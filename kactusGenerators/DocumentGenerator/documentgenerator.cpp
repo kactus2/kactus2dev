@@ -418,6 +418,8 @@ void DocumentGenerator::writeModelParameters(QTextStream& stream, int& subHeader
 		paramHeaders.append("Name");
 		paramHeaders.append("Data type");
 		paramHeaders.append("Default value");
+        paramHeaders.append("Array left");
+        paramHeaders.append("Array right");
 		paramHeaders.append("Description");
 		writeTableElement(paramHeaders, "List of model parameters defined for the component", stream);
 
@@ -428,6 +430,10 @@ void DocumentGenerator::writeModelParameters(QTextStream& stream, int& subHeader
 			stream << "\t\t\t\t\t<td>" << param->getDataType() << "</td>" << endl;
 			stream << "\t\t\t\t\t<td>" << expressionFormatter_->formatReferringExpression(param->getValue()) <<
                 "</td>" << endl;
+            stream << "\t\t\t\t\t<td>" << expressionFormatter_->formatReferringExpression(
+                param->getAttribute("kactus2:arrayLeft")) << "</td>" << endl;
+            stream << "\t\t\t\t\t<td>" << expressionFormatter_->formatReferringExpression(
+                param->getAttribute("kactus2:arrayRight")) << "</td>" << endl;
 			stream << "\t\t\t\t\t<td>" << param->getDescription() << "</td>" << endl;
 			stream << "\t\t\t\t</tr>" << endl;
 		}
@@ -466,6 +472,8 @@ void DocumentGenerator::writeParameters(QTextStream& stream, int& subHeaderNumbe
 		QStringList paramHeaders;
 		paramHeaders.append("Name");
 		paramHeaders.append("Value");
+        paramHeaders.append("Array left");
+        paramHeaders.append("Array right");
 		paramHeaders.append("Description");
 		writeTableElement(paramHeaders,
 			"List of parameters defined for the component", stream);
@@ -475,6 +483,10 @@ void DocumentGenerator::writeParameters(QTextStream& stream, int& subHeaderNumbe
 			stream << "\t\t\t\t\t<td>" << param->getName() << "</td>" << endl;
 			stream << "\t\t\t\t\t<td>" << expressionFormatter_->formatReferringExpression(param->getValue()) <<
                 "</td>" << endl;
+            stream << "\t\t\t\t\t<td>" << expressionFormatter_->formatReferringExpression(param->getAttribute(
+                "kactus2:arrayLeft")) << "</td>" << endl;
+            stream << "\t\t\t\t\t<td>" << expressionFormatter_->formatReferringExpression(param->getAttribute(
+                "kactus2:arrayRight")) << "</td>" << endl;
 			stream << "\t\t\t\t\t<td>" << param->getDescription() << "</td>" << endl;
 			stream << "\t\t\t\t</tr>" << endl;
 		}
@@ -1152,7 +1164,7 @@ void DocumentGenerator::writePortTable(QTextStream& stream, QString const& title
 {
     QStringList portHeaders;
     portHeaders << "Name" << "Direction" << "Width" << "Left bound" << "Right bound" << "Port type" <<
-        "Type definition" << "Default value" << "Description";
+        "Type definition" << "Default value" << "Array left" << "Array right" << "Description";
     writeTableElement(portHeaders, title, stream);
 
     foreach (QSharedPointer<Port> port, ports) {
@@ -1170,6 +1182,10 @@ void DocumentGenerator::writePortTable(QTextStream& stream, QString const& title
         stream << "\t\t\t\t\t<td>" << typeName << "</td>" << endl;
         stream << "\t\t\t\t\t<td>" << port->getTypeDefinition(typeName) << "</td>" << endl;
         stream << "\t\t\t\t\t<td>" << expressionFormatter_->formatReferringExpression(port->getDefaultValue())
+            << "</td>" << endl;
+        stream << "\t\t\t\t\t<td>" << expressionFormatter_->formatReferringExpression(port->getArrayLeft()) 
+            << "</td>" << endl;
+        stream << "\t\t\t\t\t<td>" << expressionFormatter_->formatReferringExpression(port->getArrayRight())
             << "</td>" << endl;
         stream << "\t\t\t\t\t<td>" << port->getDescription() << "</td>" << endl;
         stream << "\t\t\t\t</tr>" << endl;

@@ -105,7 +105,8 @@ private:
      *      @param [in] uuID            Id of the parameter.
      */
     QSharedPointer<ModelParameter> createTestModelParameter(QString const& name, QString const& dataType,
-        QString const& value, QString const& description, QString const& uuID);
+        QString const& value, QString const& description, QString const& uuID, QString const& arrayLeft,
+        QString const& arrayRight);
 
     /*!
      *  Create a parameter used in the tests.
@@ -116,7 +117,7 @@ private:
      *      @param [in] uuID            Id of the parameter.
      */
     QSharedPointer<Parameter> createTestParameter(QString const& name, QString const& value,
-        QString const& description, QString const& uuID);
+        QString const& description, QString const& uuID, QString const& arrayLeft, QString const& arrayRight);
 
     /*!
      *  Create a port used in the tests.
@@ -127,7 +128,7 @@ private:
      *      @param [in] defaultValue    The default value of the port.
      */
     QSharedPointer<Port> createTestPort(QString const& name, QString const& leftBound, QString const& rightBound,
-        QString const& defaultValue);
+        QString const& defaultValue, QString const& arrayLeft, QString const& arrayRight);
 
     /*!
      *  Create a map for configurable element values.
@@ -336,10 +337,11 @@ void tst_documentGenerator::testFileHeaderIsWritten()
 //-----------------------------------------------------------------------------
 void tst_documentGenerator::testTableOfContentsIsWrittenWithOnlyTopComponent()
 {
-    QSharedPointer<ModelParameter> modelParameter = createTestModelParameter("modelParam", "", "10", "", "M-ID");
+    QSharedPointer<ModelParameter> modelParameter = createTestModelParameter("modelParam", "", "10", "", "M-ID",
+        "", "");
 
     QList <QSharedPointer<Parameter> > componentParameters;
-    QSharedPointer<Parameter> parameter = createTestParameter("parameter", "1", "", "P-ID");
+    QSharedPointer<Parameter> parameter = createTestParameter("parameter", "1", "", "P-ID", "", "");
     componentParameters.append(parameter);
 
     QList <QSharedPointer <Register> > registers;
@@ -357,7 +359,7 @@ void tst_documentGenerator::testTableOfContentsIsWrittenWithOnlyTopComponent()
     QSharedPointer<MemoryMap> testMemoryMap = createTestMemoryMap("memoryMap", "", 8, addressBlocks);
     memoryMaps.append(testMemoryMap);
 
-    QSharedPointer<Port> port = createTestPort("port", "10", "1", "");
+    QSharedPointer<Port> port = createTestPort("port", "10", "1", "", "", "");
 
     QSharedPointer<BusInterface> busInterface (new BusInterface());
     busInterface->setName("busInterface");
@@ -449,7 +451,7 @@ void tst_documentGenerator::testTableOfContentsIsWrittenWithOnlyTopComponent()
 void tst_documentGenerator::testModelParametersWrittenWithOnlyTopComponent()
 {
     QSharedPointer<ModelParameter> modelParameter = createTestModelParameter("modelParam", "integer", "14", "",
-        "MODEL-ID");
+        "MODEL-ID", "2", "0");
     topComponent_->getModel()->addModelParameter(modelParameter);
 
     DocumentGenerator* generator = createTestGenerator();
@@ -474,12 +476,16 @@ void tst_documentGenerator::testModelParametersWrittenWithOnlyTopComponent()
                     "\t\t\t\t\t<th>Name</th>\n"
                     "\t\t\t\t\t<th>Data type</th>\n"
                     "\t\t\t\t\t<th>Default value</th>\n"
+                    "\t\t\t\t\t<th>Array left</th>\n"
+                    "\t\t\t\t\t<th>Array right</th>\n"
                     "\t\t\t\t\t<th>Description</th>\n"
                 "\t\t\t\t</tr>\n"
                 "\t\t\t\t<tr>\n"
                     "\t\t\t\t\t<td>" + modelParameter->getName() + "</td>\n"
                     "\t\t\t\t\t<td>" + modelParameter->getDataType() + "</td>\n"
                     "\t\t\t\t\t<td>" + modelParameter->getValue() + "</td>\n"
+                    "\t\t\t\t\t<td>" + modelParameter->getAttribute("kactus2:arrayLeft") + "</td>\n"
+                    "\t\t\t\t\t<td>" + modelParameter->getAttribute("kactus2:arrayRight") + "</td>\n"
                     "\t\t\t\t\t<td>" + modelParameter->getDescription() + "</td>\n"
                 "\t\t\t\t</tr>\n"
             "\t\t\t</table>\n");
@@ -522,11 +528,11 @@ void tst_documentGenerator::testModelParametersWrittenWithOnlyTopComponent()
 void tst_documentGenerator::testModelParametersWithReferences()
 {
     QSharedPointer <ModelParameter> modelParameter = createTestModelParameter("modelParam", "integer", "14", "",
-        "ID-model");
+        "ID-model", "", "");
     topComponent_->getModel()->addModelParameter(modelParameter);
 
     QSharedPointer <ModelParameter> refParameter = createTestModelParameter("refParam", "integer", "ID-model", "",
-        "ID-ref");
+        "ID-ref", "ID-model", "ID-ref");
     topComponent_->getModel()->addModelParameter(refParameter);
 
     DocumentGenerator* generator = createTestGenerator();
@@ -551,18 +557,24 @@ void tst_documentGenerator::testModelParametersWithReferences()
         "\t\t\t\t\t<th>Name</th>\n"
         "\t\t\t\t\t<th>Data type</th>\n"
         "\t\t\t\t\t<th>Default value</th>\n"
+        "\t\t\t\t\t<th>Array left</th>\n"
+        "\t\t\t\t\t<th>Array right</th>\n"
         "\t\t\t\t\t<th>Description</th>\n"
         "\t\t\t\t</tr>\n"
         "\t\t\t\t<tr>\n"
         "\t\t\t\t\t<td>" + modelParameter->getName() + "</td>\n"
         "\t\t\t\t\t<td>" + modelParameter->getDataType() + "</td>\n"
         "\t\t\t\t\t<td>" + modelParameter->getValue() + "</td>\n"
+        "\t\t\t\t\t<td>" + modelParameter->getAttribute("kactus2:arrayLeft") + "</td>\n"
+        "\t\t\t\t\t<td>" + modelParameter->getAttribute("kactus2:arrayRight") + "</td>\n"
         "\t\t\t\t\t<td>" + modelParameter->getDescription() + "</td>\n"
         "\t\t\t\t</tr>\n"
         "\t\t\t\t<tr>\n"
         "\t\t\t\t\t<td>" + refParameter->getName() + "</td>\n"
         "\t\t\t\t\t<td>" + refParameter->getDataType() + "</td>\n"
         "\t\t\t\t\t<td>modelParam</td>\n"
+        "\t\t\t\t\t<td>modelParam</td>\n"
+        "\t\t\t\t\t<td>refParam</td>\n"
         "\t\t\t\t\t<td>" + refParameter->getDescription() + "</td>\n"
         "\t\t\t\t</tr>\n"
         "\t\t\t</table>\n");
@@ -604,9 +616,10 @@ void tst_documentGenerator::testModelParametersWithReferences()
 //-----------------------------------------------------------------------------
 void tst_documentGenerator::testParametersWrittenWithOnlyTopComponent()
 {
-    QSharedPointer <Parameter> parameter = createTestParameter("parameter", "10", "Description", "ID-parameter");
+    QSharedPointer <Parameter> parameter = createTestParameter("parameter", "10", "Description", "ID-parameter",
+        "1", "0");
     QSharedPointer <Parameter> refParameter = createTestParameter("refParameter", "ID-parameter", "Describe this",
-        "ID-refer");
+        "ID-refer", "", "");
 
     QList <QSharedPointer <Parameter> > componentParameters;
     componentParameters.append(parameter);
@@ -645,16 +658,22 @@ void tst_documentGenerator::testParametersWrittenWithOnlyTopComponent()
         "\t\t\t\t<tr>\n"
         "\t\t\t\t\t<th>Name</th>\n"
         "\t\t\t\t\t<th>Value</th>\n"
+        "\t\t\t\t\t<th>Array left</th>\n"
+        "\t\t\t\t\t<th>Array right</th>\n"
         "\t\t\t\t\t<th>Description</th>\n"
         "\t\t\t\t</tr>\n"
         "\t\t\t\t<tr>\n"
         "\t\t\t\t\t<td>" + parameter->getName() + "</td>\n"
         "\t\t\t\t\t<td>" + parameter->getValue() + "</td>\n"
+        "\t\t\t\t\t<td>" + parameter->getAttribute("kactus2:arrayLeft") + "</td>\n"
+        "\t\t\t\t\t<td>" + parameter->getAttribute("kactus2:arrayRight") + "</td>\n"
         "\t\t\t\t\t<td>" + parameter->getDescription() + "</td>\n"
         "\t\t\t\t</tr>\n"
         "\t\t\t\t<tr>\n"
         "\t\t\t\t\t<td>" + refParameter->getName() + "</td>\n"
         "\t\t\t\t\t<td>parameter</td>\n"
+        "\t\t\t\t\t<td></td>\n"
+        "\t\t\t\t\t<td></td>\n"
         "\t\t\t\t\t<td>" + refParameter->getDescription() + "</td>\n"
         "\t\t\t\t</tr>\n"
         "\t\t\t</table>"
@@ -856,7 +875,7 @@ void tst_documentGenerator::testAddressBlocksWrittenWithTopComponent()
 //-----------------------------------------------------------------------------
 void tst_documentGenerator::testExpressionsInAddressBlocks()
 {
-    QSharedPointer <Parameter> targetParameter = createTestParameter("target", "4", "", "ID-TARGET");
+    QSharedPointer <Parameter> targetParameter = createTestParameter("target", "4", "", "ID-TARGET", "", "");
 
     QList <QSharedPointer <AddressBlock> > addressBlocks;
     QSharedPointer <AddressBlock> testAddressBlock = createTestAddressBlock("addressBlock", "example", "'h0",
@@ -1258,10 +1277,12 @@ void tst_documentGenerator::testMemoryMapToFieldWrittenWithTopComponent()
 void tst_documentGenerator::testPortsWrittenWithOnlyTopComponent()
 {
     QList <QSharedPointer <Parameter> > componentParameters;
-    QSharedPointer <Parameter> parameter = createTestParameter("parameter", "10", "Description", "ID-parameter");
+    QSharedPointer <Parameter> parameter = createTestParameter("parameter", "10", "Description", "ID-parameter",
+        "", "");
     componentParameters.append(parameter);
 
-    QSharedPointer <Port> portRef = createTestPort("portRef", "ID-parameter", "4", "ID-parameter");
+    QSharedPointer <Port> portRef = createTestPort("portRef", "ID-parameter", "4", "ID-parameter", "2",
+        "ID-parameter");
     portRef->setLeftBound(10);
     portRef->setRightBound(4);
 
@@ -1296,6 +1317,8 @@ void tst_documentGenerator::testPortsWrittenWithOnlyTopComponent()
         "\t\t\t\t\t<th>Port type</th>\n"
         "\t\t\t\t\t<th>Type definition</th>\n"
         "\t\t\t\t\t<th>Default value</th>\n"
+        "\t\t\t\t\t<th>Array left</th>\n"
+        "\t\t\t\t\t<th>Array right</th>\n"
         "\t\t\t\t\t<th>Description</th>\n"
         "\t\t\t\t</tr>\n"
         "\t\t\t\t<tr>\n"
@@ -1307,6 +1330,8 @@ void tst_documentGenerator::testPortsWrittenWithOnlyTopComponent()
         "\t\t\t\t\t<td>" + portRef->getRightBoundExpression() + "</td>\n"
         "\t\t\t\t\t<td>" + portRef->getTypeName() + "</td>\n"
         "\t\t\t\t\t<td>" + portRef->getTypeDefinition(portRef->getTypeName()) + "</td>\n"
+        "\t\t\t\t\t<td>parameter</td>\n"
+        "\t\t\t\t\t<td>" + portRef->getArrayLeft() + "</td>\n"
         "\t\t\t\t\t<td>parameter</td>\n"
         "\t\t\t\t\t<td>" + portRef->getDescription() + "</td>\n"
         "\t\t\t\t</tr>\n"
@@ -1570,8 +1595,9 @@ void tst_documentGenerator::testDesignIsWritten()
 
     QList <QSharedPointer<Parameter> > componentParameters;
 
-    QSharedPointer<Parameter> targetParameter = createTestParameter("firstParameter", "10", "", "ID-TARGET");
-    QSharedPointer<Parameter> referParameter = createTestParameter("referer", "ID-TARGET", "", "ID-REF");
+    QSharedPointer<Parameter> targetParameter = createTestParameter("firstParameter", "10", "", "ID-TARGET", "",
+        "");
+    QSharedPointer<Parameter> referParameter = createTestParameter("referer", "ID-TARGET", "", "ID-REF", "", "");
     componentParameters.append(targetParameter);
     componentParameters.append(referParameter);
 
@@ -1746,7 +1772,8 @@ void tst_documentGenerator::readOutputFile()
 // Function: tst_documentGenerator::createTestModelParameter()
 //-----------------------------------------------------------------------------
 QSharedPointer<ModelParameter> tst_documentGenerator::createTestModelParameter(QString const& name,
-    QString const& dataType, QString const& value, QString const& description, QString const& uuID)
+    QString const& dataType, QString const& value, QString const& description, QString const& uuID,
+    QString const& arrayLeft, QString const& arrayRight)
 {
     QSharedPointer<ModelParameter> modelParameter (new ModelParameter);
     modelParameter->setName(name);
@@ -1754,6 +1781,8 @@ QSharedPointer<ModelParameter> tst_documentGenerator::createTestModelParameter(Q
     modelParameter->setValue(value);
     modelParameter->setDescription(description);
     modelParameter->setValueId(uuID);
+    modelParameter->setAttribute("kactus2:arrayLeft", arrayLeft);
+    modelParameter->setAttribute("kactus2:arrayRight", arrayRight);
 
     return modelParameter;
 }
@@ -1762,13 +1791,15 @@ QSharedPointer<ModelParameter> tst_documentGenerator::createTestModelParameter(Q
 // Function: tst_documentGenerator::createTestParameter()
 //-----------------------------------------------------------------------------
 QSharedPointer<Parameter> tst_documentGenerator::createTestParameter(QString const& name, QString const& value,
-    QString const& description, QString const& uuID)
+    QString const& description, QString const& uuID, QString const& arrayLeft, QString const& arrayRight)
 {
     QSharedPointer<Parameter> parameter (new Parameter);
     parameter->setName(name);
     parameter->setValue(value);
     parameter->setDescription(description);
     parameter->setValueId(uuID);
+    parameter->setAttribute("kactus2:arrayLeft", arrayLeft);
+    parameter->setAttribute("kactus2:arrayRight", arrayRight);
 
     return parameter;
 }
@@ -1777,7 +1808,7 @@ QSharedPointer<Parameter> tst_documentGenerator::createTestParameter(QString con
 // Function: tst_documentGenerator::createTestPort()
 //-----------------------------------------------------------------------------
 QSharedPointer<Port> tst_documentGenerator::createTestPort(QString const& name, QString const& leftBound,
-    QString const& rightBound, QString const& defaultValue)
+    QString const& rightBound, QString const& defaultValue, QString const& arrayLeft, QString const& arrayRight)
 {
     QSharedPointer<Port> newPort (new Port);
     newPort->setDirection(General::DIRECTION_PHANTOM);
@@ -1785,6 +1816,8 @@ QSharedPointer<Port> tst_documentGenerator::createTestPort(QString const& name, 
     newPort->setLeftBoundExpression(leftBound);
     newPort->setRightBoundExpression(rightBound);
     newPort->setDefaultValue(defaultValue);
+    newPort->setArrayLeft(arrayLeft);
+    newPort->setArrayRight(arrayRight);
 
     return newPort;
 }
