@@ -790,7 +790,7 @@ QPointF Port::getDefaultPos() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: port::()
+// Function: port::getArrayLeft()
 //-----------------------------------------------------------------------------
 QString Port::getArrayLeft() const
 {
@@ -805,7 +805,7 @@ QString Port::getArrayLeft() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: port::()
+// Function: port::setArrayLeft()
 //-----------------------------------------------------------------------------
 void Port::setArrayLeft(QString const& newArrayLeft)
 {

@@ -78,10 +78,12 @@ private slots:
 
 private:
     QSharedPointer<Parameter> createTestParameter(QString const& name, QString const& value, 
-        QString const& bitWidth, QString const& arrayLeft, QString const& arrayRight);
+        QString const& bitWidthLeft, QString const& bitWidthRight, QString const& arrayLeft,
+        QString const& arrayRight);
 
     QSharedPointer<ModelParameter> createTestModelParameter(QString const& name, QString const& value,
-        QString const& bitWidth, QString const& arrayLeft, QString const& arrayRight);
+        QString const& bitWidthLeft, QString const& bitWidthRight, QString const& arrayLeft,
+        QString const& arrayRight);
 
     QSharedPointer<Port> createTestPort(QString const& name, QString const& leftExpression,
         QString const& rightExpression, QString const& defaultValue, QString const& arrayLeft,
@@ -148,18 +150,18 @@ void tst_ParameterReferenceTree::testNoReferencesFoundAddsOneRow()
 
     QList <QSharedPointer<Parameter> > componentParameters;
     // Parameter: No references.
-    QSharedPointer<Parameter> paramRef = createTestParameter("ref1", "", "", "test", "test");
+    QSharedPointer<Parameter> paramRef = createTestParameter("ref1", "", "", "", "test", "test");
     componentParameters.append(paramRef);
 
     // Model Parameter: No references.
-    QSharedPointer<ModelParameter> modelRef = createTestModelParameter("modelRef", "test", "", "" , "");
+    QSharedPointer<ModelParameter> modelRef = createTestModelParameter("modelRef", "test", "", "", "" , "");
     Model* componentModel(new Model);
     componentModel->addModelParameter(modelRef);
 
 
     QList<QSharedPointer<Parameter> > viewParameters;
     // Parameter in view: No references
-    QSharedPointer<Parameter> viewParamRef = createTestParameter("viewParamRef", "test", "", "", "");
+    QSharedPointer<Parameter> viewParamRef = createTestParameter("viewParamRef", "test", "", "", "", "");
     viewParameters.append(viewParamRef);
     View *viewRef(new View("viewRef"));
     viewRef->getParameters()->append(viewParameters);
@@ -219,7 +221,7 @@ void tst_ParameterReferenceTree::testReferenceInParameterValueAddsThreeRows()
 
     QList <QSharedPointer<Parameter> > componentParameters;
     QSharedPointer<Parameter> referencingParameter = createTestParameter(
-        "referencingParameter", "searched", "", "", "");
+        "referencingParameter", "searched", "", "", "", "");
     componentParameters.append(referencingParameter);
 
     componentParameters.append(searched);
@@ -261,7 +263,7 @@ void tst_ParameterReferenceTree::testMultipleReferencesInOneParameter()
     componentParameters.append(searched);
     // Four references in a parameter
     QSharedPointer<Parameter> referencer = createTestParameter("refParam", "searched", "searched", "searched",
-        "searched");
+        "searched", "searched");
     componentParameters.append(referencer);
 
     QSharedPointer<Component> component(new Component);
@@ -279,24 +281,34 @@ void tst_ParameterReferenceTree::testMultipleReferencesInOneParameter()
     QCOMPARE(tree.topLevelItem(0)->child(0)->text(ParameterReferenceTree::ITEM_NAME), referencer->getName());
     QCOMPARE(tree.topLevelItem(0)->child(0)->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
 
-    QCOMPARE(tree.topLevelItem(0)->child(0)->childCount(), 4);
+    QCOMPARE(tree.topLevelItem(0)->child(0)->childCount(), 5);
     QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_NAME), QString("Value"));
     QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_EXPRESSION),
         expressionFormatter->formatReferringExpression(referencer->getValue()));
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(1)->text(ParameterReferenceTree::ITEM_NAME), QString("Bit Width"));
+
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(1)->text(ParameterReferenceTree::ITEM_NAME),
+        QString("Bit Width Left"));
     QCOMPARE(tree.topLevelItem(0)->child(0)->child(1)->text(ParameterReferenceTree::ITEM_EXPRESSION),
-        expressionFormatter->formatReferringExpression(referencer->getBitWidth()));
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(2)->text(ParameterReferenceTree::ITEM_NAME), QString("Array Left"));
+        expressionFormatter->formatReferringExpression(referencer->getBitWidthLeft()));
+
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(2)->text(ParameterReferenceTree::ITEM_NAME),
+        QString("Bit Width Right"));
     QCOMPARE(tree.topLevelItem(0)->child(0)->child(2)->text(ParameterReferenceTree::ITEM_EXPRESSION),
-        expressionFormatter->formatReferringExpression(referencer->getAttribute("kactus2:arrayLeft")));
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(3)->text(ParameterReferenceTree::ITEM_NAME), QString("Array Right"));
+        expressionFormatter->formatReferringExpression(referencer->getBitWidthRight()));
+
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(3)->text(ParameterReferenceTree::ITEM_NAME), QString("Array Left"));
     QCOMPARE(tree.topLevelItem(0)->child(0)->child(3)->text(ParameterReferenceTree::ITEM_EXPRESSION),
+        expressionFormatter->formatReferringExpression(referencer->getAttribute("kactus2:arrayLeft")));
+
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(4)->text(ParameterReferenceTree::ITEM_NAME), QString("Array Right"));
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(4)->text(ParameterReferenceTree::ITEM_EXPRESSION),
         expressionFormatter->formatReferringExpression(referencer->getAttribute("kactus2:arrayRight")));
 
     QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->childCount(), 0);
     QCOMPARE(tree.topLevelItem(0)->child(0)->child(1)->childCount(), 0);
     QCOMPARE(tree.topLevelItem(0)->child(0)->child(2)->childCount(), 0);
     QCOMPARE(tree.topLevelItem(0)->child(0)->child(3)->childCount(), 0);
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(4)->childCount(), 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -312,10 +324,10 @@ void tst_ParameterReferenceTree::testMultipleReferencesInMultipleParameters()
     componentParameters.append(searched);
 
     // Two references, in array size and array offset.
-    QSharedPointer<Parameter> firstRef = createTestParameter("ref1", "", "", "searched", "searched");
+    QSharedPointer<Parameter> firstRef = createTestParameter("ref1", "", "", "", "searched", "searched");
     componentParameters.append(firstRef);
     // Three references, in bit width, array size and array offset.
-    QSharedPointer<Parameter> secondRef = createTestParameter("ref2", "", "searched", "searched", "searched");
+    QSharedPointer<Parameter> secondRef = createTestParameter("ref2", "", "searched", "", "searched", "searched");
     componentParameters.append(secondRef);
 
     QSharedPointer<Component> component(new Component);
@@ -350,13 +362,15 @@ void tst_ParameterReferenceTree::testMultipleReferencesInMultipleParameters()
 
     QCOMPARE(tree.topLevelItem(0)->child(1)->childCount(), 3);
     QCOMPARE(tree.topLevelItem(0)->child(1)->child(0)->text(ParameterReferenceTree::ITEM_NAME),
-        QString("Bit Width"));
+        QString("Bit Width Left"));
     QCOMPARE(tree.topLevelItem(0)->child(1)->child(0)->text(ParameterReferenceTree::ITEM_EXPRESSION),
-        expressionFormatter->formatReferringExpression(secondRef->getBitWidth()));
+        expressionFormatter->formatReferringExpression(secondRef->getBitWidthLeft()));
+
     QCOMPARE(tree.topLevelItem(0)->child(1)->child(1)->text(ParameterReferenceTree::ITEM_NAME),
         QString("Array Left"));
     QCOMPARE(tree.topLevelItem(0)->child(1)->child(1)->text(ParameterReferenceTree::ITEM_EXPRESSION),
         expressionFormatter->formatReferringExpression(secondRef->getAttribute("kactus2:arrayLeft")));
+
     QCOMPARE(tree.topLevelItem(0)->child(1)->child(2)->text(ParameterReferenceTree::ITEM_NAME),
         QString("Array Right"));
     QCOMPARE(tree.topLevelItem(0)->child(1)->child(2)->text(ParameterReferenceTree::ITEM_EXPRESSION),
@@ -380,7 +394,7 @@ void tst_ParameterReferenceTree::testReferenceAsAnExpressionInParameter()
     componentParameters.append(searched);
 
     // One reference, in value.
-    QSharedPointer<Parameter> firstRef = createTestParameter("ref", "search + searched", "", "", "");
+    QSharedPointer<Parameter> firstRef = createTestParameter("ref", "search + searched", "", "", "", "");
     componentParameters.append(firstRef);
 
     QSharedPointer<Component> component(new Component);
@@ -419,7 +433,8 @@ void tst_ParameterReferenceTree::testMultipleReferencesInSameExpression()
     componentParameters.append(searched);
 
     // Three references, in value.
-    QSharedPointer<Parameter> firstRef = createTestParameter("ref", "searched + searched * searched", "", "", "");
+    QSharedPointer<Parameter> firstRef = createTestParameter("ref", "searched + searched * searched", "", "", "",
+        "");
     componentParameters.append(firstRef);
 
     QSharedPointer<Component> component(new Component);
@@ -458,7 +473,7 @@ void tst_ParameterReferenceTree::testReferenceInModelParameterValueAddsThreeRows
     componentParameters.append(searched);
 
     // One reference, in value.
-    QSharedPointer<ModelParameter> modelRef = createTestModelParameter("modelRef", "searched", "", "" , "");
+    QSharedPointer<ModelParameter> modelRef = createTestModelParameter("modelRef", "searched", "", "", "" , "");
 
     Model* componentModel(new Model);
     componentModel->addModelParameter(modelRef);
@@ -500,11 +515,12 @@ void tst_ParameterReferenceTree::testReferencesInParametersAndModelParameters()
     componentParameters.append(searched);
 
     // One reference, in array offset.
-    QSharedPointer<Parameter> paramRef = createTestParameter("paramRef", "", "", "", "searched");
+    QSharedPointer<Parameter> paramRef = createTestParameter("paramRef", "", "", "", "", "searched");
     componentParameters.append(paramRef);
 
     // Two references, in bit width and array size.
-    QSharedPointer<ModelParameter> modelRef = createTestModelParameter("modelRef", "", "searched", "searched", "");
+    QSharedPointer<ModelParameter> modelRef = createTestModelParameter("modelRef", "", "", "searched", "searched",
+        "");
     Model* componentModel(new Model);
     componentModel->addModelParameter(modelRef);
     
@@ -527,9 +543,10 @@ void tst_ParameterReferenceTree::testReferencesInParametersAndModelParameters()
 
     QCOMPARE(tree.topLevelItem(0)->child(0)->childCount(), 2);
     QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_NAME),
-        QString("Bit Width"));
+        QString("Bit Width Right"));
     QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_EXPRESSION),
-        expressionFormatter->formatReferringExpression(modelRef->getBitWidth()));
+        expressionFormatter->formatReferringExpression(modelRef->getBitWidthRight()));
+
     QCOMPARE(tree.topLevelItem(0)->child(0)->child(1)->text(ParameterReferenceTree::ITEM_NAME),
         QString("Array Left"));
     QCOMPARE(tree.topLevelItem(0)->child(0)->child(1)->text(ParameterReferenceTree::ITEM_EXPRESSION),
@@ -564,7 +581,7 @@ void tst_ParameterReferenceTree::testReferenceInViewParameterValueAddsFiveRows()
     searched->setValueId("searched");
 
     // One reference, in array offset.
-    QSharedPointer<Parameter> paramRef = createTestParameter("paramRef", "searched", "", "", "");
+    QSharedPointer<Parameter> paramRef = createTestParameter("paramRef", "searched", "", "", "", "");
 
     View *viewRef(new View("viewRef"));
     viewRef->getParameters()->append(paramRef);
@@ -1291,7 +1308,7 @@ void tst_ParameterReferenceTree::testReferenceInRegisterFieldAddsEightRows()
 //-----------------------------------------------------------------------------
 void tst_ParameterReferenceTree::testReferenceInBusInterfaceParameterAddsFourRows()
 {
-    QSharedPointer<Parameter> searched = createTestParameter("searchedParameter", "", "", "", "");
+    QSharedPointer<Parameter> searched = createTestParameter("searchedParameter", "", "", "", "", "");
     searched->setValueId("searched");
 
     QList <QSharedPointer<Parameter> > componentParameters;
@@ -1300,7 +1317,7 @@ void tst_ParameterReferenceTree::testReferenceInBusInterfaceParameterAddsFourRow
     QSharedPointer<BusInterface> refBusInterface(new BusInterface);
     refBusInterface->setName("refBusInterface");
     QList<QSharedPointer<Parameter> > busInterfaceParameters;
-    QSharedPointer<Parameter> busIFParameter = createTestParameter("busIFParameterRef", "", "", "searched", "");
+    QSharedPointer<Parameter> busIFParameter = createTestParameter("busIFParameterRef", "", "", "", "searched", "");
     busInterfaceParameters.append(busIFParameter);
 
     refBusInterface->getParameters()->append(busInterfaceParameters);
@@ -1340,7 +1357,7 @@ void tst_ParameterReferenceTree::testReferenceInBusInterfaceParameterAddsFourRow
 //-----------------------------------------------------------------------------
 void tst_ParameterReferenceTree::testReferenceInBusInterfaceMirroredSlaveAddsFourRows()
 {
-    QSharedPointer<Parameter> searched = createTestParameter("searchedParameter", "", "", "", "");
+    QSharedPointer<Parameter> searched = createTestParameter("searchedParameter", "", "", "", "", "");
     searched->setValueId("searched");
 
     QList <QSharedPointer<Parameter> > componentParameters;
@@ -1399,18 +1416,18 @@ void tst_ParameterReferenceTree::testRerefencesInMultiplePlaces()
     componentParameters.append(searched);
 
     // Parameter: Two references, in array size and array offset.
-    QSharedPointer<Parameter> paramRef = createTestParameter("ref1", "", "", "searched", "searched");
+    QSharedPointer<Parameter> paramRef = createTestParameter("ref1", "", "", "", "searched", "searched");
     componentParameters.append(paramRef);
 
     // Model Parameter: One reference, in value.
-    QSharedPointer<ModelParameter> modelRef = createTestModelParameter("modelRef", "searched", "", "" , "");
+    QSharedPointer<ModelParameter> modelRef = createTestModelParameter("modelRef", "searched", "", "", "" , "");
     Model* componentModel(new Model);
     componentModel->addModelParameter(modelRef);
 
 
     QList<QSharedPointer<Parameter> > viewParameters;
     // Parameter in view: One reference, in array offset.
-    QSharedPointer<Parameter> viewParamRef = createTestParameter("viewParamRef", "searched", "", "", "");
+    QSharedPointer<Parameter> viewParamRef = createTestParameter("viewParamRef", "searched", "", "", "", "");
     viewParameters.append(viewParamRef);
     View *viewRef(new View("viewRef"));
     viewRef->getParameters()->append(viewParameters);
@@ -1439,7 +1456,7 @@ void tst_ParameterReferenceTree::testRerefencesInMultiplePlaces()
     QSharedPointer<BusInterface> refBusInterface(new BusInterface);
     refBusInterface->setName("refBusInterface");
     QList<QSharedPointer<Parameter> > busInterfaceParameters;
-    QSharedPointer<Parameter> busIFParameter = createTestParameter("busIFParameterRef", "searched", "", "", "");
+    QSharedPointer<Parameter> busIFParameter = createTestParameter("busIFParameterRef", "searched", "", "", "", "");
     busInterfaceParameters.append(busIFParameter);
 
     refBusInterface->getParameters()->append(busInterfaceParameters);
@@ -1689,13 +1706,15 @@ void tst_ParameterReferenceTree::testRerefencesInMultiplePlaces()
 //-----------------------------------------------------------------------------
 // Function: tst_ParameterReferenceTree::createTestParameter()
 //-----------------------------------------------------------------------------
-QSharedPointer<Parameter> tst_ParameterReferenceTree::createTestParameter (QString const& name, 
-    QString const& value, QString const& bitWidth, QString const& arrayLeft, QString const& arrayRight)
+QSharedPointer<Parameter> tst_ParameterReferenceTree::createTestParameter(QString const& name,
+    QString const& value, QString const& bitWidthLeft, QString const& bitWidthRight, QString const& arrayLeft,
+    QString const& arrayRight)
 {
     QSharedPointer<Parameter> referencingParameter(new Parameter);
     referencingParameter->setName(name);
     referencingParameter->setValue(value);
-    referencingParameter->setBitWidth(bitWidth);
+    referencingParameter->setBitWidthLeft(bitWidthLeft);
+    referencingParameter->setBitWidthRight(bitWidthRight);
     referencingParameter->setAttribute("kactus2:arrayLeft", arrayLeft);
     referencingParameter->setAttribute("kactus2:arrayRight", arrayRight);
 
@@ -1706,12 +1725,14 @@ QSharedPointer<Parameter> tst_ParameterReferenceTree::createTestParameter (QStri
 // Function: tst_ParameterReferenceTree::createTestModelParameter()
 //-----------------------------------------------------------------------------
 QSharedPointer<ModelParameter> tst_ParameterReferenceTree::createTestModelParameter(QString const& name,
-    QString const& value, QString const& bitWidth, QString const& arrayLeft, QString const& arrayRight)
+    QString const& value, QString const& bitWidthLeft, QString const& bitWidthRight, QString const& arrayLeft,
+    QString const& arrayRight)
 {
     QSharedPointer<ModelParameter> referencingModelParameter(new ModelParameter);
     referencingModelParameter->setName(name);
     referencingModelParameter->setValue(value);
-    referencingModelParameter->setBitWidth(bitWidth);
+    referencingModelParameter->setBitWidthLeft(bitWidthLeft);
+    referencingModelParameter->setBitWidthRight(bitWidthRight);
     referencingModelParameter->setAttribute("kactus2:arrayLeft", arrayLeft);
     referencingModelParameter->setAttribute("kactus2:arrayRight", arrayRight);
 

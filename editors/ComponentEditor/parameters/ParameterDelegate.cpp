@@ -281,11 +281,19 @@ int ParameterDelegate::formatColumn() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterDelegate::bitwidthColumn()
+// Function: ParameterDelegate::bitWidthLeftColumn()
 //-----------------------------------------------------------------------------
-int ParameterDelegate::bitwidthColumn() const
+int ParameterDelegate::bitWidthLeftColumn() const
 {
-    return ParameterColumns::BITWIDTH;
+    return ParameterColumns::BITWIDTH_LEFT;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterDelegate::bitWidthRightColumn()
+//-----------------------------------------------------------------------------
+int ParameterDelegate::bitWidthRightColumn() const
+{
+    return ParameterColumns::BITWIDTH_RIGHT;
 }
 
 //-----------------------------------------------------------------------------
@@ -365,7 +373,7 @@ int ParameterDelegate::idColumn() const
 //-----------------------------------------------------------------------------
 bool ParameterDelegate::columnAcceptsExpression(int column) const
 {
-    return column == valueColumn() || column == bitwidthColumn() ||
+    return column == valueColumn() || column == bitWidthLeftColumn() || column == bitWidthRightColumn() ||
         column == arrayLeftColumn() || column == arrayRightColumn();
 }
 

@@ -59,7 +59,8 @@ QVariant AbstractParameterModel::data( QModelIndex const& index, int role /*= Qt
     
     if (role == Qt::DisplayRole)
     {
-        if (index.column() == valueColumn() ||index.column() == bitWidthColumn() ||
+        if (index.column() == valueColumn() || 
+            index.column() == bitWidthLeftColumn() || index.column() == bitWidthRightColumn() ||
             index.column() == arrayLeftColumn() || index.column() == arrayRightColumn())
         {
             return expressionFormatter_->formatReferringExpression(valueForIndex(index).toString());
@@ -84,7 +85,8 @@ QVariant AbstractParameterModel::data( QModelIndex const& index, int role /*= Qt
             }
         }
 
-        if (index.column() == valueColumn() ||index.column() == bitWidthColumn() ||
+        if (index.column() == valueColumn() ||
+            index.column() == bitWidthLeftColumn() || index.column() == bitWidthRightColumn() ||
             index.column() == arrayLeftColumn() || index.column() == arrayRightColumn())
         {
             return formattedValueFor(valueForIndex(index).toString());
@@ -128,10 +130,15 @@ QVariant AbstractParameterModel::headerData(int section, Qt::Orientation orienta
         {
             return tr("Type");   
         }
-        else if (section == bitWidthColumn())
+        else if (section == bitWidthLeftColumn())
         {
-            QString bitWidthHeader = tr("Bit width") + getExpressionSymbol();
-            return bitWidthHeader;
+            QString bitWidthLeft = tr("Bit vector\nleft") + getExpressionSymbol();
+            return bitWidthLeft;
+        }
+        else if (section == bitWidthRightColumn())
+        {
+            QString bitWidthRight = tr("Bit vector\nright") + getExpressionSymbol();
+            return bitWidthRight;
         }
         else if (section == minimumColumn())
         {
@@ -219,17 +226,39 @@ bool AbstractParameterModel::setData(QModelIndex const& index, const QVariant& v
         {
             parameter->setType(value.toString());
         }
-        else if (index.column() == bitWidthColumn())
+        else if (index.column() == bitWidthLeftColumn())
         {
             if (!value.isValid())
             {
-                removeReferencesFromSingleExpression(parameter->getBitWidth());
+                removeReferencesFromSingleExpression(parameter->getBitWidthLeft());
 
                 emit dataChanged(QAbstractTableModel::index(0, usageCountColumn()),
                     QAbstractTableModel::index(rowCount() - 1, usageCountColumn()));
             }
 
-            parameter->setBitWidth(value.toString());
+            parameter->setBitWidthLeft(value.toString());
+
+            if (value.isValid() && parameter->getBitWidthRight().isEmpty() && !value.toString().isEmpty())
+            {
+                parameter->setBitWidthRight(QString::number(0));
+            }
+        }
+        else if (index.column() == bitWidthRightColumn())
+        {
+            if (!value.isValid())
+            {
+                removeReferencesFromSingleExpression(parameter->getBitWidthRight());
+
+                emit dataChanged(QAbstractTableModel::index(0, usageCountColumn()),
+                    QAbstractTableModel::index(rowCount() - 1, usageCountColumn()));
+            }
+
+            parameter->setBitWidthRight(value.toString());
+
+            if (value.isValid() && parameter->getBitWidthLeft().isEmpty() && !value.toString().isEmpty())
+            {
+                parameter->setBitWidthLeft(QString::number(0));
+            }
         }
         else if (index.column() == minimumColumn())
         {
@@ -477,9 +506,13 @@ bool AbstractParameterModel::validateColumnForParameter(QModelIndex const& index
     {
         return validator_->hasValidValueForType(parameter->getValue(), parameter->getType());
     }
-    else if (index.column() == bitWidthColumn())
+    else if (index.column() == bitWidthLeftColumn())
     {
-        return true;
+        return validator_->validateArrayValues(parameter->getBitWidthLeft(), parameter->getBitWidthRight());
+    }
+    else if (index.column() == bitWidthRightColumn())
+    {
+        return validator_->validateArrayValues(parameter->getBitWidthLeft(), parameter->getBitWidthRight());
     }
     else if (index.column() == minimumColumn())
     {
@@ -506,11 +539,13 @@ bool AbstractParameterModel::validateColumnForParameter(QModelIndex const& index
     }
     else if (index.column() == arrayLeftColumn())
     {
-        return validator_->hasValidArrayValues(parameter);
+        return validator_->validateArrayValues(parameter->getAttribute("kactus2:arrayLeft"),
+            parameter->getAttribute("kactus2:arrayRight"));
     }
     else if (index.column() == arrayRightColumn())
     {
-        return validator_->hasValidArrayValues(parameter);
+        return validator_->validateArrayValues(parameter->getAttribute("kactus2:arrayLeft"),
+            parameter->getAttribute("kactus2:arrayRight"));
     }
 
     return true;
@@ -525,7 +560,7 @@ bool AbstractParameterModel::isValidExpressionColumn(QModelIndex const& index) c
 
     if ((index.column() == valueColumn() && parameter->getType() != "string") ||
         index.column() == arrayLeftColumn() || index.column() == arrayRightColumn() ||
-        index.column() == bitWidthColumn())
+        index.column() == bitWidthLeftColumn() || index.column() == bitWidthRightColumn())
     {
         return true;
     }
@@ -554,9 +589,13 @@ QVariant AbstractParameterModel::valueForIndex(QModelIndex const& index) const
     {
         return parameter->getType();
     }
-    else if (index.column() == bitWidthColumn())
+    else if (index.column() == bitWidthLeftColumn())
     {
-        return parameter->getBitWidth();
+        return parameter->getBitWidthLeft();
+    }
+    else if (index.column() == bitWidthRightColumn())
+    {
+        return parameter->getBitWidthRight();
     }
     else if (index.column() == minimumColumn())
     {
@@ -631,9 +670,13 @@ QVariant AbstractParameterModel::expressionOrValueForIndex(QModelIndex const& in
     {
         return parameter->getAttribute("kactus2:arrayRight");
     }
-    else if (index.column() == bitWidthColumn())
+    else if (index.column() == bitWidthLeftColumn())
     {
-        return parameter->getBitWidth();
+        return parameter->getBitWidthLeft();
+    }
+    else if (index.column() == bitWidthRightColumn())
+    {
+        return parameter->getBitWidthRight();
     }
     else
     {
@@ -686,8 +729,11 @@ QVariant AbstractParameterModel::backgroundColorForIndex(QModelIndex const& inde
     {
         return QColor("lemonChiffon");
     }
-    else if ((index.column() == minimumColumn() || index.column() == maximumColumn()) &&
+    else if (((index.column() == minimumColumn() || index.column() == maximumColumn()) &&
         (parameter->getType().isEmpty() || parameter->getType() == "bit" || parameter->getType() == "string"))
+        ||
+        ((index.column() == bitWidthLeftColumn() || index.column() == bitWidthRightColumn()) &&
+        parameter->getType() != "bit"))
     {
         return QColor("whiteSmoke");
     }
@@ -705,12 +751,13 @@ int AbstractParameterModel::getAllReferencesToIdInItemOnRow(const int& row, QStr
     QSharedPointer<Parameter> parameter = getParameterOnRow(row);
 
     int referencesInValue = parameter->getValue().count(valueID);
-    int referencesInBitWidth = parameter->getBitWidth().count(valueID);
+    int referencesInBitWidthLeft = parameter->getBitWidthLeft().count(valueID);
+    int referencesInBitWidthRight = parameter->getBitWidthRight().count(valueID);
     int referencesInArrayLeft = parameter->getAttribute("kactus2:arrayLeft").count(valueID);
     int referencesinArrayRight = parameter->getAttribute("kactus2:arrayRight").count(valueID);
 
-    int totalReferencesToParameter = referencesInValue + referencesInBitWidth + referencesInArrayLeft +
-        referencesinArrayRight;
+    int totalReferencesToParameter = referencesInValue + referencesInBitWidthLeft + referencesInBitWidthRight +
+        referencesInArrayLeft + referencesinArrayRight;
 
     return totalReferencesToParameter;
 }

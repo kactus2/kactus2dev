@@ -294,11 +294,19 @@ int ModelParameterModel::typeColumn() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: ModelParameterModel::bitwidthColumn()
+// Function: modelparametermodel::bitWidthLeftColumn()
 //-----------------------------------------------------------------------------
-int ModelParameterModel::bitWidthColumn() const
+int ModelParameterModel::bitWidthLeftColumn() const
 {
-    return ModelParameterColumns::BITWIDTH;
+    return ModelParameterColumns::BITWIDTH_LEFT;
+}
+
+//-----------------------------------------------------------------------------
+// Function: modelparametermodel::bitWidthRightColumn()
+//-----------------------------------------------------------------------------
+int ModelParameterModel::bitWidthRightColumn() const
+{
+    return ModelParameterColumns::BITWIDTH_RIGHT;
 }
 
 //-----------------------------------------------------------------------------

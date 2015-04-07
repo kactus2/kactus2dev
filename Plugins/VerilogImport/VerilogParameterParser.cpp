@@ -161,7 +161,8 @@ QList<QSharedPointer<ModelParameter> > VerilogParameterParser::parseParameters(Q
 
     // Find the type and the declaration. Only one per declaration is supported.
     QString type = parseType(input);
-    QString bitWidth = parseBitWidth(input);
+    QString bitWidthLeft = parseBitWidthLeft(input);
+    QString bitWidthRight = parseBitWidthRight(input);
     QString arrayLeft = parseArrayLeft(input);
     QString arrayRight = parseArrayRight(input);
     QString description = parseDescription(input);
@@ -193,7 +194,8 @@ QList<QSharedPointer<ModelParameter> > VerilogParameterParser::parseParameters(Q
         modelParameter->setDataType(type);
         modelParameter->setValue(value);
         modelParameter->setUsageType("nontyped");
-        modelParameter->setBitWidth(bitWidth);
+        modelParameter->setBitWidthLeft(bitWidthLeft);
+        modelParameter->setBitWidthRight(bitWidthRight);
         modelParameter->setAttribute("kactus2:arrayLeft", arrayLeft);
         modelParameter->setAttribute("kactus2:arrayRight", arrayRight);
         modelParameter->setDescription(description);
@@ -271,17 +273,29 @@ QString VerilogParameterParser::parseType(QString const& input)
 }
 
 //-----------------------------------------------------------------------------
-// Function: VerilogParameterParser::parseBitWidth()
+// Function: VerilogParameterParser::parseBitWidthLeft()
 //-----------------------------------------------------------------------------
-QString VerilogParameterParser::parseBitWidth(QString const& declaration)
+QString VerilogParameterParser::parseBitWidthLeft(QString const& declaration)
 {
     QString bitRange = TYPE_RULE.match(declaration).captured(3);
 
     QRegularExpressionMatch rangeMatch = VerilogSyntax::CAPTURING_RANGE.match(bitRange);
     QString left = rangeMatch.captured(1);
+
+    return left;
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogParameterParser::parseBitWidthRight()
+//-----------------------------------------------------------------------------
+QString VerilogParameterParser::parseBitWidthRight(QString const& declaration)
+{
+    QString bitRange = TYPE_RULE.match(declaration).captured(3);
+
+    QRegularExpressionMatch rangeMatch = VerilogSyntax::CAPTURING_RANGE.match(bitRange);
     QString right = rangeMatch.captured(2);
 
-    return QString::number(abs(left.toInt() - right.toInt()) + 1);
+    return right;
 }
 
 //-----------------------------------------------------------------------------
@@ -378,6 +392,12 @@ void VerilogParameterParser::replaceMacroUsesWithParameterIds(QSharedPointer<Mod
         QString parameterValue = replaceNameWithId(parameter->getValue(), macroUsage, define);
         parameter->setValue(parameterValue);
 
+        QString bitWidthLeft = replaceNameWithId(parameter->getBitWidthLeft(), macroUsage, define);
+        parameter->setBitWidthLeft(bitWidthLeft);
+
+        QString bitWidthRight = replaceNameWithId(parameter->getBitWidthRight(), macroUsage, define);
+        parameter->setBitWidthRight(bitWidthRight);
+
         QString arrayLeft = replaceNameWithId(parameter->getAttribute("kactus2:arrayLeft"), macroUsage, define);
         parameter->setAttribute("kactus2:arrayLeft", arrayLeft);
 
@@ -419,6 +439,12 @@ void VerilogParameterParser::replaceNameReferencesWithModelParameterIds(QSharedP
 
         QString parameterValue = replaceNameWithId(parameter->getValue(), nameReference, referencedParameter);
         parameter->setValue(parameterValue);
+
+        QString bitWidthLeft = replaceNameWithId(parameter->getBitWidthLeft(), nameReference, referencedParameter);
+        parameter->setBitWidthLeft(bitWidthLeft);
+
+        QString bitWidthRight = replaceNameWithId(parameter->getBitWidthRight(), nameReference, referencedParameter);
+        parameter->setBitWidthRight(bitWidthRight);
 
         QString arrayLeft = replaceNameWithId(parameter->getAttribute("kactus2:arrayLeft"),
             nameReference, referencedParameter);

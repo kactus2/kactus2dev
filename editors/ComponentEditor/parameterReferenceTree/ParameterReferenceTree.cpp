@@ -127,7 +127,8 @@ bool ParameterReferenceTree::referenceExistsInParameters(
 //-----------------------------------------------------------------------------
 bool ParameterReferenceTree::parameterHasReference(QSharedPointer<Parameter> parameter)
 {
-    if (parameter->getValue().contains(targetID_) || parameter->getBitWidth().contains(targetID_) ||
+    if (parameter->getValue().contains(targetID_) ||
+        parameter->getBitWidthLeft().contains(targetID_) || parameter->getBitWidthRight().contains(targetID_) ||
         parameter->getAttribute("kactus2:arrayLeft").contains(targetID_) ||
         parameter->getAttribute("kactus2:arrayRight").contains(targetID_))
     {
@@ -723,10 +724,16 @@ void ParameterReferenceTree::createItemsForParameter(QSharedPointer<Parameter> p
         QString expression = parameter->getValue();
         createItem(itemName, expression, parent);
     }
-    if (parameter->getBitWidth().contains(targetID_))
+    if (parameter->getBitWidthLeft().contains(targetID_))
     {
-        QString itemName = "Bit Width";
-        QString expression = parameter->getBitWidth();
+        QString itemName = "Bit Width Left";
+        QString expression = parameter->getBitWidthLeft();
+        createItem(itemName, expression, parent);
+    }
+    if (parameter->getBitWidthRight().contains(targetID_))
+    {
+        QString itemName = "Bit Width Right";
+        QString expression = parameter->getBitWidthRight();
         createItem(itemName, expression, parent);
     }
     if (parameter->getAttribute("kactus2:arrayLeft").contains(targetID_))

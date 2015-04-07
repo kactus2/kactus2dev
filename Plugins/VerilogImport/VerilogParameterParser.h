@@ -112,14 +112,23 @@ private:
      QString parseType(QString const& input);
      
      /*!
-      *  Parses the bit width of the parameter.
+      *  Parses the left value of bit width of the parameter.
       *
-      *      @param [in] declaration   The parameter declaration to parse.
+      *     @param [in] declaration    The parameter declaration to parse.
       *
-      *      @return The bit width of the parameter.
+      *     @return The left value of the parameters bit width vector.
       */
-     QString parseBitWidth(QString const& declaration);
-     
+     QString parseBitWidthLeft(QString const& declaration);
+
+     /*!
+      *  Parses the right value of bit width of the parameter.
+      *
+      *      @param [in] declaration    The parameter declaration to parse.
+      *
+      *      @return The right value of the parameters bit width vector.
+      */
+     QString parseBitWidthRight(QString const& declaration);
+
      /*!
       *  Parses the left bound for the parameter array.
       *

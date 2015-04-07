@@ -16,11 +16,14 @@
 
 #include "NameGroup.h"
 
+#include <IPXACTmodels/kactusExtensions/Kactus2Vector.h>
+
 #include <QDomNode>
 #include <QString>
 #include <QMap>
 #include <QXmlStreamWriter>
 #include <QStringList>
+#include <QSharedPointer>
 
 class VendorExtension;
 
@@ -163,16 +166,39 @@ public:
     void setBitStringLength(QString const& length);
 
     /*!
-     *  Gets the length of the bit string for storing in kactus2:bitStringLength.
+     *  Gets the left value of bit width vector.
+     *
+     *      @return The left value of the bit width vector.
      */
-    QString getBitWidth() const;
+    QString getBitWidthLeft() const;
+    
+    /*!
+     *  Gets the right value of bit width vector.
+     *
+     *      @return The right value of the bit width vector.
+     */
+    QString getBitWidthRight() const;
+    
+    /*!
+     *  Sets the left value of the bit width vector.
+     *
+     *      @param [in] newBitWidthLeft     The value to be set as the left of bit width.
+     */
+    void setBitWidthLeft(QString const& newBitWidthLeft);
 
     /*!
-     *  Sets the length of the bit string for storing int kactus2:bitStringLength.
+     *  Sets the right value of the bit width vector.
      *
-     *      @param [in] length   The bit string length for the parameter value.
+     *      @param [in] newBitWidthRight    The value to be set as the right of bit width.
      */
-    void setBitWidth(QString const& length);
+    void setBitWidthRight(QString const& newBitWidthRight);
+
+    /*!
+     *  Checks if the parameter has got a bit width vector.
+     *
+     *      @return True, if the parameter has a bit width vector, false otherwise.
+     */
+    bool hasBitWidth() const;
 
     /*!
      *  Gets the minimum value for the parameter value.
@@ -314,10 +340,39 @@ private:
     void createUuid();
 
     /*!
-     *  Change the old parameter attributes array size and array offset to new attributes array left and
-     *  array right.
+     *  Change the old parameter attributes array size, array offset and bit width to new attributes array left,
+     *  array right, bit width left and bit width right.
      */
-    void changeOldArrayValuesToNewArrayValues();
+    void changeOldAttributesToNewAttributes();
+
+    /*!
+     *  Parses the vendor extensions from a DOM node.
+     *
+     *      @param [in] vendorExtensionNode     The DOM node containing all the vendor extensions.
+     */
+    void parseVendorExtensions(QDomNode const& vendorExtensionNode);
+
+    /*!
+     *  Copies vendor extensions from another parameter.
+     *
+     *      @param [in] other   The parameter to copy extensions from.
+     */
+    void copyVendorExtensions(Parameter const& other);
+
+    /*!
+     *  Create the bit width vector extension using the given DOM node.
+     *
+     *      @param [in] vectorExtensionNode     The DOM node for bit width extension.
+     */
+    void createBitWidthVectorFromExtensionNode(QDomNode const& vectorExtensionNode);
+
+    /*!
+     *  Creates the bit width vector extension.
+     *
+     *      @param [in] left    The left value of the bit width vector.
+     *      @param [in] right   The right value of the bit width vector.
+     */
+    void createBitWidthVector(QString const& left, QString const& right);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -339,6 +394,9 @@ private:
 
 	//! The attributes for the value
 	QMap<QString, QString> valueAttributes_;
+
+    //! Vector for containing the bit width of the parameter.
+    QSharedPointer<Kactus2Vector> bitWidthVector_;
 
     /*!
 	 * OPTIONAL spirit: vendorExtensions

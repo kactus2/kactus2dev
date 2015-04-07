@@ -48,7 +48,7 @@ QString const& VerilogImporter::getName() const
 //-----------------------------------------------------------------------------
 QString const& VerilogImporter::getVersion() const
 {
-    static QString version("1.1");
+    static QString version("1.2");
     return version;
 }
 

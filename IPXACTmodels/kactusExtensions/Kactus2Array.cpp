@@ -38,7 +38,7 @@ Kactus2Array* Kactus2Array::clone() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: Kactus2Array::()
+// Function: Kactus2Array::type()
 //-----------------------------------------------------------------------------
 QString Kactus2Array::type() const
 {

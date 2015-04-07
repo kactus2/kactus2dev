@@ -82,11 +82,19 @@ int ModelParameterDelegate::formatColumn() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: ModelParameterDelegate::bitwidthColumn()
+// Function: ModelParameterDelegate::bitWidthLeftColumn()
 //-----------------------------------------------------------------------------
-int ModelParameterDelegate::bitwidthColumn() const
+int ModelParameterDelegate::bitWidthLeftColumn() const
 {
-    return ModelParameterColumns::BITWIDTH;
+    return ModelParameterColumns::BITWIDTH_LEFT;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ModelParameterDelegate::bitWidthRightColumn()
+//-----------------------------------------------------------------------------
+int ModelParameterDelegate::bitWidthRightColumn() const
+{
+    return ModelParameterColumns::BITWIDTH_RIGHT;
 }
 
 //-----------------------------------------------------------------------------

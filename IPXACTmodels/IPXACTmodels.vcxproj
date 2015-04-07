@@ -207,6 +207,7 @@
     <ClCompile Include="kactusExtensions\Kactus2Placeholder.cpp" />
     <ClCompile Include="kactusExtensions\Kactus2Position.cpp" />
     <ClCompile Include="kactusExtensions\Kactus2Value.cpp" />
+    <ClCompile Include="kactusExtensions\Kactus2Vector.cpp" />
     <ClCompile Include="kactusExtensions\KactusAttribute.cpp" />
     <ClCompile Include="kactusExtensions\ModuleParameter.cpp" />
     <ClCompile Include="librarycomponent.cpp" />
@@ -313,6 +314,7 @@
     <ClInclude Include="kactusExtensions\Kactus2Placeholder.h" />
     <ClInclude Include="kactusExtensions\Kactus2Position.h" />
     <ClInclude Include="kactusExtensions\Kactus2Value.h" />
+    <ClInclude Include="kactusExtensions\Kactus2Vector.h" />
     <ClInclude Include="kactusExtensions\KactusAttribute.h" />
     <ClInclude Include="kactusExtensions\ModuleParameter.h" />
     <ClInclude Include="librarycomponent.h" />

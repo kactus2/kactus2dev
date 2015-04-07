@@ -34,7 +34,7 @@ value_(), valueAttributes_()
 {
     attributes_ = XmlUtils::parseAttributes(parameterNode);
 
-    changeOldArrayValuesToNewArrayValues();
+    changeOldAttributesToNewAttributes();
 
 	for (int i = 0; i < parameterNode.childNodes().count(); ++i)
     {
@@ -47,12 +47,7 @@ value_(), valueAttributes_()
 		}
         else if (tempNode.nodeName() == QString("spirit:vendorExtensions")) 
         {
-            int extensionCount = tempNode.childNodes().count();
-            for (int j = 0; j < extensionCount; ++j)
-            {
-                QDomNode extensionNode = tempNode.childNodes().at(j);
-                vendorExtensions_.append(QSharedPointer<VendorExtension>(new GenericVendorExtension(extensionNode)));
-            }
+            parseVendorExtensions(tempNode);
         }
 	}
 
@@ -79,7 +74,7 @@ value_(other.value_),
 attributes_(other.attributes_),
 valueAttributes_(other.valueAttributes_)
 {
-
+    copyVendorExtensions(other);
 }
 
 //-----------------------------------------------------------------------------
@@ -93,6 +88,8 @@ Parameter & Parameter::operator=( const Parameter &other )
 		value_ = other.value_;
         attributes_ = other.attributes_;
 		valueAttributes_ = other.valueAttributes_;
+
+        copyVendorExtensions(other);
 	}
 	return *this;
 }
@@ -126,6 +123,13 @@ void Parameter::write(QXmlStreamWriter& writer)
     // write the value of the element and close the tag
     writer.writeCharacters(value_);
     writer.writeEndElement(); // spirit:value
+
+    if (!vendorExtensions_.isEmpty())
+    {
+        writer.writeStartElement("spirit:vendorExtensions");
+        XmlUtils::writeVendorExtensions(writer, vendorExtensions_);
+        writer.writeEndElement(); // spirit:vendorExtensions
+    }
 
 	writer.writeEndElement(); // spirit:parameter
 }
@@ -259,19 +263,88 @@ void Parameter::setBitStringLength(QString const& length)
 }
 
 //-----------------------------------------------------------------------------
-// Function: parameter::getBitWidth()
+// Function: parameter::getBitWidthLeft()
 //-----------------------------------------------------------------------------
-QString Parameter::getBitWidth() const
+QString Parameter::getBitWidthLeft() const
 {
-    return attributes_.value("kactus2:bitWidth");
+    if (hasBitWidth())
+    {
+        return bitWidthVector_->getLeft();
+    }
+    else
+    {
+        return QString();
+    }
 }
 
 //-----------------------------------------------------------------------------
-// Function: parameter::setBitWidth()
+// Function: parameter::getBitWidthRight()
 //-----------------------------------------------------------------------------
-void Parameter::setBitWidth(QString const& length)
+QString Parameter::getBitWidthRight() const
 {
-    setAttribute("kactus2:bitWidth", length);
+    if (hasBitWidth())
+    {
+        return bitWidthVector_->getRight();
+    }
+    else
+    {
+        return QString();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: parameter::setBitWidthLeft()
+//-----------------------------------------------------------------------------
+void Parameter::setBitWidthLeft(QString const& newBitWidthLeft)
+{
+    if (newBitWidthLeft.isEmpty() && getBitWidthRight().isEmpty())
+    {
+        vendorExtensions_.removeAll(bitWidthVector_);
+        bitWidthVector_.clear();
+    }
+    else if (hasBitWidth())
+    {
+        bitWidthVector_->setLeft(newBitWidthLeft);
+    }
+    else
+    {
+        createBitWidthVector(newBitWidthLeft, QString());
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: parameter::setBitWidthRight()
+//-----------------------------------------------------------------------------
+void Parameter::setBitWidthRight(QString const& newBitWidthRight)
+{
+    if (newBitWidthRight.isEmpty() && getBitWidthLeft().isEmpty())
+    {
+        vendorExtensions_.removeAll(bitWidthVector_);
+        bitWidthVector_.clear();
+    }
+    else if (hasBitWidth())
+    {
+        bitWidthVector_->setRight(newBitWidthRight);
+    }
+    else
+    {
+        createBitWidthVector(QString(), newBitWidthRight);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: parameter::hasBitWidth()
+//-----------------------------------------------------------------------------
+bool Parameter::hasBitWidth() const
+{
+    if (bitWidthVector_.isNull())
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -452,7 +525,7 @@ void Parameter::createUuid()
 //-----------------------------------------------------------------------------
 // Function: parameter::changeOldArrayValuesToNewArrayValues()
 //-----------------------------------------------------------------------------
-void Parameter::changeOldArrayValuesToNewArrayValues()
+void Parameter::changeOldAttributesToNewAttributes()
 {
     if (attributes_.contains("arraySize"))
     {
@@ -465,4 +538,96 @@ void Parameter::changeOldArrayValuesToNewArrayValues()
         QString arrayOffset = attributes_.take("arrayOffset");
         setAttribute("kactus2:arrayRight", arrayOffset);
     }
+
+    if (attributes_.contains("kactus2:bitWidth"))
+    {
+        QString bitWidth = attributes_.take("kactus2:bitWidth");
+        bitWidth.append("-1");
+        createBitWidthVector(bitWidth, QString::number(0));
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: Parameter::parseVendorExtensions()
+//-----------------------------------------------------------------------------
+void Parameter::parseVendorExtensions(QDomNode const& vendorExtensionNode)
+{
+    int extensionCount = vendorExtensionNode.childNodes().count();
+    for (int j = 0; j < extensionCount; ++j)
+    {
+        QDomNode extensionNode = vendorExtensionNode.childNodes().at(j);
+
+        if (extensionNode.nodeName() == "kactus2:vector")
+        {
+            createBitWidthVectorFromExtensionNode(extensionNode);
+        }
+        else
+        {
+            vendorExtensions_.append(QSharedPointer<VendorExtension>(new GenericVendorExtension(extensionNode)));
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: parameter::copyVendorExtensions()
+//-----------------------------------------------------------------------------
+void Parameter::copyVendorExtensions(Parameter const& other)
+{
+    foreach (QSharedPointer<VendorExtension> extension, other.vendorExtensions_)
+    {
+        if (extension->type() == "kactus2:vector")
+        {
+            vendorExtensions_.removeAll(bitWidthVector_);
+
+            bitWidthVector_ = QSharedPointer<Kactus2Vector>(other.bitWidthVector_->clone());
+            vendorExtensions_.append(bitWidthVector_);
+        }
+        else
+        {
+            vendorExtensions_.append(QSharedPointer<VendorExtension>(extension->clone()));
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: parameter::createBitWidthVectorFromExtensionNode()
+//-----------------------------------------------------------------------------
+void Parameter::createBitWidthVectorFromExtensionNode(QDomNode const& vectorExtensionNode)
+{
+    QString vectorLeft;
+    QString vectorRight;
+
+    int extensionCount = vectorExtensionNode.childNodes().count();
+    for (int i = 0; i < extensionCount; ++i)
+    {
+        QDomNode childNode = vectorExtensionNode.childNodes().at(i);
+
+        if (childNode.nodeName() == "kactus2:left")
+        {
+            vectorLeft = childNode.childNodes().at(0).nodeValue();
+        }
+        else if (childNode.nodeName() == "kactus2:right")
+        {
+            vectorRight = childNode.childNodes().at(0).nodeValue();
+        }
+    }
+
+    if (hasBitWidth())
+    {
+        setBitWidthLeft(vectorLeft);
+        setBitWidthRight(vectorRight);
+    }
+    else
+    {
+        createBitWidthVector(vectorLeft, vectorRight);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: parameter::createBitWidthVector()
+//-----------------------------------------------------------------------------
+void Parameter::createBitWidthVector(QString const& left, QString const& right)
+{
+    bitWidthVector_ = QSharedPointer<Kactus2Vector>(new Kactus2Vector(left, right));
+    vendorExtensions_.append(bitWidthVector_);
 }

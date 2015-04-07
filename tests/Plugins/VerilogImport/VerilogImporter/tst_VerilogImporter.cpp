@@ -56,9 +56,10 @@ private slots:
     void testParameterInParameterDeclaration();
 
     void testParameterInParameterArray();
-    
-    void testMacroInParameterArray();
+    void testParameterInParameterBitWidth();
 
+    void testMacroInParameterArray();
+    void testMacroInParameterBitWidth();
     void testMacroInParameterValue();
 
     void testSemicolonInComments(); //<! Issue #203.
@@ -646,7 +647,34 @@ void tst_VerilogImporter::testParameterInParameterArray()
 
     QCOMPARE(last->getAttribute("kactus2:arrayLeft"), first->getValueId() + "-1");
     QCOMPARE(last->getAttribute("kactus2:arrayRight"), second->getValueId());
-    QCOMPARE(last->getBitWidth(), QString("8"));
+    QCOMPARE(last->getBitWidthLeft(), QString("7"));
+    QCOMPARE(last->getBitWidthRight(), QString("0"));
+    QCOMPARE(first->getUsageCount(), 1);
+    QCOMPARE(second->getUsageCount(), 1);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogImporter::testParameterInParameterBitWidth()
+//-----------------------------------------------------------------------------
+void tst_VerilogImporter::testParameterInParameterBitWidth()
+{
+    runParser(
+        "module test #(\n"
+        "   parameter bitWidthLeft = 10,\n"
+        "   parameter bitWidthRight = 2,\n"
+        "   parameter bit [bitWidthLeft-1:bitWidthRight] newValue = 1)\n"
+        "();\n"
+        "endmodule");
+
+    QSharedPointer<ModelParameter> first = importComponent_->getModelParameters()->first();
+    QSharedPointer<ModelParameter> second = importComponent_->getModelParameters()->at(1);
+    QSharedPointer<ModelParameter> last = importComponent_->getModelParameters()->last();
+
+    QCOMPARE(last->getAttribute("kactus2:arrayLeft"), QString(""));
+    QCOMPARE(last->getAttribute("kactus2:arrayRight"), QString(""));
+    QCOMPARE(last->getBitWidthLeft(), first->getValueId() + "-1");
+    QCOMPARE(last->getBitWidthRight(), second->getValueId());
+
     QCOMPARE(first->getUsageCount(), 1);
     QCOMPARE(second->getUsageCount(), 1);
 }
@@ -678,10 +706,44 @@ void tst_VerilogImporter::testMacroInParameterArray()
 
     QCOMPARE(parameter->getAttribute("kactus2:arrayLeft"), sizeMacro->getValueId());
     QCOMPARE(parameter->getAttribute("kactus2:arrayRight"), offsetMacro->getValueId());
-    QCOMPARE(parameter->getBitWidth(), QString("8"));
+    QCOMPARE(parameter->getBitWidthLeft(), QString("7"));
+    QCOMPARE(parameter->getBitWidthRight(), QString("0"));
 
     QCOMPARE(sizeMacro->getUsageCount(), 1);
     QCOMPARE(offsetMacro->getUsageCount(), 1);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogImporter::testMacroInParameterBitWidth()
+//-----------------------------------------------------------------------------
+void tst_VerilogImporter::testMacroInParameterBitWidth()
+{
+    QSharedPointer<Parameter> leftMacro(new Parameter);
+    leftMacro->setName("BIT_LEFT");
+    leftMacro->setValue("8");
+
+    QSharedPointer<Parameter> rightMacro(new Parameter);
+    rightMacro->setName("BIT_RIGHT");
+    rightMacro->setValue("1");
+
+    importComponent_->getParameters()->append(leftMacro);
+    importComponent_->getParameters()->append(rightMacro);
+
+    runParser(
+        "module test #(\n"
+        "   parameter bit [0:2] [`BIT_LEFT:`BIT_RIGHT] valueHolder = 8'h0\n"
+        "();\n"
+        "endmodule");
+
+    QSharedPointer<ModelParameter> parameter = importComponent_->getModelParameters()->first();
+
+    QCOMPARE(parameter->getAttribute("kactus2:arrayLeft"), QString("0"));
+    QCOMPARE(parameter->getAttribute("kactus2:arrayRight"), QString("2"));
+    QCOMPARE(parameter->getBitWidthLeft(), leftMacro->getValueId());
+    QCOMPARE(parameter->getBitWidthRight(), rightMacro->getValueId());
+
+    QCOMPARE(leftMacro->getUsageCount(), 1);
+    QCOMPARE(rightMacro->getUsageCount(), 1);
 }
 
 //-----------------------------------------------------------------------------

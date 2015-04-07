@@ -129,11 +129,18 @@ protected:
     virtual int formatColumn() const;
     
     /*!
-     *  Gets the column for value bit string length.
-     *
-     *      @return The column for editing bit string length.
-     */
-    virtual int bitwidthColumn() const;
+    *  Gets the column for the left value of bit width vector.
+    *
+    *      @return The column for editing the left value of the bit width vector.
+    */
+    virtual int bitWidthLeftColumn() const;
+
+    /*!
+    *  Gets the column for the right value of bit width vector.
+    *
+    *      @return The column for editing the right value of the bit width vector.
+    */
+    virtual int bitWidthRightColumn() const;
 
     /*!
      *  Gets the column for minimum value.

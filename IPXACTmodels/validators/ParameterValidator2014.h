@@ -134,13 +134,14 @@ public:
         QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices) const;
 
     /*!
-     *  Check if the parameter has a valid array values.
+     *  Check if the given array is valid.
      *
-     *      @param [in] parameter   The parameter whose array is examined.
+     *      @param [in] arrayLeft   The left value of the array.
+     *      @param [in] arrayRight  The right value of the array.
      *
-     *      @return True, if the parameter has valid array values, false otherwise.
+     *      @return True, if the array has valid values, false otherwise.
      */
-    bool hasValidArrayValues(QSharedPointer<Parameter> parameter) const;
+    bool validateArrayValues(QString const& arrayLeft, QString const& arrayRight) const;
 
 protected:
              
