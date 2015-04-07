@@ -56,6 +56,10 @@ private slots:
     void testParameterInParameterDeclaration();
 
     void testParameterInParameterArray();
+    
+    void testMacroInParameterArray();
+
+    void testMacroInParameterValue();
 
     void testSemicolonInComments(); //<! Issue #203.
     
@@ -631,7 +635,7 @@ void tst_VerilogImporter::testParameterInParameterArray()
         "module test #(\n"
         "   parameter arraySize = 4,\n"
         "   parameter arrayOffset = 0,\n"
-        "   parameter bit [arraySize-1:arrayOffset] [7:0] second = first)\n"
+        "   parameter bit [arraySize-1:arrayOffset] [7:0] second = 0)\n"
         "();\n"
         "endmodule");
 
@@ -645,6 +649,64 @@ void tst_VerilogImporter::testParameterInParameterArray()
     QCOMPARE(last->getBitWidth(), QString("8"));
     QCOMPARE(first->getUsageCount(), 1);
     QCOMPARE(second->getUsageCount(), 1);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogImporter::testMacroInParameterArray()
+//-----------------------------------------------------------------------------
+void tst_VerilogImporter::testMacroInParameterArray()
+{
+    QSharedPointer<Parameter> sizeMacro(new Parameter);
+    sizeMacro->setName("SIZE");
+    sizeMacro->setValue("2");
+
+    QSharedPointer<Parameter> offsetMacro(new Parameter);
+    offsetMacro->setName("OFFSET");
+    offsetMacro->setValue("0");
+
+    importComponent_->getParameters()->append(sizeMacro);
+    importComponent_->getParameters()->append(offsetMacro);
+
+    runParser(
+        "module test #(\n"
+        "   parameter bit [`SIZE:`OFFSET] [7:0] second = '{8'h0,8'h0,8'h0})\n"
+        "();\n"
+        "endmodule");
+
+
+    QSharedPointer<ModelParameter> parameter = importComponent_->getModelParameters()->first();
+
+    QCOMPARE(parameter->getAttribute("kactus2:arrayLeft"), sizeMacro->getValueId());
+    QCOMPARE(parameter->getAttribute("kactus2:arrayRight"), offsetMacro->getValueId());
+    QCOMPARE(parameter->getBitWidth(), QString("8"));
+
+    QCOMPARE(sizeMacro->getUsageCount(), 1);
+    QCOMPARE(offsetMacro->getUsageCount(), 1);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogImporter::testMacroInParameterValue()
+//-----------------------------------------------------------------------------
+void tst_VerilogImporter::testMacroInParameterValue()
+{
+    QSharedPointer<Parameter> valueMacro(new Parameter);
+    valueMacro->setName("VALUE");
+    valueMacro->setValue("2");
+
+    importComponent_->getParameters()->append(valueMacro);
+
+    runParser(
+        "module test #(\n"
+        "   parameter bit valueHolder = `VALUE)\n"
+        "();\n"
+        "endmodule");
+
+
+    QSharedPointer<ModelParameter> parameter = importComponent_->getModelParameters()->first();
+
+    QCOMPARE(parameter->getValue(), valueMacro->getValueId());
+
+    QCOMPARE(valueMacro->getUsageCount(), 1);
 }
 
 //-----------------------------------------------------------------------------

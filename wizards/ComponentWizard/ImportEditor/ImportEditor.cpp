@@ -14,6 +14,7 @@
 
 #include <common/widgets/FileSelector/fileselector.h>
 
+#include <editors/ComponentEditor/parameters/parameterseditor.h>
 #include <editors/ComponentEditor/modelParameters/modelparametereditor.h>
 #include <editors/ComponentEditor/ports/portseditor.h>
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
@@ -46,6 +47,7 @@ ImportEditor::ImportEditor(QSharedPointer<Component> component, LibraryInterface
     component_(component),
     importComponent_(new Component(*component_)),
     selectedSourceFile_(),
+    parameterEditor_(new ParametersEditor(importComponent_, handler, parameterFinder, expressionFormatter, this)),
     modelParameterEditor_(new ModelParameterEditor(importComponent_, handler, parameterFinder, expressionFormatter,
         &splitter_)),
     portEditor_(new PortsEditor(importComponent_, handler, parameterFinder, expressionFormatter, &splitter_)),
@@ -69,6 +71,8 @@ ImportEditor::ImportEditor(QSharedPointer<Component> component, LibraryInterface
 
     setSourceDisplayFormatting();
 
+    connect(parameterEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+
     connect(modelParameterEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
     connect(portEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -81,6 +85,11 @@ ImportEditor::ImportEditor(QSharedPointer<Component> component, LibraryInterface
 
     connect(runner_, SIGNAL(noticeMessage(QString const&)), 
         messageBox_, SLOT(setText(QString const&)), Qt::UniqueConnection);
+
+    connect(parameterEditor_, SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(parameterEditor_, SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
     connect(modelParameterEditor_, SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
@@ -126,7 +135,7 @@ void ImportEditor::initializeFileSelection()
 //-----------------------------------------------------------------------------
 bool ImportEditor::checkEditorValidity() const
 {
-    return modelParameterEditor_->isValid() && portEditor_->isValid();
+    return parameterEditor_->isValid() && modelParameterEditor_->isValid() && portEditor_->isValid();
 }
 
 //-----------------------------------------------------------------------------
@@ -159,6 +168,7 @@ void ImportEditor::onRefresh()
     importComponent_ = runner_->import(selectedSourceFile_, componentXmlPath_, component_);
 
     scrollSourceDisplayToFirstHighlight();
+    parameterEditor_->setComponent(importComponent_);
     portEditor_->setComponent(importComponent_);
     modelParameterEditor_->setComponent(importComponent_);
 
@@ -305,7 +315,11 @@ void ImportEditor::setupLayout()
     sourceLayout->addWidget(sourceDisplayer_);
 
     splitter_.addWidget(sourceWidget);
+    splitter_.addWidget(parameterEditor_);
     splitter_.addWidget(modelParameterEditor_);
     splitter_.addWidget(portEditor_);
-    splitter_.setStretchFactor(0, 1);
+    splitter_.setStretchFactor(0, 40);
+    splitter_.setStretchFactor(1, 10);
+    splitter_.setStretchFactor(2, 20);
+    splitter_.setStretchFactor(3, 30);
 }

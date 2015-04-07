@@ -68,6 +68,14 @@ int ParametersModel::columnCount(QModelIndex const& parent) const
 }
 
 //-----------------------------------------------------------------------------
+// Function: ParametersModel::setParameters()
+//-----------------------------------------------------------------------------
+void ParametersModel::setParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > parameters)
+{
+    parameters_ = parameters;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ParametersModel::onAddItem()
 //-----------------------------------------------------------------------------
 void ParametersModel::onAddItem(QModelIndex const& index)

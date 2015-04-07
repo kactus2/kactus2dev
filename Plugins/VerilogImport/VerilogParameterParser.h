@@ -110,6 +110,33 @@ private:
      *      @return   The parsed type.
      */
      QString parseType(QString const& input);
+     
+     /*!
+      *  Parses the bit width of the parameter.
+      *
+      *      @param [in] declaration   The parameter declaration to parse.
+      *
+      *      @return The bit width of the parameter.
+      */
+     QString parseBitWidth(QString const& declaration);
+     
+     /*!
+      *  Parses the left bound for the parameter array.
+      *
+      *      @param [in] declaration   The parameter declaration to parse.
+      *
+      *      @return The left array bound.
+      */
+     QString parseArrayLeft(QString const& declaration);
+     
+     /*!
+      *  Parses the right bound for the parameter array.
+      *
+      *      @param [in] declaration   The parameter declaration to parse.
+      *
+      *      @return The right array bound.
+      */
+     QString parseArrayRight(QString const& declaration);
 
     /*!
      *  Tries to parse the descriptions of the declared parameters.
@@ -134,7 +161,38 @@ private:
       *
       *      @param [in] targetComponent   The component whose model parameter values to replace.
       */
-     void replaceNamesWithIdsInModelParameterValues(QSharedPointer<Component> targetComponent);
+     void replaceNamesReferencesWithIds(QSharedPointer<Component> targetComponent);
+
+     /*!
+      *  Replaces macro uses in parameter with corresponding id references.
+      *
+      *      @param [in] parameter          The parameter whose macro uses to replace.
+      *      @param [in] targetComponent    The containing component.
+      */
+     void replaceMacroUsesWithParameterIds(QSharedPointer<ModelParameter> parameter, 
+         QSharedPointer<Component> targetComponent) const;
+
+     /*!
+      *  Replaces a name reference in an expression with id.
+      *  Increases reference count of the referenced parameter accordingly.
+      *
+      *      @param [in] expression   The expression to replace the references in.
+      *      @param [in] namePattern  The pattern for name reference search.
+      *      @param [in] referenced   The parameter that matches the name pattern.
+      *
+      *      @return The expression where names have been replaced with the id of the referenced parameter.
+      */
+     QString replaceNameWithId(QString const& expression, QRegularExpression& namePattern, 
+         QSharedPointer<Parameter> referenced) const;
+     
+     /*!
+      *  Replaces name references uses in parameter with corresponding id references.
+      *
+      *      @param [in] parameter          The parameter whose name references to replace.
+      *      @param [in] targetComponent    The containing component.
+      */
+     void replaceNameReferencesWithModelParameterIds(QSharedPointer<ModelParameter> parameter, 
+         QSharedPointer<Component> targetComponent) const;
 
      //-----------------------------------------------------------------------------
      // Data.

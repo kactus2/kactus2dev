@@ -24,6 +24,12 @@
 #include <QRegularExpression>
 #include <QDebug>
 
+namespace
+{
+    const QRegularExpression TYPE_RULE("(\\w+)\\s+(?:(" + VerilogSyntax::RANGE + ")?\\s*(" + 
+        VerilogSyntax::RANGE + "))?\\s*" + VerilogSyntax::NAME_VALUE, QRegularExpression::CaseInsensitiveOption);
+}
+
 //-----------------------------------------------------------------------------
 // Function: VerilogParameterParser::VerilogParameterParser()
 //-----------------------------------------------------------------------------
@@ -68,7 +74,7 @@ void VerilogParameterParser::import(QString const& input, QSharedPointer<Compone
     targetComponent->getModelParameters()->clear();
     targetComponent->getModelParameters()->append(parsedParameters);
 
-    replaceNamesWithIdsInModelParameterValues(targetComponent);
+    replaceNamesReferencesWithIds(targetComponent);
 }
 
 //-----------------------------------------------------------------------------
@@ -155,6 +161,9 @@ QList<QSharedPointer<ModelParameter> > VerilogParameterParser::parseParameters(Q
 
     // Find the type and the declaration. Only one per declaration is supported.
     QString type = parseType(input);
+    QString bitWidth = parseBitWidth(input);
+    QString arrayLeft = parseArrayLeft(input);
+    QString arrayRight = parseArrayRight(input);
     QString description = parseDescription(input);
 
     // Must have name-value pair, possibly multiple times separated by comma. May have comments between.
@@ -184,6 +193,9 @@ QList<QSharedPointer<ModelParameter> > VerilogParameterParser::parseParameters(Q
         modelParameter->setDataType(type);
         modelParameter->setValue(value);
         modelParameter->setUsageType("nontyped");
+        modelParameter->setBitWidth(bitWidth);
+        modelParameter->setAttribute("kactus2:arrayLeft", arrayLeft);
+        modelParameter->setAttribute("kactus2:arrayRight", arrayRight);
         modelParameter->setDescription(description);
 
         parameters.append(modelParameter);
@@ -248,7 +260,7 @@ QString VerilogParameterParser::parseType(QString const& input)
     // The type is assumed to be the first word in the declaration.
     QRegularExpression typeRule("(\\w+)\\s+(?:" + VerilogSyntax::RANGE + "\\s*){0,2}" +  VerilogSyntax::NAME_VALUE, 
         QRegularExpression::CaseInsensitiveOption);
-    QString type = typeRule.match(input).captured(1);
+    QString type = TYPE_RULE.match(input).captured(1);
 
     if (type == "parameter")
     {
@@ -256,6 +268,40 @@ QString VerilogParameterParser::parseType(QString const& input)
     }
 
     return type;
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogParameterParser::parseBitWidth()
+//-----------------------------------------------------------------------------
+QString VerilogParameterParser::parseBitWidth(QString const& declaration)
+{
+    QString bitRange = TYPE_RULE.match(declaration).captured(3);
+
+    QRegularExpressionMatch rangeMatch = VerilogSyntax::CAPTURING_RANGE.match(bitRange);
+    QString left = rangeMatch.captured(1);
+    QString right = rangeMatch.captured(2);
+
+    return QString::number(abs(left.toInt() - right.toInt()) + 1);
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogParameterParser::parseArrayLeft()
+//-----------------------------------------------------------------------------
+QString VerilogParameterParser::parseArrayLeft(QString const& declaration)
+{
+    QString bitRange = TYPE_RULE.match(declaration).captured(2);
+
+    return VerilogSyntax::CAPTURING_RANGE.match(bitRange).captured(1);
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogParameterParser::parseArrayRight()
+//-----------------------------------------------------------------------------
+QString VerilogParameterParser::parseArrayRight(QString const& declaration)
+{
+    QString bitRange = TYPE_RULE.match(declaration).captured(2);
+
+    return VerilogSyntax::CAPTURING_RANGE.match(bitRange).captured(2);
 }
 
 //-----------------------------------------------------------------------------
@@ -309,24 +355,77 @@ void VerilogParameterParser::copyIdsFromOldModelParameters(QList<QSharedPointer<
 //-----------------------------------------------------------------------------
 // Function: VerilogParameterParser::replaceReferenceNamesWithIds()
 //-----------------------------------------------------------------------------
-void VerilogParameterParser::replaceNamesWithIdsInModelParameterValues(QSharedPointer<Component> targetComponent)
+void VerilogParameterParser::replaceNamesReferencesWithIds(QSharedPointer<Component> targetComponent)
 {
     foreach (QSharedPointer<ModelParameter> parameter, *targetComponent->getModelParameters())
     {
-        foreach (QSharedPointer<ModelParameter> referenced, *targetComponent->getModelParameters())
+        replaceMacroUsesWithParameterIds(parameter, targetComponent);
+
+        replaceNameReferencesWithModelParameterIds(parameter, targetComponent);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogParameterParser::replaceParameterNamesWithIds()
+//-----------------------------------------------------------------------------
+void VerilogParameterParser::replaceMacroUsesWithParameterIds(QSharedPointer<ModelParameter> parameter,
+    QSharedPointer<Component> targetComponent) const
+{
+    foreach (QSharedPointer<Parameter> define, *targetComponent->getParameters())
+    {
+        QRegularExpression macroUsage("`" + define->getName());
+
+        QString parameterValue = replaceNameWithId(parameter->getValue(), macroUsage, define);
+        parameter->setValue(parameterValue);
+
+        QString arrayLeft = replaceNameWithId(parameter->getAttribute("kactus2:arrayLeft"), macroUsage, define);
+        parameter->setAttribute("kactus2:arrayLeft", arrayLeft);
+
+        QString arrayRight = replaceNameWithId(parameter->getAttribute("kactus2:arrayRight"), macroUsage, define);
+        parameter->setAttribute("kactus2:arrayRight", arrayRight);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogParameterParser::replaceNameWithId()
+//-----------------------------------------------------------------------------
+QString VerilogParameterParser::replaceNameWithId(QString const& expression, QRegularExpression& namePattern, 
+    QSharedPointer<Parameter> referenced) const
+{
+    QString replaced = expression;
+    if (namePattern.match(expression).hasMatch())
+    {
+        int matchCount = expression.count(namePattern);
+        for (int i = 0; i < matchCount; ++i)
         {
-            QString parameterValue = parameter->getValue();
-
-            QRegularExpression nameReference("\\b" + referenced->getName() + "\\b");
-            if (nameReference.match(parameterValue).hasMatch())
-            {
-                for (int i = 0; i < parameterValue.count(nameReference); ++i)
-                {
-                    referenced->increaseUsageCount();
-                }
-
-                parameter->setValue(parameterValue.replace(nameReference, referenced->getValueId()));
-            }
+            referenced->increaseUsageCount();
         }
+
+        replaced.replace(namePattern, referenced->getValueId());
+    }
+
+    return replaced;
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogParameterParser::replaceModelParameterNamesWithIds()
+//-----------------------------------------------------------------------------
+void VerilogParameterParser::replaceNameReferencesWithModelParameterIds(QSharedPointer<ModelParameter> parameter, 
+    QSharedPointer<Component> targetComponent) const
+{
+    foreach (QSharedPointer<ModelParameter> referencedParameter, *targetComponent->getModelParameters())
+    {
+        QRegularExpression nameReference("\\b" + referencedParameter->getName() + "\\b");
+
+        QString parameterValue = replaceNameWithId(parameter->getValue(), nameReference, referencedParameter);
+        parameter->setValue(parameterValue);
+
+        QString arrayLeft = replaceNameWithId(parameter->getAttribute("kactus2:arrayLeft"),
+            nameReference, referencedParameter);
+        parameter->setAttribute("kactus2:arrayLeft", arrayLeft);
+
+        QString arrayRight = replaceNameWithId(parameter->getAttribute("kactus2:arrayRight"), 
+            nameReference, referencedParameter);
+        parameter->setAttribute("kactus2:arrayRight", arrayRight);
     }
 }

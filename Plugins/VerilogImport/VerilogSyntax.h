@@ -46,7 +46,7 @@ namespace VerilogSyntax
     const QRegularExpression MULTILINE_COMMENT("/\\*.*?\\*/", QRegularExpression::DotMatchesEverythingOption);  
 
     //! An expression that may an operator or an alphanumeric symbol.
-    const QString OPERATION_OR_ALPHANUMERIC("([+*\\(\\)\\{\\}/-])|([']?\\{)|(\\w+)|((\\w+)?'\\w+)");
+    const QString OPERATION_OR_ALPHANUMERIC("([+*\\(\\)\\{\\}/-])|([']?\\{)|(`?\\w+)|((\\w+)?'\\w+)");
     
     //! Name + value pair, e.g. name=value.
     const QString NAME_VALUE = "\\w+\\s*=(\\s*(" + OPERATION_OR_ALPHANUMERIC + "))+";  

@@ -20,16 +20,18 @@
 
 class LibraryInterface;
 class ColumnFreezableTable;
-/*! \brief Editor to add/edit/remove parameters of a component.
- *
- */
-class ParametersEditor : public ItemEditor {
+
+//-----------------------------------------------------------------------------
+//! Editor to add/edit/remove parameters of a component.
+//-----------------------------------------------------------------------------
+class ParametersEditor : public ItemEditor
+{
 	Q_OBJECT
 
 public:
 
 	/*!
-	 *  [Description].
+	 *  The constructor.
 	 *
 	 *      @param [in] component               Pointer to the component being edited.
 	 *      @param [in] handler                 Pointer to the instance managing the library.
@@ -43,27 +45,34 @@ public:
         QSharedPointer<ExpressionFormatter> expressionFormatter,
 		QWidget *parent = 0);
 	
-	//! \brief The destructor
+	//! The destructor
 	virtual ~ParametersEditor();
 
-	/*! \brief Check for the validity of the edited parameters.
+	/*! Check for the validity of the edited parameters.
 	*
 	* \return True if all parameters are in valid state.
 	*/
 	virtual bool isValid() const;
 
-	/*! \brief Reload the information from the model to the editor.
+	/*! Reload the information from the model to the editor.
 	*/
 	virtual void refresh();
 
+    /*!
+     *  Sets the component whose parameters to edit.
+     *
+     *      @param [in] component   The component to set.
+     */
+    void setComponent(QSharedPointer<Component> component);
+
 protected:
 
-	//! \brief Handler for widget's show event
+	//! Handler for widget's show event
 	virtual void showEvent(QShowEvent* event);
 
 private:
 
-	//! \brief No copying
+	//! No copying
 	ParametersEditor(const ParametersEditor& other);
 
 	//! No assignment
@@ -72,7 +81,7 @@ private:
     //! The view that displays the parameters.
     ColumnFreezableTable* view_;
 
-	//! \brief The model that holds the data to be displayed to the user
+	//! The model that holds the data to be displayed to the user
 	ParametersModel* model_;
 };
 

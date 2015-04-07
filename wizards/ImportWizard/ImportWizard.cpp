@@ -40,7 +40,7 @@ ImportWizard::ImportWizard(QSharedPointer<const Component> component,
 
 	setWindowTitle(tr("Import Wizard for %1").arg(component->getVlnv()->toString()));
     setWizardStyle(ModernStyle);
-    resize(800, 800);
+    resize(800, 1000);
 
     setOption(NoBackButtonOnStartPage, true);
     setOption(HaveFinishButtonOnEarlyPages, false);

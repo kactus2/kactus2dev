@@ -40,7 +40,7 @@ ComponentWizard::ComponentWizard(QSharedPointer<Component> component,
 {
 	setWindowTitle(tr("Component Wizard for %1").arg(component->getVlnv()->toString()));
     setWizardStyle(ModernStyle);
-    resize(800, 800);
+    resize(800, 1000);
 
     setOption(NoBackButtonOnStartPage, true);
     setOption(NoCancelButton, true);

@@ -34,6 +34,7 @@ class ImportHighlighter;
 class LibraryInterface;
 class ModelParameterEditor;
 class ModelParameterEditorAdapter;
+class ParametersEditor;
 class PluginManager;
 class PortsEditor;
 class VhdlParser;
@@ -176,7 +177,10 @@ private:
     //! Top-level source file relative path from component XML file.
     QString selectedSourceFile_;
 
-	//! Editor for the imported generics.
+    //! Editor for the imported parameters.
+    ParametersEditor* parameterEditor_;
+
+	//! Editor for the imported model parameters.
 	ModelParameterEditor* modelParameterEditor_;
 
 	//! Editor for the imported ports.

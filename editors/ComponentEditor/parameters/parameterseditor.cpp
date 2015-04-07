@@ -144,6 +144,14 @@ void ParametersEditor::refresh()
 }
 
 //-----------------------------------------------------------------------------
+// Function: ParametersEditor::setComponent()
+//-----------------------------------------------------------------------------
+void ParametersEditor::setComponent(QSharedPointer<Component> component)
+{
+    model_->setParameters(component->getParameters());
+}
+
+//-----------------------------------------------------------------------------
 // Function: ParametersEditor::showEvent()
 //-----------------------------------------------------------------------------
 void ParametersEditor::showEvent( QShowEvent* event )
