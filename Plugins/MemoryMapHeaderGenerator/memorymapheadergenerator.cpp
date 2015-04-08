@@ -48,6 +48,9 @@
 #include <QStringList>
 #include <QMessageBox>
 
+//-----------------------------------------------------------------------------
+// Function: MemoryMapHeaderGenerator::MemoryMapHeaderGenerator()
+//-----------------------------------------------------------------------------
 MemoryMapHeaderGenerator::MemoryMapHeaderGenerator():
 utility_(NULL),
 design_(),
@@ -55,46 +58,59 @@ operatedInterfaces_(),
 sysGenSettings_() {
 }
 
-MemoryMapHeaderGenerator::~MemoryMapHeaderGenerator() {
+//-----------------------------------------------------------------------------
+// Function: MemoryMapHeaderGenerator::~MemoryMapHeaderGenerator()
+//-----------------------------------------------------------------------------
+MemoryMapHeaderGenerator::~MemoryMapHeaderGenerator()
+{
 }
 
-QString const& MemoryMapHeaderGenerator::getName() const {
-	static QString name(tr("Memory Map Header Generator"));
-	return name;
+//-----------------------------------------------------------------------------
+// Function: MemoryMapHeaderGenerator::getName()
+//-----------------------------------------------------------------------------
+QString MemoryMapHeaderGenerator::getName() const
+{
+	return tr("Memory Map Header Generator");
 }
 
-QString const& MemoryMapHeaderGenerator::getVersion() const {
-	static QString version(tr("1.0"));
-	return version;
+//-----------------------------------------------------------------------------
+// Function: MemoryMapHeaderGenerator::getVersion()
+//-----------------------------------------------------------------------------
+QString MemoryMapHeaderGenerator::getVersion() const
+{
+	return tr("1.0");
 }
 
-QString const& MemoryMapHeaderGenerator::getDescription() const {
-	static QString description(tr("Generates C-headers for memory maps of a component"));
-	return description;
+//-----------------------------------------------------------------------------
+// Function: MemoryMapHeaderGenerator::getDescription()
+//-----------------------------------------------------------------------------
+QString MemoryMapHeaderGenerator::getDescription() const
+{
+	return tr("Generates C-headers for memory maps of a component");
 }
 
 //-----------------------------------------------------------------------------
 // Function: MemoryMapHeaderGenerator::getVendor()
 //-----------------------------------------------------------------------------
-QString const& MemoryMapHeaderGenerator::getVendor() const {
-    static QString vendor(tr("TUT"));
-    return vendor;
+QString MemoryMapHeaderGenerator::getVendor() const
+{
+    return tr("TUT");
 }
 
 //-----------------------------------------------------------------------------
 // Function: MemoryMapHeaderGenerator::getLicence()
 //-----------------------------------------------------------------------------
-QString const& MemoryMapHeaderGenerator::getLicence() const {
-    static QString licence(tr("GPL2"));
-    return licence;
+QString MemoryMapHeaderGenerator::getLicence() const
+{
+    return tr("GPL2");
 }
 
 //-----------------------------------------------------------------------------
 // Function: MemoryMapHeaderGenerator::getLicenceHolder()
 //-----------------------------------------------------------------------------
-QString const& MemoryMapHeaderGenerator::getLicenceHolder() const {
-    static QString holder(tr("Public"));
-    return holder;
+QString MemoryMapHeaderGenerator::getLicenceHolder() const
+{
+    return tr("Public");
 }
 
 //-----------------------------------------------------------------------------
@@ -105,7 +121,6 @@ PluginSettingsWidget* MemoryMapHeaderGenerator::getSettingsWidget()
     return new PluginSettingsWidget();
 }
 
-
 //-----------------------------------------------------------------------------
 // Function: MemoryMapHeaderGenerator::getIcon()
 //-----------------------------------------------------------------------------
@@ -114,6 +129,9 @@ QIcon MemoryMapHeaderGenerator::getIcon() const
     return QIcon(":icons/headerGenerator24.png");
 }
 
+//-----------------------------------------------------------------------------
+// Function: MemoryMapHeaderGenerator::checkGeneratorSupport()
+//-----------------------------------------------------------------------------
 bool MemoryMapHeaderGenerator::checkGeneratorSupport(QSharedPointer<LibraryComponent const> libComp,
                                                      QSharedPointer<LibraryComponent const> libDesConf,
                                                      QSharedPointer<LibraryComponent const> /*libDes*/) const
@@ -140,6 +158,9 @@ bool MemoryMapHeaderGenerator::checkGeneratorSupport(QSharedPointer<LibraryCompo
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Function: MemoryMapHeaderGenerator::runGenerator()
+//-----------------------------------------------------------------------------
 void MemoryMapHeaderGenerator::runGenerator( IPluginUtility* utility,
 	QSharedPointer<LibraryComponent> libComp,
 	QSharedPointer<LibraryComponent> libDesConf /*= QSharedPointer<LibraryComponent>()*/,
@@ -197,6 +218,9 @@ void MemoryMapHeaderGenerator::runGenerator( IPluginUtility* utility,
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Function: MemoryMapHeaderGenerator::addHeaderFile()
+//-----------------------------------------------------------------------------
 void MemoryMapHeaderGenerator::addHeaderFile( QSharedPointer<Component> component,
 	const QFileInfo& fileInfo,
 	const QString& filesetName,
@@ -247,6 +271,9 @@ void MemoryMapHeaderGenerator::addHeaderFile( QSharedPointer<Component> componen
 	QDesktopServices::openUrl(QUrl::fromLocalFile(fileInfo.absoluteFilePath()));
 }
 
+//-----------------------------------------------------------------------------
+// Function: MemoryMapHeaderGenerator::generateLocalMemMapHeaders()
+//-----------------------------------------------------------------------------
 void MemoryMapHeaderGenerator::generateLocalMemMapHeaders( QSharedPointer<Component> comp ) {
 	// the model which displays the local memory maps and their header paths
 	LocalHeaderSaveModel model(utility_->getLibraryInterface(), this);
@@ -365,6 +392,9 @@ void MemoryMapHeaderGenerator::generateLocalMemMapHeaders( QSharedPointer<Compon
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Function: MemoryMapHeaderGenerator::generateGlobalHeaders()
+//-----------------------------------------------------------------------------
 void MemoryMapHeaderGenerator::generateGlobalHeaders( QSharedPointer<Component> comp, QSharedPointer<Design> design ) {
 	
 	design_ = design;
@@ -471,6 +501,9 @@ void MemoryMapHeaderGenerator::generateGlobalHeaders( QSharedPointer<Component> 
 	operatedInterfaces_.clear();
 }
 
+//-----------------------------------------------------------------------------
+// Function: MemoryMapHeaderGenerator::parseInterface()
+//-----------------------------------------------------------------------------
 void MemoryMapHeaderGenerator::parseInterface( qint64 offset, QTextStream& stream, const Interface& interface )
 {
 	Q_ASSERT(design_);
@@ -645,6 +678,9 @@ void MemoryMapHeaderGenerator::parseInterface( qint64 offset, QTextStream& strea
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Function: MemoryMapHeaderGenerator::generateSystemHeaders()
+//-----------------------------------------------------------------------------
 void MemoryMapHeaderGenerator::generateSystemHeaders(QSharedPointer<Component> comp,
 	QSharedPointer<DesignConfiguration> desConf,
 	QSharedPointer<Design> design ) {
@@ -804,6 +840,9 @@ void MemoryMapHeaderGenerator::generateSystemHeaders(QSharedPointer<Component> c
 	sysGenSettings_.clear();
 }
 
+//-----------------------------------------------------------------------------
+// Function: MemoryMapHeaderGenerator::searchInstanceFiles()
+//-----------------------------------------------------------------------------
 void MemoryMapHeaderGenerator::searchInstanceFiles( QSharedPointer<const Component> component, const QString& hwViewName ) {
 	
 	// if the view is not found
@@ -948,23 +987,38 @@ void MemoryMapHeaderGenerator::searchInstanceFiles( QSharedPointer<const Compone
 	}
 }
 
-QList<IPlugin::ExternalProgramRequirement> MemoryMapHeaderGenerator::getProgramRequirements() {
+//-----------------------------------------------------------------------------
+// Function: MemoryMapHeaderGenerator::getProgramRequirements()
+//-----------------------------------------------------------------------------
+QList<IPlugin::ExternalProgramRequirement> MemoryMapHeaderGenerator::getProgramRequirements()
+{
 	return QList<IPlugin::ExternalProgramRequirement>();
 }
 
-
+//-----------------------------------------------------------------------------
+// Function: MemoryMapHeaderGenerator::HierParsingInfo::HierParsingInfo()
+//-----------------------------------------------------------------------------
 MemoryMapHeaderGenerator::HierParsingInfo::HierParsingInfo(QSharedPointer<const Component> comp, const QString& viewName ):
 comp_(comp),
 activeView_(viewName) {
 }
 
+//-----------------------------------------------------------------------------
+// Function: MemoryMapHeaderGenerator::HierParsingInfo::HierParsingInfo()
+//-----------------------------------------------------------------------------
 MemoryMapHeaderGenerator::HierParsingInfo::HierParsingInfo( const HierParsingInfo& other ):
 comp_(other.comp_),
 activeView_(other.activeView_) {
 }
 
-MemoryMapHeaderGenerator::HierParsingInfo& MemoryMapHeaderGenerator::HierParsingInfo::operator=( const HierParsingInfo& other ) {
-	if (&other != this) {
+//-----------------------------------------------------------------------------
+// Function:MemoryMapHeaderGenerator::HierParsingInfo::operator=()
+//-----------------------------------------------------------------------------
+MemoryMapHeaderGenerator::HierParsingInfo& MemoryMapHeaderGenerator::HierParsingInfo::operator=(
+    const HierParsingInfo& other)
+{
+	if (&other != this)
+    {
 		comp_ = other.comp_;
 		activeView_ = other.activeView_;
 	}

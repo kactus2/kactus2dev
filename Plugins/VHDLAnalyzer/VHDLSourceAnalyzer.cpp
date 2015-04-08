@@ -45,52 +45,49 @@ VHDLSourceAnalyzer::~VHDLSourceAnalyzer()
 //-----------------------------------------------------------------------------
 // Function: VHDLSourceAnalyzer::getName()
 //----------------------------------------------------------------------------
-QString const& VHDLSourceAnalyzer::getName() const
+QString VHDLSourceAnalyzer::getName() const
 {
-    static QString name("VHDL Source Analyzer");
-    return name;
+    return "VHDL Source Analyzer";
 }
 
 //-----------------------------------------------------------------------------
 // Function: VHDLSourceAnalyzer::getVersion()
 //-----------------------------------------------------------------------------
-QString const& VHDLSourceAnalyzer::getVersion() const
+QString VHDLSourceAnalyzer::getVersion() const
 {
-    static QString version("1.0");
-    return version;
+    return "1.0";
 }
 
 //-----------------------------------------------------------------------------
 // Function: VHDLSourceAnalyzer::getVendor()
 //-----------------------------------------------------------------------------
-QString const& VHDLSourceAnalyzer::getVendor() const {
-    static QString vendor(tr("TUT"));
-    return vendor;
+QString VHDLSourceAnalyzer::getVendor() const
+{
+    return tr("TUT");
 }
 
 //-----------------------------------------------------------------------------
 // Function: VHDLSourceAnalyzer::getLicence()
 //-----------------------------------------------------------------------------
-QString const& VHDLSourceAnalyzer::getLicence() const {
-    static QString licence(tr("GPL2"));
-    return licence;
+QString VHDLSourceAnalyzer::getLicence() const
+{
+    return tr("GPL2");
 }
 
 //-----------------------------------------------------------------------------
 // Function: VHDLSourceAnalyzer::getLicenceHolder()
 //-----------------------------------------------------------------------------
-QString const& VHDLSourceAnalyzer::getLicenceHolder() const {
-    static QString holder(tr("Public"));
-    return holder;
+QString VHDLSourceAnalyzer::getLicenceHolder() const
+{
+    return tr("Public");
 }
 
 //-----------------------------------------------------------------------------
 // Function: VHDLSourceAnalyzer::getDescription()
 //-----------------------------------------------------------------------------
-QString const& VHDLSourceAnalyzer::getDescription() const
+QString VHDLSourceAnalyzer::getDescription() const
 {
-    static QString desc("Analyzes file dependencies from VHDL files.");
-    return desc;
+    return "Analyzes file dependencies from VHDL files.";
 }
 
 //-----------------------------------------------------------------------------
@@ -101,11 +98,10 @@ PluginSettingsWidget* VHDLSourceAnalyzer::getSettingsWidget()
     return new PluginSettingsWidget();
 }
 
-
 //-----------------------------------------------------------------------------
 // Function: VHDLSourceAnalyzer::getSupportedFileTypes()
 //-----------------------------------------------------------------------------
-QStringList const& VHDLSourceAnalyzer::getSupportedFileTypes() const
+QStringList VHDLSourceAnalyzer::getSupportedFileTypes() const
 {
     return fileTypes_;
 }
@@ -136,25 +132,25 @@ QString VHDLSourceAnalyzer::calculateHash(QString const& filename)
 //-----------------------------------------------------------------------------
 // Function: VHDLSourceAnalyzer::getFileDependencies()
 //-----------------------------------------------------------------------------
-void VHDLSourceAnalyzer::getFileDependencies(Component const* /*component*/,
+QList<FileDependencyDesc> VHDLSourceAnalyzer::getFileDependencies(Component const* /*component*/,
                                              QString const& /*componentPath*/,
-                                             QString const& filename,
-                                             QList<FileDependencyDesc>& dependencies)
+                                             QString const& filename)
 {
+    QList<FileDependencyDesc> dependencies;
+
     // Try to open the file.
     QFile file(filename);
 
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text) )
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text) )
     {
-        return;
+        // Read file contents into a buffer.
+        QString source = getSourceData(file);
+
+        scanEntityReferences(source, filename, dependencies);
+        scanPackageReferences(source, filename, dependencies);   
     }
 
-    // Read file contents into a buffer.
-    QString source = getSourceData(file);
-
-    scanEntityReferences(source, filename, dependencies);
-    scanPackageReferences(source, filename, dependencies);
-
+    return dependencies;
 }
 
 //-----------------------------------------------------------------------------

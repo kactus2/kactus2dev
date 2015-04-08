@@ -26,32 +26,32 @@ utility_(NULL) {
 AlteraBSPGenerator::~AlteraBSPGenerator() {
 }
 
-QString const& AlteraBSPGenerator::getName() const {
+QString AlteraBSPGenerator::getName() const {
 	static QString name(tr("Altera BSP Generator"));
 	return name;
 }
 
-QString const& AlteraBSPGenerator::getVersion() const {
+QString AlteraBSPGenerator::getVersion() const {
 	static QString version(tr("1.0"));
 	return version;
 }
 
-QString const& AlteraBSPGenerator::getDescription() const {
+QString AlteraBSPGenerator::getDescription() const {
     static QString description(tr("Generates board support package for CPU component."));
     return description;
 }
 
-QString const& AlteraBSPGenerator::getVendor() const {
+QString AlteraBSPGenerator::getVendor() const {
     static QString vendor(tr("TUT"));
     return vendor;
 }
 
-QString const& AlteraBSPGenerator::getLicence() const {
+QString AlteraBSPGenerator::getLicence() const {
     static QString licence(tr("GPL2"));
     return licence;
 }
 
-QString const& AlteraBSPGenerator::getLicenceHolder() const {
+QString AlteraBSPGenerator::getLicenceHolder() const {
     static QString holder(tr("Public"));
     return holder;
 }

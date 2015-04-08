@@ -41,32 +41,32 @@ public:
     /*!
      *  Returns the name of the plugin.
      */
-    virtual QString const& getName() const;
+    virtual QString getName() const;
 
     /*!
      *  Returns the version of the plugin.
      */
-    virtual QString const& getVersion() const;
+    virtual QString getVersion() const;
 
     /*!
      *  Returns the description of the plugin.
      */
-    virtual QString const& getDescription() const;
+    virtual QString getDescription() const;
 
     /*!
      *  Returns the vendor of the plugin.
      */
-    virtual QString const& getVendor() const;
+    virtual QString getVendor() const;
 
     /*!
      *  Returns the licence of the plugin.
      */
-    virtual QString const& getLicence() const;
+    virtual QString getLicence() const;
 
     /*!
      *  Returns the holder of the licence of the plugin.
      */
-    virtual QString const& getLicenceHolder() const;
+    virtual QString getLicenceHolder() const;
 
     /*!
      *  Returns the settings widget.
@@ -76,7 +76,7 @@ public:
     /*!
      *  Returns the list of file types this plugin can run analysis for.
      */
-    virtual QStringList const& getSupportedFileTypes() const;
+    virtual QStringList getSupportedFileTypes() const;
 
     /*!
      *  Calculates a language-dependent hash for the given file.
@@ -118,10 +118,9 @@ public:
      *      @param [in]  filename       The name of the file to which the analysis is run.
      *      @param [out] dependencies   The list of found dependencies.
      */
-    virtual void getFileDependencies(Component const* component,
+    virtual QList<FileDependencyDesc> getFileDependencies(Component const* component,
                                      QString const& componentPath,
-                                     QString const& filename,
-                                     QList<FileDependencyDesc>& dependencies);
+                                     QString const& filename);
 
     //! \brief Returns the external program requirements of the plugin.
 	virtual QList<IPlugin::ExternalProgramRequirement> getProgramRequirements();

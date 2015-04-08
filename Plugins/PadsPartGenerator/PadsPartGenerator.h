@@ -52,28 +52,28 @@ public:
 	~PadsPartGenerator();
 
     //! Returns the name of the plugin.
-    virtual QString const& getName() const;
+    virtual QString getName() const;
 
 	//! Returns the version of the plugin.
-    virtual QString const& getVersion() const;
+    virtual QString getVersion() const;
 
 	//! Returns the description of the plugin.
-    virtual QString const& getDescription() const;
+    virtual QString getDescription() const;
 
     /*!
      *  Returns the vendor of the plugin.
      */
-    virtual QString const& getVendor() const;
+    virtual QString getVendor() const;
 
     /*!
      *  Returns the licence of the plugin.
      */
-    virtual QString const& getLicence() const;
+    virtual QString getLicence() const;
 
     /*!
      *  Returns the holder of the licence of the plugin.
      */
-    virtual QString const& getLicenceHolder() const;
+    virtual QString getLicenceHolder() const;
 
 	//! Returns the icon for the generator.
     /*!

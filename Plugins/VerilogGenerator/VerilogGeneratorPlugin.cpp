@@ -47,7 +47,7 @@ VerilogGeneratorPlugin::~VerilogGeneratorPlugin()
 //-----------------------------------------------------------------------------
 // Function: VerilogGeneratorPlugin::getName()
 //-----------------------------------------------------------------------------
-QString const& VerilogGeneratorPlugin::getName() const
+QString VerilogGeneratorPlugin::getName() const
 {
     static QString name(tr("Verilog Generator"));
     return name;
@@ -56,7 +56,7 @@ QString const& VerilogGeneratorPlugin::getName() const
 //-----------------------------------------------------------------------------
 // Function: VerilogGeneratorPlugin::getVersion()
 //-----------------------------------------------------------------------------
-QString const& VerilogGeneratorPlugin::getVersion() const
+QString VerilogGeneratorPlugin::getVersion() const
 {
     static QString version(tr("1.1"));
     return version;
@@ -65,7 +65,7 @@ QString const& VerilogGeneratorPlugin::getVersion() const
 //-----------------------------------------------------------------------------
 // Function: VerilogGeneratorPlugin::getDescription()
 //-----------------------------------------------------------------------------
-QString const& VerilogGeneratorPlugin::getDescription() const
+QString VerilogGeneratorPlugin::getDescription() const
 {
     static QString description(tr("Generates a top-level Verilog module for a HW design or component."));
     return description;
@@ -73,7 +73,7 @@ QString const& VerilogGeneratorPlugin::getDescription() const
 //-----------------------------------------------------------------------------
 // Function: VerilogGeneratorPlugin::getVendor()
 //-----------------------------------------------------------------------------
-QString const& VerilogGeneratorPlugin::getVendor() const
+QString VerilogGeneratorPlugin::getVendor() const
 {
     static QString vendor(tr("TUT"));
     return vendor;
@@ -82,7 +82,7 @@ QString const& VerilogGeneratorPlugin::getVendor() const
 //-----------------------------------------------------------------------------
 // Function: VerilogGeneratorPlugin::getLicence()
 //-----------------------------------------------------------------------------
-QString const& VerilogGeneratorPlugin::getLicence() const
+QString VerilogGeneratorPlugin::getLicence() const
 {
     static QString licence(tr("GPL2"));
     return licence;
@@ -91,7 +91,7 @@ QString const& VerilogGeneratorPlugin::getLicence() const
 //-----------------------------------------------------------------------------
 // Function: VerilogGeneratorPlugin::getLicenceHolder()
 //-----------------------------------------------------------------------------
-QString const& VerilogGeneratorPlugin::getLicenceHolder() const
+QString VerilogGeneratorPlugin::getLicenceHolder() const
 {
     static QString holder(tr("Public"));
     return holder;

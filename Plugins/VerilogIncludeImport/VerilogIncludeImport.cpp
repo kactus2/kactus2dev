@@ -43,55 +43,49 @@ VerilogIncludeImport::~VerilogIncludeImport()
 //-----------------------------------------------------------------------------
 // Function: VerilogIncludeImport::getName()
 //-----------------------------------------------------------------------------
-QString const& VerilogIncludeImport::getName() const
+QString VerilogIncludeImport::getName() const
 {
-    static QString name("Verilog include import");
-    return name;
+    return "Verilog include import";
 }
 
 //-----------------------------------------------------------------------------
 // Function: VerilogIncludeImport::getVersion()
 //-----------------------------------------------------------------------------
-QString const& VerilogIncludeImport::getVersion() const
+QString VerilogIncludeImport::getVersion() const
 {
-    static QString version("1.0");
-    return version;
+    return "1.0";
 }
 
 //-----------------------------------------------------------------------------
 // Function: VerilogIncludeImport::getDescription()
 //-----------------------------------------------------------------------------
-QString const& VerilogIncludeImport::getDescription() const
+QString VerilogIncludeImport::getDescription() const
 {
-    static QString description("Import defines from a verilog include file.");
-    return description;
+    return "Import defines from a verilog include file.";
 }
 
 //-----------------------------------------------------------------------------
 // Function: VerilogIncludeImport::getVendor()
 //-----------------------------------------------------------------------------
-QString const& VerilogIncludeImport::getVendor() const
+QString VerilogIncludeImport::getVendor() const
 {
-    static QString vendor("TUT");
-    return vendor;
+    return tr("TUT");
 }
 
 //-----------------------------------------------------------------------------
 // Function: VerilogIncludeImport::getLicence()
 //-----------------------------------------------------------------------------
-QString const& VerilogIncludeImport::getLicence() const
+QString VerilogIncludeImport::getLicence() const
 {
-    static QString licence("GPL2");
-    return licence;
+    return tr("GPL2");
 }
 
 //-----------------------------------------------------------------------------
 // Function: VerilogIncludeImport::getLicenceHolder()
 //-----------------------------------------------------------------------------
-QString const& VerilogIncludeImport::getLicenceHolder() const
+QString VerilogIncludeImport::getLicenceHolder() const
 {
-    static QString licenceHolder(tr("Public"));
-    return licenceHolder;
+    return tr("Public");
 }
 
 //-----------------------------------------------------------------------------

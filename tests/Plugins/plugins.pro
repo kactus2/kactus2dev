@@ -17,4 +17,5 @@ SUBDIRS += VerilogGenerator/VerilogGenerator.pro \
 			MakefileGenerator/tst_MakefileGenerator.pro \
 			VHDLimport/VHDLimport.pro \
 			VerilogImport/VerilogImport.pro \
-		    VerilogIncludeImport/tst_VerilogIncludeImport.pro
+		    VerilogIncludeImport/tst_VerilogIncludeImport.pro \
+			VerilogSourceAnalyzer/tst_VerilogSourceAnalyzer.pro

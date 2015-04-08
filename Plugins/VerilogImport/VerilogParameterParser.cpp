@@ -387,7 +387,7 @@ void VerilogParameterParser::replaceMacroUsesWithParameterIds(QSharedPointer<Mod
 {
     foreach (QSharedPointer<Parameter> define, *targetComponent->getParameters())
     {
-        QRegularExpression macroUsage("`" + define->getName());
+        QRegularExpression macroUsage("`" + define->getName() + "\\b");
 
         QString parameterValue = replaceNameWithId(parameter->getValue(), macroUsage, define);
         parameter->setValue(parameterValue);

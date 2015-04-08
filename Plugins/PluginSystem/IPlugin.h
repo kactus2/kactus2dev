@@ -46,32 +46,32 @@ public:
     /*!
      *  Returns the name of the plugin.
      */
-    virtual QString const& getName() const = 0;
+    virtual QString getName() const = 0;
 
     /*!
      *  Returns the version of the plugin.
      */
-    virtual QString const& getVersion() const = 0;
+    virtual QString getVersion() const = 0;
 
     /*!
      *  Returns the description of the plugin.
      */
-    virtual QString const& getDescription() const = 0;
+    virtual QString getDescription() const = 0;
 
     /*!
      *  Returns the vendor of the plugin.
      */
-    virtual QString const& getVendor() const = 0;
+    virtual QString getVendor() const = 0;
 
     /*!
      *  Returns the licence of the plugin.
      */
-    virtual QString const& getLicence() const = 0;
+    virtual QString getLicence() const = 0;
 
     /*!
      *  Returns the licence holder of the plugin.
      */
-    virtual QString const& getLicenceHolder() const = 0;
+    virtual QString getLicenceHolder() const = 0;
 
     /*!
      *  Returns the settings widget.

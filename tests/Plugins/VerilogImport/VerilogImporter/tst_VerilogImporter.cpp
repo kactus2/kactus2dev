@@ -752,23 +752,28 @@ void tst_VerilogImporter::testMacroInParameterBitWidth()
 void tst_VerilogImporter::testMacroInParameterValue()
 {
     QSharedPointer<Parameter> valueMacro(new Parameter);
-    valueMacro->setName("VALUE");
-    valueMacro->setValue("2");
+    valueMacro->setName("MAX_VALUE");
+    valueMacro->setValue("1");
 
+    QSharedPointer<Parameter> similarMacro(new Parameter);
+    similarMacro->setName("MAX");
+    similarMacro->setValue("128");
+
+    importComponent_->getParameters()->append(similarMacro);
     importComponent_->getParameters()->append(valueMacro);
 
     runParser(
         "module test #(\n"
-        "   parameter bit valueHolder = `VALUE)\n"
+        "   parameter int valueHolder = `MAX_VALUE)\n"
         "();\n"
         "endmodule");
-
 
     QSharedPointer<ModelParameter> parameter = importComponent_->getModelParameters()->first();
 
     QCOMPARE(parameter->getValue(), valueMacro->getValueId());
 
     QCOMPARE(valueMacro->getUsageCount(), 1);
+    QCOMPARE(similarMacro->getUsageCount(), 0);
 }
 
 //-----------------------------------------------------------------------------

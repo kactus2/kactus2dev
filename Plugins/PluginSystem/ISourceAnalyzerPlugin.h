@@ -55,7 +55,7 @@ public:
     /*!
      *  Returns the list of file types this plugin can run analysis for.
      */
-    virtual QStringList const& getSupportedFileTypes() const = 0;
+    virtual QStringList getSupportedFileTypes() const = 0;
 
     /*!
      *  Calculates a language-dependent hash for the given file.
@@ -94,12 +94,12 @@ public:
      *      @param [in]  component      The component to which the dependency scan is being run.
      *      @param [in]  componentPath  The path to the directory where the component is located.
      *      @param [in]  filename       The name of the file to which the analysis is run.
-     *      @param [out] dependencies   The list of found dependencies.
+     *
+     *      @return The list of found dependencies.
      */
-    virtual void getFileDependencies(Component const* component,
-                                     QString const& componentPath,
-                                     QString const& filename,
-                                     QList<FileDependencyDesc>& dependencies) = 0;
+    virtual QList<FileDependencyDesc> getFileDependencies(Component const* component,
+        QString const& componentPath, 
+        QString const& filename) = 0;
 };
 
 //-----------------------------------------------------------------------------

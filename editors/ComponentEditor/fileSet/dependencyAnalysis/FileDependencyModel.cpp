@@ -748,8 +748,8 @@ void FileDependencyModel::analyze(FileDependencyItem* fileItem)
             findDependencies(fileItem->getPath(), oldDependencies);
 
             // Scan the current dependencies.
-            QList<FileDependencyDesc> dependencyDescs;
-            plugin->getFileDependencies(component_.data(), basePath_, absPath, dependencyDescs);
+            QList<FileDependencyDesc> dependencyDescs = plugin->getFileDependencies(component_.data(), 
+                basePath_, absPath);
 
             QString file1 = fileItem->getPath();
 

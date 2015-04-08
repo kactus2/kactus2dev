@@ -89,52 +89,49 @@ PadsPartGenerator::~PadsPartGenerator()
 //-----------------------------------------------------------------------------
 // Function: PadsPartGenerator::getName()
 //-----------------------------------------------------------------------------
-QString const& PadsPartGenerator::getName() const
+QString PadsPartGenerator::getName() const
 {
-    static QString name(tr("PADS Part Generator"));
-    return name;
+    return tr("PADS Part Generator");
 }
 
 //-----------------------------------------------------------------------------
 // Function: PadsPartGenerator::getVersion()
 //-----------------------------------------------------------------------------
-QString const& PadsPartGenerator::getVersion() const
+QString PadsPartGenerator::getVersion() const
 {
-    static QString version(tr("1.0"));
-    return version;
+    return tr("1.0");
 }
 
 //-----------------------------------------------------------------------------
 // Function: PadsPartGenerator::getDescription()
 //-----------------------------------------------------------------------------
-QString const& PadsPartGenerator::getDescription() const
+QString PadsPartGenerator::getDescription() const
 {
-    static QString description(tr("Generates PADS part for component."));
-    return description;
+    return tr("Generates PADS part for component.");
 }
 
 //-----------------------------------------------------------------------------
 // Function: PadsPartGenerator::getVendor()
 //-----------------------------------------------------------------------------
-QString const& PadsPartGenerator::getVendor() const {
-    static QString vendor(tr("TUT"));
-    return vendor;
+QString PadsPartGenerator::getVendor() const
+{
+    return tr("TUT");
 }
 
 //-----------------------------------------------------------------------------
 // Function: PadsPartGenerator::getLicence()
 //-----------------------------------------------------------------------------
-QString const& PadsPartGenerator::getLicence() const {
-    static QString licence(tr("GPL2"));
-    return licence;
+QString PadsPartGenerator::getLicence() const
+{
+    return tr("GPL2");
 }
 
 //-----------------------------------------------------------------------------
 // Function: PadsPartGenerator::getLicenceHolder()
 //-----------------------------------------------------------------------------
-QString const& PadsPartGenerator::getLicenceHolder() const {
-    static QString holder(tr("Public"));
-    return holder;
+QString PadsPartGenerator::getLicenceHolder() const
+{
+    return tr("Public");
 }
 
 //-----------------------------------------------------------------------------

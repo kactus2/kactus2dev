@@ -37,55 +37,49 @@ VerilogImporter::~VerilogImporter()
 //-----------------------------------------------------------------------------
 // Function: VerilogImporter::getName()
 //-----------------------------------------------------------------------------
-QString const& VerilogImporter::getName() const
+QString VerilogImporter::getName() const
 {
-    static QString name("Verilog importer");
-    return name;
+    return "Verilog importer";
 }
 
 //-----------------------------------------------------------------------------
 // Function: VerilogImporter::getVersion()
 //-----------------------------------------------------------------------------
-QString const& VerilogImporter::getVersion() const
+QString VerilogImporter::getVersion() const
 {
-    static QString version("1.2");
-    return version;
+    return "1.2";
 }
 
 //-----------------------------------------------------------------------------
 // Function: VerilogImporter::getDescription()
 //-----------------------------------------------------------------------------
-QString const& VerilogImporter::getDescription() const
+QString VerilogImporter::getDescription() const
 {
-    static QString description("Imports model parameters and ports from a verilog file.");
-    return description;
+    return "Imports model parameters and ports from a verilog file.";
 }
 
 //-----------------------------------------------------------------------------
 // Function: VerilogImporter::getVendor()
 //-----------------------------------------------------------------------------
-QString const& VerilogImporter::getVendor() const
+QString VerilogImporter::getVendor() const
 {
-    static QString vendor("TUT");
-    return vendor;
+    return tr("TUT");
 }
 
 //-----------------------------------------------------------------------------
 // Function: VerilogImporter::getLicence()
 //-----------------------------------------------------------------------------
-QString const& VerilogImporter::getLicence() const
+QString VerilogImporter::getLicence() const
 {
-    static QString licence("GPL2");
-    return licence;
+    return tr("GPL2");
 }
 
 //-----------------------------------------------------------------------------
 // Function: VerilogImporter::getLicenceHolder()
 //-----------------------------------------------------------------------------
-QString const& VerilogImporter::getLicenceHolder() const
+QString VerilogImporter::getLicenceHolder() const
 {
-    static QString licenceHolder(tr("Public"));
-    return licenceHolder;
+    return tr("Public");
 }
 
 //-----------------------------------------------------------------------------

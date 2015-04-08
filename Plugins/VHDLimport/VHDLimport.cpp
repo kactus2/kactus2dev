@@ -62,55 +62,49 @@ VHDLimport::~VHDLimport()
 //-----------------------------------------------------------------------------
 // Function: VHDLimport::getName()
 //-----------------------------------------------------------------------------
-QString const& VHDLimport::getName() const
+QString VHDLimport::getName() const
 {
-    static QString name(tr("VHDL importer"));
-    return name;
+    return tr("VHDL importer");
 }
 
 //-----------------------------------------------------------------------------
 // Function: VHDLimport::getVersion()
 //-----------------------------------------------------------------------------
-QString const& VHDLimport::getVersion() const
+QString VHDLimport::getVersion() const
 {
-    static QString version("1.1");
-    return version;
+    return "1.1";
 }
 
 //-----------------------------------------------------------------------------
 // Function: VHDLimport::getDescription()
 //-----------------------------------------------------------------------------
-QString const& VHDLimport::getDescription() const
+QString VHDLimport::getDescription() const
 {
-    static QString description(tr("Imports model parameters and ports from a VHDL file."));
-    return description;
+    return tr("Imports model parameters and ports from a VHDL file.");
 }
 
 //-----------------------------------------------------------------------------
 // Function: VHDLimport::getVendor()
 //-----------------------------------------------------------------------------
-QString const& VHDLimport::getVendor() const
+QString VHDLimport::getVendor() const
 {
-    static QString vendor("TUT");
-    return vendor;
+    return tr("TUT");
 }
 
 //-----------------------------------------------------------------------------
 // Function: VHDLimport::getLicence()
 //-----------------------------------------------------------------------------
-QString const& VHDLimport::getLicence() const
+QString VHDLimport::getLicence() const
 {
-    static QString licence(tr("GPL2"));
-    return licence;
+    return tr("GPL2");
 }
 
 //-----------------------------------------------------------------------------
 // Function: VHDLimport::getLicenceHolder()
 //-----------------------------------------------------------------------------
-QString const& VHDLimport::getLicenceHolder() const
+QString VHDLimport::getLicenceHolder() const
 {
-    static QString licenceHolder(tr("Public"));
-    return licenceHolder;
+    return tr("Public");
 }
 
 //-----------------------------------------------------------------------------

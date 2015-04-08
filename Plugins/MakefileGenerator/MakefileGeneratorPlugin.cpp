@@ -37,52 +37,49 @@ MakefileGeneratorPlugin::~MakefileGeneratorPlugin()
 //-----------------------------------------------------------------------------
 // Function: MakefileGeneratorPlugin::getName()
 //----------------------------------------------------------------------------
-QString const& MakefileGeneratorPlugin::getName() const
+QString MakefileGeneratorPlugin::getName() const
 {
-    static QString name("Makefile Generator");
-    return name;
+    return "Makefile Generator";
 }
 
 //-----------------------------------------------------------------------------
 // Function: MakefileGeneratorPlugin::getVersion()
 //-----------------------------------------------------------------------------
-QString const& MakefileGeneratorPlugin::getVersion() const
+QString MakefileGeneratorPlugin::getVersion() const
 {
-    static QString version("0.1");
-    return version;
+    return "1.0";
 }
 
 //-----------------------------------------------------------------------------
 // Function: MakefileGeneratorPlugin::getDescription()
 //-----------------------------------------------------------------------------
-QString const& MakefileGeneratorPlugin::getDescription() const
+QString MakefileGeneratorPlugin::getDescription() const
 {
-    static QString desc("Generates Makefile for the design.");
-    return desc;
+    return "Generates Makefile for the design.";
 }
 
 //-----------------------------------------------------------------------------
 // Function: MakefileGeneratorPlugin::getVendor()
 //-----------------------------------------------------------------------------
-QString const& MakefileGeneratorPlugin::getVendor() const {
-    static QString vendor(tr("TUT"));
-    return vendor;
+QString MakefileGeneratorPlugin::getVendor() const
+{
+    return tr("TUT");
 }
 
 //-----------------------------------------------------------------------------
 // Function: MakefileGeneratorPlugin::getLicence()
 //-----------------------------------------------------------------------------
-QString const& MakefileGeneratorPlugin::getLicence() const {
-    static QString licence(tr("GPL2"));
-    return licence;
+QString MakefileGeneratorPlugin::getLicence() const
+{
+    return tr("GPL2");
 }
 
 //-----------------------------------------------------------------------------
 // Function: MakefileGeneratorPlugin::getLicenceHolder()
 //-----------------------------------------------------------------------------
-QString const& MakefileGeneratorPlugin::getLicenceHolder() const {
-    static QString holder(tr("Public"));
-    return holder;
+QString MakefileGeneratorPlugin::getLicenceHolder() const
+{
+    return tr("Public");
 }
 
 //-----------------------------------------------------------------------------

@@ -44,52 +44,49 @@ QuartusPinImportPlugin::~QuartusPinImportPlugin()
 //-----------------------------------------------------------------------------
 // Function: QuartusPinImportPlugin::getName()
 //-----------------------------------------------------------------------------
-QString const& QuartusPinImportPlugin::getName() const
+QString QuartusPinImportPlugin::getName() const
 {
-    static QString name(tr("Quartus II Pin Import"));
-    return name;
+    return tr("Quartus II Pin Import");
 }
 
 //-----------------------------------------------------------------------------
 // Function: QuartusPinImportPlugin::getVersion()
 //-----------------------------------------------------------------------------
-QString const& QuartusPinImportPlugin::getVersion() const
+QString QuartusPinImportPlugin::getVersion() const
 {
-    static QString version(tr("1.1"));
-    return version;
+    return tr("1.1");
 }
 
 //-----------------------------------------------------------------------------
 // Function: QuartusPinImportPlugin::getDescription()
 //-----------------------------------------------------------------------------
-QString const& QuartusPinImportPlugin::getDescription() const
+QString QuartusPinImportPlugin::getDescription() const
 {
-    static QString description(tr("Imports ports from Quartus pin file."));
-    return description;
+    return tr("Imports ports from Quartus pin file.");
 }
 
 //-----------------------------------------------------------------------------
 // Function: QuartusPinImportPlugin::getVendor()
 //-----------------------------------------------------------------------------
-QString const& QuartusPinImportPlugin::getVendor() const {
-    static QString vendor(tr("TUT"));
-    return vendor;
+QString QuartusPinImportPlugin::getVendor() const
+{
+    return tr("TUT");
 }
 
 //-----------------------------------------------------------------------------
 // Function: QuartusPinImportPlugin::getLicence()
 //-----------------------------------------------------------------------------
-QString const& QuartusPinImportPlugin::getLicence() const {
-    static QString licence(tr("GPL2"));
-    return licence;
+QString QuartusPinImportPlugin::getLicence() const
+{
+    return tr("GPL2");
 }
 
 //-----------------------------------------------------------------------------
 // Function: QuartusPinImportPlugin::getLicenceHolder()
 //-----------------------------------------------------------------------------
-QString const& QuartusPinImportPlugin::getLicenceHolder() const {
-    static QString holder(tr("Public"));
-    return holder;
+QString QuartusPinImportPlugin::getLicenceHolder() const
+{
+    return tr("Public");
 }
 
 //-----------------------------------------------------------------------------

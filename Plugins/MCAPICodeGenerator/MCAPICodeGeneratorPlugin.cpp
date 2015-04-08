@@ -40,52 +40,49 @@ MCAPICodeGeneratorPlugin::~MCAPICodeGeneratorPlugin()
 //-----------------------------------------------------------------------------
 // Function: MCAPICodeGeneratorPlugin::getName()
 //----------------------------------------------------------------------------
-QString const& MCAPICodeGeneratorPlugin::getName() const
+QString MCAPICodeGeneratorPlugin::getName() const
 {
-    static QString name("MCAPI Code Generator");
-    return name;
+    return "MCAPI Code Generator";
 }
 
 //-----------------------------------------------------------------------------
 // Function: MCAPICodeGeneratorPlugin::getVersion()
 //-----------------------------------------------------------------------------
-QString const& MCAPICodeGeneratorPlugin::getVersion() const
+QString MCAPICodeGeneratorPlugin::getVersion() const
 {
-    static QString version("1.1");
-    return version;
+    return "1.1";
 }
 
 //-----------------------------------------------------------------------------
 // Function: MCAPICodeGeneratorPlugin::getDescription()
 //-----------------------------------------------------------------------------
-QString const& MCAPICodeGeneratorPlugin::getDescription() const
+QString MCAPICodeGeneratorPlugin::getDescription() const
 {
-    static QString desc("Generates MCAPI code templates based on the metadata.");
-    return desc;
+    return "Generates MCAPI code templates based on the metadata.";
 }
 
 //-----------------------------------------------------------------------------
 // Function: MCAPICodeGeneratorPlugin::getVendor()
 //-----------------------------------------------------------------------------
-QString const& MCAPICodeGeneratorPlugin::getVendor() const {
-    static QString vendor(tr("TUT"));
-    return vendor;
+QString MCAPICodeGeneratorPlugin::getVendor() const
+{
+    return tr("TUT");
 }
 
 //-----------------------------------------------------------------------------
 // Function: MCAPICodeGeneratorPlugin::getLicence()
 //-----------------------------------------------------------------------------
-QString const& MCAPICodeGeneratorPlugin::getLicence() const {
-    static QString licence(tr("GPL2"));
-    return licence;
+QString MCAPICodeGeneratorPlugin::getLicence() const
+{
+    return tr("GPL2");
 }
 
 //-----------------------------------------------------------------------------
 // Function: MCAPICodeGeneratorPlugin::getLicenceHolder()
 //-----------------------------------------------------------------------------
-QString const& MCAPICodeGeneratorPlugin::getLicenceHolder() const {
-    static QString holder(tr("Public"));
-    return holder;
+QString MCAPICodeGeneratorPlugin::getLicenceHolder() const
+{
+    return tr("Public");
 }
 
 //-----------------------------------------------------------------------------

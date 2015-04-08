@@ -41,52 +41,49 @@ CppSourceAnalyzer::~CppSourceAnalyzer()
 //-----------------------------------------------------------------------------
 // Function: CppSourceAnalyzer::getName()
 //----------------------------------------------------------------------------
-QString const& CppSourceAnalyzer::getName() const
+QString CppSourceAnalyzer::getName() const
 {
-    static QString name("C/C++ Source Analyzer");
-    return name;
+    return "C/C++ Source Analyzer";
 }
 
 //-----------------------------------------------------------------------------
 // Function: CppSourceAnalyzer::getVersion()
 //-----------------------------------------------------------------------------
-QString const& CppSourceAnalyzer::getVersion() const
+QString CppSourceAnalyzer::getVersion() const
 {
-    static QString version("1.0");
-    return version;
+    return "1.0";
 }
 
 //-----------------------------------------------------------------------------
 // Function: CppSourceAnalyzer::getDescription()
 //-----------------------------------------------------------------------------
-QString const& CppSourceAnalyzer::getDescription() const
+QString CppSourceAnalyzer::getDescription() const
 {
-    static QString desc("Analyzes file dependencies from C/C++ files.");
-    return desc;
+    return "Analyzes file dependencies from C/C++ files.";
 }
 
 //-----------------------------------------------------------------------------
 // Function: CppSourceAnalyzer::getVendor()
 //-----------------------------------------------------------------------------
-QString const& CppSourceAnalyzer::getVendor() const {
-    static QString vendor(tr("TUT"));
-    return vendor;
+QString CppSourceAnalyzer::getVendor() const
+{
+    return tr("TUT");
 }
 
 //-----------------------------------------------------------------------------
 // Function: CppSourceAnalyzer::getLicence()
 //-----------------------------------------------------------------------------
-QString const& CppSourceAnalyzer::getLicence() const {
-    static QString licence(tr("GPL2"));
-    return licence;
+QString CppSourceAnalyzer::getLicence() const
+{
+    return tr("GPL2");
 }
 
 //-----------------------------------------------------------------------------
 // Function: CppSourceAnalyzer::getLicenceHolder()
 //-----------------------------------------------------------------------------
-QString const& CppSourceAnalyzer::getLicenceHolder() const {
-    static QString holder(tr("Public"));
-    return holder;
+QString CppSourceAnalyzer::getLicenceHolder() const
+{
+    return tr("Public");
 }
 
 //-----------------------------------------------------------------------------
@@ -100,7 +97,7 @@ PluginSettingsWidget* CppSourceAnalyzer::getSettingsWidget()
 //-----------------------------------------------------------------------------
 // Function: CppSourceAnalyzer::getSupportedFileTypes()
 //-----------------------------------------------------------------------------
-QStringList const& CppSourceAnalyzer::getSupportedFileTypes() const
+QStringList CppSourceAnalyzer::getSupportedFileTypes() const
 {
     return fileTypes_;
 }
@@ -131,51 +128,51 @@ QString CppSourceAnalyzer::calculateHash(QString const& filename)
 //-----------------------------------------------------------------------------
 // Function: CppSourceAnalyzer::getFileDependencies()
 //-----------------------------------------------------------------------------
-void CppSourceAnalyzer::getFileDependencies(Component const* /*component*/,
+QList<FileDependencyDesc> CppSourceAnalyzer::getFileDependencies(Component const* /*component*/,
                                             QString const& /*componentPath*/,
-                                            QString const& filename,
-                                            QList<FileDependencyDesc>& dependencies)
+                                            QString const& filename)
 {
+    QList<FileDependencyDesc> dependencies;
+
     QFile file(filename);
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text) )
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text) )
     {
-        // File could not be opened, show error
-        return;
-    }
+        QString source = getSourceData(file);
 
-    QString source = getSourceData(file);
-
-    // Find #includes
-    QTextStream sourceStream(&source);
-    while(!sourceStream.atEnd())
-    {
-        const QString currentLine = sourceStream.readLine();
-        int includePosition = currentLine.indexOf("#include");
-        // include found (can they be somewhere else than start of line?)
-        if (includePosition == 0)
+        // Find #includes
+        QTextStream sourceStream(&source);
+        while(!sourceStream.atEnd())
         {
-            FileDependencyDesc dependency;
+            const QString currentLine = sourceStream.readLine();
+            int includePosition = currentLine.indexOf("#include");
+            // include found (can they be somewhere else than start of line?)
+            if (includePosition == 0)
+            {
+                FileDependencyDesc dependency;
 
-            int includeStart = 0;
-            int includeEnd = 0;
-            // includes with < >
-            if (currentLine.indexOf("<") != -1)
-            {
-                includeStart = currentLine.indexOf("<") + 1;
-                includeEnd = currentLine.indexOf(">");
+                int includeStart = 0;
+                int includeEnd = 0;
+                // includes with < >
+                if (currentLine.indexOf("<") != -1)
+                {
+                    includeStart = currentLine.indexOf("<") + 1;
+                    includeEnd = currentLine.indexOf(">");
+                }
+                // includes with " "
+                else
+                {
+                    includeStart = currentLine.indexOf("\"") + 1;
+                    includeEnd = currentLine.indexOf("\"", includeStart+1);
+                }
+                // Include found, TODO: store it
+                QString includeName = currentLine.mid(includeStart, includeEnd-includeStart);
+                dependency.filename = includeName;
+                dependencies.append(dependency);
             }
-            // includes with " "
-            else
-            {
-                includeStart = currentLine.indexOf("\"") + 1;
-                includeEnd = currentLine.indexOf("\"", includeStart+1);
-            }
-            // Include found, TODO: store it
-            QString includeName = currentLine.mid(includeStart, includeEnd-includeStart);
-            dependency.filename = includeName;
-            dependencies.append(dependency);
         }
     }
+
+    return dependencies;
 }
 
 //-----------------------------------------------------------------------------
