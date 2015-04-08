@@ -11,6 +11,8 @@
 
 #include "ipxactmodels_global.h"
 
+#include <IPXACTmodels/NameGroup.h>
+
 #include <QString>
 #include <QList>
 #include <QXmlStreamWriter>
@@ -24,25 +26,37 @@ class IPXACTMODELS_EXPORT RemapState {
 
 public:
 
-	/*! \brief The constructor
+    /*!
+	 *  The constructor.
 	 *
-	 * \param remapNode A reference to the QDomNode to parse the information
-	 * from.
-	 *
-	 * Exception guarantee: basic
-	 * \exception Parse_error Occurs when a mandatory element is missing in
-	 * this class or one of it's member classes.
+	 *      @param [in] remapNode   A reference to the QDomNode to parse the information from.
+     *
+     *      Exception guarantee: basic
+     *      Parse_error Occurs when a mandatory element is missing in this class or one of it's member classes.
 	 */
 	RemapState(QDomNode &remapNode);
 
-	//! \brief Copy constructor
+    /*!
+     *  The default constructor.
+     */
+    RemapState();
+
+	/*!
+	 *  Copy constructor.
+	 *
+	 *      @param [in] other   The remap state to be copied.
+	 */
 	RemapState(const RemapState &other);
 
-	//! \brief Assignment operator
+    /*!
+	 *  Assignment operator.
+	 *
+	 *      @param [in] other   The remap state being assigned.
+	 */
 	RemapState &operator=(const RemapState &other);
 
-	/*! \brief The destructor
-	 *
+	/*!
+	 *  The destructor.
 	 */
 	~RemapState();
 
@@ -54,53 +68,104 @@ public:
 	* \param writer A reference to a QXmlStreamWriter instance that is used to
 	* write the document into file.
 	*/
+
+	/*!
+	 *  Write the contents of the class as a valid IP-Xact using the writer.
+	 *
+	 *      @param [in] writer  A reference to a QXMLStreamWriter instance that is used to write the document into
+     *                          a file.
+	 */
 	void write(QXmlStreamWriter& writer);
 
-	/*! \brief Check if the remap state is in a valid state.
-	 * 
-	 * \param portNames List containing the names of the ports of the component.
-	 * \param errorList The list to add the possible error messages to.
-	 * \param parentIdentifier String from parent to help to identify the location of the error.
+    /*!
+	 *  Check if the remap state is in a valid state.
 	 *
-	 * \return bool True if the state is valid and writing is possible.
-	*/
-	bool isValid(const QStringList& portNames,
-		QStringList& errorList, 
-		const QString& parentIdentifier) const;
+	 *      @param [in] portNames           List containing the names of the ports of the component.
+	 *      @param [in] errorList           The list to add the possible error messages to.
+	 *      @param [in] parentIdentifier    String from parent to help identify the location of the erro.
+     *
+     *      @return True, if the state is valid, false otherwise.
+	 */
+	bool isValid(const QStringList& portNames, QStringList& errorList, const QString& parentIdentifier) const;
 
-	/*! \brief Check if the remap state is in a valid state.
-	 * 
-	 * \param portNames List containing the names of the ports of the component.
-	 * 
-	 * \return bool True if the state is valid and writing is possible.
-	*/
+	/*!
+	 *  Check if the remap state is in a valid state.
+	 *
+	 *      @param [in] portNames   List containing the names of the ports of the component.
+     *
+     *      @return True, if the state is valid and writing is possible.
+	 */
 	bool isValid(const QStringList& portNames) const;
 
-	/*! \brief Get the name of the remap state
+    /*!
+	 *  Get the name of the remap state.
 	 *
-	 * \return QString containing the name
+     *      @return The name of the remap state.
 	 */
 	QString getName() const;
 
-	/*! \brief Get list of the remapPorts for this remap state
+    /*!
+	 *  Get the list of the remap ports for this remap state.
 	 *
-	 * \return QList containing pointers to the remapPort instaces
+     *      @return List containing pointer to the remap port instances.
 	 */
 	const QList<QSharedPointer<RemapPort> >& getRemapPorts();
 
-	/*! \brief Set the name for this remapState
+    /*!
+	 *  Set the name for this remap state.
 	 *
-	 * \param name QString containing the name
+	 *      @param [in] name    The new name of the remap state.
 	 */
 	void setName(const QString &name);
 
-	/*! \brief Set the remap ports for this remap state
+    /*!
+	 *  Set the remap ports for this remap state.
 	 *
-	 * Calling this function will delete the old remapPorts.
-	 *
-	 * \param remapPorts QList containing pointers to the remapPorts to set
+	 *      @param [in] remapPorts  A list containing pointers to the remap ports.
 	 */
 	void setRemapPorts(const QList<QSharedPointer<RemapPort> > &remapPorts);
+
+    /*!
+     *  Get the display name of the remap state.
+     *
+     *      @return The display name for the remap state.
+     */
+    QString getDisplayName() const;
+
+    /*!
+     *  Set the display name for the remap state.
+     *
+     *      @param [in] newDisplayName  The new display name for the remap state.
+     */
+    void setDisplayName(QString const& newDisplayName);
+
+    /*!
+     *  Get the description of the remap state.
+     *
+     *      @return The description of the remap state.
+     */
+    QString getDescription() const;
+
+    /*!
+     *  Set the description for the remap state.
+     *
+     *      @param [in] newDescription  The new description for the remap state.
+     */
+    void setDescription(QString const& newDescription);
+
+    /*!
+     *  Get the name group of the remap state.
+     *
+     *      @return The name group of the remap state.
+     */
+    NameGroup& getNamegroup();
+
+    /*!
+     *  Get the name group of the remap state.
+     *
+     *      @return The name group of the remap state.
+     */
+    const NameGroup& getNamegroup() const;
 
 private:
 
@@ -108,7 +173,8 @@ private:
 	 * MANDATORY
 	 * Identifies the remapState
 	 */
-	QString name_;
+	//QString name_;
+    NameGroup nameGroup_;
 
 	/*!
 	 * OPTIONAL

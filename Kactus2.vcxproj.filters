@@ -914,6 +914,12 @@
     <Filter Include="Header Files\wizards\common\ParameterComparator">
       <UniqueIdentifier>{d6bba5c6-b242-428e-958c-f810131842c4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\editors\ComponentEditor\remapStates">
+      <UniqueIdentifier>{49dba170-1c06-41a5-9e6c-71655c613648}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\ComponentEditor\remapStates">
+      <UniqueIdentifier>{ac8149ce-8f18-4742-a635-c4f7239aeabc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -3991,6 +3997,36 @@
     <ClCompile Include="wizards\common\ParameterComparator\ParameterComparator.cpp">
       <Filter>Source Files\wizards\common\ParameterComparator</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\treeStructure\RemapStatesItem.cpp">
+      <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\treeStructure\SingleRemapStateItem.cpp">
+      <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_RemapStatesItem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_SingleRemapStateItem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\remapStates\RemapStatesModel.cpp">
+      <Filter>Source Files\editors\ComponentEditor\remapStates</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\remapStates\RemapStatesEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\remapStates</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_RemapStatesEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_RemapStatesModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\remapStates\SingleRemapStateEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\remapStates</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_SingleRemapStateEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5498,6 +5534,21 @@
     </CustomBuild>
     <CustomBuild Include="designEditors\common\ComponentInstanceEditor\ConfigurableElementsFilter.h">
       <Filter>Header Files\designEditors\common\ComponentInstanceEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\treeStructure\SingleRemapStateItem.h">
+      <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\treeStructure\RemapStatesItem.h">
+      <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\remapStates\RemapStatesEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\remapStates</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\remapStates\RemapStatesModel.h">
+      <Filter>Header Files\editors\ComponentEditor\remapStates</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\remapStates\SingleRemapStateEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\remapStates</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

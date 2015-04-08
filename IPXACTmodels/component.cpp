@@ -55,7 +55,7 @@ busInterfaces_(),
 comInterfaces_(),
 apiInterfaces_(),
 channels_(), 
-remapStates_(), 
+remapStates_(new QList<QSharedPointer<RemapState> >()), 
 addressSpaces_(),
 memoryMaps_(),
 model_(), 
@@ -142,7 +142,7 @@ author_()
 
 				if (!remapStateNode.isComment())
                 {
-					remapStates_.append(QSharedPointer<RemapState>(new RemapState(remapStateNode)));
+					remapStates_->append(QSharedPointer<RemapState>(new RemapState(remapStateNode)));
 				}
 			}
 		}
@@ -353,7 +353,7 @@ busInterfaces_(),
 comInterfaces_(),
 apiInterfaces_(),
 channels_(),
-remapStates_(),
+remapStates_(new QList<QSharedPointer<RemapState> >()),
 addressSpaces_(),
 memoryMaps_(),
 model_(new Model()),
@@ -382,7 +382,7 @@ busInterfaces_(),
 comInterfaces_(),
 apiInterfaces_(),
 channels_(),
-remapStates_(),
+remapStates_(new QList<QSharedPointer<RemapState> >()),
 addressSpaces_(),
 memoryMaps_(),
 model_(new Model()),
@@ -411,7 +411,7 @@ busInterfaces_(),
 comInterfaces_(),
 apiInterfaces_(),
 channels_(),
-remapStates_(),
+remapStates_(new QList<QSharedPointer<RemapState> >()),
 addressSpaces_(),
 memoryMaps_(),
 model_(),
@@ -459,10 +459,10 @@ author_(other.author_)
 		}
 	}
 
-	foreach (QSharedPointer<RemapState> remState, other.remapStates_) {
+	foreach (QSharedPointer<RemapState> remState, *other.remapStates_) {
 		if (remState) {
 			QSharedPointer<RemapState> copy = QSharedPointer<RemapState>(new RemapState(*remState.data()));
-			remapStates_.append(copy);
+			remapStates_->append(copy);
 		}
 	}
 
@@ -600,11 +600,11 @@ Component & Component::operator=( const Component &other ) {
 			}
 		}
 
-		remapStates_.clear();
-		foreach (QSharedPointer<RemapState> remState, other.remapStates_) {
+		remapStates_->clear();
+		foreach (QSharedPointer<RemapState> remState, *other.remapStates_) {
 			if (remState) {
 				QSharedPointer<RemapState> copy = QSharedPointer<RemapState>(new RemapState(*remState.data()));
-				remapStates_.append(copy);
+				remapStates_->append(copy);
 			}
 		}
 
@@ -734,7 +734,7 @@ Component::~Component()
 {
 	busInterfaces_.clear();
 	channels_.clear();
-	remapStates_.clear();
+	remapStates_->clear();
 	addressSpaces_.clear();
 	memoryMaps_.clear();
 	compGenerators_.clear();
@@ -796,12 +796,12 @@ void Component::write(QFile& file) {
 		writer.writeEndElement(); // spirit:channels
 	}
 
-	if (remapStates_.size() != 0) {
+	if (remapStates_->size() != 0) {
 		writer.writeStartElement("spirit:remapStates");
 
 		// write each remapState
-		for (int i = 0; i < remapStates_.size(); ++i) {
-			remapStates_.at(i)->write(writer);
+		for (int i = 0; i < remapStates_->size(); ++i) {
+			remapStates_->at(i)->write(writer);
 		}
 
 		writer.writeEndElement(); // spirit:remapStates
@@ -1166,7 +1166,7 @@ bool Component::isValid( QStringList& errorList ) const {
 	}
 
 	QStringList remapNames;
-	foreach (QSharedPointer<RemapState> remState, remapStates_) {
+	foreach (QSharedPointer<RemapState> remState, *remapStates_) {
 
 		if (remapNames.contains(remState->getName())) {
 			errorList.append(QObject::tr("%1 contains several remap states with"
@@ -1420,7 +1420,7 @@ bool Component::isValid() const {
 	}
 
 	QStringList remapNames;
-	foreach (QSharedPointer<RemapState> remState, remapStates_) {
+	foreach (QSharedPointer<RemapState> remState, *remapStates_) {
 
 		if (remapNames.contains(remState->getName())) {
 			return false;
@@ -1686,14 +1686,6 @@ void Component::setAddressSpaces(QList<QSharedPointer<AddressSpace> > const& add
 	addressSpaces_ = addressSpaces;
 }
 
-void Component::setRemapStates(QList<QSharedPointer<RemapState> > const& remapStates) {
-	// delete old remap states
-	remapStates_.clear();
-
-	// save new remap states
-	remapStates_ = remapStates;
-}
-
 QList<QSharedPointer<AddressSpace> >& Component::getAddressSpaces() {
 	return addressSpaces_;
 }
@@ -1702,7 +1694,7 @@ const QList<QSharedPointer<AddressSpace> >& Component::getAddressSpaces() const 
 	return addressSpaces_;
 }
 
-const QList<QSharedPointer<RemapState> >& Component::getRemapStates() const {
+const QSharedPointer<QList<QSharedPointer<RemapState> > >& Component::getRemapStates() const {
 	return remapStates_;
 }
 

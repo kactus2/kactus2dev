@@ -332,7 +332,7 @@ public:
 	 *
 	 * \return QList containing component's remap states
 	 */
-	const QList<QSharedPointer<RemapState> >& getRemapStates() const;
+	const QSharedPointer<QList<QSharedPointer<RemapState> > >& getRemapStates() const;
 
 	/*! \brief Get the attributes for the component
 	 *
@@ -375,12 +375,6 @@ public:
 	 * \param otherClockDrivers QList containing the other clock drivers to be set
 	 */
 	void setOtherClockDrivers(const	QList<QSharedPointer<OtherClockDriver> > &otherClockDrivers);
-
-	/*! \brief Set remap states for this component
-	 *
-	 * \param remapStates QList containing the remapStates to be set
-	 */
-	void setRemapStates(const QList<QSharedPointer<RemapState> > &remapStates);
 
 	/*! \brief Get list of the files needed by this component.
 	 *
@@ -1788,7 +1782,7 @@ private:
 	 * Specifies the combination of logic states on the component ports and
 	 * translates them into a logical name.
 	 */
-	QList<QSharedPointer<RemapState> > remapStates_;
+	QSharedPointer<QList<QSharedPointer<RemapState> > > remapStates_;
 
 	/*! \brief Contains the addressSpaces
 	 * OPTIONAL spirit:addressSpaces

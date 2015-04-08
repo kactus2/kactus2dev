@@ -172,6 +172,7 @@ HEADERS += ./common/Global.h \
     ./wizards/common/ModelParameterComparator/ModelParameterComparator.h \
     ./wizards/common/ViewComparator/ViewComparator.h \
     ./wizards/common/PortComparator/PortComparator.h \
+    ./wizards/common/ParameterComparator/ParameterComparator.h \
     ./Help/HelpSystem/HelpWindow.h \
     ./Help/HelpSystem/ContextHelpBrowser.h \
     ./Help/HelpSystem/HelpSearchWidget.h \
@@ -611,7 +612,11 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
     ./kactusGenerators/quartusGenerator/quartusgenerator.h \
-    ./wizards/common/ParameterComparator/ParameterComparator.h
+    ./editors/ComponentEditor/treeStructure/SingleRemapStateItem.h \
+    ./editors/ComponentEditor/treeStructure/RemapStatesItem.h \
+    ./editors/ComponentEditor/remapStates/RemapStatesEditor.h \
+    ./editors/ComponentEditor/remapStates/RemapStatesModel.h \
+    ./editors/ComponentEditor/remapStates/SingleRemapStateEditor.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -758,6 +763,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./wizards/common/ModelParameterComparator/ModelParameterComparator.cpp \
     ./wizards/common/ViewComparator/ViewComparator.cpp \
     ./wizards/common/PortComparator/PortComparator.cpp \
+    ./wizards/common/ParameterComparator/ParameterComparator.cpp \
     ./Help/HelpSystem/ContextHelpBrowser.cpp \
     ./Help/HelpSystem/HelpSearchWidget.cpp \
     ./Help/HelpSystem/HelpWindow.cpp \
@@ -1163,5 +1169,9 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
     ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
-    ./wizards/common/ParameterComparator/ParameterComparator.cpp
+    ./editors/ComponentEditor/treeStructure/RemapStatesItem.cpp \
+    ./editors/ComponentEditor/treeStructure/SingleRemapStateItem.cpp \
+    ./editors/ComponentEditor/remapStates/RemapStatesModel.cpp \
+    ./editors/ComponentEditor/remapStates/RemapStatesEditor.cpp \
+    ./editors/ComponentEditor/remapStates/SingleRemapStateEditor.cpp
 RESOURCES += kactus.qrc

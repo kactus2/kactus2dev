@@ -30,6 +30,7 @@
 #include <editors/ComponentEditor/treeStructure/componenteditorapiinterfacesitem.h>
 #include <editors/ComponentEditor/treeStructure/componenteditorswpropertiesitem.h>
 #include <editors/ComponentEditor/treeStructure/ComponentEditorSystemViewsItem.h>
+#include <editors/ComponentEditor/treeStructure/RemapStatesItem.h>
 #include <editors/ComponentEditor/treeStructure/componenteditortreemodel.h>
 #include <editors/ComponentEditor/treeStructure/componenteditoritem.h>
 
@@ -775,6 +776,9 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createHWRootItem(QShare
 
     hwRoot->addChildItem(QSharedPointer<ComponentEditorChannelsItem>(
         new ComponentEditorChannelsItem(&navigationModel_, libHandler_, component, hwRoot)));
+
+    hwRoot->addChildItem(QSharedPointer<RemapStatesItem>(
+        new RemapStatesItem(&navigationModel_, libHandler_, component, hwRoot)));
 
     hwRoot->addChildItem(QSharedPointer<ComponentEditorCpusItem>(
         new ComponentEditorCpusItem(&navigationModel_, libHandler_, component, hwRoot)));
