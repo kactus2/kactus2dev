@@ -26,7 +26,7 @@ class FileSet;
 class VERILOGSOURCEANALYZER_EXPORT VerilogSourceAnalyzer : public QObject, public ISourceAnalyzerPlugin
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "kactus2.plugins.VerilogSourceAnalyzer" FILE "verilogSourceAnalyzer.json")
+    Q_PLUGIN_METADATA(IID "kactus2.plugins.VerilogSourceAnalyzer" FILE "VerilogSourceAnalyzer.json")
 
     Q_INTERFACES(IPlugin)
     Q_INTERFACES(ISourceAnalyzerPlugin)
