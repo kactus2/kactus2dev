@@ -8,6 +8,27 @@
               * Changed or Information
 ===============================================================================
 
+09/04/2015 2.7.572
+----------------------------------------------------
+
++ Added import for Verilog defines as component parameters
++ Added dependency analysis for Verilog include directives
++ Added grouping of configurable element values according to location in component
++ Added placeholder for remap states in component editor
+
+* Changed types in Plugin and Source analyzer plugin interfaces
+
+KNOWN UNRESOLVED ISSUES:
+* Parameters created with version 2.7.0 may not work with the latest release due to 
+  change in id formatting. The fastest way to fix this is to re-create the parameters.
+* SystemVerilog expressions are not supported by some features including generators.
+  If expressions or references have been used, it may cause at least the following issues:
+    * Memory map header generator will generate wrong offsets for registers.
+	* Memory maps visualization shows wrong offset for register and aligns them wrong.
+	* VHDL generator will generate wrong values.
+	* Port maps will not automatically adjust to changes in port size.
+* VHDL import does not preserve references to model parameters.
+
 27/03/2015 2.7.463
 ----------------------------------------------------
 

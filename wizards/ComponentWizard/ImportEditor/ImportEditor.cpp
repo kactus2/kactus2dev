@@ -209,22 +209,6 @@ QString ImportEditor::selectedFileAbsolutePath() const
 //-----------------------------------------------------------------------------
 void ImportEditor::setupLayout()
 {
-    // Make the splitter handles visible by creating lines. Handle 0 is always invisible.
-    /*const int handles = 4;
-    for ( int i = 1; i < handles; i++)
-    {
-        QSplitterHandle* handle = splitter_.handle(i);
-
-        QVBoxLayout* layout = new QVBoxLayout(handle);
-        layout->setSpacing(0);
-        layout->setMargin(0);
-
-        QFrame* line = new QFrame(handle);
-        line->setFrameShape(QFrame::HLine);
-        line->setFrameShadow(QFrame::Sunken);
-        layout->addWidget(line);
-    }*/
-
     sourceDisplayTabs_->setMinimumHeight(300);
 
 	QVBoxLayout* topLayout = new QVBoxLayout(this);    

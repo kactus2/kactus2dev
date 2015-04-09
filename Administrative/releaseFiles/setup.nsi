@@ -105,6 +105,8 @@ Section "MainSection" SEC01
   File "..\..\executable\Plugins\MakefileGenerator.dll"
   File "..\..\executable\Plugins\VerilogGeneratorPlugin.dll"
   File "..\..\executable\Plugins\VerilogImport.dll"
+  File "..\..\executable\Plugins\VerilogIncludeImport.dll"
+  File "..\..\executable\Plugins\VerilogSourceAnalyzer.dll"
   File "..\..\executable\Plugins\VHDLImport.dll"
 
   SetOutPath "$INSTDIR\Help"
@@ -188,6 +190,8 @@ Section Uninstall
   Delete "$INSTDIR\Help\Kactus2Help.qch"
   Delete "$INSTDIR\Help\Kactus2Help.qhc"
   Delete "$INSTDIR\Plugins\VHDLImport.dll"
+  Delete "$INSTDIR\Plugins\VerilogSourceAnalyzer.dll"
+  Delete "$INSTDIR\Plugins\VerilogIncludeImport.dll"
   Delete "$INSTDIR\Plugins\VerilogImport.dll"  
   Delete "$INSTDIR\Plugins\VerilogGeneratorPlugin.dll"
   Delete "$INSTDIR\Plugins\MakefileGenerator.dll"
