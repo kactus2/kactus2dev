@@ -16,6 +16,7 @@
 
 #include <Plugins/PluginSystem/IPlugin.h>
 #include <Plugins/PluginSystem/ImportPlugin/ImportPlugin.h>
+#include <Plugins/PluginSystem/ImportPlugin/IncludeImportPlugin.h>
 #include <Plugins/PluginSystem/ImportPlugin/HighlightSource.h>
 
 #include <QSharedPointer>
@@ -26,12 +27,14 @@ class Parameter;
 //-----------------------------------------------------------------------------
 //! Import plugin for Verilog definitions.
 //-----------------------------------------------------------------------------
-class VERILOGINCLUDEIMPORT_EXPORT VerilogIncludeImport : public QObject, public ImportPlugin, public HighlightSource
+class VERILOGINCLUDEIMPORT_EXPORT VerilogIncludeImport : public QObject, public IncludeImportPlugin, public HighlightSource
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "kactus2.plugins.verilogincludeimportplugin" FILE "verilogincludeimportplugin.json")
+   
     Q_INTERFACES(IPlugin)
     Q_INTERFACES(ImportPlugin)
+    Q_INTERFACES(IncludeImportPlugin)
 
 public:
 

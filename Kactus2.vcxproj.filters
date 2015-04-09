@@ -5912,6 +5912,9 @@
     <ClInclude Include="wizards\common\ParameterComparator\ParameterComparator.h">
       <Filter>Header Files\wizards\common\ParameterComparator</Filter>
     </ClInclude>
+    <ClInclude Include="Plugins\PluginSystem\ImportPlugin\IncludeImportPlugin.h">
+      <Filter>Header Files\Plugins\PluginSystem\ImportPlugin</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="designEditors\common\DiagramUtil.inl">

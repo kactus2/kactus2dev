@@ -18,12 +18,15 @@
 
 #include <QObject>
 #include <QSharedPointer>
+#include <QTabWidget>
+#include <QPlainTextEdit>
 
 class Component;
 class ExpressionParser;
+class FileSet;
 class Highlighter;
 class ImportPlugin;
-
+class ISourceAnalyzerPlugin;
 class ModelParameterVisualizer;
 
 //-----------------------------------------------------------------------------
@@ -38,19 +41,14 @@ public:
 	 *  The constructor.
 	 *
 	 *      @param [in] parameterFinder     Pointer to the parameter finder.
+     *      @param [in] displayTabs         The container widget for read and displayed source files.
 	 *      @param [in] parent              Pointer to the owner of this runner.
 	 */
-	ImportRunner(QSharedPointer<ComponentParameterFinder> parameterFinder, QObject* parent);
+	ImportRunner(QSharedPointer<ComponentParameterFinder> parameterFinder, QTabWidget* displayTabs, 
+        QObject* parent);
 
 	//! The destructor.
 	~ImportRunner();
-
-    /*!
-     *  Sets the given highlighter to be used by all highlight sources.
-     *
-     *      @param [in] highlighter   The highlighter to use.          
-     */
-    void setHighlighter(Highlighter* highlighter);
   
     /*!
      *  Sets the given highlighter to be used by all highlight sources.
@@ -71,18 +69,18 @@ public:
      *
      *      @param [in] pluginManager   The plugin manager owning all the plugins.
      */
-    void loadImportPlugins(PluginManager const& pluginManager);
+    void loadPlugins(PluginManager const& pluginManager);
 
     /*!
      *  Runs all import plugins with matching file types for a given file and component.
      *
-     *      @param [in] importFile          The relative path to the input file.
+     *      @param [in] filePath            The relative path to the input file.
      *      @param [in] componentXmlPath    The path to the target component XML file.
      *      @param [in] targetComponent     The target component to which import all parsed elements.     
      *
      *      @return The component with all the imported elements.     
      */
-    QSharedPointer<Component> import(QString const& importFile, QString const& componentXmlPath, 
+    QSharedPointer<Component> run(QString const& filePath, QString const& componentXmlPath, 
         QSharedPointer<const Component> targetComponent);
 
     /*!
@@ -102,26 +100,77 @@ private:
 	// Disable copying.
 	ImportRunner(ImportRunner const& rhs);
     ImportRunner& operator=(ImportRunner const& rhs);
+   
+    /*!
+     *  Adds model parameter visualization to a given import plugin if possible.
+     *
+     *      @param [in] parser   The plugin to add visualization to.     
+     */
+    void addModelParameterVisualizationIfPossible(ImportPlugin* importPlugin) const;
+       
+    /*!
+     *  Adds expression parser to a given import plugin if possible.
+     *
+     *      @param [in] parser   The plugin to add expression parser to.     
+     */
+    void addExpressionParserIfPossible(ImportPlugin* importPlugin) const;
 
     /*!
-     *  Finds possible import plugins for given file types.
+     *  Scrolls the given display widget to the first highlighted row.
      *
-     *      @param [in] filetypes   The file types to search for.
-     *
-     *      @return Import plugins capable of reading the given file types.
+     *      @param [in] sourceDisplay   The display to scroll.
      */
-    QList<ImportPlugin*> parsersForFileTypes(QStringList const& filetypes) const;
+    void scrollSourceDisplayToFirstHighlight(QPlainTextEdit* sourceDisplay) const;
+    
+    /*!
+     *  Imports all includes from the dependency files of a given file.
+     *
+     *      @param [in] filePath            The file whose dependency files to import.
+     *      @param [in] componentXmlPath    The path to the target component XML file.
+     *      @param [in] importComponent     The component to import to.
+     */
+    void importIncludes(QString const& filePath, QString const& componentXmlPath, 
+        QSharedPointer<Component> importComponent);
+    
+     /*!
+      *  Finds the include import plugins for the given file types.
+      *
+      *      @param [in] filetypes   The file types to find plugins for.
+      *
+      *      @return The found include import plugins.
+      */
+     QList<ImportPlugin*> includeImportPluginsForFileTypes(QStringList const& filetypes) const;
 
     /*!
      *  Finds the file types of a given file.
      *
      *      @param [in] importFile          The relative path to the file.
-     *      @param [in] targetComponent     The component containing the file set containing the given file.
+     *      @param [in] fileSets            The file sets to find the file and its file types from.
      *
      *      @return File types of the given file.
      */
-    QStringList filetypesOfImportFile(QString const& importFile, QSharedPointer<Component> targetComponent) const;
+    QStringList filetypesOf(QString const& fileName, QList<QSharedPointer<FileSet> > const& fileSets) const;
 
+    /*!
+     *  Finds possible source analyzer plugins for given file types.
+     *
+     *      @param [in] filetypes   The file types to search for.
+     *
+     *      @return Import source analyzers capable of analyzing the given file types.
+     */
+    QList<ISourceAnalyzerPlugin*> analyzerPluginsForFileTypes(QStringList filetypes) const;
+
+    /*!
+     *  Imports a file to the given component.
+     *
+     *      @param [in] filePath                The path to the file to import.
+     *      @param [in] absoluteBasePath        The absolute base path for relative filePaths.
+     *      @param [in] importPluginsForFile    The import plugins to use.
+     *      @param [in] importComponent         The component to import to.
+     */
+    void importFile(QString const& filePath, QString const& absoluteBasePath, 
+        QList<ImportPlugin*> importPluginsForFile, QSharedPointer<Component> importComponent);
+        
     /*!
      *  Reads the content of a given file.
      *
@@ -131,34 +180,36 @@ private:
      *      @return The file content.
      */
     QString readInputFile(QString const& relativePath, QString const& basePath) const;
-   
+
     /*!
-     *  Adds model parameter visualization to a given import plugin if possible.
+     *  Creates a display widget for the given file.
      *
-     *      @param [in] parser   The plugin to add visualization to.     
+     *      @param [in] filePath    Path to the file.
+     *
+     *      @return A display widget for the given file.
      */
-    void addModelParameterVisualizationIfPossible(ImportPlugin* parser);
+    QPlainTextEdit* createSourceDisplayForFile(QString const& filePath) const;
+      
+    /*!
+     *  Finds possible import plugins for given file types.
+     *
+     *      @param [in] filetypes   The file types to search for.
+     *
+     *      @return Import plugins capable of reading the given file types.
+     */
+    QList<ImportPlugin*> importPluginsForFileTypes(QStringList const& filetypes) const;
     
     /*!
      *  Adds highlighting to a given import plugin if possible.
      *
-     *      @param [in] parser   The plugin to add highlighting to.     
+     *      @param [in] parser          The plugin to add highlighting to.   
+     *      @param [in] highlighter     The highligter to add to the plugin.   
      */
-    void addHighlightIfPossible(ImportPlugin* parser);
-       
-    /*!
-     *  Adds expression parser to a given import plugin if possible.
-     *
-     *      @param [in] parser   The plugin to add expression parser to.     
-     */
-    void addExpressionParserIfPossible(ImportPlugin* importPlugin);
-
+    void addHighlightIfPossible(ImportPlugin* parser, Highlighter* highlighter) const;
+   
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    //! The highlighter used by all import plugins.
-    Highlighter* highlighter_;
 
     //! The expression parser to use for verilog expressions.
     QSharedPointer<ExpressionParser> expressionParser_;
@@ -169,9 +220,14 @@ private:
     //! All loaded import plugins.
     QList<ImportPlugin*> ImportPlugins_;
 
+    //! All loaded analyzer plugins.
+    QList<ISourceAnalyzerPlugin*> analyzerPlugins_;
+
     //! The parameter finder.
-    //QSharedPointer<ParameterFinder> parameterFinder_;
     QSharedPointer <ComponentParameterFinder> parameterFinder_;
+
+    //! The container widget for source display widgets.
+    QTabWidget* displayTabs_;
 };
 
 #endif // IMPORTRUNNER_H

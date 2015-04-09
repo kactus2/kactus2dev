@@ -17,20 +17,17 @@
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
-#include <IPXACTmodels/component.h>
-
-#include <QWidget>
-#include <QSharedPointer>
-#include <QString>
-
-#include <QTextEdit>
 #include <QPushButton>
-#include <QPlainTextEdit>
+#include <QSharedPointer>
 #include <QSplitter>
+#include <QString>
+#include <QTabWidget>
+#include <QTextEdit>
+#include <QWidget>
 
+class Component;
 class FileSelector;
 class ImportRunner;
-class ImportHighlighter;
 class LibraryInterface;
 class ModelParameterEditor;
 class ModelParameterEditorAdapter;
@@ -126,11 +123,6 @@ private:
 	ImportEditor& operator=(const ImportEditor& other);
 
     /*!
-     *  Sets the formatting of text in the source file displayer.
-     */
-    void setSourceDisplayFormatting();
-
-    /*!
      *  Finds the file extensions for given file types.
      *
      *      @param [in] possibleFileTypes   The file types whose extensions to find.
@@ -138,12 +130,6 @@ private:
      *      @return The file extensions for the file types.
      */
     QStringList fileExtensionsForTypes(QStringList possibleFileTypes) const;
-
-
-    /*!
-     *  Loads a selected file to the source file display.
-     */
-    void loadFileToDisplay();
 
     /*!
      *  Gets the absolute path to the selected source file.
@@ -186,9 +172,6 @@ private:
 	//! Editor for the imported ports.
 	PortsEditor* portEditor_;
 
-    //! Display widget for selected source file content.
-    QPlainTextEdit* sourceDisplayer_;
-
     //! Used to select the top-level source file.
     FileSelector* fileSelector_;
 
@@ -201,8 +184,8 @@ private:
     //! Adapter for model parameter editor to be used in plugins.
     ModelParameterEditorAdapter modelParameterAdapter_;
 
-    //! Highlighter for source display.
-    ImportHighlighter* highlighter_;
+    //! Tabs for displaying imported source files.
+    QTabWidget* sourceDisplayTabs_;
 
     //! Runner for all available import parsers.
     ImportRunner* runner_;

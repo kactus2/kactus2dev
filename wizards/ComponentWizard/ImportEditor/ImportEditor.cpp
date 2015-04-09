@@ -14,26 +14,22 @@
 
 #include <common/widgets/FileSelector/fileselector.h>
 
-#include <editors/ComponentEditor/parameters/parameterseditor.h>
-#include <editors/ComponentEditor/modelParameters/modelparametereditor.h>
-#include <editors/ComponentEditor/ports/portseditor.h>
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <library/LibraryManager/libraryhandler.h>
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <editors/ComponentEditor/modelParameters/modelparametereditor.h>
+#include <editors/ComponentEditor/parameters/parameterseditor.h>
+#include <editors/ComponentEditor/ports/portseditor.h>
 
 #include <wizards/ComponentWizard/ImportRunner.h>
-#include <wizards/ComponentWizard/ImportEditor/ImportHighlighter.h>
+
+#include <IPXACTmodels/component.h>
 
 #include <QApplication>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QLabel>
-#include <QFileDialog>
 #include <QDesktopServices>
-#include <QMessageBox>
-#include <QScrollBar>
-#include <QTextStream>
-#include <QTextBlock>
 
 //-----------------------------------------------------------------------------
 // Function: ImportEditor::ImportEditor()
@@ -51,25 +47,21 @@ ImportEditor::ImportEditor(QSharedPointer<Component> component, LibraryInterface
     modelParameterEditor_(new ModelParameterEditor(importComponent_, handler, parameterFinder, expressionFormatter,
         &splitter_)),
     portEditor_(new PortsEditor(importComponent_, handler, parameterFinder, expressionFormatter, &splitter_)),
-    sourceDisplayer_(new QPlainTextEdit(this)),
     fileSelector_(new FileSelector(component, this)),
     editButton_(new QPushButton(tr("Open editor"), this)),
     refreshButton_(new QPushButton(QIcon(":/icons/common/graphics/refresh.png"), "", this)),
     modelParameterAdapter_(modelParameterEditor_),
-    highlighter_(new ImportHighlighter(sourceDisplayer_, this)),
-    runner_(new ImportRunner(parameterFinder, this)),
+    sourceDisplayTabs_(new QTabWidget(this)),
+    runner_(new ImportRunner(parameterFinder, sourceDisplayTabs_, this)),
     messageBox_(new QLabel(this))
 {
 	// CSV import/export is disabled in the wizard.
 	modelParameterEditor_->setAllowImportExport(false);
 	portEditor_->setAllowImportExport(false);
 
-    runner_->setHighlighter(highlighter_);
     runner_->setVerilogExpressionParser(QSharedPointer<ExpressionParser>(new IPXactSystemVerilogParser(parameterFinder)));
     runner_->setModelParameterVisualizer(&modelParameterAdapter_);
-    runner_->loadImportPlugins(pluginMgr);
-
-    setSourceDisplayFormatting();
+    runner_->loadPlugins(pluginMgr);
 
     connect(parameterEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
@@ -164,32 +156,14 @@ void ImportEditor::onOpenEditor()
 //-----------------------------------------------------------------------------
 void ImportEditor::onRefresh() 
 {
-    loadFileToDisplay();
-    importComponent_ = runner_->import(selectedSourceFile_, componentXmlPath_, component_);
+    importComponent_ = runner_->run(selectedSourceFile_, componentXmlPath_, component_);
 
-    scrollSourceDisplayToFirstHighlight();
     parameterEditor_->setComponent(importComponent_);
     portEditor_->setComponent(importComponent_);
     modelParameterEditor_->setComponent(importComponent_);
 
     emit componentChanged(importComponent_);
     emit contentChanged();
-}
-
-//-----------------------------------------------------------------------------
-// Function: ImportEditor::setSourceEditorFormatting()
-//-----------------------------------------------------------------------------
-void ImportEditor::setSourceDisplayFormatting()
-{
-    QFont font("Courier");
-    font.setStyleHint(QFont::Monospace);
-    font.setFixedPitch(true);
-    font.setPointSize(9);
-
-    sourceDisplayer_->setFont(font);
-    sourceDisplayer_->setTabStopWidth(4 * fontMetrics().width(' '));
-    sourceDisplayer_->setReadOnly(true);
-    sourceDisplayer_->setCursorWidth(0);
 }
 
 //-----------------------------------------------------------------------------
@@ -231,55 +205,12 @@ QString ImportEditor::selectedFileAbsolutePath() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: ImportEditor::loadFileToDisplay()
-//-----------------------------------------------------------------------------
-void ImportEditor::loadFileToDisplay()
-{
-    if (selectedSourceFile_.isEmpty())
-    {
-        sourceDisplayer_->setPlainText(QString());
-        return;
-    }
-
-    QFile importFile(selectedFileAbsolutePath());
-    if (!importFile.open(QIODevice::ReadOnly))
-    {
-        QMessageBox::information(0, "Error ", importFile.errorString() + ": " + selectedFileAbsolutePath());
-        return;
-    }
-
-    QTextStream stream(&importFile);
-    sourceDisplayer_->setPlainText(stream.readAll().replace("\r\n", "\n"));       
-    importFile.close();   
-}
-
-//-----------------------------------------------------------------------------
-// Function: ImportEditor::scrollToFirstHighlight()
-//-----------------------------------------------------------------------------
-void ImportEditor::scrollSourceDisplayToFirstHighlight() const
-{
-    QTextCursor cursor = sourceDisplayer_->textCursor();
-    cursor.movePosition(QTextCursor::Start);
-    QTextCharFormat initialFormat = cursor.charFormat();
-
-    while (cursor.movePosition(QTextCursor::NextBlock) && cursor.charFormat() == initialFormat)
-    {
-    }
-
-    if (!cursor.atEnd())
-    {
-        int row = cursor.block().firstLineNumber();
-        sourceDisplayer_->verticalScrollBar()->setValue(row);
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: ImportEditor::setupLayout()
 //-----------------------------------------------------------------------------
 void ImportEditor::setupLayout()
 {
     // Make the splitter handles visible by creating lines. Handle 0 is always invisible.
-    const int handles = 3;
+    /*const int handles = 4;
     for ( int i = 1; i < handles; i++)
     {
         QSplitterHandle* handle = splitter_.handle(i);
@@ -292,7 +223,9 @@ void ImportEditor::setupLayout()
         line->setFrameShape(QFrame::HLine);
         line->setFrameShadow(QFrame::Sunken);
         layout->addWidget(line);
-    }
+    }*/
+
+    sourceDisplayTabs_->setMinimumHeight(300);
 
 	QVBoxLayout* topLayout = new QVBoxLayout(this);    
     topLayout->addWidget(&splitter_);
@@ -312,7 +245,7 @@ void ImportEditor::setupLayout()
     selectorLayout->addWidget(refreshButton_);    
 
     sourceLayout->addLayout(selectorLayout);
-    sourceLayout->addWidget(sourceDisplayer_);
+    sourceLayout->addWidget(sourceDisplayTabs_);
 
     splitter_.addWidget(sourceWidget);
     splitter_.addWidget(parameterEditor_);

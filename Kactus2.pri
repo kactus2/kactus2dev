@@ -612,6 +612,8 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
     ./kactusGenerators/quartusGenerator/quartusgenerator.h \
+    ./wizards/common/ParameterComparator/ParameterComparator.h \
+    ./Plugins/PluginSystem/ImportPlugin/IncludeImportPlugin.h \
     ./editors/ComponentEditor/treeStructure/SingleRemapStateItem.h \
     ./editors/ComponentEditor/treeStructure/RemapStatesItem.h \
     ./editors/ComponentEditor/remapStates/RemapStatesEditor.h \

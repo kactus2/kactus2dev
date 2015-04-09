@@ -72,7 +72,9 @@ int ParametersModel::columnCount(QModelIndex const& parent) const
 //-----------------------------------------------------------------------------
 void ParametersModel::setParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > parameters)
 {
+    beginResetModel();
     parameters_ = parameters;
+    endResetModel();
 }
 
 //-----------------------------------------------------------------------------
