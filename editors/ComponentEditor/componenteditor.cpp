@@ -252,7 +252,8 @@ QStringList ComponentEditor::getHwItemNames()
 
 	itemNames << "File_sets" << "Choices" << "Model_parameters" << "Parameters" << "Memory_maps" << 
 		"Address_spaces" << "Views" << "Software_views" << "System_views" << "Ports" << "Bus_interfaces" << 
-		"Channels" << "Cpus" << "Other_clock_drivers" << "COM_interfaces" << "Software_properties";
+		"Channels" << "Remap_states" << "Cpus" << "Other_clock_drivers" << "COM_interfaces" <<
+        "Software_properties";
 
 	return itemNames;
 }

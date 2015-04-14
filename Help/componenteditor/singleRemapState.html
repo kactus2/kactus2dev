@@ -11,11 +11,14 @@
       Remap state editor is used to edit the details of a single remap state.
       A <i>Remap state</i> defines a conditional remap state where each state
       is conditioned by a remap port specified with a <b>Remap Port</b> element.
-      A <i>remap state</i> element does not specify remapping addresses.
+      A <i>remap state</i> element does not specify remapping addresses. The
+      remapping addresses are defined by the <b>memory remap</b> element (of a
+      <b>memory map</b> element), and its state attribute referes to the <b>remap
+      state</b> element's name.
     </p>
     <p>
-      A remap state contains a name group, defining any descriptive text for
-      the containing element. The name group contains the following elements:
+      A remap state contains a name group, defining any descriptive text for the
+      containing element. The name group contains the following elements:
     </p>
     <ul>
       <li><b>Name</b> identifies the containing element.</li>
