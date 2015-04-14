@@ -853,6 +853,10 @@ void Design::parseVendorExtensions(QDomNode &node)
         {
             parseKactus2Attributes(childNode);
         }
+        else if (childNode.nodeName() == "kactus2:note")
+        {
+            vendorExtensions_.append(QSharedPointer<VendorExtension>(new GenericVendorExtension(childNode)));
+        }
     }
 }
 
