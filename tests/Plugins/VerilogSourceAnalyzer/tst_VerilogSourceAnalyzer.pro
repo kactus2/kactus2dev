@@ -13,6 +13,8 @@ TEMPLATE = app
 
 TARGET = tst_VerilogSourceAnalyzer
 
+DEFINES += VERILOGSOURCEANALYZER_LIB
+
 QT += core xml gui testlib widgets
 CONFIG += testcase console
 
