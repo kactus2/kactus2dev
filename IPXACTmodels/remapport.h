@@ -36,6 +36,11 @@ public:
 	 */
 	RemapPort(QDomNode &remapPortNode);
 
+    /*!
+     *  The default constructor.
+     */
+    RemapPort();
+
 	//! \brief Copy constructor
 	RemapPort(const RemapPort &other);
 

@@ -13,6 +13,7 @@
 #define SINGLEREMAPSTATEEDITOR_H
 
 #include <editors/ComponentEditor/itemeditor.h>
+#include <editors/ComponentEditor/remapStates/RemapConditionEditor.h>
 
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
 
@@ -33,10 +34,16 @@ public:
 	 *      @param [in] component               Pointer to the component that contains the view.
 	 *      @param [in] remapState              Pointer to the remap state being edited.
 	 *      @param [in] libHandler              Pointer to the instance that manages the library.
+     *      @param [in] parameterFinder         The finder for the parameter references.
+     *      @param [in] expressionFormatter     Changes the referenced ids to parameter names.
 	 *      @param [in] parent                  Pointer to the owner of this editor.
 	 */
-    SingleRemapStateEditor(QSharedPointer<Component> component, QSharedPointer<RemapState> remapState,
-        LibraryInterface* libHandler, QWidget* parent = 0);
+    SingleRemapStateEditor(QSharedPointer<Component> component,
+        QSharedPointer<RemapState> remapState,
+        LibraryInterface* libHandler,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QWidget* parent = 0);
 
 	//! The destructor
     virtual ~SingleRemapStateEditor();
@@ -52,6 +59,15 @@ public:
 	 *  Reload the information from the model to the editor.
 	 */
 	virtual void refresh();
+
+protected:
+    
+    /*!
+     *  The show event for this editor.
+     *
+     *      @param [in] event   The show event.
+     */
+    virtual void showEvent(QShowEvent * event);
 
 private:
 
@@ -71,6 +87,9 @@ private:
 
 	//! Editor to set the name, display name and description of the view.
 	NameGroupEditor nameEditor_;
+
+    //! The editor for the remap condition.
+    RemapConditionEditor* remapConditionEditor_;
 };
 
 #endif // SINGLEREMAPSTATEEDITOR_H

@@ -12,9 +12,11 @@
 #ifndef REMAPSTATESEDITOR_H
 #define REMAPSTATESEDITOR_H
 
-#include <common/views/EditableTableView/editabletableview.h>
-#include <editors/ComponentEditor/itemeditor.h>
 #include "RemapStatesModel.h"
+
+#include <common/views/EditableTableView/editabletableview.h>
+
+#include <editors/ComponentEditor/itemeditor.h>
 
 class LibraryInterface;
 

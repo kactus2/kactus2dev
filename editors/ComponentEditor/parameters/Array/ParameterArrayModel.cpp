@@ -21,7 +21,8 @@
 //-----------------------------------------------------------------------------
 ParameterArrayModel::ParameterArrayModel(int sizeOfArray, QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QSharedPointer<Choice> selectedChoice, QObject* parent /* = 0 */):
+    QSharedPointer<Choice> selectedChoice, QColor valueBackGroundColor, int arrayStartIndex,
+    QObject* parent /* = 0 */):
 ReferencingTableModel(parameterFinder, parent),
 ParameterizableTable(parameterFinder),
 sizeOfArray_(sizeOfArray),
@@ -29,7 +30,9 @@ expressionformatter_(expressionFormatter),
 arrayValues_(),
 selectedChoice_(selectedChoice),
 validator_(new ParameterValidator2014(expressionParser, parameterFinder)),
-parameterType_()
+parameterType_(),
+valueBackGroundColor_(valueBackGroundColor),
+arrayStartIndex_(arrayStartIndex)
 {
     QString repeater = ",";
     QString newArray = repeater.repeated(sizeOfArray_ - 1);
@@ -155,7 +158,7 @@ QVariant ParameterArrayModel::data(const QModelIndex &index, int role) const
     {
         if (index.column() == ArrayColumns::VALUE)
         {
-            return QColor("LemonChiffon");
+            return valueBackGroundColor_;
         }
         else
         {
@@ -275,7 +278,6 @@ bool ParameterArrayModel::validateColumnForParameter(QModelIndex const& index) c
 {
     if (index.column() == ArrayColumns::VALUE)
     {
-        //return isValuePlainOrExpression(arrayValues_.at(index.row()));
         return validator_->hasValidValueForType(arrayValues_.at(index.row()), parameterType_);
     }
 
@@ -289,7 +291,7 @@ QVariant ParameterArrayModel::valueForIndex(QModelIndex const& index) const
 {
     if (index.column() == ArrayColumns::ARRAY_INDEX)
     {
-        return index.row();
+        return index.row() + arrayStartIndex_;
     }
     else if (index.column() == ArrayColumns::VALUE)
     {

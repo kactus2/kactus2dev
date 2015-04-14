@@ -31,11 +31,17 @@ public:
 	 *      @param [in] model                   Pointer to the model that owns the items.
 	 *      @param [in] libHandler              Pointer to the instance that manages the library.
 	 *      @param [in] component               Pointer to the component being edited.
+     *      @param [in] referenceCounter        The counter for the references.
+     *      @param [in] parameterFinder         Finds the referenced parameters.
+     *      @param [in] expressionFormatter     Changes the referenced ids to parameter names.
 	 *      @param [in] parent                  Pointer to the parent item.
 	 */
     RemapStatesItem(ComponentEditorTreeModel* model,
         LibraryInterface* libHandler,
         QSharedPointer<Component> component,
+        QSharedPointer<ReferenceCounter> referenceCounter,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionFormatter> expressionFormatter,
         ComponentEditorItem* parent);
 
     /*!

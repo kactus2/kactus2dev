@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+    <link href="../style.css" rel="Stylesheet" type="text/css">
+    <title>Single remap state editor</title>
+  </head>
+  <body>
+    <h2>Single remap state editor</h2>
+    <p>
+      Remap state editor is used to edit the details of a single remap state.
+      A <i>Remap state</i> defines a conditional remap state where each state
+      is conditioned by a remap port specified with a <b>Remap Port</b> element.
+      A <i>remap state</i> element does not specify remapping addresses.
+    </p>
+    <p>
+      A remap state contains a name group, defining any descriptive text for
+      the containing element. The name group contains the following elements:
+    </p>
+    <ul>
+      <li><b>Name</b> identifies the containing element.</li>
+      <li><b>Display name</b> allows a short descriptive text to be associated
+      with the containing element.</li>
+      <li><b>Description</b> allows a textual description of the containing element.
+      </li>
+    </ul>
+    <p>
+      In addition to the name group, a remap state contains a remap state condition,
+      which is specified with <b>remap port</b> elements. These elements make up the
+      condition for this remap state. All elements should be true for the remap state to
+      be enabled.
+    </p>
+    <p>
+      <b>Port</b> contains the names of the selected remap ports. These remap ports are
+      selected among the components ports. No port can be selected twice.
+    </p>
+    <p>
+      The <b>Left bound</b> column contains the left bound value of the selected port.
+      This value cannot be given, as it is read using the selected port. Together with
+      the value of the right bound column, this value is used to calculate the width of the port.
+    </p>
+    <p>
+      The <b>Right bound</b> column contains the right bound value of the selected port.
+      This value cannot be given, as it is read using the selected port. Together with
+      the value of the left bound column, this value is used to calculate the width of the port.
+    </p>
+    <p>
+      <b>Value</b> contains the value necessary so the specified port activates the
+      <i>remap state</i>. If the port width is one, the value can be given as a plain value.
+      If the port has a longer width than one, the value must be given as an array,
+      where every index matches to the index of the port.
+    </p>
+  </body>
+</html>

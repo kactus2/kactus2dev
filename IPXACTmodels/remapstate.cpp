@@ -19,7 +19,7 @@
 //-----------------------------------------------------------------------------
 RemapState::RemapState(QDomNode &remapNode):
 nameGroup_(remapNode),
-remapPorts_()
+remapPorts_(new QList<QSharedPointer<RemapPort> >())
 {
 	for (int i = 0; i < remapNode.childNodes().count(); ++i) {
 
@@ -30,7 +30,7 @@ remapPorts_()
 			// go through all the remapPorts
 			for (int j = 0; j < tempNode.childNodes().count(); ++j) {
 				QDomNode remapPortNode = tempNode.childNodes().at(j);
-				remapPorts_.append(QSharedPointer<RemapPort>(
+				remapPorts_->append(QSharedPointer<RemapPort>(
 						new RemapPort(remapPortNode)));
 			}
 		}
@@ -42,7 +42,7 @@ remapPorts_()
 //-----------------------------------------------------------------------------
 RemapState::RemapState():
 nameGroup_(),
-remapPorts_()
+remapPorts_(new QList<QSharedPointer<RemapPort> >())
 {
 
 }
@@ -52,13 +52,13 @@ remapPorts_()
 //-----------------------------------------------------------------------------
 RemapState::RemapState( const RemapState &other ):
 nameGroup_(other.nameGroup_),
-remapPorts_()
+remapPorts_(new QList<QSharedPointer<RemapPort> > ())
 {
-	foreach (QSharedPointer<RemapPort> remapPort, other.remapPorts_) {
+	foreach (QSharedPointer<RemapPort> remapPort, *other.remapPorts_) {
 		if (remapPort) {
 			QSharedPointer<RemapPort> copy = QSharedPointer<RemapPort>(
 				new RemapPort(*remapPort.data()));
-			remapPorts_.append(copy);
+			remapPorts_->append(copy);
 		}
 	}
 }
@@ -72,13 +72,13 @@ RemapState & RemapState::operator=( const RemapState &other )
     {
         nameGroup_ = other.nameGroup_;
 
-		foreach (QSharedPointer<RemapPort> remapPort, other.remapPorts_)
+		foreach (QSharedPointer<RemapPort> remapPort, *other.remapPorts_)
         {
 			if (remapPort)
             {
 				QSharedPointer<RemapPort> copy = QSharedPointer<RemapPort>(
 					new RemapPort(*remapPort.data()));
-				remapPorts_.append(copy);
+				remapPorts_->append(copy);
 			}
 		}
 	}
@@ -90,7 +90,7 @@ RemapState & RemapState::operator=( const RemapState &other )
 //-----------------------------------------------------------------------------
 RemapState::~RemapState()
 {
-	remapPorts_.clear();
+	remapPorts_->clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -102,13 +102,13 @@ void RemapState::write(QXmlStreamWriter& writer)
 
 	nameGroup_.write(writer);
 
-	if (remapPorts_.size() != 0)
+	if (remapPorts_->size() != 0)
     {
 		writer.writeStartElement("spirit:remapPorts");
 
-		for (int i = 0; i < remapPorts_.size(); ++i)
+		for (int i = 0; i < remapPorts_->size(); ++i)
         {
-			remapPorts_.at(i)->write(writer);
+			remapPorts_->at(i)->write(writer);
 		}
 		writer.writeEndElement(); // spirit:remapPorts
 	}
@@ -132,7 +132,7 @@ bool RemapState::isValid( const QStringList& portNames,
 		valid = false;
 	}
 
-	foreach (QSharedPointer<RemapPort> remapPort, remapPorts_)
+	foreach (QSharedPointer<RemapPort> remapPort, *remapPorts_)
     {
 		if (!remapPort->isValid(portNames, errorList, QObject::tr("remap port %1").arg(nameGroup_.name())))
         {
@@ -153,7 +153,7 @@ bool RemapState::isValid( const QStringList& portNames ) const
 		return false;
 	}
 
-	foreach (QSharedPointer<RemapPort> remapPort, remapPorts_)
+	foreach (QSharedPointer<RemapPort> remapPort, *remapPorts_)
     {
 		if (!remapPort->isValid(portNames))
         {
@@ -164,21 +164,9 @@ bool RemapState::isValid( const QStringList& portNames ) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: remapstate::setRemapPorts()
-//-----------------------------------------------------------------------------
-void RemapState::setRemapPorts(const QList<QSharedPointer<RemapPort> > &remapPorts)
-{
-	// delete the old remap ports
-	remapPorts_.clear();
-
-	// save the new remap ports
-	remapPorts_ = remapPorts;
-}
-
-//-----------------------------------------------------------------------------
 // Function: remapstate::getRemapPorts()
 //-----------------------------------------------------------------------------
-const QList<QSharedPointer<RemapPort> >& RemapState::getRemapPorts()
+const QSharedPointer<QList<QSharedPointer<RemapPort> > > RemapState::getRemapPorts()
 {
 	return remapPorts_;
 }

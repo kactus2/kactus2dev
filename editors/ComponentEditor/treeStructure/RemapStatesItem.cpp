@@ -17,15 +17,21 @@
 //-----------------------------------------------------------------------------
 // Function: RemapStatesItem::RemapStatesItem()
 //-----------------------------------------------------------------------------
-RemapStatesItem::RemapStatesItem(ComponentEditorTreeModel* model,
-    LibraryInterface* libHandler, QSharedPointer<Component> component, ComponentEditorItem* parent):
+RemapStatesItem::RemapStatesItem(ComponentEditorTreeModel* model, LibraryInterface* libHandler,
+    QSharedPointer<Component> component, QSharedPointer<ReferenceCounter> referenceCounter,
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 remapStates_(component->getRemapStates())
 {
+    setParameterFinder(parameterFinder);
+    setExpressionFormatter(expressionFormatter);
+    setReferenceCounter(referenceCounter);
+
     foreach(QSharedPointer<RemapState> remapState, *remapStates_)
     {
         QSharedPointer<SingleRemapStateItem> singleRemapItem(new SingleRemapStateItem(remapState, model,
-            libHandler, component, this));
+            libHandler, component, referenceCounter, parameterFinder, expressionFormatter, this));
 
         childItems_.append(singleRemapItem);
     }
@@ -91,7 +97,7 @@ QString RemapStatesItem::getTooltip() const
 void RemapStatesItem::createChild(int index)
 {
     QSharedPointer<SingleRemapStateItem> remapItem(new SingleRemapStateItem(remapStates_->at(index), model_,
-        libHandler_, component_, this));
+        libHandler_, component_, referenceCounter_, parameterFinder_, expressionFormatter_, this));
 
     remapItem->setLocked(locked_);
 

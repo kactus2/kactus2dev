@@ -109,7 +109,7 @@ public:
 	 *
      *      @return List containing pointer to the remap port instances.
 	 */
-	const QList<QSharedPointer<RemapPort> >& getRemapPorts();
+	const QSharedPointer<QList<QSharedPointer<RemapPort> > > getRemapPorts();
 
     /*!
 	 *  Set the name for this remap state.
@@ -117,13 +117,6 @@ public:
 	 *      @param [in] name    The new name of the remap state.
 	 */
 	void setName(const QString &name);
-
-    /*!
-	 *  Set the remap ports for this remap state.
-	 *
-	 *      @param [in] remapPorts  A list containing pointers to the remap ports.
-	 */
-	void setRemapPorts(const QList<QSharedPointer<RemapPort> > &remapPorts);
 
     /*!
      *  Get the display name of the remap state.
@@ -180,7 +173,7 @@ private:
 	 * OPTIONAL
 	 * List of the remapPorts for this remap state.
 	 */
-	QList<QSharedPointer<RemapPort> > remapPorts_;
+	QSharedPointer<QList<QSharedPointer<RemapPort> > > remapPorts_;
 };
 
 #endif /* REMAPSTATE_H_ */

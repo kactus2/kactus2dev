@@ -68,6 +68,27 @@ QString ParameterizableTable::formattedValueFor(QString const& expression) const
     {
         return expression;
     }
+    else if (expression.contains('{') && expression.contains('}'))
+    {
+        QStringList arrayValues = expression.split(',');
+        arrayValues.first().remove('{');
+        arrayValues.last().remove('}');
+
+        ValueFormatter formatter;
+
+        QStringList newValues;
+
+        foreach (QString value, arrayValues)
+        {
+            newValues.append(formatter.format(expressionParser_->parseExpression(value),
+                expressionParser_->baseForExpression(value)));
+        }
+        newValues.first().prepend('{');
+        newValues.last().append('}');
+
+        QString newExpression = newValues.join(',');
+        return newExpression;
+    }
     else
     {
         return "n/a";

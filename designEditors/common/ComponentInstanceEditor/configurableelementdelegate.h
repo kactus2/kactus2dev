@@ -159,6 +159,16 @@ private:
     void createArrayEditor(QWidget* editor, QModelIndex const& index) const;
 
     /*!
+     *  Get the size of the array.
+     *
+     *      @param [in] arrayLeft   The left side of the array.
+     *      @param [in] arrayRight  The right side of the array.
+     *
+     *      @return The size of the array.
+     */
+    int getArraySize(int arrayLeft, int arrayRight) const;
+
+    /*!
      *  Repositions the editor to better use the available space. The editor is then resized to best cover the
      *  usable area.
      *

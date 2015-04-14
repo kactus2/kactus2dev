@@ -30,6 +30,7 @@
 #include <QPainter>
 #include <QScrollArea>
 #include <QSortFilterProxyModel>
+#include <QColor>
 
 //-----------------------------------------------------------------------------
 // Function: ParameterDelegate::ParameterDelegate()
@@ -130,6 +131,12 @@ void ParameterDelegate::setEditorData(QWidget* editor, QModelIndex const& index)
         QModelIndex arrayRightIndex = index.sibling(index.row(), arrayRightColumn());
         int arrayRightValue = arrayRightIndex.data(Qt::ToolTipRole).toInt();
 
+        int arrayStartIndex = arrayLeftValue;
+        if (arrayRightValue < arrayLeftValue)
+        {
+            arrayStartIndex = arrayRightValue;
+        }
+
         int arraySize = getArraySize(arrayLeftValue, arrayRightValue);
 
         QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(
@@ -138,7 +145,7 @@ void ParameterDelegate::setEditorData(QWidget* editor, QModelIndex const& index)
         QSharedPointer<Choice> selectedChoice = findChoice(index);
 
         ParameterArrayModel* model = new ParameterArrayModel(arraySize, expressionParser, getParameterFinder(),
-            expressionFormatter_, selectedChoice, view);
+            expressionFormatter_, selectedChoice, QColor("LemonChiffon"), arrayRightValue, view);
 
         QModelIndex valueIndex = index.sibling(index.row(), valueColumn());
         QString parameterValue = valueIndex.data(Qt::EditRole).toString();

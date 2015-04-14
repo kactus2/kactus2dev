@@ -34,6 +34,17 @@ portNameRef_(QString()), portIndex_(-1) {
 	value_ = remapPortNode.childNodes().at(0).nodeValue();
 }
 
+//-----------------------------------------------------------------------------
+// Function: remapport::RemapPort()
+//-----------------------------------------------------------------------------
+RemapPort::RemapPort():
+value_(),
+portNameRef_(),
+portIndex_(-1)
+{
+
+}
+
 RemapPort::RemapPort( const RemapPort &other ):
 value_(other.value_),
 portNameRef_(other.portNameRef_),

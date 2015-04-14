@@ -17,11 +17,15 @@
 // Function: SingleRemapStateItem::SingleRemapStateItem()
 //-----------------------------------------------------------------------------
 SingleRemapStateItem::SingleRemapStateItem(QSharedPointer<RemapState> remapState, ComponentEditorTreeModel* model,
-    LibraryInterface* libHandler, QSharedPointer<Component> component, ComponentEditorItem* parent):
+    LibraryInterface* libHandler, QSharedPointer<Component> component,
+    QSharedPointer<ReferenceCounter> referenceCounter, QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter, ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 remapState_(remapState)
 {
-
+    setParameterFinder(parameterFinder);
+    setExpressionFormatter(expressionFormatter);
+    setReferenceCounter(referenceCounter);
 }
 
 //-----------------------------------------------------------------------------
@@ -63,12 +67,16 @@ ItemEditor* SingleRemapStateItem::editor()
 {
     if (!editor_)
     {
-        editor_ = new SingleRemapStateEditor(component_, remapState_, libHandler_);
+        editor_ = new SingleRemapStateEditor(component_, remapState_, libHandler_, parameterFinder_,
+            expressionFormatter_);
         editor_->setProtection(locked_);
 
         connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(errorMessage(const QString&)),
+            this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
         connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
             this, SIGNAL(helpUrlRequested(QString const&)), Qt::UniqueConnection);
+        connectItemEditorToReferenceCounter();
     }
 
     return editor_;

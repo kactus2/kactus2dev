@@ -20,6 +20,7 @@
 
 #include <QPen>
 #include <QPainter>
+#include <QColor>
 
 //-----------------------------------------------------------------------------
 // Function: configurableelementdelegate::ConfigurableElemenetDelegate()
@@ -166,17 +167,17 @@ int ConfigurableElementDelegate::valueColumn() const
 //-----------------------------------------------------------------------------
 bool ConfigurableElementDelegate::valueIsArray(QModelIndex const& index) const
 {
-    QModelIndex arraySizeIndex = index.sibling(index.row(), ConfigurableElementsColumns::ARRAY_SIZE);
-    int arraySize = arraySizeIndex.data(Qt::DisplayRole).toInt();
+    QModelIndex arrayLeftIndex = index.sibling(index.row(), ConfigurableElementsColumns::ARRAY_LEFT);
+    bool arrayLeftIsOk = true;
+    int arrayLeft = arrayLeftIndex.data(Qt::DisplayRole).toInt(&arrayLeftIsOk);
 
-    if (arraySize > 0)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    QModelIndex arrayRightIndex = index.sibling(index.row(), ConfigurableElementsColumns::ARRAY_RIGHT);
+    bool arrayRightIsOk = true;
+    int arrayRight = arrayRightIndex.data(Qt::DisplayRole).toInt(&arrayRightIsOk);
+
+    int arraySize = getArraySize(arrayLeft, arrayRight);
+
+    return arrayLeftIsOk && arrayRightIsOk && arraySize > 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -199,8 +200,12 @@ void ConfigurableElementDelegate::updateEditorGeometry(QWidget *editor, const QS
 void ConfigurableElementDelegate::repositionAndResizeEditor(QWidget* editor, QStyleOptionViewItem const& option,
     QModelIndex const& index) const
 {
-    QModelIndex arraySizeIndex = index.sibling(index.row(), ConfigurableElementsColumns::ARRAY_SIZE);
-    int arraySize = arraySizeIndex.data(Qt::DisplayRole).toInt();
+    QModelIndex arrayLeftIndex = index.sibling(index.row(), ConfigurableElementsColumns::ARRAY_LEFT);
+    int arrayLeft = arrayLeftIndex.data(Qt::DisplayRole).toInt();
+    QModelIndex arrayRightIndex = index.sibling(index.row(), ConfigurableElementsColumns::ARRAY_RIGHT);
+    int arrayRight = arrayRightIndex.data(Qt::DisplayRole).toInt();
+
+    int arraySize = getArraySize(arrayLeft, arrayRight);
     int editorMinimumSize = 24 * (arraySize + 1);
 
     QPoint nameColumnTopRight = option.rect.topLeft();
@@ -240,13 +245,24 @@ void ConfigurableElementDelegate::repositionAndResizeEditor(QWidget* editor, QSt
 void ConfigurableElementDelegate::createArrayEditor(QWidget* editor, QModelIndex const& index) const
 {
     ArrayView* view = dynamic_cast<ArrayView*>(dynamic_cast<QScrollArea*>(editor)->widget());
-    QModelIndex arraySizeIndex = index.sibling(index.row(), ConfigurableElementsColumns::ARRAY_SIZE);
-    int arraySize = arraySizeIndex.data(Qt::DisplayRole).toInt();
+
+    QModelIndex arrayLeftIndex = index.sibling(index.row(), ConfigurableElementsColumns::ARRAY_LEFT);
+    int arrayLeft = arrayLeftIndex.data(Qt::DisplayRole).toInt();
+    QModelIndex arrayRightIndex = index.sibling(index.row(), ConfigurableElementsColumns::ARRAY_RIGHT);
+    int arrayRight = arrayRightIndex.data(Qt::DisplayRole).toInt();
+
+    int arraySize = getArraySize(arrayLeft, arrayRight);
+
+    int arrayStartIndex = arrayLeft;
+    if (arrayRight < arrayLeft)
+    {
+        arrayStartIndex = arrayRight;
+    }
 
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(getParameterFinder()));
     QSharedPointer<Choice> selectedChoice = findChoice(index);
     ParameterArrayModel* model = new ParameterArrayModel(arraySize, expressionParser, getParameterFinder(),
-        expressionFormatter_, selectedChoice, view);
+        expressionFormatter_, selectedChoice, QColor("LemonChiffon"), arrayStartIndex, view);
     
     QModelIndex valueIndex = index.sibling(index.row(), valueColumn());
     QString parameterValue = valueIndex.data(Qt::EditRole).toString();
@@ -268,6 +284,14 @@ void ConfigurableElementDelegate::createArrayEditor(QWidget* editor, QModelIndex
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
     connect(view->itemDelegate(), SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+}
+
+//-----------------------------------------------------------------------------
+// Function: configurableelementdelegate::getArraySize()
+//-----------------------------------------------------------------------------
+int ConfigurableElementDelegate::getArraySize(int arrayLeft, int arrayRight) const
+{
+    return abs(arrayLeft - arrayRight) + 1;
 }
 
 //-----------------------------------------------------------------------------

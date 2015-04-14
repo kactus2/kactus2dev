@@ -778,7 +778,8 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createHWRootItem(QShare
         new ComponentEditorChannelsItem(&navigationModel_, libHandler_, component, hwRoot)));
 
     hwRoot->addChildItem(QSharedPointer<RemapStatesItem>(
-        new RemapStatesItem(&navigationModel_, libHandler_, component, hwRoot)));
+        new RemapStatesItem(&navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_,
+        expressionFormatter_, hwRoot)));
 
     hwRoot->addChildItem(QSharedPointer<ComponentEditorCpusItem>(
         new ComponentEditorCpusItem(&navigationModel_, libHandler_, component, hwRoot)));

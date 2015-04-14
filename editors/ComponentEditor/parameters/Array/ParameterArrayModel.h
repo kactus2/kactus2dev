@@ -23,6 +23,7 @@
 #include <QSharedPointer>
 #include <QList>
 #include <QStringList>
+#include <QColor>
 
 //-----------------------------------------------------------------------------
 // class ParameterArrayModel.
@@ -41,6 +42,8 @@ public:
      *      @param [in] parameterFinder         Pointer to parameter finder.
      *      @param [in] expressionFormatter     Pointer to the expression formatter.
      *      @param [in] selectedChoice          The currently active choice.
+     *      @param [in] valueBackgroundColor    The colour for the background of value column.
+     *      @param [in] arrayStartIndex         The starting index of the array.
      *      @param [in] parent                  The parent of this model.
      */
     ParameterArrayModel(int sizeOfArray,
@@ -48,6 +51,8 @@ public:
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QSharedPointer<Choice> selectedChoice,
+        QColor valueBackGroundColor,
+        int arrayStartIndex,
         QObject* parent = 0);
 
     /*!
@@ -229,5 +234,11 @@ private:
 
     //! The parameter type.
     QString parameterType_;
+
+    //! The colour for the background of the value column.
+    QColor valueBackGroundColor_;
+
+    //! The starting index of the array.
+    int arrayStartIndex_;
 };
 #endif // PARAMETERARRAYMODEL_H

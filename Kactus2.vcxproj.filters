@@ -4027,6 +4027,24 @@
     <ClCompile Include="GeneratedFiles\moc_SingleRemapStateEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\remapStates\RemapConditionModel.cpp">
+      <Filter>Source Files\editors\ComponentEditor\remapStates</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\remapStates\RemapConditionEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\remapStates</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_RemapConditionEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_RemapConditionDelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\remapStates\RemapConditionDelegate.cpp">
+      <Filter>Source Files\editors\ComponentEditor\remapStates</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_RemapConditionModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5550,6 +5568,15 @@
     <CustomBuild Include="editors\ComponentEditor\remapStates\SingleRemapStateEditor.h">
       <Filter>Header Files\editors\ComponentEditor\remapStates</Filter>
     </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\remapStates\RemapConditionModel.h">
+      <Filter>Header Files\editors\ComponentEditor\remapStates</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\remapStates\RemapConditionEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\remapStates</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\remapStates\RemapConditionDelegate.h">
+      <Filter>Header Files\editors\ComponentEditor\remapStates</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -5914,6 +5941,9 @@
     </ClInclude>
     <ClInclude Include="Plugins\PluginSystem\ImportPlugin\IncludeImportPlugin.h">
       <Filter>Header Files\Plugins\PluginSystem\ImportPlugin</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\remapStates\RemapConditionColumns.h">
+      <Filter>Header Files\editors\ComponentEditor\remapStates</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

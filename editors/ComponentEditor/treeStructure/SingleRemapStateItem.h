@@ -29,16 +29,22 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] remapState  Pointer to the selected remap state.
-     *      @param [in] model       Pointer to the model that owns the items.
-     *      @param [in] libHandler  Pointer to the instance that manages the library.
-     *      @param [in] component   Pointer to the component being edited.
-     *      @param [in] parent      Pointer to the parent item.
+     *      @param [in] remapState              Pointer to the selected remap state.
+     *      @param [in] model                   Pointer to the model that owns the items.
+     *      @param [in] libHandler              Pointer to the instance that manages the library.
+     *      @param [in] component               Pointer to the component being edited.
+     *      @param [in] referenceCounter        The counter for parameter references.
+     *      @param [in] parameterFinder         Finds the referenced parameter ids.
+     *      @param [in] expressionFormatter     Changes the referenced ids to parameter names.
+     *      @param [in] parent                  Pointer to the parent item.
      */
     SingleRemapStateItem(QSharedPointer<RemapState> remapState,
         ComponentEditorTreeModel* model,
         LibraryInterface* libHandler,
         QSharedPointer<Component> component,
+        QSharedPointer<ReferenceCounter> referenceCounter,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionFormatter> expressionFormatter,
         ComponentEditorItem* parent);
 
     /*!

@@ -61,7 +61,10 @@
 						<section title="Portmaps" ref="componenteditor/portmaps.html" />
 					</section>
 					<section title="Channels" ref="componenteditor/channels.html" />
-					<section title="CPUs" ref="componenteditor/cpus.html" />
+          <section title="Remap states" ref="componenteditor/remapStates.html">
+            <section title="Single remap state" ref="componenteditor/singleRemapState.html" />
+          </section>
+          <section title="CPUs" ref="componenteditor/cpus.html" />
 					<section title="Other clock drivers" ref="componenteditor/otherclockdrivers.html" />
 					<section title="COM interfaces" ref="componenteditor/cominterfaces.html">
 						<section title="COM interface" ref="componenteditor/cominterface.html" />
