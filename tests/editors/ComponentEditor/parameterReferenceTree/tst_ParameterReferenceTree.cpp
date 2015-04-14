@@ -26,6 +26,8 @@
 #include <IPXACTmodels/mirroredslaveinterface.h>
 #include <IPXACTmodels/field.h>
 #include <IPXACTmodels/addressspace.h>
+#include <IPXACTmodels/remapstate.h>
+#include <IPXACTmodels/remapport.h>
 
 #include <IPXACTmodels/kactusExtensions/ModuleParameter.h>
 
@@ -73,6 +75,8 @@ private slots:
     void testReferenceInBusInterfaceParameterAddsFourRows();
 
     void testReferenceInBusInterfaceMirroredSlaveAddsFourRows();
+
+    void testReferenceInRemapStateAddsFourRows();
 
     void testRerefencesInMultiplePlaces();
 
@@ -1404,6 +1408,76 @@ void tst_ParameterReferenceTree::testReferenceInBusInterfaceMirroredSlaveAddsFou
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_ParameterReferenceTree::testReferenceInRemapStateAddsFourRows()
+//-----------------------------------------------------------------------------
+void tst_ParameterReferenceTree::testReferenceInRemapStateAddsFourRows()
+{
+    QSharedPointer<Parameter> searched(new Parameter);
+    searched->setName("searchedParameter");
+    searched->setValueId("searched");
+
+    QSharedPointer<RemapPort> refRemapPort(new RemapPort);
+    refRemapPort->setPortNameRef("remapPort");
+    refRemapPort->setPortIndex(1);
+    refRemapPort->setValue("searched");
+
+    QSharedPointer<RemapPort> secondRemapPort(new RemapPort);
+    secondRemapPort->setPortNameRef("remapPort");
+    secondRemapPort->setPortIndex(3);
+    secondRemapPort->setValue("searched + 1");
+
+    QSharedPointer<RemapPort> thirdRemapPort(new RemapPort);
+    thirdRemapPort->setPortNameRef("otherRemapPort");
+    thirdRemapPort->setValue("searched * 2");
+
+    QSharedPointer<RemapState> refRemapState(new RemapState());
+    refRemapState->setName("refRemapState");
+    refRemapState->getRemapPorts()->append(refRemapPort);
+    refRemapState->getRemapPorts()->append(secondRemapPort);
+    refRemapState->getRemapPorts()->append(thirdRemapPort);
+
+    QSharedPointer<Component> component(new Component);
+    component->getParameters()->append(searched);
+    component->getRemapStates()->append(refRemapState);
+
+    QSharedPointer<ExpressionFormatter> formatter = createTestExpressionFormatter(component);
+
+    ParameterReferenceTree tree(component, formatter, searched->getValueId());
+
+    QCOMPARE(tree.topLevelItemCount(), 1);
+    QCOMPARE(tree.topLevelItem(0)->text(ParameterReferenceTree::ITEM_NAME), QString("Remap States"));
+    QCOMPARE(tree.topLevelItem(0)->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+    QCOMPARE(tree.topLevelItem(0)->childCount(), 1);
+
+    QCOMPARE(tree.topLevelItem(0)->child(0)->text(ParameterReferenceTree::ITEM_NAME), QString("refRemapState"));
+    QCOMPARE(tree.topLevelItem(0)->child(0)->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+    QCOMPARE(tree.topLevelItem(0)->child(0)->childCount(), 1);
+
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_NAME),
+        QString("Remap Ports"));
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->childCount(), 3);
+
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_NAME),
+        QString("remapPort[1]"));
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_EXPRESSION),
+        QString("searchedParameter"));
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->childCount(), 0);
+
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(1)->text(ParameterReferenceTree::ITEM_NAME),
+        QString("remapPort[3]"));
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(1)->text(ParameterReferenceTree::ITEM_EXPRESSION),
+        QString("searchedParameter + 1"));
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(1)->childCount(), 0);
+
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(2)->text(ParameterReferenceTree::ITEM_NAME),
+        QString("otherRemapPort"));
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(2)->text(ParameterReferenceTree::ITEM_EXPRESSION),
+        QString("searchedParameter * 2"));
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(2)->childCount(), 0);
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_ParameterReferenceTree::testReferencesInMultiplePlaces()
 //-----------------------------------------------------------------------------
 void tst_ParameterReferenceTree::testRerefencesInMultiplePlaces()
@@ -1480,6 +1554,15 @@ void tst_ParameterReferenceTree::testRerefencesInMultiplePlaces()
 
     addressSpaces.append(addressSpaceRef);
 
+    QSharedPointer<RemapPort> refRemapPort(new RemapPort);
+    refRemapPort->setPortNameRef("remapPort");
+    refRemapPort->setPortIndex(2);
+    refRemapPort->setValue("searched");
+
+    QSharedPointer<RemapState> refRemapState(new RemapState());
+    refRemapState->setName("refRemapState");
+    refRemapState->getRemapPorts()->append(refRemapPort);
+
     QSharedPointer<Component> component(new Component);
     component->getParameters()->append(componentParameters);
     component->setModel(componentModel);
@@ -1488,12 +1571,13 @@ void tst_ParameterReferenceTree::testRerefencesInMultiplePlaces()
     component->setMemoryMaps(memoryMaps);
     component->addBusInterface(refBusInterface);
     component->setAddressSpaces(addressSpaces);
+    component->getRemapStates()->append(refRemapState);
 
     QSharedPointer<ExpressionFormatter> expressionFormatter = createTestExpressionFormatter(component);
 
     ParameterReferenceTree tree(component, expressionFormatter, searched->getValueId());
 
-    QCOMPARE(tree.topLevelItemCount(), 7);
+    QCOMPARE(tree.topLevelItemCount(), 8);
 
     //! Test model parameters.
     QCOMPARE(tree.topLevelItem(0)->text(ParameterReferenceTree::ITEM_NAME), QString("Model Parameters"));
@@ -1701,6 +1785,26 @@ void tst_ParameterReferenceTree::testRerefencesInMultiplePlaces()
         expressionFormatter->formatReferringExpression(busIFParameter->getValue()));
 
     QCOMPARE(tree.topLevelItem(6)->child(0)->child(1)->child(0)->childCount(), 0);
+
+    //! Test remap states.
+    QCOMPARE(tree.topLevelItem(7)->text(ParameterReferenceTree::ITEM_NAME), QString("Remap States"));
+    QCOMPARE(tree.topLevelItem(7)->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+    QCOMPARE(tree.topLevelItem(7)->childCount(), 1);
+
+    QCOMPARE(tree.topLevelItem(7)->child(0)->text(ParameterReferenceTree::ITEM_NAME), QString("refRemapState"));
+    QCOMPARE(tree.topLevelItem(7)->child(0)->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+    QCOMPARE(tree.topLevelItem(7)->child(0)->childCount(), 1);
+
+    QCOMPARE(tree.topLevelItem(7)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_NAME),
+        QString("Remap Ports"));
+    QCOMPARE(tree.topLevelItem(7)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+    QCOMPARE(tree.topLevelItem(7)->child(0)->child(0)->childCount(), 1);
+
+    QCOMPARE(tree.topLevelItem(7)->child(0)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_NAME),
+        QString("remapPort[2]"));
+    QCOMPARE(tree.topLevelItem(7)->child(0)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_EXPRESSION),
+        QString("searchedParameter"));
+    QCOMPARE(tree.topLevelItem(7)->child(0)->child(0)->child(0)->childCount(), 0);
 }
 
 //-----------------------------------------------------------------------------

@@ -20,6 +20,8 @@
 #include <IPXACTmodels/memorymap.h>
 #include <IPXACTmodels/mirroredslaveinterface.h>
 #include <IPXACTmodels/addressspace.h>
+#include <IPXACTmodels/remapstate.h>
+#include <IPXACTmodels/remapport.h>
 
 #include <QTreeWidget>
 #include <QSharedPointer>
@@ -279,6 +281,36 @@ private:
      *      @param [in] mirrorSlave     Pointer to the mirrored slave interface.
      */
     bool mirroredSlaveRangeHasReference(QSharedPointer<MirroredSlaveInterface> mirrorSlave);
+
+    /*!
+     *  Check if a reference exists in remap states.
+     *
+     *      @return True, if a reference exists in remap states, false otherwise.
+     */
+    bool referenceExistsInRemapStates() const;
+
+    /*!
+     *  Check if a reference exists in a single remap state.
+     *
+     *      @param [in] remapState  Pointer to the remap state.
+     *
+     *      @return True, if a reference exists in a single remap state, false otherwise.
+     */
+    bool referenceExistsInSingleRemapState(QSharedPointer<RemapState> remapState) const;
+
+    /*!
+     *  Check if a reference exists in a single remap port.
+     *
+     *      @param [in] remapPort   Pointer to the remap port.
+     *
+     *      @return True, if a reference exists in a single remap port, flase otherwise.
+     */
+    bool referenceExistsInSingleRemapPort(QSharedPointer<RemapPort> remapPort) const;
+
+    /*!
+     *  Create references for remap states.
+     */
+    void createReferencesForRemapStates();
 
     /*!
      *  Create a tree widget item to the top of the tree.

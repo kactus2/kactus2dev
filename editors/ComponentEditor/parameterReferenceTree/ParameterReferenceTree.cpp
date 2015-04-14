@@ -94,6 +94,11 @@ void ParameterReferenceTree::setupTree()
             createReferencesForBusInterfaces();
         }
 
+        if (referenceExistsInRemapStates())
+        {
+            createReferencesForRemapStates();
+        }
+
         if (topLevelItemCount() == 0)
         {
             createTopItem("No references found.");
@@ -682,6 +687,86 @@ void ParameterReferenceTree::createReferencesForBusInterfaces()
             if (referenceExistsInParameters(busInterface->getParameters()))
             {
                 createParameterReferences(busInterface->getParameters(), busInterfaceItem);
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterReferenceTree::referenceExistsInRemapStates()
+//-----------------------------------------------------------------------------
+bool ParameterReferenceTree::referenceExistsInRemapStates() const
+{
+    foreach(QSharedPointer<RemapState> remapState, *component_->getRemapStates())
+    {
+        if (referenceExistsInSingleRemapState(remapState))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterReferenceTree::referenceExistsInSingleRemapState()
+//-----------------------------------------------------------------------------
+bool ParameterReferenceTree::referenceExistsInSingleRemapState(QSharedPointer<RemapState> remapState) const
+{
+    foreach (QSharedPointer<RemapPort> remapPort, *remapState->getRemapPorts())
+    {
+        if (referenceExistsInSingleRemapPort(remapPort))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterReferenceTree::referenceExistsInSingleRemapPort()
+//-----------------------------------------------------------------------------
+bool ParameterReferenceTree::referenceExistsInSingleRemapPort(QSharedPointer<RemapPort> remapPort) const
+{
+    if (remapPort->getValue().contains(targetID_))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterReferenceTree::createReferencesForRemapStates()
+//-----------------------------------------------------------------------------
+void ParameterReferenceTree::createReferencesForRemapStates()
+{
+    QTreeWidgetItem* topRemapStatesItem = createTopItem("Remap States");
+
+    foreach (QSharedPointer<RemapState> remapState, *component_->getRemapStates())
+    {
+        if (referenceExistsInSingleRemapState(remapState))
+        {
+            QTreeWidgetItem* remapStateItem = createMiddleItem(remapState->getName(), topRemapStatesItem);
+
+            QTreeWidgetItem* remapPortsItem = createMiddleItem("Remap Ports", remapStateItem);
+            colourItemGrey(remapPortsItem);
+
+            foreach (QSharedPointer<RemapPort> remapPort, *remapState->getRemapPorts())
+            {
+                if (referenceExistsInSingleRemapPort(remapPort))
+                {
+                    QString itemName = remapPort->getPortNameRef();
+
+                    if (remapPort->getPortIndex() >= 0)
+                    {
+                        itemName.append("[" + QString::number(remapPort->getPortIndex()) + "]");
+                    }
+                    createItem(itemName, remapPort->getValue(), remapPortsItem);
+                }
             }
         }
     }
