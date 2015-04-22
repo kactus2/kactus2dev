@@ -12,8 +12,8 @@
 
 GraphicsExpandCollapseItem::GraphicsExpandCollapseItem( QGraphicsItem* parent /*= 0*/ ):
 QGraphicsPixmapItem(parent),
-expanded_(false) {
-
+expanded_(false)
+{
 	QPixmap pic(":/icons/common/graphics/triangle_arrow_right.png");
 	QPixmap scaledPic = pic.scaled(GraphicsExpandCollapseItem::SIDE, 
 		GraphicsExpandCollapseItem::SIDE, Qt::KeepAspectRatio);
@@ -22,40 +22,50 @@ expanded_(false) {
 	setShapeMode(QGraphicsPixmapItem::BoundingRectShape);
 }
 
-GraphicsExpandCollapseItem::~GraphicsExpandCollapseItem() {
+GraphicsExpandCollapseItem::~GraphicsExpandCollapseItem(
+    ) {
 }
 
-void GraphicsExpandCollapseItem::expand() {
+void GraphicsExpandCollapseItem::expand()
+{
 	expanded_ = true;
 	QPixmap pic(":/icons/common/graphics/triangle_arrow_down.png");
 	QPixmap scaledPic = pic.scaled(GraphicsExpandCollapseItem::SIDE, 
 		GraphicsExpandCollapseItem::SIDE, Qt::KeepAspectRatio);
-	setPixmap(scaledPic);
+    setPixmap(scaledPic);
+
+    emit stateChanged(expanded_);
 }
 
-bool GraphicsExpandCollapseItem::isExpanded() const {
+bool GraphicsExpandCollapseItem::isExpanded() const
+{
 	return expanded_;
 }
 
-void GraphicsExpandCollapseItem::collapse() {
+void GraphicsExpandCollapseItem::collapse()
+{
 	expanded_ = false;
 	QPixmap pic(":/icons/common/graphics/triangle_arrow_right.png");
 	QPixmap scaledPic = pic.scaled(GraphicsExpandCollapseItem::SIDE, 
 		GraphicsExpandCollapseItem::SIDE, Qt::KeepAspectRatio);
-	setPixmap(scaledPic);
+    setPixmap(scaledPic);
+
+    emit stateChanged(expanded_);
 }
 
-bool GraphicsExpandCollapseItem::isCollapsed() const {
+bool GraphicsExpandCollapseItem::isCollapsed() const
+{
 	return !expanded_;
 }
 
-void GraphicsExpandCollapseItem::mousePressEvent( QGraphicsSceneMouseEvent *event ) {
+void GraphicsExpandCollapseItem::mousePressEvent( QGraphicsSceneMouseEvent *event )
+{
 	event->accept();
 	QGraphicsPixmapItem::mousePressEvent(event);
 
 	// mouse left button changes the state of the item
-	if (event->button() == Qt::LeftButton) {
-		
+	if (event->button() == Qt::LeftButton)
+    {	
 		// if was expanded then collapse
 		if (expanded_) {
 			collapse();
@@ -64,11 +74,10 @@ void GraphicsExpandCollapseItem::mousePressEvent( QGraphicsSceneMouseEvent *even
 		else {
 			expand();
 		}
-
-		emit stateChanged(expanded_);
 	}
 }
 
-int GraphicsExpandCollapseItem::type() const {
+int GraphicsExpandCollapseItem::type() const
+{
 	return Type;
 }

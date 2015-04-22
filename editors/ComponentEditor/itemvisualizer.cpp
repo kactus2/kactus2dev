@@ -7,10 +7,10 @@
 
 #include "itemvisualizer.h"
 
-ItemVisualizer::ItemVisualizer(QSharedPointer<Component> component, QWidget *parent):
-QWidget(parent),
-component_(component) {
-	Q_ASSERT(component_);
+ItemVisualizer::ItemVisualizer(QWidget *parent):
+QWidget(parent) 
+{
+
 }
 
 ItemVisualizer::~ItemVisualizer() {

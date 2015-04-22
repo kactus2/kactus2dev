@@ -25,8 +25,8 @@ addrSpace_(addrSpace),
 localMemMap_(addrSpace->getLocalMemoryMap()),
 items_(addrSpace->getLocalMemoryMap()->getItems()),
 graphItem_(NULL),
-localMemMapVisualizer_(new MemoryMapsVisualizer(component)),
-addrSpaceVisualizer_(new AddressSpaceVisualizer(addrSpace, component))
+localMemMapVisualizer_(new MemoryMapsVisualizer()),
+addrSpaceVisualizer_(new AddressSpaceVisualizer(addrSpace))
 {
     setReferenceCounter(referenceCounter);
     setParameterFinder(parameterFinder);

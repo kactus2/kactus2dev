@@ -19,4 +19,5 @@ SUBDIRS += modelParameters/modelParameters.pro \
 		common/tst_ExpressionEditor.pro \
 		common/tst_ParameterCompleter.pro \
 		common/tst_ValueFormatter.pro \
-		parameterReferenceTree/tst_ParameterReferenceTree.pro
+		parameterReferenceTree/tst_ParameterReferenceTree.pro \
+		memoryMaps/memoryMaps.pro

@@ -35,6 +35,9 @@ public:
 
     //! \brief Refresh the item and re-layout the sub-items.
 	virtual void refresh();
+        
+    //! Updates the labels and tooltip for the item.
+    virtual void updateDisplay();
 
 	/*! \brief Get the offset of the item. 
 	 *
@@ -68,14 +71,6 @@ public:
 	 * \return The width of the item and it's sub-items.
 	*/
 	virtual qreal itemTotalWidth() const;
-
-	/*! \brief Set the width for the item.
-	 *
-	 * \param width The new width of the item.
-	 *
-	*/
-	virtual void setWidth(qreal width);
-
 
 protected:
 

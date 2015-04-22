@@ -10,56 +10,72 @@
 
 #include <QDebug>
 
+//-----------------------------------------------------------------------------
+// Function: ExpandableItem::ExpandableItem()
+//-----------------------------------------------------------------------------
 ExpandableItem::ExpandableItem( QGraphicsItem* parent /*= 0*/):
 VisualizerItem(parent),
 expandCollapseItem_(new GraphicsExpandCollapseItem(this)),
 expansionRect_(new QGraphicsRectItem(this))
- {
-
+{
 	connect(expandCollapseItem_, SIGNAL(stateChanged(bool)),
-		this, SLOT(onExpandStateChange(bool)), Qt::UniqueConnection);
+        this, SLOT(onExpandStateChange(bool)), Qt::UniqueConnection);
+
 	expandCollapseItem_->setZValue(1);
 	expansionRect_->show();
 }
 
-ExpandableItem::~ExpandableItem() {
+//-----------------------------------------------------------------------------
+// Function: ExpandableItem::~ExpandableItem()
+//-----------------------------------------------------------------------------
+ExpandableItem::~ExpandableItem()
+{
+
 }
 
-void ExpandableItem::onExpandStateChange( bool expanded ) {
+//-----------------------------------------------------------------------------
+// Function: ExpandableItem::onExpandStateChange()
+//-----------------------------------------------------------------------------
+void ExpandableItem::onExpandStateChange(bool expanded)
+{
 	// if there are children
 	QList<QGraphicsItem*> children = childItems();
-	foreach (QGraphicsItem* child, children) {
+	foreach (QGraphicsItem* child, children)
+    {
 		Q_ASSERT(child);
 
 		// if the item is visualizer item
-		VisualizerItem* childItem = dynamic_cast<VisualizerItem*>(child);
-		if (childItem) {
-			
-			// if the items are to be shown
-			if (expanded) {
-				childItem->show();
-			}
-			// if the items are to be hidden
-			else {
-				childItem->hide();
-			}
-		}
-	}
+        VisualizerItem* childItem = dynamic_cast<VisualizerItem*>(child);
+        if (childItem)
+        {
+            childItem->setVisible(expanded);
+        }
+    }
 
-	// when items are hidden/shown then the children must be reorganized
-	refresh();
+    refresh();
 }
 
-void ExpandableItem::setShowExpandableItem( bool show ) {
+//-----------------------------------------------------------------------------
+// Function: ExpandableItem::setShowExpandableItem()
+//-----------------------------------------------------------------------------
+void ExpandableItem::setShowExpandableItem( bool show )
+{
 	expandCollapseItem_->setVisible(show);
 }
 
-bool ExpandableItem::isExpanded() const {
+//-----------------------------------------------------------------------------
+// Function: ExpandableItem::isExpanded()
+//-----------------------------------------------------------------------------
+bool ExpandableItem::isExpanded() const
+{
 	return expandCollapseItem_->isExpanded();
 }
 
-void ExpandableItem::reorganizeChildren() {
-    
+//-----------------------------------------------------------------------------
+// Function: ExpandableItem::reorganizeChildren()
+//-----------------------------------------------------------------------------
+void ExpandableItem::reorganizeChildren()
+{
 	// the rectangle that contains this item and children
 	QRectF totalRect = itemTotalRect();
 
@@ -75,7 +91,7 @@ void ExpandableItem::reorganizeChildren() {
 }
 
 //-----------------------------------------------------------------------------
-// Function: setDefaultBrush()
+// Function: ExpandableItem::setDefaultBrush()
 //-----------------------------------------------------------------------------
 void ExpandableItem::setDefaultBrush(QBrush brush)
 {
@@ -83,15 +99,26 @@ void ExpandableItem::setDefaultBrush(QBrush brush)
     setExpansionBrush(brush);
 }
 
-void ExpandableItem::setExpansionBrush( const QBrush& brush ) {
+//-----------------------------------------------------------------------------
+// Function: ExpandableItem::setExpansionBrush()
+//-----------------------------------------------------------------------------
+void ExpandableItem::setExpansionBrush(QBrush const& brush)
+{
 	expansionRect_->setBrush(brush);
 }
 
-void ExpandableItem::setExpansionPen( const QPen& pen)
+//-----------------------------------------------------------------------------
+// Function: ExpandableItem::setExpansionPen()
+//-----------------------------------------------------------------------------
+void ExpandableItem::setExpansionPen(QPen const& pen)
 {
     expansionRect_->setPen(pen);
 }
 
-void ExpandableItem::setExpansionRectVisible( bool visible ) {
+//-----------------------------------------------------------------------------
+// Function: ExpandableItem::setExpansionRectVisible()
+//-----------------------------------------------------------------------------
+void ExpandableItem::setExpansionRectVisible(bool visible)
+{
 	expansionRect_->setVisible(visible);
 }

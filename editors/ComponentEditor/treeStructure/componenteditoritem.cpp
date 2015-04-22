@@ -161,8 +161,8 @@ ItemVisualizer* ComponentEditorItem::visualizer() {
 	return NULL;
 }
 
-void ComponentEditorItem::onEditorChanged() {
-	
+void ComponentEditorItem::onEditorChanged()
+{
 	// if there is a valid parent then update it also
 	if (parent_) {
 		emit contentChanged(parent_);
@@ -170,6 +170,8 @@ void ComponentEditorItem::onEditorChanged() {
 	
 	// update this item
 	emit contentChanged(this);
+
+    updateGraphics();
 
 	// also inform of child changes
 	foreach (QSharedPointer<ComponentEditorItem> childItem, childItems_) {

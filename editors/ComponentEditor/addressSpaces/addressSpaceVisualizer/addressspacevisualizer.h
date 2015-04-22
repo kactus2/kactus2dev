@@ -28,12 +28,10 @@ public:
 	/*! \brief The constructor.
 	 *
 	 * \param addrSpace Pointer to the address space being visualized.
-	 * \param component Pointer to the component being visualized.
 	 * \param parent Pointer to the owner of the visualizer.
 	 *
 	*/
 	AddressSpaceVisualizer(QSharedPointer<AddressSpace> addrSpace,
-		QSharedPointer<Component> component,
 		QWidget *parent = 0);
 	
 	//! \brief The destructor

@@ -36,6 +36,9 @@ public:
     //! \brief Refresh the item and the parent item.
 	virtual void refresh();
 
+    //! Updates the labels and tooltip for the item.
+    virtual void updateDisplay();
+
 	/*! \brief Get the offset of the item. 
 	 *
 	 * \return int The offset of the item from the parent item's base address.
@@ -71,14 +74,14 @@ public:
 	 *
 	 * \param The first address to set.
 	*/
-    virtual void setOverlappingTop(quint64 const& address);
+    virtual void setDisplayOffset(quint64 const& address);
 
 
     /*! \brief Sets the last non-overlapping address to display.
     *
     * \param The last address to set.
     */
-    virtual void setOverlappingBottom(quint64 const& address);
+    virtual void setDisplayLastAddress(quint64 const& address);
 
     // \brief Sets the item to be completely overlapped by adjacent items.
     virtual  void setCompleteOverlap();
@@ -91,7 +94,6 @@ private:
 	//! \brief No assignment
 	FieldGraphItem& operator=(const FieldGraphItem& other);
    
-
 	//! \brief Pointer to the field being visualized.
 	QSharedPointer<Field> field_;
 };

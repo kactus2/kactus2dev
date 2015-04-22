@@ -84,7 +84,8 @@ bool ComponentEditorMemMapItem::isValid() const
 //-----------------------------------------------------------------------------
 ItemEditor* ComponentEditorMemMapItem::editor()
 {
-	if (!editor_) {
+	if (!editor_)
+    {
 		editor_ = new MemoryMapEditor(component_, libHandler_, memoryMap_, parameterFinder_, expressionFormatter_);
 		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()), 
@@ -121,13 +122,16 @@ void ComponentEditorMemMapItem::createChild( int index )
 		QSharedPointer<ComponentEditorAddrBlockItem> addrBlockItem(
 			new ComponentEditorAddrBlockItem(addrBlock, model_, libHandler_, component_, referenceCounter_,
             parameterFinder_, expressionFormatter_, this));
-		addrBlockItem->setLocked(locked_);
 		
+        addrBlockItem->setLocked(locked_);
         addrBlockItem->addressUnitBitsChanged(memoryMap_->getAddressUnitBits());
 
-		if (visualizer_) {
+		if (visualizer_)
+        {
 			addrBlockItem->setVisualizer(visualizer_);
 		}
+
+        updateGraphics();
 
 		childItems_.insert(index, addrBlockItem);
 	}
@@ -150,7 +154,6 @@ void ComponentEditorMemMapItem::setVisualizer( MemoryMapsVisualizer* visualizer 
 
 	graphItem_ = new MemoryMapGraphItem(memoryMap_);
 	visualizer_->addMemoryMapItem(graphItem_);
-	graphItem_->refresh();
 
 	// update the visualizers of address block items
 	foreach (QSharedPointer<ComponentEditorItem> item, childItems_) {
@@ -158,8 +161,9 @@ void ComponentEditorMemMapItem::setVisualizer( MemoryMapsVisualizer* visualizer 
 		addrItem->setVisualizer(visualizer_);
 	}
 
-	connect(graphItem_, SIGNAL(selectEditor()),
-		this, SLOT(onSelectRequest()), Qt::UniqueConnection);
+    updateGraphics();
+
+	connect(graphItem_, SIGNAL(selectEditor()),	this, SLOT(onSelectRequest()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -188,8 +192,7 @@ void ComponentEditorMemMapItem::removeGraphicsItem()
 	// remove the graph item from the scene
 	visualizer_->removeMemoryMapItem(graphItem_);
 
-	disconnect(graphItem_, SIGNAL(selectEditor()),
-		this, SLOT(onSelectRequest()));
+	disconnect(graphItem_, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()));
 
 	// delete the graph item
 	delete graphItem_;

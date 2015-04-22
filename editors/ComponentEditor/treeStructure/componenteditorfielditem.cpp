@@ -96,8 +96,7 @@ void ComponentEditorFieldItem::setVisualizer( MemoryMapsVisualizer* visualizer )
 	// tell child to refresh itself
 	graphItem_->refresh();
 
-	connect(graphItem_, SIGNAL(selectEditor()),
-		this, SLOT(onSelectRequest()), Qt::UniqueConnection);
+	connect(graphItem_, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()), Qt::UniqueConnection);
 }
 
 QGraphicsItem* ComponentEditorFieldItem::getGraphicsItem() {

@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 15.10.2012
- *      Author: Antti Kamppi
- * 		filename: memoryvisualizationitem.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: memoryvisualizationitem.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 15.10.2012
+//
+// Description:
+// A base class for graphics items to visualize memory objects
+//-----------------------------------------------------------------------------
 
 #ifndef MEMORYVISUALIZATIONITEM_H
 #define MEMORYVISUALIZATIONITEM_H
@@ -14,119 +18,121 @@
 #include <QMultiMap>
 #include <QGraphicsSceneMouseEvent>
 
-/*! \brief The base class for graphics items to visualize memory objects.
- *
- */
-class MemoryVisualizationItem : public ExpandableItem {
+class MemoryGapItem;
+
+//-----------------------------------------------------------------------------
+//! A base class for graphics items to visualize memory objects.
+//-----------------------------------------------------------------------------
+class MemoryVisualizationItem : public ExpandableItem
+{
 	Q_OBJECT
 
 public:
 
-	//! \brief The indentation of each child under its parent.
-	enum Indentation {
+	//! The indentation of each child under its parent.
+	enum Indentation 
+    {
 		CHILD_INDENTATION = GraphicsExpandCollapseItem::SIDE
 	};
 
-	/*! \brief The constructor.
+	/*! The constructor.
 	 *
-	 * \param parent Pointer to the owner of the item.
-	 *
+	 *      @param [in] parent The owner of the item.
 	*/
 	MemoryVisualizationItem(QGraphicsItem* parent = 0);
 	
-	//! \brief The destructor
+	//! The destructor
 	virtual ~MemoryVisualizationItem();
 
-	//! \brief Set the item brush and store it as default brush.
-    void setBrush(const QBrush& brush);
+    /*!
+     *  Set the item brush and store it as default brush.
+     *
+     *      @param [in] brush   The brush to set.
+     */
+    void setBrush(QBrush const& brush);
 
-	//! \brief Refresh the item and sub-items.
+	//! Refresh the item.
 	virtual void refresh() = 0;
 
-	/*! \brief Get the offset of the item. 
+    //! Updates the labels and tooltip for the item.
+    virtual void updateDisplay() = 0;
+
+	/*! Get the offset of the item. 
 	 *
-	 * \return int The offset of the item from the parent item's base address.
+	 *      @return The offset of the item from the parent item's base address.
 	*/
 	virtual quint64 getOffset() const = 0;
 
-	/*! \brief Get the last address contained in the item.
+	/*! Get the last address contained in the item.
 	 *
-	 * \return The last address.
+	 *      @return The last address.
 	*/
 	virtual quint64 getLastAddress() const = 0;
 
-	/*! \brief Get the bit width of the item.
+	/*! Get the bit width of the item.
 	 * 
-	 * \return The bit width of the item.
+	 *      @return The bit width of the item.
 	*/
 	virtual int getBitWidth() const = 0;
 
-	/*! \brief Get number of bits the addressable unit contains.
+	/*! Get number of bits the addressable unit contains.
 	 *
-	 * \return The size of least addressable unit.
+	 *      @return The size of least addressable unit.
 	*/
 	virtual unsigned int getAddressUnitSize() const = 0;
 
-	/*! \brief Add a child visualization item for this item.
+	/*! Add a child visualization item for this item.
 	 *
-	 * \param childItem Pointer to the child to add.
+	 *       @param [in] childItem Pointer to the child to add.
 	 *
 	*/
 	virtual void addChild(MemoryVisualizationItem* childItem);
 
-	/*! \brief Remove a child visualization item from this item.
+	/*! Remove a child visualization item from this item.
 	 *
-	 * \param childItem Pointer to the child to remove.
+	 *       @param [in] childItem Pointer to the child to remove.
 	 *
 	*/
 	virtual void removeChild(MemoryVisualizationItem* childItem);
 
-	/*! \brief Set the width for the item.
+	/*! Set the width for the item.
 	 *
-	 * \param width The new width of the item.
+	 *       @param [in] width The new width of the item.
 	 *
 	*/
 	virtual void setWidth(qreal width);
 
-	/*! \brief Get the width of the item.
+	/*! The bounding rect of the item.
 	 *
-	 * The width is dependent on the parents width.
-	 *
-	 * \return The width of the item and it's sub-items.
-	*/
-    qreal itemTotalWidth() const;
-
-	/*! \brief The bounding rect of the item.
-	 *
-	 * \return The rectangle that bounds the item and possible sub items.
+	 *      @return The rectangle that bounds the item and possible sub items.
 	*/
 	virtual QRectF boundingRect() const;
 
-	/*! \brief Sets the first non-overlapping address to display.
+	/*! Sets the first non-overlapping address to display.
 	 *
-	 * \param The first address to set.
+	 *       @param [in] The first address to set.
 	*/
-    virtual void setOverlappingTop(quint64 const& address);
+    virtual void setDisplayOffset(quint64 const& address);
 
-	/*! \brief Get the first non-overlapping address of the item.
+	/*! Get the first non-overlapping address of the item.
 	 *
-	 * \return The first non-overlapping address.
+	 *      @return The first non-overlapping address.
 	 */
-    virtual quint64 getOverlappingTop();
+    virtual quint64 getDisplayOffset();
 
-	/*! \brief Sets the last non-overlapping address to display.
+	/*! Sets the last non-overlapping address to display.
 	 *
-	 * \param The last address to set.
+	 *       @param [in] The last address to set.
 	 */
-    virtual void setOverlappingBottom(quint64 const& address);
+    virtual void setDisplayLastAddress(quint64 const& address);
 
-    /*! \brief Get the last non-overlapping address of the item.
+    /*! Get the last non-overlapping address of the item.
      *
-     * \return The last non-overlapping address.
+     *      @return The last non-overlapping address.
      */
-    virtual quint64 getOverlappingBottom();
+    virtual quint64 getDisplayLastAddress();
 
-	//! \brief Sets the item to be completely overlapped by adjacent items.
+	//! Sets the item to be completely overlapped by adjacent items.
     virtual void setCompleteOverlap();
 
     /*! Tells if the item is completely overlapped by other items.
@@ -135,90 +141,179 @@ public:
      */
     virtual bool isCompletelyOverlapped() const;
 
-    //! \brief Set the item into conflicted (overlapping memory) state.
+    //! Set the item into conflicted (overlapping memory) state.
     virtual void setConflicted(bool conflicted);
 
-    // \brief Get the width of child items.
-    qreal getChildWidth() const;
+    /*!
+     *  Checks if the item is conflicted (overlapping with others).
+     *
+     *      @return True, if the item is conflicted, otherwise false.
+     */
+    bool isConflicted() const;
 
 signals:
 
-	//! \brief Emitted when the item changes.
+	//! Emitted when the item changes.
 	void contentChanged();
 
-	//! \brief Emitted when this item's editor should be displayed.
+	//! Emitted when this item's editor should be displayed.
 	void selectEditor();
 
-protected:
+    //! Emitted when the size of item the changes.
+    void sizeChanged();
 
-	//! \brief Handler for mouse press events
-	virtual void mousePressEvent(QGraphicsSceneMouseEvent* event);
+protected slots:
 
-	/*! \brief Set new positions for child items.
+    /*! Set new positions for child items.
 	 * 
 	 * The child items are organized in the order of their offset.
 	*/
 	virtual void reorganizeChildren();
 
-	//! \brief Update the offsets of the child items in the map.
-	void updateChildMap();
+protected:
+   
+    //! Shows the expand/collapse icon if the item has any children. Otherwise the icon is hidden.
+    void showExpandIconIfHasChildren();
 
-	/*! \brief Set text to the top left corner.
+    //! Update the offsets of the child items in the map.
+    void updateChildMap();
+        
+    /*!
+     *  Checks if the children must be repositioned inside this item.
+     *
+     *      @return True, if the repositioning is required.
+     */
+    bool mustRepositionChildren();
+
+    /*!
+     *  Repositions the child items and fills the empty gaps between them.
+     */
+    void repositionChildren();
+ 
+	//! Handler for mouse press events
+	virtual void mousePressEvent(QGraphicsSceneMouseEvent* event);
+
+	/*! Set text to the top left corner.
 	 *
 	 * The function groups the hexadecimal digit into groups of 4 digits.
 	 *
-	 * \param text The text to display in the corner.
-	 *
+	 *       @param [in] text The text to display in the corner.
 	*/
-	virtual void setLeftTopCorner(const QString& text);
+	virtual void setLeftTopCorner(QString const& text);
 
-	/*! \brief Set the address to be shown on the top left corner.
+	/*! Set the address to be shown on the top left corner.
 	 *
-	 * \param address The address to be shown in hexadecimal form.
-	 *
+	 *       @param [in] address The address to be shown in hexadecimal form.
 	*/
 	virtual void setLeftTopCorner(quint64 address);
 
-	/*! \brief Set text to the bottom left corner.
+    /*!
+     *  Converts an address to hexadecimal string.
+     *
+     *      @param [in] address   The address to convert.
+     *
+     *      @return The hexadecimal representation.
+     */
+    QString toHexString(quint64 address);
+
+	/*! Set text to the bottom left corner.
 	 *
 	 * The function groups the hexadecimal digit into groups of 4 digits.
 	 *
-	 * \param text The text to display in the corner.
-	 *
+	 *       @param [in] text The text to display in the corner.
 	*/
-	virtual void setLeftBottomCorner(const QString& text);
+	virtual void setLeftBottomCorner(QString const& text);
 
-	/*! \brief Set the address to be shown on the bottom left corner.
+	/*! Set the address to be shown on the bottom left corner.
 	 *
-	 * \param address The address to be shown in hexadecimal form.
-	 *
+	 *       @param [in] address The address to be shown in hexadecimal form.
 	*/
 	virtual void setLeftBottomCorner(quint64 address);
 
-	//! \brief Contains the child memory items. The offset of the child is the key.
+	//! Contains the child memory items. The offset of the child is the key.
 	QMultiMap<quint64, MemoryVisualizationItem*> childItems_;
 
-protected:
-    
-    //! \brief The first non-overlapping address.
+    //! The first non-overlapping address.
     quint64 firstFreeAddress_;
 
-    //! \brief The last non-overlapping address.
+    //! The last non-overlapping address.
     quint64 lastFreeAddress_;
 
-    //! \brief Width for child items.
+    //! Width for child items.
     qreal childWidth_;
 
 private:
 	
-	//! \brief No copying
+	//! No copying.
 	MemoryVisualizationItem(const MemoryVisualizationItem& other);
-
-	//! \brief No assignment
 	MemoryVisualizationItem& operator=(const MemoryVisualizationItem& other);
-   
-    //! \brief comparison function for two equal offsets.
-    static bool offsetLessThan(const MemoryVisualizationItem* s1, const MemoryVisualizationItem* s2);
+
+    /*!
+     *  Checks if there is empty memory space between the beginning of the item and its first child.
+     *
+     *      @param [in] current   The currently iterated child.
+     *
+     *      @return True, if there is empty space, otherwise false.
+     */
+    bool emptySpaceBeforeFirstChild(MemoryVisualizationItem* current) const;
+    
+    /*!
+     *  Checks if there is empty memory space between the given child and the last known used address.
+     *
+     *      @param [in] current             The currently iterated child.
+     *      @param [in] lastAddressInUse    The last known used address.
+     *
+     *      @return True, if there is empty space, otherwise false.
+     */
+    bool emptySpaceBeforeChild(MemoryVisualizationItem* current, quint64 lastAddressInUse) const;
+
+    /*!
+     *  Checks if the two consecutive children overlap.
+     *
+     *      @param [in] current     The currently iterated child.
+     *      @param [in] previous    The previously iterated child.
+     *
+     *      @return True, if the children overlap, otherwise false.
+     */
+    bool childrenOverlap(MemoryVisualizationItem* current, MemoryVisualizationItem* previous) const;
+
+    /*!
+     *  Creates a new child for representing a free memory slot.
+     *
+     *      @param [in] offset          The offset of the free memory slot.
+     *      @param [in] lastAddress     The last address of the free memory slot.
+     *      @param [in] yCoordinate     The y-coordinate for the memory slot item.
+     *
+     *      @return The created child item.
+     */
+    MemoryGapItem* createMemoryGap(quint64 offset, quint64 lastAddress, qreal yCoordinate);
+    
+    /*!
+     *  Creates a new child for representing an overlapping memory slot.
+     *
+     *      @param [in] offset          The offset of the overlapping memory slot.
+     *      @param [in] lastAddress     The last address of the overlapping memory slot.
+     *      @param [in] yCoordinate     The y-coordinate for the overlapping memory slot item.
+     *
+     *      @return The created child item.
+     */
+    MemoryGapItem* createConflictItem(qint64 offset, qint64 lastAddress, qreal yCoordinate);
+
+    //! comparison function for two equal offsets.
+    static bool compareItems(const MemoryVisualizationItem* s1, const MemoryVisualizationItem* s2);
+
+    /*!
+     *  Groups a given address text to groups of four digits.
+     *
+     *      @param [in] text   The address to group.
+     *
+     *      @return The grouped address text.
+     */
+    QString groupByFourDigits(QString const& text) const;
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
 	//! Conflicted state. Item is conflicted if it overlaps with other items.
     bool conflicted_;

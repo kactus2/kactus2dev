@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 17.4.2012
- *      Author: Antti Kamppi
- * 		filename: memorymapsvisualizer.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: memorymapsvisualizer.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 17.04.2012
+//
+// Description:
+// A widget to visualize a set of memory maps.
+//-----------------------------------------------------------------------------
 
 #include "memorymapsvisualizer.h"
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapview.h>
@@ -16,11 +20,14 @@
 #include <QVBoxLayout>
 #include <QPointF>
 
-MemoryMapsVisualizer::MemoryMapsVisualizer(QSharedPointer<Component> component, QWidget *parent):
-ItemVisualizer(component, parent),
+//-----------------------------------------------------------------------------
+// Function: MemoryMapsVisualizer::MemoryMapsVisualizer()
+//-----------------------------------------------------------------------------
+MemoryMapsVisualizer::MemoryMapsVisualizer(QWidget *parent):
+ItemVisualizer(parent),
 view_(new MemoryMapView(this)),
-scene_(new MemoryMapScene(this)) {
-
+scene_(new MemoryMapScene(this))
+{
 	// display a label on top the table
 	SummaryLabel* visualizationLabel = new SummaryLabel(tr("Memory maps visualization"), this);
 
@@ -33,25 +40,44 @@ scene_(new MemoryMapScene(this)) {
 	view_->setScene(scene_);
 }
 
-MemoryMapsVisualizer::~MemoryMapsVisualizer() {
+//-----------------------------------------------------------------------------
+// Function: MemoryMapsVisualizer::~MemoryMapsVisualizer()
+//-----------------------------------------------------------------------------
+MemoryMapsVisualizer::~MemoryMapsVisualizer() 
+{
 }
 
-void MemoryMapsVisualizer::addMemoryMapItem( MemoryMapGraphItem* memMapItem ) {
+//-----------------------------------------------------------------------------
+// Function: MemoryMapsVisualizer::addMemoryMapItem()
+//-----------------------------------------------------------------------------
+void MemoryMapsVisualizer::addMemoryMapItem( MemoryMapGraphItem* memMapItem ) 
+{
 	scene_->addMemGraphItem(memMapItem);
+
 	QPointF position = memMapItem->pos();
 	view_->centerOn(position.x() - MemoryVisualizationItem::CHILD_INDENTATION, position.y());
-    scene_->setSceneRect(scene_->itemsBoundingRect());
 }
 
-void MemoryMapsVisualizer::removeMemoryMapItem( MemoryMapGraphItem* memMapItem ) {
+//-----------------------------------------------------------------------------
+// Function: MemoryMapsVisualizer::removeMemoryMapItem()
+//-----------------------------------------------------------------------------
+void MemoryMapsVisualizer::removeMemoryMapItem( MemoryMapGraphItem* memMapItem )
+{
 	scene_->removeMemGraphItem(memMapItem);
-    scene_->setSceneRect(scene_->itemsBoundingRect());
 }
 
-QSize MemoryMapsVisualizer::minimumSizeHint() const {
+//-----------------------------------------------------------------------------
+// Function: MemoryMapsVisualizer::minimumSizeHint()
+//-----------------------------------------------------------------------------
+QSize MemoryMapsVisualizer::minimumSizeHint() const
+{
 	return QSize(VisualizerItem::DEFAULT_WIDTH + 80, VisualizerItem::DEFAULT_HEIGHT * 2);
 }
 
-QSize MemoryMapsVisualizer::sizeHint() const {
+//-----------------------------------------------------------------------------
+// Function: MemoryMapsVisualizer::sizeHint()
+//-----------------------------------------------------------------------------
+QSize MemoryMapsVisualizer::sizeHint() const
+{
 	return minimumSizeHint();
 }

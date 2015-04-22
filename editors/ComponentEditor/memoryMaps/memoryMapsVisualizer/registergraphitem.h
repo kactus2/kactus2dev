@@ -13,7 +13,7 @@
 
 #include <QSharedPointer>
 
-/*! \brief The graphical item that represents one register.
+/*! The graphical item that represents one register.
  *
  */
 class RegisterGraphItem : public MemoryVisualizationItem {
@@ -21,78 +21,93 @@ class RegisterGraphItem : public MemoryVisualizationItem {
 
 public:
 
-	/*! \brief The constructor
+	/*! The constructor
 	 *
 	 * \param reg Pointer to the register that this graph item visualizes.
 	 * \param parent Pointer to the parent of this graph item.
 	 *
 	*/
-	RegisterGraphItem(QSharedPointer<Register> reg,
-		QGraphicsItem* parent);
+	RegisterGraphItem(QSharedPointer<Register> reg, QGraphicsItem* parent);
 	
-	//! \brief The destructor
+	//! The destructor
 	virtual ~RegisterGraphItem();
 
-	//! \brief Refresh the item, refresh and re-layout the sub-items and refresh parent item.
+	//! Refresh the item, refresh and re-layout the sub-items and refresh parent item.
     virtual void refresh();
 
-    //! \brief Refresh the item and re-layout the sub-items.
-	virtual void refreshItem();
+    //! Updates the labels and tooltip for the item.
+   virtual  void updateDisplay();
+    
+	/*! Add a child visualization item for this item.
+	 *
+	 *      @param [in] childItem   Pointer to the child to add.
+	*/
+	virtual void addChild(MemoryVisualizationItem* childItem);
 
-    //! \brief Updates the labels and tooltip for the item.
-    void updateDisplay();
-
-	//! \brief Remove the item.
+	//! Remove the item.
     virtual void removeChild(MemoryVisualizationItem* childItem );
 
-	/*! \brief Get the offset of the item. 
+	/*! Get the offset of the item. 
 	 *
-	 * \return int The offset of the item from the parent item's base address.
+	 *      @return The offset of the item from the parent item's base address.
 	*/
 	virtual quint64 getOffset() const;
 
-	/*! \brief Get the last address contained in the item.
+	/*! Get the last address contained in the item.
 	 *
-	 * \return The last address.
+	 *      @return The last address.
 	*/
 	virtual quint64 getLastAddress() const;
 
-	/*! \brief Get the bit width of the item.
+	/*! Get the bit width of the item.
 	 * 
-	 * \return The bit width of the item.
+	 *      @return The bit width of the item.
 	*/
 	virtual int getBitWidth() const;
 
-	/*! \brief Get number of bits the addressable unit contains.
+	/*! Get number of bits the addressable unit contains.
 	 *
-	 * \return The size of least addressable unit.
+	 *      @return The size of least addressable unit.
 	*/
 	virtual unsigned int getAddressUnitSize() const;
 
-    virtual qreal getChildWidth(MemoryVisualizationItem* child) const;
-
+    /*! Set the width for the item.
+	 *
+	 *       @param [in] width The new width of the item.
+	*/
     virtual void setWidth(qreal width);
 
-protected:
+protected slots:
 
-	/*! \brief Set new positions for child field items.
+	/*! Set new positions for child field items.
 	 * 
 	 * The child items are organized in the order of their last address (MSB).
 	*/
 	virtual void reorganizeChildren();
 
-    //! \brief Update the child items in the map. Field items are organized according to last address.
+protected:
+
+    //! Update the child items in the map. Field items are organized according to last address.
     void updateChildMap();
 
 private:
 	
-	//! \brief No copying
+	//! No copying
 	RegisterGraphItem(const RegisterGraphItem& other);
 
-	//! \brief No assignment
+	//! No assignment
 	RegisterGraphItem& operator=(const RegisterGraphItem& other);
+    
+    /*!
+     *  Finds the width for the given child item.
+     *
+     *      @param [in] child   The child whose width to find.
+     *
+     *      @return The width for the child.
+     */
+    virtual qreal widthForChild(MemoryVisualizationItem* child) const;
 
-    /* \brief Sorting function for fields with same last address.
+    /* Sorting function for fields with same last address.
      *
      * \param s1 The left field in comparison s1 < s2.
      *
@@ -100,9 +115,13 @@ private:
      *
      * \return True, if s1 precedes s2, otherwise false.
      */
-    static bool addressLessThan(const MemoryVisualizationItem* s1, const MemoryVisualizationItem* s2);
+    static bool compareItems(const MemoryVisualizationItem* s1, const MemoryVisualizationItem* s2);
    
-    //! \brief Pointer to the register being visualized.
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! Pointer to the register being visualized.
 	QSharedPointer<Register> register_;
 
 };

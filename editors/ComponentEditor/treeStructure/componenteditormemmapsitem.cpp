@@ -20,7 +20,7 @@ ComponentEditorMemMapsItem::ComponentEditorMemMapsItem( ComponentEditorTreeModel
 													   ComponentEditorItem* parent ):
 ComponentEditorItem(model, libHandler, component, parent),
 memoryMaps_(component->getMemoryMaps()),
-visualizer_(new MemoryMapsVisualizer(component))
+visualizer_(new MemoryMapsVisualizer())
 {
     setReferenceCounter(referenceCounter);
     setParameterFinder(parameterFinder);
@@ -34,9 +34,6 @@ visualizer_(new MemoryMapsVisualizer(component))
 		memoryMapItem->setVisualizer(visualizer_);
 		childItems_.append(memoryMapItem);
 	}
-
-	connect(visualizer_, SIGNAL(contentChanged()),
-		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 }
 
 ComponentEditorMemMapsItem::~ComponentEditorMemMapsItem() {

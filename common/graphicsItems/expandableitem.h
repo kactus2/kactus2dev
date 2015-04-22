@@ -55,8 +55,6 @@ protected slots:
 	*/
 	void setShowExpandableItem(bool show);
 
-protected:
-
 	/*! \brief Set new positions for child items.
 	 * 
 	 * The implementation updates the position of the expand/collapse button and
@@ -64,12 +62,14 @@ protected:
 	*/
 	virtual void reorganizeChildren();
 
+protected:
+
 	/*! \brief Set the brush used to color the expansion column.
 	 *
 	 * \param brush The brush to use.
 	 *
 	*/
-	virtual void setExpansionBrush(const QBrush& brush);
+    virtual void setExpansionBrush(QBrush const& brush);
 
     /*!
      *  Sets the default coloring brush for the item.
@@ -79,7 +79,7 @@ protected:
     virtual void setDefaultBrush(QBrush brush);
 
 
-    virtual void setExpansionPen( const QPen& pen);
+    virtual void setExpansionPen(QPen const& pen);
 
 	/*! \brief Hide/show the rectangle that contains the expand/collapse icon.
 	 *

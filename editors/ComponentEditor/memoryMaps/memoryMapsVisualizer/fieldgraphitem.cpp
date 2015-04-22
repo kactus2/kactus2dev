@@ -6,7 +6,7 @@
  */
 
 #include "fieldgraphitem.h"
-#include "registergraphitem.h"
+
 #include <common/KactusColors.h>
 
 #include <QBrush>
@@ -15,10 +15,10 @@
 //-----------------------------------------------------------------------------
 // Function: FieldGraphItem::FieldGraphItem()
 //-----------------------------------------------------------------------------
-FieldGraphItem::FieldGraphItem( QSharedPointer<Field> field,
-							   QGraphicsItem* parent):
+FieldGraphItem::FieldGraphItem( QSharedPointer<Field> field, QGraphicsItem* parent):
 MemoryVisualizationItem(parent),
-field_(field) {
+    field_(field)
+{
 	Q_ASSERT(field_);
 	QBrush brush(KactusColors::FIELD_COLOR);
 	setDefaultBrush(brush);
@@ -28,59 +28,64 @@ field_(field) {
 
 	setShowExpandableItem(false);
 	setExpansionRectVisible(false);
-    setOverlappingTop(field->getMSB());
-    setOverlappingBottom(field->getBitOffset());
+
+    refresh();
 }
 
 //-----------------------------------------------------------------------------
 // Function: FieldGraphItem::~FieldGraphItem()
 //-----------------------------------------------------------------------------
-FieldGraphItem::~FieldGraphItem() {	
+FieldGraphItem::~FieldGraphItem()
+{	
 }
 
 //-----------------------------------------------------------------------------
 // Function: FieldGraphItem::refresh()
 //-----------------------------------------------------------------------------
-void FieldGraphItem::refresh() {
-	setRect(0, 0, VisualizerItem::MIN_WIDTH, VisualizerItem::DEFAULT_HEIGHT);
+void FieldGraphItem::refresh()
+{
+    updateDisplay();
 
-	// the name depends on the size of the rectangle (if too small then name is chopped)
-	setName(field_->getName());
-	setLeftTopCorner(QString::number(field_->getMSB()));
-	VisualizerItem::setRightTopCorner(QString::number(field_->getBitOffset()));
-	ExpandableItem::reorganizeChildren();
+    ExpandableItem::reorganizeChildren();
+}
 
-    setOverlappingTop(field_->getMSB());
-    setOverlappingBottom(field_->getBitOffset());
+//-----------------------------------------------------------------------------
+// Function: FieldGraphItem::updateDisplay()
+//-----------------------------------------------------------------------------
+void FieldGraphItem::updateDisplay()
+{
+    setName(field_->getName());
+    setLeftTopCorner(QString::number(field_->getMSB()));
+    setRightTopCorner(QString::number(field_->getBitOffset()));
+
+    setDisplayOffset(field_->getMSB());
+    setDisplayLastAddress(field_->getBitOffset());
     setToolTip("<b>" + getName() + "</b> [" + QString::number(field_->getMSB()) + ".." + 
         QString::number(field_->getBitOffset()) + "]");
-
-	MemoryVisualizationItem* parentGraphItem = static_cast<MemoryVisualizationItem*>(parentItem());
-	Q_ASSERT(parentGraphItem);
-	parentGraphItem->refresh();
 }
 
 //-----------------------------------------------------------------------------
 // Function: FieldGraphItem::getOffset()
 //-----------------------------------------------------------------------------
-quint64 FieldGraphItem::getOffset() const {
+quint64 FieldGraphItem::getOffset() const
+{
 	return field_->getBitOffset();
 }
 
 //-----------------------------------------------------------------------------
 // Function: FieldGraphItem::getBitWidth()
 //-----------------------------------------------------------------------------
-int FieldGraphItem::getBitWidth() const {
+int FieldGraphItem::getBitWidth() const
+{
 	return field_->getBitWidth();
 }
 
 //-----------------------------------------------------------------------------
 // Function: FieldGraphItem::getAddressUnitSize()
 //-----------------------------------------------------------------------------
-unsigned int FieldGraphItem::getAddressUnitSize() const {
-	RegisterGraphItem* regItem = static_cast<RegisterGraphItem*>(parentItem());
-	Q_ASSERT(regItem);
-	return regItem->getAddressUnitSize();
+unsigned int FieldGraphItem::getAddressUnitSize() const
+{
+    return 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -94,24 +99,24 @@ void FieldGraphItem::setWidth(qreal width)
 //-----------------------------------------------------------------------------
 // Function: FieldGraphItem::getLastAddress()
 //-----------------------------------------------------------------------------
-quint64 FieldGraphItem::getLastAddress() const {
+quint64 FieldGraphItem::getLastAddress() const
+{
 	return field_->getMSB();
 }
 
 //-----------------------------------------------------------------------------
-// Function: FieldGraphItem::setOverlappingTop()
+// Function: FieldGraphItem::setDisplayOffset()
 //-----------------------------------------------------------------------------
-void FieldGraphItem::setOverlappingTop(quint64 const& address)
+void FieldGraphItem::setDisplayOffset(quint64 const& address)
 {
     firstFreeAddress_ = address;
     setLeftTopCorner(QString::number(firstFreeAddress_));
-
 }
 
 //-----------------------------------------------------------------------------
-// Function: FieldGraphItem::setOverlappingBottom()
+// Function: FieldGraphItem::setDisplayLastAddress()
 //-----------------------------------------------------------------------------
-void FieldGraphItem::setOverlappingBottom(quint64 const& address)
+void FieldGraphItem::setDisplayLastAddress(quint64 const& address)
 {
     lastFreeAddress_ = address;
     setRightTopCorner(QString::number(lastFreeAddress_));

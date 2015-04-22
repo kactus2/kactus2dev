@@ -53,33 +53,29 @@ public:
     /*! \brief Set lowest bit for the gap.
 	 *
 	 * \param address The lowest bit that limits the gap.
-	 * \param contains If true then the address is contained in the gap, 
-	 * otherwise the gap starts from next address.
 	 *
 	*/
-	void setStartAddress(quint64 address, bool contains = true);
+	void setStartAddress(quint64 address);
 
 	/*! \brief Set highest bit for the gap.
 	 *
 	 * \param address The highest bit that limits the gap end.
-	 * \param contains If true then the address is contained in the gap,
-	 * otherwise the gap ends before the specified address.
 	 *
 	*/
-	void setEndAddress(quint64 address, bool contains = true);
+	void setEndAddress(quint64 address);
 
 	/*! \brief Sets the first non-overlapping address to display.
 	 *
 	 * \param The first address to set.
 	*/
-    virtual void setOverlappingTop(quint64 const& address);
+    virtual void setDisplayOffset(quint64 const& address);
 
 
 	/*! \brief Sets the last non-overlapping address to display.
 	 *
 	 * \param The last address to set.
 	*/
-    virtual void setOverlappingBottom(quint64 const& address);
+    virtual void setDisplayLastAddress(quint64 const& address);
 
 private:
 	//! \brief No copying

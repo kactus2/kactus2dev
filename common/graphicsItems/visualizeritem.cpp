@@ -188,9 +188,9 @@ void VisualizerItem::setNameLabelPosition()
 //-----------------------------------------------------------------------------
 // Function: minimumRect()
 //-----------------------------------------------------------------------------
-QRectF VisualizerItem::minimumRect() const {
-	return QRectF(0, 0, VisualizerItem::DEFAULT_WIDTH, 
-		VisualizerItem::DEFAULT_HEIGHT);
+QRectF VisualizerItem::minimumRect() const 
+{
+	return QRectF(0, 0, VisualizerItem::DEFAULT_WIDTH, VisualizerItem::DEFAULT_HEIGHT);
 }
 
 //-----------------------------------------------------------------------------
@@ -229,17 +229,19 @@ QBrush VisualizerItem::defaultBrush()
 //-----------------------------------------------------------------------------
 // Function: itemTotalRect()
 //-----------------------------------------------------------------------------
-QRectF VisualizerItem::itemTotalRect() const {
+QRectF VisualizerItem::itemTotalRect() const
+{
 	// the rectangle that contains this item
 	QRectF totalRect(rect());
 
 	// if there are children
 	QList<QGraphicsItem*> children = childItems();
-	foreach (QGraphicsItem* child, children) {
-
+	foreach (QGraphicsItem* child, children)
+    {
 		// the rectangle must contain this item and also the child item
 		VisualizerItem* childItem = dynamic_cast<VisualizerItem*>(child);
-		if (childItem && childItem->isVisible()) {
+		if (childItem && childItem->isVisible())
+        {
 			totalRect = totalRect.united(mapRectFromItem(child, childItem->itemTotalRect()));
 		}
 	}
@@ -256,7 +258,8 @@ qreal VisualizerItem::itemTotalWidth() const {
 //-----------------------------------------------------------------------------
 // Function: setWidth()
 //-----------------------------------------------------------------------------
-void VisualizerItem::setWidth( qreal width ) {
+void VisualizerItem::setWidth(qreal width)
+{
 	setRect(0, 0, width, VisualizerItem::DEFAULT_HEIGHT);
 	VisualizerItem::reorganizeChildren();
 }

@@ -14,8 +14,7 @@
 #include <QList>
 #include <QSharedPointer>
 
-class MemoryGapItem;
-class MemoryMapGraphItem;
+class VisualizerItem;
 
 /*! \brief The graphics scene that contains the memory map graphics items.
  *
@@ -43,19 +42,16 @@ public:
 	 * \param memGraphItem Pointer to the item.
 	 *
 	*/
-	void addMemGraphItem(MemoryMapGraphItem* memGraphItem);
+	void addMemGraphItem(VisualizerItem* memGraphItem);
 
 	/*! \brief Remove a memory map graph item from the scene.
 	 *
 	 * \param memGraphItem Pointer to the item to remove.
 	 *
 	*/
-	void removeMemGraphItem(MemoryMapGraphItem* memGraphItem);
+	void removeMemGraphItem(VisualizerItem* memGraphItem);
 
-	/*! \brief Reposition the memory map graphs items in the scene.
-	 *
-	*/
-	void rePosition();
+
 
 	/*! \brief Set the scene width.
 	 *
@@ -64,10 +60,11 @@ public:
 	 */
     void setWidth(int width);
 
-signals:
-
-	//! \brief This signal is emitted when the contents of the scene changes.
-	void contentChanged();
+    public slots:
+        	/*! \brief Reposition the memory map graphs items in the scene.
+	 *
+	*/
+	void rePosition();
 
 protected:
     
@@ -82,11 +79,8 @@ private:
 	//! \brief No assignment
 	MemoryMapScene& operator=(const MemoryMapScene& other);
 
-	//! \brief Contains the memory maps that are shown.
-	QList<QSharedPointer<MemoryMap> > memoryMaps_;
-
 	//! \brief Contains the graph items for memory maps.
-	QList<MemoryMapGraphItem*> memGraphItems_;
+	QList<VisualizerItem*> memGraphItems_;
 
     //! \brief Width of top (memory map) items.
     int width_;

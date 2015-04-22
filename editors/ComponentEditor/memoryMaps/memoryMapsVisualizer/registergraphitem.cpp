@@ -7,15 +7,15 @@
 
 #include "registergraphitem.h"
 #include "fieldgraphitem.h"
-#include <IPXACTmodels/field.h>
-#include <common/utils.h>
-#include "addressblockgraphitem.h"
+
 #include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>
-#include <editors/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacevisualizationitem.h>
 #include <editors/ComponentEditor/visualization/fieldgapitem.h>
 
-#include <common/graphicsItems/visualizeritem.h>
 #include <common/KactusColors.h>
+#include <common/utils.h>
+#include <common/graphicsItems/visualizeritem.h>
+
+#include <IPXACTmodels/field.h>
 
 #include <QBrush>
 #include <QColor>
@@ -23,23 +23,23 @@
 //-----------------------------------------------------------------------------
 // Function: RegisterGraphItem::RegisterGraphItem()
 //-----------------------------------------------------------------------------
-RegisterGraphItem::RegisterGraphItem(QSharedPointer<Register> reg,
-									 QGraphicsItem* parent):
+RegisterGraphItem::RegisterGraphItem(QSharedPointer<Register> reg, QGraphicsItem* parent):
 MemoryVisualizationItem(parent),
-register_(reg) {
-
+register_(reg)
+{
 	Q_ASSERT(register_);
-	QBrush brush(KactusColors::REGISTER_COLOR);
+
+    QBrush brush(KactusColors::REGISTER_COLOR);
 	setDefaultBrush(brush);
 
-    setOverlappingTop(reg->getMSB());
-    setOverlappingBottom(reg->getOffset());
+    updateDisplay();
 }
 
 //-----------------------------------------------------------------------------
 // Function: RegisterGraphItem::~RegisterGraphItem()
 //-----------------------------------------------------------------------------
-RegisterGraphItem::~RegisterGraphItem() {
+RegisterGraphItem::~RegisterGraphItem()
+{
 }
 
 //-----------------------------------------------------------------------------
@@ -47,20 +47,10 @@ RegisterGraphItem::~RegisterGraphItem() {
 //-----------------------------------------------------------------------------
 void RegisterGraphItem::refresh() 
 {
-    refreshItem();
-
-	MemoryVisualizationItem* parentGraphItem = static_cast<MemoryVisualizationItem*>(parentItem());
-	Q_ASSERT(parentGraphItem);
-	parentGraphItem->refresh();
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterGraphItem::refreshItemOnly()
-//-----------------------------------------------------------------------------
-void RegisterGraphItem::refreshItem()
-{
     updateDisplay();
     reorganizeChildren();
+
+    emit sizeChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -70,57 +60,48 @@ void RegisterGraphItem::updateDisplay()
 {
     setName(register_->getName());
 
-    // get the base of the parent address block
-    quint64 base = 0;
-    MemoryVisualizationItem* addrBlock = dynamic_cast<MemoryVisualizationItem*>(parentItem());
-    if (addrBlock) {
-        base = addrBlock->getOffset();
-    }
-
-    // get the offset of the register
-    quint64 offset = Utils::str2Uint(register_->getAddressOffset());
-    // calculate the start address of the register
-    quint64 startAddress = base + offset;
-    // show the start address of the register
-    setLeftTopCorner(startAddress);
+    quint64 startAddress = getOffset();
 
     // show the end address of the register
-    unsigned int addrUnit = getAddressUnitSize();
+    unsigned int aub = getAddressUnitSize();
+
     // prevent division by zero
-    if (addrUnit == 0) {
-        addrUnit = 1;
+    if (aub == 0)
+    {
+        aub = 1;
     }	
-    unsigned int addrUnits = register_->getSize() / addrUnit;
+
+    unsigned int registerSize = register_->getSize();
+    unsigned int sizeInAUB = registerSize / aub;
+
     // Round upwards. Needed for unorthodox regsize, e.g. 30b/8=3 becomes 4 (Bytes)
-    if (addrUnits * addrUnit < register_->getSize()) {
-        addrUnits++;
+    if (sizeInAUB * aub < registerSize)
+    {
+        sizeInAUB++;
     }
 
-    quint64 endAddress = base + offset + addrUnits -1;
+    quint64 endAddress = startAddress + sizeInAUB -1;
 
-    setOverlappingTop(startAddress);
-    setOverlappingBottom(endAddress);
+    setDisplayOffset(startAddress);
+    setDisplayLastAddress(endAddress);
 
     // Set tooltip to show addresses in hexadecimals.
     setToolTip("<b>Name: </b>" + register_->getName() + "<br>" +
-        "<b>First address: </b>" + AddressSpaceVisualizationItem::addr2Str(getOffset(), getBitWidth()) + "<br>" +
-        "<b>Last address: </b>" + AddressSpaceVisualizationItem::addr2Str(getLastAddress(), getBitWidth()) + 
-        "<br>" +
-        "<b>Size [bits]: </b>" + QString::number(register_->getSize()));
+        "<b>First address: </b>" + toHexString(getOffset()) + "<br>" +
+        "<b>Last address: </b>" + toHexString(getLastAddress()) + "<br>" +
+        "<b>Size [bits]: </b>" + QString::number(registerSize));
 }
 
 //-----------------------------------------------------------------------------
 // Function: RegisterGraphItem::getOffset()
 //-----------------------------------------------------------------------------
-quint64 RegisterGraphItem::getOffset() const {
-	Q_ASSERT(register_);
-	
+quint64 RegisterGraphItem::getOffset() const
+{
 	// the register offset from the address block
-	QString offsetStr = register_->getAddressOffset();
-	quint64 regOffset = Utils::str2Uint(offsetStr);
+	quint64 regOffset = Utils::str2Uint(register_->getAddressOffset());
 
 	// the address block's offset
-	AddressBlockGraphItem* blockItem = static_cast<AddressBlockGraphItem*>(parentItem());
+	MemoryVisualizationItem* blockItem = static_cast<MemoryVisualizationItem*>(parentItem());
 	Q_ASSERT(blockItem);
 	quint64 blockOffset = blockItem->getOffset();
 
@@ -131,37 +112,48 @@ quint64 RegisterGraphItem::getOffset() const {
 //-----------------------------------------------------------------------------
 // Function: RegisterGraphItem::getBitWidth()
 //-----------------------------------------------------------------------------
-int RegisterGraphItem::getBitWidth() const {
-	Q_ASSERT(register_);
+int RegisterGraphItem::getBitWidth() const
+{
 	return register_->getWidth();
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterGraphItem::addChild()
+//-----------------------------------------------------------------------------
+void RegisterGraphItem::addChild(MemoryVisualizationItem* childItem)
+{
+    MemoryVisualizationItem::addChild(childItem);
+    
+    if (childItems_.count() == 1)
+    {
+        emit sizeChanged();
+    }
 }
 
 //-----------------------------------------------------------------------------
 // Function: RegisterGraphItem::removeChild()
 //-----------------------------------------------------------------------------
-void RegisterGraphItem::removeChild( MemoryVisualizationItem* childItem ) {
+void RegisterGraphItem::removeChild( MemoryVisualizationItem* childItem )
+{
     quint64 offset = childItem->getLastAddress();
 
     Q_ASSERT(childItems_.contains(offset));
     childItems_.remove(offset, childItem);
+
+    if (childItems_.isEmpty())
+    {
+        emit sizeChanged();
+    }
 }
 
 //-----------------------------------------------------------------------------
 // Function: RegisterGraphItem::reorganizeChildren()
 //-----------------------------------------------------------------------------
-void RegisterGraphItem::reorganizeChildren() {
-
+void RegisterGraphItem::reorganizeChildren()
+{
 	// remove the gaps and update msbs of fields
 	updateChildMap();
-
-	// if there are no children then this can not be expanded or collapsed
-	if (childItems_.isEmpty()) {
-		ExpandableItem::setShowExpandableItem(false);
-	}
-	// if there are children then display the expand/collapse item
-	else {
-		ExpandableItem::setShowExpandableItem(true);
-	}
+    showExpandIconIfHasChildren();
 
 	// save the new gap child items to be added to map
 	QList<FieldGapItem*> gaps;
@@ -176,8 +168,8 @@ void RegisterGraphItem::reorganizeChildren() {
 	qreal xCoordinate = rect().left();
 
     // the previous and top-most child items.
-	MemoryVisualizationItem* previous = NULL;
-    MemoryVisualizationItem* topItem = NULL;   
+	MemoryVisualizationItem* previous = 0;
+    MemoryVisualizationItem* topItem = 0;   
     
 	for (QMap<quint64, MemoryVisualizationItem*>::iterator i = --childItems_.end();
 		i != --childItems_.begin(); --i) { 
@@ -196,21 +188,21 @@ void RegisterGraphItem::reorganizeChildren() {
 			gap = new FieldGapItem(tr("Reserved"), this);
 
             // set the first address of the gap
-            gap->setStartAddress(item->getLastAddress(), false);
+            gap->setStartAddress(item->getLastAddress() + 1);
 
             // if the gap is not at the start 
             if (previous && previous->getOffset() <= register_->getMSB()) {
                 // set the last address for the gap
-                gap->setEndAddress(OffsetMin, false);
+                gap->setEndAddress(OffsetMin - 1);
             }
             else {
                 // the gap starts from the end of the parent
-                gap->setEndAddress(OffsetMin, true);
+                gap->setEndAddress(OffsetMin);
             }			
 
             // set the gap to the end of the last item
             gap->setPos(xCoordinate, rect().bottom());
-            gap->setWidth(getChildWidth(gap));
+            gap->setWidth(widthForChild(gap));
             gap->setVisible(isExpanded());
 
             gaps.append(gap);
@@ -244,8 +236,8 @@ void RegisterGraphItem::reorganizeChildren() {
             // Field partially overlaps with previous top-most item.
             else
             {
-                item->setOverlappingTop(topItem->getOffset() - 1);
-                item->setWidth(getChildWidth(item));
+                item->setDisplayOffset(topItem->getOffset() - 1);
+                item->setWidth(widthForChild(item));
 
                 quint64 conflictEnd = item->getLastAddress();
                 MemoryVisualizationItem* previousTopItem = topItem;
@@ -257,7 +249,7 @@ void RegisterGraphItem::reorganizeChildren() {
                     if (previousTopItem != previous)
                     {
                         // Update the coordinates of previous to align conflicting area correctly.     
-                        previous->setPos(xCoordinate - getChildWidth(previousTopItem), rect().bottom());
+                        previous->setPos(xCoordinate - widthForChild(previousTopItem), rect().bottom());
                     }
 
                     previousTopItem->setCompleteOverlap();                   
@@ -270,7 +262,7 @@ void RegisterGraphItem::reorganizeChildren() {
                     if (previousTopItem != previous)
                     {
                         // Update the coordinates of previous to align conflicting area correctly.     
-                        previous->setPos(xCoordinate - getChildWidth(previousTopItem), rect().bottom());
+                        previous->setPos(xCoordinate - widthForChild(previousTopItem), rect().bottom());
                     }
 
                     previousTopItem->setCompleteOverlap(); 
@@ -280,10 +272,10 @@ void RegisterGraphItem::reorganizeChildren() {
                 // Previous top-most item is partially under this field. 
                 else 
                 {                 
-                    xCoordinate -= getChildWidth(previousTopItem);
-                    previousTopItem->setOverlappingBottom(item->getLastAddress() + 1); 
-                    previousTopItem->setWidth(getChildWidth(previousTopItem));                                                          
-                    xCoordinate += getChildWidth(previousTopItem);                                
+                    xCoordinate -= widthForChild(previousTopItem);
+                    previousTopItem->setDisplayLastAddress(item->getLastAddress() + 1); 
+                    previousTopItem->setWidth(widthForChild(previousTopItem));                                                          
+                    xCoordinate += widthForChild(previousTopItem);                                
 
                     if (previous != previousTopItem)
                     {
@@ -296,10 +288,10 @@ void RegisterGraphItem::reorganizeChildren() {
 
                 gap = new FieldGapItem("conflicted", this);                
                 gap->setConflicted(true);
-                gap->setStartAddress(previousTopItem->getOffset(),true);
-                gap->setEndAddress(conflictEnd,true); 
+                gap->setStartAddress(previousTopItem->getOffset());
+                gap->setEndAddress(conflictEnd); 
                 gap->setVisible(isExpanded());
-                gap->setWidth(getChildWidth(gap));
+                gap->setWidth(widthForChild(gap));
                 gaps.append(gap);
 
                 prevConflict = gap;
@@ -341,15 +333,16 @@ void RegisterGraphItem::reorganizeChildren() {
 	}
 
 	// if the LSB bit(s) does not belong to any field
-	if (previous && OffsetMin > 0) {
+	if (previous && OffsetMin > 0)
+    {
 		// create the gap 
 		FieldGapItem* gap = new FieldGapItem(tr("Reserved"), this);
 
 		// the gap starts from the start of the register
-		gap->setStartAddress(0, true);
+		gap->setStartAddress(0);
 
 		// the gap ends to the start of the defined field
-        gap->setEndAddress(topItem->getOffset(), false);
+        gap->setEndAddress(topItem->getOffset() - 1);
 
         // increase the x-coordinate to avoid setting the next field on top of the gap
         if (topItem == previous)
@@ -359,14 +352,15 @@ void RegisterGraphItem::reorganizeChildren() {
 
 		// gap is positioned after the last field
 		gap->setPos(xCoordinate, rect().bottom());
-        gap->setWidth(getChildWidth(gap));
+        gap->setWidth(widthForChild(gap));
 		gap->setVisible(isExpanded());
 
 		gaps.append(gap);
 	}
 
 	// add the gaps to the child items
-	foreach (MemoryGapItem* gap, gaps) {
+	foreach (MemoryGapItem* gap, gaps)
+    {
 		childItems_.insert(gap->getOffset(), gap);
 	}
 
@@ -377,12 +371,13 @@ void RegisterGraphItem::reorganizeChildren() {
 //-----------------------------------------------------------------------------
 // Function: RegisterGraphItem::updateChildMap()
 //-----------------------------------------------------------------------------
-void RegisterGraphItem::updateChildMap() {
+void RegisterGraphItem::updateChildMap()
+{
     QMap<quint64, MemoryVisualizationItem*> newMap;
 
     // go through all children and ask their offsets
-    foreach (MemoryVisualizationItem* item, childItems_) {
-
+    foreach (MemoryVisualizationItem* item, childItems_)
+    {
         // if the item is a gap then it is not added
         MemoryGapItem* gap = dynamic_cast<MemoryGapItem*>(item);
         if (gap) {
@@ -401,9 +396,9 @@ void RegisterGraphItem::updateChildMap() {
         {
             item->setConflicted(false);
         }
-        item->setOverlappingTop(item->getLastAddress());
-        item->setOverlappingBottom(item->getOffset());
-        item->setWidth(getChildWidth(item));
+        item->setDisplayOffset(item->getLastAddress());
+        item->setDisplayLastAddress(item->getOffset());
+        item->setWidth(widthForChild(item));
         quint64 msb = item->getLastAddress();
         newMap.insertMulti(msb, item);
     }
@@ -414,7 +409,7 @@ void RegisterGraphItem::updateChildMap() {
         if(newMap.count(msb) != 1)
         {
             QList<MemoryVisualizationItem*> childs = newMap.values(msb);
-            qSort(childs.begin(), childs.end(), addressLessThan );
+            qSort(childs.begin(), childs.end(), compareItems );
             newMap.remove(msb);
             foreach(MemoryVisualizationItem* child, childs)
             {
@@ -432,7 +427,7 @@ void RegisterGraphItem::updateChildMap() {
 //-----------------------------------------------------------------------------
 unsigned int RegisterGraphItem::getAddressUnitSize() const 
 {
-	AddressBlockGraphItem* addrBlock = static_cast<AddressBlockGraphItem*>(parentItem());
+	MemoryVisualizationItem* addrBlock = static_cast<MemoryVisualizationItem*>(parentItem());
 	Q_ASSERT(addrBlock);
 	return addrBlock->getAddressUnitSize();
 }
@@ -440,15 +435,17 @@ unsigned int RegisterGraphItem::getAddressUnitSize() const
 //-----------------------------------------------------------------------------
 // Function: RegisterGraphItem::getLastAddress()
 //-----------------------------------------------------------------------------
-quint64 RegisterGraphItem::getLastAddress() const {
-	AddressBlockGraphItem* addrBlock = static_cast<AddressBlockGraphItem*>(parentItem());
+quint64 RegisterGraphItem::getLastAddress() const
+{
+	MemoryVisualizationItem* addrBlock = static_cast<MemoryVisualizationItem*>(parentItem());
 	Q_ASSERT(addrBlock);
 
 	// how many bits one address unit takes
 	unsigned int addrUnit = addrBlock->getAddressUnitSize();
 
 	// prevent division by zero
-	if (addrUnit == 0) {
+	if (addrUnit == 0)
+    {
 		addrUnit = 1;
 	}
 
@@ -457,7 +454,8 @@ quint64 RegisterGraphItem::getLastAddress() const {
 
 	// how many address unit are contained in the register
 	unsigned int size = register_->getWidth() / addrUnit;
-	if (size*addrUnit < register_->getWidth()) {
+	if (size*addrUnit < register_->getWidth()) 
+    {
 		size++; //Round truncated number upwards
 	}
 	// if size is not defined then never return a negative number
@@ -474,49 +472,48 @@ quint64 RegisterGraphItem::getLastAddress() const {
 //-----------------------------------------------------------------------------
 void RegisterGraphItem::setWidth(qreal width)
 {
-    if ( childWidth_ != width)
+    if (childWidth_ != width)
     {
-         childWidth_ = width;
+        childWidth_ = width;
         VisualizerItem::setWidth(width);
         reorganizeChildren();
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: RegisterGraphItem::getChildWidth()
+// Function: RegisterGraphItem::widthForChild()
 //-----------------------------------------------------------------------------
- qreal RegisterGraphItem::getChildWidth(MemoryVisualizationItem* child) const
+ qreal RegisterGraphItem::widthForChild(MemoryVisualizationItem* child) const
 {
     Q_ASSERT(child);
-    if ( child->isCompletelyOverlapped())
+    if (child->isCompletelyOverlapped())
     {
         return 0;
     }
 
-    unsigned int highBit = child->getOverlappingTop();
+    unsigned int highBit = child->getDisplayOffset();
 
     if (highBit > register_->getMSB())
     {       
         highBit = register_->getMSB();
     }
 
-    unsigned int lowBit = child->getOverlappingBottom();
+    unsigned int lowBit = child->getDisplayLastAddress();
 
     if (lowBit > register_->getMSB())
     {
         return 0;
     }
 
-    quint64 bits =  qMin(highBit - lowBit + 1,register_->getSize());    
+    quint64 bits =  qMin(highBit - lowBit + 1, register_->getSize());    
     qreal bitWidth = childWidth_/register_->getSize();
     return bitWidth * bits;
  }
 
  //-----------------------------------------------------------------------------
- // Function: RegisterGraphItem::addressLessThan()
+ // Function: RegisterGraphItem::compareItems()
  //-----------------------------------------------------------------------------
-bool RegisterGraphItem::addressLessThan(const MemoryVisualizationItem* s1, 
-    const MemoryVisualizationItem* s2)
+bool RegisterGraphItem::compareItems(MemoryVisualizationItem const* s1, MemoryVisualizationItem const* s2)
 {
     // Field with higher offset (lsb) precedes lower offset.
     return s1->getOffset() > s2->getOffset();

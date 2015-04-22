@@ -14,7 +14,7 @@
 #include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>
 
 //-----------------------------------------------------------------------------
-// Function: componenteditoraddrblockitem::ComponentEditorAddrBlockItem()
+// Function: ComponentEditorAddrBlockItem::ComponentEditorAddrBlockItem()
 //-----------------------------------------------------------------------------
 ComponentEditorAddrBlockItem::ComponentEditorAddrBlockItem(QSharedPointer<AddressBlock> addrBlock,
 														   ComponentEditorTreeModel* model,
@@ -37,12 +37,14 @@ addressUnitBits_(0)
 
 	setObjectName(tr("ComponentEditorAddrBlockItem"));
 
-	foreach (QSharedPointer<RegisterModel> regModel, regItems_) {
+	foreach (QSharedPointer<RegisterModel> regModel, regItems_)
+    {
 		QSharedPointer<Register> reg = regModel.dynamicCast<Register>();
 		
 		// if the item was a register 
-		if (reg) {
-			QSharedPointer<ComponentEditorRegisterItem> regItem(new ComponentEditorRegisterItem( reg, model,
+		if (reg)
+        {
+			QSharedPointer<ComponentEditorRegisterItem> regItem(new ComponentEditorRegisterItem(reg, model,
                 libHandler, component, parameterFinder_, expressionFormatter_, referenceCounter_, this));
 			childItems_.append(regItem);
 		}
@@ -51,27 +53,44 @@ addressUnitBits_(0)
 	Q_ASSERT(addrBlock_);
 }
 
-ComponentEditorAddrBlockItem::~ComponentEditorAddrBlockItem() {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorAddrBlockItem::~ComponentEditorAddrBlockItem()
+//-----------------------------------------------------------------------------
+ComponentEditorAddrBlockItem::~ComponentEditorAddrBlockItem()
+{
 }
 
-QString ComponentEditorAddrBlockItem::getTooltip() const {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorAddrBlockItem::getTooltip()
+//-----------------------------------------------------------------------------
+QString ComponentEditorAddrBlockItem::getTooltip() const
+{
 	return tr("Contains details of a single address block within a memory map.");
 }
 
-QString ComponentEditorAddrBlockItem::text() const {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorAddrBlockItem::text()
+//-----------------------------------------------------------------------------
+QString ComponentEditorAddrBlockItem::text() const
+{
 	return addrBlock_->getName();
 }
 
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorAddrBlockItem::isValid()
+//-----------------------------------------------------------------------------
 bool ComponentEditorAddrBlockItem::isValid() const 
 {
 	return addrBlock_->isValid(component_->getChoices());
 }
 
 //-----------------------------------------------------------------------------
-// Function: componenteditoraddrblockitem::editor()
+// Function: ComponentEditorAddrBlockItem::editor()
 //-----------------------------------------------------------------------------
-ItemEditor* ComponentEditorAddrBlockItem::editor() {
-	if (!editor_) {
+ItemEditor* ComponentEditorAddrBlockItem::editor()
+{
+	if (!editor_)
+    {
 		editor_ = new AddressBlockEditor(addrBlock_, component_, libHandler_, parameterFinder_,
             expressionFormatter_);
 		editor_->setProtection(locked_);
@@ -97,17 +116,20 @@ ItemEditor* ComponentEditorAddrBlockItem::editor() {
 }
 
 //-----------------------------------------------------------------------------
-// Function: componenteditoraddrblockitem::createChild()
+// Function: ComponentEditorAddrBlockItem::createChild()
 //-----------------------------------------------------------------------------
-void ComponentEditorAddrBlockItem::createChild( int index ) {
+void ComponentEditorAddrBlockItem::createChild( int index )
+{
 	QSharedPointer<RegisterModel> regmodel = regItems_[index];
 	QSharedPointer<Register> reg = regmodel.dynamicCast<Register>();
-	if (reg) {
+	if (reg)
+    {
 		QSharedPointer<ComponentEditorRegisterItem> regItem(new ComponentEditorRegisterItem(reg, model_,
             libHandler_, component_, parameterFinder_, expressionFormatter_, referenceCounter_, this));
 		regItem->setLocked(locked_);
 		
-		if (visualizer_) {
+		if (visualizer_)
+        {
 			regItem->setVisualizer(visualizer_);
 		}
 
@@ -115,10 +137,14 @@ void ComponentEditorAddrBlockItem::createChild( int index ) {
 	}
 }
 
-void ComponentEditorAddrBlockItem::onEditorChanged() {
-	
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorAddrBlockItem::onEditorChanged()
+//-----------------------------------------------------------------------------
+void ComponentEditorAddrBlockItem::onEditorChanged() 
+{
 	// on address block also the grand parent must be updated
-	if (parent() && parent()->parent()) {
+	if (parent() && parent()->parent())
+    {
 		emit contentChanged(parent()->parent());
 	}
 
@@ -126,11 +152,19 @@ void ComponentEditorAddrBlockItem::onEditorChanged() {
 	ComponentEditorItem::onEditorChanged();
 }
 
-ItemVisualizer* ComponentEditorAddrBlockItem::visualizer() {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorAddrBlockItem::visualizer()
+//-----------------------------------------------------------------------------
+ItemVisualizer* ComponentEditorAddrBlockItem::visualizer()
+{
 	return visualizer_;
 }
 
-void ComponentEditorAddrBlockItem::setVisualizer( MemoryMapsVisualizer* visualizer ) {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorAddrBlockItem::setVisualizer()
+//-----------------------------------------------------------------------------
+void ComponentEditorAddrBlockItem::setVisualizer( MemoryMapsVisualizer* visualizer )
+{
 	visualizer_ = visualizer;
 
 	// get the graphics item for the memory map
@@ -139,36 +173,48 @@ void ComponentEditorAddrBlockItem::setVisualizer( MemoryMapsVisualizer* visualiz
 
 	// create the graph item for the address block
 	graphItem_ = new AddressBlockGraphItem(addrBlock_, parentItem);
+    graphItem_->setAddressableUnitBits(addressUnitBits_);
 
 	// register the addr block graph item for the parent
 	parentItem->addChild(graphItem_);
-
-	// tell child to refresh itself
-	graphItem_->refresh();
-
+	
 	// update the visualizers for register items
 	foreach (QSharedPointer<ComponentEditorItem> item, childItems_) {
 		QSharedPointer<ComponentEditorRegisterItem> regItem = item.staticCast<ComponentEditorRegisterItem>();
 		regItem->setVisualizer(visualizer_);
 	}
 
-	connect(graphItem_, SIGNAL(selectEditor()),
-		this, SLOT(onSelectRequest()), Qt::UniqueConnection);
+    updateGraphics();
+
+	connect(graphItem_, SIGNAL(selectEditor()),	this, SLOT(onSelectRequest()), Qt::UniqueConnection);
 }
 
-QGraphicsItem* ComponentEditorAddrBlockItem::getGraphicsItem() {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorAddrBlockItem::getGraphicsItem()
+//-----------------------------------------------------------------------------
+QGraphicsItem* ComponentEditorAddrBlockItem::getGraphicsItem()
+{
 	return graphItem_;
 }
 
-void ComponentEditorAddrBlockItem::updateGraphics() {
-	if (graphItem_) {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorAddrBlockItem::updateGraphics()
+//-----------------------------------------------------------------------------
+void ComponentEditorAddrBlockItem::updateGraphics()
+{
+	if (graphItem_)
+    {
 		graphItem_->refresh();
 	}
 }
 
-void ComponentEditorAddrBlockItem::removeGraphicsItem() {
-
-	if (graphItem_) {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorAddrBlockItem::removeGraphicsItem()
+//-----------------------------------------------------------------------------
+void ComponentEditorAddrBlockItem::removeGraphicsItem()
+{
+	if (graphItem_)
+    {
 		// get the graphics item for the memory map
 		MemoryVisualizationItem* parentItem = static_cast<MemoryVisualizationItem*>(parent()->getGraphicsItem());
 		Q_ASSERT(parentItem);
@@ -179,8 +225,7 @@ void ComponentEditorAddrBlockItem::removeGraphicsItem() {
 		// take the child from the parent
 		graphItem_->setParent(NULL);
 
-		disconnect(graphItem_, SIGNAL(selectEditor()),
-			this, SLOT(onSelectRequest()));
+		disconnect(graphItem_, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()));
 
 		// delete the graph item
 		delete graphItem_;
@@ -192,11 +237,16 @@ void ComponentEditorAddrBlockItem::removeGraphicsItem() {
 }
 
 //-----------------------------------------------------------------------------
-// Function: componenteditoraddrblockitem::addressUnitBitsChanged()
+// Function: ComponentEditorAddrBlockItem::addressUnitBitsChanged()
 //-----------------------------------------------------------------------------
 void ComponentEditorAddrBlockItem::addressUnitBitsChanged(int newAddressUnitBits)
 {
     addressUnitBits_ = newAddressUnitBits;
 
-    emit(changeInAddressUnitBits(newAddressUnitBits));
+    if (graphItem_)
+    {
+        graphItem_->setAddressableUnitBits(newAddressUnitBits);
+    }
+
+    emit changeInAddressUnitBits(newAddressUnitBits);
 }

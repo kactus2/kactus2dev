@@ -1,17 +1,18 @@
-/* 
- *  	Created on: 18.4.2012
- *      Author: Antti Kamppi
- * 		filename: addressblockgraphitem.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: addressblockgraphitem.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 18.4.2012
+//
+// Description:
+// The graphical item that represents one address block.
+//-----------------------------------------------------------------------------
 
 #include "addressblockgraphitem.h"
-#include "registergraphitem.h"
-#include <IPXACTmodels/register.h>
-#include <common/utils.h>
-#include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>
-#include <editors/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacevisualizationitem.h>
+
 #include <common/KactusColors.h>
+#include <common/utils.h>
 
 #include <QBrush>
 #include <QColor>
@@ -22,41 +23,33 @@
 AddressBlockGraphItem::AddressBlockGraphItem( QSharedPointer<AddressBlock> addrBlock, 
 											 QGraphicsItem *parent ):
 MemoryVisualizationItem(parent),
-addrBlock_(addrBlock) {
-
+addrBlock_(addrBlock),
+addrssableUnitBits_(0)
+{
 	Q_ASSERT(addrBlock_);
 	QBrush brush(KactusColors::ADDR_BLOCK_COLOR);
 	setDefaultBrush(brush);
 
-    setOverlappingTop(addrBlock_->getBaseAddress().toLongLong());
-    setOverlappingBottom(addrBlock_->getLastAddress());
+    updateDisplay();
 }
 
 //-----------------------------------------------------------------------------
 // Function: AddressBlockGraphItem::~AddressBlockGraphItem()
 //-----------------------------------------------------------------------------
-AddressBlockGraphItem::~AddressBlockGraphItem() {
+AddressBlockGraphItem::~AddressBlockGraphItem()
+{
+
 }
 
 //-----------------------------------------------------------------------------
 // Function: AddressBlockGraphItem::refresh()
 //-----------------------------------------------------------------------------
-void AddressBlockGraphItem::refresh() {
-    
-    updateDisplay();
-
-	MemoryVisualizationItem* parentGraphItem = static_cast<MemoryVisualizationItem*>(parentItem());
-	Q_ASSERT(parentGraphItem);
-	parentGraphItem->refresh();
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockGraphItem::refreshItem()
-//-----------------------------------------------------------------------------
-void AddressBlockGraphItem::refreshItem()
+void AddressBlockGraphItem::refresh() 
 {
     updateDisplay();
     reorganizeChildren();
+
+    emit sizeChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -65,21 +58,21 @@ void AddressBlockGraphItem::refreshItem()
 void AddressBlockGraphItem::updateDisplay()
 {
     setName(addrBlock_->getName());
-    setOverlappingTop(Utils::str2Uint(addrBlock_->getBaseAddress()));
-    setOverlappingBottom(addrBlock_->getLastAddress());
+    setDisplayOffset(Utils::str2Uint(addrBlock_->getBaseAddress()));
+    setDisplayLastAddress(addrBlock_->getLastAddress());
 
     // Set tooltip to show addresses in hexadecimals.
     setToolTip("<b>Name: </b>" + addrBlock_->getName() + "<br>" +
-        "<b>Offset: </b>" + AddressSpaceVisualizationItem::addr2Str(getOffset(), getBitWidth()) + "<br>" +
-        "<b>Last address: </b>" + AddressSpaceVisualizationItem::addr2Str(addrBlock_->getLastAddress(), 
-        getBitWidth()) + "<br>" +
+        "<b>Offset: </b>" + toHexString(getOffset()) + "<br>" +
+        "<b>Last address: </b>" + toHexString(addrBlock_->getLastAddress()) + "<br>" +
         "<b>Size [AUB]: </b>" + addrBlock_->getRange());
 }
 
 //-----------------------------------------------------------------------------
 // Function: AddressBlockGraphItem::getOffset()
 //-----------------------------------------------------------------------------
-quint64 AddressBlockGraphItem::getOffset() const {
+quint64 AddressBlockGraphItem::getOffset() const
+{
 	QString offset = addrBlock_->getBaseAddress();
 	return Utils::str2Uint(offset);
 }
@@ -87,23 +80,31 @@ quint64 AddressBlockGraphItem::getOffset() const {
 //-----------------------------------------------------------------------------
 // Function: AddressBlockGraphItem::getBitWidth()
 //-----------------------------------------------------------------------------
-int AddressBlockGraphItem::getBitWidth() const {
+int AddressBlockGraphItem::getBitWidth() const
+{
 	return addrBlock_->getWidth();
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockGraphItem::setAddressableUnitBits()
+//-----------------------------------------------------------------------------
+void AddressBlockGraphItem::setAddressableUnitBits(int addressableUnitBits)
+{
+    addrssableUnitBits_ = addressableUnitBits;
 }
 
 //-----------------------------------------------------------------------------
 // Function: AddressBlockGraphItem::getAddressUnitSize()
 //-----------------------------------------------------------------------------
-unsigned int AddressBlockGraphItem::getAddressUnitSize() const {
-	MemoryVisualizationItem* memMap = static_cast<MemoryVisualizationItem*>(parentItem());
-	Q_ASSERT(memMap);
-	return memMap->getAddressUnitSize();
+unsigned int AddressBlockGraphItem::getAddressUnitSize() const
+{
+    return addrssableUnitBits_;
 }
 
 //-----------------------------------------------------------------------------
 // Function: AddressBlockGraphItem::getLastAddress()
 //-----------------------------------------------------------------------------
-quint64 AddressBlockGraphItem::getLastAddress() const {
+quint64 AddressBlockGraphItem::getLastAddress() const
+{
 	return addrBlock_->getLastAddress();
 }
-

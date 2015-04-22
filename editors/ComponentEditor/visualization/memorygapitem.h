@@ -13,7 +13,8 @@
 /*! \brief The graphical item that represents a gap in the memory between objects.
  *
  */
-class MemoryGapItem : public MemoryVisualizationItem {
+class MemoryGapItem : public MemoryVisualizationItem
+{
 	Q_OBJECT
 
 public:
@@ -30,6 +31,9 @@ public:
 
 	//! \brief Refresh the gap item.
 	virtual void refresh();
+
+    //! Updates the labels and tooltip for the item.
+    virtual void updateDisplay();
 
 	/*! \brief Get the offset of the item. 
 	 *
@@ -58,28 +62,24 @@ public:
 	/*! \brief Set start address for the gap.
 	 *
 	 * \param address The address that limits the gap start.
-	 * \param contains If true then the address is contained in the gap, 
-	 * otherwise the gap starts from next address.
 	 *
 	*/
-	void setStartAddress(quint64 address, bool contains = true);
+	void setStartAddress(quint64 address);
 
 	/*! \brief Set end address for the gap.
 	 *
 	 * \param address The address that limits the gap end.
-	 * \param contains If true then the address is contained in the gap,
-	 * otherwise the gap ends before the specified address.
 	 *
 	*/
-	void setEndAddress(quint64 address, bool contains = true);
-
+	void setEndAddress(quint64 address);
+    
 protected:
 
-	//! \brief The start address of the gap.
-	quint64 start_;
+    //! \brief The start address of the gap.
+    quint64 start_;
 
-	//! \brief The end address of the gap.
-	quint64 end_;
+    //! \brief The end address of the gap.
+    quint64 end_;
 
 private:
 	
@@ -88,7 +88,7 @@ private:
 
 	//! \brief No assignment
 	MemoryGapItem& operator=(const MemoryGapItem& other);
-   
+
 };
 
 #endif // MEMORYGAPITEM_H

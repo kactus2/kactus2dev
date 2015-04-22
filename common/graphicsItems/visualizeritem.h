@@ -100,6 +100,13 @@ public:
 	*/
 	virtual void setNamePosition(const NameHorizontalAlign hPos, const NameVerticalAlign vPos);
     
+protected slots:
+
+	/*! \brief Set new positions for child items.
+	 * 
+	 * The base class implementation only updates the position of the name and corner texts.
+	*/
+	virtual void reorganizeChildren();
 
 protected:
 
@@ -158,12 +165,6 @@ protected:
 	 * \return QRectF that limits the minimum size needed by this item.
 	*/
 	virtual QRectF minimumRect() const;
-
-	/*! \brief Set new positions for child items.
-	 * 
-	 * The base class implementation only updates the position of the name and corner texts.
-	*/
-	virtual void reorganizeChildren();
 
     /*!
      *  Sets the default coloring brush for the item.

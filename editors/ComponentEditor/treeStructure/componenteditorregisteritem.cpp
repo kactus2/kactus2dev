@@ -117,6 +117,8 @@ void ComponentEditorRegisterItem::createChild( int index )
     {
 		fieldItem->setVisualizer(visualizer_);
 	}
+    updateGraphics();
+
 	childItems_.insert(index, fieldItem);
 }
 
@@ -166,15 +168,14 @@ void ComponentEditorRegisterItem::setVisualizer( MemoryMapsVisualizer* visualize
 	// register the addr block graph item for the parent
 	parentItem->addChild(graphItem_);
 
-	// tell child to refresh itself
-	graphItem_->refresh();
-
 	// update the visualizers for field items
 	foreach (QSharedPointer<ComponentEditorItem> item, childItems_)
     {
 		QSharedPointer<ComponentEditorFieldItem> fieldItem = item.staticCast<ComponentEditorFieldItem>();
 		fieldItem->setVisualizer(visualizer_);
 	}
+
+    updateGraphics();
 
 	connect(graphItem_, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()), Qt::UniqueConnection);
 }
@@ -215,8 +216,7 @@ void ComponentEditorRegisterItem::removeGraphicsItem()
 		// take the child from the parent
 		graphItem_->setParent(NULL);
 
-		disconnect(graphItem_, SIGNAL(selectEditor()),
-			this, SLOT(onSelectRequest()));
+		disconnect(graphItem_, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()));
 
 		// delete the graph item
 		delete graphItem_;

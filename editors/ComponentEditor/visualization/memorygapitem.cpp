@@ -30,7 +30,8 @@ end_(0) {
 //-----------------------------------------------------------------------------
 // Function: ~MemoryGapItem()
 //-----------------------------------------------------------------------------
-MemoryGapItem::~MemoryGapItem() {
+MemoryGapItem::~MemoryGapItem()
+{
 }
 
 //-----------------------------------------------------------------------------
@@ -42,16 +43,26 @@ void MemoryGapItem::refresh()
 }
 
 //-----------------------------------------------------------------------------
+// Function: MemoryGapItem::updateDisplay()
+//-----------------------------------------------------------------------------
+void MemoryGapItem::updateDisplay()
+{
+
+}
+
+//-----------------------------------------------------------------------------
 // Function: getOffset()
 //-----------------------------------------------------------------------------
-quint64 MemoryGapItem::getOffset() const {
+quint64 MemoryGapItem::getOffset() const
+{
 	return start_;
 }
 
 //-----------------------------------------------------------------------------
 // Function: getBitWidth()
 //-----------------------------------------------------------------------------
-int MemoryGapItem::getBitWidth() const {
+int MemoryGapItem::getBitWidth() const
+{
 	MemoryVisualizationItem* memItem = static_cast<MemoryVisualizationItem*>(parentItem());
 	Q_ASSERT(memItem);
 	return memItem->getBitWidth();
@@ -60,7 +71,8 @@ int MemoryGapItem::getBitWidth() const {
 //-----------------------------------------------------------------------------
 // Function: getAddressUnitSize()
 //-----------------------------------------------------------------------------
-unsigned int MemoryGapItem::getAddressUnitSize() const {
+unsigned int MemoryGapItem::getAddressUnitSize() const
+{
 	MemoryVisualizationItem* memItem = static_cast<MemoryVisualizationItem*>(parentItem());
 	Q_ASSERT(memItem);
 	return memItem->getAddressUnitSize();
@@ -69,34 +81,29 @@ unsigned int MemoryGapItem::getAddressUnitSize() const {
 //-----------------------------------------------------------------------------
 // Function: setStartAddress()
 //-----------------------------------------------------------------------------
-void MemoryGapItem::setStartAddress( quint64 address, bool contains /*= true*/ ) {
-	if (contains) {
-		start_ = address;
-	}
-	else {
-		start_ = ++address;
-	}
-    setOverlappingTop(start_);
+void MemoryGapItem::setStartAddress(quint64 address)
+{
+    start_ = address;
+	
+    setDisplayOffset(start_);
 	refresh();
 }
 
 //-----------------------------------------------------------------------------
 // Function: setEndAddress()
 //-----------------------------------------------------------------------------
-void MemoryGapItem::setEndAddress( quint64 address, bool contains /*= true*/ ) {
-	if (contains) {
-		end_ = address;
-	}
-	else {
-		end_ = --address;
-	}
-    setOverlappingBottom(end_);
+void MemoryGapItem::setEndAddress(quint64 address)
+{
+	end_ = address;
+
+    setDisplayLastAddress(end_);
 	refresh();
 }
 
 //-----------------------------------------------------------------------------
 // Function: getLastAddress()
 //-----------------------------------------------------------------------------
-quint64 MemoryGapItem::getLastAddress() const {
+quint64 MemoryGapItem::getLastAddress() const
+{
 	return end_;
 }

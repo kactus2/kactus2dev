@@ -13,9 +13,8 @@
 #include <QVBoxLayout>
 
 AddressSpaceVisualizer::AddressSpaceVisualizer(QSharedPointer<AddressSpace> addrSpace,
-											   QSharedPointer<Component> component,
 											   QWidget *parent):
-ItemVisualizer(component, parent),
+ItemVisualizer(parent),
 addrSpace_(addrSpace),
 view_(new QGraphicsView(this)),
 scene_(new AddressSpaceScene(addrSpace, this)) {
