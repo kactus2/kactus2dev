@@ -1194,7 +1194,7 @@ bool Component::isValid( QStringList& errorList ) const {
 			addSpaceNames.append(addrSpace->getName());
 		}
 
-		if (!addrSpace->isValid(choices_, errorList, thisIdentifier)) {
+		if (!addrSpace->isValid(choices_, getRemapStateNames(), errorList, thisIdentifier)) {
 			valid = false;
 		}
 	}
@@ -1211,7 +1211,7 @@ bool Component::isValid( QStringList& errorList ) const {
 			memoryMapNames.append(memMap->getName());
 		}
 
-		if (!memMap->isValid(choices_, errorList, thisIdentifier)) {
+		if (!memMap->isValid(choices_, getRemapStateNames(), errorList, thisIdentifier)) {
 			valid = false;
 		}
 	}
@@ -1444,7 +1444,7 @@ bool Component::isValid() const {
 			addSpaceNames.append(addrSpace->getName());
 		}
 
-		if (!addrSpace->isValid(choices_))
+		if (!addrSpace->isValid(choices_, getRemapStateNames()))
         {
 			return false;
 		}
@@ -1460,7 +1460,7 @@ bool Component::isValid() const {
 			memoryMapNames.append(memMap->getName());
 		}
 
-		if (!memMap->isValid(choices_))
+		if (!memMap->isValid(choices_, getRemapStateNames()))
         {
 			return false;
 		}
@@ -1696,6 +1696,20 @@ const QList<QSharedPointer<AddressSpace> >& Component::getAddressSpaces() const 
 
 const QSharedPointer<QList<QSharedPointer<RemapState> > >& Component::getRemapStates() const {
 	return remapStates_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: component::getRemapStateNames()
+//-----------------------------------------------------------------------------
+QStringList Component::getRemapStateNames() const
+{
+    QStringList remapStateNames;
+    foreach (QSharedPointer<RemapState> singleRemapState, *remapStates_)
+    {
+        remapStateNames.append(singleRemapState->getName());
+    }
+
+    return remapStateNames;
 }
 
 //-----------------------------------------------------------------------------

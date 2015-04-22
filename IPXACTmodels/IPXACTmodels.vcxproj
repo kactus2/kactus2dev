@@ -130,6 +130,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="abstractiondefinition.cpp" />
+    <ClCompile Include="AbstractMemoryMap.cpp" />
     <ClCompile Include="addressblock.cpp" />
     <ClCompile Include="addressspace.cpp" />
     <ClCompile Include="AdHocConnection.cpp" />
@@ -215,6 +216,7 @@
     <ClCompile Include="memoryblockdata.cpp" />
     <ClCompile Include="memorymap.cpp" />
     <ClCompile Include="memorymapitem.cpp" />
+    <ClCompile Include="MemoryRemap.cpp" />
     <ClCompile Include="mirroredslaveinterface.cpp" />
     <ClCompile Include="model.cpp" />
     <ClCompile Include="modelparameter.cpp" />
@@ -260,6 +262,7 @@
   <ItemGroup>
     <ClInclude Include="..\resource.h" />
     <ClInclude Include="abstractiondefinition.h" />
+    <ClInclude Include="AbstractMemoryMap.h" />
     <ClInclude Include="addressblock.h" />
     <ClInclude Include="addressspace.h" />
     <ClInclude Include="AdHocConnection.h" />
@@ -322,6 +325,7 @@
     <ClInclude Include="memoryblockdata.h" />
     <ClInclude Include="memorymap.h" />
     <ClInclude Include="memorymapitem.h" />
+    <ClInclude Include="MemoryRemap.h" />
     <ClInclude Include="mirroredslaveinterface.h" />
     <ClInclude Include="model.h" />
     <ClInclude Include="modelparameter.h" />

@@ -6,12 +6,15 @@
  */
 
 #include "componenteditormemmapitem.h"
-#include <editors/ComponentEditor/memoryMaps/memorymapeditor.h>
-#include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
+#include "MemoryRemapItem.h"
 #include "componenteditoraddrblockitem.h"
+
+#include <editors/ComponentEditor/memoryMaps/SingleMemoryMapEditor.h>
+#include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
+#include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapgraphitem.h>
+
 #include <IPXACTmodels/memorymapitem.h>
 #include <IPXACTmodels/addressblock.h>
-#include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapgraphitem.h>
 
 //-----------------------------------------------------------------------------
 // Function: componenteditormemmapitem::ComponentEditorMemMapItem()
@@ -26,7 +29,6 @@ ComponentEditorMemMapItem::ComponentEditorMemMapItem(QSharedPointer<MemoryMap> m
 													 ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 memoryMap_(memoryMap),
-items_(memoryMap->getItems()),
 visualizer_(NULL),
 graphItem_(NULL)
 {
@@ -36,21 +38,20 @@ graphItem_(NULL)
 
 	setObjectName(tr("ComponentEditorMemMapItem"));
 
-	// create the child objects in the tree
-	foreach (QSharedPointer<MemoryMapItem> memItem, items_) {
-		
-		// if the item is for address block then create child for it
-		QSharedPointer<AddressBlock> addrBlock = memItem.dynamicCast<AddressBlock>();
-		if (addrBlock) 
-        {
-			QSharedPointer<ComponentEditorAddrBlockItem> addrBlockItem(
-				new ComponentEditorAddrBlockItem(addrBlock, model, libHandler, component, referenceCounter_,
-                parameterFinder_, expressionFormatter_, this));
-			childItems_.append(addrBlockItem);
+    QSharedPointer<MemoryRemapItem> defaultRemapItem(new MemoryRemapItem(memoryMap_, memoryMap_, model, libHandler,
+        component, referenceCounter, parameterFinder, expressionFormatter, this));
+    defaultRemapItem->setLocked(locked_);
 
-            addrBlockItem->addressUnitBitsChanged(memoryMap_->getAddressUnitBits());
-		}
-	}
+    childItems_.append(defaultRemapItem);
+
+    foreach (QSharedPointer<MemoryRemap> memoryRemap, *memoryMap_->getMemoryRemaps())
+    {
+        QSharedPointer<MemoryRemapItem> memoryRemapItem(new MemoryRemapItem(memoryRemap, memoryMap_, model,
+            libHandler, component, referenceCounter, parameterFinder, expressionFormatter, this));
+        memoryRemapItem->setLocked(locked_);
+
+        childItems_.append(memoryRemapItem);
+    }
 
 	Q_ASSERT(memoryMap_);
 }
@@ -76,7 +77,11 @@ QString ComponentEditorMemMapItem::text() const
 //-----------------------------------------------------------------------------
 bool ComponentEditorMemMapItem::isValid() const
 {
-	return memoryMap_->isValid(component_->getChoices());
+    bool isParentValid = ComponentEditorItem::isValid();
+
+    bool isMemoryMapValid = memoryMap_->isValid(component_->getChoices(), component_->getRemapStateNames());
+
+    return isParentValid && isMemoryMapValid;
 }
 
 //-----------------------------------------------------------------------------
@@ -84,22 +89,7 @@ bool ComponentEditorMemMapItem::isValid() const
 //-----------------------------------------------------------------------------
 ItemEditor* ComponentEditorMemMapItem::editor()
 {
-	if (!editor_)
-    {
-		editor_ = new MemoryMapEditor(component_, libHandler_, memoryMap_, parameterFinder_, expressionFormatter_);
-		editor_->setProtection(locked_);
-		connect(editor_, SIGNAL(contentChanged()), 
-			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
-		connect(editor_, SIGNAL(childAdded(int)),
-			this, SLOT(onAddChild(int)), Qt::UniqueConnection);
-		connect(editor_, SIGNAL(childRemoved(int)),
-			this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
-		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
-			this, SIGNAL(helpUrlRequested(QString const&)));
-
-        connectItemEditorToReferenceCounter();
-	}
-	return editor_;
+    return childItems_.at(0)->editor();
 }
 
 //-----------------------------------------------------------------------------
@@ -108,7 +98,7 @@ ItemEditor* ComponentEditorMemMapItem::editor()
 QString ComponentEditorMemMapItem::getTooltip() const
 {
 	return tr("Contains the details of a single memory map that can be referenced"
-		" by containing component's slave interfaces");
+        " by containing component's slave interfaces");
 }
 
 //-----------------------------------------------------------------------------
@@ -116,25 +106,13 @@ QString ComponentEditorMemMapItem::getTooltip() const
 //-----------------------------------------------------------------------------
 void ComponentEditorMemMapItem::createChild( int index )
 {
-	QSharedPointer<MemoryMapItem> memItem = items_[index];
-	QSharedPointer<AddressBlock> addrBlock = memItem.dynamicCast<AddressBlock>();
-	if (addrBlock) {
-		QSharedPointer<ComponentEditorAddrBlockItem> addrBlockItem(
-			new ComponentEditorAddrBlockItem(addrBlock, model_, libHandler_, component_, referenceCounter_,
-            parameterFinder_, expressionFormatter_, this));
-		
-        addrBlockItem->setLocked(locked_);
-        addrBlockItem->addressUnitBitsChanged(memoryMap_->getAddressUnitBits());
+    QSharedPointer<MemoryRemap> memoryRemap = memoryMap_->getMemoryRemaps()->at(index);
 
-		if (visualizer_)
-        {
-			addrBlockItem->setVisualizer(visualizer_);
-		}
+    QSharedPointer<MemoryRemapItem> memoryRemapItem (new MemoryRemapItem(memoryRemap, memoryMap_, model_,
+        libHandler_, component_, referenceCounter_, parameterFinder_, expressionFormatter_, this));
+    memoryRemapItem->setLocked(locked_);
 
-        updateGraphics();
-
-		childItems_.insert(index, addrBlockItem);
-	}
+    childItems_.append(memoryRemapItem);
 }
 
 //-----------------------------------------------------------------------------
@@ -142,28 +120,21 @@ void ComponentEditorMemMapItem::createChild( int index )
 //-----------------------------------------------------------------------------
 ItemVisualizer* ComponentEditorMemMapItem::visualizer()
 {
-	return visualizer_;
-}	
+    return childItems_.at(0)->visualizer();
+}
 
 //-----------------------------------------------------------------------------
 // Function: componenteditormemmapitem::setVisualizer()
 //-----------------------------------------------------------------------------
 void ComponentEditorMemMapItem::setVisualizer( MemoryMapsVisualizer* visualizer )
 {
-	visualizer_ = visualizer;
+    QSharedPointer<ComponentEditorItem> item = childItems_.at(0);
+    QSharedPointer<MemoryRemapItem> memoryRemapItem = item.staticCast<MemoryRemapItem>();
 
-	graphItem_ = new MemoryMapGraphItem(memoryMap_);
-	visualizer_->addMemoryMapItem(graphItem_);
-
-	// update the visualizers of address block items
-	foreach (QSharedPointer<ComponentEditorItem> item, childItems_) {
-		QSharedPointer<ComponentEditorAddrBlockItem> addrItem = item.staticCast<ComponentEditorAddrBlockItem>();
-		addrItem->setVisualizer(visualizer_);
-	}
-
-    updateGraphics();
-
-	connect(graphItem_, SIGNAL(selectEditor()),	this, SLOT(onSelectRequest()), Qt::UniqueConnection);
+    if(memoryRemapItem)
+    {
+        memoryRemapItem->setVisualizer(visualizer);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -171,7 +142,7 @@ void ComponentEditorMemMapItem::setVisualizer( MemoryMapsVisualizer* visualizer 
 //-----------------------------------------------------------------------------
 QGraphicsItem* ComponentEditorMemMapItem::getGraphicsItem()
 {
-	return graphItem_;
+    return childItems_.at(0)->getGraphicsItem();
 }
 
 //-----------------------------------------------------------------------------
@@ -179,7 +150,7 @@ QGraphicsItem* ComponentEditorMemMapItem::getGraphicsItem()
 //-----------------------------------------------------------------------------
 void ComponentEditorMemMapItem::updateGraphics()
 {
-	graphItem_->refresh();
+    childItems_.at(0)->updateGraphics();
 }
 
 //-----------------------------------------------------------------------------
@@ -187,16 +158,7 @@ void ComponentEditorMemMapItem::updateGraphics()
 //-----------------------------------------------------------------------------
 void ComponentEditorMemMapItem::removeGraphicsItem()
 {
-	Q_ASSERT(graphItem_);
-
-	// remove the graph item from the scene
-	visualizer_->removeMemoryMapItem(graphItem_);
-
-	disconnect(graphItem_, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()));
-
-	// delete the graph item
-	delete graphItem_;
-	graphItem_ = NULL;
+    childItems_.at(0)->removeGraphicsItem();
 }
 
 //-----------------------------------------------------------------------------
@@ -206,8 +168,29 @@ void ComponentEditorMemMapItem::changeAdressUnitBitsOnAddressBlocks()
 {
     foreach (QSharedPointer<ComponentEditorItem> childItem, childItems_)
     {
-        QSharedPointer<ComponentEditorAddrBlockItem> castChildItem = 
-            qobject_cast<QSharedPointer<ComponentEditorAddrBlockItem> >(childItem);
-        castChildItem->addressUnitBitsChanged(memoryMap_->getAddressUnitBits());
+        QSharedPointer<MemoryRemapItem> memoryRemap = qobject_cast<QSharedPointer<MemoryRemapItem> >(childItem);
+        memoryRemap->changeAdressUnitBitsOnAddressBlocks();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: componenteditormemmapitem::onMemoryRemapAdded()
+//-----------------------------------------------------------------------------
+void ComponentEditorMemMapItem::onMemoryRemapAdded(int memoryRemapIndex, QSharedPointer<MemoryMap> parentMemoryMap)
+{
+    if (parentMemoryMap == memoryMap_)
+    {
+        onAddChild(memoryRemapIndex);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: componenteditormemmapitem::onMemoryRemapRemoved()
+//-----------------------------------------------------------------------------
+void ComponentEditorMemMapItem::onMemoryRemapRemoved(int memoryRemapIndex, QSharedPointer<MemoryMap> parentMemoryMap)
+{
+    if (parentMemoryMap == memoryMap_)
+    {
+        onRemoveChild(memoryRemapIndex + 1);
     }
 }

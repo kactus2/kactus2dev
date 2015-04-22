@@ -99,10 +99,12 @@ HEADERS += ../resource.h \
     ./writevalueconstraint.h \
     ./XmlUtils.h \
     ./kactusExtensions/ComponentInstantiation.h \
+    ./kactusExtensions/Kactus2Array.h \
     ./kactusExtensions/Kactus2Group.h \
     ./kactusExtensions/Kactus2Placeholder.h \
     ./kactusExtensions/Kactus2Position.h \
     ./kactusExtensions/Kactus2Value.h \
+    ./kactusExtensions/Kactus2Vector.h \
     ./kactusExtensions/KactusAttribute.h \
     ./kactusExtensions/ModuleParameter.h \
     ./validators/IPXactValueParser.h \
@@ -112,8 +114,8 @@ HEADERS += ../resource.h \
     ./validators/BinaryValidator.h \
     ./validators/namevalidator.h \
     ./validators/NMTokenValidator.h \
-    ./kactusExtensions/Kactus2Array.h \
-    ./kactusExtensions/Kactus2Vector.h
+    ./AbstractMemoryMap.h \
+    ./MemoryRemap.h
 SOURCES += ./abstractiondefinition.cpp \
     ./addressblock.cpp \
     ./addressspace.cpp \
@@ -202,10 +204,12 @@ SOURCES += ./abstractiondefinition.cpp \
     ./writevalueconstraint.cpp \
     ./XmlUtils.cpp \
     ./kactusExtensions/ComponentInstantiation.cpp \
+    ./kactusExtensions/Kactus2Array.cpp \
     ./kactusExtensions/Kactus2Group.cpp \
     ./kactusExtensions/Kactus2Placeholder.cpp \
     ./kactusExtensions/Kactus2Position.cpp \
     ./kactusExtensions/Kactus2Value.cpp \
+    ./kactusExtensions/Kactus2Vector.cpp \
     ./kactusExtensions/KactusAttribute.cpp \
     ./kactusExtensions/ModuleParameter.cpp \
     ./validators/BinaryValidator.cpp \
@@ -215,5 +219,5 @@ SOURCES += ./abstractiondefinition.cpp \
     ./validators/NMTokenValidator.cpp \
     ./validators/ParameterValidator.cpp \
     ./validators/ParameterValidator2014.cpp \
-    ./kactusExtensions/Kactus2Array.cpp \
-    ./kactusExtensions/Kactus2Vector.cpp
+    ./AbstractMemoryMap.cpp \
+    ./MemoryRemap.cpp

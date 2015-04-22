@@ -187,6 +187,7 @@ HEADERS += ./common/Global.h \
     ./Plugins/PluginSystem/PluginListDialog.h \
     ./Plugins/PluginSystem/PluginUtilityAdapter.h \
     ./Plugins/PluginSystem/ImportPlugin/ExpressionSupport.h \
+    ./Plugins/PluginSystem/ImportPlugin/IncludeImportPlugin.h \
     ./Plugins/PluginSystem/ImportPlugin/ImportColors.h \
     ./Plugins/PluginSystem/ImportPlugin/Highlighter.h \
     ./Plugins/PluginSystem/ImportPlugin/HighlightSource.h \
@@ -403,6 +404,7 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/memoryMaps/AddressBlockColumns.h \
     ./editors/ComponentEditor/memoryMaps/MemoryMapColumns.h \
     ./editors/ComponentEditor/memoryMaps/RegisterColumns.h \
+    ./editors/ComponentEditor/memoryMaps/SingleMemoryMapEditor.h \
     ./editors/ComponentEditor/memoryMaps/memorymapdelegate.h \
     ./editors/ComponentEditor/memoryMaps/memorymapeditor.h \
     ./editors/ComponentEditor/memoryMaps/memorymapmodel.h \
@@ -498,9 +500,13 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.h \
     ./editors/ComponentEditor/referenceCounter/ReferenceCounter.h \
     ./editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTree.h \
+    ./editors/ComponentEditor/remapStates/RemapConditionColumns.h \
     ./editors/ComponentEditor/remapStates/RemapStatesEditor.h \
     ./editors/ComponentEditor/remapStates/RemapStatesModel.h \
     ./editors/ComponentEditor/remapStates/SingleRemapStateEditor.h \
+    ./editors/ComponentEditor/remapStates/RemapConditionModel.h \
+    ./editors/ComponentEditor/remapStates/RemapConditionEditor.h \
+    ./editors/ComponentEditor/remapStates/RemapConditionDelegate.h \
     ./editors/CSourceEditor/CSourceContentMatcher.h \
     ./editors/CSourceEditor/MCAPIDesignerTypes.h \
     ./editors/CSourceEditor/CSourceHighlighter.h \
@@ -617,12 +623,10 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
     ./kactusGenerators/quartusGenerator/quartusgenerator.h \
-    ./wizards/common/ParameterComparator/ParameterComparator.h \
-    ./Plugins/PluginSystem/ImportPlugin/IncludeImportPlugin.h \
-    ./editors/ComponentEditor/remapStates/RemapConditionColumns.h \
-    ./editors/ComponentEditor/remapStates/RemapConditionEditor.h \
-    ./editors/ComponentEditor/remapStates/RemapConditionModel.h \
-    ./editors/ComponentEditor/remapStates/RemapConditionDelegate.hSOURCES += ./common/GenericEditProvider.cpp \
+    ./editors/ComponentEditor/treeStructure/MemoryRemapItem.h \
+    ./editors/ComponentEditor/memoryMaps/MemoryMapsColumns.h \
+    ./editors/ComponentEditor/memoryMaps/MemoryMapsView.h
+SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
     ./common/dialogs/comboSelector/comboselector.cpp \
@@ -994,6 +998,7 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/memoryMaps/registerdelegate.cpp \
     ./editors/ComponentEditor/memoryMaps/registereditor.cpp \
     ./editors/ComponentEditor/memoryMaps/registertablemodel.cpp \
+    ./editors/ComponentEditor/memoryMaps/SingleMemoryMapEditor.cpp \
     ./editors/ComponentEditor/memoryMaps/writevalueconstrainteditor.cpp \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.cpp \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/fieldgraphitem.cpp \
@@ -1067,6 +1072,9 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/common/ReferenceSelector/ReferenceSelector.cpp \
     ./editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.cpp \
     ./editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTree.cpp \
+    ./editors/ComponentEditor/remapStates/RemapConditionDelegate.cpp \
+    ./editors/ComponentEditor/remapStates/RemapConditionEditor.cpp \
+    ./editors/ComponentEditor/remapStates/RemapConditionModel.cpp \
     ./editors/ComponentEditor/remapStates/RemapStatesEditor.cpp \
     ./editors/ComponentEditor/remapStates/RemapStatesModel.cpp \
     ./editors/ComponentEditor/remapStates/SingleRemapStateEditor.cpp \
@@ -1179,7 +1187,6 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
     ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
-    ./editors/ComponentEditor/remapStates/RemapConditionModel.cpp \
-    ./editors/ComponentEditor/remapStates/RemapConditionEditor.cpp \
-    ./editors/ComponentEditor/remapStates/RemapConditionDelegate.cpp
+    ./editors/ComponentEditor/treeStructure/MemoryRemapItem.cpp \
+    ./editors/ComponentEditor/memoryMaps/MemoryMapsView.cpp
 RESOURCES += kactus.qrc

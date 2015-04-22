@@ -8,7 +8,10 @@
 #ifndef MEMORYMAPSEDITOR_H
 #define MEMORYMAPSEDITOR_H
 
+#include "memorymapsdelegate.h"
+
 #include <editors/ComponentEditor/itemeditor.h>
+
 #include <IPXACTmodels/component.h>
 
 #include <QWidget>
@@ -16,13 +19,13 @@
 #include <QSortFilterProxyModel>
 
 class LibraryInterface;
-class EditableTableView;
+class MemoryMapsView;
 class MemoryMapsModel;
 class LibraryInterface;
 
-/*! \brief Editor to edit the memory maps of a component.
- *
- */
+//-----------------------------------------------------------------------------
+//! Editor for editing the memory maps of a component.
+//-----------------------------------------------------------------------------
 class MemoryMapsEditor : public ItemEditor {
 	Q_OBJECT
 
@@ -76,6 +79,22 @@ signals:
      */
     void changeInAddressUnitBitsOnRow(int memoryMapIndex);
 
+    /*!
+     *  Inform of the added memory remap.
+     *
+     *      @param [in] memoryRemapIndex    The index of the new memory remap.
+     *      @param [in] parentMemoryMap     The owner of the new memory remap.
+     */
+    void memoryRemapAdded(int memoryRemapIndex, QSharedPointer<MemoryMap> parentMemoryMap);
+
+    /*!
+     *  Inform of the removed memory remap.
+     *
+     *      @param [in] memoryRemapIndex    The index of the removed memory remap.
+     *      @param [in] parentMemoryMap     The owner of the removed memory remap.
+     */
+    void memoryRemapRemoved(int memoryRemapIndex, QSharedPointer<MemoryMap> parentMemoryMap);
+
 protected:
 
 	//! \brief Handler for widget's show event
@@ -94,14 +113,24 @@ private:
 	//! \brief No assignment
 	MemoryMapsEditor& operator=(const MemoryMapsEditor& other);
 
-	//! \brief The view to display the table.
-	EditableTableView* view_;
+    /*!
+     *  Gets the names of the components remap states.
+     *
+     *      @return A list containing all the names of the remap states.
+     */
+    QStringList getRemapStateNames() const;
 
-	//! \brief The proxy that does the sorting of items.
+	//! The view to display the table.
+    MemoryMapsView* view_;
+
+	//! The proxy that does the sorting of items.
 	QSortFilterProxyModel* proxy_;
 
-	//! \brief The model that manages the memory maps.
+	//! The model that manages the memory maps.
 	MemoryMapsModel* model_;
+
+    //! The delegate of the view.
+    MemoryMapsDelegate* delegate_;
 };
 
 #endif // MEMORYMAPSEDITOR_H

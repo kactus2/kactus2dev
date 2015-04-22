@@ -7,94 +7,167 @@
 
 #include "memorymapsdelegate.h"
 
+#include <editors/ComponentEditor/memoryMaps/MemoryMapsColumns.h>
+#include <editors/ComponentEditor/common/ReferenceSelector/ReferenceSelector.h>
+
 #include <QLineEdit>
 #include <QSpinBox>
+#include <QRegularExpression>
+#include <QPainter>
+#include <QPen>
 
-MemoryMapsDelegate::MemoryMapsDelegate(QObject *parent):
-QStyledItemDelegate(parent) {
+//-----------------------------------------------------------------------------
+// Function: memorymapsdelegate::MemoryMapsDelegate()
+//-----------------------------------------------------------------------------
+MemoryMapsDelegate::MemoryMapsDelegate(QStringList remapStateNames, QObject *parent):
+QStyledItemDelegate(parent),
+remapStateNames_(remapStateNames)
+{
+
 }
 
-MemoryMapsDelegate::~MemoryMapsDelegate() {
+//-----------------------------------------------------------------------------
+// Function: memorymapsdelegate::~MemoryMapsDelegate()
+//-----------------------------------------------------------------------------
+MemoryMapsDelegate::~MemoryMapsDelegate()
+{
+    
 }
 
-QWidget* MemoryMapsDelegate::createEditor( QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index ) const {
-	switch (index.column()) {
-		case MemoryMapsDelegate::NAME_COLUMN:
-		case MemoryMapsDelegate::DESC_COLUMN: {
-			QLineEdit* edit = new QLineEdit(parent);
-			connect(edit, SIGNAL(editingFinished()),
-				this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
-			return edit;
-											  }
-		case MemoryMapsDelegate::AUB_COLUMN: {
-			QSpinBox* spinBox = new QSpinBox(parent);
-			connect(spinBox, SIGNAL(editingFinished()),
-				this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
-			spinBox->setRange(1, 4096);
-			return spinBox;
-											 }
-		default: {
-			return QStyledItemDelegate::createEditor(parent, option, index);
-				 }
-	}
+//-----------------------------------------------------------------------------
+// Function: memorymapsdelegate::createEditor()
+//-----------------------------------------------------------------------------
+QWidget* MemoryMapsDelegate::createEditor( QWidget* parent, const QStyleOptionViewItem& option,
+    const QModelIndex& index ) const
+{
+    if (index.column() == MemoryMapsColumns::NAME_COLUMN ||
+        index.column() == MemoryMapsColumns::DESCRIPTION_COLUMN)
+    {
+        QLineEdit* edit = new QLineEdit(parent);
+        connect(edit, SIGNAL(editingFinished()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
+        return edit;
+    }
+    else if (index.column() == MemoryMapsColumns::AUB_COLUMN)
+    {
+        QLineEdit* edit = new QLineEdit(parent);
+        connect(edit, SIGNAL(editingFinished()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
+        edit->setValidator(new QRegularExpressionValidator(QRegularExpression("\\d*"), edit));
+        return edit;
+    }
+    else if (index.column() == MemoryMapsColumns::REMAPSTATE_COLUMN)
+    {
+        ReferenceSelector* referenceSelector = new ReferenceSelector(parent);
+
+        referenceSelector->refresh(remapStateNames_);
+        return referenceSelector;
+    }
+    else
+    {
+        return QStyledItemDelegate::createEditor(parent, option, index);
+    }
 }
 
-void MemoryMapsDelegate::setEditorData( QWidget* editor, const QModelIndex& index ) const {
-	switch (index.column()) {
-		case MemoryMapsDelegate::NAME_COLUMN:
-		case MemoryMapsDelegate::DESC_COLUMN: {
-			QLineEdit* edit = qobject_cast<QLineEdit*>(editor);
-			Q_ASSERT(edit);
+//-----------------------------------------------------------------------------
+// Function: memorymapsdelegate::setEditorData()
+//-----------------------------------------------------------------------------
+void MemoryMapsDelegate::setEditorData( QWidget* editor, const QModelIndex& index ) const
+{
+    if (index.column() == MemoryMapsColumns::NAME_COLUMN ||
+        index.column() == MemoryMapsColumns::DESCRIPTION_COLUMN ||
+        index.column() == MemoryMapsColumns::AUB_COLUMN)
+    {
+        QLineEdit* edit = qobject_cast<QLineEdit*>(editor);
+        Q_ASSERT(edit);
 
-			const QString text = index.model()->data(index, Qt::DisplayRole).toString();
-			edit->setText(text);
-			break;
-											  }
-		case MemoryMapsDelegate::AUB_COLUMN: {
-			QSpinBox* spinBox = qobject_cast<QSpinBox*>(editor);
-			Q_ASSERT(spinBox);
+        const QString text = index.model()->data(index, Qt::DisplayRole).toString();
+        edit->setText(text);
+    }
+    else if (index.column() == MemoryMapsColumns::REMAPSTATE_COLUMN)
+    {
+        QString text = index.model()->data(index, Qt::DisplayRole).toString();
+        
+        if (text == tr("No remap state selected."))
+        {
+            text = "";
+        }
 
-			unsigned int value = index.model()->data(index, Qt::DisplayRole).toUInt();
-			spinBox->setValue(value);
-			break;
-											 }
-		default: {
-			QStyledItemDelegate::setEditorData(editor, index);
-			break;
-				 }
-	}
+        ReferenceSelector* referenceSelector = qobject_cast<ReferenceSelector*>(editor);
+
+        referenceSelector->selectItem(text);
+    }
+    else
+    {
+        QStyledItemDelegate::setEditorData(editor, index);
+    }
 }
 
-void MemoryMapsDelegate::setModelData( QWidget* editor, QAbstractItemModel* model, const QModelIndex& index ) const {
-	switch (index.column()) {
-		case MemoryMapsDelegate::NAME_COLUMN:
-		case MemoryMapsDelegate::DESC_COLUMN: {
-			QLineEdit* edit = qobject_cast<QLineEdit*>(editor);
-			Q_ASSERT(edit);
+//-----------------------------------------------------------------------------
+// Function: memorymapsdelegate::setModelData()
+//-----------------------------------------------------------------------------
+void MemoryMapsDelegate::setModelData( QWidget* editor, QAbstractItemModel* model, const QModelIndex& index ) const
+{
+    if (index.column() == MemoryMapsColumns::NAME_COLUMN ||
+        index.column() == MemoryMapsColumns::DESCRIPTION_COLUMN)
+    {
+        QLineEdit* edit = qobject_cast<QLineEdit*>(editor);
+        Q_ASSERT(edit);
 
-			QString text = edit->text();
-			model->setData(index, text, Qt::EditRole);
-			break;
-											  }
-		case MemoryMapsDelegate::AUB_COLUMN: {
-			QSpinBox* spinBox = qobject_cast<QSpinBox*>(editor);
-			Q_ASSERT(spinBox);
+        QString text = edit->text();
+        model->setData(index, text, Qt::EditRole);
+    }
+    else if (index.column() == MemoryMapsColumns::AUB_COLUMN)
+    {
+        QLineEdit* edit = qobject_cast<QLineEdit*>(editor);
+        Q_ASSERT(edit);
 
-			unsigned int value = spinBox->value();
-			model->setData(index, value, Qt::EditRole);
-			break;
-											 }
-		default: {
-			QStyledItemDelegate::setModelData(editor, model, index);
-			break;
-				 }
-	}
+        int editorValue = edit->text().toUInt();
+        model->setData(index, editorValue, Qt::EditRole);
+    }
+    else if (index.column() == MemoryMapsColumns::REMAPSTATE_COLUMN)
+    {
+        ReferenceSelector* referenceSelector = qobject_cast<ReferenceSelector*>(editor);
+        QString text = referenceSelector->currentText();
+        model->setData(index, text, Qt::EditRole);
+    }
+    else
+    {
+        QStyledItemDelegate::setModelData(editor, model, index);
+    }
 }
 
-void MemoryMapsDelegate::commitAndCloseEditor() {
+//-----------------------------------------------------------------------------
+// Function: memorymapsdelegate::paint()
+//-----------------------------------------------------------------------------
+void MemoryMapsDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
+    QStyledItemDelegate::paint(painter, option, index);
+
+    QPen oldPen = painter->pen();
+    QPen newPen(Qt::lightGray);
+    newPen.setWidth(1);
+    painter->setPen(newPen);
+
+    painter->drawLine(option.rect.topRight(), option.rect.bottomRight());
+
+    painter->setPen(oldPen);
+}
+
+//-----------------------------------------------------------------------------
+// Function: memorymapsdelegate::commitAndCloseEditor()
+//-----------------------------------------------------------------------------
+void MemoryMapsDelegate::commitAndCloseEditor()
+{
 	QWidget* edit = qobject_cast<QWidget*>(sender());
 	Q_ASSERT(edit);
 
 	emit commitData(edit);
 	emit closeEditor(edit);
+}
+
+//-----------------------------------------------------------------------------
+// Function: memorymapsdelegate::updateRemapStateNames()
+//-----------------------------------------------------------------------------
+void MemoryMapsDelegate::updateRemapStateNames(QStringList newRemapStateNames)
+{
+    remapStateNames_ = newRemapStateNames;
 }

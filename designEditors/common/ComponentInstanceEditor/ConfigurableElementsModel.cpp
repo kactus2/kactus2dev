@@ -864,8 +864,6 @@ QModelIndex ConfigurableElementsModel::index(int row, int column, const QModelIn
 
         return createIndex(row, column, element.data());
     }
-
-    return QModelIndex();
 }
 
 //-----------------------------------------------------------------------------

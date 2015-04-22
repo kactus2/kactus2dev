@@ -4045,6 +4045,24 @@
     <ClCompile Include="GeneratedFiles\moc_RemapConditionModel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\SingleMemoryMapEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_SingleMemoryMapEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\treeStructure\MemoryRemapItem.cpp">
+      <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_MemoryRemapItem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\MemoryMapsView.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_MemoryMapsView.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5577,6 +5595,15 @@
     <CustomBuild Include="editors\ComponentEditor\remapStates\RemapConditionDelegate.h">
       <Filter>Header Files\editors\ComponentEditor\remapStates</Filter>
     </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\memoryMaps\SingleMemoryMapEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\treeStructure\MemoryRemapItem.h">
+      <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\memoryMaps\MemoryMapsView.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -5944,6 +5971,9 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\remapStates\RemapConditionColumns.h">
       <Filter>Header Files\editors\ComponentEditor\remapStates</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\memoryMaps\MemoryMapsColumns.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

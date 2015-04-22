@@ -27,6 +27,7 @@ remapConditionEditor_(new RemapConditionEditor(remapState->getRemapPorts(), comp
 expressionFormatter, this))
 {
     connect(remapConditionEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(&nameEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
     connect(remapConditionEditor_, SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);

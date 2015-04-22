@@ -334,6 +334,13 @@ public:
 	 */
 	const QSharedPointer<QList<QSharedPointer<RemapState> > >& getRemapStates() const;
 
+    /*!
+     *  Get the names of the remap states.
+     *
+     *      @return A list containing the names of the remap states.
+     */
+    QStringList getRemapStateNames() const;
+
 	/*! \brief Get the attributes for the component
 	 *
 	 * \return A reference to QMap containing the attributes

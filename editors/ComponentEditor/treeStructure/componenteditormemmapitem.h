@@ -116,32 +116,38 @@ public:
      */
     void changeAdressUnitBitsOnAddressBlocks();
 
-signals:
+public slots:
 
     /*!
-     *  Emitted when address unit bits have been changed.
+     *  Add a memory remap item to the tree.
      *
-     *      @param [in] newAddressUnitBits  The new address unit bit value.
+     *      @param [in] memoryRemapIndex    The index of the new memory remap item.
+     *      @param [in] parentMemoryMap     The parent of the new memory remap item.
      */
-    void addressUnitBitsChanged(int newAddressUnitBits);
+    void onMemoryRemapAdded(int memoryRemapIndex, QSharedPointer<MemoryMap> parentMemoryMap);
+
+    /*!
+     *  Remove a memory remap item from the tree.
+     *
+     *      @param [in] memoryRemapIndex    The index of the removed memory remap item.
+     *      @param [in] parentMemoryMap     The parent of the removed memory remap item.
+     */
+    void onMemoryRemapRemoved(int memoryRemapIndex, QSharedPointer<MemoryMap> parentMemoryMap);
 
 private:
-	//! \brief No copying
+	//! No copying
 	ComponentEditorMemMapItem(const ComponentEditorMemMapItem& other);
 
-	//! \brief No assignment
+	//! No assignment
 	ComponentEditorMemMapItem& operator=(const ComponentEditorMemMapItem& other);
 
-	//! \brief Pointer to the memory map being edited.
+	//! Pointer to the memory map being edited.
 	QSharedPointer<MemoryMap> memoryMap_;
 
-	//! \brief Contains the address blocks that are children of this tree item.
-	QList<QSharedPointer<MemoryMapItem> >& items_;
-
-	//! \brief The visualizer to display the memory maps
+	//! The visualizer to display the memory maps
 	MemoryMapsVisualizer* visualizer_;
 
-	//! \brief Pointer to the graph item which visualizes this memory map.
+	//! Pointer to the graph item which visualizes this memory map.
 	MemoryMapGraphItem* graphItem_;
 };
 

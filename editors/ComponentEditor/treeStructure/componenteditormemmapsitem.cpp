@@ -28,11 +28,18 @@ visualizer_(new MemoryMapsVisualizer())
 
 	setObjectName(tr("ComponentEditorMemMapsItem"));
 
-	foreach (QSharedPointer<MemoryMap> memoryMap, memoryMaps_) {
+	foreach (QSharedPointer<MemoryMap> memoryMap, memoryMaps_)
+    {
 		QSharedPointer<ComponentEditorMemMapItem> memoryMapItem(new ComponentEditorMemMapItem(memoryMap, model,
             libHandler, component, referenceCounter_, parameterFinder_, expressionFormatter_, this));
 		memoryMapItem->setVisualizer(visualizer_);
 		childItems_.append(memoryMapItem);
+
+        connect(this, SIGNAL(memoryRemapAdded(int, QSharedPointer<MemoryMap>)),
+            memoryMapItem.data(), SLOT(onMemoryRemapAdded(int, QSharedPointer<MemoryMap>)), Qt::UniqueConnection);
+
+        connect(this, SIGNAL(memoryRemapRemoved(int ,QSharedPointer<MemoryMap>)),
+            memoryMapItem.data(), SLOT(onMemoryRemapRemoved(int, QSharedPointer<MemoryMap>)), Qt::UniqueConnection);
 	}
 }
 
@@ -70,6 +77,12 @@ ItemEditor* ComponentEditorMemMapsItem::editor() {
 
         connect(editor_, SIGNAL(changeInAddressUnitBitsOnRow(int)), 
             this, SLOT(addressUnitBitsChangedOnMemoryMap(int)), Qt::UniqueConnection);
+
+        connect(editor_, SIGNAL(memoryRemapAdded(int, QSharedPointer<MemoryMap>)),
+            this, SIGNAL(memoryRemapAdded(int ,QSharedPointer<MemoryMap>)), Qt::UniqueConnection);
+
+        connect(editor_, SIGNAL(memoryRemapRemoved(int, QSharedPointer<MemoryMap>)),
+            this, SIGNAL(memoryRemapRemoved(int, QSharedPointer<MemoryMap>)), Qt::UniqueConnection);
 	}
 	return editor_;
 }
@@ -78,14 +91,24 @@ QString ComponentEditorMemMapsItem::getTooltip() const {
 	return tr("Contains the memory maps of the component");
 }
 
-void ComponentEditorMemMapsItem::createChild( int index ) {
-	QSharedPointer<ComponentEditorMemMapItem> memoryMapItem(
-		new ComponentEditorMemMapItem(memoryMaps_.at(index), model_, libHandler_, component_, referenceCounter_,
-        parameterFinder_, expressionFormatter_, this));
+//-----------------------------------------------------------------------------
+// Function: componenteditormemmapsitem::()
+//-----------------------------------------------------------------------------
+void ComponentEditorMemMapsItem::createChild( int index )
+{
+	QSharedPointer<ComponentEditorMemMapItem> memoryMapItem(new ComponentEditorMemMapItem(memoryMaps_.at(index),
+        model_, libHandler_, component_, referenceCounter_, parameterFinder_, expressionFormatter_, this));
 	memoryMapItem->setLocked(locked_);
 	childItems_.insert(index, memoryMapItem);
 	
-	if (visualizer_) {
+    connect(this, SIGNAL(memoryRemapAdded(int, QSharedPointer<MemoryMap>)),
+        memoryMapItem.data(), SLOT(onMemoryRemapAdded(int, QSharedPointer<MemoryMap>)), Qt::UniqueConnection);
+
+    connect(this, SIGNAL(memoryRemapRemoved(int ,QSharedPointer<MemoryMap>)),
+        memoryMapItem.data(), SLOT(onMemoryRemapRemoved(int, QSharedPointer<MemoryMap>)), Qt::UniqueConnection);
+
+	if (visualizer_)
+    {
 		memoryMapItem->setVisualizer(visualizer_);
 	}
 }

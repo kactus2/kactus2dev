@@ -129,8 +129,10 @@ QVariant AddressSpacesModel::data( const QModelIndex& index, int role /*= Qt::Di
 	if (AddressSpacesDelegate::USER_DISPLAY_ROLE == role) {
 		return component_->getMasterInterfaces(addrSpaces_.at(index.row())->getName());
 	}
-	else if (Qt::ForegroundRole == role) {
-		if (addrSpaces_.at(index.row())->isValid(component_->getChoices())) {
+	else if (Qt::ForegroundRole == role)
+    {
+		if (addrSpaces_.at(index.row())->isValid(component_->getChoices(), component_->getRemapStateNames()))
+        {
 			return QColor("black");
 		}
 		else {
@@ -245,7 +247,7 @@ bool AddressSpacesModel::isValid() const
 	// if at least one address space is invalid
 	foreach (QSharedPointer<AddressSpace> addrSpace, addrSpaces_) 
     {
-		if (!addrSpace->isValid(component_->getChoices()))
+		if (!addrSpace->isValid(component_->getChoices(), component_->getRemapStateNames()))
         {
 			return false;
 		}

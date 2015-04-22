@@ -27,16 +27,17 @@
 // Function: MemoryMapEditor::MemoryMapEditor()
 //-----------------------------------------------------------------------------
 MemoryMapEditor::MemoryMapEditor(QSharedPointer<Component> component, LibraryInterface* handler,
-    QSharedPointer<MemoryMap> memoryMap, QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<AbstractMemoryMap> memoryRemap,
+    QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<ExpressionFormatter> expressionFormatter, QWidget* parent /* = 0 */):
-ItemEditor(component, handler, parent),
+QGroupBox(tr("Address blocks summary"), parent),
 view_(new EditableTableView(this)),
 proxy_(new MemoryMapProxy(this)),
 model_(0)
 {
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
 
-    model_ = new MemoryMapModel(memoryMap, component->getChoices(), expressionParser, parameterFinder,
+    model_ = new MemoryMapModel(memoryRemap, component->getChoices(), expressionParser, parameterFinder,
         expressionFormatter, this);
 
     ComponentParameterModel* componentParameterModel = new ComponentParameterModel(parameterFinder, this);
@@ -45,19 +46,14 @@ model_(0)
     ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
     parameterCompleter->setModel(componentParameterModel);
 
-	// display a label on top the table
-	SummaryLabel* summaryLabel = new SummaryLabel(tr("Address blocks summary"), this);
-
 	QVBoxLayout* layout = new QVBoxLayout(this);
-	layout->addWidget(summaryLabel, 0, Qt::AlignCenter);
 	layout->addWidget(view_);
-	layout->setContentsMargins(0, 0, 0, 0);
 
 	proxy_->setSourceModel(model_);
 	view_->setModel(proxy_);
 
 	//! \brief Enable import/export csv file
-	const QString compPath = ItemEditor::handler()->getDirectoryPath(*ItemEditor::component()->getVlnv());
+    const QString compPath = handler->getDirectoryPath(*component->getVlnv());
 	QString defPath = QString("%1/addrBlockList.csv").arg(compPath);
 	view_->setDefaultImportExportPath(defPath);
 	view_->setAllowImportExport(true);
@@ -110,21 +106,4 @@ bool MemoryMapEditor::isValid() const
 void MemoryMapEditor::refresh()
 {
 	view_->update();
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryMapEditor::showEvent()
-//-----------------------------------------------------------------------------
-void MemoryMapEditor::showEvent( QShowEvent* event )
-{
-	QWidget::showEvent(event);
-	emit helpUrlRequested("componenteditor/memorymap.html");
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryMapEditor::sizeHint()
-//-----------------------------------------------------------------------------
-QSize MemoryMapEditor::sizeHint() const
-{
-	return QSize(MemoryMapEditor::WIDTH, MemoryMapEditor::HEIGHT);
 }

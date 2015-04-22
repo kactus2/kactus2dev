@@ -66,6 +66,13 @@ protected:
      */
     virtual void contextMenuEvent(QContextMenuEvent* event);
 
+    /*!
+     *  Gets the action for the remove command.
+     *
+     *      @return The action for the remove command.
+     */
+    QAction* getRemoveAction() const;
+
 private slots:
    
     /*!

@@ -67,24 +67,29 @@ public:
 	*/
 	void write(QXmlStreamWriter& writer);
 
-	/*! \brief Check if the address space is in a valid state.
+    /*!
+	 *  Check if the address space is in a valid state.
 	 *
-     * \param componentChoices  Choices in the containing component.
-	 * \param errorList The list to add the possible error messages to.
-	 * \param parentIdentifier String from parent to help to identify the location of the error.
-	 *
-	 * \return bool True if the state is valid and writing is possible.
-	*/
-	bool isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices, QStringList& errorList, 
-		const QString& parentIdentifier) const;
-
-	/*! \brief Check if the address space is in a valid state.
-	 *
-     * \param componentChoices  Choices in the containing component.
+	 *      @param [in] componentChoices    Choices in the containing component.
+	 *      @param [in] remapStateNames     List containing the remap state names of the component.
+	 *      @param [in] errorList           The list to add the possible error messages to.
+	 *      @param [in] parentIdentifier    String from parent to help identify the location of the error.
      *
-	 * \return bool True if the state is valid and writing is possible.
-	*/
-	bool isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const;
+     *      @return True if the state isvalid and writing is possible.
+	 */
+	bool isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices, QStringList remapStateNames,
+        QStringList& errorList, const QString& parentIdentifier) const;
+
+	/*!
+	 *  Check if the address space is in a valid state.
+	 *
+	 *      @param [in] componentChoices    Choices in the containing component.
+	 *      @param [in] remapStateNames     A list of remap state names of the component.
+     *
+     *      @return True, if the state is valid and writing is possible, false otherwise.
+	 */
+	bool isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices, QStringList remapStateNames)
+        const;
 
 	/*! \brief Get the address unit bits
 	 *

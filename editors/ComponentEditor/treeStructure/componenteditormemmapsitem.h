@@ -92,17 +92,35 @@ public slots:
      */
     void addressUnitBitsChangedOnMemoryMap(int memoryMapIndex);
 
+signals:
+
+    /*!
+     *  Informs that a new memory remap item should be added.
+     *
+     *      @param [in] memoryRemapIndex    The index of the new memory remap item.
+     *      @param [in] parentMemoryMap     The parent memory map of the new memory remap.
+     */
+    void memoryRemapAdded(int memoryRemapIndex, QSharedPointer<MemoryMap> parentMemoryMap);
+
+    /*!
+     *  Informs that a memory remap item should be removed.
+     *
+     *      @param [in] memoryRemapIndex    The index of the removed memory remap item.
+     *      @param [in] parentMemoryMap     The parent memory map of the removed memory remap.
+     */
+    void memoryRemapRemoved(int memoryRemapIndex, QSharedPointer<MemoryMap> parentMemoryMap);
+
 private:
-	//! \brief No copying
+	//! No copying
 	ComponentEditorMemMapsItem(const ComponentEditorMemMapsItem& other);
 
-	//! \brief No assignment
+	//! No assignment
 	ComponentEditorMemMapsItem& operator=(const ComponentEditorMemMapsItem& other);
 
-	//! \brief Contains the memory maps being edited.
+	//! Contains the memory maps being edited.
 	QList<QSharedPointer<MemoryMap> >& memoryMaps_;
 
-	//! \brief The visualizer to display the memory maps
+	//! The visualizer to display the memory maps
 	MemoryMapsVisualizer* visualizer_;
 };
 

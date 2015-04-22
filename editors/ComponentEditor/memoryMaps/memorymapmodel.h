@@ -13,7 +13,7 @@
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
-#include <IPXACTmodels/memorymap.h>
+#include <IPXACTmodels/AbstractMemoryMap.h>
 #include <IPXACTmodels/memorymapitem.h>
 
 #include <QAbstractTableModel>
@@ -34,14 +34,14 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] memoryMap               Pointer to the memory map being edited.
+	 *      @param [in] memoryRemap             Pointer to the memory remap being edited.
 	 *      @param [in] componentChoices        Choices in the containing component.
 	 *      @param [in] expressionParser        Pointer to the expression parser.
 	 *      @param [in] parameterFinder         Pointer to the parameter finder.
 	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
 	 *      @param [in] parent                  Pointer to the owner of this model.
 	 */
-	MemoryMapModel(QSharedPointer<MemoryMap> memoryMap, 
+	MemoryMapModel(QSharedPointer<AbstractMemoryMap> memoryRemap,
         QSharedPointer <QList<QSharedPointer<Choice> > > componentChoices,
         QSharedPointer <ExpressionParser> expressionParser,
         QSharedPointer <ParameterFinder> parameterFinder,
@@ -194,8 +194,8 @@ private:
      */
     QVariant valueForIndex(QModelIndex const& index) const;
 
-	//! \brief Pointer to the memory map being edited.
-	QSharedPointer<MemoryMap> memoryMap_;
+	//! Pointer to the memory remap being edited.
+    QSharedPointer<AbstractMemoryMap> memoryRemap_;
 
     //! The choices available in the containing component;
     QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices_;
@@ -203,6 +203,7 @@ private:
 	//! \brief Contains the memory map items being edited.
 	QList<QSharedPointer<MemoryMapItem> >& items_;
 
+    //! The expression formatter, changes referenced ids to parameter names.
     QSharedPointer <ExpressionFormatter> expressionFormatter_;
 };
 

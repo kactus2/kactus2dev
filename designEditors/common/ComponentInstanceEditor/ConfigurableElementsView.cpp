@@ -84,3 +84,11 @@ void ConfigurableElementsView::contextMenuEvent(QContextMenuEvent* event)
         event->accept();
     }
 }
+
+//-----------------------------------------------------------------------------
+// Function: ConfigurableElementsView::getRemoveAction()
+//-----------------------------------------------------------------------------
+QAction* ConfigurableElementsView::getRemoveAction() const
+{
+    return removeAction_;
+}

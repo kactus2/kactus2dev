@@ -12,43 +12,39 @@
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
-#include <IPXACTmodels/memorymap.h>
+#include <IPXACTmodels/AbstractMemoryMap.h>
 
 #include <QSortFilterProxyModel>
 #include <QSharedPointer>
+#include <QGroupBox>
 
 class EditableTableView;
 class MemoryMapModel;
 class MemoryMapProxy;
 class LibraryInterface;
 
-/*! \brief The editor to edit the details of a single memory map.
- *
- */
-class MemoryMapEditor : public ItemEditor {
+//-----------------------------------------------------------------------------
+//! The editor to edit the address blocks of a single memory map.
+//-----------------------------------------------------------------------------
+class MemoryMapEditor : public QGroupBox
+{
 	Q_OBJECT
 
 public:
 
-	//! \brief The default height and width of the editor.
-	enum Sizes {
-		HEIGHT = 300,
-		WIDTH = 700
-	};
-	
-	/*!
+    /*!
 	 *  The constructor.
 	 *
 	 *      @param [in] component               Pointer to the component being edited.
 	 *      @param [in] handler                 Pointer to the instance managing the library.
-	 *      @param [in] memoryMap               Pointer to the memory map being edited.
+	 *      @param [in] memoryRemap             Pointer to the memory remap being edited.
 	 *      @param [in] parameterFinder         Pointer to the parameter finder.
 	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
 	 *      @param [in] parent                  Pointer to the parent of this editor.
 	 */
 	MemoryMapEditor(QSharedPointer<Component> component,
 		LibraryInterface* handler, 
-		QSharedPointer<MemoryMap> memoryMap,
+        QSharedPointer<AbstractMemoryMap> memoryRemap,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QWidget* parent = 0);
@@ -66,16 +62,54 @@ public:
 	*/
 	virtual void refresh();
 
-	/*! \brief The size hint for the editor.
-	 *
-	 * \return QSize contains the size hint.
-	*/
-	virtual QSize sizeHint() const;
+signals:
+    
+    /*!
+     *  Emitted when the contents of the widget change.
+     */
+    void contentChanged();
 
-protected:
+    /*!
+     *  Emits an error message for the user.
+     *
+     *      @param [in] msg     The error message.
+     */
+    void errorMessage(const QString& msg) const;
 
-	//! \brief Handler for widget's show event
-	virtual void showEvent(QShowEvent* event);
+    /*!
+     *  Emits a notice message for the user.
+     *
+     *      @param [in] msg   [Description].
+     */
+    void noticeMessage(const QString& msg) const;
+
+    /*!
+     *  Increases the number of references to the given parameter.
+     *
+     *      @param [in] id  The target parameter.
+     */
+    void increaseReferences(QString id);
+
+    /*!
+     *  Decreases the number of references to the given parameter.
+     *
+     *      @param [in] id  The target parameter.
+     */
+    void decreaseReferences(QString id);
+
+    /*!
+     *  Informs of an added child.
+     *
+     *      @param [in] index   The index of the new child.
+     */
+    void childAdded(int index);
+
+    /*!
+     *  Informs of a removed child.
+     *
+     *      @param [in] index   The index of the removed child.
+     */
+    void childRemoved(int index);
 
 private:
 	

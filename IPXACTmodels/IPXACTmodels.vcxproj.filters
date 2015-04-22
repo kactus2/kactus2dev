@@ -374,6 +374,12 @@
     <ClCompile Include="kactusExtensions\Kactus2Vector.cpp">
       <Filter>Source Files\kactusExtensions</Filter>
     </ClCompile>
+    <ClCompile Include="AbstractMemoryMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MemoryRemap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ipxactmodels_global.h">
@@ -687,6 +693,12 @@
     </ClInclude>
     <ClInclude Include="kactusExtensions\Kactus2Vector.h">
       <Filter>Header Files\kactusExtensions</Filter>
+    </ClInclude>
+    <ClInclude Include="AbstractMemoryMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MemoryRemap.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

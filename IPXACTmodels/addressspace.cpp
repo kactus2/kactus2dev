@@ -259,9 +259,12 @@ void AddressSpace::write(QXmlStreamWriter& writer) {
 	writer.writeEndElement(); // spirit:addressSpace
 }
 
+//-----------------------------------------------------------------------------
+// Function: addressspace::isValid()
+//-----------------------------------------------------------------------------
 bool AddressSpace::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
-    QStringList& errorList, 
-						   const QString& parentIdentifier ) const {
+    QStringList remapStateNames, QStringList& errorList, const QString& parentIdentifier ) const
+{
 	bool valid = true;
 	const QString thisIdentifier(QObject::tr("address space %1").arg(nameGroup_.name()));
 
@@ -292,7 +295,9 @@ bool AddressSpace::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > compo
 	if (localMemoryMap_) {
 		
 		// if the local memory map contains definitions but is not valid
-		if (!localMemoryMap_->isEmpty() && !localMemoryMap_->isValid(componentChoices, errorList, thisIdentifier)) {
+		if (!localMemoryMap_->isEmpty() && !localMemoryMap_->isValid(componentChoices, remapStateNames, errorList,
+            thisIdentifier))
+        {
 			valid = false;
 		}
 	}
@@ -310,8 +315,12 @@ bool AddressSpace::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > compo
 	return valid;
 }
 
-bool AddressSpace::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const {
-	
+//-----------------------------------------------------------------------------
+// Function: addressspace::isValid()
+//-----------------------------------------------------------------------------
+bool AddressSpace::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
+    QStringList remapStateNames) const
+{
 	if (nameGroup_.name().isEmpty()) {
 		return false;
 	}
@@ -333,7 +342,7 @@ bool AddressSpace::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > compo
 	if (localMemoryMap_) {
 
 		// if the memory map contains definitions but is not valid
-		if (!localMemoryMap_->isEmpty() && !localMemoryMap_->isValid(componentChoices))
+		if (!localMemoryMap_->isEmpty() && !localMemoryMap_->isValid(componentChoices, remapStateNames))
         {
 			return false;
 		}

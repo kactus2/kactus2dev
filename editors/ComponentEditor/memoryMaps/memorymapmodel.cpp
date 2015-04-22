@@ -18,7 +18,7 @@
 //-----------------------------------------------------------------------------
 // Function: MemoryMapModel::MemoryMapModel()
 //-----------------------------------------------------------------------------
-MemoryMapModel::MemoryMapModel(QSharedPointer<MemoryMap> memoryMap,
+MemoryMapModel::MemoryMapModel(QSharedPointer<AbstractMemoryMap> memoryRemap,
     QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
     QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<ParameterFinder> parameterFinder,
@@ -26,14 +26,14 @@ MemoryMapModel::MemoryMapModel(QSharedPointer<MemoryMap> memoryMap,
     QObject *parent):
 ReferencingTableModel(parameterFinder, parent),
 ParameterizableTable(parameterFinder),
-memoryMap_(memoryMap),
+memoryRemap_(memoryRemap),
 componentChoices_(componentChoices),
-items_(memoryMap->getItems()),
+items_(memoryRemap->getItems()),
 expressionFormatter_(expressionFormatter)
 {
     setExpressionParser(expressionParser);
 
-	Q_ASSERT(memoryMap_);
+    Q_ASSERT(memoryRemap_);
 }
 
 MemoryMapModel::~MemoryMapModel()
@@ -338,7 +338,7 @@ void MemoryMapModel::onAddItem( QModelIndex const& index )
 	}
 
 	// the address where the current memory map ends
-	quint64 previousEnd = memoryMap_->getLastAddress();
+	quint64 previousEnd = memoryRemap_->getLastAddress();
 	// if this is the first item to add then do not increase address
 	if (previousEnd != 0)
     {

@@ -70,7 +70,7 @@ QString ComponentEditorAddrSpaceItem::text() const {
 
 bool ComponentEditorAddrSpaceItem::isValid() const
 {
-	return addrSpace_->isValid(component_->getChoices());
+	return addrSpace_->isValid(component_->getChoices(), component_->getRemapStateNames());
 }
 
 ItemEditor* ComponentEditorAddrSpaceItem::editor() {
