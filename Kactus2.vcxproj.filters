@@ -4063,6 +4063,12 @@
     <ClCompile Include="GeneratedFiles\moc_MemoryMapsView.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_SingleAddressBlockEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\SingleAddressBlockEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5602,6 +5608,9 @@
       <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\memoryMaps\MemoryMapsView.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\memoryMaps\SingleAddressBlockEditor.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
     </CustomBuild>
   </ItemGroup>

@@ -6,12 +6,14 @@
  */
 
 #include "componenteditoraddrblockitem.h"
-#include <editors/ComponentEditor/memoryMaps/addressblockeditor.h>
-#include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
-#include <IPXACTmodels/register.h>
 #include "componenteditorregisteritem.h"
+
+#include <editors/ComponentEditor/memoryMaps/SingleAddressBlockEditor.h>
+#include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.h>
 #include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>
+
+#include <IPXACTmodels/register.h>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorAddrBlockItem::ComponentEditorAddrBlockItem()
@@ -91,21 +93,17 @@ ItemEditor* ComponentEditorAddrBlockItem::editor()
 {
 	if (!editor_)
     {
-		editor_ = new AddressBlockEditor(addrBlock_, component_, libHandler_, parameterFinder_,
+        editor_ = new SingleAddressBlockEditor(addrBlock_, component_, libHandler_, parameterFinder_,
             expressionFormatter_);
 		editor_->setProtection(locked_);
-		connect(editor_, SIGNAL(contentChanged()), 
-			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
-		connect(editor_, SIGNAL(childAdded(int)),
-			this, SLOT(onAddChild(int)), Qt::UniqueConnection);
-		connect(editor_, SIGNAL(childRemoved(int)),
-			this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(childAdded(int)), this, SLOT(onAddChild(int)), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(childRemoved(int)), this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
         connect(editor_, SIGNAL(errorMessage(const QString&)),
             this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
-		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
-			this, SIGNAL(helpUrlRequested(QString const&)));
+		connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
         
-        connect(this, SIGNAL(changeInAddressUnitBits(int)), 
+        connect(this, SIGNAL(changeInAddressUnitBits(int)),
             editor_, SIGNAL(addressUnitBitsChanged(int)), Qt::UniqueConnection);
 
         connectItemEditorToReferenceCounter();

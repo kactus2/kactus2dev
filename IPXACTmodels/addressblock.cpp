@@ -206,13 +206,17 @@ void AddressBlock::write(QXmlStreamWriter& writer) {
 	writer.writeEndElement(); // spirit:addressBlock
 }
 
+//-----------------------------------------------------------------------------
+// Function: addressblock::isValid()
+//-----------------------------------------------------------------------------
 bool AddressBlock::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
-    QStringList& errorList,
-						   const QString& parentIdentifier ) const {
+    QStringList& errorList, const QString& parentIdentifier ) const
+{
 	bool valid = true;
-	const QString thisIdentifier(QObject::tr("address block %1").arg(name_));
+    const QString thisIdentifier(QObject::tr("address block %1").arg(getName()));
 
-	if (name_.isEmpty()) {
+    if (getName().isEmpty())
+    {
 		errorList.append(QObject::tr("No name specified for address block"
 			" within %1").arg(parentIdentifier));
 		valid = false;
@@ -260,9 +264,13 @@ bool AddressBlock::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > compo
 	return valid;
 }
 
+//-----------------------------------------------------------------------------
+// Function: addressblock::isValid()
+//-----------------------------------------------------------------------------
 bool AddressBlock::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const
 {
-	if (name_.isEmpty()) {
+    if (getName().isEmpty())
+    {
 		return false;
 	}
 
@@ -524,11 +532,12 @@ bool AddressBlock::uniqueRegisterNames( QStringList& regNames ) const {
 	return true;
 }
 
-void AddressBlock::writeRegisters( QTextStream& stream, 
-	quint64 offset, 
-	bool useAddrBlockID /*= false*/, 
-	const QString& idString /*= QString()*/ ) const {
-
+//-----------------------------------------------------------------------------
+// Function: addressblock::writeRegisters()
+//-----------------------------------------------------------------------------
+void AddressBlock::writeRegisters( QTextStream& stream, quint64 offset, bool useAddrBlockID /*= false*/, 
+    const QString& idString /*= QString()*/ ) const
+{
 	// calculate the total offset of the address block
 	quint64 baseOffset = General::str2Uint(baseAddress_);
 	baseOffset += offset;
@@ -543,16 +552,18 @@ void AddressBlock::writeRegisters( QTextStream& stream,
 			id.append("_");
 		}
 	}
-	if (useAddrBlockID) {
-		id.append(name_.toUpper());
+	if (useAddrBlockID)
+    {
+        id.append(getName().toUpper());
 	}
 
 	stream << "/*" << endl;
-	stream << " * Address block: " << name_ << endl;
+    stream << " * Address block: " << getName() << endl;
 
-	if (!description_.isEmpty()) {
+    if (!getDescription().isEmpty())
+    {
 		stream << " * Description:" << endl;
-		stream << " * " << description_ << endl;
+        stream << " * " << getDescription() << endl;
 	}
 
 	stream << "*/" << endl;

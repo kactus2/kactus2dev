@@ -27,7 +27,7 @@ SingleMemoryMapEditor::SingleMemoryMapEditor(QSharedPointer<Component> component
     LibraryInterface* libHandler, QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<ExpressionFormatter> expressionFormatter, QWidget* parent /* = 0 */):
 ItemEditor(component, libHandler, parent),
-nameEditor_(memoryRemap->getNameGroup(), this, tr("Memory map name and description")),
+nameEditor_(memoryRemap->getNameGroup(), this, tr("Memory remap name and description")),
 memoryMapEditor_(new MemoryMapEditor(component, libHandler, memoryRemap, parameterFinder, expressionFormatter, this)),
 addressUnitBitsEditor_(new QLineEdit(parent)),
 slaveInterfaceLabel_(new QLabel(this)),
@@ -73,7 +73,27 @@ SingleMemoryMapEditor::~SingleMemoryMapEditor()
 //-----------------------------------------------------------------------------
 bool SingleMemoryMapEditor::isValid() const
 {
-    return nameEditor_.isValid();
+    bool nameIsValid = nameEditor_.isValid();
+    bool memoryMapEditorIsValid = memoryMapEditor_->isValid();
+
+    bool memoryRemapIsValid = false;
+
+    if (isMemoryMap())
+    {
+        memoryRemapIsValid =
+            parentMemoryMap_->isValid(component()->getChoices(), component()->getRemapStateNames());
+    }
+    else
+    {
+        QSharedPointer<MemoryRemap> transformedMemoryRemap = memoryRemap_.dynamicCast<MemoryRemap>();
+        if (transformedMemoryRemap)
+        {
+            memoryRemapIsValid =
+                transformedMemoryRemap->isValid(component()->getChoices(), component()->getRemapStateNames());
+        }
+    }
+
+    return nameIsValid && memoryMapEditorIsValid && memoryRemapIsValid;
 }
 
 //-----------------------------------------------------------------------------
@@ -209,7 +229,7 @@ void SingleMemoryMapEditor::refreshRemapStateSelector()
 //-----------------------------------------------------------------------------
 // Function: SingleMemoryMapEditor::isMemoryMap()
 //-----------------------------------------------------------------------------
-bool SingleMemoryMapEditor::isMemoryMap()
+bool SingleMemoryMapEditor::isMemoryMap() const
 {
     if (memoryRemap_->getName() == parentMemoryMap_->getName())
     {

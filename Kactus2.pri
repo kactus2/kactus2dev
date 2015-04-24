@@ -403,7 +403,9 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencySourceEditor.h \
     ./editors/ComponentEditor/memoryMaps/AddressBlockColumns.h \
     ./editors/ComponentEditor/memoryMaps/MemoryMapColumns.h \
+    ./editors/ComponentEditor/memoryMaps/MemoryMapsColumns.h \
     ./editors/ComponentEditor/memoryMaps/RegisterColumns.h \
+    ./editors/ComponentEditor/memoryMaps/MemoryMapsView.h \
     ./editors/ComponentEditor/memoryMaps/SingleMemoryMapEditor.h \
     ./editors/ComponentEditor/memoryMaps/memorymapdelegate.h \
     ./editors/ComponentEditor/memoryMaps/memorymapeditor.h \
@@ -433,6 +435,7 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/treeStructure/ComponentEditorChoicesItem.h \
     ./editors/ComponentEditor/treeStructure/SingleRemapStateItem.h \
     ./editors/ComponentEditor/treeStructure/RemapStatesItem.h \
+    ./editors/ComponentEditor/treeStructure/MemoryRemapItem.h \
     ./editors/ComponentEditor/treeStructure/componenteditorrootitem.h \
     ./editors/ComponentEditor/treeStructure/componenteditorswpropertiesitem.h \
     ./editors/ComponentEditor/treeStructure/componenteditorswviewitem.h \
@@ -623,9 +626,7 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
     ./kactusGenerators/quartusGenerator/quartusgenerator.h \
-    ./editors/ComponentEditor/treeStructure/MemoryRemapItem.h \
-    ./editors/ComponentEditor/memoryMaps/MemoryMapsColumns.h \
-    ./editors/ComponentEditor/memoryMaps/MemoryMapsView.h
+    ./editors/ComponentEditor/memoryMaps/SingleAddressBlockEditor.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -995,6 +996,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/memoryMaps/memorymapsdelegate.cpp \
     ./editors/ComponentEditor/memoryMaps/memorymapseditor.cpp \
     ./editors/ComponentEditor/memoryMaps/memorymapsmodel.cpp \
+    ./editors/ComponentEditor/memoryMaps/MemoryMapsView.cpp \
     ./editors/ComponentEditor/memoryMaps/registerdelegate.cpp \
     ./editors/ComponentEditor/memoryMaps/registereditor.cpp \
     ./editors/ComponentEditor/memoryMaps/registertablemodel.cpp \
@@ -1044,6 +1046,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/treeStructure/componenteditorviewitem.cpp \
     ./editors/ComponentEditor/treeStructure/componenteditorviewsitem.cpp \
     ./editors/ComponentEditor/treeStructure/componenttreeview.cpp \
+    ./editors/ComponentEditor/treeStructure/MemoryRemapItem.cpp \
     ./editors/ComponentEditor/treeStructure/RemapStatesItem.cpp \
     ./editors/ComponentEditor/treeStructure/SingleRemapStateItem.cpp \
     ./editors/ComponentEditor/visualization/fieldgapitem.cpp \
@@ -1187,6 +1190,5 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
     ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
-    ./editors/ComponentEditor/treeStructure/MemoryRemapItem.cpp \
-    ./editors/ComponentEditor/memoryMaps/MemoryMapsView.cpp
+    ./editors/ComponentEditor/memoryMaps/SingleAddressBlockEditor.cpp
 RESOURCES += kactus.qrc

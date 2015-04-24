@@ -9,6 +9,8 @@
 
 #include "ipxactmodels_global.h"
 
+#include <IPXACTmodels/NameGroup.h>
+
 #include <QDomNode>
 #include <QMap>
 #include <QString>
@@ -175,19 +177,20 @@ public:
 	 */
 	virtual void setName(const QString &name);
 
+    /*!
+     *  Get the name group used in this memory map item.
+     *
+     *      @return The name group of the memory map item.
+     */
+    NameGroup& getNameGroup();
+
 protected:
 
 	/*!
 	 * MANDATORY
 	 * Identifies the containing element
 	 */
-	QString name_;
-
-	//! \brief OPTIONAL spirit:displayName
-	QString displayName_;
-
-	//! \brief OPTIONAL spirit:description
-	QString description_;
+    NameGroup nameGroup_;
 
 	/*!
 	 * OPTIONAL

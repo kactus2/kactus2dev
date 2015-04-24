@@ -130,7 +130,7 @@ private:
      *
      *      @return True, if the memory remap is memory map, false otherwise.
      */
-    bool isMemoryMap();
+    bool isMemoryMap() const;
 
     //-----------------------------------------------------------------------------
     // Data.

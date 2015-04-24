@@ -13,6 +13,8 @@
 
 #include "ExpressionEditor.h"
 
+#include <QAbstractItemView>
+
 //-----------------------------------------------------------------------------
 // Function: ExpressionDelegate::ExpressionDelegate()
 //-----------------------------------------------------------------------------
@@ -73,6 +75,8 @@ void ExpressionDelegate::setModelData(QWidget* editor, QAbstractItemModel* model
         ExpressionEditor* expressionEditor = qobject_cast<ExpressionEditor*>(editor);
         expressionEditor->finishEditingCurrentWord();
         model->setData(index, expressionEditor->getExpression(), Qt::EditRole);
+
+        parameterNameCompleter_->popup()->hide();
     }
     else
     {

@@ -118,13 +118,17 @@ void SubspaceMap::write(QXmlStreamWriter& writer) {
 	writer.writeEndElement(); // spirit:subspaceMap
 }
 
-bool SubspaceMap::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
-    QStringList& errorList, 
-						  const QString& parentIdentifier ) const {
+//-----------------------------------------------------------------------------
+// Function: subspacemap::isValid()
+//-----------------------------------------------------------------------------
+bool SubspaceMap::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices, QStringList& errorList,
+    const QString& parentIdentifier ) const
+{
 	bool valid = true;
-	const QString thisIdentifier(QObject::tr("subspace map %1").arg(name_));
+    const QString thisIdentifier(QObject::tr("subspace map %1").arg(getName()));
 
-	if (name_.isEmpty()) {
+    if (getName().isEmpty())
+    {
 		errorList.append(QObject::tr("No name specified for subspace map within %1").arg(
 			parentIdentifier));
 		valid = false;
@@ -155,9 +159,13 @@ bool SubspaceMap::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > compon
 	return valid;
 }
 
-bool SubspaceMap::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const {
-	
-	if (name_.isEmpty()) {
+//-----------------------------------------------------------------------------
+// Function: subspacemap::isValid()
+//-----------------------------------------------------------------------------
+bool SubspaceMap::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const
+{
+    if (getName().isEmpty())
+    {
 		return false;
 	}
 

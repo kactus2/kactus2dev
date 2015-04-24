@@ -16,9 +16,8 @@
 #include <common/widgets/summaryLabel/summarylabel.h>
 
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
-
-#include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 
@@ -33,7 +32,7 @@ AddressBlockEditor::AddressBlockEditor(QSharedPointer<AddressBlock> addressBlock
                                        QSharedPointer<ParameterFinder> parameterFinder,
                                        QSharedPointer<ExpressionFormatter> expressionFormatter,
 									   QWidget* parent /*= 0*/):
-ItemEditor(component, handler, parent),
+QGroupBox(tr("Registers summary"), parent),
 view_(new EditableTableView(this)),
 proxy_(new AddressBlockProxy(this)),
 model_(0)
@@ -57,12 +56,10 @@ model_(0)
 	QString defPath = QString("%1/registerList.csv").arg(compPath);
 	view_->setDefaultImportExportPath(defPath);
 	view_->setAllowImportExport(true);
-
 	view_->setItemsDraggable(false);
-
 	view_->setSortingEnabled(true);
 
-	view_->setItemDelegate(new AddressBlockDelegate(parameterCompleter, parameterFinder, this));
+    view_->setItemDelegate(new AddressBlockDelegate(parameterCompleter, parameterFinder, this));
 
     connect(view_->itemDelegate(), SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
@@ -71,7 +68,8 @@ model_(0)
 
 	view_->sortByColumn(AddressBlockColumns::REGISTER_OFFSET, Qt::AscendingOrder);
 
-    setupLayout();
+    QVBoxLayout* layout = new QVBoxLayout(this);
+    layout->addWidget(view_);
 
     connect(this, SIGNAL(addressUnitBitsChanged(int)), 
         model_, SLOT(addressUnitBitsChanged(int)), Qt::UniqueConnection);
@@ -118,35 +116,4 @@ bool AddressBlockEditor::isValid() const
 void AddressBlockEditor::refresh()
 {
 	view_->update();
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockEditor::showEvent()
-//-----------------------------------------------------------------------------
-void AddressBlockEditor::showEvent( QShowEvent* event )
-{
-	QWidget::showEvent(event);
-	emit helpUrlRequested("componenteditor/addressblock.html");
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockEditor::sizeHint()
-//-----------------------------------------------------------------------------
-QSize AddressBlockEditor::sizeHint() const
-{
-	return QSize(AddressBlockEditor::WIDTH, AddressBlockEditor::HEIGHT);
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockEditor::setupLayout()
-//-----------------------------------------------------------------------------
-void AddressBlockEditor::setupLayout()
-{
-    // display a label on top the table
-    SummaryLabel* summaryLabel = new SummaryLabel(tr("Registers summary"), this);
-
-    QVBoxLayout* layout = new QVBoxLayout(this);
-    layout->addWidget(summaryLabel, 0, Qt::AlignCenter);
-    layout->addWidget(view_);
-    layout->setContentsMargins(0, 0, 0, 0);
 }

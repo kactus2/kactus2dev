@@ -255,10 +255,8 @@ bool MemoryMapModel::setData(QModelIndex const& index, QVariant const& value, in
                 QString calculatedExpression = parseExpressionToDecimal(value.toString());
                 addrBlock->removeWidthExpression();
 
-                if (calculatedExpression != value.toString())
-                {
-                    addrBlock->setWidthExpression(value.toString());
-                }
+                addrBlock->setWidthExpression(value.toString());
+
                 addrBlock->setWidth(calculatedExpression.toInt());
             }
             else 

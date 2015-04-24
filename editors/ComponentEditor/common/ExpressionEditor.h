@@ -107,6 +107,13 @@ protected:
      */
     virtual void mouseReleaseEvent(QMouseEvent* mouseEvent);
 
+    /*!
+     *  Emits a signal informing of the ending of editing the expression.
+     *
+     *      @param [in] event   The event representing the changing of focus.
+     */
+    virtual void focusOutEvent(QFocusEvent *event);
+
 signals:
 
     /*!
@@ -122,6 +129,11 @@ signals:
      *      @param [in] parameterId     The id of the parameter being referenced.
      */
     void decreaseReference(QString const& parameterId);
+
+    /*!
+     *  Informs that the editing of the expression has finished.
+     */
+    void editingFinished();
 
 private slots:
 

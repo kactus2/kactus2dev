@@ -216,15 +216,18 @@ void Bank::write(QXmlStreamWriter& writer) {
 	writer.writeEndElement(); // spirit:bank
 }
 
-bool Bank::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
-    QStringList& errorList, 
-				   const QString& parentIdentifier ) const {
+//-----------------------------------------------------------------------------
+// Function: bank::isValid()
+//-----------------------------------------------------------------------------
+bool Bank::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices, QStringList& errorList,
+    const QString& parentIdentifier ) const
+{
 	bool valid = true;
-	const QString thisIdentifier(QObject::tr("bank %1").arg(name_));
+    const QString thisIdentifier(QObject::tr("bank %1").arg(getName()));
 
-	if (name_.isEmpty()) {
-		errorList.append(QObject::tr("No name specified for bank within %1").arg(
-			parentIdentifier));
+    if (getName().isEmpty())
+    {
+		errorList.append(QObject::tr("No name specified for bank within %1").arg(parentIdentifier));
 		valid = false;
 	}
 
@@ -260,9 +263,13 @@ bool Bank::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoi
 	return valid;
 }
 
-bool Bank::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const {
-	
-	if (name_.isEmpty()) {
+//-----------------------------------------------------------------------------
+// Function: bank::isValid()
+//-----------------------------------------------------------------------------
+bool Bank::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const
+{
+    if (getName().isEmpty())
+    {
 		return false;
 	}
 

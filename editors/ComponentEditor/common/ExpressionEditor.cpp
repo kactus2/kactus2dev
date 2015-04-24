@@ -51,7 +51,7 @@ ExpressionEditor::ExpressionEditor(QSharedPointer<ParameterFinder> parameterFind
 //-----------------------------------------------------------------------------
 ExpressionEditor::~ExpressionEditor()
 {
-    nameCompleter_->popup()->hide();
+
 }
 
 //-----------------------------------------------------------------------------
@@ -654,4 +654,14 @@ void ExpressionEditor::finishEditingCurrentTerm(QString delimiter)
 bool ExpressionEditor::showCompletionsRequested(QKeyEvent* keyEvent)
 {
     return keyEvent->key() == Qt::Key_Space && (keyEvent->modifiers() & Qt::ControlModifier);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ExpressionEditor::focusOutEvent()
+//-----------------------------------------------------------------------------
+void ExpressionEditor::focusOutEvent(QFocusEvent *event)
+{
+    QTextEdit::focusOutEvent(event);
+
+    emit editingFinished();
 }

@@ -13,9 +13,11 @@
 #include <QObject>
 #include <QXmlStreamWriter>
 
-// the constructor
+//-----------------------------------------------------------------------------
+// Function: memorymapitem::MemoryMapItem()
+//-----------------------------------------------------------------------------
 MemoryMapItem::MemoryMapItem(QDomNode &memoryMapNode): 
-name_(),
+nameGroup_(memoryMapNode),
 attributes_(),
 baseAddress_(), 
 baseAddrAttributes_() {
@@ -27,23 +29,9 @@ baseAddrAttributes_() {
 
 		QDomNode tempNode = memoryMapNode.childNodes().at(i);
 
-		// get name
-		if (tempNode.nodeName() == QString("spirit:name")) {
-			name_ = tempNode.childNodes().at(0).nodeValue();
-			name_ = XmlUtils::removeWhiteSpace(name_);
-		}
-
-		else if (tempNode.nodeName() == QString("spirit:displayName")) {
-			displayName_ = tempNode.childNodes().at(0).nodeValue();
-		}
-
-		else if (tempNode.nodeName() == QString("spirit:description")) {
-			description_ = tempNode.childNodes().at(0).nodeValue();
-		}
-
 		// get addressUnitBits
-		else if (tempNode.nodeName() == QString("spirit:baseAddress")) {
-
+        if (tempNode.nodeName() == QString("spirit:baseAddress"))
+        {
 			// get base address
 			baseAddress_ = tempNode.childNodes().at(0).nodeValue();
 
@@ -55,26 +43,24 @@ baseAddrAttributes_() {
 }
 
 MemoryMapItem::MemoryMapItem():
-name_(),
+nameGroup_(),
 attributes_(),
 baseAddress_("0x0"), 
 baseAddrAttributes_() {
 }
 
 MemoryMapItem::MemoryMapItem( const MemoryMapItem &other ):
-name_(other.name_),
-displayName_(other.displayName_),
-description_(other.description_),
+nameGroup_(other.nameGroup_),
 attributes_(other.attributes_),
 baseAddress_(other.baseAddress_),
 baseAddrAttributes_(other.baseAddrAttributes_) {
 }
 
-MemoryMapItem & MemoryMapItem::operator=( const MemoryMapItem &other ) {
-	if (this != &other) {
-		name_ = other.name_;
-		displayName_ = other.displayName_;
-		description_ = other.description_;
+MemoryMapItem & MemoryMapItem::operator=( const MemoryMapItem &other )
+{
+	if (this != &other)
+    {
+        nameGroup_ = other.nameGroup_;
 		attributes_ = other.attributes_;
 		baseAddress_ = other.baseAddress_;
 		baseAddrAttributes_ = other.baseAddrAttributes_;
@@ -82,25 +68,24 @@ MemoryMapItem & MemoryMapItem::operator=( const MemoryMapItem &other ) {
 	return *this;
 }
 
-// the destructor
-MemoryMapItem::~MemoryMapItem() {
+//-----------------------------------------------------------------------------
+// Function: memorymapitem::~MemoryMapItem()
+//-----------------------------------------------------------------------------
+MemoryMapItem::~MemoryMapItem()
+{
+
 }
 
-// this is the base class implementation
-void MemoryMapItem::write(QXmlStreamWriter& writer) {
+//-----------------------------------------------------------------------------
+// Function: memorymapitem::write()
+//-----------------------------------------------------------------------------
+void MemoryMapItem::write(QXmlStreamWriter& writer)
+{
 	// the root element must be called just before calling this function
 	// otherwise the attributes are printed under the wrong element
 	XmlUtils::writeAttributes(writer, attributes_);
 
-	writer.writeTextElement("spirit:name", name_);
-
-	if (!displayName_.isEmpty()) {
-		writer.writeTextElement("spirit:displayName", displayName_);
-	}
-
-	if (!description_.isEmpty()) {
-		writer.writeTextElement("spirit:description", description_);
-	}
+    nameGroup_.write(writer);
 
 	// baseAddress is mandatory only in base bank but not in
 	// banked type bank
@@ -128,8 +113,12 @@ QString MemoryMapItem::getBaseAddress() const {
 	return baseAddress_;
 }
 
-void MemoryMapItem::setName(const QString &name) {
-	name_ = name;
+//-----------------------------------------------------------------------------
+// Function: memorymapitem::setName()
+//-----------------------------------------------------------------------------
+void MemoryMapItem::setName(const QString &name)
+{
+    nameGroup_.setName(name);
 }
 
 const QMap<QString, QString>& MemoryMapItem::getBaseAddrAttributes() {
@@ -157,22 +146,50 @@ void MemoryMapItem::setBaseAddrAttributes(const
 	baseAddrAttributes_ = baseAddrAttributes;
 }
 
-QString MemoryMapItem::getName() const {
-	return name_;
+//-----------------------------------------------------------------------------
+// Function: memorymapitem::getName()
+//-----------------------------------------------------------------------------
+QString MemoryMapItem::getName() const
+{
+    return nameGroup_.name();
 }
 
-QString MemoryMapItem::getDisplayName() const {
-	return displayName_;
+//-----------------------------------------------------------------------------
+// Function: memorymapitem::getDisplayName()
+//-----------------------------------------------------------------------------
+QString MemoryMapItem::getDisplayName() const
+{
+    return nameGroup_.displayName();
 }
 
-QString MemoryMapItem::getDescription() const {
-	return description_;
+//-----------------------------------------------------------------------------
+// Function: memorymapitem::getDescription()
+//-----------------------------------------------------------------------------
+QString MemoryMapItem::getDescription() const
+{
+    return nameGroup_.description();
 }
 
-void MemoryMapItem::setDisplayName(const QString& name) {
-	displayName_ = name;
+//-----------------------------------------------------------------------------
+// Function: memorymapitem::setDisplayName()
+//-----------------------------------------------------------------------------
+void MemoryMapItem::setDisplayName(const QString& name)
+{
+    nameGroup_.setDisplayName(name);
 }
 
-void MemoryMapItem::setDescription(const QString& description) {
-	description_ = description;
+//-----------------------------------------------------------------------------
+// Function: memorymapitem::setDescription()
+//-----------------------------------------------------------------------------
+void MemoryMapItem::setDescription(const QString& description)
+{
+    nameGroup_.setDescription(description);
+}
+
+//-----------------------------------------------------------------------------
+// Function: memorymapitem::getNameGroup()
+//-----------------------------------------------------------------------------
+NameGroup& MemoryMapItem::getNameGroup()
+{
+    return nameGroup_;
 }
