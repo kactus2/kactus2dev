@@ -176,7 +176,7 @@ protected:
     void showExpandIconIfHasChildren();
 
     //! Update the offsets of the child items in the map.
-    void updateChildMap();
+    virtual void updateChildMap();
         
     /*!
      *  Checks if the children must be repositioned inside this item.
@@ -188,7 +188,7 @@ protected:
     /*!
      *  Repositions the child items and fills the empty gaps between them.
      */
-    void repositionChildren();
+    virtual void repositionChildren();
  
 	//! Handler for mouse press events
 	virtual void mousePressEvent(QGraphicsSceneMouseEvent* event);

@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 25.4.2012
- *      Author: Antti Kamppi
- * 		filename: fieldgraphitem.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: fieldgraphitem.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 25.4.2012
+//
+// Description:
+// The graphical item that represents a bit field within a register.
+//-----------------------------------------------------------------------------
 
 #include "fieldgraphitem.h"
 
@@ -20,10 +24,12 @@ MemoryVisualizationItem(parent),
     field_(field)
 {
 	Q_ASSERT(field_);
+
+    setFlag(QGraphicsItem::ItemIgnoresParentOpacity);
+
 	QBrush brush(KactusColors::FIELD_COLOR);
 	setDefaultBrush(brush);
 
-	// fields show name in the middle
 	setNamePosition(VisualizerItem::NAME_CENTERED, VisualizerItem::NAME_BOTTOM);
 
 	setShowExpandableItem(false);
@@ -45,7 +51,6 @@ FieldGraphItem::~FieldGraphItem()
 void FieldGraphItem::refresh()
 {
     updateDisplay();
-
     ExpandableItem::reorganizeChildren();
 }
 
@@ -123,11 +128,17 @@ void FieldGraphItem::setDisplayLastAddress(quint64 const& address)
 }
 
 //-----------------------------------------------------------------------------
-// Function: FieldGraphItem::setCompleteOverlap()
+// Function: RegisterGraphItem::setConflicted()
 //-----------------------------------------------------------------------------
-void FieldGraphItem::setCompleteOverlap()
+void FieldGraphItem::setConflicted(bool conflicted)
 {
-    MemoryVisualizationItem::setCompleteOverlap();
-    setWidth(0);
-    ExpandableItem::reorganizeChildren();
+    MemoryVisualizationItem::setConflicted(conflicted);
+    if (conflicted)
+    {
+        setOpacity(0.5);
+    }
+    else
+    {
+        setOpacity(1);
+    }
 }

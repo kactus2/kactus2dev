@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 25.4.2012
- *      Author: Antti Kamppi
- * 		filename: fieldgraphitem.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: fieldgraphitem.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 25.4.2012
+//
+// Description:
+// The graphical item that represents a bit field within a register.
+//-----------------------------------------------------------------------------
 
 #ifndef FIELDGRAPHITEM_H
 #define FIELDGRAPHITEM_H
@@ -13,88 +17,88 @@
 
 #include <QSharedPointer>
 
-/*! \brief The graphical item that represents a bit field within a register.
- *
- */
-class FieldGraphItem : public MemoryVisualizationItem {
+//-----------------------------------------------------------------------------
+//! The graphical item that represents a bit field within a register.
+//-----------------------------------------------------------------------------
+class FieldGraphItem : public MemoryVisualizationItem
+{
 	Q_OBJECT
 
 public:
 
-	/*! \brief The constructor.
+	/*! The constructor.
 	 *
-	 * \param field Pointer to the field to visualize.
-	 * \param parent Pointer to the parent graph item.
+	 *      @param [in] field Pointer to the field to visualize.
+	 *      @param [in] parent Pointer to the parent graph item.
 	 *
 	*/
-	FieldGraphItem(QSharedPointer<Field> field, 
-		QGraphicsItem* parent);
+	FieldGraphItem(QSharedPointer<Field> field, QGraphicsItem* parent);
 
-	//! \brief The destructor
+	//! The destructor
 	virtual ~FieldGraphItem();
 
-    //! \brief Refresh the item and the parent item.
+    //! Refresh the item and the parent item.
 	virtual void refresh();
 
     //! Updates the labels and tooltip for the item.
     virtual void updateDisplay();
 
-	/*! \brief Get the offset of the item. 
+	/*! Get the offset of the item. 
 	 *
-	 * \return int The offset of the item from the parent item's base address.
+	 *      @return int The offset of the item from the parent item's base address.
 	*/
 	virtual quint64 getOffset() const;
 
-	/*! \brief Get the last bit contained in the field.
+	/*! Get the last bit contained in the field.
 	 *
-	 * \return The last bit.
+	 *      @return The last bit.
 	*/
 	virtual quint64 getLastAddress() const;
 
-	/*! \brief Get the bit width of the item.
+	/*! Get the bit width of the item.
 	 * 
-	 * \return The bit width of the item.
+	 *      @return The bit width of the item.
 	*/
 	virtual int getBitWidth() const;
 
-	/*! \brief Get number of bits the addressable unit contains.
+	/*! Get number of bits the addressable unit contains.
 	 *
-	 * \return The size of least addressable unit.
+	 *      @return The size of least addressable unit.
 	*/
 	virtual unsigned int getAddressUnitSize() const;
  
-	/*! \brief Set the width for the item.
+	/*! Set the width for the item.
 	 *
-	 * \param width The new width of the item.
+	 *      @param [in] width The new width of the item.
 	 *
 	*/
     void setWidth(qreal width);
 
-	/*! \brief Sets the first non-overlapping address to display.
+	/*! Sets the first non-overlapping address to display.
 	 *
-	 * \param The first address to set.
+	 *      @param [in] The first address to set.
 	*/
     virtual void setDisplayOffset(quint64 const& address);
 
 
-    /*! \brief Sets the last non-overlapping address to display.
+    /*! Sets the last non-overlapping address to display.
     *
-    * \param The last address to set.
+    *      @param [in] The last address to set.
     */
     virtual void setDisplayLastAddress(quint64 const& address);
 
-    // \brief Sets the item to be completely overlapped by adjacent items.
-    virtual  void setCompleteOverlap();
+protected:
+     
+    //! Set the item into conflicted (overlapping memory) state.
+     virtual void setConflicted(bool conflicted);
 
 private:
 
-	//! \brief No copying
+	//! No copying
 	FieldGraphItem(const FieldGraphItem& other);
-
-	//! \brief No assignment
 	FieldGraphItem& operator=(const FieldGraphItem& other);
-   
-	//! \brief Pointer to the field being visualized.
+
+	//! The field being visualized.
 	QSharedPointer<Field> field_;
 };
 
