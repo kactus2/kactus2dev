@@ -15,6 +15,8 @@
 
 #include <QFormLayout>
 #include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QLabel>
 
 //-----------------------------------------------------------------------------
 // Function: BusIfInterfaceSlave::BusIfInterfaceSlave()
@@ -29,17 +31,19 @@ bridges_(slave_, component, this)
 {
 	Q_ASSERT(slave_);
 
-	QFormLayout* memRefLayout = new QFormLayout();
-	memRefLayout->addRow(tr("Memory map"), &memoryMapReferenceSelector_);
-
+	QHBoxLayout* memRefLayout = new QHBoxLayout();
+    memRefLayout->addWidget(new QLabel(tr("Memory map")));
+    memRefLayout->addWidget(&memoryMapReferenceSelector_);
+    memRefLayout->addStretch();
+	
 	QVBoxLayout* topLayout = new QVBoxLayout(this);
 	topLayout->addLayout(memRefLayout);
 	topLayout->addWidget(&bridges_);
 
 	connect(&memoryMapReferenceSelector_, SIGNAL(itemSelected(QString const&)),
 		this, SLOT(onMemoryMapChange(QString const&)), Qt::UniqueConnection);
-	connect(&bridges_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	
+    connect(&bridges_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

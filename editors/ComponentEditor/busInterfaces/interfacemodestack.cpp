@@ -39,7 +39,7 @@ monitor_(busif, component, parent, handler, this)
 	insertWidget(General::MIRROREDSLAVE, &mirroredSlave_);
 	insertWidget(General::MIRROREDSYSTEM, &mirroredSystem_);
 	insertWidget(General::MONITOR, &monitor_);
-    insertWidget(General::INTERFACE_MODE_COUNT, new QGroupBox(tr("Undefined"), this));
+    insertWidget(General::INTERFACE_MODE_COUNT, new QGroupBox(tr("Interface mode specific options"), this));
 
     connect(&master_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -115,47 +115,51 @@ void InterfaceModeStack::refresh()
 	// select the correct editor
 	setCurrentIndex(mode_);
 
-	switch (mode_) {
-		case General::MASTER: {
-			master_.refresh();
-			master_.saveModeSpecific();
-			break;
-							  }
-		case General::SLAVE: {
-			slave_.refresh();
-			slave_.saveModeSpecific();
-			break;
-							 }
-		case General::SYSTEM: {
-			system_.refresh();
-			system_.saveModeSpecific();
-			break;
-							  }
-		case General::MIRROREDMASTER: {
-			mirroredMaster_.refresh();
-			mirroredMaster_.saveModeSpecific();
-			break;
-									  }
-		case General::MIRROREDSLAVE: {
-			mirroredSlave_.refresh();
-			mirroredSlave_.saveModeSpecific();
-			break;
-									 }
-		case General::MIRROREDSYSTEM: {
-			mirroredSystem_.refresh();
-			mirroredSystem_.saveModeSpecific();
-			break;
-									  }
-		case General::MONITOR: {
-			monitor_.refresh();
-			monitor_.saveModeSpecific();
-			break;
-							   }
-		default: {
-            setCurrentIndex(General::INTERFACE_MODE_COUNT);
-			//setCurrentIndex(General::MASTER);
-			master_.refresh();
-			master_.saveModeSpecific();
-				 }
-	}
+    if (mode_ == General::MASTER)
+    {
+        master_.refresh();
+        master_.saveModeSpecific();
+    }
+    else if (mode_ == General::SLAVE)
+    {
+        slave_.refresh();
+        slave_.saveModeSpecific();
+
+    }
+    else if (mode_ == General::SYSTEM)
+    {
+        system_.refresh();
+        system_.saveModeSpecific();
+
+    }
+    else if (mode_ == General::MIRROREDMASTER)
+    {
+        mirroredMaster_.refresh();
+        mirroredMaster_.saveModeSpecific();
+
+    }
+    else if (mode_ == General::MIRROREDSLAVE)
+    {
+        mirroredSlave_.refresh();
+        mirroredSlave_.saveModeSpecific();
+
+    }
+    else if (mode_ == General::MIRROREDSYSTEM)
+    {
+        mirroredSystem_.refresh();
+        mirroredSystem_.saveModeSpecific();
+
+    }
+    else if (mode_ == General::MONITOR)
+    {
+        monitor_.refresh();
+        monitor_.saveModeSpecific();
+    }
+    else
+    {
+        setCurrentIndex(General::INTERFACE_MODE_COUNT);
+        master_.refresh();
+        master_.saveModeSpecific();
+    }
+
 }

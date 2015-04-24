@@ -8,6 +8,8 @@
 #ifndef BUSIFGENERALDETAILS_H
 #define BUSIFGENERALDETAILS_H
 
+#include <common/widgets/interfaceModeSelector/interfacemodeselector.h>
+
 #include <IPXACTmodels/businterface.h>
 
 #include <QGroupBox>
@@ -18,7 +20,7 @@
 
 class BusInterface;
 
-/*! \brief Editor to edit the bus interface details.
+/*! Editor to edit the bus interface details.
  *
  */
 class BusIfGeneralDetails : public QGroupBox {
@@ -26,78 +28,84 @@ class BusIfGeneralDetails : public QGroupBox {
 
 public:
 
-	/*! \brief The constructor
+	/*! The constructor
 	 *
-	 * \param busif Pointer to the bus interface being edited.
-	 * \param parent Pointer to the owner of this editor.
+	 *      @param [in] busif   Pointer to the bus interface being edited.
+	 *      @param [in] parent  Pointer to the owner of this editor.
 	 *
 	*/
-	BusIfGeneralDetails(QSharedPointer<BusInterface> busif,
-		QWidget* parent);
+	BusIfGeneralDetails(QSharedPointer<BusInterface> busif, QWidget* parent);
 	
-	//! \brief The destructor
+	//! The destructor
 	virtual ~BusIfGeneralDetails();
 
-	/*! \brief Check for the validity of the edited item.
+	/*! Check for the validity of the edited item.
 	*
-	* \return True if item is valid.
+	*       @return True if item is valid.
 	*/
 	virtual bool isValid() const;
 
-	/*! \brief Restore the changes made in the editor back to ones in the model.
+	/*! Restore the changes made in the editor back to ones in the model.
 	*
 	*/
 	virtual void refresh();
 
 signals:
 
-	//! \brief Emitted when contents of the model change
+	//! Emitted when contents of the model change
 	void contentChanged();
 
-	//! \brief Prints an error message to the user.
+	//! Prints an error message to the user.
 	void errorMessage(const QString& msg) const;
 
-	//! \brief Prints a notification to user.
+	//! Prints a notification to user.
 	void noticeMessage(const QString& msg) const;
+
+    //! Emitted when a new interface mode has been selected.
+    void modeSelected(General::InterfaceMode);
 
 private slots:
 
-	//! \brief Handler for changes in least addressable unit (bits in lau)
+	//! Handler for changes in least addressable unit (bits in lau)
 	void onAddressableUnitChanged(int newValue);
 
-	//! \brief Handler for changes in the endianness.
+	//! Handler for changes in the endianness.
 	void onEndiannessChanged();
 
-	//! \brief Handler for changes in bit steering.
+	//! Handler for changes in bit steering.
 	void onBitSteeringChanged();
 
-	//! \brief Handler for changes in connection required check box
+	//! Handler for changes in connection required check box
 	void onConnectionRequiredChanged();
 
 private:
 	
-	//! \brief No copying
+	//! No copying
 	BusIfGeneralDetails(const BusIfGeneralDetails& other);
+    void setupLayout();
 
 	//! No assignment
 	BusIfGeneralDetails& operator=(const BusIfGeneralDetails& other);
 
-	//! \brief Pointer to the bus interface being edited.
+	//! Pointer to the bus interface being edited.
 	QSharedPointer<BusInterface> busif_;
 
-	//! \brief Set the connection required to true or false
+    //! The selector to select the interface mode.
+    InterfaceModeSelector modeSelector_;
+
+	//! Set the connection required to true or false
 	QCheckBox connRequired_;
 
-	//! \brief Sets the value for bits in lau.
+	//! Sets the value for bits in lau.
 	QSpinBox bitsInLau_;
 
-	//! \brief Set the endianness of interface
+	//! Set the endianness of interface
 	QComboBox endianness_;
 
-	//! \brief Set bit steering on/off
+	//! Set bit steering on/off
 	QComboBox bitSteering_;
 
-	//! \brief Enable/disable the bit steering element.
+	//! Enable/disable the bit steering element.
 	QCheckBox bitSteeringEnabled_;
 };
 

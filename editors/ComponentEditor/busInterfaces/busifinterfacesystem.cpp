@@ -28,41 +28,40 @@ mode_(mode),
 monitor_(busif->getMonitor()),
 generalTab_(generalTab), 
 libHandler_(libHandler), 
-group_(this) {
-
+group_(this)
+{
 	Q_ASSERT(mode == General::SYSTEM || mode == General::MIRROREDSYSTEM);
 
-	switch (mode) {
-		case General::SYSTEM: {
-			setTitle(tr("System"));
-			break;
-							  }
-		case General::MIRROREDSYSTEM: {
-			setTitle(tr("Mirrored system"));
-			break;
-									  }
-		// This editor should only be used for system and mirrored system.
-		default: {
-			Q_ASSERT(false);
-				 }
-	}
+    if (mode == General::SYSTEM)
+    {
+        setTitle(tr("System"));
+    }
+    else if(mode == General::MIRROREDSYSTEM) 
+    {
+        setTitle(tr("Mirrored system"));
+    }
+
+	group_.setProperty("mandatoryField", true);
 
 	connect(&group_, SIGNAL(currentIndexChanged(const QString&)),
 		this, SLOT(onGroupChange(const QString&)), Qt::UniqueConnection);
 
-	QFormLayout* layout = new QFormLayout(this);
-	layout->addRow(tr("Group"), &group_);
+    QFormLayout* groupLayout = new QFormLayout(this);
+    groupLayout->addRow(tr("System group"), &group_);
+    groupLayout->setFieldGrowthPolicy(QFormLayout::FieldsStayAtSizeHint);
 }
 
-BusIfInterfaceSystem::~BusIfInterfaceSystem() {
+BusIfInterfaceSystem::~BusIfInterfaceSystem()
+{
 }
 
-bool BusIfInterfaceSystem::isValid() const {
+bool BusIfInterfaceSystem::isValid() const
+{
 	return !group_.currentText().isEmpty();
 }
 
-void BusIfInterfaceSystem::refresh() {
-
+void BusIfInterfaceSystem::refresh()
+{
 	// when the combo box changes it must be disconnected to avoid emitting signals
 	disconnect(&group_, SIGNAL(currentIndexChanged(const QString&)),
 		this, SLOT(onGroupChange(const QString&)));
@@ -113,15 +112,18 @@ void BusIfInterfaceSystem::refresh() {
 		this, SLOT(onGroupChange(const QString&)), Qt::UniqueConnection);
 }
 
-General::InterfaceMode BusIfInterfaceSystem::getInterfaceMode() const {
+General::InterfaceMode BusIfInterfaceSystem::getInterfaceMode() const
+{
 	return mode_;
 }
 
-void BusIfInterfaceSystem::onGroupChange( const QString& /*newGroup*/ ) {
+void BusIfInterfaceSystem::onGroupChange( const QString& /*newGroup*/ )
+{
 	busif_->setSystem(group_.currentText());
 	emit contentChanged();
 }
 
-void BusIfInterfaceSystem::saveModeSpecific() {
+void BusIfInterfaceSystem::saveModeSpecific()
+{
 	busif_->setSystem(group_.currentText());
 }

@@ -17,7 +17,7 @@
 #include <QScrollArea>
 #include <QApplication>
 
-BusIfGeneralTab::BusIfGeneralTab( LibraryInterface* libHandler,
+BusIfGeneralTab::BusIfGeneralTab(LibraryInterface* libHandler,
                                   QSharedPointer<BusInterface> busif,
                                   QSharedPointer<Component> component,
                                   QSharedPointer<ParameterFinder> parameterFinder,
@@ -29,7 +29,6 @@ busif_(busif),
 nameEditor_(busif->getNameGroup(), this, tr("Name and description")),
 busType_(VLNV::BUSDEFINITION, libHandler, parentWnd, this),
 absType_(VLNV::ABSTRACTIONDEFINITION, libHandler, parentWnd, this),
-modeSelector_(this, busif),
 modeStack_(busif, component, parameterFinder, libHandler, this),
 details_(busif, this),
 parameters_(busif->getParameters(), component, parameterFinder, expressionFormatter, this),
@@ -57,7 +56,7 @@ libHandler_(libHandler) {
 		this, SLOT(onBusTypeChanged()), Qt::UniqueConnection);
 	connect(&absType_, SIGNAL(vlnvEdited()),
 		this, SLOT(onAbsTypeChanged()), Qt::UniqueConnection);
-	connect(&modeSelector_, SIGNAL(modeSelected(General::InterfaceMode)),
+	connect(&details_, SIGNAL(modeSelected(General::InterfaceMode)),
 		this, SLOT(onModeChanged(General::InterfaceMode)), Qt::UniqueConnection);
 	connect(&modeStack_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -79,37 +78,7 @@ libHandler_(libHandler) {
 
 	absType_.setMandatory(false);
 
-	// create the scroll area
-	QScrollArea* scrollArea = new QScrollArea(this);
-	scrollArea->setWidgetResizable(true);
-	scrollArea->setFrameShape(QFrame::NoFrame);
-
-	QHBoxLayout* scrollLayout = new QHBoxLayout(this);
-	scrollLayout->addWidget(scrollArea);
-	scrollLayout->setContentsMargins(0, 0, 0, 0);
-
-	// create the top widget and set it under the scroll area
-	QWidget* topWidget = new QWidget(scrollArea);
-	topWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
-	QHBoxLayout* vlnvLayout = new QHBoxLayout();
-	vlnvLayout->addWidget(&busType_);
-	vlnvLayout->addWidget(&absType_);
-
-	QFormLayout* modeLayout = new QFormLayout();
-	modeLayout->addRow(tr("Interface mode"), &modeSelector_);
-
-	// create the layout of the general tab
-	QVBoxLayout* layout = new QVBoxLayout(topWidget);
-	layout->addWidget(&nameEditor_);
-	layout->addLayout(vlnvLayout);
-	layout->addLayout(modeLayout);
-	layout->addWidget(&modeStack_);
-	layout->addWidget(&details_);
-	layout->addWidget(&parameters_);
-	layout->addStretch();
-
-	scrollArea->setWidget(topWidget);
+    setupLayout();
 }
 
 BusIfGeneralTab::~BusIfGeneralTab() {
@@ -144,11 +113,6 @@ bool BusIfGeneralTab::isValid() const {
     }
 
     else if (!parameters_.isValid()) {
-        return false;
-    }
-
-    else if (modeSelector_.currentIndex() == -1)
-    {
         return false;
     }
 
@@ -200,20 +164,14 @@ bool BusIfGeneralTab::isValid(QStringList& errorList) const
         valid = false;
     }
 
-    if (modeSelector_.currentIndex() == -1)
-    {
-        errorList.append(tr("No mode selected for %1.").arg(thisIdentifier));
-        valid = false;
-    }
-
     return valid;
 }
 
-void BusIfGeneralTab::refresh() {
+void BusIfGeneralTab::refresh()
+{
 	nameEditor_.refresh();
 	busType_.setVLNV(busif_->getBusType());
 	absType_.setVLNV(busif_->getAbstractionType());
-	modeSelector_.setMode(busif_->getInterfaceMode());
 	modeStack_.refresh();
 	details_.refresh();
 	parameters_.refresh();
@@ -287,4 +245,44 @@ void BusIfGeneralTab::onSetAbsType( const VLNV& absDefVLNV ) {
 	busif_->setAbstractionType(absDefVLNV);
 	absType_.setVLNV(absDefVLNV);
 	emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusIfGeneralTab::setupLayout()
+//-----------------------------------------------------------------------------
+void BusIfGeneralTab::setupLayout()
+{
+    // create the scroll area
+    QScrollArea* scrollArea = new QScrollArea(this);
+    scrollArea->setWidgetResizable(true);
+    scrollArea->setFrameShape(QFrame::NoFrame);
+
+    QHBoxLayout* scrollLayout = new QHBoxLayout(this);
+    scrollLayout->addWidget(scrollArea);
+    scrollLayout->setContentsMargins(0, 0, 0, 0);
+
+    // create the top widget and set it under the scroll area
+    QWidget* topWidget = new QWidget(scrollArea);
+    topWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+    QGridLayout* topLayout = new QGridLayout(topWidget);
+
+    topLayout->addWidget(&nameEditor_, 0, 0, 1, 1);
+    topLayout->addWidget(&modeStack_, 0, 1, 2, 1);
+
+    topLayout->addWidget(&details_, 1, 0, 1, 1);
+
+    QHBoxLayout* vlnvLayout = new QHBoxLayout();
+    vlnvLayout->addWidget(&busType_);
+    vlnvLayout->addWidget(&absType_);
+    topLayout->addLayout(vlnvLayout, 2, 0, 1, 2);
+    topLayout->setRowStretch(2, 10);
+
+    topLayout->addWidget(&parameters_, 3, 0, 1, 2);
+
+    topLayout->setRowStretch(0, 5);
+    topLayout->setRowStretch(1, 5);
+    topLayout->setRowStretch(3, 80);
+
+    scrollArea->setWidget(topWidget);
 }

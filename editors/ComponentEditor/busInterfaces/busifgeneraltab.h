@@ -14,7 +14,6 @@
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 #include <common/widgets/ParameterGroupBox/parametergroupbox.h>
-#include <common/widgets/interfaceModeSelector/interfacemodeselector.h>
 
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
@@ -185,6 +184,9 @@ private:
 	//! No assignment
 	BusIfGeneralTab& operator=(const BusIfGeneralTab& other);
 
+    //! Sets the widget layout.
+    void setupLayout();
+
     //-----------------------------------------------------------------------------
     //! Data.
     //-----------------------------------------------------------------------------
@@ -200,9 +202,6 @@ private:
 
 	//! \brief Contains the vlnv of the abstraction type for this interface
 	VLNVEditor absType_;
-
-	//! \brief The selector to select the interface mode.
-	InterfaceModeSelector modeSelector_;
 
 	//! \brief Contains the mode-specific editors
 	InterfaceModeStack modeStack_;
