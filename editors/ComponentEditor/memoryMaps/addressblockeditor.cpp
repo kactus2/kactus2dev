@@ -13,7 +13,6 @@
 #include "AddressBlockColumns.h"
 
 #include <common/views/EditableTableView/editabletableview.h>
-#include <common/widgets/summaryLabel/summarylabel.h>
 
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>

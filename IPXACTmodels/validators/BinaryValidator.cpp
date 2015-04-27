@@ -20,9 +20,7 @@
 BinaryValidator::BinaryValidator(QString sizeRestraint, QObject* parent):
 QRegularExpressionValidator(parent)
 {
-    QRegularExpression expression ("^([1-9]?[0-9]*'[bB][01_]{" + sizeRestraint + ",})?$");
-
-    setRegularExpression(expression);
+    setNewExpressionvalidator(sizeRestraint);
 }
 
 //-----------------------------------------------------------------------------
@@ -31,4 +29,14 @@ QRegularExpressionValidator(parent)
 BinaryValidator::~BinaryValidator()
 {
 
+}
+
+//-----------------------------------------------------------------------------
+// Function: BinaryValidator::setNewExpressionvalidator()
+//-----------------------------------------------------------------------------
+void BinaryValidator::setNewExpressionvalidator(QString const& sizeRestraint)
+{
+    QRegularExpression expression ("^([1-9]?[0-9]*'[bB][01_]{" + sizeRestraint + ",})?$");
+
+    setRegularExpression(expression);
 }

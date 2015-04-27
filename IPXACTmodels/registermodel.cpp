@@ -155,3 +155,11 @@ void RegisterModel::setParameters(
 	parameters_.clear();
     parameters_ = parameters;
 }
+
+//-----------------------------------------------------------------------------
+// Function: registermodel::getNameGroup()
+//-----------------------------------------------------------------------------
+NameGroup& RegisterModel::getNameGroup()
+{
+    return nameGroup_;
+}

@@ -159,6 +159,13 @@ public:
      */
     virtual void setParameters(const QList<QSharedPointer<Parameter> >& parameters);
 
+    /*!
+     *  Get the name group of this item.
+     *
+     *      @return The name group of this item.
+     */
+    NameGroup& getNameGroup();
+
 protected:
 
 	/*! \brief Uniquely identifies an element within this object.

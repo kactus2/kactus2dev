@@ -54,6 +54,8 @@ graphItem_(NULL)
 		}
 	}
 
+    changeAdressUnitBitsOnAddressBlocks();
+
     Q_ASSERT(memoryRemap_);
 }
 

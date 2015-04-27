@@ -38,6 +38,13 @@ public:
      */
     virtual ~BinaryValidator();
 
+    /*!
+     *  Set a new regular expression for the validator.
+     *
+     *      @param [in] sizeRestraint   The new size restraint for the validator.
+     */
+    void setNewExpressionvalidator(QString const& sizeRestraint);
+
 private:
 	
 	//! No copying

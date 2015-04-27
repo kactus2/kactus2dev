@@ -8,33 +8,27 @@
 #ifndef REGISTEREDITOR_H
 #define REGISTEREDITOR_H
 
-#include <editors/ComponentEditor/itemeditor.h>
-#include <editors/ComponentEditor/common/ParameterFinder.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
-
 #include <IPXACTmodels/register.h>
+#include <IPXACTmodels/component.h>
 
 #include <QSharedPointer>
 #include <QSortFilterProxyModel>
+#include <QGroupBox>
 
 class EditableTableView;
 class RegisterTableModel;
 class LibraryInterface;
+class ParameterFinder;
+class ExpressionFormatter;
 
-/*! \brief The editor to edit the details of a register within component editor.
- *
- */
-class RegisterEditor : public ItemEditor
+//-----------------------------------------------------------------------------
+//! Editor for editing the details of fields in a register.
+//-----------------------------------------------------------------------------
+class RegisterEditor : public QGroupBox
 {
 	Q_OBJECT
 
 public:
-
-	//! \brief The default height and width of the editor.
-	enum Sizes {
-		HEIGHT = 300,
-		WIDTH = 700
-	};
 
 	/*!
 	 *  The constructor.
@@ -66,16 +60,54 @@ public:
 	*/
 	virtual void refresh();
 
-	/*! \brief The size hint for the editor.
-	 *
-	 * \return QSize contains the size hint.
-	*/
-	virtual QSize sizeHint() const;
+signals:
 
-protected:
+    /*!
+     *  Informs of changes to the component editor tree.
+     */
+    void contentChanged();
 
-	//! \brief Handler for widget's show event
-	virtual void showEvent(QShowEvent* event);
+    /*!
+     *  Sends an error message forward.
+     *
+     *      @param [in] message     The error message.
+     */
+    void errorMessage(QString const& message) const;
+
+    /*!
+     *  Sends a notification forward.
+     *
+     *      @param [in] message     The notification.
+     */
+    void noticeMessage(QString const& message) const;
+
+    /*!
+     *  Increase the amount of references made to the given parameter.
+     *
+     *      @param [in] id  The id of the given parameter.
+     */
+    void increaseReferences(QString const& id) const;
+
+    /*!
+     *  Decrease the amount of references made to the given parameter.
+     *
+     *      @param [in] id  The id of the given parameter.
+     */
+    void decreaseReferences(QString const& id) const;
+
+    /*!
+     *  Informs that a new item has been created.
+     *
+     *      @param [in] index   The index of the new item.
+     */
+    void childAdded(int index);
+
+    /*!
+     *  Informs that an item has been removed.
+     *
+     *      @param [in] index   The index of the removed item.
+     */
+    void childRemoved(int index);
 
 private:
 

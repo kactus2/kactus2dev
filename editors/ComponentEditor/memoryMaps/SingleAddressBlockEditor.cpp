@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 24.8.2012
- *      Author: Antti Kamppi
- * 		filename: addressblockeditor.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: SingleAddressBlockEditor.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Mikko Teuho
+// Date: 23.04.2015
+//
+// Description:
+// Editor for editing the details of a single address block.
+//-----------------------------------------------------------------------------
 
 #include "SingleAddressBlockEditor.h"
 
@@ -18,7 +22,6 @@
 
 #include <QFormLayout>
 #include <QScrollArea>
-#include <QAbstractItemView>
 
 //-----------------------------------------------------------------------------
 // Function: SingleAddressBlockEditor::SingleAddressBlockEditor()
@@ -48,27 +51,25 @@ expressionParser_(new IPXactSystemVerilogParser(parameterFinder))
 
     ParameterCompleter* baseAddressEditorCompleter = new ParameterCompleter(this);
     baseAddressEditorCompleter->setModel(componentParametersModel);
-    baseAddressEditorCompleter->popup()->hide();
 
     ParameterCompleter* rangeEditorCompleter = new ParameterCompleter(this);
     rangeEditorCompleter->setModel(componentParametersModel);
-    rangeEditorCompleter->popup()->hide();
 
     ParameterCompleter* widthEditorCompleter = new ParameterCompleter(this);
     widthEditorCompleter->setModel(componentParametersModel);
-    widthEditorCompleter->popup()->hide();
     
     baseAddressEditor_->setAppendingCompleter(baseAddressEditorCompleter);
     rangeEditor_->setAppendingCompleter(rangeEditorCompleter);
     widthEditor_->setAppendingCompleter(widthEditorCompleter);
 
-    baseAddressEditor_->setToolTip(formattedValueFor(addressBlock_->getBaseAddress()));
-    rangeEditor_->setToolTip(formattedValueFor(addressBlock_->getRange()));
-    widthEditor_->setToolTip(formattedValueFor(addressBlock_->getWidthExpression()));
-
     setupLayout();
 
     connectSignals();
+
+    usageEditor_->setProperty("mandatoryField", true);
+    baseAddressEditor_->setProperty("mandatoryField", true);
+    rangeEditor_->setProperty("mandatoryField", true);
+    widthEditor_->setProperty("mandatoryField", true);
 }
 
 //-----------------------------------------------------------------------------
@@ -98,9 +99,9 @@ void SingleAddressBlockEditor::setupLayout()
 
     usageEditor_ = new UsageComboBox(addressBlockDefinitionGroup);
     addressBlockDefinitionLayout->addRow(tr("Usage:"), usageEditor_);
-    addressBlockDefinitionLayout->addRow(tr("Base Address [AUB]:"), baseAddressEditor_);
-    addressBlockDefinitionLayout->addRow(tr("Range [AUB]:"), rangeEditor_);
-    addressBlockDefinitionLayout->addRow(tr("Width [bits]:"), widthEditor_);
+    addressBlockDefinitionLayout->addRow(tr("Base Address [AUB], f(x):"), baseAddressEditor_);
+    addressBlockDefinitionLayout->addRow(tr("Range [AUB], f(x):"), rangeEditor_);
+    addressBlockDefinitionLayout->addRow(tr("Width [bits], f(x):"), widthEditor_);
 
     accessEditor_ = new AccessComboBox(addressBlockDefinitionGroup);
     addressBlockDefinitionLayout->addRow(tr("Access:"), accessEditor_);
@@ -168,6 +169,9 @@ void SingleAddressBlockEditor::connectSignals() const
     connect(baseAddressEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(rangeEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(widthEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+
+    connect(this, SIGNAL(addressUnitBitsChanged(int)),
+        registersEditor_, SIGNAL(addressUnitBitsChanged(int)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -203,8 +207,11 @@ void SingleAddressBlockEditor::refresh()
     changeExpressionEditorSignalBlockStatus(true);
 
     baseAddressEditor_->setExpression(addressBlock_->getBaseAddress());
+    baseAddressEditor_->setToolTip(formattedValueFor(addressBlock_->getBaseAddress()));
     rangeEditor_->setExpression(addressBlock_->getRange());
+    rangeEditor_->setToolTip(formattedValueFor(addressBlock_->getRange()));
     widthEditor_->setExpression(addressBlock_->getWidthExpression());
+    widthEditor_->setToolTip(formattedValueFor(addressBlock_->getWidthExpression()));
 
     changeExpressionEditorSignalBlockStatus(false);
 
@@ -252,7 +259,11 @@ void SingleAddressBlockEditor::onWidthChanged()
     widthEditor_->finishEditingCurrentWord();
     addressBlock_->setWidthExpression(widthEditor_->getExpression());
 
-    widthEditor_->setToolTip(formattedValueFor(addressBlock_->getWidthExpression()));
+    QString formattedWidth = formattedValueFor(addressBlock_->getWidthExpression());
+
+    addressBlock_->setWidth(formattedWidth.toInt());
+
+    widthEditor_->setToolTip(formattedWidth);
 }
 
 //-----------------------------------------------------------------------------

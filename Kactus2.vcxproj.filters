@@ -4069,6 +4069,12 @@
     <ClCompile Include="editors\ComponentEditor\memoryMaps\SingleAddressBlockEditor.cpp">
       <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\SingleRegisterEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_SingleRegisterEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5611,6 +5617,9 @@
       <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\memoryMaps\SingleAddressBlockEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\memoryMaps\SingleRegisterEditor.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
     </CustomBuild>
   </ItemGroup>

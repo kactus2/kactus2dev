@@ -11,7 +11,7 @@
 #include "RegisterColumns.h"
 
 #include <common/views/EditableTableView/editabletableview.h>
-#include <common/widgets/summaryLabel/summarylabel.h>
+
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
@@ -29,7 +29,7 @@ RegisterEditor::RegisterEditor(QSharedPointer<Register> reg,
                                QSharedPointer<ParameterFinder> parameterFinder,
                                QSharedPointer<ExpressionFormatter> expressionFormatter,
 							   QWidget* parent /*= 0*/ ):
-ItemEditor(component, handler, parent),
+QGroupBox(tr("Fields summary"), parent),
 view_(new EditableTableView(this)),
 proxy_(new QSortFilterProxyModel(this)),
 model_(0)
@@ -45,25 +45,19 @@ model_(0)
     ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
     parameterCompleter->setModel(componentParametersModel);
 
-	// display a label on top the table
-	SummaryLabel* summaryLabel = new SummaryLabel(tr("Fields summary"), this);
-
 	QVBoxLayout* layout = new QVBoxLayout(this);
-	layout->addWidget(summaryLabel, 0, Qt::AlignCenter);
 	layout->addWidget(view_);
-	layout->setContentsMargins(0, 0, 0, 0);
 
 	proxy_->setSourceModel(model_);
 	view_->setModel(proxy_);
 
 	//! \brief Enable import/export csv file
-	const QString compPath = ItemEditor::handler()->getDirectoryPath(*ItemEditor::component()->getVlnv());
+    const QString compPath = handler->getDirectoryPath(*component->getVlnv());
 	QString defPath = QString("%1/fieldListing.csv").arg(compPath);
-	view_->setDefaultImportExportPath(defPath);
-	view_->setAllowImportExport(true);
-
+    view_->setDefaultImportExportPath(defPath);
+	
+    view_->setAllowImportExport(true);
 	view_->setItemsDraggable(false);
-
 	view_->setSortingEnabled(true);
 
     view_->setItemDelegate(new RegisterDelegate(parameterCompleter, parameterFinder, this));
@@ -113,21 +107,4 @@ bool RegisterEditor::isValid() const
 void RegisterEditor::refresh()
 {
 	view_->update();
-}
-
-//-----------------------------------------------------------------------------
-// Function: registereditor::showEvent()
-//-----------------------------------------------------------------------------
-void RegisterEditor::showEvent( QShowEvent* event )
-{
-	QWidget::showEvent(event);
-	emit helpUrlRequested("componenteditor/register.html");
-}
-
-//-----------------------------------------------------------------------------
-// Function: registereditor::sizeHint()
-//-----------------------------------------------------------------------------
-QSize RegisterEditor::sizeHint() const
-{
-	return QSize(RegisterEditor::WIDTH, RegisterEditor::HEIGHT);
 }

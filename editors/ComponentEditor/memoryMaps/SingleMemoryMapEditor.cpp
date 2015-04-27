@@ -58,6 +58,8 @@ parentMemoryMap_(parentMemoryMap)
         this, SLOT(updateAddressUnitBits(QString const&)), Qt::UniqueConnection);
 
     setupLayout();
+
+    remapStateSelector_->setProperty("mandatoryField", true);
 }
 
 //-----------------------------------------------------------------------------
@@ -196,6 +198,7 @@ void SingleMemoryMapEditor::updateAddressUnitBits(QString const& newAddressUnitB
 {
     parentMemoryMap_->setAddressUnitBits(newAddressUnitBits.toUInt());
     emit addressUnitBitsChanged();
+    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
