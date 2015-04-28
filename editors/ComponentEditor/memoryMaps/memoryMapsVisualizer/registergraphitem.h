@@ -62,6 +62,7 @@ public:
 	*/
 	virtual quint64 getLastAddress() const;
 
+
 	/*! Get the bit width of the item.
 	 * 
 	 *      @return The bit width of the item.
@@ -80,6 +81,13 @@ public:
 	*/
     virtual void setWidth(qreal width);
 
+    /*!
+     *  Sets the index of the register dimension the item represents.
+     *
+     *      @param [in] index   The dimension index to set.
+     */
+    void setDimensionIndex(unsigned int index);
+
 protected:
 
     //! Update the child items in the map. Field items are organized according to last address.
@@ -95,6 +103,13 @@ private:
 	//! No copying
 	RegisterGraphItem(const RegisterGraphItem& other);
 	RegisterGraphItem& operator=(const RegisterGraphItem& other);
+
+    /*!
+     *  Gets the register size in AUB units.
+     *
+     *      @return The size of the register in AUBs.
+     */
+    quint64 getSizeInAUB() const;
 
     /*!
      *  Finds the width for the given child item.
@@ -167,6 +182,8 @@ private:
     //! Pointer to the register being visualized.
 	QSharedPointer<Register> register_;
 
+    //! The index in the dimension the item represents.
+    unsigned int dimensionIndex_;
 };
 
 #endif // REGISTERGRAPHITEM_H

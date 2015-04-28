@@ -28,14 +28,17 @@ graphItem_(NULL) {
 	setObjectName(tr("ComponentEditorFieldItem"));
 }
 
-ComponentEditorFieldItem::~ComponentEditorFieldItem() {
+ComponentEditorFieldItem::~ComponentEditorFieldItem()
+{
 }
 
-QString ComponentEditorFieldItem::getTooltip() const {
+QString ComponentEditorFieldItem::getTooltip() const
+{
 	return tr("Contains details of a single field within a register.");
 }
 
-QString ComponentEditorFieldItem::text() const {
+QString ComponentEditorFieldItem::text() const
+{
 	return field_->getName();
 }
 
@@ -44,29 +47,34 @@ bool ComponentEditorFieldItem::isValid() const
 	return field_->isValid(reg_->getSize(), component_->getChoices());
 }
 
-ItemEditor* ComponentEditorFieldItem::editor() {
-	if (!editor_) {
+ItemEditor* ComponentEditorFieldItem::editor()
+{
+	if (!editor_)
+    {
 		editor_ = new FieldEditor(field_, component_, libHandler_);
 		editor_->setProtection(locked_);
-		connect(editor_, SIGNAL(contentChanged()), 
-			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
-		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
-			this, SIGNAL(helpUrlRequested(QString const&)));
+
+		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
 	}
 	return editor_;
 }
 
-void ComponentEditorFieldItem::onEditorChanged() {
+void ComponentEditorFieldItem::onEditorChanged()
+{
 	// on field also the grand parent must be updated
-	if (parent() && parent()->parent()) {
+	if (parent() && parent()->parent())
+    {
 		emit contentChanged(parent()->parent());
 
 		// on field also the grand grand parent must be updated
-		if (parent()->parent()->parent()) {
+		if (parent()->parent()->parent())
+        {
 			emit contentChanged(parent()->parent()->parent());
 
 			// on field also the grand grand grand parent must be updated
-			if (parent()->parent()->parent()->parent()) {
+			if (parent()->parent()->parent()->parent())
+            {
 				emit contentChanged(parent()->parent()->parent()->parent());
 			}
 		}
@@ -76,11 +84,13 @@ void ComponentEditorFieldItem::onEditorChanged() {
 	ComponentEditorItem::onEditorChanged();
 }
 
-ItemVisualizer* ComponentEditorFieldItem::visualizer() {
+ItemVisualizer* ComponentEditorFieldItem::visualizer()
+{
 	return visualizer_;
 }
 
-void ComponentEditorFieldItem::setVisualizer( MemoryMapsVisualizer* visualizer ) {
+void ComponentEditorFieldItem::setVisualizer( MemoryMapsVisualizer* visualizer )
+{
 	visualizer_ = visualizer;
 
 	// get the graphics item for the memory map
@@ -99,17 +109,20 @@ void ComponentEditorFieldItem::setVisualizer( MemoryMapsVisualizer* visualizer )
 	connect(graphItem_, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()), Qt::UniqueConnection);
 }
 
-QGraphicsItem* ComponentEditorFieldItem::getGraphicsItem() {
+QGraphicsItem* ComponentEditorFieldItem::getGraphicsItem()
+{
 	return graphItem_;
 }
 
-void ComponentEditorFieldItem::updateGraphics() {
+void ComponentEditorFieldItem::updateGraphics()
+{
 	if (graphItem_) {
 		graphItem_->refresh();
 	}
 }
 
-void ComponentEditorFieldItem::removeGraphicsItem() {
+void ComponentEditorFieldItem::removeGraphicsItem()
+{
 	if (graphItem_) {
 
 		// get the graphics item for the memory map

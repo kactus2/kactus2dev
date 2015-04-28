@@ -57,13 +57,16 @@ private slots:
      
     void testZeroWidthFields();
 
+    void testTwoDimensional();
+
+    void testLastDimensionExceedsAddressBlockRange();
+
 private:
     void expandItem(RegisterGraphItem* registerItem);
 
     RegisterGraphItem* createRegisterItem();
 
     QList<MemoryGapItem*> findMemoryGaps(RegisterGraphItem* memoryMapItem);
-   
 };
 
 //-----------------------------------------------------------------------------
@@ -497,6 +500,74 @@ void tst_RegisterGraphItem::testZeroWidthFields()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_RegisterGraphItem::testTwoDimensional()
+//-----------------------------------------------------------------------------
+void tst_RegisterGraphItem::testTwoDimensional()
+{
+    QSharedPointer<AddressBlock> addressBlock(new AddressBlock());
+    addressBlock->setName("testBlock");
+    addressBlock->setBaseAddress(0);
+    addressBlock->setRange("4");
+
+    AddressBlockGraphItem* addressBlockItem = new AddressBlockGraphItem(addressBlock, 0);
+    addressBlockItem->setAddressableUnitBits(8);
+
+    QSharedPointer<Register> twoDimensionalRegister(new Register());
+    twoDimensionalRegister->setName("testRegister");
+    twoDimensionalRegister->setAddressOffset("1");
+    twoDimensionalRegister->setSize(8);
+    twoDimensionalRegister->setDim(2);
+
+    RegisterGraphItem* registerItem = new RegisterGraphItem(twoDimensionalRegister, addressBlockItem);
+    registerItem->setDimensionIndex(0);
+    RegisterGraphItem* secondDimension = new RegisterGraphItem(twoDimensionalRegister, addressBlockItem);
+    secondDimension->setDimensionIndex(1);
+
+    QCOMPARE(registerItem->getName(), QString("testRegister[0]"));
+    QCOMPARE(registerItem->getDisplayOffset(), quint64(1));
+    QCOMPARE(registerItem->getDisplayLastAddress(), quint64(1));
+
+    QCOMPARE(secondDimension->getName(), QString("testRegister[1]"));
+    QCOMPARE(secondDimension->getDisplayOffset(), quint64(2));
+    QCOMPARE(secondDimension->getDisplayLastAddress(), quint64(2));
+
+    delete addressBlockItem;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_RegisterGraphItem::testLastDimensionExceedsAddressBlockRange()
+//-----------------------------------------------------------------------------
+void tst_RegisterGraphItem::testLastDimensionExceedsAddressBlockRange()
+{
+    QSharedPointer<AddressBlock> addressBlock(new AddressBlock());
+    addressBlock->setName("testBlock");
+    addressBlock->setBaseAddress(0);
+    addressBlock->setRange("2");
+
+    AddressBlockGraphItem* addressBlockItem = new AddressBlockGraphItem(addressBlock, 0);
+    addressBlockItem->setAddressableUnitBits(8);
+
+    QSharedPointer<Register> twoDimensionalRegister(new Register());
+    twoDimensionalRegister->setName("testRegister");
+    twoDimensionalRegister->setAddressOffset(0);
+    twoDimensionalRegister->setSize(16);
+    twoDimensionalRegister->setDim(2);
+
+    RegisterGraphItem* registerItem = new RegisterGraphItem(twoDimensionalRegister, addressBlockItem);
+    registerItem->setDimensionIndex(0);
+    RegisterGraphItem* secondDimension = new RegisterGraphItem(twoDimensionalRegister, addressBlockItem);
+    secondDimension->setDimensionIndex(1);
+
+    QCOMPARE(registerItem->getOffset(), quint64(0));
+    QCOMPARE(registerItem->getLastAddress(), quint64(1));
+
+    QCOMPARE(secondDimension->getOffset(), quint64(2));
+    QCOMPARE(secondDimension->getLastAddress(), quint64(3));
+
+    delete addressBlockItem;
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_MemoryMapGraphItem::expandItem()
 //-----------------------------------------------------------------------------
 void tst_RegisterGraphItem::expandItem(RegisterGraphItem* registerItem)
@@ -548,7 +619,7 @@ RegisterGraphItem* tst_RegisterGraphItem::createRegisterItem()
     testRegister->setAddressOffset(0);
     testRegister->setSize(8);
 
-    return new RegisterGraphItem(testRegister, addressBlockItem);
+    return new RegisterGraphItem(testRegister,addressBlockItem);
 }
 
 //-----------------------------------------------------------------------------

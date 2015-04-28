@@ -165,8 +165,6 @@ void MemoryVisualizationItem::setCompleteOverlap()
     
     setLeftTopCorner("");
     setLeftBottomCorner("");
-
-    setRightTopCorner("");
 }
 
 //-----------------------------------------------------------------------------

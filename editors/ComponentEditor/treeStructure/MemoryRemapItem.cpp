@@ -174,6 +174,8 @@ void MemoryRemapItem::setVisualizer( MemoryMapsVisualizer* visualizer )
 	visualizer_->addMemoryMapItem(graphItem_);
 	graphItem_->refresh();
 
+    changeAdressUnitBitsOnAddressBlocks();
+
 	// update the visualizers of address block items
 	foreach (QSharedPointer<ComponentEditorItem> item, childItems_)
     {

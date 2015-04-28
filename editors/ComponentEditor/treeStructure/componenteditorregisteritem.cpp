@@ -10,8 +10,8 @@
 
 #include <editors/ComponentEditor/memoryMaps/SingleRegisterEditor.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
-#include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/registergraphitem.h>
+#include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>
 
 //-----------------------------------------------------------------------------
 // Function: componenteditorregisteritem::ComponentEditorRegisterItem()
@@ -26,9 +26,8 @@ ComponentEditorRegisterItem::ComponentEditorRegisterItem(QSharedPointer<Register
 														 ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 reg_(reg),
-fields_(reg->getFields()),
 visualizer_(NULL),
-graphItem_(NULL)
+registerDimensions_()
 {
     setReferenceCounter(referenceCounter);
     setParameterFinder(parameterFinder);
@@ -36,7 +35,7 @@ graphItem_(NULL)
 
 	setObjectName(tr("ComponentEditorRegisterItem"));
 
-	foreach(QSharedPointer<Field> field, fields_)
+	foreach(QSharedPointer<Field> field, reg_->getFields())
     {
 		if (field)
         {
@@ -45,8 +44,6 @@ graphItem_(NULL)
 			childItems_.append(fieldItem);
 		}
 	}
-
-	Q_ASSERT(reg_);
 }
 
 //-----------------------------------------------------------------------------
@@ -107,13 +104,14 @@ ItemEditor* ComponentEditorRegisterItem::editor()
 void ComponentEditorRegisterItem::createChild( int index )
 {
 	QSharedPointer<ComponentEditorFieldItem> fieldItem(new ComponentEditorFieldItem(
-		reg_, fields_.at(index), model_, libHandler_, component_, this));
+		reg_, reg_->getFields().at(index), model_, libHandler_, component_, this));
 	fieldItem->setLocked(locked_);
 	
 	if (visualizer_)
     {
 		fieldItem->setVisualizer(visualizer_);
 	}
+
     updateGraphics();
 
 	childItems_.insert(index, fieldItem);
@@ -154,17 +152,9 @@ ItemVisualizer* ComponentEditorRegisterItem::visualizer()
 void ComponentEditorRegisterItem::setVisualizer( MemoryMapsVisualizer* visualizer )
 {
 	visualizer_ = visualizer;
-
-	// get the graphics item for the memory map
-	MemoryVisualizationItem* parentItem = static_cast<MemoryVisualizationItem*>(parent()->getGraphicsItem());
-	Q_ASSERT(parentItem);
-
-	// create the graph item for the address block
-	graphItem_ = new RegisterGraphItem(reg_, parentItem);
-
-	// register the addr block graph item for the parent
-	parentItem->addChild(graphItem_);
-
+    
+    resizeGraphicsToCurrentDimensionSize();
+	
 	// update the visualizers for field items
 	foreach (QSharedPointer<ComponentEditorItem> item, childItems_)
     {
@@ -173,8 +163,6 @@ void ComponentEditorRegisterItem::setVisualizer( MemoryMapsVisualizer* visualize
 	}
 
     updateGraphics();
-
-	connect(graphItem_, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -182,7 +170,14 @@ void ComponentEditorRegisterItem::setVisualizer( MemoryMapsVisualizer* visualize
 //-----------------------------------------------------------------------------
 QGraphicsItem* ComponentEditorRegisterItem::getGraphicsItem()
 {
-	return graphItem_;
+    if (!registerDimensions_.isEmpty())
+    {
+        return registerDimensions_.first();
+    }
+    else
+    {
+	    return 0;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -190,9 +185,11 @@ QGraphicsItem* ComponentEditorRegisterItem::getGraphicsItem()
 //-----------------------------------------------------------------------------
 void ComponentEditorRegisterItem::updateGraphics()
 {
-	if (graphItem_)
+    resizeGraphicsToCurrentDimensionSize();
+
+	foreach (RegisterGraphItem* registerDimension, registerDimensions_)
     {
-		graphItem_->refresh();
+		registerDimension->refresh();
 	}
 }
 
@@ -201,25 +198,54 @@ void ComponentEditorRegisterItem::updateGraphics()
 //-----------------------------------------------------------------------------
 void ComponentEditorRegisterItem::removeGraphicsItem()
 {
-	if (graphItem_)
-    {
-		// get the graphics item for the memory map
-		MemoryVisualizationItem* parentItem = static_cast<MemoryVisualizationItem*>(parent()->getGraphicsItem());
-		Q_ASSERT(parentItem);
+    // get the graphics item for the address block.
+    MemoryVisualizationItem* parentItem = static_cast<MemoryVisualizationItem*>(parent()->getGraphicsItem());
+    Q_ASSERT(parentItem);
 
-		// unregister addr block graph item from the memory map graph item
-		parentItem->removeChild(graphItem_);
+    foreach (RegisterGraphItem* registerDimension, registerDimensions_)
+    {	
+		parentItem->removeChild(registerDimension);
+		registerDimension->setParent(0);
 
-		// take the child from the parent
-		graphItem_->setParent(NULL);
+		disconnect(registerDimension, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()));
 
-		disconnect(graphItem_, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()));
+        registerDimensions_.removeAll(registerDimension);
 
-		// delete the graph item
-		delete graphItem_;
-		graphItem_ = NULL;
-
-		// tell the parent to refresh itself
-		parentItem->refresh();
+		delete registerDimension;
+		registerDimension = 0;
 	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorRegisterItem::resizeToCurrentDimensionSize()
+//-----------------------------------------------------------------------------
+void ComponentEditorRegisterItem::resizeGraphicsToCurrentDimensionSize()
+{
+    MemoryVisualizationItem* parentItem = static_cast<MemoryVisualizationItem*>(parent()->getGraphicsItem());
+    Q_ASSERT(parentItem);
+
+    const int DIMENSION_SIZE = qMax(reg_->getDim(), 1);
+    for (int currentDimension = registerDimensions_.count(); currentDimension < DIMENSION_SIZE; currentDimension++)
+    {
+        RegisterGraphItem* newDimension = new RegisterGraphItem(reg_, parentItem);
+        newDimension->setDimensionIndex(currentDimension);
+
+        parentItem->addChild(newDimension);
+        registerDimensions_.append(newDimension);
+
+        connect(newDimension, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()), Qt::UniqueConnection);
+    }
+
+    for (int currentDimension = registerDimensions_.count() - 1; currentDimension >= DIMENSION_SIZE;
+        currentDimension--)
+    {
+        RegisterGraphItem* removedDimension = registerDimensions_.takeAt(currentDimension);
+        parentItem->removeChild(removedDimension);
+        removedDimension->setParent(0);
+
+        disconnect(removedDimension, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()));
+
+        delete removedDimension;
+        removedDimension = 0;
+    }
 }

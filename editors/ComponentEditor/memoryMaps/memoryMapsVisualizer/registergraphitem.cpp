@@ -29,7 +29,8 @@
 //-----------------------------------------------------------------------------
 RegisterGraphItem::RegisterGraphItem(QSharedPointer<Register> reg, QGraphicsItem* parent):
 MemoryVisualizationItem(parent),
-register_(reg)
+register_(reg),
+dimensionIndex_(0)
 {
 	Q_ASSERT(register_);
 
@@ -62,7 +63,14 @@ void RegisterGraphItem::refresh()
 //-----------------------------------------------------------------------------
 void RegisterGraphItem::updateDisplay()
 {
-    setName(register_->getName());
+    QString name = register_->getName();
+
+    if (register_->getDim() > 1)
+    {
+        name.append("[" + QString::number(dimensionIndex_) + "]");
+    }
+
+    setName(name);
     setDisplayOffset(getOffset());
     setDisplayLastAddress(getLastAddress());
 
@@ -116,7 +124,7 @@ quint64 RegisterGraphItem::getOffset() const
 	quint64 blockOffset = blockItem->getOffset();
 
 	// the total offset is the address block's offset added with register's offset
-	return blockOffset + regOffset;
+	return blockOffset + regOffset + (dimensionIndex_ * getSizeInAUB());
 }
 
 //-----------------------------------------------------------------------------
@@ -124,23 +132,8 @@ quint64 RegisterGraphItem::getOffset() const
 //-----------------------------------------------------------------------------
 quint64 RegisterGraphItem::getLastAddress() const
 {
-    // how many bits one address unit takes
-    unsigned int addrUnit = getAddressUnitSize();
+    quint64 size =  getSizeInAUB();
 
-    // prevent division by zero
-    if (addrUnit == 0)
-    {
-        addrUnit = 1;
-    }
-
-    // how many address unit are contained in the register
-    unsigned int size = register_->getWidth() / addrUnit;
-    if (size*addrUnit < register_->getWidth()) 
-    {
-        size++; //Round truncated number upwards
-    }
-
-    // if size is not defined then never return a negative number
     if (size == 0)
     {
         return 0;
@@ -179,6 +172,15 @@ void RegisterGraphItem::setWidth(qreal width)
         VisualizerItem::setWidth(width);
         reorganizeChildren();
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterGraphItem::setDimensionIndex()
+//-----------------------------------------------------------------------------
+void RegisterGraphItem::setDimensionIndex(unsigned int index)
+{
+    dimensionIndex_ = index;
+    updateDisplay();
 }
 
 //-----------------------------------------------------------------------------
@@ -277,6 +279,30 @@ void RegisterGraphItem::repositionChildren()
     {
         createMemoryGap(0, lastBitIndexInUse - 1);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterGraphItem::getSizeInAUB()
+//-----------------------------------------------------------------------------
+quint64 RegisterGraphItem::getSizeInAUB() const
+{
+    // how many bits one address unit takes
+    unsigned int addrUnit = getAddressUnitSize();
+
+    // prevent division by zero
+    if (addrUnit == 0)
+    {
+        addrUnit = 1;
+    }
+
+    // how many address unit are contained in the register
+    unsigned int size = register_->getWidth() / addrUnit;
+    if (size*addrUnit < register_->getWidth()) 
+    {
+        size++; //Round truncated number upwards
+    }
+
+    return size;
 }
 
 //-----------------------------------------------------------------------------

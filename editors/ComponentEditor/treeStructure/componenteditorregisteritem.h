@@ -24,7 +24,7 @@ class RegisterEditor;
 class MemoryMapsVisualizer;
 class RegisterGraphItem;
 
-/*! \brief The item for single register in component editor's navigation tree.
+/*! The item for single register in component editor's navigation tree.
  *
  */
 class ComponentEditorRegisterItem : public ComponentEditorItem {
@@ -35,14 +35,14 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] reg                     Pointer to the register being edited.
-	 *      @param [in] model                   Pointer to the model that owns the items.
-	 *      @param [in] libHandler              Pointer to the instance that manages the library.
-	 *      @param [in] component               Pointer to the component being edited.
-	 *      @param [in] parameterFinder         Pointer to the parameter finder.
-	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
-	 *      @param [in] referenceCounter        Pointer to the instance for counting references made to parameters.
-	 *      @param [in] parent                  Pointer to the parent item.
+	 *      @param [in] reg                     The register being edited.
+	 *      @param [in] model                   The model that owns the items.
+	 *      @param [in] libHandler              The instance that manages the library.
+	 *      @param [in] component               The component being edited.
+	 *      @param [in] parameterFinder         The parameter finder.
+	 *      @param [in] expressionFormatter     The expression formatter.
+	 *      @param [in] referenceCounter        The instance counting references made to parameters.
+	 *      @param [in] parent                  The parent item.
 	 */
 	ComponentEditorRegisterItem(QSharedPointer<Register> reg, 
 		ComponentEditorTreeModel* model,
@@ -53,96 +53,85 @@ public:
         QSharedPointer<ReferenceCounter> referenceCounter,
 		ComponentEditorItem* parent);
 
-	//! \brief The destructor
+	//! The destructor
 	virtual ~ComponentEditorRegisterItem();
 
-	/*! \brief Get the tool tip for the item.
+	/*! Get the tool tip for the item.
 	 * 
-	 * \return The text for the tool tip to print to user.
+	 *      @return The text for the tool tip to print to user.
 	*/
 	virtual QString getTooltip() const;
 
-	/*! \brief Get the text to be displayed to user in the tree for this item.
+	/*! Get the text to be displayed to user in the tree for this item.
 	 *
-	 * \return QString Contains the text to display.
+	 *      @return QString Contains the text to display.
 	*/
 	virtual QString text() const;
 
-	/*! \brief Check the validity of this item and sub items.
+	/*! Check the validity of this item and sub items.
 	 *
-	 * \return bool True if item is in valid state.
+	 *      @return bool True if item is in valid state.
 	*/
 	virtual bool isValid() const;
 
-	/*! \brief Get pointer to the editor of this item.
+	/*! Get pointer to the editor of this item.
 	 *
-	 * \return Pointer to the editor to use for this item.
+	 *      @return Pointer to the editor to use for this item.
 	*/
 	virtual ItemEditor* editor();
 
-	/*! \brief Add a new child to the item.
+	/*! Add a new child to the item.
 	 * 
-	 * \param index The index to add the child into.
-	 *
+	 *      @param [in] index The index to add the child into.
 	*/
 	virtual void createChild(int index);
 
-	/*! \brief Get pointer to the visualizer of this item.
+	/*! Get pointer to the visualizer of this item.
 	 * 
-	 * 
-	 * \return Pointer to the visualizer to use for this item.
+	 *      @return Pointer to the visualizer to use for this item.
 	*/
 	virtual ItemVisualizer* visualizer();
 
-	/*! \brief Set the visualizer for this item.
+	/*! Set the visualizer for this item.
 	 *
-	 * \param visualizer Pointer to the visualizer.
-	 *
+	 *      @param [in] visualizer Pointer to the visualizer.
 	*/
 	virtual void setVisualizer(MemoryMapsVisualizer* visualizer);
 
-	/*! \brief Get the visualizer graphics item for the register.
+	/*! Get the visualizer graphics item for the register.
 	 *
-	 * \return QGraphicsItem* Pointer to the graphics item.
+	 *      @return QGraphicsItem* Pointer to the graphics item.
 	*/
 	virtual QGraphicsItem* getGraphicsItem();
 
-	/*! \brief Update the graphics item of the register.
-	 *
-	*/
+	//! Update the graphics item of the register.
 	virtual void updateGraphics();
 
-	/*! \brief Remove the graphics item of the register.
-	 *
-	*/
+	//! Remove the graphics item of the register.
 	virtual void removeGraphicsItem();
 
 protected slots:
 
-	/*! \brief Handler for editor's contentChanged signal.
-	 *
-	*/
+	//! Handler for editor's contentChanged signal.
 	virtual void onEditorChanged();
 
 private:
 	
-	//! \brief No copying
+	//! No copying
 	ComponentEditorRegisterItem(const ComponentEditorRegisterItem& other);
-
-	//! \brief No assignment
 	ComponentEditorRegisterItem& operator=(const ComponentEditorRegisterItem& other);
 
-	//! \brief Pointer to the register being edited.
+    //! Updates the graphical items to match the current register dimension.
+    void resizeGraphicsToCurrentDimensionSize();
+
+	//! The register being edited.
 	QSharedPointer<Register> reg_;
 
-	//! \brief Contains the fields that belong to this register.
-	QList<QSharedPointer<Field> >& fields_;
-
-	//! \brief Pointer to the visualizer of memory maps.
+	//! The visualizer of memory maps.
 	MemoryMapsVisualizer* visualizer_;
 
-	//! \brief Pointer to the graph item that visualizes the register.
-	RegisterGraphItem* graphItem_;
+	//! The graph items that visualizes the register dimensions.
+	QList<RegisterGraphItem*> registerDimensions_;
 };
 
 #endif // COMPONENTEDITORREGISTERITEM_H
