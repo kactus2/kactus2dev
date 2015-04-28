@@ -419,7 +419,6 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/memoryMaps/registerdelegate.h \
     ./editors/ComponentEditor/memoryMaps/registereditor.h \
     ./editors/ComponentEditor/memoryMaps/registertablemodel.h \
-    ./editors/ComponentEditor/memoryMaps/writevalueconstrainteditor.h \
     ./editors/ComponentEditor/memoryMaps/addressblockdelegate.h \
     ./editors/ComponentEditor/memoryMaps/addressblockeditor.h \
     ./editors/ComponentEditor/memoryMaps/addressblockmodel.h \
@@ -627,7 +626,9 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.h
+    ./kactusGenerators/quartusGenerator/quartusgenerator.h \
+    ./editors/ComponentEditor/memoryMaps/SingleFieldEditor.h \
+    ./editors/ComponentEditor/memoryMaps/WriteValueConstraintComboBox.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -1004,7 +1005,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/memoryMaps/SingleAddressBlockEditor.cpp \
     ./editors/ComponentEditor/memoryMaps/SingleMemoryMapEditor.cpp \
     ./editors/ComponentEditor/memoryMaps/SingleRegisterEditor.cpp \
-    ./editors/ComponentEditor/memoryMaps/writevalueconstrainteditor.cpp \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.cpp \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/fieldgraphitem.cpp \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapgraphitem.cpp \
@@ -1192,5 +1192,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp
+    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
+    ./editors/ComponentEditor/memoryMaps/SingleFieldEditor.cpp \
+    ./editors/ComponentEditor/memoryMaps/WriteValueConstraintComboBox.cpp
 RESOURCES += kactus.qrc

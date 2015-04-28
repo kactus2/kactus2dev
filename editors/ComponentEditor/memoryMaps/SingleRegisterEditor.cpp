@@ -6,7 +6,7 @@
 // Date: 24.04.2015
 //
 // Description:
-// Editor for editing the details of a single address block.
+// Editor for editing the details of a single register.
 //-----------------------------------------------------------------------------
 
 #include "SingleRegisterEditor.h"
@@ -137,7 +137,7 @@ void SingleRegisterEditor::setupLayout()
     registerDefinitionLayout->addRow(tr("Reset mask:"), resetMaskEditor_);
 
     QHBoxLayout* topOfPageLayout = new QHBoxLayout();
-    topOfPageLayout->addWidget(&nameEditor_,1, Qt::AlignTop);
+    topOfPageLayout->addWidget(&nameEditor_, 0, Qt::AlignTop);
     topOfPageLayout->addWidget(registerDefinitionGroup, 0);
 
     QVBoxLayout* fieldEditorLayout = new QVBoxLayout();

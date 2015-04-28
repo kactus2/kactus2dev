@@ -2605,9 +2605,6 @@
     <ClCompile Include="GeneratedFiles\moc_registertablemodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_writevalueconstrainteditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_addressblockdelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -3239,9 +3236,6 @@
       <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\memoryMaps\registertablemodel.cpp">
-      <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\memoryMaps\writevalueconstrainteditor.cpp">
       <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\memoryMaps\memoryMapsVisualizer\addressblockgraphitem.cpp">
@@ -4073,6 +4067,18 @@
       <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_SingleRegisterEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_SingleFieldEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\SingleFieldEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\WriteValueConstraintComboBox.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_WriteValueConstraintComboBox.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -5070,9 +5076,6 @@
     <CustomBuild Include="editors\ComponentEditor\memoryMaps\registertablemodel.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\memoryMaps\writevalueconstrainteditor.h">
-      <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
-    </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\memoryMaps\addressblockdelegate.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
     </CustomBuild>
@@ -5620,6 +5623,12 @@
       <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\memoryMaps\SingleRegisterEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\memoryMaps\SingleFieldEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\memoryMaps\WriteValueConstraintComboBox.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
     </CustomBuild>
   </ItemGroup>
@@ -6328,5 +6337,6 @@
     <None Include="wizards\common\ListComparator.inl">
       <Filter>Source Files\wizards\common</Filter>
     </None>
+    <None Include="ClassDiagram21.cd" />
   </ItemGroup>
 </Project>

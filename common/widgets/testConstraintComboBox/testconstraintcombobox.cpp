@@ -11,7 +11,7 @@ TestConstraintComboBox::TestConstraintComboBox(QWidget *parent):
 QComboBox(parent) {
 	setEditable(false);
 
-	for (unsigned int i = 0; i <= General::TESTCONSTRAINT_COUNT; ++i) {
+	for (unsigned int i = 0; i < General::TESTCONSTRAINT_COUNT; ++i) {
 		addItem(General::TEST_CONSTRAINT_STRINGS[i]);
 	}
 }

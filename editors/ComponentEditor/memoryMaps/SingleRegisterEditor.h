@@ -6,7 +6,7 @@
 // Date: 24.04.2015
 //
 // Description:
-// Editor for editing the details of a single address block.
+// Editor for editing the details of a single register.
 //-----------------------------------------------------------------------------
 
 #ifndef SINGLEREGISTEREDITOR_H

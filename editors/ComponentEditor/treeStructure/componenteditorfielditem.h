@@ -27,21 +27,25 @@ class ComponentEditorFieldItem : public ComponentEditorItem {
 
 public:
 
-	/*! \brief The constructor
-	 * 
-	 * \param reg Pointer to the register which contains this field.
-	 * \param field Pointer to the field being edited.
-	 * \param model Pointer to the model that owns the items.
-	 * \param libHandler Pointer to the instance that manages the library.
-	 * \param component Pointer to the component being edited.
-	 * \param parent Pointer to the parent item.
+    /*!
+	 *  The constructor.
 	 *
-	*/
+	 *      @param [in] reg                 Pointer to the register which contains this field.
+	 *      @param [in] field               Pointer to the field being edited.
+	 *      @param [in] model               Pointer to the model that owns the items.
+	 *      @param [in] libHandler          Pointer to the instance that manages the library.
+	 *      @param [in] component           Pointer to the component being edited.
+	 *      @param [in] parameterFinder     Pointer to the parameter finder.
+	 *      @param [in] referenceCounter    Pointer to the instance for counting references made to the parameters.
+	 *      @param [in] parent              Pointer to the parent item.
+	 */
 	ComponentEditorFieldItem(QSharedPointer<Register> reg,
 		QSharedPointer<Field> field,
 		ComponentEditorTreeModel* model,
 		LibraryInterface* libHandler,
 		QSharedPointer<Component> component,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ReferenceCounter> referenceCounter,
 		ComponentEditorItem* parent);
 
 	//! \brief The destructor

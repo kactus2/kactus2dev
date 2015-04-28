@@ -834,3 +834,11 @@ void Field::copyVendorExtensions(const Field & other)
         }
     }
 }
+
+//-----------------------------------------------------------------------------
+// Function: field::getNameGroup()
+//-----------------------------------------------------------------------------
+NameGroup& Field::getNameGroup()
+{
+    return nameGroup_;
+}

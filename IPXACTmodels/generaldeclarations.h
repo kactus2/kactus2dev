@@ -557,8 +557,7 @@ const QString TEST_CONSTRAINT_STRINGS[] = {
 	"unConstrained",
 	"restore",
 	"writeAsRead",
-	"readOnly",
-	""
+	"readOnly"
 };
 
 /*! \brief Convert the enum value to a matching string.

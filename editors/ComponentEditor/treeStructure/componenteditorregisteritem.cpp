@@ -40,7 +40,7 @@ registerDimensions_()
 		if (field)
         {
 			QSharedPointer<ComponentEditorFieldItem> fieldItem(new ComponentEditorFieldItem(
-				reg, field, model, libHandler, component, this));
+				reg, field, model, libHandler, component, parameterFinder, referenceCounter, this));
 			childItems_.append(fieldItem);
 		}
 	}
@@ -104,7 +104,7 @@ ItemEditor* ComponentEditorRegisterItem::editor()
 void ComponentEditorRegisterItem::createChild( int index )
 {
 	QSharedPointer<ComponentEditorFieldItem> fieldItem(new ComponentEditorFieldItem(
-		reg_, reg_->getFields().at(index), model_, libHandler_, component_, this));
+		reg_, reg_->getFields().at(index), model_, libHandler_, component_, parameterFinder_, referenceCounter_, this));
 	fieldItem->setLocked(locked_);
 	
 	if (visualizer_)

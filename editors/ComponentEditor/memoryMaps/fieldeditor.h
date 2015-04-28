@@ -14,82 +14,72 @@
 
 #include <QSharedPointer>
 #include <QSortFilterProxyModel>
+#include <QGroupBox>
 
 class EditableTableView;
 class EnumeratedValueModel;
-class WriteValueConstraintEditor;
 class LibraryInterface;
 
-/*! \brief The editor to edit the enumerated values of a field.
- *
- */
-class FieldEditor : public ItemEditor {
+//-----------------------------------------------------------------------------
+//! Editor for editing the enumerated values of a field.
+//-----------------------------------------------------------------------------
+class FieldEditor : public QGroupBox
+{
 	Q_OBJECT
 
 public:
 
-	//! \brief The default height and width of the editor.
-	enum Sizes {
-		HEIGHT = 300,
-		WIDTH = 700
-	};
-
-	/*! \brief The constructor
-	 * 
-	 * \param field Pointer to the field being edited.
-	 * \param component Pointer to the component being edited.
-	 * \param handler Pointer to the instance managing the library.
-	 * \param parent Pointer to the parent of this editor.
+	/*!
+	 *  The constructor.
 	 *
+	 *      @param [in] field       Pointer to the field being edited.
+	 *      @param [in] component   Pointer to the component being edited.
+	 *      @param [in] handler     Pointer to the instance managing the library.
+	 *      @param [in] parent      Pointer to the parent of this editor.
 	 */
-	FieldEditor(QSharedPointer<Field> field,
-		QSharedPointer<Component> component,
-		LibraryInterface* handler, 
-		QWidget* parent = 0);
+	FieldEditor(QSharedPointer<Field> field, QSharedPointer<Component> component, LibraryInterface* handler,
+        QWidget* parent = 0);
 
-	//! \brief The destructor
+	/*!
+	 *  The destructor.
+	 */
 	virtual ~FieldEditor();
 
-	/*! \brief Check for the validity of the editor
-	* 
-	* \return True if the editor is in valid state.
-	*/
+	/*!
+	 *  Check for the validity of the editor.
+	 *
+     *      @return True, if the editor is in a valid state, false otherwise.
+	 */
 	virtual bool isValid() const;
 
-	/*! \brief Reload the information from the model to the editor.
-	*/
+	/*!
+	 *  Reload the information from the model to the editor.
+	 */
 	virtual void refresh();
 
-	/*! \brief The size hint for the editor.
-	 *
-	 * \return QSize contains the size hint.
-	*/
-	virtual QSize sizeHint() const;
+signals:
 
-protected:
-
-	//! \brief Handler for widget's show event
-	virtual void showEvent(QShowEvent* event);
+    /*!
+     *  Informs of changes to the component editor tree.
+     */
+    void contentChanged();
 
 private:
 	
-	//! \brief No copying
+	//! No copying
 	FieldEditor(const FieldEditor& other);
 
-	//! \brief No assignment
+	//! No assignment
 	FieldEditor& operator=(const FieldEditor& other);
 
-	//! \brief The view to display the enumerated values.
+	//! The view to display the enumerated values.
 	EditableTableView* enumView_;
 
-	//! \brief The proxy that does the sorting of enumerated values.
+	//! The proxy that does the sorting of enumerated values.
 	QSortFilterProxyModel* enumProxy_;
 
-	//! \brief The model that manages the enumerated values.
+	//! The model that manages the enumerated values.
 	EnumeratedValueModel* enumModel_;
-
-	//! \brief The editor to set the write constraints of field.
-	WriteValueConstraintEditor* writeConstr_;
 };
 
 #endif // FIELDEDITOR_H

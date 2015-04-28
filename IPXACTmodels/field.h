@@ -401,6 +401,13 @@ public:
 	*/
 	QSharedPointer<WriteValueConstraint> getWriteConstraint();
 
+    /*!
+     *  Get the namegroup of this field.
+     *
+     *      @return The name group of this field.
+     */
+    NameGroup& getNameGroup();
+
 private:
 
     /*!
