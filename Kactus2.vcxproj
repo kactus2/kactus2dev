@@ -644,6 +644,12 @@ CreateHelp
     <ClCompile Include="editors\ComponentEditor\memoryMaps\memorymapproxy.cpp" />
     <ClCompile Include="editors\ComponentEditor\memoryMaps\memorymapsdelegate.cpp" />
     <ClCompile Include="editors\ComponentEditor\memoryMaps\memorymapseditor.cpp" />
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\AddressBlockExpressionsGatherer.cpp" />
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\FieldExpressionsGatherer.cpp" />
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryMapExpressionsGatherer.cpp" />
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryRemapExpressionGatherer.cpp" />
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\ReferenceCalculator.cpp" />
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\RegisterExpressionsGatherer.cpp" />
     <ClCompile Include="editors\ComponentEditor\memoryMaps\memorymapsmodel.cpp" />
     <ClCompile Include="editors\ComponentEditor\memoryMaps\MemoryMapsView.cpp" />
     <ClCompile Include="editors\ComponentEditor\memoryMaps\memoryMapsVisualizer\addressblockgraphitem.cpp" />
@@ -2283,6 +2289,12 @@ CreateHelp
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_DLL -DQT_HELP_LIB "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog" "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp" "-I.\editors\ComponentEditor\common"</Command>
     </CustomBuild>
+    <ClInclude Include="editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\AddressBlockExpressionsGatherer.h" />
+    <ClInclude Include="editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\FieldExpressionsGatherer.h" />
+    <ClInclude Include="editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryMapExpressionsGatherer.h" />
+    <ClInclude Include="editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryRemapExpressionGatherer.h" />
+    <ClInclude Include="editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\ReferenceCalculator.h" />
+    <ClInclude Include="editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\RegisterExpressionsGatherer.h" />
     <ClInclude Include="editors\ComponentEditor\memoryMaps\RegisterColumns.h" />
     <CustomBuild Include="editors\ComponentEditor\memoryMaps\SingleMemoryMapEditor.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>

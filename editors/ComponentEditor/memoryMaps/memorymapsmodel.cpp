@@ -10,16 +10,23 @@
 
 #include "MemoryMapsColumns.h"
 
+#include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/MemoryMapExpressionsGatherer.h>
+#include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/MemoryRemapExpressionGatherer.h>
+#include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
+
 #include <IPXACTmodels/memorymapitem.h>
 
 #include <QColor>
+#include <QMap>
 
 //-----------------------------------------------------------------------------
 // Function: memorymapsmodel::MemoryMapsModel()
 //-----------------------------------------------------------------------------
-MemoryMapsModel::MemoryMapsModel( QSharedPointer<Component> component, QObject *parent ):
+MemoryMapsModel::MemoryMapsModel( QSharedPointer<Component> component,
+    QSharedPointer<ParameterFinder> parameterFinder, QObject *parent ):
 QAbstractItemModel(parent),
 component_(component),
+parameterFinder_(parameterFinder),
 rootMemoryMaps_(component->getMemoryMaps())
 {
 	Q_ASSERT(component_);
@@ -300,6 +307,8 @@ void MemoryMapsModel::onRemoveItem( const QModelIndex& index )
 
     if (!index.parent().isValid())
     {
+        decreaseReferencesWithRemovedMemoryMap(rootMemoryMaps_.at(index.row()));
+
         beginRemoveRows(QModelIndex(), index.row(), index.row());
         rootMemoryMaps_.removeAt(index.row());
         endRemoveRows();
@@ -315,12 +324,51 @@ void MemoryMapsModel::onRemoveItem( const QModelIndex& index )
         QSharedPointer<MemoryRemap> removedMemoryRemap = getIndexedMemoryRemap(index.parent(), index.row());
         QSharedPointer<MemoryMap> parentMemoryMap = getParentMemoryMap(removedMemoryRemap);
 
+        decreaseReferencesWithRemovedMemoryRemap(removedMemoryRemap);
+
         beginRemoveRows(index.parent(), index.row(), index.row());
         parentMemoryMap->getMemoryRemaps()->removeAt(index.row());
         endRemoveRows();
 
         emit memoryRemapRemoved(index.row(), parentMemoryMap);
         emit contentChanged();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: memorymapsmodel::decreaseReferencesWithRemovedMemoryMap()
+//-----------------------------------------------------------------------------
+void MemoryMapsModel::decreaseReferencesWithRemovedMemoryMap(QSharedPointer<MemoryMap> removedMemoryMap)
+{
+    MemoryMapExpressionGatherer* memoryMapGatherer = new MemoryMapExpressionGatherer();
+
+    QStringList expressionList = memoryMapGatherer->getExpressions(removedMemoryMap);
+
+    ReferenceCalculator* memoryMapReferenceCalculator = new ReferenceCalculator(parameterFinder_);
+    QMap<QString, int> referencedParameters = memoryMapReferenceCalculator->getReferencedParameters(expressionList);
+
+    foreach (QString referencedId, referencedParameters.keys())
+    {
+        for (int i = 0; i < referencedParameters.value(referencedId); ++i)
+        {
+            emit decreaseReferences(referencedId);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: memorymapsmodel::decreaseReferencesWithRemovedMemoryRemap()
+//-----------------------------------------------------------------------------
+void MemoryMapsModel::decreaseReferencesWithRemovedMemoryRemap(QSharedPointer<MemoryRemap> removedMemoryRemap)
+{
+    QMap<QString, int> referencedParameters = getReferencedParameters(removedMemoryRemap);
+
+    foreach (QString referencedId, referencedParameters.keys())
+    {
+        for (int i = 0; i < referencedParameters.value(referencedId); ++i)
+        {
+            emit decreaseReferences(referencedId);
+        }
     }
 }
 
@@ -337,6 +385,8 @@ void MemoryMapsModel::onAddMemoryRemap(const QModelIndex& index)
     QSharedPointer<MemoryMap> parentMemoryMap = rootMemoryMaps_.at(index.row());
     int rowOfNewItem = parentMemoryMap->getMemoryRemaps()->count();
 
+    increaseReferencesWithNewRemap(parentMemoryMap);
+
     QSharedPointer<MemoryRemap> newMemoryRemap (new MemoryRemap);
     QList<QSharedPointer<MemoryMapItem> > newRemapItems;
     foreach (QSharedPointer<MemoryMapItem> memoryMapItem, parentMemoryMap->getItems())
@@ -352,6 +402,36 @@ void MemoryMapsModel::onAddMemoryRemap(const QModelIndex& index)
 
     emit memoryRemapAdded(rowOfNewItem, parentMemoryMap);
     emit contentChanged();
+}
+
+
+//-----------------------------------------------------------------------------
+// Function: memorymapsmodel::increaseReferencesWithNewRemap()
+//-----------------------------------------------------------------------------
+void MemoryMapsModel::increaseReferencesWithNewRemap(QSharedPointer<MemoryMap> parentMemoryMap)
+{
+    QMap<QString, int> referencedParameters = getReferencedParameters(parentMemoryMap);
+
+    foreach (QString referencedId, referencedParameters.keys())
+    {
+        for (int i = 0; i < referencedParameters.value(referencedId); ++i)
+        {
+            emit increaseReferences(referencedId);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: memorymapsmodel::getReferencedParameters()
+//-----------------------------------------------------------------------------
+QMap<QString, int> MemoryMapsModel::getReferencedParameters(QSharedPointer<AbstractMemoryMap> memoryMap) const
+{
+    MemoryRemapExpressionGatherer* memoryRemapGatherer = new MemoryRemapExpressionGatherer();
+
+    QStringList expressionList = memoryRemapGatherer->getExpressions(memoryMap);
+
+    ReferenceCalculator* memoryMapReferenceCalculator = new ReferenceCalculator(parameterFinder_);
+    return memoryMapReferenceCalculator->getReferencedParameters(expressionList);
 }
 
 //-----------------------------------------------------------------------------

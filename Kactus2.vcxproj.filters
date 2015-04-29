@@ -920,6 +920,12 @@
     <Filter Include="Header Files\editors\ComponentEditor\remapStates">
       <UniqueIdentifier>{ac8149ce-8f18-4742-a635-c4f7239aeabc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators">
+      <UniqueIdentifier>{f21aaa0e-dde2-4784-b98b-f98a327c86ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators">
+      <UniqueIdentifier>{0383a24a-2477-42e1-a186-544e70d7a570}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -4081,6 +4087,24 @@
     <ClCompile Include="GeneratedFiles\moc_WriteValueConstraintComboBox.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\FieldExpressionsGatherer.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\RegisterExpressionsGatherer.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\AddressBlockExpressionsGatherer.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryMapExpressionsGatherer.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\ReferenceCalculator.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryRemapExpressionGatherer.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -6001,6 +6025,24 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\memoryMaps\MemoryMapsColumns.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\FieldExpressionsGatherer.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\RegisterExpressionsGatherer.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\AddressBlockExpressionsGatherer.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryMapExpressionsGatherer.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\ReferenceCalculator.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryRemapExpressionGatherer.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

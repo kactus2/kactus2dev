@@ -11,6 +11,7 @@
 #include "memorymapsdelegate.h"
 
 #include <editors/ComponentEditor/itemeditor.h>
+#include <editors/ComponentEditor/common/ParameterFinder.h>
 
 #include <IPXACTmodels/component.h>
 
@@ -37,14 +38,16 @@ public:
 		WIDTH = 700
 	};
 
-	/*! \brief The constructor
+	/*!
+	 *  The constructor.
 	 *
-	 * \param component Pointer to the component being edited.
-	 * \param handler Pointer to the instance managing the library.
-	 * \param parent Pointer to the owner of this editor.
-	 *
-	*/
+	 *      @param [in] component           Pointer to the component being edited.
+	 *      @param [in] parameterFinder     Pointer to the parameter finder.
+	 *      @param [in] handler             Pointer to the instance managing the library.
+	 *      @param [in] parent              Pointer to the owner of this editor.
+	 */
 	MemoryMapsEditor(QSharedPointer<Component> component,
+        QSharedPointer<ParameterFinder> parameterFinder,
 		LibraryInterface* handler, 
 		QWidget *parent = 0);
 	

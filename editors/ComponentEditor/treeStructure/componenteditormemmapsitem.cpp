@@ -62,11 +62,14 @@ QString ComponentEditorMemMapsItem::text() const {
 	return tr("Memory maps");
 }
 
+//-----------------------------------------------------------------------------
+// Function: componenteditormemmapsitem::editor()
+//-----------------------------------------------------------------------------
 ItemEditor* ComponentEditorMemMapsItem::editor()
 {
 	if (!editor_)
     {
-		editor_ = new MemoryMapsEditor(component_, libHandler_);
+		editor_ = new MemoryMapsEditor(component_, parameterFinder_, libHandler_);
 		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()), 
 			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
@@ -87,6 +90,8 @@ ItemEditor* ComponentEditorMemMapsItem::editor()
 
         connect(editor_, SIGNAL(memoryRemapRemoved(int, QSharedPointer<MemoryMap>)),
             this, SIGNAL(memoryRemapRemoved(int, QSharedPointer<MemoryMap>)), Qt::UniqueConnection);
+
+        connectItemEditorToReferenceCounter();
 	}
 	return editor_;
 }

@@ -12,6 +12,8 @@
 #include <IPXACTmodels/memorymap.h>
 #include <IPXACTmodels/MemoryRemap.h>
 
+#include <editors/ComponentEditor/common/ParameterFinder.h>
+
 #include <QAbstractTableModel>
 #include <QAbstractItemModel>
 #include <QSharedPointer>
@@ -29,10 +31,12 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] component   Pointer to the component that contains the memory maps to edit.
-	 *      @param [in] parent      Pointer to the owner of the model.
+	 *      @param [in] component           Pointer to the component that contains the memory maps to edit.
+     *      @param [in] parameterFinder     Pointer to the instance used to find parameters.
+	 *      @param [in] parent              Pointer to the owner of the model.
 	 */
-	MemoryMapsModel(QSharedPointer<Component> component, QObject *parent);
+	MemoryMapsModel(QSharedPointer<Component> component, QSharedPointer<ParameterFinder> parameterFinder,
+        QObject *parent);
 	
 	/*!
 	 *  The destructor.
@@ -166,8 +170,56 @@ signals:
     //! Emitted when a memory remap is removed from the given index.
     void memoryRemapRemoved(int index, QSharedPointer<MemoryMap> parentMemoryMap);
 
+    /*!
+     *  Informs of an increase in references for a given parameter.
+     *
+     *      @param [in] id  The id of the given parameter.
+     */
+    void increaseReferences(QString const& id);
+
+    /*!
+     *  Informs of a decrease in references for a given parameter.
+     *
+     *      @param [in] id  The id of the given parameter.
+     */
+    void decreaseReferences(QString const& id);
+
 private:
 	
+    //! No copying
+    MemoryMapsModel(const MemoryMapsModel& other);
+
+    //! No assignment
+    MemoryMapsModel& operator=(const MemoryMapsModel& other);
+
+    /*!
+     *  Increaser the number of references when creating a new memory remap.
+     *
+     *      @param [in] parentMemoryMap     The parent memory map of the memory remap.
+     */
+    void increaseReferencesWithNewRemap(QSharedPointer<MemoryMap> parentMemoryMap);
+
+    /*!
+     *  Decrease the number of references when removing a memory remap.
+     *
+     *      @param [in] removedMemoryRemap  The removed memory remap.
+     */
+    void decreaseReferencesWithRemovedMemoryRemap(QSharedPointer<MemoryRemap> removedMemoryRemap);
+
+    /*!
+     *  Get the referenced parameters in the given abstract memory map.
+     *
+     *      @param [in] memoryMap   The given memory map.
+     */
+    QMap<QString, int> getReferencedParameters(QSharedPointer<AbstractMemoryMap> memoryMap) const;
+
+    /*!
+     *  Decrease the number of references when removing a memory map.
+     *
+     *      @param [in] removedMemoryMap    The removed memory map.
+     */
+    void decreaseReferencesWithRemovedMemoryMap(QSharedPointer<MemoryMap> removedMemoryMap);
+
     /*!
      *  Create a parent index for the index of a memory remap.
      *
@@ -227,14 +279,11 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-	//! No copying
-	MemoryMapsModel(const MemoryMapsModel& other);
-
-	//! No assignment
-	MemoryMapsModel& operator=(const MemoryMapsModel& other);
-
 	//! Pointer to the component that contains the memory maps to edit.
 	QSharedPointer<Component> component_;
+
+    //! The parameter finder.
+    QSharedPointer<ParameterFinder> parameterFinder_;
 
 	//! Contains the memory maps to show in the summary.
 	QList<QSharedPointer<MemoryMap> >& rootMemoryMaps_;

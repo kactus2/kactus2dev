@@ -21,12 +21,12 @@
 //-----------------------------------------------------------------------------
 // Function: memorymapseditor::MemoryMapsEditor()
 //-----------------------------------------------------------------------------
-MemoryMapsEditor::MemoryMapsEditor( QSharedPointer<Component> component, LibraryInterface* handler,
-    QWidget *parent ):
+MemoryMapsEditor::MemoryMapsEditor( QSharedPointer<Component> component,
+    QSharedPointer<ParameterFinder> parameterFinder, LibraryInterface* handler, QWidget *parent ):
 ItemEditor(component, handler, parent),
 view_(new MemoryMapsView(this)),
 proxy_(new QSortFilterProxyModel(this)),
-model_(new MemoryMapsModel(component, this)),
+model_(new MemoryMapsModel(component, parameterFinder, this)),
 delegate_()
 {
 	// display a label on top the table
@@ -55,6 +55,11 @@ delegate_()
 	connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(model_, SIGNAL(memoryMapAdded(int)), this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
 	connect(model_, SIGNAL(memoryMapRemoved(int)), this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
+
+    connect(model_, SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(model_, SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
     connect(model_, SIGNAL(memoryRemapAdded(int, QSharedPointer<MemoryMap>)),
         this, SIGNAL(memoryRemapAdded(int, QSharedPointer<MemoryMap>)), Qt::UniqueConnection);
