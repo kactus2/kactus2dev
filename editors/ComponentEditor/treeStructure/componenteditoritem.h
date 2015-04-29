@@ -83,7 +83,7 @@ public:
 	 *
 	 * \return The number of child items this item contains.
 	*/
-	int rowCount() const;
+	virtual int rowCount() const;
 
 	/*! \brief Returns true if item contains child items.
 	 *

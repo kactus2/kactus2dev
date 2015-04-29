@@ -112,7 +112,7 @@ QString ComponentEditorMemMapItem::getTooltip() const
 //-----------------------------------------------------------------------------
 void ComponentEditorMemMapItem::createChild( int index )
 {
-    QSharedPointer<MemoryRemap> memoryRemap = memoryMap_->getMemoryRemaps()->at(index);
+    QSharedPointer<MemoryRemap> memoryRemap = memoryMap_->getMemoryRemaps()->at(index - 1);
 
     QSharedPointer<MemoryRemapItem> memoryRemapItem (new MemoryRemapItem(memoryRemap, memoryMap_, model_,
         libHandler_, component_, referenceCounter_, parameterFinder_, expressionFormatter_, expressionParser_, this));
@@ -186,7 +186,7 @@ void ComponentEditorMemMapItem::onMemoryRemapAdded(int memoryRemapIndex, QShared
 {
     if (parentMemoryMap == memoryMap_)
     {
-        onAddChild(memoryRemapIndex);
+        onAddChild(memoryRemapIndex + 1);
     }
 }
 

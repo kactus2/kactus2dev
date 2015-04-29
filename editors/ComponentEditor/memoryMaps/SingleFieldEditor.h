@@ -9,8 +9,8 @@
 // Editor for editing the details of a single field.
 //-----------------------------------------------------------------------------
 
-#ifndef SIGNLEFIELDEDITOR_H
-#define SIGNLEFIELDEDITOR_H
+#ifndef SINGLEFIELDEDITOR_H
+#define SINGLEFIELDEDITOR_H
 
 #include <editors/ComponentEditor/itemeditor.h>
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
@@ -256,4 +256,4 @@ private:
     QSharedPointer<Field> field_;
 };
 
-#endif // SIGNLEFIELDEDITOR_H
+#endif // SINGLEFIELDEDITOR_H
