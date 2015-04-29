@@ -38,8 +38,7 @@ expressionFormatter_(expressionFormatter)
 
     setupTree();
 
-    //resizeColumnToContents(ITEM_NAME);
-    setColumnWidth(ITEM_NAME, 200);
+    setColumnWidth(ITEM_NAME, 240);
 }
 
 //-----------------------------------------------------------------------------
@@ -198,7 +197,7 @@ bool ParameterReferenceTree::referenceExistsInAddressSpaces()
 {
     foreach(QSharedPointer<AddressSpace> addressSpace, component_->getAddressSpaces())
     {
-        if (referenceExistsInSingleMemoryMap(addressSpace->getLocalMemoryMap()))
+        if (referenceExistsInDefaultMemoryRemap(addressSpace->getLocalMemoryMap()))
         {
             return true;
         }
@@ -346,7 +345,49 @@ bool ParameterReferenceTree::referenceExistsInMemoryMaps()
 //-----------------------------------------------------------------------------
 bool ParameterReferenceTree::referenceExistsInSingleMemoryMap(QSharedPointer<MemoryMap> memoryMap)
 {
+    if (referenceExistsInDefaultMemoryRemap(memoryMap))
+    {
+        return true;
+    }
+
+    foreach (QSharedPointer<MemoryRemap> memoryRemap, *memoryMap->getMemoryRemaps())
+    {
+        if (referenceExistsInSingleMemoryRemap(memoryRemap))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterReferenceTree::referenceExistsInSingleMemoryMap()
+//-----------------------------------------------------------------------------
+bool ParameterReferenceTree::referenceExistsInDefaultMemoryRemap(QSharedPointer<MemoryMap> memoryMap)
+{
     foreach(QSharedPointer<MemoryMapItem> addressBlockItem, memoryMap->getItems())
+    {
+        QSharedPointer<AddressBlock> addressBlock = addressBlockItem.dynamicCast<AddressBlock>();
+
+        if (addressBlock)
+        {
+            if (referenceExistsInAddressBlock(addressBlock))
+            {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterReferenceTree::()
+//-----------------------------------------------------------------------------
+bool ParameterReferenceTree::referenceExistsInSingleMemoryRemap(QSharedPointer<MemoryRemap> memoryRemap)
+{
+    foreach(QSharedPointer<MemoryMapItem> addressBlockItem, memoryRemap->getItems())
     {
         QSharedPointer<AddressBlock> addressBlock = addressBlockItem.dynamicCast<AddressBlock>();
 
@@ -457,12 +498,14 @@ void ParameterReferenceTree::createReferencesForAddressSpaces()
 
     foreach (QSharedPointer<AddressSpace> addressSpace, component_->getAddressSpaces())
     {
-        if (addressSpace->hasLocalMemoryMap() && referenceExistsInSingleMemoryMap(addressSpace->getLocalMemoryMap()))
+        if (addressSpace->hasLocalMemoryMap() && referenceExistsInDefaultMemoryRemap(addressSpace->getLocalMemoryMap()))
         {
             QTreeWidgetItem* addressSpaceItem = createMiddleItem(addressSpace->getName(), topAddressSpaceItem);
             QSharedPointer <MemoryMap> localMemoryMap = addressSpace->getLocalMemoryMap();
 
-            createReferencesForSingleMemoryMap(localMemoryMap, addressSpaceItem);
+            QTreeWidgetItem* memoryMapItem = createMiddleItem(localMemoryMap->getName(), addressSpaceItem);
+
+            createReferencesForSingleMemoryMap(localMemoryMap, memoryMapItem);
         }
     }
 }
@@ -478,7 +521,25 @@ void ParameterReferenceTree::createReferencesForMemoryMaps()
     {
         if (referenceExistsInSingleMemoryMap(memoryMap))
         {
-            createReferencesForSingleMemoryMap(memoryMap, topMemoryMapItem);
+            QTreeWidgetItem* memoryMapTreeItem = createMiddleItem(memoryMap->getName(), topMemoryMapItem);
+
+            QTreeWidgetItem* memoryRemapsTreeItem = createMiddleItem("Memory remaps", memoryMapTreeItem);
+            colourItemGrey(memoryRemapsTreeItem);
+
+            if (referenceExistsInDefaultMemoryRemap(memoryMap))
+            {
+                QTreeWidgetItem* defaultMemoryRemapItem = createMiddleItem("Default", memoryRemapsTreeItem);
+                createReferencesForSingleMemoryMap(memoryMap, defaultMemoryRemapItem);
+            }
+
+            foreach (QSharedPointer<MemoryRemap> memoryRemap, *memoryMap->getMemoryRemaps())
+            {
+                if (referenceExistsInSingleMemoryRemap(memoryRemap))
+                {
+                    QTreeWidgetItem* memoryRemapItem = createMiddleItem(memoryRemap->getName(), memoryRemapsTreeItem);
+                    createReferencesForSingleMemoryMap(memoryRemap, memoryRemapItem);
+                }
+            }
         }
     }
 }
@@ -486,12 +547,10 @@ void ParameterReferenceTree::createReferencesForMemoryMaps()
 //-----------------------------------------------------------------------------
 // Function: ParameterReferenceTree::createReferencesForSingleMemoryMap()
 //-----------------------------------------------------------------------------
-void ParameterReferenceTree::createReferencesForSingleMemoryMap(QSharedPointer<MemoryMap> memoryMap,
-    QTreeWidgetItem* topMemoryMapItem)
+void ParameterReferenceTree::createReferencesForSingleMemoryMap(QSharedPointer<AbstractMemoryMap> memoryMap,
+    QTreeWidgetItem* memoryRemapItem)
 {
-    QTreeWidgetItem* memoryMapTreeItem = createMiddleItem(memoryMap->getName(), topMemoryMapItem);
-
-    QTreeWidgetItem* middleAddressBlocksItem = createMiddleItem("Address blocks", memoryMapTreeItem);
+    QTreeWidgetItem* middleAddressBlocksItem = createMiddleItem("Address blocks", memoryRemapItem);
 
     colourItemGrey(middleAddressBlocksItem);
 

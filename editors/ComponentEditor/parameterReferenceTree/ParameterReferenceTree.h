@@ -17,7 +17,9 @@
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/register.h>
 #include <IPXACTmodels/addressblock.h>
+#include <IPXACTmodels/AbstractMemoryMap.h>
 #include <IPXACTmodels/memorymap.h>
+#include <IPXACTmodels/MemoryRemap.h>
 #include <IPXACTmodels/mirroredslaveinterface.h>
 #include <IPXACTmodels/addressspace.h>
 #include <IPXACTmodels/remapstate.h>
@@ -167,6 +169,24 @@ private:
     bool referenceExistsInSingleMemoryMap(QSharedPointer<MemoryMap> memoryMap);
 
     /*!
+     *  Check if a reference exists in the default memory remap (memory map).
+     *
+     *      @param [in] memoryMap   The memory map being examined.
+     *
+     *      @return True, if a reference exists in this memory map, false otherwise.
+     */
+    bool referenceExistsInDefaultMemoryRemap(QSharedPointer<MemoryMap> memoryMap);
+
+    /*!
+     *  Check if a reference exists in a single memory remap of a memory map.
+     *
+     *      @param [in] memoryRemap     The memory remap being examined.
+     *
+     *      @return True, if a reference exists in this memory remap, false otherwise.
+     */
+    bool referenceExistsInSingleMemoryRemap(QSharedPointer<MemoryRemap> memoryRemap);
+
+    /*!
      *  Check if a reference exists in an address block.
      *
      *      @param [in] addressBlock    The address block whose references are being looked at.
@@ -218,12 +238,13 @@ private:
     void createReferencesForMemoryMaps();
 
     /*!
-     *  Create the references for a single memory map.
+     *  Create the references for a single abstract memory map.
      *
-     *      @param [in] memoryMap           The memory map.
+     *      @param [in] memoryMap           The memory map / memory remap.
      *      @param [in] topMemoryMapItem    The parent tree item of the new memory map tree item.
      */
-    void createReferencesForSingleMemoryMap(QSharedPointer<MemoryMap> memoryMap, QTreeWidgetItem* topMemoryMapItem);
+    void createReferencesForSingleMemoryMap(QSharedPointer<AbstractMemoryMap> memoryMap,
+        QTreeWidgetItem* memoryRemapItem);
 
     /*!
      *  Create the references for a single address block.
