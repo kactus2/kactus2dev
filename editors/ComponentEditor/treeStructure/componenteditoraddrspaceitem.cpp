@@ -19,6 +19,7 @@ ComponentEditorAddrSpaceItem::ComponentEditorAddrSpaceItem(QSharedPointer<Addres
                                                            QSharedPointer<ReferenceCounter> referenceCounter,
                                                            QSharedPointer<ParameterFinder> parameterFinder,
                                                            QSharedPointer<ExpressionFormatter> expressionFormatter,
+                                                           QSharedPointer<ExpressionParser> expressionParser,
 														   ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 addrSpace_(addrSpace),
@@ -26,7 +27,8 @@ localMemMap_(addrSpace->getLocalMemoryMap()),
 items_(addrSpace->getLocalMemoryMap()->getItems()),
 graphItem_(NULL),
 localMemMapVisualizer_(new MemoryMapsVisualizer()),
-addrSpaceVisualizer_(new AddressSpaceVisualizer(addrSpace))
+addrSpaceVisualizer_(new AddressSpaceVisualizer(addrSpace)),
+expressionParser_(expressionParser)
 {
     setReferenceCounter(referenceCounter);
     setParameterFinder(parameterFinder);
@@ -45,7 +47,7 @@ addrSpaceVisualizer_(new AddressSpaceVisualizer(addrSpace))
 		if (addrBlock) {
 			QSharedPointer<ComponentEditorAddrBlockItem> addrBlockItem(
 				new ComponentEditorAddrBlockItem(addrBlock, model, libHandler, component, referenceCounter_,
-                parameterFinder_, expressionFormatter_, this));
+                parameterFinder_, expressionFormatter_,expressionParser_, this));
 
 			addrBlockItem->setVisualizer(localMemMapVisualizer_);
 			childItems_.append(addrBlockItem);
@@ -105,7 +107,7 @@ void ComponentEditorAddrSpaceItem::createChild( int index ) {
 	if (addrBlock) {
 		QSharedPointer<ComponentEditorAddrBlockItem> addrBlockItem(
 			new ComponentEditorAddrBlockItem(addrBlock, model_, libHandler_, component_, referenceCounter_,
-            parameterFinder_, expressionFormatter_, this));
+            parameterFinder_, expressionFormatter_, expressionParser_, this));
 		addrBlockItem->setLocked(locked_);
 
 		if (localMemMapVisualizer_) {

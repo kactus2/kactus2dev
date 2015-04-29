@@ -68,6 +68,11 @@ public:
 	*/
 	virtual QSize sizeHint() const;
 
+protected:
+
+    //! Handler for events when the widget is shown.
+    virtual void showEvent(QShowEvent* event);
+
 private:
 	
 	//! No copying

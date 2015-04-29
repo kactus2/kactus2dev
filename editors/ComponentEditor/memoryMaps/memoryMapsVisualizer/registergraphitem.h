@@ -17,20 +17,25 @@
 
 #include <QSharedPointer>
 
+class ExpressionParser;
+
 //-----------------------------------------------------------------------------
 //! The graphical item that represents one register.
 //-----------------------------------------------------------------------------
-class RegisterGraphItem : public MemoryVisualizationItem {
+class RegisterGraphItem : public MemoryVisualizationItem
+{
 	Q_OBJECT
 
 public:
 
 	/*! The constructor
 	 *
-	 *      @param [in] reg     The register that this graph item visualizes.
-	 *      @param [in] parent  The parent of this graph item.
+	 *      @param [in] reg                 The register that this graph item visualizes.
+     *      @param [in] expressionParser    Parser for expressions in register fields.
+	 *      @param [in] parent              The parent of this graph item.
 	*/
-	RegisterGraphItem(QSharedPointer<Register> reg, QGraphicsItem* parent);
+	RegisterGraphItem(QSharedPointer<Register> reg, QSharedPointer<ExpressionParser> expressionParser,
+        QGraphicsItem* parent);
 	
 	//! The destructor
 	virtual ~RegisterGraphItem();
@@ -61,7 +66,6 @@ public:
 	 *      @return The last address.
 	*/
 	virtual quint64 getLastAddress() const;
-
 
 	/*! Get the bit width of the item.
 	 * 
@@ -184,6 +188,9 @@ private:
 
     //! The index in the dimension the item represents.
     unsigned int dimensionIndex_;
+
+    //! Parser for expressions in register fields.
+    QSharedPointer<ExpressionParser> expresionParser_;
 };
 
 #endif // REGISTERGRAPHITEM_H

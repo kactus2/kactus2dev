@@ -25,6 +25,8 @@
 #include <QLineEdit>
 #include <QLabel>
 
+class Component;
+class ExpressionParser;
 //-----------------------------------------------------------------------------
 //! Editor for editing the details of a single memory map.
 //-----------------------------------------------------------------------------
@@ -43,6 +45,7 @@ public:
      *      @param [in] libHandler              Pointer to the instance that manages the library.
      *      @param [in] parameterFinder         The finder for the parameter references.
      *      @param [in] expressionFormatter     Changes the referenced ids to parameter names.
+     *      @param [in] expressionParser        The expression parser.
      *      @param [in] parent                  Pointer to the owner of this editor.
      */
     SingleMemoryMapEditor(QSharedPointer<Component> component,
@@ -51,6 +54,7 @@ public:
         LibraryInterface* libHandler,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QSharedPointer<ExpressionParser> expressionParser,
         QWidget* parent = 0);
 
     /*!

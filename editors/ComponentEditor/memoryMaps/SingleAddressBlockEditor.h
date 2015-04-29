@@ -15,7 +15,6 @@
 #include "addressblockeditor.h"
 
 #include <editors/ComponentEditor/itemeditor.h>
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
 
@@ -25,9 +24,10 @@
 #include <QSharedPointer>
 
 class ExpressionFormatter;
+class ExpressionEditor;
+class ExpressionParser;
 class LibraryInterface;
 class ParameterFinder;
-class ExpressionEditor;
 class UsageComboBox;
 class AccessComboBox;
 class BooleanComboBox;
@@ -49,6 +49,7 @@ public:
 	 *      @param [in] handler                 Pointer to the instance managing the library.
 	 *      @param [in] parameterFinder         Pointer to the parameter finder.
 	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
+     *      @param [in] expressionFormatter     The expression parser.
 	 *      @param [in] parent                  Pointer to the parent of this editor.
 	 */
     SingleAddressBlockEditor(QSharedPointer<AddressBlock> addressBlock,
@@ -56,6 +57,7 @@ public:
         LibraryInterface* handler,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QSharedPointer<ExpressionParser> expressionParser,
         QWidget* parent = 0);
 
 
@@ -196,7 +198,7 @@ private:
     QSharedPointer<AddressBlock> addressBlock_;
 
     //! The expression parser.
-    QSharedPointer<IPXactSystemVerilogParser> expressionParser_;
+    QSharedPointer<ExpressionParser> expressionParser_;
 };
 
 #endif // SINGLEADDRESSBLOCKEDITOR_H

@@ -1,10 +1,13 @@
-/* 
- *  	Created on: 16.5.2012
- *      Author: Antti Kamppi
- * 		filename: componenteditormemmapitem.h
- *		Project: Kactus 2
- */
-
+//-----------------------------------------------------------------------------
+// File: componenteditormemmapitem.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 16.05.2012
+//
+// Description:
+// The item for a single memory map in component editor's navigation tree.
+//-----------------------------------------------------------------------------
 #ifndef COMPONENTEDITORMEMMAPITEM_H
 #define COMPONENTEDITORMEMMAPITEM_H
 
@@ -17,11 +20,13 @@
 class MemoryMapEditor;
 class MemoryMapsVisualizer;
 class MemoryMapGraphItem;
+class ExpressionParser;
 
-/*! \brief The item for a single memory map in component editor's navigation tree.
- *
- */
-class ComponentEditorMemMapItem : public ComponentEditorItem {
+//-----------------------------------------------------------------------------
+//! The item for a single memory map in component editor's navigation tree.
+//-----------------------------------------------------------------------------
+class ComponentEditorMemMapItem : public ComponentEditorItem
+{
 	Q_OBJECT
 
 public:
@@ -29,14 +34,15 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] memoryMap               Pointer to the memory map being edited.
-	 *      @param [in] model                   Pointer to the model that owns the items.
-	 *      @param [in] libHandler              Pointer to the instance that manages the library.
-	 *      @param [in] component               Pointer to the component being edited.
-     *      @param [in] referenceCounter        Pointer to the instance for counting references to parameters.
-	 *      @param [in] parameterFinder         Pointer to the parameter finder.
-	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
-	 *      @param [in] parent                  Pointer to the parent item.
+	 *      @param [in] memoryMap               The memory map being edited.
+	 *      @param [in] model                   The model that owns the items.
+	 *      @param [in] libHandler              The instance that manages the library.
+	 *      @param [in] component               The component being edited.
+     *      @param [in] referenceCounter        The instance for counting references to parameters.
+	 *      @param [in] parameterFinder         The parameter finder.
+	 *      @param [in] expressionFormatter     The expression formatter.
+     *      @param [in] expressionParser        The expression parser to use.
+	 *      @param [in] parent                  The parent item.
 	 */
 	ComponentEditorMemMapItem(QSharedPointer<MemoryMap> memoryMap,
 		ComponentEditorTreeModel* model,
@@ -45,6 +51,7 @@ public:
         QSharedPointer<ReferenceCounter> referenceCounter,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QSharedPointer<ExpressionParser> expressionParser,
 		ComponentEditorItem* parent);
 
 	//! \brief The destructor
@@ -52,52 +59,51 @@ public:
 
 	/*! \brief Get the tool tip for the item.
 	 * 
-	 * \return The text for the tool tip to print to user.
+	 *      @return The text for the tool tip to print to user.
 	*/
 	virtual QString getTooltip() const;
 
 	/*! \brief Get the text to be displayed to user in the tree for this item.
 	 *
-	 * \return QString Contains the text to display.
+	 *      @return QString Contains the text to display.
 	*/
 	virtual QString text() const;
 
 	/*! \brief Check the validity of this item and sub items.
 	 *
-	 * \return bool True if item is in valid state.
+	 *      @return bool True if item is in valid state.
 	*/
 	virtual bool isValid() const;
 
 	/*! \brief Get pointer to the editor of this item.
 	 *
-	 * \return Pointer to the editor to use for this item.
+	 *      @return The editor to use for this item.
 	*/
 	virtual ItemEditor* editor();
 
 	/*! \brief Add a new child to the item.
 	 * 
-	 * \param index The index to add the child into.
+	 *      @param [in] index The index to add the child into.
 	 *
 	*/
 	virtual void createChild(int index);
 
 	/*! \brief Get pointer to the visualizer of this item.
 	 * 
-	 * 
-	 * \return Pointer to the visualizer to use for this item.
+	 *      @return The visualizer to use for this item.
 	*/
 	virtual ItemVisualizer* visualizer();
 
 	/*! \brief Set the visualizer for this item.
 	 *
-	 * \param visualizer Pointer to the visualizer.
+	 *      @param [in] visualizer The visualizer.
 	 *
 	*/
 	virtual void setVisualizer(MemoryMapsVisualizer* visualizer);
 
 	/*! \brief Get the visualizer graphics item for the memory map.
 	 *
-	 * \return QGraphicsItem* Pointer to the graphics item.
+	 *      @return QGraphicsItem* The graphics item.
 	*/
 	virtual QGraphicsItem* getGraphicsItem();
 
@@ -137,18 +143,19 @@ public slots:
 private:
 	//! No copying
 	ComponentEditorMemMapItem(const ComponentEditorMemMapItem& other);
-
-	//! No assignment
 	ComponentEditorMemMapItem& operator=(const ComponentEditorMemMapItem& other);
 
-	//! Pointer to the memory map being edited.
+	//! The memory map being edited.
 	QSharedPointer<MemoryMap> memoryMap_;
 
 	//! The visualizer to display the memory maps
 	MemoryMapsVisualizer* visualizer_;
 
-	//! Pointer to the graph item which visualizes this memory map.
+	//! The graph item which visualizes this memory map.
 	MemoryMapGraphItem* graphItem_;
+
+    //! The expression parser to use.
+    QSharedPointer<ExpressionParser> expressionParser_;
 };
 
 #endif // COMPONENTEDITORMEMMAPITEM_H

@@ -36,6 +36,8 @@
 
 #include <editors/ComponentEditor/general/generaleditor.h>
 
+#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/dialogs/comboSelector/comboselector.h>
 
@@ -738,13 +740,16 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createHWRootItem(QShare
     connect(parametersItem.data(), SIGNAL(openReferenceTree(QString)),
         this, SLOT(openReferenceTree(QString)), Qt::UniqueConnection);
 
+
+    QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder_));
+
     hwRoot->addChildItem(QSharedPointer<ComponentEditorMemMapsItem>(new ComponentEditorMemMapsItem(
         &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionFormatter_,
-        hwRoot)));
+        expressionParser, hwRoot)));
 
     hwRoot->addChildItem(QSharedPointer<ComponentEditorAddrSpacesItem>(new ComponentEditorAddrSpacesItem(
         &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionFormatter_,
-        hwRoot)));
+        expressionParser, hwRoot)));
 
     QSharedPointer<ComponentEditorViewsItem> viewsItem(new ComponentEditorViewsItem(&navigationModel_, libHandler_,
         component, referenceCounter_, parameterFinder_, expressionFormatter_, hwRoot));

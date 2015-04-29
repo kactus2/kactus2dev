@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 16.5.2012
- *      Author: Antti Kamppi
- * 		filename: componenteditormemmapitem.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: componenteditormemmapitem.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 16.05.2012
+//
+// Description:
+// The item for a single memory map in component editor's navigation tree.
+//-----------------------------------------------------------------------------
 
 #include "componenteditormemmapitem.h"
 #include "MemoryRemapItem.h"
@@ -26,11 +30,13 @@ ComponentEditorMemMapItem::ComponentEditorMemMapItem(QSharedPointer<MemoryMap> m
                                                      QSharedPointer<ReferenceCounter> referenceCounter,
                                                      QSharedPointer<ParameterFinder> parameterFinder,
                                                      QSharedPointer<ExpressionFormatter> expressionFormatter,
+                                                     QSharedPointer<ExpressionParser> expressionParser,
 													 ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 memoryMap_(memoryMap),
 visualizer_(NULL),
-graphItem_(NULL)
+graphItem_(NULL),
+expressionParser_(expressionParser)
 {
     setReferenceCounter(referenceCounter);
     setParameterFinder(parameterFinder);
@@ -39,7 +45,7 @@ graphItem_(NULL)
 	setObjectName(tr("ComponentEditorMemMapItem"));
 
     QSharedPointer<MemoryRemapItem> defaultRemapItem(new MemoryRemapItem(memoryMap_, memoryMap_, model, libHandler,
-        component, referenceCounter, parameterFinder, expressionFormatter, this));
+        component, referenceCounter, parameterFinder, expressionFormatter, expressionParser_, this));
     defaultRemapItem->setLocked(locked_);
 
     childItems_.append(defaultRemapItem);
@@ -47,7 +53,7 @@ graphItem_(NULL)
     foreach (QSharedPointer<MemoryRemap> memoryRemap, *memoryMap_->getMemoryRemaps())
     {
         QSharedPointer<MemoryRemapItem> memoryRemapItem(new MemoryRemapItem(memoryRemap, memoryMap_, model,
-            libHandler, component, referenceCounter, parameterFinder, expressionFormatter, this));
+            libHandler, component, referenceCounter, parameterFinder, expressionFormatter, expressionParser_, this));
         memoryRemapItem->setLocked(locked_);
 
         childItems_.append(memoryRemapItem);
@@ -109,7 +115,7 @@ void ComponentEditorMemMapItem::createChild( int index )
     QSharedPointer<MemoryRemap> memoryRemap = memoryMap_->getMemoryRemaps()->at(index);
 
     QSharedPointer<MemoryRemapItem> memoryRemapItem (new MemoryRemapItem(memoryRemap, memoryMap_, model_,
-        libHandler_, component_, referenceCounter_, parameterFinder_, expressionFormatter_, this));
+        libHandler_, component_, referenceCounter_, parameterFinder_, expressionFormatter_, expressionParser_, this));
     memoryRemapItem->setLocked(locked_);
 
     childItems_.append(memoryRemapItem);

@@ -26,13 +26,15 @@ MemoryRemapItem::MemoryRemapItem(QSharedPointer<AbstractMemoryMap> memoryRemap,
     QSharedPointer<MemoryMap> parentMemoryMap, ComponentEditorTreeModel* model, LibraryInterface* libHandler,
     QSharedPointer<Component> component, QSharedPointer<ReferenceCounter> referenceCounter,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+     QSharedPointer<ExpressionParser> expressionParser,
     ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 memoryRemap_(memoryRemap),
 parentMemoryMap_(parentMemoryMap),
 items_(memoryRemap->getItems()),
 visualizer_(NULL),
-graphItem_(NULL)
+graphItem_(NULL),
+expressionParser_(expressionParser)
 {
     setReferenceCounter(referenceCounter);
     setParameterFinder(parameterFinder);
@@ -49,7 +51,7 @@ graphItem_(NULL)
         {
 			QSharedPointer<ComponentEditorAddrBlockItem> addrBlockItem(
 				new ComponentEditorAddrBlockItem(addrBlock, model, libHandler, component, referenceCounter_,
-                parameterFinder_, expressionFormatter_, this));
+                parameterFinder_, expressionFormatter_, expressionParser_, this));
 			childItems_.append(addrBlockItem);
 		}
 	}
@@ -102,7 +104,7 @@ ItemEditor* MemoryRemapItem::editor()
     if (!editor_)
     {
         editor_ = new SingleMemoryMapEditor(component_, memoryRemap_, parentMemoryMap_, libHandler_,
-            parameterFinder_, expressionFormatter_);
+            parameterFinder_, expressionFormatter_, expressionParser_);
         editor_->setProtection(locked_);
         
         connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
@@ -143,7 +145,7 @@ void MemoryRemapItem::createChild( int index )
     {
 		QSharedPointer<ComponentEditorAddrBlockItem> addrBlockItem(
 			new ComponentEditorAddrBlockItem(addrBlock, model_, libHandler_, component_, referenceCounter_,
-            parameterFinder_, expressionFormatter_, this));
+            parameterFinder_, expressionFormatter_, expressionParser_, this));
 		addrBlockItem->setLocked(locked_);
 		
 		if (visualizer_)

@@ -15,7 +15,8 @@ HEADERS += ../../../../../../common/utils.h \
     ../../../../../../editors/ComponentEditor/visualization/memorygapitem.h \
     ../../../../../../editors/ComponentEditor/visualization/memoryvisualizationitem.h \
     ../../../../../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/registergraphitem.h \
-    ../../../../../../common/graphicsItems/visualizeritem.h
+    ../../../../../../common/graphicsItems/visualizeritem.h \
+    ../../../../../../editors/ComponentEditor/common/NullParser.h
 SOURCES += ../../../../../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.cpp \
     ../../../../../../common/graphicsItems/expandableitem.cpp \
     ../../../../../../editors/ComponentEditor/visualization/fieldgapitem.cpp \
@@ -25,4 +26,5 @@ SOURCES += ../../../../../../editors/ComponentEditor/memoryMaps/memoryMapsVisual
     ../../../../../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/registergraphitem.cpp \
     ./tst_AddressBlockGraphItem.cpp \
     ../../../../../../common/utils.cpp \
-    ../../../../../../common/graphicsItems/visualizeritem.cpp
+    ../../../../../../common/graphicsItems/visualizeritem.cpp \
+    ../../../../../../editors/ComponentEditor/common/NullParser.cpp

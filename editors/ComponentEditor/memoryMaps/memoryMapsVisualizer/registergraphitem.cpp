@@ -15,6 +15,8 @@
 #include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>
 #include <editors/ComponentEditor/visualization/fieldgapitem.h>
 
+#include <editors/ComponentEditor/common/ExpressionParser.h>
+
 #include <common/KactusColors.h>
 #include <common/utils.h>
 #include <common/graphicsItems/visualizeritem.h>
@@ -27,10 +29,12 @@
 //-----------------------------------------------------------------------------
 // Function: RegisterGraphItem::RegisterGraphItem()
 //-----------------------------------------------------------------------------
-RegisterGraphItem::RegisterGraphItem(QSharedPointer<Register> reg, QGraphicsItem* parent):
+RegisterGraphItem::RegisterGraphItem(QSharedPointer<Register> reg,
+    QSharedPointer<ExpressionParser> expressionParser,QGraphicsItem* parent):
 MemoryVisualizationItem(parent),
 register_(reg),
-dimensionIndex_(0)
+dimensionIndex_(0),
+expresionParser_(expressionParser)
 {
 	Q_ASSERT(register_);
 
@@ -65,7 +69,7 @@ void RegisterGraphItem::updateDisplay()
 {
     QString name = register_->getName();
 
-    if (register_->getDim() > 1)
+    if (expresionParser_->parseExpression(register_->getDimensionExpression()).toUInt() > 1)
     {
         name.append("[" + QString::number(dimensionIndex_) + "]");
     }
@@ -116,7 +120,7 @@ void RegisterGraphItem::removeChild( MemoryVisualizationItem* childItem )
 quint64 RegisterGraphItem::getOffset() const
 {
 	// the register offset from the address block
-	quint64 regOffset = Utils::str2Uint(register_->getAddressOffset());
+	quint64 regOffset = expresionParser_->parseExpression(register_->getAddressOffset()).toUInt();
 
 	// the address block's offset
 	MemoryVisualizationItem* blockItem = static_cast<MemoryVisualizationItem*>(parentItem());
@@ -148,7 +152,7 @@ quint64 RegisterGraphItem::getLastAddress() const
 //-----------------------------------------------------------------------------
 int RegisterGraphItem::getBitWidth() const
 {
-	return register_->getWidth();
+	return expresionParser_->parseExpression(register_->getSizeExpression()).toUInt();
 }
 
 //-----------------------------------------------------------------------------
@@ -296,8 +300,8 @@ quint64 RegisterGraphItem::getSizeInAUB() const
     }
 
     // how many address unit are contained in the register
-    unsigned int size = register_->getWidth() / addrUnit;
-    if (size*addrUnit < register_->getWidth()) 
+    unsigned int size = expresionParser_->parseExpression(register_->getSizeExpression()).toUInt() / addrUnit;
+    if (size*addrUnit < expresionParser_->parseExpression(register_->getSizeExpression()).toUInt()) 
     {
         size++; //Round truncated number upwards
     }

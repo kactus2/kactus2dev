@@ -25,12 +25,13 @@ ComponentEditorAddrBlockItem::ComponentEditorAddrBlockItem(QSharedPointer<Addres
                                                            QSharedPointer<ReferenceCounter> referenceCounter,
                                                            QSharedPointer<ParameterFinder> parameterFinder,
                                                            QSharedPointer<ExpressionFormatter> expressionFormatter,
+                                                           QSharedPointer<ExpressionParser> expressionParser,
 														   ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 addrBlock_(addrBlock),
-regItems_(addrBlock->getRegisterData()),
 visualizer_(NULL),
 graphItem_(NULL),
+expressionParser_(expressionParser),
 addressUnitBits_(0)
 {
     setReferenceCounter(referenceCounter);
@@ -39,7 +40,7 @@ addressUnitBits_(0)
 
 	setObjectName(tr("ComponentEditorAddrBlockItem"));
 
-	foreach (QSharedPointer<RegisterModel> regModel, regItems_)
+	foreach (QSharedPointer<RegisterModel> regModel, addrBlock->getRegisterData())
     {
 		QSharedPointer<Register> reg = regModel.dynamicCast<Register>();
 		
@@ -47,7 +48,8 @@ addressUnitBits_(0)
 		if (reg)
         {
 			QSharedPointer<ComponentEditorRegisterItem> regItem(new ComponentEditorRegisterItem(reg, model,
-                libHandler, component, parameterFinder_, expressionFormatter_, referenceCounter_, this));
+                libHandler, component, parameterFinder_, expressionFormatter_, referenceCounter_,
+                expressionParser_, this));
 			childItems_.append(regItem);
 		}
 	}
@@ -94,7 +96,7 @@ ItemEditor* ComponentEditorAddrBlockItem::editor()
 	if (!editor_)
     {
         editor_ = new SingleAddressBlockEditor(addrBlock_, component_, libHandler_, parameterFinder_,
-            expressionFormatter_);
+            expressionFormatter_, expressionParser_);
 		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(childAdded(int)), this, SLOT(onAddChild(int)), Qt::UniqueConnection);
@@ -118,12 +120,13 @@ ItemEditor* ComponentEditorAddrBlockItem::editor()
 //-----------------------------------------------------------------------------
 void ComponentEditorAddrBlockItem::createChild( int index )
 {
-	QSharedPointer<RegisterModel> regmodel = regItems_[index];
+	QSharedPointer<RegisterModel> regmodel = addrBlock_->getRegisterData()[index];
 	QSharedPointer<Register> reg = regmodel.dynamicCast<Register>();
 	if (reg)
     {
 		QSharedPointer<ComponentEditorRegisterItem> regItem(new ComponentEditorRegisterItem(reg, model_,
-            libHandler_, component_, parameterFinder_, expressionFormatter_, referenceCounter_, this));
+            libHandler_, component_, parameterFinder_, expressionFormatter_, referenceCounter_, 
+            expressionParser_, this));
 		regItem->setLocked(locked_);
 		
 		if (visualizer_)

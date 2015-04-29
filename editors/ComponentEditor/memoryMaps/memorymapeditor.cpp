@@ -15,7 +15,6 @@
 #include <common/views/EditableTableView/editabletableview.h>
 #include <common/widgets/summaryLabel/summarylabel.h>
 
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
@@ -29,17 +28,14 @@
 MemoryMapEditor::MemoryMapEditor(QSharedPointer<Component> component, LibraryInterface* handler,
     QSharedPointer<AbstractMemoryMap> memoryRemap,
     QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter, QWidget* parent /* = 0 */):
+    QSharedPointer<ExpressionFormatter> expressionFormatter, 
+    QSharedPointer<ExpressionParser> expressionParser,
+    QWidget* parent):
 QGroupBox(tr("Address blocks summary"), parent),
-view_(new EditableTableView(this)),
-proxy_(new MemoryMapProxy(this)),
-model_(0)
+    view_(new EditableTableView(this)),
+    model_(new MemoryMapModel(memoryRemap, component->getChoices(), expressionParser, parameterFinder,
+    expressionFormatter, this))
 {
-    QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
-
-    model_ = new MemoryMapModel(memoryRemap, component->getChoices(), expressionParser, parameterFinder,
-        expressionFormatter, this);
-
     ComponentParameterModel* componentParameterModel = new ComponentParameterModel(parameterFinder, this);
     componentParameterModel->setExpressionParser(expressionParser);
 
@@ -49,8 +45,9 @@ model_(0)
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(view_);
 
-	proxy_->setSourceModel(model_);
-	view_->setModel(proxy_);
+    MemoryMapProxy* proxy = new MemoryMapProxy(this);
+	proxy->setSourceModel(model_);
+	view_->setModel(proxy);
 
 	//! \brief Enable import/export csv file
     const QString compPath = handler->getDirectoryPath(*component->getVlnv());

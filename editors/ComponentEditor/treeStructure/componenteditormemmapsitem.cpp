@@ -17,10 +17,12 @@ ComponentEditorMemMapsItem::ComponentEditorMemMapsItem( ComponentEditorTreeModel
                                                        QSharedPointer<ReferenceCounter> referenceCounter,
                                                        QSharedPointer<ParameterFinder> parameterFinder,
                                                        QSharedPointer<ExpressionFormatter> expressionFormatter,
+                                                       QSharedPointer<ExpressionParser> expressionParser,
 													   ComponentEditorItem* parent ):
 ComponentEditorItem(model, libHandler, component, parent),
 memoryMaps_(component->getMemoryMaps()),
-visualizer_(new MemoryMapsVisualizer())
+visualizer_(new MemoryMapsVisualizer()),
+expressionParser_(expressionParser)
 {
     setReferenceCounter(referenceCounter);
     setParameterFinder(parameterFinder);
@@ -31,7 +33,7 @@ visualizer_(new MemoryMapsVisualizer())
 	foreach (QSharedPointer<MemoryMap> memoryMap, memoryMaps_)
     {
 		QSharedPointer<ComponentEditorMemMapItem> memoryMapItem(new ComponentEditorMemMapItem(memoryMap, model,
-            libHandler, component, referenceCounter_, parameterFinder_, expressionFormatter_, this));
+            libHandler, component, referenceCounter_, parameterFinder_, expressionFormatter_, expressionParser_, this));
 		memoryMapItem->setVisualizer(visualizer_);
 		childItems_.append(memoryMapItem);
 
@@ -60,8 +62,10 @@ QString ComponentEditorMemMapsItem::text() const {
 	return tr("Memory maps");
 }
 
-ItemEditor* ComponentEditorMemMapsItem::editor() {
-	if (!editor_) {
+ItemEditor* ComponentEditorMemMapsItem::editor()
+{
+	if (!editor_)
+    {
 		editor_ = new MemoryMapsEditor(component_, libHandler_);
 		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()), 
@@ -97,7 +101,8 @@ QString ComponentEditorMemMapsItem::getTooltip() const {
 void ComponentEditorMemMapsItem::createChild( int index )
 {
 	QSharedPointer<ComponentEditorMemMapItem> memoryMapItem(new ComponentEditorMemMapItem(memoryMaps_.at(index),
-        model_, libHandler_, component_, referenceCounter_, parameterFinder_, expressionFormatter_, this));
+        model_, libHandler_, component_, referenceCounter_, parameterFinder_, expressionFormatter_,
+        expressionParser_, this));
 	memoryMapItem->setLocked(locked_);
 	childItems_.insert(index, memoryMapItem);
 	

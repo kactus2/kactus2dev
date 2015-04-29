@@ -1,21 +1,30 @@
-/* 
- *  	Created on: 9.5.2012
- *      Author: Antti Kamppi
- * 		filename: componenteditoraddrspacesitem.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: componenteditoraddrspacesitem.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 09.05.2012
+//
+// Description:
+// The Address spaces-item in the component editor navigation tree.
+//-----------------------------------------------------------------------------
 
 #include "componenteditoraddrspacesitem.h"
 #include "componenteditoraddrspaceitem.h"
 #include <editors/ComponentEditor/treeStructure/componenteditortreemodel.h>
 #include <editors/ComponentEditor/addressSpaces/addressspaceseditor.h>
 
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorAddrSpacesItem::ComponentEditorAddrSpacesItem()
+//-----------------------------------------------------------------------------
 ComponentEditorAddrSpacesItem::ComponentEditorAddrSpacesItem(ComponentEditorTreeModel* model,
     LibraryInterface* libHandler, QSharedPointer<Component> component,
     QSharedPointer<ReferenceCounter> referenceCounter, QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter, ComponentEditorItem* parent):
+    QSharedPointer<ExpressionFormatter> expressionFormatter, 
+    QSharedPointer<ExpressionParser> expressionParser, ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-addrSpaces_(component->getAddressSpaces())
+addrSpaces_(component->getAddressSpaces()),
+expressionParser_(expressionParser)
 {
     setReferenceCounter(referenceCounter);
     setParameterFinder(parameterFinder);
@@ -24,25 +33,41 @@ addrSpaces_(component->getAddressSpaces())
 	foreach (QSharedPointer<AddressSpace> addrSpace, addrSpaces_) {
 		QSharedPointer<ComponentEditorAddrSpaceItem> addrItem(
 			new ComponentEditorAddrSpaceItem(addrSpace, model, libHandler, component, referenceCounter_,
-            parameterFinder_, expressionFormatter_, this));	
+            parameterFinder_, expressionFormatter_, expressionParser_, this));	
 		childItems_.append(addrItem);
 	};
 }
 
-ComponentEditorAddrSpacesItem::~ComponentEditorAddrSpacesItem() {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorAddrSpacesItem::~ComponentEditorAddrSpacesItem()
+//-----------------------------------------------------------------------------
+ComponentEditorAddrSpacesItem::~ComponentEditorAddrSpacesItem()
+{
 }
 
-QFont ComponentEditorAddrSpacesItem::getFont() const {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorAddrSpacesItem::getFont()
+//-----------------------------------------------------------------------------
+QFont ComponentEditorAddrSpacesItem::getFont() const
+{
     QFont font(ComponentEditorItem::getFont());
     font.setBold(!addrSpaces_.empty());
     return font;
 }
 
-QString ComponentEditorAddrSpacesItem::text() const {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorAddrSpacesItem::text()
+//-----------------------------------------------------------------------------
+QString ComponentEditorAddrSpacesItem::text() const
+{
 	return tr("Address spaces");
 }
 
-ItemEditor* ComponentEditorAddrSpacesItem::editor() {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorAddrSpacesItem::editor()
+//-----------------------------------------------------------------------------
+ItemEditor* ComponentEditorAddrSpacesItem::editor()
+{
 	if (!editor_) {
 		editor_ = new AddressSpacesEditor(component_, libHandler_);
 		editor_->setProtection(locked_);
@@ -60,14 +85,22 @@ ItemEditor* ComponentEditorAddrSpacesItem::editor() {
 	return editor_;
 }
 
-QString ComponentEditorAddrSpacesItem::getTooltip() const {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorAddrSpacesItem::getTooltip()
+//-----------------------------------------------------------------------------
+QString ComponentEditorAddrSpacesItem::getTooltip() const
+{
 	return tr("Contains the address spaces specified for the component");
 }
 
-void ComponentEditorAddrSpacesItem::createChild( int index ) {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorAddrSpacesItem::createChild()
+//-----------------------------------------------------------------------------
+void ComponentEditorAddrSpacesItem::createChild( int index )
+{
 	QSharedPointer<ComponentEditorAddrSpaceItem> addrItem(
 		new ComponentEditorAddrSpaceItem(addrSpaces_.at(index), model_, libHandler_, component_, referenceCounter_,
-        parameterFinder_, expressionFormatter_, this));
+        parameterFinder_, expressionFormatter_, expressionParser_, this));
 	addrItem->setLocked(locked_);
 	childItems_.insert(index, addrItem);
 }

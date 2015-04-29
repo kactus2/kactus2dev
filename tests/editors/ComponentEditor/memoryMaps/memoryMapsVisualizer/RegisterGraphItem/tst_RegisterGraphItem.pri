@@ -11,15 +11,19 @@ HEADERS += ../../../../../../common/utils.h \
     ../../../../../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.h \
     ../../../../../../common/graphicsItems/expandableitem.h \
     ../../../../../../editors/ComponentEditor/visualization/fieldgapitem.h \
+    ../../../../../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/fieldgraphitem.h \
     ../../../../../../common/graphicsItems/graphicsexpandcollapseitem.h \
     ../../../../../../editors/ComponentEditor/visualization/memorygapitem.h \
     ../../../../../../editors/ComponentEditor/visualization/memoryvisualizationitem.h \
     ../../../../../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/registergraphitem.h \
     ../../../../../../common/graphicsItems/visualizeritem.h \
-    ../../../../../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/fieldgraphitem.h
+    ../../../../../../editors/ComponentEditor/common/ExpressionParser.h \
+    ../../../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
+    ../../../../../../editors/ComponentEditor/common/NullParser.h
 SOURCES += ../../../../../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.cpp \
     ../../../../../../common/graphicsItems/expandableitem.cpp \
     ../../../../../../editors/ComponentEditor/visualization/fieldgapitem.cpp \
+    ../../../../../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/fieldgraphitem.cpp \
     ../../../../../../common/graphicsItems/graphicsexpandcollapseitem.cpp \
     ../../../../../../editors/ComponentEditor/visualization/memorygapitem.cpp \
     ../../../../../../editors/ComponentEditor/visualization/memoryvisualizationitem.cpp \
@@ -27,4 +31,5 @@ SOURCES += ../../../../../../editors/ComponentEditor/memoryMaps/memoryMapsVisual
     ./tst_RegisterGraphItem.cpp \
     ../../../../../../common/utils.cpp \
     ../../../../../../common/graphicsItems/visualizeritem.cpp \
-    ../../../../../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/fieldgraphitem.cpp
+    ../../../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
+    ../../../../../../editors/ComponentEditor/common/NullParser.cpp

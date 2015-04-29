@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 24.8.2012
- *      Author: Antti Kamppi
- * 		filename: componenteditorregisteritem.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: componenteditorregisteritem.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 24.08.2012
+//
+// Description:
+// The item for single register in component editor's navigation tree.
+//-----------------------------------------------------------------------------
 
 #ifndef COMPONENTEDITORREGISTERITEM_H
 #define COMPONENTEDITORREGISTERITEM_H
@@ -23,11 +27,13 @@
 class RegisterEditor;
 class MemoryMapsVisualizer;
 class RegisterGraphItem;
+class ExpressionParser;
 
-/*! The item for single register in component editor's navigation tree.
- *
- */
-class ComponentEditorRegisterItem : public ComponentEditorItem {
+//-----------------------------------------------------------------------------
+//! The item for single register in component editor's navigation tree.
+//-----------------------------------------------------------------------------
+class ComponentEditorRegisterItem : public ComponentEditorItem
+{
 	Q_OBJECT
 
 public:
@@ -42,6 +48,7 @@ public:
 	 *      @param [in] parameterFinder         The parameter finder.
 	 *      @param [in] expressionFormatter     The expression formatter.
 	 *      @param [in] referenceCounter        The instance counting references made to parameters.
+	 *      @param [in] expressionParser        The expression parser to use.
 	 *      @param [in] parent                  The parent item.
 	 */
 	ComponentEditorRegisterItem(QSharedPointer<Register> reg, 
@@ -51,6 +58,7 @@ public:
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QSharedPointer<ReferenceCounter> referenceCounter,
+        QSharedPointer<ExpressionParser> expressionParser,
 		ComponentEditorItem* parent);
 
 	//! The destructor
@@ -104,8 +112,6 @@ public:
 	*/
 	virtual QGraphicsItem* getGraphicsItem();
 
-	//! Update the graphics item of the register.
-	virtual void updateGraphics();
 
 	//! Remove the graphics item of the register.
 	virtual void removeGraphicsItem();
@@ -114,6 +120,9 @@ protected slots:
 
 	//! Handler for editor's contentChanged signal.
 	virtual void onEditorChanged();
+
+    //! Update the graphics item of the register.
+    virtual void updateGraphics();
 
 private:
 	
@@ -132,6 +141,9 @@ private:
 
 	//! The graph items that visualizes the register dimensions.
 	QList<RegisterGraphItem*> registerDimensions_;
+
+    //! The expression parser to use.
+    QSharedPointer<ExpressionParser> expressionParser_;
 };
 
 #endif // COMPONENTEDITORREGISTERITEM_H

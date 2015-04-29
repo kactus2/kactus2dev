@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 24.8.2012
- *      Author: Antti Kamppi
- * 		filename: componenteditorregisteritem.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: componenteditormemmapsitem.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 09.05.2012
+//
+// Description:
+// The Memory maps-item in the component navigation tree.
+//-----------------------------------------------------------------------------
 
 #include "componenteditorregisteritem.h"
 #include "componenteditorfielditem.h"
@@ -12,6 +16,8 @@
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/registergraphitem.h>
 #include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>
+
+#include <editors/ComponentEditor/common/ExpressionParser.h>
 
 //-----------------------------------------------------------------------------
 // Function: componenteditorregisteritem::ComponentEditorRegisterItem()
@@ -23,11 +29,13 @@ ComponentEditorRegisterItem::ComponentEditorRegisterItem(QSharedPointer<Register
                                                          QSharedPointer<ParameterFinder> parameterFinder,
                                                          QSharedPointer<ExpressionFormatter> expressionFormatter,
                                                          QSharedPointer<ReferenceCounter> referenceCounter,
+                                                         QSharedPointer<ExpressionParser> expressionParser,
 														 ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 reg_(reg),
 visualizer_(NULL),
-registerDimensions_()
+registerDimensions_(),
+expressionParser_(expressionParser)
 {
     setReferenceCounter(referenceCounter);
     setParameterFinder(parameterFinder);
@@ -163,6 +171,8 @@ void ComponentEditorRegisterItem::setVisualizer( MemoryMapsVisualizer* visualize
 	}
 
     updateGraphics();
+
+    connect(visualizer_, SIGNAL(displayed()), this, SLOT(updateGraphics()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -222,12 +232,16 @@ void ComponentEditorRegisterItem::removeGraphicsItem()
 void ComponentEditorRegisterItem::resizeGraphicsToCurrentDimensionSize()
 {
     MemoryVisualizationItem* parentItem = static_cast<MemoryVisualizationItem*>(parent()->getGraphicsItem());
-    Q_ASSERT(parentItem);
+    
+    if(!parentItem)
+    {
+        return;
+    }
 
-    const int DIMENSION_SIZE = qMax(reg_->getDim(), 1);
+    const int DIMENSION_SIZE = qMax(expressionParser_->parseExpression(reg_->getDimensionExpression()).toInt(), 1);
     for (int currentDimension = registerDimensions_.count(); currentDimension < DIMENSION_SIZE; currentDimension++)
     {
-        RegisterGraphItem* newDimension = new RegisterGraphItem(reg_, parentItem);
+        RegisterGraphItem* newDimension = new RegisterGraphItem(reg_, expressionParser_, parentItem);
         newDimension->setDimensionIndex(currentDimension);
 
         parentItem->addChild(newDimension);

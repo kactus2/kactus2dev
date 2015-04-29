@@ -7,16 +7,24 @@
 
 #include "componenteditorgroupslot.h"
 
-ComponentEditorGroupSlot::ComponentEditorGroupSlot( QWidget *parent):
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorGroupSlot::ComponentEditorGroupSlot()
+//-----------------------------------------------------------------------------
+ComponentEditorGroupSlot::ComponentEditorGroupSlot(QWidget* parent):
 QWidget(parent),
 layout_(this),
-currentWidget_(NULL) {
-
+currentWidget_(NULL)
+{
 	layout_.setContentsMargins(0, 0, 0, 0);
 }
 
-ComponentEditorGroupSlot::~ComponentEditorGroupSlot() {
-	if (currentWidget_) {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorGroupSlot::~ComponentEditorGroupSlot()
+//-----------------------------------------------------------------------------
+ComponentEditorGroupSlot::~ComponentEditorGroupSlot()
+{
+	if (currentWidget_)
+    {
 		currentWidget_->hide();
 		layout_.removeWidget(currentWidget_);
 		currentWidget_->setParent(NULL);
@@ -24,31 +32,42 @@ ComponentEditorGroupSlot::~ComponentEditorGroupSlot() {
 	}
 }
 
-void ComponentEditorGroupSlot::setWidget( QWidget* widget ) {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorGroupSlot::setWidget()
+//-----------------------------------------------------------------------------
+void ComponentEditorGroupSlot::setWidget(QWidget* widget)
+{
+    if (widget != currentWidget_)
+    {
+        // if there is a previous widget being displayed
+        if (currentWidget_) 
+        {
+            // set the previous widget to hidden
+            currentWidget_->hide();
 
-	// if there is a previous widget being displayed
-	if (currentWidget_) {
+            // remove this widget as the parent of the widget
+            currentWidget_->setParent(NULL);
 
-		// set the previous widget to hidden
-		currentWidget_->hide();
+            // remove the previous because only one widget can be displayed at a time.
+            layout_.removeWidget(currentWidget_);
+        }
 
-		// remove this widget as the parent of the widget
-		currentWidget_->setParent(NULL);
+        // update the current widget and display it
+        currentWidget_ = widget;
 
-		// remove the previous because only one widget can be displayed at a time.
-		layout_.removeWidget(currentWidget_);
-	}
-
-	// update the current widget and display it
-	currentWidget_ = widget;
-
-	// TODO remove this and replace with Q_ASSERT(widget)
-	if (currentWidget_) {
-		layout_.addWidget(currentWidget_);
-		currentWidget_->show();
-	}
+        // TODO remove this and replace with Q_ASSERT(widget)
+        if (currentWidget_)
+        {
+            layout_.addWidget(currentWidget_);
+            currentWidget_->show();
+        }
+    }
 }
 
-QWidget* ComponentEditorGroupSlot::getWidget() const {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorGroupSlot::getWidget()
+//-----------------------------------------------------------------------------
+QWidget* ComponentEditorGroupSlot::getWidget() const
+{
 	return currentWidget_;
 }

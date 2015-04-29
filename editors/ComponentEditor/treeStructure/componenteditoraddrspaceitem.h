@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 10.5.2012
- *      Author: Antti Kamppi
- * 		filename: componenteditoraddrspaceitem.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: componenteditoraddrspaceitem.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 10.05.2012
+//
+// Description:
+// The item for a single address space in the component editor's navigation tree.
+//-----------------------------------------------------------------------------
 
 #ifndef COMPONENTEDITORADDRSPACEITEM_H
 #define COMPONENTEDITORADDRSPACEITEM_H
@@ -18,11 +22,13 @@
 
 class LocalMemoryMapGraphItem;
 class MemoryMapsVisualizer;
+class ExpressionParser;
 
-/*! \brief The item for a single address space in the component editor's navigation tree.
- *
- */
-class ComponentEditorAddrSpaceItem : public ComponentEditorItem {
+//-----------------------------------------------------------------------------
+//! The item for a single address space in the component editor's navigation tree.
+//-----------------------------------------------------------------------------
+class ComponentEditorAddrSpaceItem : public ComponentEditorItem
+{
 	Q_OBJECT
 
 public:
@@ -30,14 +36,15 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] addrSpace               Pointer to the address space being edited.
-	 *      @param [in] model                   Pointer to the model that owns the items.
-	 *      @param [in] libHandler              Pointer to the instance that manages the library.
-	 *      @param [in] component               Pointer to the component being edited.
-     *      @param [in] referenceCounter        Pointer to the instance for counting references to parameters.
-	 *      @param [in] parameterFinder         Pointer to the parameter finder.
-	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
-	 *      @param [in] parent                  Pointer to the parent item.
+	 *      @param [in] addrSpace               The address space being edited.
+	 *      @param [in] model                   The model that owns the items.
+	 *      @param [in] libHandler              The instance that manages the library.
+	 *      @param [in] component               The component being edited.
+     *      @param [in] referenceCounter        The instance for counting references to parameters.
+	 *      @param [in] parameterFinder         The parameter finder.
+	 *      @param [in] expressionFormatter     The expression formatter.
+	 *      @param [in] expressionParser        The expression parser to use.
+	 *      @param [in] parent                  The parent item.
 	 */
 	ComponentEditorAddrSpaceItem(QSharedPointer<AddressSpace> addrSpace,
 		ComponentEditorTreeModel* model,
@@ -46,96 +53,100 @@ public:
         QSharedPointer<ReferenceCounter> referenceCounter,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QSharedPointer<ExpressionParser> expressionParser,
 		ComponentEditorItem* parent);
 
-	//! \brief The destructor
+	//! The destructor
 	virtual ~ComponentEditorAddrSpaceItem();
 
-	/*! \brief Get the tool tip for the item.
+	/*! Get the tool tip for the item.
 	 * 
-	 * \return The text for the tool tip to print to user.
+	 *      @return The text for the tool tip to print to user.
 	*/
 	virtual QString getTooltip() const;
 
-	/*! \brief Get the text to be displayed to user in the tree for this item.
+	/*! Get the text to be displayed to user in the tree for this item.
 	 *
-	 * \return QString Contains the text to display.
+	 *      @return QString Contains the text to display.
 	*/
 	virtual QString text() const;
 
-	/*! \brief Check the validity of this item and sub items.
+	/*! Check the validity of this item and sub items.
 	 *
-	 * \return bool True if item is in valid state.
+	 *      @return bool True if item is in valid state.
 	*/
 	virtual bool isValid() const;
 
-	/*! \brief Get pointer to the editor of this item.
+	/*! Get pointer to the editor of this item.
 	 *
-	 * \return Pointer to the editor to use for this item.
+	 *      @return The editor to use for this item.
 	*/
 	virtual ItemEditor* editor();
 
-	/*! \brief Add a new child to the item.
+	/*! Add a new child to the item.
 	 * 
-	 * \param index The index to add the child into.
+	 *      @param [in] index The index to add the child into.
 	 *
 	*/
 	virtual void createChild(int index);
 	
-	/*! \brief Get the visualizer graphics item for the memory map.
+	/*! Get the visualizer graphics item for the memory map.
 	 *
-	 * \return QGraphicsItem* Pointer to the graphics item.
+	 *      @return QGraphicsItem* The graphics item.
 	*/
 	virtual QGraphicsItem* getGraphicsItem();
 
-	/*! \brief Update the graphics item of the memory map.
+	/*! Update the graphics item of the memory map.
 	 *
 	*/
 	virtual void updateGraphics();
 
-	/*! \brief Remove the graphics item of the memory map.
+	/*! Remove the graphics item of the memory map.
 	 *
 	*/
 	virtual void removeGraphicsItem();
 
-	/*! \brief Get pointer to the visualizer of this item.
+	/*! Get pointer to the visualizer of this item.
 	 * 
 	 * 
-	 * \return Pointer to the visualizer to use for this item.
+	 *      @return The visualizer to use for this item.
 	*/
 	virtual ItemVisualizer* visualizer();
 
 protected slots:
 
-	/*! \brief Handler for editor's contentChanged signal.
+	/*! Handler for editor's contentChanged signal.
 	 *
 	*/
 	virtual void onEditorChanged();
 
 private:
-	//! \brief No copying
+	//! No copying
 	ComponentEditorAddrSpaceItem(const ComponentEditorAddrSpaceItem& other);
 
-	//! \brief No assignment
+	//! No assignment
 	ComponentEditorAddrSpaceItem& operator=(const ComponentEditorAddrSpaceItem& other);
 
-	//! \brief Pointer to the address space being edited.
+	//! The address space being edited.
 	QSharedPointer<AddressSpace> addrSpace_;
 
-	//! \brief Pointer to the local memory map of the address space.
+	//! The local memory map of the address space.
 	QSharedPointer<MemoryMap> localMemMap_;
 
-	//! \brief Contains the address blocks that are children of this tree item.
+	//! Contains the address blocks that are children of this tree item.
 	QList<QSharedPointer<MemoryMapItem> >& items_;
 
-	//! \brief Pointer to the graph item of the local memory map.
+	//! The graph item of the local memory map.
 	LocalMemoryMapGraphItem* graphItem_;
 
-	//! \brief Pointer to the visualizer for the local memory maps.
+	//! The visualizer for the local memory maps.
 	MemoryMapsVisualizer* localMemMapVisualizer_;
 
-	//! \brief The visualizer of this tree item, visualizes the relation of segments and local memory map. 
+	//! The visualizer of this tree item, visualizes the relation of segments and local memory map. 
 	AddressSpaceVisualizer* addrSpaceVisualizer_;
+
+    //! The expression parser to use.
+    QSharedPointer<ExpressionParser> expressionParser_;
 };
 
 #endif // COMPONENTEDITORADDRSPACEITEM_H

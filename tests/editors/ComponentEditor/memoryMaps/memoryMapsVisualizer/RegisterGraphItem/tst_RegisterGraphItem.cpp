@@ -16,6 +16,9 @@
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/fieldgraphitem.h>
 #include <editors/ComponentEditor/visualization/memorygapitem.h>
 
+#include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
+#include <editors/ComponentEditor/common/NullParser.h>
+
 #include <IPXACTmodels/addressblock.h>
 #include <IPXACTmodels/field.h>
 #include <IPXACTmodels/register.h>
@@ -35,7 +38,6 @@ private slots:
     void testRegisterWithField();
 
     void testRegisterWithConsecutiveFields();
-    FieldGraphItem* createFieldItem(QString name, unsigned int offset, unsigned int bitWidth, RegisterGraphItem* parentRegister);
 
     void testFieldInSecondAddress();
 
@@ -61,10 +63,14 @@ private slots:
 
     void testLastDimensionExceedsAddressBlockRange();
 
+    void testExpressions();
+
 private:
     void expandItem(RegisterGraphItem* registerItem);
 
     RegisterGraphItem* createRegisterItem();
+
+    FieldGraphItem* createFieldItem(QString name, unsigned int offset, unsigned int bitWidth, RegisterGraphItem* parentRegister);
 
     QList<MemoryGapItem*> findMemoryGaps(RegisterGraphItem* memoryMapItem);
 };
@@ -93,7 +99,9 @@ void tst_RegisterGraphItem::testConstructor()
     testRegister->setAddressOffset(0);
     testRegister->setSize(1);
 
-    RegisterGraphItem* registerItem = new RegisterGraphItem(testRegister, addressBlockItem);
+    QSharedPointer<ExpressionParser> noParser(new NullParser());
+
+    RegisterGraphItem* registerItem = new RegisterGraphItem(testRegister, noParser, addressBlockItem);
 
     QCOMPARE(registerItem->getName(), QString("testRegister"));
     QCOMPARE(registerItem->getOffset(), quint64(0));
@@ -518,9 +526,11 @@ void tst_RegisterGraphItem::testTwoDimensional()
     twoDimensionalRegister->setSize(8);
     twoDimensionalRegister->setDim(2);
 
-    RegisterGraphItem* registerItem = new RegisterGraphItem(twoDimensionalRegister, addressBlockItem);
+    QSharedPointer<ExpressionParser> noParser(new NullParser());
+
+    RegisterGraphItem* registerItem = new RegisterGraphItem(twoDimensionalRegister, noParser, addressBlockItem);
     registerItem->setDimensionIndex(0);
-    RegisterGraphItem* secondDimension = new RegisterGraphItem(twoDimensionalRegister, addressBlockItem);
+    RegisterGraphItem* secondDimension = new RegisterGraphItem(twoDimensionalRegister, noParser, addressBlockItem);
     secondDimension->setDimensionIndex(1);
 
     QCOMPARE(registerItem->getName(), QString("testRegister[0]"));
@@ -553,9 +563,11 @@ void tst_RegisterGraphItem::testLastDimensionExceedsAddressBlockRange()
     twoDimensionalRegister->setSize(16);
     twoDimensionalRegister->setDim(2);
 
-    RegisterGraphItem* registerItem = new RegisterGraphItem(twoDimensionalRegister, addressBlockItem);
+    QSharedPointer<ExpressionParser> noParser(new NullParser());
+
+    RegisterGraphItem* registerItem = new RegisterGraphItem(twoDimensionalRegister, noParser, addressBlockItem);
     registerItem->setDimensionIndex(0);
-    RegisterGraphItem* secondDimension = new RegisterGraphItem(twoDimensionalRegister, addressBlockItem);
+    RegisterGraphItem* secondDimension = new RegisterGraphItem(twoDimensionalRegister, noParser, addressBlockItem);
     secondDimension->setDimensionIndex(1);
 
     QCOMPARE(registerItem->getOffset(), quint64(0));
@@ -563,6 +575,37 @@ void tst_RegisterGraphItem::testLastDimensionExceedsAddressBlockRange()
 
     QCOMPARE(secondDimension->getOffset(), quint64(2));
     QCOMPARE(secondDimension->getLastAddress(), quint64(3));
+
+    delete addressBlockItem;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_RegisterGraphItem::testExpressions()
+//-----------------------------------------------------------------------------
+void tst_RegisterGraphItem::testExpressions()
+{
+    QSharedPointer<AddressBlock> addressBlock(new AddressBlock());
+    addressBlock->setName("testBlock");
+    addressBlock->setBaseAddress(0);
+    addressBlock->setRange("6");
+
+    AddressBlockGraphItem* addressBlockItem = new AddressBlockGraphItem(addressBlock, 0);
+    addressBlockItem->setAddressableUnitBits(8);
+
+    QSharedPointer<Register> testRegister(new Register());
+    testRegister->setName("testRegister");
+    testRegister->setAddressOffset("1+1");
+    testRegister->setSizeExpression("8*2");
+    testRegister->setDimensionExpression("3-1");
+
+    QSharedPointer<ExpressionParser> expressionParser(new SystemVerilogExpressionParser());
+
+    RegisterGraphItem* registerItem = new RegisterGraphItem(testRegister, expressionParser, addressBlockItem);
+    
+    QCOMPARE(registerItem->getName(), QString("testRegister[0]"));
+    QCOMPARE(registerItem->getDisplayOffset(), quint64(2));
+    QCOMPARE(registerItem->getDisplayLastAddress(), quint64(3));
+    QCOMPARE(registerItem->getBitWidth(), 16);
 
     delete addressBlockItem;
 }
@@ -619,7 +662,9 @@ RegisterGraphItem* tst_RegisterGraphItem::createRegisterItem()
     testRegister->setAddressOffset(0);
     testRegister->setSize(8);
 
-    return new RegisterGraphItem(testRegister,addressBlockItem);
+    QSharedPointer<ExpressionParser> noParser(new NullParser());
+
+    return new RegisterGraphItem(testRegister, noParser, addressBlockItem);
 }
 
 //-----------------------------------------------------------------------------

@@ -15,6 +15,8 @@
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/registergraphitem.h>
 #include <editors/ComponentEditor/visualization/memorygapitem.h>
 
+#include <editors/ComponentEditor/common/NullParser.h>
+
 #include <IPXACTmodels/addressblock.h>
 #include <IPXACTmodels/register.h>
 #include <IPXACTmodels/registermodel.h>
@@ -92,7 +94,9 @@ void tst_AddressBlockGraphItem::testAddressBlockWithRegister()
     registers.append(reg);
     addressBlock->getRegisterData().append(registers);
 
-    RegisterGraphItem* registerItem = new RegisterGraphItem(reg, addressBlockItem);
+    QSharedPointer<ExpressionParser> noParser(new NullParser());
+
+    RegisterGraphItem* registerItem = new RegisterGraphItem(reg, noParser, addressBlockItem);
     addressBlockItem->addChild(registerItem);
 
     QCOMPARE(addressBlockItem->getName(), QString("testBlock"));
@@ -136,7 +140,9 @@ void tst_AddressBlockGraphItem::testRegisterInSecondAddress()
     registers.append(reg);
     addressBlock->getRegisterData().append(registers);
 
-    RegisterGraphItem* registerItem = new RegisterGraphItem(reg, addressBlockItem);
+    QSharedPointer<ExpressionParser> noParser(new NullParser());
+
+    RegisterGraphItem* registerItem = new RegisterGraphItem(reg, noParser, addressBlockItem);
     addressBlockItem->addChild(registerItem);
 
     expandItem(addressBlockItem);
@@ -183,7 +189,9 @@ void tst_AddressBlockGraphItem::testEmptyAfterLastRegister()
     registers.append(reg);
     addressBlock->getRegisterData().append(registers);
 
-    RegisterGraphItem* registerItem = new RegisterGraphItem(reg, addressBlockItem);
+    QSharedPointer<ExpressionParser> noParser(new NullParser());
+
+    RegisterGraphItem* registerItem = new RegisterGraphItem(reg, noParser, addressBlockItem);
     addressBlockItem->addChild(registerItem);
 
     expandItem(addressBlockItem);

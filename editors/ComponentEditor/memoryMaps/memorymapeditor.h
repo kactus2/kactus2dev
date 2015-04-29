@@ -22,7 +22,7 @@ class EditableTableView;
 class MemoryMapModel;
 class MemoryMapProxy;
 class LibraryInterface;
-
+class ExpressionParser;
 //-----------------------------------------------------------------------------
 //! The editor to edit the address blocks of a single memory map.
 //-----------------------------------------------------------------------------
@@ -35,18 +35,19 @@ public:
     /*!
 	 *  The constructor.
 	 *
-	 *      @param [in] component               Pointer to the component being edited.
-	 *      @param [in] handler                 Pointer to the instance managing the library.
-	 *      @param [in] memoryRemap             Pointer to the memory remap being edited.
-	 *      @param [in] parameterFinder         Pointer to the parameter finder.
-	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
-	 *      @param [in] parent                  Pointer to the parent of this editor.
+	 *      @param [in] component               The component being edited.
+	 *      @param [in] handler                 The instance managing the library.
+	 *      @param [in] memoryRemap             The memory remap being edited.
+	 *      @param [in] parameterFinder         The parameter finder for component.
+	 *      @param [in] expressionFormatter     The expression formatter.
+     *      @param [in] expressionParser        The expression parser.
+	 *      @param [in] parent                  The parent of this editor.
 	 */
-	MemoryMapEditor(QSharedPointer<Component> component,
-		LibraryInterface* handler, 
-        QSharedPointer<AbstractMemoryMap> memoryRemap,
+	MemoryMapEditor(QSharedPointer<Component> component, LibraryInterface* handler, 
+        QSharedPointer<AbstractMemoryMap> memoryRemap, 
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QSharedPointer<ExpressionParser> expressionParser,
         QWidget* parent = 0);
 	
 	//! \brief The destructor
@@ -121,9 +122,6 @@ private:
 
 	//! \brief The view to show the details of a memory map.
 	EditableTableView* view_;
-
-	//! \brief The proxy that does the sorting of items.
-	MemoryMapProxy* proxy_;
 
 	//! \brief The model that manages the items.
 	MemoryMapModel* model_;

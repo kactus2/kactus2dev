@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 22.5.2012
- *      Author: Antti Kamppi
- * 		filename: itemvisualizer.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: itemvisualizer.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 22.05.2012
+//
+// Description:
+// The base class for all IP-Xact visualizer classes.
+//-----------------------------------------------------------------------------
 
 #ifndef ITEMVISUALIZER_H
 #define ITEMVISUALIZER_H
@@ -13,29 +17,34 @@
 #include <QWidget>
 #include <QSharedPointer>
 
-/*! \brief The base class for all IP-Xact visualizer classes.
- *
- */
+//-----------------------------------------------------------------------------
+//! The base class for all IP-Xact visualizer classes.
+//-----------------------------------------------------------------------------
 class ItemVisualizer : public QWidget
 {
 	Q_OBJECT
 
 public:
 
-	/*! \brief The constructor
+	/*! The constructor
 	 *
-	 * \param parent Pointer to the parent of the visualizer. 
+	 *      @param [in] parent  The parent widget of the visualizer. 
 	*/
 	ItemVisualizer(QWidget* parent = 0);
 	
-	//! \brief The destructor
+	//! The destructor
 	virtual ~ItemVisualizer();
 
+signals:
+
+    //! Emitted when the visualizer is shown.
+    void displayed();
+
 private:
-	//! \brief No copying
+	//! No copying
 	ItemVisualizer(const ItemVisualizer& other);
 
-	//! \brief No assignment
+	//! No assignment
 	ItemVisualizer& operator=(const ItemVisualizer& other);
 };
 

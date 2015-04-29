@@ -13,8 +13,9 @@
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapview.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapscene.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapgraphitem.h>
+
 #include <common/graphicsItems/visualizeritem.h>
-#include <common/graphicsItems/visualizeritem.h>
+
 #include <common/widgets/summaryLabel/summarylabel.h>
 
 #include <QVBoxLayout>
@@ -80,4 +81,13 @@ QSize MemoryMapsVisualizer::minimumSizeHint() const
 QSize MemoryMapsVisualizer::sizeHint() const
 {
 	return minimumSizeHint();
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapsVisualizer::showEvent()
+//-----------------------------------------------------------------------------
+void MemoryMapsVisualizer::showEvent(QShowEvent* event)
+{
+    QWidget::showEvent(event);
+    emit displayed();
 }

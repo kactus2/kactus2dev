@@ -23,7 +23,7 @@
 class MemoryMapEditor;
 class MemoryMapsVisualizer;
 class MemoryMapGraphItem;
-
+class ExpressionParser;
 //-----------------------------------------------------------------------------
 //! The item for a single memory remap in component editor's navigation tree.
 //-----------------------------------------------------------------------------
@@ -36,15 +36,16 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] memoryRemap             Pointer to the memory remap being edited.
-     *      @param [in] parentMemoryMap         Pointer to the parent memory map of the memory remap.
-     *      @param [in] model                   Pointer to the model that owns the items.
-     *      @param [in] libHandler              Pointer to the instance that manages the library.
-     *      @param [in] component               Pointer to the component being edited.
-     *      @param [in] referenceCounter        Pointer to the instance for counting references to parameters.
-     *      @param [in] parameterFinder         Pointer to the parameter finder.
-     *      @param [in] expressionFormatter     Pointer to the expression formatter.
-     *      @param [in] parent                  Pointer to the parent item.
+     *      @param [in] memoryRemap             The memory remap being edited.
+     *      @param [in] parentMemoryMap         The parent memory map of the memory remap.
+     *      @param [in] model                   The model that owns the items.
+     *      @param [in] libHandler              The instance that manages the library.
+     *      @param [in] component               The component being edited.
+     *      @param [in] referenceCounter        The instance for counting references to parameters.
+     *      @param [in] parameterFinder         The parameter finder.
+     *      @param [in] expressionFormatter     The expression formatter.
+     *      @param [in] expressionParser        The expression parser to use.
+     *      @param [in] parent                  The parent item.
      */
     MemoryRemapItem(QSharedPointer<AbstractMemoryMap> memoryRemap,
         QSharedPointer<MemoryMap> parentMemoryMap,
@@ -54,6 +55,7 @@ public:
         QSharedPointer<ReferenceCounter> referenceCounter,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QSharedPointer<ExpressionParser> expressionParser,
         ComponentEditorItem* parent);
 
     /*!
@@ -83,9 +85,9 @@ public:
 	virtual bool isValid() const;
 
 	/*!
-	 *  Get the pointer to the editor of this item.
+	 *  Get the The editor of this item.
 	 *
-     *      @return Pointer to the editor to use for this item.
+     *      @return The editor to use for this item.
 	 */
 	virtual ItemEditor* editor();
 
@@ -97,23 +99,23 @@ public:
 	virtual void createChild(int index);
 
 	/*!
-	 *  Get pointer to the visualizer of this item.
+	 *  Get The visualizer of this item.
 	 *
-     *      @return Pointer to the visualizer to user for this item.
+     *      @return The visualizer to user for this item.
 	 */
 	virtual ItemVisualizer* visualizer();
 
 	/*!
 	 *  Set the visualizer for this item.
 	 *
-	 *      @param [in] visualizer  Pointer to the visualizer.
+	 *      @param [in] visualizer  The visualizer.
 	 */
 	virtual void setVisualizer(MemoryMapsVisualizer* visualizer);
 
 	/*!
 	 *  Get the visualizer graphics item for the memory remap.
 	 *
-     *      @return Pointer to the graphics item.
+     *      @return The graphics item.
 	 */
 	virtual QGraphicsItem* getGraphicsItem();
 
@@ -141,10 +143,10 @@ private:
 	//! No assignment
     MemoryRemapItem& operator=(const MemoryRemapItem& other);
 
-	//! Pointer to the memory remap being edited.
+	//! The memory remap being edited.
     QSharedPointer<AbstractMemoryMap> memoryRemap_;
 
-    //! Pointer to the parent memory map of this memory remap.
+    //! The parent memory map of this memory remap.
     QSharedPointer<MemoryMap> parentMemoryMap_;
 
 	//! Contains the address blocks that are children of this tree item.
@@ -153,8 +155,11 @@ private:
 	//! The visualizer to display the memory maps
 	MemoryMapsVisualizer* visualizer_;
 
-	//! Pointer to the graph item which visualizes this memory map.
+	//! The graph item which visualizes this memory map.
 	MemoryMapGraphItem* graphItem_;
+
+    //! The expression parser to use.
+    QSharedPointer<ExpressionParser> expressionParser_;
 };
 
 #endif // MEMORYREMAPITEM_H
