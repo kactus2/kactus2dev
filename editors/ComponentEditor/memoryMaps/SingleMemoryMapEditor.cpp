@@ -29,14 +29,14 @@ SingleMemoryMapEditor::SingleMemoryMapEditor(QSharedPointer<Component> component
     QSharedPointer<ExpressionParser> expressionParser,
     QWidget* parent):
 ItemEditor(component, libHandler, parent),
-    nameEditor_(memoryRemap->getNameGroup(), this, tr("Memory remap name and description")),
-    memoryMapEditor_(new MemoryMapEditor(component, libHandler, memoryRemap, parameterFinder, expressionFormatter, 
-        expressionParser, this)),
-    addressUnitBitsEditor_(new QLineEdit(parent)),
-    slaveInterfaceLabel_(new QLabel(this)),
-    remapStateSelector_(),
-    memoryRemap_(memoryRemap),
-    parentMemoryMap_(parentMemoryMap)
+nameEditor_(memoryRemap->getNameGroup(), this, tr("Memory remap name and description")),
+memoryMapEditor_(new MemoryMapEditor(component, libHandler, memoryRemap, parameterFinder, expressionFormatter,
+    expressionParser, this)),
+addressUnitBitsEditor_(new QLineEdit(parent)),
+slaveInterfaceLabel_(new QLabel(this)),
+remapStateSelector_(),
+memoryRemap_(memoryRemap),
+parentMemoryMap_(parentMemoryMap)
 {
     addressUnitBitsEditor_->setValidator(
         new QRegularExpressionValidator(QRegularExpression("\\d*"), addressUnitBitsEditor_));

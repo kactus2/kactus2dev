@@ -21,6 +21,7 @@
 #include <QList>
 
 class Choice;
+class AddressBlock;
 
 /*! \brief The model to manage the details of a single memory map.
  *
@@ -193,6 +194,17 @@ private:
      *      @return The data in the given index.
      */
     QVariant valueForIndex(QModelIndex const& index) const;
+
+    /*!
+     *  Decrease the number of references made from a removed address block..
+     *
+     *      @param [in] removedAddressBlock     The removed address block.
+     */
+    void decreaseReferencesWithRemovedAddressBlock(QSharedPointer<AddressBlock> removedAddressBlock);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
 	//! Pointer to the memory remap being edited.
     QSharedPointer<AbstractMemoryMap> memoryRemap_;

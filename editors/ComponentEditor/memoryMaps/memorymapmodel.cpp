@@ -9,6 +9,9 @@
 
 #include "MemoryMapColumns.h"
 
+#include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/AddressBlockExpressionsGatherer.h>
+#include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
+
 #include <IPXACTmodels/addressblock.h>
 #include <IPXACTmodels/generaldeclarations.h>
 
@@ -397,7 +400,11 @@ void MemoryMapModel::onRemoveItem( QModelIndex const& index )
 	// remove the specified item
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
 
-    removeReferencesInItemOnRow(index.row());
+    QSharedPointer<AddressBlock> addressBlock = items_.at(index.row()).dynamicCast<AddressBlock>();
+    if (addressBlock)
+    {
+        decreaseReferencesWithRemovedAddressBlock(addressBlock);
+    }
 
 	items_.removeAt(index.row());
 	endRemoveRows();
@@ -407,6 +414,26 @@ void MemoryMapModel::onRemoveItem( QModelIndex const& index )
 
 	// tell also parent widget that contents have been changed
 	emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: memorymapmodel::decreaseReferencesWithRemovedAddressBlock()
+//-----------------------------------------------------------------------------
+void MemoryMapModel::decreaseReferencesWithRemovedAddressBlock(QSharedPointer<AddressBlock> removedAddressBlock)
+{
+    AddressBlockExpressionGatherer* addressBlockGatherer = new AddressBlockExpressionGatherer();
+    QStringList expressionList = addressBlockGatherer->getExpressions(removedAddressBlock);
+
+    ReferenceCalculator* referenceCalculator = new ReferenceCalculator(getParameterFinder());
+    QMap<QString, int> referencedParameters = referenceCalculator->getReferencedParameters(expressionList);
+
+    foreach (QString referencedId, referencedParameters.keys())
+    {
+        for (int i = 0; i < referencedParameters.value(referencedId); ++i)
+        {
+            emit decreaseReferences(referencedId);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------

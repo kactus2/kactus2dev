@@ -9,6 +9,9 @@
 
 #include "AddressBlockColumns.h"
 
+#include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterExpressionsGatherer.h>
+#include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
+
 #include <IPXACTmodels/choice.h>
 #include <IPXACTmodels/register.h>
 #include <IPXACTmodels/generaldeclarations.h>
@@ -16,6 +19,9 @@
 #include <QRegularExpression>
 #include <QColor>
 
+//-----------------------------------------------------------------------------
+// Function: addressblockmodel::AddressBlockModel()
+//-----------------------------------------------------------------------------
 AddressBlockModel::AddressBlockModel(QSharedPointer<AddressBlock> addressBlock,
     QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ParameterFinder> parameterFinder,
@@ -792,7 +798,12 @@ void AddressBlockModel::onRemoveItem( const QModelIndex& index ) {
 	// remove the specified item
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
 
-    removeReferencesInItemOnRow(index.row());
+    QSharedPointer<Register> removedRegister = items_.at(index.row()).dynamicCast<Register>();
+
+    if (removedRegister)
+    {
+        decreaseReferencesWithRemovedRegister(removedRegister);
+    }
 
 	items_.removeAt(index.row());
 	endRemoveRows();
@@ -802,6 +813,26 @@ void AddressBlockModel::onRemoveItem( const QModelIndex& index ) {
 
 	// tell also parent widget that contents have been changed
 	emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: addressblockmodel::decreaserReferencesWithRemovedRegisters()
+//-----------------------------------------------------------------------------
+void AddressBlockModel::decreaseReferencesWithRemovedRegister(QSharedPointer<Register> removedRegister)
+{
+    RegisterExpressionsGatherer* registerGatherer = new RegisterExpressionsGatherer();
+    QStringList expressionList = registerGatherer->getExpressions(removedRegister);
+
+    ReferenceCalculator* referenceCalculator = new ReferenceCalculator(getParameterFinder());
+    QMap<QString, int> referencedParameters = referenceCalculator->getReferencedParameters(expressionList);
+
+    foreach (QString referencedID, referencedParameters.keys())
+    {
+        for (int i = 0; i < referencedParameters.value(referencedID); ++i)
+        {
+            emit decreaseReferences(referencedID);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------

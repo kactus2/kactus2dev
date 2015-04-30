@@ -32,8 +32,8 @@ MemoryMapEditor::MemoryMapEditor(QSharedPointer<Component> component, LibraryInt
     QSharedPointer<ExpressionParser> expressionParser,
     QWidget* parent):
 QGroupBox(tr("Address blocks summary"), parent),
-    view_(new EditableTableView(this)),
-    model_(new MemoryMapModel(memoryRemap, component->getChoices(), expressionParser, parameterFinder,
+view_(new EditableTableView(this)),
+model_(new MemoryMapModel(memoryRemap, component->getChoices(), expressionParser, parameterFinder,
     expressionFormatter, this))
 {
     ComponentParameterModel* componentParameterModel = new ComponentParameterModel(parameterFinder, this);

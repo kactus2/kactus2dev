@@ -20,6 +20,7 @@
 #include <QSharedPointer>
 
 class Choice;
+class Register;
 
 /*! \brief The model to manage the details of a single address block.
  *
@@ -209,6 +210,17 @@ private:
      *      @param [in] index   The index whose value is being searched for.
      */
     QVariant valueForIndex(const QModelIndex& index) const;
+
+    /*!
+     *  Decrease the number of references made from a removed register.
+     *
+     *      @param [in] removedRegister     The removed register.
+     */
+    void decreaseReferencesWithRemovedRegister(QSharedPointer<Register> removedRegister);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
 	//! \brief Pointer to the address block being edited.
 	QSharedPointer<AddressBlock> addressBlock_;
