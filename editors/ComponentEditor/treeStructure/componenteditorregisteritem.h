@@ -26,6 +26,7 @@
 
 class RegisterEditor;
 class MemoryMapsVisualizer;
+class MemoryVisualizationItem;
 class RegisterGraphItem;
 class ExpressionParser;
 
@@ -132,6 +133,26 @@ private:
 
     //! Updates the graphical items to match the current register dimension.
     void resizeGraphicsToCurrentDimensionSize();
+
+    /*!
+     *  Creates a graphical item for representing a register dimension.
+     *
+     *      @param [in] dimensionIndex      The index of the represented dimension.
+     *      @param [in] parentItem          The parent graphical item for the dimension item.
+     */
+    void createDimensionGraphicsItem(int dimensionIndex, MemoryVisualizationItem* parentItem);
+    
+    /*!
+     *  Removes a graphical item representing a register dimension.
+     *
+     *      @param [in] dimensionIndex      The index of the dimension to remove.
+     *      @param [in] parentItem          The parent graphical item of the dimension item.
+     */
+    void removeDimensionGraphicsItem(int dimensionIndex, MemoryVisualizationItem* parentItem);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
 	//! The register being edited.
 	QSharedPointer<Register> reg_;

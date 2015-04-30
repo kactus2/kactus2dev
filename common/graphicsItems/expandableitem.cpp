@@ -13,7 +13,7 @@
 //-----------------------------------------------------------------------------
 // Function: ExpandableItem::ExpandableItem()
 //-----------------------------------------------------------------------------
-ExpandableItem::ExpandableItem( QGraphicsItem* parent /*= 0*/):
+ExpandableItem::ExpandableItem(QGraphicsItem* parent):
 VisualizerItem(parent),
 expandCollapseItem_(new GraphicsExpandCollapseItem(this)),
 expansionRect_(new QGraphicsRectItem(this))
@@ -52,7 +52,16 @@ void ExpandableItem::onExpandStateChange(bool expanded)
         }
     }
 
-    refresh();
+    if (expanded)
+    {
+        reorganizeChildren();
+    }
+    else
+    {
+        updateRectangle();
+    }
+
+    emit expandStateChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -76,17 +85,7 @@ bool ExpandableItem::isExpanded() const
 //-----------------------------------------------------------------------------
 void ExpandableItem::reorganizeChildren()
 {
-	// the rectangle that contains this item and children
-	QRectF totalRect = itemTotalRect();
-
-	// the rectangle is on the left side of the parent and children
-	expansionRect_->setRect(-GraphicsExpandCollapseItem::SIDE, 0, 
-        GraphicsExpandCollapseItem::SIDE, totalRect.height());
-
-    // Set the position for the expand/collapse item with the icon.
-    expandCollapseItem_->setPos(-GraphicsExpandCollapseItem::SIDE, 
-        GraphicsExpandCollapseItem::SIDE / 2 + VisualizerItem::CORNER_INDENTATION);
-
+    updateRectangle();
 	VisualizerItem::reorganizeChildren();
 }
 
@@ -121,4 +120,21 @@ void ExpandableItem::setExpansionPen(QPen const& pen)
 void ExpandableItem::setExpansionRectVisible(bool visible)
 {
 	expansionRect_->setVisible(visible);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ExpandableItem::updateHeight()
+//-----------------------------------------------------------------------------
+void ExpandableItem::updateRectangle()
+{
+    // the rectangle that contains this item and children
+    QRectF totalRect = itemTotalRect();
+
+    // the rectangle is on the left side of the parent and children
+    expansionRect_->setRect(-GraphicsExpandCollapseItem::SIDE, 0, 
+        GraphicsExpandCollapseItem::SIDE, totalRect.height());
+
+    // Set the position for the expand/collapse item with the icon.
+    expandCollapseItem_->setPos(-GraphicsExpandCollapseItem::SIDE, 
+        GraphicsExpandCollapseItem::SIDE / 2 + VisualizerItem::CORNER_INDENTATION);
 }

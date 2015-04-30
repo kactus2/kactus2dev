@@ -91,6 +91,11 @@ public:
      *      @param [in] index   The dimension index to set.
      */
     void setDimensionIndex(unsigned int index);
+        
+    /*!
+     *  Called to notify the register item that the dimension of the register has changed..
+     */
+    void dimensionChanged();
 
 protected:
 

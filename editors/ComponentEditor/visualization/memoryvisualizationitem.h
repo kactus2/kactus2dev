@@ -153,14 +153,8 @@ public:
 
 signals:
 
-	//! Emitted when the item changes.
-	void contentChanged();
-
 	//! Emitted when this item's editor should be displayed.
 	void selectEditor();
-
-    //! Emitted when the size of item the changes.
-    void sizeChanged();
 
 protected slots:
 

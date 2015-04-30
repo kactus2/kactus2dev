@@ -61,9 +61,12 @@ VisualizerItem::~VisualizerItem() {
 void VisualizerItem::setName( const QString& name ) 
 {	
     name_ = name;
-    setToolTip(name);
-    nameLabel_.setPlainText(name);   
-    setNameLabelPosition();
+    nameLabel_.setPlainText(name); 
+    
+    if (nameHorizontalPos_ != VisualizerItem::NAME_LEFT_ALIGN)
+    {
+        setNameLabelPosition();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -142,6 +145,7 @@ void VisualizerItem::setRightBottomPosition()
 //-----------------------------------------------------------------------------
 void VisualizerItem::setNameLabelPosition()
 {
+
     // Horizontal position.
     int xCoordinate = 0;
     switch (nameHorizontalPos_) {
@@ -182,7 +186,7 @@ void VisualizerItem::setNameLabelPosition()
              }
     }
 
-    nameLabel_.setPos(xCoordinate,yCoordinate);
+    nameLabel_.setPos(xCoordinate, yCoordinate);
 }
 
 //-----------------------------------------------------------------------------

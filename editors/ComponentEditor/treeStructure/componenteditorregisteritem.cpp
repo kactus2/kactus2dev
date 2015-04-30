@@ -157,7 +157,7 @@ ItemVisualizer* ComponentEditorRegisterItem::visualizer()
 //-----------------------------------------------------------------------------
 // Function: componenteditorregisteritem::setVisualizer()
 //-----------------------------------------------------------------------------
-void ComponentEditorRegisterItem::setVisualizer( MemoryMapsVisualizer* visualizer )
+void ComponentEditorRegisterItem::setVisualizer(MemoryMapsVisualizer* visualizer)
 {
 	visualizer_ = visualizer;
     
@@ -169,10 +169,13 @@ void ComponentEditorRegisterItem::setVisualizer( MemoryMapsVisualizer* visualize
 		QSharedPointer<ComponentEditorFieldItem> fieldItem = item.staticCast<ComponentEditorFieldItem>();
 		fieldItem->setVisualizer(visualizer_);
 	}
+    
+    foreach (RegisterGraphItem* registerDimension, registerDimensions_)
+    {
+        registerDimension->refresh();
+    }
 
-    updateGraphics();
-
-    connect(visualizer_, SIGNAL(displayed()), this, SLOT(updateGraphics()), Qt::UniqueConnection);
+    //connect(visualizer_, SIGNAL(displayed()), this, SLOT(updateGraphics()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -195,12 +198,18 @@ QGraphicsItem* ComponentEditorRegisterItem::getGraphicsItem()
 //-----------------------------------------------------------------------------
 void ComponentEditorRegisterItem::updateGraphics()
 {
+    int oldDimension = registerDimensions_.count();
     resizeGraphicsToCurrentDimensionSize();
 
 	foreach (RegisterGraphItem* registerDimension, registerDimensions_)
     {
 		registerDimension->refresh();
 	}
+
+    if (oldDimension != registerDimensions_.count())
+    {
+        registerDimensions_.first()->dimensionChanged();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -224,6 +233,8 @@ void ComponentEditorRegisterItem::removeGraphicsItem()
 		delete registerDimension;
 		registerDimension = 0;
 	}
+
+    parentItem->refresh();
 }
 
 //-----------------------------------------------------------------------------
@@ -239,27 +250,46 @@ void ComponentEditorRegisterItem::resizeGraphicsToCurrentDimensionSize()
     }
 
     const int DIMENSION_SIZE = qMax(expressionParser_->parseExpression(reg_->getDimensionExpression()).toInt(), 1);
+   
     for (int currentDimension = registerDimensions_.count(); currentDimension < DIMENSION_SIZE; currentDimension++)
     {
-        RegisterGraphItem* newDimension = new RegisterGraphItem(reg_, expressionParser_, parentItem);
-        newDimension->setDimensionIndex(currentDimension);
-
-        parentItem->addChild(newDimension);
-        registerDimensions_.append(newDimension);
-
-        connect(newDimension, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()), Qt::UniqueConnection);
+        createDimensionGraphicsItem(currentDimension, parentItem);
     }
 
     for (int currentDimension = registerDimensions_.count() - 1; currentDimension >= DIMENSION_SIZE;
         currentDimension--)
     {
-        RegisterGraphItem* removedDimension = registerDimensions_.takeAt(currentDimension);
-        parentItem->removeChild(removedDimension);
-        removedDimension->setParent(0);
-
-        disconnect(removedDimension, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()));
-
-        delete removedDimension;
-        removedDimension = 0;
+        removeDimensionGraphicsItem(currentDimension, parentItem);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorRegisterItem::createDimensionGraphicsItem()
+//-----------------------------------------------------------------------------
+void ComponentEditorRegisterItem::createDimensionGraphicsItem(int dimensionIndex,
+    MemoryVisualizationItem* parentItem)
+{
+    RegisterGraphItem* newDimension = new RegisterGraphItem(reg_, expressionParser_, parentItem);
+    newDimension->setDimensionIndex(dimensionIndex);
+
+    parentItem->addChild(newDimension);
+    registerDimensions_.append(newDimension);
+
+    connect(newDimension, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()), Qt::UniqueConnection);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorRegisterItem::removeDimensionGraphicsItem()
+//-----------------------------------------------------------------------------
+void ComponentEditorRegisterItem::removeDimensionGraphicsItem(int dimensionIndex, 
+    MemoryVisualizationItem* parentItem)
+{
+    RegisterGraphItem* removedDimension = registerDimensions_.takeAt(dimensionIndex);
+    parentItem->removeChild(removedDimension);
+    removedDimension->setParent(0);
+
+    disconnect(removedDimension, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()));
+
+    delete removedDimension;
+    removedDimension = 0;
 }

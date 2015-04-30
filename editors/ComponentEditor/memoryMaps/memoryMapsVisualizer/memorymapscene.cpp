@@ -51,7 +51,7 @@ void MemoryMapScene::addMemGraphItem( VisualizerItem* memGraphItem )
     addItem(memGraphItem);
     memGraphItems_.append(memGraphItem);
 
-    connect(memGraphItem, SIGNAL(sizeChanged()), this, SLOT(rePosition()), Qt::UniqueConnection);
+    connect(memGraphItem, SIGNAL(expandStateChanged()), this, SLOT(rePosition()), Qt::UniqueConnection);
 
     // Update scene rect height.   
     QRectF rect = sceneRect();
@@ -74,7 +74,7 @@ void MemoryMapScene::removeMemGraphItem( VisualizerItem* memGraphItem )
     removeItem(memGraphItem);
     memGraphItems_.removeAll(memGraphItem);
 
-    disconnect(memGraphItem, SIGNAL(sizeChanged()), this, SLOT(rePosition()));
+    disconnect(memGraphItem, SIGNAL(expandStateChanged()), this, SLOT(rePosition()));
 
     for (int i = startIndex; i < memGraphItems_.count(); i++)
     {     

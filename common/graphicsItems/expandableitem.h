@@ -39,6 +39,10 @@ public:
 	*/
 	virtual bool isExpanded() const;
 
+signals: 
+    //! Emitted when the item is expanded or collapsed.
+    void expandStateChanged();
+
 protected slots:
 
 	/*! \brief Handler for expandCollapseItem's stateChanged()-signal.
@@ -61,6 +65,7 @@ protected slots:
 	 * calls base class implementation.
 	*/
 	virtual void reorganizeChildren();
+
 
 protected:
 
@@ -95,6 +100,9 @@ private:
 
 	//! \brief No assignment
 	ExpandableItem& operator=(const ExpandableItem& other);
+
+    //! Updates the item rectangle to correct size.
+    void updateRectangle();
 
 	//! \brief The item to show/hide the child items
 	GraphicsExpandCollapseItem* expandCollapseItem_;

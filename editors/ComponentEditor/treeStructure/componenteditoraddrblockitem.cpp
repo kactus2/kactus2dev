@@ -180,7 +180,8 @@ void ComponentEditorAddrBlockItem::setVisualizer( MemoryMapsVisualizer* visualiz
 	parentItem->addChild(graphItem_);
 	
 	// update the visualizers for register items
-	foreach (QSharedPointer<ComponentEditorItem> item, childItems_) {
+	foreach (QSharedPointer<ComponentEditorItem> item, childItems_)
+    {
 		QSharedPointer<ComponentEditorRegisterItem> regItem = item.staticCast<ComponentEditorRegisterItem>();
 		regItem->setVisualizer(visualizer_);
 	}

@@ -530,8 +530,11 @@ void tst_RegisterGraphItem::testTwoDimensional()
 
     RegisterGraphItem* registerItem = new RegisterGraphItem(twoDimensionalRegister, noParser, addressBlockItem);
     registerItem->setDimensionIndex(0);
+    registerItem->updateDisplay();
+
     RegisterGraphItem* secondDimension = new RegisterGraphItem(twoDimensionalRegister, noParser, addressBlockItem);
     secondDimension->setDimensionIndex(1);
+    secondDimension->updateDisplay();
 
     QCOMPARE(registerItem->getName(), QString("testRegister[0]"));
     QCOMPARE(registerItem->getDisplayOffset(), quint64(1));

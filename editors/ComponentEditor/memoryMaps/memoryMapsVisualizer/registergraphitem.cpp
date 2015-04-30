@@ -58,8 +58,6 @@ void RegisterGraphItem::refresh()
 {
     updateDisplay();
     reorganizeChildren();
-
-    emit sizeChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -91,11 +89,6 @@ void RegisterGraphItem::updateDisplay()
 void RegisterGraphItem::addChild(MemoryVisualizationItem* childItem)
 {
     MemoryVisualizationItem::addChild(childItem);
-
-    if (childItems_.count() == 1)
-    {
-        emit sizeChanged();
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -107,11 +100,6 @@ void RegisterGraphItem::removeChild( MemoryVisualizationItem* childItem )
 
     Q_ASSERT(childItems_.contains(offset));
     childItems_.remove(offset, childItem);
-
-    if (childItems_.isEmpty())
-    {
-        emit sizeChanged();
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -184,7 +172,14 @@ void RegisterGraphItem::setWidth(qreal width)
 void RegisterGraphItem::setDimensionIndex(unsigned int index)
 {
     dimensionIndex_ = index;
-    updateDisplay();
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterGraphItem::dimensionChanged()
+//-----------------------------------------------------------------------------
+void RegisterGraphItem::dimensionChanged()
+{
+    emit expandStateChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -300,8 +295,9 @@ quint64 RegisterGraphItem::getSizeInAUB() const
     }
 
     // how many address unit are contained in the register
-    unsigned int size = expresionParser_->parseExpression(register_->getSizeExpression()).toUInt() / addrUnit;
-    if (size*addrUnit < expresionParser_->parseExpression(register_->getSizeExpression()).toUInt()) 
+    unsigned int bitSize = expresionParser_->parseExpression(register_->getSizeExpression()).toUInt();
+    unsigned int size = bitSize / addrUnit;
+    if (size*addrUnit < bitSize) 
     {
         size++; //Round truncated number upwards
     }

@@ -139,9 +139,6 @@ void ComponentEditorFieldItem::setVisualizer( MemoryMapsVisualizer* visualizer )
 	// register the addr block graph item for the parent
 	parentItem->addChild(graphItem_);
 
-	// tell child to refresh itself
-	graphItem_->refresh();
-
 	connect(graphItem_, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()), Qt::UniqueConnection);
 }
 

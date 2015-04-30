@@ -17,8 +17,6 @@
 #include <QRectF>
 #include <QPen>
 
-#include <QDebug>
-
 //-----------------------------------------------------------------------------
 // Function: MemoryVisualizationItem::MemoryVisualizationItem()
 //-----------------------------------------------------------------------------
@@ -61,8 +59,8 @@ void MemoryVisualizationItem::addChild(MemoryVisualizationItem* childItem)
     childItem->setWidth(childWidth_);
     childItem->setVisible(isExpanded());
 
-    connect(childItem, SIGNAL(sizeChanged()), this, SLOT(reorganizeChildren()), Qt::UniqueConnection);
-    connect(childItem, SIGNAL(sizeChanged()), this, SIGNAL(sizeChanged()), Qt::UniqueConnection);
+    connect(childItem, SIGNAL(expandStateChanged()), this, SLOT(reorganizeChildren()), Qt::UniqueConnection);
+    connect(childItem, SIGNAL(expandStateChanged()), this, SIGNAL(expandStateChanged()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -75,11 +73,8 @@ void MemoryVisualizationItem::removeChild(MemoryVisualizationItem* childItem)
     Q_ASSERT(childItems_.contains(offset));
     childItems_.remove(offset, childItem);
 
-    disconnect(childItem, SIGNAL(sizeChanged()), this, SLOT(reorganizeChildren()));
-    disconnect(childItem, SIGNAL(sizeChanged()), this, SIGNAL(sizeChanged()));
-
-    reorganizeChildren();
-    emit sizeChanged();
+    disconnect(childItem, SIGNAL(expandStateChanged()), this, SLOT(reorganizeChildren()));
+    disconnect(childItem, SIGNAL(expandStateChanged()), this, SIGNAL(expandStateChanged()));
 }
 
 //-----------------------------------------------------------------------------
@@ -207,11 +202,12 @@ bool MemoryVisualizationItem::isConflicted() const
 //-----------------------------------------------------------------------------
 void MemoryVisualizationItem::reorganizeChildren()
 {
-    updateChildMap();
     showExpandIconIfHasChildren();
 
-    if (mustRepositionChildren())
+   if (mustRepositionChildren())
     {
+        updateChildMap();
+
         repositionChildren();
     }
 
@@ -260,7 +256,7 @@ void MemoryVisualizationItem::updateChildMap()
             QList<MemoryVisualizationItem*> childs = updatedMap.values(offset);
             updatedMap.remove(offset);
 
-            qSort(childs.begin(), childs.end(), compareItems);
+            qStableSort(childs.begin(), childs.end(), compareItems);
 
             foreach(MemoryVisualizationItem* child, childs)
             {

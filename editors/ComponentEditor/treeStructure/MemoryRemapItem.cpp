@@ -153,6 +153,8 @@ void MemoryRemapItem::createChild( int index )
 			addrBlockItem->setVisualizer(visualizer_);
 		}
 
+        updateGraphics();
+
 		childItems_.insert(index, addrBlockItem);
 	}
 }
@@ -184,6 +186,8 @@ void MemoryRemapItem::setVisualizer( MemoryMapsVisualizer* visualizer )
 		QSharedPointer<ComponentEditorAddrBlockItem> addrItem = item.staticCast<ComponentEditorAddrBlockItem>();
 		addrItem->setVisualizer(visualizer_);
 	}
+
+    updateGraphics();
 
 	connect(graphItem_, SIGNAL(selectEditor()),
 		this, SLOT(onSelectRequest()), Qt::UniqueConnection);
@@ -218,8 +222,7 @@ void MemoryRemapItem::removeGraphicsItem()
         // remove the graph item from the scene
         visualizer_->removeMemoryMapItem(graphItem_);
 
-        disconnect(graphItem_, SIGNAL(selectEditor()),
-            this, SLOT(onSelectRequest()));
+        disconnect(graphItem_, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()));
 
         // delete the graph item
         delete graphItem_;

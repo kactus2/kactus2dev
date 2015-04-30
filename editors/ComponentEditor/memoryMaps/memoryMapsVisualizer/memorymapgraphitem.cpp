@@ -43,11 +43,7 @@ MemoryMapGraphItem::~MemoryMapGraphItem()
 void MemoryMapGraphItem::refresh() 
 {
     updateDisplay();
-
-    showExpandIconIfHasChildren();
     reorganizeChildren();
-
-    emit sizeChanged();
 }
 
 //-----------------------------------------------------------------------------

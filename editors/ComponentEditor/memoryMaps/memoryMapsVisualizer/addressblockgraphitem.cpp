@@ -20,8 +20,8 @@
 //-----------------------------------------------------------------------------
 // Function: AddressBlockGraphItem::AddressBlockGraphItem()
 //-----------------------------------------------------------------------------
-AddressBlockGraphItem::AddressBlockGraphItem( QSharedPointer<AddressBlock> addrBlock, 
-											 QGraphicsItem *parent ):
+AddressBlockGraphItem::AddressBlockGraphItem(QSharedPointer<AddressBlock> addrBlock, 
+    QGraphicsItem *parent ):
 MemoryVisualizationItem(parent),
 addrBlock_(addrBlock),
 addrssableUnitBits_(0)
@@ -48,8 +48,6 @@ void AddressBlockGraphItem::refresh()
 {
     updateDisplay();
     reorganizeChildren();
-
-    emit sizeChanged();
 }
 
 //-----------------------------------------------------------------------------
