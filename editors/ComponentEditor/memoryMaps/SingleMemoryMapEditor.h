@@ -92,10 +92,8 @@ private slots:
 
     /*!
      *  Updates the address unit bits [AUB].
-     *
-     *      @param [in] newAddressUnitBits  The new address unit bits [AUB].
      */
-    void updateAddressUnitBits(QString const& newAddressUnitBits);
+    void updateAddressUnitBits();
 
     /*!
      *  Sets the new remap state to the memory remap.

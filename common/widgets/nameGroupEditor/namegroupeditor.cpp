@@ -50,6 +50,7 @@ descriptionEdit_(this) {
 
 	connect(&nameEdit_, SIGNAL(textEdited(const QString&)),
 		this, SLOT(onNameChanged(const QString&)), Qt::UniqueConnection);
+    connect(&nameEdit_, SIGNAL(editingFinished()), this, SIGNAL(nameChanged()), Qt::UniqueConnection);
 	connect(&displayNameEdit_, SIGNAL(textEdited(const QString&)),
 		this, SLOT(onDisplayNameChanged(const QString&)), Qt::UniqueConnection);
 	connect(&descriptionEdit_, SIGNAL(textChanged()),
@@ -71,7 +72,11 @@ QString NameGroupEditor::getDescription() const {
 	return nameGroup_.description();
 }
 
-void NameGroupEditor::onNameChanged( const QString& newName ) {
+//-----------------------------------------------------------------------------
+// Function: namegroupeditor::onNameChanged()
+//-----------------------------------------------------------------------------
+void NameGroupEditor::onNameChanged( const QString& newName )
+{
 	nameGroup_.setName(newName);
 	emit contentChanged();
 }

@@ -179,6 +179,11 @@ signals:
 	//! \brief Emitted when the contents of the model change.
 	void contentChanged();
 
+    /*!
+     *  Informs of a need to redraw the visualizer.
+     */
+    void graphicsChanged();
+
     //! \brief Prints an error message to the user.
     void errorMessage(const QString& msg) const;
 

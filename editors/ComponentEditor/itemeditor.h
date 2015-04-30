@@ -78,6 +78,11 @@ signals:
 	*/
 	void contentChanged();
 
+    /*!
+     *  Informs of the necessity to redraw the visualizer.
+     */
+    void graphicsChanged();
+
 	//! \brief Prints an error message to the user.
 	void errorMessage(const QString& msg) const;
 

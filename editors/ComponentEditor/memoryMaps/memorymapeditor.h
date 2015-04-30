@@ -71,6 +71,11 @@ signals:
     void contentChanged();
 
     /*!
+     *  Informs of a need to redraw the visualization.
+     */
+    void graphicsChanged();
+
+    /*!
      *  Emits an error message for the user.
      *
      *      @param [in] msg     The error message.

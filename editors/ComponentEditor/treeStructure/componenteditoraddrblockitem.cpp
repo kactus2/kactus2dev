@@ -99,6 +99,7 @@ ItemEditor* ComponentEditorAddrBlockItem::editor()
             expressionFormatter_, expressionParser_);
 		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(graphicsChanged()), this, SLOT(onGraphicsChanged()), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(childAdded(int)), this, SLOT(onAddChild(int)), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(childRemoved(int)), this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
         connect(editor_, SIGNAL(errorMessage(const QString&)),
@@ -248,6 +249,7 @@ void ComponentEditorAddrBlockItem::addressUnitBitsChanged(int newAddressUnitBits
     if (graphItem_)
     {
         graphItem_->setAddressableUnitBits(newAddressUnitBits);
+        graphItem_->refresh();
     }
 
     emit changeInAddressUnitBits(newAddressUnitBits);

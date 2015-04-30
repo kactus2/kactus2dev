@@ -496,6 +496,14 @@ bool AddressBlockModel::setData( const QModelIndex& index, const QVariant& value
             return false;
         }
 
+        if (index.column() == AddressBlockColumns::NAME ||
+            index.column() == AddressBlockColumns::REGISTER_OFFSET ||
+            index.column() == AddressBlockColumns::REGISTER_SIZE ||
+            index.column() == AddressBlockColumns::REGISTER_DIMENSION)
+        {
+            emit graphicsChanged();
+        }
+
 		emit dataChanged(index, index);
 		emit contentChanged();
 		return true;

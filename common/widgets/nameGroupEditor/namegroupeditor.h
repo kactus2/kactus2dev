@@ -76,6 +76,11 @@ signals:
 	//! \brief Emitted when user edits one of the fields.
 	void contentChanged();
 
+    /*!
+     *  Informs of change in name.
+     */
+    void nameChanged();
+
 private slots:
 
 	/*! \brief Handler for editing of the name field.

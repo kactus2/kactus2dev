@@ -300,6 +300,12 @@ bool MemoryMapModel::setData(QModelIndex const& index, QVariant const& value, in
             return false;
         }
 
+        if (index.column() == MemoryMapColumns::NAME_COLUMN || index.column() == MemoryMapColumns::BASE_COLUMN ||
+            index.column() == MemoryMapColumns::RANGE_COLUMN || index.column() == MemoryMapColumns::WIDTH_COLUMN)
+        {
+            emit graphicsChanged();
+        }
+
         emit dataChanged(index, index);
         emit contentChanged();
         return true;

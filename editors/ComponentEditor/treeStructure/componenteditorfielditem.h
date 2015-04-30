@@ -105,6 +105,13 @@ public:
 	*/
 	virtual void removeGraphicsItem();
 
+signals:
+
+    /*!
+     *  Inform of the need to redraw the visualization.
+     */
+    void graphicsChanged();
+
 protected slots:
 
 	/*! \brief Handler for editor's contentChanged signal.

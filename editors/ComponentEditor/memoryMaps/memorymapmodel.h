@@ -172,6 +172,11 @@ signals:
 	//! \brief Emitted when the contents of the model change.
 	void contentChanged();
 
+    /*!
+     *  Informs of a need to redraw the visualization.
+     */
+    void graphicsChanged();
+
 	//! \brief Emitted when a new memory map item is added to the given index.
 	void itemAdded(int index);
 

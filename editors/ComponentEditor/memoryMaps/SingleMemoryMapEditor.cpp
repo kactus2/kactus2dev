@@ -57,8 +57,11 @@ parentMemoryMap_(parentMemoryMap)
     connect(&nameEditor_, SIGNAL(contentChanged()), this, SLOT(refreshSlaveBinding()), Qt::UniqueConnection);
     connect(&nameEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
-    connect(addressUnitBitsEditor_, SIGNAL(textEdited(QString const&)),
-        this, SLOT(updateAddressUnitBits(QString const&)), Qt::UniqueConnection);
+    connect(&nameEditor_, SIGNAL(nameChanged()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
+    connect(memoryMapEditor_, SIGNAL(graphicsChanged()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
+
+    connect(addressUnitBitsEditor_, SIGNAL(editingFinished()),
+        this, SLOT(updateAddressUnitBits()), Qt::UniqueConnection);
 
     setupLayout();
 
@@ -197,9 +200,9 @@ void SingleMemoryMapEditor::refreshSlaveBinding()
 //-----------------------------------------------------------------------------
 // Function: SingleMemoryMapEditor::updateAddressUnitBits()
 //-----------------------------------------------------------------------------
-void SingleMemoryMapEditor::updateAddressUnitBits(QString const& newAddressUnitBits)
+void SingleMemoryMapEditor::updateAddressUnitBits()
 {
-    parentMemoryMap_->setAddressUnitBits(newAddressUnitBits.toUInt());
+    parentMemoryMap_->setAddressUnitBits(addressUnitBitsEditor_->text().toUInt());
     emit addressUnitBitsChanged();
     emit contentChanged();
 }

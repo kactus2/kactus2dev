@@ -155,6 +155,11 @@ signals:
 	//! Emitted when the contents of the model change.
 	void contentChanged();
 
+    /*!
+     *  Informs of a need to redraw the visualization.
+     */
+    void graphicsChanged();
+
 	//! Emitted when a new memory map is added to the given index.
 	void memoryMapAdded(int index);
 

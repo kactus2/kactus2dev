@@ -161,6 +161,9 @@ ItemVisualizer* ComponentEditorItem::visualizer() {
 	return NULL;
 }
 
+//-----------------------------------------------------------------------------
+// Function: componenteditoritem::onEditorChanged()
+//-----------------------------------------------------------------------------
 void ComponentEditorItem::onEditorChanged()
 {
 	// if there is a valid parent then update it also
@@ -171,19 +174,25 @@ void ComponentEditorItem::onEditorChanged()
 	// update this item
 	emit contentChanged(this);
 
+    foreach (QSharedPointer<ComponentEditorItem> childItem, childItems_)
+    {
+        emit contentChanged(childItem.data());
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: componenteditoritem::onGraphicsChanged()
+//-----------------------------------------------------------------------------
+void ComponentEditorItem::onGraphicsChanged()
+{
     updateGraphics();
 
-	// also inform of child changes
-	foreach (QSharedPointer<ComponentEditorItem> childItem, childItems_) {
-		// tell the model that data has changed for the child
-		emit contentChanged(childItem.data());
-
-		// tell the child to update it's editor contents
-		childItem->refreshEditor();
-
-		// tell the child to update it's visualization graphics item
-		childItem->updateGraphics();
-	}
+    // also inform of child changes
+    foreach (QSharedPointer<ComponentEditorItem> childItem, childItems_)
+    {
+        // tell the child to update it's visualization graphics item
+        childItem->updateGraphics();
+    }
 }
 
 void ComponentEditorItem::setLocked( bool locked ) {

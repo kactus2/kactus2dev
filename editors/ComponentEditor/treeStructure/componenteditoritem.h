@@ -397,6 +397,11 @@ protected slots:
 	*/
 	virtual void onEditorChanged();
 
+    /*!
+     *  Handles the redrawing of the visualization of the item.
+     */
+    virtual void onGraphicsChanged();
+
 	/*! \brief Handler for ItemEditor's childAdded(int) signal.
 	 *
 	 * \param index The index to add the child to.

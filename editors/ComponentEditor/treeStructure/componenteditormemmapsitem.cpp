@@ -71,16 +71,13 @@ ItemEditor* ComponentEditorMemMapsItem::editor()
     {
 		editor_ = new MemoryMapsEditor(component_, parameterFinder_, libHandler_);
 		editor_->setProtection(locked_);
-		connect(editor_, SIGNAL(contentChanged()), 
-			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
-		connect(editor_, SIGNAL(childAdded(int)),
-			this, SLOT(onAddChild(int)), Qt::UniqueConnection);
-		connect(editor_, SIGNAL(childRemoved(int)),
-			this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
-		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
-			this, SIGNAL(helpUrlRequested(QString const&)));
+		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(graphicsChanged()), this, SLOT(onGraphicsChanged()), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(childAdded(int)), this, SLOT(onAddChild(int)), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(childRemoved(int)), this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
 		connect(editor_, SIGNAL(selectBusInterface(const QString&)),
-			model_, SLOT(onSelectBusInterface(const QString&)), Qt::UniqueConnection);
+            model_, SLOT(onSelectBusInterface(const QString&)), Qt::UniqueConnection);
 
         connect(editor_, SIGNAL(changeInAddressUnitBitsOnRow(int)), 
             this, SLOT(addressUnitBitsChangedOnMemoryMap(int)), Qt::UniqueConnection);

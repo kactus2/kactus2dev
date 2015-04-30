@@ -210,6 +210,7 @@ bool MemoryMapsModel::setData( const QModelIndex& index, const QVariant& value, 
                 memoryRemap->setName(value.toString());
             }
 
+            emit graphicsChanged();
         }
         else if (index.column() == MemoryMapsColumns::AUB_COLUMN)
         {

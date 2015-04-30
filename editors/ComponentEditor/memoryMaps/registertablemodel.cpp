@@ -298,6 +298,8 @@ bool RegisterTableModel::setData( const QModelIndex& index, const QVariant& valu
         if (index.column() == RegisterColumns::NAME_COLUMN)
         {
             fields_.at(index.row())->setName(value.toString());
+
+            emit graphicsChanged();
         }
         else if (index.column() == RegisterColumns::DESC_COLUMN)
         {
@@ -317,6 +319,8 @@ bool RegisterTableModel::setData( const QModelIndex& index, const QVariant& valu
                 fields_.at(index.row())->setBitOffsetExpression(value.toString());
             }
             fields_.at(index.row())->setBitOffset(calculatedExpression.toInt());
+
+            emit graphicsChanged();
         }
         else if (index.column() == RegisterColumns::WIDTH_COLUMN)
         {
@@ -332,6 +336,8 @@ bool RegisterTableModel::setData( const QModelIndex& index, const QVariant& valu
                 fields_.at(index.row())->setBitWidthExpression(value.toString());
             }
             fields_.at(index.row())->setBitWidth(calculatedExpression.toInt());
+
+            emit graphicsChanged();
         }
         else if (index.column() == RegisterColumns::VOLATILE_COLUMN)
         {
@@ -375,6 +381,8 @@ bool RegisterTableModel::setData( const QModelIndex& index, const QVariant& valu
             }
 
             fields_.at(index.row())->setIsPresentExpression(value.toString());
+
+            emit graphicsChanged();
         }
         else
         {
