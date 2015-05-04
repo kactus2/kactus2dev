@@ -18,6 +18,7 @@
 #include <IPXACTmodels/MemoryRemap.h>
 
 #include <QFormLayout>
+#include <QSplitter>
 
 //-----------------------------------------------------------------------------
 // Function: SingleMemoryMapEditor::SingleMemoryMapEditor()
@@ -141,36 +142,51 @@ void SingleMemoryMapEditor::setupLayout()
     scrollLayot->addWidget(scrollArea);
     scrollLayot->setContentsMargins(0, 0, 0, 0);
 
-    QGroupBox* additionalDataGroup = new QGroupBox(tr("Memory map definition"));
+    QGroupBox* memoryMapDefinitionGroup = new QGroupBox(tr("Memory map definition"));
 
-    QFormLayout* additionalDataLayout = new QFormLayout();
-    additionalDataLayout->addRow(tr("Address Unit Bits [AUB]:"), addressUnitBitsEditor_);
+    QFormLayout* memoryMapDefinitionGroupLayout = new QFormLayout(memoryMapDefinitionGroup);
+    memoryMapDefinitionGroupLayout->addRow(tr("Address Unit Bits [AUB]:"), addressUnitBitsEditor_);
 
-    remapStateSelector_ = new ReferenceSelector(additionalDataGroup);
-    additionalDataLayout->addRow(tr("Remap state:"), remapStateSelector_);
+    remapStateSelector_ = new ReferenceSelector(memoryMapDefinitionGroup);
+    memoryMapDefinitionGroupLayout->addRow(tr("Remap state:"), remapStateSelector_);
 
-    additionalDataLayout->addRow(tr("Slave interface binding:"), slaveInterfaceLabel_);
+    memoryMapDefinitionGroupLayout->addRow(tr("Slave interface binding:"), slaveInterfaceLabel_);
 
     connect(remapStateSelector_, SIGNAL(itemSelected(QString const&)),
         this, SLOT(onRemapStateSelected(QString const&)), Qt::UniqueConnection);
 
-    additionalDataGroup->setLayout(additionalDataLayout);
-
     QHBoxLayout* topOfPageLayout = new QHBoxLayout();
-    topOfPageLayout->addWidget(&nameEditor_, 0);
-    topOfPageLayout->addWidget(additionalDataGroup, 0);
+    topOfPageLayout->addWidget(&nameEditor_, 0, Qt::AlignTop);
+    topOfPageLayout->addWidget(memoryMapDefinitionGroup, 0);
 
-    QVBoxLayout* addressBlockEditorLayout = new QVBoxLayout();
-    addressBlockEditorLayout->addWidget(memoryMapEditor_, 0);
+    QWidget* topOfPageWidget = new QWidget();
+    topOfPageWidget->setSizeIncrement(QSizePolicy::Expanding, QSizePolicy::Maximum);
+    topOfPageWidget->setLayout(topOfPageLayout);
+    topOfPageWidget->setContentsMargins(0, 0, 0, 0);
 
-    QWidget* topWidget = new QWidget(scrollArea);
-    topWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    scrollArea->setWidget(topWidget);
+    QSplitter* verticalSplitter = new QSplitter(Qt::Vertical, scrollArea);
+    verticalSplitter->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    verticalSplitter->addWidget(topOfPageWidget);
+    verticalSplitter->addWidget(memoryMapEditor_);
 
-    QVBoxLayout* topLayout = new QVBoxLayout(topWidget);
-    topLayout->addLayout(topOfPageLayout);
-    topLayout->addLayout(addressBlockEditorLayout);
-    topLayout->setContentsMargins(0, 0, 0, 0);
+    verticalSplitter->setStretchFactor(1,1);
+
+    QSplitterHandle* handle = verticalSplitter->handle(1);
+
+    QVBoxLayout* handleLayout = new QVBoxLayout(handle);
+    handleLayout->setSpacing(0);
+    handleLayout->setMargin(0);
+
+    QFrame* line = new QFrame(handle);
+    line->setLineWidth(2);
+    line->setMidLineWidth(2);
+    line->setFrameShape(QFrame::HLine);
+    line->setFrameShadow(QFrame::Sunken);
+    handleLayout->addWidget(line);
+
+    verticalSplitter->setHandleWidth(10);
+
+    scrollArea->setWidget(verticalSplitter);
 }
 
 //-----------------------------------------------------------------------------

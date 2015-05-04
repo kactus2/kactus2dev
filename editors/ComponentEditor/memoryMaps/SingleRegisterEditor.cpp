@@ -25,6 +25,7 @@
 
 #include <QFormLayout>
 #include <QScrollArea>
+#include <QSplitter>
 
 //-----------------------------------------------------------------------------
 // Function: SingleRegisterEditor::SingleRegisterEditor()
@@ -116,6 +117,10 @@ void SingleRegisterEditor::setupLayout()
 
     QGroupBox* registerDefinitionGroup = new QGroupBox(tr("Register definition"));
 
+    offsetEditor_->setFrameShadow(QFrame::Sunken);
+    sizeEditor_->setFrameShadow(QFrame::Sunken);
+    dimensionEditor_->setFrameShadow(QFrame::Sunken);
+
     QFormLayout* registerDefinitionLayout = new QFormLayout(registerDefinitionGroup);
     registerDefinitionLayout->addRow(tr("Offset [AUB], f(x):"), offsetEditor_);
     registerDefinitionLayout->addRow(tr("Size [bits], f(x):"), sizeEditor_);
@@ -140,17 +145,32 @@ void SingleRegisterEditor::setupLayout()
     topOfPageLayout->addWidget(&nameEditor_, 0, Qt::AlignTop);
     topOfPageLayout->addWidget(registerDefinitionGroup, 0);
 
-    QVBoxLayout* fieldEditorLayout = new QVBoxLayout();
-    fieldEditorLayout->addWidget(fieldsEditor_, 0);
+    QWidget* topOfPageWidget = new QWidget();
+    topOfPageWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    topOfPageWidget->setLayout(topOfPageLayout);
+    topOfPageWidget->setContentsMargins(0, 0, 0, 0);
 
-    QWidget* topWidget = new QWidget(scrollArea);
-    topWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    scrollArea->setWidget(topWidget);
+    QSplitter* verticalSplitter = new QSplitter(Qt::Vertical, scrollArea);
+    verticalSplitter->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    verticalSplitter->addWidget(topOfPageWidget);
+    verticalSplitter->addWidget(fieldsEditor_);
+    verticalSplitter->setStretchFactor(1, 1);
 
-    QVBoxLayout* topLayout = new QVBoxLayout(topWidget);
-    topLayout->addLayout(topOfPageLayout);
-    topLayout->addLayout(fieldEditorLayout, 1);
-    topLayout->setContentsMargins(0, 0, 0, 0);
+    QSplitterHandle* handle = verticalSplitter->handle(1);
+    QVBoxLayout* handleLayout = new QVBoxLayout(handle);
+    handleLayout->setSpacing(0);
+    handleLayout->setMargin(0);
+
+    QFrame* line = new QFrame(handle);
+    line->setLineWidth(2);
+    line->setMidLineWidth(2);
+    line->setFrameShape(QFrame::HLine);
+    line->setFrameShadow(QFrame::Sunken);
+    handleLayout->addWidget(line);
+
+    verticalSplitter->setHandleWidth(10);
+
+    scrollArea->setWidget(verticalSplitter);
 }
 
 //-----------------------------------------------------------------------------
