@@ -117,12 +117,12 @@ public:
 	*/
 	virtual void removeGraphicsItem();
 
+public slots:
+
     /*!
      *  Change the address unit bits for the address blocks.
      */
     void changeAdressUnitBitsOnAddressBlocks();
-
-public slots:
 
     /*!
      *  Add a memory remap item to the tree.

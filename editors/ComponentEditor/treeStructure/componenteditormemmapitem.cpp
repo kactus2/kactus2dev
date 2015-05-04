@@ -48,6 +48,9 @@ expressionParser_(expressionParser)
         component, referenceCounter, parameterFinder, expressionFormatter, expressionParser_, this));
     defaultRemapItem->setLocked(locked_);
 
+    connect(defaultRemapItem.data(), SIGNAL(addressUnitBitsChanged()),
+        this, SLOT(changeAdressUnitBitsOnAddressBlocks()), Qt::UniqueConnection);
+
     childItems_.append(defaultRemapItem);
 
     foreach (QSharedPointer<MemoryRemap> memoryRemap, *memoryMap_->getMemoryRemaps())
@@ -55,6 +58,9 @@ expressionParser_(expressionParser)
         QSharedPointer<MemoryRemapItem> memoryRemapItem(new MemoryRemapItem(memoryRemap, memoryMap_, model,
             libHandler, component, referenceCounter, parameterFinder, expressionFormatter, expressionParser_, this));
         memoryRemapItem->setLocked(locked_);
+
+        MemoryMapsVisualizer* memoryRemapVisualizer = new MemoryMapsVisualizer();
+        memoryRemapItem->setVisualizer(memoryRemapVisualizer);
 
         childItems_.append(memoryRemapItem);
     }
@@ -117,6 +123,9 @@ void ComponentEditorMemMapItem::createChild( int index )
     QSharedPointer<MemoryRemapItem> memoryRemapItem (new MemoryRemapItem(memoryRemap, memoryMap_, model_,
         libHandler_, component_, referenceCounter_, parameterFinder_, expressionFormatter_, expressionParser_, this));
     memoryRemapItem->setLocked(locked_);
+
+    MemoryMapsVisualizer* memoryRemapVisualizer = new MemoryMapsVisualizer();
+    memoryRemapItem->setVisualizer(memoryRemapVisualizer);
 
     childItems_.append(memoryRemapItem);
 }

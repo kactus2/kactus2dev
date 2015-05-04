@@ -10,6 +10,7 @@
 
 #include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>
 #include <IPXACTmodels/memorymap.h>
+#include <IPXACTmodels/AbstractMemoryMap.h>
 
 #include <QSharedPointer>
 #include <QGraphicsItem>
@@ -22,14 +23,16 @@ class MemoryMapGraphItem : public MemoryVisualizationItem {
 
 public:
 
-	/*! \brief The constructor
+    /*!
+	 *  The constructor.
 	 *
-	 * \param memoryMap Pointer to the memory map to visualize
-	 * \param parent Pointer to the owner of this graphics item.
-	 *
-	*/
-	MemoryMapGraphItem(QSharedPointer<MemoryMap> memoryMap, QGraphicsItem* parent = 0);
-	
+	 *      @param [in] parentMemoryMap     The parent memory map of the memory remap.
+	 *      @param [in] memoryRemap         The memory remap to be visualized.
+	 *      @param [in] parent              Pointer to the owner of this graphics item.
+	 */
+	MemoryMapGraphItem(QSharedPointer<MemoryMap> parentMemoryMap, QSharedPointer<AbstractMemoryMap> memoryRemap,
+        QGraphicsItem* parent = 0);
+
 	//! \brief The destructor
 	virtual ~MemoryMapGraphItem();
 
@@ -74,8 +77,11 @@ public:
 
 protected:
 
-	//! \brief Pointer to the memory map that is shown
-	QSharedPointer<MemoryMap> memoryMap_;
+	//! Pointer to the memory remap that is shown
+    QSharedPointer<AbstractMemoryMap> memoryMap_;
+
+    //! Pointer to the parent of the shown memory remap.
+    QSharedPointer<MemoryMap> parentMemoryMap_;
 
 private:
 	

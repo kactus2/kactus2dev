@@ -136,6 +136,13 @@ public slots:
      */
     void changeAdressUnitBitsOnAddressBlocks();
 
+signals:
+
+    /*!
+     *  Informs of a change in address unit bits.
+     */
+    void addressUnitBitsChanged();
+
 private:
 	//! No copying
     MemoryRemapItem(const MemoryRemapItem& other);

@@ -66,7 +66,15 @@ expressionParser_(expressionParser)
 //-----------------------------------------------------------------------------
 MemoryRemapItem::~MemoryRemapItem()
 {
-
+    if (visualizer_)
+    {
+        QSharedPointer<MemoryRemap> transformedMemoryRemap = memoryRemap_.dynamicCast<MemoryRemap>();
+        if (transformedMemoryRemap)
+        {
+            delete visualizer_;
+            visualizer_ = NULL;
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -112,9 +120,11 @@ ItemEditor* MemoryRemapItem::editor()
         connect(editor_, SIGNAL(childAdded(int)), this, SLOT(onAddChild(int)), Qt::UniqueConnection);
         connect(editor_, SIGNAL(childRemoved(int)), this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
         connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
-
         connect(editor_, SIGNAL(addressUnitBitsChanged()),
             this, SLOT(changeAdressUnitBitsOnAddressBlocks()), Qt::UniqueConnection);
+
+        connect(editor_, SIGNAL(addressUnitBitsChanged()),
+            this, SIGNAL(addressUnitBitsChanged()), Qt::UniqueConnection);
 
         connectItemEditorToReferenceCounter();
     }
@@ -175,7 +185,7 @@ void MemoryRemapItem::setVisualizer( MemoryMapsVisualizer* visualizer )
 {
 	visualizer_ = visualizer;
 
-	graphItem_ = new MemoryMapGraphItem(parentMemoryMap_);
+	graphItem_ = new MemoryMapGraphItem(parentMemoryMap_, memoryRemap_);
 	visualizer_->addMemoryMapItem(graphItem_);
 	graphItem_->refresh();
 

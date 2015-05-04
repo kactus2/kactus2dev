@@ -12,7 +12,7 @@
 LocalMemoryMapGraphItem::LocalMemoryMapGraphItem(QSharedPointer<AddressSpace> addrSpace, 
 												 QSharedPointer<MemoryMap> localMemoryMap,
 												 QGraphicsItem* parent /*= 0*/ ):
-MemoryMapGraphItem(localMemoryMap, parent),
+MemoryMapGraphItem(localMemoryMap, localMemoryMap, parent),
 addrSpace_(addrSpace) {   
 }
 

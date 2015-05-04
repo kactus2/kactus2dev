@@ -21,9 +21,11 @@
 //-----------------------------------------------------------------------------
 // Function: MemoryMapGraphItem::MemoryMapGraphItem()
 //-----------------------------------------------------------------------------
-MemoryMapGraphItem::MemoryMapGraphItem(QSharedPointer<MemoryMap> memoryMap, QGraphicsItem* parent):
+MemoryMapGraphItem::MemoryMapGraphItem(QSharedPointer<MemoryMap> parentMemoryMap,
+    QSharedPointer<AbstractMemoryMap> memoryRemap, QGraphicsItem* parent /* = 0 */):
 MemoryVisualizationItem(parent),
-memoryMap_(memoryMap) 
+memoryMap_(memoryRemap),
+parentMemoryMap_(parentMemoryMap)
 {
 	Q_ASSERT(memoryMap_);
 	QBrush brush(KactusColors::MEM_MAP_COLOR);
@@ -57,7 +59,7 @@ void MemoryMapGraphItem::updateDisplay()
 
     // Set tooltip to show addresses in hexadecimals.
     setToolTip("<b>Name: </b>" + memoryMap_->getName() + "<br>" +
-        "<b>AUB: </b>" + QString::number(memoryMap_->getAddressUnitBits()) + "<br>" +
+        "<b>AUB: </b>" + QString::number(parentMemoryMap_->getAddressUnitBits()) + "<br>" +
         "<b>First address: </b>" + toHexString(getOffset()) + "<br>" +
         "<b>Last address: </b>" + toHexString(memoryMap_->getLastAddress()));
 }
@@ -83,7 +85,7 @@ int MemoryMapGraphItem::getBitWidth() const
 //-----------------------------------------------------------------------------
 unsigned int MemoryMapGraphItem::getAddressUnitSize() const 
 {
-	return memoryMap_->getAddressUnitBits();
+    return parentMemoryMap_->getAddressUnitBits();
 }
 
 //-----------------------------------------------------------------------------
