@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
   <head>
     <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
@@ -8,13 +8,41 @@
   <body>
     <h2>Register editor</h2>
     <p>
-      Register editor is used to edit the details of a single register
-      by assigning bit fields to a containing register. A bit field
-      may contain just one bit, the whole register or something in
-      between.
+      Register editor is used to edit the details of a single register by assigning bit fields to a containing
+      register. A bit field may contain just one bit, the whole register or something in between.
+      <br />The <b>name</b>, <b>display name</b> and a <b>description</b> contain identification information of a
+      register.
+      <br /><b>Offset</b> [AUB] specifies the location of the register from the start of the containing address
+        block, expressed as address unit bits (mandatory, can be given as an expression).
+      <br /><b>Size</b> defines the number of data bits the register contains. It must be less or equal to the
+      <i>width</i> of the address block (mandatory, can be given as an expression).
+      <br /><b>Dimension</b> assigns an unbounded dimension to the register. Its semantics are the same as the C
+        language standard for the layout of memory in multidimensional arrays (can be given as an expression).
+      <br /><b>Volatile</b>=true indicates that the register value may change without a write operation to it.
     </p>
     <p>
-      Field has a <b>name</b> and a textual
+      <b>Access</b> specifies the accessability of the register.
+    </p>
+    <ul>
+        <li><i>read-write</i>. Both read and write transactions may have an effect on this register.</li>
+        <li><i>read-only</i>. Only read transactions are allowed in this register.</li>
+        <li><i>write-only</i>. Only write transactions are allowed in this register.</li>
+        <li><i>read-writeOnce</i>. Both read and write transactions may have an effect on this register. Only the
+            first write transaction, after an event that caused the reset value of the register to be loaded, may
+            affet the contents of the register, and read transactions return a value related to the values in the
+            register.</li>
+        <li><i>writeOnce</i>. Only the first write transaction affects the contents of the register.</li>
+    </ul>
+    <p>
+      <b>Reset value</b> defines the register's value on reset. The number of bits must equal to register
+      size.
+      <br /><b>Reset mask</b> defines the bits of the register that have a known reset value. The number of bits
+      must equal to register size.
+    </p>
+    <h3>Fields table</h3>
+    <p>
+      The fields table enables the user to define the register fields.
+      A field has a <b>name</b> and a textual
       <b>description</b>. <b>Offset</b> describes the starting bit of
       the field within the containing register. <b>Width</b> specifies
       how many bits are included in the field. Name, offset, and width
@@ -28,11 +56,17 @@
       the possible values are:
     </p>
     <ul>
-      <li><i>read-write</i></li>
-      <li><i>read-only</i></li>
-      <li><i>write-only</i></li>
-      <li><i>read-writeOnce</i></li>
-      <li><i>writeOnce</i></li>
+        <li><i>read-write</i>. Both read and write transactions may have an effect on this field. Write
+            transactions may affect the contents of the field, and read transactions return a value related to
+            the field.</li>
+        <li><i>read-only</i>. A read transaction to this field returns a value related to the value in the field.
+            A write transaction to this field has undefined results.</li>
+        <li><i>write-only</i>. A write transaction to this address affects the contents of the field. A read
+            transaction to this field has undefined results.</li>
+        <li><i>read-writeOnce</i>. Both read and write transactions may have an effect on this field. Only the
+            first write transaction may affect the contents of the field, and read transactions return a value
+            related to the values in the field.</li>
+        <li><i>writeOnce</i>. Only the first write transaction affects the contents of this field.</li>
     </ul>
     <p>
     <b>Modified write value</b> describes how the data in the field is
@@ -41,57 +75,44 @@
     bitwise and field-wise set/clear/toggle is also possbile. The
     possible values are:
     </p>
-    <dl>
-      <dt> <i>oneToClear</i></dt>
-      <dd>- each written '1' bit will assign the corresponding bit to '0'.</dd>
-      <dt> <i>oneToSet</i></dt>
-      <dd>- each written '1' bit will assign the corresponding bit to '1'.</dd>
-      <dt><i>oneToToggle</i></dt>
-      <dd>- each written '1' bit will toggle the corresponding bit.</dd>
-      <dt><i>zeroToClear, zeroToSet, zeroToToggle</i></dt>
-      <dd>- similar to previous ones, except that written '0' bit triggers the action
-      <dt><i>clear</i></dt>
-      <dd>- each write operation will clear all bits in the field to '0'.</dd>
-      <dt><i>set</i></dt>
-      <dd>- each write operation will set all bits in the field to '1'.</dd>
-      <dt><i>modify</i></dt>
-      <dd>- indicates that after a write operation all bits in the field can be modified.</dd>
-      <dt><i>'&nbsp; ' (empty setting)</i></dt>
-      <dd>- indicates that the value written to a field is the value stored in the field. This is the default.</dd>
-    </dl>
-
-
+    <ul>
+      <li><i>oneToClear</i>. Each written '1' bit will assign the corresponding bit to '0'.</li>
+      <li><i>oneToSet</i>. Each written '1' bit will assign the corresponding bit to '1'.</li>
+      <li><i>oneToToggle</i>. Each written '1' bit will toggle the corresponding bit.</li>
+      <li><i>zeroToClear, zeroToSet, zeroToToggle</i>. Similar to previous ones, except that written '0' bit
+        triggers the action.</li>
+      <li><i>clear</i>. Each write operation will clear all bits in the field to '0'.</li>
+      <li><i>set</i>. Each write operation will set all bits in the field to '1'.</li>
+      <li><i>modify</i>. Indicates that after a write operation all bits in the field can be modified.</li>
+      <li><i>'&nbsp; ' (empty setting)</i>. Indicates that the value written to a field is the value stored in the
+        field. This is the default.</li>
+    </ul>
     <p>
-      <br><b>Read action</b> specifies if some action happens to the
+      <b>Read action</b> specifies if some action happens to the
       field after a read operation. By default the register is
       unmodified. the possible values are:
     </p>
-    <dl>
-      <dt><i>clear</i></dt>
-      <dd>- all bits in the field are cleared to '0' after a read operation.</dd>
-      <dt><i>set</i></dt>
-      <dd>- all bits in the field are set to '1' after a read operation.</dd>
-      <dt><i>modify</i></dt>
-      <dd>- indicates that the bits in the field are modified in some way after a read operation.</dd>
-      <dt><i>'&nbsp; ' (empty setting)</i></dt>
-      <dd>- indicates that field is not modified after a read operation. This is the default.</dd>				
-    </dl>
+    <ul>
+      <li><i>clear</i>. All bits in the field are cleared to '0' after a read operation.</li>
+      <li><i>set</i>. All bits in the field are set to '1' after a read operation.</li>
+      <li><i>modify</i>. Indicates that the bits in the field are modified in some way after a read operation.</li>
+      <li><i>'&nbsp; ' (empty setting)</i>. Indicates that field is not modified after a read operation. This is
+        the default.</li>
+    </ul>
     <p>
-      <br><b>Testable</b> specifies if the field is testable by an
+      <b>Testable</b> specifies if the field is testable by an
       automated register test. <b>Test constraint</b> specifies the
       constraints for the automated tests for the field, the possible
       values are:
     </p>
-    <dl>
-
-      <dt><i>unConstrained</i></dt>
-      <dd>- there are no constraints for the written or read data. This is the default setting.</dd>
-      <dt><i>restore</i></dt>
-      <dd>- the field's value must be restored to its original value before accessing another register.</dd>
-      <dt><i>writeAsRead</i></dt>
-      <dd>- the data written to a field must be same that was read previously from the field.</dd>
-      <dt><i>readOnly</i></dt>
-      <dd>- indicates that the field can only be read.</dd>				
-    </dl>
+    <ul>
+        <li><i>unConstrained</i>. There are no constrains for the written or read data. This is the default
+            setting.</li>
+        <li><i>restore</i>. The field's value must be restored to its original value before accessing another
+            register.</li>
+        <li><i>writeAsRead</i>. The data written to a field must be the same that was read previously from the
+            field.</li>
+        <li><i>readOnly</i>. Indicates that the field can only be read.</li>
+    </ul>
   </body>
 </html>

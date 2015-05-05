@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 	<head>
 	<meta http-equiv="Content-Type"content="text/html; charset=utf-8">
@@ -8,25 +8,104 @@
 	<body>
 		<h2>Field editor</h2>
 		<p>
-			The field editor is used to edit the details of a field. For example user may define enumerated
-			values that define the legal bit patterns of a field.
-		</p>
+			The field editor is used to edit the details of a field. For example user may define enumerated	values
+            that define the legal bit patterns of a field.
+            <br />The <b>name</b>, <b>display name</b> and the <b>description</b> contain identification
+            information of a register.
+            <br /><b>Offset</b> [bits] describes the starting bit of the field within the containing register
+              (mandatory, can be given as an expression).
+            <br /><b>Width</b> [bits] speficies how many bits are included in the field (mandatory, can be given
+              as an expression).
+            <br /><b>Is present</b> defines whether the enclosing elemment is present in the document (can be
+              given as an expression).
+            <br /><b>Volatile</b>=true indicates that the register may change its value without write operations.
+        </p>
+        <p>
+            <b>Access</b> specifies the accessability of the field. The possible values are:
+        </p>
+        <ul>
+            <li><i>read-write</i>. Both read and write transactions may have an effect on this field. Write
+                transactions may affect the contents of the field, and read transactions return a value related to
+                the field.</li>
+            <li><i>read-only</i>. A read transaction to this field returns a value related to the value in the
+                field. A write transaction to this field has undefined results.</li>
+            <li><i>write-only</i>. A write transaction to this address affects the contents of the field. A read
+                transaction to this field has undefined results.</li>
+            <li><i>read-writeOnce</i>. Both read and write transactions may have an effect on this field. Only the
+                first write transaction may affect the contents of the field, and read transactions return a value
+                related to the values in the field.</li>
+            <li><i>writeOnce</i>. Only the first write transaction affects the contents of this field.</li>
+        </ul>
+        <p>
+            <b>Modified write value</b> describes how the data in the field is manipulated on a write operation.
+            The basic operation without any setting is to store the written value 'as is'. Moreover, both bitwise
+            and field-wise set/clear/toggle is also possible. The possible values are:
+        </p>
+        <ul>
+            <li><i>oneToClear</i>. Each written '1' bit will assign the corresponding bit to '0'.</li>
+            <li><i>oneToSet</i>. Each written '1' bit will assign the corresponding bit to '1'.</li>
+            <li><i>oneToToggle</i>. Each written '1' bit will toggle the corresponding bit.</li>
+            <li><i>zeroToClear, zeroToSet, zeroToToggle</i>. Similar to previous ones, except that written '0' bit
+                triggers the action.</li>
+            <li><i>clear</i>. Each write operation will clear all bits in the field to '0'.</li>
+            <li><i>set</i>. Each write operation will set all bits in the field to '1'.</li>
+            <li><i>modify</i>. Indicates that after a write operation, all bits in the field can be modified.</li>
+            <li><i>'&nbsp; ' (empty setting)</i>. Indicates that the value written to a field is the value stored
+                in the field. This is the default value.</li>
+        </ul>
+        <p>
+            <b>Read action</b> specifies if some action happens to the field after a read operation. By default the
+                register is unmodified. The possible values are:
+        </p>
+        <ul>
+            <li><i>clear</i>. All bits in the field are cleared to '0' after a read operation.</li>
+            <li><i>set</i>. All bits in the field are set to '1' after a read operation.</li>
+            <li><i>modify</i>. Indicates that the bits of the field are modified in some way after a read
+                operation.</li>
+            <li><i>'&nbsp; ' (empty setting)</i>. Indicates that the field is not modified after a read operation.
+                This is the default.</li>
+        </ul>
+        <p>
+            <b>Testable</b> specifies if the field is testable by an automated register test.
+        </p>
+        <p>
+            <b>Test constraint</b> specifies the constaints for the automated tests for the field. The possible
+            values are:
+            <ul>
+                <li><i>unConstrained</i>. There are no constraints for the written or read data. This is the
+                    default setting.</li>
+                <li><i>Restore</i>. The fields value must be restored to its original value before accessing
+                    another register.
+                </li>
+                <li><i>WriteAsRead</i>. The data written to a field must be same that was read previously from
+                    the field</li>
+                <li><i>ReadOnly</i>. Indicates that the field can only be read.</li>
+            </ul>
+        </p>
+        <p>
+        	The <b>write value constraint</b>s are used to define what are the legal values user may write to a
+            field The possible values are:
+            <ul>
+                <li><i>No constraints</i>. Indicates that there are no constraints to values to be written.</li>
+                <li><i>Write as read</i>. Inidcates that only legal values to be written are the same that were
+                    previously read from the field.</li>
+                <li><i>Use enumerated values</i>. Indicates that the defined enumerated values are the only legal
+                    values that can be written.</li>
+                <li><i>Set minimum and maximum limits</i>. Indicates that the minimum and maximum limits can be set
+                    for the value written to the field.</li>
+            </ul>
+        </p>
+        <h3>Enumerations table</h3>
 		<p>
 			The enumerated values table enables user the define bit patterns that can be identified by a name. 
 			This can be used to define the legal bit patterns for a field or to define some default settings 
 			to help configuration of the field.
 		</p>
-		<p>
-			<dl>The write value constraints are used to define what are the legal values user may write to a field, the options are:
-				<dt><strong>No constraints</strong></dt>
-				<dd>- indicating that there are no constraints to values to be written.</dd>
-				<dt><strong>Write as read</strong></dt>
-				<dd>- indicating that only legal values to be written are the same that were previously read from the field.</dd>
-				<dt><strong>Use enumerated values</strong></dt>
-				<dd>- indicating that the defined enumerated values are the only legal values that can be written.</dd>
-				<dt><strong>Set minimum and maximum limits</strong></dt>
-				<dd>- indicating that user may set the minimum and maximum limits for the values written to the field.</dd>				
-			</dl>
-		</p>
+        <p>
+            Each enumeration contains a unique <b>name</b> of the enumeration (mandatory).
+            <br /><b>Value</b> defines the value to assign to the specified name (mandatory).
+            <br /><b>Usage</b> defines the software access condition under which this name value pair is valid.
+            Possible values are <i>read</i>, <i>write</i> and <i>read-write</i>.
+        </p>
 	</body>
 </html>

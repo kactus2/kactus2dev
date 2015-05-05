@@ -8,13 +8,35 @@
   <body>
     <h2>Address block editor</h2>
     <p>
-      Address block editor is used to edit the details of an address
-      block by defining registers to it. Each row in the editor
-      specifies a single register within the containing address block.
+      Address block editor is used to edit the details of an address block by defining registers to it. Each row
+      in the editor specifies a single register within the containing address block. The <b>name</b>,
+      <b>display name</b> and a <b>description</b> contain identification information of an address block.
+      <br /><b>Usage</b> specifies the usage of the address block (mandatory).
+      <br /><b>Base address</b> specifies the starting address for the address block, expressed as address unit
+        bits (mandatory, can be given as an expression).
+      <br /><b>Range</b> specifies the size of the block, expressed as address unit bits (mandatory, can be given
+        as an expression).
+      <br /><b>Width</b> is the data width in bits of a row in the address block (mandatory, can be given as an
+        expression).
     </p>
     <p>
-      Each register has a <b>name</b> and a textual
-      <b>description</b>. <br><b>Offset</b> specifies the location of
+        <b>Access</b> specifies the accessability of the block.
+    </p>
+    <ul>
+        <li><i>read-write</i>. Both read and write transactions may have an effect on this address block.</li>
+        <li><i>read-only</i>. Only read transactions are allowed in this register.</li>
+        <li><i>write-only</i>. Only write transactions are allowed in this register.</li>
+        <li><i>read-writeOnce</i>. Read actions and the first write action may have an effect on this address
+            block.</li>
+        <li><i>writeOnce</i>. Only the first write action affects the contents of this address block.</li>
+    </ul>
+    <p>
+        <b>Volatile</b>=true indicates that the stored value may change without the master's write operation.
+    </p>
+    <h3>Registers table</h3>
+    <p>
+      The register table enables the user to define registers for the address block. Each register has a
+      <b>name</b> and a textual <b>description</b>. <br><b>Offset</b> specifies the location of
       the register from the start of the containing address block
       expressed as number of addressing units. The actual address of
       the register is the sum of address block's base addr and
@@ -34,11 +56,14 @@
       possible values are:
     </p>
     <ul>
-      <li>Read-write</li>
-      <li>Read-only</li>
-      <li>Write-only</li>
-      <li>Read-writeOnce</li>
-      <li>writeOnce</li>
+      <li><i>read-write</i>. Both read and write transactions may have an effect on this register.</li>
+      <li><i>read-only</i>. Only read transactions are allowed in this register.</li>
+      <li><i>write-only</i>. Only write transactions are allowed in this register.</li>
+      <li><i>read-writeOnce</i>. Both read and write transactions may have an effect on this register. Only the
+          first write transaction, after an event that caused the reset value of the register to be loaded, may
+          affet the contents of the register, and read transactions return a value related to the values in the
+          register.</li>
+      <li><i>writeOnce</i>. Only the first write transaction affects the contents of the register.</li>
     </ul>
     <p>
       <b>Reset value</b> defines register's value on reset and

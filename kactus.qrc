@@ -81,8 +81,6 @@
       <file>common/graphics/naming-policy.png</file>
       <file>common/graphics/lock-on.png</file>
       <file>common/graphics/lock-off.png</file>
-      <file>common/graphics/expand.png</file>
-      <file>common/graphics/collapse.png</file>
       <file>common/graphics/traffic-light_green.png</file>
       <file>common/graphics/traffic-light_red.png</file>
       <file>common/graphics/traffic-light_yellow.png</file>

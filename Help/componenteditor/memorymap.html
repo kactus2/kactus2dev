@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
   <head>
     <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
@@ -8,39 +8,22 @@
   <body>
     <h2>Memory map editor</h2>
     <p>
-      Memory map editor can be used to edit the details of a <i>memory
-      map</i> Memory map is defined for a <i>slave interface</i>. It
-      defines what the masters can access in this component. Memory
-      map is hiearchical.
+      Memory map editor can be used to edit the details of a <i>memory map</i>. The <b>name</b>,
+      <b>display name</b> and a <b>description</b> contain identification information of a memory map.
+      <br />The <b>address unit bits</b> [AUB] defines the number of data bits each address increment of the memory
+      map contains.
+      <br /><b>Remap state</b> identifies the name of the remap state for which the optional memory map elements
+      are active. Memory maps are labeled with a default remap state, while memory remaps must be given a
+      remap state (mandatory).
+      <br />Memory map is defined for a <i>slave interface</i>. It defines what the masters can access in this
+      component. Memory map is hierarchical.
     </p>
-    <ul>
-      <li> slave port has memory map MM1
-	<ul>
-	  <li>address block A1
-	    <ul>
-	      <li>register R1, read/write...
-		<ul>
-		  <li>bit field f1, bits 7:0, command...</li>
-		  <li>bit field f2...</li>
-		</ul>
-	      </li>
-	      <li>register R2, write-only...</li>
-	      <li>register R3, read-only...</li>
-	    </ul>
-	  </li>
-	  <li>address block A2...
-	    <ul>
-	      <li>memory m1, 16KB, read/write </li>
-	    </ul>
-	  </li>
-	</ul>
-      </li>
-    </ul>
+    <h3>Address blocks table</h3>
     <p>
     <i>Address block</i> specifies a single contiguous block of
     memory, either a set of registers or a block of memory. (Moreover,
     IP-XACT allows defining <i>bank</i> or <i>subspaceMap</i>, but
-    they are not yet supportted by Kactus v2.1, March
+    they are not yet supportted by Kactus (v2.1, March
     2013). <i>Registers</i> are inside address block and each
     register can have <i>bit fields</i>. <br> Address block has 5
     mandatory parameters: usage, name, base address, range, and width.
@@ -77,11 +60,12 @@
       block. The possible values are:
     </p>
     <ul>
-      <li><i>Read-write</i></li>
-      <li><i>Read-only</i></li>
-      <li><i>Write-only</i></li>
-      <li><i>Read-writeOnce</i></li>
-      <li><i>writeOnce</i></li>
+        <li><i>read-write</i>. Both read and write transactions may have an effect on this address block.</li>
+        <li><i>read-only</i>. Only read transactions are allowed in this register.</li>
+        <li><i>write-only</i>. Only write transactions are allowed in this register.</li>
+        <li><i>read-writeOnce</i>. Read actions and the first write action may have an effect on this address
+            block.</li>
+        <li><i>writeOnce</i>. Only the first write action affects the contents of this address block.</li>
     </ul>
     <p>
       <b>Volatile</b>=true indicates that the stored value may
@@ -109,7 +93,8 @@
       accessed at once. Smaller accesses (e.g. 1 byte at a time) are
       also allowed. <b>Memory maps visualization</b> is shown on the
       right. User can expand and minimize parts of it by clicking the
-      plus (+) and minus (-) signs.<br>
+      expand arrow <img src="../images/triangle_arrow_right.png" alt="expand"> and
+      the minimize arrow <img src="../images/triangle_arrow_down.png" alt="minimize">.<br>
       <img src="../images/mem_map_visualization.png" alt="screen_cap_of_mem_map_visualization">
 
     </p>
