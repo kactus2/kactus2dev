@@ -200,8 +200,8 @@ QRectF VisualizerItem::minimumRect() const
 //-----------------------------------------------------------------------------
 // Function: reorganizeChildren()
 //-----------------------------------------------------------------------------
-void VisualizerItem::reorganizeChildren() {
-
+void VisualizerItem::reorganizeChildren()
+{
 	// the label position 
     setLeftTopPosition();
 	setLeftBottomPosition();
@@ -298,8 +298,8 @@ void VisualizerItem::resizeLabels()
         rightBottomText_.x() + rightBottomText_.boundingRect().width());
     const unsigned int margin = VisualizerItem::CORNER_INDENTATION;
 
-    bool hasLeftText = !leftTopText_.text().size() == 0 || !leftBottomText_.text().size() == 0;
-    bool hasRightText = !rightTopText_.text().size() == 0 || !rightBottomText_.text().size() == 0;
+    bool hasLeftText = leftTopText_.text().size() != 0 || leftBottomText_.text().size() != 0;
+    bool hasRightText = rightTopText_.text().size() != 0 || rightBottomText_.text().size() != 0;
     
     // Set size for right text(s).
     if (hasRightText)
@@ -415,8 +415,8 @@ QString VisualizerItem::clipText(QString const& text, int maxChars) const
     {
         return "";
     }       
-    else if (text.size() > maxChars) {    
- 
+    else if (text.size() > maxChars)
+    {    
         QString chopped(text);
         chopped.resize(maxChars - 3);
 

@@ -165,7 +165,8 @@ ItemVisualizer* ComponentEditorRegisterItem::visualizer()
 void ComponentEditorRegisterItem::setVisualizer(MemoryMapsVisualizer* visualizer)
 {
 	visualizer_ = visualizer;
-    
+    connect(visualizer_, SIGNAL(displayed()), this, SLOT(updateGraphics()), Qt::UniqueConnection);
+
     resizeGraphicsToCurrentDimensionSize();
 	
 	// update the visualizers for field items
@@ -179,8 +180,6 @@ void ComponentEditorRegisterItem::setVisualizer(MemoryMapsVisualizer* visualizer
     {
         registerDimension->refresh();
     }
-
-    //connect(visualizer_, SIGNAL(displayed()), this, SLOT(updateGraphics()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -203,18 +202,12 @@ QGraphicsItem* ComponentEditorRegisterItem::getGraphicsItem()
 //-----------------------------------------------------------------------------
 void ComponentEditorRegisterItem::updateGraphics()
 {
-    int oldDimension = registerDimensions_.count();
     resizeGraphicsToCurrentDimensionSize();
 
 	foreach (RegisterGraphItem* registerDimension, registerDimensions_)
     {
 		registerDimension->refresh();
 	}
-
-    if (oldDimension != registerDimensions_.count())
-    {
-        registerDimensions_.first()->dimensionChanged();
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -238,8 +231,6 @@ void ComponentEditorRegisterItem::removeGraphicsItem()
 		delete registerDimension;
 		registerDimension = 0;
 	}
-
-    parentItem->refresh();
 }
 
 //-----------------------------------------------------------------------------

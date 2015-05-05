@@ -135,6 +135,9 @@ void ComponentEditorAddrBlockItem::createChild( int index )
 			regItem->setVisualizer(visualizer_);
 		}
 
+        updateGraphics();
+        parent()->updateGraphics();
+
 		childItems_.insert(index, regItem);
 	}
 }

@@ -198,10 +198,7 @@ void MemoryRemapItem::setVisualizer( MemoryMapsVisualizer* visualizer )
 		addrItem->setVisualizer(visualizer_);
 	}
 
-    updateGraphics();
-
-	connect(graphItem_, SIGNAL(selectEditor()),
-		this, SLOT(onSelectRequest()), Qt::UniqueConnection);
+	connect(graphItem_, SIGNAL(selectEditor()),	this, SLOT(onSelectRequest()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -237,7 +234,7 @@ void MemoryRemapItem::removeGraphicsItem()
 
         // delete the graph item
         delete graphItem_;
-        graphItem_ = NULL;
+        graphItem_ = 0;
     }
 }
 

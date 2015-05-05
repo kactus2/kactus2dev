@@ -27,7 +27,8 @@
 MemoryMapsVisualizer::MemoryMapsVisualizer(QWidget *parent):
 ItemVisualizer(parent),
 view_(new MemoryMapView(this)),
-scene_(new MemoryMapScene(this))
+scene_(new MemoryMapScene(this)),
+memGraphItems_()
 {
 	// display a label on top the table
 	SummaryLabel* visualizationLabel = new SummaryLabel(tr("Memory maps visualization"), this);
@@ -53,6 +54,8 @@ MemoryMapsVisualizer::~MemoryMapsVisualizer()
 //-----------------------------------------------------------------------------
 void MemoryMapsVisualizer::addMemoryMapItem( MemoryMapGraphItem* memMapItem ) 
 {
+    memGraphItems_.append(memMapItem);
+
 	scene_->addMemGraphItem(memMapItem);
 
 	QPointF position = memMapItem->pos();
@@ -64,6 +67,8 @@ void MemoryMapsVisualizer::addMemoryMapItem( MemoryMapGraphItem* memMapItem )
 //-----------------------------------------------------------------------------
 void MemoryMapsVisualizer::removeMemoryMapItem( MemoryMapGraphItem* memMapItem )
 {
+    memGraphItems_.removeAll(memMapItem);
+
 	scene_->removeMemGraphItem(memMapItem);
 }
 
@@ -90,4 +95,10 @@ void MemoryMapsVisualizer::showEvent(QShowEvent* event)
 {
     QWidget::showEvent(event);
     emit displayed();
+
+    foreach (MemoryMapGraphItem* memoryMap, memGraphItems_)
+    {
+        memoryMap->recursiveRefresh();
+    }
+    scene_->rePosition();
 }

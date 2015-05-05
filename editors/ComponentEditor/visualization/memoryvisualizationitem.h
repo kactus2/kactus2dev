@@ -150,6 +150,17 @@ public:
      *      @return True, if the item is conflicted, otherwise false.
      */
     bool isConflicted() const;
+   
+    /*! Set new positions for child items.
+	 * 
+	 * The child items are organized in the order of their offset.
+	*/
+	virtual void reorganizeChildren();
+
+public slots:
+
+    //! Refresh the item and all the sub items.
+    virtual void recursiveRefresh();
 
 signals:
 
@@ -158,18 +169,18 @@ signals:
 
 protected slots:
 
-    /*! Set new positions for child items.
-	 * 
-	 * The child items are organized in the order of their offset.
-	*/
-	virtual void reorganizeChildren();
+    
+    /*!
+     *  Repositions the child items within this item.
+     */
+    virtual void repositionChildren();
 
 protected:
    
     //! Shows the expand/collapse icon if the item has any children. Otherwise the icon is hidden.
     void showExpandIconIfHasChildren();
 
-    //! Update the offsets of the child items in the map.
+    //! Update the offsets of the child items in the map and fills the empty gaps between them..
     virtual void updateChildMap();
         
     /*!
@@ -178,11 +189,6 @@ protected:
      *      @return True, if the repositioning is required.
      */
     bool mustRepositionChildren();
-
-    /*!
-     *  Repositions the child items and fills the empty gaps between them.
-     */
-    virtual void repositionChildren();
  
 	//! Handler for mouse press events
 	virtual void mousePressEvent(QGraphicsSceneMouseEvent* event);
@@ -276,22 +282,20 @@ private:
      *
      *      @param [in] offset          The offset of the free memory slot.
      *      @param [in] lastAddress     The last address of the free memory slot.
-     *      @param [in] yCoordinate     The y-coordinate for the memory slot item.
      *
      *      @return The created child item.
      */
-    MemoryGapItem* createMemoryGap(quint64 offset, quint64 lastAddress, qreal yCoordinate);
+    MemoryGapItem* createMemoryGap(quint64 offset, quint64 lastAddress);
     
     /*!
      *  Creates a new child for representing an overlapping memory slot.
      *
      *      @param [in] offset          The offset of the overlapping memory slot.
      *      @param [in] lastAddress     The last address of the overlapping memory slot.
-     *      @param [in] yCoordinate     The y-coordinate for the overlapping memory slot item.
      *
      *      @return The created child item.
      */
-    MemoryGapItem* createConflictItem(qint64 offset, qint64 lastAddress, qreal yCoordinate);
+    MemoryGapItem* createConflictItem(qint64 offset, qint64 lastAddress);
 
     //! comparison function for two equal offsets.
     static bool compareItems(const MemoryVisualizationItem* s1, const MemoryVisualizationItem* s2);

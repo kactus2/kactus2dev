@@ -98,7 +98,7 @@ QString ComponentEditorMemMapsItem::getTooltip() const {
 }
 
 //-----------------------------------------------------------------------------
-// Function: componenteditormemmapsitem::()
+// Function: componenteditormemmapsitem::createChild()
 //-----------------------------------------------------------------------------
 void ComponentEditorMemMapsItem::createChild( int index )
 {

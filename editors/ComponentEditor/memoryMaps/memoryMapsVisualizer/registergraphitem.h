@@ -45,12 +45,6 @@ public:
 
     //! Updates the labels and tooltip for the item.
    virtual  void updateDisplay();
-    
-	/*! Add a child visualization item for this item.
-	 *
-	 *      @param [in] childItem   Pointer to the child to add.
-	*/
-	virtual void addChild(MemoryVisualizationItem* childItem);
 
 	//! Remove the item.
     virtual void removeChild(MemoryVisualizationItem* childItem );
@@ -91,11 +85,6 @@ public:
      *      @param [in] index   The dimension index to set.
      */
     void setDimensionIndex(unsigned int index);
-        
-    /*!
-     *  Called to notify the register item that the dimension of the register has changed..
-     */
-    void dimensionChanged();
 
 protected:
 

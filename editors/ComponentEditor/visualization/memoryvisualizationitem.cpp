@@ -59,8 +59,14 @@ void MemoryVisualizationItem::addChild(MemoryVisualizationItem* childItem)
     childItem->setWidth(childWidth_);
     childItem->setVisible(isExpanded());
 
+    reorganizeChildren();
+    emit expandStateChanged();
+
     connect(childItem, SIGNAL(expandStateChanged()), this, SLOT(reorganizeChildren()), Qt::UniqueConnection);
     connect(childItem, SIGNAL(expandStateChanged()), this, SIGNAL(expandStateChanged()), Qt::UniqueConnection);
+
+    connect(childItem, SIGNAL(destroyed(QObject*)), this, SLOT(reorganizeChildren()), Qt::UniqueConnection);
+    connect(childItem, SIGNAL(destroyed(QObject*)), this, SIGNAL(expandStateChanged()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -204,10 +210,9 @@ void MemoryVisualizationItem::reorganizeChildren()
 {
     showExpandIconIfHasChildren();
 
-   if (mustRepositionChildren())
+    if (mustRepositionChildren())
     {
         updateChildMap();
-
         repositionChildren();
     }
 
@@ -266,6 +271,66 @@ void MemoryVisualizationItem::updateChildMap()
     }
 
     childItems_ = updatedMap;
+
+    quint64 lastAddressInUse = getOffset();
+
+    MemoryGapItem* previousOverlap = 0;
+    MemoryVisualizationItem* previous = 0;
+    quint64 previousLastAddress = lastAddressInUse;
+    foreach (MemoryVisualizationItem* current, childItems_)
+    {
+        quint64 currentOffset = current->getOffset();
+        quint64 currentLastAddress = current->getLastAddress();
+        if (emptySpaceBeforeFirstChild(current))
+        {
+            createMemoryGap(getOffset(), currentOffset - 1);
+        }  
+        else if (emptySpaceBeforeChild(current, lastAddressInUse))
+        {
+            createMemoryGap(lastAddressInUse + 1, currentOffset - 1);
+        }
+        else if (childrenOverlap(current, previous))
+        {
+            current->setConflicted(true);
+            previous->setConflicted(true);
+
+            if (currentLastAddress > previousLastAddress)
+            {
+                current->setDisplayOffset(previousLastAddress + 1);
+
+                previous->setDisplayLastAddress(qMin(previousLastAddress, currentOffset - 1));
+
+                // If previous block is completely overlapped by the preceding block and this block.
+                if (previousOverlap && previousOverlap->getLastAddress() + 1 >= currentOffset)
+                {
+                    previous->setCompleteOverlap();
+                }
+
+                previousOverlap = createConflictItem(currentOffset, previousLastAddress);
+            }
+            else
+            {
+                quint64 nonOverlappingOffset = qMax(currentOffset, previous->getDisplayOffset());
+                current->setDisplayOffset(nonOverlappingOffset);
+            }
+        }
+        else if (previous && currentOffset <= lastAddressInUse)
+        {
+            current->setConflicted(true);
+        }
+
+
+        lastAddressInUse = qMax(currentLastAddress, lastAddressInUse);
+
+        previous = current;
+        previousLastAddress = currentLastAddress;
+    }
+
+    // Fill in any addresses left between children and the end of this item.
+    if (getLastAddress() > lastAddressInUse)
+    {
+        createMemoryGap(lastAddressInUse + 1, getLastAddress());
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -281,67 +346,26 @@ bool MemoryVisualizationItem::mustRepositionChildren()
 //-----------------------------------------------------------------------------
 void MemoryVisualizationItem::repositionChildren()
 {
-    quint64 lastAddressInUse = getOffset();
     qreal yCoordinate = rect().bottom();
 
-    MemoryGapItem* previousOverlap = 0;
-    MemoryVisualizationItem* previous = 0;
     foreach (MemoryVisualizationItem* current, childItems_)
-    {
-        if (emptySpaceBeforeFirstChild(current))
-        {
-            createMemoryGap(getOffset(), current->getOffset() - 1, yCoordinate);
-            yCoordinate += VisualizerItem::DEFAULT_HEIGHT;
-        }  
-        else if (emptySpaceBeforeChild(current, lastAddressInUse))
-        {
-            createMemoryGap(lastAddressInUse + 1, current->getOffset() - 1, yCoordinate);
-            yCoordinate += VisualizerItem::DEFAULT_HEIGHT;
-        }
-        else if (childrenOverlap(current, previous))
-        {
-            current->setConflicted(true);
-            previous->setConflicted(true);
-
-            if (current->getLastAddress() > previous->getLastAddress())
-            {
-                current->setDisplayOffset(previous->getLastAddress() + 1);
-
-                previous->setDisplayLastAddress(qMin(previous->getLastAddress(), current->getOffset() - 1));
-
-                // If previous block is completely overlapped by the preceding block and this block.
-                if (previousOverlap && previousOverlap->getLastAddress() + 1 >= current->getOffset())
-                {
-                    previous->setCompleteOverlap();
-                }
-
-                previousOverlap = createConflictItem(current->getOffset(), previous->getLastAddress(), yCoordinate);
-                yCoordinate += VisualizerItem::DEFAULT_HEIGHT;
-            }
-            else
-            {
-                quint64 nonOverlappingOffset = qMax(current->getOffset(), previous->getDisplayOffset());
-                current->setDisplayOffset(nonOverlappingOffset);
-            }
-        }
-        else if (previous && current->getOffset() <= lastAddressInUse)
-        {
-            current->setConflicted(true);
-        }
-
+    {     
         current->setPos(MemoryVisualizationItem::CHILD_INDENTATION, yCoordinate);
         yCoordinate = mapRectFromItem(current, current->itemTotalRect()).bottom();
-
-        lastAddressInUse = qMax(current->getLastAddress(), lastAddressInUse);
-
-        previous = current;
     }
+}
 
-    // Fill in any addresses left between children and the end of this item.
-    if (getLastAddress() > lastAddressInUse)
+//-----------------------------------------------------------------------------
+// Function: MemoryVisualizationItem::recursiveRefresh()
+//-----------------------------------------------------------------------------
+void MemoryVisualizationItem::recursiveRefresh()
+{
+    foreach (MemoryVisualizationItem* child, childItems_.values())
     {
-        createMemoryGap(lastAddressInUse + 1, getLastAddress(), yCoordinate);
+        child->recursiveRefresh();
     }
+
+    refresh();
 }
 
 //-----------------------------------------------------------------------------
@@ -430,15 +454,15 @@ bool MemoryVisualizationItem::childrenOverlap(MemoryVisualizationItem* current, 
 //-----------------------------------------------------------------------------
 // Function: MemoryVisualizationItem::createConflictItem()
 //-----------------------------------------------------------------------------
-MemoryGapItem* MemoryVisualizationItem::createConflictItem(qint64 offset, qint64 lastAddress, qreal yCoordinate)
+MemoryGapItem* MemoryVisualizationItem::createConflictItem(qint64 offset, qint64 lastAddress)
 {
     MemoryGapItem* gap = new MemoryGapItem(this);
     gap->setWidth(childWidth_);
     gap->setConflicted(true);
     gap->setName("conflicted");
     gap->setStartAddress(offset);
-    gap->setEndAddress(lastAddress);                     
-    gap->setPos(CHILD_INDENTATION, yCoordinate);
+    gap->setEndAddress(lastAddress);               
+    gap->setVisible(isExpanded());
 
     childItems_.insert(gap->getOffset(), gap);
     return gap;
@@ -447,13 +471,13 @@ MemoryGapItem* MemoryVisualizationItem::createConflictItem(qint64 offset, qint64
 //-----------------------------------------------------------------------------
 // Function: MemoryVisualizationItem::createMemoryGap()
 //-----------------------------------------------------------------------------
-MemoryGapItem* MemoryVisualizationItem::createMemoryGap(quint64 offset, quint64 lastAddress, qreal yCoordinate)
+MemoryGapItem* MemoryVisualizationItem::createMemoryGap(quint64 offset, quint64 lastAddress)
 {
     MemoryGapItem* gap = new MemoryGapItem(this);
     gap->setWidth(childWidth_);
     gap->setStartAddress(offset);
     gap->setEndAddress(lastAddress);
-    gap->setPos(CHILD_INDENTATION, yCoordinate);
+    gap->setVisible(isExpanded());
 
     childItems_.insert(gap->getOffset(), gap);
     return gap;

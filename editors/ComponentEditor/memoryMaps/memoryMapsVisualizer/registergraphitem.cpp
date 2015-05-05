@@ -72,23 +72,18 @@ void RegisterGraphItem::updateDisplay()
         name.append("[" + QString::number(dimensionIndex_) + "]");
     }
 
+    quint64 offset = getOffset();
+    quint64 lastAddress = getLastAddress();
+
     setName(name);
-    setDisplayOffset(getOffset());
-    setDisplayLastAddress(getLastAddress());
+    setDisplayOffset(offset);
+    setDisplayLastAddress(lastAddress);
 
     // Set tooltip to show addresses in hexadecimals.
     setToolTip("<b>Name: </b>" + register_->getName() + "<br>" +
-        "<b>First address: </b>" + toHexString(getOffset()) + "<br>" +
-        "<b>Last address: </b>" + toHexString(getLastAddress()) + "<br>" +
+        "<b>First address: </b>" + toHexString(offset) + "<br>" +
+        "<b>Last address: </b>" + toHexString(lastAddress) + "<br>" +
         "<b>Size [bits]: </b>" + QString::number(register_->getSize()));
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterGraphItem::addChild()
-//-----------------------------------------------------------------------------
-void RegisterGraphItem::addChild(MemoryVisualizationItem* childItem)
-{
-    MemoryVisualizationItem::addChild(childItem);
 }
 
 //-----------------------------------------------------------------------------
@@ -124,7 +119,7 @@ quint64 RegisterGraphItem::getOffset() const
 //-----------------------------------------------------------------------------
 quint64 RegisterGraphItem::getLastAddress() const
 {
-    quint64 size =  getSizeInAUB();
+    quint64 size = getSizeInAUB();
 
     if (size == 0)
     {
@@ -172,14 +167,6 @@ void RegisterGraphItem::setWidth(qreal width)
 void RegisterGraphItem::setDimensionIndex(unsigned int index)
 {
     dimensionIndex_ = index;
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterGraphItem::dimensionChanged()
-//-----------------------------------------------------------------------------
-void RegisterGraphItem::dimensionChanged()
-{
-    emit expandStateChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -235,7 +222,6 @@ void RegisterGraphItem::updateChildMap()
 //-----------------------------------------------------------------------------
 void RegisterGraphItem::repositionChildren()
 {
-    // The offset where the previous block starts.
     quint64 lastBitIndexInUse = register_->getMSB() + 1;
     MemoryVisualizationItem* previous = 0;
 

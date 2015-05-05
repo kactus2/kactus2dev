@@ -610,7 +610,7 @@ void tst_MemoryMapGraphItem::testConsecutiveBlocksInsideThird()
 //-----------------------------------------------------------------------------
 MemoryMapGraphItem* tst_MemoryMapGraphItem::createMemoryMapItem(QSharedPointer<MemoryMap> memoryMap)
 {
-    MemoryMapGraphItem* memoryMapItem = new MemoryMapGraphItem(memoryMap);
+    MemoryMapGraphItem* memoryMapItem = new MemoryMapGraphItem(memoryMap, memoryMap, 0);
     memoryMapItem->refresh();
 
     return memoryMapItem;

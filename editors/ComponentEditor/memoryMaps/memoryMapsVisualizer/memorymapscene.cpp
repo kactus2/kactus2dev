@@ -118,7 +118,8 @@ void MemoryMapScene::rePosition()
 //-----------------------------------------------------------------------------
 void MemoryMapScene::setWidth(int width)
 {
-    if (width > VisualizerItem::DEFAULT_WIDTH)
+    int newWidth = width - MemoryVisualizationItem::CHILD_INDENTATION;
+    if (width > VisualizerItem::DEFAULT_WIDTH && width_ != newWidth)
     {
         width_ = width - MemoryVisualizationItem::CHILD_INDENTATION;        
        

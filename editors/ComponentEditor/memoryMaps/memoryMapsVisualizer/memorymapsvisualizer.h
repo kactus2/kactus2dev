@@ -86,6 +86,9 @@ private:
 
 	//! The scene that contains the memory map items.
 	MemoryMapScene* scene_;
+
+    //! Contains the graph items for memory maps.
+    QList<MemoryMapGraphItem*> memGraphItems_;
 };
 
 #endif // MEMORYMAPSVISUALIZER_H
