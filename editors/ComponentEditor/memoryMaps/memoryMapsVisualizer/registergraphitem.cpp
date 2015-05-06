@@ -30,7 +30,7 @@
 // Function: RegisterGraphItem::RegisterGraphItem()
 //-----------------------------------------------------------------------------
 RegisterGraphItem::RegisterGraphItem(QSharedPointer<Register> reg,
-    QSharedPointer<ExpressionParser> expressionParser,QGraphicsItem* parent):
+    QSharedPointer<ExpressionParser> expressionParser, QGraphicsItem* parent):
 MemoryVisualizationItem(parent),
 register_(reg),
 dimensionIndex_(0),
@@ -195,6 +195,8 @@ void RegisterGraphItem::updateChildMap()
         item->setDisplayOffset(item->getLastAddress());
         item->setDisplayLastAddress(item->getOffset());
 
+        item->setVisible(isExpanded() && item->isPresent());
+
         newMap.insertMulti(item->getLastAddress(), item);
     }
 
@@ -233,31 +235,34 @@ void RegisterGraphItem::repositionChildren()
     { 
         MemoryVisualizationItem* current = i.value();
 
-        // if there is a gap between the MSB of the register and the last item.
-        if (emptySpaceBeforeLeftmostChild(current))
+        if (current->isPresent())
         {
-            createMemoryGap(current->getOffset() + current->getBitWidth(), register_->getMSB());
-        }
-        else if (emptySpaceBeforeChild(current, lastBitIndexInUse))
-        {
-            createMemoryGap(current->getLastAddress() + 1, lastBitIndexInUse - 1);
-        }
+            // if there is a gap between the MSB of the register and the last item.
+            if (emptySpaceBeforeLeftmostChild(current))
+            {
+                createMemoryGap(current->getOffset() + current->getBitWidth(), register_->getMSB());
+            }
+            else if (emptySpaceBeforeChild(current, lastBitIndexInUse))
+            {
+                createMemoryGap(current->getLastAddress() + 1, lastBitIndexInUse - 1);
+            }
 
-        if (childrenOverlap(current, previous))
-        {
-            current->setConflicted(true);
-            previous->setConflicted(true);
-        }
-        else if (current->getLastAddress() >= lastBitIndexInUse)
-        {
-            current->setConflicted(true);
-        }
+            if (childrenOverlap(current, previous))
+            {
+                current->setConflicted(true);
+                previous->setConflicted(true);
+            }
+            else if (current->getLastAddress() >= lastBitIndexInUse)
+            {
+                current->setConflicted(true);
+            }
 
-        current->setPos(findPositionFor(current));
-        current->setWidth(findWidthFor(current));
+            current->setPos(findPositionFor(current));
+            current->setWidth(findWidthFor(current));
 
-        lastBitIndexInUse = qMin(current->getOffset(), lastBitIndexInUse);
-        previous = current;
+            lastBitIndexInUse = qMin(current->getOffset(), lastBitIndexInUse);
+            previous = current;
+        }
     }
 
     if (previous && lastBitIndexInUse > 0)

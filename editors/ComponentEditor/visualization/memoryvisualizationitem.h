@@ -157,6 +157,13 @@ public:
 	*/
 	virtual void reorganizeChildren();
 
+    /*!
+     *  Checks if the item is to be used in the visualization.
+     *
+     *      @return True, if the item should be used, otherwise false.
+     */
+    virtual bool isPresent() const;
+
 public slots:
 
     //! Refresh the item and all the sub items.

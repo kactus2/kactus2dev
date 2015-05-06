@@ -13,15 +13,19 @@
 
 #include <common/KactusColors.h>
 
+#include <editors/ComponentEditor/common/ExpressionParser.h>
+
 #include <QBrush>
 #include <QColor>
 
 //-----------------------------------------------------------------------------
 // Function: FieldGraphItem::FieldGraphItem()
 //-----------------------------------------------------------------------------
-FieldGraphItem::FieldGraphItem( QSharedPointer<Field> field, QGraphicsItem* parent):
+FieldGraphItem::FieldGraphItem( QSharedPointer<Field> field, QSharedPointer<ExpressionParser> expressionParser,
+    QGraphicsItem* parent):
 MemoryVisualizationItem(parent),
-    field_(field)
+    field_(field),
+    expressionParser_(expressionParser)
 {
 	Q_ASSERT(field_);
 
@@ -60,13 +64,17 @@ void FieldGraphItem::refresh()
 void FieldGraphItem::updateDisplay()
 {
     setName(field_->getName());
-    setLeftTopCorner(QString::number(field_->getMSB()));
-    setRightTopCorner(QString::number(field_->getBitOffset()));
 
-    setDisplayOffset(field_->getMSB());
-    setDisplayLastAddress(field_->getBitOffset());
-    setToolTip("<b>" + getName() + "</b> [" + QString::number(field_->getMSB()) + ".." + 
-        QString::number(field_->getBitOffset()) + "]");
+    quint64 leftBound = getLastAddress();
+    quint64 rightBound = getOffset();
+
+    setLeftTopCorner(QString::number(leftBound));
+    setRightTopCorner(QString::number(rightBound));
+
+    setDisplayOffset(leftBound);
+    setDisplayLastAddress(rightBound);
+    setToolTip("<b>" + getName() + "</b> [" + QString::number(leftBound) + ".." + 
+        QString::number(rightBound) + "]");
 }
 
 //-----------------------------------------------------------------------------
@@ -74,7 +82,7 @@ void FieldGraphItem::updateDisplay()
 //-----------------------------------------------------------------------------
 quint64 FieldGraphItem::getOffset() const
 {
-	return field_->getBitOffset();
+	return expressionParser_->parseExpression(field_->getBitOffsetExpression()).toUInt();
 }
 
 //-----------------------------------------------------------------------------
@@ -82,7 +90,7 @@ quint64 FieldGraphItem::getOffset() const
 //-----------------------------------------------------------------------------
 int FieldGraphItem::getBitWidth() const
 {
-	return field_->getBitWidth();
+	return expressionParser_->parseExpression(field_->getBitWidthExpression()).toInt();
 }
 
 //-----------------------------------------------------------------------------
@@ -106,7 +114,14 @@ void FieldGraphItem::setWidth(qreal width)
 //-----------------------------------------------------------------------------
 quint64 FieldGraphItem::getLastAddress() const
 {
-	return field_->getMSB();
+    const int MSB = getOffset() + getBitWidth();
+
+    if (MSB == 0)
+    {
+        return 0;
+    }
+
+    return MSB -1;
 }
 
 //-----------------------------------------------------------------------------
@@ -141,4 +156,12 @@ void FieldGraphItem::setConflicted(bool conflicted)
     {
         setOpacity(1);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldGraphItem::isPresent()
+//-----------------------------------------------------------------------------
+bool FieldGraphItem::isPresent() const
+{
+    return expressionParser_->parseExpression(field_->getIsPresentExpression()) == "1";
 }

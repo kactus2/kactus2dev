@@ -65,6 +65,8 @@ private slots:
 
     void testExpressions();
 
+    void testNonPresentField();
+
 private:
     void expandItem(RegisterGraphItem* registerItem);
 
@@ -73,6 +75,7 @@ private:
     FieldGraphItem* createFieldItem(QString name, unsigned int offset, unsigned int bitWidth, RegisterGraphItem* parentRegister);
 
     QList<MemoryGapItem*> findMemoryGaps(RegisterGraphItem* memoryMapItem);
+   
 };
 
 //-----------------------------------------------------------------------------
@@ -614,6 +617,46 @@ void tst_RegisterGraphItem::testExpressions()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_RegisterGraphItem::testNonPresentField()
+//-----------------------------------------------------------------------------
+void tst_RegisterGraphItem::testNonPresentField()
+{
+    RegisterGraphItem* registerItem = createRegisterItem();
+
+    QSharedPointer<Field> nonPresentField(new Field());
+    nonPresentField->setName("invisibleField");
+    nonPresentField->setBitOffset(2);
+    nonPresentField->setBitWidth(2);
+    nonPresentField->setIsPresentExpression("0");
+
+    QSharedPointer<ExpressionParser> expressionParser(new SystemVerilogExpressionParser());
+
+    FieldGraphItem* nonPresentItem = new FieldGraphItem(nonPresentField, expressionParser, registerItem);
+    registerItem->addChild(nonPresentItem);
+
+    FieldGraphItem* presentItem = createFieldItem("visibleField", 1, 3, registerItem);
+
+    expandItem(registerItem);
+    
+    QCOMPARE(nonPresentItem->isVisible(), false);
+
+    QCOMPARE(presentItem->isConflicted(), false);
+
+    QList<MemoryGapItem*> reservedSpaces = findMemoryGaps(registerItem);
+
+    QCOMPARE(reservedSpaces.size(), 2);
+    MemoryGapItem* reservedMSBs = reservedSpaces.first();
+    QCOMPARE(reservedMSBs->getDisplayOffset(), quint64(7));
+    QCOMPARE(reservedMSBs->getDisplayLastAddress(), quint64(4));
+
+    MemoryGapItem* reservedLSB = reservedSpaces.last();
+    QCOMPARE(reservedLSB->getDisplayOffset(), quint64(0));
+    QCOMPARE(reservedLSB->getDisplayLastAddress(), quint64(0));
+
+    delete registerItem->parentItem();
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_MemoryMapGraphItem::expandItem()
 //-----------------------------------------------------------------------------
 void tst_RegisterGraphItem::expandItem(RegisterGraphItem* registerItem)
@@ -681,7 +724,9 @@ FieldGraphItem* tst_RegisterGraphItem::createFieldItem(QString name, unsigned in
     field->setBitOffset(offset);
     field->setBitWidth(bitWidth);
     
-    FieldGraphItem* fieldItem = new FieldGraphItem(field, parentRegister);
+    QSharedPointer<ExpressionParser> expressionParser(new SystemVerilogExpressionParser());
+
+    FieldGraphItem* fieldItem = new FieldGraphItem(field, expressionParser, parentRegister);
     parentRegister->addChild(fieldItem);
 
     return fieldItem;

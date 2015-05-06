@@ -220,6 +220,14 @@ void MemoryVisualizationItem::reorganizeChildren()
 }
 
 //-----------------------------------------------------------------------------
+// Function: MemoryVisualizationItem::isPresent()
+//-----------------------------------------------------------------------------
+bool MemoryVisualizationItem::isPresent() const
+{
+    return true;
+}
+
+//-----------------------------------------------------------------------------
 // Function: MemoryVisualizationItem::showExpandIconIfHasChildren()
 //-----------------------------------------------------------------------------
 void MemoryVisualizationItem::showExpandIconIfHasChildren()
@@ -247,7 +255,7 @@ void MemoryVisualizationItem::updateChildMap()
     quint64 lastAvailableAddress = getLastAddress();
     foreach (MemoryVisualizationItem* item, childItems_)
     {       
-        item->updateDisplay();
+        //item->updateDisplay();
         item->setConflicted(item->getLastAddress() > lastAvailableAddress);
 
         updatedMap.insertMulti(item->getOffset(), item);

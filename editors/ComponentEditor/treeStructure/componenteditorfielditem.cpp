@@ -1,16 +1,23 @@
-/* 
- *  	Created on: 28.8.2012
- *      Author: Antti Kamppi
- * 		filename: componenteditorfielditem.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: componenteditorfielditem.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 28.08.2012
+//
+// Description:
+// The item for single field in component editor's navigation tree
+//-----------------------------------------------------------------------------
 
 #include "componenteditorfielditem.h"
 
 #include <editors/ComponentEditor/memoryMaps/SingleFieldEditor.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
-#include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/fieldgraphitem.h>
+
+#include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>
+    
+#include <editors/ComponentEditor/common/ExpressionParser.h>
 
 //-----------------------------------------------------------------------------
 // Function: componenteditorfielditem::ComponentEditorFieldItem()
@@ -22,12 +29,14 @@ ComponentEditorFieldItem::ComponentEditorFieldItem(QSharedPointer<Register> reg,
 												   QSharedPointer<Component> component,
                                                    QSharedPointer<ParameterFinder> parameterFinder,
                                                    QSharedPointer<ReferenceCounter> referenceCounter,
-												   ComponentEditorItem* parent):
+                                                   QSharedPointer<ExpressionParser> expressionParser,
+                                                   ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 reg_(reg),
 field_(field),
 visualizer_(NULL),
-graphItem_(NULL)
+graphItem_(NULL),
+expressionParser_(expressionParser)
 {
 	Q_ASSERT(field_);
 
@@ -135,7 +144,7 @@ void ComponentEditorFieldItem::setVisualizer( MemoryMapsVisualizer* visualizer )
 	Q_ASSERT(parentItem);
 
 	// create the graph item for the address block
-	graphItem_ = new FieldGraphItem(field_, parentItem);
+	graphItem_ = new FieldGraphItem(field_, expressionParser_, parentItem);
 
 	// register the addr block graph item for the parent
 	parentItem->addChild(graphItem_);

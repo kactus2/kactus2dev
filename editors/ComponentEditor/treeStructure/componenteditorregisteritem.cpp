@@ -48,7 +48,8 @@ expressionParser_(expressionParser)
 		if (field)
         {
 			QSharedPointer<ComponentEditorFieldItem> fieldItem(new ComponentEditorFieldItem(
-				reg, field, model, libHandler, component, parameterFinder, referenceCounter, this));
+				reg, field, model, libHandler, component, parameterFinder, referenceCounter, expressionParser_, 
+                this));
 			childItems_.append(fieldItem);
 
             connect(fieldItem.data(), SIGNAL(graphicsChanged()), this, SLOT(onGraphicsChanged()), Qt::UniqueConnection);
@@ -115,7 +116,8 @@ ItemEditor* ComponentEditorRegisterItem::editor()
 void ComponentEditorRegisterItem::createChild( int index )
 {
 	QSharedPointer<ComponentEditorFieldItem> fieldItem(new ComponentEditorFieldItem(
-		reg_, reg_->getFields().at(index), model_, libHandler_, component_, parameterFinder_, referenceCounter_, this));
+		reg_, reg_->getFields().at(index), model_, libHandler_, component_, parameterFinder_, 
+        referenceCounter_, expressionParser_, this));
 	fieldItem->setLocked(locked_);
 	
 	if (visualizer_)

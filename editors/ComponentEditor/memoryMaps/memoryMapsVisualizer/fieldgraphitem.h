@@ -17,6 +17,7 @@
 
 #include <QSharedPointer>
 
+class ExpressionParser;
 //-----------------------------------------------------------------------------
 //! The graphical item that represents a bit field within a register.
 //-----------------------------------------------------------------------------
@@ -28,11 +29,13 @@ public:
 
 	/*! The constructor.
 	 *
-	 *      @param [in] field Pointer to the field to visualize.
-	 *      @param [in] parent Pointer to the parent graph item.
+	 *      @param [in] field               The field to visualize.
+     *      @param [in] expressionParser    Parser for expressions in fields.
+	 *      @param [in] parent              The parent graph item.
 	 *
 	*/
-	FieldGraphItem(QSharedPointer<Field> field, QGraphicsItem* parent);
+	FieldGraphItem(QSharedPointer<Field> field, QSharedPointer<ExpressionParser> expressionParser,
+        QGraphicsItem* parent);
 
 	//! The destructor
 	virtual ~FieldGraphItem();
@@ -86,6 +89,13 @@ public:
     *      @param [in] The last address to set.
     */
     virtual void setDisplayLastAddress(quint64 const& address);
+    
+    /*!
+     *  Checks if the item is to be used in the visualization.
+     *
+     *      @return True, if the item should be used, otherwise false.
+     */
+    virtual bool isPresent() const;
 
 protected:
      
@@ -100,6 +110,9 @@ private:
 
 	//! The field being visualized.
 	QSharedPointer<Field> field_;
+
+    //! The expression parser to use.
+    QSharedPointer<ExpressionParser> expressionParser_;
 };
 
 #endif // FIELDGRAPHITEM_H
