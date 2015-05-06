@@ -95,14 +95,14 @@ void tst_RegisterGraphItem::testConstructor()
     addressBlock->setBaseAddress(0);
     addressBlock->setRange("1");
 
-    AddressBlockGraphItem* addressBlockItem = new AddressBlockGraphItem(addressBlock, 0);
+    QSharedPointer<ExpressionParser> noParser(new NullParser());
+
+    AddressBlockGraphItem* addressBlockItem = new AddressBlockGraphItem(addressBlock, noParser, 0);
 
     QSharedPointer<Register> testRegister(new Register());
     testRegister->setName("testRegister");
     testRegister->setAddressOffset(0);
     testRegister->setSize(1);
-
-    QSharedPointer<ExpressionParser> noParser(new NullParser());
 
     RegisterGraphItem* registerItem = new RegisterGraphItem(testRegister, noParser, addressBlockItem);
 
@@ -520,7 +520,9 @@ void tst_RegisterGraphItem::testTwoDimensional()
     addressBlock->setBaseAddress(0);
     addressBlock->setRange("4");
 
-    AddressBlockGraphItem* addressBlockItem = new AddressBlockGraphItem(addressBlock, 0);
+    QSharedPointer<ExpressionParser> noParser(new NullParser());
+
+    AddressBlockGraphItem* addressBlockItem = new AddressBlockGraphItem(addressBlock, noParser, 0);
     addressBlockItem->setAddressableUnitBits(8);
 
     QSharedPointer<Register> twoDimensionalRegister(new Register());
@@ -529,7 +531,6 @@ void tst_RegisterGraphItem::testTwoDimensional()
     twoDimensionalRegister->setSize(8);
     twoDimensionalRegister->setDim(2);
 
-    QSharedPointer<ExpressionParser> noParser(new NullParser());
 
     RegisterGraphItem* registerItem = new RegisterGraphItem(twoDimensionalRegister, noParser, addressBlockItem);
     registerItem->setDimensionIndex(0);
@@ -560,7 +561,9 @@ void tst_RegisterGraphItem::testLastDimensionExceedsAddressBlockRange()
     addressBlock->setBaseAddress(0);
     addressBlock->setRange("2");
 
-    AddressBlockGraphItem* addressBlockItem = new AddressBlockGraphItem(addressBlock, 0);
+    QSharedPointer<ExpressionParser> noParser(new NullParser());
+
+    AddressBlockGraphItem* addressBlockItem = new AddressBlockGraphItem(addressBlock, noParser, 0);
     addressBlockItem->setAddressableUnitBits(8);
 
     QSharedPointer<Register> twoDimensionalRegister(new Register());
@@ -569,7 +572,6 @@ void tst_RegisterGraphItem::testLastDimensionExceedsAddressBlockRange()
     twoDimensionalRegister->setSize(16);
     twoDimensionalRegister->setDim(2);
 
-    QSharedPointer<ExpressionParser> noParser(new NullParser());
 
     RegisterGraphItem* registerItem = new RegisterGraphItem(twoDimensionalRegister, noParser, addressBlockItem);
     registerItem->setDimensionIndex(0);
@@ -595,7 +597,9 @@ void tst_RegisterGraphItem::testExpressions()
     addressBlock->setBaseAddress(0);
     addressBlock->setRange("6");
 
-    AddressBlockGraphItem* addressBlockItem = new AddressBlockGraphItem(addressBlock, 0);
+    QSharedPointer<ExpressionParser> noParser(new NullParser());
+
+    AddressBlockGraphItem* addressBlockItem = new AddressBlockGraphItem(addressBlock, noParser, 0);
     addressBlockItem->setAddressableUnitBits(8);
 
     QSharedPointer<Register> testRegister(new Register());
@@ -700,15 +704,15 @@ RegisterGraphItem* tst_RegisterGraphItem::createRegisterItem()
     addressBlock->setBaseAddress(0);
     addressBlock->setRange("1");
 
-    AddressBlockGraphItem* addressBlockItem = new AddressBlockGraphItem(addressBlock, 0);
+    QSharedPointer<ExpressionParser> noParser(new NullParser());
+
+    AddressBlockGraphItem* addressBlockItem = new AddressBlockGraphItem(addressBlock, noParser, 0);
     addressBlockItem->setAddressableUnitBits(8);
 
     QSharedPointer<Register> testRegister(new Register());
     testRegister->setName("testRegister");
     testRegister->setAddressOffset(0);
     testRegister->setSize(8);
-
-    QSharedPointer<ExpressionParser> noParser(new NullParser());
 
     return new RegisterGraphItem(testRegister, noParser, addressBlockItem);
 }

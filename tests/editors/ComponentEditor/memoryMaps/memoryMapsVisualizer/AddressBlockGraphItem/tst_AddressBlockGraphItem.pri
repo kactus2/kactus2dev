@@ -7,7 +7,8 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../../../../common/utils.h \
+HEADERS += ../../../../../../editors/ComponentEditor/common/NullParser.h \
+    ../../../../../../common/utils.h \
     ../../../../../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.h \
     ../../../../../../common/graphicsItems/expandableitem.h \
     ../../../../../../editors/ComponentEditor/visualization/fieldgapitem.h \
@@ -16,8 +17,10 @@ HEADERS += ../../../../../../common/utils.h \
     ../../../../../../editors/ComponentEditor/visualization/memoryvisualizationitem.h \
     ../../../../../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/registergraphitem.h \
     ../../../../../../common/graphicsItems/visualizeritem.h \
-    ../../../../../../editors/ComponentEditor/common/NullParser.h
-SOURCES += ../../../../../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.cpp \
+    ../../../../../../editors/ComponentEditor/common/ExpressionParser.h \
+    ../../../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h
+SOURCES += ../../../../../../editors/ComponentEditor/common/NullParser.cpp \
+    ../../../../../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.cpp \
     ../../../../../../common/graphicsItems/expandableitem.cpp \
     ../../../../../../editors/ComponentEditor/visualization/fieldgapitem.cpp \
     ../../../../../../common/graphicsItems/graphicsexpandcollapseitem.cpp \
@@ -27,4 +30,4 @@ SOURCES += ../../../../../../editors/ComponentEditor/memoryMaps/memoryMapsVisual
     ./tst_AddressBlockGraphItem.cpp \
     ../../../../../../common/utils.cpp \
     ../../../../../../common/graphicsItems/visualizeritem.cpp \
-    ../../../../../../editors/ComponentEditor/common/NullParser.cpp
+    ../../../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp

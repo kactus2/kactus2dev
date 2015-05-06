@@ -18,6 +18,7 @@
 #include <QGraphicsItem>
 #include <QSharedPointer>
 
+class ExpressionParser;
 //-----------------------------------------------------------------------------
 //! The graphical item that represents one address block.
 //-----------------------------------------------------------------------------
@@ -33,6 +34,7 @@ public:
 	 *       @param [in] parent     The parent graph item.
 	*/
 	AddressBlockGraphItem(QSharedPointer<AddressBlock> addrBlock, 
+        QSharedPointer<ExpressionParser> expressionParser,
 		QGraphicsItem *parent);
 	
 	//! The destructor
@@ -88,6 +90,9 @@ private:
 
     //! The number of bits in an address unit.
     int addrssableUnitBits_;
+
+    //! The expression parser to use.
+    QSharedPointer<ExpressionParser> expressionParser_;
 };
 
 #endif // ADDRESSBLOCKGRAPHITEM_H

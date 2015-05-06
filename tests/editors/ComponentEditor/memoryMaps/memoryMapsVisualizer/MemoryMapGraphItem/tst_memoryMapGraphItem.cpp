@@ -15,6 +15,8 @@
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapgraphitem.h>
 #include <editors/ComponentEditor/visualization/memorygapitem.h>
 
+#include <editors/ComponentEditor/common/NullParser.h>
+
 #include <IPXACTmodels/addressblock.h>
 #include <IPXACTmodels/memorymap.h>
 #include <IPXACTmodels/memorymapitem.h>
@@ -110,7 +112,9 @@ void tst_MemoryMapGraphItem::testMemoryMapWithAddressBlock()
     
     MemoryMapGraphItem* memoryMapItem = createMemoryMapItem(memoryMap);
 
-    AddressBlockGraphItem* addressBlockItem = new AddressBlockGraphItem(addressBlock, memoryMapItem);
+    QSharedPointer<ExpressionParser> noParser(new NullParser());
+
+    AddressBlockGraphItem* addressBlockItem = new AddressBlockGraphItem(addressBlock, noParser, memoryMapItem);
     memoryMapItem->addChild(addressBlockItem);
     memoryMapItem->refresh();
 
@@ -150,8 +154,10 @@ void tst_MemoryMapGraphItem::testMemoryMapWithConsecutiveAddressBlocks()
 
     MemoryMapGraphItem* memoryMapItem = createMemoryMapItem(memoryMap);
 
-    AddressBlockGraphItem* firstBlockItem = new AddressBlockGraphItem(firstBlock, memoryMapItem);
-    AddressBlockGraphItem* secondBlockItem = new AddressBlockGraphItem(secondBlock, memoryMapItem);
+    QSharedPointer<ExpressionParser> noParser(new NullParser());
+
+    AddressBlockGraphItem* firstBlockItem = new AddressBlockGraphItem(firstBlock, noParser, memoryMapItem);
+    AddressBlockGraphItem* secondBlockItem = new AddressBlockGraphItem(secondBlock, noParser, memoryMapItem);
     memoryMapItem->addChild(firstBlockItem);
     memoryMapItem->addChild(secondBlockItem);
 
@@ -191,8 +197,10 @@ void tst_MemoryMapGraphItem::testGapBetweenTwoAddressBlocks()
 
     MemoryMapGraphItem* memoryMapItem = createMemoryMapItem(memoryMap);
 
-    AddressBlockGraphItem* firstBlockItem = new AddressBlockGraphItem(firstBlock, memoryMapItem);
-    AddressBlockGraphItem* secondBlockItem = new AddressBlockGraphItem(lastBlock, memoryMapItem);
+    QSharedPointer<ExpressionParser> noParser(new NullParser());
+
+    AddressBlockGraphItem* firstBlockItem = new AddressBlockGraphItem(firstBlock, noParser, memoryMapItem);
+    AddressBlockGraphItem* secondBlockItem = new AddressBlockGraphItem(lastBlock, noParser, memoryMapItem);
     memoryMapItem->addChild(firstBlockItem);
     memoryMapItem->addChild(secondBlockItem);
 
@@ -241,8 +249,10 @@ void tst_MemoryMapGraphItem::testPartiallyOverlappingAddressBlocks()
 
     MemoryMapGraphItem* memoryMapItem = createMemoryMapItem(memoryMap);
 
-    AddressBlockGraphItem* firstBlockItem = new AddressBlockGraphItem(firstBlock, memoryMapItem);
-    AddressBlockGraphItem* secondBlockItem = new AddressBlockGraphItem(secondBlock, memoryMapItem);
+    QSharedPointer<ExpressionParser> noParser(new NullParser());
+
+    AddressBlockGraphItem* firstBlockItem = new AddressBlockGraphItem(firstBlock, noParser, memoryMapItem);
+    AddressBlockGraphItem* secondBlockItem = new AddressBlockGraphItem(secondBlock, noParser, memoryMapItem);
     memoryMapItem->addChild(firstBlockItem);
     memoryMapItem->addChild(secondBlockItem);
 
@@ -290,8 +300,10 @@ void tst_MemoryMapGraphItem::testFullyOverlappingAddressBlocks()
 
     MemoryMapGraphItem* memoryMapItem = createMemoryMapItem(memoryMap);
 
-    AddressBlockGraphItem* firstBlockItem = new AddressBlockGraphItem(firstBlock, memoryMapItem);
-    AddressBlockGraphItem* secondBlockItem = new AddressBlockGraphItem(secondBlock, memoryMapItem);
+    QSharedPointer<ExpressionParser> noParser(new NullParser());
+
+    AddressBlockGraphItem* firstBlockItem = new AddressBlockGraphItem(firstBlock, noParser, memoryMapItem);
+    AddressBlockGraphItem* secondBlockItem = new AddressBlockGraphItem(secondBlock, noParser, memoryMapItem);
     memoryMapItem->addChild(firstBlockItem);
     memoryMapItem->addChild(secondBlockItem);
 
@@ -333,9 +345,11 @@ void tst_MemoryMapGraphItem::testMultipleBlocksOverlapping()
 
     MemoryMapGraphItem* memoryMapItem = createMemoryMapItem(memoryMap);
 
-    AddressBlockGraphItem* largeAddressBlock = new AddressBlockGraphItem(largeBlock, memoryMapItem);
-    AddressBlockGraphItem* firstOverlap = new AddressBlockGraphItem(firstOverlappingBlock, memoryMapItem);
-    AddressBlockGraphItem* secondOverlap = new AddressBlockGraphItem(seconOverlappingBlock, memoryMapItem);
+    QSharedPointer<ExpressionParser> noParser(new NullParser());
+
+    AddressBlockGraphItem* largeAddressBlock = new AddressBlockGraphItem(largeBlock, noParser, memoryMapItem);
+    AddressBlockGraphItem* firstOverlap = new AddressBlockGraphItem(firstOverlappingBlock, noParser, memoryMapItem);
+    AddressBlockGraphItem* secondOverlap = new AddressBlockGraphItem(seconOverlappingBlock, noParser, memoryMapItem);
     memoryMapItem->addChild(largeAddressBlock);
     memoryMapItem->addChild(firstOverlap);
     memoryMapItem->addChild(secondOverlap);
@@ -390,9 +404,11 @@ void tst_MemoryMapGraphItem::testTwoBlocksCompletelyOverlappingThird()
 
     MemoryMapGraphItem* memoryMapItem = createMemoryMapItem(memoryMap);
 
-    AddressBlockGraphItem* firstBlockItem = new AddressBlockGraphItem(firstBlock, memoryMapItem);
-    AddressBlockGraphItem* overlappedItem = new AddressBlockGraphItem(overlappedBlock, memoryMapItem);
-    AddressBlockGraphItem* lastBlockItem = new AddressBlockGraphItem(lastBlock, memoryMapItem);
+    QSharedPointer<ExpressionParser> noParser(new NullParser());
+
+    AddressBlockGraphItem* firstBlockItem = new AddressBlockGraphItem(firstBlock, noParser, memoryMapItem);
+    AddressBlockGraphItem* overlappedItem = new AddressBlockGraphItem(overlappedBlock, noParser, memoryMapItem);
+    AddressBlockGraphItem* lastBlockItem = new AddressBlockGraphItem(lastBlock, noParser, memoryMapItem);
     memoryMapItem->addChild(firstBlockItem);
     memoryMapItem->addChild(lastBlockItem);
     memoryMapItem->addChild(overlappedItem);
@@ -456,9 +472,11 @@ void tst_MemoryMapGraphItem::testTwoOverlappingBlocksInsideThrid()
 
     MemoryMapGraphItem* memoryMapItem = createMemoryMapItem(memoryMap);
 
-    AddressBlockGraphItem* containerBlock = new AddressBlockGraphItem(largeAddressBlock, memoryMapItem);
-    AddressBlockGraphItem* firstOverlap = new AddressBlockGraphItem(firstOverlappingBlock, memoryMapItem);
-    AddressBlockGraphItem* secondOverlap = new AddressBlockGraphItem(secondOverlappingBlock, memoryMapItem);
+    QSharedPointer<ExpressionParser> noParser(new NullParser());
+
+    AddressBlockGraphItem* containerBlock = new AddressBlockGraphItem(largeAddressBlock, noParser, memoryMapItem);
+    AddressBlockGraphItem* firstOverlap = new AddressBlockGraphItem(firstOverlappingBlock, noParser, memoryMapItem);
+    AddressBlockGraphItem* secondOverlap = new AddressBlockGraphItem(secondOverlappingBlock, noParser, memoryMapItem);
     memoryMapItem->addChild(containerBlock);
     memoryMapItem->addChild(firstOverlap);
     memoryMapItem->addChild(secondOverlap);
@@ -512,9 +530,11 @@ void tst_MemoryMapGraphItem::testIdenticalBlocksOverlappingThird()
 
     MemoryMapGraphItem* memoryMapItem = createMemoryMapItem(memoryMap);
 
-    AddressBlockGraphItem* unique = new AddressBlockGraphItem(uniqueBlock, memoryMapItem);
-    AddressBlockGraphItem* firstTwin = new AddressBlockGraphItem(twin1, memoryMapItem);
-    AddressBlockGraphItem* secondTwin = new AddressBlockGraphItem(twin2, memoryMapItem);
+    QSharedPointer<ExpressionParser> noParser(new NullParser());
+
+    AddressBlockGraphItem* unique = new AddressBlockGraphItem(uniqueBlock, noParser, memoryMapItem);
+    AddressBlockGraphItem* firstTwin = new AddressBlockGraphItem(twin1, noParser, memoryMapItem);
+    AddressBlockGraphItem* secondTwin = new AddressBlockGraphItem(twin2, noParser, memoryMapItem);
     memoryMapItem->addChild(unique);
     memoryMapItem->addChild(firstTwin);
     memoryMapItem->addChild(secondTwin);
@@ -572,9 +592,11 @@ void tst_MemoryMapGraphItem::testConsecutiveBlocksInsideThird()
 
     MemoryMapGraphItem* memoryMapItem = createMemoryMapItem(memoryMap);
 
-    AddressBlockGraphItem* container = new AddressBlockGraphItem(containerBlock, memoryMapItem);
-    AddressBlockGraphItem* firstInsider = new AddressBlockGraphItem(firstInsideBlock, memoryMapItem);
-    AddressBlockGraphItem* secondInsider = new AddressBlockGraphItem(secondInsideBlock, memoryMapItem);
+    QSharedPointer<ExpressionParser> noParser(new NullParser());
+
+    AddressBlockGraphItem* container = new AddressBlockGraphItem(containerBlock, noParser, memoryMapItem);
+    AddressBlockGraphItem* firstInsider = new AddressBlockGraphItem(firstInsideBlock, noParser, memoryMapItem);
+    AddressBlockGraphItem* secondInsider = new AddressBlockGraphItem(secondInsideBlock, noParser, memoryMapItem);
     memoryMapItem->addChild(container);
     memoryMapItem->addChild(firstInsider);
     memoryMapItem->addChild(secondInsider);

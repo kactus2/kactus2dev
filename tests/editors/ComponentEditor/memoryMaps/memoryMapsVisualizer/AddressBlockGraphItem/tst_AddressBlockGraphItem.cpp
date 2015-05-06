@@ -16,6 +16,7 @@
 #include <editors/ComponentEditor/visualization/memorygapitem.h>
 
 #include <editors/ComponentEditor/common/NullParser.h>
+#include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
 
 #include <IPXACTmodels/addressblock.h>
 #include <IPXACTmodels/register.h>
@@ -37,6 +38,8 @@ private slots:
     void testRegisterInSecondAddress();
 
     void testEmptyAfterLastRegister();
+
+    void testExpressions();
 
 private:
     void expandItem(AddressBlockGraphItem* memoryMapItem);
@@ -61,7 +64,9 @@ void tst_AddressBlockGraphItem::testConstructor()
     addressBlock->setBaseAddress(0);
     addressBlock->setRange("1");
 
-    AddressBlockGraphItem* addressBlockItem = new AddressBlockGraphItem(addressBlock, 0);
+    QSharedPointer<ExpressionParser> noParser(new NullParser());
+
+    AddressBlockGraphItem* addressBlockItem = new AddressBlockGraphItem(addressBlock, noParser, 0);
 
     QCOMPARE(addressBlockItem->getName(), QString("testBlock"));
     QCOMPARE(addressBlockItem->getOffset(), quint64(0));
@@ -80,11 +85,12 @@ void tst_AddressBlockGraphItem::testConstructor()
 void tst_AddressBlockGraphItem::testAddressBlockWithRegister()
 {
     QSharedPointer<AddressBlock> addressBlock(new AddressBlock());
-    addressBlock->setName("testBlock");
     addressBlock->setBaseAddress(0);
     addressBlock->setRange("1");
 
-    AddressBlockGraphItem* addressBlockItem = new AddressBlockGraphItem(addressBlock, 0);
+    QSharedPointer<ExpressionParser> noParser(new NullParser());
+
+    AddressBlockGraphItem* addressBlockItem = new AddressBlockGraphItem(addressBlock, noParser, 0);
     addressBlockItem->setAddressableUnitBits(8);
 
     QList<QSharedPointer<RegisterModel> > registers;
@@ -94,12 +100,9 @@ void tst_AddressBlockGraphItem::testAddressBlockWithRegister()
     registers.append(reg);
     addressBlock->getRegisterData().append(registers);
 
-    QSharedPointer<ExpressionParser> noParser(new NullParser());
-
     RegisterGraphItem* registerItem = new RegisterGraphItem(reg, noParser, addressBlockItem);
     addressBlockItem->addChild(registerItem);
 
-    QCOMPARE(addressBlockItem->getName(), QString("testBlock"));
     QCOMPARE(addressBlockItem->getOffset(), quint64(0));
     QCOMPARE(addressBlockItem->getLastAddress(), quint64(0));
     QCOMPARE(addressBlockItem->getDisplayOffset(), quint64(0));
@@ -126,11 +129,12 @@ void tst_AddressBlockGraphItem::testAddressBlockWithRegister()
 void tst_AddressBlockGraphItem::testRegisterInSecondAddress()
 {
     QSharedPointer<AddressBlock> addressBlock(new AddressBlock());
-    addressBlock->setName("testBlock");
     addressBlock->setBaseAddress(0);
     addressBlock->setRange("2");
 
-    AddressBlockGraphItem* addressBlockItem = new AddressBlockGraphItem(addressBlock, 0);
+    QSharedPointer<ExpressionParser> noParser(new NullParser());
+
+    AddressBlockGraphItem* addressBlockItem = new AddressBlockGraphItem(addressBlock, noParser, 0);
     addressBlockItem->setAddressableUnitBits(8);
 
     QList<QSharedPointer<RegisterModel> > registers;
@@ -139,8 +143,6 @@ void tst_AddressBlockGraphItem::testRegisterInSecondAddress()
     reg->setSize(8);
     registers.append(reg);
     addressBlock->getRegisterData().append(registers);
-
-    QSharedPointer<ExpressionParser> noParser(new NullParser());
 
     RegisterGraphItem* registerItem = new RegisterGraphItem(reg, noParser, addressBlockItem);
     addressBlockItem->addChild(registerItem);
@@ -175,11 +177,12 @@ void tst_AddressBlockGraphItem::testRegisterInSecondAddress()
 void tst_AddressBlockGraphItem::testEmptyAfterLastRegister()
 {
     QSharedPointer<AddressBlock> addressBlock(new AddressBlock());
-    addressBlock->setName("testBlock");
     addressBlock->setBaseAddress(0);
     addressBlock->setRange("2");
 
-    AddressBlockGraphItem* addressBlockItem = new AddressBlockGraphItem(addressBlock, 0);
+    QSharedPointer<ExpressionParser> noParser(new NullParser());
+
+    AddressBlockGraphItem* addressBlockItem = new AddressBlockGraphItem(addressBlock, noParser, 0);
     addressBlockItem->setAddressableUnitBits(8);
 
     QList<QSharedPointer<RegisterModel> > registers;
@@ -189,7 +192,6 @@ void tst_AddressBlockGraphItem::testEmptyAfterLastRegister()
     registers.append(reg);
     addressBlock->getRegisterData().append(registers);
 
-    QSharedPointer<ExpressionParser> noParser(new NullParser());
 
     RegisterGraphItem* registerItem = new RegisterGraphItem(reg, noParser, addressBlockItem);
     addressBlockItem->addChild(registerItem);
@@ -214,6 +216,28 @@ void tst_AddressBlockGraphItem::testEmptyAfterLastRegister()
     QCOMPARE(firstGap->pos().y(), qreal(2*VisualizerItem::DEFAULT_HEIGHT));
     QCOMPARE(firstGap->getDisplayOffset(), quint64(1));
     QCOMPARE(firstGap->getDisplayLastAddress(), quint64(1));
+    delete addressBlockItem;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_AddressBlockGraphItem::testExpressions()
+//-----------------------------------------------------------------------------
+void tst_AddressBlockGraphItem::testExpressions()
+{
+    QSharedPointer<AddressBlock> addressBlock(new AddressBlock());
+    addressBlock->setBaseAddress("1+1");
+    addressBlock->setRange("4*2");
+    addressBlock->setWidthExpression("16+16");
+
+    QSharedPointer<ExpressionParser> expressionParser(new SystemVerilogExpressionParser());
+
+    AddressBlockGraphItem* addressBlockItem = new AddressBlockGraphItem(addressBlock, expressionParser, 0);
+    addressBlockItem->setAddressableUnitBits(8);
+
+    QCOMPARE(addressBlockItem->getBitWidth(), 32);
+    QCOMPARE(addressBlockItem->getDisplayOffset(), quint64(2));
+    QCOMPARE(addressBlockItem->getDisplayLastAddress(), quint64(9));
+
     delete addressBlockItem;
 }
 

@@ -11,15 +11,12 @@
 
 #include <QtTest>
 
-//#include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.h>
-//#include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/registergraphitem.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/fieldgraphitem.h>
 #include <editors/ComponentEditor/visualization/memorygapitem.h>
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 #include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
 #include <editors/ComponentEditor/common/NullParser.h>
 
-#include <IPXACTmodels/addressblock.h>
 #include <IPXACTmodels/field.h>
 
 class tst_FieldGraphItem : public QObject

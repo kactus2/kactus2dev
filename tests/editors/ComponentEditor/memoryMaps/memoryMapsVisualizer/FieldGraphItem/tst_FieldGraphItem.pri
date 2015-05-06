@@ -7,9 +7,7 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../../../../common/utils.h \
-    ../../../../../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.h \
-    ../../../../../../common/graphicsItems/expandableitem.h \
+HEADERS += ../../../../../../common/graphicsItems/expandableitem.h \
     ../../../../../../editors/ComponentEditor/visualization/fieldgapitem.h \
     ../../../../../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/fieldgraphitem.h \
     ../../../../../../common/graphicsItems/graphicsexpandcollapseitem.h \
@@ -18,9 +16,9 @@ HEADERS += ../../../../../../common/utils.h \
     ../../../../../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/registergraphitem.h \
     ../../../../../../common/graphicsItems/visualizeritem.h \
     ../../../../../../editors/ComponentEditor/common/ExpressionParser.h \
-    ../../../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h
-SOURCES += ../../../../../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.cpp \
-    ../../../../../../common/graphicsItems/expandableitem.cpp \
+    ../../../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
+    ../../../../../../editors/ComponentEditor/common/NullParser.h
+SOURCES += ../../../../../../common/graphicsItems/expandableitem.cpp \
     ../../../../../../editors/ComponentEditor/visualization/fieldgapitem.cpp \
     ../../../../../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/fieldgraphitem.cpp \
     ../../../../../../common/graphicsItems/graphicsexpandcollapseitem.cpp \
@@ -28,6 +26,6 @@ SOURCES += ../../../../../../editors/ComponentEditor/memoryMaps/memoryMapsVisual
     ../../../../../../editors/ComponentEditor/visualization/memoryvisualizationitem.cpp \
     ../../../../../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/registergraphitem.cpp \
     ./tst_FieldGraphItem.cpp \
-    ../../../../../../common/utils.cpp \
     ../../../../../../common/graphicsItems/visualizeritem.cpp \
-    ../../../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp
+    ../../../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
+    ../../../../../../editors/ComponentEditor/common/NullParser.cpp

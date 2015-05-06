@@ -177,7 +177,7 @@ void ComponentEditorAddrBlockItem::setVisualizer( MemoryMapsVisualizer* visualiz
 	Q_ASSERT(parentItem);
 
 	// create the graph item for the address block
-	graphItem_ = new AddressBlockGraphItem(addrBlock_, parentItem);
+	graphItem_ = new AddressBlockGraphItem(addrBlock_, expressionParser_, parentItem);
     graphItem_->setAddressableUnitBits(addressUnitBits_);
 
 	// register the addr block graph item for the parent
