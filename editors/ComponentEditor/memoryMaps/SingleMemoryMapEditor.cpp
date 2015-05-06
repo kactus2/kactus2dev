@@ -256,7 +256,9 @@ void SingleMemoryMapEditor::refreshRemapStateSelector()
 //-----------------------------------------------------------------------------
 bool SingleMemoryMapEditor::isMemoryMap() const
 {
-    if (memoryRemap_->getName() == parentMemoryMap_->getName())
+    QSharedPointer<MemoryMap> transFormedMemoryRemap = memoryRemap_.dynamicCast<MemoryMap>();
+
+    if (transFormedMemoryRemap && transFormedMemoryRemap == parentMemoryMap_)
     {
         return true;
     }

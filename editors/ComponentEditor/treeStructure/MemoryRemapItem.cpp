@@ -82,12 +82,15 @@ MemoryRemapItem::~MemoryRemapItem()
 //-----------------------------------------------------------------------------
 QString MemoryRemapItem::text() const
 {
-    if (memoryRemap_->getName() == parentMemoryMap_->getName())
+    QSharedPointer<MemoryMap> transFormedMemoryRemap = memoryRemap_.dynamicCast<MemoryMap>();
+    if (transFormedMemoryRemap && transFormedMemoryRemap == parentMemoryMap_)
     {
         return QString("Default");
     }
-
-    return memoryRemap_->getName();
+    else
+    {
+        return memoryRemap_->getName();
+    }
 }
 
 //-----------------------------------------------------------------------------
