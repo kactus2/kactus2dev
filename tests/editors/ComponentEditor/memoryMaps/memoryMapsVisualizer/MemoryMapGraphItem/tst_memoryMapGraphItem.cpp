@@ -16,6 +16,7 @@
 #include <editors/ComponentEditor/visualization/memorygapitem.h>
 
 #include <editors/ComponentEditor/common/NullParser.h>
+#include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
 
 #include <IPXACTmodels/addressblock.h>
 #include <IPXACTmodels/memorymap.h>
@@ -50,7 +51,9 @@ private slots:
 
     void testIdenticalBlocksOverlappingThird();
 
-     void testConsecutiveBlocksInsideThird();
+    void testConsecutiveBlocksInsideThird();
+
+    void testExpressions();
 
 private:
     MemoryMapGraphItem* createMemoryMapItem(QSharedPointer<MemoryMap> memoryMap);
@@ -160,6 +163,7 @@ void tst_MemoryMapGraphItem::testMemoryMapWithConsecutiveAddressBlocks()
     AddressBlockGraphItem* secondBlockItem = new AddressBlockGraphItem(secondBlock, noParser, memoryMapItem);
     memoryMapItem->addChild(firstBlockItem);
     memoryMapItem->addChild(secondBlockItem);
+    memoryMapItem->refresh();
 
     QCOMPARE(memoryMapItem->getOffset(), quint64(0));
     QCOMPARE(memoryMapItem->getLastAddress(), quint64(1));
@@ -625,6 +629,33 @@ void tst_MemoryMapGraphItem::testConsecutiveBlocksInsideThird()
     QCOMPARE(secondInsider->getDisplayLastAddress(), quint64(4));
 
     delete memoryMapItem;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_MemoryMapGraphItem::testExpressions()
+//-----------------------------------------------------------------------------
+void tst_MemoryMapGraphItem::testExpressions()
+{
+    QSharedPointer<MemoryMap> memoryMap(new MemoryMap());
+    memoryMap->setAddressUnitBits(8);
+
+    QSharedPointer<AddressBlock> parametrizedBlock = createAddressBlock("container", "'h2", "'h2+'h2", 8);
+
+    QList<QSharedPointer<MemoryMapItem> > addressBlocks;
+    addressBlocks.append(parametrizedBlock);
+    memoryMap->setItems(addressBlocks);
+
+    QSharedPointer<ExpressionParser> expressionParser(new SystemVerilogExpressionParser());
+
+    MemoryMapGraphItem* memoryMapItem = new MemoryMapGraphItem(memoryMap, memoryMap, 0);
+
+
+    AddressBlockGraphItem* parametrizedItem = new AddressBlockGraphItem(parametrizedBlock, expressionParser, memoryMapItem);
+    memoryMapItem->addChild(parametrizedItem);
+    memoryMapItem->refresh();
+
+    QCOMPARE(memoryMapItem->getDisplayOffset(), quint64(2));
+    QCOMPARE(memoryMapItem->getDisplayLastAddress(), quint64(5));
 }
 
 //-----------------------------------------------------------------------------

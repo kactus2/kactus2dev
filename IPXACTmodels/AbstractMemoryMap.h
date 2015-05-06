@@ -156,13 +156,6 @@ public:
 	/*!
 	 *  Get the first address of the memory map.
 	 *
-     *      @return The first address of the memory map in quint64 form.
-	 */
-	quint64 getFirstAddress() const;
-
-	/*!
-	 *  Get the first address of the memory map.
-	 *
      *      @return The first address of the memory map in qstring form.
 	 */
 	QString getFirstAddressStr() const;

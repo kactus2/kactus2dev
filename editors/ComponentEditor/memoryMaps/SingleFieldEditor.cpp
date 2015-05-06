@@ -20,11 +20,13 @@
 #include <editors/ComponentEditor/common/ValueFormatter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
-#include <common\widgets\accessComboBox\accesscombobox.h>
-#include <common\widgets\booleanComboBox\booleancombobox.h>
-#include <common\widgets\modWriteComboBox\modwritecombobox.h>
-#include <common\widgets\testConstraintComboBox\testconstraintcombobox.h>
-#include <common\widgets\readActionComboBox\readactioncombobox.h>
+#include <editors/ComponentEditor/common/ExpressionParser.h>
+
+#include <common/widgets/accessComboBox/accesscombobox.h>
+#include <common/widgets/booleanComboBox/booleancombobox.h>
+#include <common/widgets/modWriteComboBox/modwritecombobox.h>
+#include <common/widgets/testConstraintComboBox/testconstraintcombobox.h>
+#include <common/widgets/readActionComboBox/readactioncombobox.h>
 
 #include <QScrollArea>
 #include <QFormLayout>
@@ -35,6 +37,7 @@
 //-----------------------------------------------------------------------------
 SingleFieldEditor::SingleFieldEditor(QSharedPointer<Field> field, QSharedPointer<Component> component,
                                      LibraryInterface* handler, QSharedPointer<ParameterFinder> parameterFinder,
+                                     QSharedPointer<ExpressionParser> expressionParser,
                                      QWidget* parent /* = 0 */):
 ItemEditor(component, handler, parent),
 nameEditor_(field->getNameGroup(), this, tr("Field name and description")),
@@ -48,7 +51,7 @@ readActionEditor_(),
 testableEditor_(),
 testConstrainedEditor_(),
 isPresentEditor_(new ExpressionEditor(parameterFinder, this)),
-expressionParser_(new IPXactSystemVerilogParser(parameterFinder)),
+expressionParser_(expressionParser),
 writeConstraintEditor_(new WriteValueConstraintComboBox(field->getWriteConstraint(), this)),
 writeConstraintMinLimit_(new QLineEdit(this)),
 writeConstraintMaxLimit_(new QLineEdit(this)),

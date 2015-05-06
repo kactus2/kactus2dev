@@ -15,7 +15,6 @@
 #include "registereditor.h"
 
 #include <editors/ComponentEditor/itemeditor.h>
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
 
@@ -32,7 +31,7 @@ class AccessComboBox;
 class BooleanComboBox;
 class ExpressionEditor;
 class BinaryValidator;
-
+class ExpressionParser;
 //-----------------------------------------------------------------------------
 //! Editor for editing the details of a single register.
 //-----------------------------------------------------------------------------
@@ -45,18 +44,20 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] singleRegister          Pointer to the register being edited.
-	 *      @param [in] component               Pointer to the component being edited.
-	 *      @param [in] handler                 Pointer to the instance that manages the library.
-	 *      @param [in] parameterFinder         Pointer to the parameter finder.
-	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
-	 *      @param [in] parent                  Pointer to the parent of this editor.
+	 *      @param [in] singleRegister          The register being edited.
+	 *      @param [in] component               The component being edited.
+	 *      @param [in] handler                 The instance that manages the library.
+	 *      @param [in] parameterFinder         The parameter finder.
+     *      @param [in] expressionFormatter     The expression formatter.
+     *      @param [in] expressionParser        The expression parser to use.
+	 *      @param [in] parent                  The parent of this editor.
 	 */
     SingleRegisterEditor(QSharedPointer<Register> singleRegister,
         QSharedPointer<Component> component,
         LibraryInterface* handler,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QSharedPointer<ExpressionParser> expressionParser,
         QWidget* parent = 0);
 
     /*!
@@ -222,7 +223,7 @@ private:
     BinaryValidator* resetMaskValidator_;
 
     //! The expression parser.
-    QSharedPointer<IPXactSystemVerilogParser> expressionParser_;
+    QSharedPointer<ExpressionParser> expressionParser_;
 };
 
 #endif // SINGLEREGISTEREDITOR_H

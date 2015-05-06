@@ -162,7 +162,7 @@ ItemVisualizer* ComponentEditorItem::visualizer() {
 }
 
 //-----------------------------------------------------------------------------
-// Function: componenteditoritem::onEditorChanged()
+// Function: ComponentEditorItem::onEditorChanged()
 //-----------------------------------------------------------------------------
 void ComponentEditorItem::onEditorChanged()
 {
@@ -181,28 +181,34 @@ void ComponentEditorItem::onEditorChanged()
 }
 
 //-----------------------------------------------------------------------------
-// Function: componenteditoritem::onGraphicsChanged()
+// Function: ComponentEditorItem::onGraphicsChanged()
 //-----------------------------------------------------------------------------
 void ComponentEditorItem::onGraphicsChanged()
 {
-    updateGraphics();
-
-    // also inform of child changes
+    QApplication::setOverrideCursor(Qt::WaitCursor);
     foreach (QSharedPointer<ComponentEditorItem> childItem, childItems_)
     {
-        // tell the child to update it's visualization graphics item
         childItem->updateGraphics();
     }
+
+    updateGraphics();
+    QApplication::restoreOverrideCursor();
 }
 
-void ComponentEditorItem::setLocked( bool locked ) {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorItem::setLocked()
+//-----------------------------------------------------------------------------
+void ComponentEditorItem::setLocked(bool locked)
+{
 	// if this item contains an editor
-	if (editor_) {
+	if (editor_)
+    {
 		editor_->setProtection(locked);
 	}
 
 	// also tell child items
-	foreach (QSharedPointer<ComponentEditorItem> childItem, childItems_) {
+	foreach (QSharedPointer<ComponentEditorItem> childItem, childItems_)
+    {
 		childItem->setLocked(locked);
 	}
 

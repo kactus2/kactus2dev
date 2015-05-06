@@ -131,6 +131,11 @@ protected slots:
 	 *
 	*/
 	virtual void onEditorChanged();
+    
+    /*!
+     *  Handles the redrawing of the visualization of the item.
+     */
+    virtual void onGraphicsChanged();
 
 signals:
     void changeInAddressUnitBits(int newAddressUnitBits);

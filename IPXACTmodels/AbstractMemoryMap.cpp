@@ -376,37 +376,6 @@ QString AbstractMemoryMap::getLastAddressStr() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractMemoryMap::getFirstAddress()
-//-----------------------------------------------------------------------------
-quint64 AbstractMemoryMap::getFirstAddress() const
-{
-	quint64 firstBase = 0;
-	for (int i = 0; i < items_.size(); ++i)
-    {
-		QSharedPointer<AddressBlock> block = items_.at(i).dynamicCast<AddressBlock>();
-		if (!block)
-        {
-			continue;
-		}
-		// convert the base address to numerical format
-		QString addrStr = block->getBaseAddress();
-		quint64 addr = General::str2Uint(addrStr);
-
-		// if this is the first block then it must be smallest so far
-		if (i == 0)
-        {
-			firstBase = addr;
-		}
-		// for others, check if the new base is smaller
-		else if (firstBase > addr)
-        {
-			firstBase = addr;
-		}
-	}
-	return firstBase;
-}
-
-//-----------------------------------------------------------------------------
 // Function: AbstractMemoryMap::getFirstAddressStr()
 //-----------------------------------------------------------------------------
 QString AbstractMemoryMap::getFirstAddressStr() const

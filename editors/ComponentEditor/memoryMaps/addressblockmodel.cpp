@@ -250,7 +250,7 @@ QVariant AddressBlockModel::valueForIndex(const QModelIndex& index) const
 
             if (dimension == "n/a")
             {
-                reg->setDim(0);
+                reg->setDim(1);
             }
 
             return dimension;

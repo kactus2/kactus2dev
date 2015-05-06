@@ -79,8 +79,7 @@ void AddressBlockGraphItem::updateDisplay()
 //-----------------------------------------------------------------------------
 quint64 AddressBlockGraphItem::getOffset() const
 {
-	QString offset = addrBlock_->getBaseAddress();
-	return expressionParser_->parseExpression(offset).toUInt();
+	return expressionParser_->parseExpression(addrBlock_->getBaseAddress()).toUInt();
 }
 
 //-----------------------------------------------------------------------------

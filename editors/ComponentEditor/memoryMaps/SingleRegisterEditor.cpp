@@ -21,6 +21,8 @@
 #include <editors/ComponentEditor/common/ValueFormatter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
+#include <editors/ComponentEditor/common/ExpressionParser.h>
+
 #include <IPXACTmodels/validators/BinaryValidator.h>
 
 #include <QFormLayout>
@@ -33,7 +35,9 @@
 SingleRegisterEditor::SingleRegisterEditor(QSharedPointer<Register> selectedRegister,
     QSharedPointer<Component> component, LibraryInterface* handler,
     QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter, QWidget* parent /* = 0 */):
+    QSharedPointer<ExpressionFormatter> expressionFormatter, 
+    QSharedPointer<ExpressionParser> expressionParser,
+    QWidget* parent /* = 0 */):
 ItemEditor(component, handler, parent),
 selectedRegister_(selectedRegister),
 nameEditor_(selectedRegister->getNameGroup(), this, tr("Register name and description")),
@@ -45,7 +49,7 @@ volatileEditor_(),
 accessEditor_(),
 resetValueEditor_(new QLineEdit(this)),
 resetMaskEditor_(new QLineEdit(this)),
-expressionParser_(new IPXactSystemVerilogParser(parameterFinder)),
+expressionParser_(expressionParser),
 resetValueValidator_(),
 resetMaskValidator_()
 {

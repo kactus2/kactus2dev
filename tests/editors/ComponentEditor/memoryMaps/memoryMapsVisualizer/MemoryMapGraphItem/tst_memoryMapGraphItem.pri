@@ -7,25 +7,23 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../../../../common/utils.h \
-    ../../../../../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.h \
+HEADERS += ../../../../../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.h \
     ../../../../../../common/graphicsItems/expandableitem.h \
     ../../../../../../common/graphicsItems/graphicsexpandcollapseitem.h \
     ../../../../../../editors/ComponentEditor/visualization/memorygapitem.h \
     ../../../../../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapgraphitem.h \
-    ../../../../../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapscene.h \
     ../../../../../../editors/ComponentEditor/visualization/memoryvisualizationitem.h \
     ../../../../../../common/graphicsItems/visualizeritem.h \
     ../../../../../../editors/ComponentEditor/common/ExpressionParser.h \
-    ../../../../../../editors/ComponentEditor/common/NullParser.h
+    ../../../../../../editors/ComponentEditor/common/NullParser.h \
+    ../../../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h
 SOURCES += ../../../../../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.cpp \
     ../../../../../../common/graphicsItems/expandableitem.cpp \
     ../../../../../../common/graphicsItems/graphicsexpandcollapseitem.cpp \
     ../../../../../../editors/ComponentEditor/visualization/memorygapitem.cpp \
     ../../../../../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapgraphitem.cpp \
-    ../../../../../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapscene.cpp \
     ../../../../../../editors/ComponentEditor/visualization/memoryvisualizationitem.cpp \
     ./tst_MemoryMapGraphItem.cpp \
-    ../../../../../../common/utils.cpp \
     ../../../../../../common/graphicsItems/visualizeritem.cpp \
-    ../../../../../../editors/ComponentEditor/common/NullParser.cpp
+    ../../../../../../editors/ComponentEditor/common/NullParser.cpp \
+    ../../../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp

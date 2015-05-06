@@ -125,6 +125,10 @@ protected slots:
     //! Update the graphics item of the register.
     virtual void updateGraphics();
 
+    virtual void onGraphicsChanged();
+    
+
+
 private:
 	
 	//! No copying

@@ -8,7 +8,6 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 
 HEADERS += ../../../../../../editors/ComponentEditor/common/NullParser.h \
-    ../../../../../../common/utils.h \
     ../../../../../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.h \
     ../../../../../../common/graphicsItems/expandableitem.h \
     ../../../../../../editors/ComponentEditor/visualization/fieldgapitem.h \
@@ -28,6 +27,5 @@ SOURCES += ../../../../../../editors/ComponentEditor/common/NullParser.cpp \
     ../../../../../../editors/ComponentEditor/visualization/memoryvisualizationitem.cpp \
     ../../../../../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/registergraphitem.cpp \
     ./tst_AddressBlockGraphItem.cpp \
-    ../../../../../../common/utils.cpp \
     ../../../../../../common/graphicsItems/visualizeritem.cpp \
     ../../../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp

@@ -15,6 +15,7 @@
 
 #include <IPXACTmodels/register.h>
 
+#include <QApplication>
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorAddrBlockItem::ComponentEditorAddrBlockItem()
 //-----------------------------------------------------------------------------
@@ -155,6 +156,18 @@ void ComponentEditorAddrBlockItem::onEditorChanged()
 
 	// call the base class to update this and parent
 	ComponentEditorItem::onEditorChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorAddrBlockItem::onGraphicsChanged()
+//-----------------------------------------------------------------------------
+void ComponentEditorAddrBlockItem::onGraphicsChanged()
+{
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+    ComponentEditorItem::onGraphicsChanged();
+
+    parent()->updateGraphics();
+    QApplication::restoreOverrideCursor();
 }
 
 //-----------------------------------------------------------------------------

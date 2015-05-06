@@ -13,7 +13,6 @@
 #define SINGLEFIELDEDITOR_H
 
 #include <editors/ComponentEditor/itemeditor.h>
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
 
@@ -31,7 +30,7 @@ class ReadActionComboBox;
 class TestConstraintComboBox;
 class ParameterFinder;
 class WriteValueConstraintComboBox;
-
+class ExpressionParser;
 //-----------------------------------------------------------------------------
 //! Editor for editing the details of a single register.
 //-----------------------------------------------------------------------------
@@ -44,16 +43,18 @@ public:
     /*!
 	 *  The constructor.
 	 *
-	 *      @param [in] field               Pointer to the field being edited.
-	 *      @param [in] component           Pointer to the component being edited.
-	 *      @param [in] handler             Pointer to the instance managing the library.
-	 *      @param [in] parameterFinder     Pointer to the instance for finding parameter references.
-	 *      @param [in] parent              Pointer to the parent of this editor.
+	 *      @param [in] field               The field being edited.
+	 *      @param [in] component           The component being edited.
+	 *      @param [in] handler             The instance managing the library.
+     *      @param [in] parameterFinder     The instance for finding parameter references.
+     *      @param [in] expressionParser    The expression parser to use.
+	 *      @param [in] parent              The parent of this editor.
 	 */
 	SingleFieldEditor(QSharedPointer<Field> field,
         QSharedPointer<Component> component,
         LibraryInterface* handler,
         QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionParser> expressionParser,
         QWidget* parent = 0);
 
     /*!
@@ -241,7 +242,7 @@ private:
     ExpressionEditor* isPresentEditor_;
 
     //! The expression parser.
-    QSharedPointer<IPXactSystemVerilogParser> expressionParser_;
+    QSharedPointer<ExpressionParser> expressionParser_;
 
     //! The write constraint selector.
     WriteValueConstraintComboBox* writeConstraintEditor_;

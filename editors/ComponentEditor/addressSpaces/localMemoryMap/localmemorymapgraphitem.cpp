@@ -7,24 +7,26 @@
 
 #include "localmemorymapgraphitem.h"
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapscene.h>
-#include <editors/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacevisualizationitem.h>
 
 LocalMemoryMapGraphItem::LocalMemoryMapGraphItem(QSharedPointer<AddressSpace> addrSpace, 
 												 QSharedPointer<MemoryMap> localMemoryMap,
 												 QGraphicsItem* parent /*= 0*/ ):
 MemoryMapGraphItem(localMemoryMap, localMemoryMap, parent),
-addrSpace_(addrSpace) {   
+addrSpace_(addrSpace)
+{   
 }
 
-LocalMemoryMapGraphItem::~LocalMemoryMapGraphItem() {
+LocalMemoryMapGraphItem::~LocalMemoryMapGraphItem()
+{
 }
 
-unsigned int LocalMemoryMapGraphItem::getAddressUnitSize() const {
+unsigned int LocalMemoryMapGraphItem::getAddressUnitSize() const
+{
 	return addrSpace_->getAddressUnitBits();
 }
 
-void LocalMemoryMapGraphItem::refresh() {
-
+void LocalMemoryMapGraphItem::refresh()
+{
     QString name = memoryMap_->getName();
     if (name.isEmpty())
     {
@@ -32,14 +34,17 @@ void LocalMemoryMapGraphItem::refresh() {
     }
 
     setName(name);
-    setLeftTopCorner(memoryMap_->getFirstAddress());
-    setLeftBottomCorner(memoryMap_->getLastAddress());
 
-    setToolTip("<b>Name: </b>" + memoryMap_->getName() + "<br>" +
+    quint64 offset = getOffset();
+    quint64 lastAddress = getLastAddress();
+
+    setLeftTopCorner(offset);
+    setLeftBottomCorner(lastAddress);
+
+    setToolTip("<b>Name: </b>" + name + "<br>" +
         "<b>AUB: </b>" + QString::number(getAddressUnitSize()) + "<br>" +
-        "<b>First address: </b>" + AddressSpaceVisualizationItem::addr2Str(getOffset(), getBitWidth()) + "<br>" +
-        "<b>Last address: </b>" + AddressSpaceVisualizationItem::addr2Str(memoryMap_->getLastAddress(), 
-        getBitWidth()));
+        "<b>First address: </b>" + toHexString(offset) + "<br>" +
+        "<b>Last address: </b>" + toHexString(lastAddress));
 
 	// set the positions for the children
 	MemoryVisualizationItem::reorganizeChildren();

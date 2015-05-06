@@ -19,6 +19,8 @@
 
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 
+#include <QApplication>
+
 //-----------------------------------------------------------------------------
 // Function: componenteditorregisteritem::ComponentEditorRegisterItem()
 //-----------------------------------------------------------------------------
@@ -96,7 +98,8 @@ ItemEditor* ComponentEditorRegisterItem::editor()
 {
 	if (!editor_)
     {
-        editor_ = new SingleRegisterEditor(reg_, component_, libHandler_, parameterFinder_, expressionFormatter_);
+        editor_ = new SingleRegisterEditor(reg_, component_, libHandler_, parameterFinder_, expressionFormatter_,
+            expressionParser_);
 		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(graphicsChanged()), this, SLOT(onGraphicsChanged()), Qt::UniqueConnection);
@@ -210,6 +213,19 @@ void ComponentEditorRegisterItem::updateGraphics()
     {
 		registerDimension->refresh();
 	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorRegisterItem::onGraphicsChanged()
+//-----------------------------------------------------------------------------
+void ComponentEditorRegisterItem::onGraphicsChanged()
+{
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+    ComponentEditorItem::onGraphicsChanged();
+
+    parent()->updateGraphics();
+    parent()->parent()->updateGraphics();
+    QApplication::restoreOverrideCursor();
 }
 
 //-----------------------------------------------------------------------------

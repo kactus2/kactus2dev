@@ -252,4 +252,9 @@ void MemoryRemapItem::changeAdressUnitBitsOnAddressBlocks()
             qobject_cast<QSharedPointer<ComponentEditorAddrBlockItem> >(childItem);
         castChildItem->addressUnitBitsChanged(parentMemoryMap_->getAddressUnitBits());
     }
+
+    if (graphItem_)
+    {
+        graphItem_->recursiveRefresh();
+    }
 }

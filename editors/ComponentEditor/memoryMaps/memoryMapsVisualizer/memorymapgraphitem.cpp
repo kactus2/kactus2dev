@@ -16,13 +16,12 @@
 #include <QBrush>
 #include <QColor>
 
-#include <QDebug>
-
 //-----------------------------------------------------------------------------
 // Function: MemoryMapGraphItem::MemoryMapGraphItem()
 //-----------------------------------------------------------------------------
-MemoryMapGraphItem::MemoryMapGraphItem(QSharedPointer<MemoryMap> parentMemoryMap,
-    QSharedPointer<AbstractMemoryMap> memoryRemap, QGraphicsItem* parent /* = 0 */):
+MemoryMapGraphItem::MemoryMapGraphItem(QSharedPointer<MemoryMap> parentMemoryMap,    
+    QSharedPointer<AbstractMemoryMap> memoryRemap,
+    QGraphicsItem* parent /* = 0 */):
 MemoryVisualizationItem(parent),
 memoryMap_(memoryRemap),
 parentMemoryMap_(parentMemoryMap)
@@ -54,14 +53,18 @@ void MemoryMapGraphItem::refresh()
 void MemoryMapGraphItem::updateDisplay()
 {
     setName(memoryMap_->getName());
-    setDisplayOffset(memoryMap_->getFirstAddress());
-    setDisplayLastAddress(memoryMap_->getLastAddress());
+
+    quint64 offset = getOffset();
+    quint64 lastAddress = getLastAddress();
+
+    setDisplayOffset(offset);
+    setDisplayLastAddress(lastAddress);
 
     // Set tooltip to show addresses in hexadecimals.
     setToolTip("<b>Name: </b>" + memoryMap_->getName() + "<br>" +
         "<b>AUB: </b>" + QString::number(parentMemoryMap_->getAddressUnitBits()) + "<br>" +
-        "<b>First address: </b>" + toHexString(getOffset()) + "<br>" +
-        "<b>Last address: </b>" + toHexString(memoryMap_->getLastAddress()));
+        "<b>First address: </b>" + toHexString(offset) + "<br>" +
+        "<b>Last address: </b>" + toHexString(lastAddress));
 }
 
 //-----------------------------------------------------------------------------
@@ -69,7 +72,14 @@ void MemoryMapGraphItem::updateDisplay()
 //-----------------------------------------------------------------------------
 quint64 MemoryMapGraphItem::getOffset() const 
 {
-	return memoryMap_->getFirstAddress();
+    if (childItems_.isEmpty())
+    {
+        return 0;
+    }
+    else
+    {
+        return childItems_.first()->getOffset();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -93,7 +103,14 @@ unsigned int MemoryMapGraphItem::getAddressUnitSize() const
 //-----------------------------------------------------------------------------
 quint64 MemoryMapGraphItem::getLastAddress() const 
 {
-	return memoryMap_->getLastAddress();
+    if (childItems_.isEmpty())
+    {
+        return 0;
+    }
+    else
+    {
+        return childItems_.last()->getLastAddress();
+    }
 }
 
 //-----------------------------------------------------------------------------

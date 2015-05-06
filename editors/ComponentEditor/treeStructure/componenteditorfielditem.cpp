@@ -85,7 +85,7 @@ ItemEditor* ComponentEditorFieldItem::editor()
 {
 	if (!editor_)
     {
-        editor_ = new SingleFieldEditor(field_, component_, libHandler_, parameterFinder_);
+        editor_ = new SingleFieldEditor(field_, component_, libHandler_, parameterFinder_, expressionParser_);
 		editor_->setProtection(locked_);
 
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
