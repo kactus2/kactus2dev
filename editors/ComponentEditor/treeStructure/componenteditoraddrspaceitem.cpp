@@ -12,6 +12,9 @@
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
 #include <editors/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacevisualizer.h>
 
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorAddrSpaceItem::ComponentEditorAddrSpaceItem()
+//-----------------------------------------------------------------------------
 ComponentEditorAddrSpaceItem::ComponentEditorAddrSpaceItem(QSharedPointer<AddressSpace> addrSpace,
 														   ComponentEditorTreeModel* model,
 														   LibraryInterface* libHandler,
@@ -27,7 +30,7 @@ localMemMap_(addrSpace->getLocalMemoryMap()),
 items_(addrSpace->getLocalMemoryMap()->getItems()),
 graphItem_(NULL),
 localMemMapVisualizer_(new MemoryMapsVisualizer()),
-addrSpaceVisualizer_(new AddressSpaceVisualizer(addrSpace)),
+addrSpaceVisualizer_(new AddressSpaceVisualizer(addrSpace, expressionParser)),
 expressionParser_(expressionParser)
 {
     setReferenceCounter(referenceCounter);
@@ -40,11 +43,12 @@ expressionParser_(expressionParser)
 	localMemMapVisualizer_->addMemoryMapItem(graphItem_);
 	graphItem_->refresh();
 
-	foreach (QSharedPointer<MemoryMapItem> memItem, items_) {
-
+	foreach (QSharedPointer<MemoryMapItem> memItem, items_)
+    {
 		// if the item is for address block then create child for it
 		QSharedPointer<AddressBlock> addrBlock = memItem.dynamicCast<AddressBlock>();
-		if (addrBlock) {
+		if (addrBlock)
+        {
 			QSharedPointer<ComponentEditorAddrBlockItem> addrBlockItem(
 				new ComponentEditorAddrBlockItem(addrBlock, model, libHandler, component, referenceCounter_,
                 parameterFinder_, expressionFormatter_,expressionParser_, this));
@@ -55,31 +59,50 @@ expressionParser_(expressionParser)
 	}
 }
 
-ComponentEditorAddrSpaceItem::~ComponentEditorAddrSpaceItem() {
-	if (localMemMapVisualizer_) {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorAddrSpaceItem::~ComponentEditorAddrSpaceItem()
+//-----------------------------------------------------------------------------
+ComponentEditorAddrSpaceItem::~ComponentEditorAddrSpaceItem()
+{
+	if (localMemMapVisualizer_)
+    {
 		delete localMemMapVisualizer_;
 		localMemMapVisualizer_ = NULL;
 	}
-	if (addrSpaceVisualizer_) {
+	if (addrSpaceVisualizer_)
+    {
 		delete addrSpaceVisualizer_;
 		addrSpaceVisualizer_ = NULL;
 	}
 }
 
-QString ComponentEditorAddrSpaceItem::text() const {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorAddrSpaceItem::text()
+//-----------------------------------------------------------------------------
+QString ComponentEditorAddrSpaceItem::text() const
+{
 	return addrSpace_->getName();
 }
 
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorAddrSpaceItem::isValid()
+//-----------------------------------------------------------------------------
 bool ComponentEditorAddrSpaceItem::isValid() const
 {
 	return addrSpace_->isValid(component_->getChoices(), component_->getRemapStateNames());
 }
 
-ItemEditor* ComponentEditorAddrSpaceItem::editor() {
-	if (!editor_) {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorAddrSpaceItem::editor()
+//-----------------------------------------------------------------------------
+ItemEditor* ComponentEditorAddrSpaceItem::editor()
+{
+	if (!editor_)
+    {
 		editor_ = new AddressSpaceEditor(component_, libHandler_, addrSpace_, parameterFinder_,
             expressionFormatter_);
 		editor_->setProtection(locked_);
+
 		connect(editor_, SIGNAL(contentChanged()),
 			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(childAdded(int)),
@@ -96,36 +119,57 @@ ItemEditor* ComponentEditorAddrSpaceItem::editor() {
 	return editor_;
 }
 
-QString ComponentEditorAddrSpaceItem::getTooltip() const {
-	return tr("Address space defines a logical address space seen by a master"
-		" bus interface");
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorAddrSpaceItem::getTooltip()
+//-----------------------------------------------------------------------------
+QString ComponentEditorAddrSpaceItem::getTooltip() const
+{
+	return tr("Address space defines a logical address space seen by a master bus interface");
 }
 
-void ComponentEditorAddrSpaceItem::createChild( int index ) {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorAddrSpaceItem::createChild()
+//-----------------------------------------------------------------------------
+void ComponentEditorAddrSpaceItem::createChild(int index)
+{
 	QSharedPointer<MemoryMapItem> memItem = items_[index];
 	QSharedPointer<AddressBlock> addrBlock = memItem.dynamicCast<AddressBlock>();
-	if (addrBlock) {
+	if (addrBlock)
+    {
 		QSharedPointer<ComponentEditorAddrBlockItem> addrBlockItem(
 			new ComponentEditorAddrBlockItem(addrBlock, model_, libHandler_, component_, referenceCounter_,
             parameterFinder_, expressionFormatter_, expressionParser_, this));
 		addrBlockItem->setLocked(locked_);
 
-		if (localMemMapVisualizer_) {
+		if (localMemMapVisualizer_)
+        {
 			addrBlockItem->setVisualizer(localMemMapVisualizer_);
 		}
 		childItems_.insert(index, addrBlockItem);
 	}
 }
 
-QGraphicsItem* ComponentEditorAddrSpaceItem::getGraphicsItem() {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorAddrSpaceItem::getGraphicsItem()
+//-----------------------------------------------------------------------------
+QGraphicsItem* ComponentEditorAddrSpaceItem::getGraphicsItem()
+{
 	return graphItem_;
 }
 
-void ComponentEditorAddrSpaceItem::updateGraphics() {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorAddrSpaceItem::updateGraphics()
+//-----------------------------------------------------------------------------
+void ComponentEditorAddrSpaceItem::updateGraphics()
+{
 	graphItem_->refresh();
 }
 
-void ComponentEditorAddrSpaceItem::removeGraphicsItem() {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorAddrSpaceItem::removeGraphicsItem()
+//-----------------------------------------------------------------------------
+void ComponentEditorAddrSpaceItem::removeGraphicsItem()
+{
 	Q_ASSERT(graphItem_);
 
 	// remove the graph item from the scene
@@ -139,12 +183,20 @@ void ComponentEditorAddrSpaceItem::removeGraphicsItem() {
 	graphItem_ = NULL;
 }
 
-ItemVisualizer* ComponentEditorAddrSpaceItem::visualizer() {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorAddrSpaceItem::visualizer()
+//-----------------------------------------------------------------------------
+ItemVisualizer* ComponentEditorAddrSpaceItem::visualizer()
+{
 	addrSpaceVisualizer_->refresh();
 	return addrSpaceVisualizer_;
 }
 
-void ComponentEditorAddrSpaceItem::onEditorChanged() {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorAddrSpaceItem::onEditorChanged()
+//-----------------------------------------------------------------------------
+void ComponentEditorAddrSpaceItem::onEditorChanged()
+{
 	ComponentEditorItem::onEditorChanged();
 	addrSpaceVisualizer_->refresh();
 }

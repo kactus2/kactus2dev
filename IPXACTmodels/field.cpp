@@ -611,18 +611,6 @@ bool Field::hasBitWidthExpression()
     return bitWidthAttributes_.contains("expression");
 }
 
-int Field::getMSB() const {
-	const int MSB = bitOffset_ + bitWidth_;
-	
-	// field is at least one bit wide
-	if (MSB == 0) {
-		return 0;
-	}
-	
-	// the number of bits starts at zero
-	return MSB -1;
-}
-
 const QMap<QString,QString>& Field::getBitWidthAttributes() const {
     return bitWidthAttributes_;
 }
@@ -763,6 +751,14 @@ QSharedPointer<WriteValueConstraint> Field::getWriteConstraint() {
 }
 
 //-----------------------------------------------------------------------------
+// Function: field::getNameGroup()
+//-----------------------------------------------------------------------------
+NameGroup& Field::getNameGroup()
+{
+    return nameGroup_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: field::parseVendorExtensions()
 //-----------------------------------------------------------------------------
 void Field::parseVendorExtensions(QDomNode const& fieldNode)
@@ -833,12 +829,4 @@ void Field::copyVendorExtensions(const Field & other)
             vendorExtensions_.append(QSharedPointer<VendorExtension>(extension->clone()));
         }
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: field::getNameGroup()
-//-----------------------------------------------------------------------------
-NameGroup& Field::getNameGroup()
-{
-    return nameGroup_;
 }

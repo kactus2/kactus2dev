@@ -12,6 +12,9 @@
 #include <QScrollArea>
 #include <QWidget>
 
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceEditor::AddressSpaceEditor()
+//-----------------------------------------------------------------------------
 AddressSpaceEditor::AddressSpaceEditor( QSharedPointer<Component> component, 
 										LibraryInterface* handler,
 									   QSharedPointer<AddressSpace> addrSpace,
@@ -81,10 +84,18 @@ localMemMap_(addrSpace->getLocalMemoryMap(), component, handler, parameterFinder
 	refresh();
 }
 
-AddressSpaceEditor::~AddressSpaceEditor() {
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceEditor::~AddressSpaceEditor()
+//-----------------------------------------------------------------------------
+AddressSpaceEditor::~AddressSpaceEditor()
+{
 }
 
-bool AddressSpaceEditor::isValid() const {
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceEditor::isValid()
+//-----------------------------------------------------------------------------
+bool AddressSpaceEditor::isValid() const
+{
 	if (!nameEditor_.isValid()) {
 		return false;
 	}
@@ -102,7 +113,11 @@ bool AddressSpaceEditor::isValid() const {
 	}
 }
 
-void AddressSpaceEditor::refresh() {
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceEditor::refresh()
+//-----------------------------------------------------------------------------
+void AddressSpaceEditor::refresh()
+{
 	nameEditor_.refresh();
 
 	general_.refresh();
@@ -110,7 +125,11 @@ void AddressSpaceEditor::refresh() {
 	localMemMap_.refresh();
 }
 
-void AddressSpaceEditor::showEvent( QShowEvent* event ) {
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceEditor::showEvent()
+//-----------------------------------------------------------------------------
+void AddressSpaceEditor::showEvent( QShowEvent* event )
+{
 	QWidget::showEvent(event);
 	emit helpUrlRequested("componenteditor/addressspace.html");
 }

@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 22.12.2012
- *      Author: Antti Kamppi
- * 		filename: addressspacescene.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: addressspacescene.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 22.12.2012
+//
+// Description:
+// The graphics scene containing the segments and local memory map of an address space.
+//-----------------------------------------------------------------------------
 
 #ifndef ADDRESSSPACESCENE_H
 #define ADDRESSSPACESCENE_H
@@ -16,11 +20,13 @@
 #include <QMultiMap>
 
 class AddressSpaceVisualizationItem;
+class ExpressionParser;
 
-/*! \brief The graphics scene containing the segments and local memory map of an address space.
- *
- */
-class AddressSpaceScene : public QGraphicsScene {
+//-----------------------------------------------------------------------------
+//! The graphics scene containing the segments and local memory map of an address space.
+//-----------------------------------------------------------------------------
+class AddressSpaceScene : public QGraphicsScene
+{
 	Q_OBJECT
 
 public:
@@ -28,28 +34,28 @@ public:
     //! Margin between segments/blocks and segments/blocks outside address space. 
     static const unsigned int MARGIN = 10;
 
-	/*! \brief The constructor.
+	/*! The constructor.
 	 *
-	 * \param addrSpace Pointer to the address space being visualized.
-	 * \param parent Pointer to the owner of the scene.
+	 *       @param [in] addrSpace         The address space being visualized.
+     *       @param [in] expressionParser  The expression parser to use for local memory maps.
+	 *       @param [in] parent            The owner of the scene.
 	 *
 	*/
-	AddressSpaceScene(QSharedPointer<AddressSpace> addrSpace, 
+	AddressSpaceScene(QSharedPointer<AddressSpace> addrSpace, QSharedPointer<ExpressionParser> expressionParser,
 		QObject *parent);
 	
-	//! \brief The destructor
+	//! The destructor
 	virtual ~AddressSpaceScene();
 
-	/*! \brief Refresh the address space visualization.
+	/*! Refresh the address space visualization.
 	 *
 	*/
 	virtual void refresh();
 
-	/*! \brief Reposition the items on the visualization.
+	/*! Reposition the items on the visualization.
 	 * 
 	 * The items are repositioned based on the offsets and new items are not 
 	 * created or old removed.
-	 *
 	*/
 	virtual void rePosition();
 
@@ -95,7 +101,11 @@ private:
         AddressSpaceGapItem::AddressPosition const align,
         QMultiMap<quint64, AddressSpaceVisualizationItem*>& map);
 
-	//! Pointer to the address space being visualized.
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+	//! The address space being visualized.
 	QSharedPointer<AddressSpace> addrSpace_;
 
 	//! Contains the segments and segments gaps ordered by offsets
@@ -109,6 +119,8 @@ private:
 
 	//! Contains the local address blocks outside address space ordered by offsets
 	QMultiMap<quint64, AddressSpaceVisualizationItem*> exceedingAddrBlocks_;
+
+    QSharedPointer<ExpressionParser> expressionParser_;
 };
 
 #endif // ADDRESSSPACESCENE_H

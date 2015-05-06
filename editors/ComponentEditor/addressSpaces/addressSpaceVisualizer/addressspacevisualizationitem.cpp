@@ -187,7 +187,8 @@ bool AddressSpaceVisualizationItem::isConflicted() const
 //-----------------------------------------------------------------------------
 // Function: addr2Str()
 //-----------------------------------------------------------------------------
-QString AddressSpaceVisualizationItem::addr2Str( quint64 const address, int const bitWidth ) {
+QString AddressSpaceVisualizationItem::addr2Str( quint64 const address, int const bitWidth )
+{
 	// convert the number into hexadecimal form
 	QString str = QString::number(address, 16);
 	str = str.toUpper();

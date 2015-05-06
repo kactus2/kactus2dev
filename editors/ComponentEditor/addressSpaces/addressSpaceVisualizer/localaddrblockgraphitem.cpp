@@ -1,22 +1,33 @@
-/* 
- *  	Created on: 14.1.2013
- *      Author: Antti Kamppi
- * 		filename: localaddrblockgraphitem.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: localaddrblockgraphitem.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 14.01.2013
+//
+// Description:
+// The graph item to visualize address blocks in local memory map.
+//-----------------------------------------------------------------------------
 
 #include "localaddrblockgraphitem.h"
 #include <common/utils.h>
 #include <common/KactusColors.h>
 
+#include <editors/ComponentEditor/common/ExpressionParser.h>
+
 #include <QBrush>
 
+//-----------------------------------------------------------------------------
+// Function: LocalAddrBlockGraphItem::LocalAddrBlockGraphItem()
+//-----------------------------------------------------------------------------
 LocalAddrBlockGraphItem::LocalAddrBlockGraphItem(QSharedPointer<AddressSpace> addrSpace,
 												 QSharedPointer<AddressBlock> block,
+                                                 QSharedPointer<ExpressionParser> expressionParser,
 												 QGraphicsItem* parent /*= 0*/ ):
 AddressSpaceVisualizationItem(addrSpace, parent),
-addrBlock_(block) {
-
+addrBlock_(block),
+expressionParser_(expressionParser)
+{
 	Q_ASSERT(addrBlock_);
 
 	QBrush brush(KactusColors::ADDR_BLOCK_COLOR);
@@ -24,31 +35,56 @@ addrBlock_(block) {
 	setNamePosition(VisualizerItem::NAME_LEFT_ALIGN, VisualizerItem::NAME_MIDDLE);
 }
 
-LocalAddrBlockGraphItem::~LocalAddrBlockGraphItem() {
+//-----------------------------------------------------------------------------
+// Function: LocalAddrBlockGraphItem::~LocalAddrBlockGraphItem()
+//-----------------------------------------------------------------------------
+LocalAddrBlockGraphItem::~LocalAddrBlockGraphItem()
+{
 }
 
-void LocalAddrBlockGraphItem::refresh() {
+//-----------------------------------------------------------------------------
+// Function: LocalAddrBlockGraphItem::refresh()
+//-----------------------------------------------------------------------------
+void LocalAddrBlockGraphItem::refresh()
+{
 	setName(addrBlock_->getName());
     
-    quint64 offset = Utils::str2Uint(addrBlock_->getBaseAddress());
-    quint64 lastAddr = addrBlock_->getLastAddress();
+    quint64 offset = getOffset();
+    quint64 lastAddr = getLastAddress();
     setOverlappingTop(offset);    
     setOverlappingBottom(lastAddr);
 	
     // Set tooltip to show addresses in hexadecimals.
     setToolTip("<b>Name: </b>" + addrBlock_->getName() + "<br>" +
-        "<b>Base address: </b>" + addr2Str(getOffset(), getBitWidth()) + "<br>" +
-        "<b>Last address: </b>" + addr2Str(addrBlock_->getLastAddress(), getBitWidth()) + "<br>" +
+        "<b>Base address: </b>" + addr2Str(offset, getBitWidth()) + "<br>" +
+        "<b>Last address: </b>" + addr2Str(lastAddr, getBitWidth()) + "<br>" +
         "<b>Size [AUB]: </b>" + addrBlock_->getRange());
 
 	VisualizerItem::reorganizeChildren();
 }
 
-quint64 LocalAddrBlockGraphItem::getOffset() const {
-	QString offset = addrBlock_->getBaseAddress();
-	return Utils::str2Uint(offset);
+//-----------------------------------------------------------------------------
+// Function: LocalAddrBlockGraphItem::getOffset()
+//-----------------------------------------------------------------------------
+quint64 LocalAddrBlockGraphItem::getOffset() const
+{
+	return expressionParser_->parseExpression(addrBlock_->getBaseAddress()).toUInt();
 }
 
-quint64 LocalAddrBlockGraphItem::getLastAddress() const {
-	return addrBlock_->getLastAddress();
+//-----------------------------------------------------------------------------
+// Function: LocalAddrBlockGraphItem::getLastAddress()
+//-----------------------------------------------------------------------------
+quint64 LocalAddrBlockGraphItem::getLastAddress() const 
+{
+    quint64 base = getOffset();
+    quint64 range = expressionParser_->parseExpression(addrBlock_->getRange()).toUInt();
+
+    quint64 lastAddr = base + range;
+
+    if (lastAddr == 0) 
+    {
+        return 0;
+    }
+
+    return lastAddr -1;
 }

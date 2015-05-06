@@ -1,24 +1,33 @@
-/* 
- *  	Created on: 19.12.2012
- *      Author: Antti Kamppi
- * 		filename: addressspacevisualizer.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: addressspacevisualizer.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 19.12.2012
+//
+// Description:
+// The visualizer to display the contents of an address space.
+//-----------------------------------------------------------------------------
 
 #include "addressspacevisualizer.h"
+
 #include <common/graphicsItems/visualizeritem.h>
 #include <common/widgets/summaryLabel/summarylabel.h>
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceVisualizer::AddressSpaceVisualizer()
+//-----------------------------------------------------------------------------
 AddressSpaceVisualizer::AddressSpaceVisualizer(QSharedPointer<AddressSpace> addrSpace,
+                                               QSharedPointer<ExpressionParser> expressionParser,
 											   QWidget *parent):
 ItemVisualizer(parent),
 addrSpace_(addrSpace),
 view_(new QGraphicsView(this)),
-scene_(new AddressSpaceScene(addrSpace, this)) {
-
+scene_(new AddressSpaceScene(addrSpace, expressionParser, this))
+{
 	// display a label on top the table
 	SummaryLabel* segmentLabel = new SummaryLabel(tr("Segments"), this);
 	SummaryLabel* localAddrBlockLabel = new SummaryLabel(tr("Address blocks"), this);
@@ -36,17 +45,33 @@ scene_(new AddressSpaceScene(addrSpace, this)) {
 	view_->setScene(scene_);
 }
 
-AddressSpaceVisualizer::~AddressSpaceVisualizer() {
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceVisualizer::~AddressSpaceVisualizer()
+//-----------------------------------------------------------------------------
+AddressSpaceVisualizer::~AddressSpaceVisualizer()
+{
 }
 
-void AddressSpaceVisualizer::refresh() {
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceVisualizer::refresh()
+//-----------------------------------------------------------------------------
+void AddressSpaceVisualizer::refresh()
+{
 	scene_->refresh();
 }
 
-QSize AddressSpaceVisualizer::minimumSizeHint() const {
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceVisualizer::minimumSizeHint()
+//-----------------------------------------------------------------------------
+QSize AddressSpaceVisualizer::minimumSizeHint() const
+{
 	return QSize(VisualizerItem::DEFAULT_WIDTH * 2 + 3, VisualizerItem::DEFAULT_HEIGHT * 6);
 }
 
-QSize AddressSpaceVisualizer::sizeHint() const {
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceVisualizer::sizeHint()
+//-----------------------------------------------------------------------------
+QSize AddressSpaceVisualizer::sizeHint() const
+{
 	return minimumSizeHint();
 }

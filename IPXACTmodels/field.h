@@ -185,12 +185,6 @@ public:
      */
     bool hasBitWidthExpression();
 
-	/*! \brief Get the MSB of the field.
-	 *
-	 * \return The MSB bit of the field.
-	*/
-	int getMSB() const;
-
     /*! \brief Get the attributes for the bit width element.
      *
      * \return QMap containing the attributes.

@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 22.12.2012
- *      Author: Antti Kamppi
- * 		filename: addressspacescene.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: addressspacescene.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 22.12.2012
+//
+// Description:
+// The graphics scene containing the segments and local memory map of an address space.
+//-----------------------------------------------------------------------------
 
 #include "addressspacescene.h"
 #include "segmentgraphitem.h"
@@ -11,22 +15,26 @@
 #include "addressspacegapitem.h"
 #include "localaddrblockgraphitem.h"
 #include "AddressSpaceConflictedItem.h"
+
 #include <IPXACTmodels/memorymap.h>
 #include <IPXACTmodels/memorymapitem.h>
 #include <IPXACTmodels/addressblock.h>
+
 #include <common/graphicsItems/visualizeritem.h>
 
 //-----------------------------------------------------------------------------
 // Function: AddressSpaceScene()
 //-----------------------------------------------------------------------------
 AddressSpaceScene::AddressSpaceScene(QSharedPointer<AddressSpace> addrSpace,
+     QSharedPointer<ExpressionParser> expressionParser,
 									 QObject *parent):
 QGraphicsScene(parent),
 addrSpace_(addrSpace),
 segmentItems_(),
 addrBlockItems_(),
 exceedingSegments_(),
-exceedingAddrBlocks_()
+exceedingAddrBlocks_(),
+expressionParser_(expressionParser)
 {
 }
 
@@ -49,9 +57,10 @@ void AddressSpaceScene::refresh()
     exceedingAddrBlocks_.clear();
     exceedingSegments_.clear();
 
-    QList<QSharedPointer<Segment> >& segs = addrSpace_->getSegments();
-    foreach(QSharedPointer<Segment> seg, segs) {
-        SegmentGraphItem* segItem = new SegmentGraphItem(addrSpace_, seg);
+    QList<QSharedPointer<Segment> >& segments = addrSpace_->getSegments();
+    foreach(QSharedPointer<Segment> current, segments)
+    {
+        SegmentGraphItem* segItem = new SegmentGraphItem(addrSpace_, current);
         addItem(segItem);
 
         if ( segItem->getOffset() > addrSpace_->getLastAddress())
@@ -66,12 +75,13 @@ void AddressSpaceScene::refresh()
 
     QSharedPointer<MemoryMap> localMap = addrSpace_->getLocalMemoryMap();
     QList<QSharedPointer<MemoryMapItem> >& blocks = localMap->getItems();
-    foreach (QSharedPointer<MemoryMapItem> memItem, blocks) {
-
+    foreach (QSharedPointer<MemoryMapItem> memItem, blocks)
+    {
         QSharedPointer<AddressBlock> addrBlock = memItem.dynamicCast<AddressBlock>();
         if (addrBlock) {
 
-            LocalAddrBlockGraphItem* blockItem = new LocalAddrBlockGraphItem(addrSpace_, addrBlock);
+            LocalAddrBlockGraphItem* blockItem = new LocalAddrBlockGraphItem(addrSpace_, addrBlock,
+                expressionParser_);
             addItem(blockItem);
 
             if (blockItem->getOffset() > addrSpace_->getLastAddress())
@@ -128,8 +138,8 @@ void AddressSpaceScene::rePosition()
         }
 
 		// if both have the same starting address
-		if (seg->getOverlappingTop() == block->getOverlappingTop()) {
-
+		if (seg->getOverlappingTop() == block->getOverlappingTop())
+        {
 			// the y-coordinate where the both items are aligned
 			qreal yCoord = qMax(segCoord, blockCoord);
 
@@ -178,7 +188,6 @@ void AddressSpaceScene::rePosition()
 				// the segment has been processed but block is needed on next loop iteration
 				prevSeg = seg;
 				++segIterator;
-				continue;
 			}
 
 			// if segment reaches further than block
@@ -210,7 +219,6 @@ void AddressSpaceScene::rePosition()
 				// the block has been processed but segment is needed on next loop iteration
 				prevBlock = block;
 				++blockIterator;
-				continue;
 			}
 			// if blocks are of same size
 			else {
@@ -232,7 +240,6 @@ void AddressSpaceScene::rePosition()
 				prevBlock = block;
 				++segIterator;
 				++blockIterator;
-				continue;
 			}
 		}
 
@@ -262,7 +269,6 @@ void AddressSpaceScene::rePosition()
 				// the segment has been processed but block is needed on next loop iteration
 				prevSeg = seg;
 				++segIterator;
-				continue;
 			}
 
 			// if segment reaches further than block
@@ -294,7 +300,6 @@ void AddressSpaceScene::rePosition()
 				// the block has been processed but segment is needed on next loop iteration
 				prevBlock = block;
 				++blockIterator;
-				continue;
 			}
 			// if blocks have the same ending address
 			else {
@@ -321,7 +326,6 @@ void AddressSpaceScene::rePosition()
 				prevBlock = block;
 				++segIterator;
 				++blockIterator;
-				continue;
 			}
 		}
 
@@ -359,7 +363,6 @@ void AddressSpaceScene::rePosition()
                 // the segment has been processed but block is needed on next loop iteration
                 prevSeg = seg;
 				++segIterator;
-				continue;
 			}
 
 			// if segment reaches further than block
@@ -382,7 +385,6 @@ void AddressSpaceScene::rePosition()
 				// the block has been processed but segment is needed on next loop iteration
 				prevBlock = block;
 				++blockIterator;
-				continue;
 			}
 			// if blocks have the same ending address
             else {
@@ -409,12 +411,11 @@ void AddressSpaceScene::rePosition()
 				prevBlock = block;
 				++segIterator;
 				++blockIterator;
-				continue;
 			}
 		}		
     }   
 
-    rePositionExceeding(qMax(segCoord,blockCoord)); 
+    rePositionExceeding(qMax(segCoord, blockCoord)); 
 }
 
 //-----------------------------------------------------------------------------
@@ -439,7 +440,8 @@ void AddressSpaceScene::updateMaps(QMultiMap<quint64, AddressSpaceVisualizationI
 
         // if the item is gap item then remove it
         AddressSpaceGapItem* gap = dynamic_cast<AddressSpaceGapItem*>(item);
-        if (gap) {
+        if (gap)
+        {
             removeItem(gap);
 			delete gap;
 			gap = NULL;

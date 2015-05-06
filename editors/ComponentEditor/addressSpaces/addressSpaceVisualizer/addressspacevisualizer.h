@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 19.12.2012
- *      Author: Antti Kamppi
- * 		filename: addressspacevisualizer.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: addressspacevisualizer.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 19.12.2012
+//
+// Description:
+// The visualizer to display the contents of an address space.
+//-----------------------------------------------------------------------------
 
 #ifndef ADDRESSSPACEVISUALIZER_H
 #define ADDRESSSPACEVISUALIZER_H
@@ -17,56 +21,61 @@
 #include <QGraphicsView>
 #include <QSize>
 
-/*! \brief The visualizer to display the contents of an address space.
- *
- */
-class AddressSpaceVisualizer : public ItemVisualizer {
+class ExpressionParser;
+
+//-----------------------------------------------------------------------------
+//! The visualizer to display the contents of an address space.
+//-----------------------------------------------------------------------------
+class AddressSpaceVisualizer : public ItemVisualizer
+{
 	Q_OBJECT
 
 public:
 
-	/*! \brief The constructor.
+	/*! The constructor.
 	 *
-	 * \param addrSpace Pointer to the address space being visualized.
-	 * \param parent Pointer to the owner of the visualizer.
+     *       @param [in] addrSpace          The address space being visualized.
+     *       @param [in] expressionParser   The expression parser to use.
+	 *       @param [in] parent             The owner of the visualizer.
 	 *
 	*/
 	AddressSpaceVisualizer(QSharedPointer<AddressSpace> addrSpace,
+        QSharedPointer<ExpressionParser> expressionParser,
 		QWidget *parent = 0);
 	
-	//! \brief The destructor
+	//! The destructor
 	virtual ~AddressSpaceVisualizer();
 
-	//! \brief Update the contents of the visualizer
+	//! Update the contents of the visualizer
 	virtual void refresh();
 
-	/*! \brief The minimum size hint for the visualizer.
+	/*! The minimum size hint for the visualizer.
 	 *
-	 * \return QSize contains the minimum size hint.
+	 *      @return The minimum size hint.
 	*/
 	virtual QSize minimumSizeHint() const;
 
-	/*! \brief The size hint for the visualizer.
+	/*! The size hint for the visualizer.
 	 *
-	 * \return QSize contains the size hint.
+	 *      @return The size hint.
 	*/
 	virtual QSize sizeHint() const;
 
 private:
 	
-	//! \brief No copying
+	//! No copying
 	AddressSpaceVisualizer(const AddressSpaceVisualizer& other);
 
-	//! \brief No assignment
+	//! No assignment
 	AddressSpaceVisualizer& operator=(const AddressSpaceVisualizer& other);
 
-	//! \brief Pointer to the address space being visualized.
+	//! The address space being visualized.
 	QSharedPointer<AddressSpace> addrSpace_;
 
-	//! \brief The view displaying the visualization items.
+	//! The view displaying the visualization items.
 	QGraphicsView* view_;
 
-	//! \brief The scene that manages the visualization items.
+	//! The scene that manages the visualization items.
 	AddressSpaceScene* scene_;
 };
 
