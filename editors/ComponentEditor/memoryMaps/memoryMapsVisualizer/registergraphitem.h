@@ -126,7 +126,16 @@ private:
      *      @return The position.
      */
     QPointF findPositionFor(MemoryVisualizationItem* child) const;
-    
+
+    /*!
+     *  Gets the MSB of the register.
+     *
+     *      @param [in] registerSize   The size of the register.
+     *
+     *      @return The MSB of the register.
+     */
+    unsigned int getRegisterMSB(unsigned int registerSize) const;
+
     /*!
      *  Checks if there is empty memory space between the beginning of the register item and its first child.
      *
@@ -134,7 +143,7 @@ private:
      *
      *      @return True, if there is empty space, otherwise false.
      */
-    bool emptySpaceBeforeLeftmostChild(MemoryVisualizationItem* current);
+    bool emptySpaceBeforeLeftmostChild(MemoryVisualizationItem* current, unsigned int registerMSB) const;
         
     /*!
      *  Checks if there is empty memory space between the given child and the last known used bit index.
@@ -144,7 +153,7 @@ private:
      *
      *      @return True, if there is empty space, otherwise false.
      */
-    bool emptySpaceBeforeChild(MemoryVisualizationItem* current, quint64 lastBitIndexInUse);
+    bool emptySpaceBeforeChild(MemoryVisualizationItem* current, quint64 lastBitIndexInUse) const;
     
     /*!
      *  Checks if the two consecutive children overlap.

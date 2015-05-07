@@ -32,18 +32,20 @@ memoryRemaps_(new QList<QSharedPointer<MemoryRemap> >())
 
         else if (tempNode.nodeName() == QString("spirit:memoryRemaps"))
         {
-            int extensionCount = tempNode.childNodes().count();
-            for (int j = 0; j < extensionCount; ++j)
+            int remapCount = tempNode.childNodes().count();
+            for (int j = 0; j < remapCount; ++j)
             {
-                QSharedPointer<MemoryRemap> temp (new MemoryRemap(tempNode.childNodes().at(j)));
-                memoryRemaps_->append(temp);
+                QDomNode remapNode = tempNode.childNodes().at(j);
+                QSharedPointer<MemoryRemap> memoryRemap (new MemoryRemap(remapNode));
+                memoryRemaps_->append(memoryRemap);
             }
         }
 
         else if (tempNode.nodeName() == QString("spirit:vendorExtensions")) 
         {
             int extensionCount = tempNode.childNodes().count();
-            for (int j = 0; j < extensionCount; ++j) {
+            for (int j = 0; j < extensionCount; ++j)
+            {
                 QDomNode extensionNode = tempNode.childNodes().at(j);
                 vendorExtensions_.append(QSharedPointer<VendorExtension>(new GenericVendorExtension(extensionNode)));
             }

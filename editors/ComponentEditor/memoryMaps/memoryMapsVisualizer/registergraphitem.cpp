@@ -40,8 +40,6 @@ expresionParser_(expressionParser)
 
     QBrush brush(KactusColors::REGISTER_COLOR);
 	setDefaultBrush(brush);
-
-    updateDisplay();
 }
 
 //-----------------------------------------------------------------------------
@@ -83,7 +81,7 @@ void RegisterGraphItem::updateDisplay()
     setToolTip("<b>Name: </b>" + register_->getName() + "<br>" +
         "<b>First address: </b>" + toHexString(offset) + "<br>" +
         "<b>Last address: </b>" + toHexString(lastAddress) + "<br>" +
-        "<b>Size [bits]: </b>" + QString::number(register_->getSize()));
+        "<b>Size [bits]: </b>" + expresionParser_->parseExpression(register_->getSizeExpression()));
 }
 
 //-----------------------------------------------------------------------------
@@ -187,9 +185,11 @@ void RegisterGraphItem::updateChildMap()
         }
     }
 
+    unsigned int registerMSB = getRegisterMSB(getBitWidth());
+
     foreach (MemoryVisualizationItem* item, childItems_)
     {
-        bool childIsOutsideRegister = item->getLastAddress() > register_->getMSB();
+        bool childIsOutsideRegister = item->getLastAddress() > registerMSB;
         item->setConflicted(childIsOutsideRegister);
 
         item->setDisplayOffset(item->getLastAddress());
@@ -224,9 +224,11 @@ void RegisterGraphItem::updateChildMap()
 //-----------------------------------------------------------------------------
 void RegisterGraphItem::repositionChildren()
 {
-    quint64 lastBitIndexInUse = register_->getMSB() + 1;
-    MemoryVisualizationItem* previous = 0;
+    unsigned int registerSize = getBitWidth();
+    unsigned int registerMSB = getRegisterMSB(registerSize);
 
+    quint64 lastBitIndexInUse = registerSize;
+    MemoryVisualizationItem* previous = 0;
     // QMap sorts children by ascending keys. This must iterate children from largest to smallest key (MSB). 
     // A local copy of the child items is created to ensure that inserting gaps does not interfere the iteration.
     QMap<quint64, MemoryVisualizationItem*> childCopies = childItems_;
@@ -238,9 +240,9 @@ void RegisterGraphItem::repositionChildren()
         if (current->isPresent())
         {
             // if there is a gap between the MSB of the register and the last item.
-            if (emptySpaceBeforeLeftmostChild(current))
+            if (emptySpaceBeforeLeftmostChild(current, registerMSB))
             {
-                createMemoryGap(current->getOffset() + current->getBitWidth(), register_->getMSB());
+                createMemoryGap(current->getOffset() + current->getBitWidth(), registerMSB);
             }
             else if (emptySpaceBeforeChild(current, lastBitIndexInUse))
             {
@@ -301,10 +303,12 @@ quint64 RegisterGraphItem::getSizeInAUB() const
 //-----------------------------------------------------------------------------
 qreal RegisterGraphItem::findWidthFor(MemoryVisualizationItem* child) const
 {
-    quint64 availableBits = register_->getSize() - child->getOffset();
+    unsigned int registerSize = getBitWidth();
+
+    quint64 availableBits = registerSize - child->getOffset();
     quint64 childBitWidth = qMin(quint64(child->getBitWidth()), availableBits);
 
-    qreal pixelsPerBit = childWidth_/register_->getSize();
+    qreal pixelsPerBit = childWidth_/registerSize;
 
     return pixelsPerBit * childBitWidth;
 }
@@ -316,15 +320,18 @@ QPointF RegisterGraphItem::findPositionFor(MemoryVisualizationItem* child) const
 {
     qreal y = rect().bottom();
 
+    unsigned int registerSize = getBitWidth();
+    unsigned int registerMSB = getRegisterMSB(registerSize);
+
     unsigned int hiBit = child->getLastAddress();
 
-    if (hiBit >= register_->getMSB())
+    if (hiBit >= registerMSB)
     {
         return QPointF(0, y);
     }
 
-    quint64 bits =  qMin(hiBit + 1, register_->getSize());    
-    qreal pixelsPerBit = childWidth_/register_->getSize();
+    quint64 bits =  qMin(hiBit + 1, registerSize);    
+    qreal pixelsPerBit = childWidth_/registerSize;
 
     qreal x = childWidth_ - pixelsPerBit * bits;
 
@@ -332,26 +339,31 @@ QPointF RegisterGraphItem::findPositionFor(MemoryVisualizationItem* child) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: RegisterGraphItem::compareItems()
+// Function: RegisterGraphItem::getRegisterMSB()
 //-----------------------------------------------------------------------------
-bool RegisterGraphItem::compareItems(MemoryVisualizationItem const* s1, MemoryVisualizationItem const* s2)
+unsigned int RegisterGraphItem::getRegisterMSB(unsigned int registerSize) const
 {
-    // Field with higher offset (lsb) precedes lower offset.
-    return s1->getOffset() > s2->getOffset();
+    unsigned int registerMSB = 0;
+    if (registerSize != 0)
+    {
+        registerMSB = registerSize -1;
+    }
+
+    return registerMSB;
 }
 
 //-----------------------------------------------------------------------------
 // Function: RegisterGraphItem::emptySpaceBeforeLeftmostChild()
 //-----------------------------------------------------------------------------
-bool RegisterGraphItem::emptySpaceBeforeLeftmostChild(MemoryVisualizationItem* current)
+bool RegisterGraphItem::emptySpaceBeforeLeftmostChild(MemoryVisualizationItem* current, unsigned int registerMSB) const
 {
-    return current == childItems_.last() && current->getLastAddress() < register_->getMSB();
+    return current == childItems_.last() && current->getLastAddress() < registerMSB;
 }
 
 //-----------------------------------------------------------------------------
 // Function: RegisterGraphItem::emptySpaceBeforeChild()
 //-----------------------------------------------------------------------------
-bool RegisterGraphItem::emptySpaceBeforeChild(MemoryVisualizationItem* current, quint64 lastBitIndexInUse)
+bool RegisterGraphItem::emptySpaceBeforeChild(MemoryVisualizationItem* current, quint64 lastBitIndexInUse) const
 {
     return current->getLastAddress() + 1 < lastBitIndexInUse;
 }
@@ -364,7 +376,7 @@ void RegisterGraphItem::createMemoryGap(quint64 startAddress, quint64 endAddress
     // create the gap item
     FieldGapItem* gap = new FieldGapItem(tr("Reserved"), this);
     gap->setStartAddress(startAddress);
-    gap->setEndAddress(qMin(endAddress, quint64(register_->getMSB())));
+    gap->setEndAddress(qMin(endAddress, quint64(getRegisterMSB(getBitWidth()))));
     gap->setPos(findPositionFor(gap));
     gap->setWidth(findWidthFor(gap));
 
@@ -377,4 +389,13 @@ void RegisterGraphItem::createMemoryGap(quint64 startAddress, quint64 endAddress
 bool RegisterGraphItem::childrenOverlap(MemoryVisualizationItem* current, MemoryVisualizationItem* previous)
 {
     return previous && current->getLastAddress() >= previous->getOffset();
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterGraphItem::compareItems()
+//-----------------------------------------------------------------------------
+bool RegisterGraphItem::compareItems(MemoryVisualizationItem const* s1, MemoryVisualizationItem const* s2)
+{
+    // Field with higher offset (lsb) precedes lower offset.
+    return s1->getOffset() > s2->getOffset();
 }

@@ -161,13 +161,13 @@ void MemoryRemapItem::createChild( int index )
 			new ComponentEditorAddrBlockItem(addrBlock, model_, libHandler_, component_, referenceCounter_,
             parameterFinder_, expressionFormatter_, expressionParser_, this));
 		addrBlockItem->setLocked(locked_);
-		
+		addrBlockItem->addressUnitBitsChanged(parentMemoryMap_->getAddressUnitBits());
+
 		if (visualizer_)
         {
 			addrBlockItem->setVisualizer(visualizer_);
 		}
 
-        updateGraphics();
 
 		childItems_.insert(index, addrBlockItem);
 	}

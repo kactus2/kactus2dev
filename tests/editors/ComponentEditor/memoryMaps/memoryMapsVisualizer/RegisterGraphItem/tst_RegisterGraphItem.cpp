@@ -105,6 +105,7 @@ void tst_RegisterGraphItem::testConstructor()
     testRegister->setSize(1);
 
     RegisterGraphItem* registerItem = new RegisterGraphItem(testRegister, noParser, addressBlockItem);
+    registerItem->refresh();
 
     QCOMPARE(registerItem->getName(), QString("testRegister"));
     QCOMPARE(registerItem->getOffset(), quint64(0));
@@ -125,8 +126,9 @@ void tst_RegisterGraphItem::testRegisterWithField()
 {    
     RegisterGraphItem* registerItem = createRegisterItem();
     FieldGraphItem* fieldItem = createFieldItem("testField", 0, 8, registerItem);
+    registerItem->refresh();
+    fieldItem->refresh();
 
-    QCOMPARE(registerItem->getName(), QString("testRegister"));
     QCOMPARE(registerItem->getOffset(), quint64(0));
     QCOMPARE(registerItem->getLastAddress(), quint64(0));
     QCOMPARE(registerItem->getDisplayOffset(), quint64(0));
@@ -611,7 +613,8 @@ void tst_RegisterGraphItem::testExpressions()
     QSharedPointer<ExpressionParser> expressionParser(new SystemVerilogExpressionParser());
 
     RegisterGraphItem* registerItem = new RegisterGraphItem(testRegister, expressionParser, addressBlockItem);
-    
+    registerItem->refresh();
+
     QCOMPARE(registerItem->getName(), QString("testRegister[0]"));
     QCOMPARE(registerItem->getDisplayOffset(), quint64(2));
     QCOMPARE(registerItem->getDisplayLastAddress(), quint64(3));

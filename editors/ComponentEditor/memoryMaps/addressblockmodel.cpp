@@ -606,7 +606,17 @@ bool AddressBlockModel::validateColumnForParameter(QModelIndex const& index) con
 
     if (reg)
     {
-        if (index.column() == AddressBlockColumns::REGISTER_DIMENSION)
+        if (index.column() == AddressBlockColumns::NAME)
+        {
+            QStringList registerNames;
+            foreach (QSharedPointer<RegisterModel> registerItem, items_)
+            {
+                registerNames.append(registerItem->getName());
+            }
+
+            return registerNames.count(reg->getName()) == 1;
+        }
+        else if (index.column() == AddressBlockColumns::REGISTER_DIMENSION)
         {
             QString dimension = QString::number(reg->getDim());
             return isValuePlainOrExpression(dimension);

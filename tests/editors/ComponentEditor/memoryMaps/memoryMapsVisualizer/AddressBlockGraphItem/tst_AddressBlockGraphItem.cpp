@@ -67,6 +67,7 @@ void tst_AddressBlockGraphItem::testConstructor()
     QSharedPointer<ExpressionParser> noParser(new NullParser());
 
     AddressBlockGraphItem* addressBlockItem = new AddressBlockGraphItem(addressBlock, noParser, 0);
+    addressBlockItem->refresh();
 
     QCOMPARE(addressBlockItem->getName(), QString("testBlock"));
     QCOMPARE(addressBlockItem->getOffset(), quint64(0));
@@ -102,6 +103,8 @@ void tst_AddressBlockGraphItem::testAddressBlockWithRegister()
 
     RegisterGraphItem* registerItem = new RegisterGraphItem(reg, noParser, addressBlockItem);
     addressBlockItem->addChild(registerItem);
+    addressBlockItem->refresh();
+    registerItem->refresh();
 
     QCOMPARE(addressBlockItem->getOffset(), quint64(0));
     QCOMPARE(addressBlockItem->getLastAddress(), quint64(0));
@@ -146,6 +149,7 @@ void tst_AddressBlockGraphItem::testRegisterInSecondAddress()
 
     RegisterGraphItem* registerItem = new RegisterGraphItem(reg, noParser, addressBlockItem);
     addressBlockItem->addChild(registerItem);
+    registerItem->refresh();
 
     expandItem(addressBlockItem);
 
@@ -195,6 +199,7 @@ void tst_AddressBlockGraphItem::testEmptyAfterLastRegister()
 
     RegisterGraphItem* registerItem = new RegisterGraphItem(reg, noParser, addressBlockItem);
     addressBlockItem->addChild(registerItem);
+    registerItem->refresh();
 
     expandItem(addressBlockItem);
 
@@ -233,6 +238,7 @@ void tst_AddressBlockGraphItem::testExpressions()
 
     AddressBlockGraphItem* addressBlockItem = new AddressBlockGraphItem(addressBlock, expressionParser, 0);
     addressBlockItem->setAddressableUnitBits(8);
+    addressBlockItem->refresh();
 
     QCOMPARE(addressBlockItem->getBitWidth(), 32);
     QCOMPARE(addressBlockItem->getDisplayOffset(), quint64(2));

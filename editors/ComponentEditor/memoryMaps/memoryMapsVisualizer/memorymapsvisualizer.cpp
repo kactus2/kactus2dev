@@ -20,7 +20,7 @@
 
 #include <QVBoxLayout>
 #include <QPointF>
-
+#include <QApplication>
 //-----------------------------------------------------------------------------
 // Function: MemoryMapsVisualizer::MemoryMapsVisualizer()
 //-----------------------------------------------------------------------------
@@ -94,6 +94,9 @@ QSize MemoryMapsVisualizer::sizeHint() const
 void MemoryMapsVisualizer::showEvent(QShowEvent* event)
 {
     QWidget::showEvent(event);
+    
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+
     emit displayed();
 
     foreach (MemoryMapGraphItem* memoryMap, memGraphItems_)
@@ -101,4 +104,6 @@ void MemoryMapsVisualizer::showEvent(QShowEvent* event)
         memoryMap->recursiveRefresh();
     }
     scene_->rePosition();
+
+    QApplication::restoreOverrideCursor();
 }

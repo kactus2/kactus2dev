@@ -208,6 +208,9 @@ void tst_MemoryMapGraphItem::testGapBetweenTwoAddressBlocks()
     memoryMapItem->addChild(firstBlockItem);
     memoryMapItem->addChild(secondBlockItem);
 
+    firstBlockItem->refresh();
+    secondBlockItem->refresh();
+
     expandItem(memoryMapItem);
 
     QVERIFY(firstBlockItem->isVisible());
@@ -260,6 +263,9 @@ void tst_MemoryMapGraphItem::testPartiallyOverlappingAddressBlocks()
     memoryMapItem->addChild(firstBlockItem);
     memoryMapItem->addChild(secondBlockItem);
 
+    firstBlockItem->refresh();
+    secondBlockItem->refresh();
+
     expandItem(memoryMapItem);
 
     QVERIFY(firstBlockItem->isVisible());
@@ -311,6 +317,9 @@ void tst_MemoryMapGraphItem::testFullyOverlappingAddressBlocks()
     memoryMapItem->addChild(firstBlockItem);
     memoryMapItem->addChild(secondBlockItem);
 
+    firstBlockItem->refresh();
+    secondBlockItem->refresh();
+
     expandItem(memoryMapItem);
 
     QVERIFY(firstBlockItem->isVisible());
@@ -357,6 +366,10 @@ void tst_MemoryMapGraphItem::testMultipleBlocksOverlapping()
     memoryMapItem->addChild(largeAddressBlock);
     memoryMapItem->addChild(firstOverlap);
     memoryMapItem->addChild(secondOverlap);
+
+    largeAddressBlock->refresh();
+    firstOverlap->refresh();
+    secondOverlap->refresh();
 
     expandItem(memoryMapItem);
 
@@ -416,6 +429,10 @@ void tst_MemoryMapGraphItem::testTwoBlocksCompletelyOverlappingThird()
     memoryMapItem->addChild(firstBlockItem);
     memoryMapItem->addChild(lastBlockItem);
     memoryMapItem->addChild(overlappedItem);
+
+    firstBlockItem->refresh();
+    lastBlockItem->refresh();
+    overlappedItem->refresh();
 
     expandItem(memoryMapItem);
 
@@ -485,6 +502,10 @@ void tst_MemoryMapGraphItem::testTwoOverlappingBlocksInsideThrid()
     memoryMapItem->addChild(firstOverlap);
     memoryMapItem->addChild(secondOverlap);
 
+    containerBlock->refresh();
+    firstOverlap->refresh();
+    secondOverlap->refresh();
+
     expandItem(memoryMapItem);
 
     QList<MemoryGapItem*> conflictedAreas = findMemoryGaps(memoryMapItem);
@@ -542,6 +563,10 @@ void tst_MemoryMapGraphItem::testIdenticalBlocksOverlappingThird()
     memoryMapItem->addChild(unique);
     memoryMapItem->addChild(firstTwin);
     memoryMapItem->addChild(secondTwin);
+
+    unique->refresh();
+    firstTwin->refresh();
+    secondTwin->refresh();
 
     expandItem(memoryMapItem);
 
@@ -604,6 +629,10 @@ void tst_MemoryMapGraphItem::testConsecutiveBlocksInsideThird()
     memoryMapItem->addChild(container);
     memoryMapItem->addChild(firstInsider);
     memoryMapItem->addChild(secondInsider);
+
+    container->refresh();
+    firstInsider->refresh();
+    secondInsider->refresh();
 
     expandItem(memoryMapItem);
 

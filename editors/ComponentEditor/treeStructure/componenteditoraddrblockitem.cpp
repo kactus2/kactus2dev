@@ -136,8 +136,7 @@ void ComponentEditorAddrBlockItem::createChild( int index )
 			regItem->setVisualizer(visualizer_);
 		}
 
-        updateGraphics();
-        parent()->updateGraphics();
+        onGraphicsChanged();
 
 		childItems_.insert(index, regItem);
 	}
@@ -203,8 +202,6 @@ void ComponentEditorAddrBlockItem::setVisualizer( MemoryMapsVisualizer* visualiz
 		regItem->setVisualizer(visualizer_);
 	}
 
-    updateGraphics();
-
 	connect(graphItem_, SIGNAL(selectEditor()),	this, SLOT(onSelectRequest()), Qt::UniqueConnection);
 }
 
@@ -249,9 +246,6 @@ void ComponentEditorAddrBlockItem::removeGraphicsItem()
 		// delete the graph item
 		delete graphItem_;
 		graphItem_ = NULL;
-
-		// tell the parent to refresh itself
-		parentItem->refresh();
 	}
 }
 

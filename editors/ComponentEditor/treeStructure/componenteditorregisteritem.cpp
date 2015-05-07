@@ -128,7 +128,6 @@ void ComponentEditorRegisterItem::createChild( int index )
 		fieldItem->setVisualizer(visualizer_);
 	}
 
-    updateGraphics();
 
     connect(fieldItem.data(), SIGNAL(graphicsChanged()), this, SLOT(onGraphicsChanged()), Qt::UniqueConnection);
 
@@ -180,11 +179,6 @@ void ComponentEditorRegisterItem::setVisualizer(MemoryMapsVisualizer* visualizer
 		QSharedPointer<ComponentEditorFieldItem> fieldItem = item.staticCast<ComponentEditorFieldItem>();
 		fieldItem->setVisualizer(visualizer_);
 	}
-    
-    foreach (RegisterGraphItem* registerDimension, registerDimensions_)
-    {
-        registerDimension->refresh();
-    }
 }
 
 //-----------------------------------------------------------------------------

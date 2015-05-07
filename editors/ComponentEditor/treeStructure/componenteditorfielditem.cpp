@@ -188,14 +188,10 @@ void ComponentEditorFieldItem::removeGraphicsItem()
 		// take the child from the parent
 		graphItem_->setParent(NULL);
 
-		disconnect(graphItem_, SIGNAL(selectEditor()),
-			this, SLOT(onSelectRequest()));
+		disconnect(graphItem_, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()));
 
 		// delete the graph item
 		delete graphItem_;
 		graphItem_ = NULL;
-
-		// tell the parent to refresh itself
-		parentItem->refresh();
 	}
 }

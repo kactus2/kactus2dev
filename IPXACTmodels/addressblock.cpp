@@ -253,8 +253,20 @@ bool AddressBlock::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > compo
         valid = false;
     }
 
+    QStringList registerNames;
 	foreach (QSharedPointer<RegisterModel> regModel, registerData_)
     {
+        if (registerNames.contains(regModel->getName()))
+        {
+            errorList.append(QObject::tr("%1 contains multiple registers with name %2").arg(
+                thisIdentifier, regModel->getName()));
+            valid = false;
+        }
+        else
+        {
+            registerNames.append(regModel->getName());
+        }
+
 		if (!regModel->isValid(componentChoices, errorList, thisIdentifier))
         {
 			valid = false;
@@ -297,8 +309,18 @@ bool AddressBlock::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > compo
         return false;
     }
 
+    QStringList registerNames;
 	foreach (QSharedPointer<RegisterModel> regModel, registerData_)
     {
+        if (registerNames.contains(regModel->getName()))
+        {
+            return false;
+        }
+        else
+        {
+            registerNames.append(regModel->getName());
+        }
+
 		if (!regModel->isValid(componentChoices))
         {
 			return false;
