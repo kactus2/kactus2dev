@@ -10,76 +10,56 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QScrollArea>
+#include <QSplitter>
 #include <QWidget>
 
 //-----------------------------------------------------------------------------
 // Function: AddressSpaceEditor::AddressSpaceEditor()
 //-----------------------------------------------------------------------------
 AddressSpaceEditor::AddressSpaceEditor( QSharedPointer<Component> component, 
-										LibraryInterface* handler,
-									   QSharedPointer<AddressSpace> addrSpace,
-                                       QSharedPointer <ParameterFinder> parameterFinder,
-                                       QSharedPointer <ExpressionFormatter> expressionFormatter,
-									   QWidget* parent /*= 0*/ ):
+    LibraryInterface* handler,
+    QSharedPointer<AddressSpace> addrSpace,
+    QSharedPointer <ParameterFinder> parameterFinder,
+    QSharedPointer <ExpressionFormatter> expressionFormatter,
+    QWidget* parent):
 ItemEditor(component, handler, parent),
-addrSpace_(addrSpace),
-nameEditor_(addrSpace->getNameGroup(), this),
-general_(addrSpace, this),
-segments_(addrSpace, component, handler, this),
-localMemMap_(addrSpace->getLocalMemoryMap(), component, handler, parameterFinder, expressionFormatter, this)
+    addrSpace_(addrSpace),
+    nameEditor_(addrSpace->getNameGroup(), this),
+    generalEditor_(addrSpace, this),
+    segmentsEditor_(addrSpace, component, handler, this),
+    localMemMapEditor_(addrSpace->getLocalMemoryMap(), component, handler, parameterFinder, expressionFormatter, 
+        this)
 {
 	Q_ASSERT(addrSpace_);
 
-	// create the scroll area
-	QScrollArea* scrollArea = new QScrollArea(this);
-	scrollArea->setWidgetResizable(true);
-	scrollArea->setFrameShape(QFrame::NoFrame);
+    connect(&nameEditor_, SIGNAL(contentChanged()),	this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
-	QVBoxLayout* scrollLayout = new QVBoxLayout(this);
-	scrollLayout->addWidget(scrollArea);
-	scrollLayout->setContentsMargins(0, 0, 0, 0);
+    connect(&generalEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(&generalEditor_, SIGNAL(graphicsChanged()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
 
-	// create the top widget and set it under the scroll area
-	QWidget* topWidget = new QWidget(scrollArea);
-	topWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    connect(&segmentsEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(&segmentsEditor_, SIGNAL(contentChanged()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
 
-	QVBoxLayout* layout = new QVBoxLayout(topWidget);
-
-	layout->addWidget(&nameEditor_);
-	connect(&nameEditor_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-
-	layout->addWidget(&general_);
-	connect(&general_, SIGNAL(contentChanged()), 
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-
-	layout->addWidget(&segments_);
-	connect(&segments_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&segments_, SIGNAL(errorMessage(const QString&)),
-		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
-	connect(&segments_, SIGNAL(noticeMessage(const QString&)),
-		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
-
-
-	layout->addWidget(&localMemMap_);
-	connect(&localMemMap_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(&localMemMap_, SIGNAL(errorMessage(const QString&)),
+    connect(&segmentsEditor_, SIGNAL(errorMessage(const QString&)),
         this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
-	connect(&localMemMap_, SIGNAL(itemAdded(int)),
+    connect(&segmentsEditor_, SIGNAL(noticeMessage(const QString&)),
+        this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
+
+	connect(&localMemMapEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(&localMemMapEditor_, SIGNAL(graphicsChanged()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
+    connect(&localMemMapEditor_, SIGNAL(errorMessage(const QString&)),
+        this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
+	connect(&localMemMapEditor_, SIGNAL(itemAdded(int)),
 		this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
-	connect(&localMemMap_, SIGNAL(itemRemoved(int)),
+	connect(&localMemMapEditor_, SIGNAL(itemRemoved(int)),
 		this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
 
-    connect(&localMemMap_, SIGNAL(increaseReferences(QString)),
+    connect(&localMemMapEditor_, SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
-    connect(&localMemMap_, SIGNAL(decreaseReferences(QString)),
+    connect(&localMemMapEditor_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
-	layout->setContentsMargins(0, 0, 0, 0);
-
-	scrollArea->setWidget(topWidget);
+    setupLayout();
 
 	refresh();
 }
@@ -96,21 +76,8 @@ AddressSpaceEditor::~AddressSpaceEditor()
 //-----------------------------------------------------------------------------
 bool AddressSpaceEditor::isValid() const
 {
-	if (!nameEditor_.isValid()) {
-		return false;
-	}
-	else if (!general_.isValid()) {
-		return false;
-	}
-	else if (!segments_.isValid()) {
-		return false;
-	}
-	else if (!localMemMap_.isValid()) {
-		return false;
-	}
-	else {
-		return true;
-	}
+	return nameEditor_.isValid() && generalEditor_.isValid() && segmentsEditor_.isValid() && 
+        localMemMapEditor_.isValid();
 }
 
 //-----------------------------------------------------------------------------
@@ -119,10 +86,9 @@ bool AddressSpaceEditor::isValid() const
 void AddressSpaceEditor::refresh()
 {
 	nameEditor_.refresh();
-
-	general_.refresh();
-	segments_.refresh();
-	localMemMap_.refresh();
+	generalEditor_.refresh();
+	segmentsEditor_.refresh();
+	localMemMapEditor_.refresh();
 }
 
 //-----------------------------------------------------------------------------
@@ -132,4 +98,59 @@ void AddressSpaceEditor::showEvent( QShowEvent* event )
 {
 	QWidget::showEvent(event);
 	emit helpUrlRequested("componenteditor/addressspace.html");
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceEditor::setupLayout()
+//-----------------------------------------------------------------------------
+void AddressSpaceEditor::setupLayout()
+{
+    QScrollArea* scrollArea = new QScrollArea(this);
+    scrollArea->setWidgetResizable(true);
+    scrollArea->setFrameShape(QFrame::NoFrame);
+
+    QVBoxLayout* scrollLayout = new QVBoxLayout(this);
+    scrollLayout->addWidget(scrollArea);
+    scrollLayout->setContentsMargins(0, 0, 0, 0);
+
+    QWidget* topWidget = new QWidget(scrollArea);
+    topWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+    QVBoxLayout* topLayout = new QVBoxLayout(topWidget);
+    
+    QHBoxLayout* nameAndGeneralLayout = new QHBoxLayout();
+    nameAndGeneralLayout->addWidget(&nameEditor_);
+    nameAndGeneralLayout->addWidget(&generalEditor_);
+    topLayout->addLayout(nameAndGeneralLayout);
+    topLayout->addWidget(&segmentsEditor_);
+    topLayout->setContentsMargins(0, 0, 0, 0);
+
+    QWidget* bottomWidget = new QWidget(scrollArea);
+    bottomWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+    QVBoxLayout* bottomLayout = new QVBoxLayout(bottomWidget);
+    bottomLayout->addWidget(&localMemMapEditor_);
+    bottomLayout->setContentsMargins(0, 0, 0, 0);
+
+    QSplitter* verticalSplitter = new QSplitter(Qt::Vertical, scrollArea);
+    verticalSplitter->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    verticalSplitter->addWidget(topWidget);
+    verticalSplitter->addWidget(bottomWidget);
+    verticalSplitter->setStretchFactor(1, 1);
+
+    QSplitterHandle* handle = verticalSplitter->handle(1);
+    QVBoxLayout* handleLayout = new QVBoxLayout(handle);
+    handleLayout->setSpacing(0);
+    handleLayout->setMargin(0);
+
+    QFrame* line = new QFrame(handle);
+    line->setLineWidth(2);
+    line->setMidLineWidth(2);
+    line->setFrameShape(QFrame::HLine);
+    line->setFrameShadow(QFrame::Sunken);
+    handleLayout->addWidget(line);
+
+    verticalSplitter->setHandleWidth(10);
+
+    scrollArea->setWidget(verticalSplitter);
 }

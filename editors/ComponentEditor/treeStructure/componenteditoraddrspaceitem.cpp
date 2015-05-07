@@ -52,7 +52,8 @@ expressionParser_(expressionParser)
 			QSharedPointer<ComponentEditorAddrBlockItem> addrBlockItem(
 				new ComponentEditorAddrBlockItem(addrBlock, model, libHandler, component, referenceCounter_,
                 parameterFinder_, expressionFormatter_,expressionParser_, this));
-
+            
+            addrBlockItem->addressUnitBitsChanged(addrSpace_->getAddressUnitBits());
 			addrBlockItem->setVisualizer(localMemMapVisualizer_);
 			childItems_.append(addrBlockItem);
 		}
@@ -103,16 +104,12 @@ ItemEditor* ComponentEditorAddrSpaceItem::editor()
             expressionFormatter_);
 		editor_->setProtection(locked_);
 
-		connect(editor_, SIGNAL(contentChanged()),
-			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
-		connect(editor_, SIGNAL(childAdded(int)),
-			this, SLOT(onAddChild(int)), Qt::UniqueConnection);
-		connect(editor_, SIGNAL(childRemoved(int)),
-			this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
-        connect(editor_, SIGNAL(errorMessage(QString const&)),
-            this, SIGNAL(errorMessage(QString const&)));
-		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
-			this, SIGNAL(helpUrlRequested(QString const&)));
+		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(graphicsChanged()), this, SLOT(onGraphicsChanged()), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(childAdded(int)), this, SLOT(onAddChild(int)), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(childRemoved(int)),	this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
+		connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
 
         connectItemEditorToReferenceCounter();
 	}
@@ -140,6 +137,7 @@ void ComponentEditorAddrSpaceItem::createChild(int index)
 			new ComponentEditorAddrBlockItem(addrBlock, model_, libHandler_, component_, referenceCounter_,
             parameterFinder_, expressionFormatter_, expressionParser_, this));
 		addrBlockItem->setLocked(locked_);
+        addrBlockItem->addressUnitBitsChanged(addrSpace_->getAddressUnitBits());
 
 		if (localMemMapVisualizer_)
         {
@@ -175,8 +173,7 @@ void ComponentEditorAddrSpaceItem::removeGraphicsItem()
 	// remove the graph item from the scene
 	localMemMapVisualizer_->removeMemoryMapItem(graphItem_);
 
-	disconnect(graphItem_, SIGNAL(selectEditor()),
-		this, SLOT(onSelectRequest()));
+	disconnect(graphItem_, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()));
 
 	// delete the graph item
 	delete graphItem_;
@@ -188,15 +185,13 @@ void ComponentEditorAddrSpaceItem::removeGraphicsItem()
 //-----------------------------------------------------------------------------
 ItemVisualizer* ComponentEditorAddrSpaceItem::visualizer()
 {
-	addrSpaceVisualizer_->refresh();
 	return addrSpaceVisualizer_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentEditorAddrSpaceItem::onEditorChanged()
+// Function: ComponentEditorAddrSpaceItem::onGraphicsChanged()
 //-----------------------------------------------------------------------------
-void ComponentEditorAddrSpaceItem::onEditorChanged()
+void ComponentEditorAddrSpaceItem::onGraphicsChanged()
 {
-	ComponentEditorItem::onEditorChanged();
 	addrSpaceVisualizer_->refresh();
 }

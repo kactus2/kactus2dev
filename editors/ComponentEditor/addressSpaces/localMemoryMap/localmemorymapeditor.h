@@ -67,6 +67,9 @@ signals:
 	//! \brief Emitted when the contents of the model change.
 	void contentChanged();
 
+    //! Emitted when the changes should be reflected in visualization.
+    void graphicsChanged();
+
 	//! \brief Emitted when a new memory map item is added to the given index.
 	void itemAdded(int index);
 

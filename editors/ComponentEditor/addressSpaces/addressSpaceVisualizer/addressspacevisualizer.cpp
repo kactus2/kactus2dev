@@ -75,3 +75,12 @@ QSize AddressSpaceVisualizer::sizeHint() const
 {
 	return minimumSizeHint();
 }
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceVisualizer::showEvent()
+//-----------------------------------------------------------------------------
+void AddressSpaceVisualizer::showEvent(QShowEvent* event)
+{
+    ItemVisualizer::showEvent(event);
+    refresh();
+}

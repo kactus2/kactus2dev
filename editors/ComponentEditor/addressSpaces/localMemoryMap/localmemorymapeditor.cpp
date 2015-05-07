@@ -79,10 +79,14 @@ LocalMemoryMapEditor::LocalMemoryMapEditor(QSharedPointer<MemoryMap> memoryMap,
     connect(this, SIGNAL(toggled(bool)), this, SLOT(onCheckStateChanged()), Qt::UniqueConnection);
 
 	connect(nameEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-
+    
 	connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(model_, SIGNAL(itemAdded(int)), this, SIGNAL(itemAdded(int)), Qt::UniqueConnection);
 	connect(model_, SIGNAL(itemRemoved(int)), this, SIGNAL(itemRemoved(int)), Qt::UniqueConnection);
+    
+    connect(model_, SIGNAL(graphicsChanged()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
+    connect(model_, SIGNAL(itemAdded(int)), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
+    connect(model_, SIGNAL(itemRemoved(int)), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
 
 	// connect view to model
 	connect(view_, SIGNAL(addItem(const QModelIndex&)),

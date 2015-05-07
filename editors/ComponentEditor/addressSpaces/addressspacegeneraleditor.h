@@ -11,100 +11,96 @@
 #include <IPXACTmodels/addressspace.h>
 #include <common/widgets/NumberLineEdit/numberlineedit.h>
 
-#include <QSpinBox>
 #include <QGroupBox>
 #include <QSharedPointer>
 
-/*! \brief Editor to set the general settings of an address space.
+/*! Editor to set the general settings of an address space.
  * 
  * The editable fields are:
  * - size of the addressable unit
  * - range of the address space
  * - width of the address space
  */
-class AddressSpaceGeneralEditor : public QGroupBox {
+class AddressSpaceGeneralEditor : public QGroupBox
+{
 	Q_OBJECT
 
 public:
 
-	/*! \brief The constructor
+	/*! The constructor
 	 *
-	 * \param addrSpace Pointer to the address space being edited.
-	 * \param parent Pointer to the owner of the editor.
-	 *
+	 *       @param [in] addrSpace  The address space being edited.
+	 *       @param [in] parent     The owner of the editor.
 	*/
-	AddressSpaceGeneralEditor(QSharedPointer<AddressSpace> addrSpace, 
-		QWidget *parent);
+	AddressSpaceGeneralEditor(QSharedPointer<AddressSpace> addrSpace, QWidget *parent);
 	
-	//! \brief The destructor
+	//! The destructor
 	virtual ~AddressSpaceGeneralEditor();
 
-	/*! \brief Check if the editor is in valid state and can be saved.
+	/*! Check if the editor is in valid state and can be saved.
 	 *
-	 * \return True if everything is ok.
+	 *      @return True if everything is ok.
 	*/
 	bool isValid() const;
 
-	/*! \brief Read the settings from the address space model to the editor fields.
+	/*! Read the settings from the address space model to the editor fields.
 	 *
 	*/
 	void refresh();
 
 signals:
 
-	//! \brief Emitted when the contents of one of the editor fields changes.
+	//! Emitted when the contents of one of the editor fields changes.
 	void contentChanged();
 
-	/*! \brief Emitted when user changes the size of an addressable unit.
+    //! Emitted when the change in fields should be reflected in the visualization.
+    void graphicsChanged();
+
+	/*! Emitted when user changes the size of an addressable unit.
 	 *
-	 * \param units The new addressable unit size.
-	 *
+	 *       @param units The new addressable unit size.
 	*/
 	void addressableUnitsChanged(int units);
 
-	/*! \brief Emitted when user changes the width of a row in address space.
+	/*! Emitted when user changes the width of a row in address space.
 	 *
-	 * \param width The new width of a row.
-	 *
+	 *       @param width The new width of a row.
 	*/
 	void widthChanged(int width);
 
-	/*! \brief Emitted when user changes the range of an address space.
+	/*! Emitted when user changes the range of an address space.
 	 *
-	 * \param range The new range as number of addressable units.
-	 *
+	 *       @param range The new range as number of addressable units.
 	*/
-	void rangeChanged(const QString& range);
+	void rangeChanged(QString const& range);
 
 private slots:
 
-	//! \brief Handler for changes in addressable unit.
-	void onAddrUnitChanged(int newValue);
+	//! Handler for changes in addressable unit.
+    void onAddrUnitChanged();
 
-	//! \brief Handler for changes in width.
-	void onWidthChanged(int newWidth);
+	//! Handler for changes in width.
+    void onWidthChanged();
 
-	//! \brief Handler for changes in range.
-	void onRangeChanged(const QString& newRange);
+	//! Handler for changes in range.
+    void onRangeChanged();
 
 private:
-	//! \brief No copying
+	//! No copying
 	AddressSpaceGeneralEditor(const AddressSpaceGeneralEditor& other);
-
-	//! \brief No assignment
 	AddressSpaceGeneralEditor& operator=(const AddressSpaceGeneralEditor& other);
 
-	//! \brief Pointer to the address space being edited.
+	//! The address space being edited.
 	QSharedPointer<AddressSpace> addrSpace_;
 
-	//! \brief Editor to set the size of an addressable unit.
-	QSpinBox addrUnit_;
+	//! Editor to set the size of an addressable unit.
+	NumberLineEdit addrUnitEditor_;
 
-	//! \brief Editor to set the width of one row in address space.
-	QSpinBox width_;
+    //! Editor to set the range of the address space.
+    NumberLineEdit rangeEditor_;
 
-	//! \brief Editor to set the range of the address space.
-	NumberLineEdit range_;
+	//! Editor to set the width of one row in address space.
+	NumberLineEdit widthEditor_;
 };
 
 #endif // ADDRESSSPACEGENERALEDITOR_H

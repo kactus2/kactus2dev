@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 21.2.2012
- *      Author: Antti Kamppi
- * 		filename: addressspaceeditor.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: addressspaceeditor.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 21.2.2012
+//
+// Description:
+// Editor to edit and save settings of an address space within component editor.
+//-----------------------------------------------------------------------------
 
 #ifndef ADDRESSSPACEEDITOR_H
 #define ADDRESSSPACEEDITOR_H
@@ -22,14 +26,16 @@
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
 #include <editors/ComponentEditor/itemeditor.h>
+
 #include <QSharedPointer>
 
 class LibraryInterface;
 
-/*! \brief Editor to edit and save settings of an address space within component editor.
- *
- */
-class AddressSpaceEditor : public ItemEditor {
+//-----------------------------------------------------------------------------
+//! Editor to edit and save settings of an address space within component editor.
+//-----------------------------------------------------------------------------
+class AddressSpaceEditor : public ItemEditor
+{
 	Q_OBJECT
 
 public:
@@ -37,12 +43,12 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] component               Pointer to the component being edited.
-	 *      @param [in] handler                 Pointer to the instance managing the library.
-	 *      @param [in] addrSpace               Pointer to the address space being edited.
-	 *      @param [in] parameterFinder         Pointer to the parameter finder.
-	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
-	 *      @param [in] parent                  Pointer to the owner of this editor.
+	 *      @param [in] component               The component being edited.
+	 *      @param [in] handler                 The instance managing the library.
+	 *      @param [in] addrSpace               The address space being edited.
+	 *      @param [in] parameterFinder         The parameter finder.
+	 *      @param [in] expressionFormatter     The expression formatter.
+	 *      @param [in] parent                  The owner of this editor.
 	 */
 	AddressSpaceEditor(QSharedPointer<Component> component,
 		LibraryInterface* handler,
@@ -51,46 +57,47 @@ public:
         QSharedPointer <ExpressionFormatter> expressionFormatter,
 		QWidget* parent = 0);
 	
-	//! \brief The destructor
+	//! The destructor
 	virtual ~AddressSpaceEditor();
 
-	/*! \brief Check for the validity of the address space.
+	/*! Check for the validity of the address space.
 	* 
-	* \return True if address space is valid and can be saved.
+	*       @return True if address space is valid and can be saved.
 	*/
 	virtual bool isValid() const;
 
-	/*! \brief Reload the information from the model to the editor.
+	/*! Reload the information from the model to the editor.
 	*/
 	virtual void refresh();
 
 protected:
 
-	//! \brief Handler for widget's show event
+	//! Handler for widget's show event
 	virtual void showEvent(QShowEvent* event);
 
 private:
 
-	//! \brief No copying
+	//! No copying
 	AddressSpaceEditor(const AddressSpaceEditor& other);
-
-	//! \brief No assignment
 	AddressSpaceEditor& operator=(const AddressSpaceEditor& other);
 
-	//! \brief Pointer to the address space being edited.
+    //! Sets the widget layout.
+    void setupLayout();
+
+	//! The address space being edited.
 	QSharedPointer<AddressSpace> addrSpace_;
 
-	//! \brief The editor to set the name, display name and description.
+	//! The editor to set the name, display name and description.
 	NameGroupEditor nameEditor_;
 
-	//! \brief The editor to set the general settings of address space.
-	AddressSpaceGeneralEditor general_;
+	//! The editor to set the general settings of address space.
+	AddressSpaceGeneralEditor generalEditor_;
 
-	//! \brief The editor to set the segments of the address space.
-	SegmentEditor segments_;
+	//! The editor to set the segments of the address space.
+	SegmentEditor segmentsEditor_;
 
-	//! \brief The editor to set the local memory map.
-	LocalMemoryMapEditor localMemMap_;
+	//! The editor to set the local memory map.
+	LocalMemoryMapEditor localMemMapEditor_;
 };
 
 #endif // ADDRESSSPACEEDITOR_H

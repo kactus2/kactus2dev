@@ -118,7 +118,7 @@ protected slots:
 	/*! Handler for editor's contentChanged signal.
 	 *
 	*/
-	virtual void onEditorChanged();
+	virtual void onGraphicsChanged();
 
 private:
 	//! No copying
