@@ -100,8 +100,8 @@ ItemEditor* ComponentEditorAddrSpaceItem::editor()
 {
 	if (!editor_)
     {
-		editor_ = new AddressSpaceEditor(component_, libHandler_, addrSpace_, parameterFinder_,
-            expressionFormatter_);
+		editor_ = new AddressSpaceEditor(component_, libHandler_, addrSpace_, parameterFinder_, 
+            expressionFormatter_, expressionParser_);
 		editor_->setProtection(locked_);
 
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);

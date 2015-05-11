@@ -108,7 +108,7 @@ QVariant ModelParameterModel::data(QModelIndex const& index, int role) const
     }
     else if (Qt::ForegroundRole == role)
     {
-        if (!validateColumnForParameter(index))
+        if (!validateIndex(index))
         {
              return QColor("red");
         }
@@ -426,9 +426,9 @@ void ModelParameterModel::setParameterFactory(QSharedPointer<ModelParameterFacto
 }
 
 //-----------------------------------------------------------------------------
-// Function: ModelParameterModel::validateColumnForParameter()
+// Function: ModelParameterModel::validateIndex()
 //-----------------------------------------------------------------------------
-bool ModelParameterModel::validateColumnForParameter(QModelIndex const& index) const
+bool ModelParameterModel::validateIndex(QModelIndex const& index) const
 {
     QSharedPointer <Parameter> parameter = getParameterOnRow(index.row());
 
@@ -439,7 +439,7 @@ bool ModelParameterModel::validateColumnForParameter(QModelIndex const& index) c
     }
     else
     {
-        return AbstractParameterModel::validateColumnForParameter(index);
+        return AbstractParameterModel::validateIndex(index);
     }
 }
 

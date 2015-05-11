@@ -88,15 +88,15 @@ protected:
      *      @return The expression for the index if available, otherwise the value for the given index.
      */
     virtual QVariant expressionOrValueForIndex(QModelIndex const& index) const = 0; 
-
+  
     /*!
-     *  Validates the data in a parameter corresponding to a given column.
+     *  Validates the data in an index.
      *
      *      @param [in] index   The index whose data to validate
      *
-     *      @return True, if the data in the parameter is valid, otherwise false.
+     *      @return True, if the data in the index is valid, otherwise false.
      */
-    virtual bool validateColumnForParameter(QModelIndex const& index) const = 0;
+    virtual bool validateIndex(QModelIndex const& index) const = 0;
 
     /*!
      *  Gets a black color for valid index and red color for invalid index.

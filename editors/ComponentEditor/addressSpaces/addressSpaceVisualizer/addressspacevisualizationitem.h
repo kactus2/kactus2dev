@@ -14,6 +14,7 @@
 #include <QSharedPointer>
 #include <QBrush>
 
+class ExpressionParser;
 /*! \brief The base class to visualize objects in address space editor.
  *
  */
@@ -35,7 +36,8 @@ public:
 	 * \param parent Pointer to the parent graphics item.
 	 *
 	*/
-	AddressSpaceVisualizationItem(QSharedPointer<AddressSpace> addrSpace,
+	AddressSpaceVisualizationItem(QString const& addressSpaceWidth,
+        QSharedPointer<ExpressionParser> expressionParser,
 		QGraphicsItem* parent = 0);
 	
 	//! \brief The destructor
@@ -55,12 +57,6 @@ public:
 	 * \return The last address.
 	*/
 	virtual quint64 getLastAddress() const = 0;
-
-	/*! \brief Get number of bits the addressable unit contains.
-	 *
-	 * \return The size of least addressable unit.
-	*/
-	virtual unsigned int getAddressUnitSize() const;
 
 	/*! \brief Get the bit width of the address space.
 	 * 
@@ -178,12 +174,12 @@ private:
 	
 	//! \brief No copying
 	AddressSpaceVisualizationItem(const AddressSpaceVisualizationItem& other);
-
-	//! \brief No assignment
 	AddressSpaceVisualizationItem& operator=(const AddressSpaceVisualizationItem& other);
 
-	//! Pointer to the address space being edited.
-	QSharedPointer<AddressSpace> addrSpace_;
+
+	QString addressSpaceWidth_;
+
+    QSharedPointer<ExpressionParser> expressionParser_;
 
 	//! Conflicted state. Item is conflicted if it overlaps with other items.
     bool conflicted_;

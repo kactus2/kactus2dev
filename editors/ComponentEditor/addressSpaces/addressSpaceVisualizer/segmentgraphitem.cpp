@@ -11,10 +11,11 @@
 
 #include <QBrush>
 
-SegmentGraphItem::SegmentGraphItem(QSharedPointer<AddressSpace> addrSpace,
-								   QSharedPointer<Segment> segment,
+SegmentGraphItem::SegmentGraphItem(QSharedPointer<Segment> segment,
+                                   QString const& addressSpaceWidth,
+                                   QSharedPointer<ExpressionParser> expressionParser,
 								   QGraphicsItem* parent):
-AddressSpaceVisualizationItem(addrSpace, parent),
+AddressSpaceVisualizationItem(addressSpaceWidth, expressionParser, parent),
 segment_(segment) {
 
 	Q_ASSERT(segment_);
@@ -30,14 +31,14 @@ SegmentGraphItem::~SegmentGraphItem() {
 void SegmentGraphItem::refresh() {
     setName(segment_->getName());
 
-    quint64 offset = Utils::str2Uint(segment_->getAddressOffset());
-    quint64 lastAddr = segment_->getLastAddress();
+    quint64 offset = getOffset();
+    quint64 lastAddr = getLastAddress();
     setOverlappingTop(offset);
     setOverlappingBottom(lastAddr);
 
     setToolTip("<b>Name: </b>" + segment_->getName() + "<br>" +
-        "<b>Offset: </b>" + addr2Str(getOffset(), getBitWidth()) + "<br>" +
-        "<b>Last address: </b>" + addr2Str(getLastAddress(), getBitWidth())  + "<br>" +
+        "<b>Offset: </b>" + addr2Str(offset, getBitWidth()) + "<br>" +
+        "<b>Last address: </b>" + addr2Str(lastAddr, getBitWidth())  + "<br>" +
         "<b>Size [AUB]: </b>" + segment_->getRange());
 
     VisualizerItem::reorganizeChildren();
@@ -48,8 +49,27 @@ quint64 SegmentGraphItem::getOffset() const {
 	return Utils::str2Uint(offset);
 }
 
-quint64 SegmentGraphItem::getLastAddress() const {
-	return segment_->getLastAddress();
+quint64 SegmentGraphItem::getLastAddress() const
+{
+    quint64 base = getOffset();
+    quint64 range = Utils::str2Uint(segment_->getRange());
+
+    quint64 lastAddr = base + range;
+
+    // if the base and range are undefined then return 0
+    if (lastAddr == 0) {
+        return 0;
+    }
+
+    // if they are defined then return actual last address
+    if (range != 0)
+    {
+        return lastAddr - 1;
+    }
+    else
+    {
+        return lastAddr;
+    }
 }
 
 void SegmentGraphItem::setOverlappingTop(quint64 const& address)

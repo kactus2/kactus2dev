@@ -266,14 +266,6 @@ public:
 	*/
 	void setSegments(const QList<QSharedPointer<Segment> >& segments);
 
-	/*! \brief Get the last address of the address space that has segment assigned to it.
-	 * 
-	 * If there are no segments defined then 0 is returned.
-	 * 
-	 * \return The last address contained in a segment.
-	*/
-	quint64 getLastSegmentedAddress() const;
-
 	/*! \brief Get the last address contained in the address space.
 	 * 
 	 * The last address is defined by the range specified for address space.
@@ -281,6 +273,10 @@ public:
 	 * \return The last address of the address space.
 	*/
 	quint64 getLastAddress() const;
+
+    void setWidthExpression(QString const& expression);
+
+    QString getWidthExpression();
 
 private:
 

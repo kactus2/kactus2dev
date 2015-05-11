@@ -521,7 +521,7 @@ void RemapConditionModel::save()
 //-----------------------------------------------------------------------------
 // Function: RemapConditionModel::getAllReferencesToIdInItemOnRow()
 //-----------------------------------------------------------------------------
-int RemapConditionModel::getAllReferencesToIdInItemOnRow(const int& row, QString valueID) const
+int RemapConditionModel::getAllReferencesToIdInItemOnRow(const int& row, QString const& valueID) const
 {
     int referencesInValue = remapPortsVisibleInModel_->at(row)->getValue().count(valueID);
 
@@ -529,9 +529,9 @@ int RemapConditionModel::getAllReferencesToIdInItemOnRow(const int& row, QString
 }
 
 //-----------------------------------------------------------------------------
-// Function: RemapConditionModel::validateColumnForParameter()
+// Function: RemapConditionModel::validateIndex()
 //-----------------------------------------------------------------------------
-bool RemapConditionModel::validateColumnForParameter(QModelIndex const& index) const
+bool RemapConditionModel::validateIndex(QModelIndex const& index) const
 {
     QSharedPointer<RemapPort> targetRemapPort = remapPortsVisibleInModel_->at(index.row());
 

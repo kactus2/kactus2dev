@@ -266,15 +266,15 @@ QVariant ParameterArrayModel::expressionOrValueForIndex(QModelIndex const& index
 //-----------------------------------------------------------------------------
 // Function: ParameterArrayModel::getAllReferencesToIdInItemOnRow()
 //-----------------------------------------------------------------------------
-int ParameterArrayModel::getAllReferencesToIdInItemOnRow(const int& row, QString valueID) const
+int ParameterArrayModel::getAllReferencesToIdInItemOnRow(const int& row, QString const& valueID) const
 {
     return arrayValues_.at(row).count(valueID);
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterArrayModel::validateColumnForParameter()
+// Function: ParameterArrayModel::validateIndex()
 //-----------------------------------------------------------------------------
-bool ParameterArrayModel::validateColumnForParameter(QModelIndex const& index) const
+bool ParameterArrayModel::validateIndex(QModelIndex const& index) const
 {
     if (index.column() == ArrayColumns::VALUE)
     {

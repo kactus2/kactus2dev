@@ -598,9 +598,9 @@ QVariant AddressBlockModel::expressionOrValueForIndex(QModelIndex const& index) 
 }
 
 //-----------------------------------------------------------------------------
-// Function: addressblockmodel::validateColumnForParameter()
+// Function: addressblockmodel::validateIndex()
 //-----------------------------------------------------------------------------
-bool AddressBlockModel::validateColumnForParameter(QModelIndex const& index) const
+bool AddressBlockModel::validateIndex(QModelIndex const& index) const
 {
     const QSharedPointer<Register> reg = items_.at(index.row()).dynamicCast<Register>();
 
@@ -718,7 +718,7 @@ bool AddressBlockModel::validateResetColumn(QString const& resetValue, int const
 //-----------------------------------------------------------------------------
 // Function: addressblockmodel::getAllReferencesToIdInItemOnRow()
 //-----------------------------------------------------------------------------
-int AddressBlockModel::getAllReferencesToIdInItemOnRow(const int& row, QString valueID) const
+int AddressBlockModel::getAllReferencesToIdInItemOnRow(const int& row, QString const& valueID) const
 {
     const QSharedPointer<Register> reg = items_.at(row).dynamicCast<Register>();
 
@@ -838,11 +838,11 @@ void AddressBlockModel::onRemoveItem( const QModelIndex& index ) {
 //-----------------------------------------------------------------------------
 void AddressBlockModel::decreaseReferencesWithRemovedRegister(QSharedPointer<Register> removedRegister)
 {
-    RegisterExpressionsGatherer* registerGatherer = new RegisterExpressionsGatherer();
-    QStringList expressionList = registerGatherer->getExpressions(removedRegister);
+    RegisterExpressionsGatherer registerGatherer;
+    QStringList expressionList = registerGatherer.getExpressions(removedRegister);
 
-    ReferenceCalculator* referenceCalculator = new ReferenceCalculator(getParameterFinder());
-    QMap<QString, int> referencedParameters = referenceCalculator->getReferencedParameters(expressionList);
+    ReferenceCalculator referenceCalculator(getParameterFinder());
+    QMap<QString, int> referencedParameters = referenceCalculator.getReferencedParameters(expressionList);
 
     foreach (QString referencedID, referencedParameters.keys())
     {

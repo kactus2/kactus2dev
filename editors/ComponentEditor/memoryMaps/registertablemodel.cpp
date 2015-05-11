@@ -453,9 +453,9 @@ QVariant RegisterTableModel::expressionOrValueForIndex(QModelIndex const& index)
 }
 
 //-----------------------------------------------------------------------------
-// Function: registertablemodel::validateColumnForParameter()
+// Function: registertablemodel::validateIndex()
 //-----------------------------------------------------------------------------
-bool RegisterTableModel:: validateColumnForParameter(QModelIndex const& index) const
+bool RegisterTableModel:: validateIndex(QModelIndex const& index) const
 {
     if (index.column() == RegisterColumns::OFFSET_COLUMN)
     {
@@ -490,7 +490,7 @@ bool RegisterTableModel:: validateColumnForParameter(QModelIndex const& index) c
 //-----------------------------------------------------------------------------
 // Function: registertablemodel::getAllReferencesToIdInItemOnRow()
 //-----------------------------------------------------------------------------
-int RegisterTableModel::getAllReferencesToIdInItemOnRow(const int& row, QString valueID) const
+int RegisterTableModel::getAllReferencesToIdInItemOnRow(const int& row, QString const& valueID) const
 {
     int referencesInBitOffset = fields_.at(row)->getBitOffsetExpression().count(valueID);
     int referencesInBitWidth = fields_.at(row)->getBitWidthExpression().count(valueID);

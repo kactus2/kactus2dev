@@ -460,9 +460,9 @@ QVariant MemoryMapModel::expressionOrValueForIndex(QModelIndex const& index) con
 }
 
 //-----------------------------------------------------------------------------
-// Function: memorymapmodel::validateColumnForParameter()
+// Function: memorymapmodel::validateIndex()
 //-----------------------------------------------------------------------------
-bool MemoryMapModel::validateColumnForParameter(QModelIndex const& index) const
+bool MemoryMapModel::validateIndex(QModelIndex const& index) const
 {
     if (index.column() == MemoryMapColumns::BASE_COLUMN)
     {
@@ -490,7 +490,7 @@ bool MemoryMapModel::validateColumnForParameter(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 // Function: memorymapmodel::getAllReferencesToIdInItemOnRow()
 //-----------------------------------------------------------------------------
-int MemoryMapModel::getAllReferencesToIdInItemOnRow(const int& row, QString valueID) const
+int MemoryMapModel::getAllReferencesToIdInItemOnRow(const int& row, QString const& valueID) const
 {
     QSharedPointer<AddressBlock> addressBlock = items_.at(row).dynamicCast<AddressBlock>();
 

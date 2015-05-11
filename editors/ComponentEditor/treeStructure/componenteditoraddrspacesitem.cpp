@@ -68,8 +68,10 @@ QString ComponentEditorAddrSpacesItem::text() const
 //-----------------------------------------------------------------------------
 ItemEditor* ComponentEditorAddrSpacesItem::editor()
 {
-	if (!editor_) {
-		editor_ = new AddressSpacesEditor(component_, libHandler_);
+	if (!editor_)
+    {
+		editor_ = new AddressSpacesEditor(component_, libHandler_, parameterFinder_, 
+            expressionFormatter_, expressionParser_);
 		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()), 
 			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
@@ -81,6 +83,8 @@ ItemEditor* ComponentEditorAddrSpacesItem::editor()
 			this, SIGNAL(helpUrlRequested(QString const&)));
 		connect(editor_, SIGNAL(selectBusInterface(const QString&)),
 			model_, SLOT(onSelectBusInterface(const QString&)), Qt::UniqueConnection);
+
+        connectItemEditorToReferenceCounter();
 	}
 	return editor_;
 }

@@ -138,7 +138,7 @@ protected:
      *
      *      @return     True, if the data is valid, otherwise false.
      */
-    virtual bool validateColumnForParameter(QModelIndex const& index) const;
+    virtual bool validateIndex(QModelIndex const& index) const;
 
     /*!
      *  Gets the number of all the references made on the selected row to the selected parameter.
@@ -148,7 +148,7 @@ protected:
      *
      *      @return The amount of references made on the selected row to the selected parameter.
      */
-    virtual int getAllReferencesToIdInItemOnRow(const int& row, QString valueID) const;
+    virtual int getAllReferencesToIdInItemOnRow(const int& row, QString const& valueID) const;
 
 public slots:
 

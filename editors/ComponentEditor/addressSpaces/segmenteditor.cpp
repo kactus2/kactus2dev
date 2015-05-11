@@ -6,21 +6,31 @@
  */
 
 #include "segmenteditor.h"
-#include <library/LibraryManager/libraryinterface.h>
-#include <common/delegates/LineEditDelegate/lineeditdelegate.h>
+
+#include "SegmentDelegate.h"
+
+#include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
+#include <editors/ComponentEditor/common/ParameterCompleter.h>
 
 #include <QVBoxLayout>
 
+//-----------------------------------------------------------------------------
+// Function: SegmentEditor::SegmentEditor()
+//-----------------------------------------------------------------------------
 SegmentEditor::SegmentEditor(QSharedPointer<AddressSpace> addrSpace, 
 	QSharedPointer<Component> component,
-	LibraryInterface* handler,
+    QString const& componentPath,
+    QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionParser> expressionParser,
+    QSharedPointer<ExpressionFormatter> expressionFormatter,
 							 QWidget *parent ):
 QGroupBox(tr("Segments"), parent),
 view_(this),
 proxy_(this),
-model_(addrSpace, this),
-component_(component),
-handler_(handler) {
+model_(addrSpace, parameterFinder, expressionFormatter, this),
+component_(component)
+{
+    model_.setExpressionParser(expressionParser);
 
 	connect(&model_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -45,8 +55,7 @@ handler_(handler) {
 	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
 		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 
-	const QString compPath = handler_->getDirectoryPath(*component_->getVlnv());
-	QString defPath = QString("%1/segmentList.csv").arg(compPath);
+	QString defPath = QString("%1/segmentList.csv").arg(componentPath);
 	view_.setDefaultImportExportPath(defPath);
 	view_.setAllowImportExport(true);
 
@@ -56,12 +65,20 @@ handler_(handler) {
 	// items can not be dragged
 	view_.setItemsDraggable(false);
 
-	view_.setItemDelegate(new LineEditDelegate(this));
+    ComponentParameterModel* completionModel = new ComponentParameterModel(parameterFinder, this);
+    completionModel->setExpressionParser(expressionParser);
+
+    ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
+    parameterCompleter->setModel(completionModel);
+
+	view_.setItemDelegate(new SegmentDelegate(parameterCompleter, parameterFinder, this));
 
 	// set source model for proxy
 	proxy_.setSourceModel(&model_);
 	// set proxy to be the source for the view
 	view_.setModel(&proxy_);
+
+    proxy_.setSortRole(Qt::ToolTipRole);
 
 	// sort the view
 	view_.sortByColumn(0, Qt::AscendingOrder);
@@ -70,14 +87,26 @@ handler_(handler) {
 	layout->addWidget(&view_);
 }
 
-SegmentEditor::~SegmentEditor() {
+//-----------------------------------------------------------------------------
+// Function: SegmentEditor::~SegmentEditor()
+//-----------------------------------------------------------------------------
+SegmentEditor::~SegmentEditor()
+{
 }
 
-bool SegmentEditor::isValid() const {
+//-----------------------------------------------------------------------------
+// Function: SegmentEditor::isValid()
+//-----------------------------------------------------------------------------
+bool SegmentEditor::isValid() const
+{
 	return model_.isValid();
 }
 
-void SegmentEditor::refresh() {
+//-----------------------------------------------------------------------------
+// Function: SegmentEditor::refresh()
+//-----------------------------------------------------------------------------
+void SegmentEditor::refresh()
+{
 	view_.update();
 	view_.sortByColumn(1, Qt::AscendingOrder);
 }

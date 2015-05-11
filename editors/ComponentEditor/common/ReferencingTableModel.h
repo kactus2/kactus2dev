@@ -55,7 +55,7 @@ protected:
      *
      *      @return The amount of references made to the selected id on the selected row.
      */
-    virtual int getAllReferencesToIdInItemOnRow(const int& row, QString valueID) const = 0;
+    virtual int getAllReferencesToIdInItemOnRow(const int& row, QString const& valueID) const = 0;
 
     /*!
      *  Remove all the references from a single expression.

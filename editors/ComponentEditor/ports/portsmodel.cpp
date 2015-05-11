@@ -841,9 +841,9 @@ QVariant PortsModel::expressionOrValueForIndex(QModelIndex const& index) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: portsmodel::validateColumnForParameter()
+// Function: portsmodel::validateIndex()
 //-----------------------------------------------------------------------------
-bool PortsModel::validateColumnForParameter(QModelIndex const& index) const
+bool PortsModel::validateIndex(QModelIndex const& index) const
 {
     QSharedPointer<Port> port = portOnRow(index.row());
 
@@ -899,7 +899,7 @@ bool PortsModel::isArrayValid(QSharedPointer<Port> port) const
 //-----------------------------------------------------------------------------
 // Function: portsmodel::getAllReferencesToIdInItemOnRow()
 //-----------------------------------------------------------------------------
-int PortsModel::getAllReferencesToIdInItemOnRow(const int& row, QString valueID) const
+int PortsModel::getAllReferencesToIdInItemOnRow(const int& row, QString const& valueID) const
 {
     QSharedPointer<Port> port = model_->getPorts().at(row);
 

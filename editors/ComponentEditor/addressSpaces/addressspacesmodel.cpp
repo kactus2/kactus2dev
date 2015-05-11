@@ -6,206 +6,246 @@
  */
 
 #include "addressspacesmodel.h"
-#include "addressspacesdelegate.h"
+
+#include "AddressSpaceColumns.h"
+
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
 #include <QColor>
 
-AddressSpacesModel::AddressSpacesModel( QSharedPointer<Component> component, 
-									   QObject *parent ):
-QAbstractTableModel(parent),
-component_(component),
-addrSpaces_(component->getAddressSpaces()) {
+//-----------------------------------------------------------------------------
+// Function: AddressSpacesModel::AddressSpacesModel()
+//-----------------------------------------------------------------------------
+AddressSpacesModel::AddressSpacesModel(QSharedPointer<Component> component, 
+    QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QObject *parent):
+ReferencingTableModel(parameterFinder, parent),
+    ParameterizableTable(parameterFinder),
+    component_(component),
+    addrSpaces_(component->getAddressSpaces()),
+    expressionFormatter_(expressionFormatter)
+{
 
-	Q_ASSERT(component);
 }
 
-AddressSpacesModel::~AddressSpacesModel() {
+//-----------------------------------------------------------------------------
+// Function: AddressSpacesModel::~AddressSpacesModel()
+//-----------------------------------------------------------------------------
+AddressSpacesModel::~AddressSpacesModel()
+{
 }
 
-int AddressSpacesModel::rowCount( const QModelIndex& parent /*= QModelIndex()*/ ) const {
-	if (parent.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: AddressSpacesModel::rowCount()
+//-----------------------------------------------------------------------------
+int AddressSpacesModel::rowCount(QModelIndex const& parent) const
+{
+	if (parent.isValid())
+    {
 		return 0;
 	}
 	return addrSpaces_.size();
 }
 
-int AddressSpacesModel::columnCount( const QModelIndex& parent /*= QModelIndex()*/ ) const {
-	if (parent.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: AddressSpacesModel::columnCount()
+//-----------------------------------------------------------------------------
+int AddressSpacesModel::columnCount(QModelIndex const& parent) const
+{
+	if (parent.isValid())
+    {
 		return 0;
 	}
-	return AddressSpacesDelegate::COLUMN_COUNT;
+
+	return AddressSpaceColumns::COLUMN_COUNT;
 }
 
-Qt::ItemFlags AddressSpacesModel::flags( const QModelIndex& index ) const {
-	if (!index.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: AddressSpacesModel::rowCount()
+//-----------------------------------------------------------------------------
+Qt::ItemFlags AddressSpacesModel::flags(QModelIndex const& index ) const
+{
+	if (!index.isValid())
+    {
 		return Qt::NoItemFlags;
 	}
 	// interface references are made in bus interface editor
-	if (index.column() == AddressSpacesDelegate::INTERFACE_COLUMN) {
-		return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+	if (index.column() == AddressSpaceColumns::INTERFACE_BINDING)
+    {
+		return Qt::ItemIsSelectable;
 	}
+
 	return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
 }
 
-QVariant AddressSpacesModel::headerData( int section, Qt::Orientation orientation, int role /*= Qt::DisplayRole*/ ) const {
-	if (orientation != Qt::Horizontal) {
+//-----------------------------------------------------------------------------
+// Function: AddressSpacesModel::headerData()
+//-----------------------------------------------------------------------------
+QVariant AddressSpacesModel::headerData( int section, Qt::Orientation orientation, int role) const
+{
+	if (orientation != Qt::Horizontal)
+    {
 		return QVariant();
 	}
-	if (Qt::DisplayRole == role) {
-
-		switch (section) {
-			case AddressSpacesDelegate::NAME_COLUMN: {
-				return tr("Name");
-					}
-			case AddressSpacesDelegate::ADDR_UNIT_COLUMN: {
-				return tr("Addressable\nunit bits (AUB)");
-					}
-			case AddressSpacesDelegate::RANGE_COLUMN: {
-				return tr("Range\n[AUB]");
-													  }
-			case AddressSpacesDelegate::WIDTH_COLUMN: {
-				return tr("Width\n [bits]");
-					}
-			case AddressSpacesDelegate::INTERFACE_COLUMN: {
-				return tr("Master interface\nbinding");
-													   }
-			case AddressSpacesDelegate::DESCRIPTION_COLUMN: {
-				return tr("Description");
-															}
-			default: {
-				return QVariant();
-					 }
-		}
+	if (Qt::DisplayRole == role) 
+    {
+        if (section == AddressSpaceColumns::NAME)
+        {
+            return tr("Name");
+        }
+        else if (section == AddressSpaceColumns::AUB)
+        {
+            return tr("Addressable\nunit bits (AUB)");
+        }
+        else if (section == AddressSpaceColumns::RANGE)
+        {
+            return tr("Range\n[AUB]") + getExpressionSymbol();
+        }
+        else if (section == AddressSpaceColumns::WIDTH)
+        {
+            return tr("Width\n [bits]") + getExpressionSymbol();
+        }
+        else if (section == AddressSpaceColumns::INTERFACE_BINDING)
+        {
+            return tr("Master interface\nbinding");
+        }
+        else if (section == AddressSpaceColumns::DESCRIPTION)
+        {
+            return tr("Description");
+        }
+        else
+        {
+            return QVariant();
+        }
 	}
-	else {
+	else
+    {
 		return QVariant();
 	}
 }
 
-QVariant AddressSpacesModel::data( const QModelIndex& index, int role /*= Qt::DisplayRole*/ ) const {
-	if (!index.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: AddressSpacesModel::data()
+//-----------------------------------------------------------------------------
+QVariant AddressSpacesModel::data(QModelIndex const& index, int role) const
+{
+	if (!index.isValid() || index.row() < 0 || index.row() >= addrSpaces_.size())
+    {
 		return QVariant();
 	}
-	else if (index.row() < 0 || index.row() >= addrSpaces_.size()) {
-		return QVariant();
+
+	if (role == Qt::DisplayRole) 
+    {
+        if (isValidExpressionColumn(index))
+        {
+            return expressionFormatter_->formatReferringExpression(expressionOrValueForIndex(index).toString());
+        }
+
+        return expressionOrValueForIndex(index);
 	}
-
-	if (Qt::DisplayRole == role) {
-
-		switch (index.column()) {
-			case AddressSpacesDelegate::NAME_COLUMN: {
-				return addrSpaces_.at(index.row())->getName();
-													 }
-			case AddressSpacesDelegate::ADDR_UNIT_COLUMN: {
-				return addrSpaces_.at(index.row())->getAddressUnitBits();
-														  }
-			case AddressSpacesDelegate::WIDTH_COLUMN: {
-				return addrSpaces_.at(index.row())->getWidth();
-													  }
-			case AddressSpacesDelegate::RANGE_COLUMN: {
-				return addrSpaces_.at(index.row())->getRange();
-													  }
-			case AddressSpacesDelegate::INTERFACE_COLUMN: {
-				QStringList interfaceNames = component_->getMasterInterfaces(
-					addrSpaces_.at(index.row())->getName());
-
-				// if no interface refers to the memory map
-				if (interfaceNames.isEmpty()) {
-					return tr("No binding");
-				}
-				// if there are then show them separated by space
-				else {
-					return interfaceNames.join(" ");
-				}
-													   }
-			case AddressSpacesDelegate::DESCRIPTION_COLUMN: {
-				return addrSpaces_.at(index.row())->getDescription();
-															}
-			default: {
-				return QVariant();
-					 }
-		}
-	}
-	if (AddressSpacesDelegate::USER_DISPLAY_ROLE == role) {
+    else if (role == Qt::EditRole)
+    {
+        return expressionOrValueForIndex(index);  
+    }
+	else if (Qt::UserRole == role)
+    {
 		return component_->getMasterInterfaces(addrSpaces_.at(index.row())->getName());
 	}
 	else if (Qt::ForegroundRole == role)
     {
-		if (addrSpaces_.at(index.row())->isValid(component_->getChoices(), component_->getRemapStateNames()))
+        if (index.column() == AddressSpaceColumns::INTERFACE_BINDING)
         {
-			return QColor("black");
-		}
-		else {
-			return QColor("red");
-		}
-	}
-	else if (Qt::BackgroundRole == role) {
-		switch (index.column()) {
-			case AddressSpacesDelegate::NAME_COLUMN:
-			case AddressSpacesDelegate::ADDR_UNIT_COLUMN:
-			case AddressSpacesDelegate::WIDTH_COLUMN: 
-			case AddressSpacesDelegate::RANGE_COLUMN: {
-				return QColor("LemonChiffon");
-										  }
-			default:
-				return QColor("white");
-		}
-	}
-	else {
-		return QVariant();
-	}
+            return QColor("gray");
+        }
+        
+        return blackForValidOrRedForInvalidIndex(index);
+    }
+    else if (Qt::BackgroundRole == role)
+    {
+        if (index.column() == AddressSpaceColumns::NAME || index.column() ==  AddressSpaceColumns::AUB ||
+            index.column() ==  AddressSpaceColumns::WIDTH || index.column() ==  AddressSpaceColumns::RANGE)
+        {
+            return QColor("LemonChiffon");
+        }
+        else
+        {
+            return QColor("white");
+        }
+    }
+    else if (role == Qt::ToolTipRole)
+    {
+        if (isValidExpressionColumn(index))
+        {
+            return formattedValueFor(expressionOrValueForIndex(index).toString());
+        }
+
+        return expressionOrValueForIndex(index);        
+    }
+    else
+    {
+        return QVariant();
+    }
 }
 
-bool AddressSpacesModel::setData( const QModelIndex& index, const QVariant& value, int role /*= Qt::EditRole*/ ) {
-	if (!index.isValid()) {
-		return false;
-	}
-	else if (index.row() < 0 || index.row() >= addrSpaces_.size()) {
+//-----------------------------------------------------------------------------
+// Function: AddressSpacesModel::setData()
+//-----------------------------------------------------------------------------
+bool AddressSpacesModel::setData(QModelIndex const& index, QVariant const& value, int role)
+{
+	if (!index.isValid() || index.row() < 0 || index.row() >= addrSpaces_.size())
+    {
 		return false;
 	}
 
-	if (Qt::EditRole == role) {
-
-		switch (index.column()) {
-			case AddressSpacesDelegate::NAME_COLUMN: {
-				addrSpaces_[index.row()]->setName(value.toString());
-				break;
-													 }
-			case AddressSpacesDelegate::ADDR_UNIT_COLUMN: {
-				addrSpaces_[index.row()]->setAddressUnitBits(value.toUInt());
-				break;
-														  }
-			case AddressSpacesDelegate::WIDTH_COLUMN: {
-				addrSpaces_[index.row()]->setWidth(value.toUInt());
-				break;
-													  }
-			case AddressSpacesDelegate::RANGE_COLUMN: {
-				addrSpaces_[index.row()]->setRange(value.toString());
-				break;
-													  }
-			case AddressSpacesDelegate::DESCRIPTION_COLUMN: {
-				addrSpaces_[index.row()]->setDescription(value.toString());
-				break;
-															}
-			default: {
-				return false;
-					 }
-		}
+	if (Qt::EditRole == role)
+    {
+        if (index.column() == AddressSpaceColumns::NAME)
+        {
+            addrSpaces_[index.row()]->setName(value.toString());
+        }
+        else if (index.column() == AddressSpaceColumns::AUB)
+        {
+            addrSpaces_[index.row()]->setAddressUnitBits(value.toUInt());
+        }
+        else if (index.column() == AddressSpaceColumns::WIDTH)
+        {
+            addrSpaces_[index.row()]->setWidth(parseExpressionToDecimal(value.toString()).toUInt());
+            addrSpaces_[index.row()]->setWidthExpression(value.toString());
+        }
+        else if (index.column() == AddressSpaceColumns::RANGE)
+        {
+            addrSpaces_[index.row()]->setRange(value.toString());
+        }
+        else if (index.column() == AddressSpaceColumns::DESCRIPTION)
+        {
+            addrSpaces_[index.row()]->setDescription(value.toString());
+        }
+        else
+        {
+            return false;
+        }
 
 		emit dataChanged(index, index);
 		emit contentChanged();
 		return true;
 	}
-	else {
+	else
+    {
 		return false;
 	}
 }
 
-void AddressSpacesModel::onAddItem( const QModelIndex& index ) {
+//-----------------------------------------------------------------------------
+// Function: AddressSpacesModel::onAddItem()
+//-----------------------------------------------------------------------------
+void AddressSpacesModel::onAddItem(QModelIndex const& index )
+{
 	int row = addrSpaces_.size();
 
 	// if the index is valid then add the item to the correct position
-	if (index.isValid()) {
+	if (index.isValid())
+    {
 		row = index.row();
 	}
 
@@ -220,15 +260,18 @@ void AddressSpacesModel::onAddItem( const QModelIndex& index ) {
 	emit contentChanged();
 }
 
-void AddressSpacesModel::onRemoveItem( const QModelIndex& index ) {
+//-----------------------------------------------------------------------------
+// Function: AddressSpacesModel::onRemoveItem()
+//-----------------------------------------------------------------------------
+void AddressSpacesModel::onRemoveItem(QModelIndex const& index )
+{
 	// don't remove anything if index is invalid
-	if (!index.isValid()) {
+	if (!index.isValid() || index.row() < 0 || index.row() >= addrSpaces_.size())
+    {
 		return;
 	}
-	// make sure the row number if valid
-	else if (index.row() < 0 || index.row() >= addrSpaces_.size()) {
-		return;
-	}
+
+    removeReferencesInItemOnRow(index.row());
 
 	// remove the specified item
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
@@ -242,6 +285,9 @@ void AddressSpacesModel::onRemoveItem( const QModelIndex& index ) {
 	emit contentChanged();
 }
 
+//-----------------------------------------------------------------------------
+// Function: AddressSpacesModel::isValid()
+//-----------------------------------------------------------------------------
 bool AddressSpacesModel::isValid() const
 {
 	// if at least one address space is invalid
@@ -254,4 +300,84 @@ bool AddressSpacesModel::isValid() const
 	}
 	// all address spaces were valid
 	return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpacesModel::isValidExpressionColumn()
+//-----------------------------------------------------------------------------
+bool AddressSpacesModel::isValidExpressionColumn(QModelIndex const& index) const
+{
+    return index.column() == AddressSpaceColumns::WIDTH || index.column() == AddressSpaceColumns::RANGE;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpacesModel::expressionOrValueForIndex()
+//-----------------------------------------------------------------------------
+QVariant AddressSpacesModel::expressionOrValueForIndex(QModelIndex const& index) const
+{
+    if (index.column() == AddressSpaceColumns::NAME)
+    {
+        return addrSpaces_.at(index.row())->getName();
+    }
+    else if (index.column() == AddressSpaceColumns::AUB)
+    {
+        return addrSpaces_.at(index.row())->getAddressUnitBits();
+    }
+    else if (index.column() == AddressSpaceColumns::WIDTH)
+    {
+        return addrSpaces_.at(index.row())->getWidthExpression();
+    }
+    else if (index.column() == AddressSpaceColumns::RANGE)
+    {
+        return addrSpaces_.at(index.row())->getRange();
+    }
+    else if (index.column() == AddressSpaceColumns::INTERFACE_BINDING)
+    {
+        QStringList interfaceNames = component_->getMasterInterfaces(addrSpaces_.at(index.row())->getName());
+
+        // if no interface refers to the memory map
+        if (interfaceNames.isEmpty())
+        {
+            return tr("No binding");
+        }
+        // if there are then show them separated by space
+        else
+        {
+            return interfaceNames.join(" ");
+        }
+    }
+    else if (index.column() == AddressSpaceColumns::DESCRIPTION)
+    {
+        return addrSpaces_.at(index.row())->getDescription();
+    }
+    else
+    {
+        return QVariant();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpacesModel::validateIndex()
+//-----------------------------------------------------------------------------
+bool AddressSpacesModel::validateIndex(QModelIndex const& index) const
+{
+    if (isValidExpressionColumn(index))
+    {
+        return isValuePlainOrExpression(expressionOrValueForIndex(index).toString());
+    }
+    else
+    {
+        return true;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpacesModel::getAllReferencesToIdInItemOnRow()
+//-----------------------------------------------------------------------------
+int AddressSpacesModel::getAllReferencesToIdInItemOnRow(const int& row, QString const& valueID) const
+{
+    int referencesInRange = addrSpaces_.at(row)->getRange().count(valueID);
+    int referencesInWidth = addrSpaces_.at(row)->getWidthExpression().count(valueID);
+
+    return referencesInRange + referencesInWidth;
 }

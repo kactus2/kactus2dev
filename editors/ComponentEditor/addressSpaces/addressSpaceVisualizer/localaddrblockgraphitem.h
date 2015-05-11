@@ -36,8 +36,8 @@ public:
 	 *       @param [in] parent             The parent graph item.
 	 *
 	*/
-	LocalAddrBlockGraphItem(QSharedPointer<AddressSpace> addrSpace,
-		QSharedPointer<AddressBlock> block,
+	LocalAddrBlockGraphItem(QSharedPointer<AddressBlock> block,
+        QString const& addressSpaceWidth,
         QSharedPointer<ExpressionParser> expressionParser,
 		QGraphicsItem* parent = 0);
 	

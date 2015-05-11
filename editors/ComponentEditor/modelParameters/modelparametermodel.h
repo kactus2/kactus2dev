@@ -270,7 +270,7 @@ protected:
      *
      *      @return True, if the data in the parameter is valid, otherwise false.
      */
-    virtual bool validateColumnForParameter(QModelIndex const& index) const;
+    virtual bool validateIndex(QModelIndex const& index) const;
 
 private:
 

@@ -492,9 +492,9 @@ QString AbstractParameterModel::matchArrayValuesToSelectedChoice(QSharedPointer<
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractParameterModel::validateColumnForParameter()
+// Function: AbstractParameterModel::validateIndex()
 //-----------------------------------------------------------------------------
-bool AbstractParameterModel::validateColumnForParameter(QModelIndex const& index) const
+bool AbstractParameterModel::validateIndex(QModelIndex const& index) const
 {
     QSharedPointer<Parameter> parameter = getParameterOnRow(index.row());
 
@@ -746,7 +746,7 @@ QVariant AbstractParameterModel::backgroundColorForIndex(QModelIndex const& inde
 //-----------------------------------------------------------------------------
 // Function: AbstractParameterModel::getAllReferencesToIdInItemRow()
 //-----------------------------------------------------------------------------
-int AbstractParameterModel::getAllReferencesToIdInItemOnRow(const int& row, QString valueID) const
+int AbstractParameterModel::getAllReferencesToIdInItemOnRow(const int& row, QString const& valueID) const
 {
     QSharedPointer<Parameter> parameter = getParameterOnRow(row);
 

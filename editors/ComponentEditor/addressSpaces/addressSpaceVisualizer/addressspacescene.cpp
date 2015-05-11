@@ -20,6 +20,8 @@
 #include <IPXACTmodels/memorymapitem.h>
 #include <IPXACTmodels/addressblock.h>
 
+#include <editors/ComponentEditor/common/ExpressionParser.h>
+
 #include <common/graphicsItems/visualizeritem.h>
 
 //-----------------------------------------------------------------------------
@@ -57,13 +59,15 @@ void AddressSpaceScene::refresh()
     exceedingAddrBlocks_.clear();
     exceedingSegments_.clear();
 
+    quint64 addressSpaceEnd = addressSpaceLastAddress();
+
     QList<QSharedPointer<Segment> >& segments = addrSpace_->getSegments();
     foreach(QSharedPointer<Segment> current, segments)
     {
-        SegmentGraphItem* segItem = new SegmentGraphItem(addrSpace_, current);
+        SegmentGraphItem* segItem = new SegmentGraphItem(current, addrSpace_->getWidthExpression(), expressionParser_);
         addItem(segItem);
 
-        if ( segItem->getOffset() > addrSpace_->getLastAddress())
+        if ( segItem->getOffset() > addressSpaceEnd)
         {
             exceedingSegments_.insert(segItem->getOffset(), segItem);
         }
@@ -80,11 +84,11 @@ void AddressSpaceScene::refresh()
         QSharedPointer<AddressBlock> addrBlock = memItem.dynamicCast<AddressBlock>();
         if (addrBlock) {
 
-            LocalAddrBlockGraphItem* blockItem = new LocalAddrBlockGraphItem(addrSpace_, addrBlock,
-                expressionParser_);
+            LocalAddrBlockGraphItem* blockItem = new LocalAddrBlockGraphItem(addrBlock, 
+                addrSpace_->getWidthExpression(), expressionParser_);
             addItem(blockItem);
 
-            if (blockItem->getOffset() > addrSpace_->getLastAddress())
+            if (blockItem->getOffset() > addressSpaceEnd)
             {
                 exceedingAddrBlocks_.insert(blockItem->getOffset(), blockItem);
             }
@@ -425,6 +429,8 @@ void AddressSpaceScene::updateMaps(QMultiMap<quint64, AddressSpaceVisualizationI
     QMultiMap<quint64, AddressSpaceVisualizationItem*> const& exceedingItemMap, 
     AddressSpaceGapItem::AddressPosition const align) 
 {
+    quint64 addressSpaceEnd = addressSpaceLastAddress();
+
     // Conflict all items outside address space.
     foreach (AddressSpaceVisualizationItem* exceedingItem, exceedingItemMap)
     {
@@ -451,7 +457,7 @@ void AddressSpaceScene::updateMaps(QMultiMap<quint64, AddressSpaceVisualizationI
         // update the offset for other than gap items
         quint64 offset = item->getOffset();
         newMap.insert(offset, item);
-        if (item->getLastAddress() > addrSpace_->getLastAddress())
+        if (item->getLastAddress() > addressSpaceEnd)
         {
             item->setConflicted(true);
         }
@@ -475,7 +481,7 @@ void AddressSpaceScene::updateMaps(QMultiMap<quint64, AddressSpaceVisualizationI
         if (item->getOffset() > lastAddress + 1 || 
             (topItem == NULL && item->getOffset() == lastAddress + 1)) {
             // create the gap item.
-            AddressSpaceGapItem* gap = new AddressSpaceGapItem(addrSpace_, align);
+            AddressSpaceGapItem* gap = new AddressSpaceGapItem(align, addrSpace_->getWidthExpression(), expressionParser_);
             addItem(gap);
 
             // if the gap is at the start of the address space.
@@ -503,11 +509,11 @@ void AddressSpaceScene::updateMaps(QMultiMap<quint64, AddressSpaceVisualizationI
 	}
 
 	// add a gap to the end of the address space if last item < addr space size.
-	if (addrSpace_->getLastAddress() > lastAddress || 
+	if (addressSpaceEnd > lastAddress || 
         (newMap.empty() && newMap == segmentItems_ && !addrBlockItems_.empty() )) 
         {
 		// create the gap item.
-		AddressSpaceGapItem* gap = new AddressSpaceGapItem(addrSpace_, align);
+		AddressSpaceGapItem* gap = new AddressSpaceGapItem(align, addrSpace_->getWidthExpression(), expressionParser_);
 		addItem(gap);
 
 	    // set the first address of the gap.
@@ -521,7 +527,7 @@ void AddressSpaceScene::updateMaps(QMultiMap<quint64, AddressSpaceVisualizationI
 		}
 
 		// set the last address for the gap
-		gap->setEndAddress(addrSpace_->getLastAddress());
+		gap->setEndAddress(addressSpaceEnd);
 		gap->refresh();
 
 		newMap.insert(lastAddress + 1, gap);
@@ -605,8 +611,8 @@ void AddressSpaceScene::resolveConflicts(AddressSpaceVisualizationItem* currentI
             }
 
             // Add conflicting item.
-            AddressSpaceConflictedItem* conflict = new AddressSpaceConflictedItem(addrSpace_, 
-                align);
+            AddressSpaceConflictedItem* conflict = new AddressSpaceConflictedItem(
+                align, addrSpace_->getWidthExpression(), expressionParser_);
             addItem(conflict);                
             conflict->setStartAddress(currentItem->getOffset(),true);
             conflict->setEndAddress(conflictEnd,true); 
@@ -624,4 +630,18 @@ void AddressSpaceScene::resolveConflicts(AddressSpaceVisualizationItem* currentI
         topItem = currentItem;
     }
 
+}
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceScene::addressSpaceLastAddress()
+//-----------------------------------------------------------------------------
+quint64 AddressSpaceScene::addressSpaceLastAddress() const
+{
+    QString rangeExpression = addrSpace_->getRange();
+    quint64 range = expressionParser_->parseExpression(rangeExpression).toUInt();
+    if (rangeExpression.isEmpty() || range <= 0)
+    {
+        return 0;
+    }
+
+    return range - 1;
 }

@@ -116,9 +116,9 @@ QVariant ComponentParameterModel::expressionOrValueForIndex(QModelIndex const& i
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentParameterModel::validateColumnForParameter()
+// Function: ComponentParameterModel::validateIndex()
 //-----------------------------------------------------------------------------
-bool ComponentParameterModel::validateColumnForParameter(QModelIndex const& index) const
+bool ComponentParameterModel::validateIndex(QModelIndex const& index) const
 {
    if (index.column() == ComponentParameterColumns::NAME || index.column() == ComponentParameterColumns::ID)
    {
@@ -135,7 +135,7 @@ bool ComponentParameterModel::validateColumnForParameter(QModelIndex const& inde
 //-----------------------------------------------------------------------------
 // Function: ComponentParameterModel::getAllReferencesToIdInItemOnRow()
 //-----------------------------------------------------------------------------
-int ComponentParameterModel::getAllReferencesToIdInItemOnRow(const int& row, QString valueID) const
+int ComponentParameterModel::getAllReferencesToIdInItemOnRow(const int& row, QString const& valueID) const
 {
     QStringList parameterIDs = parameterFinder_->getAllParameterIds();
 

@@ -10,6 +10,8 @@
 
 #include <editors/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacevisualizationitem.h>
 
+class ExpressionParser;
+
 class AddressSpaceGapItem : public AddressSpaceVisualizationItem {
 	Q_OBJECT
 
@@ -27,8 +29,9 @@ public:
 	 * \param parent Pointer to the parent graph item.
 	 *
 	*/
-	AddressSpaceGapItem(QSharedPointer<AddressSpace> addrSpace,
-		AddressPosition addrPos = ALIGN_RIGHT,
+	AddressSpaceGapItem(AddressPosition addrPos,
+        QString const& addressSpaceWidth,
+        QSharedPointer<ExpressionParser> expressionParser,
 		QGraphicsItem* parent = 0);
 	
 	//! \brief The destructor

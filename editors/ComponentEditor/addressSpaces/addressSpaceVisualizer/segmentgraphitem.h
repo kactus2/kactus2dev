@@ -13,6 +13,7 @@
 
 #include <QSharedPointer>
 
+class ExpressionParser;
 /*! \brief The graph item to visualize segments in address space editor.
  *
  */
@@ -28,8 +29,9 @@ public:
 	 * \param parent Pointer to the parent graph item.
 	 *
 	*/
-	SegmentGraphItem(QSharedPointer<AddressSpace> addrSpace,
-		QSharedPointer<Segment> segment,
+	SegmentGraphItem(QSharedPointer<Segment> segment,
+        QString const& addressSpaceWidth,
+        QSharedPointer<ExpressionParser> expressionParser,
 		QGraphicsItem* parent = 0);
 	
 	//! \brief The destructor

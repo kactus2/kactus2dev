@@ -14,6 +14,7 @@
 
 #include <editors/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacegapitem.h>
 
+class ExpressionParser;
 //-----------------------------------------------------------------------------
 //! Visual item for overlapping memory segments and local memory blocks.
 //-----------------------------------------------------------------------------
@@ -29,8 +30,9 @@ public:
      *      @param [in] addrPos  Address alignment.
      *      @param [in] parent  Pointer to the parent graph item.
      */
-	AddressSpaceConflictedItem(QSharedPointer<AddressSpace> addrSpace,
-		AddressPosition addrPos = ALIGN_RIGHT,
+	AddressSpaceConflictedItem(AddressPosition addrPos,
+        QString const& addressSpaceWidth,
+        QSharedPointer<ExpressionParser> expressionParser,
 		QGraphicsItem* parent = 0);
 	
 	//! The destructor.

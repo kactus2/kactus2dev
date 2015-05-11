@@ -7,6 +7,8 @@
 
 #include "addressspaceeditor.h"
 
+#include <library/LibraryManager/libraryinterface.h>
+
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QScrollArea>
@@ -16,17 +18,19 @@
 //-----------------------------------------------------------------------------
 // Function: AddressSpaceEditor::AddressSpaceEditor()
 //-----------------------------------------------------------------------------
-AddressSpaceEditor::AddressSpaceEditor( QSharedPointer<Component> component, 
+AddressSpaceEditor::AddressSpaceEditor(QSharedPointer<Component> component, 
     LibraryInterface* handler,
     QSharedPointer<AddressSpace> addrSpace,
     QSharedPointer <ParameterFinder> parameterFinder,
     QSharedPointer <ExpressionFormatter> expressionFormatter,
+    QSharedPointer<ExpressionParser> expressionParser,
     QWidget* parent):
 ItemEditor(component, handler, parent),
     addrSpace_(addrSpace),
     nameEditor_(addrSpace->getNameGroup(), this),
-    generalEditor_(addrSpace, this),
-    segmentsEditor_(addrSpace, component, handler, this),
+    generalEditor_(addrSpace, parameterFinder, expressionParser, this),
+    segmentsEditor_(addrSpace, component, handler->getDirectoryPath(*component->getVlnv()), parameterFinder,
+    expressionParser, expressionFormatter, this),
     localMemMapEditor_(addrSpace->getLocalMemoryMap(), component, handler, parameterFinder, expressionFormatter, 
         this)
 {
@@ -36,6 +40,11 @@ ItemEditor(component, handler, parent),
 
     connect(&generalEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(&generalEditor_, SIGNAL(graphicsChanged()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
+
+    connect(&generalEditor_, SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(&generalEditor_, SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
     connect(&segmentsEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(&segmentsEditor_, SIGNAL(contentChanged()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
@@ -119,10 +128,10 @@ void AddressSpaceEditor::setupLayout()
     QVBoxLayout* topLayout = new QVBoxLayout(topWidget);
     
     QHBoxLayout* nameAndGeneralLayout = new QHBoxLayout();
-    nameAndGeneralLayout->addWidget(&nameEditor_);
+    nameAndGeneralLayout->addWidget(&nameEditor_, 0, Qt::AlignTop);
     nameAndGeneralLayout->addWidget(&generalEditor_);
     topLayout->addLayout(nameAndGeneralLayout);
-    topLayout->addWidget(&segmentsEditor_);
+    topLayout->addWidget(&segmentsEditor_, 1);
     topLayout->setContentsMargins(0, 0, 0, 0);
 
     QWidget* bottomWidget = new QWidget(scrollArea);

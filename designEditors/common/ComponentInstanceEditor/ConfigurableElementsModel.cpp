@@ -640,9 +640,9 @@ QString ConfigurableElementsModel::tooltipForIndex(QModelIndex const& index) con
 }
 
 //-----------------------------------------------------------------------------
-// Function: ConfigurableElementsModel::validateColumnForParameter()
+// Function: ConfigurableElementsModel::validateIndex()
 //-----------------------------------------------------------------------------
-bool ConfigurableElementsModel::validateColumnForParameter(QModelIndex const& index) const
+bool ConfigurableElementsModel::validateIndex(QModelIndex const& index) const
 {
     if (index.parent().isValid())
     {

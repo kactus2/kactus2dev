@@ -1,26 +1,31 @@
-/* 
- *  	Created on: 21.2.2012
- *      Author: Antti Kamppi
- * 		filename: addressspacegeneraleditor.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: addressspacegeneraleditor.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 21.02.2012
+//
+// Description:
+// Editor to set the general settings of an address space.
+//-----------------------------------------------------------------------------
 
 #ifndef ADDRESSSPACEGENERALEDITOR_H
 #define ADDRESSSPACEGENERALEDITOR_H
 
 #include <IPXACTmodels/addressspace.h>
+
 #include <common/widgets/NumberLineEdit/numberlineedit.h>
 
 #include <QGroupBox>
 #include <QSharedPointer>
 
-/*! Editor to set the general settings of an address space.
- * 
- * The editable fields are:
- * - size of the addressable unit
- * - range of the address space
- * - width of the address space
- */
+class ExpressionEditor;
+class ExpressionParser;
+class ParameterFinder;
+
+//-----------------------------------------------------------------------------
+//! Editor to set the general settings of an address space.
+//-----------------------------------------------------------------------------
 class AddressSpaceGeneralEditor : public QGroupBox
 {
 	Q_OBJECT
@@ -29,11 +34,16 @@ public:
 
 	/*! The constructor
 	 *
-	 *       @param [in] addrSpace  The address space being edited.
-	 *       @param [in] parent     The owner of the editor.
+     *       @param [in] addrSpace          The address space being edited.
+     *       @param [in] parameterFinder    The finder for parameters available in expressions.
+     *       @param [in] expressionParser   The expression parser.
+	 *       @param [in] parent             The owner of the editor.
 	*/
-	AddressSpaceGeneralEditor(QSharedPointer<AddressSpace> addrSpace, QWidget *parent);
-	
+	AddressSpaceGeneralEditor(QSharedPointer<AddressSpace> addrSpace, 
+        QSharedPointer<ParameterFinder> parameterFinder, 
+        QSharedPointer<ExpressionParser> expressionParser,
+        QWidget *parent);
+
 	//! The destructor
 	virtual ~AddressSpaceGeneralEditor();
 
@@ -73,6 +83,20 @@ signals:
 	 *       @param range The new range as number of addressable units.
 	*/
 	void rangeChanged(QString const& range);
+    
+    /*!
+     *  Increase the amount of references to a parameter with a matching id.
+     *
+     *      @param [in] id      Id of the parameter, whose references are being increased.
+     */
+    void increaseReferences(QString id);
+
+    /*!
+     *  Decrease the amount of references to a parameter with a matching id.
+     *
+     *      @param [in] id      Id of the parameter, whose references are being increased.
+     */
+    void decreaseReferences(QString id);
 
 private slots:
 
@@ -89,18 +113,35 @@ private:
 	//! No copying
 	AddressSpaceGeneralEditor(const AddressSpaceGeneralEditor& other);
 	AddressSpaceGeneralEditor& operator=(const AddressSpaceGeneralEditor& other);
+   
+    
+    /*!
+     *  Formats a given expression to human-readable format.
+     *
+     *      @param [in] expression   The expression to format.
+     *
+     *      @return The formatted expression.
+     */
+    QString format(QString const& expression) const;
+	
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
-	//! The address space being edited.
-	QSharedPointer<AddressSpace> addrSpace_;
+    //! The address space being edited.
+    QSharedPointer<AddressSpace> addrSpace_;
+
+    //! The expression parser to use.
+    QSharedPointer<ExpressionParser> expressionParser_;
 
 	//! Editor to set the size of an addressable unit.
 	NumberLineEdit addrUnitEditor_;
 
     //! Editor to set the range of the address space.
-    NumberLineEdit rangeEditor_;
+    ExpressionEditor* rangeEditor_;
 
 	//! Editor to set the width of one row in address space.
-	NumberLineEdit widthEditor_;
+	ExpressionEditor* widthEditor_;
 };
 
 #endif // ADDRESSSPACEGENERALEDITOR_H

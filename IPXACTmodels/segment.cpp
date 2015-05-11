@@ -216,25 +216,3 @@ void Segment::setOffset( const QString& addressOffset ) {
 void Segment::setRange( const QString& range ) {
 	range_ = range;
 }
-
-quint64 Segment::getLastAddress() const {
-	quint64 base = General::str2Uint(addressOffset_);
-	quint64 range = General::str2Uint(range_);
-
-	quint64 lastAddr = base + range;
-
-	// if the base and range are undefined then return 0
-	if (lastAddr == 0) {
-		return 0;
-	}
-
-    // if they are defined then return actual last address
-    if (range != 0)
-    {
-        return lastAddr - 1;
-    }
-    else
-    {
-        return lastAddr;
-    }
-}

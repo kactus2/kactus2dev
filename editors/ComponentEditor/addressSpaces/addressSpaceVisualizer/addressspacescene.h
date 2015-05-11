@@ -51,6 +51,7 @@ public:
 	 *
 	*/
 	virtual void refresh();
+    quint64 addressSpaceLastAddress() const;
 
 	/*! Reposition the items on the visualization.
 	 * 

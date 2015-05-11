@@ -172,7 +172,7 @@ protected:
      *
      *      @return The amount of references made to the selected parameter.
      */
-    virtual int getAllReferencesToIdInItemOnRow(const int& row, QString valueID) const;
+    virtual int getAllReferencesToIdInItemOnRow(const int& row, QString const& valueID) const;
 
     /*!
      *  Validates the data in the array at index corresponding to the given column.
@@ -181,7 +181,7 @@ protected:
      *
      *      @return True, if the value is valid for the column.
      */
-    virtual bool validateColumnForParameter(QModelIndex const& index) const;
+    virtual bool validateIndex(QModelIndex const& index) const;
 
 private:
 	// Disable copying.

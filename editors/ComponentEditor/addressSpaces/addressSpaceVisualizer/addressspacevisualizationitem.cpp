@@ -7,6 +7,8 @@
 
 #include "addressspacevisualizationitem.h"
 
+#include <editors/ComponentEditor/common/ExpressionParser.h>
+
 #include "common/KactusColors.h"
 
 #include <QRectF>
@@ -15,40 +17,37 @@
 //-----------------------------------------------------------------------------
 // Function: AddressSpaceVisualizationItem()
 //-----------------------------------------------------------------------------
-AddressSpaceVisualizationItem::AddressSpaceVisualizationItem(QSharedPointer<AddressSpace> addrSpace,
-															 QGraphicsItem* parent /*= 0*/):
+AddressSpaceVisualizationItem::AddressSpaceVisualizationItem(QString const& addressSpaceWidth,
+                                                             QSharedPointer<ExpressionParser> expressionParser,
+															 QGraphicsItem* parent):
 VisualizerItem(parent),
-addrSpace_(addrSpace),
+expressionParser_(expressionParser),
+addressSpaceWidth_(addressSpaceWidth),
 overlapped_(false)
 {
-	Q_ASSERT(addrSpace_);
     setRect(0, 0, VisualizerItem::DEFAULT_WIDTH, AddressSpaceVisualizationItem::SEGMENT_HEIGHT);
 }
 
 //-----------------------------------------------------------------------------
 // Function: ~AddressSpaceVisualizationItem()
 //-----------------------------------------------------------------------------
-AddressSpaceVisualizationItem::~AddressSpaceVisualizationItem() {
-}
-
-//-----------------------------------------------------------------------------
-// Function: getAddressUnitSize()
-//-----------------------------------------------------------------------------
-unsigned int AddressSpaceVisualizationItem::getAddressUnitSize() const {
-	return addrSpace_->getAddressUnitBits();
+AddressSpaceVisualizationItem::~AddressSpaceVisualizationItem()
+{
 }
 
 //-----------------------------------------------------------------------------
 // Function: getBitWidth()
 //-----------------------------------------------------------------------------
-int AddressSpaceVisualizationItem::getBitWidth() const {
-	return addrSpace_->getWidth();
+int AddressSpaceVisualizationItem::getBitWidth() const
+{
+	return expressionParser_->parseExpression(addressSpaceWidth_).toInt();
 }
 
 //-----------------------------------------------------------------------------
 // Function: setLeftTopCorner()
 //-----------------------------------------------------------------------------
-void AddressSpaceVisualizationItem::setLeftTopCorner( quint64 address ) {
+void AddressSpaceVisualizationItem::setLeftTopCorner(quint64 address)
+{
 	QString padded = addr2Str(address, getBitWidth());
 	VisualizerItem::setLeftTopCorner(padded);
 }
@@ -56,7 +55,8 @@ void AddressSpaceVisualizationItem::setLeftTopCorner( quint64 address ) {
 //-----------------------------------------------------------------------------
 // Function: setRightTopCorner()
 //-----------------------------------------------------------------------------
-void AddressSpaceVisualizationItem::setRightTopCorner( quint64 address ) {
+void AddressSpaceVisualizationItem::setRightTopCorner(quint64 address)
+{
 	QString padded = addr2Str(address, getBitWidth());
 	VisualizerItem::setRightTopCorner(padded);
 }
@@ -64,7 +64,8 @@ void AddressSpaceVisualizationItem::setRightTopCorner( quint64 address ) {
 //-----------------------------------------------------------------------------
 // Function: setLeftBottomCorner()
 //-----------------------------------------------------------------------------
-void AddressSpaceVisualizationItem::setLeftBottomCorner( quint64 address ) {
+void AddressSpaceVisualizationItem::setLeftBottomCorner(quint64 address)
+{
 	QString padded = addr2Str(address, getBitWidth());
 	VisualizerItem::setLeftBottomCorner(padded);
 }	
@@ -72,16 +73,16 @@ void AddressSpaceVisualizationItem::setLeftBottomCorner( quint64 address ) {
 //-----------------------------------------------------------------------------
 // Function: setRightBottomCorner()
 //-----------------------------------------------------------------------------
-void AddressSpaceVisualizationItem::setRightBottomCorner( quint64 address ) {
+void AddressSpaceVisualizationItem::setRightBottomCorner(quint64 address)
+{
 	QString padded = addr2Str(address, getBitWidth());
 	VisualizerItem::setRightBottomCorner(padded);
 }
 
-
 //-----------------------------------------------------------------------------
 // Function: setBottomCoordinate()
 //-----------------------------------------------------------------------------
-void AddressSpaceVisualizationItem::setBottomCoordinate( qreal yCoordinate ) {
+void AddressSpaceVisualizationItem::setBottomCoordinate(qreal yCoordinate) {
 	qreal width = rect().width();
 	qreal height = yCoordinate - y();
 	setRect(0, 0, width, height);
@@ -91,7 +92,8 @@ void AddressSpaceVisualizationItem::setBottomCoordinate( qreal yCoordinate ) {
 //-----------------------------------------------------------------------------
 // Function: setHeight()
 //-----------------------------------------------------------------------------
-void AddressSpaceVisualizationItem::setHeight( qreal height ) {
+void AddressSpaceVisualizationItem::setHeight(qreal height)
+{
 	qreal width = rect().width();
 
     setRect(0, 0, width, height);

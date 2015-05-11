@@ -17,10 +17,12 @@
 //-----------------------------------------------------------------------------
 // Function: AddressSpaceConflictedItem()
 //-----------------------------------------------------------------------------
-AddressSpaceConflictedItem::AddressSpaceConflictedItem(QSharedPointer<AddressSpace> addrSpace,
-										 AddressSpaceConflictedItem::AddressPosition addrPos,
+AddressSpaceConflictedItem::AddressSpaceConflictedItem(
+                                         AddressSpaceConflictedItem::AddressPosition addrPos,
+                                         QString const& addressSpaceWidth, 
+                                         QSharedPointer<ExpressionParser> expressionParser,
 										 QGraphicsItem* parent):
-AddressSpaceGapItem(addrSpace, addrPos, parent)
+AddressSpaceGapItem(addrPos, addressSpaceWidth, expressionParser, parent)
 {
     //QBrush brush(KactusColors::DRAFT_COMPONENT);
     //setDefaultBrush(QBrush());

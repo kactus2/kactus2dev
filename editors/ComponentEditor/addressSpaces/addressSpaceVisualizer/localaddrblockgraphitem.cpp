@@ -20,11 +20,11 @@
 //-----------------------------------------------------------------------------
 // Function: LocalAddrBlockGraphItem::LocalAddrBlockGraphItem()
 //-----------------------------------------------------------------------------
-LocalAddrBlockGraphItem::LocalAddrBlockGraphItem(QSharedPointer<AddressSpace> addrSpace,
-												 QSharedPointer<AddressBlock> block,
+LocalAddrBlockGraphItem::LocalAddrBlockGraphItem(QSharedPointer<AddressBlock> block,
+                                                 QString const& addressSpaceWidth,
                                                  QSharedPointer<ExpressionParser> expressionParser,
 												 QGraphicsItem* parent /*= 0*/ ):
-AddressSpaceVisualizationItem(addrSpace, parent),
+AddressSpaceVisualizationItem(addressSpaceWidth, expressionParser, parent),
 addrBlock_(block),
 expressionParser_(expressionParser)
 {

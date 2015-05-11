@@ -16,7 +16,7 @@
 
 class LibraryInterface;
 
-/*! \brief The editor to add/remove/edit address spaces of component.
+/*! The editor to add/remove/edit address spaces of component.
  *
  */
 class AddressSpacesEditor : public ItemEditor {
@@ -24,58 +24,61 @@ class AddressSpacesEditor : public ItemEditor {
 
 public:
 
-	/*! \brief The constructor
+	/*! The constructor
 	 *
-	 * \param component Pointer to the component being edited.
-	 * \param handler Pointer to the instance managing the library.
-	 *
+	 *      @param [in] component               The component being edited.
+	 *      @param [in] handler                 The instance managing the library.
+     *      @param [in] parameterFinder         Finder for parameter names.
+     *      @param [in] expressionFormatter     Formatter for expressions.
+     *      @param [in] expressionParser        The expression parser to use.
 	*/
 	AddressSpacesEditor(QSharedPointer<Component> component,
-		LibraryInterface* handler);
+		 LibraryInterface* handler,
+         QSharedPointer<ParameterFinder> parameterFinder,
+         QSharedPointer<ExpressionFormatter> expressionFormatter,
+         QSharedPointer<ExpressionParser> expressionParser);
 	
-	//! \brief The destructor
+	//! The destructor
 	~AddressSpacesEditor();
 
-	/*! \brief Check for the validity of the editor
+	/*! Check for the validity of the editor
 	* 
-	* \return True if the editor is in valid state.
+	*       @return True if the editor is in valid state.
 	*/
 	virtual bool isValid() const;
 
-	/*! \brief Reload the information from the model to the editor.
+	/*! Reload the information from the model to the editor.
 	*/
 	virtual void refresh();
 
 signals:
 
-	//! \brief Emitted when a bus interface editor should be opened.
+	//! Emitted when a bus interface editor should be opened.
 	void selectBusInterface(const QString& interfaceName);
 
 protected:
 
-	//! \brief Handler for widget's show event
+	//! Handler for widget's show event
 	virtual void showEvent(QShowEvent* event);
 
 private slots:
 
-		//! \brief Handler for view's doubleClicked-signal.
-		virtual void onDoubleClick(const QModelIndex& index);
+    //! Handler for view's doubleClicked-signal.
+    virtual void onDoubleClick(const QModelIndex& index);
 
 private:
 	
-	//! \brief No copying
+	//! No copying
 	AddressSpacesEditor(const AddressSpacesEditor& other);
-
-	//! \brief No assignment
 	AddressSpacesEditor& operator=(const AddressSpacesEditor& other);
 
-	//! \brief The view to display the address spaces.
+	//! The view to display the address spaces.
 	EditableTableView view_;
 
-	//! \brief The model that manages the file set objects for the view.
+	//! The model that manages the file set objects for the view.
 	AddressSpacesModel model_;
 
-	//! \brief The proxy to do the sorting
+	//! The proxy to do the sorting
 	QSortFilterProxyModel proxy_;
 };
 

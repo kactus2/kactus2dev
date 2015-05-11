@@ -7,25 +7,32 @@
 
 #include "addressspaceseditor.h"
 #include "addressspacesdelegate.h"
+
+#include "AddressSpaceColumns.h"
+
 #include <common/widgets/summaryLabel/summarylabel.h>
+
+#include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
+#include <editors/ComponentEditor/common/ParameterCompleter.h>
+
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <QVBoxLayout>
 
+//-----------------------------------------------------------------------------
+// Function: AddressSpacesEditor::AddressSpacesEditor()
+//-----------------------------------------------------------------------------
 AddressSpacesEditor::AddressSpacesEditor(QSharedPointer<Component> component,
-										LibraryInterface* handler):
+    LibraryInterface* handler,
+    QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<ExpressionParser> expressionParser):
 ItemEditor(component, handler),
-view_(this),
-model_(component, this),
-proxy_(this) {
-
-	// display a label on top the table
-	SummaryLabel* summaryLabel = new SummaryLabel(tr("Address spaces summary"), this);
-
-	QVBoxLayout* layout = new QVBoxLayout(this);
-	layout->addWidget(summaryLabel, 0, Qt::AlignCenter);
-	layout->addWidget(&view_);
-	layout->setContentsMargins(0, 0, 0, 0);
+    view_(this),
+    model_(component, parameterFinder, expressionFormatter, this),
+    proxy_(this)
+{
+    model_.setExpressionParser(expressionParser);
 
 	proxy_.setSourceModel(&model_);
 
@@ -39,15 +46,27 @@ proxy_(this) {
 	// items can not be dragged
 	view_.setItemsDraggable(false);
 	
- 	view_.setItemDelegate(new AddressSpacesDelegate(this));
+    ComponentParameterModel* completionModel = new ComponentParameterModel(parameterFinder, this);
+    completionModel->setExpressionParser(expressionParser);
 
-	connect(&model_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
+    parameterCompleter->setModel(completionModel);
+
+    AddressSpacesDelegate* delegate = new AddressSpacesDelegate(parameterCompleter, parameterFinder, this);
+ 	view_.setItemDelegate(delegate);
+    
+    // display a label on top the table
+    SummaryLabel* summaryLabel = new SummaryLabel(tr("Address spaces summary"), this);
+
+    QVBoxLayout* layout = new QVBoxLayout(this);
+    layout->addWidget(summaryLabel, 0, Qt::AlignCenter);
+    layout->addWidget(&view_);
+    layout->setContentsMargins(0, 0, 0, 0);
+
+	connect(&model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	
-	connect(&model_, SIGNAL(addrSpaceAdded(int)),
-		this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
-	connect(&model_, SIGNAL(addrSpaceRemoved(int)),
-		this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
+	connect(&model_, SIGNAL(addrSpaceAdded(int)), this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
+	connect(&model_, SIGNAL(addrSpaceRemoved(int)),	this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
 
 	connect(&view_, SIGNAL(addItem(const QModelIndex&)),
 		&model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
@@ -56,44 +75,69 @@ proxy_(this) {
 
 	connect(&view_, SIGNAL(doubleClicked(const QModelIndex&)),
 		this, SLOT(onDoubleClick(const QModelIndex&)), Qt::UniqueConnection);
+
+    connect(delegate, SIGNAL(increaseReferences(QString)), 
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(delegate, SIGNAL(decreaseReferences(QString)), 
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);;
 }
 
-AddressSpacesEditor::~AddressSpacesEditor() {
+//-----------------------------------------------------------------------------
+// Function: AddressSpacesEditor::~AddressSpacesEditor()
+//-----------------------------------------------------------------------------
+AddressSpacesEditor::~AddressSpacesEditor()
+{
 }
 
-bool AddressSpacesEditor::isValid() const {
+//-----------------------------------------------------------------------------
+// Function: AddressSpacesEditor::isValid()
+//-----------------------------------------------------------------------------
+bool AddressSpacesEditor::isValid() const
+{
 	return model_.isValid();
 }
 
-void AddressSpacesEditor::refresh() {
+//-----------------------------------------------------------------------------
+// Function: AddressSpacesEditor::refresh()
+//-----------------------------------------------------------------------------
+void AddressSpacesEditor::refresh()
+{
 	view_.update();
 }
 
-void AddressSpacesEditor::showEvent( QShowEvent* event ) {
+//-----------------------------------------------------------------------------
+// Function: AddressSpacesEditor::showEvent()
+//-----------------------------------------------------------------------------
+void AddressSpacesEditor::showEvent(QShowEvent* event)
+{
 	QWidget::showEvent(event);
 	emit helpUrlRequested("componenteditor/addressspaces.html");
 }
 
-void AddressSpacesEditor::onDoubleClick( const QModelIndex& index ) {
+//-----------------------------------------------------------------------------
+// Function: AddressSpacesEditor::onDoubleClick()
+//-----------------------------------------------------------------------------
+void AddressSpacesEditor::onDoubleClick(QModelIndex const& index)
+{
 	QModelIndex origIndex = proxy_.mapToSource(index);
 
 	// index must be valid
-	if (!origIndex.isValid()) {
+	if (!origIndex.isValid())
+    {
 		return;
 	}
 
 	// if the column is for interface references
-	if (origIndex.column() == AddressSpacesDelegate::INTERFACE_COLUMN) {
-
+	if (origIndex.column() == AddressSpaceColumns::INTERFACE_BINDING)
+    {
 		// get the names of the interface that refer to selected memory map
-		QStringList busIfNames = model_.data(origIndex, AddressSpacesDelegate::USER_DISPLAY_ROLE).toStringList();
+		QStringList busIfNames = model_.data(origIndex, Qt::UserRole).toStringList();
 
-		// if there are no bus interfaces or there are many
-		if (busIfNames.size() != 1) {
-			return;
+		// if there is exactly one bus interface
+        // inform component editor that bus interface editor should be selected
+        if (busIfNames.size() == 1)
+        {
+		    emit selectBusInterface(busIfNames.first());
 		}
-
-		// inform component editor that bus interface editor should be selected
-		emit selectBusInterface(busIfNames.first());
 	}
 }

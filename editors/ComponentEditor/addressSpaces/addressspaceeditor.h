@@ -48,6 +48,7 @@ public:
 	 *      @param [in] addrSpace               The address space being edited.
 	 *      @param [in] parameterFinder         The parameter finder.
 	 *      @param [in] expressionFormatter     The expression formatter.
+     *      @param [in] expressionParser        The expression parser to use.
 	 *      @param [in] parent                  The owner of this editor.
 	 */
 	AddressSpaceEditor(QSharedPointer<Component> component,
@@ -55,6 +56,7 @@ public:
 		QSharedPointer<AddressSpace> addrSpace,
         QSharedPointer <ParameterFinder> parameterFinder,
         QSharedPointer <ExpressionFormatter> expressionFormatter,
+        QSharedPointer<ExpressionParser> expressionParser,
 		QWidget* parent = 0);
 	
 	//! The destructor
@@ -69,6 +71,7 @@ public:
 	/*! Reload the information from the model to the editor.
 	*/
 	virtual void refresh();
+
 
 protected:
 

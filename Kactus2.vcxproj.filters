@@ -2305,9 +2305,6 @@
     <ClCompile Include="GeneratedFiles\moc_ComPropertyModel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_addressspaceeditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_addressspacegeneraleditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -3811,9 +3808,6 @@
     <ClCompile Include="GeneratedFiles\moc_ParameterReferenceCounter.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ReferenceCounter.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="editors\ComponentEditor\common\ComponentParameterFinder.cpp">
       <Filter>Source Files\editors\ComponentEditor\common</Filter>
     </ClCompile>
@@ -3837,9 +3831,6 @@
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\common\ParameterizableTable.cpp">
       <Filter>Source Files\editors\ComponentEditor\common</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_IEditProvider.cpp">
-      <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\common\ExpressionDelegate.cpp">
       <Filter>Source Files\editors\ComponentEditor\common</Filter>
@@ -4104,6 +4095,21 @@
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryRemapExpressionGatherer.cpp">
       <Filter>Source Files\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_addressspaceeditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_SegmentDelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_IEditProvider.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ReferenceCounter.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\addressSpaces\SegmentDelegate.cpp">
+      <Filter>Source Files\editors\ComponentEditor\addressSpaces</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5655,6 +5661,9 @@
     <CustomBuild Include="editors\ComponentEditor\memoryMaps\WriteValueConstraintComboBox.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
     </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\addressSpaces\SegmentDelegate.h">
+      <Filter>Header Files\editors\ComponentEditor\addressSpaces</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -6043,6 +6052,9 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryRemapExpressionGatherer.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\addressSpaces\AddressSpaceColumns.h">
+      <Filter>Header Files\editors\ComponentEditor\addressSpaces</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

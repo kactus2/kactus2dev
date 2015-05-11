@@ -119,7 +119,7 @@ QVariant ParameterizableTable::italicForEvaluatedValue(QModelIndex const& index)
 //-----------------------------------------------------------------------------
 QVariant ParameterizableTable::blackForValidOrRedForInvalidIndex(QModelIndex const& index) const
 {
-    if (validateColumnForParameter(index))
+    if (validateIndex(index))
     {
         return QColor("black");
     }

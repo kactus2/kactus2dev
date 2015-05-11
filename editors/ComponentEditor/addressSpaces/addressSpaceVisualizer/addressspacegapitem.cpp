@@ -14,10 +14,11 @@
 //-----------------------------------------------------------------------------
 // Function: AddressSpaceGapItem()
 //-----------------------------------------------------------------------------
-AddressSpaceGapItem::AddressSpaceGapItem(QSharedPointer<AddressSpace> addrSpace,
-										 AddressSpaceGapItem::AddressPosition addrPos,
+AddressSpaceGapItem::AddressSpaceGapItem(AddressSpaceGapItem::AddressPosition addrPos,
+                                         QString const& addressSpaceWidth,
+                                         QSharedPointer<ExpressionParser> expressionParser,
 										 QGraphicsItem* parent):
-AddressSpaceVisualizationItem(addrSpace, parent),
+AddressSpaceVisualizationItem(addressSpaceWidth, expressionParser, parent),
 start_(0),
 end_(0),
 addrPosition_(addrPos) 

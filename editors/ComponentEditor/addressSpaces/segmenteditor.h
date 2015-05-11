@@ -19,8 +19,9 @@
 #include <QGroupBox>
 
 class LibraryInterface;
-
-/*! \brief The editor to edit the segments of an address space.
+class ExpressionParser;
+class ExpressionFormatter;
+/*! The editor to edit the segments of an address space.
  *
  */
 class SegmentEditor : public QGroupBox {
@@ -28,77 +29,78 @@ class SegmentEditor : public QGroupBox {
 
 public:
 
-	/*! \brief The constructor
-	 *
-	 * \param addrSpace Pointer to the address space being edited.
-	 * \param component Pointer to the component being edited.
-	 * \param handler Pointer to the instance managing the library.
-	 * \param parent Pointer to the owner of this editor.
-	 *
-	*/
+    /*! The constructor
+     *
+     *      @param [in] addrSpace           The address space whose segments are edited.
+     *      @param [in] component           The component being edited.
+     *      @param [in] componentPath       The path to component xml file.
+     *      @param [in] parameterFinder     Finder for available parameter names.
+     *      @param [in] expressionParser    Parser for expressions.
+     *      @param [in] expressionFormatter Formatter for expressions.
+     *      @param [in] parent              Pointer to the owner of this editor.
+     *
+	 */
 	SegmentEditor(QSharedPointer<AddressSpace> addrSpace, 
 		QSharedPointer<Component> component,
-		LibraryInterface* handler,
+        QString const& componentPath,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionParser> expressionParser,
+            QSharedPointer<ExpressionFormatter> expressionFormatter,
 		QWidget *parent);
 	
-	//! \brief The destructor
+	//! The destructor
 	virtual ~SegmentEditor();
 
-	/*! \brief Check if the editor is in valid state.
+	/*! Check if the editor is in valid state.
 	 *
-	 * \return True if the editor is in valid state.
+	 *      @return True if the editor is in valid state.
 	*/
 	bool isValid() const;
 
-	/*! \brief Read the settings from the address space to the editor.
+	/*! Read the settings from the address space to the editor.
 	 *
 	*/
 	void refresh();
 
 signals:
 
-	//! \brief Emitted when the contents of the editor change.
+	//! Emitted when the contents of the editor change.
 	void contentChanged();
 
-	//! \brief Print an error message to the user.
+	//! Print an error message to the user.
 	void errorMessage(const QString& msg);
 
-	//! \brief Print a notification to the user.
+	//! Print a notification to the user.
 	void noticeMessage(const QString& msg);
 
-	//! \brief Emitted when a new segment is added to the address space.
+	//! Emitted when a new segment is added to the address space.
 	void segmentAdded(QSharedPointer<Segment> segment);
 
-	//! \brief Emitted when a segment is removed from the address space.
+	//! Emitted when a segment is removed from the address space.
 	void segmentRemoved(const QString& segmentName);
 
-	//! \brief Emitted when a segment is renamed.
+	//! Emitted when a segment is renamed.
 	void segmentRenamed(const QString& oldName, const QString& newName);
 
-	//! \brief Emitted when the range or offset of a segment has changed.
+	//! Emitted when the range or offset of a segment has changed.
 	void segmentChanged(QSharedPointer<Segment> segment);
 
 private:
-	//! \brief No copying
+	//! No copying
 	SegmentEditor(const SegmentEditor& other);
-
-	//! \brief No assignment
 	SegmentEditor& operator=(const SegmentEditor& other);
 
-	//! \brief The view to display the segments.
+	//! The view to display the segments.
 	EditableTableView view_;
 
-	//! \brief The proxy to do the sorting of segments.
+	//! The proxy to do the sorting of segments.
 	SegmentProxy proxy_;
 
-	//! \brief The model that contains the segments.
+	//! The model that contains the segments.
 	SegmentsModel model_;
 
-	//! \brief Pointer to the component being edited.
+	//! Pointer to the component being edited.
 	QSharedPointer<Component> component_;
-
-	//! \brief Pointer to the instance managing the library.
-	LibraryInterface* handler_;
 };
 
 #endif // SEGMENTEDITOR_H

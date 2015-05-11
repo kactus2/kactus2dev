@@ -116,15 +116,6 @@ public:
 	*/
 	const QMap<QString, QString>& getRangeAttributes() const;
 
-	/*! \brief Get the last address contained in the segment.
-	 * 
-	 * The last address is offset + range - 1.
-	 * If offset and range are undefined then 0 is returned.
-	 * 
-	 * \return The last address contained in the segment.
-	*/
-	quint64 getLastAddress() const;
-
 	/*! \brief Set the name for the segment.
 	 *
 	 * \param name The name for the segment.

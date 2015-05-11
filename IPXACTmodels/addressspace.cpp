@@ -428,6 +428,11 @@ QSharedPointer<MemoryMap> AddressSpace::getLocalMemoryMap() {
 	return localMemoryMap_;
 }
 
+bool AddressSpace::hasLocalMemoryMap() const
+{
+    return localMemoryMap_;
+}
+
 void AddressSpace::setLocalMemoryMap( QSharedPointer<MemoryMap> localMemoryMap ) {
 	if (localMemoryMap_) {
 		localMemoryMap_.clear();
@@ -479,16 +484,6 @@ const NameGroup& AddressSpace::getNameGroup() const {
 	return nameGroup_;
 }
 
-quint64 AddressSpace::getLastSegmentedAddress() const {
-	quint64 lastAddress = 0;
-	
-	// find the last address defined in a segment
-	foreach (QSharedPointer<Segment> segment, segments_) {
-		lastAddress = qMax(lastAddress, segment->getLastAddress());
-	}
-	return lastAddress;
-}
-
 quint64 AddressSpace::getLastAddress() const {
 	quint64 range = General::str2Uint(range_);
 	
@@ -499,6 +494,24 @@ quint64 AddressSpace::getLastAddress() const {
 	return range - 1;
 }
 
-bool AddressSpace::hasLocalMemoryMap() const {
-	return localMemoryMap_;
+//-----------------------------------------------------------------------------
+// Function: AddressSpace::setWidthExpression()
+//-----------------------------------------------------------------------------
+void AddressSpace::setWidthExpression(QString const& expression)
+{
+    widthAttributes_.insert("kactus2:widthExpression", expression);
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpace::getWidthExpression()
+//-----------------------------------------------------------------------------
+QString AddressSpace::getWidthExpression()
+{
+    QString expression = widthAttributes_.value("kactus2:widthExpression");
+    if (expression.isEmpty())
+    {
+        expression = QString::number(getWidth());
+    }
+
+    return expression;
 }
