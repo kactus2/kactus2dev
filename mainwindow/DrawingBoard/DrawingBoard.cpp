@@ -54,7 +54,7 @@ void DrawingBoard::addAndOpenDocument(TabDocument* doc, bool forceUnlocked)
     connect(doc, SIGNAL(errorMessage(QString const&)),
         this, SIGNAL(errorMessage(QString const&)), Qt::UniqueConnection);
     connect(doc, SIGNAL(noticeMessage(QString const&)),
-        this, SIGNAL(errorMessage(QString const&)), Qt::UniqueConnection);
+        this, SIGNAL(noticeMessage(QString const&)), Qt::UniqueConnection);
 
     connect(doc, SIGNAL(helpUrlRequested(QString const&)),
         this, SIGNAL(helpUrlRequested(QString const&)), Qt::UniqueConnection);
