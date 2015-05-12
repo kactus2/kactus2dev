@@ -71,6 +71,7 @@ private slots:
     void testRegisterwithNoReferences();
 
     void testReferenceInAddressSpaceAddressBlockAddsSixRows();
+    void testReferenceInAddressSpaceSegmentAddsSixRows();
 
     void testReferenceInRegisterFieldAddsTenRows();
 
@@ -113,7 +114,7 @@ private:
     QSharedPointer<AddressSpace> createTestAddressSpace(QString const& name,
         QSharedPointer<MemoryMap> localMemoryMap);
 
-    QSharedPointer<ExpressionFormatter> createTestExpressionFormatter(QSharedPointer<Component> component);
+    QSharedPointer<ExpressionFormatter> createTestExpressionFormatter(QSharedPointer<Component> component);   
 };
 
 tst_ParameterReferenceTree::tst_ParameterReferenceTree()
@@ -1287,6 +1288,75 @@ void tst_ParameterReferenceTree::testReferenceInAddressSpaceAddressBlockAddsSixR
         addressBlockRef->getBaseAddress()));
 
     QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->childCount(), 0);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ParameterReferenceTree::testReferenceInAddressSpaceSegmentAddsSixRows()
+//-----------------------------------------------------------------------------
+void tst_ParameterReferenceTree::testReferenceInAddressSpaceSegmentAddsSixRows()
+{
+    QSharedPointer <AddressSpace> addressSpace = createTestAddressSpace("addressSpace", QSharedPointer<MemoryMap>());
+    addressSpace->setWidthExpression("searched");
+    addressSpace->setRange("searched+1");
+
+    QList <QSharedPointer <AddressSpace> > addressSpaces;
+    addressSpaces.append(addressSpace);
+    
+    QSharedPointer<Component> component(new Component);
+    component->setAddressSpaces(addressSpaces);
+
+    QSharedPointer<Segment> testSegment(new Segment());
+    testSegment->setName("testSegment");
+    testSegment->setOffset("searched");
+    testSegment->setRange("searched+2");
+
+    QList<QSharedPointer<Segment> > segments;
+    segments.append(testSegment);
+    addressSpace->setSegments(segments);
+
+    QSharedPointer<ExpressionFormatter> expressionFormatter = createTestExpressionFormatter(component);
+
+    ParameterReferenceTree referenceTree(component, expressionFormatter, "searched");
+
+    QCOMPARE(referenceTree.topLevelItemCount(), 1);
+    QTreeWidgetItem* addressSpacesItem = referenceTree.topLevelItem(0);
+    QCOMPARE(addressSpacesItem->text(ParameterReferenceTree::ITEM_NAME), QString("Address Spaces"));
+    QCOMPARE(addressSpacesItem->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+
+    QCOMPARE(referenceTree.topLevelItem(0)->childCount(), 1);
+    QTreeWidgetItem* testSpaceItem = referenceTree.topLevelItem(0)->child(0);
+    QCOMPARE(testSpaceItem->text(ParameterReferenceTree::ITEM_NAME), QString("addressSpace"));
+    QCOMPARE(testSpaceItem->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+
+    QCOMPARE(testSpaceItem->childCount(), 3);
+
+    QTreeWidgetItem* widthItem = testSpaceItem->child(0);
+    QCOMPARE(widthItem->text(ParameterReferenceTree::ITEM_NAME), QString("Width"));
+    QCOMPARE(widthItem->text(ParameterReferenceTree::ITEM_EXPRESSION), QString("searched"));
+
+    QTreeWidgetItem* rangeItem = testSpaceItem->child(1);
+    QCOMPARE(rangeItem->text(ParameterReferenceTree::ITEM_NAME), QString("Range"));
+    QCOMPARE(rangeItem->text(ParameterReferenceTree::ITEM_EXPRESSION), QString("searched+1"));
+
+    QTreeWidgetItem* segmentsItem = testSpaceItem->child(2);
+    QCOMPARE(segmentsItem->text(ParameterReferenceTree::ITEM_NAME), QString("Segments"));
+    QCOMPARE(segmentsItem->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+   
+    QCOMPARE(segmentsItem->childCount(), 1);
+    QTreeWidgetItem* singleSegmentItem = segmentsItem->child(0);
+    QCOMPARE(singleSegmentItem->text(ParameterReferenceTree::ITEM_NAME), QString("testSegment"));
+    QCOMPARE(singleSegmentItem->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+
+    QCOMPARE(singleSegmentItem->childCount(), 2);
+    QTreeWidgetItem* segmentOffsetItem = singleSegmentItem->child(0);
+    QCOMPARE(segmentOffsetItem->text(ParameterReferenceTree::ITEM_NAME), QString("Offset"));
+    QCOMPARE(segmentOffsetItem->text(ParameterReferenceTree::ITEM_EXPRESSION), QString("searched"));
+    QCOMPARE(segmentOffsetItem->childCount(), 0);
+
+    QTreeWidgetItem* segmentRangeItem = singleSegmentItem->child(1);
+    QCOMPARE(segmentRangeItem->text(ParameterReferenceTree::ITEM_NAME), QString("Range"));
+    QCOMPARE(segmentRangeItem->text(ParameterReferenceTree::ITEM_EXPRESSION), QString("searched+2"));
+    QCOMPARE(segmentRangeItem->childCount(), 0);
 }
 
 //-----------------------------------------------------------------------------

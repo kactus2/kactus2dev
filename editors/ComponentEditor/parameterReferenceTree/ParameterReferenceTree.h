@@ -6,7 +6,7 @@
 // Date: 20.01.2015
 //
 // Description:
-// Tree widget for displaying parameter references.
+// Tree widget for displaying references to a parameter within a component.
 //-----------------------------------------------------------------------------
 
 #ifndef PARAMETERREFERENCETREE_H
@@ -29,22 +29,29 @@
 #include <QSharedPointer>
 
 //-----------------------------------------------------------------------------
-//! Tree widget for displaying differences of two components.
+//! Tree widget for displaying references to a parameter within a component.
 //-----------------------------------------------------------------------------
 class ParameterReferenceTree : public QTreeWidget 
 {
     Q_OBJECT
 public:
 
-    //! Enumeration of the two columns.
+    //! Enumeration of the columns.
     enum COLUMNS
     {
-        ITEM_NAME=0,
+        ITEM_NAME = 0,
         ITEM_EXPRESSION,
         COLUMN_COUNT
     };
     
-    //! The constructor.
+    /*!
+     *   The constructor.
+     *
+     *      @param [in] component               The component whose references to display.
+     *      @param [in] expressionFormatter     Formatter for expressions.
+     *      @param [in] targetID                The parameter id whose references to display.
+     *      @param [in] parent                  The parent widget.
+     */
     ParameterReferenceTree(QSharedPointer<Component> component,
         QSharedPointer<ExpressionFormatter> expressionFormatter, QString const& targetID, QWidget *parent = 0);
 
@@ -69,7 +76,7 @@ private:
      *
      *      @return True, if there is a reference in parameters to this parameter, false otherwise.
      */
-    bool referenceExistsInParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > parameterList);
+    bool referenceExistsInParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > parameterList) const;
 
     /*!
      *  Check if a parameter has a reference to this parameter.
@@ -78,7 +85,7 @@ private:
      *
      *      @return True, if a reference exists in this parameter, false otherwise.
      */
-    bool parameterHasReference(QSharedPointer<Parameter> parameter);
+    bool parameterHasReference(QSharedPointer<Parameter> parameter) const;
 
     /*!
      *  Create the references for parameters.
@@ -94,7 +101,8 @@ private:
      *
      *      @return True, if there is a reference in model parameters to this parameter, false otherwise.
      */
-    bool referenceExistsInModelParameters(QSharedPointer<QList<QSharedPointer<ModelParameter> > > modelParameters);
+    bool referenceExistsInModelParameters(
+        QSharedPointer<QList<QSharedPointer<ModelParameter> > > modelParameters) const;
 
     /*!
      *  Create the references for model parameters.
@@ -110,21 +118,48 @@ private:
      *
      *      @return True, if there is a reference to this parameter, false otherwise.
      */
-    bool referenceExistsInAddressSpaces();
+    bool referenceExistsInAddressSpaces() const;
+    
+    /*!
+     *  Check if a reference exists in an address space.
+     *
+     *      @param[in] addressSpace    The address space to search for.
+     *
+     *      @return True, if there is a reference in the address space to this parameter, otherwise false.
+     */
+    bool referenceExistsInSingleAddressSpace(QSharedPointer<AddressSpace> addressSpace) const;
+        
+    /*!
+     *  Check if a reference exists in an address space segments.
+     *
+     *      @param[in] addressSpace    The address space whose segments to search for.
+     *
+     *      @return True, if there is a reference in the segments to this parameter, otherwise false.
+     */
+    bool referenceExistsInSegments(QSharedPointer<AddressSpace> addressSpace) const;
+            
+    /*!
+     *  Check if a reference exists in a segment.
+     *
+     *      @param[in] segment      The segment to search for.
+     *
+     *      @return True, if there is a reference in the segment to this parameter, otherwise false.
+     */
+    bool referenceExistsInSingleSegment(QSharedPointer<Segment> segment) const;
 
     /*!
      *  Check if a reference exists in views' parameters.
      *
      *      @return True, if there is a reference to this parameter, false otherwise.
      */
-    bool referenceExistsInViews();
+    bool referenceExistsInViews() const;
 
     /*!
      *  Check if a reference exists in a single view parameters.
      *
      *      @return True, if there is a reference to this parameter, false otherwise.
      */
-    bool referenceExistsInView(QSharedPointer<View> view);
+    bool referenceExistsInView(QSharedPointer<View> view) const;
 
     /*!
      *  Create the references for views.
@@ -175,7 +210,7 @@ private:
      *
      *      @return True, if a reference exists in this memory map, false otherwise.
      */
-    bool referenceExistsInDefaultMemoryRemap(QSharedPointer<MemoryMap> memoryMap);
+    bool referenceExistsInDefaultMemoryRemap(QSharedPointer<MemoryMap> memoryMap) const;
 
     /*!
      *  Check if a reference exists in a single memory remap of a memory map.
@@ -193,7 +228,7 @@ private:
      *
      *      @return True, if there is a reference to this parameter, false otherwise.
      */
-    bool referenceExistsInAddressBlock(QSharedPointer<AddressBlock> addressBlock);
+    bool referenceExistsInAddressBlock(QSharedPointer<AddressBlock> addressBlock) const;
 
     /*!
      *  Checks if a reference exists in an address blocks values.
@@ -202,7 +237,7 @@ private:
      *
      *      @return True, if there is a reference to this parameter, false otherwise.
      */
-    bool referenceExistsInAddressBlockValues(QSharedPointer<AddressBlock> addressBlock);
+    bool referenceExistsInAddressBlockValues(QSharedPointer<AddressBlock> addressBlock) const;
 
     /*!
      *  Check if a register has a reference.
@@ -211,26 +246,50 @@ private:
      *
      *      @return True, if there is a reference to this parameter, false otherwise.
      */
-    bool registerHasReference(QSharedPointer<Register> targetRegister);
+    bool registerHasReference(QSharedPointer<Register> targetRegister) const;
 
     /*!
      *  Check if any of the register fields has a reference.
      *
      *      @param [in] targetRegister      The register, whose fields are being checked.
      */
-    bool referenceExistsInRegisterFields(QSharedPointer<Register> targetRegister);
+    bool referenceExistsInRegisterFields(QSharedPointer<Register> targetRegister) const;
 
     /*!
      *  Check if a single field has a reference.
      *
      *      @param [in] targetField         The target field.
      */
-    bool registerFieldHasReference(QSharedPointer<Field> targetField);
+    bool registerFieldHasReference(QSharedPointer<Field> targetField) const;
 
     /*!
      *  Create the references for address spaces.
      */
     void createReferencesForAddressSpaces();
+
+    /*!
+     *  Create the references for a single address space.
+     *
+     *      @param [in] addressSpace    The address space to create references for.
+     *      @param [in] parent          The parent tree item of the new address space item.
+     */
+    void createItemsForAddressSpace(QSharedPointer<AddressSpace> addressSpace, QTreeWidgetItem* parent);
+    
+    /*!
+     *  Create the references for segments within an address space.
+     *
+     *      @param [in] addressSpace    The address space to create references for.
+     *      @param [in] parent          The parent tree item of the new segment items.
+     */
+    void createReferencesForSegments(QSharedPointer<AddressSpace> addressSpace, QTreeWidgetItem* parent);
+        
+    /*!
+     *  Create the references a segment within an address space.
+     *
+     *      @param [in] segment    The segment to create references for.
+     *      @param [in] parent     The parent tree item of the segment items.
+     */
+    void createItemsForSegment(QSharedPointer<Segment> segment, QTreeWidgetItem* parent);
 
     /*!
      *  Create the references for memory maps.
@@ -268,7 +327,7 @@ private:
      *
      *      @return True, if a reference exists in a bus interface, false otherwise.
      */
-    bool referenceExistsInBusInterfaces();
+    bool referenceExistsInBusInterfaces() const;
 
     /*!
      *  Create references for bus interfaces.
@@ -280,28 +339,28 @@ private:
      *
      *      @param [in] busInterface    Pointer to the bus interface.
      */
-    bool referenceExistsInSingleBusInterface(QSharedPointer<BusInterface> busInterface);
+    bool referenceExistsInSingleBusInterface(QSharedPointer<BusInterface> busInterface) const;
 
     /*!
      *  Check if a reference exists in mirrored slave.
      *
      *      @param [in] mirrorSlave     Pointer to the mirrored slave interface.
      */
-    bool referenceExistsInMirroredSlave(QSharedPointer<MirroredSlaveInterface> mirrorSlave);
+    bool referenceExistsInMirroredSlave(QSharedPointer<MirroredSlaveInterface> mirrorSlave) const;
 
     /*!
      *  Check if a reference exists in mirrored slaves remap address.
      *
      *      @param [in] mirrorSlave     Pointer to the mirrored slave interface.
      */
-    bool mirroredSlaveRemapAddressHasReference(QSharedPointer<MirroredSlaveInterface> mirrorSlave);
+    bool mirroredSlaveRemapAddressHasReference(QSharedPointer<MirroredSlaveInterface> mirrorSlave) const;
 
     /*!
      *  Check if a reference exists in mirrored slaves range.
      *
      *      @param [in] mirrorSlave     Pointer to the mirrored slave interface.
      */
-    bool mirroredSlaveRangeHasReference(QSharedPointer<MirroredSlaveInterface> mirrorSlave);
+    bool mirroredSlaveRangeHasReference(QSharedPointer<MirroredSlaveInterface> mirrorSlave) const;
 
     /*!
      *  Check if a reference exists in remap states.

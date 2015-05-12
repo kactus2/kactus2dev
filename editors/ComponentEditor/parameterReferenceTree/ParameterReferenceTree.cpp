@@ -6,7 +6,7 @@
 // Date: 20.01.2015
 //
 // Description:
-// Tree widget for displaying parameter references.
+// Tree widget for displaying references to a parameter within a component.
 //-----------------------------------------------------------------------------
 
 #include "ParameterReferenceTree.h"
@@ -113,7 +113,7 @@ void ParameterReferenceTree::setupTree()
 // Function: ParameterReferenceTree::referenceExistsInParameters()
 //-----------------------------------------------------------------------------
 bool ParameterReferenceTree::referenceExistsInParameters(
-    QSharedPointer<QList<QSharedPointer<Parameter> > > parameterList)
+    QSharedPointer<QList<QSharedPointer<Parameter> > > parameterList) const
 {
     foreach (QSharedPointer<Parameter> parameter, *parameterList)
     {
@@ -129,7 +129,7 @@ bool ParameterReferenceTree::referenceExistsInParameters(
 //-----------------------------------------------------------------------------
 // Function: ParameterReferenceTree::parameterHasReference()
 //-----------------------------------------------------------------------------
-bool ParameterReferenceTree::parameterHasReference(QSharedPointer<Parameter> parameter)
+bool ParameterReferenceTree::parameterHasReference(QSharedPointer<Parameter> parameter) const
 {
     if (parameter->getValue().contains(targetID_) ||
         parameter->getBitWidthLeft().contains(targetID_) || parameter->getBitWidthRight().contains(targetID_) ||
@@ -161,7 +161,7 @@ void ParameterReferenceTree::createParameterReferences(
 // Function: ParameterReferenceTree::referenceExistsInModelParameters()
 //-----------------------------------------------------------------------------
 bool ParameterReferenceTree::referenceExistsInModelParameters(
-    QSharedPointer<QList<QSharedPointer<ModelParameter> > > modelParameters)
+    QSharedPointer<QList<QSharedPointer<ModelParameter> > > modelParameters) const
 {
     foreach(QSharedPointer<Parameter> modelParameter, *modelParameters)
     {
@@ -193,10 +193,15 @@ void ParameterReferenceTree::createReferencesForModelParameters(
 //-----------------------------------------------------------------------------
 // Function: ParameterReferenceTree::referenceExistsInAddressSpaces()
 //-----------------------------------------------------------------------------
-bool ParameterReferenceTree::referenceExistsInAddressSpaces()
+bool ParameterReferenceTree::referenceExistsInAddressSpaces() const
 {
     foreach(QSharedPointer<AddressSpace> addressSpace, component_->getAddressSpaces())
     {
+        if (referenceExistsInSingleAddressSpace(addressSpace))
+        {
+            return true;
+        }
+
         if (referenceExistsInDefaultMemoryRemap(addressSpace->getLocalMemoryMap()))
         {
             return true;
@@ -207,9 +212,44 @@ bool ParameterReferenceTree::referenceExistsInAddressSpaces()
 }
 
 //-----------------------------------------------------------------------------
+// Function: ParameterReferenceTree::referenceExistsInAddressSpace()
+//-----------------------------------------------------------------------------
+bool ParameterReferenceTree::referenceExistsInSingleAddressSpace(QSharedPointer<AddressSpace> addressSpace) const
+{
+    return addressSpace->getWidthExpression().contains(targetID_) || 
+        addressSpace->getRange().contains(targetID_) ||
+        referenceExistsInSegments(addressSpace) || 
+        referenceExistsInDefaultMemoryRemap(addressSpace->getLocalMemoryMap());
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterReferenceTree::referenceExistsInSegments()
+//-----------------------------------------------------------------------------
+bool ParameterReferenceTree::referenceExistsInSegments(QSharedPointer<AddressSpace> addressSpace) const
+{
+    foreach (QSharedPointer<Segment> segment, addressSpace->getSegments())
+    {
+        if (referenceExistsInSingleSegment(segment))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterReferenceTree::referenceExistsInSingleSegment()
+//-----------------------------------------------------------------------------
+bool ParameterReferenceTree::referenceExistsInSingleSegment(QSharedPointer<Segment> segment) const
+{
+    return segment->getAddressOffset().contains(targetID_) || segment->getRange().contains(targetID_);
+}
+
+//-----------------------------------------------------------------------------
 // Function: ParameterReferenceTree::referenceExistsInViews()
 //-----------------------------------------------------------------------------
-bool ParameterReferenceTree::referenceExistsInViews()
+bool ParameterReferenceTree::referenceExistsInViews() const
 {
     foreach(QSharedPointer<View> view, component_->getViews())
     {
@@ -225,7 +265,7 @@ bool ParameterReferenceTree::referenceExistsInViews()
 //-----------------------------------------------------------------------------
 // Function: ParameterReferenceTree::referenceExistsInView()
 //-----------------------------------------------------------------------------
-bool ParameterReferenceTree::referenceExistsInView(QSharedPointer<View> view)
+bool ParameterReferenceTree::referenceExistsInView(QSharedPointer<View> view) const
 {
     foreach (QSharedPointer<Parameter> parameter, *view->getParameters())
     {
@@ -297,14 +337,9 @@ bool ParameterReferenceTree::referenceExistsInPorts()
 //-----------------------------------------------------------------------------
 bool ParameterReferenceTree::portHasreference(QSharedPointer<Port> port)
 {
-    if (port->getLeftBoundExpression().contains(targetID_) ||
+    return port->getLeftBoundExpression().contains(targetID_) ||
         port->getRightBoundExpression().contains(targetID_) || port->getDefaultValue().contains(targetID_) ||
-        port->getArrayLeft().contains(targetID_) || port->getArrayRight().contains(targetID_))
-    {
-        return true;
-    }
-
-    return false;
+        port->getArrayLeft().contains(targetID_) || port->getArrayRight().contains(targetID_);
 }
 
 //-----------------------------------------------------------------------------
@@ -364,7 +399,7 @@ bool ParameterReferenceTree::referenceExistsInSingleMemoryMap(QSharedPointer<Mem
 //-----------------------------------------------------------------------------
 // Function: ParameterReferenceTree::referenceExistsInSingleMemoryMap()
 //-----------------------------------------------------------------------------
-bool ParameterReferenceTree::referenceExistsInDefaultMemoryRemap(QSharedPointer<MemoryMap> memoryMap)
+bool ParameterReferenceTree::referenceExistsInDefaultMemoryRemap(QSharedPointer<MemoryMap> memoryMap) const
 {
     foreach(QSharedPointer<MemoryMapItem> addressBlockItem, memoryMap->getItems())
     {
@@ -406,7 +441,7 @@ bool ParameterReferenceTree::referenceExistsInSingleMemoryRemap(QSharedPointer<M
 //-----------------------------------------------------------------------------
 // Function: ParameterReferenceTree::referenceExistsInAddressBlock()
 //-----------------------------------------------------------------------------
-bool ParameterReferenceTree::referenceExistsInAddressBlock(QSharedPointer<AddressBlock> addressBlock)
+bool ParameterReferenceTree::referenceExistsInAddressBlock(QSharedPointer<AddressBlock> addressBlock) const
 {
     if (referenceExistsInAddressBlockValues(addressBlock))
     {
@@ -432,7 +467,7 @@ bool ParameterReferenceTree::referenceExistsInAddressBlock(QSharedPointer<Addres
 //-----------------------------------------------------------------------------
 // Function: ParameterReferenceTree::referenceExistsInAddressBlockValues()
 //-----------------------------------------------------------------------------
-bool ParameterReferenceTree::referenceExistsInAddressBlockValues(QSharedPointer<AddressBlock> addressBlock)
+bool ParameterReferenceTree::referenceExistsInAddressBlockValues(QSharedPointer<AddressBlock> addressBlock) const
 {
     return addressBlock->getBaseAddress().contains(targetID_) || addressBlock->getRange().contains(targetID_) ||
         addressBlock->getWidthExpression().contains(targetID_);
@@ -441,7 +476,7 @@ bool ParameterReferenceTree::referenceExistsInAddressBlockValues(QSharedPointer<
 //-----------------------------------------------------------------------------
 // Function: ParameterReferenceTree::registerHasReference()
 //-----------------------------------------------------------------------------
-bool ParameterReferenceTree::registerHasReference(QSharedPointer<Register> targetRegister)
+bool ParameterReferenceTree::registerHasReference(QSharedPointer<Register> targetRegister) const
 {
     if (targetRegister->getAddressOffset().contains(targetID_) ||
         targetRegister->getDimensionExpression().contains(targetID_) ||
@@ -461,7 +496,7 @@ bool ParameterReferenceTree::registerHasReference(QSharedPointer<Register> targe
 //-----------------------------------------------------------------------------
 // Function: ParameterReferenceTree::referenceExistsInRegisterFields()
 //-----------------------------------------------------------------------------
-bool ParameterReferenceTree::referenceExistsInRegisterFields(QSharedPointer<Register> targetRegister)
+bool ParameterReferenceTree::referenceExistsInRegisterFields(QSharedPointer<Register> targetRegister) const
 {
     foreach (QSharedPointer<Field> registerField, targetRegister->getFields())
     {
@@ -477,16 +512,11 @@ bool ParameterReferenceTree::referenceExistsInRegisterFields(QSharedPointer<Regi
 //-----------------------------------------------------------------------------
 // Function: ParameterReferenceTree::registerFieldHasReference()
 //-----------------------------------------------------------------------------
-bool ParameterReferenceTree::registerFieldHasReference(QSharedPointer<Field> targetField)
+bool ParameterReferenceTree::registerFieldHasReference(QSharedPointer<Field> targetField) const
 {
-    if (targetField->getBitOffsetExpression().contains(targetID_) ||
+    return targetField->getBitOffsetExpression().contains(targetID_) ||
         targetField->getBitWidthExpression().contains(targetID_) ||
-        targetField->getIsPresentExpression().contains(targetID_))
-    {
-        return true;
-    }
-
-    return false;
+        targetField->getIsPresentExpression().contains(targetID_);
 }
 
 //-----------------------------------------------------------------------------
@@ -498,15 +528,78 @@ void ParameterReferenceTree::createReferencesForAddressSpaces()
 
     foreach (QSharedPointer<AddressSpace> addressSpace, component_->getAddressSpaces())
     {
-        if (addressSpace->hasLocalMemoryMap() && referenceExistsInDefaultMemoryRemap(addressSpace->getLocalMemoryMap()))
+        if (referenceExistsInSingleAddressSpace(addressSpace))
         {
             QTreeWidgetItem* addressSpaceItem = createMiddleItem(addressSpace->getName(), topAddressSpaceItem);
-            QSharedPointer <MemoryMap> localMemoryMap = addressSpace->getLocalMemoryMap();
 
-            QTreeWidgetItem* memoryMapItem = createMiddleItem(localMemoryMap->getName(), addressSpaceItem);
+            if (referenceExistsInSingleAddressSpace(addressSpace))
+            {
+                createItemsForAddressSpace(addressSpace, addressSpaceItem);
+            }
 
-            createReferencesForSingleMemoryMap(localMemoryMap, memoryMapItem);
+            if (referenceExistsInSegments(addressSpace))
+            {
+                QTreeWidgetItem* segmentsItem = createMiddleItem("Segments", addressSpaceItem);
+                colourItemGrey(segmentsItem);
+
+                createReferencesForSegments(addressSpace, segmentsItem);
+            }
+
+            if (addressSpace->hasLocalMemoryMap() && referenceExistsInDefaultMemoryRemap(addressSpace->getLocalMemoryMap()))
+            {
+                QSharedPointer <MemoryMap> localMemoryMap = addressSpace->getLocalMemoryMap();
+                QTreeWidgetItem* memoryMapItem = createMiddleItem(localMemoryMap->getName(), addressSpaceItem);
+                createReferencesForSingleMemoryMap(localMemoryMap, memoryMapItem);
+            }
         }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterReferenceTree::createItemsForAddressSpace()
+//-----------------------------------------------------------------------------
+void ParameterReferenceTree::createItemsForAddressSpace(QSharedPointer<AddressSpace> addressSpace, QTreeWidgetItem* parent)
+{
+    if (addressSpace->getWidthExpression().contains(targetID_))
+    {
+        createItem("Width", addressSpace->getWidthExpression(), parent);
+    }
+
+    if (addressSpace->getRange().contains(targetID_))
+    {
+        createItem("Range", addressSpace->getRange(), parent);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterReferenceTree::createReferencesForSegments()
+//-----------------------------------------------------------------------------
+void ParameterReferenceTree::createReferencesForSegments(QSharedPointer<AddressSpace> addressSpace, QTreeWidgetItem* parent)
+{
+    foreach (QSharedPointer<Segment> segment, addressSpace->getSegments())
+    {
+        if (referenceExistsInSingleSegment(segment))
+        {
+            createItemsForSegment(segment, parent);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterReferenceTree::createItemsForSegment()
+//-----------------------------------------------------------------------------
+void ParameterReferenceTree::createItemsForSegment(QSharedPointer<Segment> segment, QTreeWidgetItem* parent)
+{
+    QTreeWidgetItem* segmentItem = createMiddleItem(segment->getName(), parent);
+
+    if (segment->getAddressOffset().contains(targetID_))
+    {
+        createItem("Offset", segment->getAddressOffset(), segmentItem);
+    }
+
+    if (segment->getRange().contains(targetID_))
+    {
+        createItem("Range", segment->getRange(), segmentItem);
     }
 }
 
@@ -626,7 +719,7 @@ void ParameterReferenceTree::createReferencesForSingleRegister(QSharedPointer<Re
 //-----------------------------------------------------------------------------
 // Function: ParameterReferenceTree::referenceExistsInBusInterfaces()
 //-----------------------------------------------------------------------------
-bool ParameterReferenceTree::referenceExistsInBusInterfaces()
+bool ParameterReferenceTree::referenceExistsInBusInterfaces() const
 {
     foreach (QSharedPointer<BusInterface> busInterface, component_->getBusInterfaces())
     {
@@ -642,7 +735,7 @@ bool ParameterReferenceTree::referenceExistsInBusInterfaces()
 //-----------------------------------------------------------------------------
 // Function: ParameterReferenceTree::referenceExistsInSingleBusInterface()
 //-----------------------------------------------------------------------------
-bool ParameterReferenceTree::referenceExistsInSingleBusInterface(QSharedPointer<BusInterface> busInterface)
+bool ParameterReferenceTree::referenceExistsInSingleBusInterface(QSharedPointer<BusInterface> busInterface) const
 {
     foreach (QSharedPointer<Parameter> parameter, *busInterface->getParameters())
     {
@@ -666,48 +759,26 @@ bool ParameterReferenceTree::referenceExistsInSingleBusInterface(QSharedPointer<
 //-----------------------------------------------------------------------------
 // Function: ParameterReferenceTree::referenceExistsInMirroredSlave()
 //-----------------------------------------------------------------------------
-bool ParameterReferenceTree::referenceExistsInMirroredSlave(QSharedPointer<MirroredSlaveInterface> mirrorSlave)
+bool ParameterReferenceTree::referenceExistsInMirroredSlave(QSharedPointer<MirroredSlaveInterface> mirrorSlave) const
 {
-    if (mirroredSlaveRemapAddressHasReference(mirrorSlave))
-    {
-        return true;
-    }
-    if (mirroredSlaveRangeHasReference(mirrorSlave))
-    {
-        return true;
-    }
-    return false;
+    return (mirroredSlaveRemapAddressHasReference(mirrorSlave) ||mirroredSlaveRangeHasReference(mirrorSlave));
 }
 
 //-----------------------------------------------------------------------------
 // Function: ParameterReferenceTree::mirroredSlaveRemapAddressHasReference()
 //-----------------------------------------------------------------------------
 bool ParameterReferenceTree::mirroredSlaveRemapAddressHasReference(
-    QSharedPointer<MirroredSlaveInterface> mirrorSlave)
+    QSharedPointer<MirroredSlaveInterface> mirrorSlave) const
 {
-    if (mirrorSlave->getRemapAddressID() == targetID_)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return mirrorSlave->getRemapAddressID() == targetID_;
 }
 
 //-----------------------------------------------------------------------------
 // Function: ParameterReferenceTree::mirroredSlaveRangeHasReference()
 //-----------------------------------------------------------------------------
-bool ParameterReferenceTree::mirroredSlaveRangeHasReference(QSharedPointer<MirroredSlaveInterface> mirrorSlave)
+bool ParameterReferenceTree::mirroredSlaveRangeHasReference(QSharedPointer<MirroredSlaveInterface> mirrorSlave) const
 {
-    if (mirrorSlave->getRangeID() == targetID_)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return mirrorSlave->getRangeID() == targetID_;
 }
 
 //-----------------------------------------------------------------------------
@@ -864,33 +935,23 @@ void ParameterReferenceTree::createItemsForParameter(QSharedPointer<Parameter> p
 {
     if (parameter->getValue().contains(targetID_))
     {
-        QString itemName = "Value";
-        QString expression = parameter->getValue();
-        createItem(itemName, expression, parent);
+        createItem("Value", parameter->getValue(), parent);
     }
     if (parameter->getBitWidthLeft().contains(targetID_))
     {
-        QString itemName = "Bit Width Left";
-        QString expression = parameter->getBitWidthLeft();
-        createItem(itemName, expression, parent);
+        createItem("Bit Width Left", parameter->getBitWidthLeft(), parent);
     }
     if (parameter->getBitWidthRight().contains(targetID_))
     {
-        QString itemName = "Bit Width Right";
-        QString expression = parameter->getBitWidthRight();
-        createItem(itemName, expression, parent);
+        createItem("Bit Width Right", parameter->getBitWidthRight(), parent);
     }
     if (parameter->getAttribute("kactus2:arrayLeft").contains(targetID_))
     {
-        QString itemName = "Array Left";
-        QString expression = parameter->getAttribute("kactus2:arrayLeft");
-        createItem(itemName, expression, parent);
+        createItem("Array Left", parameter->getAttribute("kactus2:arrayLeft"), parent);
     }
     if (parameter->getAttribute("kactus2:arrayRight").contains(targetID_))
     {
-        QString itemName = "Array Right";
-        QString expression = parameter->getAttribute("kactus2:arrayRight");
-        createItem(itemName, expression, parent);
+        createItem("Array Right", parameter->getAttribute("kactus2:arrayRight"), parent);
     }
 }
 
@@ -901,33 +962,23 @@ void ParameterReferenceTree::createItemsForPort(QSharedPointer<Port> port, QTree
 {
     if (port->getLeftBoundExpression().contains(targetID_))
     {
-        QString itemName = "Left (Higher) Bound";
-        QString expression = port->getLeftBoundExpression();
-        createItem(itemName, expression, parent);
+        createItem("Left (Higher) Bound", port->getLeftBoundExpression(), parent);
     }
     if (port->getRightBoundExpression().contains(targetID_))
     {
-        QString itemName = "Right (Lower) Bound";
-        QString expression = port->getRightBoundExpression();
-        createItem(itemName, expression, parent);
+        createItem("Right (Lower) Bound", port->getRightBoundExpression(), parent);
     }
     if (port->getDefaultValue().contains(targetID_))
     {
-        QString itemName = "Default Value";
-        QString expression = port->getDefaultValue();
-        createItem(itemName, expression, parent);
+        createItem("Default Value", port->getDefaultValue(), parent);
     }
     if (port->getArrayLeft().contains(targetID_))
     {
-        QString itemName = "Array Left";
-        QString expression = port->getArrayLeft();
-        createItem(itemName, expression, parent);
+        createItem("Array Left", port->getArrayLeft(), parent);
     }
     if (port->getArrayRight().contains(targetID_))
     {
-        QString itemName = "Array Right";
-        QString expression = port->getArrayRight();
-        createItem(itemName, expression, parent);
+        createItem("Array Right", port->getArrayRight(), parent);
     }
 }
 
@@ -939,21 +990,15 @@ void ParameterReferenceTree::createItemsForRegister(QSharedPointer<Register> tar
 {
     if (targetRegister->getAddressOffset().contains(targetID_))
     {
-        QString itemName = "Offset";
-        QString expression = targetRegister->getAddressOffset();
-        createItem(itemName, expression, parent);
+        createItem("Offset", targetRegister->getAddressOffset(), parent);
     }
     if (targetRegister->getDimensionExpression().contains(targetID_))
     {
-        QString itemName = "Dimension";
-        QString expression = targetRegister->getDimensionExpression();
-        createItem(itemName, expression, parent);
+        createItem("Dimension", targetRegister->getDimensionExpression(), parent);
     }
     if (targetRegister->getSizeExpression().contains(targetID_))
     {
-        QString itemName = "Size";
-        QString expression = targetRegister->getSizeExpression();
-        createItem(itemName, expression, parent);
+        createItem("Size", targetRegister->getSizeExpression(), parent);
     }
 }
 
@@ -965,21 +1010,15 @@ void ParameterReferenceTree::createItemsForAddressBlock(QSharedPointer<AddressBl
 {
     if (targetAddressBlock->getBaseAddress().contains(targetID_))
     {
-        QString itemName = "Base Address";
-        QString expression = targetAddressBlock->getBaseAddress();
-        createItem(itemName, expression, parent);
+        createItem("Base Address", targetAddressBlock->getBaseAddress(), parent);
     }
     if (targetAddressBlock->getRange().contains(targetID_))
     {
-        QString itemName = "Range";
-        QString expression = targetAddressBlock->getRange();
-        createItem(itemName, expression, parent);
+        createItem("Range", targetAddressBlock->getRange(), parent);
     }
     if (targetAddressBlock->getWidthExpression().contains(targetID_))
     {
-        QString itemName = "Width";
-        QString expression = targetAddressBlock->getWidthExpression();
-        createItem(itemName, expression, parent);
+        createItem("Width", targetAddressBlock->getWidthExpression(), parent);
     }
 }
 
@@ -990,21 +1029,15 @@ void ParameterReferenceTree::createItemsForField(QSharedPointer<Field> targetFie
 {
     if (targetField->getBitOffsetExpression().contains(targetID_))
     {
-        QString itemName = "Offset";
-        QString expression = targetField->getBitOffsetExpression();
-        createItem(itemName, expression, parent);
+        createItem("Offset", targetField->getBitOffsetExpression(), parent);
     }
     if (targetField->getBitWidthExpression().contains(targetID_))
     {
-        QString itemName = "Width";
-        QString expression = targetField->getBitWidthExpression();
-        createItem(itemName, expression, parent);
+        createItem("Width", targetField->getBitWidthExpression(), parent);
     }
     if (targetField->getIsPresentExpression().contains(targetID_))
     {
-        QString itemName = "Is Present";
-        QString expression = targetField->getIsPresentExpression();
-        createItem(itemName, expression, parent);
+        createItem("Is Present", targetField->getIsPresentExpression(), parent);
     }
 }
 
