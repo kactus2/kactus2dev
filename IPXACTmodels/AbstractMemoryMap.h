@@ -67,199 +67,192 @@ public:
     virtual ~AbstractMemoryMap();
 
     /*!
-	 *  Writes the abstract memory map information to xml.
-	 *
-	 *      @param [in] writer  A reference to a QXMLStreamWriter instance used to write the information.
-	 */
-	void write(QXmlStreamWriter& writer);
+     *  Writes the abstract memory map information to xml.
+     *
+     *      @param [in] writer  A reference to a QXMLStreamWriter instance used to write the information.
+     */
+    void write(QXmlStreamWriter& writer);
 
     /*!
-	 *  Check if the memory map is in a valid state.
-	 *
-	 *      @param [in] componentChoices    Choices in the containing component.
-	 *      @param [in] errorList           The list to add the possble error messages to.
-	 *      @param [in] parentIdentifier    String from parent to help to identify the location of the error.
+     *  Check if the memory map is in a valid state.
+     *
+     *      @param [in] componentChoices    Choices in the containing component.
+     *      @param [in] errorList           The list to add the possble error messages to.
+     *      @param [in] parentIdentifier    String from parent to help to identify the location of the error.
      *
      *      @return True, if the state is valid and writing is possible, false otherwise.
-	 */
-	bool isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices, QStringList& errorList,
+     */
+    bool isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices, QStringList& errorList,
         const QString& parentIdentifier) const;
 
     /*!
-	 *  Check if the memory map is in a valid state.
-	 *
-	 *      @param [in] componentChoices    Choices in the containing component.
+     *  Check if the memory map is in a valid state.
+     *
+     *      @param [in] componentChoices    Choices in the containing component.
      *
      *      @return True if the state is valid and writing is possible, false otherwise.
-	 */
-	bool isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const;
+     */
+    bool isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const;
 
     /*!
-	 *  Check if the address blocks within memory map contains registers with given names.
-	 *
-	 *      @param [in] regNames    List of register names to be checked.
+     *  Check if the address blocks within memory map contains registers with given names.
+     *
+     *      @param [in] regNames    List of register names to be checked.
      *
      *      @return True, if all register names are unique.
-	 */
-	bool uniqueRegisterNames(QStringList& regNames) const;
+     */
+    bool uniqueRegisterNames(QStringList& regNames) const;
 
-	/*!
-	 *  Write the register names and addresses to the given stream.
-	 *
-	 *      @param [in] stream          The stream where the data is written into.
-	 *      @param [in] offset          The offset added to the register addresses.
-	 *      @param [in] useAddrBlockID  If false, then containing address block name is prepended to each register.
-	 *      @param [in] idString        The string which is added to the beginning of names.
-	 */
-	void writeRegisters(QTextStream& stream, quint64 offset, bool useAddrBlockID = false,
+    /*!
+     *  Write the register names and addresses to the given stream.
+     *
+     *      @param [in] stream          The stream where the data is written into.
+     *      @param [in] offset          The offset added to the register addresses.
+     *      @param [in] useAddrBlockID  If false, then containing address block name is prepended to each register.
+     *      @param [in] idString        The string which is added to the beginning of names.
+     */
+    void writeRegisters(QTextStream& stream, quint64 offset, bool useAddrBlockID = false,
         const QString& idString = QString()) const;
 
     /*!
-	 *  Check if the names of memory typed address blocks are contained in the given list.
-	 *
-	 *      @param [in] memNames    List of memory names.
+     *  Check if the names of memory typed address blocks are contained in the given list.
+     *
+     *      @param [in] memNames    List of memory names.
      *
      *      @return True, if all memory names are unique, false otherwise.
-	 */
-	bool uniqueMemoryNames(QStringList& memNames) const;
+     */
+    bool uniqueMemoryNames(QStringList& memNames) const;
 
     /*!
-	 *  Write the memory names and addresses to the given stream.
-	 *
-	 *      @param [in] stream      The stream where the data is written into.
-	 *      @param [in] offset      The offset added to the register addresses.
-	 *      @param [in] idString    The string which is added to the beginning of names.
-	 */
-	void writeMemoryAddresses(QTextStream& stream, quint64 offset, const QString& idString = QString()) const;
+     *  Write the memory names and addresses to the given stream.
+     *
+     *      @param [in] stream      The stream where the data is written into.
+     *      @param [in] offset      The offset added to the register addresses.
+     *      @param [in] idString    The string which is added to the beginning of names.
+     */
+    void writeMemoryAddresses(QTextStream& stream, quint64 offset, const QString& idString = QString()) const;
 
     /*!
-	 *  Check if the memory map contains at sub items.
-	 *
+     *  Check if the memory map contains at sub items.
+     *
      *      @return True, if the memory map contains sub items, false otherwise.
-	 */
-	bool containsSubItems() const;
+     */
+    bool containsSubItems() const;
 
     /*!
-	 *  Returns the last address of the memory map.
-	 *
+     *  Returns the last address of the memory map.
+     *
      *      @return A quint64 form of the last address.
-	 */
-	quint64 getLastAddress() const;
+     */
+    quint64 getLastAddress() const;
 
     /*!
-	 *  Get the last address of the memory map.
-	 *
+     *  Get the last address of the memory map.
+     *
      *      @return The last address in a qstring form.
-	 */
-	QString getLastAddressStr() const;
+     */
+    QString getLastAddressStr() const;
 
-	/*!
-	 *  Get the first address of the memory map.
-	 *
+    /*!
+     *  Get the first address of the memory map.
+     *
      *      @return The first address of the memory map in qstring form.
-	 */
-	QString getFirstAddressStr() const;
+     */
+    QString getFirstAddressStr() const;
 
     /*!
-	 *  Get a list of memory map items.
-	 *
+     *  Get a list of memory map items.
+     *
      *      @return A list containing pointers to the memory map items stored in this instance.
-	 */
-	const QList<QSharedPointer<MemoryMapItem> >& getItems() const;
+     */
+    const QList<QSharedPointer<MemoryMapItem> >& getItems() const;
 
     /*!
-	 *  Get a list of memory map items.
-	 *
+     *  Get a list of memory map items.
+     *
      *      @return A list containing pointers to the memory map items stored in this instance.
-	 */
-	QList<QSharedPointer<MemoryMapItem> >& getItems();
+     */
+    QList<QSharedPointer<MemoryMapItem> >& getItems();
 
     /*!
-	 *  Set the memory map elements for this memory map.
-	 *
-	 *      @param [in] newItems    A List containing pointers to the items to be stored in this memory map.
-	 */
-	void setItems(const QList<QSharedPointer<MemoryMapItem> > &newItems);
+     *  Set the memory map elements for this memory map.
+     *
+     *      @param [in] newItems    A List containing pointers to the items to be stored in this memory map.
+     */
+    void setItems(const QList<QSharedPointer<MemoryMapItem> > &newItems);
 
     /*!
-	 *  Get the name of the memory map.
-	 *
+     *  Get the name of the memory map.
+     *
      *      @return The name of the memory map.
-	 */
-	QString getName() const;
+     */
+    QString getName() const;
 
     /*!
-	 *  Set the name of the memory map.
-	 *
-	 *      @param [in] name    The new name for the memory map.
-	 */
-	void setName(const QString &name);
+     *  Set the name of the memory map.
+     *
+     *      @param [in] name    The new name for the memory map.
+     */
+    void setName(const QString &name);
 
     /*!
-	 *  Get the display name of the memory map.
-	 *
+     *  Get the display name of the memory map.
+     *
      *      @return The display name of the memory map.
-	 */
-	QString getDisplayName() const;
+     */
+    QString getDisplayName() const;
 
     /*!
-	 *  Set the display name for the memory map.
-	 *
-	 *      @param [in] displayName     The new display name.
-	 */
-	void setDisplayName(const QString& displayName);
+     *  Set the display name for the memory map.
+     *
+     *      @param [in] displayName     The new display name.
+     */
+    void setDisplayName(const QString& displayName);
 
     /*!
-	 *  Get the description of the memory map.
-	 *
+     *  Get the description of the memory map.
+     *
      *      @return The description of the memory map.
-	 */
-	QString getDescription() const;
+     */
+    QString getDescription() const;
 
     /*!
-	 *  Set the description for the memory map.
-	 *
-	 *      @param [in] description     The new description.
-	 */
-	void setDescription(const QString& description);
+     *  Set the description for the memory map.
+     *
+     *      @param [in] description     The new description.
+     */
+    void setDescription(const QString& description);
 
     /*!
-	 *  Check if the memory map contains any sub items.
-	 *
+     *  Check if the memory map contains any sub items.
+     *
      *      @return True, if the memory map contains sub items.
-	 */
-	bool isEmpty() const;
+     */
+    bool isEmpty() const;
 
     /*!
-	 *  Get reference to the name group-struct of the memory map.
-	 *
+     *  Get reference to the name group-struct of the memory map.
+     *
      *      @return Reference to the name group;
-	 */
-	NameGroup& getNameGroup();
-
-    /*!
-	 *  Get the largest bit width contained in the memory map.
-	 *
-     *      @return The number of vits in the widest address block.
-	 */
-	int getMaxWidth() const;
+     */
+    NameGroup& getNameGroup();
 
 private:
 
-	//! Contains the name, display name and description of the memory map.
-	NameGroup nameGroup_;
+    //! Contains the name, display name and description of the memory map.
+    NameGroup nameGroup_;
 
-	/*!
-	 * OPTIONAL (spirit:id)
-	 * Assigns a unique identifier for the containing element.
-	 */
-	QString id_;
+    /*!
+     * OPTIONAL (spirit:id)
+     * Assigns a unique identifier for the containing element.
+     */
+    QString id_;
 
-	/*!
-	 * OPTIONAL
-	 * Contains pointers to the memory map elements
-	 */
-	QList<QSharedPointer<MemoryMapItem> > items_;
+    /*!
+     * OPTIONAL
+     * Contains pointers to the memory map elements
+     */
+    QList<QSharedPointer<MemoryMapItem> > items_;
 
 };
 

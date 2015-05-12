@@ -13,6 +13,7 @@
 #define LOCALADDRBLOCKGRAPHITEM_H
 
 #include <editors/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacevisualizationitem.h>
+
 #include <IPXACTmodels/addressblock.h>
 
 #include <QSharedPointer>
@@ -69,9 +70,6 @@ private:
 
 	//! The address block being visualized.
 	QSharedPointer<AddressBlock> addrBlock_;
-
-    //! Expression parser for solving expressions.
-    QSharedPointer<ExpressionParser> expressionParser_;
 };
 
 #endif // LOCALADDRBLOCKGRAPHITEM_H

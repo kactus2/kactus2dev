@@ -10,7 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include "localaddrblockgraphitem.h"
-#include <common/utils.h>
+
 #include <common/KactusColors.h>
 
 #include <editors/ComponentEditor/common/ExpressionParser.h>
@@ -25,8 +25,7 @@ LocalAddrBlockGraphItem::LocalAddrBlockGraphItem(QSharedPointer<AddressBlock> bl
                                                  QSharedPointer<ExpressionParser> expressionParser,
 												 QGraphicsItem* parent /*= 0*/ ):
 AddressSpaceVisualizationItem(addressSpaceWidth, expressionParser, parent),
-addrBlock_(block),
-expressionParser_(expressionParser)
+addrBlock_(block)
 {
 	Q_ASSERT(addrBlock_);
 
@@ -58,7 +57,7 @@ void LocalAddrBlockGraphItem::refresh()
     setToolTip("<b>Name: </b>" + addrBlock_->getName() + "<br>" +
         "<b>Base address: </b>" + addr2Str(offset, getBitWidth()) + "<br>" +
         "<b>Last address: </b>" + addr2Str(lastAddr, getBitWidth()) + "<br>" +
-        "<b>Size [AUB]: </b>" + addrBlock_->getRange());
+        "<b>Size [AUB]: </b>" + getExpressionParser()->parseExpression(addrBlock_->getRange()));
 
 	VisualizerItem::reorganizeChildren();
 }
@@ -68,7 +67,7 @@ void LocalAddrBlockGraphItem::refresh()
 //-----------------------------------------------------------------------------
 quint64 LocalAddrBlockGraphItem::getOffset() const
 {
-	return expressionParser_->parseExpression(addrBlock_->getBaseAddress()).toUInt();
+	return getExpressionParser()->parseExpression(addrBlock_->getBaseAddress()).toUInt();
 }
 
 //-----------------------------------------------------------------------------
@@ -77,7 +76,7 @@ quint64 LocalAddrBlockGraphItem::getOffset() const
 quint64 LocalAddrBlockGraphItem::getLastAddress() const 
 {
     quint64 base = getOffset();
-    quint64 range = expressionParser_->parseExpression(addrBlock_->getRange()).toUInt();
+    quint64 range = getExpressionParser()->parseExpression(addrBlock_->getRange()).toUInt();
 
     quint64 lastAddr = base + range;
 

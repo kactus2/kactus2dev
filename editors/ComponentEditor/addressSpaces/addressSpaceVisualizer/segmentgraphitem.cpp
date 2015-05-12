@@ -6,18 +6,24 @@
  */
 
 #include "segmentgraphitem.h"
+
 #include <common/utils.h>
 #include <common/KactusColors.h>
 
+#include <editors/ComponentEditor/common/ExpressionParser.h>
+
 #include <QBrush>
 
+//-----------------------------------------------------------------------------
+// Function: SegmentGraphItem::SegmentGraphItem()
+//-----------------------------------------------------------------------------
 SegmentGraphItem::SegmentGraphItem(QSharedPointer<Segment> segment,
                                    QString const& addressSpaceWidth,
                                    QSharedPointer<ExpressionParser> expressionParser,
 								   QGraphicsItem* parent):
 AddressSpaceVisualizationItem(addressSpaceWidth, expressionParser, parent),
-segment_(segment) {
-
+segment_(segment)
+{
 	Q_ASSERT(segment_);
 
 	QBrush brush(KactusColors::ADDRESS_SEGMENT);
@@ -25,10 +31,18 @@ segment_(segment) {
 	setNamePosition(VisualizerItem::NAME_RIGHT_ALIGN, VisualizerItem::NAME_MIDDLE);
 }
 
-SegmentGraphItem::~SegmentGraphItem() {
+//-----------------------------------------------------------------------------
+// Function: SegmentGraphItem::~SegmentGraphItem()
+//-----------------------------------------------------------------------------
+SegmentGraphItem::~SegmentGraphItem()
+{
 }
 
-void SegmentGraphItem::refresh() {
+//-----------------------------------------------------------------------------
+// Function: SegmentGraphItem::refresh()
+//-----------------------------------------------------------------------------
+void SegmentGraphItem::refresh()
+{
     setName(segment_->getName());
 
     quint64 offset = getOffset();
@@ -39,25 +53,32 @@ void SegmentGraphItem::refresh() {
     setToolTip("<b>Name: </b>" + segment_->getName() + "<br>" +
         "<b>Offset: </b>" + addr2Str(offset, getBitWidth()) + "<br>" +
         "<b>Last address: </b>" + addr2Str(lastAddr, getBitWidth())  + "<br>" +
-        "<b>Size [AUB]: </b>" + segment_->getRange());
+        "<b>Size [AUB]: </b>" + getExpressionParser()->parseExpression(segment_->getRange()));
 
     VisualizerItem::reorganizeChildren();
 }
 
-quint64 SegmentGraphItem::getOffset() const {
-	QString offset = segment_->getAddressOffset();
-	return Utils::str2Uint(offset);
+//-----------------------------------------------------------------------------
+// Function: SegmentGraphItem::getOffset()
+//-----------------------------------------------------------------------------
+quint64 SegmentGraphItem::getOffset() const
+{
+	return getExpressionParser()->parseExpression(segment_->getAddressOffset()).toUInt();
 }
 
+//-----------------------------------------------------------------------------
+// Function: SegmentGraphItem::getLastAddress()
+//-----------------------------------------------------------------------------
 quint64 SegmentGraphItem::getLastAddress() const
 {
     quint64 base = getOffset();
-    quint64 range = Utils::str2Uint(segment_->getRange());
+    quint64 range = getExpressionParser()->parseExpression(segment_->getRange()).toUInt();
 
     quint64 lastAddr = base + range;
 
     // if the base and range are undefined then return 0
-    if (lastAddr == 0) {
+    if (lastAddr == 0)
+    {
         return 0;
     }
 
@@ -72,6 +93,9 @@ quint64 SegmentGraphItem::getLastAddress() const
     }
 }
 
+//-----------------------------------------------------------------------------
+// Function: SegmentGraphItem::setOverlappingTop()
+//-----------------------------------------------------------------------------
 void SegmentGraphItem::setOverlappingTop(quint64 const& address)
 {
     firstFreeAddress_ = address;
@@ -86,6 +110,9 @@ void SegmentGraphItem::setOverlappingTop(quint64 const& address)
     }
 }
 
+//-----------------------------------------------------------------------------
+// Function: SegmentGraphItem::setOverlappingBottom()
+//-----------------------------------------------------------------------------
 void SegmentGraphItem::setOverlappingBottom(quint64 const& address)
 {
     lastFreeAddress_ = address;

@@ -1,13 +1,19 @@
-/* 
- *  	Created on: 17.12.2012
- *      Author: Antti Kamppi
- * 		filename: localmemorymapgraphitem.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: localmemorymapgraphitem.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 17.12.2012
+//
+// Description:
+// The graph item that visualizes a local memory map within address space.
+//-----------------------------------------------------------------------------
 
 #include "localmemorymapgraphitem.h"
-#include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapscene.h>
 
+//-----------------------------------------------------------------------------
+// Function: LocalMemoryMapGraphItem::LocalMemoryMapGraphItem()
+//-----------------------------------------------------------------------------
 LocalMemoryMapGraphItem::LocalMemoryMapGraphItem(QSharedPointer<AddressSpace> addrSpace, 
 												 QSharedPointer<MemoryMap> localMemoryMap,
 												 QGraphicsItem* parent /*= 0*/ ):
@@ -16,15 +22,24 @@ addrSpace_(addrSpace)
 {   
 }
 
+//-----------------------------------------------------------------------------
+// Function: LocalMemoryMapGraphItem::~LocalMemoryMapGraphItem()
+//-----------------------------------------------------------------------------
 LocalMemoryMapGraphItem::~LocalMemoryMapGraphItem()
 {
 }
 
+//-----------------------------------------------------------------------------
+// Function: LocalMemoryMapGraphItem::getAddressUnitSize()
+//-----------------------------------------------------------------------------
 unsigned int LocalMemoryMapGraphItem::getAddressUnitSize() const
 {
 	return addrSpace_->getAddressUnitBits();
 }
 
+//-----------------------------------------------------------------------------
+// Function: LocalMemoryMapGraphItem::refresh()
+//-----------------------------------------------------------------------------
 void LocalMemoryMapGraphItem::refresh()
 {
     QString name = memoryMap_->getName();
@@ -48,8 +63,4 @@ void LocalMemoryMapGraphItem::refresh()
 
 	// set the positions for the children
 	MemoryVisualizationItem::reorganizeChildren();
-
-	MemoryMapScene* memScene = static_cast<MemoryMapScene*>(scene());
-	Q_ASSERT(memScene);
-	memScene->rePosition();
 }

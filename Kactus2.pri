@@ -409,6 +409,8 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/memoryMaps/SingleMemoryMapEditor.h \
     ./editors/ComponentEditor/memoryMaps/SingleAddressBlockEditor.h \
     ./editors/ComponentEditor/memoryMaps/SingleRegisterEditor.h \
+    ./editors/ComponentEditor/memoryMaps/SingleFieldEditor.h \
+    ./editors/ComponentEditor/memoryMaps/WriteValueConstraintComboBox.h \
     ./editors/ComponentEditor/memoryMaps/memorymapdelegate.h \
     ./editors/ComponentEditor/memoryMaps/memorymapeditor.h \
     ./editors/ComponentEditor/memoryMaps/memorymapmodel.h \
@@ -433,6 +435,12 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapview.h \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/registergraphitem.h \
+    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/AddressBlockExpressionsGatherer.h \
+    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/FieldExpressionsGatherer.h \
+    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/MemoryMapExpressionsGatherer.h \
+    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/MemoryRemapExpressionGatherer.h \
+    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h \
+    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterExpressionsGatherer.h \
     ./editors/ComponentEditor/treeStructure/ComponentEditorChoicesItem.h \
     ./editors/ComponentEditor/treeStructure/SingleRemapStateItem.h \
     ./editors/ComponentEditor/treeStructure/RemapStatesItem.h \
@@ -627,14 +635,8 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
     ./kactusGenerators/quartusGenerator/quartusgenerator.h \
-    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/FieldExpressionsGatherer.h \
-    ./editors/ComponentEditor/memoryMaps/SingleFieldEditor.h \
-    ./editors/ComponentEditor/memoryMaps/WriteValueConstraintComboBox.h \
-    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/AddressBlockExpressionsGatherer.h \
-    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterExpressionsGatherer.h \
-    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/MemoryMapExpressionsGatherer.h \
-    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h \
-    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/MemoryRemapExpressionGatherer.h
+    ./editors/ComponentEditor/addressSpaces/SegmentDelegate.h \
+    ./editors/ComponentEditor/addressSpaces/AddressSpaceColumns.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -1009,9 +1011,10 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/memoryMaps/registereditor.cpp \
     ./editors/ComponentEditor/memoryMaps/registertablemodel.cpp \
     ./editors/ComponentEditor/memoryMaps/SingleAddressBlockEditor.cpp \
+    ./editors/ComponentEditor/memoryMaps/SingleFieldEditor.cpp \
     ./editors/ComponentEditor/memoryMaps/SingleMemoryMapEditor.cpp \
     ./editors/ComponentEditor/memoryMaps/SingleRegisterEditor.cpp \
-    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/MemoryMapExpressionsGatherer.cpp \
+    ./editors/ComponentEditor/memoryMaps/WriteValueConstraintComboBox.cpp \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.cpp \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/fieldgraphitem.cpp \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapgraphitem.cpp \
@@ -1019,6 +1022,12 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.cpp \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapview.cpp \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/registergraphitem.cpp \
+    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/AddressBlockExpressionsGatherer.cpp \
+    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/FieldExpressionsGatherer.cpp \
+    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/MemoryMapExpressionsGatherer.cpp \
+    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/MemoryRemapExpressionGatherer.cpp \
+    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.cpp \
+    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterExpressionsGatherer.cpp \
     ./editors/ComponentEditor/treeStructure/componenteditoraddrblockitem.cpp \
     ./editors/ComponentEditor/treeStructure/componenteditoraddrspaceitem.cpp \
     ./editors/ComponentEditor/treeStructure/componenteditoraddrspacesitem.cpp \
@@ -1200,11 +1209,5 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
     ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
-    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/AddressBlockExpressionsGatherer.cpp \
-    ./editors/ComponentEditor/memoryMaps/SingleFieldEditor.cpp \
-    ./editors/ComponentEditor/memoryMaps/WriteValueConstraintComboBox.cpp \
-    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/FieldExpressionsGatherer.cpp \
-    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterExpressionsGatherer.cpp \
-    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.cpp \
-    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/MemoryRemapExpressionGatherer.cpp
+    ./editors/ComponentEditor/addressSpaces/SegmentDelegate.cpp
 RESOURCES += kactus.qrc

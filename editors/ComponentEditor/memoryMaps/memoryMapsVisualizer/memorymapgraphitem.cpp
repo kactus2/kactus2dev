@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 17.4.2012
- *      Author: Antti Kamppi
- * 		filename: memorymapgraphitem.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: localmemorymapgraphitem.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 17.12.2012
+//
+// Description:
+// The graph item that visualizes a local memory map within address space.
+//-----------------------------------------------------------------------------
 
 #include "memorymapgraphitem.h"
 #include "addressblockgraphitem.h"
@@ -26,9 +30,9 @@ MemoryVisualizationItem(parent),
 memoryMap_(memoryRemap),
 parentMemoryMap_(parentMemoryMap)
 {
-	Q_ASSERT(memoryMap_);
-	QBrush brush(KactusColors::MEM_MAP_COLOR);
-	setDefaultBrush(brush);
+    Q_ASSERT(memoryMap_);
+    QBrush brush(KactusColors::MEM_MAP_COLOR);
+    setDefaultBrush(brush);
 }
 
 //-----------------------------------------------------------------------------
@@ -87,7 +91,12 @@ quint64 MemoryMapGraphItem::getOffset() const
 //-----------------------------------------------------------------------------
 int MemoryMapGraphItem::getBitWidth() const 
 {
-	return memoryMap_->getMaxWidth();
+    int width = 0;
+    foreach (MemoryVisualizationItem* child, childItems_.values())
+    {
+        width = qMax(child->getBitWidth(), width);  
+    }
+    return width;
 }
 
 //-----------------------------------------------------------------------------

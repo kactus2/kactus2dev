@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 20.12.2012
- *      Author: Antti Kamppi
- * 		filename: addressspacevisualizationitem.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: addressspacevisualizationitem.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 20.12.2012
+//
+// Description:
+// The base class to visualize objects in address space editor.
+//-----------------------------------------------------------------------------
 
 #include "addressspacevisualizationitem.h"
 
@@ -189,7 +193,7 @@ bool AddressSpaceVisualizationItem::isConflicted() const
 //-----------------------------------------------------------------------------
 // Function: addr2Str()
 //-----------------------------------------------------------------------------
-QString AddressSpaceVisualizationItem::addr2Str( quint64 const address, int const bitWidth )
+QString AddressSpaceVisualizationItem::addr2Str(quint64 const address, int const bitWidth)
 {
 	// convert the number into hexadecimal form
 	QString str = QString::number(address, 16);
@@ -201,12 +205,18 @@ QString AddressSpaceVisualizationItem::addr2Str( quint64 const address, int cons
 
 	// group the string to groups of four characters
 	int size = padded.size();
-	for (int i = size; i > 0; i -= 4) {
+	for (int i = size; i > 0; i -= 4)
+    {
 		padded.insert(i, " ");
 	}
 
-	// add the identifier indicating a hexadecimal number
-	padded.prepend("0x");
-
 	return padded;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceVisualizationItem::getExpressionParser()
+//-----------------------------------------------------------------------------
+QSharedPointer<ExpressionParser> AddressSpaceVisualizationItem::getExpressionParser() const
+{
+    return expressionParser_;
 }

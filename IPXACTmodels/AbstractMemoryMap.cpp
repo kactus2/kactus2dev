@@ -329,50 +329,50 @@ quint64 AbstractMemoryMap::getLastAddress() const
 //-----------------------------------------------------------------------------
 QString AbstractMemoryMap::getLastAddressStr() const
 {
-	int index = -1;
-	quint64 lastBaseAddress = 0;
+    int index = -1;
+    quint64 lastBaseAddress = 0;
 
-	for (int i = 0; i < items_.size(); ++i)
+    for (int i = 0; i < items_.size(); ++i)
     {
-		QSharedPointer<AddressBlock> block = items_.at(i).dynamicCast<AddressBlock>();
-		
-		if (!block)
+        QSharedPointer<AddressBlock> block = items_.at(i).dynamicCast<AddressBlock>();
+        
+        if (!block)
         {
-			continue;
-		}
+            continue;
+        }
 
-		// get the base of the current block
-		quint64 base = General::str2Uint(block->getBaseAddress());
+        // get the base of the current block
+        quint64 base = General::str2Uint(block->getBaseAddress());
 
-		// find the last lastBlock in the memory map
-		if (base >= lastBaseAddress)
+        // find the last lastBlock in the memory map
+        if (base >= lastBaseAddress)
         {
-			lastBaseAddress = base;
-			index = i;
-		}
-	}
+            lastBaseAddress = base;
+            index = i;
+        }
+    }
 
-	if (index == -1)
+    if (index == -1)
     {
-		return QString();
-	}
+        return QString();
+    }
 
-	// calculate the last address contained in the block
-	QSharedPointer<AddressBlock> lastBlock = items_.at(index).staticCast<AddressBlock>();
-	Q_ASSERT(lastBlock);
+    // calculate the last address contained in the block
+    QSharedPointer<AddressBlock> lastBlock = items_.at(index).staticCast<AddressBlock>();
+    Q_ASSERT(lastBlock);
 
-	quint64 range = General::str2Uint(lastBlock->getRange());
-	quint64 lastAddress = range + lastBaseAddress - 1;
+    quint64 range = General::str2Uint(lastBlock->getRange());
+    quint64 lastAddress = range + lastBaseAddress - 1;
 
-	// if base and range were undefined then there is no last address
-	if (range == 0 && lastBaseAddress == 0)
+    // if base and range were undefined then there is no last address
+    if (range == 0 && lastBaseAddress == 0)
     {
-		return QString();
-	}
+        return QString();
+    }
 
-	QString str = QString::number(lastAddress, 16);
-	str.prepend("0x");
-	return str;
+    QString str = QString::number(lastAddress, 16);
+    str.prepend("0x");
+    return str;
 }
 
 //-----------------------------------------------------------------------------
@@ -380,34 +380,34 @@ QString AbstractMemoryMap::getLastAddressStr() const
 //-----------------------------------------------------------------------------
 QString AbstractMemoryMap::getFirstAddressStr() const
 {
-	quint64 firstBase = 0;
-	QString base;
-	for (int i = 0; i < items_.size(); ++i)
+    quint64 firstBase = 0;
+    QString base;
+    for (int i = 0; i < items_.size(); ++i)
     {
-		QSharedPointer<AddressBlock> block = items_.at(i).dynamicCast<AddressBlock>();
-		if (!block)
+        QSharedPointer<AddressBlock> block = items_.at(i).dynamicCast<AddressBlock>();
+        if (!block)
         {
-			continue;
-		}
+            continue;
+        }
 
-		// convert the base address to numerical format
-		QString addrStr = block->getBaseAddress();
-		quint64 addr = General::str2Uint(addrStr);
+        // convert the base address to numerical format
+        QString addrStr = block->getBaseAddress();
+        quint64 addr = General::str2Uint(addrStr);
 
-		// if this is the first lastBlock then it must be smallest so far
-		if (i == 0)
+        // if this is the first lastBlock then it must be smallest so far
+        if (i == 0)
         {
-			firstBase = addr;
-			base = addrStr;
-		}
-		// for others, check if the new base is smaller
-		else if (firstBase > addr)
+            firstBase = addr;
+            base = addrStr;
+        }
+        // for others, check if the new base is smaller
+        else if (firstBase > addr)
         {
-			firstBase = addr;
-			base = addrStr;
-		}
-	}
-	return base;
+            firstBase = addr;
+            base = addrStr;
+        }
+    }
+    return base;
 }
 
 //-----------------------------------------------------------------------------
@@ -415,38 +415,16 @@ QString AbstractMemoryMap::getFirstAddressStr() const
 //-----------------------------------------------------------------------------
 bool AbstractMemoryMap::isEmpty() const
 {
-	return items_.isEmpty() && nameGroup_.name().isEmpty() && nameGroup_.displayName().isEmpty() &&
+    return items_.isEmpty() && nameGroup_.name().isEmpty() && nameGroup_.displayName().isEmpty() &&
         nameGroup_.description().isEmpty();
-}	
+}    
 
 //-----------------------------------------------------------------------------
 // Function: AbstractMemoryMap::getNameGroup()
 //-----------------------------------------------------------------------------
 NameGroup& AbstractMemoryMap::getNameGroup()
 {
-	return nameGroup_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractMemoryMap::getMaxWidth()
-//-----------------------------------------------------------------------------
-int AbstractMemoryMap::getMaxWidth() const
-{
-	int width = 0;
-	foreach (QSharedPointer<MemoryMapItem> memItem, items_)
-    {
-		// only check the widths of address blocks
-		QSharedPointer<AddressBlock> addrBlock = memItem.dynamicCast<AddressBlock>();
-		if (addrBlock)
-        {
-			// find the largest width
-			if (width < addrBlock->getWidth())
-            {
-				width = addrBlock->getWidth();
-			}
-		}
-	}
-	return width;
+    return nameGroup_;
 }
 
 //-----------------------------------------------------------------------------
@@ -454,21 +432,21 @@ int AbstractMemoryMap::getMaxWidth() const
 //-----------------------------------------------------------------------------
 bool AbstractMemoryMap::uniqueRegisterNames(QStringList& regNames) const
 {
-	foreach (QSharedPointer<MemoryMapItem> memItem, items_)
+    foreach (QSharedPointer<MemoryMapItem> memItem, items_)
     {
-		// only address blocks contain registers
-		QSharedPointer<AddressBlock> addrBlock = memItem.dynamicCast<AddressBlock>();
-		if (addrBlock)
+        // only address blocks contain registers
+        QSharedPointer<AddressBlock> addrBlock = memItem.dynamicCast<AddressBlock>();
+        if (addrBlock)
         {
-			// if address blocks contain registers with same names
-			if (!addrBlock->uniqueRegisterNames(regNames))
+            // if address blocks contain registers with same names
+            if (!addrBlock->uniqueRegisterNames(regNames))
             {
-				return false;
-			}
-		}
-	}
-	// all address blocks contained unique names
-	return true;
+                return false;
+            }
+        }
+    }
+    // all address blocks contained unique names
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -477,16 +455,16 @@ bool AbstractMemoryMap::uniqueRegisterNames(QStringList& regNames) const
 void AbstractMemoryMap::writeRegisters(QTextStream& stream, quint64 offset, bool useAddrBlockID /* = false */,
     const QString& idString /* = QString() */) const
 {
-	foreach (QSharedPointer<MemoryMapItem> memItem, items_)
+    foreach (QSharedPointer<MemoryMapItem> memItem, items_)
     {
-		// only address blocks contain registers
-		QSharedPointer<AddressBlock> addrBlock = memItem.dynamicCast<AddressBlock>();
-		if (addrBlock && addrBlock->getUsage() == General::REGISTER)
+        // only address blocks contain registers
+        QSharedPointer<AddressBlock> addrBlock = memItem.dynamicCast<AddressBlock>();
+        if (addrBlock && addrBlock->getUsage() == General::REGISTER)
         {
-			// tell address block to write its registers
-			addrBlock->writeRegisters(stream, offset, useAddrBlockID, idString);
-		}
-	}
+            // tell address block to write its registers
+            addrBlock->writeRegisters(stream, offset, useAddrBlockID, idString);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -494,28 +472,28 @@ void AbstractMemoryMap::writeRegisters(QTextStream& stream, quint64 offset, bool
 //-----------------------------------------------------------------------------
 bool AbstractMemoryMap::uniqueMemoryNames(QStringList& memNames) const
 {
-	foreach (QSharedPointer<MemoryMapItem> memItem, items_)
+    foreach (QSharedPointer<MemoryMapItem> memItem, items_)
     {
-		// only address blocks can be memory blocks
-		QSharedPointer<AddressBlock> addrBlock = memItem.dynamicCast<AddressBlock>();
-		
-		// if address block's type is memory
-		if (addrBlock && addrBlock->getUsage() == General::MEMORY)
+        // only address blocks can be memory blocks
+        QSharedPointer<AddressBlock> addrBlock = memItem.dynamicCast<AddressBlock>();
+        
+        // if address block's type is memory
+        if (addrBlock && addrBlock->getUsage() == General::MEMORY)
         {
-			const QString memName = addrBlock->getName();
+            const QString memName = addrBlock->getName();
 
-			// if memory name is not unique
-			if (memNames.contains(memName))
+            // if memory name is not unique
+            if (memNames.contains(memName))
             {
-				return false;
-			}
+                return false;
+            }
 
-			memNames.append(memName);
-		}
-	}
+            memNames.append(memName);
+        }
+    }
 
-	// all were unique
-	return true;
+    // all were unique
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -524,67 +502,67 @@ bool AbstractMemoryMap::uniqueMemoryNames(QStringList& memNames) const
 void AbstractMemoryMap::writeMemoryAddresses(QTextStream& stream, quint64 offset,
     const QString& idString /* = QString() */) const
 {
-	foreach (QSharedPointer<MemoryMapItem> memItem, items_)
+    foreach (QSharedPointer<MemoryMapItem> memItem, items_)
     {
-		// only address blocks can be memory blocks, also write reserved blocks
-		QSharedPointer<AddressBlock> addrBlock = memItem.dynamicCast<AddressBlock>();
-		if (addrBlock && (addrBlock->getUsage() == General::MEMORY ||addrBlock->getUsage() == General::RESERVED))
+        // only address blocks can be memory blocks, also write reserved blocks
+        QSharedPointer<AddressBlock> addrBlock = memItem.dynamicCast<AddressBlock>();
+        if (addrBlock && (addrBlock->getUsage() == General::MEMORY ||addrBlock->getUsage() == General::RESERVED))
         {
-			// calculate the total offset of the memory
-			quint64 memoryOffset = General::str2Uint(addrBlock->getBaseAddress());
-			quint64 totalOffset = offset + memoryOffset;
-			
-			// the start address of the block
-			QString offsetStr = QString::number(totalOffset, 16);
-			offsetStr.prepend("0x");
+            // calculate the total offset of the memory
+            quint64 memoryOffset = General::str2Uint(addrBlock->getBaseAddress());
+            quint64 totalOffset = offset + memoryOffset;
+            
+            // the start address of the block
+            QString offsetStr = QString::number(totalOffset, 16);
+            offsetStr.prepend("0x");
 
-			// the last address contained in the block
-			quint64 endAddr = General::str2Uint(addrBlock->getLastAddressStr());
-			
-			// the last address is the total offset incremented with the last address without the base
-			endAddr += offset;
-			QString endAddrStr = QString::number(endAddr, 16);
-			endAddrStr.prepend("0x");
+            // the last address contained in the block
+            quint64 endAddr = General::str2Uint(addrBlock->getLastAddressStr());
+            
+            // the last address is the total offset incremented with the last address without the base
+            endAddr += offset;
+            QString endAddrStr = QString::number(endAddr, 16);
+            endAddrStr.prepend("0x");
 
-			stream << "/*" << endl;
+            stream << "/*" << endl;
 
-			// if the block is memory
-			if (addrBlock->getUsage() == General::MEMORY)
+            // if the block is memory
+            if (addrBlock->getUsage() == General::MEMORY)
             {
-				stream << " * Memory block name: " << addrBlock->getName() << endl;
-			}
-			// if the block is reserved type
-			else
+                stream << " * Memory block name: " << addrBlock->getName() << endl;
+            }
+            // if the block is reserved type
+            else
             {
-				stream << " * Reserved block name: " << addrBlock->getName() << endl;
-			}
+                stream << " * Reserved block name: " << addrBlock->getName() << endl;
+            }
 
-			stream << " * Width: " << addrBlock->getWidth() << endl;
-			stream << " * Range: " << addrBlock->getRange() << endl;
-			QString accessStr = General::access2Str(addrBlock->getAccess());
-			if (!accessStr.isEmpty())
+            stream << " * Width: " << addrBlock->getWidth() << endl;
+            stream << " * Range: " << addrBlock->getRange() << endl;
+            QString accessStr = General::access2Str(addrBlock->getAccess());
+            if (!accessStr.isEmpty())
             {
-				stream << " * Access: " << accessStr << endl;
-			}
-			stream << "*/" << endl;
-			
-			// write the define for the memory
-			stream << "#define ";
-			if (!idString.isEmpty())
+                stream << " * Access: " << accessStr << endl;
+            }
+            stream << "*/" << endl;
+            
+            // write the define for the memory
+            stream << "#define ";
+            if (!idString.isEmpty())
             {
-				stream << idString.toUpper() << "_" << addrBlock->getName().toUpper() << "_START " <<
+                stream << idString.toUpper() << "_" << addrBlock->getName().toUpper() << "_START " <<
                     offsetStr << endl;
-				stream << "#define " << idString.toUpper() << "_" << addrBlock->getName().toUpper() << "_END " <<
+                stream << "#define " << idString.toUpper() << "_" << addrBlock->getName().toUpper() << "_END " <<
                     endAddrStr << endl;
-			}
-			else
+            }
+            else
             {
-				stream << addrBlock->getName().toUpper() << "_START " << offsetStr << endl;
-				stream << "#define " << addrBlock->getName().toUpper() << "_END " << endAddrStr << endl;
-			}
+                stream << addrBlock->getName().toUpper() << "_START " << offsetStr << endl;
+                stream << "#define " << addrBlock->getName().toUpper() << "_END " << endAddrStr << endl;
+            }
 
-			stream << endl;
-		}
-		
-	}
+            stream << endl;
+        }
+        
+    }
 }

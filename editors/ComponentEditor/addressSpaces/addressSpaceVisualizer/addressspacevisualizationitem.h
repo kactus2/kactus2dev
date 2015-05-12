@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 20.12.2012
- *      Author: Antti Kamppi
- * 		filename: addressspacevisualizationitem.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: addressspacevisualizationitem.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 20.12.2012
+//
+// Description:
+// The base class to visualize objects in address space editor.
+//-----------------------------------------------------------------------------
 
 #ifndef ADDRESSSPACEVISUALIZATIONITEM_H
 #define ADDRESSSPACEVISUALIZATIONITEM_H
@@ -15,90 +19,93 @@
 #include <QBrush>
 
 class ExpressionParser;
-/*! \brief The base class to visualize objects in address space editor.
- *
- */
-class AddressSpaceVisualizationItem : public VisualizerItem {
+
+//-----------------------------------------------------------------------------
+//! The base class to visualize objects in address space editor.
+//-----------------------------------------------------------------------------
+class AddressSpaceVisualizationItem : public VisualizerItem
+{
 	Q_OBJECT
 
 public:
 
-    //! \brief The minimum and maximum bounds for address space items.
+    //! The minimum and maximum bounds for address space items.
 	enum Bounds {
         PEN_WIDTH = 2,
         MIN_HEIGHT = VisualizerItem::DEFAULT_HEIGHT/2 + PEN_WIDTH, //! Height for items with one address.
         SEGMENT_HEIGHT = 2*MIN_HEIGHT + PEN_WIDTH                  //! Height for items with address range.
 	};
 
-	/*! \brief The constructor
+	/*! The constructor
 	 *
-	 * \param addrSpace Pointer to the address space being visualized.
-	 * \param parent Pointer to the parent graphics item.
+	 *      @param [in] addrSpace           The address space being visualized.
+   	 *      @param [in] expressionParser    The expression parser to use.
+	 *      @param [in] parent              The parent graphics item.
 	 *
 	*/
 	AddressSpaceVisualizationItem(QString const& addressSpaceWidth,
         QSharedPointer<ExpressionParser> expressionParser,
 		QGraphicsItem* parent = 0);
 	
-	//! \brief The destructor
+	//! The destructor
 	virtual ~AddressSpaceVisualizationItem();
 
-	//! \brief Refresh the item.
+	//! Refresh the item.
 	virtual void refresh() = 0;
 
-	/*! \brief Get the offset of the item. 
+	/*! Get the offset of the item. 
 	 *
-	 * \return int The offset of the item.
+	 *      @return int The offset of the item.
 	*/
 	virtual quint64 getOffset() const = 0;
 
-	/*! \brief Get the last address contained in the item.
+	/*! Get the last address contained in the item.
 	 *
-	 * \return The last address.
+	 *      @return The last address.
 	*/
 	virtual quint64 getLastAddress() const = 0;
 
-	/*! \brief Get the bit width of the address space.
+	/*! Get the bit width of the address space.
 	 * 
-	 * \return The bit width of the address space.
+	 *      @return The bit width of the address space.
 	*/
 	virtual int getBitWidth() const;
 
-	/*! \brief Set the coordinate that is the bottom y-coordinate for the item.
+	/*! Set the coordinate that is the bottom y-coordinate for the item.
 	 *
-	 * \param yCoordinate The y-coordinate of the bottom.
+	 *      @param [in] yCoordinate The y-coordinate of the bottom.
 	 *
 	*/
 	virtual void setBottomCoordinate(qreal yCoordinate);
 
-	/*! \brief Set the height for the item.
+	/*! Set the height for the item.
 	 *
-	 * \param height The height to set.
+	 *      @param [in] height The height to set.
 	 *
 	*/
 	virtual void setHeight(qreal height);
 
-	/*! \brief Sets the first non-overlapping address to display.
+	/*! Sets the first non-overlapping address to display.
 	 *
-	 * \param The first address to set.
+	 *      @param [in] The first address to set.
 	*/
     virtual void setOverlappingTop(quint64 const& address);
 
-	/*! \brief Get the first non-overlapping address of the item.
+	/*! Get the first non-overlapping address of the item.
 	 *
-	 * \return The first non-overlapping address or -1 if completely overlapped.
+	 *      @return The first non-overlapping address or -1 if completely overlapped.
 	 */
     virtual quint64 getOverlappingTop();
 
-	/*! \brief Sets the last non-overlapping address to display.
+	/*! Sets the last non-overlapping address to display.
 	 *
-	 * \param The last address to set.
+	 *      @param [in] The last address to set.
 	 */
     virtual void setOverlappingBottom(quint64 const& address);
 
-    /*! \brief Get the last non-overlapping address of the item.
+    /*! Get the last non-overlapping address of the item.
      *
-     * \return The last non-overlapping address or -1 if completely overlapped.
+     *      @return The last non-overlapping address or -1 if completely overlapped.
      */
     virtual quint64 getOverlappingBottom();
 
@@ -125,60 +132,64 @@ public:
      */
     virtual bool isConflicted() const;
 
-	/*! \brief Convert the address to string presented in hexadecimal form.
+	/*! Convert the address to string presented in hexadecimal form.
 	 *
-	 * \param address  The address to be converted.
-	 * \param bitWidth The bit width of the item.
+	 *      @param [in] address  The address to be converted.
+	 *      @param [in] bitWidth The bit width of the item.
 	 *
-	 * \return QString containing the address in hexadecimal form.
+	 *      @return QString containing the address in hexadecimal form.
 	*/
     static QString addr2Str(quint64 const address, int const bitWidth);
 
 protected:
 
-	/*! \brief Set the address to be shown on the top left corner.
+	/*! Set the address to be shown on the top left corner.
 	 *
-	 * \param address The address to be shown in hexadecimal form.
+	 *      @param [in] address The address to be shown in hexadecimal form.
 	 *
 	*/
 	virtual void setLeftTopCorner(quint64 address);
 
-	/*! \brief Set the address to be shown on the top left corner.
+	/*! Set the address to be shown on the top left corner.
 	 *
-	 * \param address The address to be shown in hexadecimal form.
+	 *      @param [in] address The address to be shown in hexadecimal form.
 	 *
 	*/
 	virtual void setRightTopCorner(quint64 address);
 
-	/*! \brief Set the address to be shown on the top left corner.
+	/*! Set the address to be shown on the top left corner.
 	 *
-	 * \param address The address to be shown in hexadecimal form.
+	 *      @param [in] address The address to be shown in hexadecimal form.
 	 *
 	*/
 	virtual void setLeftBottomCorner(quint64 address);
 
-	/*! \brief Set the address to be shown on the top left corner.
+	/*! Set the address to be shown on the top left corner.
 	 *
-	 * \param address The address to be shown in hexadecimal form.
+	 *      @param [in] address The address to be shown in hexadecimal form.
 	 *
 	*/
 	virtual void setRightBottomCorner(quint64 address);
 
-    //! \brief The first non-overlapping address.
+    //! Get the expression parser for solving expression values.
+    QSharedPointer<ExpressionParser> getExpressionParser() const;
+
+    //! The first non-overlapping address.
     quint64 firstFreeAddress_;
 
-    //! \brief The last non-overlapping address.
+    //! The last non-overlapping address.
     quint64 lastFreeAddress_;
 
 private:
 	
-	//! \brief No copying
+	//! No copying
 	AddressSpaceVisualizationItem(const AddressSpaceVisualizationItem& other);
 	AddressSpaceVisualizationItem& operator=(const AddressSpaceVisualizationItem& other);
 
-
+    //! The bit width of the address space.
 	QString addressSpaceWidth_;
 
+    //! The expression parser to use.
     QSharedPointer<ExpressionParser> expressionParser_;
 
 	//! Conflicted state. Item is conflicted if it overlaps with other items.
