@@ -24,7 +24,7 @@
 #include <QFileInfo>
 #include <QList>
 #include <QTextStream>
-#include <qdir>
+#include <QDir>
 
 class IPluginUtility;
 class PluginUtilityAdapter;
