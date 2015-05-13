@@ -135,6 +135,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\editors\ComponentEditor\common\ComponentParameterFinder.cpp" />
+    <ClCompile Include="..\..\editors\ComponentEditor\common\ExpressionFormatter.cpp" />
+    <ClCompile Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.cpp" />
+    <ClCompile Include="..\..\editors\ComponentEditor\common\ListParameterFinder.cpp" />
+    <ClCompile Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp" />
+    <ClCompile Include="BaseMemoryMapHeaderWriter.cpp" />
     <ClCompile Include="fileSaveDialog\filesavedialog.cpp" />
     <ClCompile Include="fileSaveDialog\filesavedialogview.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_filesavedialog.cpp">
@@ -204,12 +210,21 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="globalheadersavemodel.cpp" />
+    <ClCompile Include="GlobalMemoryMapHeaderWriter.cpp" />
     <ClCompile Include="localheadersavedelegate.cpp" />
     <ClCompile Include="localheadersavemodel.cpp" />
+    <ClCompile Include="LocalMemoryMapHeaderWriter.cpp" />
     <ClCompile Include="memorymapheadergenerator.cpp" />
     <ClCompile Include="systemheadersavemodel.cpp" />
+    <ClCompile Include="SystemMemoryMapHeaderWriter.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\editors\ComponentEditor\common\ListParameterFinder.h" />
+    <ClInclude Include="..\..\editors\ComponentEditor\common\ParameterFinder.h" />
+    <ClInclude Include="BaseMemoryMapHeaderWriter.h" />
+    <ClInclude Include="GlobalMemoryMapHeaderWriter.h" />
+    <ClInclude Include="LocalMemoryMapHeaderWriter.h" />
+    <ClInclude Include="SystemMemoryMapHeaderWriter.h" />
     <CustomBuild Include="systemheadersavemodel.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing systemheadersavemodel.h...</Message>
@@ -336,6 +351,10 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DMEMORYMAPHEADERGENERATOR_LIB -DNDEBUG -DQT_CORE_LIB -DQT_DLL -DQT_GUI_LIB -DQT_HELP_LIB -DQT_NO_DEBUG -DQT_PRINTSUPPORT_LIB -DQT_WIDGETS_LIB -DQT_XML_LIB -DQT_XMLPATTERNS_LIB -DUNICODE -DWIN32 -D_WINDLL "-I.\GeneratedFiles" "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(Configuration)\." "-I$(QTDIR)\include\qtmain" "-I." "-I.\..\.." "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp" "-I$(QTDIR)\..\qtxmlpatterns\include\QtXmlPatterns" "-I$(QTDIR)\..\qtxmlpatterns\include" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtPrintSupport" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtXml" "-I.\GeneratedFiles\$(ConfigurationName)\."</Command>
     </CustomBuild>
+    <ClInclude Include="..\..\editors\ComponentEditor\common\ComponentParameterFinder.h" />
+    <ClInclude Include="..\..\editors\ComponentEditor\common\ExpressionFormatter.h" />
+    <ClInclude Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.h" />
+    <ClInclude Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.h" />
     <ClInclude Include="memorymapheadergenerator_global.h" />
   </ItemGroup>
   <ItemGroup>

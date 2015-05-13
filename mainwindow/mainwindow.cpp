@@ -3098,6 +3098,7 @@ void MainWindow::openDesign(VLNV const& vlnv, QString const& viewName , bool for
 
     connect(designWidget, SIGNAL(clearItemSelection()),
         this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
+    connect(designWidget, SIGNAL(refreshed()), this, SLOT(onDesignDocumentRefreshed()), Qt::UniqueConnection);
 
     designTabs_->addAndOpenDocument(designWidget, forceUnlocked);
 }
@@ -3204,6 +3205,7 @@ void MainWindow::openSWDesign(const VLNV& vlnv, QString const& viewName, bool fo
 	connect(designWidget, SIGNAL(clearItemSelection()),
 		this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
 
+    connect(designWidget, SIGNAL(refreshed()), this, SLOT(onDesignDocumentRefreshed()), Qt::UniqueConnection);
 	connect(designWidget, SIGNAL(zoomChanged()), this, SLOT(updateZoomTools()), Qt::UniqueConnection);
 	connect(designWidget, SIGNAL(modeChanged(DrawMode)),
 		this, SLOT(onDrawModeChanged(DrawMode)), Qt::UniqueConnection);
@@ -3263,6 +3265,7 @@ void MainWindow::openSystemDesign(VLNV const& vlnv, QString const& viewName, boo
 	connect(designWidget, SIGNAL(clearItemSelection()),
 		this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
 
+    connect(designWidget, SIGNAL(refreshed()), this, SLOT(onDesignDocumentRefreshed()), Qt::UniqueConnection);
 	connect(designWidget, SIGNAL(zoomChanged()), this, SLOT(updateZoomTools()), Qt::UniqueConnection);
 	connect(designWidget, SIGNAL(modeChanged(DrawMode)),
 		this, SLOT(onDrawModeChanged(DrawMode)), Qt::UniqueConnection);
@@ -4485,4 +4488,22 @@ void MainWindow::setPluginVisibilities()
     }
 
     generationGroup_->setVisible(isGenerationGroupVisible);
+}
+
+//-----------------------------------------------------------------------------
+// Function: mainwindow::onDesignDocumentRefreshed()
+//-----------------------------------------------------------------------------
+void MainWindow::onDesignDocumentRefreshed()
+{
+    TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
+    DesignWidget* designWidget = dynamic_cast<DesignWidget*>(doc);
+
+    if (designWidget)
+    {
+        QSharedPointer<LibraryComponent> topItem = libraryHandler_->getModel(doc->getDocumentVLNV());
+        QSharedPointer<Component> topComponent = topItem.dynamicCast<Component>();
+
+        instanceEditor_->setContext(topComponent, designWidget->getDiagram()->getDesignConfiguration(),
+            &designWidget->getDiagram()->getEditProvider());
+    }
 }

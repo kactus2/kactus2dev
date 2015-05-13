@@ -13,8 +13,6 @@
 #include <QDir>
 #include <QStringList>
 
-const QString GlobalHeaderSaveModel::DEFAULT_HEADER_DIR = tr("headers");
-
 GlobalHeaderSaveModel::GlobalHeaderSaveModel( LibraryInterface* handler,
 	QObject *parent ):
 QAbstractTableModel(parent),
@@ -248,8 +246,8 @@ void GlobalHeaderSaveModel::setDesign( QSharedPointer<Component> topComp, QShare
 			QString compPath(handler_->getDirectoryPath(*topComp->getVlnv()));
 
 			// the relative path from the xml dir to the header to generate
-			QString headerPath = QString("%1/%2/%3.h").arg(GlobalHeaderSaveModel::DEFAULT_HEADER_DIR).arg(
-				instance.getInstanceName()).arg(interfaceName);
+			QString headerPath = QString("%1/%2/%3.h").arg( tr("headers")).arg(instance.getInstanceName()).arg(
+                interfaceName);
 
 			// the absolute path to the header file
 			const QString fullPath = QString("%1/%2").arg(compPath).arg(headerPath);

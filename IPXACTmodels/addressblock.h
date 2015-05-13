@@ -19,7 +19,6 @@
 #include <QMap>
 #include <QSharedPointer>
 #include <QXmlStreamWriter>
-#include <QTextStream>
 
 class Choice;
 class RegisterModel;
@@ -116,20 +115,6 @@ public:
 	 * \return True if all register names are unique.
 	 */
 	 bool uniqueRegisterNames(QStringList& regNames) const;
-
-	 /*! \brief Write the register names and addresses to the given stream.
-	 *
-	 * Method: 		writeRegisters
-	 * Full name:	MemoryMap::writeRegisters
-	 * Access:		public 
-	 * 
-	 * \param stream The stream where the data is written into.
-	 * \param offset The offset added to the register addresses.
-	 * \param useAddrBlockID If false then containing address block name is prepended to each register name.
-	 * \param idString The string which is added to the beginning of names. This can be used e.g. to contain an instance name.
-	 *
-	*/
-	void writeRegisters(QTextStream& stream, quint64 offset, bool useAddrBlockID = false, const QString& idString = QString()) const;
 
 	 /*! \brief Get the access information
 	 *

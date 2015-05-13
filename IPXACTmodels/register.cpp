@@ -445,34 +445,6 @@ unsigned int Register::getMSB() const {
 	return registerDefinition_.getMSB();
 }
 
-void Register::writeHeaderInfo( QTextStream& stream, quint64 offset, const QString& idString /*= QString()*/ ) const {
-
-	// calculate the total address of the register
-	quint64 regOffset = General::str2Uint(addressOffset_);
-	regOffset += offset;
-
-	QString offsetStr = QString::number(regOffset, 16);
-	offsetStr.prepend("0x");
-
-	stream << "/*" << endl;
-	stream << " * Register name: " << nameGroup_.name() << endl;
-	
-	if (!nameGroup_.description().isEmpty()) {
-		stream << " * Description:" << endl;
-		stream << " * " << nameGroup_.description() << endl;
-	}
-
-	stream << "*/" << endl;
-	stream << "#define ";
-
-	if (idString.isEmpty()) {
-		stream << nameGroup_.name().toUpper() << " " << offsetStr << endl; 
-	}
-	else {
-		stream << idString.toUpper() << "_" << nameGroup_.name().toUpper() << " " << offsetStr << endl;
-	}
-}
-
 //-----------------------------------------------------------------------------
 // Function: register::parseVendorExtensions()
 //-----------------------------------------------------------------------------

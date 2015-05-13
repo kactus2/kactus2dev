@@ -46,9 +46,6 @@ public:
 		QFileInfo fileInfo_;
 	};
 
-	//! \brief The default directory name to save the headers to.
-	static const QString DEFAULT_HEADER_DIR;
-
 	//! \brief The column numbers for the table.
 	enum Columns {
 		INSTANCE_NAME = 0,

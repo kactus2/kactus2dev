@@ -484,6 +484,11 @@ private slots:
     //! Runs an import wizard for the currently open component.
     void onRunImportWizard();
 
+    /*!
+     *  Update the instance editor, when the design document is refreshed.
+     */
+    void onDesignDocumentRefreshed();
+
 private:
 	// Disable copying.
 	MainWindow(MainWindow const& rhs);

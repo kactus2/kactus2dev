@@ -23,7 +23,6 @@
 #include <QSharedPointer>
 #include <QDomNode>
 #include <QXmlStreamWriter>
-#include <QTextStream>
 
 class Choice;
 
@@ -104,17 +103,6 @@ public:
     bool uniqueRegisterNames(QStringList& regNames) const;
 
     /*!
-     *  Write the register names and addresses to the given stream.
-     *
-     *      @param [in] stream          The stream where the data is written into.
-     *      @param [in] offset          The offset added to the register addresses.
-     *      @param [in] useAddrBlockID  If false, then containing address block name is prepended to each register.
-     *      @param [in] idString        The string which is added to the beginning of names.
-     */
-    void writeRegisters(QTextStream& stream, quint64 offset, bool useAddrBlockID = false,
-        const QString& idString = QString()) const;
-
-    /*!
      *  Check if the names of memory typed address blocks are contained in the given list.
      *
      *      @param [in] memNames    List of memory names.
@@ -122,15 +110,6 @@ public:
      *      @return True, if all memory names are unique, false otherwise.
      */
     bool uniqueMemoryNames(QStringList& memNames) const;
-
-    /*!
-     *  Write the memory names and addresses to the given stream.
-     *
-     *      @param [in] stream      The stream where the data is written into.
-     *      @param [in] offset      The offset added to the register addresses.
-     *      @param [in] idString    The string which is added to the beginning of names.
-     */
-    void writeMemoryAddresses(QTextStream& stream, quint64 offset, const QString& idString = QString()) const;
 
     /*!
      *  Check if the memory map contains at sub items.

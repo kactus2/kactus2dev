@@ -19,7 +19,6 @@
 #include <QString>
 #include <QList>
 #include <QSharedPointer>
-#include <QTextStream>
 
 class AlternateRegister;
 class RegisterDefinition;
@@ -101,19 +100,6 @@ public:
 	 * \return bool True if the state is valid and writing is possible.
 	*/
     virtual bool isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const;
-
-	/*! \brief Write the register details to a header file.
-	 *
-	 * Method: 		writeHeaderInfo
-	 * Full name:	Register::writeHeaderInfo
-	 * Access:		public 
-	 *
-	 * \param stream The stream to write into.
-	 * \param offset The offset of the containing address block.
-	 * \param idString The string which is prepended to the register name.
-	 *
-	*/
-	void writeHeaderInfo(QTextStream& stream, quint64 offset, const QString& idString = QString()) const;
 
 	/*! \brief Get the addressOffset of the register
 	 *

@@ -13,8 +13,6 @@
 #include <QDir>
 #include <QStringList>
 
-const QString LocalHeaderSaveModel::DEFAULT_HEADER_DIR = tr("headers");
-
 LocalHeaderSaveModel::LocalHeaderSaveModel(LibraryInterface* handler, 
 	QObject *parent ):
 QAbstractTableModel(parent),
@@ -62,8 +60,7 @@ void LocalHeaderSaveModel::setComponent( QSharedPointer<Component> component ) {
 			QString compPath(handler_->getDirectoryPath(*component_->getVlnv()));
 
 			// the relative path from the xml dir to the header to generate
-			QString headerPath = QString("%1/%2.h").arg(LocalHeaderSaveModel::DEFAULT_HEADER_DIR).arg(
-				localMemMap->getName());
+			QString headerPath = QString("%1/%2.h").arg(tr("headers")).arg(localMemMap->getName());
 
 			// the absolute path to the header file
 			const QString fullPath = QString("%1/%2").arg(compPath).arg(headerPath);

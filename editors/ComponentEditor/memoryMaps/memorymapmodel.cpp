@@ -230,7 +230,10 @@ bool MemoryMapModel::setData(QModelIndex const& index, QVariant const& value, in
         }									
         else if (index.column() == MemoryMapColumns::BASE_COLUMN)
         {
-            removeReferencesFromSingleExpression(items_.at(index.row())->getBaseAddress());
+            if (!value.isValid())
+            {
+                removeReferencesFromSingleExpression(items_.at(index.row())->getBaseAddress());
+            }
 
             items_.at(index.row())->setBaseAddress(value.toString());
         }
@@ -239,7 +242,10 @@ bool MemoryMapModel::setData(QModelIndex const& index, QVariant const& value, in
             QSharedPointer<AddressBlock> addrBlock = items_.at(index.row()).dynamicCast<AddressBlock>();
             if (addrBlock)
             {
-                removeReferencesFromSingleExpression(addrBlock->getRange());
+                if (!value.isValid())
+                {
+                    removeReferencesFromSingleExpression(addrBlock->getRange());
+                }
                 addrBlock->setRange(value.toString());
             }
             // if the item is not address block then range can not be saved
@@ -253,7 +259,10 @@ bool MemoryMapModel::setData(QModelIndex const& index, QVariant const& value, in
             QSharedPointer<AddressBlock> addrBlock = items_.at(index.row()).dynamicCast<AddressBlock>();
             if (addrBlock)
             {
-                removeReferencesFromSingleExpression(addrBlock->getWidthExpression());
+                if (!value.isValid())
+                {
+                    removeReferencesFromSingleExpression(addrBlock->getWidthExpression());
+                }
 
                 QString calculatedExpression = parseExpressionToDecimal(value.toString());
                 addrBlock->removeWidthExpression();
@@ -456,7 +465,37 @@ bool MemoryMapModel::isValidExpressionColumn(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 QVariant MemoryMapModel::expressionOrValueForIndex(QModelIndex const& index) const
 {
-    return data(index, Qt::DisplayRole);
+    QSharedPointer<AddressBlock> addressBlock = items_.at(index.row()).dynamicCast<AddressBlock>();
+
+    if (addressBlock)
+    {
+        if (index.column() == MemoryMapColumns::BASE_COLUMN)
+        {
+            return addressBlock->getBaseAddress();
+        }
+        else if (index.column() == MemoryMapColumns::RANGE_COLUMN)
+        {
+            return addressBlock->getRange();
+        }
+        else if (index.column() == MemoryMapColumns::WIDTH_COLUMN)
+        {
+            if (addressBlock->getWidthExpression().isEmpty())
+            {
+                return addressBlock->getWidth();
+            }
+            else
+            {
+                return addressBlock->getWidthExpression();
+            }
+        }
+
+        else
+        {
+            return data(index, Qt::DisplayRole);
+        }
+    }
+
+    return QVariant();
 }
 
 //-----------------------------------------------------------------------------

@@ -14,12 +14,31 @@ HEADERS += ./memorymapheadergenerator_global.h \
     ./localheadersavedelegate.h \
     ./localheadersavemodel.h \
     ./fileSaveDialog/filesavedialog.h \
-    ./fileSaveDialog/filesavedialogview.h
+    ./fileSaveDialog/filesavedialogview.h \
+    ../../editors/ComponentEditor/common/ComponentParameterFinder.h \
+    ../../editors/ComponentEditor/common/ExpressionFormatter.h \
+    ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
+    ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
+    ./SystemMemoryMapHeaderWriter.h \
+    ./LocalMemoryMapHeaderWriter.h \
+    ./GlobalMemoryMapHeaderWriter.h \
+    ./BaseMemoryMapHeaderWriter.h \
+    ../../editors/ComponentEditor/common/ParameterFinder.h \
+    ../../editors/ComponentEditor/common/ListParameterFinder.h
 SOURCES += ./globalheadersavemodel.cpp \
     ./localheadersavedelegate.cpp \
     ./localheadersavemodel.cpp \
     ./memorymapheadergenerator.cpp \
     ./systemheadersavemodel.cpp \
+    ./fileSaveDialog/filesavedialog.cpp \
     ./fileSaveDialog/filesavedialogview.cpp \
-    ./fileSaveDialog/filesavedialog.cpp
+    ../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
+    ../../editors/ComponentEditor/common/ExpressionFormatter.cpp \
+    ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
+    ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
+    ./SystemMemoryMapHeaderWriter.cpp \
+    ./LocalMemoryMapHeaderWriter.cpp \
+    ./GlobalMemoryMapHeaderWriter.cpp \
+    ./BaseMemoryMapHeaderWriter.cpp \
+    ../../editors/ComponentEditor/common/ListParameterFinder.cpp
 RESOURCES += memorymapheadergenerator.qrc

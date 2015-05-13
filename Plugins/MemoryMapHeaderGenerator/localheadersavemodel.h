@@ -21,7 +21,7 @@ class LibraryInterface;
  *
  */
 class LocalHeaderSaveModel : public QAbstractTableModel {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
 
@@ -37,9 +37,6 @@ public:
 		//! \brief The name of the sw view to create the header for.
 		QString swView_;
 	};
-
-	//! \brief The default directory name to save the headers to.
-	static const QString DEFAULT_HEADER_DIR;
 
 	//! \brief The column numbers for the table.
 	enum Columns {
