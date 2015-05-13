@@ -48,10 +48,10 @@ signals:
 private slots:
 
 	//! \brief Handler for state changes on direct connection check box
-	void onDirectConnectionChanged(int state);
+	void onDirectConnectionChanged(bool checked);
 
 	//! \brief Handler for state changes on is addressable check box
-	void onIsAddressableChanged(int state);
+	void onIsAddressableChanged(bool checked);
 
 	//! \brief Handler for changes in max masters line edit.
 	void onMastersChanged();

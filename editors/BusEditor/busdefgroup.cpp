@@ -14,53 +14,58 @@
 #include <QSizePolicy>
 #include <QLabel>
 
+//-----------------------------------------------------------------------------
+// Function: BusDefGroup::BusDefGroup()
+//-----------------------------------------------------------------------------
 BusDefGroup::BusDefGroup(QWidget *parent): 
 QGroupBox(tr("General (Bus Definition)"), parent),
-busDef_(),
-directConnection_(tr("Used only between regular and bus components (spirit:directConnection)"), this),
-isAddressable_(tr("Does not include addressing"), this),
-maxMasters_(this),
-maxSlaves_(this),
-descriptionEditor_(this)
+    busDef_(),
+    directConnection_(tr("Allow direct master-slave connection"), this),
+    isAddressable_(tr("Addressable bus"), this),
+    maxMasters_(this),
+    maxSlaves_(this),
+    descriptionEditor_(this)
 {    
     QRegExp regExp(QString("[0-9]*"), Qt::CaseInsensitive, QRegExp::W3CXmlSchema11);
     QRegExpValidator* validator = new QRegExpValidator(regExp, this);
     maxMasters_.setValidator(validator);
     maxSlaves_.setValidator(validator);
 	
+    maxMasters_.setPlaceholderText(tr("unbound"));
+    maxSlaves_.setPlaceholderText(tr("unbound"));
+
     setupLayout();
 
-	connect(&maxMasters_, SIGNAL(editingFinished()),
-		this, SLOT(onMastersChanged()), Qt::UniqueConnection);
-	connect(&maxSlaves_, SIGNAL(editingFinished()),
-		this, SLOT(onSlavesChanged()), Qt::UniqueConnection);
+	connect(&maxMasters_, SIGNAL(editingFinished()), this, SLOT(onMastersChanged()), Qt::UniqueConnection);
+	connect(&maxSlaves_, SIGNAL(editingFinished()),	this, SLOT(onSlavesChanged()), Qt::UniqueConnection);
 	 
-	connect(&directConnection_, SIGNAL(stateChanged(int)),
-		this, SLOT(onDirectConnectionChanged(int)), Qt::UniqueConnection);
-	connect(&isAddressable_, SIGNAL(stateChanged(int)),
-		this, SLOT(onIsAddressableChanged(int)), Qt::UniqueConnection);
+	connect(&directConnection_, SIGNAL(toggled(bool)),
+        this, SLOT(onDirectConnectionChanged(bool)), Qt::UniqueConnection);
+	connect(&isAddressable_, SIGNAL(toggled(bool)),
+		this, SLOT(onIsAddressableChanged(bool)), Qt::UniqueConnection);
 
-    connect(&descriptionEditor_, SIGNAL(textChanged()), 
-        this, SLOT(onDescriptionChanged()), Qt::UniqueConnection);
+    connect(&descriptionEditor_, SIGNAL(textChanged()), this, SLOT(onDescriptionChanged()), Qt::UniqueConnection);
 }
 
-BusDefGroup::~BusDefGroup() {
+//-----------------------------------------------------------------------------
+// Function: BusDefGroup::~BusDefGroup()
+//-----------------------------------------------------------------------------
+BusDefGroup::~BusDefGroup()
+{
 }
 
-void BusDefGroup::setBusDef( QSharedPointer<BusDefinition> busDef ) {
+//-----------------------------------------------------------------------------
+// Function: BusDefGroup::setBusDef()
+//-----------------------------------------------------------------------------
+void BusDefGroup::setBusDef( QSharedPointer<BusDefinition> busDef )
+{
 	busDef_ = busDef;
 
 	// set value for direct connection check box
-	if (busDef_->getDirectConnection())
-		directConnection_.setCheckState(Qt::Unchecked);
-	else
-		directConnection_.setCheckState(Qt::Checked);
+    directConnection_.setChecked(busDef_->getDirectConnection());
 
 	// set value for is addressable check box
-	if (busDef_->getIsAddressable())
-		isAddressable_.setCheckState(Qt::Unchecked);
-	else
-		isAddressable_.setCheckState(Qt::Checked);
+	isAddressable_.setChecked(busDef_->getIsAddressable());
 
 	// set value for the max masters line edit
 	if (busDef_->getMaxMasters() < 0)
@@ -77,29 +82,29 @@ void BusDefGroup::setBusDef( QSharedPointer<BusDefinition> busDef ) {
     descriptionEditor_.setPlainText(busDef_->getDescription());
 }
 
-void BusDefGroup::onDirectConnectionChanged( int state ) {
-
-	// if user unchecked the box
-	if (state == Qt::Unchecked) 
-		busDef_->setDirectConnection(true);
-	else 
-		busDef_->setDirectConnection(false);
-
+//-----------------------------------------------------------------------------
+// Function: BusDefGroup::onDirectConnectionChanged()
+//-----------------------------------------------------------------------------
+void BusDefGroup::onDirectConnectionChanged(bool checked)
+{
+	busDef_->setDirectConnection(checked);
 	emit contentChanged();
 }
 
-void BusDefGroup::onIsAddressableChanged( int state ) {
-	
-	// if user unchecked the box
-	if (state == Qt::Unchecked) 
-		busDef_->setIsAddressable(true);
-	else 
-		busDef_->setIsAddressable(false);
-
+//-----------------------------------------------------------------------------
+// Function: BusDefGroup::onIsAddressableChanged()
+//-----------------------------------------------------------------------------
+void BusDefGroup::onIsAddressableChanged(bool checked)
+{
+	busDef_->setIsAddressable(checked);
 	emit contentChanged();
 }
 
-void BusDefGroup::onMastersChanged() {
+//-----------------------------------------------------------------------------
+// Function: BusDefGroup::onMastersChanged()
+//-----------------------------------------------------------------------------
+void BusDefGroup::onMastersChanged()
+{
 	QString text = maxMasters_.text();
 
 	// if was not set
@@ -113,7 +118,11 @@ void BusDefGroup::onMastersChanged() {
 	emit contentChanged();
 }
 
-void BusDefGroup::onSlavesChanged() {
+//-----------------------------------------------------------------------------
+// Function: BusDefGroup::onSlavesChanged()
+//-----------------------------------------------------------------------------
+void BusDefGroup::onSlavesChanged()
+{
 	QString text = maxSlaves_.text();
 
 	// if was not set
@@ -142,28 +151,28 @@ void BusDefGroup::onDescriptionChanged()
 //-----------------------------------------------------------------------------
 void BusDefGroup::setupLayout()
 {
-    QFormLayout* masterLayout = new QFormLayout();
-    masterLayout->addRow(tr("Max masters:"), &maxMasters_);
+    QFormLayout* masterSlaveLayout = new QFormLayout();
+    masterSlaveLayout->addRow(tr("Max masters on bus:"), &maxMasters_);
+    masterSlaveLayout->addRow(tr("Max slaves on bus:"), &maxSlaves_);
 
-    QFormLayout* slaveLayout = new QFormLayout();
-    slaveLayout->addRow(tr("Max slaves:"), &maxSlaves_);
-
-    QHBoxLayout* selectionsLayout = new QHBoxLayout();
+    QVBoxLayout* selectionsLayout = new QVBoxLayout();
     selectionsLayout->addWidget(&directConnection_);
     selectionsLayout->addWidget(&isAddressable_);
-    selectionsLayout->addLayout(masterLayout);
-    selectionsLayout->addLayout(slaveLayout);
+    selectionsLayout->addLayout(masterSlaveLayout);
     selectionsLayout->addStretch();    
 
-    QVBoxLayout* topLayout = new QVBoxLayout(this);
+    QVBoxLayout* descriptionLayout = new QVBoxLayout();
+    descriptionLayout->addWidget(new QLabel(tr("Description:"), this), 0, Qt::AlignTop);
+    descriptionLayout->addWidget(&descriptionEditor_, 1, Qt::AlignTop);
+    
+    QHBoxLayout* topLayout = new QHBoxLayout(this);
     topLayout->addLayout(selectionsLayout);
-    topLayout->addWidget(new QLabel(tr("Description:"), this));
-    topLayout->addWidget(&descriptionEditor_);
+    topLayout->addLayout(descriptionLayout);
 
-    maxMasters_.setMaximumWidth(45);
+    maxMasters_.setMaximumWidth(55);
     maxMasters_.setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-    maxSlaves_.setMaximumWidth(45);
+    maxSlaves_.setMaximumWidth(55);
     maxSlaves_.setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 
-    descriptionEditor_.setMaximumHeight(50);
+    descriptionEditor_.setMaximumHeight(75);
 }

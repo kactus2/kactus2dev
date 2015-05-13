@@ -14,7 +14,7 @@
 
 #define VERSION_BASEYEAR       0
 #define VERSION_DATE           "2015-05-13"
-#define VERSION_TIME           "13:57:03"
+#define VERSION_TIME           "13:29:20"
 
 #define VERSION_MAJOR          2
 #define VERSION_MINOR          7

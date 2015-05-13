@@ -17,11 +17,13 @@
 #include <QModelIndexList>
 #include <QCoreApplication>
 #include <QFile>
+#include <QSplitter>
+#include <QScrollArea>
 
 //-----------------------------------------------------------------------------
 // Function: BusEditor::BusEditor()
 //-----------------------------------------------------------------------------
-BusEditor::BusEditor( QWidget *parent, 
+BusEditor::BusEditor(QWidget *parent, 
 					 LibraryInterface* libHandler,
 					 QSharedPointer<BusDefinition> busDef, 
 					 QSharedPointer<AbstractionDefinition> absDef,
@@ -31,16 +33,18 @@ libHandler_(libHandler),
 busDef_(busDef),
 absDef_(absDef),
 busDefGroup_(this),
-absDefGroup_(libHandler ,this) {
-
+absDefGroup_(libHandler ,this)
+{
     supportedWindows_ |= TabDocument::NOTES_WINDOW;
 
 	// if abstraction definition is being edited
-	if (absDef_) {
+	if (absDef_)
+    {
 		absDefGroup_.setAbsDef(absDef_);
 	}
 	// if abstraction definition is not being edited.
-	else {
+	else
+    {
 		absDefGroup_.setDisabled(true);
 	}
 
@@ -85,7 +89,8 @@ absDefGroup_(libHandler ,this) {
 //-----------------------------------------------------------------------------
 // Function: BusEditor::~BusEditor()
 //-----------------------------------------------------------------------------
-BusEditor::~BusEditor() {
+BusEditor::~BusEditor()
+{
 }
 
 //-----------------------------------------------------------------------------
@@ -116,10 +121,11 @@ bool BusEditor::validate(QStringList& errorList)
 //-----------------------------------------------------------------------------
 // Function: BusEditor::save()
 //-----------------------------------------------------------------------------
-bool BusEditor::save() {
-
+bool BusEditor::save()
+{
 	// if abstraction definition is being edited
-	if (absDefGroup_.isEnabled()) {
+	if (absDefGroup_.isEnabled())
+    {
 		// save the changes from the model to the abstraction definition
 		absDefGroup_.save();
 
@@ -127,8 +133,8 @@ bool BusEditor::save() {
 	}
 
 	// if bus definition is being edited
-	if (busDefGroup_.isEnabled()) {
-
+	if (busDefGroup_.isEnabled())
+    {
 		libHandler_->writeModelToFile(busDef_);
 	}
 
@@ -138,8 +144,8 @@ bool BusEditor::save() {
 //-----------------------------------------------------------------------------
 // Function: BusEditor::saveAs()
 //-----------------------------------------------------------------------------
-bool BusEditor::saveAs() {
-
+bool BusEditor::saveAs()
+{
     // Ask the user for a new VLNV along with the directory.
     VLNV vlnv;
     
@@ -150,8 +156,10 @@ bool BusEditor::saveAs() {
 	QString absDirectory;
 
 	// if bus definition is being edited
-	if (busDefGroup_.isEnabled()) {
-		if (!NewObjectDialog::saveAsDialog(this, libHandler_, *busDef_->getVlnv(), vlnv, busDirectory))	{
+	if (busDefGroup_.isEnabled())
+    {
+		if (!NewObjectDialog::saveAsDialog(this, libHandler_, *busDef_->getVlnv(), vlnv, busDirectory))
+        {
 			return false;
 		}
 
@@ -162,8 +170,10 @@ bool BusEditor::saveAs() {
 	}
 
 	// if abstraction definition is being edited but not the bus definition
-	else if (absDef_ && !busDefGroup_.isEnabled()) {
-		if (!NewObjectDialog::saveAsDialog(this, libHandler_, *absDef_->getVlnv(), vlnv, absDirectory))	{
+	else if (absDef_ && !busDefGroup_.isEnabled())
+    {
+		if (!NewObjectDialog::saveAsDialog(this, libHandler_, *absDef_->getVlnv(), vlnv, absDirectory))
+        {
 			return false;
 		}
 
@@ -182,8 +192,8 @@ bool BusEditor::saveAs() {
 	}
     
 	// if both are being edited (now the bus definition vlnv has already been defined but not abs def)
-	if (busDefGroup_.isEnabled() && absDef_) {
-
+	if (busDefGroup_.isEnabled() && absDef_)
+    {
 		// remove the possible .busDef from the end of the name field
 		QString absDefName = busDefVLNV.getName();
 		absDefName = absDefName.remove(".busDef", Qt::CaseInsensitive);
@@ -198,10 +208,12 @@ bool BusEditor::saveAs() {
 		absDirectory = busDirectory;
 
 		// if the automatic abs def vlnv is taken
-		if (libHandler_->contains(absDefVLNV)) {
+		if (libHandler_->contains(absDefVLNV))
+        {
 			VLNV newAbsDefVLNV;
 
-			if (!NewObjectDialog::saveAsDialog(this, libHandler_, absDefVLNV, newAbsDefVLNV, absDirectory)) {
+			if (!NewObjectDialog::saveAsDialog(this, libHandler_, absDefVLNV, newAbsDefVLNV, absDirectory))
+            {
 				return false;
 			}
 			// save the created abstraction definition vlnv
@@ -231,23 +243,50 @@ bool BusEditor::saveAs() {
 //-----------------------------------------------------------------------------
 // Function: BusEditor::setupLayout()
 //-----------------------------------------------------------------------------
-void BusEditor::setupLayout() {
+void BusEditor::setupLayout()
+{
+    QScrollArea* scrollArea = new QScrollArea(this);
+    scrollArea->setWidgetResizable(true);
+    scrollArea->setFrameShape(QFrame::NoFrame);    
 
-	QVBoxLayout* topLayout = new QVBoxLayout(this);
-	topLayout->addWidget(&busDefGroup_);
-	topLayout->addWidget(&absDefGroup_, 1);
+    QHBoxLayout* scrollLayout = new QHBoxLayout(this);
+    scrollLayout->addWidget(scrollArea);
+    scrollLayout->setContentsMargins(0, 0, 0, 0);
+
+    QSplitter* verticalSplitter = new QSplitter(Qt::Vertical, scrollArea);
+    verticalSplitter->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    verticalSplitter->addWidget(&busDefGroup_);
+    verticalSplitter->addWidget(&absDefGroup_);
+    verticalSplitter->setStretchFactor(1, 1);
+    verticalSplitter->setContentsMargins(2, 2, 2, 2);
+
+    QSplitterHandle* handle = verticalSplitter->handle(1);
+    QVBoxLayout* handleLayout = new QVBoxLayout(handle);
+    handleLayout->setSpacing(0);
+    handleLayout->setMargin(0);
+
+    QFrame* line = new QFrame(handle);
+    line->setLineWidth(2);
+    line->setMidLineWidth(2);
+    line->setFrameShape(QFrame::HLine);
+    line->setFrameShadow(QFrame::Sunken);
+    handleLayout->addWidget(line);
+
+    verticalSplitter->setHandleWidth(10);
+
+    scrollArea->setWidget(verticalSplitter);
 }
 
 //-----------------------------------------------------------------------------
 // Function: BusEditor::getDocumentVLNV()
 //-----------------------------------------------------------------------------
-VLNV BusEditor::getDocumentVLNV() const {
-
+VLNV BusEditor::getDocumentVLNV() const
+{
 	// if abstraction definition is being edited then use it as the identifier.
-	if (absDef_) {
+	if (absDef_)
+    {
 		return *absDef_->getVlnv();
 	}
-
 	// if only bus definition is being edited then use it as identifier.
 	else if (busDef_)
 	{
@@ -280,7 +319,8 @@ void BusEditor::showEvent(QShowEvent* event)
 //-----------------------------------------------------------------------------
 // Function: BusEditor::getIdentifyingVLNV()
 //-----------------------------------------------------------------------------
-VLNV BusEditor::getIdentifyingVLNV() const {
+VLNV BusEditor::getIdentifyingVLNV() const
+{
 	return getDocumentVLNV();
 }
 
@@ -289,8 +329,7 @@ VLNV BusEditor::getIdentifyingVLNV() const {
 //-----------------------------------------------------------------------------
 void BusEditor::setBusDef(QSharedPointer<BusDefinition> busDef)
 {
-    Q_ASSERT_X(busDef, "BusEditor setBusDef",
-        "Null Bus Definition pointer given as parameter");
+    Q_ASSERT_X(busDef, "BusEditor setBusDef", "Null Bus Definition pointer given as parameter");
 
     busDef_ = busDef;
 

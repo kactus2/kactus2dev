@@ -5,11 +5,104 @@
 <body>
     <h2>Bus Definition</h2>
     <p>
-        Bus definitions are a part of the IP-XACT and they are used to define bus connections in HW designs.
+        Bus definitions are a part of the IP-XACT and they are used to define bus connections
+        in HW designs.
+
+        <p>
+            <b>Allow direct master-slave connection</b> defines if a master bus interface can be directly 
+            connected to a slave bus interface. If unselected, a bus interface can be connected only to
+            a mirrored bus interface of the same type e.g. master to mirrored-master.
+        </p>
+
+        <p>
+            <b>Addressable bus</b> defines if the bus interfaces contain addressing information.
+        </p>
+
+        <p>
+            <b>Max masters on bus</b> defines the maximum number of master bus interfaces connected to
+            the bus. If unspecified, the number of masters is unbound.
+        </p>
+
+        <p>
+           <b>Max slaves on bus</b> defines the maximum number of slaves bus interfaces connected to
+            the bus. If unspecified, the number of slaves is unbound.
+        </p>
+
+        <p>
+            <b>Description</b> is an optional free text for further details.
+        </p>
+    </p>
+
+    <h2>Abstraction Definition</h2>
+    <p>
         <p>
             An abstraction definition can also be linked with a bus definition to provide additional validation
             for bus connections. Abstraction definition defines what logical signals must be present in the bus
-            interface in order for the bus connection with such abstraction definition to be valid.
+            interface in order for the bus connection with such abstraction definition to be valid. Logical
+            signals have the following properties:
+        </p>
+        <p>
+            <b>Name</b> is a mandatory unique identifier for the logical signal.
+        </p>
+        <p>
+            <b>Qualifier</b> is an optional indicator for what kind of information the the signal carries.
+            It can have one of the following five values:
+        </p>
+        <ul>
+            <li><b>address</b> indicates that the signal carries address information.
+            </li>
+            <li><b>data</b> indicates that the signal carries data.
+            </li>
+            <li><b>clock</b> indicates that the signal is a repeating clock signal for the bus interface.
+            </li>
+            <li><b>reset</b> indicates that the signal is a reset signal for the bus interface and
+            is used to set the interface into a know valid state.
+            </li>
+            <li><b>any</b> indicates that the signal may carry any information.
+            </li>
+        </ul>
+        <p>
+            <b>Width</b> is an optional definition of the number of bits in the logical signal.
+            If not specified, the number of bits in the connected physical port is used.
+        </p>
+        <p>
+            <b>Default value</b> is an optional value that is applied when the logical signal is not
+            connected in a connected bus interface.
+        </p>
+        <p>
+            <b>Direction</b> is an optional restriction for the logical signal direction in the 
+            connected bus interface.
+        </p>
+        <p>
+            <b>Presence</b> is an optional restriction for the logical signal presence in a bus interface.
+            It can have one of the following three values:
+        </p>
+        <ul>
+            <li><b>required</b> indicates that the logical signal must appear in the connected bus interface.
+            </li>
+            <li><b>illegal</b> indicates that the logical signal must not appear in the connected bus interface.
+            </li>
+            <li><b>optional</b> does not apply any restrictions. This is the default value.
+            </li>
+        </ul>
+        <p>
+            <b>Driver</b> is an optional setting for defining what kind of a driver the logical
+            signal requires in a complete design. The possible values are the following:
+        </p>
+        <ul>
+            <li><b>any</b> indicates that any logical signal or value is valid for driving the signal. 
+            This is the default value.
+            </li>
+            <li><b>clock</b> indicates that a repeating waveform is required.
+            </li>
+            <li><b>singleshot</b> indicates that a non-repeating waveform is required.
+            </li>
+            <li><b>none</b> indicates that no driver is required.
+            </li>
+        </ul>
+        </p>
+        <p>
+            <b>Description</b> is an optional free text for further details.
         </p>
     </p>
 </body>
