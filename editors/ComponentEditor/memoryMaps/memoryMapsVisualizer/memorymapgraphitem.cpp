@@ -10,7 +10,10 @@
 //-----------------------------------------------------------------------------
 
 #include "memorymapgraphitem.h"
+
 #include "addressblockgraphitem.h"
+
+#include <editors/ComponentEditor/visualization/memorygapitem.h>
 
 #include <IPXACTmodels/memorymapitem.h>
 #include <IPXACTmodels/addressblock.h>
@@ -94,7 +97,10 @@ int MemoryMapGraphItem::getBitWidth() const
     int width = 0;
     foreach (MemoryVisualizationItem* child, childItems_.values())
     {
-        width = qMax(child->getBitWidth(), width);  
+        if (dynamic_cast<MemoryGapItem*>(child) == 0)
+        {
+            width = qMax(child->getBitWidth(), width);  
+        }
     }
     return width;
 }
