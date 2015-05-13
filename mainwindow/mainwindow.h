@@ -39,7 +39,7 @@ class AdHocInterfaceItem;
 class ComponentInstanceEditor;
 class ConfigurationEditor;
 class SystemDetailsEditor;
-class AddressEditor;
+//class AddressEditor;
 class InterfaceEditor;
 class ConnectionEditor;
 class AdHocEditor;
@@ -750,8 +750,8 @@ private:
     QDockWidget* adHocDock_;
 
     //! Address editor for HW designs and its dock widget.
-    AddressEditor* addressEditor_;
-    QDockWidget* addressDock_;
+    //AddressEditor* addressEditor_;
+    //QDockWidget* addressDock_;
 
 	//! \brief The widget to edit the configuration of designs.
 	ConfigurationEditor* configurationEditor_;

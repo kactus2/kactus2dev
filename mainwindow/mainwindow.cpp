@@ -48,7 +48,7 @@
 #include <designEditors/HWDesign/HWComponentItem.h>
 #include <designEditors/HWDesign/BusPortItem.h>
 #include <designEditors/HWDesign/BusInterfaceItem.h>
-#include <designEditors/HWDesign/AddressEditor/AddressEditor.h>
+//#include <designEditors/HWDesign/AddressEditor/AddressEditor.h>
 #include <designEditors/HWDesign/AdHocEditor/AdHocEditor.h>
 #include <designEditors/SystemDesign/SystemDetailsEditor/SystemDetailsEditor.h>
 #include <designEditors/SystemDesign/SystemDesignWidget.h>
@@ -143,8 +143,8 @@ MainWindow::MainWindow(QWidget *parent)
       instanceDock_(0),
       adHocEditor_(0),
       adHocDock_(0),
-      addressEditor_(0),
-      addressDock_(0),
+      //addressEditor_(0),
+      //addressDock_(0),
       configurationEditor_(0),
       configurationDock_(0),
       systemDetailsEditor_(0),
@@ -226,7 +226,7 @@ MainWindow::MainWindow(QWidget *parent)
     setupLibraryDock();
     setupInstanceEditor();
     setupAdHocVisibilityEditor();
-    setupAddressEditor();
+    //setupAddressEditor();
 	setupConfigurationEditor();
     setupSystemDetailsEditor();
 	setupInterfaceEditor();
@@ -526,9 +526,9 @@ void MainWindow::loadWorkspace(QString const& workspaceName)
     visibilities_.insert(TabDocument::ADHOC_WINDOW, adHocVisible);
     adHocDock_->toggleViewAction()->setChecked(adHocVisible);
 
-    const bool addressVisible = settings.value("AddressVisibility", false).toBool();
+    /*const bool addressVisible = settings.value("AddressVisibility", false).toBool();
     visibilities_.insert(TabDocument::ADDRESS_WINDOW, addressVisible);
-    addressDock_->toggleViewAction()->setChecked(addressVisible);
+    addressDock_->toggleViewAction()->setChecked(addressVisible);*/
 
     const bool interfaceVisible = settings.value("InterfaceVisibility", true).toBool();
     visibilities_.insert(TabDocument::INTERFACEWINDOW, interfaceVisible);
@@ -990,7 +990,7 @@ void MainWindow::setupMenus()
 	sysGroup->widgetForAction(actExit_)->installEventFilter(ribbon_);
 
 	// the menu to display the dock widgets
-    windowsMenu_.addAction(addressDock_->toggleViewAction());	
+    //windowsMenu_.addAction(addressDock_->toggleViewAction());	
     windowsMenu_.addAction(adHocDock_->toggleViewAction());	        
     windowsMenu_.addAction(connectionDock_->toggleViewAction());
     windowsMenu_.addAction(contextHelpDock_->toggleViewAction());    
@@ -1254,7 +1254,7 @@ void MainWindow::setupAdHocVisibilityEditor()
 //-----------------------------------------------------------------------------
 // Function: mainwindow::setupAddressEditor()
 //-----------------------------------------------------------------------------
-void MainWindow::setupAddressEditor()
+/*void MainWindow::setupAddressEditor()
 {
     addressDock_ = new QDockWidget(tr("Address Editor"), this);
     addressDock_->setObjectName(tr("Address Editor"));
@@ -1266,7 +1266,7 @@ void MainWindow::setupAddressEditor()
     addDockWidget(Qt::BottomDockWidgetArea, addressDock_);
 
     connect(addressEditor_, SIGNAL(contentChanged()), this, SLOT(onDesignChanged()), Qt::UniqueConnection);
-}
+}*/
 
 //-----------------------------------------------------------------------------
 // Function: mainwindow::setupInterfaceEditor()
@@ -1336,7 +1336,7 @@ void MainWindow::onClearItemSelection()
         adHocEditor_->clear();
     }
 
-    addressEditor_->clear();
+    //addressEditor_->clear();
 	instanceEditor_->clear();
 	interfaceEditor_->clear();
 	connectionEditor_->clear();
@@ -1357,7 +1357,7 @@ void MainWindow::onComponentSelected( ComponentItem* component ) {
     if (dynamic_cast<HWComponentItem*>(component) != 0)
     {
         adHocEditor_->setDataSource(dynamic_cast<HWComponentItem*>(component));
-        addressEditor_->setComponent(component);
+        //addressEditor_->setComponent(component);
     }
     else
     {
@@ -1415,7 +1415,7 @@ void MainWindow::onInterfaceSelected( ConnectionEndpoint* interface ) {
 void MainWindow::onConnectionSelected( GraphicsConnection* connection ) {
 	Q_ASSERT(connection);
     adHocEditor_->clear();
-    addressEditor_->clear();
+    //addressEditor_->clear();
 	instanceEditor_->clear();
 	interfaceEditor_->clear();
 	connectionEditor_->setConnection(connection);
@@ -2035,7 +2035,7 @@ void MainWindow::onDocumentChanged(int index)
     {
 		configurationEditor_->clear();
         systemDetailsEditor_->clear();
-        addressEditor_->clear();
+        //addressEditor_->clear();
 		instanceEditor_->clear();
         adHocEditor_->clear();
 		interfaceEditor_->clear();
@@ -3458,7 +3458,7 @@ void MainWindow::updateWindows()
     updateWindowAndControlVisibility(TabDocument::INTERFACEWINDOW, interfaceDock_);
     updateWindowAndControlVisibility(TabDocument::INSTANCEWINDOW, instanceDock_);
     updateWindowAndControlVisibility(TabDocument::ADHOC_WINDOW, adHocDock_);
-    updateWindowAndControlVisibility(TabDocument::ADDRESS_WINDOW, addressDock_);   
+    //updateWindowAndControlVisibility(TabDocument::ADDRESS_WINDOW, addressDock_);   
 }
 
 //-----------------------------------------------------------------------------
@@ -3557,8 +3557,8 @@ void MainWindow::connectVisibilityControls()
         this, SLOT(onAdHocAction(bool)), Qt::UniqueConnection);
 
     // Action to show/hide the address editor.
-    connect(addressDock_->toggleViewAction(), SIGNAL(toggled(bool)), 
-        this, SLOT(onAddressAction(bool)), Qt::UniqueConnection);
+    /*connect(addressDock_->toggleViewAction(), SIGNAL(toggled(bool)), 
+        this, SLOT(onAddressAction(bool)), Qt::UniqueConnection);*/
 }
 
 //-----------------------------------------------------------------------------
@@ -3588,7 +3588,7 @@ void MainWindow::disconnectVisibilityControls()
 
     disconnect(adHocDock_->toggleViewAction(), SIGNAL(toggled(bool)), this, SLOT(onAdHocAction(bool)));
 
-    disconnect(addressDock_->toggleViewAction(), SIGNAL(toggled(bool)), this, SLOT(onAddressAction(bool)));
+    //disconnect(addressDock_->toggleViewAction(), SIGNAL(toggled(bool)), this, SLOT(onAddressAction(bool)));
 }
 
 //-----------------------------------------------------------------------------
