@@ -4111,6 +4111,9 @@
     <ClCompile Include="editors\ComponentEditor\addressSpaces\SegmentDelegate.cpp">
       <Filter>Source Files\editors\ComponentEditor\addressSpaces</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\addressSpaces\AddressSpaceExpressionsGatherer.cpp">
+      <Filter>Source Files\editors\ComponentEditor\addressSpaces</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -6054,6 +6057,9 @@
       <Filter>Header Files\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators</Filter>
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\addressSpaces\AddressSpaceColumns.h">
+      <Filter>Header Files\editors\ComponentEditor\addressSpaces</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\addressSpaces\AddressSpaceExpressionsGatherer.h">
       <Filter>Header Files\editors\ComponentEditor\addressSpaces</Filter>
     </ClInclude>
   </ItemGroup>

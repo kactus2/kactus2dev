@@ -41,11 +41,11 @@ QStringList RegisterExpressionsGatherer::getExpressions(QSharedPointer<Register>
     expressionList.append(currentRegister->getSizeExpression());
     expressionList.append(currentRegister->getDimensionExpression());
 
-    FieldExpressionsGatherer* fieldGatherer = new FieldExpressionsGatherer();
+    FieldExpressionsGatherer fieldGatherer;
 
     foreach (QSharedPointer<Field> field, currentRegister->getFields())
     {
-        expressionList.append(fieldGatherer->getExpressions(field));
+        expressionList.append(fieldGatherer.getExpressions(field));
     }
 
     return expressionList;

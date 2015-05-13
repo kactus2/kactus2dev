@@ -178,6 +178,13 @@ protected:
 
 private:
 	
+    /*!
+     *  Decrease the number of references made from a removed address space.
+     *
+     *      @param [in] removedAddressSpace     The removed address space.
+     */
+    void decreaseReferencesWithRemovedAddressSpace(QSharedPointer<AddressSpace> removedAddressSpace);
+
 	//! No copying
 	AddressSpacesModel(const AddressSpacesModel& other);
 	AddressSpacesModel& operator=(const AddressSpacesModel& other);

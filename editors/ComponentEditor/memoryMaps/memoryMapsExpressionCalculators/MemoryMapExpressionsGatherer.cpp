@@ -37,13 +37,13 @@ QStringList MemoryMapExpressionGatherer::getExpressions(QSharedPointer<MemoryMap
 {
     QStringList expressionList;
 
-    MemoryRemapExpressionGatherer* memoryRemapGatherer = new MemoryRemapExpressionGatherer();
+    MemoryRemapExpressionGatherer memoryRemapGatherer;
 
-    expressionList.append(memoryRemapGatherer->getExpressions(memoryMap));
+    expressionList.append(memoryRemapGatherer.getExpressions(memoryMap));
 
     foreach (QSharedPointer<MemoryRemap> memoryRemap, *memoryMap->getMemoryRemaps())
     {
-        expressionList.append(memoryRemapGatherer->getExpressions(memoryRemap));
+        expressionList.append(memoryRemapGatherer.getExpressions(memoryRemap));
     }
 
     return expressionList;

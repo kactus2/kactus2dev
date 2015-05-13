@@ -38,14 +38,14 @@ QStringList MemoryRemapExpressionGatherer::getExpressions(QSharedPointer<Abstrac
 {
     QStringList expressionList;
 
-    AddressBlockExpressionGatherer* addressBlockGatherer = new AddressBlockExpressionGatherer();
+    AddressBlockExpressionGatherer addressBlockGatherer;
 
     foreach(QSharedPointer<MemoryMapItem> memoryMapItem, memoryMap->getItems())
     {
         QSharedPointer<AddressBlock> addressBlock = memoryMapItem.dynamicCast<AddressBlock>();
         if (addressBlock)
         {
-            expressionList.append(addressBlockGatherer->getExpressions(addressBlock));
+            expressionList.append(addressBlockGatherer.getExpressions(addressBlock));
         }
     }
 

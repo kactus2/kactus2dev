@@ -335,6 +335,8 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/software/systemView/SystemViewsDelegate.h \
     ./editors/ComponentEditor/software/systemView/SystemViewsEditor.h \
     ./editors/ComponentEditor/software/systemView/SystemViewsModel.h \
+    ./editors/ComponentEditor/addressSpaces/AddressSpaceColumns.h \
+    ./editors/ComponentEditor/addressSpaces/SegmentDelegate.h \
     ./editors/ComponentEditor/addressSpaces/addressspaceeditor.h \
     ./editors/ComponentEditor/addressSpaces/addressspacegeneraleditor.h \
     ./editors/ComponentEditor/addressSpaces/addressspacesdelegate.h \
@@ -635,8 +637,7 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
     ./kactusGenerators/quartusGenerator/quartusgenerator.h \
-    ./editors/ComponentEditor/addressSpaces/SegmentDelegate.h \
-    ./editors/ComponentEditor/addressSpaces/AddressSpaceColumns.h
+    ./editors/ComponentEditor/addressSpaces/AddressSpaceExpressionsGatherer.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -976,6 +977,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/addressSpaces/addressspacesdelegate.cpp \
     ./editors/ComponentEditor/addressSpaces/addressspaceseditor.cpp \
     ./editors/ComponentEditor/addressSpaces/addressspacesmodel.cpp \
+    ./editors/ComponentEditor/addressSpaces/SegmentDelegate.cpp \
     ./editors/ComponentEditor/addressSpaces/segmenteditor.cpp \
     ./editors/ComponentEditor/addressSpaces/segmentproxy.cpp \
     ./editors/ComponentEditor/addressSpaces/segmentsmodel.cpp \
@@ -1209,5 +1211,5 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
     ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
-    ./editors/ComponentEditor/addressSpaces/SegmentDelegate.cpp
+    ./editors/ComponentEditor/addressSpaces/AddressSpaceExpressionsGatherer.cpp
 RESOURCES += kactus.qrc

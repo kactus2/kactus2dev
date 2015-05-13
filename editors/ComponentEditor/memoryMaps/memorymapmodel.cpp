@@ -436,11 +436,11 @@ void MemoryMapModel::onRemoveItem( QModelIndex const& index )
 //-----------------------------------------------------------------------------
 void MemoryMapModel::decreaseReferencesWithRemovedAddressBlock(QSharedPointer<AddressBlock> removedAddressBlock)
 {
-    AddressBlockExpressionGatherer* addressBlockGatherer = new AddressBlockExpressionGatherer();
-    QStringList expressionList = addressBlockGatherer->getExpressions(removedAddressBlock);
+    AddressBlockExpressionGatherer addressBlockGatherer;
+    QStringList expressionList = addressBlockGatherer.getExpressions(removedAddressBlock);
 
-    ReferenceCalculator* referenceCalculator = new ReferenceCalculator(getParameterFinder());
-    QMap<QString, int> referencedParameters = referenceCalculator->getReferencedParameters(expressionList);
+    ReferenceCalculator referenceCalculator(getParameterFinder());
+    QMap<QString, int> referencedParameters = referenceCalculator.getReferencedParameters(expressionList);
 
     foreach (QString referencedId, referencedParameters.keys())
     {

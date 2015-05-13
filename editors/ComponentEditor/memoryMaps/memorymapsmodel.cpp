@@ -341,12 +341,12 @@ void MemoryMapsModel::onRemoveItem( const QModelIndex& index )
 //-----------------------------------------------------------------------------
 void MemoryMapsModel::decreaseReferencesWithRemovedMemoryMap(QSharedPointer<MemoryMap> removedMemoryMap)
 {
-    MemoryMapExpressionGatherer* memoryMapGatherer = new MemoryMapExpressionGatherer();
+    MemoryMapExpressionGatherer memoryMapGatherer;
 
-    QStringList expressionList = memoryMapGatherer->getExpressions(removedMemoryMap);
+    QStringList expressionList = memoryMapGatherer.getExpressions(removedMemoryMap);
 
-    ReferenceCalculator* memoryMapReferenceCalculator = new ReferenceCalculator(parameterFinder_);
-    QMap<QString, int> referencedParameters = memoryMapReferenceCalculator->getReferencedParameters(expressionList);
+    ReferenceCalculator memoryMapReferenceCalculator(parameterFinder_);
+    QMap<QString, int> referencedParameters = memoryMapReferenceCalculator.getReferencedParameters(expressionList);
 
     foreach (QString referencedId, referencedParameters.keys())
     {

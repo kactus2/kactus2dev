@@ -512,6 +512,7 @@ CreateHelp
     <ClCompile Include="editors\ComDefinitionEditor\ComPropertyEditor.cpp" />
     <ClCompile Include="editors\ComDefinitionEditor\ComPropertyModel.cpp" />
     <ClCompile Include="editors\ComponentEditor\addressSpaces\addressspaceeditor.cpp" />
+    <ClCompile Include="editors\ComponentEditor\addressSpaces\AddressSpaceExpressionsGatherer.cpp" />
     <ClCompile Include="editors\ComponentEditor\addressSpaces\addressspacegeneraleditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\addressSpaces\addressspacesdelegate.cpp" />
     <ClCompile Include="editors\ComponentEditor\addressSpaces\addressspaceseditor.cpp" />
@@ -2155,6 +2156,7 @@ CreateHelp
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_DLL -DQT_HELP_LIB  "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog" "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp" "-I.\editors\ComponentEditor\common" "-I.\editors\ComponentEditor\addressSpaces"</Command>
     </CustomBuild>
     <ClInclude Include="editors\ComponentEditor\addressSpaces\AddressSpaceColumns.h" />
+    <ClInclude Include="editors\ComponentEditor\addressSpaces\AddressSpaceExpressionsGatherer.h" />
     <ClInclude Include="editors\ComponentEditor\common\ExpressionFormatter.h" />
     <ClInclude Include="editors\ComponentEditor\common\ExpressionFormatterFactory.h" />
     <ClInclude Include="editors\ComponentEditor\common\ExpressionFormatterFactoryImplementation.h" />

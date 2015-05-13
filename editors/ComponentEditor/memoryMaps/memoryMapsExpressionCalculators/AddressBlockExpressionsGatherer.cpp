@@ -42,7 +42,7 @@ QStringList AddressBlockExpressionGatherer::getExpressions(QSharedPointer<Addres
     expressionList.append(currentAddressBlock->getRange());
     expressionList.append(currentAddressBlock->getWidthExpression());
 
-    RegisterExpressionsGatherer* registerGatherer = new RegisterExpressionsGatherer();
+    RegisterExpressionsGatherer registerGatherer;
 
     foreach (QSharedPointer<RegisterModel> registerModel, currentAddressBlock->getRegisterData())
     {
@@ -50,7 +50,7 @@ QStringList AddressBlockExpressionGatherer::getExpressions(QSharedPointer<Addres
 
         if (targetRegister)
         {
-            expressionList.append(registerGatherer->getExpressions(targetRegister));
+            expressionList.append(registerGatherer.getExpressions(targetRegister));
         }
     }
 

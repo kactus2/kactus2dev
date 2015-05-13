@@ -11,6 +11,9 @@
 
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
+#include <editors/ComponentEditor/addressSpaces/AddressSpaceExpressionsGatherer.h>
+#include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
+
 #include <QColor>
 
 //-----------------------------------------------------------------------------
@@ -271,7 +274,7 @@ void AddressSpacesModel::onRemoveItem(QModelIndex const& index )
 		return;
 	}
 
-    removeReferencesInItemOnRow(index.row());
+    decreaseReferencesWithRemovedAddressSpace(addrSpaces_.at(index.row()));
 
 	// remove the specified item
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
@@ -380,4 +383,28 @@ int AddressSpacesModel::getAllReferencesToIdInItemOnRow(const int& row, QString 
     int referencesInWidth = addrSpaces_.at(row)->getWidthExpression().count(valueID);
 
     return referencesInRange + referencesInWidth;
+}
+
+//-----------------------------------------------------------------------------
+// Function: addressspacesmodel::decreaseReferencesWithRemovedAddressSpace()
+//-----------------------------------------------------------------------------
+void AddressSpacesModel::decreaseReferencesWithRemovedAddressSpace(
+    QSharedPointer<AddressSpace> removedAddressSpace)
+{
+    AddressSpaceExpressionGatherer addressSpaceGatherer;
+
+    QStringList expressionList = addressSpaceGatherer.getExpressions(removedAddressSpace);
+
+    ReferenceCalculator addressSpaceReferenceCalculator(getParameterFinder());
+
+    QMap<QString, int> referencedParameters = addressSpaceReferenceCalculator.getReferencedParameters(
+        expressionList);
+
+    foreach (QString referencedId, referencedParameters.keys())
+    {
+        for (int i = 0 ; i < referencedParameters.value(referencedId); ++i)
+        {
+            emit decreaseReferences(referencedId);
+        }
+    }
 }
