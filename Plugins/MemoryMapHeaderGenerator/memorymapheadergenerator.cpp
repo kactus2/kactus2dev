@@ -140,6 +140,8 @@ void MemoryMapHeaderGenerator::runGenerator( IPluginUtility* utility, QSharedPoi
 {
 	utility_ = utility;
 
+    utility_->printInfo(tr("Running %1 %2.").arg(getName(), getVersion()));
+
 	QSharedPointer<Component> comp = libComp.dynamicCast<Component>();
 	Q_ASSERT(comp);
 

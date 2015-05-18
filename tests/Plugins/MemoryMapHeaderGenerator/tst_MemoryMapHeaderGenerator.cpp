@@ -31,6 +31,9 @@
 #include <IPXACTmodels/cpu.h>
 #include <IPXACTmodels/Interconnection.h>
 #include <IPXACTmodels/SystemView.h>
+#include <IPXACTmodels/channel.h>
+#include <IPXACTmodels/mirroredslaveinterface.h>
+#include <IPXACTmodels/subspacemap.h>
 
 #include <QFile>
 
@@ -47,7 +50,7 @@ private slots:
     void cleanupTestCase();
     void init();
     void cleanup();
-
+    
     void testLocalMemoryMapHeaderGeneration();
     void testGenerationWithHexadecimalRegisterOffset();
     void testGenerationWithReferencingRegisterOffset();
@@ -57,6 +60,12 @@ private slots:
     void testMemoryMapHeaderGenerationInDesignWithMultipleSlaves();
     void testDesignMemoryMapHeaderWithReferences();
     void testDesignMemoryMapHeaderWithConfigurableElements();
+    
+    void testDesignMemoryMapHeaderWithChannel();
+    void testChannelDesignWithReferences();
+
+    void testDesignMemoryMapHeaderWithBridge();
+    void testDesignMemoryMapHeaderWithOpaqueBridge();
 
     //void testSystemMemoryMapHeaderGeneration();
 
@@ -85,6 +94,17 @@ private:
 
     QSharedPointer<Design> createTestHWDesign(QString const& designName, QSharedPointer<Component> masterComponent,
         QSharedPointer<Component> slaveComponent);
+
+    QSharedPointer<Component> createTestChannelComponent(QString const& componentName,
+        QString const& mirroredMasterBaseAddress, QString const& mirroredSlaveRemap,
+        QString const& mirroredSlaveRange);
+
+    QSharedPointer<Design> createTestMiddleDesign(QString const& designName,
+        QSharedPointer<Component> masterComponent, QSharedPointer<Component> slaveComponent,
+        QSharedPointer<Component> middleComponent);
+
+    QSharedPointer<Component> createTestBridgeComponent(QString const& componentName,
+        QString const& masterBaseAddress, bool bridgeIsOpaque, QString const& bridgeReference);
 
     void readOutPutFile();
 
@@ -153,7 +173,7 @@ void tst_MemoryMapHeaderGenerator::cleanup()
     delete headerGenerator_;
     headerGenerator_ = 0;
     
-   QFile::remove(targetPath_);
+    QFile::remove(targetPath_);
 }
 
 //-----------------------------------------------------------------------------
@@ -197,7 +217,22 @@ void tst_MemoryMapHeaderGenerator::testLocalMemoryMapHeaderGeneration()
     PluginUtilityAdapter adapter(&library_, &parentWidget, this);
     QSharedPointer<LibraryComponent> libComponent = library_.getModel(*topComponent_->getVlnv());
 
+    QSignalSpy generatorSpy(&adapter, SIGNAL(infoMessage(QString const&)));
+
     headerGenerator_->runGenerator(&adapter, libComponent);
+
+    QCOMPARE(generatorSpy.count(), 4);
+
+    QString initialMessage = generatorSpy.first().at(0).toString();
+    QCOMPARE(initialMessage, QString("Running %1 %2.").arg(headerGenerator_->getName(),
+        headerGenerator_->getVersion()));
+    QString generatorStartMessage = generatorSpy.at(1).first().toString();
+    QCOMPARE(generatorStartMessage, QString("Generation started %1").arg(QDateTime::currentDateTime().
+        toString(Qt::LocalDate)));
+    QString writingFinishedMessage = generatorSpy.at(2).first().toString();
+    QCOMPARE(writingFinishedMessage, QString("Finished writing file generatorOutput.h."));
+    QString generatorFinishedMessage = generatorSpy.at(3).first().toString();
+    QCOMPARE(generatorFinishedMessage, QString("Generation complete."));
 
     readOutPutFile();
 
@@ -616,7 +651,23 @@ void tst_MemoryMapHeaderGenerator::testDesignMemoryMapHeaderGeneration()
     QWidget parentWidget;
     PluginUtilityAdapter adapter(&library_, &parentWidget, this);
 
+    QSignalSpy generatorSpy(&adapter, SIGNAL(infoMessage(QString const&)));
+
     headerGenerator_->runGenerator(&adapter, topComponent_, QSharedPointer<LibraryComponent>(), headerDesign);
+
+    QCOMPARE(generatorSpy.count(), 4);
+
+    QString initialMessage = generatorSpy.first().at(0).toString();
+    QCOMPARE(initialMessage, QString("Running %1 %2.").arg(headerGenerator_->getName(),
+        headerGenerator_->getVersion()));
+    QString generatorStartMessage = generatorSpy.at(1).first().toString();
+    QCOMPARE(generatorStartMessage, QString("Generation started %1").arg(QDateTime::currentDateTime().
+        toString(Qt::LocalDate)));
+    QString writingFinishedMessage = generatorSpy.at(2).first().toString();
+    QCOMPARE(writingFinishedMessage, QString("Finished writing file generatorOutput.h."));
+    QString generatorFinishedMessage = generatorSpy.at(3).first().toString();
+    QCOMPARE(generatorFinishedMessage, QString("Generation complete."));
+
 
     readOutPutFile();
 
@@ -1121,6 +1172,414 @@ void tst_MemoryMapHeaderGenerator::testDesignMemoryMapHeaderWithConfigurableElem
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_MemoryMapHeaderGenerator::testDesignMemoryMapHeaderWithChannel()
+//-----------------------------------------------------------------------------
+void tst_MemoryMapHeaderGenerator::testDesignMemoryMapHeaderWithChannel()
+{
+    QSharedPointer<Component> masterComponent = createTestMasterComponent("masterComponent", "4");
+    QSharedPointer<Component> slaveComponent = createTestSlaveComponent("slaveComponent", "8");
+    QSharedPointer<Component> channelComponent = createTestChannelComponent("channelComponent", "0", "4", "32");
+    QSharedPointer<Design> headerDesign = createTestMiddleDesign("channelDesign", masterComponent, slaveComponent,
+        channelComponent);
+
+    library_.addComponent(masterComponent);
+    library_.writeModelToFile("C:/Test/TestLibrary/TestComponent/1.0/masterComponent.1.0.xml", topComponent_);
+    library_.addComponent(slaveComponent);
+    library_.writeModelToFile("C:/Test/TestLibrary/TestComponent/1.0/slaveComponent.1.0.xml", topComponent_);
+    library_.addComponent(channelComponent);
+    library_.writeModelToFile("C:/Test/TestLibrary/TestComponent/1.0/channelComponent.1.0.xml", topComponent_);
+    library_.addComponent(headerDesign);
+    library_.writeModelToFile("C:/Test/TestLibrary/TestComponent/1.0/channelDesign.1.0.xml", topComponent_);
+
+    View* headerTestView = new View("headerView");
+    headerTestView->setHierarchyRef(*headerDesign->getVlnv());
+    topComponent_->addView(headerTestView);
+
+    QFileInfo saveFileInfo (targetPath_);
+
+    headerGenerator_->setGlobalSaveFileOptions(topComponent_, "masterInstance_0", "masterID",
+        masterComponent->getBusInterfaceNames().at(0), saveFileInfo);
+
+    QWidget parentWidget;
+    PluginUtilityAdapter adapter(&library_, &parentWidget, this);
+
+    headerGenerator_->runGenerator(&adapter, topComponent_, QSharedPointer<LibraryComponent>(), headerDesign);
+
+    readOutPutFile();
+
+    QString headerDefine = "__MASTERINSTANCE_0_" + masterComponent->getBusInterfaceNames().at(0).toUpper() + "_H";
+
+    QString expectedOutput(
+        "/*\n"
+        " * File: generatorOutput.h\n"
+        " * Created on: " + QDate::currentDate().toString("dd.MM.yyyy") + "\n"
+        " * Generated by: \n"
+        " *\n"
+        " * Description:\n"
+        " * Header file generated by Kactus2 for instance \"masterInstance_0\" interface \"masterBusInterface\".\n"
+        " * This file contains addresses of the memories and registers defined in the memory maps of connected "
+            "components.\n"
+        " * Source component: " + topComponent_->getVlnv()->toString(":") + ".\n"
+        "*/\n"
+        "\n"
+        "#ifndef " + headerDefine + "\n"
+        "#define " + headerDefine + "\n"
+        "\n"
+        "/*\n"
+        " * Instance: slaveInstance_0 Interface: slaveBusInterface\n"
+        " * Instance base address: 0x8\n"
+        " * Source component: " + slaveComponent->getVlnv()->toString(":") + "\n"
+        " * The defines for the memory map \"slaveMemoryMap\":\n"
+        "*/\n"
+        "\n"
+        "/*\n"
+        " * Address block: slaveAddressBlock\n"
+        "*/\n"
+        "/*\n"
+        " * Register name: slaveRegister\n"
+        "*/\n"
+        "#define SLAVEINSTANCE_0_SLAVEREGISTER 0x10\n"
+        "\n"
+        "#endif /* " + headerDefine + " */\n"
+        );
+
+    if (!outPut_.contains(expectedOutput))
+    {
+        QStringList outputLines = outPut_.split("\n");
+        QStringList expectedLines = expectedOutput.split("\n");
+
+        QVERIFY(outputLines.count() >= expectedLines.count());
+
+        int lineOffset = outputLines.indexOf(expectedLines.first());
+        if (lineOffset == -1)
+        {
+            readOutPutFile();
+            QCOMPARE(outPut_, expectedOutput);
+        }
+        else
+        {
+            int lineCount = expectedLines.count();
+            for (int i = 0; i < lineCount; ++i)
+            {
+                QCOMPARE(outputLines.at(i + lineOffset), expectedLines.at(i));
+            }
+        }
+    }
+    else if (outPut_.count(expectedOutput) != 1)
+    {
+        QVERIFY2(false, QString(expectedOutput + " was found " + QString::number(outPut_.count(expectedOutput)) +
+            " times in output.").toLocal8Bit());
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_MemoryMapHeaderGenerator::testChannelDesignWithReferences()
+//-----------------------------------------------------------------------------
+void tst_MemoryMapHeaderGenerator::testChannelDesignWithReferences()
+{
+    QSharedPointer<Parameter> slaveParameter = createTestParameter("slaveParameter", "param_ID", "8");
+    QSharedPointer<Parameter> otherSlaveParameter = createTestParameter("otherParameter", "other_ID", "16");
+
+    QSharedPointer<Component> masterComponent = createTestMasterComponent("masterComponent", "4");
+    QSharedPointer<Component> slaveComponent = createTestSlaveComponent("slaveComponent", "8");
+    QSharedPointer<Component> channelComponent = createTestChannelComponent("channelComponent", "0", "param_ID",
+        "other_ID");
+    QSharedPointer<Design> headerDesign = createTestMiddleDesign("channelDesign", masterComponent, slaveComponent,
+        channelComponent);
+
+    channelComponent->getParameters()->append(slaveParameter);
+    channelComponent->getParameters()->append(otherSlaveParameter);
+
+    library_.addComponent(masterComponent);
+    library_.writeModelToFile("C:/Test/TestLibrary/TestComponent/1.0/masterComponent.1.0.xml", topComponent_);
+    library_.addComponent(slaveComponent);
+    library_.writeModelToFile("C:/Test/TestLibrary/TestComponent/1.0/slaveComponent.1.0.xml", topComponent_);
+    library_.addComponent(channelComponent);
+    library_.writeModelToFile("C:/Test/TestLibrary/TestComponent/1.0/channelComponent.1.0.xml", topComponent_);
+    library_.addComponent(headerDesign);
+    library_.writeModelToFile("C:/Test/TestLibrary/TestComponent/1.0/channelDesign.1.0.xml", topComponent_);
+
+    View* headerTestView = new View("headerView");
+    headerTestView->setHierarchyRef(*headerDesign->getVlnv());
+    topComponent_->addView(headerTestView);
+
+    QFileInfo saveFileInfo (targetPath_);
+
+    headerGenerator_->setGlobalSaveFileOptions(topComponent_, "masterInstance_0", "masterID",
+        masterComponent->getBusInterfaceNames().at(0), saveFileInfo);
+
+    QWidget parentWidget;
+    PluginUtilityAdapter adapter(&library_, &parentWidget, this);
+
+    headerGenerator_->runGenerator(&adapter, topComponent_, QSharedPointer<LibraryComponent>(), headerDesign);
+
+    readOutPutFile();
+
+    QString headerDefine = "__MASTERINSTANCE_0_" + masterComponent->getBusInterfaceNames().at(0).toUpper() + "_H";
+
+    QString expectedOutput(
+        "/*\n"
+        " * File: generatorOutput.h\n"
+        " * Created on: " + QDate::currentDate().toString("dd.MM.yyyy") + "\n"
+        " * Generated by: \n"
+        " *\n"
+        " * Description:\n"
+        " * Header file generated by Kactus2 for instance \"masterInstance_0\" interface \"masterBusInterface\".\n"
+        " * This file contains addresses of the memories and registers defined in the memory maps of connected "
+            "components.\n"
+        " * Source component: " + topComponent_->getVlnv()->toString(":") + ".\n"
+        "*/\n"
+        "\n"
+        "#ifndef " + headerDefine + "\n"
+        "#define " + headerDefine + "\n"
+        "\n"
+        "/*\n"
+        " * Instance: slaveInstance_0 Interface: slaveBusInterface\n"
+        " * Instance base address: 0xc\n"
+        " * Source component: " + slaveComponent->getVlnv()->toString(":") + "\n"
+        " * The defines for the memory map \"slaveMemoryMap\":\n"
+        "*/\n"
+        "\n"
+        "/*\n"
+        " * Address block: slaveAddressBlock\n"
+        "*/\n"
+        "/*\n"
+        " * Register name: slaveRegister\n"
+        "*/\n"
+        "#define SLAVEINSTANCE_0_SLAVEREGISTER 0x14\n"
+        "\n"
+        "#endif /* " + headerDefine + " */\n"
+        );
+
+    if (!outPut_.contains(expectedOutput))
+    {
+        QStringList outputLines = outPut_.split("\n");
+        QStringList expectedLines = expectedOutput.split("\n");
+
+        QVERIFY(outputLines.count() >= expectedLines.count());
+
+        int lineOffset = outputLines.indexOf(expectedLines.first());
+        if (lineOffset == -1)
+        {
+            readOutPutFile();
+            QCOMPARE(outPut_, expectedOutput);
+        }
+        else
+        {
+            int lineCount = expectedLines.count();
+            for (int i = 0; i < lineCount; ++i)
+            {
+                QCOMPARE(outputLines.at(i + lineOffset), expectedLines.at(i));
+            }
+        }
+    }
+    else if (outPut_.count(expectedOutput) != 1)
+    {
+        QVERIFY2(false, QString(expectedOutput + " was found " + QString::number(outPut_.count(expectedOutput)) +
+            " times in output.").toLocal8Bit());
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_MemoryMapHeaderGenerator::testDesignMemoryMapHeaderWithBridge()
+//-----------------------------------------------------------------------------
+void tst_MemoryMapHeaderGenerator::testDesignMemoryMapHeaderWithBridge()
+{
+    QSharedPointer<Component> masterComponent = createTestMasterComponent("masterComponent", "4");
+    QSharedPointer<Component> slaveComponent = createTestSlaveComponent("slaveComponent", "4");
+    QSharedPointer<Component> bridgeComponent = createTestBridgeComponent("bridgeComponent", "16", false, "");
+
+    QSharedPointer<Design> headerDesign = createTestMiddleDesign("bridgeDesign", masterComponent, slaveComponent,
+        bridgeComponent);
+
+    library_.addComponent(masterComponent);
+    library_.writeModelToFile("C:/Test/TestLibrary/TestComponent/1.0/masterComponent.1.0.xml", topComponent_);
+    library_.addComponent(slaveComponent);
+    library_.writeModelToFile("C:/Test/TestLibrary/TestComponent/1.0/slaveComponent.1.0.xml", topComponent_);
+    library_.addComponent(bridgeComponent);
+    library_.writeModelToFile("C:/Test/TestLibrary/TestComponent/1.0/bridgeComponent.1.0.xml", topComponent_);
+    library_.addComponent(headerDesign);
+    library_.writeModelToFile("C:/Test/TestLibrary/TestComponent/1.0/bridgeDesign.1.0.xml", topComponent_);
+
+        View* headerTestView = new View("headerView");
+    headerTestView->setHierarchyRef(*headerDesign->getVlnv());
+    topComponent_->addView(headerTestView);
+
+    QFileInfo saveFileInfo (targetPath_);
+
+    headerGenerator_->setGlobalSaveFileOptions(topComponent_, "masterInstance_0", "masterID",
+        masterComponent->getBusInterfaceNames().at(0), saveFileInfo);
+
+    QWidget parentWidget;
+    PluginUtilityAdapter adapter(&library_, &parentWidget, this);
+
+    headerGenerator_->runGenerator(&adapter, topComponent_, QSharedPointer<LibraryComponent>(), headerDesign);
+
+    readOutPutFile();
+
+    QString headerDefine = "__MASTERINSTANCE_0_" + masterComponent->getBusInterfaceNames().at(0).toUpper() + "_H";
+
+    QString expectedOutput(
+        "/*\n"
+        " * File: generatorOutput.h\n"
+        " * Created on: " + QDate::currentDate().toString("dd.MM.yyyy") + "\n"
+        " * Generated by: \n"
+        " *\n"
+        " * Description:\n"
+        " * Header file generated by Kactus2 for instance \"masterInstance_0\" interface \"masterBusInterface\".\n"
+        " * This file contains addresses of the memories and registers defined in the memory maps of connected "
+            "components.\n"
+        " * Source component: " + topComponent_->getVlnv()->toString(":") + ".\n"
+        "*/\n"
+        "\n"
+        "#ifndef " + headerDefine + "\n"
+        "#define " + headerDefine + "\n"
+        "\n"
+        "/*\n"
+        " * Instance: slaveInstance_0 Interface: slaveBusInterface\n"
+        " * Instance base address: 0x14\n"
+        " * Source component: " + slaveComponent->getVlnv()->toString(":") + "\n"
+        " * The defines for the memory map \"slaveMemoryMap\":\n"
+        "*/\n"
+        "\n"
+        "/*\n"
+        " * Address block: slaveAddressBlock\n"
+        "*/\n"
+        "/*\n"
+        " * Register name: slaveRegister\n"
+        "*/\n"
+        "#define SLAVEINSTANCE_0_SLAVEREGISTER 0x18\n"
+        "\n"
+        "#endif /* " + headerDefine + " */\n"
+        );
+
+    if (!outPut_.contains(expectedOutput))
+    {
+        QStringList outputLines = outPut_.split("\n");
+        QStringList expectedLines = expectedOutput.split("\n");
+
+        QVERIFY(outputLines.count() >= expectedLines.count());
+
+        int lineOffset = outputLines.indexOf(expectedLines.first());
+        if (lineOffset == -1)
+        {
+            readOutPutFile();
+            QCOMPARE(outPut_, expectedOutput);
+        }
+        else
+        {
+            int lineCount = expectedLines.count();
+            for (int i = 0; i < lineCount; ++i)
+            {
+                QCOMPARE(outputLines.at(i + lineOffset), expectedLines.at(i));
+            }
+        }
+    }
+    else if (outPut_.count(expectedOutput) != 1)
+    {
+        QVERIFY2(false, QString(expectedOutput + " was found " + QString::number(outPut_.count(expectedOutput)) +
+            " times in output.").toLocal8Bit());
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_MemoryMapHeaderGenerator::testDesignMemoryMapHeaderWithOpaqueBridge()
+//-----------------------------------------------------------------------------
+void tst_MemoryMapHeaderGenerator::testDesignMemoryMapHeaderWithOpaqueBridge()
+{
+    QSharedPointer<Component> masterComponent = createTestMasterComponent("masterComponent", "0");
+    QSharedPointer<Component> slaveComponent = createTestSlaveComponent("slaveComponent", "2");
+
+    QSharedPointer<MemoryMap> opaqueMemoryMap = createTestMemoryMap("opaqueMemoryMap",
+        QList<QSharedPointer<AddressBlock> > ());
+    
+    QSharedPointer<SubspaceMap> opaqueSubspace (new SubspaceMap());
+    opaqueSubspace->setBaseAddress("16");
+
+    QList<QSharedPointer<MemoryMapItem> > opaqueItems;
+    opaqueItems.append(opaqueSubspace);
+    opaqueMemoryMap->setItems(opaqueItems);
+
+    QSharedPointer<Component> bridgeComponent = createTestBridgeComponent("opqueBridge", "4", true,
+        opaqueMemoryMap->getName());
+
+    QList<QSharedPointer<MemoryMap> > bridgeMemoryMapList;
+    bridgeMemoryMapList.append(opaqueMemoryMap);
+    bridgeComponent->setMemoryMaps(bridgeMemoryMapList);
+
+    QSharedPointer<Design> headerDesign = createTestMiddleDesign("bridgeDesign", masterComponent, slaveComponent,
+        bridgeComponent);
+
+    library_.addComponent(masterComponent);
+    library_.writeModelToFile("C:/Test/TestLibrary/TestComponent/1.0/masterComponent.1.0.xml", topComponent_);
+    library_.addComponent(slaveComponent);
+    library_.writeModelToFile("C:/Test/TestLibrary/TestComponent/1.0/slaveComponent.1.0.xml", topComponent_);
+    library_.addComponent(bridgeComponent);
+    library_.writeModelToFile("C:/Test/TestLibrary/TestComponent/1.0/bridgeComponent.1.0.xml", topComponent_);
+    library_.addComponent(headerDesign);
+    library_.writeModelToFile("C:/Test/TestLibrary/TestComponent/1.0/bridgeDesign.1.0.xml", topComponent_);
+
+        View* headerTestView = new View("headerView");
+    headerTestView->setHierarchyRef(*headerDesign->getVlnv());
+    topComponent_->addView(headerTestView);
+
+    QFileInfo saveFileInfo (targetPath_);
+
+    headerGenerator_->setGlobalSaveFileOptions(topComponent_, "masterInstance_0", "masterID",
+        masterComponent->getBusInterfaceNames().at(0), saveFileInfo);
+
+    QWidget parentWidget;
+    PluginUtilityAdapter adapter(&library_, &parentWidget, this);
+
+    QSignalSpy errorMessageSignals(&adapter, SIGNAL(errorMessage(QString const&)));
+
+    headerGenerator_->runGenerator(&adapter, topComponent_, QSharedPointer<LibraryComponent>(), headerDesign);
+
+    QCOMPARE(errorMessageSignals.count(), 1);
+    QString errorMessage = errorMessageSignals.first().first().toString();
+    QString expectedErrorMessage("An opaque bridge was found in interface bridgeSlaveBusInterface in instance "
+        "channelInstance_0. Currently, opaque bridges are handled as transparent bridges.");
+    QCOMPARE(errorMessage, expectedErrorMessage);
+
+    readOutPutFile();
+
+    QString headerDefine = "__MASTERINSTANCE_0_" + masterComponent->getBusInterfaceNames().at(0).toUpper() + "_H";
+
+    QString expectedOutput(
+        "/*\n"
+        " * File: generatorOutput.h\n"
+        );
+
+    if (!outPut_.contains(expectedOutput))
+    {
+        QStringList outputLines = outPut_.split("\n");
+        QStringList expectedLines = expectedOutput.split("\n");
+
+        QVERIFY(outputLines.count() >= expectedLines.count());
+
+        int lineOffset = outputLines.indexOf(expectedLines.first());
+        if (lineOffset == -1)
+        {
+            readOutPutFile();
+            QCOMPARE(outPut_, expectedOutput);
+        }
+        else
+        {
+            int lineCount = expectedLines.count();
+            for (int i = 0; i < lineCount; ++i)
+            {
+                QCOMPARE(outputLines.at(i + lineOffset), expectedLines.at(i));
+            }
+        }
+    }
+    else if (outPut_.count(expectedOutput) != 1)
+    {
+        QVERIFY2(false, QString(expectedOutput + " was found " + QString::number(outPut_.count(expectedOutput)) +
+            " times in output.").toLocal8Bit());
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_MemoryMapHeaderGenerator::testSystemMemoryMapHeaderGeneration()
 //-----------------------------------------------------------------------------
 /*
@@ -1333,6 +1792,7 @@ QSharedPointer<Component> tst_MemoryMapHeaderGenerator::createTestMasterComponen
     masterBus->setName("masterBusInterface");
     QSharedPointer<MasterInterface> interfaceMaster(new MasterInterface);
     interfaceMaster->setBaseAddress(instanceBaseAddress);
+    interfaceMaster->setAddressSpaceRef(localAddressSpace->getName());
     masterBus->setMaster(interfaceMaster);
     masterBus->setInterfaceMode(General::MASTER);
 
@@ -1404,6 +1864,174 @@ QSharedPointer<Design> tst_MemoryMapHeaderGenerator::createTestHWDesign(QString 
     newDesign->setInterconnections(interconnectionList);
 
     return newDesign;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_MemoryMapHeaderGenerator::createTestChannelComponent()
+//-----------------------------------------------------------------------------
+QSharedPointer<Component> tst_MemoryMapHeaderGenerator::createTestChannelComponent(QString const& componentName,
+    QString const& mirroredMasterBaseAddress, QString const& mirroredSlaveRemap, QString const& mirroredSlaveRange)
+{
+    QSharedPointer<Component> newChannelComponent (new Component(VLNV(VLNV::COMPONENT, "TUT", "TestLibrary",
+        componentName, "1.0")));
+
+    QSharedPointer<Register> localRegister = createTestRegister("mirroredRegister", "4");
+    QList<QSharedPointer<Register> > localRegisterList;
+    localRegisterList.append(localRegister);
+
+    QSharedPointer<AddressBlock> mirroredAddressBlock = createTestAddressBlock("mirroredAddressBlock",
+        localRegisterList);
+    QList<QSharedPointer<AddressBlock> > localAddressBlockList;
+    localAddressBlockList.append(mirroredAddressBlock);
+
+    QSharedPointer<MemoryMap> localMemoryMap = createTestMemoryMap("localMasterMemory", localAddressBlockList);
+
+    QSharedPointer<AddressSpace> localAddressSpace = createTestAddressSpace("localAddressSpace", localMemoryMap);
+    QList<QSharedPointer<AddressSpace> > addressSpaceList;
+    addressSpaceList.append(localAddressSpace);
+
+    newChannelComponent->setAddressSpaces(addressSpaceList);
+
+    // Create mirrored master interface.
+    QSharedPointer<BusInterface> mirroredMasterBus(new BusInterface);
+    mirroredMasterBus->setName("mirroredMasterInterface");
+    QSharedPointer<MasterInterface> mirroredMasterInterface(new MasterInterface);
+    mirroredMasterInterface->setBaseAddress(mirroredMasterBaseAddress);
+    mirroredMasterInterface->setAddressSpaceRef(localAddressSpace->getName());
+    mirroredMasterBus->setMaster(mirroredMasterInterface);
+    mirroredMasterBus->setInterfaceMode(General::MIRROREDMASTER);
+
+    // Create mirrored slave interface.
+    QSharedPointer<MirroredSlaveInterface> interfaceMirroredSlave (new MirroredSlaveInterface);
+    interfaceMirroredSlave->setRemapAddress(mirroredSlaveRemap);
+    interfaceMirroredSlave->setRange(mirroredSlaveRange);
+
+    QSharedPointer<BusInterface> mirroredSlaveBus(new BusInterface);
+    mirroredSlaveBus->setName("mirroredSlaveInterface");
+    mirroredSlaveBus->setMirroredSlave(interfaceMirroredSlave);
+    mirroredSlaveBus->setInterfaceMode(General::MIRROREDSLAVE);
+
+    QList<QSharedPointer<BusInterface> > busInterfaceList;
+    busInterfaceList.append(mirroredMasterBus);
+    busInterfaceList.append(mirroredSlaveBus);
+    newChannelComponent->setBusInterfaces(busInterfaceList);
+
+    QStringList interfaceNames;
+    interfaceNames.append(mirroredMasterBus->getName());
+    interfaceNames.append(mirroredSlaveBus->getName());
+
+    QSharedPointer<Channel> masterSlaveChannel (new Channel());
+    masterSlaveChannel->setName("masterSlaveChannel");
+    masterSlaveChannel->setInterfaces(interfaceNames);
+
+    QList<QSharedPointer<Channel> > channelList;
+    channelList.append(masterSlaveChannel);
+    newChannelComponent->setChannels(channelList);
+
+    return newChannelComponent;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_MemoryMapHeaderGenerator::createTestChannelDesign()
+//-----------------------------------------------------------------------------
+QSharedPointer<Design> tst_MemoryMapHeaderGenerator::createTestMiddleDesign(QString const& designName,
+    QSharedPointer<Component> masterComponent, QSharedPointer<Component> slaveComponent,
+    QSharedPointer<Component> middleComponent)
+{
+    QSharedPointer<Design> newDesign(new Design(VLNV(VLNV::DESIGN, "TUT", "TestLibrary", designName, "1.0")));
+
+    ComponentInstance masterInstance ("masterInstance_0", "", "", *masterComponent->getVlnv(), QPointF(),
+        "masterID");
+    ComponentInstance slaveInstance ("slaveInstance_0", "", "", *slaveComponent->getVlnv(), QPointF(), "slaveID");
+    ComponentInstance channelInstance ("channelInstance_0", "", "", *middleComponent->getVlnv(), QPointF(),
+        "middleID");
+    QList<ComponentInstance> componentInstances;
+    componentInstances.append(masterInstance);
+    componentInstances.append(slaveInstance);
+    componentInstances.append(channelInstance);
+    newDesign->setComponentInstances(componentInstances);
+
+    Interface interfaceMaster (masterInstance.getInstanceName(), masterComponent->getBusInterfaceNames().at(0));
+    Interface interfaceMiddleFirst (channelInstance.getInstanceName(),
+        middleComponent->getBusInterfaceNames().at(0));
+    Interface interfaceMiddleSecond (channelInstance.getInstanceName(),
+        middleComponent->getBusInterfaceNames().at(1));
+    Interface interfaceSlave (slaveInstance.getInstanceName(), slaveComponent->getBusInterfaceNames().at(0));
+
+    Interconnection masterMiddleConnect("masterMirrored", interfaceMaster, interfaceMiddleFirst);
+    Interconnection middleSlaveConnect("mirroredSlave", interfaceMiddleSecond, interfaceSlave);
+
+    QList<Interconnection> interconnectionList;
+    interconnectionList.append(masterMiddleConnect);
+    interconnectionList.append(middleSlaveConnect);
+
+    newDesign->setInterconnections(interconnectionList);
+
+    return newDesign;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_MemoryMapHeaderGenerator::createTestBridgeComponent()
+//-----------------------------------------------------------------------------
+QSharedPointer<Component> tst_MemoryMapHeaderGenerator::createTestBridgeComponent(QString const& componentName,
+    QString const& masterBaseAddress, bool bridgeIsOpaque, QString const& bridgeReference)
+{
+    QSharedPointer<Component> newBridgeComponent (new Component(VLNV(VLNV::COMPONENT, "TUT", "TestLibrary",
+        componentName, "1.0")));
+
+    QSharedPointer<Register> masterRegister = createTestRegister("bridgeMasterRegister", "4");
+    QList<QSharedPointer<Register> > masterRegisterList;
+    masterRegisterList.append(masterRegister);
+
+    QSharedPointer<AddressBlock> masterAddressBlock = createTestAddressBlock("bridgeMasterAddressBlock",
+        masterRegisterList);
+    QList<QSharedPointer<AddressBlock> > masterAddressBlockList;
+    masterAddressBlockList.append(masterAddressBlock);
+
+    QSharedPointer<MemoryMap> masterMemory = createTestMemoryMap("bridgeMasterMemory", masterAddressBlockList);
+
+    QSharedPointer<AddressSpace> masterAddressSpace = createTestAddressSpace("bridgetMasterSpace", masterMemory);
+    QList<QSharedPointer<AddressSpace> > masterSpaceList;
+    masterSpaceList.append(masterAddressSpace);
+
+    newBridgeComponent->setAddressSpaces(masterSpaceList);
+
+    // Create master bus interface.
+    QSharedPointer<MasterInterface> bridgeMasterInterface(new MasterInterface);
+    bridgeMasterInterface->setBaseAddress(masterBaseAddress);
+    bridgeMasterInterface->setAddressSpaceRef(masterAddressSpace->getName());
+
+    QSharedPointer<BusInterface> bridgeMasterBus(new BusInterface);
+    bridgeMasterBus->setName("bridgeMasterBusInterface");
+    bridgeMasterBus->setMaster(bridgeMasterInterface);
+    bridgeMasterBus->setInterfaceMode(General::MASTER);
+
+    // Create slave bus interface.
+    QSharedPointer<SlaveInterface> bridgeSlaveInterface (new SlaveInterface);
+    if (!bridgeReference.isEmpty())
+    {
+        bridgeSlaveInterface->setMemoryMapRef(bridgeReference);
+    }
+
+    QSharedPointer<SlaveInterface::Bridge> bridge(new SlaveInterface::Bridge());
+    bridge->masterRef_ = bridgeMasterBus->getName();
+    bridge->opaque_ = bridgeIsOpaque;
+
+    QList<QSharedPointer<SlaveInterface::Bridge> > slaveInterfaceBridges;
+    slaveInterfaceBridges.append(bridge);
+    bridgeSlaveInterface->setBridges(slaveInterfaceBridges);
+
+    QSharedPointer<BusInterface> bridgeSlaveBus (new BusInterface);
+    bridgeSlaveBus->setName("bridgeSlaveBusInterface");
+    bridgeSlaveBus->setSlave(bridgeSlaveInterface);
+    bridgeSlaveBus->setInterfaceMode(General::SLAVE);
+
+    QList<QSharedPointer<BusInterface> > busInterfaceList;
+    busInterfaceList.append(bridgeSlaveBus);
+    busInterfaceList.append(bridgeMasterBus);
+    newBridgeComponent->setBusInterfaces(busInterfaceList);
+
+    return newBridgeComponent;
 }
 
 //-----------------------------------------------------------------------------

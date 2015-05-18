@@ -131,6 +131,7 @@ void SystemMemoryMapHeaderWriter::writeMemoryMapHeader(QSharedPointer<Component>
 
 	if (result == QDialog::Rejected)
     {
+        informGenerationAbort();
 		return;
 	}
 
@@ -139,6 +140,8 @@ void SystemMemoryMapHeaderWriter::writeMemoryMapHeader(QSharedPointer<Component>
     searchInstanceFiles(component, sysView->getHWViewRef());
 
 	bool changed = false;
+
+    informStartOfGeneration();
 
 	// write the system headers for CPU instances
     foreach (const SystemHeaderSaveModel::SysHeaderOptions& systemHeaderOption, systemGeneratorSettings_)
@@ -174,6 +177,8 @@ void SystemMemoryMapHeaderWriter::writeMemoryMapHeader(QSharedPointer<Component>
 
 		stream << endl << "#endif /* " << headerGuard << " */" << endl;
 
+        informWritingFinished(systemHeaderOption.sysHeaderInfo_.fileName());
+
 		file.close();
 
 		changed = true;
@@ -190,6 +195,8 @@ void SystemMemoryMapHeaderWriter::writeMemoryMapHeader(QSharedPointer<Component>
 
 	// clear the settings after generation
     systemGeneratorSettings_.clear();
+
+    informGenerationComplete();
 }
 
 //-----------------------------------------------------------------------------

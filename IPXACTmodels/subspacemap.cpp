@@ -19,22 +19,21 @@
 #include <QXmlStreamWriter>
 #include "XmlUtils.h"
 
-// The constructor
+//-----------------------------------------------------------------------------
+// Function: subspacemap::SubspaceMap()
+//-----------------------------------------------------------------------------
 SubspaceMap::SubspaceMap(QDomNode &memoryMapNode): MemoryMapItem(memoryMapNode),
 parameters_(),
 vendorExtensions_()
 {
-	for (int i = 0; i < memoryMapNode.childNodes().count(); ++i) {
-		if (memoryMapNode.childNodes().at(i).nodeName() ==
-				QString("spirit:parameters")) {
-
+	for (int i = 0; i < memoryMapNode.childNodes().count(); ++i)
+    {
+		if (memoryMapNode.childNodes().at(i).nodeName() == QString("spirit:parameters"))
+        {
 			// go through all parameters
-			for (int j = 0;
-					j < memoryMapNode.childNodes().at(i).childNodes().count();
-					++j) {
-
-				QDomNode parameterNode =
-						memoryMapNode.childNodes().at(i).childNodes().at(j);
+			for (int j = 0; j < memoryMapNode.childNodes().at(i).childNodes().count(); ++j)
+            {
+				QDomNode parameterNode = memoryMapNode.childNodes().at(i).childNodes().at(j);
 				Parameter *temp = new Parameter(parameterNode);
 				parameters_.append(QSharedPointer<Parameter>(temp));
 			}
@@ -43,12 +42,24 @@ vendorExtensions_()
         else if (memoryMapNode.nodeName() == QString("spirit:vendorExtensions")) 
         {
             int extensionCount = memoryMapNode.childNodes().count();
-            for (int j = 0; j < extensionCount; ++j) {
+            for (int j = 0; j < extensionCount; ++j)
+            {
                 QDomNode extensionNode = memoryMapNode.childNodes().at(j);
                 vendorExtensions_.append(QSharedPointer<VendorExtension>(new GenericVendorExtension(extensionNode)));
             }
         }
 	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: subspacemap::SubspaceMap()
+//-----------------------------------------------------------------------------
+SubspaceMap::SubspaceMap():
+MemoryMapItem(),
+parameters_(),
+vendorExtensions_()
+{
+
 }
 
 SubspaceMap::SubspaceMap( const SubspaceMap &other ):

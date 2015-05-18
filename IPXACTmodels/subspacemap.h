@@ -42,6 +42,11 @@ public:
 	 */
 	SubspaceMap(QDomNode &memoryMapNode);
 
+    /*!
+     *  The default constructor.
+     */
+    SubspaceMap();
+
 	//! \brief Copy constructor
 	SubspaceMap(const SubspaceMap &other);
 

@@ -317,17 +317,6 @@ public:
 	*/
 	QStringList getAllParameterNames() const;
 
-	/*! \brief Get the default value set for specified parameter or model parameter.
-     *
-	 * First model parameters is searched and then parameters. The first 
-	 * parameter/model parameter matching the paramName is selected.
-	 * 
-	 * \param paramName Identifies the parameter or model parameter.
-	 *
-	 * \return QString contains the specified default value.
-	*/
-	QString getAllParametersDefaultValue(const QString& paramName) const;
-
 	/*! \brief Get this component's remap states
 	 *
 	 * \return QList containing component's remap states

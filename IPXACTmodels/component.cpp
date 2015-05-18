@@ -3794,29 +3794,6 @@ QStringList Component::getAllParameterNames() const {
 	return names;
 }
 
-QString Component::getAllParametersDefaultValue( const QString& paramName ) const {
-	if (model_) {
-
-		// if the model parameter with given name is found
-		QSharedPointer<ModelParameter> modelParam = model_->getModelParameter(paramName);
-		if (modelParam) {
-			return modelParam->getValue();
-		}
-	}
-
-	// model parameter was not found, search among parameters
-	foreach (QSharedPointer<Parameter> param, *parameters_)
-    {
-		if (param->getName() == paramName)
-        {
-			return param->getValue();
-		}
-	}
-
-	// no parameter or model parameter was found
-	return QString();
-}
-
 const QStringList Component::getDependentDirs() const {
 	QStringList dirs;
 

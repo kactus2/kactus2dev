@@ -164,6 +164,38 @@ protected:
     QString getAddressBlockLastAddress(QSharedPointer<AddressBlock> targetAddressBlock,
         QSharedPointer<ExpressionParser> expressionParser) const;
     
+    /*!
+     *  Get the parsed value for a given expression.
+     *
+     *      @param [in] expression  The expression to be parsed.
+     *      @param [in] finder      The parameter finder used in the parser.
+     *
+     *      @return The parsed value for the given expression.
+     */
+    QString parsedValueFor(QString const& expression, QSharedPointer<ParameterFinder> finder) const;
+
+    /*!
+     *  Inform of the start of the generator.
+     */
+    void informStartOfGeneration() const;
+
+    /*!
+     *  Inform when the writing has been finished.
+     *
+     *      @param [in] outputFile  The name of the output file.
+     */
+    void informWritingFinished(QString const& outputFile) const;
+
+    /*!
+     *  Inform of the generation finish.
+     */
+    void informGenerationComplete() const;
+
+    /*!
+     *  Inform of the generation abort.
+     */
+    void informGenerationAbort() const;
+
     //! The interface which offers core utilities for plugins.
     IPluginUtility* utility_;
 

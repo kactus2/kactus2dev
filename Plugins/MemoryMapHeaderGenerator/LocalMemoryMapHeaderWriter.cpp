@@ -70,11 +70,15 @@ void LocalMemoryMapHeaderWriter::writeMemoryMapHeader(QList<LocalHeaderSaveModel
         // if user clicked cancel
         if (result == QDialog::Rejected)
         {
+            informGenerationAbort();
             return;
         }
 
         options = model.getHeaderOptions();
     }
+
+    informStartOfGeneration();
+
 	foreach (LocalHeaderSaveModel::SaveFileOptions* headerOpt, options)
     {
 		QFile file(headerOpt->fileInfo_.absoluteFilePath());
@@ -117,6 +121,8 @@ void LocalMemoryMapHeaderWriter::writeMemoryMapHeader(QList<LocalHeaderSaveModel
 		}
 
 		stream << "#endif /* " << headerGuard << " */" << endl << endl;
+
+        informWritingFinished(headerOpt->fileInfo_.fileName());
 
 		file.close();
 
@@ -161,4 +167,6 @@ void LocalMemoryMapHeaderWriter::displayMemoryMapHeader(QString const& filePath)
     {
         QDesktopServices::openUrl(QUrl::fromLocalFile(filePath));
     }
+
+    informGenerationComplete();
 }

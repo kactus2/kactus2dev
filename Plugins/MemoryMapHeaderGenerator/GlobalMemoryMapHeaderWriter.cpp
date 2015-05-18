@@ -80,11 +80,15 @@ void GlobalMemoryMapHeaderWriter::writeMemoryMapHeader(QSharedPointer<Component>
         // if user clicked cancel
         if (result == QDialog::Rejected)
         {
+            informGenerationAbort();
             return;
         }
 
         options = model.getHeaderOptions();
     }
+
+    informStartOfGeneration();
+
 	foreach (GlobalHeaderSaveModel::SaveFileOptions* headerOpt, options)
     {
 		QFile file(headerOpt->fileInfo_.absoluteFilePath());
@@ -120,6 +124,8 @@ void GlobalMemoryMapHeaderWriter::writeMemoryMapHeader(QSharedPointer<Component>
 
         file.close();
 
+        informWritingFinished(headerOpt->fileInfo_.fileName());
+
 		addHeaderFile(globalComponent, headerOpt->fileInfo_, headerOpt->instance_, QStringList(),
             headerOpt->instanceId_);
 
@@ -140,6 +146,9 @@ void GlobalMemoryMapHeaderWriter::writeMemoryMapHeader(QSharedPointer<Component>
 	// clear the members for next generation run
     componentDesign_.clear();
 	operatedInterfaces_.clear();
+
+
+    informGenerationComplete();
 }
 
 //-----------------------------------------------------------------------------
@@ -202,6 +211,19 @@ void GlobalMemoryMapHeaderWriter::parseSlaveInterface(qint64 offset, QSharedPoin
 {
     QSharedPointer<SlaveInterface> slave = component->getBusInterface(interFace.getBusRef())->getSlave();
     Q_ASSERT(slave);
+
+    if (!slave->getBridges().isEmpty())
+    {
+        foreach (QSharedPointer<SlaveInterface::Bridge> bridge, slave->getBridges())
+        {
+            if (bridge->opaque_)
+            {
+                utility_->printError(QObject::tr("An opaque bridge was found in interface ") +
+                    interFace.getBusRef() + QObject::tr(" in instance ") + interFace.getComponentRef() +
+                    QObject::tr(". Currently, opaque bridges are handled as transparent bridges."));
+            }
+        }
+    }
 
     QSharedPointer<MemoryMap> memMap = component->getMemoryMap(slave->getMemoryMapRef());
     if (memMap && memMap->containsSubItems())
@@ -271,25 +293,11 @@ void GlobalMemoryMapHeaderWriter::parseMirroredSlaveInterface(qint64 offset, QSh
     // increase the offset by the remap address of the mirrored slave interface
     QString remapStr = component->getBusInterface(interFace.getBusRef())->getMirroredSlave()->getRemapAddress();
 
-    // if the remap address is directly a number
-    if (Utils::isNumber(remapStr))
-    {
-        offset += Utils::str2Int(remapStr);
-    }
-    else
-    {
-        if (componentDesign_->hasConfElementValue(interFace.getComponentRef(), remapStr))
-        {
-            QString confValue = componentDesign_->getConfElementValue(interFace.getComponentRef(), remapStr);
-            offset += Utils::str2Int(confValue);
-        }
-        // if the value is not set then use the default value from the component
-        else
-        {
-            QString defValue = component->getAllParametersDefaultValue(remapStr);
-            offset += Utils::str2Int(defValue);
-        }
-    }
+    QString instanceId = getInstanceID(interFace.getComponentRef());
+    QSharedPointer<ListParameterFinder> finder = createParameterFinder(instanceId, component);
+
+    QString remapValue = parsedValueFor(remapStr, finder);
+    offset += remapValue.toInt();
 
     QList<Interface> connected = componentDesign_->getConnectedInterfaces(interFace);
     foreach (Interface targetInterface, connected)

@@ -350,3 +350,47 @@ QString BaseMemoryMapHeaderWriter::getAddressBlockLastAddress(QSharedPointer<Add
     lastAddressString.append(QString::number(lastAddress, 16));
     return lastAddressString;
 }
+
+//-----------------------------------------------------------------------------
+// Function: BaseMemoryMapHeaderWriter::formattedValueFor()
+//-----------------------------------------------------------------------------
+QString BaseMemoryMapHeaderWriter::parsedValueFor(QString const& expression,
+    QSharedPointer<ParameterFinder> finder) const
+{
+    QSharedPointer<IPXactSystemVerilogParser> expressionParser (new IPXactSystemVerilogParser(finder));
+
+    return expressionParser->parseExpression(expression);
+}
+
+//-----------------------------------------------------------------------------
+// Function: BaseMemoryMapHeaderWriter::informStartOfGeneration()
+//-----------------------------------------------------------------------------
+void BaseMemoryMapHeaderWriter::informStartOfGeneration() const
+{
+    utility_->printInfo(QObject::tr("Generation started %1").arg(QDateTime::currentDateTime().
+        toString(Qt::LocalDate)));
+}
+
+//-----------------------------------------------------------------------------
+// Function: BaseMemoryMapHeaderWriter::informWritingFinished()
+//-----------------------------------------------------------------------------
+void BaseMemoryMapHeaderWriter::informWritingFinished(QString const& outputFile) const
+{
+    utility_->printInfo(QObject::tr("Finished writing file %1.").arg(outputFile));
+}
+
+//-----------------------------------------------------------------------------
+// Function: BaseMemoryMapHeaderWriter::informGenerationComplete()
+//-----------------------------------------------------------------------------
+void BaseMemoryMapHeaderWriter::informGenerationComplete() const
+{
+    utility_->printInfo(QObject::tr("Generation complete."));
+}
+
+//-----------------------------------------------------------------------------
+// Function: BaseMemoryMapHeaderWriter::informGenerationAbort()
+//-----------------------------------------------------------------------------
+void BaseMemoryMapHeaderWriter::informGenerationAbort() const
+{
+    utility_->printInfo(QObject::tr("Generation aborted."));
+}
