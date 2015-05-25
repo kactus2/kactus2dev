@@ -13,6 +13,8 @@
 
 #include <IPXACTmodels/modelparameter.h>
 
+#include <QRegularExpression>
+
 //-----------------------------------------------------------------------------
 // Function: ModelParameterVerilogWriter::ModelParameterVerilogWriter()
 //-----------------------------------------------------------------------------
@@ -81,6 +83,14 @@ QString ModelParameterVerilogWriter::formattedValue() const
 
     if (QString::compare(modelParameter_->getDataType(), "string") == 0)
     {
+        QRegularExpression expression("\".*\"");
+        QRegularExpressionMatch expressionMatch = expression.match(value);
+
+        if (expressionMatch.hasMatch())
+        {
+            value = expressionMatch.captured(0);
+        }
+
         if (!value.startsWith("\""))
         {
             value.prepend("\"");
@@ -90,6 +100,11 @@ QString ModelParameterVerilogWriter::formattedValue() const
         {
             value.append("\"");
         }
+    }
+
+    else
+    {
+        value.remove(" ");
     }
 
     QString formatted = formatter_->formatReferringExpression(value);

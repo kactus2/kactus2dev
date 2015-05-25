@@ -46,6 +46,9 @@ private slots:
     void testNonTypedModelParameter();
 
     void testReferencingModelParameter();
+    void testModelParameterWithSpaces();
+    void testModelParameterStringWithSpaces();
+    void testModelParameterStringWithoutEndingQuote();
 
 private:
 
@@ -233,6 +236,56 @@ void tst_ModelParameterVerilogWriter::testReferencingModelParameter()
     parameter.write(outputStream_);
 
     QCOMPARE(outputString_, QString("parameter         Referer          = target"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ModelParameterVerilogWriter::testModelParameterWithSpaces()
+//-----------------------------------------------------------------------------
+void tst_ModelParameterVerilogWriter::testModelParameterWithSpaces()
+{
+    modelParam_->setName("spaces");
+    modelParam_->setValue("  4     -   12");
+
+    QSharedPointer<ExpressionFormatter> formatter = createTestFormatterUsingComponent(QSharedPointer<Component>(0));
+
+    ModelParameterVerilogWriter modelParameterWriter(modelParam_, formatter);
+    modelParameterWriter.write(outputStream_);
+
+    QCOMPARE(outputString_, QString("parameter         spaces           = 4-12"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ModelParameterVerilogWriter::testModelParameterStringWithSpaces()
+//-----------------------------------------------------------------------------
+void tst_ModelParameterVerilogWriter::testModelParameterStringWithSpaces()
+{
+    modelParam_->setName("stringSpaces");
+    modelParam_->setValue("   \"No   mutants   allowed.\"    ");
+    modelParam_->setDataType("string");
+
+    QSharedPointer<ExpressionFormatter> formatter = createTestFormatterUsingComponent(QSharedPointer<Component>(0));
+
+    ModelParameterVerilogWriter modelParameterWriter(modelParam_, formatter);
+    modelParameterWriter.write(outputStream_);
+
+    QCOMPARE(outputString_, QString("parameter string  stringSpaces     = \"No   mutants   allowed.\""));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ModelParameterVerilogWriter::testModelParameterStringWithoutEndingQuote()
+//-----------------------------------------------------------------------------
+void tst_ModelParameterVerilogWriter::testModelParameterStringWithoutEndingQuote()
+{
+    modelParam_->setName("noEndingQuote");
+    modelParam_->setValue("\"Need quote");
+    modelParam_->setDataType("string");
+
+    QSharedPointer<ExpressionFormatter> formatter = createTestFormatterUsingComponent(QSharedPointer<Component>(0));
+
+    ModelParameterVerilogWriter modelParameterWriter(modelParam_, formatter);
+    modelParameterWriter.write(outputStream_);
+
+    QCOMPARE(outputString_, QString("parameter string  noEndingQuote    = \"Need quote\""));
 }
 
 //-----------------------------------------------------------------------------

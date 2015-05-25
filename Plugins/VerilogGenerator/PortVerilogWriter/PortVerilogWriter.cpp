@@ -99,6 +99,8 @@ QString PortVerilogWriter::bounds() const
     QString boundsDefinition = "[" + port_->getLeftBoundExpression() + ":" + 
         port_->getRightBoundExpression() + "]";
 
+    boundsDefinition.remove(" ");
+
     if (boundsDefinition == "[0:0]")
     {
         return QString();

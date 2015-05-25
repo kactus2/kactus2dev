@@ -285,6 +285,9 @@ void tst_PortVerilogWriter::testWriteParametrizedPort_data()
     QTest::newRow("Left and right parameterized") << "id" << "id" <<  "input  bit     [name:name] data";
     QTest::newRow("Left and right parameterized with different parameters") 
         << "id-1" << "id2" <<  "input  bit     [name-1:name2] data";
+
+    QTest::newRow("Left and right parameterized with spacing") << "  id  +    1" << " id2  "
+        << "input  bit     [name+1:name2] data";
 }
 
 //-----------------------------------------------------------------------------
