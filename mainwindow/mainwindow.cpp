@@ -63,6 +63,8 @@
 #include <editors/CSourceEditor/CSourceContentMatcher.h>
 #include <editors/ComponentEditor/common/ExpressionFormatterFactoryImplementation.h>
 
+#include <editors/ConfigurationTools/ViewConfigurer.h>
+
 #include <Help/HelpSystem/ContextHelpBrowser.h>
 #include <Help/HelpSystem/HelpWindow.h>
 
@@ -92,7 +94,6 @@
 #include <Plugins/PluginSystem/IPluginUtility.h>
 #include <Plugins/PluginSystem/PluginListDialog.h>
 #include <Plugins/PluginSystem/PluginUtilityAdapter.h>
-
 
 #include <settings/SettingsDialog.h>
 #include <settings/SettingsUpdater.h>
@@ -193,6 +194,8 @@ MainWindow::MainWindow(QWidget *parent)
       actAbout_(0), 
       actHelp_(0),
       actExit_(0),
+      configurationToolsGroup_(0),
+      actionConfigureViews_(0),
       windowsMenu_(this),
       visibilityMenu_(this),
       workspaceMenu_(this),
@@ -854,6 +857,10 @@ void MainWindow::setupActions()
 	actExit_ = new QAction(QIcon(":/icons/common/graphics/system-exit.png"), tr("Exit"), this);
 	connect(actExit_, SIGNAL(triggered()), this, SLOT(close()), Qt::UniqueConnection);
 
+    actionConfigureViews_ = new QAction(QIcon(":/icons/common/graphics/viewConfiguration.png"),
+        tr("View configuration"), this);
+    connect(actionConfigureViews_, SIGNAL(triggered()), this, SLOT(onConfigureViews()), Qt::UniqueConnection);
+
     connectVisibilityControls();
 
 	setupMenus();
@@ -962,6 +969,14 @@ void MainWindow::setupMenus()
 	viewGroup->widgetForAction(actFitInView_)->installEventFilter(ribbon_);
 	viewGroup->widgetForAction(actVisibleDocks_)->installEventFilter(ribbon_);
 	viewGroup->widgetForAction(actVisibilityControl_)->installEventFilter(ribbon_);
+
+    //! The "Configuration tools" group.
+    configurationToolsGroup_ = ribbon_->addGroup(tr("Configuration Tools"));
+    configurationToolsGroup_->addAction(actionConfigureViews_);
+    configurationToolsGroup_->setVisible(false);
+    configurationToolsGroup_->setEnabled(false);
+
+    configurationToolsGroup_->widgetForAction(actionConfigureViews_)->installEventFilter(ribbon_);
 
 	//! The "Workspace" group.
 	RibbonGroup* workspacesGroup = ribbon_->addGroup(tr("Workspace"));
@@ -1493,6 +1508,11 @@ void MainWindow::updateMenuStrip()
 		actGenQuartus_->setVisible(false);
         actRunImport_->setVisible(false);
 	}
+
+    configurationToolsGroup_->setEnabled(unlocked);
+    configurationToolsGroup_->setVisible(doc != 0 && (isHWComp || isHWDesign));
+    actionConfigureViews_->setEnabled(unlocked);
+    actionConfigureViews_->setVisible(isHWDesign || isHWComp);
 
 	editGroup_->setVisible(doc != 0);
 	editGroup_->setEnabled(doc != 0 && unlocked);
@@ -4409,5 +4429,75 @@ void MainWindow::onDesignDocumentRefreshed()
 
         instanceEditor_->setContext(topComponent, designWidget->getDiagram()->getDesignConfiguration(),
             &designWidget->getDiagram()->getEditProvider());
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: mainwindow::onConfigureViews()
+//-----------------------------------------------------------------------------
+void MainWindow::onConfigureViews()
+{
+    TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
+
+    if (!doc || doc->isProtected())
+    {
+        return;
+    }
+
+    if (doc->isModified())
+    {
+        QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(), tr("The document has been "
+            "modified. The changes need to be saved before the import wizard can be run. Save changes and "
+            "continue?"), QMessageBox::Yes | QMessageBox::No, this);
+
+        if (msgBox.exec() == QMessageBox::No || !doc->save())
+        {
+            return;
+        }
+    }
+
+    VLNV componentVLNV = doc->getDocumentVLNV();
+    VLNV designVLNV = doc->getIdentifyingVLNV();
+
+    QSharedPointer<Component> currentComponent = libraryHandler_->getModel(componentVLNV).dynamicCast<Component>();
+    QSharedPointer<Design> libraryDesign;
+    QSharedPointer<DesignConfiguration> libraryDesignConfiguration;
+
+    DesignWidget* desWidget = qobject_cast<DesignWidget*>(doc);
+    QString viewName ("");
+
+    if (desWidget && componentVLNV != designVLNV)
+    {
+        libraryDesign = libraryHandler_->getModel(designVLNV).dynamicCast<Design>();
+
+        viewName = desWidget->getOpenViewName();
+
+        VLNV designConfigurationVLNV;
+
+        if (desWidget->getImplementation() == KactusAttribute::HW)
+        {
+            designConfigurationVLNV = currentComponent->getHierRef(viewName);
+        }
+        else
+        {
+            return;
+        }
+
+        if (designConfigurationVLNV.isValid() && designConfigurationVLNV != designVLNV)
+        {
+            libraryDesignConfiguration = libraryHandler_->getModel(designConfigurationVLNV).
+                dynamicCast<DesignConfiguration>();
+        }
+    }
+
+    if (currentComponent)
+    {
+        ViewConfigurer configurer(currentComponent, libraryDesign, libraryDesignConfiguration, libraryHandler_,
+            viewName);
+
+        if (configurer.exec() == QDialog::Accepted)
+        {
+            doc->refresh();
+        }
     }
 }

@@ -336,6 +336,7 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/software/systemView/SystemViewsEditor.h \
     ./editors/ComponentEditor/software/systemView/SystemViewsModel.h \
     ./editors/ComponentEditor/addressSpaces/AddressSpaceColumns.h \
+    ./editors/ComponentEditor/addressSpaces/AddressSpaceExpressionsGatherer.h \
     ./editors/ComponentEditor/addressSpaces/SegmentDelegate.h \
     ./editors/ComponentEditor/addressSpaces/addressspaceeditor.h \
     ./editors/ComponentEditor/addressSpaces/addressspacegeneraleditor.h \
@@ -526,6 +527,9 @@ HEADERS += ./common/Global.h \
     ./editors/CSourceEditor/CSourceHighlighter.h \
     ./editors/CSourceEditor/CSourceTextEdit.h \
     ./editors/CSourceEditor/CSourceWidget.h \
+    ./editors/ConfigurationTools/ViewConfigurerColumns.h \
+    ./editors/ConfigurationTools/ViewConfigurer.h \
+    ./editors/ConfigurationTools/ViewConfigurerDelegate.h \
     ./designEditors/SystemDesign/HWMappingItem.h \
     ./designEditors/SystemDesign/SystemMoveCommands.h \
     ./designEditors/SystemDesign/SWComponentItem.h \
@@ -636,8 +640,7 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.h \
-    ./editors/ComponentEditor/addressSpaces/AddressSpaceExpressionsGatherer.h
+    ./kactusGenerators/quartusGenerator/quartusgenerator.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -973,6 +976,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/software/systemView/SystemViewsEditor.cpp \
     ./editors/ComponentEditor/software/systemView/SystemViewsModel.cpp \
     ./editors/ComponentEditor/addressSpaces/addressspaceeditor.cpp \
+    ./editors/ComponentEditor/addressSpaces/AddressSpaceExpressionsGatherer.cpp \
     ./editors/ComponentEditor/addressSpaces/addressspacegeneraleditor.cpp \
     ./editors/ComponentEditor/addressSpaces/addressspacesdelegate.cpp \
     ./editors/ComponentEditor/addressSpaces/addressspaceseditor.cpp \
@@ -1106,6 +1110,8 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/CSourceEditor/CSourceHighlighter.cpp \
     ./editors/CSourceEditor/CSourceTextEdit.cpp \
     ./editors/CSourceEditor/CSourceWidget.cpp \
+    ./editors/ConfigurationTools/ViewConfigurer.cpp \
+    ./editors/ConfigurationTools/ViewConfigurerDelegate.cpp \
     ./designEditors/HWDesign/AdHocEnabled.cpp \
     ./designEditors/HWDesign/AdHocInterfaceItem.cpp \
     ./designEditors/HWDesign/AdHocPortItem.cpp \
@@ -1210,6 +1216,5 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
-    ./editors/ComponentEditor/addressSpaces/AddressSpaceExpressionsGatherer.cpp
+    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp
 RESOURCES += kactus.qrc

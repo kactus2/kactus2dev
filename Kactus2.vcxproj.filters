@@ -926,6 +926,12 @@
     <Filter Include="Header Files\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators">
       <UniqueIdentifier>{0383a24a-2477-42e1-a186-544e70d7a570}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\editors\ConfigurationTools">
+      <UniqueIdentifier>{3f49035a-f56d-4986-a5fc-61b3c9feaa4a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\editors\ConfigurationTools">
+      <UniqueIdentifier>{8f5efcc6-1e11-42fd-8f57-33e0401ba98f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -4114,6 +4120,18 @@
     <ClCompile Include="editors\ComponentEditor\addressSpaces\AddressSpaceExpressionsGatherer.cpp">
       <Filter>Source Files\editors\ComponentEditor\addressSpaces</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ConfigurationTools\ViewConfigurer.cpp">
+      <Filter>Source Files\editors\ConfigurationTools</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ConfigurationTools\ViewConfigurerDelegate.cpp">
+      <Filter>Source Files\editors\ConfigurationTools</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ViewConfigurerDelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ViewConfigurer.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5667,6 +5685,12 @@
     <CustomBuild Include="editors\ComponentEditor\addressSpaces\SegmentDelegate.h">
       <Filter>Header Files\editors\ComponentEditor\addressSpaces</Filter>
     </CustomBuild>
+    <CustomBuild Include="editors\ConfigurationTools\ViewConfigurerDelegate.h">
+      <Filter>Header Files\editors\ConfigurationTools</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ConfigurationTools\ViewConfigurer.h">
+      <Filter>Header Files\editors\ConfigurationTools</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -6061,6 +6085,9 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\addressSpaces\AddressSpaceExpressionsGatherer.h">
       <Filter>Header Files\editors\ComponentEditor\addressSpaces</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ConfigurationTools\ViewConfigurerColumns.h">
+      <Filter>Header Files\editors\ConfigurationTools</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

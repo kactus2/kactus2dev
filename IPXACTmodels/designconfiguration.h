@@ -381,6 +381,13 @@ private:
      */
     void parseConfigurableElementValues(QDomNode const& extensionNode);
 
+    /*!
+     *  Parses the view configuration values.
+     *
+     *      @param [in] extensionNode   The DOM node containing the extensions for view configurations.
+     */
+    void parseViewConfigurationValues(QDomNode const& extensionNode);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

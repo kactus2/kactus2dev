@@ -104,6 +104,7 @@
       <file>common/graphics/balloon.png</file>
 	    <file>common/graphics/pin--plus.png</file>
       <file>common/graphics/star.png</file>
+      <file>common/graphics/viewConfiguration.png</file>
   </qresource>
     <qresource prefix="/">        
         <file>common/graphics/splash.png</file>

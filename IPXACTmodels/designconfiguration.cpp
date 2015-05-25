@@ -1009,6 +1009,11 @@ void DesignConfiguration::parseVendorExtensions(QDomNode const& extensionsNode)
         {
             parseConfigurableElementValues(extensionNode);
         }
+
+        else if (extensionNode.nodeName() == "kactus2:viewConfigurations")
+        {
+            parseViewConfigurationValues(extensionNode);
+        }
     }
 }
 
@@ -1050,4 +1055,26 @@ void DesignConfiguration::parseConfigurableElementValues(QDomNode const& extensi
     }
 
     vendorExtensions_.append(configurableElementsGroup);
+}
+
+//-----------------------------------------------------------------------------
+// Function: designconfiguration::parseViewConfigurationValues()
+//-----------------------------------------------------------------------------
+void DesignConfiguration::parseViewConfigurationValues(QDomNode const& extensionNode)
+{
+    QSharedPointer<Kactus2Group> viewGroup(new Kactus2Group("kactus2:viewConfigurations"));
+
+    for (int i = 0; i < extensionNode.childNodes().size(); ++i)
+    {
+        QDomNode instanceNode = extensionNode.childNodes().at(i);
+        QDomNamedNodeMap attributes = instanceNode.attributes();
+
+        QSharedPointer<Kactus2Placeholder> viewItem(new Kactus2Placeholder("kactus2:instanceView"));
+        viewItem->setAttribute("id", attributes.namedItem("id").nodeValue());
+        viewItem->setAttribute("viewName", attributes.namedItem("viewName").nodeValue());
+
+        viewGroup->addToGroup(viewItem);
+    }
+
+    vendorExtensions_.append(viewGroup);
 }

@@ -489,6 +489,11 @@ private slots:
      */
     void onDesignDocumentRefreshed();
 
+    /*!
+     *  Configure the used views.
+     */
+    void onConfigureViews();
+
 private:
 	// Disable copying.
 	MainWindow(MainWindow const& rhs);
@@ -908,6 +913,12 @@ private:
     QAction* actExit_;
 
     QActionGroup* modeActionGroup_;
+
+    //! The group for configuration tools.
+    RibbonGroup* configurationToolsGroup_;
+
+    //! The action to configure the views.
+    QAction* actionConfigureViews_;
 
 	//! \brief The menu containing the actions to select which windows to display.
 	QMenu windowsMenu_;
