@@ -318,11 +318,6 @@ bool PortsModel::setData(QModelIndex const& index, QVariant const& value, int ro
             // make sure left bound doesn't drop below right bound.
             QString calculatedExpression = parseExpressionToDecimal(value.toString());
 
-            if(calculatedExpression.toInt() < port->getRightBound() || calculatedExpression == "n/a")
-            {
-                return false;
-            }
-
             // ok so make the change.
             port->removeLeftBoundExpression();
             
@@ -347,11 +342,6 @@ bool PortsModel::setData(QModelIndex const& index, QVariant const& value, int ro
 
             // make sure right bound is not greater than left bound.
             QString calculatedExpression = parseExpressionToDecimal(value.toString());
-
-            if (calculatedExpression.toInt() > port->getLeftBound() ||  calculatedExpression == "n/a")
-            {
-                return false;
-            }
 
             // ok so apply the change.
             port->removeRightBoundExpression();
@@ -738,7 +728,11 @@ QVariant PortsModel::valueForIndex(QModelIndex const& index) const
     }
     else if (index.column() == PortColumns::WIDTH)
     {
-        return port->getPortSize();
+        int calculatedLeftBound = parseExpressionToDecimal(port->getLeftBoundExpression()).toInt();
+        int calculatedRightBound = parseExpressionToDecimal(port->getRightBoundExpression()).toInt();
+
+        int portWidth = abs(calculatedLeftBound - calculatedRightBound) + 1;
+        return portWidth;
     }
     else if (index.column() == PortColumns::LEFT_BOUND)
     {
