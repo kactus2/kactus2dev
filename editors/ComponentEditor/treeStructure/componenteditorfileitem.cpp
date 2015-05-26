@@ -14,7 +14,6 @@
 #include <editors/ComponentEditor/fileSet/file/fileeditor.h>
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/generaldeclarations.h>
-#include <common/utils.h>
 
 #include <QDesktopServices>
 #include <QFileInfo>
@@ -35,8 +34,6 @@ ComponentEditorFileItem::ComponentEditorFileItem(QSharedPointer<File> file,
 												 ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 file_(file),
-urlTester_(new QRegExpValidator(Utils::URL_IDENTIFY_REG_EXP, this)),
-urlValidator_(new QRegExpValidator(Utils::URL_VALIDITY_REG_EXP, this)),
 editAction_(new QAction(tr("Edit"), this)),
 editWithAction_(new QAction(tr("Edit/Run with..."), this)),
 runAction_(new QAction(tr("Run"), this))
@@ -72,43 +69,27 @@ bool ComponentEditorFileItem::isValid() const
 	}
 
 	QString filePath = file_->getName();
-	int pos = 0;
-	
-	// check if the path is actually a URL to (external) location
-	if (urlTester_->validate(filePath, pos) == QValidator::Acceptable) { 
-		pos = 0;
 
-		// if the URL is not valid
-		if (urlValidator_->validate(filePath, pos) != QValidator::Acceptable) {
-			return false;
-		}
+    // get the path to the xml file
+    QString basePath = libHandler_->getPath(*component_->getVlnv());
 
-		// the URL was valid
-		return true;
-	}
+    QString absPath;
 
-	// the path was not URL so interpret is as file path
-	else {
+    // if the path is relative then create absolute path
+    QFileInfo originalInfo(filePath);
+    if (originalInfo.isRelative())
+    {
+        absPath = General::getAbsolutePath(basePath, filePath);
+    }
+    // if the reference is directly absolute
+    else
+    {
+        absPath = filePath;
+    }
 
-		// get the path to the xml file
-		QString basePath = libHandler_->getPath(*component_->getVlnv());
-
-		QString absPath;
-
-		// if the path is relative then create absolute path
-		QFileInfo originalInfo(filePath);
-		if (originalInfo.isRelative()) {
-			absPath = General::getAbsolutePath(basePath, filePath);
-		}
-		// if the reference is directly absolute
-		else {
-			absPath = filePath;
-		}
-
-		// check if the file exists in the file system
-		QFileInfo fileInfo(absPath);
-		return fileInfo.exists();
-	}
+    // check if the file exists in the file system
+    QFileInfo fileInfo(absPath);
+    return fileInfo.exists();
 }
 
 //-----------------------------------------------------------------------------

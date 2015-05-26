@@ -144,12 +144,6 @@ private:
     //! \brief Pointer to the file being edited.
 	QSharedPointer<File> file_;
 
-	//! \brief Checks if the given string is a URL (invalids are allowed) or not.
-	QRegExpValidator* urlTester_;
-
-	//! \brief Validates the file path to check if they are valid URLs.
-	QRegExpValidator* urlValidator_;
-
     //! Action to open the file for editing with default editor.
     QAction* editAction_;
 

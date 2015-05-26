@@ -60,9 +60,9 @@ LibraryData::LibraryData(LibraryHandler* parent, QWidget* parentWidget)
       syntaxErrors_(0),
       vlnvErrors_(0),
       fileErrors_(0),
-		fileCount_(0),
-		urlTester_(new QRegExpValidator(Utils::URL_IDENTIFY_REG_EXP, this)),
-		urlValidator_(new QRegExpValidator(Utils::URL_VALIDITY_REG_EXP, this)) {
+      fileCount_(0),
+      urlTester_(new QRegExpValidator(Utils::URL_VALIDITY_REG_EXP, this))
+{
 	connect(this, SIGNAL(errorMessage(const QString&)),
 		parent, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
 	connect(this, SIGNAL(noticeMessage(const QString&)),
@@ -662,31 +662,7 @@ bool LibraryData::checkObject( QSharedPointer<LibraryComponent> libComp, const Q
 
 			pos = 0;
 
-			// if the URL is not valid
-			if (urlValidator_->validate(originalPath, pos) != QValidator::Acceptable) {
-
-				// if theres no printing then there is no reason to check further errors
-				if (!print) {
-					return false;
-				}
-
-				// if this is the first found error
-				if (wasValid) {
-
-					emit noticeMessage(tr("The following errors were found while processing item %1:").arg(vlnv.toString(":")));
-					++failedObjects_;
-					wasValid = false;
-				}
-
-				emit errorMessage(tr("\tURL %1 was not valid.").arg(originalPath));
-				++errors_;
-				++fileErrors_;
-			}
-
-			// The URL was valid
-			else {
-				++fileCount_;
-			}
+            ++fileCount_;
 		}
 
 		// The path was not URL so it must be file reference on the disk.

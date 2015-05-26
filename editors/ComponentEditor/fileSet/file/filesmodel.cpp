@@ -127,23 +127,30 @@ QVariant FilesModel::data( const QModelIndex& index, int role /*= Qt::DisplayRol
 	else if (FilesModel::USER_DISPLAY_ROLE == role && index.column() == 2) {
 		return files_.at(index.row())->getAllFileTypes();
 	}
-	else if (Qt::ForegroundRole == role) {
-		QSharedPointer<File> file = files_[index.row()];
-
-		// check that file is syntax valid and that file exists.
-		QString xmlPath = handler_->getPath(*component_->getVlnv());
-		QString absFilePath = General::getAbsolutePath(xmlPath, file->getName());
-		Q_ASSERT(!absFilePath.isEmpty());
-
-		QFileInfo fileInfo(absFilePath);
-
-		if (file->isValid(true) && fileInfo.exists()) {
-			return QColor("black");
-		}
-		else {
-			return QColor("red");
-		}
+	else if (Qt::ForegroundRole == role)
+    {
+        if (filePathExists(files_[index.row()]))
+        {
+            return QColor("black");
+        }
+        else
+        {
+            return QColor("red");
+        }
 	}
+
+    else if (role == Qt::ToolTipRole)
+    {
+        if (!filePathExists(files_.at(index.row())))
+        {
+            return tr("File not found");
+        }
+        else
+        {
+            return QString();
+        }
+    }
+
 	else if (Qt::BackgroundRole == role) {
 		switch (index.column()) {
 		case 0:
@@ -325,4 +332,18 @@ void FilesModel::onMoveItem( const QModelIndex& originalPos, const QModelIndex& 
 	emit fileMoved(source, target);
 
 	emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: filesmodel::fileExists()
+//-----------------------------------------------------------------------------
+bool FilesModel::filePathExists(QSharedPointer<File> file) const
+{
+    QString xmlPath = handler_->getPath(*component_->getVlnv());
+    QString absFilePath = General::getAbsolutePath(xmlPath, file->getName());
+    Q_ASSERT(!absFilePath.isEmpty());
+
+    QFileInfo fileInfo(absFilePath);
+
+    return file->isValid(true) && fileInfo.exists();
 }

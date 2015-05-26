@@ -149,6 +149,15 @@ private:
 	//! \brief No assignment
 	FilesModel& operator=(const FilesModel& other);
 
+    /*!
+     *  Check if the file path exists for the given file.
+     *
+     *      @param [in] file    The selected file.
+     *
+     *      @return True, if the file path is found, otherwise false.
+     */
+    bool filePathExists(QSharedPointer<File> file) const;
+
 	//! \brief Pointer to the instance that manages the library.
 	LibraryInterface* handler_;
 

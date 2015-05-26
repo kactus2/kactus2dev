@@ -402,7 +402,7 @@ void FileDependencyEditor::scanDirectories()
         foreach (QSharedPointer<File> file, fileSet->getFiles())
         {
             // For non-url files, check if the model does not contain a corresponding file item.
-            if (!QRegExp(Utils::URL_IDENTIFY_REG_EXP).exactMatch(file->getName()) &&
+            if (!QRegExp(Utils::URL_VALIDITY_REG_EXP).exactMatch(file->getName()) &&
                 model_.findFileItem(file->getName()) == 0)
             {
                 QFileInfo info(file->getName());
