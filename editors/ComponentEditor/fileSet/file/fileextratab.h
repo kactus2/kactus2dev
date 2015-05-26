@@ -101,12 +101,6 @@ private:
 	//! \brief editor to set the image types of the file.
 	ListManager imageTypes_;
 
-	//! \brief The view to display the file defines
-	//FileDefineView defineView_;
-
-	//! \brief The model that contains the file defines
-	//FileDefineModel defineModel_;
-
 	//! \brief Pointer to the file model that is being edited.
 	QSharedPointer<File> file_;
 

@@ -221,96 +221,141 @@ void FileSet::write(QXmlStreamWriter& writer)
 	writer.writeEndElement(); // spirit:fileSet
 }
 
-bool FileSet::isValid( QStringList& errorList, const QString& parentIdentifier, 
-					  bool checkChildren /*= true*/ ) const {
+//-----------------------------------------------------------------------------
+// Function: fileset::isValid()
+//-----------------------------------------------------------------------------
+bool FileSet::isValid( QStringList& errorList, const QString& parentIdentifier, bool checkChildren /*= true*/ )
+    const
+{
 	bool valid = true;
 	const QString thisIdentifier = QObject::tr("file set %1").arg(nameGroup_.name());
 
-	if (nameGroup_.name().isEmpty()) {
+	if (nameGroup_.name().isEmpty())
+    {
 		errorList.append(QObject::tr("Name of the file set missing within %1").arg(
 			parentIdentifier));
 		valid = false;
 	}
 
-	if (checkChildren) {
+    if (dependencies_.contains(""))
+    {
+        errorList.append(QObject::tr("Empty dependency found in %1.").arg(thisIdentifier));
+
+        valid = false;
+    }
+
+	if (checkChildren)
+    {
 		QStringList fileIDs;
 		QStringList fileNames;
-		foreach (QSharedPointer<File> file, files_) {
-
-			if (fileNames.contains(file->getName())) {
+		foreach (QSharedPointer<File> file, files_)
+        {
+			if (fileNames.contains(file->getName()))
+            {
 				errorList.append(QObject::tr("%1 contains several files with"
 					" name %2").arg(thisIdentifier).arg(file->getName()));
 				valid = false;
 			}
-			else {
+			else
+            {
 				fileNames.append(file->getName());
 			}
 
-			if (!file->isValid(errorList, thisIdentifier)) {
+			if (!file->isValid(errorList, thisIdentifier))
+            {
 				valid = false;
 			}
 
 			// if file has file id specified then save it to list to be used later.
-			if (!file->getFileId().isEmpty()) {
+			if (!file->getFileId().isEmpty())
+            {
 				fileIDs.append(file->getFileId());
 			}
 		}
 
-		foreach (QSharedPointer<FileBuilder> fileBuilder, defaultFileBuilders_) {
-			if (!fileBuilder->isValid(errorList, thisIdentifier)) {
+		foreach (QSharedPointer<FileBuilder> fileBuilder, defaultFileBuilders_)
+        {
+			if (!fileBuilder->isValid(errorList, thisIdentifier))
+            {
 				valid = false;
 			}
 		}
 
-		foreach (QSharedPointer<Function> func, functions_) {
-			if (!func->isValid(fileIDs, errorList, thisIdentifier)) {
+		foreach (QSharedPointer<Function> func, functions_)
+        {
+			if (!func->isValid(fileIDs, errorList, thisIdentifier))
+            {
 				valid = false;
 			}
 		}
+
 	}
 
 	return valid;
 }
 
-bool FileSet::isValid( bool checkChildren ) const {
-	if (nameGroup_.name().isEmpty()) {
+//-----------------------------------------------------------------------------
+// Function: fileset::isValid()
+//-----------------------------------------------------------------------------
+bool FileSet::isValid( bool checkChildren ) const
+{
+	if (nameGroup_.name().isEmpty())
+    {
 		return false;
 	}
 
-	if (checkChildren) {
+    foreach (QString dependecy, dependencies_)
+    {
+        if (dependecy.isEmpty())
+        {
+            return false;
+        }
+    }
+
+	if (checkChildren)
+    {
 		QStringList fileIDs;
 		QStringList fileNames;
-		foreach (QSharedPointer<File> file, files_) {
-
-			if (fileNames.contains(file->getName())) {
+		foreach (QSharedPointer<File> file, files_)
+        {
+			if (fileNames.contains(file->getName()))
+            {
 				return false;
 			}
-			else {
+			else
+            {
 				fileNames.append(file->getName());
 			}
 
-			if (!file->isValid()) {
+			if (!file->isValid())
+            {
 				return false;
 			}
 
 			// if file has file id specified then save it to list to be used later.
-			if (!file->getFileId().isEmpty()) {
+			if (!file->getFileId().isEmpty())
+            {
 				fileIDs.append(file->getFileId());
 			}
 		}
 
-		foreach (QSharedPointer<FileBuilder> fileBuilder, defaultFileBuilders_) {
-			if (!fileBuilder->isValid()) {
+		foreach (QSharedPointer<FileBuilder> fileBuilder, defaultFileBuilders_)
+        {
+			if (!fileBuilder->isValid())
+            {
 				return false;
 			}
 		}
 
-		foreach (QSharedPointer<Function> func, functions_) {
-			if (!func->isValid(fileIDs, true)) {
+		foreach (QSharedPointer<Function> func, functions_)
+        {
+			if (!func->isValid(fileIDs, true))
+            {
 				return false;
 			}
 		}
 	}
+
 	return true;
 }
 

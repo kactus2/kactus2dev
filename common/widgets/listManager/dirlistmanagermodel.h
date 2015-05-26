@@ -58,6 +58,15 @@ private:
 	//! \brief No assignment
 	DirListManagerModel& operator=(const DirListManagerModel& other);
 
+    /*!
+     *  Check if the file exists for the given path.
+     *
+     *      @param [in] relativePath    The path to the file.
+     *
+     *      @return True, if the path exists, otherwise false.
+     */
+    bool directoryExistsForPath(QString const& relativePath) const;
+
 	//! \brief Pointer to the instance which manages the library.
 	LibraryInterface* handler_;
 
