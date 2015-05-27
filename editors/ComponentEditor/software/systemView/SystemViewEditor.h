@@ -79,6 +79,11 @@ private:
     SystemViewEditor(SystemViewEditor const& rhs);
     SystemViewEditor& operator=(SystemViewEditor const& rhs);
 
+    /*!
+     *  Setup the layout.
+     */
+    void setupLayout();
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

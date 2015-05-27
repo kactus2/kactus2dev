@@ -127,33 +127,38 @@ void SystemView::write(QXmlStreamWriter& writer)
 // Function: SystemView::isValid()
 //-----------------------------------------------------------------------------
 bool SystemView::isValid(const QStringList& fileSetNames, const QStringList& HWViewNames,
-	QStringList& errorList, const QString& parentIdentifier) const
+    QStringList& errorList, const QString& parentIdentifier) const
 {
     bool valid = true;
     const QString thisIdentifier(QObject::tr("system view %1").arg(nameGroup_.name()));
 
     if (nameGroup_.name().isEmpty())
     {
-        errorList.append(QObject::tr("No name specified for system view in %1").arg(
-            parentIdentifier));
+        errorList.append(QObject::tr("No name specified for system view in %1").arg(parentIdentifier));
+        valid = false;
+    }
+
+    if (!hierarchyRef_.isValid(errorList, thisIdentifier))
+    {
         valid = false;
     }
 
 	 // make sure the referenced file sets are found
-	 foreach (QString fileSetRef, fileSetRefs_) {
-		 if (!fileSetNames.contains(fileSetRef)) {
-			 errorList.append(QObject::tr("System View %1 contained reference to file"
-				 " set %2 which is not found within %3").arg(
-				 nameGroup_.name()).arg(fileSetRef).arg(parentIdentifier));
+	 foreach (QString fileSetRef, fileSetRefs_)
+     {
+		 if (!fileSetNames.contains(fileSetRef))
+         {
+			 errorList.append(QObject::tr("System View %1 contained reference to file set %2 which is not found "
+                 "within %3").arg(nameGroup_.name()).arg(fileSetRef).arg(parentIdentifier));
 			 valid = false;
 		 }
 	 }
 
 	 // if HW view is specified but not found
-	 if (!hwViewRef_.isEmpty() &&  !HWViewNames.contains(hwViewRef_)) {
-		 errorList.append(QObject::tr("System view %1 contained reference to HW view %2"
-			 " which is not found withing %3.").arg(nameGroup_.name()).arg(
-			 hwViewRef_).arg(parentIdentifier));
+	 if (!hwViewRef_.isEmpty() &&  !HWViewNames.contains(hwViewRef_))
+     {
+		 errorList.append(QObject::tr("System view %1 contained reference to HW view %2 which is not found "
+             "withing %3.").arg(nameGroup_.name()).arg(hwViewRef_).arg(parentIdentifier));
 		 valid = false;
 	 }
 
@@ -170,15 +175,23 @@ bool SystemView::isValid(const QStringList& fileSetNames, const QStringList& HWV
         return false;
     }
 
+    if (!hierarchyRef_.isValid())
+    {
+        return false;
+    }
+
 	 // make sure the referenced file sets are found
-	 foreach (QString fileSetRef, fileSetRefs_) {
-		 if (!fileSetNames.contains(fileSetRef)) {
+	 foreach (QString fileSetRef, fileSetRefs_)
+     {
+		 if (!fileSetNames.contains(fileSetRef))
+         {
 			 return false;
 		 }
 	 }
 
 	 // if HW view is specified but not found
-	 if (!hwViewRef_.isEmpty() && !HWViewNames.contains(hwViewRef_)) {
+	 if (!hwViewRef_.isEmpty() && !HWViewNames.contains(hwViewRef_))
+     {
 		 return false;
 	 }
 

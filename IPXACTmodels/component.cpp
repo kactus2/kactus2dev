@@ -1052,35 +1052,45 @@ void Component::write(QFile& file) {
 	writer.writeEndDocument();
 }
 
-bool Component::isValid( QStringList& errorList ) const {
+//-----------------------------------------------------------------------------
+// Function: component::isValid()
+//-----------------------------------------------------------------------------
+bool Component::isValid( QStringList& errorList ) const
+{
 	bool valid = true;
 	QString thisIdentifier(QObject::tr("containing component"));
 
-	if (!vlnv_) {
+	if (!vlnv_)
+    {
 		errorList.append(QObject::tr("No vlnv specified for the component."));
 		valid = false;
 	}
-	else if (!vlnv_->isValid(errorList, thisIdentifier)) {
+	else if (!vlnv_->isValid(errorList, thisIdentifier))
+    {
 		valid = false;
 	}
-	else {
+	else
+    {
 		thisIdentifier = QObject::tr("component %1").arg(vlnv_->toString());
 	}
 
 	// get the names of all file sets
 	QStringList fileSetNames;
-	foreach (QSharedPointer<FileSet> fileset, fileSets_) {
-
-		if (fileSetNames.contains(fileset->getName())) {
-			errorList.append(QObject::tr("%1 contains several file sets with"
-				" name %2").arg(thisIdentifier).arg(fileset->getName()));
+	foreach (QSharedPointer<FileSet> fileset, fileSets_)
+    {
+		if (fileSetNames.contains(fileset->getName()))
+        {
+			errorList.append(QObject::tr("%1 contains several file sets with name %2").arg(
+                thisIdentifier).arg(fileset->getName()));
 			valid = false;
 		}
-		else {
+		else
+        {
 			fileSetNames.append(fileset->getName());
 		}
 
-		if (!fileset->isValid(errorList, thisIdentifier, true)) {
+		if (!fileset->isValid(errorList, thisIdentifier, true))
+        {
 			valid = false;
 		}
 	}
@@ -1089,146 +1099,211 @@ bool Component::isValid( QStringList& errorList ) const {
 	QList<General::PortBounds> physPorts;
 	QStringList portNames;
 	
-	if (model_) {
+	if (model_)
+    {
 		physPorts = model_->getPortBounds();
 		portNames = model_->getPortNames();
 
-		if (!model_->isValid(fileSetNames, choices_, errorList, thisIdentifier)) {
+		if (!model_->isValid(fileSetNames, choices_, errorList, thisIdentifier))
+        {
 			valid = false;
 		}
 	}
 
+    QStringList softwareViewNames;
+    foreach (QSharedPointer<SWView> softwareView, swViews_)
+    {
+        if (softwareViewNames.contains(softwareView->getName()))
+        {
+            errorList.append(QObject::tr("%1 contains several software views with name %2").arg(thisIdentifier).
+                arg(softwareView->getName()));
+            valid = false;
+        }
+        else
+        {
+            softwareViewNames.append(softwareView->getName());
+        }
+
+        if (!softwareView->isValid(fileSetNames, getCpuNames(), errorList, thisIdentifier))
+        {
+            valid = false;
+        }
+    }
+
+    QStringList systemViewNames;
+    foreach (QSharedPointer<SystemView> currentSystemView, systemViews_)
+    {
+        if (systemViewNames.contains(currentSystemView->getName()))
+        {
+            errorList.append(QObject::tr("%1 contains several system views with name %2").arg(thisIdentifier).
+                arg(currentSystemView->getName()));
+            valid = false;
+        }
+        else
+        {
+            systemViewNames.append(currentSystemView->getName());
+        }
+
+        if (!currentSystemView->isValid(fileSetNames, getViewNames(), errorList, thisIdentifier))
+        {
+            valid = false;
+        }
+    }
+
     QStringList memoryMaps = getMemoryMapNames();
     QStringList addressSpaces = getAddressSpaceNames();
 	QStringList busifNames;
-	foreach (QSharedPointer<BusInterface> busif, busInterfaces_) {
-		
-		if (busifNames.contains(busif->getName())) {
-			errorList.append(QObject::tr("%1 contains several bus interfaces"
-			" with name %2").arg(thisIdentifier).arg(busif->getName()));
+	foreach (QSharedPointer<BusInterface> busif, busInterfaces_)
+    {
+		if (busifNames.contains(busif->getName()))
+        {
+			errorList.append(QObject::tr("%1 contains several bus interfaces with name %2").arg(thisIdentifier).
+                arg(busif->getName()));
 			valid = false;
 		}
-		else {
+		else
+        {
 			busifNames.append(busif->getName());
 		}
 
-		if (!busif->isValid(physPorts, memoryMaps, addressSpaces, choices_, errorList, thisIdentifier)) {
+		if (!busif->isValid(physPorts, memoryMaps, addressSpaces, choices_, errorList, thisIdentifier))
+        {
 			valid = false;
 		}
 	}
 
     QStringList comIfNames;
-    foreach (QSharedPointer<ComInterface> comIf, comInterfaces_) {
-
-        if (comIfNames.contains(comIf->getName())) {
-            errorList.append(QObject::tr("%1 contains several COM interfaces"
-                " with name %2").arg(thisIdentifier).arg(comIf->getName()));
+    foreach (QSharedPointer<ComInterface> comIf, comInterfaces_)
+    {
+        if (comIfNames.contains(comIf->getName()))
+        {
+            errorList.append(QObject::tr("%1 contains several COM interfaces with name %2").arg(thisIdentifier).
+                arg(comIf->getName()));
             valid = false;
         }
-        else {
+        else
+        {
             comIfNames.append(comIf->getName());
         }
 
-        if (!comIf->isValid(errorList, thisIdentifier)) {
+        if (!comIf->isValid(errorList, thisIdentifier))
+        {
             valid = false;
         }
     }
 
     QStringList apiIfNames;
-    foreach (QSharedPointer<ApiInterface> apiIf, apiInterfaces_) {
-
-        if (apiIfNames.contains(apiIf->getName())) {
-            errorList.append(QObject::tr("%1 contains several API interfaces"
-                " with name %2").arg(thisIdentifier).arg(apiIf->getName()));
+    foreach (QSharedPointer<ApiInterface> apiIf, apiInterfaces_)
+    {
+        if (apiIfNames.contains(apiIf->getName()))
+        {
+            errorList.append(QObject::tr("%1 contains several API interfaces with name %2").arg(thisIdentifier).
+                arg(apiIf->getName()));
             valid = false;
         }
-        else {
+        else
+        {
             apiIfNames.append(apiIf->getName());
         }
 
-        if (!apiIf->isValid(errorList, thisIdentifier)) {
+        if (!apiIf->isValid(errorList, thisIdentifier))
+        {
             valid = false;
         }
     }
 
 	QStringList channelNames;
-	foreach (QSharedPointer<Channel> channel, channels_) {
-
-		if (channelNames.contains(channel->getName())) {
-			errorList.append(QObject::tr("%1 contains several channels with "
-				"name %2").arg(thisIdentifier).arg(channel->getName()));
+	foreach (QSharedPointer<Channel> channel, channels_)
+    {
+		if (channelNames.contains(channel->getName()))
+        {
+			errorList.append(QObject::tr("%1 contains several channels with name %2").arg(thisIdentifier).
+                arg(channel->getName()));
 			valid = false;
 		}
 
-		if (!channel->isValid(busifNames, errorList, thisIdentifier)) {
+		if (!channel->isValid(busifNames, errorList, thisIdentifier))
+        {
 			valid = false;
 		}
 	}
 
 	QStringList remapNames;
-	foreach (QSharedPointer<RemapState> remState, *remapStates_) {
-
-		if (remapNames.contains(remState->getName())) {
-			errorList.append(QObject::tr("%1 contains several remap states with"
-				" name %2").arg(thisIdentifier).arg(remState->getName()));
+	foreach (QSharedPointer<RemapState> remState, *remapStates_)
+    {
+		if (remapNames.contains(remState->getName()))
+        {
+			errorList.append(QObject::tr("%1 contains several remap states with name %2").arg(thisIdentifier).
+                arg(remState->getName()));
 			valid = false;
 		}
-		else {
+		else
+        {
 			remapNames.append(remState->getName());
 		}
 
-		if (!remState->isValid(portNames, errorList, thisIdentifier)) {
+		if (!remState->isValid(portNames, errorList, thisIdentifier))
+        {
 			valid = false;
 		}
 	}
 
 	QStringList addSpaceNames;
-	foreach (QSharedPointer<AddressSpace> addrSpace, addressSpaces_) {
-
-		if (addSpaceNames.contains(addrSpace->getName())) {
-			errorList.append(QObject::tr("%1 contains several address spaces"
-				" with name %2").arg(thisIdentifier).arg(addrSpace->getName()));
+	foreach (QSharedPointer<AddressSpace> addrSpace, addressSpaces_)
+    {
+		if (addSpaceNames.contains(addrSpace->getName()))
+        {
+			errorList.append(QObject::tr("%1 contains several address spaces with name %2").arg(thisIdentifier).
+                arg(addrSpace->getName()));
 			valid = false;
 		}
-		else {
+		else
+        {
 			addSpaceNames.append(addrSpace->getName());
 		}
 
-		if (!addrSpace->isValid(choices_, getRemapStateNames(), errorList, thisIdentifier)) {
+		if (!addrSpace->isValid(choices_, getRemapStateNames(), errorList, thisIdentifier))
+        {
 			valid = false;
 		}
 	}
 
 	QStringList memoryMapNames;
-	foreach (QSharedPointer<MemoryMap> memMap, memoryMaps_) {
-
-		if (memoryMapNames.contains(memMap->getName())) {
-			errorList.append(QObject::tr("%1 contains several memory maps with"
-				" name %2").arg(thisIdentifier).arg(memMap->getName()));
+	foreach (QSharedPointer<MemoryMap> memMap, memoryMaps_)
+    {
+		if (memoryMapNames.contains(memMap->getName()))
+        {
+			errorList.append(QObject::tr("%1 contains several memory maps with name %2").arg(thisIdentifier).
+                arg(memMap->getName()));
 			valid = false;
 		}
-		else {
+		else
+        {
 			memoryMapNames.append(memMap->getName());
 		}
 
-		if (!memMap->isValid(choices_, getRemapStateNames(), errorList, thisIdentifier)) {
+		if (!memMap->isValid(choices_, getRemapStateNames(), errorList, thisIdentifier))
+        {
 			valid = false;
 		}
 	}
 
 	QStringList compGenNames;
-	foreach (QSharedPointer<ComponentGenerator> compGen, compGenerators_) {
-
-		if (compGenNames.contains(compGen->getName())) {
-			errorList.append(QObject::tr("%1 contains several component generators"
-				" with name %2").arg(thisIdentifier).arg(compGen->getName()));
+	foreach (QSharedPointer<ComponentGenerator> compGen, compGenerators_)
+    {
+		if (compGenNames.contains(compGen->getName()))
+        {
+			errorList.append(QObject::tr("%1 contains several component generators with name %2").
+                arg(thisIdentifier).arg(compGen->getName()));
 			valid = false;
 		}
-		else {
+		else
+        {
 			compGenNames.append(compGen->getName());
 		}
 
-		if (!compGen->isValid(choices_, errorList, thisIdentifier)) {
+		if (!compGen->isValid(choices_, errorList, thisIdentifier))
+        {
 			valid = false;
 		}
 	}
@@ -1236,9 +1311,10 @@ bool Component::isValid( QStringList& errorList ) const {
 	QStringList choiceNames;
 	foreach (QSharedPointer<Choice> choice, *choices_)
     {
-		if (choiceNames.contains(choice->getName())) {
-			errorList.append(QObject::tr("%1 contains several choices with name %2").arg(
-				thisIdentifier).arg(choice->getName()));
+		if (choiceNames.contains(choice->getName()))
+        {
+			errorList.append(QObject::tr("%1 contains several choices with name %2").arg(thisIdentifier).
+                arg(choice->getName()));
 			valid = false;
 		}
 		else
@@ -1253,35 +1329,41 @@ bool Component::isValid( QStringList& errorList ) const {
 	}
 
 	QStringList cpuNames;
-	foreach (QSharedPointer<Cpu> cpu, cpus_) {
-
-		if (cpuNames.contains(cpu->getName())) {
-			errorList.append(QObject::tr("%1 contains several cpus with name %2").arg(
-				thisIdentifier).arg(cpu->getName()));
+	foreach (QSharedPointer<Cpu> cpu, cpus_)
+    {
+		if (cpuNames.contains(cpu->getName()))
+        {
+			errorList.append(QObject::tr("%1 contains several cpus with name %2").arg(thisIdentifier).
+                arg(cpu->getName()));
 			valid = false;
 		}
-		else {
+		else
+        {
 			cpuNames.append(cpu->getName());
 		}
 
-		if (!cpu->isValid(addSpaceNames, choices_, errorList, thisIdentifier)) {
+		if (!cpu->isValid(addSpaceNames, choices_, errorList, thisIdentifier))
+        {
 			valid = false;
 		}
 	}
 
 	QStringList clockNames;
-	foreach (QSharedPointer<OtherClockDriver> otherClock, otherClockDrivers_) {
-
-		if (clockNames.contains(otherClock->getClockName())) {
-			errorList.append(QObject::tr("%1 contains several other clock drivers"
-				" with name %2").arg(thisIdentifier).arg(otherClock->getClockName()));
+	foreach (QSharedPointer<OtherClockDriver> otherClock, otherClockDrivers_)
+    {
+		if (clockNames.contains(otherClock->getClockName()))
+        {
+			errorList.append(QObject::tr("%1 contains several other clock drivers with name %2").
+                arg(thisIdentifier).arg(otherClock->getClockName()));
 			valid = false;
 		}
-		else {
+		else
+        {
 			clockNames.append(otherClock->getClockName());
 		}
 
-		if (!otherClock->isValid(errorList, thisIdentifier)) {
+		if (!otherClock->isValid(errorList, thisIdentifier))
+        {
 			valid = false;
 		}
 	}
@@ -1311,26 +1393,35 @@ bool Component::isValid( QStringList& errorList ) const {
 	return valid;
 }
 
-bool Component::isValid() const {
-	if (!vlnv_) {
+//-----------------------------------------------------------------------------
+// Function: component::isValid()
+//-----------------------------------------------------------------------------
+bool Component::isValid() const
+{
+	if (!vlnv_)
+    {
 		return false;
 	}
-	else if (!vlnv_->isValid()) {
+	else if (!vlnv_->isValid())
+    {
 		return false;
 	}
 
 	// get the names of all file sets
 	QStringList fileSetNames;
-	foreach (QSharedPointer<FileSet> fileset, fileSets_) {
-
-		if (fileSetNames.contains(fileset->getName())) {
+	foreach (QSharedPointer<FileSet> fileset, fileSets_)
+    {
+		if (fileSetNames.contains(fileset->getName()))
+        {
 			return false;
 		}
-		else {
+		else
+        {
 			fileSetNames.append(fileset->getName());
 		}
 
-		if (!fileset->isValid(true)) {
+		if (!fileset->isValid(true))
+        {
 			return false;
 		}
 	}
@@ -1358,15 +1449,45 @@ bool Component::isValid() const {
         }
     }
 
+    QStringList softwareViewNames;
+    foreach (QSharedPointer<SWView> softwareView, swViews_)
+    {
+        if (softwareViewNames.contains(softwareView->getName()) ||
+            softwareView->isValid(fileSetNames, getCpuNames()))
+        {
+            return false;
+        }
+        else
+        {
+            softwareViewNames.append(softwareView->getName());
+        }
+    }
+
+    QStringList systemViewNames;
+    foreach (QSharedPointer<SystemView> currentSystemView, systemViews_)
+    {
+        if (systemViewNames.contains(currentSystemView->getName()) ||
+            currentSystemView->isValid(fileSetNames, getViewNames()))
+        {
+            return false;
+        }
+        else
+        {
+            systemViewNames.append(currentSystemView->getName());
+        }
+    }
+
     QStringList memoryMaps = getMemoryMapNames();
     QStringList addressSpaces = getAddressSpaceNames();
 	QStringList busifNames;
-	foreach (QSharedPointer<BusInterface> busif, busInterfaces_) {
-
-		if (busifNames.contains(busif->getName())) {
+	foreach (QSharedPointer<BusInterface> busif, busInterfaces_)
+    {
+		if (busifNames.contains(busif->getName()))
+        {
 			return false;
 		}
-		else {
+		else
+        {
 			busifNames.append(busif->getName());
 		}
 
@@ -1377,70 +1498,83 @@ bool Component::isValid() const {
 	}
 
     QStringList comIfNames;
-    foreach (QSharedPointer<ComInterface> comIf, comInterfaces_) {
-
-        if (comIfNames.contains(comIf->getName())) {
+    foreach (QSharedPointer<ComInterface> comIf, comInterfaces_)
+    {
+        if (comIfNames.contains(comIf->getName()))
+        {
             return false;
         }
-        else {
+        else
+        {
             comIfNames.append(comIf->getName());
         }
 
-        if (!comIf->isValid()) {
+        if (!comIf->isValid())
+        {
             return false;
         }
     }
 
     QStringList apiIfNames;
-    foreach (QSharedPointer<ApiInterface> apiIf, apiInterfaces_) {
-
-        if (apiIfNames.contains(apiIf->getName())) {
+    foreach (QSharedPointer<ApiInterface> apiIf, apiInterfaces_)
+    {
+        if (apiIfNames.contains(apiIf->getName()))
+        {
             return false;
         }
-        else {
+        else
+        {
             apiIfNames.append(apiIf->getName());
         }
 
-        if (!apiIf->isValid()) {
+        if (!apiIf->isValid())
+        {
             return false;
         }
     }
 
 
 	QStringList channelNames;
-	foreach (QSharedPointer<Channel> channel, channels_) {
-
-		if (channelNames.contains(channel->getName())) {
+	foreach (QSharedPointer<Channel> channel, channels_)
+    {
+		if (channelNames.contains(channel->getName()))
+        {
 			return false;
 		}
 
-		if (!channel->isValid(busifNames)) {
+		if (!channel->isValid(busifNames))
+        {
 			return false;
 		}
 	}
 
 	QStringList remapNames;
-	foreach (QSharedPointer<RemapState> remState, *remapStates_) {
-
-		if (remapNames.contains(remState->getName())) {
+	foreach (QSharedPointer<RemapState> remState, *remapStates_)
+    {
+		if (remapNames.contains(remState->getName()))
+        {
 			return false;
 		}
-		else {
+		else
+        {
 			remapNames.append(remState->getName());
 		}
 
-		if (!remState->isValid(portNames)) {
+		if (!remState->isValid(portNames))
+        {
 			return false;
 		}
 	}
 
 	QStringList addSpaceNames;
-	foreach (QSharedPointer<AddressSpace> addrSpace, addressSpaces_) {
-
-		if (addSpaceNames.contains(addrSpace->getName())) {
+	foreach (QSharedPointer<AddressSpace> addrSpace, addressSpaces_)
+    {
+		if (addSpaceNames.contains(addrSpace->getName()))
+        {
 			return false;
 		}
-		else {
+		else
+        {
 			addSpaceNames.append(addrSpace->getName());
 		}
 
@@ -1451,12 +1585,14 @@ bool Component::isValid() const {
 	}
 
 	QStringList memoryMapNames;
-	foreach (QSharedPointer<MemoryMap> memMap, memoryMaps_) {
-
-		if (memoryMapNames.contains(memMap->getName())) {
+	foreach (QSharedPointer<MemoryMap> memMap, memoryMaps_)
+    {
+		if (memoryMapNames.contains(memMap->getName()))
+        {
 			return false;
 		}
-		else {
+		else
+        {
 			memoryMapNames.append(memMap->getName());
 		}
 
@@ -1467,12 +1603,14 @@ bool Component::isValid() const {
 	}
 
 	QStringList compGenNames;
-	foreach (QSharedPointer<ComponentGenerator> compGen, compGenerators_) {
-
-		if (compGenNames.contains(compGen->getName())) {
+	foreach (QSharedPointer<ComponentGenerator> compGen, compGenerators_)
+    {
+		if (compGenNames.contains(compGen->getName()))
+        {
 			return false;
 		}
-		else {
+		else
+        {
 			compGenNames.append(compGen->getName());
 		}
 
@@ -1483,27 +1621,32 @@ bool Component::isValid() const {
 	}
 
 	QStringList choiceNames;
-	foreach (QSharedPointer<Choice> choice, *choices_) {
-
-		if (choiceNames.contains(choice->getName())) {
+	foreach (QSharedPointer<Choice> choice, *choices_)
+    {
+		if (choiceNames.contains(choice->getName()))
+        {
 			return false;
 		}
-		else {
+		else
+        {
 			choiceNames.append(choice->getName());
 		}
 
-		if (!choice->isValid()) {
+		if (!choice->isValid())
+        {
 			return false;
 		}
 	}
 
 	QStringList cpuNames;
-	foreach (QSharedPointer<Cpu> cpu, cpus_) {
-
-		if (cpuNames.contains(cpu->getName())) {
+	foreach (QSharedPointer<Cpu> cpu, cpus_)
+    {
+		if (cpuNames.contains(cpu->getName()))
+        {
 			return false;
 		}
-		else {
+		else
+        {
 			cpuNames.append(cpu->getName());
 		}
 
@@ -1514,16 +1657,19 @@ bool Component::isValid() const {
 	}
 
 	QStringList clockNames;
-	foreach (QSharedPointer<OtherClockDriver> otherClock, otherClockDrivers_) {
-
-		if (clockNames.contains(otherClock->getClockName())) {
+	foreach (QSharedPointer<OtherClockDriver> otherClock, otherClockDrivers_)
+    {
+		if (clockNames.contains(otherClock->getClockName()))
+        {
 			return false;
 		}
-		else {
+		else
+        {
 			clockNames.append(otherClock->getClockName());
 		}
 
-		if (!otherClock->isValid()) {
+		if (!otherClock->isValid())
+        {
 			return false;
 		}
 	}

@@ -73,17 +73,15 @@ public:
 	/*!
      *  Checks if the view is in a valid state.
 	 * 
-	 *		  @param [in] fileSetNames		 File set names of the containing component.
-	 *		  @param [in] HWViewNames		 Names of the HW views in the containing component.
+	 *		@param [in] fileSetNames	 File set names of the containing component.
+	 *		@param [in] HWViewNames		 Names of the HW views in the containing component.
 	 *      @param [in] errorList        The list to add the possible error messages to.
 	 *      @param [in] parentIdentifier String from parent to help to identify the location of the error.
 	 *
 	 *      @return True if contents are valid.
 	 */
-	bool isValid(const QStringList& fileSetNames,
-		const QStringList& HWViewNames,
-		QStringList& errorList,
-		QString const& parentIdentifier) const;
+	bool isValid(const QStringList& fileSetNames, const QStringList& HWViewNames, QStringList& errorList,
+        QString const& parentIdentifier) const;
 
 	/*!
      *  Checks if the view is in a valid state.

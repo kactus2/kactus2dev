@@ -171,38 +171,44 @@ void SWView::write( QXmlStreamWriter& writer, bool withinHWComp ) {
 //-----------------------------------------------------------------------------
 // Function: SWView::isValid()
 //-----------------------------------------------------------------------------
-bool SWView::isValid(const QStringList& fileSetNames, 
-	const QStringList& cpuNames,
-	QStringList& errorList, 
-	const QString& parentIdentifier) const
+bool SWView::isValid(const QStringList& fileSetNames, const QStringList& cpuNames, QStringList& errorList,
+    const QString& parentIdentifier) const
 {
     bool valid = true;
     const QString thisIdentifier(QObject::tr("SW view %1").arg(nameGroup_.name()));
 
     if (nameGroup_.name().isEmpty())
     {
-        errorList.append(QObject::tr("No name specified for SW view in %1").arg(
-            parentIdentifier));
+        errorList.append(QObject::tr("No name specified for SW view in %1").arg(parentIdentifier));
+        valid = false;
+    }
+
+    if (!hierarchyRef_.isValid(errorList, thisIdentifier))
+    {
         valid = false;
     }
 
 	// make sure the referenced file sets are found
-	foreach (QString fileSetRef, filesetRefs_) {
-		if (!fileSetNames.contains(fileSetRef)) {
-			errorList.append(QObject::tr("SW View %1 contained reference to file"
-				" set %2 which is not found within %3").arg(
-				nameGroup_.name()).arg(fileSetRef).arg(parentIdentifier));
+	foreach (QString fileSetRef, filesetRefs_)
+    {
+		if (!fileSetNames.contains(fileSetRef))
+        {
+			errorList.append(QObject::tr("SW View %1 contained reference to file set %2 which is not found "
+                "within %3").arg(nameGroup_.name()).arg(fileSetRef).arg(parentIdentifier));
+            valid = false;
+		}
+	}
+
+	foreach (QSharedPointer<SWBuildCommand> swCom, swBuildCommands_)
+    {
+		if (swCom && !swCom->isValid(errorList, thisIdentifier))
+        {
 			valid = false;
 		}
 	}
 
-	foreach (QSharedPointer<SWBuildCommand> swCom, swBuildCommands_) {
-		if (swCom && !swCom->isValid(errorList, thisIdentifier)) {
-			valid = false;
-		}
-	}
-
-	if (bspCommand_ && !bspCommand_->isValid(cpuNames, errorList, thisIdentifier)) {
+	if (bspCommand_ && !bspCommand_->isValid(cpuNames, errorList, thisIdentifier))
+    {
 		valid = false;
 	}
 
@@ -214,24 +220,35 @@ bool SWView::isValid(const QStringList& fileSetNames,
 //-----------------------------------------------------------------------------
 bool SWView::isValid(const QStringList& fileSetNames, const QStringList& cpuNames) const
 {
-    if (nameGroup_.name().isEmpty()) {
+    if (nameGroup_.name().isEmpty())
+    {
+        return false;
+    }
+
+    if (!hierarchyRef_.isValid())
+    {
         return false;
     }
 
 	// make sure the referenced file sets are found
-	foreach (QString fileSetRef, filesetRefs_) {
-		if (!fileSetNames.contains(fileSetRef)) {
+	foreach (QString fileSetRef, filesetRefs_)
+    {
+		if (!fileSetNames.contains(fileSetRef))
+        {
 			return false;
 		}
 	}
 
-	foreach (QSharedPointer<SWBuildCommand> swCom, swBuildCommands_) {
-		if (swCom && !swCom->isValid()) {
+	foreach (QSharedPointer<SWBuildCommand> swCom, swBuildCommands_)
+    {
+		if (swCom && !swCom->isValid())
+        {
 			return false;
 		}
 	}
 
-	if (bspCommand_ && !bspCommand_->isValid(cpuNames)) {
+	if (bspCommand_ && !bspCommand_->isValid(cpuNames))
+    {
 		return false;
 	}
 

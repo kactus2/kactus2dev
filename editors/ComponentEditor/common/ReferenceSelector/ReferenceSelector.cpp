@@ -8,6 +8,7 @@
 #include "ReferenceSelector.h"
 
 #include <QPalette>
+#include <QEvent>
 
 //-----------------------------------------------------------------------------
 // Function: ReferenceSelector::ReferenceSelector()
@@ -63,6 +64,10 @@ void ReferenceSelector::selectItem(QString const& itemName)
         setItemData(index, QColor(Qt::red), Qt::TextColorRole);
         setItemIcon(index, QIcon(QPixmap(":/icons/common/graphics/exclamation.png")));
     }
+    else if (!isEnabled())
+    {
+        setTextColor(Qt::gray);
+    }
     else
     {
         setTextColor(Qt::black);
@@ -100,4 +105,30 @@ void ReferenceSelector::setTextColor(QColor const& color)
     QPalette coloredPalette = palette();
     coloredPalette.setColor(QPalette::Text, color);
     setPalette(coloredPalette);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ReferenceSelector::changeEvent()
+//-----------------------------------------------------------------------------
+void ReferenceSelector::changeEvent(QEvent *currentEvent)
+{
+    QComboBox::changeEvent(currentEvent);
+
+    if (currentEvent->type() == QEvent::EnabledChange)
+    {
+        QPalette usedPalette = palette();
+        if (usedPalette.color(QPalette::Text) != Qt::red)
+        {
+            if (isEnabled())
+            {
+                usedPalette.setColor(QPalette::Text, Qt::black);
+            }
+            else
+            {
+                usedPalette.setColor(QPalette::Text, Qt::gray);
+            }
+        }
+
+        setPalette(usedPalette);
+    }
 }

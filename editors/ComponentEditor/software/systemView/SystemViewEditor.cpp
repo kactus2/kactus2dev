@@ -20,6 +20,7 @@
 #include <QLabel>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <QScrollArea>
 
 //-----------------------------------------------------------------------------
 // Function: SystemViewEditor::SystemViewEditor()
@@ -54,32 +55,15 @@ fileSetRefEditor_(NULL)
 	HWViewRefEditor_ = new ViewSelector(ViewSelector::BOTH_HW_VIEWS, component, this);
 	HWViewRefEditor_->setFixedWidth(200);
 
-    connect(&nameEditor_, SIGNAL(contentChanged()),
-        this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(hierRefEditor_, SIGNAL(vlnvEdited()),
-        this, SLOT(onHierRefChange()), Qt::UniqueConnection);
-	 connect(fileSetRefEditor_, SIGNAL(contentChanged()),
-		 this, SLOT(onFileSetRefChange()), Qt::UniqueConnection);
-	 connect(HWViewRefEditor_, SIGNAL(viewSelected(const QString&)),
-		 this, SLOT(onHWViewChange(const QString&)), Qt::UniqueConnection);
+    connect(&nameEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(hierRefEditor_, SIGNAL(vlnvEdited()), this, SLOT(onHierRefChange()), Qt::UniqueConnection);
+    connect(fileSetRefEditor_, SIGNAL(contentChanged()), this, SLOT(onFileSetRefChange()), Qt::UniqueConnection);
+    connect(HWViewRefEditor_, SIGNAL(viewSelected(const QString&)),
+        this, SLOT(onHWViewChange(const QString&)), Qt::UniqueConnection);
+     
+     refresh();
 
-    refresh();
-
-	 QGroupBox* HWViewGroup = new QGroupBox(tr("HW View"), this);
-	 QLabel* HWViewLabel = new QLabel(tr("Used HW view"), HWViewGroup);
-
-	 QHBoxLayout* groupLayout = new QHBoxLayout(HWViewGroup);
-	 groupLayout->addWidget(HWViewLabel);
-	 groupLayout->addWidget(HWViewRefEditor_);
-	 groupLayout->addStretch();
-
-    QVBoxLayout* layout = new QVBoxLayout(this);
-    layout->addWidget(&nameEditor_);
-    layout->addWidget(hierRefEditor_);
-	 layout->addWidget(HWViewGroup);
-	 layout->addWidget(fileSetRefEditor_);
-    layout->addStretch();
-    layout->setContentsMargins(0, 0, 0, 0);
+     setupLayout();
 }
 
 //-----------------------------------------------------------------------------
@@ -93,30 +77,32 @@ SystemViewEditor::~SystemViewEditor() {
 //-----------------------------------------------------------------------------
 bool SystemViewEditor::isValid() const
 {
-    // if name group is not valid
-    if (!nameEditor_.isValid() || !hierRefEditor_->isValid()) {
+    if (!nameEditor_.isValid() || !hierRefEditor_->isValid())
+    {
         return false;
-	 }
+    }
 
-	 // check the file set references that they are to valid file sets.
-	 QStringList fileSetRefs = fileSetRefEditor_->items();
-	 foreach (QString ref, fileSetRefs) {
+    // check the file set references that they are to valid file sets.
+    QStringList fileSetRefs = fileSetRefEditor_->items();
+    foreach (QString ref, fileSetRefs)
+    {
+        // if the component does not contain the referenced file set.
+        if (!component()->hasFileSet(ref))
+        {
+            return false;
+        }
+    }
 
-		 // if the component does not contain the referenced file set.
-		 if (!component()->hasFileSet(ref)) {
-			 return false;
-		 }
-	 }
-
-	 // if there is a HW view selected
-	 QString selectedHWView = HWViewRefEditor_->currentText();
-	 if (!selectedHWView.isEmpty()) {
-
-		 // if the component does not contain the referenced view.
-		 if (!component()->hasView(selectedHWView)) {
-			 return false;
-		 }
-	 }
+    // if there is a HW view selected
+    QString selectedHWView = HWViewRefEditor_->currentText();
+    if (!selectedHWView.isEmpty())
+    {
+        // if the component does not contain the referenced view.
+        if (!component()->hasView(selectedHWView))
+        {
+            return false;
+        }
+    }
 
     return true;
 }
@@ -147,4 +133,46 @@ void SystemViewEditor::onFileSetRefChange() {
 void SystemViewEditor::onHWViewChange( const QString& /*viewName*/ ) {
 	view_->setHWViewRef(HWViewRefEditor_->currentText());
 	emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemViewEditor::setupLayout()
+//-----------------------------------------------------------------------------
+void SystemViewEditor::setupLayout()
+{
+    QScrollArea* scrollArea = new QScrollArea(this);
+    scrollArea->setWidgetResizable(true);
+    scrollArea->setFrameShape(QFrame::NoFrame);
+
+    QHBoxLayout* scrollLayout = new QHBoxLayout(this);
+    scrollLayout->addWidget(scrollArea);
+    scrollLayout->setContentsMargins(0, 0, 0, 0);
+
+    QHBoxLayout* topOfPageLayout = new QHBoxLayout();
+    topOfPageLayout->addWidget(&nameEditor_);
+    topOfPageLayout->addWidget(hierRefEditor_, 0, Qt::AlignTop);
+    
+    QGroupBox* HWViewGroup = new QGroupBox(tr("HW View"));
+    QLabel* HWViewLabel = new QLabel(tr("Used HW view"), HWViewGroup);
+
+    QHBoxLayout* groupLayout = new QHBoxLayout(HWViewGroup);
+    groupLayout->addWidget(HWViewLabel);
+    groupLayout->addWidget(HWViewRefEditor_);
+    groupLayout->addStretch();
+
+    HWViewGroup->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
+
+    QHBoxLayout* middleLayout = new QHBoxLayout();
+    middleLayout->addWidget(fileSetRefEditor_);
+    middleLayout->addWidget(HWViewGroup, 0, Qt::AlignTop);
+
+    QWidget* topWidget = new QWidget(scrollArea);
+    topWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    scrollArea->setWidget(topWidget);
+
+    QVBoxLayout* topLayout = new QVBoxLayout(topWidget);
+    topLayout->addLayout(topOfPageLayout);
+    topLayout->addLayout(middleLayout);
+    topLayout->addStretch();
+    topLayout->setContentsMargins(0, 0, 0, 0);
 }

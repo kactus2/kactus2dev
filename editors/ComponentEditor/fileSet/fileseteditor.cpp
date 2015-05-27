@@ -25,9 +25,9 @@ nameEditor_(fileSet->getNameGroup(), this),
 groups_(tr("Group identifiers"), this),
 fileBuilders_(fileSet->getDefaultFileBuilders(), this),
 files_(component, fileSet, handler, this),
-dependencies_(tr("Dependent directories"), handler, component, this) {
-
-	Q_ASSERT(fileSet_);
+dependencies_(tr("Dependent directories"), handler, component, this)
+{
+    nameEditor_.setTitle("File set name and description");
 
 	// set the maximum heights to give more space for files editor
 	fileBuilders_.setMaximumHeight(150);

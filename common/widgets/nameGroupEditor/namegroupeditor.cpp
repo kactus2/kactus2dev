@@ -43,10 +43,10 @@ descriptionEdit_(this) {
 	layout->addWidget(&displayNameEdit_, 1, 1, 1, 1);
 
 	QLabel* descriptionLabel = new QLabel(tr("Description:"), this);
-	layout->addWidget(descriptionLabel, 2, 0, 1, 1);
+    layout->addWidget(descriptionLabel, 2, 0, 1, 1, Qt::AlignTop);
 
 	descriptionEdit_.setToolTip(tr("Set the description for the element"));
-	layout->addWidget(&descriptionEdit_, 3, 0, 1, 2);
+    layout->addWidget(&descriptionEdit_, 2, 1, 1, 1);
 
 	connect(&nameEdit_, SIGNAL(textEdited(const QString&)),
 		this, SLOT(onNameChanged(const QString&)), Qt::UniqueConnection);

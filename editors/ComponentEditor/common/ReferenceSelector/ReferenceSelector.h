@@ -43,6 +43,15 @@ public slots:
 	*/
     void selectItem(QString const& itemName);
 
+protected:
+
+    /*!
+     *  Handles the change events and changes the text colour depengin on the enabled state of the component.
+     *
+     *      @param [in] currentEvent    The current change event.
+     */
+    virtual void changeEvent(QEvent *currentEvent);
+
 signals:
 
 	//! Emitted when memory map was selected by user.

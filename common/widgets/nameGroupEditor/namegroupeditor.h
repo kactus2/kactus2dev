@@ -24,7 +24,7 @@ class NameGroupEditor : public QGroupBox {
 public:
 
 	//! \brief The maximum height for the editor
-	static const int MAX_EDITOR_HEIGHT = 150;
+	static const int MAX_EDITOR_HEIGHT = 130;
 
 	/*! \brief The constructor
 	 *

@@ -45,7 +45,8 @@ bool ComponentEditorSWViewItem::isValid() const {
 
 	// check that the reference is found if its been defined
 	VLNV swHierRef = swView_->getHierarchyRef();
-	if (swHierRef.isValid() && !libHandler_->contains(swHierRef)) {
+	if (!swHierRef.isValid() || !libHandler_->contains(swHierRef))
+    {
 		return false;
 	}
 

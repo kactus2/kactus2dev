@@ -17,6 +17,7 @@
 
 #include <IPXACTmodels/SWView.h>
 #include <QApplication>
+#include <QScrollArea>
 
 //-----------------------------------------------------------------------------
 // Function: SWViewEditor::SWViewEditor()
@@ -47,7 +48,8 @@ bspEditor_(NULL) {
     hierRefEditor_->addContentType(VLNV::DESIGN);
     hierRefEditor_->setImplementationFilter(true, KactusAttribute::SW);
 	hierRefEditor_->setTitle(tr("Hierarchy reference"));
-	hierRefEditor_->setMandatory(false);
+    hierRefEditor_->setMandatory(true);
+    hierRefEditor_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
 	fileSetRefEditor_ = new FileSetRefEditor(component, tr("File set references"), this);
 	fileSetRefEditor_->initialize();
@@ -64,27 +66,15 @@ bspEditor_(NULL) {
 		bspEditor_->show();
 	}
 
-    connect(&nameEditor_, SIGNAL(contentChanged()),
-        this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(hierRefEditor_, SIGNAL(vlnvEdited()),
-        this, SLOT(onHierRefChange()), Qt::UniqueConnection);
-	 connect(fileSetRefEditor_, SIGNAL(contentChanged()),
-		 this, SLOT(onFileSetRefChange()), Qt::UniqueConnection);
-	 connect(swBuildCommands_, SIGNAL(contentChanged()),
-		 this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	 connect(bspEditor_, SIGNAL(contentChanged()),
-		 this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(&nameEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(hierRefEditor_, SIGNAL(vlnvEdited()), this, SLOT(onHierRefChange()), Qt::UniqueConnection);
+    connect(fileSetRefEditor_, SIGNAL(contentChanged()), this, SLOT(onFileSetRefChange()), Qt::UniqueConnection);
+    connect(swBuildCommands_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(bspEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
     refresh();
 
-    QVBoxLayout* layout = new QVBoxLayout(this);
-    layout->addWidget(&nameEditor_);
-    layout->addWidget(hierRefEditor_);
-	 layout->addWidget(fileSetRefEditor_);
-	 layout->addWidget(swBuildCommands_);
-	 layout->addWidget(bspEditor_);
-    layout->addStretch();
-	layout->setContentsMargins(0, 0, 0, 0);
+    setupLayout();
 }
 
 //-----------------------------------------------------------------------------
@@ -121,6 +111,11 @@ bool SWViewEditor::isValid() const
 		 return false;
 	 }
 
+     if (!hierRefEditor_->isValid())
+     {
+         return false;
+     }
+
     return true;
 }
 
@@ -145,4 +140,37 @@ void SWViewEditor::showEvent( QShowEvent* event ) {
 void SWViewEditor::onFileSetRefChange() {
 	view_->setFileSetRefs(fileSetRefEditor_->items());
 	emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWViewEditor::setupLayout()
+//-----------------------------------------------------------------------------
+void SWViewEditor::setupLayout()
+{
+    QScrollArea* scrollArea = new QScrollArea(this);
+    scrollArea->setWidgetResizable(true);
+    scrollArea->setFrameShape(QFrame::NoFrame);
+
+    QHBoxLayout* scrollLayout = new QHBoxLayout(this);
+    scrollLayout->addWidget(scrollArea);
+    scrollLayout->setContentsMargins(0, 0, 0, 0);
+
+    QHBoxLayout* pageTopLayout = new QHBoxLayout();
+    pageTopLayout->addWidget(&nameEditor_);
+    pageTopLayout->addWidget(hierRefEditor_, 0, Qt::AlignTop);
+
+    QHBoxLayout* pageMiddleLayout = new QHBoxLayout();
+    pageMiddleLayout->addWidget(fileSetRefEditor_);
+    pageMiddleLayout->addWidget(swBuildCommands_);
+
+    QWidget* topWidget = new QWidget(scrollArea);
+    topWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    scrollArea->setWidget(topWidget);
+
+    QVBoxLayout* topLayout = new QVBoxLayout(topWidget);
+    topLayout->addLayout(pageTopLayout);
+    topLayout->addLayout(pageMiddleLayout);
+    topLayout->addWidget(bspEditor_);
+    topLayout->addStretch();
+    topLayout->setContentsMargins(0, 0, 0, 0);
 }

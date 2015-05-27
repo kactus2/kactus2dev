@@ -77,6 +77,11 @@ private:
     SWViewEditor(SWViewEditor const& rhs);
     SWViewEditor& operator=(SWViewEditor const& rhs);
 
+    /*!
+     *  Setup the layout.
+     */
+    void setupLayout();
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
