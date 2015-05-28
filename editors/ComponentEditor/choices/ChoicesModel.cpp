@@ -120,24 +120,22 @@ QVariant ChoicesModel::data( const QModelIndex& index, int role) const
 
     QSharedPointer<Choice> choice = choices_->at(index.row());
 
-    if (Qt::DisplayRole == role)
+    if (role == Qt::DisplayRole)
     {
-        switch (index.column()) {
-        case CHOICE_NAME:
-            {
-                return choice->getName();
-            }
-        case CHOICE_ENUMERATIONS:
-            {
-                return choice->getEnumerationValues().join(", ");
-            }
-        default:
-            {
-                return QVariant();
-            }
+        if (index.column() == CHOICE_NAME)
+        {
+            return choice->getName();
+        }
+        else if (index.column() == CHOICE_ENUMERATIONS) 
+        {
+            return choice->getEnumerationValues().join(", ");
+        }
+        else
+        {
+            return QVariant();
         }
 	}
-    else if (Qt::EditRole == role)
+    else if (role == Qt::EditRole)
     {
         if (index.column() == CHOICE_NAME) 
         {
@@ -148,7 +146,7 @@ QVariant ChoicesModel::data( const QModelIndex& index, int role) const
             return QVariant();
         }
     }
-	else if (Qt::ForegroundRole == role)
+	else if (role == Qt::ForegroundRole)
     {
         if (choice->isValid())
         {
@@ -159,7 +157,7 @@ QVariant ChoicesModel::data( const QModelIndex& index, int role) const
             return QColor(Qt::red);
         }
 	}
-    else if (Qt::BackgroundRole == role)
+    else if (role == Qt::BackgroundRole)
     {
         return QColor("lemonChiffon");
     }
@@ -179,24 +177,17 @@ bool ChoicesModel::setData( const QModelIndex& index, const QVariant& value, int
 		return false;
 	}
 
-	if (Qt::EditRole == role)
+    if (role == Qt::EditRole && index.column() == CHOICE_NAME)
     {
-        if (index.column() == CHOICE_NAME)
-        {       
-            choices_->at(index.row())->setName(value.toString());
-            emit dataChanged(index, index);
-            emit contentChanged();
-            return true;
-        }
-        else 
-        {
-            return false;
-        }
+        choices_->at(index.row())->setName(value.toString());
+        emit dataChanged(index, index);
+        emit contentChanged();
+        return true;
     }
-	else
+    else
     {
-		return false;
-	}
+        return false;
+    }
 }
 
 //-----------------------------------------------------------------------------

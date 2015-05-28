@@ -92,6 +92,10 @@ void ChoicesDelegate::setEditorData(QWidget* editor, QModelIndex const& index) c
         connect(view, SIGNAL(removeItem(const QModelIndex&)),
             model, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
     }
+    else
+    {
+        QStyledItemDelegate::setEditorData(editor, index);
+    }
 }
 
 //-----------------------------------------------------------------------------
