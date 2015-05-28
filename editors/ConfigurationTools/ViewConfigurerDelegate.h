@@ -75,6 +75,16 @@ public:
      */
     virtual void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 
+    /*!
+     *  Gets the modified size hint for the item of this delegate.
+     *
+     *      @param [in] option  The used style option.
+     *      @param [in] index   The current index.
+     *
+     *      @return The size hint of the item at the given index.
+     */
+    virtual QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const;
+
 private:
     // Disable copying and assignment.
     ViewConfigurerDelegate(ViewConfigurerDelegate const& rhs);

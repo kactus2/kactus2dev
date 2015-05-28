@@ -140,7 +140,17 @@ void ViewConfigurerDelegate::paint(QPainter *painter, const QStyleOptionViewItem
     painter->setPen(newPen);
 
     painter->drawLine(option.rect.topRight(), option.rect.bottomRight());
-    painter->drawLine(option.rect.bottomLeft(), option.rect.bottomRight());
 
     painter->setPen(oldPen);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ViewConfigurerDelegate::sizeHint()
+//-----------------------------------------------------------------------------
+QSize ViewConfigurerDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
+    QSize rowSize = QStyledItemDelegate::sizeHint(option, index);
+    rowSize.setHeight(rowSize.height() + 5);
+
+    return rowSize;
 }

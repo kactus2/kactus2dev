@@ -51,6 +51,8 @@ commitButton_ (new QPushButton(tr("Save"), this))
     viewsTree_->hideColumn(ViewConfigurerColumns::INSTANCE_ID);
     viewsTree_->setIndentation(15);
 
+    viewsTree_->setAlternatingRowColors(true);
+
     viewsTree_->setItemDelegate(new ViewConfigurerDelegate(libraryHandler, this));
 
     QTreeWidgetItem* topComponentItem (new QTreeWidgetItem(viewsTree_));
@@ -58,10 +60,16 @@ commitButton_ (new QPushButton(tr("Save"), this))
     if (!selectedDesign && !selectedDesignConfiguration_)
     {
         topComponentItem->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
+
+        topComponentItem->setIcon(ViewConfigurerColumns::ITEM_VLNV,
+            QIcon(":/icons/common/graphics/hw-component.png"));
     }
     else
     {
         usedHierarchicalComponentVLNVS_.append(selectedComponent->getVlnv()->toString(":"));
+
+        topComponentItem->setIcon(ViewConfigurerColumns::ITEM_VLNV,
+            QIcon(":/icons/common/graphics/hier-hw-component.png"));
     }
 
     topComponentItem->setText(ViewConfigurerColumns::ITEM_VLNV, selectedComponent->getVlnv()->toString(":"));
@@ -161,7 +169,29 @@ void ViewConfigurer::createChildTreeWidgetItems(QSharedPointer<Design> currentDe
 
         instanceItem->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
 
-        checkInstanceDesign(component, instanceViewName, instanceItem);
+        instanceItem->setIcon(ViewConfigurerColumns::ITEM_VLNV, QIcon(":/icons/common/graphics/hw-component.png"));
+
+        if (usedHierarchicalComponentVLNVS_.contains(instanceItem->text(ViewConfigurerColumns::ITEM_VLNV)))
+        {
+            instanceItem->setText(ViewConfigurerColumns::INSTANCE_VIEW, ViewConfigurerColumns::CYCLICCOMPONENTTEXT);
+
+            QBrush foreGroundBrush (Qt::red);
+            instanceItem->setForeground(ViewConfigurerColumns::INSTANCE_VIEW, foreGroundBrush);
+            instanceItem->setForeground(ViewConfigurerColumns::ITEM_VLNV, foreGroundBrush);
+            instanceItem->setForeground(ViewConfigurerColumns::INSTANCE_NAME, foreGroundBrush);
+            instanceItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+        }
+        else
+        {
+            usedHierarchicalComponentVLNVS_.append(instanceItem->text(ViewConfigurerColumns::ITEM_VLNV));
+
+            checkInstanceDesign(component, instanceViewName, instanceItem);
+
+            if (usedHierarchicalComponentVLNVS_.size() > 1)
+            {
+                usedHierarchicalComponentVLNVS_.removeAll(instanceItem->text(ViewConfigurerColumns::ITEM_VLNV));
+            }
+        }
     }
 }
 
@@ -187,31 +217,14 @@ void ViewConfigurer::checkInstanceDesign(QSharedPointer<Component> component, QS
                 QSharedPointer<Design> viewDesign = libraryHandler_->getModel(designReference).
                     dynamicCast<Design>();
 
-                if (viewDesign && !usedHierarchicalComponentVLNVS_.contains(
-                    currentTreeItem->text(ViewConfigurerColumns::ITEM_VLNV)))
+                if (viewDesign)
                 {
-                    usedHierarchicalComponentVLNVS_.append(currentTreeItem->text(
-                        ViewConfigurerColumns::ITEM_VLNV));
+                    currentTreeItem->setIcon(ViewConfigurerColumns::ITEM_VLNV,
+                        QIcon(":/icons/common/graphics/hier-hw-component.png"));
 
                     createChildTreeWidgetItems(viewDesign, viewDesignConfiguration, currentTreeItem);
 
-                    if (usedHierarchicalComponentVLNVS_.size() > 1)
-                    {
-                        usedHierarchicalComponentVLNVS_.removeAll(currentTreeItem->text(
-                            ViewConfigurerColumns::ITEM_VLNV));
-                    }
-                }
-                else
-                {
-                    currentTreeItem->setText(ViewConfigurerColumns::INSTANCE_VIEW,
-                        ViewConfigurerColumns::CYCLICCOMPONENTTEXT);
-
-                    QBrush foreGroundBrush (Qt::red);
-                    currentTreeItem->setForeground(ViewConfigurerColumns::INSTANCE_VIEW, foreGroundBrush);
-                    currentTreeItem->setForeground(ViewConfigurerColumns::ITEM_VLNV, foreGroundBrush);
-                    currentTreeItem->setForeground(ViewConfigurerColumns::INSTANCE_NAME, foreGroundBrush);
-
-                    currentTreeItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+                    currentTreeItem->setExpanded(true);
                 }
             }
         } 
@@ -279,6 +292,8 @@ void ViewConfigurer::onInstanceViewChanged(QTreeWidgetItem* changedItem, int col
     {
         changedItem->takeChildren();
 
+        changedItem->setIcon(ViewConfigurerColumns::ITEM_VLNV, QIcon(":/icons/common/graphics/hw-component.png"));
+
         QString itemVLNV = changedItem->text(ViewConfigurerColumns::ITEM_VLNV);
         VLNV componentVLNV (VLNV::COMPONENT, itemVLNV, ":");
 
@@ -300,6 +315,11 @@ void ViewConfigurer::onInstanceViewChanged(QTreeWidgetItem* changedItem, int col
         {
             QBrush foreGroundBrush (Qt::red);
             changedItem->setForeground(ViewConfigurerColumns::INSTANCE_VIEW, foreGroundBrush);
+
+            if (isChangedItemTopItem(changedItem))
+            {
+                usedHierarchicalComponentVLNVS_.removeAll(itemVLNV);
+            }
         }
         else
         {
@@ -351,6 +371,8 @@ void ViewConfigurer::changedTopItemChangesDesignConfiguration(QSharedPointer<Com
         if (viewDesignConfiguration)
         {
             selectedDesignConfiguration_ = viewDesignConfiguration;
+
+            usedHierarchicalComponentVLNVS_.append(component->getVlnv()->toString(":"));
         }
     }
 }
