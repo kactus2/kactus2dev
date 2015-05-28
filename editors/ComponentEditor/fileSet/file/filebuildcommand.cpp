@@ -18,7 +18,7 @@ FileBuildCommand::FileBuildCommand( QWidget *parent,
 								   LibraryInterface* handler,
 								   QSharedPointer<Component> component,
 								   QSharedPointer<File> file):
-QWidget(parent),
+QGroupBox(tr("Build command"), parent),
 buildCommand_(file->getBuildcommand()), 
 command_(this),
 flags_(this),
@@ -36,6 +36,8 @@ layout_(this) {
 	setupCommand();
 	setupFlags();
 	setupTarget();
+
+    setContentsMargins(0, 0, 0, 0);
 
 	// get the data from the buildCommand to the editor
 	refresh();

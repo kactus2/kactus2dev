@@ -57,9 +57,6 @@ private slots:
 	//! \brief Handler for external declarations changes.
 	void onExternalDecChanged();
 
-	//! \brief Handler for description changes.
-	void onDescriptionChanged();
-
 private:
 
 	//! \brief No copying
@@ -82,9 +79,6 @@ private:
 
 	//! \brief The check box to inform that file contains external declarations.
 	QCheckBox externalDec_;
-
-	//! \brief Plain text editor to set the description of the file.
-	QPlainTextEdit description_;
 };
 
 #endif // FILEGENERALEDITOR_H

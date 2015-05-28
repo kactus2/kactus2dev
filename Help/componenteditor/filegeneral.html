@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
   <head>
     <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
@@ -12,32 +12,42 @@
       within a file set.
     </p>
     <p>
-      <b>Name</b> field contains the relative file path from the
-      containing component's xml-file to this file. <b>File types</b>
-      list specifies the type of the file. File type can be used
-      i.e. when specifying build commands for a group of files.
+      <b>Name</b> field contains the relative file path from the containing component's xml-file to this file.
+      <br /><b>File types</b> list specifies the type of the file. File type can be used i.e. when specifying
+      build commands for a group of files.
+    </p>
+    <h3>General options</h3>
+    <p>
+      <b>Logical name</b> specifies e.g. a VHDL library where the VHDL-file will be compiled to.
+      If it is <b>"only used as default"</b>, it can be overridden by another process. If check box is
+      unticked, then this logical name cannot be overrriden.
     </p>
     <p>
-      <b>General options</b> define 5 optional things.  <b>Logical
-      name</b> specifies e.g. a VHDL library where the VHDL-file will
-      be compiled to. If it is <b>"only used as default"</b>, it can
-      be overridden by another process. If check box is unticked, then
-      this logical name cannot be overrriden.
-      
-      <br>The check boxes <b>is include file </b> and <b>contains
-      external declarations</b> can be used to specify the file is an
-      include file and that the file contains external declarations
-      and is needed by other files in this file
-      set. <b>Description</b> is a freely formatted text desribing
-      this file
+      The check boxes <b>is include file </b> and <b>contains external declarations</b> can be used to specify
+      the file is an include file and that the file contains external declarations and is needed by other files
+      in this file set.
     </p>
     <p>
-      <b>Build command</b> can be used to define a specific build
-      <b>command</b> and <b>flags</b> for this file. Flags can either
-      <b>replace default flags</b> (e.g. those specified for this file
-      type) in the build script or be appended to them. <b>Target
-      name</b> specifies a path to the file that is derived from this
+      <b>Description</b> is a freely formatted text desribing this file.
+    </p>
+    <h3>Build command</h3>
+    <p>
+      <b>Build command</b> can be used to define a specific build <b>command</b> and <b>flags</b> for this file.
+      <br /><b>Flags</b> can either <b>replace default flags</b> (e.g. those specified for this file type) in the build
+      script or be appended to them.
+      <br /><b>Target file</b> specifies a path to the file that is derived from this
       file when build process is run.
+    </p>
+    <h3>External dependencies and defines </h3>
+    <p>
+      <b>Dependencies</b> contains a list of paths to directories containing (include) files on which the file
+      depends.
+    </p>
+    <p>
+      <b>Exported names</b> contains a list defining any names that can be referenced externally.
+    </p>
+    <p>
+      <b>Image types</b> contains a list of the current files relations to executable image types in the design.
     </p>
 	</body>
 </html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
   <head>
     <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
@@ -19,47 +19,40 @@
       visualization displaying the address space in its current state.
     </p>
     <p>
-      Address space has a <b>name</b> and textual <b>description</b>
+      Address space has a <b>name</b> and textual <b>description</b>.
       <b>Display name</b> can be more detailed or user-friendly than
-      name, but usually only few words.
+      name, but usually only a few words.
     </p>
     <p>
-      The general group contains the same settings that can be set
-      through the address spaces summary. <b>Addressable unit size</b>
-      specifies the number of bits each address increment contains,
-      e.g. 8 bits or 32 bits. <b>Range</b> is the size of the address
-      space expressed as addressable units, i.e. the number of
-      separate addresses. <br><b>Width</b> is the data width of a row
-      in bits. It defines the maximum size for a single transfer.
+      The general group contains the same settings that can be set through the address spaces summary.
+      <br /><b>Addressable unit size</b> specifies the number of bits each address increment contains, e.g.
+      8 bits or 32 bits.
+      <br /><b>Range</b> is the size of the address space expressed as addressable units, i.e. the number of
+      separate addresses.
+      <br /><b>Width</b> is the data width of a row in bits. It defines the maximum size for a single transfer.
+    </p>
+    <h3>Segments</h3>
+    <p>
+      <b>Segments</b> editor can be used to describe portions of the address space, i.e. split it into smaller
+      segments.
+      <br />Each segment has the starting <b>offset</b> address, range (size) as number of AUBs, and textual
+      <b>description</b>. The visualization on the right side reacts to the changes and displays how the
+      segments are situated in the address space. Mismatches, e.g. sum of segment ranges being greater than
+      address block range, can be easily spotted from the visualization.
+    </p>
+    <h3>Local memory map</h3>
+    <p>
+      <b>Local memory map</b> is optional but some processors require specifying a memory map that is local
+      to the component.  This consists of <b>Address blocks</b> similarly to the memory map of a slave
+      interface. Hence, address blocks can contain either memory or registers, and registers can contain bit
+      fields. Local memory map is useful for storing the programmer's view to interrupts registers, timers,
+      and other local things. The overall address space of a component is a concatenation of local memory map
+      (e.g. timers) and the memory maps of other units (e.g. registers of accelerator A, registers of
+      accelerator B etc.)
     </p>
     <p>
-      <b>Segments</b> editor can be used to describe portions of the
-      address space, i.e. split it into smaller segments. Each segment
-      has the starting <b>offset</b> address, range (size) as number
-      of AUBs, and textual <b>description</b>. The visualization on
-      the right side reacts to the changes and displays how the
-      segments are situated in the address space. Mismatches, e.g. sum
-      of segment ranges being greater than address block range, can be
-      easily spotted from the visualization.
-    </p>
-    <p>
-      <b>Local memory map</b> is optional but some processors require
-      specifying a memory map that is local to the component.  This
-      consists of <b>Address blocks</b> similarly to the memory map of
-      a slave interface. Hence, address blocks can contain either
-      memory or registers, and registers can contain bit fields. Local
-      memory map is useful for storing the programmer's view to
-      interrupts registers, timers, and other local things. The
-      overall address space of a component is a concatenation of local
-      memory map (e.g. timers) and the memory maps of other units
-      (e.g. registers of accelerator A, registers of accelerator B
-      etc.)
-    </p>
-    <p>
-      The parameters editor can be used to define parameters for the
-      address space. The editor is similar to the parameters editor
-      with the exception that the scope of the parameters is limited
-      to the containing address space.
+      The address block editor can be used to define address blocks for the address space. The editor is
+      similar to the address block editor in memory maps.
     </p>
     <p>Tag <i>executableImage</i> is not supported yet. IP-XACT
     standard allows defining an executable software image to be loaded

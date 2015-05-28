@@ -20,8 +20,8 @@
           <section title="Component Editor" ref="componenteditor/componenteditor.html">
 					<section title="General" ref="componenteditor/general.html" />
 					<section title="File sets" ref="componenteditor/filesets.html">
-						<section title="File set" ref="componenteditor/fileset.html">
-							<section title="File" ref="componenteditor/filegeneral.html" />
+            <section title="File set" ref="componenteditor/fileset.html">
+              <section title="File" ref="componenteditor/filegeneral.html" />
 						</section>
 					</section>
 					<section title="Choices" ref="componenteditor/choices.html" />

@@ -60,20 +60,7 @@
 	  <td>IP</td>
 	  <td>A single IP-block (which might be hierarchical)</td>
 	</tr>
-	<tr>
-	  <td rowspan="3">Implementation <br>(cannot be modified
-	  after creation)</td> <td>HW</td> <td>Hardware
-	  implementation, such as VHDL or Verilog</td>
-	</tr>
-	<tr>
-	  <td>SW</td>
-	  <td>Software implementation, such as C</td>
-	</tr>
-	<tr>
-	  <td>SYS</td> <td>Contains information about the SW component
-	  mapping to the underlying HW platform.</td>
-	</tr>
-	<tr>
+  	<tr>
 	  <td rowspan="4"> Firmness</td> <td>Template</td> <td>Used as
 	  a base for creating new components, but must not be used as
 	  such. It should be copied and then saved with new VLNV.</td>
@@ -90,6 +77,19 @@
 	  <td>Definitions</td> <td>Component contains global definitions
       and cannot be instantiated as such.</td>
 	</tr>
+	<tr>
+	  <td rowspan="3">Implementation <br>(cannot be modified
+	  after creation)</td> <td>HW</td> <td>Hardware
+	  implementation, such as VHDL or Verilog</td>
+	</tr>
+	<tr>
+	  <td>SW</td>
+	  <td>Software implementation, such as C</td>
+	</tr>
+	<tr>
+	  <td>SYS</td> <td>Contains information about the SW component
+	  mapping to the underlying HW platform.</td>
+	</tr>
     </table>
 
     <p>
@@ -103,10 +103,9 @@
       --&gt;.
     </p>
     <p>
-      <b>Component preview</b> box on the bottom displays how the
-      component will look like when instantiated in a design. The
-      preview displays the <i>bus interfaces</i> of the component and
-      also the <i>ports</i> that are marked as <i>ad-hoc</i>.
+      <b>Component preview</b> box on the right side of the editor displays how the component will look like when
+      instantiated in a design. The preview displays the <i>bus interfaces</i> of the component and also the
+      <i>ports</i> that are marked as <i>ad-hoc</i>.
     </p>
   </body>
 </html>

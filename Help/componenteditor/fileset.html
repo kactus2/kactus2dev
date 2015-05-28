@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
   <head>
     <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
@@ -21,23 +21,23 @@
       display. Description contains a textual description of the file
       set.
     </p>
+    <h3>Files</h3>
     <p>
-      <b>Files</b> group box lists the files contained in the file
-      set. Each file has of course the <b>name</b>.  <b> File path</b>
-      is defined relative to the component's xml-file. <b>File
-      type</b> links files to their build command (see below). One
-      file can have many types.  <b>Description</b> is a freely
-      formatted text describing a single file.
-      
-      The file types and description columns are editable but the file
-      name and file path are not. <br> <b>Add Files</b> button opens
-      a dialog to select files on the disk to add to the file set.
-      The order of files is maintained and can be changed by dragging
-      rows. If the compilation order of files is important then the
-      files should be listed in order needed by compilation.  <br> If
-      a file is in <font color="red">invalid state</font>,
-      i.e. missing a mandatory file type, then the file is displayed
-      in <font color="red">red color</font>.
+      <b>Files</b> group box lists the files contained in the file set.
+      Each file has a <b>name</b> identifying the file. The file name is mandatory, and it is given when adding
+      file.
+      <br /><b>File path</b> is defined either as relative to the component's xml-file or as an absolute path.
+      The file path is mandatory and it is given when adding files.
+      <br /><b>File type</b> links files to their build command (see below). One file can have many types. File
+      type is mandatory.
+      <br /><b>Description</b> is a freely formatted text describing a single file.
+    </p>
+    <p>
+      <b>Add Files</b> button opens a dialog to select files on the disk to add to the file set. The order of
+      files is maintained and can be changed by dragging rows. If the compilation order of files is important
+      then the files should be listed in order needed by compilation.
+      <br>If a file is in <font color="red">invalid state</font>, i.e. missing a mandatory file type, then the
+      file is displayed in <font color="red">red color</font>.
     </p>
     <p>
       The files box also contains a context menu (right mouse button)
@@ -52,20 +52,18 @@
       <li>Import a csv-file to the editor</li>
       <li>Export the contents of the editor to a csv-file</li>
     </ul>
+    <h3>Default build commands</h3>
     <p>
-      <b>Default build command</b> can define <b>command</b> and
-      <b>flags</b> to build files, e.g. running gcc for C files or
-      vcom for VHDL. <b>File type</b> must macth the file table
-      above. The defined command can either <b>replace default
-      flags</b> or be appended to it. This table has a similar context
-      menu as the files editor.
+      <b>Default build command</b> can define <b>command</b> and <b>flags</b> to build files, e.g. running gcc
+      for C files or vcom for VHDL. <b>File type</b> must macth the file table above. The defined command can
+      either <b>replace default flags</b> or be appended to it. This table has a similar context menu as the
+      files editor.
     </p>
+    <h3>Group identifiers</h3>
     <p>
-      <b>Group identifier</b> can be used to describe the function or
-      purpose of the file with a single unbounded word. <i>Group</i>
-      identifiers can contain several identifiers and the possible
-      words are not limited.  However the editor suggests the
-      following options:
+      <b>Group identifier</b> can be used to describe the function or purpose of the file with a single
+      unbounded word. <i>Group</i> identifiers can contain several identifiers and the possible words are not
+      limited.  However the editor suggests the following options:
     </p>
     <ul>
       <li>Diagnostics</li>
@@ -74,10 +72,10 @@
       <li>Simulation</li>
       <li>sourceFiles</li>
     </ul>
+    <h3>Dependent directories</h3>
     <p>
-      <b>Dependent directories</b> can specify a freetext list of
-      paths to directories on which this file set depends,
-      e.g. directories of include files.
+      <b>Dependent directories</b> can specify a freetext list of paths to directories on which this file
+      set depends, e.g. directories of include files.
     </p>
   </body>
 </html>

@@ -9,8 +9,15 @@
 #define FILEEDITOR_H
 
 #include "../../itemeditor.h"
-#include "filegeneraltab.h"
-#include "fileextratab.h"
+
+#include "filenameeditor.h"
+#include "filegeneraleditor.h"
+#include "filetypeeditor.h"
+#include "filebuildcommand.h"
+
+#include <common/widgets/listManager/dirlistmanager.h>
+#include <common/widgets/listManager/listmanager.h>
+
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/file.h>
 
@@ -21,10 +28,11 @@
 
 class LibraryInterface;
 
-/*! \brief FileEditor is a widget to edit the details of a File
- * 
- */
-class FileEditor : public ItemEditor {
+//-----------------------------------------------------------------------------
+// Editor for the details of a file.
+//-----------------------------------------------------------------------------
+class FileEditor : public ItemEditor
+{
 	Q_OBJECT
 
 public:
@@ -55,13 +63,6 @@ public:
 	*/
 	virtual void refresh();
 
-    /*!
-     *  Sets the protection state of the editor.
-     *
-     *      @param [in] locked  True for locked state; false for unlocked.
-     */
-    virtual void setProtection(bool locked);
-
 signals:
 
     //! Emitted when the file should be opened in default editor.
@@ -69,6 +70,37 @@ signals:
 
     //! Emitted when the file should be run.
     void runFile();
+
+protected:
+
+    /*!
+     *  Shows the editor and emits a request for the help file.
+     *
+     *      @param [in] event   The show event.
+     */
+    virtual void showEvent(QShowEvent* event);
+
+private slots:
+
+    /*!
+     *  Changes the file types in the current file.
+     */
+    void onFileTypesChanged();
+
+    /*!
+     *  Changes the dependencies of the current file.
+     */
+    void onDependenciesChanged();
+
+    /*!
+     *  Changes the exported names of the current file.
+     */
+    void onExportedNamesChanged();
+
+    /*!
+     *  Changes the image types of the current file.
+     */
+    void onImageTypesChanged();
 
 private:
 
@@ -78,17 +110,44 @@ private:
 	//! No assignment
 	FileEditor& operator=(const FileEditor& other);
 
-	//! \brief The tab widget that contains the other widgets.
-	QTabWidget tabs_;
+    /*!
+     *  Setups the layout for the editor.
+     */
+    void setupLayout();
 
-	//! \brief Pointer to the widget that is used for general settings of file.
-	FileGeneralTab generalTab_;
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
-	//! \brief Pointer to the widget that is used to edit i.e external dependencies.
-	FileExtraTab extraTab_;
-
-	//! \brief Pointer to the file that is edited in this editor.
+    //! Pointer to the file that is edited in this editor.
 	QSharedPointer<File> file_;
+
+    //! The editor for the file name and description.
+    FileNameEditor nameEditor_;
+
+    //! The button for editing the current file.
+    QPushButton* editButton_;
+
+    //! The button for running the current file.
+    QPushButton* runButton_;
+
+    //! Editor for the files general settings.
+    FileGeneralEditor generalEditor_;
+
+    //! Editor for the file types of a file.
+    FileTypeEditor fileTypeEditor_;
+
+    //! Editor for the build commands of a file.
+    FileBuildCommand buildCommand_;
+
+    //! Editor for the dependencies of a file.
+    DirListManager dependenciesEditor_;
+
+    //! Editor for the exported names of a file.
+    ListManager exportedNamesEditor_;
+
+    //! Editor for the image types of a file.
+    ListManager imageTypesEditor_;
 };
 
 #endif // FILEEDITOR_H

@@ -15,6 +15,7 @@
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QGridLayout>
 #include <QLabel>
 
 //-----------------------------------------------------------------------------
@@ -23,23 +24,26 @@
 FileNameEditor::FileNameEditor(QSharedPointer<File> file, QWidget* parent)
     : QGroupBox(tr("File name and path"), parent), 
       fileNameLabel_(file->getName(), this),
+      descriptionEditor_(this),
       file_(file)
 {
-    // the layout for the name label and name line edit
-	QHBoxLayout* nameLayout = new QHBoxLayout();
+    setMaximumHeight(100);
+    
+    QLabel* nameLabel = new QLabel(tr("Name:"), this);
+    nameLabel->setToolTip(tr("The name field contains an absolute or relative\n"
+        "path to a file name or directory"));
 
-	// create the label
-	QLabel* nameLabel = new QLabel(tr("Name:"), this);
-	nameLabel->setToolTip(tr("The name field contains an absolute or relative\n"
-		"path to a file name or directory"));
-	nameLayout->addWidget(nameLabel, 0);
-	nameLayout->addWidget(&fileNameLabel_, 1);
-	nameLayout->setContentsMargins(0, 0, 0, 0);
+    QLabel* descriptionLabel = new QLabel(tr("Description:"), this);
 
-	// the top layout for the whole widget
-	QVBoxLayout* topLayout = new QVBoxLayout(this);
+    descriptionEditor_.setToolTip("Set the description for the file");
 
-	topLayout->addLayout(nameLayout);
+    QGridLayout* topLayout = new QGridLayout(this);
+    topLayout->addWidget(nameLabel, 0, 0, 1, 1);
+    topLayout->addWidget(&fileNameLabel_, 0, 1, 1, 1);
+    topLayout->addWidget(descriptionLabel, 1, 0, 1, 1, Qt::AlignTop);
+    topLayout->addWidget(&descriptionEditor_, 1, 1, 1, 1);
+
+    connect(&descriptionEditor_, SIGNAL(textChanged()), this, SLOT(onDescriptionChanged()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -64,4 +68,19 @@ bool FileNameEditor::isValid() const
 void FileNameEditor::refresh()
 {
     fileNameLabel_.setText(file_->getName());
+
+    disconnect(&descriptionEditor_, SIGNAL(textChanged()), this, SLOT(onDescriptionChanged()));
+
+    descriptionEditor_.setPlainText(file_->getDescription());
+
+    connect(&descriptionEditor_, SIGNAL(textChanged()), this, SLOT(onDescriptionChanged()), Qt::UniqueConnection);
+}
+
+//-----------------------------------------------------------------------------
+// Function: filenameeditor::onDescriptionChanged()
+//-----------------------------------------------------------------------------
+void FileNameEditor::onDescriptionChanged()
+{
+    file_->setDescription(descriptionEditor_.toPlainText());
+    emit contentChanged();
 }

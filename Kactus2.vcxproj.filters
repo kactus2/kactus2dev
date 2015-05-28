@@ -2536,13 +2536,7 @@
     <ClCompile Include="GeneratedFiles\moc_FileDependencySourceEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_fileextratab.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_filegeneraleditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_filegeneraltab.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_filenamelineedit.cpp">
@@ -3154,13 +3148,7 @@
     <ClCompile Include="editors\ComponentEditor\fileSet\file\fileeditor.cpp">
       <Filter>Source Files\editors\ComponentEditor\fileSet\file</Filter>
     </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\fileSet\file\fileextratab.cpp">
-      <Filter>Source Files\editors\ComponentEditor\fileSet\file</Filter>
-    </ClCompile>
     <ClCompile Include="editors\ComponentEditor\fileSet\file\filegeneraleditor.cpp">
-      <Filter>Source Files\editors\ComponentEditor\fileSet\file</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\fileSet\file\filegeneraltab.cpp">
       <Filter>Source Files\editors\ComponentEditor\fileSet\file</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\fileSet\file\filenameeditor.cpp">
@@ -4132,6 +4120,9 @@
     <ClCompile Include="GeneratedFiles\moc_ViewConfigurer.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_filenameeditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5043,13 +5034,7 @@
     <CustomBuild Include="editors\ComponentEditor\fileSet\dependencyAnalysis\FileDependencySourceEditor.h">
       <Filter>Header Files\editors\ComponentEditor\fileSet\dependencyAnalysis</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\fileSet\file\fileextratab.h">
-      <Filter>Header Files\editors\ComponentEditor\fileSet\file</Filter>
-    </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\fileSet\file\filegeneraleditor.h">
-      <Filter>Header Files\editors\ComponentEditor\fileSet\file</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\fileSet\file\filegeneraltab.h">
       <Filter>Header Files\editors\ComponentEditor\fileSet\file</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\fileSet\file\filenameeditor.h">

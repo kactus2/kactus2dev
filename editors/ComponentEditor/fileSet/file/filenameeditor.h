@@ -16,6 +16,7 @@
 #include <QString>
 #include <QSharedPointer>
 #include <QLabel>
+#include <QPlainTextEdit>
 
 class File;
 //-----------------------------------------------------------------------------
@@ -23,6 +24,8 @@ class File;
 //-----------------------------------------------------------------------------
 class FileNameEditor : public QGroupBox 
 {
+    Q_OBJECT
+
 public:
 	
 	/*! The constructor
@@ -45,6 +48,20 @@ public:
 	//! Refresh the editor.
 	void refresh();
 
+signals:
+
+    /*!
+     *  Informs of a change of content in the component.
+     */
+    void contentChanged();
+
+private slots:
+
+    /*!
+     *  Handles the change of description of file.
+     */
+    void onDescriptionChanged();
+
 private:
 
 	//! No copying
@@ -55,6 +72,9 @@ private:
 	
 	//! The label to display the file name.
     QLabel fileNameLabel_;
+
+    //! The editor for description of a file.
+    QPlainTextEdit descriptionEditor_;
 
 	//! Pointer to the file being edited.
 	QSharedPointer<File> file_;

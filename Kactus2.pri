@@ -378,9 +378,7 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/fileSet/filesetsmodel.h \
     ./editors/ComponentEditor/fileSet/groupmanager.h \
     ./editors/ComponentEditor/fileSet/groupmanagerdelegate.h \
-    ./editors/ComponentEditor/fileSet/file/fileextratab.h \
     ./editors/ComponentEditor/fileSet/file/filegeneraleditor.h \
-    ./editors/ComponentEditor/fileSet/file/filegeneraltab.h \
     ./editors/ComponentEditor/fileSet/file/filenameeditor.h \
     ./editors/ComponentEditor/fileSet/file/filenamelineedit.h \
     ./editors/ComponentEditor/fileSet/file/filesdelegate.h \
@@ -893,9 +891,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/fileSet/file/filedefinemodel.cpp \
     ./editors/ComponentEditor/fileSet/file/filedefineview.cpp \
     ./editors/ComponentEditor/fileSet/file/fileeditor.cpp \
-    ./editors/ComponentEditor/fileSet/file/fileextratab.cpp \
     ./editors/ComponentEditor/fileSet/file/filegeneraleditor.cpp \
-    ./editors/ComponentEditor/fileSet/file/filegeneraltab.cpp \
     ./editors/ComponentEditor/fileSet/file/filenameeditor.cpp \
     ./editors/ComponentEditor/fileSet/file/filenamelineedit.cpp \
     ./editors/ComponentEditor/fileSet/file/filesdelegate.cpp \

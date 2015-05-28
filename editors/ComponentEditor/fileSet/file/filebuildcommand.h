@@ -14,7 +14,7 @@
 #include <IPXACTmodels/file.h>
 #include <IPXACTmodels/component.h>
 
-#include <QWidget>
+#include <QGroupBox>
 #include <QLineEdit>
 #include <QCheckBox>
 #include <QGridLayout>
@@ -23,10 +23,11 @@
 
 class LibraryInterface;
 
-/*! \brief FileBuildCommand is a widget to edit File's buildCommand
+/*! \brief FileBuildCommand is a group box for editing buildCommand of a file.
  * 
  */
-class FileBuildCommand : public QWidget {
+class FileBuildCommand : public QGroupBox
+{
 	Q_OBJECT
 
 public:
