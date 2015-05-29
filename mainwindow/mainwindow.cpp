@@ -28,6 +28,8 @@
 #include <mainwindow/NewPages/NewApiDefinitionPage.h>
 #include <mainwindow/NewPages/newbuspage.h>
 #include <mainwindow/DrawingBoard/DrawingBoard.h>
+#include <mainwindow/SaveHierarchy/DocumentTreeBuilder.h>
+#include <mainwindow/SaveHierarchy/SaveHierarchyDialog.h>
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 #include <common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.h>
@@ -158,6 +160,7 @@ MainWindow::MainWindow(QWidget *parent)
       actNew_(0),
       actSave_(0),
       actSaveAs_(0),
+      actSaveHierarchy_(0),
       actPrint_(0), 
       editGroup_(0),
       actUndo_(0), 
@@ -687,6 +690,11 @@ void MainWindow::setupActions()
 	actSaveAs_->setEnabled(false);
 	connect(actSaveAs_, SIGNAL(triggered()), designTabs_, SLOT(saveCurrentDocumentAs()));
 
+    actSaveHierarchy_ = new QAction(QIcon(":/icons/common/graphics/file-save-hierarchical.png"), 
+        tr("Save Hierarchy"), this);
+    actSaveHierarchy_->setVisible(false);
+    connect(actSaveHierarchy_, SIGNAL(triggered()), this, SLOT(saveCurrentDocumentHierarchy()));
+
 	actSaveAll_ = new QAction(QIcon(":/icons/common/graphics/file-save_all.png"), tr("Save All"), this);
 	actSaveAll_->setShortcut(QKeySequence("Ctrl+Shift+S"));
 	connect(actSaveAll_, SIGNAL(triggered()), this, SLOT(saveAll()));
@@ -751,8 +759,7 @@ void MainWindow::setupActions()
 
 	// Initialize the action to add a new column.
 	actAddColumn_ = new QAction(QIcon(":/icons/common/graphics/diagram-add-column.png"), tr("Add Column"), this);
-	connect(actAddColumn_, SIGNAL(triggered()), 
-		this, SLOT(addColumn()), Qt::UniqueConnection);
+	connect(actAddColumn_, SIGNAL(triggered()), this, SLOT(addColumn()), Qt::UniqueConnection);
 
 	// Initialize the action to set draw mode to selection mode.
 	actToolSelect_ = new QAction(QIcon(":/icons/common/graphics/tool-select.png"), tr("Select Tool"), this);
@@ -815,21 +822,20 @@ void MainWindow::setupActions()
 	connect(actFitInView_, SIGNAL(triggered()), this, SLOT(fitInView()));
 
 	// the action for user to select the visible docks
-	actVisibleDocks_ = new QAction(QIcon(":icons/common/graphics/dockSelect.png"),
-		tr("Visible Windows"), this);
+	actVisibleDocks_ = new QAction(QIcon(":icons/common/graphics/dockSelect.png"), tr("Visible Windows"), this);
 	connect(actVisibleDocks_, SIGNAL(triggered()), this, SLOT(selectVisibleDocks()), Qt::UniqueConnection);
+    actVisibleDocks_->setMenu(&windowsMenu_);
 
 	// Initialize the action to manage visibility control.
 	actVisibilityControl_ = new QAction(QIcon(":icons/common/graphics/visibility.png"), tr("Visibility Control"), this);
 	actVisibilityControl_->setEnabled(false);
 	actVisibilityControl_->setVisible(false);
-	connect(actVisibilityControl_, SIGNAL(triggered()),
-		this, SLOT(openVisibilityControlMenu()), Qt::UniqueConnection);
+	connect(actVisibilityControl_, SIGNAL(triggered()), this, SLOT(openVisibilityControlMenu()), Qt::UniqueConnection);
 
 	// Initialize the action to manage workspaces.
-	actWorkspaces_ = new QAction(QIcon(":icons/common/graphics/workspace.png"),
-		tr("Workspaces"), this);
+	actWorkspaces_ = new QAction(QIcon(":icons/common/graphics/workspace.png"),	tr("Workspaces"), this);
 	connect(actWorkspaces_, SIGNAL(triggered()), this, SLOT(openWorkspaceMenu()), Qt::UniqueConnection);
+    actWorkspaces_->setMenu(&workspaceMenu_);
 
 	actRefresh_ = new QAction(QIcon(":/icons/common/graphics/refresh.png"), tr("Refresh"), this);
 	actRefresh_->setShortcut(QKeySequence("F5"));
@@ -887,11 +893,13 @@ void MainWindow::setupMenus()
 	fileGroup->addAction(actSave_);
 	fileGroup->addAction(actSaveAs_);
 	fileGroup->addAction(actSaveAll_);
+    fileGroup->addAction(actSaveHierarchy_);
 	fileGroup->addAction(actPrint_);
 
 	fileGroup->widgetForAction(actNew_)->installEventFilter(ribbon_);
 	fileGroup->widgetForAction(actSave_)->installEventFilter(ribbon_);
 	fileGroup->widgetForAction(actSaveAs_)->installEventFilter(ribbon_);
+    fileGroup->widgetForAction(actSaveHierarchy_)->installEventFilter(ribbon_);
 	fileGroup->widgetForAction(actSaveAll_)->installEventFilter(ribbon_);
 	fileGroup->widgetForAction(actPrint_)->installEventFilter(ribbon_);
 
@@ -1336,6 +1344,25 @@ void MainWindow::onDesignChanged()
 }
 
 //-----------------------------------------------------------------------------
+// Function: MainWindow::saveCurrentDocumentHierarchy()
+//-----------------------------------------------------------------------------
+void MainWindow::saveCurrentDocumentHierarchy()
+{
+    TabDocument* currentDocument = dynamic_cast<TabDocument*>(designTabs_->currentWidget());
+
+    if (currentDocument)
+    {
+        DocumentTreeBuilder documentTreeBuilder(libraryHandler_);
+        QObject* documentRoot = documentTreeBuilder.createFrom(currentDocument->getDocumentVLNV());
+
+        SaveHierarchyDialog saveDialog(documentRoot, libraryHandler_, this);
+        saveDialog.exec();
+
+        delete documentRoot;
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: mainwindow::onClearItemSelection()
 //-----------------------------------------------------------------------------
 void MainWindow::onClearItemSelection()
@@ -1446,9 +1473,9 @@ void MainWindow::updateMenuStrip()
 		!doc->isProtected());
 
 	bool isHWComp = false;
-	ComponentEditor* ipEditor = dynamic_cast<ComponentEditor*>(doc);
-	if (ipEditor) {
-		isHWComp = ipEditor->isHWImplementation();
+	ComponentEditor* componentEditor = dynamic_cast<ComponentEditor*>(doc);
+	if (componentEditor) {
+		isHWComp = componentEditor->isHWImplementation();
 	}
 
 	bool isHWDesign = dynamic_cast<HWDesignWidget*>(doc) != 0;
@@ -1456,11 +1483,13 @@ void MainWindow::updateMenuStrip()
 
 	actSave_->setEnabled(doc != 0 && doc->isModified());
 	actSaveAs_->setEnabled(doc != 0);
+    actSaveHierarchy_->setVisible(isHWComp || isHWDesign);
 	actPrint_->setEnabled(doc != 0 && (doc->getFlags() & TabDocument::DOC_PRINT_SUPPORT));
 
 	// generation group is always visible when there is open editor but disabled when locked
 	generationGroup_->setEnabled(unlocked);
-	if (doc != 0 && (ipEditor != 0 || isHWDesign || isSystemDesign)) {
+	if (doc != 0 && (componentEditor != 0 || isHWDesign || isSystemDesign))
+    {
 		generationGroup_->setVisible(true);
 	}
 	else {
@@ -3537,21 +3566,21 @@ void MainWindow::openCSource(ComponentItem* compItem)
 	if (fileSet->getFiles().count() > 1)
 	{
 		// Show a dialog for selecting what source file to open.
-		ListSelectDialog dialog(this);
-		dialog.setWindowTitle(tr("Open Source"));
-		dialog.setDescription(tr("Select C source file to open:"));
+		ListSelectDialog saveDialog(this);
+		saveDialog.setWindowTitle(tr("Open Source"));
+		saveDialog.setDescription(tr("Select C source file to open:"));
 
 		foreach (QSharedPointer<File> file, fileSet->getFiles())
 		{
-			dialog.addItem(new QListWidgetItem(file->getName()));
+			saveDialog.addItem(new QListWidgetItem(file->getName()));
 		}
 
-		if (dialog.exec() == QDialog::Rejected)
+		if (saveDialog.exec() == QDialog::Rejected)
 		{
 			return;
 		}
 
-		filename = dialog.getSelectedItem()->text();
+		filename = saveDialog.getSelectedItem()->text();
 	}
 	else
 	{
@@ -3927,17 +3956,17 @@ void MainWindow::onWorkspaceChanged(QAction* action)
 //-----------------------------------------------------------------------------
 void MainWindow::onNewWorkspace()
 {
-    NewWorkspaceDialog dialog(this);
+    NewWorkspaceDialog saveDialog(this);
 
-    if (dialog.exec() == QDialog::Accepted)
+    if (saveDialog.exec() == QDialog::Accepted)
     {
 		saveWorkspace(curWorkspaceName_);
 
-		createNewWorkspace(dialog.getName());
-		copyComponentEditorSettings(dialog.getName());
+		createNewWorkspace(saveDialog.getName());
+		copyComponentEditorSettings(saveDialog.getName());
 
-        saveWorkspace(dialog.getName());
-        curWorkspaceName_ = dialog.getName();
+        saveWorkspace(saveDialog.getName());
+        curWorkspaceName_ = saveDialog.getName();
 
 		QSettings settings;
 		settings.setValue("Workspaces/CurrentWorkspace", curWorkspaceName_);
@@ -3951,7 +3980,7 @@ void MainWindow::onNewWorkspace()
 //-----------------------------------------------------------------------------
 void MainWindow::onDeleteWorkspace()
 {
-    DeleteWorkspaceDialog dialog(this);
+    DeleteWorkspaceDialog saveDialog(this);
 
     // Fill in the dialog with existing workspace names.
     QSettings settings;
@@ -3963,17 +3992,17 @@ void MainWindow::onDeleteWorkspace()
     {
         if (workspace != "Default" && workspace != curWorkspaceName_)
         {        
-            dialog.addWorkspaceName(workspace);
+            saveDialog.addWorkspaceName(workspace);
         }
     }
 
     settings.endGroup();
 
     // Execute the dialog.
-    if (dialog.exec() == QDialog::Accepted)
+    if (saveDialog.exec() == QDialog::Accepted)
     {
         // Remove the workspace from the settings and update the workspace menu.
-        settings.remove("Workspaces/" + dialog.getName());
+        settings.remove("Workspaces/" + saveDialog.getName());
         updateWorkspaceMenu();
     }
 }

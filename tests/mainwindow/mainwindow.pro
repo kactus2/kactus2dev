@@ -12,4 +12,5 @@
 TEMPLATE = subdirs
 
 CONFIG += testcase
-SUBDIRS += DrawingBoard/tst_DocumentTreeBuilder.pro
+SUBDIRS += SaveHierarchy/tst_DocumentTreeBuilder.pro \
+           SaveHierarchy/tst_HierarchicalSaveBuildStrategy.pro

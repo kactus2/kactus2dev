@@ -267,13 +267,6 @@ public slots:
      */
     void requestRefresh();
 
-	/*! \brief Display an error dialog to user with given text.
-	 *
-	 * \param message Contains the text to display in the error dialog.
-	 *
-	*/
-	void onErrorDialog(const QString& message);
-
 signals:
 	//! \brief Emitted when contents of the widget change
 	void contentChanged();

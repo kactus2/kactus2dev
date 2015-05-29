@@ -932,6 +932,12 @@
     <Filter Include="Source Files\editors\ConfigurationTools">
       <UniqueIdentifier>{8f5efcc6-1e11-42fd-8f57-33e0401ba98f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\mainwindow\SaveHierarchy">
+      <UniqueIdentifier>{caf9e3b7-62f0-44f4-ae6c-519b73d27903}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\mainwindow\SaveHierarchy">
+      <UniqueIdentifier>{9682689d-893a-453f-b6f7-58188d71bb3d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -4123,6 +4129,24 @@
     <ClCompile Include="GeneratedFiles\moc_filenameeditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="mainwindow\SaveHierarchy\DocumentTreeBuilder.cpp">
+      <Filter>Source Files\mainwindow\SaveHierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\SaveHierarchy\HierarchicalSaveBuildStrategy.cpp">
+      <Filter>Source Files\mainwindow\SaveHierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\SaveHierarchy\SaveAsItem.cpp">
+      <Filter>Source Files\mainwindow\SaveHierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\SaveHierarchy\SaveHierarchyDelegate.cpp">
+      <Filter>Source Files\mainwindow\SaveHierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\SaveHierarchy\SaveHierarchyDialog.cpp">
+      <Filter>Source Files\mainwindow\SaveHierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_SaveHierarchyDialog.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5676,6 +5700,9 @@
     <CustomBuild Include="editors\ConfigurationTools\ViewConfigurer.h">
       <Filter>Header Files\editors\ConfigurationTools</Filter>
     </CustomBuild>
+    <CustomBuild Include="mainwindow\SaveHierarchy\SaveHierarchyDialog.h">
+      <Filter>Header Files\mainwindow\SaveHierarchy</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -6073,6 +6100,21 @@
     </ClInclude>
     <ClInclude Include="editors\ConfigurationTools\ViewConfigurerColumns.h">
       <Filter>Header Files\editors\ConfigurationTools</Filter>
+    </ClInclude>
+    <ClInclude Include="mainwindow\SaveHierarchy\HierarchicalSaveBuildStrategy.h">
+      <Filter>Header Files\mainwindow\SaveHierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="mainwindow\SaveHierarchy\HierarchicalSaveColumns.h">
+      <Filter>Header Files\mainwindow\SaveHierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="mainwindow\SaveHierarchy\SaveAsItem.h">
+      <Filter>Header Files\mainwindow\SaveHierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="mainwindow\SaveHierarchy\DocumentTreeBuilder.h">
+      <Filter>Header Files\mainwindow\SaveHierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="mainwindow\SaveHierarchy\SaveHierarchyDelegate.h">
+      <Filter>Header Files\mainwindow\SaveHierarchy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

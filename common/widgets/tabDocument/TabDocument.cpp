@@ -280,6 +280,9 @@ void TabDocument::setTabTitle(QString const& title)
     title_ = title;
 }
 
+//-----------------------------------------------------------------------------
+// Function: TabDocument::getDocumentVLNV()
+//-----------------------------------------------------------------------------
 VLNV TabDocument::getDocumentVLNV() const 
 {
 	return VLNV();
@@ -449,12 +452,4 @@ void TabDocument::handleRefreshRequest()
     {
         refresh();
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: TabDocument::onErrorDialog()
-//-----------------------------------------------------------------------------
-void TabDocument::onErrorDialog(const QString& message)
-{
-	QMessageBox::warning(this, tr("Component editor"), message);
 }

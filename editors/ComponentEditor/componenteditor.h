@@ -172,6 +172,12 @@ private slots:
 	 *
 	*/
     void onExpand(const QModelIndex& index);
+    
+	/*! \brief Display an error dialog to user with given text.
+	 *
+	 *      @param [in] message Contains the text to display in the error dialog.
+	*/
+	void onErrorDialog(const QString& message);
 
 signals:
     /*!

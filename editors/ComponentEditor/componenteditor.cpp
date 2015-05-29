@@ -389,6 +389,14 @@ void ComponentEditor::onExpand(const QModelIndex& index)
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComponentEditor::onErrorDialog()
+//-----------------------------------------------------------------------------
+void ComponentEditor::onErrorDialog(const QString& message)
+{
+    QMessageBox::warning(this, tr("Component editor"), message);
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComponentEditor::onItemActivated()
 //-----------------------------------------------------------------------------
 void ComponentEditor::onItemActivated( const QModelIndex& index )

@@ -416,6 +416,9 @@ private slots:
 	//! \brief Handler for signals that inform that design has changed.
 	void onDesignChanged();
 
+    //! \brief Saves the document hierarchy under current document.
+    void saveCurrentDocumentHierarchy();
+
 	//! \brief Create a pop up menu to select which dock widgets to display.
 	void selectVisibleDocks();
 
@@ -714,7 +717,8 @@ private:
 	 *  Set the visibilities for the plug ins.
 	 */
 	void setPluginVisibilities();
-   
+
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -800,6 +804,8 @@ private:
 
 	//! \brief Action to save the current design as new object
 	QAction* actSaveAs_;
+
+    QAction* actSaveHierarchy_;
 
     //! Action to save all designs.
     QAction* actSaveAll_;
