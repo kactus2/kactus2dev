@@ -6,7 +6,7 @@
 // Date: 27.08.2013
 //
 // Description:
-// Widget for viewing and selecting a library path.
+// Widget for selecting a path under library locations
 //-----------------------------------------------------------------------------
 
 #ifndef LIBRARYSELECTORWIDGET_H
@@ -16,14 +16,13 @@
 #include <QSharedPointer>
 #include <QPushButton>
 
-class LibraryInterface;
 class LibraryPathSelector;
-class Component;
 
 //-----------------------------------------------------------------------------
-//! Widget is used to select a valid path within a library for a component.
+//! Widget for selecting a path under library locations
 //-----------------------------------------------------------------------------
-class LibrarySelectorWidget : public QWidget {
+class LibrarySelectorWidget : public QWidget
+{
 	Q_OBJECT
 
 public:

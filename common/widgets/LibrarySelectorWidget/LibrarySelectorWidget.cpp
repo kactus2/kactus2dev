@@ -6,7 +6,7 @@
 // Date: 25.06.2013
 //
 // Description:
-// Widget for viewing and parsing a vhdl file.
+// Widget for selecting a path under library locations.
 //-----------------------------------------------------------------------------
 
 #include "LibrarySelectorWidget.h"
@@ -20,7 +20,7 @@
 #include <common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.h>
 
 //-----------------------------------------------------------------------------
-// Function: LibrarySelectorWidget()
+// Function: LibrarySelectorWidget::LibrarySelectorWidget()
 //-----------------------------------------------------------------------------
 LibrarySelectorWidget::LibrarySelectorWidget(QWidget* parent):
     QWidget(parent),
@@ -28,28 +28,32 @@ LibrarySelectorWidget::LibrarySelectorWidget(QWidget* parent):
     browseButton_(new QPushButton(tr("Browse"),this)),
     directorySet_(false)
 {
-
-    // Pushbutton connections.
     connect(browseButton_, SIGNAL(clicked()),this, SLOT(onBrowse()), Qt::UniqueConnection);
-    connect(librarySelector_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(librarySelector_, SIGNAL(editTextChanged(QString const&)), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(librarySelector_, SIGNAL(contentChanged()), 
+        this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(librarySelector_, SIGNAL(editTextChanged(QString const&)), 
+        this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
     setupLayout();
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~LibrarySelectorWidget()
+// Function: LibrarySelectorWidget::~LibrarySelectorWidget()
 //-----------------------------------------------------------------------------
-LibrarySelectorWidget::~LibrarySelectorWidget() {
+LibrarySelectorWidget::~LibrarySelectorWidget()
+{
 }
 
+//-----------------------------------------------------------------------------
+// Function: LibrarySelectorWidget::getPath()
+//-----------------------------------------------------------------------------
 QString LibrarySelectorWidget::getPath() const
 {
     return librarySelector_->currentText();
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~isValid()
+// Function: LibrarySelectorWidget::reset()
 //-----------------------------------------------------------------------------
 void LibrarySelectorWidget::reset()
 {
@@ -58,7 +62,7 @@ void LibrarySelectorWidget::reset()
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~isValid()
+// Function: LibrarySelectorWidget::isValid()
 //-----------------------------------------------------------------------------
 bool LibrarySelectorWidget::isValid() const
 {
@@ -66,17 +70,17 @@ bool LibrarySelectorWidget::isValid() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: onBrowse()
+// Function: LibrarySelectorWidget::onBrowse()
 //-----------------------------------------------------------------------------
 void LibrarySelectorWidget::onBrowse()
 {
     QString baseDirectory = QFileInfo(librarySelector_->currentText()).filePath();
-    if ( baseDirectory.size() < 1 )
+    if (baseDirectory.size() < 1)
     {
         baseDirectory = librarySelector_->currentLocation();
     }
 
-    QString targetDirectory = QFileDialog::getExistingDirectory(this, tr("Choose Target Directory"),
+    QString targetDirectory = QFileDialog::getExistingDirectory(this, tr("Choose target directory"),
         baseDirectory);
 
     if (targetDirectory.size() < 1)
@@ -94,24 +98,20 @@ void LibrarySelectorWidget::onBrowse()
     QSettings settings;
     while (!librarySelector_->hasIndexFor(targetDirectory))
     {
-        QMessageBox warningDialog(QMessageBox::Warning, 
-            "Warning", "Chosen path is not in any active library. Do you want to configure libraries?"
-            , QMessageBox::Yes | QMessageBox::Cancel, this);
+        QMessageBox warningDialog(QMessageBox::Warning, "Warning", 
+            "Chosen path is not in any active library. Do you want to configure libraries?",
+            QMessageBox::Yes | QMessageBox::Cancel, this);
 
-        warningDialog.setDetailedText(targetDirectory + 
-            "\nis not in any of the active libraries:\n" + 
+        warningDialog.setDetailedText(targetDirectory + "\nis not in any of the active libraries:\n" + 
             librarySelector_->getLibraryLocations().join("\n"));
 
-        warningDialog.exec();
-
-        QMessageBox::StandardButton clicked = warningDialog.standardButton(warningDialog.clickedButton());
-
-        if (clicked == QMessageBox::Yes) {
+        if (warningDialog.exec() == QMessageBox::Yes)
+        {
             LibrarySettingsDialog dialog(settings, this);
             dialog.exec();
             librarySelector_->refresh();
         }
-        else //if( msg == QMessageBox::Cancel ){
+        else //if( msg == QMessageBox::Cancel )
         {
             return;
         }
@@ -122,28 +122,27 @@ void LibrarySelectorWidget::onBrowse()
 }
 
 //-----------------------------------------------------------------------------
-// Function: updateDirectory()
+// Function: LibrarySelectorWidget::updateDirectory()
 //-----------------------------------------------------------------------------
 void LibrarySelectorWidget::updatePath(QString const& path)
 {
-    if ( !directorySet_ )
+    if (!directorySet_)
     {
-        QString dir = librarySelector_->currentLocation();
+        QString directory = librarySelector_->currentLocation();
 
-        librarySelector_->setEditText(dir + path);
+        librarySelector_->setEditText(directory + path);
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: setupLayout()
+// Function: LibrarySelectorWidget::setupLayout()
 //-----------------------------------------------------------------------------
 void LibrarySelectorWidget::setupLayout()
 {
-    // Create the directory line edit and label.
-    QLabel *directoryLabel = new QLabel(tr("Directory:"), this);
-
     QHBoxLayout *widgetLayout = new QHBoxLayout(this);
-    widgetLayout->addWidget(directoryLabel);
+    widgetLayout->addWidget(new QLabel(tr("Directory:"), this));
     widgetLayout->addWidget(librarySelector_, 1);
     widgetLayout->addWidget(browseButton_);
+
+    widgetLayout->setContentsMargins(0, 0, 0, 0);
 }

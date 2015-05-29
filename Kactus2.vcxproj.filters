@@ -4147,6 +4147,9 @@
     <ClCompile Include="GeneratedFiles\moc_SaveHierarchyDialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_HierarchicalSaveBuildStrategy.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5703,6 +5706,9 @@
     <CustomBuild Include="mainwindow\SaveHierarchy\SaveHierarchyDialog.h">
       <Filter>Header Files\mainwindow\SaveHierarchy</Filter>
     </CustomBuild>
+    <CustomBuild Include="mainwindow\SaveHierarchy\HierarchicalSaveBuildStrategy.h">
+      <Filter>Header Files\mainwindow\SaveHierarchy</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -6100,9 +6106,6 @@
     </ClInclude>
     <ClInclude Include="editors\ConfigurationTools\ViewConfigurerColumns.h">
       <Filter>Header Files\editors\ConfigurationTools</Filter>
-    </ClInclude>
-    <ClInclude Include="mainwindow\SaveHierarchy\HierarchicalSaveBuildStrategy.h">
-      <Filter>Header Files\mainwindow\SaveHierarchy</Filter>
     </ClInclude>
     <ClInclude Include="mainwindow\SaveHierarchy\HierarchicalSaveColumns.h">
       <Filter>Header Files\mainwindow\SaveHierarchy</Filter>

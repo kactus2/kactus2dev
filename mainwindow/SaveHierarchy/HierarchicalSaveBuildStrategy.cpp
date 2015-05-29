@@ -25,7 +25,8 @@
 //-----------------------------------------------------------------------------
 // Function: HierarchicalSaveBuildStrategy::HierarchicalSaveBuildStrategy()
 //-----------------------------------------------------------------------------
-HierarchicalSaveBuildStrategy::HierarchicalSaveBuildStrategy(LibraryInterface* library): library_(library)
+HierarchicalSaveBuildStrategy::HierarchicalSaveBuildStrategy(LibraryInterface* library, QObject* parent): 
+QObject(parent), library_(library), saveMode_(CURRENT_DIRECTORY), savePath_()
 {
 
 }
@@ -45,7 +46,7 @@ QTreeWidgetItem* HierarchicalSaveBuildStrategy::build(QObject* rootObject) const
 {
     if (rootObject && rootObject->property("VLNVType") != "DesignConfiguration")
     {
-        return createComponentItem(rootObject);
+        return createItemAndItsChildren(rootObject);
     }
     else
     {
@@ -88,9 +89,25 @@ void HierarchicalSaveBuildStrategy::saveItem(QTreeWidgetItem* item) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: HierarchicalSaveBuildStrategy::createComponentItem()
+// Function: HierarchicalSaveBuildStrategy::setSaveMode()
 //-----------------------------------------------------------------------------
-QTreeWidgetItem* HierarchicalSaveBuildStrategy::createComponentItem(QObject* rootObject) const
+void HierarchicalSaveBuildStrategy::setSaveMode(SaveMode mode)
+{
+    saveMode_ = mode;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HierarchicalSaveBuildStrategy::setSavePath()
+//-----------------------------------------------------------------------------
+void HierarchicalSaveBuildStrategy::setSavePath(QString const& path)
+{
+    savePath_ = path;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HierarchicalSaveBuildStrategy::createItemAndItsChildren()
+//-----------------------------------------------------------------------------
+QTreeWidgetItem* HierarchicalSaveBuildStrategy::createItemAndItsChildren(QObject* rootObject) const
 {
     QTreeWidgetItem* rootItem = createItem(rootObject);
 
@@ -304,9 +321,24 @@ void HierarchicalSaveBuildStrategy::saveToLibrary(VLNV const& previousReference,
     QSharedPointer<LibraryComponent> model) const
 {
     if (!library_->contains(*model->getVlnv()))
-    {    
-        QFileInfo fileinfo(library_->getPath(previousReference));
-        QString path = fileinfo.absolutePath();
+    {
+        QString path;
+        if (saveMode_ == CURRENT_DIRECTORY)
+        {
+            QFileInfo fileinfo(library_->getPath(previousReference));
+            path = fileinfo.absolutePath();
+        }
+        else if (saveMode_ == SINGLE_DIRECTORY)
+        {
+            path = savePath_;
+        }
+        else //if (saveMode_ == COMMON_ROOT_DIRECTORY)
+        {
+            path = savePath_ + "/" + model->getVlnv()->toString("/");
+        }
+
         library_->writeModelToFile(path, model);
     }
+
+    emit itemSaved();
 }

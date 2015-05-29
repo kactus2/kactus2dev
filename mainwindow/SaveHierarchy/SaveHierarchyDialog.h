@@ -15,6 +15,7 @@
 #include <QDialog>
 
 #include <QObject>
+#include <QProgressBar>
 #include <QTreeWidget>
 
 #include "HierarchicalSaveBuildStrategy.h"
@@ -37,10 +38,34 @@ public slots:
     //! Called when the save button is clicked.
     virtual void accept();
 
+private slots:
+
+    //! Called when saving to current directories is selected.
+    void onSetSaveModeToCurrent(bool enabled);
+
+    //! Called when saving to new root directory is selected.
+    void onSetSaveModeToCommonRoot(bool enabled);
+
+    //! Called when saving to a single directory is selected.
+    void onSetSaveModeToSingleDirectory(bool enabled);
+
+    //! Called when an item has been saved.
+    void onItemSaved();
+
 private:
     // Disable copying.
     SaveHierarchyDialog(SaveHierarchyDialog const& rhs);
     SaveHierarchyDialog& operator=(SaveHierarchyDialog const& rhs);
+
+    
+    /*!
+     *  Finds the number of checked items under a given tree item.
+     *
+     *      @param [in] item   The item to start the count from.
+     *
+     *      @return The number of checked items under the item including the item itself.
+     */
+    int findNumberOfCheckedItems(QTreeWidgetItem* item);
 
     //! Sets the dialog layout.
     void setupLayout();
@@ -51,6 +76,9 @@ private:
 
     //! View for selecting and editing the documents to save.
     QTreeWidget* documentSelectionView_;
+
+    //! Progress bar for showing save progression.
+    QProgressBar* saveProgressBar_;
 
     //! Selector for save location within libraries.
     LibrarySelectorWidget* directoryEditor_;

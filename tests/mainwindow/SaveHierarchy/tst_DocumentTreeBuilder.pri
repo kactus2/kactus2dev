@@ -7,8 +7,8 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../MockObjects/LibraryMock.h \
-    ../../../mainwindow/DrawingBoard/DocumentTreeBuilder.h
-SOURCES += ./tst_DocumentTreeBuilder.cpp \
+HEADERS += ../../../mainwindow/SaveHierarchy/DocumentTreeBuilder.h \
+    ../../MockObjects/LibraryMock.h
+SOURCES += ../../../mainwindow/SaveHierarchy/DocumentTreeBuilder.cpp \
     ../../MockObjects/LibraryMock.cpp \
-    ../../../mainwindow/DrawingBoard/DocumentTreeBuilder.cpp
+    ./tst_DocumentTreeBuilder.cpp

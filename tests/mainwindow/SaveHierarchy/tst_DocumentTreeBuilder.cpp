@@ -12,7 +12,7 @@
 #include <QtTest>
 #include <QSharedPointer>
 
-#include <mainwindow/DrawingBoard/DocumentTreeBuilder.h>
+#include <mainwindow/SaveHierarchy/DocumentTreeBuilder.h>
 
 #include <tests/MockObjects/LibraryMock.h>
 
@@ -120,6 +120,7 @@ void tst_DocumentTreeBuilder::testReferenceResultsInListWithReference()
 
     QCOMPARE(rootObject->objectName(), topComponentVLNV().toString());
     QCOMPARE(rootObject->children().count(), 0);
+    QCOMPARE(rootObject->property("VLNVType").toString(), QString("Component"));
 
     delete rootObject;
 }
@@ -140,9 +141,11 @@ void tst_DocumentTreeBuilder::testHierarchicalReferenceToDesign()
 
     QCOMPARE(rootObject->objectName(), topComponentVLNV().toString());
     QCOMPARE(rootObject->children().count(), 1);
+    QCOMPARE(rootObject->property("VLNVType").toString(), QString("Component"));
 
     QObject* designObject = rootObject->children().first();
     QCOMPARE(designObject->objectName(), topDesignVLNV().toString());
+    QCOMPARE(designObject->property("VLNVType").toString(), QString("Design"));
 
     delete rootObject;
 }
@@ -164,14 +167,17 @@ void tst_DocumentTreeBuilder::testHierarchicalReferenceToDesignConfiguration()
 
     QCOMPARE(rootObject->objectName(), topComponentVLNV().toString());
     QCOMPARE(rootObject->children().count(), 1);
+    QCOMPARE(rootObject->property("VLNVType").toString(), QString("Component"));
 
     QObject* designConfigurationObject = rootObject->children().first();
     QCOMPARE(designConfigurationObject->objectName(), topDesignConfigurationVLNV().toString());
     QCOMPARE(designConfigurationObject->children().count(), 1);
+    QCOMPARE(designConfigurationObject->property("VLNVType").toString(), QString("DesignConfiguration"));
 
     QObject* designObject = designConfigurationObject->children().first();
     QCOMPARE(designObject->objectName(), topDesignVLNV().toString());
     QCOMPARE(designObject->children().count(), 0);
+    QCOMPARE(designObject->property("VLNVType").toString(), QString("Design"));
 
     delete rootObject;
 }

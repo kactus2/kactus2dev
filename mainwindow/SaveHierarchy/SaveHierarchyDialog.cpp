@@ -19,28 +19,22 @@
 
 #include <common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.h>
 
-#include <IPXACTmodels/view.h>
-#include <IPXACTmodels/vlnv.h>
-
-#include <QVBoxLayout>
-#include <QHeaderView>
+#include <QApplication>
 #include <QDialogButtonBox>
 #include <QGroupBox>
+#include <QProgressBar>
 #include <QRadioButton>
-#include <QLabel>
+#include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
 // Function: SaveHierarchyDialog::SaveHierarchyDialog()
 //-----------------------------------------------------------------------------
 SaveHierarchyDialog::SaveHierarchyDialog(QObject* rootObject, LibraryInterface* library, QWidget *parent)
-    : QDialog(parent), documentSelectionView_(new QTreeWidget(this)), 
+    : QDialog(parent), documentSelectionView_(new QTreeWidget(this)), saveProgressBar_(new QProgressBar(this)), 
     directoryEditor_(new LibrarySelectorWidget(this)), 
-    documentSelectionBuilder_(library)
+    documentSelectionBuilder_(library, this)
 {
     setWindowTitle(tr("Save hierarchy"));
-
-    //directoryEditor_->layout()->setContentsMargins(0,0,0,0);
-    directoryEditor_->setEnabled(false);
 
     documentSelectionView_->addTopLevelItem(documentSelectionBuilder_.build(rootObject));
     documentSelectionView_->setColumnCount(2);
@@ -55,9 +49,14 @@ SaveHierarchyDialog::SaveHierarchyDialog(QObject* rootObject, LibraryInterface* 
     documentSelectionView_->setHeaderLabels(selectionHeaders);
 
     documentSelectionView_->setColumnWidth(0, 400);
+
+    directoryEditor_->setEnabled(false);
+
     resize(800, 600);
 
     setupLayout();
+
+    connect(&documentSelectionBuilder_, SIGNAL(itemSaved()), this, SLOT(onItemSaved()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -73,9 +72,83 @@ SaveHierarchyDialog::~SaveHierarchyDialog()
 //-----------------------------------------------------------------------------
 void SaveHierarchyDialog::accept()
 {
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+
+    int checkedItems = findNumberOfCheckedItems(documentSelectionView_->topLevelItem(0));
+    saveProgressBar_->setMaximum(checkedItems);
+
+    if (directoryEditor_->isEnabled())
+    {
+        documentSelectionBuilder_.setSavePath(directoryEditor_->getPath());
+    }
+
     documentSelectionBuilder_.saveItem(documentSelectionView_->topLevelItem(0));
 
     QDialog::accept();
+
+    QApplication::restoreOverrideCursor();
+}
+
+//-----------------------------------------------------------------------------
+// Function: SaveHierarchyDialog::onSaveModeChanged()
+//-----------------------------------------------------------------------------
+void SaveHierarchyDialog::onSetSaveModeToCurrent(bool enabled)
+{
+    if (enabled)
+    {
+        documentSelectionBuilder_.setSaveMode(HierarchicalSaveBuildStrategy::CURRENT_DIRECTORY);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SaveHierarchyDialog::onSetSaveModeToCommonRoot()
+//-----------------------------------------------------------------------------
+void SaveHierarchyDialog::onSetSaveModeToCommonRoot(bool enabled)
+{
+    if (enabled)
+    {
+        documentSelectionBuilder_.setSaveMode(HierarchicalSaveBuildStrategy::COMMON_ROOT_DIRECTORY);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SaveHierarchyDialog::onSetSaveModeToSingleDirectory()
+//-----------------------------------------------------------------------------
+void SaveHierarchyDialog::onSetSaveModeToSingleDirectory(bool enabled)
+{
+    if (enabled)
+    {
+        documentSelectionBuilder_.setSaveMode(HierarchicalSaveBuildStrategy::SINGLE_DIRECTORY);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SaveHierarchyDialog::onItemSaved()
+//-----------------------------------------------------------------------------
+void SaveHierarchyDialog::onItemSaved()
+{
+    saveProgressBar_->setValue(saveProgressBar_->value() +1);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SaveHierarchyDialog::numberOfCheckedItems()
+//-----------------------------------------------------------------------------
+int SaveHierarchyDialog::findNumberOfCheckedItems(QTreeWidgetItem* item)
+{
+    int count = 0;
+
+    if (item->checkState(HierarchicalSaveColumns::SAVE_AS_VLNV) == Qt::Checked)
+    {
+        count++;
+
+        int childCount = item->childCount();
+        for (int i = 0; i < childCount; i++)
+        {
+            count += findNumberOfCheckedItems(item->child(i));
+        }
+    }	
+
+    return count;
 }
 
 //-----------------------------------------------------------------------------
@@ -83,6 +156,7 @@ void SaveHierarchyDialog::accept()
 //-----------------------------------------------------------------------------
 void SaveHierarchyDialog::setupLayout()
 {
+
     QDialogButtonBox* dialogControls = new QDialogButtonBox(this);
     dialogControls->addButton(tr("Save"), QDialogButtonBox::AcceptRole);
     dialogControls->addButton(QDialogButtonBox::Cancel);
@@ -91,27 +165,39 @@ void SaveHierarchyDialog::setupLayout()
     QVBoxLayout* documentLayout = new QVBoxLayout(documentTreeGroup); 
     documentLayout->addWidget(documentSelectionView_);
 
-    // TODO: Implement different save scenarios before enabling selection.
     QGroupBox* directorySelectionGroup = new QGroupBox(tr("Select save location"), this);
-    directorySelectionGroup->setEnabled(false);
 
-    QRadioButton* currentButton = new QRadioButton(tr("Save in current directories."), directorySelectionGroup);
-    currentButton->setChecked(true);
+    QRadioButton* originalButton = new QRadioButton(tr("Save in original directories."), directorySelectionGroup);
+    QRadioButton* newRootButton = new QRadioButton(tr("Save in subdirectories under a given root directory."), 
+        directorySelectionGroup);
+    QRadioButton* singleDirectoryButton = new QRadioButton(tr("Save all in one directory."), 
+        directorySelectionGroup);
+    originalButton->setChecked(true);
 
-    QRadioButton* newRootButton = new QRadioButton(tr("Save under new root directory."), directorySelectionGroup);
- 
     QVBoxLayout* selectionLayout = new QVBoxLayout(directorySelectionGroup); 
-    selectionLayout->addWidget(currentButton);
+    selectionLayout->addWidget(originalButton);
     selectionLayout->addWidget(newRootButton);
+    selectionLayout->addWidget(singleDirectoryButton);
     selectionLayout->addWidget(directoryEditor_);
+
+    saveProgressBar_->setAlignment(Qt::AlignCenter);
+    saveProgressBar_->setMinimum(0);
 
     QVBoxLayout* topLayout = new QVBoxLayout(this);
     topLayout->addWidget(documentTreeGroup);
     topLayout->addWidget(directorySelectionGroup);
+    topLayout->addWidget(saveProgressBar_);
     topLayout->addWidget(dialogControls);
 
     connect(dialogControls, SIGNAL(accepted()), this, SLOT(accept()), Qt::UniqueConnection);
     connect(dialogControls, SIGNAL(rejected()), this, SLOT(reject()), Qt::UniqueConnection);
 
-    connect(newRootButton, SIGNAL(toggled(bool)), directoryEditor_, SLOT(setEnabled(bool)), Qt::UniqueConnection);
+    connect(originalButton, SIGNAL(toggled(bool)), directoryEditor_, SLOT(setDisabled(bool)), Qt::UniqueConnection);
+
+    connect(originalButton, SIGNAL(toggled(bool)), 
+        this, SLOT(onSetSaveModeToCurrent(bool)), Qt::UniqueConnection);
+    connect(newRootButton, SIGNAL(toggled(bool)), 
+        this, SLOT(onSetSaveModeToCommonRoot(bool)), Qt::UniqueConnection);
+    connect(singleDirectoryButton, SIGNAL(toggled(bool)), 
+        this, SLOT(onSetSaveModeToSingleDirectory(bool)), Qt::UniqueConnection);
 }
