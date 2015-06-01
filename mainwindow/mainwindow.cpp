@@ -692,7 +692,7 @@ void MainWindow::setupActions()
 
     actSaveHierarchy_ = new QAction(QIcon(":/icons/common/graphics/file-save-hierarchical.png"), 
         tr("Save Hierarchy"), this);
-    actSaveHierarchy_->setVisible(false);
+    actSaveHierarchy_->setEnabled(false);
     connect(actSaveHierarchy_, SIGNAL(triggered()), this, SLOT(saveCurrentDocumentHierarchy()));
 
 	actSaveAll_ = new QAction(QIcon(":/icons/common/graphics/file-save_all.png"), tr("Save All"), this);
@@ -1483,7 +1483,7 @@ void MainWindow::updateMenuStrip()
 
 	actSave_->setEnabled(doc != 0 && doc->isModified());
 	actSaveAs_->setEnabled(doc != 0);
-    actSaveHierarchy_->setVisible(doc != 0);
+    actSaveHierarchy_->setEnabled(doc != 0);
 	actPrint_->setEnabled(doc != 0 && (doc->getFlags() & TabDocument::DOC_PRINT_SUPPORT));
 
 	// generation group is always visible when there is open editor but disabled when locked
