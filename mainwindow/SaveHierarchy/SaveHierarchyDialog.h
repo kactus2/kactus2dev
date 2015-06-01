@@ -83,6 +83,9 @@ private:
     //! Selector for save location within libraries.
     LibrarySelectorWidget* directoryEditor_;
 
+    //! The document library in use.
+    LibraryInterface* library_;
+
     //! The building strategy for the document tree.
     HierarchicalSaveBuildStrategy documentSelectionBuilder_;
 };

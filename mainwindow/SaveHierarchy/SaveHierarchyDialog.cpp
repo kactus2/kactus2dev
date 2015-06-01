@@ -31,7 +31,7 @@
 //-----------------------------------------------------------------------------
 SaveHierarchyDialog::SaveHierarchyDialog(QObject* rootObject, LibraryInterface* library, QWidget *parent)
     : QDialog(parent), documentSelectionView_(new QTreeWidget(this)), saveProgressBar_(new QProgressBar(this)), 
-    directoryEditor_(new LibrarySelectorWidget(this)), 
+    directoryEditor_(new LibrarySelectorWidget(this)), library_(library),
     documentSelectionBuilder_(library, this)
 {
     setWindowTitle(tr("Save hierarchy"));
@@ -82,7 +82,9 @@ void SaveHierarchyDialog::accept()
         documentSelectionBuilder_.setSavePath(directoryEditor_->getPath());
     }
 
+    library_->beginSave();
     documentSelectionBuilder_.saveItem(documentSelectionView_->topLevelItem(0));
+    library_->endSave();
 
     QDialog::accept();
 

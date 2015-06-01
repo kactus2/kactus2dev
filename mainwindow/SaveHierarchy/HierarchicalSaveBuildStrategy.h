@@ -117,11 +117,19 @@ private:
     void setInvalid(QTreeWidgetItem* item) const;
 
     /*!
+     *  Sets the appropriate icon for the item.
+     *
+     *      @param [in] object      The object in the document tree representing the item.
+     *      @param [in] item        The item whose icon to set.
+     */
+    void setIcon(QObject* object, QTreeWidgetItem* item) const;
+
+    /*!
      *  Generates an unused VLVN.
      *
      *      @param [in] previousVLNV   The base VLNV for generation.
      *
-     *      @return The geneated unique VLNV.
+     *      @return The generated unique VLNV.
      */
     QString generateUnusedVLNV(QString const& previousVLNV) const;
 

@@ -51,7 +51,7 @@ QObject* DocumentTreeBuilder::createFrom(VLNV const& root) const
         }
         else if (library_->getDocumentType(root) == VLNV::DESIGN)
         {
-            rootNode = createFromDesign(root, QSharedPointer<DesignConfiguration const>());
+            rootNode = createFromDesign(root);
         }
         else if (library_->getDocumentType(root) == VLNV::DESIGNCONFIGURATION)
         {
@@ -84,10 +84,19 @@ QObject* DocumentTreeBuilder::createFromComponent(VLNV const& root) const
     QSharedPointer<LibraryComponent const> component = library_->getModelReadOnly(root);
     QSharedPointer<Component const> rootComponent = component.dynamicCast<Component const>();
 
+    if (rootComponent->getComponentImplementation() == KactusAttribute::SW)
+    {
+        componentNode->setProperty("implementation", "SW");
+    }
+    else
+    {
+        componentNode->setProperty("implementation", "HW");
+    }
+
     QList<VLNV> hierarchyReferences = rootComponent->getHierRefs();
     foreach (VLNV reference, hierarchyReferences)
     {
-        if (library_->contains(reference) && rootComponent->getViewType(reference) == KactusAttribute::HW)
+        if (library_->contains(reference))
         {
             if (library_->getDocumentType(reference) == VLNV::DESIGNCONFIGURATION)
             {
@@ -96,7 +105,7 @@ QObject* DocumentTreeBuilder::createFromComponent(VLNV const& root) const
             }
             else if (library_->getDocumentType(reference) == VLNV::DESIGN)
             {
-                QObject* designNode = createFromDesign(reference, QSharedPointer<DesignConfiguration const>());
+                QObject* designNode = createFromDesign(reference);
                 designNode->setParent(componentNode);
             }
         }
@@ -116,12 +125,12 @@ QObject* DocumentTreeBuilder::createFromDesignConfiguration(VLNV const& designCo
 
     QSharedPointer<LibraryComponent const> configModel = library_->getModelReadOnly(designConfiguration);
     QSharedPointer<DesignConfiguration const> configuration = configModel.dynamicCast<DesignConfiguration const>();
-    
+
     VLNV designRef = configuration->getDesignRef();
 
     if (library_->contains(designRef))
     {
-        QObject* designNode = createFromDesign(designRef, configuration);
+        QObject* designNode = createFromDesign(designRef);
         designNode->setParent(designConfigNode);
     }
 
@@ -131,8 +140,7 @@ QObject* DocumentTreeBuilder::createFromDesignConfiguration(VLNV const& designCo
 //-----------------------------------------------------------------------------
 // Function: DocumentTreeBuilder::createFromDesign()
 //-----------------------------------------------------------------------------
-QObject* DocumentTreeBuilder::createFromDesign(VLNV const& designRef, 
-    QSharedPointer<DesignConfiguration const> configuration) const
+QObject* DocumentTreeBuilder::createFromDesign(VLNV const& designRef) const
 {
     QObject* designNode = new QObject(0);
     designNode->setObjectName(designRef.toString());
@@ -141,16 +149,33 @@ QObject* DocumentTreeBuilder::createFromDesign(VLNV const& designRef,
     QSharedPointer<LibraryComponent const> designModel = library_->getModelReadOnly(designRef);
     QSharedPointer<Design const> design = designModel.dynamicCast<Design const>();
 
-    foreach (ComponentInstance instance, design->getComponentInstances())
+    if (design->getDesignImplementation() == KactusAttribute::SW)
     {
-        QObject* instanceNode = createFrom(instance.getComponentRef());
+        designNode->setProperty("implementation", "SW");
+    }
+    else if (design->getDesignImplementation() == KactusAttribute::SYSTEM)
+    {
+        designNode->setProperty("implementation", "System");
+    }
+    else
+    {
+        designNode->setProperty("implementation", "HW");
+    }
+
+    foreach (ComponentInstance swInstance, design->getComponentInstances())
+    {
+        QObject* instanceNode = createFrom(swInstance.getComponentRef());
         instanceNode->setParent(designNode);
 
-        instanceNode->setProperty("instanceName", instance.getInstanceName());
-        if (!configuration.isNull())
-        {
-            instanceNode->setProperty("activeView", configuration->getActiveView(instance.getInstanceName()));
-        }
+        instanceNode->setProperty("instanceName", swInstance.getInstanceName());
+    }
+
+    foreach (SWInstance swInstance, design->getSWInstances())
+    {
+        QObject* swInstanceNode = createFrom(swInstance.getComponentRef());
+        swInstanceNode->setParent(designNode);
+
+        swInstanceNode->setProperty("instanceName", swInstance.getInstanceName());
     }
 
     return designNode;

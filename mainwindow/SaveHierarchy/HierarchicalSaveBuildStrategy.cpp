@@ -21,6 +21,8 @@
 #include <IPXACTmodels/design.h>
 #include <IPXACTmodels/designconfiguration.h>
 #include <IPXACTmodels/librarycomponent.h>
+#include <IPXACTmodels/SWView.h>
+#include <IPXACTmodels/SystemView.h>
 
 //-----------------------------------------------------------------------------
 // Function: HierarchicalSaveBuildStrategy::HierarchicalSaveBuildStrategy()
@@ -135,15 +137,7 @@ QTreeWidgetItem* HierarchicalSaveBuildStrategy::createItem(QObject* object) cons
     else
     {
         item->setText(HierarchicalSaveColumns::VLNV, vlnvString);
-
-        if (object->property("VLNVType") == "Component")
-        {
-            item->setIcon(HierarchicalSaveColumns::VLNV, QIcon(":/icons/common/graphics/hw-component.png"));
-        }
-        else
-        {
-            item->setIcon(HierarchicalSaveColumns::VLNV, QIcon(":/icons/common/graphics/hw-design.png"));
-        }
+        setIcon(object, item);
 
         QString suggestedVLNV = generateUnusedVLNV(vlnvMatch.captured());
         item->setText(HierarchicalSaveColumns::SAVE_AS_VLNV, suggestedVLNV);
@@ -163,6 +157,39 @@ void HierarchicalSaveBuildStrategy::setInvalid(QTreeWidgetItem* item) const
     item->setText(HierarchicalSaveColumns::VLNV, QObject::tr("Item not found"));
     item->setIcon(HierarchicalSaveColumns::VLNV, QIcon(":/icons/common/graphics/exclamation.png"));
     item->setText(HierarchicalSaveColumns::SAVE_AS_VLNV, ":::");
+}
+
+//-----------------------------------------------------------------------------
+// Function: HierarchicalSaveBuildStrategy::setIcon()
+//-----------------------------------------------------------------------------
+void HierarchicalSaveBuildStrategy::setIcon(QObject* object, QTreeWidgetItem* item) const
+{
+    if (object->property("VLNVType") == "Component")
+    {
+        if (object->property("implementation") == "HW")
+        {
+            item->setIcon(HierarchicalSaveColumns::VLNV, QIcon(":/icons/common/graphics/hw-component.png"));
+        }
+        else
+        {
+            item->setIcon(HierarchicalSaveColumns::VLNV, QIcon(":/icons/common/graphics/sw-component24x24.png"));
+        }
+    }
+    else
+    {
+        if (object->property("implementation") == "HW")
+        {
+            item->setIcon(HierarchicalSaveColumns::VLNV, QIcon(":/icons/common/graphics/hw-design.png"));
+        }
+        else if (object->property("implementation") == "System")
+        {
+            item->setIcon(HierarchicalSaveColumns::VLNV, QIcon(":/icons/common/graphics/system-design.png"));
+        }
+        else
+        {
+            item->setIcon(HierarchicalSaveColumns::VLNV, QIcon(":/icons/common/graphics/sw-design24x24.png"));
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -267,10 +294,61 @@ void HierarchicalSaveBuildStrategy::updateReferencesFromTo(QSharedPointer<Librar
 void HierarchicalSaveBuildStrategy::updateComponentReferences(QSharedPointer<Component> component, 
     VLNV const& reference, VLNV const& updatedReference) const
 {
-    foreach (QString viewName, component->getHierViews())
+    foreach (QString viewName, component->getViewNames())
     {
         View* view = component->findView(viewName);
 
+        if (view->isHierarchical())
+        {
+            QSharedPointer<LibraryComponent> configModel = library_->getModel(view->getHierarchyRef());
+            QSharedPointer<DesignConfiguration> config = configModel.dynamicCast<DesignConfiguration>(); 
+
+            if (view->getHierarchyRef() == reference)
+            {
+                view->setHierarchyRef(updatedReference);
+            }
+            else if (config && config->getDesignRef() == reference)
+            {
+                VLNV configVLNV(VLNV::DESIGNCONFIGURATION, updatedReference.toString());
+                configVLNV.setName(configVLNV.getName() + "cfg");
+
+                config->setVlnv(configVLNV);
+                config->setDesignRef(updatedReference);
+
+                view->setHierarchyRef(configVLNV);
+
+                saveToLibrary(view->getHierarchyRef(), config);
+            }
+        }
+    }
+
+    foreach (QString viewName, component->getSWViewNames())
+    {
+        QSharedPointer<SWView> view = component->findSWView(viewName);
+        QSharedPointer<LibraryComponent> configModel = library_->getModel(view->getHierarchyRef());
+        QSharedPointer<DesignConfiguration> config = configModel.dynamicCast<DesignConfiguration>(); 
+
+        if (view->getHierarchyRef() == reference)
+        {
+            view->setHierarchyRef(updatedReference);
+        }
+        else if (config && config->getDesignRef() == reference)
+        {
+            VLNV configVLNV(VLNV::DESIGNCONFIGURATION, updatedReference.toString());
+            configVLNV.setName(configVLNV.getName() + "cfg");
+
+            config->setVlnv(configVLNV);
+            config->setDesignRef(updatedReference);
+
+            view->setHierarchyRef(configVLNV);
+
+            saveToLibrary(view->getHierarchyRef(), config);
+        }
+    }
+
+    foreach (QString viewName, component->getSystemViewNames())
+    {
+        SystemView* view = component->findSystemView(viewName);
         QSharedPointer<LibraryComponent> configModel = library_->getModel(view->getHierarchyRef());
         QSharedPointer<DesignConfiguration> config = configModel.dynamicCast<DesignConfiguration>(); 
 
@@ -300,7 +378,6 @@ void HierarchicalSaveBuildStrategy::updateDesignReferences(QSharedPointer<Design
     VLNV childVLNV, VLNV newChildVLNV) const
 {
     QList<ComponentInstance> updatedInstances;
-
     foreach (ComponentInstance instance, design->getComponentInstances())
     {
         if (instance.getComponentRef() == childVLNV)
@@ -311,7 +388,19 @@ void HierarchicalSaveBuildStrategy::updateDesignReferences(QSharedPointer<Design
         updatedInstances.append(instance);
     }
 
+    QList<SWInstance> updatedSWInstances;
+    foreach (SWInstance instance, design->getSWInstances())
+    {
+        if (instance.getComponentRef() == childVLNV)
+        {
+            instance.setComponentRef(newChildVLNV);
+        }
+
+        updatedSWInstances.append(instance);
+    }
+
     design->setComponentInstances(updatedInstances);
+    design->setSWInstances(updatedSWInstances);
 }
 
 //-----------------------------------------------------------------------------

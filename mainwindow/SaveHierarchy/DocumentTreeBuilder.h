@@ -73,11 +73,10 @@ private:
      *  Creates an object tree starting at the given design.
      *
      *      @param [in] designRef       The VLNV of the design document.
-     *      @param [in] configuration   The design configuration for the design, if any.
      *
      *      @return The object tree representing the document tree starting at the design.
      */
-    QObject* createFromDesign(VLNV const& designRef, QSharedPointer<DesignConfiguration const> configuration) const;
+    QObject* createFromDesign(VLNV const& designRef) const;
 
     //! The IP-XACT library in use.
     LibraryInterface* library_;

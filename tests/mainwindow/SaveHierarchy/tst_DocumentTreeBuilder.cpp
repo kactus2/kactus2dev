@@ -201,12 +201,10 @@ void tst_DocumentTreeBuilder::testHierarchicalReferenceToInstanceInDesign()
     
     QSharedPointer<Component> component = createTopComponent();
 
-    QSharedPointer<DesignConfiguration> designConfiguration = createDesignConfiguration();
+    createDesignConfiguration();
 
     View* hierarchicalView = component->createView();
     hierarchicalView->setHierarchyRef(topDesignConfigurationVLNV());
-
-    designConfiguration->addViewConfiguration("instance1", "view1");
 
     QObject* rootObject = builder_->createFrom(topComponentVLNV());
     QCOMPARE(rootObject->children().count(), 1);
@@ -221,7 +219,6 @@ void tst_DocumentTreeBuilder::testHierarchicalReferenceToInstanceInDesign()
     QCOMPARE(instanceObject->children().count(), 0);
     QCOMPARE(instanceObject->objectName(), instanceVLNV.toString());
     QCOMPARE(instanceObject->property("instanceName").toString(), QString("instance1"));
-    QCOMPARE(instanceObject->property("activeView").toString(), QString("view1"));
 
     delete rootObject;
 }
