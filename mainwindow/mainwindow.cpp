@@ -1483,7 +1483,7 @@ void MainWindow::updateMenuStrip()
 
 	actSave_->setEnabled(doc != 0 && doc->isModified());
 	actSaveAs_->setEnabled(doc != 0);
-    actSaveHierarchy_->setEnabled(doc != 0);
+    actSaveHierarchy_->setEnabled(componentEditor || dynamic_cast<DesignWidget*>(doc));
 	actPrint_->setEnabled(doc != 0 && (doc->getFlags() & TabDocument::DOC_PRINT_SUPPORT));
 
 	// generation group is always visible when there is open editor but disabled when locked
