@@ -21,6 +21,19 @@
       display. Description contains a textual description of the file
       set.
     </p>
+    <h3>Group identifiers</h3>
+    <p>
+      <b>Group identifier</b> can be used to describe the function or purpose of the file with a single
+      unbounded word. <i>Group</i> identifiers can contain several identifiers and the possible words are not
+      limited.  However the editor suggests the following options:
+    </p>
+    <ul>
+      <li>Diagnostics</li>
+      <li>Documentation</li>
+      <li>ProjectFiles</li>
+      <li>Simulation</li>
+      <li>sourceFiles</li>
+    </ul>
     <h3>Files</h3>
     <p>
       <b>Files</b> group box lists the files contained in the file set.
@@ -54,24 +67,15 @@
     </ul>
     <h3>Default build commands</h3>
     <p>
-      <b>Default build command</b> can define <b>command</b> and <b>flags</b> to build files, e.g. running gcc
-      for C files or vcom for VHDL. <b>File type</b> must macth the file table above. The defined command can
-      either <b>replace default flags</b> or be appended to it. This table has a similar context menu as the
-      files editor.
+      <b>Default build command</b> defines how to build the files within the file set by e.g. running gcc
+      for C files or vcom for VHDL.
     </p>
-    <h3>Group identifiers</h3>
     <p>
-      <b>Group identifier</b> can be used to describe the function or purpose of the file with a single
-      unbounded word. <i>Group</i> identifiers can contain several identifiers and the possible words are not
-      limited.  However the editor suggests the following options:
+      <b>File type</b> defines which files are build by the given <b>command</b>.<br />
+      <b>Flags</b> define the command line options for the command e.g. -Wall. The defined command can
+      either <b>replace default flags</b> defined in the target <i>file</i> or be appended to it.<br />
+      This table has a similar context menu as the files editor.
     </p>
-    <ul>
-      <li>Diagnostics</li>
-      <li>Documentation</li>
-      <li>ProjectFiles</li>
-      <li>Simulation</li>
-      <li>sourceFiles</li>
-    </ul>
     <h3>Dependent directories</h3>
     <p>
       <b>Dependent directories</b> can specify a freetext list of paths to directories on which this file

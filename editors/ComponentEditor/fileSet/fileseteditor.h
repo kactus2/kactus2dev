@@ -82,6 +82,7 @@ private:
 
 	//! No copying
 	FileSetEditor(const FileSetEditor& other);
+    void setupLayout();
 
 	//! No assignment
 	FileSetEditor& operator=(const FileSetEditor& other);
@@ -96,10 +97,10 @@ private:
 	NameGroupEditor nameEditor_;
 
 	//! \brief Used to manage groups of FileSet.
-	GroupManager groups_;
+	GroupManager groupsEditor_;
 
 	//! \brief Used to edit the default file builders of file set.
-	FileBuildersEditor fileBuilders_;
+	FileBuildersEditor fileBuilderEditor_;
 
 	//! \brief The editor to add/remove/edit the files of file set.
 	FilesEditor files_;
