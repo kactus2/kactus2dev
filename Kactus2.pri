@@ -125,6 +125,12 @@ HEADERS += ./common/Global.h \
     ./mainwindow/NewPages/NewSWDesignPage.h \
     ./mainwindow/NewPages/NewSystemPage.h \
     ./mainwindow/DrawingBoard/DrawingBoard.h \
+    ./mainwindow/SaveHierarchy/DocumentTreeBuilder.h \
+    ./mainwindow/SaveHierarchy/HierarchicalSaveBuildStrategy.h \
+    ./mainwindow/SaveHierarchy/HierarchicalSaveColumns.h \
+    ./mainwindow/SaveHierarchy/SaveAsItem.h \
+    ./mainwindow/SaveHierarchy/SaveHierarchyDelegate.h \
+    ./mainwindow/SaveHierarchy/SaveHierarchyDialog.h \
     ./settings/SettingsUpdater.h \
     ./settings/ComponentEditorSettingsPage.h \
     ./settings/SettingsPage.h \
@@ -742,6 +748,11 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./mainwindow/Ribbon/Ribbon.cpp \
     ./mainwindow/Ribbon/RibbonGroup.cpp \
     ./mainwindow/DrawingBoard/DrawingBoard.cpp \
+    ./mainwindow/SaveHierarchy/DocumentTreeBuilder.cpp \
+    ./mainwindow/SaveHierarchy/HierarchicalSaveBuildStrategy.cpp \
+    ./mainwindow/SaveHierarchy/SaveAsItem.cpp \
+    ./mainwindow/SaveHierarchy/SaveHierarchyDelegate.cpp \
+    ./mainwindow/SaveHierarchy/SaveHierarchyDialog.cpp \
     ./settings/ComponentEditorSettingsPage.cpp \
     ./settings/FileTypesDelegate.cpp \
     ./settings/FileTypeSettingsPage.cpp \
