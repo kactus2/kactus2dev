@@ -41,7 +41,7 @@ qreal HWConnectionEndpoint::getNameLength()
 //-----------------------------------------------------------------------------
 // Function: HWConnectionEndpont::shortenNameLabel()
 //-----------------------------------------------------------------------------
-void HWConnectionEndpoint::shortenNameLabel(qreal width)
+void HWConnectionEndpoint::shortenNameLabel(qreal /*width*/)
 {
-	width = 0;
+	
 }

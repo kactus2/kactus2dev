@@ -30,8 +30,8 @@
 //-----------------------------------------------------------------------------
 SystemMemoryMapHeaderWriter::SystemMemoryMapHeaderWriter(IPluginUtility* utility, QObject* parentObject):
 BaseMemoryMapHeaderWriter(utility),
-systemGeneratorSettings_(),
-parentObject_(parentObject)
+parentObject_(parentObject),
+systemGeneratorSettings_()
 {
 
 }

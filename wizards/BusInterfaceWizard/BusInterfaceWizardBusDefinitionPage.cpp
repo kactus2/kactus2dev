@@ -37,16 +37,17 @@ BusInterfaceWizardBusEditorPage::BusInterfaceWizardBusEditorPage(QSharedPointer<
     LibraryInterface* lh, QStringList physicalPorts, 
     BusInterfaceWizard* parent, 
     VLNV& absDefVLNV, 
-    SignalNamingPolicy namingPolicy )
+    SignalNamingPolicy namingPolicy)
     : QWizardPage(parent),
+    handler_(lh),
     component_(component),
     busIf_(busIf),
-    physicalPorts_(physicalPorts),
-    handler_(lh),
     absDefVLNV_(absDefVLNV),
+    physicalPorts_(physicalPorts),
     editor_(this, handler_, QSharedPointer<BusDefinition>(0), QSharedPointer<AbstractionDefinition>(0), true),
     portNamesPolicy_(namingPolicy),
     portMappings_(),
+    hasChanged_(false),
     mappingMode_(NO_GENERATION)
 {       
     setTitle(tr("Bus Definition"));

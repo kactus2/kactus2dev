@@ -157,11 +157,10 @@ private:
      *      @param [in] output          The output stream for generation.
      *      @param [in] drawSymbol      The rectangle used as a drawing symbol for decal.
      *      @param [in] gateTitle       The title of the gate.
-     *      @param [in] gateName        The name of the gate used as a decal name.    
-     *      @param [in] pinCount        The number of terminals in the decal.     
+     *      @param [in] gateName        The name of the gate used as a decal name.      
      */
-    void insertCAEDecal(QTextStream& output, QRect const& drawSymbol, QString const& gateTitle, 
-        QString const& gateName, int pinCount); 
+    void insertCAEDecal(QTextStream& output, QRect const& drawSymbol,
+        QString const& gateTitle, QString const& gateName); 
     
 
     /*!

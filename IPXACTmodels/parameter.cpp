@@ -29,8 +29,8 @@
 //-----------------------------------------------------------------------------
 // Function: Parameter::Parameter()
 //-----------------------------------------------------------------------------
-Parameter::Parameter(QDomNode & parameterNode): nameGroup_(parameterNode), attributes_(),
-value_(), valueAttributes_()
+Parameter::Parameter(QDomNode & parameterNode): nameGroup_(parameterNode),
+value_(), attributes_(), valueAttributes_(), bitWidthVector_(), vendorExtensions_()
 {
     attributes_ = XmlUtils::parseAttributes(parameterNode);
 

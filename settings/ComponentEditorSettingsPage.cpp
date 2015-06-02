@@ -182,10 +182,8 @@ void ComponentEditorSettingsPage::onSwHorizonSelectAll(int rowIndex)
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorSettingsPage::onSwVerticalSelectAll()
 //-----------------------------------------------------------------------------
-void ComponentEditorSettingsPage::onSwVerticalSelectAll(int columnIndex)
+void ComponentEditorSettingsPage::onSwVerticalSelectAll()
 {
-	columnIndex = 0;
-
 	bool checkBoxChecked = false;
 
 	for (int rowIndex = 0; rowIndex < workspaceSwCheckBoxes_.at(currentWorkspaceIndex_).size(); ++rowIndex)
@@ -367,7 +365,7 @@ void ComponentEditorSettingsPage::setSwTable(QTableWidget* table, QStringList ho
 	table->horizontalHeader()->setSelectionMode(QAbstractItemView::SingleSelection);
 	table->verticalHeader()->setSelectionMode(QAbstractItemView::SingleSelection);
 
-	connect(table->horizontalHeader(), SIGNAL(sectionClicked(int)), this, SLOT(onSwVerticalSelectAll(int)));
+	connect(table->horizontalHeader(), SIGNAL(sectionClicked(int)), this, SLOT(onSwVerticalSelectAll()));
 	connect(table->verticalHeader(), SIGNAL(sectionClicked(int)), this, SLOT(onSwHorizonSelectAll(int)));
 }
 

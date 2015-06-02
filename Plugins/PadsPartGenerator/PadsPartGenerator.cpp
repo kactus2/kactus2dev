@@ -325,7 +325,7 @@ bool PadsPartGenerator::generateCAEFile(QFile* file, const QString& partTitle, c
         QRect caeRect(0,0, PART_DEFAULT_WIDTH, pinCount/2 * PIN_SPAN + 5*PIN_SPAN);
 
         insertCAEHeader(caeFileStream, timestamp, gateName, pinCount);
-        insertCAEDecal(caeFileStream, caeRect, partTitle, gateName, pinCount);
+        insertCAEDecal(caeFileStream, caeRect, partTitle, gateName);
         insertCAETerminals(caeFileStream, caeRect, pinCount);
         caeFileStream << endl;
 
@@ -375,7 +375,7 @@ void PadsPartGenerator::insertCAEHeader(QTextStream& output, QString const& time
 // Function: PadsPartGenerator::generateCAEDecal()
 //-----------------------------------------------------------------------------
 void PadsPartGenerator::insertCAEDecal(QTextStream& output, QRect const& drawSymbol, 
-    QString const& gateTitle, QString const& gateName, int pinCount)
+    QString const& gateTitle, QString const& gateName)
 {   
     int partWidth = drawSymbol.width();
     int partHeight = drawSymbol.height();

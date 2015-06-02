@@ -186,11 +186,11 @@ private:
 	AddressSpaceVisualizationItem(const AddressSpaceVisualizationItem& other);
 	AddressSpaceVisualizationItem& operator=(const AddressSpaceVisualizationItem& other);
 
-    //! The bit width of the address space.
-	QString addressSpaceWidth_;
-
     //! The expression parser to use.
     QSharedPointer<ExpressionParser> expressionParser_;
+
+    //! The bit width of the address space.
+	QString addressSpaceWidth_;
 
 	//! Conflicted state. Item is conflicted if it overlaps with other items.
     bool conflicted_;

@@ -49,9 +49,9 @@ volatileEditor_(),
 accessEditor_(),
 resetValueEditor_(new QLineEdit(this)),
 resetMaskEditor_(new QLineEdit(this)),
-expressionParser_(expressionParser),
 resetValueValidator_(),
-resetMaskValidator_()
+resetMaskValidator_(),
+expressionParser_(expressionParser)
 {
     offsetEditor_->setFixedHeight(20);
     sizeEditor_->setFixedHeight(20);
@@ -400,7 +400,9 @@ bool SingleRegisterEditor::isResetValid(QString const& resetValue) const
         QString bits = match.captured("bits");
         bits.remove('_');
 
-        if (bits.size() == selectedRegister_->getSize() && (sizeOfBits.isEmpty() ||
+        unsigned int numberOfBitCharacters = bits.size();
+
+        if (numberOfBitCharacters == selectedRegister_->getSize() && (sizeOfBits.isEmpty() ||
             sizeOfBits.toInt() == selectedRegister_->getSize()))
         {
             return true;

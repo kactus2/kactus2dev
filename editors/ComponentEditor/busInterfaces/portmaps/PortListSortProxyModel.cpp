@@ -67,89 +67,50 @@ void PortListSortProxyModel::setFilterPorts(QStringList const& ports)
 //-----------------------------------------------------------------------------
 // Function: PortListSortProxyModel::setFilterInDirection()
 //-----------------------------------------------------------------------------
-void PortListSortProxyModel::setFilterInDirection(bool enabled)
+void PortListSortProxyModel::setFilterInDirection(bool filterInDirection)
 {
-    switch(filterDirection_)
+    if (filterDirection_ == IN && !filterInDirection)
     {
-    case IN:
-        {
-            if (!enabled)
-            {
-                filterDirection_ = ANY;
-            }
-            break;
-        }
-    case OUT:
-        {
-            if (enabled)
-            {
-                filterDirection_ = INOUT;
-            }
-            break;
-        }
-
-    case INOUT:
-        {
-            if (!enabled)
-            {
-                filterDirection_ = OUT;
-            }
-            break;
-        }
-
-    case ANY:
-    default:
-        {
-            if (enabled)
-            {
-                filterDirection_ = IN;
-            }
-        }
+        filterDirection_ = ANY;
     }
+    else if (filterDirection_ == OUT && filterInDirection)
+    {
+        filterDirection_ = INOUT;
+    }
+    else if (filterDirection_ == INOUT && !filterInDirection)
+    {
+        filterDirection_ = OUT;
+    }
+    else if (filterDirection_ == ANY && filterInDirection)
+    {
+        filterDirection_ = IN;
+    }
+    
     invalidateFilter();
 }
 
 //-----------------------------------------------------------------------------
 // Function: PortListSortProxyModel::setFilterOutDirection()
 //-----------------------------------------------------------------------------
-void PortListSortProxyModel::setFilterOutDirection(bool enabled)
+void PortListSortProxyModel::setFilterOutDirection(bool filterOutDirection)
 {
-    switch(filterDirection_)
+    if (filterDirection_ == IN && filterOutDirection)
     {
-    case IN:
-        {
-            if (enabled)
-            {
-                filterDirection_ = INOUT;
-            }
-            break;
-        }
-    case OUT:
-        {
-            if (!enabled)
-            {
-                filterDirection_ = ANY;
-            }
-            break;
-        }
-
-    case INOUT:
-        {
-            if (!enabled)
-            {
-                filterDirection_ = IN;
-            }
-        }
-
-    case ANY:
-    default:
-        {
-            if (enabled)
-            {
-                filterDirection_ = OUT;
-            }
-        }
+        filterDirection_ = INOUT; 
     }
+    else if (filterDirection_ == OUT && !filterOutDirection)
+    {
+        filterDirection_ = ANY;
+    }
+    else if (filterDirection_ == INOUT && !filterOutDirection)
+    {
+        filterDirection_ = IN;
+    }
+    else if (filterDirection_ == ANY && filterOutDirection)
+    {
+        filterDirection_ = OUT;
+    }
+
     invalidateFilter();
 }
 

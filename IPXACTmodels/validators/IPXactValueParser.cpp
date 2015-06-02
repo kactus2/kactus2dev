@@ -98,7 +98,7 @@ bool IPXactValueParser::isValidExpression(QString const& expression, QString con
 //-----------------------------------------------------------------------------
 // Function: IPXactValueParser::isArrayExpression()
 //-----------------------------------------------------------------------------
-bool IPXactValueParser::isArrayExpression(QString const& expression) const
+bool IPXactValueParser::isArrayExpression(QString const& /*expression*/) const
 {
     return false;
 }
@@ -106,7 +106,7 @@ bool IPXactValueParser::isArrayExpression(QString const& expression) const
 //-----------------------------------------------------------------------------
 // Function: IPXactValueParser::isPlainValue()
 //-----------------------------------------------------------------------------
-bool IPXactValueParser::isPlainValue(QString const& expression) const
+bool IPXactValueParser::isPlainValue(QString const& /*expression*/) const
 {
     return true;
 }

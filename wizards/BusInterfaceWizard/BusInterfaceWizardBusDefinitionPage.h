@@ -156,22 +156,23 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The abstraction definition VLNV.
-    VLNV absDefVLNV_;
-
     //! The library handler.
     LibraryInterface* handler_;
 
-    QStringList physicalPorts_;
-
-    //! The editor for bus and abstraction definition.
-    BusEditor editor_;
+    //! The component whose bus interface is being edited.
+    QSharedPointer<Component> component_;
 
     //! The bus interface being edited.
     QSharedPointer<BusInterface> busIf_;
 
-    //! The component whose bus interface is being edited.
-    QSharedPointer<Component> component_;
+    //! The abstraction definition VLNV.
+    VLNV absDefVLNV_;
+
+    //! The limited set of physical ports to show in the port maps.
+    QStringList physicalPorts_;
+
+    //! The editor for bus and abstraction definition.
+    BusEditor editor_;
 
     //! The source for logical signal names.
     SignalNamingPolicy portNamesPolicy_;

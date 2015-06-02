@@ -223,14 +223,14 @@ private:
      */
     QList<General::InterfaceMode> getOpposingModes(QSharedPointer<BusInterface> busIf);
 
-	//! The name label.
-    QGraphicsTextItem nameLabel_;
-
 	//! The bus interface.
 	QSharedPointer<BusInterface> busInterface_;
 
 	//! The library interface.
     LibraryInterface* lh_;
+
+    //! The name label.
+    QGraphicsTextItem nameLabel_;
 
     //! The position of the port before mouse move.
     QPointF oldPos_;

@@ -60,7 +60,7 @@ public slots:
 	 *
 	 *      @param [in] columnIndex   If software would have hierarchy, this selects it.
 	 */
-	void onSwVerticalSelectAll(int columnIndex);
+    void onSwVerticalSelectAll();
 
 	/*!
 	 *  Change the workspace index.

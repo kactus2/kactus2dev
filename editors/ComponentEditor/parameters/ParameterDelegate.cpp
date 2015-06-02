@@ -128,14 +128,9 @@ void ParameterDelegate::setEditorData(QWidget* editor, QModelIndex const& index)
 
         QModelIndex arrayLeftIndex = index.sibling(index.row(), arrayLeftColumn());
         int arrayLeftValue = arrayLeftIndex.data(Qt::ToolTipRole).toInt();
+
         QModelIndex arrayRightIndex = index.sibling(index.row(), arrayRightColumn());
         int arrayRightValue = arrayRightIndex.data(Qt::ToolTipRole).toInt();
-
-        int arrayStartIndex = arrayLeftValue;
-        if (arrayRightValue < arrayLeftValue)
-        {
-            arrayStartIndex = arrayRightValue;
-        }
 
         int arraySize = getArraySize(arrayLeftValue, arrayRightValue);
 

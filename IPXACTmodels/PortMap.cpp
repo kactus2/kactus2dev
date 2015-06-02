@@ -20,8 +20,8 @@
 //-----------------------------------------------------------------------------
 PortMap::PortMap(): 
 logicalPort_(),
+physicalPort_(),
 logicalVector_(QSharedPointer<Vector>(new Vector())), 
-physicalPort_(), 
 physicalVector_(QSharedPointer<Vector>(new Vector()))
 {
 
@@ -32,8 +32,8 @@ physicalVector_(QSharedPointer<Vector>(new Vector()))
 //-----------------------------------------------------------------------------
 PortMap::PortMap(QDomNode &portMap): 
 logicalPort_(),
+physicalPort_(),
 logicalVector_(),
-physicalPort_(), 
 physicalVector_()
 {
 	for (int i = 0; i < portMap.childNodes().count(); ++i) {
@@ -95,8 +95,8 @@ physicalVector_()
 //-----------------------------------------------------------------------------
 PortMap::PortMap( const PortMap& other ): 
 logicalPort_(other.logicalPort_),
-logicalVector_(),
 physicalPort_(other.physicalPort_),
+logicalVector_(),
 physicalVector_() {
 
 	if (other.logicalVector_)

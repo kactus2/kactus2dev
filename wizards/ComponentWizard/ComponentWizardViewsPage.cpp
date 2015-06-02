@@ -34,10 +34,10 @@ ComponentWizardViewsPage::ComponentWizardViewsPage(LibraryInterface* lh,
     library_(lh), 
     parent_(parent),
     editorTabs_(new QTabWidget(this)),
-    viewList_(new QListView(this)),
-    viewModel_(new ViewListModel(this)),
     addButton_(new QPushButton(QIcon(":/icons/common/graphics/add.png"), QString(), this)),
     removeButton_(new QPushButton(QIcon(":/icons/common/graphics/remove.png"), QString(), this)),
+    viewList_(new QListView(this)),
+    viewModel_(new ViewListModel(this)),
     parameterFinder_(parameterFinder),
     expressionFormatter_(expressionFormatter)
 {

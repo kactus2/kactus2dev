@@ -135,8 +135,8 @@ QVariant PortsModel::data(const QModelIndex& index, int role /*= Qt::DisplayRole
 	else if (Qt::BackgroundRole == role)
     {
         if (index.column() == PortColumns::ROW_NUMBER ||
-            index.column() == PortColumns::WIDTH && hasExpressionInLeftOrRightBound(portOnRow(index.row())) ||
-            index.column() == PortColumns::TYPE_DEF && !portOnRow(index.row())->hasType())
+            (index.column() == PortColumns::WIDTH && hasExpressionInLeftOrRightBound(portOnRow(index.row()))) ||
+            (index.column() == PortColumns::TYPE_DEF && !portOnRow(index.row())->hasType()))
         {
             return QColor("whiteSmoke");
         }

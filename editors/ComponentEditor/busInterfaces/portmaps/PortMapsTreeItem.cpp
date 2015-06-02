@@ -32,13 +32,12 @@ PortMapsTreeItem::PortMapsTreeItem() :
 // Function: PortMapsTreeItem::PortMapsTreeItem()
 //-----------------------------------------------------------------------------
 PortMapsTreeItem::PortMapsTreeItem(PortMapsTreeItem* parent, 
-QSharedPointer<Component> component, 
-QString const& name, ItemType type)
-: parent_(parent),
+    QSharedPointer<Component> component, QString const& name, ItemType type): 
 component_(component),
-type_(type),
-name_(name),
-children_()
+    parent_(parent),
+    type_(type),
+    name_(name),
+    children_()
 {
 }
 

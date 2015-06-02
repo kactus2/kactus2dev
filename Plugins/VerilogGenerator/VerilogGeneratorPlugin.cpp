@@ -125,8 +125,8 @@ QIcon VerilogGeneratorPlugin::getIcon() const
 // Function: VerilogGeneratorPlugin::checkGeneratorSupport()
 //-----------------------------------------------------------------------------
 bool VerilogGeneratorPlugin::checkGeneratorSupport(QSharedPointer<LibraryComponent const> libComp,
-    QSharedPointer<LibraryComponent const> libDesConf,
-    QSharedPointer<LibraryComponent const> libDes) const
+    QSharedPointer<LibraryComponent const> /*libDesConf*/,
+    QSharedPointer<LibraryComponent const> /*libDes*/) const
 {
     QSharedPointer<const Component> targetComponent = libComp.dynamicCast<const Component>();
     

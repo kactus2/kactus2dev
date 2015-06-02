@@ -38,7 +38,7 @@ SaveHierarchyDelegate::~SaveHierarchyDelegate()
 //-----------------------------------------------------------------------------
 // Function: SaveHierarchyDelegate::createEditor()
 //-----------------------------------------------------------------------------
-QWidget* SaveHierarchyDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const& option, 
+QWidget* SaveHierarchyDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const& /*option*/, 
     QModelIndex const& index) const
 {
     if (index.column() == HierarchicalSaveColumns::SAVE_AS_VLNV)

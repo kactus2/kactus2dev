@@ -122,11 +122,12 @@ private:
      */
     QWidget* createExpressionEditor(QWidget* parent) const;
 
+    //! The completer for parameter names in expressions.
+    QCompleter* parameterNameCompleter_;
+
     //! Finder for parameters in the containing component.
     QSharedPointer<ParameterFinder> parameterFinder_;
 
-    //! The completer for parameter names in expressions.
-    QCompleter* parameterNameCompleter_;
 };
 
 #endif // EXPRESSIONDELEGATE_H

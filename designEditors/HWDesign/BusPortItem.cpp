@@ -36,10 +36,13 @@
 BusPortItem::BusPortItem(QSharedPointer<BusInterface> busIf, LibraryInterface* lh,
                          bool packetized, QGraphicsItem *parent)
     : HWConnectionEndpoint(parent, !packetized),
-      busInterface_(busIf), nameLabel_("",this),
-	  lh_(lh), oldPos_(), 
+      busInterface_(busIf),
+	  lh_(lh),
+      nameLabel_("",this),
+      oldPos_(), 
 	  oldPortPositions_(),
-      offPageConnector_(0), oldName_()
+      offPageConnector_(0), 
+      oldName_()
 {
     Q_ASSERT_X(busIf, "BusPortItem constructor",
         "Null BusInterface pointer given as parameter");

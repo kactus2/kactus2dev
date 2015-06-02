@@ -38,8 +38,11 @@
 //-----------------------------------------------------------------------------
 ImportRunner::ImportRunner(QSharedPointer<ComponentParameterFinder> parameterFinder, QTabWidget* displayTabs,
     QObject* parent)
-    : QObject(parent), ImportPlugins_(), expressionParser_(new NullParser()),
+    : QObject(parent), 
+    expressionParser_(new NullParser()),
     modelParameterVisualizer_(0),
+    ImportPlugins_(),
+    analyzerPlugins_(),
     parameterFinder_(parameterFinder),
     displayTabs_(displayTabs)
 {

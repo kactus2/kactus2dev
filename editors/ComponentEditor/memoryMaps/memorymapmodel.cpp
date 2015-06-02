@@ -369,7 +369,7 @@ void MemoryMapModel::onAddItem( QModelIndex const& index )
         QString calculatedExpression = parseExpressionToDecimal(items_.at(itemIndex)->getBaseAddress());
         int addressBlockBaseAddress = calculatedExpression.toInt();
 
-        if (addressBlockBaseAddress > lastBaseAddress || itemIndex == items_.size() - 1 && lastBaseAddress == 0)
+        if (addressBlockBaseAddress > lastBaseAddress || (itemIndex == items_.size() - 1 && lastBaseAddress == 0))
         {
             QSharedPointer<AddressBlock> addressBlock = items_.at(itemIndex).dynamicCast<AddressBlock>();
             if (addressBlock)

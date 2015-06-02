@@ -25,10 +25,10 @@ childItems_(),
 editor_(NULL),
 locked_(true),
 highlight_(false),
-parent_(parent),
 referenceCounter_(0),
 parameterFinder_(0),
-expressionFormatter_(0)
+expressionFormatter_(0),
+parent_(parent)
 {
 
 	connect(this, SIGNAL(contentChanged(ComponentEditorItem*)),

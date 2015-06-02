@@ -96,9 +96,9 @@ public slots:
     /*!
      *  Sets the filter for out-direction.
      *
-     *      @param [in] enabled   If true, filter using out-direction.
+     *      @param [in] filterOutDirection   If true, filter using out-direction.
      */
-    virtual void setFilterOutDirection(bool enabled);
+    virtual void setFilterOutDirection(bool filterOutDirection);
 
     /*!
 	 *  Sets to show or hide already connected ports.
