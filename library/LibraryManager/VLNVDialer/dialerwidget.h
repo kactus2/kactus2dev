@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 11.7.2011
- *      Author: Antti Kamppi
- * 		filename: dialerwidget.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: dialerwidget.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 11.07.2011
+//
+// Description:
+// Contains the combo boxes to set search settings for vlnv-fields.
+//-----------------------------------------------------------------------------
 
 #ifndef DIALERWIDGET_H
 #define DIALERWIDGET_H
@@ -15,102 +19,100 @@
 
 class LibraryItem;
 
-/*! \brief Contains the combo boxes to set search settings for vlnv-fields.
- *
- */
-class DialerWidget : public QWidget {
+//-----------------------------------------------------------------------------
+//! Contains the combo boxes to set search settings for vlnv-fields.
+//-----------------------------------------------------------------------------
+class DialerWidget : public QWidget
+{
 	Q_OBJECT
 
 public:
 
-	/*! \brief The constructor
+	/*! The constructor
 	 *
-	 * \param parent Pointer to the owner of this widget.
+	 *      @param [in] parent  The owner of this widget.
 	 *
 	*/
 	DialerWidget(QWidget *parent);
 	
-	//! \brief The destructor
+	//! The destructor
 	virtual ~DialerWidget();
 
-	/*! \brief Set the root item used to create the suggestions for dialer.
+	/*! Set the root item used to create the suggestions for dialer.
 	 *
-	 * \param rootItem Pointer to the root item of the library.
+	 *      @param [in] rootItem    The root item of the library.
 	 *
 	*/
 	void setRootItem(const LibraryItem* rootItem);
 
 signals:
 
-	//! \brief Emitted when the text in vendor combobox is changed.
-	void vendorChanged(const QString& vendorText);
+	//! Emitted when the text in vendor combobox is changed.
+	void vendorChanged(QString const& vendorText);
 
-	//! \brief Emitted when the text in library combobox is changed.
-	void libraryChanged(const QString& libraryText);
+	//! Emitted when the text in library combobox is changed.
+	void libraryChanged(QString const& libraryText);
 
-	//! \brief Emitted when the text in name combobox is changed.
-	void nameChanged(const QString& nameText);
+	//! Emitted when the text in name combobox is changed.
+	void nameChanged(QString const& nameText);
 
-	//! \brief Emitted when the text in version combobox is changed.
-	void versionChanged(const QString& versionText);
+	//! Emitted when the text in version combobox is changed.
+	void versionChanged(QString const& versionText);
 
 public slots:
 
-	//! \brief Refresh the vendor list
+	//! Refresh the vendor list
 	void refreshVendors();
 
 private slots:
 
-	//! \brief Handler when the text in vendor combobox is changed.
-	void onVendorChanged(const QString& vendorText);
+	//! Handler when the text in vendor combobox is changed.
+	void onVendorChanged(QString const& vendorText);
 
-	//! \brief Handler when the text in library combobox is changed.
-	void onLibraryChanged(const QString& libraryText);
+	//! Handler when the text in library combobox is changed.
+	void onLibraryChanged(QString const& libraryText);
 
-	//! \brief Handler when the text in name combobox is changed.
-	void onNameChanged(const QString& nameText);
+	//! Handler when the text in name combobox is changed.
+	void onNameChanged(QString const& nameText);
 
-	//! \brief Handler when the text in version combobox is changed.
-	void onVersionChanged(const QString& versionText);
+	//! Handler when the text in version combobox is changed.
+	void onVersionChanged(QString const& versionText);
 
 private:
-	//! \brief No copying
+	//! No copying
 	DialerWidget(const DialerWidget& other);
-
-	//! \brief No assignment
 	DialerWidget& operator=(const DialerWidget& other);
 
-	//! \brief Disconnect the signals from combo boxes.
-	void disconnectBoxes();
+    void setupLayout();
 
-	//! \brief Connect signals from combo boxes.
+	//! Connect signals from combo boxes.
 	void connectBoxes();
 
-	//! \brief Box to set the vendor rules for search.
+	//! Box to set the vendor rules for search.
 	QComboBox vendorBox_;
 
-	//! \brief Box to set the library rules for search.
+	//! Box to set the library rules for search.
 	QComboBox libraryBox_;
 
-	//! \brief Box to set the name rules for search.
+	//! Box to set the name rules for search.
 	QComboBox nameBox_;
 
-	//! \brief Box to set the version rules for search.
+	//! Box to set the version rules for search.
 	QComboBox versionBox_;
 
-	//! \brief Pointer to the root item of the library.
+	//! The root item of the library.
 	const LibraryItem* root_;
 
-	//! \brief Pointers to library items that represent vendors.
+	//! The library items that represent vendors.
 	QList<LibraryItem*> vendors_;
 
-	//! \brief Pointers to library items that represent libraries.
+	//! The library items that represent libraries.
 	QList<LibraryItem*> libraries_;
 
-	//! \brief Pointers to library items that represent names.
+	//! The library items that represent names.
 	QList<LibraryItem*> names_;
 
-	//! \brief Pointers to library items that represent versions.
+	//! The library items that represent versions.
 	QList<LibraryItem*> versions_;
 };
 
