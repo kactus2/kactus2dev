@@ -38,6 +38,8 @@ MemoryVisualizationItem(parent),
 
 	setShowExpandableItem(false);
 	setExpansionRectVisible(false);
+
+    updateDisplay();
 }
 
 //-----------------------------------------------------------------------------

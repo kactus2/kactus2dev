@@ -40,6 +40,8 @@ expresionParser_(expressionParser)
 
     QBrush brush(KactusColors::REGISTER_COLOR);
 	setDefaultBrush(brush);
+
+    updateDisplay();
 }
 
 //-----------------------------------------------------------------------------

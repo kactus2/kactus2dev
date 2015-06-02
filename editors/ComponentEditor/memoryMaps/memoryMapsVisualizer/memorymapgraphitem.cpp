@@ -36,6 +36,8 @@ parentMemoryMap_(parentMemoryMap)
     Q_ASSERT(memoryMap_);
     QBrush brush(KactusColors::MEM_MAP_COLOR);
     setDefaultBrush(brush);
+
+    updateDisplay();
 }
 
 //-----------------------------------------------------------------------------

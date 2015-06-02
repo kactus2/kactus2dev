@@ -15,7 +15,7 @@
 #include <QDebug>
 
 //-----------------------------------------------------------------------------
-// Function: MemoryMapScene()
+// Function: MemoryMapScene::MemoryMapScene()
 //-----------------------------------------------------------------------------
 MemoryMapScene::MemoryMapScene(QObject *parent):
 QGraphicsScene(parent),
@@ -25,14 +25,14 @@ width_(VisualizerItem::DEFAULT_WIDTH)
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~MemoryMapScene()
+// Function: MemoryMapScene::~MemoryMapScene()
 //-----------------------------------------------------------------------------
 MemoryMapScene::~MemoryMapScene()
 {
 }
 
 //-----------------------------------------------------------------------------
-// Function: addMemGraphItem()
+// Function: MemoryMapScene::addMemGraphItem()
 //-----------------------------------------------------------------------------
 void MemoryMapScene::addMemGraphItem( VisualizerItem* memGraphItem )
 {
@@ -40,9 +40,11 @@ void MemoryMapScene::addMemGraphItem( VisualizerItem* memGraphItem )
 
     qreal yCoordinate = 0;
 
-    if (!memGraphItems_.isEmpty())
+    bool firstItem = memGraphItems_.isEmpty();
+
+    if (!firstItem)
     {        
-        yCoordinate = memGraphItems_.last()->itemTotalRect().bottom() + 10;
+        yCoordinate = memGraphItems_.last()->pos().y() + memGraphItems_.last()->itemTotalRect().height() + 10;
     }
 
     memGraphItem->setPos(0, yCoordinate);
@@ -55,6 +57,12 @@ void MemoryMapScene::addMemGraphItem( VisualizerItem* memGraphItem )
 
     // Update scene rect height.   
     QRectF rect = sceneRect();
+
+    if (firstItem)
+    {
+        rect = itemsBoundingRect();
+    }
+
     rect.setBottom(yCoordinate + memGraphItem->rect().height());
 
     setSceneRect(rect);
@@ -62,7 +70,7 @@ void MemoryMapScene::addMemGraphItem( VisualizerItem* memGraphItem )
 }
 
 //-----------------------------------------------------------------------------
-// Function: removeMemGraphItem()
+// Function: MemoryMapScene::removeMemGraphItem()
 //-----------------------------------------------------------------------------
 void MemoryMapScene::removeMemGraphItem( VisualizerItem* memGraphItem )
 {
@@ -93,7 +101,7 @@ void MemoryMapScene::removeMemGraphItem( VisualizerItem* memGraphItem )
 }
 
 //-----------------------------------------------------------------------------
-// Function: rePosition()
+// Function: MemoryMapScene::rePosition()
 //-----------------------------------------------------------------------------
 void MemoryMapScene::rePosition()
 {
@@ -114,7 +122,7 @@ void MemoryMapScene::rePosition()
 }
 
 //-----------------------------------------------------------------------------
-// Function: setWidth()
+// Function: MemoryMapScene::setWidth()
 //-----------------------------------------------------------------------------
 void MemoryMapScene::setWidth(int width)
 {
@@ -136,7 +144,7 @@ void MemoryMapScene::setWidth(int width)
 }
 
 //-----------------------------------------------------------------------------
-// Function: wheelEvent()
+// Function: MemoryMapScene::wheelEvent()
 //-----------------------------------------------------------------------------
 void MemoryMapScene::wheelEvent(QGraphicsSceneWheelEvent * wheelEvent)
 {   

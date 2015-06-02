@@ -33,6 +33,8 @@ expressionParser_(expressionParser)
 	Q_ASSERT(addrBlock_);
 	QBrush brush(KactusColors::ADDR_BLOCK_COLOR);
 	setDefaultBrush(brush);
+
+    updateDisplay();
 }
 
 //-----------------------------------------------------------------------------
