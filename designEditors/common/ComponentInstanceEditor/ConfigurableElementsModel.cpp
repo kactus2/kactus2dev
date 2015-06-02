@@ -369,7 +369,7 @@ bool ConfigurableElementsModel::isParameterEditable(QModelIndex const& index) co
 //-----------------------------------------------------------------------------
 void ConfigurableElementsModel::setDesignConfigurationModel(QSharedPointer<DesignConfiguration> designConfiguration)
 {
-    designConfiguration_ = designConfiguration.data();
+    designConfiguration_ = designConfiguration;
 }
 
 //-----------------------------------------------------------------------------

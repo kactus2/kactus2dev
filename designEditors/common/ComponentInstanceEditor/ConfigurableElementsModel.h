@@ -383,7 +383,7 @@ private:
     ParameterValidator2014* validator_;
 
     //! The design configuration model used to find the currently active view of the component instance.
-    DesignConfiguration* designConfiguration_;
+    QSharedPointer<DesignConfiguration> designConfiguration_;
 
     //! The list containing all the root items in the model.
     QList<QString*> rootItems_;
