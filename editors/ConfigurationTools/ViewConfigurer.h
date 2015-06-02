@@ -66,6 +66,11 @@ private slots:
      */
     void saveAndCloseConfigurer();
 
+    /*!
+     *  Remove the view overrides from the design configuration.
+     */
+    void clearViewOverrides();
+
 private:
     // No copying allowed.
     ViewConfigurer(ViewConfigurer const& rhs);
@@ -166,6 +171,9 @@ private:
 
     //! The commit button.
     QPushButton* commitButton_; 
+
+    //! The button for removing the view overrides.
+    QPushButton* clearButton_;
 };
 
 //-----------------------------------------------------------------------------

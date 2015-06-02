@@ -864,7 +864,7 @@ void MainWindow::setupActions()
 	connect(actExit_, SIGNAL(triggered()), this, SLOT(close()), Qt::UniqueConnection);
 
     actionConfigureViews_ = new QAction(QIcon(":/icons/common/graphics/viewConfiguration.png"),
-        tr("View configuration"), this);
+        tr("View Configuration"), this);
     connect(actionConfigureViews_, SIGNAL(triggered()), this, SLOT(onConfigureViews()), Qt::UniqueConnection);
 
     connectVisibilityControls();

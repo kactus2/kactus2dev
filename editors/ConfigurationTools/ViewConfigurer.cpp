@@ -38,8 +38,11 @@ selectedDesignConfiguration_(selectedDesignConfiguration),
 viewsTree_(new QTreeWidget(this)),
 libraryHandler_(libraryHandler),
 usedHierarchicalComponentVLNVS_(),
-commitButton_ (new QPushButton(tr("Save"), this))
+commitButton_ (new QPushButton(QIcon(":/icons/common/graphics/file-save.png"), tr("Save"), this)),
+clearButton_(new QPushButton(QIcon(":/icons/common/graphics/cleanup.png"), tr("Clear"), this))
 {
+    clearButton_->setEnabled(false);
+
     setMinimumWidth(600);
     setMinimumHeight(400);
 
@@ -123,16 +126,19 @@ ViewConfigurer::~ViewConfigurer()
 //-----------------------------------------------------------------------------
 void ViewConfigurer::setupLayout()
 {
+    connect(clearButton_, SIGNAL(released()), this, SLOT(clearViewOverrides()), Qt::UniqueConnection);
+
     connect(commitButton_, SIGNAL(released()), this, SLOT(saveAndCloseConfigurer()), Qt::UniqueConnection);
 
-    QPushButton* cancelButton (new QPushButton(tr("Cancel"), this));
-    connect(cancelButton, SIGNAL(released()), this, SLOT(reject()), Qt::UniqueConnection);
+    QPushButton* closeButton (new QPushButton(tr("Close"), this));
+    connect(closeButton, SIGNAL(released()), this, SLOT(reject()), Qt::UniqueConnection);
 
     QDialogButtonBox* buttonBox (new QDialogButtonBox(Qt::Horizontal));
+    buttonBox->addButton(clearButton_, QDialogButtonBox::ActionRole);
     buttonBox->addButton(commitButton_, QDialogButtonBox::ActionRole);
-    buttonBox->addButton(cancelButton, QDialogButtonBox::ActionRole);
+    buttonBox->addButton(closeButton, QDialogButtonBox::ActionRole);
 
-    setWindowTitle("Configuration of views");
+    setWindowTitle("Configure view overrides");
 
     QVBoxLayout* mainLayout (new QVBoxLayout(this));
     mainLayout->addWidget(viewsTree_);
@@ -232,7 +238,7 @@ void ViewConfigurer::checkInstanceDesign(QSharedPointer<Component> component, QS
 }
 
 //-----------------------------------------------------------------------------
-// Function: ViewConfigurer::createTreeWithExistingItems()
+// Function: ViewConfigurer::modifyTreeWithExistingViewGroup()
 //-----------------------------------------------------------------------------
 void ViewConfigurer::modifyTreeWithExistingViewGroup()
 {
@@ -242,6 +248,8 @@ void ViewConfigurer::modifyTreeWithExistingViewGroup()
 
         if (!viewOverrides.isEmpty())
         {
+            clearButton_->setEnabled(true);
+
             for (int treeTopIndex = 0; treeTopIndex < viewsTree_->topLevelItemCount(); ++treeTopIndex)
             {
                 parseExistingInstanceView(viewsTree_->topLevelItem(treeTopIndex), viewOverrides);
@@ -290,6 +298,7 @@ void ViewConfigurer::onInstanceViewChanged(QTreeWidgetItem* changedItem, int col
 
         if (isChangedItemTopItem(changedItem))
         {
+            clearButton_->setEnabled(false);
             changedTopItemChangesDesignConfiguration(component, viewName);
         }
 
@@ -447,5 +456,43 @@ void ViewConfigurer::parseChildTreeItem(QTreeWidgetItem* treeItem, QMap<QString,
         {
             parseChildTreeItem(treeItem->child(itemChildIndex), viewOverrides);
         }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ViewConfigurer::clearViewOverrides()
+//-----------------------------------------------------------------------------
+void ViewConfigurer::clearViewOverrides()
+{
+    if(selectedDesignConfiguration_)
+    {
+        selectedDesignConfiguration_->setKactus2ViewOverrides(QMap<QString, QString> ());
+        libraryHandler_->writeModelToFile(selectedDesignConfiguration_);
+
+        for (int treeTopIndex = 0; treeTopIndex < viewsTree_->topLevelItemCount(); ++treeTopIndex)
+        {
+            QTreeWidgetItem* treeTopItem = viewsTree_->topLevelItem(treeTopIndex);
+
+            treeTopItem->takeChildren();
+
+            QString topItemView = treeTopItem->text(ViewConfigurerColumns::INSTANCE_VIEW);
+            QString topItemVLNV = treeTopItem->text(ViewConfigurerColumns::ITEM_VLNV);
+            VLNV topComponentVLNV (VLNV::COMPONENT, topItemVLNV, ":");
+
+            QSharedPointer<Component> topComponent = libraryHandler_->getModel(topComponentVLNV).
+                dynamicCast<Component>();
+
+            disconnect(viewsTree_, SIGNAL(itemChanged(QTreeWidgetItem*, int)),
+                this, SLOT(onInstanceViewChanged(QTreeWidgetItem*, int)));
+
+            checkInstanceDesign(topComponent, topItemView, treeTopItem);
+
+            connect(viewsTree_, SIGNAL(itemChanged(QTreeWidgetItem*, int)),
+                this, SLOT(onInstanceViewChanged(QTreeWidgetItem*, int)), Qt::UniqueConnection);
+        }
+
+        clearButton_->setEnabled(false);
+
+        setCommmitButtonEnabledStatus();
     }
 }
