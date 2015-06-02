@@ -107,10 +107,10 @@ private:
      *  Change the view data of the tree item, if found in the stored configuration.
      *
      *      @param [in] currentTreeItem     The current tree item.
-     *      @param [in] viewGroup           The stored view configuration group.
+     *      @param [in] viewOverrides       The stored view overrides.
      */
-    void parseExistingViewGroup(QTreeWidgetItem* currentTreeItem, QSharedPointer<Kactus2Group> viewGroup);
-    
+    void parseExistingInstanceView(QTreeWidgetItem* currentTreeItem, QMap<QString, QString> viewOverrides);
+
     /*!
      *  Check if the changed item is a top level tree item.
      *
@@ -143,10 +143,10 @@ private:
     /*!
      *  Prepare the tree items for saving.
      *
-     *      @param [in] treeItem    The current tree item.
-     *      @param [in] viewGroup   The view configuration group.
+     *      @param [in] treeItem        The current tree item.
+     *      @param [in] viewOverrides   The view overrides.
      */
-    void parseChildTreeItem(QTreeWidgetItem* treeItem, QSharedPointer<Kactus2Group> viewGroup);
+    void parseChildTreeItem(QTreeWidgetItem* treeItem, QMap<QString, QString>& viewOverrides);
 
     //-----------------------------------------------------------------------------
     // Data.

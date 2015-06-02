@@ -363,6 +363,20 @@ public:
      */
     QMap<QString, QString> getConfigurableElementValues(QString const& instanceUUID) const;
 
+    /*!
+     *  Gets the override view configuration.
+     *
+     *      @return Pairs of instance id and their overridden views.
+     */
+    QMap<QString, QString> getKactus2ViewOverrides() const;
+
+    /*!
+     *  Sets the override view configuration.
+     *
+     *      @param [in] kactus2ViewOverrides    The new view overrides.
+     */
+    void setKactus2ViewOverrides(QMap<QString, QString> kactus2ViewOverrides);
+
 private:
 
     /*!

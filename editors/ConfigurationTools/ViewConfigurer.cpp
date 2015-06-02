@@ -238,48 +238,35 @@ void ViewConfigurer::modifyTreeWithExistingViewGroup()
 {
     if(selectedDesignConfiguration_)
     {
-        QList<QSharedPointer<VendorExtension> > designConfigVendors =
-            selectedDesignConfiguration_->getVendorExtensions();
+        QMap<QString, QString> viewOverrides = selectedDesignConfiguration_->getKactus2ViewOverrides();
 
-        foreach (QSharedPointer<VendorExtension> extension, designConfigVendors)
+        if (!viewOverrides.isEmpty())
         {
-            if (extension->type() == "kactus2:viewConfigurations")
+            for (int treeTopIndex = 0; treeTopIndex < viewsTree_->topLevelItemCount(); ++treeTopIndex)
             {
-                QSharedPointer<Kactus2Group> viewGroup = extension.dynamicCast<Kactus2Group>();
-
-                for (int treeTopIndex = 0; treeTopIndex < viewsTree_->topLevelItemCount(); ++treeTopIndex)
-                {
-                    parseExistingViewGroup(viewsTree_->topLevelItem(treeTopIndex), viewGroup);
-                }
-
-                return;
+                parseExistingInstanceView(viewsTree_->topLevelItem(treeTopIndex), viewOverrides);
             }
         }
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: ViewConfigurer::parseExistingViewGroup()
+// Function: ViewConfigurer::parseExistingInstanceView()
 //-----------------------------------------------------------------------------
-void ViewConfigurer::parseExistingViewGroup(QTreeWidgetItem* currentTreeItem,
-    QSharedPointer<Kactus2Group> viewGroup)
+void ViewConfigurer::parseExistingInstanceView(QTreeWidgetItem* currentTreeItem, QMap<QString, QString> viewOverrides)
 {
-    foreach (QSharedPointer<VendorExtension> extension, viewGroup->getByType("kactus2:instanceView"))
+    QString treeItemOverrideView = viewOverrides.value(currentTreeItem->text(ViewConfigurerColumns::INSTANCE_ID));
+
+    if (!treeItemOverrideView.isEmpty())
     {
-        QSharedPointer<Kactus2Placeholder> viewConfiguration = extension.dynamicCast<Kactus2Placeholder>();
+        currentTreeItem->setText(ViewConfigurerColumns::INSTANCE_VIEW, treeItemOverrideView);
 
-        if (viewConfiguration->getAttributeValue("id") == currentTreeItem->text(ViewConfigurerColumns::INSTANCE_ID))
-        {
-            currentTreeItem->setText(ViewConfigurerColumns::INSTANCE_VIEW,
-                viewConfiguration->getAttributeValue("viewName"));
-
-            onInstanceViewChanged(currentTreeItem, ViewConfigurerColumns::INSTANCE_VIEW);
-        }
+        onInstanceViewChanged(currentTreeItem, ViewConfigurerColumns::INSTANCE_VIEW);
     }
 
-    for (int treeChildItem = 0; treeChildItem < currentTreeItem->childCount(); ++treeChildItem)
+    for (int treeItemChildIndex = 0; treeItemChildIndex < currentTreeItem->childCount(); ++treeItemChildIndex)
     {
-        parseExistingViewGroup(currentTreeItem->child(treeChildItem), viewGroup);
+        parseExistingInstanceView(currentTreeItem->child(treeItemChildIndex), viewOverrides);
     }
 }
 
@@ -425,38 +412,18 @@ void ViewConfigurer::saveAndCloseConfigurer()
 {
     if(selectedDesignConfiguration_)
     {
-        QList<QSharedPointer<VendorExtension> > designConfigVendors =
-            selectedDesignConfiguration_->getVendorExtensions();
-
-        foreach (QSharedPointer<VendorExtension> extension, designConfigVendors)
+        QMap<QString, QString> viewOverrides;
+        for (int treetopIndex = 0; treetopIndex < viewsTree_->topLevelItemCount(); ++treetopIndex)
         {
-            if (extension->type() == "kactus2:viewConfigurations")
-            {
-                designConfigVendors.removeAll(extension);
-                break;
-            }
-        }
-
-        QSharedPointer<Kactus2Group> viewGroup(new Kactus2Group("kactus2:viewConfigurations"));
-        bool viewGroupIsEmpty = true;
-
-        for (int treeIndex = 0; treeIndex < viewsTree_->topLevelItemCount(); ++treeIndex)
-        {
-            QTreeWidgetItem* topItem = viewsTree_->topLevelItem(treeIndex);
+            QTreeWidgetItem* topItem = viewsTree_->topLevelItem(treetopIndex);
 
             for (int topItemChildIndex = 0; topItemChildIndex < topItem->childCount(); ++topItemChildIndex)
             {
-                parseChildTreeItem(topItem->child(topItemChildIndex), viewGroup);
-                viewGroupIsEmpty = false;
+                parseChildTreeItem(topItem->child(topItemChildIndex), viewOverrides);
             }
         }
 
-        if (!viewGroupIsEmpty)
-        {
-            designConfigVendors.append(viewGroup);
-            selectedDesignConfiguration_->setVendorExtensions(designConfigVendors);
-        }
-
+        selectedDesignConfiguration_->setKactus2ViewOverrides(viewOverrides);
         libraryHandler_->writeModelToFile(selectedDesignConfiguration_);
     }
 
@@ -466,22 +433,19 @@ void ViewConfigurer::saveAndCloseConfigurer()
 //-----------------------------------------------------------------------------
 // Function: ViewConfigurer::parseChildTreeItem()
 //-----------------------------------------------------------------------------
-void ViewConfigurer::parseChildTreeItem(QTreeWidgetItem* treeItem, QSharedPointer<Kactus2Group> viewGroup)
+void ViewConfigurer::parseChildTreeItem(QTreeWidgetItem* treeItem, QMap<QString, QString>& viewOverrides)
 {
     QString treeItemID = treeItem->text(ViewConfigurerColumns::INSTANCE_ID);
     QString treeItemView = treeItem->text(ViewConfigurerColumns::INSTANCE_VIEW);
-    
+
     if (treeItemView != ViewConfigurerColumns::NOVIEWTEXT &&
         treeItemView != ViewConfigurerColumns::CYCLICCOMPONENTTEXT)
     {
-        QSharedPointer<Kactus2Placeholder> treeItemExtension(new Kactus2Placeholder("kactus2:instanceView"));
-        treeItemExtension->setAttribute("id", treeItemID);
-        treeItemExtension->setAttribute("viewName", treeItemView);
-        viewGroup->addToGroup(treeItemExtension);
+        viewOverrides.insert(treeItemID, treeItemView);
 
         for (int itemChildIndex = 0; itemChildIndex < treeItem->childCount(); ++itemChildIndex)
         {
-            parseChildTreeItem(treeItem->child(itemChildIndex), viewGroup);
+            parseChildTreeItem(treeItem->child(itemChildIndex), viewOverrides);
         }
     }
 }

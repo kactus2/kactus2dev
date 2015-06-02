@@ -12,4 +12,6 @@
 TEMPLATE = subdirs
 
 CONFIG += testcase
-SUBDIRS += documentGenerator/tst_documentGenerator.pro
+
+SUBDIRS += documentGenerator/tst_documentGenerator.pro \
+		quartusGenerator/tst_QuartusGenerator.pro

@@ -64,6 +64,13 @@ public:
 	 */
 	void generateProject(QString outputPath, const QString& top_entity);
 
+    /*!
+     *  Replace the printed time with the given text.
+     *
+     *      @param [in] newTime     The replacement for the printed time.
+     */
+    void replaceTime(QString const& newTime);
+
 signals:
 
 	//! \brief Send error message to user.
@@ -153,6 +160,9 @@ private:
 
 	//! \brief Pointer to the owner of this generator.
 	QWidget* parent_;
+
+    //! Time replacement for the creation time. Used in tests.
+    QString timeReplacement_;
 };
 
 #endif /* QUARTUSGENERATOR_H_ */

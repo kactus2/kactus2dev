@@ -935,6 +935,76 @@ void DesignConfiguration::setConfigurableElementValues(QString const& instanceUU
 }
 
 //-----------------------------------------------------------------------------
+// Function: designconfiguration::getKactsu2ViewOverrides()
+//-----------------------------------------------------------------------------
+QMap<QString, QString> DesignConfiguration::getKactus2ViewOverrides() const
+{
+    QSharedPointer<Kactus2Group> overrideGroup;
+    foreach (QSharedPointer<VendorExtension> extension, vendorExtensions_)
+    {
+        if (extension->type() == "kactus2:viewOverrides")
+        {
+            overrideGroup = extension.dynamicCast<Kactus2Group>();
+            break;
+        }
+    }
+
+    QMap <QString, QString> viewOverrides;
+
+    if (overrideGroup)
+    {
+        foreach (QSharedPointer<VendorExtension> extension, overrideGroup->getByType("kactus2:instanceView"))
+        {
+            QSharedPointer<Kactus2Placeholder> viewExtension = extension.dynamicCast<Kactus2Placeholder>();
+
+            if (viewExtension)
+            {
+                QString viewOverrideId = viewExtension->getAttributeValue("id");
+                QString viewOverrideValue = viewExtension->getAttributeValue("viewName");
+
+                viewOverrides.insert(viewOverrideId, viewOverrideValue);
+            }
+        }
+    }
+
+    return viewOverrides;
+}
+
+//-----------------------------------------------------------------------------
+// Function: designconfiguration::setKactus2ViewOverrides()
+//-----------------------------------------------------------------------------
+void DesignConfiguration::setKactus2ViewOverrides(QMap<QString, QString> kactus2ViewOverrides)
+{
+    foreach (QSharedPointer<VendorExtension> extension, vendorExtensions_)
+    {
+        if (extension->type() == "kactus2:viewOverrides")
+        {
+            vendorExtensions_.removeAll(extension);
+            break;
+        }
+    }
+
+    if (!kactus2ViewOverrides.isEmpty())
+    {
+        QSharedPointer<Kactus2Group> overrideGroup (new Kactus2Group("kactus2:viewOverrides"));
+
+        QMap<QString, QString>::const_iterator overrideIndex = kactus2ViewOverrides.constBegin();
+        while (overrideIndex != kactus2ViewOverrides.constEnd())
+        {
+            QSharedPointer<Kactus2Placeholder> treeItemExtension(new Kactus2Placeholder("kactus2:instanceView"));
+            treeItemExtension->setAttribute("id", overrideIndex.key());
+            treeItemExtension->setAttribute("viewName", overrideIndex.value());
+
+            overrideGroup->addToGroup(treeItemExtension);
+
+            ++overrideIndex;
+        }
+
+        vendorExtensions_.append(overrideGroup);
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: DesignConfiguration::findOrCreateInstanceExtension()
 //-----------------------------------------------------------------------------
 QSharedPointer<VendorExtension> DesignConfiguration::findOrCreateInstanceExtension(QString const& instanceUUID)
@@ -1010,7 +1080,7 @@ void DesignConfiguration::parseVendorExtensions(QDomNode const& extensionsNode)
             parseConfigurableElementValues(extensionNode);
         }
 
-        else if (extensionNode.nodeName() == "kactus2:viewConfigurations")
+        else if (extensionNode.nodeName() == "kactus2:viewOverrides")
         {
             parseViewConfigurationValues(extensionNode);
         }
@@ -1062,7 +1132,7 @@ void DesignConfiguration::parseConfigurableElementValues(QDomNode const& extensi
 //-----------------------------------------------------------------------------
 void DesignConfiguration::parseViewConfigurationValues(QDomNode const& extensionNode)
 {
-    QSharedPointer<Kactus2Group> viewGroup(new Kactus2Group("kactus2:viewConfigurations"));
+    QSharedPointer<Kactus2Group> viewGroup(new Kactus2Group("kactus2:viewOverrides"));
 
     for (int i = 0; i < extensionNode.childNodes().size(); ++i)
     {

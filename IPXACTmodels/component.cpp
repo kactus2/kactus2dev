@@ -1453,7 +1453,7 @@ bool Component::isValid() const
     foreach (QSharedPointer<SWView> softwareView, swViews_)
     {
         if (softwareViewNames.contains(softwareView->getName()) ||
-            softwareView->isValid(fileSetNames, getCpuNames()))
+            !softwareView->isValid(fileSetNames, getCpuNames()))
         {
             return false;
         }
@@ -1467,7 +1467,7 @@ bool Component::isValid() const
     foreach (QSharedPointer<SystemView> currentSystemView, systemViews_)
     {
         if (systemViewNames.contains(currentSystemView->getName()) ||
-            currentSystemView->isValid(fileSetNames, getViewNames()))
+            !currentSystemView->isValid(fileSetNames, getViewNames()))
         {
             return false;
         }
