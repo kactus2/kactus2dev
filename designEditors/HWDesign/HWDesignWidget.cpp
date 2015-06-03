@@ -32,7 +32,6 @@
 #include <IPXACTmodels/generaldeclarations.h>
 
 #include <kactusGenerators/vhdlGenerator/vhdlgenerator2.h>
-#include <kactusGenerators/quartusGenerator/quartusgenerator.h>
 #include <kactusGenerators/modelsimGenerator/modelsimgenerator.h>
 
 #include <QMessageBox>
@@ -684,39 +683,6 @@ void HWDesignWidget::onVhdlGenerate() {
 			emit refresh(this);
 		}
 	}
-}
-
-void HWDesignWidget::onQuartusGenerate() {
-
-	if (isModified() && askSaveFile()) {
-		save();
-	}
-
-	QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(*getEditedComponent()->getVlnv());
-	QSharedPointer<Component> component = libComp.staticCast<Component>();
-
-	QString path = QFileDialog::getExistingDirectory(this,
-		tr("Set the directory where the Quartus project is created to"),
-		getLibraryInterface()->getPath(*getEditedComponent()->getVlnv()));
-
-	// if user clicks cancel then nothing is created
-	if (path.isEmpty())
-		return;
-
-	// create the quartus project
-	QuartusGenerator quartusGen(getLibraryInterface(), this);
-	connect(&quartusGen, SIGNAL(errorMessage(const QString&)),
-		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
-	connect(&quartusGen, SIGNAL(noticeMessage(const QString&)),
-		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
-
-	// try to find the pin maps
-	quartusGen.setBoardName(component);
-
-	// parse the files from components
-	quartusGen.parseFiles(component, getOpenViewName());
-
-	quartusGen.generateProject(path, component->getVlnv()->getName());
 }
 
 void HWDesignWidget::onModelsimGenerate() {

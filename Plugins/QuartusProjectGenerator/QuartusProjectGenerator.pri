@@ -7,8 +7,8 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../MockObjects/LibraryMock.h \
-    ../../../Plugins/QuartusProjectGenerator/QuartusGenerator.h
-SOURCES += ../../../Plugins/QuartusProjectGenerator/QuartusGenerator.cpp \
-    ../../MockObjects/LibraryMock.cpp \
-    ./tst_QuartusGenerator.cpp
+HEADERS += ./QuartusProjectGenerator.h \
+    ./QuartusGenerator.h
+SOURCES += ./QuartusProjectGenerator.cpp \
+    ./QuartusGenerator.cpp
+RESOURCES += QuartusProjectGenerator.qrc

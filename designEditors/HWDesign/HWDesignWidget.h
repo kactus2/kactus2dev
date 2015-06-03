@@ -82,9 +82,6 @@ public slots:
 	//! \brief Called when user clicks the generate top-vhdl icon
 	void onVhdlGenerate();
 
-	//! \brief Called when user clicks the generate quartus project icon
-	void onQuartusGenerate();
-
 	//! \brief Called when user clicks the generate modelsim icon
 	void onModelsimGenerate();
 

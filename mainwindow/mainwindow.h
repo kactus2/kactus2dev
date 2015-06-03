@@ -210,9 +210,6 @@ public slots:
     //! Generates the ModelSim makefile from the current design.
     void generateModelSim();
 
-    //! Generates the Quartus project from the current design.
-    void generateQuartus();
-
 	//! \brief Generates the documentation for the current component/design.
 	void generateDoc();
 
@@ -849,9 +846,6 @@ private:
 
     //! Action to generate a ModelSim makefile from a design.
     QAction* actGenModelSim_;
-
-    //! Action to generate a Quartus project from a design.
-    QAction* actGenQuartus_;
 
 	//! \brief Action to generate the documentation for a component.
 	QAction* actGenDocumentation_;

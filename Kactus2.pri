@@ -126,10 +126,10 @@ HEADERS += ./common/Global.h \
     ./mainwindow/NewPages/NewSystemPage.h \
     ./mainwindow/DrawingBoard/DrawingBoard.h \
     ./mainwindow/SaveHierarchy/DocumentTreeBuilder.h \
-    ./mainwindow/SaveHierarchy/HierarchicalSaveBuildStrategy.h \
     ./mainwindow/SaveHierarchy/HierarchicalSaveColumns.h \
     ./mainwindow/SaveHierarchy/SaveAsItem.h \
     ./mainwindow/SaveHierarchy/SaveHierarchyDelegate.h \
+    ./mainwindow/SaveHierarchy/HierarchicalSaveBuildStrategy.h \
     ./mainwindow/SaveHierarchy/SaveHierarchyDialog.h \
     ./settings/SettingsUpdater.h \
     ./settings/ComponentEditorSettingsPage.h \
@@ -643,8 +643,7 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/vhdlGenerator/vhdlport.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.h
+    ./kactusGenerators/modelsimGenerator/modelsimgenerator.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -1222,6 +1221,5 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
-    ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp
+    ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp
 RESOURCES += kactus.qrc

@@ -533,9 +533,6 @@
     <Filter Include="Source Files\kactusGenerators\modelsimGenerator">
       <UniqueIdentifier>{4697ea43-7841-4607-b56a-5d057f770e05}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\kactusGenerators\quartusGenerator">
-      <UniqueIdentifier>{4ab964a4-d2c1-45c6-be87-82877944ff93}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\kactusGenerators">
       <UniqueIdentifier>{92fda97e-e51f-4e8f-94dc-dd7b59575d10}</UniqueIdentifier>
     </Filter>
@@ -547,9 +544,6 @@
     </Filter>
     <Filter Include="Header Files\kactusGenerators\modelsimGenerator">
       <UniqueIdentifier>{40496d77-2846-4a5a-a656-02401bc3b522}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\kactusGenerators\quartusGenerator">
-      <UniqueIdentifier>{9fa58811-55e5-451f-aa5a-9513f855e5d1}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\designEditors\common">
       <UniqueIdentifier>{4dbcb3e0-06d1-48aa-9b91-0766a72b6575}</UniqueIdentifier>
@@ -2032,9 +2026,6 @@
     <ClCompile Include="kactusGenerators\modelsimGenerator\modelsimgenerator.cpp">
       <Filter>Source Files\kactusGenerators\modelsimGenerator</Filter>
     </ClCompile>
-    <ClCompile Include="kactusGenerators\quartusGenerator\quartusgenerator.cpp">
-      <Filter>Source Files\kactusGenerators\quartusGenerator</Filter>
-    </ClCompile>
     <ClCompile Include="kactusGenerators\vhdlGenerator\vhdlcomponentdeclaration.cpp">
       <Filter>Source Files\kactusGenerators\vhdlGenerator</Filter>
     </ClCompile>
@@ -2061,9 +2052,6 @@
     </ClCompile>
     <ClCompile Include="kactusGenerators\vhdlGenerator\vhdlsignal.cpp">
       <Filter>Source Files\kactusGenerators\vhdlGenerator</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_quartusgenerator.cpp">
-      <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_modelsimgenerator.cpp">
       <Filter>Generated Files</Filter>
@@ -4697,9 +4685,6 @@
     </CustomBuild>
     <CustomBuild Include="kactusGenerators\vhdlGenerator\vhdlsignal.h">
       <Filter>Header Files\kactusGenerators\vhdlGenerator</Filter>
-    </CustomBuild>
-    <CustomBuild Include="kactusGenerators\quartusGenerator\quartusgenerator.h">
-      <Filter>Header Files\kactusGenerators\quartusGenerator</Filter>
     </CustomBuild>
     <CustomBuild Include="kactusGenerators\modelsimGenerator\modelsimgenerator.h">
       <Filter>Header Files\kactusGenerators\modelsimGenerator</Filter>

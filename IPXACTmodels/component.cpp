@@ -2403,18 +2403,6 @@ void Component::changeFileName( const QString& from, const QString& to ) {
 	}
 }
 
-File* Component::getQuartusPinmap() const {
-
-	foreach (QSharedPointer<FileSet> fileSet, fileSets_) {
-		File* file = fileSet->getQuartusPinMap();
-		if (file)
-			return file;
-	}
-
-	// no pin map was found
-	return 0;
-}
-
 void Component::setVlnv( const VLNV& vlnv ) {
 	LibraryComponent::setVlnv(vlnv);
 	LibraryComponent::vlnv_->setType(VLNV::COMPONENT);

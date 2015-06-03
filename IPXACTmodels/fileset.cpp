@@ -720,17 +720,6 @@ void FileSet::changeFileName( const QString& from, const QString& to ) {
 	}
 }
 
-File* FileSet::getQuartusPinMap() const {
-
-	foreach (QSharedPointer<File> file, files_) {
-
-		if (file->isQuartusPinmap())
-			return file.data();
-	}
-	// no pin map was found
-	return 0;
-}
-
 void FileSet::sortFiles( const QStringList& fileNames ) {
 
 	QList<QSharedPointer<File> > tempList;

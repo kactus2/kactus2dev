@@ -26,7 +26,6 @@
       <file>common/graphics/exclamation.png</file>
       <file>common/graphics/remove.png</file>
       <file>common/graphics/add.png</file>
-      <file>common/graphics/quartus_generator.png</file>
       <file>common/graphics/vhdl_gen.png</file>
       <file>common/graphics/modelsim_generator.png</file>
       <file>common/graphics/refresh.png</file>

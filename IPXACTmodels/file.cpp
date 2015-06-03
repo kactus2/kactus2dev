@@ -814,15 +814,6 @@ void File::setBuildFlags( const QString& buildFlags, bool replaceDefault ) {
 	buildcommand_->setReplaceDefaultFlags(replaceDefault);
 }
 
-bool File::isQuartusPinmap() const {
-
-	foreach (QString type, userFileTypes_) {
-		if (type == QString("quartusPinmap"))
-			return true;
-	}
-	return false;
-}
-
 bool File::operator==( const File& other ) const {
 	return name_ == other.name_;
 }

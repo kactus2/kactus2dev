@@ -23,7 +23,8 @@ SUBDIRS += IPXACTmodels/IPXACTmodels.pro \
 	Plugins/VHDLimport/VHDLimport.pro \
 	Plugins/VerilogImport/VerilogImport.pro \
 	Plugins/VerilogIncludeImport/VerilogIncludeImport.pro \
-	Plugins/VerilogSourceAnalyzer/VerilogSourceAnalyzer.pro 
+	Plugins/VerilogSourceAnalyzer/VerilogSourceAnalyzer.pro \
+	Plugins/QuartusProjectGenerator/QuartusProjectGenerator.pro
 
 CONFIG(test) {
 	SUBDIRS += tests/test_all.pro

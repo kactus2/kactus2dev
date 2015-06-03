@@ -419,12 +419,6 @@ public:
 	*/
 	void changeFileName(const QString& from, const QString& to);
 
-	/*! \brief Get pointer to the file that contains quartus pinmap
-	 *
-	 * \return Pointer to the file, if not found then null pointer is returned.
-	*/
-	File* getQuartusPinMap() const;
-
 	/*! \brief Sort the files in the file set to given order.
 	 *
 	 * \param fileNames Contains the names of files in the order to sort them into.

@@ -172,7 +172,6 @@ MainWindow::MainWindow(QWidget *parent)
       pluginActionGroup_(0),
       actGenVHDL_(0),
       actGenModelSim_(0),
-      actGenQuartus_(0), 
       actGenDocumentation_(0),
       actRunImport_(0),
       diagramToolsGroup_(0), 
@@ -741,12 +740,6 @@ void MainWindow::setupActions()
 	connect(actGenModelSim_, SIGNAL(triggered()), 
 		this, SLOT(generateModelSim()), Qt::UniqueConnection);
 
-	// Initialize the action to generate a Quartus project.
-	actGenQuartus_ = new QAction(QIcon(":/icons/common/graphics/quartus_generator.png"),
-		tr("Generate Quartus Project"), this);
-	connect(actGenQuartus_, SIGNAL(triggered()), 
-		this, SLOT(generateQuartus()), Qt::UniqueConnection);
-
 	// initialize the action to generate documentation for the component/design
 	actGenDocumentation_ = new QAction(QIcon(":icons/common/graphics/documentation.png"),
 		tr("Generate Documentation"), this);
@@ -933,7 +926,6 @@ void MainWindow::setupMenus()
     generationGroup_->addAction(actRunImport_);
     generationGroup_->addAction(actGenVHDL_);
     generationGroup_->addAction(actGenModelSim_);
-    generationGroup_->addAction(actGenQuartus_);    
     generationGroup_->setVisible(false);
     generationGroup_->setEnabled(false);
 
@@ -941,8 +933,7 @@ void MainWindow::setupMenus()
 	generationGroup_->widgetForAction(actRunImport_)->installEventFilter(ribbon_);
 	generationGroup_->widgetForAction(actGenVHDL_)->installEventFilter(ribbon_);
 	generationGroup_->widgetForAction(actGenModelSim_)->installEventFilter(ribbon_);
-	generationGroup_->widgetForAction(actGenQuartus_)->installEventFilter(ribbon_);
-
+	
     createGeneratorPluginActions();
     
 	//! The "Diagram Tools" group.
@@ -1509,10 +1500,7 @@ void MainWindow::updateMenuStrip()
 		actGenModelSim_->setEnabled(unlocked);
 		actGenModelSim_->setVisible(true);
 		
-		actGenQuartus_->setEnabled(unlocked);
-		actGenQuartus_->setVisible(true);
-
-        actRunImport_->setEnabled(false);
+		actRunImport_->setEnabled(false);
         actRunImport_->setVisible(false);
 	}
 	// if is hardware component then set only documentation, modelsim and vhdl enabled
@@ -1525,9 +1513,6 @@ void MainWindow::updateMenuStrip()
 		
 		actGenModelSim_->setEnabled(unlocked);
 		actGenModelSim_->setVisible(true);
-       
-		actGenQuartus_->setDisabled(true);
-		actGenQuartus_->setVisible(false);
 
         actRunImport_->setEnabled(unlocked);
         actRunImport_->setVisible(true);
@@ -1536,7 +1521,6 @@ void MainWindow::updateMenuStrip()
 		actGenVHDL_->setVisible(false);
 		actGenDocumentation_->setVisible(false);
 		actGenModelSim_->setVisible(false);
-		actGenQuartus_->setVisible(false);
         actRunImport_->setVisible(false);
 	}
 
@@ -1658,19 +1642,6 @@ void MainWindow::generateModelSim() {
 		}
 	}
 
-}
-
-//-----------------------------------------------------------------------------
-// Function: generateQuartus()
-//-----------------------------------------------------------------------------
-void MainWindow::generateQuartus()
-{
-	HWDesignWidget* designWidget = dynamic_cast<HWDesignWidget*>(designTabs_->currentWidget());
-
-	if (designWidget != 0)
-	{
-		designWidget->onQuartusGenerate();
-	}
 }
 
 //-----------------------------------------------------------------------------

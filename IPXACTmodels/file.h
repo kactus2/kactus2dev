@@ -542,12 +542,6 @@ public:
 	*/
 	void setBuildFlags(const QString& buildFlags, bool replaceDefault);
 
-	/*! \brief Checks if the file is a Quartus pin map.
-	 *
-	 * \return True if file is pin map.
-	*/
-	bool isQuartusPinmap() const;
-
 	/*! \brief Check if this file is a vhdl file.
 	 *
 	 *

@@ -426,12 +426,6 @@ public:
 	*/
 	void removeChannel(const QString& channelName);
 
-	/*! \brief Get the file that wraps the quartus pin map.
-	 *
-	 * \return Pointer to the file wrapper.
-	*/
-	File* getQuartusPinmap() const;
-
     /*!
      *  Sets the product hierarchy level of the component.
      *

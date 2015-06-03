@@ -50,6 +50,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VerilogIncludeImport", "Plu
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VerilogSourceAnalyzer", "Plugins\VerilogSourceAnalyzer\VerilogSourceAnalyzer.vcxproj", "{537BFE8E-F268-4BED-8CF0-0E5C2A630F0F}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QuartusProjectGenerator", "Plugins\QuartusProjectGenerator\QuartusProjectGenerator.vcxproj", "{19FABF05-9AD2-4437-84E9-5A60DF6E7BAE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -178,6 +180,14 @@ Global
 		{537BFE8E-F268-4BED-8CF0-0E5C2A630F0F}.Release|Win32.Build.0 = Release|Win32
 		{537BFE8E-F268-4BED-8CF0-0E5C2A630F0F}.Release|x64.ActiveCfg = Release|x64
 		{537BFE8E-F268-4BED-8CF0-0E5C2A630F0F}.Release|x64.Build.0 = Release|x64
+		{19FABF05-9AD2-4437-84E9-5A60DF6E7BAE}.Debug|Win32.ActiveCfg = Debug|Win32
+		{19FABF05-9AD2-4437-84E9-5A60DF6E7BAE}.Debug|Win32.Build.0 = Debug|Win32
+		{19FABF05-9AD2-4437-84E9-5A60DF6E7BAE}.Debug|x64.ActiveCfg = Debug|x64
+		{19FABF05-9AD2-4437-84E9-5A60DF6E7BAE}.Debug|x64.Build.0 = Debug|x64
+		{19FABF05-9AD2-4437-84E9-5A60DF6E7BAE}.Release|Win32.ActiveCfg = Release|Win32
+		{19FABF05-9AD2-4437-84E9-5A60DF6E7BAE}.Release|Win32.Build.0 = Release|Win32
+		{19FABF05-9AD2-4437-84E9-5A60DF6E7BAE}.Release|x64.ActiveCfg = Release|x64
+		{19FABF05-9AD2-4437-84E9-5A60DF6E7BAE}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -195,14 +205,14 @@ Global
 		{939C5230-35C3-455B-98F6-51E47E9E3DBB} = {90EC3FAA-DA36-47D5-97B5-9D463272C406}
 		{85A166AC-D2CF-496C-9EFD-648765C4AC72} = {90EC3FAA-DA36-47D5-97B5-9D463272C406}
 		{2480AD41-D429-460B-9DAC-B1BA784F0FE1} = {90EC3FAA-DA36-47D5-97B5-9D463272C406}
-		{2480AD41-D429-460B-9DAC-B1BA784F0FE1} = {90EC3FAA-DA36-47D5-97B5-9D463272C406}
 		{537BFE8E-F268-4BED-8CF0-0E5C2A630F0F} = {90EC3FAA-DA36-47D5-97B5-9D463272C406}
+		{19FABF05-9AD2-4437-84E9-5A60DF6E7BAE} = {90EC3FAA-DA36-47D5-97B5-9D463272C406}
 		{5C0CA59D-CFCE-49C6-B62A-9E3065CA34DD} = {9AC1D5FF-D209-4186-8C80-027639ACC2A3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		Qt5Version = 5.2.0x64
-		BuildVersion_UpdateFileVersion = True
-		BuildVersion_UpdateAssemblyVersion = True
 		AMDCaProjectFile = D:\user\maattaj\FunBase\public\trunk\CodeAnalyst\Kactus2_Solution.caw
+		BuildVersion_UpdateAssemblyVersion = True
+		BuildVersion_UpdateFileVersion = True
+		Qt5Version = 5.2.0x64
 	EndGlobalSection
 EndGlobal
