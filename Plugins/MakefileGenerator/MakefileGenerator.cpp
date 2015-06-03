@@ -306,6 +306,12 @@ void MakefileGenerator::writeMakeObjects(MakefileParser::MakeFileData &mfd, QTex
         // Find out the compiler.
         QString compiler = getFileCompiler(mod, mfd);
 
+		// No compiler -> Cannot make an object file.
+		if ( compiler.isEmpty() )
+		{
+			continue;
+		}
+
         // Flags will always include at least the includes.
         QString cFlags = "$(INCLUDES) ";
 
@@ -342,21 +348,25 @@ QString MakefileGenerator::getFileCompiler(MakefileParser::MakeObjectData &mod, 
         {
             if ( ( mod.swBuildCmd == 0 || mod.swBuildCmd->getCommand().isEmpty() ) && mfd.hwBuildCmd != 0 )
             {
-                compiler = mfd.hwBuildCmd->getCommand();
+				// Verify that file has a type matching the build command.
+				if ( mod.file->getFileTypes().contains( mfd.hwBuildCmd->getFileType() ) )
+				{
+					compiler = mfd.hwBuildCmd->getCommand();
+				}
             }
             else if ( mod.swBuildCmd != 0 )
             {
-                compiler = mod.swBuildCmd->getCommand();
+				compiler = mod.swBuildCmd->getCommand();
             }
         }
         else if ( mod.fileSetBuildCmd != 0 )
         {
-            compiler = mod.fileSetBuildCmd->getCommand();
+			compiler = mod.fileSetBuildCmd->getCommand();
         }
     }
     else
     {
-        compiler = mod.fileBuildCmd->getCommand();
+		compiler = mod.fileBuildCmd->getCommand();
     }
 
     return compiler;
