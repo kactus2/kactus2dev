@@ -695,6 +695,13 @@ private:
     unsigned int defaultWindows();
 
     /*!
+     *  Updates the visibility control menu according to the open document.
+     *
+     *      @param [in] document   The currently open document.
+     */
+    void updateVisibilityControlMenu(TabDocument* document);
+
+    /*!
      *  Connects all the visibility controls for windows.     
      */
     void connectVisibilityControls();

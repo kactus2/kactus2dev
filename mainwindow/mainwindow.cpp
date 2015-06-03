@@ -823,14 +823,16 @@ void MainWindow::setupActions()
 
 	// the action for user to select the visible docks
 	actVisibleDocks_ = new QAction(QIcon(":icons/common/graphics/dockSelect.png"), tr("Visible Windows"), this);
-	connect(actVisibleDocks_, SIGNAL(triggered()), this, SLOT(selectVisibleDocks()), Qt::UniqueConnection);
     actVisibleDocks_->setMenu(&windowsMenu_);
+    connect(actVisibleDocks_, SIGNAL(triggered()), this, SLOT(selectVisibleDocks()), Qt::UniqueConnection);
 
 	// Initialize the action to manage visibility control.
 	actVisibilityControl_ = new QAction(QIcon(":icons/common/graphics/visibility.png"), tr("Visibility Control"), this);
 	actVisibilityControl_->setEnabled(false);
 	actVisibilityControl_->setVisible(false);
-	connect(actVisibilityControl_, SIGNAL(triggered()), this, SLOT(openVisibilityControlMenu()), Qt::UniqueConnection);
+    actVisibilityControl_->setMenu(&visibilityMenu_);
+    connect(actVisibilityControl_, SIGNAL(triggered()), this, SLOT(openVisibilityControlMenu()), Qt::UniqueConnection);    
+    connect(&visibilityMenu_, SIGNAL(triggered(QAction*)), this, SLOT(onVisibilityControlToggled(QAction*)));
 
 	// Initialize the action to manage workspaces.
 	actWorkspaces_ = new QAction(QIcon(":icons/common/graphics/workspace.png"),	tr("Workspaces"), this);
@@ -1780,10 +1782,10 @@ void MainWindow::generateDoc()
 	Q_ASSERT(vlnv.isValid());
 
 	// if changes have been made to the component
-	if (doc->isModified()) {
+	if (doc->isModified())
+    {
 		QMessageBox::information(this, QCoreApplication::applicationName(), 
-			tr("Changes have been made to the component. Save the changes before "
-			   "generating documentation."));
+			tr("Changes have been made to the component. Save the changes before generating documentation."));
 		return;
 	}
 
@@ -1955,6 +1957,7 @@ void MainWindow::onDocumentChanged(int index)
 	if (doc) 
     {
 		updateWindows();
+        updateVisibilityControlMenu(doc);
 	}
 
 	// if the new tab is designWidget
@@ -2952,11 +2955,7 @@ void MainWindow::openBus(const VLNV& busDefVLNV, const VLNV& absDefVLNV, bool di
 			busDef = libComp.dynamicCast<BusDefinition>();
 	}
 	else {
-		emit errorMessage(tr("Bus definition %1:%2:%3:%4 was not found in the library").arg(
-			busDefVLNV.getVendor()).arg(
-			busDefVLNV.getLibrary()).arg(
-			busDefVLNV.getName()).arg(
-			busDefVLNV.getVersion()));
+		emit errorMessage(tr("Bus definition %1 was not found in the library").arg(busDefVLNV.toString()));
 		return;
 	}
 
@@ -2976,11 +2975,8 @@ void MainWindow::openBus(const VLNV& busDefVLNV, const VLNV& absDefVLNV, bool di
 				editor = new BusEditor(this, libraryHandler_, busDef, absDef, disableBusDef);
 		}
 		else {
-			emit errorMessage(tr("Abstraction definition %1:%2:%3:%4 was not found in the library").arg(
-				absDefVLNV.getVendor()).arg(
-				absDefVLNV.getLibrary()).arg(
-				absDefVLNV.getName()).arg(
-				absDefVLNV.getVersion()));
+			emit errorMessage(tr("Abstraction definition %1 was not found in the library").arg(
+                absDefVLNV.toString()));
 			return;
 		}
 	}
@@ -3029,8 +3025,7 @@ void MainWindow::openDesign(VLNV const& vlnv, QString const& viewName , bool for
     connect(designWidget, SIGNAL(modeChanged(DrawMode)),
         this, SLOT(onDrawModeChanged(DrawMode)), Qt::UniqueConnection);
 
-    connect(designWidget, SIGNAL(destroyed(QObject*)),
-        this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
+    connect(designWidget, SIGNAL(destroyed(QObject*)), this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
 
     connect(designWidget, SIGNAL(openDesign(const VLNV&, const QString&)),
         this, SLOT(openDesign(const VLNV&, const QString&)));
@@ -3247,11 +3242,7 @@ void MainWindow::openComponent( const VLNV& vlnv, bool forceUnlocked ) {
 		component = libComp.dynamicCast<Component>();
 	}
 	else {
-		emit errorMessage(tr("VLNV %1:%2:%3:%4 was not found in the library").arg(
-			vlnv.getVendor()).arg(
-			vlnv.getLibrary()).arg(
-			vlnv.getName()).arg(
-			vlnv.getVersion()));
+		emit errorMessage(tr("VLNV %1 was not found in the library").arg(vlnv.toString()));
 		QApplication::restoreOverrideCursor();
 		return;
 	}
@@ -3305,10 +3296,7 @@ void MainWindow::openComDefinition(VLNV const& vlnv, bool forceUnlocked /*= fals
     }
     else
     {
-        emit errorMessage(tr("VLNV %1:%2:%3:%4 was not found in the library").arg(vlnv.getVendor(),
-                                                                                  vlnv.getLibrary(),
-                                                                                  vlnv.getName(),
-                                                                                  vlnv.getVersion()));
+        emit errorMessage(tr("VLNV %1 was not found in the library").arg(vlnv.toString()));
         return;
     }
 
@@ -3343,10 +3331,7 @@ void MainWindow::openApiDefinition(VLNV const& vlnv, bool forceUnlocked /*= fals
     }
     else
     {
-        emit errorMessage(tr("VLNV %1:%2:%3:%4 was not found in the library").arg(vlnv.getVendor(),
-                                                                                  vlnv.getLibrary(),
-                                                                                  vlnv.getName(),
-                                                                                  vlnv.getVersion()));
+        emit errorMessage(tr("VLNV %1 was not found in the library").arg(vlnv.toString()));
         return;
     }
 
@@ -3465,6 +3450,30 @@ unsigned int MainWindow::defaultWindows()
 {
     return TabDocument::OUTPUTWINDOW | TabDocument::LIBRARYWINDOW | 
         TabDocument::PREVIEWWINDOW | TabDocument::CONTEXT_HELP_WINDOW;        
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainWindow::updateVisibilityControlMenu()
+//-----------------------------------------------------------------------------
+void MainWindow::updateVisibilityControlMenu(TabDocument* document)
+{
+    visibilityMenu_.clear();
+
+    QActionGroup* group = new QActionGroup(this);
+    group->setExclusive(false);
+
+    QMapIterator<QString, bool> iter(document->getVisibilityControls());
+    while (iter.hasNext())
+    {
+        iter.next();
+
+        QAction* action = new QAction(tr(qPrintable(iter.key())), this);
+        action->setCheckable(true);
+        action->setChecked(iter.value());
+
+        group->addAction(action);
+        visibilityMenu_.addAction(action);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -4092,30 +4101,6 @@ void MainWindow::onInstanceAction( bool show ) {
 //-----------------------------------------------------------------------------
 void MainWindow::openVisibilityControlMenu()
 {
-    visibilityMenu_.clear();
-
-    // Add all available visibility controls from the current document to the popup menu.
-    TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
-    Q_ASSERT(doc != 0);
-
-    QMapIterator<QString, bool> iter(doc->getVisibilityControls());
-    QActionGroup* group = new QActionGroup(this);
-
-    while (iter.hasNext())
-    {
-        iter.next();
-        
-        QAction* action = new QAction(tr(qPrintable(iter.key())), this);
-        action->setCheckable(true);
-        action->setChecked(iter.value());
-
-        group->addAction(action);
-        visibilityMenu_.addAction(action);
-    }
-
-    connect(group, SIGNAL(triggered(QAction*)), this, SLOT(onVisibilityControlToggled(QAction*)));
-
-    // Show the popup menu.
     visibilityMenu_.exec(QCursor::pos());
 }
 

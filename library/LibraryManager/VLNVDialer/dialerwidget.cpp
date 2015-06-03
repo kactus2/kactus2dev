@@ -305,10 +305,10 @@ void DialerWidget::setupLayout()
     QGroupBox* filtersGroup = new QGroupBox(tr("Library Filters"), this);
 
     QFormLayout* layout = new QFormLayout(filtersGroup);
-    layout->addRow(tr("Vendor"), &vendorBox_);
-    layout->addRow(tr("Library"), &libraryBox_);
-    layout->addRow(tr("Name"), &nameBox_);
-    layout->addRow(tr("Version"), &versionBox_);
+    layout->addRow(tr("Vendor:"), &vendorBox_);
+    layout->addRow(tr("Library:"), &libraryBox_);
+    layout->addRow(tr("Name:"), &nameBox_);
+    layout->addRow(tr("Version:"), &versionBox_);
 
     layout->setSpacing(2);
     layout->setContentsMargins(4, 2, 4, 2);

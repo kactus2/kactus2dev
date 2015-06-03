@@ -169,27 +169,27 @@ void DrawingBoard::refreshCurrentDocument()
 void DrawingBoard::closeAndRemoveDocument(int index)
 {	
     Q_ASSERT(widget(index) != 0);
-    TabDocument* doc = static_cast<TabDocument*>(widget(index));
+    TabDocument* document = static_cast<TabDocument*>(widget(index));
 
     // If the document has been modified, ask a confirmation from the user.
-    if (doc->isModified())
+    if (document->isModified())
     {
         QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-            "Do you want to save changes to " + doc->getDocumentName() + "?",
+            "Do you want to save changes to " + document->getDocumentName() + "?",
             QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, this);
 
         int saveChanges = msgBox.exec();
         if (saveChanges == QMessageBox::Yes)
         {
             // Try to save and if it fails, cancel the close operation.
-            if (!doc->save())
+            if (!document->save())
             {
                 return;
             }
         }
         else if (saveChanges == QMessageBox::No)
         {
-            doc->setModified(false);
+            document->setModified(false);
         }
         else if (saveChanges == QMessageBox::Cancel)
         {
@@ -198,9 +198,12 @@ void DrawingBoard::closeAndRemoveDocument(int index)
         }
     }
 
-    removeTab(index);
-    delete doc;
-    doc = 0;
+    // Deleting a document will automatically remove the associated tab from this widget.
+    // Using removeTab() triggers showEvent() in the next tab before deleted() 
+    // triggers MainWindow::onClearItemSelection. This wrong order of triggers would cause the instance 
+    // details editor in design editor to appear empty for a previously selected component.
+    delete document;
+    document = 0;
 
     if (count() == 0)
     {
