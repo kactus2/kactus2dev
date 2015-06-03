@@ -93,8 +93,9 @@ void MakefileGenerator::generateInstanceMakefile(QString basePath, QString topPa
     outStream << "INCLUDES=$(patsubst %, -I%, $(_INCLUDES))" << endl << endl;
 
     // The files proper are also dependencies of the source files.
-    // The object directory is an dependency, so that it will be created if needed.
-    outStream << "DEPS= $(ODIR)";
+    // Creation of object directory is a dependency, so that it will be done if needed.
+	// WARNING: MUST NOT BE $(ODIR), as it will make all object files as dependencies!
+    outStream << "DEPS= $(CODIR)";
 
     foreach(MakefileParser::MakeObjectData file, mfd.includeFiles)
     {
@@ -287,7 +288,7 @@ void MakefileGenerator::writeExeBuild(QTextStream& outStream) const
     outStream << "clean:\n\trm -f $(OBJ);" << endl << endl;
 
     // Make a directory for the object files.
-    outStream << "$(ODIR):\n\tmkdir -p $(ODIR);" << endl;
+    outStream << "$(CODIR):\n\tmkdir -p $(ODIR);" << endl;
 }
 
 //-----------------------------------------------------------------------------
