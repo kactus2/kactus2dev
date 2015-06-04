@@ -67,7 +67,7 @@ void RegisterGraphItem::updateDisplay()
 {
     QString name = register_->getName();
 
-    if (expresionParser_->parseExpression(register_->getDimensionExpression()).toUInt() > 1)
+    if (expresionParser_->parseExpression(register_->getDimensionExpression()).toUInt() > 0)
     {
         name.append("[" + QString::number(dimensionIndex_) + "]");
     }

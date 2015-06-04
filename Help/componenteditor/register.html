@@ -8,17 +8,22 @@
   <body>
     <h2>Register editor</h2>
     <p>
-      Register editor is used to edit the details of a single register by assigning bit fields to a containing
-      register. A bit field may contain just one bit, the whole register or something in between.
-      <br />The <b>name</b>, <b>display name</b> and a <b>description</b> contain identification information of a
-      register.
-      <br /><b>Offset</b> [AUB] specifies the location of the register from the start of the containing address
-        block, expressed as address unit bits (mandatory, can be given as an expression).
-      <br /><b>Size</b> defines the number of data bits the register contains. It must be less or equal to the
-      <i>width</i> of the address block (mandatory, can be given as an expression).
-      <br /><b>Dimension</b> assigns an unbounded dimension to the register. Its semantics are the same as the C
-        language standard for the layout of memory in multidimensional arrays (can be given as an expression).
-      <br /><b>Volatile</b>=true indicates that the register value may change without a write operation to it.
+      Register editor is used to edit the details of a single register and the possible bit fields within
+      the register. A bit field may contain just one bit, the whole register or something in between.
+    </p>
+    <p>
+      The <b>name</b>, <b>display name</b> and a <b>description</b> contain identification information of a
+      register. Name is mandatory and must be unique within the containing address block. <br />
+      <b>Offset</b> is a mandatory value to specify the location of the register from the start of the
+      containing address block expressed as address units. Offset can be given as a SystemVerilog expression.
+      <b>Size</b> is mandatory and defines the number of data bits the register contains. Size must be less or
+      equal to the <i>width</i> of the containing address block. Size can be given as a SystemVerilog
+      expression.<br >
+      <b>Dimension</b> assigns an array dimension to the register. The register will be repeated in the
+      address block as many times as indicated by the <i>dimension</i> value. Dimension 0 means
+      that the register is not an array and will appear exactly once. Dimension can be given as a 
+      SystemVerilog expression.<br >
+      <b>Volatile</b> indicates whether the register value may change without a write operation to it.
     </p>
     <p>
       <b>Access</b> specifies the accessability of the register.
@@ -42,18 +47,15 @@
     <h3>Fields table</h3>
     <p>
       The fields table enables the user to define the register fields.
-      A field has a <b>name</b> and a textual
-      <b>description</b>. <b>Offset</b> describes the starting bit of
-      the field within the containing register. <b>Width</b> specifies
-      how many bits are included in the field. Name, offset, and width
-      are mandatory. <br> <b>Volatile</b>= true indicates that there
-      is no guarantee that two consecutive read operations will return
-      the same value because the register may change its value without
-      write operations i.e. as a result of an interrupt.
+      A field has a unique <b>name</b> and a textual <b>description</b>. <br />
+      <b>Offset</b> is a mandatory value to specify the the starting bit of the field within the register. <br >
+      <b>Width</b> is a mandatory value to specify the how many bits are included in the field.<br >
+      <b>Volatile</b> indicates if there is no guarantee that two consecutive read operations will return
+      the same value because the register may change its value without write operations i.e. as a 
+      result of an interrupt.
     </p>
     <p>
-      <b>Access</b> column specifies the accessibility of the field,
-      the possible values are:
+      <b>Access</b> column specifies the accessibility of the field. The possible values are:
     </p>
     <ul>
         <li><i>read-write</i>. Both read and write transactions may have an effect on this field. Write
@@ -100,10 +102,9 @@
         the default.</li>
     </ul>
     <p>
-      <b>Testable</b> specifies if the field is testable by an
-      automated register test. <b>Test constraint</b> specifies the
-      constraints for the automated tests for the field, the possible
-      values are:
+      <b>Testable</b> specifies if the field is testable by an automated register test. 
+      <b>Test constraint</b> specifies the constraints for the automated tests for the field. 
+      The the possible constraint values are:
     </p>
     <ul>
         <li><i>unConstrained</i>. There are no constrains for the written or read data. This is the default
@@ -114,5 +115,11 @@
             field.</li>
         <li><i>readOnly</i>. Indicates that the field can only be read.</li>
     </ul>
+    <p>
+      <img src="../images/appicon.png" alt="kactus logo"/><b>Is present</b> is a Kactus2 extension for
+      enabling/disabling a field presence in a register. Value 1 indicates that the field is present
+      in the register whereas value 0 marks the field to be treated as if it did not exist.
+      Is present can be given as a SystemVerilog expression, but it must evaluate to 1 or 0.
+    </p>
   </body>
 </html>

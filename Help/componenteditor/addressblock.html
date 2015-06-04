@@ -8,19 +8,31 @@
   <body>
     <h2>Address block editor</h2>
     <p>
-      Address block editor is used to edit the details of an address block by defining registers to it. Each row
-      in the editor specifies a single register within the containing address block. The <b>name</b>,
-      <b>display name</b> and a <b>description</b> contain identification information of an address block.
-      <br /><b>Usage</b> specifies the usage of the address block (mandatory).
-      <br /><b>Base address</b> specifies the starting address for the address block, expressed as address unit
-        bits (mandatory, can be given as an expression).
-      <br /><b>Range</b> specifies the size of the block, expressed as address unit bits (mandatory, can be given
-        as an expression).
-      <br /><b>Width</b> is the data width in bits of a row in the address block (mandatory, can be given as an
-        expression).
+      Address block editor is used to edit the details of an address block and the possible registers in it. 
     </p>
     <p>
-        <b>Access</b> specifies the accessability of the block.
+      The <b>name</b>, <b>display name</b> and a <b>description</b> contain identification information
+      of the address block. Name is mandatory and must be unique within all the address blocks of the 
+      containing memory map.<br />
+      <b>Usage</b> is a mandatory value to specify the usage of the address block and may 
+      have one of the following values:
+    </p>
+      <ul>
+        <li><i>Register</i> The address block range may contain registers.</li>
+        <li><i>Memory</i> The address block range is ROM, RAM or write-only memory as defined by 
+        <i>access</i> and shall not contain registers.</li>
+        <li><i>Reserved</i> The address block is reserved for other usage and shall not contain registers.</li>
+      </ul>
+    <p>
+      <b>Base address</b> is mandatory and specifies the starting address for the address block expressed in 
+      address units. Base address can be given as a SystemVerilog expression.<br />
+      <b>Range</b> is mandatory and specifies the size of the block expressed in address units. 
+      Range can be given as a SystemVerilog expression.<br />
+      <b>Width</b> is mandatory and defines the data width of a row in the address block in bits.
+      Width can be given as a SystemVerilog expression.
+    </p>
+    <p>
+        <b>Access</b> specifies the accessability of the address block. The possible values are:
     </p>
     <ul>
         <li><i>read-write</i>. Both read and write transactions may have an effect on this address block.</li>
@@ -31,29 +43,32 @@
         <li><i>writeOnce</i>. Only the first write action affects the contents of this address block.</li>
     </ul>
     <p>
-        <b>Volatile</b>=true indicates that the stored value may change without the master's write operation.
+        <b>Volatile</b> indicates whether the stored value may change without the master's write operation.
     </p>
     <h3>Registers table</h3>
     <p>
-      The register table enables the user to define registers for the address block. Each register has a
-      <b>name</b> and a textual <b>description</b>. <br><b>Offset</b> specifies the location of
-      the register from the start of the containing address block
-      expressed as number of addressing units. The actual address of
-      the register is the sum of address block's base addr and
-      register offset. E.g. if base addr=0x100 and reg has offset=0x4,
-      then register's address=0x104.<br><b>Size</b> defines the
-      number of data bits the register contains. It must be less or
-      equal to <i>Width</i> of the address
-      space. <br><b>Dimension</b> assigns an unbounded dimension to
-      the register. Its semantics are the same as the C language
-      standard for the layout of memory in multidimensional
-      arrays. <br><b>Volatile</b>=true indicates that register value
-      may change without a write operation to it, i.e. by an interrupt
-      event.
+      The register table enables the user to define registers for the address block. Each row
+      represents a single register. 
+    </p>
+    </p>
+      Each register has a unique <b>name</b> and an optional <b>description</b> for details.<br>
+      <b>Offset</b> is mandatory and specifies the location of the register from the start of the 
+      containing address block expressed as number of addressing units. The actual address of the 
+      register is the sum of address block's base address and the register offset. E.g. if the base 
+      address is 0x100 and the register offset is 0x4, the register's address is 0x104.
+      Offset can be given as a SystemVerilog expression.<br>
+      <b>Size</b> is mandatory and defines the number of data bits the register contains. Size must be less or
+      equal to the <i>width</i> of the containing address block. Size can be given as a SystemVerilog
+       expression.<br>
+      <b>Dimension</b> assigns an array dimension to the register. The register will be repeated in the
+      address block as many times as indicated by the <i>dimension</i> value. Dimension 0 means
+      that the register is not an array and will appear exactly once. Dimension can be given as a 
+      SystemVerilog expression.<br>
+      <b>Volatile</b> indicates whether the register value may change without a
+      write operation to it, i.e. by an interrupt event.
     </p>
     <p>
-      <b>Access</b> column specifies the accessibility of the register, the
-      possible values are:
+      <b>Access</b> column specifies the accessibility of the register. The possible values are:
     </p>
     <ul>
       <li><i>read-write</i>. Both read and write transactions may have an effect on this register.</li>
@@ -67,12 +82,11 @@
     </ul>
     <p>
       <b>Reset value</b> defines register's value on reset and
-      <b>Reset mask</b> defines the bits of the register that have a
-      known reset value. Bit value of 1 means that the corresponding
-      bit has a known reset value, whereas 0 means that the value is
-      unknown. Both use SystemVerilog syntax for binary values e.g.
-      'b1011, 4'b1011, and 4'b10_11 are all valid values. The number
-      of bits must equal the register <i>size</i>.
+      <b>Reset mask</b> defines the bits of the register that have a known reset value. 
+      Bit value of 1 means that the corresponding bit has a known reset value whereas 0 means that 
+      the value is unknown. Both use SystemVerilog syntax for binary values e.g.
+      'b1011, 4'b1011, and 4'b10_11 are all valid values. The numberof bits must be equal to 
+      the register <i>size</i>.
     </p>
   </body>
 </html>

@@ -9,16 +9,18 @@
 		<h2>Field editor</h2>
 		<p>
 			The field editor is used to edit the details of a field. For example user may define enumerated	values
-            that define the legal bit patterns of a field.
-            <br />The <b>name</b>, <b>display name</b> and the <b>description</b> contain identification
-            information of a register.
-            <br /><b>Offset</b> [bits] describes the starting bit of the field within the containing register
-              (mandatory, can be given as an expression).
-            <br /><b>Width</b> [bits] speficies how many bits are included in the field (mandatory, can be given
-              as an expression).
-            <br /><b>Is present</b> defines whether the enclosing elemment is present in the document (can be
-              given as an expression).
-            <br /><b>Volatile</b>=true indicates that the register may change its value without write operations.
+            that define the legal bit patterns of a field.<br />
+            The <b>name</b>, <b>display name</b> and the <b>description</b> contain identification
+            information of a register.<br />
+            <b>Offset</b> describes the starting bit of the field within the containing register
+             (mandatory, can be given as an expression). <br />
+            <b>Width</b> speficies how many bits are included in the field (mandatory, can be given
+             as an expression).<br />
+            <img src="../images/appicon.png" alt="kactus logo"/><b>Is present</b> is a Kactus2 extension for
+            enabling/disabling a field presence in a register. Value 1 indicates that the field is present
+            in the register whereas value 0 marks the field to be treated as if it did not exist.
+            Is present can be given as a SystemVerilog expression, but it must evaluate to 1 or 0.<br />
+            <b>Volatile</b>=true indicates that the register may change its value without write operations.
         </p>
         <p>
             <b>Access</b> specifies the accessability of the field. The possible values are:
