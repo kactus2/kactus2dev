@@ -570,3 +570,20 @@ bool SystemDesignWidget::saveAs()
         return false;
     }
 }
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignWidget::getIdentifyingVLNV()
+//-----------------------------------------------------------------------------
+VLNV SystemDesignWidget::getIdentifyingVLNV() const
+{
+    const QSharedPointer<DesignConfiguration> designConf = getDiagram()->getDesignConfiguration();
+
+    if (designConf)
+    {
+        return designConf->getDesignRef();
+    }
+    else
+    {
+        return getEditedComponent()->getHierSWRef(getOpenViewName());
+    }
+}

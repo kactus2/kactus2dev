@@ -51,6 +51,13 @@ public:
      */
     virtual KactusAttribute::Implementation getImplementation() const;
 
+    /*!
+     *  Get the vlnv that can be used to identify the document.
+     *
+     *      @return The VLNV that identifies the document.
+     */
+    virtual VLNV getIdentifyingVLNV() const;
+
 public slots:
     //! Adds a new column to the diagram.
     virtual void addColumn();
