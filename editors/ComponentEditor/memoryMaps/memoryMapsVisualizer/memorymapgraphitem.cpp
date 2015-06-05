@@ -81,14 +81,16 @@ void MemoryMapGraphItem::updateDisplay()
 //-----------------------------------------------------------------------------
 quint64 MemoryMapGraphItem::getOffset() const 
 {
-    if (childItems_.isEmpty())
+    quint64 offset = 0;
+    foreach (MemoryVisualizationItem* child, childItems_.values())
     {
-        return 0;
+        if (dynamic_cast<MemoryGapItem*>(child) == 0)
+        {
+            offset = qMin(child->getOffset(), offset);  
+        }
     }
-    else
-    {
-        return childItems_.first()->getOffset();
-    }
+
+    return offset;
 }
 
 //-----------------------------------------------------------------------------
@@ -120,14 +122,16 @@ unsigned int MemoryMapGraphItem::getAddressUnitSize() const
 //-----------------------------------------------------------------------------
 quint64 MemoryMapGraphItem::getLastAddress() const 
 {
-    if (childItems_.isEmpty())
+    quint64 lastAddress = 0;
+    foreach (MemoryVisualizationItem* child, childItems_.values())
     {
-        return 0;
+        if (dynamic_cast<MemoryGapItem*>(child) == 0)
+        {
+            lastAddress = qMax(child->getLastAddress(), lastAddress);  
+        }
     }
-    else
-    {
-        return childItems_.last()->getLastAddress();
-    }
+
+    return lastAddress;
 }
 
 //-----------------------------------------------------------------------------

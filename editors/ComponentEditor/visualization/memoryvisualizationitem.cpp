@@ -255,7 +255,7 @@ void MemoryVisualizationItem::updateChildMap()
     quint64 lastAvailableAddress = getLastAddress();
     foreach (MemoryVisualizationItem* item, childItems_)
     {       
-        //item->updateDisplay();
+        item->updateDisplay();
         item->setConflicted(item->getLastAddress() > lastAvailableAddress);
 
         updatedMap.insertMulti(item->getOffset(), item);
