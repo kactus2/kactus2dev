@@ -195,14 +195,22 @@ QVariant RegisterTableModel::data( const QModelIndex& index, int role /*= Qt::Di
 
 	else if (Qt::ForegroundRole == role) 
     {
-        if (fields_.at(index.row())->isValid(reg_->getSize(), componentChoices_)) 
+        if (validateIndex(index))
         {
-            return blackForValidOrRedForInvalidIndex(index);
-		}
-		else
+            if (index.column() != RegisterColumns::IS_PRESENT_COLUMN && 
+                parseExpressionToDecimal(fields_.at(index.row())->getIsPresentExpression()).toInt() != 1)
+            {
+                return QColor("gray");
+            }
+            else
+            {
+                return QColor("black");
+            }
+        }
+        else
         {
-			return QColor("red");
-		}
+            return QColor("red");
+        }
 	}
 	else if (Qt::BackgroundRole == role) 
     {

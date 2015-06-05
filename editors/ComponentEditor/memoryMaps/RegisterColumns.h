@@ -18,9 +18,9 @@ namespace RegisterColumns
     enum Column
     {
         NAME_COLUMN = 0,
-        DESC_COLUMN,
         OFFSET_COLUMN,
         WIDTH_COLUMN,
+        DESC_COLUMN,
         VOLATILE_COLUMN,
         ACCESS_COLUMN,
         MOD_WRITE_COLUMN,
