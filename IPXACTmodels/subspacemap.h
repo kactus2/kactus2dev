@@ -101,17 +101,7 @@ public:
 	 *
 	 * \return QList containing pointers to the parameters
 	 */
-	const QList<QSharedPointer<Parameter> >& getParameters();
-
-	/*! \brief Set the parameters for the SubspaceMap
-	 *
-	 * Calling this function deletes the old parameters. If old values must
-	 * be saved then function getParameters() must first be called to
-	 * add the old values to the QList given as a parameter for this function.
-	 *
-	 * \param parameters QList containing the parameters
-	 */
-	void setParameters(const QList<QSharedPointer<Parameter> > &parameters);
+	QList<QSharedPointer<Parameter> > const& getParameters();
 
 private:
 

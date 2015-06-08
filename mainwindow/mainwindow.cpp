@@ -719,8 +719,7 @@ void MainWindow::setupActions()
 	// the action to search for IP-Xact documents in file system
 	actLibrarySearch_ = new QAction(QIcon(":/icons/common/graphics/library-refresh.png"),
 		tr("Refresh library"), this);
-	connect(actLibrarySearch_, SIGNAL(triggered()),
-		this, SLOT(onLibrarySearch()), Qt::UniqueConnection);
+	connect(actLibrarySearch_, SIGNAL(triggered()),	this, SLOT(onLibrarySearch()), Qt::UniqueConnection);
 
 	// Check the library integrity
 	actCheckIntegrity_ = new QAction(QIcon(":/icons/common/graphics/checkIntegrity.png"),
