@@ -300,10 +300,12 @@ void HierarchicalSaveBuildStrategy::updateComponentReferences(QSharedPointer<Com
 
         if (view->isHierarchical())
         {
-            QSharedPointer<LibraryComponent> configModel = library_->getModel(view->getHierarchyRef());
+            VLNV hierarchyReference = view->getHierarchyRef();
+
+            QSharedPointer<LibraryComponent> configModel = library_->getModel(hierarchyReference);
             QSharedPointer<DesignConfiguration> config = configModel.dynamicCast<DesignConfiguration>(); 
 
-            if (view->getHierarchyRef() == reference)
+            if (hierarchyReference == reference)
             {
                 view->setHierarchyRef(updatedReference);
             }
@@ -317,7 +319,7 @@ void HierarchicalSaveBuildStrategy::updateComponentReferences(QSharedPointer<Com
 
                 view->setHierarchyRef(configVLNV);
 
-                saveToLibrary(view->getHierarchyRef(), config);
+                saveToLibrary(hierarchyReference, config);
             }
         }
     }
