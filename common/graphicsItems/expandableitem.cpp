@@ -21,6 +21,8 @@ expansionRect_(new QGraphicsRectItem(this))
 	connect(expandCollapseItem_, SIGNAL(stateChanged(bool)),
         this, SLOT(onExpandStateChange(bool)), Qt::UniqueConnection);
 
+    setShowExpandableItem(false);
+
 	expandCollapseItem_->setZValue(1);
 	expansionRect_->show();
 }

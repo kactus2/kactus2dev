@@ -79,8 +79,7 @@ void MemoryVisualizationItem::removeChild(MemoryVisualizationItem* childItem)
     Q_ASSERT(childItems_.contains(offset));
     childItems_.remove(offset, childItem);
 
-    disconnect(childItem, SIGNAL(expandStateChanged()), this, SLOT(reorganizeChildren()));
-    disconnect(childItem, SIGNAL(expandStateChanged()), this, SIGNAL(expandStateChanged()));
+    showExpandIconIfHasChildren();
 }
 
 //-----------------------------------------------------------------------------
@@ -211,9 +210,17 @@ void MemoryVisualizationItem::reorganizeChildren()
     showExpandIconIfHasChildren();
 
     if (mustRepositionChildren())
-    {
+    {    
+        int childCountBeforeUpdate = childItems_.count();
         updateChildMap();
+        int childCountAfterUpdate = childItems_.count();
+
         repositionChildren();
+
+        if (childCountBeforeUpdate != childCountAfterUpdate)
+        {
+            emit expandStateChanged();
+        }
     }
 
     ExpandableItem::reorganizeChildren();
@@ -232,7 +239,17 @@ bool MemoryVisualizationItem::isPresent() const
 //-----------------------------------------------------------------------------
 void MemoryVisualizationItem::showExpandIconIfHasChildren()
 {
-    ExpandableItem::setShowExpandableItem(!childItems_.isEmpty());
+    foreach (MemoryVisualizationItem* item, childItems_)
+    {
+        MemoryGapItem* gap = dynamic_cast<MemoryGapItem*>(item);
+        if (!gap)
+        {
+            ExpandableItem::setShowExpandableItem(true);
+            return;
+        }
+    }
+
+    ExpandableItem::setShowExpandableItem(false);
 }
 
 //-----------------------------------------------------------------------------
@@ -335,7 +352,7 @@ void MemoryVisualizationItem::updateChildMap()
     }
 
     // Fill in any addresses left between children and the end of this item.
-    if (getLastAddress() > lastAddressInUse)
+    if (!childItems_.isEmpty() && getLastAddress() > lastAddressInUse)
     {
         createMemoryGap(lastAddressInUse + 1, getLastAddress());
     }
