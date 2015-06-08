@@ -774,7 +774,7 @@ void ConfigurableElementsModel::readComponentConfigurableElements()
             QString activeViewName = designConfiguration_->getActiveView(componentInstanceName);
             View* activeView = component_->componentModel()->findView(activeViewName);
 
-            if (!activeView->getParameters()->isEmpty())
+            if (activeView && !activeView->getParameters()->isEmpty())
             {
                 foreach (QSharedPointer<Parameter> parameterPointer, *activeView->getParameters())
                 {
@@ -782,7 +782,7 @@ void ConfigurableElementsModel::readComponentConfigurableElements()
                 }
             }
 
-            if (!activeView->getModuleParameters()->isEmpty())
+            if (activeView && !activeView->getModuleParameters()->isEmpty())
             {
                 foreach (QSharedPointer<Parameter> parameterPointer, *activeView->getModuleParameters())
                 {
