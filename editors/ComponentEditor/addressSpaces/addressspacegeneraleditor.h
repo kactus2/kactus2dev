@@ -18,6 +18,7 @@
 
 #include <QGroupBox>
 #include <QSharedPointer>
+#include <QLabel>
 
 class ExpressionEditor;
 class ExpressionParser;
@@ -32,14 +33,17 @@ class AddressSpaceGeneralEditor : public QGroupBox
 
 public:
 
-	/*! The constructor
+	/*!
+	 *  The constructor.
 	 *
-     *       @param [in] addrSpace          The address space being edited.
-     *       @param [in] parameterFinder    The finder for parameters available in expressions.
-     *       @param [in] expressionParser   The expression parser.
-	 *       @param [in] parent             The owner of the editor.
-	*/
-	AddressSpaceGeneralEditor(QSharedPointer<AddressSpace> addrSpace, 
+	 *      @param [in] addrSpace           The address space being edited.
+	 *      @param [in] busInterfaceNames   A list of master interface names bound to this address space.
+	 *      @param [in] parameterFinder     The finder for parameters available in expressions.
+	 *      @param [in] expressionParser    The expression parser.
+	 *      @param [in] parent              The owner of the editor.
+	 */
+	AddressSpaceGeneralEditor(QSharedPointer<AddressSpace> addrSpace,
+        QStringList busInterfaceNames,
         QSharedPointer<ParameterFinder> parameterFinder, 
         QSharedPointer<ExpressionParser> expressionParser,
         QWidget *parent);
@@ -53,10 +57,12 @@ public:
 	*/
 	bool isValid() const;
 
-	/*! Read the settings from the address space model to the editor fields.
+	/*!
+	 *  Read the settings from the address space model to the editor fields.
 	 *
-	*/
-	void refresh();
+	 *      @param [in] masterInterfaceNames    A list of master interface names bound to this address space.
+	 */
+	void refresh(QStringList masterInterfaceNames);
 
 signals:
 
@@ -123,7 +129,7 @@ private:
      *      @return The formatted expression.
      */
     QString format(QString const& expression) const;
-	
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -142,6 +148,9 @@ private:
 
 	//! Editor to set the width of one row in address space.
 	ExpressionEditor* widthEditor_;
+
+    //! Label for the master interface binding(s).
+    QLabel* masterInterfaceBindingLabel_;
 };
 
 #endif // ADDRESSSPACEGENERALEDITOR_H

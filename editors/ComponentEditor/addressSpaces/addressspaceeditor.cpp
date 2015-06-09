@@ -28,11 +28,12 @@ AddressSpaceEditor::AddressSpaceEditor(QSharedPointer<Component> component,
 ItemEditor(component, handler, parent),
     addrSpace_(addrSpace),
     nameEditor_(addrSpace->getNameGroup(), this),
-    generalEditor_(addrSpace, parameterFinder, expressionParser, this),
+    generalEditor_(addrSpace, component->getMasterInterfaces(addrSpace_->getName()), parameterFinder,
+                   expressionParser, this),
     segmentsEditor_(addrSpace, component, handler->getDirectoryPath(*component->getVlnv()), parameterFinder,
-    expressionParser, expressionFormatter, this),
+                    expressionParser, expressionFormatter, this),
     localMemMapEditor_(addrSpace->getLocalMemoryMap(), component, handler, parameterFinder, expressionFormatter, 
-        this)
+                       this)
 {
 	Q_ASSERT(addrSpace_);
 
@@ -94,8 +95,10 @@ bool AddressSpaceEditor::isValid() const
 //-----------------------------------------------------------------------------
 void AddressSpaceEditor::refresh()
 {
-	nameEditor_.refresh();
-	generalEditor_.refresh();
+    QStringList masterInterfaceList = component()->getMasterInterfaces(addrSpace_->getName());
+
+    nameEditor_.refresh();
+	generalEditor_.refresh(masterInterfaceList);
 	segmentsEditor_.refresh();
 	localMemMapEditor_.refresh();
 }

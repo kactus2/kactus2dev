@@ -346,7 +346,7 @@ QVariant AddressSpacesModel::expressionOrValueForIndex(QModelIndex const& index)
         // if there are then show them separated by space
         else
         {
-            return interfaceNames.join(" ");
+            return interfaceNames.join(", ");
         }
     }
     else if (index.column() == AddressSpaceColumns::DESCRIPTION)

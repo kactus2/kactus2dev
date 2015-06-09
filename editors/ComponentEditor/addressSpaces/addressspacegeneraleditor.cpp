@@ -27,8 +27,9 @@
 //-----------------------------------------------------------------------------
 // Function: AddressSpaceGeneralEditor::AddressSpaceGeneralEditor()
 //-----------------------------------------------------------------------------
-AddressSpaceGeneralEditor::AddressSpaceGeneralEditor(QSharedPointer<AddressSpace> addrSpace, 
-    QSharedPointer<ParameterFinder> parameterFinder, 
+AddressSpaceGeneralEditor::AddressSpaceGeneralEditor(QSharedPointer<AddressSpace> addrSpace,
+    QStringList busInterfaceNames,
+    QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<ExpressionParser> expressionParser,
     QWidget *parent):
 QGroupBox(tr("General"), parent),
@@ -36,7 +37,8 @@ addrSpace_(addrSpace),
 expressionParser_(expressionParser),
 addrUnitEditor_(this),
 rangeEditor_(new ExpressionEditor(parameterFinder, this)),
-widthEditor_(new ExpressionEditor(parameterFinder, this))
+widthEditor_(new ExpressionEditor(parameterFinder, this)),
+masterInterfaceBindingLabel_(new QLabel(this))
 {
 	Q_ASSERT(addrSpace_);
 
@@ -65,9 +67,10 @@ widthEditor_(new ExpressionEditor(parameterFinder, this))
 	layout->addRow(tr("Addressable unit bits (AUB):"),&addrUnitEditor_);
 	layout->addRow(tr("Range (=size) [AUB], f(x):"), rangeEditor_);
     layout->addRow(tr("Width [bits], f(x):"), widthEditor_);
+    layout->addRow(tr("Master interface binding:"), masterInterfaceBindingLabel_);
 	layout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
 
-	refresh();
+	refresh(busInterfaceNames);
 
 	connect(&addrUnitEditor_, SIGNAL(textChanged(QString const&)), this, SLOT(onAddrUnitChanged()), Qt::UniqueConnection);
     connect(&addrUnitEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
@@ -107,7 +110,7 @@ bool AddressSpaceGeneralEditor::isValid() const
 //-----------------------------------------------------------------------------
 // Function: AddressSpaceGeneralEditor::refresh()
 //-----------------------------------------------------------------------------
-void AddressSpaceGeneralEditor::refresh()
+void AddressSpaceGeneralEditor::refresh(QStringList masterInterfaceNames)
 {
     widthEditor_->blockSignals(true);
     rangeEditor_->blockSignals(true);
@@ -123,6 +126,15 @@ void AddressSpaceGeneralEditor::refresh()
 
     widthEditor_->blockSignals(false);
     rangeEditor_->blockSignals(false);
+
+    if (masterInterfaceNames.isEmpty())
+    {
+        masterInterfaceBindingLabel_->setText(tr("No binding"));
+    }
+    else
+    {
+        masterInterfaceBindingLabel_->setText(masterInterfaceNames.join(", "));
+    }
 }
 
 //-----------------------------------------------------------------------------
