@@ -186,6 +186,11 @@ QList<QSharedPointer<Parameter> > TopComponentParameterFinder::activeViewParamet
         QString implementationView = activeView_;
         if (activeView->isHierarchical())
         {
+            foreach (QSharedPointer<ModelParameter> moduleParameter, *activeView->getModuleParameters())
+            {
+                viewParameters.append(moduleParameter);
+            }
+
             implementationView = activeView->getTopLevelView();
         }
 
