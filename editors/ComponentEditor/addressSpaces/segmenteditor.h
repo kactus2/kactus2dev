@@ -8,12 +8,13 @@
 #ifndef SEGMENTEDITOR_H
 #define SEGMENTEDITOR_H
 
+#include "segmentsmodel.h"
+
+#include <common/views/EditableTableView/editabletableview.h>
+
 #include <IPXACTmodels/addressspace.h>
 #include <IPXACTmodels/segment.h>
 #include <IPXACTmodels/component.h>
-#include <common/views/EditableTableView/editabletableview.h>
-#include "segmentsmodel.h"
-#include "segmentproxy.h"
 
 #include <QSharedPointer>
 #include <QGroupBox>
@@ -92,9 +93,6 @@ private:
 
 	//! The view to display the segments.
 	EditableTableView view_;
-
-	//! The proxy to do the sorting of segments.
-	SegmentProxy proxy_;
 
 	//! The model that contains the segments.
 	SegmentsModel model_;

@@ -14,6 +14,7 @@
 
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
+#include <editors/ComponentEditor/memoryMaps/ExpressionProxyModel.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 
@@ -29,23 +30,26 @@ AddressSpacesEditor::AddressSpacesEditor(QSharedPointer<Component> component,
     QSharedPointer<ExpressionParser> expressionParser):
 ItemEditor(component, handler),
     view_(this),
-    model_(component, parameterFinder, expressionFormatter, this),
-    proxy_(this)
+    model_(component, parameterFinder, expressionFormatter, this)
 {
     model_.setExpressionParser(expressionParser);
 
-	proxy_.setSourceModel(&model_);
+    ExpressionProxyModel* proxy = new ExpressionProxyModel(expressionParser, this);
+    proxy->setColumnToAcceptExpressions(AddressSpaceColumns::RANGE);
+    proxy->setColumnToAcceptExpressions(AddressSpaceColumns::WIDTH);
 
-	view_.setModel(&proxy_);
+	proxy->setSourceModel(&model_);
+
+	view_.setModel(proxy);
 
 	const QString compPath = ItemEditor::handler()->getDirectoryPath(*ItemEditor::component()->getVlnv());
 	QString defPath = QString("%1/addrSpaceList.csv").arg(compPath);
 	view_.setDefaultImportExportPath(defPath);
 	view_.setAllowImportExport(true);
 
-	// items can not be dragged
 	view_.setItemsDraggable(false);
-	
+    view_.setSortingEnabled(true);
+
     ComponentParameterModel* completionModel = new ComponentParameterModel(parameterFinder, this);
     completionModel->setExpressionParser(expressionParser);
 
@@ -122,19 +126,11 @@ void AddressSpacesEditor::showEvent(QShowEvent* event)
 //-----------------------------------------------------------------------------
 void AddressSpacesEditor::onDoubleClick(QModelIndex const& index)
 {
-	QModelIndex origIndex = proxy_.mapToSource(index);
-
-	// index must be valid
-	if (!origIndex.isValid())
-    {
-		return;
-	}
-
 	// if the column is for interface references
-	if (origIndex.column() == AddressSpaceColumns::INTERFACE_BINDING)
+	if (index.isValid() && index.column() == AddressSpaceColumns::INTERFACE_BINDING)
     {
 		// get the names of the interface that refer to selected memory map
-		QStringList busIfNames = model_.data(origIndex, Qt::UserRole).toStringList();
+		QStringList busIfNames = index.data(Qt::UserRole).toStringList();
 
 		// if there is exactly one bus interface
         // inform component editor that bus interface editor should be selected

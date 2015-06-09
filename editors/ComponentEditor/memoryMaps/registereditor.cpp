@@ -6,6 +6,8 @@
  */
 
 #include "registereditor.h"
+
+#include "ExpressionProxyModel.h"
 #include "registertablemodel.h"
 #include "registerdelegate.h"
 #include "RegisterColumns.h"
@@ -31,7 +33,6 @@ RegisterEditor::RegisterEditor(QSharedPointer<Register> reg,
 							   QWidget* parent /*= 0*/ ):
 QGroupBox(tr("Fields summary"), parent),
 view_(new EditableTableView(this)),
-proxy_(new QSortFilterProxyModel(this)),
 model_(0)
 {
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
@@ -48,8 +49,13 @@ model_(0)
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(view_);
 
-	proxy_->setSourceModel(model_);
-	view_->setModel(proxy_);
+    ExpressionProxyModel* proxy = new ExpressionProxyModel(expressionParser, this);
+    proxy->setColumnToAcceptExpressions(RegisterColumns::OFFSET_COLUMN);
+    proxy->setColumnToAcceptExpressions(RegisterColumns::WIDTH_COLUMN);
+    proxy->setColumnToAcceptExpressions(RegisterColumns::IS_PRESENT_COLUMN);
+
+	proxy->setSourceModel(model_);
+	view_->setModel(proxy);
 
 	//! \brief Enable import/export csv file
     const QString compPath = handler->getDirectoryPath(*component->getVlnv());

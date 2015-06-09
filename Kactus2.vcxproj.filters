@@ -2320,9 +2320,6 @@
     <ClCompile Include="GeneratedFiles\moc_segmenteditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_segmentproxy.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_segmentsmodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -2581,9 +2578,6 @@
     <ClCompile Include="GeneratedFiles\moc_memorymapeditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_memorymapproxy.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_memorymapsdelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -2606,9 +2600,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_addressblockeditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_addressblockproxy.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_enumeratedvaluedelegate.cpp">
@@ -2920,9 +2911,6 @@
     <ClCompile Include="editors\ComponentEditor\addressSpaces\segmenteditor.cpp">
       <Filter>Source Files\editors\ComponentEditor\addressSpaces</Filter>
     </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\addressSpaces\segmentproxy.cpp">
-      <Filter>Source Files\editors\ComponentEditor\addressSpaces</Filter>
-    </ClCompile>
     <ClCompile Include="editors\ComponentEditor\addressSpaces\segmentsmodel.cpp">
       <Filter>Source Files\editors\ComponentEditor\addressSpaces</Filter>
     </ClCompile>
@@ -3187,9 +3175,6 @@
     <ClCompile Include="editors\ComponentEditor\memoryMaps\addressblockmodel.cpp">
       <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
     </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\memoryMaps\addressblockproxy.cpp">
-      <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
-    </ClCompile>
     <ClCompile Include="editors\ComponentEditor\memoryMaps\enumeratedvaluedelegate.cpp">
       <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
     </ClCompile>
@@ -3206,9 +3191,6 @@
       <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\memoryMaps\memorymapmodel.cpp">
-      <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\memoryMaps\memorymapproxy.cpp">
       <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\memoryMaps\memorymapsdelegate.cpp">
@@ -4138,6 +4120,12 @@
     <ClCompile Include="GeneratedFiles\moc_HierarchicalSaveBuildStrategy.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ExpressionProxyModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\ExpressionProxyModel.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -4833,9 +4821,6 @@
     <CustomBuild Include="editors\ComponentEditor\addressSpaces\segmenteditor.h">
       <Filter>Header Files\editors\ComponentEditor\addressSpaces</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\addressSpaces\segmentproxy.h">
-      <Filter>Header Files\editors\ComponentEditor\addressSpaces</Filter>
-    </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\addressSpaces\segmentsmodel.h">
       <Filter>Header Files\editors\ComponentEditor\addressSpaces</Filter>
     </CustomBuild>
@@ -5103,9 +5088,6 @@
     <CustomBuild Include="editors\ComponentEditor\memoryMaps\memorymapmodel.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\memoryMaps\memorymapproxy.h">
-      <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
-    </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\memoryMaps\memorymapsdelegate.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
     </CustomBuild>
@@ -5131,9 +5113,6 @@
       <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\memoryMaps\addressblockmodel.h">
-      <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\memoryMaps\addressblockproxy.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\memoryMaps\enumeratedvaluedelegate.h">
@@ -5693,6 +5672,9 @@
     </CustomBuild>
     <CustomBuild Include="mainwindow\SaveHierarchy\HierarchicalSaveBuildStrategy.h">
       <Filter>Header Files\mainwindow\SaveHierarchy</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\memoryMaps\ExpressionProxyModel.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

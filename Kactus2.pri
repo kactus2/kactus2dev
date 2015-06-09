@@ -350,7 +350,6 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/addressSpaces/addressspaceseditor.h \
     ./editors/ComponentEditor/addressSpaces/addressspacesmodel.h \
     ./editors/ComponentEditor/addressSpaces/segmenteditor.h \
-    ./editors/ComponentEditor/addressSpaces/segmentproxy.h \
     ./editors/ComponentEditor/addressSpaces/segmentsmodel.h \
     ./editors/ComponentEditor/addressSpaces/localMemoryMap/localmemorymapeditor.h \
     ./editors/ComponentEditor/addressSpaces/localMemoryMap/localmemorymapgraphitem.h \
@@ -421,7 +420,6 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/memoryMaps/memorymapdelegate.h \
     ./editors/ComponentEditor/memoryMaps/memorymapeditor.h \
     ./editors/ComponentEditor/memoryMaps/memorymapmodel.h \
-    ./editors/ComponentEditor/memoryMaps/memorymapproxy.h \
     ./editors/ComponentEditor/memoryMaps/memorymapsdelegate.h \
     ./editors/ComponentEditor/memoryMaps/memorymapseditor.h \
     ./editors/ComponentEditor/memoryMaps/memorymapsmodel.h \
@@ -431,7 +429,6 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/memoryMaps/addressblockdelegate.h \
     ./editors/ComponentEditor/memoryMaps/addressblockeditor.h \
     ./editors/ComponentEditor/memoryMaps/addressblockmodel.h \
-    ./editors/ComponentEditor/memoryMaps/addressblockproxy.h \
     ./editors/ComponentEditor/memoryMaps/enumeratedvaluedelegate.h \
     ./editors/ComponentEditor/memoryMaps/enumeratedvaluemodel.h \
     ./editors/ComponentEditor/memoryMaps/fieldeditor.h \
@@ -643,7 +640,8 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/vhdlGenerator/vhdlport.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./kactusGenerators/modelsimGenerator/modelsimgenerator.h
+    ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
+    ./editors/ComponentEditor/memoryMaps/ExpressionProxyModel.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -989,7 +987,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/addressSpaces/addressspacesmodel.cpp \
     ./editors/ComponentEditor/addressSpaces/SegmentDelegate.cpp \
     ./editors/ComponentEditor/addressSpaces/segmenteditor.cpp \
-    ./editors/ComponentEditor/addressSpaces/segmentproxy.cpp \
     ./editors/ComponentEditor/addressSpaces/segmentsmodel.cpp \
     ./editors/ComponentEditor/addressSpaces/localMemoryMap/localmemorymapeditor.cpp \
     ./editors/ComponentEditor/addressSpaces/localMemoryMap/localmemorymapgraphitem.cpp \
@@ -1007,14 +1004,12 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/memoryMaps/addressblockdelegate.cpp \
     ./editors/ComponentEditor/memoryMaps/addressblockeditor.cpp \
     ./editors/ComponentEditor/memoryMaps/addressblockmodel.cpp \
-    ./editors/ComponentEditor/memoryMaps/addressblockproxy.cpp \
     ./editors/ComponentEditor/memoryMaps/enumeratedvaluedelegate.cpp \
     ./editors/ComponentEditor/memoryMaps/enumeratedvaluemodel.cpp \
     ./editors/ComponentEditor/memoryMaps/fieldeditor.cpp \
     ./editors/ComponentEditor/memoryMaps/memorymapdelegate.cpp \
     ./editors/ComponentEditor/memoryMaps/memorymapeditor.cpp \
     ./editors/ComponentEditor/memoryMaps/memorymapmodel.cpp \
-    ./editors/ComponentEditor/memoryMaps/memorymapproxy.cpp \
     ./editors/ComponentEditor/memoryMaps/memorymapsdelegate.cpp \
     ./editors/ComponentEditor/memoryMaps/memorymapseditor.cpp \
     ./editors/ComponentEditor/memoryMaps/memorymapsmodel.cpp \
@@ -1221,5 +1216,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
-    ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp
+    ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
+    ./editors/ComponentEditor/memoryMaps/ExpressionProxyModel.cpp
 RESOURCES += kactus.qrc

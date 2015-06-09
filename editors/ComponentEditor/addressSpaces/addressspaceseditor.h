@@ -77,9 +77,6 @@ private:
 
 	//! The model that manages the file set objects for the view.
 	AddressSpacesModel model_;
-
-	//! The proxy to do the sorting
-	QSortFilterProxyModel proxy_;
 };
 
 #endif // ADDRESSSPACESEDITOR_H

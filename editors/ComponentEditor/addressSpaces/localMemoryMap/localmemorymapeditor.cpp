@@ -14,7 +14,7 @@
 #include <editors/ComponentEditor/memoryMaps/MemoryMapColumns.h>
 #include <editors/ComponentEditor/memoryMaps/memorymapdelegate.h>
 #include <editors/ComponentEditor/memoryMaps/memorymapmodel.h>
-#include <editors/ComponentEditor/memoryMaps/memorymapproxy.h>
+#include <editors/ComponentEditor/memoryMaps/ExpressionProxyModel.h>
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
@@ -36,7 +36,6 @@ LocalMemoryMapEditor::LocalMemoryMapEditor(QSharedPointer<MemoryMap> memoryMap,
       localMemoryMap_(memoryMap),
       nameEditor_(new NameGroupEditor(memoryMap->getNameGroup(), this)),
       view_(new EditableTableView(this)),
-      proxy_(new MemoryMapProxy(this)),
       model_(0),
       component_(component),
       handler_(handler)
@@ -55,14 +54,18 @@ LocalMemoryMapEditor::LocalMemoryMapEditor(QSharedPointer<MemoryMap> memoryMap,
     ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
     parameterCompleter->setModel(componentParameterModel);
 
-	proxy_->setSourceModel(model_);
-	view_->setModel(proxy_);
+    ExpressionProxyModel* proxy = new ExpressionProxyModel(expressionParser, this);
+    proxy->setColumnToAcceptExpressions(MemoryMapColumns::BASE_COLUMN);
+    proxy->setColumnToAcceptExpressions(MemoryMapColumns::RANGE_COLUMN);
+
+	proxy->setSourceModel(model_);
+	view_->setModel(proxy);
 
 	// display a label on top the table
 	SummaryLabel* summaryLabel = new SummaryLabel(tr("Address blocks"), this);
 
-	proxy_->setSourceModel(model_);
-	view_->setModel(proxy_);
+	proxy->setSourceModel(model_);
+	view_->setModel(proxy);
 
 	const QString compPath = handler_->getDirectoryPath(*component_->getVlnv());
 	QString defPath = QString("%1/localAddrBlockList.csv").arg(compPath);

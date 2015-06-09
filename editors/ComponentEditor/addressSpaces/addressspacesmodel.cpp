@@ -76,7 +76,7 @@ Qt::ItemFlags AddressSpacesModel::flags(QModelIndex const& index ) const
 	// interface references are made in bus interface editor
 	if (index.column() == AddressSpaceColumns::INTERFACE_BINDING)
     {
-		return Qt::ItemIsSelectable;
+		return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 	}
 
 	return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
@@ -111,7 +111,7 @@ QVariant AddressSpacesModel::headerData( int section, Qt::Orientation orientatio
         }
         else if (section == AddressSpaceColumns::INTERFACE_BINDING)
         {
-            return tr("Master interface\nbinding");
+            return tr("Master interface\nbinding(s)");
         }
         else if (section == AddressSpaceColumns::DESCRIPTION)
         {

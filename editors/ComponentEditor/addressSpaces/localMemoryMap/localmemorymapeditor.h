@@ -15,14 +15,12 @@
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
 #include <QGroupBox>
-#include <QSortFilterProxyModel>
 #include <QSharedPointer>
 #include <QCheckBox>
 
 class NameGroupEditor;
 class EditableTableView;
 class MemoryMapModel;
-class MemoryMapProxy;
 class LibraryInterface;
 
 /*! \brief LocalMemoryMapEditor is used to edit a local memory map of an address space.
@@ -114,9 +112,6 @@ private:
 
 	//! \brief The view to display the table of local memory address blocks
 	EditableTableView* view_;
-
-	//! \brief The proxy that does the sorting
-	MemoryMapProxy* proxy_;
 
 	//! \brief The model that manages the items.
 	MemoryMapModel* model_;

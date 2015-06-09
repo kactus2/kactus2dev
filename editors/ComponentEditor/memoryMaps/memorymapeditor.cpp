@@ -7,10 +7,10 @@
 
 #include "memorymapeditor.h"
 
+#include "ExpressionProxyModel.h"
 #include "memorymapmodel.h"
 #include "memorymapdelegate.h"
 #include "MemoryMapColumns.h"
-#include "memorymapproxy.h"
 
 #include <common/views/EditableTableView/editabletableview.h>
 #include <common/widgets/summaryLabel/summarylabel.h>
@@ -45,7 +45,11 @@ model_(new MemoryMapModel(memoryRemap, component->getChoices(), expressionParser
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(view_);
 
-    MemoryMapProxy* proxy = new MemoryMapProxy(this);
+    ExpressionProxyModel* proxy = new ExpressionProxyModel(expressionParser, this);
+    proxy->setColumnToAcceptExpressions(MemoryMapColumns::BASE_COLUMN);
+    proxy->setColumnToAcceptExpressions(MemoryMapColumns::RANGE_COLUMN);
+    proxy->setColumnToAcceptExpressions(MemoryMapColumns::WIDTH_COLUMN);
+
 	proxy->setSourceModel(model_);
 	view_->setModel(proxy);
 
@@ -55,13 +59,10 @@ model_(new MemoryMapModel(memoryRemap, component->getChoices(), expressionParser
 	view_->setDefaultImportExportPath(defPath);
 	view_->setAllowImportExport(true);
 
-	// items can not be dragged
 	view_->setItemsDraggable(false);
-
 	view_->setSortingEnabled(true);
 
     view_->setItemDelegate(new MemoryMapDelegate(parameterCompleter, parameterFinder, this));
-
 	view_->sortByColumn(MemoryMapColumns::BASE_COLUMN, Qt::AscendingOrder);
 
 	connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -70,7 +71,7 @@ model_(new MemoryMapModel(memoryRemap, component->getChoices(), expressionParser
 	connect(model_, SIGNAL(itemRemoved(int)), this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
 
 	connect(view_, SIGNAL(addItem(const QModelIndex&)),
-		model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
+        model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
 	connect(view_, SIGNAL(removeItem(const QModelIndex&)),
 		model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 

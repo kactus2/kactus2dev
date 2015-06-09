@@ -37,6 +37,8 @@ ItemEditor(component, handler, parent),
 {
 	Q_ASSERT(addrSpace_);
 
+    nameEditor_.setTitle(tr("Address space name and description"));
+
     connect(&nameEditor_, SIGNAL(contentChanged()),	this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
     connect(&generalEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);

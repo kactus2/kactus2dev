@@ -12,7 +12,6 @@
 #include <IPXACTmodels/component.h>
 
 #include <QSharedPointer>
-#include <QSortFilterProxyModel>
 #include <QGroupBox>
 
 class EditableTableView;
@@ -124,9 +123,6 @@ private:
 
 	//! \brief Pointer to the view that displays the items.
 	EditableTableView* view_;
-
-	//! \brief Pointer to the proxy that does the sorting of items.
-	QSortFilterProxyModel* proxy_;
 
 	//! \brief Pointer to the model that manages the details of items.
 	RegisterTableModel* model_;

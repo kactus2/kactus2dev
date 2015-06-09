@@ -16,7 +16,6 @@
 #include <QGroupBox>
 
 class AddressBlockModel;
-class AddressBlockProxy;
 class EditableTableView;
 class ExpressionFormatter;
 class LibraryInterface;
@@ -132,9 +131,6 @@ private:
 
 	//! The view to display the items.
 	EditableTableView* view_;
-
-	//! The proxy that does the sorting of items.
-	AddressBlockProxy* proxy_;
 
 	//! Pointer to the model that manages the details of address block.
 	AddressBlockModel* model_;

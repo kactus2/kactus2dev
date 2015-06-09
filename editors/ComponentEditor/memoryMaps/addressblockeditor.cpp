@@ -9,7 +9,7 @@
 
 #include "addressblockdelegate.h"
 #include "addressblockmodel.h"
-#include "addressblockproxy.h"
+#include "ExpressionProxyModel.h"
 #include "AddressBlockColumns.h"
 
 #include <common/views/EditableTableView/editabletableview.h>
@@ -33,7 +33,6 @@ AddressBlockEditor::AddressBlockEditor(QSharedPointer<AddressBlock> addressBlock
 									   QWidget* parent /*= 0*/):
 QGroupBox(tr("Registers summary"), parent),
 view_(new EditableTableView(this)),
-proxy_(new AddressBlockProxy(this)),
 model_(0)
 {
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
@@ -47,8 +46,15 @@ model_(0)
     ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
     parameterCompleter->setModel(componentParametersModel);
 
-	proxy_->setSourceModel(model_);
-	view_->setModel(proxy_);
+    ExpressionProxyModel* proxy = new ExpressionProxyModel(expressionParser, this);
+    proxy->setColumnToAcceptExpressions(AddressBlockColumns::REGISTER_OFFSET);
+    proxy->setColumnToAcceptExpressions(AddressBlockColumns::REGISTER_SIZE);
+    proxy->setColumnToAcceptExpressions(AddressBlockColumns::REGISTER_DIMENSION);
+    proxy->setColumnToAcceptExpressions(AddressBlockColumns::RESET_VALUE);
+    proxy->setColumnToAcceptExpressions(AddressBlockColumns::RESET_MASK);
+
+    proxy->setSourceModel(model_);
+	view_->setModel(proxy);
 
 	//! Enable import/export csv file
 	const QString compPath = handler->getDirectoryPath(*component->getVlnv());

@@ -67,7 +67,7 @@ masterInterfaceBindingLabel_(new QLabel(this))
 	layout->addRow(tr("Addressable unit bits (AUB):"),&addrUnitEditor_);
 	layout->addRow(tr("Range (=size) [AUB], f(x):"), rangeEditor_);
     layout->addRow(tr("Width [bits], f(x):"), widthEditor_);
-    layout->addRow(tr("Master interface binding:"), masterInterfaceBindingLabel_);
+    layout->addRow(tr("Master interface binding(s):"), masterInterfaceBindingLabel_);
 	layout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
 
 	refresh(busInterfaceNames);

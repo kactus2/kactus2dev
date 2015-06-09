@@ -11,6 +11,7 @@
 
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
+#include <editors/ComponentEditor/memoryMaps/ExpressionProxyModel.h>
 
 #include <QVBoxLayout>
 
@@ -26,7 +27,6 @@ SegmentEditor::SegmentEditor(QSharedPointer<AddressSpace> addrSpace,
 							 QWidget *parent ):
 QGroupBox(tr("Segments"), parent),
 view_(this),
-proxy_(this),
 model_(addrSpace, parameterFinder, expressionFormatter, this),
 component_(component)
 {
@@ -59,10 +59,7 @@ component_(component)
 	view_.setDefaultImportExportPath(defPath);
 	view_.setAllowImportExport(true);
 
-	// set view to be sortable
 	view_.setSortingEnabled(true);
-
-	// items can not be dragged
 	view_.setItemsDraggable(false);
 
     ComponentParameterModel* completionModel = new ComponentParameterModel(parameterFinder, this);
@@ -73,15 +70,14 @@ component_(component)
 
 	view_.setItemDelegate(new SegmentDelegate(parameterCompleter, parameterFinder, this));
 
-	// set source model for proxy
-	proxy_.setSourceModel(&model_);
-	// set proxy to be the source for the view
-	view_.setModel(&proxy_);
+    ExpressionProxyModel* proxy = new ExpressionProxyModel(expressionParser, this);
+    proxy->setColumnToAcceptExpressions(1);
+    proxy->setColumnToAcceptExpressions(2);
 
-    proxy_.setSortRole(Qt::ToolTipRole);
+	proxy->setSourceModel(&model_);
+	view_.setModel(proxy);
 
-	// sort the view
-	view_.sortByColumn(0, Qt::AscendingOrder);
+	view_.sortByColumn(1, Qt::AscendingOrder);
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(&view_);
