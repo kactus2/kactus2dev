@@ -239,7 +239,16 @@ void BaseMemoryMapHeaderWriter::writeRegister(QSharedPointer<ExpressionParser> e
         stream << " * Description:" << endl;
         stream << " * " << currentRegister->getDescription() << endl;
     }
-    stream << "*/" << endl;
+
+    stream << " * Offset: " << formatter->formatReferringExpression(currentRegister->getAddressOffset());
+    if (!expressionParser->isPlainValue(currentRegister->getAddressOffset()))
+    {
+        quint64 parsedOffsetInt = parsedOffset.toUInt();
+        QString parsedOffsetString = QString::number(parsedOffsetInt, 16);
+        stream << " = 0x" << parsedOffsetString;
+    }
+
+    stream << endl << "*/" << endl;
     stream << "#define ";
 
     if (idString.isEmpty())
@@ -251,10 +260,7 @@ void BaseMemoryMapHeaderWriter::writeRegister(QSharedPointer<ExpressionParser> e
         stream << idString.toUpper() << "_" << currentRegister->getName().toUpper() << " " <<
             registerOffsetString;
     }
-    if (!expressionParser->isPlainValue(currentRegister->getAddressOffset()))
-    {
-        stream << " // " << formatter->formatReferringExpression(currentRegister->getAddressOffset());
-    }
+
     stream << endl;
 }
 
