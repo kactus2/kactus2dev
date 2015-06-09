@@ -17,11 +17,11 @@ namespace MemoryMapColumns
     //! Defines the columns for the memory map table.
     enum Column
     {
-        NAME_COLUMN = 0,		
-        USAGE_COLUMN,	
+        NAME_COLUMN = 0,
         BASE_COLUMN,
         RANGE_COLUMN,
         WIDTH_COLUMN,
+        USAGE_COLUMN,
         ACCESS_COLUMN,
         VOLATILE_COLUMN,
         DESCRIPTION_COLUMN,

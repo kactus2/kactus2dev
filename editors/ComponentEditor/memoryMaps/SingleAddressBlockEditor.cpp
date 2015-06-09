@@ -72,7 +72,6 @@ expressionParser_(expressionParser)
 
     connectSignals();
 
-    usageEditor_->setProperty("mandatoryField", true);
     baseAddressEditor_->setProperty("mandatoryField", true);
     rangeEditor_->setProperty("mandatoryField", true);
     widthEditor_->setProperty("mandatoryField", true);
@@ -114,7 +113,10 @@ void SingleAddressBlockEditor::refresh()
     nameEditor_.refresh();
     registersEditor_->refresh();
 
-    usageEditor_->setCurrentValue(addressBlock_->getUsage());
+    General::Usage usage = addressBlock_->getUsage();
+    registersEditor_->setEnabled(!addressBlock_->getRegisterData().isEmpty() ||
+        (usage != General::RESERVED && usage != General::MEMORY));
+    usageEditor_->setCurrentValue(usage);
 
     changeExpressionEditorSignalBlockStatus(true);
 
@@ -194,7 +196,11 @@ QString SingleAddressBlockEditor::formattedValueFor(QString const& expression) c
 //-----------------------------------------------------------------------------
 void SingleAddressBlockEditor::onUsageSelected(QString const& newUsage)
 {
-    addressBlock_->setUsage(General::str2Usage(newUsage, General::USAGE_COUNT));
+    General::Usage usage = General::str2Usage(newUsage, General::USAGE_COUNT);
+
+    addressBlock_->setUsage(usage);
+    registersEditor_->setEnabled(!addressBlock_->getRegisterData().isEmpty() || 
+        (usage != General::RESERVED && usage != General::MEMORY));
 
     emit contentChanged();
 }
@@ -247,11 +253,12 @@ void SingleAddressBlockEditor::setupLayout()
 
     QFormLayout* addressBlockDefinitionLayout = new QFormLayout(addressBlockDefinitionGroup);
 
-    usageEditor_ = new UsageComboBox(addressBlockDefinitionGroup);
-    addressBlockDefinitionLayout->addRow(tr("Usage:"), usageEditor_);
     addressBlockDefinitionLayout->addRow(tr("Base Address [AUB], f(x):"), baseAddressEditor_);
     addressBlockDefinitionLayout->addRow(tr("Range [AUB], f(x):"), rangeEditor_);
     addressBlockDefinitionLayout->addRow(tr("Width [bits], f(x):"), widthEditor_);
+    
+    usageEditor_ = new UsageComboBox(addressBlockDefinitionGroup);
+    addressBlockDefinitionLayout->addRow(tr("Usage:"), usageEditor_);
 
     accessEditor_ = new AccessComboBox(addressBlockDefinitionGroup);
     addressBlockDefinitionLayout->addRow(tr("Access:"), accessEditor_);

@@ -180,8 +180,7 @@ QVariant MemoryMapModel::data(QModelIndex const& index, int role) const
     }
     else if (role == Qt::BackgroundRole)
     {
-        if (index.column() == MemoryMapColumns::USAGE_COLUMN ||
-            index.column() == MemoryMapColumns::NAME_COLUMN ||
+        if (index.column() == MemoryMapColumns::NAME_COLUMN ||
             index.column() == MemoryMapColumns::BASE_COLUMN ||
             index.column() == MemoryMapColumns::RANGE_COLUMN ||
             index.column() == MemoryMapColumns::WIDTH_COLUMN) 
