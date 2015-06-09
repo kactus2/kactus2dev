@@ -134,13 +134,19 @@ void ParameterDelegate::setEditorData(QWidget* editor, QModelIndex const& index)
 
         int arraySize = getArraySize(arrayLeftValue, arrayRightValue);
 
+        int arrayStartIndex = arrayLeftValue;
+        if (arrayRightValue < arrayLeftValue)
+        {
+            arrayStartIndex = arrayRightValue;
+        }
+
         QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(
             getParameterFinder()));
 
         QSharedPointer<Choice> selectedChoice = findChoice(index);
 
         ParameterArrayModel* model = new ParameterArrayModel(arraySize, expressionParser, getParameterFinder(),
-            expressionFormatter_, selectedChoice, QColor("LemonChiffon"), arrayRightValue, view);
+            expressionFormatter_, selectedChoice, QColor("LemonChiffon"), arrayStartIndex, view);
 
         QModelIndex valueIndex = index.sibling(index.row(), valueColumn());
         QString parameterValue = valueIndex.data(Qt::EditRole).toString();
