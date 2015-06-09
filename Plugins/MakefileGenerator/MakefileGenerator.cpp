@@ -81,7 +81,7 @@ void MakefileGenerator::generateInstanceMakefile(QString basePath, QString topPa
     // Add the path to the list of created makefiles for later reference.
     makeNames.append( instancePath );
 
-    // Begin the file with the includes.
+    // Write the paths of directories containing includes.
     outStream << "_INCLUDES=";
 
     foreach( QString path, mfd.includeDirectories )
@@ -90,12 +90,11 @@ void MakefileGenerator::generateInstanceMakefile(QString basePath, QString topPa
     }
 
     outStream << endl;
+	// Will make the -I option out of every included directory.
     outStream << "INCLUDES=$(patsubst %, -I%, $(_INCLUDES))" << endl << endl;
 
-    // The files proper are also dependencies of the source files.
-    // Creation of object directory is a dependency, so that it will be done if needed.
-	// WARNING: MUST NOT BE $(ODIR), as it will make all object files as dependencies!
-    outStream << "DEPS= $(CODIR)";
+    // The include files themselves are dependencies of the source files.
+    outStream << "DEPS=";
 
     foreach(MakefileParser::MakeObjectData file, mfd.includeFiles)
     {
@@ -109,6 +108,16 @@ void MakefileGenerator::generateInstanceMakefile(QString basePath, QString topPa
 
     writeObjectList(mfd, outStream);
     writeExeBuild(outStream);
+
+	// Create rule for using debugging and profiling options
+	outStream << "DEBUG_FLAGS +="<< endl;
+	outStream << "debug: DEBUG_FLAGS += -ggdb" << endl;
+	outStream << "debug: $(ENAME)" << endl << endl;
+
+	outStream << "PROFILE_FLAGS +="<< endl;
+	outStream << "profile: PROFILE_FLAGS += -pg -fno-omit-frame-pointer -fno-inline-functions "
+		"-fno-inline-functions-called-once -fno-optimize-sibling-calls" << endl;
+	outStream << "profile: $(ENAME)" << endl << endl;
 
     writeMakeObjects(mfd, outStream, mfd.swObjects, instancePath);
     writeMakeObjects(mfd, outStream, mfd.hwObjects, instancePath);
@@ -219,7 +228,7 @@ void MakefileGenerator::generateLauncher(QString basePath, QString topPath, QStr
 //-----------------------------------------------------------------------------
 void MakefileGenerator::writeFinalFlagsAndBuilder(MakefileParser::MakeFileData &mfd, QTextStream& outStream) const
 {
-    QString finalFlags = "$(INCLUDES)";
+    QString finalFlags = "$(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS)";
     QString finalBuilder;
 
     // If build command of software view of the hardware instance exist, its properties are used.
@@ -288,7 +297,9 @@ void MakefileGenerator::writeExeBuild(QTextStream& outStream) const
     outStream << "clean:\n\trm -f $(OBJ);" << endl << endl;
 
     // Make a directory for the object files.
-    outStream << "$(CODIR):\n\tmkdir -p $(ODIR);" << endl;
+    outStream << "all: $(OBJ)" << endl << endl;
+    outStream << "$(OBJ): | $(ODIR)" << endl << endl;
+    outStream << "$(ODIR):\n\tmkdir -p $(ODIR)" << endl;
 }
 
 //-----------------------------------------------------------------------------
@@ -314,7 +325,7 @@ void MakefileGenerator::writeMakeObjects(MakefileParser::MakeFileData &mfd, QTex
 		}
 
         // Flags will always include at least the includes.
-        QString cFlags = "$(INCLUDES) ";
+        QString cFlags = "$(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) ";
 
         // The other flags are not hard coded.
         cFlags += mod.fileBuildCmd->getFlags();
