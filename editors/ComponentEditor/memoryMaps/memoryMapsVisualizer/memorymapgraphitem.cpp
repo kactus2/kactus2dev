@@ -81,7 +81,12 @@ void MemoryMapGraphItem::updateDisplay()
 //-----------------------------------------------------------------------------
 quint64 MemoryMapGraphItem::getOffset() const 
 {
-    quint64 offset = 0;
+    if (childItems_.isEmpty())
+    {
+        return 0;
+    }
+
+    quint64 offset = childItems_.last()->getOffset();
     foreach (MemoryVisualizationItem* child, childItems_.values())
     {
         if (dynamic_cast<MemoryGapItem*>(child) == 0)
