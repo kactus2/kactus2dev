@@ -616,7 +616,7 @@ QVariant MemoryMapsModel::valueForIndex(QModelIndex const& index) const
         }
         else
         {
-            return interfaceNames.join(" ");
+            return interfaceNames.join(", ");
         }
     }
     else if (index.column() == MemoryMapsColumns::REMAPSTATE_COLUMN)

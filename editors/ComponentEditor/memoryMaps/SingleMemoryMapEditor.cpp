@@ -208,7 +208,7 @@ void SingleMemoryMapEditor::refreshSlaveBinding()
     QStringList interfaceNames = component()->getSlaveInterfaces(parentMemoryMap_->getName());
     if (!interfaceNames.isEmpty())
     {
-        slaveInterfaceText = interfaceNames.join(" ");
+        slaveInterfaceText = interfaceNames.join(", ");
     }
     slaveInterfaceLabel_->setText(slaveInterfaceText);
 }
