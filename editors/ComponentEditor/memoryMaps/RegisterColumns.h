@@ -20,7 +20,6 @@ namespace RegisterColumns
         NAME_COLUMN = 0,
         OFFSET_COLUMN,
         WIDTH_COLUMN,
-        DESC_COLUMN,
         VOLATILE_COLUMN,
         ACCESS_COLUMN,
         MOD_WRITE_COLUMN,
@@ -28,6 +27,7 @@ namespace RegisterColumns
         TESTABLE_COLUMN,
         TEST_CONSTR_COLUMN,
         IS_PRESENT_COLUMN,
+        DESC_COLUMN,
         COLUMN_COUNT
     };
 }

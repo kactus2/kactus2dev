@@ -43,6 +43,8 @@ LocalMemoryMapEditor::LocalMemoryMapEditor(QSharedPointer<MemoryMap> memoryMap,
     setCheckable(true);
     setChecked(!localMemoryMap_->isEmpty());
 
+    nameEditor_->setTitle(tr("Memory map name and description"));
+
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
 
     model_ = new MemoryMapModel(memoryMap, component->getChoices(), expressionParser, parameterFinder,

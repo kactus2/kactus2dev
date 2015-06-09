@@ -19,12 +19,12 @@ namespace AddressBlockColumns
         NAME = 0,
         REGISTER_OFFSET,
         REGISTER_SIZE,
-        REGISTER_DIMENSION,
-        DESCRIPTION,
+        REGISTER_DIMENSION,        
         VOLATILE,
         REGISTER_ACCESS,
         RESET_VALUE,
         RESET_MASK,
+        DESCRIPTION,
         COLUMN_COUNT
     };
 }
