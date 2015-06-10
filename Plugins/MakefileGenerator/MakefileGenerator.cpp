@@ -96,9 +96,9 @@ void MakefileGenerator::generateInstanceMakefile(QString basePath, QString topPa
     // The include files themselves are dependencies of the source files.
     outStream << "DEPS=";
 
-    foreach(MakefileParser::MakeObjectData file, mfd.includeFiles)
+    foreach(QSharedPointer<MakefileParser::MakeObjectData> file, mfd.includeFiles)
     {
-        outStream << " " << General::getRelativePath(instancePath,file.path) << "/" << file.fileName;
+        outStream << " " << General::getRelativePath(instancePath,file->path) << "/" << file->fileName;
     }
 
     outStream << endl << endl;
@@ -110,14 +110,14 @@ void MakefileGenerator::generateInstanceMakefile(QString basePath, QString topPa
     writeExeBuild(outStream);
 
 	// Create rule for using debugging and profiling options
-	outStream << "DEBUG_FLAGS +="<< endl;
+	outStream << "DEBUG_FLAGS +=" << endl;
 	outStream << "debug: DEBUG_FLAGS += -ggdb" << endl;
 	outStream << "debug: $(ENAME)" << endl << endl;
 
 	outStream << "PROFILE_FLAGS +="<< endl;
 	outStream << "profile: PROFILE_FLAGS += -pg -fno-omit-frame-pointer -fno-inline-functions "
 		"-fno-inline-functions-called-once -fno-optimize-sibling-calls" << endl;
-	outStream << "profile: $(ENAME)" << endl << endl;
+	outStream << "profile: $(ENAME)" << endl;
 
     writeMakeObjects(mfd, outStream, mfd.swObjects, instancePath);
     writeMakeObjects(mfd, outStream, mfd.hwObjects, instancePath);
@@ -260,19 +260,19 @@ void MakefileGenerator::writeObjectList(MakefileParser::MakeFileData &mfd, QText
     // Include files are skipped and the object file is simply original filename + ".o".
     outStream << "_OBJ=";
 
-    foreach(MakefileParser::MakeObjectData mod, mfd.swObjects)
+    foreach(QSharedPointer<MakefileParser::MakeObjectData> mod, mfd.swObjects)
     {
-        if ( !mod.file->getIncludeFile() )
+        if ( !mod->file->getIncludeFile() && !mod->compiler.isEmpty() )
         {
-            outStream << " " << mod.fileName << ".o";
+            outStream << " " << mod->fileName << ".o";
         }
     }
 
-    foreach(MakefileParser::MakeObjectData mod, mfd.hwObjects)
+    foreach(QSharedPointer<MakefileParser::MakeObjectData> mod, mfd.hwObjects)
     {
-        if ( !mod.file->getIncludeFile() )
+        if ( !mod->file->getIncludeFile() && !mod->compiler.isEmpty() )
         {
-            outStream << " " << mod.file->getName() << ".o";
+            outStream << " " << mod->file->getName() << ".o";
         }
     }
 
@@ -299,95 +299,45 @@ void MakefileGenerator::writeExeBuild(QTextStream& outStream) const
     // Make a directory for the object files.
     outStream << "all: $(OBJ)" << endl << endl;
     outStream << "$(OBJ): | $(ODIR)" << endl << endl;
-    outStream << "$(ODIR):\n\tmkdir -p $(ODIR)" << endl;
+    outStream << "$(ODIR):\n\tmkdir -p $(ODIR)" << endl << endl;
 }
 
 //-----------------------------------------------------------------------------
 // Function: MakefileGenerator::writeMakeObjects()
 //-----------------------------------------------------------------------------
-void MakefileGenerator::writeMakeObjects(MakefileParser::MakeFileData &mfd, QTextStream& outStream, QList<MakefileParser::MakeObjectData>& objects, QString instancePath) const
+void MakefileGenerator::writeMakeObjects(MakefileParser::MakeFileData &mfd, QTextStream& outStream, QList<QSharedPointer<MakefileParser::MakeObjectData>>& objects, QString instancePath) const
 {
-    foreach(MakefileParser::MakeObjectData mod, objects)
+    foreach(QSharedPointer<MakefileParser::MakeObjectData> mod, objects)
     {
         // Skip the include files. Those do not need their own object files.
-        if ( mod.file->getIncludeFile() )
+        if ( mod->file->getIncludeFile() || mod->compiler.isEmpty() )
         {
             continue;
         }
-
-        // Find out the compiler.
-        QString compiler = getFileCompiler(mod, mfd);
-
-		// No compiler -> Cannot make an object file.
-		if ( compiler.isEmpty() )
-		{
-			continue;
-		}
 
         // Flags will always include at least the includes.
         QString cFlags = "$(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) ";
 
         // The other flags are not hard coded.
-        cFlags += mod.fileBuildCmd->getFlags();
+        cFlags += mod->fileBuildCmd->getFlags();
         cFlags += getFileFlags(mod, mfd);
 
         // The relative path is needed by the make and the builder to access the source file.
-        QString relPath = General::getRelativePath(instancePath,mod.path);
-        QString fileName = mod.fileName;
+        QString relPath = General::getRelativePath(instancePath,mod->path);
+        QString fileName = mod->fileName;
 
         // Write the rule for building the individual object file, including dependencies.
         outStream << endl;
         outStream << "$(ODIR)/" << fileName << ".o: $(DEPS) " << relPath << "/" << fileName << endl;
-        outStream << "\t" << compiler << " -c -o $(ODIR)/" << fileName << ".o " <<
+        outStream << "\t" << mod->compiler << " -c -o $(ODIR)/" << fileName << ".o " <<
             relPath << "/" << fileName << " " << cFlags << endl;
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: MakefileGenerator::getFileCompiler()
-//-----------------------------------------------------------------------------
-QString MakefileGenerator::getFileCompiler(MakefileParser::MakeObjectData &mod, MakefileParser::MakeFileData &mfd) const
-{
-    QString compiler;
-
-    // This mesh does following:
-    // 1. No file builder -> use fileSet builder
-    // 2. No fileSet builder -> use builder of the software view of the software instance
-    // 3. If nothing else, use the builder of the software view of the hardware instance
-    if ( mod.fileBuildCmd->getCommand().isEmpty() )
-    {
-        if ( mod.fileSetBuildCmd == 0 || mod.fileSetBuildCmd->getCommand().isEmpty() )
-        {
-            if ( ( mod.swBuildCmd == 0 || mod.swBuildCmd->getCommand().isEmpty() ) && mfd.hwBuildCmd != 0 )
-            {
-				// Verify that file has a type matching the build command.
-				if ( mod.file->getFileTypes().contains( mfd.hwBuildCmd->getFileType() ) )
-				{
-					compiler = mfd.hwBuildCmd->getCommand();
-				}
-            }
-            else if ( mod.swBuildCmd != 0 )
-            {
-				compiler = mod.swBuildCmd->getCommand();
-            }
-        }
-        else if ( mod.fileSetBuildCmd != 0 )
-        {
-			compiler = mod.fileSetBuildCmd->getCommand();
-        }
-    }
-    else
-    {
-		compiler = mod.fileBuildCmd->getCommand();
-    }
-
-    return compiler;
-}
-
-//-----------------------------------------------------------------------------
 // Function: MakefileGenerator::getFileFlags()
 //-----------------------------------------------------------------------------
-QString MakefileGenerator::getFileFlags(MakefileParser::MakeObjectData &mod, MakefileParser::MakeFileData &mfd) const
+QString MakefileGenerator::getFileFlags(QSharedPointer<MakefileParser::MakeObjectData> &mod, MakefileParser::MakeFileData &mfd) const
 {
     QString cFlags;
 
@@ -395,21 +345,21 @@ QString MakefileGenerator::getFileFlags(MakefileParser::MakeObjectData &mod, Mak
     // 1. If file does not override flags, may use fileSet flags
     // 2. If fileSet does not override flags, may use software flags
     // 2. If software does not override flags, may use hardware flags
-    if ( !mod.fileBuildCmd->getReplaceDefaultFlags() )
+    if ( !mod->fileBuildCmd->getReplaceDefaultFlags() )
     {
-        if ( mod.fileSetBuildCmd != 0 )
+        if ( mod->fileSetBuildCmd != 0 )
         {
-            cFlags += " " + mod.fileSetBuildCmd->getFlags();
+            cFlags += " " + mod->fileSetBuildCmd->getFlags();
         }
 
-        if ( mod.fileSetBuildCmd == 0 || !mod.fileSetBuildCmd->getReplaceDefaultFlags() )
+        if ( mod->fileSetBuildCmd == 0 || !mod->fileSetBuildCmd->getReplaceDefaultFlags() )
         {
-            if ( mod.swBuildCmd != 0 )
+            if ( mod->swBuildCmd != 0 )
             {
-                cFlags += " " + mod.swBuildCmd->getFlags();
+                cFlags += " " + mod->swBuildCmd->getFlags();
             }   
 
-            if ( ( mod.swBuildCmd == 0 || !mod.swBuildCmd->getReplaceDefaultFlags() ) && mfd.hwBuildCmd != 0 )
+            if ( ( mod->swBuildCmd == 0 || !mod->swBuildCmd->getReplaceDefaultFlags() ) && mfd.hwBuildCmd != 0 )
             {
                 cFlags += " " + mfd.hwBuildCmd->getFlags();
             }

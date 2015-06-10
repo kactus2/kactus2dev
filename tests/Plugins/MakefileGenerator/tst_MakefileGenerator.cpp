@@ -59,7 +59,8 @@ private slots:
     void multipleHardWare();
     void multipleHardWareMedRefs();
 
-    void noHardWare();
+	void noHardWare();
+	void noFileType();
     void multipleInstances();
     void apiUsage();
     void threeLevelStack();
@@ -1006,6 +1007,60 @@ void tst_MakefileGenerator::noHardWare()
     verifyOutputContains("software_0", "gcc -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw");
 }
 
+// File with unsupported file type must not be in makefile!
+void tst_MakefileGenerator::noFileType()
+{
+	QSharedPointer<Design> design;
+	QSharedPointer<DesignConfiguration> desgconf;
+	QSharedPointer<Component> topComponent = createDesign(design, desgconf);
+
+	QMap<QString,QString> activeViews;
+	SWView* hardView;
+	SWView* softView;
+
+	QString hwInstanceName = "hardware_0";
+	QString hardViewName = "firmware";
+	createHW(hwInstanceName, design, hardViewName, activeViews, hardView);
+
+	QString swInstanceName = "software_0";
+	QString softViewName = "default";
+
+	QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, activeViews, softView,swInstanceName);
+
+	QString fileSetName = "someFileSet";
+	addFileSet(sw, fileSetName, softView);
+
+	QSharedPointer<FileSet> fileSet = sw->getFileSet(fileSetName);
+	addFileToSet(fileSet, "array.c");
+	addFileToSet(fileSet, "support.c");
+	addFileToSet(fileSet, "additional.c");
+	addFileToSet(fileSet, "hiterbehn.c", "topSecret");
+	addFileToSet(fileSet, "array.h", "cSource", true);
+	addFileToSet(fileSet, "support.h", "cSource", true);
+
+	addCmd2View(hardView, "gcc", "cSource", "-hw", false);
+	addCmd2View(softView, "gcc", "cSource", "-sw", false);
+
+	QSharedPointer<File> file;
+	getFile(file, sw, "support.c");
+	setFileBuilder(file, "continental", "-y", false);
+
+	desgconf->setViewConfigurations(activeViews);
+
+	MakefileParser parser;
+	parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
+	MakefileGenerator generator( parser, &utilityMock_ );
+
+	generator.generate(outputDir_,outputDir_,"tsydemi");
+
+	verifyOutputContains("software_0", "_OBJ= array.c.o support.c.o additional.c.o");
+	verifyOutputContains("software_0", "EBUILDER= gcc");
+	verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hw -sw");
+	verifyOutputContains("software_0", "gcc -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw -hw");
+	verifyOutputContains("software_0", "continental -c -o $(ODIR)/support.c.o ../../support.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -y -sw -hw");
+	verifyOutputContains("software_0", "gcc -c -o $(ODIR)/additional.c.o ../../additional.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw -hw");
+}
+
 // Must work with multiple instances of the same component.
 void tst_MakefileGenerator::multipleInstances()
 {
@@ -1429,13 +1484,13 @@ void tst_MakefileGenerator::circularapiUsage()
 QSharedPointer<Component> tst_MakefileGenerator::createDesign(QSharedPointer<Design> &design,
     QSharedPointer<DesignConfiguration> &desgconf)
 {
-    VLNV dvlnv("","kyytto","raision kirjasto","design","1.0");
+    VLNV dvlnv("","vendor","lib","design","1.0");
     design = QSharedPointer<Design>(new Design(dvlnv));
-    VLNV dgvlnv("","kyytto","raision kirjasto","design-conf","1.0");
+    VLNV dgvlnv("","vendor","lib","design-conf","1.0");
     desgconf = QSharedPointer<DesignConfiguration>(new DesignConfiguration(dgvlnv));
     desgconf->setDesignRef(dvlnv);
 
-    VLNV topvlvnv("","kyytto","raision kirjasto","master-plan","1.0");
+    VLNV topvlvnv("","vendor","lib","master-plan","1.0");
     QSharedPointer<Component> top = QSharedPointer<Component>(new Component(topvlvnv));
     top->setComponentImplementation(KactusAttribute::SYSTEM);
     library_.addComponent(top);
@@ -1465,7 +1520,7 @@ void tst_MakefileGenerator::addFileToSet(QSharedPointer<FileSet> fileSet, QStrin
 
 QSharedPointer<Component> tst_MakefileGenerator::createSW(QString swName, QString hwInstanceName, QSharedPointer<Design> design, QString softViewName, QMap<QString,QString>& activeViews, SWView*& softView, QString swInstanceName)
 {
-    VLNV swvlvnv("","kyytto","raision kirjasto",swName,"1.0");
+    VLNV swvlvnv("","vendor","lib",swName,"1.0");
     QSharedPointer<Component> sw = QSharedPointer<Component>(new Component(swvlvnv));
     SWInstance softInstance;
     softInstance.setInstanceName(swInstanceName);
@@ -1489,7 +1544,7 @@ QSharedPointer<Component> tst_MakefileGenerator::createSW(QString swName, QStrin
 
 QSharedPointer<Component> tst_MakefileGenerator::createHW(QString hwInstanceName, QSharedPointer<Design> design, QString hardViewName, QMap<QString,QString>& activeViews, SWView*& hardView, QString hwName/*="hardware"*/)
 {
-    VLNV hwvlvnv("","kyytto","raision kirjasto",hwName,"1.0");
+    VLNV hwvlvnv("","vendor","lib",hwName,"1.0");
     QSharedPointer<Component> hw = QSharedPointer<Component>(new Component(hwvlvnv));
     ComponentInstance hwInstance(hwInstanceName,"","esim",hwvlvnv,QPointF(),hwInstanceName);
 

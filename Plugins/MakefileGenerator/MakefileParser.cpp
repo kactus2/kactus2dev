@@ -129,6 +129,17 @@ void MakefileParser::parse(LibraryInterface* library, QSharedPointer<Component> 
         // Both component and hardware software views are needed to build.
         findHardwareBuildCommand(makeData, softView, hardView);
 
+		// Now we may check the compiler of individual files...
+		foreach ( QSharedPointer<MakeObjectData> mod, makeData.swObjects )
+		{
+			mod->compiler = getFileCompiler( mod, makeData );
+		}
+
+		foreach ( QSharedPointer<MakeObjectData> mod, makeData.hwObjects )
+		{
+			mod->compiler = getFileCompiler( mod, makeData );
+		}
+
         // Check if software objects found: If none, no need for a make file.
         if ( makeData.swObjects.count() < 1 )
         {
@@ -335,7 +346,7 @@ void MakefileParser::parseStackObjects(QSharedPointer<Component> softComponent,
 // Function: MakefileParser::createMakeObjects()
 //-----------------------------------------------------------------------------
 void MakefileParser::parseMakeObjects(LibraryInterface* library, QSharedPointer<SWView> view,
-    QSharedPointer<Component> component, MakeFileData &makeData, QList<MakeObjectData>& objects, bool pickSWView)
+    QSharedPointer<Component> component, MakeFileData &makeData, QList<QSharedPointer<MakeObjectData>>& objects, bool pickSWView)
 {
     // Go through the fileSets referenced in the software view.
     foreach( QString fsetName, view->getFileSetRefs())
@@ -346,8 +357,8 @@ void MakefileParser::parseMakeObjects(LibraryInterface* library, QSharedPointer<
         foreach( QSharedPointer<File> file, fset->getFiles())
         {
             // Initialize the data to the collection associated with the makefile data.
-            objects.append(MakeObjectData());
-            MakeObjectData& objectData = objects.last();
+            objects.append(QSharedPointer<MakeObjectData>(new MakeObjectData));
+            QSharedPointer<MakeObjectData> objectData = objects.last();
 
             // We may assume that a file path is relative to the component path, and thus the include path
             // is component path + file path.
@@ -355,10 +366,10 @@ void MakefileParser::parseMakeObjects(LibraryInterface* library, QSharedPointer<
             QFileInfo fileQfi = QFileInfo(componentQfi.absolutePath() + "/" + file->getName());
 
             // Set the needed fields.
-            objectData.file = file;
-            objectData.fileBuildCmd = file->getBuildcommand();
-            objectData.fileName = fileQfi.fileName();
-            objectData.path = fileQfi.absolutePath();
+            objectData->file = file;
+            objectData->fileBuildCmd = file->getBuildcommand();
+            objectData->fileName = fileQfi.fileName();
+            objectData->path = fileQfi.absolutePath();
 
             // In case of an include file:
             if ( file->getIncludeFile() )
@@ -374,7 +385,7 @@ void MakefileParser::parseMakeObjects(LibraryInterface* library, QSharedPointer<
             {
                 if ( file->getFileTypes().contains( builder->getFileType() ) )
                 {
-                    objectData.fileSetBuildCmd = builder;
+                    objectData->fileSetBuildCmd = builder;
                     break;
                 }
             }
@@ -386,7 +397,7 @@ void MakefileParser::parseMakeObjects(LibraryInterface* library, QSharedPointer<
                 {
                     if ( file->getFileTypes().contains( buildCmd->getFileType() ) )
                     {
-                        objectData.swBuildCmd = buildCmd;
+                        objectData->swBuildCmd = buildCmd;
 
                         // If found, append the flags of the software view for later use.
                         makeData.softViewFlags.append(buildCmd->getFlags());
@@ -436,12 +447,12 @@ void MakefileParser::findHardwareBuildCommand(MakeFileData &makeData, QSharedPoi
     }
 
     // Go through the files parsed from the software view of the software component.
-    foreach(MakeObjectData mod, makeData.swObjects)
+    foreach(QSharedPointer<MakeObjectData> mod, makeData.swObjects)
     {
         // Find build command from the software view of the hardware component matching file type.
         foreach( QSharedPointer<SWBuildCommand> buildCmd, hardView->getSWBuildCommands() )
         {
-            if ( mod.file->getFileTypes().contains( buildCmd->getFileType() ) )
+            if ( mod->file->getFileTypes().contains( buildCmd->getFileType() ) )
             {
                 makeData.hwBuildCmd = buildCmd;
                 break;
@@ -450,16 +461,61 @@ void MakefileParser::findHardwareBuildCommand(MakeFileData &makeData, QSharedPoi
     }
 
     // Go through the files parsed from the software view of the hardware component.
-    foreach(MakeObjectData mod, makeData.hwObjects)
+    foreach(QSharedPointer<MakeObjectData> mod, makeData.hwObjects)
     {
         // Find build command from the software view of the hardware component matching file type.
         foreach( QSharedPointer<SWBuildCommand> buildCmd, hardView->getSWBuildCommands() )
         {
-            if ( mod.file->getFileTypes().contains( buildCmd->getFileType() ) )
+            if ( mod->file->getFileTypes().contains( buildCmd->getFileType() ) )
             {
                 makeData.hwBuildCmd = buildCmd;
                 break;
             }
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MakefileParser::getFileCompiler()
+//-----------------------------------------------------------------------------
+QString MakefileParser::getFileCompiler(QSharedPointer<MakeObjectData> mod, MakeFileData &mfd) const
+{
+	QString compiler;
+	QSharedPointer<SWBuildCommand> swbc;
+
+	// This mesh does following:
+	// 1. No file builder -> use fileSet builder
+	// 2. No fileSet builder -> use builder of the software view of the software instance
+	// 3. If nothing else, use the builder of the software view of the hardware instance
+	// 4. However, if the builder of latter two is not off matching file type, it is ignored.
+	if ( mod->fileBuildCmd->getCommand().isEmpty() )
+	{
+		if ( mod->fileSetBuildCmd == 0 || mod->fileSetBuildCmd->getCommand().isEmpty() )
+		{
+			if ( mod->swBuildCmd == 0 || mod->swBuildCmd->getCommand().isEmpty() )
+			{
+				swbc = mfd.hwBuildCmd;
+			}
+			else
+			{
+				swbc = mod->swBuildCmd;
+			}
+		}
+		else if ( mod->fileSetBuildCmd != 0 )
+		{
+			compiler = mod->fileSetBuildCmd->getCommand();
+		}
+	}
+	else
+	{
+		compiler = mod->fileBuildCmd->getCommand();
+	}
+
+	// Verify that file has a type matching the build command.
+	if ( swbc != 0 && mod->file->getFileTypes().contains( swbc->getFileType() ) )
+	{
+		compiler = swbc->getCommand();
+	}
+
+	return compiler;
 }

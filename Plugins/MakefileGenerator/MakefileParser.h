@@ -38,6 +38,8 @@ public:
         QSharedPointer<FileBuilder> fileSetBuildCmd;
         // The build command of the active software view of the software instance.
         QSharedPointer<SWBuildCommand> swBuildCmd;
+		// The resolved compiler for the object file.
+		QString compiler;
         // The absolute path of the file.
         QString path;
         // The name of the file.
@@ -48,9 +50,9 @@ public:
     struct MakeFileData
     {
         // Parsed files found in software views of software components.
-        QList<MakeObjectData> swObjects;
+        QList<QSharedPointer<MakeObjectData>> swObjects;
         // Parsed files found in software views of hardware components.
-        QList<MakeObjectData> hwObjects;
+        QList<QSharedPointer<MakeObjectData>> hwObjects;
         // The build command of the active software view of the hardware instance.
         QSharedPointer<SWBuildCommand> hwBuildCmd;
         // Flags passed down from software views.
@@ -60,7 +62,7 @@ public:
         // The list of all included directories.
         QStringList includeDirectories;
         // The list of all include files.
-        QList<MakeObjectData> includeFiles;
+        QList<QSharedPointer<MakeObjectData>> includeFiles;
         // The list of parsed software instances. Tracked to avoid re-parsing a dependency.
         QStringList parsedInstances;
         // Instance specific fileSet, which is to contain the makefile generated for the instance.
@@ -94,7 +96,7 @@ public:
      */
     void parse( LibraryInterface* library, QSharedPointer<Component> topComponent,
         QSharedPointer<DesignConfiguration const> desgConf, QSharedPointer<const Design> design,
-        QString sysViewName, QString targetPath = "");
+        QString sysViewName, QString targetPath = "" );
 
 private:
 
@@ -164,7 +166,7 @@ private:
      *      @param [in] pickSWView   True, if flags corresponding file type are culled from the software view.
      */
       void parseMakeObjects(LibraryInterface* library, QSharedPointer<SWView> view,
-          QSharedPointer<Component> component, MakeFileData &makeData, QList<MakeObjectData>& objects,
+          QSharedPointer<Component> component, MakeFileData &makeData, QList<QSharedPointer<MakeObjectData>>& objects,
           bool pickSWView);
 
     /*!
@@ -188,6 +190,14 @@ private:
      *      @param [in] hardView   Software view of the hardware component.
      */
      void findHardwareBuildCommand(MakeFileData &makeData, QSharedPointer<SWView> softView, QSharedPointer<SWView> hardView);
+
+    /*!
+     *  Gets the compiler used for the file.
+     *
+     *      @param [in] mod   The make data associated with the object file.
+     *      @param [in] mfd   The make data associated with the makefile as whole.
+     */
+     QString getFileCompiler(QSharedPointer<MakeObjectData> mod, MakeFileData &mfd) const;
 
      //! Collection of data sets, one for each make file.
      QList<MakeFileData> parsedData_;

@@ -100,15 +100,7 @@ private:
      *      @param [in] objects   The list of the objects written.
      *      @param [in] instancePath   Path of the makefile and thus the path where it is called from.
      */
-     void writeMakeObjects(MakefileParser::MakeFileData &mfd, QTextStream& outStream, QList<MakefileParser::MakeObjectData>& objects, QString instancePath) const;
-
-    /*!
-     *  Gets the compiler used for the file.
-     *
-     *      @param [in] mod   The make data associated with the object file.
-     *      @param [in] mfd   The make data associated with the makefile as whole.
-     */
-     QString getFileCompiler(MakefileParser::MakeObjectData &mod, MakefileParser::MakeFileData &mfd) const;
+     void writeMakeObjects(MakefileParser::MakeFileData &mfd, QTextStream& outStream, QList<QSharedPointer<MakefileParser::MakeObjectData>>& objects, QString instancePath) const;
 
     /*!
      *  Gets concatenates the build flags of the file with those fileSet and software views.
@@ -116,7 +108,7 @@ private:
      *      @param [in] mod   The make data associated with the object file.
      *      @param [in] mfd   The make data associated with the makefile as whole.
      */
-     QString getFileFlags(MakefileParser::MakeObjectData &mod, MakefileParser::MakeFileData &mfd) const;
+     QString getFileFlags(QSharedPointer<MakefileParser::MakeObjectData> &mod, MakefileParser::MakeFileData &mfd) const;
 
      /*!
       *  Writes list of launched executables.
