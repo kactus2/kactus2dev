@@ -4,7 +4,7 @@
  *      Author: Antti Kamppi
  */
 
-#include "quartusgenerator.h"
+#include "QuartusGenerator.h"
 
 #include <library/LibraryManager/libraryhandler.h>
 
@@ -50,7 +50,7 @@ QuartusGenerator::~QuartusGenerator()
 }
 
 //-----------------------------------------------------------------------------
-// Function: QuartusGenerator::setBoardName()
+// Function: QuartusGenerator::readExistingPinMap()
 //-----------------------------------------------------------------------------
 void QuartusGenerator::readExistingPinMap(QSharedPointer<Component> component)
 {
