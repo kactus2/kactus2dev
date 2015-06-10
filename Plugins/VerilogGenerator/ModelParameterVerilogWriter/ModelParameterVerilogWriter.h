@@ -70,6 +70,13 @@ private:
      *      @return A Verilog parameter declaration.
      */
     QString createDeclaration() const;
+    
+    /*!
+     *  Returns the array bounds for the model parameter.
+     *     
+     *      @return The array bounds.
+     */
+    QString arrayBounds() const;
 
     /*!
      *  Returns the formatted model parameter value.
@@ -77,7 +84,7 @@ private:
      *      @return The formatted model parameter value.
      */
     QString formattedValue() const;
-
+   
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

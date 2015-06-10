@@ -62,7 +62,7 @@ QString PortVerilogWriter::createDeclaration() const
 
     portDeclaration.replace("<direction>", direction().leftJustified(6));
     portDeclaration.replace("<type>", port_->getTypeName().leftJustified(7));
-    portDeclaration.replace("<bounds>", formatter_->formatReferringExpression(bounds()).leftJustified(6));
+    portDeclaration.replace("<bounds>", arrayAndVectorBounds().leftJustified(20));
     portDeclaration.replace("<name>", port_->getName());
 
     return portDeclaration;
@@ -92,19 +92,27 @@ QString PortVerilogWriter::direction() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortVerilogWriter::bounds()
+// Function: PortVerilogWriter::arrayAndVectorBounds()
 //-----------------------------------------------------------------------------
-QString PortVerilogWriter::bounds() const
+QString PortVerilogWriter::arrayAndVectorBounds() const
 {
-    QString boundsDefinition = "[" + port_->getLeftBoundExpression() + ":" + 
-        port_->getRightBoundExpression() + "]";
+    QString arrayDefinition = "[" + port_->getArrayLeft() + ":" + port_->getArrayRight() + "]";
 
-    boundsDefinition.remove(" ");
+    arrayDefinition.remove(" ");
 
-    if (boundsDefinition == "[0:0]")
+    if (arrayDefinition == "[:]")
     {
-        return QString();
+        arrayDefinition.clear();
     }
 
-    return boundsDefinition;
+    QString vectorDefinition = "[" + port_->getLeftBoundExpression() + ":" + port_->getRightBoundExpression() + "]";
+
+    vectorDefinition.remove(" ");
+
+    if (vectorDefinition == "[0:0]")
+    {
+        vectorDefinition.clear();
+    }
+
+    return formatter_->formatReferringExpression(arrayDefinition + vectorDefinition);
 }

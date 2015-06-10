@@ -60,9 +60,11 @@ bool ModelParameterVerilogWriter::nothingToWrite() const
 //-----------------------------------------------------------------------------
 QString ModelParameterVerilogWriter::createDeclaration() const
 {
-    QString parameterDeclaration("parameter <type> <name> = <default>");
+    QString parameterDeclaration("parameter <type> <arrayBounds> <name> = <default>");
 
     parameterDeclaration.replace("<type>", modelParameter_->getDataType().leftJustified(7));
+    parameterDeclaration.replace("<arrayBounds>", arrayBounds().leftJustified(20));
+    //parameterDeclaration.replace("<vectorBounds>", vectorBounds());
     parameterDeclaration.replace("<name>", modelParameter_->getName().leftJustified(16));
     parameterDeclaration.replace("<default>", formattedValue());
 
@@ -75,7 +77,37 @@ QString ModelParameterVerilogWriter::createDeclaration() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: ModelParameterVerilogWriter::formatValue()
+// Function: ModelParameterVerilogWriter::arrayBounds()
+//-----------------------------------------------------------------------------
+QString ModelParameterVerilogWriter::arrayBounds() const
+{
+    QString arrayLeft = modelParameter_->getAttribute("kactus2:arrayLeft");
+    QString arrayRight = modelParameter_->getAttribute("kactus2:arrayRight");
+
+    QString arrayDefinition = "[" + arrayLeft + ":" + arrayRight + "]";
+    arrayDefinition.remove(" ");
+
+    if (arrayDefinition == "[:]")
+    {
+        arrayDefinition.clear();
+    }
+
+    QString vectorLeft = modelParameter_->getBitWidthLeft();
+    QString vectorRight = modelParameter_->getBitWidthRight();
+
+    QString vectorDefinition = "[" + vectorLeft + ":" + vectorRight + "]";
+    vectorDefinition.remove(" ");
+
+    if (vectorDefinition == "[:]")
+    {
+        vectorDefinition.clear();
+    }
+
+    return formatter_->formatReferringExpression(arrayDefinition + vectorDefinition);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ModelParameterVerilogWriter::formattedValue()
 //-----------------------------------------------------------------------------
 QString ModelParameterVerilogWriter::formattedValue() const
 {
