@@ -36,9 +36,10 @@ public:
      *  Generates all makefiles based on the parsed data.
      *
      *      @param [in] targetPath   The path, where the makefiles are created.
-     *      @param [in] targetPath   The path, where the top component is.
+	 *      @param [in] targetPath   The path, where the top component is.
+	 *      @param [in] sysViewName  Name of the system view pointing to used design configuration.
      */
-    void generate(QString targetPath, QString topPath) const;
+    void generate(QString targetPath, QString topPath, QString sysViewName) const;
 
 private:
 

@@ -36,12 +36,12 @@ MakefileGenerator::~MakefileGenerator()
 //-----------------------------------------------------------------------------
 // Function: MakefileGenerator::generate()
 //-----------------------------------------------------------------------------
-void MakefileGenerator::generate(QString targetPath, QString topPath) const
+void MakefileGenerator::generate(QString targetPath, QString topPath, QString sysViewName) const
 {
     // Names of the created directories to be referenced by the master makefile.
     QStringList makeNames;
     // Create base directory for the software.
-    QString basePath = targetPath + "/sw/";
+    QString basePath = targetPath + "/sw_" + sysViewName + "/";
     QDir path;
     path.mkpath( basePath );
 
@@ -289,7 +289,7 @@ void MakefileGenerator::writeExeBuild(QTextStream& outStream) const
 {
     // Rather straight forward: write constant build rule and a cleaner rule.
     outStream << "$(ENAME): $(OBJ)" << endl;
-    outStream << "\t$(EBUILDER) -o bin_$(ENAME) $(OBJ) $(EFLAGS)"
+    outStream << "\t$(EBUILDER) -o $(ENAME) $(OBJ) $(EFLAGS)"
         << endl << endl;
 
     // Delete all known object files. May leave renamed files undeleted, but is more secure than deleting all
@@ -431,7 +431,7 @@ void MakefileGenerator::writeProcessList(QTextStream& outStream, QStringList mak
     {
         QFileInfo qfi = QFileInfo( directory );
 
-        outStream << General::getRelativePath(basePath,directory) << "/bin_" << qfi.fileName() << " ";
+        outStream << General::getRelativePath(basePath,directory) << qfi.fileName() << " ";
     }
 
     outStream << ")" << endl;

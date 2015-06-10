@@ -57,20 +57,8 @@ const QStringList& MakefileParser::getReplacedFiles()
 //-----------------------------------------------------------------------------
 void MakefileParser::parse(LibraryInterface* library, QSharedPointer<Component> topComponent,
     QSharedPointer<DesignConfiguration const> desgConf, QSharedPointer<const Design> design,
-    QString targetPath /*= ""*/)
+    QString sysViewName, QString targetPath /*= ""*/)
 {
-    // Find the name of the system view associated with the design.
-    QString sysViewName;
-
-    foreach( QSharedPointer<SystemView> view, topComponent->getSystemViews() )
-    {
-        if ( view->getHierarchyRef() == *desgConf->getVlnv() )
-        {
-            sysViewName = view->getName();
-            break;
-        }
-    }
-
     // Fabricate name for the fileSet of design-wide files.
     QString fileSetName = sysViewName + "_general_files";
 
@@ -82,7 +70,7 @@ void MakefileParser::parse(LibraryInterface* library, QSharedPointer<Component> 
     generalFileSet_ = fileSet;
 
     // The base directory for the software.
-    QString basePath = targetPath + "/sw/";
+    QString basePath = targetPath + "/sw_" + sysViewName + "/";
 
     // Check if the main make file and the launcher files already exits.
     QString mainMakeDir = basePath + "Makefile";

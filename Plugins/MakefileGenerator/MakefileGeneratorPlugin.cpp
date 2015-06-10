@@ -17,6 +17,7 @@
 #include <IPXACTmodels/designconfiguration.h>
 #include <QMessageBox>
 #include <QCoreApplication>
+#include <IPXACTmodels/SystemView.h>
 
 //-----------------------------------------------------------------------------
 // Function: MakefileGeneratorPlugin::MakefileGeneratorPlugin()
@@ -123,10 +124,22 @@ void MakefileGeneratorPlugin::runGenerator( IPluginUtility* utility,
     QSharedPointer<DesignConfiguration const> desgConf = libDesConf.dynamicCast<DesignConfiguration const>();
     
     QString targetDir = QFileInfo(utility->getLibraryInterface()->getPath(*libDes->getVlnv())).absolutePath(); 
-    QString topDir = QFileInfo(utility->getLibraryInterface()->getPath(*libComp->getVlnv())).absolutePath(); 
+	QString topDir = QFileInfo(utility->getLibraryInterface()->getPath(*libComp->getVlnv())).absolutePath(); 
+
+	// Find the name of the system view pointing to the design configuration.
+	QString sysViewName;
+
+	foreach ( QSharedPointer<SystemView> view, comp->getSystemViews() )
+	{
+		if ( view->getHierarchyRef() == *desgConf->getVlnv() )
+		{
+			sysViewName = view->getName();
+			break;
+		}
+	}
 
     MakefileParser parser;
-    parser.parse( utility->getLibraryInterface(), comp, desgConf, design, targetDir );
+    parser.parse( utility->getLibraryInterface(), comp, desgConf, design, sysViewName, targetDir );
 
     QStringList replacedFiles = parser.getReplacedFiles();
 
@@ -153,7 +166,7 @@ void MakefileGeneratorPlugin::runGenerator( IPluginUtility* utility,
     }
 
     MakefileGenerator generator( parser, utility );
-    generator.generate(targetDir, topDir);
+    generator.generate(targetDir, topDir, sysViewName);
 
     utility->getLibraryInterface()->writeModelToFile(libComp);
 

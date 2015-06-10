@@ -131,16 +131,16 @@ void tst_MakefileGenerator::baseCase()
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design, outputDir_ );
     MakefileGenerator generator( parser, &utilityMock_ );
-    generator.generate(outputDir_,outputDir_);
+    generator.generate(outputDir_,outputDir_,"tsydemi");
 
     verifyOutputContains("software_0", "_OBJ= array.c.o");
     verifyOutputContains("software_0", "OBJ= $(patsubst %,$(ODIR)/%,$(_OBJ))");
     verifyOutputContains("software_0", "ODIR= obj");
     verifyOutputContains("software_0", "ENAME= software_0");
-    verifyOutputContains("software_0", "EFLAGS= $(INCLUDES)");
+    verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS)");
     verifyOutputContains("software_0", "EBUILDER= gcc");
-    verifyOutputContains("software_0", "$(ENAME): $(OBJ)\n\t$(EBUILDER) -o bin_$(ENAME) $(OBJ) $(EFLAGS)");
-    verifyOutputContains("software_0", "gcc -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) -sw -hw");
+    verifyOutputContains("software_0", "$(ENAME): $(OBJ)\n\t$(EBUILDER) -o $(ENAME) $(OBJ) $(EFLAGS)");
+    verifyOutputContains("software_0", "gcc -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw -hw");
 }
 
 // Case used to test if file builder properly overrides other builders.
@@ -176,12 +176,12 @@ void tst_MakefileGenerator::fileBuildOverride()
     desgconf->setViewConfigurations(activeViews);
 
     MakefileParser parser;
-    parser.parse( &library_, topComponent, desgconf, design );
+    parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
     MakefileGenerator generator( parser, &utilityMock_ );
-    generator.generate(outputDir_,outputDir_);
+    generator.generate(outputDir_,outputDir_,"tsydemi");
 
-    verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) -sw");
-    verifyOutputContains("software_0", "python -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) -l -sw");
+    verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw");
+    verifyOutputContains("software_0", "python -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -l -sw");
 }
 
 // Case used to test if file set builder properly overrides other builders.
@@ -214,13 +214,13 @@ void tst_MakefileGenerator::fileSetBuildOverride()
     desgconf->setViewConfigurations(activeViews);
 
     MakefileParser parser;
-    parser.parse( &library_, topComponent, desgconf, design );
+    parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
     MakefileGenerator generator( parser, &utilityMock_ );
 
-    generator.generate(outputDir_,outputDir_);
+    generator.generate(outputDir_,outputDir_,"tsydemi");
 
-    verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) -sw");
-    verifyOutputContains("software_0", "javac -beef -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) -lrt -sw");
+    verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw");
+    verifyOutputContains("software_0", "javac -beef -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -lrt -sw");
 }
 
 // Case used to test if file flags properly replace other flags if needed.
@@ -257,13 +257,13 @@ void tst_MakefileGenerator::fileFlagReplace()
     desgconf->setViewConfigurations(activeViews);
 
     MakefileParser parser;
-    parser.parse( &library_, topComponent, desgconf, design );
+    parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
     MakefileGenerator generator( parser, &utilityMock_ );
 
-    generator.generate(outputDir_,outputDir_);
+    generator.generate(outputDir_,outputDir_,"tsydemi");
 
-    verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) -sw");
-    verifyOutputContains("software_0", "gcc -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) -u");
+    verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw");
+    verifyOutputContains("software_0", "gcc -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -u");
 }
 
 // Case used to test if file set flags properly replace other flags if needed.
@@ -296,13 +296,13 @@ void tst_MakefileGenerator::fileSetFlagReplace()
     desgconf->setViewConfigurations(activeViews);
 
     MakefileParser parser;
-    parser.parse( &library_, topComponent, desgconf, design );
+    parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
     MakefileGenerator generator( parser, &utilityMock_ );
 
-    generator.generate(outputDir_,outputDir_);
+    generator.generate(outputDir_,outputDir_,"tsydemi");
 
-    verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) -sw");
-    verifyOutputContains("software_0", "javac -beef -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) -lrt");
+    verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw");
+    verifyOutputContains("software_0", "javac -beef -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -lrt");
 }
 
 // Include files shoudl not yield object files.
@@ -338,15 +338,15 @@ void tst_MakefileGenerator::includeFile()
     desgconf->setViewConfigurations(activeViews);
 
     MakefileParser parser;
-    parser.parse( &library_, topComponent, desgconf, design );
+    parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
     MakefileGenerator generator( parser, &utilityMock_ );
 
-    generator.generate(outputDir_,outputDir_);
+    generator.generate(outputDir_,outputDir_,"tsydemi");
 
     verifyOutputContains("software_0", "_OBJ= array.c.o\n");
     verifyOutputContains("software_0", "EBUILDER= gcc");
-    verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) -hw -sw");
-    verifyOutputContains("software_0", "gcc -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) -sw -hw");
+    verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hw -sw");
+    verifyOutputContains("software_0", "gcc -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw -hw");
 }
 
 // Softwaree view of the software component should be able to replace those of hardware component.
@@ -381,14 +381,14 @@ void tst_MakefileGenerator::swSWViewFlagReplace()
     desgconf->setViewConfigurations(activeViews);
 
     MakefileParser parser;
-    parser.parse( &library_, topComponent, desgconf, design );
+    parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
     MakefileGenerator generator( parser, &utilityMock_ );
 
-    generator.generate(outputDir_,outputDir_);
+    generator.generate(outputDir_,outputDir_,"tsydemi");
 
     verifyOutputContains("software_0", "EBUILDER= gcc");
-    verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) -hw -sw");
-    verifyOutputContains("software_0", "gcc -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) -sw\n");
+    verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hw -sw");
+    verifyOutputContains("software_0", "gcc -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw\n");
 }
 
 // See if hardware builder is taken account properly.
@@ -428,14 +428,14 @@ void tst_MakefileGenerator::hwBuilder()
     desgconf->setViewConfigurations(activeViews);
 
     MakefileParser parser;
-    parser.parse( &library_, topComponent, desgconf, design );
+    parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
     MakefileGenerator generator( parser, &utilityMock_ );
 
-    generator.generate(outputDir_,outputDir_);
+    generator.generate(outputDir_,outputDir_,"tsydemi");
 
     verifyOutputContains("software_0", "EBUILDER= super_asm");
-    verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) -hw -sw");
-    verifyOutputContains("software_0", "super_asm -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) -u -lrt -sw -hw");
+    verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hw -sw");
+    verifyOutputContains("software_0", "super_asm -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -u -lrt -sw -hw");
 }
 
 // See if hardware builder works if there are no software view for the software component.
@@ -474,14 +474,14 @@ void tst_MakefileGenerator::hwBuilderWithNoSoftView()
     desgconf->setViewConfigurations(activeViews);
 
     MakefileParser parser;
-    parser.parse( &library_, topComponent, desgconf, design );
+    parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
     MakefileGenerator generator( parser, &utilityMock_ );
 
-    generator.generate(outputDir_,outputDir_);
+    generator.generate(outputDir_,outputDir_,"tsydemi");
 
     verifyOutputContains("software_0", "EBUILDER= super_asm");
-    verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) -hw");
-    verifyOutputContains("software_0", "super_asm -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) -u -lrt -hw");
+    verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hw");
+    verifyOutputContains("software_0", "super_asm -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -u -lrt -hw");
 }
 
 // See if hard ware's own file set references function.
@@ -521,14 +521,14 @@ void tst_MakefileGenerator::hwRef()
     desgconf->setViewConfigurations(activeViews);
 
     MakefileParser parser;
-    parser.parse( &library_, topComponent, desgconf, design );
+    parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
     MakefileGenerator generator( parser, &utilityMock_ );
 
-    generator.generate(outputDir_,outputDir_);
+    generator.generate(outputDir_,outputDir_,"tsydemi");
 
     verifyOutputContains("software_0", "EBUILDER= super_asm");
-    verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) -hw");
-    verifyOutputContains("software_0", "super_asm -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) -u -lrt -hw");
+    verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hw");
+    verifyOutputContains("software_0", "super_asm -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -u -lrt -hw");
 }
 
 // See if hard ware's own file set references function, while there are those of software component.
@@ -576,16 +576,16 @@ void tst_MakefileGenerator::hwandswRef()
     desgconf->setViewConfigurations(activeViews);
 
     MakefileParser parser;
-    parser.parse( &library_, topComponent, desgconf, design );
+    parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
     MakefileGenerator generator( parser, &utilityMock_ );
 
-    generator.generate(outputDir_,outputDir_);
+    generator.generate(outputDir_,outputDir_,"tsydemi");
 
     verifyOutputContains("software_0", "_OBJ= sarray.c.o harray.c.o");
     verifyOutputContains("software_0", "EBUILDER= super_asm");
-    verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) -hw -sw");
-    verifyOutputContains("software_0", "super_asm -c -o $(ODIR)/sarray.c.o ../../sarray.c $(INCLUDES) -su -sset -sw -hw");
-    verifyOutputContains("software_0", "super_asm -c -o $(ODIR)/harray.c.o ../../harray.c $(INCLUDES) -hu -hset -hw");
+    verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hw -sw");
+    verifyOutputContains("software_0", "super_asm -c -o $(ODIR)/sarray.c.o ../../sarray.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -su -sset -sw -hw");
+    verifyOutputContains("software_0", "super_asm -c -o $(ODIR)/harray.c.o ../../harray.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hu -hset -hw");
 }
 
 // Instance specific header files must be included to the make file.
@@ -626,10 +626,10 @@ void tst_MakefileGenerator::instanceHeaders()
     desgconf->setViewConfigurations(activeViews);
 
     MakefileParser parser;
-    parser.parse( &library_, topComponent, desgconf, design );
+    parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
     MakefileGenerator generator( parser, &utilityMock_ );
 
-    generator.generate(outputDir_,outputDir_);
+    generator.generate(outputDir_,outputDir_,"tsydemi");
 }
 
 // Generate makefile with multiple source and header files.
@@ -673,18 +673,18 @@ void tst_MakefileGenerator::multipleFiles()
     desgconf->setViewConfigurations(activeViews);
 
     MakefileParser parser;
-    parser.parse( &library_, topComponent, desgconf, design );
+    parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
     MakefileGenerator generator( parser, &utilityMock_ );
 
-    generator.generate(outputDir_,outputDir_);
+    generator.generate(outputDir_,outputDir_,"tsydemi");
 
     verifyOutputContains("software_0", "_OBJ= array.c.o support.c.o additional.c.o hiterbehn.c.o");
     verifyOutputContains("software_0", "EBUILDER= gcc");
-    verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) -hw -sw");
-    verifyOutputContains("software_0", "gcc -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) -sw -hw");
-    verifyOutputContains("software_0", "continental -c -o $(ODIR)/support.c.o ../../support.c $(INCLUDES) -y -sw -hw");
-    verifyOutputContains("software_0", "gcc -c -o $(ODIR)/additional.c.o ../../additional.c $(INCLUDES) -sw -hw");
-    verifyOutputContains("software_0", "gcc -c -o $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(INCLUDES) -sw -hw");
+    verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hw -sw");
+    verifyOutputContains("software_0", "gcc -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw -hw");
+    verifyOutputContains("software_0", "continental -c -o $(ODIR)/support.c.o ../../support.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -y -sw -hw");
+    verifyOutputContains("software_0", "gcc -c -o $(ODIR)/additional.c.o ../../additional.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw -hw");
+    verifyOutputContains("software_0", "gcc -c -o $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw -hw");
 }
 
 // Generate makefile when multiple file sets are featured.
@@ -727,18 +727,18 @@ void tst_MakefileGenerator::multipleFileSets()
     desgconf->setViewConfigurations(activeViews);
 
     MakefileParser parser;
-    parser.parse( &library_, topComponent, desgconf, design );
+    parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
     MakefileGenerator generator( parser, &utilityMock_ );
 
-    generator.generate(outputDir_,outputDir_);
+    generator.generate(outputDir_,outputDir_,"tsydemi");
 
     verifyOutputContains("software_0", "_OBJ= array.c.o support.c.o additional.c.o hiterbehn.c.o");
     verifyOutputContains("software_0", "EBUILDER= gcc");
-    verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) -hw -sw");
-    verifyOutputContains("software_0", "gcc -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) -sw -hw");
-    verifyOutputContains("software_0", "continental -c -o $(ODIR)/support.c.o ../../support.c $(INCLUDES) -y -sw -hw");
-    verifyOutputContains("software_0", "gcc -c -o $(ODIR)/additional.c.o ../../additional.c $(INCLUDES) -sw -hw");
-    verifyOutputContains("software_0", "gcc -c -o $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(INCLUDES) -sw -hw");
+    verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hw -sw");
+    verifyOutputContains("software_0", "gcc -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw -hw");
+    verifyOutputContains("software_0", "continental -c -o $(ODIR)/support.c.o ../../support.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -y -sw -hw");
+    verifyOutputContains("software_0", "gcc -c -o $(ODIR)/additional.c.o ../../additional.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw -hw");
+    verifyOutputContains("software_0", "gcc -c -o $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw -hw");
 }
 
 // Generate makefile when multiple components are featured.
@@ -780,22 +780,22 @@ void tst_MakefileGenerator::multipleComponents()
     desgconf->setViewConfigurations(activeViews);
 
     MakefileParser parser;
-    parser.parse( &library_, topComponent, desgconf, design );
+    parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
     MakefileGenerator generator( parser, &utilityMock_ );
 
-    generator.generate(outputDir_,outputDir_);
+    generator.generate(outputDir_,outputDir_,"tsydemi");
 
     verifyOutputContains("crapware_0", "EBUILDER= hopo");
-    verifyOutputContains("crapware_0", "EFLAGS= $(INCLUDES) -hw");
+    verifyOutputContains("crapware_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hw");
     verifyOutputContains("crapware_0", "_OBJ= array.c.o support.c.o");
-    verifyOutputContains("crapware_0", "hopo -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) -hw");
-    verifyOutputContains("crapware_0", "continental -c -o $(ODIR)/support.c.o ../../support.c $(INCLUDES) -y -hw");
+    verifyOutputContains("crapware_0", "hopo -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hw");
+    verifyOutputContains("crapware_0", "continental -c -o $(ODIR)/support.c.o ../../support.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -y -hw");
 
     verifyOutputContains("stackware_0", "EBUILDER= hopo");
-    verifyOutputContains("stackware_0", "EFLAGS= $(INCLUDES) -hw -bmw");
+    verifyOutputContains("stackware_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hw -bmw");
     verifyOutputContains("stackware_0", "_OBJ= additional.c.o hiterbehn.c.o");
-    verifyOutputContains("stackware_0", "asm-meister -c -o $(ODIR)/additional.c.o ../../additional.c $(INCLUDES) -bmw -hw");
-    verifyOutputContains("stackware_0", "asm-meister -c -o $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(INCLUDES) -bmw -hw");
+    verifyOutputContains("stackware_0", "asm-meister -c -o $(ODIR)/additional.c.o ../../additional.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -bmw -hw");
+    verifyOutputContains("stackware_0", "asm-meister -c -o $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -bmw -hw");
 }
 
 // Yield no makefile, if no files are present.
@@ -830,18 +830,18 @@ void tst_MakefileGenerator::noFilesComponent()
     desgconf->setViewConfigurations(activeViews);
 
     MakefileParser parser;
-    parser.parse( &library_, topComponent, desgconf, design );
+    parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
     MakefileGenerator generator( parser, &utilityMock_ );
 
-    generator.generate(outputDir_,outputDir_);
+    generator.generate(outputDir_,outputDir_,"tsydemi");
 
     verifyOutputContains("stackware_0", "EBUILDER= hopo");
-    verifyOutputContains("stackware_0", "EFLAGS= $(INCLUDES) -hw -bmw");
+    verifyOutputContains("stackware_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hw -bmw");
     verifyOutputContains("stackware_0", "_OBJ= additional.c.o hiterbehn.c.o");
-    verifyOutputContains("stackware_0", "asm-meister -c -o $(ODIR)/additional.c.o ../../additional.c $(INCLUDES) -bmw -hw");
-    verifyOutputContains("stackware_0", "asm-meister -c -o $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(INCLUDES) -bmw -hw");
+    verifyOutputContains("stackware_0", "asm-meister -c -o $(ODIR)/additional.c.o ../../additional.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -bmw -hw");
+    verifyOutputContains("stackware_0", "asm-meister -c -o $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -bmw -hw");
 
-    QFile outputFile(outputDir_ + "/sw/whatware_0/Makefile");
+    QFile outputFile(outputDir_ + "/sw_tsydemi/whatware_0/Makefile");
 
     QVERIFY(!outputFile.open(QIODevice::ReadOnly));
 }
@@ -888,22 +888,22 @@ void tst_MakefileGenerator::multipleHardWare()
     desgconf->setViewConfigurations(activeViews);
 
     MakefileParser parser;
-    parser.parse( &library_, topComponent, desgconf, design );
+    parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
     MakefileGenerator generator( parser, &utilityMock_ );
 
-    generator.generate(outputDir_,outputDir_);
+    generator.generate(outputDir_,outputDir_,"tsydemi");
 
     verifyOutputContains("crapware_0", "EBUILDER= hopo");
-    verifyOutputContains("crapware_0", "EFLAGS= $(INCLUDES) -ahw");
+    verifyOutputContains("crapware_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -ahw");
     verifyOutputContains("crapware_0", "_OBJ= array.c.o support.c.o");
-    verifyOutputContains("crapware_0", "hopo -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) -ahw");
-    verifyOutputContains("crapware_0", "continental -c -o $(ODIR)/support.c.o ../../support.c $(INCLUDES) -y -ahw");
+    verifyOutputContains("crapware_0", "hopo -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -ahw");
+    verifyOutputContains("crapware_0", "continental -c -o $(ODIR)/support.c.o ../../support.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -y -ahw");
 
     verifyOutputContains("stackware_0", "EBUILDER= juu -f");
-    verifyOutputContains("stackware_0", "EFLAGS= $(INCLUDES) -bhw -bmw");
+    verifyOutputContains("stackware_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -bhw -bmw");
     verifyOutputContains("stackware_0", "_OBJ= additional.c.o hiterbehn.c.o");
-    verifyOutputContains("stackware_0", "asm-meister -c -o $(ODIR)/additional.c.o ../../additional.c $(INCLUDES) -bmw -bhw");
-    verifyOutputContains("stackware_0", "asm-meister -c -o $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(INCLUDES) -bmw -bhw");
+    verifyOutputContains("stackware_0", "asm-meister -c -o $(ODIR)/additional.c.o ../../additional.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -bmw -bhw");
+    verifyOutputContains("stackware_0", "asm-meister -c -o $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -bmw -bhw");
 }
 
 // Multiple hardware, along with their references to their own files.
@@ -954,22 +954,22 @@ void tst_MakefileGenerator::multipleHardWareMedRefs()
     desgconf->setViewConfigurations(activeViews);
 
     MakefileParser parser;
-    parser.parse( &library_, topComponent, desgconf, design );
+    parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
     MakefileGenerator generator( parser, &utilityMock_ );
 
-    generator.generate(outputDir_,outputDir_);
+    generator.generate(outputDir_,outputDir_,"tsydemi");
 
     verifyOutputContains("crapware_0", "EBUILDER= hopo");
-    verifyOutputContains("crapware_0", "EFLAGS= $(INCLUDES) -ahw");
+    verifyOutputContains("crapware_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -ahw");
     verifyOutputContains("crapware_0", "_OBJ= array.c.o support.c.o");
-    verifyOutputContains("crapware_0", "hopo -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) -ahw");
-    verifyOutputContains("crapware_0", "continental -c -o $(ODIR)/support.c.o ../../support.c $(INCLUDES) -y -ahw");
+    verifyOutputContains("crapware_0", "hopo -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -ahw");
+    verifyOutputContains("crapware_0", "continental -c -o $(ODIR)/support.c.o ../../support.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -y -ahw");
 
     verifyOutputContains("stackware_0", "EBUILDER= juu");
-    verifyOutputContains("stackware_0", "EFLAGS= $(INCLUDES) -bhw -bmw");
+    verifyOutputContains("stackware_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -bhw -bmw");
     verifyOutputContains("stackware_0", "_OBJ= additional.c.o hiterbehn.c.o");
-    verifyOutputContains("stackware_0", "asm-meister -c -o $(ODIR)/additional.c.o ../../additional.c $(INCLUDES) -bmw -bhw");
-    verifyOutputContains("stackware_0", "asm-meister -c -o $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(INCLUDES) -bmw -bhw");
+    verifyOutputContains("stackware_0", "asm-meister -c -o $(ODIR)/additional.c.o ../../additional.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -bmw -bhw");
+    verifyOutputContains("stackware_0", "asm-meister -c -o $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -bmw -bhw");
 }
 
 // How it works without hardware. NOTICE: presently shall have no compiler!
@@ -994,16 +994,16 @@ void tst_MakefileGenerator::noHardWare()
     desgconf->setViewConfigurations(activeViews);
 
     MakefileParser parser;
-    parser.parse( &library_, topComponent, desgconf, design );
+    parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
     MakefileGenerator generator( parser, &utilityMock_ );
 
-    generator.generate(outputDir_,outputDir_);
+    generator.generate(outputDir_,outputDir_,"tsydemi");
 
     verifyOutputContains("software_0", "_OBJ= array.c.o");
     verifyOutputContains("software_0", "OBJ= $(patsubst %,$(ODIR)/%,$(_OBJ))");
     verifyOutputContains("software_0", "EBUILDER= ");
-    verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) -sw");
-    verifyOutputContains("software_0", "gcc -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) -sw");
+    verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw");
+    verifyOutputContains("software_0", "gcc -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw");
 }
 
 // Must work with multiple instances of the same component.
@@ -1049,16 +1049,16 @@ void tst_MakefileGenerator::multipleInstances()
     desgconf->setViewConfigurations(activeViews);
 
     MakefileParser parser;
-    parser.parse( &library_, topComponent, desgconf, design );
+    parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
     MakefileGenerator generator( parser, &utilityMock_ );
 
-    generator.generate(outputDir_,outputDir_);
+    generator.generate(outputDir_,outputDir_,"tsydemi");
 
     verifyOutputContains("stackware_0", "EBUILDER= hopo");
-    verifyOutputContains("stackware_0", "EFLAGS= $(INCLUDES) -hw -bmw");
+    verifyOutputContains("stackware_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hw -bmw");
 
     verifyOutputContains("stackware_1", "EBUILDER= hopo");
-    verifyOutputContains("stackware_1", "EFLAGS= $(INCLUDES) -hw -bmw");
+    verifyOutputContains("stackware_1", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hw -bmw");
 }
 
 // Must include API dependencies to the make file.
@@ -1116,19 +1116,19 @@ void tst_MakefileGenerator::apiUsage()
     desgconf->setViewConfigurations(activeViews);
 
     MakefileParser parser;
-    parser.parse( &library_, topComponent, desgconf, design );
+    parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
     MakefileGenerator generator( parser, &utilityMock_ );
 
-    generator.generate(outputDir_,outputDir_);
+    generator.generate(outputDir_,outputDir_,"tsydemi");
 
     verifyOutputContains("crapware_0", "EBUILDER= hopo -s");
-    verifyOutputContains("crapware_0", "EFLAGS= $(INCLUDES) -hw");
+    verifyOutputContains("crapware_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hw");
     verifyOutputContains("crapware_0", "_OBJ= array.c.o support.c.o additional.c.o hiterbehn.c.o");
-    verifyOutputContains("crapware_0", "hopo -s -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) -hw");
-    verifyOutputContains("crapware_0", "continental -c -o $(ODIR)/support.c.o ../../support.c $(INCLUDES) -y -hw");
+    verifyOutputContains("crapware_0", "hopo -s -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hw");
+    verifyOutputContains("crapware_0", "continental -c -o $(ODIR)/support.c.o ../../support.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -y -hw");
 
-    verifyOutputContains("crapware_0", "asm-meister -c -o $(ODIR)/additional.c.o ../../additional.c $(INCLUDES) -bmw -hw");
-    verifyOutputContains("crapware_0", "asm-meister -c -o $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(INCLUDES) -bmw -hw");
+    verifyOutputContains("crapware_0", "asm-meister -c -o $(ODIR)/additional.c.o ../../additional.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -bmw -hw");
+    verifyOutputContains("crapware_0", "asm-meister -c -o $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -bmw -hw");
 }
 
 // A more complex situation with API dependency.
@@ -1206,21 +1206,21 @@ void tst_MakefileGenerator::threeLevelStack()
     desgconf->setViewConfigurations(activeViews);
 
     MakefileParser parser;
-    parser.parse( &library_, topComponent, desgconf, design );
+    parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
     MakefileGenerator generator( parser, &utilityMock_ );
 
-    generator.generate(outputDir_,outputDir_);
+    generator.generate(outputDir_,outputDir_,"tsydemi");
 
     verifyOutputContains("crapware_0", "EBUILDER= hopo");
-    verifyOutputContains("crapware_0", "EFLAGS= $(INCLUDES) -hw");
+    verifyOutputContains("crapware_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hw");
     verifyOutputContains("crapware_0", "_OBJ= array.c.o support.c.o additional.c.o hiterbehn.c.o ok.c.o");
-    verifyOutputContains("crapware_0", "hopo -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) -hw");
-    verifyOutputContains("crapware_0", "continental -c -o $(ODIR)/support.c.o ../../support.c $(INCLUDES) -y -hw");
+    verifyOutputContains("crapware_0", "hopo -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hw");
+    verifyOutputContains("crapware_0", "continental -c -o $(ODIR)/support.c.o ../../support.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -y -hw");
 
-    verifyOutputContains("crapware_0", "jaska -c -o $(ODIR)/additional.c.o ../../additional.c $(INCLUDES) -g -hw");
-    verifyOutputContains("crapware_0", "jaska -c -o $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(INCLUDES) -g -hw");
+    verifyOutputContains("crapware_0", "jaska -c -o $(ODIR)/additional.c.o ../../additional.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -g -hw");
+    verifyOutputContains("crapware_0", "jaska -c -o $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -g -hw");
 
-    verifyOutputContains("crapware_0", "hopo -c -o $(ODIR)/ok.c.o ../../ok.c $(INCLUDES) -hw");
+    verifyOutputContains("crapware_0", "hopo -c -o $(ODIR)/ok.c.o ../../ok.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hw");
 }
 
 // If no top level in the stack, there can be no executable!
@@ -1311,12 +1311,12 @@ void tst_MakefileGenerator::fullCircularapiUsage()
     desgconf->setViewConfigurations(activeViews);
 
     MakefileParser parser;
-    parser.parse( &library_, topComponent, desgconf, design );
+    parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
     MakefileGenerator generator( parser, &utilityMock_ );
 
-    generator.generate(outputDir_,outputDir_);
+    generator.generate(outputDir_,outputDir_,"tsydemi");
 
-    QFile outputFile(outputDir_ + "/sw/topware_0/Makefile");
+    QFile outputFile(outputDir_ + "/sw_tsydemi/topware_0/Makefile");
 
     QVERIFY(!outputFile.open(QIODevice::ReadOnly));
 }
@@ -1409,21 +1409,21 @@ void tst_MakefileGenerator::circularapiUsage()
     desgconf->setViewConfigurations(activeViews);
 
     MakefileParser parser;
-    parser.parse( &library_, topComponent, desgconf, design );
+    parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
     MakefileGenerator generator( parser, &utilityMock_ );
 
-    generator.generate(outputDir_,outputDir_);
+    generator.generate(outputDir_,outputDir_,"tsydemi");
 
     verifyOutputContains("crapware_0", "EBUILDER= hopo");
-    verifyOutputContains("crapware_0", "EFLAGS= $(INCLUDES) -hw");
+    verifyOutputContains("crapware_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hw");
     verifyOutputContains("crapware_0", "_OBJ= array.c.o support.c.o additional.c.o hiterbehn.c.o ok.c.o");
-    verifyOutputContains("crapware_0", "hopo -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) -hw");
-    verifyOutputContains("crapware_0", "continental -c -o $(ODIR)/support.c.o ../../support.c $(INCLUDES) -y -hw");
+    verifyOutputContains("crapware_0", "hopo -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hw");
+    verifyOutputContains("crapware_0", "continental -c -o $(ODIR)/support.c.o ../../support.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -y -hw");
 
-    verifyOutputContains("crapware_0", "jaska -c -o $(ODIR)/additional.c.o ../../additional.c $(INCLUDES) -g -hw");
-    verifyOutputContains("crapware_0", "jaska -c -o $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(INCLUDES) -g -hw");
+    verifyOutputContains("crapware_0", "jaska -c -o $(ODIR)/additional.c.o ../../additional.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -g -hw");
+    verifyOutputContains("crapware_0", "jaska -c -o $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -g -hw");
 
-    verifyOutputContains("crapware_0", "hopo -c -o $(ODIR)/ok.c.o ../../ok.c $(INCLUDES) -hw");
+    verifyOutputContains("crapware_0", "hopo -c -o $(ODIR)/ok.c.o ../../ok.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hw");
 }
 
 QSharedPointer<Component> tst_MakefileGenerator::createDesign(QSharedPointer<Design> &design,
@@ -1513,7 +1513,7 @@ QSharedPointer<Component> tst_MakefileGenerator::createHW(QString hwInstanceName
 //-----------------------------------------------------------------------------
 void tst_MakefileGenerator::verifyOutputContains(QString instanceName, QString const& expectedOutput)
 {
-    QFile outputFile(outputDir_ + "/sw/" + instanceName + "/Makefile");
+    QFile outputFile(outputDir_ + "/sw_tsydemi/" + instanceName + "/Makefile");
 
     QVERIFY(outputFile.open(QIODevice::ReadOnly));
 

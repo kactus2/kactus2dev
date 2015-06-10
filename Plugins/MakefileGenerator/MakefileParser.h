@@ -88,11 +88,13 @@ public:
      *      @param [in] library   The library containing all components in the design.
      *      @param [in] topComponent   The top component associated with the design.
      *      @param [in] desgConf   The design configuration object associated with the design.
-     *      @param [in] design   The design object.
+	 *      @param [in] design   The design object.
+	 *      @param [in] sysViewName  Name of the system view pointing to used design configuration.
+	 *      @param [in] targetPath  Path where the generated files will be placed.
      */
     void parse( LibraryInterface* library, QSharedPointer<Component> topComponent,
         QSharedPointer<DesignConfiguration const> desgConf, QSharedPointer<const Design> design,
-        QString targetPath = "");
+        QString sysViewName, QString targetPath = "");
 
 private:
 

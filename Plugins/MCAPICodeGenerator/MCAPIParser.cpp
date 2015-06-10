@@ -105,8 +105,20 @@ void MCAPIParser::parseTopLevel(QSharedPointer<Design> design, QSharedPointer<Co
             NodeData& nd = designNodes_.last();
             nd.instance = instance;
 
+			// Find the name of the system view pointing to the design configuration.
+			QString sysViewName;
+
+			foreach ( QSharedPointer<SystemView> view, topComponent->getSystemViews() )
+			{
+				if ( view->getHierarchyRef() == *desgConf->getVlnv() )
+				{
+					sysViewName = view->getName();
+					break;
+				}
+			}
+
             // Parse its directory as well.
-            QString subDir = "/sw/" + instance.getInstanceName();
+            QString subDir = "/sw_" + sysViewName + "/" + instance.getInstanceName();
             QString dir = QFileInfo(utility_->getLibraryInterface()->getPath(*designVLNV)).absolutePath() + subDir;
             nd.directory = dir;
 
