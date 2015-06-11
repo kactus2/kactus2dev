@@ -268,14 +268,20 @@ void FileDependencyEditor::scanFiles(QString const& path)
             {
                 QSharedPointer<FileSet> fileSet;
 
-                // Check if the file set does not exist in the component.
-                if (component_->hasFileSet(fileType + "s"))
+                QString fileSetName = QString(path).replace(QRegularExpression("^(./)?../.*/"), "external_");
+                if (fileSetName == ".")
                 {
-                    fileSet = component_->getFileSet(fileType + "s");
+                    fileSetName = tr("base");
+                }
+
+                // Check if the file set does not exist in the component.
+                if (component_->hasFileSet(fileSetName))
+                {
+                    fileSet = component_->getFileSet(fileSetName);
                 }
                 else
                 {
-                    fileSet.reset(new FileSet(fileType + "s", ""));
+                    fileSet.reset(new FileSet(fileSetName, ""));
                     component_->addFileSet(fileSet);
                     emit fileSetAdded(fileSet.data());
                 }
@@ -348,18 +354,7 @@ void FileDependencyEditor::filterToggle(QAction* action)
     FileDependencyGraphView::DependencyFilters filters = graphWidget_.getView().getFilters();
 
     // Toggle the appropriate filter based on the button that was clicked.
-    if (filters & action->data().toUInt())
-    {
-        // Filter was on, disable it.
-        action->setChecked(false);
-        filters ^= action->data().toUInt();
-    }
-    else
-    {
-        // Filter was off, enable it.
-        action->setChecked(true);
-        filters ^= action->data().toUInt();
-    }
+    filters ^= action->data().toUInt();
 
     // Apply the new filter setup to the view.
     graphWidget_.getView().setFilters(filters);
@@ -371,12 +366,13 @@ void FileDependencyEditor::filterToggle(QAction* action)
 void FileDependencyEditor::addFilterButton(QIcon icon, QString iconText,
                                            FileDependencyGraphView::DependencyFilter filter)
 {
-    QAction* tmp = 0;
     FileDependencyGraphView::DependencyFilters filters = graphWidget_.getView().getFilters();
-    tmp = toolbar_.addAction(icon, iconText);
+
+    QAction* tmp = toolbar_.addAction(icon, iconText);
     tmp->setData(filter);
     tmp->setCheckable(true);
     tmp->setChecked(filters & filter);
+
     filterActions_.addAction(tmp);
 }
 
