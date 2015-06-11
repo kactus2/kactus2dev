@@ -12,6 +12,8 @@ INCLUDEPATH += ./GeneratedFiles \
     ./../.. \
     . \
     ./GeneratedFiles/release
+LIBS += -L"./../../executable" \
+    -lIPXACTmodels
 DEPENDPATH += .
 MOC_DIR += ./GeneratedFiles/release
 OBJECTS_DIR += release
