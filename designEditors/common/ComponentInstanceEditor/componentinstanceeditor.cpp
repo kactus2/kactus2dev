@@ -68,6 +68,8 @@ ComponentInstanceEditor::ComponentInstanceEditor(QWidget *parent)
 	configurableElements_->hide();
     propertyValueEditor_->hide();
 
+    configurableElements_->setMinimumHeight(230);
+
 	vlnvDisplayer_->setTitle(tr("Instance model VLNV"));
 	vlnvDisplayer_->setFlat(false);
 
@@ -78,7 +80,7 @@ ComponentInstanceEditor::ComponentInstanceEditor(QWidget *parent)
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(vlnvDisplayer_);
 	layout->addWidget(nameGroup_);
-	layout->addWidget(configurableElements_);
+	layout->addWidget(configurableElements_, 1);
     layout->addWidget(swGroup_);
     layout->addWidget(propertyValueEditor_);
 	layout->addStretch();

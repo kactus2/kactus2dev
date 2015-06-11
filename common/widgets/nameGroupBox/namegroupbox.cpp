@@ -26,7 +26,7 @@ descriptionEdit_(0) {
 	setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
 
 	// set the maximum height for the widget
-	setMaximumHeight(150);
+    setMaximumHeight(130);
 
 	// the layout manager for this widget
 	QGridLayout* layout = new QGridLayout(this);
@@ -50,11 +50,11 @@ descriptionEdit_(0) {
 	layout->addWidget(displayNameEdit_, 1, 1, 1, 1);
 
 	QLabel* descriptionLabel = new QLabel(tr("Description:"), this);
-	layout->addWidget(descriptionLabel, 2, 0, 1, 1);
+    layout->addWidget(descriptionLabel, 2, 0, 1, 1, Qt::AlignTop);
 
 	descriptionEdit_ = new QPlainTextEdit(this);
 	descriptionEdit_->setToolTip(tr("Set the description for the element"));
-	layout->addWidget(descriptionEdit_, 3, 0, 1, 2);
+    layout->addWidget(descriptionEdit_, 2, 1, 1, 1);
 
 	// connect the signals that inform of changes made to items
 	connect(nameEdit_, SIGNAL(textEdited(const QString&)),
