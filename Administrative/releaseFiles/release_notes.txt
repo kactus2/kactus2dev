@@ -8,6 +8,31 @@
               * Changed or Information
 ===============================================================================
 
+12/06/2015 2.8.0
+----------------------------------------------------
+
++ Added feature to import parameters from include files.
++ Improved configurable element variables editor
+	* Synchronizes with the enhanced model parameter definition.
+	* The parameters of the top component can be used in the configurable element variables.
+	* Variables are now grouped according to their location in the component.
++ Added editors for IP-XACT elements remapState and memoryRemap.
++ Added support for expressions in memory map elements.
++ Added support for parameter references in generated header files.
++ Added feature to save new versions of design configurations and designs.
++ Added support for module parameters to hierarchical views.
+
+KNOWN UNRESOLVED ISSUES:
+* Memory map header generation from a system design does not work properly.
+* Parameters created with version 2.7.0 may not work with the latest release due to 
+  change in id formatting. The fastest way to fix this is to re-create the parameters.
+* SystemVerilog expressions are not supported by some features including generators.
+  If expressions or references have been used, it may cause at least the following issues:
+	* VHDL generator will generate wrong values.
+	* Port maps will not automatically adjust to changes in port size.
+* VHDL import does not preserve references to model parameters.
+* In ports editor, creating a bus interface through ports is not possible for name column.
+
 13/05/2015 2.7.970
 ----------------------------------------------------
 
