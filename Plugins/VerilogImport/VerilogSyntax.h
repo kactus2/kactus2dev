@@ -12,8 +12,6 @@
 #ifndef VERILOGSYNTAX_H
 #define VERILOGSYNTAX_H
 
-#include <Plugins/common/HDLmath.h>
-
 #include <QRegularExpression>
 
 namespace VerilogSyntax

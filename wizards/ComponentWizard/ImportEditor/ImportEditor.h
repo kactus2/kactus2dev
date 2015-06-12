@@ -163,9 +163,6 @@ private:
     //! Top-level source file relative path from component XML file.
     QString selectedSourceFile_;
 
-    //! Editor for the imported parameters.
-    ParametersEditor* parameterEditor_;
-
 	//! Editor for the imported model parameters.
 	ModelParameterEditor* modelParameterEditor_;
 

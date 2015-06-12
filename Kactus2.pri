@@ -411,6 +411,7 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/memoryMaps/MemoryMapColumns.h \
     ./editors/ComponentEditor/memoryMaps/MemoryMapsColumns.h \
     ./editors/ComponentEditor/memoryMaps/RegisterColumns.h \
+    ./editors/ComponentEditor/memoryMaps/ExpressionProxyModel.h \
     ./editors/ComponentEditor/memoryMaps/MemoryMapsView.h \
     ./editors/ComponentEditor/memoryMaps/SingleMemoryMapEditor.h \
     ./editors/ComponentEditor/memoryMaps/SingleAddressBlockEditor.h \
@@ -640,8 +641,7 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/vhdlGenerator/vhdlport.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
-    ./editors/ComponentEditor/memoryMaps/ExpressionProxyModel.h
+    ./kactusGenerators/modelsimGenerator/modelsimgenerator.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -1006,6 +1006,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/memoryMaps/addressblockmodel.cpp \
     ./editors/ComponentEditor/memoryMaps/enumeratedvaluedelegate.cpp \
     ./editors/ComponentEditor/memoryMaps/enumeratedvaluemodel.cpp \
+    ./editors/ComponentEditor/memoryMaps/ExpressionProxyModel.cpp \
     ./editors/ComponentEditor/memoryMaps/fieldeditor.cpp \
     ./editors/ComponentEditor/memoryMaps/memorymapdelegate.cpp \
     ./editors/ComponentEditor/memoryMaps/memorymapeditor.cpp \
@@ -1216,6 +1217,5 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
-    ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
-    ./editors/ComponentEditor/memoryMaps/ExpressionProxyModel.cpp
+    ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp
 RESOURCES += kactus.qrc

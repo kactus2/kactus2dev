@@ -19,6 +19,8 @@
 #include <wizards/ComponentWizard/ImportEditor/ImportHighlighter.h>
 
 #include <IPXACTmodels/component.h>
+#include <IPXACTmodels/model.h>
+#include <IPXACTmodels/modelparameter.h>
 
 class tst_VerilogIncludeImport : public QObject
 {
@@ -95,7 +97,8 @@ void tst_VerilogIncludeImport::testFileTypes()
     QVERIFY(supportedFileTypes.contains("verilogSource"));
     QVERIFY(supportedFileTypes.contains("verilogSource-95"));
     QVERIFY(supportedFileTypes.contains("verilogSource-2001"));
-    QCOMPARE(supportedFileTypes.count(), 3);
+    QVERIFY(supportedFileTypes.contains("systemVerilogSource"));
+    QCOMPARE(supportedFileTypes.count(), 4);
 }
 
 //-----------------------------------------------------------------------------
@@ -107,7 +110,7 @@ void tst_VerilogIncludeImport::testNothingIsParsedFromMalformedInput()
 
     runParser(input);
 
-    QCOMPARE(importComponent_->getParameters()->count(), 0);
+    QCOMPARE(importComponent_->getModel()->getModelParameters()->count(), 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -129,14 +132,16 @@ void tst_VerilogIncludeImport::testDefineIsParsed()
     QFETCH(QString, input);
     QFETCH(QString, expectedName);
     QFETCH(QString, expectedValue);
+    QFETCH(QString, expectedDescription);
 
     runParser(input);
 
-    QCOMPARE(importComponent_->getParameters()->count(), 1);
+    QCOMPARE(importComponent_->getModel()->getModelParameters()->count(), 1);
 
-    QSharedPointer<Parameter> createdParameter = importComponent_->getParameters()->first();
+    QSharedPointer<ModelParameter> createdParameter = importComponent_->getModel()->getModelParameters()->first();
     QCOMPARE(createdParameter->getName(), expectedName);
     QCOMPARE(createdParameter->getValue(), expectedValue);
+    QCOMPARE(createdParameter->getDescription(), expectedDescription);
 }
 
 //-----------------------------------------------------------------------------
@@ -147,14 +152,19 @@ void tst_VerilogIncludeImport::testDefineIsParsed_data()
     QTest::addColumn<QString>("input");
     QTest::addColumn<QString>("expectedName");
     QTest::addColumn<QString>("expectedValue");
+    QTest::addColumn<QString>("expectedDescription");
 
-    QTest::newRow("Name and value") << "`define ZERO 0\n" << "ZERO" << "0";
+    QTest::newRow("Name and value") << "`define ZERO 0\n" << "ZERO" << "0" << "";
     QTest::newRow("Value with whitespace") <<  
-        "`define BASIC_STRING \"Test string\"\n" << "BASIC_STRING" << "\"Test string\"";
+        "`define BASIC_STRING \"Test string\"\n" << "BASIC_STRING" << "\"Test string\"" << "";
     QTest::newRow("Value on multiple lines") <<  
         "`define LONG_STRING \"Test string \\\n"
                               "spanning multiple \\\n"
-                              "lines.\"\n" << "LONG_STRING" << "\"Test string spanning multiple lines.\"";
+                              "lines.\"\n" << "LONG_STRING" << "\"Test string spanning multiple lines.\"" << "";
+    QTest::newRow("Define without value gets default value one") << "`define DEFAULT \n" << "DEFAULT" << "1" << "";
+    QTest::newRow("Value with trailing comment") <<  
+        "`define COMMENTED 1 // Define description is given in comments.\n" 
+        << "COMMENTED" << "1" << "Define description is given in comments.";
 }
 
 //-----------------------------------------------------------------------------
@@ -167,7 +177,7 @@ void tst_VerilogIncludeImport::testMultipleDefinitions()
 
     runParser(input);
 
-    QCOMPARE(importComponent_->getParameters()->count(), defineCount);
+    QCOMPARE(importComponent_->getModel()->getModelParameters()->count(), defineCount);
 }
 
 //-----------------------------------------------------------------------------
@@ -210,7 +220,7 @@ void tst_VerilogIncludeImport::testDefinitionWithArgumentsIsNotParsed()
 
     runParser(input);
 
-    QCOMPARE(importComponent_->getParameters()->count(), 0);
+    QCOMPARE(importComponent_->getModel()->getModelParameters()->count(), 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -235,13 +245,14 @@ void tst_VerilogIncludeImport::testDefineIsHighlighted()
 
     runParser(input);
 
-    QVERIFY2(importComponent_->getParameters()->count() != 0, "No parameters parsed from input.");
+    QVERIFY2(importComponent_->getModel()->getModelParameters()->count() != 0, 
+        "No model parameters parsed from input.");
 
     int begin = input.indexOf(defineDeclaration);
 
-    verifyNotHighlightedBeforeDeclaration(begin, ImportColors::PARAMETER);
-    verifyDeclarationIsHighlighted(begin, defineDeclaration.length(), ImportColors::PARAMETER);
-    verifyNotHighlightedAfterDeclartion(begin, defineDeclaration.length(), ImportColors::PARAMETER);
+    verifyNotHighlightedBeforeDeclaration(begin, ImportColors::MODELPARAMETER);
+    verifyDeclarationIsHighlighted(begin, defineDeclaration.length(), ImportColors::MODELPARAMETER);
+    verifyNotHighlightedAfterDeclartion(begin, defineDeclaration.length(), ImportColors::MODELPARAMETER);
 }
 
 //-----------------------------------------------------------------------------
@@ -275,17 +286,17 @@ void tst_VerilogIncludeImport::testWithoutHighlighter()
 //-----------------------------------------------------------------------------
 void tst_VerilogIncludeImport::testExistingParameterIsUpdated()
 {
-    QSharedPointer<Parameter> existingParameter(new Parameter());
+    QSharedPointer<ModelParameter> existingParameter(new ModelParameter());
     existingParameter->setName("EXISTING");
     existingParameter->setValue("1");
     existingParameter->setDescription("This parameter has already been defined");
-    importComponent_->getParameters()->append(existingParameter);
+    importComponent_->getModel()->getModelParameters()->append(existingParameter);
 
-    runParser("`define EXISTING 2\n\n");
+    runParser("`define EXISTING 2 // This parameter has been updated.\n\n");
 
-    QCOMPARE(importComponent_->getParameters()->count(), 1);
-    QCOMPARE(importComponent_->getParameters()->first()->getDescription(), 
-        QString("This parameter has already been defined"));
+    QCOMPARE(importComponent_->getModel()->getModelParameters()->count(), 1);
+    QCOMPARE(importComponent_->getModel()->getModelParameters()->first()->getDescription(), 
+        QString("This parameter has been updated."));
 }
 
 //-----------------------------------------------------------------------------

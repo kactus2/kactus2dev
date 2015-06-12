@@ -23,7 +23,7 @@
 #include <QObject>
 
 class Component;
-class Parameter;
+class ModelParameter;
 //-----------------------------------------------------------------------------
 //! Import plugin for Verilog definitions.
 //-----------------------------------------------------------------------------
@@ -97,7 +97,7 @@ public:
     virtual QString getCompatibilityWarnings() const;
 
     /*!
-     *  Parses the given input and creates parameters from Verilog defines.
+     *  Parses the given input and creates model parameters from Verilog defines.
      *
      *      @param [in] input               The input text to parse.
      *      @param [in] targetComponent     The component to apply all imported changes to.
@@ -125,23 +125,23 @@ private:
     void highlightDefinition(QString const& definition);
 
     /*!
-     *  Creates a parameter from the given definition and adds it to the component.
-     *  Existing parameter with the same name will be updated and no new parameter is added.
+     *  Creates a model parameter from the given definition and adds it to the component.
+     *  Existing model parameter with the same name will be updated and no new parameter is added.
      *
-     *      @param [in] definition          The definition to create the parameter from.
-     *      @param [in] targetComponent     The component to add the parameter to.
+     *      @param [in] definition          The definition to create the model parameter from.
+     *      @param [in] targetComponent     The component to add the model parameter to.
      */
-    void createParameterFromDefinition(QString const& definition, QSharedPointer<Component> targetComponent);
+    void createModelParameterFromDefinition(QString const& definition, QSharedPointer<Component> targetComponent);
 
     /*!
-     *  Finds a parameter in the given component by the given name.
+     *  Finds a model parameter in the given component by the given name.
      *
      *      @param [in] targetComponent     The component the search in.
-     *      @param [in] name                The name of the parameter to find.
+     *      @param [in] name                The name of the model parameter to find.
      *
-     *      @return The parameter with the given name or null if no parameter matches the name.
+     *      @return The model parameter with the given name or null if no model parameter matches the name.
      */
-    QSharedPointer<Parameter> findParameterByName(QSharedPointer<Component> targetComponent, 
+    QSharedPointer<ModelParameter> findModelParameterByName(QSharedPointer<Component> targetComponent, 
         QString const& name) const;
 
     //! The highlighter to use.
