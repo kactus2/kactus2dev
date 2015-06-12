@@ -4126,6 +4126,12 @@
     <ClCompile Include="editors\ComponentEditor\memoryMaps\ExpressionProxyModel.cpp">
       <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
     </ClCompile>
+    <ClCompile Include="mainwindow\ExitScreen.cpp">
+      <Filter>Source Files\mainwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ExitScreen.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5675,6 +5681,9 @@
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\memoryMaps\ExpressionProxyModel.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
+    </CustomBuild>
+    <CustomBuild Include="mainwindow\ExitScreen.h">
+      <Filter>Header Files\mainwindow</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

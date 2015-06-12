@@ -641,7 +641,8 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/vhdlGenerator/vhdlport.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./kactusGenerators/modelsimGenerator/modelsimgenerator.h
+    ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
+    ./mainwindow/ExitScreen.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -1217,5 +1218,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
-    ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp
+    ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
+    ./mainwindow/ExitScreen.cpp
 RESOURCES += kactus.qrc

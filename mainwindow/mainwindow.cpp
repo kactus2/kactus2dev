@@ -10,7 +10,9 @@
 //-----------------------------------------------------------------------------
 
 #include "mainwindow.h"
+
 #include "SplashScreen.h"
+#include "ExitScreen.h"
 #include "version.h"
 
 #include "NewWorkspaceDialog.h"
@@ -2003,6 +2005,15 @@ void MainWindow::closeEvent(QCloseEvent* event)
             event->ignore();
             return;
         }
+    }
+
+    QSettings settings;
+    bool showExitScreen = settings.value("General/showExitScreen", true).toBool();
+    if (showExitScreen)
+    {
+        hide();
+        ExitScreen exitScreen(this);
+        exitScreen.exec();
     }
 }
 
