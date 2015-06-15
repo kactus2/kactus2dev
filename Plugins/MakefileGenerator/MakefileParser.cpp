@@ -346,7 +346,7 @@ void MakefileParser::parseStackObjects(QSharedPointer<Component> softComponent,
 // Function: MakefileParser::createMakeObjects()
 //-----------------------------------------------------------------------------
 void MakefileParser::parseMakeObjects(LibraryInterface* library, QSharedPointer<SWView> view,
-    QSharedPointer<Component> component, MakeFileData &makeData, QList<QSharedPointer<MakeObjectData>>& objects, bool pickSWView)
+    QSharedPointer<Component> component, MakeFileData &makeData, QList<QSharedPointer<MakeObjectData> >& objects, bool pickSWView)
 {
     // Go through the fileSets referenced in the software view.
     foreach( QString fsetName, view->getFileSetRefs())

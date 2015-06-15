@@ -100,7 +100,7 @@ private:
      *      @param [in] objects   The list of the objects written.
      *      @param [in] instancePath   Path of the makefile and thus the path where it is called from.
      */
-     void writeMakeObjects(MakefileParser::MakeFileData &mfd, QTextStream& outStream, QList<QSharedPointer<MakefileParser::MakeObjectData>>& objects, QString instancePath) const;
+     void writeMakeObjects(MakefileParser::MakeFileData &mfd, QTextStream& outStream, QList<QSharedPointer<MakefileParser::MakeObjectData> >& objects, QString instancePath) const;
 
     /*!
      *  Gets concatenates the build flags of the file with those fileSet and software views.

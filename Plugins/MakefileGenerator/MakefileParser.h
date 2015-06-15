@@ -50,9 +50,9 @@ public:
     struct MakeFileData
     {
         // Parsed files found in software views of software components.
-        QList<QSharedPointer<MakeObjectData>> swObjects;
+        QList<QSharedPointer<MakeObjectData> > swObjects;
         // Parsed files found in software views of hardware components.
-        QList<QSharedPointer<MakeObjectData>> hwObjects;
+        QList<QSharedPointer<MakeObjectData> > hwObjects;
         // The build command of the active software view of the hardware instance.
         QSharedPointer<SWBuildCommand> hwBuildCmd;
         // Flags passed down from software views.
@@ -62,7 +62,7 @@ public:
         // The list of all included directories.
         QStringList includeDirectories;
         // The list of all include files.
-        QList<QSharedPointer<MakeObjectData>> includeFiles;
+        QList<QSharedPointer<MakeObjectData> > includeFiles;
         // The list of parsed software instances. Tracked to avoid re-parsing a dependency.
         QStringList parsedInstances;
         // Instance specific fileSet, which is to contain the makefile generated for the instance.
@@ -166,7 +166,7 @@ private:
      *      @param [in] pickSWView   True, if flags corresponding file type are culled from the software view.
      */
       void parseMakeObjects(LibraryInterface* library, QSharedPointer<SWView> view,
-          QSharedPointer<Component> component, MakeFileData &makeData, QList<QSharedPointer<MakeObjectData>>& objects,
+          QSharedPointer<Component> component, MakeFileData &makeData, QList<QSharedPointer<MakeObjectData> >& objects,
           bool pickSWView);
 
     /*!
