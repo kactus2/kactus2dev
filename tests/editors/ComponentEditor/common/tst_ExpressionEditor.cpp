@@ -422,7 +422,7 @@ void tst_ExpressionEditor::testCompletionChangesWithCursor()
     ExpressionEditor* editor = createEditorForComponent(targetComponent);
 
     editor->show();
-    QVERIFY(QTest::qWaitForWindowActive(editor));
+    QVERIFY(QTest::qWaitForWindowActive(editor, 5000));
 
     editor->setExpression("id+1+id+\"text\"");
 
@@ -455,7 +455,7 @@ void tst_ExpressionEditor::testCompleteChangesInAllValuesWithKeyNavigation()
     ExpressionEditor* editor = createEditorWithoutFinder();
 
     editor->show();
-    QVERIFY(QTest::qWaitForWindowActive(editor));
+    QVERIFY(QTest::qWaitForWindowActive(editor, 5000));
 
     editor->setExpression("1+1+1+1");
     QTextCursor cursor = editor->textCursor();

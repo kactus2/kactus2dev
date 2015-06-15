@@ -67,8 +67,6 @@ private slots:
 
     void testTopLevelModuleParametersAreWritten();
 
-    void testExistingModuleBodyIsPreserved();
-
 private:
 
     void addPort( QString const& portName, int portSize, General::Direction direction, 
@@ -1042,41 +1040,6 @@ void tst_VerilogGenerator::testTopLevelModuleParametersAreWritten()
         "\n"
         "endmodule\n"
         ));
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_VerilogGenerator::testExistingModuleBodyIsPreserved()
-//-----------------------------------------------------------------------------
-void tst_VerilogGenerator::testExistingModuleBodyIsPreserved()
-{
-    QFile outputFile("./generatorOutput.v"); 
-    
-    QVERIFY(outputFile.open(QIODevice::WriteOnly));
-    QTextStream outputStream(&outputFile);
-
-    outputStream << 
-        "module TestComponent (input clk);\n"
-        "\n"
-        "wire [7:0] internal;\n"
-        "\n"
-        "endmodule";
-
-    outputFile.close();
-
-    addPort("rst_only", 1, General::IN, topComponent_);
-
-    runGenerator();
-
-    verifyOutputContains(QString(
-        "module TestComponent (\n"
-        "    // These ports are not in any interface\n"
-        "    input                               rst_only\n"
-        ");\n"
-        "\n"
-        "wire [7:0] internal;\n"
-        "\n"
-        "endmodule\n"
-     ));
 }
 
 //-----------------------------------------------------------------------------
