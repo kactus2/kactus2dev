@@ -96,6 +96,9 @@ protected slots:
 	*/
 	virtual void onEditorChanged();
 
+	//! Opens the folder that contains the file.
+	void onOpenContainingFolder();
+
 private:
 	//! \brief No copying
 	ComponentEditorFileItem(const ComponentEditorFileItem& other);
@@ -139,7 +142,7 @@ private:
      *
      *      @return A text where variables have been replaced with their values.
      */
-    QString resolveEnvironmentVariables(QString const& text) const;
+	QString resolveEnvironmentVariables(QString const& text) const;
 
     //! \brief Pointer to the file being edited.
 	QSharedPointer<File> file_;
@@ -151,7 +154,10 @@ private:
     QAction* editWithAction_;
 
     //! Action to run the file for editing with an application.
-    QAction* runAction_;
+	QAction* runAction_;
+
+	//! Action to open the containing folder.
+	QAction* openContainingFolderAction_;
 };
 
 #endif // COMPONENTEDITORFILEITEM_H

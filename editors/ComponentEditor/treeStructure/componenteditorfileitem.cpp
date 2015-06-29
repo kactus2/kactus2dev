@@ -36,11 +36,14 @@ ComponentEditorItem(model, libHandler, component, parent),
 file_(file),
 editAction_(new QAction(tr("Edit"), this)),
 editWithAction_(new QAction(tr("Edit/Run with..."), this)),
-runAction_(new QAction(tr("Run"), this))
+runAction_(new QAction(tr("Run"), this)),
+openContainingFolderAction_(new QAction(tr("Open Containing Folder"), this) )
 {
     connect(editAction_, SIGNAL(triggered(bool)), this, SLOT(openItem()), Qt::UniqueConnection);
     connect(editWithAction_, SIGNAL(triggered(bool)), this, SLOT(openWith()), Qt::UniqueConnection);
-    connect(runAction_, SIGNAL(triggered(bool)), this, SLOT(run()), Qt::UniqueConnection);
+	connect(runAction_, SIGNAL(triggered(bool)), this, SLOT(run()), Qt::UniqueConnection);
+	connect(openContainingFolderAction_, SIGNAL(triggered(bool)),
+		this, SLOT(onOpenContainingFolder()), Qt::UniqueConnection);
 }
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorFileItem::~ComponentEditorFileItem()
@@ -175,7 +178,8 @@ QList<QAction*> ComponentEditorFileItem::actions() const
     QList<QAction*> actionList;
     actionList.append(editAction_);
     actionList.append(editWithAction_);
-    actionList.append(runAction_);
+	actionList.append(runAction_);
+	actionList.append(openContainingFolderAction_);
 
     runAction_->setEnabled(runExecutableSet());
 
@@ -290,4 +294,15 @@ QString ComponentEditorFileItem::resolveEnvironmentVariables(QString const& text
     }
 
     return parsed;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HierarchyView::onOpenContainingFolder()
+//-----------------------------------------------------------------------------
+void ComponentEditorFileItem::onOpenContainingFolder()
+{
+	QString path = QFileInfo(fileAbsolutePath()).absolutePath();
+
+	// Open the folder in the operating system's default file browser.
+	QDesktopServices::openUrl(QUrl::fromLocalFile(path));
 }

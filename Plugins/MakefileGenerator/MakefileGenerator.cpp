@@ -381,7 +381,7 @@ void MakefileGenerator::writeProcessList(QTextStream& outStream, QStringList mak
     {
         QFileInfo qfi = QFileInfo( directory );
 
-        outStream << General::getRelativePath(basePath,directory) << qfi.fileName() << " ";
+        outStream << General::getRelativePath(basePath,directory) << "/" << qfi.fileName() << " ";
     }
 
     outStream << ")" << endl;
