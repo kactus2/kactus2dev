@@ -29,7 +29,8 @@ FileTypesModel::FileTypesModel(QSettings& settings, QObject *parent)
         FileTypeEntry entry;
         entry.name = typeName;
         entry.extensions = settings.value("Extensions").toString();
-        entry.executable = settings.value("Executable").toString();
+		entry.executable = settings.value("Executable").toString();
+		entry.editInKactus = settings.value("EditInKactus").toBool();
 
         entries_.append(entry);
         settings.endGroup();
@@ -102,6 +103,10 @@ QVariant FileTypesModel::data(QModelIndex const& index, int role /*= Qt::Display
             {
                 return entry.executable;
             }
+		case FILE_TYPES_COL_EDIT_IN_KACTUS:
+			{
+				return entry.editInKactus;
+			}
         default:
             {
                 return QVariant();
@@ -145,7 +150,11 @@ QVariant FileTypesModel::headerData(int section, Qt::Orientation orientation, in
             case FILE_TYPES_COL_EXECUTABLE:
                 {
                     return tr("Executed with");
-                }
+				}
+			case FILE_TYPES_COL_EDIT_IN_KACTUS:
+				{
+					return tr("Edit in Kactus2");
+				}
             default:
                 {
                     return QVariant();
@@ -195,7 +204,11 @@ bool FileTypesModel::setData(const QModelIndex& index, const QVariant& value, in
         case  FILE_TYPES_COL_EXECUTABLE:
             {
                 entries_[index.row()].executable = value.toString();
-            }
+			}
+		case FILE_TYPES_COL_EDIT_IN_KACTUS:
+			{
+				 entries_[index.row()].editInKactus = value.toBool();
+			}
         default:
             {
                 return false;
@@ -223,7 +236,8 @@ Qt::ItemFlags FileTypesModel::flags(const QModelIndex& index) const
     {
     case FILE_TYPES_COL_NAME:
     case FILE_TYPES_COL_EXTENSIONS:
-    case FILE_TYPES_COL_EXECUTABLE:
+	case FILE_TYPES_COL_EXECUTABLE:
+	case FILE_TYPES_COL_EDIT_IN_KACTUS:
         {
             return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
         }
@@ -314,7 +328,8 @@ void FileTypesModel::apply(QSettings& settings)
     {
         settings.beginGroup(entry.name);
         settings.setValue("Extensions", entry.extensions);
-        settings.setValue("Executable", entry.executable);
+		settings.setValue("Executable", entry.executable);
+		settings.setValue("EditInKactus", entry.editInKactus);
         settings.endGroup();
     }
     settings.endGroup();

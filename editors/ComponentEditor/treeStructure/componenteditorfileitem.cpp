@@ -225,10 +225,19 @@ void ComponentEditorFileItem::runInApplication(QString const& applicationPath)
 //-----------------------------------------------------------------------------
 bool ComponentEditorFileItem::useKactusCSourceEditor() const
 {
-    QString filePath = fileAbsolutePath();
-    QString fileSuffix = QFileInfo(filePath).completeSuffix().toLower();
+	QSettings settings;
 
-    return fileSuffix == "c" || fileSuffix == "h";
+	foreach(QString fileType, file_->getAllFileTypes())
+	{
+		QString key = "FileTypes/" + fileType + "/EditInKactus";
+
+		if ( settings.value(key).toBool() )
+		{
+			return true;
+		}
+	}
+
+	return false;
 }
 
 //-----------------------------------------------------------------------------
