@@ -27,10 +27,10 @@ FileTypesModel::FileTypesModel(QSettings& settings, QObject *parent)
     {
         settings.beginGroup(typeName);
         FileTypeEntry entry;
-        entry.name = typeName;
+		entry.name = typeName;
+		entry.editInKactus = settings.value("EditInKactus").toBool();
         entry.extensions = settings.value("Extensions").toString();
 		entry.executable = settings.value("Executable").toString();
-		entry.editInKactus = settings.value("EditInKactus").toBool();
 
         entries_.append(entry);
         settings.endGroup();
@@ -93,8 +93,11 @@ QVariant FileTypesModel::data(QModelIndex const& index, int role /*= Qt::Display
         case FILE_TYPES_COL_NAME:
             {
                 return entry.name;
-            }
-
+			}
+		case FILE_TYPES_COL_EDIT_IN_KACTUS:
+			{
+				return entry.editInKactus;
+			}
         case FILE_TYPES_COL_EXTENSIONS:
             {
                 return entry.extensions;
@@ -103,10 +106,6 @@ QVariant FileTypesModel::data(QModelIndex const& index, int role /*= Qt::Display
             {
                 return entry.executable;
             }
-		case FILE_TYPES_COL_EDIT_IN_KACTUS:
-			{
-				return entry.editInKactus;
-			}
         default:
             {
                 return QVariant();
@@ -142,7 +141,10 @@ QVariant FileTypesModel::headerData(int section, Qt::Orientation orientation, in
                 {
                     return tr("File type");
                 }
-
+			case FILE_TYPES_COL_EDIT_IN_KACTUS:
+				{
+					return tr("Edit in Kactus2");
+				}
             case FILE_TYPES_COL_EXTENSIONS:
                 {
                     return tr("Extensions");
@@ -150,10 +152,6 @@ QVariant FileTypesModel::headerData(int section, Qt::Orientation orientation, in
             case FILE_TYPES_COL_EXECUTABLE:
                 {
                     return tr("Executed with");
-				}
-			case FILE_TYPES_COL_EDIT_IN_KACTUS:
-				{
-					return tr("Edit in Kactus2");
 				}
             default:
                 {
@@ -195,7 +193,10 @@ bool FileTypesModel::setData(const QModelIndex& index, const QVariant& value, in
                 entries_[index.row()].name = name;
                 break;
             }
-
+		case FILE_TYPES_COL_EDIT_IN_KACTUS:
+			{
+				entries_[index.row()].editInKactus = value.toBool();
+			}
         case FILE_TYPES_COL_EXTENSIONS:
             {
                 entries_[index.row()].extensions = value.toString();
@@ -204,10 +205,6 @@ bool FileTypesModel::setData(const QModelIndex& index, const QVariant& value, in
         case  FILE_TYPES_COL_EXECUTABLE:
             {
                 entries_[index.row()].executable = value.toString();
-			}
-		case FILE_TYPES_COL_EDIT_IN_KACTUS:
-			{
-				 entries_[index.row()].editInKactus = value.toBool();
 			}
         default:
             {
@@ -234,10 +231,10 @@ Qt::ItemFlags FileTypesModel::flags(const QModelIndex& index) const
 
     switch (index.column())
     {
-    case FILE_TYPES_COL_NAME:
+	case FILE_TYPES_COL_NAME:
+	case FILE_TYPES_COL_EDIT_IN_KACTUS:
     case FILE_TYPES_COL_EXTENSIONS:
 	case FILE_TYPES_COL_EXECUTABLE:
-	case FILE_TYPES_COL_EDIT_IN_KACTUS:
         {
             return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
         }
@@ -326,10 +323,10 @@ void FileTypesModel::apply(QSettings& settings)
     settings.beginGroup("FileTypes");
     foreach (FileTypeEntry const& entry, entries_)
     {
-        settings.beginGroup(entry.name);
+		settings.beginGroup(entry.name);
+		settings.setValue("EditInKactus", entry.editInKactus);
         settings.setValue("Extensions", entry.extensions);
 		settings.setValue("Executable", entry.executable);
-		settings.setValue("EditInKactus", entry.editInKactus);
         settings.endGroup();
     }
     settings.endGroup();

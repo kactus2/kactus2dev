@@ -24,10 +24,10 @@
 //-----------------------------------------------------------------------------
 enum FileTypesColumn
 {
-    FILE_TYPES_COL_NAME,
+	FILE_TYPES_COL_NAME,
+	FILE_TYPES_COL_EDIT_IN_KACTUS,
     FILE_TYPES_COL_EXTENSIONS,
 	FILE_TYPES_COL_EXECUTABLE,
-	FILE_TYPES_COL_EDIT_IN_KACTUS,
     FILE_TYPES_COL_COUNT
 };
 
@@ -156,15 +156,15 @@ private:
     //-----------------------------------------------------------------------------
     struct FileTypeEntry
     {
-        QString name;       //!< The file type name.
+		QString name;       //!< The file type name.
+		bool editInKactus;	//!< True, if edited in Kactus rather than some other application.
         QString extensions; //!< The extensions for this file type.
         QString executable; //!< The executable to run this file type.
-		bool editInKactus;	//!< True, if edited in Kactus rather than some other application.
 
         /*!
          *  Default constructor.
          */
-        FileTypeEntry() : name(), extensions(), executable(), editInKactus()
+        FileTypeEntry() : name(), editInKactus(false), extensions(), executable()
         {
         }
     };
