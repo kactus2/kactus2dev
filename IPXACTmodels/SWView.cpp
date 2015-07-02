@@ -183,7 +183,7 @@ bool SWView::isValid(const QStringList& fileSetNames, const QStringList& cpuName
         valid = false;
     }
 
-    if (!hierarchyRef_.isValid(errorList, thisIdentifier))
+    if (!hierarchyRef_.isEmpty() && !hierarchyRef_.isValid(errorList, thisIdentifier))
     {
         valid = false;
     }
