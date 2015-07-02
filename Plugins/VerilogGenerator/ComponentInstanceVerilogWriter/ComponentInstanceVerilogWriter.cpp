@@ -248,7 +248,7 @@ QString ComponentInstanceVerilogWriter::portDefaultValue(QString const& portName
     QSharedPointer<Port> port =  referencedComponent_->getPort(portName);
     if (port->getDirection() == General::IN && !port->getDefaultValue().isEmpty())
     {
-        defaultValue = port->getDefaultValue();
+        defaultValue = expressionFormatter_->formatReferringExpression(port->getDefaultValue());
     }
     return defaultValue;
 }
