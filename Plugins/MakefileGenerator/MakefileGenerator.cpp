@@ -153,7 +153,7 @@ void MakefileGenerator::generateMainMakefile(QString basePath, QString topPath, 
     makeFile.open(QIODevice::WriteOnly);
     QTextStream outStream(&makeFile);
 
-    // Default target would make for each directory.
+    // Default target for each directory.
     outStream << "make:";
 
     foreach( QString directory, makeNames )
@@ -167,7 +167,23 @@ void MakefileGenerator::generateMainMakefile(QString basePath, QString topPath, 
     foreach( QString directory, makeNames )
     {
         outStream << endl << "\t(cd " << General::getRelativePath(basePath,directory) << "; make clean)";
-    }
+	}
+
+	// Debug target for each directory.
+	outStream << endl << endl << "debug:";
+
+	foreach( QString directory, makeNames )
+	{
+		outStream << endl << "\t(cd " << General::getRelativePath(basePath,directory) << "; make debug)";
+	}
+
+	// Profiling target for each directory.
+	outStream << endl << endl << "profile:";
+
+	foreach( QString directory, makeNames )
+	{
+		outStream << endl << "\t(cd " << General::getRelativePath(basePath,directory) << "; make profile)";
+	}
 
     // Close after it is done.
     makeFile.close();
