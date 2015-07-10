@@ -7,166 +7,226 @@
 
 #include "enumeratedvaluemodel.h"
 #include "enumeratedvaluedelegate.h"
+#include "EnumeratedValueColumns.h"
 
-EnumeratedValueModel::EnumeratedValueModel(QSharedPointer<Field> field, 
-										   QObject *parent):
+//-----------------------------------------------------------------------------
+// Function: enumeratedvaluemodel::EnumeratedValueModel()
+//-----------------------------------------------------------------------------
+EnumeratedValueModel::EnumeratedValueModel(QSharedPointer<Field> field, QObject *parent):
 QAbstractTableModel(parent),
 field_(field),
-enumValues_(field->getEnumeratedValues()) {
-
+enumValues_(field->getEnumeratedValues())
+{
 	Q_ASSERT(field_);
 }
 
-EnumeratedValueModel::~EnumeratedValueModel() {
+//-----------------------------------------------------------------------------
+// Function: enumeratedvaluemodel::~EnumeratedValueModel()
+//-----------------------------------------------------------------------------
+EnumeratedValueModel::~EnumeratedValueModel()
+{
+
 }
 
-int EnumeratedValueModel::rowCount( const QModelIndex& parent /*= QModelIndex()*/ ) const {
-	if (parent.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: enumeratedvaluemodel::rowCount()
+//-----------------------------------------------------------------------------
+int EnumeratedValueModel::rowCount( const QModelIndex& parent /*= QModelIndex()*/ ) const
+{
+	if (parent.isValid())
+    {
 		return 0;
 	}
 	return enumValues_.size();
 }
 
-int EnumeratedValueModel::columnCount( const QModelIndex& parent /*= QModelIndex()*/ ) const {
-	if (parent.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: enumeratedvaluemodel::columnCount()
+//-----------------------------------------------------------------------------
+int EnumeratedValueModel::columnCount( const QModelIndex& parent /*= QModelIndex()*/ ) const
+{
+	if (parent.isValid())
+    {
 		return 0;
 	}
-	return EnumeratedValueDelegate::COLUMN_COUNT;
+    return EnumeratedValueColumns::COLUMN_COUNT;
 }
 
-Qt::ItemFlags EnumeratedValueModel::flags( const QModelIndex& index ) const {
-	if (!index.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: enumeratedvaluemodel::flags()
+//-----------------------------------------------------------------------------
+Qt::ItemFlags EnumeratedValueModel::flags( const QModelIndex& index ) const
+{
+	if (!index.isValid())
+    {
 		return Qt::NoItemFlags;
 	}
 	return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
 }
 
-QVariant EnumeratedValueModel::headerData( int section, Qt::Orientation orientation, int role /*= Qt::DisplayRole*/ ) const {
-	if (orientation != Qt::Horizontal) {
+//-----------------------------------------------------------------------------
+// Function: enumeratedvaluemodel::headerData()
+//-----------------------------------------------------------------------------
+QVariant EnumeratedValueModel::headerData( int section, Qt::Orientation orientation,
+    int role /*= Qt::DisplayRole*/ ) const
+{
+	if (orientation != Qt::Horizontal)
+    {
 		return QVariant();
 	}
-	if (Qt::DisplayRole == role) {
+	if (Qt::DisplayRole == role)
+    {
+        if (section == EnumeratedValueColumns::NAME_COLUMN)
+        {
+            return tr("Enumeration name");
+        }
+        else if (section == EnumeratedValueColumns::DISPLAY_NAME)
+        {
+            return tr("Display name");
+        }
+        else if (section == EnumeratedValueColumns::VALUE_COLUMN)
+        {
+            return tr("Value");
+        }
+        else if (section == EnumeratedValueColumns::USAGE_COLUMN)
+        {
+            return tr("Usage");
+        }
+        else if (section == EnumeratedValueColumns::DESCRIPTION)
+        {
+            return tr("Description");
+        }
+	}
 
-		switch (section) {
-			case EnumeratedValueDelegate::NAME_COLUMN: {
-				return tr("Enumeration name");
-												}
-			case EnumeratedValueDelegate::VALUE_COLUMN: {
-				return tr("Value");
-												}
-			case EnumeratedValueDelegate::USAGE_COLUMN: {
-				return tr("Usage");
-												  }
-			default: {
-				return QVariant();
-					 }
-		}
-	}
-	else {
-		return QVariant();
-	}
+    return QVariant();
 }
 
-QVariant EnumeratedValueModel::data( const QModelIndex& index, int role /*= Qt::DisplayRole*/ ) const {
-	if (!index.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: enumeratedvaluemodel::data()
+//-----------------------------------------------------------------------------
+QVariant EnumeratedValueModel::data( const QModelIndex& index, int role /*= Qt::DisplayRole*/ ) const
+{
+	if (!index.isValid())
+    {
 		return QVariant();
 	}
-	else if (index.row() < 0 || index.row() >= enumValues_.size()) {
+	else if (index.row() < 0 || index.row() >= enumValues_.size())
+    {
 		return QVariant();
 	}
 
-	if (Qt::DisplayRole == role) {
-
-		switch (index.column()) {
-			case EnumeratedValueDelegate::NAME_COLUMN: {
-				return enumValues_.at(index.row())->getName();
-													   }
-			case EnumeratedValueDelegate::VALUE_COLUMN: {
-				return enumValues_.at(index.row())->getValue();
-														}
-			case EnumeratedValueDelegate::USAGE_COLUMN: {
-				return EnumeratedValue::usage2Str(enumValues_.at(index.row())->getUsage());
-												  }
-			default: {
-				return QVariant();
-					 }
-		}
+	if (role == Qt::DisplayRole || role == Qt::EditRole || role == Qt::ToolTipRole)
+    {
+        return valueForIndex(index);
 	}
-	else if (Qt::ForegroundRole == role) {
 
-		if (enumValues_.at(index.row())->isValid()) {
+	else if (Qt::ForegroundRole == role)
+    {
+		if (enumValues_.at(index.row())->isValid())
+        {
 			return QColor("black");
 		}
-		else {
+		else
+        {
 			return QColor("red");
 		}
 	}
-	else if (Qt::BackgroundRole == role) {
-		switch (index.column()) {
-			case EnumeratedValueDelegate::NAME_COLUMN:
-			case EnumeratedValueDelegate::VALUE_COLUMN:{
-				return QColor("LemonChiffon");
-													}
-			default:
-				return QColor("white");
-		}
+
+	else if (Qt::BackgroundRole == role)
+    {
+        if (index.column() == EnumeratedValueColumns::NAME_COLUMN ||
+            index.column() == EnumeratedValueColumns::VALUE_COLUMN)
+        {
+            return QColor("LemonChiffon");
+        }
+        else
+        {
+            return QColor("white");
+        }
 	}
-	else {
+	else
+    {
 		return QVariant();
 	}
 }
 
-bool EnumeratedValueModel::setData( const QModelIndex& index, const QVariant& value, int role /*= Qt::EditRole*/ ) {
-	if (!index.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: enumeratedvaluemodel::setData()
+//-----------------------------------------------------------------------------
+bool EnumeratedValueModel::setData( const QModelIndex& index, const QVariant& value, int role /*= Qt::EditRole*/ )
+{
+	if (!index.isValid())
+    {
 		return false;
 	}
-	else if (index.row() < 0 || index.row() >= enumValues_.size()) {
+	else if (index.row() < 0 || index.row() >= enumValues_.size())
+    {
 		return false;
 	}
 
-	if (Qt::EditRole == role) {
-
-		switch (index.column()) {
-			case EnumeratedValueDelegate::NAME_COLUMN: {
-				enumValues_[index.row()]->setName(value.toString());
-				break;
-													   }
-			case EnumeratedValueDelegate::VALUE_COLUMN: {
-				enumValues_[index.row()]->setValue(value.toString());
-				break;
-														}
-			case EnumeratedValueDelegate::USAGE_COLUMN: {
-				enumValues_[index.row()]->setUsage(EnumeratedValue::str2Usage(value.toString(), EnumeratedValue::READWRITE));
-				break;
-												  }
-			default: {
-				return false;
-					 }
-		}
+	if (Qt::EditRole == role)
+    {
+        if (index.column() == EnumeratedValueColumns::NAME_COLUMN)
+        {
+            enumValues_[index.row()]->setName(value.toString());
+        }
+        else if (index.column() == EnumeratedValueColumns::DISPLAY_NAME)
+        {
+            enumValues_[index.row()]->setDisplayName(value.toString());
+        }
+        else if (index.column() == EnumeratedValueColumns::VALUE_COLUMN)
+        {
+            enumValues_[index.row()]->setValue(value.toString());
+        }
+        else if (index.column() == EnumeratedValueColumns::USAGE_COLUMN)
+        {
+            enumValues_[index.row()]->setUsage(EnumeratedValue::str2Usage(
+                value.toString(), EnumeratedValue::READWRITE));
+        }
+        else if (index.column() == EnumeratedValueColumns::DESCRIPTION)
+        {
+            enumValues_[index.row()]->setDescription(value.toString());
+        }
+        else
+        {
+            return false;
+        }
 
 		emit dataChanged(index, index);
 		emit contentChanged();
 		return true;
 	}
-	else {
+	else
+    {
 		return false;
 	}
 }
 
-bool EnumeratedValueModel::isValid() const {
-	foreach (QSharedPointer<EnumeratedValue> enumValue, enumValues_) {
-		if (!enumValue->isValid()) {
+//-----------------------------------------------------------------------------
+// Function: enumeratedvaluemodel::isValid()
+//-----------------------------------------------------------------------------
+bool EnumeratedValueModel::isValid() const
+{
+	foreach (QSharedPointer<EnumeratedValue> enumValue, enumValues_)
+    {
+		if (!enumValue->isValid())
+        {
 			return false;
 		}
 	}
 	return true;
 }
 
-void EnumeratedValueModel::onAddItem( const QModelIndex& index ) {
+//-----------------------------------------------------------------------------
+// Function: enumeratedvaluemodel::onAddItem()
+//-----------------------------------------------------------------------------
+void EnumeratedValueModel::onAddItem( const QModelIndex& index )
+{
 	int row = enumValues_.size();
 
 	// if the index is valid then add the item to the correct position
-	if (index.isValid()) {
+	if (index.isValid())
+    {
 		row = index.row();
 	}
 
@@ -181,13 +241,19 @@ void EnumeratedValueModel::onAddItem( const QModelIndex& index ) {
 	emit contentChanged();
 }
 
-void EnumeratedValueModel::onRemoveItem( const QModelIndex& index ) {
+//-----------------------------------------------------------------------------
+// Function: enumeratedvaluemodel::onRemoveItem()
+//-----------------------------------------------------------------------------
+void EnumeratedValueModel::onRemoveItem( const QModelIndex& index )
+{
 	// don't remove anything if index is invalid
-	if (!index.isValid()) {
+	if (!index.isValid())
+    {
 		return;
 	}
 	// make sure the row number if valid
-	else if (index.row() < 0 || index.row() >= enumValues_.size()) {
+	else if (index.row() < 0 || index.row() >= enumValues_.size())
+    {
 		return;
 	}
 
@@ -201,4 +267,35 @@ void EnumeratedValueModel::onRemoveItem( const QModelIndex& index ) {
 
 	// tell also parent widget that contents have been changed
 	emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: enumeratedvaluemodel::valueForIndex()
+//-----------------------------------------------------------------------------
+QVariant EnumeratedValueModel::valueForIndex(QModelIndex const& index) const
+{
+    if (index.column() == EnumeratedValueColumns::NAME_COLUMN)
+    {
+        return enumValues_.at(index.row())->getName();
+    }
+    else if (index.column() == EnumeratedValueColumns::DISPLAY_NAME)
+    {
+        return enumValues_.at(index.row())->getDisplayName();
+    }
+    else if (index.column() == EnumeratedValueColumns::VALUE_COLUMN)
+    {
+        return enumValues_.at(index.row())->getValue();
+    }
+    else if (index.column() == EnumeratedValueColumns::USAGE_COLUMN)
+    {
+        return EnumeratedValue::usage2Str(enumValues_.at(index.row())->getUsage());
+    }
+    else if (index.column() == EnumeratedValueColumns::DESCRIPTION)
+    {
+        return enumValues_.at(index.row())->getDescription();
+    }
+    else
+    {
+        return QVariant();
+    }
 }

@@ -6,93 +6,94 @@
  */
 
 #include "enumeratedvaluedelegate.h"
+#include "EnumeratedValueColumns.h"
 
 #include <QLineEdit>
 #include <QComboBox>
 
+//-----------------------------------------------------------------------------
+// Function: enumeratedvaluedelegate::EnumeratedValueDelegate()
+//-----------------------------------------------------------------------------
 EnumeratedValueDelegate::EnumeratedValueDelegate(QObject *parent):
-QStyledItemDelegate(parent) {
+QStyledItemDelegate(parent)
+{
+
 }
 
-EnumeratedValueDelegate::~EnumeratedValueDelegate() {
+//-----------------------------------------------------------------------------
+// Function: enumeratedvaluedelegate::~EnumeratedValueDelegate()
+//-----------------------------------------------------------------------------
+EnumeratedValueDelegate::~EnumeratedValueDelegate()
+{
+
 }
 
-QWidget* EnumeratedValueDelegate::createEditor( QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index ) const {
-	switch (index.column()) {
-		case EnumeratedValueDelegate::NAME_COLUMN: 
-		case EnumeratedValueDelegate::VALUE_COLUMN: {
-			QLineEdit* edit = new QLineEdit(parent);
-			connect(edit, SIGNAL(editingFinished()),
-				this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
-			return edit;
-												   }
-		case EnumeratedValueDelegate::USAGE_COLUMN: {
-			QComboBox* combo = new QComboBox(parent);
-			combo->addItem(tr("read-write"));
-			combo->addItem(tr("read"));
-			combo->addItem(tr("write"));
-			return combo;
-													}
-		default: {
-			return QStyledItemDelegate::createEditor(parent, option, index);
-				 }
-	}
+//-----------------------------------------------------------------------------
+// Function: enumeratedvaluedelegate::createEditor()
+//-----------------------------------------------------------------------------
+QWidget* EnumeratedValueDelegate::createEditor( QWidget* parent, const QStyleOptionViewItem& option,
+    const QModelIndex& index ) const
+{
+    if (index.column() == EnumeratedValueColumns::USAGE_COLUMN)
+    {
+        QComboBox* combo = new QComboBox(parent);
+        combo->addItem(tr("read-write"));
+        combo->addItem(tr("read"));
+        combo->addItem(tr("write"));
+        return combo;
+    }
+
+    else
+    {
+        return QStyledItemDelegate::createEditor(parent, option, index);
+    }
 }
 
-void EnumeratedValueDelegate::setEditorData( QWidget* editor, const QModelIndex& index ) const {
-	switch (index.column()) {
-		case EnumeratedValueDelegate::NAME_COLUMN:
-		case EnumeratedValueDelegate::VALUE_COLUMN: {
-			QLineEdit* edit = qobject_cast<QLineEdit*>(editor);
-			Q_ASSERT(edit);
+//-----------------------------------------------------------------------------
+// Function: enumeratedvaluedelegate::setEditorData()
+//-----------------------------------------------------------------------------
+void EnumeratedValueDelegate::setEditorData( QWidget* editor, const QModelIndex& index ) const
+{
+    if (index.column() == EnumeratedValueColumns::USAGE_COLUMN)
+    {
+        QComboBox* combo = qobject_cast<QComboBox*>(editor);
+        Q_ASSERT(combo);
 
-			const QString text = index.model()->data(index, Qt::DisplayRole).toString();
-			edit->setText(text);
-			break;
-												   }
-		case EnumeratedValueDelegate::USAGE_COLUMN: {
-			QComboBox* combo = qobject_cast<QComboBox*>(editor);
-			Q_ASSERT(combo);
-
-			QString text = index.model()->data(index, Qt::DisplayRole).toString();
-			int comboIndex = combo->findText(text);
-			combo->setCurrentIndex(comboIndex);
-			break;
-													}
-		default: {
-			QStyledItemDelegate::setEditorData(editor, index);
-			break;
-				 }
-	}
+        QString text = index.model()->data(index, Qt::DisplayRole).toString();
+        int comboIndex = combo->findText(text);
+        combo->setCurrentIndex(comboIndex);
+    }
+    else
+    {
+        QStyledItemDelegate::setEditorData(editor, index);
+    }
 }
 
-void EnumeratedValueDelegate::setModelData( QWidget* editor, QAbstractItemModel* model, const QModelIndex& index ) const {
-	switch (index.column()) {
-		case EnumeratedValueDelegate::NAME_COLUMN:
-		case EnumeratedValueDelegate::VALUE_COLUMN: {
-			QLineEdit* edit = qobject_cast<QLineEdit*>(editor);
-			Q_ASSERT(edit);
+//-----------------------------------------------------------------------------
+// Function: enumeratedvaluedelegate::setModelData()
+//-----------------------------------------------------------------------------
+void EnumeratedValueDelegate::setModelData( QWidget* editor, QAbstractItemModel* model, const QModelIndex& index )
+    const
+{
+    if (index.column() == EnumeratedValueColumns::USAGE_COLUMN)
+    {
+        QComboBox* combo = qobject_cast<QComboBox*>(editor);
+        Q_ASSERT(combo);
 
-			QString text = edit->text();
-			model->setData(index, text, Qt::EditRole);
-			break;
-												   }
-		case EnumeratedValueDelegate::USAGE_COLUMN: {
-			QComboBox* combo = qobject_cast<QComboBox*>(editor);
-			Q_ASSERT(combo);
-
-			QString text = combo->currentText();
-			model->setData(index, text, Qt::EditRole);
-			break;
-													}
-		default: {
-			QStyledItemDelegate::setModelData(editor, model, index);
-			break;
-				 }
-	}
+        QString text = combo->currentText();
+        model->setData(index, text, Qt::EditRole);
+    }
+    else
+    {
+        QStyledItemDelegate::setModelData(editor, model, index);
+    }
 }
 
-void EnumeratedValueDelegate::commitAndCloseEditor() {
+//-----------------------------------------------------------------------------
+// Function: enumeratedvaluedelegate::commitAndCloseEditor()
+//-----------------------------------------------------------------------------
+void EnumeratedValueDelegate::commitAndCloseEditor()
+{
 	QWidget* edit = qobject_cast<QWidget*>(sender());
 	Q_ASSERT(edit);
 

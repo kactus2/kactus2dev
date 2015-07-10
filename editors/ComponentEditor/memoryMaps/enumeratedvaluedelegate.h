@@ -18,14 +18,6 @@ class EnumeratedValueDelegate : public QStyledItemDelegate {
 
 public:
 
-	//! \brief Defines the columns used in the enumeration values table.
-	enum Column {
-		NAME_COLUMN = 0,
-		VALUE_COLUMN,
-		USAGE_COLUMN,
-		COLUMN_COUNT
-	};
-
 	/*! \brief The constructor
 	 *
 	 * \param parent Pointer to the owner of the delegate.

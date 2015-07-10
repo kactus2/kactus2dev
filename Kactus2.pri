@@ -108,6 +108,7 @@ HEADERS += ./common/Global.h \
     ./common/dialogs/createConfigurationDialog/createconfigurationdialog.h \
     ./common/dialogs/NewBusDialog/NewBusDialog.h \
     ./mainwindow/SplashScreen.h \
+    ./mainwindow/ExitScreen.h \
     ./mainwindow/NewWorkspaceDialog.h \
     ./mainwindow/DeleteWorkspaceDialog.h \
     ./mainwindow/mainwindow.h \
@@ -642,7 +643,7 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
-    ./mainwindow/ExitScreen.h
+    ./editors/ComponentEditor/memoryMaps/EnumeratedValueColumns.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -729,6 +730,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./common/views/EditableTableView/editabletableview.cpp \
     ./common/views/EditableListView/editablelistview.cpp \
     ./mainwindow/DeleteWorkspaceDialog.cpp \
+    ./mainwindow/ExitScreen.cpp \
     ./mainwindow/main.cpp \
     ./mainwindow/mainwindow.cpp \
     ./mainwindow/NewWorkspaceDialog.cpp \
@@ -1218,6 +1220,5 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
-    ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
-    ./mainwindow/ExitScreen.cpp
+    ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp
 RESOURCES += kactus.qrc

@@ -6095,6 +6095,9 @@
     <ClInclude Include="mainwindow\SaveHierarchy\SaveHierarchyDelegate.h">
       <Filter>Header Files\mainwindow\SaveHierarchy</Filter>
     </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\memoryMaps\EnumeratedValueColumns.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="designEditors\common\DiagramUtil.inl">

@@ -130,6 +130,15 @@ private:
 	//! \brief No assignment
 	EnumeratedValueModel& operator=(const EnumeratedValueModel& other);
 
+    /*!
+     *  Gets the value for the given index.
+     *
+     *      @param [in] index   The index of the target data.
+     *
+     *      @return The data in the given index.
+     */
+    QVariant valueForIndex(QModelIndex const& index) const;
+
 	//! \brief Pointer to the field being edited.
 	QSharedPointer<Field> field_;
 
