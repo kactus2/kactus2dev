@@ -14,6 +14,7 @@
 #include "ExpressionEditor.h"
 
 #include <QAbstractItemView>
+#include <QKeyEvent>
 
 //-----------------------------------------------------------------------------
 // Function: ExpressionDelegate::ExpressionDelegate()
@@ -26,7 +27,7 @@ ExpressionDelegate::ExpressionDelegate(QCompleter* parameterNameCompleter,
 
 }
 
-//----------------------------------------------------------------k-------------
+//-----------------------------------------------------------------------------
 // Function: ExpressionDelegate::~ExpressionDelegate()
 //-----------------------------------------------------------------------------
 ExpressionDelegate::~ExpressionDelegate()
@@ -98,6 +99,26 @@ QWidget* ExpressionDelegate::createExpressionEditor(QWidget* parent) const
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
     return editor;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ExpressionDelegate::eventFilter()
+//-----------------------------------------------------------------------------
+bool ExpressionDelegate::eventFilter(QObject* editor, QEvent *event)
+{
+    if (event->type() == QEvent::KeyPress)
+    {
+        QKeyEvent* keyEvent = dynamic_cast<QKeyEvent*>(event);
+        if (keyEvent->key() == Qt::Key_Return || keyEvent->key() == Qt::Key_Enter)
+        {
+            QWidget* editorWidget = dynamic_cast<QWidget*>(editor);
+            commitData(editorWidget);
+            closeEditor(editorWidget);
+            return true;
+        }
+    }
+
+    return QStyledItemDelegate::eventFilter(editor, event);
 }
 
 //-----------------------------------------------------------------------------

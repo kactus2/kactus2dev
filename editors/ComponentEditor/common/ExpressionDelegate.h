@@ -14,6 +14,7 @@
 
 #include <QStyledItemDelegate>
 #include <QCompleter>
+#include <QEvent>
 
 class ParameterFinder;
 
@@ -84,6 +85,16 @@ signals:
     void decreaseReferences(QString id);
 
 protected:
+
+    /*!
+     *  Filter for editor events.
+     *
+     *      @param [in] editor  The editor receiving the event.
+     *      @param [in] event   The caught event.
+     *
+     *      @return True, if the event is filtered, false if it is passed to the editor.
+     */
+    virtual bool eventFilter(QObject* editor, QEvent *event);
 
     /*!
      *  Checks if the given column supports expressions in the editor.

@@ -169,7 +169,7 @@ void ExpressionEditor::mousePressEvent(QMouseEvent* mouseEvent)
 //-----------------------------------------------------------------------------
 void ExpressionEditor::keyPressEvent(QKeyEvent* keyEvent)
 {
-    if (keyEvent->key() == Qt::Key_Return)
+    if (keyEvent->key() == Qt::Key_Return || keyEvent->key() == Qt::Key_Enter)
     {
         QWidget::keyPressEvent(keyEvent);
         return;
