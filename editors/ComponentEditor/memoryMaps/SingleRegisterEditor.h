@@ -102,7 +102,10 @@ private slots:
      *  Save the edited dimension to the register.
      */
     void onDimensionEdited();
-
+    
+    /*!
+     *  Save the edited is present to the register.
+     */
     void onIsPresentEdited();
 
     /*!

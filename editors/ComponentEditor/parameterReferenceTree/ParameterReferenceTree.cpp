@@ -480,7 +480,8 @@ bool ParameterReferenceTree::registerHasReference(QSharedPointer<Register> targe
 {
     if (targetRegister->getAddressOffset().contains(targetID_) ||
         targetRegister->getDimensionExpression().contains(targetID_) ||
-        targetRegister->getSizeExpression().contains(targetID_))
+        targetRegister->getSizeExpression().contains(targetID_) ||
+        targetRegister->getIsPresentExpression().contains(targetID_))
     {
         return true;
     }
@@ -995,6 +996,10 @@ void ParameterReferenceTree::createItemsForRegister(QSharedPointer<Register> tar
     if (targetRegister->getDimensionExpression().contains(targetID_))
     {
         createItem("Dimension", targetRegister->getDimensionExpression(), parent);
+    }
+    if (targetRegister->getIsPresentExpression().contains(targetID_))
+    {
+        createItem("Is present", targetRegister->getIsPresentExpression(), parent);
     }
     if (targetRegister->getSizeExpression().contains(targetID_))
     {
