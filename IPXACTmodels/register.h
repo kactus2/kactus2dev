@@ -91,7 +91,7 @@ public:
 	 * \return bool True if the state is valid and writing is possible.
 	*/
     virtual bool isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices, QStringList& errorList, 
-		const QString& parentIdentifier) const;
+		QString const& parentIdentifier) const;
 
 	/*! \brief Check if the register is in a valid state.
 	 *
@@ -170,11 +170,37 @@ public:
      */
     void removeSizeExpression();
 
+    /*!
+     *  Set the expression for register presence.
+     *
+     *      @param [in] expression  The expression for register presence.
+     */
+    void setIsPresentExpression(QString const& expression);
+
+    /*!
+     *  Get the expression for register presence.
+     *
+     *      @return The expression for register presence.
+     */
+    QString getIsPresentExpression();
+
+    /*!
+     *  Removes the expression for register presence.
+     */
+    void removeIsPresentExpression();
+
+    /*!
+     *  Check if the register has an expression for presence.
+     *
+     *      @return True, if there is an expression, otherwise false.
+     */
+    bool hasIsPresentExpression();
+
     /*! \brief Set the addressOffset for this register.
      *
      * \param addressOffset QString containing the addressOffset.
      */
-    void setAddressOffset(const QString& addressOffset);
+    void setAddressOffset(QString const& addressOffset);
 
     /*! \brief Set the alternate registers for this register.
      *
@@ -227,7 +253,7 @@ public:
 	 * \param typeIdentifier The type identifier to set.
 	 *
 	*/
-	void setTypeIdentifier(const QString& typeIdentifier);
+	void setTypeIdentifier(QString const& typeIdentifier);
 
 	/*! \brief Get the width of the register.
 	 *
@@ -279,7 +305,7 @@ public:
 	 * \param registerValue The reset value to set.
 	 *
 	*/
-	void setRegisterValue(const QString& registerValue);
+	void setRegisterValue(QString const& registerValue);
 
 	//! \brief Clear the register reset value and mask.
 	void clearReset();
@@ -295,7 +321,7 @@ public:
 	 * \param registerMask The register's reset mask to set.
 	 *
 	*/
-	void setRegisterMask(const QString& registerMask);
+	void setRegisterMask(QString const& registerMask);
 
 private:
 
@@ -312,6 +338,9 @@ private:
      *      @param [in] expression  The initial expression to set.
      */
     void createDimensionExpressionExtension(QString const& expression);
+
+
+    void createIsPresentExpressionExtension(QString const& expression);
 
     /*!
      *  Copies vendor extensions from another register.
@@ -348,6 +377,9 @@ private:
 
     //! Expression used for register dimension.
     QSharedPointer<Kactus2Value> dimensionExpression_;
+
+    //! The vendor extension for is present expression.
+    QSharedPointer<Kactus2Value> isPresentExpression_;
 };
 
 #endif /* REGISTER_H_ */

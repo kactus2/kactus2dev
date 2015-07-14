@@ -130,5 +130,6 @@ bool AddressBlockDelegate::columnAcceptsExpression(int column) const
 {
     return column == AddressBlockColumns::REGISTER_DIMENSION ||
         column == AddressBlockColumns::REGISTER_SIZE ||
-        column == AddressBlockColumns::REGISTER_OFFSET;
+        column == AddressBlockColumns::REGISTER_OFFSET ||
+        column == AddressBlockColumns::IS_PRESENT;
 }

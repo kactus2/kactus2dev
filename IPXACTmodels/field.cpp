@@ -551,14 +551,7 @@ void Field::removeIsPresentExpression()
 //-----------------------------------------------------------------------------
 bool Field::hasIsPresentExpression()
 {
-    if (isPresentExpression_.isNull())
-    {
-        return false;
-    }
-    else
-    {
-        return true;
-    }
+    return !isPresentExpression_.isNull();
 }
 
 //-----------------------------------------------------------------------------

@@ -131,7 +131,7 @@ void SingleFieldEditor::setupLayout()
     QFormLayout* fieldDefinitionLayout = new QFormLayout(fieldDefinitionGroup);
     fieldDefinitionLayout->addRow(tr("Offset [bits], f(x):"), offsetEditor_);
     fieldDefinitionLayout->addRow(tr("Width [bits], f(x):"), widthEditor_);
-    fieldDefinitionLayout->addRow(tr("Is present, f(x);"), isPresentEditor_);
+    fieldDefinitionLayout->addRow(tr("Is present, f(x):"), isPresentEditor_);
 
     QGroupBox* fieldConstraintGroup = new QGroupBox(tr("Field constraints"));
 

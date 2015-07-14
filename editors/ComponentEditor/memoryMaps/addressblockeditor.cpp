@@ -52,6 +52,7 @@ model_(0)
     proxy->setColumnToAcceptExpressions(AddressBlockColumns::REGISTER_DIMENSION);
     proxy->setColumnToAcceptExpressions(AddressBlockColumns::RESET_VALUE);
     proxy->setColumnToAcceptExpressions(AddressBlockColumns::RESET_MASK);
+    proxy->setColumnToAcceptExpressions(AddressBlockColumns::IS_PRESENT);
 
     proxy->setSourceModel(model_);
 	view_->setModel(proxy);

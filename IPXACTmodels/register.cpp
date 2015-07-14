@@ -21,6 +21,9 @@
 #include <QSharedPointer>
 #include "XmlUtils.h"
 
+//-----------------------------------------------------------------------------
+// Function: Register::Register()
+//-----------------------------------------------------------------------------
 Register::Register(QDomNode& registerNode):
 RegisterModel(registerNode),
 dim_(-1),
@@ -28,7 +31,8 @@ addressOffset_(),
 alternateRegisters_(), 
 registerDefinition_(registerNode),
 vendorExtensions_(),
-dimensionExpression_()
+dimensionExpression_(),
+isPresentExpression_()
 {
 
 	for (int i = 0; i < registerNode.childNodes().count(); ++i) {
@@ -58,6 +62,9 @@ dimensionExpression_()
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Function: Register::Register()
+//-----------------------------------------------------------------------------
 Register::Register():
 RegisterModel(),
 dim_(-1),
@@ -65,11 +72,14 @@ addressOffset_("'h0"),
 alternateRegisters_(), 
 registerDefinition_(),
 vendorExtensions_(),
-dimensionExpression_()
+dimensionExpression_(),
+isPresentExpression_()
 {
 }
 
-
+//-----------------------------------------------------------------------------
+// Function: Register::Register()
+//-----------------------------------------------------------------------------
 Register::Register( General::BooleanValue volatileValue, General::Access access ):
 RegisterModel(),
 dim_(-1),
@@ -77,12 +87,16 @@ addressOffset_(),
 alternateRegisters_(), 
 registerDefinition_(),
 vendorExtensions_(),
-dimensionExpression_()
+dimensionExpression_(),
+isPresentExpression_()
 {
 	registerDefinition_.setVolatile(volatileValue);
 	registerDefinition_.setAccess(access);
 }
 
+//-----------------------------------------------------------------------------
+// Function: Register::Register()
+//-----------------------------------------------------------------------------
 Register::Register( const Register& other ):
 RegisterModel(other),
 dim_(other.dim_),
@@ -90,11 +104,13 @@ addressOffset_(other.addressOffset_),
 alternateRegisters_(),
 registerDefinition_(other.registerDefinition_),
 vendorExtensions_(),
-dimensionExpression_()
+dimensionExpression_(),
+isPresentExpression_()
 {
-
-	foreach (QSharedPointer<AlternateRegister> altReg, other.alternateRegisters_) {
-		if (altReg) {
+	foreach (QSharedPointer<AlternateRegister> altReg, other.alternateRegisters_)
+    {
+		if (altReg)
+        {
 			QSharedPointer<AlternateRegister> copy = QSharedPointer<AlternateRegister>(
 				new AlternateRegister(*altReg.data()));
 			alternateRegisters_.append(copy);
@@ -104,8 +120,13 @@ dimensionExpression_()
     copyVendorExtensions(other);
 }
 
-Register& Register::operator=( const Register& other ) {
-	if (this != &other) {
+//-----------------------------------------------------------------------------
+// Function: Register::operator=()
+//-----------------------------------------------------------------------------
+Register& Register::operator=( const Register& other )
+{
+	if (this != &other)
+    {
 		RegisterModel::operator=(other);
 
 		dim_ = other.dim_;
@@ -113,8 +134,10 @@ Register& Register::operator=( const Register& other ) {
 		registerDefinition_ = other.registerDefinition_;
 
 		alternateRegisters_.clear();
-		foreach (QSharedPointer<AlternateRegister> altReg, other.alternateRegisters_) {
-			if (altReg) {
+		foreach (QSharedPointer<AlternateRegister> altReg, other.alternateRegisters_)
+        {
+			if (altReg)
+            {
 				QSharedPointer<AlternateRegister> copy = QSharedPointer<AlternateRegister>(
 					new AlternateRegister(*altReg.data()));
 				alternateRegisters_.append(copy);
@@ -126,23 +149,35 @@ Register& Register::operator=( const Register& other ) {
 	return *this;
 }
 
-
-Register::~Register() {
+//-----------------------------------------------------------------------------
+// Function: Register::~Register()
+//-----------------------------------------------------------------------------
+Register::~Register()
+{
 	alternateRegisters_.clear();
 }
 
-QSharedPointer<RegisterModel> Register::clone() {
+//-----------------------------------------------------------------------------
+// Function: Register::clone()
+//-----------------------------------------------------------------------------
+QSharedPointer<RegisterModel> Register::clone()
+{
 	return QSharedPointer<RegisterModel>(new Register(*this));
 }
 
-void Register::write(QXmlStreamWriter& writer) {
+//-----------------------------------------------------------------------------
+// Function: Register::write()
+//-----------------------------------------------------------------------------
+void Register::write(QXmlStreamWriter& writer)
+{
 	writer.writeStartElement("spirit:register");
 
 	// call base class to write base class info
 	RegisterModel::write(writer);
 
 	// if optional spirit:dim is defined
-	if (dim_ >= 0) {
+	if (dim_ >= 0)
+    {
 		writer.writeTextElement("spirit:dim", QString::number(dim_));
 	}
 
@@ -152,7 +187,8 @@ void Register::write(QXmlStreamWriter& writer) {
 	registerDefinition_.write(writer);
 
 	// if any alternate registers exist
-	if (alternateRegisters_.size() != 0) {
+	if (alternateRegisters_.size() != 0)
+    {
 		writer.writeStartElement("spirit:alternateRegisters");
 
 		// write each alternate register
@@ -177,7 +213,7 @@ void Register::write(QXmlStreamWriter& writer) {
 // Function: Register::isValid()
 //-----------------------------------------------------------------------------
 bool Register::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
-    QStringList& errorList, const QString& parentIdentifier ) const
+    QStringList& errorList,QString const& parentIdentifier ) const
 {
 	bool valid = true;
 	const QString thisIdentifier(QObject::tr("register %1").arg(nameGroup_.name()));
@@ -228,7 +264,6 @@ bool Register::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > component
 //-----------------------------------------------------------------------------
 bool Register::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const
 {
-
 	if (nameGroup_.name().isEmpty()) 
     {
 		return false;
@@ -264,20 +299,35 @@ bool Register::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > component
 	return true;
 }
 
-QString Register::getAddressOffset() const {
+//-----------------------------------------------------------------------------
+// Function: Register::getAddressOffset()
+//-----------------------------------------------------------------------------
+QString Register::getAddressOffset() const
+{
     return addressOffset_;
 }
 
-quint64 Register::getOffset() const {
+//-----------------------------------------------------------------------------
+// Function: Register::getOffset()
+//-----------------------------------------------------------------------------
+quint64 Register::getOffset() const
+{
 	return General::str2Uint(addressOffset_);
 }
 
-const QList<QSharedPointer<AlternateRegister> >&
-Register::getAlternateRegisters() const {
+//-----------------------------------------------------------------------------
+// Function: Register::getAlternateRegisters()
+//-----------------------------------------------------------------------------
+const QList<QSharedPointer<AlternateRegister> >& Register::getAlternateRegisters() const
+{
     return alternateRegisters_;
 }
 
-int Register::getDim() const {
+//-----------------------------------------------------------------------------
+// Function: Register::getDim()
+//-----------------------------------------------------------------------------
+int Register::getDim() const
+{
     return dim_;
 }
 
@@ -363,85 +413,209 @@ void Register::removeSizeExpression()
     registerDefinition_.removeSizeExpression();
 }
 
-void Register::setAddressOffset(const QString& addressOffset) {
-    this->addressOffset_ = addressOffset;
+//-----------------------------------------------------------------------------
+// Function: Register::setIsPresentExpression()
+//-----------------------------------------------------------------------------
+void Register::setIsPresentExpression(QString const& expression)
+{
+    if (hasIsPresentExpression())
+    {
+        isPresentExpression_->setValue(expression);
+    }
+    else if (!expression.isEmpty())
+    {
+        createIsPresentExpressionExtension(expression);
+    }
 }
 
-void Register::setAlternateRegisters(
-		const QList<QSharedPointer<AlternateRegister> >& alternateRegisters) {
+//-----------------------------------------------------------------------------
+// Function: Register::getIsPresentExpression()
+//-----------------------------------------------------------------------------
+QString Register::getIsPresentExpression()
+{
+    if (hasIsPresentExpression())
+    {
+        return isPresentExpression_->value();
+    }
+
+    return QString("1");
+}
+
+//-----------------------------------------------------------------------------
+// Function: Register::removeIsPresentExpression()
+//-----------------------------------------------------------------------------
+void Register::removeIsPresentExpression()
+{
+    vendorExtensions_.removeAll(isPresentExpression_);
+    isPresentExpression_.clear();
+}
+
+//-----------------------------------------------------------------------------
+// Function: Register::hasIsPresentExpression()
+//-----------------------------------------------------------------------------
+bool Register::hasIsPresentExpression()
+{
+    return !isPresentExpression_.isNull();
+}
+
+//-----------------------------------------------------------------------------
+// Function: Register::setAddressOffset()
+//-----------------------------------------------------------------------------
+void Register::setAddressOffset(const QString& addressOffset)
+{
+    addressOffset_ = addressOffset;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Register::setAlternateRegisters()
+//-----------------------------------------------------------------------------
+void Register::setAlternateRegisters(const QList<QSharedPointer<AlternateRegister> >& alternateRegisters)
+{
 	alternateRegisters_.clear();
-    this->alternateRegisters_ = alternateRegisters;
+    alternateRegisters_ = alternateRegisters;
 }
 
-void Register::setDim(int dim) {
-    this->dim_ = dim;
+//-----------------------------------------------------------------------------
+// Function: Register::setDim()
+//-----------------------------------------------------------------------------
+void Register::setDim(int dim)
+{
+    dim_ = dim;
 }
 
-const QList<QSharedPointer<Field> >& Register::getFields() const {
+//-----------------------------------------------------------------------------
+// Function: Register::getFields()
+//-----------------------------------------------------------------------------
+const QList<QSharedPointer<Field> >& Register::getFields() const
+{
 	return registerDefinition_.getFields();
 }
 
-QList<QSharedPointer<Field> >& Register::getFields() {
+//-----------------------------------------------------------------------------
+// Function: Register::getFields()
+//-----------------------------------------------------------------------------
+QList<QSharedPointer<Field> >& Register::getFields()
+{
 	return registerDefinition_.getFields();
 }
 
-unsigned int Register::getWidth() const {
+//-----------------------------------------------------------------------------
+// Function: Register::getWidth()
+//-----------------------------------------------------------------------------
+unsigned int Register::getWidth() const
+{
 	return registerDefinition_.getSize();
 }
 
-QString Register::getTypeIdentifier() const {
+//-----------------------------------------------------------------------------
+// Function: Register::getTypeIdentifier()
+//-----------------------------------------------------------------------------
+QString Register::getTypeIdentifier() const
+{
 	return registerDefinition_.getTypeIdentifier();
 }
 
-void Register::setTypeIdentifier( const QString& typeIdentifier ) {
+//-----------------------------------------------------------------------------
+// Function: Register::setTypeIdentifier()
+//-----------------------------------------------------------------------------
+void Register::setTypeIdentifier(QString const& typeIdentifier )
+{
 	registerDefinition_.setTypeIdentifier(typeIdentifier);
 }
 
-unsigned int Register::getSize() const {
+//-----------------------------------------------------------------------------
+// Function: Register::getSize()
+//-----------------------------------------------------------------------------
+unsigned int Register::getSize() const
+{
 	return registerDefinition_.getSize();
 }
 
-void Register::setSize( unsigned int size ) {
+//-----------------------------------------------------------------------------
+// Function: Register::setSize()
+//-----------------------------------------------------------------------------
+void Register::setSize( unsigned int size )
+{
 	registerDefinition_.setSize(size);
 }
 
-General::BooleanValue Register::getVolatile() const {
+//-----------------------------------------------------------------------------
+// Function: Register::getVolatile()
+//-----------------------------------------------------------------------------
+General::BooleanValue Register::getVolatile() const
+{
 	return registerDefinition_.getVolatile();
 }
 
-void Register::setVolatile( General::BooleanValue volatileValue ) {
+//-----------------------------------------------------------------------------
+// Function: Register::setVolatile()
+//-----------------------------------------------------------------------------
+void Register::setVolatile( General::BooleanValue volatileValue )
+{
 	registerDefinition_.setVolatile(volatileValue);
 }
 
-General::Access Register::getAccess() const {
+//-----------------------------------------------------------------------------
+// Function: Register::getAccess()
+//-----------------------------------------------------------------------------
+General::Access Register::getAccess() const
+{
 	return registerDefinition_.getAccess();
 }
 
-void Register::setAccess( General::Access access ) {
+//-----------------------------------------------------------------------------
+// Function: Register::setAccess()
+//-----------------------------------------------------------------------------
+void Register::setAccess( General::Access access )
+{
 	registerDefinition_.setAccess(access);
 }
 
-QString Register::getRegisterValue() const {
+//-----------------------------------------------------------------------------
+// Function: Register::getRegisterValue()
+//-----------------------------------------------------------------------------
+QString Register::getRegisterValue() const
+{
 	return registerDefinition_.getRegisterValue();
 }
 
-void Register::setRegisterValue( const QString& registerValue ) {
+//-----------------------------------------------------------------------------
+// Function: Register::setRegisterValue()
+//-----------------------------------------------------------------------------
+void Register::setRegisterValue(QString const& registerValue)
+{
 	registerDefinition_.setRegisterValue(registerValue);
 }
 
-void Register::clearReset() {
+//-----------------------------------------------------------------------------
+// Function: Register::clearReset()
+//-----------------------------------------------------------------------------
+void Register::clearReset()
+{
 	registerDefinition_.clearReset();
 }
 
-QString Register::getRegisterMask() const {
+//-----------------------------------------------------------------------------
+// Function: Register::getRegisterMask()
+//-----------------------------------------------------------------------------
+QString Register::getRegisterMask() const
+{
 	return registerDefinition_.getRegisterMask();
 }
 
-void Register::setRegisterMask( const QString& registerMask ) {
+//-----------------------------------------------------------------------------
+// Function: Register::setRegisterMask()
+//-----------------------------------------------------------------------------
+void Register::setRegisterMask(QString const& registerMask )
+{
 	registerDefinition_.setRegisterMask(registerMask);
 }
 
-unsigned int Register::getMSB() const {
+//-----------------------------------------------------------------------------
+// Function: Register::getMSB()
+//-----------------------------------------------------------------------------
+unsigned int Register::getMSB() const
+{
 	return registerDefinition_.getMSB();
 }
 
@@ -451,12 +625,17 @@ unsigned int Register::getMSB() const {
 void Register::parseVendorExtensions(QDomNode const& registerNode)
 {
     int extensionCount = registerNode.childNodes().count();
-    for (int j = 0; j < extensionCount; ++j) {
+    for (int j = 0; j < extensionCount; j++)
+    {
         QDomNode extensionNode = registerNode.childNodes().at(j);
 
         if (extensionNode.nodeName() == QString("kactus2:dimExpression"))
         {
-            createDimensionExpressionExtension(extensionNode.childNodes().at(j).nodeValue());
+            createDimensionExpressionExtension(extensionNode.childNodes().at(0).nodeValue());
+        }
+        else if (extensionNode.nodeName() == QString("kactus2:isPresent"))
+        {
+            createIsPresentExpressionExtension(extensionNode.childNodes().at(0).nodeValue());
         }
         else
         {
@@ -478,7 +657,19 @@ void Register::createDimensionExpressionExtension(QString const& expression)
 }
 
 //-----------------------------------------------------------------------------
-// Function: register::copyVendorExtensions()
+// Function: Register::createIsPresentExpressionExtension()
+//-----------------------------------------------------------------------------
+void Register::createIsPresentExpressionExtension(QString const& expression)
+{
+    if (isPresentExpression_.isNull())
+    {
+        isPresentExpression_ = QSharedPointer<Kactus2Value>(new Kactus2Value("kactus2:isPresent", expression));
+        vendorExtensions_.append(isPresentExpression_);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: Register::copyVendorExtensions()
 //-----------------------------------------------------------------------------
 void Register::copyVendorExtensions(const Register & other)
 {
@@ -488,6 +679,11 @@ void Register::copyVendorExtensions(const Register & other)
         {
             dimensionExpression_ = QSharedPointer<Kactus2Value>(other.dimensionExpression_->clone());
             vendorExtensions_.append(dimensionExpression_);
+        }
+        else if (extension->type() == "kactus2:isPresent")
+        {
+            isPresentExpression_ = QSharedPointer<Kactus2Value>(other.isPresentExpression_->clone());
+            vendorExtensions_.append(isPresentExpression_);
         }
         else
         {

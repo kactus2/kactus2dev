@@ -103,6 +103,8 @@ private slots:
      */
     void onDimensionEdited();
 
+    void onIsPresentEdited();
+
     /*!
      *  Save the selected volatile value to the register.
      *
@@ -203,6 +205,9 @@ private:
 
     //! The dimension editor.
     ExpressionEditor* dimensionEditor_;
+
+    //! The is present editor, accepts expressions.
+    ExpressionEditor* isPresentEditor_;
 
     //! The volatility selector.
     BooleanComboBox* volatileEditor_;

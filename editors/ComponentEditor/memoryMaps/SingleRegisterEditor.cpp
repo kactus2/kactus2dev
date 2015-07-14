@@ -45,6 +45,7 @@ fieldsEditor_(new RegisterEditor(selectedRegister, component, handler, parameter
 offsetEditor_(new ExpressionEditor(parameterFinder, this)),
 sizeEditor_(new ExpressionEditor(parameterFinder, this)),
 dimensionEditor_(new ExpressionEditor(parameterFinder, this)),
+isPresentEditor_(new ExpressionEditor(parameterFinder, this)),
 volatileEditor_(),
 accessEditor_(),
 resetValueEditor_(new QLineEdit(this)),
@@ -56,6 +57,7 @@ expressionParser_(expressionParser)
     offsetEditor_->setFixedHeight(20);
     sizeEditor_->setFixedHeight(20);
     dimensionEditor_->setFixedHeight(20);
+    isPresentEditor_->setFixedHeight(20);
 
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser_);
@@ -69,9 +71,13 @@ expressionParser_(expressionParser)
     ParameterCompleter* dimensionParameterCompleter = new ParameterCompleter(this);
     dimensionParameterCompleter->setModel(componentParametersModel);
 
+    ParameterCompleter* isPresentCompleter = new ParameterCompleter(this);
+    isPresentCompleter->setModel(componentParametersModel);
+
     offsetEditor_->setAppendingCompleter(offsetParameterCompleter);
     sizeEditor_->setAppendingCompleter(sizeParameterCompleter);
     dimensionEditor_->setAppendingCompleter(dimensionParameterCompleter);
+    isPresentEditor_->setAppendingCompleter(isPresentCompleter);
 
     resetValueValidator_ = new BinaryValidator(formattedValueFor(selectedRegister_->getSizeExpression()), resetValueEditor_);
     resetMaskValidator_= new BinaryValidator(formattedValueFor(selectedRegister_->getSizeExpression()), resetMaskEditor_);
@@ -124,11 +130,13 @@ void SingleRegisterEditor::setupLayout()
     offsetEditor_->setFrameShadow(QFrame::Sunken);
     sizeEditor_->setFrameShadow(QFrame::Sunken);
     dimensionEditor_->setFrameShadow(QFrame::Sunken);
+    isPresentEditor_->setFrameShadow(QFrame::Sunken);
 
     QFormLayout* registerDefinitionLayout = new QFormLayout(registerDefinitionGroup);
     registerDefinitionLayout->addRow(tr("Offset [AUB], f(x):"), offsetEditor_);
     registerDefinitionLayout->addRow(tr("Size [bits], f(x):"), sizeEditor_);
     registerDefinitionLayout->addRow(tr("Dimension, f(x):"), dimensionEditor_);
+    registerDefinitionLayout->addRow(tr("Is present, f(x):"), isPresentEditor_);
 
     volatileEditor_ = new BooleanComboBox(registerDefinitionGroup);
     registerDefinitionLayout->addRow(tr("Volatile:"), volatileEditor_);
@@ -196,6 +204,9 @@ void SingleRegisterEditor::refresh()
     dimensionEditor_->setExpression(selectedRegister_->getDimensionExpression());
     dimensionEditor_->setToolTip(formattedValueFor(selectedRegister_->getDimensionExpression()));
 
+    isPresentEditor_->setExpression(selectedRegister_->getIsPresentExpression());
+    isPresentEditor_->setToolTip(formattedValueFor(selectedRegister_->getIsPresentExpression()));
+
     changeExpressionEditorsSignalBlockStatus(false);
 
     accessEditor_->setCurrentValue(selectedRegister_->getAccess());
@@ -235,10 +246,15 @@ void SingleRegisterEditor::connectSignals()
         this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
     connect(dimensionEditor_, SIGNAL(decreaseReference(QString const&)),
         this, SIGNAL(decreaseReferences(QString const&)), Qt::UniqueConnection);
+    connect(isPresentEditor_, SIGNAL(increaseReference(QString const&)),
+        this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
+    connect(isPresentEditor_, SIGNAL(decreaseReference(QString const&)),
+        this, SIGNAL(decreaseReferences(QString const&)), Qt::UniqueConnection);
 
     connect(offsetEditor_, SIGNAL(editingFinished()), this, SLOT(onOffsetEdited()), Qt::UniqueConnection);
     connect(sizeEditor_, SIGNAL(editingFinished()), this, SLOT(onSizeEdited()), Qt::UniqueConnection);
     connect(dimensionEditor_, SIGNAL(editingFinished()), this, SLOT(onDimensionEdited()), Qt::UniqueConnection);
+    connect(isPresentEditor_, SIGNAL(editingFinished()), this, SLOT(onIsPresentEdited()), Qt::UniqueConnection);
 
     connect(resetValueEditor_, SIGNAL(textEdited(QString const&)),
         this, SLOT(onResetValueChanged(QString const&)), Qt::UniqueConnection);
@@ -250,6 +266,7 @@ void SingleRegisterEditor::connectSignals()
     connect(offsetEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(sizeEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(dimensionEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(isPresentEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
     connect(offsetEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
     connect(sizeEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
@@ -287,6 +304,7 @@ void SingleRegisterEditor::changeExpressionEditorsSignalBlockStatus(bool blockSt
     offsetEditor_->blockSignals(blockStatus);
     sizeEditor_->blockSignals(blockStatus);
     dimensionEditor_->blockSignals(blockStatus);
+    isPresentEditor_->blockSignals(blockStatus);
 }
 
 //-----------------------------------------------------------------------------
@@ -333,6 +351,18 @@ void SingleRegisterEditor::onDimensionEdited()
     selectedRegister_->setDim(formattedDimension.toInt());
 
     dimensionEditor_->setToolTip(formattedDimension);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SingleRegisterEditor::onIsPresentEdited()
+//-----------------------------------------------------------------------------
+void SingleRegisterEditor::onIsPresentEdited()
+{
+    isPresentEditor_->finishEditingCurrentWord();
+    selectedRegister_->setIsPresentExpression(isPresentEditor_->getExpression());
+
+    QString formattedPresence = formattedValueFor(selectedRegister_->getIsPresentExpression());
+    isPresentEditor_->setToolTip(formattedPresence);
 }
 
 //-----------------------------------------------------------------------------
