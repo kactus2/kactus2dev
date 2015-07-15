@@ -249,9 +249,17 @@ void ComInterface::setDescription(QString const& desc)
 //-----------------------------------------------------------------------------
 // Function: ComInterface::setComType()
 //-----------------------------------------------------------------------------
-void ComInterface::setComType(VLNV const& vlnv)
+void ComInterface::setComType(VLNV const& vlnv, QList< QSharedPointer<ComProperty> > const* properties)
 {
-    comType_ = vlnv;
+	comType_ = vlnv;
+
+	if ( properties != NULL )
+	{
+		foreach (QSharedPointer<ComProperty const> prop, *properties)
+		{
+			propertyValues_[prop->getName()] = prop->getDefaultValue();
+		}
+	}
 }
 
 //-----------------------------------------------------------------------------

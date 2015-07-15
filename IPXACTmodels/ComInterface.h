@@ -26,6 +26,8 @@
 #include <QMap>
 #include <QPointF>
 
+#include <IPXACTmodels/ComProperty.h>
+
 //-----------------------------------------------------------------------------
 //! COM interface class for defining properties of a specific COM interface
 //! in a SW component.
@@ -99,7 +101,7 @@ public:
      *
      *      @param [in] vlnv The COM definition VLNV.
      */
-    void setComType(VLNV const& vlnv);
+    void setComType(VLNV const& vlnv, QList< QSharedPointer<ComProperty> > const* properties = NULL);
 
     /*!
      *  Sets the transfer type.

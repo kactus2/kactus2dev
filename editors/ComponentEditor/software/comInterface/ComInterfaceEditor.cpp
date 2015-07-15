@@ -143,8 +143,6 @@ bool ComInterfaceEditor::isValid() const
 //-----------------------------------------------------------------------------
 void ComInterfaceEditor::onComDefinitionChanged()
 {
-	comIf_->setComType(comType_->getVLNV());
-
 	disconnect(&transferTypeCombo_, SIGNAL(currentIndexChanged(int)),
 		this, SLOT(onTransferTypeChange()));
     if (comType_->getVLNV().isValid())
@@ -157,7 +155,9 @@ void ComInterfaceEditor::onComDefinitionChanged()
         {
             emit errorMessage("COM definition with the given VLNV does not exist");
             return;
-        }
+		}
+
+		comIf_->setComType(comType_->getVLNV(), &comDef->getProperties());
 
         propertyValueEditor_.setAllowedProperties(&comDef->getProperties());
 
