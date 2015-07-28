@@ -36,6 +36,9 @@
 #include <QMessageBox>
 #include <QHeaderView>
 
+//-----------------------------------------------------------------------------
+// Function: PortsEditor::PortsEditor()
+//-----------------------------------------------------------------------------
 PortsEditor::PortsEditor(QSharedPointer<Component> component, LibraryInterface* handler,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
     QWidget *parent):
@@ -62,23 +65,21 @@ handler_(handler)
 	view_.setAllowImportExport(true);
     view_.setAlternatingRowColors(false);
 
-	connect(model_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(model_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(model_, SIGNAL(errorMessage(const QString&)),
-		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
+    connect(model_, SIGNAL(errorMessage(const QString&)),
+        this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
 	connect(model_, SIGNAL(noticeMessage(const QString&)),
 		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 
 	connect(&view_, SIGNAL(addItem(const QModelIndex&)),
-		model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
+        model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
 	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
 		model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
   
-    connect(&view_, SIGNAL(createBus(QStringList const& )),
-            this, SLOT(onCreateNewInteface(QStringList const& )));
-    connect(&view_, SIGNAL(createExistingBus(QStringList const& )),
+    connect(&view_, SIGNAL(createBus(QStringList const& )), this, SLOT(onCreateNewInteface(QStringList const& )));
+    connect(&view_, SIGNAL(createExistingBus(QStringList const& )), 
         this, SLOT(onCreateInterface(QStringList const& )));
 
 	// set view to be sortable

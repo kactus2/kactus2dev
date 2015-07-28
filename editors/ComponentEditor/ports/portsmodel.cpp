@@ -22,6 +22,7 @@
 #include <QString>
 #include <QStringList>
 #include <QColor>
+#include <QRegularExpression>
 
 //-----------------------------------------------------------------------------
 // Function: PortsModel::PortsModel()
@@ -96,6 +97,11 @@ QVariant PortsModel::data(const QModelIndex& index, int role /*= Qt::DisplayRole
         {
             return expressionFormatter_->formatReferringExpression(valueForIndex(index).toString());
         }
+        else if (index.column() == PortColumns::PORT_COL_DESC)
+        {
+            return valueForIndex(index).toString().replace(QRegularExpression("\n.*$", 
+                QRegularExpression::DotMatchesEverythingOption), "...");
+        }
         else
         {
             return valueForIndex(index);
@@ -103,6 +109,10 @@ QVariant PortsModel::data(const QModelIndex& index, int role /*= Qt::DisplayRole
     }
     else if (role == Qt::EditRole)
     {
+        if (index.column() == PortColumns::PORT_COL_DESC)
+        {
+            return valueForIndex(index);
+        }
         return expressionOrValueForIndex(index);
     }
     else if (role == Qt::ToolTipRole)
@@ -204,12 +214,12 @@ QVariant PortsModel::headerData( int section, Qt::Orientation orientation, int r
             }
             else if (section == PortColumns::LEFT_BOUND)
             {
-                QString leftBoundHeader = tr("Left\n(higher)\nbound") + getExpressionSymbol();
+                QString leftBoundHeader = tr("Left (higher)\nbound") + getExpressionSymbol();
                 return leftBoundHeader;
             }
             else if (section == PortColumns::RIGHT_BOUND)
             {
-                QString rightBoundHeader = tr("Right\n(lower)\nbound") + getExpressionSymbol();
+                QString rightBoundHeader = tr("Right (lower)\nbound") + getExpressionSymbol();
                 return rightBoundHeader;
             }
             else if (section == PortColumns::TYPE_NAME)
@@ -827,6 +837,10 @@ QVariant PortsModel::expressionOrValueForIndex(QModelIndex const& index) const
     else if (index.column() == PortColumns::ARRAY_RIGHT)
     {
         return port->getArrayRight();
+    }
+    else if (index.column() == PortColumns::PORT_COL_DESC)
+    {
+        return port->getDescription();
     }
     else
     {

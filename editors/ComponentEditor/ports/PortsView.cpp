@@ -88,22 +88,25 @@ void PortsView::contextMenuEvent(QContextMenuEvent* event)
     menu.addAction(&addAction_);
 
     // if at least one valid item is selected
-    if (index.isValid()) {
+    if (index.isValid())
+    {
         menu.addAction(&removeAction_);
         menu.addAction(&clearAction_);
         menu.addAction(&copyAction_);
+        menu.addAction(&pasteAction_);
     }
-
-    menu.addAction(&pasteAction_);
     
     if (index.isValid())
     {
+        menu.addSeparator();
         QMenu* createMenu = menu.addMenu(tr("New bus interface"));
         createMenu->addAction(&createBus_);    
         createMenu->addAction(&createExistingBus_);           
     }
 
-    if (impExportable_) {
+    if (importExportAllowed())
+    {
+        menu.addSeparator();
         menu.addAction(&importAction_);
         menu.addAction(&exportAction_);
     }

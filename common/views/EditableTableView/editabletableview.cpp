@@ -1,12 +1,15 @@
-/* 
- *  	Created on: 10.12.2011
- *      Author: Antti Kamppi
- * 		filename: editabletableview.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: editabletableview.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 10.12.2011
+//
+// Description:
+// This view can be used to display contents of a table model and supports adding and removing items.
+//-----------------------------------------------------------------------------
 
 #include "editabletableview.h"
-#include <IPXACTmodels/vlnv.h>
 
 #include <QHeaderView>
 #include <QMenu>
@@ -25,6 +28,9 @@
 #include <QSize>
 #include <QHeaderView>
 
+//-----------------------------------------------------------------------------
+// Function: EditableTableView::EditableTableView()
+//-----------------------------------------------------------------------------
 EditableTableView::EditableTableView(QWidget *parent)
     : QTableView(parent),
       pressedPoint_(),
@@ -35,7 +41,7 @@ EditableTableView::EditableTableView(QWidget *parent)
       clearAction_(tr("Clear"), this),
       importAction_(tr("Import csv-file"), this),
       exportAction_(tr("Export csv-file"), this),
-      impExportable_(false),
+      importExportEnabled_(false),
       defImportExportPath_(),
       itemsDraggable_(true)
 {
@@ -60,10 +66,8 @@ EditableTableView::EditableTableView(QWidget *parent)
 	// user can select several items at a time
 	setSelectionMode(QAbstractItemView::ContiguousSelection);
 
-	setEditTriggers(QAbstractItemView::DoubleClicked |
-		QAbstractItemView::SelectedClicked |
-		QAbstractItemView::EditKeyPressed |
-		QAbstractItemView::AnyKeyPressed);
+	setEditTriggers(QAbstractItemView::DoubleClicked |QAbstractItemView::SelectedClicked |
+		QAbstractItemView::EditKeyPressed |	QAbstractItemView::AnyKeyPressed);
 
 	setToolTip(tr("Double click to add a new item."));
 	
@@ -72,67 +76,97 @@ EditableTableView::EditableTableView(QWidget *parent)
 	setMinimumHeight(MINIMUM_TABLE_HEIGHT);
 }
 
-EditableTableView::~EditableTableView() {
+//-----------------------------------------------------------------------------
+// Function: EditableTableView::~EditableTableView()
+//-----------------------------------------------------------------------------
+EditableTableView::~EditableTableView()
+{
 }
 
-void EditableTableView::mouseMoveEvent( QMouseEvent* e ) {
+//-----------------------------------------------------------------------------
+// Function: EditableTableView::setAllowImportExport()
+//-----------------------------------------------------------------------------
+void EditableTableView::setAllowImportExport(bool allow)
+{
+    importExportEnabled_ = allow;
+}
 
-		QModelIndex selected;
+//-----------------------------------------------------------------------------
+// Function: EditableTableView::importExportAllowed()
+//-----------------------------------------------------------------------------
+bool EditableTableView::importExportAllowed() const
+{
+    return importExportEnabled_;
+}
 
-	if (itemsDraggable_) {
+//-----------------------------------------------------------------------------
+// Function: EditableTableView::mouseMoveEvent()
+//-----------------------------------------------------------------------------
+void EditableTableView::mouseMoveEvent(QMouseEvent* event)
+{
+    QModelIndex selected;
 
+	if (itemsDraggable_)
+    {
 		// if left mouse button was pressed 
-		if (e->buttons() & Qt::LeftButton) {
-
+		if (event->buttons() & Qt::LeftButton)
+        {
 			QModelIndex startIndex = indexAt(pressedPoint_);
-			QModelIndex thisIndex = indexAt(e->pos());
-			selected = thisIndex;
+			QModelIndex thisIndex = indexAt(event->pos());
+            selected = thisIndex;
 
 			// if the model is a sort proxy then convert the indexes to source indexes
 			QSortFilterProxyModel* sortProxy = dynamic_cast<QSortFilterProxyModel*>(model());
-			if (sortProxy) {
-
+			if (sortProxy)
+            {
 				startIndex = sortProxy->mapToSource(startIndex);
 				thisIndex = sortProxy->mapToSource(thisIndex);
 			}
 
 			// if the item was dragged to new location
-			if (startIndex.isValid() && startIndex != thisIndex) {
+			if (startIndex.isValid() && startIndex != thisIndex)
+            {
 				setCursor(QCursor(Qt::ClosedHandCursor));
-
 				emit moveItem(startIndex, thisIndex);
 
 				// update the pressed point so the dragging works also
 				// when moving further to another index
-				pressedPoint_ = e->pos();
+				pressedPoint_ = event->pos();
 			}
 		}
 	}
 
-	QTableView::mouseMoveEvent(e);
+	QTableView::mouseMoveEvent(event);
 
 	// if item is being dragged then do not select an area
-	if (itemsDraggable_) {
+	if (itemsDraggable_)
+    {
 		clearSelection();
 		setCurrentIndex(selected);
 	}
 }
 
-void EditableTableView::keyPressEvent( QKeyEvent* event ) {
-
-	// call the base class implementation
+//-----------------------------------------------------------------------------
+// Function: EditableTableView::keyPressEvent()
+//-----------------------------------------------------------------------------
+void EditableTableView::keyPressEvent(QKeyEvent* event)
+{
 	QTableView::keyPressEvent(event);
 
-	if (event->matches(QKeySequence::Copy)) {
+	if (event->matches(QKeySequence::Copy))
+    {
 		onCopyAction();
 	}
-	if (event->matches(QKeySequence::Paste)) {
+	if (event->matches(QKeySequence::Paste))
+    {
 		onPasteAction();
 	}
-	if (event->matches(QKeySequence::Delete)) {
+	if (event->matches(QKeySequence::Delete))
+    {
 		onClearAction();
 	}
-	if (event->matches(QKeySequence::InsertLineSeparator)) {
+	if (event->matches(QKeySequence::InsertLineSeparator))
+    {
 		onAddAction();
 	}
     if (event->matches(QKeySequence::Cut))
@@ -141,10 +175,15 @@ void EditableTableView::keyPressEvent( QKeyEvent* event ) {
     }
 }
 
-void EditableTableView::mouseDoubleClickEvent( QMouseEvent* event ) {
+//-----------------------------------------------------------------------------
+// Function: EditableTableView::mouseDoubleClickEvent()
+//-----------------------------------------------------------------------------
+void EditableTableView::mouseDoubleClickEvent(QMouseEvent* event)
+{
 	// if there is no item on the clicked position then a new item should be added
 	QModelIndex index = indexAt(event->pos());
-	if (!index.isValid()){
+	if (!index.isValid())
+    {
 		emit addItem(index);
 		event->accept();
 		return;
@@ -153,24 +192,37 @@ void EditableTableView::mouseDoubleClickEvent( QMouseEvent* event ) {
 	QTableView::mouseDoubleClickEvent(event);
 }
 
-void EditableTableView::mousePressEvent( QMouseEvent* event ) {
+//-----------------------------------------------------------------------------
+// Function: EditableTableView::mousePressEvent()
+//-----------------------------------------------------------------------------
+void EditableTableView::mousePressEvent(QMouseEvent* event)
+{
 	pressedPoint_ = event->pos();
 
 	// if user clicked area that has no item
 	QModelIndex pressedIndex = indexAt(pressedPoint_);
-	if (!pressedIndex.isValid()) {
+	if (!pressedIndex.isValid())
+    {
 		setCurrentIndex(pressedIndex);
 	}
 
 	QTableView::mousePressEvent(event);
 }
 
-void EditableTableView::mouseReleaseEvent( QMouseEvent* event ) {
+//-----------------------------------------------------------------------------
+// Function: EditableTableView::mouseReleaseEvent()
+//-----------------------------------------------------------------------------
+void EditableTableView::mouseReleaseEvent(QMouseEvent* event)
+{
 	setCursor(QCursor(Qt::ArrowCursor));
 	QTableView::mouseReleaseEvent(event);
 }
 
-void EditableTableView::contextMenuEvent( QContextMenuEvent* event ) {
+//-----------------------------------------------------------------------------
+// Function: EditableTableView::contextMenuEvent()
+//-----------------------------------------------------------------------------
+void EditableTableView::contextMenuEvent(QContextMenuEvent* event)
+{
 	pressedPoint_ = event->pos();
 
 	QModelIndex index = indexAt(pressedPoint_);
@@ -179,14 +231,16 @@ void EditableTableView::contextMenuEvent( QContextMenuEvent* event ) {
 	menu.addAction(&addAction_);
 
 	// if at least one valid item is selected
-	if (index.isValid()) {
+	if (index.isValid())
+    {
 		menu.addAction(&removeAction_);
 		menu.addAction(&clearAction_);
 		menu.addAction(&copyAction_);
-	}
-	menu.addAction(&pasteAction_);
-
-	if (impExportable_) {
+        menu.addAction(&pasteAction_);
+    }
+	if (importExportAllowed())
+    {
+        menu.addSeparator();
 		menu.addAction(&importAction_);
 		menu.addAction(&exportAction_);
 	}
@@ -196,69 +250,110 @@ void EditableTableView::contextMenuEvent( QContextMenuEvent* event ) {
 	event->accept();
 }
 
-void EditableTableView::onAddAction() {
-
+//-----------------------------------------------------------------------------
+// Function: EditableTableView::onAddAction()
+//-----------------------------------------------------------------------------
+void EditableTableView::onAddAction()
+{
 	QModelIndexList indexes = selectedIndexes();
 	QModelIndex posToAdd;
-	int rowCount = 1;
 
-	QSortFilterProxyModel* sortProxy = dynamic_cast<QSortFilterProxyModel*>(model());
+    QSortFilterProxyModel* sortProxy = dynamic_cast<QSortFilterProxyModel*>(model());
 
-	// if there were indexes selected
-	if (!indexes.isEmpty()) {
+	if (!indexes.isEmpty())
+    {
 		qSort(indexes);
-
 		posToAdd = indexes.first();
 
-		if (sortProxy) {
+		if (sortProxy)
+        {
 			posToAdd = sortProxy->mapToSource(posToAdd);
 		}
-
-		// count how many rows are to be added
-		int previousRow = indexes.first().row();
-		foreach (QModelIndex index, indexes) {
-			
-			if (index.row() != previousRow) {
-				++rowCount;
-			}
-
-			previousRow = index.row();
-		}
 	}
-
-	for (int i = 0; i < rowCount; ++i) {
+    
+    int rowsToAdd = qMax(1, countRows(indexes));
+	for (int i = 0; i < rowsToAdd; ++i)
+    {
 		emit addItem(posToAdd);
 	}
+   
+    QModelIndex firstCreatedIndex;
+    int nameColumn = NAME_COLUMN;
+    if (posToAdd.isValid() && (posToAdd.sibling(posToAdd.row(), NAME_COLUMN).flags() & Qt::ItemIsEditable) == 0)
+    {
+        nameColumn++;
+    }
+
+    if (posToAdd.isValid())
+    {
+        firstCreatedIndex = posToAdd.sibling(posToAdd.row(), nameColumn); 
+        if (sortProxy)
+        {
+            firstCreatedIndex = sortProxy->mapFromSource(firstCreatedIndex);
+        }
+    }
+    else
+    {
+        firstCreatedIndex = model()->index(model()->rowCount() - 1, nameColumn);
+        if (sortProxy)
+        {
+            QModelIndex indexOnLastRow = sortProxy->sourceModel()->index(model()->rowCount() - 1, nameColumn);
+            firstCreatedIndex = sortProxy->mapFromSource(indexOnLastRow);
+        }
+    }
+
+    clearSelection();
+    setCurrentIndex(firstCreatedIndex);
 }
 
-void EditableTableView::onRemoveAction() {
-	QModelIndexList indexes = selectedIndexes();
+//-----------------------------------------------------------------------------
+// Function: EditableTableView::countRows()
+//-----------------------------------------------------------------------------
+int EditableTableView::countRows(QModelIndexList const& indexes)
+{
+    if (indexes.empty())
+    {
+        return 0;
+    }
 
-	if (indexes.isEmpty()) {
+    int rows = 1;
+
+    int previousRow = indexes.first().row();
+    foreach (QModelIndex index, indexes)
+    {
+        if (index.row() != previousRow)
+        {
+            rows++;
+        }
+
+        previousRow = index.row();
+    }
+    
+    return rows;
+}
+
+//-----------------------------------------------------------------------------
+// Function: EditableTableView::onRemoveAction()
+//-----------------------------------------------------------------------------
+void EditableTableView::onRemoveAction()
+{
+	QModelIndexList indexes = selectedIndexes();
+	if (indexes.isEmpty())
+    {
 		return;
 	}
 
 	QApplication::setOverrideCursor(Qt::WaitCursor);
 
 	qSort(indexes);
-	
-	// count how many rows the user wants to remove
-	int previousRow = indexes.first().row();
-	int rowCount = 1;
-	foreach (QModelIndex index, indexes) {
-		if (previousRow != index.row()) {
-			++rowCount;
-		}
-		previousRow = index.row();
-	}
+	int rowCount = qMax(1, countRows(indexes));
 
-	// remove as many rows as wanted
+	// Remove as many rows as wanted.
     QSortFilterProxyModel* sortProxy = dynamic_cast<QSortFilterProxyModel*>(model());
 
 	for (int i = 0; i < rowCount; ++i)
     {
         QModelIndex index = indexes.first();
-
         if (sortProxy != 0)
         {
             index = sortProxy->mapToSource(index);
@@ -273,56 +368,61 @@ void EditableTableView::onRemoveAction() {
 	QApplication::restoreOverrideCursor();
 }
 
-void EditableTableView::setupActions() {
+//-----------------------------------------------------------------------------
+// Function: EditableTableView::setupActions()
+//-----------------------------------------------------------------------------
+void EditableTableView::setupActions()
+{
 	addAction_.setToolTip(tr("Add a new row to table"));
 	addAction_.setStatusTip(tr("Add a new row to table"));
-	connect(&addAction_, SIGNAL(triggered()),
-		this, SLOT(onAddAction()), Qt::UniqueConnection);
+	connect(&addAction_, SIGNAL(triggered()), this, SLOT(onAddAction()), Qt::UniqueConnection);
 	addAction_.setShortcut(QKeySequence::InsertLineSeparator);
 
 	removeAction_.setToolTip(tr("Remove a row from the table"));
 	removeAction_.setStatusTip(tr("Remove a row from the table"));
-	connect(&removeAction_, SIGNAL(triggered()),
-		this, SLOT(onRemoveAction()), Qt::UniqueConnection);
+	connect(&removeAction_, SIGNAL(triggered()), this, SLOT(onRemoveAction()), Qt::UniqueConnection);
     removeAction_.setShortcut(Qt::SHIFT + Qt::Key_Delete);
 
 	copyAction_.setToolTip(tr("Copy a row from the table"));
 	copyAction_.setStatusTip(tr("Copy a row from the table"));
-	connect(&copyAction_, SIGNAL(triggered()),
-		this, SLOT(onCopyAction()), Qt::UniqueConnection);
+	connect(&copyAction_, SIGNAL(triggered()), this, SLOT(onCopyAction()), Qt::UniqueConnection);
 	copyAction_.setShortcut(QKeySequence::Copy);
 
 	pasteAction_.setToolTip(tr("Paste a row to the table"));
 	pasteAction_.setStatusTip(tr("Paste a row to the table"));
-	connect(&pasteAction_, SIGNAL(triggered()),
-		this, SLOT(onPasteAction()), Qt::UniqueConnection);
+	connect(&pasteAction_, SIGNAL(triggered()), this, SLOT(onPasteAction()), Qt::UniqueConnection);
 	pasteAction_.setShortcut(QKeySequence::Paste);
 
 	clearAction_.setToolTip(tr("Clear the contents of a cell"));
 	clearAction_.setStatusTip(tr("Clear the contents of a cell"));
-	connect(&clearAction_, SIGNAL(triggered()),
-		this, SLOT(onClearAction()), Qt::UniqueConnection);
+	connect(&clearAction_, SIGNAL(triggered()),	this, SLOT(onClearAction()), Qt::UniqueConnection);
 	clearAction_.setShortcut(QKeySequence::Delete);
 
 	importAction_.setToolTip(tr("Import a csv-file to table"));
 	importAction_.setStatusTip(tr("Import a csv-file to table"));
-	connect(&importAction_, SIGNAL(triggered()),
-		this, SLOT(onCSVImport()), Qt::UniqueConnection);
+	connect(&importAction_, SIGNAL(triggered()), this, SLOT(onCSVImport()), Qt::UniqueConnection);
 
 	exportAction_.setToolTip(tr("Export table to a csv-file"));
 	exportAction_.setStatusTip(tr("Export table to a csv-file"));
-	connect(&exportAction_, SIGNAL(triggered()),
-		this, SLOT(onCSVExport()), Qt::UniqueConnection);
+	connect(&exportAction_, SIGNAL(triggered()), this, SLOT(onCSVExport()), Qt::UniqueConnection);
 }
 
-void EditableTableView::setItemsDraggable( bool draggable ) {
+//-----------------------------------------------------------------------------
+// Function: EditableTableView::setItemsDraggable()
+//-----------------------------------------------------------------------------
+void EditableTableView::setItemsDraggable(bool draggable)
+{
 	itemsDraggable_ = draggable;
 }
 
-void EditableTableView::onCopyAction() {
-
+//-----------------------------------------------------------------------------
+// Function: EditableTableView::onCopyAction()
+//-----------------------------------------------------------------------------
+void EditableTableView::onCopyAction()
+{
 	// if nothing was selected then don't copy anything
-	if (!currentIndex().isValid()) {
+	if (!currentIndex().isValid())
+    {
 		return;
 	}
 
@@ -331,143 +431,136 @@ void EditableTableView::onCopyAction() {
 	QModelIndexList indexes = selectedIndexes();
 	qSort(indexes);
 
-	QString copyText;
+    int lastColumn = indexes.last().column();
+    
+    QString copyText;
+    foreach(QModelIndex sourceIndex, indexes)
+    {
+        copyText.append(sourceIndex.data(Qt::EditRole).toString());
 
-	for (int row = indexes.first().row(); row <= indexes.last().row(); ++row) {
-		for (int column = indexes.first().column(); column <= indexes.last().column(); ++column) {
-
-			QModelIndex itemToAdd = model()->index(row, column, QModelIndex());
-
-			copyText.append(model()->data(itemToAdd, Qt::DisplayRole).toString());
-
-			// separate columns with tab
-			if (column < indexes.last().column()) {
-				copyText.append("\t");
-			}
-			// for the last column don't add tab but new line instead
-			else {
-				copyText.append("\n");
-			}
-		}
-	}
-
-	QClipboard* clipBoard = QApplication::clipboard();
-
-	clipBoard->setText(copyText);
-
+        if (sourceIndex.column() < lastColumn)
+        {
+            copyText.append("\t");
+        }
+        else
+        {
+            copyText.append("\n");
+        }
+    }
+	
+	QApplication::clipboard()->setText(copyText);
 	QApplication::restoreOverrideCursor();
 }
 
-void EditableTableView::onPasteAction() {
-
+//-----------------------------------------------------------------------------
+// Function: EditableTableView::onPasteAction()
+//-----------------------------------------------------------------------------
+void EditableTableView::onPasteAction()
+{
 	QApplication::setOverrideCursor(Qt::WaitCursor);
 
 	// find the highest row to start adding to
 	QModelIndexList indexes = selectedIndexes();
 	QModelIndex posToPaste;
-	if (!indexes.isEmpty()) {
+	if (!indexes.isEmpty())
+    {
 		qSort(indexes);
 		posToPaste = indexes.first();
 	}
 
-	int startRow = posToPaste.row();
-	int startCol = posToPaste.column();
+	int targetRow = posToPaste.row();
+	int startColumn = posToPaste.column();
 
-	QClipboard* clipBoard = QApplication::clipboard();
     QString subtype("plain");
-    QString pasteText = clipBoard->text(subtype);
+    QString pasteText = QApplication::clipboard()->text(subtype);
 
-	// split the string from clip board into rows
-	QStringList rowsToAdd = pasteText.split("\n");
+	// Split the string from clip board into rows.
+	QStringList rowsToAdd = pasteText.split("\n", QString::SkipEmptyParts);
 
-	// the model containing the actual data
-	QAbstractTableModel* origModel = NULL;
+    bool useDynamicSorting = false;
+    QSortFilterProxyModel* proxyModel = qobject_cast<QSortFilterProxyModel*>(model());
+    if (proxyModel)
+    {
+        useDynamicSorting = proxyModel->dynamicSortFilter();
+        proxyModel->setDynamicSortFilter(false);
+    }
 
-	QSortFilterProxyModel* proxyModel = qobject_cast<QSortFilterProxyModel*>(model());
+	foreach (QString row, rowsToAdd)
+    {
+		// New row starts always on same column.
+		int targetColumn = qMax(0, startColumn);
 
-	// if view is connected to proxy model
-	if (proxyModel) {
-		origModel = qobject_cast<QAbstractTableModel*>(proxyModel->sourceModel());
-	}
-	// if view is connected directly to actual model
-	else {
-		origModel = qobject_cast<QAbstractTableModel*>(model());
-	}
-	Q_ASSERT(origModel);
-
-	foreach (QString row, rowsToAdd) {
-
-		if (row.isEmpty()) {
-			continue;
-		}
-
-		// new row starts always on same column
-		int columnCounter = qMax(0, startCol);
-
-		QModelIndex newRow = origModel->index(startRow, columnCounter, QModelIndex());
-		emit addItem(newRow);
-
-		// split the row into columns
+		// Split the row into columns.
 		QStringList columnsToAdd = row.split("\t");
-		foreach (QString column, columnsToAdd) {
-
-			QModelIndex itemToSet = origModel->index(startRow, columnCounter, QModelIndex());
-			// if the index is not valid then the data is written to last item
-			if (!itemToSet.isValid()) {
-				int lastRow = origModel->rowCount(QModelIndex()) - 1;
-
-				itemToSet = origModel->index(lastRow, columnCounter, QModelIndex());
-			}
-                        
-            // Check for name conflicts.   
-            if ( columnCounter == NAME_COLUMN && column.size() > 0 )
+		foreach (QString column, columnsToAdd)
+        {
+			QModelIndex itemToSet = model()->index(targetRow, targetColumn, QModelIndex());
+			if (itemToSet.isValid())
             {
-                column = getUniqueName(column, origModel);
-            }
+                // Check for name conflicts.   
+                if (targetColumn == NAME_COLUMN && column.size() > 0)
+                {
+                    column = getUniqueName(column);
+                }
 
-			origModel->setData(itemToSet, column, Qt::EditRole);
-			++columnCounter;
+                model()->setData(itemToSet, column, Qt::EditRole);
+			}
+
+			targetColumn++;
 		}
 		
-		if (startRow >= 0) {
-			// when row is done then increase the row counter
-			++startRow;
+		if (targetRow >= 0)
+        {
+			targetRow++;
 		}
 	}
+
+    if (proxyModel)
+    {
+        proxyModel->setDynamicSortFilter(useDynamicSorting);
+    }
 
 	QApplication::restoreOverrideCursor();
 }
 
-void EditableTableView::onClearAction() {
-	
+//-----------------------------------------------------------------------------
+// Function: EditableTableView::onClearAction()
+//-----------------------------------------------------------------------------
+void EditableTableView::onClearAction()
+{	
 	QModelIndexList indexes = selectedIndexes();
 
 	// clear the contents of each cell
-	foreach (QModelIndex index, indexes) {
+	foreach (QModelIndex index, indexes)
+    {
 		model()->setData(index, QVariant(), Qt::EditRole);
 	}
 }
 
-void EditableTableView::onCSVExport( const QString& filePath ) {
-
+//-----------------------------------------------------------------------------
+// Function: EditableTableView::onCSVExport()
+//-----------------------------------------------------------------------------
+void EditableTableView::onCSVExport(const QString& filePath)
+{
 	QString target(filePath);
 
-	if (filePath.isEmpty()) {
-		target = QFileDialog::getSaveFileName(this, 
-			tr("Set name and location for csv-file"),
+	if (filePath.isEmpty())
+    {
+		target = QFileDialog::getSaveFileName(this, tr("Set name and location for csv-file"),
 			defImportExportPath_, tr("csv-files (*.csv)"));
 	}
 
-	if (target.isEmpty()) {
+	if (target.isEmpty())
+    {
 		return;
 	}
 
 	QFile file(target);
 
 	// if file can not be opened 
-	if (!file.open(QIODevice::Truncate | QIODevice::WriteOnly)) {
-		QMessageBox::critical(this, tr("Error opening file"),
-			tr("Could not open file %1 for writing").arg(target));
+	if (!file.open(QIODevice::Truncate | QIODevice::WriteOnly))
+    {
+		QMessageBox::critical(this, tr("Error opening file"), tr("Could not open file %1 for writing").arg(target));
 		return;
 	}
 
@@ -480,20 +573,20 @@ void EditableTableView::onCSVExport( const QString& filePath ) {
 	QTextStream stream(&file);
 
 	// write the headers
-	for (int i = 0; i < columnCount; ++i) {
-		stream << model()->headerData(i, Qt::Horizontal, Qt::DisplayRole).toString().simplified();
-		stream << ";";
+	for (int i = 0; i < columnCount; i++)
+    {
+		stream << model()->headerData(i, Qt::Horizontal, Qt::DisplayRole).toString().simplified() << ";";
 	}
 	stream << endl;
 
 	// write each row
-	for (int row = 0; row < rowCount; ++row) {
-		
+	for (int row = 0; row < rowCount; row++)
+    {	
 		// write each column
-		for (int col = 0; col < columnCount; ++col) {
-
-			QModelIndex index = model()->index(row, col, QModelIndex());
-			stream << model()->data(index, Qt::DisplayRole).toString();
+		for (int column = 0; column < columnCount; column++)
+        {
+			QModelIndex index = model()->index(row, column, QModelIndex());
+			stream << index.data(Qt::DisplayRole).toString();
 			stream << ";";
 		}
 		stream << endl;
@@ -503,25 +596,29 @@ void EditableTableView::onCSVExport( const QString& filePath ) {
 	QApplication::restoreOverrideCursor();
 }
 
-void EditableTableView::onCSVImport( const QString& filePath ) {
-	
+//-----------------------------------------------------------------------------
+// Function: EditableTableView::onCSVImport()
+//-----------------------------------------------------------------------------
+void EditableTableView::onCSVImport(const QString& filePath)
+{
 	QString target(filePath);
 	
-	if (filePath.isEmpty()) {
-		target = QFileDialog::getOpenFileName(this, tr("Open file"),
-			defImportExportPath_, tr("csv-files (*.csv)"));
+	if (filePath.isEmpty())
+    {
+		target = QFileDialog::getOpenFileName(this, tr("Open file"), defImportExportPath_, tr("csv-files (*.csv)"));
 	}
 
-	if (target.isEmpty()) {
+	if (target.isEmpty())
+    {
 		return;
 	}
 	
 	QFile file(target);
 
 	// if file can not be opened 
-	if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-		QMessageBox::critical(this, tr("Error opening file"),
-			tr("Could not open file %1 for reading").arg(target));
+	if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+		QMessageBox::critical(this, tr("Error opening file"), tr("Could not open file %1 for reading").arg(target));
 		return;
 	}
 
@@ -539,18 +636,21 @@ void EditableTableView::onCSVImport( const QString& filePath ) {
 	QSortFilterProxyModel* proxyModel = qobject_cast<QSortFilterProxyModel*>(model());
 	
 	// if view is connected to proxy model
-	if (proxyModel) {
+	if (proxyModel)
+    {
 		origModel = qobject_cast<QAbstractTableModel*>(proxyModel->sourceModel());
 	}
 	// if view is connected directly to actual model
-	else {
+	else
+    {
 		origModel = qobject_cast<QAbstractTableModel*>(model());
 	}
 	Q_ASSERT(origModel);
 
 	int columnCount = origModel->columnCount(QModelIndex());
 
-	while (!stream.atEnd()) {
+	while (!stream.atEnd())
+    {
 		QString line = stream.readLine();
 		QStringList columns = line.split(";");
 
@@ -560,10 +660,9 @@ void EditableTableView::onCSVImport( const QString& filePath ) {
 		// data is always added to the last row
 		int rowCount = origModel->rowCount(QModelIndex());
 
-		for (int col = 0; col < columnCount && col < columns.size(); ++col) {
-
+		for (int col = 0; col < columnCount && col < columns.size(); ++col)
+        {
 			QModelIndex index = origModel->index(rowCount - 1, col, QModelIndex());
-
 			origModel->setData(index, columns.at(col), Qt::EditRole);
 		}
 	}
@@ -573,16 +672,19 @@ void EditableTableView::onCSVImport( const QString& filePath ) {
 	QApplication::restoreOverrideCursor();
 }
 
-void EditableTableView::setDefaultImportExportPath( const QString& path ) {
+//-----------------------------------------------------------------------------
+// Function: EditableTableView::setDefaultImportExportPath()
+//-----------------------------------------------------------------------------
+void EditableTableView::setDefaultImportExportPath(const QString& path)
+{
 	defImportExportPath_ = path;
 }
 
-void EditableTableView::setAllowImportExport( bool allow ) {
-	impExportable_ = allow;
-}
-
-void EditableTableView::setModel( QAbstractItemModel* model ) {
-	
+//-----------------------------------------------------------------------------
+// Function: EditableTableView::setModel()
+//-----------------------------------------------------------------------------
+void EditableTableView::setModel(QAbstractItemModel* model)
+{
 	// the base class implementation does most of the work
 	QTableView::setModel(model);
 
@@ -591,8 +693,8 @@ void EditableTableView::setModel( QAbstractItemModel* model ) {
 
 	// set the widths for the columns
 	int columnCount = model->columnCount(QModelIndex());
-	for (int i = 0; i < columnCount; ++i) {
-
+	for (int i = 0; i < columnCount; ++i)
+    {
 		// the width required by the contents of the model
 		int contentSize = sizeHintForColumn(i);
 
@@ -603,7 +705,8 @@ void EditableTableView::setModel( QAbstractItemModel* model ) {
 		int headerSize = 0;
 
 		// find the line that needs most space
-		foreach (QString headerLine, headerLines) {
+		foreach (QString headerLine, headerLines)
+        {
 			headerSize = qMax(headerSize, fMetrics.width(headerLine));
 		}
         headerSize += 45;
@@ -614,25 +717,27 @@ void EditableTableView::setModel( QAbstractItemModel* model ) {
 }
 
 //-----------------------------------------------------------------------------
-// Function: getUniqueName()
+// Function: EditableTableView::getUniqueName()
 //-----------------------------------------------------------------------------
-QString EditableTableView::getUniqueName(QString const& original, QAbstractTableModel* model)
+QString EditableTableView::getUniqueName(QString const& original)
 {
+    int rowCount = model()->rowCount();
+
     QString name = original;    
     int trailingNumber = 1;
+    
     bool match =  true;
-    while ( match )
+    while (match)
     {
-        match = false;
-        for(int row = 0; row < model->rowCount(); row++ )
+        match = false;        
+        for(int row = 0; row < rowCount; row++)
         {
-            QModelIndex index = model->index(row, NAME_COLUMN);
-            if ( name == model->data(index ,Qt::DisplayRole ).toString() )
+            QModelIndex index = model()->index(row, NAME_COLUMN);
+            if (name == index.data(Qt::DisplayRole).toString())
             {
                 match = true;
                 name = original + "_" + QString::number(trailingNumber);
                 trailingNumber++;
-                break;
             }
         }       
     }

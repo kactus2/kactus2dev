@@ -56,7 +56,9 @@ void FileTypesView::contextMenuEvent( QContextMenuEvent* event ) {
 	}
 	menu.addAction(&pasteAction_);
 
-	if (impExportable_) {
+	if (importExportAllowed()) 
+    {
+        menu.addSeparator();
 		menu.addAction(&importAction_);
 		menu.addAction(&exportAction_);
 	}

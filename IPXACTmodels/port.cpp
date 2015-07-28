@@ -625,7 +625,7 @@ void Port::removeRightBoundExpression()
 }
 
 void Port::setPortSize( int size ) {
-	setLeftBound(size-1);
+	setLeftBound(qMax(0, size-1));
 	setRightBound(0);
 }
 
