@@ -16,11 +16,11 @@
 #include <IPXACTmodels/register.h>
 #include <IPXACTmodels/generaldeclarations.h>
 
-#include <QRegularExpression>
 #include <QColor>
+#include <QRegularExpression>
 
 //-----------------------------------------------------------------------------
-// Function: addressblockmodel::AddressBlockModel()
+// Function: AddressBlockModel::AddressBlockModel()
 //-----------------------------------------------------------------------------
 AddressBlockModel::AddressBlockModel(QSharedPointer<AddressBlock> addressBlock,
     QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
@@ -41,25 +41,44 @@ expressionFormatter_(expressionFormatter)
     setExpressionParser(expressionParser);
 }
 
-AddressBlockModel::~AddressBlockModel() {
+//-----------------------------------------------------------------------------
+// Function: AddressBlockModel::~AddressBlockModel()
+//-----------------------------------------------------------------------------
+AddressBlockModel::~AddressBlockModel()
+{
 }
 
-int AddressBlockModel::rowCount( const QModelIndex& parent /*= QModelIndex()*/ ) const {
-	if (parent.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: AddressBlockModel::rowCount()
+//-----------------------------------------------------------------------------
+int AddressBlockModel::rowCount(QModelIndex const& parent) const
+{
+	if (parent.isValid())
+    {
 		return 0;
 	}
 	return items_.size();
 }
 
-int AddressBlockModel::columnCount( const QModelIndex& parent /*= QModelIndex()*/ ) const {
-	if (parent.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: AddressBlockModel::columnCount()
+//-----------------------------------------------------------------------------
+int AddressBlockModel::columnCount(QModelIndex const& parent) const
+{
+	if (parent.isValid())
+    {
 		return 0;
 	}
 	return AddressBlockColumns::COLUMN_COUNT;
 }
 
-Qt::ItemFlags AddressBlockModel::flags( const QModelIndex& index ) const {
-	if (!index.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: AddressBlockModel::flags()
+//-----------------------------------------------------------------------------
+Qt::ItemFlags AddressBlockModel::flags(QModelIndex const& index) const
+{
+	if (!index.isValid())
+    {
 		return Qt::NoItemFlags;
 	}
 	return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
@@ -68,7 +87,7 @@ Qt::ItemFlags AddressBlockModel::flags( const QModelIndex& index ) const {
 //-----------------------------------------------------------------------------
 // Function: addressblockmodel::headerData()
 //-----------------------------------------------------------------------------
-QVariant AddressBlockModel::headerData( int section, Qt::Orientation orientation, int role /*= Qt::DisplayRole*/ )
+QVariant AddressBlockModel::headerData( int section, Qt::Orientation orientation, int role)
     const 
 {
 	if (orientation != Qt::Horizontal) 
@@ -134,13 +153,9 @@ QVariant AddressBlockModel::headerData( int section, Qt::Orientation orientation
 //-----------------------------------------------------------------------------
 // Function: addressblockmodel::data()
 //-----------------------------------------------------------------------------
-QVariant AddressBlockModel::data( const QModelIndex& index, int role /*= Qt::DisplayRole*/ ) const 
+QVariant AddressBlockModel::data(QModelIndex const& index, int role) const 
 {
-	if (!index.isValid()) 
-    {
-		return QVariant();
-	}
-	else if (index.row() < 0 || index.row() >= items_.size()) 
+	if (!index.isValid() || index.row() < 0 || index.row() >= items_.size()) 
     {
 		return QVariant();
 	}
@@ -176,14 +191,23 @@ QVariant AddressBlockModel::data( const QModelIndex& index, int role /*= Qt::Dis
 
 	else if (Qt::ForegroundRole == role)
     {
-		if (items_.at(index.row())->isValid(componentChoices_))
+        if (validateIndex(index))
         {
-            return blackForValidOrRedForInvalidIndex(index);
-		}
-		else
+            QSharedPointer<Register> reg = items_.at(index.row()).dynamicCast<Register>();
+            if (index.column() != AddressBlockColumns::IS_PRESENT && reg &&
+                parseExpressionToDecimal(reg->getIsPresentExpression()).toInt() != 1)
+            {
+                return QColor("gray");
+            }
+            else
+            {
+                return QColor("black");
+            }
+        }
+        else
         {
-			return QColor("red");
-		}
+            return QColor("red");
+        }
 	}
     else if (Qt::BackgroundRole == role)
     {
@@ -208,7 +232,7 @@ QVariant AddressBlockModel::data( const QModelIndex& index, int role /*= Qt::Dis
 //-----------------------------------------------------------------------------
 // Function: addressblockmodel::valueForIndex()
 //-----------------------------------------------------------------------------
-QVariant AddressBlockModel::valueForIndex(const QModelIndex& index) const
+QVariant AddressBlockModel::valueForIndex(QModelIndex const& index) const
 {
     const QSharedPointer<Register> reg = items_.at(index.row()).dynamicCast<Register>();
 
@@ -280,13 +304,9 @@ QVariant AddressBlockModel::valueForIndex(const QModelIndex& index) const
 //-----------------------------------------------------------------------------
 // Function: addressblockmodel::setData()
 //-----------------------------------------------------------------------------
-bool AddressBlockModel::setData( const QModelIndex& index, const QVariant& value, int role /*= Qt::EditRole*/ ) 
+bool AddressBlockModel::setData(QModelIndex const& index, QVariant const& value, int role) 
 {
-	if (!index.isValid()) 
-    {
-		return false;
-	}
-	else if (index.row() < 0 || index.row() >= items_.size()) 
+	if (!index.isValid() || index.row() < 0 || index.row() >= items_.size()) 
     {
 		return false;
 	}
@@ -418,7 +438,8 @@ bool AddressBlockModel::setData( const QModelIndex& index, const QVariant& value
         if (index.column() == AddressBlockColumns::NAME ||
             index.column() == AddressBlockColumns::REGISTER_OFFSET ||
             index.column() == AddressBlockColumns::REGISTER_SIZE ||
-            index.column() == AddressBlockColumns::REGISTER_DIMENSION)
+            index.column() == AddressBlockColumns::REGISTER_DIMENSION ||
+            index.column() == AddressBlockColumns::IS_PRESENT)
         {
             emit graphicsChanged();
         }
@@ -433,6 +454,9 @@ bool AddressBlockModel::setData( const QModelIndex& index, const QVariant& value
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Function: AddressBlockModel::isValid()
+//-----------------------------------------------------------------------------
 bool AddressBlockModel::isValid() const 
 { 
     // Usage must be register or unspecified, if address block has children (registers).
@@ -453,7 +477,7 @@ bool AddressBlockModel::isValid() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: addressblockmodel::isValidExpressionColumn()
+// Function: AddressBlockModel::isValidExpressionColumn()
 //-----------------------------------------------------------------------------
 bool AddressBlockModel::isValidExpressionColumn(QModelIndex const& index) const
 {
@@ -464,7 +488,7 @@ bool AddressBlockModel::isValidExpressionColumn(QModelIndex const& index) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: addressblockmodel::expressionOrValueForIndex()
+// Function: AddressBlockModel::expressionOrValueForIndex()
 //-----------------------------------------------------------------------------
 QVariant AddressBlockModel::expressionOrValueForIndex(QModelIndex const& index) const
 {
@@ -497,7 +521,7 @@ QVariant AddressBlockModel::expressionOrValueForIndex(QModelIndex const& index) 
 }
 
 //-----------------------------------------------------------------------------
-// Function: addressblockmodel::validateIndex()
+// Function: AddressBlockModel::validateIndex()
 //-----------------------------------------------------------------------------
 bool AddressBlockModel::validateIndex(QModelIndex const& index) const
 {
@@ -586,7 +610,7 @@ bool AddressBlockModel::validateIndex(QModelIndex const& index) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: addressblockmodel::validateResetColumns()
+// Function: AddressBlockModel::validateResetColumns()
 //-----------------------------------------------------------------------------
 bool AddressBlockModel::validateResetColumn(QString const& resetValue, int const& registerSize) const
 {
@@ -616,7 +640,7 @@ bool AddressBlockModel::validateResetColumn(QString const& resetValue, int const
 }
 
 //-----------------------------------------------------------------------------
-// Function: addressblockmodel::getAllReferencesToIdInItemOnRow()
+// Function: AddressBlockModel::getAllReferencesToIdInItemOnRow()
 //-----------------------------------------------------------------------------
 int AddressBlockModel::getAllReferencesToIdInItemOnRow(const int& row, QString const& valueID) const
 {
@@ -639,7 +663,11 @@ int AddressBlockModel::getAllReferencesToIdInItemOnRow(const int& row, QString c
     }
 }
 
-void AddressBlockModel::onAddItem( const QModelIndex& index ) {
+//-----------------------------------------------------------------------------
+// Function: AddressBlockModel::onAddItem()
+//-----------------------------------------------------------------------------
+void AddressBlockModel::onAddItem(QModelIndex const& index)
+{
     // Usage must be register or unspecified, if trying to add children (registers).
     if (addressBlock_->getUsage() == General::MEMORY || addressBlock_->getUsage() == General::RESERVED)
     {
@@ -704,7 +732,10 @@ void AddressBlockModel::onAddItem( const QModelIndex& index ) {
 	emit contentChanged();
 }
 
-void AddressBlockModel::onRemoveItem( const QModelIndex& index ) {
+//-----------------------------------------------------------------------------
+// Function: AddressBlockModel::onRemoveItem()
+//-----------------------------------------------------------------------------
+void AddressBlockModel::onRemoveItem(QModelIndex const& index ) {
 	// don't remove anything if index is invalid
 	if (!index.isValid()) {
 		return;
@@ -735,7 +766,7 @@ void AddressBlockModel::onRemoveItem( const QModelIndex& index ) {
 }
 
 //-----------------------------------------------------------------------------
-// Function: addressblockmodel::decreaserReferencesWithRemovedRegisters()
+// Function: AddressBlockModel::decreaserReferencesWithRemovedRegisters()
 //-----------------------------------------------------------------------------
 void AddressBlockModel::decreaseReferencesWithRemovedRegister(QSharedPointer<Register> removedRegister)
 {
@@ -755,7 +786,7 @@ void AddressBlockModel::decreaseReferencesWithRemovedRegister(QSharedPointer<Reg
 }
 
 //-----------------------------------------------------------------------------
-// Function: addressblockmodel::addressUnitBitsChanged()
+// Function: AddressBlockModel::addressUnitBitsChanged()
 //-----------------------------------------------------------------------------
 void AddressBlockModel::addressUnitBitsChanged(int newAddressUnitbits)
 {

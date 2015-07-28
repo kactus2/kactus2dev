@@ -34,7 +34,7 @@ RegisterGraphItem::RegisterGraphItem(QSharedPointer<Register> reg,
 MemoryVisualizationItem(parent),
 register_(reg),
 dimensionIndex_(0),
-expresionParser_(expressionParser)
+expressionParser_(expressionParser)
 {
 	Q_ASSERT(register_);
 
@@ -67,7 +67,7 @@ void RegisterGraphItem::updateDisplay()
 {
     QString name = register_->getName();
 
-    if (expresionParser_->parseExpression(register_->getDimensionExpression()).toUInt() > 0)
+    if (expressionParser_->parseExpression(register_->getDimensionExpression()).toUInt() > 0)
     {
         name.append("[" + QString::number(dimensionIndex_) + "]");
     }
@@ -83,7 +83,7 @@ void RegisterGraphItem::updateDisplay()
     setToolTip("<b>Name: </b>" + register_->getName() + "<br>" +
         "<b>First address: </b>" + toHexString(offset) + "<br>" +
         "<b>Last address: </b>" + toHexString(lastAddress) + "<br>" +
-        "<b>Size [bits]: </b>" + expresionParser_->parseExpression(register_->getSizeExpression()));
+        "<b>Size [bits]: </b>" + expressionParser_->parseExpression(register_->getSizeExpression()));
 }
 
 //-----------------------------------------------------------------------------
@@ -103,7 +103,7 @@ void RegisterGraphItem::removeChild( MemoryVisualizationItem* childItem )
 quint64 RegisterGraphItem::getOffset() const
 {
 	// the register offset from the address block
-	quint64 regOffset = expresionParser_->parseExpression(register_->getAddressOffset()).toUInt();
+	quint64 regOffset = expressionParser_->parseExpression(register_->getAddressOffset()).toUInt();
 
 	// the address block's offset
 	MemoryVisualizationItem* blockItem = static_cast<MemoryVisualizationItem*>(parentItem());
@@ -135,7 +135,7 @@ quint64 RegisterGraphItem::getLastAddress() const
 //-----------------------------------------------------------------------------
 int RegisterGraphItem::getBitWidth() const
 {
-	return expresionParser_->parseExpression(register_->getSizeExpression()).toUInt();
+	return expressionParser_->parseExpression(register_->getSizeExpression()).toUInt();
 }
 
 //-----------------------------------------------------------------------------
@@ -167,6 +167,14 @@ void RegisterGraphItem::setWidth(qreal width)
 void RegisterGraphItem::setDimensionIndex(unsigned int index)
 {
     dimensionIndex_ = index;
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterGraphItem::isPresent()
+//-----------------------------------------------------------------------------
+bool RegisterGraphItem::isPresent() const
+{
+     return expressionParser_->parseExpression(register_->getIsPresentExpression()) == "1";
 }
 
 //-----------------------------------------------------------------------------
@@ -290,7 +298,7 @@ quint64 RegisterGraphItem::getSizeInAUB() const
     }
 
     // how many address unit are contained in the register
-    unsigned int bitSize = expresionParser_->parseExpression(register_->getSizeExpression()).toUInt();
+    unsigned int bitSize = expressionParser_->parseExpression(register_->getSizeExpression()).toUInt();
     unsigned int size = bitSize / addrUnit;
     if (size*addrUnit < bitSize) 
     {

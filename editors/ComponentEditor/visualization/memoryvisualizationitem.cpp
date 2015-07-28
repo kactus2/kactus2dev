@@ -274,6 +274,7 @@ void MemoryVisualizationItem::updateChildMap()
     {       
         item->updateDisplay();
         item->setConflicted(item->getLastAddress() > lastAvailableAddress);
+        item->setVisible(isExpanded() && item->isPresent());
 
         updatedMap.insertMulti(item->getOffset(), item);
     }
@@ -304,51 +305,54 @@ void MemoryVisualizationItem::updateChildMap()
     quint64 previousLastAddress = lastAddressInUse;
     foreach (MemoryVisualizationItem* current, childItems_)
     {
-        quint64 currentOffset = current->getOffset();
-        quint64 currentLastAddress = current->getLastAddress();
-        if (emptySpaceBeforeFirstChild(current))
+        if (current->isPresent())
         {
-            createMemoryGap(getOffset(), currentOffset - 1);
-        }  
-        else if (emptySpaceBeforeChild(current, lastAddressInUse))
-        {
-            createMemoryGap(lastAddressInUse + 1, currentOffset - 1);
-        }
-        else if (childrenOverlap(current, previous))
-        {
-            current->setConflicted(true);
-            previous->setConflicted(true);
-
-            if (currentLastAddress > previousLastAddress)
+            quint64 currentOffset = current->getOffset();
+            quint64 currentLastAddress = current->getLastAddress();
+            if (emptySpaceBeforeFirstChild(current))
             {
-                current->setDisplayOffset(previousLastAddress + 1);
+                createMemoryGap(getOffset(), currentOffset - 1);
+            }  
+            else if (emptySpaceBeforeChild(current, lastAddressInUse))
+            {
+                createMemoryGap(lastAddressInUse + 1, currentOffset - 1);
+            }
+            else if (childrenOverlap(current, previous))
+            {
+                current->setConflicted(true);
+                previous->setConflicted(true);
 
-                previous->setDisplayLastAddress(qMin(previousLastAddress, currentOffset - 1));
-
-                // If previous block is completely overlapped by the preceding block and this block.
-                if (previousOverlap && previousOverlap->getLastAddress() + 1 >= currentOffset)
+                if (currentLastAddress > previousLastAddress)
                 {
-                    previous->setCompleteOverlap();
+                    current->setDisplayOffset(previousLastAddress + 1);
+
+                    previous->setDisplayLastAddress(qMin(previousLastAddress, currentOffset - 1));
+
+                    // If previous block is completely overlapped by the preceding block and this block.
+                    if (previousOverlap && previousOverlap->getLastAddress() + 1 >= currentOffset)
+                    {
+                        previous->setCompleteOverlap();
+                    }
+
+                    previousOverlap = createConflictItem(currentOffset, previousLastAddress);
                 }
-
-                previousOverlap = createConflictItem(currentOffset, previousLastAddress);
+                else
+                {
+                    quint64 nonOverlappingOffset = qMax(currentOffset, previous->getDisplayOffset());
+                    current->setDisplayOffset(nonOverlappingOffset);
+                }
             }
-            else
+            else if (previous && currentOffset <= lastAddressInUse)
             {
-                quint64 nonOverlappingOffset = qMax(currentOffset, previous->getDisplayOffset());
-                current->setDisplayOffset(nonOverlappingOffset);
+                current->setConflicted(true);
             }
+
+
+            lastAddressInUse = qMax(currentLastAddress, lastAddressInUse);
+
+            previous = current;
+            previousLastAddress = currentLastAddress;
         }
-        else if (previous && currentOffset <= lastAddressInUse)
-        {
-            current->setConflicted(true);
-        }
-
-
-        lastAddressInUse = qMax(currentLastAddress, lastAddressInUse);
-
-        previous = current;
-        previousLastAddress = currentLastAddress;
     }
 
     // Fill in any addresses left between children and the end of this item.
@@ -375,8 +379,11 @@ void MemoryVisualizationItem::repositionChildren()
 
     foreach (MemoryVisualizationItem* current, childItems_)
     {     
-        current->setPos(MemoryVisualizationItem::CHILD_INDENTATION, yCoordinate);
-        yCoordinate = mapRectFromItem(current, current->itemTotalRect()).bottom();
+        if (current->isPresent())
+        {
+            current->setPos(MemoryVisualizationItem::CHILD_INDENTATION, yCoordinate);
+            yCoordinate = mapRectFromItem(current, current->itemTotalRect()).bottom();
+        }
     }
 }
 
@@ -385,9 +392,11 @@ void MemoryVisualizationItem::repositionChildren()
 //-----------------------------------------------------------------------------
 void MemoryVisualizationItem::recursiveRefresh()
 {
-    foreach (MemoryVisualizationItem* child, childItems_.values())
+    // Note: Refreshing children may change memory gap items, foreach for childItems_ will not work.
+    int childCount = childItems_.count();
+    for (int i = 0; i < childCount; i++)
     {
-        child->recursiveRefresh();
+        childItems_.values().at(i)->recursiveRefresh();
     }
 
     refresh();

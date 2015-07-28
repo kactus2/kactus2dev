@@ -26,8 +26,6 @@ componentChoices_(componentChoices),
 fields_(reg->getFields()),
 expressionFormatter_(expressionFormatter)
 {
-	Q_ASSERT(reg);
-
     setExpressionParser(expressionParser);
 }
 

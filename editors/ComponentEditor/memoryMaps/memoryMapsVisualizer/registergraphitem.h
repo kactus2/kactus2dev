@@ -86,6 +86,13 @@ public:
      */
     void setDimensionIndex(unsigned int index);
 
+    /*!
+     *  Checks if the item is to be used in the visualization.
+     *
+     *      @return True, if the item should be used, otherwise false.
+     */
+    virtual bool isPresent() const;
+
 protected:
 
     //! Update the child items in the map. Field items are organized according to last address.
@@ -193,7 +200,7 @@ private:
     unsigned int dimensionIndex_;
 
     //! Parser for expressions in register fields.
-    QSharedPointer<ExpressionParser> expresionParser_;
+    QSharedPointer<ExpressionParser> expressionParser_;
 };
 
 #endif // REGISTERGRAPHITEM_H
