@@ -9,6 +9,7 @@
 #include "RegisterColumns.h"
 
 #include <QColor>
+#include <QRegularExpression>
 
 //-----------------------------------------------------------------------------
 // Function: registertablemodel::RegisterTableModel()
@@ -94,7 +95,7 @@ QVariant RegisterTableModel::headerData( int section, Qt::Orientation orientatio
         {
             return tr("Field\nname");
         }
-        else if (section == RegisterColumns::DESC_COLUMN)
+        else if (section == RegisterColumns::DESCRIPTION_COLUMN)
         {
             return tr("Description");
         }
@@ -168,6 +169,11 @@ QVariant RegisterTableModel::data( const QModelIndex& index, int role /*= Qt::Di
         {
             return expressionFormatter_->formatReferringExpression(valueForIndex(index).toString());
         }
+        else if (index.column() == RegisterColumns::DESCRIPTION_COLUMN)
+        {
+            return valueForIndex(index).toString().replace(QRegularExpression("\n.*$", 
+                QRegularExpression::DotMatchesEverythingOption), "...");
+        }
         else
         {
             return valueForIndex(index);
@@ -176,6 +182,11 @@ QVariant RegisterTableModel::data( const QModelIndex& index, int role /*= Qt::Di
 
     else if (role == Qt::EditRole)
     {
+        if (index.column() == RegisterColumns::DESCRIPTION_COLUMN)
+        {
+            return valueForIndex(index);
+        }
+
         return expressionOrValueForIndex(index);
     }
 
@@ -237,7 +248,7 @@ QVariant RegisterTableModel::valueForIndex(QModelIndex const& index) const
     {
         return fields_.at(index.row())->getName();
     }
-    else if (index.column() == RegisterColumns::DESC_COLUMN)
+    else if (index.column() == RegisterColumns::DESCRIPTION_COLUMN)
     {
         return fields_.at(index.row())->getDescription();
     }
@@ -307,7 +318,7 @@ bool RegisterTableModel::setData( const QModelIndex& index, const QVariant& valu
 
             emit graphicsChanged();
         }
-        else if (index.column() == RegisterColumns::DESC_COLUMN)
+        else if (index.column() == RegisterColumns::DESCRIPTION_COLUMN)
         {
             fields_.at(index.row())->setDescription(value.toString());
         }

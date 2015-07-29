@@ -127,3 +127,11 @@ QSharedPointer<Choice> ArrayDelegate::findChoice(QModelIndex const& /*index*/) c
 {
     return selectedChoice_;
 }
+
+//-----------------------------------------------------------------------------
+// Function: ArrayDelegate::descriptionColumn()
+//-----------------------------------------------------------------------------
+int ArrayDelegate::descriptionColumn() const
+{
+    return -1;
+}

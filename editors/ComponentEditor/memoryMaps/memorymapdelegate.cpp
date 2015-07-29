@@ -16,9 +16,11 @@
 #include <IPXACTmodels/validators/namevalidator.h>
 
 #include <QLineEdit>
+#include <QKeyEvent>
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
 #include <QSpinBox>
+#include <QTextEdit>
 
 //-----------------------------------------------------------------------------
 // Function: MemoryMapDelegate::MemoryMapDelegate()
@@ -140,6 +142,23 @@ void MemoryMapDelegate::setModelData(QWidget* editor, QAbstractItemModel* model,
 }
 
 //-----------------------------------------------------------------------------
+// Function: memorymapdelegate::columnAcceptsExpression()
+//-----------------------------------------------------------------------------
+bool MemoryMapDelegate::columnAcceptsExpression(int column) const
+{
+    return column == MemoryMapColumns::BASE_COLUMN || column == MemoryMapColumns::RANGE_COLUMN ||
+        column == MemoryMapColumns::WIDTH_COLUMN;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapDelegate::descriptionColumn()
+//-----------------------------------------------------------------------------
+int MemoryMapDelegate::descriptionColumn() const
+{
+    return MemoryMapColumns::DESCRIPTION_COLUMN;
+}
+
+//-----------------------------------------------------------------------------
 // Function: MemoryMapDelegate::commitAndCloseEditor()
 //-----------------------------------------------------------------------------
 void MemoryMapDelegate::commitAndCloseEditor()
@@ -167,13 +186,4 @@ QWidget* MemoryMapDelegate::createNameEditor(QWidget* parent, QStyleOptionViewIt
 
     connect(nameEditor, SIGNAL(editingFinished()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
     return nameEditor;
-}
-
-//-----------------------------------------------------------------------------
-// Function: memorymapdelegate::columnAcceptsExpression()
-//-----------------------------------------------------------------------------
-bool MemoryMapDelegate::columnAcceptsExpression(int column) const
-{
-    return column == MemoryMapColumns::BASE_COLUMN || column == MemoryMapColumns::RANGE_COLUMN ||
-        column == MemoryMapColumns::WIDTH_COLUMN;
 }

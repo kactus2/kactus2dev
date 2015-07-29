@@ -1,117 +1,154 @@
-/* 
- *  	Created on: 15.6.2012
- *      Author: Antti Kamppi
- * 		filename: businterfacesdelegate.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: businterfacesdelegate.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 15.06.2012
+//
+// Description:
+// The delegate that provides editors for bus interfaces.
+//-----------------------------------------------------------------------------
 
 #include "businterfacesdelegate.h"
+#include "BusInterfaceColumns.h"
+
 #include <common/widgets/interfaceModeSelector/interfacemodeselector.h>
 
 #include <QLineEdit>
 
+//-----------------------------------------------------------------------------
+// Function: BusInterfacesDelegate::BusInterfacesDelegate()
+//-----------------------------------------------------------------------------
 BusInterfacesDelegate::BusInterfacesDelegate(QObject *parent):
-QStyledItemDelegate(parent) {
+MultilineDescriptionDelegate(parent)
+{
 }
 
-BusInterfacesDelegate::~BusInterfacesDelegate() {
+//-----------------------------------------------------------------------------
+// Function: BusInterfacesDelegate::~BusInterfacesDelegate()
+//-----------------------------------------------------------------------------
+BusInterfacesDelegate::~BusInterfacesDelegate()
+{
 }
 
-QWidget* BusInterfacesDelegate::createEditor( QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index ) const {
-	switch (index.column()) {
-		case BusInterfacesDelegate::NAME_COLUMN:
-		case BusInterfacesDelegate::DESCRIPTION_COLUMN: {
-			QLineEdit* edit = new QLineEdit(parent);
-			connect(edit, SIGNAL(editingFinished()),
-				this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
-			return edit;
-														}
-		case BusInterfacesDelegate::BUSDEF_COLUMN:
-		case BusInterfacesDelegate::ABSDEF_COLUMN: {
-			Q_ASSERT(false);
-			return NULL;
-												   }
-		case BusInterfacesDelegate::IF_MODE_COLUMN: {
-			InterfaceModeSelector* selector = new InterfaceModeSelector(parent);
-			connect(selector, SIGNAL(currentIndexChanged(int)),
-				this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
-			return selector;
-													}
-		default: {
-			return QStyledItemDelegate::createEditor(parent, option, index);
-				 }
-	}
+//-----------------------------------------------------------------------------
+// Function: BusInterfacesDelegate::createEditor()
+//-----------------------------------------------------------------------------
+QWidget* BusInterfacesDelegate::createEditor(QWidget* parent, const QStyleOptionViewItem& option, 
+    QModelIndex const& index) const
+{
+    if (index.column() == BusInterfaceColumns::NAME_COLUMN)
+    {
+        QLineEdit* edit = new QLineEdit(parent);
+        connect(edit, SIGNAL(editingFinished()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
+        return edit;
+    }
+    else if (index.column() == BusInterfaceColumns::BUSDEF_COLUMN ||
+        index.column() == BusInterfaceColumns::ABSDEF_COLUMN) 
+    {    		
+        Q_ASSERT_X(false, "BusInterfacesDelegate::createEditor()", 
+            "Attempting to create editor for non-editable index.");
+        return 0;
+    }
+    else if (index.column() == BusInterfaceColumns::IF_MODE_COLUMN)
+    {
+        InterfaceModeSelector* selector = new InterfaceModeSelector(parent); 
+        connect(selector, SIGNAL(currentIndexChanged(int)), 
+            this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
+        return selector;
+    }
+    else
+    {
+        return MultilineDescriptionDelegate::createEditor(parent, option, index);
+    }
 }
 
-void BusInterfacesDelegate::setEditorData( QWidget* editor, const QModelIndex& index ) const {
-	switch (index.column()) {
-		case BusInterfacesDelegate::NAME_COLUMN:
-		case BusInterfacesDelegate::DESCRIPTION_COLUMN: {
-			QLineEdit* edit = qobject_cast<QLineEdit*>(editor);
-			Q_ASSERT(edit);
+//-----------------------------------------------------------------------------
+// Function: BusInterfacesDelegate::setEditorData()
+//-----------------------------------------------------------------------------
+void BusInterfacesDelegate::setEditorData(QWidget* editor, QModelIndex const& index) const
+{
+    if (index.column() == BusInterfaceColumns::NAME_COLUMN)
+    {
+        QLineEdit* edit = qobject_cast<QLineEdit*>(editor);
+        Q_ASSERT(edit);
 
-			const QString text = index.model()->data(index, Qt::DisplayRole).toString();
-			edit->setText(text);
-			break;
-														}
-		case BusInterfacesDelegate::BUSDEF_COLUMN:
-		case BusInterfacesDelegate::ABSDEF_COLUMN: {
-			Q_ASSERT(false);
-			break;
-												   }
-		case BusInterfacesDelegate::IF_MODE_COLUMN: {
-			InterfaceModeSelector* selector = qobject_cast<InterfaceModeSelector*>(editor);
-			Q_ASSERT(selector);
+        const QString text = index.data(Qt::DisplayRole).toString();
+        edit->setText(text);
+    }
+    else if (index.column() == BusInterfaceColumns::BUSDEF_COLUMN ||
+        index.column() ==  BusInterfaceColumns::ABSDEF_COLUMN)
+    {
+        Q_ASSERT(false);			
+    }
+    else if (index.column() == BusInterfaceColumns::IF_MODE_COLUMN)
+    {
+        InterfaceModeSelector* selector = qobject_cast<InterfaceModeSelector*>(editor);
+        Q_ASSERT(selector);
 
-			QString modeName = index.model()->data(index, Qt::DisplayRole).toString();
-			selector->setMode(modeName);
-			break;
-													}
-		default: {
-			QStyledItemDelegate::setEditorData(editor, index);
-				 }
-	}
+        QString modeName = index.data(Qt::DisplayRole).toString();
+        selector->setMode(modeName);
+    }
+    else
+    {
+        MultilineDescriptionDelegate::setEditorData(editor, index);
+    }
 }
 
-void BusInterfacesDelegate::setModelData( QWidget* editor, QAbstractItemModel* model, const QModelIndex& index ) const {
-	switch (index.column()) {
-		case BusInterfacesDelegate::NAME_COLUMN:
-		case BusInterfacesDelegate::DESCRIPTION_COLUMN: {
-			QLineEdit* edit = qobject_cast<QLineEdit*>(editor);
-			Q_ASSERT(edit);
+//-----------------------------------------------------------------------------
+// Function: BusInterfacesDelegate::setModelData()
+//-----------------------------------------------------------------------------
+void BusInterfacesDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, 
+    QModelIndex const& index) const
+{
+    if (index.column() == BusInterfaceColumns::NAME_COLUMN)
+    {
+        QLineEdit* edit = qobject_cast<QLineEdit*>(editor);
+        Q_ASSERT(edit);
 
-			QString text = edit->text();
-			model->setData(index, text, Qt::EditRole);
-			break;
-														}
-		case BusInterfacesDelegate::BUSDEF_COLUMN:
-		case BusInterfacesDelegate::ABSDEF_COLUMN: {
-			Q_ASSERT(false);
-			break;
-												   }
-		case BusInterfacesDelegate::IF_MODE_COLUMN: {
-			InterfaceModeSelector* selector = qobject_cast<InterfaceModeSelector*>(editor);
-			Q_ASSERT(selector);
+        QString text = edit->text();
+        model->setData(index, text, Qt::EditRole);
+    }
+    else if (index.column() == BusInterfaceColumns::BUSDEF_COLUMN || 
+        index.column() == BusInterfaceColumns::ABSDEF_COLUMN)
+    {
+        Q_ASSERT(false);			
+    }
+    else if (index.column() == BusInterfaceColumns::IF_MODE_COLUMN)
+    {
+        InterfaceModeSelector* selector = qobject_cast<InterfaceModeSelector*>(editor);
+        Q_ASSERT(selector);
 
-			General::InterfaceMode mode = selector->selected();
-			QString modeStr = General::interfaceMode2Str(mode);
-			model->setData(index, modeStr, Qt::EditRole);
-			break;
-													}	
-		default: {
-			QStyledItemDelegate::setModelData(editor, model, index);
-				 }
-	}
+        General::InterfaceMode mode = selector->selected();
+        QString modeStr = General::interfaceMode2Str(mode);
+        model->setData(index, modeStr, Qt::EditRole);
+    }	
+    else
+    {
+        MultilineDescriptionDelegate::setModelData(editor, model, index);
+    }
 }
 
-void BusInterfacesDelegate::commitAndCloseEditor() {
+//-----------------------------------------------------------------------------
+// Function: BusInterfacesDelegate::descriptionColumn()
+//-----------------------------------------------------------------------------
+int BusInterfacesDelegate::descriptionColumn() const
+{
+    return BusInterfaceColumns::DESCRIPTION_COLUMN;
+}
 
+//-----------------------------------------------------------------------------
+// Function: BusInterfacesDelegate::commitAndCloseEditor()
+//-----------------------------------------------------------------------------
+void BusInterfacesDelegate::commitAndCloseEditor()
+{
 	QWidget* edit = qobject_cast<QWidget*>(sender());
 	Q_ASSERT(edit);
 
 	QComboBox* combo = qobject_cast<QComboBox*>(edit);
 
-	if (combo) {
+	if (combo)
+    {
 		emit commitData(combo);
 	}
 	else {

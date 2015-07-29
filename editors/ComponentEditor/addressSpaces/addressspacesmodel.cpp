@@ -15,6 +15,7 @@
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
 
 #include <QColor>
+#include <QRegularExpression>
 
 //-----------------------------------------------------------------------------
 // Function: AddressSpacesModel::AddressSpacesModel()
@@ -144,11 +145,20 @@ QVariant AddressSpacesModel::data(QModelIndex const& index, int role) const
         {
             return expressionFormatter_->formatReferringExpression(expressionOrValueForIndex(index).toString());
         }
-
+        else if (index.column() == AddressSpaceColumns::DESCRIPTION)
+        {
+            return expressionOrValueForIndex(index).toString().replace(QRegularExpression("\n.*$", 
+                QRegularExpression::DotMatchesEverythingOption), "...");
+        }
         return expressionOrValueForIndex(index);
 	}
     else if (role == Qt::EditRole)
     {
+        if (index.column() == AddressSpaceColumns::DESCRIPTION)
+        {
+            return expressionOrValueForIndex(index);
+        }
+
         return expressionOrValueForIndex(index);  
     }
 	else if (Qt::UserRole == role)

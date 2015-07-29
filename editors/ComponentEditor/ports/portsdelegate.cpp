@@ -15,12 +15,13 @@
 
 #include <kactusGenerators/vhdlGenerator/vhdlgeneral.h>
 
-#include <QComboBox>
-#include <QLineEdit>
-#include <QCheckBox>
 #include <QApplication>
+#include <QComboBox>
+#include <QCheckBox>
+#include <QLineEdit>
 #include <QMouseEvent>
 #include <QPainter>
+#include <QTextEdit>
 
 //-----------------------------------------------------------------------------
 // Function: PortsDelegate::PortsDelegate()
@@ -69,7 +70,7 @@ QWidget* PortsDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const
 //-----------------------------------------------------------------------------
 void PortsDelegate::setEditorData(QWidget* editor, QModelIndex const& index) const
 {
-if (index.column() == PortColumns::DIRECTION)
+    if (index.column() == PortColumns::DIRECTION)
     {
         QString text = index.data(Qt::DisplayRole).toString();
         QComboBox* combo = qobject_cast<QComboBox*>(editor);
@@ -240,6 +241,14 @@ bool PortsDelegate::columnAcceptsExpression(int column) const
     return column == PortColumns::DEFAULT_VALUE || column == PortColumns::LEFT_BOUND ||
         column == PortColumns::RIGHT_BOUND || column == PortColumns::ARRAY_LEFT ||
         column == PortColumns::ARRAY_RIGHT;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortsDelegate::descriptionColumn()
+//-----------------------------------------------------------------------------
+int PortsDelegate::descriptionColumn() const
+{
+    return PortColumns::DESCRIPTION;
 }
 
 //-----------------------------------------------------------------------------

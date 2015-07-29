@@ -1,46 +1,61 @@
-/* 
- *  	Created on: 9.12.2011
- *      Author: Antti Kamppi
- * 		filename: lineeditdelegate.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: lineeditdelegate.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 9.12.2011
+//
+// Description:
+// The base class to provide QLineEditor for a widget.
+//-----------------------------------------------------------------------------
 
 #include "lineeditdelegate.h"
 
 #include <QLineEdit>
 
+//-----------------------------------------------------------------------------
+// Function: LineEditDelegate::LineEditDelegate()
+//-----------------------------------------------------------------------------
 LineEditDelegate::LineEditDelegate(QObject *parent):
-QStyledItemDelegate(parent) {
+QStyledItemDelegate(parent)
+{
 }
 
-LineEditDelegate::~LineEditDelegate() {
+//-----------------------------------------------------------------------------
+// Function: LineEditDelegate::~LineEditDelegate()
+//-----------------------------------------------------------------------------
+LineEditDelegate::~LineEditDelegate()
+{
 }
 
-QWidget* LineEditDelegate::createEditor( QWidget* parent, 
-										const QStyleOptionViewItem&, 
-										const QModelIndex&) const {
-
-	QLineEdit* edit = new QLineEdit(parent);
-	connect(edit, SIGNAL(editingFinished()),
-		this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
-	edit->setMinimumHeight(LineEditDelegate::MINIMUM_EDITOR_HEIGHT);
-	return edit;
+//-----------------------------------------------------------------------------
+// Function: LineEditDelegate::createEditor()
+//-----------------------------------------------------------------------------
+QWidget* LineEditDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const&, QModelIndex const&) const
+{
+	QLineEdit* editor = new QLineEdit(parent);
+	connect(editor, SIGNAL(editingFinished()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
+	editor->setMinimumHeight(LineEditDelegate::MINIMUM_EDITOR_HEIGHT);
+	return editor;
 }
 
-void LineEditDelegate::setEditorData( QWidget* editor,
-									 const QModelIndex& index ) const {
+//-----------------------------------------------------------------------------
+// Function: LineEditDelegate::setEditorData()
+//-----------------------------------------------------------------------------
+void LineEditDelegate::setEditorData(QWidget* editor, QModelIndex const& index ) const {
 
 	QLineEdit* edit = qobject_cast<QLineEdit*>(editor);
 	Q_ASSERT(edit);
 
-	const QString text = index.model()->data(index, Qt::DisplayRole).toString();
+	const QString text = index.data(Qt::DisplayRole).toString();
 	edit->setText(text);
 }
 
-void LineEditDelegate::setModelData( QWidget* editor, 
-									QAbstractItemModel* model,
-									const QModelIndex& index ) const {
-
+//-----------------------------------------------------------------------------
+// Function: LineEditDelegate::setModelData()
+//-----------------------------------------------------------------------------
+void LineEditDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index ) const
+{
 	QLineEdit* edit = qobject_cast<QLineEdit*>(editor);
 	Q_ASSERT(edit);
 
@@ -48,7 +63,11 @@ void LineEditDelegate::setModelData( QWidget* editor,
 	model->setData(index, text, Qt::EditRole);
 }
 
-void LineEditDelegate::commitAndCloseEditor() {
+//-----------------------------------------------------------------------------
+// Function: LineEditDelegate::commitAndCloseEditor()
+//-----------------------------------------------------------------------------
+void LineEditDelegate::commitAndCloseEditor()
+{
 	QLineEdit* edit = qobject_cast<QLineEdit*>(sender());
 	Q_ASSERT(edit);
 

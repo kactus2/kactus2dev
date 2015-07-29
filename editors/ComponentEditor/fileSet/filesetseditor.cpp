@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 25.5.2012
- *      Author: Antti Kamppi
- * 		filename: filesetseditor.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: filesetseditor.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 25.5.2012
+//
+// Description:
+// The editor to add/remove/edit file sets of a component.
+//-----------------------------------------------------------------------------
 
 #include "filesetseditor.h"
 #include "filesetsdelegate.h"
@@ -13,16 +17,19 @@
 
 #include <QVBoxLayout>
 
-FileSetsEditor::FileSetsEditor(QSharedPointer<Component> component,
-                               LibraryInterface* libInterface, PluginManager& pluginMgr)
-    : ItemEditor(component, libInterface),
-      splitter_(Qt::Vertical, this),
-      view_(&splitter_),
-      model_(component, this),
-      proxy_(this),
-      dependencyEditor_(component, QFileInfo(libInterface->getPath(*component->getVlnv())).path(),
-                        pluginMgr, &splitter_),
-      firstShow_(true)
+//-----------------------------------------------------------------------------
+// Function: FileSetsEditor::FileSetsEditor()
+//-----------------------------------------------------------------------------
+FileSetsEditor::FileSetsEditor(QSharedPointer<Component> component, LibraryInterface* libInterface, 
+    PluginManager& pluginMgr):
+ItemEditor(component, libInterface),
+    splitter_(Qt::Vertical, this),
+    view_(&splitter_),
+    model_(component, this),
+    proxy_(this),
+    dependencyEditor_(component, QFileInfo(libInterface->getPath(*component->getVlnv())).path(), pluginMgr, 
+        &splitter_),
+    firstShow_(true)
 {
     splitter_.addWidget(&view_);
     splitter_.addWidget(&dependencyEditor_);
@@ -37,26 +44,20 @@ FileSetsEditor::FileSetsEditor(QSharedPointer<Component> component,
 
 	proxy_.setSourceModel(&model_);
 
+    view_.setModel(&proxy_);
+    view_.setItemDelegate(new FileSetsDelegate(this));
+    view_.setItemsDraggable(false);
 	view_.setAllowImportExport(true);
+
 	const QString compPath = ItemEditor::handler()->getDirectoryPath(*ItemEditor::component()->getVlnv());
 	QString defPath = QString("%1/fileSetList.csv").arg(compPath);
 	view_.setDefaultImportExportPath(defPath);
 
-	view_.setModel(&proxy_);
-	view_.setItemDelegate(new FileSetsDelegate(this));
+	connect(&model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&model_, SIGNAL(fileSetAdded(int)),	this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
+	connect(&model_, SIGNAL(fileSetRemoved(int)), this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
 
-	// items can not be dragged
-	view_.setItemsDraggable(false);
-
-	connect(&model_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&model_, SIGNAL(fileSetAdded(int)),
-		this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
-	connect(&model_, SIGNAL(fileSetRemoved(int)),
-		this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
-
-    connect(&model_, SIGNAL(contentChanged()),
-            &dependencyEditor_, SLOT(refresh()), Qt::UniqueConnection);
+    connect(&model_, SIGNAL(contentChanged()), &dependencyEditor_, SLOT(refresh()), Qt::UniqueConnection);
 
     connect(&dependencyEditor_, SIGNAL(contentChanged()),
             this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -70,28 +71,40 @@ FileSetsEditor::FileSetsEditor(QSharedPointer<Component> component,
             this, SIGNAL(filesUpdated()), Qt::UniqueConnection);
 
 	connect(&view_, SIGNAL(addItem(const QModelIndex&)),
-		&model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
+        &model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
 	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
 		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 }
 
-FileSetsEditor::~FileSetsEditor() {
+//-----------------------------------------------------------------------------
+// Function: FileSetsEditor::~FileSetsEditor()
+//-----------------------------------------------------------------------------
+FileSetsEditor::~FileSetsEditor()
+{
 
 }
 
-bool FileSetsEditor::isValid() const {
+//-----------------------------------------------------------------------------
+// Function: FileSetsEditor::isValid()
+//-----------------------------------------------------------------------------
+bool FileSetsEditor::isValid() const
+{
 	return model_.isValid();
 }
 
-void FileSetsEditor::makeChanges() {
-	// TODO remove this in final
-}
-
-void FileSetsEditor::refresh() {
+//-----------------------------------------------------------------------------
+// Function: FileSetsEditor::refresh()
+//-----------------------------------------------------------------------------
+void FileSetsEditor::refresh()
+{
 	view_.update();
 }
 
-void FileSetsEditor::showEvent( QShowEvent* event ) {
+//-----------------------------------------------------------------------------
+// Function: FileSetsEditor::showEvent()
+//-----------------------------------------------------------------------------
+void FileSetsEditor::showEvent( QShowEvent* event )
+{
 	QWidget::showEvent(event);
 	emit helpUrlRequested("componenteditor/filesets.html");
 

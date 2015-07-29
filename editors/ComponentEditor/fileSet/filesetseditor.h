@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 25.5.2012
- *      Author: Antti Kamppi
- * 		filename: filesetseditor.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: filesetseditor.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 25.5.2012
+//
+// Description:
+// The editor to add/remove/edit file sets of a component.
+//-----------------------------------------------------------------------------
 
 #ifndef FILESETSEDITOR_H
 #define FILESETSEDITOR_H
@@ -20,46 +24,39 @@
 class PluginManager;
 class LibraryInterface;
 
-/*! \brief The editor to add/remove/edit file sets of a component.
- *
- */
-class FileSetsEditor : public ItemEditor {
+//-----------------------------------------------------------------------------
+//! The editor to add/remove/edit file sets of a component.
+//-----------------------------------------------------------------------------
+class FileSetsEditor : public ItemEditor
+{
 	Q_OBJECT
 
 public:
 
-	//! \brief The default width of the name column.
+	//! The default width of the name column.
 	static const int NAME_COLUMN_WIDTH = 200;
 
-	//! \brief The default width of the description column.
+	//! The default width of the description column.
 	static const int DESC_COLUMN_WIDTH = 300;
 
-	/*! \brief The constructor
+	/*! The constructor
 	 *
-	 * \param component        Pointer to the component being edited.
-     * \param libraryInterface The library interface.
-     * \param pluginMgr        The plugin manager.    
+	 *      @param [in] component           The component being edited.
+     *      @param [in] libraryInterface    The library interface.
+     *      @param [in] pluginMgr           The plugin manager.    
 	 */
-	FileSetsEditor(QSharedPointer<Component> component,
-                   LibraryInterface* libInterface,
-                   PluginManager& pluginMgr);
+	FileSetsEditor(QSharedPointer<Component> component, LibraryInterface* libInterface, PluginManager& pluginMgr);
 	
-	//! \brief The destructor
+	//! The destructor
 	~FileSetsEditor();
 
-	/*! \brief Check for the validity of the editor
+	/*! Check for the validity of the editor
 	* 
-	* \return True if the editor is in valid state.
+	*       @return True if the editor is in valid state.
 	*/
 	virtual bool isValid() const;
 
-	/*! \brief Make the changes from the editor to the IPXact model.
-	 *
-	*/
-	virtual void makeChanges();
-
-	/*! \brief Reload the information from the model to the editor.
-	*/
+	//! Reload the information from the model to the editor.
 	virtual void refresh();
 
 signals:
@@ -69,6 +66,7 @@ signals:
     //! Emitted when the files have been updated.
     void filesUpdated();
 
+    //! Emitted when the file dependencies have changed.
     void dependenciesChanged();
 
 public slots:
@@ -78,27 +76,25 @@ public slots:
     void refreshDependencyModel();
 
 protected:
-	//! \brief Handler for widget's show event
+	//! Handler for widget's show event
 	virtual void showEvent(QShowEvent* event);
 
 private:
 
-	//! \brief No copying
+	//! No copying
 	FileSetsEditor(const FileSetsEditor& other);
-
-	//! \brief No assignment
 	FileSetsEditor& operator=(const FileSetsEditor& other);
 
     //! Splitter for the fileset table and dependency graph.
     QSplitter splitter_;
     
-	//! \brief The view to display the file sets.
+	//! The view to display the file sets.
 	EditableTableView view_;
 
-	//! \brief The model that manages the file set objects for the view.
+	//! The model that manages the file set objects for the view.
 	FileSetsModel model_;
 
-	//! \brief The proxy to do the sorting
+	//! The proxy to do the sorting.
 	QSortFilterProxyModel proxy_;
 
     //! The file dependency editor.

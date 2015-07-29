@@ -102,6 +102,9 @@ protected:
      */
     virtual bool columnAcceptsExpression(int column) const;
 
+    //! Gets the description column.
+    virtual int descriptionColumn() const;
+
 private:
     // Disable copying.
     PortsDelegate(PortsDelegate const& rhs);

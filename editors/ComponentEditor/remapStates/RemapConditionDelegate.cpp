@@ -195,6 +195,14 @@ bool RemapConditionDelegate::columnAcceptsExpression(int column) const
 }
 
 //-----------------------------------------------------------------------------
+// Function: RemapConditionDelegate::descriptionColumn()
+//-----------------------------------------------------------------------------
+int RemapConditionDelegate::descriptionColumn() const
+{
+    return -1;
+}
+
+//-----------------------------------------------------------------------------
 // Function: RemapConditionDelegate::valueIsArray()
 //-----------------------------------------------------------------------------
 bool RemapConditionDelegate::valueIsArray(QModelIndex const& index) const

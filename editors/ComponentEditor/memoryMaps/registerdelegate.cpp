@@ -15,10 +15,12 @@
 #include <common/widgets/testConstraintComboBox/testconstraintcombobox.h>
 
 #include <QLineEdit>
+#include <QKeyEvent>
 #include <QSpinBox>
+#include <QTextEdit>
 
 //-----------------------------------------------------------------------------
-// Function: registerdelegate::RegisterDelegate()
+// Function: RegisterDelegate::RegisterDelegate()
 //-----------------------------------------------------------------------------
 RegisterDelegate::RegisterDelegate(QCompleter* parameterNameCompleter,
     QSharedPointer<ParameterFinder> parameterFinder, QObject *parent):
@@ -28,7 +30,7 @@ ExpressionDelegate(parameterNameCompleter, parameterFinder, parent)
 }
 
 //-----------------------------------------------------------------------------
-// Function: registerdelegate::~RegisterDelegate()
+// Function: RegisterDelegate::~RegisterDelegate()
 //-----------------------------------------------------------------------------
 RegisterDelegate::~RegisterDelegate() 
 {
@@ -36,7 +38,7 @@ RegisterDelegate::~RegisterDelegate()
 }
 
 //-----------------------------------------------------------------------------
-// Function: registerdelegate::createEditor()
+// Function: RegisterDelegate::createEditor()
 //-----------------------------------------------------------------------------
 QWidget* RegisterDelegate::createEditor( QWidget* parent, const QStyleOptionViewItem& option, 
     const QModelIndex& index ) const 
@@ -73,7 +75,7 @@ QWidget* RegisterDelegate::createEditor( QWidget* parent, const QStyleOptionView
 }
 
 //-----------------------------------------------------------------------------
-// Function: registerdelegate::setEditorData()
+// Function: RegisterDelegate::setEditorData()
 //-----------------------------------------------------------------------------
 void RegisterDelegate::setEditorData( QWidget* editor, const QModelIndex& index ) const
 {
@@ -128,7 +130,7 @@ void RegisterDelegate::setEditorData( QWidget* editor, const QModelIndex& index 
 }
 
 //-----------------------------------------------------------------------------
-// Function: registerdelegate::setModelData()
+// Function: RegisterDelegate::setModelData()
 //-----------------------------------------------------------------------------
 void RegisterDelegate::setModelData( QWidget* editor, QAbstractItemModel* model, const QModelIndex& index ) const 
 {
@@ -179,21 +181,30 @@ void RegisterDelegate::setModelData( QWidget* editor, QAbstractItemModel* model,
 }
 
 //-----------------------------------------------------------------------------
-// Function: registerdelegate::commitAndCloseEditor()
-//-----------------------------------------------------------------------------
-void RegisterDelegate::commitAndCloseEditor() {
-	QWidget* edit = qobject_cast<QWidget*>(sender());
-	Q_ASSERT(edit);
-
-	emit commitData(edit);
-	emit closeEditor(edit);
-}
-
-//-----------------------------------------------------------------------------
-// Function: registerdelegate::columnAcceptsExpression()
+// Function: RegisterDelegate::columnAcceptsExpression()
 //-----------------------------------------------------------------------------
 bool RegisterDelegate::columnAcceptsExpression(int column) const
 {
     return column == RegisterColumns::WIDTH_COLUMN || column == RegisterColumns::OFFSET_COLUMN ||
         column == RegisterColumns::IS_PRESENT_COLUMN;
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterDelegate::descriptionColumn()
+//-----------------------------------------------------------------------------
+int RegisterDelegate::descriptionColumn() const
+{
+    return RegisterColumns::DESCRIPTION_COLUMN;
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterDelegate::commitAndCloseEditor()
+//-----------------------------------------------------------------------------
+void RegisterDelegate::commitAndCloseEditor()
+{
+	QWidget* edit = qobject_cast<QWidget*>(sender());
+	Q_ASSERT(edit);
+
+	emit commitData(edit);
+	emit closeEditor(edit);
 }

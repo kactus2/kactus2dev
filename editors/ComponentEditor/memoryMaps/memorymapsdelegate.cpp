@@ -10,17 +10,19 @@
 #include <editors/ComponentEditor/memoryMaps/MemoryMapsColumns.h>
 #include <editors/ComponentEditor/common/ReferenceSelector/ReferenceSelector.h>
 
+#include <QKeyEvent>
 #include <QLineEdit>
-#include <QSpinBox>
-#include <QRegularExpression>
 #include <QPainter>
 #include <QPen>
+#include <QRegularExpression>
+#include <QSpinBox>
+#include <QTextEdit>
 
 //-----------------------------------------------------------------------------
 // Function: memorymapsdelegate::MemoryMapsDelegate()
 //-----------------------------------------------------------------------------
 MemoryMapsDelegate::MemoryMapsDelegate(QStringList remapStateNames, QObject *parent):
-QStyledItemDelegate(parent),
+MultilineDescriptionDelegate(parent),
 remapStateNames_(remapStateNames)
 {
 
@@ -40,8 +42,7 @@ MemoryMapsDelegate::~MemoryMapsDelegate()
 QWidget* MemoryMapsDelegate::createEditor( QWidget* parent, const QStyleOptionViewItem& option,
     const QModelIndex& index ) const
 {
-    if (index.column() == MemoryMapsColumns::NAME_COLUMN ||
-        index.column() == MemoryMapsColumns::DESCRIPTION_COLUMN)
+    if (index.column() == MemoryMapsColumns::NAME_COLUMN)
     {
         QLineEdit* edit = new QLineEdit(parent);
         connect(edit, SIGNAL(editingFinished()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
@@ -63,7 +64,7 @@ QWidget* MemoryMapsDelegate::createEditor( QWidget* parent, const QStyleOptionVi
     }
     else
     {
-        return QStyledItemDelegate::createEditor(parent, option, index);
+        return MultilineDescriptionDelegate::createEditor(parent, option, index);
     }
 }
 
@@ -73,13 +74,12 @@ QWidget* MemoryMapsDelegate::createEditor( QWidget* parent, const QStyleOptionVi
 void MemoryMapsDelegate::setEditorData( QWidget* editor, const QModelIndex& index ) const
 {
     if (index.column() == MemoryMapsColumns::NAME_COLUMN ||
-        index.column() == MemoryMapsColumns::DESCRIPTION_COLUMN ||
         index.column() == MemoryMapsColumns::AUB_COLUMN)
     {
         QLineEdit* edit = qobject_cast<QLineEdit*>(editor);
         Q_ASSERT(edit);
 
-        const QString text = index.model()->data(index, Qt::DisplayRole).toString();
+        const QString text = index.data(Qt::DisplayRole).toString();
         edit->setText(text);
     }
     else if (index.column() == MemoryMapsColumns::REMAPSTATE_COLUMN)
@@ -97,7 +97,7 @@ void MemoryMapsDelegate::setEditorData( QWidget* editor, const QModelIndex& inde
     }
     else
     {
-        QStyledItemDelegate::setEditorData(editor, index);
+        MultilineDescriptionDelegate::setEditorData(editor, index);
     }
 }
 
@@ -106,8 +106,7 @@ void MemoryMapsDelegate::setEditorData( QWidget* editor, const QModelIndex& inde
 //-----------------------------------------------------------------------------
 void MemoryMapsDelegate::setModelData( QWidget* editor, QAbstractItemModel* model, const QModelIndex& index ) const
 {
-    if (index.column() == MemoryMapsColumns::NAME_COLUMN ||
-        index.column() == MemoryMapsColumns::DESCRIPTION_COLUMN)
+    if (index.column() == MemoryMapsColumns::NAME_COLUMN)
     {
         QLineEdit* edit = qobject_cast<QLineEdit*>(editor);
         Q_ASSERT(edit);
@@ -131,8 +130,16 @@ void MemoryMapsDelegate::setModelData( QWidget* editor, QAbstractItemModel* mode
     }
     else
     {
-        QStyledItemDelegate::setModelData(editor, model, index);
+        MultilineDescriptionDelegate::setModelData(editor, model, index);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapsDelegate::descriptionColumn()
+//-----------------------------------------------------------------------------
+int MemoryMapsDelegate::descriptionColumn() const
+{
+    return MemoryMapsColumns::DESCRIPTION_COLUMN;
 }
 
 //-----------------------------------------------------------------------------

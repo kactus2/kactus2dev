@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 25.5.2012
- *      Author: Antti Kamppi
- * 		filename: filesetsmodel.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: filesetsmodel.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 25.5.2012
+//
+// Description:
+// The model class to manage the objects for FileSetsEditor.
+//-----------------------------------------------------------------------------
 
 #ifndef FILESETSMODEL_H
 #define FILESETSMODEL_H
@@ -15,110 +19,99 @@
 #include <QList>
 #include <QSharedPointer>
 
-/*! \brief The model class to manage the objects for FileSetsEditor.
- *
- */
-class FileSetsModel : public QAbstractTableModel {
+//-----------------------------------------------------------------------------
+//! The model class to manage the objects for FileSetsEditor.
+//-----------------------------------------------------------------------------
+class FileSetsModel : public QAbstractTableModel
+{
 	Q_OBJECT
 
 public:
 
-	//! \brief The number of columns the model contains.
-	static const int COLUMN_COUNT = 3;
-
-	//! \brief USER_DISPLAY_ROLE returns QStringList for column 2
-	static const int USER_DISPLAY_ROLE = Qt::UserRole;
-
-	//! \brief USER_EDIT_ROLE takes QStringList for column 2
-	static const int USER_EDIT_ROLE = Qt::UserRole + 1;
-
-	/*! \brief The constructor
+	/*! The constructor
 	 *
-	 * \param component Pointer to the component being edited.
-	 * \param parent Pointer to the owner of this model.
-	 *
+	 *      @param [in] component   The component being edited.
+	 *      @param [in] parent      The owner of this model.
 	*/
-	FileSetsModel(QSharedPointer<Component> component, 
-		QObject *parent);
+	FileSetsModel(QSharedPointer<Component> component, QObject *parent);
 	
-	//! \brief The destructor
+	//! The destructor
 	~FileSetsModel();
 
+    //! Refreshes the model.
     void refresh();
 
-	/*! \brief Get the number of rows an item contains.
+	/*! Get the number of rows an item contains.
 	 *
-	 * \param parent Identifies the parent that's row count is requested.
+	 *      @param [in] parent  Identifies the parent that's row count is requested.
 	 *
-	 * \return Number of rows the item has.
+	 *      @return Number of rows the item has.
 	*/
 	virtual int rowCount(const QModelIndex& parent = QModelIndex()) const;
 
-	/*! \brief Get the number of columns the item has to be displayed.
+	/*! Get the number of columns the item has to be displayed.
 	 *
-	 * \param parent Identifies the parent that's column count is requested.
+	 *      @param [in] parent  Identifies the parent that's column count is requested.
 	 *
-	 * \return The number of columns to be displayed.
+	 *      @return The number of columns to be displayed.
 	*/
 	virtual int columnCount(const QModelIndex& parent = QModelIndex()) const;
 
-	/*! \brief Get the data for specified item.
+	/*! Get the data for specified item.
 	 *
-	 * \param index Specifies the item that's data is requested.
-	 * \param role The role that defines what kind of data is requested.
+	 *      @param [in] index   Specifies the item that's data is requested.
+	 *      @param [in] role    The role that defines what kind of data is requested.
 	 *
-	 * \return QVariant Contains the data for the item.
+	 *      @return QVariant Contains the data for the item.
 	*/
 	virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
 
-	/*! \brief Get the header data for specified header.
+	/*! Get the header data for specified header.
 	 *
-	 * \param section The section specifies the row/column number for the header.
-	 * \param orientation Specified if horizontal or vertical header is wanted.
-	 * \param role Specifies the type of the requested data.
+	 *      @param [in] section         The section specifies the row/column number for the header.
+	 *      @param [in] orientation     Specified if horizontal or vertical header is wanted.
+	 *      @param [in] role            Specifies the type of the requested data.
 	 *
-	 * \return QVariant Contains the requested data.
+	 *      @return QVariant Contains the requested data.
 	*/
-	virtual QVariant headerData(int section, Qt::Orientation orientation, 
-		int role = Qt::DisplayRole) const;
+	virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
-	/*! \brief Save the data to the model for specified item
+	/*! Save the data to the model for specified item
 	 *
-	 * \param index The model index of the item that's data is to be saved.
-	 * \param value The data that is to be saved.
-	 * \param role The role specifies what kind of data should be saved.
+	 *      @param [in] index   The model index of the item that's data is to be saved.
+	 *      @param [in] value   The data that is to be saved.
+	 *      @param [in] role    The role specifies what kind of data should be saved.
 	 *
-	 * \return True if saving happened successfully.
+	 *      @return True if saving happened successfully.
 	*/
-	bool setData(const QModelIndex& index, const QVariant& value, 
-		int role = Qt::EditRole);
+	bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
 
-	/*! \brief Get the item flags that defines the possible operations for the item.
+	/*! Get the item flags that defines the possible operations for the item.
 	 *
-	 * \param index Model index that identifies the item.
+	 *      @param [in] index   Model index that identifies the item.
 	 *
-	 * \return Qt::ItemFlags specify the possible operations for the item.
+	 *      @return Flags specify the possible operations for the item.
 	*/
 	Qt::ItemFlags flags(const QModelIndex& index) const;
 
-	/*! \brief Check the validity of the items in the model.
+	/*! Check the validity of the items in the model.
 	 *
-	 * \return True if all items are in valid state.
+	 *      @return True if all items are in valid state.
 	*/
 	virtual bool isValid() const;
 
 public slots:
 
-	/*! \brief Add a new item to the given index.
+	/*! Add a new item to the given index.
 	 *
-	 * \param index The index identifying the position for new item.
+	 *      @param [in] index   The index identifying the position for new item.
 	 *
 	*/
 	virtual void onAddItem(const QModelIndex& index);
 
-	/*! \brief Remove the item in the given index.
+	/*! Remove the item in the given index.
 	 *
-	 * \param index The index identifying the item to remove.
+	 *      @param [in] index   The index identifying the item to remove.
 	 *
 	*/
 	virtual void onRemoveItem(const QModelIndex& index);
@@ -126,40 +119,38 @@ public slots:
     /*!
      *  Updates the model when a file set has been added from outside the model.
      *
-     *      @param [in] fileSet The file set that was added.
+     *      @param [in] fileSet     The file set that was added.
      */
     void onFileSetAdded(FileSet* fileSet);
 
 signals:
 
-	//! \brief Emitted when the contents of the model change.
+	//! Emitted when the contents of the model change.
 	void contentChanged();
 
-	/*! \brief Emitted when a new file set is added to the model.
+	/*! Emitted when a new file set is added to the model.
 	 *
-	 * \param index The index of the added file set.
+	 *      @param [in] index   The index of the added file set.
 	 *
 	*/
 	void fileSetAdded(int index);
 
-	/*! \brief Emitted when a file set is removed from the model.
+	/*! Emitted when a file set is removed from the model.
 	 *
-	 * \param index The index of the removed file set.
+	 *      @param [in] index   The index of the removed file set.
 	 *
 	*/
 	void fileSetRemoved(int index);
 
 private:
-	//! \brief No copying
+	//! No copying
 	FileSetsModel(const FileSetsModel& other);
-
-	//! \brief No assignment
 	FileSetsModel& operator=(const FileSetsModel& other);
 
-	//! \brief Pointer to the component being edited.
+	//! The component being edited.
 	QSharedPointer<Component> component_;
 
-	//! \brief The file sets to edit.
+	//! The file sets to edit.
 	QList<QSharedPointer<FileSet> >& fileSets_;
 };
 

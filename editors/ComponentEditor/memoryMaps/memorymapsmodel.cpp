@@ -6,7 +6,6 @@
  */
 
 #include "memorymapsmodel.h"
-#include "memorymapsdelegate.h"
 
 #include "MemoryMapsColumns.h"
 
@@ -18,6 +17,7 @@
 
 #include <QColor>
 #include <QMap>
+#include <QRegularExpression>
 
 //-----------------------------------------------------------------------------
 // Function: memorymapsmodel::MemoryMapsModel()
@@ -140,21 +140,27 @@ QVariant MemoryMapsModel::headerData( int section, Qt::Orientation orientation, 
 //-----------------------------------------------------------------------------
 QVariant MemoryMapsModel::data( const QModelIndex& index, int role /*= Qt::DisplayRole*/ ) const
 {
-	if (!index.isValid())
+	if (!index.isValid() || !isIndexValid(index))
     {
 		return QVariant();
 	}
 
-    else if (!isIndexValid(index))
+	if (role == Qt::DisplayRole)
     {
-		return QVariant();
-	}
+        if (index.column() == MemoryMapsColumns::DESCRIPTION_COLUMN)
+        {
+            return valueForIndex(index).toString().replace(QRegularExpression("\n.*$", 
+                QRegularExpression::DotMatchesEverythingOption), "...");
+        }
 
-	if (Qt::DisplayRole == role)
-    {
         return valueForIndex(index);
 	}
-	if (MemoryMapsDelegate::USER_DISPLAY_ROLE == role)
+    else if ((role == Qt::EditRole || role == Qt::ToolTipRole) && 
+        index.column() == MemoryMapsColumns::DESCRIPTION_COLUMN)
+    {
+        return valueForIndex(index);
+    }
+	else if (role == Qt::UserRole)
     {
         QSharedPointer<MemoryMap> parentMemoryMap =
             getParentMemoryMap(getIndexedMemoryRemap(index.parent(), index.row()));
@@ -166,11 +172,11 @@ QVariant MemoryMapsModel::data( const QModelIndex& index, int role /*= Qt::Displ
 
         return component_->getSlaveInterfaces(parentMemoryMap->getName());
 	}
-	else if (Qt::ForegroundRole == role)
+	else if (role == Qt::ForegroundRole)
     {
-        return getForeGroundcolour(index);
+        return getForegroundColor(index);
 	}
-	else if (Qt::BackgroundRole == role)
+	else if (role == Qt::BackgroundRole)
     {
         if (index.column() == MemoryMapsColumns::NAME_COLUMN ||
             index.column() == MemoryMapsColumns::REMAPSTATE_COLUMN)
@@ -657,7 +663,7 @@ QVariant MemoryMapsModel::valueForIndex(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 // Function: memorymapsmodel::getForeGroundcolour()
 //-----------------------------------------------------------------------------
-QColor MemoryMapsModel::getForeGroundcolour(QModelIndex const& index) const
+QColor MemoryMapsModel::getForegroundColor(QModelIndex const& index) const
 {
     if (index.column() == MemoryMapsColumns::INTERFACE_COLUMN ||
         (!index.parent().isValid() && index.column() == MemoryMapsColumns::REMAPSTATE_COLUMN) ||

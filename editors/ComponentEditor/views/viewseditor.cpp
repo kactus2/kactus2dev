@@ -6,20 +6,24 @@
  */
 
 #include "viewseditor.h"
+
+#include "ViewsDelegate.h"
+
 #include <common/widgets/summaryLabel/summarylabel.h>
 #include <common/delegates/LineEditDelegate/lineeditdelegate.h>
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <QVBoxLayout>
 
-ViewsEditor::ViewsEditor( QSharedPointer<Component> component,
-	LibraryInterface* handler, 
-						 QWidget* parent /*= 0*/ ):
+//-----------------------------------------------------------------------------
+// Function: ViewsEditor::ViewsEditor()
+//-----------------------------------------------------------------------------
+ViewsEditor::ViewsEditor(QSharedPointer<Component> component, LibraryInterface* handler, QWidget* parent):
 ItemEditor(component, handler, parent),
-view_(this),
-proxy_(this),
-model_(component, this) {
-
+    view_(this),
+    proxy_(this),
+    model_(component, this)
+{
 	// display a label on top the table
 	SummaryLabel* summaryLabel = new SummaryLabel(tr("Views summary"), this);
 
@@ -44,35 +48,46 @@ model_(component, this) {
 	// items can not be dragged
 	view_.setItemsDraggable(false);
 
-	view_.setItemDelegate(new LineEditDelegate(this));
+	view_.setItemDelegate(new ViewsDelegate(this));
 
-	connect(&model_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(&model_, SIGNAL(contentChanged()),
-        this, SLOT(onItemChanged()), Qt::UniqueConnection);
-	connect(&model_, SIGNAL(viewAdded(int)),
-		this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
-	connect(&model_, SIGNAL(viewRemoved(int)),
-		this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
+	connect(&model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(&model_, SIGNAL(contentChanged()), this, SLOT(onItemChanged()), Qt::UniqueConnection);
+	connect(&model_, SIGNAL(viewAdded(int)), this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
+	connect(&model_, SIGNAL(viewRemoved(int)), this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
 
 	connect(&view_, SIGNAL(addItem(const QModelIndex&)),
-		&model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
+        &model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
 	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
 		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 }
 
-ViewsEditor::~ViewsEditor() {
+//-----------------------------------------------------------------------------
+// Function: ViewsEditor::~ViewsEditor()
+//-----------------------------------------------------------------------------
+ViewsEditor::~ViewsEditor()
+{
 }
 
-bool ViewsEditor::isValid() const {
+//-----------------------------------------------------------------------------
+// Function: ViewsEditor::isValid()
+//-----------------------------------------------------------------------------
+bool ViewsEditor::isValid() const
+{
 	return model_.isValid();
 }
 
-void ViewsEditor::refresh() {    
+//-----------------------------------------------------------------------------
+// Function: ViewsEditor::refresh()
+//-----------------------------------------------------------------------------
+void ViewsEditor::refresh()
+{    
     onItemChanged();
     view_.update();
 }
 
+//-----------------------------------------------------------------------------
+// Function: ViewsEditor::onItemChanged()
+//-----------------------------------------------------------------------------
 void ViewsEditor::onItemChanged()
 {
     view_.sortByColumn(ViewsModel::NAME_COLUMN, Qt::AscendingOrder);
@@ -80,7 +95,11 @@ void ViewsEditor::onItemChanged()
     view_.update();
 }
 
-void ViewsEditor::showEvent( QShowEvent* event ) {
+//-----------------------------------------------------------------------------
+// Function: ViewsEditor::showEvent()
+//-----------------------------------------------------------------------------
+void ViewsEditor::showEvent(QShowEvent* event)
+{
 	QWidget::showEvent(event);
 	emit helpUrlRequested("componenteditor/views.html");
 }

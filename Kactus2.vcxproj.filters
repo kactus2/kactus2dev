@@ -4132,6 +4132,18 @@
     <ClCompile Include="GeneratedFiles\moc_ExitScreen.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\common\MultilineDescriptionDelegate.cpp">
+      <Filter>Source Files\editors\ComponentEditor\common</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_MultilineDescriptionDelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\views\ViewsDelegate.cpp">
+      <Filter>Source Files\editors\ComponentEditor\views</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ViewsDelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5684,6 +5696,12 @@
     </CustomBuild>
     <CustomBuild Include="mainwindow\ExitScreen.h">
       <Filter>Header Files\mainwindow</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\common\MultilineDescriptionDelegate.h">
+      <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\views\ViewsDelegate.h">
+      <Filter>Header Files\editors\ComponentEditor\views</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

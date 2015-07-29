@@ -1,22 +1,27 @@
-/* 
- *  	Created on: 9.12.2011
- *      Author: Antti Kamppi
- * 		filename: lineeditdelegate.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: lineeditdelegate.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 9.12.2011
+//
+// Description:
+// The base class to provide QLineEditor for a widget.
+//-----------------------------------------------------------------------------
 
 #ifndef LINEEDITDELEGATE_H
 #define LINEEDITDELEGATE_H
 
 #include <QStyledItemDelegate>
 
-/*! \brief The base class to provide QLineEditor for a widget.
+/*! The base class to provide QLineEditor for a widget.
  * 
  * LineEditDelegate can be sub classed to provide more specific editors.
  * In subclasses the createEditor() can be reimplemented to create more specific
  * line editors.
  */ 
-class LineEditDelegate : public QStyledItemDelegate {
+class LineEditDelegate : public QStyledItemDelegate
+{
 	Q_OBJECT
 
 public:
@@ -42,9 +47,8 @@ public:
 	 *
 	 * \return Pointer to the editor to be used to edit the item.
 	*/
-	virtual QWidget* createEditor(QWidget* parent, 
-		const QStyleOptionViewItem& option, 
-		const QModelIndex& index) const;
+	virtual QWidget* createEditor(QWidget* parent, QStyleOptionViewItem const& option, 
+        QModelIndex const& index) const;
 
 	/*! \brief Set the data for the editor.
 	 *
@@ -52,7 +56,7 @@ public:
 	 * \param index Model index identifying the item that's data is to be set.
 	 *
 	*/
-	virtual void setEditorData(QWidget* editor, const QModelIndex& index) const;
+	virtual void setEditorData(QWidget* editor, QModelIndex const& index) const;
 
 	/*! \brief Save the data from the editor to the model.
 	 *
@@ -61,8 +65,7 @@ public:
 	 * \param index Model index identifying the item that's data is to be saved.
 	 *
 	*/
-	virtual void setModelData(QWidget* editor, QAbstractItemModel* model, 
-		const QModelIndex& index) const;
+	virtual void setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index) const;
 
 private slots:
 

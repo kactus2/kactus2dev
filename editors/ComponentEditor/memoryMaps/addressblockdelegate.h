@@ -12,6 +12,8 @@
 
 #include <editors/ComponentEditor/common/ExpressionDelegate.h>
 
+#include <QEvent>
+
 //-----------------------------------------------------------------------------
 //! The delegate that provides editors to add/remove/edit the details of address block.
 //-----------------------------------------------------------------------------
@@ -47,7 +49,7 @@ public:
 
 	/*! Set the data for the editor.
 	 *
-	 *      @param [in] editor  Pointer to the editor where the data is to be set.
+	 *      @param [in] editor  The editor where the data is to be set.
 	 *      @param [in] index   Model index identifying the item that's data is to be set.
 	 *
 	*/
@@ -55,7 +57,7 @@ public:
 
 	/*! Save the data from the editor to the model.
 	 *
-	 *      @param [in] editor  Pointer to the editor that contains the data to store.
+	 *      @param [in] editor  The editor that contains the data to store.
 	 *      @param [in] model   Model that contains the data structure where data is to be saved to.
 	 *      @param [in] index   Model index identifying the item that's data is to be saved.
 	 *
@@ -74,13 +76,15 @@ protected:
      */
     virtual bool columnAcceptsExpression(int column) const;
 
+    //! Gets the description column.
+    virtual int descriptionColumn() const;
+
 private:
 	
 	//! No copying
 	AddressBlockDelegate(const AddressBlockDelegate& other);
-
-	//! No assignment
 	AddressBlockDelegate& operator=(const AddressBlockDelegate& other);
+ 
 
 };
 

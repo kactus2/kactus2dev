@@ -148,7 +148,7 @@ void MemoryMapsEditor::onDoubleClick( const QModelIndex& index )
     if (origIndex.column() == MemoryMapsColumns::INTERFACE_COLUMN)
     {
 		// get the names of the interface that refer to selected memory map
-		QStringList busIfNames = model_->data(origIndex, MemoryMapsDelegate::USER_DISPLAY_ROLE).toStringList();
+		QStringList busIfNames = model_->data(origIndex, Qt::UserRole).toStringList();
 
 		// if there are no bus interfaces or there are many
 		if (busIfNames.size() != 1)

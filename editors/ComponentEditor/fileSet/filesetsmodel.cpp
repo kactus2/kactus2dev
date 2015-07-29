@@ -1,193 +1,239 @@
-/* 
- *  	Created on: 25.5.2012
- *      Author: Antti Kamppi
- * 		filename: filesetsmodel.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: filesetsmodel.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 25.5.2012
+//
+// Description:
+// The model class to manage the objects for FileSetsEditor.
+//-----------------------------------------------------------------------------
 
 #include "filesetsmodel.h"
 
+#include <QColor>
 #include <QStringList>
 #include <QString>
-#include <QColor>
+#include <QRegularExpression>
 
+namespace
+{
+    enum FileSetColumns
+    {
+        NAME_COLUMN = 0,
+        GROUP_COLUMN,
+        DESCRIPTION,
+        COLUMN_COUNT
+    };
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileSetsModel::FileSetsModel()
+//-----------------------------------------------------------------------------
 FileSetsModel::FileSetsModel(QSharedPointer<Component> component, 
 							 QObject *parent):
 QAbstractTableModel(parent),
 component_(component),
-fileSets_(component->getFileSets()) {
+fileSets_(component->getFileSets())
+{
 
 }
 
-FileSetsModel::~FileSetsModel() {
+//-----------------------------------------------------------------------------
+// Function: FileSetsModel::~FileSetsModel()
+//-----------------------------------------------------------------------------
+FileSetsModel::~FileSetsModel()
+{
 }
 
-int FileSetsModel::rowCount( const QModelIndex& parent /*= QModelIndex()*/ ) const {
-	if (parent.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: FileSetsModel::rowCount()
+//-----------------------------------------------------------------------------
+int FileSetsModel::rowCount(QModelIndex const& parent /*= QModelIndex()*/ ) const
+{
+	if (parent.isValid())
+    {
 		return 0;
 	}
 	return fileSets_.size();
 }
 
-int FileSetsModel::columnCount( const QModelIndex& parent /*= QModelIndex()*/ ) const {
-	if (parent.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: FileSetsModel::columnCount()
+//-----------------------------------------------------------------------------
+int FileSetsModel::columnCount(QModelIndex const& parent /*= QModelIndex()*/ ) const
+{
+	if (parent.isValid())
+    {
 		return 0;
 	}
-	return FileSetsModel::COLUMN_COUNT;
+	return COLUMN_COUNT;
 }
 
-Qt::ItemFlags FileSetsModel::flags( const QModelIndex& index ) const {
-	if (!index.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: FileSetsModel::flags()
+//-----------------------------------------------------------------------------
+Qt::ItemFlags FileSetsModel::flags(QModelIndex const& index ) const
+{
+	if (!index.isValid())
+    {
 		return Qt::NoItemFlags;
 	}
+
 	return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
 }
 
-QVariant FileSetsModel::headerData( int section,
-								   Qt::Orientation orientation,
-								   int role /*= Qt::DisplayRole*/ ) const {
-
-	if (orientation != Qt::Horizontal) {
+//-----------------------------------------------------------------------------
+// Function: FileSetsModel::headerData()
+//-----------------------------------------------------------------------------
+QVariant FileSetsModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+	if (orientation != Qt::Horizontal)
+    {
 		return QVariant();
 	}
-	if (Qt::DisplayRole == role) {
 
-		switch (section) {
-			case 0: {
-				return tr("Name");
-					}
-			case 1: {
-				return tr("Description");
-					}
-			case 2: {
-				return tr("Group identifiers");
-					}
-			default: {
-				return QVariant();
-					 }
-		}
+	if (Qt::DisplayRole == role)
+    {
+        if (section == NAME_COLUMN)
+        {
+            return tr("Name");
+        }
+        else if (section == GROUP_COLUMN)
+        {
+            return tr("Group identifiers");
+        }
+        else if (section == DESCRIPTION)
+        {
+            return tr("Description");
+        }
+        else
+        {
+            return QVariant();
+        }
 	}
-	else {
+	else
+    {
 		return QVariant();
 	}
 }
 
-QVariant FileSetsModel::data( const QModelIndex& index, 
-							 int role /*= Qt::DisplayRole*/ ) const {
-	if (!index.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: FileSetsModel::data()
+//-----------------------------------------------------------------------------
+QVariant FileSetsModel::data(QModelIndex const& index, int role) const
+{
+	if (!index.isValid() || index.row() < 0 || index.row() >= fileSets_.size())
+    {
 		return QVariant();
 	}
-	else if (index.row() < 0 || index.row() >= fileSets_.size()) {
-		return QVariant();
-	}
 
-	if (Qt::DisplayRole == role) {
-
-		switch (index.column()) {
-			case 0: {
-				return fileSets_.at(index.row())->getName();
-					}
-			case 1: {
-				return fileSets_.at(index.row())->getDescription();
-					}
-			case 2: {
-				// each group name if in it's own index
-				QStringList groupNames = fileSets_.at(index.row())->getGroups();
-
-				// concatenate the names to a single string with spaces in between
-				QString str;
-				foreach (QString groupName, groupNames) {
-					str += groupName;
-					str += " ";
-				}
-
-				// return the string with all group names
-				return str;
-					}
-			default: {
-				return QVariant();
-					 }
-		}
-	}
-	// for user role a QStringList is returned
-	else if (FileSetsModel::USER_DISPLAY_ROLE == role && index.column() == 2) {
-		return fileSets_.at(index.row())->getGroups();
-	}
-	else if (Qt::ForegroundRole == role) {
-		if (fileSets_.at(index.row())->isValid(false)) {
+    QSharedPointer<FileSet> fileSet = fileSets_.at(index.row());
+    if (role == Qt::DisplayRole)
+    {
+        if (index.column() == NAME_COLUMN)
+        {
+            return fileSet->getName();
+        }
+        else if (index.column() == DESCRIPTION)
+        {
+            return fileSet->getDescription().replace(QRegularExpression("\n.*$", 
+                QRegularExpression::DotMatchesEverythingOption), "...");
+        }
+        else if (index.column() == GROUP_COLUMN)
+        {
+            return fileSet->getGroups().join(" ");
+        }
+        else
+        {
+            return QVariant();
+        }
+    }
+    else if ((role == Qt::EditRole || role == Qt::ToolTipRole) && index.column() == DESCRIPTION)
+    {
+        return fileSet->getDescription();
+    }
+	else if (role == Qt::ForegroundRole)
+    {
+		if (fileSet->isValid(false))
+        {
 			return QColor("black");
 		}
-		else {
+		else
+        {
 			return QColor("red");
 		}
 	}
-	else if (Qt::BackgroundRole == role) {
-		switch (index.column()) {
-			case 0: {
-				return QColor("LemonChiffon");
-					}
-			default:
-				return QColor("white");
+	else if (Qt::BackgroundRole == role)
+    {
+        if (index.column() == NAME_COLUMN)
+        {
+            return QColor("LemonChiffon");
+        }
+        else
+        {
+            return QColor("white");
 		}
 	}
-	else {
+	else
+    {
 		return QVariant();
 	}
 }
 
-bool FileSetsModel::setData( const QModelIndex& index,
-							const QVariant& value,
-							int role /*= Qt::EditRole*/ ) {
-	if (!index.isValid()) {
-		return false;
-	}
-	else if (index.row() < 0 || index.row() >= fileSets_.size()) {
+//-----------------------------------------------------------------------------
+// Function: FileSetsModel::setData()
+//-----------------------------------------------------------------------------
+bool FileSetsModel::setData(const QModelIndex& index, const QVariant& value, int role)
+{
+	if (!index.isValid() || index.row() < 0 || index.row() >= fileSets_.size())
+    {
 		return false;
 	}
 
-	if (Qt::EditRole == role) {
-		
-		switch (index.column()) {
-			case 0: {
-				fileSets_[index.row()]->setName(value.toString());
-				break;
-					}
-			case 1: {
-				fileSets_[index.row()]->setDescription(value.toString());
-				break;
-					}
-			case 2: {
-				QString str = value.toString();
-				QStringList groupNames = str.split(' ', QString::SkipEmptyParts);
-				fileSets_[index.row()]->setGroups(groupNames);
-				break;
-					}
-			default: {
-				return false;
-					 }
-		}
+    QSharedPointer<FileSet> fileSet = fileSets_[index.row()];
+
+    if (Qt::EditRole == role)
+    {
+        if (index.column() == NAME_COLUMN)
+        {
+            fileSet->setName(value.toString());
+        }
+        else if (index.column() == DESCRIPTION)
+        {
+            fileSet->setDescription(value.toString());
+        }
+        else if(index.column() == GROUP_COLUMN)
+        {
+            QString str = value.toString();
+            QStringList groupNames = str.split(' ', QString::SkipEmptyParts);
+            fileSet->setGroups(groupNames);
+        }
+        else
+        {
+            return false;
+        }
 
 		emit dataChanged(index, index);
 		emit contentChanged();
 		return true;
 	}
-	// for user edit role a QStringList is used
-	else if (FileSetsModel::USER_EDIT_ROLE == role && index.column() == 2) {
-		fileSets_[index.row()]->setGroups(value.toStringList());
-		emit dataChanged(index, index);
-		emit contentChanged();
-		return true;
-	}
-	else {
+	else
+    {
 		return false;
 	}
 }
 
-void FileSetsModel::onAddItem( const QModelIndex& index ) {
+//-----------------------------------------------------------------------------
+// Function: FileSetsModel::onAddItem()
+//-----------------------------------------------------------------------------
+void FileSetsModel::onAddItem(QModelIndex const& index)
+{
 	int row = fileSets_.size();
 
 	// if the index is valid then add the item to the correct position
-	if (index.isValid()) {
+	if (index.isValid())
+    {
 		row = index.row();
 	}
 
@@ -202,13 +248,14 @@ void FileSetsModel::onAddItem( const QModelIndex& index ) {
 	emit contentChanged();
 }
 
-void FileSetsModel::onRemoveItem( const QModelIndex& index ) {
+//-----------------------------------------------------------------------------
+// Function: FileSetsModel::onRemoveItem()
+//-----------------------------------------------------------------------------
+void FileSetsModel::onRemoveItem(QModelIndex const& index)
+{
 	// don't remove anything if index is invalid
-	if (!index.isValid()) {
-		return;
-	}
-	// make sure the row number if valid
-	else if (index.row() < 0 || index.row() >= fileSets_.size()) {
+	if (!index.isValid() || index.row() < 0 || index.row() >= fileSets_.size())
+    {
 		return;
 	}
 
@@ -224,11 +271,16 @@ void FileSetsModel::onRemoveItem( const QModelIndex& index ) {
 	emit contentChanged();
 }
 
-bool FileSetsModel::isValid() const {
-	
+//-----------------------------------------------------------------------------
+// Function: FileSetsModel::isValid()
+//-----------------------------------------------------------------------------
+bool FileSetsModel::isValid() const
+{
 	// if at least one file set is invalid
-	foreach (QSharedPointer<FileSet> fileSet, fileSets_) {
-		if (!fileSet->isValid(true)) {
+	foreach (QSharedPointer<FileSet> fileSet, fileSets_)
+    {
+		if (!fileSet->isValid(true))
+        {
 			return false;
 		}
 	}

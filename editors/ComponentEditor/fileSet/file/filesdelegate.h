@@ -9,17 +9,13 @@
 #define FILESDELEGATE_H
 
 #include <QStyledItemDelegate>
+#include <editors/ComponentEditor/common/MultilineDescriptionDelegate.h>
 
-class FilesDelegate : public QStyledItemDelegate {
+class FilesDelegate : public MultilineDescriptionDelegate
+{
 	Q_OBJECT
 
 public:
-
-	//! \brief The role that uses QStringList to display file types.
-	static const int USER_DISPLAY_ROLE = Qt::UserRole;
-
-	//! \brief The role the uses QStringList to edit file types.
-	static const int USER_EDIT_ROLE = Qt::UserRole + 1;
 
 	//! \brief The minimum height for the editor.
 	static const int LIST_EDITOR_MIN_HEIGHT = 100;
@@ -64,6 +60,11 @@ public:
 	virtual void setModelData(QWidget* editor, QAbstractItemModel* model, 
 		const QModelIndex& index) const;
 
+protected:
+
+    //! Gets the descriptions column.
+    virtual int descriptionColumn() const;
+
 private slots:
 
 	/*! \brief Commit the data from the sending editor and close the editor.
@@ -77,6 +78,8 @@ private:
 
 	//! \brief No assignment
 	FilesDelegate& operator=(const FilesDelegate& other);
+
+
 };
 
 #endif // FILESDELEGATE_H

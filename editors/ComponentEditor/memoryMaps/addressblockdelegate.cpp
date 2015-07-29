@@ -12,8 +12,10 @@
 
 #include <IPXACTmodels/validators/BinaryValidator.h>
 
-#include <QLineEdit>
 #include <QIntValidator>
+#include <QKeyEvent>
+#include <QLineEdit>
+#include <QTextEdit>
 
 //-----------------------------------------------------------------------------
 // Function: AddressBlockDelegate::AddressBlockDelegate()
@@ -121,6 +123,14 @@ void AddressBlockDelegate::setModelData(QWidget* editor, QAbstractItemModel* mod
     {
         ExpressionDelegate::setModelData(editor, model, index);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockDelegate::descriptionColumn()
+//-----------------------------------------------------------------------------
+int AddressBlockDelegate::descriptionColumn() const
+{
+    return AddressBlockColumns::DESCRIPTION;
 }
 
 //-----------------------------------------------------------------------------

@@ -18,19 +18,22 @@
 #include <QCoreApplication>
 #include <QFile>
 
+//-----------------------------------------------------------------------------
+// Function: AbsDefGroup::AbsDefGroup()
+//-----------------------------------------------------------------------------
 AbsDefGroup::AbsDefGroup(LibraryInterface* handler, QWidget *parent): 
 QGroupBox(tr("Signals (Abstraction Definition)"), parent),
 portView_(this),
 portModel_(this),
 handler_(handler),
-absDef_() {
-
+absDef_()
+{
 	portView_.setModel(&portModel_);
 	portView_.setItemDelegate(new BusPortsDelegate(this));
     portView_.setAllowImportExport(true);
+    portView_.setItemsDraggable(false);
 
-	connect(&portView_, SIGNAL(addSignalOptions()),
-		this, SLOT(onAddSignalOptions()), Qt::UniqueConnection);
+	connect(&portView_, SIGNAL(addSignalOptions()), this, SLOT(onAddSignalOptions()), Qt::UniqueConnection);
 	
 	connect(&portModel_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -50,28 +53,32 @@ absDef_() {
     connect(&portView_, SIGNAL(removeItem(const QModelIndex&)),
         &portModel_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 
-	/*connect(&portView_, SIGNAL(removeItems(const QModelIndexList&)),
-		&portModel_, SLOT(removeIndexes(const QModelIndexList&)), Qt::UniqueConnection);
-	connect(&portView_, SIGNAL(copyItems(const QModelIndexList&)),
-		&portModel_, SLOT(copyIndexes(const QModelIndexList&)), Qt::UniqueConnection);		*/
-
 	setupLayout();
 }
 
-AbsDefGroup::~AbsDefGroup() {
+//-----------------------------------------------------------------------------
+// Function: AbsDefGroup::~AbsDefGroup()
+//-----------------------------------------------------------------------------
+AbsDefGroup::~AbsDefGroup()
+{
 }
 
-void AbsDefGroup::onImport() {
-
+//-----------------------------------------------------------------------------
+// Function: AbsDefGroup::onImport()
+//-----------------------------------------------------------------------------
+void AbsDefGroup::onImport()
+{
 	QString homePath;
 
 	// if abs def is set then use its location in library
-	if (absDef_) {
+	if (absDef_)
+    {
 		const QString busPath = handler_->getDirectoryPath(*absDef_->getVlnv());
 		homePath = QString("%1/logicalSignals.csv").arg(busPath);
 	}
 	// if there is no abs def then use default library location
-	else {
+	else
+    {
 		QSettings settings;
 		homePath = settings.value(QString("Library/DefaultLocation"), 
 			QCoreApplication::applicationDirPath()).toString();
@@ -80,54 +87,77 @@ void AbsDefGroup::onImport() {
 	QString path = QFileDialog::getOpenFileName(this,  tr("csv-files (*.csv)"), homePath);
 
 	// if user clicked cancel
-	if (path.isEmpty()) {
+	if (path.isEmpty())
+    {
 		return;
 	}
 
 	portModel_.importCSV(path);
 }
 
-void AbsDefGroup::onExport() {
+//-----------------------------------------------------------------------------
+// Function: AbsDefGroup::onExport()
+//-----------------------------------------------------------------------------
+void AbsDefGroup::onExport()
+{
 	QString homePath;
 
 	// if abs def is set then use its location in library
-	if (absDef_) {
+	if (absDef_)
+    {
 		const QString busPath = handler_->getDirectoryPath(*absDef_->getVlnv());
 		homePath = QString("%1/logicalSignals.csv").arg(busPath);
 	}
 	// if there is no abs def then use default library location
-	else {
+	else
+    {
 		QSettings settings;
 		homePath = settings.value(QString("Library/DefaultLocation"), 
 			QCoreApplication::applicationDirPath()).toString();
 	}
 
-	QString path = QFileDialog::getSaveFileName(this, tr("Save a csv-file"), 
-		homePath, tr("csv-files (*.csv)"));
+	QString path = QFileDialog::getSaveFileName(this, tr("Save a csv-file"), homePath, tr("csv-files (*.csv)"));
 
 	// if user clicked cancel
 	if (path.isEmpty())
+    {
 		return;
+    }
 
 	portModel_.exportCSV(path);
 }
 
-void AbsDefGroup::onAddSignalOptions() {
+//-----------------------------------------------------------------------------
+// Function: AbsDefGroup::onAddSignalOptions()
+//-----------------------------------------------------------------------------
+void AbsDefGroup::onAddSignalOptions()
+{
 	portModel_.addSignalOptions(portView_.selected());
 }
 
-void AbsDefGroup::save() {
+//-----------------------------------------------------------------------------
+// Function: AbsDefGroup::save()
+//-----------------------------------------------------------------------------
+void AbsDefGroup::save()
+{
 	// tell port model to transfer the ports to the abstraction definition
 	portModel_.save();
 }
 
-void AbsDefGroup::setupLayout() {
-
+//-----------------------------------------------------------------------------
+// Function: AbsDefGroup::setupLayout()
+//-----------------------------------------------------------------------------
+void AbsDefGroup::setupLayout()
+{
 	QVBoxLayout* topLayout = new QVBoxLayout(this);
 	topLayout->addWidget(&portView_, 1);
 }
 
-void AbsDefGroup::setAbsDef(QSharedPointer<AbstractionDefinition> absDef) {
+//-----------------------------------------------------------------------------
+// Function: AbsDefGroup::setAbsDef()
+//-----------------------------------------------------------------------------
+void AbsDefGroup::setAbsDef(QSharedPointer<AbstractionDefinition> absDef)
+{
 	absDef_ = absDef;
 	portModel_.setAbsDef(absDef);
 }

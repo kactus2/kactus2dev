@@ -163,6 +163,14 @@ int ConfigurableElementDelegate::valueColumn() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: ConfigurableElementDelegate::descriptionColumn()
+//-----------------------------------------------------------------------------
+int ConfigurableElementDelegate::descriptionColumn() const
+{
+    return -1;
+}
+
+//-----------------------------------------------------------------------------
 // Function: configurableelementdelegate::valueIsArray()
 //-----------------------------------------------------------------------------
 bool ConfigurableElementDelegate::valueIsArray(QModelIndex const& index) const

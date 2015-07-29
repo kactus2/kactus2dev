@@ -9,6 +9,7 @@
 #define REGISTERDELEGATE_H
 
 #include <QStyledItemDelegate>
+#include <QEvent>
 
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionDelegate.h>
@@ -43,9 +44,8 @@ public:
 	 *
 	 * \return Pointer to the editor to be used to edit the item.
 	*/
-	virtual QWidget* createEditor(QWidget* parent, 
-		const QStyleOptionViewItem& option, 
-		const QModelIndex& index) const;
+	virtual QWidget* createEditor(QWidget* parent, 	const QStyleOptionViewItem& option, 
+        QModelIndex const& index) const;
 
 	/*! \brief Set the data for the editor.
 	 *
@@ -76,6 +76,9 @@ protected:
      */
     virtual bool columnAcceptsExpression(int column) const;
 
+    //! Gets the description column.
+    virtual int descriptionColumn() const;
+
 private slots:
 
 	/*! \brief Commit the data from the sending editor and close the editor.
@@ -90,6 +93,7 @@ private:
 
 	//! \brief No assignment
 	RegisterDelegate& operator=(const RegisterDelegate& other);
+
 };
 
 #endif // REGISTERDELEGATE_H

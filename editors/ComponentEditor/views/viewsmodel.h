@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 12.6.2012
- *      Author: Antti Kamppi
- * 		filename: viewsmodel.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: viewsmodel.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 12.6.2012
+//
+// Description:
+// The model to manage the views summary.
+//-----------------------------------------------------------------------------
 
 #ifndef VIEWSMODEL_H
 #define VIEWSMODEL_H
@@ -15,10 +19,11 @@
 #include <QList>
 #include <QSharedPointer>
 
-/*! \brief The model to manage the views summary.
- *
- */
-class ViewsModel : public QAbstractTableModel {
+//-----------------------------------------------------------------------------
+//! The model to manage the views summary.
+//-----------------------------------------------------------------------------
+class ViewsModel : public QAbstractTableModel
+{
 	Q_OBJECT
 
 public:
@@ -37,8 +42,7 @@ public:
 	 * \param parent Pointer to the owner of the model.
 	 *
 	*/
-	ViewsModel(QSharedPointer<Component> component,
-		QObject *parent);
+	ViewsModel(QSharedPointer<Component> component,	QObject* parent);
 	
 	//! \brief The destructor
 	virtual ~ViewsModel();
@@ -49,7 +53,7 @@ public:
 	 *
 	 * \return Number of rows the item has.
 	*/
-	virtual int rowCount(const QModelIndex& parent = QModelIndex()) const;
+	virtual int rowCount(QModelIndex const& parent = QModelIndex()) const;
 
 	/*! \brief Get the number of columns the item has to be displayed.
 	 *
@@ -57,7 +61,7 @@ public:
 	 *
 	 * \return The number of columns to be displayed.
 	*/
-	virtual int columnCount(const QModelIndex& parent = QModelIndex()) const;
+	virtual int columnCount(QModelIndex const& parent = QModelIndex()) const;
 
 	/*! \brief Get the item flags that defines the possible operations for the item.
 	 *
@@ -65,7 +69,7 @@ public:
 	 *
 	 * \return Qt::ItemFlags specify the possible operations for the item.
 	*/
-	Qt::ItemFlags flags(const QModelIndex& index) const;
+	Qt::ItemFlags flags(QModelIndex const& index) const;
 
 	/*! \brief Get the header data for specified header.
 	 *
@@ -85,7 +89,7 @@ public:
 	 *
 	 * \return QVariant Contains the data for the item.
 	*/
-	virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
+	virtual QVariant data(QModelIndex const& index, int role = Qt::DisplayRole) const;
 
 	/*! \brief Save the data to the model for specified item
 	 *
@@ -95,8 +99,7 @@ public:
 	 *
 	 * \return True if saving happened successfully.
 	*/
-	bool setData(const QModelIndex& index, const QVariant& value, 
-		int role = Qt::EditRole);
+	bool setData(QModelIndex const& index, const QVariant& value, int role = Qt::EditRole);
 
 	/*! \brief Check if the views model is in a valid state.
 	 *
@@ -111,14 +114,14 @@ public slots:
 	 * \param index The index identifying the position for new item.
 	 *
 	*/
-	virtual void onAddItem(const QModelIndex& index);
+	virtual void onAddItem(QModelIndex const& index);
 
 	/*! \brief Remove the item in the given index.
 	 *
 	 * \param index The index identifying the item to remove.
 	 *
 	*/
-	virtual void onRemoveItem(const QModelIndex& index);
+	virtual void onRemoveItem(QModelIndex const& index);
 
 signals:
 
@@ -134,8 +137,6 @@ signals:
 private:
 	//! \brief No copying
 	ViewsModel(const ViewsModel& other);
-
-	//! \brief No assignment
 	ViewsModel& operator=(const ViewsModel& other);
 
 	//! \brief Pointer to the component being edited.

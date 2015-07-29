@@ -8,21 +8,16 @@
 #ifndef MEMORYMAPSDELEGATE_H
 #define MEMORYMAPSDELEGATE_H
 
-#include <QStyledItemDelegate>
+#include <editors/ComponentEditor/common/MultilineDescriptionDelegate.h>
 
 //-----------------------------------------------------------------------------
 //! The delegate to provide editor for adding/removing/editing the memory maps of a component.
 //-----------------------------------------------------------------------------
-class MemoryMapsDelegate : public QStyledItemDelegate
+class MemoryMapsDelegate : public MultilineDescriptionDelegate
 {
 	Q_OBJECT
 
 public:
-
-	//! \brief The role to display interface column with QStringList.
-	enum Roles {
-		USER_DISPLAY_ROLE = Qt::UserRole
-	};
 
     /*!
 	 *  The constructor.
@@ -73,6 +68,11 @@ public:
 
     virtual void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 
+protected:
+
+    //! Gets the description column.
+    virtual int descriptionColumn() const;
+
 private slots:
 
     /*!
@@ -87,6 +87,7 @@ private:
 
 	//! \brief No assignment
 	MemoryMapsDelegate& operator=(const MemoryMapsDelegate& other);
+
 
     //! A list of the components remap state names.
     QStringList remapStateNames_;

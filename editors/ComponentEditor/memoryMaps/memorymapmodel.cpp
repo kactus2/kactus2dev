@@ -16,7 +16,7 @@
 #include <IPXACTmodels/generaldeclarations.h>
 
 #include <QColor>
-#include <QDebug>
+#include <QRegularExpression>
 
 //-----------------------------------------------------------------------------
 // Function: MemoryMapModel::MemoryMapModel()
@@ -158,12 +158,22 @@ QVariant MemoryMapModel::data(QModelIndex const& index, int role) const
                 return formattedValueFor(valueForIndex(index).toString());
             }
         }
+        else if (role == Qt::DisplayRole && index.column() == MemoryMapColumns::DESCRIPTION_COLUMN)
+        {
+            return valueForIndex(index).toString().replace(QRegularExpression("\n.*$", 
+                QRegularExpression::DotMatchesEverythingOption), "...");
+        }
 
         return valueForIndex(index);
     }
 
     else if (role == Qt::EditRole)
     {
+        if (index.column() == MemoryMapColumns::DESCRIPTION_COLUMN)
+        {
+            return valueForIndex(index);
+        }
+
         return expressionOrValueForIndex(index);
     }
 

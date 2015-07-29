@@ -19,10 +19,11 @@
 
 #include <IPXACTmodels/validators/ParameterValidator2014.h>
 
+#include <QApplication>
 #include <QColor>
 #include <QFont>
 #include <QMessageBox>
-#include <QApplication>
+#include <QRegularExpression>
 
 //-----------------------------------------------------------------------------
 // Function: AbstractParameterModel::AbstractParameterModel()
@@ -64,6 +65,10 @@ QVariant AbstractParameterModel::data( QModelIndex const& index, int role /*= Qt
             index.column() == arrayLeftColumn() || index.column() == arrayRightColumn())
         {
             return expressionFormatter_->formatReferringExpression(valueForIndex(index).toString());
+        }
+        else if (index.column() == descriptionColumn())
+        {
+            return valueForIndex(index).toString().replace(QRegularExpression("\n.*$", QRegularExpression::DotMatchesEverythingOption), "...");
         }
         else
         {
@@ -677,6 +682,10 @@ QVariant AbstractParameterModel::expressionOrValueForIndex(QModelIndex const& in
     else if (index.column() == bitWidthRightColumn())
     {
         return parameter->getBitWidthRight();
+    }
+    else if (index.column() == descriptionColumn())
+    {
+        return parameter->getDescription();
     }
     else
     {

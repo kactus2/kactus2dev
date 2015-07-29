@@ -27,7 +27,7 @@ namespace RegisterColumns
         TESTABLE_COLUMN,
         TEST_CONSTR_COLUMN,
         IS_PRESENT_COLUMN,
-        DESC_COLUMN,
+        DESCRIPTION_COLUMN,
         COLUMN_COUNT
     };
 }

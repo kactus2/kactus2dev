@@ -852,7 +852,7 @@ IPXACTMODELS_EXPORT General::BooleanValue bool2BooleanValue(const bool value);
  * \return BooleanValue that matches the QString. If no match is found then
  * BooleanValue is BOOL_UNSPECIFIED.
  */
-General::BooleanValue str2BooleanValue(const QString& str);
+IPXACTMODELS_EXPORT General::BooleanValue str2BooleanValue(const QString& str);
 
 /*! \brief Convert BooleanValue to QString
  *
@@ -861,7 +861,7 @@ General::BooleanValue str2BooleanValue(const QString& str);
  * \return QString that matches the value. If value was BOOL_UNSPECIFIED then
  * empty QString is returned.
  */
-QString booleanValue2Str(const General::BooleanValue value);
+IPXACTMODELS_EXPORT QString booleanValue2Str(const General::BooleanValue value);
 
 /*! \brief Equals the spirit:qualifier element in IP-Xact specification
  *

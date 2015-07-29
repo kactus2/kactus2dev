@@ -36,3 +36,12 @@ bool SegmentDelegate::columnAcceptsExpression(int column) const
 {
     return column == 1 || column == 2;
 }
+
+//-----------------------------------------------------------------------------
+// Function: SegmentDelegate::descriptionColumn()
+//-----------------------------------------------------------------------------
+int SegmentDelegate::descriptionColumn() const
+{
+    return 3;
+}
+

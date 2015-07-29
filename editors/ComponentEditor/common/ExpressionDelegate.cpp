@@ -21,7 +21,7 @@
 //-----------------------------------------------------------------------------
 ExpressionDelegate::ExpressionDelegate(QCompleter* parameterNameCompleter, 
     QSharedPointer<ParameterFinder> parameterFinder, QObject *parent)
-    : QStyledItemDelegate(parent), 
+    : MultilineDescriptionDelegate(parent), 
     parameterNameCompleter_(parameterNameCompleter), parameterFinder_(parameterFinder)
 {
 
@@ -46,7 +46,7 @@ QWidget* ExpressionDelegate::createEditor(QWidget* parent, QStyleOptionViewItem 
     }
     else
     {
-        return QStyledItemDelegate::createEditor(parent, option, index);
+        return MultilineDescriptionDelegate::createEditor(parent, option, index);
     }
 }
 
@@ -62,7 +62,7 @@ void ExpressionDelegate::setEditorData(QWidget* editor, QModelIndex const& index
     }
     else
     {
-        QStyledItemDelegate::setEditorData(editor, index);
+        MultilineDescriptionDelegate::setEditorData(editor, index);
     }
 }
 
@@ -81,7 +81,7 @@ void ExpressionDelegate::setModelData(QWidget* editor, QAbstractItemModel* model
     }
     else
     {
-        QStyledItemDelegate::setModelData(editor, model, index);
+        MultilineDescriptionDelegate::setModelData(editor, model, index);
     }
 }
 
@@ -99,26 +99,6 @@ QWidget* ExpressionDelegate::createExpressionEditor(QWidget* parent) const
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
     return editor;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ExpressionDelegate::eventFilter()
-//-----------------------------------------------------------------------------
-bool ExpressionDelegate::eventFilter(QObject* editor, QEvent *event)
-{
-    if (event->type() == QEvent::KeyPress)
-    {
-        QKeyEvent* keyEvent = dynamic_cast<QKeyEvent*>(event);
-        if (keyEvent->key() == Qt::Key_Return || keyEvent->key() == Qt::Key_Enter)
-        {
-            QWidget* editorWidget = dynamic_cast<QWidget*>(editor);
-            commitData(editorWidget);
-            closeEditor(editorWidget);
-            return true;
-        }
-    }
-
-    return QStyledItemDelegate::eventFilter(editor, event);
 }
 
 //-----------------------------------------------------------------------------

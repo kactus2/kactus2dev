@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 11.6.2012
- *      Author: Antti Kamppi
- * 		filename: addressspacesdelegate.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: addressspacesdelegate.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 11.6.2012
+//
+// Description:
+// The delegate that provides editors to edit the address spaces summary.
+//-----------------------------------------------------------------------------
 
 #ifndef ADDRESSSPACESDELEGATE_H
 #define ADDRESSSPACESDELEGATE_H
@@ -11,10 +15,11 @@
 #include <editors/ComponentEditor/common/ExpressionDelegate.h>
 
 #include <QStyledItemDelegate>
+#include <QEvent>
 
-/*! The delegate that provides editors to edit the address spaces summary.
- *
- */
+//-----------------------------------------------------------------------------
+//! The delegate that provides editors to edit the address spaces summary.
+//-----------------------------------------------------------------------------
 class AddressSpacesDelegate : public ExpressionDelegate 
 {
 	Q_OBJECT
@@ -44,6 +49,9 @@ protected:
      *      @return True, if the cells in the column allow expressions, otherwise false.
      */
     virtual bool columnAcceptsExpression(int column) const;
+
+    //! Gets the description column.
+    virtual int descriptionColumn() const;
 
 private:
 	//! No copying

@@ -183,11 +183,8 @@ bool ComInterfacesModel::setData( const QModelIndex& index, const QVariant& valu
 				break;
 												}
 			case ComInterfacesDelegate::COM_DEF_COLUMN: {
-				VLNV comDefVLNV = VLNV(VLNV::COMDEFINITION, value.toString(), ":");
-				// parse the com definition
-				QSharedPointer<LibraryComponent const> libComp = libHandler_->getModelReadOnly(comDefVLNV);
-				const QSharedPointer<ComDefinition const> comDef = libComp.staticCast<ComDefinition const>();
-				comIfs_[index.row()]->setComType(comDefVLNV,&comDef->getProperties());
+				VLNV comDef = VLNV(VLNV::COMDEFINITION, value.toString(), ":");
+				comIfs_[index.row()]->setComType(comDef);
 				break;
 														}
 			case ComInterfacesDelegate::TRANSFER_TYPE_COLUMN: {

@@ -8,9 +8,11 @@
 #ifndef VIEWSEDITOR_H
 #define VIEWSEDITOR_H
 
-#include <common/views/EditableTableView/editabletableview.h>
-#include <editors/ComponentEditor/itemeditor.h>
 #include "viewsmodel.h"
+
+#include <common/views/EditableTableView/editabletableview.h>
+
+#include <editors/ComponentEditor/itemeditor.h>
 
 #include <QSortFilterProxyModel>
 

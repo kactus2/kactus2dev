@@ -274,11 +274,11 @@ private:
     /*!
      *  Gets the foreground colour for the given index.
      *
-     *      @param [in] index   The index whose foreground colour is wanted.
+     *      @param [in] index   The index whose foreground color is wanted.
      *
      *      @return Black for valid, red for invalid and gray for data that cannot be changed.
      */
-    QColor getForeGroundcolour(QModelIndex const& index) const;
+    QColor getForegroundColor(QModelIndex const& index) const;
 
     //-----------------------------------------------------------------------------
     // Data.

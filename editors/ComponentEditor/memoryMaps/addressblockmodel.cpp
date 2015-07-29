@@ -166,6 +166,11 @@ QVariant AddressBlockModel::data(QModelIndex const& index, int role) const
         {
             return expressionFormatter_->formatReferringExpression(valueForIndex(index).toString());
         }
+        else if (index.column() == AddressBlockColumns::DESCRIPTION)
+        {
+            return valueForIndex(index).toString().replace(QRegularExpression("\n.*$", 
+                QRegularExpression::DotMatchesEverythingOption), "...");
+        }
         else
         {
             return valueForIndex(index);
@@ -174,6 +179,11 @@ QVariant AddressBlockModel::data(QModelIndex const& index, int role) const
 
     else if (role == Qt::EditRole)
     {
+        if (index.column() == AddressBlockColumns::DESCRIPTION)
+        {
+            return valueForIndex(index);
+        }
+
         return expressionOrValueForIndex(index);
     }
 

@@ -1,49 +1,38 @@
 //-----------------------------------------------------------------------------
-// File: filesetsdelegate.h
+// File: MultilineDescriptionDelegate.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Antti Kamppi
-// Date: 29.5.2012
+// Author: Esko Pekkarinen
+// Date: 27.07.2015
 //
 // Description:
-// The delegate class to provide editors for file sets editor.
+// A delegate that provides a multiline editor for descriptions.
 //-----------------------------------------------------------------------------
 
-#ifndef FILESETSDELEGATE_H
-#define FILESETSDELEGATE_H
+#ifndef MULTILINEDESCRIPTIONDELEGATE_H
+#define MULTILINEDESCRIPTIONDELEGATE_H
 
-#include <editors/ComponentEditor/common/MultilineDescriptionDelegate.h>
+#include <QStyledItemDelegate>
+#include <QEvent>
 
 //-----------------------------------------------------------------------------
-//! The delegate class to provide editors for file sets editor.
+//! A delegate that provides a multiline editor for descriptions.
 //-----------------------------------------------------------------------------
-class FileSetsDelegate : public MultilineDescriptionDelegate
+class MultilineDescriptionDelegate : public QStyledItemDelegate 
 {
 	Q_OBJECT
 
 public:
 
-	//! The column number for name field.
-	static const int NAME_COLUMN = 0;
-
-	//! The column number for group identifiers.
-	static const int GROUP_COLUMN = 1;
-
-    //! The column number for description field.
-    static const int DESC_COLUMN = 2;
-
-	//! The minimum height for the custom list editor.
-	static const int LIST_EDITOR_MIN_HEIGHT = 100;
-
-	/*! The constructor
-	 *
-	 *      @param [in] parent Pointer to the owner of the delegate.
-	 *
-	*/
-	FileSetsDelegate(QObject *parent);
+    /*!
+     *  The constructor.
+     *
+     *      @param [in] parent      The parent object.
+     */
+	MultilineDescriptionDelegate(QObject* parent);
 	
 	//! The destructor
-	~FileSetsDelegate();
+	virtual ~MultilineDescriptionDelegate();
 
 	/*! Create a new editor for the given item
 	 *
@@ -51,10 +40,11 @@ public:
 	 *      @param [in] option  Contains options for the editor.
 	 *      @param [in] index   Model index identifying the item.
 	 *
-	 *      @return Pointer to the editor to be used to edit the item.
+	 * \return Pointer to the editor to be used to edit the item.
 	*/
-	virtual QWidget* createEditor(QWidget* parent, QStyleOptionViewItem const& option, 
+	virtual QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& option, 
         QModelIndex const& index) const;
+
 
 	/*! Set the data for the editor.
 	 *
@@ -69,29 +59,21 @@ public:
 	 *      @param [in] editor  The editor that contains the data to store.
 	 *      @param [in] model   Model that contains the data structure where data is to be saved to.
 	 *      @param [in] index   Model index identifying the item that's data is to be saved.
-	 *
 	*/
 	virtual void setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index) const;
 
 protected:
 
-    //! Gets the description column.
-    virtual int descriptionColumn() const;
+    //! Filters events for editors.
+    virtual bool eventFilter(QObject* editor, QEvent *event);
 
-private slots:
-
-	/*! Commit the data from the sending editor and close the editor.
-	 *
-	*/
-	void commitAndCloseEditor();
+    virtual int descriptionColumn() const = 0;
 
 private:
-	
 	//! No copying
-	FileSetsDelegate(const FileSetsDelegate& other);
+	MultilineDescriptionDelegate(const MultilineDescriptionDelegate& other);
+	MultilineDescriptionDelegate& operator=(const MultilineDescriptionDelegate& other);
 
-	//! No assignment
-	FileSetsDelegate& operator=(const FileSetsDelegate& other);
 };
 
-#endif // FILESETSDELEGATE_H
+#endif // MULTILINEDESCRIPTIONDELEGATE_H

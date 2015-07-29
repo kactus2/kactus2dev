@@ -110,7 +110,12 @@ QWidget* ParameterDelegate::createEditor(QWidget* parent, QStyleOptionViewItem c
     {
         return createEnumerationSelector(parent, index);
     }
-
+    else if (index.column() == descriptionColumn())
+    {
+        QTextEdit* editor = new QTextEdit(parent);
+        editor->setMinimumHeight(120);
+        return editor;
+    }
     else
     {
         return ChoiceCreatorDelegate::createEditor(parent, option, index);
@@ -197,7 +202,13 @@ void ParameterDelegate::setEditorData(QWidget* editor, QModelIndex const& index)
     {
         // Do nothing.
 	}
+    else if (index.column() == descriptionColumn())
+    {
+        QString text = index.data(Qt::EditRole).toString();
+        QTextEdit* textEdit = qobject_cast<QTextEdit*>(editor);
 
+        textEdit->setText(text);
+    }
     else
     {
         ChoiceCreatorDelegate::setEditorData(editor, index);
@@ -237,7 +248,12 @@ void ParameterDelegate::setModelData(QWidget* editor, QAbstractItemModel* model,
         }
         model->setData(index, text, Qt::EditRole);
     }
+    else if (index.column() == descriptionColumn())
+    {
+        QTextEdit* textEdit = qobject_cast<QTextEdit*>(editor);
 
+        model->setData(index, textEdit->toPlainText(), Qt::EditRole);
+    }
 	else 
     {
         ChoiceCreatorDelegate::setModelData(editor, model, index);
@@ -517,7 +533,7 @@ void ParameterDelegate::repositionAndResizeEditor(QWidget* editor, QStyleOptionV
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterDelegate::()
+// Function: ParameterDelegate::getArraySize()
 //-----------------------------------------------------------------------------
 int ParameterDelegate::getArraySize(int arrayLeftValue, int arrayRightValue) const
 {

@@ -28,7 +28,7 @@ namespace PortColumns
         ARRAY_LEFT,         //!< Column for setting the left side of the array.
         ARRAY_RIGHT,        //!< Column for setting the right side of the array.
         ADHOC_VISIBILITY,   //!< Column for toggling ad-hoc visibility on/off.
-        PORT_COL_DESC,      //!< Column for adding a description for the port.
+        DESCRIPTION,      //!< Column for adding a description for the port.
         COLUMN_COUNT
     };
 }
