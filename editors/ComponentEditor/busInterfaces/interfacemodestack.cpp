@@ -8,23 +8,23 @@
 #include "interfacemodestack.h"
 #include "busifgeneraltab.h"
 
+#include <editors/ComponentEditor/common/ExpressionParser.h>
+
 //-----------------------------------------------------------------------------
 // Function: interfacemodestack::InterfaceModeStack()
 //-----------------------------------------------------------------------------
-InterfaceModeStack::InterfaceModeStack(QSharedPointer<BusInterface> busif,
-                                       QSharedPointer<Component> component,
-                                       QSharedPointer<ParameterFinder> parameterFinder,
-                                       LibraryInterface* handler,
-                                       BusIfGeneralTab* parent):
+InterfaceModeStack::InterfaceModeStack(QSharedPointer<BusInterface> busif, QSharedPointer<Component> component,
+                                       QSharedPointer<ParameterFinder> parameterFinder, LibraryInterface* handler,
+                                       QSharedPointer<ExpressionParser> expressionParser, BusIfGeneralTab* parent):
 QStackedWidget(parent),
 busif_(busif),
 parent_(parent),
 mode_(busif->getInterfaceMode()),
-master_(General::MASTER, busif, component, this),
+master_(General::MASTER, busif_, component, parameterFinder, expressionParser, this),
 slave_(busif, component, this),
 system_(General::SYSTEM, parent, handler, busif, component, this),
-mirroredMaster_(General::MIRROREDMASTER, busif, component, this),
-mirroredSlave_(busif, component, parameterFinder, this),
+mirroredMaster_(General::MIRROREDMASTER, busif, component, parameterFinder, expressionParser, this),
+mirroredSlave_(busif, component, parameterFinder, expressionParser, this),
 mirroredSystem_(General::MIRROREDSYSTEM, parent, handler, busif, component, this),
 monitor_(busif, component, parent, handler, this)
 {
@@ -56,12 +56,19 @@ monitor_(busif, component, parent, handler, this)
 	connect(&monitor_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
-    connect(this, SIGNAL(busIfParametersChanged()),
-        &mirroredSlave_, SLOT(onBusIfParametersChanged()), Qt::UniqueConnection);
-
     connect(&mirroredSlave_, SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
     connect(&mirroredSlave_, SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+
+    connect(&master_, SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(&master_, SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+
+    connect(&mirroredMaster_, SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(&mirroredMaster_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 }
 
@@ -80,17 +87,15 @@ void InterfaceModeStack::setMode( General::InterfaceMode mode )
 {
     if (mode_ == General::MIRROREDSLAVE)
     {
-        QString remapAddressID = mirroredSlave_.getRemapAddressID();
-        if (!remapAddressID.isEmpty())
-        {
-            emit decreaseReferences(remapAddressID);
-        }
-
-        QString rangeID = mirroredSlave_.getRangeID();
-        if (!rangeID.isEmpty())
-        {
-            emit decreaseReferences(rangeID);
-        }
+        mirroredSlave_.removeReferencesFromExpressions();
+    }
+    else if (mode_ == General::MASTER)
+    {
+        master_.removeReferencesFromExpressions();
+    }
+    else if (mode_ == General::MIRROREDMASTER)
+    {
+        mirroredMaster_.removeReferencesFromExpressions();
     }
 
 	// update the current mode

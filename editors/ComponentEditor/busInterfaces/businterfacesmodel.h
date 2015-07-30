@@ -20,6 +20,7 @@
 #include <QList>
 
 class LibraryInterface;
+class ParameterFinder;
 
 //-----------------------------------------------------------------------------
 //! The model that manages the objects for BusInterfacesEditor.
@@ -29,14 +30,16 @@ class BusInterfacesModel : public QAbstractTableModel {
 
 public:
 
-	/*! The constructor
-	 * 
-	 *      @param [in] libHandler  The instance that manages the library.
-	 *      @param [in] component   The component being edited.
-	 *      @param [in] parent      The owner of this model.
+    /*!
+	 *  The constructor.
 	 *
-	*/
-	BusInterfacesModel(LibraryInterface* libHandler, QSharedPointer<Component> component, QObject* parent);
+	 *      @param [in] libHandler          The instance that manages the library.
+	 *      @param [in] component           The component being edited.
+	 *      @param [in] parameterFinder     The parameter finder.
+	 *      @param [in] parent              The owner of this model.
+	 */
+	BusInterfacesModel(LibraryInterface* libHandler, QSharedPointer<Component> component,
+        QSharedPointer<ParameterFinder> parameterFinder, QObject *parent);
 	
 	//! The destructor
 	virtual ~BusInterfacesModel();
@@ -179,6 +182,20 @@ signals:
      */
     void busIfMoved(int source, int target);
 
+    /*!
+     *  Increase the number of references made to the specified parameter.
+     *
+     *      @param [in] id  Id of the parameter whose reference count is increased.
+     */
+    void increaseReferences(QString id);
+
+    /*!
+     *  Decrease the number of references made to the specified parameter.
+     *
+     *      @param [in] id  Id of the parameter whose reference count is decreased.
+     */
+    void decreaseReferences(QString id);
+
 private:
 
 	//! No copying
@@ -186,6 +203,13 @@ private:
 
 	//! No assignment
 	BusInterfacesModel& operator=(const BusInterfacesModel& other);
+
+    /*!
+     *  Remove references from the expressions contained within the removed bus interface.
+     *
+     *      @param [in] busInterfaceIndex   The index of the removed bus interface.
+     */
+    void removeReferencesFromExpressions(int busInterfaceIndex);
    
 	//! The instance that manages the library.
 	LibraryInterface* libHandler_;
@@ -196,6 +220,8 @@ private:
 	//! The bus interfaces being edited.
 	QList<QSharedPointer<BusInterface> >& busifs_;
 
+    //! The parameter finder.
+    QSharedPointer<ParameterFinder> parameterFinder_;
 };
 
 #endif // BUSINTERFACESMODEL_H

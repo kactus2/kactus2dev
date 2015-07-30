@@ -23,8 +23,6 @@
 
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 
-#include <IPXACTmodels/validators/BinaryValidator.h>
-
 #include <QFormLayout>
 #include <QScrollArea>
 #include <QSplitter>
@@ -50,8 +48,6 @@ volatileEditor_(),
 accessEditor_(),
 resetValueEditor_(new QLineEdit(this)),
 resetMaskEditor_(new QLineEdit(this)),
-resetValueValidator_(),
-resetMaskValidator_(),
 expressionParser_(expressionParser)
 {
     offsetEditor_->setFixedHeight(20);
@@ -78,12 +74,6 @@ expressionParser_(expressionParser)
     sizeEditor_->setAppendingCompleter(sizeParameterCompleter);
     dimensionEditor_->setAppendingCompleter(dimensionParameterCompleter);
     isPresentEditor_->setAppendingCompleter(isPresentCompleter);
-
-    resetValueValidator_ = new BinaryValidator(formattedValueFor(selectedRegister_->getSizeExpression()), resetValueEditor_);
-    resetMaskValidator_= new BinaryValidator(formattedValueFor(selectedRegister_->getSizeExpression()), resetMaskEditor_);
-
-    resetValueEditor_->setValidator(resetValueValidator_);
-    resetMaskEditor_->setValidator(resetMaskValidator_);
 
     setupLayout();
 
@@ -214,12 +204,6 @@ void SingleRegisterEditor::refresh()
 
     resetValueEditor_->setText(selectedRegister_->getRegisterValue());
     resetMaskEditor_->setText(selectedRegister_->getRegisterMask());
-
-    resetMaskValidator_->setNewExpressionvalidator(formattedValueFor(selectedRegister_->getSizeExpression()));
-    resetValueValidator_->setNewExpressionvalidator(formattedValueFor(selectedRegister_->getSizeExpression()));
-
-    setResetValueColours();
-    setResetMaskColours();
 }
 
 //-----------------------------------------------------------------------------
@@ -256,10 +240,8 @@ void SingleRegisterEditor::connectSignals()
     connect(dimensionEditor_, SIGNAL(editingFinished()), this, SLOT(onDimensionEdited()), Qt::UniqueConnection);
     connect(isPresentEditor_, SIGNAL(editingFinished()), this, SLOT(onIsPresentEdited()), Qt::UniqueConnection);
 
-    connect(resetValueEditor_, SIGNAL(textEdited(QString const&)),
-        this, SLOT(onResetValueChanged(QString const&)), Qt::UniqueConnection);
-    connect(resetMaskEditor_, SIGNAL(textEdited(QString const&)),
-        this, SLOT(onResetMaskChanged(QString const&)), Qt::UniqueConnection);
+    connect(resetValueEditor_, SIGNAL(editingFinished()), this, SLOT(onResetValueChanged()), Qt::UniqueConnection);
+    connect(resetMaskEditor_, SIGNAL(editingFinished()), this, SLOT(onResetMaskChanged()), Qt::UniqueConnection);
 
     connect(&nameEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(offsetEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -331,12 +313,6 @@ void SingleRegisterEditor::onSizeEdited()
     QString formattedSize = formattedValueFor(selectedRegister_->getSizeExpression());
     selectedRegister_->setSize(formattedSize.toInt());
 
-    resetMaskValidator_->setNewExpressionvalidator(formattedValueFor(selectedRegister_->getSizeExpression()));
-    resetValueValidator_->setNewExpressionvalidator(formattedValueFor(selectedRegister_->getSizeExpression()));
-
-    setResetValueColours();
-    setResetMaskColours();
-
     sizeEditor_->setToolTip(formattedSize);
 }
 
@@ -395,11 +371,16 @@ void SingleRegisterEditor::onAccessSelected(QString const& newAccessValue)
 //-----------------------------------------------------------------------------
 // Function: SingleRegisterEditor::onResetValueChanged()
 //-----------------------------------------------------------------------------
-void SingleRegisterEditor::onResetValueChanged(QString const& newResetValue)
+void SingleRegisterEditor::onResetValueChanged()
 {
+    QString newResetValue = resetValueEditor_->text();
     selectedRegister_->setRegisterValue(newResetValue);
 
-    setResetValueColours();
+    if (newResetValue.isEmpty())
+    {
+        selectedRegister_->setRegisterMask("");
+        resetMaskEditor_->clear();
+    }
 
     emit contentChanged();
 }
@@ -407,78 +388,11 @@ void SingleRegisterEditor::onResetValueChanged(QString const& newResetValue)
 //-----------------------------------------------------------------------------
 // Function: SingleRegisterEditor::onResetMaskChanged()
 //-----------------------------------------------------------------------------
-void SingleRegisterEditor::onResetMaskChanged(QString const& newResetMask)
+void SingleRegisterEditor::onResetMaskChanged()
 {
-    selectedRegister_->setRegisterMask(newResetMask);
-
-    setResetMaskColours();
+    selectedRegister_->setRegisterMask(resetMaskEditor_->text());
 
     emit contentChanged();
-}
-
-//-----------------------------------------------------------------------------
-// Function: SingleRegisterEditor::isResetValid()
-//-----------------------------------------------------------------------------
-bool SingleRegisterEditor::isResetValid(QString const& resetValue) const
-{
-    QRegularExpression resetExpression("(?<size>[1-9]?[0-9]*)'(?<bitChar>[bB])(?<bits>[01_]+)");
-    QRegularExpressionMatch match = resetExpression.match(resetValue);
-
-    if (match.hasMatch())
-    {
-        QString sizeOfBits = match.captured("size");
-        QString bitChar = match.captured("bitChar");
-        QString bits = match.captured("bits");
-        bits.remove('_');
-
-        unsigned int numberOfBitCharacters = bits.size();
-
-        if (numberOfBitCharacters == selectedRegister_->getSize() && (sizeOfBits.isEmpty() ||
-            sizeOfBits.toInt() == selectedRegister_->getSize()))
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: SingleRegisterEditor::setResetFontColours()
-//-----------------------------------------------------------------------------
-void SingleRegisterEditor::setResetValueColours() const
-{
-    QPalette* palette = new QPalette();
-
-    if (isResetValid(selectedRegister_->getRegisterValue()))
-    {
-        palette->setColor(QPalette::Text, Qt::black);
-        resetValueEditor_->setPalette(*palette);
-    }
-    else
-    {
-        palette->setColor(QPalette::Text, Qt::red);
-        resetValueEditor_->setPalette(*palette);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: SingleRegisterEditor::setResetMaskColours()
-//-----------------------------------------------------------------------------
-void SingleRegisterEditor::setResetMaskColours() const
-{
-    QPalette* palette = new QPalette();
-
-    if (isResetValid(selectedRegister_->getRegisterMask()))
-    {
-        palette->setColor(QPalette::Text, Qt::black);
-        resetMaskEditor_->setPalette(*palette);
-    }
-    else
-    {
-        palette->setColor(QPalette::Text, Qt::red);
-        resetMaskEditor_->setPalette(*palette);
-    }
 }
 
 //-----------------------------------------------------------------------------

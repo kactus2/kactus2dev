@@ -4144,6 +4144,18 @@
     <ClCompile Include="GeneratedFiles\moc_ViewsDelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\ports\PortTagEditorDelegate.cpp">
+      <Filter>Source Files\editors\ComponentEditor\ports</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_PortTagEditorDelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_BusInterfaceWizardGeneralOptionsPage.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_BusInterfaceWizard.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5703,6 +5715,15 @@
     <CustomBuild Include="editors\ComponentEditor\views\ViewsDelegate.h">
       <Filter>Header Files\editors\ComponentEditor\views</Filter>
     </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\ports\PortTagEditorDelegate.h">
+      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
+    </CustomBuild>
+    <CustomBuild Include="wizards\BusInterfaceWizard\BusInterfaceWizardGeneralOptionsPage.h">
+      <Filter>Header Files\wizards\BusInterfaceWizard</Filter>
+    </CustomBuild>
+    <CustomBuild Include="wizards\BusInterfaceWizard\BusInterfaceWizard.h">
+      <Filter>Header Files\wizards\BusInterfaceWizard</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -5836,12 +5857,6 @@
     </ClInclude>
     <ClInclude Include="library\LibraryManager\LibraryUtils.h">
       <Filter>Header Files\library\LibraryManager</Filter>
-    </ClInclude>
-    <ClInclude Include="wizards\BusInterfaceWizard\BusInterfaceWizard.h">
-      <Filter>Header Files\wizards\BusInterfaceWizard</Filter>
-    </ClInclude>
-    <ClInclude Include="wizards\BusInterfaceWizard\BusInterfaceWizardGeneralOptionsPage.h">
-      <Filter>Header Files\wizards\BusInterfaceWizard</Filter>
     </ClInclude>
     <ClInclude Include="designEditors\HWDesign\AdHocEnabled.h">
       <Filter>Header Files\designEditors\HWDesign</Filter>

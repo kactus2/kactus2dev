@@ -6,7 +6,9 @@
  */
 
 #include "componenteditorbusinterfaceitem.h"
+
 #include <editors/ComponentEditor/busInterfaces/businterfaceeditor.h>
+#include <editors/ComponentEditor/common/ExpressionParser.h>
 
 #include <IPXACTmodels/PortMap.h>
 
@@ -15,11 +17,13 @@ ComponentEditorBusInterfaceItem::ComponentEditorBusInterfaceItem(QSharedPointer<
     QSharedPointer<ReferenceCounter> referenceCounter,
     QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<ExpressionParser> expressionParser,
     ComponentEditorItem* parent, QWidget* parentWnd):
 ComponentEditorItem(model, libHandler, component, parent),
 busif_(busif),
 parentWnd_(parentWnd),
-editAction_(new QAction(tr("Edit"), this))
+editAction_(new QAction(tr("Edit"), this)),
+expressionParser_(expressionParser)
 {
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);
@@ -86,14 +90,12 @@ bool ComponentEditorBusInterfaceItem::isValid() const {
 ItemEditor* ComponentEditorBusInterfaceItem::editor() {
 	if (!editor_) {
 		editor_ = new BusInterfaceEditor(libHandler_, component_, busif_, parameterFinder_, expressionFormatter_,
-            0, parentWnd_);
+            expressionParser_, 0, parentWnd_);
 		editor_->setProtection(locked_);
-		connect(editor_, SIGNAL(contentChanged()),
-			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
-        connect(editor_, SIGNAL(errorMessage(const QString&)), 
+		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(errorMessage(const QString&)),
             this, SIGNAL(errorMessage(const QString&)),Qt::UniqueConnection);
-		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
-			this, SIGNAL(helpUrlRequested(QString const&)));
+		connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
 
         connectItemEditorToReferenceCounter();
 

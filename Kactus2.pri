@@ -161,9 +161,9 @@ HEADERS += ./common/Global.h \
     ./wizards/ComponentWizard/ImportEditor/ImportEditor.h \
     ./wizards/ComponentWizard/ImportEditor/ImportHighlighter.h \
     ./wizards/BusInterfaceWizard/BusInterfaceWizard.h \
-    ./wizards/BusInterfaceWizard/BusInterfaceWizardGeneralOptionsPage.h \
     ./wizards/BusInterfaceWizard/BusInterfaceWizardBusDefinitionPage.h \
     ./wizards/BusInterfaceWizard/BusInterfaceWizardConclusionPage.h \
+    ./wizards/BusInterfaceWizard/BusInterfaceWizardGeneralOptionsPage.h \
     ./wizards/BusInterfaceWizard/BusInterfaceWizardIntroPage.h \
     ./wizards/BusInterfaceWizard/BusInterfaceWizardPortMapPage.h \
     ./wizards/ImportWizard/ImportWizardIntroPage.h \
@@ -258,6 +258,7 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/modelParameters/modelparametermodel.h \
     ./editors/ComponentEditor/modelParameters/modelparametereditor.h \
     ./editors/ComponentEditor/ports/PortColumns.h \
+    ./editors/ComponentEditor/ports/PortTagEditorDelegate.h \
     ./editors/ComponentEditor/ports/portsdelegate.h \
     ./editors/ComponentEditor/ports/portseditor.h \
     ./editors/ComponentEditor/ports/portsmodel.h \
@@ -281,6 +282,7 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/channels/channelsdelegate.h \
     ./editors/ComponentEditor/channels/channelseditor.h \
     ./editors/ComponentEditor/channels/channelsmodel.h \
+    ./editors/ComponentEditor/busInterfaces/BusInterfaceColumns.h \
     ./editors/ComponentEditor/busInterfaces/bridgesmodel.h \
     ./editors/ComponentEditor/busInterfaces/busifgeneraldetails.h \
     ./editors/ComponentEditor/busInterfaces/busifgeneraltab.h \
@@ -367,6 +369,7 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/cpus/cpusmodel.h \
     ./editors/ComponentEditor/views/ModuleParameterFactoryImplementation.h \
     ./editors/ComponentEditor/views/ModuleParameterEditor.h \
+    ./editors/ComponentEditor/views/ViewsDelegate.h \
     ./editors/ComponentEditor/views/filesetrefmodel.h \
     ./editors/ComponentEditor/views/flatviewgeneraltab.h \
     ./editors/ComponentEditor/views/hierarchyrefwidget.h \
@@ -409,6 +412,7 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencySourceDialog.h \
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencySourceEditor.h \
     ./editors/ComponentEditor/memoryMaps/AddressBlockColumns.h \
+    ./editors/ComponentEditor/memoryMaps/EnumeratedValueColumns.h \
     ./editors/ComponentEditor/memoryMaps/MemoryMapColumns.h \
     ./editors/ComponentEditor/memoryMaps/MemoryMapsColumns.h \
     ./editors/ComponentEditor/memoryMaps/RegisterColumns.h \
@@ -511,6 +515,7 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/common/CompleterPopupTable.h \
     ./editors/ComponentEditor/common/ExpressionDelegate.h \
     ./editors/ComponentEditor/common/ExpressionEditor.h \
+    ./editors/ComponentEditor/common/MultilineDescriptionDelegate.h \
     ./editors/ComponentEditor/common/ParameterCompleter.h \
     ./editors/ComponentEditor/common/ParameterizableTable.h \
     ./editors/ComponentEditor/common/ReferencingTableModel.h \
@@ -642,8 +647,7 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/vhdlGenerator/vhdlport.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
-    ./editors/ComponentEditor/memoryMaps/EnumeratedValueColumns.h
+    ./kactusGenerators/modelsimGenerator/modelsimgenerator.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -945,6 +949,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/ports/portseditor.cpp \
     ./editors/ComponentEditor/ports/portsmodel.cpp \
     ./editors/ComponentEditor/ports/PortsView.cpp \
+    ./editors/ComponentEditor/ports/PortTagEditorDelegate.cpp \
     ./editors/ComponentEditor/views/envidentifiereditor.cpp \
     ./editors/ComponentEditor/views/envidentifiersdelegate.cpp \
     ./editors/ComponentEditor/views/envidentifiersmodel.cpp \
@@ -956,6 +961,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/views/ModuleParameterEditor.cpp \
     ./editors/ComponentEditor/views/ModuleParameterFactoryImplementation.cpp \
     ./editors/ComponentEditor/views/vieweditor.cpp \
+    ./editors/ComponentEditor/views/ViewsDelegate.cpp \
     ./editors/ComponentEditor/views/viewseditor.cpp \
     ./editors/ComponentEditor/views/viewsmodel.cpp \
     ./editors/ComponentEditor/software/PropertyValueDelegate.cpp \
@@ -1095,6 +1101,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/common/ExpressionFormatterFactoryImplementation.cpp \
     ./editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
     ./editors/ComponentEditor/common/ListParameterFinder.cpp \
+    ./editors/ComponentEditor/common/MultilineDescriptionDelegate.cpp \
     ./editors/ComponentEditor/common/MultipleParameterFinder.cpp \
     ./editors/ComponentEditor/common/NullParser.cpp \
     ./editors/ComponentEditor/common/ParameterCompleter.cpp \

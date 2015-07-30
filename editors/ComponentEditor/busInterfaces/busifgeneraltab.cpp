@@ -17,19 +17,18 @@
 #include <QScrollArea>
 #include <QApplication>
 
-BusIfGeneralTab::BusIfGeneralTab(LibraryInterface* libHandler,
-                                  QSharedPointer<BusInterface> busif,
-                                  QSharedPointer<Component> component,
-                                  QSharedPointer<ParameterFinder> parameterFinder,
-                                  QSharedPointer<ExpressionFormatter> expressionFormatter,
-                                  QWidget* parent,
-                                  QWidget* parentWnd):
+BusIfGeneralTab::BusIfGeneralTab(LibraryInterface* libHandler, QSharedPointer<BusInterface> busif,
+                                 QSharedPointer<Component> component,
+                                 QSharedPointer<ParameterFinder> parameterFinder,
+                                 QSharedPointer<ExpressionFormatter> expressionFormatter,
+                                 QSharedPointer<ExpressionParser> expressionParser,
+                                 QWidget* parent, QWidget* parentWnd):
 QWidget(parent),
 busif_(busif),
 nameEditor_(busif->getNameGroup(), this, tr("Name and description")),
 busType_(VLNV::BUSDEFINITION, libHandler, parentWnd, this),
 absType_(VLNV::ABSTRACTIONDEFINITION, libHandler, parentWnd, this),
-modeStack_(busif, component, parameterFinder, libHandler, this),
+modeStack_(busif, component, parameterFinder, libHandler, expressionParser, this),
 details_(busif, this),
 parameters_(busif->getParameters(), component, parameterFinder, expressionFormatter, this),
 libHandler_(libHandler) {
@@ -64,9 +63,6 @@ libHandler_(libHandler) {
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&parameters_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-
-    connect(&parameters_, SIGNAL(contentChanged()),
-        &modeStack_, SIGNAL(busIfParametersChanged()), Qt::UniqueConnection);
 
 	connect(&busType_, SIGNAL(setAbsDef(const VLNV&)),
 		this, SLOT(onSetAbsType(const VLNV&)), Qt::UniqueConnection);

@@ -17,6 +17,12 @@
 
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/masterinterface.h>
+#include <IPXACTmodels/mirroredslaveinterface.h>
+
+#include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
 
 #include <QColor>
 #include <QCoreApplication>
@@ -31,11 +37,12 @@
 // Function: BusInterfacesModel::BusInterfacesModel()
 //-----------------------------------------------------------------------------
 BusInterfacesModel::BusInterfacesModel(LibraryInterface* libHandler, QSharedPointer<Component> component,
-    QObject *parent ):
+                                       QSharedPointer<ParameterFinder> parameterFinder, QObject *parent):
 QAbstractTableModel(parent),
-    libHandler_(libHandler),
-    component_(component),
-    busifs_(component->getBusInterfaces())
+libHandler_(libHandler),
+component_(component),
+busifs_(component->getBusInterfaces()),
+parameterFinder_(parameterFinder)
 {
 	Q_ASSERT(libHandler_);
 	Q_ASSERT(component_);
@@ -366,7 +373,10 @@ void BusInterfacesModel::onRemoveItem(QModelIndex const& index)
 
 	// remove the specified item
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
+
+    removeReferencesFromExpressions(index.row());
 	busifs_.removeAt(index.row());
+
 	endRemoveRows();
 
 	// inform navigation tree that file set has been removed
@@ -430,4 +440,41 @@ bool BusInterfacesModel::isValid() const
 	}
 	// all bus interfaces were valid
 	return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: businterfacesmodel::removeReferencesFromExpressions()
+//-----------------------------------------------------------------------------
+void BusInterfacesModel::removeReferencesFromExpressions(int busInterfaceIndex)
+{
+    QSharedPointer<BusInterface> removedInterface = busifs_.at(busInterfaceIndex);
+
+    if (removedInterface->getInterfaceMode() == General::MASTER ||
+        removedInterface->getInterfaceMode() == General::MIRROREDMASTER ||
+        removedInterface->getInterfaceMode() == General::MIRROREDSLAVE)
+    {
+        QStringList expressions;
+        if (removedInterface->getMaster())
+        {
+            QSharedPointer<MasterInterface> removedMaster = removedInterface->getMaster();
+            expressions.append(removedMaster->getBaseAddress());
+        }
+        else if (removedInterface->getMirroredSlave())
+        {
+            QSharedPointer<MirroredSlaveInterface> removedMirrorSlave = removedInterface->getMirroredSlave();
+            expressions.append(removedMirrorSlave->getRange());
+            expressions.append(removedMirrorSlave->getRemapAddress());
+        }
+
+        ReferenceCalculator referenceCalculator(parameterFinder_);
+        QMap<QString, int> referencedParameters = referenceCalculator.getReferencedParameters(expressions);
+
+        foreach (QString referencedId, referencedParameters.keys())
+        {
+            for (int i = 0; i < referencedParameters.value(referencedId); ++i)
+            {
+                emit decreaseReferences(referencedId);
+            }
+        }
+    }
 }

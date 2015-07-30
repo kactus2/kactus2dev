@@ -238,13 +238,17 @@ QVariant PortsModel::headerData(int section, Qt::Orientation orientation, int ro
                 QString arrayRightHeader = tr("Array\nright") + getExpressionSymbol();
                 return arrayRightHeader;
             }
-            else if (section == PortColumns::DESCRIPTION)
+            else if (section == PortColumns::TAG_GROUP)
             {
-                return tr("Description");
+                return tr("Port\ntags");
             }
             else if (section == PortColumns::ADHOC_VISIBILITY)
             {
                 return tr("Ad-hoc");
+            }
+            else if (section == PortColumns::DESCRIPTION)
+            {
+                return tr("Description");
             }
             else
             {
@@ -413,13 +417,18 @@ bool PortsModel::setData(QModelIndex const& index, QVariant const& value, int ro
                 port->setArrayLeft(QString::number(0));
             }
         }
-        else if (index.column() == PortColumns::DESCRIPTION)
+        else if (index.column() == PortColumns::TAG_GROUP)
         {
-            port->setDescription(value.toString());
+            QString tagGroup = value.toString();
+            port->setPortTags(tagGroup);
         }
         else if (index.column() == PortColumns::ADHOC_VISIBILITY)
         {
             port->setAdHocVisible(value.toBool());
+        }
+        else if (index.column() == PortColumns::DESCRIPTION)
+        {
+            port->setDescription(value.toString());
         }
         else
         {
@@ -780,13 +789,17 @@ QVariant PortsModel::valueForIndex(QModelIndex const& index) const
     {
         return port->getArrayRight();
     }
-    else if (index.column() == PortColumns::DESCRIPTION)
+    else if (index.column() == PortColumns::TAG_GROUP)
     {
-        return port->getDescription();
+        return port->getPortTags();
     }
     else if (index.column() == PortColumns::ADHOC_VISIBILITY)
     {
         return port->isAdHocVisible();
+    }
+    else if (index.column() == PortColumns::DESCRIPTION)
+    {
+        return port->getDescription();
     }
     else
     {

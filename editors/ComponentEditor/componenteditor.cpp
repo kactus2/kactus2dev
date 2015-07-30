@@ -781,7 +781,7 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createHWRootItem(QShare
 
     QSharedPointer<ComponentEditorBusInterfacesItem> busInterfaceItem (new ComponentEditorBusInterfacesItem(
         &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionFormatter_,
-        hwRoot, parentWidget()));
+        expressionParser, hwRoot, parentWidget()));
 
     hwRoot->addChildItem(busInterfaceItem);
 

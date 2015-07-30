@@ -27,6 +27,7 @@ namespace PortColumns
         DEFAULT_VALUE,      //!< Column for setting the default value for the port.
         ARRAY_LEFT,         //!< Column for setting the left side of the array.
         ARRAY_RIGHT,        //!< Column for setting the right side of the array.
+        TAG_GROUP,          //!< Column for tagging a port.
         ADHOC_VISIBILITY,   //!< Column for toggling ad-hoc visibility on/off.
         DESCRIPTION,      //!< Column for adding a description for the port.
         COLUMN_COUNT

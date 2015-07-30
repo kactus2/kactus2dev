@@ -754,6 +754,14 @@ bool ParameterReferenceTree::referenceExistsInSingleBusInterface(QSharedPointer<
         }
     }
 
+    if (busInterface->getMaster())
+    {
+        if (referenceExistsInMasterInterface(busInterface->getMaster()))
+        {
+            return true;
+        }
+    }
+
     return false;
 }
 
@@ -771,7 +779,7 @@ bool ParameterReferenceTree::referenceExistsInMirroredSlave(QSharedPointer<Mirro
 bool ParameterReferenceTree::mirroredSlaveRemapAddressHasReference(
     QSharedPointer<MirroredSlaveInterface> mirrorSlave) const
 {
-    return mirrorSlave->getRemapAddressID() == targetID_;
+    return mirrorSlave->getRemapAddress().contains(targetID_);
 }
 
 //-----------------------------------------------------------------------------
@@ -779,7 +787,15 @@ bool ParameterReferenceTree::mirroredSlaveRemapAddressHasReference(
 //-----------------------------------------------------------------------------
 bool ParameterReferenceTree::mirroredSlaveRangeHasReference(QSharedPointer<MirroredSlaveInterface> mirrorSlave) const
 {
-    return mirrorSlave->getRangeID() == targetID_;
+    return mirrorSlave->getRange().contains(targetID_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterReferenceTree::referenceExistsInMasterInterface()
+//-----------------------------------------------------------------------------
+bool ParameterReferenceTree::referenceExistsInMasterInterface(QSharedPointer<MasterInterface> masterInterface) const
+{
+    return masterInterface->getBaseAddress().contains(targetID_);
 }
 
 //-----------------------------------------------------------------------------
@@ -795,9 +811,10 @@ void ParameterReferenceTree::createReferencesForBusInterfaces()
         {
             QTreeWidgetItem* busInterfaceItem = createMiddleItem(busInterface->getName(), topBusInterfaceItem);
 
-            QSharedPointer<MirroredSlaveInterface> mirrorSlave(busInterface->getMirroredSlave());
-            if (mirrorSlave)
+            if (busInterface->getMirroredSlave())
             {
+                QSharedPointer<MirroredSlaveInterface> mirrorSlave(busInterface->getMirroredSlave());
+
                 if (referenceExistsInMirroredSlave(mirrorSlave))
                 {
                     QTreeWidgetItem* mirroredInterfaceItem =
@@ -806,11 +823,36 @@ void ParameterReferenceTree::createReferencesForBusInterfaces()
 
                     if (mirroredSlaveRemapAddressHasReference(mirrorSlave))
                     {
-                        createItem("Remap Address", mirrorSlave->getRemapAddressID(), mirroredInterfaceItem);
+                        createItem("Remap Address", mirrorSlave->getRemapAddress(), mirroredInterfaceItem);
                     }
                     if (mirroredSlaveRangeHasReference(mirrorSlave))
                     {
-                        createItem("Range", mirrorSlave->getRangeID(), mirroredInterfaceItem);
+                        createItem("Range", mirrorSlave->getRange(), mirroredInterfaceItem);
+                    }
+                }
+            }
+
+            if (busInterface->getMaster())
+            {
+                QSharedPointer<MasterInterface> master(busInterface->getMaster());
+
+                if (referenceExistsInMasterInterface(master))
+                {
+                    if (busInterface->getInterfaceMode() == General::MASTER)
+                    {
+                        QTreeWidgetItem* masterInterfaceItem = createMiddleItem(
+                            "Master Interface", busInterfaceItem);
+                        colourItemGrey(masterInterfaceItem);
+
+                        createItem("Base Address", master->getBaseAddress(), masterInterfaceItem);
+                    }
+                    else
+                    {
+                        QTreeWidgetItem* masterInterfaceItem = createMiddleItem(
+                            "Mirrored Master Interface", busInterfaceItem);
+                        colourItemGrey(masterInterfaceItem);
+
+                        createItem("Base Address", master->getBaseAddress(), masterInterfaceItem);
                     }
                 }
             }

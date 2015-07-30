@@ -27,6 +27,8 @@ class LibraryInterface;
 //-----------------------------------------------------------------------------
 class BusInterfaceWizard : public QWizard
 {
+    Q_OBJECT
+
 public:
     
     //! Enumeration for the wizard pages.
@@ -62,6 +64,22 @@ public:
 	 *  Destructor.
 	 */
 	 ~BusInterfaceWizard();
+
+signals:
+
+     /*!
+      *  Increase the number of references made to a specific parameter.
+      *
+      *      @param [in] id  The id of the parameter whose reference count is to be increased.
+      */
+     void increaseReferences(QString id);
+
+     /*!
+      *  Decrease the number of references made to a specific parameter.
+      *
+      *      @param [in] id  The id of the parameter whose reference count is to be decreased.
+      */
+     void decreaseReferences(QString id);
 
 private:
     // Disable copying.

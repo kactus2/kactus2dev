@@ -24,6 +24,10 @@
 #include <QSharedPointer>
 #include <QLineEdit>
 
+class ExpressionEditor;
+class ExpressionParser;
+class ParameterFinder;
+
 //-----------------------------------------------------------------------------
 //! Editor to edit master or mirrored master settings of a bus interface.
 //-----------------------------------------------------------------------------
@@ -32,17 +36,21 @@ class BusIfInterfaceMaster : public BusIfInterfaceModeEditor {
 
 public:
 
-	/*! The constructor
+    /*!
+	 *  The constructor.
 	 *
-	 *        @param [in] mode      The mode of the bus interface (may be master or mirrored master).
-	 *        @param [in] busif     Pointer to the bus interface being edited.
-	 *        @param [in] component Pointer to the component being edited.
-	 *        @param [in] parent    Pointer to the owner of this editor.
-	 *
-	*/
+	 *      @param [in] mode                The mode of the bus interface (master / mirrored master).
+	 *      @param [in] busif               Pointer to the bus interface being edited.
+	 *      @param [in] component           Pointer to the component being edited.
+	 *      @param [in] parameterFinder     Pointer to the parameter finder.
+	 *      @param [in] expressionParser    Pointer to the expression parser.
+	 *      @param [in] parent              Pointer to the owner of this editor.
+	 */
 	BusIfInterfaceMaster(General::InterfaceMode mode, 
 		QSharedPointer<BusInterface> busif,
 		QSharedPointer<Component> component,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionParser> expressionParser,
 		QWidget *parent);
 	
 	//! The destructor
@@ -68,13 +76,40 @@ public:
 	//! Save the interface mode-specific details to the bus interface.
 	virtual void saveModeSpecific();
 
+    /*!
+     *  Remove the references from the expressions.
+     */
+    void removeReferencesFromExpressions();
+
+signals:
+
+    /*!
+     *  Increase the number of references to the given parameter.
+     *
+     *      @param [in] id  The id of the target parameter.
+     */
+    void increaseReferences(QString id);
+
+    /*!
+     *  Decrease the number of references to the given parameter.
+     *
+     *      @param [in] id  The id of the target parameter.
+     */
+    void decreaseReferences(QString id);
+
 private slots:
 
-	//! Handler for changes in address space reference.
+	/*!
+	 *  Handler for changes in address space reference.
+	 *
+	 *      @param [in] addrSpaceName   The name of the referenced address space.
+	 */
 	void onAddressSpaceChange(const QString& addrSpaceName);
 
-	//! Handler for changes in base address.
-	void onBaseAddressChange(const QString& newBase);
+    /*!
+     *  Handler for changes in base address.
+     */
+    void onBaseAddressChange();
 
 private:
 
@@ -83,6 +118,13 @@ private:
 
 	//! No assignment
 	BusIfInterfaceMaster& operator=(const BusIfInterfaceMaster& other);
+
+    /*!
+     *  Formats a given expression.
+     *
+     *      @param [in] expression  The given expression.
+     */
+    QString formattedValueFor(QString const& expression) const;
 
 	//! Pointer to the master element being edited.
 	QSharedPointer<MasterInterface> master_;
@@ -93,8 +135,14 @@ private:
 	//! Combo box to select an address space within component
 	ReferenceSelector addressSpaceReferenceSelector_;
 
-	//! Line edit to set the base address of master's address space.
-	QLineEdit baseAddress_;
+    //! Editor for the base address of an address space.
+    ExpressionEditor* baseAddressEditor_;
+
+    //! The expression parser.
+    QSharedPointer<ExpressionParser> expressionParser_;
+
+    //! The parameter finder.
+    QSharedPointer<ParameterFinder> parameterFinder_;
 };
 
 #endif // BUSIFINTERFACEMASTER_H

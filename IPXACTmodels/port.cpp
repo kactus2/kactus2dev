@@ -15,6 +15,7 @@
 
 #include <IPXACTmodels/kactusExtensions/Kactus2Placeholder.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Position.h>
+#include <IPXACTmodels/kactusExtensions/Kactus2Value.h>
 
 #include <QDomNode>
 #include <QString>
@@ -860,6 +861,62 @@ void Port::setArrayRight(QString const& newArrayRight)
 }
 
 //-----------------------------------------------------------------------------
+// Function: port::setPortTags()
+//-----------------------------------------------------------------------------
+void Port::setPortTags(const QString& newPortTags)
+{
+    QSharedPointer<VendorExtension> portTagsExtension = getVendorExtension("kactus2:portTags");
+
+    if (newPortTags.isEmpty())
+    {
+        vendorExtensions_.removeAll(portTagsExtension);
+    }
+    else if (portTagsExtension)
+    {
+        QSharedPointer<Kactus2Value> tagExtension = portTagsExtension.dynamicCast<Kactus2Value>();
+        tagExtension->setValue(newPortTags);
+    }
+    else
+    {
+        createTagExtension(newPortTags);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: port::getPortTags()
+//-----------------------------------------------------------------------------
+const QString Port::getPortTags() const
+{
+    QSharedPointer<VendorExtension> portTagsExtension = getVendorExtension("kactus2:portTags");
+
+    if (portTagsExtension)
+    {
+        QSharedPointer<Kactus2Value> portTags = portTagsExtension.dynamicCast<Kactus2Value>();
+        return portTags->value();
+    }
+    else
+    {
+        return QString();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: port::getVendorExtension()
+//-----------------------------------------------------------------------------
+QSharedPointer<VendorExtension> Port::getVendorExtension(QString const& extensionType) const
+{
+    foreach (QSharedPointer<VendorExtension> kactus2Extension, vendorExtensions_)
+    {
+        if (kactus2Extension->type() == extensionType)
+        {
+            return kactus2Extension;
+        }
+    }
+
+    return QSharedPointer<VendorExtension> ();
+}
+
+//-----------------------------------------------------------------------------
 // Function: Port::parseVendorExtensions()
 //-----------------------------------------------------------------------------
 void Port::parseVendorExtensions(QDomNode const& extensionsNode)
@@ -881,6 +938,11 @@ void Port::parseVendorExtensions(QDomNode const& extensionsNode)
         else if (extensionNode.nodeName() == "kactus2:array")
         {
             createArrayExtensionFromExtensionNode(extensionNode);
+        }
+        else if (extensionNode.nodeName() == "kactus2:portTags")
+        {
+            QString portTags = extensionNode.childNodes().at(0).nodeValue();
+            createTagExtension(portTags);
         }
         else
         {                    
@@ -967,4 +1029,13 @@ void Port::createArrayExtension(QString const& left, QString const& right)
 {
     configurableArray_ = QSharedPointer<Kactus2Array>(new Kactus2Array(left, right));
     vendorExtensions_.append(configurableArray_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: port::createTagExtension()
+//-----------------------------------------------------------------------------
+void Port::createTagExtension(QString portTags)
+{
+    QSharedPointer<VendorExtension> portTagExtension (new Kactus2Value("kactus2:portTags", portTags));
+    vendorExtensions_.append(portTagExtension);
 }

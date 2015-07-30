@@ -582,8 +582,13 @@ QString Register::getRegisterValue() const
 //-----------------------------------------------------------------------------
 // Function: Register::setRegisterValue()
 //-----------------------------------------------------------------------------
-void Register::setRegisterValue(QString const& registerValue)
+void Register::setRegisterValue( const QString& registerValue )
 {
+    if (registerValue.isEmpty())
+    {
+        clearReset();
+    }
+
 	registerDefinition_.setRegisterValue(registerValue);
 }
 

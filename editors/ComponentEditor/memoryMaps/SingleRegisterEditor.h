@@ -30,7 +30,6 @@ class ExpressionFormatter;
 class AccessComboBox;
 class BooleanComboBox;
 class ExpressionEditor;
-class BinaryValidator;
 class ExpressionParser;
 //-----------------------------------------------------------------------------
 //! Editor for editing the details of a single register.
@@ -127,14 +126,14 @@ private slots:
      *
      *      @param [in] newResetValue   The new value for the reset.
      */
-    void onResetValueChanged(QString const& newResetValue);
+    void onResetValueChanged();
 
     /*!
      *  Save the edited reset mask to the register.
      *
      *      @param [in] newResetMask    The new value for the reset mask.
      */
-    void onResetMaskChanged(QString const& newResetMask);
+    void onResetMaskChanged();
 
 private:
 
@@ -169,23 +168,6 @@ private:
      *      @param [in] blockStatus     The new status of signal blocking.
      */
     void changeExpressionEditorsSignalBlockStatus(bool blockStatus) const;
-
-    /*!
-     *  Check if a reset value / mask is valid.
-     *
-     *      @param [in] resetValue  The value to be checked.
-     */
-    bool isResetValid(QString const& resetValue) const;
-
-    /*!
-     *  Set the color of the text in the reset value editor.
-     */
-    void setResetValueColours() const;
-
-    /*!
-     *  Set the color of the text in the reset mask editor.
-     */
-    void setResetMaskColours() const;
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -223,12 +205,6 @@ private:
 
     //! The reset mask editor.
     QLineEdit* resetMaskEditor_;
-
-    //! The validator for the reset value editor.
-    BinaryValidator* resetValueValidator_;
-
-    //! The validator for the reset mask editor.
-    BinaryValidator* resetMaskValidator_;
 
     //! The expression parser.
     QSharedPointer<ExpressionParser> expressionParser_;

@@ -17,6 +17,7 @@
 #include <QSharedPointer>
 
 class LibraryInterface;
+class ParameterFinder;
 
 /*! \brief Editor to add/remove/edit the bus interfaces of a component.
  *
@@ -38,16 +39,16 @@ public:
 	//! \brief The width of the interface mode column.
 	static const int IF_MODE_COLUMN_WIDTH = 100;
 
-	/*! \brief The constructor
+	/*!
+	 *  The constructor.
 	 *
-	 * \param handler Pointer to the instance that manages the library.
-	 * \param component Pointer to the component being edited.
-	 * \param parent Pointer to the parent of this editor.
-	 *
-	*/
-	BusInterfacesEditor(LibraryInterface* handler,
-		QSharedPointer<Component> component,
-				QWidget* parent = 0);
+	 *      @param [in] handler             Pointer to the instance that manages the library.
+	 *      @param [in] component           Pointer to the component being edited.
+	 *      @param [in] parameterFinder     Pointer to the parameter finder.
+	 *      @param [in] parent              Pointer to the owner of this editor.
+	 */
+	BusInterfacesEditor(LibraryInterface* handler, QSharedPointer<Component> component,
+        QSharedPointer<ParameterFinder> parameterFinder, QWidget* parent = 0);
 	
 	//! \brief The destructor
 	virtual ~BusInterfacesEditor();

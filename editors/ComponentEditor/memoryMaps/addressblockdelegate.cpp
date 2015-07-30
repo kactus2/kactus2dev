@@ -49,21 +49,6 @@ QWidget* AddressBlockDelegate::createEditor(QWidget* parent, QStyleOptionViewIte
     {
         return new AccessComboBox(parent);
     }
-    else if (index.column() == AddressBlockColumns::RESET_VALUE || index.column() == AddressBlockColumns::RESET_MASK)
-    {
-        QWidget* editor = QStyledItemDelegate::createEditor(parent, option, index);
-        QLineEdit* lineEditor = qobject_cast<QLineEdit*>(editor);
-
-        if (lineEditor)
-        {
-            QModelIndex modelIndex (index.sibling(index.row(), AddressBlockColumns::REGISTER_SIZE));
-            QString sizeExpression = modelIndex.data(Qt::ToolTipRole).toString();
-
-            lineEditor->setValidator(new BinaryValidator(sizeExpression, lineEditor));
-        }
-
-        return editor;
-    }
     else
     {
         return ExpressionDelegate::createEditor(parent, option, index);

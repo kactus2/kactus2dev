@@ -137,6 +137,16 @@ private:
      */  
     QWidget* createSelectorWithVHDLStandardLibraries(QWidget* parent) const;
 
+    /*!
+     *  Create a list editor used in defining tags for the ports.
+     *
+     *      @param [in] currentIndex    The currently selected index.
+     *      @param [in] parent          The owner of the new editor.
+     *
+     *      @return The list editor for port tags.
+     */
+    QWidget* createListEditorForPortTags(const QModelIndex& currentIndex, QWidget* parent) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

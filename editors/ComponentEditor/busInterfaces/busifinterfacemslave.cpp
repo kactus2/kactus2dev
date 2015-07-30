@@ -8,7 +8,14 @@
 #include "busifinterfacemslave.h"
 
 #include <IPXACTmodels/generaldeclarations.h>
-#include <common/widgets/parameterComboBox/parametercombobox.h>
+
+#include <editors/ComponentEditor/common/ExpressionEditor.h>
+#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <editors/ComponentEditor/common/ParameterCompleter.h>
+#include <editors/ComponentEditor/common/ValueFormatter.h>
+#include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
+
+#include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
 
 #include <QLabel>
 #include <QGridLayout>
@@ -19,28 +26,56 @@
 BusIfInterfaceMSlave::BusIfInterfaceMSlave(QSharedPointer<BusInterface> busif, 
 										   QSharedPointer<Component> component,
                                            QSharedPointer<ParameterFinder> parameterFinder,
+                                           QSharedPointer<ExpressionParser> expressionParser,
 										   QWidget *parent):
 BusIfInterfaceModeEditor(busif, component, tr("Mirrored slave"), parent),
 mirroredSlave_(QSharedPointer<MirroredSlaveInterface>(new MirroredSlaveInterface())),
-remapEdit_(new ParameterComboBox(parameterFinder, this, true)),
-rangeEdit_(new ParameterComboBox(parameterFinder, this, true))
+remapEditor_(new ExpressionEditor(parameterFinder, this)),
+rangeEditor_(new ExpressionEditor(parameterFinder, this)),
+expressionParser_(expressionParser),
+parameterFinder_(parameterFinder)
 {
-	QLabel* remapLabel = new QLabel(tr("Remap address"), this);
-	QLabel* rangeLabel = new QLabel(tr("Range"), this);
+    QString functionSymbol(0x0192);
+	QLabel* remapLabel = new QLabel(tr("Remap address") + ", " + functionSymbol + "(x)", this);
+	QLabel* rangeLabel = new QLabel(tr("Range") + ", " + functionSymbol + "(x)", this);
+
+    remapEditor_->setFixedHeight(20);
+    rangeEditor_->setFixedHeight(20);
+
+    remapEditor_->setFrameShadow(QFrame::Sunken);
+    rangeEditor_->setFrameShadow(QFrame::Sunken);
+
+    ComponentParameterModel* componentParameterModel = new ComponentParameterModel(parameterFinder, this);
+    componentParameterModel->setExpressionParser(expressionParser);
+
+    ParameterCompleter* remapCompleter = new ParameterCompleter(this);
+    remapCompleter->setModel(componentParameterModel);
+    remapEditor_->setAppendingCompleter(remapCompleter);
+
+    ParameterCompleter* rangeCompleter = new ParameterCompleter(this);
+    rangeCompleter->setModel(componentParameterModel);
+    rangeEditor_->setAppendingCompleter(rangeCompleter);
 
 	QGridLayout* topLayout = new QGridLayout(this);
 	topLayout->addWidget(remapLabel, 0, 0, Qt::AlignLeft);
-	topLayout->addWidget(remapEdit_, 0, 1, Qt::AlignLeft);
+    topLayout->addWidget(remapEditor_, 0, 1, Qt::AlignLeft);
 	topLayout->addWidget(rangeLabel, 1, 0, Qt::AlignLeft);
-	topLayout->addWidget(rangeEdit_, 1, 1, Qt::AlignLeft);
+    topLayout->addWidget(rangeEditor_, 1, 1, Qt::AlignLeft);
+
 	topLayout->setColumnStretch(2, 1);
 	topLayout->setRowStretch(2, 1);
 
-	connect(remapEdit_, SIGNAL(textChanged(const QString&)),
-		this, SLOT(onRemapChange(const QString&)), Qt::UniqueConnection);
+    connect(remapEditor_, SIGNAL(editingFinished()), this, SLOT(onRemapChange()), Qt::UniqueConnection);
+    connect(rangeEditor_, SIGNAL(editingFinished()), this, SLOT(onRangeChange()), Qt::UniqueConnection);
 
-    connect(rangeEdit_, SIGNAL(textChanged(const QString&)),
-        this, SLOT(onRangeChange(const QString&)), Qt::UniqueConnection);
+    connect(remapEditor_, SIGNAL(increaseReference(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(remapEditor_, SIGNAL(decreaseReference(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+    connect(rangeEditor_, SIGNAL(increaseReference(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(rangeEditor_, SIGNAL(decreaseReference(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -62,79 +97,58 @@ bool BusIfInterfaceMSlave::isValid() const
 //-----------------------------------------------------------------------------
 // Function: busifinterfacemslave::refresh()
 //-----------------------------------------------------------------------------
-void BusIfInterfaceMSlave::refresh() {
+void BusIfInterfaceMSlave::refresh()
+{
 	// if the model contains master-element
-	if (busif_->getMirroredSlave()) {
+	if (busif_->getMirroredSlave())
+    {
 		mirroredSlave_ = busif_->getMirroredSlave();
 	}
-	else {
+	else
+    {
 		mirroredSlave_.clear();
 		mirroredSlave_ = QSharedPointer<MirroredSlaveInterface>(new MirroredSlaveInterface());
 	}
 
-	remapEdit_->refresh();
-    QString remapID = mirroredSlave_->getRemapAddressID();
-    if (!remapID.isEmpty())
-    {
-        int remapIndex = remapEdit_->findData(remapID);
-        remapEdit_->setRemapText(remapEdit_->itemText(remapIndex));
-    }
-    else
-    {
-        remapEdit_->setRemapText(mirroredSlave_->getRemapAddress());
-    }
+    rangeEditor_->blockSignals(true);
 
-    rangeEdit_->refresh();
-    QString rangeID = mirroredSlave_->getRangeID();
-    if (!rangeID.isEmpty())
-    {
-        int rangeIndex = rangeEdit_->findData(rangeID);
-        rangeEdit_->setRemapText(rangeEdit_->itemText(rangeIndex));
-    }
-    else
-    {
-        rangeEdit_->setRemapText(mirroredSlave_->getRange());
-    }
+    rangeEditor_->setExpression(mirroredSlave_->getRange());
+    rangeEditor_->setToolTip(formattedValueFor(mirroredSlave_->getRange()));
+
+    rangeEditor_->blockSignals(false);
+
+    remapEditor_->blockSignals(true);
+
+    remapEditor_->setExpression(mirroredSlave_->getRemapAddress());
+    remapEditor_->setToolTip(formattedValueFor(mirroredSlave_->getRemapAddress()));
+
+    remapEditor_->blockSignals(false);
 }
 
 //-----------------------------------------------------------------------------
 // Function: busifinterfacemslave::getInterfaceMode()
 //-----------------------------------------------------------------------------
-General::InterfaceMode BusIfInterfaceMSlave::getInterfaceMode() const {
+General::InterfaceMode BusIfInterfaceMSlave::getInterfaceMode() const
+{
 	return General::MIRROREDSLAVE;
 }
 
 //-----------------------------------------------------------------------------
 // Function: busifinterfacemslave::saveModeSpecific()
 //-----------------------------------------------------------------------------
-void BusIfInterfaceMSlave::saveModeSpecific() {
+void BusIfInterfaceMSlave::saveModeSpecific()
+{
 	busif_->setMirroredSlave(mirroredSlave_);
 }
 
 //-----------------------------------------------------------------------------
 // Function: busifinterfacemslave::onRemapChange()
 //-----------------------------------------------------------------------------
-void BusIfInterfaceMSlave::onRemapChange( const QString& newRemapAddress )
+void BusIfInterfaceMSlave::onRemapChange()
 {
-    QString oldID = mirroredSlave_->getRemapAddressID();
-    if (!oldID.isEmpty())
-    {
-        emit decreaseReferences(oldID);
-    }
-
-    mirroredSlave_->setRemapAddress(newRemapAddress);
-
-    if (isBoxValueParameter(remapEdit_, newRemapAddress))
-    {
-        QString currentID = remapEdit_->itemData(remapEdit_->currentIndex()).toString();
-        mirroredSlave_->setRemapAddressID(currentID);
-        emit increaseReferences(currentID);
-    }
-
-    else
-    {
-        mirroredSlave_->removeRemapAddressID();
-    }
+    remapEditor_->finishEditingCurrentWord();
+    mirroredSlave_->setRemapAddress(remapEditor_->getExpression());
+    remapEditor_->setToolTip(formattedValueFor(remapEditor_->getExpression()));
 
     emit contentChanged();
 }
@@ -142,94 +156,59 @@ void BusIfInterfaceMSlave::onRemapChange( const QString& newRemapAddress )
 //-----------------------------------------------------------------------------
 // Function: busifinterfacemslave::onRangeChange()
 //-----------------------------------------------------------------------------
-void BusIfInterfaceMSlave::onRangeChange(const QString& newRange)
+void BusIfInterfaceMSlave::onRangeChange()
 {
-    QString oldID = mirroredSlave_->getRangeID();
-    if (!oldID.isEmpty())
-    {
-        emit decreaseReferences(oldID);
-    }
-
-    mirroredSlave_->setRange(newRange);
-
-    if (isBoxValueParameter(rangeEdit_, newRange))
-    {
-        QString currentID = rangeEdit_->itemData(rangeEdit_->currentIndex()).toString();
-        mirroredSlave_->setRangeID(currentID);
-        emit increaseReferences(currentID);
-    }
-
-    else
-    {
-        mirroredSlave_->removeRangeID();
-    }
+    rangeEditor_->finishEditingCurrentWord();
+    mirroredSlave_->setRange(rangeEditor_->getExpression());
+    rangeEditor_->setToolTip(formattedValueFor(rangeEditor_->getExpression()));
 
     emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
-// Function: busifinterfacemslave::isBoxValueParameter()
+// Function: busifinterfacemslave::formattedValueFor()
 //-----------------------------------------------------------------------------
-bool BusIfInterfaceMSlave::isBoxValueParameter(ParameterComboBox* combo, QString newText)
+QString BusIfInterfaceMSlave::formattedValueFor(QString const& expression) const
 {
-    for (int i = 0; i < combo->count(); ++i)
+    if (expressionParser_->isValidExpression(expression))
     {
-        if (combo->itemText(i) == newText)
+        ValueFormatter formatter;
+        return formatter.format(expressionParser_->parseExpression(expression),
+            expressionParser_->baseForExpression(expression));
+    }
+    else if (expressionParser_->isPlainValue(expression))
+    {
+        return expression;
+    }
+    else
+    {
+        return "n/a";
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: busifinterfacemslave::removeReferencesFromExpressions()
+//-----------------------------------------------------------------------------
+void BusIfInterfaceMSlave::removeReferencesFromExpressions()
+{
+    QStringList expressionList;
+    expressionList.append(rangeEditor_->getExpression());
+    expressionList.append(remapEditor_->getExpression());
+
+    ReferenceCalculator referenceCalculator(parameterFinder_);
+    QMap<QString, int> referencedParameters = referenceCalculator.getReferencedParameters(expressionList);
+
+    foreach (QString referencedId, referencedParameters.keys())
+    {
+        for (int i = 0; i < referencedParameters.value(referencedId); ++i)
         {
-            return true;
+            emit decreaseReferences(referencedId);
         }
     }
 
-    return false;
-}
+    remapEditor_->clear();
+    mirroredSlave_->setRemapAddress("");
 
-//-----------------------------------------------------------------------------
-// Function: busifinterfacemslave::giveRemapAddressID()
-//-----------------------------------------------------------------------------
-QString BusIfInterfaceMSlave::getRemapAddressID()
-{
-    return mirroredSlave_->getRemapAddressID();
-}
-
-//-----------------------------------------------------------------------------
-// Function: busifinterfacemslave::giveRangeID()
-//-----------------------------------------------------------------------------
-QString BusIfInterfaceMSlave::getRangeID()
-{
-    return mirroredSlave_->getRangeID();
-}
-
-//-----------------------------------------------------------------------------
-// Function: busifinterfacemslave::onBusIfParametersChanged()
-//-----------------------------------------------------------------------------
-void BusIfInterfaceMSlave::onBusIfParametersChanged()
-{
-    QString remapAddressID = getRemapAddressID();
-    QString remapAddressName = mirroredSlave_->getRemapAddress();
-
-    QString rangeID = getRangeID();
-    QString rangeName = mirroredSlave_->getRange();
-
-    remapEdit_->refresh();
-    rangeEdit_->refresh();
-
-    if (remapAddressID.isEmpty())
-    {
-        remapEdit_->setRemapText(remapAddressName);
-    }
-    else
-    {
-        int remapIndex = remapEdit_->findData(remapAddressID);
-        remapEdit_->setRemapText(remapEdit_->itemText(remapIndex));
-    }
-
-    if (rangeID.isEmpty())
-    {
-        rangeEdit_->setRemapText(rangeName);
-    }
-    else
-    {
-        int rangeIndex = rangeEdit_->findData(rangeID);
-        rangeEdit_->setRemapText(rangeEdit_->itemText(rangeIndex));
-    }
+    rangeEditor_->clear();
+    mirroredSlave_->setRange("");
 }

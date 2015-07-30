@@ -21,6 +21,7 @@
 #include <IPXACTmodels/memorymap.h>
 #include <IPXACTmodels/MemoryRemap.h>
 #include <IPXACTmodels/mirroredslaveinterface.h>
+#include <IPXACTmodels/masterinterface.h>
 #include <IPXACTmodels/addressspace.h>
 #include <IPXACTmodels/remapstate.h>
 #include <IPXACTmodels/remapport.h>
@@ -347,6 +348,13 @@ private:
      *      @param [in] mirrorSlave     Pointer to the mirrored slave interface.
      */
     bool referenceExistsInMirroredSlave(QSharedPointer<MirroredSlaveInterface> mirrorSlave) const;
+
+    /*!
+     *  Check if a reference exists in a master interface.
+     *
+     *      @param [in] masterInterface     Pointer to the master interface.
+     */
+    bool referenceExistsInMasterInterface(QSharedPointer<MasterInterface> masterInterface) const;
 
     /*!
      *  Check if a reference exists in mirrored slaves remap address.

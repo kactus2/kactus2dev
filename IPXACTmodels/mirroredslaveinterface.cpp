@@ -193,47 +193,6 @@ void MirroredSlaveInterface::setRangeAttributes(const
 	rangeAttributes_ = rangeAttributes;
 }
 
-//-----------------------------------------------------------------------------
-// Function: mirroredslaveinterface::setRangeID()
-//-----------------------------------------------------------------------------
-void MirroredSlaveInterface::setRangeID(QString rangeID)
-{
-    if (!rangeID.isEmpty())
-    {
-        rangeAttributes_.insert("kactus2:expression", rangeID);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: mirroredslaveinterface::getRangeID()
-//-----------------------------------------------------------------------------
-QString MirroredSlaveInterface::getRangeID()
-{
-    if (hasRangeID())
-    {
-        return rangeAttributes_.value("kactus2:expression");
-    }
-    else
-    {
-        return QString();
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: mirroredslaveinterface::hasRangeID()
-//-----------------------------------------------------------------------------
-bool MirroredSlaveInterface::hasRangeID()
-{
-    return rangeAttributes_.contains("kactus2:expression");
-}
-
-//-----------------------------------------------------------------------------
-// Function: mirroredslaveinterface::removeRangeID()
-//-----------------------------------------------------------------------------
-void MirroredSlaveInterface::removeRangeID()
-{
-    rangeAttributes_.remove("kactus2:expression");
-}
 
 QString MirroredSlaveInterface::getRange() const {
 	return range_;
@@ -257,12 +216,17 @@ MirroredSlaveInterface::getRemapAddresses() {
 	return remapAddresses_;
 }
 
-void MirroredSlaveInterface::setRemapAddress( const QString& remapAddress ) {
+//-----------------------------------------------------------------------------
+// Function: mirroredslaveinterface::setRemapAddress()
+//-----------------------------------------------------------------------------
+void MirroredSlaveInterface::setRemapAddress( const QString& remapAddress )
+{
 	// remove previous remap addresses
 	remapAddresses_.clear();
 
 	// if the remap address is empty then don't add it
-	if (remapAddress.isEmpty()) {
+	if (remapAddress.isEmpty())
+    {
 		return;
 	}
 
@@ -271,73 +235,27 @@ void MirroredSlaveInterface::setRemapAddress( const QString& remapAddress ) {
 	remapAddresses_.append(remap);
 }
 
-QString MirroredSlaveInterface::getRemapAddress( const QString& state /*= QString()*/ ) const {
+//-----------------------------------------------------------------------------
+// Function: mirroredslaveinterface::getRemapAddress()
+//-----------------------------------------------------------------------------
+QString MirroredSlaveInterface::getRemapAddress( const QString& state /*= QString()*/ ) const
+{
 	QString remapAddress;
-	foreach (QSharedPointer<MirroredSlaveInterface::RemapAddress> remap, remapAddresses_) {
-
+	foreach (QSharedPointer<MirroredSlaveInterface::RemapAddress> remap, remapAddresses_)
+    {
 		// if state is left empty the first remap address is returned
-		if (state.isEmpty()) {
+		if (state.isEmpty())
+        {
 			remapAddress = remap->remapAddress_;
 			break;
 		}
 		// if the remap address for the specified state was found
-		else if (remap->state_ == state) {
+		else if (remap->state_ == state)
+        {
 			remapAddress = remap->remapAddress_;
 			break;
 		}
 	}
 
 	return remapAddress;
-}
-
-//-----------------------------------------------------------------------------
-// Function: mirroredslaveinterface::setRemapAddressID()
-//-----------------------------------------------------------------------------
-void MirroredSlaveInterface::setRemapAddressID(QString remapID)
-{
-    if (!remapID.isEmpty() && remapAddresses_.size() != 0)
-    {
-        remapAddresses_.at(0)->remapAttributes_.insert("kactus2:expression", remapID);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: mirroredslaveinterface::getRemapAddressID()
-//-----------------------------------------------------------------------------
-QString MirroredSlaveInterface::getRemapAddressID()
-{
-    if (hasRemapAddressID())
-    {
-        return remapAddresses_.at(0)->remapAttributes_.value("kactus2:expression");
-    }
-    else
-    {
-        return QString();
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: mirroredslaveinterface::hasRemapAddressID()
-//-----------------------------------------------------------------------------
-bool MirroredSlaveInterface::hasRemapAddressID()
-{
-    if (remapAddresses_.size() != 0)
-    {
-        return remapAddresses_.at(0)->remapAttributes_.contains("kactus2:expression");
-    }
-    else
-    {
-        return false;
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: mirroredslaveinterface::removeRemapAddressID()
-//-----------------------------------------------------------------------------
-void MirroredSlaveInterface::removeRemapAddressID()
-{
-    if (remapAddresses_.size() != 0)
-    {
-        remapAddresses_.at(0)->remapAttributes_.remove("kactus2:expression");        
-    }
 }

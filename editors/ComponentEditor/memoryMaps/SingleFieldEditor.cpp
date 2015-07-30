@@ -55,6 +55,8 @@ expressionParser_(expressionParser),
 writeConstraintEditor_(new WriteValueConstraintComboBox(field->getWriteConstraint(), this)),
 writeConstraintMinLimit_(new QLineEdit(this)),
 writeConstraintMaxLimit_(new QLineEdit(this)),
+resetValueEditor_(new QLineEdit(this)),
+resetMaskEditor_(new QLineEdit(this)),
 field_(field)
 {
     offsetEditor_->setFixedHeight(20);
@@ -76,12 +78,12 @@ field_(field)
     ParameterCompleter* widthCompleter = new ParameterCompleter(this);
     widthCompleter->setModel(componentParametersModel);
 
-    ParameterCompleter* isPresetCompleter = new ParameterCompleter(this);
-    isPresetCompleter->setModel(componentParametersModel);
+    ParameterCompleter* isPresentCompleter = new ParameterCompleter(this);
+    isPresentCompleter->setModel(componentParametersModel);
 
     offsetEditor_->setAppendingCompleter(offsetCompleter);
     widthEditor_->setAppendingCompleter(widthCompleter);
-    isPresentEditor_->setAppendingCompleter(isPresetCompleter);
+    isPresentEditor_->setAppendingCompleter(isPresentCompleter);
 
     setupLayout();
     connectSignals();
@@ -132,6 +134,8 @@ void SingleFieldEditor::setupLayout()
     fieldDefinitionLayout->addRow(tr("Offset [bits], f(x):"), offsetEditor_);
     fieldDefinitionLayout->addRow(tr("Width [bits], f(x):"), widthEditor_);
     fieldDefinitionLayout->addRow(tr("Is present, f(x):"), isPresentEditor_);
+    fieldDefinitionLayout->addRow(tr("Reset value:"), resetValueEditor_);
+    fieldDefinitionLayout->addRow(tr("Reset mask:"), resetMaskEditor_);
 
     QGroupBox* fieldConstraintGroup = new QGroupBox(tr("Field constraints"));
 
@@ -245,6 +249,9 @@ void SingleFieldEditor::connectSignals()
         this, SLOT(onWriteConstraintMinimumEdited(QString const&)), Qt::UniqueConnection);
     connect(writeConstraintMaxLimit_, SIGNAL(textEdited(QString const&)),
         this, SLOT(onWriteConstraintMaximumEdited(QString const&)), Qt::UniqueConnection);
+
+    connect(resetValueEditor_, SIGNAL(editingFinished()), this, SLOT(onResetValueEdited()), Qt::UniqueConnection);
+    connect(resetMaskEditor_, SIGNAL(editingFinished()), this, SLOT(onResetMaskEdited()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -279,6 +286,9 @@ void SingleFieldEditor::refresh()
     writeConstraintMaxLimit_->setText(QString::number(field_->getWriteConstraint()->getMaximum()));
 
     setWriteMinMaxConstraintEnableStatus(field_->getWriteConstraint()->getType());
+
+    resetValueEditor_->setText(field_->getResetValue());
+    resetMaskEditor_->setText(field_->getResetMask());
 }
 
 //-----------------------------------------------------------------------------
@@ -473,5 +483,33 @@ void SingleFieldEditor::onWriteConstraintMinimumEdited(QString const& newWriteCo
 void SingleFieldEditor::onWriteConstraintMaximumEdited(QString const& newWriteConstraintMax)
 {
     field_->getWriteConstraint()->setMaximum(newWriteConstraintMax.toInt());
+    emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: SingleFieldEditor::onResetValueEdited()
+//-----------------------------------------------------------------------------
+void SingleFieldEditor::onResetValueEdited()
+{
+    QString newResetValue = resetValueEditor_->text();
+    
+    field_->setResetValue(newResetValue);
+
+    if (newResetValue.isEmpty())
+    {
+        resetMaskEditor_->clear();
+        field_->setResetMask("");
+    }
+
+    emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: SingleFieldEditor::onResetMaskEdited()
+//-----------------------------------------------------------------------------
+void SingleFieldEditor::onResetMaskEdited()
+{
+    field_->setResetMask(resetMaskEditor_->text());
+
     emit contentChanged();
 }

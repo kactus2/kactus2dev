@@ -8,14 +8,16 @@
 #ifndef BUSINTERFACEEDITOR_H
 #define BUSINTERFACEEDITOR_H
 
-#include <editors/ComponentEditor/itemeditor.h>
-#include <editors/ComponentEditor/common/ParameterFinder.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include "busifgeneraltab.h"
+#include "busifportmaptab.h"
 
 #include <IPXACTmodels/businterface.h>
 #include <IPXACTmodels/component.h>
-#include "busifgeneraltab.h"
-#include "busifportmaptab.h"
+
+#include <editors/ComponentEditor/itemeditor.h>
+#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <editors/ComponentEditor/common/ExpressionParser.h>
 
 #include <QSharedPointer>
 #include <QTabWidget>
@@ -38,6 +40,7 @@ public:
 	 *      @param [in] busif                   Pointer to the bus interface being edited.
 	 *      @param [in] parameterFinder         Pointer to the parameter finder.
 	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
+     *      @param [in] expressionParser        Pointer to the expression parser.
 	 *      @param [in] parent                  Pointer to the owner of this container.
 	 *      @param [in] parentWnd               Pointer to the parent window.
 	 */
@@ -46,6 +49,7 @@ public:
 		QSharedPointer<BusInterface> busif,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QSharedPointer<ExpressionParser> expressionParser,
 		QWidget* parent,
         QWidget* parentWnd);
 	

@@ -163,6 +163,20 @@ private slots:
      */
     void onWriteConstraintMaximumEdited(QString const& newWriteConstraintMax);
 
+    /*!
+     *  Sets the edited reset value for the field.
+     *
+     *      @param [in] newResetValue   The new reset value.
+     */
+    void onResetValueEdited();
+
+    /*!
+     *  Sets the edited reset mask for the field.
+     *
+     *      @param [in] newResetMask    The new reset mask.
+     */
+    void onResetMaskEdited();
+
 private:
 	
 	//! No copying
@@ -252,6 +266,12 @@ private:
 
     //! The write constraint maximum value editor.
     QLineEdit* writeConstraintMaxLimit_;
+
+    //! Editor for the reset value of a field.
+    QLineEdit* resetValueEditor_;
+
+    //! Editor for the reset mask of a field.
+    QLineEdit* resetMaskEditor_;
 
     //! The field being edited.
     QSharedPointer<Field> field_;

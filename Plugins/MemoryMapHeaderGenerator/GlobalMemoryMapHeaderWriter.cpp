@@ -189,7 +189,12 @@ void GlobalMemoryMapHeaderWriter::parseInterface(qint64 offset, QTextStream& str
 void GlobalMemoryMapHeaderWriter::parseMasterInterface(qint64 offset, QSharedPointer<Component> component,
     QTextStream& stream, const Interface& interFace)
 {
-    offset += Utils::str2Int(component->getBusInterface(interFace.getBusRef())->getMaster()->getBaseAddress());
+    QString instanceID = getInstanceID(interFace.getComponentRef());
+    QSharedPointer<ListParameterFinder> finder = createParameterFinder(instanceID, component);
+
+    QString masterBaseAddress = component->getBusInterface(interFace.getBusRef())->getMaster()->getBaseAddress();
+
+    offset += Utils::str2Int(parsedValueFor(masterBaseAddress, finder));
 
     QList<Interface> connected = componentDesign_->getConnectedInterfaces(interFace);
     foreach (Interface targetInterface, connected)

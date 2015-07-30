@@ -10,10 +10,12 @@
 //-----------------------------------------------------------------------------
 
 #include "portsdelegate.h"
-
 #include "PortColumns.h"
+#include "PortTagEditorDelegate.h"
 
 #include <kactusGenerators/vhdlGenerator/vhdlgeneral.h>
+
+#include <common/widgets/listManager/listeditor.h>
 
 #include <QApplication>
 #include <QComboBox>
@@ -59,6 +61,10 @@ QWidget* PortsDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const
     {
         return createSelectorWithVHDLStandardLibraries(parent);
     }
+    else if (index.column() == PortColumns::TAG_GROUP)
+    {
+        return createListEditorForPortTags(index, parent);
+    }
     else
     {
         return ExpressionDelegate::createEditor(parent, option, index);
@@ -94,6 +100,19 @@ void PortsDelegate::setEditorData(QWidget* editor, QModelIndex const& index) con
             combo->setCurrentIndex(comboIndex);
         }
     }
+    else if (index.column() == PortColumns::TAG_GROUP)
+    {
+        ListEditor* tagEditor = qobject_cast<ListEditor*>(editor);
+        Q_ASSERT(tagEditor);
+
+        QString portTagGroup = index.model()->data(index, Qt::DisplayRole).toString();
+
+        if (!portTagGroup.isEmpty())
+        {
+            QStringList portTags = portTagGroup.split(", ");
+            tagEditor->setItems(portTags);
+        }
+    }
     else
     {
         ExpressionDelegate::setEditorData(editor, index);
@@ -112,6 +131,19 @@ void PortsDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, QMo
         QComboBox* combo = qobject_cast<QComboBox*>(editor);
         QString text = combo->currentText();
         model->setData(index, text, Qt::EditRole);
+    }
+    else if (index.column() == PortColumns::TAG_GROUP)
+    {
+        ListEditor* tagEditor = qobject_cast<ListEditor*>(editor);
+        Q_ASSERT(tagEditor);
+
+        QStringList tagGroup = tagEditor->items();
+        tagGroup.removeDuplicates();
+        tagGroup.removeAll("");
+
+        QString portTags = tagGroup.join(", ");
+
+        model->setData(index, portTags);
     }
     else
     {
@@ -297,4 +329,32 @@ QWidget* PortsDelegate::createSelectorWithVHDLStandardLibraries(QWidget* parent)
     }
 
     return combo;
+}
+
+//-----------------------------------------------------------------------------
+// Function: portsdelegate::createListEditorForPortTags()
+//-----------------------------------------------------------------------------
+QWidget* PortsDelegate::createListEditorForPortTags(const QModelIndex& currentIndex, QWidget* parent) const
+{
+    ListEditor* tagEditor = new ListEditor(parent);
+    tagEditor->setMinimumHeight(100);
+
+    QStringList existingTags;
+
+    int portCount = currentIndex.model()->rowCount();
+    for (int i = 0; i < portCount; ++i)
+    {
+        QModelIndex portIndex = currentIndex.sibling(i, PortColumns::TAG_GROUP);
+        QString portTags = portIndex.data(Qt::ToolTipRole).toString();
+
+        if (!portTags.isEmpty())
+        {
+            QStringList newTags = portTags.split(", ");
+            existingTags.append(newTags);
+        }
+    }
+    existingTags.removeDuplicates();
+
+    tagEditor->setItemDelegate(new PortTagEditorDelegate(existingTags, parent));
+    return tagEditor;
 }

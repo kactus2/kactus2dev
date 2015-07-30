@@ -16,6 +16,14 @@
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/masterinterface.h>
 
+#include <editors/ComponentEditor/common/ExpressionEditor.h>
+#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <editors/ComponentEditor/common/ParameterCompleter.h>
+#include <editors/ComponentEditor/common/ValueFormatter.h>
+#include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
+
+#include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
+
 #include <QLabel>
 #include <QGridLayout>
 #include <QString>
@@ -23,16 +31,28 @@
 //-----------------------------------------------------------------------------
 // Function: BusIfInterfaceMaster::BusIfInterfaceMaster()
 //-----------------------------------------------------------------------------
-BusIfInterfaceMaster::BusIfInterfaceMaster(General::InterfaceMode mode,
-										   QSharedPointer<BusInterface> busif,
-										   QSharedPointer<Component> component,
-										   QWidget *parent):
+BusIfInterfaceMaster::BusIfInterfaceMaster(General::InterfaceMode mode, QSharedPointer<BusInterface> busif,
+                                           QSharedPointer<Component> component,
+                                           QSharedPointer<ParameterFinder> parameterFinder,
+                                           QSharedPointer<ExpressionParser> expressionParser, QWidget *parent):
 BusIfInterfaceModeEditor(busif, component, tr("Master"), parent), 
 master_(QSharedPointer<MasterInterface>(new MasterInterface())),
 mode_(mode),
-addressSpaceReferenceSelector_(this), 
-baseAddress_(this) 
+addressSpaceReferenceSelector_(this),
+baseAddressEditor_(new ExpressionEditor(parameterFinder, this)),
+expressionParser_(expressionParser),
+parameterFinder_(parameterFinder)
 {
+    baseAddressEditor_->setFixedHeight(20);
+
+    ComponentParameterModel* componentParameterModel = new ComponentParameterModel(parameterFinder, this);
+    componentParameterModel->setExpressionParser(expressionParser_);
+    ParameterCompleter* baseAddressCompleter = new ParameterCompleter(this);
+    baseAddressCompleter->setModel(componentParameterModel);
+    baseAddressEditor_->setAppendingCompleter(baseAddressCompleter);
+
+    baseAddressEditor_->setFrameShadow(QFrame::Sunken);
+
     // set the title depending on the mode
     if (mode == General::MASTER)
     {
@@ -49,20 +69,26 @@ baseAddress_(this)
     }
 
 	QLabel* addrSpaceLabel = new QLabel(tr("Address space"), this);
-	QLabel* baseAddrLabel = new QLabel(tr("Base address"), this);
+
+    QString functionSymbol(0x0192);
+	QLabel* baseAddrLabel = new QLabel(tr("Base address") + ", " + functionSymbol +"(x)", this);
 
 	QGridLayout* topLayout = new QGridLayout(this);
 	topLayout->addWidget(addrSpaceLabel, 0, 0, Qt::AlignLeft);
 	topLayout->addWidget(&addressSpaceReferenceSelector_, 0, 1, Qt::AlignLeft);
 	topLayout->addWidget(baseAddrLabel, 1, 0, Qt::AlignLeft);
-	topLayout->addWidget(&baseAddress_, 1, 1, Qt::AlignLeft);
-	topLayout->setColumnStretch(2, 1);
+    topLayout->addWidget(baseAddressEditor_, 1, 1, Qt::AlignLeft);
+    topLayout->setColumnStretch(2, 1);
 	topLayout->setRowStretch(2, 1);
 
 	connect(&addressSpaceReferenceSelector_, SIGNAL(itemSelected(const QString&)),
 		this, SLOT(onAddressSpaceChange(const QString&)), Qt::UniqueConnection);
-	connect(&baseAddress_, SIGNAL(textEdited(const QString&)),
-		this, SLOT(onBaseAddressChange(const QString&)), Qt::UniqueConnection);
+    connect(baseAddressEditor_, SIGNAL(editingFinished()), this, SLOT(onBaseAddressChange()), Qt::UniqueConnection);
+
+    connect(baseAddressEditor_, SIGNAL(increaseReference(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(baseAddressEditor_, SIGNAL(decreaseReference(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -96,7 +122,7 @@ bool BusIfInterfaceMaster::isValid() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusIfInterfaceMaster::isValid()
+// Function: BusIfInterfaceMaster::refresh()
 //-----------------------------------------------------------------------------
 void BusIfInterfaceMaster::refresh()
 {
@@ -119,12 +145,17 @@ void BusIfInterfaceMaster::refresh()
 	// if address space ref is empty then there can be no base address
 	if (addrSpaceRef.isEmpty())
     {
-		baseAddress_.setDisabled(true);
+        baseAddressEditor_->setDisabled(true);
 	}
 	else 
     {
-		baseAddress_.setEnabled(true);
-		baseAddress_.setText(master_->getBaseAddress());
+        baseAddressEditor_->blockSignals(true);
+
+        baseAddressEditor_->setEnabled(true);
+        baseAddressEditor_->setExpression(master_->getBaseAddress());
+        baseAddressEditor_->setToolTip(formattedValueFor(master_->getBaseAddress()));
+
+        baseAddressEditor_->blockSignals(false);
 	}
 
 	// select the address space ref and base address
@@ -149,13 +180,13 @@ void BusIfInterfaceMaster::onAddressSpaceChange(const QString& addrSpaceName)
 	// if address space reference is empty then there can be no base address
 	if (addrSpaceName.isEmpty())
     {
-		baseAddress_.clear();
-		baseAddress_.setDisabled(true);
-		master_->setBaseAddress("");
+        removeReferencesFromExpressions();
+
+        baseAddressEditor_->setDisabled(true);
 	}
 	else
     {
-		baseAddress_.setEnabled(true);
+        baseAddressEditor_->setEnabled(true);
 	}
 
 	emit contentChanged();
@@ -164,10 +195,13 @@ void BusIfInterfaceMaster::onAddressSpaceChange(const QString& addrSpaceName)
 //-----------------------------------------------------------------------------
 // Function: BusIfInterfaceMaster::onBaseAddressChange()
 //-----------------------------------------------------------------------------
-void BusIfInterfaceMaster::onBaseAddressChange(const QString& newBase)
+void BusIfInterfaceMaster::onBaseAddressChange()
 {
-	master_->setBaseAddress(newBase);
-	emit contentChanged();
+    baseAddressEditor_->finishEditingCurrentWord();
+    master_->setBaseAddress(baseAddressEditor_->getExpression());
+    baseAddressEditor_->setToolTip(formattedValueFor(baseAddressEditor_->getExpression()));
+
+    emit contentChanged();
 }	
 
 //-----------------------------------------------------------------------------
@@ -176,4 +210,48 @@ void BusIfInterfaceMaster::onBaseAddressChange(const QString& newBase)
 void BusIfInterfaceMaster::saveModeSpecific()
 {
 	busif_->setMaster(master_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: busifinterfacemaster::formattedValueFor()
+//-----------------------------------------------------------------------------
+QString BusIfInterfaceMaster::formattedValueFor(QString const& expression) const
+{
+    if (expressionParser_->isValidExpression(expression))
+    {
+        ValueFormatter formatter;
+        return formatter.format(expressionParser_->parseExpression(expression),
+            expressionParser_->baseForExpression(expression));
+    }
+    else if (expressionParser_->isPlainValue(expression))
+    {
+        return expression;
+    }
+    else
+    {
+        return "n/a";
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: busifinterfacemaster::removeReferencesFromExpressions()
+//-----------------------------------------------------------------------------
+void BusIfInterfaceMaster::removeReferencesFromExpressions()
+{
+    QStringList baseAddressExpression;
+    baseAddressExpression.append(baseAddressEditor_->getExpression());
+
+    ReferenceCalculator referenceCalculator(parameterFinder_);
+    QMap<QString, int> referencedParameters = referenceCalculator.getReferencedParameters(baseAddressExpression);
+
+    foreach (QString referencedId, referencedParameters.keys())
+    {
+        for (int i = 0; i < referencedParameters.value(referencedId); ++i)
+        {
+            emit decreaseReferences(referencedId);
+        }
+    }
+
+    baseAddressEditor_->clear();
+    master_->setBaseAddress("");
 }

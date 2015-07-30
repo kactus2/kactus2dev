@@ -16,13 +16,14 @@
 // Function: BusInterfacesEditor::BusInterfacesEditor()
 //-----------------------------------------------------------------------------
 BusInterfacesEditor::BusInterfacesEditor(LibraryInterface* handler,
-										 QSharedPointer<Component> component, 
-										 QWidget* parent /*= 0*/ ):
+                                         QSharedPointer<Component> component,
+                                         QSharedPointer<ParameterFinder> parameterFinder,
+                                         QWidget* parent /* = 0 */):
 ItemEditor(component, handler, parent),
 view_(this),
 proxy_(this),
-model_(handler, component, this) {
-
+model_(handler, component, parameterFinder, this)
+{
 	// display a label on top the table
 	SummaryLabel* summaryLabel = new SummaryLabel(tr("Bus interfaces"), this);
 
@@ -61,6 +62,11 @@ model_(handler, component, this) {
 		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
     connect(&view_, SIGNAL(moveItem(const QModelIndex&, const QModelIndex&)),
         &model_, SLOT(onMoveItem(const QModelIndex&, const QModelIndex&)), Qt::UniqueConnection);
+
+    connect(&model_, SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(&model_, SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

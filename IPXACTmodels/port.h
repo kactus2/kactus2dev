@@ -498,6 +498,29 @@ public:
      */
     void setArrayRight(QString const& newArrayRight);
 
+    /*!
+     *  Set the port tags.
+     *
+     *      @param [in] portTags    The tags separated by a comma.
+     */
+    void setPortTags(const QString& portTags);
+
+    /*!
+     *  Gets the tags associated with the port.
+     *
+     *      @return Tags associated with the port.
+     */
+    const QString getPortTags() const;
+
+    /*!
+     *  Get the vendor extension associated with the given type.
+     *
+     *      @param [in] extensionType   The type of the wanted vendor extension.
+     *
+     *      @return Vendor extension matching the given type. If it is not found, return an empty pointer.
+     */
+    QSharedPointer<VendorExtension> getVendorExtension(QString const& extensionType) const;
+
 private:
 
     /*!
@@ -538,6 +561,13 @@ private:
      *      @param [in] right   Value for the right side of the array.
      */
     void createArrayExtension(QString const& left, QString const& right);
+
+    /*!
+     *  Create the vendor extension for tags.
+     *
+     *      @param [in] portTags    The port tags.
+     */
+    void createTagExtension(QString portTags);
 
     //! \brief Contains the name, display name and description for the port.
 	NameGroup nameGroup_;

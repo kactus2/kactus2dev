@@ -9,24 +9,30 @@
 #include "componenteditorbusinterfaceitem.h"
 #include <editors/ComponentEditor/busInterfaces/businterfaceseditor.h>
 
+//-----------------------------------------------------------------------------
+// Function: componenteditorbusinterfacesitem::ComponentEditorBusInterfacesItem()
+//-----------------------------------------------------------------------------
 ComponentEditorBusInterfacesItem::ComponentEditorBusInterfacesItem(ComponentEditorTreeModel* model,
     LibraryInterface* libHandler, QSharedPointer<Component> component,
     QSharedPointer<ReferenceCounter> referenceCounter,
     QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<ExpressionParser> expressionParser,
     ComponentEditorItem* parent, QWidget* parentWnd):
 ComponentEditorItem(model, libHandler, component, parent),
 busifs_(component->getBusInterfaces()),
-parentWnd_(parentWnd)
+parentWnd_(parentWnd),
+expressionParser_(expressionParser)
 {
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);
     setReferenceCounter(referenceCounter);
 
-	foreach (QSharedPointer<BusInterface> busif, busifs_) {
+	foreach (QSharedPointer<BusInterface> busif, busifs_)
+    {
 		QSharedPointer<ComponentEditorBusInterfaceItem> busifItem(
-			new ComponentEditorBusInterfaceItem(busif, model, libHandler, component, referenceCounter_,
-            parameterFinder_, expressionFormatter_, this, parentWnd));
+            new ComponentEditorBusInterfaceItem(busif, model, libHandler, component, referenceCounter_,
+            parameterFinder_, expressionFormatter_, expressionParser_, this, parentWnd));
 
         connect(busifItem.data(), SIGNAL(openReferenceTree(QString)),
             this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
@@ -50,18 +56,15 @@ QString ComponentEditorBusInterfacesItem::text() const {
 
 ItemEditor* ComponentEditorBusInterfacesItem::editor() {
 	if (!editor_) {
-		editor_ = new BusInterfacesEditor(libHandler_, component_);
+		editor_ = new BusInterfacesEditor(libHandler_, component_, parameterFinder_);
 		editor_->setProtection(locked_);
-		connect(editor_, SIGNAL(contentChanged()), 
-			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
-		connect(editor_, SIGNAL(childAdded(int)),
-			this, SLOT(onAddChild(int)), Qt::UniqueConnection);
-		connect(editor_, SIGNAL(childRemoved(int)),
-			this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
-        connect(editor_, SIGNAL(childMoved(int, int)),
-            this, SLOT(onMoveChild(int, int)), Qt::UniqueConnection);
-		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
-			this, SIGNAL(helpUrlRequested(QString const&)));
+		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(childAdded(int)), this, SLOT(onAddChild(int)), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(childRemoved(int)), this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(childMoved(int, int)), this, SLOT(onMoveChild(int, int)), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
+
+        connectItemEditorToReferenceCounter();
 	}
 	return editor_;
 }
@@ -73,7 +76,7 @@ QString ComponentEditorBusInterfacesItem::getTooltip() const {
 void ComponentEditorBusInterfacesItem::createChild( int index ) {
 	QSharedPointer<ComponentEditorBusInterfaceItem> busifItem(
 		new ComponentEditorBusInterfaceItem(busifs_.at(index), model_, libHandler_, component_, referenceCounter_,
-        parameterFinder_, expressionFormatter_, this, parentWnd_));
+        parameterFinder_, expressionFormatter_, expressionParser_, this, parentWnd_));
 	busifItem->setLocked(locked_);
 
     connect(busifItem.data(), SIGNAL(openReferenceTree(QString)),

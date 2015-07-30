@@ -18,7 +18,8 @@
 #include <QSharedPointer>
 #include <QLineEdit>
 
-class ParameterComboBox;
+class ExpressionEditor;
+class ExpressionParser;
 
 /*! \brief Editor to edit mirrored slave details of a bus interface.
  *
@@ -34,11 +35,13 @@ public:
 	 *      @param [in] busif               Pointer to the bus interface being edited.
 	 *      @param [in] component           Pointer to the component being edited.
 	 *      @param [in] parameterFinder     Pointer to the parameter finder.
+     *      @param [in] expressionParser    Pointer to the expression parser.
 	 *      @param [in] parent              Pointer to the owner of this editor.
 	 */
 	BusIfInterfaceMSlave(QSharedPointer<BusInterface> busif,
 		QSharedPointer<Component> component,
         QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionParser> expressionParser,
 		QWidget *parent);
 	
 	//! \brief The destructor
@@ -65,33 +68,21 @@ public:
 	virtual void saveModeSpecific();
 
     /*!
-     *  Gets the current id of selected remap address.
-     *
-     *      @return The id of the selected remap address.
+     *  Remove all the references from the expressions contained within this interface.
      */
-    QString getRemapAddressID();
-
-    /*!
-     *  Gets the current id of selected range.
-     *
-     *      @return The id of the selected range.
-     */
-    QString getRangeID();
-
-public slots:
-
-    /*!
-     *  Catches any parameter changes in the bus interface parameters.
-     */
-    void onBusIfParametersChanged();
+    void removeReferencesFromExpressions();
 
 private slots:
 
-	//! \brief Handler for changes in remap address.
-	void onRemapChange(const QString& newRemapAddress);
+    /*!
+     *  Handler for changes in remap address.
+     */
+    void onRemapChange();
 
-	//! \brief Handler for changes in range.
-	void onRangeChange(const QString& newRange);
+    /*!
+     *  Handler for changes in range.
+     */
+    void onRangeChange();
 
 signals:
 
@@ -118,23 +109,26 @@ private:
 	BusIfInterfaceMSlave& operator=(const BusIfInterfaceMSlave& other);
 
     /*!
-     *  Check if the selected value is within the combo box.
+     *  Calculates a given expression.
      *
-     *      @param [in] combo       The selected combo box.
-     *      @param [in] newText     The text that was placed in the box.
-     *
-     *      @return True, if the text is found in the combo box, false otherwise.
+     *      @param [in] expression  The expression to be formatted.
      */
-    bool isBoxValueParameter(ParameterComboBox* combo, QString newText);
+    QString formattedValueFor(QString const& expression) const;
 
 	//! \brief Pointer to the mirrored slave interface mode being edited.
 	QSharedPointer<MirroredSlaveInterface> mirroredSlave_;
 
-	//! \brief Editor to set the remap address.
-	ParameterComboBox* remapEdit_;
+    //! Editor for the mirrored slave remap address.
+    ExpressionEditor* remapEditor_;
 
-	//! \brief Editor to set the range.
-    ParameterComboBox* rangeEdit_;
+    //! Editor for the mirrored slave range.
+    ExpressionEditor* rangeEditor_;
+
+    //! The expression parser for calculating the expression.
+    QSharedPointer<ExpressionParser> expressionParser_;
+
+    //! The parameter finder for searching the component parameters.
+    QSharedPointer<ParameterFinder> parameterFinder_;
 };
 
 #endif // BUSIFINTERFACEMSLAVE_H

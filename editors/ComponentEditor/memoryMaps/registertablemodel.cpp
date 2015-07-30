@@ -138,6 +138,14 @@ QVariant RegisterTableModel::headerData( int section, Qt::Orientation orientatio
             QString isPresent = tr("Is Present") + getExpressionSymbol();
             return isPresent;
         }
+        else if (section == RegisterColumns::RESET_VALUE_COLUMN)
+        {
+            return tr("Reset value");
+        }
+        else if (section == RegisterColumns::RESET_MASK_COLUMN)
+        {
+            return tr("Reset mask");
+        }
         else
         {
             return QVariant();
@@ -290,6 +298,14 @@ QVariant RegisterTableModel::valueForIndex(QModelIndex const& index) const
     {
         return fields_.at(index.row())->getIsPresentExpression();
     }
+    else if (index.column() == RegisterColumns::RESET_VALUE_COLUMN)
+    {
+        return fields_.at(index.row())->getResetValue();
+    }
+    else if (index.column() == RegisterColumns::RESET_MASK_COLUMN)
+    {
+        return fields_.at(index.row())->getResetMask();
+    }
     else
     {
         return QVariant();
@@ -400,6 +416,23 @@ bool RegisterTableModel::setData( const QModelIndex& index, const QVariant& valu
             fields_.at(index.row())->setIsPresentExpression(value.toString());
 
             emit graphicsChanged();
+        }
+        else if (index.column() == RegisterColumns::RESET_VALUE_COLUMN)
+        {
+            QString newResetValue = value.toString();
+            fields_.at(index.row())->setResetValue(newResetValue);
+
+            if (newResetValue.isEmpty())
+            {
+                fields_.at(index.row())->setResetMask(newResetValue);
+
+                QModelIndex maskIndex = QAbstractTableModel::index(index.row(), RegisterColumns::RESET_MASK_COLUMN);
+                emit dataChanged(maskIndex, maskIndex);
+            }
+        }
+        else if (index.column() == RegisterColumns::RESET_MASK_COLUMN)
+        {
+            fields_.at(index.row())->setResetMask(value.toString());
         }
         else
         {

@@ -17,6 +17,7 @@
 
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <editors/ComponentEditor/common/ExpressionParser.h>
 
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/businterface.h>
@@ -43,6 +44,7 @@ public:
 	 *      @param [in] component               Pointer to the component being edited.
 	 *      @param [in] parameterFinder         Pointer to the parameter finder.
 	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
+     *      @param [in] expressionParser        Pointer to the expression parser.
 	 *      @param [in] parent                  Pointer to the owner of this editor.
 	 *      @param [in] parentWnd               Pointer to the parent window.
 	 */
@@ -51,6 +53,7 @@ public:
 		QSharedPointer<Component> component,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QSharedPointer<ExpressionParser> expressionParser,
 		QWidget* parent,
         QWidget* parentWnd);
 	

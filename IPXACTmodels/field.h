@@ -268,8 +268,7 @@ public:
      * \param enumeratedValues QList containing pointers to the enumerated
      * values.
      */
-    void setEnumeratedValues(const QList<QSharedPointer<EnumeratedValue> >&
-    enumeratedValues);
+    void setEnumeratedValues(const QList<QSharedPointer<EnumeratedValue> >& enumeratedValues);
 
     /*! \brief Set the name for the field.
      *
@@ -402,6 +401,34 @@ public:
      */
     NameGroup& getNameGroup();
 
+    /*!
+     *  Set the reset value for this field.
+     *
+     *      @param [in] newResetValue   The new reset value.
+     */
+    void setResetValue(QString const& newResetValue);
+
+    /*!
+     *  Get the reset value of this field.
+     *
+     *      @return The reset value associated with this field.
+     */
+    QString getResetValue() const;
+
+    /*!
+     *  Set the reset mask for this field.
+     *
+     *      @param [in] newResetMask    The new reset mask.
+     */
+    void setResetMask(QString const& newResetMask);
+
+    /*!
+     *  Get the reset mask of this field.
+     *
+     *      @return The reset mask associated with this field.
+     */
+    QString getResetMask() const;
+
 private:
 
     /*!
@@ -418,7 +445,35 @@ private:
      */
     void createOffsetExpressionExtension(QString const& expression);
 
+    /*!
+     *  Create a vendor extension for an is present expression.
+     *
+     *      @param [in] expression  The is present expression.
+     */
     void createIsPresentExpressionExtension(QString const& expression);
+
+    /*!
+     *  Create a vendor extension for a reset value.
+     *
+     *      @param [in] newResetValue   The new reset value.
+     */
+    void createResetValueExtension(QString const& newResetValue);
+
+    /*!
+     *  Create a vendor extension for a reset mask.
+     *
+     *      @param [in] newResetMask    The new reset mask.
+     */
+    void createResetMaskExtension(QString const& newResetMask);
+
+    /*!
+     *  Get a vendor extension from this fields vendor extension list.
+     *
+     *      @param [in] type    The type of the searched vendor extension.
+     *
+     *      @return A pointer to the searched vendor extension.
+     */
+    QSharedPointer<VendorExtension> getVendorExtension(QString const& type) const;
 
     /*!
      *  Copies vendor extensions from another field.

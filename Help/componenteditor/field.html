@@ -1,8 +1,8 @@
 ﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 	<head>
-	<meta http-equiv="Content-Type"content="text/html; charset=utf-8">
-		<link href="../style.css" rel="Stylesheet" type="text/css">
+	<meta http-equiv="Content-Type"content="text/html; charset=utf-8"/>
+		<link href="../style.css" rel="Stylesheet" type="text/css"/>
 		<title>Field editor</title>
 	</head>
 	<body>
@@ -15,11 +15,34 @@
             <b>Offset</b> describes the starting bit of the field within the containing register
              (mandatory, can be given as an expression). <br />
             <b>Width</b> speficies how many bits are included in the field (mandatory, can be given
-             as an expression).<br />
-            <img src="../images/appicon.png" alt="kactus logo"/><b>Is present</b> is a Kactus2 extension for
-            enabling/disabling a field presence in a register. Value 1 indicates that the field is present
-            in the register whereas value 0 marks the field to be treated as if it did not exist.
-            Is present can be given as a SystemVerilog expression, but it must evaluate to 1 or 0.<br />
+             as an expression).
+        </p>
+        <p>
+          <img src="../images/appicon.png" alt="kactus logo"/> Kactus2 extensions in fields
+        </p>
+        <table border="1">
+          <tr>
+	        <th>Extension</th>
+	        <th>Description</th>
+          </tr>
+	      <tr>
+            <td>Is present</td>
+    	    <td>Enables/disables a field's presence in a register. Value 1 indicates that the field is
+                present in the register whereas value 0 marks the field to be treated as if it did not
+                exist. Is present can be given as a SystemVerilog expression, but it must evaluate to
+                1 or 0.</td>
+          </tr>
+	      <tr>
+	        <td>Reset value</td>
+    	    <td>Defines the actual reset value on reset.</td>
+	      </tr>
+    	  <tr>
+	        <td>Reset mask</td>
+	        <td>Defines the bits that have a known reset value. Bit value of 1 means that the corresponding
+                bit has a known reset value whereas 0 means that the value is unknown.</td>
+    	  </tr>
+        </table>
+        <p>
             <b>Volatile</b>=true indicates that the register may change its value without write operations.
         </p>
         <p>
@@ -73,17 +96,19 @@
         <p>
             <b>Test constraint</b> specifies the constaints for the automated tests for the field. The possible
             values are:
-            <ul>
-                <li><i>unConstrained</i>. There are no constraints for the written or read data. This is the
-                    default setting.</li>
-                <li><i>Restore</i>. The fields value must be restored to its original value before accessing
-                    another register.
-                </li>
-                <li><i>WriteAsRead</i>. The data written to a field must be same that was read previously from
-                    the field</li>
-                <li><i>ReadOnly</i>. Indicates that the field can only be read.</li>
-            </ul>
         </p>
+
+        <ul>
+            <li><i>unConstrained</i>. There are no constraints for the written or read data. This is the
+                default setting.</li>
+            <li><i>Restore</i>. The fields value must be restored to its original value before accessing
+                another register.
+            </li>
+            <li><i>WriteAsRead</i>. The data written to a field must be same that was read previously from
+                the field</li>
+            <li><i>ReadOnly</i>. Indicates that the field can only be read.</li>
+        </ul>
+
         <p>
         	The <b>write value constraint</b>s are used to define what are the legal values user may write to a
             field The possible values are:

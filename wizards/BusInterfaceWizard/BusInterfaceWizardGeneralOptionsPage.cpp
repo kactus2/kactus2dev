@@ -25,13 +25,14 @@
 BusInterfaceWizardGeneralOptionsPage::BusInterfaceWizardGeneralOptionsPage(QSharedPointer<Component> component,
     QSharedPointer<BusInterface> busIf, LibraryInterface* lh,  bool absDefEditable,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
-    BusInterfaceWizard* parent) : 
-    QWizardPage(parent),
-    component_(component),
-    busIf_(busIf),
-    handler_(lh),
-    newBus_(true),
-    generalTab_(new BusIfGeneralTab(lh, busIf, component, parameterFinder, expressionFormatter, this, parent))
+    QSharedPointer<ExpressionParser> ExpressionParser, BusInterfaceWizard* parent) : 
+QWizardPage(parent),
+component_(component),
+busIf_(busIf),
+handler_(lh),
+newBus_(true),
+generalTab_(new BusIfGeneralTab(lh, busIf, component, parameterFinder, expressionFormatter, ExpressionParser,
+                                this, parent))
 {
     setTitle(tr("Bus interface general options"));
     setSubTitle(tr("Setup the general options for bus interface."));
@@ -39,6 +40,11 @@ BusInterfaceWizardGeneralOptionsPage::BusInterfaceWizardGeneralOptionsPage(QShar
 
     generalTab_->setAbsTypeMandatory(true);
     generalTab_->setBusTypesLock(!absDefEditable);
+
+    connect(generalTab_, SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(generalTab_, SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
     setupLayout();
 }

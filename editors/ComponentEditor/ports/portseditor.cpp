@@ -257,6 +257,11 @@ void PortsEditor::onCreateNewInteface(QStringList const& selectedPorts)
         dialog.getSignalSelection() == NewBusDialog::USE_DESCRIPTION);
     component_->addBusInterface(busIf);   
 
+    connect(&wizard, SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(&wizard, SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+
     if (wizard.exec() == QWizard::Accepted)
     {
         emit createInterface();
@@ -278,6 +283,11 @@ void PortsEditor::onCreateInterface(QStringList const& selectedPorts)
     // Open the bus interface wizard.
     BusInterfaceWizard wizard(component_, busIf, handler_, selectedPorts, this);
     component_->addBusInterface(busIf);   
+
+    connect(&wizard, SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(&wizard, SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
     if (wizard.exec() == QWizard::Accepted)
     {

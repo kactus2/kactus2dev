@@ -24,28 +24,32 @@
 
 class LibraryInterface;
 class BusIfGeneralTab;
+class ExpressionParser;
 
 /*! \brief This widget stack contains the different editors to edit interface mode specific details of bus interface.
  *
  */
-class InterfaceModeStack : public QStackedWidget {
+class InterfaceModeStack : public QStackedWidget
+{
 	Q_OBJECT
 
 public:
 
-	/*!
+    /*!
 	 *  The constructor.
 	 *
 	 *      @param [in] busif               Pointer to the bus interface being edited.
 	 *      @param [in] component           Pointer to the component being edited.
 	 *      @param [in] parameterFinder     Pointer to the parameter finder.
 	 *      @param [in] handler             Pointer to the instance that manages the library.
-	 *      @param [in] parent              Pointer to the owner of the stack.
+	 *      @param [in] expressionParser    Pointer to the expression parser.
+	 *      @param [in] parent              Pointer to the owner of this stack.
 	 */
 	InterfaceModeStack(QSharedPointer<BusInterface> busif,
 		QSharedPointer<Component> component,
         QSharedPointer<ParameterFinder> parameterFinder,
 		LibraryInterface* handler,
+        QSharedPointer<ExpressionParser> expressionParser,
 		BusIfGeneralTab* parent);
 	
 	//! \brief The destructor
@@ -82,11 +86,6 @@ signals:
      */
     void decreaseReferences(QString const& id);
 
-    /*!
-     *  Informs a change in the bus interface parameters.
-     */
-    void busIfParametersChanged();
-
 private:
 	
 	//! \brief No copying
@@ -104,12 +103,25 @@ private:
 	//! \brief The current mode of the interface.
 	General::InterfaceMode mode_;
 
+    //! The master interface.
 	BusIfInterfaceMaster master_;
+
+    //! The slave interface.
 	BusIfInterfaceSlave slave_;
+
+    //! The system interface.
 	BusIfInterfaceSystem system_;
+
+    //! The mirrored master interface.
 	BusIfInterfaceMaster mirroredMaster_;
+
+    //! The mirrored slave interface.
 	BusIfInterfaceMSlave mirroredSlave_;
+
+    //! The mirrored system interface.
 	BusIfInterfaceSystem mirroredSystem_;
+
+    //! The monitor interface.
 	BusIfInterfaceMonitor monitor_;
 };
 

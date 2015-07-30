@@ -202,14 +202,6 @@ private:
 	AddressBlockModel& operator=(const AddressBlockModel& other);
 
     /*!
-     *  Validates the data in the register reset columns.
-     *
-     *      @param [in] resetValue      The value in the column.
-     *      @param [in] registerSize    The size of the register.
-     */
-    bool validateResetColumn(QString const& resetValue, int const& registerSize) const;
-
-    /*!
      *  Get the value for the corresponding index.
      *
      *      @param [in] index   The index whose value is being searched for.

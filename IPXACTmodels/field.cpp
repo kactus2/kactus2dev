@@ -752,6 +752,103 @@ NameGroup& Field::getNameGroup()
 }
 
 //-----------------------------------------------------------------------------
+// Function: field::setResetValue()
+//-----------------------------------------------------------------------------
+void Field::setResetValue(QString const& newResetValue)
+{
+    QSharedPointer<VendorExtension> resetValueExtension = getVendorExtension("kactus2:resetValue");
+
+    if (newResetValue.isEmpty())
+    {
+        vendorExtensions_.removeAll(resetValueExtension);
+    }
+    else if (resetValueExtension)
+    {
+        QSharedPointer<Kactus2Value> resetValue = resetValueExtension.dynamicCast<Kactus2Value>();
+        resetValue->setValue(newResetValue);
+    }
+    else
+    {
+        createResetValueExtension(newResetValue);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: field::getResetValue()
+//-----------------------------------------------------------------------------
+QString Field::getResetValue() const
+{
+    QSharedPointer<VendorExtension> resetValueExtension = getVendorExtension("kactus2:resetValue");
+
+    if (resetValueExtension)
+    {
+        QSharedPointer<Kactus2Value> resetValue = resetValueExtension.dynamicCast<Kactus2Value>();
+        return resetValue->value();
+    }
+    else
+    {
+        return QString();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: field::setResetMask()
+//-----------------------------------------------------------------------------
+void Field::setResetMask(QString const& newResetMask)
+{
+    QSharedPointer<VendorExtension> resetMaskExtension = getVendorExtension("kactus2:resetMask");
+    
+    if (newResetMask.isEmpty())
+    {
+        vendorExtensions_.removeAll(resetMaskExtension);
+    }
+
+    else if (resetMaskExtension)
+    {
+        QSharedPointer<Kactus2Value> resetMask = resetMaskExtension.dynamicCast<Kactus2Value>();
+        resetMask->setValue(newResetMask);
+    }
+    else
+    {
+        createResetMaskExtension(newResetMask);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: field::getResetMask()
+//-----------------------------------------------------------------------------
+QString Field::getResetMask() const
+{
+    QSharedPointer<VendorExtension> resetMaskExtension = getVendorExtension("kactus2:resetMask");
+
+    if (resetMaskExtension)
+    {
+        QSharedPointer<Kactus2Value> resetMask = resetMaskExtension.dynamicCast<Kactus2Value>();
+        return resetMask->value();
+    }
+    else
+    {
+        return QString();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: field::getVendorExtension()
+//-----------------------------------------------------------------------------
+QSharedPointer<VendorExtension> Field::getVendorExtension(QString const& extensionType) const
+{
+    foreach (QSharedPointer<VendorExtension> kactus2Extension, vendorExtensions_)
+    {
+        if (kactus2Extension->type() == extensionType)
+        {
+            return kactus2Extension;
+        }
+    }
+
+    return QSharedPointer<VendorExtension>();
+}
+
+//-----------------------------------------------------------------------------
 // Function: field::parseVendorExtensions()
 //-----------------------------------------------------------------------------
 void Field::parseVendorExtensions(QDomNode const& fieldNode)
@@ -768,6 +865,14 @@ void Field::parseVendorExtensions(QDomNode const& fieldNode)
         else if (extensionNode.nodeName() == QString("kactus2:isPresent"))
         {
             createIsPresentExpressionExtension(extensionNode.childNodes().at(i).nodeValue());
+        }
+        else if (extensionNode.nodeName() == QString("kactus2:resetValue"))
+        {
+            createResetValueExtension(extensionNode.childNodes().at(0).nodeValue());
+        }
+        else if (extensionNode.nodeName() == QString("kactus2:resetMask"))
+        {
+            createResetMaskExtension(extensionNode.childNodes().at(0).nodeValue());
         }
         else
         {
@@ -801,6 +906,24 @@ void Field::createIsPresentExpressionExtension(QString const& expression)
 }
 
 //-----------------------------------------------------------------------------
+// Function: field::createResetValueExtension()
+//-----------------------------------------------------------------------------
+void Field::createResetValueExtension(QString const& newResetValue)
+{
+    QSharedPointer<VendorExtension> resetValueExtension (new Kactus2Value("kactus2:resetValue", newResetValue));
+    vendorExtensions_.append(resetValueExtension);
+}
+
+//-----------------------------------------------------------------------------
+// Function: field::createResetMaskExtension()
+//-----------------------------------------------------------------------------
+void Field::createResetMaskExtension(QString const& newResetMask)
+{
+    QSharedPointer<VendorExtension> resetMaskExtension (new Kactus2Value("kactus2:resetMask", newResetMask));
+    vendorExtensions_.append(resetMaskExtension);
+}
+
+//-----------------------------------------------------------------------------
 // Function: field::copyVendorExtensions()
 //-----------------------------------------------------------------------------
 void Field::copyVendorExtensions(const Field & other)
@@ -823,3 +946,4 @@ void Field::copyVendorExtensions(const Field & other)
         }
     }
 }
+

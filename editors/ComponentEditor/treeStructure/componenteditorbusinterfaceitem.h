@@ -14,6 +14,8 @@
 
 #include <QSharedPointer>
 
+class ExpressionParser;
+
 /*! \brief The item for single bus interface in the component editor's navigation tree.
  *
  */
@@ -22,17 +24,18 @@ class ComponentEditorBusInterfaceItem : public ComponentEditorItem {
 
 public:
 
-	/*!
+    /*!
 	 *  The constructor.
 	 *
 	 *      @param [in] busif                   Pointer to the bus interface being edited.
 	 *      @param [in] model                   Pointer to the model that owns the items.
 	 *      @param [in] libHandler              Pointer to the instance that manages the library.
 	 *      @param [in] component               Pointer to the component being edited.
-     *      @param [in] referenceCounter        Pointer to the reference counter.
+	 *      @param [in] referenceCounter        Pointer to the reference counter.
 	 *      @param [in] parameterFinder         Pointer to the parameter finder.
 	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
-	 *      @param [in] parent                  Pointer to the parent item.
+	 *      @param [in] expressionParser        Pointer to the expression parser.
+	 *      @param [in] parent                  Pointer to the owner of this item.
 	 *      @param [in] parentWnd               Pointer to the parent window.
 	 */
 	ComponentEditorBusInterfaceItem(QSharedPointer<BusInterface> busif,
@@ -42,6 +45,7 @@ public:
         QSharedPointer<ReferenceCounter> referenceCounter,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QSharedPointer<ExpressionParser> expressionParser,
 		ComponentEditorItem* parent,
         QWidget* parentWnd);
 
@@ -107,6 +111,9 @@ private:
 
     //! Action to open the bus interface for editing.
     QAction* editAction_;
+
+    //! The expression parse used to form the results of the expressions.
+    QSharedPointer<ExpressionParser> expressionParser_;
 };
 
 #endif // COMPONENTEDITORBUSINTERFACEITEM_H

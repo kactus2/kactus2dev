@@ -24,11 +24,13 @@ class BusInterfaceWizard;
 class BusInterface;
 class Component;
 class LibraryInterface;
+class ExpressionParser;
 //-----------------------------------------------------------------------------
 //! General options page for the interface wizard.
 //-----------------------------------------------------------------------------
 class BusInterfaceWizardGeneralOptionsPage : public QWizardPage
 {
+    Q_OBJECT
 
 public:
 
@@ -49,6 +51,7 @@ public:
         bool absDefEditable,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QSharedPointer<ExpressionParser> expressionParser,
         BusInterfaceWizard* parent);
 
     /*!
@@ -78,6 +81,21 @@ public:
      */
     virtual bool isComplete();
 
+signals:
+
+    /*!
+     *  Increase the number of references made to a specific parameter.
+     *
+     *      @param [in] id  The id of the parameter whose reference count is to be increased.
+     */
+    void increaseReferences(QString id);
+
+    /*!
+     *  Decrease the number of references made to a specific parameter.
+     *
+     *      @param [in] id  The id of the parameter whose reference count is to be decreased.
+     */
+    void decreaseReferences(QString id);
 
 private:
     // Disable copying.
