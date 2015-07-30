@@ -560,22 +560,6 @@ bool AddressBlockModel::validateIndex(QModelIndex const& index) const
     {
         QString size = reg->getSizeExpression();
         return isValuePlainOrExpression(size);
-        /*
-        QString size = reg->getSizeExpression();
-        if (isValuePlainOrExpression(size))
-        {
-            QString dimension = QString::number(reg->getDim());
-            return isValuePlainOrExpression(dimension);
-        }*/
-        /*else if (index.column() == AddressBlockColumns::REGISTER_SIZE)
-        {
-            QString size = reg->getSizeExpression();
-            return isValuePlainOrExpression(size);
-        }
-        else
-        {
-            return false;
-        }*/
     }
 
     else if (index.column() == AddressBlockColumns::REGISTER_OFFSET)
