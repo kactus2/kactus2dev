@@ -6116,6 +6116,9 @@
     <ClInclude Include="editors\ComponentEditor\memoryMaps\EnumeratedValueColumns.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
     </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\busInterfaces\BusInterfaceColumns.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="designEditors\common\DiagramUtil.inl">

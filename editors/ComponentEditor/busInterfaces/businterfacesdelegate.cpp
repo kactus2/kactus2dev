@@ -37,20 +37,20 @@ BusInterfacesDelegate::~BusInterfacesDelegate()
 QWidget* BusInterfacesDelegate::createEditor(QWidget* parent, const QStyleOptionViewItem& option, 
     QModelIndex const& index) const
 {
-    if (index.column() == BusInterfaceColumns::NAME_COLUMN)
+    if (index.column() == BusInterfaceColumns::NAME)
     {
         QLineEdit* edit = new QLineEdit(parent);
         connect(edit, SIGNAL(editingFinished()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
         return edit;
     }
-    else if (index.column() == BusInterfaceColumns::BUSDEF_COLUMN ||
-        index.column() == BusInterfaceColumns::ABSDEF_COLUMN) 
+    else if (index.column() == BusInterfaceColumns::BUSDEF ||
+        index.column() == BusInterfaceColumns::ABSDEF) 
     {    		
         Q_ASSERT_X(false, "BusInterfacesDelegate::createEditor()", 
             "Attempting to create editor for non-editable index.");
         return 0;
     }
-    else if (index.column() == BusInterfaceColumns::IF_MODE_COLUMN)
+    else if (index.column() == BusInterfaceColumns::INTERFACE_MODE)
     {
         InterfaceModeSelector* selector = new InterfaceModeSelector(parent); 
         connect(selector, SIGNAL(currentIndexChanged(int)), 
@@ -68,7 +68,7 @@ QWidget* BusInterfacesDelegate::createEditor(QWidget* parent, const QStyleOption
 //-----------------------------------------------------------------------------
 void BusInterfacesDelegate::setEditorData(QWidget* editor, QModelIndex const& index) const
 {
-    if (index.column() == BusInterfaceColumns::NAME_COLUMN)
+    if (index.column() == BusInterfaceColumns::NAME)
     {
         QLineEdit* edit = qobject_cast<QLineEdit*>(editor);
         Q_ASSERT(edit);
@@ -76,12 +76,12 @@ void BusInterfacesDelegate::setEditorData(QWidget* editor, QModelIndex const& in
         const QString text = index.data(Qt::DisplayRole).toString();
         edit->setText(text);
     }
-    else if (index.column() == BusInterfaceColumns::BUSDEF_COLUMN ||
-        index.column() ==  BusInterfaceColumns::ABSDEF_COLUMN)
+    else if (index.column() == BusInterfaceColumns::BUSDEF ||
+        index.column() ==  BusInterfaceColumns::ABSDEF)
     {
         Q_ASSERT(false);			
     }
-    else if (index.column() == BusInterfaceColumns::IF_MODE_COLUMN)
+    else if (index.column() == BusInterfaceColumns::INTERFACE_MODE)
     {
         InterfaceModeSelector* selector = qobject_cast<InterfaceModeSelector*>(editor);
         Q_ASSERT(selector);
@@ -101,7 +101,7 @@ void BusInterfacesDelegate::setEditorData(QWidget* editor, QModelIndex const& in
 void BusInterfacesDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, 
     QModelIndex const& index) const
 {
-    if (index.column() == BusInterfaceColumns::NAME_COLUMN)
+    if (index.column() == BusInterfaceColumns::NAME)
     {
         QLineEdit* edit = qobject_cast<QLineEdit*>(editor);
         Q_ASSERT(edit);
@@ -109,12 +109,12 @@ void BusInterfacesDelegate::setModelData(QWidget* editor, QAbstractItemModel* mo
         QString text = edit->text();
         model->setData(index, text, Qt::EditRole);
     }
-    else if (index.column() == BusInterfaceColumns::BUSDEF_COLUMN || 
-        index.column() == BusInterfaceColumns::ABSDEF_COLUMN)
+    else if (index.column() == BusInterfaceColumns::BUSDEF || 
+        index.column() == BusInterfaceColumns::ABSDEF)
     {
         Q_ASSERT(false);			
     }
-    else if (index.column() == BusInterfaceColumns::IF_MODE_COLUMN)
+    else if (index.column() == BusInterfaceColumns::INTERFACE_MODE)
     {
         InterfaceModeSelector* selector = qobject_cast<InterfaceModeSelector*>(editor);
         Q_ASSERT(selector);
@@ -134,7 +134,7 @@ void BusInterfacesDelegate::setModelData(QWidget* editor, QAbstractItemModel* mo
 //-----------------------------------------------------------------------------
 int BusInterfacesDelegate::descriptionColumn() const
 {
-    return BusInterfaceColumns::DESCRIPTION_COLUMN;
+    return BusInterfaceColumns::DESCRIPTION;
 }
 
 //-----------------------------------------------------------------------------

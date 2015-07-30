@@ -85,7 +85,7 @@ void MultilineDescriptionDelegate::setModelData(QWidget* editor, QAbstractItemMo
 //-----------------------------------------------------------------------------
 // Function: MultilineDescriptionDelegate::eventFilter()
 //-----------------------------------------------------------------------------
-bool MultilineDescriptionDelegate::eventFilter(QObject* editor, QEvent *event)
+bool MultilineDescriptionDelegate::eventFilter(QObject* editor, QEvent* event)
 {
     if (event->type() == QEvent::KeyPress)
     {

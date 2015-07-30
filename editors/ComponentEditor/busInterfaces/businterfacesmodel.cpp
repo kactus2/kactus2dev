@@ -82,8 +82,8 @@ Qt::ItemFlags BusInterfacesModel::flags(QModelIndex const& index) const
 		return Qt::NoItemFlags;
 	}
 	// bus def and abs def can not be edited but can have data dropped on them
-	else if (index.column() == BusInterfaceColumns::BUSDEF_COLUMN ||
-		index.column() == BusInterfaceColumns::ABSDEF_COLUMN)
+	else if (index.column() == BusInterfaceColumns::BUSDEF ||
+		index.column() == BusInterfaceColumns::ABSDEF)
     {
         return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
 	}
@@ -101,23 +101,23 @@ QVariant BusInterfacesModel::headerData(int section, Qt::Orientation orientation
 		return QVariant();
     }
 
-    if (section == BusInterfaceColumns::NAME_COLUMN)
+    if (section == BusInterfaceColumns::NAME)
     {
         return tr("Name");
     }
-    else if (section == BusInterfaceColumns::BUSDEF_COLUMN)
+    else if (section == BusInterfaceColumns::BUSDEF)
     {
         return tr("Bus\ndefinition");
     }
-    else if (section == BusInterfaceColumns::ABSDEF_COLUMN)
+    else if (section == BusInterfaceColumns::ABSDEF)
     {
         return tr("Abstraction\ndefinition");
     }
-    else if (section == BusInterfaceColumns::IF_MODE_COLUMN)
+    else if (section == BusInterfaceColumns::INTERFACE_MODE)
     {
         return tr("Interface\nmode");
     }
-    else if (section == BusInterfaceColumns::DESCRIPTION_COLUMN)
+    else if (section == BusInterfaceColumns::DESCRIPTION)
     {
         return tr("Description");
     }
@@ -140,24 +140,24 @@ QVariant BusInterfacesModel::data(QModelIndex const& index, int role) const
     QSharedPointer<BusInterface> busInterface = busifs_.at(index.row());
 	if (role == Qt::DisplayRole)
     {
-        if (index.column() == BusInterfaceColumns::NAME_COLUMN)
+        if (index.column() == BusInterfaceColumns::NAME)
         {
             return busInterface->getName();
         }
-        else if ( index.column() == BusInterfaceColumns::BUSDEF_COLUMN)
+        else if ( index.column() == BusInterfaceColumns::BUSDEF)
         {
             return busInterface->getBusType().toString(":");
         }
-        else if (index.column() == BusInterfaceColumns::ABSDEF_COLUMN)
+        else if (index.column() == BusInterfaceColumns::ABSDEF)
         {
             return busInterface->getAbstractionType().toString(":");
         }
-        else if (index.column() == BusInterfaceColumns::IF_MODE_COLUMN)
+        else if (index.column() == BusInterfaceColumns::INTERFACE_MODE)
         {
             General::InterfaceMode mode = busInterface->getInterfaceMode();
             return General::interfaceMode2Str(mode);
         }
-        else if (index.column() == BusInterfaceColumns::DESCRIPTION_COLUMN)
+        else if (index.column() == BusInterfaceColumns::DESCRIPTION)
         {
             return busInterface->getDescription().replace(QRegularExpression("\n.*$", 
                 QRegularExpression::DotMatchesEverythingOption), "...");
@@ -168,7 +168,7 @@ QVariant BusInterfacesModel::data(QModelIndex const& index, int role) const
         }
 	}
     else if ((role == Qt::EditRole || role == Qt::ToolTipRole) && 
-        index.column() == BusInterfaceColumns::DESCRIPTION_COLUMN)
+        index.column() == BusInterfaceColumns::DESCRIPTION)
     {
         return busInterface->getDescription();
     }
@@ -186,9 +186,9 @@ QVariant BusInterfacesModel::data(QModelIndex const& index, int role) const
 	}
 	else if (role == Qt::BackgroundRole)
     {
-        if (index.column() == BusInterfaceColumns::NAME_COLUMN ||
-            index.column() == BusInterfaceColumns::BUSDEF_COLUMN ||
-            index.column() == BusInterfaceColumns::IF_MODE_COLUMN)
+        if (index.column() == BusInterfaceColumns::NAME ||
+            index.column() == BusInterfaceColumns::BUSDEF ||
+            index.column() == BusInterfaceColumns::INTERFACE_MODE)
         {
             return QColor("LemonChiffon");
         }
@@ -216,27 +216,27 @@ bool BusInterfacesModel::setData(QModelIndex const& index, const QVariant& value
     QSharedPointer<BusInterface> busInterface = busifs_.at(index.row());
 	if (role == Qt::EditRole)
     {
-        if (index.column() == BusInterfaceColumns::NAME_COLUMN)
+        if (index.column() == BusInterfaceColumns::NAME)
         {
             busInterface->setName(value.toString());
         }
-        else if (index.column() == BusInterfaceColumns::BUSDEF_COLUMN)
+        else if (index.column() == BusInterfaceColumns::BUSDEF)
         {
             VLNV busType = VLNV(VLNV::BUSDEFINITION, value.toString(), ":");
             busInterface->setBusType(busType);
         }
-        else if (index.column() ==  BusInterfaceColumns::ABSDEF_COLUMN)
+        else if (index.column() ==  BusInterfaceColumns::ABSDEF)
         {
             VLNV absType = VLNV(VLNV::ABSTRACTIONDEFINITION, value.toString(), ":");
             busInterface->setAbstractionType(absType);
         }
-        else if (index.column() ==  BusInterfaceColumns::IF_MODE_COLUMN)
+        else if (index.column() ==  BusInterfaceColumns::INTERFACE_MODE)
         {
             QString modeStr = value.toString();
             General::InterfaceMode mode = General::str2Interfacemode(modeStr, General::MASTER);
             busInterface->setInterfaceMode(mode);
         }
-        else if (index.column() ==  BusInterfaceColumns::DESCRIPTION_COLUMN) {
+        else if (index.column() ==  BusInterfaceColumns::DESCRIPTION) {
             busInterface->setDescription(value.toString());
         }
         else
@@ -297,7 +297,7 @@ bool BusInterfacesModel::dropMimeData(const QMimeData *data, Qt::DropAction acti
 
     VLNV vlnv = variant.value<VLNV>();
 
-    if (parent.column() == BusInterfaceColumns::BUSDEF_COLUMN)
+    if (parent.column() == BusInterfaceColumns::BUSDEF)
     {
         if (vlnv.getType() != VLNV::BUSDEFINITION)
         {
@@ -310,12 +310,12 @@ bool BusInterfacesModel::dropMimeData(const QMimeData *data, Qt::DropAction acti
         QList<VLNV> absDefVLNVs;
         if (libHandler_->getChildren(absDefVLNVs, vlnv) == 1) 
         {
-            setData(index(parent.row(),BusInterfaceColumns::ABSDEF_COLUMN), absDefVLNVs.first().toString(":"));
+            setData(index(parent.row(),BusInterfaceColumns::ABSDEF), absDefVLNVs.first().toString(":"));
         }
 
         emit contentChanged();
     }
-    else if (parent.column() == BusInterfaceColumns::ABSDEF_COLUMN)
+    else if (parent.column() == BusInterfaceColumns::ABSDEF)
     {
         if ( vlnv.getType() != VLNV::ABSTRACTIONDEFINITION )
         {
