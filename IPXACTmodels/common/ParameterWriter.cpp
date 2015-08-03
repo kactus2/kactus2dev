@@ -10,7 +10,9 @@
 //-----------------------------------------------------------------------------
 
 #include "ParameterWriter.h"
-#include <IPXACTmodels/Parameter.h>
+
+#include <IPXACTmodels/common/Parameter.h>
+#include <IPXACTmodels/VendorExtension.h>
 
 #include <QSharedPointer>
 #include <QXmlStreamWriter>
@@ -131,7 +133,7 @@ void ParameterWriter::writeValue(QXmlStreamWriter &writer, QSharedPointer<Parame
 {
     writer.writeStartElement("ipxact:value");
     
-    foreach (QString attribute, parameter->getValueAttributes())
+    foreach (QString attribute, parameter->getValueAttributeNames())
     {
         writer.writeAttribute(attribute, parameter->getValueAttribute(attribute));
     }

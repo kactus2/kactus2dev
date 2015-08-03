@@ -6,7 +6,7 @@
 // Date: 31.07.2015
 //
 // Description:
-// <Short description of the class/file contents>
+// Implementation of ipxact:vector element.
 //-----------------------------------------------------------------------------
 
 #include "Vector.h"
@@ -15,8 +15,7 @@
 // Function: Vector::Vector()
 //-----------------------------------------------------------------------------
 Vector::Vector(QString left, QString right):
-left_(left),
-right_(right)
+Range(left, right)
 {
     
 }
@@ -27,36 +26,4 @@ right_(right)
 Vector::~Vector()
 {
     
-}
-
-//-----------------------------------------------------------------------------
-// Function: Vector::getLeft()
-//-----------------------------------------------------------------------------
-QString Vector::getLeft() const
-{
-    return left_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: Vector::getRight()
-//-----------------------------------------------------------------------------
-QString Vector::getRight() const
-{
-    return right_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: Vector::setLeft()
-//-----------------------------------------------------------------------------
-void Vector::setLeft(QString const& newLeft)
-{
-    left_ = newLeft;
-}
-
-//-----------------------------------------------------------------------------
-// Function: Vector::setRight()
-//-----------------------------------------------------------------------------
-void Vector::setRight(QString const& newright)
-{
-    right_ = newright;
 }

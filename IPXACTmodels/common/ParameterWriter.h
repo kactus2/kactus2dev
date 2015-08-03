@@ -13,6 +13,7 @@
 #define PARAMETERWRITER_H
 
 #include <QObject>
+#include <QSharedPointer>
 #include <QXmlStreamWriter>
 
 class Parameter;

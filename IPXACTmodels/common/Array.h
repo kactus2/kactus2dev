@@ -2,15 +2,17 @@
 // File: Array.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Mikko Teuho
-// Date: 01.04.2015
+// Author: Esko Pekkarinen
+// Date: 03.08.2015
 //
 // Description:
-// Kactus2 vendor extension for arrays.
+// Implementation of ipxact:array element.
 //-----------------------------------------------------------------------------
 
 #ifndef ARRAY_H
 #define ARRAY_H
+
+#include "Range.h"
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
@@ -20,7 +22,7 @@
 //-----------------------------------------------------------------------------
 // Kactus2 vendor extension for arrays.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT Array
+class IPXACTMODELS_EXPORT Array : public Range
 {
 public:
 
@@ -36,34 +38,6 @@ public:
 	 *  The destructor.
 	*/
     virtual ~Array();
-
-    /*!
-     *  Gets the left value of the array.
-     *
-     *      @return The left value of the array.
-     */
-    QString getLeft() const;
-
-    /*!
-     *  Gets the right value of the array.
-     *
-     *      @return The right value of the array.
-     */
-    QString getRight() const;
-
-    /*!
-     *  Sets the left value for the array.
-     *
-     *      @param [in] newLeft     The value to be set as left.
-     */
-    void setLeft(QString const& newLeft);
-
-    /*!
-     *  Sets the right value for the array.
-     *
-     *      @param [in] newright    The value to be set as right.
-     */
-    void setRight(QString const& newright);
 
 private:
     //! Disable copying.

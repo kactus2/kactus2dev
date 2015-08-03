@@ -7,12 +7,18 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../IPXACTmodels/common/ParameterWriter.h \
-    ../../../IPXACTmodels/parameter.h \
-    ../../../IPXACTmodels/kactusExtensions/Kactus2Vector.h \
-    ../../../IPXACTmodels/kactusExtensions/Kactus2Array.h
+HEADERS += ../../../IPXACTmodels/common/Parameter.h \
+    ../../../IPXACTmodels/common/ParameterWriter.h \
+    ../../../IPXACTmodels/NameGroup.h \
+    ../../../IPXACTmodels/XmlUtils.h \
+    ../../../IPXACTmodels/GenericVendorExtension.h \
+    ../../../IPXACTmodels/common/Array.h \
+    ../../../IPXACTmodels/common/Vector.h
 SOURCES += ../../../IPXACTmodels/common/ParameterWriter.cpp \
+    ../../../IPXACTmodels/common/Parameter.cpp \
     ./tst_ParameterWriter.cpp \
-    ../../../IPXACTmodels/parameter.cpp \
-    ../../../IPXACTmodels/kactusExtensions/Kactus2Vector.cpp \
-    ../../../IPXACTmodels/kactusExtensions/Kactus2Array.cpp
+    ../../../IPXACTmodels/NameGroup.cpp \
+    ../../../IPXACTmodels/XmlUtils.cpp \
+    ../../../IPXACTmodels/GenericVendorExtension.cpp \
+    ../../../IPXACTmodels/common/Array.cpp \
+    ../../../IPXACTmodels/common/Vector.cpp

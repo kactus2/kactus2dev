@@ -20,8 +20,6 @@
 #include <QDomNamedNodeMap>
 #include <QObject>
 #include <QMap>
-#include <QXmlStreamWriter>
-#include <qmath.h>
 
 #include <QUuid>
 
@@ -29,10 +27,10 @@
 // Function: Parameter::Parameter()
 //-----------------------------------------------------------------------------
 Parameter::Parameter(QDomNode & parameterNode): nameGroup_(parameterNode),
-value_(), attributes_(), valueAttributes_(), bitWidthVector_(), 
-vectors_(new QList<QSharedPointer<Vector> >()),
-arrays_(new QList<QSharedPointer<Array> >()),
-vendorExtensions_(new QList<QSharedPointer<VendorExtension> >())
+    value_(), attributes_(), valueAttributes_(), bitWidthVector_(), 
+    vectors_(new QList<QSharedPointer<Vector> >()),
+    arrays_(new QList<QSharedPointer<Array> >()),
+    vendorExtensions_(new QList<QSharedPointer<VendorExtension> >())
 {
     attributes_ = XmlUtils::parseAttributes(parameterNode);
 
@@ -60,7 +58,10 @@ vendorExtensions_(new QList<QSharedPointer<VendorExtension> >())
 //-----------------------------------------------------------------------------
 // Function: Parameter::Parameter()
 //-----------------------------------------------------------------------------
-Parameter::Parameter(): nameGroup_(), value_(), attributes_(), valueAttributes_(), 
+Parameter::Parameter(): nameGroup_(),
+    value_(), 
+    attributes_(), 
+    valueAttributes_(), 
     bitWidthVector_(), 
     vectors_(new QList<QSharedPointer<Vector> >()),
     arrays_(new QList<QSharedPointer<Array> >()), 
@@ -72,17 +73,25 @@ Parameter::Parameter(): nameGroup_(), value_(), attributes_(), valueAttributes_(
 //-----------------------------------------------------------------------------
 // Function: Parameter::Parameter()
 //-----------------------------------------------------------------------------
-Parameter::Parameter( const Parameter &other ):
-nameGroup_(other.nameGroup_),
-value_(other.value_),
-attributes_(other.attributes_),
-valueAttributes_(other.valueAttributes_), 
-bitWidthVector_(other.bitWidthVector_), 
-vectors_(other.vectors_), 
-arrays_(other.arrays_), 
-vendorExtensions_(other.vendorExtensions_)
+Parameter::Parameter( const Parameter &other ): nameGroup_(other.nameGroup_),
+    value_(other.value_),
+    attributes_(other.attributes_),
+    valueAttributes_(other.valueAttributes_), 
+    bitWidthVector_(other.bitWidthVector_), 
+    vectors_(other.vectors_), 
+    arrays_(other.arrays_), 
+    vendorExtensions_(other.vendorExtensions_)
 {
     copyVendorExtensions(other);
+}
+
+//-----------------------------------------------------------------------------
+// Function: Parameter::~Parameter()
+//-----------------------------------------------------------------------------
+Parameter::~Parameter()
+{
+    attributes_.clear();
+    valueAttributes_.clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -100,15 +109,6 @@ Parameter & Parameter::operator=( const Parameter &other )
         copyVendorExtensions(other);
 	}
 	return *this;
-}
-
-//-----------------------------------------------------------------------------
-// Function: Parameter::~Parameter()
-//-----------------------------------------------------------------------------
-Parameter::~Parameter()
-{
-    attributes_.clear();
-    valueAttributes_.clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -180,7 +180,7 @@ void Parameter::setValue(QString const& value)
 //-----------------------------------------------------------------------------
 QString Parameter::getChoiceRef() const
 {
-    return getAttribute("spirit:choiceRef");
+    return getAttribute("choiceRef");
 }
 
 //-----------------------------------------------------------------------------
@@ -276,7 +276,7 @@ void Parameter::setValueId(QString const& id)
 //-----------------------------------------------------------------------------
 int Parameter::getUsageCount() const
 {
-    return attributes_.value("usageCount", "0").toInt();
+    return getAttribute("usageCount").toInt();
 }
 
 //-----------------------------------------------------------------------------
@@ -343,22 +343,6 @@ QString Parameter::getValueAttribute(QString const& attributeName) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: Parameter::elementIdentifier()
-//-----------------------------------------------------------------------------
-QString Parameter::elementIdentifier() const
-{
-    return "spirit:parameter";
-}
-
-//-----------------------------------------------------------------------------
-// Function: Parameter::elementName()
-//-----------------------------------------------------------------------------
-QString Parameter::elementName() const
-{
-    return "parameter";
-}
-
-//-----------------------------------------------------------------------------
 // Function: Parameter::setValueAttribute()
 //-----------------------------------------------------------------------------
 void Parameter::setValueAttribute(QString const& attributeName, QString const& attributeValue)
@@ -374,19 +358,19 @@ void Parameter::setValueAttribute(QString const& attributeName, QString const& a
 }
 
 //-----------------------------------------------------------------------------
-// Function: Parameter::getValueAttributes()
-//-----------------------------------------------------------------------------
-QStringList Parameter::getValueAttributes() const
-{
-    return valueAttributes_.keys();
-}
-
-//-----------------------------------------------------------------------------
 // Function: Parameter::getAttributeNames()
 //-----------------------------------------------------------------------------
 QStringList Parameter::getAttributeNames() const
 {
     return attributes_.keys();
+}
+
+//-----------------------------------------------------------------------------
+// Function: Parameter::getValueAttributeNames()
+//-----------------------------------------------------------------------------
+QStringList Parameter::getValueAttributeNames() const
+{
+    return valueAttributes_.keys();
 }
 
 //-----------------------------------------------------------------------------
@@ -448,6 +432,18 @@ QString Parameter::getArrayLeft() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: Parameter::getArrayRight()
+//-----------------------------------------------------------------------------
+QString Parameter::getArrayRight() const
+{
+    if (arrays_->isEmpty())
+    {
+        return QString();
+    }
+
+    return arrays_->first()->getRight();
+}
+//-----------------------------------------------------------------------------
 // Function: Parameter::setArrayLeft()
 //-----------------------------------------------------------------------------
 void Parameter::setArrayLeft(QString const& leftExpression)
@@ -462,18 +458,6 @@ void Parameter::setArrayLeft(QString const& leftExpression)
     }
 }
 
-//-----------------------------------------------------------------------------
-// Function: Parameter::getArrayRight()
-//-----------------------------------------------------------------------------
-QString Parameter::getArrayRight() const
-{
-    if (arrays_->isEmpty())
-    {
-        return QString();
-    }
-
-    return arrays_->first()->getRight();
-}
 
 //-----------------------------------------------------------------------------
 // Function: Parameter::setArrayRight()
@@ -516,9 +500,7 @@ void Parameter::parseVendorExtensions(QDomNode const& vendorExtensionNode)
     for (int j = 0; j < extensionCount; ++j)
     {
         QDomNode extensionNode = vendorExtensionNode.childNodes().at(j);
-
-            vendorExtensions_->append(QSharedPointer<VendorExtension>(new GenericVendorExtension(extensionNode)));
-        
+        vendorExtensions_->append(QSharedPointer<VendorExtension>(new GenericVendorExtension(extensionNode)));
     }
 }
 

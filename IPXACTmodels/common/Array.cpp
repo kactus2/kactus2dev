@@ -2,11 +2,11 @@
 // File: Array.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Mikko Teuho
-// Date: 01.04.2015
+// Author: Esko Pekkarinen
+// Date: 03.08.2015
 //
 // Description:
-// Kactus2 vendor extension for arrays.
+// Implementation of ipxact:array element.
 //-----------------------------------------------------------------------------
 
 #include "Array.h"
@@ -15,8 +15,7 @@
 // Function: Array::Array()
 //-----------------------------------------------------------------------------
 Array::Array(QString left, QString right):
-left_(left),
-right_(right)
+Range(left, right)
 {
     
 }
@@ -27,36 +26,4 @@ right_(right)
 Array::~Array()
 {
 
-}
-
-//-----------------------------------------------------------------------------
-// Function: Array::getLeft()
-//-----------------------------------------------------------------------------
-QString Array::getLeft() const
-{
-    return left_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: Array::getRight()
-//-----------------------------------------------------------------------------
-QString Array::getRight() const
-{
-    return right_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: Array::setLeft()
-//-----------------------------------------------------------------------------
-void Array::setLeft(QString const& newLeft)
-{
-    left_ = newLeft;
-}
-
-//-----------------------------------------------------------------------------
-// Function: Array::setRight()
-//-----------------------------------------------------------------------------
-void Array::setRight(QString const& newright)
-{
-    right_ = newright;
 }

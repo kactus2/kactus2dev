@@ -124,6 +124,7 @@ void tst_ParameterWriter::testWriteValue()
     testParameter->setValueId("");
     testParameter->setName("testParameter");
     testParameter->setValue("parameterValue");
+    testParameter->setValueAttribute("vendorAttribute", "attributeValue");
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
@@ -133,7 +134,7 @@ void tst_ParameterWriter::testWriteValue()
     QCOMPARE(output, QString(
         "<ipxact:parameter>"
             "<ipxact:name>testParameter</ipxact:name>"
-            "<ipxact:value>parameterValue</ipxact:value>"
+            "<ipxact:value vendorAttribute=\"attributeValue\">parameterValue</ipxact:value>"
         "</ipxact:parameter>"));
 }
 

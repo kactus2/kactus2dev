@@ -15,8 +15,8 @@
 #include <IPXACTmodels/ipxactmodels_global.h>
 #include <IPXACTmodels/NameGroup.h>
 
-#include <IPXACTmodels/common/Array.h>
-#include <IPXACTmodels/common/Vector.h>
+#include "Array.h"
+#include "Vector.h"
 
 #include <QDomNode>
 #include <QString>
@@ -49,11 +49,11 @@ public:
 	//! Copy constructor
 	Parameter(const Parameter &other);
 
+    //! The destructor
+    virtual ~Parameter();
+
 	//! Assignment operator
 	Parameter &operator=(const Parameter &other);
-
-	//! The destructor
-	virtual ~Parameter();
 
 	/*! Write the contents of the class using the writer.
 	*
@@ -136,20 +136,6 @@ public:
      *      @param [in] type   The format type.
      */
     void setType(QString const& type);
-
-    /*!
-     *  Gets the length of the bit string for storing the parameter value.
-     *
-     *      @return The length of the bit string.
-     */
-    QString getBitStringLength() const;
-
-    /*!
-     *  Sets the length of the bit string for storing the parameter value.
-     *
-     *      @param [in] length   The bit string length for the parameter value.
-     */
-    void setBitStringLength(QString const& length);
 
     /*!
      *  Gets the minimum value for the parameter value.
@@ -268,42 +254,81 @@ public:
     void setValueAttribute(QString const& attributeName, QString const& attributeValue);
            
     /*!
-     *  Gets the general name of the IP-Xact element represented by the parameter e.g. parameter.
+     *  Gets the names of the parameter attributes.
      *
-     *      @return The name of IP-Xact element.
+     *      @return The parameter attribute names.
      */
-    virtual QString elementName() const;
-
     QStringList getAttributeNames() const;
 
-    QStringList getValueAttributes() const;
+    /*!
+     *  Gets the names of the parameter value attributes.
+     *
+     *      @return The parameter value attribute names.
+     */
+    QStringList getValueAttributeNames() const;
 
+    /*!
+     *  Gets the vectors for the parameter.
+     *
+     *      @return The parameter vectors.
+     */
     QSharedPointer<QList<QSharedPointer<Vector> > > getVectors() const;
 
+    /*!
+     *  Sets the left index of the parameter vector.
+     *
+     *      @param [in] leftExpression   The left index to set.
+     */
     void setVectorLeft(QString const& leftExpression);
-
+    
+    /*!
+     *  Sets the right index of the parameter vector.
+     *
+     *      @param [in] leftExpression   The left index to set.
+     */
     void setVectorRight(QString const& rightExpression);
-
+    
+    /*!
+     *  Gets the arrays for the parameter.
+     *
+     *      @return The parameter arrays.
+     */
     QSharedPointer<QList<QSharedPointer<Array> > > getArrays() const;
-
-    void setArrayLeft(QString const& leftExpression);
-        
+    
+    /*!
+     *  Gets the left index of the parameter array.
+     *
+     *      @return The left index of the array.
+     */
     QString getArrayLeft() const;
 
-    void setArrayRight(QString const& rightExpression);
-        
+    /*!
+     *  Gets the right index of the parameter array.
+     *
+     *      @return The right index of the array.
+     */
     QString getArrayRight() const;
 
-    QSharedPointer<QList<QSharedPointer<VendorExtension> > > getVendorExtensions() const;
-
-protected:
+    /*!
+     *  Sets the left index of the parameter array.
+     *
+     *      @param [in] leftExpression   The left index to set.
+     */
+    void setArrayLeft(QString const& leftExpression);
         
     /*!
-     *  Gets the identifier for the IP-Xact element represented by the parameter e.g. spirit:parameter.
+     *  Sets the right index of the parameter array.
      *
-     *      @return The name of IP-Xact element.
+     *      @param [in] leftExpression   The left index to set.
      */
-    virtual QString elementIdentifier() const;
+    void setArrayRight(QString const& rightExpression);
+        
+    /*!
+     *  Gets the vendor extensions for the parameter.
+     *
+     *      @return The vendor extensions for the parameter.
+     */
+    QSharedPointer<QList<QSharedPointer<VendorExtension> > > getVendorExtensions() const;
 
 private:
  
@@ -333,32 +358,25 @@ private:
     //! Contains the name, display name and description of parameter.
     NameGroup nameGroup_;
 
-	/*!  The actual value of the parameter
-	 * MANDATORY
-	 */
+    //! The parameter value.
 	QString value_;
 
-    /*!
-	 * OPTIONAL
-	 * Contains the attributes for the parameter
-	 */
+    //! Parameter attributes.
 	QMap<QString, QString> attributes_;
 
-	//! The attributes for the value
+	//! The attributes for the value.
 	QMap<QString, QString> valueAttributes_;
 
     //! Vector for containing the bit width of the parameter.
     QSharedPointer<Vector> bitWidthVector_;
 
-
+    //! Vectors for defining parameter bit width.
     QSharedPointer<QList<QSharedPointer<Vector> > > vectors_;
 
+    //! Arrays for defining parameter as an array of values.
     QSharedPointer<QList<QSharedPointer<Array> > > arrays_;
 
-    /*!
-	 * OPTIONAL spirit: vendorExtensions
-	 * Parameter vendor extensions.
-	 */
+    //! Parameter vendor extensions.
     QSharedPointer<QList<QSharedPointer<VendorExtension> > > vendorExtensions_;
 };
 
