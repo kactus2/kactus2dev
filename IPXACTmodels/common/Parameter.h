@@ -288,13 +288,6 @@ private:
     void createUuid();
 
     /*!
-     *  Parses the vendor extensions from a DOM node.
-     *
-     *      @param [in] vendorExtensionNode     The DOM node containing all the vendor extensions.
-     */
-    void parseVendorExtensions(QDomNode const& vendorExtensionNode);
-
-    /*!
      *  Copies vendor extensions from another parameter.
      *
      *      @param [in] other   The parameter to copy extensions from.

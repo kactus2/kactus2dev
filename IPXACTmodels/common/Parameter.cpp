@@ -410,19 +410,6 @@ void Parameter::createUuid()
 }
 
 //-----------------------------------------------------------------------------
-// Function: Parameter::parseVendorExtensions()
-//-----------------------------------------------------------------------------
-void Parameter::parseVendorExtensions(QDomNode const& vendorExtensionNode)
-{
-    int extensionCount = vendorExtensionNode.childNodes().count();
-    for (int j = 0; j < extensionCount; ++j)
-    {
-        QDomNode extensionNode = vendorExtensionNode.childNodes().at(j);
-        vendorExtensions_->append(QSharedPointer<VendorExtension>(new GenericVendorExtension(extensionNode)));
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: parameter::copyVendorExtensions()
 //-----------------------------------------------------------------------------
 void Parameter::copyVendorExtensions(Parameter const& other)
