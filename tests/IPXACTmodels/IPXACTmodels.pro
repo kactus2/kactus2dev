@@ -13,4 +13,5 @@ TEMPLATE = subdirs
 
 CONFIG += testcase
 SUBDIRS += validators\tst_ParameterValidator.pro \
-		   validators\tst_ParameterValidator2014.pro
+		   validators\tst_ParameterValidator2014.pro \
+		   common\tst_ParameterWriter.pro
