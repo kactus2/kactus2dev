@@ -13,9 +13,9 @@
 #define PARAMETER_H
 
 #include <IPXACTmodels/ipxactmodels_global.h>
-#include <IPXACTmodels/NameGroup.h>
 
 #include "Array.h"
+#include "NameGroup.h"
 #include "Vector.h"
 
 #include <QDomNode>
@@ -30,15 +30,9 @@ class VendorExtension;
 //-----------------------------------------------------------------------------
 //! Implementation for ipxact:parameter element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT Parameter
+class IPXACTMODELS_EXPORT Parameter : public NameGroup
 {
 public:
-
-	/*! The constructor
-	 *
-	 *      @param [in] parameterNode A reference to the QDomNode to parse the information from.
-	 */
-	Parameter(QDomNode &parameterNode);
 
 	/*! The default constructor
 	 *
@@ -54,56 +48,12 @@ public:
 
 	//! Assignment operator
 	Parameter &operator=(const Parameter &other);
-
-	/*! Write the contents of the class using the writer.
-	*
-	* Uses the specified writer to write the class contents into file as valid IP-Xact.
-	*
-	*      @param [in] writer A reference to a QXmlStreamWriter instance that is used to write the document.
-	*/
-	//virtual void write(QXmlStreamWriter& writer);
-
-	/*! Get the name of the parameter
-	 *
-	 *      @return QString containing the name
-	 */
-	QString getName() const;
-
-	/*! Get the display name of the parameter.
-	 *
-	 *      @return The parameter display name.
-	 */
-	QString getDisplayName() const;
-
-	/*! Get the description of the parameter.
-	 *
-	 *      @return QString containing the description.
-	 */
-	QString getDescription() const;
     
 	/*! Get the value of the parameter
 	 *
 	 *      @return QString containing the value
 	 */
 	QString getValue() const;
-
-	/*! Set the name for the parameter
-	 *
-	 *      @param [in] name QString containing the name
-	 */
-	void setName(QString const& name);
-    
-	/*! Set the display name for the parameter.
-	 *
-	 *      @param [in] displayName The display name to set.
-	 */
-	void setDisplayName(QString const& displayName);
-    
-	/*! Set the description for the parameter.
-	 *
-	 *      @param [in] description QString containing the description.
-	 */
-	void setDescription(QString const& description);
 
 	/*! Set the value for the parameter
 	 *
@@ -354,9 +304,6 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    //! Contains the name, display name and description of parameter.
-    NameGroup nameGroup_;
 
     //! The parameter value.
 	QString value_;

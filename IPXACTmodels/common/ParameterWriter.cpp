@@ -69,16 +69,16 @@ void ParameterWriter::writeAttributes(QXmlStreamWriter& writer, QSharedPointer<P
 //-----------------------------------------------------------------------------
 void ParameterWriter::writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<Parameter> parameter) const
 {
-    writer.writeTextElement("ipxact:name", parameter->getName());
+    writer.writeTextElement("ipxact:name", parameter->name());
     
-    if (!parameter->getDisplayName().isEmpty())
+    if (!parameter->displayName().isEmpty())
     {
-        writer.writeTextElement("ipxact:displayName", parameter->getDisplayName());
+        writer.writeTextElement("ipxact:displayName", parameter->displayName());
     }
 
-    if (!parameter->getDescription().isEmpty())
+    if (!parameter->description().isEmpty())
     {
-        writer.writeTextElement("ipxact:description", parameter->getDescription());
+        writer.writeTextElement("ipxact:description", parameter->description());
     }
 }
 

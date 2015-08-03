@@ -7,17 +7,19 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../IPXACTmodels/common/Parameter.h \
+HEADERS += ../../../IPXACTmodels/common/Range.h \
+    ../../../IPXACTmodels/common/Parameter.h \
     ../../../IPXACTmodels/common/ParameterWriter.h \
-    ../../../IPXACTmodels/NameGroup.h \
+    ../../../IPXACTmodels/common/NameGroup.h \
     ../../../IPXACTmodels/XmlUtils.h \
     ../../../IPXACTmodels/GenericVendorExtension.h \
     ../../../IPXACTmodels/common/Array.h \
     ../../../IPXACTmodels/common/Vector.h
-SOURCES += ../../../IPXACTmodels/common/ParameterWriter.cpp \
+SOURCES += ../../../IPXACTmodels/common/Range.cpp \
+    ../../../IPXACTmodels/common/ParameterWriter.cpp \
     ../../../IPXACTmodels/common/Parameter.cpp \
     ./tst_ParameterWriter.cpp \
-    ../../../IPXACTmodels/NameGroup.cpp \
+    ../../../IPXACTmodels/common/NameGroup.cpp \
     ../../../IPXACTmodels/XmlUtils.cpp \
     ../../../IPXACTmodels/GenericVendorExtension.cpp \
     ../../../IPXACTmodels/common/Array.cpp \

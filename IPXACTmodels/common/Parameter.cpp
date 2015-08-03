@@ -14,10 +14,8 @@
 #include <IPXACTmodels/GenericVendorExtension.h>
 #include <IPXACTmodels/XmlUtils.h>
 
-#include <QDomNode>
 #include <QString>
 #include <QList>
-#include <QDomNamedNodeMap>
 #include <QObject>
 #include <QMap>
 
@@ -26,39 +24,7 @@
 //-----------------------------------------------------------------------------
 // Function: Parameter::Parameter()
 //-----------------------------------------------------------------------------
-Parameter::Parameter(QDomNode & parameterNode): nameGroup_(parameterNode),
-    value_(), attributes_(), valueAttributes_(), bitWidthVector_(), 
-    vectors_(new QList<QSharedPointer<Vector> >()),
-    arrays_(new QList<QSharedPointer<Array> >()),
-    vendorExtensions_(new QList<QSharedPointer<VendorExtension> >())
-{
-    attributes_ = XmlUtils::parseAttributes(parameterNode);
-
-	for (int i = 0; i < parameterNode.childNodes().count(); ++i)
-    {
-		QDomNode tempNode = parameterNode.childNodes().at(i);
-
-		if (tempNode.nodeName() == QString("spirit:value"))
-        {
-			value_ = tempNode.childNodes().at(0).nodeValue();
-			valueAttributes_ = XmlUtils::parseAttributes(tempNode);
-		}
-        else if (tempNode.nodeName() == QString("spirit:vendorExtensions")) 
-        {
-            parseVendorExtensions(tempNode);
-        }
-	}
-
-    if (getValueId().isEmpty())
-    {
-        createUuid();
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: Parameter::Parameter()
-//-----------------------------------------------------------------------------
-Parameter::Parameter(): nameGroup_(),
+Parameter::Parameter(): NameGroup(),
     value_(), 
     attributes_(), 
     valueAttributes_(), 
@@ -73,7 +39,7 @@ Parameter::Parameter(): nameGroup_(),
 //-----------------------------------------------------------------------------
 // Function: Parameter::Parameter()
 //-----------------------------------------------------------------------------
-Parameter::Parameter( const Parameter &other ): nameGroup_(other.nameGroup_),
+Parameter::Parameter( const Parameter &other ): NameGroup(other),
     value_(other.value_),
     attributes_(other.attributes_),
     valueAttributes_(other.valueAttributes_), 
@@ -101,7 +67,7 @@ Parameter & Parameter::operator=( const Parameter &other )
 {
 	if (this != &other) 
     {
-		nameGroup_ = other.nameGroup_;
+		NameGroup::operator=(other);
 		value_ = other.value_;
         attributes_ = other.attributes_;
 		valueAttributes_ = other.valueAttributes_;
@@ -112,59 +78,11 @@ Parameter & Parameter::operator=( const Parameter &other )
 }
 
 //-----------------------------------------------------------------------------
-// Function: Parameter::getName()
-//-----------------------------------------------------------------------------
-QString Parameter::getName() const
-{
-	return nameGroup_.name();
-}
-
-//-----------------------------------------------------------------------------
-// Function: Parameter::getDisplayName()
-//-----------------------------------------------------------------------------
-QString Parameter::getDisplayName() const
-{
-    return nameGroup_.displayName();
-}
-
-//-----------------------------------------------------------------------------
-// Function: Parameter::getDescription()
-//-----------------------------------------------------------------------------
-QString Parameter::getDescription() const 
-{
-    return nameGroup_.description();
-}
-
-//-----------------------------------------------------------------------------
 // Function: Parameter::getValue()
 //-----------------------------------------------------------------------------
 QString Parameter::getValue() const
 {
     return value_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: Parameter::setName()
-//-----------------------------------------------------------------------------
-void Parameter::setName(QString const& name)
-{
-	nameGroup_.setName(name);
-}
-
-//-----------------------------------------------------------------------------
-// Function: Parameter::setDisplayName()
-//-----------------------------------------------------------------------------
-void Parameter::setDisplayName(const QString& displayName)
-{
-    nameGroup_.setDisplayName(displayName);
-}
-
-//-----------------------------------------------------------------------------
-// Function: Parameter::setDescription()
-//-----------------------------------------------------------------------------
-void Parameter::setDescription(const QString& description)
-{
-    nameGroup_.setDescription(description);
 }
 
 //-----------------------------------------------------------------------------
