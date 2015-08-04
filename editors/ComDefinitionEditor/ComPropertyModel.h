@@ -144,7 +144,10 @@ private:
     ComPropertyModel& operator=(ComPropertyModel const& rhs);
     
     //! IP address regular expression string.
-    static QString const IP_ADDRESS_REGEX;
+	static QString const IP_ADDRESS_REGEX;
+
+	//! Time unit regular expression string.
+	static QString const TIME_UNIT_REGEX;
 
     //-----------------------------------------------------------------------------
     // Data.

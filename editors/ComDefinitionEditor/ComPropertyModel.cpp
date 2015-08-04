@@ -2,7 +2,7 @@
 // File: ComPropertyModel.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Joni-Matti Määttä
+// Author: Joni-Matti MÃ¤Ã¤ttÃ¤
 // Date: 17.4.2012
 //
 // Description:
@@ -20,6 +20,7 @@
 #include <QColor>
 
 QString const ComPropertyModel::IP_ADDRESS_REGEX("^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$");
+QString const ComPropertyModel::TIME_UNIT_REGEX("^(fs|ps|ns|us|Âµs|ms|sec|s)$");
 
 //-----------------------------------------------------------------------------
 // Function: ComPropertyModel::ComPropertyModel()
@@ -144,6 +145,10 @@ QVariant ComPropertyModel::data(QModelIndex const& index, int role /*= Qt::Displ
                 {
                     ok = value.contains(QRegExp(IP_ADDRESS_REGEX));
                 }
+				else if ( type == "time unit" )
+				{
+					ok = value.contains(QRegularExpression(TIME_UNIT_REGEX));
+				}
 
                 if (ok)
                 {
