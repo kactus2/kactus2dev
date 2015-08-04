@@ -121,7 +121,7 @@ public:
     /*!
      *  Returns the name of the parameter.
      */
-    QString const& getName() const;
+    QString const& name() const;
 
     /*!
      *  Returns the type of the parameter.

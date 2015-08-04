@@ -148,9 +148,9 @@ void ColumnDesc::setWidth(unsigned int width)
 }
 
 //-----------------------------------------------------------------------------
-// Function: ColumnDesc::getName()
+// Function: ColumnDesc::name()
 //-----------------------------------------------------------------------------
-QString const& ColumnDesc::getName() const
+QString const& ColumnDesc::name() const
 {
     return name_;
 }

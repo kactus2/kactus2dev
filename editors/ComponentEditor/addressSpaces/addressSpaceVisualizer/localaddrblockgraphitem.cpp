@@ -46,7 +46,7 @@ LocalAddrBlockGraphItem::~LocalAddrBlockGraphItem()
 //-----------------------------------------------------------------------------
 void LocalAddrBlockGraphItem::refresh()
 {
-	setName(addrBlock_->getName());
+	setName(addrBlock_->name());
     
     quint64 offset = getOffset();
     quint64 lastAddr = getLastAddress();
@@ -54,7 +54,7 @@ void LocalAddrBlockGraphItem::refresh()
     setOverlappingBottom(lastAddr);
 	
     // Set tooltip to show addresses in hexadecimals.
-    setToolTip("<b>Name: </b>" + addrBlock_->getName() + "<br>" +
+    setToolTip("<b>Name: </b>" + addrBlock_->name() + "<br>" +
         "<b>Base address: </b>" + addr2Str(offset, getBitWidth()) + "<br>" +
         "<b>Last address: </b>" + addr2Str(lastAddr, getBitWidth()) + "<br>" +
         "<b>Size [AUB]: </b>" + getExpressionParser()->parseExpression(addrBlock_->getRange()));

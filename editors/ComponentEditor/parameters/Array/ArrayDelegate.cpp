@@ -117,7 +117,7 @@ int ArrayDelegate::valueColumn() const
 //-----------------------------------------------------------------------------
 QString ArrayDelegate::choiceNameOnRow(QModelIndex const& /*index*/) const
 {
-    return selectedChoice_->getName();
+    return selectedChoice_->name();
 }
 
 //-----------------------------------------------------------------------------

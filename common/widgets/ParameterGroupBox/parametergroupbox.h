@@ -12,7 +12,7 @@
 #ifndef PARAMETERGROUPBOX_H
 #define PARAMETERGROUPBOX_H
 
-#include <IPXACTmodels/parameter.h>
+#include <IPXACTmodels/common/Parameter.h>
 
 #include <QGroupBox>
 #include <QList>

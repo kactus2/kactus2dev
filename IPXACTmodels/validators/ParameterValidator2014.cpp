@@ -11,7 +11,7 @@
 
 #include "ParameterValidator2014.h"
 
-#include <IPXACTmodels/parameter.h>
+#include <IPXACTmodels/common/Parameter.h>
 
 #include <QRegularExpression>
 #include <QStringList>
@@ -328,7 +328,7 @@ QStringList ParameterValidator2014::findErrorsInType(Parameter const* parameter,
     if (!hasValidType(parameter))
     {
         typeErrors.append(QObject::tr("Invalid type %1 specified for %2 %3 within %4").arg(
-            parameter->getType(), parameter->elementName(), parameter->getName(), context));
+            parameter->getType(), parameter->elementName(), parameter->name(), context));
     }
 
     return typeErrors;
@@ -345,7 +345,7 @@ QStringList ParameterValidator2014::findErrorsInValue(Parameter const* parameter
     if (parameter->getValue().isEmpty())
     {
         valueErrors.append(QObject::tr("No value specified for %1 %2 within %3").arg(
-            parameter->elementName(), parameter->getName(), context));
+            parameter->elementName(), parameter->name(), context));
     }
     else
     {
@@ -353,28 +353,28 @@ QStringList ParameterValidator2014::findErrorsInValue(Parameter const* parameter
         {
             valueErrors.append(QObject::tr("Value %1 is not valid for type %2 in %3 %4 within %5").arg(
                 parameter->getValue(), parameter->getType(), parameter->elementName(), 
-                parameter->getName(), context));
+                parameter->name(), context));
         }
 
         if (valueIsLessThanMinimum(parameter))
         {
             valueErrors.append(QObject::tr("Value %1 violates minimum value %2 in %3 %4 within %5"
                 ).arg(parameter->getValue(), parameter->getMinimumValue(), 
-                parameter->elementName(), parameter->getName(), context));
+                parameter->elementName(), parameter->name(), context));
         }
 
         if (valueIsGreaterThanMaximum(parameter))
         {
             valueErrors.append(QObject::tr("Value %1 violates maximum value %2 in %3 %4 within %5"
                 ).arg(parameter->getValue(), parameter->getMaximumValue(), 
-                parameter->elementName(), parameter->getName(), context));
+                parameter->elementName(), parameter->name(), context));
         }
 
         if (!hasValidValueForChoice(parameter, availableChoices))
         {           
             valueErrors.append(QObject::tr("Value %1 references unknown enumeration for choice "
                 "%2 in %3 %4 within %5").arg(parameter->getValue(), parameter->getChoiceRef(), 
-                parameter->elementName(), parameter->getName(), context));
+                parameter->elementName(), parameter->name(), context));
         }
     }
 

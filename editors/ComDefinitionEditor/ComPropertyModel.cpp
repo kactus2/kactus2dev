@@ -107,7 +107,7 @@ QVariant ComPropertyModel::data(QModelIndex const& index, int role /*= Qt::Displ
         switch (index.column())
         {
         case PROPERTY_COL_NAME:
-            return table_.at(index.row())->getName();
+            return table_.at(index.row())->name();
 
         case PROPERTY_COL_REQUIRED:
             return table_.at(index.row())->isRequired();

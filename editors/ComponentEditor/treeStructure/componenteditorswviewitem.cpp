@@ -30,7 +30,7 @@ QString ComponentEditorSWViewItem::getTooltip() const {
 }
 
 QString ComponentEditorSWViewItem::text() const {
-	return swView_->getName();
+	return swView_->name();
 }
 
 bool ComponentEditorSWViewItem::isValid() const {
@@ -77,7 +77,7 @@ bool ComponentEditorSWViewItem::canBeOpened() const {
 	// been made to the library
 	QSharedPointer<LibraryComponent const> libComp = libHandler_->getModelReadOnly(*component_->getVlnv());
 	QSharedPointer<Component const> comp = libComp.staticCast<Component const>();
-	VLNV originalRef = comp->getHierSWRef(swView_->getName());
+	VLNV originalRef = comp->getHierSWRef(swView_->name());
 	return originalRef == swView_->getHierarchyRef();
 }
 
@@ -102,7 +102,7 @@ void ComponentEditorSWViewItem::openItem()
 		emit errorMessage(tr("The changes to component must be saved before view can be opened."));
 		return;
 	}
-	QString viewName = swView_->getName();
+	QString viewName = swView_->name();
 	VLNV compVLNV = *component_->getVlnv();
 	emit openSWDesign(compVLNV, viewName);
 }

@@ -60,7 +60,7 @@ void LocalHeaderSaveModel::setComponent( QSharedPointer<Component> component ) {
 			QString compPath(handler_->getDirectoryPath(*component_->getVlnv()));
 
 			// the relative path from the xml dir to the header to generate
-			QString headerPath = QString("%1/%2.h").arg(tr("headers")).arg(localMemMap->getName());
+			QString headerPath = QString("%1/%2.h").arg(tr("headers")).arg(localMemMap->name());
 
 			// the absolute path to the header file
 			const QString fullPath = QString("%1/%2").arg(compPath).arg(headerPath);
@@ -152,7 +152,7 @@ QVariant LocalHeaderSaveModel::data( const QModelIndex& index, int role /*= Qt::
 			return table_.at(index.row())->swView_;
 															  }
 		case LocalHeaderSaveModel::MEM_MAP_NAME: {
-			return table_.at(index.row())->localMemMap_->getName();
+			return table_.at(index.row())->localMemMap_->name();
 												 }
 		case LocalHeaderSaveModel::FILE_NAME: {
 			return table_.at(index.row())->fileInfo_.fileName();

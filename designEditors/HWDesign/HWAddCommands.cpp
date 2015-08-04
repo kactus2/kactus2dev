@@ -429,7 +429,7 @@ AddPhysicalPortCommand::~AddPhysicalPortCommand()
 void AddPhysicalPortCommand::undo()
 {
     Q_ASSERT(component_ != 0 && port_ != 0);
-    component_->removePort(port_->getName());
+    component_->removePort(port_->name());
 	
     // Execute child commands.
     QUndoCommand::undo();

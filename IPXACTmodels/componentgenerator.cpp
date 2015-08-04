@@ -7,7 +7,9 @@
 #include "componentgenerator.h"
 #include "generaldeclarations.h"
 #include "XmlUtils.h"
-#include "parameter.h"
+
+#include <IPXACTmodels/common/Parameter.h>
+#include <IPXACTmodels/common/ParameterWriter.h>
 
 #include <IPXACTmodels/validators/ParameterValidator.h>
 
@@ -83,31 +85,33 @@ void ComponentGenerator::write(QXmlStreamWriter& writer) {
 	}
 	}
 
-	writer.writeTextElement("spirit:name", name_);
+	writer.writeTextElement("spirit:name", name());
 
-	if (!displayName_.isEmpty()) {
-		writer.writeTextElement("spirit:displayName", displayName_);
+	if (!displayName().isEmpty()) {
+		writer.writeTextElement("spirit:displayName", displayName());
 	}
 
-	if (!description_.isEmpty()) {
-		writer.writeTextElement("spirit:description", description_);
+	if (!description().isEmpty()) {
+		writer.writeTextElement("spirit:description", description());
 	}
 
 	if (phase_ >= 0) {
 		writer.writeTextElement("spirit:phase", QString::number(phase_));
 	}
 
-	// if any parameters exist
-	if (parameters_.size() != 0) {
-		writer.writeStartElement("spirit:parameters");
+    if (parameters_.size() != 0)
+    {
+        writer.writeStartElement("ipxact:parameters");
 
-		// write each parameter
-		for (int i = 0; i < parameters_.size(); ++i) {
-			parameters_.at(i)->write(writer);
-		}
+        ParameterWriter parameterWriter;
+        // write each parameter
+        for (int i = 0; i < parameters_.size(); ++i)
+        {
+            parameterWriter.writeParameter(writer, parameters_.at(i));
+        }
 
-		writer.writeEndElement(); // spirit:parameters
-	}
+        writer.writeEndElement(); // ipxact:parameters
+    }
 
 	// write the spirit:apiType element
 	switch (apiType_) {
@@ -135,7 +139,7 @@ bool ComponentGenerator::isValid(QSharedPointer<QList<QSharedPointer<Choice> > >
     QStringList& errorList, const QString& parentIdentifier ) const {
 	bool valid = true;
 
-	if (name_.isEmpty()) {
+	if (name().isEmpty()) {
 		errorList.append(QObject::tr("No name specified for component generator"
 			" within %1").arg(parentIdentifier));
 		valid = false;
@@ -144,7 +148,7 @@ bool ComponentGenerator::isValid(QSharedPointer<QList<QSharedPointer<Choice> > >
     ParameterValidator validator;
     foreach (QSharedPointer<Parameter> param, parameters_)
     {
-        errorList.append(validator.findErrorsIn(param.data(), QObject::tr("component generator %1").arg(name_),
+        errorList.append(validator.findErrorsIn(param.data(), QObject::tr("component generator %1").arg(name()),
             componentChoices));
         if (!validator.validate(param.data(), componentChoices)) 
         {
@@ -155,7 +159,7 @@ bool ComponentGenerator::isValid(QSharedPointer<QList<QSharedPointer<Choice> > >
 	if (generatorExe_.isEmpty())
     {
 		errorList.append(QObject::tr("No path to the generator executable specified"
-			" for component generator %1 within %2").arg(name_).arg(parentIdentifier));
+			" for component generator %1 within %2").arg(name()).arg(parentIdentifier));
 		valid = false;
 	}
 
@@ -163,7 +167,7 @@ bool ComponentGenerator::isValid(QSharedPointer<QList<QSharedPointer<Choice> > >
 }
 
 bool ComponentGenerator::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const {
-	if (name_.isEmpty()) {
+	if (name().isEmpty()) {
 		return false;
 	}
 

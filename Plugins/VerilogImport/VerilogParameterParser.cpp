@@ -205,10 +205,10 @@ QList<QSharedPointer<ModelParameter> > VerilogParameterParser::parseParameters(Q
         modelParameter->setDataType(type);
         modelParameter->setValue(value);
         modelParameter->setUsageType("nontyped");
-        modelParameter->setBitWidthLeft(bitWidthLeft);
-        modelParameter->setBitWidthRight(bitWidthRight);
-        modelParameter->setAttribute("kactus2:arrayLeft", arrayLeft);
-        modelParameter->setAttribute("kactus2:arrayRight", arrayRight);
+        modelParameter->setVectorLeft(bitWidthLeft);
+        modelParameter->setVectorRight(bitWidthRight);
+        modelParameter->setArrayLeft(arrayLeft);
+        modelParameter->setArrayRight(arrayRight);
         modelParameter->setDescription(description);
 
         parameters.append(modelParameter);
@@ -369,7 +369,7 @@ void VerilogParameterParser::copyIdsFromOldModelParameters(QList<QSharedPointer<
     foreach (QSharedPointer<ModelParameter> parameter, parsedParameters)
     {
         QSharedPointer<ModelParameter> existingParameter = 
-            targetComponent->getModel()->getModelParameter(parameter->getName());
+            targetComponent->getModel()->getModelParameter(parameter->name());
         if (!existingParameter.isNull())
         {
             parameter->setValueId(existingParameter->getValueId());
@@ -398,22 +398,22 @@ void VerilogParameterParser::replaceMacroUsesWithParameterIds(QSharedPointer<Mod
 {
     foreach (QSharedPointer<Parameter> define, *targetComponent->getParameters())
     {
-        QRegularExpression macroUsage("`" + define->getName() + "\\b");
+        QRegularExpression macroUsage("`" + define->name() + "\\b");
 
         QString parameterValue = replaceNameWithId(parameter->getValue(), macroUsage, define);
         parameter->setValue(parameterValue);
 
-        QString bitWidthLeft = replaceNameWithId(parameter->getBitWidthLeft(), macroUsage, define);
-        parameter->setBitWidthLeft(bitWidthLeft);
+        QString bitWidthLeft = replaceNameWithId(parameter->getVectorLeft(), macroUsage, define);
+        parameter->setVectorLeft(bitWidthLeft);
 
-        QString bitWidthRight = replaceNameWithId(parameter->getBitWidthRight(), macroUsage, define);
-        parameter->setBitWidthRight(bitWidthRight);
+        QString bitWidthRight = replaceNameWithId(parameter->getVectorRight(), macroUsage, define);
+        parameter->setVectorRight(bitWidthRight);
 
-        QString arrayLeft = replaceNameWithId(parameter->getAttribute("kactus2:arrayLeft"), macroUsage, define);
-        parameter->setAttribute("kactus2:arrayLeft", arrayLeft);
+        QString arrayLeft = replaceNameWithId(parameter->getArrayLeft(), macroUsage, define);
+        parameter->setArrayLeft(arrayLeft);
 
-        QString arrayRight = replaceNameWithId(parameter->getAttribute("kactus2:arrayRight"), macroUsage, define);
-        parameter->setAttribute("kactus2:arrayRight", arrayRight);
+        QString arrayRight = replaceNameWithId(parameter->getArrayRight(), macroUsage, define);
+        parameter->setArrayRight(arrayRight);
     }
 }
 
@@ -446,23 +446,21 @@ void VerilogParameterParser::replaceNameReferencesWithModelParameterIds(QSharedP
 {
     foreach (QSharedPointer<ModelParameter> referencedParameter, *targetComponent->getModelParameters())
     {
-        QRegularExpression nameReference("\\b" + referencedParameter->getName() + "\\b");
+        QRegularExpression nameReference("\\b" + referencedParameter->name() + "\\b");
 
         QString parameterValue = replaceNameWithId(parameter->getValue(), nameReference, referencedParameter);
         parameter->setValue(parameterValue);
 
-        QString bitWidthLeft = replaceNameWithId(parameter->getBitWidthLeft(), nameReference, referencedParameter);
-        parameter->setBitWidthLeft(bitWidthLeft);
+        QString bitWidthLeft = replaceNameWithId(parameter->getVectorLeft(), nameReference, referencedParameter);
+        parameter->setVectorLeft(bitWidthLeft);
 
-        QString bitWidthRight = replaceNameWithId(parameter->getBitWidthRight(), nameReference, referencedParameter);
-        parameter->setBitWidthRight(bitWidthRight);
+        QString bitWidthRight = replaceNameWithId(parameter->getVectorRight(), nameReference, referencedParameter);
+        parameter->setVectorRight(bitWidthRight);
 
-        QString arrayLeft = replaceNameWithId(parameter->getAttribute("kactus2:arrayLeft"),
-            nameReference, referencedParameter);
-        parameter->setAttribute("kactus2:arrayLeft", arrayLeft);
+        QString arrayLeft = replaceNameWithId(parameter->getArrayLeft(), nameReference, referencedParameter);
+        parameter->setArrayLeft(arrayLeft);
 
-        QString arrayRight = replaceNameWithId(parameter->getAttribute("kactus2:arrayRight"), 
-            nameReference, referencedParameter);
-        parameter->setAttribute("kactus2:arrayRight", arrayRight);
+        QString arrayRight = replaceNameWithId(parameter->getArrayRight(), nameReference, referencedParameter);
+        parameter->setArrayRight(arrayRight);
     }
 }

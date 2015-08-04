@@ -84,7 +84,7 @@ int RemapConditionModel::getArrayStartIndex(QString const& remapPortName)
 {
     foreach (QSharedPointer<Port> targetPort, componentPorts_)
     {
-        if (targetPort->getName() == remapPortName)
+        if (targetPort->name() == remapPortName)
         {
             int arrayLeft = formattedValueFor(targetPort->getLeftBoundExpression()).toInt();
             int arrayRight = formattedValueFor(targetPort->getRightBoundExpression()).toInt();
@@ -137,7 +137,7 @@ QString RemapConditionModel::getEndOfArray(QString const& remapPortName, int new
 {
     foreach (QSharedPointer<Port> targetPort, componentPorts_)
     {
-        if (targetPort->getName() == remapPortName)
+        if (targetPort->name() == remapPortName)
         {
             QString leftBound = parseExpressionToDecimal(targetPort->getLeftBoundExpression());
             QString rightBound = parseExpressionToDecimal(targetPort->getRightBoundExpression());
@@ -282,7 +282,7 @@ QVariant RemapConditionModel::valueForIndex(QModelIndex const& index) const
         {
             foreach (QSharedPointer<Port> targetPort, componentPorts_)
             {
-                if (targetPort->getName() == remapPort->getPortNameRef())
+                if (targetPort->name() == remapPort->getPortNameRef())
                 {
                     return(targetPort->getLeftBoundExpression());
                 }
@@ -295,7 +295,7 @@ QVariant RemapConditionModel::valueForIndex(QModelIndex const& index) const
         {
             foreach (QSharedPointer<Port> targetPort, componentPorts_)
             {
-                if (targetPort->getName() == remapPort->getPortNameRef())
+                if (targetPort->name() == remapPort->getPortNameRef())
                 {
                     return targetPort->getRightBoundExpression();
                 }
@@ -539,7 +539,7 @@ bool RemapConditionModel::validateIndex(QModelIndex const& index) const
     {
         foreach (QSharedPointer<Port> targetPort, componentPorts_)
         {
-            if (targetPort->getName() == targetRemapPort->getPortNameRef())
+            if (targetPort->name() == targetRemapPort->getPortNameRef())
             {
                 return true;
             }
@@ -615,9 +615,9 @@ QStringList RemapConditionModel::getAvailablePorts()
 
     foreach (QSharedPointer<Port> targetPort, componentPorts_)
     {
-        if (!usedPorts.contains(targetPort->getName()))
+        if (!usedPorts.contains(targetPort->name()))
         {
-            availablePorts.append(targetPort->getName());
+            availablePorts.append(targetPort->name());
         }
     }
 

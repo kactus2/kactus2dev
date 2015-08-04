@@ -50,7 +50,7 @@ public:
     /*!
      *  Returns the name of the node.
      */
-    QString const& getName() const;
+    QString const& name() const;
 
     /*!
      *  Returns the VLNV of the node (valid only if the node level is LEVEL_VERSION).

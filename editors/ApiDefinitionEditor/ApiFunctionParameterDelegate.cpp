@@ -120,7 +120,7 @@ QWidget* ApiFunctionParameterDelegate::createEditor(QWidget* parent, QStyleOptio
             {
                 foreach (QSharedPointer<ComProperty const> property, comDefinition_->getProperties())
                 {
-                    box->addItem(property->getName());
+                    box->addItem(property->name());
                 }
             }
 

@@ -204,7 +204,7 @@ void VHDLSourceAnalyzer::scanDefinitions(Component const* component, QString con
             }
 
             // Try to open the file.
-            QString filename = General::getAbsolutePath(componentPath, files.at(i)->getName());
+            QString filename = General::getAbsolutePath(componentPath, files.at(i)->name());
             QFile file(filename);
 
             if (!file.open(QIODevice::ReadOnly | QIODevice::Text))

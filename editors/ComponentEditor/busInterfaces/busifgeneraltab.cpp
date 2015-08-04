@@ -25,7 +25,7 @@ BusIfGeneralTab::BusIfGeneralTab(LibraryInterface* libHandler, QSharedPointer<Bu
                                  QWidget* parent, QWidget* parentWnd):
 QWidget(parent),
 busif_(busif),
-nameEditor_(busif->getNameGroup(), this, tr("Name and description")),
+nameEditor_(busif, this, tr("Name and description")),
 busType_(VLNV::BUSDEFINITION, libHandler, parentWnd, this),
 absType_(VLNV::ABSTRACTIONDEFINITION, libHandler, parentWnd, this),
 modeStack_(busif, component, parameterFinder, libHandler, expressionParser, this),
@@ -154,7 +154,7 @@ bool BusIfGeneralTab::isValid(QStringList& errorList) const
         valid = false;
     }
 
-    QString thisIdentifier(tr("bus interface %1").arg(busif_->getName()));
+    QString thisIdentifier(tr("bus interface %1").arg(busif_->name()));
 
     if (!parameters_.isValid(errorList, thisIdentifier)) {        
         valid = false;

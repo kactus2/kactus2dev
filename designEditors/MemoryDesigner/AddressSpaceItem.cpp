@@ -69,7 +69,7 @@ AddressSpaceItem::AddressSpaceItem(LibraryInterface* libInterface, QString const
     setRect(QRectF(-WIDTH / 2, 0, NAME_COLUMN_WIDTH, 80));
 
     // Create the name label.
-    nameLabel_ = new QGraphicsTextItem(addressSpace->getName(), this);
+    nameLabel_ = new QGraphicsTextItem(addressSpace->name(), this);
     QFont font = nameLabel_->font();
     font.setStyleStrategy(QFont::NoAntialias);
     font.setWeight(QFont::Bold);
@@ -113,7 +113,7 @@ AddressSpaceItem::AddressSpaceItem(LibraryInterface* libInterface, QString const
 
         // Add the actual segment section.
         AddressSectionItem* section = new SegmentItem(component_, addressSpace_,
-            segment->getName(), startAddress, range, this);
+            segment->name(), startAddress, range, this);
         section->setColor(KactusColors::ADDRESS_SEGMENT);
         section->setPos(0.0, getHeight());
         addItem(section);
@@ -133,7 +133,7 @@ AddressSpaceItem::AddressSpaceItem(LibraryInterface* libInterface, QString const
         addItem(section);
     }
 
-    updateNameLabel(instanceName + "<br>" + addressSpace->getName());
+    updateNameLabel(instanceName + "<br>" + addressSpace->name());
     updateVisuals();
     updateSize();
 }

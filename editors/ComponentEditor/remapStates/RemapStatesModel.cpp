@@ -116,15 +116,15 @@ QVariant RemapStatesModel::data(const QModelIndex& index, int role /* = Qt::Disp
     {
         if (index.column() == RemapStatesModel::NAME_COLUMN)
         {
-            return remapStates_->at(index.row())->getName();
+            return remapStates_->at(index.row())->name();
         }
         else if (index.column() == RemapStatesModel::DISPLAY_NAME_COLUMN)
         {
-            return remapStates_->at(index.row())->getDisplayName();
+            return remapStates_->at(index.row())->displayName();
         }
         else if (index.column() == RemapStatesModel::DESCRIPTION_COLUMN)
         {
-            return remapStates_->at(index.row())->getDescription();
+            return remapStates_->at(index.row())->description();
         }
     }
 

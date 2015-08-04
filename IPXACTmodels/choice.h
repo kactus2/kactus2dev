@@ -79,7 +79,7 @@ public:
 	 *
 	 *      @return QString containing the name.
 	 */
-	QString getName() const;
+	QString name() const;
 
 	/*! Set the name of the choice.
 	 *

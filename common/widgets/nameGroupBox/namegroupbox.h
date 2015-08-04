@@ -38,19 +38,19 @@ public:
 	 *
 	 * \return QString containing the name.
 	 */
-	QString getName() const;
+	QString name() const;
 
 	/*! \brief Get the value of the displayName-field.
 	 *
 	 * \return QString containing the displayName.
 	 */
-	QString getDisplayName() const;
+	QString displayName() const;
 
 	/*! \brief Get the value of the description-field.
 	 *
 	 * \return QString containing the description.
 	 */
-	QString getDescription() const;
+	QString description() const;
 
 	/*! \brief Check if the widget is in valid mode.
 	 *

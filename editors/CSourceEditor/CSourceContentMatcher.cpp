@@ -138,10 +138,10 @@ int CSourceContentMatcher::enumerateNames(QString const &text, MatchExecFunc fun
             {
                 QSharedPointer<ApiFunction const> apiFunc = apiDef->getFunction(i);
 
-                if (tryMatchIdentifier(apiFunc->getName(), MCAPI_CONTENT_FUNC, matchExp, func, count))
+                if (tryMatchIdentifier(apiFunc->name(), MCAPI_CONTENT_FUNC, matchExp, func, count))
                 {
                     // Check if this was an exact match.
-                    if (!exactMatch && apiFunc->getName() == word)
+                    if (!exactMatch && apiFunc->name() == word)
                     {
                         exactMatch = true;
                     }
@@ -220,7 +220,7 @@ int CSourceContentMatcher::enumerateFunctionParams(QString const &text, MatchExe
             {
                 QSharedPointer<ApiFunction const> apiFunc = apiDef->getFunction(i);
 
-                if (apiFunc->getName() == funcName)
+                if (apiFunc->name() == funcName)
                 {
                     matchingApiFunc = apiFunc.data();
                     break;
@@ -283,7 +283,7 @@ void CSourceContentMatcher::tryMatchParam(ApiFunction const* apiFuncDesc, QStrin
             // Find the matching COM interface.
             foreach (QSharedPointer<ComInterface> comIf, ownerComponent_->getComInterfaces())
             {
-                QString value = comIf->getName();
+                QString value = comIf->name();
 
                 if (dependentParam->getContentSource() != "Name")
                 {
@@ -301,7 +301,7 @@ void CSourceContentMatcher::tryMatchParam(ApiFunction const* apiFuncDesc, QStrin
 
                     if (apiParam->getContentSource() == "Name")
                     {
-                        identifier = comIf->getName();
+                        identifier = comIf->name();
                     }
                     else
                     {
@@ -334,7 +334,7 @@ void CSourceContentMatcher::tryMatchParam(ApiFunction const* apiFuncDesc, QStrin
 
                 if (apiParam->getContentSource() == "Name")
                 {
-                    identifier = comIf->getName();
+                    identifier = comIf->name();
                 }
                 else
                 {

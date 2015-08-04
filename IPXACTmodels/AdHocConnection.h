@@ -13,7 +13,7 @@
 #define ADHOCCONNECTION_H
 
 #include "PortRef.h"
-#include "NameGroup.h"
+#include <IPXACTmodels/common/NameGroup.h>
 
 #include "ipxactmodels_global.h"
 
@@ -28,7 +28,7 @@
 // component instance ports or between component instance ports and ports 
 // of the encompassing component (in the case of a hierarchical component).
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT AdHocConnection
+class IPXACTMODELS_EXPORT AdHocConnection : public NameGroup
 {
 public:
     /*! The constructor
@@ -57,27 +57,6 @@ public:
 
     //! Assignment operator
     AdHocConnection& operator=(const AdHocConnection& other);
-
-    /*!
-     *  Gets the name of the connection.     
-     *
-     *      @return The name of the connection.
-     */
-    QString name() const;
-
-    /*!
-     *  Gets the display name of the connection.     
-     *
-     *      @return The display name of the connection.
-     */
-    QString displayName() const;
-
-    /*!
-     *  Gets the description of the connection.     
-     *
-     *      @return The description of the connection.
-     */
-    QString description() const;
 
     /*!
      *  Gets the internal port references of the connection.     
@@ -155,15 +134,6 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    /*! MANDATORY spirit:nameGroupPort
-     *
-     * Container for the following values:
-     *  MANDATORY spirit:name
-     *  OPTIONAL spirit:displayName
-     *  OPTIONAL spirit:description
-     */
-    NameGroup nameGroup_;
 
     /*! OPTIONAL spirit:tiedValue
      *

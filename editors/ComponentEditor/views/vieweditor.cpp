@@ -42,7 +42,7 @@ ViewEditor::ViewEditor( QSharedPointer<Component> component, QSharedPointer<View
     QSharedPointer<ExpressionFormatter> expressionFormatter, QWidget *parent ): 
 ItemEditor(component, libHandler, parent), 
 view_(view),
-nameEditor_(view->getNameGroup(), this, tr("View name and description")),
+nameEditor_(view, this, tr("View name and description")),
 viewTypeSelector_(),
 envIdentifier_(view, this),
 typeDependentEditors_(this),

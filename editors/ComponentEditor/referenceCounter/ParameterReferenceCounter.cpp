@@ -11,7 +11,7 @@
 
 #include "ParameterReferenceCounter.h"
 
-#include <IPXACTmodels/parameter.h>
+#include <IPXACTmodels/common/Parameter.h>
 
 //-----------------------------------------------------------------------------
 // Function: ParameterReferenceCounter::ParameterReferenceCounter()

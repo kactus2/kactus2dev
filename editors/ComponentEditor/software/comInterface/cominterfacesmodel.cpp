@@ -100,7 +100,7 @@ QVariant ComInterfacesModel::data( const QModelIndex& index, int role /*= Qt::Di
 
 		switch (index.column()) {
 			case ComInterfacesDelegate::NAME_COLUMN: {
-				return comIfs_.at(index.row())->getName();
+				return comIfs_.at(index.row())->name();
 												}
 			case ComInterfacesDelegate::COM_DEF_COLUMN: {
 				return comIfs_.at(index.row())->getComType().toString(":");

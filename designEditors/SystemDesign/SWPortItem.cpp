@@ -114,11 +114,11 @@ QString SWPortItem::name() const
 {
     if (isCom())
     {
-        return comInterface_->getName();
+        return comInterface_->name();
     }
     else if (isApi())
     {
-        return apiInterface_->getName();
+        return apiInterface_->name();
     }
     else
     {

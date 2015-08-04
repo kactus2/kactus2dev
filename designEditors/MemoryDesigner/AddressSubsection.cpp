@@ -193,9 +193,9 @@ void AddressSubsection::setMinStartAddress(quint64 minAddress)
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressSubsection::getName()
+// Function: AddressSubsection::name()
 //-----------------------------------------------------------------------------
-QString const& AddressSubsection::getName() const
+QString const& AddressSubsection::name() const
 {
     return name_;
 }

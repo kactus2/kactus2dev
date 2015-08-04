@@ -62,7 +62,7 @@ QWidget* PropertyValueDelegate::createEditor(QWidget* parent, QStyleOptionViewIt
                     {
                         if (!prop->isRequired())
                         {
-                            box->addItem(prop->getName());
+                            box->addItem(prop->name());
                         }
                     }
                 }

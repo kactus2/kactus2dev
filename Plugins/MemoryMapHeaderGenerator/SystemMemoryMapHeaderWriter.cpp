@@ -57,7 +57,7 @@ void SystemMemoryMapHeaderWriter::writeMemoryMapHeader(QSharedPointer<Component>
     VLNV designVLNV;
     foreach (QSharedPointer<View> hwView, component->getViews())
     {
-        if (hwView->getName() == hwViewName)
+        if (hwView->name() == hwViewName)
         {
             designVLNV = hwView->getHierarchyRef();
         }

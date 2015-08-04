@@ -210,7 +210,7 @@ void CSourceHighlighter::registerAPI(QSharedPointer<ApiDefinition const> apiDef)
     for (int i = 0; i < apiDef->getFunctionCount(); ++i)
     {
         QSharedPointer<ApiFunction const> apiFunc = apiDef->getFunction(i);
-        rule.pattern = QRegExp("\\b" + apiFunc->getName() + "\\b");
+        rule.pattern = QRegExp("\\b" + apiFunc->name() + "\\b");
         highlightRules_.append(rule);
     }
 }

@@ -28,7 +28,7 @@ QString ComponentEditorAPIInterfaceItem::getTooltip() const {
 }
 
 QString ComponentEditorAPIInterfaceItem::text() const {
-	return apiIf_->getName();
+	return apiIf_->name();
 }
 
 bool ComponentEditorAPIInterfaceItem::isValid() const {

@@ -8,9 +8,12 @@
 #include "vhdlcomponentdeclaration.h"
 
 #include "vhdlgeneral.h"
+
+#include <IPXACTmodels/businterface.h>
 #include <IPXACTmodels/modelparameter.h>
 #include <IPXACTmodels/port.h>
 #include <IPXACTmodels/generaldeclarations.h>
+
 
 VhdlComponentDeclaration::VhdlComponentDeclaration(QSharedPointer<Component> component):
 VhdlObject(component->getVlnv()->getName(), ""),
@@ -107,8 +110,8 @@ void VhdlComponentDeclaration::write( QTextStream& stream ) const {
 				}
 				else {	
 					stream << "Interface: " << interfaceName << endl;
-					const QString description = component_->getInterfaceDescription(
-						interfaceName);
+					const QString description = component_->getBusInterface(
+						interfaceName)->description();
 					if (!description.isEmpty()) {
 						VhdlGeneral::writeDescription(description, stream, QString("      "));
 					}

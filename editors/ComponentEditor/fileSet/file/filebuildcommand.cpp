@@ -104,7 +104,7 @@ void FileBuildCommand::refresh() {
 	command_.setText(buildCommand_->getCommand());
 	flags_.setText(buildCommand_->getFlags());
 	replaceDefault_.setChecked(buildCommand_->getReplaceDefaultFlags());
-	target_.setText(buildCommand_->getTargetName());
+	target_.setText(buildCommand_->getTarname());
 }
 
 void FileBuildCommand::onCommandChanged() {

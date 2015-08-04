@@ -67,7 +67,7 @@ QString ListParameterFinder::nameForId(QString const& id) const
 {
     QSharedPointer<Parameter> targetParameter = getParameterWithID(id);
 
-    return targetParameter->getName();
+    return targetParameter->name();
 }
 
 //-----------------------------------------------------------------------------

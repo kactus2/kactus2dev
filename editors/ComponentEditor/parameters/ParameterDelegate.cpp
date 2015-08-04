@@ -436,7 +436,7 @@ QWidget* ParameterDelegate::createChoiceSelector(QWidget* parent) const
     combo->addItem(QString("<none>"));
     foreach (QSharedPointer<Choice> choice, *getChoices())
     {
-        combo->addItem(choice->getName());
+        combo->addItem(choice->name());
     }
 
     return combo;

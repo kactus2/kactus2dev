@@ -126,7 +126,7 @@ void ComponentWizardConclusionPage::updateComponentDetails()
 
         foreach (QSharedPointer<FileSet> fileSet,  workingComponent_->getFileSets())
         {         
-            fileSets.append(tr("%1,  %2 file(s)<br>").arg(fileSet->getName()).arg(fileSet->getFiles().count()));
+            fileSets.append(tr("%1,  %2 file(s)<br>").arg(fileSet->name()).arg(fileSet->getFiles().count()));
         }
 
         filesetsLabel_->setText(fileSets.left(fileSets.lastIndexOf("<br")));

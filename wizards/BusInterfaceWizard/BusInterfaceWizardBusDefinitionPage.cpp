@@ -21,7 +21,7 @@
 #include <editors/ComponentEditor/ports/portsdelegate.h>
 #include <library/LibraryManager/libraryinterface.h>
 #include <IPXACTmodels/PortMap.h>
-#include <IPXACTmodels/vector.h>
+#include <IPXACTmodels/common/Vector.h>
 #include <IPXACTmodels/vlnv.h>
 
 #include <QVBoxLayout>
@@ -203,10 +203,10 @@ void BusInterfaceWizardBusEditorPage::createLogicalPortsAndMappings(QStringList 
         QSharedPointer<PortAbstraction> absPort(0);
 
         QRegExp indexExp("\\[(\\d+)\\]");
-        QString absPortName = physPort->getName().toUpper();        
+        QString absPortName = physPort->name().toUpper();        
         if (portNamesPolicy_ == DESCRIPTION)
         {
-            absPortName = physPort->getDescription().toUpper();
+            absPortName = physPort->description().toUpper();
             indexExp.indexIn(absPortName);
             absPortName.remove(indexExp);
             absPort = findPortByName(absPortName, logicalPorts);
@@ -286,7 +286,7 @@ void BusInterfaceWizardBusEditorPage::createPortMaps()
                     // are generated from the physical ports and index is found in description.
                     QRegExp indexExp("\\[(\\d+)\\]");                    
                     if ( (mappingMode_ == GENERATE_SINGLE || portNamesPolicy_ == DESCRIPTION) && 
-                        physPort->getDescription().contains(indexExp))
+                        physPort->description().contains(indexExp))
                     {
                         lowerLogical = indexExp.cap(1).toInt();
                         higherLogical += lowerLogical;                       

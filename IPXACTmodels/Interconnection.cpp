@@ -23,7 +23,7 @@
 // Function: Interconnection::Interconnection()
 //-----------------------------------------------------------------------------
 Interconnection::Interconnection(QDomNode& interconnectionNode): 
-    nameGroup_(), 
+    NameGroup(), 
     interface1(QString(), QString()), 
     interface2(QString(), QString()), 
     route_(), 
@@ -36,15 +36,15 @@ Interconnection::Interconnection(QDomNode& interconnectionNode):
 
         if (node.nodeName() == "spirit:name") 
         {
-            nameGroup_.setName(node.firstChild().nodeValue());
+            setName(node.firstChild().nodeValue());
         } 
         else if (node.nodeName() == "spirit:displayName")
         {
-            nameGroup_.setDisplayName(node.firstChild().nodeValue());
+            setDisplayName(node.firstChild().nodeValue());
         } 
         else if (node.nodeName() == "spirit:description")
         {
-            nameGroup_.setDescription(node.firstChild().nodeValue());
+            setDescription(node.firstChild().nodeValue());
         }
         else if (node.nodeName() == "spirit:activeInterface")
         {
@@ -70,7 +70,7 @@ Interconnection::Interconnection(QString name,
     bool offPage,
     QString displayName,
     QString description): 
-    nameGroup_(name, displayName, description),
+    NameGroup(name, displayName, description),
     interface1(interface1), 
     interface2(interface2), 
     route_(route), 
@@ -83,7 +83,7 @@ Interconnection::Interconnection(QString name,
 // Function: Interconnection::Interconnection()
 //-----------------------------------------------------------------------------
 Interconnection::Interconnection( const Interconnection& other ):
-nameGroup_(other.nameGroup_),
+NameGroup(other),
     interface1(other.interface1),
     interface2(other.interface2),
     route_(other.route_),
@@ -104,37 +104,13 @@ Interconnection::~Interconnection()
 //-----------------------------------------------------------------------------
 Interconnection& Interconnection::operator=( const Interconnection& other ) {
     if (this != &other) {
-        nameGroup_ = other.nameGroup_;
+        NameGroup::operator=(other);
         interface1 = other.interface1;
         interface2 = other.interface2;
         route_ = other.route_;
         offPage_ = other.offPage_;
     }
     return *this;
-}
-
-//-----------------------------------------------------------------------------
-// Function: Interconnection::name()
-//-----------------------------------------------------------------------------
-QString Interconnection::name() const
-{
-    return nameGroup_.name();
-}
-
-//-----------------------------------------------------------------------------
-// Function: Interconnection::displayName()
-//-----------------------------------------------------------------------------
-QString Interconnection::displayName() const
-{
-    return nameGroup_.displayName();
-}
-
-//-----------------------------------------------------------------------------
-// Function: Interconnection::description()
-//-----------------------------------------------------------------------------
-QString Interconnection::description() const
-{
-    return nameGroup_.description();
 }
 
 //-----------------------------------------------------------------------------
@@ -187,7 +163,7 @@ bool Interconnection::isValid( const QStringList& instanceNames,
         const QString thisIdentifier(QObject::tr("interconnection within %1").arg(
             parentIdentifier));
 
-        if (nameGroup_.name().isEmpty()) {
+        if (name().isEmpty()) {
             errorList.append(QObject::tr("No name specified for interconnection"
                 " within %1").arg(parentIdentifier));
             valid = false;
@@ -208,7 +184,7 @@ bool Interconnection::isValid( const QStringList& instanceNames,
 // Function: Interconnection::isValid()
 //-----------------------------------------------------------------------------
 bool Interconnection::isValid( const QStringList& instanceNames ) const {
-    if (nameGroup_.name().isEmpty()) {
+    if (name().isEmpty()) {
         return false;
     }
 
@@ -229,7 +205,18 @@ void Interconnection::write(QXmlStreamWriter& writer)
 {
     writer.writeStartElement("spirit:interconnection");
 
-    nameGroup_.write(writer);    
+    writer.writeTextElement("ipxact:name", name());
+
+    if (!displayName().isEmpty())
+    {
+        writer.writeTextElement("ipxact:displayName", displayName());
+    }
+
+    if (!description().isEmpty())
+    {
+        writer.writeTextElement("ipxact:description", description());
+    }
+  
 
     // Write interface manually, since interface.write() writes element with name spirit:interface.
     writer.writeEmptyElement("spirit:activeInterface");

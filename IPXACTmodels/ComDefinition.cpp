@@ -194,15 +194,15 @@ bool ComDefinition::isValid(QStringList& errorList) const
 
     foreach (QSharedPointer<ComProperty> prop, properties_)
     {
-        if (propertyNames.contains(prop->getName()))
+        if (propertyNames.contains(prop->name()))
         {
             errorList.append(QObject::tr("Property '%1' defined multiple times"
-                                         "in %2").arg(prop->getName(), thisIdentifier));
+                                         "in %2").arg(prop->name(), thisIdentifier));
             valid = false;
         }
         else
         {
-            propertyNames.append(prop->getName());
+            propertyNames.append(prop->name());
         }
 
         if (!prop->isValid(errorList, thisIdentifier))
@@ -244,13 +244,13 @@ bool ComDefinition::isValid() const
 
     foreach (QSharedPointer<ComProperty> prop, properties_)
     {
-        if (propertyNames.contains(prop->getName()))
+        if (propertyNames.contains(prop->name()))
         {
             return false;
         }
         else
         {
-            propertyNames.append(prop->getName());
+            propertyNames.append(prop->name());
         }
 
         if (!prop->isValid())
@@ -321,7 +321,7 @@ void ComDefinition::removeProperty(QString const& name)
 {
     foreach (QSharedPointer<ComProperty> property, properties_)
     {
-        if (property->getName() == name)
+        if (property->name() == name)
         {
             properties_.removeOne(property);
             break;

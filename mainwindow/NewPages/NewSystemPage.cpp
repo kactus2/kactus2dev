@@ -63,7 +63,7 @@ mapDescLabel_(new QLabel(tr("Creates a SW architecture and maps it to selected t
     for (int i = 0; i < libInterface->getTreeRoot()->getNumberOfChildren(); ++i)
     {
         QTreeWidgetItem* item = new QTreeWidgetItem();
-        item->setText(0, libInterface->getTreeRoot()->child(i)->getName());
+        item->setText(0, libInterface->getTreeRoot()->child(i)->name());
 
         // Add child items.
         addChildItems(libInterface->getTreeRoot()->child(i), item);
@@ -263,7 +263,7 @@ void NewSystemPage::addChildItems(LibraryItem const* libItem, QTreeWidgetItem* t
 
         // Create a child tree widget item.
         QTreeWidgetItem* item = new QTreeWidgetItem();
-        item->setText(0, libItem->child(i)->getName());
+        item->setText(0, libItem->child(i)->name());
 
         // Recursively add its children if this is not the leaf level.
         if (!vlnv.isValid())

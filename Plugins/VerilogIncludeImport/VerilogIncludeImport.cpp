@@ -206,7 +206,7 @@ QSharedPointer<ModelParameter> VerilogIncludeImport::findModelParameterByName(QS
     QSharedPointer<ModelParameter> parameter;
     foreach (QSharedPointer<ModelParameter> existingParameter, *targetComponent->getModelParameters())
     {
-        if (existingParameter->getName() == name)
+        if (existingParameter->name() == name)
         {
             return existingParameter;            
         }

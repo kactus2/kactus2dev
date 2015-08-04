@@ -300,9 +300,9 @@ ConnectionDeleteCommand::ConnectionDeleteCommand(HWConnection* conn, QUndoComman
             // If the port is visible as ad-hoc in the current design, it must be hidden.
             DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(scene_);
             Q_ASSERT(diagram);
-            if (diagram->getDiagramAdHocPort(port->getName()) != 0)
+            if (diagram->getDiagramAdHocPort(port->name()) != 0)
             {                               
-                new AdHocVisibilityChangeCommand(diagram, port->getName(), false, delCmd);
+                new AdHocVisibilityChangeCommand(diagram, port->name(), false, delCmd);
             }        
         }
     }
@@ -485,9 +485,9 @@ InterfaceDeleteCommand::InterfaceDeleteCommand(BusInterfaceItem* interface,
             // If the port is visible as ad-hoc in the current design, it must be hidden.
             DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(interface->scene());
             Q_ASSERT(diagram);
-            if (diagram->getDiagramAdHocPort(port->getName()) != 0)
+            if (diagram->getDiagramAdHocPort(port->name()) != 0)
             {                               
-                new AdHocVisibilityChangeCommand(diagram, port->getName(), false, delCmd);
+                new AdHocVisibilityChangeCommand(diagram, port->name(), false, delCmd);
             }
         }
     }
@@ -600,5 +600,5 @@ void DeletePhysicalPortCommand::redo()
     QUndoCommand::redo();
 
     Q_ASSERT(component_ != 0 && !port_.isNull());
-    component_->removePort(port_->getName());
+    component_->removePort(port_->name());
 }

@@ -71,7 +71,7 @@ QStringList ModelParameterValidator::findErrorsInUsageType(ModelParameter const*
     if (!hasValidUsageType(modelParameter)) 
     {
         usageErrors.append(QObject::tr("Invalid usage type set for %1 %2 within %3"
-            ).arg(modelParameter->elementName(), modelParameter->getName(), context));
+            ).arg(modelParameter->elementName(), modelParameter->name(), context));
     }
 
     return usageErrors;

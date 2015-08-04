@@ -15,7 +15,7 @@
 #include <IPXACTmodels/businterface.h>
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/memorymap.h>
-#include <IPXACTmodels/parameter.h>
+#include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/registermodel.h>
 
 //-----------------------------------------------------------------------------
@@ -144,7 +144,7 @@ QString ComponentParameterFinder::nameForId(QString const& id) const
 {
     QSharedPointer <Parameter> targetParameter = getParameterWithID(id);
 
-    return targetParameter->getName();
+    return targetParameter->name();
 }
 
 //-----------------------------------------------------------------------------

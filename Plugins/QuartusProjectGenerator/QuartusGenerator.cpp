@@ -65,7 +65,7 @@ void QuartusGenerator::readExistingPinMap(QSharedPointer<Component> component)
 		return;
 	}
 
-	QString pinmapPath = General::getAbsolutePath(handler_->getPath(*component->getVlnv()), fileWrapper->getName());
+	QString pinmapPath = General::getAbsolutePath(handler_->getPath(*component->getVlnv()), fileWrapper->name());
 	
 	// if the file did not exist
 	QFileInfo pinmapInfo(pinmapPath);
@@ -344,13 +344,13 @@ void QuartusGenerator::parseFileSets(QSharedPointer<Component> component, const 
 void QuartusGenerator::parseSingleFile(QSharedPointer<File> currentFile, QString const& basePath,
     QString const& componentVLNV)
 {
-    QString absolutePath = General::getAbsolutePath(basePath, currentFile->getName());
+    QString absolutePath = General::getAbsolutePath(basePath, currentFile->name());
     QFileInfo filePathInfo(absolutePath);
     absolutePath = filePathInfo.canonicalFilePath();
 
     if (absolutePath.isEmpty())
     {
-        emit errorMessage(tr("The file %1 was not found within %2").arg(currentFile->getName(), basePath));
+        emit errorMessage(tr("The file %1 was not found within %2").arg(currentFile->name(), basePath));
         return;
     }
 
@@ -385,7 +385,7 @@ void QuartusGenerator::parseBlindFileSet(QSharedPointer<Component> component)
     QList<QSharedPointer<File> > fileList = component->getRTLFiles();
     foreach (QSharedPointer<File> file, fileList)
     {
-        QString absolutePath = General::getAbsolutePath(basePath, file->getName());
+        QString absolutePath = General::getAbsolutePath(basePath, file->name());
 
         QFileInfo fileInfo(absolutePath);
         if (!fileInfo.exists())
@@ -417,7 +417,7 @@ void QuartusGenerator::parseFilesFromHierarchicalView(View* view, QSharedPointer
     if (!handler_->contains(vlnv))
     {
         emit errorMessage(tr("Hierarchy reference %1 referenced within view %2 in component %3 was not found "
-            "in the library. Stopping generation.").arg(vlnv.toString(), view->getName(),
+            "in the library. Stopping generation.").arg(vlnv.toString(), view->name(),
             component->getVlnv()->getName()));
         return;
     }

@@ -504,16 +504,6 @@ public:
 	*/
 	bool hasView(const QString& viewName) const;
 
-	/*! \brief Get the description of specified view.
-	* 
-	* If view is not found a null string is returned.
-	*
-	* \param viewName Identifies the view that's description is wanted.
-	*
-	* \return QString Contains the description for the view.
-	*/
-	QString getViewDescription(const QString& viewName) const;
-
 	/*! \brief Remove view from the component.
 	*
 	* \param viewName The name of the view to remove
@@ -1387,14 +1377,6 @@ public:
 	 * \return QString The name of the interface that contains the port.
 	*/
 	QString getInterfaceNameForPort(const QString& portName) const;
-
-	/*! \brief Get the description of the specified interface.
-	 *
-	 * \param interfaceName The name of the interface that's description is wanted.
-	 *
-	 * \return QString The description of the given interface.
-	*/
-	QString getInterfaceDescription(const QString& interfaceName) const;
 
 	/*! \brief Get the named port of a component
 	*

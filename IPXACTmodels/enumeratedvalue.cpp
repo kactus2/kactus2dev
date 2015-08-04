@@ -16,9 +16,8 @@
 #include <QObject>
 #include "XmlUtils.h"
 
-EnumeratedValue::EnumeratedValue(QDomNode& enumerationNode):
+EnumeratedValue::EnumeratedValue(QDomNode& enumerationNode): NameGroup(),
 usage_(EnumeratedValue::READWRITE), 
-nameGroup_(enumerationNode),
 value_(),
 vendorExtensions_()
 {
@@ -46,16 +45,16 @@ vendorExtensions_()
 }
 
 EnumeratedValue::EnumeratedValue():
+NameGroup(),
 usage_(EnumeratedValue::READWRITE), 
-nameGroup_(),
 value_(),
 vendorExtensions_()
 {
 }
 
 EnumeratedValue::EnumeratedValue( const EnumeratedValue& other ):
+NameGroup(other),
 usage_(other.usage_),
-nameGroup_(other.nameGroup_),
 value_(other.value_),
 vendorExtensions_(other.vendorExtensions_)
 {
@@ -63,8 +62,8 @@ vendorExtensions_(other.vendorExtensions_)
 
 EnumeratedValue& EnumeratedValue::operator=( const EnumeratedValue& other ) {
 	if (this != &other) {
+        NameGroup::operator=(other);
 		usage_ = other.usage_;
-		nameGroup_ = other.nameGroup_;
 		value_ = other.value_;
         vendorExtensions_ = other.vendorExtensions_;
 	}
@@ -81,16 +80,16 @@ void EnumeratedValue::write(QXmlStreamWriter& writer) {
 	// write the spirit:usage attribute
 	writer.writeAttribute("spirit:usage", EnumeratedValue::usage2Str(usage_));
 
-	writer.writeTextElement("spirit:name", nameGroup_.name());
+	writer.writeTextElement("spirit:name", name());
 	
 	// if optional displayName is defined
-	if (!nameGroup_.displayName().isEmpty()) {
-		writer.writeTextElement("spirit:displayName", nameGroup_.displayName());
+	if (!displayName().isEmpty()) {
+		writer.writeTextElement("spirit:displayName", displayName());
 	}
 
 	// is optional description is defined
-	if (!nameGroup_.description().isEmpty()) {
-		writer.writeTextElement("spirit:description", nameGroup_.description());
+	if (!description().isEmpty()) {
+		writer.writeTextElement("spirit:description", description());
 	}
 
 	writer.writeTextElement("spirit:value", value_);
@@ -110,7 +109,7 @@ bool EnumeratedValue::isValid( QStringList& errorList,
 
 	bool valid = true;
 
-	if (nameGroup_.name().isEmpty()) {
+	if (name().isEmpty()) {
 		errorList.append(QObject::tr("No name specified for enumerated value"
 			" within %1").arg(parentIdentifier));
 		valid = false;
@@ -118,7 +117,7 @@ bool EnumeratedValue::isValid( QStringList& errorList,
 
 	if (value_.isEmpty()) {
 		errorList.append(QObject::tr("No value set for enumerated value %1 "
-			"within %2").arg(nameGroup_.name()).arg(parentIdentifier));
+			"within %2").arg(name()).arg(parentIdentifier));
 		valid = false;
 	}
 
@@ -126,7 +125,7 @@ bool EnumeratedValue::isValid( QStringList& errorList,
 }
 
 bool EnumeratedValue::isValid() const {
-	if (nameGroup_.name().isEmpty()) {
+	if (name().isEmpty()) {
 		return false;
 	}
 
@@ -137,36 +136,12 @@ bool EnumeratedValue::isValid() const {
 	return true;
 }	
 
-QString EnumeratedValue::getDescription() const {
-    return nameGroup_.description();
-}
-
-QString EnumeratedValue::getDisplayName() const {
-    return nameGroup_.displayName();
-}
-
-QString EnumeratedValue::getName() const {
-    return nameGroup_.name();
-}
-
 EnumeratedValue::EnumeratedUsage EnumeratedValue::getUsage() const {
     return usage_;
 }
 
 QString EnumeratedValue::getValue() const {
     return value_;
-}
-
-void EnumeratedValue::setDescription(const QString& description) {
-    nameGroup_.setDescription(description);
-}
-
-void EnumeratedValue::setDisplayName(const QString& displayName) {
-    nameGroup_.setDisplayName(displayName);
-}
-
-void EnumeratedValue::setName(const QString& name) {
-    nameGroup_.setName(name);
 }
 
 void EnumeratedValue::setUsage(EnumeratedValue::EnumeratedUsage usage) {

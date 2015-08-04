@@ -19,7 +19,7 @@
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/design.h>
 #include <IPXACTmodels/Interface.h>
-#include <IPXACTmodels/parameter.h>
+#include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/designconfiguration.h>
 
 #include <QObject>

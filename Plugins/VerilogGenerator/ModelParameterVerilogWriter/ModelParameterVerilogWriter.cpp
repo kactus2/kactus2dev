@@ -52,7 +52,7 @@ void ModelParameterVerilogWriter::write(QTextStream& output) const
 //-----------------------------------------------------------------------------
 bool ModelParameterVerilogWriter::nothingToWrite() const
 {
-    return modelParameter_.isNull() || modelParameter_->getName().isEmpty();
+    return modelParameter_.isNull() || modelParameter_->name().isEmpty();
 }
 
 //-----------------------------------------------------------------------------
@@ -65,7 +65,7 @@ QString ModelParameterVerilogWriter::createDeclaration() const
     parameterDeclaration.replace("<type>", modelParameter_->getDataType().leftJustified(7));
     parameterDeclaration.replace("<arrayBounds>", arrayBounds().leftJustified(20));
     //parameterDeclaration.replace("<vectorBounds>", vectorBounds());
-    parameterDeclaration.replace("<name>", modelParameter_->getName().leftJustified(16));
+    parameterDeclaration.replace("<name>", modelParameter_->name().leftJustified(16));
     parameterDeclaration.replace("<default>", formattedValue());
 
     if (modelParameter_->getValue().isEmpty())
@@ -92,8 +92,8 @@ QString ModelParameterVerilogWriter::arrayBounds() const
         arrayDefinition.clear();
     }
 
-    QString vectorLeft = modelParameter_->getBitWidthLeft();
-    QString vectorRight = modelParameter_->getBitWidthRight();
+    QString vectorLeft = modelParameter_->getVectorLeft();
+    QString vectorRight = modelParameter_->getVectorRight();
 
     QString vectorDefinition = "[" + vectorLeft + ":" + vectorRight + "]";
     vectorDefinition.remove(" ");

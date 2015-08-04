@@ -78,7 +78,7 @@ QString ComponentEditorAddrBlockItem::getTooltip() const
 //-----------------------------------------------------------------------------
 QString ComponentEditorAddrBlockItem::text() const
 {
-	return addrBlock_->getName();
+	return addrBlock_->name();
 }
 
 //-----------------------------------------------------------------------------

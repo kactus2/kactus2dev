@@ -151,12 +151,12 @@ QVariant FilesModel::data(QModelIndex const& index, int role) const
     {
         if (index.column() == NAME_COLUMN)
         {
-            QFileInfo fileInfo(files_.at(index.row())->getName());
+            QFileInfo fileInfo(files_.at(index.row())->name());
             return fileInfo.fileName();
         }
         else if (index.column() == PATH_COLUMN)
         {
-            return file->getName();
+            return file->name();
         }
         else if (index.column() == TYPES_COLUMN)
         {
@@ -312,7 +312,7 @@ void FilesModel::onAddItem(QModelIndex const& index, const QString& filePath )
 	// if the file is already contained in the list
 	foreach (QSharedPointer<File> file, files_)
     {
-		if (file->getName() == relPath)
+		if (file->name() == relPath)
         {
 			return;
 		}
@@ -401,7 +401,7 @@ void FilesModel::onMoveItem(QModelIndex const& originalPos, QModelIndex const& n
 bool FilesModel::filePathExists(QSharedPointer<File> file) const
 {
     QString xmlPath = handler_->getPath(*component_->getVlnv());
-    QString absFilePath = General::getAbsolutePath(xmlPath, file->getName());
+    QString absFilePath = General::getAbsolutePath(xmlPath, file->name());
     Q_ASSERT(!absFilePath.isEmpty());
 
     QFileInfo fileInfo(absFilePath);

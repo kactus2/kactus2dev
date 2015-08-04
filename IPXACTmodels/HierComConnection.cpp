@@ -296,9 +296,9 @@ void HierComConnection::setOffPage(bool offPage)
 }
 
 //-----------------------------------------------------------------------------
-// Function: HierComConnection::getName()
+// Function: HierComConnection::name()
 //-----------------------------------------------------------------------------
-QString const& HierComConnection::getName() const
+QString const& HierComConnection::name() const
 {
     return name_;
 }

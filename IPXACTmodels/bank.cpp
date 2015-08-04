@@ -9,9 +9,11 @@
 #include "subspacemap.h"
 #include "addressblock.h"
 #include "generaldeclarations.h"
-#include "parameter.h"
 #include "memoryblockdata.h"
 #include "GenericVendorExtension.h"
+
+#include <IPXACTmodels/common/Parameter.h>
+#include <IPXACTmodels/common/ParameterReader.h>
 
 #include <QString>
 #include <QDomNode>
@@ -75,14 +77,14 @@ vendorExtensions_()
 		}
 
 		// get parameters
-		else if (tempNode.nodeName() == QString("spirit:parameters")) {
-
+		else if (tempNode.nodeName() == QString("spirit:parameters"))
+        {
+            ParameterReader reader;
 			// go through all parameters
 			for (int j = 0; j < tempNode.childNodes().count(); ++j) {
 
 				QDomNode parameterNode = tempNode.childNodes().at(j);
-				Parameter *temp = new Parameter(parameterNode);
-				tempParameters.append(QSharedPointer<Parameter>(temp));
+				tempParameters.append(reader.createParameterFrom(parameterNode));
 			}
 		}
 
@@ -223,9 +225,9 @@ bool Bank::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoi
     const QString& parentIdentifier ) const
 {
 	bool valid = true;
-    const QString thisIdentifier(QObject::tr("bank %1").arg(getName()));
+    const QString thisIdentifier(QObject::tr("bank %1").arg(name()));
 
-    if (getName().isEmpty())
+    if (name().isEmpty())
     {
 		errorList.append(QObject::tr("No name specified for bank within %1").arg(parentIdentifier));
 		valid = false;
@@ -268,7 +270,7 @@ bool Bank::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoi
 //-----------------------------------------------------------------------------
 bool Bank::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const
 {
-    if (getName().isEmpty())
+    if (name().isEmpty())
     {
 		return false;
 	}

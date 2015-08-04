@@ -456,7 +456,7 @@ void updateSystemDesignV2(LibraryInterface* lh,
                 }
                 else
                 {
-                    dependency.setName(hwInstance.getInstanceName() + "_" + dependency.getName());
+                    dependency.setName(hwInstance.getInstanceName() + "_" + dependency.name());
                     dependency.setInterface1(ApiInterfaceRef(hwInstance.getInstanceName() + "_" + dependency.getInterface1().componentRef,
                                                              dependency.getInterface1().apiRef));
                     dependency.setInterface2(ApiInterfaceRef(hwInstance.getInstanceName() + "_" + dependency.getInterface2().componentRef,

@@ -219,15 +219,15 @@ bool ApiDefinition::isValid(QStringList& errorList) const
 
     foreach (QSharedPointer<ApiFunction> func, functions_)
     {
-        if (funcNames.contains(func->getName()))
+        if (funcNames.contains(func->name()))
         {
             errorList.append(QObject::tr("Function with name '%1' defined multiple times"
-                                         "in %2").arg(func->getName(), thisIdentifier));
+                                         "in %2").arg(func->name(), thisIdentifier));
             valid = false;
         }
         else
         {
-            funcNames.append(func->getName());
+            funcNames.append(func->name());
         }
 
         if (!func->isValid(errorList, thisIdentifier))
@@ -275,13 +275,13 @@ bool ApiDefinition::isValid() const
 
     foreach (QSharedPointer<ApiFunction> func, functions_)
     {
-        if (funcNames.contains(func->getName()))
+        if (funcNames.contains(func->name()))
         {
             return false;
         }
         else
         {
-            funcNames.append(func->getName());
+            funcNames.append(func->name());
         }
 
         if (!func->isValid())

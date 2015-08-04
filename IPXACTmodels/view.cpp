@@ -6,10 +6,14 @@
 #include "generaldeclarations.h"
 #include "GenericVendorExtension.h"
 #include "modelparameter.h"
-#include "parameter.h"
+
 #include "view.h"
 #include "vlnv.h"
 #include "XmlUtils.h"
+
+#include <IPXACTmodels/common/ParameterReader.h>
+#include <IPXACTmodels/common/ParameterWriter.h>
+#include <IPXACTmodels/common/Parameter.h>
 
 #include <IPXACTmodels/kactusExtensions/ComponentInstantiation.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Value.h>
@@ -22,7 +26,7 @@
 #include <QXmlStreamWriter>
 
 View::View(QDomNode &viewNode): 
-nameGroup_(viewNode),
+NameGroup(),
 envIdentifiers_(),
 language_(),
 languageStrict_(false),
@@ -80,11 +84,13 @@ vendorExtensions_()
 		}
 		else if (tempNode.nodeName() == QString("spirit:parameters"))
         {
+            ParameterReader reader;
 			// go through all parameters
 			for (int j = 0; j < tempNode.childNodes().count(); ++j)
             {
+                
 				QDomNode parameterNode = tempNode.childNodes().at(j);
-				parameters_->append(QSharedPointer<Parameter>(new Parameter(parameterNode)));
+				parameters_->append(QSharedPointer<Parameter>(reader.createParameterFrom(parameterNode)));
 			}
 		}
 		else if (tempNode.nodeName() == QString("spirit:hierarchyRef"))
@@ -103,7 +109,7 @@ vendorExtensions_()
 }
 
 View::View(const QString name): 
-nameGroup_(name), 
+NameGroup(name), 
 envIdentifiers_(),
 language_(),
 languageStrict_(false),
@@ -119,7 +125,7 @@ vendorExtensions_()
 }
 
 View::View(): 
-nameGroup_(),
+NameGroup(),
 envIdentifiers_(),
 language_(),
 languageStrict_(false),
@@ -135,7 +141,7 @@ vendorExtensions_()
 }
 
 View::View( const View &other ):
-nameGroup_(other.nameGroup_),
+NameGroup(other),
 envIdentifiers_(other.envIdentifiers_),
 language_(other.language_),
 languageStrict_(other.languageStrict_),
@@ -165,7 +171,7 @@ vendorExtensions_()
 
 View & View::operator=( const View &other ) {
 	if (this != &other) {
-		nameGroup_ = other.nameGroup_;
+		NameGroup::operator=(other);
 		envIdentifiers_ = other.envIdentifiers_;
 		language_ = other.language_;
 		languageStrict_ = other.languageStrict_;
@@ -202,7 +208,18 @@ void View::write(QXmlStreamWriter& writer)
 {
 	writer.writeStartElement("spirit:view");
 
-    nameGroup_.write(writer);
+    writer.writeTextElement("ipxact:name", name());
+
+    if (!displayName().isEmpty())
+    {
+        writer.writeTextElement("ipxact:displayName", displayName());
+    }
+
+    if (!description().isEmpty())
+    {
+        writer.writeTextElement("ipxact:description", description());
+    }
+
 
 	// write all spirit:envIdentifier elements
 	for (int i = 0; i < envIdentifiers_.size(); ++i) {
@@ -252,19 +269,19 @@ void View::write(QXmlStreamWriter& writer)
 				constraintSetRefs_.at(i));
 	}
 
-	// write all the parameters
-	if (parameters_->size() != 0)
+    if (parameters_->size() != 0)
     {
-		writer.writeStartElement("spirit:parameters");
+        writer.writeStartElement("ipxact:parameters");
 
-		// go through each parameter
-		for (int i = 0; i < parameters_->size(); ++i)
+        ParameterWriter parameterWriter;
+        // write each parameter
+        for (int i = 0; i < parameters_->size(); ++i)
         {
-			parameters_->at(i)->write(writer);
-		}
+            parameterWriter.writeParameter(writer, parameters_->at(i));
+        }
 
-		writer.writeEndElement(); // spirit:parameters
-	}
+        writer.writeEndElement(); // ipxact:parameters
+    }
 
     if (!vendorExtensions_.isEmpty())
     {
@@ -282,16 +299,16 @@ bool View::isValid( const QStringList& fileSetNames,
 				   const QString& parentIdentifier ) const {
 
 	bool valid = true;
-	const QString thisIdentifier(QObject::tr("view %1").arg(nameGroup_.name()));
+	const QString thisIdentifier(QObject::tr("view %1").arg(name()));
 
-	if (nameGroup_.name().isEmpty()) {
+	if (name().isEmpty()) {
 		errorList.append(QObject::tr("No name specified for view within %1").arg(parentIdentifier));
 		valid = false;
 	}
 
 	if (envIdentifiers_.isEmpty()) {
 		errorList.append(QObject::tr("No environment identifier specified for "
-			"view %1 within %2").arg(nameGroup_.name()).arg(parentIdentifier));
+			"view %1 within %2").arg(name()).arg(parentIdentifier));
 		valid = false;
 	}
 
@@ -309,7 +326,7 @@ bool View::isValid( const QStringList& fileSetNames,
 			if (!fileSetNames.contains(fileSetRef)) {
 				errorList.append(QObject::tr("View %1 contained reference to file"
 					" set %2 which is not found within %3").arg(
-					nameGroup_.name()).arg(fileSetRef).arg(parentIdentifier));
+					name()).arg(fileSetRef).arg(parentIdentifier));
 				valid = false;
 			}
 		}
@@ -331,7 +348,7 @@ bool View::isValid( const QStringList& fileSetNames,
 bool View::isValid( const QStringList& fileSetNames, 
     QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices ) const 
 {
-	if (nameGroup_.name().isEmpty()) 
+	if (name().isEmpty()) 
     {
 		return false;
 	}
@@ -380,10 +397,6 @@ void View::setFileSetRefs(const QList<QString> &fileSetRefs) {
 
 QString View::getLanguage() const {
 	return language_;
-}
-
-QString View::getName() const {
-	return nameGroup_.name();
 }
 
 VLNV View::getHierarchyRef() const
@@ -453,12 +466,6 @@ QSharedPointer<QList<QSharedPointer<Parameter> > > View::getParameters() const
 	return parameters_;
 }
 
-void View::setName(QString const& name) 
-{
-	nameGroup_.setName(name);
-    getOrCreateComponentInstantiation()->setName(name);
-}
-
 void View::setModelName(const QString &modelName) {
 	modelName_ = modelName;
 
@@ -484,22 +491,6 @@ void View::addFileSetRef(const QString fileSetRef) {
 
 	hierarchyRef_.clear();
     removeTopLevelViewRefExtension();
-}
-
-QString View::getDisplayName() const {
-	return nameGroup_.displayName();
-}
-
-QString View::getDescription() const {
-	return nameGroup_.description();
-}
-
-void View::setDisplayName( const QString& displayName ) {
-	nameGroup_.setDisplayName(displayName);
-}
-
-void View::setDescription( const QString& description ) {
-	nameGroup_.setDescription(description);
 }
 
 bool View::isHierarchical() const {
@@ -549,15 +540,6 @@ void View::setTopLevelView( const QString& viewName ) {
 	fileSetRefs_.clear();
 	constraintSetRefs_.clear();
 	parameters_->clear();
-}
-
-NameGroup& View::getNameGroup() {
-	return nameGroup_;
-}
-
-const NameGroup& View::getNameGroup() const
-{
-	return nameGroup_;
 }
 
 void View::clearHierarchy()
@@ -634,9 +616,9 @@ void View::createTopLevelViewRefExtension(QString topLevelViewRef)
 void View::parseComponentInstantiation(QDomNode& instantiationNode)
 {
     QSharedPointer<ComponentInstantiation> instantiation(new ComponentInstantiation(instantiationNode));
-    if (instantiation->getName().isEmpty())
+    if (instantiation->name().isEmpty())
     {
-        instantiation->setName(getName());
+        instantiation->setName(name());
     }
 
     vendorExtensions_.append(instantiation);

@@ -68,7 +68,7 @@ public:
 	 *
 	 * \return QString containing the target name.
 	 */
-	QString getTargetName() const;
+	QString getTarname() const;
 
 	/*! \brief Get the attributes for the target name-element.
 	 *

@@ -401,7 +401,7 @@ void ModelsimGenerator::parseFileSets( QSharedPointer<Component> component,
 			
 			// get the absolute path to the file
 			QString absolutePath = General::getAbsolutePath(basePath,
-				file->getName());
+				file->name());
 
 			// make sure the file exists in the file system
 			QFileInfo fileInfo(absolutePath);
@@ -486,7 +486,7 @@ void ModelsimGenerator::readDesign( const QSharedPointer<Design> design,
 
 			// if component only has one view
 			if (component->viewCount() == 1)
-				viewName = component->getViews().first()->getName();
+				viewName = component->getViews().first()->name();
 
 			// if component has multiple views
 			else if (component->viewCount() > 1) {
@@ -529,7 +529,7 @@ void ModelsimGenerator::parseBlindFileSet( QSharedPointer<Component> component )
 
 		// get the absolute path to the file
 		QString absolutePath = General::getAbsolutePath(basePath,
-			file->getName());
+			file->name());
 
 		// make sure the file exists in the file system
 		QFileInfo fileInfo(absolutePath);

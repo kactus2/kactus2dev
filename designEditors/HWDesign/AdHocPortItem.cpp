@@ -139,7 +139,7 @@ AdHocPortItem::~AdHocPortItem()
 //-----------------------------------------------------------------------------
 QString AdHocPortItem::name() const
 {
-    return port_->getName();
+    return port_->name();
 }
 
 //-----------------------------------------------------------------------------
@@ -174,7 +174,7 @@ void AdHocPortItem::updateInterface()
     setBrush(QBrush(Qt::black));
 
 	nameLabel_.setHtml("<div style=\"background-color:#eeeeee; padding:10px 10px;\">" +
-                 		port_->getName() + "</div>");
+                 		port_->name() + "</div>");
 
 	setLabelPosition();
 
@@ -463,7 +463,7 @@ void AdHocPortItem::setInterfaceMode(General::InterfaceMode)
 QString AdHocPortItem::description() const
 {
 	Q_ASSERT(port_);
-    return port_->getDescription();
+    return port_->description();
 }
 
 //-----------------------------------------------------------------------------

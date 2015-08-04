@@ -5,10 +5,12 @@
  */
 
 #include "servicetypedef.h"
-#include "parameter.h"
+#include <IPXACTmodels/common/Parameter.h>
 #include "generaldeclarations.h"
 
 #include <IPXACTmodels/XmlUtils.h>
+#include <IPXACTmodels/common/ParameterReader.h>
+#include <IPXACTmodels/common/ParameterWriter.h>
 
 #include <QDomNode>
 #include <QString>
@@ -49,13 +51,13 @@ ServiceTypeDef::ServiceTypeDef(QDomNode &serviceTypeNode): typeName_(QString()),
 			typeDefinition_ = tempNode.childNodes().at(0).nodeValue();
 		}
 
-		else if (tempNode.nodeName() == QString("spirit:parameters")) {
-
+		else if (tempNode.nodeName() == QString("spirit:parameters"))
+        {
+            ParameterReader reader;
 			// go through all parameters
 			for (int j = 0; j < tempNode.childNodes().count(); ++j) {
 				QDomNode parameterNode = tempNode.childNodes().at(j);
-				parameters_.append(QSharedPointer<Parameter>(
-						new Parameter(parameterNode)));
+				parameters_.append(QSharedPointer<Parameter>(reader.createParameterFrom(parameterNode)));
 			}
 		}
 	}
@@ -122,16 +124,20 @@ void ServiceTypeDef::write(QXmlStreamWriter& writer) {
                 		typeDefinition_);
 	}
 
-	// if any parameter are found
-	if (parameters_.size() != 0) {
-		writer.writeStartElement("spirit:parameters");
+    if (parameters_.size() != 0)
+    {
+        writer.writeStartElement("ipxact:parameters");
 
-		// go through each parameter
-		for (int i = 0; i < parameters_.size(); ++i) {
-			parameters_.at(i)->write(writer);
-		}
-		writer.writeEndElement(); // spirit:parameters
-	}
+        ParameterWriter parameterWriter;
+        // write each parameter
+        for (int i = 0; i < parameters_.size(); ++i)
+        {
+            parameterWriter.writeParameter(writer, parameters_.at(i));
+        }
+
+        writer.writeEndElement(); // ipxact:parameters
+    }
+
 	writer.writeEndElement(); // spirit:serviceTypeDef
 }
 

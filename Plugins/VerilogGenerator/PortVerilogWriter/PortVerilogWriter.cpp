@@ -63,7 +63,7 @@ QString PortVerilogWriter::createDeclaration() const
     portDeclaration.replace("<direction>", direction().leftJustified(6));
     portDeclaration.replace("<type>", port_->getTypeName().leftJustified(7));
     portDeclaration.replace("<bounds>", arrayAndVectorBounds().leftJustified(20));
-    portDeclaration.replace("<name>", port_->getName());
+    portDeclaration.replace("<name>", port_->name());
 
     return portDeclaration;
 }

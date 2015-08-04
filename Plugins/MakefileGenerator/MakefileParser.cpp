@@ -239,7 +239,7 @@ void MakefileParser::findInstanceHeaders(LibraryInterface* library, QSharedPoint
         {
             // We may assume that a file path is relative to the component path, and thus the include path is
             // component path + file path.
-            QFileInfo fileQfi = QFileInfo(componentQfi.absolutePath() + "/" + file->getName());
+            QFileInfo fileQfi = QFileInfo(componentQfi.absolutePath() + "/" + file->name());
             makeData.includeDirectories.append(fileQfi.absolutePath());
         }
     }
@@ -363,7 +363,7 @@ void MakefileParser::parseMakeObjects(LibraryInterface* library, QSharedPointer<
             // We may assume that a file path is relative to the component path, and thus the include path
             // is component path + file path.
             QFileInfo componentQfi = QFileInfo(library->getPath(*component->getVlnv()));
-            QFileInfo fileQfi = QFileInfo(componentQfi.absolutePath() + "/" + file->getName());
+            QFileInfo fileQfi = QFileInfo(componentQfi.absolutePath() + "/" + file->name());
 
             // Set the needed fields.
             objectData->file = file;

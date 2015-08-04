@@ -85,10 +85,10 @@ QVariant ChannelsModel::data( const QModelIndex& index, int role /*= Qt::Display
 
 		switch (index.column()) {
 			case ChannelsDelegate::NAME_COLUMN: {
-				return channels_.at(index.row())->getName();
+				return channels_.at(index.row())->name();
 													 }
 			case ChannelsDelegate::DISPLAY_NAME_COLUMN: {
-				return channels_.at(index.row())->getDisplayName();
+				return channels_.at(index.row())->displayName();
 														  }
 			case ChannelsDelegate::INTERFACE_COLUMN: {
 				// each group name if in it's own index
@@ -105,7 +105,7 @@ QVariant ChannelsModel::data( const QModelIndex& index, int role /*= Qt::Display
 				return str;
 													  }
 			case ChannelsDelegate::DESCRIPTION_COLUMN: {
-				return channels_.at(index.row())->getDescription();
+				return channels_.at(index.row())->description();
 													  }
 			default: {
 				return QVariant();

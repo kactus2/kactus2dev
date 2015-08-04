@@ -9,7 +9,7 @@
 
 #include "ipxactmodels_global.h"
 
-#include <IPXACTmodels/NameGroup.h>
+#include <IPXACTmodels/common/NameGroup.h>
 
 #include <QDomNode>
 #include <QMap>
@@ -24,7 +24,7 @@ class Choice;
  * MemoryMapItem instances don't represent any element in IP-Xact specification
  * so only it is meant to be purely a base class.
  */
-class IPXACTMODELS_EXPORT MemoryMapItem {
+class IPXACTMODELS_EXPORT MemoryMapItem : public NameGroup{
 
 public:
 
@@ -114,36 +114,6 @@ public:
 	 */
 	virtual QString getBaseAddress() const;
 
-	/*! \brief Get the name of the element
-	 *
-	 * \return QString containing the element
-	 */
-	virtual QString getName() const;
-
-	/*! \brief Get the displayName of this memoryMapItem
-	 *
-	 * \return QString containing the displayName
-	 */
-	virtual QString getDisplayName() const;
-
-	/*! \brief Get the description of this memoryMapItem
-	 *
-	 * \return QString containing the description.
-	 */
-	virtual QString getDescription() const;
-
-	/*! \brief Set the displayName for this memoryMapItem
-	 *
-	 * \param name The name to be set.
-	 */
-	virtual void setDisplayName(const QString& name);
-
-	/*! \brief Set the description for this memoryMapItem
-	 *
-	 * \param description The description to be set.
-	 */
-	virtual void setDescription(const QString& description);
-
 	/*! \brief Set the attributes for the element
 	 *
 	 * Calling this function deletes the old attributes. If old values must
@@ -171,26 +141,7 @@ public:
 	 */
 	virtual void setBaseAddress(const QString &baseAddress);
 
-	/*! \brief Set the name for the element
-	 *
-	 * \param name QString containing the name
-	 */
-	virtual void setName(const QString &name);
-
-    /*!
-     *  Get the name group used in this memory map item.
-     *
-     *      @return The name group of the memory map item.
-     */
-    NameGroup& getNameGroup();
-
 protected:
-
-	/*!
-	 * MANDATORY
-	 * Identifies the containing element
-	 */
-    NameGroup nameGroup_;
 
 	/*!
 	 * OPTIONAL

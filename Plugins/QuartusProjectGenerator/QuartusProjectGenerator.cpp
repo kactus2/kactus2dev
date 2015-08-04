@@ -219,7 +219,7 @@ QString QuartusProjectGenerator::getOpenViewName(QSharedPointer<LibraryComponent
         if ((desConf && currentView->getHierarchyRef() == *desConf->getVlnv()) ||
             (design && currentView->getHierarchyRef() == *design->getVlnv()))
         {
-            return currentView->getName();
+            return currentView->name();
         }
     }
 

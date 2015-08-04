@@ -59,7 +59,7 @@ void AddressBlockGraphItem::refresh()
 //-----------------------------------------------------------------------------
 void AddressBlockGraphItem::updateDisplay()
 {
-    setName(addrBlock_->getName());
+    setName(addrBlock_->name());
 
     quint64 offset = getOffset();
     quint64 lastAddress = getLastAddress();
@@ -68,7 +68,7 @@ void AddressBlockGraphItem::updateDisplay()
     setDisplayLastAddress(lastAddress);
 
     // Set tooltip to show addresses in hexadecimals.
-    setToolTip("<b>Name: </b>" + addrBlock_->getName() + "<br>" +
+    setToolTip("<b>Name: </b>" + addrBlock_->name() + "<br>" +
         "<b>Offset: </b>" + toHexString(offset) + "<br>" +
         "<b>Last address: </b>" + toHexString(lastAddress) + "<br>" +
         "<b>Size [AUB]: </b>" + expressionParser_->parseExpression(addrBlock_->getRange()));

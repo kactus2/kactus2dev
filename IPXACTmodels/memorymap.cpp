@@ -156,20 +156,20 @@ bool MemoryMap::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componen
 {
     bool valid = AbstractMemoryMap::isValid(componentChoices, errorList, parentIdentifier);
 
-    const QString thisIdentifier(QObject::tr("memory map %1").arg(getName()));
+    const QString thisIdentifier(QObject::tr("memory map %1").arg(name()));
 
     QStringList memoryRemapNames;
     foreach (QSharedPointer<MemoryRemap> singleMemoryRemap, *memoryRemaps_)
     {
-        if (memoryRemapNames.contains(singleMemoryRemap->getName()))
+        if (memoryRemapNames.contains(singleMemoryRemap->name()))
         {
             errorList.append(QObject::tr("%1 contains several memory remaps with the name %2").arg(
-                thisIdentifier).arg(singleMemoryRemap->getName()));
+                thisIdentifier).arg(singleMemoryRemap->name()));
             valid = false;
         }
         else
         {
-            memoryRemapNames.append(singleMemoryRemap->getName());
+            memoryRemapNames.append(singleMemoryRemap->name());
         }
         if (!singleMemoryRemap->isValid(componentChoices, remapStateNames, errorList, thisIdentifier))
         {
@@ -191,13 +191,13 @@ bool MemoryMap::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componen
     QStringList memoryRemapNames;
     foreach (QSharedPointer<MemoryRemap> singleMemoryRemap, *memoryRemaps_)
     {
-        if (memoryRemapNames.contains(singleMemoryRemap->getName()))
+        if (memoryRemapNames.contains(singleMemoryRemap->name()))
         {
             return false;
         }
         else
         {
-            memoryRemapNames.append(singleMemoryRemap->getName());
+            memoryRemapNames.append(singleMemoryRemap->name());
         }
 
         if (!singleMemoryRemap->isValid(componentChoices, remapStateNames))

@@ -163,7 +163,7 @@ QVariant AddressSpacesModel::data(QModelIndex const& index, int role) const
     }
 	else if (Qt::UserRole == role)
     {
-		return component_->getMasterInterfaces(addrSpaces_.at(index.row())->getName());
+		return component_->getMasterInterfaces(addrSpaces_.at(index.row())->name());
 	}
 	else if (Qt::ForegroundRole == role)
     {
@@ -330,7 +330,7 @@ QVariant AddressSpacesModel::expressionOrValueForIndex(QModelIndex const& index)
 {
     if (index.column() == AddressSpaceColumns::NAME)
     {
-        return addrSpaces_.at(index.row())->getName();
+        return addrSpaces_.at(index.row())->name();
     }
     else if (index.column() == AddressSpaceColumns::AUB)
     {
@@ -346,7 +346,7 @@ QVariant AddressSpacesModel::expressionOrValueForIndex(QModelIndex const& index)
     }
     else if (index.column() == AddressSpaceColumns::INTERFACE_BINDING)
     {
-        QStringList interfaceNames = component_->getMasterInterfaces(addrSpaces_.at(index.row())->getName());
+        QStringList interfaceNames = component_->getMasterInterfaces(addrSpaces_.at(index.row())->name());
 
         // if no interface refers to the memory map
         if (interfaceNames.isEmpty())
@@ -361,7 +361,7 @@ QVariant AddressSpacesModel::expressionOrValueForIndex(QModelIndex const& index)
     }
     else if (index.column() == AddressSpaceColumns::DESCRIPTION)
     {
-        return addrSpaces_.at(index.row())->getDescription();
+        return addrSpaces_.at(index.row())->description();
     }
     else
     {

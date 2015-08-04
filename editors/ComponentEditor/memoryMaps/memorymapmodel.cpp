@@ -565,11 +565,11 @@ QVariant MemoryMapModel::valueForIndex(QModelIndex const& index) const
 {
     if (index.column() == MemoryMapColumns::NAME_COLUMN)
     {
-        return items_.at(index.row())->getName();
+        return items_.at(index.row())->name();
     }
     else if (index.column() == MemoryMapColumns::DESCRIPTION_COLUMN)
     {
-        return items_.at(index.row())->getDescription();
+        return items_.at(index.row())->description();
     }
     else if (index.column() == MemoryMapColumns::BASE_COLUMN)
     {

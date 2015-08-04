@@ -8,7 +8,7 @@
 #define REGISTERMODEL_H_
 
 #include "ipxactmodels_global.h"
-#include "NameGroup.h"
+#include "common/NameGroup.h"
 
 #include <QList>
 #include <QDomNode>
@@ -31,7 +31,7 @@ class Parameter;
  * AlternateRegister = 	spirit:alternateRegister
  * RegisterFile = 		spirit:registerFile
  */
-class IPXACTMODELS_EXPORT RegisterModel {
+class IPXACTMODELS_EXPORT RegisterModel : public NameGroup{
 
 public:
 
@@ -97,29 +97,11 @@ public:
 	*/
     virtual bool isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const = 0;
 
-	/*! \brief Get the description of the register.
-	 *
-	 * \return QString containing the description
-	 */
-    virtual QString getDescription() const;
-
-    /*! \brief Get the display name of the register.
-     *
-     * \return QString containing the display name.
-     */
-    virtual QString getDisplayName() const;
-
     /*! \brief Get the id of the register.
      *
      * \return QString containing the id
      */
     virtual QString getId() const;
-
-    /*! \brief Get the name of the register.
-     *
-     * \return QString containing the name.
-     */
-    virtual QString getName() const;
 
     /*! \brief Get the parameters of the register.
      *
@@ -127,29 +109,11 @@ public:
      */
     virtual const QList<QSharedPointer<Parameter> >& getParameters() const;
 
-    /*! \brief Set the description of the register.
-     *
-     * \param description QString containing the description.
-     */
-    virtual void setDescription(const QString& description);
-
-    /*! \brief Set the display name of the register.
-     *
-     * \param displayName QString containing the name
-     */
-    virtual void setDisplayName(const QString& displayName);
-
     /*! \brief Set the id of the register.
      *
      * \param id QString containing the id.
      */
     virtual void setId(const QString& id);
-
-    /*! \brief Set the name for the register.
-     *
-     * \param name QString containing the name.
-     */
-    virtual void setName(const QString& name);
 
     /*! \brief Set the parameters for the register.
      *
@@ -159,22 +123,12 @@ public:
      */
     virtual void setParameters(const QList<QSharedPointer<Parameter> >& parameters);
 
-    /*!
-     *  Get the name group of this item.
-     *
-     *      @return The name group of this item.
-     */
-    NameGroup& getNameGroup();
-
 protected:
 
 	/*! \brief Uniquely identifies an element within this object.
 	 * OPTIONAL spirit:id
 	 */
 	QString id_;
-
-	//! \brief Contains the name, display name and description of the register item.
-	NameGroup nameGroup_;
 
 	/*! \brief Contains the parameters.
 	 * OPTIONAL spirit:parameters

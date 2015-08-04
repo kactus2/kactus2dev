@@ -80,11 +80,11 @@ bool BusInterfaceWizardGeneralOptionsPage::validatePage()
     QStringList errors;
     bool valid = true;
  
-   if (component_->hasInterface(busIf_->getName()) && 
-        component_->getBusInterface(busIf_->getName()) != busIf_)
+   if (component_->hasInterface(busIf_->name()) && 
+        component_->getBusInterface(busIf_->name()) != busIf_)
     {
         errors.append(tr("Component %1 already has interface named %2.").arg(component_->getVlnv()->toString(), 
-            busIf_->getName()));
+            busIf_->name()));
         valid = false;
     }    
     

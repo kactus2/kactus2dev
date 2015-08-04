@@ -102,7 +102,7 @@ QVariant AdHocModel::data(QModelIndex const& index, int role /*= Qt::DisplayRole
         {
         case ADHOC_COL_NAME:
             {
-                return table_.at(index.row())->getName();
+                return table_.at(index.row())->name();
             }
 
         case ADHOC_COL_DIRECTION:
@@ -120,7 +120,7 @@ QVariant AdHocModel::data(QModelIndex const& index, int role /*= Qt::DisplayRole
     {
         if (index.column() == ADHOC_COL_VISIBILITY)
         {
-            if (dataSource_->isPortAdHocVisible(table_.at(index.row())->getName()))
+            if (dataSource_->isPortAdHocVisible(table_.at(index.row())->name()))
             {
                 return Qt::Checked;
             }
@@ -194,7 +194,7 @@ bool AdHocModel::setData(const QModelIndex& index, const QVariant& value, int ro
     if (role == Qt::CheckStateRole)
     {
         QSharedPointer<QUndoCommand> cmd(new AdHocVisibilityChangeCommand(dataSource_,
-                                                                          table_.at(index.row())->getName(),
+                                                                          table_.at(index.row())->name(),
                                                                           value == Qt::Checked));
         dataSource_->getEditProvider().addCommand(cmd);
         cmd->redo();

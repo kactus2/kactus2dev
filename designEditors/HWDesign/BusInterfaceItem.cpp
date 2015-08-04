@@ -114,7 +114,7 @@ BusInterfaceItem::~BusInterfaceItem() {
 
 QString BusInterfaceItem::name() const
 {
-    return busInterface_->getName();
+    return busInterface_->name();
 }
 
 void BusInterfaceItem::setName( const QString& name ) {
@@ -253,7 +253,7 @@ void BusInterfaceItem::updateInterface()
     setPolygon(shape);
 
 	nameLabel_.setHtml("<div style=\"background-color:#eeeeee; padding:10px 10px;\">"
-		                 + busInterface_->getName() + "</div>");
+		                 + busInterface_->name() + "</div>");
 
 	setLabelPosition();
 
@@ -276,9 +276,9 @@ bool BusInterfaceItem::onConnect(ConnectionEndpoint const* other)
     }
 
     // Update the name if the bus interface is defined but its name is empty.
-    if (busInterface_->getInterfaceMode() != General::INTERFACE_MODE_COUNT && busInterface_->getName() == "")
+    if (busInterface_->getInterfaceMode() != General::INTERFACE_MODE_COUNT && busInterface_->name() == "")
     {
-        busInterface_->setName(other->getBusInterface()->getName());
+        busInterface_->setName(other->getBusInterface()->name());
         updateInterface();
     }
 
@@ -291,13 +291,13 @@ bool BusInterfaceItem::onConnect(ConnectionEndpoint const* other)
     }
 
     // Determine the name for the interface.
-    QString newBusIfName = other->getBusInterface()->getName();
+    QString newBusIfName = other->getBusInterface()->name();
     unsigned int index = 0;
 
     while (component_->getBusInterface(newBusIfName) != 0)
     {
         ++index;
-        newBusIfName = other->getBusInterface()->getName() + "_" + QString::number(index);
+        newBusIfName = other->getBusInterface()->name() + "_" + QString::number(index);
     }
 
     // Create a new bus interface for the diagram interface.
@@ -714,7 +714,7 @@ void BusInterfaceItem::undefine(bool removePorts)
     //busInterface_->setName("");
     
     // Remove the bus interface from the top-level component and destroy it.
-    component_->removeBusInterface(busInterface_->getName());
+    component_->removeBusInterface(busInterface_->name());
 }
 
 //-----------------------------------------------------------------------------
@@ -747,7 +747,7 @@ void BusInterfaceItem::setInterfaceMode( General::InterfaceMode mode ) {
 
 QString BusInterfaceItem::description() const {
 	Q_ASSERT(busInterface_);
-	return busInterface_->getDescription();
+	return busInterface_->description();
 }
 
 void BusInterfaceItem::setDescription( const QString& description ) {

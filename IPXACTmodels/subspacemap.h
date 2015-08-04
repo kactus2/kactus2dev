@@ -9,7 +9,7 @@
 
 #include "memorymapitem.h"
 #include "generaldeclarations.h"
-#include "parameter.h"
+#include <IPXACTmodels/common/Parameter.h>
 
 #include "ipxactmodels_global.h"
 

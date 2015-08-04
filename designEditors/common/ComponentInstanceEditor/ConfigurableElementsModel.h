@@ -15,7 +15,7 @@
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/ListParameterFinder.h>
 
-#include <IPXACTmodels/parameter.h>
+#include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/modelparameter.h>
 #include <IPXACTmodels/choice.h>
 #include <IPXACTmodels/validators/ParameterValidator2014.h>

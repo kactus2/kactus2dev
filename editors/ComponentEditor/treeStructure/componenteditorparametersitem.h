@@ -10,7 +10,7 @@
 
 #include "componenteditoritem.h"
 
-#include <IPXACTmodels/parameter.h>
+#include <IPXACTmodels/common/Parameter.h>
 
 /*! \brief The parameters-item in the component editor navigation tree.
  *

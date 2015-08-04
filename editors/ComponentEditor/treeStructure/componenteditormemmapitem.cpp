@@ -81,7 +81,7 @@ ComponentEditorMemMapItem::~ComponentEditorMemMapItem()
 //-----------------------------------------------------------------------------
 QString ComponentEditorMemMapItem::text() const
 {
-	return memoryMap_->getName();
+	return memoryMap_->name();
 }
 
 //-----------------------------------------------------------------------------

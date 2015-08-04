@@ -8,7 +8,7 @@
 #ifndef NAMEGROUPEDITOR_H
 #define NAMEGROUPEDITOR_H
 
-#include <IPXACTmodels/NameGroup.h>
+#include <IPXACTmodels/common/NameGroup.h>
 
 #include <QGroupBox>
 #include <QLineEdit>
@@ -37,6 +37,10 @@ public:
 		QWidget *parent,
 		const QString& title = QString("Names"));
 
+    NameGroupEditor(QSharedPointer<NameGroup> nameGroup,
+        QWidget *parent,
+        const QString& title = QString("Names"));
+
 	//! \brief The destructor
 	~NameGroupEditor();
 
@@ -44,19 +48,19 @@ public:
 	 *
 	 * \return The contents of the name field.
 	*/
-	QString getName() const;
+	QString name() const;
 
 	/*! \brief Get the display name of the name group.
 	 *
 	 * \return The contents of the display name field.
 	*/
-	QString getDisplayName() const;
+	QString displayName() const;
 
 	/*! \brief Get the description of the name group.
 	 *
 	 * \return The contents of the description field.
 	*/
-	QString getDescription() const;
+	QString description() const;
 
 	/*! \brief Check if the editor is in valid state.
 	 *
@@ -105,6 +109,7 @@ private slots:
 private:
 	//! \brief No copying
 	NameGroupEditor(const NameGroupEditor& other);
+    void setupLayout();
 
 	//! \brief No assignment
 	NameGroupEditor& operator=(const NameGroupEditor& other);

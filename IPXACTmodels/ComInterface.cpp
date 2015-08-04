@@ -46,7 +46,7 @@ ComInterface::ComInterface(ComInterface const& rhs)
 // Function: ComInterface::ComInterface()
 //-----------------------------------------------------------------------------
 ComInterface::ComInterface(QDomNode& node)
-    : nameGroup_(node), 
+    : nameGroup_(), 
       comType_(),
       transferType_(), 
       dir_(General::INOUT),
@@ -257,7 +257,7 @@ void ComInterface::setComType(VLNV const& vlnv, QList< QSharedPointer<ComPropert
 	{
 		foreach (QSharedPointer<ComProperty const> prop, *properties)
 		{
-			propertyValues_[prop->getName()] = prop->getDefaultValue();
+			propertyValues_[prop->name()] = prop->getDefaultValue();
 		}
 	}
 }
@@ -287,9 +287,9 @@ void ComInterface::setPropertyValues(QMap<QString, QString> const& values)
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComInterface::getName()
+// Function: ComInterface::name()
 //-----------------------------------------------------------------------------
-QString ComInterface::getName() const
+QString ComInterface::name() const
 {
     return nameGroup_.name();
 }

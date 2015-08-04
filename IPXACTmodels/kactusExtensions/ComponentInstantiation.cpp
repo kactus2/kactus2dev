@@ -17,7 +17,7 @@
 //-----------------------------------------------------------------------------
 // Function: ComponentInstantiation::ComponentInstantiation()
 //-----------------------------------------------------------------------------
-ComponentInstantiation::ComponentInstantiation(): nameGroup_(), 
+ComponentInstantiation::ComponentInstantiation(): NameGroup(), 
     moduleParameters_(new QList<QSharedPointer<ModelParameter> >())
 {
 
@@ -27,7 +27,7 @@ ComponentInstantiation::ComponentInstantiation(): nameGroup_(),
 // Function: ComponentInstantiation::ComponentInstantiation()
 //-----------------------------------------------------------------------------
 ComponentInstantiation::ComponentInstantiation(QDomNode& node) :
-nameGroup_(node), 
+NameGroup(), 
     moduleParameters_(new QList<QSharedPointer<ModelParameter> >())
 {
     int childCount = node.childNodes().count();
@@ -60,7 +60,8 @@ ComponentInstantiation::~ComponentInstantiation()
 VendorExtension* ComponentInstantiation::clone() const
 {
     ComponentInstantiation* cloned = new ComponentInstantiation();
-    cloned->nameGroup_ = nameGroup_;
+    cloned->NameGroup::operator=(*this);
+
     foreach(QSharedPointer<ModelParameter> moduleParameter, *moduleParameters_)
     {
         QSharedPointer<ModuleParameter> copy(moduleParameter.dynamicCast<ModuleParameter>()->clone());
@@ -83,9 +84,20 @@ QString ComponentInstantiation::type() const
 void ComponentInstantiation::write(QXmlStreamWriter& writer) const
 {
     writer.writeStartElement(type());
-    nameGroup_.write(writer);
+    
+    writer.writeTextElement("ipxact:name", name());
 
-    if (!moduleParameters_->isEmpty())
+    if (!displayName().isEmpty())
+    {
+        writer.writeTextElement("ipxact:displayName", displayName());
+    }
+
+    if (!description().isEmpty())
+    {
+        writer.writeTextElement("ipxact:description", description());
+    }
+
+    /*if (!moduleParameters_->isEmpty())
     {
         writer.writeStartElement("kactus2:moduleParameters");
         foreach(QSharedPointer<Parameter> moduleParameter, *moduleParameters_)
@@ -93,25 +105,9 @@ void ComponentInstantiation::write(QXmlStreamWriter& writer) const
             moduleParameter->write(writer);
         }
         writer.writeEndElement();
-    }
+    }*/
 
     writer.writeEndElement();
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentInstantiation::setName()
-//-----------------------------------------------------------------------------
-void ComponentInstantiation::setName(QString const& name)
-{
-    nameGroup_.setName(name);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentInstantiation::getName()
-//-----------------------------------------------------------------------------
-QString ComponentInstantiation::getName() const
-{
-    return nameGroup_.name();
 }
 
 //-----------------------------------------------------------------------------

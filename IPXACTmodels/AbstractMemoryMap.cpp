@@ -32,7 +32,7 @@
 // Function: AbstractMemoryMap::AbstractMemoryMap()
 //-----------------------------------------------------------------------------
 AbstractMemoryMap::AbstractMemoryMap(QDomNode &abstractMemoryMapNode):
-nameGroup_(abstractMemoryMapNode),
+NameGroup(),
 id_(),
 items_()
 {
@@ -56,7 +56,7 @@ items_()
 // Function: AbstractMemoryMap::AbstractMemoryMap()
 //-----------------------------------------------------------------------------
 AbstractMemoryMap::AbstractMemoryMap():
-nameGroup_(),
+NameGroup(),
 id_(),
 items_()
 {
@@ -67,7 +67,7 @@ items_()
 // Function: AbstractMemoryMap::AbstractMemoryMap()
 //-----------------------------------------------------------------------------
 AbstractMemoryMap::AbstractMemoryMap(const AbstractMemoryMap &other):
-nameGroup_(other.nameGroup_),
+NameGroup(other),
 id_(other.id_),
 items_()
 {
@@ -88,7 +88,7 @@ AbstractMemoryMap & AbstractMemoryMap::operator=( const AbstractMemoryMap& other
 {
     if (this != &other)
     {
-        nameGroup_ = other.nameGroup_;
+        NameGroup::operator=(other);
         id_ = other.id_;
 
         items_.clear();
@@ -123,16 +123,16 @@ void AbstractMemoryMap::write(QXmlStreamWriter& writer)
         writer.writeAttribute("spirit:id", id_);
     }
 
-    writer.writeTextElement("spirit:name", nameGroup_.name());
+    writer.writeTextElement("spirit:name", name());
 
-    if (!nameGroup_.displayName().isEmpty())
+    if (!displayName().isEmpty())
     {
-        writer.writeTextElement("spirit:displayName", nameGroup_.displayName());
+        writer.writeTextElement("spirit:displayName", displayName());
     }
 
-    if (!nameGroup_.description().isEmpty())
+    if (!description().isEmpty())
     {
-        writer.writeTextElement("spirit:description", nameGroup_.description());
+        writer.writeTextElement("spirit:description", description());
     }
 
     foreach (QSharedPointer<MemoryMapItem> item, items_)
@@ -148,9 +148,9 @@ bool AbstractMemoryMap::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > 
     QStringList& errorList, const QString& parentIdentifier) const
 {
     bool valid = true;
-    const QString thisIdentifier(QObject::tr("memory map %1").arg(nameGroup_.name()));
+    const QString thisIdentifier(QObject::tr("memory map %1").arg(name()));
 
-    if (nameGroup_.name().isEmpty())
+    if (name().isEmpty())
     {
         errorList.append(QObject::tr("No name specified for memory map within %1").arg(parentIdentifier));
         valid = false;
@@ -159,15 +159,15 @@ bool AbstractMemoryMap::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > 
     QStringList memItemNames;
     foreach (QSharedPointer<MemoryMapItem> memItem, items_)
     {
-        if (memItemNames.contains(memItem->getName()))
+        if (memItemNames.contains(memItem->name()))
         {
             errorList.append(QObject::tr("%1 contains several memory map items with name %2").arg(
-                memItem->getName()));
+                memItem->name()));
             valid = false;
         }
         else
         {
-            memItemNames.append(memItem->getName());
+            memItemNames.append(memItem->name());
         }
 
         if (!memItem->isValid(componentChoices, errorList, thisIdentifier))
@@ -184,7 +184,7 @@ bool AbstractMemoryMap::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > 
 //-----------------------------------------------------------------------------
 bool AbstractMemoryMap::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const
 {
-    if (nameGroup_.name().isEmpty())
+    if (name().isEmpty())
     {
         return false;
     }
@@ -192,13 +192,13 @@ bool AbstractMemoryMap::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > 
     QStringList memItemNames;
     foreach (QSharedPointer<MemoryMapItem> memItem, items_)
     {
-        if (memItemNames.contains(memItem->getName()))
+        if (memItemNames.contains(memItem->name()))
         {
             return false;
         }
         else
         {
-            memItemNames.append(memItem->getName());
+            memItemNames.append(memItem->name());
         }
 
         if (!memItem->isValid(componentChoices))
@@ -219,14 +219,6 @@ bool AbstractMemoryMap::containsSubItems() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractMemoryMap::setName()
-//-----------------------------------------------------------------------------
-void AbstractMemoryMap::setName(const QString &name)
-{
-    nameGroup_.setName(name);
-}
-
-//-----------------------------------------------------------------------------
 // Function: AbstractMemoryMap::getItems()
 //-----------------------------------------------------------------------------
 const QList<QSharedPointer<MemoryMapItem> >& AbstractMemoryMap::getItems() const
@@ -242,51 +234,11 @@ QList<QSharedPointer<MemoryMapItem> >& AbstractMemoryMap::getItems()
     return items_;
 }
 
-//-----------------------------------------------------------------------------
-// Function: AbstractMemoryMap::getName()
-//-----------------------------------------------------------------------------
-QString AbstractMemoryMap::getName() const
-{
-    return nameGroup_.name();
-}
-
 void AbstractMemoryMap::setItems(const QList<QSharedPointer<MemoryMapItem> > &newItems)
 {
     items_.clear();
 
     items_ = newItems;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractMemoryMap::getDisplayName()
-//-----------------------------------------------------------------------------
-QString AbstractMemoryMap::getDisplayName() const
-{
-    return nameGroup_.displayName();
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractMemoryMap::setDisplayName()
-//-----------------------------------------------------------------------------
-void AbstractMemoryMap::setDisplayName(const QString& displayName)
-{
-    nameGroup_.setDisplayName(displayName);
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractMemoryMap::getDescription()
-//-----------------------------------------------------------------------------
-QString AbstractMemoryMap::getDescription() const
-{
-    return nameGroup_.description();
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractMemoryMap::setDescription()
-//-----------------------------------------------------------------------------
-void AbstractMemoryMap::setDescription(const QString& description)
-{
-    nameGroup_.setDescription(description);
 }
 
 //-----------------------------------------------------------------------------
@@ -415,17 +367,9 @@ QString AbstractMemoryMap::getFirstAddressStr() const
 //-----------------------------------------------------------------------------
 bool AbstractMemoryMap::isEmpty() const
 {
-    return items_.isEmpty() && nameGroup_.name().isEmpty() && nameGroup_.displayName().isEmpty() &&
-        nameGroup_.description().isEmpty();
+    return items_.isEmpty() && name().isEmpty() && displayName().isEmpty() &&
+        description().isEmpty();
 }    
-
-//-----------------------------------------------------------------------------
-// Function: AbstractMemoryMap::getNameGroup()
-//-----------------------------------------------------------------------------
-NameGroup& AbstractMemoryMap::getNameGroup()
-{
-    return nameGroup_;
-}
 
 //-----------------------------------------------------------------------------
 // Function: AbstractMemoryMap::uniqueRegisterNames()
@@ -462,7 +406,7 @@ bool AbstractMemoryMap::uniqueMemoryNames(QStringList& memNames) const
         // if address block's type is memory
         if (addrBlock && addrBlock->getUsage() == General::MEMORY)
         {
-            const QString memName = addrBlock->getName();
+            const QString memName = addrBlock->name();
 
             // if memory name is not unique
             if (memNames.contains(memName))

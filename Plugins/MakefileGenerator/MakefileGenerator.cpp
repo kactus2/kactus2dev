@@ -288,7 +288,7 @@ void MakefileGenerator::writeObjectList(MakefileParser::MakeFileData &mfd, QText
     {
         if ( !mod->file->getIncludeFile() && !mod->compiler.isEmpty() )
         {
-            outStream << " " << mod->file->getName() << ".o";
+            outStream << " " << mod->file->name() << ".o";
         }
     }
 

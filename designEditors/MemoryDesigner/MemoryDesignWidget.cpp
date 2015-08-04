@@ -213,7 +213,7 @@ void MemoryDesignWidget::addColumn()
 
     if (dialog.exec() == QDialog::Accepted)
     {
-        getDiagram()->addColumn(ColumnDesc(dialog.getName(), COLUMN_CONTENT_COMPONENTS, 0,
+        getDiagram()->addColumn(ColumnDesc(dialog.name(), COLUMN_CONTENT_COMPONENTS, 0,
                                            MemoryDesignDiagram::COLUMN_WIDTH));
     }
 }

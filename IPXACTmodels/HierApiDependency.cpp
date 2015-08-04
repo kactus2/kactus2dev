@@ -303,9 +303,9 @@ void HierApiDependency::setOffPage(bool offPage)
 }
 
 //-----------------------------------------------------------------------------
-// Function: HierApiDependency::getName()
+// Function: HierApiDependency::name()
 //-----------------------------------------------------------------------------
-QString const& HierApiDependency::getName() const
+QString const& HierApiDependency::name() const
 {
     return name_;
 }

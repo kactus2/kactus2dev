@@ -124,7 +124,7 @@ QVariant ChoicesModel::data( const QModelIndex& index, int role) const
     {
         if (index.column() == CHOICE_NAME)
         {
-            return choice->getName();
+            return choice->name();
         }
         else if (index.column() == CHOICE_ENUMERATIONS) 
         {
@@ -139,7 +139,7 @@ QVariant ChoicesModel::data( const QModelIndex& index, int role) const
     {
         if (index.column() == CHOICE_NAME) 
         {
-            return choice->getName();
+            return choice->name();
         }
         else
         {

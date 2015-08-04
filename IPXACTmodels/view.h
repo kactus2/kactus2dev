@@ -9,7 +9,7 @@
 
 #include"vlnv.h"
 
-#include <IPXACTmodels/NameGroup.h>
+#include <IPXACTmodels/common/NameGroup.h>
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/filebuilder.h>
 
@@ -34,7 +34,7 @@ class VLNV;
  *
  * Specifies a representation level of a component.
  */
-class IPXACTMODELS_EXPORT View {
+class IPXACTMODELS_EXPORT View : public NameGroup {
 
 public:
 
@@ -152,24 +152,6 @@ public:
 	 */
 	QString getModelName() const;
 
-	/*! \brief Get the name of the view
-	 *
-	 * \return QString containing the name
-	 */
-	QString getName() const;
-
-	/*! \brief Get the display name of the view
-	 *
-	 * \return QString containing the display name.
-	*/
-	QString getDisplayName() const;
-
-	/*! \brief Get the description of the view.
-	 *
-	 * \return QString containing the description.
-	*/
-	QString getDescription() const;
-
 	/*! \brief Get the default file builders for this view.
 	 *
 	 * \return QList containing pointers to the file builders for this view.
@@ -189,20 +171,6 @@ public:
 	*/
 	void setDefaultFileBuilders(
 		QList<QSharedPointer<FileBuilder> >& defaultFileBuilders);
-
-	/*! \brief Set the display name for the view.
-	 *
-	 * \param displayName Contains the display name to set.
-	 *
-	*/
-	void setDisplayName(const QString& displayName);
-
-	/*! \brief Set the description for the view.
-	 *
-	 * \param description Contains the description of the view.
-	 *
-	*/
-	void setDescription(const QString& description);
 
 	/*! \brief Get list of the parameters for this view
 	 *
@@ -252,12 +220,6 @@ public:
 	 */
 	void setModelName(const QString &modelName);
 
-	/*! \brief Set the name for the view
-	 *
-	 * \param name QString containing the new name.
-	 */
-	void setName(const QString &name);
-
 	/*! \brief Add a new envIdentifier for this view.
 	 *
 	 * \param envIdentifier The envIdentifier to add.
@@ -288,18 +250,6 @@ public:
 	 *
 	*/
 	void setTopLevelView(const QString& viewName);
-
-	/*! \brief Get the name group struct of this view.
-	 *
-	 * \return Reference to the struct containing the name group.
-	*/
-	NameGroup& getNameGroup();
-
-	/*! \brief Get the name group struct of this view.
-	 *
-	 * \return Reference to the struct containing the name group.
-	*/
-	const NameGroup& getNameGroup() const;
 
 	/*! \brief Clear the hierarchical reference and the top level reference.
 	 *
@@ -356,10 +306,6 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-	//! \brief Contains the name, display name and description of view.
-	NameGroup nameGroup_;
-
 	/*!
 	 * MANDATORY spirit:envIdentifier
 	 * Designates and qualifies information about how this model view is

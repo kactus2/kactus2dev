@@ -227,7 +227,7 @@ QStringList ImportRunner::filetypesOf(QString const& fileName,
     {
         foreach(QSharedPointer<File> file, fileSet->getFiles())
         {
-            if (filePattern.match(file->getName()).hasMatch())
+            if (filePattern.match(file->name()).hasMatch())
             {
                 fileTypes.append(file->getAllFileTypes());
             }

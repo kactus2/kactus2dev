@@ -49,7 +49,7 @@ QString SingleRemapStateItem::getTooltip() const
 //-----------------------------------------------------------------------------
 QString SingleRemapStateItem::text() const
 {
-    return remapState_->getName();
+    return remapState_->name();
 }
 
 //-----------------------------------------------------------------------------

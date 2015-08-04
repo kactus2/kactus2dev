@@ -262,15 +262,15 @@ bool SWInstance::isValid(QStringList& errorList, QStringList const& hwUUIDs,
 
     foreach (QSharedPointer<ComInterface> comIf, comInterfaces_)
     {
-        if (interfaceNames.contains(comIf->getName()))
+        if (interfaceNames.contains(comIf->name()))
         {
             errorList.append(QObject::tr("%1 contains several COM interfaces with"
-                                         " name '%2'").arg(thisId, comIf->getName()));
+                                         " name '%2'").arg(thisId, comIf->name()));
             valid = false;
         }
         else
         {
-            interfaceNames.append(comIf->getName());
+            interfaceNames.append(comIf->name());
         }
 
         if (!comIf->isValid(errorList, thisId))
@@ -302,11 +302,11 @@ bool SWInstance::isValid( const QStringList& hwUUIDs ) const {
 
 	foreach (QSharedPointer<ComInterface> comIf, comInterfaces_)
 	{
-		if (interfaceNames.contains(comIf->getName())) {
+		if (interfaceNames.contains(comIf->name())) {
 			return false;
 		}
 		else {
-			interfaceNames.append(comIf->getName());
+			interfaceNames.append(comIf->name());
 		}
 
 		if (!comIf->isValid()) {

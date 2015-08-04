@@ -261,7 +261,7 @@ void MemoryDesignDiagram::addColumn(ColumnDesc const& desc)
 //             
 //             if (dialog.exec() == QDialog::Accepted)
 //             {
-//                 ColumnDesc desc(dialog.getName(), dialog.getContentType(), dialog.getAllowedItems(),
+//                 ColumnDesc desc(dialog.name(), dialog.getContentType(), dialog.getAllowedItems(),
 //                                 column->getColumnDesc().getWidth());
 // 
 //                 QSharedPointer<QUndoCommand> cmd(new GraphicsColumnChangeCommand(column, desc));
@@ -481,7 +481,7 @@ bool MemoryDesignDiagram::isConnected(AddressSpaceItem const* addrSpaceItem, Mem
     {
         // Check if the bus interface has the correct address space as a reference.
         if (busIf->getInterfaceMode() == General::MASTER &&
-            busIf->getMaster()->getAddressSpaceRef() == addrSpaceItem->getAddressSpace()->getName())
+            busIf->getMaster()->getAddressSpaceRef() == addrSpaceItem->getAddressSpace()->name())
         {
             quint64 addressOffsetTemp = 0;
 
@@ -508,12 +508,12 @@ bool MemoryDesignDiagram::findRoute(QString const& instanceName, QSharedPointer<
         Interface const* interface = 0;
 
         QPair<Interface, Interface> interfaces = conn.getInterfaces();
-        if (interfaces.first.references(instanceName, busIf->getName()) )
+        if (interfaces.first.references(instanceName, busIf->name()) )
         {
             interface = &interfaces.second;
         }
 
-        if (interfaces.second.references(instanceName, busIf->getName()))
+        if (interfaces.second.references(instanceName, busIf->name()))
         {
             interface = &interfaces.first;
         }

@@ -105,7 +105,7 @@ void LibraryItem::createChild( const VLNV& vlnv, Level level ) {
 	for (int i = 0; i < childItems_.size(); ++i) {
 
 		// if a child with the same name is found
-		if (childItems_[i]->getName() == childName) {
+		if (childItems_[i]->name() == childName) {
 			childItems_[i]->createChild(vlnv,
 				static_cast<Level>(static_cast<int>(level) + 1));
 			return;
@@ -121,7 +121,7 @@ void LibraryItem::createChild( const VLNV& vlnv, Level level ) {
 }
 
 // Get the name of the item
-QString LibraryItem::getName() const {
+QString LibraryItem::name() const {
 	return name_;
 }
 
@@ -224,25 +224,25 @@ LibraryItem* LibraryItem::findHighestUnique( const VLNV& vlnv ) {
 		switch (level_) {
 
 		case ROOT: {
-			if (childItems_.at(i)->getName() == vlnv.getVendor()) {
+			if (childItems_.at(i)->name() == vlnv.getVendor()) {
 				return childItems_.at(i)->findHighestUnique(vlnv);
 			}
 			continue;
 				   }
 		case VENDOR: {
-			if (childItems_.at(i)->getName() == vlnv.getLibrary()) {
+			if (childItems_.at(i)->name() == vlnv.getLibrary()) {
 				return childItems_.at(i)->findHighestUnique(vlnv);
 			}
 			continue;
 					 }
 		case LIBRARY: {
-			if (childItems_.at(i)->getName() == vlnv.getName()) {
+			if (childItems_.at(i)->name() == vlnv.getName()) {
 				return childItems_.at(i)->findHighestUnique(vlnv);
 			}
 			continue;
 					  }
 		case NAME: {
-			if (childItems_.at(i)->getName() == vlnv.getVersion()) {
+			if (childItems_.at(i)->name() == vlnv.getVersion()) {
 				return childItems_.at(i)->findHighestUnique(vlnv);
 			}
 			continue;
@@ -294,7 +294,7 @@ LibraryItem* LibraryItem::findItem( const VLNV& vlnv ) {
 	for (int i = 0; i <childItems_.size(); ++i) {
 
 		// if child item was one that was searched for
-		if (childItems_.value(i)->getName() == searchedChildName)
+		if (childItems_.value(i)->name() == searchedChildName)
 			return childItems_.value(i)->findItem(vlnv);
 	}
 
@@ -346,7 +346,7 @@ QList<LibraryItem*> LibraryItem::getVendors( const QRegExpValidator& validator )
 		case LibraryItem::ROOT: {
 			foreach (LibraryItem* item, childItems_) {
 
-				QString name = item->getName();
+				QString name = item->name();
 
 				// if the child's name passes the validation
 				if (QValidator::Acceptable == validator.validate(name, pos))
@@ -392,7 +392,7 @@ QList<LibraryItem*> LibraryItem::getLibraries( const QRegExpValidator& validator
 		case LibraryItem::VENDOR: {
 			foreach (LibraryItem* item, childItems_) {
 
-				QString name = item->getName();
+				QString name = item->name();
 
 				// if the child's name passes the validation
 				if (QValidator::Acceptable == validator.validate(name, pos))

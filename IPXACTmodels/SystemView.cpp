@@ -15,7 +15,7 @@
 // Function: SystemView::SystemView()
 //-----------------------------------------------------------------------------
 SystemView::SystemView(QDomNode& viewNode)
-    : nameGroup_(viewNode), 
+    : nameGroup_(), 
       hierarchyRef_(),
 		fileSetRefs_()
 {
@@ -247,9 +247,9 @@ VLNV SystemView::getHierarchyRef() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: SystemView::getName()
+// Function: SystemView::name()
 //-----------------------------------------------------------------------------
-QString SystemView::getName() const
+QString SystemView::name() const
 {    
     return nameGroup_.name();
 }

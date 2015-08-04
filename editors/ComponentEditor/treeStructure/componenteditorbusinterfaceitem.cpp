@@ -36,7 +36,7 @@ ComponentEditorBusInterfaceItem::~ComponentEditorBusInterfaceItem() {
 }
 
 QString ComponentEditorBusInterfaceItem::text() const {
-	return busif_->getName();
+	return busif_->name();
 }
 
 bool ComponentEditorBusInterfaceItem::isValid() const {

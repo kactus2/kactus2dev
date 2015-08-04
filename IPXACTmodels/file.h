@@ -12,7 +12,7 @@
 #include "buildcommand.h"
 
 #include "ipxactmodels_global.h"
-#include <IPXACTmodels/NameGroup.h>
+#include <IPXACTmodels/common/NameGroup.h>
 
 #include <QString>
 #include <QList>
@@ -344,7 +344,7 @@ public:
 	 *
 	 * \return QString containing the name.
 	 */
-	QString getName() const;
+	QString name() const;
 
 	/*! \brief Get the list of the attributes for the name-element.
 	 *

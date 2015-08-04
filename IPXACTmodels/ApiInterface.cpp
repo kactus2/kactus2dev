@@ -75,7 +75,7 @@ ApiInterface::ApiInterface(ApiInterface const& rhs)
 // Function: ApiInterface::ApiInterface()
 //-----------------------------------------------------------------------------
 ApiInterface::ApiInterface(QDomNode& node)
-    : nameGroup_(node),
+    : nameGroup_(),
       apiType_(),
       dependencyDir_(DEPENDENCY_PROVIDER),
       defaultPos_()
@@ -209,9 +209,9 @@ void ApiInterface::setDependencyDirection(DependencyDirection dir)
 }
 
 //-----------------------------------------------------------------------------
-// Function: ApiInterface::getName()
+// Function: ApiInterface::name()
 //-----------------------------------------------------------------------------
-QString ApiInterface::getName() const
+QString ApiInterface::name() const
 {
     return nameGroup_.name();
 }

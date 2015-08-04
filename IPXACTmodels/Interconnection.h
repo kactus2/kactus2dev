@@ -14,7 +14,7 @@
 
 #include "Interface.h"
 
-#include "NameGroup.h"
+#include <IPXACTmodels/common/NameGroup.h>
 
 #include "ipxactmodels_global.h"
 
@@ -29,7 +29,7 @@
 // Specifies a connection between one bus interface of a component
 // and another bus interface of a component.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT Interconnection
+class IPXACTMODELS_EXPORT Interconnection : public NameGroup
 {
 public:
     /*! The constructor
@@ -55,27 +55,6 @@ public:
 
     //! Assignment operator
     Interconnection& operator=(const Interconnection& other);
-
-    /*!
-     *  Returns the name of the interconnection.
-     *
-     *      @return The name of the interconnection.
-     */
-    QString name() const;
-
-    /*!
-     *  Returns the display name of the interconnection.
-     *
-     *      @return The display name of the interconnection.
-     */
-    QString displayName() const;
-
-    /*!
-     *  Returns the description of the interconnection.
-     *
-     *      @return The description of the interconnection.
-     */
-    QString description() const;
 
     /*!
      *  Checks if the interconnection is treated as an off-page connection.
@@ -142,15 +121,6 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    /*! MANDATORY spirit:nameGroup
-     *
-     * Container for the following values:
-     *  MANDATORY spirit:name
-     *  OPTIONAL spirit:displayName
-     *  OPTIONAL spirit:description
-     */
-    NameGroup nameGroup_;
 
     //! First of the two interfaces that form this interconnection.
     Interface interface1;

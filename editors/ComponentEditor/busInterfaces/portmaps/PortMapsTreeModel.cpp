@@ -197,7 +197,7 @@ QVariant PortMapsTreeModel::data(const QModelIndex& index, int role /*= Qt::Disp
                 return QIcon(":icons/common/graphics/cross.png");
             }
 
-            General::Direction direction = absDef_->getPortDirection(item->getName(), interfaceMode_);      
+            General::Direction direction = absDef_->getPortDirection(item->name(), interfaceMode_);      
             switch( direction )
             {
             case General::IN :
@@ -430,7 +430,7 @@ PortMapsTreeItem* PortMapsTreeModel::findItem(QString const& name)
     for (int i = 0; i < root_->getChildCount(); ++i)
     {
         item = root_->getChild(i);
-        if (item->getName() == name)
+        if (item->name() == name)
         {
             return item;
         }
@@ -524,7 +524,7 @@ void PortMapsTreeModel::restoreItem(QModelIndex const& index)
     }
 
     PortMapsTreeItem* item = root_->getChild(index.row());
-    QString logicalName = item->getName();
+    QString logicalName = item->name();
         
     emit logicalRestored(logicalName);
 }
@@ -546,7 +546,7 @@ void PortMapsTreeModel::removeItem(QModelIndex const& index)
     }
 
     PortMapsTreeItem* item = root_->getChild(index.row());
-    QString logicalName = item->getName();
+    QString logicalName = item->name();
     if (item->getType() == PortMapsTreeItem::ITEM_LOGICAL_PORT)
     {
         beginRemoveRows(getItemIndex(root_,0), item->getIndex(), item->getIndex());
@@ -576,7 +576,7 @@ void PortMapsTreeModel::removeMapping(QModelIndex const& index)
     }
 
     PortMapsTreeItem* item = root_->getChild(index.row());
-    QString logicalName = item->getName();
+    QString logicalName = item->name();
     QStringList physPorts;
     foreach (QSharedPointer<PortMap> portMap, portMaps_)
     {

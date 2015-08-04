@@ -18,7 +18,7 @@
 // Function: remapstate::RemapState()
 //-----------------------------------------------------------------------------
 RemapState::RemapState(QDomNode &remapNode):
-nameGroup_(remapNode),
+NameGroup(),
 remapPorts_(new QList<QSharedPointer<RemapPort> >())
 {
 	for (int i = 0; i < remapNode.childNodes().count(); ++i) {
@@ -41,7 +41,7 @@ remapPorts_(new QList<QSharedPointer<RemapPort> >())
 // Function: remapstate::RemapState()
 //-----------------------------------------------------------------------------
 RemapState::RemapState():
-nameGroup_(),
+NameGroup(),
 remapPorts_(new QList<QSharedPointer<RemapPort> >())
 {
 
@@ -51,7 +51,7 @@ remapPorts_(new QList<QSharedPointer<RemapPort> >())
 // Function: remapstate::RemapState()
 //-----------------------------------------------------------------------------
 RemapState::RemapState( const RemapState &other ):
-nameGroup_(other.nameGroup_),
+NameGroup(other),
 remapPorts_(new QList<QSharedPointer<RemapPort> > ())
 {
 	foreach (QSharedPointer<RemapPort> remapPort, *other.remapPorts_) {
@@ -70,7 +70,7 @@ RemapState & RemapState::operator=( const RemapState &other )
 {
 	if (this != &other)
     {
-        nameGroup_ = other.nameGroup_;
+        NameGroup::operator=(other);
 
 		foreach (QSharedPointer<RemapPort> remapPort, *other.remapPorts_)
         {
@@ -100,7 +100,18 @@ void RemapState::write(QXmlStreamWriter& writer)
 {
 	writer.writeStartElement("spirit:remapState");
 
-	nameGroup_.write(writer);
+    writer.writeTextElement("ipxact:name", name());
+
+    if (!displayName().isEmpty())
+    {
+        writer.writeTextElement("ipxact:displayName", displayName());
+    }
+
+    if (!description().isEmpty())
+    {
+        writer.writeTextElement("ipxact:description", description());
+    }
+
 
 	if (remapPorts_->size() != 0)
     {
@@ -126,7 +137,7 @@ bool RemapState::isValid( const QStringList& portNames,
 {
 	bool valid = true;
 
-    if (nameGroup_.name().isEmpty())
+    if (name().isEmpty())
     {
 		errorList.append(QObject::tr("No name specified for a remap state within %1").arg(parentIdentifier));
 		valid = false;
@@ -134,7 +145,7 @@ bool RemapState::isValid( const QStringList& portNames,
 
 	foreach (QSharedPointer<RemapPort> remapPort, *remapPorts_)
     {
-		if (!remapPort->isValid(portNames, errorList, QObject::tr("remap port %1").arg(nameGroup_.name())))
+		if (!remapPort->isValid(portNames, errorList, QObject::tr("remap port %1").arg(name())))
         {
 				valid = false;
 		}
@@ -148,7 +159,7 @@ bool RemapState::isValid( const QStringList& portNames,
 //-----------------------------------------------------------------------------
 bool RemapState::isValid( const QStringList& portNames ) const
 {
-    if (nameGroup_.name().isEmpty())
+    if (name().isEmpty())
     {
 		return false;
 	}
@@ -169,68 +180,4 @@ bool RemapState::isValid( const QStringList& portNames ) const
 const QSharedPointer<QList<QSharedPointer<RemapPort> > > RemapState::getRemapPorts()
 {
 	return remapPorts_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: remapstate::setName()
-//-----------------------------------------------------------------------------
-void RemapState::setName(const QString &name)
-{
-    nameGroup_.setName(name);
-}
-
-//-----------------------------------------------------------------------------
-// Function: remapstate::getName()
-//-----------------------------------------------------------------------------
-QString RemapState::getName() const
-{
-    return nameGroup_.name();
-}
-
-//-----------------------------------------------------------------------------
-// Function: remapstate::getDisplayName()
-//-----------------------------------------------------------------------------
-QString RemapState::getDisplayName() const
-{
-    return nameGroup_.displayName();
-}
-
-//-----------------------------------------------------------------------------
-// Function: remapstate::setDisplayName()
-//-----------------------------------------------------------------------------
-void RemapState::setDisplayName(QString const& newDisplayName)
-{
-    nameGroup_.setDisplayName(newDisplayName);
-}
-
-//-----------------------------------------------------------------------------
-// Function: remapstate::getDescription()
-//-----------------------------------------------------------------------------
-QString RemapState::getDescription() const
-{
-    return nameGroup_.description();
-}
-
-//-----------------------------------------------------------------------------
-// Function: remapstate::setDescription()
-//-----------------------------------------------------------------------------
-void RemapState::setDescription(QString const& newDescription)
-{
-    nameGroup_.setDescription(newDescription);
-}
-
-//-----------------------------------------------------------------------------
-// Function: remapstate::getNamegroup()
-//-----------------------------------------------------------------------------
-const NameGroup& RemapState::getNamegroup() const
-{
-    return nameGroup_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: remapstate::getNamegroup()
-//-----------------------------------------------------------------------------
-NameGroup& RemapState::getNamegroup()
-{
-    return nameGroup_;
 }

@@ -16,7 +16,7 @@
 #include "generaldeclarations.h"
 #include "ipxactmodels_global.h"
 
-#include <IPXACTmodels/NameGroup.h>
+#include <IPXACTmodels/common/NameGroup.h>
 
 #include <QList>
 #include <QString>
@@ -29,7 +29,7 @@ class Choice;
 //-----------------------------------------------------------------------------
 //! Abstract memory-map contains common memory-map elements.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT AbstractMemoryMap
+class IPXACTMODELS_EXPORT AbstractMemoryMap : public NameGroup
 {
 
 public:
@@ -161,65 +161,13 @@ public:
     void setItems(const QList<QSharedPointer<MemoryMapItem> > &newItems);
 
     /*!
-     *  Get the name of the memory map.
-     *
-     *      @return The name of the memory map.
-     */
-    QString getName() const;
-
-    /*!
-     *  Set the name of the memory map.
-     *
-     *      @param [in] name    The new name for the memory map.
-     */
-    void setName(const QString &name);
-
-    /*!
-     *  Get the display name of the memory map.
-     *
-     *      @return The display name of the memory map.
-     */
-    QString getDisplayName() const;
-
-    /*!
-     *  Set the display name for the memory map.
-     *
-     *      @param [in] displayName     The new display name.
-     */
-    void setDisplayName(const QString& displayName);
-
-    /*!
-     *  Get the description of the memory map.
-     *
-     *      @return The description of the memory map.
-     */
-    QString getDescription() const;
-
-    /*!
-     *  Set the description for the memory map.
-     *
-     *      @param [in] description     The new description.
-     */
-    void setDescription(const QString& description);
-
-    /*!
      *  Check if the memory map contains any sub items.
      *
      *      @return True, if the memory map contains sub items.
      */
     bool isEmpty() const;
 
-    /*!
-     *  Get reference to the name group-struct of the memory map.
-     *
-     *      @return Reference to the name group;
-     */
-    NameGroup& getNameGroup();
-
 private:
-
-    //! Contains the name, display name and description of the memory map.
-    NameGroup nameGroup_;
 
     /*!
      * OPTIONAL (spirit:id)

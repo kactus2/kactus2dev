@@ -40,7 +40,7 @@ SingleFieldEditor::SingleFieldEditor(QSharedPointer<Field> field, QSharedPointer
                                      QSharedPointer<ExpressionParser> expressionParser,
                                      QWidget* parent /* = 0 */):
 ItemEditor(component, handler, parent),
-nameEditor_(field->getNameGroup(), this, tr("Field name and description")),
+nameEditor_(field, this, tr("Field name and description")),
 enumerationsEditor_(new FieldEditor(field, component, handler, this)),
 offsetEditor_(new ExpressionEditor(parameterFinder, this)),
 widthEditor_(new ExpressionEditor(parameterFinder, this)),

@@ -14,6 +14,8 @@
 
 #include <QList>
 #include <QSharedPointer>
+#include <QString>
+#include <QStringList>
 
 class ModelParameter;
 

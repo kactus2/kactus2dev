@@ -72,15 +72,15 @@ descriptionEdit_(0) {
 NameGroupBox::~NameGroupBox() {
 }
 
-QString NameGroupBox::getName() const {
+QString NameGroupBox::name() const {
 	return nameEdit_->text();
 }
 
-QString NameGroupBox::getDisplayName() const {
+QString NameGroupBox::displayName() const {
 	return displayNameEdit_->text();
 }
 
-QString NameGroupBox::getDescription() const {
+QString NameGroupBox::description() const {
 	return descriptionEdit_->toPlainText();
 }
 

@@ -239,9 +239,9 @@ QString VerilogSourceAnalyzer::findAbsolutePathInFileSets(QString fileName,
     {
         foreach (QSharedPointer<File> file, fileSet->getFiles())
         {
-            if (namePattern.match(file->getName()).hasMatch())
+            if (namePattern.match(file->name()).hasMatch())
             {
-                return QFileInfo(xmlPath + "/" + file->getName()).absoluteFilePath();
+                return QFileInfo(xmlPath + "/" + file->name()).absoluteFilePath();
             }
         } 
     }	

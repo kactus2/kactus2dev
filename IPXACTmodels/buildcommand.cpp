@@ -99,6 +99,6 @@ void BuildCommand::setTargetName(const QString &targetName) {
 	targetName_ = targetName;
 }
 
-QString BuildCommand::getTargetName() const {
+QString BuildCommand::getTarname() const {
 	return targetName_;
 }

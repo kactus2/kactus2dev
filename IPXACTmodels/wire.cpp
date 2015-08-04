@@ -6,7 +6,7 @@
 
 #include "wire.h"
 #include "generaldeclarations.h"
-#include "vector.h"
+#include <IPXACTmodels/common/Vector.h>
 #include "XmlUtils.h"
 
 #include <QString>
@@ -129,7 +129,7 @@ Wire::Wire(QDomNode &wireNode): direction_(General::DIRECTION_INVALID),
 		// get spirit:vector node and parse left and right values
 		else if (tempNode.nodeName() ==	QString("spirit:vector")) {
 			vector_ = QSharedPointer<Vector>(
-					new Vector(tempNode));
+					new Vector("", ""));
 		}
 
 		// get spirit:wireTypeDefs
@@ -226,7 +226,7 @@ wireTypeDefs_(),
 defaultDriverValue_(defaultValue), 
 defaultValueAttributes_() {
 
-	vector_ = QSharedPointer<Vector>(new Vector(leftBound, rightBound));
+	vector_ = QSharedPointer<Vector>(new Vector(QString::number(leftBound), QString::number(rightBound)));
 }
 
 // the destructor
@@ -244,7 +244,7 @@ void Wire::write( QXmlStreamWriter& writer, const QStringList& viewNames ) {
 
 	// if optional element spirit:vector is defined
 	if (vector_) {
-		vector_->write(writer);
+		//vector_->write(writer);
 	}
 
 	if (wireTypeDefs_.size() != 0) {
@@ -319,9 +319,9 @@ bool Wire::isValid(bool hasViews) const {
 		return false;
 
 	// if vector exists but is not valid
-	if (vector_ && !vector_->isValid())
+	/*if (vector_ && !vector_->isValid())
 		return false;
-
+        */
 	// if there are types defined but no views exist
 	if (!wireTypeDefs_.isEmpty() && !hasViews) {
 		return false;
@@ -350,9 +350,9 @@ bool Wire::isValid( bool hasViews,
 		valid = false;
 	}
 
-	if (vector_ && !vector_->isValid(errorList, parentIdentifier)) {
+	/*if (vector_ && !vector_->isValid(errorList, parentIdentifier)) {
 		valid = false;
-	}
+	}*/
 
 	// if there are types defined but no views exist
 	if (!wireTypeDefs_.isEmpty() && !hasViews) {
@@ -425,22 +425,22 @@ QString Wire::getDefaultDriverValue() const {
 
 void Wire::setLeftBound( int leftBound ) {
 	if (vector_)
-		vector_->setLeft(leftBound);
+		vector_->setLeft(QString::number(leftBound));
 
 	// if vector is not specified then create a new vector
 	else {
-		vector_ = QSharedPointer<Vector>(new Vector(leftBound, 0));
+		vector_ = QSharedPointer<Vector>(new Vector(QString::number(leftBound), 0));
 	}
 }
 
 void Wire::setRightBound( int rightBound ) {
 
 	if (vector_)
-		vector_->setRight(rightBound);
+		vector_->setRight(QString::number(rightBound));
 
 	// if vector is not specified then create a new vector
 	else {
-		vector_ = QSharedPointer<Vector>(new Vector(0, rightBound));
+		vector_ = QSharedPointer<Vector>(new Vector("0", QString::number(rightBound)));
 	}
 }
 
@@ -451,10 +451,10 @@ void Wire::setLeftBoundExpression(QString const& expression)
 {
     if (!vector_)
     {
-        vector_ = QSharedPointer<Vector>(new Vector(0,0));
+        vector_ = QSharedPointer<Vector>(new Vector("0","0"));
     }
 
-    vector_->setLeftAttribute(EXPRESSION_KEY, expression);
+    vector_->setLeft(expression);
 }
 
 //-----------------------------------------------------------------------------
@@ -464,10 +464,10 @@ void Wire::setRightBoundExpression(QString const& expression)
 {
     if (!vector_)
     {
-        vector_ = QSharedPointer<Vector>(new Vector(0,0));
+        vector_ = QSharedPointer<Vector>(new Vector("0","0"));
     }
 
-    vector_->setRightAttribute(EXPRESSION_KEY, expression);
+    vector_->setRight(expression);
 }
 
 //-----------------------------------------------------------------------------
@@ -475,14 +475,7 @@ void Wire::setRightBoundExpression(QString const& expression)
 //-----------------------------------------------------------------------------
 bool Wire::hasLeftBoundExpression()
 {
-    if (!vector_)
-    {
-        return false;
-    }
-    else
-    {
-        return vector_->hasLeftAttribute(EXPRESSION_KEY);
-    }
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -490,14 +483,7 @@ bool Wire::hasLeftBoundExpression()
 //-----------------------------------------------------------------------------
 bool Wire::hasRightBoundExpression()
 {
-    if (!vector_)
-    {
-        return false;
-    }
-    else
-    {
-        return vector_->hasRightAttribute(EXPRESSION_KEY);
-    }
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -507,10 +493,10 @@ QString Wire::getLeftBoundExpression()
 {
     if (!vector_)
     {
-        vector_ = QSharedPointer<Vector>(new Vector());
+        vector_ = QSharedPointer<Vector>(new Vector("", ""));
     }
 
-    return vector_->getLeftAttribute(EXPRESSION_KEY);
+    return vector_->getLeft();
 }
 
 //-----------------------------------------------------------------------------
@@ -520,32 +506,10 @@ QString Wire::getRightBoundExpression()
 {
     if (!vector_)
     {
-        vector_ = QSharedPointer<Vector>(new Vector());
+        vector_ = QSharedPointer<Vector>(new Vector("", ""));
     }
 
-    return vector_->getRightAttribute(EXPRESSION_KEY);
-}
-
-//-----------------------------------------------------------------------------
-// Function: wire::removeLeftBoundExpression()
-//-----------------------------------------------------------------------------
-void Wire::removeLeftBoundExpression()
-{
-    if (vector_)
-    {
-        vector_->removeLeftAttribute(EXPRESSION_KEY);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: wire::removeRightBoundExpression()
-//-----------------------------------------------------------------------------
-void Wire::removeRightBoundExpression()
-{
-    if (vector_)
-    {
-        vector_->removeRightAttribute(EXPRESSION_KEY);
-    }
+    return vector_->getRight();
 }
 
 QString Wire::getTypeName( const QString& viewName /*= QString("")*/ ) const {

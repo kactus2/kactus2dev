@@ -383,7 +383,7 @@ void HWDesignWidget::keyPressEvent(QKeyEvent *event)
 
                 foreach(QSharedPointer<Port> port, ports)
                 {
-                    textList.append("* " + port->getName());
+                    textList.append("* " + port->name());
                 }
 
                 msgBox.setDetailedText(textList.join("\n"));
@@ -761,7 +761,7 @@ void HWDesignWidget::addColumn()
             columnWidth = HWDesignDiagram::IO_COLUMN_WIDTH;
         }
 
-        ColumnDesc desc(dialog.getName(), dialog.getContentType(), dialog.getAllowedItems(), columnWidth);
+        ColumnDesc desc(dialog.name(), dialog.getContentType(), dialog.getAllowedItems(), columnWidth);
         getDiagram()->addColumn(desc);
     }
 }

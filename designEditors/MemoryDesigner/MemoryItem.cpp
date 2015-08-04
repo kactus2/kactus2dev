@@ -70,7 +70,7 @@ MemoryItem::MemoryItem(LibraryInterface* libInterface, QString const& instanceNa
     setRect(QRectF(-WIDTH / 2, 0, NAME_COLUMN_WIDTH, 80));
 
     // Create the name label.
-    nameLabel_ = new QGraphicsTextItem(memoryMap->getName(), this);
+    nameLabel_ = new QGraphicsTextItem(memoryMap->name(), this);
     QFont font = nameLabel_->font();
     font.setStyleStrategy(QFont::NoAntialias);
     font.setWeight(QFont::Bold);
@@ -126,7 +126,7 @@ MemoryItem::MemoryItem(LibraryInterface* libInterface, QString const& instanceNa
             }
 
             AddressSectionItem* section = new AddressBlockItem(component_, memoryMap_,
-                                                               block->getName(), startAddress, range, this);
+                                                               block->name(), startAddress, range, this);
             section->setColor(KactusColors::MEMORY_BLOCK);
             section->setPos(0.0, getHeight());
 
@@ -170,7 +170,7 @@ MemoryItem::MemoryItem(LibraryInterface* libInterface, QString const& instanceNa
         }
     }
 
-    updateNameLabel(component->getVlnv()->getName() + "<br>" + memoryMap->getName());
+    updateNameLabel(component->getVlnv()->getName() + "<br>" + memoryMap->name());
     updateVisuals();
     updateSize();
 }

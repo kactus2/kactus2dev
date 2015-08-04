@@ -79,7 +79,7 @@ public:
 	 *
 	 * \return The name of the item
 	 */
-	QString getName() const;
+	QString name() const;
 
 	/*! \brief Get the level of the item in the hierarchy
 	 *

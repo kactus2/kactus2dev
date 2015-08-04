@@ -41,7 +41,7 @@ ComponentEditorFileSetItem::~ComponentEditorFileSetItem() {
 // Function: ComponentEditorFileSetItem::text()
 //-----------------------------------------------------------------------------
 QString ComponentEditorFileSetItem::text() const {
-	return fileSet_->getName();
+	return fileSet_->name();
 }
 
 //-----------------------------------------------------------------------------

@@ -510,7 +510,7 @@ EndPointTypesCommand::EndPointTypesCommand(HWConnectionEndpoint* endpoint,
         newBusType_ = endpoint_->getBusInterface()->getBusType();
         newAbsType_ = endpoint_->getBusInterface()->getAbstractionType();
         newMode_ = endpoint_->getBusInterface()->getInterfaceMode();
-        newName_ = endpoint_->getBusInterface()->getName();
+        newName_ = endpoint_->getBusInterface()->name();
     }
 
     // Save the interface modes for each connection.

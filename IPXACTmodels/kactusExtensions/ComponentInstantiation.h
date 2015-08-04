@@ -15,16 +15,17 @@
 #include <IPXACTmodels/VendorExtension.h>
 #include <IPXACTmodels/ipxactmodels_global.h>
 
-#include <IPXACTmodels/NameGroup.h>
+#include <IPXACTmodels/common/NameGroup.h>
 
 #include <QSharedPointer>
 #include <QList>
+#include <QDomNode>
 
 class ModelParameter;
 class ModuleParameter;
 class Parameter;
 
-class IPXACTMODELS_EXPORT ComponentInstantiation : public VendorExtension
+class IPXACTMODELS_EXPORT ComponentInstantiation : public VendorExtension, public NameGroup
 {
 public:
 
@@ -58,16 +59,6 @@ public:
     virtual void write(QXmlStreamWriter& writer) const;
 
     /*!
-     *  Sets the name of the component instantiation.
-     *
-     *      @param [in] name   The name to set.
-     */
-    void setName(QString const& name);
-
-    //! Gets the name of the component instantiation.
-    QString getName() const;
-
-    /*!
      *  Adds a module parameter to the component instantiation.
      *
      *      @param [in] moduleParameter   The module parameter to add.
@@ -86,9 +77,6 @@ private:
 	// Disable copying.
 	ComponentInstantiation(ComponentInstantiation const& rhs);
 	ComponentInstantiation& operator=(ComponentInstantiation const& rhs);
-
-    //! Contains the name, display name and description of the component instantiation.
-    NameGroup nameGroup_;
 
     //! The module parameters in the component instantiation.
     QSharedPointer<QList<QSharedPointer<ModelParameter> > > moduleParameters_;

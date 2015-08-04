@@ -11,7 +11,7 @@
 
 #include "PortMap.h"
 
-#include "vector.h"
+#include <IPXACTmodels/common/Vector.h>
 #include "port.h"
 #include "XmlUtils.h"
 
@@ -21,8 +21,8 @@
 PortMap::PortMap(): 
 logicalPort_(),
 physicalPort_(),
-logicalVector_(QSharedPointer<Vector>(new Vector())), 
-physicalVector_(QSharedPointer<Vector>(new Vector()))
+logicalVector_(QSharedPointer<Vector>(new Vector("", ""))), 
+physicalVector_(QSharedPointer<Vector>(new Vector("", "")))
 {
 
 }
@@ -58,8 +58,7 @@ physicalVector_()
 						QString("spirit:vector")) {
 					QDomNode vectorNode = tempNode.childNodes().at(j);
 
-					logicalVector_ = QSharedPointer<Vector>(
-							new Vector(vectorNode));
+					logicalVector_ = QSharedPointer<Vector>(new Vector("", ""));
 				}
 			}
 
@@ -82,8 +81,7 @@ physicalVector_()
 						QString("spirit:vector")) {
 					QDomNode vectorNode = tempNode.childNodes().at(j);
 
-					physicalVector_ = QSharedPointer<Vector>(
-							new Vector(vectorNode));
+					physicalVector_ = QSharedPointer<Vector>(new Vector("", ""));
 				}
 			}
 		}
@@ -160,20 +158,20 @@ bool PortMap::isValid( const QList<General::PortBounds>& physicalPorts,
 	int logSize = 1;
 
 	if (physicalVector_) {
-		if (!physicalVector_->isValid(errorList, 
+		/*if (!physicalVector_->isValid(errorList, 
 			QObject::tr("port map within %1").arg(parentIdentifier))) {
 				valid = false;
-		}
+		}*/
 
-		physSize = physicalVector_->getSize();
+		//physSize = physicalVector_->getSize();
 	}
 	if (logicalVector_) {
-		if (!logicalVector_->isValid(errorList,
+		/*if (!logicalVector_->isValid(errorList,
 			QObject::tr("port map within %1").arg(parentIdentifier))) {
 				valid = false;
-		}
+		}*/
 
-		logSize = logicalVector_->getSize();
+		//logSize = logicalVector_->getSize();
 	}
 
 	// if the sizes of the ports don't match
@@ -237,18 +235,18 @@ bool PortMap::isValid( const QList<General::PortBounds>& physicalPorts ) const
 	int logSize = 1;
 
 	if (physicalVector_) {
-		if (!physicalVector_->isValid()) {
+		/*if (!physicalVector_->isValid()) {
 				return false;
 		}
 
-		physSize = physicalVector_->getSize();
+		physSize = physicalVector_->getSize();*/
 	}
 	if (logicalVector_) {
-		if (!logicalVector_->isValid()) {
+		/*if (!logicalVector_->isValid()) {
 				return false;
 		}
 
-		logSize = logicalVector_->getSize();
+		logSize = logicalVector_->getSize();*/
 	}
 
 	// if the sizes of the ports don't match
@@ -298,7 +296,7 @@ void PortMap::write(QXmlStreamWriter& writer) const
 
     // if a logical vector is defined
     if (logicalVector_) {
-        logicalVector_->write(writer);
+        //logicalVector_->write(writer);
     }
     writer.writeEndElement(); // spirit:logicalPort
 
@@ -307,7 +305,7 @@ void PortMap::write(QXmlStreamWriter& writer) const
 
     // if a physical vector is defined
     if (physicalVector_) {
-        physicalVector_->write(writer);
+        //physicalVector_->write(writer);
     }
 
     writer.writeEndElement(); // spirit:physicalPort
@@ -326,8 +324,8 @@ General::PortBounds PortMap::getPhysicalRange(QSharedPointer<Port> referencedPhy
     // referenced wire model port.
     if (!physicalVector_.isNull())
     {
-        physicalBounds.left_ = physicalVector_->getLeft();
-        physicalBounds.right_ = physicalVector_->getRight();        
+        physicalBounds.left_ = physicalVector_->getLeft().toInt();
+        physicalBounds.right_ = physicalVector_->getRight().toInt();        
     }
     else if(!referencedPhysicalPort.isNull() &&
             referencedPhysicalPort->getPortType() == General::WIRE)
@@ -354,8 +352,8 @@ General::PortBounds PortMap::getLogicalRange(QSharedPointer<Port> referencedPhys
     // [abs(physical.left – physical.right): 0].
     if (!logicalVector_.isNull())
     {
-        logicalBounds.left_ = logicalVector_->getLeft();
-        logicalBounds.right_ = logicalVector_->getRight();        
+        logicalBounds.left_ = logicalVector_->getLeft().toInt();
+        logicalBounds.right_ = logicalVector_->getRight().toInt();        
     }
     else
     {
@@ -408,7 +406,7 @@ int PortMap::getLogicalLeft() const
 {
     if (logicalVector_)
     {
-        return logicalVector_->getLeft();
+        return logicalVector_->getLeft().toInt();
     }
     return -1;
 }
@@ -420,10 +418,10 @@ void PortMap::setLogicalLeft(int left)
 {
     if (!logicalVector_)
     {
-        logicalVector_ = QSharedPointer<Vector>(new Vector());
+        logicalVector_ = QSharedPointer<Vector>(new Vector("", ""));
     }
 
-    logicalVector_->setLeft(left);
+    logicalVector_->setLeft(QString::number(left));
 }
 
 //-----------------------------------------------------------------------------
@@ -433,7 +431,7 @@ int PortMap::getLogicalRight() const
 {
     if (logicalVector_)
     {
-        return logicalVector_->getRight();
+        return logicalVector_->getRight().toInt();
     }
     return -1;
 }
@@ -445,10 +443,10 @@ void PortMap::setLogicalRight(int right)
 {
     if (!logicalVector_)
     {
-        logicalVector_ = QSharedPointer<Vector>(new Vector());
+        logicalVector_ = QSharedPointer<Vector>(new Vector("", ""));
     }
 
-    logicalVector_->setRight(right);
+    logicalVector_->setRight(QString::number(right));
 }
 
 //-----------------------------------------------------------------------------
@@ -482,7 +480,7 @@ int PortMap::getPhysicalLeft() const
 {
     if (physicalVector_)
     {
-        return physicalVector_->getLeft();
+        return physicalVector_->getLeft().toInt();
     }
     return -1;
 }
@@ -494,10 +492,10 @@ void PortMap::setPhysicalLeft(int left)
 {
     if (!physicalVector_)
     {
-        physicalVector_ = QSharedPointer<Vector>(new Vector());
+        physicalVector_ = QSharedPointer<Vector>(new Vector("", ""));
     }
 
-    physicalVector_->setLeft(left);
+    physicalVector_->setLeft(QString::number(left));
 }
 
 //-----------------------------------------------------------------------------
@@ -507,7 +505,7 @@ int PortMap::getPhysicalRight() const
 {
     if (physicalVector_)
     {
-        return physicalVector_->getRight();
+        return physicalVector_->getRight().toInt();
     }
     return -1;
 }
@@ -519,8 +517,8 @@ void PortMap::setPhysicalRight(int right)
 {
     if (!physicalVector_)
     {
-        physicalVector_ = QSharedPointer<Vector>(new Vector());
+        physicalVector_ = QSharedPointer<Vector>(new Vector("", ""));
     }
 
-    physicalVector_->setRight(right);
+    physicalVector_->setRight(QString::number(right));
 }

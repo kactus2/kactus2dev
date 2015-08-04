@@ -14,7 +14,7 @@
 #define COMINTERFACE_H
 
 #include "generaldeclarations.h"
-#include "NameGroup.h"
+#include <IPXACTmodels/common/NameGroup.h>
 
 #include "ipxactmodels_global.h"
 
@@ -134,7 +134,7 @@ public:
     /*!
      *  Returns the name of the COM interface.
      */
-    QString getName() const;
+    QString name() const;
 
     /*!
      *  Returns the display name of the COM interface.

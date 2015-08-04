@@ -82,7 +82,7 @@ ComponentEditorAddrSpaceItem::~ComponentEditorAddrSpaceItem()
 //-----------------------------------------------------------------------------
 QString ComponentEditorAddrSpaceItem::text() const
 {
-	return addrSpace_->getName();
+	return addrSpace_->name();
 }
 
 //-----------------------------------------------------------------------------

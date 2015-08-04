@@ -34,7 +34,7 @@ QString ComponentEditorSystemViewItem::getTooltip() const {
 }
 
 QString ComponentEditorSystemViewItem::text() const {
-	return systemView_->getName();
+	return systemView_->name();
 }
 
 bool ComponentEditorSystemViewItem::isValid() const {
@@ -80,7 +80,7 @@ bool ComponentEditorSystemViewItem::canBeOpened() const {
 	// been made to the library
 	QSharedPointer<LibraryComponent const> libComp = libHandler_->getModelReadOnly(*component_->getVlnv());
 	QSharedPointer<Component const> comp = libComp.staticCast<Component const>();
-	VLNV originalRef = comp->getHierSystemRef(systemView_->getName());
+	VLNV originalRef = comp->getHierSystemRef(systemView_->name());
 	return originalRef == systemView_->getHierarchyRef();
 }
 
@@ -103,7 +103,7 @@ void ComponentEditorSystemViewItem::openItem()
 		return;
 	}
 
-	QString viewName = systemView_->getName();
+	QString viewName = systemView_->name();
 	VLNV compVLNV = *component_->getVlnv();
 	emit openSystemDesign(compVLNV, viewName);
 }

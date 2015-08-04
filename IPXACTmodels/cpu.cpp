@@ -6,10 +6,12 @@
 
 #include "cpu.h"
 
-#include "parameter.h"
+#include <IPXACTmodels/common/Parameter.h>
+#include <IPXACTmodels/common/ParameterWriter.h>
 #include "GenericVendorExtension.h"
 
 #include <IPXACTmodels/validators/ParameterValidator.h>
+#include <IPXACTmodels/common/ParameterReader.h>
 
 #include <QDomNode>
 #include <QString>
@@ -24,7 +26,7 @@
 // Function: Cpu()
 //-----------------------------------------------------------------------------
 Cpu::Cpu():
-nameGroup_(),
+NameGroup(),
 addressSpaceRefs_(),
 parameters_(),
 vendorExtensions_()
@@ -32,7 +34,7 @@ vendorExtensions_()
 }
 
 Cpu::Cpu(QDomNode &cpuNode): 
-nameGroup_(cpuNode), 
+NameGroup(), 
 addressSpaceRefs_(),
 parameters_(),
 vendorExtensions_()
@@ -56,8 +58,9 @@ vendorExtensions_()
 			// all was fine and attribute can be added
 			addressSpaceRefs_.append(str);
 		}
-		else if (tempNode.nodeName() == QString("spirit:parameters")) {
-
+		else if (tempNode.nodeName() == QString("spirit:parameters"))
+        {
+            ParameterReader reader;
 			// go through all parameters
 			for (int j = 0; j < tempNode.childNodes().count(); ++j) {
 
@@ -65,8 +68,7 @@ vendorExtensions_()
 
 				// dont parse comments
 				if (!parameterNode.isComment()) {
-					parameters_.append(QSharedPointer<Parameter>(
-							new Parameter(parameterNode)));
+					parameters_.append(QSharedPointer<Parameter>(reader.createParameterFrom(parameterNode)));
 				}
 			}
 		}
@@ -83,7 +85,7 @@ vendorExtensions_()
 }
 
 Cpu::Cpu( const Cpu &other ):
-nameGroup_(other.nameGroup_),
+NameGroup(other),
 addressSpaceRefs_(other.addressSpaceRefs_),
 parameters_(),
 vendorExtensions_(other.vendorExtensions_)
@@ -98,7 +100,7 @@ vendorExtensions_(other.vendorExtensions_)
 
 Cpu & Cpu::operator=( const Cpu &other ) {
 	if (this != &other) {
-		nameGroup_ = other.nameGroup_;
+		NameGroup::operator=(other);
 		addressSpaceRefs_ = other.addressSpaceRefs_;
         vendorExtensions_ = other.vendorExtensions_;
 
@@ -120,14 +122,14 @@ Cpu::~Cpu() {
 void Cpu::write(QXmlStreamWriter& writer) {
 	writer.writeStartElement("spirit:cpu");
 
-	writer.writeTextElement("spirit:name", nameGroup_.name());
+	writer.writeTextElement("spirit:name", name());
 
-	if (!nameGroup_.displayName().isEmpty()) {
-		writer.writeTextElement("spirit:displayName", nameGroup_.displayName());
+	if (!displayName().isEmpty()) {
+		writer.writeTextElement("spirit:displayName", displayName());
 	}
 
-	if (!nameGroup_.description().isEmpty()) {
-		writer.writeTextElement("spirit:description", nameGroup_.description());
+	if (!description().isEmpty()) {
+		writer.writeTextElement("spirit:description", description());
 	}
 
     for (int i = 0; i < addressSpaceRefs_.size(); ++i) {
@@ -140,15 +142,19 @@ void Cpu::write(QXmlStreamWriter& writer) {
             addressSpaceRefs_.at(i));
     }
 
-	// write parameters if they exist
-	if (parameters_.size() != 0) {
-		writer.writeStartElement("spirit:parameters");
+    if (parameters_.size() != 0)
+    {
+        writer.writeStartElement("ipxact:parameters");
 
-		for (int i = 0; i < parameters_.size(); ++i) {
-			parameters_.at(i)->write(writer);
-		}
-		writer.writeEndElement(); // spirit:parameters
-	}
+        ParameterWriter parameterWriter;
+        // write each parameter
+        for (int i = 0; i < parameters_.size(); ++i)
+        {
+            parameterWriter.writeParameter(writer, parameters_.at(i));
+        }
+
+        writer.writeEndElement(); // ipxact:parameters
+    }
 
     if (!vendorExtensions_.isEmpty())
     {
@@ -166,9 +172,9 @@ bool Cpu::isValid(const QStringList& addrSpaceNames,
 				  QStringList& errorList, 
 				  const QString& parentIdentifier ) const {
 	bool valid = true;
-	const QString thisIdentifier(QObject::tr("cpu %1").arg(nameGroup_.name()));
+	const QString thisIdentifier(QObject::tr("cpu %1").arg(name()));
 
-	if (nameGroup_.name().isEmpty()) {
+	if (name().isEmpty()) {
 		errorList.append(QObject::tr("No name specified for a cpu within %1").arg(
 			parentIdentifier));
 		valid = false;
@@ -176,7 +182,7 @@ bool Cpu::isValid(const QStringList& addrSpaceNames,
 
 	if (addressSpaceRefs_.isEmpty()) {
 		errorList.append(QObject::tr("No address space reference defined for"
-			" cpu %1 within %2").arg(nameGroup_.name()).arg(parentIdentifier));
+			" cpu %1 within %2").arg(name()).arg(parentIdentifier));
 		valid = false;
 	}
 	// if there are references then check that they are valid
@@ -185,7 +191,7 @@ bool Cpu::isValid(const QStringList& addrSpaceNames,
 			if (!addrSpaceNames.contains(addrRef)) {
 				errorList.append(QObject::tr("Cpu %1 contained reference to "
 					"address space %2 which is not found within %3").arg(
-					nameGroup_.name()).arg(addrRef).arg(parentIdentifier));
+					name()).arg(addrRef).arg(parentIdentifier));
 				valid = false;
 			}
 		}
@@ -207,7 +213,7 @@ bool Cpu::isValid(const QStringList& addrSpaceNames,
 bool Cpu::isValid(const QStringList& addrSpaceNames, 
     QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const 
 {
-	if (nameGroup_.name().isEmpty()) 
+	if (name().isEmpty()) 
     {
 		return false;
 	}
@@ -252,14 +258,6 @@ void Cpu::setParameters(QList<QSharedPointer<Parameter> > &parameters) {
 	parameters_ = parameters;
 }
 
-QString Cpu::getName() const {
-	return nameGroup_.name();
-}
-
-void Cpu::setName(const QString &name) {
-	nameGroup_.setName(name);
-}
-
 const QStringList& Cpu::getAddressSpaceRefs() {
 	return addressSpaceRefs_;
 }
@@ -268,20 +266,4 @@ void Cpu::setAddressSpaceRefs(const QStringList& addressSpaceRefs) {
 	// remove old addressSpaceRefs
 	addressSpaceRefs_.clear();
 	addressSpaceRefs_ = addressSpaceRefs;
-}
-
-QString Cpu::getDisplayName() const {
-	return nameGroup_.displayName();
-}
-
-QString Cpu::getDescription() const {
-	return nameGroup_.description();
-}
-
-void Cpu::setDisplayName( const QString& displayName ) {
-	nameGroup_.setDisplayName(displayName);
-}
-
-void Cpu::setDescription( const QString& description ) {
-	nameGroup_.setDescription(description);
 }

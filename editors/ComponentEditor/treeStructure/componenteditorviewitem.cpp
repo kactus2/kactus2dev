@@ -27,7 +27,7 @@ ComponentEditorItem(model, libHandler, component, parent),
 
 	Q_ASSERT(view_);
 
-	setObjectName(tr("ComponentEditorViewItem: %1").arg(view->getName()));
+	setObjectName(tr("ComponentEditorViewItem: %1").arg(view->name()));
 
     connect(editAction_, SIGNAL(triggered(bool)), this, SLOT(openItem()), Qt::UniqueConnection); 
 }
@@ -42,7 +42,7 @@ ComponentEditorViewItem::~ComponentEditorViewItem() {
 // Function: text()
 //-----------------------------------------------------------------------------
 QString ComponentEditorViewItem::text() const {
-	return view_->getName();
+	return view_->name();
 }
 
 //-----------------------------------------------------------------------------
@@ -111,7 +111,7 @@ bool ComponentEditorViewItem::canBeOpened() const {
 	// been made to the library
 	QSharedPointer<LibraryComponent const> libComp = libHandler_->getModelReadOnly(*component_->getVlnv());
 	QSharedPointer<Component const> comp = libComp.staticCast<Component const>();
-	VLNV originalRef = comp->getHierRef(view_->getName());
+	VLNV originalRef = comp->getHierRef(view_->name());
 	return originalRef == view_->getHierarchyRef();
 }
 
@@ -134,7 +134,7 @@ void ComponentEditorViewItem::openItem() {
 	if (!canBeOpened()) {
 		return;
 	}
-	QString viewName = view_->getName();
+	QString viewName = view_->name();
 	VLNV compVLNV = *component_->getVlnv();
 	emit openDesign(compVLNV, viewName);
 }

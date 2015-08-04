@@ -269,7 +269,7 @@ void PortsEditor::onCreateNewInteface(QStringList const& selectedPorts)
     }
     else
     {
-        component_->removeBusInterface(busIf->getName());
+        component_->removeBusInterface(busIf->name());
     }
 }
 
@@ -296,6 +296,6 @@ void PortsEditor::onCreateInterface(QStringList const& selectedPorts)
     }
     else
     {
-        component_->removeBusInterface(busIf->getName());
+        component_->removeBusInterface(busIf->name());
     }
 }

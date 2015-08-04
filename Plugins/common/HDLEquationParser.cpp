@@ -156,7 +156,7 @@ int HDLEquationParser::valueFromModelParameter(QString const& term) const
 {
     foreach (QSharedPointer<ModelParameter> parameter, knownValues_) 
     {
-        if (parameter->getName() == term)
+        if (parameter->name() == term)
         {
             return parse(parameter->getValue());
         }

@@ -7,7 +7,7 @@
 #include "register.h"
 #include "generaldeclarations.h"
 #include "alternateregister.h"
-#include "parameter.h"
+#include <IPXACTmodels/common/Parameter.h>
 #include "registermodel.h"
 #include "GenericVendorExtension.h"
 
@@ -216,9 +216,9 @@ bool Register::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > component
     QStringList& errorList,QString const& parentIdentifier ) const
 {
 	bool valid = true;
-	const QString thisIdentifier(QObject::tr("register %1").arg(nameGroup_.name()));
+	const QString thisIdentifier(QObject::tr("register %1").arg(name()));
 
-	if (nameGroup_.name().isEmpty())
+	if (name().isEmpty())
     {
 		errorList.append(QObject::tr("No name specified for register within %1").arg(
 			parentIdentifier));
@@ -228,7 +228,7 @@ bool Register::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > component
 	if (addressOffset_.isEmpty())
     {
 		errorList.append(QObject::tr("No address offset set for register %1"
-			" within %2").arg(nameGroup_.name()).arg(parentIdentifier));
+			" within %2").arg(name()).arg(parentIdentifier));
 		valid = false;
 	}
 
@@ -264,7 +264,7 @@ bool Register::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > component
 //-----------------------------------------------------------------------------
 bool Register::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const
 {
-	if (nameGroup_.name().isEmpty()) 
+	if (name().isEmpty()) 
     {
 		return false;
 	}

@@ -20,7 +20,7 @@
 #include <IPXACTmodels/file.h>
 #include <IPXACTmodels/fileset.h>
 #include <IPXACTmodels/PortMap.h>
-#include <IPXACTmodels/vector.h>
+#include <IPXACTmodels/common/Vector.h>
 
 #include <QApplication>
 #include <QTextCharFormat>
@@ -540,9 +540,10 @@ void PadsPartGeneratorDialog::generateGates()
             int pinCount = 0;
             foreach(QSharedPointer<PortMap> portMap, busInterface->getPortMaps())
             {
-                pinCount += portMap->logicalVector()->getSize();
+                pinCount += abs(portMap->logicalVector()->getLeft().toInt() - 
+                    portMap->logicalVector()->getRight().toInt()) + 1; //portMap->logicalVector()->getSize();
             }
-            insertGate(busInterface->getName(), 1, pinCount, 0, cursor);
+            insertGate(busInterface->name(), 1, pinCount, 0, cursor);
             insertPins(busInterface, cursor);
             cursor.insertBlock();
 
@@ -557,7 +558,8 @@ void PadsPartGeneratorDialog::generateGates()
         {
             foreach(QSharedPointer<PortMap> portMap, busInterface->getPortMaps())
             {
-                pinCount += portMap->logicalVector()->getSize();
+                pinCount += abs(portMap->logicalVector()->getLeft().toInt() - 
+                    portMap->logicalVector()->getRight().toInt()) + 1; //portMap->logicalVector()->getSize();
             }
         }
 
@@ -702,7 +704,7 @@ void PadsPartGeneratorDialog::insertAttributes(QTextCursor& cursor)
     // Insert all parameters as attributes.
     foreach(QSharedPointer<Parameter> parameter, *component_->getParameters())
     {
-        attr.replace(PadsAsciiSyntax::ATTRNAME, "\"" + parameter->getName() + "\"");
+        attr.replace(PadsAsciiSyntax::ATTRNAME, "\"" + parameter->name() + "\"");
         attr.replace(PadsAsciiSyntax::VALUE, parameter->getValue());
         insertLine(attr.join(PadsAsciiSyntax::SEPARATOR), cursor, PadsAsciiSyntax::ATTRIBUTE_EXP);
     }

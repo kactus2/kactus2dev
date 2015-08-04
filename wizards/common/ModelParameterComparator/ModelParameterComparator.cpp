@@ -66,10 +66,10 @@ QList<QSharedPointer<IPXactDiff> > ModelParameterComparator::diffFields(QSharedP
 {
     QList<QSharedPointer<IPXactDiff> > diffResult;
 
-    QSharedPointer<IPXactDiff> modification(new IPXactDiff(elementType(), reference->getName()));
+    QSharedPointer<IPXactDiff> modification(new IPXactDiff(elementType(), reference->name()));
     modification->setChangeType(IPXactDiff::MODIFICATION);
 
-    modification->checkForChange("description", reference->getDescription(), subject->getDescription());
+    modification->checkForChange("description", reference->description(), subject->description());
     modification->checkForChange("type", reference->getType(), subject->getType());
     modification->checkForChange("value", reference->getValue(), subject->getValue());
     modification->checkForChange("data type", reference->getDataType(), subject->getDataType());

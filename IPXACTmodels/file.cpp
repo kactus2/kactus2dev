@@ -27,7 +27,7 @@ nameGroup_(name), value_(value), vendorExtensions_() {
 }
 
 File::Define::Define( QDomNode& defineNode ):
-nameGroup_(defineNode), value_(), vendorExtensions_() {
+nameGroup_(), value_(), vendorExtensions_() {
 
 	for (int i = 0; i < defineNode.childNodes().count(); ++i) {
 		QDomNode tempNode = defineNode.childNodes().at(i);
@@ -693,7 +693,7 @@ const QMap<QString, QString>& File::getAttributes() {
 	return attributes_;
 }
 
-QString File::getName() const {
+QString File::name() const {
 	return name_;
 }
 
@@ -837,7 +837,7 @@ bool File::isVhdlFile() const {
 }
 
 QString File::fileSetName() const {
-	return parent_->getName();
+	return parent_->name();
 }
 
 QStringList File::getAllFileTypes() const {

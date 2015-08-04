@@ -63,7 +63,7 @@ int BusInterfaceWizardConclusionPage::nextId() const
 void BusInterfaceWizardConclusionPage::initializePage()
 {
     // Set label texts.
-    nameLabel_.setText(busIf_->getName());
+    nameLabel_.setText(busIf_->name());
     modeLabel_.setText(General::interfaceMode2Str(busIf_->getInterfaceMode()));
     busDefLabel_.setText(busIf_->getBusType().toString());
     absDefLabel_.setText(busIf_->getAbstractionType().toString());

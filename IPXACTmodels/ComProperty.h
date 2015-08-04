@@ -100,7 +100,7 @@ public:
     /*!
      *  Returns the name of the property.
      */
-    QString const& getName() const;
+    QString const& name() const;
 
     /*!
      *  Returns true if the property is required.

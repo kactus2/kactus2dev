@@ -277,9 +277,9 @@ void BusInterfaceDialog::setName(QString const& name)
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceDialog::getName()
+// Function: BusInterfaceDialog::name()
 //-----------------------------------------------------------------------------
-QString BusInterfaceDialog::getName() const
+QString BusInterfaceDialog::name() const
 {
     Q_ASSERT(nameEdit_ != 0);
     return nameEdit_->text();

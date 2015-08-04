@@ -129,11 +129,11 @@ void ComponentVerilogWriter::writeParameter(QTextStream& outputStream, QSharedPo
         outputStream << ",";
     }
 
-    CommentWriter descriptionWriter(parameter->getDescription());
+    CommentWriter descriptionWriter(parameter->description());
     descriptionWriter.setIndent(4);
     descriptionWriter.write(outputStream);
 
-    if (parameter->getDescription().isEmpty())
+    if (parameter->description().isEmpty())
     {
         outputStream << endl;
     }
@@ -192,7 +192,7 @@ void ComponentVerilogWriter::writeInterfaceIntroduction(QString const& interface
             outputStream << indentation() << "// Interface: " << interfaceName << endl;
 
             QSharedPointer<const BusInterface> busInterface = component_->getBusInterface(interfaceName);
-            CommentWriter descriptionWriter(busInterface->getDescription());
+            CommentWriter descriptionWriter(busInterface->description());
             descriptionWriter.setIndent(4);
             descriptionWriter.write(outputStream);
         }        
@@ -215,11 +215,11 @@ void ComponentVerilogWriter::writePort(QTextStream& outputStream, QSharedPointer
         outputStream << ",";
     }
 
-    CommentWriter descriptionWriter(port->getDescription());
+    CommentWriter descriptionWriter(port->description());
     descriptionWriter.setIndent(4);
     descriptionWriter.write(outputStream);
 
-    if (port->getDescription().isEmpty())
+    if (port->description().isEmpty())
     {
         outputStream << endl;
     }

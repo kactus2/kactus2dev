@@ -5,7 +5,9 @@
  */
 
 #include "registermodel.h"
-#include "parameter.h"
+#include <IPXACTmodels/common/Parameter.h>
+#include <IPXACTmodels/common/ParameterReader.h>
+#include <IPXACTmodels/common/ParameterWriter.h>
 
 #include <IPXACTmodels/XmlUtils.h>
 
@@ -17,8 +19,8 @@
 #include <QDomNamedNodeMap>
 
 RegisterModel::RegisterModel(QDomNode& registerNode):
-id_(), 
-nameGroup_(registerNode), 
+NameGroup(), 
+    id_(), 
 parameters_() {
 
 	// get the spirit:id attribute
@@ -31,25 +33,25 @@ parameters_() {
 		QDomNode tempNode = registerNode.childNodes().at(i);
 
 		if (tempNode.nodeName() == QString("spirit:parameters")) {
-
+            ParameterReader reader;
 			// parse each parameter
 			for (int j = 0; j < tempNode.childNodes().count(); ++j) {
 				QDomNode parameterNode = tempNode.childNodes().at(j);
 
-				parameters_.append(QSharedPointer<Parameter>(
-						new Parameter(parameterNode)));
+				parameters_.append(QSharedPointer<Parameter>(reader.createParameterFrom(parameterNode)));
 			}
 		}
 	}
 }
 
-RegisterModel::RegisterModel() {
+RegisterModel::RegisterModel(): NameGroup()
+{
 
 }
 
 RegisterModel::RegisterModel( const RegisterModel& other ):
-id_(other.id_),
-nameGroup_(other.nameGroup_),
+NameGroup(other),
+    id_(other.id_),
 parameters_() {
 
 	foreach (QSharedPointer<Parameter> param, other.parameters_) {
@@ -62,10 +64,10 @@ parameters_() {
 }
 
 RegisterModel& RegisterModel::operator=( const RegisterModel& other ) {
-	if (this != &other) {
+	if (this != &other)
+    {
+		NameGroup::operator=(other);
 		id_ = other.id_;
-		nameGroup_ = other.nameGroup_;
-
 		parameters_.clear();
 		foreach (QSharedPointer<Parameter> param, other.parameters_) {
 			if (param) {
@@ -88,78 +90,48 @@ void RegisterModel::write(QXmlStreamWriter& writer) {
 		writer.writeAttribute("spirit:id", id_);
 	}
 
-	writer.writeTextElement("spirit:name", nameGroup_.name());
+	writer.writeTextElement("spirit:name", name());
 
 	// if optional displayName defined
-	if (!nameGroup_.displayName().isEmpty()) {
-		writer.writeTextElement("spirit:displayName", nameGroup_.displayName());
+	if (!displayName().isEmpty()) {
+		writer.writeTextElement("spirit:displayName", displayName());
 	}
 
 	// if optional description is defined
-	if (!nameGroup_.description().isEmpty()) {
-		writer.writeTextElement("spirit:description", nameGroup_.description());
+	if (!description().isEmpty()) {
+		writer.writeTextElement("spirit:description", description());
 	}
 
-	// if optional parameters are defined
-	if (parameters_.size() != 0) {
-		writer.writeStartElement("spirit:parameters");
+    if (parameters_.size() != 0)
+    {
+        writer.writeStartElement("ipxact:parameters");
 
-		// write each parameter
-		for (int i = 0; i < parameters_.size(); ++i) {
-			parameters_.at(i)->write(writer);
-		}
+        ParameterWriter parameterWriter;
+        // write each parameter
+        for (int i = 0; i < parameters_.size(); ++i)
+        {
+            parameterWriter.writeParameter(writer, parameters_.at(i));
+        }
 
-		writer.writeEndElement(); // spirit:parameters
-	}
-	return;
-}
-
-QString RegisterModel::getDescription() const {
-    return nameGroup_.description();
-}
-
-QString RegisterModel::getDisplayName() const {
-    return nameGroup_.displayName();
+        writer.writeEndElement(); // ipxact:parameters
+    }
 }
 
 QString RegisterModel::getId() const {
     return id_;
 }
 
-QString RegisterModel::getName() const {
-    return nameGroup_.name();
-}
-
 const QList<QSharedPointer<Parameter> >& RegisterModel::getParameters() const {
     return parameters_;
 }
 
-void RegisterModel::setDescription(const QString& description) {
-    nameGroup_.setDescription(description);
-}
-
-void RegisterModel::setDisplayName(const QString& displayName) {
-    nameGroup_.setDisplayName(displayName);
-}
 
 void RegisterModel::setId(const QString& id) {
     this->id_ = id;
-}
-
-void RegisterModel::setName(const QString& name) {
-    nameGroup_.setName(name);
 }
 
 void RegisterModel::setParameters(
 		const QList<QSharedPointer<Parameter> >& parameters) {
 	parameters_.clear();
     parameters_ = parameters;
-}
-
-//-----------------------------------------------------------------------------
-// Function: registermodel::getNameGroup()
-//-----------------------------------------------------------------------------
-NameGroup& RegisterModel::getNameGroup()
-{
-    return nameGroup_;
 }

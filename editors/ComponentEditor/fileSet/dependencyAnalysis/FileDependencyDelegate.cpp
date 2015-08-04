@@ -86,7 +86,7 @@ void FileDependencyDelegate::setEditorData(QWidget *editor, const QModelIndex &i
 
         foreach (QSharedPointer<FileSet> fileSet, component_->getFileSets())
         {
-            collectionEditor->addItem(fileSet->getName(), fileSetNames.contains(fileSet->getName()));
+            collectionEditor->addItem(fileSet->name(), fileSetNames.contains(fileSet->name()));
         }
     }
     else

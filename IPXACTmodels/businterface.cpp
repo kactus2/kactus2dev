@@ -14,6 +14,8 @@
 #include"vlnv.h"
 
 #include <IPXACTmodels/validators/ParameterValidator.h>
+#include <IPXACTmodels/common/ParameterReader.h>
+#include <IPXACTmodels/common/ParameterWriter.h>
 
 #include <QString>
 #include <QList>
@@ -27,9 +29,10 @@
 const int DEFAULT_BITS_IN_LAU = 8;
 
 // struct constructor
-BusInterface::MonitorInterface::MonitorInterface(QDomNode& monitorNode):
+BusInterface::MonitorInterface::MonitorInterface(QDomNode& monitorNode): 
 interfaceMode_(General::MONITOR),
-group_() {
+group_()
+{
 	// get the interfaceMode attribute
 	QDomNamedNodeMap attributeMap = monitorNode.attributes();
 	QString interfaceMode = attributeMap.namedItem(QString(
@@ -50,14 +53,14 @@ group_() {
 	}
 }
 
-BusInterface::MonitorInterface::MonitorInterface():
+BusInterface::MonitorInterface::MonitorInterface(): 
 interfaceMode_(General::MONITOR),
 group_() {
 }
 
 // class constructor
 BusInterface::BusInterface(QDomNode &busInterface):
-nameGroup_(busInterface),
+NameGroup(),
 attributes_(),
 busType_(), abstractionType_(),
 interfaceMode_(General::INTERFACE_MODE_COUNT),
@@ -231,14 +234,14 @@ monitor_() {
 		}
 
 		// get parameters
-		else if (children.at(i).nodeName() == QString("spirit:parameters")) {
-
+		else if (children.at(i).nodeName() == QString("spirit:parameters"))
+        {
+            ParameterReader reader;
 			// go through all parameters
 			for (int j = 0; j < children.at(i).childNodes().count(); ++j) {
 
 				QDomNode parameterNode = children.at(i).childNodes().at(j);
-				Parameter *temp = new Parameter(parameterNode);
-				parameters_->append(QSharedPointer<Parameter>(temp));
+				parameters_->append(reader.createParameterFrom(parameterNode));
 			}
 		}
         else if (children.at(i).nodeName() == "spirit:vendorExtensions")
@@ -266,7 +269,7 @@ monitor_() {
 	}
 }
 
-BusInterface::BusInterface(): nameGroup_(),
+BusInterface::BusInterface(): NameGroup(),
 		attributes_(),
 		busType_(), abstractionType_(),
         interfaceMode_(General::INTERFACE_MODE_COUNT),
@@ -284,7 +287,7 @@ BusInterface::BusInterface(): nameGroup_(),
 }
 
 BusInterface::BusInterface( const BusInterface &other ):
-nameGroup_(other.nameGroup_),
+NameGroup(other),
 attributes_(other.attributes_),
 busType_(other.busType_),
 abstractionType_(other.abstractionType_),
@@ -341,7 +344,7 @@ BusInterface & BusInterface::operator=( const BusInterface &other )
 {
 	if (this != &other)
     {	
-		nameGroup_ = other.nameGroup_;
+		NameGroup::operator=(other);
 		attributes_ = other.attributes_;
 		busType_ = other.busType_;
 		abstractionType_ = other.abstractionType_;
@@ -419,13 +422,13 @@ void BusInterface::write(QXmlStreamWriter& writer) {
 	if (!attributes_.isEmpty())
 		XmlUtils::writeAttributes(writer, attributes_);
 
-	writer.writeTextElement("spirit:name", nameGroup_.name());
+	writer.writeTextElement("spirit:name", name());
 
-	if (!nameGroup_.displayName().isEmpty())
-		writer.writeTextElement("spirit:displayName", nameGroup_.displayName());
+	if (!displayName().isEmpty())
+		writer.writeTextElement("spirit:displayName", displayName());
 
-	if (!nameGroup_.description().isEmpty())
-		writer.writeTextElement("spirit:description", nameGroup_.description());
+	if (!description().isEmpty())
+		writer.writeTextElement("spirit:description", description());
 
 	writer.writeEmptyElement("spirit:busType");
 	busType_.writeAsAttributes(writer);
@@ -555,15 +558,19 @@ void BusInterface::write(QXmlStreamWriter& writer) {
 	writer.writeTextElement("spirit:endianness",
 			General::endianness2Str(endianness_));
 
-	if (parameters_->size() != 0) {
-		writer.writeStartElement("spirit:parameters");
+    if (parameters_->size() != 0)
+    {
+        writer.writeStartElement("ipxact:parameters");
 
-		// write each parameter
-		for (int i = 0; i < parameters_->size(); ++i) {
-			parameters_->at(i)->write(writer);
-		}
-		writer.writeEndElement(); // spirit:parameters
-	}
+        ParameterWriter parameterWriter;
+        // write each parameter
+        for (int i = 0; i < parameters_->size(); ++i)
+        {
+            parameterWriter.writeParameter(writer, parameters_->at(i));
+        }
+
+        writer.writeEndElement(); // ipxact:parameters
+    }
 
     if (!defaultPos_.isNull())
     {
@@ -586,9 +593,9 @@ bool BusInterface::isValid( const QList<General::PortBounds>& physicalPorts, QSt
     const QString& parentIdentifier ) const 
 {
     bool valid = true;
-    const QString thisIdentifier(QObject::tr("bus interface %1").arg(nameGroup_.name()));
+    const QString thisIdentifier(QObject::tr("bus interface %1").arg(name()));
 
-	if (nameGroup_.name().isEmpty()) {
+	if (name().isEmpty()) {
 		errorList.append(QObject::tr("No name specified for bus interface within %1").arg(
 			parentIdentifier));
 		valid = false;
@@ -617,7 +624,7 @@ bool BusInterface::isValid( const QList<General::PortBounds>& physicalPorts, QSt
             !addressSpaces.contains(master_->getAddressSpaceRef()))
         {
             errorList.append(QObject::tr("Bus interface %1 references address space %2 which is not "
-                "found within %3.").arg(nameGroup_.name(), master_->getAddressSpaceRef(), parentIdentifier));
+                "found within %3.").arg(name(), master_->getAddressSpaceRef(), parentIdentifier));
             valid = false;
         }
 
@@ -634,7 +641,7 @@ bool BusInterface::isValid( const QList<General::PortBounds>& physicalPorts, QSt
         else if (!slave_->getMemoryMapRef().isEmpty() && !memoryMaps.contains(slave_->getMemoryMapRef()))
         {
             errorList.append(QObject::tr("Bus interface %1 references memory map %2 which is not "
-                "found within %3.").arg(nameGroup_.name(), slave_->getMemoryMapRef(), parentIdentifier));
+                "found within %3.").arg(name(), slave_->getMemoryMapRef(), parentIdentifier));
             valid = false;
         }
 
@@ -696,7 +703,7 @@ bool BusInterface::isValid( const QList<General::PortBounds>& physicalPorts, QSt
 bool BusInterface::isValid( const QList<General::PortBounds>& physicalPorts, QStringList const& memoryMaps,
     QStringList const& addressSpaces, QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const 
 {
-	if (nameGroup_.name().isEmpty())
+	if (name().isEmpty())
     {
 		return false;
 	}
@@ -791,10 +798,6 @@ void BusInterface::setConnectionRequired(bool connectionRequired) {
 	connectionRequired_ = connectionRequired;
 }
 
-QString BusInterface::getName() const {
-	return nameGroup_.name();
-}
-
 void BusInterface::setEndianness(General::Endianness endianness) {
 	endianness_ = endianness;
 }
@@ -834,9 +837,6 @@ VLNV BusInterface::getBusType() const {
 	return busType_;
 }
 
-void BusInterface::setName(const QString &name) {
-	nameGroup_.setName(name);
-}
 
 const QMap<QString, QString>& BusInterface::getBitSteeringAttributes() {
 	return bitSteeringAttributes_;
@@ -1045,22 +1045,6 @@ bool BusInterface::hasBridge() const {
 	return slave_->hasBridge();
 }
 
-void BusInterface::setDisplayName( const QString& displayName ) {
-	nameGroup_.setDisplayName(displayName);
-}
-
-void BusInterface::setDescription( const QString& description ) {
-	nameGroup_.setDescription(description);
-}
-
-QString BusInterface::getDisplayName() const {
-	return nameGroup_.displayName();
-}
-
-QString BusInterface::getDescription() const {
-	return nameGroup_.description();
-}
-
 const QMap<QString, QString>& BusInterface::getAttributes() const {
 	return attributes_;
 }
@@ -1139,13 +1123,13 @@ void BusInterface::setMCAPIPortID(int portID)
     // Try to replace the old one if it already exists.
     foreach (QSharedPointer<Parameter> param, *parameters_)
     {
-        if (param->getName() == "kts_port_id")
+        if (param->name() == "kts_port_id")
         {
             param->setValue(QString::number(portID));
             return;
         }
     }
-
+    
     // Otherwise create a new parameter.
     QSharedPointer<Parameter> param(new Parameter());
     param->setName("kts_port_id");
@@ -1160,21 +1144,13 @@ int BusInterface::getMCAPIPortID() const
 {
     foreach (QSharedPointer<Parameter> param, *parameters_)
     {
-        if (param->getName() == "kts_port_id")
+        if (param->name() == "kts_port_id")
         {
             return param->getValue().toInt();
         }
     }
 
     return -1;
-}
-
-NameGroup& BusInterface::getNameGroup() {
-	return nameGroup_;
-}
-
-const NameGroup& BusInterface::getNameGroup() const {
-	return nameGroup_;
 }
 
 QString BusInterface::getMemoryMapRef() const {

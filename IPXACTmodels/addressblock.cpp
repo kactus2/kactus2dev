@@ -8,12 +8,14 @@
 #include "memorymapitem.h"
 #include "generaldeclarations.h"
 #include "GenericVendorExtension.h"
-#include "parameter.h"
 #include "registerfile.h"
 #include "register.h"
 #include "XmlUtils.h"
 
 #include <common/utils.h>
+
+#include <IPXACTmodels/common/Parameter.h>
+#include <IPXACTmodels/common/ParameterReader.h>
 
 #include <QString>
 #include <QStringList>
@@ -78,14 +80,14 @@ vendorExtensions_()
 		}
 
 		// get parameters
-		else if (tempNode.nodeName() == QString("spirit:parameters")) {
-
+		else if (tempNode.nodeName() == QString("spirit:parameters"))
+        {
+            ParameterReader reader;
 			// go through all parameters
 			for (int j = 0; j < tempNode.childNodes().count(); ++j) {
 
-				QDomNode parameterNode = tempNode.childNodes().at(j);
-				QSharedPointer<Parameter> temp(new Parameter(parameterNode));
-				memoryBlockData_.addParameter(temp);
+				QDomNode parameterNode = tempNode.childNodes().at(j);				
+				memoryBlockData_.addParameter(reader.createParameterFrom(parameterNode));
 			}
 		}
 		else if (tempNode.nodeName() == QString("spirit:register")) {
@@ -213,9 +215,9 @@ bool AddressBlock::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > compo
     QStringList& errorList, const QString& parentIdentifier ) const
 {
 	bool valid = true;
-    const QString thisIdentifier(QObject::tr("address block %1").arg(getName()));
+    const QString thisIdentifier(QObject::tr("address block %1").arg(name()));
 
-    if (getName().isEmpty())
+    if (name().isEmpty())
     {
 		errorList.append(QObject::tr("No name specified for address block"
 			" within %1").arg(parentIdentifier));
@@ -256,15 +258,15 @@ bool AddressBlock::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > compo
     QStringList registerNames;
 	foreach (QSharedPointer<RegisterModel> regModel, registerData_)
     {
-        if (registerNames.contains(regModel->getName()))
+        if (registerNames.contains(regModel->name()))
         {
             errorList.append(QObject::tr("%1 contains multiple registers with name %2").arg(
-                thisIdentifier, regModel->getName()));
+                thisIdentifier, regModel->name()));
             valid = false;
         }
         else
         {
-            registerNames.append(regModel->getName());
+            registerNames.append(regModel->name());
         }
 
 		if (!regModel->isValid(componentChoices, errorList, thisIdentifier))
@@ -281,7 +283,7 @@ bool AddressBlock::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > compo
 //-----------------------------------------------------------------------------
 bool AddressBlock::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const
 {
-    if (getName().isEmpty())
+    if (name().isEmpty())
     {
 		return false;
 	}
@@ -312,13 +314,13 @@ bool AddressBlock::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > compo
     QStringList registerNames;
 	foreach (QSharedPointer<RegisterModel> regModel, registerData_)
     {
-        if (registerNames.contains(regModel->getName()))
+        if (registerNames.contains(regModel->name()))
         {
             return false;
         }
         else
         {
-            registerNames.append(regModel->getName());
+            registerNames.append(regModel->name());
         }
 
 		if (!regModel->isValid(componentChoices))
@@ -541,7 +543,7 @@ const QList<QSharedPointer<RegisterModel> >& AddressBlock::getRegisterData() con
 
 bool AddressBlock::uniqueRegisterNames( QStringList& regNames ) const {
 	foreach (QSharedPointer<RegisterModel> reg, registerData_) {
-		const QString regName = reg->getName();
+		const QString regName = reg->name();
 
 		// the register name was not unique
 		if (regNames.contains(regName)) {

@@ -365,7 +365,7 @@ QStringList VerilogGeneratorPlugin::findReferencingViews(QSharedPointer<Componen
             }
             else
             {
-                hierViews.append(view->getName());
+                hierViews.append(view->name());
             }
         }
     }

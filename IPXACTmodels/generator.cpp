@@ -6,7 +6,10 @@
 
 #include "generator.h"
 
-#include "parameter.h"
+#include <IPXACTmodels/common/Parameter.h>
+#include <IPXACTmodels/common/ParameterReader.h>
+#include <IPXACTmodels/common/ParameterWriter.h>
+
 #include "generaldeclarations.h"
 #include "GenericVendorExtension.h"
 
@@ -20,8 +23,7 @@
 #include "XmlUtils.h"
 
 // the constructor
-Generator::Generator(QDomNode &generatorNode): hidden_(false),
-name_(), displayName_(), description_(),
+Generator::Generator(QDomNode &generatorNode): NameGroup(), hidden_(false),
 phase_(-1), parameters_(), apiType_(Generator::NONE), generatorExe_(), vendorExtensions_()
 {
 	// get attributes for the componentGenerator
@@ -35,24 +37,24 @@ phase_(-1), parameters_(), apiType_(Generator::NONE), generatorExe_(), vendorExt
 		QDomNode tempNode = generatorNode.childNodes().at(i);
 
 		if (tempNode.nodeName() == QString("spirit:name")) {
-			name_ = tempNode.childNodes().at(0).nodeValue();
+			setName(tempNode.childNodes().at(0).nodeValue());
 		}
 
 		else if (tempNode.nodeName() == QString("spirit:displayName")) {
-			displayName_ = tempNode.childNodes().at(0).nodeValue();
+			setDisplayName(tempNode.childNodes().at(0).nodeValue());
 		}
 
 		else if (tempNode.nodeName() == QString("spirit:phase")) {
 			phase_ = tempNode.childNodes().at(0).nodeValue().toDouble();
 		}
 
-		else if (tempNode.nodeName() == QString("spirit:parameters")) {
-
+		else if (tempNode.nodeName() == QString("spirit:parameters"))
+        {
+            ParameterReader reader;
 			// go through all parameters
 			for (int j = 0; j < tempNode.childNodes().count(); ++j) {
 				QDomNode parameterNode = tempNode.childNodes().at(j);
-				parameters_.append(QSharedPointer<Parameter>(
-						new Parameter(parameterNode)));
+				parameters_.append(reader.createParameterFrom(parameterNode));
 			}
 		}
 
@@ -70,7 +72,7 @@ phase_(-1), parameters_(), apiType_(Generator::NONE), generatorExe_(), vendorExt
 		}
 
 		else if (tempNode.nodeName() == QString("spirit:description")) {
-			description_ = tempNode.childNodes().at(0).nodeValue();
+			setDescription(tempNode.childNodes().at(0).nodeValue());
 		}
         else if (tempNode.nodeName() == QString("spirit:vendorExtensions")) 
         {
@@ -84,10 +86,8 @@ phase_(-1), parameters_(), apiType_(Generator::NONE), generatorExe_(), vendorExt
 }
 
 Generator::Generator( const Generator &other ):
+NameGroup(other),
 hidden_(other.hidden_),
-name_(other.name_),
-displayName_(other.displayName_),
-description_(other.description_),
 phase_(other.phase_),
 parameters_(),
 apiType_(other.apiType_),
@@ -105,10 +105,8 @@ vendorExtensions_(other.vendorExtensions_)
 
 Generator & Generator::operator=( const Generator &other ) {
 	if (this != &other) {
+        NameGroup::operator=(other);
 		hidden_ = other.hidden_;
-		name_ = other.name_;
-		displayName_ = other.displayName_;
-		description_ = other.description_;
 		phase_ = other.phase_;
 		apiType_ = other.apiType_;
 		generatorExe_ = other.generatorExe_;
@@ -135,31 +133,33 @@ void Generator::write(QXmlStreamWriter& writer) {
 	writer.writeStartElement("spirit:generator");
 	writer.writeAttribute("spirit:hidden", General::bool2Str(hidden_));
 
-	writer.writeTextElement("spirit:name", name_);
+	writer.writeTextElement("spirit:name", name());
 
-	if (!displayName_.isEmpty()) {
-                writer.writeTextElement("spirit:displayName", displayName_);
+	if (!displayName().isEmpty()) {
+                writer.writeTextElement("spirit:displayName", displayName());
 	}
 
-	if (!description_.isEmpty()) {
-		writer.writeTextElement("spirit:description", description_);
+	if (!description().isEmpty()) {
+		writer.writeTextElement("spirit:description", description());
 	}
 
 	if (phase_ >= 0) {
 		writer.writeTextElement("spirit:phase", QString::number(phase_));
 	}
 
-	// if any parameters exist
-	if (parameters_.size() != 0) {
-		writer.writeStartElement("spirit:parameters");
+    if (parameters_.size() != 0)
+    {
+        writer.writeStartElement("ipxact:parameters");
 
-		// write each parameter
-		for (int i = 0; i < parameters_.size(); ++i) {
-			parameters_.at(i)->write(writer);
-		}
+        ParameterWriter parameterWriter;
+        // write each parameter
+        for (int i = 0; i < parameters_.size(); ++i)
+        {
+            parameterWriter.writeParameter(writer, parameters_.at(i));
+        }
 
-		writer.writeEndElement(); // spirit:parameters
-	}
+        writer.writeEndElement(); // ipxact:parameters
+    }
 
 	// write the spirit:apiType element
 	switch (apiType_) {
@@ -197,20 +197,12 @@ bool Generator::getHidden() const {
 	return hidden_;
 }
 
-void Generator::setName(const QString &name) {
-	name_ = name;
-}
-
 void Generator::setPhase(double phase) {
 	phase_ = phase;
 }
 
 void Generator::setGeneratorExe(const QString &generatorExe) {
 	generatorExe_ = generatorExe;
-}
-
-QString Generator::getName() const {
-	return name_;
 }
 
 void Generator::setParameters(const QList<QSharedPointer<Parameter> > &parameters) {
@@ -235,20 +227,4 @@ QString Generator::getGeneratorExe() const {
 
 Generator::ApiType Generator::getApiType() const {
 	return apiType_;
-}
-
-void Generator::setDescription(const QString &description) {
-	description_ = description;
-}
-
-QString Generator::getDescription() const {
-	return description_;
-}
-
-QString Generator::getDisplayName() const {
-	return displayName_;
-}
-
-void Generator::setDisplayName(const QString &displayName) {
-	displayName_ = displayName;
 }

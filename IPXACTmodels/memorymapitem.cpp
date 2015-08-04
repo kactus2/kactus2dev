@@ -17,7 +17,7 @@
 // Function: memorymapitem::MemoryMapItem()
 //-----------------------------------------------------------------------------
 MemoryMapItem::MemoryMapItem(QDomNode &memoryMapNode): 
-nameGroup_(memoryMapNode),
+NameGroup(),
 attributes_(),
 baseAddress_(), 
 baseAddrAttributes_() {
@@ -43,14 +43,14 @@ baseAddrAttributes_() {
 }
 
 MemoryMapItem::MemoryMapItem():
-nameGroup_(),
+NameGroup(),
 attributes_(),
 baseAddress_("0x0"), 
 baseAddrAttributes_() {
 }
 
 MemoryMapItem::MemoryMapItem( const MemoryMapItem &other ):
-nameGroup_(other.nameGroup_),
+NameGroup(other),
 attributes_(other.attributes_),
 baseAddress_(other.baseAddress_),
 baseAddrAttributes_(other.baseAddrAttributes_) {
@@ -60,7 +60,7 @@ MemoryMapItem & MemoryMapItem::operator=( const MemoryMapItem &other )
 {
 	if (this != &other)
     {
-        nameGroup_ = other.nameGroup_;
+        NameGroup::operator=(other);
 		attributes_ = other.attributes_;
 		baseAddress_ = other.baseAddress_;
 		baseAddrAttributes_ = other.baseAddrAttributes_;
@@ -85,7 +85,18 @@ void MemoryMapItem::write(QXmlStreamWriter& writer)
 	// otherwise the attributes are printed under the wrong element
 	XmlUtils::writeAttributes(writer, attributes_);
 
-    nameGroup_.write(writer);
+    writer.writeTextElement("ipxact:name", name());
+
+    if (!displayName().isEmpty())
+    {
+        writer.writeTextElement("ipxact:displayName", displayName());
+    }
+
+    if (!description().isEmpty())
+    {
+        writer.writeTextElement("ipxact:description", description());
+    }
+
 
 	// baseAddress is mandatory only in base bank but not in
 	// banked type bank
@@ -113,13 +124,6 @@ QString MemoryMapItem::getBaseAddress() const {
 	return baseAddress_;
 }
 
-//-----------------------------------------------------------------------------
-// Function: memorymapitem::setName()
-//-----------------------------------------------------------------------------
-void MemoryMapItem::setName(const QString &name)
-{
-    nameGroup_.setName(name);
-}
 
 const QMap<QString, QString>& MemoryMapItem::getBaseAddrAttributes() {
 	return baseAddrAttributes_;
@@ -144,52 +148,4 @@ void MemoryMapItem::setBaseAddrAttributes(const
 
 	// save new attributes
 	baseAddrAttributes_ = baseAddrAttributes;
-}
-
-//-----------------------------------------------------------------------------
-// Function: memorymapitem::getName()
-//-----------------------------------------------------------------------------
-QString MemoryMapItem::getName() const
-{
-    return nameGroup_.name();
-}
-
-//-----------------------------------------------------------------------------
-// Function: memorymapitem::getDisplayName()
-//-----------------------------------------------------------------------------
-QString MemoryMapItem::getDisplayName() const
-{
-    return nameGroup_.displayName();
-}
-
-//-----------------------------------------------------------------------------
-// Function: memorymapitem::getDescription()
-//-----------------------------------------------------------------------------
-QString MemoryMapItem::getDescription() const
-{
-    return nameGroup_.description();
-}
-
-//-----------------------------------------------------------------------------
-// Function: memorymapitem::setDisplayName()
-//-----------------------------------------------------------------------------
-void MemoryMapItem::setDisplayName(const QString& name)
-{
-    nameGroup_.setDisplayName(name);
-}
-
-//-----------------------------------------------------------------------------
-// Function: memorymapitem::setDescription()
-//-----------------------------------------------------------------------------
-void MemoryMapItem::setDescription(const QString& description)
-{
-    nameGroup_.setDescription(description);
-}
-
-//-----------------------------------------------------------------------------
-// Function: memorymapitem::getNameGroup()
-//-----------------------------------------------------------------------------
-NameGroup& MemoryMapItem::getNameGroup()
-{
-    return nameGroup_;
 }

@@ -27,8 +27,8 @@ AddressSpaceEditor::AddressSpaceEditor(QSharedPointer<Component> component,
     QWidget* parent):
 ItemEditor(component, handler, parent),
     addrSpace_(addrSpace),
-    nameEditor_(addrSpace->getNameGroup(), this),
-    generalEditor_(addrSpace, component->getMasterInterfaces(addrSpace_->getName()), parameterFinder,
+    nameEditor_(addrSpace, this),
+    generalEditor_(addrSpace, component->getMasterInterfaces(addrSpace_->name()), parameterFinder,
                    expressionParser, this),
     segmentsEditor_(addrSpace, component, handler->getDirectoryPath(*component->getVlnv()), parameterFinder,
                     expressionParser, expressionFormatter, this),
@@ -97,7 +97,7 @@ bool AddressSpaceEditor::isValid() const
 //-----------------------------------------------------------------------------
 void AddressSpaceEditor::refresh()
 {
-    QStringList masterInterfaceList = component()->getMasterInterfaces(addrSpace_->getName());
+    QStringList masterInterfaceList = component()->getMasterInterfaces(addrSpace_->name());
 
     nameEditor_.refresh();
 	generalEditor_.refresh(masterInterfaceList);

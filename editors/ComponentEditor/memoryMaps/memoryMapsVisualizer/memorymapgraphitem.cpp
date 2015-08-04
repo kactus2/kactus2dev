@@ -61,7 +61,7 @@ void MemoryMapGraphItem::refresh()
 //-----------------------------------------------------------------------------
 void MemoryMapGraphItem::updateDisplay()
 {
-    setName(memoryMap_->getName());
+    setName(memoryMap_->name());
 
     quint64 offset = getOffset();
     quint64 lastAddress = getLastAddress();
@@ -70,7 +70,7 @@ void MemoryMapGraphItem::updateDisplay()
     setDisplayLastAddress(lastAddress);
 
     // Set tooltip to show addresses in hexadecimals.
-    setToolTip("<b>Name: </b>" + memoryMap_->getName() + "<br>" +
+    setToolTip("<b>Name: </b>" + memoryMap_->name() + "<br>" +
         "<b>AUB: </b>" + QString::number(parentMemoryMap_->getAddressUnitBits()) + "<br>" +
         "<b>First address: </b>" + toHexString(offset) + "<br>" +
         "<b>Last address: </b>" + toHexString(lastAddress));

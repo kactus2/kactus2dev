@@ -82,7 +82,7 @@ BusPortItem::~BusPortItem() {
 
 QString BusPortItem::name() const
 {
-    return busInterface_->getName();
+    return busInterface_->name();
 }
 
 //-----------------------------------------------------------------------------
@@ -251,7 +251,7 @@ bool BusPortItem::onConnect(ConnectionEndpoint const* other)
     // If the port is a non-typed one, try to copy the configuration from the other end point.
     if (getConnections().empty() && !isTypeLocked())
     {
-        oldName_ = busInterface_->getName();
+        oldName_ = busInterface_->name();
 
         if (otherBusIf != 0 && otherBusIf->getBusType().isValid())
         {
@@ -285,12 +285,12 @@ bool BusPortItem::onConnect(ConnectionEndpoint const* other)
                 busInterface_->setPortMaps(newPortMaps);
             }
     
-            QString ifName = other->getBusInterface()->getName();
+            QString ifName = other->getBusInterface()->name();
             int count = 0;
             while( getOwnerComponent()->hasInterface(ifName) )
             {
                 count++;
-                ifName = other->getBusInterface()->getName() + "_" + QString::number(count);
+                ifName = other->getBusInterface()->name() + "_" + QString::number(count);
             }
             busInterface_->setName(ifName);
 
@@ -715,7 +715,7 @@ void BusPortItem::setInterfaceMode( General::InterfaceMode mode ) {
 
 QString BusPortItem::description() const {
     Q_ASSERT(busInterface_);
-    return busInterface_->getDescription();
+    return busInterface_->description();
 }
 
 void BusPortItem::setDescription( const QString& description ) {

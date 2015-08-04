@@ -111,7 +111,7 @@ QVariant ApiFunctionModel::data( const QModelIndex& index, int role) const {
 
     // return data for display role
     if (role == Qt::DisplayRole) {
-        return apiFunctions_.at(index.row())->getName();
+        return apiFunctions_.at(index.row())->name();
     }
     // if unsupported role
     else {

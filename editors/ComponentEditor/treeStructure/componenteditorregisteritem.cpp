@@ -80,7 +80,7 @@ QString ComponentEditorRegisterItem::getTooltip() const
 //-----------------------------------------------------------------------------
 QString ComponentEditorRegisterItem::text() const
 {
-	return reg_->getName();
+	return reg_->name();
 }
 
 //-----------------------------------------------------------------------------

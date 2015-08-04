@@ -71,7 +71,7 @@ public:
     /*!
      *  Returns the interface name.
      */
-    QString getName() const;
+    QString name() const;
 
     /*!
      *  Returns the selected mode.

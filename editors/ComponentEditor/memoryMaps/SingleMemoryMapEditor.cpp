@@ -30,7 +30,7 @@ SingleMemoryMapEditor::SingleMemoryMapEditor(QSharedPointer<Component> component
     QSharedPointer<ExpressionParser> expressionParser,
     QWidget* parent):
 ItemEditor(component, libHandler, parent),
-nameEditor_(memoryRemap->getNameGroup(), this, tr("Memory remap name and description")),
+nameEditor_(memoryRemap, this, tr("Memory remap name and description")),
 memoryMapEditor_(new MemoryMapEditor(component, libHandler, memoryRemap, parameterFinder, expressionFormatter,
     expressionParser, this)),
 addressUnitBitsEditor_(new QLineEdit(parent)),
@@ -205,7 +205,7 @@ void SingleMemoryMapEditor::refreshSlaveBinding()
 {
     QString slaveInterfaceText ("No binding");
 
-    QStringList interfaceNames = component()->getSlaveInterfaces(parentMemoryMap_->getName());
+    QStringList interfaceNames = component()->getSlaveInterfaces(parentMemoryMap_->name());
     if (!interfaceNames.isEmpty())
     {
         slaveInterfaceText = interfaceNames.join(", ");
@@ -232,7 +232,7 @@ void SingleMemoryMapEditor::refreshRemapStateSelector()
 
     foreach (QSharedPointer<RemapState> remapState, *component()->getRemapStates())
     {
-        remapStateNames.append(remapState->getName());
+        remapStateNames.append(remapState->name());
     }
 
     remapStateSelector_->refresh(remapStateNames);

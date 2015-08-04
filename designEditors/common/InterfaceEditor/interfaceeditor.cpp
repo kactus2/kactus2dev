@@ -15,7 +15,7 @@
 #include <IPXACTmodels/ComDefinition.h>
 #include <IPXACTmodels/ComProperty.h>
 #include <IPXACTmodels/PortMap.h>
-#include <IPXACTmodels/vector.h>
+#include <IPXACTmodels/common/Vector.h>
 
 #include <common/GenericEditProvider.h>
 #include <common/graphicsItems/ComponentItem.h>
@@ -512,8 +512,9 @@ void InterfaceEditor::setPortMaps() {
 		QString logicalPort = portMap->logicalPort();
 
         // if the logical port is vectored
-        if (portMap->logicalVector()) {
-            logicalPort += portMap->logicalVector()->toString();
+        if (portMap->logicalVector())
+        {
+            logicalPort += "[" + portMap->logicalVector()->getLeft() + ".." + portMap->logicalVector()->getRight() + "]";
         }
 
 		QTableWidgetItem* logicalItem = new QTableWidgetItem(logicalPort);
@@ -533,7 +534,7 @@ void InterfaceEditor::setPortMaps() {
 		// get size of the logical port
 		int logicalSize = 1;
 		if (portMap->logicalVector()) {
-			logicalSize = portMap->logicalVector()->getSize();
+			//logicalSize = portMap->logicalVector()->getSize();
 		}
 		
 		// display at least the name of physical port
@@ -543,7 +544,8 @@ void InterfaceEditor::setPortMaps() {
 			physicalPort = portMap->physicalPort();
             // if the physical port is vectored.
             if (portMap->physicalVector()) {
-                physicalPort += portMap->physicalVector()->toString();
+                physicalPort += 
+                    "[" + portMap->physicalVector()->getLeft() + ".." + portMap->physicalVector()->getRight() + "]";
             }
 		}
 		// if port map does not contain physical vector but port is found on the component
@@ -565,7 +567,7 @@ void InterfaceEditor::setPortMaps() {
 		// get size of the physical port
 		int physicalSize = 1;
 		if (portMap->physicalVector()) {
-			physicalSize = portMap->physicalVector()->getSize();
+			//physicalSize = portMap->physicalVector()->getSize();
 		}
 
 		// if the sizes of the ports don't match

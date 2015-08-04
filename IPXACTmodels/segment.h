@@ -9,7 +9,7 @@
 #ifndef SEGMENT_H_
 #define SEGMENT_H_
 
-#include <IPXACTmodels/NameGroup.h>
+#include <IPXACTmodels/common/NameGroup.h>
 
 #include "ipxactmodels_global.h"
 
@@ -23,7 +23,7 @@ class VendorExtension;
 /*! \brief Segment describes the location and size of an area in containing address space.
  *
  */
-class IPXACTMODELS_EXPORT Segment {
+class IPXACTMODELS_EXPORT Segment : public NameGroup{
 
 public:
 
@@ -74,24 +74,6 @@ public:
 	*/
 	bool isValid() const;
 
-	/*! \brief Get the name of the segment.
-	 *
-	 * \return QString contains the segment name.
-	*/
-	QString getName() const;
-
-	/*! \brief Get the display name of the segment.
-	 *
-	 * \return QString contains the display name of the segment.
-	*/
-	QString getDisplayName() const;
-
-	/*! \brief Get the description of the segment.
-	 *
-	 * \return QString contains the description of the segment.
-	*/
-	QString getDescription() const;
-
 	/*! \brief Get the address offset of the segment within the containing address space.
 	 *
 	 * \return QString contains the address offset.
@@ -116,26 +98,6 @@ public:
 	*/
 	const QMap<QString, QString>& getRangeAttributes() const;
 
-	/*! \brief Set the name for the segment.
-	 *
-	 * \param name The name for the segment.
-	 *
-	*/
-	void setName(const QString& name);
-	
-	/*! \brief Set the display name for the segment.
-	 *
-	 * \param dispName The display name for the segment.
-	 *
-	*/
-	void setDisplayName(const QString& dispName);
-
-	/*! \brief Set the description for the segment.
-	 *
-	 * \param description The description for the segment.
-	 *
-	*/
-	void setDescription(const QString& description);
 
 	/*! \brief Set the address offset for the segment.
 	 *
@@ -152,9 +114,6 @@ public:
 	void setRange(const QString& range);
 
 private:
-
-	//! \brief Contains the name and description of the segment
-	NameGroup nameGroup_;
 
 	//! \brief The offset of the segment from the beginning of the containing address space.
 	QString addressOffset_;

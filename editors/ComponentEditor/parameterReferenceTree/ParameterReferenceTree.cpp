@@ -132,7 +132,7 @@ bool ParameterReferenceTree::referenceExistsInParameters(
 bool ParameterReferenceTree::parameterHasReference(QSharedPointer<Parameter> parameter) const
 {
     if (parameter->getValue().contains(targetID_) ||
-        parameter->getBitWidthLeft().contains(targetID_) || parameter->getBitWidthRight().contains(targetID_) ||
+        parameter->getVectorLeft().contains(targetID_) || parameter->getVectorRight().contains(targetID_) ||
         parameter->getAttribute("kactus2:arrayLeft").contains(targetID_) ||
         parameter->getAttribute("kactus2:arrayRight").contains(targetID_))
     {
@@ -151,7 +151,7 @@ void ParameterReferenceTree::createParameterReferences(
     {
         if (parameterHasReference(parameter))
         {
-            QTreeWidgetItem* parameterItem = createMiddleItem(parameter->getName(), parentItem);
+            QTreeWidgetItem* parameterItem = createMiddleItem(parameter->name(), parentItem);
             createItemsForParameter(parameter, parameterItem);
         }
     }
@@ -184,7 +184,7 @@ void ParameterReferenceTree::createReferencesForModelParameters(
     {
         if (parameterHasReference(modelParameter))
         {
-            QTreeWidgetItem* modelParameterItem = createMiddleItem(modelParameter->getName(), parentItem);
+            QTreeWidgetItem* modelParameterItem = createMiddleItem(modelParameter->name(), parentItem);
             createItemsForParameter(modelParameter, modelParameterItem);
         }
     }
@@ -297,7 +297,7 @@ void ParameterReferenceTree::createReferencesForViews()
     {
         if (referenceExistsInView(view))
         {
-            QTreeWidgetItem* viewItem = createMiddleItem(view->getName(), topViewsItem);
+            QTreeWidgetItem* viewItem = createMiddleItem(view->name(), topViewsItem);
             if (referenceExistsInParameters(view->getParameters()))
             {
                 QTreeWidgetItem* viewParametersItem = createMiddleItem("Parameters", viewItem);
@@ -353,7 +353,7 @@ void ParameterReferenceTree::createReferencesForPorts()
     {
         if (portHasreference(port))
         {
-            QTreeWidgetItem* portItem = createMiddleItem(port->getName(), topPortsItem);
+            QTreeWidgetItem* portItem = createMiddleItem(port->name(), topPortsItem);
             createItemsForPort(port, portItem);
         }
     }
@@ -531,7 +531,7 @@ void ParameterReferenceTree::createReferencesForAddressSpaces()
     {
         if (referenceExistsInSingleAddressSpace(addressSpace))
         {
-            QTreeWidgetItem* addressSpaceItem = createMiddleItem(addressSpace->getName(), topAddressSpaceItem);
+            QTreeWidgetItem* addressSpaceItem = createMiddleItem(addressSpace->name(), topAddressSpaceItem);
 
             if (referenceExistsInSingleAddressSpace(addressSpace))
             {
@@ -549,7 +549,7 @@ void ParameterReferenceTree::createReferencesForAddressSpaces()
             if (addressSpace->hasLocalMemoryMap() && referenceExistsInDefaultMemoryRemap(addressSpace->getLocalMemoryMap()))
             {
                 QSharedPointer <MemoryMap> localMemoryMap = addressSpace->getLocalMemoryMap();
-                QTreeWidgetItem* memoryMapItem = createMiddleItem(localMemoryMap->getName(), addressSpaceItem);
+                QTreeWidgetItem* memoryMapItem = createMiddleItem(localMemoryMap->name(), addressSpaceItem);
                 createReferencesForSingleMemoryMap(localMemoryMap, memoryMapItem);
             }
         }
@@ -591,7 +591,7 @@ void ParameterReferenceTree::createReferencesForSegments(QSharedPointer<AddressS
 //-----------------------------------------------------------------------------
 void ParameterReferenceTree::createItemsForSegment(QSharedPointer<Segment> segment, QTreeWidgetItem* parent)
 {
-    QTreeWidgetItem* segmentItem = createMiddleItem(segment->getName(), parent);
+    QTreeWidgetItem* segmentItem = createMiddleItem(segment->name(), parent);
 
     if (segment->getAddressOffset().contains(targetID_))
     {
@@ -615,7 +615,7 @@ void ParameterReferenceTree::createReferencesForMemoryMaps()
     {
         if (referenceExistsInSingleMemoryMap(memoryMap))
         {
-            QTreeWidgetItem* memoryMapTreeItem = createMiddleItem(memoryMap->getName(), topMemoryMapItem);
+            QTreeWidgetItem* memoryMapTreeItem = createMiddleItem(memoryMap->name(), topMemoryMapItem);
 
             QTreeWidgetItem* memoryRemapsTreeItem = createMiddleItem("Memory remaps", memoryMapTreeItem);
             colourItemGrey(memoryRemapsTreeItem);
@@ -630,7 +630,7 @@ void ParameterReferenceTree::createReferencesForMemoryMaps()
             {
                 if (referenceExistsInSingleMemoryRemap(memoryRemap))
                 {
-                    QTreeWidgetItem* memoryRemapItem = createMiddleItem(memoryRemap->getName(), memoryRemapsTreeItem);
+                    QTreeWidgetItem* memoryRemapItem = createMiddleItem(memoryRemap->name(), memoryRemapsTreeItem);
                     createReferencesForSingleMemoryMap(memoryRemap, memoryRemapItem);
                 }
             }
@@ -669,7 +669,7 @@ void ParameterReferenceTree::createReferencesForSingleMemoryMap(QSharedPointer<A
 void ParameterReferenceTree::createReferencesForSingleAddressBlock(QSharedPointer<AddressBlock> addressBlock,
     QTreeWidgetItem* middleAddressBlocksItem)
 {
-    QTreeWidgetItem* addressBlockItem = createMiddleItem(addressBlock->getName(),
+    QTreeWidgetItem* addressBlockItem = createMiddleItem(addressBlock->name(),
         middleAddressBlocksItem);
 
     if (referenceExistsInAddressBlockValues(addressBlock))
@@ -698,7 +698,7 @@ void ParameterReferenceTree::createReferencesForSingleAddressBlock(QSharedPointe
 void ParameterReferenceTree::createReferencesForSingleRegister(QSharedPointer<Register> targetRegister,
     QTreeWidgetItem* parentItem)
 {
-    QTreeWidgetItem* registerItem = createMiddleItem(targetRegister->getName(), parentItem);
+    QTreeWidgetItem* registerItem = createMiddleItem(targetRegister->name(), parentItem);
     createItemsForRegister(targetRegister, registerItem);
 
     if (referenceExistsInRegisterFields(targetRegister))
@@ -710,7 +710,7 @@ void ParameterReferenceTree::createReferencesForSingleRegister(QSharedPointer<Re
         {
             if (registerFieldHasReference(registerField))
             {
-                QTreeWidgetItem* singleFieldItem = createMiddleItem(registerField->getName(), fieldsItem);
+                QTreeWidgetItem* singleFieldItem = createMiddleItem(registerField->name(), fieldsItem);
                 createItemsForField(registerField, singleFieldItem);
             }
         }
@@ -809,7 +809,7 @@ void ParameterReferenceTree::createReferencesForBusInterfaces()
     {
         if (referenceExistsInSingleBusInterface(busInterface))
         {
-            QTreeWidgetItem* busInterfaceItem = createMiddleItem(busInterface->getName(), topBusInterfaceItem);
+            QTreeWidgetItem* busInterfaceItem = createMiddleItem(busInterface->name(), topBusInterfaceItem);
 
             if (busInterface->getMirroredSlave())
             {
@@ -923,7 +923,7 @@ void ParameterReferenceTree::createReferencesForRemapStates()
     {
         if (referenceExistsInSingleRemapState(remapState))
         {
-            QTreeWidgetItem* remapStateItem = createMiddleItem(remapState->getName(), topRemapStatesItem);
+            QTreeWidgetItem* remapStateItem = createMiddleItem(remapState->name(), topRemapStatesItem);
 
             QTreeWidgetItem* remapPortsItem = createMiddleItem("Remap Ports", remapStateItem);
             colourItemGrey(remapPortsItem);
@@ -980,13 +980,13 @@ void ParameterReferenceTree::createItemsForParameter(QSharedPointer<Parameter> p
     {
         createItem("Value", parameter->getValue(), parent);
     }
-    if (parameter->getBitWidthLeft().contains(targetID_))
+    if (parameter->getVectorLeft().contains(targetID_))
     {
-        createItem("Bit Width Left", parameter->getBitWidthLeft(), parent);
+        createItem("Bit Width Left", parameter->getVectorLeft(), parent);
     }
-    if (parameter->getBitWidthRight().contains(targetID_))
+    if (parameter->getVectorRight().contains(targetID_))
     {
-        createItem("Bit Width Right", parameter->getBitWidthRight(), parent);
+        createItem("Bit Width Right", parameter->getVectorRight(), parent);
     }
     if (parameter->getAttribute("kactus2:arrayLeft").contains(targetID_))
     {

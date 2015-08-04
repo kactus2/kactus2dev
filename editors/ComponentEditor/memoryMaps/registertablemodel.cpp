@@ -254,11 +254,11 @@ QVariant RegisterTableModel::valueForIndex(QModelIndex const& index) const
 {
     if (index.column() == RegisterColumns::NAME_COLUMN)
     {
-        return fields_.at(index.row())->getName();
+        return fields_.at(index.row())->name();
     }
     else if (index.column() == RegisterColumns::DESCRIPTION_COLUMN)
     {
-        return fields_.at(index.row())->getDescription();
+        return fields_.at(index.row())->description();
     }
     else if (index.column() == RegisterColumns::OFFSET_COLUMN)
     {

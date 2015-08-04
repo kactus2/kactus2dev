@@ -11,7 +11,7 @@
 
 #include "ipxactmodels_global.h"
 
-#include <IPXACTmodels/NameGroup.h>
+#include <IPXACTmodels/common/NameGroup.h>
 
 #include <QString>
 #include <QList>
@@ -22,7 +22,7 @@
  * Defines a conditional remap state where each state is conditioned by a remap
  * port specified with a remapPort instance.
  */
-class IPXACTMODELS_EXPORT RemapState {
+class IPXACTMODELS_EXPORT RemapState : public NameGroup{
 
 public:
 
@@ -98,76 +98,15 @@ public:
 	bool isValid(const QStringList& portNames) const;
 
     /*!
-	 *  Get the name of the remap state.
-	 *
-     *      @return The name of the remap state.
-	 */
-	QString getName() const;
-
-    /*!
 	 *  Get the list of the remap ports for this remap state.
 	 *
      *      @return List containing pointer to the remap port instances.
 	 */
 	const QSharedPointer<QList<QSharedPointer<RemapPort> > > getRemapPorts();
 
-    /*!
-	 *  Set the name for this remap state.
-	 *
-	 *      @param [in] name    The new name of the remap state.
-	 */
-	void setName(const QString &name);
 
-    /*!
-     *  Get the display name of the remap state.
-     *
-     *      @return The display name for the remap state.
-     */
-    QString getDisplayName() const;
-
-    /*!
-     *  Set the display name for the remap state.
-     *
-     *      @param [in] newDisplayName  The new display name for the remap state.
-     */
-    void setDisplayName(QString const& newDisplayName);
-
-    /*!
-     *  Get the description of the remap state.
-     *
-     *      @return The description of the remap state.
-     */
-    QString getDescription() const;
-
-    /*!
-     *  Set the description for the remap state.
-     *
-     *      @param [in] newDescription  The new description for the remap state.
-     */
-    void setDescription(QString const& newDescription);
-
-    /*!
-     *  Get the name group of the remap state.
-     *
-     *      @return The name group of the remap state.
-     */
-    NameGroup& getNamegroup();
-
-    /*!
-     *  Get the name group of the remap state.
-     *
-     *      @return The name group of the remap state.
-     */
-    const NameGroup& getNamegroup() const;
 
 private:
-
-	/*!
-	 * MANDATORY
-	 * Identifies the remapState
-	 */
-	//QString name_;
-    NameGroup nameGroup_;
 
 	/*!
 	 * OPTIONAL

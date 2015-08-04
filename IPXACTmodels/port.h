@@ -10,7 +10,7 @@
 #include "generaldeclarations.h"
 #include "ipxactmodels_global.h"
 
-#include <IPXACTmodels/NameGroup.h>
+#include <IPXACTmodels/common/NameGroup.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Array.h>
 
 #include <QString>
@@ -31,7 +31,7 @@ class Kactus2Position;
  *
  * Port describes a single external port on the component
  */
-class IPXACTMODELS_EXPORT Port {
+class IPXACTMODELS_EXPORT Port : public NameGroup{
 
 public:
 
@@ -151,40 +151,6 @@ public:
 		QStringList& errorList, 
 		const QString& parentIdentifier) const;
 
-	/*! \brief Get the name of the port
-	 *
-	 * \return QString containing the name
-	 */
-	QString getName() const;
-
-	/*! \brief Get the display name of the port.
-	 *
-	 *
-	 * \return QString contains the display name.
-	*/
-	QString getDisplayName() const;
-
-	/*! \brief Set the display name for the port.
-	 *
-	 * \param displayName The display name to set.
-	 *
-	*/
-	void setDisplayName(const QString& displayName);
-
-	/*! \brief Get the description of the port.
-	 *
-	 *
-	 * \return QString contains the description of the port.
-	*/
-	QString getDescription() const;
-
-	/*! \brief Set the description for the port.
-	 *
-	 * \param description The description to set.
-	 *
-	*/
-	void setDescription(const QString& description);
-
 	/*! \brief Get the type of the port
 	 *
 	 * \return PortType: WIRE or TRANSACTIONAL
@@ -204,16 +170,6 @@ public:
 	 * then null pointer is returned.
 	 */
 	Wire *getWire() const;
-
-	/*! \brief Set the name for the port.
-	 *
-	 * Note: This function should not be called directly to change the name
-	 * of the port because model has stored the ports in a map indexed by name.
-	 * Instead use the model's renamePort() function.
-	 *
-	 * \param name QString containing the name
-	 */
-	void setName(const QString &name);
 
 	/*! \brief Set the transactional element for the port
 	 *
@@ -341,16 +297,6 @@ public:
      *      @return     The expression.
      */
     QString getRightBoundExpression() const;
-
-    /*!
-     *  Remove the left bound expression.
-     */
-    void removeLeftBoundExpression();
-
-    /*!
-     *  Remove the right bound expression.
-     */
-    void removeRightBoundExpression();
 
 	/*! \brief Set the size of the port
 	 * 
@@ -569,8 +515,9 @@ private:
      */
     void createTagExtension(QString portTags);
 
-    //! \brief Contains the name, display name and description for the port.
-	NameGroup nameGroup_;
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
 	/*!
 	 * Defines the port type

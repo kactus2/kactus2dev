@@ -9,11 +9,11 @@
 
 #include"vlnv.h"
 #include "generaldeclarations.h"
-#include "parameter.h"
+#include "common/Parameter.h"
 
 #include "ipxactmodels_global.h"
  
-#include <IPXACTmodels/NameGroup.h>
+#include <IPXACTmodels/common/NameGroup.h>
 
 #include <QDomNode>
 #include <QString>
@@ -34,7 +34,7 @@ class MirroredSlaveInterface;
  *
  * BusInterface defines properties of the specific interface in a component.
  */
-class IPXACTMODELS_EXPORT BusInterface {
+class IPXACTMODELS_EXPORT BusInterface : public NameGroup {
 
 public:
 
@@ -192,24 +192,6 @@ public:
 	 */
 	General::InterfaceMode getInterfaceMode() const;
 
-	/*! \brief get the name of the bus interface
-	 *
-	 * \return The name of the interface.
-	 */
-	QString getName() const;
-
-	/*! \brief Get the display name of the bus interface
-	 *
-	 * \return QString containing the display name.
-	*/
-	QString getDisplayName() const;
-
-	/*! \brief Get the description of the bus interface
-	 *
-	 * \return QString containing the description.
-	*/
-	QString getDescription() const;
-
 	/*! \brief Get the parameters of the bus interface
 	 *
 	 * \return A QList holding the parameters for this interface.
@@ -280,26 +262,6 @@ public:
 	 * \param interfaceMode The interface mode
 	 */
 	void setInterfaceMode(General::InterfaceMode interfaceMode);
-
-	/*! \brief Set the name of this interface
-	 *
-	 * \param name The name wanted
-	 */
-	void setName(const QString &name);
-
-	/*! \brief Set the display name for the bus interface
-	 *
-	 * \param displayName QString containing the display name.
-	 *
-	*/
-	void setDisplayName(const QString& displayName);
-
-	/*! \brief Set the description for the bus interface.
-	 *
-	 * \param description QString containing the description.
-	 *
-	*/
-	void setDescription(const QString& description);
 
 	/*! \brief Set the port maps for this interface
 	 *
@@ -498,18 +460,6 @@ public:
      */
     QPointF const& getDefaultPos() const;
 
-	/*! \brief Get the struct that contains name, display name and description.
-	 *
-	 * \return Reference to the struct.
-	*/
-	NameGroup& getNameGroup();
-
-	/*! \brief Get the struct that contains name, display name and description.
-	 *
-	 * \return Reference to the struct.
-	*/
-	const NameGroup& getNameGroup() const;
-
 	/*! \brief Get the memory map reference of a slave interface.
 	 *
 	 * If the interface mode is other than General::SLAVE then empty QString is returned.
@@ -528,9 +478,6 @@ public:
 	QString getAddressSpaceRef() const;
 
 private:
-
-	//! \brief Contains the name, display name and description of bus interface.
-	NameGroup nameGroup_;
 
 	//! \brief Contains the attributes for the bus interface
 	QMap<QString, QString> attributes_;

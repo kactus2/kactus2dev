@@ -98,7 +98,7 @@ public:
     /*!
      *  Returns the name of the subsection.
      */
-    QString const& getName() const;
+    QString const& name() const;
 
     /*!
      *  Returns the top y coordinate.

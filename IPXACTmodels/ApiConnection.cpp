@@ -329,9 +329,9 @@ void ApiConnection::setOffPage(bool offPage)
 }
 
 //-----------------------------------------------------------------------------
-// Function: ApiDependency::getName()
+// Function: ApiDependency::name()
 //-----------------------------------------------------------------------------
-QString const& ApiConnection::getName() const
+QString const& ApiConnection::name() const
 {
     return name_;
 }

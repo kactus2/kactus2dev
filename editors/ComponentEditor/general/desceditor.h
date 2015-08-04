@@ -45,7 +45,7 @@ public:
     /*!
      *  Returns the description string.
      */
-    QString getDescription() const;
+    QString description() const;
 
 signals:
     //! Emitted when the contents of the editor have changed.

@@ -96,7 +96,7 @@ QVariant SystemViewsModel::data( const QModelIndex& index, int role /*= Qt::Disp
 
 		switch (index.column()) {
 			case SystemViewsDelegate::NAME_COLUMN: {
-				return views_.at(index.row())->getName();
+				return views_.at(index.row())->name();
 													 }
 			case SystemViewsDelegate::HIER_REF_COLUMN: {
 				return views_.at(index.row())->getHierarchyRef().toString(":");

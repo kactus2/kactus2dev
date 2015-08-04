@@ -166,9 +166,9 @@ bool Choice::isValid() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: Choice::getName()
+// Function: Choice::name()
 //-----------------------------------------------------------------------------
-QString Choice::getName() const
+QString Choice::name() const
 {
 	return choiceName_;
 }

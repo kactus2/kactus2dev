@@ -253,7 +253,7 @@ QVariant AddressBlockModel::valueForIndex(QModelIndex const& index) const
 
     if (index.column() == AddressBlockColumns::NAME)
     {
-        return reg->getName();
+        return reg->name();
     }
     else if (index.column() == AddressBlockColumns::REGISTER_OFFSET)
     {
@@ -283,7 +283,7 @@ QVariant AddressBlockModel::valueForIndex(QModelIndex const& index) const
     }
     else if (index.column() == AddressBlockColumns::DESCRIPTION)
     {
-        return items_.at(index.row())->getDescription();
+        return items_.at(index.row())->description();
     }
     else if (index.column() == AddressBlockColumns::VOLATILE)
     {
@@ -546,10 +546,10 @@ bool AddressBlockModel::validateIndex(QModelIndex const& index) const
         QStringList registerNames;
         foreach (QSharedPointer<RegisterModel> registerItem, items_)
         {
-            registerNames.append(registerItem->getName());
+            registerNames.append(registerItem->name());
         }
 
-        return registerNames.count(reg->getName()) == 1;
+        return registerNames.count(reg->name()) == 1;
     }
     else if (index.column() == AddressBlockColumns::REGISTER_DIMENSION)
     {

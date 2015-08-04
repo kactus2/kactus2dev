@@ -13,8 +13,7 @@
 #include <QString>
 #include <QList>
 
-Channel::Channel(QDomNode &channelNode): name_(),
-displayName_(), description_(), busInterfaces_() {
+Channel::Channel(QDomNode &channelNode): NameGroup(), busInterfaces_() {
 	// go through all the childnodes
 	for (int i = 0; i < channelNode.childNodes().count(); ++i) {
 
@@ -24,20 +23,18 @@ displayName_(), description_(), busInterfaces_() {
 		if (tempNode.nodeName() == QString("spirit:name")) {
 
 			// strip all whitespace characters
-			name_ = tempNode.childNodes().at(0).nodeValue();
-			name_ = XmlUtils::removeWhiteSpace(name_);
+			QString name = tempNode.childNodes().at(0).nodeValue();
+			setName(XmlUtils::removeWhiteSpace(name));
 		}
 
 		// get the display name
 		else if (tempNode.nodeName() == QString("spirit:displayName")) {
-			displayName_ =
-					tempNode.childNodes().at(0).nodeValue();
+			setDisplayName(tempNode.childNodes().at(0).nodeValue());
 		}
 
 		// get the description
 		else if (tempNode.nodeName() == QString("spirit:description")) {
-			description_ =
-					tempNode.childNodes().at(0).nodeValue();
+			setDescription(tempNode.childNodes().at(0).nodeValue());
 		}
 
 		// get the bus interface refs
@@ -48,34 +45,20 @@ displayName_(), description_(), busInterfaces_() {
 			busInterfaces_.append(XmlUtils::removeWhiteSpace(temp));
 		}
 	}
-
-	// if mandatory elements are missing
-// 	if (name_.isNull()) {
-// 		throw Parse_error(QObject::tr("Mandatory element spirit:name was not"
-// 				" found"));
-// 	}
-// 	if (busInterfaces_.size() < 2) {
-// 		throw Parse_error(QObject::tr("Mandatory element spirit:busInterfaceRef"
-// 				" was not found"));
-// 	}
 }
 
-Channel::Channel(): name_(),
-displayName_(), description_(), busInterfaces_() {
+Channel::Channel(): NameGroup(), busInterfaces_() {
 }
 
 Channel::Channel( const Channel& other ):
-name_(other.name_),
-displayName_(other.displayName_),
-description_(other.description_),
-busInterfaces_(other.busInterfaces_) {
+NameGroup(other),
+busInterfaces_(other.busInterfaces_)
+{
 }
 
 Channel& Channel::operator=( const Channel& other ) {
 	if (this != &other) {
-		name_ = other.name_;
-		displayName_ = other.displayName_;
-		description_ = other.description_;
+		NameGroup::operator=(other);
 		busInterfaces_ = other.busInterfaces_;
 	}
 	return *this;
@@ -87,16 +70,16 @@ Channel::~Channel() {
 void Channel::write(QXmlStreamWriter& writer) {
 	writer.writeStartElement("spirit:channel");
 
-	writer.writeTextElement("spirit:name", name_);
+	writer.writeTextElement("spirit:name", name());
 
 	// optional element
-	if (!displayName_.isEmpty()) {
-		writer.writeTextElement("spirit:displayName", displayName_);
+	if (!displayName().isEmpty()) {
+		writer.writeTextElement("spirit:displayName", displayName());
 	}
 
 	// optional element
-	if (!description_.isEmpty()) {
-		writer.writeTextElement("spirit:description", description_);
+	if (!description().isEmpty()) {
+		writer.writeTextElement("spirit:description", description());
 	}
 
 	for (int i = 0; i < busInterfaces_.size(); ++i)
@@ -113,7 +96,7 @@ bool Channel::isValid(const QStringList& interfaceNames,
 					  const QString& parentIdentifier ) const {
 	bool valid = true;
 
-	if (name_.isEmpty()) {
+	if (name().isEmpty()) {
 		errorList.append(QObject::tr("No name specified for channel within %1").arg(
 			parentIdentifier));
 		valid = false;
@@ -121,14 +104,14 @@ bool Channel::isValid(const QStringList& interfaceNames,
 
 	if (busInterfaces_.size() < 2) {
 		errorList.append(QObject::tr("At least two interfaces must be listed in"
-			" a channel %1 within %2").arg(name_).arg(parentIdentifier));
+			" a channel %1 within %2").arg(name()).arg(parentIdentifier));
 		valid = false;
 	}
 
 	foreach (QString interfaceRef, busInterfaces_) {
 		if (!interfaceNames.contains(interfaceRef)) {
 			errorList.append(QObject::tr("Channel %1 contained invalid interface "
-				"reference to %2 within %3").arg(name_).arg(interfaceRef).arg(
+				"reference to %2 within %3").arg(name()).arg(interfaceRef).arg(
 				parentIdentifier));
 			valid = false;
 		}
@@ -138,7 +121,7 @@ bool Channel::isValid(const QStringList& interfaceNames,
 }
 
 bool Channel::isValid(const QStringList& interfaceNames) const {
-	if (name_.isEmpty()) {
+	if (name().isEmpty()) {
 		return false;
 	}
 	else if (busInterfaces_.size() < 2) {
@@ -154,18 +137,6 @@ bool Channel::isValid(const QStringList& interfaceNames) const {
 	return true;
 }
 
-QString Channel::getName() const {
-	return name_;
-}
-
-QString Channel::getDisplayName() const {
-	return displayName_;
-}
-
-QString Channel::getDescription() const {
-	return description_;
-}
-
 const QStringList& Channel::getInterfaces() const {
 	return busInterfaces_;
 }
@@ -176,16 +147,4 @@ bool Channel::containsInterface( const QString& interfaceName ) const {
 
 void Channel::setInterfaces( const QStringList& interfaceNames ) {
 	busInterfaces_ = interfaceNames;
-}
-
-void Channel::setName( const QString& name ) {
-	name_ = name;
-}
-
-void Channel::setDisplayName( const QString& name ) {
-	displayName_ = name;
-}
-
-void Channel::setDescription( const QString& description ) {
-	description_ = description;
 }

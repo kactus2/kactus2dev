@@ -166,7 +166,7 @@ QVariant LibraryTreeModel::data(const QModelIndex& index, int role) const {
 
 	if (role == Qt::DisplayRole) {
 
-		return item->getName();
+		return item->name();
 	}
 
 	else if (role == Qt::ForegroundRole) {

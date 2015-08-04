@@ -14,7 +14,7 @@
 
 #include"vlnv.h"
 
-#include <IPXACTmodels/NameGroup.h>
+#include <IPXACTmodels/common/NameGroup.h>
 
 #include <IPXACTmodels/filebuilder.h>
 #include "ipxactmodels_global.h"
@@ -114,7 +114,7 @@ public:
 	 *
 	 * \return QString containing the name
 	 */
-	QString getName() const;
+	QString name() const;
 
 	/*! \brief Get the display name of the view
 	 *

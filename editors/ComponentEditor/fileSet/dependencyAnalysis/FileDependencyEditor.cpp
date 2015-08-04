@@ -398,10 +398,10 @@ void FileDependencyEditor::scanDirectories()
         foreach (QSharedPointer<File> file, fileSet->getFiles())
         {
             // For non-url files, check if the model does not contain a corresponding file item.
-            if (!QRegExp(Utils::URL_VALIDITY_REG_EXP).exactMatch(file->getName()) &&
-                model_.findFileItem(file->getName()) == 0)
+            if (!QRegExp(Utils::URL_VALIDITY_REG_EXP).exactMatch(file->name()) &&
+                model_.findFileItem(file->name()) == 0)
             {
-                QFileInfo info(file->getName());
+                QFileInfo info(file->name());
                 QString folderPath = info.path();
 
                 // Create a folder item for the file if not already created.
@@ -414,7 +414,7 @@ void FileDependencyEditor::scanDirectories()
 
                 // Create a file item.
                 QList<File*> fileRefs;
-                component_->getFiles(file->getName(), fileRefs);
+                component_->getFiles(file->name(), fileRefs);
 
                 QString fileType = "";
 
@@ -423,7 +423,7 @@ void FileDependencyEditor::scanDirectories()
                     fileType = file->getFileTypes().first();
                 }
 
-                folderItem->addFile(component_.data(), file->getName(), fileType, fileRefs);
+                folderItem->addFile(component_.data(), file->name(), fileType, fileRefs);
             }
         }
     }

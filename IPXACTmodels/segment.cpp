@@ -16,7 +16,7 @@
 #include <QStringList>
 
 Segment::Segment( QDomNode &segmentNode ):
-nameGroup_(segmentNode),
+NameGroup(),
 addressOffset_(),
 offsetAttributes_(),
 range_(),
@@ -50,7 +50,7 @@ vendorExtensions_()
 }
 
 Segment::Segment():
-nameGroup_(),
+NameGroup(),
 addressOffset_(),
 offsetAttributes_(),
 range_(),
@@ -61,7 +61,7 @@ vendorExtensions_()
 }
 
 Segment::Segment( const Segment& other ):
-nameGroup_(other.nameGroup_),
+NameGroup(other),
 addressOffset_(other.addressOffset_),
 offsetAttributes_(other.offsetAttributes_),
 range_(other.range_),
@@ -76,7 +76,7 @@ Segment::~Segment() {
 Segment& Segment::operator=( const Segment& other ) {
 
 	if (this != &other) {
-		nameGroup_ = other.nameGroup_;
+		NameGroup::operator=(other);
 		addressOffset_ = other.addressOffset_;
 		offsetAttributes_ = other.offsetAttributes_;
 		range_ = other.range_;
@@ -90,16 +90,16 @@ void Segment::write( QXmlStreamWriter& writer ) {
 
 	writer.writeStartElement("spirit:segment");
 
-	if (!nameGroup_.name().isEmpty()) {
-		writer.writeTextElement("spirit:name", nameGroup_.name());
+	if (!name().isEmpty()) {
+		writer.writeTextElement("spirit:name", name());
 	}
 
-	if (!nameGroup_.displayName().isEmpty()) {
-		writer.writeTextElement("spirit:displayName", nameGroup_.displayName());
+	if (!displayName().isEmpty()) {
+		writer.writeTextElement("spirit:displayName", displayName());
 	}
 
-	if (!nameGroup_.description().isEmpty()) {
-		writer.writeTextElement("spirit:description", nameGroup_.description());
+	if (!description().isEmpty()) {
+		writer.writeTextElement("spirit:description", description());
 	}
 
 	if (!addressOffset_.isEmpty()) {
@@ -132,9 +132,9 @@ void Segment::write( QXmlStreamWriter& writer ) {
 
 bool Segment::isValid( QStringList& errorList, const QString& parentIdentifier ) const {
 	bool valid = true;
-	const QString thisIdentifier(QObject::tr("segment %1").arg(nameGroup_.name()));
+	const QString thisIdentifier(QObject::tr("segment %1").arg(name()));
 
-	if (nameGroup_.name().isEmpty()) {
+	if (name().isEmpty()) {
 		valid = false;
 		errorList.append(QObject::tr("No name set for segment within %1").arg(parentIdentifier));
 	}
@@ -156,7 +156,7 @@ bool Segment::isValid( QStringList& errorList, const QString& parentIdentifier )
 
 bool Segment::isValid() const {
 	
-	if (nameGroup_.name().isEmpty()) {
+	if (name().isEmpty()) {
 		return false;
 	}
 	else if (addressOffset_.isEmpty()) {
@@ -167,18 +167,6 @@ bool Segment::isValid() const {
 	}
 
 	return true;
-}
-
-QString Segment::getName() const {
-	return nameGroup_.name();
-}
-
-QString Segment::getDisplayName() const {
-	return nameGroup_.displayName();
-}
-
-QString Segment::getDescription() const {
-	return nameGroup_.description();
 }
 
 QString Segment::getAddressOffset() const {
@@ -195,18 +183,6 @@ const QMap<QString, QString>& Segment::getOffsetAttributes() const {
 
 const QMap<QString, QString>& Segment::getRangeAttributes() const {
 	return rangeAttributes_;
-}
-
-void Segment::setName( const QString& name ) {
-	nameGroup_.setName(name);
-}
-
-void Segment::setDisplayName( const QString& dispName ) {
-	nameGroup_.setDisplayName(dispName);
-}
-
-void Segment::setDescription( const QString& description ) {
-	nameGroup_.setDescription(description);
 }
 
 void Segment::setOffset( const QString& addressOffset ) {

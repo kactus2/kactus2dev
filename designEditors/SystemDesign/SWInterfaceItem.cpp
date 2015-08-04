@@ -120,11 +120,11 @@ QString SWInterfaceItem::name() const
 {
     if (isCom())
     {
-        return comInterface_->getName();
+        return comInterface_->name();
     }
     else if (isApi())
     {
-        return apiInterface_->getName();
+        return apiInterface_->name();
     }
     else
     {
@@ -299,13 +299,13 @@ bool SWInterfaceItem::onConnect(ConnectionEndpoint const* other)
         if (other->getType() == ENDPOINT_TYPE_API)
         {
             // Determine the name for the interface.
-            QString name = other->getApiInterface()->getName();
+            QString name = other->getApiInterface()->name();
             unsigned int index = 0;
 
             while (component_->getApiInterface(name) != 0)
             {
                 ++index;
-                name = other->getApiInterface()->getName() + "_" + QString::number(index);
+                name = other->getApiInterface()->name() + "_" + QString::number(index);
             }
 
             apiInterface_ = QSharedPointer<ApiInterface>(new ApiInterface());
@@ -318,13 +318,13 @@ bool SWInterfaceItem::onConnect(ConnectionEndpoint const* other)
         else if (other->getType() == ENDPOINT_TYPE_COM)
         {
             // Determine the name for the interface.
-            QString name = other->getComInterface()->getName();
+            QString name = other->getComInterface()->name();
             unsigned int index = 0;
 
             while (component_->getComInterface(name) != 0)
             {
                 ++index;
-                name = other->getApiInterface()->getName() + "_" + QString::number(index);
+                name = other->getApiInterface()->name() + "_" + QString::number(index);
             }
 
             comInterface_ = QSharedPointer<ComInterface>(new ComInterface());

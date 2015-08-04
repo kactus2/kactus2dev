@@ -12,7 +12,7 @@
 #ifndef PARAMETERSMODEL_H
 #define PARAMETERSMODEL_H
 
-#include <IPXACTmodels/parameter.h>
+#include <IPXACTmodels/common/Parameter.h>
 
 #include <editors/ComponentEditor/common/AbstractParameterModel.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>

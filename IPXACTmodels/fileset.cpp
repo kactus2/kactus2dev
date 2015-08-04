@@ -12,7 +12,7 @@
 #include "GenericVendorExtension.h"
 #include "XmlUtils.h"
 
-#include <IPXACTmodels/NameGroup.h>
+#include <IPXACTmodels/common/NameGroup.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Value.h>
 
 #include <QString>
@@ -27,7 +27,7 @@
 // Function: FileSet::FileSet()
 //-----------------------------------------------------------------------------
 FileSet::FileSet(QDomNode & fileSetNode):
-nameGroup_(fileSetNode),
+NameGroup(),
 	groups_(),
 files_(), 
 defaultFileBuilders_(),
@@ -70,7 +70,7 @@ vendorExtensions_()
 // Function: FileSet::FileSet()
 //-----------------------------------------------------------------------------
 FileSet::FileSet(const QString& name, const QString& group):
-nameGroup_(name),
+NameGroup(name),
 	groups_(),
 	files_(), defaultFileBuilders_(),
 	dependencies_(), 
@@ -88,7 +88,7 @@ nameGroup_(name),
 // Function: FileSet::FileSet()
 //-----------------------------------------------------------------------------
 FileSet::FileSet():
-nameGroup_(), 
+NameGroup(), 
 	groups_(), 
 	files_(), 
 	defaultFileBuilders_(), 
@@ -104,7 +104,7 @@ nameGroup_(),
 // Function: FileSet::FileSet()
 //-----------------------------------------------------------------------------
 FileSet::FileSet( const FileSet &other ):
-nameGroup_(other.nameGroup_),
+NameGroup(other),
 groups_(other.groups_),
 files_(),
 defaultFileBuilders_(),
@@ -139,7 +139,7 @@ vendorExtensions_()
 
 FileSet & FileSet::operator=( const FileSet &other ) {
 	if (this != &other) {
-		nameGroup_ = other.nameGroup_;
+		NameGroup::operator=(other);
 		groups_ = other.groups_;
 		dependencies_ = other.dependencies_;
 
@@ -184,7 +184,17 @@ void FileSet::write(QXmlStreamWriter& writer)
 {
 	writer.writeStartElement("spirit:fileSet");
 
-    nameGroup_.write(writer);
+    writer.writeTextElement("ipxact:name", name());
+
+    if (!displayName().isEmpty())
+    {
+        writer.writeTextElement("ipxact:displayName", displayName());
+    }
+
+    if (!description().isEmpty())
+    {
+        writer.writeTextElement("ipxact:description", description());
+    }
 
 	// if optional groups are defined
 	for (int i = 0; i < groups_.size(); ++i) {
@@ -228,9 +238,9 @@ bool FileSet::isValid( QStringList& errorList, const QString& parentIdentifier, 
     const
 {
 	bool valid = true;
-	const QString thisIdentifier = QObject::tr("file set %1").arg(nameGroup_.name());
+	const QString thisIdentifier = QObject::tr("file set %1").arg(name());
 
-	if (nameGroup_.name().isEmpty())
+	if (name().isEmpty())
     {
 		errorList.append(QObject::tr("Name of the file set missing within %1").arg(
 			parentIdentifier));
@@ -250,15 +260,15 @@ bool FileSet::isValid( QStringList& errorList, const QString& parentIdentifier, 
 		QStringList fileNames;
 		foreach (QSharedPointer<File> file, files_)
         {
-			if (fileNames.contains(file->getName()))
+			if (fileNames.contains(file->name()))
             {
 				errorList.append(QObject::tr("%1 contains several files with"
-					" name %2").arg(thisIdentifier).arg(file->getName()));
+					" name %2").arg(thisIdentifier).arg(file->name()));
 				valid = false;
 			}
 			else
             {
-				fileNames.append(file->getName());
+				fileNames.append(file->name());
 			}
 
 			if (!file->isValid(errorList, thisIdentifier))
@@ -299,7 +309,7 @@ bool FileSet::isValid( QStringList& errorList, const QString& parentIdentifier, 
 //-----------------------------------------------------------------------------
 bool FileSet::isValid( bool checkChildren ) const
 {
-	if (nameGroup_.name().isEmpty())
+	if (name().isEmpty())
     {
 		return false;
 	}
@@ -318,13 +328,13 @@ bool FileSet::isValid( bool checkChildren ) const
 		QStringList fileNames;
 		foreach (QSharedPointer<File> file, files_)
         {
-			if (fileNames.contains(file->getName()))
+			if (fileNames.contains(file->name()))
             {
 				return false;
 			}
 			else
             {
-				fileNames.append(file->getName());
+				fileNames.append(file->name());
 			}
 
 			if (!file->isValid())
@@ -377,7 +387,7 @@ QStringList FileSet::getFiles( const QStringList& fileTypes ) const {
 	foreach (QSharedPointer<File> file, files_) {
 		// if the file matches one of the file types
 		if (file->matchesFileType(fileTypes)) {
-			files.append(file->getName());
+			files.append(file->name());
 		}
 	}
 
@@ -407,14 +417,6 @@ void FileSet::setDefaultFileBuilders(
 
 	// save the new file builders
 	defaultFileBuilders_ = defaultFileBuilders;
-}
-
-QString FileSet::getName() const {
-	return nameGroup_.name();
-}
-
-void FileSet::setName(const QString &name) {
-	nameGroup_.setName(name);
 }
 
 const QStringList& FileSet::getGroups() {
@@ -447,7 +449,7 @@ const QStringList FileSet::getFilePaths() {
 	QStringList filePaths;
 
 	for (int i = 0; i < files_.size(); ++i) {
-		filePaths.append(files_.at(i)->getName());
+		filePaths.append(files_.at(i)->name());
 	}
 	return filePaths;
 }
@@ -460,7 +462,7 @@ QList<General::LibraryFilePair> FileSet::getVhdlLibraries() const {
 	foreach (QSharedPointer<File> file, files_) {
 
 		if (file->isVhdlFile()) {
-			QString filePath = file->getName();
+			QString filePath = file->name();
 			QString libName = file->getLogicalName();
 			if (libName.isEmpty()) {
 				libName = QString("work");
@@ -497,7 +499,7 @@ QList<General::LibraryFilePair> FileSet::getVerilogLibraries() const {
 			|| files_.at(i)->getFileTypes().at(0) == QString(
 			"verilogSource-2001"))) {
 
-				QString filePath = files_.at(i)->getName();
+				QString filePath = files_.at(i)->name();
 
 				// add the library name to the list of libraries
 				QString libName = files_.at(i)->getLogicalName();
@@ -521,7 +523,7 @@ void FileSet::addFile(QSharedPointer<File> file) {
 	for (int i = 0; i < files_.size(); ++i) {
 
 		// if files have same name
-		if (files_.at(i)->getName() == file->getName()) {
+		if (files_.at(i)->name() == file->name()) {
 
 			// remove the old file and replace it with the new one
 			files_.removeAt(i);
@@ -546,7 +548,7 @@ QSharedPointer<File> FileSet::addFile(const QString& filePath, QSettings& settin
 
 	// check if file already exists
 	foreach (QSharedPointer<File> fileSearch, files_) {
-		if (fileSearch->getName() == filePath) {
+		if (fileSearch->name() == filePath) {
 			file = fileSearch;
 		}
 	}
@@ -585,29 +587,9 @@ QStringList FileSet::getFileNames() const {
 
 	// go through all file sets
 	for (int i = 0; i < files_.size(); ++i) {
-		files.append(files_.at(i)->getName());
+		files.append(files_.at(i)->name());
 	}
 	return files;
-}
-
-QString FileSet::getDisplayName() const
-{
-	return nameGroup_.displayName();
-}
-
-QString FileSet::getDescription() const
-{
-	return nameGroup_.description();
-}
-
-void FileSet::setDisplayName( const QString& displayName )
-{
-	nameGroup_.setDisplayName(displayName);
-}
-
-void FileSet::setDescription( const QString& description )
-{
-	nameGroup_.setDescription(description);
 }
 
 void FileSet::removeFile( const QString& fileName ) {
@@ -615,7 +597,7 @@ void FileSet::removeFile( const QString& fileName ) {
 	for (int i = 0; i < files_.size(); ++i) {
 
 		// if the file is the specified one
-		if (files_.at(i)->getName() == fileName) {
+		if (files_.at(i)->name() == fileName) {
 			files_.value(i).clear();
 			files_.removeAt(i);
 			return;
@@ -703,7 +685,7 @@ bool FileSet::contains( const QString& fileName ) const {
 
 	foreach (QSharedPointer<File> file, files_) {
 		
-		if (file->getName() == fileName)
+		if (file->name() == fileName)
 			return true;
 	}
 	return false;
@@ -713,7 +695,7 @@ void FileSet::changeFileName( const QString& from, const QString& to ) {
 
 	foreach (QSharedPointer<File> file, files_) {
 
-		if (file->getName() == from) {
+		if (file->name() == from) {
 			file->setName(to);
 			return;
 		}
@@ -731,7 +713,7 @@ void FileSet::sortFiles( const QStringList& fileNames ) {
 		foreach (QSharedPointer<File> file, files_) {
 			
 			// if file is the one searched for
-			if (file->getName() == fileName)
+			if (file->name() == fileName)
 				tempList.append(file);
 		}
 	}
@@ -767,14 +749,6 @@ void FileSet::clearFiles() {
 	files_.clear();
 }
 
-NameGroup& FileSet::getNameGroup() {
-	return nameGroup_;
-}
-
-const NameGroup& FileSet::getNameGroup() const {
-	return nameGroup_;
-}
-
 QString FileSet::getFileSetId() const 
 {
     if (fileSetId_.isNull())
@@ -804,7 +778,7 @@ QStringList FileSet::findFilesByFileType( const QString& fileType ) const {
 		
 		// if file matches the file type to search then add its path to the list.
 		if (file->matchesFileType(fileType)) {
-			files.append(file->getName());
+			files.append(file->name());
 		}
 	}
 

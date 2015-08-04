@@ -17,7 +17,7 @@
 // Function: SWView::SWView()
 //-----------------------------------------------------------------------------
 SWView::SWView(QDomNode& viewNode):
-nameGroup_(viewNode), 
+nameGroup_(), 
 	hierarchyRef_(),
 	filesetRefs_(),
 	swBuildCommands_(),
@@ -256,9 +256,9 @@ bool SWView::isValid(const QStringList& fileSetNames, const QStringList& cpuName
 }
 
 //-----------------------------------------------------------------------------
-// Function: SWView::getName()
+// Function: SWView::name()
 //-----------------------------------------------------------------------------
-QString SWView::getName() const
+QString SWView::name() const
 {
     return nameGroup_.name();
 }

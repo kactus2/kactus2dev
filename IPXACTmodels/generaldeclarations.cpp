@@ -6,7 +6,7 @@
 
 #include "generaldeclarations.h"
 #include "PortMap.h"
-#include "vector.h"
+#include <IPXACTmodels/common/Vector.h>
 #include "XmlUtils.h"
 
 #include <QDomNode>
@@ -141,13 +141,13 @@ General::PortAlignment General::calculatePortAlignment(
 	// if port 1 is vectored on the port map
 	if (portMap1->physicalVector()) {
 		phys1LeftBound = portMap1->getPhysicalLeft();
-		phys1RightBound = portMap1->physicalVector()->getRight();
+		phys1RightBound = portMap1->physicalVector()->getRight().toInt();
 	}
 
 	// if port 2 is vectored on the port map
 	if (portMap2->physicalVector()) {
 		phys2LeftBound = portMap2->getPhysicalLeft();
-		phys2RightBound = portMap2->physicalVector()->getRight();
+		phys2RightBound = portMap2->physicalVector()->getRight().toInt();
 	}
 
 	// if both have vectored logical signals

@@ -133,11 +133,11 @@ QVariant FileSetsModel::data(QModelIndex const& index, int role) const
     {
         if (index.column() == NAME_COLUMN)
         {
-            return fileSet->getName();
+            return fileSet->name();
         }
         else if (index.column() == DESCRIPTION)
         {
-            return fileSet->getDescription().replace(QRegularExpression("\n.*$", 
+            return fileSet->description().replace(QRegularExpression("\n.*$", 
                 QRegularExpression::DotMatchesEverythingOption), "...");
         }
         else if (index.column() == GROUP_COLUMN)
@@ -151,7 +151,7 @@ QVariant FileSetsModel::data(QModelIndex const& index, int role) const
     }
     else if ((role == Qt::EditRole || role == Qt::ToolTipRole) && index.column() == DESCRIPTION)
     {
-        return fileSet->getDescription();
+        return fileSet->description();
     }
 	else if (role == Qt::ForegroundRole)
     {

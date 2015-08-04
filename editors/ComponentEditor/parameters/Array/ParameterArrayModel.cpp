@@ -139,7 +139,7 @@ QVariant ParameterArrayModel::data(const QModelIndex &index, int role) const
     {
         if (index.column() == ArrayColumns::VALUE)
         {
-            if (!selectedChoice_->getName().isEmpty())
+            if (!selectedChoice_->name().isEmpty())
             {
                 return expressionOrValueForIndex(index);
             }
@@ -308,7 +308,7 @@ QVariant ParameterArrayModel::valueForIndex(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 QString ParameterArrayModel::evaluateValueWithChoice(const int& row) const
 {
-    if (!selectedChoice_->getName().isEmpty())
+    if (!selectedChoice_->name().isEmpty())
     {
         foreach (QSharedPointer<Enumeration> enumeration, *selectedChoice_->enumerations())
         {

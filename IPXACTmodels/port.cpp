@@ -6,10 +6,9 @@
 
 #include "port.h"
 
-#include "parameter.h"
+#include <IPXACTmodels/common/Parameter.h>
 #include "transactional.h"
 #include "wire.h"
-#include "vector.h"
 #include "GenericVendorExtension.h"
 #include "XmlUtils.h"
 
@@ -27,7 +26,7 @@
 
 // the constructor
 Port::Port(QDomNode &portNode): 
-nameGroup_(portNode), 
+NameGroup(), 
 portType_(General::WIRE),
 wire_(),
 transactional_(),
@@ -81,7 +80,8 @@ vendorExtensions_()
 // Function: Port()
 //-----------------------------------------------------------------------------
 Port::Port(QString const& name, Port const& other): 
-nameGroup_(name), portType_(other.portType_),
+NameGroup(name),
+    portType_(other.portType_),
 wire_(), 
 transactional_(other.transactional_),
 portAccessHandle_(other.portAccessHandle_),
@@ -104,7 +104,7 @@ vendorExtensions_()
 // Function: Port()
 //-----------------------------------------------------------------------------
 Port::Port(const Port &other): 
-nameGroup_(other.nameGroup_), 
+NameGroup(other), 
 portType_(other.portType_),
 wire_(),
 transactional_(),
@@ -133,7 +133,7 @@ vendorExtensions_()
 //-----------------------------------------------------------------------------
 Port & Port::operator=( const Port &other ) {
 	if (this != &other) {
-		nameGroup_ = other.nameGroup_;
+		NameGroup::operator=(other);
 		portType_ = other.portType_;
 		portAccessHandle_ = other.portAccessHandle_;
 		portAccessType_ = other.portAccessType_;
@@ -164,7 +164,7 @@ Port & Port::operator=( const Port &other ) {
 // Function: Port::Port()
 //-----------------------------------------------------------------------------
 Port::Port():
-nameGroup_(), 
+NameGroup(), 
 portType_(General::WIRE),
 wire_(),
 transactional_(),
@@ -190,7 +190,7 @@ Port::Port( const QString& name,
 		   int rightBound, 
 		   const QString& defaultValue, 
 		   bool allLogicalDirections ):
-nameGroup_(name), 
+NameGroup(name), 
 portType_(General::WIRE),
 wire_(), 
 transactional_(),
@@ -218,7 +218,7 @@ Port::Port( const QString& name,
 		   const QString& typeDefinition,
 		   const QString& defaultValue,
 		   const QString& description ):
-nameGroup_(name, QString(), description),
+NameGroup(name, QString(), description),
 portType_(General::WIRE),
 wire_(),
 transactional_(),
@@ -253,7 +253,18 @@ void Port::write(QXmlStreamWriter& writer, const QStringList& viewNames)
 {
 	writer.writeStartElement("spirit:port");
 
-    nameGroup_.write(writer);
+    writer.writeTextElement("ipxact:name", name());
+
+    if (!displayName().isEmpty())
+    {
+        writer.writeTextElement("ipxact:displayName", displayName());
+    }
+
+    if (!description().isEmpty())
+    {
+        writer.writeTextElement("ipxact:description", description());
+    }
+
 
 	// write the port type element (spirit:wire or spirit:transactional)
 	switch (portType_) {
@@ -302,7 +313,7 @@ void Port::write(QXmlStreamWriter& writer, const QStringList& viewNames)
 
 bool Port::isValid(bool hasViews) const {
 
-	if (nameGroup_.name().isEmpty())
+	if (name().isEmpty())
 		return false;
 
 	// if port is type wire but the element is not defined.
@@ -326,7 +337,7 @@ bool Port::isValid( bool hasViews,
 
 	bool valid = true;
 
-	if (nameGroup_.name().isEmpty()) {
+	if (name().isEmpty()) {
 		errorList.append(QObject::tr("Port has no name within %1").arg(parentIdentifier));
 		valid = false;
 	}
@@ -344,7 +355,7 @@ bool Port::isValid( bool hasViews,
 	}
 
 	if (wire_) {
-		if (!wire_->isValid(hasViews, errorList, QObject::tr("Port %1").arg(nameGroup_.name()))) {
+		if (!wire_->isValid(hasViews, errorList, QObject::tr("Port %1").arg(name()))) {
 			valid = false;
 		}
 	}
@@ -370,30 +381,6 @@ void Port::setTransactional(Transactional *transactional) {
 
 Transactional *Port::getTransactional() const {
 	return transactional_.data();
-}
-
-void Port::setName(const QString &name) {
-	nameGroup_.setName(name);
-}
-
-QString Port::getName() const {
-	return nameGroup_.name();
-}
-
-QString Port::getDisplayName() const {
-	return nameGroup_.displayName();
-}
-
-void Port::setDisplayName( const QString& displayName ) {
-	nameGroup_.setDisplayName(displayName);
-}
-
-QString Port::getDescription() const {
-	return nameGroup_.description();
-}
-
-void Port::setDescription( const QString& description ) {
-	nameGroup_.setDescription(description);
 }
 
 General::PortType Port::getPortType() const {
@@ -437,7 +424,7 @@ int Port::getLeftBound() const {
 
 	// if the wire has a vector defined
 	if (wire_->getVector()) {
-		return wire_->getVector()->getLeft();
+		return wire_->getVector()->getLeft().toInt();
 	}
 
 	// no vector so bound is 0
@@ -453,7 +440,7 @@ int Port::getRightBound() const {
 
 	// if the wire has a vector defined
 	if (wire_->getVector()) {
-		return wire_->getVector()->getRight();
+		return wire_->getVector()->getRight().toInt();
 	}
 
 	// no vector so bound is 0
@@ -601,28 +588,6 @@ QString Port::getRightBoundExpression() const
     }
 
     return QString::number(getRightBound());
-}
-
-//-----------------------------------------------------------------------------
-// Function: port::removeLeftBoundExpression()
-//-----------------------------------------------------------------------------
-void Port::removeLeftBoundExpression()
-{
-    if (wire_)
-    {
-        wire_->removeLeftBoundExpression();
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: port::removeRightBoundExpression()
-//-----------------------------------------------------------------------------
-void Port::removeRightBoundExpression()
-{
-    if (wire_)
-    {
-        wire_->removeRightBoundExpression();
-    }
 }
 
 void Port::setPortSize( int size ) {

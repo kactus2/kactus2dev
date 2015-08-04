@@ -129,7 +129,7 @@ bool PortMapsBitMapItem::isValid(QStringList& errorList) const
                     physDir != logDir) 
                 {
                     QString error = tr("Direction between logical port %1 and physical port %2 did not match.");
-                    errorList.append(error.arg(parent->getName(), bitMap.physName));
+                    errorList.append(error.arg(parent->name(), bitMap.physName));
                     valid = false;
                 }
             }

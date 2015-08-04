@@ -40,7 +40,7 @@ bool ViewComparator::compare(QSharedPointer<const View> first, QSharedPointer<co
 //-----------------------------------------------------------------------------
 bool ViewComparator::compareFields(QSharedPointer<const View> first, QSharedPointer<const View> second) const
 {
-    return first->getName() == second->getName() &&
+    return first->name() == second->name() &&
         first->isHierarchical() == second->isHierarchical() &&  
         first->getHierarchyRef() == second->getHierarchyRef() &&
         first->getLanguage() == second->getLanguage() &&
@@ -73,7 +73,7 @@ QList<QSharedPointer<IPXactDiff> > ViewComparator::diff(QSharedPointer<const Vie
 QList<QSharedPointer<IPXactDiff> > ViewComparator::diffFields(QSharedPointer<const View> reference, 
     QSharedPointer<const View> subject) const
 {
-    QSharedPointer<IPXactDiff> add(new IPXactDiff(elementType(), reference->getName()));
+    QSharedPointer<IPXactDiff> add(new IPXactDiff(elementType(), reference->name()));
     add->setChangeType(IPXactDiff::MODIFICATION);
 
     add->checkForChange("environment identifiers", reference->getEnvIdentifiers().join(", "), 

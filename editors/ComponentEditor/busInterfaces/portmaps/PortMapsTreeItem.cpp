@@ -170,9 +170,9 @@ PortMapsTreeItem::ItemType PortMapsTreeItem::getType() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortMapsTreeItem::getName()
+// Function: PortMapsTreeItem::name()
 //-----------------------------------------------------------------------------
-QString PortMapsTreeItem::getName() const
+QString PortMapsTreeItem::name() const
 {
     return name_;
 }

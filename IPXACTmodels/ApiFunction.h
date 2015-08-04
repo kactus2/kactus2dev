@@ -115,7 +115,7 @@ public:
     /*!
      *  Returns the name of the function.
      */
-    QString const& getName() const;
+    QString const& name() const;
 
     /*!
      *  Returns the return value type.

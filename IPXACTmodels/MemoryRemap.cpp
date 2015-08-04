@@ -123,13 +123,13 @@ bool MemoryRemap::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > compon
     {
         if (remapState_.isEmpty())
         {
-            errorList.append(QObject::tr("No remap state assigned in memory remap %1 of %2").arg(getName()).
+            errorList.append(QObject::tr("No remap state assigned in memory remap %1 of %2").arg(name()).
                 arg(parentIdentifier));
         }
         else
         {
             errorList.append(QObject::tr("Remap state %1 in memory remap %2 of %3 is not a remap state of component").
-                arg(remapState_).arg(getName()).arg(parentIdentifier));
+                arg(remapState_).arg(name()).arg(parentIdentifier));
         }
     }
 

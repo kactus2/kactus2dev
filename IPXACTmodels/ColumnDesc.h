@@ -80,7 +80,7 @@ public:
     /*!
      *  Returns the name of the column.
      */
-    QString const& getName() const;
+    QString const& name() const;
 
     /*!
      *  Returns the content type.

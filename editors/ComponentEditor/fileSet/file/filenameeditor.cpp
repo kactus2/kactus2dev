@@ -23,7 +23,7 @@
 //-----------------------------------------------------------------------------
 FileNameEditor::FileNameEditor(QSharedPointer<File> file, QWidget* parent)
     : QGroupBox(tr("File name and path"), parent), 
-      fileNameLabel_(file->getName(), this),
+      fileNameLabel_(file->name(), this),
       descriptionEditor_(this),
       file_(file)
 {
@@ -67,7 +67,7 @@ bool FileNameEditor::isValid() const
 //-----------------------------------------------------------------------------
 void FileNameEditor::refresh()
 {
-    fileNameLabel_.setText(file_->getName());
+    fileNameLabel_.setText(file_->name());
 
     disconnect(&descriptionEditor_, SIGNAL(textChanged()), this, SLOT(onDescriptionChanged()));
 

@@ -65,7 +65,7 @@ void RegisterGraphItem::refresh()
 //-----------------------------------------------------------------------------
 void RegisterGraphItem::updateDisplay()
 {
-    QString name = register_->getName();
+    QString name = register_->name();
 
     if (expressionParser_->parseExpression(register_->getDimensionExpression()).toUInt() > 0)
     {
@@ -80,7 +80,7 @@ void RegisterGraphItem::updateDisplay()
     setDisplayLastAddress(lastAddress);
 
     // Set tooltip to show addresses in hexadecimals.
-    setToolTip("<b>Name: </b>" + register_->getName() + "<br>" +
+    setToolTip("<b>Name: </b>" + register_->name() + "<br>" +
         "<b>First address: </b>" + toHexString(offset) + "<br>" +
         "<b>Last address: </b>" + toHexString(lastAddress) + "<br>" +
         "<b>Size [bits]: </b>" + expressionParser_->parseExpression(register_->getSizeExpression()));

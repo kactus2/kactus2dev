@@ -9,7 +9,7 @@
 
 #include "ipxactmodels_global.h"
 
-#include <IPXACTmodels/NameGroup.h>
+#include <IPXACTmodels/common/NameGroup.h>
 
 #include <QDomNode>
 #include <QString>
@@ -21,7 +21,7 @@ class VendorExtension;
  *
  * Describes a name and value pair for the given field.
  */
-class IPXACTMODELS_EXPORT EnumeratedValue {
+class IPXACTMODELS_EXPORT EnumeratedValue : public NameGroup {
 
 public:
 
@@ -83,24 +83,6 @@ public:
 	*/
 	bool isValid() const;
 
-	/*! \brief Get the description
-     *
-     * \return QString containing the description.
-     */
-    QString getDescription() const;
-
-    /*! \brief Get the displayName
-     *
-     * \return QString containing the name.
-     */
-    QString getDisplayName() const;
-
-    /*! \brief Get the name
-     *
-     * \return QString containing the name.
-     */
-    QString getName() const;
-
     /*! \brief Get the usage
      *
      * \return enum EnumeratedUsage.
@@ -112,24 +94,6 @@ public:
      * \return unsigned int the value
      */
 	QString getValue() const;
-
-    /*! \brief Set the description
-     *
-     * \param description QString containing the description.
-     */
-    void setDescription(const QString& description);
-
-    /*! \brief Set the displayName
-     *
-     * \param displayName QString containing the name.
-     */
-    void setDisplayName(const QString& displayName);
-
-    /*! \brief Set the name.
-     *
-     * \param name QString containing the name
-     */
-    void setName(const QString& name);
 
     /*! \brief Set the usage
      *
@@ -168,9 +132,6 @@ private:
      * OPTIONAL spirit:usage
      */
     EnumeratedUsage usage_;
-
-	//! \brief Contains the name, display name and description of the enumerated value.
-	NameGroup nameGroup_;
 
     /*! \brief The value of the enumeratedValue
      * MANDATORY spirit:value

@@ -13,7 +13,7 @@
 
 #include <IPXACTmodels/component.h>
 
-#include <IPXACTmodels/parameter.h>
+#include <IPXACTmodels/common/Parameter.h>
 
 //-----------------------------------------------------------------------------
 // Function: TopComponentParameterFinder::TopComponentParameterFinder()
@@ -108,7 +108,7 @@ bool TopComponentParameterFinder::hasId(QString const& id) const
 QString TopComponentParameterFinder::nameForId(QString const& id) const
 {
     QSharedPointer <Parameter> targetParameter = getParameterWithID(id);
-    return targetParameter->getName();
+    return targetParameter->name();
 }
 
 //-----------------------------------------------------------------------------
@@ -196,7 +196,7 @@ QList<QSharedPointer<Parameter> > TopComponentParameterFinder::activeViewParamet
 
         foreach (QSharedPointer<View> view, component_->getViews())
         {
-            if (view->getName() == implementationView)
+            if (view->name() == implementationView)
             {
                 viewParameters.append(*view->getParameters());
                 foreach(QSharedPointer<ModelParameter> moduleParameter, *view->getModuleParameters())

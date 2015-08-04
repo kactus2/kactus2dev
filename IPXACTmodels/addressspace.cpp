@@ -6,12 +6,14 @@
 
 #include "addressspace.h"
 #include "memorymap.h"
-#include "parameter.h"
 #include "XmlUtils.h"
 #include "GenericVendorExtension.h"
 
 #include <common/utils.h>
 
+#include <IPXACTmodels/common/Parameter.h>
+#include <IPXACTmodels/common/ParameterReader.h>
+#include <IPXACTmodels/common/ParameterWriter.h>
 #include <IPXACTmodels/validators/ParameterValidator.h>
 
 #include <QDomNode>
@@ -26,7 +28,7 @@ const int DEFAULT_ADDRESS_UNIT_BITS = 8;
 
 // the constructor
 AddressSpace::AddressSpace(QDomNode &addrSpaceNode):
-nameGroup_(addrSpaceNode),
+NameGroup(),
 range_(QString()),
 rangeAttributes_(),
 width_(-1), 
@@ -74,11 +76,12 @@ vendorExtensions_()
 					new MemoryMap(tempNode));
 		}
 
-		else if (tempNode.nodeName() == QString("spirit:parameters")) {
+		else if (tempNode.nodeName() == QString("spirit:parameters"))
+        {
+            ParameterReader reader;
 			for (int j = 0; j < tempNode.childNodes().count(); ++j) {
 				QDomNode parameterNode = tempNode.childNodes().at(j);
-				parameters_.append(QSharedPointer<Parameter>(
-						new Parameter(parameterNode)));
+				parameters_.append(reader.createParameterFrom(parameterNode));
 			}
 		}
         else if (tempNode.nodeName() == QString("spirit:vendorExtensions")) 
@@ -93,7 +96,7 @@ vendorExtensions_()
 }
 
 AddressSpace::AddressSpace( const AddressSpace &other ):
-nameGroup_(other.nameGroup_),
+NameGroup(other),
 range_(other.range_),
 rangeAttributes_(other.rangeAttributes_),
 width_(other.width_),
@@ -129,7 +132,7 @@ vendorExtensions_(other.vendorExtensions_)
 }
 
 AddressSpace::AddressSpace():
-nameGroup_(),
+NameGroup(),
 range_(),
 rangeAttributes_(),
 width_(-1), 
@@ -144,7 +147,7 @@ vendorExtensions_()
 
 AddressSpace & AddressSpace::operator=( const AddressSpace &other ) {
 	if (this != &other) {
-		nameGroup_ = other.nameGroup_;
+		NameGroup::operator=(other);
 		range_ = other.range_;
 		rangeAttributes_ = other.rangeAttributes_;
 		width_ = other.width_;
@@ -190,14 +193,14 @@ AddressSpace::~AddressSpace() {
 void AddressSpace::write(QXmlStreamWriter& writer) {
 	writer.writeStartElement("spirit:addressSpace");
 
-	writer.writeTextElement("spirit:name", nameGroup_.name());
+	writer.writeTextElement("spirit:name", name());
 
-	if (!nameGroup_.displayName().isEmpty()) {
-		writer.writeTextElement("spirit:displayName", nameGroup_.displayName());
+	if (!displayName().isEmpty()) {
+		writer.writeTextElement("spirit:displayName", displayName());
 	}
 
-	if (!nameGroup_.description().isEmpty()) {
-		writer.writeTextElement("spirit:description", nameGroup_.description());
+	if (!description().isEmpty()) {
+		writer.writeTextElement("spirit:description", description());
 	}
 
     // start the spirit:range tag
@@ -237,16 +240,18 @@ void AddressSpace::write(QXmlStreamWriter& writer) {
 		writer.writeEndElement(); // spirit:localMemoryMap
 	}
 
-	// if any parameters exist
-	if (parameters_.size() != 0) {
-		writer.writeStartElement("spirit:parameters");
+	if (parameters_.size() != 0)
+    {
+		writer.writeStartElement("ipxact:parameters");
 
+        ParameterWriter parameterWriter;
 		// write each parameter
-		for (int i = 0; i < parameters_.size(); ++i) {
-			parameters_.at(i)->write(writer);
+		for (int i = 0; i < parameters_.size(); ++i)
+        {
+			parameterWriter.writeParameter(writer, parameters_.at(i));
 		}
 
-		writer.writeEndElement(); // spirit:parameters
+		writer.writeEndElement(); // ipxact:parameters
 	}
 
     if (!vendorExtensions_.isEmpty())
@@ -266,9 +271,9 @@ bool AddressSpace::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > compo
     QStringList remapStateNames, QStringList& errorList, const QString& parentIdentifier ) const
 {
 	bool valid = true;
-	const QString thisIdentifier(QObject::tr("address space %1").arg(nameGroup_.name()));
+	const QString thisIdentifier(QObject::tr("address space %1").arg(name()));
 
-	if (nameGroup_.name().isEmpty()) {
+	if (name().isEmpty()) {
 		errorList.append(QObject::tr("No name specified for %1 within %2").arg(
 			thisIdentifier).arg(parentIdentifier));
 		valid = false;
@@ -321,7 +326,7 @@ bool AddressSpace::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > compo
 bool AddressSpace::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
     QStringList remapStateNames) const
 {
-	if (nameGroup_.name().isEmpty()) {
+	if (name().isEmpty()) {
 		return false;
 	}
 
@@ -388,10 +393,6 @@ void AddressSpace::setRangeAttributes(
 	rangeAttributes_ = rangeAttributes;
 }
 
-void AddressSpace::setName(const QString &name) {
-	nameGroup_.setName(name);
-}
-
 int AddressSpace::getWidth() const {
 	return width_;
 }
@@ -407,10 +408,6 @@ void AddressSpace::setWidthAttributes(
 
 	// save new width attributes
 	widthAttributes_ = widthAttributes;
-}
-
-QString AddressSpace::getName() const {
-	return nameGroup_.name();
 }
 
 void AddressSpace::setWidth(int width) {
@@ -452,22 +449,6 @@ void AddressSpace::setSegments( const QList<QSharedPointer<Segment> >& segments 
 	segments_ = segments;
 }
 
-void AddressSpace::setDisplayName( const QString& dispName ) {
-	nameGroup_.setDisplayName(dispName);
-}
-
-QString AddressSpace::getDisplayName() const {
-	return nameGroup_.displayName();
-}
-
-void AddressSpace::setDescription( const QString& description ) {
-	nameGroup_.setDescription(description);
-}
-
-QString AddressSpace::getDescription() const {
-	return nameGroup_.description();
-}
-
 QList<QSharedPointer<Parameter> >& AddressSpace::getParameters() {
 	return parameters_;
 }
@@ -476,15 +457,8 @@ const QList<QSharedPointer<Parameter> >& AddressSpace::getParameters() const {
 	return parameters_;
 }
 
-NameGroup& AddressSpace::getNameGroup() {
-	return nameGroup_;
-}
-
-const NameGroup& AddressSpace::getNameGroup() const {
-	return nameGroup_;
-}
-
-quint64 AddressSpace::getLastAddress() const {
+quint64 AddressSpace::getLastAddress() const
+{
 	quint64 range = General::str2Uint(range_);
 	
 	// if range is undefined

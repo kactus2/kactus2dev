@@ -9,6 +9,8 @@
 
 #include "ipxactmodels_global.h"
 
+#include <IPXACTmodels/common/NameGroup.h>
+
 #include <QXmlStreamWriter>
 #include <QString>
 #include <QDomNode>
@@ -19,7 +21,7 @@
  * This struct contains a list of all the mirrored bus interfaces in the
  * containing component that belong to the same channel
  */
-class IPXACTMODELS_EXPORT Channel {
+class IPXACTMODELS_EXPORT Channel : public NameGroup {
 
 public:
 
@@ -79,24 +81,6 @@ public:
 	*/
 	bool isValid(const QStringList& interfaceNames) const;
 
-	/*! \brief Get the name of the channel
-	 *
-	 * \return QString containing the name.
-	 */
-	QString getName() const;
-
-	/*! \brief Get the displayName of the channel.
-	 *
-	 * \return QString containing the name.
-	 */
-	QString getDisplayName() const;
-
-	/*! \brief Get the description of the channel.
-	 *
-	 * \return QString containing the description.
-	 */
-	QString getDescription() const;
-
 	/*! \brief Get the references to bus interfaces that belong to this channel.
 	 *
 	 * \return Reference to QStringList containing the interface references.
@@ -122,37 +106,8 @@ public:
 	*/
 	void setInterfaces(const QStringList& interfaceNames);
 
-	/*! \brief Set the name of the channel
-	 *
-	 * \param name The name to be set.
-	 *
-	*/
-	void setName(const QString& name);
-
-	/*! \brief Set the display name of the channel.
-	 *
-	 * \param name The display name to set.
-	 *
-	*/
-	void setDisplayName(const QString& name);
-
-	/*! \brief  Set the desciption of the channel.
-	 *
-	 * \param description The description to set.
-	 *
-	*/
-	void setDescription(const QString& description);
 
 private:
-
-	//! \brief Identifies the containing element
-	QString name_;
-
-	//! \brief The displayName that can have a short descriptive name
-	QString displayName_;
-
-	//! \brief The textual description of the containing element.
-	QString description_;
 
 	//! \brief List of references to mirrored bus interfaces.
 	QStringList busInterfaces_;

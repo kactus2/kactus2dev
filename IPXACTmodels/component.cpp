@@ -8,7 +8,6 @@
 
 #include "librarycomponent.h"
 #include "businterface.h"
-#include "parameter.h"
 #include "addressspace.h"
 #include "memorymap.h"
 #include "remapstate.h"
@@ -29,6 +28,9 @@
 #include "SystemView.h"
 #include "FileDependency.h"
 
+#include <IPXACTmodels/common/Parameter.h>
+#include <IPXACTmodels/common/ParameterReader.h>
+#include <IPXACTmodels/common/ParameterWriter.h>
 #include <IPXACTmodels/validators/ParameterValidator.h>
 
 #include <QDomDocument>
@@ -263,7 +265,9 @@ author_()
 		}
 
 		// get parameters
-		else if (children.at(i).nodeName() == QString("spirit:parameters")) {
+		else if (children.at(i).nodeName() == QString("spirit:parameters"))
+        {
+            ParameterReader reader;
 			// go through all parameters
 			for (int j = 0; j < children.at(i).childNodes().count(); ++j) {
 
@@ -271,7 +275,7 @@ author_()
 
 				if (!parameterNode.isComment())
                 {
-					parameters_->append(QSharedPointer<Parameter>(new Parameter(parameterNode)));
+					parameters_->append(QSharedPointer<Parameter>(reader.createParameterFrom(parameterNode)));
 				}
 			}
 		}
@@ -898,15 +902,18 @@ void Component::write(QFile& file) {
 		writer.writeTextElement("spirit:description", description_);
 	}
 
-	if (parameters_->size() != 0) {
-		writer.writeStartElement("spirit:parameters");
+	if (parameters_->size() != 0)
+    {
+		writer.writeStartElement("ipxact:parameters");
 
+        ParameterWriter parameterWriter;
 		// write each parameter
-		for (int i = 0; i < parameters_->size(); ++i) {
-			parameters_->at(i)->write(writer);
+		for (int i = 0; i < parameters_->size(); ++i)
+        {
+			parameterWriter.writeParameter(writer, parameters_->at(i));
 		}
 
-		writer.writeEndElement(); // spirit:parameters
+		writer.writeEndElement(); // ipxact:parameters
 	}
 
 	// if contains kactus2 attributes
@@ -1078,15 +1085,15 @@ bool Component::isValid( QStringList& errorList ) const
 	QStringList fileSetNames;
 	foreach (QSharedPointer<FileSet> fileset, fileSets_)
     {
-		if (fileSetNames.contains(fileset->getName()))
+		if (fileSetNames.contains(fileset->name()))
         {
 			errorList.append(QObject::tr("%1 contains several file sets with name %2").arg(
-                thisIdentifier).arg(fileset->getName()));
+                thisIdentifier).arg(fileset->name()));
 			valid = false;
 		}
 		else
         {
-			fileSetNames.append(fileset->getName());
+			fileSetNames.append(fileset->name());
 		}
 
 		if (!fileset->isValid(errorList, thisIdentifier, true))
@@ -1113,15 +1120,15 @@ bool Component::isValid( QStringList& errorList ) const
     QStringList softwareViewNames;
     foreach (QSharedPointer<SWView> softwareView, swViews_)
     {
-        if (softwareViewNames.contains(softwareView->getName()))
+        if (softwareViewNames.contains(softwareView->name()))
         {
             errorList.append(QObject::tr("%1 contains several software views with name %2").arg(thisIdentifier).
-                arg(softwareView->getName()));
+                arg(softwareView->name()));
             valid = false;
         }
         else
         {
-            softwareViewNames.append(softwareView->getName());
+            softwareViewNames.append(softwareView->name());
         }
 
         if (!softwareView->isValid(fileSetNames, getCpuNames(), errorList, thisIdentifier))
@@ -1133,15 +1140,15 @@ bool Component::isValid( QStringList& errorList ) const
     QStringList systemViewNames;
     foreach (QSharedPointer<SystemView> currentSystemView, systemViews_)
     {
-        if (systemViewNames.contains(currentSystemView->getName()))
+        if (systemViewNames.contains(currentSystemView->name()))
         {
             errorList.append(QObject::tr("%1 contains several system views with name %2").arg(thisIdentifier).
-                arg(currentSystemView->getName()));
+                arg(currentSystemView->name()));
             valid = false;
         }
         else
         {
-            systemViewNames.append(currentSystemView->getName());
+            systemViewNames.append(currentSystemView->name());
         }
 
         if (!currentSystemView->isValid(fileSetNames, getViewNames(), errorList, thisIdentifier))
@@ -1155,15 +1162,15 @@ bool Component::isValid( QStringList& errorList ) const
 	QStringList busifNames;
 	foreach (QSharedPointer<BusInterface> busif, busInterfaces_)
     {
-		if (busifNames.contains(busif->getName()))
+		if (busifNames.contains(busif->name()))
         {
 			errorList.append(QObject::tr("%1 contains several bus interfaces with name %2").arg(thisIdentifier).
-                arg(busif->getName()));
+                arg(busif->name()));
 			valid = false;
 		}
 		else
         {
-			busifNames.append(busif->getName());
+			busifNames.append(busif->name());
 		}
 
 		if (!busif->isValid(physPorts, memoryMaps, addressSpaces, choices_, errorList, thisIdentifier))
@@ -1175,15 +1182,15 @@ bool Component::isValid( QStringList& errorList ) const
     QStringList comIfNames;
     foreach (QSharedPointer<ComInterface> comIf, comInterfaces_)
     {
-        if (comIfNames.contains(comIf->getName()))
+        if (comIfNames.contains(comIf->name()))
         {
             errorList.append(QObject::tr("%1 contains several COM interfaces with name %2").arg(thisIdentifier).
-                arg(comIf->getName()));
+                arg(comIf->name()));
             valid = false;
         }
         else
         {
-            comIfNames.append(comIf->getName());
+            comIfNames.append(comIf->name());
         }
 
         if (!comIf->isValid(errorList, thisIdentifier))
@@ -1195,15 +1202,15 @@ bool Component::isValid( QStringList& errorList ) const
     QStringList apiIfNames;
     foreach (QSharedPointer<ApiInterface> apiIf, apiInterfaces_)
     {
-        if (apiIfNames.contains(apiIf->getName()))
+        if (apiIfNames.contains(apiIf->name()))
         {
             errorList.append(QObject::tr("%1 contains several API interfaces with name %2").arg(thisIdentifier).
-                arg(apiIf->getName()));
+                arg(apiIf->name()));
             valid = false;
         }
         else
         {
-            apiIfNames.append(apiIf->getName());
+            apiIfNames.append(apiIf->name());
         }
 
         if (!apiIf->isValid(errorList, thisIdentifier))
@@ -1215,10 +1222,10 @@ bool Component::isValid( QStringList& errorList ) const
 	QStringList channelNames;
 	foreach (QSharedPointer<Channel> channel, channels_)
     {
-		if (channelNames.contains(channel->getName()))
+		if (channelNames.contains(channel->name()))
         {
 			errorList.append(QObject::tr("%1 contains several channels with name %2").arg(thisIdentifier).
-                arg(channel->getName()));
+                arg(channel->name()));
 			valid = false;
 		}
 
@@ -1231,15 +1238,15 @@ bool Component::isValid( QStringList& errorList ) const
 	QStringList remapNames;
 	foreach (QSharedPointer<RemapState> remState, *remapStates_)
     {
-		if (remapNames.contains(remState->getName()))
+		if (remapNames.contains(remState->name()))
         {
 			errorList.append(QObject::tr("%1 contains several remap states with name %2").arg(thisIdentifier).
-                arg(remState->getName()));
+                arg(remState->name()));
 			valid = false;
 		}
 		else
         {
-			remapNames.append(remState->getName());
+			remapNames.append(remState->name());
 		}
 
 		if (!remState->isValid(portNames, errorList, thisIdentifier))
@@ -1251,15 +1258,15 @@ bool Component::isValid( QStringList& errorList ) const
 	QStringList addSpaceNames;
 	foreach (QSharedPointer<AddressSpace> addrSpace, addressSpaces_)
     {
-		if (addSpaceNames.contains(addrSpace->getName()))
+		if (addSpaceNames.contains(addrSpace->name()))
         {
 			errorList.append(QObject::tr("%1 contains several address spaces with name %2").arg(thisIdentifier).
-                arg(addrSpace->getName()));
+                arg(addrSpace->name()));
 			valid = false;
 		}
 		else
         {
-			addSpaceNames.append(addrSpace->getName());
+			addSpaceNames.append(addrSpace->name());
 		}
 
 		if (!addrSpace->isValid(choices_, getRemapStateNames(), errorList, thisIdentifier))
@@ -1271,15 +1278,15 @@ bool Component::isValid( QStringList& errorList ) const
 	QStringList memoryMapNames;
 	foreach (QSharedPointer<MemoryMap> memMap, memoryMaps_)
     {
-		if (memoryMapNames.contains(memMap->getName()))
+		if (memoryMapNames.contains(memMap->name()))
         {
 			errorList.append(QObject::tr("%1 contains several memory maps with name %2").arg(thisIdentifier).
-                arg(memMap->getName()));
+                arg(memMap->name()));
 			valid = false;
 		}
 		else
         {
-			memoryMapNames.append(memMap->getName());
+			memoryMapNames.append(memMap->name());
 		}
 
 		if (!memMap->isValid(choices_, getRemapStateNames(), errorList, thisIdentifier))
@@ -1291,15 +1298,15 @@ bool Component::isValid( QStringList& errorList ) const
 	QStringList compGenNames;
 	foreach (QSharedPointer<ComponentGenerator> compGen, compGenerators_)
     {
-		if (compGenNames.contains(compGen->getName()))
+		if (compGenNames.contains(compGen->name()))
         {
 			errorList.append(QObject::tr("%1 contains several component generators with name %2").
-                arg(thisIdentifier).arg(compGen->getName()));
+                arg(thisIdentifier).arg(compGen->name()));
 			valid = false;
 		}
 		else
         {
-			compGenNames.append(compGen->getName());
+			compGenNames.append(compGen->name());
 		}
 
 		if (!compGen->isValid(choices_, errorList, thisIdentifier))
@@ -1311,15 +1318,15 @@ bool Component::isValid( QStringList& errorList ) const
 	QStringList choiceNames;
 	foreach (QSharedPointer<Choice> choice, *choices_)
     {
-		if (choiceNames.contains(choice->getName()))
+		if (choiceNames.contains(choice->name()))
         {
 			errorList.append(QObject::tr("%1 contains several choices with name %2").arg(thisIdentifier).
-                arg(choice->getName()));
+                arg(choice->name()));
 			valid = false;
 		}
 		else
         {
-			choiceNames.append(choice->getName());
+			choiceNames.append(choice->name());
 		}
 
 		if (!choice->isValid(errorList, thisIdentifier))
@@ -1331,15 +1338,15 @@ bool Component::isValid( QStringList& errorList ) const
 	QStringList cpuNames;
 	foreach (QSharedPointer<Cpu> cpu, cpus_)
     {
-		if (cpuNames.contains(cpu->getName()))
+		if (cpuNames.contains(cpu->name()))
         {
 			errorList.append(QObject::tr("%1 contains several cpus with name %2").arg(thisIdentifier).
-                arg(cpu->getName()));
+                arg(cpu->name()));
 			valid = false;
 		}
 		else
         {
-			cpuNames.append(cpu->getName());
+			cpuNames.append(cpu->name());
 		}
 
 		if (!cpu->isValid(addSpaceNames, choices_, errorList, thisIdentifier))
@@ -1372,15 +1379,15 @@ bool Component::isValid( QStringList& errorList ) const
     QStringList paramNames;
 	foreach (QSharedPointer<Parameter> param, *parameters_)
     {
-		if (paramNames.contains(param->getName())) 
+		if (paramNames.contains(param->name())) 
         {
 			errorList.append(QObject::tr("%1 contains several parameters with name %2").arg(thisIdentifier, 
-                param->getName()));
+                param->name()));
 			valid = false;
 		}
 		else 
         {
-			paramNames.append(param->getName());
+			paramNames.append(param->name());
 		}
 
         errorList.append(validator.findErrorsIn(param.data(), thisIdentifier, choices_));
@@ -1411,13 +1418,13 @@ bool Component::isValid() const
 	QStringList fileSetNames;
 	foreach (QSharedPointer<FileSet> fileset, fileSets_)
     {
-		if (fileSetNames.contains(fileset->getName()))
+		if (fileSetNames.contains(fileset->name()))
         {
 			return false;
 		}
 		else
         {
-			fileSetNames.append(fileset->getName());
+			fileSetNames.append(fileset->name());
 		}
 
 		if (!fileset->isValid(true))
@@ -1452,28 +1459,28 @@ bool Component::isValid() const
     QStringList softwareViewNames;
     foreach (QSharedPointer<SWView> softwareView, swViews_)
     {
-        if (softwareViewNames.contains(softwareView->getName()) ||
+        if (softwareViewNames.contains(softwareView->name()) ||
             !softwareView->isValid(fileSetNames, getCpuNames()))
         {
             return false;
         }
         else
         {
-            softwareViewNames.append(softwareView->getName());
+            softwareViewNames.append(softwareView->name());
         }
     }
 
     QStringList systemViewNames;
     foreach (QSharedPointer<SystemView> currentSystemView, systemViews_)
     {
-        if (systemViewNames.contains(currentSystemView->getName()) ||
+        if (systemViewNames.contains(currentSystemView->name()) ||
             !currentSystemView->isValid(fileSetNames, getViewNames()))
         {
             return false;
         }
         else
         {
-            systemViewNames.append(currentSystemView->getName());
+            systemViewNames.append(currentSystemView->name());
         }
     }
 
@@ -1482,13 +1489,13 @@ bool Component::isValid() const
 	QStringList busifNames;
 	foreach (QSharedPointer<BusInterface> busif, busInterfaces_)
     {
-		if (busifNames.contains(busif->getName()))
+		if (busifNames.contains(busif->name()))
         {
 			return false;
 		}
 		else
         {
-			busifNames.append(busif->getName());
+			busifNames.append(busif->name());
 		}
 
 		if (!busif->isValid(physPorts, memoryMaps, addressSpaces, choices_))
@@ -1500,13 +1507,13 @@ bool Component::isValid() const
     QStringList comIfNames;
     foreach (QSharedPointer<ComInterface> comIf, comInterfaces_)
     {
-        if (comIfNames.contains(comIf->getName()))
+        if (comIfNames.contains(comIf->name()))
         {
             return false;
         }
         else
         {
-            comIfNames.append(comIf->getName());
+            comIfNames.append(comIf->name());
         }
 
         if (!comIf->isValid())
@@ -1518,13 +1525,13 @@ bool Component::isValid() const
     QStringList apiIfNames;
     foreach (QSharedPointer<ApiInterface> apiIf, apiInterfaces_)
     {
-        if (apiIfNames.contains(apiIf->getName()))
+        if (apiIfNames.contains(apiIf->name()))
         {
             return false;
         }
         else
         {
-            apiIfNames.append(apiIf->getName());
+            apiIfNames.append(apiIf->name());
         }
 
         if (!apiIf->isValid())
@@ -1537,7 +1544,7 @@ bool Component::isValid() const
 	QStringList channelNames;
 	foreach (QSharedPointer<Channel> channel, channels_)
     {
-		if (channelNames.contains(channel->getName()))
+		if (channelNames.contains(channel->name()))
         {
 			return false;
 		}
@@ -1551,13 +1558,13 @@ bool Component::isValid() const
 	QStringList remapNames;
 	foreach (QSharedPointer<RemapState> remState, *remapStates_)
     {
-		if (remapNames.contains(remState->getName()))
+		if (remapNames.contains(remState->name()))
         {
 			return false;
 		}
 		else
         {
-			remapNames.append(remState->getName());
+			remapNames.append(remState->name());
 		}
 
 		if (!remState->isValid(portNames))
@@ -1569,13 +1576,13 @@ bool Component::isValid() const
 	QStringList addSpaceNames;
 	foreach (QSharedPointer<AddressSpace> addrSpace, addressSpaces_)
     {
-		if (addSpaceNames.contains(addrSpace->getName()))
+		if (addSpaceNames.contains(addrSpace->name()))
         {
 			return false;
 		}
 		else
         {
-			addSpaceNames.append(addrSpace->getName());
+			addSpaceNames.append(addrSpace->name());
 		}
 
 		if (!addrSpace->isValid(choices_, getRemapStateNames()))
@@ -1587,13 +1594,13 @@ bool Component::isValid() const
 	QStringList memoryMapNames;
 	foreach (QSharedPointer<MemoryMap> memMap, memoryMaps_)
     {
-		if (memoryMapNames.contains(memMap->getName()))
+		if (memoryMapNames.contains(memMap->name()))
         {
 			return false;
 		}
 		else
         {
-			memoryMapNames.append(memMap->getName());
+			memoryMapNames.append(memMap->name());
 		}
 
 		if (!memMap->isValid(choices_, getRemapStateNames()))
@@ -1605,13 +1612,13 @@ bool Component::isValid() const
 	QStringList compGenNames;
 	foreach (QSharedPointer<ComponentGenerator> compGen, compGenerators_)
     {
-		if (compGenNames.contains(compGen->getName()))
+		if (compGenNames.contains(compGen->name()))
         {
 			return false;
 		}
 		else
         {
-			compGenNames.append(compGen->getName());
+			compGenNames.append(compGen->name());
 		}
 
 		if (!compGen->isValid(choices_))
@@ -1623,13 +1630,13 @@ bool Component::isValid() const
 	QStringList choiceNames;
 	foreach (QSharedPointer<Choice> choice, *choices_)
     {
-		if (choiceNames.contains(choice->getName()))
+		if (choiceNames.contains(choice->name()))
         {
 			return false;
 		}
 		else
         {
-			choiceNames.append(choice->getName());
+			choiceNames.append(choice->name());
 		}
 
 		if (!choice->isValid())
@@ -1641,13 +1648,13 @@ bool Component::isValid() const
 	QStringList cpuNames;
 	foreach (QSharedPointer<Cpu> cpu, cpus_)
     {
-		if (cpuNames.contains(cpu->getName()))
+		if (cpuNames.contains(cpu->name()))
         {
 			return false;
 		}
 		else
         {
-			cpuNames.append(cpu->getName());
+			cpuNames.append(cpu->name());
 		}
 
 		if (!cpu->isValid(addSpaceNames, choices_))
@@ -1723,7 +1730,7 @@ QStringList Component::getMemoryMapNames() const {
 	QStringList memoryMapNames;
 	foreach (QSharedPointer<MemoryMap> memMap, memoryMaps_) {
 		Q_ASSERT(memMap);
-		memoryMapNames.append(memMap->getName());
+		memoryMapNames.append(memMap->name());
 	}
 	return memoryMapNames;
 }
@@ -1743,7 +1750,7 @@ QStringList Component::getCpuNames() const
 	QStringList cpuNames;
 	foreach (QSharedPointer<Cpu> cpu, cpus_) {
 		if (cpu) {
-			cpuNames.append(cpu->getName());
+			cpuNames.append(cpu->name());
 		}
 	}
 
@@ -1852,7 +1859,7 @@ QStringList Component::getRemapStateNames() const
     QStringList remapStateNames;
     foreach (QSharedPointer<RemapState> singleRemapState, *remapStates_)
     {
-        remapStateNames.append(singleRemapState->getName());
+        remapStateNames.append(singleRemapState->name());
     }
 
     return remapStateNames;
@@ -1865,7 +1872,7 @@ QSharedPointer<Choice> Component::getChoice(QString const& choiceName) const
 {
     foreach(QSharedPointer<Choice> choice, *choices_)
     {
-        if (choice->getName() == choiceName)
+        if (choice->name() == choiceName)
         {
             return choice;
         }
@@ -1980,7 +1987,7 @@ QStringList Component::getVhdlLibraries( const QString& viewName ) const {
 	// view was not specified so take all file sets
 	else {
 		foreach (QSharedPointer<FileSet> fileSet, fileSets_) {
-			fileSetNames.append(fileSet->getName());
+			fileSetNames.append(fileSet->name());
 		}
 	}
 
@@ -1991,7 +1998,7 @@ QStringList Component::getVhdlLibraries( const QString& viewName ) const {
 		foreach (QSharedPointer<FileSet> fileSet, fileSets_) {
 			
 			// if file set is the searched one
-			if (fileSet->getName() == fileSetName) {
+			if (fileSet->name() == fileSetName) {
 				libraries += fileSet->getVhdlLibraryNames();
 			}
 		}
@@ -2013,7 +2020,7 @@ QList<General::LibraryFilePair> Component::getLibraries( const QString& viewName
 
 		// find the matching file set
 		foreach (QSharedPointer<FileSet> fileSet, fileSets_) {
-			if (fileSet->getName() == fileSetName) {
+			if (fileSet->name() == fileSetName) {
 				libraries += fileSet->getVerilogLibraries();
 				libraries += fileSet->getVhdlLibraries();
 			}
@@ -2112,7 +2119,7 @@ QSharedPointer<FileSet> Component::getFileSet( const QString& name ) const {
 	for (int i = 0; i < fileSets_.size(); ++i) {
 
 		// if the file set was found
-		if (fileSets_.at(i)->getName() == name) {
+		if (fileSets_.at(i)->name() == name) {
 			return fileSets_.at(i);
 		}
 	}
@@ -2127,7 +2134,7 @@ QSharedPointer<FileSet> Component::getFileSet( const QString& name ) {
 	foreach (QSharedPointer<FileSet> fileSet, fileSets_) {
 		
 		// if the file set is found
-		if (fileSet->getName() == name) {
+		if (fileSet->name() == name) {
 			return fileSet;
 		}
 	}
@@ -2150,7 +2157,7 @@ QStringList Component::getFiles(const QString fileSetName) {
 	for (int i = 0; i < fileSets_.size(); ++i) {
 
 		// if the file set has the specified name
-		if (fileSets_.at(i)->getName() == fileSetName) {
+		if (fileSets_.at(i)->name() == fileSetName) {
 			files += fileSets_.at(i)->getFileNames();
 		}
 	}
@@ -2173,7 +2180,7 @@ QStringList Component::getFilesFromFileSets( const QStringList& fileSetNames, co
 	foreach (QSharedPointer<FileSet> fileSet, fileSets_) {
 		
 		// if the file set is one of the specified ones
-		if (fileSetNames.contains(fileSet->getName())) {
+		if (fileSetNames.contains(fileSet->name())) {
 			files += fileSet->getFiles(fileTypes);
 		}
 	}
@@ -2190,7 +2197,7 @@ void Component::getFiles(QString const& filename, QList<File*>& files)
     {
         foreach (QSharedPointer<File> file, fileSet->getFiles())
         {
-            if (file->getName() == filename)
+            if (file->name() == filename)
             {
                 files.append(file.data());
             }
@@ -2203,7 +2210,7 @@ QStringList Component::getFileSetNames() const {
 	QStringList list;
 
 	foreach (QSharedPointer<FileSet> fileSet, fileSets_) {
-		list.append(fileSet->getName());
+		list.append(fileSet->name());
 	}
 	return list;
 }
@@ -2213,7 +2220,7 @@ bool Component::hasFileSet( const QString& fileSetName ) const {
 	foreach (QSharedPointer<FileSet> fileSet, fileSets_) {
 
 		// if the file set is found.
-		if (fileSet->getName() == fileSetName)
+		if (fileSet->name() == fileSetName)
 			return true;
 	}
 
@@ -2256,7 +2263,7 @@ void Component::removeFileSet( const QString& fileSetName ) {
 	for (int i = 0; i <fileSets_.size(); ++i) {
 		
 		// if the file set is the specified one
-		if (fileSets_.at(i)->getName() == fileSetName) {
+		if (fileSets_.at(i)->name() == fileSetName) {
 			fileSets_.value(i).clear();
 			fileSets_.removeAt(i);
 			return;
@@ -2313,7 +2320,7 @@ const QStringList Component::getAddressSpaceNames() const
 
 	// get the names of all address spaces.
 	foreach (QSharedPointer<AddressSpace> addrSpace, addressSpaces_) {
-		list.append(addrSpace->getName());
+		list.append(addrSpace->name());
 	}
 	return list;
 }
@@ -2346,7 +2353,7 @@ General::Direction Component::getPortDirection( const QString& portName ) const 
 void Component::removeChannel( const QString& channelName ) {
 
 	for (int i = 0; i < channels_.size(); ++i) {
-		if (channels_.at(i)->getName() == channelName) {
+		if (channels_.at(i)->name() == channelName) {
 			channels_.removeAt(i);
 			return;
 		}
@@ -2517,7 +2524,7 @@ const QList<QSharedPointer<Port> > Component::getPorts( const QString& interface
 	// search the named interface
 	bool found = false;
 	foreach (QSharedPointer<BusInterface> busif, busInterfaces_) {
-		if (busif->getName() == interfaceName) {
+		if (busif->name() == interfaceName) {
 			found = true;
 			portNames = busif->getPhysicalPortNames();
 			break;
@@ -2536,7 +2543,7 @@ const QList<QSharedPointer<Port> > Component::getPorts( const QString& interface
 
 	// check each port
 	foreach (QSharedPointer<Port> port, ports) {
-		if (portNames.contains(port->getName())) {
+		if (portNames.contains(port->name())) {
 
 			portsToReturn.append(port);
 		}
@@ -2639,13 +2646,13 @@ QString Component::getViewName( const VLNV& vlnv ) const {
 
 	foreach (QSharedPointer<SWView> swView, swViews_) {
 		if (swView->getHierarchyRef() == vlnv) {
-			return swView->getName();
+			return swView->name();
 		}
 	}
 
 	foreach (QSharedPointer<SystemView> sysView, systemViews_) {
 		if (sysView->getHierarchyRef() == vlnv) {
-			return sysView->getName();
+			return sysView->name();
 		}
 	}
 
@@ -2659,12 +2666,12 @@ QMap<QString, VLNV> Component::getHierRefNames() const {
 	}
 	foreach (QSharedPointer<SWView> swView, swViews_) {
 		if (swView->getHierarchyRef().isValid()) {
-			map.insert(swView->getName(), swView->getHierarchyRef());
+			map.insert(swView->name(), swView->getHierarchyRef());
 		}
 	}
 	foreach (QSharedPointer<SystemView> sysView, systemViews_) {
 		if (sysView->getHierarchyRef().isValid()) {
-			map.insert(sysView->getName(), sysView->getHierarchyRef());
+			map.insert(sysView->name(), sysView->getHierarchyRef());
 		}
 	}
 	return map;
@@ -2820,14 +2827,6 @@ bool Component::hasView( const QString& viewName ) const {
 	return model_->findView(viewName);
 }
 
-QString Component::getViewDescription( const QString& viewName ) const {
-	View* view = findView(viewName);
-	if (!view)
-		return QString();
-
-	return view->getDescription();
-}
-
 VLNV Component::getHierSWRef(const QString viewName) const {
 
     // search all views
@@ -2835,7 +2834,7 @@ VLNV Component::getHierSWRef(const QString viewName) const {
 
         // if the view has the given name 
         // or no name is given AND the view is hierarchical
-        if (swViews_.at(i)->getName() == viewName ||
+        if (swViews_.at(i)->name() == viewName ||
             (viewName.isEmpty() && swViews_.at(i)->getHierarchyRef().isValid())) {
                 return swViews_.at(i)->getHierarchyRef();
         }
@@ -2867,7 +2866,7 @@ void Component::setHierSWRef(const VLNV& vlnv, const QString& viewName /*= QStri
     foreach (QSharedPointer<SWView> view, swViews_) {
 
         // if the view has given name or no name is given AND view is hierarchical
-        if (view->getName() == viewName ||
+        if (view->name() == viewName ||
             (viewName.isEmpty() && view->getHierarchyRef().isValid())) {
                 view->setHierarchyRef(vlnv);
         }
@@ -2879,7 +2878,7 @@ QSharedPointer<SWView> Component::findSWView( const QString name ) const {
     for (int i = 0; i < swViews_.size(); ++i) {
 
         // if the view has the specified name
-        if (swViews_.at(i)->getName() == name) {
+        if (swViews_.at(i)->name() == name) {
             return swViews_.at(i);
         }
     }
@@ -2893,7 +2892,7 @@ QSharedPointer<SWView> Component::getSWView( const QString& viewName ) {
 
 	// first
 	foreach (QSharedPointer<SWView> view, swViews_) {
-		if (view->getName() == viewName) {
+		if (view->name() == viewName) {
 			swView = view;
 		}
 	}
@@ -2909,7 +2908,7 @@ QSharedPointer<SWView> Component::getSWView( const QString& viewName ) {
 
 void Component::addSWView(SWView* newView) {
     // remove previous views with the same name.
-    removeSWView(newView->getName());
+    removeSWView(newView->name());
 
     // add the new view
     swViews_.append(QSharedPointer<SWView>(newView));
@@ -2932,7 +2931,7 @@ SWView* Component::createSWView() {
 QStringList Component::getSWViewNames() const {
     QStringList list;
     foreach (QSharedPointer<SWView> view, swViews_) {
-        list.append(view->getName());
+        list.append(view->name());
     }
     return list;
 }
@@ -2946,7 +2945,7 @@ void Component::removeSWView( const QString& viewName ) {
     for (int i = 0; i < swViews_.size(); ++i) {
 
         // if the view has the specified name
-        if (swViews_.at(i)->getName() == viewName) {
+        if (swViews_.at(i)->name() == viewName) {
 
             // remove the view
             swViews_.removeAt(i);
@@ -2978,7 +2977,7 @@ VLNV Component::getHierSystemRef(const QString viewName) const {
 
         // if the view has the given name 
         // or no name is given AND the view is hierarchical
-        if (systemViews_.at(i)->getName() == viewName ||
+        if (systemViews_.at(i)->name() == viewName ||
             (viewName.isEmpty() && systemViews_.at(i)->getHierarchyRef().isValid())) {
                 return systemViews_.at(i)->getHierarchyRef();
         }
@@ -3010,7 +3009,7 @@ void Component::setHierSystemRef(const VLNV& vlnv, const QString& viewName /*= Q
     foreach (QSharedPointer<SystemView> view, systemViews_) {
 
         // if the view has given name or no name is given AND view is hierarchical
-        if (view->getName() == viewName ||
+        if (view->name() == viewName ||
             (viewName.isEmpty() && view->getHierarchyRef().isValid())) {
                 view->setHierarchyRef(vlnv);
         }
@@ -3022,7 +3021,7 @@ SystemView* Component::findSystemView(const QString name) const {
     for (int i = 0; i < systemViews_.size(); ++i) {
 
         // if the view has the specified name
-        if (systemViews_.at(i)->getName() == name) {
+        if (systemViews_.at(i)->name() == name) {
             return systemViews_.at(i).data();
         }
     }
@@ -3048,7 +3047,7 @@ QSharedPointer<SystemView> Component::findSystemView( const VLNV& hierRef ) cons
 
 void Component::addSystemView(SystemView* newView) {
     // remove previous views with the same name.
-    removeSystemView(newView->getName());
+    removeSystemView(newView->name());
 
     // add the new view
     systemViews_.append(QSharedPointer<SystemView>(newView));
@@ -3071,7 +3070,7 @@ SystemView* Component::createSystemView() {
 QStringList Component::getSystemViewNames() const {
     QStringList list;
     foreach (QSharedPointer<SystemView> view, systemViews_) {
-        list.append(view->getName());
+        list.append(view->name());
     }
     return list;
 }
@@ -3085,7 +3084,7 @@ void Component::removeSystemView( const QString& viewName ) {
     for (int i = 0; i < systemViews_.size(); ++i) {
 
         // if the view has the specified name
-        if (systemViews_.at(i)->getName() == viewName) {
+        if (systemViews_.at(i)->name() == viewName) {
 
             // remove the view
             systemViews_.removeAt(i);
@@ -3209,7 +3208,7 @@ void Component::removeAddressSpace( const QString& addrSpaceName ) {
 	for (int i = 0; i < addressSpaces_.size(); ++i) {
 		
 		// if the specified address space is found
-		if (addressSpaces_.at(i)->getName() == addrSpaceName) {
+		if (addressSpaces_.at(i)->name() == addrSpaceName) {
 			addressSpaces_.removeAt(i);
 			return;
 		}
@@ -3224,7 +3223,7 @@ AddressSpace* Component::createAddressSpace() {
 
 bool Component::hasAddressSpace( const QString& addrSpaceName ) const {
 	foreach (QSharedPointer<AddressSpace> addrSpace, addressSpaces_) {
-		if (addrSpace->getName() == addrSpaceName) {
+		if (addrSpace->name() == addrSpaceName) {
 			return true;
 		}
 	}
@@ -3233,7 +3232,7 @@ bool Component::hasAddressSpace( const QString& addrSpaceName ) const {
 
 void Component::removeCpu( const QString& cpuName ) {
 	for (int i = 0; i < cpus_.size(); ++i) {
-		if (cpus_.at(i)->getName() == cpuName) {
+		if (cpus_.at(i)->name() == cpuName) {
 			cpus_.removeAt(i);
 			return;
 		}
@@ -3316,7 +3315,7 @@ QStringList Component::getComInterfaceNames() const
 {
     QStringList comNames;
 	foreach (QSharedPointer<ComInterface> comIf, comInterfaces_) {
-		comNames.append(comIf->getName());
+		comNames.append(comIf->name());
 	}
 	return comNames;
 }
@@ -3326,7 +3325,7 @@ QStringList Component::getComInterfaceNames() const
 //-----------------------------------------------------------------------------
 QSharedPointer<ComInterface> Component::getComInterface( QString const& name ) {
 	foreach (QSharedPointer<ComInterface> comIf, comInterfaces_) {
-		if (comIf->getName() == name) {
+		if (comIf->name() == name) {
 			return comIf;
 		}
 	}
@@ -3364,7 +3363,7 @@ bool Component::addComInterface(QSharedPointer<ComInterface> comInterface)
 void Component::removeComInterface(QString const& name)
 {
 	for (int i = 0; i < comInterfaces_.size(); ++i) {
-		if (comInterfaces_.at(i)->getName() == name) {
+		if (comInterfaces_.at(i)->name() == name) {
 			comInterfaces_.removeAt(i);
 			--i;
 		}
@@ -3401,7 +3400,7 @@ QList<QSharedPointer<ApiInterface> >& Component::getApiInterfaces() {
 QStringList Component::getApiInterfaceNames() const {
     QStringList apiNames;
 	foreach (QSharedPointer<ApiInterface> apiIf, apiInterfaces_) {
-		apiNames.append(apiIf->getName());
+		apiNames.append(apiIf->name());
 	}
 	return apiNames;
 }
@@ -3412,7 +3411,7 @@ QStringList Component::getApiInterfaceNames() const {
 QSharedPointer<ApiInterface> Component::getApiInterface( QString const& name ) {
 
 	foreach (QSharedPointer<ApiInterface> apiIf, apiInterfaces_) {
-		if (apiIf->getName() == name) {
+		if (apiIf->name() == name) {
 			return apiIf;
 		}
 	}
@@ -3452,7 +3451,7 @@ bool Component::addApiInterface(QSharedPointer<ApiInterface> apiInterface) {
 //-----------------------------------------------------------------------------
 void Component::removeApiInterface(QString const& name) {
     for (int i = 0; i < apiInterfaces_.size(); ++i) {
-		if (apiInterfaces_.at(i)->getName() == name) {
+		if (apiInterfaces_.at(i)->name() == name) {
 			apiInterfaces_.removeAt(i);
 			--i;
 		}
@@ -3545,7 +3544,7 @@ void Component::parseSystemViews(QDomNode& node)
 General::InterfaceMode Component::getInterfaceMode( const QString& interfaceName ) const {
 	
 	foreach (QSharedPointer<BusInterface> busif, busInterfaces_) {
-		if (busif->getName() == interfaceName) {
+		if (busif->name() == interfaceName) {
 			return busif->getInterfaceMode();
 		}
 	}
@@ -3588,7 +3587,7 @@ QList<QSharedPointer<const BusInterface> > Component::getChannelConnectedInterfa
 QSharedPointer<BusInterface> Component::getBusInterface( const QString& name ) {
 
 	foreach (QSharedPointer<BusInterface> busif, busInterfaces_) {
-		if (busif->getName() == name) {
+		if (busif->name() == name) {
 			return busif;
 		}
 	}
@@ -3599,7 +3598,7 @@ QSharedPointer<BusInterface> Component::getBusInterface( const QString& name ) {
 QSharedPointer<BusInterface const> Component::getBusInterface( const QString& name ) const {
 
     foreach (QSharedPointer<BusInterface> busif, busInterfaces_) {
-        if (busif->getName() == name) {
+        if (busif->name() == name) {
             return busif;
         }
     }
@@ -3620,7 +3619,7 @@ QStringList Component::getSlaveInterfaces( const QString& memoryMap ) const {
 
 		// if interface refers to given memory map then add its name to list
 		if (busif->getMemoryMapRef() == memoryMap) {
-			names.append(busif->getName());
+			names.append(busif->name());
 		}
 	}
 	return names;
@@ -3638,7 +3637,7 @@ QStringList Component::getMasterInterfaces( const QString& addressSpace ) const 
 
 				// if interface refers to given address space
 				if (busif->getAddressSpaceRef() == addressSpace) {
-					names.append(busif->getName());
+					names.append(busif->name());
 				}
 		}
 	}
@@ -3652,7 +3651,7 @@ QStringList Component::getMasterInterfaces() const {
 		if (busif->getInterfaceMode() == General::MASTER ||
 			busif->getInterfaceMode() == General::MIRROREDMASTER) {
 
-			names.append(busif->getName());
+			names.append(busif->name());
 		}
 	}
 	return names;
@@ -3664,7 +3663,7 @@ bool Component::hasInterfaces() const {
 
 bool Component::hasInterface( const QString& interfaceName ) const {
 	foreach (QSharedPointer<BusInterface> busif, busInterfaces_) {
-		if (busif->getName() == interfaceName) {
+		if (busif->name() == interfaceName) {
 			return true;
 		}
 	}
@@ -3674,7 +3673,7 @@ bool Component::hasInterface( const QString& interfaceName ) const {
 bool Component::addBusInterface(QSharedPointer<BusInterface> busInterface ) {
 
 	// if bus interface with given name already exists
-	if (hasInterface(busInterface->getName())) {
+	if (hasInterface(busInterface->name())) {
 		return false;
 	}
 
@@ -3685,7 +3684,7 @@ bool Component::addBusInterface(QSharedPointer<BusInterface> busInterface ) {
 void Component::removeBusInterface( const QString& busifName ) {
 
 	for (int i = 0; i < busInterfaces_.size(); ++i) {
-		if (busInterfaces_.at(i)->getName() == busifName) {
+		if (busInterfaces_.at(i)->name() == busifName) {
 			busInterfaces_.removeAt(i);
 			--i;
 		}
@@ -3706,7 +3705,7 @@ QStringList Component::getBusInterfaceNames() const {
 
 	QStringList list;
 	foreach (QSharedPointer<BusInterface> busif, busInterfaces_) {
-		list.append(busif->getName());
+		list.append(busif->name());
 	}
 	return list;
 }
@@ -3750,21 +3749,11 @@ QString Component::getInterfaceNameForPort( const QString& portName ) const {
 			// mark port as found and set the interface name
 			else {
 				found = true;
-				interfaceName = busif->getName();
+				interfaceName = busif->name();
 			}
 		}
 	}
 	return interfaceName;
-}
-
-QString Component::getInterfaceDescription( const QString& interfaceName ) const {
-
-	foreach (QSharedPointer<BusInterface> busif, busInterfaces_) {
-		if (busif->getName() == interfaceName) {
-			return busif->getDescription();
-		}
-	}
-	return QString();
 }
 
 void Component::setBusInterfaces(QList<QSharedPointer<BusInterface> >& busInterfaces ) {
@@ -3783,7 +3772,7 @@ QSharedPointer<MemoryMap> Component::getMemoryMap(QString const& name) const
 {
     for (int i = 0; i < memoryMaps_.size(); ++i)
     {
-        if (memoryMaps_.at(i)->getName() == name)
+        if (memoryMaps_.at(i)->name() == name)
         {
             return memoryMaps_.at(i);
         }
@@ -3916,7 +3905,7 @@ QStringList Component::getParameterNames() const
 	QStringList names;
 	foreach (QSharedPointer<Parameter> param, *parameters_)
     {
-		names.append(param->getName());
+		names.append(param->name());
 	}
 	return names;
 }
@@ -4004,13 +3993,13 @@ bool Component::validateParameters(QSharedPointer<QList<QSharedPointer<Parameter
     QStringList parameterNames;
     foreach (QSharedPointer<Parameter> param, *parameters)
     {
-        if (parameterNames.contains(param->getName()))
+        if (parameterNames.contains(param->name()))
         {
             return false;
         }
         else 
         {
-            parameterNames.append(param->getName());
+            parameterNames.append(param->name());
         }
 
         if (!validateParameter(param))

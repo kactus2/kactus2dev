@@ -47,9 +47,9 @@ void DescEditor::setDescription(QString const& desc)
 }
 
 //-----------------------------------------------------------------------------
-// Function: getDescription()
+// Function: description()
 //-----------------------------------------------------------------------------
-QString DescEditor::getDescription() const
+QString DescEditor::description() const
 {
     return m_descEdit->toPlainText();
 }

@@ -9,7 +9,7 @@
 
 #include "generaldeclarations.h"
 
-#include <IPXACTmodels/NameGroup.h>
+#include <IPXACTmodels/common/NameGroup.h>
 
 #include "ipxactmodels_global.h"
 
@@ -33,7 +33,7 @@ class Kactus2Value;
  *
  * Contains a list of files and directories associated with a component.
  */
-class IPXACTMODELS_EXPORT FileSet {
+class IPXACTMODELS_EXPORT FileSet : public NameGroup {
 
 public:
 
@@ -153,36 +153,6 @@ public:
 	 */
 	const QStringList& getGroups();
 
-	/*! \brief Get the name group that contains the name, display name and description.
-	 *
-	 * \return Reference to the group.
-	*/
-	NameGroup& getNameGroup();
-
-	/*! \brief Get the name group that contains the name, display name and description.
-	 *
-	 * \return Reference to the group.
-	*/
-	const NameGroup& getNameGroup() const;
-
-	/*! \brief Get the name of the file set.
-	 *
-	 * \return QString containing the name.
-	 */
-	QString getName() const;
-
-	/*! \brief Get the displayName of the file set.
-	*
-	* \return QString containing the displayName.
-	*/
-	QString getDisplayName() const;
-
-	/*! \brief Get the description of the file set.
-	*
-	* \return The description of the file set.
-	*/
-	QString getDescription() const;
-
 	/*! \brief Set the default file builders for this file set.
 	 *
 	 * Calling this function will delete old file builders.
@@ -254,24 +224,6 @@ public:
 	 *
 	*/
 	void setGroups(const QString& groupName);
-
-	/*! \brief Set the name for this file set
-	 *
-	 * \param name QString containing the name.
-	 */
-	void setName(const QString &name);
-
-	/*! \brief Set the display name for the file set.
-	*
-	* \param displayName QString containing the displayName.
-	*/
-	void setDisplayName(const QString& displayName);
-
-	/*! \brief Set the description for the file set.
-	*
-	* \param description QString containing the description.
-	*/
-	void setDescription(const QString& description);
 
 	/*! \brief Get the file paths of the files stored in the file set.
 	 *
@@ -480,14 +432,6 @@ private:
      *      @param [in] other   The file set to copy extensions from.
      */
     void copyVendorExtensions(const FileSet & other);
-
-	/*! \brief Contains the name and description information for file set.
-	 * 
-	 * MANDATORY spirit:name
-	 * OPTIONAL spirit:displayName
-	 * OPTIONAL spirit:description
-	 */
-	NameGroup nameGroup_;
 
 	/*! \brief Describes the function or purpose of the file set.
 	 * OPTIONAL spirit:group

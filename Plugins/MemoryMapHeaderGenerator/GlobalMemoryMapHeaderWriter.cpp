@@ -250,7 +250,7 @@ void GlobalMemoryMapHeaderWriter::parseSlaveInterface(qint64 offset, QSharedPoin
 
         QSharedPointer<ListParameterFinder> finder = createParameterFinder(instanceID, component);
 
-        stream << " * The defines for the memory map \"" << memMap->getName() << "\":" << endl;
+        stream << " * The defines for the memory map \"" << memMap->name() << "\":" << endl;
         stream << "*/" << endl << endl;
 
         writeMemoryAddresses(finder, memMap, stream, offset, interFace.getComponentRef());
@@ -330,7 +330,7 @@ void GlobalMemoryMapHeaderWriter::parseMirroredMasterInterface(qint64 offset, QS
 
     foreach (QSharedPointer<const BusInterface> busif, connectedInterfaces)
     {
-        Interface connectedInterface(interFace.getComponentRef(), busif->getName());
+        Interface connectedInterface(interFace.getComponentRef(), busif->name());
         if (operatedInterfaces_.contains(connectedInterface))
         {
             continue;

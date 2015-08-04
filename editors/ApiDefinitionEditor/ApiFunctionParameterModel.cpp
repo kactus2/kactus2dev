@@ -87,7 +87,7 @@ QVariant ApiFunctionParameterModel::data(QModelIndex const& index, int role /*= 
         switch (index.column())
         {
         case API_FUNC_PARAM_COL_NAME:
-            return func_->getParam(index.row())->getName();
+            return func_->getParam(index.row())->name();
 
         case API_FUNC_PARAM_COL_TYPE:
             return func_->getParam(index.row())->getType();

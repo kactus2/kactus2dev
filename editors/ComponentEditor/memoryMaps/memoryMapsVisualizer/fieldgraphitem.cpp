@@ -63,7 +63,7 @@ void FieldGraphItem::refresh()
 //-----------------------------------------------------------------------------
 void FieldGraphItem::updateDisplay()
 {
-    setName(field_->getName());
+    setName(field_->name());
 
     quint64 leftBound = getLastAddress();
     quint64 rightBound = getOffset();
@@ -73,7 +73,7 @@ void FieldGraphItem::updateDisplay()
 
     setDisplayOffset(leftBound);
     setDisplayLastAddress(rightBound);
-    setToolTip("<b>" + getName() + "</b> [" + QString::number(leftBound) + ".." + 
+    setToolTip("<b>" + name() + "</b> [" + QString::number(leftBound) + ".." + 
         QString::number(rightBound) + "]");
 }
 

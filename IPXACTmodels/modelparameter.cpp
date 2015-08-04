@@ -22,7 +22,7 @@
 //-----------------------------------------------------------------------------
 // Function: ModelParameter::ModelParameter()
 //-----------------------------------------------------------------------------
-ModelParameter::ModelParameter(QDomNode &modelParameterNode): Parameter(modelParameterNode)
+ModelParameter::ModelParameter(QDomNode &modelParameterNode): Parameter()
 {
 
 }

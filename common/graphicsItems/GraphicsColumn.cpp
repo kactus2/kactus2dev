@@ -356,11 +356,11 @@ void GraphicsColumn::updateItemPositions()
 }
 
 //-----------------------------------------------------------------------------
-// Function: getName()
+// Function: name()
 //-----------------------------------------------------------------------------
-QString const& GraphicsColumn::getName() const
+QString const& GraphicsColumn::name() const
 {
-    return desc_.getName();
+    return desc_.name();
 }
 
 //-----------------------------------------------------------------------------
@@ -535,7 +535,7 @@ void GraphicsColumn::setWidth(unsigned int width)
 //-----------------------------------------------------------------------------
 void GraphicsColumn::updateNameLabel()
 {
-    nameLabel_->setHtml("<center>" + desc_.getName() + "</center>");
+    nameLabel_->setHtml("<center>" + desc_.name() + "</center>");
     nameLabel_->setTextWidth(qMax<unsigned int>(140, desc_.getWidth()));
     nameLabel_->setPos((desc_.getWidth() - nameLabel_->textWidth()) / 2.0, 5.0);
 }

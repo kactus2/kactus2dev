@@ -11,7 +11,7 @@
 #include "ipxactmodels_global.h"
 #include "writevalueconstraint.h"
 
-#include <IPXACTmodels/NameGroup.h>
+#include <IPXACTmodels/common/NameGroup.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Value.h>
 
 #include <QString>
@@ -30,7 +30,7 @@ class VendorExtension;
  *
  * Describes a smaller bit field of a register.
  */
-class IPXACTMODELS_EXPORT Field 
+class IPXACTMODELS_EXPORT Field : public NameGroup
 {
 
 public:
@@ -191,18 +191,6 @@ public:
      */
     const QMap<QString,QString>& getBitWidthAttributes() const;
 
-    /*! \brief Get the description of the field.
-     *
-     * \return QString containing the description.
-     */
-    QString getDescription() const;
-
-    /*! \brief Get the displayName
-     *
-     * \return QString containing the name.
-     */
-    QString getDisplayName() const;
-
     /*! \brief Get list of the enumeratedValues.
      *
      * \return QList containing pointers to the enumerated values.
@@ -214,12 +202,6 @@ public:
      * \return QList containing pointers to the enumerated values.
      */
 	QList<QSharedPointer<EnumeratedValue> >& getEnumeratedValues();
-
-    /*! \brief Get the name of the field
-     *
-     * \return QString containing the name.
-     */
-    QString getName() const;
 
     /*! \brief Get list of the parameters for the field.
      *
@@ -251,30 +233,12 @@ public:
      */
     void setBitWidthAttributes(const QMap<QString,QString>& bitWidthAttributes);
 
-    /*! \brief Set the description for the field.
-     *
-     * \param description QString containing the description.
-     */
-    void setDescription(const QString& description);
-
-    /*! \brief Set the displayName for the field.
-     *
-     * \param displayName QString containing the displayName.
-     */
-    void setDisplayName(const QString& displayName);
-
     /*! \brief Set the enumerated values for the field.
      *
      * \param enumeratedValues QList containing pointers to the enumerated
      * values.
      */
     void setEnumeratedValues(const QList<QSharedPointer<EnumeratedValue> >& enumeratedValues);
-
-    /*! \brief Set the name for the field.
-     *
-     * \param name QString containing the name.
-     */
-    void setName(const QString& name);
 
     /*! \brief Set the parameters for the field.
      *
@@ -395,13 +359,6 @@ public:
 	QSharedPointer<WriteValueConstraint> getWriteConstraint();
 
     /*!
-     *  Get the namegroup of this field.
-     *
-     *      @return The name group of this field.
-     */
-    NameGroup& getNameGroup();
-
-    /*!
      *  Set the reset value for this field.
      *
      *      @param [in] newResetValue   The new reset value.
@@ -486,9 +443,6 @@ private:
 	 * OPTIONAL spirit:id
 	 */
 	QString id_;
-
-	//! \brief Contains the name, display name and description of field.
-	NameGroup nameGroup_;
 
 	/*! \brief Describes the offset where this bit field starts.
 	 * MANDATORY spirit:bitOffset

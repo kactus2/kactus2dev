@@ -15,7 +15,7 @@
 
 #include"vlnv.h"
 #include "generaldeclarations.h"
-#include <IPXACTmodels/NameGroup.h>
+#include <IPXACTmodels/common/NameGroup.h>
 
 #include "ipxactmodels_global.h"
 
@@ -139,7 +139,7 @@ public:
     /*!
      *  Returns the name of the API interface.
      */
-    QString getName() const;
+    QString name() const;
 
     /*!
      *  Returns the display name of the API interface.

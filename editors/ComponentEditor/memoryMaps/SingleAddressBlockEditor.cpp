@@ -36,7 +36,7 @@ SingleAddressBlockEditor::SingleAddressBlockEditor(QSharedPointer<AddressBlock> 
     QSharedPointer<ExpressionParser> expressionParser,
     QWidget* parent):
 ItemEditor(component, handler, parent),
-nameEditor_(addressBlock->getNameGroup(), this, tr("Address block name and description")),
+nameEditor_(addressBlock, this, tr("Address block name and description")),
 registersEditor_(new AddressBlockEditor(addressBlock, component, handler, parameterFinder, expressionFormatter,
     this)),
 usageEditor_(),

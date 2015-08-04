@@ -7,9 +7,12 @@
 #include "memorymapitem.h"
 #include "subspacemap.h"
 
-#include "parameter.h"
+
 #include "GenericVendorExtension.h"
 
+#include <IPXACTmodels/common/Parameter.h>
+#include <IPXACTmodels/common/ParameterReader.h>
+#include <IPXACTmodels/common/ParameterWriter.h>
 #include <IPXACTmodels/validators/ParameterValidator.h>
 
 #include <QList>
@@ -18,6 +21,7 @@
 #include <QObject>
 #include <QXmlStreamWriter>
 #include "XmlUtils.h"
+
 
 //-----------------------------------------------------------------------------
 // Function: SubspaceMap::SubspaceMap()
@@ -30,12 +34,12 @@ vendorExtensions_()
     {
 		if (memoryMapNode.childNodes().at(i).nodeName() == QString("spirit:parameters"))
         {
+            ParameterReader reader;
 			// go through all parameters
 			for (int j = 0; j < memoryMapNode.childNodes().at(i).childNodes().count(); ++j)
             {
 				QDomNode parameterNode = memoryMapNode.childNodes().at(i).childNodes().at(j);
-				Parameter *temp = new Parameter(parameterNode);
-				parameters_.append(QSharedPointer<Parameter>(temp));
+				parameters_.append(QSharedPointer<Parameter>(reader.createParameterFrom(parameterNode)));
 			}
 		}
 
@@ -123,17 +127,19 @@ void SubspaceMap::write(QXmlStreamWriter& writer)
 
 	MemoryMapItem::write(writer);
 
-	if (parameters_.size() != 0)
+    if (parameters_.size() != 0)
     {
-		writer.writeStartElement("spirit:parameters");
+        writer.writeStartElement("ipxact:parameters");
 
-		foreach (QSharedPointer<Parameter> parameter, parameters_)
+        ParameterWriter parameterWriter;
+        // write each parameter
+        for (int i = 0; i < parameters_.size(); ++i)
         {
-			parameter->write(writer);
-		}
+            parameterWriter.writeParameter(writer, parameters_.at(i));
+        }
 
-		writer.writeEndElement(); // spirit:parameters
-	}
+        writer.writeEndElement(); // ipxact:parameters
+    }
 
     if (!vendorExtensions_.isEmpty())
     {
@@ -152,9 +158,9 @@ bool SubspaceMap::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > compon
     const QString& parentIdentifier ) const
 {
 	bool valid = true;
-    const QString thisIdentifier(QObject::tr("subspace map %1").arg(getName()));
+    const QString thisIdentifier(QObject::tr("subspace map %1").arg(name()));
 
-    if (getName().isEmpty())
+    if (name().isEmpty())
     {
 		errorList.append(QObject::tr("No name specified for subspace map within %1").arg(parentIdentifier));
 		valid = false;
@@ -191,7 +197,7 @@ bool SubspaceMap::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > compon
 //-----------------------------------------------------------------------------
 bool SubspaceMap::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const
 {
-    if (getName().isEmpty())
+    if (name().isEmpty())
     {
 		return false;
 	}

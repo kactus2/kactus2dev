@@ -54,7 +54,7 @@ public:
     /*!
      *  Returns the column name from the dialog.
      */
-    QString getName() const;
+    QString name() const;
 
     /*!
      *  Returns the column content type from the dialog.

@@ -171,11 +171,12 @@ void Model::write(QXmlStreamWriter& writer) {
     {
 		writer.writeStartElement("spirit:modelParameters");
 
+        /*
 		// go through each modelParameter
 		foreach (QSharedPointer<ModelParameter> modelparam, *modelParameters_)
         {
 			modelparam->write(writer);
-		}
+		}*/
 
 		writer.writeEndElement(); // spirit:modelParameters
 	}
@@ -196,13 +197,13 @@ bool Model::isValid( const QStringList& fileSetNames,
 	QStringList portNames;
 	foreach (QSharedPointer<Port> port, ports_) {
 
-		if (portNames.contains(port->getName())) {
+		if (portNames.contains(port->name())) {
 			errorList.append(QObject::tr("%1 contains several ports with name %2").arg(
-				parentIdentifier).arg(port->getName()));
+				parentIdentifier).arg(port->name()));
 			valid = false;
 		}
 		else {
-			portNames.append(port->getName());
+			portNames.append(port->name());
 		}
 
 		if (!port->isValid(hasViews, errorList, parentIdentifier)) {
@@ -213,13 +214,13 @@ bool Model::isValid( const QStringList& fileSetNames,
 	QStringList viewNames;
 	foreach (QSharedPointer<View> view, views_) {
 
-		if (viewNames.contains(view->getName())) {
+		if (viewNames.contains(view->name())) {
 			errorList.append(QObject::tr("%1 contains several views with name %2").arg(
-				parentIdentifier).arg(view->getName()));
+				parentIdentifier).arg(view->name()));
 			valid = false;
 		}
 		else {
-			viewNames.append(view->getName());
+			viewNames.append(view->name());
 		}
 
 		if (!view->isValid(fileSetNames, componentChoices, errorList, parentIdentifier)) {
@@ -231,14 +232,14 @@ bool Model::isValid( const QStringList& fileSetNames,
 	QStringList modelParamNames;
 	foreach (QSharedPointer<ModelParameter> modelParam, *modelParameters_) 
     {
-		if (modelParamNames.contains(modelParam->getName())) {
+		if (modelParamNames.contains(modelParam->name())) {
 			errorList.append(QObject::tr("%1 contains several model parameters"
-				" with name %2").arg(parentIdentifier).arg(modelParam->getName()));
+				" with name %2").arg(parentIdentifier).arg(modelParam->name()));
 			valid = false;
 		}
 		else 
         {
-			modelParamNames.append(modelParam->getName());
+			modelParamNames.append(modelParam->name());
 		}
 
         errorList.append(validator.findErrorsIn(modelParam.data(), parentIdentifier, componentChoices));
@@ -261,11 +262,11 @@ bool Model::isValid(const QStringList& fileSetNames,
 	QStringList portNames;
 	foreach (QSharedPointer<Port> port, ports_) {
 
-		if (portNames.contains(port->getName())) {
+		if (portNames.contains(port->name())) {
 			return false;
 		}
 		else {
-			portNames.append(port->getName());
+			portNames.append(port->name());
 		}
 
 		if (!port->isValid(hasViews)) {
@@ -276,11 +277,11 @@ bool Model::isValid(const QStringList& fileSetNames,
 	QStringList viewNames;
 	foreach (QSharedPointer<View> view, views_) {
 
-		if (viewNames.contains(view->getName())) {
+		if (viewNames.contains(view->name())) {
 			return false;
 		}
 		else {
-			viewNames.append(view->getName());
+			viewNames.append(view->name());
 		}
 
 		if (!view->isValid(fileSetNames, componentChoices)) {
@@ -292,13 +293,13 @@ bool Model::isValid(const QStringList& fileSetNames,
 	QStringList modelParamNames;
 	foreach (QSharedPointer<ModelParameter> modelParam, *modelParameters_)
     {
-		if (modelParamNames.contains(modelParam->getName()))
+		if (modelParamNames.contains(modelParam->name()))
         {
 			return false;
 		}
 		else
         {
-			modelParamNames.append(modelParam->getName());
+			modelParamNames.append(modelParam->name());
 		}
 
 		if (!validator.validate(modelParam.data(), componentChoices))
@@ -361,7 +362,7 @@ VLNV Model::getHierRef(const QString viewName) const {
 
 		// if the view has the given name 
 		// or no name is given AND the view is hierarchical
-		if (views_.at(i)->getName() == viewName ||
+		if (views_.at(i)->name() == viewName ||
 				(viewName.isEmpty() && views_.at(i)->getHierarchyRef().isValid())) {
 			return views_.at(i)->getHierarchyRef();
 		}
@@ -377,7 +378,7 @@ void Model::setHierRef(const VLNV& vlnv, const QString& viewName /*= QString()*/
 	foreach (QSharedPointer<View> view, views_) {
 		
 		// if the view has given name or no name is given AND view is hierarchical
-		if (view->getName() == viewName ||
+		if (view->name() == viewName ||
 			(viewName.isEmpty() && view->getHierarchyRef().isValid())) {
 			view->setHierarchyRef(vlnv);
 		}
@@ -404,7 +405,7 @@ QMap<QString, VLNV> Model::getHierRefNames() const {
 	QMap<QString, VLNV> map;
 	foreach (QSharedPointer<View> view, views_) {
 		if (view->isHierarchical()) {
-			map.insert(view->getName(), view->getHierarchyRef());
+			map.insert(view->name(), view->getHierarchyRef());
 		}
 	}
 	return map;
@@ -415,7 +416,7 @@ View* Model::findView(const QString name) const {
 	for (int i = 0; i < views_.size(); ++i) {
 
 		// if the view has the specified name
-		if (views_.at(i)->getName() == name) {
+		if (views_.at(i)->name() == name) {
 			return views_.at(i).data();
 		}
 	}
@@ -427,7 +428,7 @@ View* Model::findView(const QString name) const {
 void Model::addView(View* newView) {
 
 	// remove previous views with the same name.
-	removeView(newView->getName());
+	removeView(newView->name());
 
 	// add the new view
 	views_.append(QSharedPointer<View>(newView));
@@ -439,7 +440,7 @@ void Model::removeView(const QString& name) {
 	for (int i = 0; i < views_.size(); ++i) {
 
 		// if the view has the specified name
-		if (views_.at(i)->getName() == name) {
+		if (views_.at(i)->name() == name) {
 
 			// remove the view
 			views_.removeAt(i);
@@ -459,7 +460,7 @@ QStringList Model::getViewNames() const {
 
 	QStringList list;
 	foreach (QSharedPointer<View> view, views_) {
-		list.append(view->getName());
+		list.append(view->name());
 	}
 	return list;
 }
@@ -467,7 +468,7 @@ QStringList Model::getViewNames() const {
 QString Model::getViewName( const VLNV& vlnv ) const {
 	foreach (QSharedPointer<View> view, views_) {
 		if (view->getHierarchyRef() == vlnv) {
-			return view->getName();
+			return view->name();
 		}
 	}
 	return QString();
@@ -482,7 +483,7 @@ QStringList Model::getHierViews() const {
 	QStringList viewList;
 	foreach (QSharedPointer<View> view, views_) {
 		if (view->isHierarchical())
-			viewList.append(view->getName());
+			viewList.append(view->name());
 	}
 	return viewList;
 }
@@ -491,7 +492,7 @@ QStringList Model::getFlatViews() const {
 	QStringList viewList;
 	foreach (QSharedPointer<View> view, views_) {
 		if (!view->isHierarchical()) {
-			viewList.append(view->getName());
+			viewList.append(view->name());
 		}
 	}
 	return viewList;
@@ -501,7 +502,7 @@ QStringList Model::getFileSetRefs( const QString& viewName ) const {
 
 	QStringList fileSets;
 	foreach (QSharedPointer<View> view, views_) {
-		if (view->getName() == viewName) {
+		if (view->name() == viewName) {
 			
 			// if view is hierarchical and contains reference to another 
 			// rtl-level implementation
@@ -526,7 +527,7 @@ QString Model::getEntityName( const QString& viewName ) const {
 	// search all views
 	foreach (QSharedPointer<View> view, views_) {
 		// if the specified view was found
-		if (view->getName() == viewName) {
+		if (view->name() == viewName) {
 
 			// if view is not hierarchical
 			if (!view->isHierarchical()) {
@@ -555,7 +556,7 @@ QString Model::getArchitectureName( const QString& viewName ) const {
 	// search all views
 	foreach (QSharedPointer<View> view, views_) {
 		// if the specified view was found
-		if (view->getName() == viewName) {
+		if (view->name() == viewName) {
 
 			// if view is not hierarchical
 			if (!view->isHierarchical()) {
@@ -593,7 +594,7 @@ QSharedPointer<ModelParameter> Model::getModelParameter(QString const& name) con
 {
 	foreach (QSharedPointer<ModelParameter> modelParam, *modelParameters_) 
     {
-		if (modelParam->getName() == name) {
+		if (modelParam->name() == name) {
 			return modelParam;
 		}
 	}
@@ -622,7 +623,7 @@ void Model::removeModelParameter(const QString& paramName) {
 
 	for (int i = 0; i < modelParameters_->size(); ++i)
     {
-		if (modelParameters_->at(i)->getName() == paramName) {
+		if (modelParameters_->at(i)->name() == paramName) {
 			modelParameters_->removeAt(i);
 			--i;
 		}
@@ -633,7 +634,7 @@ QStringList Model::getModelParameterNames() const
 {
 	QStringList list;
 	foreach (QSharedPointer<ModelParameter> modelParam, *modelParameters_) {
-		list.append(modelParam->getName());
+		list.append(modelParam->name());
 	}
 	return list;
 }
@@ -654,7 +655,7 @@ QList<QSharedPointer<Port> >& Model::getPorts() {
 QSharedPointer<Port> Model::getPort( const QString& name ) const {
 
 	foreach (QSharedPointer<Port> port, ports_) {
-		if (port->getName() == name) {
+		if (port->name() == name) {
 			return port;
 		}
 	}
@@ -685,7 +686,7 @@ bool Model::addPort( QSharedPointer<Port> newPort ) {
 
 void Model::removePort( const QString& portName ) {
 	for (int i = 0; i < ports_.size(); ++i) {
-		if (ports_.at(i)->getName() == portName) {
+		if (ports_.at(i)->name() == portName) {
 			ports_.removeAt(i);
 			--i;
 		}
@@ -696,7 +697,7 @@ bool Model::renamePort( const QString& oldName, const QString& newName ) {
 
 	bool found = false;
 	foreach (QSharedPointer<Port> port, ports_) {
-		if (port->getName() == oldName) {
+		if (port->name() == oldName) {
 			port->setName(newName);
 			found = true;
 		}
@@ -707,7 +708,7 @@ bool Model::renamePort( const QString& oldName, const QString& newName ) {
 QStringList Model::getPortNames() const {
 	QStringList portNames;
 	foreach (QSharedPointer<Port> port, ports_) {
-		portNames.append(port->getName());
+		portNames.append(port->name());
 	}
 	return portNames;
 }
@@ -715,7 +716,7 @@ QStringList Model::getPortNames() const {
 General::Direction Model::getPortDirection( const QString& portName ) const {
 
 	foreach (QSharedPointer<Port> port, ports_) {
-		if (port->getName() == portName) {
+		if (port->name() == portName) {
 			return port->getDirection();
 		}
 	}
@@ -767,7 +768,7 @@ QMap<QString, QString> Model::getPortDefaultValues() const {
 
 				// if port has a default value specified
 				if (!port->getDefaultValue().isEmpty()) {
-					defaultValues.insert(port->getName(), port->getDefaultValue());
+					defaultValues.insert(port->name(), port->getDefaultValue());
 				}
 		}
 	}
@@ -811,7 +812,7 @@ QList<General::PortBounds> Model::getPortBounds() const {
 	QList<General::PortBounds> portBounds;
 	
 	foreach (QSharedPointer<Port> port, ports_) {
-		General::PortBounds tempBound(port->getName(), port->getLeftBound(), 
+		General::PortBounds tempBound(port->name(), port->getLeftBound(), 
 			port->getRightBound());
 		portBounds.append(tempBound);
 	}

@@ -190,21 +190,21 @@ void BaseMemoryMapHeaderWriter::writeRegistersFromAddressBlock(QSharedPointer<Ex
         id = idString;
         if (useAddressBlockID)
         {
-            id.append(currentAddressBlock->getName().toUpper());
+            id.append(currentAddressBlock->name().toUpper());
         }
     }
     
     if (useAddressBlockID)
     {
-        id.append(currentAddressBlock->getName().toUpper());
+        id.append(currentAddressBlock->name().toUpper());
     }
 
     stream << "/*" << endl;
-    stream << " * Address block: " << currentAddressBlock->getName() << endl;
-    if (!currentAddressBlock->getDescription().isEmpty())
+    stream << " * Address block: " << currentAddressBlock->name() << endl;
+    if (!currentAddressBlock->description().isEmpty())
     {
         stream << " * Description:" << endl;
-        stream << " * " << currentAddressBlock->getDescription() << endl;
+        stream << " * " << currentAddressBlock->description() << endl;
     }
     stream << "*/" << endl;
 
@@ -232,12 +232,12 @@ void BaseMemoryMapHeaderWriter::writeRegister(QSharedPointer<ExpressionParser> e
     registerOffsetString.prepend("0x");
 
     stream << "/*" << endl;
-    stream << " * Register name: " << currentRegister->getName() << endl;
+    stream << " * Register name: " << currentRegister->name() << endl;
 
-    if (!currentRegister->getDescription().isEmpty())
+    if (!currentRegister->description().isEmpty())
     {
         stream << " * Description:" << endl;
-        stream << " * " << currentRegister->getDescription() << endl;
+        stream << " * " << currentRegister->description() << endl;
     }
 
     stream << " * Offset: " << formatter->formatReferringExpression(currentRegister->getAddressOffset());
@@ -253,11 +253,11 @@ void BaseMemoryMapHeaderWriter::writeRegister(QSharedPointer<ExpressionParser> e
 
     if (idString.isEmpty())
     {
-        stream << currentRegister->getName().toUpper() << " " << registerOffsetString;
+        stream << currentRegister->name().toUpper() << " " << registerOffsetString;
     }
     else
     {
-        stream << idString.toUpper() << "_" << currentRegister->getName().toUpper() << " " <<
+        stream << idString.toUpper() << "_" << currentRegister->name().toUpper() << " " <<
             registerOffsetString;
     }
 
@@ -290,11 +290,11 @@ void BaseMemoryMapHeaderWriter::writeMemoryAddresses(QSharedPointer<ParameterFin
             stream << "/*" << endl;
             if (currentAddressBlock->getUsage() == General::MEMORY)
             {
-                stream << " * Memory block name: " << currentAddressBlock->getName() << endl;
+                stream << " * Memory block name: " << currentAddressBlock->name() << endl;
             }
             else
             {
-                stream << " * Reserved block name: " << currentAddressBlock->getName() << endl;
+                stream << " * Reserved block name: " << currentAddressBlock->name() << endl;
             }
 
             stream << " * Width: " << currentAddressBlock->getWidth();
@@ -320,7 +320,7 @@ void BaseMemoryMapHeaderWriter::writeMemoryAddresses(QSharedPointer<ParameterFin
             }
             stream << "*/" << endl;
 
-            QString blockName = currentAddressBlock->getName().toUpper();
+            QString blockName = currentAddressBlock->name().toUpper();
             if (!idString.isEmpty())
             {
                 blockName = idString.toUpper() + "_" + blockName;

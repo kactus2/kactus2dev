@@ -9,6 +9,8 @@
 
 #include "ipxactmodels_global.h"
 
+#include <IPXACTmodels/common/NameGroup.h>
+
 #include <QString>
 #include <QList>
 #include <QDomNode>
@@ -24,7 +26,7 @@ class VendorExtension;
  * be used as a base class to generalize ComponentGenerator class to
  * represent spirit:componentGenerator element.
  */
-class IPXACTMODELS_EXPORT Generator {
+class IPXACTMODELS_EXPORT Generator : public NameGroup {
 
 public:
 
@@ -84,12 +86,6 @@ public:
 	 */
 	virtual bool getHidden() const;
 
-	/*! \brief Get the name of the Component Generator
-	 *
-	 * \return QString containing the name
-	 */
-	virtual QString getName() const;
-
 	/*! \brief Get list of the parameters for this Component Generator
 	 *
 	 * \return QList containing pointers to the parameters.
@@ -123,12 +119,6 @@ public:
 	 */
 	virtual void setHidden(bool hidden);
 
-	/*! \brief Set the name for the Component Generator.
-	 *
-	 * \param name QString containing the name.
-	 */
-	virtual void setName(const QString &name);
-
 	/*! \brief Set the parameters for this Component Generator.
 	 *
 	 * Calling this function will delete the old parameters.
@@ -145,30 +135,6 @@ public:
 	 */
 	virtual void setPhase(double phase);
 
-	/*! \brief Set the description of this Component Generator
-	 *
-	 * \param descriptions QString containing the description.
-	 */
-	virtual void setDescription(const QString &description);
-
-	/*! \brief Get the description of this Component Generator.
-	 *
-	 * \return QString containing the description.
-	 */
-	virtual QString getDescription() const;
-
-	/*! \brief Get the display name
-	 *
-	 * \return QString containing the display name.
-	 */
-	virtual QString getDisplayName() const;
-
-	/*! \brief Set the display name.
-	 *
-	 * \param QString containing the display name.
-	 */
-	virtual void setDisplayName(const QString &displayName);
-
 protected:
 
 	/*!
@@ -177,24 +143,6 @@ protected:
 	 * run as part of a generator chain.
 	 */
 	bool hidden_;
-
-	/*!
-	 * MANDATORY spirit:name
-	 * Identifies the component generator
-	 */
-	QString name_;
-
-	/*!
-	 * MANDATORY spirit:displayName
-	 * A short descriptive text to be associated with the containing element.
-	 */
-	QString displayName_;
-
-	/*!
-	 * OPTIONAL spirit:description
-	 * Contains a textual description of the Component Generator.
-	 */
-	QString description_;
 
 	/*!
 	 * OPTIONAL spirit:phase

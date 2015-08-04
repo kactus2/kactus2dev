@@ -239,7 +239,7 @@ QSharedPointer<Design> HWDesignDiagram::createDesign(const VLNV &vlnv) const
             while (itrBusIf.hasNext())
             {
                 QSharedPointer<BusInterface> busif = itrBusIf.next();
-                instance.updateBusInterfacePosition(busif->getName(), comp->getBusPort(busif->getName())->pos());
+                instance.updateBusInterfacePosition(busif->name(), comp->getBusPort(busif->name())->pos());
             }
 
             QMapIterator<QString, bool> itrAdHoc(comp->getPortAdHocVisibilities());
@@ -720,7 +720,7 @@ void HWDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent
                     columnWidth = IO_COLUMN_WIDTH;
                 }
 
-                ColumnDesc desc(dialog.getName(), dialog.getContentType(), dialog.getAllowedItems(), columnWidth);
+                ColumnDesc desc(dialog.name(), dialog.getContentType(), dialog.getAllowedItems(), columnWidth);
 
                 // Keep the previous width if the content type did not change.
                 if (dialog.getContentType() == column->getColumnDesc().getContentType())
@@ -833,7 +833,7 @@ void HWDesignDiagram::addBusToLibrary(HWConnectionEndpoint* endpoint)
             oldBusType = endpoint->getBusInterface()->getBusType();
             oldAbsType = endpoint->getBusInterface()->getAbstractionType();
             oldMode = endpoint->getBusInterface()->getInterfaceMode();
-            oldName = endpoint->getBusInterface()->getName();
+            oldName = endpoint->getBusInterface()->name();
         }
 
         // Set the types for the end point.
@@ -841,7 +841,7 @@ void HWDesignDiagram::addBusToLibrary(HWConnectionEndpoint* endpoint)
 
         if (editName)
         {
-            endpoint->getBusInterface()->setName(modeDialog.getName());
+            endpoint->getBusInterface()->setName(modeDialog.name());
         }
 
         endpoint->updateInterface();
@@ -1088,7 +1088,7 @@ void HWDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
                 oldBusType = dragEndPoint_->getBusInterface()->getBusType();
                 oldAbsType = dragEndPoint_->getBusInterface()->getAbstractionType();
                 oldMode = dragEndPoint_->getBusInterface()->getInterfaceMode();
-                oldName = dragEndPoint_->getBusInterface()->getName();
+                oldName = dragEndPoint_->getBusInterface()->name();
             }
 
             // Define the bus for the end point.
@@ -1096,7 +1096,7 @@ void HWDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
             
             if (editName)
             {
-                dragEndPoint_->getBusInterface()->setName(dialog.getName());
+                dragEndPoint_->getBusInterface()->setName(dialog.name());
             }
 
             dragEndPoint_->updateInterface();
@@ -2116,12 +2116,12 @@ void HWDesignDiagram::pasteInterfaces(BusInterfaceCollectionCopyData const& coll
     foreach(BusInterfaceCopyData const& instance, collection.instances)
     {        
         // Bus interface must have a unique name within the component.
-        QString uniqueBusName = instance.busInterface->getName();        	
+        QString uniqueBusName = instance.busInterface->name();        	
         unsigned int count =  0;	
         while( component->getBusPort( uniqueBusName ) != 0 )
         {
             count++;
-            uniqueBusName = instance.busInterface->getName() + "_" + QString::number(count);			
+            uniqueBusName = instance.busInterface->name() + "_" + QString::number(count);			
         }
 
         // Create a copy of the busInterface and rename it.
@@ -2179,13 +2179,13 @@ void HWDesignDiagram::pasteInterfaces(BusInterfaceCollectionCopyData const& coll
         }
 
         // Bus interface must have a unique name within the component.
-        QString uniqueBusName = instance.busInterface->getName();
+        QString uniqueBusName = instance.busInterface->name();
         unsigned int count =  0;
 
         while (existingNames.contains(uniqueBusName))
         {
             count++;
-            uniqueBusName = instance.busInterface->getName() + "_" + QString::number(count);			
+            uniqueBusName = instance.busInterface->name() + "_" + QString::number(count);			
         }
 
         GraphicsColumn* ioColumn = column;

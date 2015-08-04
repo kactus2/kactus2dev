@@ -25,7 +25,7 @@
 #include <IPXACTmodels/ApiInterface.h>
 #include <IPXACTmodels/ComInterface.h>
 #include <IPXACTmodels/PortMap.h>
-#include <IPXACTmodels/vector.h>
+#include <IPXACTmodels/common/Vector.h>
 
 #include <common/graphicsItems/ConnectionUndoCommands.h>
 #include <common/GenericEditProvider.h>
@@ -569,10 +569,10 @@ void ConnectionEditor::addMap( int& row, bool invalid,
 			portMap1->getLogicalRight());
 		
 		// if the logical port and port 2 sizes don't match
-		if (portMap1->logicalVector()->getSize() != size2) {
+		/*if (portMap1->logicalVector()->getSize() != size2) {
 			phys1Invalid = true;
 			phys2Invalid = true;
-		}
+		}*/
 		port2Item = new QTableWidgetItem(port2);
 	}
 	// if port map2 has vectored logical signal
@@ -584,10 +584,10 @@ void ConnectionEditor::addMap( int& row, bool invalid,
 			portMap2->getLogicalRight());
 
 		// if the logical port and port 2 sizes don't match
-		if (portMap2->logicalVector()->getSize() != size1) {
+		/*if (portMap2->logicalVector()->getSize() != size1) {
 			phys1Invalid = true;
 			phys2Invalid = true;
-		}
+		}*/
 		port1Item = new QTableWidgetItem(port1);
 
 		// port 2 uses the original physical bounds

@@ -126,9 +126,9 @@ QVariant ViewsModel::data(QModelIndex const& index, int role) const
     {
         if (index.column() == ViewsModel::NAME_COLUMN)
         {
-            if (!view->getName().isEmpty())
+            if (!view->name().isEmpty())
             {
-                return views_.at(index.row())->getName();
+                return views_.at(index.row())->name();
             }
             else
             {
@@ -148,7 +148,7 @@ QVariant ViewsModel::data(QModelIndex const& index, int role) const
         }
         else if (index.column() == ViewsModel::DESCRIPTION_COLUMN)
         {
-            return view->getDescription().replace(QRegularExpression("\n.*$", 
+            return view->description().replace(QRegularExpression("\n.*$", 
                 QRegularExpression::DotMatchesEverythingOption), "...");
         }
         else
@@ -158,7 +158,7 @@ QVariant ViewsModel::data(QModelIndex const& index, int role) const
 	}
     else if (role == Qt::EditRole && index.column() == ViewsModel::DESCRIPTION_COLUMN)
     {
-        return view->getDescription();
+        return view->description();
     }
 	else if (role == Qt::ForegroundRole)
     {

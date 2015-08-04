@@ -94,7 +94,7 @@ QVariant ApiInterfacesModel::data( const QModelIndex& index, int role /*= Qt::Di
 
 		switch (index.column()) {
 			case ApiInterfacesDelegate::NAME_COLUMN: {
-				return apis_.at(index.row())->getName();
+				return apis_.at(index.row())->name();
 													 }
 			case ApiInterfacesDelegate::API_DEF_COLUMN: {
 				return apis_.at(index.row())->getApiType().toString(":");

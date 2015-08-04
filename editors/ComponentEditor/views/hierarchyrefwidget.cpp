@@ -117,7 +117,7 @@ void HierarchyRefWidget::refresh(QStringList const& availableViews)
 	// Set the available views from the component.
 	QStringList viewList;
 	viewList.append(availableViews);
-    viewList.removeAll(view_->getName()); //<! Cannot refer to this view.
+    viewList.removeAll(view_->name()); //<! Cannot refer to this view.
 
 	topLevelRef_->refresh(viewList);
     topLevelRef_->selectItem(view_->getTopLevelView());

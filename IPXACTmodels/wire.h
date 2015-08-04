@@ -307,16 +307,6 @@ public:
      */
     QString getRightBoundExpression();
 
-    /*!
-     *  Remove the left bound expression.
-     */
-    void removeLeftBoundExpression();
-
-    /*!
-     *  Remove the right bound expression.
-     */
-    void removeRightBoundExpression();
-
 	/*! \brief Get the type name of the port for given view.
 	 *
 	 * \param viewName The name of the view used.

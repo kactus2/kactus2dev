@@ -39,7 +39,7 @@ public:
     /*!
      *  Returns the contents of the name field.
      */
-    QString getName() const;
+    QString name() const;
 
 public slots:
     void accept();

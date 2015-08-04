@@ -179,9 +179,9 @@ void ApiFunctionParameter::setDescription(QString const& desc)
 }
 
 //-----------------------------------------------------------------------------
-// Function: ApiFunctionParameter::getName()
+// Function: ApiFunctionParameter::name()
 //-----------------------------------------------------------------------------
-QString const& ApiFunctionParameter::getName() const
+QString const& ApiFunctionParameter::name() const
 {
     return name_;
 }

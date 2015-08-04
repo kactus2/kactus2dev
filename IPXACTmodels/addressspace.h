@@ -28,7 +28,7 @@ class VendorExtension;
  * Each AddressSpace defines a logical address space seen by a master bus
  * interface.
  */
-class IPXACTMODELS_EXPORT AddressSpace {
+class IPXACTMODELS_EXPORT AddressSpace : public NameGroup{
 
 public:
 
@@ -97,12 +97,6 @@ public:
 	 */
 	unsigned int getAddressUnitBits() const;
 
-	/*! \brief Get the name of the address space
-	 *
-	 * \return QString containing the name of the address space
-	 */
-	QString getName() const;
-
 	/*! \brief Get the range of the address space
 	 *
 	 * \return QString containing the range of the address space
@@ -132,12 +126,6 @@ public:
 	 * \param addressUnitBits The wanted setting
 	 */
 	void setAddressUnitBits(unsigned int addressUnitBits);
-
-	/*! \brief Set the name for the address space
-	 *
-	 * \param name The wanted name
-	 */
-	void setName(const QString& name);
 
 	/*! \brief Set the range for the address space
 	 *
@@ -198,32 +186,6 @@ public:
 	 */
 	void setLocalMemoryMap(QSharedPointer<MemoryMap> localMemoryMap);
 
-	/*! \brief Set the display name for the address space.
-	 *
-	 * \param dispName The display name to set.
-	 *
-	*/
-	void setDisplayName(const QString& dispName);
-
-	/*! \brief Get the display name of the address space.
-	 *
-	 * \return QString contains the display name.
-	*/
-	QString getDisplayName() const;
-
-	/*! \brief Set the description for the address space.
-	 *
-	 * \param description contains the description to set.
-	 *
-	*/
-	void setDescription(const QString& description);
-
-	/*! \brief Get the description of the address space.
-	 *
-	 * \return QString contains the description of the address space.
-	*/
-	QString getDescription() const;
-
 	/*! \brief Get the parameters of the address space.
 	 *
 	 * \return QList containing pointers to the parameters.
@@ -235,18 +197,6 @@ public:
 	 * \return QList containing pointers to the parameters.
 	*/
 	const QList<QSharedPointer<Parameter> >& getParameters() const;
-
-	/*! \brief Get the name group that contains the name, display name and description.
-	 *
-	 * \return Reference to the group.
-	*/
-	NameGroup& getNameGroup();
-
-	/*! \brief Get the name group that contains the name, display name and description.
-	 *
-	 * \return Reference to the group.
-	*/
-	const NameGroup& getNameGroup() const;
 
 	/*! \brief Get the segments contained in this address space.
 	*
@@ -279,9 +229,6 @@ public:
     QString getWidthExpression();
 
 private:
-
-	//! \brief Contains the name and description.
-	NameGroup nameGroup_;
 
 	//! \brief MANDATORY, address range of an address space.
 	QString range_;

@@ -302,9 +302,9 @@ void ComConnection::setOffPage(bool offPage)
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComConnection::getName()
+// Function: ComConnection::name()
 //-----------------------------------------------------------------------------
-QString const& ComConnection::getName() const
+QString const& ComConnection::name() const
 {
     return name_;
 }

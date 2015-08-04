@@ -57,7 +57,7 @@ ComponentEditorFileItem::~ComponentEditorFileItem()
 //-----------------------------------------------------------------------------
 QString ComponentEditorFileItem::text() const
 {
-    QFileInfo fileQfi = QFileInfo(file_->getName());
+    QFileInfo fileQfi = QFileInfo(file_->name());
     return fileQfi.fileName();
 }
 
@@ -71,7 +71,7 @@ bool ComponentEditorFileItem::isValid() const
 		return false;
 	}
 
-	QString filePath = file_->getName();
+	QString filePath = file_->name();
 
     // get the path to the xml file
     QString basePath = libHandler_->getPath(*component_->getVlnv());
@@ -205,7 +205,7 @@ void ComponentEditorFileItem::onEditorChanged() {
 //-----------------------------------------------------------------------------
 QString ComponentEditorFileItem::fileAbsolutePath() const
 {
-    const QString relPath = file_->getName();
+    const QString relPath = file_->name();
     const QString xmlPath = libHandler_->getPath(*component_->getVlnv());
 
     return General::getAbsolutePath(xmlPath, relPath);

@@ -171,7 +171,7 @@ public:
     /*!
      *  Returns the name of the dependency.
      */
-    QString const& getName() const;
+    QString const& name() const;
 
     /*!
      *  Returns the display name of the SW instance.

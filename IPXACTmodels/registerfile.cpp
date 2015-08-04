@@ -7,7 +7,7 @@
 #include "registerfile.h"
 #include "registermodel.h"
 #include "register.h"
-#include "parameter.h"
+#include <IPXACTmodels/common/Parameter.h>
 #include "GenericVendorExtension.h"
 
 #include <IPXACTmodels/XmlUtils.h>
@@ -47,13 +47,13 @@ vendorExtensions_()
 		else if (tempNode.nodeName() == QString("spirit:register")) {
 			
 			Register* reg = new Register(tempNode);
-			registerData_.insert(reg->getName(), QSharedPointer<Register>(
+			registerData_.insert(reg->name(), QSharedPointer<Register>(
 				reg));
 		}
 		else if (tempNode.nodeName() == QString("spirit:registerFile")) {
 			RegisterFile* reg = new RegisterFile(tempNode);
 
-			registerData_.insert(reg->getName(),
+			registerData_.insert(reg->name(),
 				QSharedPointer<RegisterFile>(reg));
 		}
         else if (tempNode.nodeName() == QString("spirit:vendorExtensions")) 
@@ -97,7 +97,7 @@ vendorExtensions_(other.vendorExtensions_)
 				}
 
 				if (copy)
-					registerData_.insert(copy->getName(), copy);
+					registerData_.insert(copy->name(), copy);
 				
 			}
 	}
@@ -134,7 +134,7 @@ RegisterFile& RegisterFile::operator=( const RegisterFile& other ) {
 					}
 
 					if (copy)
-						registerData_.insert(copy->getName(), copy);
+						registerData_.insert(copy->name(), copy);
 
 				}
 		}
@@ -194,9 +194,9 @@ bool RegisterFile::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > compo
     QStringList& errorList,
 						   const QString& parentIdentifier ) const {
 	bool valid = true;
-	const QString thisIdentifier(QObject::tr("register file %1").arg(nameGroup_.name()));
+	const QString thisIdentifier(QObject::tr("register file %1").arg(name()));
 
-	if (nameGroup_.name().isEmpty()) {
+	if (name().isEmpty()) {
 		errorList.append(QObject::tr("No name specified for register file"
 			" within %1").arg(parentIdentifier));
 		valid = false;
@@ -235,7 +235,7 @@ bool RegisterFile::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > compo
 
 bool RegisterFile::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const
 {
-	if (nameGroup_.name().isEmpty())
+	if (name().isEmpty())
     {
 		return false;
 	}

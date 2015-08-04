@@ -2295,7 +2295,7 @@ void MainWindow::createDesignForExistingComponent(VLNV const& vlnv)
     if (success)
     {
         // Open the design.
-        openDesign(vlnv, view->getName(), true);
+        openDesign(vlnv, view->name(), true);
     }
     else
     {
@@ -2481,7 +2481,7 @@ void MainWindow::createSWDesign(VLNV const& vlnv)
     if (success)
     {
         // Open the design.
-        openSWDesign(vlnv, view->getName(), true);
+        openSWDesign(vlnv, view->name(), true);
     }
     else
     {
@@ -2710,7 +2710,7 @@ void MainWindow::createSystemDesign(VLNV const& vlnv)
     if (success)
     {
         // Open the design.
-        QString viewName = view->getName();
+        QString viewName = view->name();
         openSystemDesign(vlnv, viewName, true);
     }
     else
@@ -3562,7 +3562,7 @@ void MainWindow::openCSource(ComponentItem* compItem)
 
 		foreach (QSharedPointer<File> file, fileSet->getFiles())
 		{
-			saveDialog.addItem(new QListWidgetItem(file->getName()));
+			saveDialog.addItem(new QListWidgetItem(file->name()));
 		}
 
 		if (saveDialog.exec() == QDialog::Rejected)
@@ -3575,7 +3575,7 @@ void MainWindow::openCSource(ComponentItem* compItem)
 	else
 	{
 		// Otherwise there is only one possibility.
-		filename = fileSet->getFiles().first()->getName();
+		filename = fileSet->getFiles().first()->name();
 	}
 
 	if (compItem->componentModel()->getVlnv()->isValid())
@@ -3952,11 +3952,11 @@ void MainWindow::onNewWorkspace()
     {
 		saveWorkspace(curWorkspaceName_);
 
-		createNewWorkspace(saveDialog.getName());
-		copyComponentEditorSettings(saveDialog.getName());
+		createNewWorkspace(saveDialog.name());
+		copyComponentEditorSettings(saveDialog.name());
 
-        saveWorkspace(saveDialog.getName());
-        curWorkspaceName_ = saveDialog.getName();
+        saveWorkspace(saveDialog.name());
+        curWorkspaceName_ = saveDialog.name();
 
 		QSettings settings;
 		settings.setValue("Workspaces/CurrentWorkspace", curWorkspaceName_);
@@ -3992,7 +3992,7 @@ void MainWindow::onDeleteWorkspace()
     if (saveDialog.exec() == QDialog::Accepted)
     {
         // Remove the workspace from the settings and update the workspace menu.
-        settings.remove("Workspaces/" + saveDialog.getName());
+        settings.remove("Workspaces/" + saveDialog.name());
         updateWorkspaceMenu();
     }
 }

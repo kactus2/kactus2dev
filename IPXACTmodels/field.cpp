@@ -6,10 +6,12 @@
 
 #include "field.h"
 #include "generaldeclarations.h"
-#include "parameter.h"
 #include "enumeratedvalue.h"
 #include "GenericVendorExtension.h"
 
+#include <IPXACTmodels/common/Parameter.h>
+#include <IPXACTmodels/common/ParameterReader.h>
+#include <IPXACTmodels/common/ParameterWriter.h>
 #include <IPXACTmodels/validators/ParameterValidator.h>
 
 #include <QString>
@@ -24,8 +26,8 @@
 #include "XmlUtils.h"
 
 Field::Field(QDomNode& fieldNode): 
+NameGroup(),
 id_(), 
-nameGroup_(fieldNode),
 bitOffset_(0), 
 typeIdentifier_(),
 bitWidth_(0),
@@ -74,14 +76,14 @@ isPresentExpression_()
 						new EnumeratedValue(enumeratedNode)));
 			}
 		}
-		else if (tempNode.nodeName() == QString("spirit:parameters")) {
-
+		else if (tempNode.nodeName() == QString("spirit:parameters")) 
+        {
+            ParameterReader reader;
 			// parse each parameter
 			for (int j = 0; j < tempNode.childNodes().count(); ++j) {
 				QDomNode parameterNode = tempNode.childNodes().at(j);
 
-				parameters_.append(QSharedPointer<Parameter>(
-						new Parameter(parameterNode)));
+				parameters_.append(reader.createParameterFrom(parameterNode));
 			}
 		}
 		else if (tempNode.nodeName() == QString("spirit:volatile")) {
@@ -114,8 +116,8 @@ isPresentExpression_()
 }
 
 Field::Field():
+NameGroup(),
 id_(), 
-nameGroup_(),
 bitOffset_(0), 
 typeIdentifier_(),
 bitWidth_(0),
@@ -137,8 +139,8 @@ isPresentExpression_()
 }
 
 Field::Field( General::BooleanValue volatileValue, General::Access access ):
+NameGroup(),
 id_(), 
-nameGroup_(),
 bitOffset_(0), 
 typeIdentifier_(),
 bitWidth_(0),
@@ -159,9 +161,9 @@ isPresentExpression_()
 
 }
 
-Field::Field( const Field& other ):
+Field::Field( const Field& other ): 
+NameGroup(other),
 id_(other.id_),
-nameGroup_(other.nameGroup_),
 bitOffset_(other.bitOffset_),
 typeIdentifier_(other.typeIdentifier_),
 bitWidth_(other.bitWidth_),
@@ -207,7 +209,7 @@ isPresentExpression_()
 Field& Field::operator=( const Field& other ) {
 	if (this != &other) {
 		id_ = other.id_;
-		nameGroup_ = other.nameGroup_;
+		NameGroup::operator=(other);
 		bitOffset_ = other.bitOffset_;
 		typeIdentifier_ = other.typeIdentifier_;
 		bitWidth_ = other.bitWidth_;
@@ -261,16 +263,16 @@ void Field::write(QXmlStreamWriter& writer) {
 		writer.writeAttribute("spirit:id", id_);
 	}
 
-	writer.writeTextElement("spirit:name", nameGroup_.name());
+	writer.writeTextElement("spirit:name", name());
 
 	// if optional displayName is defined
-	if (!nameGroup_.displayName().isEmpty()) {
-		writer.writeTextElement("spirit:displayName", nameGroup_.displayName());
+	if (!displayName().isEmpty()) {
+		writer.writeTextElement("spirit:displayName", displayName());
 	}
 
 	// if optional description is defined
-	if (!nameGroup_.description().isEmpty()) {
-		writer.writeTextElement("spirit:description", nameGroup_.description());
+	if (!description().isEmpty()) {
+		writer.writeTextElement("spirit:description", description());
 	}
 
 	writer.writeTextElement("spirit:bitOffset", QString::number(bitOffset_));
@@ -328,16 +330,19 @@ void Field::write(QXmlStreamWriter& writer) {
 		writer.writeEndElement(); // spirit:enumeratedValues
 	}
 
-	// if optional parameters exist
-	if (parameters_.size() != 0) {
-		writer.writeStartElement("spirit:parameters");
+    if (parameters_.size() != 0)
+    {
+        writer.writeStartElement("ipxact:parameters");
 
-		for (int i = 0; i < parameters_.size(); ++i) {
-			parameters_.at(i)->write(writer);
-		}
+        ParameterWriter parameterWriter;
+        // write each parameter
+        for (int i = 0; i < parameters_.size(); ++i)
+        {
+            parameterWriter.writeParameter(writer, parameters_.at(i));
+        }
 
-		writer.writeEndElement(); // spirit:parameters
-	}
+        writer.writeEndElement(); // ipxact:parameters
+    }
 
     if (!vendorExtensions_.isEmpty())
     {
@@ -353,7 +358,7 @@ bool Field::isValid(unsigned int registerSize, QSharedPointer<QList<QSharedPoint
     QStringList& errorList, const QString& parentIdentifier ) const {
 	bool valid = true;
 
-	if (nameGroup_.name().isEmpty()) {
+	if (name().isEmpty()) {
 		errorList.append(QObject::tr("No name specified for a field within %1").arg(
 			parentIdentifier));
 		valid = false;
@@ -361,13 +366,13 @@ bool Field::isValid(unsigned int registerSize, QSharedPointer<QList<QSharedPoint
 
 	if (bitOffset_ < 0) {
 		errorList.append(QObject::tr("No bit offset set for field %1 within %2").arg(
-			nameGroup_.name()).arg(parentIdentifier));
+			name()).arg(parentIdentifier));
 		valid = false;
 	}
 
 	if (bitWidth_ <= 0) {
 		errorList.append(QObject::tr("No bit width set for field %1 within %2").arg(
-			nameGroup_.name()).arg(parentIdentifier));
+			name()).arg(parentIdentifier));
 		valid = false;
 	}
 
@@ -379,7 +384,7 @@ bool Field::isValid(unsigned int registerSize, QSharedPointer<QList<QSharedPoint
 
 	foreach (QSharedPointer<EnumeratedValue> enumValue, enumeratedValues_)
     {
-		if (!enumValue->isValid(errorList, QObject::tr("field %1").arg(nameGroup_.name())))
+		if (!enumValue->isValid(errorList, QObject::tr("field %1").arg(name())))
         {
 			valid = false;
 		}
@@ -388,7 +393,7 @@ bool Field::isValid(unsigned int registerSize, QSharedPointer<QList<QSharedPoint
     ParameterValidator validator;
     foreach (QSharedPointer<Parameter> param, parameters_)
     {
-        errorList.append(validator.findErrorsIn(param.data(), QObject::tr("field %1").arg(nameGroup_.name()),
+        errorList.append(validator.findErrorsIn(param.data(), QObject::tr("field %1").arg(name()),
             componentChoices));
         if (!validator.validate(param.data(), componentChoices)) 
         {
@@ -402,7 +407,7 @@ bool Field::isValid(unsigned int registerSize, QSharedPointer<QList<QSharedPoint
 bool Field::isValid(unsigned int registerSize, 
     QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const 
 {
-    if (nameGroup_.name().isEmpty()) 
+    if (name().isEmpty()) 
     {
         return false;
     }
@@ -608,14 +613,6 @@ const QMap<QString,QString>& Field::getBitWidthAttributes() const {
     return bitWidthAttributes_;
 }
 
-QString Field::getDescription() const {
-    return nameGroup_.description();
-}
-
-QString Field::getDisplayName() const {
-    return nameGroup_.displayName();
-}
-
 const QList<QSharedPointer<EnumeratedValue> >&
 Field::getEnumeratedValues() const {
     return enumeratedValues_;
@@ -623,10 +620,6 @@ Field::getEnumeratedValues() const {
 
 QList<QSharedPointer<EnumeratedValue> >& Field::getEnumeratedValues() {
 	return enumeratedValues_;
-}
-
-QString Field::getName() const {
-    return nameGroup_.name();
 }
 
 const QList<QSharedPointer<Parameter> >& Field::getParameters() const {
@@ -650,21 +643,9 @@ void Field::setBitWidthAttributes(
     bitWidthAttributes_ = bitWidthAttributes;
 }
 
-void Field::setDescription(const QString& description) {
-    nameGroup_.setDescription(description);
-}
-
-void Field::setDisplayName(const QString& displayName) {
-    nameGroup_.setDisplayName(displayName);
-}
-
 void Field::setEnumeratedValues(
 		const QList<QSharedPointer<EnumeratedValue> >& enumeratedValues) {
     enumeratedValues_ = enumeratedValues;
-}
-
-void Field::setName(const QString& name) {
-    nameGroup_.setName(name);
 }
 
 void Field::setParameters(const QList<QSharedPointer<Parameter> >& parameters) {
@@ -741,14 +722,6 @@ QSharedPointer<WriteValueConstraint> Field::getWriteConstraint() {
 		writeConstraint_ = QSharedPointer<WriteValueConstraint>(new WriteValueConstraint());
 	}
 	return writeConstraint_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: field::getNameGroup()
-//-----------------------------------------------------------------------------
-NameGroup& Field::getNameGroup()
-{
-    return nameGroup_;
 }
 
 //-----------------------------------------------------------------------------

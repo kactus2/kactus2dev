@@ -40,7 +40,7 @@ bool PortComparator::compare(QSharedPointer<const Port> first, QSharedPointer<co
 //-----------------------------------------------------------------------------
 bool PortComparator::compareFields(QSharedPointer<const Port> first, QSharedPointer<const Port> second) const
 {
-    return first->getName() == second->getName() &&
+    return first->name() == second->name() &&
         first->getPortAccessType() == second->getPortAccessType() &&
         first->getTypeName() == second->getTypeName() &&
         first->getTypeDefinitions() == second->getTypeDefinitions() &&
@@ -74,7 +74,7 @@ QList<QSharedPointer<IPXactDiff> > PortComparator::diff(QSharedPointer<const Por
 QList<QSharedPointer<IPXactDiff> > PortComparator::diffFields(QSharedPointer<const Port> reference, 
     QSharedPointer<const Port> subject) const
 {
-    QSharedPointer<IPXactDiff> portDiff(new IPXactDiff(elementType(), reference->getName()));
+    QSharedPointer<IPXactDiff> portDiff(new IPXactDiff(elementType(), reference->name()));
     portDiff->setChangeType(IPXactDiff::MODIFICATION);
 
     portDiff->checkForChange("port access type", reference->getPortAccessType(), subject->getPortAccessType());

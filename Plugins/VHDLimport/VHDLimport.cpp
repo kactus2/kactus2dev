@@ -202,7 +202,7 @@ void VHDLimport::onPortParsed(QSharedPointer<Port> parsedPort, QString const& de
 
     foreach(QSharedPointer<ModelParameter> modelParameter, *targetComponent_->getModelParameters())
     {
-        if (declaration.contains(modelParameter->getName()))
+        if (declaration.contains(modelParameter->name()))
         {
             addDependencyOfGenericToPort(modelParameter, parsedPort);
         }

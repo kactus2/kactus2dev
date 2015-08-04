@@ -58,9 +58,9 @@ NewWorkspaceDialog::~NewWorkspaceDialog()
 }
 
 //-----------------------------------------------------------------------------
-// Function: getName()
+// Function: name()
 //----------------------------------------------------------------------------- 
-QString NewWorkspaceDialog::getName() const
+QString NewWorkspaceDialog::name() const
 {
     return nameEdit_->text();
 }

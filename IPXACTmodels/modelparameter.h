@@ -12,8 +12,8 @@
 #ifndef MODELPARAMETER_H_
 #define MODELPARAMETER_H_
 
-#include <IPXACTmodels/NameGroup.h>
-#include <IPXACTmodels/parameter.h>
+#include <IPXACTmodels/common/NameGroup.h>
+#include <IPXACTmodels/common/Parameter.h>
 
 #include "ipxactmodels_global.h"
 

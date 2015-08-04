@@ -133,7 +133,7 @@ void MakefileGeneratorPlugin::runGenerator( IPluginUtility* utility,
 	{
 		if ( view->getHierarchyRef() == *desgConf->getVlnv() )
 		{
-			sysViewName = view->getName();
+			sysViewName = view->name();
 			break;
 		}
 	}

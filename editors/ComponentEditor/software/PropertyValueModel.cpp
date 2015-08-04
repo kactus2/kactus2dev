@@ -55,7 +55,7 @@ void PropertyValueModel::setAllowedProperties(QList< QSharedPointer<ComProperty>
 
                 for (; i < table_.size(); ++i)
                 {
-                    if (table_.at(i).first == prop->getName())
+                    if (table_.at(i).first == prop->name())
                     {
                         break;
                     }
@@ -64,7 +64,7 @@ void PropertyValueModel::setAllowedProperties(QList< QSharedPointer<ComProperty>
                 // If the value was not found, add it.
                 if (i == table_.size())
                 {
-                    table_.append(NameValuePair(prop->getName(), prop->getDefaultValue()));
+                    table_.append(NameValuePair(prop->name(), prop->getDefaultValue()));
                 }
             }
         }
@@ -168,7 +168,7 @@ QVariant PropertyValueModel::data(QModelIndex const& index, int role /*= Qt::Dis
         {
             foreach (QSharedPointer<ComProperty const> prop, *allowedProperties_)
             {
-                if (prop->getName() == table_.at(index.row()).first &&
+                if (prop->name() == table_.at(index.row()).first &&
                     prop->isRequired())
                 {
                     QFont font;
@@ -191,7 +191,7 @@ QVariant PropertyValueModel::data(QModelIndex const& index, int role /*= Qt::Dis
                 {
                     foreach (QSharedPointer<ComProperty const> prop, *allowedProperties_)
                     {
-                        if (prop->getName() == table_.at(index.row()).first)
+                        if (prop->name() == table_.at(index.row()).first)
                         {
                             return QColor(Qt::black);
                         }
@@ -210,7 +210,7 @@ QVariant PropertyValueModel::data(QModelIndex const& index, int role /*= Qt::Dis
                     foreach (QSharedPointer<ComProperty const> prop, *allowedProperties_)
                     {
                         // Check if we found a match.
-                        if (prop->getName() == table_.at(index.row()).first)
+                        if (prop->name() == table_.at(index.row()).first)
                         {
                             QString const& value = table_.at(index.row()).second;
                             bool ok = true;
@@ -298,7 +298,7 @@ Qt::ItemFlags PropertyValueModel::flags(QModelIndex const& index) const
             foreach (QSharedPointer<ComProperty const> prop, *allowedProperties_)
             {
                 // Check if we found a match.
-                if (prop->getName() == table_.at(index.row()).first && prop->isRequired())
+                if (prop->name() == table_.at(index.row()).first && prop->isRequired())
                 {
                     return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
                 }
@@ -401,7 +401,7 @@ void PropertyValueModel::onRemoveItem(QModelIndex const& index)
         foreach (QSharedPointer<ComProperty const> prop, *allowedProperties_)
         {
             // Check if we found a match.
-            if (prop->getName() == table_.at(index.row()).first && prop->isRequired())
+            if (prop->name() == table_.at(index.row()).first && prop->isRequired())
             {
                 return;
             }
@@ -430,7 +430,7 @@ bool PropertyValueModel::isValid() const
 
             for (; i < allowedProperties_->size(); ++i)
             {
-                if (allowedProperties_->at(i)->getName() == pair.first)
+                if (allowedProperties_->at(i)->name() == pair.first)
                 {
                     break;
                 }

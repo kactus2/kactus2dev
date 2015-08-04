@@ -429,9 +429,9 @@ void SystemComponentItem::setPropertyValues(QMap<QString, QString> const& values
     // Check that at least all required properties are found in the values.
     foreach (QSharedPointer<ComProperty const> prop, componentModel()->getSWProperties())
     {
-        if (prop->isRequired() && !propertyValues_.contains(prop->getName()))
+        if (prop->isRequired() && !propertyValues_.contains(prop->name()))
         {
-            propertyValues_.insert(prop->getName(), prop->getDefaultValue());
+            propertyValues_.insert(prop->name(), prop->getDefaultValue());
         }
     }
 
@@ -555,7 +555,7 @@ QMap<QString, QPointF> SystemComponentItem::getApiInterfacePositions() const
     while (itrApiIf.hasNext())
     {
         QSharedPointer<ApiInterface> apiIf = itrApiIf.next();
-        positions[apiIf->getName()] = getSWPort(apiIf->getName(), SWConnectionEndpoint::ENDPOINT_TYPE_API)->pos();
+        positions[apiIf->name()] = getSWPort(apiIf->name(), SWConnectionEndpoint::ENDPOINT_TYPE_API)->pos();
     }
 
     return positions;
@@ -572,7 +572,7 @@ QMap<QString, QPointF> SystemComponentItem::getComInterfacePositions() const
     while (itrComIf.hasNext())
     {
         QSharedPointer<ComInterface> comIf = itrComIf.next();
-        positions[comIf->getName()] = getSWPort(comIf->getName(), SWConnectionEndpoint::ENDPOINT_TYPE_COM)->pos();
+        positions[comIf->name()] = getSWPort(comIf->name(), SWConnectionEndpoint::ENDPOINT_TYPE_COM)->pos();
     }
 
     return positions;

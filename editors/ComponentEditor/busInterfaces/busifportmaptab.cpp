@@ -15,7 +15,7 @@
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/port.h>
 #include <IPXACTmodels/PortMap.h>
-#include <IPXACTmodels/vector.h>
+#include <IPXACTmodels/common/Vector.h>
 
 #include <IPXACTmodels/vlnv.h>
 #include <library/LibraryManager/libraryinterface.h>

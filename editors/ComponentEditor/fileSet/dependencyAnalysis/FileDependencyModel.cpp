@@ -259,11 +259,11 @@ QVariant FileDependencyModel::data(const QModelIndex& index, int role /*= Qt::Di
                 }
                 else
                 {
-                    QString str = fileSets[0]->getName();
+                    QString str = fileSets[0]->name();
 
                     for (int i = 1; i < fileSets.count(); ++i)
                     {
-                        str += "; " + fileSets[i]->getName();
+                        str += "; " + fileSets[i]->name();
                     }
 
                     if (multiple)
@@ -367,7 +367,7 @@ QVariant FileDependencyModel::data(const QModelIndex& index, int role /*= Qt::Di
 
         foreach (FileSet* fileSet, item->getFileSets())
         {
-            fileSetNames.append(fileSet->getName());
+            fileSetNames.append(fileSet->name());
         }
 
         return fileSetNames;

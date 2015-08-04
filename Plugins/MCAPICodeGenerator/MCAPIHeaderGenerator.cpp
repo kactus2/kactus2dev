@@ -148,7 +148,7 @@ void MCAPIHeaderGenerator::addGeneratedMCAPIToFileset(QString directory, QShared
     {
         if ( view->getHierarchyRef() == *desgConf->getVlnv() )
         {
-           sysViewName = view->getName();
+           sysViewName = view->name();
            break;
         }
     }

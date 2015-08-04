@@ -34,7 +34,7 @@ LocalMemoryMapEditor::LocalMemoryMapEditor(QSharedPointer<MemoryMap> memoryMap,
                                            QWidget *parent)
     : QGroupBox(tr("Local memory map"), parent),
       localMemoryMap_(memoryMap),
-      nameEditor_(new NameGroupEditor(memoryMap->getNameGroup(), this)),
+      nameEditor_(new NameGroupEditor(memoryMap, this)),
       view_(new EditableTableView(this)),
       model_(0),
       component_(component),

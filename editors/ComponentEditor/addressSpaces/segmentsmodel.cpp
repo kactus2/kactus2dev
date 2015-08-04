@@ -176,7 +176,7 @@ bool SegmentsModel::setData(QModelIndex const& index, QVariant const& value, int
     {
         if (index.column() ==  NAME)
         {
-            const QString oldName = segments_.at(index.row())->getName();
+            const QString oldName = segments_.at(index.row())->name();
 
             segments_.at(index.row())->setName(value.toString());
             emit segmentRenamed(oldName, value.toString());
@@ -291,7 +291,7 @@ void SegmentsModel::onRemoveItem(QModelIndex const& index)
 
     removeReferencesInItemOnRow(index.row());
 
-	emit segmentRemoved(segments_.at(index.row())->getName());
+	emit segmentRemoved(segments_.at(index.row())->name());
 
 	// remove the specified item
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
@@ -317,7 +317,7 @@ QVariant SegmentsModel::expressionOrValueForIndex(QModelIndex const& index) cons
 {
     if (index.column() == NAME)
     {
-        return segments_.at(index.row())->getName();
+        return segments_.at(index.row())->name();
     }
     else if (index.column() == OFFSET)
     {
@@ -329,7 +329,7 @@ QVariant SegmentsModel::expressionOrValueForIndex(QModelIndex const& index) cons
     }
     else if (index.column() ==  DESCRIPTION)
     {
-        return segments_.at(index.row())->getDescription();
+        return segments_.at(index.row())->description();
     }
     else 
     {
@@ -347,10 +347,10 @@ bool SegmentsModel::validateIndex(QModelIndex const& index) const
         QStringList segmentNames;
         foreach (QSharedPointer<Segment> segment, segments_)
         {
-            segmentNames.append(segment->getName());
+            segmentNames.append(segment->name());
         }
 
-        return segmentNames.count(segments_.at(index.row())->getName()) == 1;
+        return segmentNames.count(segments_.at(index.row())->name()) == 1;
     }
     else if (index.column() == OFFSET)
     {

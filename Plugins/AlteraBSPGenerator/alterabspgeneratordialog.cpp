@@ -182,7 +182,7 @@ void AlteraBSPGeneratorDialog::onRunClicked() {
 	// add the target dir to the list to remember where the generator is run.
 	Q_ASSERT(currentView_);
 
-	generatedPaths_.append(AlteraBSPGeneratorDialog::GenerationOptions(targetDir_ + "/", currentView_->getName()));
+	generatedPaths_.append(AlteraBSPGeneratorDialog::GenerationOptions(targetDir_ + "/", currentView_->name()));
 
 	QGuiApplication::restoreOverrideCursor();
 }

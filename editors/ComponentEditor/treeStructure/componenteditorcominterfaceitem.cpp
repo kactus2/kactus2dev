@@ -24,7 +24,7 @@ ComponentEditorComInterfaceItem::~ComponentEditorComInterfaceItem() {
 }
 
 QString ComponentEditorComInterfaceItem::text() const {
-	return interface_->getName();
+	return interface_->name();
 }
 
 bool ComponentEditorComInterfaceItem::isValid() const {

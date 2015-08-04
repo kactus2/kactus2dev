@@ -35,7 +35,7 @@ BusInterfaceWizardPortMapPage::BusInterfaceWizardPortMapPage(QSharedPointer<Comp
     portMapTab_(lh, component, busIf.data(), this)
 {
     setTitle(tr("Port Maps"));
-    setSubTitle(tr("Create port maps for interface %1.").arg(busIf->getName()));
+    setSubTitle(tr("Create port maps for interface %1.").arg(busIf->name()));
     setFinalPage(false);
     
     portMapTab_.setPhysicalPorts(physicalPorts);

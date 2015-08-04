@@ -12,10 +12,10 @@
 #include <IPXACTmodels/port.h>
 
 VhdlPort::VhdlPort(Port* port):
-VhdlTypedObject(port->getName(),
+VhdlTypedObject(port->name(),
 		   port->getTypeName(),
 		   port->getDefaultValue(), 
-		   port->getDescription()),
+		   port->description()),
 direction_(port->getDirection()),
 left_(port->getLeftBound()),
 right_(port->getRightBound()),

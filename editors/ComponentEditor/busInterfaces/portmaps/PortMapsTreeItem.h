@@ -146,7 +146,7 @@ public:
      *
      *      @return The name of the item.
      */
-    QString getName() const;
+    QString name() const;
 
 protected:
 

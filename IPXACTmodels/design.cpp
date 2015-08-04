@@ -491,15 +491,15 @@ bool Design::isValid( QStringList& errorList ) const {
 
     foreach (ComConnection const& conn, comConnections_)
     {
-        if (comConnectionNames.contains(conn.getName()))
+        if (comConnectionNames.contains(conn.name()))
         {
             errorList.append(QObject::tr("Design contains several COM connections "
-                                         "with name '%1'").arg(conn.getName()));
+                                         "with name '%1'").arg(conn.name()));
             valid = false;
         }
         else
         {
-            comConnectionNames.append(conn.getName());
+            comConnectionNames.append(conn.name());
         }
 
         if (!conn.isValid(errorList, allInstanceNames, thisIdentifier))
@@ -510,13 +510,13 @@ bool Design::isValid( QStringList& errorList ) const {
 
 	QStringList hierComNames;
 	foreach (const HierComConnection& hierComm, hierComConnections_) {
-		if (hierComNames.contains(hierComm.getName())) {
+		if (hierComNames.contains(hierComm.name())) {
 			errorList.append(QObject::tr("Design contains several hierarchical COM "
-				"connections with name %1").arg(hierComm.getName()));
+				"connections with name %1").arg(hierComm.name()));
 			valid = false;
 		}
 		else {
-			hierComNames.append(hierComm.getName());
+			hierComNames.append(hierComm.name());
 		}
 
 		if (!hierComm.isValid(errorList, allInstanceNames, thisIdentifier)) {
@@ -526,13 +526,13 @@ bool Design::isValid( QStringList& errorList ) const {
 
 	QStringList apiDepNames;
 	foreach (const ApiConnection& apiDep, apiDependencies_) {
-		if (apiDepNames.contains(apiDep.getName())) {
+		if (apiDepNames.contains(apiDep.name())) {
 			errorList.append(QObject::tr("Design contains several API dependencies"
-				" with name %1").arg(apiDep.getName()));
+				" with name %1").arg(apiDep.name()));
 			valid = false;
 		}
 		else {
-			apiDepNames.append(apiDep.getName());
+			apiDepNames.append(apiDep.name());
 		}
 
 		if (!apiDep.isValid(errorList, allInstanceNames, thisIdentifier)) {
@@ -542,13 +542,13 @@ bool Design::isValid( QStringList& errorList ) const {
 
 	QStringList hierAPINames;
 	foreach (const HierApiDependency& hierAPI, hierApiDependencies_) {
-		if (hierAPINames.contains(hierAPI.getName())) {
+		if (hierAPINames.contains(hierAPI.name())) {
 			errorList.append(QObject::tr("Design contains several hierarchical "
-				"API dependencies with name %1").arg(hierAPI.getName()));
+				"API dependencies with name %1").arg(hierAPI.name()));
 			valid = false;
 		}
 		else {
-			hierAPINames.append(hierAPI.getName());
+			hierAPINames.append(hierAPI.name());
 		}
 
 		if (!hierAPI.isValid(errorList, allInstanceNames, thisIdentifier)) {
@@ -666,11 +666,11 @@ bool Design::isValid() const {
 
 	foreach (ComConnection const& conn, comConnections_)
 	{
-		if (comConnectionNames.contains(conn.getName())) {
+		if (comConnectionNames.contains(conn.name())) {
 			return false;
 		}
 		else {
-			comConnectionNames.append(conn.getName());
+			comConnectionNames.append(conn.name());
 		}
 
 		if (!conn.isValid(allInstanceNames)) {
@@ -680,11 +680,11 @@ bool Design::isValid() const {
 
 	QStringList hierComNames;
 	foreach (const HierComConnection& hierComm, hierComConnections_) {
-		if (hierComNames.contains(hierComm.getName())) {
+		if (hierComNames.contains(hierComm.name())) {
 			return false;
 		}
 		else {
-			hierComNames.append(hierComm.getName());
+			hierComNames.append(hierComm.name());
 		}
 
 		if (!hierComm.isValid(allInstanceNames)) {
@@ -694,11 +694,11 @@ bool Design::isValid() const {
 
 	QStringList apiDepNames;
 	foreach (const ApiConnection& apiDep, apiDependencies_) {
-		if (apiDepNames.contains(apiDep.getName())) {
+		if (apiDepNames.contains(apiDep.name())) {
 			return false;
 		}
 		else {
-			apiDepNames.append(apiDep.getName());
+			apiDepNames.append(apiDep.name());
 		}
 
 		if (!apiDep.isValid(allInstanceNames)) {
@@ -708,11 +708,11 @@ bool Design::isValid() const {
 
 	QStringList hierAPINames;
 	foreach (const HierApiDependency& hierAPI, hierApiDependencies_) {
-		if (hierAPINames.contains(hierAPI.getName())) {
+		if (hierAPINames.contains(hierAPI.name())) {
 			return false;
 		}
 		else {
-			hierAPINames.append(hierAPI.getName());
+			hierAPINames.append(hierAPI.name());
 		}
 
 		if (!hierAPI.isValid(allInstanceNames)) {

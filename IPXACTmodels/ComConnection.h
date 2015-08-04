@@ -154,7 +154,7 @@ public:
     /*!
      *  Returns the name of the connection.
      */
-    QString const& getName() const;
+    QString const& name() const;
 
     /*!
      *  Returns the display name of the SW instance.

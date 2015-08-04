@@ -7,7 +7,7 @@
 #include "alternateregister.h"
 #include "registerdefinition.h"
 #include "GenericVendorExtension.h"
-#include "parameter.h"
+#include <IPXACTmodels/common/Parameter.h>
 
 #include <IPXACTmodels/validators/ParameterValidator.h>
 
@@ -152,7 +152,7 @@ bool AlternateRegister::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > 
 
 	bool valid = true;
 
-	if (nameGroup_.name().isEmpty())
+	if (name().isEmpty())
     {
 		errorList.append(QObject::tr("No name specified for alternate register"
 			" within %1").arg(parentIdentifier));
@@ -162,13 +162,13 @@ bool AlternateRegister::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > 
 	if (alternateGroups_.isEmpty())
     {
 		errorList.append(QObject::tr("At least one alternate group must be "
-			"specified for alternate register %1 within %2").arg(nameGroup_.name()).arg(
+			"specified for alternate register %1 within %2").arg(name()).arg(
 			parentIdentifier));
 		valid = false;
 	}
 
 	if (alternateRegisterDef_ && !alternateRegisterDef_->isValid(componentChoices, errorList, 
-        QObject::tr("alternate register %1").arg(nameGroup_.name()))) {
+        QObject::tr("alternate register %1").arg(name()))) {
 		valid = false;
 	}
 
@@ -176,7 +176,7 @@ bool AlternateRegister::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > 
     foreach (QSharedPointer<Parameter> param, parameters_)
     {
         errorList.append(validator.findErrorsIn(param.data(), 
-            QObject::tr("alternate register %1").arg(nameGroup_.name()), componentChoices));
+            QObject::tr("alternate register %1").arg(name()), componentChoices));
 
         if (!validator.validate(param.data(), componentChoices)) 
         {
@@ -192,7 +192,7 @@ bool AlternateRegister::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > 
 //-----------------------------------------------------------------------------
 bool AlternateRegister::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const
 {
-	if (nameGroup_.name().isEmpty()) {
+	if (name().isEmpty()) {
 		return false;
 	}
 

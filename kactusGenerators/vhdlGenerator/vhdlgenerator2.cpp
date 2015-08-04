@@ -219,7 +219,7 @@ void VhdlGenerator2::generate( const QString& outputFileName) {
 
 
 	// if view has description
-	QString viewDescription = component_->getViewDescription(viewName_);
+	QString viewDescription = component_->findView(viewName_)->description();
 	VhdlGeneral::writeDescription(viewDescription, vhdlStream);
 
 	QString archName;
@@ -345,7 +345,7 @@ bool VhdlGenerator2::addRTLView( const QString& vhdlFileName ) {
 		return true;
 	}
 
-	activeView->setTopLevelView(rtlView->getName());
+	activeView->setTopLevelView(rtlView->name());
 
 	return true;
 }
@@ -442,7 +442,7 @@ bool VhdlGenerator2::containsArchitecture() const {
 void VhdlGenerator2::parseTopGenerics()
 {
 	foreach (QSharedPointer<ModelParameter> modelParam, *component_->getModelParameters()) {
-		QString name = modelParam->getName();
+		QString name = modelParam->name();
 		QSharedPointer<VhdlGeneric> generic(new VhdlGeneric(modelParam.data()));
 
 		topGenerics_.insert(name, generic);
@@ -1179,8 +1179,8 @@ void VhdlGenerator2::writePorts( QTextStream& vhdlStream ) {
 					}
 					else {	
 						vhdlStream << "Interface: " << interfaceName << endl;
-						const QString description = component_->getInterfaceDescription(
-							interfaceName);
+						const QString description = component_->getBusInterface(
+							interfaceName)->description();
 						if (!description.isEmpty()) {							
 							VhdlGeneral::writeDescription(description, vhdlStream, QString("    "));
 						}

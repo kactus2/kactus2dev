@@ -149,7 +149,7 @@ QVariant BusInterfacesModel::data(QModelIndex const& index, int role) const
     {
         if (index.column() == BusInterfaceColumns::NAME)
         {
-            return busInterface->getName();
+            return busInterface->name();
         }
         else if ( index.column() == BusInterfaceColumns::BUSDEF)
         {
@@ -166,7 +166,7 @@ QVariant BusInterfacesModel::data(QModelIndex const& index, int role) const
         }
         else if (index.column() == BusInterfaceColumns::DESCRIPTION)
         {
-            return busInterface->getDescription().replace(QRegularExpression("\n.*$", 
+            return busInterface->description().replace(QRegularExpression("\n.*$", 
                 QRegularExpression::DotMatchesEverythingOption), "...");
         }
         else
@@ -177,7 +177,7 @@ QVariant BusInterfacesModel::data(QModelIndex const& index, int role) const
     else if ((role == Qt::EditRole || role == Qt::ToolTipRole) && 
         index.column() == BusInterfaceColumns::DESCRIPTION)
     {
-        return busInterface->getDescription();
+        return busInterface->description();
     }
 	else if (role == Qt::ForegroundRole)
     {

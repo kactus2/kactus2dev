@@ -350,7 +350,7 @@ QStringList FileDependencyItem::getFileTypes() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: FileDependencyItem::getName()
+// Function: FileDependencyItem::name()
 //-----------------------------------------------------------------------------
 QString const& FileDependencyItem::getPath() const
 {

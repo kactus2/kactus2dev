@@ -67,7 +67,7 @@ QString ComponentEditorFieldItem::getTooltip() const
 //-----------------------------------------------------------------------------
 QString ComponentEditorFieldItem::text() const
 {
-	return field_->getName();
+	return field_->name();
 }
 
 //-----------------------------------------------------------------------------

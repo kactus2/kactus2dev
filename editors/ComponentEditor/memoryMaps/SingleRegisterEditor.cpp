@@ -38,7 +38,7 @@ SingleRegisterEditor::SingleRegisterEditor(QSharedPointer<Register> selectedRegi
     QWidget* parent /* = 0 */):
 ItemEditor(component, handler, parent),
 selectedRegister_(selectedRegister),
-nameEditor_(selectedRegister->getNameGroup(), this, tr("Register name and description")),
+nameEditor_(selectedRegister, this, tr("Register name and description")),
 fieldsEditor_(new RegisterEditor(selectedRegister, component, handler, parameterFinder, expressionFormatter, this)),
 offsetEditor_(new ExpressionEditor(parameterFinder, this)),
 sizeEditor_(new ExpressionEditor(parameterFinder, this)),

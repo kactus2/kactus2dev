@@ -43,14 +43,14 @@ SegmentGraphItem::~SegmentGraphItem()
 //-----------------------------------------------------------------------------
 void SegmentGraphItem::refresh()
 {
-    setName(segment_->getName());
+    setName(segment_->name());
 
     quint64 offset = getOffset();
     quint64 lastAddr = getLastAddress();
     setOverlappingTop(offset);
     setOverlappingBottom(lastAddr);
 
-    setToolTip("<b>Name: </b>" + segment_->getName() + "<br>" +
+    setToolTip("<b>Name: </b>" + segment_->name() + "<br>" +
         "<b>Offset: </b>" + addr2Str(offset, getBitWidth()) + "<br>" +
         "<b>Last address: </b>" + addr2Str(lastAddr, getBitWidth())  + "<br>" +
         "<b>Size [AUB]: </b>" + getExpressionParser()->parseExpression(segment_->getRange()));

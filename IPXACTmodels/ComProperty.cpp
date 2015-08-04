@@ -145,9 +145,9 @@ void ComProperty::setDescription(QString const& description)
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComProperty::getName()
+// Function: ComProperty::name()
 //-----------------------------------------------------------------------------
-QString const& ComProperty::getName() const
+QString const& ComProperty::name() const
 {
     return name_;
 }

@@ -235,34 +235,34 @@ bool AbstractParameterModel::setData(QModelIndex const& index, const QVariant& v
         {
             if (!value.isValid())
             {
-                removeReferencesFromSingleExpression(parameter->getBitWidthLeft());
+                removeReferencesFromSingleExpression(parameter->getVectorLeft());
 
                 emit dataChanged(QAbstractTableModel::index(0, usageCountColumn()),
                     QAbstractTableModel::index(rowCount() - 1, usageCountColumn()));
             }
 
-            parameter->setBitWidthLeft(value.toString());
+            parameter->setVectorLeft(value.toString());
 
-            if (value.isValid() && parameter->getBitWidthRight().isEmpty() && !value.toString().isEmpty())
+            if (value.isValid() && parameter->getVectorRight().isEmpty() && !value.toString().isEmpty())
             {
-                parameter->setBitWidthRight(QString::number(0));
+                parameter->setVectorRight("0");
             }
         }
         else if (index.column() == bitWidthRightColumn())
         {
             if (!value.isValid())
             {
-                removeReferencesFromSingleExpression(parameter->getBitWidthRight());
+                removeReferencesFromSingleExpression(parameter->getVectorRight());
 
                 emit dataChanged(QAbstractTableModel::index(0, usageCountColumn()),
                     QAbstractTableModel::index(rowCount() - 1, usageCountColumn()));
             }
 
-            parameter->setBitWidthRight(value.toString());
+            parameter->setVectorRight(value.toString());
 
-            if (value.isValid() && parameter->getBitWidthLeft().isEmpty() && !value.toString().isEmpty())
+            if (value.isValid() && parameter->getVectorLeft().isEmpty() && !value.toString().isEmpty())
             {
-                parameter->setBitWidthLeft(QString::number(0));
+                parameter->setVectorLeft("0");
             }
         }
         else if (index.column() == minimumColumn())
@@ -447,7 +447,7 @@ QSharedPointer<Choice> AbstractParameterModel::findChoice(QString const& choiceN
 {
     foreach (QSharedPointer<Choice> choice, *choices_)
     {
-        if (choice->getName() == choiceName)
+        if (choice->name() == choiceName)
         {
             return choice;
         }
@@ -513,11 +513,11 @@ bool AbstractParameterModel::validateIndex(QModelIndex const& index) const
     }
     else if (index.column() == bitWidthLeftColumn())
     {
-        return validator_->validateArrayValues(parameter->getBitWidthLeft(), parameter->getBitWidthRight());
+        return validator_->validateArrayValues(parameter->getVectorLeft(), parameter->getVectorRight());
     }
     else if (index.column() == bitWidthRightColumn())
     {
-        return validator_->validateArrayValues(parameter->getBitWidthLeft(), parameter->getBitWidthRight());
+        return validator_->validateArrayValues(parameter->getVectorLeft(), parameter->getVectorRight());
     }
     else if (index.column() == minimumColumn())
     {
@@ -584,11 +584,11 @@ QVariant AbstractParameterModel::valueForIndex(QModelIndex const& index) const
 
     if (index.column() == nameColumn())
     {
-        return parameter->getName();
+        return parameter->name();
     }
     else if (index.column() == displayNameColumn())
     {
-        return parameter->getDisplayName();
+        return parameter->displayName();
     }
     else if (index.column() == typeColumn())
     {
@@ -596,11 +596,11 @@ QVariant AbstractParameterModel::valueForIndex(QModelIndex const& index) const
     }
     else if (index.column() == bitWidthLeftColumn())
     {
-        return parameter->getBitWidthLeft();
+        return parameter->getVectorLeft();
     }
     else if (index.column() == bitWidthRightColumn())
     {
-        return parameter->getBitWidthRight();
+        return parameter->getVectorRight();
     }
     else if (index.column() == minimumColumn())
     {
@@ -632,7 +632,7 @@ QVariant AbstractParameterModel::valueForIndex(QModelIndex const& index) const
     }
     else if (index.column() == descriptionColumn())
     {
-        return parameter->getDescription();
+        return parameter->description();
     }
     else if (index.column() == idColumn())
     {
@@ -677,15 +677,15 @@ QVariant AbstractParameterModel::expressionOrValueForIndex(QModelIndex const& in
     }
     else if (index.column() == bitWidthLeftColumn())
     {
-        return parameter->getBitWidthLeft();
+        return parameter->getVectorLeft();
     }
     else if (index.column() == bitWidthRightColumn())
     {
-        return parameter->getBitWidthRight();
+        return parameter->getVectorRight();
     }
     else if (index.column() == descriptionColumn())
     {
-        return parameter->getDescription();
+        return parameter->description();
     }
     else
     {
@@ -703,9 +703,9 @@ bool AbstractParameterModel::canRemoveRow(int const& row) const
     if (parameter->getUsageCount() > 0)
     {
         QMessageBox removeWarning;
-        removeWarning.setText("Are you sure you want to remove " + parameter->getName()
+        removeWarning.setText("Are you sure you want to remove " + parameter->name()
             + "? There are " + QString::number(parameter->getUsageCount()) + " references to it." +
-            " \n\nTo see where " + parameter->getName() + 
+            " \n\nTo see where " + parameter->name() + 
             " has been referenced, double click its usage count.");
         removeWarning.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
         removeWarning.setDefaultButton(QMessageBox::No);
@@ -760,8 +760,8 @@ int AbstractParameterModel::getAllReferencesToIdInItemOnRow(const int& row, QStr
     QSharedPointer<Parameter> parameter = getParameterOnRow(row);
 
     int referencesInValue = parameter->getValue().count(valueID);
-    int referencesInBitWidthLeft = parameter->getBitWidthLeft().count(valueID);
-    int referencesInBitWidthRight = parameter->getBitWidthRight().count(valueID);
+    int referencesInBitWidthLeft = parameter->getVectorLeft().count(valueID);
+    int referencesInBitWidthRight = parameter->getVectorRight().count(valueID);
     int referencesInArrayLeft = parameter->getAttribute("kactus2:arrayLeft").count(valueID);
     int referencesinArrayRight = parameter->getAttribute("kactus2:arrayRight").count(valueID);
 

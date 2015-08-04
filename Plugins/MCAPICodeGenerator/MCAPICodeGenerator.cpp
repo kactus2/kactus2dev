@@ -174,13 +174,13 @@ void MCAPICodeGenerator::generateMCAPIForComponent(QString dir, QSharedPointer<C
         if ( !viewName.isEmpty() )
         {
             QSharedPointer<SWView> view = component->getSWView( viewName );
-            view->addFileSetRef( fileSet->getName() );
+            view->addFileSetRef( fileSet->name() );
         }
     }
     else if ( viewCount > 0 )
     {
         // Add fileSet to the existing software view
-        component->getSWViews().first()->addFileSetRef( fileSet->getName() );
+        component->getSWViews().first()->addFileSetRef( fileSet->name() );
     }
 }
 

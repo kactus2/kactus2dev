@@ -125,8 +125,8 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
             while (itrApiIf.hasNext())
             {
                 QSharedPointer<ApiInterface> apiIf = itrApiIf.next();
-                instance.updateApiInterfacePosition(apiIf->getName(),
-                    mappingItem->getSWPort(apiIf->getName(), SWConnectionEndpoint::ENDPOINT_TYPE_API)->pos());
+                instance.updateApiInterfacePosition(apiIf->name(),
+                    mappingItem->getSWPort(apiIf->name(), SWConnectionEndpoint::ENDPOINT_TYPE_API)->pos());
             }
 
             QListIterator<QSharedPointer<ComInterface> >
@@ -135,8 +135,8 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
             while (itrComIf.hasNext())
             {
                 QSharedPointer<ComInterface> comIf = itrComIf.next();
-                instance.updateComInterfacePosition(comIf->getName(),
-                    mappingItem->getSWPort(comIf->getName(), SWConnectionEndpoint::ENDPOINT_TYPE_COM)->pos());
+                instance.updateComInterfacePosition(comIf->name(),
+                    mappingItem->getSWPort(comIf->name(), SWConnectionEndpoint::ENDPOINT_TYPE_COM)->pos());
             }
 
             instances.append(instance);
@@ -178,8 +178,8 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
             while (itrApiIf.hasNext())
             {
                 QSharedPointer<ApiInterface> apiIf = itrApiIf.next();
-                instance.updateApiInterfacePosition(apiIf->getName(),
-                    swCompItem->getSWPort(apiIf->getName(), SWConnectionEndpoint::ENDPOINT_TYPE_API)->pos());
+                instance.updateApiInterfacePosition(apiIf->name(),
+                    swCompItem->getSWPort(apiIf->name(), SWConnectionEndpoint::ENDPOINT_TYPE_API)->pos());
             }
 
             QListIterator<QSharedPointer<ComInterface> >
@@ -188,8 +188,8 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
             while (itrComIf.hasNext())
             {
                 QSharedPointer<ComInterface> comIf = itrComIf.next();
-                instance.updateComInterfacePosition(comIf->getName(),
-                    swCompItem->getSWPort(comIf->getName(), SWConnectionEndpoint::ENDPOINT_TYPE_COM)->pos());
+                instance.updateComInterfacePosition(comIf->name(),
+                    swCompItem->getSWPort(comIf->name(), SWConnectionEndpoint::ENDPOINT_TYPE_COM)->pos());
             }
 
             // Hack: Save undefined interfaces as COM interfaces.
@@ -636,7 +636,7 @@ void SystemDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
                     }
                 }
 
-                ColumnDesc desc(dialog.getName(), dialog.getContentType(), dialog.getAllowedItems(), columnWidth);
+                ColumnDesc desc(dialog.name(), dialog.getContentType(), dialog.getAllowedItems(), columnWidth);
 
                 // Keep the previous width if the content type did not change.
                 if (dialog.getContentType() == column->getColumnDesc().getContentType())
@@ -1634,7 +1634,7 @@ void SystemDesignDiagram::loadComConnections(QSharedPointer<Design> design)
         }
 
         GraphicsConnection* connection = new GraphicsConnection(port1, port2, true,
-            conn.getName(),
+            conn.name(),
             conn.getDisplayName(),
             conn.getDescription(), this);
         connection->setRoute(conn.getRoute());
@@ -1732,7 +1732,7 @@ void SystemDesignDiagram::loadComConnections(QSharedPointer<Design> design)
         }
 
         GraphicsConnection* connection = new GraphicsConnection(port, interface, true,
-            hierConn.getName(),
+            hierConn.name(),
             hierConn.getDisplayName(),
             hierConn.getDescription(), this);
         connection->setRoute(hierConn.getRoute());
@@ -1808,7 +1808,7 @@ void SystemDesignDiagram::loadApiDependencies(QSharedPointer<Design> design)
         }
 
         GraphicsConnection* connection = new GraphicsConnection(port1, port2, true,
-            dependency.getName(),
+            dependency.name(),
             dependency.getDisplayName(),
             dependency.getDescription(), this);
         connection->setRoute(dependency.getRoute());
@@ -1907,7 +1907,7 @@ void SystemDesignDiagram::loadApiDependencies(QSharedPointer<Design> design)
         }
 
         GraphicsConnection* connection = new GraphicsConnection(port, interface, true,
-            dependency.getName(),
+            dependency.name(),
             dependency.getDisplayName(),
             dependency.getDescription(), this);
         connection->setRoute(dependency.getRoute());
@@ -2144,7 +2144,7 @@ void SystemDesignDiagram::importDesign(QSharedPointer<Design> design, IGraphicsI
         }
 
         GraphicsConnection* connection = new GraphicsConnection(port1, port2, true,
-            dependency.getName(),
+            dependency.name(),
             dependency.getDisplayName(),
             dependency.getDescription(), this);
         connection->setImported(dependency.isImported());
@@ -2211,7 +2211,7 @@ void SystemDesignDiagram::importDesign(QSharedPointer<Design> design, IGraphicsI
         }
 
         GraphicsConnection* connection = new GraphicsConnection(port1, port2, true,
-                                                                conn.getName(),
+                                                                conn.name(),
                                                                 conn.getDisplayName(),
                                                                 conn.getDescription(), this);
 

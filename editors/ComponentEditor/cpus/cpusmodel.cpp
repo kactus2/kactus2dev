@@ -87,10 +87,10 @@ QVariant CpusModel::data( const QModelIndex& index, int role /*= Qt::DisplayRole
 
 		switch (index.column()) {
 			case CpusDelegate::NAME_COLUMN: {
-				return cpus_.at(index.row())->getName();
+				return cpus_.at(index.row())->name();
 												}
 			case CpusDelegate::DISPLAY_NAME_COLUMN: {
-				return cpus_.at(index.row())->getDisplayName();
+				return cpus_.at(index.row())->displayName();
 														}
 			case CpusDelegate::ADDRSPACE_COLUMN: {
 				// each group name if in it's own index
@@ -107,7 +107,7 @@ QVariant CpusModel::data( const QModelIndex& index, int role /*= Qt::DisplayRole
 				return str;
 													 }
 			case CpusDelegate::DESCRIPTION_COLUMN: {
-				return cpus_.at(index.row())->getDescription();
+				return cpus_.at(index.row())->description();
 													   }
 			default: {
 				return QVariant();

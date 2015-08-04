@@ -12,10 +12,10 @@
 #include <QChar>
 
 VhdlGeneric::VhdlGeneric(ModelParameter* generic):
-VhdlTypedObject(generic->getName(),
+VhdlTypedObject(generic->name(),
 		        generic->getDataType(),
     	        generic->getValue(),
-		        generic->getDescription()) 
+		        generic->description()) 
 {
 	Q_ASSERT(generic);
 }

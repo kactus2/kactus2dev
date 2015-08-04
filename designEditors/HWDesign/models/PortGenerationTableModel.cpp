@@ -396,7 +396,7 @@ void PortGenerationTableModel::initialize(QSharedPointer<Component> srcComponent
         if (createNew)
         {
             row = QSharedPointer<PortGenerationRow>(new PortGenerationRow(portName, port->getDirection(),
-                port->getDescription(), port->getPortSize()));
+                port->description(), port->getPortSize()));
         }
         else
         {

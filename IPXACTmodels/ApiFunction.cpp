@@ -131,15 +131,15 @@ bool ApiFunction::isValid(QStringList& errorList, QString const& parentId) const
 
     foreach (QSharedPointer<ApiFunctionParameter> param, params_)
     {
-        if (paramNames.contains(param->getName()))
+        if (paramNames.contains(param->name()))
         {
             errorList.append(QObject::tr("Multiple definitions of function parameter '%1'"
-                                         "in %2").arg(param->getName(), thisId));
+                                         "in %2").arg(param->name(), thisId));
             valid = false;
         }
         else
         {
-            paramNames.append(param->getName());
+            paramNames.append(param->name());
         }
 
         if (!param->isValid(errorList, thisId))
@@ -167,13 +167,13 @@ bool ApiFunction::isValid() const
 
     foreach (QSharedPointer<ApiFunctionParameter> param, params_)
     {
-        if (paramNames.contains(param->getName()))
+        if (paramNames.contains(param->name()))
         {
             return false;
         }
         else
         {
-            paramNames.append(param->getName());
+            paramNames.append(param->name());
         }
 
         if (!param->isValid())
@@ -244,9 +244,9 @@ void ApiFunction::removeParam(int index)
 }
 
 //-----------------------------------------------------------------------------
-// Function: ApiFunction::getName()
+// Function: ApiFunction::name()
 //-----------------------------------------------------------------------------
-QString const& ApiFunction::getName() const
+QString const& ApiFunction::name() const
 {
     return name_;
 }
@@ -319,11 +319,11 @@ void ApiFunction::generateToolTipText(int paramIndex, QString& text) const
         // Highlight the parameter of the given index.
         if (i == paramIndex)
         {
-            text += "<b>" + params_.at(i)->getType() + ' ' + params_.at(i)->getName() + "</b>";
+            text += "<b>" + params_.at(i)->getType() + ' ' + params_.at(i)->name() + "</b>";
         }
         else
         {
-            text += params_.at(i)->getType() + ' ' + params_.at(i)->getName();
+            text += params_.at(i)->getType() + ' ' + params_.at(i)->name();
         }
 
         // Add comma only if this is not the last parameter.

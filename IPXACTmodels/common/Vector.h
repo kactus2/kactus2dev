@@ -33,14 +33,15 @@ public:
      */
     Vector(QString left, QString right);
 
+    //! Copy constructor.
+    Vector(Vector const& other);
+
 	/*!
 	 *  The destructor.
 	*/
     virtual ~Vector();
 
 private:
-    //! Disable copying.
-    Vector(Vector const& other);
 
 	// Disable assignment.
     Vector& operator=(Vector const& rhs);

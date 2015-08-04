@@ -175,7 +175,7 @@ void ComponentWizardViewsPage::onViewSelected(QModelIndex const& index)
 void ComponentWizardViewsPage::createEditorForView(QSharedPointer<Component> component, QSharedPointer<View> view)
 {
     ViewEditor* editor = new ViewEditor(component, view, library_, parameterFinder_, expressionFormatter_, this);       
-    int editorIndex = editorTabs_->addTab(editor, view->getName());
+    int editorIndex = editorTabs_->addTab(editor, view->name());
 
     updateIconForTab(editorIndex);
 

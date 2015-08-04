@@ -107,7 +107,7 @@ HWComponentItem::HWComponentItem(LibraryInterface* lh_,
     // Parse port ad-hoc visibilities.
     foreach (QSharedPointer<Port> adhocPort, componentModel()->getPorts())
     {
-        if (!isPortAdHocVisible(adhocPort->getName()))
+        if (!isPortAdHocVisible(adhocPort->name()))
         {
             continue;
         }
@@ -798,7 +798,7 @@ QMap<QString, QPointF> HWComponentItem::getBusInterfacePositions() const
     while (itrBusIf.hasNext())
     {
         QSharedPointer<BusInterface> busif = itrBusIf.next();
-        positions[busif->getName()] = getBusPort(busif->getName())->pos();
+        positions[busif->name()] = getBusPort(busif->name())->pos();
     }
 
     return positions;

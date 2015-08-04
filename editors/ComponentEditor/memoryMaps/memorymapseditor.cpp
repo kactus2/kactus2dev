@@ -116,7 +116,7 @@ QStringList MemoryMapsEditor::getRemapStateNames() const
     QStringList remapStateNames;
     foreach (QSharedPointer<RemapState> remapState, *component()->getRemapStates())
     {
-        remapStateNames.append(remapState->getName());
+        remapStateNames.append(remapState->name());
     }
 
     return remapStateNames;

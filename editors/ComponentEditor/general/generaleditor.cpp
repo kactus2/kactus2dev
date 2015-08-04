@@ -172,7 +172,7 @@ void GeneralEditor::onAttributesChange()
 //-----------------------------------------------------------------------------
 void GeneralEditor::onDescriptionChange()
 {
-	component()->setDescription(descEditor_->getDescription());
+	component()->setDescription(descEditor_->description());
 	emit contentChanged();
 }
 
@@ -192,7 +192,7 @@ void GeneralEditor::showEvent( QShowEvent* event )
 //-----------------------------------------------------------------------------
 void GeneralEditor::onHeaderChange()
 {
-	component()->setTopComments(headerEditor_->getDescription());
+	component()->setTopComments(headerEditor_->description());
 	emit contentChanged();
 }
 

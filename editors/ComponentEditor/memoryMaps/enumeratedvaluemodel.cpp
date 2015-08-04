@@ -276,11 +276,11 @@ QVariant EnumeratedValueModel::valueForIndex(QModelIndex const& index) const
 {
     if (index.column() == EnumeratedValueColumns::NAME_COLUMN)
     {
-        return enumValues_.at(index.row())->getName();
+        return enumValues_.at(index.row())->name();
     }
     else if (index.column() == EnumeratedValueColumns::DISPLAY_NAME)
     {
-        return enumValues_.at(index.row())->getDisplayName();
+        return enumValues_.at(index.row())->displayName();
     }
     else if (index.column() == EnumeratedValueColumns::VALUE_COLUMN)
     {
@@ -292,7 +292,7 @@ QVariant EnumeratedValueModel::valueForIndex(QModelIndex const& index) const
     }
     else if (index.column() == EnumeratedValueColumns::DESCRIPTION)
     {
-        return enumValues_.at(index.row())->getDescription();
+        return enumValues_.at(index.row())->description();
     }
     else
     {

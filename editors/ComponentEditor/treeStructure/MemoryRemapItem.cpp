@@ -89,7 +89,7 @@ QString MemoryRemapItem::text() const
     }
     else
     {
-        return memoryRemap_->getName();
+        return memoryRemap_->name();
     }
 }
 
@@ -140,9 +140,9 @@ ItemEditor* MemoryRemapItem::editor()
 //-----------------------------------------------------------------------------
 QString MemoryRemapItem::getTooltip() const
 {
-    if(memoryRemap_->getName() == parentMemoryMap_->getName())
+    if(memoryRemap_->name() == parentMemoryMap_->name())
     {
-        return tr("The default memory map of ") + parentMemoryMap_->getName() + ".";
+        return tr("The default memory map of ") + parentMemoryMap_->name() + ".";
     }
 
     return tr("Contains the details of a memory remap.");

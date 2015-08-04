@@ -379,7 +379,7 @@ QString VerilogPortParser::replaceModelParameterNamesWithIds(QString const& expr
     {
         foreach (QSharedPointer<Parameter> define, *targetComponent->getParameters())
         {
-            QRegularExpression macroUsage("`" + define->getName());
+            QRegularExpression macroUsage("`" + define->name());
             if (macroUsage.match(result).hasMatch())
             {
                 result.replace(macroUsage, define->getValueId());
@@ -394,7 +394,7 @@ QString VerilogPortParser::replaceModelParameterNamesWithIds(QString const& expr
     
     foreach (QSharedPointer<ModelParameter> modelParameter, *targetComponent->getModelParameters())
     {
-        QRegularExpression nameReference("\\b" + modelParameter->getName() + "\\b");
+        QRegularExpression nameReference("\\b" + modelParameter->name() + "\\b");
         if (nameReference.match(result).hasMatch())
         {
             result.replace(nameReference, modelParameter->getValueId());

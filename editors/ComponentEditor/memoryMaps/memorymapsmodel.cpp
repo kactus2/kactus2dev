@@ -170,7 +170,7 @@ QVariant MemoryMapsModel::data( const QModelIndex& index, int role /*= Qt::Displ
             parentMemoryMap = rootMemoryMaps_.at(index.row());
         }
 
-        return component_->getSlaveInterfaces(parentMemoryMap->getName());
+        return component_->getSlaveInterfaces(parentMemoryMap->name());
 	}
 	else if (role == Qt::ForegroundRole)
     {
@@ -579,12 +579,12 @@ QVariant MemoryMapsModel::valueForIndex(QModelIndex const& index) const
     {
         if (!index.parent().isValid())
         {
-            return rootMemoryMaps_.at(index.row())->getName();
+            return rootMemoryMaps_.at(index.row())->name();
         }
         else
         {
             QSharedPointer<MemoryRemap> childItem = getIndexedMemoryRemap(index.parent(), index.row());
-            return childItem->getName();
+            return childItem->name();
         }
     }
     else if (index.column() == MemoryMapsColumns::AUB_COLUMN)
@@ -615,7 +615,7 @@ QVariant MemoryMapsModel::valueForIndex(QModelIndex const& index) const
             parentMemoryMap = getParentMemoryMap(getIndexedMemoryRemap(index.parent(), index.row()));
         }
 
-        QStringList interfaceNames = component_->getSlaveInterfaces(parentMemoryMap->getName());
+        QStringList interfaceNames = component_->getSlaveInterfaces(parentMemoryMap->name());
         if (interfaceNames.isEmpty() || parentMemoryMap->isEmpty())
         {
             return tr("No binding");
@@ -648,12 +648,12 @@ QVariant MemoryMapsModel::valueForIndex(QModelIndex const& index) const
     {
         if (!index.parent().isValid())
         {
-            return rootMemoryMaps_.at(index.row())->getDescription();
+            return rootMemoryMaps_.at(index.row())->description();
         }
         else
         {
             QSharedPointer<MemoryRemap> childItem = getIndexedMemoryRemap(index.parent(), index.row());
-            return childItem->getDescription();
+            return childItem->description();
         }
     }
 

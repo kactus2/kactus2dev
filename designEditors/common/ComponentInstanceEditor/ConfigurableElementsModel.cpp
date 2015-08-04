@@ -399,7 +399,7 @@ QVariant ConfigurableElementsModel::valueForIndex(QModelIndex const& index) cons
 
         if (index.column() == ConfigurableElementsColumns::NAME)
         {
-            return targetElement->getName();
+            return targetElement->name();
         }
         else if (index.column() == ConfigurableElementsColumns::VALUE)
         {
@@ -424,7 +424,7 @@ QVariant ConfigurableElementsModel::valueForIndex(QModelIndex const& index) cons
         }
         else if (index.column() == ConfigurableElementsColumns::TYPE)
         {
-            return targetElement->getValueFormat();
+            return targetElement->getType();
         }
     }
 
@@ -525,7 +525,7 @@ QSharedPointer<Choice> ConfigurableElementsModel::findChoice(QString const& choi
 {
     foreach (QSharedPointer<Choice> choice, *component_->componentModel()->getChoices())
     {
-        if (choice->getName() == choiceName)
+        if (choice->name() == choiceName)
         {
             return choice;
         }
@@ -586,7 +586,7 @@ QVariant ConfigurableElementsModel::expressionOrValueForIndex(QModelIndex const&
 
         if (index.column() == ConfigurableElementsColumns::NAME)
         {
-            return element->getName();
+            return element->name();
         }
         else if (index.column() == ConfigurableElementsColumns::VALUE)
         {

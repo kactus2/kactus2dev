@@ -6,7 +6,8 @@
 
 #include "memoryblockdata.h"
 #include "generaldeclarations.h"
-#include "parameter.h"
+#include <IPXACTmodels/common/Parameter.h>
+#include <IPXACTmodels/common/ParameterWriter.h>
 
 #include <IPXACTmodels/validators/ParameterValidator.h>
 
@@ -83,16 +84,19 @@ void MemoryBlockData::write(QXmlStreamWriter& writer) {
 		writer.writeTextElement("spirit:access", General::access2Str(access_));
 	}
 
-	if (parameters_.size() != 0) {
-		writer.writeStartElement("spirit:parameters");
+    if (parameters_.size() != 0)
+    {
+        writer.writeStartElement("ipxact:parameters");
 
-		// go through each parameter
-		for (int i = 0; i < parameters_.size(); ++i) {
-			parameters_.at(i)->write(writer);
-		}
+        ParameterWriter parameterWriter;
+        // write each parameter
+        for (int i = 0; i < parameters_.size(); ++i)
+        {
+            parameterWriter.writeParameter(writer, parameters_.at(i));
+        }
 
-		writer.writeEndElement(); // spirit:parameters
-	}
+        writer.writeEndElement(); // ipxact:parameters
+    }
 }
 
 bool MemoryBlockData::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,

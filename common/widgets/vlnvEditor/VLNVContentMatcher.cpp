@@ -86,11 +86,11 @@ bool VLNVContentMatcher::enumerateMatches(QString const& text, LineContentAssist
         {
             VLNVDataNode const* child = node_->getChildren()[i].data();
 
-            if (child->getName().toLower().contains(exp))
+            if (child->name().toLower().contains(exp))
             {
                 if (assist != 0)
                 {
-                    QListWidgetItem* item = new QListWidgetItem(child->getName());
+                    QListWidgetItem* item = new QListWidgetItem(child->name());
 
                     // Add an icon if the child is at the leaf level.
 //                     if (child->getLevel() == VLNVDataNode::LEVEL_VERSION)
@@ -144,7 +144,7 @@ bool VLNVContentMatcher::enumerateMatches(QString const& text, LineContentAssist
 
                 ++count;
 
-                if (!exactMatch && child->getName() == text)
+                if (!exactMatch && child->name() == text)
                 {
                     exactMatch = true;
                 }

@@ -33,12 +33,12 @@ void AdHocEnabled::setAdHocData(QSharedPointer<Component> component, QMap<QStrin
     {
         bool visible = adhocPort->isAdHocVisible();
 
-        if (portAdHocVisibilities.contains(adhocPort->getName()))
+        if (portAdHocVisibilities.contains(adhocPort->name()))
         {
-            visible = portAdHocVisibilities.value(adhocPort->getName());
+            visible = portAdHocVisibilities.value(adhocPort->name());
         }
 
-        portAdHocVisibilities_.insert(adhocPort->getName(), visible);
+        portAdHocVisibilities_.insert(adhocPort->name(), visible);
     }
 }
 
