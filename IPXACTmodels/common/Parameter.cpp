@@ -77,6 +77,11 @@ Parameter & Parameter::operator=( const Parameter &other )
 	return *this;
 }
 
+QString Parameter::elementName() const
+{
+    return "parameter";
+}
+
 //-----------------------------------------------------------------------------
 // Function: Parameter::getValue()
 //-----------------------------------------------------------------------------
@@ -297,6 +302,30 @@ QStringList Parameter::getValueAttributeNames() const
 QSharedPointer<QList<QSharedPointer<Vector> > > Parameter::getVectors() const
 {
     return vectors_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Parameter::getVectorLeft()
+//-----------------------------------------------------------------------------
+QString Parameter::getVectorLeft() const
+{
+    if (vectors_->isEmpty())
+    {
+        return QString();
+    }
+    return vectors_->first()->getLeft();
+}
+
+//-----------------------------------------------------------------------------
+// Function: Parameter::getVectorRight()
+//-----------------------------------------------------------------------------
+QString Parameter::getVectorRight() const
+{
+    if (vectors_->isEmpty())
+    {
+        return QString();
+    }
+    return vectors_->first()->getRight();
 }
 
 //-----------------------------------------------------------------------------

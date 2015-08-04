@@ -15,7 +15,7 @@
 #include <IPXACTmodels/ipxactmodels_global.h>
 
 #include "Array.h"
-#include "NameGroup.h"
+#include <IPXACTmodels/common/NameGroup.h>
 #include "Vector.h"
 
 #include <QDomNode>
@@ -49,6 +49,8 @@ public:
 	//! Assignment operator
 	Parameter &operator=(const Parameter &other);
     
+    virtual QString elementName() const;
+
 	/*! Get the value of the parameter
 	 *
 	 *      @return QString containing the value
@@ -223,6 +225,20 @@ public:
      *      @return The parameter vectors.
      */
     QSharedPointer<QList<QSharedPointer<Vector> > > getVectors() const;
+        
+    /*!
+     *  Gets the left index of the parameter vector.
+     *
+     *      @return The left index of the vector.
+     */
+    QString getVectorLeft() const;
+
+    /*!
+     *  Gets the right index of the parameter vector.
+     *
+     *      @return The right index of the vector.
+     */
+    QString getVectorRight() const;
 
     /*!
      *  Sets the left index of the parameter vector.

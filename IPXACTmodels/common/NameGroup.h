@@ -95,13 +95,6 @@ public:
      */
     void setDescription(QString const& description);
 
-    /*!
-     *  Writes the NameGroup to XML.
-     *
-     *      @param [in] writer   The writer used for writing the XML.
-     */
-    void write(QXmlStreamWriter& writer) const;
-
 private:
 
     //! The name matches the spirit:name field within nameGroup.

@@ -13,7 +13,7 @@
 
 #include <IPXACTmodels/choice.h>
 #include <IPXACTmodels/Enumeration.h>
-#include <IPXACTmodels/parameter.h>
+#include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/validators/ParameterValidator.h>
 
 class tst_ParameterValidator : public QObject
@@ -195,7 +195,7 @@ void tst_ParameterValidator::testFormat()
     QFETCH(bool, expectedValid);
 
     Parameter* parameter = createParameterWithName();
-    parameter->setValueFormat(format);
+    parameter->setValueAttribute("spirit:format", format);
 
     ParameterValidator validator;
     QVERIFY(validator.hasValidFormat(parameter) == expectedValid);
@@ -241,7 +241,7 @@ void tst_ParameterValidator::testValueForBoolFormat()
     QFETCH(bool, expectedValid);
 
     Parameter* parameter = createParameterWithName();
-    parameter->setValueFormat("bool");
+    parameter->setValueAttribute("spirit:format", "bool");
     parameter->setValue(value);
 
     ParameterValidator validator;
@@ -285,8 +285,8 @@ void tst_ParameterValidator::testBitStringLengthIsSetForBitStringFormatAndNotSet
     QFETCH(bool, expectedValid);
 
     Parameter* parameter = createParameterWithName();
-    parameter->setValueFormat(format);
-    parameter->setBitStringLength(bitStringLength);
+    parameter->setValueAttribute("spirit:format", format);
+    parameter->setValueAttribute("spirit:bitStringLength", bitStringLength);
 
     ParameterValidator validator;
     QVERIFY(validator.hasValidBitStringLength(parameter) == expectedValid);
@@ -350,7 +350,7 @@ void tst_ParameterValidator::testMinimumValueNotCheckedForEmptyBoolOrStringForma
     Parameter* parameter = createParameterWithName();
     parameter->setValueAttribute("spirit:minimum", "100");
 
-    parameter->setValueFormat(format);
+    parameter->setValueAttribute("spirit:format", format);
 
     ParameterValidator validator;
     QVERIFY(validator.hasValidMinimumValue(parameter) == true);
@@ -382,7 +382,7 @@ void tst_ParameterValidator::testMinimumValueIsValidForGivenFormat()
 
     parameter->setValue("1000000000");
 
-    parameter->setValueFormat(format);
+    parameter->setValueAttribute("spirit:format", format);
     parameter->setValueAttribute("spirit:minimum", boundary);
 
     QStringList errorList;
@@ -494,7 +494,7 @@ void tst_ParameterValidator::testValidityWithMinimumValueAndFormat(QString const
     QFETCH(bool, expectedValid);
 
     Parameter* parameter = createParameterWithName();
-    parameter->setValueFormat(format);
+    parameter->setValueAttribute("spirit:format", format);
     parameter->setValueAttribute("spirit:minimum", boundary);
     parameter->setValue(value);
 
@@ -624,7 +624,7 @@ void tst_ParameterValidator::testMaximumValueIsValidForGivenFormat()
 
     parameter->setValue("0");
 
-    parameter->setValueFormat(format);
+    parameter->setValueAttribute("spirit:format", format);
     parameter->setValueAttribute("spirit:maximum", boundary);
 
     QStringList errorList;
@@ -739,7 +739,7 @@ void tst_ParameterValidator::testValidityWithMaximumValueAndFormat(QString const
     QFETCH(bool, expectedValid);
 
     Parameter* parameter = createParameterWithName();
-    parameter->setValueFormat(format);
+    parameter->setValueAttribute("spirit:format", format);
     parameter->setValueAttribute("spirit:maximum", boundary);
     parameter->setValue(value);
 

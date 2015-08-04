@@ -15,7 +15,7 @@
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 
 #include <IPXACTmodels/validators/ParameterValidator2014.h>
-#include <IPXACTmodels/parameter.h>
+#include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/component.h>
 
 class tst_ParameterValidator2014 : public QObject
