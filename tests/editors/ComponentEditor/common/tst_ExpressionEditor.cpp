@@ -434,7 +434,7 @@ void tst_ExpressionEditor::testCompletionChangesWithCursor()
     QVERIFY2(editor->completer()->popup()->isVisible(), "Completer popup should be visible after clicking a word.");
     QCOMPARE(editor->completer()->currentCompletion(), QString("testParameter"));
 
-    cursor.setPosition(testParameter->getName().length() + 1);
+    cursor.setPosition(testParameter->name().length() + 1);
 
     QTest::mouseClick(editor->viewport(), Qt::LeftButton, 0, editor->cursorRect(cursor).center());
 

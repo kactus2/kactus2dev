@@ -85,12 +85,12 @@ void tst_VHDLPortParser::testPortIsParsed()
     QCOMPARE(importComponent_->getPorts().count(), 1);
 
     QSharedPointer<Port> createdPort = importComponent_->getPorts().first();
-    QCOMPARE(createdPort->getName(), expectedName);
+    QCOMPARE(createdPort->name(), expectedName);
     QCOMPARE(createdPort->getDirection(), expectedDirection);
     QCOMPARE(createdPort->getPortSize(), expectedSize);
     QCOMPARE(createdPort->getTypeName(), expectedType);    
     QCOMPARE(createdPort->getDefaultValue(), expectedDefaultValue);
-    QCOMPARE(createdPort->getDescription(), expectedDescription);
+    QCOMPARE(createdPort->description(), expectedDescription);
 }
 
 //-----------------------------------------------------------------------------

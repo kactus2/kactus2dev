@@ -69,7 +69,7 @@ void tst_AddressBlockGraphItem::testConstructor()
     AddressBlockGraphItem* addressBlockItem = new AddressBlockGraphItem(addressBlock, noParser, 0);
     addressBlockItem->refresh();
 
-    QCOMPARE(addressBlockItem->getName(), QString("testBlock"));
+    QCOMPARE(addressBlockItem->name(), QString("testBlock"));
     QCOMPARE(addressBlockItem->getOffset(), quint64(0));
     QCOMPARE(addressBlockItem->getLastAddress(), quint64(0));
     QCOMPARE(addressBlockItem->getDisplayOffset(), quint64(0));
@@ -158,7 +158,7 @@ void tst_AddressBlockGraphItem::testRegisterInSecondAddress()
 
     MemoryGapItem* initialGap = gaps.first();
     QVERIFY(!initialGap->isConflicted());
-    QCOMPARE(initialGap->getName(), QString("Reserved"));
+    QCOMPARE(initialGap->name(), QString("Reserved"));
     QCOMPARE(initialGap->pos().x(), qreal(MemoryVisualizationItem::CHILD_INDENTATION));
     QCOMPARE(initialGap->pos().y(), qreal(VisualizerItem::DEFAULT_HEIGHT));
     QCOMPARE(initialGap->getDisplayOffset(), quint64(0));
@@ -216,7 +216,7 @@ void tst_AddressBlockGraphItem::testEmptyAfterLastRegister()
 
     MemoryGapItem* firstGap = gaps.first();
     QVERIFY(!firstGap->isConflicted());
-    QCOMPARE(firstGap->getName(), QString("Reserved"));
+    QCOMPARE(firstGap->name(), QString("Reserved"));
     QCOMPARE(firstGap->pos().x(), qreal(MemoryVisualizationItem::CHILD_INDENTATION));
     QCOMPARE(firstGap->pos().y(), qreal(2*VisualizerItem::DEFAULT_HEIGHT));
     QCOMPARE(firstGap->getDisplayOffset(), quint64(1));

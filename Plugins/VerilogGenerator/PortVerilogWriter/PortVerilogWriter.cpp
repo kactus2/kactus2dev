@@ -109,7 +109,7 @@ QString PortVerilogWriter::arrayAndVectorBounds() const
 
     vectorDefinition.remove(" ");
 
-    if (vectorDefinition == "[0:0]")
+    if (vectorDefinition == "[0:0]" || vectorDefinition == "[:]")
     {
         vectorDefinition.clear();
     }

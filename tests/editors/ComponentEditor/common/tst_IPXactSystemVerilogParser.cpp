@@ -23,7 +23,7 @@
 #include <IPXACTmodels/memorymapitem.h>
 #include <IPXACTmodels/model.h>
 #include <IPXACTmodels/modelparameter.h>
-#include <IPXACTmodels/parameter.h>
+#include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/register.h>
 
 class tst_IPXactSystemVerilogParser : public QObject

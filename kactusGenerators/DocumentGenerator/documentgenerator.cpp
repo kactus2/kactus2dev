@@ -431,9 +431,9 @@ void DocumentGenerator::writeModelParameters(QTextStream& stream, int& subHeader
 			stream << "\t\t\t\t\t<td>" << expressionFormatter_->formatReferringExpression(param->getValue()) <<
                 "</td>" << endl;
             stream << "\t\t\t\t\t<td>" << expressionFormatter_->formatReferringExpression(
-                param->getAttribute("kactus2:arrayLeft")) << "</td>" << endl;
+                param->getArrayLeft()) << "</td>" << endl;
             stream << "\t\t\t\t\t<td>" << expressionFormatter_->formatReferringExpression(
-                param->getAttribute("kactus2:arrayRight")) << "</td>" << endl;
+                param->getArrayRight()) << "</td>" << endl;
 			stream << "\t\t\t\t\t<td>" << param->description() << "</td>" << endl;
 			stream << "\t\t\t\t</tr>" << endl;
 		}
@@ -483,10 +483,10 @@ void DocumentGenerator::writeParameters(QTextStream& stream, int& subHeaderNumbe
 			stream << "\t\t\t\t\t<td>" << param->name() << "</td>" << endl;
 			stream << "\t\t\t\t\t<td>" << expressionFormatter_->formatReferringExpression(param->getValue()) <<
                 "</td>" << endl;
-            stream << "\t\t\t\t\t<td>" << expressionFormatter_->formatReferringExpression(param->getAttribute(
-                "kactus2:arrayLeft")) << "</td>" << endl;
-            stream << "\t\t\t\t\t<td>" << expressionFormatter_->formatReferringExpression(param->getAttribute(
-                "kactus2:arrayRight")) << "</td>" << endl;
+            stream << "\t\t\t\t\t<td>" << expressionFormatter_->formatReferringExpression(param->getArrayLeft()) 
+                << "</td>" << endl;
+            stream << "\t\t\t\t\t<td>" << expressionFormatter_->formatReferringExpression(param->getArrayRight())
+                << "</td>" << endl;
 			stream << "\t\t\t\t\t<td>" << param->description() << "</td>" << endl;
 			stream << "\t\t\t\t</tr>" << endl;
 		}

@@ -80,10 +80,10 @@ void tst_VHDLGenericParser::testGenericIsParsed()
     QCOMPARE(importComponent_->getModelParameters()->count(), 1);
 
     QSharedPointer<ModelParameter> createdModelParamter = importComponent_->getModelParameters()->first();
-    QCOMPARE(createdModelParamter->getName(), expectedName);
+    QCOMPARE(createdModelParamter->name(), expectedName);
     QCOMPARE(createdModelParamter->getDataType(), expectedType);
     QCOMPARE(createdModelParamter->getValue(), expectedDefaultValue);
-    QCOMPARE(createdModelParamter->getDescription(), expectedDescription);
+    QCOMPARE(createdModelParamter->description(), expectedDescription);
 }
 
 //-----------------------------------------------------------------------------

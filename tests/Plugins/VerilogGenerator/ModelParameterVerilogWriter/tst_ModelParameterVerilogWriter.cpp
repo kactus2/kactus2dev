@@ -299,8 +299,8 @@ void tst_ModelParameterVerilogWriter::testModelParameterWithVectorBounds()
     modelParam_->setName("mask");
     modelParam_->setDataType("bit");
     modelParam_->setValue("'hFF");
-    modelParam_->setBitWidthLeft("7");
-    modelParam_->setBitWidthRight("0");
+    modelParam_->setVectorLeft("7");
+    modelParam_->setVectorRight("0");
 
     QSharedPointer<ExpressionFormatter> formatter = createTestFormatterUsingComponent(QSharedPointer<Component>(0));
 
@@ -318,8 +318,8 @@ void tst_ModelParameterVerilogWriter::testModelParameterWithVectorAndArrayBounds
     modelParam_->setName("mask");
     modelParam_->setDataType("bit");
     modelParam_->setValue("'hFF");
-    modelParam_->setBitWidthLeft("7");
-    modelParam_->setBitWidthRight("0");
+    modelParam_->setVectorLeft("7");
+    modelParam_->setVectorRight("0");
     modelParam_->setAttribute("kactus2:arrayLeft", "2");
     modelParam_->setAttribute("kactus2:arrayRight", "1");
 

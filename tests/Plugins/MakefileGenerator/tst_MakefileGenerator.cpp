@@ -1612,7 +1612,7 @@ void tst_MakefileGenerator::getFile(QSharedPointer<File>& file, QSharedPointer<C
     {
         foreach( QSharedPointer<File> possibleFile, fset->getFiles())
         {
-            if ( possibleFile->getName() == fileName )
+            if ( possibleFile->name() == fileName )
             {
                 file = possibleFile;
                 return;

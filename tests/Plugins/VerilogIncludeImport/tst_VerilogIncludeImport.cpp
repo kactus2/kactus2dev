@@ -139,9 +139,9 @@ void tst_VerilogIncludeImport::testDefineIsParsed()
     QCOMPARE(importComponent_->getModel()->getModelParameters()->count(), 1);
 
     QSharedPointer<ModelParameter> createdParameter = importComponent_->getModel()->getModelParameters()->first();
-    QCOMPARE(createdParameter->getName(), expectedName);
+    QCOMPARE(createdParameter->name(), expectedName);
     QCOMPARE(createdParameter->getValue(), expectedValue);
-    QCOMPARE(createdParameter->getDescription(), expectedDescription);
+    QCOMPARE(createdParameter->description(), expectedDescription);
 }
 
 //-----------------------------------------------------------------------------
@@ -295,7 +295,7 @@ void tst_VerilogIncludeImport::testExistingParameterIsUpdated()
     runParser("`define EXISTING 2 // This parameter has been updated.\n\n");
 
     QCOMPARE(importComponent_->getModel()->getModelParameters()->count(), 1);
-    QCOMPARE(importComponent_->getModel()->getModelParameters()->first()->getDescription(), 
+    QCOMPARE(importComponent_->getModel()->getModelParameters()->first()->description(), 
         QString("This parameter has been updated."));
 }
 

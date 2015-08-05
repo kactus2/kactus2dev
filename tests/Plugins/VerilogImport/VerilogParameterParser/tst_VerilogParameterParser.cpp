@@ -75,10 +75,10 @@ private:
 void tst_VerilogParameterParser::verifyParameter( QSharedPointer<ModelParameter> parameter,
     QString name, QString value, QString type, QString description )
 {
-    QCOMPARE(parameter->getName(), name);
+    QCOMPARE(parameter->name(), name);
     QCOMPARE(parameter->getValue(), value);
     QCOMPARE(parameter->getDataType(), type);
-    QCOMPARE(parameter->getDescription(), description);
+    QCOMPARE(parameter->description(), description);
 }
 
 tst_VerilogParameterParser::tst_VerilogParameterParser()
@@ -668,15 +668,15 @@ void tst_VerilogParameterParser::twoDimensional()
     QList<QSharedPointer<ModelParameter> > parameters = parser.parseParameters(declarations[0]);
 
     verifyParameter( parameters[0], "shift_type", "'{3'b001}", "bit", "joku" );
-    QCOMPARE(parameters[0]->getBitWidthLeft(), QString("7"));
-    QCOMPARE(parameters[0]->getBitWidthRight(), QString("0"));
-    QCOMPARE(parameters[0]->getAttribute("kactus2:arrayLeft"),QString(""));
-    QCOMPARE(parameters[0]->getAttribute("kactus2:arrayRight"),QString(""));
+    QCOMPARE(parameters[0]->getVectorLeft(), QString("7"));
+    QCOMPARE(parameters[0]->getVectorRight(), QString("0"));
+    QCOMPARE(parameters[0]->getArrayLeft(),QString(""));
+    QCOMPARE(parameters[0]->getArrayRight(),QString(""));
 
     parameters.append(parser.parseParameters(declarations[1]));
     verifyParameter( parameters[1], "mask", "'{2'b00}", "bit", "" );
-    QCOMPARE(parameters[1]->getAttribute("kactus2:arrayLeft"),QString("count"));
-    QCOMPARE(parameters[1]->getAttribute("kactus2:arrayRight"),QString("0"));
+    QCOMPARE(parameters[1]->getArrayLeft(),QString("count"));
+    QCOMPARE(parameters[1]->getArrayRight(),QString("0"));
 }
 
 //-----------------------------------------------------------------------------
@@ -694,17 +694,17 @@ void tst_VerilogParameterParser::closerOnLine()
 
     QList<QSharedPointer<ModelParameter> > parameters = parser.parseParameters(declarations[0]);
     verifyParameter( parameters[0], "shift_type", "'{3'b001}", "bit", "joku" );
-    QCOMPARE(parameters[0]->getBitWidthLeft(), QString("2"));
-    QCOMPARE(parameters[0]->getBitWidthRight(), QString("0"));
-    QCOMPARE(parameters[0]->getAttribute("kactus2:arrayLeft"),QString("count"));
-    QCOMPARE(parameters[0]->getAttribute("kactus2:arrayRight"),QString("1"));
+    QCOMPARE(parameters[0]->getVectorLeft(), QString("2"));
+    QCOMPARE(parameters[0]->getVectorRight(), QString("0"));
+    QCOMPARE(parameters[0]->getArrayLeft(), QString("count"));
+    QCOMPARE(parameters[0]->getArrayRight(), QString("1"));
 
     parameters.append(parser.parseParameters(declarations[1]));
     verifyParameter( parameters[1], "mask", "'{2'b00}", "bit", "" );
-    QCOMPARE(parameters[1]->getBitWidthLeft(), QString("1"));
-    QCOMPARE(parameters[1]->getBitWidthRight(), QString("0"));
-    QCOMPARE(parameters[1]->getAttribute("kactus2:arrayLeft"),QString("count"));
-    QCOMPARE(parameters[1]->getAttribute("kactus2:arrayRight"),QString("1"));
+    QCOMPARE(parameters[1]->getVectorLeft(), QString("1"));
+    QCOMPARE(parameters[1]->getVectorRight(), QString("0"));
+    QCOMPARE(parameters[1]->getArrayLeft(),QString("count"));
+    QCOMPARE(parameters[1]->getArrayRight(),QString("1"));
 
 }
 

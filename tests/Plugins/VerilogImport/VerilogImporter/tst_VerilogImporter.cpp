@@ -520,8 +520,6 @@ void tst_VerilogImporter::testParameterIsHighlighted_data()
 void tst_VerilogImporter::testParameterInPortDeclaration()
 {
     QFETCH(QString, fileContent);
-    QFETCH(int, expectedLeftBound);
-    QFETCH(int, expectedRightBound);
     QFETCH(QString, expectedLeftBoundExpression);
     QFETCH(QString, expectedRightBoundExpression);
 
@@ -530,8 +528,6 @@ void tst_VerilogImporter::testParameterInPortDeclaration()
     QVERIFY2(importComponent_->getPorts().count() != 0, "No ports parsed from input.");
   
     QSharedPointer<Port> createdPort = importComponent_->getPorts().first();
-    QCOMPARE(createdPort->getLeftBound(), expectedLeftBound);
-    QCOMPARE(createdPort->getRightBound(), expectedRightBound);
 
     QRegularExpression leftRule(expectedLeftBoundExpression);
     QVERIFY(leftRule.match(createdPort->getLeftBoundExpression()).hasMatch());
@@ -548,8 +544,6 @@ void tst_VerilogImporter::testParameterInPortDeclaration()
 void tst_VerilogImporter::testParameterInPortDeclaration_data()
 {
     QTest::addColumn<QString>("fileContent");
-    QTest::addColumn<int>("expectedLeftBound");
-    QTest::addColumn<int>("expectedRightBound");
     QTest::addColumn<QString>("expectedLeftBoundExpression");
     QTest::addColumn<QString>("expectedRightBoundExpression");
 
@@ -558,14 +552,14 @@ void tst_VerilogImporter::testParameterInPortDeclaration_data()
         "   input [left:0] data\n"
         ");\n"
         "endmodule"
-        << 4 << 0 << parameterUuid() << "0";
+        << parameterUuid() << "0";
 
     QTest::newRow("Parameter as right port bound") <<
         "module test #(parameter right = 4) (\n"
         "   input [0:right] data\n"
         ");\n"
         "endmodule"
-        << 0 << 4 << "0" << parameterUuid();
+        << "0" << parameterUuid();
 
     QTest::newRow("Parameters in left bound equation") <<
         "module test #(\n"
@@ -575,7 +569,7 @@ void tst_VerilogImporter::testParameterInPortDeclaration_data()
         "   input [data_bits + addr_bits:0] bus\n"
         ");\n"
         "endmodule"
-        << 32 + 8 << 0 << parameterUuid() + " \\+ " + parameterUuid() << "0";
+        << parameterUuid() + " \\+ " + parameterUuid() << "0";
 
     QTest::newRow("Parameters and constants in left bound equation") <<
         "module test #(\n"
@@ -585,7 +579,7 @@ void tst_VerilogImporter::testParameterInPortDeclaration_data()
         "   input [data_bits ** data_bus_count - 1:0] data_bus\n"
         ");\n"
         "endmodule"
-        << 8*8*8 - 1 << 0 << parameterUuid() + " \\*\\* " + parameterUuid() + " - 1" << "0";
+        << parameterUuid() + " \\*\\* " + parameterUuid() + " - 1" << "0";
 
     QTest::newRow("Parameters in other parameters") <<
         "module test #(\n"
@@ -596,7 +590,7 @@ void tst_VerilogImporter::testParameterInPortDeclaration_data()
         "   input [port_width - 1:0] data_bus\n"
         ");\n"
         "endmodule"
-        << 8 + 4 - 1 << 0 << parameterUuid() + " - 1" << "0";
+        << parameterUuid() + " - 1" << "0";
 
     QTest::newRow("Parameters with similar names") <<
         "module test #(\n"
@@ -606,7 +600,7 @@ void tst_VerilogImporter::testParameterInPortDeclaration_data()
         "   input [data_bits-1:0] data_bus\n"
         ");\n"
         "endmodule"
-        << 4 - 1 << 0 << parameterUuid() + "-1" << "0";
+        << parameterUuid() + "-1" << "0";
 }
 
 //-----------------------------------------------------------------------------
@@ -647,10 +641,10 @@ void tst_VerilogImporter::testParameterInParameterArray()
     QSharedPointer<ModelParameter> second = importComponent_->getModelParameters()->at(1);
     QSharedPointer<ModelParameter> last = importComponent_->getModelParameters()->last();
 
-    QCOMPARE(last->getAttribute("kactus2:arrayLeft"), first->getValueId() + "-1");
-    QCOMPARE(last->getAttribute("kactus2:arrayRight"), second->getValueId());
-    QCOMPARE(last->getBitWidthLeft(), QString("7"));
-    QCOMPARE(last->getBitWidthRight(), QString("0"));
+    QCOMPARE(last->getArrayLeft(), first->getValueId() + "-1");
+    QCOMPARE(last->getArrayRight(), second->getValueId());
+    QCOMPARE(last->getVectorLeft(), QString("7"));
+    QCOMPARE(last->getVectorRight(), QString("0"));
     QCOMPARE(first->getUsageCount(), 1);
     QCOMPARE(second->getUsageCount(), 1);
 }
@@ -672,10 +666,10 @@ void tst_VerilogImporter::testParameterInParameterBitWidth()
     QSharedPointer<ModelParameter> second = importComponent_->getModelParameters()->at(1);
     QSharedPointer<ModelParameter> last = importComponent_->getModelParameters()->last();
 
-    QCOMPARE(last->getAttribute("kactus2:arrayLeft"), QString(""));
-    QCOMPARE(last->getAttribute("kactus2:arrayRight"), QString(""));
-    QCOMPARE(last->getBitWidthLeft(), first->getValueId() + "-1");
-    QCOMPARE(last->getBitWidthRight(), second->getValueId());
+    QCOMPARE(last->getArrayLeft(), QString(""));
+    QCOMPARE(last->getArrayRight(), QString(""));
+    QCOMPARE(last->getVectorLeft(), first->getValueId() + "-1");
+    QCOMPARE(last->getVectorRight(), second->getValueId());
 
     QCOMPARE(first->getUsageCount(), 1);
     QCOMPARE(second->getUsageCount(), 1);
@@ -706,10 +700,10 @@ void tst_VerilogImporter::testMacroInParameterArray()
 
     QSharedPointer<ModelParameter> parameter = importComponent_->getModelParameters()->first();
 
-    QCOMPARE(parameter->getAttribute("kactus2:arrayLeft"), sizeMacro->getValueId());
-    QCOMPARE(parameter->getAttribute("kactus2:arrayRight"), offsetMacro->getValueId());
-    QCOMPARE(parameter->getBitWidthLeft(), QString("7"));
-    QCOMPARE(parameter->getBitWidthRight(), QString("0"));
+    QCOMPARE(parameter->getArrayLeft(), sizeMacro->getValueId());
+    QCOMPARE(parameter->getArrayRight(), offsetMacro->getValueId());
+    QCOMPARE(parameter->getVectorLeft(), QString("7"));
+    QCOMPARE(parameter->getVectorRight(), QString("0"));
 
     QCOMPARE(sizeMacro->getUsageCount(), 1);
     QCOMPARE(offsetMacro->getUsageCount(), 1);
@@ -739,10 +733,10 @@ void tst_VerilogImporter::testMacroInParameterBitWidth()
 
     QSharedPointer<ModelParameter> parameter = importComponent_->getModelParameters()->first();
 
-    QCOMPARE(parameter->getAttribute("kactus2:arrayLeft"), QString("0"));
-    QCOMPARE(parameter->getAttribute("kactus2:arrayRight"), QString("2"));
-    QCOMPARE(parameter->getBitWidthLeft(), leftMacro->getValueId());
-    QCOMPARE(parameter->getBitWidthRight(), rightMacro->getValueId());
+    QCOMPARE(parameter->getArrayLeft(), QString("0"));
+    QCOMPARE(parameter->getArrayRight(), QString("2"));
+    QCOMPARE(parameter->getVectorLeft(), leftMacro->getValueId());
+    QCOMPARE(parameter->getVectorRight(), rightMacro->getValueId());
 
     QCOMPARE(leftMacro->getUsageCount(), 1);
     QCOMPARE(rightMacro->getUsageCount(), 1);
@@ -817,7 +811,7 @@ void tst_VerilogImporter::testParameterNotFoundInFileIsRemoved()
 
     QCOMPARE(importComponent_->getModelParameters()->count(), 1);
     QSharedPointer<ModelParameter> importedParameter = importComponent_->getModelParameters()->first();
-    QCOMPARE(importedParameter->getName(), QString("dataWidth_g"));
+    QCOMPARE(importedParameter->name(), QString("dataWidth_g"));
 }
 
 //-----------------------------------------------------------------------------

@@ -722,7 +722,7 @@ void tst_VHDLimport::testParameterNotFoundInFileIsRemoved()
 
     QCOMPARE(importComponent_->getModelParameters()->count(), 1);
     QSharedPointer<ModelParameter> importedParameter = importComponent_->getModelParameters()->first();
-    QCOMPARE(importedParameter->getName(), QString("dataWidth_g"));
+    QCOMPARE(importedParameter->name(), QString("dataWidth_g"));
 }
 
 //-----------------------------------------------------------------------------

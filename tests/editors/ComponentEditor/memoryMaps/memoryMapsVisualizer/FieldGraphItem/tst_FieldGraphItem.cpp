@@ -55,7 +55,7 @@ void tst_FieldGraphItem::testConstructor()
     FieldGraphItem* FieldItem = new FieldGraphItem(testField, noParser, 0);
     FieldItem->refresh();
 
-    QCOMPARE(FieldItem->getName(), QString("testField"));
+    QCOMPARE(FieldItem->name(), QString("testField"));
     QCOMPARE(FieldItem->getOffset(), quint64(0));
     QCOMPARE(FieldItem->getLastAddress(), quint64(1));
     QCOMPARE(FieldItem->getDisplayOffset(), quint64(1));

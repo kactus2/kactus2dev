@@ -199,18 +199,18 @@ void tst_QuartusGenerator::testGeneratorWithDesignContainingTopComponentVerilogF
     topComponent_->addFileSet(topComponentFileSet);
 
     View* quartusTopView (new View("quartusTopView"));
-    quartusTopView->addFileSetRef(topComponentFileSet->getName());
+    quartusTopView->addFileSetRef(topComponentFileSet->name());
     topComponent_->addView(quartusTopView);
 
     View* quartusTestView (new View("quartusView"));
     quartusTestView->setHierarchyRef(*quartusDesign->getVlnv());
-    quartusTestView->setTopLevelView(quartusTopView->getName());
+    quartusTestView->setTopLevelView(quartusTopView->name());
     topComponent_->addView(quartusTestView);
 
     QString currentTime = QDateTime::currentDateTime().toString(QString("hh:mm:ss dd.MM.yyyy"));
     quartusGenerator_->replaceTime(currentTime);
 
-    quartusGenerator_->parseFiles(topComponent_, quartusTestView->getName());
+    quartusGenerator_->parseFiles(topComponent_, quartusTestView->name());
     quartusGenerator_->generateProject(targetPath_, targetEntity_, generatorInformation_);
 
     QString expectedProjectOutput( getQuartusHeader(currentTime) + 
@@ -247,7 +247,7 @@ void tst_QuartusGenerator::testGeneratorWithDesignContainingInstances()
     componentOne->addFileSet(componentOneFileset);
 
     View* componentOneView (new View("vhdlView"));
-    componentOneView->addFileSetRef(componentOneFileset->getName());
+    componentOneView->addFileSetRef(componentOneFileset->name());
     componentOne->addView(componentOneView);
 
     QSharedPointer<Component> componentTwo = createTestComponent("componentTwo");
@@ -259,7 +259,7 @@ void tst_QuartusGenerator::testGeneratorWithDesignContainingInstances()
     componentTwo->addFileSet(componentTwoFileset);
 
     View* componentTwoView (new View("qipView"));
-    componentTwoView->addFileSetRef(componentTwoFileset->getName());
+    componentTwoView->addFileSetRef(componentTwoFileset->name());
     componentTwo->addView(componentTwoView);
 
     QSharedPointer<Component> componentThree = createTestComponent("componentThree");
@@ -271,7 +271,7 @@ void tst_QuartusGenerator::testGeneratorWithDesignContainingInstances()
     componentThree->addFileSet(componentThreeFileSet);
 
     View* componentThreeView (new View("sdcView"));
-    componentThreeView->addFileSetRef(componentThreeFileSet->getName());
+    componentThreeView->addFileSetRef(componentThreeFileSet->name());
     componentThree->addView(componentThreeView);
 
     QList<QSharedPointer<Component> > componentsInDesign;
@@ -292,18 +292,18 @@ void tst_QuartusGenerator::testGeneratorWithDesignContainingInstances()
     topComponent_->addFileSet(topComponentFileSet);
 
     View* quartusTopLevelView (new View("quartusTopView"));
-    quartusTopLevelView->addFileSetRef(topComponentFileSet->getName());
+    quartusTopLevelView->addFileSetRef(topComponentFileSet->name());
     topComponent_->addView(quartusTopLevelView);
 
     View* quartusDesignView (new View("quartusView"));
     quartusDesignView->setHierarchyRef(*quartusDesignConf->getVlnv());
-    quartusDesignView->setTopLevelView(quartusTopLevelView->getName());
+    quartusDesignView->setTopLevelView(quartusTopLevelView->name());
     topComponent_->addView(quartusDesignView);
 
     QString currentTime = QDateTime::currentDateTime().toString(QString("hh:mm:ss dd.MM.yyyy"));
     quartusGenerator_->replaceTime(currentTime);
 
-    quartusGenerator_->parseFiles(topComponent_, quartusDesignView->getName());
+    quartusGenerator_->parseFiles(topComponent_, quartusDesignView->name());
     quartusGenerator_->generateProject(targetPath_, targetEntity_, generatorInformation_);
 
     QString expectedProjectOutput( getQuartusHeader(currentTime) + 
@@ -346,7 +346,7 @@ void tst_QuartusGenerator::testGeneratorWithConfiguredViews()
     componentOne->addFileSet(componentOneFileset);
 
     View* componentOneView (new View("vhdlView"));
-    componentOneView->addFileSetRef(componentOneFileset->getName());
+    componentOneView->addFileSetRef(componentOneFileset->name());
     componentOne->addView(componentOneView);
 
     QSharedPointer<QFile> componentOneVerilogFile = createEmptyFile("changingWithView.v");
@@ -358,7 +358,7 @@ void tst_QuartusGenerator::testGeneratorWithConfiguredViews()
     componentOne->addFileSet(componentOneOtherFileset);
 
     View* componentOneOtherView (new View("restView"));
-    componentOneOtherView->addFileSetRef(componentOneOtherFileset->getName());
+    componentOneOtherView->addFileSetRef(componentOneOtherFileset->name());
     componentOne->addView(componentOneOtherView);
 
     QSharedPointer<Component> componentTwo = createTestComponent("componentTwo");
@@ -370,7 +370,7 @@ void tst_QuartusGenerator::testGeneratorWithConfiguredViews()
     componentTwo->addFileSet(componentTwoFileset);
 
     View* componentTwoView (new View("qipView"));
-    componentTwoView->addFileSetRef(componentTwoFileset->getName());
+    componentTwoView->addFileSetRef(componentTwoFileset->name());
     componentTwo->addView(componentTwoView);
 
     View* componentTwoOtherView (new View("componentTwoEmptyView"));
@@ -393,7 +393,7 @@ void tst_QuartusGenerator::testGeneratorWithConfiguredViews()
     QString currentTime = QDateTime::currentDateTime().toString(QString("hh:mm:ss dd.MM.yyyy"));
     quartusGenerator_->replaceTime(currentTime);
 
-    quartusGenerator_->parseFiles(topComponent_, quartusDesignView->getName());
+    quartusGenerator_->parseFiles(topComponent_, quartusDesignView->name());
     quartusGenerator_->generateProject(targetPath_, targetEntity_, generatorInformation_);
 
     QString expectedProjectOutput( getQuartusHeader(currentTime) + 
@@ -454,7 +454,7 @@ void tst_QuartusGenerator::testGeneratorInInstancesWithoutActiveViews()
     componentTwo->addFileSet(componentTwoOtherFileset);
 
     View* componentTwoView (new View("qipView"));
-    componentTwoView->addFileSetRef(componentTwoFileset->getName());
+    componentTwoView->addFileSetRef(componentTwoFileset->name());
     componentTwo->addView(componentTwoView);
 
     View* componentTwoOtherView (new View("componentTwoEmptyView"));
@@ -490,7 +490,7 @@ void tst_QuartusGenerator::testGeneratorInInstancesWithoutActiveViews()
     QString currentTime = QDateTime::currentDateTime().toString(QString("hh:mm:ss dd.MM.yyyy"));
     quartusGenerator_->replaceTime(currentTime);
 
-    quartusGenerator_->parseFiles(topComponent_, quartusDesignView->getName());
+    quartusGenerator_->parseFiles(topComponent_, quartusDesignView->name());
     quartusGenerator_->generateProject(targetPath_, targetEntity_, generatorInformation_);
 
     QString expectedProjectOutput( getQuartusHeader(currentTime) + 
@@ -655,7 +655,7 @@ QSharedPointer<DesignConfiguration> tst_QuartusGenerator::createTestDesignConfig
         if (referencedComponent && referencedComponent->viewCount() > 0)
         {
             newDesignConfiguration->addViewConfiguration(currentInstance.getInstanceName(),
-                referencedComponent->getViews().at(0)->getName());
+                referencedComponent->getViews().at(0)->name());
         }
     }
 
@@ -706,7 +706,7 @@ void tst_QuartusGenerator::setViewOverridesForDesignConfiguration(
 
         if (referencedComponent && referencedComponent->viewCount() > 1)
         {
-            viewOverrides.insert(instance.getUuid(), referencedComponent->getViews().at(1)->getName());
+            viewOverrides.insert(instance.getUuid(), referencedComponent->getViews().at(1)->name());
         }
     }
 

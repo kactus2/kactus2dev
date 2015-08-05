@@ -183,12 +183,12 @@ void tst_VerilogPortParser::testVerilog2001PortIsParsed()
 
     QSharedPointer<Port> createdPort = importComponent_->getPorts().first();
 
-    QCOMPARE(createdPort->getName(), expectedPortName);
+    QCOMPARE(createdPort->name(), expectedPortName);
     QCOMPARE(createdPort->getTypeName(), expectedType);
     QCOMPARE(createdPort->getDirection(), expectedDirection);
     QCOMPARE(createdPort->getLeftBound(), expectedLeft);
     QCOMPARE(createdPort->getRightBound(), expectedRight);
-    QCOMPARE(createdPort->getDescription(), expectedDescription);
+    QCOMPARE(createdPort->description(), expectedDescription);
 }
 
 //-----------------------------------------------------------------------------
@@ -290,12 +290,12 @@ void tst_VerilogPortParser::testVerilog1995PortIsParsed()
 
     QSharedPointer<Port> createdPort = importComponent_->getPorts().first();
 
-    QCOMPARE(createdPort->getName(), expectedPortName);
+    QCOMPARE(createdPort->name(), expectedPortName);
     QCOMPARE(createdPort->getTypeName(), QString(""));
     QCOMPARE(createdPort->getDirection(), expectedDirection);
     QCOMPARE(createdPort->getLeftBound(), expectedLeft);
     QCOMPARE(createdPort->getRightBound(), expectedRight);
-    QCOMPARE(createdPort->getDescription(), expectedDescription);
+    QCOMPARE(createdPort->description(), expectedDescription);
 }
 
 //-----------------------------------------------------------------------------
@@ -649,8 +649,6 @@ void tst_VerilogPortParser::testPortsInSubmodulesAreNotParsed_data()
 void tst_VerilogPortParser::testEquationAsPortBound()
 {
     QFETCH(QString, fileContent);
-    QFETCH(int, expectedLeft);
-    QFETCH(int, expectedRight);
     QFETCH(QString, expectedLeftExpression);
     QFETCH(QString, expectedRightExpression);
 
@@ -659,8 +657,6 @@ void tst_VerilogPortParser::testEquationAsPortBound()
     QVERIFY2(importComponent_->getPorts().count() != 0, "No ports parsed from input.");
 
     QSharedPointer<Port> createdPort = importComponent_->getPorts().first();
-    QCOMPARE(createdPort->getLeftBound(), expectedLeft);
-    QCOMPARE(createdPort->getRightBound(), expectedRight);
     QCOMPARE(createdPort->getLeftBoundExpression(), expectedLeftExpression);
     QCOMPARE(createdPort->getRightBoundExpression(), expectedRightExpression);
 }
@@ -671,8 +667,6 @@ void tst_VerilogPortParser::testEquationAsPortBound()
 void tst_VerilogPortParser::testEquationAsPortBound_data()
 {
     QTest::addColumn<QString>("fileContent");
-    QTest::addColumn<int>("expectedLeft");
-    QTest::addColumn<int>("expectedRight");
     QTest::addColumn<QString>("expectedLeftExpression");
     QTest::addColumn<QString>("expectedRightExpression");
 
@@ -681,49 +675,49 @@ void tst_VerilogPortParser::testEquationAsPortBound_data()
         "    input [2-1:0] data\n"
         ");\n"
         "endmodule\n"
-        << 1 << 0 << "2-1" << "0";
+        << "2-1" << "0";
 
     QTest::newRow("Both bounds with multiply") <<
         "module test(\n"
         "    input [2*4-1:2*1] data\n"
         ");\n"
         "endmodule\n"
-        << 7 << 2 << "2*4-1" << "2*1";
+        << "2*4-1" << "2*1";
 
     QTest::newRow("Power of two") <<
         "module test(\n"
         "    input [2**4:0] data\n"
         ");\n"
         "endmodule\n"
-        << 16 << 0 << "2**4" << "0";
+        << "2**4" << "0";
 
     QTest::newRow("Power of zero") <<
         "module test(\n"
         "    input [8**0:0] data\n"
         ");\n"
         "endmodule\n"
-        << 1 << 0 << "8**0" << "0";
+        << "8**0" << "0";
 
     QTest::newRow("Multiple operations in mixed order") <<
         "module test(\n"
         "    input [32-2**4+2*4:0] data\n"
         ");\n"
         "endmodule\n"
-        << 24 << 0 << "32-2**4+2*4" << "0";
+        << "32-2**4+2*4" << "0";
 
     QTest::newRow("Division") <<
         "module test(\n"
         "    input [32/2:0/2] data\n"
         ");\n"
         "endmodule\n"
-        << 16 << 0 << "32/2" << "0/2";
+        << "32/2" << "0/2";
 
     QTest::newRow("Division by zero results zero") <<
         "module test(\n"
         "    input [32/0:0] data\n"
         ");\n"
         "endmodule\n"
-        << 0 << 0 << "32/0" << "0";
+        << "32/0" << "0";
 }
 
 //-----------------------------------------------------------------------------
@@ -828,8 +822,6 @@ void tst_VerilogPortParser::testMacroInBoundsIsParsed()
     importComponent_->getParameters()->append(macroDefinition);
 
     QFETCH(QString, fileContent);
-    QFETCH(int, expectedLeft);
-    QFETCH(int, expectedRight);
     QFETCH(QString, expectedLeftExpression);
     QFETCH(QString, expectedRightExpression);
 
@@ -838,8 +830,6 @@ void tst_VerilogPortParser::testMacroInBoundsIsParsed()
     QVERIFY2(importComponent_->getPorts().count() != 0, "No ports parsed from input.");
 
     QSharedPointer<Port> createdPort = importComponent_->getPorts().first();
-    QCOMPARE(createdPort->getLeftBound(), expectedLeft);
-    QCOMPARE(createdPort->getRightBound(), expectedRight);
     QCOMPARE(createdPort->getLeftBoundExpression(), expectedLeftExpression);
     QCOMPARE(createdPort->getRightBoundExpression(), expectedRightExpression);
 }
@@ -850,8 +840,6 @@ void tst_VerilogPortParser::testMacroInBoundsIsParsed()
 void tst_VerilogPortParser::testMacroInBoundsIsParsed_data()
 {
     QTest::addColumn<QString>("fileContent");
-    QTest::addColumn<int>("expectedLeft");
-    QTest::addColumn<int>("expectedRight");
     QTest::addColumn<QString>("expectedLeftExpression");
     QTest::addColumn<QString>("expectedRightExpression");
 
@@ -860,28 +848,28 @@ void tst_VerilogPortParser::testMacroInBoundsIsParsed_data()
         "    input [`WIDTH:0] data\n"
         ");\n"
         "endmodule\n"
-        << 16 << 0 << "macroId" << "0";
+        << "macroId" << "0";
 
     QTest::newRow("Macro in left vector expression") <<
         "module test(\n"
         "    input [8+`WIDTH:0] data\n"
         ");\n"
         "endmodule\n"
-        << 24 << 0 << "8+macroId" << "0";
+        << "8+macroId" << "0";
 
     QTest::newRow("Macro in right vector bound") <<
         "module test(\n"
         "    input [0:`WIDTH] data\n"
         ");\n"
         "endmodule\n"
-        << 0 << 16 << "0" << "macroId";
+        << "0" << "macroId";
 
     QTest::newRow("Macro in right vector expression") <<
         "module test(\n"
         "    input [0:2*`WIDTH] data\n"
         ");\n"
         "endmodule\n"
-        << 0 << 32 << "0" << "2*macroId";
+        << "0" << "2*macroId";
 }
 
 QTEST_APPLESS_MAIN(tst_VerilogPortParser)

@@ -27,7 +27,7 @@
 #include <IPXACTmodels/fileset.h>
 #include <IPXACTmodels/model.h>
 #include <IPXACTmodels/modelparameter.h>
-#include <IPXACTmodels/parameter.h>
+#include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/port.h>
 #include <IPXACTmodels/PortMap.h>
 #include <IPXACTmodels/view.h>
@@ -481,12 +481,12 @@ void tst_documentGenerator::testModelParametersWrittenWithOnlyTopComponent()
                     "\t\t\t\t\t<th>Description</th>\n"
                 "\t\t\t\t</tr>\n"
                 "\t\t\t\t<tr>\n"
-                    "\t\t\t\t\t<td>" + modelParameter->getName() + "</td>\n"
+                    "\t\t\t\t\t<td>" + modelParameter->name() + "</td>\n"
                     "\t\t\t\t\t<td>" + modelParameter->getDataType() + "</td>\n"
                     "\t\t\t\t\t<td>" + modelParameter->getValue() + "</td>\n"
-                    "\t\t\t\t\t<td>" + modelParameter->getAttribute("kactus2:arrayLeft") + "</td>\n"
-                    "\t\t\t\t\t<td>" + modelParameter->getAttribute("kactus2:arrayRight") + "</td>\n"
-                    "\t\t\t\t\t<td>" + modelParameter->getDescription() + "</td>\n"
+                    "\t\t\t\t\t<td>" + modelParameter->getArrayLeft() + "</td>\n"
+                    "\t\t\t\t\t<td>" + modelParameter->getArrayRight() + "</td>\n"
+                    "\t\t\t\t\t<td>" + modelParameter->description() + "</td>\n"
                 "\t\t\t\t</tr>\n"
             "\t\t\t</table>\n");
 
@@ -562,20 +562,20 @@ void tst_documentGenerator::testModelParametersWithReferences()
         "\t\t\t\t\t<th>Description</th>\n"
         "\t\t\t\t</tr>\n"
         "\t\t\t\t<tr>\n"
-        "\t\t\t\t\t<td>" + modelParameter->getName() + "</td>\n"
+        "\t\t\t\t\t<td>" + modelParameter->name() + "</td>\n"
         "\t\t\t\t\t<td>" + modelParameter->getDataType() + "</td>\n"
         "\t\t\t\t\t<td>" + modelParameter->getValue() + "</td>\n"
-        "\t\t\t\t\t<td>" + modelParameter->getAttribute("kactus2:arrayLeft") + "</td>\n"
-        "\t\t\t\t\t<td>" + modelParameter->getAttribute("kactus2:arrayRight") + "</td>\n"
-        "\t\t\t\t\t<td>" + modelParameter->getDescription() + "</td>\n"
+        "\t\t\t\t\t<td>" + modelParameter->getArrayLeft() + "</td>\n"
+        "\t\t\t\t\t<td>" + modelParameter->getArrayRight() + "</td>\n"
+        "\t\t\t\t\t<td>" + modelParameter->description() + "</td>\n"
         "\t\t\t\t</tr>\n"
         "\t\t\t\t<tr>\n"
-        "\t\t\t\t\t<td>" + refParameter->getName() + "</td>\n"
+        "\t\t\t\t\t<td>" + refParameter->name() + "</td>\n"
         "\t\t\t\t\t<td>" + refParameter->getDataType() + "</td>\n"
         "\t\t\t\t\t<td>modelParam</td>\n"
         "\t\t\t\t\t<td>modelParam</td>\n"
         "\t\t\t\t\t<td>refParam</td>\n"
-        "\t\t\t\t\t<td>" + refParameter->getDescription() + "</td>\n"
+        "\t\t\t\t\t<td>" + refParameter->description() + "</td>\n"
         "\t\t\t\t</tr>\n"
         "\t\t\t</table>\n");
 
@@ -663,18 +663,18 @@ void tst_documentGenerator::testParametersWrittenWithOnlyTopComponent()
         "\t\t\t\t\t<th>Description</th>\n"
         "\t\t\t\t</tr>\n"
         "\t\t\t\t<tr>\n"
-        "\t\t\t\t\t<td>" + parameter->getName() + "</td>\n"
+        "\t\t\t\t\t<td>" + parameter->name() + "</td>\n"
         "\t\t\t\t\t<td>" + parameter->getValue() + "</td>\n"
-        "\t\t\t\t\t<td>" + parameter->getAttribute("kactus2:arrayLeft") + "</td>\n"
-        "\t\t\t\t\t<td>" + parameter->getAttribute("kactus2:arrayRight") + "</td>\n"
-        "\t\t\t\t\t<td>" + parameter->getDescription() + "</td>\n"
+        "\t\t\t\t\t<td>" + parameter->getArrayLeft() + "</td>\n"
+        "\t\t\t\t\t<td>" + parameter->getArrayRight() + "</td>\n"
+        "\t\t\t\t\t<td>" + parameter->description() + "</td>\n"
         "\t\t\t\t</tr>\n"
         "\t\t\t\t<tr>\n"
-        "\t\t\t\t\t<td>" + refParameter->getName() + "</td>\n"
+        "\t\t\t\t\t<td>" + refParameter->name() + "</td>\n"
         "\t\t\t\t\t<td>parameter</td>\n"
         "\t\t\t\t\t<td></td>\n"
         "\t\t\t\t\t<td></td>\n"
-        "\t\t\t\t\t<td>" + refParameter->getDescription() + "</td>\n"
+        "\t\t\t\t\t<td>" + refParameter->description() + "</td>\n"
         "\t\t\t\t</tr>\n"
         "\t\t\t</table>"
         );
@@ -742,9 +742,9 @@ void tst_documentGenerator::testMemoryMapsWrittenWithTopComponent()
     QString expectedOutput(
         "\t\t<h2><a id=\"" + topComponent_->getVlnv()->toString() + ".memoryMaps\">0.1 Memory maps</a></h2>\n"
         "\t\t\t<h3><a id=\""+ topComponent_->getVlnv()->toString() + ".memoryMap." +
-        memoryMap->getName() + "\">0.1.1 " + memoryMap->getName() + "</a></h3>\n"
+        memoryMap->name() + "\">0.1.1 " + memoryMap->name() + "</a></h3>\n"
         "\t\t\t<p>\n"
-        "\t\t\t" + getIndentString() + "<strong>Description:</strong> " + memoryMap->getDescription() + "<br>\n"
+        "\t\t\t" + getIndentString() + "<strong>Description:</strong> " + memoryMap->description() + "<br>\n"
         "\t\t\t" + getIndentString() + "<strong>Address unit bits (AUB):</strong> " + 
         QString::number(memoryMap->getAddressUnitBits()) + "<br>\n"
         "\t\t\t</p>"
@@ -813,12 +813,12 @@ void tst_documentGenerator::testAddressBlocksWrittenWithTopComponent()
     
     QString expectedOutput(
         "\t\t\t<h3><a id=\"" + topComponent_->getVlnv()->toString() + ".addressBlock." +
-        testAddressBlock->getName() + "\">0.1.1.1 " + testAddressBlock->getName() + "</a></h3>\n"
+        testAddressBlock->name() + "\">0.1.1.1 " + testAddressBlock->name() + "</a></h3>\n"
         "\t\t\t<p>\n"
-        "\t\t\t" + getIndentString() + "<strong>Description:</strong> " + testAddressBlock->getDescription() +
+        "\t\t\t" + getIndentString() + "<strong>Description:</strong> " + testAddressBlock->description() +
         "<br>\n"
         "\t\t\t</p>\n"
-        "\t\t\t" + getTableString() + "List of values in " + testAddressBlock->getName() + ".\">\n"
+        "\t\t\t" + getTableString() + "List of values in " + testAddressBlock->name() + ".\">\n"
         "\t\t\t\t<tr>\n"
         "\t\t\t\t\t<th>Usage</th>\n"
         "\t\t\t\t\t<th>Base address [AUB]</th>\n"
@@ -901,12 +901,12 @@ void tst_documentGenerator::testExpressionsInAddressBlocks()
 
     QString expectedOutput(
         "\t\t\t<h3><a id=\"" + topComponent_->getVlnv()->toString() + ".addressBlock." +
-        testAddressBlock->getName() + "\">0.1.1.1 " + testAddressBlock->getName() + "</a></h3>\n"
+        testAddressBlock->name() + "\">0.1.1.1 " + testAddressBlock->name() + "</a></h3>\n"
         "\t\t\t<p>\n"
-        "\t\t\t" + getIndentString() + "<strong>Description:</strong> " + testAddressBlock->getDescription() +
+        "\t\t\t" + getIndentString() + "<strong>Description:</strong> " + testAddressBlock->description() +
         "<br>\n"
         "\t\t\t</p>\n"
-        "\t\t\t" + getTableString() + "List of values in " + testAddressBlock->getName() + ".\">\n"
+        "\t\t\t" + getTableString() + "List of values in " + testAddressBlock->name() + ".\">\n"
         "\t\t\t\t<tr>\n"
         "\t\t\t\t\t<th>Usage</th>\n"
         "\t\t\t\t\t<th>Base address [AUB]</th>\n"
@@ -983,12 +983,12 @@ void tst_documentGenerator::testRegistersWrittenWithTopComponent()
     generator = 0;
 
     QString expectedOutput(
-        "\t\t\t<h3><a id=\"" + topComponent_->getVlnv()->toString() + ".register." + testRegister->getName() +
-        "\">0.1.1.1.1 " + testRegister->getName() + "</a></h3>\n"
+        "\t\t\t<h3><a id=\"" + topComponent_->getVlnv()->toString() + ".register." + testRegister->name() +
+        "\">0.1.1.1.1 " + testRegister->name() + "</a></h3>\n"
         "\t\t\t<p>\n"
-        "\t\t\t" + getIndentString() + "<strong>Description:</strong> " + testRegister->getDescription() + "<br>\n"
+        "\t\t\t" + getIndentString() + "<strong>Description:</strong> " + testRegister->description() + "<br>\n"
         "\t\t\t</p>\n"
-        "\t\t\t" + getTableString() + "List of values in " + testRegister->getName() + ".\">\n"
+        "\t\t\t" + getTableString() + "List of values in " + testRegister->name() + ".\">\n"
         "\t\t\t\t<tr>\n"
         "\t\t\t\t\t<th>Offset [AUB]</th>\n"
         "\t\t\t\t\t<th>Size [bits]</th>\n"
@@ -1066,8 +1066,8 @@ void tst_documentGenerator::testFieldsWrittenWithTopComponent()
     generator = 0;
 
     QString expectedOutput(
-        "\t\t\t<h4>Register " + fieldRegister->getName() + " contains the following fields:</h4>\n"
-        "\t\t\t" + getTableString() + "List of fields contained within register " + fieldRegister->getName() +
+        "\t\t\t<h4>Register " + fieldRegister->name() + " contains the following fields:</h4>\n"
+        "\t\t\t" + getTableString() + "List of fields contained within register " + fieldRegister->name() +
         ".\">\n"
         "\t\t\t\t<tr>\n"
         "\t\t\t\t\t<th>Field name</th>\n"
@@ -1078,13 +1078,13 @@ void tst_documentGenerator::testFieldsWrittenWithTopComponent()
         "\t\t\t\t\t<th>Description</th>\n"
         "\t\t\t\t</tr>\n"
         "\t\t\t\t<tr>\n"
-        "\t\t\t\t\t<td><a id=\"" + topComponent_->getVlnv()->toString() + ".field." + testField->getName() +
-        "\">" + testField->getName() + "</a></td>\n"
+        "\t\t\t\t\t<td><a id=\"" + topComponent_->getVlnv()->toString() + ".field." + testField->name() +
+        "\">" + testField->name() + "</a></td>\n"
         "\t\t\t\t\t<td>" + testField->getBitOffsetExpression() + "</td>\n"
         "\t\t\t\t\t<td>" + testField->getBitWidthExpression() + "</td>\n"
         "\t\t\t\t\t<td>" + General::bool2Str(testField->getVolatile()) + "</td>\n"
         "\t\t\t\t\t<td>" + General::access2Str(testField->getAccess()) + "</td>\n"
-        "\t\t\t\t\t<td>" + testField->getDescription() + "</td>\n"
+        "\t\t\t\t\t<td>" + testField->description() + "</td>\n"
         "\t\t\t\t</tr>\n"
         "\t\t\t</table>\n"
         );
@@ -1161,19 +1161,19 @@ void tst_documentGenerator::testMemoryMapToFieldWrittenWithTopComponent()
 
     QString expectedOutput(
         "\t\t<h2><a id=\"" + topComponent_->getVlnv()->toString() + ".memoryMaps\">0.1 Memory maps</a></h2>\n"
-        "\t\t\t<h3><a id=\"" + topComponent_->getVlnv()->toString() + ".memoryMap." + testMemoryMap->getName() +
-        "\">0.1.1 " + testMemoryMap->getName() + "</a></h3>\n"
+        "\t\t\t<h3><a id=\"" + topComponent_->getVlnv()->toString() + ".memoryMap." + testMemoryMap->name() +
+        "\">0.1.1 " + testMemoryMap->name() + "</a></h3>\n"
         "\t\t\t<p>\n"
         "\t\t\t" + getIndentString() + "<strong>Address unit bits (AUB):</strong> " +
         QString::number(testMemoryMap->getAddressUnitBits()) + "<br>\n"
         "\t\t\t</p>\n"
         "\t\t\t<h3><a id=\"" + topComponent_->getVlnv()->toString() + ".addressBlock." +
-        testAddressBlock->getName() + "\">0.1.1.1 " + testAddressBlock->getName() + "</a></h3>\n"
+        testAddressBlock->name() + "\">0.1.1.1 " + testAddressBlock->name() + "</a></h3>\n"
         "\t\t\t<p>\n"
-        "\t\t\t" + getIndentString() + "<strong>Description:</strong> " + testAddressBlock->getDescription() +
+        "\t\t\t" + getIndentString() + "<strong>Description:</strong> " + testAddressBlock->description() +
         "<br>\n"
         "\t\t\t</p>\n"
-        "\t\t\t" + getTableString() + "List of values in " + testAddressBlock->getName() + ".\">\n"
+        "\t\t\t" + getTableString() + "List of values in " + testAddressBlock->name() + ".\">\n"
         "\t\t\t\t<tr>\n"
         "\t\t\t\t\t<th>Usage</th>\n"
         "\t\t\t\t\t<th>Base address [AUB]</th>\n"
@@ -1191,12 +1191,12 @@ void tst_documentGenerator::testMemoryMapToFieldWrittenWithTopComponent()
         "\t\t\t\t\t<td>" + General::bool2Str(testAddressBlock->getVolatile()) + "</td>\n"
         "\t\t\t\t</tr>\n"
         "\t\t\t</table>\n"
-        "\t\t\t<h3><a id=\"" + topComponent_->getVlnv()->toString() + ".register." + testRegister->getName() +
-        "\">0.1.1.1.1 " + testRegister->getName() + "</a></h3>\n"
+        "\t\t\t<h3><a id=\"" + topComponent_->getVlnv()->toString() + ".register." + testRegister->name() +
+        "\">0.1.1.1.1 " + testRegister->name() + "</a></h3>\n"
         "\t\t\t<p>\n"
-        "\t\t\t" + getIndentString() + "<strong>Description:</strong> " + testRegister->getDescription() + "<br>\n"
+        "\t\t\t" + getIndentString() + "<strong>Description:</strong> " + testRegister->description() + "<br>\n"
         "\t\t\t</p>\n"
-        "\t\t\t" + getTableString() + "List of values in " + testRegister->getName() + ".\">\n"
+        "\t\t\t" + getTableString() + "List of values in " + testRegister->name() + ".\">\n"
         "\t\t\t\t<tr>\n"
         "\t\t\t\t\t<th>Offset [AUB]</th>\n"
         "\t\t\t\t\t<th>Size [bits]</th>\n"
@@ -1216,8 +1216,8 @@ void tst_documentGenerator::testMemoryMapToFieldWrittenWithTopComponent()
         "\t\t\t\t\t<td>" + testRegister->getRegisterMask() + "</td>\n"
         "\t\t\t\t</tr>\n"
         "\t\t\t</table>\n"
-        "\t\t\t<h4>Register " + testRegister->getName() + " contains the following fields:</h4>\n"
-        "\t\t\t" + getTableString() + "List of fields contained within register " + testRegister->getName() +
+        "\t\t\t<h4>Register " + testRegister->name() + " contains the following fields:</h4>\n"
+        "\t\t\t" + getTableString() + "List of fields contained within register " + testRegister->name() +
         ".\">\n"
         "\t\t\t\t<tr>\n"
         "\t\t\t\t\t<th>Field name</th>\n"
@@ -1229,12 +1229,12 @@ void tst_documentGenerator::testMemoryMapToFieldWrittenWithTopComponent()
         "\t\t\t\t</tr>\n"
         "\t\t\t\t<tr>\n"
         "\t\t\t\t\t<td><a id=\"" + topComponent_->getVlnv()->toString() + ".field." +
-        testField->getName() + "\">" + testField->getName() + "</a></td>\n"
+        testField->name() + "\">" + testField->name() + "</a></td>\n"
         "\t\t\t\t\t<td>" + testField->getBitOffsetExpression() + "</td>\n"
         "\t\t\t\t\t<td>" + testField->getBitWidthExpression() + "</td>\n"
         "\t\t\t\t\t<td>" + General::bool2Str(testField->getVolatile()) + "</td>\n"
         "\t\t\t\t\t<td>" + General::access2Str(testField->getAccess()) + "</td>\n"
-        "\t\t\t\t\t<td>" + testField->getDescription() + "</td>\n"
+        "\t\t\t\t\t<td>" + testField->description() + "</td>\n"
         "\t\t\t\t</tr>\n"
         "\t\t\t</table>\n"
         );
@@ -1283,8 +1283,6 @@ void tst_documentGenerator::testPortsWrittenWithOnlyTopComponent()
 
     QSharedPointer <Port> portRef = createTestPort("portRef", "ID-parameter", "4", "ID-parameter", "2",
         "ID-parameter");
-    portRef->setLeftBound(10);
-    portRef->setRightBound(4);
 
     topComponent_->addPort(portRef);
 
@@ -1322,8 +1320,8 @@ void tst_documentGenerator::testPortsWrittenWithOnlyTopComponent()
         "\t\t\t\t\t<th>Description</th>\n"
         "\t\t\t\t</tr>\n"
         "\t\t\t\t<tr>\n"
-        "\t\t\t\t\t<td><a id=\"" + topComponent_->getVlnv()->toString() + ".port." + portRef->getName() + "\">" +
-        portRef->getName() + "</a></td>\n"
+        "\t\t\t\t\t<td><a id=\"" + topComponent_->getVlnv()->toString() + ".port." + portRef->name() + "\">" +
+        portRef->name() + "</a></td>\n"
         "\t\t\t\t\t<td>" + General::direction2Str(portRef->getDirection()) + "</td>\n"
         "\t\t\t\t\t<td>" + QString::number(portRef->getPortSize()) + "</td>\n"
         "\t\t\t\t\t<td>parameter</td>\n"
@@ -1333,7 +1331,7 @@ void tst_documentGenerator::testPortsWrittenWithOnlyTopComponent()
         "\t\t\t\t\t<td>parameter</td>\n"
         "\t\t\t\t\t<td>" + portRef->getArrayLeft() + "</td>\n"
         "\t\t\t\t\t<td>parameter</td>\n"
-        "\t\t\t\t\t<td>" + portRef->getDescription() + "</td>\n"
+        "\t\t\t\t\t<td>" + portRef->description() + "</td>\n"
         "\t\t\t\t</tr>\n"
         "\t\t\t</table>\n");
 
@@ -1397,7 +1395,7 @@ void tst_documentGenerator::testBusInterfacesWrittenWithoutPorts()
 
     QString expectedOutput(
         "\t\t<h2><a id=\"" + topComponent_->getVlnv()->toString() + ".interfaces\">0.1 Bus interfaces</a></h2>\n"
-        "\t\t\t<h3>0.1.1 " + busInterface->getName() + "</h3>\n"
+        "\t\t\t<h3>0.1.1 " + busInterface->name() + "</h3>\n"
         "\t\t\t<p>\n"
         "\t\t\t" + getIndentString() + "<strong>Interface mode:</strong> " +
         General::interfaceMode2Str(busInterface->getInterfaceMode()) + "<br>\n"
@@ -1476,10 +1474,10 @@ void tst_documentGenerator::testFileSetsWrittenForTopComponent()
 
     QString expectedOutput(
         "\t\t<h2><a id=\"" + topComponent_->getVlnv()->toString() + ".fileSets\">0.1 File sets</a></h2>\n"
-        "\t\t\t<h3><a id=\"" + topComponent_->getVlnv()->toString() + ".fileSet." + testFileSet->getName() +
-        "\">0.1.1 " + testFileSet->getName() + "</a></h3>\n"
+        "\t\t\t<h3><a id=\"" + topComponent_->getVlnv()->toString() + ".fileSet." + testFileSet->name() +
+        "\">0.1.1 " + testFileSet->name() + "</a></h3>\n"
         "\t\t\t<p>\n"
-        "\t\t\t" + getIndentString() + "<strong>Description:</strong> " + testFileSet->getDescription() + "<br>\n"
+        "\t\t\t" + getIndentString() + "<strong>Description:</strong> " + testFileSet->description() + "<br>\n"
         "\t\t\t" + getIndentString() + "<strong>Identifiers:</strong> " + groups + "<br>\n"
         "\t\t\t</p>\n"
         );
@@ -1543,7 +1541,7 @@ void tst_documentGenerator::testViewsWrittenForTopComponent()
 
     QString expectedOutput(
         "\t\t<h2><a id=\"" + topComponent_->getVlnv()->toString() + ".views\">0.1 Views</a></h2>\n"
-        "\t\t\t<h3>0.1.1 View: " + flatView->getName() + "</h3>\n"
+        "\t\t\t<h3>0.1.1 View: " + flatView->name() + "</h3>\n"
         "\t\t\t<p>\n"
         "\t\t\t<strong>" + getIndentString() + "Type: </strong>non-hierarchical<br>\n"
         );
@@ -1648,8 +1646,8 @@ void tst_documentGenerator::testDesignIsWritten()
         "\t\t\t\t\t<td>" + firstInstance.getInstanceName() + "</td>\n"
         "\t\t\t\t\t<td><a href=\"#" + firstVlnv.toString(":") + "\">" + firstVlnv.toString(" - ") + "</a></td>\n"
         "\t\t\t\t\t<td>\n"
-        "\t\t\t\t\t" + targetParameter->getName() + " = " + targetParameter->getValue() + "<br>\n"
-        "\t\t\t\t\t" + referParameter->getName() + " = " + targetParameter->getName() + "\n"
+        "\t\t\t\t\t" + targetParameter->name() + " = " + targetParameter->getValue() + "<br>\n"
+        "\t\t\t\t\t" + referParameter->name() + " = " + targetParameter->name() + "\n"
         "\t\t\t\t\t</td>\n"
         "\t\t\t\t\t<td></td>\n"
         "\t\t\t\t\t<td>" + firstInstance.getDescription() + "</td>\n"
@@ -1781,8 +1779,8 @@ QSharedPointer<ModelParameter> tst_documentGenerator::createTestModelParameter(Q
     modelParameter->setValue(value);
     modelParameter->setDescription(description);
     modelParameter->setValueId(uuID);
-    modelParameter->setAttribute("kactus2:arrayLeft", arrayLeft);
-    modelParameter->setAttribute("kactus2:arrayRight", arrayRight);
+    modelParameter->setArrayLeft(arrayLeft);
+    modelParameter->setArrayRight(arrayRight);
 
     return modelParameter;
 }
@@ -1798,8 +1796,8 @@ QSharedPointer<Parameter> tst_documentGenerator::createTestParameter(QString con
     parameter->setValue(value);
     parameter->setDescription(description);
     parameter->setValueId(uuID);
-    parameter->setAttribute("kactus2:arrayLeft", arrayLeft);
-    parameter->setAttribute("kactus2:arrayRight", arrayRight);
+    parameter->setArrayLeft(arrayLeft);
+    parameter->setArrayRight(arrayRight);
 
     return parameter;
 }
@@ -1833,7 +1831,7 @@ QMap<QString, QString> tst_documentGenerator::createConfigurableElementvalues(QS
 
     foreach (QSharedPointer<Parameter> parameter, *component->getParameters())
     {
-        instanceConfigurableElementValues[parameter->getName()] =
+        instanceConfigurableElementValues[parameter->name()] =
             refExpressionFormatter->formatReferringExpression(parameter->getValue());
     }
 

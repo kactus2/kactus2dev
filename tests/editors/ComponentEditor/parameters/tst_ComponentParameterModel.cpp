@@ -22,7 +22,7 @@
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 
 #include <IPXACTmodels/component.h>
-#include <IPXACTmodels/parameter.h>
+#include <IPXACTmodels/common/Parameter.h>
 
 class tst_ComponentParameterModel : public QObject
 {

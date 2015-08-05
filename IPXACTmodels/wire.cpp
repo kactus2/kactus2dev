@@ -429,7 +429,7 @@ void Wire::setLeftBound( int leftBound ) {
 
 	// if vector is not specified then create a new vector
 	else {
-		vector_ = QSharedPointer<Vector>(new Vector(QString::number(leftBound), 0));
+		vector_ = QSharedPointer<Vector>(new Vector(QString::number(leftBound), ""));
 	}
 }
 

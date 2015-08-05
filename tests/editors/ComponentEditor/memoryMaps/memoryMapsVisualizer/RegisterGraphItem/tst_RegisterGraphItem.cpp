@@ -107,7 +107,7 @@ void tst_RegisterGraphItem::testConstructor()
     RegisterGraphItem* registerItem = new RegisterGraphItem(testRegister, noParser, addressBlockItem);
     registerItem->refresh();
 
-    QCOMPARE(registerItem->getName(), QString("testRegister"));
+    QCOMPARE(registerItem->name(), QString("testRegister"));
     QCOMPARE(registerItem->getOffset(), quint64(0));
     QCOMPARE(registerItem->getLastAddress(), quint64(0));
     QCOMPARE(registerItem->getDisplayOffset(), quint64(0));
@@ -140,7 +140,7 @@ void tst_RegisterGraphItem::testRegisterWithField()
 
     QVERIFY(fieldItem->isVisible());
     QVERIFY(!fieldItem->isConflicted());
-    QCOMPARE(fieldItem->getName(), QString("testField"));
+    QCOMPARE(fieldItem->name(), QString("testField"));
     QCOMPARE(fieldItem->pos().x(), qreal(0));
     QCOMPARE(fieldItem->pos().y(), qreal(VisualizerItem::DEFAULT_HEIGHT));
     QCOMPARE(fieldItem->getOffset(), quint64(0));
@@ -200,7 +200,7 @@ void tst_RegisterGraphItem::testFieldInSecondAddress()
 
     MemoryGapItem* emptyMSB = gaps.first();
     QVERIFY(!emptyMSB->isConflicted());
-    QCOMPARE(emptyMSB->getName(), QString("Reserved"));
+    QCOMPARE(emptyMSB->name(), QString("Reserved"));
     QCOMPARE(emptyMSB->pos().x(), qreal(0));
     QCOMPARE(emptyMSB->pos().y(), qreal(VisualizerItem::DEFAULT_HEIGHT));
     QCOMPARE(emptyMSB->getDisplayOffset(), quint64(7));
@@ -242,7 +242,7 @@ void tst_RegisterGraphItem::testEmptyAfterLastField()
 
     MemoryGapItem* emptyLSB = gaps.first();
     QVERIFY(!emptyLSB->isConflicted());
-    QCOMPARE(emptyLSB->getName(), QString("Reserved"));
+    QCOMPARE(emptyLSB->name(), QString("Reserved"));
     QCOMPARE(emptyLSB->pos().x(), fieldItem->boundingRect().right());
     QCOMPARE(emptyLSB->getDisplayOffset(), quint64(0));
     QCOMPARE(emptyLSB->getDisplayLastAddress(), quint64(0));
@@ -268,7 +268,7 @@ void tst_RegisterGraphItem::testFieldOutsideRegisterIsNotValid()
 
     MemoryGapItem* placeholderForFields = gaps.first();
     QVERIFY(!placeholderForFields->isConflicted());
-    QCOMPARE(placeholderForFields->getName(), QString("Reserved"));
+    QCOMPARE(placeholderForFields->name(), QString("Reserved"));
     QCOMPARE(placeholderForFields->pos().x(), qreal(0));
     QCOMPARE(placeholderForFields->getDisplayOffset(), quint64(7));
     QCOMPARE(placeholderForFields->getDisplayLastAddress(), quint64(0));
@@ -298,7 +298,7 @@ void tst_RegisterGraphItem::testFieldEndingOutsideRegisterIsNotValid()
 
     MemoryGapItem* placeholderForFields = gaps.first();
     QVERIFY(!placeholderForFields->isConflicted());
-    QCOMPARE(placeholderForFields->getName(), QString("Reserved"));
+    QCOMPARE(placeholderForFields->name(), QString("Reserved"));
     QCOMPARE(placeholderForFields->pos().x(), registerItem->boundingRect().width()/8);
     QCOMPARE(placeholderForFields->getDisplayOffset(), quint64(6));
     QCOMPARE(placeholderForFields->getDisplayLastAddress(), quint64(0));
@@ -332,7 +332,7 @@ void tst_RegisterGraphItem::testEmptyBetweenTwoFields()
 
     MemoryGapItem* emptySpace = gaps.first();
     QVERIFY(!emptySpace->isConflicted());
-    QCOMPARE(emptySpace->getName(), QString("Reserved"));
+    QCOMPARE(emptySpace->name(), QString("Reserved"));
     QCOMPARE(emptySpace->pos().x(), 2*registerItem->boundingRect().width()/8);
     QCOMPARE(emptySpace->getDisplayOffset(), quint64(5));
     QCOMPARE(emptySpace->getDisplayLastAddress(), quint64(3));
@@ -542,11 +542,11 @@ void tst_RegisterGraphItem::testTwoDimensional()
     secondDimension->setDimensionIndex(1);
     secondDimension->updateDisplay();
 
-    QCOMPARE(registerItem->getName(), QString("testRegister[0]"));
+    QCOMPARE(registerItem->name(), QString("testRegister[0]"));
     QCOMPARE(registerItem->getDisplayOffset(), quint64(1));
     QCOMPARE(registerItem->getDisplayLastAddress(), quint64(1));
 
-    QCOMPARE(secondDimension->getName(), QString("testRegister[1]"));
+    QCOMPARE(secondDimension->name(), QString("testRegister[1]"));
     QCOMPARE(secondDimension->getDisplayOffset(), quint64(2));
     QCOMPARE(secondDimension->getDisplayLastAddress(), quint64(2));
 
@@ -615,7 +615,7 @@ void tst_RegisterGraphItem::testExpressions()
     RegisterGraphItem* registerItem = new RegisterGraphItem(testRegister, expressionParser, addressBlockItem);
     registerItem->refresh();
 
-    QCOMPARE(registerItem->getName(), QString("testRegister[0]"));
+    QCOMPARE(registerItem->name(), QString("testRegister[0]"));
     QCOMPARE(registerItem->getDisplayOffset(), quint64(2));
     QCOMPARE(registerItem->getDisplayLastAddress(), quint64(3));
     QCOMPARE(registerItem->getBitWidth(), 16);
