@@ -15,4 +15,5 @@ CONFIG += testcase
 SUBDIRS += validators\tst_ParameterValidator.pro \
 		   validators\tst_ParameterValidator2014.pro \
 		   common\tst_ParameterWriter.pro \
-		   common\tst_ParameterReader.pro
+		   common\tst_ParameterReader.pro \
+		   DesignConfiguration\tst_DesignConfigurationWriter.pro
