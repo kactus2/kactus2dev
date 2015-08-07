@@ -58,7 +58,8 @@ NameGroup::~NameGroup()
 //-----------------------------------------------------------------------------
 // Function: NameGroup::operator=()
 //-----------------------------------------------------------------------------
-NameGroup& NameGroup::operator=( const NameGroup& other ) {
+NameGroup& NameGroup::operator=( const NameGroup& other )
+{
     if (this != &other) {
         name_ = other.name_;
         displayName_ = other.displayName_;

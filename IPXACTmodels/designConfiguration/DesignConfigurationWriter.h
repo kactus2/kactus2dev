@@ -17,6 +17,8 @@
 #include <IPXACTmodels/vlnv.h>
 #include <IPXACTmodels/ipxactmodels_global.h>
 
+#include <IPXACTmodels/common/DocumentWriter.h>
+
 #include <QObject>
 #include <QXmlStreamWriter>
 #include <QSharedPointer>
@@ -24,7 +26,7 @@
 //-----------------------------------------------------------------------------
 //! Writer class for IP-XACT Design configuration element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT DesignConfigurationWriter : public QObject
+class IPXACTMODELS_EXPORT DesignConfigurationWriter : public DocumentWriter
 {
     Q_OBJECT
 
@@ -65,52 +67,12 @@ private:
         QSharedPointer<DesignConfiguration> designConfiguration) const; 
 
     /*!
-     *  Write the xlm name space.
-     *
-     *      @param [in] writer                  The used xml writer.
-     *      @param [in] designConfiguration     The selected design configuration.
-     */
-    void writeXMLNameSpace(QXmlStreamWriter& writer, QSharedPointer<DesignConfiguration> designConfiguration) const;
-
-    /*!
-     *  Write attributes.
-     *
-     *      @param [in] writer      The used xml writer.
-     *      @param [in] attributes  Key-value pairs to be written as attributes.
-     */
-    void writeAttributes(QXmlStreamWriter& writer, QMap<QString, QString> attributes) const;
-
-    /*!
-     *  Write the vlnv of design configuration as elements.
-     *
-     *      @param [in] writer                  The used xml writer.
-     *      @param [in] designConfiguration     The selected design configuration.
-     */
-    void writeVLNVasElements(QXmlStreamWriter& writer, QSharedPointer<DesignConfiguration> designConfiguration) const;
-
-    /*!
-     *  Write the description.
-     *
-     *      @param [in] writer                  The used xml writer.
-     *      @param [in] designConfiguration     The selected design configuration.
-     */
-    void writeDescription(QXmlStreamWriter& writer, QSharedPointer<DesignConfiguration> designConfiguration) const;
-
-    /*!
      *  Write the VLNV of the design configuration's referenced design.
      *
      *      @param [in] writer              The used xml writer.
      *      @param [in] designReference     The VLNV of the referenced design.
      */
     void writeDesignReference(QXmlStreamWriter& writer, VLNV& designReference) const;
-
-    /*!
-     *  Write the VLNV as attributes.
-     *
-     *      @param [in] writer      The used xml writer.
-     *      @param [in] itemVLNV    The VLNV to be written.
-     */
-    void writeVLNVAsAttributes(QXmlStreamWriter& writer, VLNV& itemVLNV) const;
 
     /*!
      *  Write generator chain configuration.
@@ -175,30 +137,6 @@ private:
     void writeViewConfigurations(QXmlStreamWriter& writer,
         QSharedPointer<DesignConfiguration> designConfiguration) const;
 
-    /*!
-     *  Write the parameters.
-     *
-     *      @param [in] writer                  The used xml writer.
-     *      @param [in] designConfiguration     The selected design configuration.
-     */
-    void writeParameters(QXmlStreamWriter& writer, QSharedPointer<DesignConfiguration> designConfiguration) const;
-
-    /*!
-     *  Write the assertions.
-     *
-     *      @param [in] writer                  The used xml writer.
-     *      @param [in] designConfiguration     The selected design configuration.
-     */
-    void writeAssertions(QXmlStreamWriter& writer, QSharedPointer<DesignConfiguration> designConfiguration) const;
-
-    /*!
-     *  Write the vendor extensions.
-     *
-     *      @param [in] writer                  The used xml writer.
-     *      @param [in] designConfiguration     The selected design configuration.
-     */
-    void writeVendorExtensions(QXmlStreamWriter& writer,
-        QSharedPointer<DesignConfiguration> designConfiguration) const;
 };
 
 #endif // DESIGNCONFIGURATIONWRITER_H

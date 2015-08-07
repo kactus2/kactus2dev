@@ -36,6 +36,7 @@ private slots:
     void cleanup();
 
     void testSimpleDesignConfiguration();
+    void testTopCommentsAreWritten();
     void testDesignReference();
     void testGeneratorChainConfiguration();
     void testInterconnectionConfiguration();
@@ -110,9 +111,9 @@ void tst_DesignConfigurationWriter::testSimpleDesignConfiguration()
     QString expectedOutput(
         "<?xml version=\"1.0\"?>\n"
         "<ipxact:designConfiguration "
-        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
-        "xmlns:kactus2=\"http://funbase.cs.tut.fi/\" "
         "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\""
         ">\n"
@@ -122,7 +123,6 @@ void tst_DesignConfigurationWriter::testSimpleDesignConfiguration()
         "\t<ipxact:version>0.1</ipxact:version>\n"
         "</ipxact:designConfiguration>\n");
     QCOMPARE(output, expectedOutput);
-    //compareOutputToExpected(output, expectedOutput);
 
     expectedOutput.clear();
     output.clear();
@@ -131,9 +131,9 @@ void tst_DesignConfigurationWriter::testSimpleDesignConfiguration()
     expectedOutput = 
         "<?xml version=\"1.0\"?>\n"
         "<ipxact:designConfiguration "
-        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
-        "xmlns:kactus2=\"http://funbase.cs.tut.fi/\" "
         "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\""
         ">\n"
@@ -145,8 +145,42 @@ void tst_DesignConfigurationWriter::testSimpleDesignConfiguration()
         "</ipxact:designConfiguration>\n";
 
     designConfigurationWriter.writeDesignConfiguration(xmlStreamWriter, designConfiguration_);
-    //QCOMPARE(output, expectedOutput);
+
     compareOutputToExpected(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_DesignConfigurationWriter::testTopCommentsAreWritten()
+//-----------------------------------------------------------------------------
+void tst_DesignConfigurationWriter::testTopCommentsAreWritten()
+{
+    designConfiguration_->setTopComments("Comments");
+
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    xmlStreamWriter.setAutoFormatting(true);
+    xmlStreamWriter.setAutoFormattingIndent(-1);
+
+    DesignConfigurationWriter designConfigurationWriter;
+    designConfigurationWriter.writeDesignConfiguration(xmlStreamWriter, designConfiguration_);
+
+    QString expectedOutput(
+        "<?xml version=\"1.0\"?>\n"
+        "<!--Comments-->\n"
+        "<ipxact:designConfiguration "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\""
+        ">\n"
+        "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+        "\t<ipxact:library>TestLibrary</ipxact:library>\n"
+        "\t<ipxact:name>TestDesignConfiguration</ipxact:name>\n"
+        "\t<ipxact:version>0.1</ipxact:version>\n"
+        "</ipxact:designConfiguration>\n");
+    QCOMPARE(output, expectedOutput);
 }
 
 //-----------------------------------------------------------------------------
@@ -169,9 +203,9 @@ void tst_DesignConfigurationWriter::testDesignReference()
     QString expectedOutput(
         "<?xml version=\"1.0\"?>\n"
         "<ipxact:designConfiguration "
-        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
-        "xmlns:kactus2=\"http://funbase.cs.tut.fi/\" "
         "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\""
         ">\n"
@@ -182,7 +216,6 @@ void tst_DesignConfigurationWriter::testDesignReference()
         "\t<ipxact:designRef vendor=\"TUT\" library=\"TestLibrary\" name=\"DesignReference\" version=\"1.1\"/>\n"
         "</ipxact:designConfiguration>\n");
 
-    //QCOMPARE(output, expectedOutput);
     compareOutputToExpected(output, expectedOutput);
 }
 
@@ -214,9 +247,9 @@ void tst_DesignConfigurationWriter::testGeneratorChainConfiguration()
     QString expectedOutput(
         "<?xml version=\"1.0\"?>\n"
         "<ipxact:designConfiguration "
-        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
-        "xmlns:kactus2=\"http://funbase.cs.tut.fi/\" "
         "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\""
         ">\n"
@@ -233,7 +266,6 @@ void tst_DesignConfigurationWriter::testGeneratorChainConfiguration()
             "\t</ipxact:generatorChainConfiguration>\n"
         "</ipxact:designConfiguration>\n");
 
-    //QCOMPARE(output, expectedOutput);
     compareOutputToExpected(output, expectedOutput);
 }
 
@@ -295,9 +327,9 @@ void tst_DesignConfigurationWriter::testInterconnectionConfiguration()
     QString expectedOutput(
         "<?xml version=\"1.0\"?>\n"
         "<ipxact:designConfiguration "
-        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
-        "xmlns:kactus2=\"http://funbase.cs.tut.fi/\" "
         "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\""
         ">\n"
@@ -331,7 +363,6 @@ void tst_DesignConfigurationWriter::testInterconnectionConfiguration()
         "</ipxact:designConfiguration>\n"
         );
 
-    //QCOMPARE(output, expectedOutput);
     compareOutputToExpected(output, expectedOutput);
 }
 
@@ -364,9 +395,9 @@ void tst_DesignConfigurationWriter::testViewConfiguration()
     QString expectedOutput(
         "<?xml version=\"1.0\"?>\n"
         "<ipxact:designConfiguration "
-        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
-        "xmlns:kactus2=\"http://funbase.cs.tut.fi/\" "
         "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\""
         ">\n"
@@ -387,7 +418,6 @@ void tst_DesignConfigurationWriter::testViewConfiguration()
         "</ipxact:designConfiguration>\n"
         );
 
-    //QCOMPARE(output, expectedOutput);
     compareOutputToExpected(output, expectedOutput);
 }
 
@@ -415,9 +445,9 @@ void tst_DesignConfigurationWriter::testParameters()
     QString expectedOutput(
         "<?xml version=\"1.0\"?>\n"
         "<ipxact:designConfiguration "
-        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
-        "xmlns:kactus2=\"http://funbase.cs.tut.fi/\" "
         "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\""
         ">\n"
@@ -434,7 +464,6 @@ void tst_DesignConfigurationWriter::testParameters()
         "</ipxact:designConfiguration>\n"
         );
 
-    //QCOMPARE(output, expectedOutput);
     compareOutputToExpected(output, expectedOutput);
 }
 
@@ -463,9 +492,9 @@ void tst_DesignConfigurationWriter::testAssertion()
     QString expectedOutput(
         "<?xml version=\"1.0\"?>\n"
         "<ipxact:designConfiguration "
-        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
-        "xmlns:kactus2=\"http://funbase.cs.tut.fi/\" "
         "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\""
         ">\n"
@@ -484,7 +513,6 @@ void tst_DesignConfigurationWriter::testAssertion()
         "</ipxact:designConfiguration>\n"
         );
 
-    //QCOMPARE(output, expectedOutput);
     compareOutputToExpected(output, expectedOutput);
 }
 
@@ -499,10 +527,8 @@ void tst_DesignConfigurationWriter::testVendorExtensions()
     extensionNode.appendChild(document.createTextNode("testValue"));
 
     QSharedPointer<GenericVendorExtension> testExtension(new GenericVendorExtension(extensionNode));
-    QList<QSharedPointer<VendorExtension> > vendorExtensions;
-    vendorExtensions.append(testExtension);
 
-    designConfiguration_->setVendorExtensions(vendorExtensions);
+    designConfiguration_->getVendorExtensions()->append(testExtension);
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
@@ -516,9 +542,9 @@ void tst_DesignConfigurationWriter::testVendorExtensions()
     QString expectedOutput(
         "<?xml version=\"1.0\"?>\n"
         "<ipxact:designConfiguration "
-        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
-        "xmlns:kactus2=\"http://funbase.cs.tut.fi/\" "
         "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\""
         ">\n"
@@ -532,7 +558,6 @@ void tst_DesignConfigurationWriter::testVendorExtensions()
         "</ipxact:designConfiguration>\n"
         );
 
-    //QCOMPARE(output, expectedOutput);
     compareOutputToExpected(output, expectedOutput);
 }
 
@@ -551,7 +576,6 @@ void tst_DesignConfigurationWriter::compareOutputToExpected(QString const& outpu
         int lineOffset = outputLines.indexOf(expectedLines.first());
         if (lineOffset == -1)
         {
-            //readOutPutFile();
             QCOMPARE(output, expectedOutput);
         }
         else

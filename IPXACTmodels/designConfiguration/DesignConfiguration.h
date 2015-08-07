@@ -14,12 +14,14 @@
 
 #include <IPXACTmodels/common/Assertion.h>
 #include <IPXACTmodels/common/ConfigurableVLNVReference.h>
+#include <IPXACTmodels/common/Document.h>
 #include <IPXACTmodels/common/Parameter.h>
+
 #include <IPXACTmodels/designConfiguration/InterconnectionConfiguration.h>
 #include <IPXACTmodels/designConfiguration/ViewConfiguration.h>
+
 #include <IPXACTmodels/librarycomponent.h>
 #include <IPXACTmodels/ipxactmodels_global.h>
-#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
 #include <QSharedPointer>
 #include <QList>
@@ -36,7 +38,7 @@ class VLNV;
 //-----------------------------------------------------------------------------
 //! Implementation for the ipxact:designConfiguration element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT DesignConfiguration : public LibraryComponent
+class IPXACTMODELS_EXPORT DesignConfiguration : public Document
 {
 
 public:
@@ -44,16 +46,9 @@ public:
     /*!
 	 *  The constructor.
 	 *
-	 *      @param [in] doc     A reference to a QDomDocument that represents the information for parsing.
-	 */
-	DesignConfiguration(QDomDocument& doc);
-
-    /*!
-	 *  The constructor.
-	 *
 	 *      @param [in] vlnv    VLNV to be set for the design configuration.
 	 */
-	DesignConfiguration(const VLNV& vlnv);
+	DesignConfiguration(VLNV const& vlnv);
 
     /*!
 	 *  The constructor.
@@ -76,9 +71,9 @@ public:
 	virtual ~DesignConfiguration();
 
     /*!
-	 *  Clone this design configuration and return pointer to the copy.
+	 *  Clone this design configuration.
 	 */
-	virtual QSharedPointer<LibraryComponent> clone() const;
+	virtual QSharedPointer<Document> clone() const;
 
     /*!
 	 *  Library component contains write function as purely virtual. This should be deleted
@@ -86,35 +81,11 @@ public:
 	virtual void write(QFile& file);
 
     /*!
-	 *  Check the validity of the design configuration.
-	 *
-	 *      @param [in] errorList   A list of error messages of the detected errors.
-     *
-     *      @return True if the design configuration is valid, otherwise false.
-	 */
-	virtual bool isValid(QStringList& errorList) const;
-
-
-    /*!
-	 *  Check the validity of the design configuration.
-	 *
-     *      @return True if the state is valid, otherwise false.
-	 */
-	virtual bool isValid() const;
-
-    /*!
 	 *  Set the vlnv.
 	 *
 	 *      @param [in] vlnv    Reference to the vlnv to be set.
 	 */
 	virtual void setVlnv(const VLNV& vlnv);
-
-    /*!
-     *  Get the description.
-     *
-     *      @return The description.
-     */
-    QString getDescription() const;
 
     /*!
      *  Get the design reference.
@@ -159,13 +130,6 @@ public:
     void setAttributes(const QMap<QString, QString>& attributes);
 
     /*!
-     *  Set the description.
-     *
-     *      @param [in] description     The new description.
-     */
-    void setDescription(const QString& description);
-
-    /*!
      *  Set the design reference.
      *
      *      @param [in] designRef   A VLNV tag that identifies the design.
@@ -198,29 +162,29 @@ public:
      *
      *      @return Empty QStringlist (contains VLNV dependencies).
      */
-    virtual const QStringList getDependentFiles() const;
+    virtual QStringList getDependentFiles() const;
 
     /*!
      *  Get the list of VLNVs needed by this design configuration.
      *
      *      @return A list of pointers to VLNVs that are needed in this design configuration.
      */
-    virtual const QList<VLNV> getDependentVLNVs() const;
+    virtual QList<VLNV> getDependentVLNVs() const;
 
     /*!
 	 *  Add a new view configuration to the design configuration.
 	 *
-	 *      @param [in] instanceName    The name of the component instnace that's view is set.
+	 *      @param [in] instanceName    The name of the component instance that's view is set.
 	 *      @param [in] viewName        The name of the component's view that is set as active.
 	 */
-	virtual void addViewConfiguration(const QString& instanceName, const QString& viewName);
+	virtual void addViewConfiguration(QString const& instanceName, QString const& viewName);
 
     /*!
 	 *  Remove the view configuration.
 	 *
 	 *      @param [in] instanceName    The instance name of the view configuration to be removed.
 	 */
-	virtual void removeViewConfiguration(const QString& instanceName);
+	virtual void removeViewConfiguration(QString const& instanceName);
 
     /*!
 	 *  Get the active view name for the given component instance.
@@ -229,7 +193,7 @@ public:
      *
      *      @return The name of the active view.
 	 */
-	QString getActiveView(const QString& instanceName) const;
+	QString getActiveView(QString const& instanceName) const;
 
     /*!
 	 *  Check if an active view has been defined for the given instance.
@@ -238,7 +202,7 @@ public:
      *
      *      @return True if an active view is found, false otherwise.
 	 */
-	bool hasActiveView(const QString& instanceName) const;
+	bool hasActiveView(QString const& instanceName) const;
 
     /*!
 	 *  Set the implementation type of the design configuration.
@@ -295,34 +259,6 @@ public:
      */
     void setKactus2ViewOverrides(QMap<QString, QString> kactus2ViewOverrides);
 
-    /*!
-     *  Get the assertions.
-     *
-     *      @return A list of pointers to the assertions
-     */
-    QSharedPointer<QList<QSharedPointer<Assertion> > > getAssertions() const;
-
-    /*!
-     *  Set the assertions.
-     *
-     *      @param [in] newAssertions   A list of new assertions.
-     */
-    void setAssertions(QSharedPointer<QList<QSharedPointer<Assertion> > > newAssertions);
-
-    /*!
-     *  Get the parameters.
-     *
-     *      @return A list of pointers to the parameters.
-     */
-    QSharedPointer<QList<QSharedPointer<Parameter> > > getParameters() const;
-
-    /*!
-     *  Set the parameters.
-     *
-     *      @param [in] newParameters   A list of new parameters.
-     */
-    void setParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters);
-
 private:
 
     /*!
@@ -364,17 +300,8 @@ private:
     //! A list containing pointers to the view configurations.
     QList<QSharedPointer<ViewConfiguration> > viewConfigurations_;
 
-    //! The textual description.
-    QString description_;
-
     //! Contains the attributes for the design configuration.
     QMap<QString, QString> attributes_;
-
-    //! A list containing pointers to the assertions.
-    QSharedPointer<QList<QSharedPointer<Assertion> > > assertions_;
-
-    //! A list containing pointers to the parameters.
-    QSharedPointer<QList<QSharedPointer<Parameter> > > parameters_;
 };
 
 #endif // DESIGNCONFIGURATION_H

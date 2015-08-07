@@ -7,7 +7,10 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../IPXACTmodels/designConfiguration/AbstractorInstance.h \
+HEADERS += ../../../IPXACTmodels/common/Document.h \
+    ../../../IPXACTmodels/designConfiguration/AbstractorInstance.h \
+    ../../../IPXACTmodels/common/Array.h \
+    ../../../IPXACTmodels/common/Assertion.h \
     ../../../IPXACTmodels/common/ConfigurableElementValue.h \
     ../../../IPXACTmodels/common/ConfigurableVLNVReference.h \
     ../../../IPXACTmodels/designConfiguration/DesignConfiguration.h \
@@ -15,18 +18,21 @@ HEADERS += ../../../IPXACTmodels/designConfiguration/AbstractorInstance.h \
     ../../../IPXACTmodels/designConfiguration/InterfaceRef.h \
     ../../../IPXACTmodels/kactusExtensions/KactusAttribute.h \
     ../../../IPXACTmodels/designConfiguration/MultipleAbstractorInstances.h \
-    ../../../IPXACTmodels/designConfiguration/ViewConfiguration.h \
-    ../../../IPXACTmodels/XmlUtils.h \
-    ../../../IPXACTmodels/designConfiguration/DesignConfigurationWriter.h \
-    ../../../IPXACTmodels/common/Assertion.h \
     ../../../IPXACTmodels/common/NameGroup.h \
-    ../../../IPXACTmodels/common/NameGroupWriter.h \
-    ../../../IPXACTmodels/common/ParameterWriter.h \
     ../../../IPXACTmodels/common/Parameter.h \
     ../../../IPXACTmodels/common/Range.h \
     ../../../IPXACTmodels/common/Vector.h \
-    ../../../IPXACTmodels/common/Array.h
-SOURCES += ../../../IPXACTmodels/designConfiguration/AbstractorInstance.cpp \
+    ../../../IPXACTmodels/designConfiguration/ViewConfiguration.h \
+    ../../../IPXACTmodels/XmlUtils.h \
+    ../../../IPXACTmodels/common/DocumentWriter.h \
+    ../../../IPXACTmodels/designConfiguration/DesignConfigurationWriter.h \
+    ../../../IPXACTmodels/common/NameGroupWriter.h \
+    ../../../IPXACTmodels/common/ParameterWriter.h
+SOURCES += ../../../IPXACTmodels/common/Document.cpp \
+    ../../../IPXACTmodels/common/DocumentWriter.cpp \
+    ../../../IPXACTmodels/designConfiguration/AbstractorInstance.cpp \
+    ../../../IPXACTmodels/common/Array.cpp \
+    ../../../IPXACTmodels/common/Assertion.cpp \
     ../../../IPXACTmodels/common/ConfigurableElementValue.cpp \
     ../../../IPXACTmodels/common/ConfigurableVLNVReference.cpp \
     ../../../IPXACTmodels/designConfiguration/DesignConfiguration.cpp \
@@ -35,14 +41,12 @@ SOURCES += ../../../IPXACTmodels/designConfiguration/AbstractorInstance.cpp \
     ../../../IPXACTmodels/designConfiguration/InterfaceRef.cpp \
     ../../../IPXACTmodels/kactusExtensions/KactusAttribute.cpp \
     ../../../IPXACTmodels/designConfiguration/MultipleAbstractorInstances.cpp \
-    ../../../IPXACTmodels/designConfiguration/ViewConfiguration.cpp \
-    ../../../IPXACTmodels/XmlUtils.cpp \
-    ./tst_DesignConfigurationWriter.cpp \
-    ../../../IPXACTmodels/common/Assertion.cpp \
     ../../../IPXACTmodels/common/NameGroup.cpp \
     ../../../IPXACTmodels/common/NameGroupWriter.cpp \
-    ../../../IPXACTmodels/common/ParameterWriter.cpp \
     ../../../IPXACTmodels/common/Parameter.cpp \
+    ../../../IPXACTmodels/common/ParameterWriter.cpp \
     ../../../IPXACTmodels/common/Range.cpp \
     ../../../IPXACTmodels/common/Vector.cpp \
-    ../../../IPXACTmodels/common/Array.cpp
+    ../../../IPXACTmodels/designConfiguration/ViewConfiguration.cpp \
+    ../../../IPXACTmodels/XmlUtils.cpp \
+    ./tst_DesignConfigurationWriter.cpp

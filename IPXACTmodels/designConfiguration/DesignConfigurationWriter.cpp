@@ -22,24 +22,11 @@
 #include <QMap>
 #include <QSharedPointer>
 
-namespace
-{
-    const QString IPXACT_VENDOR("ipxact:vendor");
-    const QString IPXACT_LIBRARY("ipxact:library");
-    const QString IPXACT_NAME("ipxact:name");
-    const QString IPXACT_VERSION("ipxact:version");
-
-    const QString PLAIN_VENDOR("vendor");
-    const QString PLAIN_LIBRARY("library");
-    const QString PLAIN_NAME("name");
-    const QString PLAIN_VERSION("version");
-}
-
 //-----------------------------------------------------------------------------
 // Function: DesignConfigurationWriter::DesignConfigurationWriter()
 //-----------------------------------------------------------------------------
-DesignConfigurationWriter::DesignConfigurationWriter(QObject* parent /* = 0 */):
-QObject(parent)
+DesignConfigurationWriter::DesignConfigurationWriter(QObject* parent):
+DocumentWriter(parent)
 {
 
 }
@@ -58,11 +45,13 @@ DesignConfigurationWriter::~DesignConfigurationWriter()
 void DesignConfigurationWriter::writeDesignConfiguration(QXmlStreamWriter& writer,
     QSharedPointer<DesignConfiguration> designConfiguration) const
 {
+    writer.writeStartDocument();
+
     writeDesignConfigurationStart(writer, designConfiguration);
 
-    writeXMLNameSpace(writer, designConfiguration);
+    writeNamespaceDeclarations(writer);
 
-    writeVLNVasElements(writer, designConfiguration);
+    writeVLNVElements(writer, designConfiguration->getVlnv());
 
     writeDescription(writer, designConfiguration);
 
@@ -90,70 +79,8 @@ void DesignConfigurationWriter::writeDesignConfiguration(QXmlStreamWriter& write
 void DesignConfigurationWriter::writeDesignConfigurationStart(QXmlStreamWriter& writer,
     QSharedPointer<DesignConfiguration> designConfiguration) const
 {
-    writer.writeStartDocument();
-
-    foreach (QString comment, designConfiguration->getTopComments())
-    {
-        writer.writeComment(comment);
-    }
-
+    writeTopComments(writer, designConfiguration);
     writer.writeStartElement("ipxact:designConfiguration");
-}
-
-//-----------------------------------------------------------------------------
-// Function: DesignConfigurationWriter::writeXMLNameSpace()
-//-----------------------------------------------------------------------------
-void DesignConfigurationWriter::writeXMLNameSpace(QXmlStreamWriter& writer,
-    QSharedPointer<DesignConfiguration> designConfiguration) const
-{
-    QMap<QString, QString> designConfigAttributes = designConfiguration->getAttributes();
-
-    designConfigAttributes.insert("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
-    designConfigAttributes.insert("xmlns:ipxact", "http://www.accellera.org/XMLSchema/IPXACT/1685-2014");
-    designConfigAttributes.insert("xsi:schemaLocation", "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd");
-    designConfigAttributes.insert("xmlns:kactus2", "http://funbase.cs.tut.fi/");
-
-    writeAttributes(writer, designConfigAttributes);
-
-    designConfiguration->setAttributes(designConfigAttributes);
-}
-
-//-----------------------------------------------------------------------------
-// Function: DesignConfigurationWriter::writeAttributes()
-//-----------------------------------------------------------------------------
-void DesignConfigurationWriter::writeAttributes(QXmlStreamWriter& writer, QMap<QString, QString> attributes) const
-{
-    for (QMap<QString, QString>::const_iterator attributeIndex = attributes.begin();
-        attributeIndex != attributes.end(); ++attributeIndex)
-    {
-        writer.writeAttribute(attributeIndex.key(), attributeIndex.value());
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: DesignConfigurationWriter::writeVLNVasElements()
-//-----------------------------------------------------------------------------
-void DesignConfigurationWriter::writeVLNVasElements(QXmlStreamWriter& writer,
-    QSharedPointer<DesignConfiguration> designConfiguration) const
-{
-    VLNV* designConfigurationVLNV = designConfiguration->getVlnv();
-
-    writer.writeTextElement(IPXACT_VENDOR, designConfigurationVLNV->getVendor());
-    writer.writeTextElement(IPXACT_LIBRARY, designConfigurationVLNV->getLibrary());
-    writer.writeTextElement(IPXACT_NAME, designConfigurationVLNV->getName());
-    writer.writeTextElement(IPXACT_VERSION, designConfigurationVLNV->getVersion());
-}
-
-//-----------------------------------------------------------------------------
-// Function: DesignConfigurationWriter::writeDescription()
-//-----------------------------------------------------------------------------
-void DesignConfigurationWriter::writeDescription(QXmlStreamWriter& writer,
-    QSharedPointer<DesignConfiguration> designConfiguration) const
-{
-    if (!designConfiguration->getDescription().isEmpty())
-    {
-        writer.writeTextElement("ipxact:description", designConfiguration->getDescription());
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -165,19 +92,8 @@ void DesignConfigurationWriter::writeDesignReference(QXmlStreamWriter& writer, V
     {
         writer.writeEmptyElement("ipxact:designRef");
 
-        writeVLNVAsAttributes(writer, designReference);
+        writeVLNVAttributes(writer, designReference);
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: DesignConfigurationWriter::writeVLNVAsAttributes()
-//-----------------------------------------------------------------------------
-void DesignConfigurationWriter::writeVLNVAsAttributes(QXmlStreamWriter& writer, VLNV& itemVLNV) const
-{
-    writer.writeAttribute(PLAIN_VENDOR, itemVLNV.getVendor());
-    writer.writeAttribute(PLAIN_LIBRARY, itemVLNV.getLibrary());
-    writer.writeAttribute(PLAIN_NAME, itemVLNV.getName());
-    writer.writeAttribute(PLAIN_VERSION, itemVLNV.getVersion());
 }
 
 //-----------------------------------------------------------------------------
@@ -186,12 +102,12 @@ void DesignConfigurationWriter::writeVLNVAsAttributes(QXmlStreamWriter& writer, 
 void DesignConfigurationWriter::writeGeneratorChainConfiguration(QXmlStreamWriter& writer,
     QSharedPointer<DesignConfiguration> designConfiguration) const
 {
-    foreach (QSharedPointer<ConfigurableVLNVReference> currentChain,designConfiguration->getGeneratorChainConfs())
+    foreach (QSharedPointer<ConfigurableVLNVReference> currentChain, designConfiguration->getGeneratorChainConfs())
     {
         writer.writeStartElement("ipxact:generatorChainConfiguration");
 
         VLNV currentChainVLNV = *currentChain;
-        writeVLNVAsAttributes(writer, currentChainVLNV);
+        writeVLNVAttributes(writer, currentChainVLNV);
 
         writeConfigurableElementValues(writer, *currentChain->getConfigurableElementValues());
 
@@ -314,7 +230,7 @@ void DesignConfigurationWriter::writeAbstractorInstances(QXmlStreamWriter& write
         QSharedPointer<ConfigurableVLNVReference> abstractorRef = abstractorInstance->getAbstractorRef();  
 
         VLNV abstractorRefVLNV = *abstractorRef;
-        writeVLNVAsAttributes(writer, abstractorRefVLNV);
+        writeVLNVAttributes(writer, abstractorRefVLNV);
 
         writeConfigurableElementValues(writer, *abstractorRef->getConfigurableElementValues());
 
@@ -351,71 +267,5 @@ void DesignConfigurationWriter::writeViewConfigurations(QXmlStreamWriter& writer
         writer.writeEndElement(); // ipxact:view
 
         writer.writeEndElement(); // ipxact:viewConfiguration
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: DesignConfigurationWriter::writeParameters()
-//-----------------------------------------------------------------------------
-void DesignConfigurationWriter::writeParameters(QXmlStreamWriter& writer,
-    QSharedPointer<DesignConfiguration> designConfiguration) const
-{
-    if (!designConfiguration->getParameters()->isEmpty())
-    {
-        writer.writeStartElement("ipxact:parameters");
-
-        ParameterWriter parameterWriter;
-
-        foreach (QSharedPointer<Parameter> currentParameter, *designConfiguration->getParameters())
-        {
-            parameterWriter.writeParameter(writer, currentParameter);
-        }
-
-        writer.writeEndElement(); // ipxact:parameters
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: DesignConfigurationWriter::writeAssertions()
-//-----------------------------------------------------------------------------
-void DesignConfigurationWriter::writeAssertions(QXmlStreamWriter& writer,
-    QSharedPointer<DesignConfiguration> designConfiguration) const
-{
-    if (!designConfiguration->getAssertions()->isEmpty())
-    {
-        writer.writeStartElement("ipxact:assertions");
-
-        foreach (QSharedPointer<Assertion> assertion, *designConfiguration->getAssertions())
-        {
-            writer.writeStartElement("ipxact:assertion");
-
-            NameGroupWriter nameGroupWriter;
-            nameGroupWriter.writeNameGroup(writer, assertion);
-
-            writer.writeTextElement("ipxact:assert", assertion->getAssert());
-
-            writer.writeEndElement(); // ipxact:assertion
-        }
-
-        writer.writeEndElement(); // ipxact:assertions
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: DesignConfigurationWriter::writeVendorExtensions()
-//-----------------------------------------------------------------------------
-void DesignConfigurationWriter::writeVendorExtensions(QXmlStreamWriter& writer,
-    QSharedPointer<DesignConfiguration> designConfiguration) const
-{
-    if (!designConfiguration->getVendorExtensions().isEmpty())
-    {
-        writer.writeStartElement("ipxact:vendorExtensions");
-
-        foreach (QSharedPointer<VendorExtension> extension, designConfiguration->getVendorExtensions())
-        {
-            extension->write(writer);
-        }
-
-        writer.writeEndElement(); // ipxact:vendorExtensions
     }
 }

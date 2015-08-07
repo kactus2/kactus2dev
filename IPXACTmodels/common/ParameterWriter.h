@@ -17,7 +17,7 @@
 #include <QXmlStreamWriter>
 
 class Parameter;
-
+class VendorExtension;
 //-----------------------------------------------------------------------------
 //! Writer class for IP-XACT Parameter element.
 //-----------------------------------------------------------------------------
@@ -85,7 +85,8 @@ private:
      *      @param [in] parameter   The parameter whose value to write.
      */
     void writeValue(QXmlStreamWriter &writer, QSharedPointer<Parameter> parameter) const;
-   
+
+           
     /*!
      *  Writes the vendor extensions of a given parameter into xml.
      *

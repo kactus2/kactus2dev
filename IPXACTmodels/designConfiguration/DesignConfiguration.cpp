@@ -11,7 +11,6 @@
 
 #include "DesignConfiguration.h"
 
-#include "IPXACTmodels/librarycomponent.h"
 #include <IPXACTmodels/generatorchain.h>
 #include <IPXACTmodels/vlnv.h>
 #include <IPXACTmodels/XmlUtils.h>
@@ -32,122 +31,27 @@
 //-----------------------------------------------------------------------------
 // Function: DesignConfiguration::DesignConfiguration()
 //-----------------------------------------------------------------------------
-DesignConfiguration::DesignConfiguration(QDomDocument& doc):
-LibraryComponent(doc), 
-designRef_(),
-generatorChainConfigurations_(),
-interconnectionConfigurations_(),
-viewConfigurations_(), 
-description_(), 
-attributes_(),
-assertions_(new QList<QSharedPointer<Assertion> >),
-parameters_(new QList<QSharedPointer<Parameter> >)
-{
-	LibraryComponent::vlnv_->setType(VLNV::DESIGNCONFIGURATION);
-
-	// find the IP-Xact root element (spirit:component or spirit:design ...)
-	QDomNodeList nodeList = doc.childNodes();
-	int i = 0;
-	// search for the first element with children (=document type)
-	while (!nodeList.at(i).hasChildNodes())
-    {
-		// if the node is for a header comment
-		if (nodeList.at(i).isComment())
-        {
-			topComments_.append(nodeList.at(i).nodeValue());
-		}
-		++i;
-	}
-
-	QDomNode designConfNode = doc.childNodes().item(i);
-
-	// parse the attributes
-	attributes_ = XmlUtils::parseAttributes(designConfNode);
-
-	// go through all childNodes
-	for (int i = 0; i < designConfNode.childNodes().count(); ++i)
-    {
-		QDomNode tempNode = designConfNode.childNodes().at(i);
-
-		if (tempNode.nodeName() == QString("spirit:designRef"))
-        {
-            designRef_ = VLNV::createVLNV(tempNode, VLNV::DESIGN);
-        }
-        else if (tempNode.nodeName() ==	QString("spirit:generatorChainConfiguration")) 
-        {
-            //generatorChainConfs_.append(QSharedPointer<GeneratorChainConfiguration>(
-            //    new GeneratorChainConfiguration(tempNode)));
-            generatorChainConfigurations_.append(QSharedPointer<ConfigurableVLNVReference>
-                (new ConfigurableVLNVReference(tempNode, VLNV::GENERATORCHAIN)));
-        }
-        else if (tempNode.nodeName() ==	QString("ipxact:interconnectionConfiguration"))
-        {
-            //interconnectionConfs_.append(QSharedPointer<InterconnectionConf>(new InterconnectionConf(tempNode)));
-        }
-		else if (tempNode.nodeName() == QString("spirit:viewConfiguration"))
-        {
-            QString instanceName;
-            QString viewName;
-
-            // search both child elements of the viewConfiguration element
-            for (int j = 0; j < tempNode.childNodes().count(); ++j) 
-            {
-                QDomNode viewNode = tempNode.childNodes().at(j);
-
-                if (viewNode.nodeName() == QString("spirit:instanceName"))
-                {
-                    instanceName = viewNode.childNodes().at(0).nodeValue();
-                }
-                else if (viewNode.nodeName() == QString("spirit:viewName"))
-                {
-                    viewName = viewNode.childNodes().at(0).nodeValue();
-                }
-            }
-
-            // add the child elements into the QMap
-            //viewConfigurations_.insert(instanceName, viewName);
-        }
-        else if (tempNode.nodeName() ==	QString("spirit:description"))
-        {
-            description_ = tempNode.childNodes().at(0).nodeValue();
-        }
-        else if (tempNode.nodeName() == "spirit:vendorExtensions")
-        {
-            parseVendorExtensions(tempNode);
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: DesignConfiguration::DesignConfiguration()
-//-----------------------------------------------------------------------------
-DesignConfiguration::DesignConfiguration( const VLNV& vlnv ):
-LibraryComponent(vlnv), 
+DesignConfiguration::DesignConfiguration(VLNV const& vlnv):
+Document(vlnv), 
 designRef_(),
 generatorChainConfigurations_(),
 interconnectionConfigurations_(),
 viewConfigurations_(),
-description_(), 
-attributes_(),
-assertions_(new QList<QSharedPointer<Assertion> > ),
-parameters_(new QList<QSharedPointer<Parameter> >)
+attributes_()
 {
-	LibraryComponent::vlnv_->setType(VLNV::DESIGNCONFIGURATION);
+    setVlnv(vlnv);
 }
 
 //-----------------------------------------------------------------------------
 // Function: DesignConfiguration::DesignConfiguration()
 //-----------------------------------------------------------------------------
-DesignConfiguration::DesignConfiguration( const DesignConfiguration& other ):
-LibraryComponent(other),
+DesignConfiguration::DesignConfiguration(DesignConfiguration const& other):
+Document(other),
 designRef_(other.designRef_),
 generatorChainConfigurations_(),
 interconnectionConfigurations_(),
 viewConfigurations_(),
-description_(other.description_),
-attributes_(other.attributes_),
-assertions_(new QList<QSharedPointer<Assertion> > ),
-parameters_(new QList<QSharedPointer<Parameter> > )
+attributes_(other.attributes_)
 {
     foreach (QSharedPointer<ConfigurableVLNVReference> generatorChainConf, other.generatorChainConfigurations_)
     {
@@ -178,37 +82,18 @@ parameters_(new QList<QSharedPointer<Parameter> > )
         }
     }
 
-    foreach (QSharedPointer<Assertion> assertion, *other.assertions_)
-    {
-        if (assertion)
-        {
-            QSharedPointer<Assertion> copy = QSharedPointer<Assertion>(new Assertion(*assertion.data()));
-            assertions_->append(copy);
-        }
-    }
-    foreach (QSharedPointer<Parameter> parameter, *other.parameters_)
-    {
-        if (parameter)
-        {
-            QSharedPointer<Parameter> copy = QSharedPointer<Parameter>(new Parameter(*parameter.data()));
-            parameters_->append(copy);
-        }
-    }
 }
 
 //-----------------------------------------------------------------------------
 // Function: DesignConfiguration::DesignConfiguration()
 //-----------------------------------------------------------------------------
 DesignConfiguration::DesignConfiguration():
-LibraryComponent(),
+Document(),
 designRef_(),
 generatorChainConfigurations_(),
 interconnectionConfigurations_(),
 viewConfigurations_(),
-description_(),
-attributes_(),
-assertions_(new QList<QSharedPointer<Assertion> >),
-parameters_(new QList<QSharedPointer<Parameter> > )
+attributes_()
 {
 
 }
@@ -220,10 +105,8 @@ DesignConfiguration& DesignConfiguration::operator=( const DesignConfiguration& 
 {
 	if (this != &other)
     {
-		LibraryComponent::operator=(other);
-	
+		Document::operator=(other);
 		designRef_ = other.designRef_;
-		description_ = other.description_;
 		attributes_ = other.attributes_;
 
         generatorChainConfigurations_.clear();
@@ -258,23 +141,6 @@ DesignConfiguration& DesignConfiguration::operator=( const DesignConfiguration& 
                 viewConfigurations_.append(copy);
             }
         }
-
-        foreach (QSharedPointer<Assertion> assertion, *other.assertions_)
-        {
-            if (assertion)
-            {
-                QSharedPointer<Assertion> copy = QSharedPointer<Assertion>(new Assertion(*assertion.data()));
-                assertions_->append(copy);
-            }
-        }
-        foreach (QSharedPointer<Parameter> parameter, *other.parameters_)
-        {
-            if (parameter)
-            {
-                QSharedPointer<Parameter> copy = QSharedPointer<Parameter>(new Parameter(*parameter.data()));
-                parameters_->append(copy);
-            }
-        }
 	}
 	return *this;
 }
@@ -287,115 +153,24 @@ DesignConfiguration::~DesignConfiguration()
     generatorChainConfigurations_.clear();
     interconnectionConfigurations_.clear();
     viewConfigurations_.clear();
-    assertions_.clear();
-    parameters_.clear();
 }
 
 //-----------------------------------------------------------------------------
 // Function: DesignConfiguration::clone()
 //-----------------------------------------------------------------------------
-QSharedPointer<LibraryComponent> DesignConfiguration::clone() const
+QSharedPointer<Document> DesignConfiguration::clone() const
 {
-	return QSharedPointer<LibraryComponent>(new DesignConfiguration(*this));	
-}
-
-//-----------------------------------------------------------------------------
-// Function: DesignConfiguration::isValid()
-//-----------------------------------------------------------------------------
-bool DesignConfiguration::isValid( QStringList& errorList ) const
-{
-	bool valid = true;
-	QString thisIdentifier(QObject::tr("containing design configuration"));
-
-	if (!vlnv_)
-    {
-		errorList.append(QObject::tr("No vlnv specified for the design configuration."));
-		valid = false;
-	}
-	else if (!vlnv_->isValid(errorList, thisIdentifier))
-    {
-		valid = false;
-	}
-	else
-    {
-		thisIdentifier = QObject::tr("design configuration %1").arg(vlnv_->toString());
-	}
-
-	if (!designRef_.isValid(errorList, thisIdentifier))
-    {
-		valid = false;
-	}
-
-    foreach (QSharedPointer<ConfigurableVLNVReference> generatorChainConf, generatorChainConfigurations_)
-    {
-        if (!generatorChainConf->isValid(errorList, thisIdentifier))
-        {
-            valid = false;
-        }
-    }
-
-    foreach (QSharedPointer<ViewConfiguration> configuration, viewConfigurations_)
-    {
-        if (configuration->getInstanceName().isEmpty())
-        {
-            errorList.append(QObject::tr("No instance name set for view configuration within %1").arg(thisIdentifier));
-            valid = false;
-        }
-        if (configuration->getViewReference().isEmpty())
-        {
-            errorList.append(QObject::tr("No view name set for view configuration within %1").arg(thisIdentifier));
-            valid = false;
-        }
-    }
-
-	return valid;
-}
-
-//-----------------------------------------------------------------------------
-// Function: DesignConfiguration::isValid()
-//-----------------------------------------------------------------------------
-bool DesignConfiguration::isValid() const
-{
-	if (!vlnv_)
-    {
-		return false;
-	}
-	else if (!vlnv_->isValid())
-    {
-		return false;
-	}
-
-	if (!designRef_.isValid())
-    {
-		return false;
-	}
-
-    foreach (QSharedPointer<ConfigurableVLNVReference> generatorChainConf, generatorChainConfigurations_)
-    {
-        if (!generatorChainConf->isValid())
-        {
-            return false;
-        }
-    }
-
-    foreach (QSharedPointer<ViewConfiguration> configuration, viewConfigurations_)
-    {
-        if (configuration->getInstanceName().isEmpty() || configuration->getViewReference().isEmpty())
-        {
-            return false;
-        }
-    }
-
-    return true;
+	return QSharedPointer<Document>(new DesignConfiguration(*this));	
 }
 
 //-----------------------------------------------------------------------------
 // Function: DesignConfiguration::setVlnv()
 //-----------------------------------------------------------------------------
-void DesignConfiguration::setVlnv( const VLNV& vlnv )
+void DesignConfiguration::setVlnv(const VLNV& vlnv)
 {
-    LibraryComponent::setVlnv(vlnv);
-    LibraryComponent::vlnv_->setType(VLNV::DESIGNCONFIGURATION);
+    VLNV designConfigurationVLNV(vlnv);
+    designConfigurationVLNV.setType(VLNV::DESIGNCONFIGURATION);
+    Document::setVlnv(vlnv);    
 }
 
 //-----------------------------------------------------------------------------
@@ -457,27 +232,11 @@ const QList<QSharedPointer<InterconnectionConfiguration> >& DesignConfiguration:
 }
 
 //-----------------------------------------------------------------------------
-// Function: DesignConfiguration::setDescription()
-//-----------------------------------------------------------------------------
-void DesignConfiguration::setDescription(const QString& description)
-{
-    description_ = description;
-}
-
-//-----------------------------------------------------------------------------
 // Function: DesignConfiguration::getViewConfigurations()
 //-----------------------------------------------------------------------------
 QList<QSharedPointer<ViewConfiguration> > DesignConfiguration::getViewConfigurations()
 {
     return viewConfigurations_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: DesignConfiguration::getDescription()
-//-----------------------------------------------------------------------------
-QString DesignConfiguration::getDescription() const
-{
-    return description_;
 }
 
 //-----------------------------------------------------------------------------
@@ -511,16 +270,15 @@ const QList<QSharedPointer<ConfigurableVLNVReference> > DesignConfiguration::get
 //-----------------------------------------------------------------------------
 // Function: DesignConfiguration::getDependentFiles()
 //-----------------------------------------------------------------------------
-const QStringList DesignConfiguration::getDependentFiles() const 
+QStringList DesignConfiguration::getDependentFiles() const
 {
-    // DesignConfiguration does not have any dependency files, it only has vlvn dependencies.
     return QStringList();
 }
 
 //-----------------------------------------------------------------------------
 // Function: DesignConfiguration::getDependentVLNVs()
 //-----------------------------------------------------------------------------
-const QList<VLNV> DesignConfiguration::getDependentVLNVs() const
+QList<VLNV> DesignConfiguration::getDependentVLNVs() const
 {
 	QList<VLNV> vlnvList;
 
@@ -552,7 +310,7 @@ const QList<VLNV> DesignConfiguration::getDependentVLNVs() const
 //-----------------------------------------------------------------------------
 // Function: DesignConfiguration::addViewConfiguration()
 //-----------------------------------------------------------------------------
-void DesignConfiguration::addViewConfiguration( const QString& instanceName, const QString& viewName )
+void DesignConfiguration::addViewConfiguration(QString const& instanceName, QString const& viewName)
 {
 	if (!viewName.isEmpty())
     {
@@ -564,7 +322,7 @@ void DesignConfiguration::addViewConfiguration( const QString& instanceName, con
 //-----------------------------------------------------------------------------
 // Function: DesignConfiguration::removeViewConfiguration()
 //-----------------------------------------------------------------------------
-void DesignConfiguration::removeViewConfiguration( const QString& instanceName )
+void DesignConfiguration::removeViewConfiguration(QString const& instanceName)
 {
     foreach (QSharedPointer<ViewConfiguration> configuration, viewConfigurations_)
     {
@@ -578,7 +336,7 @@ void DesignConfiguration::removeViewConfiguration( const QString& instanceName )
 //-----------------------------------------------------------------------------
 // Function: DesignConfiguration::getActiveView()
 //-----------------------------------------------------------------------------
-QString DesignConfiguration::getActiveView( const QString& instanceName ) const
+QString DesignConfiguration::getActiveView(QString const& instanceName) const
 {
     foreach (QSharedPointer<ViewConfiguration> configuration, viewConfigurations_)
     {
@@ -594,7 +352,7 @@ QString DesignConfiguration::getActiveView( const QString& instanceName ) const
 //-----------------------------------------------------------------------------
 // Function: DesignConfiguration::hasActiveView()
 //-----------------------------------------------------------------------------
-bool DesignConfiguration::hasActiveView( const QString& instanceName ) const
+bool DesignConfiguration::hasActiveView(QString const& instanceName) const
 {
 	return !getActiveView(instanceName).isEmpty();
 }
@@ -604,7 +362,7 @@ bool DesignConfiguration::hasActiveView( const QString& instanceName ) const
 //-----------------------------------------------------------------------------
 void DesignConfiguration::setDesignConfigImplementation(KactusAttribute::Implementation implementation)
 {
-    kactus2Attributes_.insert("kts_implementation", KactusAttribute::valueToString(implementation));
+    setImplementation(implementation);
 }
 
 //-----------------------------------------------------------------------------
@@ -612,13 +370,7 @@ void DesignConfiguration::setDesignConfigImplementation(KactusAttribute::Impleme
 //-----------------------------------------------------------------------------
 KactusAttribute::Implementation DesignConfiguration::getDesignConfigImplementation() const
 {
-    KactusAttribute::Implementation implementation = KactusAttribute::HW;
-
-    if (!kactus2Attributes_.contains(QString("kts_implementation")))
-        return implementation;
-    else
-        KactusAttribute::stringToValue(kactus2Attributes_.value(QString("kts_implementation")), implementation);
-    return implementation;
+    return getImplementation();
 }
 
 //-----------------------------------------------------------------------------
@@ -627,7 +379,7 @@ KactusAttribute::Implementation DesignConfiguration::getDesignConfigImplementati
 QMap<QString, QString> DesignConfiguration::getConfigurableElementValues(QString const& instanceUUID) const
 {
     QMap<QString, QString> configurableElements;
-    foreach(QSharedPointer<VendorExtension> extension, vendorExtensions_)
+    foreach(QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
         if (extension->type() == "kactus2:configurableElementValues")
         {
@@ -708,7 +460,7 @@ void DesignConfiguration::setConfigurableElementValues(QString const& instanceUU
 QMap<QString, QString> DesignConfiguration::getKactus2ViewOverrides() const
 {
     QSharedPointer<Kactus2Group> overrideGroup;
-    foreach (QSharedPointer<VendorExtension> extension, vendorExtensions_)
+    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
         if (extension->type() == "kactus2:viewOverrides")
         {
@@ -743,11 +495,11 @@ QMap<QString, QString> DesignConfiguration::getKactus2ViewOverrides() const
 //-----------------------------------------------------------------------------
 void DesignConfiguration::setKactus2ViewOverrides(QMap<QString, QString> kactus2ViewOverrides)
 {
-    foreach (QSharedPointer<VendorExtension> extension, vendorExtensions_)
+    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
         if (extension->type() == "kactus2:viewOverrides")
         {
-            vendorExtensions_.removeAll(extension);
+            getVendorExtensions()->removeAll(extension);
             break;
         }
     }
@@ -768,7 +520,7 @@ void DesignConfiguration::setKactus2ViewOverrides(QMap<QString, QString> kactus2
             ++overrideIndex;
         }
 
-        vendorExtensions_.append(overrideGroup);
+        getVendorExtensions()->append(overrideGroup);
     }
 }
 
@@ -778,7 +530,7 @@ void DesignConfiguration::setKactus2ViewOverrides(QMap<QString, QString> kactus2
 QSharedPointer<VendorExtension> DesignConfiguration::findOrCreateInstanceExtension(QString const& instanceUUID)
 {
     QSharedPointer<Kactus2Group> cevGroup;
-    foreach(QSharedPointer<VendorExtension> extension, vendorExtensions_)
+    foreach(QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
         if (extension->type() == "kactus2:configurableElementValues")
         {
@@ -790,7 +542,7 @@ QSharedPointer<VendorExtension> DesignConfiguration::findOrCreateInstanceExtensi
     if (cevGroup.isNull())
     {
         cevGroup = QSharedPointer<Kactus2Group>(new Kactus2Group("kactus2:configurableElementValues"));
-        vendorExtensions_.append(cevGroup);
+        getVendorExtensions()->append(cevGroup);
     }
 
     QSharedPointer<Kactus2Group> targetInstanceGroup;
@@ -839,7 +591,7 @@ void DesignConfiguration::parseVendorExtensions(QDomNode const& extensionsNode)
                 QDomNode ktsExtensionNode = extensionNode.childNodes().at(j);
                 if (ktsExtensionNode.nodeName() == "kactus2:kts_attributes")
                 {
-                    parseKactus2Attributes(ktsExtensionNode);
+                    //parseKactus2Attributes(ktsExtensionNode);
                 }
             }
         }
@@ -892,7 +644,7 @@ void DesignConfiguration::parseConfigurableElementValues(QDomNode const& extensi
         configurableElementsGroup->addToGroup(instanceGroup);
     }
 
-    vendorExtensions_.append(configurableElementsGroup);
+    getVendorExtensions()->append(configurableElementsGroup);
 }
 
 //-----------------------------------------------------------------------------
@@ -914,45 +666,5 @@ void DesignConfiguration::parseViewConfigurationValues(QDomNode const& extension
         viewGroup->addToGroup(viewItem);
     }
 
-    vendorExtensions_.append(viewGroup);
-}
-
-//-----------------------------------------------------------------------------
-// Function: DesignConfiguration::getAssertions()
-//-----------------------------------------------------------------------------
-QSharedPointer<QList<QSharedPointer<Assertion> > > DesignConfiguration::getAssertions() const
-{
-    return assertions_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: DesignConfiguration::setAssertions()
-//-----------------------------------------------------------------------------
-void DesignConfiguration::setAssertions(QSharedPointer<QList<QSharedPointer<Assertion> > > newAssertions)
-{
-    assertions_ = newAssertions;
-}
-
-//-----------------------------------------------------------------------------
-// Function: DesignConfiguration::getParameters()
-//-----------------------------------------------------------------------------
-QSharedPointer<QList<QSharedPointer<Parameter> > > DesignConfiguration::getParameters() const
-{
-    return parameters_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: DesignConfiguration::setParameters()
-//-----------------------------------------------------------------------------
-void DesignConfiguration::setParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters)
-{
-    parameters_ = newParameters;
-}
-
-//-----------------------------------------------------------------------------
-// Function: DesignConfiguration::write()
-//-----------------------------------------------------------------------------
-void DesignConfiguration::write(QFile& file)
-{
-
+    getVendorExtensions()->append(viewGroup);
 }
