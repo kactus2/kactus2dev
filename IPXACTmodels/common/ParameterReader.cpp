@@ -14,6 +14,8 @@
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/GenericVendorExtension.h>
 
+#include <IPXACTmodels/BusDefinition/BusDefinition.h>
+
 //-----------------------------------------------------------------------------
 // Function: ParameterReader::ParameterReader()
 //-----------------------------------------------------------------------------

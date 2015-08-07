@@ -51,7 +51,7 @@ private:
      *  Reads the attributes from XML to a parameter.
      *
      *      @param [in] parameterNode   The XML description of the parameter.
-     *      @param [in] parameter       The parameter to insert the attributes into.
+     *      @param [in/out] parameter   The parameter to insert the attributes into.
      */
     void parseAttributes(QDomNode const& parameterNode, QSharedPointer<Parameter> parameter) const;
    
@@ -59,7 +59,7 @@ private:
      *  Reads the name group from XML to a parameter.
      *
      *      @param [in] parameterNode   The XML description of the parameter.
-     *      @param [in] parameter       The parameter to insert the name group info into.
+     *      @param [in/out] parameter   The parameter to insert the name group info into.
      */
     void parseNameGroup(QDomNode const& parameterNode, QSharedPointer<Parameter> parameter) const;
        
@@ -67,7 +67,7 @@ private:
      *  Reads the vectors from XML to a parameter.
      *
      *      @param [in] parameterNode   The XML description of the parameter.
-     *      @param [in] parameter       The parameter to insert the vectors into.
+     *      @param [in/out] parameter   The parameter to insert the vectors into.
      */
     void parseVectors(QDomNode const& parameterNode, QSharedPointer<Parameter> parameter) const;
       
@@ -75,7 +75,7 @@ private:
      *  Reads the arrays from XML to a parameter.
      *
      *      @param [in] parameterNode   The XML description of the parameter.
-     *      @param [in] parameter       The parameter to insert the arrays into.
+     *      @param [in/out] parameter   The parameter to insert the arrays into.
      */
     void parseArrays(QDomNode const& parameterNode, QSharedPointer<Parameter> parameter) const;
        
@@ -83,7 +83,7 @@ private:
      *  Reads the parameter value from XML to a parameter.
      *
      *      @param [in] parameterNode   The XML description of the parameter.
-     *      @param [in] parameter       The parameter to insert the value into.
+     *      @param [in/out] parameter   The parameter to insert the value into.
      */
     void parseValue(QDomNode const& parameterNode, QSharedPointer<Parameter> parameter) const;
        
@@ -91,7 +91,7 @@ private:
      *  Reads the vendor extensions from XML to a parameter.
      *
      *      @param [in] parameterNode   The XML description of the parameter.
-     *      @param [in] parameter       The parameter to insert the vendor extensions into.
+     *      @param [in/out] parameter   The parameter to insert the vendor extensions into.
      */
     void parseVendorExtensions(QDomNode const& parameterNode, QSharedPointer<Parameter> parameter) const;
 };

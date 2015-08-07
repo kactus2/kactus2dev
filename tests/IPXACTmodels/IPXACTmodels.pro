@@ -17,4 +17,5 @@ SUBDIRS += validators\tst_ParameterValidator.pro \
 		   common\tst_ParameterWriter.pro \
 		   common\tst_ParameterReader.pro \
 		   BusDefinition\tst_BusDefinitionWriter.pro \
+		   BusDefinition\tst_BusDefinitionReader.pro \
 		   DesignConfiguration\tst_DesignConfigurationWriter.pro
