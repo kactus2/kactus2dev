@@ -78,7 +78,7 @@ bool HWDesignWidget::setDesign(VLNV const& vlnv, QString const& viewName)
 		if (vlnv.isValid() && vlnv.getType() == VLNV::COMPONENT) {
 
 			// create model 
-			QSharedPointer<LibraryComponent> libComponent = getLibraryInterface()->getModel(vlnv);
+			QSharedPointer<Document> libComponent = getLibraryInterface()->getModel(vlnv);
             QSharedPointer<Component> comp = libComponent.staticCast<Component>();
 
 			if (comp == 0)
@@ -98,7 +98,7 @@ bool HWDesignWidget::setDesign(VLNV const& vlnv, QString const& viewName)
 		Q_ASSERT(getLibraryInterface()->contains(vlnv));
 		Q_ASSERT(getLibraryInterface()->getDocumentType(vlnv) == VLNV::COMPONENT);
 
-		QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(vlnv);
+		QSharedPointer<Document> libComp = getLibraryInterface()->getModel(vlnv);
 		QSharedPointer<Component> comp = libComp.staticCast<Component>();
 
 		// get the directory path where the component's xml file is located
@@ -160,20 +160,20 @@ bool HWDesignWidget::setDesign(QSharedPointer<Component> comp, const QString& vi
     // if the component contains a direct reference to a design
     if (designVLNV.getType() == VLNV::DESIGN)
     {
-        QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(designVLNV);	
+        QSharedPointer<Document> libComp = getLibraryInterface()->getModel(designVLNV);	
         design = libComp.staticCast<Design>();
     }
     // if component had reference to a design configuration
     else if (designVLNV.getType() == VLNV::DESIGNCONFIGURATION)
     {
-        QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(designVLNV);
+        QSharedPointer<Document> libComp = getLibraryInterface()->getModel(designVLNV);
         designConf = libComp.staticCast<DesignConfiguration>();
 
         designVLNV = designConf->getDesignRef();
 
         if (designVLNV.isValid())
         {
-            QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(designVLNV);	
+            QSharedPointer<Document> libComp = getLibraryInterface()->getModel(designVLNV);	
             design = libComp.staticCast<Design>();
         }
 
@@ -555,7 +555,7 @@ QSharedPointer<Component> HWDesignWidget::createEmptyDesign(VLNV const& prevlnv)
 	
 	if (getLibraryInterface()->contains(prevlnv)) {
 		// find the component
-		QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(prevlnv);
+		QSharedPointer<Document> libComp = getLibraryInterface()->getModel(prevlnv);
 		newComponent = libComp.staticCast<Component>();
 
 		Q_ASSERT_X(newComponent, "HWDesignWidget::createEmptyDesign",

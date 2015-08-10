@@ -11,7 +11,6 @@
 
 #include <IPXACTmodels/librarycomponent.h>
 #include <IPXACTmodels/component.h>
-#include <IPXACTmodels/busdefinition.h>
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
@@ -108,7 +107,7 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event) {
 	if (vlnv.isValid()) {
 
 		// parse the model
-		QSharedPointer<LibraryComponent const> libComp = handler_->getModelReadOnly(vlnv);
+		QSharedPointer<Document const> libComp = handler_->getModelReadOnly(vlnv);
 		if (!libComp) {
 			emit errorMessage(tr("Item not found in the library"));
 			return;
@@ -117,7 +116,7 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event) {
         QMenu* menuNew = 0;
 
 		// if component
-		if (libComp->getVlnv()->getType() == VLNV::COMPONENT) {
+		if (libComp->getVlnv().getType() == VLNV::COMPONENT) {
 			QSharedPointer<Component const> component = libComp.staticCast<Component const>();
 
 			// depending on the type of the component
@@ -174,21 +173,21 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event) {
                          }
 			}		
 		}
-		else if (libComp->getVlnv()->getType() == VLNV::BUSDEFINITION) {
+		else if (libComp->getVlnv().getType() == VLNV::BUSDEFINITION) {
 
-			QSharedPointer<BusDefinition const> busDef = libComp.staticCast<BusDefinition const>();
+			//QSharedPointer<BusDefinition const> busDef = libComp.staticCast<BusDefinition const>();
 			
             menu.addAction(openBusAction_);
             menuNew = menu.addMenu(tr("Add"));
             menuNew->addAction(addSignalsAction_);
 		}
-		else if (libComp->getVlnv()->getType() == VLNV::ABSTRACTIONDEFINITION) {
+		else if (libComp->getVlnv().getType() == VLNV::ABSTRACTIONDEFINITION) {
 			menu.addAction(openBusAction_);
 		}
-        else if (libComp->getVlnv()->getType() == VLNV::COMDEFINITION) {
+        else if (libComp->getVlnv().getType() == VLNV::COMDEFINITION) {
             menu.addAction(openComDefAction_);
         }
-        else if (libComp->getVlnv()->getType() == VLNV::APIDEFINITION) {
+        else if (libComp->getVlnv().getType() == VLNV::APIDEFINITION) {
             menu.addAction(openApiDefAction_);
         }
 
@@ -201,10 +200,10 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event) {
 
         menu.addSeparator();
         
-        if (!libComp->isValid())
-        {
-            menu.addAction(showErrorsAction_);
-        }
+//         if (!libComp->isValid())
+//         {
+//             menu.addAction(showErrorsAction_);
+//         }
 
         menu.addAction(openContainingFolderAction_);
 		menu.addAction(openXmlAction_);

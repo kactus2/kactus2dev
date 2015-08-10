@@ -216,7 +216,7 @@ void GlobalHeaderSaveModel::setDesign( QSharedPointer<Component> topComp, QShare
 
 		// parse the component model for the instance
 		VLNV compVLNV = instance.getComponentRef();
-		QSharedPointer<const LibraryComponent> libComp = handler_->getModelReadOnly(compVLNV);
+		QSharedPointer<const Document> libComp = handler_->getModelReadOnly(compVLNV);
 		QSharedPointer<const Component> comp = libComp.dynamicCast<const Component>();
 		if (!comp) {
 			continue;

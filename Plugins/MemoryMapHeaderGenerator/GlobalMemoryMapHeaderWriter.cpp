@@ -161,7 +161,7 @@ void GlobalMemoryMapHeaderWriter::parseInterface(qint64 offset, QTextStream& str
 
 	// parse the component containing the interface
 	VLNV compVLNV = componentDesign_->getHWComponentVLNV(interface.getComponentRef());
-	QSharedPointer<LibraryComponent> libComp = utility_->getLibraryInterface()->getModel(compVLNV);
+	QSharedPointer<Document> libComp = utility_->getLibraryInterface()->getModel(compVLNV);
 	QSharedPointer<Component> component = libComp.dynamicCast<Component>();
 	Q_ASSERT(component);
 

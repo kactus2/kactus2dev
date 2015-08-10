@@ -15,9 +15,7 @@
 #include "libraryinterface.h"
 
 #include <IPXACTmodels/librarycomponent.h>
-#include <IPXACTmodels/busdefinition.h>
 #include <IPXACTmodels/design.h>
-#include <IPXACTmodels/designconfiguration.h>
 
 //-----------------------------------------------------------------------------
 // Function: LibraryTreeFilter::LibraryTreeFilter()
@@ -67,7 +65,7 @@ bool LibraryTreeFilter::filterAcceptsRow(int sourceRow, const QModelIndex& sourc
             continue;
         }
 
-        QSharedPointer<LibraryComponent const> libComb = handler_->getModelReadOnly(vlnv);
+        QSharedPointer<Document const> libComb = handler_->getModelReadOnly(vlnv);
 
         // check the type
         switch (handler_->getDocumentType(vlnv))
@@ -108,7 +106,7 @@ bool LibraryTreeFilter::filterAcceptsRow(int sourceRow, const QModelIndex& sourc
                 {
                     continue;
                 }
-                QSharedPointer<BusDefinition const> busDef = libComb.staticCast<BusDefinition const>();
+                //QSharedPointer<BusDefinition const> busDef = libComb.staticCast<BusDefinition const>();
 
                 // if this was not supposed to show then check next one
                 if  (!implementation().hw_)

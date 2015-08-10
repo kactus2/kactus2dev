@@ -200,7 +200,7 @@ QVariant LibraryTreeModel::data(const QModelIndex& index, int role) const {
 				QString("<b>Name:</b> ") + vlnv.getName() + "<br>" +
 				QString("<b>Version:</b> ") + vlnv.getVersion() + "<br>";
 
-			QSharedPointer<LibraryComponent const> libComp = handler_->getModelReadOnly(vlnv);
+			QSharedPointer<Document const> libComp = handler_->getModelReadOnly(vlnv);
 
 			if (libComp != 0 && !libComp->getDescription().isEmpty()) {
 				text += QString("<br><b>Description:</b><br>") + libComp->getDescription();
@@ -222,7 +222,7 @@ QVariant LibraryTreeModel::data(const QModelIndex& index, int role) const {
 
 			if (vlnv.getType() == VLNV::COMPONENT) {
 
-				QSharedPointer<LibraryComponent const> libComp = handler_->getModelReadOnly(vlnv);
+				QSharedPointer<Document const> libComp = handler_->getModelReadOnly(vlnv);
 				QSharedPointer<Component const> component = libComp.staticCast<Component const>();
 
                 if (component != 0)
@@ -274,7 +274,7 @@ QVariant LibraryTreeModel::data(const QModelIndex& index, int role) const {
 			else if (vlnv.getType() == VLNV::DESIGN) {
 
                 // Determine the design type.
-                QSharedPointer<LibraryComponent> libComp = handler_->getModel(vlnv);
+                QSharedPointer<Document> libComp = handler_->getModel(vlnv);
                 QSharedPointer<Design> design = libComp.staticCast<Design>();
                 if (design && design->getDesignImplementation() == KactusAttribute::SW)
                 {

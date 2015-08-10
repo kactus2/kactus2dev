@@ -14,6 +14,7 @@
 #include "ipxactmodels_global.h"
  
 #include <IPXACTmodels/common/NameGroup.h>
+#include <IPXACTmodels/PortMap.h>
 
 #include <QDomNode>
 #include <QString>

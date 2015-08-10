@@ -17,10 +17,10 @@
 /*!
  * The VLNV tags that name the elements containing information
  */
-const QString VENDOR_("spirit:vendor");
-const QString LIBRARY_("spirit:library");
-const QString NAME_("spirit:name");
-const QString VERSION_("spirit:version");
+const QString VENDOR_("ipxact:vendor");
+const QString LIBRARY_("ipxact:library");
+const QString NAME_("ipxact:name");
+const QString VERSION_("ipxact:version");
 
 // Constructor
 IPXactModel::IPXactModel(QDomDocument document, QObject *parent):

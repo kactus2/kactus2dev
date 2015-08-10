@@ -120,20 +120,20 @@ bool MemoryDesignWidget::setDesign(QSharedPointer<Component> comp, const QString
     // if the component contains a direct reference to a design
     if (designVLNV.getType() == VLNV::DESIGN)
     {
-        QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(designVLNV);	
+        QSharedPointer<Document> libComp = getLibraryInterface()->getModel(designVLNV);	
         design = libComp.staticCast<Design>();
     }
     // if component had reference to a design configuration
     else if (designVLNV.getType() == VLNV::DESIGNCONFIGURATION)
     {
-        QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(designVLNV);
+        QSharedPointer<Document> libComp = getLibraryInterface()->getModel(designVLNV);
         designConf = libComp.staticCast<DesignConfiguration>();
 
         designVLNV = designConf->getDesignRef();
 
         if (designVLNV.isValid())
         {
-            QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(designVLNV);	
+            QSharedPointer<Document> libComp = getLibraryInterface()->getModel(designVLNV);	
             design = libComp.staticCast<Design>();
         }
 

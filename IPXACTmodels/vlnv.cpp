@@ -232,8 +232,7 @@ VLNV::IPXactType VLNV::string2Type(const QString &type) {
 	}
 
 	// if busdefinition
-	else if (QString::compare(type, QObject::tr("spirit:busDefinition"),
-			Qt::CaseInsensitive) == 0)  {
+	else if (type == "ipxact:busDefinition")  {
 		return BUSDEFINITION;
 	}
 

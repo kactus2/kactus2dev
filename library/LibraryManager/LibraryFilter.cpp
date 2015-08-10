@@ -15,9 +15,7 @@
 #include "libraryinterface.h"
 
 #include <IPXACTmodels/librarycomponent.h>
-#include <IPXACTmodels/busdefinition.h>
-#include <IPXACTmodels/design.h>
-#include <IPXACTmodels/designconfiguration.h>
+#include <IPXACTmodels/component.h>
 
 #include <QRegExp>
 

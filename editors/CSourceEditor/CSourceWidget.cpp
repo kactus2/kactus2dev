@@ -54,7 +54,7 @@ CSourceWidget::CSourceWidget(QString const& sourceFile,
 
     foreach (QSharedPointer<ApiInterface const> apiIf, ownerComponent->getApiInterfaces())
     {
-        QSharedPointer<LibraryComponent const> libComp = libInterface->getModelReadOnly(apiIf->getApiType());
+        QSharedPointer<Document const> libComp = libInterface->getModelReadOnly(apiIf->getApiType());
         QSharedPointer<ApiDefinition const> apiDef = libComp.dynamicCast<ApiDefinition const>();
 
         if (apiDef != 0)

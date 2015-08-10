@@ -25,7 +25,7 @@
 
 class Component;
 class GeneratorConfiguration;
-class LibraryComponent;
+class Document;
 
 //-----------------------------------------------------------------------------
 //! Plugin for structural verilog generation.
@@ -99,9 +99,9 @@ public:
      *
      *      @return True, if the generator supports the given component, otherwise false.
      */
-    virtual bool checkGeneratorSupport(QSharedPointer<LibraryComponent const> libComp, 
-        QSharedPointer<LibraryComponent const> libDesConf = QSharedPointer<LibraryComponent const>() , 
-        QSharedPointer<LibraryComponent const> libDes = QSharedPointer<LibraryComponent const>()) const;
+    virtual bool checkGeneratorSupport(QSharedPointer<Document const> libComp, 
+        QSharedPointer<Document const> libDesConf = QSharedPointer<Document const>() , 
+        QSharedPointer<Document const> libDes = QSharedPointer<Document const>()) const;
 
     /*!
      *  Runs the generator.
@@ -112,9 +112,9 @@ public:
      *      @param [in]	        libDes			The optional design object.
      */
     virtual void runGenerator(IPluginUtility* utility, 
-        QSharedPointer<LibraryComponent> libComp, 
-        QSharedPointer<LibraryComponent> libDesConf = QSharedPointer<LibraryComponent>(), 
-        QSharedPointer<LibraryComponent> libDes = QSharedPointer<LibraryComponent>());
+        QSharedPointer<Document> libComp, 
+        QSharedPointer<Document> libDesConf = QSharedPointer<Document>(), 
+        QSharedPointer<Document> libDes = QSharedPointer<Document>());
 
 protected:
 
@@ -127,9 +127,9 @@ protected:
      *
      *      @return List of possible view names for which to run the generation.
      */
-    QStringList findPossibleViewNames(QSharedPointer<LibraryComponent> libComp, 
-        QSharedPointer<LibraryComponent> libDes, 
-        QSharedPointer<LibraryComponent> libDesConf) const;
+    QStringList findPossibleViewNames(QSharedPointer<Document> libComp, 
+        QSharedPointer<Document> libDes, 
+        QSharedPointer<Document> libDesConf) const;
 
     /*!
      *  Checks if the generator could be configured.

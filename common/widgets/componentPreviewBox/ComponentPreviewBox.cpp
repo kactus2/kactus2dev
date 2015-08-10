@@ -69,7 +69,7 @@ namespace
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentPreviewBox()
+// Function: ComponentPreviewBox::ComponentPreviewBox()
 //-----------------------------------------------------------------------------
 ComponentPreviewBox::ComponentPreviewBox(LibraryInterface* lh) : lh_(lh), component_(), scene_(0)
 {
@@ -85,14 +85,14 @@ ComponentPreviewBox::ComponentPreviewBox(LibraryInterface* lh) : lh_(lh), compon
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~ComponentPreviewBox()
+// Function: ComponentPreviewBox::~ComponentPreviewBox()
 //-----------------------------------------------------------------------------
 ComponentPreviewBox::~ComponentPreviewBox()
 {
 }
 
 //-----------------------------------------------------------------------------
-// Function: updatePreview()
+// Function: ComponentPreviewBox::updatePreview()
 //-----------------------------------------------------------------------------
 void ComponentPreviewBox::updatePreview()
 {
@@ -100,30 +100,21 @@ void ComponentPreviewBox::updatePreview()
     delete scene_;
     scene_ = new GridScene(this);
     setScene(scene_);
-    //centerOn(0, 0);
 
     if (component_ != 0)
     {
         ComponentItem* item = 0;
 
-        switch (component_->getComponentImplementation())
+        if (component_->getComponentImplementation() == KactusAttribute::HW)
         {
-        case KactusAttribute::HW:
-            {
-                item = new HWComponentItem(lh_, component_, component_->getVlnv()->getName());
-                break;
-            }
 
-        case KactusAttribute::SW:
-            {
-                item = new SWComponentItem(lh_, component_, component_->getVlnv()->getName());
-                break;
-            }
-
-        default:
-            break;
+            item = new HWComponentItem(lh_, component_, component_->getVlnv()->getName());
         }
-        
+        else if (component_->getComponentImplementation() == KactusAttribute::SW)
+        {
+            item = new SWComponentItem(lh_, component_, component_->getVlnv()->getName());
+        }
+
         if (item != 0)
         {
             connect(item, SIGNAL(endpointMoved(ConnectionEndpoint*)), this, SIGNAL(endpointsRearranged()));
@@ -133,7 +124,7 @@ void ComponentPreviewBox::updatePreview()
 }
 
 //-----------------------------------------------------------------------------
-// Function: setComponent()
+// Function: ComponentPreviewBox::setComponent()
 //-----------------------------------------------------------------------------
 void ComponentPreviewBox::setComponent(QSharedPointer<Component> component)
 {
@@ -141,17 +132,25 @@ void ComponentPreviewBox::setComponent(QSharedPointer<Component> component)
     updatePreview();
 }
 
-void ComponentPreviewBox::setComponent( const VLNV& vlnv ) {
+//-----------------------------------------------------------------------------
+// Function: ComponentPreviewBox::setComponent()
+//-----------------------------------------------------------------------------
+void ComponentPreviewBox::setComponent( const VLNV& vlnv )
+{
 	QSharedPointer<Component> component;
 	
 	// if the vlnv belongs to a component
-	if (lh_->getDocumentType(vlnv) == VLNV::COMPONENT) {
-		QSharedPointer<LibraryComponent> libComp = lh_->getModel(vlnv);
-		component = libComp.staticCast<Component>();
+	if (lh_->getDocumentType(vlnv) == VLNV::COMPONENT)
+    {
+		component = lh_->getModel(vlnv).staticCast<Component>();
 	}
 	setComponent(component);
 }
 
-QRectF ComponentPreviewBox::itemsBoundingRect() const {
+//-----------------------------------------------------------------------------
+// Function: ComponentPreviewBox::itemsBoundingRect()
+//-----------------------------------------------------------------------------
+QRectF ComponentPreviewBox::itemsBoundingRect() const
+{
 	return scene_->itemsBoundingRect();
 }

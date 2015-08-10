@@ -68,8 +68,11 @@ attributes_() {
 	// search for the first element with children (=document type)
 	while (!nodeList.at(i).hasChildNodes()) {
 		// if the node is for a header comment
-		if (nodeList.at(i).isComment()) {
-			topComments_.append(nodeList.at(i).nodeValue());
+		if (nodeList.at(i).isComment())
+        {
+            QStringList comments = getTopComments();
+            comments.append(nodeList.at(i).nodeValue());
+            setTopComments(comments);
 		}
 
 		++i;
@@ -227,7 +230,7 @@ GeneratorChain::~GeneratorChain() {
 	return;
 }
 
-QSharedPointer<LibraryComponent> GeneratorChain::clone() const {
+QSharedPointer<Document> GeneratorChain::clone() const {
 	return QSharedPointer<LibraryComponent>(new GeneratorChain(*this));
 }
 
@@ -393,7 +396,8 @@ void GeneratorChain::setDisplayName(const QString &displayName) {
 	displayName_ = displayName;
 }
 
-const QStringList GeneratorChain::getDependentFiles() const {
+QStringList GeneratorChain::getDependentFiles() const
+{
 	QStringList fileList;
 
 	for (int i = 0; i < generators_.size(); ++i) {
@@ -402,7 +406,8 @@ const QStringList GeneratorChain::getDependentFiles() const {
 	return fileList;
 }
 
-const QList<VLNV> GeneratorChain::getDependentVLNVs() const {
+QList<VLNV> GeneratorChain::getDependentVLNVs() const
+{
         QList<VLNV> vlnvList;
 
 	// get the vlnvs of the generator chains that are included in this

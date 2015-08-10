@@ -372,7 +372,7 @@ void PortGenerationTableModel::initialize(QSharedPointer<Component> srcComponent
     draftComponent_ = targetComponent;
 
     // Get the abstract definition of the bus interface.
-    QSharedPointer<LibraryComponent> libComp = lh->getModel(busIf->getAbstractionType());
+    QSharedPointer<Document> libComp = lh->getModel(busIf->getAbstractionType());
     QSharedPointer<AbstractionDefinition> absDef = libComp.staticCast<AbstractionDefinition>();
 
     beginResetModel();    

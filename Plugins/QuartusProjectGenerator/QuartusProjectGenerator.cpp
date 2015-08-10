@@ -117,9 +117,9 @@ QIcon QuartusProjectGenerator::getIcon() const
 //-----------------------------------------------------------------------------
 // Function: QuartusProjectGenerator::checkGeneratorSupport()
 //-----------------------------------------------------------------------------
-bool QuartusProjectGenerator::checkGeneratorSupport( QSharedPointer<LibraryComponent const> libComp,
-    QSharedPointer<LibraryComponent const> libDesConf /*= QSharedPointer<LibraryComponent const>()*/,
-    QSharedPointer<LibraryComponent const> libDes /*= QSharedPointer<LibraryComponent const>()*/ ) const
+bool QuartusProjectGenerator::checkGeneratorSupport( QSharedPointer<Document const> libComp,
+    QSharedPointer<Document const> libDesConf /*= QSharedPointer<Document const>()*/,
+    QSharedPointer<Document const> libDes /*= QSharedPointer<Document const>()*/ ) const
 {
     QSharedPointer<Component const> component = libComp.staticCast<Component const>();
 
@@ -142,9 +142,9 @@ bool QuartusProjectGenerator::checkGeneratorSupport( QSharedPointer<LibraryCompo
 // Function: QuartusProjectGenerator::runGenerator()
 //-----------------------------------------------------------------------------
 void QuartusProjectGenerator::runGenerator(IPluginUtility* utility,
-    QSharedPointer<LibraryComponent> libComp,
-    QSharedPointer<LibraryComponent> libDesConf,
-    QSharedPointer<LibraryComponent> libDes)
+    QSharedPointer<Document> libComp,
+    QSharedPointer<Document> libDesConf,
+    QSharedPointer<Document> libDes)
 {
     utility->printInfo(tr("Running %1 %2.").arg(getName(), getVersion()));
 
@@ -208,8 +208,8 @@ void QuartusProjectGenerator::onNoticeMessage(QString const& message)
 //-----------------------------------------------------------------------------
 // Function: QuartusProjectGenerator::getOpenViewName()
 //-----------------------------------------------------------------------------
-QString QuartusProjectGenerator::getOpenViewName(QSharedPointer<LibraryComponent> libDesConf,
-    QSharedPointer<LibraryComponent> libDes, QSharedPointer<Component> component)
+QString QuartusProjectGenerator::getOpenViewName(QSharedPointer<Document> libDesConf,
+    QSharedPointer<Document> libDes, QSharedPointer<Component> component)
 {
     QSharedPointer<DesignConfiguration> desConf = libDesConf.staticCast<DesignConfiguration>();
     QSharedPointer<Design> design = libDes.staticCast<Design>();

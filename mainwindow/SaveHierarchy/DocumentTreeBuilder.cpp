@@ -81,7 +81,7 @@ QObject* DocumentTreeBuilder::createFromComponent(VLNV const& root) const
     componentNode->setObjectName(root.toString());
     componentNode->setProperty("VLNVType", "Component");
 
-    QSharedPointer<LibraryComponent const> component = library_->getModelReadOnly(root);
+    QSharedPointer<Document const> component = library_->getModelReadOnly(root);
     QSharedPointer<Component const> rootComponent = component.dynamicCast<Component const>();
 
     if (rootComponent->getComponentImplementation() == KactusAttribute::SW)
@@ -123,7 +123,7 @@ QObject* DocumentTreeBuilder::createFromDesignConfiguration(VLNV const& designCo
     designConfigNode->setObjectName(designConfiguration.toString());
     designConfigNode->setProperty("VLNVType", "DesignConfiguration");
 
-    QSharedPointer<LibraryComponent const> configModel = library_->getModelReadOnly(designConfiguration);
+    QSharedPointer<Document const> configModel = library_->getModelReadOnly(designConfiguration);
     QSharedPointer<DesignConfiguration const> configuration = configModel.dynamicCast<DesignConfiguration const>();
 
     VLNV designRef = configuration->getDesignRef();
@@ -146,7 +146,7 @@ QObject* DocumentTreeBuilder::createFromDesign(VLNV const& designRef) const
     designNode->setObjectName(designRef.toString());
     designNode->setProperty("VLNVType", "Design");
 
-    QSharedPointer<LibraryComponent const> designModel = library_->getModelReadOnly(designRef);
+    QSharedPointer<Document const> designModel = library_->getModelReadOnly(designRef);
     QSharedPointer<Design const> design = designModel.dynamicCast<Design const>();
 
     if (design->getDesignImplementation() == KactusAttribute::SW)

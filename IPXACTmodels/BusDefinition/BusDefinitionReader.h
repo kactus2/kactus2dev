@@ -16,12 +16,14 @@
 #include <QDomNode>
 #include <QSharedPointer>
 
+#include <IPXACTmodels/ipxactmodels_global.h>
+
 class BusDefinition;
 
 //-----------------------------------------------------------------------------
 //! XML reader class for IP-XACT Parameter element.
 //-----------------------------------------------------------------------------
-class BusDefinitionReader : public QObject
+class IPXACTMODELS_EXPORT BusDefinitionReader : public QObject
 {
     Q_OBJECT
 public:

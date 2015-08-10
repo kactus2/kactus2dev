@@ -9,7 +9,7 @@
 #define HIERARCHYITEM_H
 
 #include <IPXACTmodels/component.h>
-#include <IPXACTmodels/busdefinition.h>
+#include <IPXACTmodels/BusDefinition/BusDefinition.h>
 #include <IPXACTmodels/abstractiondefinition.h>
 #include <IPXACTmodels/ApiDefinition.h>
 #include <IPXACTmodels/ComDefinition.h>

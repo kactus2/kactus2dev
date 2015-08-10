@@ -17,8 +17,6 @@
 
 #include <IPXACTmodels/GenericVendorExtension.h>
 
-#include <tests/MockObjects/LibraryMock.h>
-
 #include <QDomElement>
 
 class tst_DesignConfigurationWriter : public QObject

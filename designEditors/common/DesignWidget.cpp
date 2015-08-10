@@ -181,7 +181,7 @@ void DesignWidget::refresh()
 {
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
-    QSharedPointer<LibraryComponent> libComp = lh_->getModel(*editedComponent_->getVlnv());
+    QSharedPointer<Document> libComp = lh_->getModel(*editedComponent_->getVlnv());
     QSharedPointer<Component> comp = libComp.staticCast<Component>();
 
     setDesign(comp, viewName_);

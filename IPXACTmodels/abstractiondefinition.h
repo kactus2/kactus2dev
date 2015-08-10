@@ -66,7 +66,7 @@ public:
 	 *
 	 * \return QSharedPointer<LibraryComponent> Pointer to the cloned abstraction definition.
 	*/
-	virtual QSharedPointer<LibraryComponent> clone() const;
+	virtual QSharedPointer<Document> clone()  const;
 
 	/*! \brief Write the document contents into file.
 	*
@@ -165,7 +165,7 @@ public:
 	 *
 	 * \return Empty QStringList
 	 */
-	virtual const QStringList getDependentFiles() const;
+	virtual QStringList getDependentFiles() const;
 
 	/*! \brief Get the VLNVs of the IP-Xact documents needed by this document
 	 *
@@ -174,7 +174,7 @@ public:
 	 *
 	 * \return QList containing pointers to the VLNVs.
 	 */
-	virtual const QList<VLNV> getDependentVLNVs() const;
+	virtual QList<VLNV> getDependentVLNVs() const;
 
 	/*! \brief Get the logical names of the ports defined in this abstraction definition.
 	 *

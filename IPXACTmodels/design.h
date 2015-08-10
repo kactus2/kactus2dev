@@ -75,7 +75,7 @@ public:
 	 *
 	 * \return QSharedPointer<LibraryComponent> Pointer to the cloned design.
 	*/
-	virtual QSharedPointer<LibraryComponent> clone() const;
+	virtual QSharedPointer<Document> clone()  const;
 
 	/*! \brief Write XML IP-XACT document of this design
 	*/
@@ -299,11 +299,11 @@ public:
 
 	/*! \brief Reimplemented from base class
 	*/
-	virtual const QStringList getDependentFiles() const;
+	virtual QStringList getDependentFiles() const;
 
 	/*! \brief Reimplemented from base class
 	*/
-	virtual const QList<VLNV> getDependentVLNVs() const;
+	virtual QList<VLNV> getDependentVLNVs() const;
 
     /*! \brief Get the VLNVs of the components referenced by this design
 	 *

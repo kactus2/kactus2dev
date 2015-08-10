@@ -673,7 +673,7 @@ void SystemDesignDiagram::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
         if (vlnv.getType() == VLNV::COMPONENT)
         {
             // Determine the component type.
-            QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(vlnv);
+            QSharedPointer<Document> libComp = getLibraryInterface()->getModel(vlnv);
             QSharedPointer<Component> comp = libComp.staticCast<Component>();
 
             // component with given vlnv was not found
@@ -754,7 +754,7 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
         }
 
         // Retrieve the component model.
-        QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(droppedVLNV);
+        QSharedPointer<Document> libComp = getLibraryInterface()->getModel(droppedVLNV);
         QSharedPointer<Component> comp = libComp.staticCast<Component>();
 
         // Set the instance name for the new component instance.
@@ -849,7 +849,7 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
     else if (dragType_ == DRAG_TYPE_HW)
     {
         // Retrieve the component.
-        QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(droppedVLNV);
+        QSharedPointer<Document> libComp = getLibraryInterface()->getModel(droppedVLNV);
         QSharedPointer<Component> newComponent = libComp.staticCast<Component>();
 
         // Check if the component does not have any hierarchical views.
@@ -962,7 +962,7 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
     else if (dragType_ == DRAG_TYPE_DESIGN)
     {
         // Retrieve the design.
-        QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(droppedVLNV);
+        QSharedPointer<Document> libComp = getLibraryInterface()->getModel(droppedVLNV);
         QSharedPointer<Design> design = libComp.dynamicCast<Design>();
 
         // Import elements to the column under cursor.
@@ -1358,7 +1358,7 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
     // Create (HW) component instances.
     foreach (ComponentInstance const& instance, design->getComponentInstances())
     {
-        QSharedPointer<LibraryComponent> libComponent = getLibraryInterface()->getModel(instance.getComponentRef());
+        QSharedPointer<Document> libComponent = getLibraryInterface()->getModel(instance.getComponentRef());
         QSharedPointer<Component> component = libComponent.staticCast<Component>();
 
         if (!component)
@@ -2049,7 +2049,7 @@ void SystemDesignDiagram::importDesign(QSharedPointer<Design> design, IGraphicsI
     // Import SW instances.
     foreach (SWInstance const& instance, design->getSWInstances())
     {
-        QSharedPointer<LibraryComponent> libComponent = getLibraryInterface()->getModel(instance.getComponentRef());
+        QSharedPointer<Document> libComponent = getLibraryInterface()->getModel(instance.getComponentRef());
         QSharedPointer<Component> component = libComponent.staticCast<Component>();
 
         if (!component)

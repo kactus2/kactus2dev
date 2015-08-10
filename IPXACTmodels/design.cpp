@@ -51,7 +51,9 @@ Design::Design(QDomDocument& doc)
 
 		// if the node is for a header comment
 		if (nodes.at(i).isComment()) {
-			topComments_.append(nodes.at(i).nodeValue());
+            QStringList comments = getTopComments();
+            comments.append(nodes.at(i).nodeValue());
+            setTopComments(comments);
 		}
 		else if (nodes.at(i).nodeName() == "spirit:design") {
 			break;
@@ -192,8 +194,8 @@ Design::~Design()
 //-----------------------------------------------------------------------------
 // Function: Design::close()
 //-----------------------------------------------------------------------------
-QSharedPointer<LibraryComponent> Design::clone() const {
-	return QSharedPointer<LibraryComponent>(new Design(*this));
+QSharedPointer<Document> Design::clone() const {
+	return QSharedPointer<Document>(new Design(*this));
 }
 
 //-----------------------------------------------------------------------------
@@ -262,7 +264,8 @@ void Design::write(QFile& file)
     writer.writeStartElement("kactus2:extensions");  
 
   // if contains kactus2 attributes
-    if (!kactus2Attributes_.isEmpty()) {           
+    if (hasKactusAttributes())
+    {           
         writeKactus2Attributes(writer);
     }
 
@@ -763,13 +766,14 @@ void Design::setAdHocConnections(QList<AdHocConnection> const& adHocConnections)
 	adHocConnections_ = adHocConnections;
 }
 
-const QStringList Design::getDependentFiles() const
+QStringList Design::getDependentFiles() const
 {
 	// TODO implement this
 	return QStringList();
 }
 
-const QList<VLNV> Design::getDependentVLNVs() const {
+QList<VLNV> Design::getDependentVLNVs() const
+{
 	QList<VLNV> instanceList;
 
 	// go through all component instances within the design
@@ -1322,7 +1326,7 @@ QString Design::getConfElementValue( const QString& instanceName, const QString&
 //-----------------------------------------------------------------------------
 void Design::setDesignImplementation(KactusAttribute::Implementation implementation)
 {
-	kactus2Attributes_.insert("kts_implementation", KactusAttribute::valueToString(implementation));
+    setImplementation(implementation);
 }
 
 //-----------------------------------------------------------------------------
@@ -1330,14 +1334,7 @@ void Design::setDesignImplementation(KactusAttribute::Implementation implementat
 //-----------------------------------------------------------------------------
 KactusAttribute::Implementation Design::getDesignImplementation() const
 {
-    KactusAttribute::Implementation implementation = KactusAttribute::HW;
-
-    if (!kactus2Attributes_.contains(QString("kts_implementation")))
-        return implementation;
-    else
-        KactusAttribute::stringToValue(kactus2Attributes_.value(QString("kts_implementation")),
-        implementation);
-    return implementation;
+    return getImplementation();
 }
 
 //-----------------------------------------------------------------------------

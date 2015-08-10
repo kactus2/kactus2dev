@@ -15,7 +15,8 @@
 
 class Design;
 class LibraryItem;
-class LibraryComponent;
+class Document;
+class Document;
 
 /*! \brief LibraryInterface defines an interface to operate the IP-Xact-library.
  * 
@@ -35,7 +36,7 @@ public:
 	 * If vlnv is not found in library a null pointer is returned. The ownership 
 	 * of the parsed object remains on Library Handler.
 	*/
-	virtual QSharedPointer<LibraryComponent> getModel(const VLNV& vlnv) = 0;
+	virtual QSharedPointer<Document> getModel(const VLNV& vlnv) = 0;
 
     /*! \brief Get a model that matches given VLNV for read-only access.
 	 *
@@ -47,7 +48,7 @@ public:
 	 * If vlnv is not found in library a null pointer is returned. The ownership 
 	 * of the parsed object remains on Library Handler.
 	*/
-	virtual QSharedPointer<LibraryComponent const> getModelReadOnly(const VLNV& vlnv) = 0;
+	virtual QSharedPointer<Document const> getModelReadOnly(const VLNV& vlnv) = 0;
 
 	/*! \brief Add a new VLNV tag to the library
 	 *
@@ -108,7 +109,7 @@ public:
      * \return True if the model was in valid state and was successfully written.
      */
     virtual bool writeModelToFile(const QString path, 
-		QSharedPointer<LibraryComponent> model,
+		QSharedPointer<Document> model,
 		bool printErrors = true) = 0;
 
 	/*! \brief Write the already registered model to file system.
@@ -123,8 +124,10 @@ public:
 	 * 
 	 * \return True if the model was in valid state and was successfully written.
 	*/
-	virtual bool writeModelToFile(QSharedPointer<LibraryComponent> model,
+	virtual bool writeModelToFile(QSharedPointer<Document> model,
 		bool printErrors = true) = 0;
+
+    //virtual bool writeModelToFile(QSharedPointer<Document> model) = 0;
 
 	/*! \brief Search for IP-Xact files in the file system and add them to library
 	 * 

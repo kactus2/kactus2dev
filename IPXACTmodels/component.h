@@ -9,6 +9,7 @@
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
+#include "common/Document.h"
 #include "librarycomponent.h"
 #include "generaldeclarations.h"
 #include "view.h"
@@ -97,7 +98,7 @@ public:
 	 *
 	 * \return QSharedPointer<LibraryComponent> Pointer to the cloned component.
 	*/
-	virtual QSharedPointer<LibraryComponent> clone() const;
+	virtual QSharedPointer<Document> clone()  const;
 
 	/*! \brief Write the document contents into file.
 	*
@@ -376,13 +377,13 @@ public:
 	 *
 	 * \return QStringList A list containing the paths to the files.
 	 */
-	virtual const QStringList getDependentFiles() const;
+	virtual QStringList getDependentFiles() const;
 
 	/*! \brief Get list of the VLNVs needed by this component.
 	 *
 	 * \return QList containing pointers to the VLNVs.
 	 */
-	virtual const QList<VLNV> getDependentVLNVs() const;
+	virtual QList<VLNV> getDependentVLNVs() const;
 
 	/*! \brief Get the vhdl files and their libraries used in this component.
 	 *
@@ -1636,7 +1637,7 @@ public:
 	 *
 	 * \return QStringList containing the relative directory paths.
 	*/
-	virtual const QStringList getDependentDirs() const;
+	virtual QStringList getDependentDirs() const;
 
     /*!
      *  Sets the author of the component.

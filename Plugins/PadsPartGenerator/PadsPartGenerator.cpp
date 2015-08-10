@@ -153,9 +153,9 @@ QIcon PadsPartGenerator::getIcon() const
 //-----------------------------------------------------------------------------
 // Function: PadsPartGenerator::checkGeneratorSupport()
 //-----------------------------------------------------------------------------
-bool PadsPartGenerator::checkGeneratorSupport(QSharedPointer<LibraryComponent const> libComp, 
-    QSharedPointer<LibraryComponent const> libDesConf /*= QSharedPointer<LibraryComponent const>()*/, 
-    QSharedPointer<LibraryComponent const> libDes /*= QSharedPointer<LibraryComponent const>()*/) const
+bool PadsPartGenerator::checkGeneratorSupport(QSharedPointer<Document const> libComp, 
+    QSharedPointer<Document const> libDesConf /*= QSharedPointer<Document const>()*/, 
+    QSharedPointer<Document const> libDes /*= QSharedPointer<Document const>()*/) const
 {
     // Pads part generation can only be run on component editor.
     if (libDesConf || libDes) {
@@ -178,9 +178,9 @@ bool PadsPartGenerator::checkGeneratorSupport(QSharedPointer<LibraryComponent co
 // Function: PadsPartGenerator::runGenerator()
 //-----------------------------------------------------------------------------
 void PadsPartGenerator::runGenerator(IPluginUtility* utility, 
-    QSharedPointer<LibraryComponent> libComp, 
-    QSharedPointer<LibraryComponent> libDesConf /*= QSharedPointer<LibraryComponent>()*/, 
-    QSharedPointer<LibraryComponent> libDes /*= QSharedPointer<LibraryComponent>()*/)
+    QSharedPointer<Document> libComp, 
+    QSharedPointer<Document> libDesConf /*= QSharedPointer<Document>()*/, 
+    QSharedPointer<Document> libDes /*= QSharedPointer<Document>()*/)
 {
     // Part generation can only run on HW components
     QSharedPointer<Component> comp = libComp.dynamicCast<Component>();

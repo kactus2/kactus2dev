@@ -29,7 +29,7 @@
 typedef QList<QFileInfo> fileList;
 
 class LibraryItem;
-class LibraryComponent;
+class Document;
 class VLNVDialer;
 
 /*! \brief LibraryHandler is the class that implements the services to manage library
@@ -61,7 +61,7 @@ public:
 	 * If vlnv is not found in library a null pointer is returned. The ownership 
 	 * of the parsed object remains on Library Handler.
 	*/
-	virtual QSharedPointer<LibraryComponent> getModel(const VLNV& vlnv);
+	virtual QSharedPointer<Document> getModel(const VLNV& vlnv);
 
     /*! \brief Get a model that matches given VLNV for read-only access.
 	 *
@@ -73,7 +73,7 @@ public:
 	 * If vlnv is not found in library a null pointer is returned. The ownership 
 	 * of the parsed object remains on Library Handler.
 	*/
-	virtual QSharedPointer<LibraryComponent const> getModelReadOnly(const VLNV& vlnv);
+	virtual QSharedPointer<Document const> getModelReadOnly(const VLNV& vlnv);
 
 	/*! \brief Add a new VLNV tag to the library
 	 *
@@ -134,7 +134,7 @@ public:
      * \return True if the model was in valid state and was successfully written.
      */
     virtual bool writeModelToFile(const QString path, 
-		QSharedPointer<LibraryComponent> model,
+		QSharedPointer<Document> model,
 		bool printErrors = true);
 
 	/*! \brief Write the already registered model to file system.
@@ -149,8 +149,9 @@ public:
 	 * 
 	 * \return True if the model was in valid state and was successfully written.
 	*/
-	virtual bool writeModelToFile(QSharedPointer<LibraryComponent> model,
+	virtual bool writeModelToFile(QSharedPointer<Document> model,
 		bool printErrors = true);
+   // virtual bool writeModelToFile(QSharedPointer<Document> model);
 
 	/*! \brief Search for IP-Xact files in the file system and add them to library
 	 * 
@@ -608,7 +609,7 @@ private:
 	 * Key = VLNV that identifies the library object.
 	 * Value = pointer to the library object that has been parsed.
 	 */
-	QMap<VLNV, QSharedPointer<LibraryComponent> > objects_;
+	QMap<VLNV, QSharedPointer<Document> > objects_;
 
 	//! \brief If true then items are being saved and library is not refreshed
 	bool saveInProgress_;

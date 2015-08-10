@@ -41,7 +41,7 @@
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/model.h>
 #include <IPXACTmodels/designconfiguration.h>
-#include <IPXACTmodels/busdefinition.h>
+#include <IPXACTmodels/BusDefinition/BusDefinition.h>
 #include <IPXACTmodels/PortRef.h>
 #include <IPXACTmodels/Interconnection.h>
 #include <IPXACTmodels/Interface.h>
@@ -878,7 +878,7 @@ void HWDesignDiagram::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
         if (vlnv.getType() == VLNV::COMPONENT)
         {
             // Determine the component type.
-			QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(vlnv);
+			QSharedPointer<Document> libComp = getLibraryInterface()->getModel(vlnv);
             QSharedPointer<Component> comp = libComp.staticCast<Component>();
 
             // component with given vlnv was not found
@@ -961,7 +961,7 @@ void HWDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
         }
 
         // Create the component model.
-        QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(droppedVLNV);
+        QSharedPointer<Document> libComp = getLibraryInterface()->getModel(droppedVLNV);
         QSharedPointer<Component> comp = libComp.staticCast<Component>();
 
         // Disallow instantiation of components marked as template.
@@ -1043,7 +1043,7 @@ void HWDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
 				absdefVLNV = droppedVLNV;
 
 				// parse the abstraction definition
-				QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(droppedVLNV);
+				QSharedPointer<Document> libComp = getLibraryInterface()->getModel(droppedVLNV);
 				QSharedPointer<AbstractionDefinition> absDef = libComp.staticCast<AbstractionDefinition>();
 
 				// get the bus definition referenced by the abstraction definition

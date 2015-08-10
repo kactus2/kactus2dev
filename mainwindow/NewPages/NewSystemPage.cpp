@@ -232,7 +232,7 @@ void NewSystemPage::onTreeItemChanged(QTreeWidgetItem* cur, QTreeWidgetItem*)
                 sysVLNV.getName(), sysVLNV.getVersion()));
 
             // Add all available hierarchical views to the view combo box.
-            QSharedPointer<LibraryComponent> libComp = libInterface_->getModel(compVLNV);
+            QSharedPointer<Document> libComp = libInterface_->getModel(compVLNV);
             QSharedPointer<Component> comp = libComp.staticCast<Component>();
 
             viewComboBox_->clear();
@@ -283,7 +283,7 @@ void NewSystemPage::addChildItems(LibraryItem const* libItem, QTreeWidgetItem* t
         else
         {
             // Only hierarchical HW components are added.
-            QSharedPointer<LibraryComponent> libComp = libInterface_->getModel(vlnv);
+            QSharedPointer<Document> libComp = libInterface_->getModel(vlnv);
             QSharedPointer<Component> comp = libComp.staticCast<Component>();
 
             QStringList views = comp->getHierViews();

@@ -15,7 +15,7 @@
 #include <QWizard>
 
 #include <IPXACTmodels/abstractiondefinition.h>
-#include <IPXACTmodels/busdefinition.h>
+#include <IPXACTmodels/BusDefinition/BusDefinition.h>
 #include <IPXACTmodels/businterface.h>
 
 class Component;

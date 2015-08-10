@@ -55,7 +55,9 @@ ComDefinition::ComDefinition(QDomDocument& doc) : LibraryComponent(doc),
     {
 		// if the node is for a header comment
 		if (nodeList.at(i).isComment()) {
-			topComments_.append(nodeList.at(i).nodeValue());
+            QStringList comments = getTopComments();
+            comments.append(nodeList.at(i).nodeValue());
+            setTopComments(comments);
 		}
         ++i;
     }
@@ -93,9 +95,9 @@ ComDefinition::~ComDefinition()
 //-----------------------------------------------------------------------------
 // Function: ComDefinition::clone()
 //-----------------------------------------------------------------------------
-QSharedPointer<LibraryComponent> ComDefinition::clone() const
+QSharedPointer<Document> ComDefinition::clone() const
 {
-    return QSharedPointer<LibraryComponent>(new ComDefinition(*this));
+    return QSharedPointer<Document>(new ComDefinition(*this));
 }
 
 //-----------------------------------------------------------------------------
@@ -265,7 +267,7 @@ bool ComDefinition::isValid() const
 //-----------------------------------------------------------------------------
 // Function: ComDefinition::getDependentFiles()
 //-----------------------------------------------------------------------------
-QStringList const ComDefinition::getDependentFiles() const
+QStringList ComDefinition::getDependentFiles() const
 {
     return QStringList();
 }
@@ -273,7 +275,7 @@ QStringList const ComDefinition::getDependentFiles() const
 //-----------------------------------------------------------------------------
 // Function: ComDefinition::getDependentVLNVs()
 //-----------------------------------------------------------------------------
-QList<VLNV> const ComDefinition::getDependentVLNVs() const
+QList<VLNV> ComDefinition::getDependentVLNVs() const
 {
     return QList<VLNV>();
 }

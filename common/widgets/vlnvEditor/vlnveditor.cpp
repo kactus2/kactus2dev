@@ -24,7 +24,6 @@
 
 #include <IPXACTmodels/librarycomponent.h>
 #include <IPXACTmodels/abstractiondefinition.h>
-#include <IPXACTmodels/busdefinition.h>
 #include <IPXACTmodels/designconfiguration.h>
 
 #include <QGridLayout>
@@ -366,7 +365,7 @@ void VLNVEditor::dropEvent(QDropEvent* event)
         }
         else if (type == VLNV::DESIGNCONFIGURATION)
         {
-            QSharedPointer<LibraryComponent> libComp = handler_->getModel(vlnv);
+            QSharedPointer<Document> libComp = handler_->getModel(vlnv);
             QSharedPointer<DesignConfiguration> designConf = libComp.staticCast<DesignConfiguration>();
             if (designConf->getDesignConfigImplementation() != implementationFilter_)
             {
@@ -405,7 +404,7 @@ void VLNVEditor::dropEvent(QDropEvent* event)
     }
     else if(type == VLNV::ABSTRACTIONDEFINITION)
     {
-        QSharedPointer<LibraryComponent> libComp = handler_->getModel(vlnv);
+        QSharedPointer<Document> libComp = handler_->getModel(vlnv);
         QSharedPointer<AbstractionDefinition> absDef = libComp.staticCast<AbstractionDefinition>();
         Q_ASSERT(absDef);
 

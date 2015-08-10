@@ -61,7 +61,7 @@ public:
      *
      *      @return The created copy of the COM definition.
      */
-    virtual QSharedPointer<LibraryComponent> clone() const;
+    virtual QSharedPointer<Document> clone()  const;
 
     /*!
      *  Writes the communication definition to an XML file.
@@ -85,12 +85,12 @@ public:
     /*!
      *  Returns the dependent files (none).
      */
-    virtual QStringList const getDependentFiles() const;
+    virtual QStringList getDependentFiles() const;
 
     /*!
      *  Returns the dependent VLNVs (none).
      */
-    virtual QList<VLNV> const getDependentVLNVs() const;
+    virtual QList<VLNV> getDependentVLNVs() const;
 
     /*!
      *  Adds a new transfer type to the communication definition.

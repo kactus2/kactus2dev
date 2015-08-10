@@ -207,7 +207,7 @@ void SystemDetailsEditor::onHWRefChanged()
 
     if (hwRefEditor_->isValid())
     {
-        QSharedPointer<LibraryComponent const> libComp = handler_->getModelReadOnly(hwRefEditor_->getVLNV());
+        QSharedPointer<Document const> libComp = handler_->getModelReadOnly(hwRefEditor_->getVLNV());
         QSharedPointer<Component const> component = libComp.dynamicCast<Component const>();
 
         if (component != 0)
@@ -248,7 +248,7 @@ void SystemDetailsEditor::applyHW()
     if (componentVLNV != *component_->getVlnv())
     {
         // Verify that the component is found.
-        QSharedPointer<LibraryComponent> libComp = handler_->getModel(componentVLNV);
+        QSharedPointer<Document> libComp = handler_->getModel(componentVLNV);
         QSharedPointer<Component> newComponent = libComp.dynamicCast<Component>();
 
         if (newComponent == 0)

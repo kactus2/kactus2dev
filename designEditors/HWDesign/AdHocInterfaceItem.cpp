@@ -28,7 +28,7 @@
 
 #include <IPXACTmodels/businterface.h>
 #include <IPXACTmodels/component.h>
-#include <IPXACTmodels/busdefinition.h>
+#include <IPXACTmodels/BusDefinition/BusDefinition.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 

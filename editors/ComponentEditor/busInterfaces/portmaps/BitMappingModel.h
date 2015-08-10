@@ -15,9 +15,11 @@
 #include <QList>
 #include <QAbstractTableModel>
 #include <QMimeData>
+#include <QSharedPointer>
 
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/abstractiondefinition.h>
+#include <IPXACTmodels/PortMap.h>
 
 class BusInterface;
 class Component;

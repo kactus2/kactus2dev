@@ -86,7 +86,7 @@ void ApiDefinitionEditor::setProtection(bool locked)
 //-----------------------------------------------------------------------------
 void ApiDefinitionEditor::refresh()
 {
-    QSharedPointer<LibraryComponent> libComp = libHandler_->getModel(*apiDef_->getVlnv());
+    QSharedPointer<Document> libComp = libHandler_->getModel(*apiDef_->getVlnv());
     apiDef_ = libComp.staticCast<ApiDefinition>();
 
     // Update the editors.
@@ -188,7 +188,7 @@ void ApiDefinitionEditor::updateComDefinition()
     // Retrieve the new COM definition if the VLNV is valid.
     if (vlnv.isValid())
     {
-        QSharedPointer<LibraryComponent const> libComp = libHandler_->getModelReadOnly(vlnv);
+        QSharedPointer<Document const> libComp = libHandler_->getModelReadOnly(vlnv);
         QSharedPointer<ComDefinition const> comDef = libComp.dynamicCast<ComDefinition const>();
         functionEditor_.setComDefinition(comDef);
     }

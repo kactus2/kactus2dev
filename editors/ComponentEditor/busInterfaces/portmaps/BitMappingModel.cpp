@@ -511,7 +511,7 @@ void BitMappingModel::setAbsType(const VLNV& absDefVlnv, General::InterfaceMode 
     }
 
     // ask library to parse the model for abstraction definition
-    QSharedPointer<LibraryComponent> libComb;
+    QSharedPointer<Document> libComb;
     if (handler_->contains(absDefVlnv))
     { 
         libComb = handler_->getModel(absDefVlnv);

@@ -83,7 +83,7 @@ void SystemMemoryMapHeaderWriter::writeMemoryMapHeader(QSharedPointer<Component>
 	foreach (const ComponentInstance& instance, design->getComponentInstances())
     {
 		VLNV instanceVLNV = instance.getComponentRef();
-		QSharedPointer<const LibraryComponent> libComp = utility_->getLibraryInterface()->
+		QSharedPointer<const Document> libComp = utility_->getLibraryInterface()->
             getModelReadOnly(instanceVLNV);
 		QSharedPointer<const Component> instComponent = libComp.dynamicCast<const Component>();
 		Q_ASSERT(instComponent);
@@ -217,7 +217,7 @@ void SystemMemoryMapHeaderWriter::searchInstanceFiles(QSharedPointer<const Compo
         return;
     }
 
-    QSharedPointer<const LibraryComponent> libDesConf = utility_->getLibraryInterface()->getModelReadOnly(hierRef);
+    QSharedPointer<const Document> libDesConf = utility_->getLibraryInterface()->getModelReadOnly(hierRef);
     QSharedPointer<const DesignConfiguration> desConf = libDesConf.dynamicCast<const DesignConfiguration>();
 
     QSharedPointer<const Design> design;
@@ -229,7 +229,7 @@ void SystemMemoryMapHeaderWriter::searchInstanceFiles(QSharedPointer<const Compo
     else
     {
         VLNV designVLNV = desConf->getDesignRef();
-        QSharedPointer<const LibraryComponent> libDes =
+        QSharedPointer<const Document> libDes =
             utility_->getLibraryInterface()->getModelReadOnly(designVLNV);
         design = libDes.dynamicCast<const Design>();
     }
@@ -290,7 +290,7 @@ void SystemMemoryMapHeaderWriter::searchInstanceFiles(QSharedPointer<const Compo
         if (!matched)
         {
             VLNV instanceVLNV = instance.getComponentRef();
-            QSharedPointer<const LibraryComponent> libComp =
+            QSharedPointer<const Document> libComp =
                 utility_->getLibraryInterface()->getModelReadOnly(instanceVLNV);
             QSharedPointer<const Component> instanceComponent = libComp.dynamicCast<const Component>();
             Q_ASSERT(instanceComponent);

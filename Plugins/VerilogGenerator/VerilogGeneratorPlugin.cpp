@@ -124,9 +124,9 @@ QIcon VerilogGeneratorPlugin::getIcon() const
 //-----------------------------------------------------------------------------
 // Function: VerilogGeneratorPlugin::checkGeneratorSupport()
 //-----------------------------------------------------------------------------
-bool VerilogGeneratorPlugin::checkGeneratorSupport(QSharedPointer<LibraryComponent const> libComp,
-    QSharedPointer<LibraryComponent const> /*libDesConf*/,
-    QSharedPointer<LibraryComponent const> /*libDes*/) const
+bool VerilogGeneratorPlugin::checkGeneratorSupport(QSharedPointer<Document const> libComp,
+    QSharedPointer<Document const> /*libDesConf*/,
+    QSharedPointer<Document const> /*libDes*/) const
 {
     QSharedPointer<const Component> targetComponent = libComp.dynamicCast<const Component>();
     
@@ -137,9 +137,9 @@ bool VerilogGeneratorPlugin::checkGeneratorSupport(QSharedPointer<LibraryCompone
 // Function: VerilogGeneratorPlugin::runGenerator()
 //-----------------------------------------------------------------------------
 void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility, 
-    QSharedPointer<LibraryComponent> libComp,
-    QSharedPointer<LibraryComponent> libDesConf,
-    QSharedPointer<LibraryComponent> libDes)
+    QSharedPointer<Document> libComp,
+    QSharedPointer<Document> libDesConf,
+    QSharedPointer<Document> libDes)
 {
     utility_ = utility;
     topComponent_ = libComp.dynamicCast<Component>();
@@ -179,20 +179,20 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
 //-----------------------------------------------------------------------------
 // Function: VerilogGeneratorPlugin::findPossibleViewNames()
 //-----------------------------------------------------------------------------
-QStringList VerilogGeneratorPlugin::findPossibleViewNames(QSharedPointer<LibraryComponent> libComp,
-    QSharedPointer<LibraryComponent> libDes, QSharedPointer<LibraryComponent> libDesConf) const
+QStringList VerilogGeneratorPlugin::findPossibleViewNames(QSharedPointer<Document> libComp,
+    QSharedPointer<Document> libDes, QSharedPointer<Document> libDesConf) const
 {
     QSharedPointer<Component> topComponent = libComp.dynamicCast<Component>();
     QSharedPointer<DesignConfiguration> designConfig = libDesConf.dynamicCast<DesignConfiguration>();
 
     QStringList viewNames;
-    if (designConfig && libDes && designConfig->getDesignRef() == *libDes->getVlnv())
+    if (designConfig && libDes && designConfig->getDesignRef() == libDes->getVlnv())
     {        
         viewNames = findReferencingViews(topComponent, *designConfig->getVlnv());
     }
     else if (libDes)
     {
-        viewNames = findReferencingViews(topComponent, *libDes->getVlnv());
+        viewNames = findReferencingViews(topComponent, libDes->getVlnv());
     }
     else
     {

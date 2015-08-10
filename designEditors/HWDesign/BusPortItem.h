@@ -13,6 +13,7 @@
 #include "HWConnectionEndpoint.h"
 
 #include <common/graphicsItems/GraphicsItemTypes.h>
+#include <IPXACTmodels/PortMap.h>
 
 class BusInterface;
 class HWComponentItem;

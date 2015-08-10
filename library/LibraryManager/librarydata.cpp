@@ -15,9 +15,12 @@
 #include <common/utils.h>
 #include <common/widgets/ScanProgressWidget/scanprogresswidget.h>
 
+#include <IPXACTmodels/BusDefinition/BusDefinition.h>
+#include <IPXACTmodels/BusDefinition/BusDefinitionReader.h>
+
 #include <IPXACTmodels/librarycomponent.h>
 #include <IPXACTmodels/abstractiondefinition.h>
-#include <IPXACTmodels/busdefinition.h>
+
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/design.h>
 #include <IPXACTmodels/designconfiguration.h>
@@ -350,14 +353,14 @@ void LibraryData::parseFile( const QString& filePath ) {
 	libraryItems_.insert(vlnv, filePath);
 }
 
-QSharedPointer<LibraryComponent> LibraryData::getModel( const VLNV& vlnv ) {
+QSharedPointer<Document> LibraryData::getModel( const VLNV& vlnv ) {
 	if (!libraryItems_.contains(vlnv)) {
 		emit noticeMessage(tr("VLNV %1:%2:%3:%4 was not found in the library").arg(
 			vlnv.getVendor()).arg(
 			vlnv.getLibrary()).arg(
 			vlnv.getName()).arg(
 			vlnv.getVersion()));
-		return QSharedPointer<LibraryComponent>();
+		return QSharedPointer<Document>();
 	}
 
 	VLNV toCreate = vlnv;
@@ -369,7 +372,7 @@ QSharedPointer<LibraryComponent> LibraryData::getModel( const VLNV& vlnv ) {
 
 	// if the file was not found
 	if (path.isEmpty()) {
-		return QSharedPointer<LibraryComponent>();
+		return QSharedPointer<Document>();
 	}
 
 	// create file handle and use it to read the IP-Xact document into memory
@@ -378,63 +381,56 @@ QSharedPointer<LibraryComponent> LibraryData::getModel( const VLNV& vlnv ) {
 	if (!doc.setContent(&file)) {
 		emit errorMessage(tr("The document %1 in file %2 could not be opened.").arg(
 			toCreate.toString()).arg(path));
-		return QSharedPointer<LibraryComponent>();
+		return QSharedPointer<Document>();
 	}
 	file.close();
 
-	QSharedPointer<LibraryComponent> libComp;
+	QSharedPointer<Document> libComp;
 
-	try {
 		// create correct type of object and cast the pointer
 		switch (toCreate.getType()) {
 			case VLNV::BUSDEFINITION: {
-				libComp = QSharedPointer<LibraryComponent>(new BusDefinition(doc));
+                BusDefinitionReader reader;
+				libComp = reader.createBusDefinitionFrom(doc);
 				break;
 									  }
 			case VLNV::COMPONENT: {
-				libComp = QSharedPointer<LibraryComponent>(new Component(doc));
+				libComp = QSharedPointer<Document>(new Component(doc));
 				break;
 								  }
 			case VLNV::DESIGN: {
-				libComp = QSharedPointer<LibraryComponent>(new Design(doc));
+				libComp = QSharedPointer<Document>(new Design(doc));
 				break;
 							   }
 
 			case VLNV::GENERATORCHAIN: {
-				libComp = QSharedPointer<LibraryComponent>(new GeneratorChain(doc));
+				libComp = QSharedPointer<Document>(new GeneratorChain(doc));
 				break;
 									   }
 			case VLNV::DESIGNCONFIGURATION: {
-				libComp = QSharedPointer<LibraryComponent>(new DesignConfiguration(doc));
+				libComp = QSharedPointer<Document>(new DesignConfiguration(doc));
 				break;
 											}
 
 			case VLNV::ABSTRACTIONDEFINITION: {
-				libComp = QSharedPointer<LibraryComponent>(new AbstractionDefinition(doc));
+				libComp = QSharedPointer<Document>(new AbstractionDefinition(doc));
 				break;
 											  }
 
             case VLNV::COMDEFINITION: {
-                libComp = QSharedPointer<LibraryComponent>(new ComDefinition(doc));
+                libComp = QSharedPointer<Document>(new ComDefinition(doc));
                 break;
                                       }
 
             case VLNV::APIDEFINITION: {
-                libComp = QSharedPointer<LibraryComponent>(new ApiDefinition(doc));
+                libComp = QSharedPointer<Document>(new ApiDefinition(doc));
                 break;
                                       }
 			default: {
 				emit noticeMessage(tr("Document was not supported type"));
-				return QSharedPointer<LibraryComponent>();
+				return QSharedPointer<Document>();
 					 }
 		}
-	}
-	// if an exception occurred during the parsing
-	catch (...) {
-		emit errorMessage(
-			tr("Error occurred during parsing of the document %1").arg(path));
-		return QSharedPointer<LibraryComponent>();
-	}
 
 	return libComp;
 }
@@ -493,7 +489,7 @@ void LibraryData::performIntegrityCheckStep()
 	if (timerStep_ < timerSteps_)
 	{
 
-		QSharedPointer<LibraryComponent> libComp = getModel(iterObjects_.key());
+		QSharedPointer<Document> libComp = getModel(iterObjects_.key());
 		// if the object could not be parsed
 		if (!libComp) {
 
@@ -541,7 +537,7 @@ void LibraryData::performIntegrityCheckStep()
 	}
 }
 
-bool LibraryData::checkObject( QSharedPointer<LibraryComponent> libComp, const QString& path, bool print /*= true*/ ) {
+bool LibraryData::checkObject( QSharedPointer<Document> libComp, const QString& path, bool print /*= true*/ ) {
 
 	// in the start assume that document is valid and if errors are 
 	// found the set document as invalid
@@ -550,7 +546,7 @@ bool LibraryData::checkObject( QSharedPointer<LibraryComponent> libComp, const Q
 	Q_ASSERT(libComp);
 
 	// used to print information to user
-	VLNV vlnv(*libComp->getVlnv());
+	VLNV vlnv(libComp->getVlnv());
 
 	// inform the user of the object being processed
 
@@ -573,7 +569,7 @@ bool LibraryData::checkObject( QSharedPointer<LibraryComponent> libComp, const Q
 
 	// check if the component xml is valid and if not then print errors of the component
 	QStringList errorList;
-	if (!libComp->isValid(errorList)) {
+	/*if (!libComp->isValid(errorList)) {
 
 		// if theres no printing then there is no reason to check further errors
 		if (!print) {
@@ -591,7 +587,7 @@ bool LibraryData::checkObject( QSharedPointer<LibraryComponent> libComp, const Q
 		}
 		errors_ += errorList.size();
 		syntaxErrors_ += errorList.size();
-	}
+	}*/
 
 	// check that all VLNVs needed by this model are found in the library
 	QList<VLNV> vlnvList = libComp->getDependentVLNVs();

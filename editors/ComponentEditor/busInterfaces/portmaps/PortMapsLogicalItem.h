@@ -20,6 +20,7 @@
 #include <QSharedPointer>
 
 #include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/PortMap.h>
 
 class AbstractionDefinition;
 class BusInterface;

@@ -377,7 +377,7 @@ bool VhdlGenerator2::parseDesignAndConfiguration() {
 
 	// if configuration is used
 	if (documentType == VLNV::DESIGNCONFIGURATION) {
-		QSharedPointer<LibraryComponent> libComp = handler_->getModel(hierarchyRef);
+		QSharedPointer<Document> libComp = handler_->getModel(hierarchyRef);
 		desConf_ = libComp.staticCast<DesignConfiguration>();
 	}
 	// if the referenced document was not found
@@ -507,7 +507,7 @@ void VhdlGenerator2::parseInstances() {
 
 		// if component declaration is not yet created then create it
 		else {
-			QSharedPointer<LibraryComponent> libComp = handler_->getModel(instance.getComponentRef());
+			QSharedPointer<Document> libComp = handler_->getModel(instance.getComponentRef());
 			QSharedPointer<Component> component = libComp.staticCast<Component>();
 			Q_ASSERT(component);
 			compDeclaration = QSharedPointer<VhdlComponentDeclaration>(

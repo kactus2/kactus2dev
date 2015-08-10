@@ -13,6 +13,7 @@
 #include "ipxactmodels_global.h"
 
 #include <IPXACTmodels/kactusExtensions/Kactus2Value.h>
+#include <IPXACTmodels/common/Document.h>
 
 #include <QString>
 #include <QList>
@@ -30,7 +31,7 @@ class VendorExtension;
  * of the components, designs, busdefinitions, etc.
  *
  */
-class IPXACTMODELS_EXPORT LibraryComponent {
+class IPXACTMODELS_EXPORT LibraryComponent : public Document {
 
 public:
 
@@ -75,7 +76,7 @@ public:
 	 *
 	 * \return QSharedPointer<LibraryComponent> Pointer to the cloned library component.
 	*/
-	virtual QSharedPointer<LibraryComponent> clone() const = 0;
+	//virtual QSharedPointer<LibraryComponent> clone() const = 0;
 
 	/*! \brief Check the validity of the library component.
 	 * 
@@ -147,7 +148,7 @@ public:
 	 *
 	 * \return QStringList containing the file dependencies of the document.
 	 */
-	virtual const QStringList getDependentFiles() const = 0;
+	virtual QStringList getDependentFiles() const = 0;
 
 	/*! \brief Get the dependent directories of the object. Default returns empty list.
 	 *
@@ -158,13 +159,13 @@ public:
 	 *
 	 * \return empty list, reimplement in sub-classes.
 	*/
-	virtual const QStringList getDependentDirs() const;
+	virtual QStringList getDependentDirs() const;
 
 	/*! \brief A pure virtual function to be implemented by subclasses.
 	 *
 	 * \return QList containing VLNVs that are needed by this document.
 	 */
-	virtual const QList<VLNV> getDependentVLNVs()const = 0;
+	virtual QList<VLNV> getDependentVLNVs() const = 0;
 
 	/*! \brief Write the model to disk as an IP-Xact document.
 	 *
@@ -194,39 +195,6 @@ public:
 	 *
 	 */
 	 virtual void writeVLNV(QXmlStreamWriter& writer);
-
-	/*! \brief Get the comments from the beginning of the XML file.
-	 *
-	 * Method: 		getTopComments
-	 * Full name:	LibraryComponent::getTopComments
-	 * Access:		virtual public 
-	 *
-	 *
-	 * \return QStringList containing the XML header comment lines.
-	*/
-	virtual QStringList getTopComments() const;
-
-	/*! \brief Set the top header comments for the XML file.
-	 *
-	 * Method: 		setTopComments
-	 * Full name:	LibraryComponent::setTopComments
-	 * Access:		virtual public 
-	 *
-	 * \param comment QString containing the comments, if string contains line breaks it chopped to separate strings.
-	 *
-	*/
-	virtual void setTopComments(const QString& comment);
-
-	/*! \brief Set the top header comments for the XML file.
-	 *
-	 * Method: 		setTopComments
-	 * Full name:	LibraryComponent::setTopComments
-	 * Access:		virtual public 
-	 *
-	 * \param comments QStringList which contains the comment lines of the XML header.
-	 *
-	*/
-	virtual void setTopComments(const QStringList& comments);
 
     /*!
      *  Sets the vendor extensions in the library component.
@@ -304,12 +272,6 @@ protected:
 	 * OPTIONAL
 	 */
 	QString description_;
-
-	//! \brief Contains the kactus2 attributes for the IP-Xact object.
-	QMap<QString, QString> kactus2Attributes_;
-
-	//! \brief Contains the comment lines from the beginning of the document.
-	QStringList topComments_;
 
     //! Component vendor extensions.
     QList<QSharedPointer<VendorExtension> > vendorExtensions_;

@@ -70,7 +70,7 @@ void HierarchicalSaveBuildStrategy::saveItem(QTreeWidgetItem* item) const
 
         if (library_->contains(oldVLNV))
         {
-            QSharedPointer<LibraryComponent> newModel = library_->getModel(oldVLNV);
+            QSharedPointer<Document> newModel = library_->getModel(oldVLNV);
             newModel->setVlnv(newVLNV);
 
             int childCount = item->childCount();
@@ -270,7 +270,7 @@ bool HierarchicalSaveBuildStrategy::shouldSaveItem(QTreeWidgetItem* item) const
 //-----------------------------------------------------------------------------
 // Function: HierarchicalSaveBuildStrategy::updateReferencesTo()
 //-----------------------------------------------------------------------------
-void HierarchicalSaveBuildStrategy::updateReferencesFromTo(QSharedPointer<LibraryComponent> model, 
+void HierarchicalSaveBuildStrategy::updateReferencesFromTo(QSharedPointer<Document> model, 
     QTreeWidgetItem* childItem) const
 {
     VLNV childVLNV = VLNV(VLNV::COMPONENT, childItem->text(HierarchicalSaveColumns::VLNV));
@@ -278,11 +278,11 @@ void HierarchicalSaveBuildStrategy::updateReferencesFromTo(QSharedPointer<Librar
 
     VLNV newChildVLNV = VLNV(childVLNV.getType(), childItem->text(HierarchicalSaveColumns::SAVE_AS_VLNV));
 
-    if (model->getVlnv()->getType() == VLNV::COMPONENT)
+    if (model->getVlnv().getType() == VLNV::COMPONENT)
     {
         updateComponentReferences(model.dynamicCast<Component>(), childVLNV, newChildVLNV);
     }
-    else if (model->getVlnv()->getType() == VLNV::DESIGN)
+    else if (model->getVlnv().getType() == VLNV::DESIGN)
     {
         updateDesignReferences(model.dynamicCast<Design>(), childVLNV, newChildVLNV);
     }
@@ -302,7 +302,7 @@ void HierarchicalSaveBuildStrategy::updateComponentReferences(QSharedPointer<Com
         {
             VLNV hierarchyReference = view->getHierarchyRef();
 
-            QSharedPointer<LibraryComponent> configModel = library_->getModel(hierarchyReference);
+            QSharedPointer<Document> configModel = library_->getModel(hierarchyReference);
             QSharedPointer<DesignConfiguration> config = configModel.dynamicCast<DesignConfiguration>(); 
 
             if (hierarchyReference == reference)
@@ -327,7 +327,7 @@ void HierarchicalSaveBuildStrategy::updateComponentReferences(QSharedPointer<Com
     foreach (QString viewName, component->getSWViewNames())
     {
         QSharedPointer<SWView> view = component->findSWView(viewName);
-        QSharedPointer<LibraryComponent> configModel = library_->getModel(view->getHierarchyRef());
+        QSharedPointer<Document> configModel = library_->getModel(view->getHierarchyRef());
         QSharedPointer<DesignConfiguration> config = configModel.dynamicCast<DesignConfiguration>(); 
 
         if (view->getHierarchyRef() == reference)
@@ -351,7 +351,7 @@ void HierarchicalSaveBuildStrategy::updateComponentReferences(QSharedPointer<Com
     foreach (QString viewName, component->getSystemViewNames())
     {
         SystemView* view = component->findSystemView(viewName);
-        QSharedPointer<LibraryComponent> configModel = library_->getModel(view->getHierarchyRef());
+        QSharedPointer<Document> configModel = library_->getModel(view->getHierarchyRef());
         QSharedPointer<DesignConfiguration> config = configModel.dynamicCast<DesignConfiguration>(); 
 
         if (view->getHierarchyRef() == reference)
@@ -409,9 +409,9 @@ void HierarchicalSaveBuildStrategy::updateDesignReferences(QSharedPointer<Design
 // Function: SaveHierarchyDialog::saveToLibrary()
 //-----------------------------------------------------------------------------
 void HierarchicalSaveBuildStrategy::saveToLibrary(VLNV const& previousReference,
-    QSharedPointer<LibraryComponent> model) const
+    QSharedPointer<Document> model) const
 {
-    if (!library_->contains(*model->getVlnv()))
+    if (!library_->contains(model->getVlnv()))
     {
         QString path;
         if (saveMode_ == CURRENT_DIRECTORY)
@@ -425,7 +425,7 @@ void HierarchicalSaveBuildStrategy::saveToLibrary(VLNV const& previousReference,
         }
         else //if (saveMode_ == COMMON_ROOT_DIRECTORY)
         {
-            path = savePath_ + "/" + model->getVlnv()->toString("/");
+            path = savePath_ + "/" + model->getVlnv().toString("/");
         }
 
         library_->writeModelToFile(path, model);

@@ -82,7 +82,7 @@ BusDefinition & BusDefinition::operator=(BusDefinition const& other)
 //-----------------------------------------------------------------------------
 BusDefinition::~BusDefinition()
 {
-	systemGroupNames_.clear();    
+
 }
 
 //-----------------------------------------------------------------------------

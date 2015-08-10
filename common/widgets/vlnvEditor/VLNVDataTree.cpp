@@ -240,7 +240,7 @@ void VLNVDataTree::parseSubtree(LibraryInterface* lh, LibraryItem const* libItem
 
             // Retrieve the library component for filtering. Filtering is possible only if the
             // library component is an IP-XACT component.
-            QSharedPointer<LibraryComponent const> libComp = lh->getModelReadOnly(vlnv);
+            QSharedPointer<Document const> libComp = lh->getModelReadOnly(vlnv);
             QSharedPointer<Component const> component = libComp.dynamicCast<Component const>();
 
             if (component == 0 ||

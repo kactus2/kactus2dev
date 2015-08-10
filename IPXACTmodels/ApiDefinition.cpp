@@ -60,8 +60,11 @@ ApiDefinition::ApiDefinition(QDomDocument& doc)
     while (!nodeList.at(i).hasChildNodes())
     {
 		// if the node is for a header comment
-		if (nodeList.at(i).isComment()) {
-			topComments_.append(nodeList.at(i).nodeValue());
+		if (nodeList.at(i).isComment())
+        {
+            QStringList comments = getTopComments();
+            comments.append(nodeList.at(i).nodeValue());
+            setTopComments(comments);
 		}
         ++i;
     }
@@ -108,9 +111,9 @@ ApiDefinition::~ApiDefinition()
 //-----------------------------------------------------------------------------
 // Function: ApiDefinition::clone()
 //-----------------------------------------------------------------------------
-QSharedPointer<LibraryComponent> ApiDefinition::clone() const
+QSharedPointer<Document> ApiDefinition::clone() const
 {
-    return QSharedPointer<LibraryComponent>(new ApiDefinition(*this));
+    return QSharedPointer<Document>(new ApiDefinition(*this));
 }
 
 //-----------------------------------------------------------------------------
@@ -296,7 +299,7 @@ bool ApiDefinition::isValid() const
 //-----------------------------------------------------------------------------
 // Function: ApiDefinition::getDependentFiles()
 //-----------------------------------------------------------------------------
-QStringList const ApiDefinition::getDependentFiles() const
+QStringList ApiDefinition::getDependentFiles() const
 {
     return QStringList();
 }
@@ -304,7 +307,7 @@ QStringList const ApiDefinition::getDependentFiles() const
 //-----------------------------------------------------------------------------
 // Function: ApiDefinition::getDependentVLNVs()
 //-----------------------------------------------------------------------------
-QList<VLNV> const ApiDefinition::getDependentVLNVs() const
+QList<VLNV> ApiDefinition::getDependentVLNVs() const
 {
     QList<VLNV> vlnvs;
 

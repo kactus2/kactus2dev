@@ -385,7 +385,7 @@ void PortMapsTreeModel::setAbsType(const VLNV& vlnv, General::InterfaceMode mode
     }
 
     // ask library to parse the model for abstraction definition
-    QSharedPointer<LibraryComponent> libComb;
+    QSharedPointer<Document> libComb;
     if (handler_->contains(vlnv)) 
     {
         libComb = handler_->getModel(vlnv);

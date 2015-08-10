@@ -78,7 +78,7 @@ bool ComponentEditorSystemViewItem::canBeOpened() const {
 	// check that the reference has not been changed
 	// if it has then there is no way to open the design because the changes have not
 	// been made to the library
-	QSharedPointer<LibraryComponent const> libComp = libHandler_->getModelReadOnly(*component_->getVlnv());
+	QSharedPointer<Document const> libComp = libHandler_->getModelReadOnly(*component_->getVlnv());
 	QSharedPointer<Component const> comp = libComp.staticCast<Component const>();
 	VLNV originalRef = comp->getHierSystemRef(systemView_->name());
 	return originalRef == systemView_->getHierarchyRef();

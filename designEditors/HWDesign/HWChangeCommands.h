@@ -12,8 +12,9 @@
 #ifndef HWCHANGECOMMANDS_H
 #define HWCHANGECOMMANDS_H
 
-#include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/ApiInterface.h>
+#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/PortMap.h>
 
 #include <QUndoCommand>
 #include <QGraphicsItem>

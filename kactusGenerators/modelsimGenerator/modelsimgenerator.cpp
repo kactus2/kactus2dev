@@ -308,7 +308,7 @@ void ModelsimGenerator::parseFiles( QSharedPointer<Component> component, const Q
 			
 			// parse the design configuration
 			desConfVLNV = vlnv;
-			QSharedPointer<LibraryComponent> libComp = handler_->getModel(desConfVLNV);
+			QSharedPointer<Document> libComp = handler_->getModel(desConfVLNV);
 			designConf = libComp.staticCast<DesignConfiguration>();
 			
 			// find the referenced design
@@ -344,7 +344,7 @@ void ModelsimGenerator::parseFiles( QSharedPointer<Component> component, const Q
 		}
 
 		// parse the design
-		QSharedPointer<LibraryComponent> libComp = handler_->getModel(designVLNV);
+		QSharedPointer<Document> libComp = handler_->getModel(designVLNV);
 		design = libComp.staticCast<Design>();
 
 		// read the design and it's component instances
@@ -459,10 +459,10 @@ void ModelsimGenerator::readDesign( const QSharedPointer<Design> design,
 		}
 
 		QSharedPointer<Component> component;
-		QSharedPointer<LibraryComponent> libComp = handler_->getModel(vlnv);
+		QSharedPointer<Document> libComp = handler_->getModel(vlnv);
 		
 		// if library item is component
-		if (libComp->getVlnv()->getType() == VLNV::COMPONENT)
+		if (libComp->getVlnv().getType() == VLNV::COMPONENT)
 			component = libComp.staticCast<Component>();
 		
 		// if item was not component

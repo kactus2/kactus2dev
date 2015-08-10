@@ -387,7 +387,7 @@ void ConnectionEditor::setPortMaps() {
 	VLNV absDefVLNV = busIf1->getAbstractionType();
 	QSharedPointer<AbstractionDefinition> absDef;
 	if (handler_->getDocumentType(absDefVLNV) == VLNV::ABSTRACTIONDEFINITION) {
-		QSharedPointer<LibraryComponent> libComp = handler_->getModel(absDefVLNV);
+		QSharedPointer<Document> libComp = handler_->getModel(absDefVLNV);
 		absDef = libComp.staticCast<AbstractionDefinition>();
 	}
 

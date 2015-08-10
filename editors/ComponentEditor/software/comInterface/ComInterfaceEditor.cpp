@@ -150,7 +150,7 @@ void ComInterfaceEditor::onComDefinitionChanged()
     if (comType_->getVLNV().isValid())
     {
         // Retrieve the COM definition from the library.
-        QSharedPointer<LibraryComponent const> libComp = libInterface_->getModelReadOnly(comType_->getVLNV());
+        QSharedPointer<Document const> libComp = libInterface_->getModelReadOnly(comType_->getVLNV());
         QSharedPointer<ComDefinition const> comDef = libComp.dynamicCast<ComDefinition const>();
 
         if (comDef == 0)
@@ -212,7 +212,7 @@ void ComInterfaceEditor::refresh() {
 	if (comVLNV.isValid())
 	{
 		// Retrieve the COM definition from the library.
-		QSharedPointer<LibraryComponent const> libComp = libInterface_->getModelReadOnly(comVLNV);
+		QSharedPointer<Document const> libComp = libInterface_->getModelReadOnly(comVLNV);
 		QSharedPointer<ComDefinition const> comDef = libComp.dynamicCast<ComDefinition const>();
 
 		if (comDef == 0)

@@ -35,20 +35,20 @@ bool getDesign(LibraryInterface* lh, VLNV& designVLNV,
     // Check if the component contains a direct reference to a design.
     if (designVLNV.getType() == VLNV::DESIGN)
     {
-        QSharedPointer<LibraryComponent const> libComp = lh->getModelReadOnly(designVLNV);
+        QSharedPointer<Document const> libComp = lh->getModelReadOnly(designVLNV);
         design = libComp.staticCast<Design const>();
     }
     // Otherwise check if the component had reference to a design configuration.
     else if (designVLNV.getType() == VLNV::DESIGNCONFIGURATION)
     {
-        QSharedPointer<LibraryComponent const> libComp = lh->getModelReadOnly(designVLNV);
+        QSharedPointer<Document const> libComp = lh->getModelReadOnly(designVLNV);
         designConf = libComp.staticCast<DesignConfiguration const>();
 
         designVLNV = designConf->getDesignRef();
 
         if (designVLNV.isValid())
         {
-            QSharedPointer<LibraryComponent const> libComp = lh->getModelReadOnly(designVLNV);
+            QSharedPointer<Document const> libComp = lh->getModelReadOnly(designVLNV);
             design = libComp.staticCast<Design const>();
         }
 
@@ -172,7 +172,7 @@ void parseProgrammableElementsV2(LibraryInterface* lh, VLNV designVLNV,
     {
         if (!instance.isDraft())
         {
-            QSharedPointer<LibraryComponent> libComp = lh->getModel(instance.getComponentRef());
+            QSharedPointer<Document> libComp = lh->getModel(instance.getComponentRef());
             QSharedPointer<Component> childComp = libComp.staticCast<Component>();
 
             if (childComp)
@@ -233,7 +233,7 @@ void addNewInstancesV2(QList<ComponentInstance> const& elements,
         hwInstances.append(instance);
 
         // Import SW components from SW design if found.
-        QSharedPointer<LibraryComponent const> libComp = lh->getModelReadOnly(instance.getComponentRef());
+        QSharedPointer<Document const> libComp = lh->getModelReadOnly(instance.getComponentRef());
         QSharedPointer<Component const> component = libComp.staticCast<Component const>();
 
         if (component != 0 && component->hasSWViews())
@@ -395,7 +395,7 @@ void updateSystemDesignV2(LibraryInterface* lh,
     // 4. PHASE: Parse SW designs from active SW views to retrieve the imported SW instances.
     foreach (ComponentInstance const& hwInstance, hwInstances)
     {
-        QSharedPointer<LibraryComponent const> libComp = lh->getModelReadOnly(hwInstance.getComponentRef());
+        QSharedPointer<Document const> libComp = lh->getModelReadOnly(hwInstance.getComponentRef());
         QSharedPointer<Component const> component = libComp.staticCast<Component const>();
 
         QString viewName = "";

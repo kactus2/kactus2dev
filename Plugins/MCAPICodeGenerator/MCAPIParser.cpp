@@ -95,7 +95,7 @@ void MCAPIParser::parseTopLevel(QSharedPointer<Design> design, QSharedPointer<Co
         VLNV instanceVLNV = instance.getComponentRef();
         VLNV* designVLNV = design->getVlnv();
 
-        QSharedPointer<LibraryComponent> instanceLibComp = utility_->getLibraryInterface()->getModel(instanceVLNV);
+        QSharedPointer<Document> instanceLibComp = utility_->getLibraryInterface()->getModel(instanceVLNV);
         QSharedPointer<Component> instanceComp = instanceLibComp.dynamicCast<Component>();
 
         // Check if can generate the component, return if cannot
@@ -164,7 +164,7 @@ bool MCAPIParser::canGenerateMCAPIComponent(QSharedPointer<Component> component)
             hasMcapi = true;
         }
 
-        QSharedPointer<LibraryComponent> libCom = utility_->getLibraryInterface()->getModel(comIf->getComType());
+        QSharedPointer<Document> libCom = utility_->getLibraryInterface()->getModel(comIf->getComType());
         QSharedPointer<ComDefinition> comDef = libCom.dynamicCast<ComDefinition>();
 
         checkRequiredPropertiesSet(component->getVlnv()->toString(), comDef, comIf, errorList);
@@ -221,7 +221,7 @@ void MCAPIParser::findEndpointDefinitions(QSharedPointer<const Design> design, S
 
         // Obtain the component object corresponding the software instance.
         VLNV instanceVLNV = targetInstance.getComponentRef();
-        QSharedPointer<LibraryComponent> instanceLibComp = utility_->getLibraryInterface()->getModel(instanceVLNV);
+        QSharedPointer<Document> instanceLibComp = utility_->getLibraryInterface()->getModel(instanceVLNV);
         QSharedPointer<Component> instanceComp = instanceLibComp.dynamicCast<Component>();
 
         if ( instanceComp == 0 )

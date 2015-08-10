@@ -98,7 +98,7 @@ void MakefileParser::parse(LibraryInterface* library, QSharedPointer<Component> 
     {
         // The VLNV and the component of the instance are needed.
         const VLNV softwareVLNV = softInstance.getComponentRef();
-        QSharedPointer<LibraryComponent> instanceLibSWComp = library->getModel(softwareVLNV);
+        QSharedPointer<Document> instanceLibSWComp = library->getModel(softwareVLNV);
         QSharedPointer<Component> softComponent = instanceLibSWComp.dynamicCast<Component>();
 
         // Lower levels of a stack do not get their own instances.
@@ -272,7 +272,7 @@ QSharedPointer<SWView> MakefileParser::parseHWMakeObjects(QSharedPointer<const D
 
         // Get the component of the hardware instance.
         const VLNV hardwareVLNV = hwInstance->getComponentRef();
-        QSharedPointer<LibraryComponent> instanceLibHWComp = library->getModel(hardwareVLNV);
+        QSharedPointer<Document> instanceLibHWComp = library->getModel(hardwareVLNV);
         QSharedPointer<Component> hardComponent = instanceLibHWComp.dynamicCast<Component>();
 
         // The get the active software view from it.
@@ -429,7 +429,7 @@ QSharedPointer<Component> MakefileParser::searchSWComponent(LibraryInterface* li
 
     // Obtain the component of the instance.
     VLNV instanceVLNV = targetInstance.getComponentRef();
-    QSharedPointer<LibraryComponent> instanceLibComp = library->getModel(instanceVLNV);
+    QSharedPointer<Document> instanceLibComp = library->getModel(instanceVLNV);
     QSharedPointer<Component> instanceComp = instanceLibComp.dynamicCast<Component>();
 
     return instanceComp;

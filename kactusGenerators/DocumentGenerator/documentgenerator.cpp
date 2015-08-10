@@ -142,7 +142,7 @@ expressionFormatter_()
 	connect(this, SIGNAL(noticeMessage(const QString&)),
 		parent, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 
-	QSharedPointer<LibraryComponent> libComp = handler_->getModel(vlnv);
+	QSharedPointer<Document> libComp = handler_->getModel(vlnv);
 	component_ = libComp.staticCast<Component>();
 
     expressionFormatter_ = expressionFormatterFactory_->makeExpressionFormatter(component_);
@@ -971,7 +971,7 @@ void DocumentGenerator::writeView( QSharedPointer<View> view, QTextStream& strea
 	VLNV designVLNV;
 	VLNV desConfVLNV;
 
-	QSharedPointer<LibraryComponent> libComp = handler_->getModel(vlnv);
+	QSharedPointer<Document> libComp = handler_->getModel(vlnv);
 	
 	// if the hierarchical reference was for design configuration
 	if (handler_->getDocumentType(vlnv) == VLNV::DESIGNCONFIGURATION) {
@@ -1100,7 +1100,7 @@ void DocumentGenerator::writeView( QSharedPointer<View> view, QTextStream& strea
 		
         VLNV tempVlnv = instance.getComponentRef();
 
-        QSharedPointer<LibraryComponent> libComp = handler_->getModel(tempVlnv);
+        QSharedPointer<Document> libComp = handler_->getModel(tempVlnv);
         QSharedPointer<Component> component = libComp.staticCast<Component>();
 
         ExpressionFormatter* equationFormatter = expressionFormatterFactory_->makeExpressionFormatter(component);

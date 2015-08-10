@@ -94,7 +94,7 @@ public:
 	 *
 	 * \return QSharedPointer<LibraryComponent> Pointer to the cloned generator chain.
 	*/
-	virtual QSharedPointer<LibraryComponent> clone() const;
+	virtual QSharedPointer<Document> clone() const;
 
 	/*! \brief Write the document contents into file.
 	*
@@ -248,14 +248,14 @@ public:
 	 * \return QStringList containing filepaths to files that this
 	 * generatorChain needs.
 	 */
-	virtual const QStringList getDependentFiles() const;
+	virtual QStringList getDependentFiles() const;
 
 	/*! \brief Get list of the VLNVs this generatorChain needs.
 	 *
 	 * \return List containing VLNVs of other generatorChains that this
 	 * generatorChain needs.
 	 */
-	virtual const QList<VLNV> getDependentVLNVs() const;
+	virtual QList<VLNV> getDependentVLNVs() const;
 
 private:
 

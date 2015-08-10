@@ -616,7 +616,7 @@ void PadsPartGeneratorDialog::insertGate(QString const& name, int decals, int pi
 void PadsPartGeneratorDialog::insertPins(QSharedPointer<BusInterface> busInterface, QTextCursor& cursor)
 {
     // Get the abstract definition of the bus interface for resolving the logical signal size.
-    QSharedPointer<LibraryComponent> libComp = libHandler_->getModel(busInterface->getAbstractionType());
+    QSharedPointer<Document> libComp = libHandler_->getModel(busInterface->getAbstractionType());
     QSharedPointer<AbstractionDefinition> absDef = libComp.staticCast<AbstractionDefinition>();
     bool showLogicalIndex = false;     
 

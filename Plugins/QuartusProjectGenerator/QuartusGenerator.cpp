@@ -426,7 +426,7 @@ void QuartusGenerator::parseFilesFromHierarchicalView(View* view, QSharedPointer
     if (vlnv.getType() == VLNV::DESIGNCONFIGURATION)
     {
         desConfVLNV = vlnv;
-        QSharedPointer<LibraryComponent> libComp = handler_->getModel(desConfVLNV);
+        QSharedPointer<Document> libComp = handler_->getModel(desConfVLNV);
         designConf = libComp.staticCast<DesignConfiguration>();
 
         designVLNV = designConf->getDesignRef();
@@ -449,7 +449,7 @@ void QuartusGenerator::parseFilesFromHierarchicalView(View* view, QSharedPointer
         return;
     }
 
-    QSharedPointer<LibraryComponent> libComp = handler_->getModel(designVLNV);
+    QSharedPointer<Document> libComp = handler_->getModel(designVLNV);
     design = libComp.staticCast<Design>();
 
     readDesign(design, designConf);
@@ -482,9 +482,9 @@ void QuartusGenerator::readDesign(const QSharedPointer<Design> design,
 		}
 
 		QSharedPointer<Component> component;
-		QSharedPointer<LibraryComponent> libComp = handler_->getModel(vlnv);
+		QSharedPointer<Document> libComp = handler_->getModel(vlnv);
 
-		if (libComp->getVlnv()->getType() == VLNV::COMPONENT)
+		if (libComp->getVlnv().getType() == VLNV::COMPONENT)
         {
 			component = libComp.staticCast<Component>();
         }

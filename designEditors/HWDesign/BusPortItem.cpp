@@ -18,7 +18,7 @@
 
 #include <IPXACTmodels/businterface.h>
 #include <IPXACTmodels/component.h>
-#include <IPXACTmodels/busdefinition.h>
+#include <IPXACTmodels/BusDefinition/BusDefinition.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 
@@ -359,7 +359,7 @@ bool BusPortItem::isConnectionValid(ConnectionEndpoint const* other) const
         General::InterfaceMode otherMode = otherBusIf->getInterfaceMode();
 
         // Retrieve the bus definition to get access to the direct connection flag.
-        QSharedPointer<LibraryComponent const> libComp = lh_->getModelReadOnly(busInterface_->getBusType());
+        QSharedPointer<Document const> libComp = lh_->getModelReadOnly(busInterface_->getBusType());
         QSharedPointer<BusDefinition const> busDef = libComp.dynamicCast<BusDefinition const>();
 
         bool directConnection = busDef == 0 || busDef->getDirectConnection();
@@ -791,7 +791,7 @@ QList<General::InterfaceMode> BusPortItem::getOpposingModes(QSharedPointer<BusIn
     case General::MASTER:
         {
             // Try to determine whether this port should be slave or mirrored-master.
-            QSharedPointer<LibraryComponent> libComp = lh_->getModel(busIf->getBusType());
+            QSharedPointer<Document> libComp = lh_->getModel(busIf->getBusType());
             QSharedPointer<BusDefinition> busDef = libComp.dynamicCast<BusDefinition>();
 
             if (busDef == 0)
@@ -816,7 +816,7 @@ QList<General::InterfaceMode> BusPortItem::getOpposingModes(QSharedPointer<BusIn
     case General::SLAVE:
         {
             // Try to determine whether this port should be slave or mirrored-master.
-            QSharedPointer<LibraryComponent> libComp = lh_->getModel(busIf->getBusType());
+            QSharedPointer<Document> libComp = lh_->getModel(busIf->getBusType());
             QSharedPointer<BusDefinition> busDef = libComp.dynamicCast<BusDefinition>();
 
             if (busDef == 0)

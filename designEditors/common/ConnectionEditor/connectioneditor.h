@@ -14,6 +14,7 @@
 
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/component.h>
+#include <IPXACTmodels/PortMap.h>
 
 #include <QWidget>
 #include <QLineEdit>

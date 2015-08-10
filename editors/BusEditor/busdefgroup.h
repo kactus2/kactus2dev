@@ -7,7 +7,7 @@
 #ifndef BUSDEFGROUP_H
 #define BUSDEFGROUP_H
 
-#include <IPXACTmodels/busdefinition.h>
+#include <IPXACTmodels/BusDefinition/BusDefinition.h>
 
 #include <QGroupBox>
 #include <QCheckBox>
@@ -81,10 +81,10 @@ private:
 	QCheckBox isAddressable_;
 
 	//! \brief Spin box to set the maximum number of masters
-	QLineEdit maxMasters_;
+	QLineEdit maxMastersEditor_;
 
 	//! \brief Spin box to set the maximum number of slaves
-	QLineEdit maxSlaves_;
+	QLineEdit maxSlavesEditor_;
 
     //! Editor for bus definition description.
     QPlainTextEdit descriptionEditor_;

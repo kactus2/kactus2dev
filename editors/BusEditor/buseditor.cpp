@@ -74,11 +74,11 @@ absDefGroup_(libHandler ,this)
 
     if (busDef_)
     {
-        VLNV const* vlnv = busDef_->getVlnv();
-        setDocumentName(vlnv->getName() + " (" + vlnv->getVersion() + ")");
+        VLNV vlnv = busDef_->getVlnv();
+        setDocumentName(vlnv.getName() + " (" + vlnv.getVersion() + ")");
 
         // Open in unlocked mode by default only if the version is draft.
-        setProtection(vlnv->getVersion() != "draft");
+        setProtection(vlnv.getVersion() != "draft");
     }
     else
     {
@@ -91,6 +91,7 @@ absDefGroup_(libHandler ,this)
 //-----------------------------------------------------------------------------
 BusEditor::~BusEditor()
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -110,10 +111,10 @@ bool BusEditor::validate(QStringList& errorList)
     }
 
     // if bus definition is being edited
-    if (busDefGroup_.isEnabled())
-    {
-        valid = busDef_->isValid(errorList) && valid;
-    }
+     if (busDefGroup_.isEnabled())
+//      {
+//          valid = busDef_->isValid(errorList) && valid;
+//     }
 
     return valid;
 }
@@ -128,8 +129,7 @@ bool BusEditor::save()
     {
 		// save the changes from the model to the abstraction definition
 		absDefGroup_.save();
-
-		libHandler_->writeModelToFile(absDef_);
+		libHandler_->writeModelToFile(absDef_, true);
 	}
 
 	// if bus definition is being edited
@@ -158,7 +158,7 @@ bool BusEditor::saveAs()
 	// if bus definition is being edited
 	if (busDefGroup_.isEnabled())
     {
-		if (!NewObjectDialog::saveAsDialog(this, libHandler_, *busDef_->getVlnv(), vlnv, busDirectory))
+		if (!NewObjectDialog::saveAsDialog(this, libHandler_, busDef_->getVlnv(), vlnv, busDirectory))
         {
 			return false;
 		}
@@ -179,8 +179,8 @@ bool BusEditor::saveAs()
 
 		absDefGroup_.save();
 
-		absDefVLNV = VLNV(VLNV::ABSTRACTIONDEFINITION, vlnv.getVendor(), vlnv.getLibrary(),
-			vlnv.getName(), vlnv.getVersion());
+		absDefVLNV = VLNV(VLNV::ABSTRACTIONDEFINITION, vlnv.getVendor(), vlnv.getLibrary(),	vlnv.getName(), 
+            vlnv.getVersion());
 
 		absDef_->setVlnv(absDefVLNV);
 
@@ -290,7 +290,7 @@ VLNV BusEditor::getDocumentVLNV() const
 	// if only bus definition is being edited then use it as identifier.
 	else if (busDef_)
 	{
-	    return *busDef_->getVlnv();	
+	    return busDef_->getVlnv();	
     }
     else
 	{
@@ -336,8 +336,8 @@ void BusEditor::setBusDef(QSharedPointer<BusDefinition> busDef)
     busDefGroup_.setBusDef(busDef_);
     busDefGroup_.setDisabled(false);
 
-    VLNV const* vlnv = busDef_->getVlnv();
-    setDocumentName(vlnv->getName() + " (" + vlnv->getVersion() + ")");
+    VLNV vlnv = busDef_->getVlnv();
+    setDocumentName(vlnv.getName() + " (" + vlnv.getVersion() + ")");
 }
 
 //-----------------------------------------------------------------------------

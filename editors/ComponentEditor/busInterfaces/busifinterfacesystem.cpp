@@ -10,7 +10,7 @@
 #include "busifgeneraltab.h"
 #include <library/LibraryManager/libraryinterface.h>
 #include <IPXACTmodels/vlnv.h>
-#include <IPXACTmodels/busdefinition.h>
+#include <IPXACTmodels/BusDefinition/BusDefinition.h>
 #include <IPXACTmodels/librarycomponent.h>
 #include <IPXACTmodels/businterface.h>
 
@@ -88,7 +88,7 @@ void BusIfInterfaceSystem::refresh()
 		return;
 	}
 
-	QSharedPointer<LibraryComponent> libComp = libHandler_->getModel(busDefVLNV);
+	QSharedPointer<Document> libComp = libHandler_->getModel(busDefVLNV);
 	Q_ASSERT(libComp);
 
 	// if the library component with given vlnv was not a bus definition
@@ -109,7 +109,7 @@ void BusIfInterfaceSystem::refresh()
 
 	// reconnect the combo box
 	connect(&group_, SIGNAL(currentIndexChanged(const QString&)),
-		this, SLOT(onGroupChange(const QString&)), Qt::UniqueConnection);
+        this, SLOT(onGroupChange(const QString&)), Qt::UniqueConnection);
 }
 
 General::InterfaceMode BusIfInterfaceSystem::getInterfaceMode() const

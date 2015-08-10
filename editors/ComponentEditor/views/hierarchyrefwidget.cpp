@@ -201,7 +201,7 @@ void HierarchyRefWidget::updateDesignReference()
 
     if (library_->contains(view_->getHierarchyRef()))
     {
-        QSharedPointer<const LibraryComponent> libraryModel = library_->getModelReadOnly(view_->getHierarchyRef());
+        QSharedPointer<const Document> libraryModel = library_->getModelReadOnly(view_->getHierarchyRef());
         designConfiguration = libraryModel.dynamicCast<const DesignConfiguration>();
     }
 

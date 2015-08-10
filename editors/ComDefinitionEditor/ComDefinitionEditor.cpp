@@ -76,7 +76,7 @@ void ComDefinitionEditor::setProtection(bool locked)
 //-----------------------------------------------------------------------------
 void ComDefinitionEditor::refresh()
 {
-    QSharedPointer<LibraryComponent> libComp = libHandler_->getModel(*comDef_->getVlnv());
+    QSharedPointer<Document> libComp = libHandler_->getModel(*comDef_->getVlnv());
     comDef_ = libComp.staticCast<ComDefinition>();
 
     // Initialize the editors.

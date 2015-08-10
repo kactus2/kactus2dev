@@ -13,6 +13,7 @@
 #define SELECTINTERFACEMODEDIALOG_H
 
 #include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/PortMap.h>
 
 #include <QDialog>
 #include <QGridLayout>

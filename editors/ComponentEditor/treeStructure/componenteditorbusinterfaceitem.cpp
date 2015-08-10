@@ -58,7 +58,7 @@ bool ComponentEditorBusInterfaceItem::isValid() const {
             return false;
         }
 
-        QSharedPointer<LibraryComponent> libComp = libHandler_->getModel(busif_->getAbstractionType());
+        QSharedPointer<Document> libComp = libHandler_->getModel(busif_->getAbstractionType());
         QSharedPointer<AbstractionDefinition> absDef = libComp.dynamicCast<AbstractionDefinition>();
 
         if (absDef)

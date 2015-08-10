@@ -213,7 +213,7 @@ void InterfaceEditor::setInterface( ConnectionEndpoint* interface ) {
         // Retrieve the COM definition.
         if (interface->getComInterface()->getComType().isValid())
         {
-            QSharedPointer<LibraryComponent const> libComp =
+            QSharedPointer<Document const> libComp =
                 handler_->getModelReadOnly(interface->getComInterface()->getComType());
             comDef_ = libComp.dynamicCast<ComDefinition const>();
         }
@@ -490,7 +490,7 @@ void InterfaceEditor::setPortMaps() {
 	VLNV absDefVLNV = busIf->getAbstractionType();
 	QSharedPointer<AbstractionDefinition> absDef;
 	if (handler_->getDocumentType(absDefVLNV) == VLNV::ABSTRACTIONDEFINITION) {
-		QSharedPointer<LibraryComponent> libComp = handler_->getModel(absDefVLNV);
+		QSharedPointer<Document> libComp = handler_->getModel(absDefVLNV);
 		absDef = libComp.staticCast<AbstractionDefinition>();
 	}
 

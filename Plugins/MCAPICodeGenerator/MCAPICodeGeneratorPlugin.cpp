@@ -104,9 +104,9 @@ QIcon MCAPICodeGeneratorPlugin::getIcon() const
 //-----------------------------------------------------------------------------
 // Function: MCAPICodeGeneratorPlugin::checkGeneratorSupport()
 //-----------------------------------------------------------------------------
-bool MCAPICodeGeneratorPlugin::checkGeneratorSupport( QSharedPointer<LibraryComponent const> libComp,
-    QSharedPointer<LibraryComponent const> libDesConf,
-    QSharedPointer<LibraryComponent const> libDes ) const
+bool MCAPICodeGeneratorPlugin::checkGeneratorSupport( QSharedPointer<Document const> libComp,
+    QSharedPointer<Document const> libDesConf,
+    QSharedPointer<Document const> libDes ) const
 {
     QSharedPointer<Component const> comp = libComp.dynamicCast<Component const>();
     QSharedPointer<DesignConfiguration const> desgConf = libDesConf.dynamicCast<DesignConfiguration const>();
@@ -119,9 +119,9 @@ bool MCAPICodeGeneratorPlugin::checkGeneratorSupport( QSharedPointer<LibraryComp
 // Function: MCAPICodeGeneratorPlugin::runGenerator()
 //-----------------------------------------------------------------------------
 void MCAPICodeGeneratorPlugin::runGenerator( IPluginUtility* utility, 
-    QSharedPointer<LibraryComponent> libComp,
-    QSharedPointer<LibraryComponent> libDesConf,
-    QSharedPointer<LibraryComponent> libDes)
+    QSharedPointer<Document> libComp,
+    QSharedPointer<Document> libDesConf,
+    QSharedPointer<Document> libDes)
 {
     QSharedPointer<Design> design = libDes.dynamicCast<Design>();
     QSharedPointer<Component> comp = libComp.dynamicCast<Component>();
@@ -132,7 +132,7 @@ void MCAPICodeGeneratorPlugin::runGenerator( IPluginUtility* utility,
         MCAPIParser parser( utility );
         parser.parseMCAPIForComponent(comp);
         MCAPICodeGenerator generator( parser, utility );
-        QString dir = QFileInfo(utility->getLibraryInterface()->getPath(*libComp->getVlnv())).absolutePath(); 
+        QString dir = QFileInfo(utility->getLibraryInterface()->getPath(libComp->getVlnv())).absolutePath(); 
         generator.generateMCAPIForComponent(dir, comp);
     }
     else if ( libDes != 0 && desgConf != 0 &&

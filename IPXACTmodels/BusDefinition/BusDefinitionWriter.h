@@ -19,13 +19,15 @@
 #include <IPXACTmodels/common/ParameterWriter.h>
 #include <IPXACTmodels/common/DocumentWriter.h>
 
+#include <IPXACTmodels/ipxactmodels_global.h>
+
 class BusDefinition;
 class VLNV;
 
 //-----------------------------------------------------------------------------
 //! Writer class for IP-XACT BusDefinition element.
 //-----------------------------------------------------------------------------
-class BusDefinitionWriter : public DocumentWriter
+class IPXACTMODELS_EXPORT BusDefinitionWriter : public DocumentWriter
 {
     Q_OBJECT
 public:

@@ -167,7 +167,7 @@ public:
 	 *
 	 * \return QSharedPointer<LibraryComponent> Pointer to the cloned design configuration.
 	*/
-	virtual QSharedPointer<LibraryComponent> clone() const;
+	virtual QSharedPointer<Document> clone()  const;
 
 	/*! \brief Write the document contents into file.
 	*
@@ -288,14 +288,14 @@ public:
      *
      * \return Empty QStringList.
      */
-    virtual const QStringList getDependentFiles() const;
+    virtual QStringList getDependentFiles() const;
 
     /*! \brief Get list of the VLNVs needed by this designConfiguration.
      *
      * \return A list of pointers to VLNVs that are needed by this
      * designConfiguration.
      */
-    virtual const QList<VLNV> getDependentVLNVs() const;
+    virtual QList<VLNV> getDependentVLNVs() const;
 
 	/*! \brief Add a new view configuration to the design configuration.
 	 *

@@ -213,7 +213,7 @@ void ComponentEditor::refresh()
 	VLNV compVLNV = *component_->getVlnv();
 
 	// get the original model of the component
-	QSharedPointer<LibraryComponent> libComp = libHandler_->getModel(compVLNV);
+	QSharedPointer<Document> libComp = libHandler_->getModel(compVLNV);
 	Q_ASSERT(libHandler_->getDocumentType(compVLNV) == VLNV::COMPONENT);
 	QSharedPointer<Component> comp = libComp.staticCast<Component>();
 

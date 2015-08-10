@@ -102,7 +102,7 @@ void MemoryDesignDiagram::loadDesign(QSharedPointer<Design> design)
     // Create (HW) component instances.
     foreach (ComponentInstance const& instance, design->getComponentInstances())
     {
-        QSharedPointer<LibraryComponent> libComponent = getLibraryInterface()->getModel(instance.getComponentRef());
+        QSharedPointer<Document> libComponent = getLibraryInterface()->getModel(instance.getComponentRef());
         QSharedPointer<Component> component = libComponent.staticCast<Component>();
 
         if (!component)
@@ -626,7 +626,7 @@ QSharedPointer<Component const> MemoryDesignDiagram::getComponentByInstanceName(
     {
         if (instance.getInstanceName() == componentRef)
         {
-            QSharedPointer<LibraryComponent const> libComp =
+            QSharedPointer<Document const> libComp =
                 getLibraryInterface()->getModelReadOnly(instance.getComponentRef());
             return libComp.dynamicCast<Component const>();
         }

@@ -232,7 +232,9 @@ attributes_()
 		// if the node is for a header comment
 		if (nodeList.at(i).isComment())
         {
-			topComments_.append(nodeList.at(i).nodeValue());
+            QStringList comments = getTopComments();
+            comments.append(nodeList.at(i).nodeValue());
+            setTopComments(comments);
 		}
 		++i;
 	}
@@ -408,9 +410,9 @@ DesignConfiguration::~DesignConfiguration()
 //-----------------------------------------------------------------------------
 // Function: DesignConfiguration::clone()
 //-----------------------------------------------------------------------------
-QSharedPointer<LibraryComponent> DesignConfiguration::clone() const
+QSharedPointer<Document> DesignConfiguration::clone() const
 {
-	return QSharedPointer<LibraryComponent>(new DesignConfiguration(*this));	
+	return QSharedPointer<Document>(new DesignConfiguration(*this));	
 }
 
 //-----------------------------------------------------------------------------
@@ -508,7 +510,7 @@ void DesignConfiguration::write(QFile& file)
     }
 
     // if contains kactus2 attributes
-    if (!kactus2Attributes_.isEmpty()) 
+    if (hasKactusAttributes()) 
     {
         writer.writeStartElement("spirit:vendorExtensions");
         writer.writeStartElement("kactus2:extensions");
@@ -754,7 +756,7 @@ DesignConfiguration::getGeneratorChainConfs()
 //-----------------------------------------------------------------------------
 // Function: DesignConfiguration::getDependentFiles()
 //-----------------------------------------------------------------------------
-const QStringList DesignConfiguration::getDependentFiles() const 
+QStringList DesignConfiguration::getDependentFiles() const
 {
     // DesignConfiguration does not have any dependency files, it only has vlvn dependencies.
     return QStringList();
@@ -763,7 +765,7 @@ const QStringList DesignConfiguration::getDependentFiles() const
 //-----------------------------------------------------------------------------
 // Function: DesignConfiguration::getDependentVLNVs()
 //-----------------------------------------------------------------------------
-const QList<VLNV> DesignConfiguration::getDependentVLNVs() const
+QList<VLNV> DesignConfiguration::getDependentVLNVs() const
 {
 	QList<VLNV> vlnvList;
 
@@ -836,7 +838,7 @@ bool DesignConfiguration::hasActiveView( const QString& instanceName ) const
 //-----------------------------------------------------------------------------
 void DesignConfiguration::setDesignConfigImplementation(KactusAttribute::Implementation implementation)
 {
-    kactus2Attributes_.insert("kts_implementation", KactusAttribute::valueToString(implementation));
+    setImplementation(implementation);    
 }
 
 //-----------------------------------------------------------------------------
@@ -844,13 +846,7 @@ void DesignConfiguration::setDesignConfigImplementation(KactusAttribute::Impleme
 //-----------------------------------------------------------------------------
 KactusAttribute::Implementation DesignConfiguration::getDesignConfigImplementation() const
 {
-    KactusAttribute::Implementation implementation = KactusAttribute::HW;
-
-    if (!kactus2Attributes_.contains(QString("kts_implementation")))
-        return implementation;
-    else
-        KactusAttribute::stringToValue(kactus2Attributes_.value(QString("kts_implementation")), implementation);
-    return implementation;
+    return getImplementation();
 }
 
 //-----------------------------------------------------------------------------

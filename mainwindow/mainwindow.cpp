@@ -84,7 +84,7 @@
 #include <IPXACTmodels/design.h>
 #include <IPXACTmodels/designconfiguration.h>
 #include <IPXACTmodels/abstractiondefinition.h>
-#include <IPXACTmodels/busdefinition.h>
+#include <IPXACTmodels/BusDefinition/BusDefinition.h>
 #include <IPXACTmodels/fileset.h>
 #include <IPXACTmodels/file.h>
 #include <IPXACTmodels/ComDefinition.h>
@@ -1677,9 +1677,9 @@ void MainWindow::runGeneratorPlugin(QAction* action)
     // Retrieve the library component.
 	 VLNV compVLNV = doc->getDocumentVLNV();
 	 VLNV desVLNV = doc->getIdentifyingVLNV();
-	 QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(compVLNV);
-	 QSharedPointer<LibraryComponent> libDes;
-	 QSharedPointer<LibraryComponent> libDesConf;
+	 QSharedPointer<Document> libComp = libraryHandler_->getModel(compVLNV);
+	 QSharedPointer<Document> libDes;
+	 QSharedPointer<Document> libDesConf;
 
 	 // if the design is supported by the document type
 	 DesignWidget* desWidget = qobject_cast<DesignWidget*>(doc);
@@ -1939,7 +1939,7 @@ void MainWindow::onDocumentChanged(int index)
     {
 		configurationEditor_->setConfiguration(designwidget);
         
-        QSharedPointer<LibraryComponent> topItem = libraryHandler_->getModel(doc->getDocumentVLNV());
+        QSharedPointer<Document> topItem = libraryHandler_->getModel(doc->getDocumentVLNV());
         QSharedPointer<Component> topComponent = topItem.dynamicCast<Component>();
         if (topComponent)
         {
@@ -2210,7 +2210,7 @@ void MainWindow::createDesignForExistingComponent(VLNV const& vlnv)
     Q_ASSERT(libraryHandler_->getDocumentType(vlnv) == VLNV::COMPONENT);
 
     // Retrieve the component to which the design will be created.
-    QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(vlnv);
+    QSharedPointer<Document> libComp = libraryHandler_->getModel(vlnv);
     QSharedPointer<Component> component = libComp.staticCast<Component>();
 
     // Ask the user the VLNV, target path and view name.
@@ -2388,7 +2388,7 @@ void MainWindow::createSWDesign(VLNV const& vlnv)
     Q_ASSERT(libraryHandler_->getDocumentType(vlnv) == VLNV::COMPONENT);
 
     // Retrieve the component to which the SW design will be created.
-    QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(vlnv);
+    QSharedPointer<Document> libComp = libraryHandler_->getModel(vlnv);
     QSharedPointer<Component> component = libComp.staticCast<Component>();
 
     // Ask the user the VLNV, target path and view name.
@@ -2628,7 +2628,7 @@ void MainWindow::createSystemDesign(VLNV const& vlnv)
     libraryHandler_->beginSave();
 
     // Retrieve the component to which the system design will be created.
-    QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(vlnv);
+    QSharedPointer<Document> libComp = libraryHandler_->getModel(vlnv);
     QSharedPointer<Component> component = libComp.staticCast<Component>();
     component->setVersion(VERSION_FILESTR);
 
@@ -2765,10 +2765,10 @@ void MainWindow::createBus( VLNV const& vlnv, QString const& directory )
 	// Create the file for the bus definition.
     bool success = true;
 
-    if (!libraryHandler_->writeModelToFile(directory, busDef))
+    /*if (!libraryHandler_->writeModelToFile(directory, busDef))
     {
         success = false;
-    }
+    }*/
 
 	// create an abstraction definition
 	QSharedPointer<AbstractionDefinition> absDef = QSharedPointer<AbstractionDefinition>(new AbstractionDefinition());
@@ -2932,7 +2932,7 @@ void MainWindow::openBus(const VLNV& busDefVLNV, const VLNV& absDefVLNV, bool di
 	if (libraryHandler_->contains(busDefVLNV) && 
 		libraryHandler_->getDocumentType(busDefVLNV) == VLNV::BUSDEFINITION) {
 
-			QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(busDefVLNV);
+			QSharedPointer<Document> libComp = libraryHandler_->getModel(busDefVLNV);
 			busDef = libComp.dynamicCast<BusDefinition>();
 	}
 	else {
@@ -2950,7 +2950,7 @@ void MainWindow::openBus(const VLNV& busDefVLNV, const VLNV& absDefVLNV, bool di
 		if (libraryHandler_->contains(absDefVLNV) && 
 			libraryHandler_->getDocumentType(absDefVLNV) == VLNV::ABSTRACTIONDEFINITION) {
 
-				QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(absDefVLNV);
+				QSharedPointer<Document> libComp = libraryHandler_->getModel(absDefVLNV);
 				absDef = libComp.staticCast<AbstractionDefinition>();
 
 				editor = new BusEditor(this, libraryHandler_, busDef, absDef, disableBusDef);
@@ -3041,7 +3041,7 @@ void MainWindow::openMemoryDesign(const VLNV& vlnv, const QString& viewName, boo
     Q_ASSERT(libraryHandler_->getDocumentType(vlnv) == VLNV::COMPONENT);
 
     // parse the referenced component
-    QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(vlnv);
+    QSharedPointer<Document> libComp = libraryHandler_->getModel(vlnv);
     QSharedPointer<Component> comp = libComp.staticCast<Component>();
 
     // check if the design is already open
@@ -3096,7 +3096,7 @@ void MainWindow::openSWDesign(const VLNV& vlnv, QString const& viewName, bool fo
 	Q_ASSERT(libraryHandler_->getDocumentType(vlnv) == VLNV::COMPONENT);
 
 	// parse the referenced component
-	QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(vlnv);
+	QSharedPointer<Document> libComp = libraryHandler_->getModel(vlnv);
 	QSharedPointer<Component> comp = libComp.staticCast<Component>();
 
 	// check if the design is already open
@@ -3153,7 +3153,7 @@ void MainWindow::openSystemDesign(VLNV const& vlnv, QString const& viewName, boo
 	Q_ASSERT(libraryHandler_->getDocumentType(vlnv) == VLNV::COMPONENT);
 
 	// parse the referenced component
-	QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(vlnv);
+	QSharedPointer<Document> libComp = libraryHandler_->getModel(vlnv);
 	QSharedPointer<Component> comp = libComp.staticCast<Component>();
 
 	// check if the design is already open
@@ -3219,7 +3219,7 @@ void MainWindow::openComponent( const VLNV& vlnv, bool forceUnlocked ) {
 	QSharedPointer<Component> component;
 
 	if (libraryHandler_->contains(vlnv)) {
-		QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(vlnv);
+		QSharedPointer<Document> libComp = libraryHandler_->getModel(vlnv);
 		component = libComp.dynamicCast<Component>();
 	}
 	else {
@@ -3272,7 +3272,7 @@ void MainWindow::openComDefinition(VLNV const& vlnv, bool forceUnlocked /*= fals
 
     if (libraryHandler_->contains(vlnv))
     {
-        QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(vlnv);
+        QSharedPointer<Document> libComp = libraryHandler_->getModel(vlnv);
         comDef = libComp.dynamicCast<ComDefinition>();
     }
     else
@@ -3307,7 +3307,7 @@ void MainWindow::openApiDefinition(VLNV const& vlnv, bool forceUnlocked /*= fals
 
     if (libraryHandler_->contains(vlnv))
     {
-        QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(vlnv);
+        QSharedPointer<Document> libComp = libraryHandler_->getModel(vlnv);
         apiDef = libComp.dynamicCast<ApiDefinition>();
     }
     else
@@ -4153,7 +4153,7 @@ bool MainWindow::hasInvalidReferences(QList<VLNV> hierRefs, VLNV const& referenc
         else if (libraryHandler_->getDocumentType(ref) == VLNV::DESIGNCONFIGURATION) {
             VLNV designVLNV = libraryHandler_->getDesignVLNV(ref);
 
-            QSharedPointer<LibraryComponent> libComp2 = libraryHandler_->getModel(ref);
+            QSharedPointer<Document> libComp2 = libraryHandler_->getModel(ref);
             QSharedPointer<DesignConfiguration> desConf = libComp2.staticCast<DesignConfiguration>();
             VLNV refToDesign = desConf->getDesignRef();
 
@@ -4330,9 +4330,9 @@ void MainWindow::setPluginVisibilities()
 	// Enable/disable the plugin generator actions based on the component being edited in the document.
 	VLNV compVLNV;
 	VLNV desVLNV;
-	QSharedPointer<LibraryComponent const> libComp;
-	QSharedPointer<LibraryComponent const> libDes;
-	QSharedPointer<LibraryComponent const> libDesConf;
+	QSharedPointer<Document const> libComp;
+	QSharedPointer<Document const> libDes;
+	QSharedPointer<Document const> libDesConf;
 	if (doc != 0) {
 		compVLNV = doc->getDocumentVLNV();
 		desVLNV = doc->getIdentifyingVLNV();
@@ -4419,7 +4419,7 @@ void MainWindow::onDesignDocumentRefreshed()
 
     if (designWidget)
     {
-        QSharedPointer<LibraryComponent> topItem = libraryHandler_->getModel(doc->getDocumentVLNV());
+        QSharedPointer<Document> topItem = libraryHandler_->getModel(doc->getDocumentVLNV());
         QSharedPointer<Component> topComponent = topItem.dynamicCast<Component>();
 
         instanceEditor_->setContext(topComponent, designWidget->getDiagram()->getDesignConfiguration(),

@@ -85,10 +85,13 @@ author_()
 	while (!nodeList.at(i).hasChildNodes()) {
 		
 		// if the node is for a header comment
-		if (nodeList.at(i).isComment()) {
-			topComments_.append(nodeList.at(i).nodeValue());
+		if (nodeList.at(i).isComment())
+        {
+            QStringList comments = getTopComments();
+			comments.append(nodeList.at(i).nodeValue());
+            setTopComments(comments);
 		}
-		++i;
+		i++;
 	}
 
 	QDomNodeList children = doc.childNodes().item(i).childNodes();
@@ -752,9 +755,9 @@ Component::~Component()
 	model_.clear();
 }
 
-QSharedPointer<LibraryComponent> Component::clone() const 
+QSharedPointer<Document> Component::clone() const 
 {
-	return QSharedPointer<LibraryComponent>(new Component(*this));
+	return QSharedPointer<Document>(new Component(*this));
 }
 
 void Component::write(QFile& file) {
@@ -898,7 +901,8 @@ void Component::write(QFile& file) {
 	}
 
 	// if description is specified in the base class
-	if (!LibraryComponent::description_.isEmpty()) {
+	if (!LibraryComponent::description_.isEmpty())
+    {
 		writer.writeTextElement("spirit:description", description_);
 	}
 
@@ -917,7 +921,8 @@ void Component::write(QFile& file) {
 	}
 
 	// if contains kactus2 attributes
-	if (!kactus2Attributes_.isEmpty()) {
+	if (hasKactusAttributes())
+    {
 		writer.writeStartElement("spirit:vendorExtensions");
 		writer.writeStartElement("kactus2:extensions");
 		
@@ -1894,7 +1899,8 @@ const QList<QSharedPointer<OtherClockDriver> >& Component::getOtherClockDrivers(
 	return otherClockDrivers_;
 }
 
-const QList<VLNV> Component::getDependentVLNVs() const {
+QList<VLNV> Component::getDependentVLNVs() const
+{
 	QList<VLNV> vlnvList;
 
 	// search all bus interfaces
@@ -1943,7 +1949,8 @@ const QList<VLNV> Component::getDependentVLNVs() const {
 	return vlnvList;
 }
 
-const QStringList Component::getDependentFiles() const {
+QStringList Component::getDependentFiles() const
+{
 	QStringList files;
 
 	// find the file sets
@@ -2415,58 +2422,41 @@ void Component::setVlnv( const VLNV& vlnv ) {
 	LibraryComponent::vlnv_->setType(VLNV::COMPONENT);
 }
 
-KactusAttribute::ProductHierarchy Component::getComponentHierarchy() const {
+KactusAttribute::ProductHierarchy Component::getComponentHierarchy() const
+{
 
-	KactusAttribute::ProductHierarchy hierarchy = KactusAttribute::FLAT;
-
-	// if attribute is not found
-	if (!kactus2Attributes_.contains(QString("kts_productHier")))
-		return hierarchy;
-	else
-		KactusAttribute::stringToValue(kactus2Attributes_.value(QString("kts_productHier")),
-		hierarchy);
-
-	return hierarchy;
+    return getHierarchy();
 }
 
-KactusAttribute::Firmness Component::getComponentFirmness() const {
-	KactusAttribute::Firmness firmness = KactusAttribute::MUTABLE;
-
-	if (!kactus2Attributes_.contains(QString("kts_firmness")))
-		return firmness;
-	else
-		KactusAttribute::stringToValue(kactus2Attributes_.value(QString("kts_firmness")),
-		firmness);
-	return firmness;
+KactusAttribute::Firmness Component::getComponentFirmness() const
+{
+    return getFirmness();
 }
 
-KactusAttribute::Implementation Component::getComponentImplementation() const {
-	KactusAttribute::Implementation implementation = KactusAttribute::HW;
-
-	if (!kactus2Attributes_.contains(QString("kts_implementation")))
-		return implementation;
-	else
-		KactusAttribute::stringToValue(kactus2Attributes_.value(QString("kts_implementation")),
-		implementation);
-	return implementation;
+KactusAttribute::Implementation Component::getComponentImplementation() const
+{	
+    return getImplementation();
 }
 
 //-----------------------------------------------------------------------------
 // Function: setComponentHierarchy()
 //-----------------------------------------------------------------------------
-void Component::setComponentHierarchy(KactusAttribute::ProductHierarchy prodHier) {
-    kactus2Attributes_.insert("kts_productHier", KactusAttribute::valueToString(prodHier));
+void Component::setComponentHierarchy(KactusAttribute::ProductHierarchy prodHier)
+{
+    setHierarchy(prodHier);
 }
 
-void Component::setComponentImplementation( KactusAttribute::Implementation implementation ) {
-	kactus2Attributes_.insert("kts_implementation", KactusAttribute::valueToString(implementation));
+void Component::setComponentImplementation( KactusAttribute::Implementation implementation )
+{
+    setImplementation(implementation);	
 }
 
 //-----------------------------------------------------------------------------
 // Function: setComponentFirmness()
 //-----------------------------------------------------------------------------
-void Component::setComponentFirmness(KactusAttribute::Firmness firmness) {
-    kactus2Attributes_.insert("kts_firmness", KactusAttribute::valueToString(firmness));
+void Component::setComponentFirmness(KactusAttribute::Firmness firmness)
+{
+    setFirmness(firmness);
 }
 
 bool Component::hasModelParameters() const {
@@ -3917,7 +3907,8 @@ QStringList Component::getAllParameterNames() const {
 	return names;
 }
 
-const QStringList Component::getDependentDirs() const {
+QStringList Component::getDependentDirs() const
+{
 	QStringList dirs;
 
 	foreach (QSharedPointer<FileSet> fileSet, fileSets_) {

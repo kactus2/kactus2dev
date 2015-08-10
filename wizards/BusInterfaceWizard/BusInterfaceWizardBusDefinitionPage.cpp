@@ -15,7 +15,7 @@
 
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/abstractiondefinition.h>
-#include <IPXACTmodels/busdefinition.h>
+#include <IPXACTmodels/BusDefinition/BusDefinition.h>
 #include <editors/BusEditor/absdefgroup.h>
 #include <editors/BusEditor/busdefgroup.h>
 #include <editors/ComponentEditor/ports/portsdelegate.h>
@@ -82,7 +82,7 @@ int BusInterfaceWizardBusEditorPage::nextId() const
 //-----------------------------------------------------------------------------
 void BusInterfaceWizardBusEditorPage::initializePage()
 {   
-    QSharedPointer<LibraryComponent> libComp = handler_->getModel(busIf_->getAbstractionType());
+    QSharedPointer<Document> libComp = handler_->getModel(busIf_->getAbstractionType());
     QSharedPointer<AbstractionDefinition> absDef = libComp.dynamicCast<AbstractionDefinition>();
     portMappings_.clear();
 
@@ -106,7 +106,7 @@ void BusInterfaceWizardBusEditorPage::initializePage()
     }
 
     editor_.setAbsDef(absDef);   
-    editor_.setBusDef(handler_->getModel(busIf_->getBusType()).dynamicCast<BusDefinition>());
+    //editor_.setBusDef(handler_->getModel(busIf_->getBusType()).dynamicCast<BusDefinition>());
     editor_.setProtection(!newAbsDef);   
 }
 
@@ -255,7 +255,7 @@ void BusInterfaceWizardBusEditorPage::createPortMaps()
     QList<QSharedPointer<PortMap> > portMaps;            
     if (mappingMode_ != NO_GENERATION)
     {
-        QSharedPointer<LibraryComponent> libComp =  handler_->getModel(busIf_->getAbstractionType());
+        QSharedPointer<Document> libComp =  handler_->getModel(busIf_->getAbstractionType());
         QSharedPointer<AbstractionDefinition> absDef = libComp.dynamicCast<AbstractionDefinition>();
         if (absDef)
         {

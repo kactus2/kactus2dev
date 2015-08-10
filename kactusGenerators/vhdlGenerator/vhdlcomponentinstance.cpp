@@ -84,7 +84,7 @@ portMap_()
 				continue;
 			}
 
-			QSharedPointer<LibraryComponent> libComp = handler->getModel(j.value());
+			QSharedPointer<Document> libComp = handler->getModel(j.value());
 			QSharedPointer<AbstractionDefinition> absDef = libComp.staticCast<AbstractionDefinition>();
 
 			// if the abstraction definition has defined a default value for the port

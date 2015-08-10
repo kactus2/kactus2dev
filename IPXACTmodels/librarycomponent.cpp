@@ -30,10 +30,9 @@
 #include "XmlUtils.h"
 
 LibraryComponent::LibraryComponent(QDomDocument &doc):
+Document(),
 vlnv_(), 
 description_(),
-kactus2Attributes_(),
-topComments_(),
 vendorExtensions_()
 {
 	// get the VLNV
@@ -65,29 +64,27 @@ vendorExtensions_()
 
 // the default constructor
 LibraryComponent::LibraryComponent():
+Document(),
 vlnv_(), 
 description_(),
-kactus2Attributes_(),
 vendorExtensions_()
 {
 	vlnv_ = QSharedPointer<VLNV>(new VLNV());
 }
 
 LibraryComponent::LibraryComponent(const VLNV &vlnv):
+Document(),
 vlnv_(), 
 description_(),
-kactus2Attributes_(),
-topComments_(),
 vendorExtensions_()
 {
     vlnv_ = QSharedPointer<VLNV>(new VLNV(vlnv));
 }
 
 LibraryComponent::LibraryComponent( const LibraryComponent &other ):
+Document(other),
 vlnv_(),
 description_(other.description_),
-kactus2Attributes_(other.kactus2Attributes_),
-topComments_(other.topComments_),
 vendorExtensions_()
 {
 	if (other.vlnv_) {
@@ -101,9 +98,11 @@ vendorExtensions_()
     copyVendorExtensions(other);
 }
 
-LibraryComponent & LibraryComponent::operator=( const LibraryComponent &other ) {
-	if (this != &other) {
-
+LibraryComponent & LibraryComponent::operator=( const LibraryComponent &other )
+{
+	if (this != &other)
+    {
+        Document::operator=(other);
 		if (other.vlnv_) {
 			vlnv_ = QSharedPointer<VLNV>(new VLNV(*other.vlnv_));
 		}
@@ -111,10 +110,6 @@ LibraryComponent & LibraryComponent::operator=( const LibraryComponent &other ) 
 			vlnv_ = QSharedPointer<VLNV>(new VLNV());
 
 		description_ = other.description_;
-
-		kactus2Attributes_ = other.kactus2Attributes_;
-
-		topComments_ = other.topComments_;
 
         copyVendorExtensions(other);
 	}
@@ -124,7 +119,8 @@ LibraryComponent & LibraryComponent::operator=( const LibraryComponent &other ) 
 LibraryComponent::~LibraryComponent() {
 }
 
-VLNV LibraryComponent::findVLNV(QDomDocument &doc) {
+VLNV LibraryComponent::findVLNV(QDomDocument &doc)
+{
 	// first the correct element is searched for by its name
 	// and then the child of the element (which is the text element that holds
 	// the value of the element) is added to the struct
@@ -190,11 +186,13 @@ void LibraryComponent::setDescription(const QString & description) {
 	description_ = description;
 }
 
-void LibraryComponent::write(QXmlStreamWriter& writer) {
+void LibraryComponent::write(QXmlStreamWriter& writer)
+{
 	writer.writeStartDocument();
 
 	// write the top comments for the XML file
-	foreach (QString comment, topComments_) {
+	foreach (QString comment, getTopComments())
+    {
 		writer.writeComment(comment);
 	}
 
@@ -215,48 +213,61 @@ void LibraryComponent::writeVLNV(QXmlStreamWriter& writer) {
     vlnv_->writeAsElements(writer);
 }
 
-void LibraryComponent::writeKactus2Attributes( QXmlStreamWriter& writer ) {
+void LibraryComponent::writeKactus2Attributes( QXmlStreamWriter& writer )
+{
 	writer.writeStartElement("kactus2:kts_attributes");
 	
 	// write the attribute describing the product hierarchy
-	if (kactus2Attributes_.contains("kts_productHier")) {
-		writer.writeTextElement("kactus2:kts_productHier", 
-			kactus2Attributes_.value("kts_productHier"));
+	if (hasProductHierarchy())
+    {
+		writer.writeTextElement("kactus2:kts_productHier", KactusAttribute::valueToString(getHierarchy()));
 	}
 
 	// write the implementation attribute
-	if (kactus2Attributes_.contains("kts_implementation")) {
-		writer.writeTextElement("kactus2:kts_implementation", kactus2Attributes_.value("kts_implementation"));
+	if (hasImplementation())
+    {
+		writer.writeTextElement("kactus2:kts_implementation", KactusAttribute::valueToString(getImplementation()));
 	}
 
 	// if firmness is defined
-	if (kactus2Attributes_.contains("kts_firmness")) {
-		writer.writeTextElement("kactus2:kts_firmness",
-			kactus2Attributes_.value("kts_firmness"));
-	}
+	if (hasFirmness())
+    {
+		writer.writeTextElement("kactus2:kts_firmness",	KactusAttribute::valueToString(getFirmness()));
+    }
 
 	writer.writeEndElement(); // kactus2:kts_attributes
 }
 
-void LibraryComponent::parseKactus2Attributes( QDomNode& attributeNode ) {
+void LibraryComponent::parseKactus2Attributes( QDomNode& attributeNode )
+{
 	
 	// go through all the child nodes of the fileNode
-	for (int i = 0; i < attributeNode.childNodes().count(); ++i) {
+	for (int i = 0; i < attributeNode.childNodes().count(); ++i)
+    {
 		QDomNode tempNode = attributeNode.childNodes().at(i);
 
-		if (tempNode.nodeName() == "kactus2:kts_productHier") {
-			kactus2Attributes_.insert("kts_productHier", tempNode.childNodes().at(0).nodeValue());
+		if (tempNode.nodeName() == "kactus2:kts_productHier")
+        {
+            KactusAttribute::ProductHierarchy hierarchy;
+            KactusAttribute::stringToValue(tempNode.childNodes().at(0).nodeValue(), hierarchy);
+            setHierarchy(hierarchy);
 		}
-		else if (tempNode.nodeName() == "kactus2:kts_implementation") {
-			QString value = tempNode.childNodes().at(0).nodeValue();
-			kactus2Attributes_.insert("kts_implementation", value);
+		else if (tempNode.nodeName() == "kactus2:kts_implementation")
+        {
+            KactusAttribute::Implementation implementation;
+            KactusAttribute::stringToValue(tempNode.childNodes().at(0).nodeValue(), implementation);
+            setImplementation(implementation);
 		}
-		else if (tempNode.nodeName() == "kactus2:kts_firmness") {
-			kactus2Attributes_.insert("kts_firmness", tempNode.childNodes().at(0).nodeValue());
+		else if (tempNode.nodeName() == "kactus2:kts_firmness")
+        {
+            KactusAttribute::Firmness firmness;
+            KactusAttribute::stringToValue(tempNode.childNodes().at(0).nodeValue(), firmness);
+            setFirmness(firmness);
 		}
 	}
 	return;
 }
+
 
 void LibraryComponent::setXMLNameSpaceAttributes( QMap<QString, QString>& attributes ) {
 
@@ -276,11 +287,6 @@ void LibraryComponent::writeVendorExtensions(QXmlStreamWriter& writer) const
     XmlUtils::writeVendorExtensions(writer, vendorExtensions_);
 }
 
-void LibraryComponent::setTopComments( const QString& comment ) {
-	QStringList comments = comment.split("\n");
-	topComments_ = comments;
-}
-
 //-----------------------------------------------------------------------------
 // Function: LibraryComponent::setVendorExtensions()
 //-----------------------------------------------------------------------------
@@ -297,15 +303,8 @@ QList<QSharedPointer<VendorExtension> > LibraryComponent::getVendorExtensions() 
     return vendorExtensions_;
 }
 
-void LibraryComponent::setTopComments( const QStringList& comments ) {
-	topComments_ = comments;
-}
-
-QStringList LibraryComponent::getTopComments() const {
-	return topComments_;
-}
-
-const QStringList LibraryComponent::getDependentDirs() const {
+QStringList LibraryComponent::getDependentDirs() const
+{
 	return QStringList();
 }
 

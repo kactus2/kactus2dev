@@ -103,8 +103,8 @@ QIcon MemoryMapHeaderGenerator::getIcon() const
 //-----------------------------------------------------------------------------
 // Function: MemoryMapHeaderGenerator::checkGeneratorSupport()
 //-----------------------------------------------------------------------------
-bool MemoryMapHeaderGenerator::checkGeneratorSupport(QSharedPointer<LibraryComponent const> libComp,
-    QSharedPointer<LibraryComponent const> libDesConf, QSharedPointer<LibraryComponent const> /*libDes*/) const
+bool MemoryMapHeaderGenerator::checkGeneratorSupport(QSharedPointer<Document const> libComp,
+    QSharedPointer<Document const> libDesConf, QSharedPointer<Document const> /*libDes*/) const
 {
 	QSharedPointer<Component const> comp = libComp.dynamicCast<Component const>();
 	if (!comp)
@@ -134,9 +134,9 @@ bool MemoryMapHeaderGenerator::checkGeneratorSupport(QSharedPointer<LibraryCompo
 //-----------------------------------------------------------------------------
 // Function: MemoryMapHeaderGenerator::runGenerator()
 //-----------------------------------------------------------------------------
-void MemoryMapHeaderGenerator::runGenerator( IPluginUtility* utility, QSharedPointer<LibraryComponent> libComp,
-    QSharedPointer<LibraryComponent> libDesConf /*= QSharedPointer<LibraryComponent>()*/,
-    QSharedPointer<LibraryComponent> libDes /*= QSharedPointer<LibraryComponent>()*/ )
+void MemoryMapHeaderGenerator::runGenerator( IPluginUtility* utility, QSharedPointer<Document> libComp,
+    QSharedPointer<Document> libDesConf /*= QSharedPointer<Document>()*/,
+    QSharedPointer<Document> libDes /*= QSharedPointer<Document>()*/ )
 {
 	utility_ = utility;
 
@@ -159,7 +159,7 @@ void MemoryMapHeaderGenerator::runGenerator( IPluginUtility* utility, QSharedPoi
 		Q_ASSERT(design);
 
 		// the component knows the implementation of the view
-		KactusAttribute::Implementation implementation = comp->getViewType(*libDesConf->getVlnv());
+		KactusAttribute::Implementation implementation = comp->getViewType(libDesConf->getVlnv());
 
 		QSharedPointer<DesignConfiguration> desConf = libDesConf.dynamicCast<DesignConfiguration>();
 		Q_ASSERT(desConf);

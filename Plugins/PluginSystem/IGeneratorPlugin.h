@@ -20,7 +20,7 @@
 #include <QIcon>
 
 class LibraryInterface;
-class LibraryComponent;
+class Document;
 class IPluginUtility;
 
 //-----------------------------------------------------------------------------
@@ -49,9 +49,9 @@ public:
      *
      *      @return True, if the generator supports the given component. Otherwise false.
      */
-    virtual bool checkGeneratorSupport(QSharedPointer<LibraryComponent const> libComp,
-		QSharedPointer<LibraryComponent const> libDesConf = QSharedPointer<LibraryComponent const>(),
-		QSharedPointer<LibraryComponent const> libDes = QSharedPointer<LibraryComponent const>()) const = 0;
+    virtual bool checkGeneratorSupport(QSharedPointer<Document const> libComp,
+		QSharedPointer<Document const> libDesConf = QSharedPointer<Document const>(),
+		QSharedPointer<Document const> libDes = QSharedPointer<Document const>()) const = 0;
 
     /*!
      *  Runs the generator.
@@ -62,9 +62,9 @@ public:
      *      @param [in, out]	libDes			The optional design object.
      */
     virtual void runGenerator(IPluginUtility* utility,
-                              QSharedPointer<LibraryComponent> libComp,
-							  QSharedPointer<LibraryComponent> libDesConf = QSharedPointer<LibraryComponent>(),
-							  QSharedPointer<LibraryComponent> libDes = QSharedPointer<LibraryComponent>()) = 0;
+                              QSharedPointer<Document> libComp,
+							  QSharedPointer<Document> libDesConf = QSharedPointer<Document>(),
+							  QSharedPointer<Document> libDes = QSharedPointer<Document>()) = 0;
 };
 
 Q_DECLARE_INTERFACE(IGeneratorPlugin, "com.tut.Kactus2.IGeneratorPlugin/1.0")

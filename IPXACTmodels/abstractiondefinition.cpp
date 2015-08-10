@@ -37,8 +37,11 @@ attributes_() {
 	// search for the first element with children (=document type)
 	while (!nodeList.at(i).hasChildNodes()) {
 		// if the node is for a header comment
-		if (nodeList.at(i).isComment()) {
-			topComments_.append(nodeList.at(i).nodeValue());
+		if (nodeList.at(i).isComment())
+        {
+            QStringList comments = getTopComments();
+            comments.append(nodeList.at(i).nodeValue());
+            setTopComments(comments);
 		}
 
 		++i;
@@ -131,8 +134,8 @@ AbstractionDefinition::~AbstractionDefinition() {
 	ports_.clear();
 }
 
-QSharedPointer<LibraryComponent> AbstractionDefinition::clone() const {
-	return QSharedPointer<LibraryComponent>(new AbstractionDefinition(*this));
+QSharedPointer<Document> AbstractionDefinition::clone() const {
+	return QSharedPointer<Document>(new AbstractionDefinition(*this));
 }
 
 void AbstractionDefinition::write(QFile& file) {
@@ -291,11 +294,13 @@ void AbstractionDefinition::setExtends(const VLNV& extends) {
 
 // abstractionDefinition does not have any dependency files, it is pure
 // IP-Xact element with only VLNV type dependencies
-const QStringList AbstractionDefinition::getDependentFiles() const {
+QStringList AbstractionDefinition::getDependentFiles() const
+{
 	return QStringList();
 }
 
-const QList<VLNV> AbstractionDefinition::getDependentVLNVs() const {
+QList<VLNV> AbstractionDefinition::getDependentVLNVs() const
+{
 	QList<VLNV> vlnvList;
 
 	// append the busType element representing the busDefinition of this

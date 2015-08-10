@@ -73,9 +73,9 @@ QIcon AlteraBSPGenerator::getIcon() const
     return QIcon(":icons/BSPicon24.png");
 }
 
-bool AlteraBSPGenerator::checkGeneratorSupport( QSharedPointer<LibraryComponent const> libComp,
-	QSharedPointer<LibraryComponent const> libDesConf /*= QSharedPointer<LibraryComponent const>()*/,
-	QSharedPointer<LibraryComponent const> libDes /*= QSharedPointer<LibraryComponent const>()*/ ) const {
+bool AlteraBSPGenerator::checkGeneratorSupport( QSharedPointer<Document const> libComp,
+	QSharedPointer<Document const> libDesConf /*= QSharedPointer<Document const>()*/,
+	QSharedPointer<Document const> libDes /*= QSharedPointer<Document const>()*/ ) const {
 	
 	// BSP package can only be run on component editor 
 	if (libDesConf || libDes) {
@@ -106,9 +106,9 @@ bool AlteraBSPGenerator::checkGeneratorSupport( QSharedPointer<LibraryComponent 
 }
 
 void AlteraBSPGenerator::runGenerator(IPluginUtility* utility,
-	QSharedPointer<LibraryComponent> libComp,
-    QSharedPointer<LibraryComponent> /*libDesConf*/,
-    QSharedPointer<LibraryComponent> /*libDes*/) {
+	QSharedPointer<Document> libComp,
+    QSharedPointer<Document> /*libDesConf*/,
+    QSharedPointer<Document> /*libDes*/) {
 
 	utility_ = utility;
 	Q_ASSERT(utility_);

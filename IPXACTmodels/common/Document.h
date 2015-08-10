@@ -157,6 +157,10 @@ public:
 
 protected:
 
+    bool hasKactusAttributes() const;
+
+    bool hasImplementation() const;
+
     /*!
      *  Sets the implementation type for the document.
      *
@@ -170,6 +174,18 @@ protected:
      *      @return The implementation type for the document.
      */
     KactusAttribute::Implementation getImplementation() const;
+
+    bool hasProductHierarchy() const;
+
+    void setHierarchy(KactusAttribute::ProductHierarchy productHierarchy);
+  
+    KactusAttribute::ProductHierarchy getHierarchy() const;
+
+    bool hasFirmness() const;
+
+    KactusAttribute::Firmness getFirmness() const;
+
+    void setFirmness(KactusAttribute::Firmness firmness);
 
 private:
     

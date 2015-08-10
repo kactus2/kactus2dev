@@ -22,7 +22,7 @@
 
 class Component;
 class LibraryInterface;
-class LibraryComponent;
+class Document;
 class KactusAttributeEditor;
 class ComponentPreviewBox;
 

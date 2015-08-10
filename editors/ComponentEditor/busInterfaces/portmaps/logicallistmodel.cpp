@@ -44,7 +44,7 @@ void LogicalListModel::setAbsType( const VLNV& vlnv, General::InterfaceMode mode
 	}
 
 	// ask library to parse the model for abstraction definition
-	QSharedPointer<LibraryComponent> libComb;
+	QSharedPointer<Document> libComb;
 	if (libHandler_->contains(vlnv)) 
 		libComb = libHandler_->getModel(vlnv);
 
@@ -54,7 +54,7 @@ void LogicalListModel::setAbsType( const VLNV& vlnv, General::InterfaceMode mode
 
 	// make sure the model is for abstraction definition
 	QSharedPointer<AbstractionDefinition> absdef;
-	if (libComb->getVlnv()->getType() == VLNV::ABSTRACTIONDEFINITION)
+	if (libComb->getVlnv().getType() == VLNV::ABSTRACTIONDEFINITION)
 		absdef = libComb.staticCast<AbstractionDefinition>();
 
 	// if model was some other type then free memory and exit

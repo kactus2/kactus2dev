@@ -251,7 +251,7 @@ void ConfigurationEditor::onRemove()
     
 
 	VLNV designVLNV;
-	QSharedPointer<LibraryComponent> libComp = handler_->getModel(configVLNV);
+	QSharedPointer<Document> libComp = handler_->getModel(configVLNV);
 	if (handler_->getDocumentType(configVLNV) == VLNV::DESIGNCONFIGURATION)
     {
 		QSharedPointer<DesignConfiguration> desConf = libComp.staticCast<DesignConfiguration>();

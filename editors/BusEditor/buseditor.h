@@ -10,7 +10,7 @@
 #include <common/widgets/tabDocument/TabDocument.h>
 
 #include <IPXACTmodels/abstractiondefinition.h>
-#include <IPXACTmodels/busdefinition.h>
+#include <IPXACTmodels/BusDefinition/BusDefinition.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 
@@ -115,7 +115,7 @@ private:
 
 	//! \brief Set the layout of the widget
 	void setupLayout();
-
+    
 	//! \brief Pointer to the instance that handles the library
 	LibraryInterface* libHandler_;
 

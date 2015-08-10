@@ -18,7 +18,8 @@
 #include <QWidget>
 
 class LibraryHandler;
-class LibraryComponent;
+class Document;
+class Document;
 class ScanProgressWidget;
 
 /*! \brief LibraryData is the data model that manages the actual VLNV library.
@@ -103,7 +104,7 @@ public:
 	 * If vlnv is not found in library a null pointer is returned. The ownership 
 	 * of the parsed object is passed to the caller.
 	*/
-	QSharedPointer<LibraryComponent> getModel(const VLNV& vlnv);
+	QSharedPointer<Document> getModel(const VLNV& vlnv);
 
 	/*! \brief Check the integrity of the library.
 	 *
@@ -127,7 +128,7 @@ public:
 	 *
 	 * \return True if the object was valid.
 	*/
-	bool checkObject(QSharedPointer<LibraryComponent> libComp, const QString& path, bool print = true);
+	bool checkObject(QSharedPointer<Document> libComp, const QString& path, bool print = true);
 
 signals:
 

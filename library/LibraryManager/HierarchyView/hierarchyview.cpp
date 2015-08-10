@@ -12,7 +12,7 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 #include <IPXACTmodels/component.h>
-#include <IPXACTmodels/busdefinition.h>
+#include <IPXACTmodels/BusDefinition/BusDefinition.h>
 
 #include <QMenu>
 #include <QApplication>
@@ -348,7 +348,7 @@ void HierarchyView::contextMenuEvent( QContextMenuEvent* event ) {
 	if (vlnv.isValid()) {
 
 		// parse the model
-		QSharedPointer<LibraryComponent const> libComp = handler_->getModelReadOnly(vlnv);
+		QSharedPointer<Document const> libComp = handler_->getModelReadOnly(vlnv);
 		Q_ASSERT_X(libComp, "HierarchyView::contextMenuEvent()",
 			"Object was not found in library.");
 
@@ -439,10 +439,10 @@ void HierarchyView::contextMenuEvent( QContextMenuEvent* event ) {
 
         menu.addSeparator();
 
-        if (!libComp->isValid())
-        {
-            menu.addAction(showErrorsAction_);
-        }
+//          if (!libComp->isValid())
+//          {
+//              menu.addAction(showErrorsAction_);
+//          }
 
         menu.addAction(openContainingFolderAction_);
         menu.addAction(openXmlAction_);

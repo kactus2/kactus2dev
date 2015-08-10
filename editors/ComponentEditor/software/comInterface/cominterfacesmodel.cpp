@@ -137,7 +137,7 @@ QVariant ComInterfacesModel::data( const QModelIndex& index, int role /*= Qt::Di
 		}
 
 		// parse the com definition
-		QSharedPointer<LibraryComponent const> libComp = libHandler_->getModelReadOnly(comDefVLNV);
+		QSharedPointer<Document const> libComp = libHandler_->getModelReadOnly(comDefVLNV);
 		const QSharedPointer<ComDefinition const> comDef = libComp.staticCast<ComDefinition const>();
 		
 		// and return the transfer types specified in the com definition

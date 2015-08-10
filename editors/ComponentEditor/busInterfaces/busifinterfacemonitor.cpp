@@ -10,7 +10,7 @@
 #include "busifgeneraltab.h"
 #include <library/LibraryManager/libraryinterface.h>
 #include <IPXACTmodels/vlnv.h>
-#include <IPXACTmodels/busdefinition.h>
+#include <IPXACTmodels/BusDefinition/BusDefinition.h>
 
 #include <QGridLayout>
 #include <QLabel>
@@ -103,7 +103,7 @@ void BusIfInterfaceMonitor::refresh() {
 				break;
 			}
 
-			QSharedPointer<LibraryComponent> libComp = libHandler_->getModel(busDefVLNV);
+			QSharedPointer<Document> libComp = libHandler_->getModel(busDefVLNV);
 			Q_ASSERT(libComp);
 				
 			// if the library component with given vlnv was not a bus definition
@@ -177,7 +177,7 @@ void BusIfInterfaceMonitor::onInterfaceModeChange( General::InterfaceMode mode )
 				break;
 			}
 
-			QSharedPointer<LibraryComponent> libComp = libHandler_->getModel(busDefVLNV);
+			QSharedPointer<Document> libComp = libHandler_->getModel(busDefVLNV);
 			Q_ASSERT(libComp);
 
 			// if the library component with given vlnv was not a bus definition

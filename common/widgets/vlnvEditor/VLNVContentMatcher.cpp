@@ -96,7 +96,7 @@ bool VLNVContentMatcher::enumerateMatches(QString const& text, LineContentAssist
 //                     if (child->getLevel() == VLNVDataNode::LEVEL_VERSION)
 //                     {
 //                         // Retrieve the component for further examination.
-//                         QSharedPointer<LibraryComponent const> libComp = lh_->getModelReadOnly(child->getVLNV());
+//                         QSharedPointer<Document const> libComp = lh_->getModelReadOnly(child->getVLNV());
 //                         QSharedPointer<Component const> component = libComp.dynamicCast<Component const>();
 // 
 //                         if (component != 0)

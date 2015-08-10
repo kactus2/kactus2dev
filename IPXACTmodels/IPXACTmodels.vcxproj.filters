@@ -51,6 +51,12 @@
     <Filter Include="Source Files\common">
       <UniqueIdentifier>{f81db2e0-6b15-4378-a84f-e30cbdb942c3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\BusDefinition">
+      <UniqueIdentifier>{9784a5a1-4c50-4889-8187-b6a3563987d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\BusDefinition">
+      <UniqueIdentifier>{b3c73ea0-2cec-4b2d-93eb-a9a6e3650ab3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="abstractiondefinition.cpp">
@@ -93,9 +99,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="buildmodel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="busdefinition.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="businterface.cpp">
@@ -410,6 +413,54 @@
     <ClCompile Include="GeneratedFiles\Release\moc_ParameterWriter.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="BusDefinition\BusDefinition.cpp">
+      <Filter>Source Files\BusDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="BusDefinition\BusDefinitionReader.cpp">
+      <Filter>Source Files\BusDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="BusDefinition\BusDefinitionWriter.cpp">
+      <Filter>Source Files\BusDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_BusDefinitionReader.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_BusDefinitionReader.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_BusDefinitionWriter.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_BusDefinitionWriter.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="common\Document.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\Assertion.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\BooleanValue.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\DocumentWriter.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_DocumentWriter.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_DocumentWriter.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_NameGroupWriter.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_NameGroupWriter.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="common\NameGroupWriter.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ipxactmodels_global.h">
@@ -455,9 +506,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="buildmodel.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="busdefinition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="businterface.h">
@@ -736,6 +784,18 @@
     <ClInclude Include="validators\ParameterValidator.h">
       <Filter>Header Files\validators</Filter>
     </ClInclude>
+    <ClInclude Include="BusDefinition\BusDefinition.h">
+      <Filter>Header Files\BusDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="common\Document.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\Assertion.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="common\BooleanValue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="validators\namevalidator.h">
@@ -751,6 +811,18 @@
       <Filter>Header Files\common</Filter>
     </CustomBuild>
     <CustomBuild Include="common\ParameterWriter.h">
+      <Filter>Header Files\common</Filter>
+    </CustomBuild>
+    <CustomBuild Include="BusDefinition\BusDefinitionReader.h">
+      <Filter>Header Files\BusDefinition</Filter>
+    </CustomBuild>
+    <CustomBuild Include="BusDefinition\BusDefinitionWriter.h">
+      <Filter>Header Files\BusDefinition</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\DocumentWriter.h">
+      <Filter>Header Files\common</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\NameGroupWriter.h">
       <Filter>Header Files\common</Filter>
     </CustomBuild>
   </ItemGroup>
