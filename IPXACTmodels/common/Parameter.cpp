@@ -25,13 +25,13 @@
 // Function: Parameter::Parameter()
 //-----------------------------------------------------------------------------
 Parameter::Parameter(): NameGroup(),
+    Extendable(),
     value_(), 
     attributes_(), 
     valueAttributes_(), 
     bitWidthVector_(), 
     vectors_(new QList<QSharedPointer<Vector> >()),
-    arrays_(new QList<QSharedPointer<Array> >()), 
-    vendorExtensions_(new QList<QSharedPointer<VendorExtension> >())
+    arrays_(new QList<QSharedPointer<Array> >())
 {
     createUuid();
 }
@@ -40,15 +40,15 @@ Parameter::Parameter(): NameGroup(),
 // Function: Parameter::Parameter()
 //-----------------------------------------------------------------------------
 Parameter::Parameter( const Parameter &other ): NameGroup(other),
+    Extendable(),
     value_(other.value_),
     attributes_(other.attributes_),
     valueAttributes_(other.valueAttributes_), 
     bitWidthVector_(other.bitWidthVector_), 
     vectors_(other.vectors_), 
-    arrays_(other.arrays_), 
-    vendorExtensions_(other.vendorExtensions_)
+    arrays_(other.arrays_)
 {
-    copyVendorExtensions(other);
+
 }
 
 //-----------------------------------------------------------------------------
@@ -63,11 +63,12 @@ Parameter::~Parameter()
 //-----------------------------------------------------------------------------
 // Function: Parameter::operator=()
 //-----------------------------------------------------------------------------
-Parameter & Parameter::operator=( const Parameter &other ) 
+Parameter & Parameter::operator=(Parameter const& other) 
 {
 	if (this != &other) 
     {
 		NameGroup::operator=(other);
+        Extendable::operator=(other);
 		value_ = other.value_;
         attributes_ = other.attributes_;
 		valueAttributes_ = other.valueAttributes_;
@@ -76,6 +77,7 @@ Parameter & Parameter::operator=( const Parameter &other )
 	}
 	return *this;
 }
+
 
 QString Parameter::elementName() const
 {
@@ -422,14 +424,6 @@ void Parameter::setArrayRight(QString const& rightExpression)
 }
 
 //-----------------------------------------------------------------------------
-// Function: Parameter::getVendorExtensions()
-//-----------------------------------------------------------------------------
-QSharedPointer<QList<QSharedPointer<VendorExtension> > > Parameter::getVendorExtensions() const
-{
-    return vendorExtensions_;
-}
-
-//-----------------------------------------------------------------------------
 // Function: Parameter::createUuid()
 //-----------------------------------------------------------------------------
 void Parameter::createUuid()
@@ -437,15 +431,3 @@ void Parameter::createUuid()
     QString formattedUuid = "uuid_" + QUuid::createUuid().toString().remove('{').remove('}').replace('-', '_');
     setValueId(formattedUuid);
 }
-
-//-----------------------------------------------------------------------------
-// Function: parameter::copyVendorExtensions()
-//-----------------------------------------------------------------------------
-void Parameter::copyVendorExtensions(Parameter const& other)
-{
-    foreach (QSharedPointer<VendorExtension> extension, *other.vendorExtensions_)
-    {
-        vendorExtensions_->append(QSharedPointer<VendorExtension>(extension->clone()));
-    }
-}
-

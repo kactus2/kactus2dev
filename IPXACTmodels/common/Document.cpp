@@ -26,13 +26,13 @@
 // Function: Document::Document()
 //-----------------------------------------------------------------------------
 Document::Document():
+Extendable(),
 vlnv_(), 
 description_(),
 kactus2Attributes_(),
 topComments_(),
 parameters_(new QList<QSharedPointer<Parameter> >()),
-assertions_(new QList<QSharedPointer<Assertion> >()),
-vendorExtensions_(new QList<QSharedPointer<VendorExtension> >())
+assertions_(new QList<QSharedPointer<Assertion> >())
 {
 	vlnv_ = VLNV();
 }
@@ -41,13 +41,13 @@ vendorExtensions_(new QList<QSharedPointer<VendorExtension> >())
 // Function: Document::Document()
 //-----------------------------------------------------------------------------
 Document::Document(const VLNV &vlnv):
+Extendable(),
 vlnv_(), 
 description_(),
 kactus2Attributes_(),
 topComments_(),
 parameters_(new QList<QSharedPointer<Parameter> >()),
-assertions_(new QList<QSharedPointer<Assertion> >()),
-vendorExtensions_(new QList<QSharedPointer<VendorExtension> >())
+assertions_(new QList<QSharedPointer<Assertion> >())
 {
     vlnv_ = vlnv;
 }
@@ -56,17 +56,16 @@ vendorExtensions_(new QList<QSharedPointer<VendorExtension> >())
 // Function: Document::Document()
 //-----------------------------------------------------------------------------
 Document::Document(Document const& other):
+Extendable(),
 vlnv_(other.vlnv_),
 description_(other.description_),
 kactus2Attributes_(other.kactus2Attributes_),
 topComments_(other.topComments_),
 parameters_(new QList<QSharedPointer<Parameter> >()),
-assertions_(new QList<QSharedPointer<Assertion> >()),
-vendorExtensions_(new QList<QSharedPointer<VendorExtension> >())
+assertions_(new QList<QSharedPointer<Assertion> >())
 {
     copyParameters(other);
     copyAssertions(other);
-    copyVendorExtensions(other);
 }
 
 //-----------------------------------------------------------------------------
@@ -76,6 +75,8 @@ Document & Document::operator=( const Document &other )
 {
 	if (this != &other)
     {
+        Extendable::operator=(other);
+
         if (!vlnv_.isEmpty())
         {
             vlnv_ = other.vlnv_;
@@ -91,7 +92,7 @@ Document & Document::operator=( const Document &other )
 
         copyParameters(other);
         copyAssertions(other);
-        copyVendorExtensions(other);
+
 	}
 	return *this;
 }
@@ -153,14 +154,6 @@ QSharedPointer<QList<QSharedPointer<Assertion> > > Document::getAssertions() con
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryComponent::getVendorExtensions()
-//-----------------------------------------------------------------------------
-QSharedPointer<QList<QSharedPointer<VendorExtension> > > Document::getVendorExtensions() const
-{
-    return vendorExtensions_;
-}
-
-//-----------------------------------------------------------------------------
 // Function: Document::setTopComments()
 //-----------------------------------------------------------------------------
 void Document::setTopComments(QString const& comment)
@@ -198,7 +191,7 @@ QStringList Document::getDependentDirs() const
 //-----------------------------------------------------------------------------
 void Document::setVersion(QString versionNumber)
 {
-    foreach(QSharedPointer<VendorExtension> extension, *vendorExtensions_)
+    foreach(QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
         if (extension->type() == "kactus2:version")
         {
@@ -207,7 +200,7 @@ void Document::setVersion(QString versionNumber)
         }
     }
 
-    vendorExtensions_->append(QSharedPointer<Kactus2Value>(new Kactus2Value("kactus2:version", versionNumber)));
+    getVendorExtensions()->append(QSharedPointer<Kactus2Value>(new Kactus2Value("kactus2:version", versionNumber)));
 }
 
 //-----------------------------------------------------------------------------
@@ -347,16 +340,5 @@ void Document::copyAssertions(Document const& other)
             QSharedPointer<Assertion> copy = QSharedPointer<Assertion>(new Assertion(*assertion.data()));
             assertions_->append(copy);
         }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: librarycomponent::copyVendorExtensions()
-//-----------------------------------------------------------------------------
-void Document::copyVendorExtensions(const Document & other)
-{
-    foreach (QSharedPointer<VendorExtension> extension, *other.vendorExtensions_)
-    {
-        vendorExtensions_->append(QSharedPointer<VendorExtension>(extension->clone()));
     }
 }

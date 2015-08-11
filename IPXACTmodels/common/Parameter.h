@@ -14,8 +14,10 @@
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
-#include "Array.h"
+#include <IPXACTmodels/common/Extendable.h>
 #include <IPXACTmodels/common/NameGroup.h>
+
+#include "Array.h"
 #include "Vector.h"
 
 #include <QDomNode>
@@ -30,7 +32,7 @@ class VendorExtension;
 //-----------------------------------------------------------------------------
 //! Implementation for ipxact:parameter element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT Parameter : public NameGroup
+class IPXACTMODELS_EXPORT Parameter : public NameGroup, public Extendable
 {
 public:
 
@@ -288,13 +290,6 @@ public:
      *      @param [in] leftExpression   The left index to set.
      */
     void setArrayRight(QString const& rightExpression);
-        
-    /*!
-     *  Gets the vendor extensions for the parameter.
-     *
-     *      @return The vendor extensions for the parameter.
-     */
-    QSharedPointer<QList<QSharedPointer<VendorExtension> > > getVendorExtensions() const;
 
 private:
  
@@ -302,13 +297,6 @@ private:
      *  Creates an UUID for the parameter.
      */
     void createUuid();
-
-    /*!
-     *  Copies vendor extensions from another parameter.
-     *
-     *      @param [in] other   The parameter to copy extensions from.
-     */
-    void copyVendorExtensions(Parameter const& other);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -332,8 +320,6 @@ private:
     //! Arrays for defining parameter as an array of values.
     QSharedPointer<QList<QSharedPointer<Array> > > arrays_;
 
-    //! Parameter vendor extensions.
-    QSharedPointer<QList<QSharedPointer<VendorExtension> > > vendorExtensions_;
 };
 
 #endif /* PARAMETER_H */

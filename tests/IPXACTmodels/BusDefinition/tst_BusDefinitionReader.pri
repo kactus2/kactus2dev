@@ -8,31 +8,35 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 
 HEADERS += ../../../IPXACTmodels/common/Array.h \
+    ../../../IPXACTmodels/common/Assertion.h \
+    ../../../IPXACTmodels/common/BooleanValue.h \
     ../../../IPXACTmodels/BusDefinition/BusDefinition.h \
+    ../../../IPXACTmodels/common/Document.h \
     ../../../IPXACTmodels/GenericVendorExtension.h \
+    ../../../IPXACTmodels/kactusExtensions/Kactus2Value.h \
+    ../../../IPXACTmodels/kactusExtensions/KactusAttribute.h \
     ../../../IPXACTmodels/common/NameGroup.h \
     ../../../IPXACTmodels/common/Parameter.h \
     ../../../IPXACTmodels/common/Range.h \
     ../../../IPXACTmodels/common/Vector.h \
-    ../../../IPXACTmodels/BusDefinition/BusDefinitionReader.h \
     ../../../IPXACTmodels/vlnv.h \
-    ../../../IPXACTmodels/common/BooleanValue.h \
-    ../../../IPXACTmodels/common/Document.h \
-    ../../../IPXACTmodels/kactusExtensions/Kactus2Value.h \
-    ../../../IPXACTmodels/common/Assertion.h \
-    ../../../IPXACTmodels/kactusExtensions/KactusAttribute.h
+    ../../../IPXACTmodels/BusDefinition/BusDefinitionReader.h \
+    ../../../IPXACTmodels/common/Extendable.h \
+    ../../../IPXACTmodels/common/ParameterReader.h
 SOURCES += ../../../IPXACTmodels/common/Array.cpp \
+    ../../../IPXACTmodels/common/Assertion.cpp \
+    ../../../IPXACTmodels/common/BooleanValue.cpp \
     ../../../IPXACTmodels/BusDefinition/BusDefinition.cpp \
     ../../../IPXACTmodels/BusDefinition/BusDefinitionReader.cpp \
+    ../../../IPXACTmodels/common/Document.cpp \
     ../../../IPXACTmodels/GenericVendorExtension.cpp \
+    ../../../IPXACTmodels/kactusExtensions/Kactus2Value.cpp \
+    ../../../IPXACTmodels/kactusExtensions/KactusAttribute.cpp \
     ../../../IPXACTmodels/common/NameGroup.cpp \
     ../../../IPXACTmodels/common/Parameter.cpp \
     ../../../IPXACTmodels/common/Range.cpp \
     ../../../IPXACTmodels/common/Vector.cpp \
     ./tst_BusDefinitionReader.cpp \
     ../../../IPXACTmodels/vlnv.cpp \
-    ../../../IPXACTmodels/common/BooleanValue.cpp \
-    ../../../IPXACTmodels/common/Document.cpp \
-    ../../../IPXACTmodels/kactusExtensions/Kactus2Value.cpp \
-    ../../../IPXACTmodels/common/Assertion.cpp \
-    ../../../IPXACTmodels/kactusExtensions/KactusAttribute.cpp
+    ../../../IPXACTmodels/common/Extendable.cpp \
+    ../../../IPXACTmodels/common/ParameterReader.cpp

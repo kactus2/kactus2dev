@@ -19,6 +19,8 @@
 #include <IPXACTmodels/ipxactmodels_global.h>
 #include <IPXACTmodels/vlnv.h>
 
+#include <IPXACTmodels/common/Extendable.h>
+
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Value.h>
 
@@ -34,7 +36,7 @@ class VendorExtension;
 //-----------------------------------------------------------------------------
 //! Base class for IP-XACT documents e.g. component and design.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT Document
+class IPXACTMODELS_EXPORT Document : public Extendable
 {
 public:
 
@@ -101,13 +103,6 @@ public:
      *      @return The assertions for the document.
      */
     QSharedPointer<QList<QSharedPointer<Assertion> > > getAssertions() const;
-
-    /*!
-     *  Gets the vendor extensions.
-     *     
-     *      @return The vendor extensions for the document.
-     */
-    QSharedPointer<QList<QSharedPointer<VendorExtension> > > getVendorExtensions() const;
     
     /*!
      *  Sets the comments to display in the beginning of the XML file.
@@ -232,8 +227,6 @@ private:
     //! A list of assertions for the document.
     QSharedPointer<QList<QSharedPointer<Assertion> > > assertions_;
 
-    //! Any vendor extensions.
-    QSharedPointer<QList<QSharedPointer<VendorExtension> > > vendorExtensions_;
 };
 
 #endif /* DOCUMENT_H */

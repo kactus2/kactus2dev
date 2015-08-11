@@ -13,7 +13,8 @@ HEADERS += ../../../IPXACTmodels/common/Array.h \
     ../../../IPXACTmodels/common/Parameter.h \
     ../../../IPXACTmodels/common/Range.h \
     ../../../IPXACTmodels/common/Vector.h \
-    ../../../IPXACTmodels/common/ParameterWriter.h
+    ../../../IPXACTmodels/common/ParameterWriter.h \
+    ../../../IPXACTmodels/common/Extendable.h
 SOURCES += ../../../IPXACTmodels/common/Array.cpp \
     ../../../IPXACTmodels/GenericVendorExtension.cpp \
     ../../../IPXACTmodels/common/NameGroup.cpp \
@@ -21,4 +22,5 @@ SOURCES += ../../../IPXACTmodels/common/Array.cpp \
     ../../../IPXACTmodels/common/ParameterWriter.cpp \
     ../../../IPXACTmodels/common/Range.cpp \
     ../../../IPXACTmodels/common/Vector.cpp \
-    ./tst_ParameterWriter.cpp
+    ./tst_ParameterWriter.cpp \
+    ../../../IPXACTmodels/common/Extendable.cpp

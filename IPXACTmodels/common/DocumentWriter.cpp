@@ -11,6 +11,7 @@
 
 #include "DocumentWriter.h"
 #include "Document.h"
+#include "Extendable.h"
 
 #include <IPXACTmodels/VendorExtension.h>
 #include <IPXACTmodels/vlnv.h>
@@ -135,12 +136,12 @@ void DocumentWriter::writeAssertions(QXmlStreamWriter& writer, QSharedPointer<Do
 //-----------------------------------------------------------------------------
 // Function: DocumentWriter::writeVendorExtensions()
 //-----------------------------------------------------------------------------
-void DocumentWriter::writeVendorExtensions(QXmlStreamWriter& writer, QSharedPointer<Document> document) const
+void DocumentWriter::writeVendorExtensions(QXmlStreamWriter& writer, QSharedPointer<Extendable> element) const
 {
-    if (!document->getVendorExtensions()->isEmpty())
+    if (!element->getVendorExtensions()->isEmpty())
     {
         writer.writeStartElement("ipxact:vendorExtensions");
-        foreach (QSharedPointer<VendorExtension> extension, *document->getVendorExtensions())
+        foreach (QSharedPointer<VendorExtension> extension, *element->getVendorExtensions())
         {
             extension->write(writer);
         }

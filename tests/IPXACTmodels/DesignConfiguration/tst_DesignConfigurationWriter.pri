@@ -7,13 +7,13 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../IPXACTmodels/common/Document.h \
-    ../../../IPXACTmodels/designConfiguration/AbstractorInstance.h \
+HEADERS += ../../../IPXACTmodels/designConfiguration/AbstractorInstance.h \
     ../../../IPXACTmodels/common/Array.h \
     ../../../IPXACTmodels/common/Assertion.h \
     ../../../IPXACTmodels/common/ConfigurableElementValue.h \
     ../../../IPXACTmodels/common/ConfigurableVLNVReference.h \
     ../../../IPXACTmodels/designConfiguration/DesignConfiguration.h \
+    ../../../IPXACTmodels/common/Document.h \
     ../../../IPXACTmodels/designConfiguration/InterconnectionConfiguration.h \
     ../../../IPXACTmodels/designConfiguration/InterfaceRef.h \
     ../../../IPXACTmodels/kactusExtensions/KactusAttribute.h \
@@ -24,19 +24,20 @@ HEADERS += ../../../IPXACTmodels/common/Document.h \
     ../../../IPXACTmodels/common/Vector.h \
     ../../../IPXACTmodels/designConfiguration/ViewConfiguration.h \
     ../../../IPXACTmodels/XmlUtils.h \
-    ../../../IPXACTmodels/common/DocumentWriter.h \
     ../../../IPXACTmodels/designConfiguration/DesignConfigurationWriter.h \
+    ../../../IPXACTmodels/common/DocumentWriter.h \
     ../../../IPXACTmodels/common/NameGroupWriter.h \
-    ../../../IPXACTmodels/common/ParameterWriter.h
-SOURCES += ../../../IPXACTmodels/common/Document.cpp \
-    ../../../IPXACTmodels/common/DocumentWriter.cpp \
-    ../../../IPXACTmodels/designConfiguration/AbstractorInstance.cpp \
+    ../../../IPXACTmodels/common/ParameterWriter.h \
+    ../../../IPXACTmodels/common/Extendable.h
+SOURCES += ../../../IPXACTmodels/designConfiguration/AbstractorInstance.cpp \
     ../../../IPXACTmodels/common/Array.cpp \
     ../../../IPXACTmodels/common/Assertion.cpp \
     ../../../IPXACTmodels/common/ConfigurableElementValue.cpp \
     ../../../IPXACTmodels/common/ConfigurableVLNVReference.cpp \
     ../../../IPXACTmodels/designConfiguration/DesignConfiguration.cpp \
     ../../../IPXACTmodels/designConfiguration/DesignConfigurationWriter.cpp \
+    ../../../IPXACTmodels/common/Document.cpp \
+    ../../../IPXACTmodels/common/DocumentWriter.cpp \
     ../../../IPXACTmodels/designConfiguration/InterconnectionConfiguration.cpp \
     ../../../IPXACTmodels/designConfiguration/InterfaceRef.cpp \
     ../../../IPXACTmodels/kactusExtensions/KactusAttribute.cpp \
@@ -49,4 +50,5 @@ SOURCES += ../../../IPXACTmodels/common/Document.cpp \
     ../../../IPXACTmodels/common/Vector.cpp \
     ../../../IPXACTmodels/designConfiguration/ViewConfiguration.cpp \
     ../../../IPXACTmodels/XmlUtils.cpp \
-    ./tst_DesignConfigurationWriter.cpp
+    ./tst_DesignConfigurationWriter.cpp \
+    ../../../IPXACTmodels/common/Extendable.cpp

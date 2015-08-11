@@ -17,6 +17,7 @@
 #include <QXmlStreamWriter>
 
 class Document;
+class Extendable;
 class VendorExtension;
 class VLNV;
 
@@ -97,12 +98,12 @@ protected:
 
 
     /*!
-     *  Writes the vendor extensions of a given document into XML.
+     *  Writes the vendor extensions of a given element into XML.
      *
      *      @param [in] writer      The XML writer to use.
-     *      @param [in] document    The document whose vendor extensions to write.
+     *      @param [in] element     The element whose vendor extensions to write.
      */
-    void writeVendorExtensions(QXmlStreamWriter& writer,  QSharedPointer<Document> document) const;
+    void writeVendorExtensions(QXmlStreamWriter& writer,  QSharedPointer<Extendable> element) const;
 
 private:
 
