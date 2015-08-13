@@ -108,7 +108,7 @@ private:
      *      @param [in] multipleAbstractors     A list of multipleAbastractors.
      */
     void writeMultipleAbstractorInstances(QXmlStreamWriter& writer,
-        QList<QSharedPointer<MultipleAbstractorInstances> > multipleAbstractors) const;
+        QSharedPointer<QList<QSharedPointer<MultipleAbstractorInstances> > > multipleAbstractors) const;
 
     /*!
      *  Write the interface references.
@@ -117,7 +117,7 @@ private:
      *      @param [in] interfaceReferences     A list of interface references.
      */
     void writeInterfaceReferences(QXmlStreamWriter& writer,
-        QList<QSharedPointer<InterfaceRef> > interfaceReferences) const;
+        QSharedPointer<QList<QSharedPointer<InterfaceRef> > > interfaceReferences) const;
 
     /*!
      *  Write the abstractor instances.
@@ -126,7 +126,7 @@ private:
      *      @param [in] abstractorInstances     A list of abstractor instances.
      */
     void writeAbstractorInstances(QXmlStreamWriter& writer,
-        QList<QSharedPointer<AbstractorInstance> > abstractorInstances) const;
+        QSharedPointer<QList<QSharedPointer<AbstractorInstance> > > abstractorInstances) const;
 
     /*!
      *  Write the view configurations.

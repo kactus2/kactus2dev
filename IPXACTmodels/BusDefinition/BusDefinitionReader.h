@@ -16,6 +16,7 @@
 #include <QDomNode>
 #include <QSharedPointer>
 
+#include <IPXACTmodels/common/DocumentReader.h>
 #include <IPXACTmodels/ipxactmodels_global.h>
 
 class BusDefinition;
@@ -23,7 +24,7 @@ class BusDefinition;
 //-----------------------------------------------------------------------------
 //! XML reader class for IP-XACT Parameter element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT BusDefinitionReader : public QObject
+class IPXACTMODELS_EXPORT BusDefinitionReader : public DocumentReader
 {
     Q_OBJECT
 public:
@@ -49,22 +50,6 @@ private:
 	BusDefinitionReader(BusDefinitionReader const& rhs);
 	BusDefinitionReader& operator=(BusDefinitionReader const& rhs);
         
-    /*!
-     *  Reads the top comments from XML to a bus definition.
-     *
-     *      @param [in]     document        The XML document to read.
-     *      @param [in/out] busDefinition   The bus definition to insert the comments into.
-     */
-    void parseTopComments(QDomNode const& document, QSharedPointer<BusDefinition> busDefinition) const;
-            
-    /*!
-     *  Reads the VLNV from XML to a bus definition.
-     *
-     *      @param [in]     busNode         The XML description of the bus definition.
-     *      @param [in/out] busDefinition   The bus definition to insert the VLNV into.
-     */
-    void parseVLNV(QDomNode const& busNode, QSharedPointer<BusDefinition> busDefinition) const;
-                
     /*!
      *  Reads the direct connection property from XML to a bus definition.
      *
@@ -120,38 +105,6 @@ private:
      *      @param [in/out] busDefinition   The bus definition to insert the system group names into.
      */
     void parseSystemGroupNames(QDomNode const& busNode, QSharedPointer<BusDefinition> busDefinition) const;
-                    
-    /*!
-     *  Reads the description from XML to a bus definition.
-     *
-     *      @param [in]     busNode         The XML description of the bus definition.
-     *      @param [in/out] busDefinition   The bus definition to insert the description into.
-     */
-    void parseDescription(QDomNode const& busNode, QSharedPointer<BusDefinition> busDefinition) const;
-                    
-    /*!
-     *  Reads the parameters from XML to a bus definition.
-     *
-     *      @param [in]     busNode         The XML description of the bus definition.
-     *      @param [in/out] busDefinition   The bus definition to insert the parameters into.
-     */
-    void parseParameters(QDomNode const& busNode, QSharedPointer<BusDefinition> busDefinition) const;
-                    
-    /*!
-     *  Reads the assertions from XML to a bus definition.
-     *
-     *      @param [in]     busNode         The XML description of the bus definition.
-     *      @param [in/out] busDefinition   The bus definition to insert the assertions into.
-     */
-    void parseAssertions(QDomNode const& busNode, QSharedPointer<BusDefinition> busDefinition) const;
-                        
-    /*!
-     *  Reads the vendor extensions from XML to a bus definition.
-     *
-     *      @param [in]     busNode         The XML description of the bus definition.
-     *      @param [in/out] busDefinition   The bus definition to insert the vendor extensions into.
-     */
-    void parseVendorExtension(QDomNode const& busNode, QSharedPointer<BusDefinition> busDefinition) const;
 };
 
 #endif // BUSDEFINITIONREADER_H

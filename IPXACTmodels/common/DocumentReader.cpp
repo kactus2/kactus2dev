@@ -1,0 +1,129 @@
+//-----------------------------------------------------------------------------
+// File: DocumentReader.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Mikko Teuho
+// Date: 12.08.2015
+//
+// Description:
+// Base class for XML readers.
+//-----------------------------------------------------------------------------
+
+#include "DocumentReader.h"
+#include "ParameterReader.h"
+
+#include <IPXACTmodels/GenericVendorExtension.h>
+
+//-----------------------------------------------------------------------------
+// Function: DocumentReader::DocumentReader()
+//-----------------------------------------------------------------------------
+DocumentReader::DocumentReader(QObject* parent /* = 0 */):
+QObject(parent)
+{
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: DocumentReader::~DocumentReader()
+//-----------------------------------------------------------------------------
+DocumentReader::~DocumentReader()
+{
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: DocumentReader::parseTopComments()
+//-----------------------------------------------------------------------------
+void DocumentReader::parseTopComments(QDomNode const& documentNode, QSharedPointer<Document> document) const
+{
+    QStringList comments;
+
+    QDomNodeList nodeList = documentNode.childNodes();
+    QDomNode singleDocumentNode = documentNode.firstChildElement();
+
+    for (int i = 0; i < nodeList.size() && nodeList.at(i) != singleDocumentNode; ++i)
+    {
+        if (nodeList.at(i).isComment())
+        {
+            comments.append(nodeList.at(i).nodeValue());
+        }
+    }
+
+    document->setTopComments(comments);
+}
+
+//-----------------------------------------------------------------------------
+// Function: DocumentReader::parseVLNV()
+//-----------------------------------------------------------------------------
+void DocumentReader::parseVLNVElements(QDomNode const& documentNode, QSharedPointer<Document> document,
+    VLNV::IPXactType type) const
+{
+    QString vendor = documentNode.firstChildElement("ipxact:vendor").firstChild().nodeValue();
+    QString library = documentNode.firstChildElement("ipxact:library").firstChild().nodeValue();
+    QString name = documentNode.firstChildElement("ipxact:name").firstChild().nodeValue();
+    QString version = documentNode.firstChildElement("ipxact:version").firstChild().nodeValue();
+
+    VLNV documentVLNV(type, vendor, library, name, version);
+    document->setVlnv(documentVLNV);
+}
+
+//-----------------------------------------------------------------------------
+// Function: DocumentReader::parseDescription()
+//-----------------------------------------------------------------------------
+void DocumentReader::parseDescription(QDomNode const& documentNode, QSharedPointer<Document> document) const
+{
+    document->setDescription(documentNode.firstChildElement("ipxact:description").firstChild().nodeValue());
+}
+
+//-----------------------------------------------------------------------------
+// Function: DocumentReader::parseParameters()
+//-----------------------------------------------------------------------------
+void DocumentReader::parseParameters(QDomNode const& documentNode, QSharedPointer<Document> document) const
+{
+    QDomNodeList parameterNodes = documentNode.firstChildElement("ipxact:parameters").childNodes();
+    ParameterReader parameterReader;
+
+    int parameterCount = parameterNodes.count();
+    for (int i = 0;i < parameterCount; i++)
+    {
+        document->getParameters()->append(parameterReader.createParameterFrom(parameterNodes.at(i)));
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: DocumentReader::parseAssertions()
+//-----------------------------------------------------------------------------
+void DocumentReader::parseAssertions(QDomNode const& documentNode, QSharedPointer<Document> document) const
+{
+    QDomNodeList assertionNodes = documentNode.firstChildElement("ipxact:assertions").childNodes();
+
+    int assertionCount = assertionNodes.count();
+    for (int i = 0; i < assertionCount; i++)
+    {
+        QDomNode assertionNode = assertionNodes.at(i);
+
+        QSharedPointer<Assertion> assertion(new Assertion());
+        assertion->setName(assertionNode.firstChildElement("ipxact:name").firstChild().nodeValue());
+        assertion->setDisplayName(assertionNode.firstChildElement("ipxact:displayName").firstChild().nodeValue());
+        assertion->setDescription(assertionNode.firstChildElement("ipxact:description").firstChild().nodeValue());
+        
+        assertion->setAssert(assertionNode.firstChildElement("ipxact:assert").firstChild().nodeValue());
+
+        document->getAssertions()->append(assertion);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: DocumentReader::parseVendorExtensions()
+//-----------------------------------------------------------------------------
+void DocumentReader::parseVendorExtensions(QDomNode const& documentNode, QSharedPointer<Document> document) const
+{
+    QDomNodeList extensionNodes = documentNode.firstChildElement("ipxact:vendorExtensions").childNodes();
+
+    int extensionCount = extensionNodes.count();
+    for (int i = 0; i < extensionCount; i++)
+    {
+        QSharedPointer<VendorExtension> extension(new GenericVendorExtension(extensionNodes.at(i)));
+        document->getVendorExtensions()->append(extension);
+    }
+}

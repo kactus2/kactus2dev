@@ -63,28 +63,28 @@ public:
      *
      *      @return A list of pointers to the interface references.
      */
-    QList<QSharedPointer<InterfaceRef> > getInterfaceReferences() const;
+    QSharedPointer<QList<QSharedPointer<InterfaceRef> > > getInterfaceReferences() const;
 
     /*!
      *  Set the interface references.
      *
      *      @param [in] newInterfaceReferences  A list of pointers to the interface references.
      */
-    void setInterfaceReferences(QList<QSharedPointer<InterfaceRef> > newInterfaceReferences);
+    void setInterfaceReferences(QSharedPointer<QList<QSharedPointer<InterfaceRef> > > newInterfaceReferences);
 
     /*!
      *  Get the abstractor instances.
      *
      *      @return A list of pointers to the abstractor instances.
      */
-    QList<QSharedPointer<AbstractorInstance> > getAbstractorInstances() const;
+    QSharedPointer<QList<QSharedPointer<AbstractorInstance> > > getAbstractorInstances() const;
 
     /*!
      *  Set the abstractor instances.
      *
      *      @param [in] newAbstractorInstances  A list of pointers to the abstractor instances.
      */
-    void setAbstractorInstances(QList<QSharedPointer<AbstractorInstance> > newAbstractorInstances);
+    void setAbstractorInstances(QSharedPointer<QList<QSharedPointer<AbstractorInstance> > > newAbstractorInstances);
 
     /*!
      *  Get the VLNVs used in the contained elements.
@@ -99,10 +99,10 @@ private:
     QString isPresent_;
 
     //! A list of interface references.
-    QList<QSharedPointer<InterfaceRef> > interfaceReferences_;
+    QSharedPointer<QList<QSharedPointer<InterfaceRef> > > interfaceReferences_;
 
     //! A list of abstractor instances.
-    QList<QSharedPointer<AbstractorInstance> > abstractorInstances_;
+    QSharedPointer<QList<QSharedPointer<AbstractorInstance> > > abstractorInstances_;
 };
 
 #endif // MULTIPLEABSTRACTORINSTANCES_H

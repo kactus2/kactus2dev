@@ -19,7 +19,8 @@
 //-----------------------------------------------------------------------------
 // Function: BusDefinitionReader::BusDefinitionReader()
 //-----------------------------------------------------------------------------
-BusDefinitionReader::BusDefinitionReader(QObject *parent): QObject(parent)
+BusDefinitionReader::BusDefinitionReader(QObject *parent):
+DocumentReader(parent)
 {
 
 }
@@ -42,7 +43,7 @@ QSharedPointer<BusDefinition> BusDefinitionReader::createBusDefinitionFrom(QDomN
     parseTopComments(document, busDefinition);
 
     QDomNode busNode = document.firstChildElement();
-    parseVLNV(busNode, busDefinition);
+    parseVLNVElements(busNode, busDefinition, VLNV::BUSDEFINITION);
 
     parseDirectConnection(busNode, busDefinition);
 
@@ -64,45 +65,9 @@ QSharedPointer<BusDefinition> BusDefinitionReader::createBusDefinitionFrom(QDomN
 
     parseAssertions(busNode, busDefinition);
 
-    parseVendorExtension(busNode, busDefinition);
+    parseVendorExtensions(busNode, busDefinition);
 
     return busDefinition;
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusDefinitionReader::parseTopComments()
-//-----------------------------------------------------------------------------
-void BusDefinitionReader::parseTopComments(QDomNode const& document, 
-    QSharedPointer<BusDefinition> busDefinition) const
-{
-    QStringList comments;
-
-    QDomNodeList nodeList = document.childNodes();
-    QDomNode busNode = document.firstChildElement();
-
-    for (int i = 0; i < nodeList.size() && nodeList.at(i) != busNode; i++)
-    {
-        if (nodeList.at(i).isComment())
-        {
-            comments.append(nodeList.at(i).nodeValue());            
-        }
-    }
-
-    busDefinition->setTopComments(comments);
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusDefinitionReader::parseVLNV()
-//-----------------------------------------------------------------------------
-void BusDefinitionReader::parseVLNV(QDomNode const& busNode, QSharedPointer<BusDefinition> busDefinition) const
-{
-    QString vendor = busNode.firstChildElement("ipxact:vendor").firstChild().nodeValue();
-    QString library = busNode.firstChildElement("ipxact:library").firstChild().nodeValue();
-    QString name = busNode.firstChildElement("ipxact:name").firstChild().nodeValue();
-    QString version = busNode.firstChildElement("ipxact:version").firstChild().nodeValue();
-
-    VLNV busVLNV(VLNV::BUSDEFINITION, vendor, library, name, version);
-    busDefinition->setVlnv(busVLNV);
 }
 
 //-----------------------------------------------------------------------------
@@ -200,69 +165,4 @@ void BusDefinitionReader::parseSystemGroupNames(QDomNode const& busNode,
     }
 
     busDefinition->setSystemGroupNames(systemGroupNames);
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusDefinitionReader::parseDescription()
-//-----------------------------------------------------------------------------
-void BusDefinitionReader::parseDescription(QDomNode const& busNode,
-    QSharedPointer<BusDefinition> busDefinition) const
-{
-    busDefinition->setDescription(busNode.firstChildElement("ipxact:description").firstChild().nodeValue());
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusDefinitionReader::parseParameters()
-//-----------------------------------------------------------------------------
-void BusDefinitionReader::parseParameters(QDomNode const& busNode,
-    QSharedPointer<BusDefinition> busDefinition) const
-{
-    QDomNodeList parameterNodes = busNode.firstChildElement("ipxact:parameters").childNodes();
-    ParameterReader parameterReader;
-
-    int parameterCount = parameterNodes.count();
-    for (int i = 0; i < parameterCount; i++)
-    {
-        busDefinition->getParameters()->append(parameterReader.createParameterFrom(parameterNodes.at(i)));
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusDefinitionReader::parseAssertions()
-//-----------------------------------------------------------------------------
-void BusDefinitionReader::parseAssertions(QDomNode const& busNode, 
-    QSharedPointer<BusDefinition> busDefinition) const
-{
-    QDomNodeList assertionNodes = busNode.firstChildElement("ipxact:assertions").childNodes();
-
-    int assertionCount = assertionNodes.count();
-    for (int i = 0; i < assertionCount; i++)
-    {
-        QDomNode assertionNode = assertionNodes.at(i);
-
-        QSharedPointer<Assertion> assertion(new Assertion());
-        assertion->setName(assertionNode.firstChildElement("ipxact:name").firstChild().nodeValue());
-        assertion->setDisplayName(assertionNode.firstChildElement("ipxact:displayName").firstChild().nodeValue());
-        assertion->setDescription(assertionNode.firstChildElement("ipxact:description").firstChild().nodeValue());
-
-        assertion->setAssert(assertionNode.firstChildElement("ipxact:assert").firstChild().nodeValue());
-
-        busDefinition->getAssertions()->append(assertion);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusDefinitionReader::parseVendorExtension()
-//-----------------------------------------------------------------------------
-void BusDefinitionReader::parseVendorExtension(QDomNode const& busNode, 
-    QSharedPointer<BusDefinition> busDefinition) const
-{
-    QDomNodeList extensionNodes = busNode.firstChildElement("ipxact:vendorExtensions").childNodes();
-
-    int extensionCount = extensionNodes.count();
-    for (int i = 0; i < extensionCount; i++)
-    {
-        QSharedPointer<VendorExtension> extension(new GenericVendorExtension(extensionNodes.at(i)));
-        busDefinition->getVendorExtensions()->append(extension);
-    }
 }

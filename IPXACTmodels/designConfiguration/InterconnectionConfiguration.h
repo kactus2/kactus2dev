@@ -73,14 +73,15 @@ public:
      *
      *      @return A list of multipleAbstractorInstances.
      */
-    QList<QSharedPointer<MultipleAbstractorInstances> > getAbstractorInstances() const;
+    QSharedPointer<QList<QSharedPointer<MultipleAbstractorInstances> > > getAbstractorInstances() const;
 
     /*!
      *  Set the multipleAbstractorInstances.
      *
      *      @param [in] newAbstractorInstances  A new list of multipleAbstractorInstances.
      */
-    void setAbstractorInstances(QList<QSharedPointer<MultipleAbstractorInstances> > newAbstractorInstances);
+    void setAbstractorInstances(
+        QSharedPointer<QList<QSharedPointer<MultipleAbstractorInstances> > > newAbstractorInstances);
 
     /*!
      *  Get the VLNVs used in this element.
@@ -98,7 +99,7 @@ private:
     QString interconnectionRef_;
 
     //! List of multiple abstractor elements.
-    QList<QSharedPointer<MultipleAbstractorInstances> > abstractorInstances_;
+    QSharedPointer<QList<QSharedPointer<MultipleAbstractorInstances> > > abstractorInstances_;
 };
 
 #endif // INTERCONNECTIONCONFIGURATION_H

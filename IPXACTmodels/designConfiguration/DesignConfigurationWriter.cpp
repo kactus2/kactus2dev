@@ -102,7 +102,7 @@ void DesignConfigurationWriter::writeDesignReference(QXmlStreamWriter& writer, V
 void DesignConfigurationWriter::writeGeneratorChainConfiguration(QXmlStreamWriter& writer,
     QSharedPointer<DesignConfiguration> designConfiguration) const
 {
-    foreach (QSharedPointer<ConfigurableVLNVReference> currentChain, designConfiguration->getGeneratorChainConfs())
+    foreach (QSharedPointer<ConfigurableVLNVReference> currentChain, *designConfiguration->getGeneratorChainConfs())
     {
         writer.writeStartElement("ipxact:generatorChainConfiguration");
 
@@ -143,7 +143,7 @@ void DesignConfigurationWriter::writeInterConnectionConfiguration(QXmlStreamWrit
     QSharedPointer<DesignConfiguration> designConfiguration) const
 {
     foreach (QSharedPointer<InterconnectionConfiguration> configuration,
-        designConfiguration->getInterconnectionConfs())
+        *designConfiguration->getInterconnectionConfs())
     {
         writer.writeStartElement("ipxact:interconnectionConfiguration");
 
@@ -164,9 +164,9 @@ void DesignConfigurationWriter::writeInterConnectionConfiguration(QXmlStreamWrit
 // Function: DesignConfigurationWriter::writeMultipleAbstractorInstances()
 //-----------------------------------------------------------------------------
 void DesignConfigurationWriter::writeMultipleAbstractorInstances(QXmlStreamWriter& writer,
-    QList<QSharedPointer<MultipleAbstractorInstances> > multipleAbstractors) const
+    QSharedPointer<QList<QSharedPointer<MultipleAbstractorInstances> > > multipleAbstractors) const
 {
-    foreach (QSharedPointer<MultipleAbstractorInstances> multipleAbstractor, multipleAbstractors)
+    foreach (QSharedPointer<MultipleAbstractorInstances> multipleAbstractor, *multipleAbstractors)
     {
         writer.writeStartElement("ipxact:abstractorInstances");
 
@@ -186,9 +186,9 @@ void DesignConfigurationWriter::writeMultipleAbstractorInstances(QXmlStreamWrite
 // Function: DesignConfigurationWriter::writeInterfaceReferences()
 //-----------------------------------------------------------------------------
 void DesignConfigurationWriter::writeInterfaceReferences(QXmlStreamWriter& writer,
-    QList<QSharedPointer<InterfaceRef> > interfaceReferences) const
+    QSharedPointer<QList<QSharedPointer<InterfaceRef> > > interfaceReferences) const
 {
-    foreach (QSharedPointer<InterfaceRef> singleInterface, interfaceReferences)
+    foreach (QSharedPointer<InterfaceRef> singleInterface, *interfaceReferences)
     {
         writer.writeStartElement("ipxact:interfaceRef");
         
@@ -208,9 +208,9 @@ void DesignConfigurationWriter::writeInterfaceReferences(QXmlStreamWriter& write
 // Function: DesignConfigurationWriter::writeAbstractorInstances()
 //-----------------------------------------------------------------------------
 void DesignConfigurationWriter::writeAbstractorInstances(QXmlStreamWriter& writer,
-    QList<QSharedPointer<AbstractorInstance> > abstractorInstances) const
+    QSharedPointer<QList<QSharedPointer<AbstractorInstance> > > abstractorInstances) const
 {
-    foreach (QSharedPointer<AbstractorInstance> abstractorInstance, abstractorInstances)
+    foreach (QSharedPointer<AbstractorInstance> abstractorInstance, *abstractorInstances)
     {
         writer.writeStartElement("ipxact:abstractorInstance");
 
@@ -248,7 +248,7 @@ void DesignConfigurationWriter::writeAbstractorInstances(QXmlStreamWriter& write
 void DesignConfigurationWriter::writeViewConfigurations(QXmlStreamWriter& writer,
     QSharedPointer<DesignConfiguration> designConfiguration) const
 {
-    foreach (QSharedPointer<ViewConfiguration> configuration, designConfiguration->getViewConfigurations())
+    foreach (QSharedPointer<ViewConfiguration> configuration, *designConfiguration->getViewConfigurations())
     {
         writer.writeStartElement("ipxact:viewConfiguration");
 

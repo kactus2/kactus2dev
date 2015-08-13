@@ -38,7 +38,7 @@ private slots:
     void testDesignReference();
     void testGeneratorChainConfiguration();
     void testInterconnectionConfiguration();
-    void testViewConfiguration();
+    void testViewConfigurations();
     void testParameters();
     void testAssertion();
     void testVendorExtensions();
@@ -93,7 +93,7 @@ void tst_DesignConfigurationWriter::cleanup()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_DesignConfigurationWriter::writeSimpleDesignConfiguration()
+// Function: tst_DesignConfigurationWriter::testSimpleDesignConfiguration()
 //-----------------------------------------------------------------------------
 void tst_DesignConfigurationWriter::testSimpleDesignConfiguration()
 {
@@ -182,7 +182,7 @@ void tst_DesignConfigurationWriter::testTopCommentsAreWritten()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_DesignConfigurationWriter::testDesignConfigurationContainsDesignReference()
+// Function: tst_DesignConfigurationWriter::testDesignReference()
 //-----------------------------------------------------------------------------
 void tst_DesignConfigurationWriter::testDesignReference()
 {
@@ -218,7 +218,7 @@ void tst_DesignConfigurationWriter::testDesignReference()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_DesignConfigurationWriter::testDesignConfigurationContainsGeneratorChainConfiguration()
+// Function: tst_DesignConfigurationWriter::testGeneratorChainConfiguration()
 //-----------------------------------------------------------------------------
 void tst_DesignConfigurationWriter::testGeneratorChainConfiguration()
 {
@@ -229,9 +229,7 @@ void tst_DesignConfigurationWriter::testGeneratorChainConfiguration()
         new ConfigurableElementValue("10", "testReferenceID"));
     generatorChainConf->getConfigurableElementValues()->append(generatorChainConfigurable);
 
-    QList<QSharedPointer<ConfigurableVLNVReference> > generatorChains;
-    generatorChains.append(generatorChainConf);
-    designConfiguration_->setGeneratorChainConfs(generatorChains);
+    designConfiguration_->getGeneratorChainConfs()->append(generatorChainConf);
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
@@ -268,7 +266,7 @@ void tst_DesignConfigurationWriter::testGeneratorChainConfiguration()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_DesignConfigurationWriter::testDesignConfigurationContainsInterconnectionConfiguration()
+// Function: tst_DesignConfigurationWriter::testInterconnectionConfiguration()
 //-----------------------------------------------------------------------------
 void tst_DesignConfigurationWriter::testInterconnectionConfiguration()
 {
@@ -284,34 +282,22 @@ void tst_DesignConfigurationWriter::testInterconnectionConfiguration()
     testAbstractorInstance->setViewName("abstractorView");
     testAbstractorInstance->setAbstractorRef(testAbstractorRef);
 
-    QList<QSharedPointer<AbstractorInstance> > abstractorList;
-    abstractorList.append(testAbstractorInstance);
-
     QSharedPointer<InterfaceRef> testInterfaceReference(new InterfaceRef());
     testInterfaceReference->setComponentRef("testComponent");
     testInterfaceReference->setBusRef("testBus");
     testInterfaceReference->setIsPresent("1");
 
-    QList<QSharedPointer<InterfaceRef> > interfaceRefList;
-    interfaceRefList.append(testInterfaceReference);
-
     QSharedPointer<MultipleAbstractorInstances> multipleAbstractors (new MultipleAbstractorInstances());
     multipleAbstractors->setIsPresent("1");
-    multipleAbstractors->setInterfaceReferences(interfaceRefList);
-    multipleAbstractors->setAbstractorInstances(abstractorList);
-
-    QList<QSharedPointer<MultipleAbstractorInstances> > multipleAbstractorList;
-    multipleAbstractorList.append(multipleAbstractors);
+    multipleAbstractors->getInterfaceReferences()->append(testInterfaceReference);
+    multipleAbstractors->getAbstractorInstances()->append(testAbstractorInstance);
 
     QSharedPointer<InterconnectionConfiguration> testInterconnectionConfig (new InterconnectionConfiguration());
     testInterconnectionConfig->setIsPresent("0");
     testInterconnectionConfig->setInterconnectionReference("testInterconnectionReference");
-    testInterconnectionConfig->setAbstractorInstances(multipleAbstractorList);
+    testInterconnectionConfig->getAbstractorInstances()->append(multipleAbstractors);
 
-    QList<QSharedPointer<InterconnectionConfiguration> > interconnectionConfigList;
-    interconnectionConfigList.append(testInterconnectionConfig);
-
-    designConfiguration_->setInterconnectionConfs(interconnectionConfigList);
+    designConfiguration_->getInterconnectionConfs()->append(testInterconnectionConfig);
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
@@ -365,9 +351,9 @@ void tst_DesignConfigurationWriter::testInterconnectionConfiguration()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_DesignConfigurationWriter::testDesignConfigurationContainsViewConfiguration()
+// Function: tst_DesignConfigurationWriter::testViewConfiguration()
 //-----------------------------------------------------------------------------
-void tst_DesignConfigurationWriter::testViewConfiguration()
+void tst_DesignConfigurationWriter::testViewConfigurations()
 {
     QSharedPointer<ViewConfiguration> testViewConfiguration (new ViewConfiguration("testViewConfig"));
     testViewConfiguration->setIsPresent("1");
@@ -376,10 +362,7 @@ void tst_DesignConfigurationWriter::testViewConfiguration()
     QSharedPointer<ConfigurableElementValue> viewConfigCEV (new ConfigurableElementValue("2", "testReferenceID"));
     testViewConfiguration->getViewConfigurableElements()->append(viewConfigCEV);
 
-    QList<QSharedPointer<ViewConfiguration> > viewConfigurationList;
-    viewConfigurationList.append(testViewConfiguration);
-
-    designConfiguration_->setViewConfigurations(viewConfigurationList);
+    designConfiguration_->getViewConfigurations()->append(testViewConfiguration);
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
@@ -515,7 +498,7 @@ void tst_DesignConfigurationWriter::testAssertion()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_DesignConfigurationWriter::testDesignConfigurationContainsVendorExtensions()
+// Function: tst_DesignConfigurationWriter::testVendorExtensions()
 //-----------------------------------------------------------------------------
 void tst_DesignConfigurationWriter::testVendorExtensions()
 {

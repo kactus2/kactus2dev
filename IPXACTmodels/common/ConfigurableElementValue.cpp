@@ -80,3 +80,19 @@ void ConfigurableElementValue::setReferenceId(QString const& newReferenceId)
 {
     attributes_.insert("referenceId", newReferenceId);
 }
+
+//-----------------------------------------------------------------------------
+// Function: ConfigurableElementValue::getAttributes()
+//-----------------------------------------------------------------------------
+QMap<QString, QString> ConfigurableElementValue::getAttributes() const
+{
+    return attributes_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConfigurableElementValue::insertAttribute()
+//-----------------------------------------------------------------------------
+void ConfigurableElementValue::insertAttribute(QString attributeKey, QString attributeValue)
+{
+    attributes_.insert(attributeKey, attributeValue);
+}

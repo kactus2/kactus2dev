@@ -99,21 +99,21 @@ public:
      *
      *      @return The list containing pointers to the generator chain configurations.
      */
-    const QList<QSharedPointer<ConfigurableVLNVReference > > getGeneratorChainConfs();
+    QSharedPointer<QList<QSharedPointer<ConfigurableVLNVReference> > > getGeneratorChainConfs();
 
     /*!
      *  Get the list of interconnection configurations.
      *
      *      @return A list containing pointers to the interconnection configurations.
      */
-    const QList<QSharedPointer<InterconnectionConfiguration> >& getInterconnectionConfs();
+    QSharedPointer<QList<QSharedPointer<InterconnectionConfiguration> > > getInterconnectionConfs();
 
     /*!
      *  Get the list of view configurations.
      *
      *      @return A list containing pointers to the view configurations.
      */
-    QList<QSharedPointer<ViewConfiguration> > getViewConfigurations();
+    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > getViewConfigurations();
 
     /*!
      *  Get the attributes.
@@ -141,21 +141,23 @@ public:
      *
      *      @param [in] generatorChainConfs     A list containing pointers to the generator chain configurations.
      */
-    void setGeneratorChainConfs(QList<QSharedPointer<ConfigurableVLNVReference> > generatorChainConfs);
+    void setGeneratorChainConfs(
+        QSharedPointer<QList<QSharedPointer<ConfigurableVLNVReference> > > generatorChainConfs);
 
     /*!
      *  Set the interconnection configurations.
      *
      *      @param [in] interconnectionConfs    A list containing pointers to the interconnection configurations.
      */
-    void setInterconnectionConfs(QList<QSharedPointer<InterconnectionConfiguration> >& interconnectionConfs);
+    void setInterconnectionConfs(
+        QSharedPointer<QList<QSharedPointer<InterconnectionConfiguration> > > interconnectionConfs);
 
     /*!
      *  Set the view configurations.
      *
      *      @param [in] newViewConfigurations   A list containing pointers to the view configurations.
      */
-    void setViewConfigurations(QList<QSharedPointer<ViewConfiguration> > newViewConfigurations);
+    void setViewConfigurations(QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > newViewConfigurations);
 
     /*!
      *  Get the list of the files needed by this design configuration.
@@ -261,29 +263,6 @@ public:
 
 private:
 
-    /*!
-     *  Parses the vendor extensions of the design from a QDomNode.
-     *
-     *      @param [in] node The QDomNode from where to parse the information.
-     */
-    void parseVendorExtensions(QDomNode const& extensionsNode);
-
-    /*!
-     *  Parses the override configurable element values for component instances.
-     *
-     *      @param [in] extensionNode   The DOM node containing the extensions for configurable element values.
-     *
-     *      @remark This is for Kactus2 extensions.
-     */
-    void parseConfigurableElementValues(QDomNode const& extensionNode);
-
-    /*!
-     *  Parses the view configuration values.
-     *
-     *      @param [in] extensionNode   The DOM node containing the extensions for view configurations.
-     */
-    void parseViewConfigurationValues(QDomNode const& extensionNode);
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -292,13 +271,13 @@ private:
     VLNV designRef_;
 
     //! A list containing pointers to the generator chain configurations.
-    QList<QSharedPointer<ConfigurableVLNVReference> > generatorChainConfigurations_;
+    QSharedPointer<QList<QSharedPointer<ConfigurableVLNVReference> > > generatorChainConfigurations_;
 
     //! A list containing pointers to the interconnection configurations.
-    QList<QSharedPointer<InterconnectionConfiguration> > interconnectionConfigurations_;
+    QSharedPointer<QList<QSharedPointer<InterconnectionConfiguration> > > interconnectionConfigurations_;
 
     //! A list containing pointers to the view configurations.
-    QList<QSharedPointer<ViewConfiguration> > viewConfigurations_;
+    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > viewConfigurations_;
 
     //! Contains the attributes for the design configuration.
     QMap<QString, QString> attributes_;

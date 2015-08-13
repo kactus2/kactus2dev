@@ -75,6 +75,21 @@ public:
      */
     void setReferenceId(QString const& newReferenceId);
 
+    /*!
+     *  Get the attributes associated with this configurable element value.
+     *
+     *      @return A map containing pairs of attribute names and values.
+     */
+    QMap<QString, QString> getAttributes() const;
+
+    /*!
+     *  Insert an attribute for the configurable element value.
+     *
+     *      @param [in] attributeKey    The key for the attribute.
+     *      @param [in] attributeValue  The value for the attribute.
+     */
+    void insertAttribute(QString attributeKey, QString attributeValue);
+
 private:
 
     //! The value of the element.

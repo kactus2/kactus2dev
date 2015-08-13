@@ -17,7 +17,7 @@
 InterconnectionConfiguration::InterconnectionConfiguration():
 isPresent_(),
 interconnectionRef_(),
-abstractorInstances_()
+abstractorInstances_(new QList<QSharedPointer<MultipleAbstractorInstances> >)
 {
 
 }
@@ -28,15 +28,15 @@ abstractorInstances_()
 InterconnectionConfiguration::InterconnectionConfiguration(const InterconnectionConfiguration& other):
 isPresent_(other.isPresent_),
 interconnectionRef_(other.interconnectionRef_),
-abstractorInstances_()
+abstractorInstances_(new QList<QSharedPointer<MultipleAbstractorInstances> > )
 {
-    foreach (QSharedPointer<MultipleAbstractorInstances> multipleAbstractor, other.abstractorInstances_)
+    foreach (QSharedPointer<MultipleAbstractorInstances> multipleAbstractor, *other.abstractorInstances_)
     {
         if (multipleAbstractor)
         {
             QSharedPointer<MultipleAbstractorInstances> copy = QSharedPointer<MultipleAbstractorInstances>(
                 new MultipleAbstractorInstances(*multipleAbstractor.data()));
-            abstractorInstances_.append(copy);
+            abstractorInstances_->append(copy);
         }
     }
 }
@@ -84,7 +84,8 @@ void InterconnectionConfiguration::setInterconnectionReference(QString const& ne
 //-----------------------------------------------------------------------------
 // Function: InterconnectionConfiguration::getAbstractorInstances()
 //-----------------------------------------------------------------------------
-QList<QSharedPointer<MultipleAbstractorInstances> > InterconnectionConfiguration::getAbstractorInstances() const
+QSharedPointer<QList<QSharedPointer<MultipleAbstractorInstances> > > InterconnectionConfiguration::
+    getAbstractorInstances() const
 {
     return abstractorInstances_;
 }
@@ -93,7 +94,7 @@ QList<QSharedPointer<MultipleAbstractorInstances> > InterconnectionConfiguration
 // Function: InterconnectionConfiguration::setAbstractorInstances()
 //-----------------------------------------------------------------------------
 void InterconnectionConfiguration::setAbstractorInstances(
-    QList<QSharedPointer<MultipleAbstractorInstances> > newAbstractorInstances)
+    QSharedPointer<QList<QSharedPointer<MultipleAbstractorInstances> > > newAbstractorInstances)
 {
     abstractorInstances_ = newAbstractorInstances;
 }
@@ -105,7 +106,7 @@ QList<VLNV> InterconnectionConfiguration::getDependantVLNVs() const
 {
     QList<VLNV> vlnvList;
 
-    foreach (QSharedPointer<MultipleAbstractorInstances> multipleAbstractor, abstractorInstances_)
+    foreach (QSharedPointer<MultipleAbstractorInstances> multipleAbstractor, *abstractorInstances_)
     {
         vlnvList.append(multipleAbstractor->getDependantVLNVs());
     }
