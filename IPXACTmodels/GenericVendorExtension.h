@@ -92,7 +92,7 @@ private:
      *      @param [in] node        The DOM node to write.
      *      @param [in] writer      The XML writer to use.
      */
-    void writeAttributes(QDomNode const& node, QXmlStreamWriter &writer) const;
+    void writeAttributes(QDomNode const& node, QXmlStreamWriter& writer) const;
     
 	//-----------------------------------------------------------------------------
 	// Data.

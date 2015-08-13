@@ -77,7 +77,7 @@ void GenericVendorExtension::writeNode(QDomNode const& node, QXmlStreamWriter& w
 //-----------------------------------------------------------------------------
 // Function: GenericVendorExtension::writeAttributes()
 //-----------------------------------------------------------------------------
-void GenericVendorExtension::writeAttributes(QDomNode const& node, QXmlStreamWriter &writer) const
+void GenericVendorExtension::writeAttributes(QDomNode const& node, QXmlStreamWriter& writer) const
 {
     QDomNamedNodeMap attributes = node.attributes();
 

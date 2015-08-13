@@ -126,7 +126,7 @@ void ParameterWriter::writeVectors(QXmlStreamWriter& writer, QSharedPointer<Para
 //-----------------------------------------------------------------------------
 // Function: ParameterWriter::writeValue()
 //-----------------------------------------------------------------------------
-void ParameterWriter::writeValue(QXmlStreamWriter &writer, QSharedPointer<Parameter> parameter) const
+void ParameterWriter::writeValue(QXmlStreamWriter& writer, QSharedPointer<Parameter> parameter) const
 {
     writer.writeStartElement("ipxact:value");
     

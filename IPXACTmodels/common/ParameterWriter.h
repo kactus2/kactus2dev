@@ -60,7 +60,7 @@ private:
      *      @param [in] writer      The xml writer to use.
      *      @param [in] parameter   The parameter whose name group to write.
      */
-    void writeNameGroup(QXmlStreamWriter &writer, QSharedPointer<Parameter> parameter) const;
+    void writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<Parameter> parameter) const;
     
     /*!
      *  Writes the vectors of a given parameter into xml.
@@ -76,7 +76,7 @@ private:
      *      @param [in] writer      The xml writer to use.
      *      @param [in] parameter   The parameter whose arrays to write.
      */
-    void writeArrays(QXmlStreamWriter &writer, QSharedPointer<Parameter> parameter) const;
+    void writeArrays(QXmlStreamWriter& writer, QSharedPointer<Parameter> parameter) const;
         
     /*!
      *  Writes the value of a given parameter into xml.
@@ -84,7 +84,7 @@ private:
      *      @param [in] writer      The xml writer to use.
      *      @param [in] parameter   The parameter whose value to write.
      */
-    void writeValue(QXmlStreamWriter &writer, QSharedPointer<Parameter> parameter) const;
+    void writeValue(QXmlStreamWriter& writer, QSharedPointer<Parameter> parameter) const;
            
     /*!
      *  Writes the vendor extensions of a given parameter into xml.
@@ -92,7 +92,7 @@ private:
      *      @param [in] writer      The xml writer to use.
      *      @param [in] parameter   The parameter whose vendor extensions to write.
      */
-    void writeVendorExtensions(QXmlStreamWriter &writer, QSharedPointer<Parameter> parameter) const;
+    void writeVendorExtensions(QXmlStreamWriter& writer, QSharedPointer<Parameter> parameter) const;
 };
 
 #endif // PARAMETERWRITER_H

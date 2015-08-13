@@ -19,7 +19,7 @@
 #include <QStringList>
 #include <QFileInfo>
 
-class PortMap;
+//class PortMap;
 
 /*! \brief Namespace General is used to store the commonly used structs and enums
  *
@@ -787,12 +787,12 @@ struct PortAlignment {
  *
  * \return General::PortAlignment Contains the alignments for the ports.
 */
-IPXACTMODELS_EXPORT PortAlignment calculatePortAlignment(const PortMap* portMap1, 
+/*IPXACTMODELS_EXPORT PortAlignment calculatePortAlignment(const PortMap* portMap1, 
 									 int phys1LeftBound,
 									 int phys1RightBound,
 									 const PortMap* portMap2,
 									 int phys2LeftBound,
-									 int phys2RightBound);
+									 int phys2RightBound);*/
 
 
 
@@ -862,63 +862,6 @@ IPXACTMODELS_EXPORT General::BooleanValue str2BooleanValue(const QString& str);
  * empty QString is returned.
  */
 IPXACTMODELS_EXPORT QString booleanValue2Str(const General::BooleanValue value);
-
-/*! \brief Equals the spirit:qualifier element in IP-Xact specification
- *
- * Qualifier indicates which type of information a port carries.
- */
-struct Qualifier {
-	/*!
-	 * OPTIONAL spirit:isAddress
-	 * When true specifies the port contains address information.
-	 */
-	bool isAddress_;
-
-	/*!
-	 * OPTIONAL spirit:isData
-	 * When true specifies the port contains data information
-	 */
-	bool isData_;
-
-	/*!
-	 * OPTIONAL spirit:isClock
-	 * When true specifies the port is a clock for this bus interface
-	 */
-	bool isClock_;
-
-	/*!
-	 * OPTIONAL spirit:isReset
-	 * When true specifies this port is a reset for this bus interface
-	 */
-	bool isReset_;
-
-	/*! \brief The constructor
-	 *
-	 * \param qualifierNode A reference to a QDomNode to parse the information
-	 * from.
-	 */
-	Qualifier(QDomNode& qualifierNode);
-
-	/*! \brief The default constructor
-	 *
-	*/
-	Qualifier();
-
-	/*! \brief The copy constructor
-	 *
-	 * \param other Reference to the Qualifier to copy.
-	 *
-	*/
-	Qualifier(const Qualifier& other);
-
-	/*! \brief The assignment operator
-	 *
-	 * \param other Reference to the Qualifier to assign.
-	 *
-	 * \return Reference to this Qualifier.
-	*/
-	Qualifier& operator=(const Qualifier& other);
-};
 
 /*! \brief Contains the file path for a file and the library for the file.
  *

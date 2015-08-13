@@ -1,0 +1,211 @@
+//-----------------------------------------------------------------------------
+// File: WirePort.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Esko Pekkarinen
+// Date: 11.08.2015
+//
+// Description:
+// Implementation for ipxact:wirePort element within abstraction definition.
+//-----------------------------------------------------------------------------
+
+#ifndef WIREPORT_H
+#define WIREPORT_H
+
+#include <QString>
+
+#include <IPXACTmodels/generaldeclarations.h>
+
+class TimingConstraint;
+class CellSpecification;
+
+//-----------------------------------------------------------------------------
+//! Implementation for ipxact:wirePort element within abstraction definition.
+//-----------------------------------------------------------------------------
+class WirePort 
+{
+public:
+
+    //! Possible values for wire presence.
+    enum PresenceType
+    {
+        ILLEGAL = 0,
+        OPTIONAL,
+        REQUIRED,
+        UNKNOWN
+    };
+
+	//! The constructor.
+	WirePort();
+
+    //! Copy constructor.
+    WirePort(WirePort const& other);
+
+	//! The destructor.
+	~WirePort();
+    
+    /*!
+     *  Sets the presence restriction for the port.
+     *
+     *      @param [in] presence   The restriction to set.
+     */
+    void setPresence(PresenceType presence);
+
+    /*!
+     *  Gets the presence restriction for the port.
+     *
+     *      @return The presence restriction for the port.
+     */
+    PresenceType getPresence() const;
+        
+    /*!
+     *  Sets the number of bits required for the port.
+     *
+     *      @param [in] widthExpression   The number of bits to set.
+     */
+    void setWidth(QString const& widthExpression);
+
+    /*!
+     *  Gets the number of bits required for the port.
+     *
+     *      @return The number of bits to required for the port.
+     */
+    QString getWidth() const;
+
+    /*!
+     *  Sets a direction restriction for the port.
+     *
+     *      @param [in] direction   The required direction.
+     */
+    void setDirection(General::Direction direction);
+   
+    /*!
+     *  Gets a direction restriction for the port.
+     *
+     *      @return The required direction.
+     */
+    General::Direction getDirection() const;
+    
+    /*!
+     *  Sets a timing constraint for the port.
+     *
+     *      @param [in] timeConstraint      The constraint to set.
+     */
+    void setTimingConstraint(QSharedPointer<TimingConstraint> timeConstraint);
+
+    /*!
+     *  Gets the timing constraint for the port.
+     *
+     *      @return The timing constraint.
+     */
+    QSharedPointer<TimingConstraint> getTimingConstraint() const;
+        
+    /*!
+     *  Sets a load constraint for the port.
+     *
+     *      @param [in] loadConstraint      The constraint to set.
+     */
+    void setLoadConstraint(QSharedPointer<CellSpecification> loadConstraint);
+    
+    /*!
+     *  Gets the load constraint for the port.
+     *
+     *      @return The load constraint.
+     */
+    QSharedPointer<CellSpecification> getLoadConstraint() const;
+            
+    /*!
+     *  Sets a drive constraint for the port.
+     *
+     *      @param [in] driveConstraint     The constraint to set.
+     */
+    void setDriveConstraint(QSharedPointer<CellSpecification> driveConstraint);
+    
+    /*!
+     *  Gets the drive constraint for the port.
+     *
+     *      @return The drive constraint.
+     */
+    QSharedPointer<CellSpecification> getDriveConstraint() const;
+                
+    /*!
+     *  Sets a timing constraint for the port in the mirrored mode.
+     *
+     *      @param [in] timeConstraint     The constraint to set.
+     */
+    void setMirroredTimingConstraint(QSharedPointer<TimingConstraint> timeConstraint);
+    
+    /*!
+     *  Gets the timing constraint for the port in mirrored mode.
+     *
+     *      @return The timing constraint.
+     */
+    QSharedPointer<TimingConstraint> getMirroredTimingConstraint() const;
+                    
+    /*!
+     *  Sets a load constraint for the port in the mirrored mode.
+     *
+     *      @param [in] loadConstraint     The constraint to set.
+     */
+    void setMirroredLoadConstraint(QSharedPointer<CellSpecification> loadConstraint);
+        
+    /*!
+     *  Gets the load constraint for the port in mirrored mode.
+     *
+     *      @return The load constraint.
+     */
+    QSharedPointer<CellSpecification> getMirroredLoadConstraint() const;
+                        
+    /*!
+     *  Sets a drive constraint for the port in the mirrored mode.
+     *
+     *      @param [in] driveConstraint     The constraint to set.
+     */
+    void setMirroredDriveConstraint(QSharedPointer<CellSpecification> driveConstraint);
+        
+    /*!
+     *  Gets the drive constraint for the port in mirrored mode.
+     *
+     *      @return The drive constraint.
+     */
+    QSharedPointer<CellSpecification> getMirroredDriveConstraint() const;
+
+private:
+
+	// Disable copying.
+    WirePort& operator=(WirePort const& rhs);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! Defines if the port is required or forbidden in a bus interface.
+    PresenceType presence_;
+
+    //! Number of bits required for the port.
+    QString width_;
+
+    //! The direction restriction for the port.
+    General::Direction direction_;
+
+    //! The timing constraint for the port.
+    QSharedPointer<TimingConstraint> timingConstraint_;
+
+    //! The drive constraint for the port.
+    QSharedPointer<CellSpecification> driveConstraint_;
+
+    //! The load constraint for the port.
+    QSharedPointer<CellSpecification> loadConstraint_;
+
+    //! The timing constraint for the port in mirrored mode.
+    QSharedPointer<TimingConstraint> mirroredTimingConstraint_;
+
+    //! The drive constraint for the port in mirrored mode.
+    QSharedPointer<CellSpecification> mirroredDriveConstraint_;
+
+    //! The load constraint for the port in mirrored mode.
+    QSharedPointer<CellSpecification> mirroredLoadConstraint_;
+};
+
+#endif // WIREPORT_H
+

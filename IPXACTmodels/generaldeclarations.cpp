@@ -5,7 +5,7 @@
  */
 
 #include "generaldeclarations.h"
-#include "PortMap.h"
+//#include "PortMap.h"
 #include <IPXACTmodels/common/Vector.h>
 #include "XmlUtils.h"
 
@@ -123,7 +123,7 @@ General::PortAlignment& General::PortAlignment::operator=( const PortAlignment& 
 	return *this;
 }
 
-General::PortAlignment General::calculatePortAlignment( 
+/*General::PortAlignment General::calculatePortAlignment( 
 	const PortMap* portMap1, 
 	int phys1LeftBound, 
 	int phys1RightBound, 
@@ -225,7 +225,7 @@ General::PortAlignment General::calculatePortAlignment(
 		alignment.invalidAlignment_ = false;
 	}
 	return alignment;
-}
+}*/
 
 QString General::port2String(const QString& portName, int leftBound, int rightBound) {
 	QString str(portName);
@@ -755,58 +755,6 @@ General::InterfaceMode General::getCompatibleInterfaceMode(InterfaceMode mode)
             return MASTER;
         }
     }
-}
-
-General::Qualifier::Qualifier(QDomNode& qualifierNode): isAddress_(false),
-		isData_(false), isClock_(false), isReset_(false) {
-	for (int i = 0; i < qualifierNode.childNodes().count(); ++i) {
-		QDomNode tempNode = qualifierNode.childNodes().at(i);
-
-		if (tempNode.nodeName() == QString("spirit:isAddress")) {
-			QString isAddress = tempNode.childNodes().at(0).nodeValue();
-			isAddress_ = General::str2Bool(isAddress, false);
-		}
-
-		else if (tempNode.nodeName() == QString("spirit:isData")) {
-			QString isData = tempNode.childNodes().at(0).nodeValue();
-			isData_ = General::str2Bool(isData, false);
-		}
-
-		else if (tempNode.nodeName() == QString("spirit:isClock")) {
-			QString isClock = tempNode.childNodes().at(0).nodeValue();
-			isClock_ = General::str2Bool(isClock, false);
-		}
-
-		else if (tempNode.nodeName() == QString("spirit:isReset")) {
-			QString isReset = tempNode.childNodes().at(0).nodeValue();
-			isReset_ = General::str2Bool(isReset, false);
-		}
-	}
-	return;
-}
-
-General::Qualifier::Qualifier( const Qualifier& other ):
-isAddress_(other.isAddress_),
-isData_(other.isData_),
-isClock_(other.isClock_),
-isReset_(other.isReset_) {
-}
-
-General::Qualifier::Qualifier():
-isAddress_(false),
-isData_(false),
-isClock_(false),
-isReset_(false) {
-}
-
-General::Qualifier& General::Qualifier::operator=( const Qualifier& other ) {
-	if (this != &other) {
-		isAddress_ = other.isAddress_;
-		isData_ = other.isData_;
-		isClock_ = other.isClock_;
-		isReset_ = other.isReset_;
-	}
-	return *this;
 }
 
 General::LibraryFilePair::LibraryFilePair(const QString filePath,
