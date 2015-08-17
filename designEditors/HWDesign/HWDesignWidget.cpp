@@ -26,7 +26,7 @@
 #include <IPXACTmodels/librarycomponent.h>
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/design.h>
-#include <IPXACTmodels/designconfiguration.h>
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 #include <IPXACTmodels/model.h>
 #include <IPXACTmodels/view.h>
 #include <IPXACTmodels/generaldeclarations.h>

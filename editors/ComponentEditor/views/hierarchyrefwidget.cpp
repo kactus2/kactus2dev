@@ -16,7 +16,7 @@
 #include <editors/ComponentEditor/common/ReferenceSelector/ReferenceSelector.h>
 
 #include <IPXACTmodels/view.h>
-#include <IPXACTmodels/designconfiguration.h>
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
 #include <QVBoxLayout>
 #include <QSharedPointer>

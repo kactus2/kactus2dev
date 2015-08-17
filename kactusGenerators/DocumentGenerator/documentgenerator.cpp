@@ -7,7 +7,6 @@
 
 #include "documentgenerator.h"
 
-#include <IPXACTmodels/designconfiguration.h>
 #include <IPXACTmodels/design.h>
 #include <IPXACTmodels/librarycomponent.h>
 #include <IPXACTmodels/generaldeclarations.h>
@@ -21,7 +20,7 @@
 #include <IPXACTmodels/buildcommand.h>
 #include <IPXACTmodels/view.h>
 #include <IPXACTmodels/design.h>
-#include <IPXACTmodels/designconfiguration.h>
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 #include <IPXACTmodels/memorymap.h>
 
@@ -976,7 +975,7 @@ void DocumentGenerator::writeView( QSharedPointer<View> view, QTextStream& strea
 	// if the hierarchical reference was for design configuration
 	if (handler_->getDocumentType(vlnv) == VLNV::DESIGNCONFIGURATION) {
 		desConf = libComp.staticCast<DesignConfiguration>();
-		desConfVLNV = *desConf->getVlnv();
+		desConfVLNV = desConf->getVlnv();
 
 		designVLNV = desConf->getDesignRef();
 		// if design vlnv was not found in library

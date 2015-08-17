@@ -28,7 +28,6 @@
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <IPXACTmodels/component.h>
-#include <IPXACTmodels/designconfiguration.h>
 #include <IPXACTmodels/design.h>
 #include <IPXACTmodels/GenericVendorExtension.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Group.h>

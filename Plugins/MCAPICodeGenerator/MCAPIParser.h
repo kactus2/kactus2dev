@@ -15,7 +15,7 @@
 #include <IPXACTmodels/ComDefinition.h>
 #include <IPXACTmodels/ComInterface.h>
 #include <IPXACTmodels/design.h>
-#include <IPXACTmodels/designconfiguration.h>
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 #include <Plugins/PluginSystem/IPluginUtility.h>
 
 class Component;

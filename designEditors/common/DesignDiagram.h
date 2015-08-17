@@ -15,7 +15,7 @@
 #include <designEditors/HWDesign/AdHocEnabled.h>
 #include <designEditors/common/DrawMode.h>
 
-#include <IPXACTmodels/designconfiguration.h>
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 #include <IPXACTmodels/ColumnDesc.h>
 
 #include <QAction>

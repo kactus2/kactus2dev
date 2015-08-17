@@ -212,7 +212,7 @@ void MakefileParser::findInstanceHeaders(LibraryInterface* library, QSharedPoint
     MakeFileData &makeData)
 {
     // The path leading to the design.
-    QFileInfo componentQfi = QFileInfo(library->getPath(*desgConf->getVlnv()));
+    QFileInfo componentQfi = QFileInfo(library->getPath(desgConf->getVlnv()));
 
     QString fileSetName = softInstance.getFileSetRef();
 

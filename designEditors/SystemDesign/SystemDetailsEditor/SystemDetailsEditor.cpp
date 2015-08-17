@@ -19,8 +19,8 @@
 
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 #include <IPXACTmodels/SystemView.h>
-#include <IPXACTmodels/designconfiguration.h>
 #include <IPXACTmodels/design.h>
 #include <IPXACTmodels/SWInstance.h>
 

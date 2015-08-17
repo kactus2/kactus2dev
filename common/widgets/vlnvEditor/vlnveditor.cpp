@@ -24,7 +24,7 @@
 
 #include <IPXACTmodels/librarycomponent.h>
 #include <IPXACTmodels/abstractiondefinition.h>
-#include <IPXACTmodels/designconfiguration.h>
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
 #include <QGridLayout>
 #include <QVBoxLayout>

@@ -10,7 +10,6 @@
 
 #include "activevieweditor.h"
 #include <IPXACTmodels/component.h>
-#include <IPXACTmodels/designconfiguration.h>
 
 #include <QWidget>
 #include <QPushButton>

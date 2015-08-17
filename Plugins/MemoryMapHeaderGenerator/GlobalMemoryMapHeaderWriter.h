@@ -20,7 +20,7 @@
 #include <IPXACTmodels/design.h>
 #include <IPXACTmodels/Interface.h>
 #include <IPXACTmodels/common/Parameter.h>
-#include <IPXACTmodels/designconfiguration.h>
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
 #include <QObject>
 #include <QSharedPointer>

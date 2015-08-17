@@ -20,10 +20,12 @@
 // the model files
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/abstractiondefinition.h>
-#include <IPXACTmodels/designconfiguration.h>
 #include <IPXACTmodels/librarycomponent.h>
 #include <IPXACTmodels/design.h>
 #include <IPXACTmodels/vlnv.h>
+
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+#include <IPXACTmodels/designConfiguration/DesignConfigurationWriter.h>
 
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 #include <IPXACTmodels/BusDefinition/BusDefinitionWriter.h>
@@ -641,6 +643,17 @@ bool LibraryHandler::writeModelToFile( const QString path,
 
         writer.writeBusDefinition(xmlWriter, busDef);
     }
+    else if (model->getVlnv().getType() == VLNV::DESIGNCONFIGURATION)
+    {
+        DesignConfigurationWriter designConfigurationWriter;
+        QXmlStreamWriter xmlWriter(&newFile);
+        xmlWriter.setAutoFormatting(true);
+        xmlWriter.setAutoFormattingIndent(-1);
+
+        QSharedPointer<DesignConfiguration> designConfiguration = model.dynamicCast<DesignConfiguration>();
+
+        designConfigurationWriter.writeDesignConfiguration(xmlWriter, designConfiguration);
+    }
     //model->write(newFile);
 
     // close the file
@@ -718,6 +731,17 @@ bool LibraryHandler::writeModelToFile(QSharedPointer<Document> model, bool print
         xmlWriter.setAutoFormattingIndent(-1);
 
         writer.writeBusDefinition(xmlWriter, busDef);
+    }
+    else if (model->getVlnv().getType() == VLNV::DESIGNCONFIGURATION)
+    {
+        DesignConfigurationWriter designConfigurationWriter;
+        QXmlStreamWriter xmlWriter(&newFile);
+        xmlWriter.setAutoFormatting(true);
+        xmlWriter.setAutoFormattingIndent(-1);
+
+        QSharedPointer<DesignConfiguration> designConfiguration = model.dynamicCast<DesignConfiguration>();
+
+        designConfigurationWriter.writeDesignConfiguration(xmlWriter, designConfiguration);
     }
     //model->write(newFile);
 

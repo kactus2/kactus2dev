@@ -18,8 +18,6 @@
 #include <common/GenericEditProvider.h>
 #include "configurableelementeditor.h"
 
-#include <IPXACTmodels/designconfiguration.h>
-
 #include <QWidget>
 #include <QComboBox>
 #include <QGroupBox>

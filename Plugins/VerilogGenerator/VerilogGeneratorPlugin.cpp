@@ -21,7 +21,7 @@
 
 #include <IPXACTmodels/fileset.h>
 #include <IPXACTmodels/design.h>
-#include <IPXACTmodels/designconfiguration.h>
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
 #include <QDateTime>
 #include <QFileDialog>
@@ -187,8 +187,8 @@ QStringList VerilogGeneratorPlugin::findPossibleViewNames(QSharedPointer<Documen
 
     QStringList viewNames;
     if (designConfig && libDes && designConfig->getDesignRef() == libDes->getVlnv())
-    {        
-        viewNames = findReferencingViews(topComponent, *designConfig->getVlnv());
+    {
+        viewNames = findReferencingViews(topComponent, designConfig->getVlnv());
     }
     else if (libDes)
     {

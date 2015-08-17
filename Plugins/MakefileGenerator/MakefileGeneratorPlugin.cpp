@@ -13,8 +13,8 @@
 #include "MakefileParser.h"
 #include "MakefileGeneratorPlugin.h"
 
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 #include <IPXACTmodels/design.h>
-#include <IPXACTmodels/designconfiguration.h>
 #include <QMessageBox>
 #include <QCoreApplication>
 #include <IPXACTmodels/SystemView.h>
@@ -131,7 +131,7 @@ void MakefileGeneratorPlugin::runGenerator( IPluginUtility* utility,
 
 	foreach ( QSharedPointer<SystemView> view, comp->getSystemViews() )
 	{
-		if ( view->getHierarchyRef() == *desgConf->getVlnv() )
+        if ( view->getHierarchyRef() == desgConf->getVlnv() )
 		{
 			sysViewName = view->name();
 			break;

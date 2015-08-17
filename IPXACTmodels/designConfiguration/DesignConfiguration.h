@@ -76,11 +76,6 @@ public:
 	virtual QSharedPointer<Document> clone() const;
 
     /*!
-	 *  Library component contains write function as purely virtual. This should be deleted
-	 */
-	virtual void write(QFile& file);
-
-    /*!
 	 *  Set the vlnv.
 	 *
 	 *      @param [in] vlnv    Reference to the vlnv to be set.

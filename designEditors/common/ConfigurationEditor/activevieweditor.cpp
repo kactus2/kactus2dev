@@ -6,13 +6,12 @@
  */
 
 #include "activevieweditor.h"
-
 #include "activeviewdelegate.h"
+
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
 #include <designEditors/common/DesignDiagram.h>
 #include <designEditors/common/DesignWidget.h>
-
-#include <IPXACTmodels/designconfiguration.h>
 
 #include <QVBoxLayout>
 #include <QSharedPointer>

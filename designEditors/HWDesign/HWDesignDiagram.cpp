@@ -40,7 +40,7 @@
 #include <IPXACTmodels/portabstraction.h>
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/model.h>
-#include <IPXACTmodels/designconfiguration.h>
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 #include <IPXACTmodels/PortRef.h>
 #include <IPXACTmodels/Interconnection.h>

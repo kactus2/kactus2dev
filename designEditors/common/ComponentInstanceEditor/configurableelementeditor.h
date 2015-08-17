@@ -8,6 +8,8 @@
 #ifndef CONFIGURABLEELEMENTEDITOR_H
 #define CONFIGURABLEELEMENTEDITOR_H
 
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/ListParameterFinder.h>
@@ -15,8 +17,6 @@
 #include "ConfigurableElementsModel.h"
 #include "configurableelementdelegate.h"
 #include "ConfigurableElementsView.h"
-
-#include <IPXACTmodels/designconfiguration.h>
 
 #include <QAbstractItemModel>
 #include <QGroupBox>

@@ -110,7 +110,7 @@ void MCAPIParser::parseTopLevel(QSharedPointer<Design> design, QSharedPointer<Co
 
 			foreach ( QSharedPointer<SystemView> view, topComponent->getSystemViews() )
 			{
-				if ( view->getHierarchyRef() == *desgConf->getVlnv() )
+                if ( view->getHierarchyRef() == desgConf->getVlnv() )
 				{
 					sysViewName = view->name();
 					break;

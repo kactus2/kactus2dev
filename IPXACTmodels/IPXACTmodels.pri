@@ -7,8 +7,10 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../resource.h \
+HEADERS += ./designConfiguration/AbstractorInstance.h \
+    ../resource.h \
     ./abstractiondefinition.h \
+    ./AbstractMemoryMap.h \
     ./addressblock.h \
     ./addressspace.h \
     ./AdHocConnection.h \
@@ -22,7 +24,6 @@ HEADERS += ../resource.h \
     ./bspbuildcommand.h \
     ./buildcommand.h \
     ./buildmodel.h \
-    ./busdefinition.h \
     ./businterface.h \
     ./channel.h \
     ./choice.h \
@@ -30,6 +31,8 @@ HEADERS += ../resource.h \
     ./ComConnection.h \
     ./ComDefinition.h \
     ./ComInterface.h \
+    ./common/Assertion.h \
+    ./common/BooleanValue.h \
     ./component.h \
     ./componentgenerator.h \
     ./ComponentInstance.h \
@@ -37,7 +40,7 @@ HEADERS += ../resource.h \
     ./cpu.h \
     ./design.h \
     ./designconfabstractor.h \
-    ./designconfiguration.h \
+    ./designConfiguration/DesignConfiguration.h \
     ./enumeratedvalue.h \
     ./Enumeration.h \
     ./field.h \
@@ -62,12 +65,11 @@ HEADERS += ../resource.h \
     ./memoryblockdata.h \
     ./memorymap.h \
     ./memorymapitem.h \
+    ./MemoryRemap.h \
     ./mirroredslaveinterface.h \
     ./model.h \
     ./modelparameter.h \
-    ./NameGroup.h \
     ./otherclockdriver.h \
-    ./parameter.h \
     ./port.h \
     ./portabstraction.h \
     ./PortMap.h \
@@ -90,7 +92,6 @@ HEADERS += ../resource.h \
     ./SystemView.h \
     ./transactional.h \
     ./transactionalabstraction.h \
-    ./vector.h \
     ./VendorExtension.h \
     ./view.h \
     ./vlnv.h \
@@ -114,9 +115,31 @@ HEADERS += ../resource.h \
     ./validators/BinaryValidator.h \
     ./validators/namevalidator.h \
     ./validators/NMTokenValidator.h \
-    ./AbstractMemoryMap.h \
-    ./MemoryRemap.h
+    ./common/Array.h \
+    ./common/Document.h \
+    ./common/NameGroup.h \
+    ./common/Parameter.h \
+    ./common/Range.h \
+    ./common/Vector.h \
+    ./common/DocumentWriter.h \
+    ./common/NameGroupWriter.h \
+    ./common/ParameterReader.h \
+    ./common/ParameterWriter.h \
+    ./BusDefinition/BusDefinition.h \
+    ./BusDefinition/BusDefinitionReader.h \
+    ./BusDefinition/BusDefinitionWriter.h \
+    ./common/Extendable.h \
+    ./common/DocumentReader.h \
+    ./designConfiguration/DesignConfigurationReader.h \
+    ./designConfiguration/DesignConfigurationWriter.h \
+    ./designConfiguration/InterconnectionConfiguration.h \
+    ./designConfiguration/InterfaceRef.h \
+    ./designConfiguration/MultipleAbstractorInstances.h \
+    ./designConfiguration/ViewConfiguration.h \
+    ./common/ConfigurableVLNVReference.h \
+    ./common/ConfigurableElementValue.h
 SOURCES += ./abstractiondefinition.cpp \
+    ./AbstractMemoryMap.cpp \
     ./addressblock.cpp \
     ./addressspace.cpp \
     ./AdHocConnection.cpp \
@@ -130,7 +153,6 @@ SOURCES += ./abstractiondefinition.cpp \
     ./bspbuildcommand.cpp \
     ./buildcommand.cpp \
     ./buildmodel.cpp \
-    ./busdefinition.cpp \
     ./businterface.cpp \
     ./channel.cpp \
     ./choice.cpp \
@@ -145,7 +167,6 @@ SOURCES += ./abstractiondefinition.cpp \
     ./cpu.cpp \
     ./design.cpp \
     ./designconfabstractor.cpp \
-    ./designconfiguration.cpp \
     ./enumeratedvalue.cpp \
     ./Enumeration.cpp \
     ./field.cpp \
@@ -169,12 +190,11 @@ SOURCES += ./abstractiondefinition.cpp \
     ./memoryblockdata.cpp \
     ./memorymap.cpp \
     ./memorymapitem.cpp \
+    ./MemoryRemap.cpp \
     ./mirroredslaveinterface.cpp \
     ./model.cpp \
     ./modelparameter.cpp \
-    ./NameGroup.cpp \
     ./otherclockdriver.cpp \
-    ./parameter.cpp \
     ./port.cpp \
     ./portabstraction.cpp \
     ./PortMap.cpp \
@@ -196,7 +216,6 @@ SOURCES += ./abstractiondefinition.cpp \
     ./SystemView.cpp \
     ./transactional.cpp \
     ./transactionalabstraction.cpp \
-    ./vector.cpp \
     ./view.cpp \
     ./vlnv.cpp \
     ./wire.cpp \
@@ -219,5 +238,30 @@ SOURCES += ./abstractiondefinition.cpp \
     ./validators/NMTokenValidator.cpp \
     ./validators/ParameterValidator.cpp \
     ./validators/ParameterValidator2014.cpp \
-    ./AbstractMemoryMap.cpp \
-    ./MemoryRemap.cpp
+    ./common/Array.cpp \
+    ./common/Assertion.cpp \
+    ./common/BooleanValue.cpp \
+    ./common/Document.cpp \
+    ./common/DocumentWriter.cpp \
+    ./common/NameGroup.cpp \
+    ./common/NameGroupWriter.cpp \
+    ./common/Parameter.cpp \
+    ./common/ParameterReader.cpp \
+    ./common/ParameterWriter.cpp \
+    ./common/Range.cpp \
+    ./common/Vector.cpp \
+    ./BusDefinition/BusDefinition.cpp \
+    ./BusDefinition/BusDefinitionReader.cpp \
+    ./BusDefinition/BusDefinitionWriter.cpp \
+    ./common/Extendable.cpp \
+    ./common/DocumentReader.cpp \
+    ./designConfiguration/AbstractorInstance.cpp \
+    ./designConfiguration/DesignConfiguration.cpp \
+    ./designConfiguration/DesignConfigurationReader.cpp \
+    ./designConfiguration/DesignConfigurationWriter.cpp \
+    ./designConfiguration/InterconnectionConfiguration.cpp \
+    ./designConfiguration/InterfaceRef.cpp \
+    ./designConfiguration/MultipleAbstractorInstances.cpp \
+    ./designConfiguration/ViewConfiguration.cpp \
+    ./common/ConfigurableVLNVReference.cpp \
+    ./common/ConfigurableElementValue.cpp

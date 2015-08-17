@@ -57,6 +57,12 @@
     <Filter Include="Source Files\BusDefinition">
       <UniqueIdentifier>{b3c73ea0-2cec-4b2d-93eb-a9a6e3650ab3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\designConfiguration">
+      <UniqueIdentifier>{08dd8af0-de2a-47a7-9b4c-07b5f19ca328}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\designConfiguration">
+      <UniqueIdentifier>{3756b817-3a7e-4d61-aaeb-4228dc0db3b6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="abstractiondefinition.cpp">
@@ -141,9 +147,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="designconfabstractor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="designconfiguration.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="enumeratedvalue.cpp">
@@ -461,6 +464,60 @@
     <ClCompile Include="common\NameGroupWriter.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
+    <ClCompile Include="common\Extendable.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_DocumentReader.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_DocumentReader.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="common\DocumentReader.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_DesignConfigurationReader.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_DesignConfigurationReader.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_DesignConfigurationWriter.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_DesignConfigurationWriter.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="designConfiguration\AbstractorInstance.cpp">
+      <Filter>Source Files\designConfiguration</Filter>
+    </ClCompile>
+    <ClCompile Include="designConfiguration\DesignConfiguration.cpp">
+      <Filter>Source Files\designConfiguration</Filter>
+    </ClCompile>
+    <ClCompile Include="designConfiguration\DesignConfigurationReader.cpp">
+      <Filter>Source Files\designConfiguration</Filter>
+    </ClCompile>
+    <ClCompile Include="designConfiguration\DesignConfigurationWriter.cpp">
+      <Filter>Source Files\designConfiguration</Filter>
+    </ClCompile>
+    <ClCompile Include="designConfiguration\InterconnectionConfiguration.cpp">
+      <Filter>Source Files\designConfiguration</Filter>
+    </ClCompile>
+    <ClCompile Include="designConfiguration\InterfaceRef.cpp">
+      <Filter>Source Files\designConfiguration</Filter>
+    </ClCompile>
+    <ClCompile Include="designConfiguration\MultipleAbstractorInstances.cpp">
+      <Filter>Source Files\designConfiguration</Filter>
+    </ClCompile>
+    <ClCompile Include="designConfiguration\ViewConfiguration.cpp">
+      <Filter>Source Files\designConfiguration</Filter>
+    </ClCompile>
+    <ClCompile Include="common\ConfigurableVLNVReference.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\ConfigurableElementValue.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ipxactmodels_global.h">
@@ -548,9 +605,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="designconfabstractor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="designconfiguration.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="enumeratedvalue.h">
@@ -796,6 +850,33 @@
     <ClInclude Include="common\BooleanValue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="common\Extendable.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="designConfiguration\AbstractorInstance.h">
+      <Filter>Header Files\designConfiguration</Filter>
+    </ClInclude>
+    <ClInclude Include="designConfiguration\DesignConfiguration.h">
+      <Filter>Header Files\designConfiguration</Filter>
+    </ClInclude>
+    <ClInclude Include="designConfiguration\InterconnectionConfiguration.h">
+      <Filter>Header Files\designConfiguration</Filter>
+    </ClInclude>
+    <ClInclude Include="designConfiguration\InterfaceRef.h">
+      <Filter>Header Files\designConfiguration</Filter>
+    </ClInclude>
+    <ClInclude Include="designConfiguration\MultipleAbstractorInstances.h">
+      <Filter>Header Files\designConfiguration</Filter>
+    </ClInclude>
+    <ClInclude Include="designConfiguration\ViewConfiguration.h">
+      <Filter>Header Files\designConfiguration</Filter>
+    </ClInclude>
+    <ClInclude Include="common\ConfigurableVLNVReference.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\ConfigurableElementValue.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="validators\namevalidator.h">
@@ -824,6 +905,15 @@
     </CustomBuild>
     <CustomBuild Include="common\NameGroupWriter.h">
       <Filter>Header Files\common</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\DocumentReader.h">
+      <Filter>Header Files\common</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designConfiguration\DesignConfigurationReader.h">
+      <Filter>Header Files\designConfiguration</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designConfiguration\DesignConfigurationWriter.h">
+      <Filter>Header Files\designConfiguration</Filter>
     </CustomBuild>
   </ItemGroup>
 </Project>

@@ -8,7 +8,7 @@
 #ifndef ACTIVEVIEWMODEL_H
 #define ACTIVEVIEWMODEL_H
 
-#include <IPXACTmodels/designconfiguration.h>
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
 #include <designEditors/HWDesign/HWComponentItem.h>
 

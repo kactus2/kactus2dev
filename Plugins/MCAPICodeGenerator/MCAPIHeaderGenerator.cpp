@@ -146,7 +146,7 @@ void MCAPIHeaderGenerator::addGeneratedMCAPIToFileset(QString directory, QShared
 
     foreach( QSharedPointer<SystemView> view, topComponent->getSystemViews() )
     {
-        if ( view->getHierarchyRef() == *desgConf->getVlnv() )
+        if ( view->getHierarchyRef() == desgConf->getVlnv() )
         {
            sysViewName = view->name();
            break;

@@ -10,7 +10,7 @@
 #include <IPXACTmodels/vlnv.h>
 #include <library/LibraryManager/libraryinterface.h>
 #include <IPXACTmodels/librarycomponent.h>
-#include <IPXACTmodels/designconfiguration.h>
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
 #include <QDebug>
 

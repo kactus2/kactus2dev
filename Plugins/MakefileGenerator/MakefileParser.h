@@ -15,7 +15,7 @@
 #include <QString>
 
 #include <IPXACTmodels/design.h>
-#include <IPXACTmodels/designconfiguration.h>
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 #include <IPXACTmodels/file.h>
 #include <IPXACTmodels/fileset.h>
 #include <IPXACTmodels/component.h>

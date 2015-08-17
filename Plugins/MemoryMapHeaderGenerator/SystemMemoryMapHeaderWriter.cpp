@@ -72,7 +72,7 @@ void SystemMemoryMapHeaderWriter::writeMemoryMapHeader(QSharedPointer<Component>
 
     systemGeneratorSettings_.clear();
 
-    QSharedPointer<SystemView> sysView = component->findSystemView(*designConfiguration->getVlnv());
+    QSharedPointer<SystemView> sysView = component->findSystemView(designConfiguration->getVlnv());
 	Q_ASSERT(sysView);
 
 	QStringList usedFileTypes;
@@ -379,7 +379,7 @@ QSharedPointer<SystemView> SystemMemoryMapHeaderWriter::findSystemView(QSharedPo
 {
     foreach (QSharedPointer<SystemView> systemDesignView, component->getSystemViews())
     {
-        if (systemDesignView->getHierarchyRef() == *designConfiguration->getVlnv())
+        if (systemDesignView->getHierarchyRef() == designConfiguration->getVlnv())
         {
             return systemDesignView;
         }

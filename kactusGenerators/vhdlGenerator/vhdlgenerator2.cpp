@@ -419,6 +419,7 @@ bool VhdlGenerator2::parseDesignAndConfiguration() {
 	if (desConf_) {
 		QStringList errorList;
 
+        /*
 		if (!desConf_->isValid(errorList)) {
 			emit noticeMessage(tr("The configuration contained following errors:"));
 
@@ -426,7 +427,7 @@ bool VhdlGenerator2::parseDesignAndConfiguration() {
 				emit errorMessage(error);
 			}
 			return false;
-		}
+		}*/
 	}
 	
 

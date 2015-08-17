@@ -21,7 +21,6 @@
 #include <designEditors/SystemDesign/SWComponentItem.h>
 
 #include <IPXACTmodels/component.h>
-#include <IPXACTmodels/designconfiguration.h>
 
 #include <IPXACTmodels/vlnv.h>
 

@@ -40,7 +40,6 @@
 #include <designEditors/common/StickyNote/StickyNote.h>
 
 #include <IPXACTmodels/component.h>
-#include <IPXACTmodels/designconfiguration.h>
 #include <IPXACTmodels/design.h>
 #include <IPXACTmodels/model.h>
 #include <IPXACTmodels/memorymap.h>

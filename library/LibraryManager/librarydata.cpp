@@ -21,9 +21,11 @@
 #include <IPXACTmodels/librarycomponent.h>
 #include <IPXACTmodels/abstractiondefinition.h>
 
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+#include <IPXACTmodels/designConfiguration/DesignConfigurationReader.h>
+
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/design.h>
-#include <IPXACTmodels/designconfiguration.h>
 #include <IPXACTmodels/generatorchain.h>
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/ComDefinition.h>
@@ -408,7 +410,8 @@ QSharedPointer<Document> LibraryData::getModel( const VLNV& vlnv ) {
 				break;
 									   }
 			case VLNV::DESIGNCONFIGURATION: {
-				libComp = QSharedPointer<Document>(new DesignConfiguration(doc));
+                DesignConfigurationReader reader;
+                libComp = reader.createDesignConfigurationFrom(doc);
 				break;
 											}
 

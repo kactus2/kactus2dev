@@ -19,7 +19,7 @@
 #include <IPXACTmodels/modelparameter.h>
 #include <IPXACTmodels/choice.h>
 #include <IPXACTmodels/validators/ParameterValidator2014.h>
-#include <IPXACTmodels/designconfiguration.h>
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
 #include <QAbstractTableModel>
 #include <QMap>
