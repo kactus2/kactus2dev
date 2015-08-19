@@ -87,7 +87,7 @@ void WireAbstractionWriter::writeQualifier(QXmlStreamWriter& writer,
         {
             writer.writeTextElement("ipxact:isClock", "true");
         }
-        if (qualifier.isReset())
+        else if (qualifier.isReset())
         {
             writer.writeTextElement("ipxact:isReset", "true");
         }
@@ -130,15 +130,15 @@ void WireAbstractionWriter::writeWirePort(QXmlStreamWriter& writer, QSharedPoint
 //-----------------------------------------------------------------------------
 void WireAbstractionWriter::writePresence(QXmlStreamWriter& writer, QSharedPointer<WirePort> wirePort) const
 {
-    if (wirePort->getPresence() == WirePort::REQUIRED)
+    if (wirePort->getPresence() == General::REQUIRED)
     {
         writer.writeTextElement("ipxact:presence", "required");
     }
-    else if (wirePort->getPresence() == WirePort::OPTIONAL)
+    else if (wirePort->getPresence() == General::OPTIONAL)
     {
         writer.writeTextElement("ipxact:presence", "optional");
     }
-    else if (wirePort->getPresence() == WirePort::ILLEGAL)
+    else if (wirePort->getPresence() == General::ILLEGAL)
     {
         writer.writeTextElement("ipxact:presence", "illegal");
     }

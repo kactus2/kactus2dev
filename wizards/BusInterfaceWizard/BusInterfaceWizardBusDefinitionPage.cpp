@@ -14,7 +14,7 @@
 #include "BusInterfaceWizard.h"
 
 #include <IPXACTmodels/component.h>
-#include <IPXACTmodels/abstractiondefinition.h>
+#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 #include <editors/BusEditor/absdefgroup.h>
 #include <editors/BusEditor/busdefgroup.h>
@@ -192,7 +192,8 @@ void BusInterfaceWizardBusEditorPage::setupLayout()
 void BusInterfaceWizardBusEditorPage::createLogicalPortsAndMappings(QStringList const& physPorts, 
     QSharedPointer<AbstractionDefinition> absDef)
 {
-    QList<QSharedPointer<PortAbstraction> >  logicalPorts;    
+    QSharedPointer<QList<QSharedPointer<PortAbstraction> >  > logicalPorts = absDef->getLogicalPorts(); 
+    logicalPorts->clear();
 
     foreach(QString port, physPorts)
     {
@@ -215,19 +216,18 @@ void BusInterfaceWizardBusEditorPage::createLogicalPortsAndMappings(QStringList 
         if (!absPort.isNull())
         {
             int index = indexExp.cap(1).toInt(); //!< On failed capture, index = 0.
-            int newSize = qMax(absPort->getWidth(General::MASTER), index + physPort->getPortSize());            
-            absPort->setMasterWidth(newSize);
-            absPort->setSlaveWidth(newSize);
+            int newSize = qMax(absPort->getWire()->getMasterPort()->getWidth().toInt(), index + physPort->getPortSize());            
+            absPort->getWire()->getMasterPort()->setWidth(QString::number(newSize));
+            absPort->getWire()->getSlavePort()->setWidth(QString::number(newSize));
         }
         else
         {
             absPort = createAbsPort(absPortName, portDirection, portWidth);
-            logicalPorts.append(absPort);
+            logicalPorts->append(absPort);
         }               
         portMappings_.insert(port, absPortName);
     }
 
-    absDef->setPorts(logicalPorts);
 }
 
 //-----------------------------------------------------------------------------
@@ -259,15 +259,13 @@ void BusInterfaceWizardBusEditorPage::createPortMaps()
         QSharedPointer<AbstractionDefinition> absDef = libComp.dynamicCast<AbstractionDefinition>();
         if (absDef)
         {
-            QStringList absPortNames = absDef->getPortNames(busIf_->getInterfaceMode());
-
             int logicalMax = 0;
             foreach(QString port, physicalPorts_)
             {
                 QString logicalName = portMappings_.value(port);
 
                 // Map only to logical signals that are defined.
-                if (absPortNames.contains(logicalName))
+                if (absDef->hasPort(logicalName, busIf_->getInterfaceMode()))
                 {
 
                     QSharedPointer<Port> physPort = component_->getPort(port);
@@ -299,8 +297,8 @@ void BusInterfaceWizardBusEditorPage::createPortMaps()
                         logicalMax = lowerLogical + portWidth;
                     }
 
-                    if (absDef->getPortSize(logicalName, busIf_->getInterfaceMode()) == -1 ||
-                        higherLogical < absDef->getPortSize(logicalName, busIf_->getInterfaceMode()))
+                    QString absWidth = absDef->getPort(logicalName)->getWire()->getWidth(busIf_->getInterfaceMode());
+                    if (absWidth.isEmpty() || higherLogical < absWidth.toInt())
                     {
                         QSharedPointer<PortMap> portMap(new PortMap());
                         portMap->setLogicalPort(logicalName);
@@ -330,34 +328,50 @@ QSharedPointer<PortAbstraction> BusInterfaceWizardBusEditorPage::createAbsPort(Q
     if (busIf_->getInterfaceMode() == General::MASTER || 
         busIf_->getInterfaceMode() == General::MIRROREDMASTER)
     {
-        absPort->setMasterDirection(portDirection);
-        absPort->setSlaveDirection(General::convert2Mirrored(portDirection));            
+        QSharedPointer<WirePort> masterPort(new WirePort());
+        masterPort->setDirection(portDirection);
+
+        QSharedPointer<WirePort> slavePort(new WirePort());
+        slavePort->setDirection(General::convert2Mirrored(portDirection));
+
+        absPort->getWire()->setMasterPort(masterPort);
+        absPort->getWire()->setSlavePort(slavePort);
 
         if (portWidth > 0)
         {    
-            absPort->setMasterWidth(portWidth);
-            absPort->setSlaveWidth(portWidth);
+            masterPort->setWidth(QString::number(portWidth));
+            slavePort->setWidth(QString::number(portWidth));
         }
     } 
     else if (busIf_->getInterfaceMode() == General::SLAVE ||
         busIf_->getInterfaceMode() == General::MIRROREDSLAVE)
     {
-        absPort->setSlaveDirection(portDirection);
-        absPort->setMasterDirection(General::convert2Mirrored(portDirection));
+        QSharedPointer<WirePort> slavePort(new WirePort());
+        slavePort->setDirection(portDirection);
+
+        QSharedPointer<WirePort> masterPort(new WirePort());
+        masterPort->setDirection(General::convert2Mirrored(portDirection));
+
+        absPort->getWire()->setSlavePort(slavePort);
+        absPort->getWire()->setMasterPort(masterPort);
 
         if (portWidth > 0)
         {
-            absPort->setMasterWidth(portWidth);
-            absPort->setSlaveWidth(portWidth);
+            masterPort->setWidth(QString::number(portWidth));
+            slavePort->setWidth(QString::number(portWidth));
         }
     }
     else //if(busIf_->getInterfaceMode() == General::SYSTEM ||
         //busIf_->getInterfaceMode() == General::MIRROREDSYSTEM)
     {
-        absPort->setSystemDirection(portDirection);
+        QSharedPointer<WirePort> systemPort(new WirePort());
+        systemPort->setDirection(portDirection);
+
+        absPort->getWire()->addSystemPort(systemPort);
+
         if (portWidth > 0)
         {
-            absPort->setSystemWidth(portWidth);
+            systemPort->setWidth(QString::number(portWidth));
         }
     }
 	
@@ -368,9 +382,9 @@ QSharedPointer<PortAbstraction> BusInterfaceWizardBusEditorPage::createAbsPort(Q
 // Function: BusInterfaceWizardBusEditorPage::findPortByName()
 //-----------------------------------------------------------------------------
 QSharedPointer<PortAbstraction> BusInterfaceWizardBusEditorPage::findPortByName(QString const& portName, 
-    const QList<QSharedPointer<PortAbstraction> >& ports)
+    QSharedPointer<QList<QSharedPointer<PortAbstraction> > > ports)
 {
-    foreach (QSharedPointer<PortAbstraction> port, ports)
+    foreach (QSharedPointer<PortAbstraction> port, *ports)
     {
         if (QString::compare(portName, port->getLogicalName()) == 0)
         {

@@ -18,17 +18,19 @@
 #include <common/dialogs/TableViewDialog/TableViewDialog.h>
 
 // the model files
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/abstractiondefinition.h>
-#include <IPXACTmodels/librarycomponent.h>
-#include <IPXACTmodels/design.h>
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
+#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinitionWriter.h>
+
+#include <IPXACTmodels/BusDefinition/BusDefinition.h>
+#include <IPXACTmodels/BusDefinition/BusDefinitionWriter.h>
 
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 #include <IPXACTmodels/designConfiguration/DesignConfigurationWriter.h>
 
-#include <IPXACTmodels/BusDefinition/BusDefinition.h>
-#include <IPXACTmodels/BusDefinition/BusDefinitionWriter.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/librarycomponent.h>
+#include <IPXACTmodels/design.h>
+#include <IPXACTmodels/vlnv.h>
 
 #include <QString>
 #include <QStringList>
@@ -629,29 +631,33 @@ bool LibraryHandler::writeModelToFile( const QString path,
 
 	// write the parsed model
     QSharedPointer<LibraryComponent> libraryComponent = model.dynamicCast<LibraryComponent>();
-    QSharedPointer<BusDefinition> busDef = model.dynamicCast<BusDefinition>();
-    if (libraryComponent)
+
+    
+    QXmlStreamWriter xmlWriter(&newFile);
+    xmlWriter.setAutoFormatting(true);
+    xmlWriter.setAutoFormattingIndent(-1);
+    
+    /*if (libraryComponent)
     {
         libraryComponent->write(newFile);
     }
-    else if (busDef)
+    else*/
+    if (model->getVlnv().getType() == VLNV::BUSDEFINITION)
     {
         BusDefinitionWriter writer;
-        QXmlStreamWriter xmlWriter(&newFile);
-        xmlWriter.setAutoFormatting(true);
-        xmlWriter.setAutoFormattingIndent(-1);
-
+        QSharedPointer<BusDefinition> busDef = model.dynamicCast<BusDefinition>();
         writer.writeBusDefinition(xmlWriter, busDef);
+    }
+    else if (model->getVlnv().getType() == VLNV::ABSTRACTIONDEFINITION)
+    {
+        AbstractionDefinitionWriter writer;
+        QSharedPointer<AbstractionDefinition> absDef = model.dynamicCast<AbstractionDefinition>();
+        writer.writeAbstractionDefinition(xmlWriter, absDef);
     }
     else if (model->getVlnv().getType() == VLNV::DESIGNCONFIGURATION)
     {
         DesignConfigurationWriter designConfigurationWriter;
-        QXmlStreamWriter xmlWriter(&newFile);
-        xmlWriter.setAutoFormatting(true);
-        xmlWriter.setAutoFormattingIndent(-1);
-
         QSharedPointer<DesignConfiguration> designConfiguration = model.dynamicCast<DesignConfiguration>();
-
         designConfigurationWriter.writeDesignConfiguration(xmlWriter, designConfiguration);
     }
     //model->write(newFile);
@@ -716,31 +722,29 @@ bool LibraryHandler::writeModelToFile(QSharedPointer<Document> model, bool print
 		return false;
 	}
 
+    QXmlStreamWriter xmlWriter(&newFile);
+    xmlWriter.setAutoFormatting(true);
+    xmlWriter.setAutoFormattingIndent(-1);
+
 	// write the parsed model
     QSharedPointer<LibraryComponent> libraryComponent = model.dynamicCast<LibraryComponent>();
-    QSharedPointer<BusDefinition> busDef = model.dynamicCast<BusDefinition>();
-    if (libraryComponent)
-    {
-        libraryComponent->write(newFile);
-    }
-    else if (busDef)
+ 
+    if (model->getVlnv().getType() == VLNV::BUSDEFINITION)
     {
         BusDefinitionWriter writer;
-        QXmlStreamWriter xmlWriter(&newFile);
-        xmlWriter.setAutoFormatting(true);
-        xmlWriter.setAutoFormattingIndent(-1);
-
+        QSharedPointer<BusDefinition> busDef = model.dynamicCast<BusDefinition>();
         writer.writeBusDefinition(xmlWriter, busDef);
+    }
+    else if (model->getVlnv().getType() == VLNV::ABSTRACTIONDEFINITION)
+    {
+        AbstractionDefinitionWriter writer;
+        QSharedPointer<AbstractionDefinition> absDef = model.dynamicCast<AbstractionDefinition>();
+        writer.writeAbstractionDefinition(xmlWriter, absDef);
     }
     else if (model->getVlnv().getType() == VLNV::DESIGNCONFIGURATION)
     {
         DesignConfigurationWriter designConfigurationWriter;
-        QXmlStreamWriter xmlWriter(&newFile);
-        xmlWriter.setAutoFormatting(true);
-        xmlWriter.setAutoFormattingIndent(-1);
-
         QSharedPointer<DesignConfiguration> designConfiguration = model.dynamicCast<DesignConfiguration>();
-
         designConfigurationWriter.writeDesignConfiguration(xmlWriter, designConfiguration);
     }
     //model->write(newFile);

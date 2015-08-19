@@ -18,11 +18,13 @@
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 #include <IPXACTmodels/BusDefinition/BusDefinitionReader.h>
 
-#include <IPXACTmodels/librarycomponent.h>
-#include <IPXACTmodels/abstractiondefinition.h>
+#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
+#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinitionReader.h>
 
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 #include <IPXACTmodels/designConfiguration/DesignConfigurationReader.h>
+
+#include <IPXACTmodels/librarycomponent.h>
 
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/design.h>
@@ -416,7 +418,12 @@ QSharedPointer<Document> LibraryData::getModel( const VLNV& vlnv ) {
 											}
 
 			case VLNV::ABSTRACTIONDEFINITION: {
-				libComp = QSharedPointer<Document>(new AbstractionDefinition(doc));
+				//libComp = QSharedPointer<Document>(new AbstractionDefinition(doc));
+                QString debug;
+                QTextStream stream(&debug);
+                doc.save(stream, 2);
+                AbstractionDefinitionReader reader;
+                libComp = reader.createAbstractionDefinitionFrom(doc);
 				break;
 											  }
 

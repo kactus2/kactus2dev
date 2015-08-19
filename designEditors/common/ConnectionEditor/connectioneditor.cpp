@@ -20,7 +20,7 @@
 
 #include <IPXACTmodels/businterface.h>
 #include <IPXACTmodels/component.h>
-#include <IPXACTmodels/abstractiondefinition.h>
+#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/ApiInterface.h>
 #include <IPXACTmodels/ComInterface.h>

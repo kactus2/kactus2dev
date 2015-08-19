@@ -138,7 +138,7 @@ private:
      *      @return The searched port or 0 if port was not found in the group.
      */
     QSharedPointer<PortAbstraction> findPortByName(QString const& portName, 
-        const QList<QSharedPointer<PortAbstraction> >& ports);
+        QSharedPointer<QList<QSharedPointer<PortAbstraction> > > ports);
 
 
     /*!

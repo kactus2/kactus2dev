@@ -16,7 +16,7 @@
 
 #include <designEditors/HWDesign/models/PortGenerationRow.h>
 
-#include <IPXACTmodels/abstractiondefinition.h>
+#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/businterface.h>
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/port.h>

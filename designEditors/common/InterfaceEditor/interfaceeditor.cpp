@@ -9,7 +9,7 @@
 
 #include <IPXACTmodels/businterface.h>
 #include <IPXACTmodels/generaldeclarations.h>
-#include <IPXACTmodels/abstractiondefinition.h>
+#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/ApiInterface.h>
 #include <IPXACTmodels/ComInterface.h>
 #include <IPXACTmodels/ComDefinition.h>

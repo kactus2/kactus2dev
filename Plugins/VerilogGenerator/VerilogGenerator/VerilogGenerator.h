@@ -17,6 +17,7 @@
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/design.h>
+#include <IPXACTmodels/PortMap.h>
 
 #include <QTextStream>
 

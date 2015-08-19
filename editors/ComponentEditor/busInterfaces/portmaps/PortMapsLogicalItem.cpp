@@ -13,7 +13,9 @@
 #include "PortMapsBitMapItem.h"
 #include "PortMapsTreeModel.h"
 
-#include <IPXACTmodels/abstractiondefinition.h>
+#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
+#include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>
+
 #include <IPXACTmodels/businterface.h>
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/PortMap.h>
@@ -52,7 +54,7 @@ void PortMapsLogicalItem::refresh()
     int width = -1;
     if (absDef_)
     {
-        width = absDef_->getPortSize(name(), busIf_->getInterfaceMode());
+        //width = absDef_->getPortSize(name(), busIf_->getInterfaceMode());
     }
     
 
@@ -192,18 +194,19 @@ bool PortMapsLogicalItem::isValid() const
                 {
                     return false;
                 } 
+
+                General::Presence portPresence = absDef_->getPort(portMap->logicalPort())->getPresence(busIf_->getInterfaceMode());
                 // if abstraction def is set but port is not defined as optional or
                 // required
-                if (!absDef_->isRequired(portMap->logicalPort(), busIf_->getInterfaceMode()) &&
-                    !absDef_->isOptional(portMap->logicalPort(), busIf_->getInterfaceMode())) 
+                if (!portPresence != General::REQUIRED && portPresence != General::OPTIONAL)
                 {
                     return false;
-                } 
+                }
                 // if abstraction def is set and logical port is illegal 
-                if (absDef_->isIllegal(portMap->logicalPort(), busIf_->getInterfaceMode()))
+                if (portPresence == General::ILLEGAL)
                 {
                     return false;
-                }              
+                }
             }
         }
     }
@@ -243,7 +246,7 @@ bool PortMapsLogicalItem::isValid(QStringList& errorList) const
                 {
                     errorList.append(tr("Port %1 is not defined in abstraction definition.").arg(portMap->logicalPort()));
                     valid = false;
-                }    
+                } /*   
                 // if port is not defined as optional or required
                 else if (!absDef_->isRequired(portMap->logicalPort(), busIf_->getInterfaceMode()) &&
                     !absDef_->isOptional(portMap->logicalPort(), busIf_->getInterfaceMode())) 
@@ -256,7 +259,7 @@ bool PortMapsLogicalItem::isValid(QStringList& errorList) const
                 {
                     errorList.append(tr("Port %1 is illegal in abstraction definition.").arg(portMap->logicalPort()));
                     valid = false;
-                }
+                }*/
             }
         }
     }
@@ -273,7 +276,7 @@ int PortMapsLogicalItem::getWidth() const
     int width = -1;
     if (absDef_)
     {
-        width = absDef_->getPortSize(name(), busIf_->getInterfaceMode());    
+        //width = absDef_->getPortSize(name(), busIf_->getInterfaceMode());    
     }
     
 

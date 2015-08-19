@@ -498,3 +498,11 @@ bool PortAbstraction::hasDefaultValue() const {
 		return false;
 	}
 }
+
+//-----------------------------------------------------------------------------
+// Function: PortAbstraction::getPresence()
+//-----------------------------------------------------------------------------
+General::Presence PortAbstraction::getPresence(General::InterfaceMode mode) const
+{
+    // TODO.
+}

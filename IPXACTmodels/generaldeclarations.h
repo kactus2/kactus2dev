@@ -101,7 +101,8 @@ namespace General {
 enum Presence {
 	ILLEGAL,
 	REQUIRED,
-	OPTIONAL
+	OPTIONAL,
+    PRESENCE_UNKNOWN
 };
 
 /*! \brief Convert the value of the QString into enum Presence
@@ -746,7 +747,7 @@ struct PortBounds {
 IPXACTMODELS_EXPORT QString port2String(const QString& portName, int leftBound, int rightBound);
 
 //! \brief Port alignment is used to contain the physical bounds of two ports.
-struct PortAlignment {
+struct IPXACTMODELS_EXPORT PortAlignment {
 	
 	//! \brief The calculated left bound for port 1.
 	int port1Left_;

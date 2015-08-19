@@ -11,6 +11,8 @@
 
 #include "ipxactmodels_global.h"
 
+#include <common/Qualifier.h>
+
 #include <QSharedPointer>
 #include <QList>
 #include <QDomNode>
@@ -114,7 +116,7 @@ public:
 	 *
 	 * \return A pointer to the qualifier instance.
 	 */
-	General::Qualifier* getQualifier() const;
+	Qualifier getQualifier() const;
 
 	/*! \brief Set the onMaster element
 	 *
@@ -132,7 +134,7 @@ public:
 	 *
 	 * \param qualifier A pointer to the Qualifier instance.
 	 */
-	void setQualifier(General::Qualifier* qualifier);
+	void setQualifier(Qualifier qualifier);
 
 private:
 
@@ -148,7 +150,7 @@ private:
 	 * OPTIONAL spirit:qualifier
 	 * Indicates which type of information this transactional port carries.
 	 */
-	QSharedPointer<General::Qualifier> qualifier_;
+	Qualifier qualifier_;
 
 	/*!
 	 * OPTIONAL spirit:onMaster

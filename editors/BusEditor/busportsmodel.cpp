@@ -25,7 +25,8 @@ namespace
         DIRECTION_COLUMN,
         PRESENCE_COLUMN,
         DRIVER_COLUMN,
-        COMMENT_COLUMN
+        COMMENT_COLUMN,
+        COLUMN_COUNT
     };
 }
 
@@ -52,47 +53,43 @@ BusPortsModel::~BusPortsModel()
 //-----------------------------------------------------------------------------
 // Function: BusPortsModel::rowCount()
 //-----------------------------------------------------------------------------
-int BusPortsModel::rowCount( const QModelIndex& parent /*= QModelIndex()*/ ) const 
+int BusPortsModel::rowCount(QModelIndex const& parent) const 
 {
 	if (parent.isValid())
     {
 		return 0;
     }
+
 	return table_.size();
 }
 
 //-----------------------------------------------------------------------------
 // Function: BusPortsModel::columnCount()
 //-----------------------------------------------------------------------------
-int BusPortsModel::columnCount( const QModelIndex& parent /*= QModelIndex()*/ ) const 
+int BusPortsModel::columnCount(QModelIndex const& parent) const 
 {
 	if (parent.isValid())
     {
 		return 0;
     }
-	return 9;
+
+	return COLUMN_COUNT;
 }
 
 //-----------------------------------------------------------------------------
 // Function: BusPortsModel::data()
 //-----------------------------------------------------------------------------
-QVariant BusPortsModel::data( const QModelIndex& index, 
-							 int role /*= Qt::DisplayRole*/ ) const 
+QVariant BusPortsModel::data(QModelIndex const& index, int role) const 
 {
-	if (!index.isValid())
-    {
-		return QVariant();
-    }
-	else if (index.row() < 0 || index.row() >= table_.size())
+	if (!index.isValid() || index.row() < 0 || index.row() >= table_.size())
     {
 		return QVariant();
     }
 
 	if (role == Qt::DisplayRole) 
     {
-		switch (index.column()) 
+        if (index.column() == NAME_COLUMN) 
         {
-        case NAME_COLUMN: {
             if (table_.at(index.row()).name_.isEmpty())
             {
                 return "unnamed";
@@ -101,46 +98,55 @@ QVariant BusPortsModel::data( const QModelIndex& index,
             {
                 return table_.at(index.row()).name_;
             }
-				}
-		case QUALIFIER_COLUMN: {
-			return portQualifier2Str(table_.at(index.row()).qualifier_);
-				}
-		case WIDTH_COLUMN: {
-			int width = table_.at(index.row()).width_;
-			
-			// if width is unspecified
-			if (width <= 0) 
+        }
+        else if (index.column() == QUALIFIER_COLUMN)
+        {
+            return portQualifier2Str(table_.at(index.row()).qualifier_);
+        }
+        else if (index.column() == WIDTH_COLUMN)
+        {
+            int width = table_.at(index.row()).width_;
+
+            // if width is unspecified
+            if (width <= 0) 
             {
-				return QString();
-			}
-			return width;
-				}
-		case DEFAULT_COLUMN: {
-			return table_.at(index.row()).defaultValue_;
-				}
-		case MODE_COLUMN: {
-			return portMode2Str(table_.at(index.row()).mode_);
-				}
-		case DIRECTION_COLUMN: {
-			return portDirection2Str(table_.at(index.row()).direction_);
-				}
-		case PRESENCE_COLUMN: {
-			return General::presence2Str(table_.at(index.row()).presence_);
-				}
-		case DRIVER_COLUMN: {
-			return portDriver2Str(table_.at(index.row()).driver_);
-				}
-		case COMMENT_COLUMN: {
-			return table_.at(index.row()).comment_;
-				}
-		default: {
-			return QVariant();
-					}
-		}
-	}
+                return QString();
+            }
+            return width;
+        }
+        else if (index.column() == DEFAULT_COLUMN)
+        {
+            return table_.at(index.row()).defaultValue_;
+        }
+        else if (index.column() == MODE_COLUMN)
+        {
+            return portMode2Str(table_.at(index.row()).mode_);
+        }
+        else if (index.column() == DIRECTION_COLUMN)
+        {
+            return portDirection2Str(table_.at(index.row()).direction_);
+        }
+        else if (index.column() == PRESENCE_COLUMN)
+        {
+            return presence2Str(table_.at(index.row()).presence_);
+        }
+        else if (index.column() == DRIVER_COLUMN)
+        {
+            return portDriver2Str(table_.at(index.row()).driver_);
+        }
+        else if (index.column() == COMMENT_COLUMN)
+        {
+            return table_.at(index.row()).comment_;
+        }
+        else
+        {
+            return QVariant();
+        }
+
+    }
 	else if (role == Qt::BackgroundRole) 
     {
-        if (index.column() == 0) 
+        if (index.column() == NAME_COLUMN) 
         {
             return QColor("LemonChiffon");
         }
@@ -170,7 +176,7 @@ QVariant BusPortsModel::data( const QModelIndex& index,
         }
 
         // index for the previous port
-        QModelIndex previous = QAbstractTableModel::index(--topIndex, 1, QModelIndex());
+        QModelIndex previous = QAbstractTableModel::index(--topIndex, QUALIFIER_COLUMN, QModelIndex());
 
         // color of the previous port
         QColor previousColor = data(previous, Qt::BackgroundRole).value<QColor>();
@@ -187,7 +193,7 @@ QVariant BusPortsModel::data( const QModelIndex& index,
     }
     else if (role == Qt::ForegroundRole)
     {
-        if (table_.at(index.row()).name_.isEmpty())
+        if (index.column() == NAME_COLUMN && table_.at(index.row()).name_.isEmpty())
         {
             return QColor("red");
         }
@@ -199,72 +205,64 @@ QVariant BusPortsModel::data( const QModelIndex& index,
 //-----------------------------------------------------------------------------
 // Function: BusPortsModel::headerData()
 //-----------------------------------------------------------------------------
-QVariant BusPortsModel::headerData( int section,
-								   Qt::Orientation orientation,
-								   int role /*= Qt::DisplayRole*/ ) const 
+QVariant BusPortsModel::headerData(int section, Qt::Orientation orientation, int role) const 
 {
    if (role != Qt::DisplayRole)
    {
-	   return QVariant();
-   }
-   else if (section < 0)
-   {
-	   return QVariant();
+       return QVariant();
    }
 
-   if (role == Qt::DisplayRole) 
+   if (orientation == Qt::Horizontal) 
    {
-	   if (orientation == Qt::Horizontal) 
+       if (section == NAME_COLUMN)
+       {		   
+           return tr("Name");
+       }
+       else if (section == QUALIFIER_COLUMN)
        {
-		   switch (section) {
-		   case NAME_COLUMN: {
-			   return tr("Name");
-				   }
-		   case QUALIFIER_COLUMN: {
-			   return tr("Qualifier");
-				   }
-		   case WIDTH_COLUMN: {
-			   return tr("Width");
-				   }
-		   case DEFAULT_COLUMN: {
-			   return tr("Default");
-				   }
-		   case MODE_COLUMN: {
-			   return tr("Mode");
-				   }
-		   case DIRECTION_COLUMN: {
-			   return tr("Direction");
-				   }
-		   case PRESENCE_COLUMN: {
-			   return tr("Presence");
-				   }
-		   case DRIVER_COLUMN: {
-			   return tr("Driver");
-				   }
-		   case COMMENT_COLUMN: {
-			   return tr("Description");
-				   }
-		   default: {
-			   return QVariant();
-					}
-		   }
-	   }
-	   // vertical headers
-	   else 
+           return tr("Qualifier");
+       }
+       else if (section ==  WIDTH_COLUMN)
        {
-		   // provide horizontal headers only for each defined port
-		   if (section > table_.size())
-           {
-			   return QVariant();
-           }
-
-		   return section + 1;
-	   }
+           return tr("Width");
+       }
+       else if (section ==  DEFAULT_COLUMN)
+       {
+           return tr("Default");
+       }
+       else if (section ==  MODE_COLUMN)
+       {
+           return tr("Mode");
+       }
+       else if (section == DIRECTION_COLUMN)
+       {
+           return tr("Direction");
+       }
+       else if (section == PRESENCE_COLUMN)
+       {
+           return tr("Presence");
+       }
+       else if (section == DRIVER_COLUMN)
+       {
+           return tr("Driver");
+       }
+       else if (section == COMMENT_COLUMN)
+       {
+           return tr("Description");
+       }
+       else
+       {
+           return QVariant();
+       }
    }
-   // if unsupported role
-   else
+   else // vertical headers
    {
-	   return QVariant();
+       if (section > table_.size())
+       {
+           return QVariant();
+       }
+
+       return section + 1;
    }
 }
 
@@ -273,7 +271,8 @@ QVariant BusPortsModel::headerData( int section,
 //-----------------------------------------------------------------------------
 QString BusPortsModel::portMode2Str( PortMode mode ) const 
 {
-	switch (mode) {
+	switch (mode)
+    {
 		case BusPortsModel::MODE_MASTER: 
 			return tr("master");
 		case BusPortsModel::MODE_SLAVE: 
@@ -474,29 +473,29 @@ void BusPortsModel::save()
 		QSharedPointer<PortAbstraction> portAbs = QSharedPointer<PortAbstraction>(new PortAbstraction());
 
 		// set the logical name
-		portAbs->setLogicalName(table_.at(i).name_);
+		portAbs->setName(table_.at(i).name_);
 
 		// set the qualifier for the port
 		switch (table_.at(i).qualifier_) {
 			case BusPortsModel::QUALIFIER_ADDRESS: {
-				portAbs->setAsAddress();
+				portAbs->setQualifier(Qualifier::Address);
 				break;
 												   }
 			case BusPortsModel::QUALIFIER_DATA: {
-				portAbs->setAsData();
+				portAbs->setQualifier(Qualifier::Data);
 				break;
 												   }
 			case BusPortsModel::QUALIFIER_CLOCK: {
-				portAbs->setAsClock();
+				portAbs->setQualifier(Qualifier::Clock);
 				break;
 												   }
 			case BusPortsModel::QUALIFIER_RESET: {
-				portAbs->setAsReset();
+				portAbs->setQualifier(Qualifier::Reset);
 				break;
 												   }
 			 // qualifier is any
 			default: {
-				portAbs->clearQualifier();
+				portAbs->setQualifier(Qualifier::Reset);
 				break;
 					 }
 
@@ -505,26 +504,26 @@ void BusPortsModel::save()
 		// set the default value element
 		if (!table_.at(i).defaultValue_.isEmpty()) 
         {
-			portAbs->setDefaultValue(table_.at(i).defaultValue_.toInt());
+			portAbs->setDefaultValue(table_.at(i).defaultValue_);
 		}
 
 		// set the driver settings for the port
 		switch (table_.at(i).driver_) {
 			case BusPortsModel::DRIVER_ANY: {
-				portAbs->setDriverType(General::ANY);
+				portAbs->getWire()->setDriverType(General::ANY);
 				break;
 											}
 			case BusPortsModel::DRIVER_CLOCK: {
-				portAbs->setDriverType(General::CLOCK);
+				portAbs->getWire()->setDriverType(General::CLOCK);
 				break;
 											  }
 			case BusPortsModel::DRIVER_SINGLESHOT: {
-				portAbs->setDriverType(General::SINGLESHOT);
+				portAbs->getWire()->setDriverType(General::SINGLESHOT);
 				break;
 												   }
 			// BusPortsModel::DRIVER_NONE
 			default: {
-				portAbs->setRequiresDriver(false);
+				portAbs->getWire()->setRequiresDriver(false);
 					 }
 		}
 
@@ -555,20 +554,20 @@ void BusPortsModel::savePort(QSharedPointer<PortAbstraction> portAbs, int i)
 	// set the width of the port for the specified element
 	switch (table_.at(i).mode_) {
 			case BusPortsModel::MODE_MASTER: {
-				portAbs->setMasterWidth(table_.at(i).width_);
+				portAbs->getWire()->getMasterPort()->setWidth(QString::number(table_.at(i).width_));
 				break;
 											 }
 			case BusPortsModel::MODE_SLAVE: {
-				portAbs->setSlaveWidth(table_.at(i).width_);
+				portAbs->getWire()->getSlavePort()->setWidth(QString::number(table_.at(i).width_));
 				break;
 											}
 			case BusPortsModel::MODE_SYSTEM: {
-				portAbs->setSystemWidth(table_.at(i).width_);
+				portAbs->getWire()->getSystemPorts()->first()->setWidth(QString::number(table_.at(i).width_));
 				break;
 											 }
 			// MODE_ANY
 			default: {
-				portAbs->setAllWidths(table_.at(i).width_);
+				//portAbs->setAllWidths(table_.at(i).width_);
 				break;
 					 }
 	}
@@ -576,20 +575,20 @@ void BusPortsModel::savePort(QSharedPointer<PortAbstraction> portAbs, int i)
 	// set the direction of the port for the specified element
 	switch (table_.at(i).mode_) {
 			case BusPortsModel::MODE_MASTER: {
-				portAbs->setMasterDirection(portDirection2Direction(table_.at(i).direction_));
+				portAbs->getWire()->getMasterPort()->setDirection(portDirection2Direction(table_.at(i).direction_));
 				break;
 											 }
 			case BusPortsModel::MODE_SLAVE: {
-				portAbs->setSlaveDirection(portDirection2Direction(table_.at(i).direction_));
+				portAbs->getWire()->getSlavePort()->setDirection(portDirection2Direction(table_.at(i).direction_));
 				break;
 											}
 			case BusPortsModel::MODE_SYSTEM: {
-				portAbs->setSystemDirection(portDirection2Direction(table_.at(i).direction_));
+				portAbs->getWire()->getSystemPorts()->first()->setDirection(portDirection2Direction(table_.at(i).direction_));
 				break;
 											 }
 			// MODE_ANY
 			default: {
-				portAbs->setAllDirections(portDirection2Direction(table_.at(i).direction_));
+				//portAbs->setAllDirections(portDirection2Direction(table_.at(i).direction_));
 				break;
 					 }
 	}
@@ -597,20 +596,20 @@ void BusPortsModel::savePort(QSharedPointer<PortAbstraction> portAbs, int i)
 	// set the presence for the specified element
 	switch (table_.at(i).mode_) {
 			case BusPortsModel::MODE_MASTER: {
-				portAbs->setMasterPresence(table_.at(i).presence_);
+				portAbs->getWire()->getMasterPort()->setPresence(table_.at(i).presence_);
 				break;
 											 }
 			case BusPortsModel::MODE_SLAVE: {
-				portAbs->setSlavePresence(table_.at(i).presence_);
+				portAbs->getWire()->getSlavePort()->setPresence(table_.at(i).presence_);
 				break;
 											}
 			case BusPortsModel::MODE_SYSTEM: {
-				portAbs->setSystemPresence(table_.at(i).presence_);
+				portAbs->getWire()->getSystemPorts()->first()->setPresence(table_.at(i).presence_);
 				break;
 											 }
 			// MODE_ANY
 			default: {
-				portAbs->setAllPresences(table_.at(i).presence_);
+				//portAbs->setAllPresences(table_.at(i).presence_);
 				break;
 					 }
 	}
@@ -623,30 +622,25 @@ void BusPortsModel::readPorts()
 {
 	beginResetModel();
     table_.clear();
-	for (int i = 0; i < ports_->size(); ++i) 
-    {
-		QSharedPointer<PortAbstraction> portAbs = ports_->at(i);
-		if (!portAbs)
-        {
-			continue;
-        }
 
+	foreach (QSharedPointer<PortAbstraction> portAbs, *ports_) 
+    {
 		// create port for master
-		if (portAbs->hasMaster()) 
+		if (portAbs->getWire()->hasMasterPort()) 
         {
-			readPort(portAbs, portAbs->getMaster(), BusPortsModel::MODE_MASTER);
+			readPort(portAbs, portAbs->getWire()->getMasterPort(), BusPortsModel::MODE_MASTER);
 		}
 
 		// create port for slave
-		if (portAbs->hasSlave()) 
+		if (portAbs->getWire()->hasSlavePort()) 
         {
-			readPort(portAbs, portAbs->getSlave(), BusPortsModel::MODE_SLAVE);
+			readPort(portAbs, portAbs->getWire()->getSlavePort(), BusPortsModel::MODE_SLAVE);
 		}
 
 		// create port for system
-		if (portAbs->hasSystem()) 
+		if (!portAbs->getWire()->getSystemPorts()->isEmpty()) 
         {
-			readPort(portAbs, portAbs->getSystem(), BusPortsModel::MODE_SYSTEM);
+			readPort(portAbs, portAbs->getWire()->getSystemPorts()->first(), BusPortsModel::MODE_SYSTEM);
 		}
 	}
 
@@ -659,31 +653,28 @@ void BusPortsModel::readPorts()
 //-----------------------------------------------------------------------------
 // Function: BusPortsModel::readPort()
 //-----------------------------------------------------------------------------
-void BusPortsModel::readPort( QSharedPointer<PortAbstraction> portAbs, 
-							 WireAbstraction::WirePort* modeSpesific,
-							 BusPortsModel::PortMode mode) 
+void BusPortsModel::readPort(QSharedPointer<PortAbstraction> portAbs, QSharedPointer<WirePort> modeSpesific,
+    BusPortsModel::PortMode mode) 
 {
-	Q_ASSERT_X(portAbs, "BusPortsModel::readPort",
-		"Null Port Abstraction pointer given as parameter");
-	Q_ASSERT_X(modeSpesific, "BusPortsModel::readPort",
-		"Null WirePort pointer given as parameter");
+	Q_ASSERT_X(portAbs, "BusPortsModel::readPort", "Null Port Abstraction pointer given as parameter");
+	Q_ASSERT_X(modeSpesific, "BusPortsModel::readPort",	"Null WirePort pointer given as parameter");
 
-	BusPortsModel::Port port(portAbs->getLogicalName());
-
+	BusPortsModel::Port port(portAbs->name());
+    
 	// set the qualifier
-	if (portAbs->isAddress())
+	if (portAbs->getQualifier().isAddress())
     {
 		port.qualifier_ = BusPortsModel::QUALIFIER_ADDRESS;
     }
-	else if (portAbs->isData())
+	else if (portAbs->getQualifier().isData())
     {
 		port.qualifier_ = BusPortsModel::QUALIFIER_DATA;
     }
-	else if (portAbs->isClock())
+	else if (portAbs->getQualifier().isClock())
     {
 		port.qualifier_ = BusPortsModel::QUALIFIER_CLOCK;
     }
-	else if (portAbs->isReset())
+	else if (portAbs->getQualifier().isReset())
     {
 		port.qualifier_ = BusPortsModel::QUALIFIER_RESET;
     }
@@ -693,7 +684,7 @@ void BusPortsModel::readPort( QSharedPointer<PortAbstraction> portAbs,
     }
 
 	// set the width
-	port.width_ = modeSpesific->width_;
+	port.width_ = modeSpesific->getWidth().toInt();
 
 	// if default value has not been defined
 	if (portAbs->getDefaultValue() < 0)
@@ -702,42 +693,41 @@ void BusPortsModel::readPort( QSharedPointer<PortAbstraction> portAbs,
     }
 	else
     {
-		port.defaultValue_ = QString::number(portAbs->getDefaultValue());
+		port.defaultValue_ = portAbs->getDefaultValue();
     }
 
 	// set the mode
 	port.mode_ = mode;
 
-	// set the direction of the port
-	switch (modeSpesific->direction_) {
-		case General::IN: {
-			port.direction_ = BusPortsModel::DIRECTION_IN;
-			break;
-						  }
-		case General::OUT: {
-			port.direction_ = BusPortsModel::DIRECTION_OUT;
-			break;
-						   }
-		default: {
-			port.direction_ = BusPortsModel::DIRECTION_INOUT;
-			break;
-				 }
-	}
+    // set the direction of the port
+    if (modeSpesific->getDirection() == General::IN)
+    {
+        port.direction_ = BusPortsModel::DIRECTION_IN;
+    }
+    else if (modeSpesific->getDirection() == General::OUT)
+    {
+        port.direction_ = BusPortsModel::DIRECTION_OUT;
+    }
+    else
+    {
+        port.direction_ = BusPortsModel::DIRECTION_INOUT;
+    }
+
 
 	// set the presence for the port
-	port.presence_ = modeSpesific->presence_;
+	port.presence_ = modeSpesific->getPresence();
 
 	// set the driver setting for the port
 
 	// if port does not require driver
-	if (!portAbs->getRequiresDriver()) 
+	if (!portAbs->requiresDriver()) 
     {
 		port.driver_ = BusPortsModel::DRIVER_NONE;
     }
 	
 	// if driver is needed then find out it's type
 	else {
-		switch (portAbs->getDriverType()) {
+		switch (portAbs->getWire()->getDriverType()) {
 			case General::CLOCK: {
 				port.driver_ = BusPortsModel::DRIVER_CLOCK;
 				break;
@@ -753,7 +743,7 @@ void BusPortsModel::readPort( QSharedPointer<PortAbstraction> portAbs,
 		}
 	}
 
-	port.comment_ = portAbs->getDescription();
+	port.comment_ = portAbs->description();
 
     // Check for no duplicates.
     if (!table_.contains(port))
@@ -903,7 +893,7 @@ bool BusPortsModel::setData(const QModelIndex& index,
 				return true;
 					}
 			case PRESENCE_COLUMN: {
-				table_[index.row()].presence_ = General::str2Presence(value.toString(), General::REQUIRED);
+				table_[index.row()].presence_ = str2Presence(value.toString(), General::REQUIRED);
 				emit dataChanged(index, index);
 				return true;
 					}
@@ -1070,7 +1060,7 @@ void BusPortsModel::setAbsDef( QSharedPointer<AbstractionDefinition> absDef )
 
 	absDef_ = absDef;
 
-	ports_ = &absDef_->getPorts();
+	ports_ = absDef_->getLogicalPorts();
 
 	readPorts();
 }
@@ -1235,7 +1225,7 @@ void BusPortsModel::exportCSV( const QString& path )
 		stream << port.defaultValue_ << ";";
 		stream << portMode2Str(port.mode_) << ";";
 		stream << portDirection2Str(port.direction_) << ";";
-		stream << General::presence2Str(port.presence_) << ";";
+		stream << presence2Str(port.presence_) << ";";
 		stream << portDriver2Str(port.driver_) << ";";
 		stream << port.comment_ << endl;
 	}
@@ -1316,7 +1306,7 @@ void BusPortsModel::importCSV( const QString& path )
 		port.direction_ = str2PortDirection(settings.at(5));
 
 		// set presence
-		port.presence_ = General::str2Presence(settings.at(6), General::REQUIRED);
+		port.presence_ = str2Presence(settings.at(6), General::REQUIRED);
 
 		// set the driver
 		port.driver_ = str2PortDriver(settings.at(7));
@@ -1486,5 +1476,42 @@ bool BusPortsModel::Port::operator<( const Port& other ) const
 	else
     {
 		return name_ < other.name_;
+    }
+}
+
+
+General::Presence BusPortsModel::str2Presence(QString str, General::Presence defaultValue) {
+
+        // identify the correct enum value
+        if (str == QString("illegal")) {
+            return General::ILLEGAL;
+        }
+
+        else if (str == QString("required")) {
+            return General::REQUIRED;
+        }
+
+        else if (str == QString("optional")) {
+            return General::OPTIONAL;
+        }
+        else {
+            return defaultValue;
+        }
+}
+
+QString BusPortsModel::presence2Str(General::Presence presence) const {
+    switch (presence) {
+    case WirePort::ILLEGAL: {
+        return QString("illegal");
+                           }
+    case WirePort::REQUIRED: {
+        return QString("required");
+                            }
+    case WirePort::OPTIONAL: {
+        return QString("optional");
+                            }
+    default: {
+        return QString();
+             }
     }
 }

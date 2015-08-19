@@ -472,6 +472,7 @@ void VerilogGenerator::connectTopBusInterfaceToInterfaceInInstance(QSharedPointe
             int instancePortWidth = instanceComponent->getPortWidth(instancePort);
             int topPortWidth = topComponent_->getPortWidth(topPort);
 
+            /* TODO: Calculate alignment with expressions.
             General::PortAlignment alignment = General::calculatePortAlignment(instancePortMap.data(), 
                 instanceComponent->getPortLeftBound(instancePort), 
                 instanceComponent->getPortRightBound(instancePort),
@@ -486,7 +487,7 @@ void VerilogGenerator::connectTopBusInterfaceToInterfaceInInstance(QSharedPointe
             else
             {
                 instanceWriter->assignPortForRange(instancePort, topPort, alignment.port2Left_, alignment.port2Right_);    
-            }  
+            } */ 
         }
     }
 }

@@ -85,7 +85,8 @@ public:
 		 * \return Reference to this WirePort.
 		*/
 		WirePort& operator=(const WirePort& other);
-	};
+
+    };
 
 	/*! \brief The constructor
 	 *

@@ -186,13 +186,13 @@ int HWConnection::calculateBusWidth() const
             continue;
         }
         
-        // Calculate the intersection of the port bounds and add it to the total width.
-        General::PortAlignment align =
+        // TODO: Calculate the intersection of the port bounds and add it to the total width.
+        /*General::PortAlignment align =
             General::calculatePortAlignment(portMap1.data(), port1->getLeftBound(), port1->getRightBound(),
             portMap2.data(), port2->getLeftBound(), port2->getRightBound());
 
         int width = qMin(align.port1Left_, align.port2Left_) - qMax(align.port1Right_, align.port2Right_) + 1;
-        totalWidth += width;
+        totalWidth += width;*/
     }
 
     return totalWidth;

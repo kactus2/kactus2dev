@@ -68,6 +68,23 @@ void DocumentReader::parseVLNVElements(QDomNode const& documentNode, QSharedPoin
 }
 
 //-----------------------------------------------------------------------------
+// Function: DocumentReader::parseVLNVAttributes()
+//-----------------------------------------------------------------------------
+VLNV DocumentReader::parseVLNVAttributes(QDomNode const& vlnvNode, VLNV::IPXactType vlnvType) const
+{
+    QDomNamedNodeMap attributes = vlnvNode.attributes();
+
+    VLNV readVLNV;
+    readVLNV.setType(vlnvType);
+    readVLNV.setVendor(attributes.namedItem("vendor").nodeValue());
+    readVLNV.setLibrary(attributes.namedItem("library").nodeValue());
+    readVLNV.setName(attributes.namedItem("name").nodeValue());
+    readVLNV.setVersion(attributes.namedItem("version").nodeValue());
+
+    return readVLNV;
+}
+
+//-----------------------------------------------------------------------------
 // Function: DocumentReader::parseDescription()
 //-----------------------------------------------------------------------------
 void DocumentReader::parseDescription(QDomNode const& documentNode, QSharedPointer<Document> document) const
@@ -116,7 +133,7 @@ void DocumentReader::parseAssertions(QDomNode const& documentNode, QSharedPointe
 //-----------------------------------------------------------------------------
 // Function: DocumentReader::parseVendorExtensions()
 //-----------------------------------------------------------------------------
-void DocumentReader::parseVendorExtensions(QDomNode const& documentNode, QSharedPointer<Document> document) const
+void DocumentReader::parseVendorExtensions(QDomNode const& documentNode, QSharedPointer<Extendable> document) const
 {
     QDomNodeList extensionNodes = documentNode.firstChildElement("ipxact:vendorExtensions").childNodes();
 

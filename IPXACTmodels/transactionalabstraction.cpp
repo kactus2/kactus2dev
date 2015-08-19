@@ -51,8 +51,7 @@ qualifier_(), onMaster_(), onSlave_() {
 		QDomNode tempNode = transactionalNode.childNodes().at(i);
 
 		if (tempNode.nodeName() == QString("spirit:qualifier")) {
-			qualifier_ = QSharedPointer<General::Qualifier>(
-				new General::Qualifier(tempNode));
+			
 		}
 
 		else if (tempNode.nodeName() == QString("spirit:onMaster")) {
@@ -69,14 +68,11 @@ qualifier_(), onMaster_(), onSlave_() {
 }
 
 TransactionalAbstraction::TransactionalAbstraction( const TransactionalAbstraction& other ):
-qualifier_(),
+qualifier_(other.qualifier_),
 onMaster_(),
-onSlave_() {
+onSlave_()
+{
 
-	if (other.qualifier_) {
-		qualifier_ = QSharedPointer<General::Qualifier>(
-			new General::Qualifier(*other.qualifier_.data()));
-	}
 	if (other.onMaster_) {
 		onMaster_ = QSharedPointer<TransactionalPort>(
 			new TransactionalPort(*other.onMaster_.data()));
@@ -87,14 +83,14 @@ onSlave_() {
 	}
 }
 
-TransactionalAbstraction& TransactionalAbstraction::operator=( const TransactionalAbstraction& other ) {
-	if (this != &other) {
-		if (other.qualifier_) {
-			qualifier_ = QSharedPointer<General::Qualifier>(
-				new General::Qualifier(*other.qualifier_.data()));
-		}
-		else 
-			qualifier_ = QSharedPointer<General::Qualifier>();
+TransactionalAbstraction& TransactionalAbstraction::operator=( const TransactionalAbstraction& other )
+{
+	if (this != &other)
+    {
+
+			qualifier_ = other.qualifier_;
+		
+
 
 		if (other.onMaster_) {
 			onMaster_ = QSharedPointer<TransactionalPort>(
@@ -120,14 +116,14 @@ TransactionalAbstraction::~TransactionalAbstraction() {
 
 void TransactionalAbstraction::write(QXmlStreamWriter& writer) {
 
-	if (qualifier_) {
+	if (qualifier_.isSet()) {
 		writer.writeStartElement("spirit:qualifier");
 
 		writer.writeTextElement("spirit:isAddress",
-				General::bool2Str(qualifier_->isAddress_));
+				General::bool2Str(qualifier_.isAddress()));
 
 		writer.writeTextElement("spirit:isData",
-				General::bool2Str(qualifier_->isData_));
+				General::bool2Str(qualifier_.isData()));
 
 		writer.writeEndElement(); // spirit:qualifier
 	}
@@ -165,8 +161,9 @@ void TransactionalAbstraction::writeTransactionalPort(QXmlStreamWriter& writer,
 	writer.writeEndElement(); // spirit:service
 }
 
-General::Qualifier *TransactionalAbstraction::getQualifier() const {
-	return qualifier_.data();
+Qualifier TransactionalAbstraction::getQualifier() const
+{
+	return qualifier_;
 }
 
 TransactionalAbstraction::TransactionalPort *TransactionalAbstraction::getOnMaster() const {
@@ -184,11 +181,10 @@ TransactionalAbstraction::TransactionalPort *TransactionalAbstraction::getOnSlav
 	return onSlave_.data();
 }
 
-void TransactionalAbstraction::setQualifier(General::Qualifier *qualifier) {
-	if (qualifier_) {
-		qualifier_.clear();
-	}
-	qualifier_ = QSharedPointer<General::Qualifier>(qualifier);
+void TransactionalAbstraction::setQualifier(Qualifier qualifier) 
+{
+
+	qualifier_ = qualifier;
 }
 
 void TransactionalAbstraction::setOnSlave(TransactionalPort *onSlave) {

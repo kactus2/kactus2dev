@@ -11,7 +11,10 @@
 
 #include "busifportmaptab.h"
 
-#include <IPXACTmodels/abstractiondefinition.h>
+#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
+#include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>
+#include <IPXACTmodels/AbstractionDefinition/WireAbstraction.h>
+
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/port.h>
 #include <IPXACTmodels/PortMap.h>
@@ -616,7 +619,7 @@ int BusIfPortmapTab::getLogicalSize(QString const& logicalPort, QString const& p
         QSharedPointer<AbstractionDefinition> absDef = 
             libHandler_->getModel(absDefVLNV).staticCast<AbstractionDefinition>();     
 
-        logicalSize = absDef->getPortSize(logicalPort, busif_->getInterfaceMode());    
+        logicalSize = absDef->getPort(logicalPort)->getWire()->getWidth(busif_->getInterfaceMode()).toInt();  
         if (logicalSize < 0)
         {
             logicalSize = component_->getPortWidth(physicalPort);

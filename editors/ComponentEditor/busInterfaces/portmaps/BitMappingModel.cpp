@@ -17,18 +17,23 @@
 
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/ConnectionEndpoint.h>
+
 #include <designEditors/HWDesign/HWComponentItem.h>
 #include <designEditors/HWDesign/models/PortGenerationRow.h>
-#include <IPXACTmodels/abstractiondefinition.h>
+
+#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
+#include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>
+#include <IPXACTmodels/AbstractionDefinition/WireAbstraction.h>
+
 #include <IPXACTmodels/businterface.h>
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/port.h>
-#include <IPXACTmodels/portabstraction.h>
 #include <IPXACTmodels/PortMap.h>
+#include <IPXACTmodels/vlnv.h>
 
 #include <library/LibraryManager/libraryinterface.h>
-#include <IPXACTmodels/vlnv.h>
+
 #include <editors/ComponentEditor/busInterfaces/portmaps/BitSelectionDialog.h>
 
 namespace
@@ -456,7 +461,7 @@ void BitMappingModel::onSetLogicalSignal(QString const& logicalName)
     if (!logicalName.isEmpty())
     {
         // Indexes can be added/removed, if absDef does not define size.
-        canEdit_ = (absDef_->getPortSize(logicalName, mode_) == -1);
+        canEdit_ = (absDef_->getPort(logicalName)->getWire()->getWidth(mode_).isEmpty()); //Size(logicalName, mode_) == -1);
 
         if (mappings_.contains(logicalName))
         {
@@ -708,7 +713,7 @@ int BitMappingModel::addMapping(General::PortBounds mapping, int row)
 //-----------------------------------------------------------------------------
 void BitMappingModel::createInitialMappings()
 {
-    int logicalPortSize = absDef_->getPortSize(logicalPort_, mode_);
+    int logicalPortSize = absDef_->getPort(logicalPort_)->getWire()->getWidth(mode_).toInt();
 
     QList<QSharedPointer<PortMap> > logicPortMaps;
 

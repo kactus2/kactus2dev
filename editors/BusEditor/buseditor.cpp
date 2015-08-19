@@ -37,12 +37,10 @@ absDefGroup_(libHandler ,this)
 {
     supportedWindows_ |= TabDocument::NOTES_WINDOW;
 
-	// if abstraction definition is being edited
 	if (absDef_)
     {
 		absDefGroup_.setAbsDef(absDef_);
-	}
-	// if abstraction definition is not being edited.
+    }
 	else
     {
 		absDefGroup_.setDisabled(true);
@@ -52,15 +50,13 @@ absDefGroup_(libHandler ,this)
     {
         busDefGroup_.setBusDef(busDef_);
     } 
-    	
+    
 	busDefGroup_.setDisabled(!busDef_ || disableBusDef);
 
 	setupLayout();
 
-	connect(&busDefGroup_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&absDefGroup_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&busDefGroup_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&absDefGroup_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&absDefGroup_, SIGNAL(errorMessage(const QString&)),
 		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
 	connect(&absDefGroup_, SIGNAL(noticeMessage(const QString&)),
@@ -101,20 +97,22 @@ bool BusEditor::validate(QStringList& errorList)
 {
     bool valid = true;
 
+    // TODO: Validate the definitions.
+
     // if abstraction definition is being edited
     if (absDefGroup_.isEnabled())
     {
         // save the changes from the model to the abstraction definition
-        absDefGroup_.save();
+        //absDefGroup_.save();
 
-        valid = absDef_->isValid(errorList);
+        //valid = absDef_->isValid(errorList);
     }
 
     // if bus definition is being edited
      if (busDefGroup_.isEnabled())
-//      {
+      {
 //          valid = busDef_->isValid(errorList) && valid;
-//     }
+    }
 
     return valid;
 }
@@ -163,8 +161,8 @@ bool BusEditor::saveAs()
 			return false;
 		}
 
-		busDefVLNV = VLNV(VLNV::BUSDEFINITION, vlnv.getVendor(), vlnv.getLibrary(),
-			vlnv.getName(), vlnv.getVersion());
+		busDefVLNV = VLNV(VLNV::BUSDEFINITION, vlnv.getVendor(), vlnv.getLibrary(), vlnv.getName(), 
+            vlnv.getVersion());
 
 		busDef_->setVlnv(busDefVLNV);
 	}
@@ -172,7 +170,7 @@ bool BusEditor::saveAs()
 	// if abstraction definition is being edited but not the bus definition
 	else if (absDef_ && !busDefGroup_.isEnabled())
     {
-		if (!NewObjectDialog::saveAsDialog(this, libHandler_, *absDef_->getVlnv(), vlnv, absDirectory))
+		if (!NewObjectDialog::saveAsDialog(this, libHandler_, absDef_->getVlnv(), vlnv, absDirectory))
         {
 			return false;
 		}
@@ -285,7 +283,7 @@ VLNV BusEditor::getDocumentVLNV() const
 	// if abstraction definition is being edited then use it as the identifier.
 	if (absDef_)
     {
-		return *absDef_->getVlnv();
+		return absDef_->getVlnv();
 	}
 	// if only bus definition is being edited then use it as identifier.
 	else if (busDef_)
@@ -346,7 +344,7 @@ void BusEditor::setBusDef(QSharedPointer<BusDefinition> busDef)
 void BusEditor::setAbsDef(QSharedPointer<AbstractionDefinition> absDef)
 {
     absDef_ = absDef;
-    // if abstraction definition is being edited
+
     if (absDef_) 
     {
         absDefGroup_.setAbsDef(absDef_);

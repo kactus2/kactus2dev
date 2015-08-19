@@ -226,7 +226,7 @@ VLNV::IPXactType VLNV::string2Type(const QString &type) {
 	// find the correct enum type
 
 	// if abstractionDefinition
-	if (QString::compare(type, QObject::tr("spirit:abstractionDefinition"),
+	if (QString::compare(type, QObject::tr("ipxact:abstractionDefinition"),
 			Qt::CaseInsensitive) == 0) {
 		return ABSTRACTIONDEFINITION;
 	}
@@ -255,7 +255,7 @@ VLNV::IPXactType VLNV::string2Type(const QString &type) {
 	}
 
 	// if designConfiguration
-	else if (QString::compare(type, QObject::tr("spirit:designConfiguration"),
+	else if (QString::compare(type, QObject::tr("ipxact:designConfiguration"),
 			Qt::CaseInsensitive) == 0)  {
 		return DESIGNCONFIGURATION;
 	}

@@ -12,7 +12,7 @@
 #include "NewBusDialog.h"
 
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
-#include <IPXACTmodels/abstractiondefinition.h>
+#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 #include <IPXACTmodels/fileset.h>
 #include <IPXACTmodels/component.h>

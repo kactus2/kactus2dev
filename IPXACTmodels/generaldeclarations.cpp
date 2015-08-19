@@ -122,7 +122,7 @@ General::PortAlignment& General::PortAlignment::operator=( const PortAlignment& 
 	}
 	return *this;
 }
-
+/*
 /*General::PortAlignment General::calculatePortAlignment( 
 	const PortMap* portMap1, 
 	int phys1LeftBound, 

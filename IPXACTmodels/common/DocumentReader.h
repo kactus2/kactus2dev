@@ -59,6 +59,8 @@ protected:
      */
     void parseVLNVElements(QDomNode const& documentNode, QSharedPointer<Document> document, VLNV::IPXactType type) const;
 
+    VLNV parseVLNVAttributes(QDomNode const& vlnvNode, VLNV::IPXactType vlnvType) const;
+
     /*!
      *  Parses the description from XML to a document.
      *
@@ -89,7 +91,7 @@ protected:
      *      @param [in] documentNode    The XML description of the document.
      *      @param [in] document        The document in which the parsed vendor extensions are stored.
      */
-    void parseVendorExtensions(QDomNode const& documentNode, QSharedPointer<Document> document) const;
+    void parseVendorExtensions(QDomNode const& documentNode, QSharedPointer<Extendable> document) const;
 
 private:
 

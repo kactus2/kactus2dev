@@ -10,7 +10,7 @@
 
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
-#include <IPXACTmodels/abstractiondefinition.h>
+#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/ApiDefinition.h>
 #include <IPXACTmodels/ComDefinition.h>
 #include <IPXACTmodels/design.h>

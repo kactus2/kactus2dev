@@ -83,7 +83,7 @@
 #include <IPXACTmodels/model.h>
 #include <IPXACTmodels/design.h>
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
-#include <IPXACTmodels/abstractiondefinition.h>
+#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 #include <IPXACTmodels/fileset.h>
 #include <IPXACTmodels/file.h>

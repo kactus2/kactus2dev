@@ -57,6 +57,12 @@
     <Filter Include="Source Files\BusDefinition">
       <UniqueIdentifier>{b3c73ea0-2cec-4b2d-93eb-a9a6e3650ab3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\AbstractionDefinition">
+      <UniqueIdentifier>{e9b14fb4-39de-494f-9933-5cf8c923a03e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\AbstractionDefinition">
+      <UniqueIdentifier>{77c749b9-09e3-42ef-bc9f-febe4f45e004}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Header Files\designConfiguration">
       <UniqueIdentifier>{08dd8af0-de2a-47a7-9b4c-07b5f19ca328}</UniqueIdentifier>
     </Filter>
@@ -65,9 +71,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="abstractiondefinition.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="XmlUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -230,9 +233,6 @@
     <ClCompile Include="port.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="portabstraction.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="PortRef.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -288,12 +288,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="view.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="wire.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="wireabstraction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="writevalueconstraint.cpp">
@@ -464,6 +458,63 @@
     <ClCompile Include="common\NameGroupWriter.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_AbstractionDefinitionWriter.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_AbstractionDefinitionWriter.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="AbstractionDefinition\WireAbstraction.cpp">
+      <Filter>Source Files\AbstractionDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="AbstractionDefinition\WireAbstractionWriter.cpp">
+      <Filter>Source Files\AbstractionDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="AbstractionDefinition\WirePort.cpp">
+      <Filter>Source Files\AbstractionDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="AbstractionDefinition\AbstractionDefinition.cpp">
+      <Filter>Source Files\AbstractionDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="AbstractionDefinition\AbstractionDefinitionWriter.cpp">
+      <Filter>Source Files\AbstractionDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="AbstractionDefinition\PortAbstraction.cpp">
+      <Filter>Source Files\AbstractionDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="AbstractionDefinition\TimingConstraint.cpp">
+      <Filter>Source Files\AbstractionDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="common\Qualifier.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\CellSpecification.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\Extendable.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="wire.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_AbstractionDefinitionReader.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_AbstractionDefinitionReader.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_WireAbstractionReader.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_WireAbstractionReader.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="AbstractionDefinition\AbstractionDefinitionReader.cpp">
+      <Filter>Source Files\AbstractionDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="AbstractionDefinition\WireAbstractionReader.cpp">
+      <Filter>Source Files\AbstractionDefinition</Filter>
+    </ClCompile>
     <ClCompile Include="common\Extendable.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
@@ -521,9 +572,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ipxactmodels_global.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="abstractiondefinition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="XmlUtils.h">
@@ -688,9 +736,6 @@
     <ClInclude Include="port.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="portabstraction.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="PortRef.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -752,12 +797,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="view.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="wire.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="wireabstraction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="writevalueconstraint.h">
@@ -850,6 +889,33 @@
     <ClInclude Include="common\BooleanValue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="AbstractionDefinition\WireAbstractionWriter.h">
+      <Filter>Header Files\AbstractionDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="AbstractionDefinition\WirePort.h">
+      <Filter>Header Files\AbstractionDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="AbstractionDefinition\AbstractionDefinition.h">
+      <Filter>Header Files\AbstractionDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="AbstractionDefinition\PortAbstraction.h">
+      <Filter>Header Files\AbstractionDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="AbstractionDefinition\TimingConstraint.h">
+      <Filter>Header Files\AbstractionDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="AbstractionDefinition\WireAbstraction.h">
+      <Filter>Header Files\AbstractionDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="common\CellSpecification.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\Qualifier.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\Extendable.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
     <ClInclude Include="common\Extendable.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
@@ -876,6 +942,9 @@
     </ClInclude>
     <ClInclude Include="common\ConfigurableElementValue.h">
       <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="wire.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -905,6 +974,15 @@
     </CustomBuild>
     <CustomBuild Include="common\NameGroupWriter.h">
       <Filter>Header Files\common</Filter>
+    </CustomBuild>
+    <CustomBuild Include="AbstractionDefinition\AbstractionDefinitionWriter.h">
+      <Filter>Header Files\AbstractionDefinition</Filter>
+    </CustomBuild>
+    <CustomBuild Include="AbstractionDefinition\AbstractionDefinitionReader.h">
+      <Filter>Header Files\AbstractionDefinition</Filter>
+    </CustomBuild>
+    <CustomBuild Include="AbstractionDefinition\WireAbstractionReader.h">
+      <Filter>Header Files\AbstractionDefinition</Filter>
     </CustomBuild>
     <CustomBuild Include="common\DocumentReader.h">
       <Filter>Header Files\common</Filter>

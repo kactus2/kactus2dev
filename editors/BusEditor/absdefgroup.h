@@ -11,7 +11,7 @@
 #include "busportsview.h"
 #include "busportsmodel.h"
 
-#include <IPXACTmodels/abstractiondefinition.h>
+#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 
 #include <QGroupBox>
 #include <QPushButton>

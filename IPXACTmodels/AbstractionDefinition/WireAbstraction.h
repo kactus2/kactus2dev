@@ -150,6 +150,24 @@ public:
 	 */
 	General::DriverType getDriverType() const;
 
+    /*!
+     *  Gets the wire direction for a given interface mode.
+     *
+     *      @param [in] mode   The mode to get the direction for.
+     *
+     *      @return The direction of the wire for the given interface mode.
+     */
+    General::Direction getDirection(General::InterfaceMode mode) const;
+
+    /*!
+     *  Gets the wire width for a given interface mode.
+     *
+     *      @param [in] mode   The mode to get the width for.
+     *
+     *      @return The width of the wire for the given interface mode.
+     */
+    QString getWidth(General::InterfaceMode mode) const;
+
 private:
 
     //! The qualifier describing the information the wire carries.

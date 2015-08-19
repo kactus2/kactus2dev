@@ -13,7 +13,7 @@
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/view.h>
 #include <IPXACTmodels/librarycomponent.h>
-#include <IPXACTmodels/abstractiondefinition.h>
+#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/businterface.h>
 
 #include <library/LibraryManager/libraryinterface.h>
@@ -89,17 +89,18 @@ portMap_()
 
 			// if the abstraction definition has defined a default value for the port
 			// then use it before the port's own default value
-			if (absDef->hasDefaultValue(j.key())) {
-				tempDefaults.insert(i.key(), QString::number(absDef->getDefaultValue(j.key())));
-				break;
-			}
+			
+            //if (absDef->hasDefaultValue(j.key())) {
+// 				tempDefaults.insert(i.key(), QString::number(absDef->getDefaultValue(j.key())));
+// 				break;
+// 			}
 
 			// if abstraction definition did not contain 
-			else {
+			//else {
 				if (!tempDefaults.contains(i.key()))
 					tempDefaults.insert(i.key(), i.value());
 				continue;
-			}
+			//}
 		}
 	}
 	defaultPortConnections_ = tempDefaults;

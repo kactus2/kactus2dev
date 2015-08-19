@@ -7,10 +7,13 @@
 #ifndef BUSPORTSMODEL_H
 #define BUSPORTSMODEL_H
 
-#include <IPXACTmodels/abstractiondefinition.h>
 #include <IPXACTmodels/generaldeclarations.h>
-#include <IPXACTmodels/portabstraction.h>
-#include <IPXACTmodels/wireabstraction.h>
+
+#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
+
+#include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>
+#include <IPXACTmodels/AbstractionDefinition/WireAbstraction.h>
+#include <IPXACTmodels/AbstractionDefinition/WirePort.h>
 
 #include <QAbstractTableModel>
 #include <QSharedPointer>
@@ -344,6 +347,7 @@ public slots:
 	 */
 	void importCSV(const QString& path);
 
+   
 signals:
 
 	/*!
@@ -401,7 +405,7 @@ private:
 	 *      @param [in] mode            The mode of the port to be created.
 	 */
 	void readPort(QSharedPointer<PortAbstraction> portAbs,
-		WireAbstraction::WirePort* modeSpesific,
+		QSharedPointer<WirePort> modeSpesific,
 		BusPortsModel::PortMode mode);
 
 	/*!
@@ -461,7 +465,10 @@ private:
 	 */
 	void savePort(QSharedPointer<PortAbstraction> portAbs, int i);
     
-    //-----------------------------------------------------------------------------
+     General::Presence str2Presence(QString str, General::Presence defaultValue);
+
+     QString presence2Str(General::Presence presence) const;
+     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
@@ -469,7 +476,7 @@ private:
 	QSharedPointer<AbstractionDefinition> absDef_;
 
 	//! The pointer to the list containing the ports
-	QList<QSharedPointer<PortAbstraction> >* ports_;
+	QSharedPointer<QList<QSharedPointer<PortAbstraction> > > ports_;
 
 	//! Contains the editable ports
 	QList<Port> table_;

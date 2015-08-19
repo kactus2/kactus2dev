@@ -18,7 +18,7 @@
 #include <QSharedPointer>
 
 #include <IPXACTmodels/generaldeclarations.h>
-#include <IPXACTmodels/abstractiondefinition.h>
+#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/PortMap.h>
 
 class BusInterface;

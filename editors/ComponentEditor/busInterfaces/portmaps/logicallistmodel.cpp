@@ -11,7 +11,7 @@
 #include <library/LibraryManager/libraryinterface.h>
 #include <IPXACTmodels/vlnv.h>
 #include <IPXACTmodels/librarycomponent.h>
-#include <IPXACTmodels/abstractiondefinition.h>
+#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 
 #include <QIcon>
 

@@ -14,6 +14,8 @@
 
 #include <QString>
 
+#include <IPXACTmodels/ipxactmodels_global.h>
+
 #include <IPXACTmodels/generaldeclarations.h>
 
 class TimingConstraint;
@@ -22,7 +24,7 @@ class CellSpecification;
 //-----------------------------------------------------------------------------
 //! Implementation for ipxact:wirePort element within abstraction definition.
 //-----------------------------------------------------------------------------
-class WirePort 
+class IPXACTMODELS_EXPORT WirePort 
 {
 public:
 
@@ -49,15 +51,16 @@ public:
      *
      *      @param [in] presence   The restriction to set.
      */
-    void setPresence(PresenceType presence);
+    void setPresence(General::Presence presence);
 
     /*!
      *  Gets the presence restriction for the port.
      *
      *      @return The presence restriction for the port.
      */
-    PresenceType getPresence() const;
-        
+    General::Presence getPresence() const;
+   
+
     /*!
      *  Sets the number of bits required for the port.
      *
@@ -180,7 +183,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! Defines if the port is required or forbidden in a bus interface.
-    PresenceType presence_;
+    General::Presence presence_;
 
     //! Number of bits required for the port.
     QString width_;

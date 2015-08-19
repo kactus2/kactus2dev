@@ -12,7 +12,8 @@
 #include "PortMapsTreeItem.h"
 
 
-#include <IPXACTmodels/abstractiondefinition.h>
+#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
+
 #include <IPXACTmodels/businterface.h>
 #include <IPXACTmodels/component.h>
 

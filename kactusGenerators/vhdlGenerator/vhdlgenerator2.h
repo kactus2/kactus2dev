@@ -32,7 +32,7 @@
 class LibraryInterface;
 class VhdlConnectionEndPoint;
 class HWDesignWidget;
-
+class PortMap;
 /*! \brief Vhdl Generator generates top-level vhdl for hierarchical component.
  *
  * This class and it's interface provide services to generate vhdl code from
@@ -312,6 +312,14 @@ private:
 	*/
 	void writeUserModifiedAssignments(QTextStream& stream);
 	
+     General::PortAlignment calculatePortAlignment(const PortMap* portMap1, 
+									 int phys1LeftBound,
+									 int phys1RightBound,
+									 const PortMap* portMap2,
+									 int phys2LeftBound,
+									 int phys2RightBound);
+
+
 	//! \brief Pointer to the instance that manages the library.
 	LibraryInterface* handler_;
 

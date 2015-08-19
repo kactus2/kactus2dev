@@ -15,10 +15,12 @@
 #include "PortMapsLogicalItem.h"
 #include "PortMapsBitMapItem.h"
 
-#include <IPXACTmodels/abstractiondefinition.h>
+#include <library/LibraryManager/libraryinterface.h>
+
+#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
+
 #include <IPXACTmodels/businterface.h>
 #include <IPXACTmodels/component.h>
-#include <library/LibraryManager/libraryinterface.h>
 #include <IPXACTmodels/PortMap.h>
 #include <IPXACTmodels/vlnv.h>
 
@@ -478,12 +480,12 @@ bool PortMapsTreeModel::isValid(QStringList& errorList) const
 //-----------------------------------------------------------------------------
 // Function: PortMapsTreeModel::canCreateMap()
 //-----------------------------------------------------------------------------
-bool PortMapsTreeModel::canCreateMap( const QString& physicalPort, const QString& logicalPort ) const {
+bool PortMapsTreeModel::canCreateMap( const QString& physicalPort, const QString& logicalPort ) const
+{
     // if port maps has been defined then check that signal directions match
     if (absDef_) 
     {
-        General::Direction logicalDirection = 
-            absDef_->getPortDirection(logicalPort, interfaceMode_);
+        General::Direction logicalDirection = absDef_->getPortDirection(logicalPort, interfaceMode_);
 
         General::Direction physDirection = component_->getPortDirection(physicalPort);
 

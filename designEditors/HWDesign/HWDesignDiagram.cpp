@@ -35,9 +35,9 @@
 #include <library/LibraryManager/libraryhandler.h>
 
 #include <IPXACTmodels/component.h>
-#include <IPXACTmodels/abstractiondefinition.h>
+#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/businterface.h>
-#include <IPXACTmodels/portabstraction.h>
+#include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/model.h>
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>

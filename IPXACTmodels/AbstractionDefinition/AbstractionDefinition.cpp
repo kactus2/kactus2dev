@@ -12,8 +12,7 @@
 #include "AbstractionDefinition.h"
 
 #include "PortAbstraction.h"
-
-#include <IPXACTmodels/XmlUtils.h>
+#include "WireAbstraction.h"
 
 #include <QDomDocument>
 #include <QString>
@@ -44,9 +43,12 @@ AbstractionDefinition::AbstractionDefinition(AbstractionDefinition const& other)
 Document(other),
     busType_(other.busType_),
     extends_(other.extends_),
-    logicalPorts_(new QList<QSharedPointer<PortAbstraction> >())
+    logicalPorts_(other.logicalPorts_)
 {
-
+    foreach (QSharedPointer<PortAbstraction> port, *other.logicalPorts_)
+    {
+        logicalPorts_->append(QSharedPointer<PortAbstraction>(new PortAbstraction(*port)));
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -60,7 +62,10 @@ AbstractionDefinition & AbstractionDefinition::operator=(AbstractionDefinition c
         busType_ = other.busType_;
 		extends_ = other.extends_;
 
-        //copy ports
+        foreach (QSharedPointer<PortAbstraction> port, *other.logicalPorts_)
+        {
+            logicalPorts_->append(QSharedPointer<PortAbstraction>(new PortAbstraction(*port)));
+        }
 	}
 	return *this;
 }
@@ -149,6 +154,95 @@ QList<VLNV> AbstractionDefinition::getDependentVLNVs() const
 QStringList AbstractionDefinition::getDependentFiles() const
 {
     return QStringList();
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionDefinition::hasPort()
+//-----------------------------------------------------------------------------
+bool AbstractionDefinition::hasPort(QString const& portName, General::InterfaceMode mode)
+{
+    foreach (QSharedPointer<PortAbstraction> port, *logicalPorts_)
+    {
+        if (port->getLogicalName() == portName && port->hasWire())
+        {
+            if ((mode == General::MASTER || mode == General::MIRROREDMASTER) && port->getWire()->hasMasterPort())
+            {
+                return true;
+            }
+            else if ((mode == General::SLAVE || mode == General::MIRROREDSLAVE) && port->getWire()->hasSlavePort())
+            {
+                return true;
+            }
+            else if ((mode == General::SYSTEM || mode == General::MIRROREDSYSTEM) && 
+                !port->getWire()->getSystemPorts()->isEmpty())
+            {
+                return true;
+            }
+        }        
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionDefinition::getPortNames()
+//-----------------------------------------------------------------------------
+QStringList AbstractionDefinition::getPortNames(General::InterfaceMode mode) const
+{
+    QStringList portNames;
+    foreach (QSharedPointer<PortAbstraction> port, *logicalPorts_)
+    {
+        if (port->hasWire())
+        {
+            if ((mode == General::MASTER || mode == General::MIRROREDMASTER) && port->getWire()->hasMasterPort())
+            {
+                portNames.append(port->getLogicalName());
+            }
+            else if ((mode == General::SLAVE || mode == General::MIRROREDSLAVE) && port->getWire()->hasSlavePort())
+            {
+                portNames.append(port->getLogicalName());
+            }
+            else if ((mode == General::SYSTEM || mode == General::MIRROREDSYSTEM) && 
+                !port->getWire()->getSystemPorts()->isEmpty())
+            {
+                portNames.append(port->getLogicalName());
+            }
+        }        
+    }
+
+    return portNames;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionDefinition::getPortDirection()
+//-----------------------------------------------------------------------------
+General::Direction AbstractionDefinition::getPortDirection(QString const& portName, General::InterfaceMode mode)
+{
+    foreach (QSharedPointer<PortAbstraction> port, *logicalPorts_)
+    {
+        if (port->getLogicalName() == portName && port->hasWire())
+        {
+            return port->getWire()->getDirection(mode);            
+        }        
+    }
+
+    return General::DIRECTION_INVALID;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionDefinition::getPort()
+//-----------------------------------------------------------------------------
+QSharedPointer<PortAbstraction> AbstractionDefinition::getPort(QString const& portName)
+{
+    foreach (QSharedPointer<PortAbstraction> port, *logicalPorts_)
+    {
+        if (port->getLogicalName() == portName)
+        {
+            return port;            
+        } 
+    }
+
+    return QSharedPointer<PortAbstraction>();
 }
 
 //-----------------------------------------------------------------------------

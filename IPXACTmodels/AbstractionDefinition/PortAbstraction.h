@@ -17,6 +17,7 @@
 #include <IPXACTmodels/common/Qualifier.h>
 
 #include <IPXACTmodels/ipxactmodels_global.h>
+#include <IPXACTmodels/generaldeclarations.h>
 
 #include <QSharedPointer>
 #include <QString>
@@ -46,6 +47,20 @@ public:
 	PortAbstraction& operator=(const PortAbstraction& other);
 
     /*!
+     *  Sets the logical name of the port.
+     *
+     *      @param [in] logicalName   The name of the port to set.
+     */
+    void setLogicalName(QString const& logicalName);
+
+    /*!
+     *  Gets the logical name of the port.
+     *
+     *      @return The name of the port.
+     */
+    QString getLogicalName() const;
+
+    /*!
      *  Sets the condition for the port existence.
      *
      *      @param [in] presentExpression   The condition when port is present.
@@ -65,13 +80,20 @@ public:
      *      @return True, if the port is a wire definition, otherwise false.
      */
     bool hasWire() const;
+    
+    /*!
+     *  Sets the wire definition for the port.
+     *
+     *      @param [in] wire   The wire to set.
+     */
+    void setWire(QSharedPointer<WireAbstraction> wire);
 
 	/*!
 	 *  Gets the wire definition of the port.
 	 *
 	 *      @return The wire definition.
 	 */
-	QSharedPointer<WireAbstraction> getWire();
+	QSharedPointer<WireAbstraction> getWire() const;
 
 	/*!  Get the default value of the wire port.
 	 *
@@ -112,6 +134,8 @@ public:
      *      @return True, if a driver is required, otherwise false.
      */
     bool requiresDriver() const;
+
+    General::Presence getPresence(General::InterfaceMode mode) const;
 
     //TransactionalAbstraction* getTransactional() const;
 

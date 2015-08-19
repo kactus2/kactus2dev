@@ -6,6 +6,7 @@
  */
 
 #include "absdefgroup.h"
+
 #include <library/LibraryManager/libraryinterface.h>
 
 #include "busportsdelegate.h"
@@ -73,7 +74,7 @@ void AbsDefGroup::onImport()
 	// if abs def is set then use its location in library
 	if (absDef_)
     {
-		const QString busPath = handler_->getDirectoryPath(*absDef_->getVlnv());
+		const QString busPath = handler_->getDirectoryPath(absDef_->getVlnv());
 		homePath = QString("%1/logicalSignals.csv").arg(busPath);
 	}
 	// if there is no abs def then use default library location
@@ -105,7 +106,7 @@ void AbsDefGroup::onExport()
 	// if abs def is set then use its location in library
 	if (absDef_)
     {
-		const QString busPath = handler_->getDirectoryPath(*absDef_->getVlnv());
+		const QString busPath = handler_->getDirectoryPath(absDef_->getVlnv());
 		homePath = QString("%1/logicalSignals.csv").arg(busPath);
 	}
 	// if there is no abs def then use default library location

@@ -23,7 +23,7 @@
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
 #include <IPXACTmodels/librarycomponent.h>
-#include <IPXACTmodels/abstractiondefinition.h>
+#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
 #include <QGridLayout>

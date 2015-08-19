@@ -226,3 +226,63 @@ General::DriverType WireAbstraction::getDriverType() const
 {
     return driverType_;
 }
+
+//-----------------------------------------------------------------------------
+// Function: WireAbstraction::getDirection()
+//-----------------------------------------------------------------------------
+General::Direction WireAbstraction::getDirection(General::InterfaceMode mode) const
+{
+    if (mode == General::MASTER && hasMasterPort())
+    {
+        return getMasterPort()->getDirection();
+    } 
+    else if (mode == General::MIRROREDMASTER && hasMasterPort())
+    {
+        return General::convert2Mirrored(getMasterPort()->getDirection());
+    }
+    else if (mode == General::SLAVE && hasSlavePort())
+    {
+        return getSlavePort()->getDirection();
+    }                       
+    else if (mode == General::MIRROREDSLAVE && hasSlavePort())
+    {
+        return General::convert2Mirrored(getSlavePort()->getDirection());
+    }   
+    else if (mode == General::SYSTEM && !getSystemPorts()->isEmpty())
+    {
+        return getSystemPorts()->first()->getDirection();
+    } 
+    else if (mode == General::MIRROREDSYSTEM && !getSystemPorts()->isEmpty())
+    {
+        return General::convert2Mirrored(getSystemPorts()->first()->getDirection());
+    }
+    else
+    {
+        return General::DIRECTION_INVALID;
+    }
+}
+
+
+//-----------------------------------------------------------------------------
+// Function: WireAbstraction::getDirection()
+//-----------------------------------------------------------------------------
+QString WireAbstraction::getWidth(General::InterfaceMode mode) const
+{
+    if ((mode == General::MASTER || mode == General::MIRROREDMASTER) && hasMasterPort())
+    {
+        return getMasterPort()->getWidth();
+    } 
+    else if ((mode == General::SLAVE || mode == General::MIRROREDSLAVE) && hasSlavePort())
+    {
+        return getSlavePort()->getWidth();
+    }                        
+    else if ((mode == General::SYSTEM || mode == General::MIRROREDSYSTEM) && !getSystemPorts()->isEmpty())
+    {
+        return getSystemPorts()->first()->getWidth();
+    } 
+
+    else
+    {
+        return QString();
+    }
+}

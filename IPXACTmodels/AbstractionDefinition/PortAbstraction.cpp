@@ -11,6 +11,7 @@
 
 #include "PortAbstraction.h"
 #include "WireAbstraction.h"
+#include "WirePort.h"
 
 #include <IPXACTmodels/common/Qualifier.h>
 
@@ -27,7 +28,6 @@ NameGroup(),
     isPresent_(),
     //transactional_()//, 
     wire_()
-    //portType_(General::WIRE)
 {
 
 }
@@ -41,7 +41,6 @@ NameGroup(other),
     isPresent_(),
     //transactional_(),
     wire_()
-    //portType_(other.portType_),
 {
 
  	if (other.wire_)
@@ -73,7 +72,6 @@ PortAbstraction& PortAbstraction::operator=(PortAbstraction const& other)
 		NameGroup::operator=(other);
         Extendable::operator=(other);
         isPresent_ = other.isPresent_;
-		//portType_ = other.portType_;
 
 		if (other.wire_)
         {
@@ -92,6 +90,22 @@ PortAbstraction& PortAbstraction::operator=(PortAbstraction const& other)
 			//transactional_ = QSharedPointer<TransactionalAbstraction>();
 	}
 	return *this;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortAbstraction::setLogicalName()
+//-----------------------------------------------------------------------------
+void PortAbstraction::setLogicalName(QString const& logicalName)
+{
+    setName(logicalName);
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortAbstraction::getLogicalName()
+//-----------------------------------------------------------------------------
+QString PortAbstraction::getLogicalName() const
+{
+    return name();
 }
 
 //-----------------------------------------------------------------------------
@@ -119,15 +133,18 @@ bool PortAbstraction::hasWire() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: PortAbstraction::setWire()
+//-----------------------------------------------------------------------------
+void PortAbstraction::setWire(QSharedPointer<WireAbstraction> wire)
+{
+    wire_ = wire;
+}
+
+//-----------------------------------------------------------------------------
 // Function: PortAbstraction::getWire()
 //-----------------------------------------------------------------------------
-QSharedPointer<WireAbstraction> PortAbstraction::getWire()
+QSharedPointer<WireAbstraction> PortAbstraction::getWire() const
 {
-    if (wire_.isNull())
-    {
-        wire_ = QSharedPointer<WireAbstraction>(new WireAbstraction());
-    }
-
     return wire_;
 }
 
@@ -218,4 +235,20 @@ bool PortAbstraction::requiresDriver() const
     {
         return wire_->requiresDriver();
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortAbstraction::getPresence()
+//-----------------------------------------------------------------------------
+General::Presence PortAbstraction::getPresence(General::InterfaceMode mode) const
+{
+    if (hasWire())
+    {
+        if ((mode == General::MASTER || mode == General::MIRROREDMASTER) && wire_->hasMasterPort())
+        {
+            return wire_->getMasterPort()->getPresence();
+        }
+    }
+
+    return General::PRESENCE_UNKNOWN;
 }

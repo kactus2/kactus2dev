@@ -19,7 +19,7 @@
 // Function: WirePort::WirePort()
 //-----------------------------------------------------------------------------
 WirePort::WirePort(): 
-presence_(UNKNOWN), 
+presence_(General::PRESENCE_UNKNOWN), 
     width_(),
     direction_(General::DIRECTION_INVALID),
     timingConstraint_(),
@@ -88,9 +88,9 @@ WirePort::~WirePort()
 }
 
 //-----------------------------------------------------------------------------
-// Function: WirePort::setIsPresent()
+// Function: WirePort::setPresence()
 //-----------------------------------------------------------------------------
-void WirePort::setPresence(PresenceType presence)
+void WirePort::setPresence(General::Presence presence)
 {
     presence_ = presence;
 }
@@ -98,7 +98,7 @@ void WirePort::setPresence(PresenceType presence)
 //-----------------------------------------------------------------------------
 // Function: WirePort::getPresence()
 //-----------------------------------------------------------------------------
-WirePort::PresenceType WirePort::getPresence() const
+General::Presence WirePort::getPresence() const
 {
     return presence_;
 }

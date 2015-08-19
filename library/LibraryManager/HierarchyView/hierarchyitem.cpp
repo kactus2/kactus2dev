@@ -322,7 +322,7 @@ VLNV HierarchyItem::getVLNV() const {
 		return busDef_->getVlnv();
 	}
 	else if (type_ == HierarchyItem::ABSDEFINITION && absDef_) {
-		return *absDef_->getVlnv();
+		return absDef_->getVlnv();
 	}
 	else if (type_ == HierarchyItem::COMDEFINITION && comDef_) {
         return *comDef_->getVlnv();
@@ -396,7 +396,7 @@ bool HierarchyItem::contains( const VLNV& vlnv ) const {
 		return true;
 
 	// if abstraction definition matches the vlnv
-	else if (absDef_ && *absDef_->getVlnv() == vlnv)
+	else if (absDef_ && absDef_->getVlnv() == vlnv)
 		return true;
 
     // if COM definition matches the vlnv
