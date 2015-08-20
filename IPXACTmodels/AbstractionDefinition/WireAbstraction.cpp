@@ -22,9 +22,9 @@ WireAbstraction::WireAbstraction():
 qualifier_(),
     defaultValue_(""),
     requiresDriver_(false),
-    driverType_(General::ANY),
-    onMaster_(), 
-    onSlave_(),
+    driverType_(General::NO_DRIVER),
+    onMaster_(QSharedPointer<WirePort>()), 
+    onSlave_(QSharedPointer<WirePort>()),
     onSystem_(new QList<QSharedPointer<WirePort> >())
 {
 
@@ -38,11 +38,29 @@ qualifier_(other.qualifier_),
     defaultValue_(other.defaultValue_),
     requiresDriver_(other.requiresDriver_),
     driverType_(other.driverType_),
-    onMaster_(QSharedPointer<WirePort>(new WirePort(*other.onMaster_.data()))),
-    onSlave_(QSharedPointer<WirePort>(new WirePort(*other.onSlave_.data()))), 
-    onSystem_(new QList<QSharedPointer<WirePort> >())
+    onMaster_(),
+    onSlave_(), 
+    onSystem_()
 {
-  
+    if (other.onMaster_)
+    {
+        onMaster_ = QSharedPointer<WirePort>(new WirePort(*other.onMaster_.data()));
+    }
+    else
+    {
+        onMaster_ = QSharedPointer<WirePort>();
+    }
+
+    if (other.onSlave_)
+    {
+        onSlave_ = QSharedPointer<WirePort>(new WirePort(*other.onSlave_.data()));
+    }
+    else
+    {
+        onSlave_ = QSharedPointer<WirePort>();
+    }   
+
+    onSystem_ = other.onSystem_;
 }
 
 //-----------------------------------------------------------------------------
@@ -62,8 +80,10 @@ WireAbstraction& WireAbstraction::operator=(WireAbstraction const& other)
 			onMaster_ = QSharedPointer<WirePort>(new WirePort(*other.onMaster_.data()));
 		}
 		else
+        {
 			onMaster_ = QSharedPointer<WirePort>();
-          
+        }
+
 		if (other.onSlave_)
         {
 			onSlave_ = QSharedPointer<WirePort>(new WirePort(*other.onSlave_.data()));
@@ -92,7 +112,7 @@ WireAbstraction::~WireAbstraction()
 void WireAbstraction::setDefaultValue(QString const& defaultValue)
 {
     requiresDriver_ = false;
-    driverType_ = General::ANY;
+    driverType_ = General::NO_DRIVER;
 
     defaultValue_ = defaultValue;
 }

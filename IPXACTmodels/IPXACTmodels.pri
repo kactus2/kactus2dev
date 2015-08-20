@@ -7,9 +7,7 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./designConfiguration/AbstractorInstance.h \
-    ../resource.h \
-    ./abstractiondefinition.h \
+HEADERS += ../resource.h \
     ./AbstractMemoryMap.h \
     ./addressblock.h \
     ./addressspace.h \
@@ -40,7 +38,6 @@ HEADERS += ./designConfiguration/AbstractorInstance.h \
     ./cpu.h \
     ./design.h \
     ./designconfabstractor.h \
-    ./designConfiguration/DesignConfiguration.h \
     ./enumeratedvalue.h \
     ./Enumeration.h \
     ./field.h \
@@ -71,7 +68,6 @@ HEADERS += ./designConfiguration/AbstractorInstance.h \
     ./modelparameter.h \
     ./otherclockdriver.h \
     ./port.h \
-    ./portabstraction.h \
     ./PortMap.h \
     ./PortRef.h \
     ./register.h \
@@ -96,7 +92,6 @@ HEADERS += ./designConfiguration/AbstractorInstance.h \
     ./view.h \
     ./vlnv.h \
     ./wire.h \
-    ./wireabstraction.h \
     ./writevalueconstraint.h \
     ./XmlUtils.h \
     ./kactusExtensions/ComponentInstantiation.h \
@@ -116,30 +111,42 @@ HEADERS += ./designConfiguration/AbstractorInstance.h \
     ./validators/namevalidator.h \
     ./validators/NMTokenValidator.h \
     ./common/Array.h \
+    ./common/ConfigurableElementValue.h \
+    ./common/ConfigurableVLNVReference.h \
+    ./common/CellSpecification.h \
     ./common/Document.h \
+    ./common/Extendable.h \
     ./common/NameGroup.h \
     ./common/Parameter.h \
+    ./common/Qualifier.h \
     ./common/Range.h \
     ./common/Vector.h \
     ./common/DocumentWriter.h \
+    ./common/DocumentReader.h \
     ./common/NameGroupWriter.h \
     ./common/ParameterReader.h \
     ./common/ParameterWriter.h \
     ./BusDefinition/BusDefinition.h \
     ./BusDefinition/BusDefinitionReader.h \
     ./BusDefinition/BusDefinitionWriter.h \
-    ./common/Extendable.h \
-    ./common/DocumentReader.h \
-    ./designConfiguration/DesignConfigurationReader.h \
-    ./designConfiguration/DesignConfigurationWriter.h \
+    ./AbstractionDefinition/AbstractionDefinition.h \
+    ./AbstractionDefinition/PortAbstraction.h \
+    ./AbstractionDefinition/TimingConstraint.h \
+    ./AbstractionDefinition/WireAbstraction.h \
+    ./AbstractionDefinition/WireAbstractionWriter.h \
+    ./AbstractionDefinition/WirePort.h \
+    ./AbstractionDefinition/AbstractionDefinitionWriter.h \
+    ./AbstractionDefinition/AbstractionDefinitionReader.h \
+    ./AbstractionDefinition/WireAbstractionReader.h \
+    ./designConfiguration/AbstractorInstance.h \
+    ./designConfiguration/DesignConfiguration.h \
     ./designConfiguration/InterconnectionConfiguration.h \
     ./designConfiguration/InterfaceRef.h \
     ./designConfiguration/MultipleAbstractorInstances.h \
     ./designConfiguration/ViewConfiguration.h \
-    ./common/ConfigurableVLNVReference.h \
-    ./common/ConfigurableElementValue.h
-SOURCES += ./abstractiondefinition.cpp \
-    ./AbstractMemoryMap.cpp \
+    ./designConfiguration/DesignConfigurationReader.h \
+    ./designConfiguration/DesignConfigurationWriter.h
+SOURCES += ./AbstractMemoryMap.cpp \
     ./addressblock.cpp \
     ./addressspace.cpp \
     ./AdHocConnection.cpp \
@@ -196,7 +203,6 @@ SOURCES += ./abstractiondefinition.cpp \
     ./modelparameter.cpp \
     ./otherclockdriver.cpp \
     ./port.cpp \
-    ./portabstraction.cpp \
     ./PortMap.cpp \
     ./PortRef.cpp \
     ./register.cpp \
@@ -219,7 +225,6 @@ SOURCES += ./abstractiondefinition.cpp \
     ./view.cpp \
     ./vlnv.cpp \
     ./wire.cpp \
-    ./wireabstraction.cpp \
     ./writevalueconstraint.cpp \
     ./XmlUtils.cpp \
     ./kactusExtensions/ComponentInstantiation.cpp \
@@ -241,20 +246,33 @@ SOURCES += ./abstractiondefinition.cpp \
     ./common/Array.cpp \
     ./common/Assertion.cpp \
     ./common/BooleanValue.cpp \
+    ./common/CellSpecification.cpp \
+    ./common/ConfigurableElementValue.cpp \
+    ./common/ConfigurableVLNVReference.cpp \
     ./common/Document.cpp \
+    ./common/DocumentReader.cpp \
     ./common/DocumentWriter.cpp \
+    ./common/Extendable.cpp \
     ./common/NameGroup.cpp \
     ./common/NameGroupWriter.cpp \
     ./common/Parameter.cpp \
     ./common/ParameterReader.cpp \
     ./common/ParameterWriter.cpp \
+    ./common/Qualifier.cpp \
     ./common/Range.cpp \
     ./common/Vector.cpp \
     ./BusDefinition/BusDefinition.cpp \
     ./BusDefinition/BusDefinitionReader.cpp \
     ./BusDefinition/BusDefinitionWriter.cpp \
-    ./common/Extendable.cpp \
-    ./common/DocumentReader.cpp \
+    ./AbstractionDefinition/AbstractionDefinition.cpp \
+    ./AbstractionDefinition/AbstractionDefinitionReader.cpp \
+    ./AbstractionDefinition/AbstractionDefinitionWriter.cpp \
+    ./AbstractionDefinition/PortAbstraction.cpp \
+    ./AbstractionDefinition/TimingConstraint.cpp \
+    ./AbstractionDefinition/WireAbstraction.cpp \
+    ./AbstractionDefinition/WireAbstractionReader.cpp \
+    ./AbstractionDefinition/WireAbstractionWriter.cpp \
+    ./AbstractionDefinition/WirePort.cpp \
     ./designConfiguration/AbstractorInstance.cpp \
     ./designConfiguration/DesignConfiguration.cpp \
     ./designConfiguration/DesignConfigurationReader.cpp \
@@ -262,6 +280,4 @@ SOURCES += ./abstractiondefinition.cpp \
     ./designConfiguration/InterconnectionConfiguration.cpp \
     ./designConfiguration/InterfaceRef.cpp \
     ./designConfiguration/MultipleAbstractorInstances.cpp \
-    ./designConfiguration/ViewConfiguration.cpp \
-    ./common/ConfigurableVLNVReference.cpp \
-    ./common/ConfigurableElementValue.cpp
+    ./designConfiguration/ViewConfiguration.cpp

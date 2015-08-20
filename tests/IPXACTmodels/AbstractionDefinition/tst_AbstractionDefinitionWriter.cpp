@@ -256,6 +256,7 @@ void tst_AbstractionDefinition::testWriteWirePortForAllModes()
     testPort->setWire(wire);
 
     QSharedPointer<WirePort> systemPort(new WirePort);
+    systemPort->setSystemGroup("system1");
     systemPort->setPresence(General::REQUIRED);
     systemPort->setWidth("1");
     systemPort->setDirection(General::INOUT);
@@ -302,6 +303,7 @@ void tst_AbstractionDefinition::testWriteWirePortForAllModes()
                             "<ipxact:isReset>true</ipxact:isReset>"
                         "</ipxact:qualifier>"
                         "<ipxact:onSystem>"
+                            "<ipxact:group>system1</ipxact:group>"
                             "<ipxact:presence>required</ipxact:presence>"
                             "<ipxact:width>1</ipxact:width>"
                             "<ipxact:direction>inout</ipxact:direction>"
@@ -315,7 +317,7 @@ void tst_AbstractionDefinition::testWriteWirePortForAllModes()
                             "<ipxact:presence>illegal</ipxact:presence>"
                             "<ipxact:direction>out</ipxact:direction>"
                         "</ipxact:onSlave>"
-                        "<ipxact:requiresDriver driverType=\"singleshot\">true</ipxact:requiresDriver>"
+                        "<ipxact:requiresDriver driverType=\"singleShot\">true</ipxact:requiresDriver>"
                     "</ipxact:wire>"
                 "</ipxact:port>"
             "</ipxact:ports>"
@@ -339,14 +341,17 @@ void tst_AbstractionDefinition::testWriteMultipleSystemWirePorts()
     testPort->setRequiresDriver(false);
 
     QSharedPointer<WirePort> systemPort(new WirePort);
+    systemPort->setSystemGroup("system1");
     systemPort->setPresence(General::REQUIRED);
     systemPort->setWidth("1");
     systemPort->setDirection(General::INOUT);
 
     QSharedPointer<WirePort> secondSystemPort(new WirePort);
+    secondSystemPort->setSystemGroup("system2");
     secondSystemPort->setPresence(General::OPTIONAL);
     secondSystemPort->setWidth("16");
     secondSystemPort->setDirection(General::INOUT);
+
 
     testPort->setWire(QSharedPointer<WireAbstraction>(new WireAbstraction()));
     testPort->getWire()->addSystemPort(systemPort);
@@ -378,11 +383,13 @@ void tst_AbstractionDefinition::testWriteMultipleSystemWirePorts()
                     "<ipxact:logicalName>systemPorts</ipxact:logicalName>"
                     "<ipxact:wire>"
                         "<ipxact:onSystem>"
+                            "<ipxact:group>system1</ipxact:group>"
                             "<ipxact:presence>required</ipxact:presence>"
                             "<ipxact:width>1</ipxact:width>"
                             "<ipxact:direction>inout</ipxact:direction>"
                         "</ipxact:onSystem>" 
                         "<ipxact:onSystem>"
+                            "<ipxact:group>system2</ipxact:group>"
                             "<ipxact:presence>optional</ipxact:presence>"
                             "<ipxact:width>16</ipxact:width>"
                             "<ipxact:direction>inout</ipxact:direction>"

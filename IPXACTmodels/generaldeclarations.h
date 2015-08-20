@@ -329,7 +329,8 @@ QString Initiative2Str(const General::Initiative initiative);
 enum DriverType {
 	ANY, 		// any logic signal or value
 	CLOCK, 		// repeating type waveform
-	SINGLESHOT	// non-repeating type waveform
+	SINGLESHOT,	// non-repeating type waveform
+    NO_DRIVER
 };
 
 /*! \brief Convert the value of the QString into enum DriverType
@@ -341,8 +342,7 @@ enum DriverType {
  * \param defaultValue The value that will be returned if no match is found
  * \return General::DriverType that matches the str or default value.
  */
-General::DriverType str2DriverType(QString str,
-                General::DriverType defaultValue);
+IPXACTMODELS_EXPORT General::DriverType str2DriverType(QString str, General::DriverType defaultValue);
 
 /*! \brief Convert the value of the DriverType into QString.
  *
@@ -350,7 +350,7 @@ General::DriverType str2DriverType(QString str,
  *
  * \return QString matching the driver type.
  */
-QString driverType2Str(General::DriverType type);
+IPXACTMODELS_EXPORT QString driverType2Str(General::DriverType type);
 
 /*!
  * Specifies the direction of the port

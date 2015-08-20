@@ -524,39 +524,48 @@ QString General::timeUnit2Str(General::TimeUnit& timeUnit) {
 	}
 }
 
-General::DriverType General::str2DriverType(QString str,
-                General::DriverType defaultValue) {
-
-	if (str == QString("any")) {
+General::DriverType General::str2DriverType(QString str, General::DriverType defaultValue)
+{
+	if (str == "any")
+    {
 		return General::ANY;
 	}
-	else if (str == QString("clock")) {
+	else if (str == "clock")
+    {
 		return General::CLOCK;
 	}
-	else if (str == QString("singleshot")) {
+	else if (str == "singleShot")
+    {
 		return General::SINGLESHOT;
 	}
-	else {
+    else if (str == "none")
+    {
+        return General::NO_DRIVER;
+    }
+	else
+    {
 		return defaultValue;
 	}
 }
 
-QString General::driverType2Str(General::DriverType type) {
-
-	switch (type) {
-	case General::ANY: {
-		return QString("any");
-	}
-	case General::CLOCK: {
-		return QString("clock");
-	}
-	case General::SINGLESHOT: {
-		return QString("singleshot");
-	}
-	default: {
-		return QString();
-	}
-	}
+QString General::driverType2Str(General::DriverType type)
+{
+    if (type == General::ANY)
+    {
+        return QString("any");
+    }
+    else if (type == General::CLOCK)
+    {
+        return QString("clock");
+    }
+    else if (type == General::SINGLESHOT)
+    {
+        return QString("singleShot");
+    }
+    else 
+    {
+        return QString();
+    }
 }
 
 bool General::str2Bool(const QString str, bool defaultValue) {

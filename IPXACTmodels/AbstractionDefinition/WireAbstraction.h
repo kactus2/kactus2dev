@@ -67,22 +67,6 @@ public:
 	Qualifier getQualifier() const;
 
     /*!
-     *  Sets the wire to require a driver or not.
-     *
-     *      @param [in] requiresDriver   The r.
-     *
-     *      @return <Description>.
-     */
-    void setRequiresDriver(bool requiresDriver);
-
-    /*!
-     *  Checks if the wire requires a driver.
-     *
-     *      @return True, if the wire requires a driver, otherwise false.
-     */
-    bool requiresDriver() const;
-
-    /*!
      *  Adds a system port definition for the wire.
      *
      *      @param [in] systemPort   The system wire port to add.
@@ -137,6 +121,22 @@ public:
      *      @return The slave port definition for the wire.
      */
     QSharedPointer<WirePort> getSlavePort() const;
+    
+    /*!
+     *  Sets the wire to require a driver or not.
+     *
+     *      @param [in] requiresDriver   The r.
+     *
+     *      @return <Description>.
+     */
+    void setRequiresDriver(bool requiresDriver);
+
+    /*!
+     *  Checks if the wire requires a driver.
+     *
+     *      @return True, if the wire requires a driver, otherwise false.
+     */
+    bool requiresDriver() const;
 
     /*! Sets the driver type for this wire.
 	 *	 

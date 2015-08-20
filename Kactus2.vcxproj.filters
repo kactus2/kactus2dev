@@ -1726,15 +1726,6 @@
     <ClCompile Include="editors\BusEditor\busportsview.cpp">
       <Filter>Source Files\editors\BusEditor</Filter>
     </ClCompile>
-    <ClCompile Include="editors\BusEditor\impexpgroup.cpp">
-      <Filter>Source Files\editors\BusEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\BusEditor\renamegroup.cpp">
-      <Filter>Source Files\editors\BusEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\BusEditor\signalsgroup.cpp">
-      <Filter>Source Files\editors\BusEditor</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_absdefgroup.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -1751,15 +1742,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_busportsview.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_impexpgroup.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_renamegroup.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_signalsgroup.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_AdHocInterfaceItem.cpp">
@@ -4557,15 +4539,6 @@
     <CustomBuild Include="editors\BusEditor\busportsview.h">
       <Filter>Header Files\editors\BusEditor</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\BusEditor\impexpgroup.h">
-      <Filter>Header Files\editors\BusEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\BusEditor\renamegroup.h">
-      <Filter>Header Files\editors\BusEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\BusEditor\signalsgroup.h">
-      <Filter>Header Files\editors\BusEditor</Filter>
-    </CustomBuild>
     <CustomBuild Include="designEditors\HWDesign\AdHocInterfaceItem.h">
       <Filter>Header Files\designEditors\HWDesign</Filter>
     </CustomBuild>
@@ -6133,6 +6106,9 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\busInterfaces\BusInterfaceColumns.h">
       <Filter>Header Files\editors\ComponentEditor\busInterfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\BusEditor\LogicalPortColumns.h">
+      <Filter>Header Files\editors\BusEditor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

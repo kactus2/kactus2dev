@@ -19,7 +19,8 @@
 // Function: WirePort::WirePort()
 //-----------------------------------------------------------------------------
 WirePort::WirePort(): 
-presence_(General::PRESENCE_UNKNOWN), 
+systemGroupName_(),
+    presence_(General::PRESENCE_UNKNOWN), 
     width_(),
     direction_(General::DIRECTION_INVALID),
     timingConstraint_(),
@@ -36,8 +37,9 @@ presence_(General::PRESENCE_UNKNOWN),
 // Function: WirePort::WirePort()
 //-----------------------------------------------------------------------------
 WirePort::WirePort(WirePort const& other): 
-presence_(other.presence_), 
-    width_(other.width_), 
+systemGroupName_(other.systemGroupName_),
+    presence_(other.presence_),
+    width_(other.width_),
     direction_(other.direction_),
     timingConstraint_(),
     driveConstraint_(),
@@ -85,6 +87,22 @@ presence_(other.presence_),
 WirePort::~WirePort()
 {
 
+}
+
+//-----------------------------------------------------------------------------
+// Function: WirePort::setSystemGroup()
+//-----------------------------------------------------------------------------
+void WirePort::setSystemGroup(QString const& groupName)
+{
+    systemGroupName_ = groupName;
+}
+
+//-----------------------------------------------------------------------------
+// Function: WirePort::getSystemGroup()
+//-----------------------------------------------------------------------------
+QString WirePort::getSystemGroup() const
+{
+    return systemGroupName_;
 }
 
 //-----------------------------------------------------------------------------

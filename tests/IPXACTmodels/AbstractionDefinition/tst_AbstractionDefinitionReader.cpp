@@ -277,13 +277,16 @@ void tst_AbstractionDefinitionReader::testReadMultipleSystemPorts()
                     "<ipxact:isPresent>1</ipxact:isPresent>"
                     "<ipxact:logicalName>wirePort</ipxact:logicalName>"
                     "<ipxact:wire>"
-                        "<ipxact:onSystem>"                            
+                        "<ipxact:onSystem>"
+                            "<ipxact:group>testInGroup</ipxact:group>"
                             "<ipxact:direction>in</ipxact:direction>"
                         "</ipxact:onSystem>"
-                        "<ipxact:onSystem>"                            
+                        "<ipxact:onSystem>"   
+                            "<ipxact:group>testOutGroup</ipxact:group>"
                             "<ipxact:direction>out</ipxact:direction>"
                         "</ipxact:onSystem>"
-                        "<ipxact:onSystem>"                            
+                        "<ipxact:onSystem>"       
+                            "<ipxact:group>testInOutGroup</ipxact:group>"
                             "<ipxact:direction>inout</ipxact:direction>"
                         "</ipxact:onSystem>"
                         "<ipxact:defaultValue>1</ipxact:defaultValue>"
@@ -301,8 +304,13 @@ void tst_AbstractionDefinitionReader::testReadMultipleSystemPorts()
     QCOMPARE(systemPorts->size(), 3);
 
     QCOMPARE(systemPorts->at(0)->getDirection(), General::IN);
+    QCOMPARE(systemPorts->at(0)->getSystemGroup(), QString("testInGroup"));
+
     QCOMPARE(systemPorts->at(1)->getDirection(), General::OUT);
+    QCOMPARE(systemPorts->at(1)->getSystemGroup(), QString("testOutGroup"));
+
     QCOMPARE(systemPorts->at(2)->getDirection(), General::INOUT);
+    QCOMPARE(systemPorts->at(2)->getSystemGroup(), QString("testInOutGroup"));
 }
 
 //-----------------------------------------------------------------------------
@@ -343,7 +351,7 @@ void tst_AbstractionDefinitionReader::testReadWirePortConstraints()
                                     "</ipxact:driveConstraint>"
                                 "</ipxact:modeConstraints>"
                             "</ipxact:onSlave>"
-                        "<ipxact:requiresDriver driverType=\"clock\">true</ipxact:requiresDriver>"
+                        "<ipxact:requiresDriver driverType=\"singleShot\">true</ipxact:requiresDriver>"
                     "</ipxact:wire>"
                 "</ipxact:port>"
             "</ipxact:ports>"
@@ -359,7 +367,7 @@ void tst_AbstractionDefinitionReader::testReadWirePortConstraints()
 
     QCOMPARE(port->hasWire(), true);
     QCOMPARE(port->getWire()->requiresDriver(), true);
-    QCOMPARE(port->getWire()->getDriverType(), General::CLOCK);
+    QCOMPARE(port->getWire()->getDriverType(), General::SINGLESHOT);
 
     QSharedPointer<WirePort> slave = port->getWire()->getSlavePort();
     QSharedPointer<TimingConstraint> timingConstraint = slave->getTimingConstraint();

@@ -109,7 +109,10 @@ void WireAbstractionReader::parseSystems(QDomNode const& wireNode,
 
     for (int i = 0; i < systemNodes.count(); i++)
     {
-        QSharedPointer<WirePort> system = parseWirePort(systemNodes.at(i));
+        QDomNode systemNode = systemNodes.at(i);
+
+        QSharedPointer<WirePort> system = parseWirePort(systemNode);
+        system->setSystemGroup(systemNode.firstChildElement("ipxact:group").firstChild().nodeValue());
         wire->addSystemPort(system);
     }
 }

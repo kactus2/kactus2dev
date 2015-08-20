@@ -227,15 +227,13 @@ HEADERS += ./common/Global.h \
     ./library/LibraryManager/HierarchyView/hierarchymodel.h \
     ./library/LibraryManager/HierarchyView/hierarchywidget.h \
     ./library/LibraryManager/HierarchyView/hierarchyview.h \
+    ./editors/BusEditor/LogicalPortColumns.h \
     ./editors/BusEditor/absdefgroup.h \
     ./editors/BusEditor/busdefgroup.h \
     ./editors/BusEditor/buseditor.h \
     ./editors/BusEditor/busportsdelegate.h \
     ./editors/BusEditor/busportsmodel.h \
     ./editors/BusEditor/busportsview.h \
-    ./editors/BusEditor/impexpgroup.h \
-    ./editors/BusEditor/renamegroup.h \
-    ./editors/BusEditor/signalsgroup.h \
     ./editors/ApiDefinitionEditor/ApiDefinitionEditor.h \
     ./editors/ApiDefinitionEditor/ApiFunctionEditor.h \
     ./editors/ApiDefinitionEditor/ApiFunctionModel.h \
@@ -840,9 +838,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/BusEditor/busportsdelegate.cpp \
     ./editors/BusEditor/busportsmodel.cpp \
     ./editors/BusEditor/busportsview.cpp \
-    ./editors/BusEditor/impexpgroup.cpp \
-    ./editors/BusEditor/renamegroup.cpp \
-    ./editors/BusEditor/signalsgroup.cpp \
     ./editors/ApiDefinitionEditor/ApiDefinitionEditor.cpp \
     ./editors/ApiDefinitionEditor/ApiFunctionEditor.cpp \
     ./editors/ApiDefinitionEditor/ApiFunctionModel.cpp \

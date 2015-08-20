@@ -104,6 +104,7 @@ void WireAbstractionWriter::writeSystem(QXmlStreamWriter& writer,
     foreach (QSharedPointer<WirePort> systemPort, *wire->getSystemPorts())
     {
         writer.writeStartElement("ipxact:onSystem");
+        writer.writeTextElement("ipxact:group", systemPort->getSystemGroup());
         writeWirePort(writer, systemPort);
         writer.writeEndElement();
     }

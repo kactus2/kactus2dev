@@ -46,6 +46,11 @@ public:
 	//! The destructor.
 	~WirePort();
     
+
+    void setSystemGroup(QString const& groupName);
+
+    QString getSystemGroup() const;
+
     /*!
      *  Sets the presence restriction for the port.
      *
@@ -60,7 +65,6 @@ public:
      */
     General::Presence getPresence() const;
    
-
     /*!
      *  Sets the number of bits required for the port.
      *
@@ -181,6 +185,9 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
+
+    //! System group name for system interfaces.
+    QString systemGroupName_;
 
     //! Defines if the port is required or forbidden in a bus interface.
     General::Presence presence_;

@@ -1,74 +1,68 @@
-/* 
- *  Created on: 21.6.2011
- *      Author: Antti Kamppi
- * 		filename: busportsview.h
- */
+//-----------------------------------------------------------------------------
+// File: busportsview.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 21.6.2011
+//
+// Description:
+// The view that displays the contents of the BusPortsModel.
+//-----------------------------------------------------------------------------
 
 #ifndef BUSPORTSVIEW_H
 #define BUSPORTSVIEW_H
 
 #include <common/views/EditableTableView/editabletableview.h>
 
-#include <QTableView>
-#include <QKeyEvent>
+#include <QAction>
 #include <QContextMenuEvent>
 #include <QModelIndexList>
-#include <QAction>
+#include <QTableView>
 
-/*! \brief The view that displays the contents of the BusPortsModel
- *
- */
-class BusPortsView : public EditableTableView {
+//-----------------------------------------------------------------------------
+//! The view that displays the contents of the BusPortsModel.
+//-----------------------------------------------------------------------------
+class BusPortsView : public EditableTableView
+{
 	Q_OBJECT
 
 public:
 
-	/*! \brief The constructor
+	/*! The constructor
 	 *
-	 * \param parent Pointer to the owner of this widget.
+	 *      @param parent The owner of this widget.
 	 *
 	*/
-	BusPortsView(QWidget *parent);
+	BusPortsView(QWidget* parent);
 	
-	//! \brief The destructor
+	//! The destructor
 	virtual ~BusPortsView();
 
-	/*! \brief Get list of currently selected indexes.
+	/*! Get list of currently selected indexes.
 	 *
-	 * \return QModelIndexList contains the model indexes of the selected items.
+	 *      @return The model indexes of the selected items.
 	*/
 	QModelIndexList selected() const;
 
 signals:
 
-	//! \brief 
+	//! Emitted when missing modes should be added to the selected signal.
     void addSignalOptions();
 
 protected:
 
-	//! \brief Handler for key press events
-	//virtual void keyPressEvent(QKeyEvent* event);
-
-	//! \brief Handler for context menu events
+	//! Handler for context menu events
 	virtual void contextMenuEvent(QContextMenuEvent* e);
 
-    QAction addOptionsAction_;
-
 private:
-	//! \brief No copying
+	//! No copying
 	BusPortsView(const BusPortsView& other);
 
-	//! \brief No assignment
+	//! No assignment
 	BusPortsView& operator=(const BusPortsView& other);	
 
-	//! \brief Set up the actions and connect their handlers
-	void setupActions();
-
-	//! \brief Action to remove all selected indexes.
-	//QAction removeAction_;
-
-	//! \brief Action to copy all selected indexes.
-	//QAction copyAction_;
+    //! Action for adding missing modes for a signal.
+    QAction addOptionsAction_;
 };
 
 #endif // BUSPORTSVIEW_H
