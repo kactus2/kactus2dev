@@ -16,6 +16,7 @@
 #include "PortAbstraction.h"
 #include "WireAbstraction.h"
 #include "WireAbstractionReader.h"
+#include "TransactionalAbstractionReader.h"
 
 //-----------------------------------------------------------------------------
 // Function: AbstractionDefinitionReader::AbstractionDefinitionReader()
@@ -118,6 +119,8 @@ QSharedPointer<PortAbstraction> AbstractionDefinitionReader::parsePort(QDomNode 
 
     parseWire(portNode, port);
 
+    parseTransactional(portNode, port);
+
     parseVendorExtensions(portNode, port);
 
     return port;
@@ -130,8 +133,29 @@ void AbstractionDefinitionReader::parseWire(QDomNode const& portNode, QSharedPoi
 {
     QDomNode wireNode = portNode.firstChildElement("ipxact:wire");
 
-    WireAbstractionReader wireReader;
-    QSharedPointer<WireAbstraction> wire = wireReader.createWireAbstractionFrom(wireNode);
-    
-    port->setWire(wire);
+    if (!wireNode.isNull())
+    {
+        WireAbstractionReader wireReader;
+        QSharedPointer<WireAbstraction> wire = wireReader.createWireAbstractionFrom(wireNode);
+
+        port->setWire(wire);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionDefinitionReader::parseTransactional()
+//-----------------------------------------------------------------------------
+void AbstractionDefinitionReader::parseTransactional(QDomNode const& portNode, 
+    QSharedPointer<PortAbstraction> port) const
+{
+    QDomNode transactionalNode = portNode.firstChildElement("ipxact:transactional");
+
+    if (!transactionalNode.isNull())
+    {
+        TransactionalAbstractionReader transactionalReader;
+        QSharedPointer<TransactionalAbstraction> transactional =
+            transactionalReader.createTransactionalAbstractionFrom(transactionalNode);
+
+        port->setTransactional(transactional);
+    }
 }

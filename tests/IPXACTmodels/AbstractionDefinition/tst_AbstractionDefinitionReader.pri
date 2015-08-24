@@ -35,7 +35,8 @@ HEADERS += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h \
     ../../../IPXACTmodels/AbstractionDefinition/WireAbstractionReader.h \
     ../../../IPXACTmodels/AbstractionDefinition/TransactionalAbstraction.h \
     ../../../IPXACTmodels/AbstractionDefinition/TransactionalPort.h \
-    ../../../IPXACTmodels/common/Protocol.h
+    ../../../IPXACTmodels/common/Protocol.h \
+    ../../../IPXACTmodels/AbstractionDefinition/TransactionalAbstractionReader.h
 SOURCES += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.cpp \
     ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinitionReader.cpp \
     ../../../IPXACTmodels/common/Array.cpp \
@@ -65,4 +66,5 @@ SOURCES += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.cpp
     ../../../IPXACTmodels/vlnv.cpp \
     ../../../IPXACTmodels/AbstractionDefinition/TransactionalAbstraction.cpp \
     ../../../IPXACTmodels/AbstractionDefinition/TransactionalPort.cpp \
-    ../../../IPXACTmodels/common/Protocol.cpp
+    ../../../IPXACTmodels/common/Protocol.cpp \
+    ../../../IPXACTmodels/AbstractionDefinition/TransactionalAbstractionReader.cpp

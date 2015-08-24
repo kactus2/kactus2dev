@@ -581,6 +581,15 @@
     <ClCompile Include="validators\ModelParameterValidator.cpp">
       <Filter>Source Files\validators</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_TransactionalAbstractionReader.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_TransactionalAbstractionReader.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="AbstractionDefinition\TransactionalAbstractionReader.cpp">
+      <Filter>Source Files\AbstractionDefinition</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ipxactmodels_global.h">
@@ -1006,6 +1015,9 @@
       <Filter>Header Files\designConfiguration</Filter>
     </CustomBuild>
     <CustomBuild Include="AbstractionDefinition\TransactionalAbstractionWriter.h">
+      <Filter>Header Files\AbstractionDefinition</Filter>
+    </CustomBuild>
+    <CustomBuild Include="AbstractionDefinition\TransactionalAbstractionReader.h">
       <Filter>Header Files\AbstractionDefinition</Filter>
     </CustomBuild>
   </ItemGroup>

@@ -212,6 +212,10 @@ Qualifier PortAbstraction::getQualifier() const
     {
         return wire_->getQualifier();
     }
+    else if (!transactional_.isNull())
+    {
+         return transactional_->getQualifier();
+    }
     else
     {
         return Qualifier();

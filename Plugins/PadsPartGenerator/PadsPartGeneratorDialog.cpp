@@ -627,7 +627,7 @@ void PadsPartGeneratorDialog::insertPins(QSharedPointer<BusInterface> busInterfa
     {
         if (absDef)
         {
-            showLogicalIndex = (absDef->getPortSize(portMap->logicalPort(), busInterface->getInterfaceMode()) > 1); 
+            //showLogicalIndex = (absDef->getPortSize(portMap->logicalPort(), busInterface->getInterfaceMode()) > 1); 
         }
 
         QString pin = portMap->physicalPort();

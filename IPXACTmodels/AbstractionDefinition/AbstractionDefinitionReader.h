@@ -95,6 +95,14 @@ private:
      *      @param [in/out] port        The logical port definition to insert the wire into.
      */
     void parseWire(QDomNode const& portNode, QSharedPointer<PortAbstraction> port) const;
+    
+    /*!
+     *  Reads the transactional description from XML to a logical port definition.
+     *
+     *      @param [in]     portNode    The XML description of the logical port.
+     *      @param [in/out] port        The logical port definition to insert the transactional into.
+     */
+    void parseTransactional(QDomNode const& portNode, QSharedPointer<PortAbstraction> port) const;
 };
 
 #endif // ABSTRACTIONDEFINITIONREADER_H
