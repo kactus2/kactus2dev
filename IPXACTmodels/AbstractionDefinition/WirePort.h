@@ -46,9 +46,18 @@ public:
 	//! The destructor.
 	~WirePort();
     
-
+    /*!
+     *  Sets the group name for system mode.
+     *
+     *      @param [in] groupName   The system group to set.
+     */
     void setSystemGroup(QString const& groupName);
-
+    
+    /*!
+     *  Gets the group name for system mode.
+     *
+     *      @return The system group the wire belongs to.
+     */
     QString getSystemGroup() const;
 
     /*!

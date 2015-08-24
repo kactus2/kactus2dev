@@ -17,7 +17,7 @@
 
 #include <IPXACTmodels/kactusExtensions/ComponentInstantiation.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Value.h>
-#include <IPXACTmodels/validators/ParameterValidator.h>
+
 
 #include <QDomNode>
 #include <QObject>
@@ -331,15 +331,15 @@ bool View::isValid( const QStringList& fileSetNames,
 			}
 		}
 
-        ParameterValidator validator;
-        foreach (QSharedPointer<Parameter> param, *parameters_)
-        {
-            errorList.append(validator.findErrorsIn(param.data(), thisIdentifier, componentChoices));
-            if (!validator.validate(param.data(), componentChoices)) 
-            {
-                valid = false;
-            }
-		}
+//         ParameterValidator validator;
+//         foreach (QSharedPointer<Parameter> param, *parameters_)
+//         {
+//             errorList.append(validator.findErrorsIn(param.data(), thisIdentifier, componentChoices));
+//             if (!validator.validate(param.data(), componentChoices)) 
+//             {
+//                 valid = false;
+//             }
+// 		}
 	}
 	
 	return valid;
@@ -374,14 +374,14 @@ bool View::isValid( const QStringList& fileSetNames,
 			}
 		}
 
-        ParameterValidator validator;
-        foreach (QSharedPointer<Parameter> param, *parameters_)
-        {
-            if (!validator.validate(param.data(), componentChoices)) 
-            {
-                return false;
-            }
-        }
+//         ParameterValidator validator;
+//         foreach (QSharedPointer<Parameter> param, *parameters_)
+//         {
+//             if (!validator.validate(param.data(), componentChoices)) 
+//             {
+//                 return false;
+//             }
+//         }
 	}
 
 	return true;

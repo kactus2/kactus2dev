@@ -17,7 +17,7 @@
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
 #include <IPXACTmodels/businterface.h>
-#include <IPXACTmodels/abstractiondefinition.h>
+#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/PortRef.h>
 #include <IPXACTmodels/PortMap.h>
 

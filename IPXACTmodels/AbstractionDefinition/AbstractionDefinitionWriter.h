@@ -94,7 +94,14 @@ private:
      *      @param [in] logicalPort     The port whose wire definition to write.
      */
     void writeWire(QXmlStreamWriter& writer, QSharedPointer<PortAbstraction> logicalPort) const;
-
+        
+    /*!
+     *  Writes the transactional definition in a port definitions into XML.
+     *
+     *      @param [in] writer          The XML writer to use.
+     *      @param [in] logicalPort     The port whose transactional definition to write.
+     */
+    void writeTransactional(QXmlStreamWriter& writer, QSharedPointer<PortAbstraction> logicalPort) const;
 };    
 
 #endif // ABSTRACTIONDEFINITIONWRITER_H

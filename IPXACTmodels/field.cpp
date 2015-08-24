@@ -12,7 +12,6 @@
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/common/ParameterReader.h>
 #include <IPXACTmodels/common/ParameterWriter.h>
-#include <IPXACTmodels/validators/ParameterValidator.h>
 
 #include <QString>
 #include <QXmlStreamWriter>
@@ -390,16 +389,16 @@ bool Field::isValid(unsigned int registerSize, QSharedPointer<QList<QSharedPoint
 		}
 	}
 
-    ParameterValidator validator;
-    foreach (QSharedPointer<Parameter> param, parameters_)
-    {
-        errorList.append(validator.findErrorsIn(param.data(), QObject::tr("field %1").arg(name()),
-            componentChoices));
-        if (!validator.validate(param.data(), componentChoices)) 
-        {
-            valid = false;
-        }
-    }
+//     ParameterValidator validator;
+//     foreach (QSharedPointer<Parameter> param, parameters_)
+//     {
+//         errorList.append(validator.findErrorsIn(param.data(), QObject::tr("field %1").arg(name()),
+//             componentChoices));
+//         if (!validator.validate(param.data(), componentChoices)) 
+//         {
+//             valid = false;
+//         }
+//     }
 
 	return valid;
 }
@@ -433,14 +432,14 @@ bool Field::isValid(unsigned int registerSize,
         }
     }
 
-    ParameterValidator validator;
-    foreach (QSharedPointer<Parameter> param, parameters_)
-    {
-        if (!validator.validate(param.data(), componentChoices)) 
-        {
-            return false;
-        }
-    }
+//     ParameterValidator validator;
+//     foreach (QSharedPointer<Parameter> param, parameters_)
+//     {
+//         if (!validator.validate(param.data(), componentChoices)) 
+//         {
+//             return false;
+//         }
+//     }
 
     return true;
 }

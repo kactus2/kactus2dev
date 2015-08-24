@@ -10,6 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include "PortAbstraction.h"
+#include "TransactionalAbstraction.h"
 #include "WireAbstraction.h"
 #include "WirePort.h"
 
@@ -26,7 +27,7 @@ PortAbstraction::PortAbstraction():
 NameGroup(),
     Extendable(),
     isPresent_(),
-    //transactional_()//, 
+    transactional_(), 
     wire_()
 {
 
@@ -39,7 +40,7 @@ PortAbstraction::PortAbstraction(PortAbstraction const& other):
 NameGroup(other),
     Extendable(other),
     isPresent_(),
-    //transactional_(),
+    transactional_(),
     wire_()
 {
 
@@ -47,11 +48,12 @@ NameGroup(other),
     {
  		wire_ = QSharedPointer<WireAbstraction>(new WireAbstraction(*other.wire_.data()));
  	}
-	
-	//if (other.transactional_) {
-		//transactional_ = QSharedPointer<TransactionalAbstraction>(
-		//	new TransactionalAbstraction(*other.transactional_.data()));
-	//}
+
+    if (other.transactional_)
+    {
+        transactional_ = QSharedPointer<TransactionalAbstraction>(
+            new TransactionalAbstraction(*other.transactional_.data()));
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -82,12 +84,15 @@ PortAbstraction& PortAbstraction::operator=(PortAbstraction const& other)
 			wire_ = QSharedPointer<WireAbstraction>();
         }
 
-		//if (other.transactional_) {
-			//transactional_ = QSharedPointer<TransactionalAbstraction>(
-             //   new TransactionalAbstraction(*other.transactional_.data()));
-		//}
-		//else
-			//transactional_ = QSharedPointer<TransactionalAbstraction>();
+		if (other.transactional_)
+        {
+			transactional_ = QSharedPointer<TransactionalAbstraction>(
+                new TransactionalAbstraction(*other.transactional_.data()));
+		}
+		else
+        {
+			transactional_ = QSharedPointer<TransactionalAbstraction>();
+        }
 	}
 	return *this;
 }
@@ -148,12 +153,29 @@ QSharedPointer<WireAbstraction> PortAbstraction::getWire() const
     return wire_;
 }
 
-/*
-TransactionalAbstraction *PortAbstraction::getTransactional() const
+//-----------------------------------------------------------------------------
+// Function: PortAbstraction::hasTransactional()
+//-----------------------------------------------------------------------------
+bool PortAbstraction::hasTransactional() const
 {
-	return transactional_.data();
+    return !transactional_.isNull();
 }
-*/
+
+//-----------------------------------------------------------------------------
+// Function: PortAbstraction::setTransactional()
+//-----------------------------------------------------------------------------
+void PortAbstraction::setTransactional(QSharedPointer<TransactionalAbstraction> transactional)
+{
+    transactional_ = transactional;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortAbstraction::getTransactional()
+//-----------------------------------------------------------------------------
+QSharedPointer<TransactionalAbstraction> PortAbstraction::getTransactional() const
+{
+    return transactional_;
+}
 
 //-----------------------------------------------------------------------------
 // Function: PortAbstraction::getDefaultValue()
@@ -179,19 +201,6 @@ void PortAbstraction::setDefaultValue(QString const& defaultValue)
     }
 
     wire_->setDefaultValue(defaultValue);
-}
-
-//-----------------------------------------------------------------------------
-// Function: PortAbstraction::setQualifier()
-//-----------------------------------------------------------------------------
-void PortAbstraction::setQualifier(Qualifier::Type qualifierType)
-{
-    if (wire_.isNull())
-    {
-        wire_ = QSharedPointer<WireAbstraction>(new WireAbstraction());
-    }
-
-    wire_->setQualifier(qualifierType);
 }
 
 //-----------------------------------------------------------------------------

@@ -8,55 +8,61 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 
 HEADERS += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h \
-    ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinitionReader.h \
     ../../../IPXACTmodels/common/Array.h \
     ../../../IPXACTmodels/common/Assertion.h \
     ../../../IPXACTmodels/common/BooleanValue.h \
+    ../../../IPXACTmodels/common/CellSpecification.h \
     ../../../IPXACTmodels/common/Document.h \
+    ../../../IPXACTmodels/common/Extendable.h \
     ../../../IPXACTmodels/GenericVendorExtension.h \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Value.h \
     ../../../IPXACTmodels/kactusExtensions/KactusAttribute.h \
     ../../../IPXACTmodels/common/NameGroup.h \
     ../../../IPXACTmodels/common/Parameter.h \
+    ../../../IPXACTmodels/AbstractionDefinition/PortAbstraction.h \
+    ../../../IPXACTmodels/common/Qualifier.h \
     ../../../IPXACTmodels/common/Range.h \
+    ../../../IPXACTmodels/AbstractionDefinition/TimingConstraint.h \
     ../../../IPXACTmodels/common/Vector.h \
-    ../../../IPXACTmodels/vlnv.h \
-    ../../../IPXACTmodels/common/Extendable.h \
     ../../../IPXACTmodels/AbstractionDefinition/WireAbstraction.h \
     ../../../IPXACTmodels/AbstractionDefinition/WirePort.h \
-    ../../../IPXACTmodels/AbstractionDefinition/TimingConstraint.h \
-    ../../../IPXACTmodels/common/CellSpecification.h \
-    ../../../IPXACTmodels/common/Qualifier.h \
-    ../../../IPXACTmodels/AbstractionDefinition/PortAbstraction.h \
-    ../../../IPXACTmodels/generaldeclarations.h \
     ../../../IPXACTmodels/XmlUtils.h \
+    ../../../IPXACTmodels/generaldeclarations.h \
+    ../../../IPXACTmodels/vlnv.h \
+    ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinitionReader.h \
     ../../../IPXACTmodels/common/DocumentReader.h \
     ../../../IPXACTmodels/common/ParameterReader.h \
-    ../../../IPXACTmodels/AbstractionDefinition/WireAbstractionReader.h
+    ../../../IPXACTmodels/AbstractionDefinition/WireAbstractionReader.h \
+    ../../../IPXACTmodels/AbstractionDefinition/TransactionalAbstraction.h \
+    ../../../IPXACTmodels/AbstractionDefinition/TransactionalPort.h \
+    ../../../IPXACTmodels/common/Protocol.h
 SOURCES += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.cpp \
     ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinitionReader.cpp \
     ../../../IPXACTmodels/common/Array.cpp \
     ../../../IPXACTmodels/common/Assertion.cpp \
     ../../../IPXACTmodels/common/BooleanValue.cpp \
+    ../../../IPXACTmodels/common/CellSpecification.cpp \
     ../../../IPXACTmodels/common/Document.cpp \
+    ../../../IPXACTmodels/common/DocumentReader.cpp \
+    ../../../IPXACTmodels/common/Extendable.cpp \
     ../../../IPXACTmodels/GenericVendorExtension.cpp \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Value.cpp \
     ../../../IPXACTmodels/kactusExtensions/KactusAttribute.cpp \
     ../../../IPXACTmodels/common/NameGroup.cpp \
     ../../../IPXACTmodels/common/Parameter.cpp \
+    ../../../IPXACTmodels/common/ParameterReader.cpp \
+    ../../../IPXACTmodels/AbstractionDefinition/PortAbstraction.cpp \
+    ../../../IPXACTmodels/common/Qualifier.cpp \
     ../../../IPXACTmodels/common/Range.cpp \
+    ../../../IPXACTmodels/AbstractionDefinition/TimingConstraint.cpp \
     ../../../IPXACTmodels/common/Vector.cpp \
+    ../../../IPXACTmodels/AbstractionDefinition/WireAbstraction.cpp \
+    ../../../IPXACTmodels/AbstractionDefinition/WireAbstractionReader.cpp \
+    ../../../IPXACTmodels/AbstractionDefinition/WirePort.cpp \
+    ../../../IPXACTmodels/XmlUtils.cpp \
+    ../../../IPXACTmodels/generaldeclarations.cpp \
     ./tst_AbstractionDefinitionReader.cpp \
     ../../../IPXACTmodels/vlnv.cpp \
-    ../../../IPXACTmodels/common/Extendable.cpp \
-    ../../../IPXACTmodels/AbstractionDefinition/WireAbstraction.cpp \
-    ../../../IPXACTmodels/AbstractionDefinition/WirePort.cpp \
-    ../../../IPXACTmodels/AbstractionDefinition/TimingConstraint.cpp \
-    ../../../IPXACTmodels/common/CellSpecification.cpp \
-    ../../../IPXACTmodels/common/Qualifier.cpp \
-    ../../../IPXACTmodels/AbstractionDefinition/PortAbstraction.cpp \
-    ../../../IPXACTmodels/generaldeclarations.cpp \
-    ../../../IPXACTmodels/XmlUtils.cpp \
-    ../../../IPXACTmodels/common/DocumentReader.cpp \
-    ../../../IPXACTmodels/common/ParameterReader.cpp \
-    ../../../IPXACTmodels/AbstractionDefinition/WireAbstractionReader.cpp
+    ../../../IPXACTmodels/AbstractionDefinition/TransactionalAbstraction.cpp \
+    ../../../IPXACTmodels/AbstractionDefinition/TransactionalPort.cpp \
+    ../../../IPXACTmodels/common/Protocol.cpp

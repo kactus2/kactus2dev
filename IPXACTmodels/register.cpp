@@ -12,7 +12,6 @@
 #include "GenericVendorExtension.h"
 
 #include <common/utils.h>
-#include <IPXACTmodels/validators/ParameterValidator.h>
 
 #include <QDomNode>
 #include <QXmlStreamWriter>
@@ -245,16 +244,16 @@ bool Register::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > component
 		}
 	}
 
-    ParameterValidator validator;
-    foreach (QSharedPointer<Parameter> param, parameters_)
-    {
-        errorList.append(validator.findErrorsIn(param.data(), thisIdentifier, componentChoices));
-
-        if (!validator.validate(param.data(), componentChoices)) 
-        {
-            valid = false;
-        }
-	}
+//     ParameterValidator validator;
+//     foreach (QSharedPointer<Parameter> param, parameters_)
+//     {
+//         errorList.append(validator.findErrorsIn(param.data(), thisIdentifier, componentChoices));
+// 
+//         if (!validator.validate(param.data(), componentChoices)) 
+//         {
+//             valid = false;
+//         }
+// 	}
 
 	return valid;
 }
@@ -287,14 +286,14 @@ bool Register::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > component
 		}
 	}
 
-    ParameterValidator validator;
-    foreach (QSharedPointer<Parameter> param, parameters_)
-    {
-        if (!validator.validate(param.data(), componentChoices)) 
-        {
-            return false;
-        }
-    }
+//     ParameterValidator validator;
+//     foreach (QSharedPointer<Parameter> param, parameters_)
+//     {
+//         if (!validator.validate(param.data(), componentChoices)) 
+//         {
+//             return false;
+//         }
+//     }
 
 	return true;
 }

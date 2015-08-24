@@ -11,6 +11,7 @@
 #include <designEditors/common/DesignDiagram.h>
 #include <designEditors/HWDesign/HWChangeCommands.h>
 #include <editors/ComponentEditor/common/ValueFormatter.h>
+#include <editors/ComponentEditor/common/ExpressionParser.h>
 
 #include <IPXACTmodels/Enumeration.h>
 

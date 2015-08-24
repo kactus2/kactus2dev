@@ -10,7 +10,6 @@
 #include <IPXACTmodels/common/ParameterWriter.h>
 #include "GenericVendorExtension.h"
 
-#include <IPXACTmodels/validators/ParameterValidator.h>
 #include <IPXACTmodels/common/ParameterReader.h>
 
 #include <QDomNode>
@@ -197,15 +196,15 @@ bool Cpu::isValid(const QStringList& addrSpaceNames,
 		}
 	}
 
-    ParameterValidator validator;
-    foreach (QSharedPointer<Parameter> param, parameters_)
-    {
-        errorList.append(validator.findErrorsIn(param.data(), thisIdentifier, componentChoices));
-        if (!validator.validate(param.data(), componentChoices)) 
-        {
-            valid = false;
-        }
-	}
+//     ParameterValidator validator;
+//     foreach (QSharedPointer<Parameter> param, parameters_)
+//     {
+//         errorList.append(validator.findErrorsIn(param.data(), thisIdentifier, componentChoices));
+//         if (!validator.validate(param.data(), componentChoices)) 
+//         {
+//             valid = false;
+//         }
+// 	}
 
 	return valid;
 }
@@ -230,14 +229,14 @@ bool Cpu::isValid(const QStringList& addrSpaceNames,
 		}
 	}
 
-    ParameterValidator validator;
-    foreach (QSharedPointer<Parameter> param, parameters_)
-    {
-        if (!validator.validate(param.data(), componentChoices)) 
-        {
-            return false;
-        }
-    }
+//     ParameterValidator validator;
+//     foreach (QSharedPointer<Parameter> param, parameters_)
+//     {
+//         if (!validator.validate(param.data(), componentChoices)) 
+//         {
+//             return false;
+//         }
+//     }
 
 	return true;
 }

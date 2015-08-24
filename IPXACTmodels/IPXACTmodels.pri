@@ -7,7 +7,9 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../resource.h \
+HEADERS += ./validators/ModelParameterValidator.h \
+    ./validators/ParameterValidator2014.h \
+    ../resource.h \
     ./AbstractMemoryMap.h \
     ./addressblock.h \
     ./addressspace.h \
@@ -80,7 +82,6 @@ HEADERS += ../resource.h \
     ./segment.h \
     ./servicetypedef.h \
     ./slaveinterface.h \
-    ./StringPromtAtt.h \
     ./subspacemap.h \
     ./swbuildcommand.h \
     ./SWInstance.h \
@@ -103,10 +104,6 @@ HEADERS += ../resource.h \
     ./kactusExtensions/Kactus2Vector.h \
     ./kactusExtensions/KactusAttribute.h \
     ./kactusExtensions/ModuleParameter.h \
-    ./validators/IPXactValueParser.h \
-    ./validators/ModelParameterValidator.h \
-    ./validators/ParameterValidator.h \
-    ./validators/ParameterValidator2014.h \
     ./validators/BinaryValidator.h \
     ./validators/namevalidator.h \
     ./validators/NMTokenValidator.h \
@@ -145,7 +142,11 @@ HEADERS += ../resource.h \
     ./designConfiguration/MultipleAbstractorInstances.h \
     ./designConfiguration/ViewConfiguration.h \
     ./designConfiguration/DesignConfigurationReader.h \
-    ./designConfiguration/DesignConfigurationWriter.h
+    ./designConfiguration/DesignConfigurationWriter.h \
+    ./AbstractionDefinition/TransactionalAbstraction.h \
+    ./AbstractionDefinition/TransactionalAbstractionWriter.h \
+    ./AbstractionDefinition/TransactionalPort.h \
+    ./common/Protocol.h
 SOURCES += ./AbstractMemoryMap.cpp \
     ./addressblock.cpp \
     ./addressspace.cpp \
@@ -237,12 +238,9 @@ SOURCES += ./AbstractMemoryMap.cpp \
     ./kactusExtensions/KactusAttribute.cpp \
     ./kactusExtensions/ModuleParameter.cpp \
     ./validators/BinaryValidator.cpp \
-    ./validators/IPXactValueParser.cpp \
-    ./validators/ModelParameterValidator.cpp \
+    ./AbstractionDefinition/TransactionalAbstraction.cpp \
     ./validators/namevalidator.cpp \
     ./validators/NMTokenValidator.cpp \
-    ./validators/ParameterValidator.cpp \
-    ./validators/ParameterValidator2014.cpp \
     ./common/Array.cpp \
     ./common/Assertion.cpp \
     ./common/BooleanValue.cpp \
@@ -280,4 +278,9 @@ SOURCES += ./AbstractMemoryMap.cpp \
     ./designConfiguration/InterconnectionConfiguration.cpp \
     ./designConfiguration/InterfaceRef.cpp \
     ./designConfiguration/MultipleAbstractorInstances.cpp \
-    ./designConfiguration/ViewConfiguration.cpp
+    ./designConfiguration/ViewConfiguration.cpp \
+    ./AbstractionDefinition/TransactionalPort.cpp \
+    ./AbstractionDefinition/TransactionalAbstractionWriter.cpp \
+    ./validators/ParameterValidator2014.cpp \
+    ./validators/ModelParameterValidator.cpp \
+    ./common/Protocol.cpp

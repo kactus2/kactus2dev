@@ -14,7 +14,7 @@
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
-#include <IPXACTmodels/validators/ParameterValidator.h>
+#include <IPXACTmodels/validators/ParameterValidator2014.h>
 
 #include <QString>
 
@@ -23,7 +23,7 @@ class ModelParameter;
 //-----------------------------------------------------------------------------
 //! Validator for the IP-XACT Model Parameter element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT ModelParameterValidator : public ParameterValidator
+class IPXACTMODELS_EXPORT ModelParameterValidator : public ParameterValidator2014
 {
 public:
 

@@ -13,6 +13,8 @@
 
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>
+#include <IPXACTmodels/AbstractionDefinition/TransactionalAbstraction.h>
+#include <IPXACTmodels/AbstractionDefinition/TransactionalAbstractionWriter.h>
 #include <IPXACTmodels/AbstractionDefinition/WireAbstractionWriter.h>
 
 //-----------------------------------------------------------------------------
@@ -134,6 +136,8 @@ void AbstractionDefinitionWriter::writePort(QXmlStreamWriter& writer,
 
     writeWire(writer, logicalPort);
 
+    writeTransactional(writer, logicalPort);
+
     writeVendorExtensions(writer, logicalPort);
 
     writer.writeEndElement();
@@ -149,5 +153,17 @@ void AbstractionDefinitionWriter::writeWire(QXmlStreamWriter& writer,
     {
         WireAbstractionWriter wireWriter;
         wireWriter.writeWire(writer, logicalPort->getWire());
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionDefinitionWriter::writeTransactional()
+//-----------------------------------------------------------------------------
+void AbstractionDefinitionWriter::writeTransactional(QXmlStreamWriter& writer, QSharedPointer<PortAbstraction> logicalPort) const
+{
+    if (logicalPort->hasTransactional())
+    {
+        TransactionalAbstractionWriter transactionalWriter;
+        transactionalWriter.writeTransactional(writer, logicalPort->getTransactional());
     }
 }

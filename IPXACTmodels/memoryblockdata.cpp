@@ -9,8 +9,6 @@
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/common/ParameterWriter.h>
 
-#include <IPXACTmodels/validators/ParameterValidator.h>
-
 #include <QSharedPointer>
 #include <QList>
 #include <QXmlStreamWriter>
@@ -105,15 +103,15 @@ bool MemoryBlockData::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > co
 
 	bool valid = true;
 
-    ParameterValidator validator;
-    foreach (QSharedPointer<Parameter> param, parameters_)
-    {
-        errorList.append(validator.findErrorsIn(param.data(), parentIdentifier, componentChoices));
-        if (!validator.validate(param.data(), componentChoices)) 
-        {
-            valid = false;
-        }
-    }
+//     ParameterValidator validator;
+//     foreach (QSharedPointer<Parameter> param, parameters_)
+//     {
+//         errorList.append(validator.findErrorsIn(param.data(), parentIdentifier, componentChoices));
+//         if (!validator.validate(param.data(), componentChoices)) 
+//         {
+//             valid = false;
+//         }
+//     }
 
 	return valid;
 }
@@ -121,14 +119,14 @@ bool MemoryBlockData::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > co
 bool MemoryBlockData::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const
 {
 
-    ParameterValidator validator;
-    foreach (QSharedPointer<Parameter> param, parameters_)
-    {
-        if (!validator.validate(param.data(), componentChoices)) 
-        {
-            return false;
-        }
-    }
+//     ParameterValidator validator;
+//     foreach (QSharedPointer<Parameter> param, parameters_)
+//     {
+//         if (!validator.validate(param.data(), componentChoices)) 
+//         {
+//             return false;
+//         }
+//     }
 
 	return true;
 }

@@ -402,7 +402,7 @@ void BusPortsModel::save()
             // set the logical name
             portAbs->setName(portOnRow.name_);
 
-            portAbs->setQualifier(portOnRow.qualifier_);
+            portAbs->getWire()->setQualifier(portOnRow.qualifier_);
 
             // set the default value element
             if (!portOnRow.defaultValue_.isEmpty()) 

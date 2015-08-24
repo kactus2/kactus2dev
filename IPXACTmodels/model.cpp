@@ -10,8 +10,6 @@
 #include "modelparameter.h"
 #include "vlnv.h"
 
-#include <IPXACTmodels/validators/ModelParameterValidator.h>
-
 #include <QDomNode>
 #include <QString>
 #include <QList>
@@ -228,7 +226,7 @@ bool Model::isValid( const QStringList& fileSetNames,
 		}
 	}
 
-    ModelParameterValidator validator;
+    //ModelParameterValidator validator;
 	QStringList modelParamNames;
 	foreach (QSharedPointer<ModelParameter> modelParam, *modelParameters_) 
     {
@@ -242,11 +240,11 @@ bool Model::isValid( const QStringList& fileSetNames,
 			modelParamNames.append(modelParam->name());
 		}
 
-        errorList.append(validator.findErrorsIn(modelParam.data(), parentIdentifier, componentChoices));
-        if (!validator.validate(modelParam.data(), componentChoices))
-        {
-            valid = false;
-        }
+//         errorList.append(validator.findErrorsIn(modelParam.data(), parentIdentifier, componentChoices));
+//         if (!validator.validate(modelParam.data(), componentChoices))
+//         {
+//             valid = false;
+//         }
 	}
 
 	return valid;
@@ -289,7 +287,7 @@ bool Model::isValid(const QStringList& fileSetNames,
 		}
 	}
 
-    ModelParameterValidator validator;
+    //ModelParameterValidator validator;
 	QStringList modelParamNames;
 	foreach (QSharedPointer<ModelParameter> modelParam, *modelParameters_)
     {
@@ -302,10 +300,10 @@ bool Model::isValid(const QStringList& fileSetNames,
 			modelParamNames.append(modelParam->name());
 		}
 
-		if (!validator.validate(modelParam.data(), componentChoices))
-        {
-			return false;
-		}
+// 		if (!validator.validate(modelParam.data(), componentChoices))
+//         {
+// 			return false;
+// 		}
 	}
 
 	return true;

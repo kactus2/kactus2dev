@@ -13,7 +13,6 @@
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/common/ParameterReader.h>
 #include <IPXACTmodels/common/ParameterWriter.h>
-#include <IPXACTmodels/validators/ParameterValidator.h>
 
 #include <QList>
 #include <QSharedPointer>
@@ -179,15 +178,15 @@ bool SubspaceMap::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > compon
 		valid = false;
 	}
 
-    ParameterValidator validator;
-    foreach (QSharedPointer<Parameter> param, parameters_)
-    {
-        errorList.append(validator.findErrorsIn(param.data(), parentIdentifier, componentChoices));
-        if (!validator.validate(param.data(), componentChoices)) 
-        {
-            valid = false;
-        }
-	}
+//     ParameterValidator validator;
+//     foreach (QSharedPointer<Parameter> param, parameters_)
+//     {
+//         errorList.append(validator.findErrorsIn(param.data(), parentIdentifier, componentChoices));
+//         if (!validator.validate(param.data(), componentChoices)) 
+//         {
+//             valid = false;
+//         }
+// 	}
 
 	return valid;
 }
@@ -212,14 +211,14 @@ bool SubspaceMap::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > compon
 		return false;
 	}
 
-    ParameterValidator validator;
-    foreach (QSharedPointer<Parameter> param, parameters_)
-    {
-        if (!validator.validate(param.data(), componentChoices)) 
-        {
-            return false;
-        }
-    }
+//     ParameterValidator validator;
+//     foreach (QSharedPointer<Parameter> param, parameters_)
+//     {
+//         if (!validator.validate(param.data(), componentChoices)) 
+//         {
+//             return false;
+//         }
+//     }
 
 	return true;
 }

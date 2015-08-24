@@ -31,7 +31,6 @@
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/common/ParameterReader.h>
 #include <IPXACTmodels/common/ParameterWriter.h>
-#include <IPXACTmodels/validators/ParameterValidator.h>
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -1380,27 +1379,27 @@ bool Component::isValid( QStringList& errorList ) const
 		}
 	}
 
-    ParameterValidator validator;
+    //ParameterValidator validator;
     QStringList paramNames;
-	foreach (QSharedPointer<Parameter> param, *parameters_)
+    foreach (QSharedPointer<Parameter> param, *parameters_)
     {
-		if (paramNames.contains(param->name())) 
+        if (paramNames.contains(param->name())) 
         {
-			errorList.append(QObject::tr("%1 contains several parameters with name %2").arg(thisIdentifier, 
+            errorList.append(QObject::tr("%1 contains several parameters with name %2").arg(thisIdentifier, 
                 param->name()));
-			valid = false;
-		}
-		else 
-        {
-			paramNames.append(param->name());
-		}
-
-        errorList.append(validator.findErrorsIn(param.data(), thisIdentifier, choices_));
-        if (!validateParameter(param))
-        {
             valid = false;
         }
-	}
+        else 
+        {
+            paramNames.append(param->name());
+        }
+
+//         errorList.append(validator.findErrorsIn(param.data(), thisIdentifier, choices_));
+//         if (!validateParameter(param))
+//         {
+//             valid = false;
+//         }
+    }
 
 	return valid;
 }
@@ -4007,6 +4006,6 @@ bool Component::validateParameters(QSharedPointer<QList<QSharedPointer<Parameter
 //-----------------------------------------------------------------------------
 bool Component::validateParameter(QSharedPointer<Parameter> param) const
 {
-    ParameterValidator validator;
-    return validator.validate(param.data(), choices_);
+    //ParameterValidator validator;
+    return true; //validator.validate(param.data(), choices_);
 }

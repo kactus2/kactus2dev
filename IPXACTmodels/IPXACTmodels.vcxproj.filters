@@ -320,9 +320,6 @@
     <ClCompile Include="ApiConnection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="validators\ModelParameterValidator.cpp">
-      <Filter>Source Files\validators</Filter>
-    </ClCompile>
     <ClCompile Include="validators\namevalidator.cpp">
       <Filter>Source Files\validators</Filter>
     </ClCompile>
@@ -340,12 +337,6 @@
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_NMTokenValidator.cpp">
       <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="validators\IPXactValueParser.cpp">
-      <Filter>Source Files\validators</Filter>
-    </ClCompile>
-    <ClCompile Include="validators\ParameterValidator2014.cpp">
-      <Filter>Source Files\validators</Filter>
     </ClCompile>
     <ClCompile Include="kactusExtensions\ComponentInstantiation.cpp">
       <Filter>Source Files\kactusExtensions</Filter>
@@ -388,9 +379,6 @@
     </ClCompile>
     <ClCompile Include="common\NameGroup.cpp">
       <Filter>Source Files\common</Filter>
-    </ClCompile>
-    <ClCompile Include="validators\ParameterValidator.cpp">
-      <Filter>Source Files\validators</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_ParameterReader.cpp">
       <Filter>Generated Files\Debug</Filter>
@@ -568,6 +556,30 @@
     </ClCompile>
     <ClCompile Include="common\ConfigurableElementValue.cpp">
       <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="AbstractionDefinition\TransactionalAbstraction.cpp">
+      <Filter>Source Files\AbstractionDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="AbstractionDefinition\TransactionalPort.cpp">
+      <Filter>Source Files\AbstractionDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="AbstractionDefinition\TransactionalAbstractionWriter.cpp">
+      <Filter>Source Files\AbstractionDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_TransactionalAbstractionWriter.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_TransactionalAbstractionWriter.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="common\Protocol.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="validators\ParameterValidator2014.cpp">
+      <Filter>Source Files\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="validators\ModelParameterValidator.cpp">
+      <Filter>Source Files\validators</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -829,18 +841,6 @@
     <ClInclude Include="ApiConnection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="StringPromtAtt.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="validators\ModelParameterValidator.h">
-      <Filter>Header Files\validators</Filter>
-    </ClInclude>
-    <ClInclude Include="validators\IPXactValueParser.h">
-      <Filter>Header Files\validators</Filter>
-    </ClInclude>
-    <ClInclude Include="validators\ParameterValidator2014.h">
-      <Filter>Header Files\validators</Filter>
-    </ClInclude>
     <ClInclude Include="kactusExtensions\ComponentInstantiation.h">
       <Filter>Header Files\kactusExtensions</Filter>
     </ClInclude>
@@ -873,9 +873,6 @@
     </ClInclude>
     <ClInclude Include="common\NameGroup.h">
       <Filter>Header Files\common</Filter>
-    </ClInclude>
-    <ClInclude Include="validators\ParameterValidator.h">
-      <Filter>Header Files\validators</Filter>
     </ClInclude>
     <ClInclude Include="BusDefinition\BusDefinition.h">
       <Filter>Header Files\BusDefinition</Filter>
@@ -946,6 +943,21 @@
     <ClInclude Include="wire.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="AbstractionDefinition\TransactionalAbstraction.h">
+      <Filter>Header Files\AbstractionDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="AbstractionDefinition\TransactionalPort.h">
+      <Filter>Header Files\AbstractionDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="common\Protocol.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="validators\ParameterValidator2014.h">
+      <Filter>Header Files\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="validators\ModelParameterValidator.h">
+      <Filter>Header Files\validators</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="validators\namevalidator.h">
@@ -992,6 +1004,9 @@
     </CustomBuild>
     <CustomBuild Include="designConfiguration\DesignConfigurationWriter.h">
       <Filter>Header Files\designConfiguration</Filter>
+    </CustomBuild>
+    <CustomBuild Include="AbstractionDefinition\TransactionalAbstractionWriter.h">
+      <Filter>Header Files\AbstractionDefinition</Filter>
     </CustomBuild>
   </ItemGroup>
 </Project>

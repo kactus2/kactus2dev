@@ -16,7 +16,8 @@
 //-----------------------------------------------------------------------------
 // Function: ModelParameterValidator::ModelParameterValidator()
 //-----------------------------------------------------------------------------
-ModelParameterValidator::ModelParameterValidator()
+ModelParameterValidator::ModelParameterValidator() : 
+ParameterValidator2014(QSharedPointer<ExpressionParser>(), QSharedPointer<ParameterFinder>())
 {
 
 }
@@ -35,7 +36,7 @@ ModelParameterValidator::~ModelParameterValidator()
 bool ModelParameterValidator::validate(ModelParameter const* modelParameter,
     QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices) const
 {
-    return ParameterValidator::validate(modelParameter, availableChoices) && hasValidUsageType(modelParameter);
+    return ParameterValidator2014::validate(modelParameter, availableChoices) && hasValidUsageType(modelParameter);
 }
 
 //-----------------------------------------------------------------------------
@@ -54,7 +55,7 @@ bool ModelParameterValidator::hasValidUsageType(ModelParameter const* modelParam
 QStringList ModelParameterValidator::findErrorsIn(ModelParameter const* modelParameter, 
     QString const& context, QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices) const
 {
-    QStringList errors = ParameterValidator::findErrorsIn(modelParameter, context, availableChoices);
+    QStringList errors = ParameterValidator2014::findErrorsIn(modelParameter, context, availableChoices);
 
     errors.append(findErrorsInUsageType(modelParameter, context));
 

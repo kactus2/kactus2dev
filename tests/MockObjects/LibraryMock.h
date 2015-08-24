@@ -14,6 +14,8 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
+#include <IPXACTmodels/common/Document.h>
+
 #include <IPXACTmodels/design.h>
 #include <IPXACTmodels/librarycomponent.h>
 #include <IPXACTmodels/vlnv.h>
@@ -56,7 +58,7 @@ public:
     *
     *      @return Description.
     */
-    virtual QSharedPointer<LibraryComponent> getModel(const VLNV& vlnv);
+    virtual QSharedPointer<Document> getModel(const VLNV& vlnv);
 
     /*!
     *  Method description.
@@ -65,7 +67,7 @@ public:
     *
     *      @return Description.
     */
-    virtual QSharedPointer<LibraryComponent const> getModelReadOnly(const VLNV& vlnv);
+    virtual QSharedPointer<Document const> getModelReadOnly(const VLNV& vlnv);
 
     /*!
     *  Method description.
@@ -101,7 +103,7 @@ public:
     *
     *      @return Description.
     */
-    virtual bool writeModelToFile(const QString path, QSharedPointer<LibraryComponent> model, bool printErrors = true);
+    virtual bool writeModelToFile(const QString path, QSharedPointer<Document> model, bool printErrors = true);
 
     /*!
     *  Method description.
@@ -110,7 +112,7 @@ public:
     *
     *      @return Description.
     */
-    virtual bool writeModelToFile(QSharedPointer<LibraryComponent> model, bool printErrors = true);
+    virtual bool writeModelToFile(QSharedPointer<Document> model, bool printErrors = true);
 
     /*!
     *  Method description.

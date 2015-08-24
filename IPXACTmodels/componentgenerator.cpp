@@ -11,8 +11,6 @@
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/common/ParameterWriter.h>
 
-#include <IPXACTmodels/validators/ParameterValidator.h>
-
 #include <QList>
 #include <QString>
 #include <QDomNode>
@@ -145,16 +143,16 @@ bool ComponentGenerator::isValid(QSharedPointer<QList<QSharedPointer<Choice> > >
 		valid = false;
 	}
 
-    ParameterValidator validator;
-    foreach (QSharedPointer<Parameter> param, parameters_)
-    {
-        errorList.append(validator.findErrorsIn(param.data(), QObject::tr("component generator %1").arg(name()),
-            componentChoices));
-        if (!validator.validate(param.data(), componentChoices)) 
-        {
-            valid = false;
-        }
-    }
+//     ParameterValidator validator;
+//     foreach (QSharedPointer<Parameter> param, parameters_)
+//     {
+//         errorList.append(validator.findErrorsIn(param.data(), QObject::tr("component generator %1").arg(name()),
+//             componentChoices));
+//         if (!validator.validate(param.data(), componentChoices)) 
+//         {
+//             valid = false;
+//         }
+//     }
 
 	if (generatorExe_.isEmpty())
     {
@@ -171,14 +169,14 @@ bool ComponentGenerator::isValid(QSharedPointer<QList<QSharedPointer<Choice> > >
 		return false;
 	}
 
-    ParameterValidator validator;
-    foreach (QSharedPointer<Parameter> param, parameters_)
-    {
-        if (!validator.validate(param.data(), componentChoices)) 
-        {
-            return false;
-        }
-    }
+//     ParameterValidator validator;
+//     foreach (QSharedPointer<Parameter> param, parameters_)
+//     {
+//         if (!validator.validate(param.data(), componentChoices)) 
+//         {
+//             return false;
+//         }
+//     }
 
 	if (generatorExe_.isEmpty()) {
 		return false;

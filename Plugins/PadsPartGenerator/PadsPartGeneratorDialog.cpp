@@ -13,14 +13,17 @@
 #include "PadsPartGenerator.h"
 #include "PadsAsciiSyntax.h"
 
-#include <IPXACTmodels/vlnv.h>
 #include <library/LibraryManager/libraryinterface.h>
-#include <IPXACTmodels/abstractiondefinition.h>
+
+#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
+
+#include <IPXACTmodels/common/Vector.h>
+
 #include <IPXACTmodels/businterface.h>
 #include <IPXACTmodels/file.h>
 #include <IPXACTmodels/fileset.h>
 #include <IPXACTmodels/PortMap.h>
-#include <IPXACTmodels/common/Vector.h>
+#include <IPXACTmodels/vlnv.h>
 
 #include <QApplication>
 #include <QTextCharFormat>

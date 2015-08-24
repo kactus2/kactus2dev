@@ -14,14 +14,17 @@
 #include <IPXACTmodels/GenericVendorExtension.h>
 
 #include <IPXACTmodels/common/Assertion.h>
-#include <IPXACTmodels/common/Parameter.h>
-#include <IPXACTmodels/common/Qualifier.h>
 #include <IPXACTmodels/common/CellSpecification.h>
+#include <IPXACTmodels/common/Parameter.h>
+#include <IPXACTmodels/common/Protocol.h>
+#include <IPXACTmodels/common/Qualifier.h>
 
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinitionWriter.h>
 #include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>
 #include <IPXACTmodels/AbstractionDefinition/TimingConstraint.h>
+#include <IPXACTmodels/AbstractionDefinition/TransactionalAbstraction.h>
+#include <IPXACTmodels/AbstractionDefinition/TransactionalPort.h>
 #include <IPXACTmodels/AbstractionDefinition/WirePort.h>
 #include <IPXACTmodels/AbstractionDefinition/WireAbstraction.h>
 
@@ -43,6 +46,10 @@ private slots:
 
     void testWireConstraints();
     void testWireMirroredConstraints();
+
+    void testWriteSimpleTransactionalPort();
+    void testWriteTransactionalPortForAllModes();
+    void testWriteTransactionalPortWithProtocol();
 
     void testWriteParameters();
     void testWriteAssertions();
@@ -182,7 +189,7 @@ void tst_AbstractionDefinition::testWriteSimpleWirePort()
     testPort->setIsPresent("1");
     
     testPort->setDefaultValue("0");
-    testPort->setQualifier(Qualifier::Data);
+    testPort->getWire()->setQualifier(Qualifier::Data);
 
     QDomDocument document;
     QDomElement extensionNode = document.createElement("testExtension");
@@ -560,6 +567,227 @@ void tst_AbstractionDefinition::testWireMirroredConstraints()
                     "</ipxact:onMaster>"
                     "<ipxact:requiresDriver>false</ipxact:requiresDriver>"
                 "</ipxact:wire>"
+                "</ipxact:port>"
+            "</ipxact:ports>"
+        "</ipxact:abstractionDefinition>\n"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_AbstractionDefinition::testWriteSimpleTransactionalPort()
+//-----------------------------------------------------------------------------
+void tst_AbstractionDefinition::testWriteSimpleTransactionalPort()
+{
+    VLNV targetBus(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "TargetBusDef", "1.0");
+
+    VLNV extendingVlnv(VLNV::ABSTRACTIONDEFINITION, "TUT", "TestLibrary", "TestAbsDef", "1.0");
+    QSharedPointer<AbstractionDefinition> abstractionDefinition(new AbstractionDefinition());
+    abstractionDefinition->setVlnv(extendingVlnv);
+    abstractionDefinition->setBusType(targetBus);
+
+    QSharedPointer<PortAbstraction> testPort(new PortAbstraction());
+    testPort->setName("testPort");
+
+    testPort->setTransactional(QSharedPointer<TransactionalAbstraction>(new TransactionalAbstraction()));
+    testPort->getTransactional()->setQualifier(Qualifier::Data);
+    
+    abstractionDefinition->getLogicalPorts()->append(testPort);
+
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+    AbstractionDefinitionWriter busWriter;
+
+    busWriter.writeAbstractionDefinition(xmlStreamWriter, abstractionDefinition);
+
+    QCOMPARE(output, QString(
+        "<?xml version=\"1.0\"?>"
+        "<ipxact:abstractionDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
+            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:library>TestLibrary</ipxact:library>"
+            "<ipxact:name>TestAbsDef</ipxact:name>"
+            "<ipxact:version>1.0</ipxact:version>"
+            "<ipxact:busType vendor=\"TUT\" library=\"TestLibrary\" name=\"TargetBusDef\" version=\"1.0\"/>"
+            "<ipxact:ports>"
+                "<ipxact:port>"
+                    "<ipxact:logicalName>testPort</ipxact:logicalName>"
+                    "<ipxact:transactional>"
+                        "<ipxact:qualifier>"
+                            "<ipxact:isData>true</ipxact:isData>"
+                        "</ipxact:qualifier>"        
+                    "</ipxact:transactional>"        
+                "</ipxact:port>"
+            "</ipxact:ports>"
+        "</ipxact:abstractionDefinition>\n"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_AbstractionDefinition::testWriteTransactionalPortForAllModes()
+//-----------------------------------------------------------------------------
+void tst_AbstractionDefinition::testWriteTransactionalPortForAllModes()
+{
+    VLNV targetBus(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "TargetBusDef", "1.0");
+
+    VLNV extendingVlnv(VLNV::ABSTRACTIONDEFINITION, "TUT", "TestLibrary", "TestAbsDef", "1.0");
+    QSharedPointer<AbstractionDefinition> abstractionDefinition(new AbstractionDefinition());
+    abstractionDefinition->setVlnv(extendingVlnv);
+    abstractionDefinition->setBusType(targetBus);
+
+    QSharedPointer<PortAbstraction> testPort(new PortAbstraction());
+    testPort->setName("testPort");
+
+    QSharedPointer<TransactionalAbstraction> transactional(new TransactionalAbstraction());
+    testPort->setTransactional(transactional);
+
+    QSharedPointer<TransactionalPort> systemPort(new TransactionalPort());
+    systemPort->setSystemGroup("illegalGroup");
+    systemPort->setPresence(General::ILLEGAL);
+    transactional->addSystemPort(systemPort);
+
+    QSharedPointer<TransactionalPort> secondSystemPort(new TransactionalPort());
+    secondSystemPort->setSystemGroup("requiredGroup");
+    secondSystemPort->setPresence(General::REQUIRED);
+    transactional->addSystemPort(secondSystemPort);
+
+    QSharedPointer<TransactionalPort> masterPort(new TransactionalPort());
+    masterPort->setPresence(General::OPTIONAL);
+    masterPort->setInitiative("requires");
+    masterPort->setKind("tlm_port");
+    masterPort->setBusWidth("32");
+    transactional->setMasterPort(masterPort);
+
+    QSharedPointer<TransactionalPort> slavePort(new TransactionalPort());
+    slavePort->setPresence(General::OPTIONAL);
+    slavePort->setInitiative("provides");
+    slavePort->setKind("customKind");
+    transactional->setSlavePort(slavePort);
+
+    abstractionDefinition->getLogicalPorts()->append(testPort);
+
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+    AbstractionDefinitionWriter busWriter;
+
+    busWriter.writeAbstractionDefinition(xmlStreamWriter, abstractionDefinition);
+
+    QCOMPARE(output, QString(
+        "<?xml version=\"1.0\"?>"
+        "<ipxact:abstractionDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
+            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:library>TestLibrary</ipxact:library>"
+            "<ipxact:name>TestAbsDef</ipxact:name>"
+            "<ipxact:version>1.0</ipxact:version>"
+            "<ipxact:busType vendor=\"TUT\" library=\"TestLibrary\" name=\"TargetBusDef\" version=\"1.0\"/>"
+            "<ipxact:ports>"
+                "<ipxact:port>"                
+                    "<ipxact:logicalName>testPort</ipxact:logicalName>"
+                    "<ipxact:transactional>"    
+                    "<ipxact:onSystem>"
+                        "<ipxact:group>illegalGroup</ipxact:group>"
+                        "<ipxact:presence>illegal</ipxact:presence>"
+                    "</ipxact:onSystem>" 
+                        "<ipxact:onSystem>"
+                            "<ipxact:group>requiredGroup</ipxact:group>"
+                            "<ipxact:presence>required</ipxact:presence>"
+                        "</ipxact:onSystem>" 
+                        "<ipxact:onMaster>"
+                            "<ipxact:presence>optional</ipxact:presence>"
+                            "<ipxact:initiative>requires</ipxact:initiative>"
+                            "<ipxact:kind>tlm_port</ipxact:kind>"
+                            "<ipxact:busWidth>32</ipxact:busWidth>"
+                        "</ipxact:onMaster>" 
+                        "<ipxact:onSlave>"
+                            "<ipxact:presence>optional</ipxact:presence>"
+                            "<ipxact:initiative>provides</ipxact:initiative>"
+                            "<ipxact:kind custom=\"customKind\">custom</ipxact:kind>"
+                        "</ipxact:onSlave>"    
+                    "</ipxact:transactional>"
+                "</ipxact:port>"
+            "</ipxact:ports>"
+        "</ipxact:abstractionDefinition>\n"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_AbstractionDefinition::testWriteTransactionalPortWithProtocol()
+//-----------------------------------------------------------------------------
+void tst_AbstractionDefinition::testWriteTransactionalPortWithProtocol()
+{
+    VLNV targetBus(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "TargetBusDef", "1.0");
+
+    VLNV extendingVlnv(VLNV::ABSTRACTIONDEFINITION, "TUT", "TestLibrary", "TestAbsDef", "1.0");
+    QSharedPointer<AbstractionDefinition> abstractionDefinition(new AbstractionDefinition());
+    abstractionDefinition->setVlnv(extendingVlnv);
+    abstractionDefinition->setBusType(targetBus);
+
+    QSharedPointer<PortAbstraction> testPort(new PortAbstraction());
+    testPort->setName("testPort");
+
+    QSharedPointer<TransactionalAbstraction> transactional(new TransactionalAbstraction());
+    testPort->setTransactional(transactional);
+
+    QSharedPointer<Protocol> portProtocol(new Protocol());
+    portProtocol->setProtocolType("tlm");
+    portProtocol->setPayloadName("data");
+    portProtocol->setPayloadExtension("extension", true);
+    portProtocol->setPayloadType("generic");
+
+    QDomDocument document;
+    QDomElement extensionNode = document.createElement("testExtension");
+    extensionNode.setAttribute("vendorAttribute", "extension");
+    extensionNode.appendChild(document.createTextNode("testValue"));
+
+    QSharedPointer<GenericVendorExtension> testExtension(new GenericVendorExtension(extensionNode));
+    QSharedPointer<QList<QSharedPointer<VendorExtension> > > payloadVendorExtensions = portProtocol->getVendorExtensions();
+    payloadVendorExtensions->append(testExtension);
+
+    QSharedPointer<TransactionalPort> masterPort(new TransactionalPort());
+    masterPort->setProtocol(portProtocol);
+    transactional->setMasterPort(masterPort);
+
+    abstractionDefinition->getLogicalPorts()->append(testPort);
+
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+    AbstractionDefinitionWriter busWriter;
+
+    busWriter.writeAbstractionDefinition(xmlStreamWriter, abstractionDefinition);
+
+    QCOMPARE(output, QString(
+        "<?xml version=\"1.0\"?>"
+        "<ipxact:abstractionDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
+            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:library>TestLibrary</ipxact:library>"
+            "<ipxact:name>TestAbsDef</ipxact:name>"
+            "<ipxact:version>1.0</ipxact:version>"
+            "<ipxact:busType vendor=\"TUT\" library=\"TestLibrary\" name=\"TargetBusDef\" version=\"1.0\"/>"
+             "<ipxact:ports>"
+                "<ipxact:port>"                
+                    "<ipxact:logicalName>testPort</ipxact:logicalName>"
+                    "<ipxact:transactional>"                    
+                        "<ipxact:onMaster>"
+                            "<ipxact:protocol>"
+                                "<ipxact:protocolType>tlm</ipxact:protocolType>"
+                                "<ipxact:payload>"
+                                    "<ipxact:name>data</ipxact:name>"
+                                    "<ipxact:type>generic</ipxact:type>"
+                                    "<ipxact:extension mandatory=\"true\">extension</ipxact:extension>"
+                                    "<ipxact:vendorExtensions>"
+                                        "<testExtension vendorAttribute=\"extension\">testValue</testExtension>"
+                                    "</ipxact:vendorExtensions>"
+                                "</ipxact:payload>"
+                            "</ipxact:protocol>"
+                        "</ipxact:onMaster>" 
+                    "</ipxact:transactional>"
                 "</ipxact:port>"
             "</ipxact:ports>"
         "</ipxact:abstractionDefinition>\n"));

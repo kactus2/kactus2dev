@@ -7,9 +7,8 @@
 #include "alternateregister.h"
 #include "registerdefinition.h"
 #include "GenericVendorExtension.h"
-#include <IPXACTmodels/common/Parameter.h>
 
-#include <IPXACTmodels/validators/ParameterValidator.h>
+#include <IPXACTmodels/common/Parameter.h>
 
 #include <QXmlStreamWriter>
 #include <QDomNode>
@@ -172,17 +171,17 @@ bool AlternateRegister::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > 
 		valid = false;
 	}
 
-    ParameterValidator validator;
-    foreach (QSharedPointer<Parameter> param, parameters_)
-    {
-        errorList.append(validator.findErrorsIn(param.data(), 
-            QObject::tr("alternate register %1").arg(name()), componentChoices));
-
-        if (!validator.validate(param.data(), componentChoices)) 
-        {
-            valid = false;
-        }
-    }
+//     ParameterValidator validator;
+//     foreach (QSharedPointer<Parameter> param, parameters_)
+//     {
+//         errorList.append(validator.findErrorsIn(param.data(), 
+//             QObject::tr("alternate register %1").arg(name()), componentChoices));
+// 
+//         if (!validator.validate(param.data(), componentChoices)) 
+//         {
+//             valid = false;
+//         }
+//     }
 
 	return valid;
 }
@@ -204,14 +203,14 @@ bool AlternateRegister::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > 
 			return false;
 	}
 
-    ParameterValidator validator;
-    foreach (QSharedPointer<Parameter> param, parameters_)
-    {
-        if (!validator.validate(param.data(), componentChoices))
-        {
-            return false;
-        }
-    }
+//     ParameterValidator validator;
+//     foreach (QSharedPointer<Parameter> param, parameters_)
+//     {
+//         if (!validator.validate(param.data(), componentChoices))
+//         {
+//             return false;
+//         }
+//     }
 
 	return true;
 }

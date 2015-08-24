@@ -13,7 +13,6 @@
 #include "XmlUtils.h"
 #include"vlnv.h"
 
-#include <IPXACTmodels/validators/ParameterValidator.h>
 #include <IPXACTmodels/common/ParameterReader.h>
 #include <IPXACTmodels/common/ParameterWriter.h>
 
@@ -687,15 +686,15 @@ bool BusInterface::isValid( const QList<General::PortBounds>& physicalPorts, QSt
 		}
 	}
 
-    ParameterValidator validator;
-    foreach (QSharedPointer<Parameter> param, *parameters_)
-    {
-        errorList.append(validator.findErrorsIn(param.data(), thisIdentifier, componentChoices));
-        if (!validator.validate(param.data(), componentChoices)) 
-        {
-            valid = false;
-        }
-    }
+//     ParameterValidator validator;
+//     foreach (QSharedPointer<Parameter> param, *parameters_)
+//     {
+//         errorList.append(validator.findErrorsIn(param.data(), thisIdentifier, componentChoices));
+//         if (!validator.validate(param.data(), componentChoices)) 
+//         {
+//             valid = false;
+//         }
+//     }
 
 	return valid;
 }
@@ -761,14 +760,14 @@ bool BusInterface::isValid( const QList<General::PortBounds>& physicalPorts, QSt
 		}
 	}
 
-    ParameterValidator validator;
-    foreach (QSharedPointer<Parameter> param, *parameters_)
-    {
-        if (!validator.validate(param.data(), componentChoices)) 
-        {
-            return false;
-        }
-    }
+//     ParameterValidator validator;
+//     foreach (QSharedPointer<Parameter> param, *parameters_)
+//     {
+//         if (!validator.validate(param.data(), componentChoices)) 
+//         {
+//             return false;
+//         }
+//     }
 
 	return true;
 }

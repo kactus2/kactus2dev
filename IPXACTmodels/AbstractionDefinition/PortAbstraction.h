@@ -95,6 +95,27 @@ public:
 	 */
 	QSharedPointer<WireAbstraction> getWire() const;
 
+    /*!
+     *  Checks if the port has transactional definition.
+     *
+     *      @return True, if the port is a transactional definition, otherwise false.
+     */  
+    bool hasTransactional() const;
+    
+    /*!
+     *  Sets the transactional definition for the port.
+     *
+     *      @param [in] transactional   The transactional definition to set.
+     */
+    void setTransactional(QSharedPointer<TransactionalAbstraction> transactional);
+
+    /*!
+	 *  Gets the transactional definition of the port.
+	 *
+	 *      @return The transactional definition.
+	 */
+    QSharedPointer<TransactionalAbstraction> getTransactional() const;
+
 	/*!  Get the default value of the wire port.
 	 *
 	 *      @return The default value set for the wire port.
@@ -106,13 +127,6 @@ public:
 	 *      @param [in] defaultValue    The default value to set.
 	*/
 	void setDefaultValue(QString const& defaultValue);
-
-    /*!
-     *  Sets the wire qualifier.
-     *
-     *      @param [in] qualifierType   The qualifier to set.
-     */
-    void setQualifier(Qualifier::Type qualifierType);
 
     /*!
      *  Gets the wire qualifier.
@@ -135,20 +149,25 @@ public:
      */
     bool requiresDriver() const;
 
+    /*!
+     *  Gets the presence requirement for the port in given interface mode.
+     *
+     *      @param [in] mode   The mode to get the presence for.
+     *
+     *      @return The required presence for the mode.
+     */
     General::Presence getPresence(General::InterfaceMode mode) const;
-
-    //TransactionalAbstraction* getTransactional() const;
-
+ 
 private:
 
     //! Condition for port existence.
     QString isPresent_;
 
-	//QSharedPointer<TransactionalAbstraction> transactional_;
-
     //! Definitions for wire type port.
 	QSharedPointer<WireAbstraction> wire_;
 
+    //! Definitions for transactional type port.
+    QSharedPointer<TransactionalAbstraction> transactional_;
 };
 
 #endif /* PORTABSTRACTION_H_ */

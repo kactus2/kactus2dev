@@ -6,20 +6,25 @@
 // Date: 10.12.2014
 //
 // Description:
-// <Short description of the class/file contents>
+// Validator for ipxact:parameter.
 //-----------------------------------------------------------------------------
 
 #ifndef SYSTEMVERILOGVALIDATOR_H
 #define SYSTEMVERILOGVALIDATOR_H
 
 #include <IPXACTmodels/ipxactmodels_global.h>
-#include <IPXACTmodels/validators/ParameterValidator.h>
 
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 
 #include <QString>
 
-class IPXACTMODELS_EXPORT ParameterValidator2014 : public ParameterValidator 
+class Choice;
+class ExpressionParser;
+
+//-----------------------------------------------------------------------------
+//! Validator for ipxact:parameter.
+//-----------------------------------------------------------------------------
+class IPXACTMODELS_EXPORT ParameterValidator2014 
 {
 public:
 
@@ -45,6 +50,9 @@ public:
      */
     virtual bool validate(Parameter const* parameter, 
         QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices) const;
+
+
+    bool hasValidName(Parameter const* parameter) const;
 
     /*!
      *  Validates the value of the given parameter.
@@ -103,6 +111,15 @@ public:
      */
     virtual bool hasValidMaximumValue(Parameter const* parameter) const;
          
+    bool hasValidChoice(Parameter const* parameter, 
+        QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices) const;
+
+    bool hasValidValueForChoice(Parameter const* parameter,
+        QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices) const;
+
+    bool hasValidResolve(Parameter const* parameter) const;
+
+    bool hasValidValueId(Parameter const* parameter) const;
     /*!
      *  Checks if the value of the given parameter is less than the specified minimum value.
      *
@@ -143,6 +160,7 @@ public:
      */
     bool validateArrayValues(QString const& arrayLeft, QString const& arrayRight) const;
 
+   
 protected:
              
     /*!
@@ -165,6 +183,7 @@ protected:
      */    
     virtual qreal valueOf(QString const& value, QString const& type) const;
             
+    QStringList findErrorsInName(Parameter const* parameter, QString const& context) const;
     /*!
      *  Finds possible errors in a parameter value.
      *
@@ -176,6 +195,18 @@ protected:
     virtual QStringList findErrorsInValue(Parameter const* parameter, QString const& context, 
         QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices) const;
           
+   
+    QStringList findErrorsInMinimumValue(Parameter const* parameter, QString const& context) const;
+
+    QStringList findErrorsInMaximumValue(Parameter const* parameter, QString const& context) const;
+   
+    bool hasValidValueForFormat(QString const& value, QString const& format) const;
+   
+    QStringList findErrorsInChoice(Parameter const* parameter, QString const& context, QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices) const;
+    
+    QStringList findErrorsInResolve(Parameter const* parameter, QString const& context) const;
+
+    
     /*!
      *  Finds possible errors in a parameter value type.
      *
@@ -220,6 +251,9 @@ private:
      *      @return True, if the array values are of the same size, otherwise false.
      */
     bool arrayValuesAreSameSize(QStringList const& bitArray, QString type) const;
+
+    QSharedPointer<Choice> findChoiceByName(QString const& choiceName,
+        QSharedPointer<QList<QSharedPointer<Choice> > > choices) const;
 
     //! The expression parser to use for solving minimum, maximum and value.
     QSharedPointer<ExpressionParser> expressionParser_;
