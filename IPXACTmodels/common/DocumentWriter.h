@@ -105,6 +105,14 @@ protected:
      */
     void writeVendorExtensions(QXmlStreamWriter& writer,  QSharedPointer<Extendable> element) const;
 
+    /*!
+     *  Write the isPresent element.
+     *
+     *      @param [in] writer      The XML writer to use.
+     *      @param [in] isPresent   The value for the isPresent element.
+     */
+    void writeIsPresent(QXmlStreamWriter& writer, QString const& isPresent) const;
+
 private:
 
 	// Disable copying.

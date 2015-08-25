@@ -58,6 +58,13 @@ public:
         const QString& name, const QString& version);
 
     /*!
+     *  Constructor with VLNV information.
+     *
+     *      @param [in] configurableVLNV    The configurable VLNV.
+     */
+    ConfigurableVLNVReference(const VLNV& configurableVLNV);
+
+    /*!
      *  The destructor.
      */
     ~ConfigurableVLNVReference();
@@ -76,6 +83,24 @@ public:
      */
     void setConfigurableElementValues(
         QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > newConfigurableElementValues);
+
+    /*!
+     *  Check if the configurable vlnv contains the given configurable element.
+     *
+     *      @param [in] referenceId     The ID of the configurable element.
+     *
+     *      @return True, if the configurable element is found, false otherwise.
+     */
+    bool hasConfigurableElementValue(QString const& referenceId) const;
+
+    /*!
+     *  Get a single configurable element value.
+     *
+     *      @param [in] referenceId     The id of the configurable element value.
+     *
+     *      @return The value of the configurable element.
+     */
+    QString getSingleConfigurableElementValue(QString const& referenceId) const;
 
 private:
 

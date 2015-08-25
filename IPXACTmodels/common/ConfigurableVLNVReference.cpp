@@ -40,14 +40,6 @@ configurableElementValues_(new QList<QSharedPointer<ConfigurableElementValue> >)
 }
 
 //-----------------------------------------------------------------------------
-// Function: ConfigurableVLNVReference::~ConfigurableVLNVReference()
-//-----------------------------------------------------------------------------
-ConfigurableVLNVReference::~ConfigurableVLNVReference()
-{
-    configurableElementValues_->clear();
-}
-
-//-----------------------------------------------------------------------------
 // Function: ConfigurableVLNVReference::ConfigurableVLNVReference()
 //-----------------------------------------------------------------------------
 ConfigurableVLNVReference::ConfigurableVLNVReference(const QDomNode& vlnvReferenceNode, IPXactType type):
@@ -90,6 +82,24 @@ configurableElementValues_(new QList<QSharedPointer<ConfigurableElementValue> >)
 }
 
 //-----------------------------------------------------------------------------
+// Function: ConfigurableVLNVReference::ConfigurableVLNVReference()
+//-----------------------------------------------------------------------------
+ConfigurableVLNVReference::ConfigurableVLNVReference(const VLNV& configurableVLNV):
+VLNV(configurableVLNV),
+configurableElementValues_(new QList<QSharedPointer<ConfigurableElementValue> > )
+{
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConfigurableVLNVReference::~ConfigurableVLNVReference()
+//-----------------------------------------------------------------------------
+ConfigurableVLNVReference::~ConfigurableVLNVReference()
+{
+    configurableElementValues_->clear();
+}
+
+//-----------------------------------------------------------------------------
 // Function: ConfigurableVLNVReference::getConfigurableElementValues()
 //-----------------------------------------------------------------------------
 QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > ConfigurableVLNVReference::
@@ -106,4 +116,36 @@ void ConfigurableVLNVReference::setConfigurableElementValues(
 {
     configurableElementValues_.clear();
     configurableElementValues_ = newConfigurableElementValues;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConfigurableVLNVReference::hasConfigurableElementValue()
+//-----------------------------------------------------------------------------
+bool ConfigurableVLNVReference::hasConfigurableElementValue(QString const& referenceId) const
+{
+    foreach (QSharedPointer<ConfigurableElementValue> singleElement, *configurableElementValues_)
+    {
+        if (0 == referenceId.compare(singleElement->getReferenceId(), Qt::CaseInsensitive))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConfigurableVLNVReference::getSingleConfigurableElementValue()
+//-----------------------------------------------------------------------------
+QString ConfigurableVLNVReference::getSingleConfigurableElementValue(QString const& referenceId) const
+{
+    foreach (QSharedPointer<ConfigurableElementValue> singleElement, *configurableElementValues_)
+    {
+        if (0 == referenceId.compare(singleElement->getReferenceId(), Qt::CaseInsensitive))
+        {
+            return singleElement->getConfigurableValue();
+        }
+    }
+
+    return QString();
 }

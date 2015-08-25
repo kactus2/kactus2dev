@@ -148,3 +148,14 @@ void DocumentWriter::writeVendorExtensions(QXmlStreamWriter& writer, QSharedPoin
         writer.writeEndElement(); // ipxact:vendorExtensions
     }
 }
+
+//-----------------------------------------------------------------------------
+// Function: DocumentWriter::writeIsPresent()
+//-----------------------------------------------------------------------------
+void DocumentWriter::writeIsPresent(QXmlStreamWriter& writer, QString const& isPresent) const
+{
+    if (!isPresent.isEmpty())
+    {
+        writer.writeTextElement("ipxact:isPresent", isPresent);
+    }
+}
