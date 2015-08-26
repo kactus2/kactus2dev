@@ -29,12 +29,6 @@ class IPXACTMODELS_EXPORT PortReference
 {
 
 public:
-    /*! \brief The constructor
-    *
-    * \param portReferenceNode A reference to a QDomNode where
-    * the information should be parsed from.
-    */
-    //PortRef(QDomNode& portReferenceNode);
 
     /*!
      *  The constructor.

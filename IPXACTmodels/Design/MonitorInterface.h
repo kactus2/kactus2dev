@@ -23,12 +23,6 @@ class IPXACTMODELS_EXPORT MonitorInterface : public HierInterface
 {
 
 public:
-    /*! The constructor
-     *
-     *       @param [in]   interfaceNode   A QDomNode where the information should be parsed from.
-     */
-    //Interface(QDomNode &interfaceNode);
-    //HierInterface(QDomNode & interfaceNode);
 
     /*!
      *  The constructor.

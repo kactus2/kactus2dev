@@ -48,19 +48,17 @@ class IPXACTMODELS_EXPORT Design : public Document
 {
 
 public:
-	/*! \brief The constructor
-	*
-	* \param document a reference to a QDomDocument where the
-	* information should be parsed from.
-	*/
-	//Design(QDomDocument &document);
-
 	/*!
 	 *  The constructor.
 	 *
 	 *      @param [in] vlnv    The VLNV for the design.
 	 */
 	Design(const VLNV &vlnv);
+
+    /*!
+     *  The constructor.
+     */
+    Design();
 
 	/*!
 	 *  Copy constructor.

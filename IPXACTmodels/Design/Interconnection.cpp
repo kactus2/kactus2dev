@@ -11,48 +11,6 @@
 
 #include "Interconnection.h"
 
-/*
-//-----------------------------------------------------------------------------
-// Function: Interconnection::Interconnection()
-//-----------------------------------------------------------------------------
-Interconnection::Interconnection(QDomNode& interconnectionNode): 
-    NameGroup(), 
-    interface1(QString(), QString()), 
-    interface2(QString(), QString()), 
-    route_(), 
-    offPage_(false)
-{
-    QDomNodeList nodes = interconnectionNode.childNodes();
-
-    for (int i = 0; i < nodes.size(); i++) {
-        QDomNode node = nodes.at(i);
-
-        if (node.nodeName() == "spirit:name") 
-        {
-            setName(node.firstChild().nodeValue());
-        } 
-        else if (node.nodeName() == "spirit:displayName")
-        {
-            setDisplayName(node.firstChild().nodeValue());
-        } 
-        else if (node.nodeName() == "spirit:description")
-        {
-            setDescription(node.firstChild().nodeValue());
-        }
-        else if (node.nodeName() == "spirit:activeInterface")
-        {
-            if (interface1.getComponentRef().isNull())
-            {
-                interface1 = Interface(node);
-            }
-            else
-            {
-                interface2 = Interface(node);
-            }
-        } // TODO: spirit:monitoredActiveInterface spirit:monitorInterface
-    }
-}*/
-
 //-----------------------------------------------------------------------------
 // Function: Interconnection::Interconnection()
 //-----------------------------------------------------------------------------

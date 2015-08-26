@@ -50,13 +50,6 @@ public:
     ComponentInstance(ComponentInstance const& other);
 
     /*!
-     *  Constructor.
-     *
-     *      @param [in] node A reference to a QDomNode where the information should be parsed from.
-     */
-    //ComponentInstance(QDomNode& node);
-
-    /*!
      *  The constructor.
      */
     ComponentInstance();

@@ -11,33 +11,6 @@
 
 #include "PortReference.h"
 
-/*
-//-----------------------------------------------------------------------------
-// Function: PortRef::PortRef()
-//-----------------------------------------------------------------------------
-PortRef::PortRef(QDomNode& portReferenceNode)
-    : portRef_(), componentRef_(), left_(-1), right_(-1)
-{
-    QDomNamedNodeMap attributes = portReferenceNode.attributes();
-
-    portRef_ = attributes.namedItem("spirit:portRef").nodeValue();
-
-    if (portReferenceNode.nodeName() == "spirit:internalPortReference")
-    {
-        componentRef_ = attributes.namedItem("spirit:componentRef").nodeValue();
-    }
-
-    if (attributes.contains("spirit:left"))
-    {
-        left_ = attributes.namedItem("spirit:left").nodeValue().toInt();
-    }
-
-    if (attributes.contains("spirit:right"))
-    {
-        right_ = attributes.namedItem("spirit:right").nodeValue().toInt();
-    }
-}*/
-
 //-----------------------------------------------------------------------------
 // Function: PortReference::PortReference()
 //-----------------------------------------------------------------------------

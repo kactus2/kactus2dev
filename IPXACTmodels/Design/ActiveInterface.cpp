@@ -12,20 +12,6 @@
 #include "ActiveInterface.h"
 
 //-----------------------------------------------------------------------------
-// Function: Interface::Interface()
-//-----------------------------------------------------------------------------
-/*
-Interface::Interface(QDomNode &interfaceNode):
-componentRef_(""), 
-busRef_("")
-{
-    QDomNamedNodeMap attributes = interfaceNode.attributes();
-    
-    componentRef_ = attributes.namedItem("spirit:componentRef").nodeValue();
-    busRef_ = attributes.namedItem("spirit:busRef").nodeValue();
-}*/
-
-//-----------------------------------------------------------------------------
 // Function: ActiveInterface::ActiveInterface()
 //-----------------------------------------------------------------------------
 ActiveInterface::ActiveInterface(QString componentRef /* = QString("") */, QString busRef /* = QString("") */):

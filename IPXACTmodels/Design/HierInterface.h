@@ -24,11 +24,6 @@ class IPXACTMODELS_EXPORT HierInterface : public Extendable
 {
 
 public:
-    /*! The constructor
-     *
-     *       @param [in]   interfaceNode   A QDomNode where the information should be parsed from.
-     */
-    //HierInterface(QDomNode & interfaceNode);
 
     /*!
      *  The constructor.

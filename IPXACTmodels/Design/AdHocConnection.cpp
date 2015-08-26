@@ -11,41 +11,6 @@
 
 #include "AdHocConnection.h"
 
-/*
-//-----------------------------------------------------------------------------
-// Function: AdHocConnection::AdHocConnection()
-//-----------------------------------------------------------------------------
-AdHocConnection::AdHocConnection(QDomNode &adHocConnectionNode): 
-    NameGroup(), 
-    tiedValue_(),
-    internalPortReferences_(),
-    externalPortReferences_(),
-    route_(), 
-    offPage_(false)
-{
-    for (int i = 0; i < adHocConnectionNode.childNodes().size(); i++) {
-        QDomNode node = adHocConnectionNode.childNodes().at(i);
-
-        if (node.nodeName() == "spirit:name") {
-            setName(node.firstChild().nodeValue());
-        } else if (node.nodeName() == "spirit:displayName") {
-            setDisplayName(node.firstChild().nodeValue());
-        } else if (node.nodeName() == "spirit:description") {
-            setDescription(node.firstChild().nodeValue());
-        } else if (node.nodeName() == "spirit:internalPortReference") {
-            internalPortReferences_.append(PortRef(node));
-        } else if (node.nodeName() == "spirit:externalPortReference") {
-            externalPortReferences_.append(PortRef(node));
-        }
-    }
-
-    QDomNamedNodeMap attributes = adHocConnectionNode.attributes();
-
-    if (attributes.contains("spirit:tiedValue")) {
-        tiedValue_ = attributes.namedItem("spirit:tiedValue").nodeValue();
-    }
-}*/
-
 //-----------------------------------------------------------------------------
 // Function: AdHocConnection::AdHocConnection()
 //-----------------------------------------------------------------------------

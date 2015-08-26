@@ -85,27 +85,6 @@ private:
         QSharedPointer<DesignConfiguration> newDesignConfiguration) const;
 
     /*!
-     *  Reads a configurable VLNV reference from XML.
-     *
-     *      @param [in] configurableVLNVNode    The XML description of a configurable VLNV references.
-     *      @param [in] type                    The type of the configurable VLNV reference.
-     *
-     *      @return Pointer to a configurable VLNV reference.
-     */
-    QSharedPointer<ConfigurableVLNVReference> parseConfigurableVLNVReference(
-        QDomNode const& configurableVLNVNode, VLNV::IPXactType type) const;
-
-    /*!
-     *  Reads a configurable element value form XML.
-     *
-     *      @param [in] configurableElementNode     The XML description of a configurable element value.
-     *
-     *      @return Pointer to a configurable element value.
-     */
-    QSharedPointer<ConfigurableElementValue> parseConfigurableElementValue(
-        QDomNode const& configurableElementNode) const;
-
-    /*!
      *  Reads interconnection configurations from XML.
      *
      *      @param [in] designConfigurationDocument     The XML description of a design configuration.

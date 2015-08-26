@@ -26,11 +26,6 @@
 class IPXACTMODELS_EXPORT MonitorInterconnection : public NameGroup
 {
 public:
-    /*! The constructor
-    *
-    *       @param [in] interconnectionNode     A DOM node where the information should be parsed from.
-    */
-    //Interconnection(QDomNode& interconnectionNode);
 
     /*!
      *  The constructor.

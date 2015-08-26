@@ -144,3 +144,56 @@ void DocumentReader::parseVendorExtensions(QDomNode const& documentNode, QShared
         document->getVendorExtensions()->append(extension);
     }
 }
+
+//-----------------------------------------------------------------------------
+// Function: DocumentReader::ConfigurableVLNVReference()
+//-----------------------------------------------------------------------------
+QSharedPointer<ConfigurableVLNVReference> DocumentReader::parseConfigurableVLNVReference(
+    QDomNode const& configurableVLNVNode, VLNV::IPXactType type) const
+{
+    QDomNamedNodeMap attributeMap = configurableVLNVNode.attributes();
+
+    QString vendor = attributeMap.namedItem("vendor").nodeValue();
+    QString library = attributeMap.namedItem("library").nodeValue();
+    QString name = attributeMap.namedItem("name").nodeValue();
+    QString version = attributeMap.namedItem("version").nodeValue();
+
+    QSharedPointer<ConfigurableVLNVReference> newAbstractorRef (
+        new ConfigurableVLNVReference(type, vendor, library, name, version));
+
+    QDomNode configurableElementsNode = configurableVLNVNode.
+        firstChildElement("ipxact:configurableElementValues");
+
+    QDomNodeList configurableElementNodeList = configurableElementsNode.childNodes();
+    for (int i = 0; i < configurableElementNodeList.size(); ++i)
+    {
+        QSharedPointer<ConfigurableElementValue> newConfigurableElementValue =
+            parseConfigurableElementValue(configurableElementNodeList.at(i));
+
+        newAbstractorRef->getConfigurableElementValues()->append(newConfigurableElementValue);
+    }
+
+    return newAbstractorRef;
+}
+
+//-----------------------------------------------------------------------------
+// Function: DocumentReader::parseConfigurableElementValue()
+//-----------------------------------------------------------------------------
+QSharedPointer<ConfigurableElementValue> DocumentReader::parseConfigurableElementValue(
+    QDomNode const& configurableElementNode) const
+{
+    QSharedPointer<ConfigurableElementValue> newConfigurableElementValue (new ConfigurableElementValue());
+
+    newConfigurableElementValue->setConfigurableValue(configurableElementNode.firstChild().nodeValue());
+
+    QDomNamedNodeMap attributeMap = configurableElementNode.attributes();
+
+    for (int i = 0; i < attributeMap.size(); ++i)
+    {
+        QDomNode attributeItem = attributeMap.item(i);
+        newConfigurableElementValue->insertAttribute(
+            attributeItem.nodeName(), attributeItem.firstChild().nodeValue());
+    }
+
+    return newConfigurableElementValue;
+}

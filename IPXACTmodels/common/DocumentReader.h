@@ -16,6 +16,9 @@
 
 #include <IPXACTmodels/vlnv.h>
 
+#include <IPXACTmodels/common/ConfigurableVLNVReference.h>
+#include <IPXACTmodels/common/ConfigurableElementValue.h>
+
 #include <QObject>
 #include <QSharedPointer>
 #include <QDomNode>
@@ -92,6 +95,23 @@ protected:
      *      @param [in] document        The document in which the parsed vendor extensions are stored.
      */
     void parseVendorExtensions(QDomNode const& documentNode, QSharedPointer<Extendable> document) const;
+
+    /*!
+     *  Parses a configurable VLNV.
+     *
+     *      @param [in] configurableVLNVNode    The XML description of the configurable VLNV.
+     *      @param [in] type                    The type of the configurable VLNV.
+     */
+    QSharedPointer<ConfigurableVLNVReference> parseConfigurableVLNVReference(
+        QDomNode const& configurableVLNVNode, VLNV::IPXactType type) const;
+
+    /*!
+     *  Parses a single configurable element value.
+     *
+     *      @param [in] configurableElementNode     The XML description of the configurable element value.
+     */
+    QSharedPointer<ConfigurableElementValue> parseConfigurableElementValue(
+        QDomNode const& configurableElementNode) const;
 
 private:
 

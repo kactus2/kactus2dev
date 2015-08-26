@@ -22,4 +22,5 @@ SUBDIRS += validators\tst_ParameterValidator.pro \
 		   AbstractionDefinition\tst_AbstractionDefinitionReader.pro \
 		   DesignConfiguration\tst_DesignConfigurationWriter.pro \
 		   DesignConfiguration\tst_DesignConfigurationReader.pro \
-		   Design\tst_DesignWriter.pro
+		   Design\tst_DesignWriter.pro \
+		   Design\tst_DesignReader.pro

@@ -12,20 +12,6 @@
 #include "MonitorInterface.h"
 
 //-----------------------------------------------------------------------------
-// Function: Interface::Interface()
-//-----------------------------------------------------------------------------
-/*
-Interface::Interface(QDomNode &interfaceNode):
-componentRef_(""), 
-busRef_("")
-{
-    QDomNamedNodeMap attributes = interfaceNode.attributes();
-    
-    componentRef_ = attributes.namedItem("spirit:componentRef").nodeValue();
-    busRef_ = attributes.namedItem("spirit:busRef").nodeValue();
-}*/
-
-//-----------------------------------------------------------------------------
 // Function: MonitorInterface::MonitorInterface()
 //-----------------------------------------------------------------------------
 MonitorInterface::MonitorInterface(QString componentRef /* = QString("") */, QString busRef /* = QString("") */):

@@ -22,14 +22,17 @@ HEADERS += ../../../IPXACTmodels/common/Array.h \
     ../../../IPXACTmodels/common/Vector.h \
     ../../../IPXACTmodels/vlnv.h \
     ../../../IPXACTmodels/BusDefinition/BusDefinitionReader.h \
+    ../../../IPXACTmodels/common/DocumentReader.h \
     ../../../IPXACTmodels/common/ParameterReader.h \
-    ../../../IPXACTmodels/common/DocumentReader.h
+    ../../../IPXACTmodels/common/ConfigurableVLNVReference.h \
+    ../../../IPXACTmodels/common/ConfigurableElementValue.h
 SOURCES += ../../../IPXACTmodels/common/Array.cpp \
     ../../../IPXACTmodels/common/Assertion.cpp \
     ../../../IPXACTmodels/common/BooleanValue.cpp \
     ../../../IPXACTmodels/BusDefinition/BusDefinition.cpp \
     ../../../IPXACTmodels/BusDefinition/BusDefinitionReader.cpp \
     ../../../IPXACTmodels/common/Document.cpp \
+    ../../../IPXACTmodels/common/DocumentReader.cpp \
     ../../../IPXACTmodels/common/Extendable.cpp \
     ../../../IPXACTmodels/GenericVendorExtension.cpp \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Value.cpp \
@@ -41,4 +44,5 @@ SOURCES += ../../../IPXACTmodels/common/Array.cpp \
     ../../../IPXACTmodels/common/Vector.cpp \
     ./tst_BusDefinitionReader.cpp \
     ../../../IPXACTmodels/vlnv.cpp \
-    ../../../IPXACTmodels/common/DocumentReader.cpp
+    ../../../IPXACTmodels/common/ConfigurableVLNVReference.cpp \
+    ../../../IPXACTmodels/common/ConfigurableElementValue.cpp

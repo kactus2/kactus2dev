@@ -16,102 +16,6 @@
 //-----------------------------------------------------------------------------
 // Function: Design::Design()
 //-----------------------------------------------------------------------------
-/*
-Design::Design(QDomDocument& doc) :
-//LibraryComponent(doc),
-Document(doc),
-componentInstances_(),
-swInstances_(),
-interconnections_(),
-hierConnections_(),
-adHocConnections_(),
-portAdHocVisibilities_(),
-attributes_(),
-apiDependencies_(),
-hierApiDependencies_(),
-comConnections_(),
-hierComConnections_()
-{
-	//LibraryComponent::vlnv_->setType(VLNV::DESIGN);
-    vlnv_.setType(VLNV:DESIGN);
-
-    QDomNodeList nodes = doc.childNodes();
-
-    int i;
-	for (i = 0; i < nodes.size(); i++) {
-
-		// if the node is for a header comment
-		if (nodes.at(i).isComment()) {
-            QStringList comments = getTopComments();
-            comments.append(nodes.at(i).nodeValue());
-            setTopComments(comments);
-		}
-		else if (nodes.at(i).nodeName() == "spirit:design") {
-			break;
-		}
-	}
-    nodes = nodes.at(i).childNodes();
-
-    for (int i = 0; i < nodes.size(); i++) {
-        QDomNode node = nodes.at(i);
-
-        if (node.nodeName() == "spirit:componentInstances")
-        {
-            QDomNodeList instanceNodes = node.childNodes();
-            for (int i = 0; i < instanceNodes.size(); i++)
-            {
-                QDomNode instanceNode = instanceNodes.at(i);
-                componentInstances_.append(ComponentInstance(instanceNode));
-            }
-        }
-        else if (node.nodeName() == "spirit:interconnections")
-        {
-            QDomNodeList interconnectionNodes = node.childNodes();
-
-            for (int i = 0; i < interconnectionNodes.size(); i++)
-            {
-                QDomNode interconnectionNode = interconnectionNodes.at(i);
-
-                if (interconnectionNode.nodeName() == "spirit:interconnection")
-                {
-                    interconnections_.append(Interconnection(interconnectionNode));
-                }
-                else
-                {
-                    // TODO spirit::monitorInterconnection
-                }
-            }
-        }
-        else if (node.nodeName() == "spirit:adHocConnections")
-        {
-            QDomNodeList adHocNodes = node.childNodes();
-
-            for (int i = 0; i < adHocNodes.size(); i++)
-            {
-                QDomNode adHocNode = adHocNodes.at(i);
-                adHocConnections_.append(AdHocConnection(adHocNode));
-            }
-        }
-        else if (node.nodeName() == "spirit:hierConnections")
-        {
-            QDomNodeList hierConnectionNodes = node.childNodes();
-
-            for (int i = 0; i < hierConnectionNodes.size(); i++)
-            {
-                QDomNode hierConnectionNode = hierConnectionNodes.at(i);
-                hierConnections_.append(HierConnection(hierConnectionNode));
-            }
-        }
-        else if (node.nodeName() == "spirit:vendorExtensions")
-        {
-            parseVendorExtensions(node);
-        }
-    }
-}*/
-
-//-----------------------------------------------------------------------------
-// Function: Design::Design()
-//-----------------------------------------------------------------------------
 Design::Design(const VLNV &vlnv) :
 Document(vlnv),
 componentInstances_(new QList<QSharedPointer<ComponentInstance> > ()),
@@ -127,6 +31,26 @@ comConnections_(),
 hierComConnections_()
 {
     getVlnv().setType(VLNV::DESIGN);
+}
+
+//-----------------------------------------------------------------------------
+// Function: Design::Design()
+//-----------------------------------------------------------------------------
+Design::Design() :
+Document(),
+componentInstances_(new QList<QSharedPointer<ComponentInstance> > ()),
+swInstances_(),
+interconnections_(new QList<QSharedPointer<Interconnection> > ()),
+monitorInterconnections_(new QList<QSharedPointer<MonitorInterconnection> > ()),
+adHocConnections_(new QList<QSharedPointer<AdHocConnection> > ()),
+portAdHocVisibilities_(),
+attributes_(),
+apiDependencies_(),
+hierApiDependencies_(),
+comConnections_(),
+hierComConnections_()
+{
+
 }
 
 //-----------------------------------------------------------------------------
@@ -1009,7 +933,9 @@ QList<VLNV> Design::getComponents() const
 //-----------------------------------------------------------------------------
 void Design::setVlnv( const VLNV& vlnv )
 {
-    setVlnv(vlnv);
+    VLNV designVLNV(vlnv);
+    designVLNV.setType(VLNV::DESIGN);
+    Document::setVlnv(vlnv);
 }
 
 //-----------------------------------------------------------------------------

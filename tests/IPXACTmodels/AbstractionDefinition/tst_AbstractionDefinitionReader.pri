@@ -20,9 +20,12 @@ HEADERS += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h \
     ../../../IPXACTmodels/common/NameGroup.h \
     ../../../IPXACTmodels/common/Parameter.h \
     ../../../IPXACTmodels/AbstractionDefinition/PortAbstraction.h \
+    ../../../IPXACTmodels/common/Protocol.h \
     ../../../IPXACTmodels/common/Qualifier.h \
     ../../../IPXACTmodels/common/Range.h \
     ../../../IPXACTmodels/AbstractionDefinition/TimingConstraint.h \
+    ../../../IPXACTmodels/AbstractionDefinition/TransactionalAbstraction.h \
+    ../../../IPXACTmodels/AbstractionDefinition/TransactionalPort.h \
     ../../../IPXACTmodels/common/Vector.h \
     ../../../IPXACTmodels/AbstractionDefinition/WireAbstraction.h \
     ../../../IPXACTmodels/AbstractionDefinition/WirePort.h \
@@ -32,11 +35,10 @@ HEADERS += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h \
     ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinitionReader.h \
     ../../../IPXACTmodels/common/DocumentReader.h \
     ../../../IPXACTmodels/common/ParameterReader.h \
+    ../../../IPXACTmodels/AbstractionDefinition/TransactionalAbstractionReader.h \
     ../../../IPXACTmodels/AbstractionDefinition/WireAbstractionReader.h \
-    ../../../IPXACTmodels/AbstractionDefinition/TransactionalAbstraction.h \
-    ../../../IPXACTmodels/AbstractionDefinition/TransactionalPort.h \
-    ../../../IPXACTmodels/common/Protocol.h \
-    ../../../IPXACTmodels/AbstractionDefinition/TransactionalAbstractionReader.h
+    ../../../IPXACTmodels/common/ConfigurableElementValue.h \
+    ../../../IPXACTmodels/common/ConfigurableVLNVReference.h
 SOURCES += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.cpp \
     ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinitionReader.cpp \
     ../../../IPXACTmodels/common/Array.cpp \
@@ -53,9 +55,13 @@ SOURCES += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.cpp
     ../../../IPXACTmodels/common/Parameter.cpp \
     ../../../IPXACTmodels/common/ParameterReader.cpp \
     ../../../IPXACTmodels/AbstractionDefinition/PortAbstraction.cpp \
+    ../../../IPXACTmodels/common/Protocol.cpp \
     ../../../IPXACTmodels/common/Qualifier.cpp \
     ../../../IPXACTmodels/common/Range.cpp \
     ../../../IPXACTmodels/AbstractionDefinition/TimingConstraint.cpp \
+    ../../../IPXACTmodels/AbstractionDefinition/TransactionalAbstraction.cpp \
+    ../../../IPXACTmodels/AbstractionDefinition/TransactionalAbstractionReader.cpp \
+    ../../../IPXACTmodels/AbstractionDefinition/TransactionalPort.cpp \
     ../../../IPXACTmodels/common/Vector.cpp \
     ../../../IPXACTmodels/AbstractionDefinition/WireAbstraction.cpp \
     ../../../IPXACTmodels/AbstractionDefinition/WireAbstractionReader.cpp \
@@ -64,7 +70,5 @@ SOURCES += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.cpp
     ../../../IPXACTmodels/generaldeclarations.cpp \
     ./tst_AbstractionDefinitionReader.cpp \
     ../../../IPXACTmodels/vlnv.cpp \
-    ../../../IPXACTmodels/AbstractionDefinition/TransactionalAbstraction.cpp \
-    ../../../IPXACTmodels/AbstractionDefinition/TransactionalPort.cpp \
-    ../../../IPXACTmodels/common/Protocol.cpp \
-    ../../../IPXACTmodels/AbstractionDefinition/TransactionalAbstractionReader.cpp
+    ../../../IPXACTmodels/common/ConfigurableVLNVReference.cpp \
+    ../../../IPXACTmodels/common/ConfigurableElementValue.cpp

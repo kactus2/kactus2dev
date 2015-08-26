@@ -10,7 +10,6 @@
 //-----------------------------------------------------------------------------
 
 #include <IPXACTmodels/designConfiguration/DesignConfigurationReader.h>
-//#include <IPXACTmodels/vlnv.h>
 
 #include <QtTest>
 #include <QDomNode>
@@ -478,6 +477,7 @@ void tst_DesignConfigurationReader::testReadVendorExtensions()
         designConfigurationReader.createDesignConfigurationFrom(document);
 
     QCOMPARE(testDesignConfiguration->getVendorExtensions()->size(), 1);
+    QCOMPARE(testDesignConfiguration->getVendorExtensions()->first()->type(), QString("testExtension"));
 }
 
 QTEST_APPLESS_MAIN(tst_DesignConfigurationReader)
