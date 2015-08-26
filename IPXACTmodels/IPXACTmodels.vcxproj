@@ -392,7 +392,6 @@
     <ClCompile Include="SWView.cpp" />
     <ClCompile Include="SystemView.cpp" />
     <ClCompile Include="transactional.cpp" />
-    <ClCompile Include="transactionalabstraction.cpp" />
     <ClCompile Include="validators\BinaryValidator.cpp" />
     <ClCompile Include="validators\ModelParameterValidator.cpp" />
     <ClCompile Include="validators\namevalidator.cpp" />
@@ -772,7 +771,6 @@
     <ClInclude Include="SWView.h" />
     <ClInclude Include="SystemView.h" />
     <ClInclude Include="transactional.h" />
-    <ClInclude Include="transactionalabstraction.h" />
     <CustomBuild Include="validators\BinaryValidator.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing BinaryValidator.h...</Message>

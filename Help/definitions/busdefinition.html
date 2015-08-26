@@ -41,9 +41,59 @@
             interface in order for the bus connection with such abstraction definition to be valid. Logical
             signals have the following properties:
         </p>
+
         <p>
             <b>Name</b> is a mandatory unique identifier for the logical signal.
         </p>
+
+        <p>
+            <b>Mode</b> defines for which interface mode the settings apply.
+        </p>
+
+        <p>
+            <b>Presence</b> is an optional restriction for the logical signal presence in a bus interface.
+            It can have one of the following three values:
+        </p>
+        <ul>
+            <li><b>required</b> indicates that the logical signal must appear in the connected bus interface.
+            </li>
+            <li><b>illegal</b> indicates that the logical signal must not appear in the connected bus interface.
+            </li>
+            <li><b>optional</b> does not apply any restrictions. This is the default value.
+            </li>
+        </ul>
+
+         <p>
+            <b>Direction</b> is an optional restriction for the logical signal direction in the 
+            connected bus interface.
+        </p>
+
+        <p>
+            <b>Width</b> is an optional definition of the number of bits in the logical signal.
+            If not specified, the number of bits in the connected physical port is used.
+        </p>
+
+         <p>
+            <b>Default value</b> is an optional value that is applied when the logical signal is not
+            connected in a connected bus interface.
+        </p>  
+
+        <p>
+            <b>Driver</b> is an optional setting for defining what kind of a driver the logical
+            signal requires in a complete design. The possible values are the following:
+        </p>
+        <ul>
+            <li><b>any</b> indicates that any logical signal or value is valid for driving the signal. 
+            This is the default value.
+            </li>
+            <li><b>clock</b> indicates that a repeating waveform is required.
+            </li>
+            <li><b>singleshot</b> indicates that a non-repeating waveform is required.
+            </li>
+            <li><b>none</b> indicates that no driver is required.
+            </li>
+        </ul>
+
         <p>
             <b>Qualifier</b> is an optional indicator for what kind of information the the signal carries.
             It can have one of the following five values:
@@ -61,53 +111,15 @@
             <li><b>any</b> indicates that the signal may carry any information.
             </li>
         </ul>
+
         <p>
-            <b>Width</b> is an optional definition of the number of bits in the logical signal.
-            If not specified, the number of bits in the connected physical port is used.
+            <b>System group</b> helps identify the system interface the signal belongs to. System group
+            is mandatory for system mode and illegal for other modes.
         </p>
-        <p>
-            <b>Default value</b> is an optional value that is applied when the logical signal is not
-            connected in a connected bus interface.
-        </p>
-		 <p>
-            <b>Mode</b> defines for which interface mode the settings apply.
-        </p>
-        <p>
-            <b>Direction</b> is an optional restriction for the logical signal direction in the 
-            connected bus interface.
-        </p>
-        <p>
-            <b>Presence</b> is an optional restriction for the logical signal presence in a bus interface.
-            It can have one of the following three values:
-        </p>
-        <ul>
-            <li><b>required</b> indicates that the logical signal must appear in the connected bus interface.
-            </li>
-            <li><b>illegal</b> indicates that the logical signal must not appear in the connected bus interface.
-            </li>
-            <li><b>optional</b> does not apply any restrictions. This is the default value.
-            </li>
-        </ul>
-        <p>
-            <b>Driver</b> is an optional setting for defining what kind of a driver the logical
-            signal requires in a complete design. The possible values are the following:
-        </p>
-        <ul>
-            <li><b>any</b> indicates that any logical signal or value is valid for driving the signal. 
-            This is the default value.
-            </li>
-            <li><b>clock</b> indicates that a repeating waveform is required.
-            </li>
-            <li><b>singleshot</b> indicates that a non-repeating waveform is required.
-            </li>
-            <li><b>none</b> indicates that no driver is required.
-            </li>
-        </ul>
-        </p>
+
         <p>
             <b>Description</b> is an optional free text for further details.
         </p>
-    </p>
 
      <p>
       Bus editor contains a context menu (right mouse button) that provides following options:
@@ -122,5 +134,6 @@
       <li>Import a csv-file to the editor</li>
       <li>Export the contents of the editor to a csv-file</li>
     </ul>
+    </p>
 </body>
 </html>

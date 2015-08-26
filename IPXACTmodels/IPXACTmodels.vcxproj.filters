@@ -284,9 +284,6 @@
     <ClCompile Include="transactional.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="transactionalabstraction.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="view.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -809,9 +806,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="transactional.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="transactionalabstraction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="VendorExtension.h">

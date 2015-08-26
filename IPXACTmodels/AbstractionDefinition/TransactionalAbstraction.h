@@ -9,8 +9,8 @@
 // Implementation for ipaxct:transactional within abstraction definition.
 //-----------------------------------------------------------------------------
 
-#ifndef TRANSACTIONALABSTRACTION_H_
-#define TRANSACTIONALABSTRACTION_H_
+#ifndef TRANSACTIONALABSTRACTION_H
+#define TRANSACTIONALABSTRACTION_H
 
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/ipxactmodels_global.h>
@@ -129,4 +129,4 @@ private:
 	QSharedPointer<TransactionalPort> onSlave_;
 };
 
-#endif /* TRANSACTIONALABSTRACTION_H_ */
+#endif /* TRANSACTIONALABSTRACTION_H */
