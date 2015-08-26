@@ -31,7 +31,6 @@ public:
 	/*! The constructor
 	 *
 	 *      @param parent The owner of this widget.
-	 *
 	*/
 	BusPortsView(QWidget* parent);
 	

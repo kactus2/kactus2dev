@@ -16,11 +16,9 @@
 #include <QObject>
 #include <QSharedPointer>
 
-class CellSpecification;
 class Protocol;
 class TransactionalAbstraction;
 class TransactionalPort;
-class TimingConstraint;
 
 //-----------------------------------------------------------------------------
 //! Reader class for ipxact:transactional within abstraction definition.

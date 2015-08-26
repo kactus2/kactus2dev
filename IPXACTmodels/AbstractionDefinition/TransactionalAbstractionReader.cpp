@@ -13,7 +13,6 @@
 
 #include <IPXACTmodels/GenericVendorExtension.h>
 
-#include <IPXACTmodels/common/CellSpecification.h>
 #include <IPXACTmodels/common/Protocol.h>
 
 #include <IPXACTmodels/generaldeclarations.h>

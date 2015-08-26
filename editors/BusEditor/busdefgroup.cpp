@@ -1,8 +1,13 @@
-/*
- *  Created on: 21.6.2011
- *      Author: Antti Kamppi
- * 		filename: busdefgroup.cpp
- */
+//-----------------------------------------------------------------------------
+// File: busdefgroup.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 21.6.2011
+//
+// Description:
+// BusDefGroup contains elements to set the properties of a Bus Definition.
+//-----------------------------------------------------------------------------
 
 #include "busdefgroup.h"
 
@@ -26,10 +31,10 @@ QGroupBox(tr("General (Bus Definition)"), parent),
     maxSlavesEditor_(this),
     descriptionEditor_(this)
 {    
-    QRegExp regExp(QString("[0-9]*"), Qt::CaseInsensitive, QRegExp::W3CXmlSchema11);
-    QRegExpValidator* validator = new QRegExpValidator(regExp, this);
-    maxMastersEditor_.setValidator(validator);
-    maxSlavesEditor_.setValidator(validator);
+    QRegExp numberExpression(QString("[0-9]*"), Qt::CaseInsensitive, QRegExp::W3CXmlSchema11);
+    QRegExpValidator* numberValidator = new QRegExpValidator(numberExpression, this);
+    maxMastersEditor_.setValidator(numberValidator);
+    maxSlavesEditor_.setValidator(numberValidator);
 	
     maxMastersEditor_.setPlaceholderText(tr("unbound"));
     maxSlavesEditor_.setPlaceholderText(tr("unbound"));
@@ -94,7 +99,6 @@ void BusDefGroup::onIsAddressableChanged(bool checked)
 void BusDefGroup::onMastersChanged()
 {
     busDef_->setMaxMasters(maxMastersEditor_.text());
-
 	emit contentChanged();
 }
 
@@ -104,7 +108,6 @@ void BusDefGroup::onMastersChanged()
 void BusDefGroup::onSlavesChanged()
 {
 	busDef_->setMaxSlaves(maxSlavesEditor_.text());
-
 	emit contentChanged();
 }
 
@@ -114,7 +117,6 @@ void BusDefGroup::onSlavesChanged()
 void BusDefGroup::onDescriptionChanged()
 {
    busDef_->setDescription(descriptionEditor_.toPlainText());
-
 	emit contentChanged();
 }
 

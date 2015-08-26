@@ -17,9 +17,10 @@
 #include <Plugins/PluginSystem/PluginUtilityAdapter.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/GeneratorConfiguration.h>
 
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/design.h>
-#include <IPXACTmodels/designconfiguration.h>
 #include <IPXACTmodels/fileset.h>
 
 #include <tests/MockObjects/LibraryMock.h>

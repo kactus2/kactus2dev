@@ -54,8 +54,11 @@ QSharedPointer<WireAbstraction> WireAbstractionReader::createWireAbstractionFrom
     QDomElement driverNode = wireNode.firstChildElement("ipxact:requiresDriver");
     if (!driverNode.isNull())
     {
-        wire->setRequiresDriver(driverNode.firstChild().nodeValue() == "true");
-        wire->setDriverType(General::str2DriverType(driverNode.attribute("driverType"), General::ANY));
+        bool requiresDriver = driverNode.firstChild().nodeValue() == "true";
+        if (requiresDriver)
+        {
+            wire->setDriverType(General::str2DriverType(driverNode.attribute("driverType"), General::ANY));
+        }
     }
 
     return wire;

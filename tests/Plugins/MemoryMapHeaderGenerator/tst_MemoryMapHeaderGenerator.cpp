@@ -16,6 +16,8 @@
 
 #include <tests/MockObjects/LibraryMock.h>
 
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+
 #include <IPXACTmodels/addressblock.h>
 #include <IPXACTmodels/register.h>
 #include <IPXACTmodels/registermodel.h>
@@ -23,7 +25,6 @@
 #include <IPXACTmodels/memorymap.h>
 #include <IPXACTmodels/memorymapitem.h>
 #include <IPXACTmodels/design.h>
-#include <IPXACTmodels/designconfiguration.h>
 #include <IPXACTmodels/ComponentInstance.h>
 #include <IPXACTmodels/businterface.h>
 #include <IPXACTmodels/masterinterface.h>

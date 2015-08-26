@@ -16,9 +16,10 @@
 
 #include <tests/MockObjects/LibraryMock.h>
 
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/design.h>
-#include <IPXACTmodels/designconfiguration.h>
 #include <IPXACTmodels/vlnv.h>
 
 class tst_DocumentTreeBuilder : public QObject

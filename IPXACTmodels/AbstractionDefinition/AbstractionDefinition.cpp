@@ -43,7 +43,7 @@ AbstractionDefinition::AbstractionDefinition(AbstractionDefinition const& other)
 Document(other),
     busType_(other.busType_),
     extends_(other.extends_),
-    logicalPorts_(other.logicalPorts_)
+    logicalPorts_(new QList<QSharedPointer<PortAbstraction> >())
 {
     foreach (QSharedPointer<PortAbstraction> port, *other.logicalPorts_)
     {

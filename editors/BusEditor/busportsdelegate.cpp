@@ -1,8 +1,13 @@
-/* 
- *  Created on: 27.6.2011
- *      Author: Antti Kamppi
- * 		filename: busportsdelegate.cpp
- */
+//-----------------------------------------------------------------------------
+// File: busportsdelegate.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 27.6.2011
+//
+// Description:
+// The delegate that provides editors for logical port properties in Abstraction Definition.
+//-----------------------------------------------------------------------------
 
 #include "busportsdelegate.h"
 #include "LogicalPortColumns.h"
@@ -38,7 +43,7 @@ QWidget* BusPortsDelegate::createEditor(QWidget* parent, QStyleOptionViewItem co
     const QModelIndex& index ) const
 {
     if (index.column() == LogicalPortColumns::NAME || 
-        index.column() == LogicalPortColumns::GROUP ||
+        index.column() == LogicalPortColumns::SYSTEM_GROUP ||
         index.column() == LogicalPortColumns::DESCRIPTION)
     {
         QLineEdit* line = new QLineEdit(parent);
@@ -94,7 +99,6 @@ QWidget* BusPortsDelegate::createEditor(QWidget* parent, QStyleOptionViewItem co
         list.append(QString("master"));
         list.append(QString("slave"));
         list.append(QString("system"));
-        list.append(QString("any"));
         box->addItems(list);
 
         connect(box, SIGNAL(destroyed()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
@@ -163,7 +167,7 @@ void BusPortsDelegate::setEditorData(QWidget* editor, QModelIndex const& index )
         }            
     }
     else if (index.column() == LogicalPortColumns::WIDTH ||
-        index.column() == LogicalPortColumns::GROUP ||
+        index.column() == LogicalPortColumns::SYSTEM_GROUP ||
         index.column() == LogicalPortColumns::DESCRIPTION ||
         index.column() == LogicalPortColumns::DEFAULT_VALUE)
     {
@@ -199,7 +203,7 @@ void BusPortsDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, 
 {
     if (index.column() == LogicalPortColumns::NAME ||
         index.column() == LogicalPortColumns::WIDTH ||
-        index.column() == LogicalPortColumns::GROUP ||
+        index.column() == LogicalPortColumns::SYSTEM_GROUP ||
         index.column() == LogicalPortColumns::DEFAULT_VALUE ||
         index.column() == LogicalPortColumns::DESCRIPTION)
     {

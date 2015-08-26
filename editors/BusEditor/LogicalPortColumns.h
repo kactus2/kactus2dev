@@ -6,7 +6,7 @@
 // Date: 19.08.2015
 //
 // Description:
-// <Short description of the class/file contents>
+// Common definitions for abstraction definition logical port table.
 //-----------------------------------------------------------------------------
 
 namespace LogicalPortColumns
@@ -15,14 +15,14 @@ namespace LogicalPortColumns
     enum Columns
     {
         NAME = 0,
-        QUALIFIER,
-        WIDTH,
-        DIRECTION,
         MODE,
-        GROUP,
         PRESENCE,
+        DIRECTION,
+        WIDTH,
         DEFAULT_VALUE,
         DRIVER,
+        QUALIFIER,
+        SYSTEM_GROUP,
         DESCRIPTION,
         COLUMN_COUNT
     };

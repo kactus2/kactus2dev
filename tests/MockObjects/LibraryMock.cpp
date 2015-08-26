@@ -36,9 +36,9 @@ LibraryMock::~LibraryMock()
 //-----------------------------------------------------------------------------
 // Function: LibraryMock::addComponent()
 //-----------------------------------------------------------------------------
-void LibraryMock::addComponent(QSharedPointer<LibraryComponent> component)
+void LibraryMock::addComponent(QSharedPointer<Document> component)
 {
-    components_.insert(*component->getVlnv(), component);
+    components_.insert(component->getVlnv(), component);
 }
 
 //-----------------------------------------------------------------------------
@@ -94,7 +94,7 @@ QString LibraryMock::getDirectoryPath(const VLNV& /*vlnv*/) const
 //-----------------------------------------------------------------------------
 bool LibraryMock::writeModelToFile(const QString path, QSharedPointer<Document> model, bool /*printErrors*/)
 {
-    paths_.insert(*model->getVlnv(), path);
+    paths_.insert(model->getVlnv(), path);
     return true;
 }
 

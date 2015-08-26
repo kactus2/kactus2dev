@@ -29,88 +29,11 @@
 //-----------------------------------------------------------------------------
 //! Data model for the wires within abstraction definition.
 //-----------------------------------------------------------------------------
-class BusPortsModel : public QAbstractTableModel {
+class BusPortsModel : public QAbstractTableModel
+{
 	Q_OBJECT
 
 public:
-
-
-	//! \brief Port contains the data for a single port in abstraction definition.
-	struct Port {
-		
-		//! \brief Name of the port
-		QString name_;
-
-        //! The system group of the port.
-        QString group_;
-
-		//! \brief The qualifier identifies the type of the port.
-		Qualifier::Type qualifier_;
-
-		//! \brief Width contains the number of bits the port contains
-		int width_;
-
-		//! \brief The default value for the port
-		QString defaultValue_;
-
-		//! \brief Defines the mode of the port (master, slave or system)
-		General::InterfaceMode mode_;
-
-		//! \brief The direction of the port (in, out or inout)
-		General::Direction direction_;
-
-		//! \brief Presence defines if port is required, optional or illegal in this bus
-		General::Presence presence_;
-
-		//! \brief Driver defines the driver type for this port
-		General::DriverType driver_;
-
-		//! \brief Contains textual description of the port
-		QString description_;
-
-		/*! \brief Default constructor
-		 *
-		*/
-		Port();
-
-		/*! \brief Copy constructor
-		 *
-		 * \param other Reference to the port to copy.
-		 *
-		*/
-		Port(const Port& other);
-
-		/*! \brief Assignment operator
-		 *
-		 * \param other Reference to the port to assign
-		 *
-		*/
-		Port& operator=(const Port& other);
-
-		/*! \brief The == operator
-		 *
-		 * \param other Reference to Port to compare
-		 *
-		 * \return True if name and mode are equal.
-		*/
-		bool operator==(const Port& other) const;
-
-		/*! \brief The != operator
-		 *
-		 * \param other Reference to Port to compare
-		 *
-		 * \return True if name or mode are not equal
-		*/
-		bool operator!=(const Port& other) const;
-
-		/*! \brief The < operator
-		 *
-		 * \param other Reference to Port to compare
-		 *
-		 * \return True is name < other.name 
-		*/
-		bool operator<(const Port& other) const;
-	};
 
 	/*!
 	 *  The constructor.
@@ -222,28 +145,6 @@ public slots:
      *      @param [in] index       The index where to remove the item.
      */
     void onRemoveItem(QModelIndex const& index);
-
-	/*!
-	 *  Copy the items with given indexes in the model.
-	 *
-	 *      @param [in] indexes     List of QModelIndexes that identify items to copy.
-	 */
-	void copyIndexes(const QModelIndexList& indexes);
-
-	/*!
-	 *  Export the ports from the model to a csv-file.
-	 *
-	 *      @param [in] path    Path to the file the ports are exported to.
-	 */
-	void exportCSV(QString const& path);
-
-	/*!
-	 *  Import ports from a csv-file to the model.
-	 *
-	 *      @param [in] path    Path to the file to read the ports from.
-	 */
-	void importCSV(QString const& path);
-
    
 signals:
 
@@ -298,68 +199,14 @@ private:
 	void savePort(QSharedPointer<PortAbstraction> portAbs, int i);
 
 	/*!
-	 *  Read the ports from the abstraction defition to the table.
-	 */
-	void readPorts();
-
-	/*!
-	 *  Read a single port into table from port abstraction.
+	 *  Creates a single row into the table from port abstraction.
 	 *
-	 *      @param [in] portAbs         Pointer to the port abstraction of the port.
-	 *      @param [in] modeSpesific    Pointer to the mode specific definitions of the port.
+	 *      @param [in] portAbs         The port abstraction of the port.
+	 *      @param [in] modeSpesific    The mode specific definitions of the port.
 	 *      @param [in] mode            The mode of the port to be created.
 	 */
-	void readPort(QSharedPointer<PortAbstraction> portAbs, QSharedPointer<WirePort> modeSpesific,
+	void createRow(QSharedPointer<PortAbstraction> portAbs, QSharedPointer<WirePort> modeSpesific,
 		General::InterfaceMode mode);
-
-	/*!
-	 *  Rename port(s) with given name to another name.
-	 *
-	 *      @param [in] oldPort   The name of the port to rename.
-	 *      @param [in] newPort   The new name for the port.
-	 */
-	void renamePort(QString const& oldPort, QString const& newPort);
-
-	/*!
-	 *  Set qualifier(s) for port(s) with given name.
-	 *
-	 *      @param [in] portName    Identifies the port that's qualifier is to be changed.
-	 *      @param [in] qualifier   The value to set for the qualifier.
-	 */
-	void setQualifier(QString const& portName, QString const& qualifier);
-
-	/*!
-	 *  Set default value(s) for port(s) with the given name.
-	 *
-	 *      @param [in] portName        Identifies the port that's default value is to be set.
-	 *      @param [in] defaultValue    The value to set as default value.
-	 */
-	void setDefaultValue(QString const& portName, QString const& defaultValue);
-
-	/*!
-	 *  Set the driver(s) for port(s) with given name.
-	 *
-	 *      @param [in] portName        Identifies the port that's driver is to be set.
-	 *      @param [in] driverValue     The driver value to set.
-	 */
-	void setDriver(QString const& portName, QString const& driverValue);
-
-	/*!
-	 *  Set the description(s) for port(s) with given name.
-	 *
-	 *      @param [in] portName        Identifies the port that's comment is to be set.
-	 *      @param [in] description     The comment to set for the port(s).
-	 */
-	void setDescription(QString const& portName, QString const& description);
-
-    /*!
-     *  Set the width for the port with the given name.
-     *
-     *      @param [in] portName    Identifies the port that's width is to be set.
-     *      @param [in] width       The width to set for the port.
-     *      @param [in] mode        The port mode (master, slave, system, any).
-     */
-    void setWidth(QString const& portName, const int width, General::InterfaceMode mode);
      
 	/*! Convert PortQualifier to string.
 	 *
@@ -367,7 +214,7 @@ private:
 	 *
 	 *      @return A string representation for the Qualifier.
 	*/
-	QString toString(Qualifier::Type qualifier) const;
+	QString toString(Qualifier qualifier) const;
 
 	/*! Convert a string to PortQualifier.
 	 *
@@ -380,15 +227,58 @@ private:
      //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
+    
+    //! SignalRow represents a single row in the table by grouping the Port, Wire and WirePort elements.
+	struct SignalRow
+    {
+        //! Defines the Port represented in the row.
+        QSharedPointer<PortAbstraction> abstraction_;
 
-	//! Pointer to the abstraction definition being edited.
+		//! Defines the mode of the wirePort (master, slave or system).
+		General::InterfaceMode mode_;
+        
+        //! Defines the wirePort represented on the row.
+        QSharedPointer<WirePort> wire_;
+
+		//! The default constructor.
+		SignalRow();
+
+		//! Copy constructor
+		SignalRow(SignalRow const& other);
+
+		/*!
+		 *  Comparison of two SignalRows.
+		 *
+		 *      @param [in] other   The SignalRow to compare this to.
+		 *
+		 *      @return True, if the SignalRows are equal, otherwise false.
+		 */
+		bool operator==(SignalRow const& other) const;
+
+		/*!
+		 *  Comparison of two SignalRows.
+		 *
+		 *      @param [in] other   The SignalRow to compare this to.
+		 *
+		 *      @return True, if the SignalRows are not equal, otherwise false.
+		 */
+		bool operator!=(SignalRow const& other) const;
+
+		/*!
+		 *  Less than comparison of two SignalRows for table ordering.
+		 *
+		 *      @param [in] other   The SignalRow to compare this to.
+		 *
+		 *      @return True, if this precedes other, otherwise false.
+		 */
+		bool operator<(SignalRow const& other) const;
+	};
+
+	//! The abstraction definition being edited.
 	QSharedPointer<AbstractionDefinition> absDef_;
 
-	//! The pointer to the list containing the ports
-	QSharedPointer<QList<QSharedPointer<PortAbstraction> > > ports_;
-
-	//! Contains the editable ports
-	QList<Port> table_;
+	//! Contains the rows in the table.
+	QList<SignalRow> table_;
 };
 
 #endif // BUSPORTSMODEL_H

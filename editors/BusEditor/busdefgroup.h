@@ -1,8 +1,13 @@
-/* 
- *  Created on: 21.6.2011
- *      Author: Antti Kamppi
- * 		filename: busdefgroup.h
- */
+//-----------------------------------------------------------------------------
+// File: busdefgroup.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 21.6.2011
+//
+// Description:
+// BusDefGroup contains elements to set the properties of a Bus Definition.
+//-----------------------------------------------------------------------------
 
 #ifndef BUSDEFGROUP_H
 #define BUSDEFGROUP_H
@@ -15,75 +20,77 @@
 #include <QSharedPointer>
 #include <QPlainTextEdit>
 
-/*! \brief BusDefGroup contains elements to set the settings for the bus definition.
- *
- */
-class BusDefGroup : public QGroupBox {
+//-----------------------------------------------------------------------------
+//! BusDefGroup contains elements to set the properties of a Bus Definition.
+//-----------------------------------------------------------------------------
+class BusDefGroup : public QGroupBox
+{
 	Q_OBJECT
 
 public:
 
-	/*! \brief The constructor
+	/*! The constructor
 	 *
-	 * \param parent Pointer to the owner of this widget
+	 *      @param [in] parent The owner of this widget
 	 *
 	*/
 	BusDefGroup(QWidget *parent);
 
-	/*! \brief Set the bus definition that is being edited
+	/*! Set the bus definition that is being edited
 	 *
-	 * \param busDef Pointer to the bus definition
+	 *      @param [in] busDef The bus definition
 	 *
 	*/
 	void setBusDef(QSharedPointer<BusDefinition> busDef);
 	
-	//! \brief The destructor
+	//! The destructor
 	virtual ~BusDefGroup();
 
 signals:
 
-	//! \brief Emitted when user changes the state of one of the elements.
+	//! Emitted when user changes the state of one of the elements.
 	void contentChanged();
 
 private slots:
 
-	//! \brief Handler for state changes on direct connection check box
+	//! Handler for state changes on direct connection check box
 	void onDirectConnectionChanged(bool checked);
 
-	//! \brief Handler for state changes on is addressable check box
+	//! Handler for state changes on is addressable check box
 	void onIsAddressableChanged(bool checked);
 
-	//! \brief Handler for changes in max masters line edit.
+	//! Handler for changes in max masters line edit.
 	void onMastersChanged();
 
-	//! \brief Handler for changes in max slaves line edit.
+	//! Handler for changes in max slaves line edit.
 	void onSlavesChanged();
 
+    //! Handler for changes in the description.
     void onDescriptionChanged();
 
 private:
-	//! \brief No copying
+	//! No copying
 	BusDefGroup(const BusDefGroup& other);
 
-	//! \brief No assignment
+	//! No assignment
 	BusDefGroup& operator=(const BusDefGroup& other);
 
     //! Sets the widget layout.
     void setupLayout();
     
-	//! \brief Pointer to the bus definition to edit.
+	//! The bus definition to edit.
 	QSharedPointer<BusDefinition> busDef_;
 
-	//! \brief Check box to set the direct connection option
+	//! Check box to set the direct connection option
 	QCheckBox directConnection_;
 
-	//! \brief Check box to set the is addressable option
+	//! Check box to set the is addressable option
 	QCheckBox isAddressable_;
 
-	//! \brief Spin box to set the maximum number of masters
+	//! Spin box to set the maximum number of masters
 	QLineEdit maxMastersEditor_;
 
-	//! \brief Spin box to set the maximum number of slaves
+	//! Spin box to set the maximum number of slaves
 	QLineEdit maxSlavesEditor_;
 
     //! Editor for bus definition description.

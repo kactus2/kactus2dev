@@ -40,7 +40,7 @@ public:
      *
      *      @return Description.
      */
-    void addComponent(QSharedPointer<LibraryComponent> component);
+    void addComponent(QSharedPointer<Document> component);
 
     /*!
      *  Method description.

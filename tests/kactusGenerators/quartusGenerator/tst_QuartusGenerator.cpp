@@ -13,11 +13,12 @@
 
 #include <tests/MockObjects/LibraryMock.h>
 
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+
 #include <IPXACTmodels/librarycomponent.h>
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/ComponentInstance.h>
 #include <IPXACTmodels/design.h>
-#include <IPXACTmodels/designconfiguration.h>
 #include <IPXACTmodels/fileset.h>
 #include <IPXACTmodels/file.h>
 
@@ -296,7 +297,7 @@ void tst_QuartusGenerator::testGeneratorWithDesignContainingInstances()
     topComponent_->addView(quartusTopLevelView);
 
     View* quartusDesignView (new View("quartusView"));
-    quartusDesignView->setHierarchyRef(*quartusDesignConf->getVlnv());
+    quartusDesignView->setHierarchyRef(quartusDesignConf->getVlnv());
     quartusDesignView->setTopLevelView(quartusTopLevelView->name());
     topComponent_->addView(quartusDesignView);
 
@@ -387,7 +388,7 @@ void tst_QuartusGenerator::testGeneratorWithConfiguredViews()
     setViewOverridesForDesignConfiguration(quartusDesignConf, quartusDesign->getComponentInstances());
 
     View* quartusDesignView (new View("quartusView"));
-    quartusDesignView->setHierarchyRef(*quartusDesignConf->getVlnv());
+    quartusDesignView->setHierarchyRef(quartusDesignConf->getVlnv());
     topComponent_->addView(quartusDesignView);
 
     QString currentTime = QDateTime::currentDateTime().toString(QString("hh:mm:ss dd.MM.yyyy"));
@@ -484,7 +485,7 @@ void tst_QuartusGenerator::testGeneratorInInstancesWithoutActiveViews()
     quartusDesignConf->setViewConfigurations(viewConfigurations);
 
     View* quartusDesignView (new View("quartusView"));
-    quartusDesignView->setHierarchyRef(*quartusDesignConf->getVlnv());
+    quartusDesignView->setHierarchyRef(quartusDesignConf->getVlnv());
     topComponent_->addView(quartusDesignView);
 
     QString currentTime = QDateTime::currentDateTime().toString(QString("hh:mm:ss dd.MM.yyyy"));
