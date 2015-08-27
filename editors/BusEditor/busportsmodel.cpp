@@ -254,7 +254,8 @@ QVariant BusPortsModel::data(QModelIndex const& index, int role) const
     else if (role == Qt::ForegroundRole)
     {
         if ((index.column() == LogicalPortColumns::NAME && port.abstraction_->getLogicalName().isEmpty()) ||
-            (index.column() == LogicalPortColumns::SYSTEM_GROUP && port.mode_ != General::SYSTEM))
+            (index.column() == LogicalPortColumns::SYSTEM_GROUP && port.mode_ != General::SYSTEM) ||
+            (index.column() == LogicalPortColumns::MODE && port.mode_ == General::INTERFACE_MODE_COUNT))
         {
             return QColor("red");
         }
@@ -320,7 +321,7 @@ bool BusPortsModel::setData(QModelIndex const& index, QVariant const& value, int
     }
     else if (index.column() == LogicalPortColumns::PRESENCE)
     {
-        port.wire_->setPresence(General::str2Presence(value.toString(), General::REQUIRED));
+        port.wire_->setPresence(General::str2Presence(value.toString(), General::PRESENCE_UNKNOWN));
     }
     else if (index.column() == LogicalPortColumns::DRIVER)
     {
@@ -349,32 +350,40 @@ void BusPortsModel::setAbsDef(QSharedPointer<AbstractionDefinition> absDef)
     absDef_ = absDef;
 
     beginResetModel();
-
     table_.clear();
 
     foreach (QSharedPointer<PortAbstraction> portAbs, *absDef_->getLogicalPorts()) 
     {
         if (portAbs->hasWire())
         {
+            bool hasValidPort = false;
+
             if (portAbs->getWire()->hasMasterPort()) 
             {
                 createRow(portAbs, portAbs->getWire()->getMasterPort(), General::MASTER);
+                hasValidPort = true;
             }
 
             if (portAbs->getWire()->hasSlavePort()) 
             {
                 createRow(portAbs, portAbs->getWire()->getSlavePort(), General::SLAVE);
+                hasValidPort = true;
             }
 
             foreach (QSharedPointer<WirePort> system, *portAbs->getWire()->getSystemPorts()) 
             {
                 createRow(portAbs, system, General::SYSTEM);
+                hasValidPort = true;
+            }
+
+            if (!hasValidPort)
+            {
+                createRow(portAbs, QSharedPointer<WirePort>(new WirePort()), General::INTERFACE_MODE_COUNT);
             }
         }
     }
 
     qSort(table_);
-
     endResetModel();
 }
 

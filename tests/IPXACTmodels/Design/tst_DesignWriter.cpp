@@ -595,6 +595,7 @@ void tst_DesignWriter::testWriteVendorExtensions()
     QSharedPointer<GenericVendorExtension> testExtension(new GenericVendorExtension(extensionNode));
 
     testDesign_->getVendorExtensions()->append(testExtension);
+    testDesign_->setVersion("3.0.0");
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
@@ -619,6 +620,7 @@ void tst_DesignWriter::testWriteVendorExtensions()
             "\t<ipxact:version>0.1</ipxact:version>\n"
             "\t<ipxact:vendorExtensions>\n"
                 "\t\t<testExtension testExtensionAttribute=\"extension\">testValue</testExtension>\n"
+                "\t\t<kactus2:version>3.0.0</kactus2:version>\n"
             "\t</ipxact:vendorExtensions>\n"
         "</ipxact:design>\n"
         );

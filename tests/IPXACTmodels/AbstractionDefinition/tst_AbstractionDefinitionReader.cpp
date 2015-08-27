@@ -639,7 +639,6 @@ void tst_AbstractionDefinitionReader::testReadAssertions()
     QCOMPARE(testAssertion->getAssert(), QString("1"));
 }
 
-
 //-----------------------------------------------------------------------------
 // Function: tst_AbstractionDefinitionReader::testReadVendorExtension()
 //-----------------------------------------------------------------------------
@@ -658,6 +657,7 @@ void tst_AbstractionDefinitionReader::testReadVendorExtension()
             "<ipxact:name>TestDefinition</ipxact:name>"
             "<ipxact:version>1.0</ipxact:version>"
             "<ipxact:vendorExtensions>"
+                "<kactus2:version>3.0.0</kactus2:version>"
                 "<testExtension vendorAttribute=\"extension\">testValue</testExtension>"
             "</ipxact:vendorExtensions>"
         "</ipxact:abstractionDefinition>"));
@@ -665,7 +665,8 @@ void tst_AbstractionDefinitionReader::testReadVendorExtension()
     AbstractionDefinitionReader reader;
     QSharedPointer<AbstractionDefinition> TestDefinition = reader.createAbstractionDefinitionFrom(document);
 
-    QCOMPARE(TestDefinition->getVendorExtensions()->count(), 1);
+    QCOMPARE(TestDefinition->getVendorExtensions()->count(), 2);
+    QCOMPARE(TestDefinition->getVersion(), QString("3.0.0"));
 }
 
 

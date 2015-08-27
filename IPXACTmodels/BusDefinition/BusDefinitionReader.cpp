@@ -65,7 +65,7 @@ QSharedPointer<BusDefinition> BusDefinitionReader::createBusDefinitionFrom(QDomN
 
     parseAssertions(busNode, busDefinition);
 
-    parseVendorExtensions(busNode, busDefinition);
+    parseKactusAndVendorExtensions(busNode, busDefinition);
 
     return busDefinition;
 }

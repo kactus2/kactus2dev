@@ -52,7 +52,7 @@ private:
     void writeQualifier(QXmlStreamWriter& writer, QSharedPointer<WireAbstraction> wire) const;
         
     /*!
-     *  Writes the system port for the given wire qualifier into XML.
+     *  Writes the system port for the given wire into XML.
      *
      *      @param [in] writer      The XML writer to use.
      *      @param [in] wire        The wire whose system port to write.

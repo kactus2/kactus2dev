@@ -6,7 +6,7 @@
 // Date: 21.08.2015
 //
 // Description:
-// <Short description of the class/file contents>
+// Writer class for IP-XACT Transactional element within abstraction definition.
 //-----------------------------------------------------------------------------
 
 #ifndef TRANSACTIONALABSTRACTIONWRITER_H
@@ -21,7 +21,7 @@ class TransactionalPort;
 class Protocol;
 
 //-----------------------------------------------------------------------------
-// 
+//! Writer class for IP-XACT Transactional element within abstraction definition. 
 //-----------------------------------------------------------------------------
 class TransactionalAbstractionWriter : public QObject
 {
@@ -34,7 +34,13 @@ public:
 
 	//! The destructor.
 	~TransactionalAbstractionWriter();
-
+     
+    /*!
+     *  Writes the given transactional description into XML.
+     *
+     *      @param [in] writer          The XML writer to use.
+     *      @param [in] transactional   The transactional to write.
+     */
     void writeTransactional(QXmlStreamWriter& writer, QSharedPointer<TransactionalAbstraction> transactional) const;
 
 private:
@@ -43,30 +49,109 @@ private:
 	TransactionalAbstractionWriter(TransactionalAbstractionWriter const& rhs);
 	TransactionalAbstractionWriter& operator=(TransactionalAbstractionWriter const& rhs);
 
+        
+    /*!
+     *  Writes the given transactional qualifier into XML.
+     *
+     *      @param [in] writer          The XML writer to use.
+     *      @param [in] transactional   The transactional whose qualifier to write.
+     */
     void writeQualifier(QXmlStreamWriter& writer, QSharedPointer<TransactionalAbstraction> transactional) const; 
-    
+            
+    /*!
+     *  Writes the system port for the given transactional into XML.
+     *
+     *      @param [in] writer      The XML writer to use.
+     *      @param [in] wire        The transactional whose system port to write.
+     */
     void writeSystem(QXmlStreamWriter& writer, QSharedPointer<TransactionalAbstraction> transactional) const;
-    
+                
+    /*!
+     *  Writes the transactional port on system/master/slave into XML.
+     *
+     *      @param [in] writer      The XML writer to use.
+     *      @param [in] port        The transactional port to write.
+     */
     void writeTransactionalPort(QXmlStreamWriter& writer, QSharedPointer<TransactionalPort> port) const;
-    
+                   
+    /*!
+     *  Writes the transactional port presence on system/master/slave into XML.
+     *
+     *      @param [in] writer      The XML writer to use.
+     *      @param [in] port        The transactional port whose presence to write.
+     */
     void writePresence(QXmlStreamWriter& writer, QSharedPointer<TransactionalPort> port) const;
-    
+                       
+    /*!
+     *  Writes the transactional port initiative on system/master/slave into XML.
+     *
+     *      @param [in] writer      The XML writer to use.
+     *      @param [in] port        The transactional port whose initiative to write.
+     */
     void writeInitiative(QXmlStreamWriter& writer, QSharedPointer<TransactionalPort> port) const;
-    
+                           
+    /*!
+     *  Writes the transactional port type on system/master/slave into XML.
+     *
+     *      @param [in] writer      The XML writer to use.
+     *      @param [in] port        The transactional port whose type to write.
+     */
     void writeKind(QXmlStreamWriter& writer, QSharedPointer<TransactionalPort> port) const;
-
+                               
+    /*!
+     *  Writes the transactional port width in bits on system/master/slave into XML.
+     *
+     *      @param [in] writer      The XML writer to use.
+     *      @param [in] port        The transactional port whose width to write.
+     */
     void writeBusWidth(QXmlStreamWriter& writer, QSharedPointer<TransactionalPort> port) const;
-
+       
+    /*!
+     *  Writes the transactional port protocol on system/master/slave into XML.
+     *
+     *      @param [in] writer      The XML writer to use.
+     *      @param [in] port        The transactional port whose protocol to write.
+     */
     void writeProtocol(QXmlStreamWriter& writer, QSharedPointer<TransactionalPort> port) const;
-
+       
+    /*!
+     *  Writes the transactional port protocol type on system/master/slave into XML.
+     *
+     *      @param [in] writer          The XML writer to use.
+     *      @param [in] portProtocol    The protocol whose type to write.
+     */
     void writeProtocolType(QXmlStreamWriter& writer, QSharedPointer<Protocol> portProtocol) const;
-
+       
+    /*!
+     *  Writes the transactional port protocol payload on system/master/slave into XML.
+     *
+     *      @param [in] writer          The XML writer to use.
+     *      @param [in] portProtocol    The protocol whose payload to write.
+     */
     void writePayload(QXmlStreamWriter& writer, QSharedPointer<Protocol> portProtocol) const;
 
+    /*!
+     *  Writes the transactional port protocol vendor extensions on system/master/slave into XML.
+     *
+     *      @param [in] writer          The XML writer to use.
+     *      @param [in] portProtocol    The protocol whose vendor extensions to write.
+     */
     void writeVendorExtensions(QXmlStreamWriter& writer, QSharedPointer<Protocol> portProtocol) const;
-
+                
+    /*!
+     *  Writes the master port for the given transactional into XML.
+     *
+     *      @param [in] writer      The XML writer to use.
+     *      @param [in] wire        The transactional whose master port to write.
+     */
     void writeMaster(QXmlStreamWriter& writer, QSharedPointer<TransactionalAbstraction> transactional) const;
 
+    /*!
+     *  Writes the slave port for the given transactional into XML.
+     *
+     *      @param [in] writer      The XML writer to use.
+     *      @param [in] wire        The transactional whose slave port to write.
+     */
     void writeSlave(QXmlStreamWriter& writer, QSharedPointer<TransactionalAbstraction> transactional) const;
 
 };

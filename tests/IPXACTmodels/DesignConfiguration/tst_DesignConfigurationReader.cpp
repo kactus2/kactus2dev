@@ -462,7 +462,8 @@ void tst_DesignConfigurationReader::testReadVendorExtensions()
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestDesignConfiguration</ipxact:name>"
             "<ipxact:version>0.1</ipxact:version>"
-            "<ipxact:vendorExtensions>"
+            "<ipxact:vendorExtensions>"                
+                "<kactus2:version>3.0.0</kactus2:version>"
                 "<testExtension testExtensionAttribute=\"extension\">testValue</testExtension>"
             "</ipxact:vendorExtensions>\n"
         "</ipxact:designConfiguration>\n"
@@ -476,8 +477,9 @@ void tst_DesignConfigurationReader::testReadVendorExtensions()
     QSharedPointer<DesignConfiguration> testDesignConfiguration =
         designConfigurationReader.createDesignConfigurationFrom(document);
 
-    QCOMPARE(testDesignConfiguration->getVendorExtensions()->size(), 1);
-    QCOMPARE(testDesignConfiguration->getVendorExtensions()->first()->type(), QString("testExtension"));
+    QCOMPARE(testDesignConfiguration->getVendorExtensions()->size(), 2);
+    QCOMPARE(testDesignConfiguration->getVendorExtensions()->last()->type(), QString("testExtension"));
+    QCOMPARE(testDesignConfiguration->getVersion(), QString("3.0.0"));
 }
 
 QTEST_APPLESS_MAIN(tst_DesignConfigurationReader)

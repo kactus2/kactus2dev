@@ -401,7 +401,6 @@ void tst_AbstractionDefinition::testWriteMultipleSystemWirePorts()
                             "<ipxact:width>16</ipxact:width>"
                             "<ipxact:direction>inout</ipxact:direction>"
                         "</ipxact:onSystem>" 
-                        "<ipxact:requiresDriver>false</ipxact:requiresDriver>"
                     "</ipxact:wire>"
                 "</ipxact:port>"
             "</ipxact:ports>"
@@ -483,7 +482,6 @@ void tst_AbstractionDefinition::testWireConstraints()
                                 "</ipxact:loadConstraint>"
                             "</ipxact:modeConstraints>"
                         "</ipxact:onMaster>"
-                        "<ipxact:requiresDriver>false</ipxact:requiresDriver>"
                     "</ipxact:wire>"
                 "</ipxact:port>"
             "</ipxact:ports>"
@@ -565,7 +563,6 @@ void tst_AbstractionDefinition::testWireMirroredConstraints()
                             "</ipxact:loadConstraint>"
                         "</ipxact:mirroredModeConstraints>"
                     "</ipxact:onMaster>"
-                    "<ipxact:requiresDriver>false</ipxact:requiresDriver>"
                 "</ipxact:wire>"
                 "</ipxact:port>"
             "</ipxact:ports>"
@@ -919,6 +916,7 @@ void tst_AbstractionDefinition::testVendorExtensions()
     QSharedPointer<AbstractionDefinition> abstractionDefinition(new AbstractionDefinition());
     abstractionDefinition->setVlnv(vlnv);
     abstractionDefinition->setBusType(targetBus);
+    abstractionDefinition->setVersion("3.0.0");
 
     QDomDocument document;
     QDomElement extensionNode = document.createElement("testExtension");
@@ -948,7 +946,8 @@ void tst_AbstractionDefinition::testVendorExtensions()
             "<ipxact:version>1.0</ipxact:version>"
             "<ipxact:busType vendor=\"TUT\" library=\"TestLibrary\" name=\"TargetBusDef\" version=\"1.0\"/>"
             "<ipxact:vendorExtensions>"
-                "<testExtension vendorAttribute=\"extension\">testValue</testExtension>"
+                "<kactus2:version>3.0.0</kactus2:version>"
+                "<testExtension vendorAttribute=\"extension\">testValue</testExtension>"                
             "</ipxact:vendorExtensions>"
         "</ipxact:abstractionDefinition>\n"));
 }

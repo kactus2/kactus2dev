@@ -375,6 +375,7 @@ void tst_BusDefinition::testVendorExtensions()
     VLNV vlnv(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "TestBus", "1.0");
     QSharedPointer<BusDefinition> busDefinition(new BusDefinition());
     busDefinition->setVlnv(vlnv);
+    busDefinition->setVersion("3.0.0");
 
     QDomDocument document;
     QDomElement extensionNode = document.createElement("testExtension");
@@ -405,6 +406,7 @@ void tst_BusDefinition::testVendorExtensions()
             "<ipxact:directConnection>true</ipxact:directConnection>"
             "<ipxact:isAddressable>true</ipxact:isAddressable>"
             "<ipxact:vendorExtensions>"
+                "<kactus2:version>3.0.0</kactus2:version>"
                 "<testExtension vendorAttribute=\"extension\">testValue</testExtension>"
             "</ipxact:vendorExtensions>"
         "</ipxact:busDefinition>\n"));

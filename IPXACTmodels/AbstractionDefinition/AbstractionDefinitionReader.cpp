@@ -60,7 +60,7 @@ QSharedPointer<AbstractionDefinition> AbstractionDefinitionReader::createAbstrac
 
     parseAssertions(definitionNode, abstractionDefinion);
 
-    parseVendorExtensions(definitionNode, abstractionDefinion);
+    parseKactusAndVendorExtensions(definitionNode, abstractionDefinion);
 
     return abstractionDefinion;
 }
@@ -96,7 +96,7 @@ void AbstractionDefinitionReader::parsePorts(QDomNode definitionNode,
 {
     QSharedPointer<QList<QSharedPointer<PortAbstraction> > > logicalPorts = abstractionDefinion->getLogicalPorts();
 
-    QDomNodeList portNodes = definitionNode.firstChildElement("ipxact:ports").childNodes();
+    QDomNodeList portNodes = definitionNode.firstChildElement("ipxact:ports").elementsByTagName("ipxact:port");
     int portCount = portNodes.count();
     for (int i = 0; i < portCount; i++)
     {

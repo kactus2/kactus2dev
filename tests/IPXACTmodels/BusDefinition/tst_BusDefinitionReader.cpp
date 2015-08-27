@@ -343,6 +343,7 @@ void tst_BusDefinitionReader::testReadVendorExtension()
             "<ipxact:isAddressable>true</ipxact:isAddressable>"
             "<ipxact:vendorExtensions>"
                 "<testExtension vendorAttribute=\"extension\">testValue</testExtension>"
+                "<kactus2:version>3.0.0<kactus2:version>"
             "</ipxact:vendorExtensions>"
         "</ipxact:busDefinition>"));
 
@@ -351,7 +352,8 @@ void tst_BusDefinitionReader::testReadVendorExtension()
     BusDefinitionReader busReader;
     QSharedPointer<BusDefinition> testBus = busReader.createBusDefinitionFrom(document);
 
-    QCOMPARE(testBus->getVendorExtensions()->count(), 1);
+    QCOMPARE(testBus->getVendorExtensions()->count(), 2);
+    QCOMPARE(testBus->getVersion(), QString("3.0.0"));
 }
 
 

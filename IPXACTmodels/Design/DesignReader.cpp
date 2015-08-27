@@ -53,7 +53,7 @@ QSharedPointer<Design> DesignReader::createDesignFrom(QDomDocument const& docume
 
     parseAssertions(designNode, newDesign);
 
-    parseVendorExtensions(designNode, newDesign);
+    parseKactusAndVendorExtensions(designNode, newDesign);
 
     return newDesign;
 }

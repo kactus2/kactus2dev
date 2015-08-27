@@ -57,10 +57,6 @@ void WireAbstractionWriter::writeWire(QXmlStreamWriter& writer, QSharedPointer<W
         writer.writeCharacters("true");
         writer.writeEndElement();
     }
-    else
-    {
-        writer.writeTextElement("ipxact:requiresDriver", "false");
-    }
 
     writer.writeEndElement();
 }

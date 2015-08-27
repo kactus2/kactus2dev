@@ -498,7 +498,8 @@ void tst_DesignReader::testReadVendorExtensions()
             "<ipxact:version>0.1</ipxact:version>"
             "<ipxact:description>TestDescription</ipxact:description>"
             "<ipxact:vendorExtensions>"
-                "<testExtension testExtensionAttribute=\"extension\">testValue</testExtension>"
+                "<kactus2:version>3.0.0</kactus2:version>"
+                "<testExtension testExtensionAttribute=\"extension\">testValue</testExtension>"                
             "</ipxact:vendorExtensions>\n"
         "</ipxact:design>");
 
@@ -508,8 +509,9 @@ void tst_DesignReader::testReadVendorExtensions()
     DesignReader designReader;
     QSharedPointer<Design> testDesign = designReader.createDesignFrom(document);
 
-    QCOMPARE(testDesign->getVendorExtensions()->size(), 1);
-    QCOMPARE(testDesign->getVendorExtensions()->first()->type(), QString("testExtension"));
+    QCOMPARE(testDesign->getVendorExtensions()->size(), 2);
+    QCOMPARE(testDesign->getVendorExtensions()->last()->type(), QString("testExtension"));
+    QCOMPARE(testDesign->getVersion(), QString("3.0.0"));
 }
 
 QTEST_APPLESS_MAIN(tst_DesignReader)

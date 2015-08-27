@@ -6,7 +6,7 @@
 // Date: 21.08.2015
 //
 // Description:
-// <Short description of the class/file contents>
+// Writer class for IP-XACT Transactional element within abstraction definition.
 //-----------------------------------------------------------------------------
 
 #include "TransactionalAbstractionWriter.h"

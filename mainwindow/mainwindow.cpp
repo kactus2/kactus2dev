@@ -2765,10 +2765,10 @@ void MainWindow::createBus( VLNV const& vlnv, QString const& directory )
 	// Create the file for the bus definition.
     bool success = true;
 
-    /*if (!libraryHandler_->writeModelToFile(directory, busDef))
+    if (!libraryHandler_->writeModelToFile(directory, busDef))
     {
         success = false;
-    }*/
+    }
 
 	// create an abstraction definition
 	QSharedPointer<AbstractionDefinition> absDef = QSharedPointer<AbstractionDefinition>(new AbstractionDefinition());

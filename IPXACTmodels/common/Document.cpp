@@ -56,7 +56,7 @@ assertions_(new QList<QSharedPointer<Assertion> >())
 // Function: Document::Document()
 //-----------------------------------------------------------------------------
 Document::Document(Document const& other):
-Extendable(),
+Extendable(other),
 vlnv_(other.vlnv_),
 description_(other.description_),
 kactus2Attributes_(other.kactus2Attributes_),
@@ -187,9 +187,9 @@ QStringList Document::getDependentDirs() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: librarycomponent::setVersion()
+// Function: Document::setVersion()
 //-----------------------------------------------------------------------------
-void Document::setVersion(QString versionNumber)
+void Document::setVersion(QString const& versionNumber)
 {
     foreach(QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
@@ -201,6 +201,22 @@ void Document::setVersion(QString versionNumber)
     }
 
     getVendorExtensions()->append(QSharedPointer<Kactus2Value>(new Kactus2Value("kactus2:version", versionNumber)));
+}
+
+//-----------------------------------------------------------------------------
+// Function: Document::getVersion()
+//-----------------------------------------------------------------------------
+QString Document::getVersion() const
+{
+    foreach(QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    {
+        if (extension->type() == "kactus2:version")
+        {
+            return extension.dynamicCast<Kactus2Value>()->value();
+        }
+    }
+
+    return QString();
 }
 
 //-----------------------------------------------------------------------------

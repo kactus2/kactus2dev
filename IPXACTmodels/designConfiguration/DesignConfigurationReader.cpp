@@ -56,7 +56,7 @@ QSharedPointer<DesignConfiguration> DesignConfigurationReader::createDesignConfi
 
     parseAssertions(designConfigurationNode, newDesignConfiguration);
 
-    parseVendorExtensions(designConfigurationNode, newDesignConfiguration);
+    parseKactusAndVendorExtensions(designConfigurationNode, newDesignConfiguration);
 
     return newDesignConfiguration;
 }

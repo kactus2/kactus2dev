@@ -17,7 +17,7 @@
 //-----------------------------------------------------------------------------
 // Function: DocumentReader::DocumentReader()
 //-----------------------------------------------------------------------------
-DocumentReader::DocumentReader(QObject* parent /* = 0 */):
+DocumentReader::DocumentReader(QObject* parent):
 QObject(parent)
 {
 
@@ -131,22 +131,44 @@ void DocumentReader::parseAssertions(QDomNode const& documentNode, QSharedPointe
 }
 
 //-----------------------------------------------------------------------------
+// Function: DocumentReader::parseKactusAndVendorExtensions()
+//-----------------------------------------------------------------------------
+void DocumentReader::parseKactusAndVendorExtensions(QDomNode const& documentNode, 
+    QSharedPointer<Document> document) const
+{
+    QDomElement extensionNodes = documentNode.firstChildElement("ipxact:vendorExtensions");
+
+    QDomNode versionNode = extensionNodes.firstChildElement("kactus2:version");
+    if (!versionNode.isNull())
+    {
+        document->setVersion(versionNode.firstChild().nodeValue());
+    }
+
+    parseVendorExtensions(documentNode, document);
+}
+
+//-----------------------------------------------------------------------------
 // Function: DocumentReader::parseVendorExtensions()
 //-----------------------------------------------------------------------------
-void DocumentReader::parseVendorExtensions(QDomNode const& documentNode, QSharedPointer<Extendable> document) const
+void DocumentReader::parseVendorExtensions(QDomNode const& documentNode, QSharedPointer<Extendable> element) const
 {
     QDomNodeList extensionNodes = documentNode.firstChildElement("ipxact:vendorExtensions").childNodes();
 
     int extensionCount = extensionNodes.count();
     for (int i = 0; i < extensionCount; i++)
     {
-        QSharedPointer<VendorExtension> extension(new GenericVendorExtension(extensionNodes.at(i)));
-        document->getVendorExtensions()->append(extension);
+        QDomNode extensionNode = extensionNodes.at(i);
+
+        if (!extensionNode.nodeName().startsWith("kactus2:"))
+        {
+            QSharedPointer<VendorExtension> extension(new GenericVendorExtension(extensionNode));
+            element->getVendorExtensions()->append(extension);
+        }
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: DocumentReader::ConfigurableVLNVReference()
+// Function: DocumentReader::parseConfigurableVLNVReference()
 //-----------------------------------------------------------------------------
 QSharedPointer<ConfigurableVLNVReference> DocumentReader::parseConfigurableVLNVReference(
     QDomNode const& configurableVLNVNode, VLNV::IPXactType type) const
@@ -158,11 +180,10 @@ QSharedPointer<ConfigurableVLNVReference> DocumentReader::parseConfigurableVLNVR
     QString name = attributeMap.namedItem("name").nodeValue();
     QString version = attributeMap.namedItem("version").nodeValue();
 
-    QSharedPointer<ConfigurableVLNVReference> newAbstractorRef (
+    QSharedPointer<ConfigurableVLNVReference> vlnvReference(
         new ConfigurableVLNVReference(type, vendor, library, name, version));
 
-    QDomNode configurableElementsNode = configurableVLNVNode.
-        firstChildElement("ipxact:configurableElementValues");
+    QDomNode configurableElementsNode = configurableVLNVNode.firstChildElement("ipxact:configurableElementValues");
 
     QDomNodeList configurableElementNodeList = configurableElementsNode.childNodes();
     for (int i = 0; i < configurableElementNodeList.size(); ++i)
@@ -170,10 +191,10 @@ QSharedPointer<ConfigurableVLNVReference> DocumentReader::parseConfigurableVLNVR
         QSharedPointer<ConfigurableElementValue> newConfigurableElementValue =
             parseConfigurableElementValue(configurableElementNodeList.at(i));
 
-        newAbstractorRef->getConfigurableElementValues()->append(newConfigurableElementValue);
+        vlnvReference->getConfigurableElementValues()->append(newConfigurableElementValue);
     }
 
-    return newAbstractorRef;
+    return vlnvReference;
 }
 
 //-----------------------------------------------------------------------------

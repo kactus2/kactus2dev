@@ -87,14 +87,23 @@ protected:
      *      @param [in] document        The document in which the parsed assertions are inserted.
      */
     void parseAssertions(QDomNode const& documentNode, QSharedPointer<Document> document) const;
-
+    
+    /*!
+     *  Parses Kactus2 specific vendor extensions before other vendor extensions from XML.
+     *
+     *      @param [in] documentNode    The XML description of the document.
+     *      @param [in] document        The document in which the parsed extensions are stored.
+     */
+    virtual void parseKactusAndVendorExtensions(QDomNode const& documentNode,
+        QSharedPointer<Document> document) const;
+    
     /*!
      *  Parses the vendor extensions from XML to a document.
      *
      *      @param [in] documentNode    The XML description of the document.
-     *      @param [in] document        The document in which the parsed vendor extensions are stored.
+     *      @param [in] element         The object in which the parsed vendor extensions are stored.
      */
-    void parseVendorExtensions(QDomNode const& documentNode, QSharedPointer<Extendable> document) const;
+    void parseVendorExtensions(QDomNode const& documentNode, QSharedPointer<Extendable> element) const;
 
     /*!
      *  Parses a configurable VLNV.

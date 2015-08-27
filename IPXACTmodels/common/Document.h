@@ -144,11 +144,18 @@ public:
 	virtual QList<VLNV> getDependentVLNVs()const = 0;
 
     /*!
-     *  Set the version number kactus2 during creation of this component.
+     *  Set the version number kactus2 during creation of this document.
      *
      *      @param [in] versionNumber   Version of Kactus2.
      */
-    void setVersion(QString versionNumber);
+    void setVersion(QString const& versionNumber);
+
+    /*!
+     *  Get the version number of Kactus2 used for creating this document.
+     *
+     *      @return  The used version of Kactus2.
+     */
+    QString getVersion() const;
 
 protected:
 
