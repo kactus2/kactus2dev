@@ -13,6 +13,7 @@
 #include <IPXACTmodels/Design/Design.h>
 
 #include <IPXACTmodels/GenericVendorExtension.h>
+#include <IPXACTmodels/kactusExtensions/Kactus2Group.h>
 
 #include <QtTest>
 #include <QSharedPointer>
@@ -40,6 +41,14 @@ private slots:
     void testWriteParameters();
     void testWriteAssertions();
     void testWriteVendorExtensions();
+
+    void testWriteColumns();
+    void testWriteSWInstances();
+    void testWritePortAdHocVisibilitiesAndPositions();
+    void testWriteApiDependencies();
+    void testWriteHierApiDependencies();
+    void testWriteComConnections();
+    void testWriteHierComConnections();
 
 private:
 
@@ -621,6 +630,468 @@ void tst_DesignWriter::testWriteVendorExtensions()
             "\t<ipxact:vendorExtensions>\n"
                 "\t\t<testExtension testExtensionAttribute=\"extension\">testValue</testExtension>\n"
                 "\t\t<kactus2:version>3.0.0</kactus2:version>\n"
+            "\t</ipxact:vendorExtensions>\n"
+        "</ipxact:design>\n"
+        );
+
+    compareOutputToExpected(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_DesignWriter::testWriteColumns()
+//-----------------------------------------------------------------------------
+void tst_DesignWriter::testWriteColumns()
+{
+    QSharedPointer<ColumnDesc> testColumn (new ColumnDesc("testColumn", COLUMN_CONTENT_COMPONENTS));
+    QSharedPointer<ColumnDesc> otherColumn (new ColumnDesc("otherColumn", COLUMN_CONTENT_BUSES));
+
+    QSharedPointer<Kactus2Group> columnLayout(new Kactus2Group("kactus2:columnLayout"));
+    columnLayout->addToGroup(testColumn);
+    columnLayout->addToGroup(otherColumn);
+
+    testDesign_->getVendorExtensions()->append(columnLayout);
+
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    xmlStreamWriter.setAutoFormatting(true);
+    xmlStreamWriter.setAutoFormattingIndent(-1);
+
+    DesignWriter designWriter;
+    designWriter.writeDesign(xmlStreamWriter, testDesign_);
+
+    QString expectedOutput(
+        "<?xml version=\"1.0\"?>\n"
+        "<ipxact:design "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
+            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:library>TestLibrary</ipxact:library>\n"
+            "\t<ipxact:name>TestDesign</ipxact:name>\n"
+            "\t<ipxact:version>0.1</ipxact:version>\n"
+            "\t<ipxact:vendorExtensions>\n"
+                "\t\t<kactus2:columnLayout>\n"
+                    "\t\t\t<kactus2:column name=\"testColumn\" contentType=\"2\" allowedItems=\"0\" "
+                        "minWidth=\"259\" width=\"259\"/>\n"
+                    "\t\t\t<kactus2:column name=\"otherColumn\" contentType=\"1\" allowedItems=\"0\" "
+                        "minWidth=\"259\" width=\"259\"/>\n"
+                "\t\t</kactus2:columnLayout>\n"
+            "\t</ipxact:vendorExtensions>\n"
+        "</ipxact:design>\n"
+        );
+
+    compareOutputToExpected(output, expectedOutput);
+
+    output.clear();
+
+    QList<QSharedPointer<ColumnDesc> > columnDescriptions;
+    columnDescriptions.append(testColumn);
+
+    testDesign_->setColumns(columnDescriptions);
+
+    designWriter.writeDesign(xmlStreamWriter, testDesign_);
+
+    expectedOutput =
+        "<?xml version=\"1.0\"?>\n"
+        "<ipxact:design "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
+            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:library>TestLibrary</ipxact:library>\n"
+            "\t<ipxact:name>TestDesign</ipxact:name>\n"
+            "\t<ipxact:version>0.1</ipxact:version>\n"
+            "\t<ipxact:vendorExtensions>\n"
+                "\t\t<kactus2:columnLayout>\n"
+                    "\t\t\t<kactus2:column name=\"testColumn\" contentType=\"2\" allowedItems=\"0\" "
+                        "minWidth=\"259\" width=\"259\"/>\n"
+                "\t\t</kactus2:columnLayout>\n"
+            "\t</ipxact:vendorExtensions>\n"
+        "</ipxact:design>\n"
+        ;
+
+    compareOutputToExpected(output, expectedOutput);
+
+    output.clear();
+
+    QSharedPointer<Design> otherDesign (new Design(*testDesign_.data()));
+
+    designWriter.writeDesign(xmlStreamWriter, otherDesign);
+    compareOutputToExpected(output, expectedOutput);
+
+    output.clear();
+    QSharedPointer<Design> newDesign (new Design());
+    newDesign = otherDesign;
+
+    designWriter.writeDesign(xmlStreamWriter, otherDesign);
+    compareOutputToExpected(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_DesignWriter::testWriteSWInstances()
+//-----------------------------------------------------------------------------
+void tst_DesignWriter::testWriteSWInstances()
+{
+    VLNV componentRef(VLNV::COMPONENT, "TUT", "TestLibrary", "refComponent", "1.1");
+
+    QSharedPointer<SWInstance> testInstance(new SWInstance());
+    testInstance->setInstanceName("testInstance");
+    testInstance->setDisplayName("testDisplay");
+    testInstance->setDescription("testDescription");
+    testInstance->setComponentRef(componentRef);
+
+    QList<QSharedPointer<SWInstance> > swInstances;
+    swInstances.append(testInstance);
+
+    testDesign_->setSWInstances(swInstances);
+
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    xmlStreamWriter.setAutoFormatting(true);
+    xmlStreamWriter.setAutoFormattingIndent(-1);
+
+    DesignWriter designWriter;
+    designWriter.writeDesign(xmlStreamWriter, testDesign_);
+    
+    QString expectedOutput(
+        "<?xml version=\"1.0\"?>\n"
+        "<ipxact:design "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
+            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:library>TestLibrary</ipxact:library>\n"
+            "\t<ipxact:name>TestDesign</ipxact:name>\n"
+            "\t<ipxact:version>0.1</ipxact:version>\n"
+            "\t<ipxact:vendorExtensions>\n"
+                "\t\t<kactus2:swInstances>\n"
+                    "\t\t\t<kactus2:swInstance>\n"
+                        "\t\t\t\t<kactus2:instanceName>testInstance</kactus2:instanceName>\n"
+                        "\t\t\t\t<kactus2:displayName>testDisplay</kactus2:displayName>\n"
+                        "\t\t\t\t<kactus2:description>testDescription</kactus2:description>\n"
+                        "\t\t\t\t<kactus2:componentRef vendor=\"TUT\" library=\"TestLibrary\" "
+                            "name=\"refComponent\" version=\"1.1\"/>\n"
+                        "\t\t\t\t<kactus2:mapping kactus2:hwRef=\"\"/>\n"
+                        "\t\t\t\t<kactus2:position x=\"0\" y=\"0\"/>\n"
+                    "\t\t\t</kactus2:swInstance>\n"
+                "\t\t</kactus2:swInstances>\n"
+            "\t</ipxact:vendorExtensions>\n"
+        "</ipxact:design>\n"
+        );
+
+    compareOutputToExpected(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_DesignWriter::testWritePortAdHocVisibilitiesAndPositions()
+//-----------------------------------------------------------------------------
+void tst_DesignWriter::testWritePortAdHocVisibilitiesAndPositions()
+{
+    QMap<QString, bool> adHocVisibilities;
+    adHocVisibilities.insert("testPort", true);
+    testDesign_->setPortAdHocVisibilities(adHocVisibilities);
+
+    QPointF portPosition;
+    portPosition.setX(4);
+    portPosition.setY(25);
+
+    QMap<QString, QPointF> adHocPositions;
+    adHocPositions.insert("testPort", portPosition);
+    testDesign_->setAdHocPortPositions(adHocPositions);
+
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    xmlStreamWriter.setAutoFormatting(true);
+    xmlStreamWriter.setAutoFormattingIndent(-1);
+
+    DesignWriter designWriter;
+    designWriter.writeDesign(xmlStreamWriter, testDesign_);
+
+    QString expectedOutput(
+        "<?xml version=\"1.0\"?>\n"
+        "<ipxact:design "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
+            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:library>TestLibrary</ipxact:library>\n"
+            "\t<ipxact:name>TestDesign</ipxact:name>\n"
+            "\t<ipxact:version>0.1</ipxact:version>\n"
+            "\t<ipxact:vendorExtensions>\n"
+                "\t\t<kactus2:adHocVisibilities>\n"
+                    "\t\t\t<kactus2:adHocVisible portName=\"testPort\" x=\"4\" y=\"25\"/>\n"
+                "\t\t</kactus2:adHocVisibilities>\n"
+            "\t</ipxact:vendorExtensions>\n"
+        "</ipxact:design>\n"
+        );
+
+    compareOutputToExpected(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_DesignWriter::testWriteApiDependencies()
+//-----------------------------------------------------------------------------
+void tst_DesignWriter::testWriteApiDependencies()
+{
+    QSharedPointer<ActiveInterface> testStartInterface(new ActiveInterface("applicationOne", "busOne"));
+    QSharedPointer<ActiveInterface> testEndInterface(new ActiveInterface("applicationTwo", "busTwo"));
+
+    QPointF pointOne;
+    pointOne.setX(1);
+    pointOne.setY(1);
+    QList<QPointF> points;
+    points.append(pointOne);
+
+    QSharedPointer<ApiInterconnection> testApiConnection(new ApiInterconnection("apiConnect", "connection",
+        "described", testStartInterface, testEndInterface, points));
+
+    QList<QSharedPointer<ApiInterconnection> > apiConnections;
+    apiConnections.append(testApiConnection);
+
+    testDesign_->setApiConnections(apiConnections);
+
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    xmlStreamWriter.setAutoFormatting(true);
+    xmlStreamWriter.setAutoFormattingIndent(-1);
+
+    DesignWriter designWriter;
+    designWriter.writeDesign(xmlStreamWriter, testDesign_);
+
+    QString expectedOutput(
+        "<?xml version=\"1.0\"?>\n"
+        "<ipxact:design "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
+            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:library>TestLibrary</ipxact:library>\n"
+            "\t<ipxact:name>TestDesign</ipxact:name>\n"
+            "\t<ipxact:version>0.1</ipxact:version>\n"
+            "\t<ipxact:vendorExtensions>\n"
+                "\t\t<kactus2:apiConnections>\n"
+                    "\t\t\t<kactus2:apiConnection>\n"
+                        "\t\t\t\t<ipxact:name>apiConnect</ipxact:name>\n"
+                        "\t\t\t\t<ipxact:displayName>connection</ipxact:displayName>\n"
+                        "\t\t\t\t<ipxact:description>described</ipxact:description>\n"
+                        "\t\t\t\t<kactus2:activeApiInterface componentRef=\"applicationOne\" apiRef=\"busOne\"/>\n"
+                        "\t\t\t\t<kactus2:activeApiInterface componentRef=\"applicationTwo\" apiRef=\"busTwo\"/>\n"
+                        "\t\t\t\t<kactus2:route offPage=\"false\">\n"
+                            "\t\t\t\t\t<kactus2:position x=\"1\" y=\"1\"/>\n"
+                        "\t\t\t\t</kactus2:route>\n"
+                    "\t\t\t</kactus2:apiConnection>\n"
+                "\t\t</kactus2:apiConnections>\n"
+            "\t</ipxact:vendorExtensions>\n"
+        "</ipxact:design>\n"
+        );
+
+    compareOutputToExpected(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_DesignWriter::testWriteHierApiDependencies()
+//-----------------------------------------------------------------------------
+void tst_DesignWriter::testWriteHierApiDependencies()
+{
+    QSharedPointer<ActiveInterface> testInterface(new ActiveInterface("applicationOne", "busOne"));
+
+    QPointF pointOne;
+    pointOne.setX(1);
+    pointOne.setY(1);
+    QList<QPointF> points;
+    points.append(pointOne);
+
+    QVector2D hierVector;
+    hierVector.setX(10);
+    hierVector.setY(10);
+
+    QSharedPointer<HierApiInterconnection> testHierApi(new HierApiInterconnection(
+        "hierApi", "display", "description", "topInterface", testInterface, pointOne, hierVector, points));
+
+    QList<QSharedPointer<HierApiInterconnection> > hierApiList;
+    hierApiList.append(testHierApi);
+
+    testDesign_->setHierApiDependencies(hierApiList);
+
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    xmlStreamWriter.setAutoFormatting(true);
+    xmlStreamWriter.setAutoFormattingIndent(-1);
+
+    DesignWriter designWriter;
+    designWriter.writeDesign(xmlStreamWriter, testDesign_);
+
+    QString expectedOutput(
+        "<?xml version=\"1.0\"?>\n"
+        "<ipxact:design "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
+            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:library>TestLibrary</ipxact:library>\n"
+            "\t<ipxact:name>TestDesign</ipxact:name>\n"
+            "\t<ipxact:version>0.1</ipxact:version>\n"
+            "\t<ipxact:vendorExtensions>\n"
+                "\t\t<kactus2:hierApiDependencies>\n"
+                    "\t\t\t<kactus2:hierApiDependency interfaceRef=\"topInterface\">\n"
+                        "\t\t\t\t<ipxact:name>hierApi</ipxact:name>\n"
+                        "\t\t\t\t<ipxact:displayName>display</ipxact:displayName>\n"
+                        "\t\t\t\t<ipxact:description>description</ipxact:description>\n"
+                        "\t\t\t\t<kactus2:activeApiInterface componentRef=\"applicationOne\" apiRef=\"busOne\"/>\n"
+                        "\t\t\t\t<kactus2:position x=\"1\" y=\"1\"/>\n"
+                        "\t\t\t\t<kactus2:direction x=\"10\" y=\"10\"/>\n"
+                        "\t\t\t\t<kactus2:route kactus2:offPage=\"false\">\n"
+                            "\t\t\t\t\t<kactus2:position x=\"1\" y=\"1\"/>\n"
+                        "\t\t\t\t</kactus2:route>\n"
+                    "\t\t\t</kactus2:hierApiDependency>\n"
+                "\t\t</kactus2:hierApiDependencies>\n"
+            "\t</ipxact:vendorExtensions>\n"
+        "</ipxact:design>\n"
+        );
+
+    compareOutputToExpected(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_DesignWriter::testWriteComConnections()
+//-----------------------------------------------------------------------------
+void tst_DesignWriter::testWriteComConnections()
+{
+    QSharedPointer<ActiveInterface> testStartInterface(new ActiveInterface("applicationOne", "busOne"));
+    QSharedPointer<ActiveInterface> testEndInterface(new ActiveInterface("applicationTwo", "busTwo"));
+
+    QPointF pointOne;
+    pointOne.setX(1);
+    pointOne.setY(1);
+    QList<QPointF> points;
+    points.append(pointOne);
+
+    QSharedPointer<ComInterconnection> testComConnection(new ComInterconnection("comConnect", "display", "description",
+        testStartInterface, testEndInterface, points));
+
+    QList<QSharedPointer<ComInterconnection> > comConnectionList;
+    comConnectionList.append(testComConnection);
+
+    testDesign_->setComConnections(comConnectionList);
+
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    xmlStreamWriter.setAutoFormatting(true);
+    xmlStreamWriter.setAutoFormattingIndent(-1);
+
+    DesignWriter designWriter;
+    designWriter.writeDesign(xmlStreamWriter, testDesign_);
+
+    QString expectedOutput(
+        "<?xml version=\"1.0\"?>\n"
+        "<ipxact:design "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
+            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:library>TestLibrary</ipxact:library>\n"
+            "\t<ipxact:name>TestDesign</ipxact:name>\n"
+            "\t<ipxact:version>0.1</ipxact:version>\n"
+            "\t<ipxact:vendorExtensions>\n"
+                "\t\t<kactus2:comConnections>\n"
+                    "\t\t\t<kactus2:comConnection>\n"
+                        "\t\t\t\t<ipxact:name>comConnect</ipxact:name>\n"
+                        "\t\t\t\t<ipxact:displayName>display</ipxact:displayName>\n"
+                        "\t\t\t\t<ipxact:description>description</ipxact:description>\n"
+                        "\t\t\t\t<kactus2:activeComInterface componentRef=\"applicationOne\" comRef=\"busOne\"/>\n"
+                        "\t\t\t\t<kactus2:activeComInterface componentRef=\"applicationTwo\" comRef=\"busTwo\"/>\n"
+                        "\t\t\t\t<kactus2:route offPage=\"false\">\n"
+                            "\t\t\t\t\t<kactus2:position x=\"1\" y=\"1\"/>\n"
+                        "\t\t\t\t</kactus2:route>\n"
+                    "\t\t\t</kactus2:comConnection>\n"
+                "\t\t</kactus2:comConnections>\n"
+            "\t</ipxact:vendorExtensions>\n"
+        "</ipxact:design>\n"
+        );
+
+    compareOutputToExpected(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_DesignWriter::testWriteHierComConnections()
+//-----------------------------------------------------------------------------
+void tst_DesignWriter::testWriteHierComConnections()
+{
+    QSharedPointer<ActiveInterface> testInterface(new ActiveInterface("applicationOne", "busOne"));
+
+    QPointF pointOne;
+    pointOne.setX(1);
+    pointOne.setY(1);
+    QList<QPointF> points;
+    points.append(pointOne);
+
+    QVector2D hierVector;
+    hierVector.setX(10);
+    hierVector.setY(10);
+
+    QSharedPointer<HierComInterconnection> testHierComConnection(new HierComInterconnection("hierComConnection",
+        "display", "description", "topInterface", testInterface, pointOne, hierVector, points));
+
+    QList<QSharedPointer<HierComInterconnection> > hierComList;
+    hierComList.append(testHierComConnection);
+
+    testDesign_->setHierComConnections(hierComList);
+
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    xmlStreamWriter.setAutoFormatting(true);
+    xmlStreamWriter.setAutoFormattingIndent(-1);
+
+    DesignWriter designWriter;
+    designWriter.writeDesign(xmlStreamWriter, testDesign_);
+
+    QString expectedOutput(
+        "<?xml version=\"1.0\"?>\n"
+        "<ipxact:design "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
+            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:library>TestLibrary</ipxact:library>\n"
+            "\t<ipxact:name>TestDesign</ipxact:name>\n"
+            "\t<ipxact:version>0.1</ipxact:version>\n"
+            "\t<ipxact:vendorExtensions>\n"
+                "\t\t<kactus2:hierComConnections>\n"
+                    "\t\t\t<kactus2:hierComConnection interfaceRef=\"topInterface\">\n"
+                        "\t\t\t\t<ipxact:name>hierComConnection</ipxact:name>\n"
+                        "\t\t\t\t<ipxact:displayName>display</ipxact:displayName>\n"
+                        "\t\t\t\t<ipxact:description>description</ipxact:description>\n"
+                        "\t\t\t\t<kactus2:activeComInterface componentRef=\"applicationOne\" comRef=\"busOne\"/>\n"
+                        "\t\t\t\t<kactus2:position x=\"1\" y=\"1\"/>\n"
+                        "\t\t\t\t<kactus2:direction x=\"10\" y=\"10\"/>\n"
+                        "\t\t\t\t<kactus2:route offPage=\"false\">\n"
+                            "\t\t\t\t\t<kactus2:position x=\"1\" y=\"1\"/>\n"
+                        "\t\t\t\t</kactus2:route>\n"
+                    "\t\t\t</kactus2:hierComConnection>\n"
+                "\t\t</kactus2:hierComConnections>\n"
             "\t</ipxact:vendorExtensions>\n"
         "</ipxact:design>\n"
         );

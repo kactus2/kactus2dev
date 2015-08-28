@@ -13,6 +13,10 @@
 #define DESIGNREADER_H
 
 #include "Design.h"
+#include "ActiveInterface.h"
+#include "HierInterface.h"
+#include "MonitorInterface.h"
+#include "PortReference.h"
 
 #include <IPXACTmodels/common/DocumentReader.h>
 

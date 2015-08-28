@@ -74,6 +74,22 @@ ColumnDesc::ColumnDesc(QString const& name, ColumnContentType contentType,
 }
 
 //-----------------------------------------------------------------------------
+// Function: ColumnDesc::clone()
+//-----------------------------------------------------------------------------
+ColumnDesc* ColumnDesc::clone() const
+{
+    return new ColumnDesc(name_, contentType_, allowedItems_, minWidth_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ColumnDesc::type()
+//-----------------------------------------------------------------------------
+QString ColumnDesc::type() const
+{
+    return QString("kactus2:column");
+}
+
+//-----------------------------------------------------------------------------
 // Function: ColumnDesc::write()
 //-----------------------------------------------------------------------------
 void ColumnDesc::write(QXmlStreamWriter& writer) const

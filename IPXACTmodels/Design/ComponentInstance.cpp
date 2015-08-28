@@ -11,8 +11,6 @@
 
 #include "ComponentInstance.h"
 
-#include <IPXACTmodels/XmlUtils.h>
-
 #include <IPXACTmodels/kactusExtensions/Kactus2Placeholder.h>
 #include <IPXACTmodels/validators/namevalidator.h>
 
@@ -58,7 +56,7 @@ instanceName_(other.instanceName_),
 displayName_(other.displayName_),
 desc_(other.desc_),
 isPresent_(other.isPresent_),
-componentRef_(other.componentRef_),
+componentRef_(new ConfigurableVLNVReference(*other.componentRef_.data())),
 pos_(other.pos_),
 imported_(other.imported_),
 importRef_(other.importRef_),

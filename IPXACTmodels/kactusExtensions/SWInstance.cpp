@@ -11,9 +11,6 @@
 
 #include "SWInstance.h"
 
-#include "ComInterface.h"
-#include "XmlUtils.h"
-
 //-----------------------------------------------------------------------------
 // Function: SWInstance::SWInstance()
 //-----------------------------------------------------------------------------
@@ -53,6 +50,7 @@ SWInstance::SWInstance(SWInstance const& rhs)
 //-----------------------------------------------------------------------------
 // Function: SWInstance::SWInstance()
 //-----------------------------------------------------------------------------
+/*
 SWInstance::SWInstance(QDomNode& node)
     : instanceName_(),
       displayName_(),
@@ -80,7 +78,7 @@ SWInstance::SWInstance(QDomNode& node)
 
         if (childNode.nodeName() == "spirit:instanceName")
         {
-            instanceName_ = XmlUtils::removeWhiteSpace(childNode.childNodes().at(0).nodeValue());
+            //instanceName_ = XmlUtils::removeWhiteSpace(childNode.childNodes().at(0).nodeValue());
         }
         else if (childNode.nodeName() == "spirit:displayName")
         {
@@ -122,13 +120,13 @@ SWInstance::SWInstance(QDomNode& node)
         }
         else if (childNode.nodeName() == "kactus2:apiInterfacePositions")
         {
-            XmlUtils::parsePositionsMap(childNode, "kactus2:apiInterfacePosition",
-                                        "kactus2:apiRef", apiInterfacePositions_);
+            //XmlUtils::parsePositionsMap(childNode, "kactus2:apiInterfacePosition",
+            //                            "kactus2:apiRef", apiInterfacePositions_);
         }
         else if (childNode.nodeName() == "kactus2:comInterfacePositions")
         {
-            XmlUtils::parsePositionsMap(childNode, "kactus2:comInterfacePosition",
-                                        "kactus2:comRef", comInterfacePositions_);
+            //XmlUtils::parsePositionsMap(childNode, "kactus2:comInterfacePosition",
+            //                            "kactus2:comRef", comInterfacePositions_);
         }
         else if (childNode.nodeName() == "kactus2:draft")
         {
@@ -136,12 +134,28 @@ SWInstance::SWInstance(QDomNode& node)
         }
     }
 }
-
+*/
 //-----------------------------------------------------------------------------
 // Function: SWInstance::~SWInstance()
 //-----------------------------------------------------------------------------
 SWInstance::~SWInstance()
 {
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWInstance::clone()
+//-----------------------------------------------------------------------------
+SWInstance* SWInstance::clone() const
+{
+    return new SWInstance(*this);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWInstance::type()
+//-----------------------------------------------------------------------------
+QString SWInstance::type() const
+{
+    return QString("kactus2:swInstance");
 }
 
 //-----------------------------------------------------------------------------
@@ -152,14 +166,14 @@ void SWInstance::write(QXmlStreamWriter& writer) const
     writer.writeStartElement("kactus2:swInstance");
 
     // Write general data.
-    writer.writeTextElement("spirit:instanceName", instanceName_);
-    writer.writeTextElement("spirit:displayName", displayName_);
-    writer.writeTextElement("spirit:description", desc_);
+    writer.writeTextElement("kactus2:instanceName", instanceName_);
+    writer.writeTextElement("kactus2:displayName", displayName_);
+    writer.writeTextElement("kactus2:description", desc_);
 
     if (!componentRef_.isEmpty())
     {
         writer.writeEmptyElement("kactus2:componentRef");
-        componentRef_.writeAsAttributes(writer);
+        writeVLNVasAttributes(writer, componentRef_);
     }
     
     if (!fileSetRef_.isEmpty())
@@ -218,11 +232,8 @@ void SWInstance::write(QXmlStreamWriter& writer) const
     }
 
     // Write API and COM interface positions.
-    XmlUtils::writePositionsMap(writer, apiInterfacePositions_, "kactus2:apiInterfacePosition",
-                                "kactus2:apiRef");
-
-    XmlUtils::writePositionsMap(writer, comInterfacePositions_, "kactus2:comInterfacePosition",
-                                "kactus2:comRef");
+    writeMappedPosition(writer, apiInterfacePositions_, "kactus2:apiInterfacePosition", "kactus2:apiRef");
+    writeMappedPosition(writer, comInterfacePositions_, "kactus2:comInterfacePosition", "kactus2:comRef");
 
     writer.writeEndElement(); // kactus2:swInstance
 }
@@ -595,3 +606,49 @@ QMap<QString, QString> const& SWInstance::getPropertyValues() const
     return propertyValues_;
 }
 
+//-----------------------------------------------------------------------------
+// Function: SWInstance::writeVLNVasAttributes()
+//-----------------------------------------------------------------------------
+void SWInstance::writeVLNVasAttributes(QXmlStreamWriter& writer, VLNV const& targetVLNV) const
+{
+    writer.writeAttribute("vendor", targetVLNV.getVendor());
+    writer.writeAttribute("library", targetVLNV.getLibrary());
+    writer.writeAttribute("name", targetVLNV.getName());
+    writer.writeAttribute("version", targetVLNV.getVersion());
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWInstance::writeMappedPosition()
+//-----------------------------------------------------------------------------
+void SWInstance::writeMappedPosition(QXmlStreamWriter& writer, QMap<QString, QPointF> const& positions,
+    QString const& identifier, QString const& refIdentifier) const
+{
+    if (!positions.isEmpty())
+    {
+        QMapIterator<QString, QPointF> itrPortPos(positions);
+        writer.writeStartElement(identifier + "s");
+
+        while (itrPortPos.hasNext())
+        {
+            itrPortPos.next();
+
+            writer.writeStartElement(identifier);
+            writer.writeAttribute(refIdentifier, itrPortPos.key());
+            writePosition(writer, itrPortPos.value());
+
+            writer.writeEndElement();
+        }
+
+        writer.writeEndElement();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWInstance::writePosition()
+//-----------------------------------------------------------------------------
+void SWInstance::writePosition(QXmlStreamWriter& xmlWriter, QPointF const& pos) const
+{
+    xmlWriter.writeEmptyElement("kactus2:position");
+    xmlWriter.writeAttribute("x", QString::number(int(pos.x())));
+    xmlWriter.writeAttribute("y", QString::number(int(pos.y())));
+}

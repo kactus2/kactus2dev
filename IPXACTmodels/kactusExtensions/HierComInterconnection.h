@@ -1,38 +1,33 @@
 //-----------------------------------------------------------------------------
-// File: HierComConnection.h
+// File: HierComInterconnection.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Joni-Matti M‰‰tt‰
-// Date: 28.5.2012
+// Author: Mikko Teuho
+// Date: 28.8.2015
 //
 // Description:
-// Hierarchical COM dependency.
+// Hierarchical COM connection.
 //-----------------------------------------------------------------------------
 
-#ifndef HIERCOMCONNECTION_H
-#define HIERCOMCONNECTION_H
+#ifndef HIERCOMINTERCONNECTION_H
+#define HIERCOMINTERCONNECTION_H
 
-#include "ComConnection.h"
-
-#include "ipxactmodels_global.h"
-
-#include <QString>
-#include <QDomNode>
-#include <QXmlStreamWriter>
-#include <QPointF>
 #include <QVector2D>
-#include <QStringList>
+
+#include <IPXACTmodels/Design/Interconnection.h>
+
+#include <IPXACTmodels/VendorExtension.h>
 
 //-----------------------------------------------------------------------------
 //! Class encapsulating COM dependency connection data.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT HierComConnection
+class IPXACTMODELS_EXPORT HierComInterconnection: public Interconnection, public VendorExtension
 {
 public:
     /*!
      *  Default constructor.
      */
-    HierComConnection();
+    HierComInterconnection();
 
     /*!
      *  Constructor which sets all the values as given.
@@ -46,32 +41,38 @@ public:
      *      @param [in] direction     The direction of the top-level interface in the design diagram.
      *      @param [in] route         The connection route.
      */
-    HierComConnection(QString const& name, QString const& displayName, QString const& description,
-                      QString const& interfaceRef, ComInterfaceRef const& ref,
+    HierComInterconnection(QString const& name, QString const& displayName, QString const& description,
+                      QString const& interfaceRef,
+                      QSharedPointer<ActiveInterface> ref,
                       QPointF const& position, QVector2D const& direction,
                       QList<QPointF> const& route);
 
     /*!
      *  Copy constructor.
      */
-    HierComConnection(HierComConnection const& rhs);
-
-    /*!
-     *  Constructor which reads the COM dependency from an XML node.
-     *
-     *      @param [in] node The source XML node.
-     */
-    HierComConnection(QDomNode& node);
+    HierComInterconnection(HierComInterconnection const& rhs);
 
     /*!
      *  Destructor.
      */
-    ~HierComConnection();
+    ~HierComInterconnection();
+
+    /*!
+     *  Clone constructor.
+     */
+    virtual HierComInterconnection* clone() const;
+
+    /*!
+     *  Get the type of the extension.
+     *
+     *      @return The type of the extension.
+     */
+    virtual QString type() const;
 
     /*!
      *  Writes the contents to an XML stream.
      */
-    void write(QXmlStreamWriter& writer) const;
+    virtual void write(QXmlStreamWriter& writer) const;
 
 	/*! \brief Check if the hierarchical COM connection is in valid state.
 	 *
@@ -81,8 +82,8 @@ public:
 	 *
 	 * \return True if the hierarchical COM connection is in valid state.
 	*/
-	bool isValid(QStringList& errorList, QStringList const& instanceNames,
-                 QString const& parentId) const;
+	//bool isValid(QStringList& errorList, QStringList const& instanceNames,
+    //             QString const& parentId) const;
 
 	/*! \brief Check if the hierarchical COM connection is in valid state.
 	 *
@@ -90,74 +91,31 @@ public:
 	 *
 	 * \return True if the hierarchical COM connection is in valid state.
 	*/
-	bool isValid(const QStringList& instanceNames) const;
-
-    /*!
-     *  Sets the name of the dependency.
-     *
-     *      @param [in] name The name to set.
-     */
-    void setName(QString const& name);
-
-    /*!
-     *  Sets the display name of the dependency.
-     *
-     *      @param [in] displayName The display name to set.
-     */
-    void setDisplayName(QString const& displayName);
-
-    /*!
-     *  Sets the description of the dependency.
-     *
-     *      @param [in] description The description to set.
-     */
-    void setDescription(QString const& description);
+	//bool isValid(const QStringList& instanceNames) const;
 
     /*!
      *  Sets the top-level COM interface reference.
      *
      *      @param [in] interfaceRef Name reference to an COM interface in the top-level component.
      */
-    void setInterfaceRef(QString const& interfaceRef);
+    void setTopInterfaceRef(QString const& interfaceRef);
 
     /*!
      *  Sets the interface reference to an COM interface in a contained SW component instance.
      *
      *      @param [in] ref The interface reference.
      */
-    void setInterface(ComInterfaceRef const& ref);
-
-    /*!
-     *  Sets the flag whether the connection is off-page or not.
-     *
-     *      @param [in] offPage If true, the connection is set off-page.
-     */
-    void setOffPage(bool offPage);
-
-    /*!
-     *  Returns the name of the dependency.
-     */
-    QString const& name() const;
-
-    /*!
-     *  Returns the display name of the SW instance.
-     */
-    QString const& getDisplayName() const;
-
-    /*!
-     *  Returns the description of the SW instance.
-     */
-    QString const& getDescription() const;
+    void setInterface(QSharedPointer<ActiveInterface> ref);
 
     /*!
      *  Returns the name reference to an COM interface in the top-level component.
      */
-    QString const& getInterfaceRef() const;
+    QString const& getTopInterfaceRef() const;
 
     /*!
      *  Returns the interface reference to an COM interface in a contained SW component instance.
      */
-    ComInterfaceRef const& getInterface() const;
+    QSharedPointer<ActiveInterface> getInterface() const;
 
     /*!
      *  Returns the position of the interface in the top-level design diagram.
@@ -170,53 +128,40 @@ public:
     QVector2D const& getDirection() const;
 
     /*!
-     *  Returns the connection route.
-     */
-    QList<QPointF> const& getRoute() const;
-
-    /*!
-     *  Returns true if the connection is off-page.
-     */
-    bool isOffPage() const;
-
-    /*!
      *  Assignment operator.
      */
-    HierComConnection& operator=(HierComConnection const& rhs);
+    HierComInterconnection& operator=(HierComInterconnection const& other);
 
 private:
+
+    /*!
+     *  Write the position of the hierarchical com interface.
+     *
+     *      @param [in] xmlWriter   The used XML writer.
+     */
+    void writePosition(QXmlStreamWriter& xmlWriter) const;
+
+    /*!
+     *  Write the direction of the hierarchical com interface.
+     *
+     *      @param [in] xmlWriter   The used XML writer.
+     */
+    void writeVectorDirection(QXmlStreamWriter& xmlWriter) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The name of the dependency.
-    QString name_;
-
-    //! The display name of the dependency.
-    QString displayName_;
-
-    //! The description of the dependency.
-    QString desc_;
-
     //! The interface reference in the top-level component.
-    QString interfaceRef_;
-
-    //! The other reference to an SW component instance.
-    ComInterfaceRef interface_;
+    QString topInterfaceRef_;
 
     //! The position of the top-level interface in the design diagram.
     QPointF position_;
 
     //! The direction of the top-level interface in the design diagram.
     QVector2D direction_;
-
-    //! The connection route.
-    QList<QPointF> route_;
-
-    //! If true, the connection is off-page.
-    bool offPage_;
 };
 
 //-----------------------------------------------------------------------------
 
-#endif // HIERCOMCONNECTION_H
+#endif // HIERCOMINTERCONNECTION_H

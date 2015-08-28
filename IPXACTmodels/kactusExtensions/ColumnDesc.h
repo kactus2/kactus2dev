@@ -12,7 +12,9 @@
 #ifndef COLUMNDESC_H
 #define COLUMNDESC_H
 
-#include "ipxactmodels_global.h"
+#include <IPXACTmodels/VendorExtension.h>
+#include <IPXACTmodels/ipxactmodels_global.h>
+
 #include <designEditors/common/ColumnTypes.h>
 
 #include <QString>
@@ -23,7 +25,7 @@
 //! ColumnDesc structure which describes the kactus2:column element
 //! in an IP-XACT document.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT ColumnDesc
+class IPXACTMODELS_EXPORT ColumnDesc : public VendorExtension
 {
 public:
     /*!
@@ -45,9 +47,21 @@ public:
                unsigned int allowedItems = CIT_NONE, unsigned int minWidth = 259);
 
     /*!
+     *  Clone constructor.
+     */
+    virtual ColumnDesc* clone() const;
+
+    /*!
+     *  Get the type of the extension.
+     *
+     *      @return The type of the extension.
+     */
+    virtual QString type() const;
+
+    /*!
      *  Writes the column description to an XML stream.
      */
-    void write(QXmlStreamWriter& writer) const;
+    virtual void write(QXmlStreamWriter& writer) const;
 
     /*!
      *  Sets the name of the column.

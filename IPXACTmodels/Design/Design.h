@@ -17,18 +17,20 @@
 #include "MonitorInterconnection.h"
 #include "AdHocConnection.h"
 
-#include <IPXACTmodels/SWInstance.h>
-#include <IPXACTmodels/ApiConnection.h>
-#include <IPXACTmodels/HierApiDependency.h>
-#include <IPXACTmodels/ComConnection.h>
-#include <IPXACTmodels/HierComConnection.h>
-#include <IPXACTmodels/ColumnDesc.h>
+#include <IPXACTmodels/VendorExtension.h>
+#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/ipxactmodels_global.h>
 
 #include <IPXACTmodels/common/Document.h>
 
-#include <IPXACTmodels/vlnv.h>
-#include <IPXACTmodels/ipxactmodels_global.h>
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
+#include <IPXACTmodels/kactusExtensions/ColumnDesc.h>
+#include <IPXACTmodels/kactusExtensions/SWInstance.h>
+#include <IPXACTmodels/kactusExtensions/Kactus2Group.h>
+#include <IPXACTmodels/kactusExtensions/ApiInterconnection.h>
+#include <IPXACTmodels/kactusExtensions/HierApiInterconnection.h>
+#include <IPXACTmodels/kactusExtensions/ComInterconnection.h>
+#include <IPXACTmodels/kactusExtensions/HierComInterconnection.h>
 
 #include <QSharedPointer>
 #include <QList>
@@ -129,8 +131,7 @@ public:
      *
      *      @return A list of sw instances.
      */
-    QList<SWInstance> const& getSWInstances() const;
-    QList<SWInstance>& getSWInstances();
+    QList <QSharedPointer<SWInstance> > getSWInstances() const;
 
     /*!
      *  Get a list of the interconnections.
@@ -186,37 +187,37 @@ public:
     /*!
      *  Returns the list of API dependencies.
      */
-    QList<ApiConnection> const& getApiDependencies() const;
+    QList<QSharedPointer<ApiInterconnection> > getApiConnections() const;
 
     /*!
      *  Returns the list of hierarchical API dependencies.
      */
-    QList<HierApiDependency> const& getHierApiDependencies() const;
+    QList<QSharedPointer<HierApiInterconnection> > getHierApiDependencies() const;
 
     /*!
      *  Returns the list of COM connections.
      */
-    QList<ComConnection> const& getComConnections() const;
+    QList<QSharedPointer<ComInterconnection> > getComConnections() const;
 
     /*!
      *  Returns the list of hierarchical COM connections.
      */
-    QList<HierComConnection> const& getHierComConnections() const;
+    QList<QSharedPointer<HierComInterconnection> > getHierComConnections() const;
 
     /*!
      *  Returns the port ad-hoc visibilities for the top-level component in this design.
      */
-    QMap<QString, bool> const& getPortAdHocVisibilities() const;
+    QMap<QString, bool> getPortAdHocVisibilities() const;
 
     /*!
      *  Returns the ad-hoc port positions.
      */
-    QMap<QString, QPointF> const& getAdHocPortPositions() const;
+    QMap<QString, QPointF> getAdHocPortPositions() const;
 
     /*! 
      *  Returns the list of columns.
      */
-    QList<ColumnDesc> const& getColumns() const;
+    QList<QSharedPointer<ColumnDesc> > getColumns() const;
 
     /*!
      *  Set the component instances.
@@ -230,7 +231,7 @@ public:
      *
      *      @param [in] swInstances A list of SW instances.
      */
-    void setSWInstances(QList<SWInstance> const& swInstances);
+    void setSWInstances(QList<QSharedPointer<SWInstance> > newSWInstances);
 
     /*!
      *  Set the interconnections.
@@ -251,27 +252,27 @@ public:
      *
      *      @param [in] apiDependencies A list of API dependencies.
      */
-    void setApiDependencies(QList<ApiConnection> const& apiDependencies);
+    void setApiConnections(QList<QSharedPointer<ApiInterconnection> > newApiConnections);
 
     /*! Sets the hierarchical API dependencies for the design.
      *
      *      @param [in] hierApiDependencies A list of hierarchical API dependencies.
      */
-    void setHierApiDependencies(QList<HierApiDependency> const& hierApiDependencies);
+    void setHierApiDependencies(QList<QSharedPointer<HierApiInterconnection> > newHierApiDependencies);
 
     /*!
      *  Sets the COM connections for the design.
      *
      *      @param [in] comConnections A list of COM connections.
      */
-    void setComConnections(QList<ComConnection> const& comConnections);
+    void setComConnections(QList<QSharedPointer<ComInterconnection> > newComConnections);
 
     /*!
      *  Sets the hierarchical COM connections for the design.
      *
      *      @param [in] hierComConnections A list of hierarchical COM connections.
      */
-    void setHierComConnections(QList<HierComConnection> const& hierComConnections);
+    void setHierComConnections(QList<QSharedPointer<HierComInterconnection> > newHierComConnections);
 
     /*!
      *  Sets the port ad-hoc visibilities for the top-level component in this design.
@@ -288,7 +289,7 @@ public:
     /*!
      *  Sets the columns of this design.
      */
-    void setColumns(QList<ColumnDesc> const& columns);
+    void setColumns(QList<QSharedPointer<ColumnDesc> > newColumns);
 
 	/*!
 	 *  Get the dependent files.
@@ -388,13 +389,6 @@ private:
     void parseVendorExtensions(QDomNode& node);
 
     /*!
-     *  Parses the column layout from kactus2:columnLayout.
-     *
-     *      @param [in] layoutNode   The DOM node containing the layout.
-     */
-    void parseColumnLayout(QDomNode& layoutNode);
-
-    /*!
      *  Parses the routes from kactus2:routes.
      *
      *      @param [in] routesNode   The DOM node containing the routes.
@@ -409,60 +403,27 @@ private:
     void parseRoute(QDomNode& routeNode);
 
     /*!
-     *  Parses the ad-hoc port visibilities from kactus2:adHocVisibilities.
+     *  Copy the shared lists of another design.
      *
-     *      @param [in] visibilitiesNode   The DOM node containing the visibilities.
+     *      @param [in] other   The design being copied.
      */
-    void parseAdHocVisibilities(QDomNode& visibilitiesNode);
+    void copySharedLists(Design const& other);
 
     /*!
-     *  Parses the SW instances from kactus2:swInstances.
+     *  Get a list of grouped vendor extensions.
      *
-     *      @param [in] swInstancesNode   The DOM node containing the SW instances.
+     *      @param [in] groupName       The name of the vendor extension group.
+     *      @param [in] extensionType   The type of the target vendor extension.
      */
-    void parseSWInstances(QDomNode& swInstancesNode);
-
-    /*!
-     *  Parses the API dependencies from kactus2:apiDependencies.
-     *
-     *      @param [in] dependenciesNode   The DOM node containing the API dependencies.
-     */
-    void parseApiDependencies(QDomNode& dependenciesNode);
-
-    /*!
-     *  Parses the hierarchical API dependencies from kactus2:hierApiDependencies.
-     *
-     *      @param [in] hierDependenciesNode   The DOM node containing the hierarchical API dependencies.
-     */
-    void parseHierApiDependencies(QDomNode& hierDependenciesNode);
-
-    /*!
-     *  Parses the COM connections from kactus2:comConnections.
-     *
-     *      @param [in] comConnectionsNode   The DOM node containing the hierarchical COM connections.
-     */
-    void parseComConnections(QDomNode& comConnectionsNode);
-
-    /*!
-     *  Parses the hierarchical COM connections from kactus2:hierComConnections.
-     *
-     *      @param [in] hierComConnectionsNode   The DOM node containing the 
-     *                                           hierarchical hierarchical COM connections.
-     */
-    void parseHierComConnections(QDomNode& hierComConnectionsNode);
+    QList<QSharedPointer<VendorExtension> > getGroupedExtensionsByType(QString const& groupName,
+        QString const& extensionType) const;
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! A list of columns in the design.
-    QList<ColumnDesc> columns_;
-
     //! The HW component instances.
     QSharedPointer<QList<QSharedPointer<ComponentInstance> > > componentInstances_;
-
-    //! The SW component instances (extension).
-    QList<SWInstance> swInstances_;
 
     //! The interconnections.
     QSharedPointer<QList<QSharedPointer<Interconnection> > > interconnections_;
@@ -473,26 +434,6 @@ private:
     //! Ad-hoc connections
     QSharedPointer<QList<QSharedPointer<AdHocConnection> > > adHocConnections_;
 
-    //! Port ad-hoc visibilities.
-    QMap<QString, bool> portAdHocVisibilities_;
-
-    //! The port positions for ad-hoc ports.
-    QMap<QString, QPointF> adHocPortPositions_;
-
-    //! The attributes?
-	QMap<QString, QString> attributes_;
-
-    //! The API dependencies (extension).
-    QList<ApiConnection> apiDependencies_;
-
-    //! The hierarchical API dependencies (extension).
-    QList<HierApiDependency> hierApiDependencies_;
-
-    //! The COM connections (extension).
-    QList<ComConnection> comConnections_;
-
-    //! The hierarchical COM connections (extension).
-    QList<HierComConnection> hierComConnections_;
 };
 
 #endif // DESIGN_H

@@ -1,38 +1,33 @@
 //-----------------------------------------------------------------------------
-// File: HierApiDependency.h
+// File: HierApiInterconnection.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Joni-Matti M‰‰tt‰
-// Date: 28.5.2012
+// Author: Mikko Teuho
+// Date: 28.08.2015
 //
 // Description:
-// Hierarchical API dependency.
+// Hierarchical API connection.
 //-----------------------------------------------------------------------------
 
-#ifndef HIERAPIDEPENDENCY_H
-#define HIERAPIDEPENDENCY_H
+#ifndef HIERAPIINTERCONNECTION_H
+#define HIERAPIINTERCONNECTION_H
 
-#include "ApiConnection.h"
-
-#include "ipxactmodels_global.h"
-
-#include <QString>
-#include <QDomNode>
-#include <QXmlStreamWriter>
 #include <QPointF>
 #include <QVector2D>
-#include <QStringList>
+
+#include <IPXACTmodels/Design/Interconnection.h>
+#include <IPXACTmodels/VendorExtension.h>
 
 //-----------------------------------------------------------------------------
 //! Class encapsulating API dependency connection data.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT HierApiDependency
+class IPXACTMODELS_EXPORT HierApiInterconnection : public Interconnection, public VendorExtension
 {
 public:
     /*!
      *  Default constructor.
      */
-    HierApiDependency();
+    HierApiInterconnection();
 
     /*!
      *  Constructor which sets all the values as given.
@@ -46,32 +41,38 @@ public:
      *      @param [in] direction     The direction of the top-level interface in the design diagram.
      *      @param [in] route         The connection route.
      */
-    HierApiDependency(QString const& name, QString const& displayName, QString const& description,
-                      QString const& interfaceRef, ApiInterfaceRef const& ref,
+    HierApiInterconnection(QString const& name, QString const& displayName, QString const& description,
+                      QString const& interfaceRef,
+                      QSharedPointer<ActiveInterface> ref,
                       QPointF const& position, QVector2D const& direction,
                       QList<QPointF> const& route);
 
     /*!
      *  Copy constructor.
      */
-    HierApiDependency(HierApiDependency const& rhs);
-
-    /*!
-     *  Constructor which reads the API dependency from an XML node.
-     *
-     *      @param [in] node The source XML node.
-     */
-    HierApiDependency(QDomNode& node);
+    HierApiInterconnection(HierApiInterconnection const& rhs);
 
     /*!
      *  Destructor.
      */
-    ~HierApiDependency();
+    ~HierApiInterconnection();
+
+    /*!
+     *  The clone constructor.
+     */
+    virtual HierApiInterconnection* clone() const;
+
+    /*!
+     *  Get the type of the extension.
+     *
+     *      @return The type of the extension.
+     */
+    virtual QString type() const;
 
     /*!
      *  Writes the contents to an XML stream.
      */
-    void write(QXmlStreamWriter& writer) const;
+    virtual void write(QXmlStreamWriter& writer) const;
 
 	/*! \brief Check if the hierarchical API dependency is in valid state.
 	 *
@@ -81,8 +82,8 @@ public:
 	 *
 	 * \return True if the API dependency is in valid state.
 	*/
-	bool isValid(QStringList& errorList, QStringList const& instanceNames,
-		QString const& parentId) const;
+	//bool isValid(QStringList& errorList, QStringList const& instanceNames,
+	//	QString const& parentId) const;
 
 	/*! \brief Check if the hierarchical API dependency is in valid state.
 	 *
@@ -90,74 +91,35 @@ public:
 	 *
 	 * \return True if the API dependency is in valid state.
 	*/
-	bool isValid(const QStringList& instanceNames) const;
-
-    /*!
-     *  Sets the name of the dependency.
-     *
-     *      @param [in] name The name to set.
-     */
-    void setName(QString const& name);
-
-    /*!
-     *  Sets the display name of the dependency.
-     *
-     *      @param [in] displayName The display name to set.
-     */
-    void setDisplayName(QString const& displayName);
-
-    /*!
-     *  Sets the description of the dependency.
-     *
-     *      @param [in] description The description to set.
-     */
-    void setDescription(QString const& description);
+	//bool isValid(const QStringList& instanceNames) const;
 
     /*!
      *  Sets the top-level API interface reference.
      *
-     *      @param [in] interfaceRef Name reference to an API interface in the top-level component.
+     *      @param [in] interfaceRef    Name reference to an API interface in the top-level component.
      */
-    void setInterfaceRef(QString const& interfaceRef);
+    void setTopInterfaceRef(QString const& interfaceRef);
 
     /*!
      *  Sets the interface reference to an API interface in a contained SW component instance.
      *
-     *      @param [in] ref The interface reference.
+     *      @param [in] ref     The interface reference.
      */
-    void setInterface(ApiInterfaceRef const& ref);
-
-    /*!
-     *  Sets the flag whether the connection is off-page or not.
-     *
-     *      @param [in] offPage If true, the connection is set off-page.
-     */
-    void setOffPage(bool offPage);
-
-    /*!
-     *  Returns the name of the dependency.
-     */
-    QString const& name() const;
-
-    /*!
-     *  Returns the display name of the SW instance.
-     */
-    QString const& getDisplayName() const;
-
-    /*!
-     *  Returns the description of the SW instance.
-     */
-    QString const& getDescription() const;
+    void setInterface(QSharedPointer<ActiveInterface> ref);
 
     /*!
      *  Returns the name reference to an API interface in the top-level component.
+     *
+     *      @return The name of the referenced API interface in the top-level component.
      */
-    QString const& getInterfaceRef() const;
+    QString const& getTopInterfaceRef() const;
 
     /*!
      *  Returns the interface reference to an API interface in a contained SW component instance.
+     *
+     *      @return The used interface.
      */
-    ApiInterfaceRef const& getInterface() const;
+    QSharedPointer<ActiveInterface> getInterface() const;
 
     /*!
      *  Returns the position of the interface in the top-level design diagram.
@@ -170,53 +132,40 @@ public:
     QVector2D const& getDirection() const;
 
     /*!
-     *  Returns the connection route.
-     */
-    QList<QPointF> const& getRoute() const;
-
-    /*!
-     *  Returns true if the connection is off-page.
-     */
-    bool isOffPage() const;
-
-    /*!
      *  Assignment operator.
      */
-    HierApiDependency& operator=(HierApiDependency const& rhs);
+    HierApiInterconnection& operator=(HierApiInterconnection const& rhs);
 
 private:
+
+    /*!
+     *  Writes the position of the hierarchical interface.
+     *
+     *      @param [in] writer  The selected XML writer.
+     */
+    void writePosition(QXmlStreamWriter& writer) const;
+
+    /*!
+     *  Writes the direction of the hierarchical interface.
+     *
+     *      @param [in] writer   [Description].
+     */
+    void writeVectorDirection(QXmlStreamWriter& writer) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The name of the dependency.
-    QString name_;
-
-    //! The display name of the dependency.
-    QString displayName_;
-
-    //! The description of the dependency.
-    QString desc_;
-
     //! The interface reference in the top-level component.
-    QString interfaceRef_;
-
-    //! The other reference to an SW component instance.
-    ApiInterfaceRef interface_;
+    QString topInterfaceRef_;
 
     //! The position of the top-level interface in the design diagram.
     QPointF position_;
 
     //! The direction of the top-level interface in the design diagram.
     QVector2D direction_;
-
-    //! The connection route.
-    QList<QPointF> route_;
-
-    //! If true, the connection is off-page.
-    bool offPage_;
 };
 
 //-----------------------------------------------------------------------------
 
-#endif // HIERAPIDEPENDENCY_H
+#endif // HIERAPIINTERCONNECTION_H

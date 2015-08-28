@@ -12,9 +12,11 @@
 #ifndef SWINSTANCE_H
 #define SWINSTANCE_H
 
-#include"vlnv.h"
+#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/ipxactmodels_global.h>
+#include <IPXACTmodels/VendorExtension.h>
 
-#include "ipxactmodels_global.h"
+#include <IPXACTmodels/ComInterface.h>
 
 #include <QString>
 #include <QPointF>
@@ -24,12 +26,10 @@
 #include <QDomNode>
 #include <QXmlStreamWriter>
 
-class ComInterface;
-
 //-----------------------------------------------------------------------------
 //! SW instance class for extending IP-XACT designs.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT SWInstance
+class IPXACTMODELS_EXPORT SWInstance : public VendorExtension
 {
 public:
     /*!
@@ -55,11 +55,23 @@ public:
     ~SWInstance();
 
     /*!
+     *  Clone constructor.
+     */
+    virtual SWInstance* clone() const;
+
+    /*!
+     *  Get the type of the extension.
+     *
+     *      @return The type of the extension.
+     */
+    virtual QString type() const;
+
+    /*!
      *  Writes the contents to an XML stream.
      *
      *      @param [in] writer The XML stream writer.
      */
-    void write(QXmlStreamWriter& writer) const;
+    virtual void write(QXmlStreamWriter& writer) const;
 
     /*!
      *  Returns true if the SW instance is in a valid state.
@@ -257,6 +269,33 @@ private:
      */
     void parsePropertyValues(QDomNode& node);
     
+    /*!
+     *  Writes the given vlnv as attributes.
+     *
+     *      @param [in] writer      The used XML writer.
+     *      @param [in] targetVLNV  The target VLNV.
+     */
+    void writeVLNVasAttributes(QXmlStreamWriter& writer, VLNV const& targetVLNV) const;
+
+    /*!
+     *  Write the mapped position.
+     *
+     *      @param [in] writer          The used writer.
+     *      @param [in] positions       The positions.
+     *      @param [in] identifier      The identifier of the positions.
+     *      @param [in] refIdentifier   The reference identifier.
+     */
+    void writeMappedPosition(QXmlStreamWriter& writer, QMap<QString, QPointF> const& positions,
+        QString const& identifier, QString const& refIdentifier) const;
+
+    /*!
+     *  Write a single position.
+     *
+     *      @param [in] xmlWriter   The used XML writer.
+     *      @param [in] pos         The position to be written.
+     */
+    void writePosition(QXmlStreamWriter& xmlWriter, QPointF const& pos) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

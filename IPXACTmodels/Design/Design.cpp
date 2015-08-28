@@ -13,24 +13,19 @@
 
 #include <IPXACTmodels/XmlUtils.h>
 
+#include <IPXACTmodels/kactusExtensions/Kactus2Placeholder.h>
+
 //-----------------------------------------------------------------------------
 // Function: Design::Design()
 //-----------------------------------------------------------------------------
 Design::Design(const VLNV &vlnv) :
 Document(vlnv),
 componentInstances_(new QList<QSharedPointer<ComponentInstance> > ()),
-swInstances_(),
 interconnections_(new QList<QSharedPointer<Interconnection> > ()),
 monitorInterconnections_(new QList<QSharedPointer<MonitorInterconnection> > ()),
-adHocConnections_(new QList<QSharedPointer<AdHocConnection> > ()),
-portAdHocVisibilities_(),
-attributes_(),
-apiDependencies_(),
-hierApiDependencies_(),
-comConnections_(),
-hierComConnections_()
+adHocConnections_(new QList<QSharedPointer<AdHocConnection> > ())
 {
-    getVlnv().setType(VLNV::DESIGN);
+
 }
 
 //-----------------------------------------------------------------------------
@@ -39,16 +34,9 @@ hierComConnections_()
 Design::Design() :
 Document(),
 componentInstances_(new QList<QSharedPointer<ComponentInstance> > ()),
-swInstances_(),
 interconnections_(new QList<QSharedPointer<Interconnection> > ()),
 monitorInterconnections_(new QList<QSharedPointer<MonitorInterconnection> > ()),
-adHocConnections_(new QList<QSharedPointer<AdHocConnection> > ()),
-portAdHocVisibilities_(),
-attributes_(),
-apiDependencies_(),
-hierApiDependencies_(),
-comConnections_(),
-hierComConnections_()
+adHocConnections_(new QList<QSharedPointer<AdHocConnection> > ())
 {
 
 }
@@ -58,59 +46,12 @@ hierComConnections_()
 //-----------------------------------------------------------------------------
 Design::Design(Design const& other) :
 Document(other),
-columns_(other.columns_),
 componentInstances_(new QList<QSharedPointer<ComponentInstance> > ()),
-swInstances_(other.swInstances_),
 interconnections_(new QList<QSharedPointer<Interconnection> > ()),
 monitorInterconnections_(new QList<QSharedPointer<MonitorInterconnection> > ()),
-adHocConnections_(new QList<QSharedPointer<AdHocConnection> > ()),
-portAdHocVisibilities_(other.portAdHocVisibilities_),
-adHocPortPositions_(other.adHocPortPositions_),
-attributes_(other.attributes_),
-apiDependencies_(other.apiDependencies_),
-hierApiDependencies_(other.hierApiDependencies_),
-comConnections_(other.comConnections_),
-hierComConnections_(other.hierComConnections_)
+adHocConnections_(new QList<QSharedPointer<AdHocConnection> > ())
 {
-    foreach (QSharedPointer<ComponentInstance> instance, *other.componentInstances_)
-    {
-        if (instance)
-        {
-            QSharedPointer<ComponentInstance> copy =
-                QSharedPointer<ComponentInstance>(new ComponentInstance(*instance.data()));
-            componentInstances_->append(copy);
-        }
-    }
-
-    foreach (QSharedPointer<Interconnection> interconnection, *other.interconnections_)
-    {
-        if (interconnection)
-        {
-            QSharedPointer<Interconnection> copy =
-                QSharedPointer<Interconnection> (new Interconnection(*interconnection.data()));
-            interconnections_->append(copy);
-        }
-    }
-
-    foreach (QSharedPointer<MonitorInterconnection> interconnection, *other.monitorInterconnections_)
-    {
-        if (interconnection)
-        {
-            QSharedPointer<MonitorInterconnection> copy =
-                QSharedPointer<MonitorInterconnection> (new MonitorInterconnection(*interconnection.data()));
-            monitorInterconnections_->append(copy);
-        }
-    }
-
-    foreach (QSharedPointer<AdHocConnection> connection, *other.adHocConnections_)
-    {
-        if (connection)
-        {
-            QSharedPointer<AdHocConnection> copy =
-                QSharedPointer<AdHocConnection>(new AdHocConnection(*connection.data()));
-            adHocConnections_->append(copy);
-        }
-    }
+    copySharedLists(other);
 }
 
 //-----------------------------------------------------------------------------
@@ -121,59 +62,13 @@ Design& Design::operator=( const Design& other )
 	if (this != &other)
     {
 		Document::operator=(other);
-		columns_ = other.columns_;
 
         componentInstances_->clear();
-        foreach(QSharedPointer<ComponentInstance> instance, *other.componentInstances_)
-        {
-            if (instance)
-            {
-                QSharedPointer<ComponentInstance> copy =
-                    QSharedPointer<ComponentInstance>(new ComponentInstance(*instance.data()));
-            }
-        }
-
         interconnections_->clear();
-        foreach(QSharedPointer<Interconnection> interconnection, *other.interconnections_)
-        {
-            if (interconnection)
-            {
-                QSharedPointer<Interconnection> copy =
-                    QSharedPointer<Interconnection>(new Interconnection(*interconnection.data()));
-                interconnections_->append(copy);
-            }
-        }
-
         monitorInterconnections_->clear();
-        foreach (QSharedPointer<MonitorInterconnection> interconnection, *other.monitorInterconnections_)
-        {
-            if (interconnection)
-            {
-                QSharedPointer<MonitorInterconnection> copy =
-                    QSharedPointer<MonitorInterconnection> (new MonitorInterconnection(*interconnection.data()));
-                monitorInterconnections_->append(copy);
-            }
-        }
-
         adHocConnections_->clear();
-        foreach (QSharedPointer<AdHocConnection> connection, *other.adHocConnections_)
-        {
-            if (connection)
-            {
-                QSharedPointer<AdHocConnection> copy =
-                    QSharedPointer<AdHocConnection> (new AdHocConnection(*connection.data()));
-                adHocConnections_->append(copy);
-            }
-        }
 
-        swInstances_ = other.swInstances_;
-        portAdHocVisibilities_ = other.portAdHocVisibilities_;
-        adHocPortPositions_ = other.adHocPortPositions_;
-		attributes_ = other.attributes_;
-        apiDependencies_ = other.apiDependencies_;
-        hierApiDependencies_ = other.hierApiDependencies_;
-        comConnections_ = other.comConnections_;
-        hierComConnections_ = other.hierComConnections_;
+        copySharedLists(other);
 	}
 	return *this;
 }
@@ -591,15 +486,20 @@ QList<VLNV> Design::getDependentVLNVs() const
         }
 	}
 
-	foreach (const SWInstance swInstance, swInstances_) {
-		
-		// if sw instance vlnv reference is valid and it is not yet on the list
-		// of vlnv references
-		if (swInstance.getComponentRef().isValid() && 
-			!instanceList.contains(swInstance.getComponentRef())) {
-			instanceList.append(swInstance.getComponentRef());
-		}
-	}
+    QList<QSharedPointer<VendorExtension> > swExtensions =
+        getGroupedExtensionsByType("kactus2:swInstances", "kactus2:swInstance");
+
+    foreach (QSharedPointer<VendorExtension> extension, swExtensions)
+    {
+        QSharedPointer<SWInstance> swInstance = extension.dynamicCast<SWInstance>();
+
+        if (swInstance->getComponentRef().isValid() &&
+            !instanceList.contains(swInstance->getComponentRef()))
+        {
+            instanceList.append(swInstance->getComponentRef());
+        }
+    }
+
 	return instanceList;
 }
 
@@ -620,63 +520,15 @@ void Design::parseVendorExtensions(QDomNode &node)
         {            
             parseVendorExtensions(childNode);
         }
-        // If the column layout was found, read the column descriptions.
-        else if (childNode.nodeName() == "kactus2:columnLayout")
-        {
-            parseColumnLayout(childNode);
-        }
+
         // Otherwise read the interconnection routes if they were found.
         else if (childNode.nodeName() == "kactus2:routes")
         {
             parseRoutes(childNode);
         }
-        else if (childNode.nodeName() == "kactus2:adHocVisibilities")
-        {
-            parseAdHocVisibilities(childNode);
-        }
-        else if (childNode.nodeName() == "kactus2:swInstances")
-        {
-            parseSWInstances(childNode);
-        }
-        else if (childNode.nodeName() == "kactus2:apiDependencies")
-        {
-            parseApiDependencies(childNode);
-        }
-        else if (childNode.nodeName() == "kactus2:hierApiDependencies")
-        {
-            parseHierApiDependencies(childNode);
-        }
-        else if (childNode.nodeName() == "kactus2:comConnections")
-        {
-            parseComConnections(childNode);
-        }
-        else if (childNode.nodeName() == "kactus2:hierComConnections")
-        {
-            parseHierComConnections(childNode);
-        }
-        else if (childNode.nodeName() == "kactus2:kts_attributes")
-        {
-            //parseKactus2Attributes(childNode);
-        }
         else if (childNode.nodeName() == "kactus2:note")
         {
             //vendorExtensions_.append(QSharedPointer<VendorExtension>(new GenericVendorExtension(childNode)));
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: Design::parseColumnLayout()
-//-----------------------------------------------------------------------------
-void Design::parseColumnLayout(QDomNode& layoutNode)
-{
-    QDomNodeList columnNodes = layoutNode.childNodes();
-
-    for (int i = 0; i < columnNodes.size(); ++i)
-    {
-        if (columnNodes.at(i).nodeName() == "kactus2:column")
-        {
-            columns_.append(ColumnDesc(columnNodes.at(i)));
         }
     }
 }
@@ -756,128 +608,67 @@ void Design::parseRoute(QDomNode& routeNode)
 }
 
 //-----------------------------------------------------------------------------
-// Function: Design::parseAdHocVisibilities()
-//-----------------------------------------------------------------------------
-void Design::parseAdHocVisibilities(QDomNode& visibilitiesNode)
-{
-    for (int i = 0; i < visibilitiesNode.childNodes().size(); ++i)
-    {
-        QDomNode adHocNode = visibilitiesNode.childNodes().at(i);
-
-        if (adHocNode.nodeName() == "kactus2:adHocVisible")
-        {
-            QString name = adHocNode.attributes().namedItem("portName").nodeValue();
-            portAdHocVisibilities_[name] = true;
-
-            QPointF pos = XmlUtils::parsePoint(adHocNode);
-
-            adHocPortPositions_[name] = pos;
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: Design::parseSWInstances()
-//-----------------------------------------------------------------------------
-void Design::parseSWInstances(QDomNode& swInstancesNode)
-{
-    for (int i = 0; i < swInstancesNode.childNodes().count(); ++i)
-    {
-        QDomNode swNode = swInstancesNode.childNodes().at(i);
-
-        if (swNode.nodeName() == "kactus2:swInstance")
-        {
-            swInstances_.append(SWInstance(swNode));
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: Design::parseApiDependencies()
-//-----------------------------------------------------------------------------
-void Design::parseApiDependencies(QDomNode& dependenciesNode)
-{
-    for (int i = 0; i < dependenciesNode.childNodes().count(); ++i)
-    {
-        QDomNode apiNode = dependenciesNode.childNodes().at(i);
-
-        if (apiNode.nodeName() == "kactus2:apiDependency")
-        {
-            apiDependencies_.append(ApiConnection(apiNode));
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: Design::parseHierApiDependencies()
-//-----------------------------------------------------------------------------
-void Design::parseHierApiDependencies(QDomNode& hierDependenciesNode)
-{
-    for (int i = 0; i < hierDependenciesNode.childNodes().count(); ++i)
-    {
-        QDomNode apiNode = hierDependenciesNode.childNodes().at(i);
-
-        if (apiNode.nodeName() == "kactus2:hierApiDependency")
-        {
-            hierApiDependencies_.append(HierApiDependency(apiNode));
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: Design::parseComConnections()
-//-----------------------------------------------------------------------------
-void Design::parseComConnections(QDomNode& comConnectionsNode)
-{
-    for (int i = 0; i < comConnectionsNode.childNodes().count(); ++i)
-    {
-        QDomNode comNode = comConnectionsNode.childNodes().at(i);
-
-        if (comNode.nodeName() == "kactus2:comConnection")
-        {
-            comConnections_.append(ComConnection(comNode));
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: Design::parseHierComConnections()
-//-----------------------------------------------------------------------------
-void Design::parseHierComConnections(QDomNode& hierComConnectionsNode)
-{
-    for (int i = 0; i < hierComConnectionsNode.childNodes().count(); ++i)
-    {
-        QDomNode comNode = hierComConnectionsNode.childNodes().at(i);
-
-        if (comNode.nodeName() == "kactus2:hierComConnection")
-        {
-            hierComConnections_.append(HierComConnection(comNode));
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: Design::getPortAdHocVisibilities()
 //-----------------------------------------------------------------------------
-QMap<QString, bool> const& Design::getPortAdHocVisibilities() const
+QMap<QString, bool> Design::getPortAdHocVisibilities() const
 {
-    return portAdHocVisibilities_;
+    QList<QSharedPointer<VendorExtension> > portAdHocExtensions =
+        getGroupedExtensionsByType("kactus2:adHocVisibilities", "kactus2:adHocVisible");
+
+    QMap<QString, bool> portAdHocVisibilities;
+
+    foreach (QSharedPointer<VendorExtension> extension, portAdHocExtensions)
+    {
+        QSharedPointer<Kactus2Placeholder> portAdHocVisibility = extension.dynamicCast<Kactus2Placeholder>();
+        
+        QString portName = portAdHocVisibility->getAttributeValue("portName");
+
+        portAdHocVisibilities.insert(portName, true);
+    }
+
+    return portAdHocVisibilities;
 }
 
 //-----------------------------------------------------------------------------
 // Function: Design::getAdHocPortPositions()
 //-----------------------------------------------------------------------------
-QMap<QString, QPointF> const& Design::getAdHocPortPositions() const
+QMap<QString, QPointF> Design::getAdHocPortPositions() const
 {
-    return adHocPortPositions_;
+    QList<QSharedPointer<VendorExtension> > portAdHocExtensions =
+        getGroupedExtensionsByType("kactus2:adHocVisibilities", "kactus2:adHocVisible");
+
+    QMap<QString, QPointF> portAdHocPositions;
+
+    foreach (QSharedPointer<VendorExtension> extension, portAdHocExtensions)
+    {
+        QSharedPointer<Kactus2Placeholder> portPosition = extension.dynamicCast<Kactus2Placeholder>();
+
+        QString portName = portPosition->getAttributeValue("portName");
+        int x_position = portPosition->getAttributeValue("x").toInt();
+        int y_position = portPosition->getAttributeValue("y").toInt();
+
+        QPointF newPosition(x_position, y_position);
+        portAdHocPositions.insert(portName, newPosition);
+    }
+
+    return portAdHocPositions;
 }
 
 //-----------------------------------------------------------------------------
-// Function: getColumns()
+// Function: Design::getColumns()
 //-----------------------------------------------------------------------------
-QList<ColumnDesc> const& Design::getColumns() const
+QList<QSharedPointer<ColumnDesc> > Design::getColumns() const
 {
-	return columns_;
+    QList<QSharedPointer<VendorExtension> > columnExtensions =
+        getGroupedExtensionsByType("kactus2:layout", "kactus2:column");
+
+    QList<QSharedPointer<ColumnDesc> > columnList;
+    foreach (QSharedPointer<VendorExtension> extension, columnExtensions)
+    {
+        columnList.append(extension.dynamicCast<ColumnDesc>());
+    }
+
+    return columnList;
 }
 
 //-----------------------------------------------------------------------------
@@ -885,7 +676,50 @@ QList<ColumnDesc> const& Design::getColumns() const
 //-----------------------------------------------------------------------------
 void Design::setPortAdHocVisibilities(QMap<QString, bool> const& portAdHocVisibilities)
 {
-    portAdHocVisibilities_ = portAdHocVisibilities;
+    QMap<QString, QPointF> adHocPortPositions = getAdHocPortPositions();
+
+    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    {
+        if (extension->type() == "kactus2:adHocVisibilities")
+        {
+            getVendorExtensions()->removeAll(extension);
+            break;
+        }
+    }
+
+    if (!portAdHocVisibilities.isEmpty())
+    {
+        QSharedPointer<Kactus2Group> portAdHocs (new Kactus2Group("kactus2:adHocVisibilities"));
+        
+        QMapIterator<QString, bool> portIterator(portAdHocVisibilities);
+
+        while (portIterator.hasNext())
+        {
+            portIterator.next();
+
+            QSharedPointer<Kactus2Placeholder> newAdHocPort (new Kactus2Placeholder("kactus2:adHocVisible"));
+            newAdHocPort->setAttribute("portName", portIterator.key());
+
+            if (!adHocPortPositions.isEmpty())
+            {
+                QMapIterator<QString, QPointF> adHocPositionIterator(adHocPortPositions);
+                while (adHocPositionIterator.hasNext())
+                {
+                    adHocPositionIterator.next();
+
+                    if (portIterator.key() == adHocPositionIterator.key())
+                    {
+                        newAdHocPort->setAttribute("x", QString::number(int(adHocPositionIterator.value().x())));
+                        newAdHocPort->setAttribute("y", QString::number(int(adHocPositionIterator.value().y())));
+                    }
+                }
+            }
+
+            portAdHocs->addToGroup(newAdHocPort);
+        }
+
+        getVendorExtensions()->append(portAdHocs);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -893,15 +727,63 @@ void Design::setPortAdHocVisibilities(QMap<QString, bool> const& portAdHocVisibi
 //-----------------------------------------------------------------------------
 void Design::setAdHocPortPositions(QMap<QString, QPointF> const& val)
 {
-    adHocPortPositions_ = val;
+    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    {
+        if (extension->type() == "kactus2:adHocVisibilities")
+        {
+            getVendorExtensions()->removeAll(extension);
+            break;
+        }
+    }
+
+    if (!val.isEmpty())
+    {
+        QSharedPointer<Kactus2Group> portAdHocs (new Kactus2Group("kactus2:adHocVisibilities"));
+
+        QMapIterator<QString, QPointF> positionIterator(val);
+
+        while (positionIterator.hasNext())
+        {
+            positionIterator.next();
+
+            QSharedPointer<Kactus2Placeholder> newAdHocPort (new Kactus2Placeholder("kactus2:adHocVisible"));
+
+            newAdHocPort->setAttribute("portName", positionIterator.key());
+            newAdHocPort->setAttribute("x", QString::number(int(positionIterator.value().x())));
+            newAdHocPort->setAttribute("y", QString::number(int(positionIterator.value().y())));
+            
+            portAdHocs->addToGroup(newAdHocPort);
+        }
+
+        getVendorExtensions()->append(portAdHocs);
+    }
 }
 
 //-----------------------------------------------------------------------------
-// Function: setColumns()
+// Function: Design::setColumns()
 //-----------------------------------------------------------------------------
-void Design::setColumns(QList<ColumnDesc> const& columns)
+void Design::setColumns(QList<QSharedPointer<ColumnDesc> > newColumns)
 {
-	columns_ = columns;
+    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    {
+        if (extension->type() == "kactus2:columnLayout")
+        {
+            getVendorExtensions()->removeAll(extension);
+            break;
+        }
+    }
+
+    if (!newColumns.isEmpty())
+    {
+        QSharedPointer<Kactus2Group> newColumnLayout (new Kactus2Group("kactus2:columnLayout"));
+
+        foreach(QSharedPointer<ColumnDesc> columnExtension, newColumns)
+        {
+            newColumnLayout->addToGroup(columnExtension);
+        }
+
+        getVendorExtensions()->append(newColumnLayout);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -919,10 +801,16 @@ QList<VLNV> Design::getComponents() const
         }
 	}
 
-    foreach (SWInstance const& instance, swInstances_)
+    QList<QSharedPointer<VendorExtension> > swExtensions =
+        getGroupedExtensionsByType("kactus2:swInstances", "kactus2:swInstance");
+
+    foreach (QSharedPointer<VendorExtension> extensions, swExtensions)
     {
-        if (!instance.isDraft())
-            list.append(instance.getComponentRef());
+        QSharedPointer<SWInstance> swInstance = extensions.dynamicCast<SWInstance>();
+        if (swInstance->isDraft())
+        {
+            list.append(swInstance->getComponentRef());
+        }
     }
 
 	return list;
@@ -939,91 +827,228 @@ void Design::setVlnv( const VLNV& vlnv )
 }
 
 //-----------------------------------------------------------------------------
-// Function: Design::setApiDependencies()
+// Function: Design::setApiConnections()
 //-----------------------------------------------------------------------------
-void Design::setApiDependencies(QList<ApiConnection> const& apiDependencies)
+void Design::setApiConnections(QList<QSharedPointer<ApiInterconnection> > newApiConnections)
 {
-    apiDependencies_ = apiDependencies;
+    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    {
+        if (extension->type() == "kactus2:apiConnections")
+        {
+            getVendorExtensions()->removeAll(extension);
+            break;
+        }
+    }
+
+    if (!newApiConnections.isEmpty())
+    {
+        QSharedPointer<Kactus2Group> newApiConnectionGroup (new Kactus2Group("kactus2:apiConnections"));
+
+        foreach (QSharedPointer<ApiInterconnection> connection, newApiConnections)
+        {
+            newApiConnectionGroup->addToGroup(connection);
+        }
+
+        getVendorExtensions()->append(newApiConnectionGroup);
+    }
 }
 
 //-----------------------------------------------------------------------------
-// Function: Design::setApiDependencies()
+// Function: Design::setHierApiDependencies()
 //-----------------------------------------------------------------------------
-void Design::setHierApiDependencies(QList<HierApiDependency> const& hierApiDependencies)
+void Design::setHierApiDependencies(QList<QSharedPointer<HierApiInterconnection> > newHierApiDependencies)
 {
-    hierApiDependencies_ = hierApiDependencies;
+    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    {
+        if (extension->type() == "kactus2:hierApiDependencies")
+        {
+            getVendorExtensions()->removeAll(extension);
+            break;
+        }
+    }
+
+    if (!newHierApiDependencies.isEmpty())
+    {
+        QSharedPointer<Kactus2Group> newHierApiGroup (new Kactus2Group("kactus2:hierApiDependencies"));
+
+        foreach (QSharedPointer<HierApiInterconnection> dependency, newHierApiDependencies)
+        {
+            newHierApiGroup->addToGroup(dependency);
+        }
+
+        getVendorExtensions()->append(newHierApiGroup);
+    }
 }
 
 //-----------------------------------------------------------------------------
 // Function: Design::setComConnections()
 //-----------------------------------------------------------------------------
-void Design::setComConnections(QList<ComConnection> const& comConnections)
+void Design::setComConnections(QList<QSharedPointer<ComInterconnection> > newComConnections)
 {
-    comConnections_ = comConnections;
+    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    {
+        if (extension->type() == "kactus2:comConnections")
+        {
+            getVendorExtensions()->removeAll(extension);
+            break;
+        }
+    }
+
+    if (!newComConnections.isEmpty())
+    {
+        QSharedPointer<Kactus2Group> newComConnectionGroup (new Kactus2Group("kactus2:comConnections"));
+
+        foreach (QSharedPointer<ComInterconnection> connection, newComConnections)
+        {
+            newComConnectionGroup->addToGroup(connection);
+        }
+
+        getVendorExtensions()->append(newComConnectionGroup);
+    }
 }
 
 //-----------------------------------------------------------------------------
 // Function: Design::setHierComConnections()
 //-----------------------------------------------------------------------------
-void Design::setHierComConnections(QList<HierComConnection> const& hierComConnections)
+void Design::setHierComConnections(QList<QSharedPointer<HierComInterconnection> > newHierComConnections)
 {
-    hierComConnections_ = hierComConnections;
+    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    {
+        if (extension->type() == "kactus2:hierComConnections")
+        {
+            getVendorExtensions()->removeAll(extension);
+            break;
+        }
+    }
+
+    if (!newHierComConnections.isEmpty())
+    {
+        QSharedPointer<Kactus2Group> newHierComConnectionGroup (new Kactus2Group("kactus2:hierComConnections"));
+
+        foreach (QSharedPointer<HierComInterconnection> connection, newHierComConnections)
+        {
+            newHierComConnectionGroup->addToGroup(connection);
+        }
+
+        getVendorExtensions()->append(newHierComConnectionGroup);
+    }
 }
 
 //-----------------------------------------------------------------------------
 // Function: Design::getSWInstances()
 //-----------------------------------------------------------------------------
-QList<SWInstance> const& Design::getSWInstances() const
+QList<QSharedPointer<SWInstance> > Design::getSWInstances() const
 {
-    return swInstances_;
-}
+    QList<QSharedPointer<VendorExtension> > swExtensions =
+        getGroupedExtensionsByType("kactus2:swInstances", "kactus2:swInstance");
 
-//-----------------------------------------------------------------------------
-// Function: Design::getSWInstances()
-//-----------------------------------------------------------------------------
-QList<SWInstance>& Design::getSWInstances()
-{
-    return swInstances_;
+    QList<QSharedPointer<SWInstance> > swInstanceList;
+
+    foreach (QSharedPointer<VendorExtension> extension, swExtensions)
+    {
+        swInstanceList.append(extension.dynamicCast<SWInstance>());
+    }
+
+    return swInstanceList;
 }
 
 //-----------------------------------------------------------------------------
 // Function: Design::setSWInstances()
 //-----------------------------------------------------------------------------
-void Design::setSWInstances(QList<SWInstance> const& swInstances)
+void Design::setSWInstances(QList<QSharedPointer<SWInstance> > newSWInstances)
 {
-    swInstances_ = swInstances;
+    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    {
+        if (extension->type() == "kactus2:swInstances")
+        {
+            getVendorExtensions()->removeAll(extension);
+            break;
+        }
+    }
+
+    if (!newSWInstances.isEmpty())
+    {
+        QSharedPointer<Kactus2Group> newSwGroup (new Kactus2Group("kactus2:swInstances"));
+
+        foreach(QSharedPointer<SWInstance> swInstance, newSWInstances)
+        {
+            newSwGroup->addToGroup(swInstance);
+        }
+
+        getVendorExtensions()->append(newSwGroup);
+    }
 }
 
 //-----------------------------------------------------------------------------
 // Function: Design::getApiDependencies()
 //-----------------------------------------------------------------------------
-QList<ApiConnection> const& Design::getApiDependencies() const
+QList<QSharedPointer<ApiInterconnection> > Design::getApiConnections() const
 {
-    return apiDependencies_;
+    QList<QSharedPointer<VendorExtension> > apiConnectionExtensions =
+        getGroupedExtensionsByType("kactus2:apiConnections", "kactus2:apiConnection");
+
+    QList<QSharedPointer<ApiInterconnection> > connectionList;
+
+    foreach (QSharedPointer<VendorExtension> extension, apiConnectionExtensions)
+    {
+        connectionList.append(extension.dynamicCast<ApiInterconnection>());
+    }
+
+    return connectionList;
 }
 
 //-----------------------------------------------------------------------------
 // Function: Design::getHierApiDependencies()
 //-----------------------------------------------------------------------------
-QList<HierApiDependency> const& Design::getHierApiDependencies() const
+QList<QSharedPointer<HierApiInterconnection> > Design::getHierApiDependencies() const
 {
-    return hierApiDependencies_;
+    QList<QSharedPointer<VendorExtension> > hierApiDependencyExtensions =
+        getGroupedExtensionsByType("kactus2:hierApiDependencies", "kactus2:hierApiDependency");
+
+    QList<QSharedPointer<HierApiInterconnection> > dependencyList;
+
+    foreach (QSharedPointer<VendorExtension> extension, hierApiDependencyExtensions)
+    {
+        dependencyList.append(extension.dynamicCast<HierApiInterconnection>());
+    }
+
+    return dependencyList;
 }
 
 //-----------------------------------------------------------------------------
 // Function: Design::getComConnections()
 //-----------------------------------------------------------------------------
-QList<ComConnection> const& Design::getComConnections() const
+QList<QSharedPointer<ComInterconnection> > Design::getComConnections() const
 {
-    return comConnections_;
+    QList<QSharedPointer<VendorExtension> > comConnectionExtensions =
+        getGroupedExtensionsByType("kactus2:comConnections", "kactus2:comConnetion");
+
+    QList<QSharedPointer<ComInterconnection> > comConnectionList;
+
+    foreach (QSharedPointer<VendorExtension> extension, comConnectionExtensions)
+    {
+        comConnectionList.append(extension.dynamicCast<ComInterconnection>());
+    }
+
+    return comConnectionList;
 }
 
 //-----------------------------------------------------------------------------
 // Function: Design::getHierComConnections()
 //-----------------------------------------------------------------------------
-QList<HierComConnection> const& Design::getHierComConnections() const
+QList<QSharedPointer<HierComInterconnection> > Design::getHierComConnections() const
 {
-    return hierComConnections_;
+    QList<QSharedPointer<VendorExtension> > hierComConnectionExtensions =
+        getGroupedExtensionsByType("kactus2:comConnections", "kactus2:comConnetion");
+
+    QList<QSharedPointer<HierComInterconnection> > hierComConnectionList;
+
+    foreach (QSharedPointer<VendorExtension> extension, hierComConnectionExtensions)
+    {
+        hierComConnectionList.append(extension.dynamicCast<HierComInterconnection>());
+    }
+
+    return hierComConnectionList;
 }
 
 //-----------------------------------------------------------------------------
@@ -1194,4 +1219,71 @@ void Design::setMonitorInterconnections(
     QSharedPointer<QList<QSharedPointer<MonitorInterconnection> > > newMonitorInterconnections)
 {
     monitorInterconnections_ = newMonitorInterconnections;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Design::copySharedLists()
+//-----------------------------------------------------------------------------
+void Design::copySharedLists(Design const& other)
+{
+    foreach (QSharedPointer<ComponentInstance> instance, *other.componentInstances_)
+    {
+        if (instance)
+        {
+            QSharedPointer<ComponentInstance> copy =
+                QSharedPointer<ComponentInstance>(new ComponentInstance(*instance.data()));
+            componentInstances_->append(copy);
+        }
+    }
+
+    foreach (QSharedPointer<Interconnection> interconnection, *other.interconnections_)
+    {
+        if (interconnection)
+        {
+            QSharedPointer<Interconnection> copy =
+                QSharedPointer<Interconnection> (new Interconnection(*interconnection.data()));
+            interconnections_->append(copy);
+        }
+    }
+
+    foreach (QSharedPointer<MonitorInterconnection> interconnection, *other.monitorInterconnections_)
+    {
+        if (interconnection)
+        {
+            QSharedPointer<MonitorInterconnection> copy =
+                QSharedPointer<MonitorInterconnection> (new MonitorInterconnection(*interconnection.data()));
+            monitorInterconnections_->append(copy);
+        }
+    }
+
+    foreach (QSharedPointer<AdHocConnection> connection, *other.adHocConnections_)
+    {
+        if (connection)
+        {
+            QSharedPointer<AdHocConnection> copy =
+                QSharedPointer<AdHocConnection>(new AdHocConnection(*connection.data()));
+            adHocConnections_->append(copy);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: Design::getGroupedExtensionsByType()
+//-----------------------------------------------------------------------------
+QList<QSharedPointer<VendorExtension> > Design::getGroupedExtensionsByType(QString const& groupName,
+    QString const& extensionType) const
+{
+    QList<QSharedPointer<VendorExtension> > typedExtensions;
+
+    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    {
+        if (extension->type() == groupName)
+        {
+            QSharedPointer<Kactus2Group> extensionGroup = extension.dynamicCast<Kactus2Group>();
+            typedExtensions = extensionGroup->getByType(extensionType);
+            break;
+        }
+    }
+
+    return typedExtensions;
 }
