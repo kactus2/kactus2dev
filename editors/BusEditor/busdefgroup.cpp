@@ -26,6 +26,7 @@ BusDefGroup::BusDefGroup(QWidget *parent):
 QGroupBox(tr("General (Bus Definition)"), parent),
     busDef_(),
     directConnection_(tr("Allow direct master-slave connection"), this),
+    isBroadcast_(tr("Support broadcast"), this),
     isAddressable_(tr("Addressable bus"), this),
     maxMastersEditor_(this),
     maxSlavesEditor_(this),
@@ -46,6 +47,8 @@ QGroupBox(tr("General (Bus Definition)"), parent),
 	 
 	connect(&directConnection_, SIGNAL(toggled(bool)),
         this, SLOT(onDirectConnectionChanged(bool)), Qt::UniqueConnection);
+    connect(&isBroadcast_, SIGNAL(toggled(bool)),
+        this, SLOT(onIsBroadcastChanged(bool)), Qt::UniqueConnection);
 	connect(&isAddressable_, SIGNAL(toggled(bool)),
 		this, SLOT(onIsAddressableChanged(bool)), Qt::UniqueConnection);
 
@@ -67,6 +70,7 @@ void BusDefGroup::setBusDef( QSharedPointer<BusDefinition> busDef )
 	busDef_ = busDef;
 
     directConnection_.setChecked(busDef_->getDirectConnection());
+    isBroadcast_.setChecked(busDef_->getBroadcast().toBool());
 	isAddressable_.setChecked(busDef_->getIsAddressable());
 
     maxMastersEditor_.setText(busDef_->getMaxMasters());
@@ -82,6 +86,15 @@ void BusDefGroup::onDirectConnectionChanged(bool checked)
 {
 	busDef_->setDirectConnection(checked);
 	emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusDefGroup::onIsBroadcastChanged()
+//-----------------------------------------------------------------------------
+void BusDefGroup::onIsBroadcastChanged(bool checked)
+{
+    busDef_->setBroadcast(checked);
+    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -129,24 +142,26 @@ void BusDefGroup::setupLayout()
     masterSlaveLayout->addRow(tr("Max masters on bus:"), &maxMastersEditor_);
     masterSlaveLayout->addRow(tr("Max slaves on bus:"), &maxSlavesEditor_);
 
-    QVBoxLayout* selectionsLayout = new QVBoxLayout();
+    QGroupBox* selectionGroup = new QGroupBox(tr("Constraints"), this);
+
+    QVBoxLayout* selectionsLayout = new QVBoxLayout(selectionGroup);
     selectionsLayout->addWidget(&directConnection_);
+    selectionsLayout->addWidget(&isBroadcast_);
     selectionsLayout->addWidget(&isAddressable_);
     selectionsLayout->addLayout(masterSlaveLayout);
     selectionsLayout->addStretch();    
 
-    QVBoxLayout* descriptionLayout = new QVBoxLayout();
-    descriptionLayout->addWidget(new QLabel(tr("Description:"), this), 0, Qt::AlignTop);
+    QGroupBox* descriptionGroup = new QGroupBox(tr("Description"), this);
+
+    QVBoxLayout* descriptionLayout = new QVBoxLayout(descriptionGroup);
     descriptionLayout->addWidget(&descriptionEditor_, 1, Qt::AlignTop);
     
     QHBoxLayout* topLayout = new QHBoxLayout(this);
-    topLayout->addLayout(selectionsLayout);
-    topLayout->addLayout(descriptionLayout);
+    topLayout->addWidget(selectionGroup);
+    topLayout->addWidget(descriptionGroup, 1);
 
-    maxMastersEditor_.setMaximumWidth(55);
-    maxMastersEditor_.setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-    maxSlavesEditor_.setMaximumWidth(55);
-    maxSlavesEditor_.setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+    maxMastersEditor_.setSizePolicy(QSizePolicy::Minimum, QSizePolicy::MinimumExpanding);
+    maxSlavesEditor_.setSizePolicy(QSizePolicy::Minimum, QSizePolicy::MinimumExpanding);
 
-    descriptionEditor_.setMaximumHeight(75);
+    descriptionEditor_.setMaximumHeight(120);
 }

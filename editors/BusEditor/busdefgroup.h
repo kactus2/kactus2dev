@@ -53,10 +53,13 @@ signals:
 
 private slots:
 
-	//! Handler for state changes on direct connection check box
+	//! Handler for state changes on direct connection check box.
 	void onDirectConnectionChanged(bool checked);
 
-	//! Handler for state changes on is addressable check box
+    //! Handler for state changes on is broadcast check box.
+    void onIsBroadcastChanged(bool checked);
+
+	//! Handler for state changes on is addressable check box.
 	void onIsAddressableChanged(bool checked);
 
 	//! Handler for changes in max masters line edit.
@@ -81,16 +84,19 @@ private:
 	//! The bus definition to edit.
 	QSharedPointer<BusDefinition> busDef_;
 
-	//! Check box to set the direct connection option
+	//! Check box to set the direct connection option.
 	QCheckBox directConnection_;
 
-	//! Check box to set the is addressable option
+    //! Check box to set the broadcast option.
+    QCheckBox isBroadcast_;
+
+	//! Check box to set the is addressable option.
 	QCheckBox isAddressable_;
 
-	//! Spin box to set the maximum number of masters
+	//! Editor to set the maximum number of masters.
 	QLineEdit maxMastersEditor_;
 
-	//! Spin box to set the maximum number of slaves
+	//! Editor to set the maximum number of slaves.
 	QLineEdit maxSlavesEditor_;
 
     //! Editor for bus definition description.
