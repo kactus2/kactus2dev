@@ -16,6 +16,8 @@
 
 #include <IPXACTmodels/VendorExtension.h>
 
+#include <QDomNode>
+
 //-----------------------------------------------------------------------------
 //! Class encapsulating API connection connection data.
 //-----------------------------------------------------------------------------
@@ -45,6 +47,13 @@ public:
      *  Copy constructor.
      */
     ComInterconnection(ComInterconnection const& rhs);
+
+    /*!
+     *  QDomNode constructor.
+     *
+     *      @param [in] connectionNode  The node containing the com connection.
+     */
+    ComInterconnection(QDomNode& connectionNode);
 
     /*!
      *  Destructor.

@@ -11,6 +11,8 @@
 
 #include "SWInstance.h"
 
+#include <IPXACTmodels/XmlUtils.h>
+
 //-----------------------------------------------------------------------------
 // Function: SWInstance::SWInstance()
 //-----------------------------------------------------------------------------
@@ -50,7 +52,6 @@ SWInstance::SWInstance(SWInstance const& rhs)
 //-----------------------------------------------------------------------------
 // Function: SWInstance::SWInstance()
 //-----------------------------------------------------------------------------
-/*
 SWInstance::SWInstance(QDomNode& node)
     : instanceName_(),
       displayName_(),
@@ -76,21 +77,21 @@ SWInstance::SWInstance(QDomNode& node)
             continue;
         }
 
-        if (childNode.nodeName() == "spirit:instanceName")
+        if (childNode.nodeName() == "kactus2:instanceName")
         {
-            //instanceName_ = XmlUtils::removeWhiteSpace(childNode.childNodes().at(0).nodeValue());
+            instanceName_ = XmlUtils::removeWhiteSpace(childNode.childNodes().at(0).nodeValue());
         }
-        else if (childNode.nodeName() == "spirit:displayName")
+        else if (childNode.nodeName() == "kactus2:displayName")
         {
             displayName_ = childNode.childNodes().at(0).nodeValue();
         }
-        else if (childNode.nodeName() == "spirit:description")
+        else if (childNode.nodeName() == "kactus2:description")
         {
             desc_ = childNode.childNodes().at(0).nodeValue();
         }
         else if (childNode.nodeName() == "kactus2:componentRef")
         {
-            componentRef_ = VLNV::createVLNV(childNode, VLNV::COMPONENT);
+            componentRef_ = createComponentReference(childNode);
         }
         else if (childNode.nodeName() == "kactus2:fileSetRef")
         {
@@ -120,13 +121,13 @@ SWInstance::SWInstance(QDomNode& node)
         }
         else if (childNode.nodeName() == "kactus2:apiInterfacePositions")
         {
-            //XmlUtils::parsePositionsMap(childNode, "kactus2:apiInterfacePosition",
-            //                            "kactus2:apiRef", apiInterfacePositions_);
+            parseMappedPosition(childNode, "kactus2:apiInterfacePosition", "kactus2:apiRef",
+                apiInterfacePositions_);
         }
         else if (childNode.nodeName() == "kactus2:comInterfacePositions")
         {
-            //XmlUtils::parsePositionsMap(childNode, "kactus2:comInterfacePosition",
-            //                            "kactus2:comRef", comInterfacePositions_);
+            parseMappedPosition(childNode, "kactus2:comInterfacePosition", "kactus2:comRef",
+                comInterfacePositions_);
         }
         else if (childNode.nodeName() == "kactus2:draft")
         {
@@ -134,7 +135,7 @@ SWInstance::SWInstance(QDomNode& node)
         }
     }
 }
-*/
+
 //-----------------------------------------------------------------------------
 // Function: SWInstance::~SWInstance()
 //-----------------------------------------------------------------------------
@@ -651,4 +652,61 @@ void SWInstance::writePosition(QXmlStreamWriter& xmlWriter, QPointF const& pos) 
     xmlWriter.writeEmptyElement("kactus2:position");
     xmlWriter.writeAttribute("x", QString::number(int(pos.x())));
     xmlWriter.writeAttribute("y", QString::number(int(pos.y())));
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWInstance::parseMappedPosition()
+//-----------------------------------------------------------------------------
+void SWInstance::parseMappedPosition(QDomNode& node, QString const& identifier, QString const& refIdentifier,
+    QMap<QString, QPointF>& positions)
+{
+    for (int i = 0; i < node.childNodes().size(); ++i)
+    {
+        QDomNode childNode = node.childNodes().at(i);
+
+        if (childNode.nodeName() == identifier)
+        {
+            QString name = childNode.attributes().namedItem(refIdentifier).nodeValue();
+            QPointF pos;
+
+            if (childNode.childNodes().size() > 0 &&
+                childNode.childNodes().at(0).nodeName() == "kactus2:position")
+            {
+                QDomNode posNode = childNode.childNodes().at(0);
+                pos = parseSinglePoint(posNode);
+            }
+
+            positions[name] = pos;
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWInstance::parseSinglePoint()
+//-----------------------------------------------------------------------------
+QPointF SWInstance::parseSinglePoint(QDomNode const& node) 
+{
+    int x = node.attributes().namedItem("x").nodeValue().toInt();
+    int y = node.attributes().namedItem("y").nodeValue().toInt();
+
+    return QPointF(x, y);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWInstance::createComponentReference()
+//-----------------------------------------------------------------------------
+VLNV SWInstance::createComponentReference(const QDomNode& node)
+{
+    QDomNamedNodeMap attributeMap = node.attributes();
+    QString vendor = attributeMap.namedItem("vendor").nodeValue();
+    QString library = attributeMap.namedItem("library").nodeValue();
+    QString name = attributeMap.namedItem("name").nodeValue();
+    QString version = attributeMap.namedItem("version").nodeValue();
+
+    if (vendor.isNull() || library.isNull() || name.isNull() || version.isNull() ) 
+    {
+        return VLNV();
+    }
+
+    return VLNV(VLNV::COMPONENT, vendor, library, name, version);
 }

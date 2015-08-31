@@ -150,6 +150,70 @@ private:
      *      @param [in] portReferenceNode   The XML description of the port.
      */
     QSharedPointer<PortReference> createPortReference(const QDomNode& portReferenceNode) const;
+
+    /*!
+     *  Reads the design vendor extensions.
+     *
+     *      @param [in] documentNode    The XML description of the document.
+     *      @param [in] design          The new design item.
+     */
+    void parseDesignExtensions(QDomNode const& documentNode, QSharedPointer<Design> design) const;
+
+    /*!
+     *  Reads the design column layout (Kactus2 extension).
+     *
+     *      @param [in] columnNode  The XML description of the column layout.
+     *      @param [in] design      The new design item.
+     */
+    void parseColumnLayout(QDomNode const& columnNode, QSharedPointer<Design> design) const;
+
+    /*!
+     *  Reads the software instances (Kactus2 extension).
+     *
+     *      @param [in] swInstancesNode     The XML description of the software instances.
+     *      @param [in] design              The new design item.
+     */
+    void parseSwInstances(QDomNode const& swInstancesNode, QSharedPointer<Design> design) const;
+
+    /*!
+     *  Reads the ad-hoc port (Kactus2:extension).
+     *
+     *      @param [in] adHocsNode  The XML description of the ad-hoc ports.
+     *      @param [in] design      The new design item.
+     */
+    void parseAdHocPortPositions(QDomNode const& adHocsNode, QSharedPointer<Design> design) const;
+
+    /*!
+     *  Reads the api connections (Kactus2 extension).
+     *
+     *      @param [in] apiConnectionsNode  The XML description of the api connections.
+     *      @param [in] design              The new design item.
+     */
+    void parseApiConnections(QDomNode const& apiConnectionsNode, QSharedPointer<Design>design) const;
+
+    /*!
+     *  Reads the hierarchical api connections (Kactus2 extension).
+     *
+     *      @param [in] hierApiConnectionsNode  The XML description of the hierarchical api connections.
+     *      @param [in] design                  The new design item.
+     */
+    void parseHierApiConnections(QDomNode const& hierApiConnectionsNode, QSharedPointer<Design> design) const;
+
+    /*!
+     *  Reads the com connections (Kactus2 extension).
+     *
+     *      @param [in] comConnectionsNode  The XML description of the com connections.
+     *      @param [in] design              The new design item.
+     */
+    void parseComConnections(QDomNode const& comConnectionsNode, QSharedPointer<Design> design) const;
+
+    /*!
+     *  Reads the hierarchical com connections.
+     *
+     *      @param [in] hierComConnectionsNode  The XML description of the hierarchical com connections.
+     *      @param [in] design                  The new design item.
+     */
+    void parseHierComConnections(QDomNode const& hierComConnectionsNode, QSharedPointer<Design> design) const;
 };
 
 #endif // DESIGNREADER_H

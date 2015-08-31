@@ -660,7 +660,7 @@ QMap<QString, QPointF> Design::getAdHocPortPositions() const
 QList<QSharedPointer<ColumnDesc> > Design::getColumns() const
 {
     QList<QSharedPointer<VendorExtension> > columnExtensions =
-        getGroupedExtensionsByType("kactus2:layout", "kactus2:column");
+        getGroupedExtensionsByType("kactus2:columnLayout", "kactus2:column");
 
     QList<QSharedPointer<ColumnDesc> > columnList;
     foreach (QSharedPointer<VendorExtension> extension, columnExtensions)
@@ -748,10 +748,14 @@ void Design::setAdHocPortPositions(QMap<QString, QPointF> const& val)
 
             QSharedPointer<Kactus2Placeholder> newAdHocPort (new Kactus2Placeholder("kactus2:adHocVisible"));
 
-            newAdHocPort->setAttribute("portName", positionIterator.key());
-            newAdHocPort->setAttribute("x", QString::number(int(positionIterator.value().x())));
-            newAdHocPort->setAttribute("y", QString::number(int(positionIterator.value().y())));
-            
+            QString portName = positionIterator.key();
+            int positionX = positionIterator.value().x();
+            int positionY = positionIterator.value().y();
+
+            newAdHocPort->setAttribute("portName", portName);
+            newAdHocPort->setAttribute("x", QString::number(positionX));
+            newAdHocPort->setAttribute("y", QString::number(positionY));
+
             portAdHocs->addToGroup(newAdHocPort);
         }
 
@@ -1021,7 +1025,7 @@ QList<QSharedPointer<HierApiInterconnection> > Design::getHierApiDependencies() 
 QList<QSharedPointer<ComInterconnection> > Design::getComConnections() const
 {
     QList<QSharedPointer<VendorExtension> > comConnectionExtensions =
-        getGroupedExtensionsByType("kactus2:comConnections", "kactus2:comConnetion");
+        getGroupedExtensionsByType("kactus2:comConnections", "kactus2:comConnection");
 
     QList<QSharedPointer<ComInterconnection> > comConnectionList;
 
@@ -1039,7 +1043,7 @@ QList<QSharedPointer<ComInterconnection> > Design::getComConnections() const
 QList<QSharedPointer<HierComInterconnection> > Design::getHierComConnections() const
 {
     QList<QSharedPointer<VendorExtension> > hierComConnectionExtensions =
-        getGroupedExtensionsByType("kactus2:comConnections", "kactus2:comConnetion");
+        getGroupedExtensionsByType("kactus2:hierComConnections", "kactus2:hierComConnection");
 
     QList<QSharedPointer<HierComInterconnection> > hierComConnectionList;
 

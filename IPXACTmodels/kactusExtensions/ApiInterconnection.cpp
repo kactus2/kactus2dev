@@ -44,86 +44,76 @@ imported_(other.imported_)
 
 }
 
-/*
 //-----------------------------------------------------------------------------
 // Function: ApiDependency::ApiDependency()
 //-----------------------------------------------------------------------------
-ApiConnection::ApiConnection(QDomNode& node) :
-NameGroup(),
-//name_(), displayName_(), desc_(),
-interface1_(new ActiveInterface()),
-interface2_(new ActiveInterface()),
-route_(),
-imported_(false),
-offPage_(false)
+ApiInterconnection::ApiInterconnection(QDomNode& node) :
+Interconnection(),
+imported_()
 {
-    for (int i = 0; i < node.childNodes().count(); ++i)
+    setName(node.firstChildElement("ipxact:name").firstChild().nodeValue());
+    setDisplayName(node.firstChildElement("ipxact:displayName").firstChild().nodeValue());
+    setDescription(node.firstChildElement("ipxact:description").firstChild().nodeValue());
+
+    QDomElement apiConnectionElement = node.toElement();
+
+    if (!apiConnectionElement.isNull())
     {
-        QDomNode childNode = node.childNodes().at(i);
+        QDomNodeList apiInterfaceNodes = apiConnectionElement.elementsByTagName("kactus2:activeApiInterface");
 
-        if (childNode.isComment())
+        if (apiInterfaceNodes.count() == 2)
         {
-            continue;
-        }
+            QDomNamedNodeMap startInterfaceAttributes = apiInterfaceNodes.at(0).attributes();
+            QString startComponentRef = startInterfaceAttributes.namedItem("componentRef").nodeValue();
+            QString startApiRef = startInterfaceAttributes.namedItem("apiRef").nodeValue();
+            QSharedPointer<ActiveInterface> startInterface (new ActiveInterface(startComponentRef, startApiRef));
+            setInterface1(startInterface);
 
-        if (childNode.nodeName() == "spirit:name")
-        {
-            //name_ = childNode.childNodes().at(0).nodeValue();
-            setName(childNode.childNodes().at(0).nodeValue());
-        }
-        else if (childNode.nodeName() == "spirit:displayName")
-        {
-            //displayName_ = childNode.childNodes().at(0).nodeValue();
-            setDisplayName(childNode.childNodes().at(0).nodeValue());
-        }
-        else if (childNode.nodeName() == "spirit:description")
-        {
-            //desc_ = childNode.childNodes().at(0).nodeValue();
-            setDescription(childNode.childNodes().at(0).nodeValue());
-        }
-        else if (childNode.nodeName() == "kactus2:activeApiInterface")
-        {
-            //if (interface1_.componentRef.isNull())
-            if (interface1_->getComponentReference().isEmpty())
-            {
-                //interface1_.componentRef = childNode.attributes().namedItem("kactus2:componentRef").nodeValue();
-                //interface1_.apiRef = childNode.attributes().namedItem("kactus2:apiRef").nodeValue();
-                interface1_->setComponentReference(
-                    childNode.attributes().namedItem("kactus2:componentRef").nodeValue());
-                interface1_->setBusReference(childNode.attributes().namedItem("kactus2:apiRef").nodeValue());
-            }
-            else
-            {
-                //interface2_.componentRef = childNode.attributes().namedItem("kactus2:componentRef").nodeValue();
-                //interface2_.apiRef = childNode.attributes().namedItem("kactus2:apiRef").nodeValue();
-                interface2_->setComponentReference(
-                    childNode.attributes().namedItem("kactus2:componentRef").nodeValue());
-                interface2_->setBusReference(childNode.attributes().namedItem("kactus2:apiRef").nodeValue());
-            }
-        }
-        else if (childNode.nodeName() == "kactus2:route")
-        {
-            offPage_ = childNode.attributes().namedItem("kactus2:offPage").nodeValue() == "true";
-
-            for (int i = 0; i < childNode.childNodes().size(); ++i)
-            {
-                QDomNode posNode = childNode.childNodes().at(i);
-                QPointF pos;
-
-                if (posNode.nodeName() == "kactus2:position")
-                {
-                    pos.setX(posNode.attributes().namedItem("x").nodeValue().toInt());
-                    pos.setY(posNode.attributes().namedItem("y").nodeValue().toInt());
-                    route_.append(pos);
-                }
-            }
-        }
-        else if (childNode.nodeName() == "kactus2:imported")
-        {
-            imported_ = true;
+            QDomNamedNodeMap endInterfaceAttributes = apiInterfaceNodes.at(1).attributes();
+            QString endComponentRef = endInterfaceAttributes.namedItem("componentRef").nodeValue();
+            QString endApiRef = endInterfaceAttributes.namedItem("apiRef").nodeValue();
+            QSharedPointer<ActiveInterface> endInterface (new ActiveInterface(endComponentRef, endApiRef));
+            setInterface2(endInterface);
         }
     }
-}*/
+
+    QDomNode routeNode = node.firstChildElement("kactus2:route");
+    if (!routeNode.isNull())
+    {
+        QList<QPointF> route;
+
+        QDomNamedNodeMap routeAttributes = routeNode.attributes();
+        if (routeAttributes.namedItem("offPage").nodeValue() == "true")
+        {
+            setOffPage(true);
+        }
+        else
+        {
+            setOffPage(false);
+        }
+
+        QDomNodeList routeNodeList = routeNode.childNodes();
+        int routeCount = routeNodeList.count();
+        for (int routeIndex = 0; routeIndex < routeCount; ++routeIndex)
+        {
+            QDomNode positionNode = routeNodeList.at(routeIndex);
+            if (positionNode.nodeName() == "kactus2:position")
+            {
+                QDomNamedNodeMap positionAttributes = positionNode.attributes();
+                int positionX = positionAttributes.namedItem("x").nodeValue().toInt();
+                int positionY = positionAttributes.namedItem("y").nodeValue().toInt();
+
+                QPointF newPosition(positionX, positionY);
+                route.append(newPosition);
+            }
+        }
+
+        setRoute(route);
+    }
+
+    QDomNode importedNode = node.firstChildElement();
+    imported_ = !importedNode.isNull();
+}
 
 //-----------------------------------------------------------------------------
 // Function: ApiInterconnection::~ApiInterconnection()

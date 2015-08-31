@@ -39,6 +39,70 @@ Interconnection(rhs)
 {
 
 }
+
+//-----------------------------------------------------------------------------
+// Function: ComInterconnection::ComInterconnection()
+//-----------------------------------------------------------------------------
+ComInterconnection::ComInterconnection(QDomNode& connectionNode) :
+Interconnection()
+{
+    QDomElement connectionElement = connectionNode.toElement();
+    if (!connectionElement.isNull())
+    {
+        setName(connectionElement.firstChildElement("ipxact:name").firstChild().nodeValue());
+        setDisplayName(connectionElement.firstChildElement("ipxact:displayName").firstChild().nodeValue());
+        setDescription(connectionElement.firstChildElement("ipxact:description").firstChild().nodeValue());
+
+        QDomNodeList interfaceList = connectionElement.elementsByTagName("kactus2:activeComInterface");
+        if (interfaceList.count() == 2)
+        {
+            QDomNode startInterfaceNode = interfaceList.at(0);
+            QDomNamedNodeMap startInterfaceAttributes = startInterfaceNode.attributes();
+            QString startComponentRef = startInterfaceAttributes.namedItem("componentRef").nodeValue();
+            QString startComRef = startInterfaceAttributes.namedItem("comRef").nodeValue();
+
+            QSharedPointer<ActiveInterface> startComInterface (new ActiveInterface(startComponentRef, startComRef));
+            setInterface1(startComInterface);
+
+            QDomNode endInterfaceNode = interfaceList.at(1);
+            QDomNamedNodeMap endInterfaceAttributes = endInterfaceNode.attributes();
+            QString endComponentRef = endInterfaceAttributes.namedItem("componentRef").nodeValue();
+            QString endComRef = endInterfaceAttributes.namedItem("comRef").nodeValue();
+
+            QSharedPointer<ActiveInterface> endComInterface (new ActiveInterface(endComponentRef, endComRef));
+            setInterface2(endComInterface);
+        }
+
+        QDomElement routeElement = connectionElement.firstChildElement("kactus2:route");
+        if (!routeElement.isNull())
+        {
+            if (routeElement.attribute("offPage") == "true")
+            {
+                setOffPage(true);
+            }
+            else
+            {
+                setOffPage(false);
+            }
+            
+            QList<QPointF> newRoute;
+
+            QDomNodeList routePositionNodes = routeElement.elementsByTagName("kactus2:position");
+            int routePositionCount = routePositionNodes.count();
+            for (int i = 0; i < routePositionCount; ++i)
+            {
+                QDomNamedNodeMap routePositionAttributes = routePositionNodes.at(i).attributes();
+                int positionX = routePositionAttributes.namedItem("x").nodeValue().toInt();
+                int positionY = routePositionAttributes.namedItem("y").nodeValue().toInt();
+
+                newRoute.append(QPointF(positionX, positionY));
+            }
+
+            setRoute(newRoute);
+        }
+    }
+}
+
 /*
 //-----------------------------------------------------------------------------
 // Function: ComConnection::ComConnection()

@@ -18,6 +18,8 @@
 #include <IPXACTmodels/Design/Interconnection.h>
 #include <IPXACTmodels/VendorExtension.h>
 
+#include <QDomNode>
+
 //-----------------------------------------------------------------------------
 //! Class encapsulating API dependency connection data.
 //-----------------------------------------------------------------------------
@@ -51,6 +53,13 @@ public:
      *  Copy constructor.
      */
     HierApiInterconnection(HierApiInterconnection const& rhs);
+
+    /*!
+     *  QDomNode constructor.
+     *
+     *      @param [in] connectionNode  The node containing the connection.
+     */
+    HierApiInterconnection(QDomNode& connectionNode);
 
     /*!
      *  Destructor.
@@ -130,6 +139,20 @@ public:
      *  Returns the direction of the interface in the top-level design diagram.
      */
     QVector2D const& getDirection() const;
+
+    /*!
+     *  Set the position of the interface.
+     *
+     *      @param [in] newPosition     The new position for the interface.
+     */
+    void setPosition(QPointF const& newPosition);
+
+    /*!
+     *  Set the direction of the interface.
+     *
+     *      @param [in] newDirection    The new direction of the interface.
+     */
+    void setDirection(QVector2D const& newDirection);
 
     /*!
      *  Assignment operator.

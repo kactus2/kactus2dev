@@ -16,6 +16,8 @@
 
 #include <IPXACTmodels/VendorExtension.h>
 
+#include <QDomNode>
+
 //-----------------------------------------------------------------------------
 //! Class encapsulating API dependency connection data.
 //-----------------------------------------------------------------------------
@@ -46,6 +48,13 @@ public:
      *  Copy constructor.
      */
     ApiInterconnection(ApiInterconnection const& other);
+
+    /*!
+     *  QDomNode constructor.
+     *
+     *      @param [in] node    The node containing the api interconnection.
+     */
+    ApiInterconnection(QDomNode& node);
 
     /*!
      *  Destructor.
@@ -136,6 +145,7 @@ public:
     ApiInterconnection& operator=(ApiInterconnection const& rhs);
 
 private:
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

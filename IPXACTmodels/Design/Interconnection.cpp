@@ -22,7 +22,7 @@ startInterface_(startInterface),
 activeInterfaces_(new QList<QSharedPointer<ActiveInterface> > ()),
 hierInterfaces_(new QList<QSharedPointer<HierInterface> > ()),
 route_(),
-offPage_(),
+offPage_(false),
 isPresent_()
 {
 
@@ -38,7 +38,7 @@ startInterface_(new ActiveInterface()),
 activeInterfaces_(new QList<QSharedPointer<ActiveInterface> > ()),
 hierInterfaces_(new QList<QSharedPointer<HierInterface> > ()),
 route_(),
-offPage_(),
+offPage_(false),
 isPresent_()
 {
 

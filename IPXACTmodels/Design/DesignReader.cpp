@@ -53,7 +53,7 @@ QSharedPointer<Design> DesignReader::createDesignFrom(QDomDocument const& docume
 
     parseAssertions(designNode, newDesign);
 
-    parseKactusAndVendorExtensions(designNode, newDesign);
+    parseDesignExtensions(designNode, newDesign);
 
     return newDesign;
 }
@@ -354,4 +354,207 @@ QSharedPointer<PortReference> DesignReader::createPortReference(const QDomNode& 
     }
 
     return newPortReference;
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignReader::parseKactusAndVendorExtensions()
+//-----------------------------------------------------------------------------
+void DesignReader::parseDesignExtensions(QDomNode const& documentNode, QSharedPointer<Design> design) const
+{
+    QDomNodeList extensionNodes = documentNode.firstChildElement("ipxact:vendorExtensions").childNodes();
+    int extensionCount = extensionNodes.count();
+
+    for (int extensionIndex = 0; extensionIndex < extensionCount; ++extensionIndex)
+    {
+        QDomNode singleExtensionNode = extensionNodes.at(extensionIndex);
+        if (singleExtensionNode.nodeName() == "kactus2:columnLayout")
+        {
+            parseColumnLayout(singleExtensionNode, design);
+        }
+        if (singleExtensionNode.nodeName() == "kactus2:swInstances")
+        {
+            parseSwInstances(singleExtensionNode, design);
+        }
+        if (singleExtensionNode.nodeName() == "kactus2:adHocVisibilities")
+        {
+            parseAdHocPortPositions(singleExtensionNode, design);
+        }
+        if (singleExtensionNode.nodeName() == "kactus2:apiConnections")
+        {
+            parseApiConnections(singleExtensionNode, design);
+        }
+        if (singleExtensionNode.nodeName() == "kactus2:hierApiDependencies")
+        {
+            parseHierApiConnections(singleExtensionNode, design);
+        }
+        if (singleExtensionNode.nodeName() == "kactus2:comConnections")
+        {
+            parseComConnections(singleExtensionNode, design);
+        }
+        if (singleExtensionNode.nodeName() == "kactus2:hierComConnections")
+        {
+            parseHierComConnections(singleExtensionNode, design);
+        }
+    }
+
+    parseKactusAndVendorExtensions(documentNode, design);
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignReader::parseColumnLayout()
+//-----------------------------------------------------------------------------
+void DesignReader::parseColumnLayout(QDomNode const& columnNode, QSharedPointer<Design> design) const
+{
+    QList<QSharedPointer<ColumnDesc> > columnLayout;
+
+    QDomNodeList columnNodeList = columnNode.childNodes();
+    int columnCount = columnNodeList.count();
+    for (int columnIndex = 0 ;columnIndex < columnCount; ++columnIndex)
+    {
+        QDomNode columnNode = columnNodeList.at(columnIndex);
+        if (columnNode.nodeName() == "kactus2:column")
+        {
+            QSharedPointer<ColumnDesc> newColumn (new ColumnDesc(columnNode));
+            columnLayout.append(newColumn);
+        }
+    }
+    design->setColumns(columnLayout);
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignReader::parseSwInstances()
+//-----------------------------------------------------------------------------
+void DesignReader::parseSwInstances(QDomNode const& swInstancesNode, QSharedPointer<Design> design) const
+{
+    QList<QSharedPointer<SWInstance> > swInstanceList;
+
+    QDomNodeList swNodeList = swInstancesNode.childNodes();
+    int swCount = swNodeList.count();
+
+    for (int swIndex = 0;swIndex < swCount; ++swIndex)
+    {
+        QDomNode swNode = swNodeList.at(swIndex);
+        if (swNode.nodeName() == "kactus2:swInstance")
+        {
+            QSharedPointer<SWInstance> newSWInstance (new SWInstance(swNode));
+            swInstanceList.append(newSWInstance);
+        }
+    }
+
+    design->setSWInstances(swInstanceList);
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignReader::parseAdHocPositions()
+//-----------------------------------------------------------------------------
+void DesignReader::parseAdHocPortPositions(QDomNode const& adHocsNode, QSharedPointer<Design> design) const
+{
+    QMap<QString, QPointF> adHocPortPositions;
+
+    QDomNodeList adHocPortPositionNodeList = adHocsNode.childNodes();
+    int adHocPortPositionCount = adHocPortPositionNodeList.count();
+    for (int portPositionIndex = 0; portPositionIndex < adHocPortPositionCount; ++portPositionIndex)
+    {
+        QDomNode adHocPortPositionNode = adHocPortPositionNodeList.at(portPositionIndex);
+        if (adHocPortPositionNode.nodeName() == "kactus2:adHocVisible")
+        {
+            QDomNamedNodeMap adHocAttributes = adHocPortPositionNode.attributes();
+            QString portName = adHocAttributes.namedItem("portName").nodeValue();
+            int positionX = adHocAttributes.namedItem("x").nodeValue().toInt();
+            int positionY = adHocAttributes.namedItem("y").nodeValue().toInt();
+
+            QPointF adHocPosition (positionX, positionY);
+            adHocPortPositions.insert(portName, adHocPosition);
+        }
+    }
+
+    design->setAdHocPortPositions(adHocPortPositions);
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignReader::parseApiConnections()
+//-----------------------------------------------------------------------------
+void DesignReader::parseApiConnections(QDomNode const& apiConnectionsNode, QSharedPointer<Design>design) const
+{
+    QList<QSharedPointer<ApiInterconnection> > apiConnections;
+
+    QDomNodeList apiConnectionNodeList = apiConnectionsNode.childNodes();
+
+    int apiConnectionsCount = apiConnectionNodeList.count();
+    for (int apiConnectionIndex = 0; apiConnectionIndex < apiConnectionsCount; ++apiConnectionIndex)
+    {
+        QDomNode singleApiConnectionNode = apiConnectionNodeList.at(apiConnectionIndex);
+
+        QSharedPointer<ApiInterconnection> newApiConnection (new ApiInterconnection(singleApiConnectionNode));
+        apiConnections.append(newApiConnection);
+    }
+
+    design->setApiConnections(apiConnections);
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignReader::parseHierApiConnections()
+//-----------------------------------------------------------------------------
+void DesignReader::parseHierApiConnections(QDomNode const& hierApiConnectionsNode, QSharedPointer<Design> design)
+    const
+{
+    QList<QSharedPointer<HierApiInterconnection> > hierApiConnections;
+
+    QDomNodeList hierApiConnectionNodeList = hierApiConnectionsNode.childNodes();
+    int hierApiConnectionsCount = hierApiConnectionNodeList.count();
+    for (int connectionIndex = 0; connectionIndex < hierApiConnectionsCount; ++connectionIndex)
+    {
+        QDomNode singleHierApiConnectionNode = hierApiConnectionNodeList.at(connectionIndex);
+
+        QSharedPointer<HierApiInterconnection> newConnection (
+            new HierApiInterconnection(singleHierApiConnectionNode));
+
+        hierApiConnections.append(newConnection);
+    }
+
+    design->setHierApiDependencies(hierApiConnections);
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignReader::parseComConnections()
+//-----------------------------------------------------------------------------
+void DesignReader::parseComConnections(QDomNode const& comConnectionsNode, QSharedPointer<Design> design) const
+{
+    QList<QSharedPointer<ComInterconnection> > comConnections;
+
+    QDomNodeList comConnectionNodeList = comConnectionsNode.childNodes();
+    int comConnectionsCount = comConnectionNodeList.count();
+    for (int connectionIndex = 0; connectionIndex < comConnectionsCount; ++connectionIndex)
+    {
+        QDomNode singleComConnectionNode = comConnectionNodeList.at(connectionIndex);
+
+        QSharedPointer<ComInterconnection> newConnection (new ComInterconnection(singleComConnectionNode));
+
+        comConnections.append(newConnection);
+    }
+
+    design->setComConnections(comConnections);
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignReader::parseHierComConnections()
+//-----------------------------------------------------------------------------
+void DesignReader::parseHierComConnections(QDomNode const& hierComConnectionsNode, QSharedPointer<Design> design)
+    const
+{
+    QList<QSharedPointer<HierComInterconnection> > hierComConnections;
+
+    QDomNodeList hierComConnectionNodeList = hierComConnectionsNode.childNodes();
+    int hierComConnectionsCount = hierComConnectionNodeList.count();
+    for (int connectionIndex = 0; connectionIndex < hierComConnectionsCount; ++connectionIndex)
+    {
+        QDomNode singleHierComConnectionNode = hierComConnectionNodeList.at(connectionIndex);
+
+        QSharedPointer<HierComInterconnection> newConnection (
+            new HierComInterconnection(singleHierComConnectionNode));
+
+        hierComConnections.append(newConnection);
+    }
+
+    design->setHierComConnections(hierComConnections);
 }

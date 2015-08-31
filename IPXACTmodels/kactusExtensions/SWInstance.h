@@ -296,6 +296,31 @@ private:
      */
     void writePosition(QXmlStreamWriter& xmlWriter, QPointF const& pos) const;
 
+    /*!
+     *  Reads the mapped positions.
+     *
+     *      @param [in] node            The node containing the positions.
+     *      @param [in] identifier      The identifier for the positions.
+     *      @param [in] refIdentifier   The reference identifier for the positions.
+     *      @param [in] positions       The positions.
+     */
+    void parseMappedPosition(QDomNode& node, QString const& identifier, QString const& refIdentifier,
+        QMap<QString, QPointF>& positions);
+    
+    /*!
+     *  Reads a single point.
+     *
+     *      @param [in] node    The node containing the point.
+     */
+    QPointF parseSinglePoint(QDomNode const& node);
+
+    /*!
+     *  Create a VLNV from a node referencing a component.
+     *
+     *      @param [in] node    The node containing the component reference.
+     */
+    VLNV createComponentReference(const QDomNode& node);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

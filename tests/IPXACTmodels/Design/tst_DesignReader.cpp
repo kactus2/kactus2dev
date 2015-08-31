@@ -31,6 +31,14 @@ private slots:
     void testReadParameters();
     void testReadAssertions();
     void testReadVendorExtensions();
+
+    void testReadColumns();
+    void testReadSWInstances();
+    void testReadPortAdHocVisibilitiesAndPositions();
+    void testReadApiConnections();
+    void testReadHierApiConnections();
+    void testReadComConnections();
+    void testReadHierComConnections();
 };
 
 //-----------------------------------------------------------------------------
@@ -512,6 +520,400 @@ void tst_DesignReader::testReadVendorExtensions()
     QCOMPARE(testDesign->getVendorExtensions()->size(), 2);
     QCOMPARE(testDesign->getVendorExtensions()->last()->type(), QString("testExtension"));
     QCOMPARE(testDesign->getVersion(), QString("3.0.0"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_DesignReader::testReadColumns()
+//-----------------------------------------------------------------------------
+void tst_DesignReader::testReadColumns()
+{
+    QString documentContent(
+        "<ipxact:design xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
+            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:library>TestLibrary</ipxact:library>"
+            "<ipxact:name>TestDesign</ipxact:name>"
+            "<ipxact:version>0.1</ipxact:version>"
+            "<ipxact:description>TestDescription</ipxact:description>"
+            "<ipxact:vendorExtensions>"
+                "<kactus2:version>3.0.0</kactus2:version>"
+                "<kactus2:columnLayout>"
+                    "<kactus2:column name=\"testColumn\" contentType=\"2\" allowedItems=\"0\" "
+                        "minWidth=\"259\" width=\"259\"/>"
+                    "<kactus2:column name=\"otherColumn\" contentType=\"1\" allowedItems=\"0\" "
+                        "minWidth=\"259\" width=\"259\"/>"
+                "</kactus2:columnLayout>"
+            "</ipxact:vendorExtensions>"
+        "</ipxact:design>");
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    DesignReader designReader;
+    QSharedPointer<Design> testDesign = designReader.createDesignFrom(document);
+
+    QCOMPARE(testDesign->getVendorExtensions()->size(), 2);
+    QCOMPARE(testDesign->getVersion(), QString("3.0.0"));
+
+    QList<QSharedPointer<ColumnDesc> > columnList = testDesign->getColumns();
+    QCOMPARE(columnList.size(), 2);
+
+    int firstColumnWidth = columnList.first()->getWidth();
+    QCOMPARE(columnList.first()->name(), QString("testColumn"));
+    QCOMPARE(columnList.first()->getContentType(), COLUMN_CONTENT_COMPONENTS);
+    QCOMPARE(columnList.first()->getAllowedItems(), unsigned int(0));
+    QCOMPARE(firstColumnWidth, 259);
+
+    int secondColumnWidth = columnList.last()->getWidth();
+    QCOMPARE(columnList.last()->name(), QString("otherColumn"));
+    QCOMPARE(columnList.last()->getContentType(), COLUMN_CONTENT_BUSES);
+    QCOMPARE(columnList.last()->getAllowedItems(), unsigned int (0));
+    QCOMPARE(secondColumnWidth, 259);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_DesignReader::testReadSWInstances()
+//-----------------------------------------------------------------------------
+void tst_DesignReader::testReadSWInstances()
+{
+    QString documentContent(
+        "<ipxact:design xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
+            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:library>TestLibrary</ipxact:library>"
+            "<ipxact:name>TestDesign</ipxact:name>"
+            "<ipxact:version>0.1</ipxact:version>"
+            "<ipxact:description>TestDescription</ipxact:description>"
+            "<ipxact:vendorExtensions>"
+                "<kactus2:version>3.0.0</kactus2:version>"
+                "<kactus2:swInstances>"
+                    "<kactus2:swInstance>"
+                        "<kactus2:instanceName>testInstance</kactus2:instanceName>"
+                        "<kactus2:displayName>testDisplay</kactus2:displayName>"
+                        "<kactus2:description>testDescription</kactus2:description>"
+                        "<kactus2:componentRef vendor=\"TUT\" library=\"TestLibrary\" name=\"refComponent\" "
+                            "version=\"1.1\"/>"
+                        "<kactus2:mapping kactus2:hwRef=\"\"/>"
+                        "<kactus2:position x=\"0\" y=\"0\"/>"
+                    "</kactus2:swInstance>"
+                "</kactus2:swInstances>"
+            "</ipxact:vendorExtensions>"
+        "</ipxact:design>");
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    DesignReader designReader;
+    QSharedPointer<Design> testDesign = designReader.createDesignFrom(document);
+
+    QCOMPARE(testDesign->getVendorExtensions()->size(), 2);
+    QCOMPARE(testDesign->getVersion(), QString("3.0.0"));
+
+    QList<QSharedPointer<SWInstance> > swInstances = testDesign->getSWInstances();
+    QCOMPARE(swInstances.size(), 1);
+    QCOMPARE(swInstances.first()->getInstanceName(), QString("testInstance"));
+    QCOMPARE(swInstances.first()->getDisplayName(), QString("testDisplay"));
+    QCOMPARE(swInstances.first()->getDescription(), QString("testDescription"));
+
+    QCOMPARE(swInstances.first()->getComponentRef().getVendor(), QString("TUT"));
+    QCOMPARE(swInstances.first()->getComponentRef().getLibrary(), QString("TestLibrary"));
+    QCOMPARE(swInstances.first()->getComponentRef().getName(), QString("refComponent"));
+    QCOMPARE(swInstances.first()->getComponentRef().getVersion(), QString("1.1"));
+
+    QCOMPARE(swInstances.first()->getMapping(), QString(""));
+    QCOMPARE(swInstances.first()->getPosition().x(), qreal(0));
+    QCOMPARE(swInstances.first()->getPosition().y(), qreal(0));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_DesignReader::testReadPortAdHocVisibilitiesAndPositions()
+//-----------------------------------------------------------------------------
+void tst_DesignReader::testReadPortAdHocVisibilitiesAndPositions()
+{
+    QString documentContent(
+        "<ipxact:design xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
+            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:library>TestLibrary</ipxact:library>"
+            "<ipxact:name>TestDesign</ipxact:name>"
+            "<ipxact:version>0.1</ipxact:version>"
+            "<ipxact:description>TestDescription</ipxact:description>"
+            "<ipxact:vendorExtensions>"
+                "<kactus2:version>3.0.0</kactus2:version>"
+                "<kactus2:adHocVisibilities>"
+                    "<kactus2:adHocVisible portName=\"testPort\" x=\"4\" y=\"25\"/>"
+                "</kactus2:adHocVisibilities>"
+            "</ipxact:vendorExtensions>"
+        "</ipxact:design>");
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    DesignReader designReader;
+    QSharedPointer<Design> testDesign = designReader.createDesignFrom(document);
+
+    QCOMPARE(testDesign->getVendorExtensions()->size(), 2);
+    QCOMPARE(testDesign->getVersion(), QString("3.0.0"));
+
+    QMap<QString, QPointF> adHocPorts = testDesign->getAdHocPortPositions();
+    QCOMPARE(adHocPorts.firstKey(), QString("testPort"));
+    QCOMPARE(adHocPorts.first().x(), qreal(4));
+    QCOMPARE(adHocPorts.first().y(), qreal(25));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_DesignReader::testReadApiDependencies()
+//-----------------------------------------------------------------------------
+void tst_DesignReader::testReadApiConnections()
+{
+    QString documentContent(
+        "<ipxact:design xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
+            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:library>TestLibrary</ipxact:library>"
+            "<ipxact:name>TestDesign</ipxact:name>"
+            "<ipxact:version>0.1</ipxact:version>"
+            "<ipxact:description>TestDescription</ipxact:description>"
+            "<ipxact:vendorExtensions>"
+                "<kactus2:version>3.0.0</kactus2:version>"
+                "<kactus2:apiConnections>"
+                    "<kactus2:apiConnection>"
+                        "<ipxact:name>apiConnect</ipxact:name>"
+                        "<ipxact:displayName>connection</ipxact:displayName>"
+                        "<ipxact:description>described</ipxact:description>"
+                        "<kactus2:activeApiInterface componentRef=\"applicationOne\" apiRef=\"busOne\"/>"
+                        "<kactus2:activeApiInterface componentRef=\"applicationTwo\" apiRef=\"busTwo\"/>"
+                        "<kactus2:route offPage=\"false\">"
+                            "<kactus2:position x=\"1\" y=\"1\"/>"
+                        "</kactus2:route>"
+                        "<kactus2:imported/>"
+                    "</kactus2:apiConnection>"
+                "</kactus2:apiConnections>"
+            "</ipxact:vendorExtensions>"
+        "</ipxact:design>");
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    DesignReader designReader;
+    QSharedPointer<Design> testDesign = designReader.createDesignFrom(document);
+
+    QCOMPARE(testDesign->getVendorExtensions()->size(), 2);
+    QCOMPARE(testDesign->getVersion(), QString("3.0.0"));
+
+    QList<QSharedPointer<ApiInterconnection> > apiConnections = testDesign->getApiConnections();
+    QCOMPARE(apiConnections.size(), 1);
+    QCOMPARE(apiConnections.first()->name(), QString("apiConnect"));
+    QCOMPARE(apiConnections.first()->displayName(), QString("connection"));
+    QCOMPARE(apiConnections.first()->description(), QString("described"));
+
+    QCOMPARE(apiConnections.first()->getInterface1()->getComponentReference(), QString("applicationOne"));
+    QCOMPARE(apiConnections.first()->getInterface1()->getBusReference(), QString("busOne"));
+    QCOMPARE(apiConnections.first()->getInterface2()->getComponentReference(), QString("applicationTwo"));
+    QCOMPARE(apiConnections.first()->getInterface2()->getBusReference(), QString("busTwo"));
+
+    QCOMPARE(apiConnections.first()->isOffPage(), false);
+    QCOMPARE(apiConnections.first()->getRoute().size(), 1);
+    QCOMPARE(apiConnections.first()->getRoute().first().x(), qreal(1));
+    QCOMPARE(apiConnections.first()->getRoute().first().y(), qreal(1));
+
+    QCOMPARE(apiConnections.first()->isImported(), true);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_DesignReader::testReadHierApiConnections()
+//-----------------------------------------------------------------------------
+void tst_DesignReader::testReadHierApiConnections()
+{
+    QString documentContent(
+        "<ipxact:design xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
+            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:library>TestLibrary</ipxact:library>"
+            "<ipxact:name>TestDesign</ipxact:name>"
+            "<ipxact:version>0.1</ipxact:version>"
+            "<ipxact:description>TestDescription</ipxact:description>"
+            "<ipxact:vendorExtensions>"
+                "<kactus2:version>3.0.0</kactus2:version>"
+                "<kactus2:hierApiDependencies>"
+                    "<kactus2:hierApiDependency interfaceRef=\"topInterface\">"
+                        "<ipxact:name>hierApi</ipxact:name>"
+                        "<ipxact:displayName>display</ipxact:displayName>"
+                        "<ipxact:description>description</ipxact:description>"
+                        "<kactus2:activeApiInterface componentRef=\"applicationOne\" apiRef=\"busOne\"/>"
+                        "<kactus2:position x=\"1\" y=\"1\"/>"
+                        "<kactus2:direction x=\"10\" y=\"10\"/>"
+                        "<kactus2:route kactus2:offPage=\"false\">"
+                            "<kactus2:position x=\"1\" y=\"1\"/>"
+                        "</kactus2:route>"
+                    "</kactus2:hierApiDependency>"
+                "</kactus2:hierApiDependencies>"
+            "</ipxact:vendorExtensions>"
+        "</ipxact:design>");
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    DesignReader designReader;
+    QSharedPointer<Design> testDesign = designReader.createDesignFrom(document);
+
+    QCOMPARE(testDesign->getVendorExtensions()->size(), 2);
+    QCOMPARE(testDesign->getVersion(), QString("3.0.0"));
+
+    QList<QSharedPointer<HierApiInterconnection> > hierApiConnections = testDesign->getHierApiDependencies();
+    QCOMPARE(hierApiConnections.size(), 1);
+    QCOMPARE(hierApiConnections.first()->name(), QString("hierApi"));
+    QCOMPARE(hierApiConnections.first()->displayName(), QString("display"));
+    QCOMPARE(hierApiConnections.first()->description(), QString("description"));
+
+    QCOMPARE(hierApiConnections.first()->getTopInterfaceRef(), QString("topInterface"));
+    QCOMPARE(hierApiConnections.first()->getInterface()->getComponentReference(), QString("applicationOne"));
+    QCOMPARE(hierApiConnections.first()->getInterface()->getBusReference(), QString("busOne"));
+
+    QCOMPARE(hierApiConnections.first()->getPosition().x(), qreal(1));
+    QCOMPARE(hierApiConnections.first()->getPosition().y(), qreal(1));
+    QCOMPARE(hierApiConnections.first()->getDirection().x(), float(10));
+    QCOMPARE(hierApiConnections.first()->getDirection().y(), float(10));
+
+    QCOMPARE(hierApiConnections.first()->getRoute().size(), 1);
+    QCOMPARE(hierApiConnections.first()->getRoute().first().x(), qreal(1));
+    QCOMPARE(hierApiConnections.first()->getRoute().first().y(), qreal(1));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_DesignReader::testReadComConnections()
+//-----------------------------------------------------------------------------
+void tst_DesignReader::testReadComConnections()
+{
+    QString documentContent(
+        "<ipxact:design xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
+            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:library>TestLibrary</ipxact:library>"
+            "<ipxact:name>TestDesign</ipxact:name>"
+            "<ipxact:version>0.1</ipxact:version>"
+            "<ipxact:description>TestDescription</ipxact:description>"
+            "<ipxact:vendorExtensions>"
+                "<kactus2:version>3.0.0</kactus2:version>"
+                "<kactus2:comConnections>"
+                    "<kactus2:comConnection>"
+                        "<ipxact:name>comConnect</ipxact:name>"
+                        "<ipxact:displayName>display</ipxact:displayName>"
+                        "<ipxact:description>description</ipxact:description>"
+                        "<kactus2:activeComInterface componentRef=\"applicationOne\" comRef=\"busOne\"/>"
+                        "<kactus2:activeComInterface componentRef=\"applicationTwo\" comRef=\"busTwo\"/>"
+                        "<kactus2:route offPage=\"false\">"
+                            "<kactus2:position x=\"1\" y=\"1\"/>"
+                        "</kactus2:route>"
+                    "</kactus2:comConnection>"
+                "</kactus2:comConnections>"
+            "</ipxact:vendorExtensions>"
+        "</ipxact:design>");
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    DesignReader designReader;
+    QSharedPointer<Design> testDesign = designReader.createDesignFrom(document);
+
+    QCOMPARE(testDesign->getVendorExtensions()->size(), 2);
+    QCOMPARE(testDesign->getVersion(), QString("3.0.0"));
+
+    QList<QSharedPointer<ComInterconnection> > comConnections = testDesign->getComConnections();
+    QCOMPARE(comConnections.size(), 1);
+    QCOMPARE(comConnections.first()->name(), QString("comConnect"));
+    QCOMPARE(comConnections.first()->displayName(), QString("display"));
+    QCOMPARE(comConnections.first()->description(), QString("description"));
+
+    QCOMPARE(comConnections.first()->getInterface1()->getComponentReference(), QString("applicationOne"));
+    QCOMPARE(comConnections.first()->getInterface1()->getBusReference(), QString("busOne"));
+    QCOMPARE(comConnections.first()->getInterface2()->getComponentReference(), QString("applicationTwo"));
+    QCOMPARE(comConnections.first()->getInterface2()->getBusReference(), QString("busTwo"));
+
+    QCOMPARE(comConnections.first()->getRoute().size(), 1);
+    QCOMPARE(comConnections.first()->getRoute().first().x(), qreal(1));
+    QCOMPARE(comConnections.first()->getRoute().first().y(), qreal(1));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_DesignReader::testReadHierComConnections()
+//-----------------------------------------------------------------------------
+void tst_DesignReader::testReadHierComConnections()
+{
+    QString documentContent(
+        "<ipxact:design xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
+            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:library>TestLibrary</ipxact:library>"
+            "<ipxact:name>TestDesign</ipxact:name>"
+            "<ipxact:version>0.1</ipxact:version>"
+            "<ipxact:description>TestDescription</ipxact:description>"
+            "<ipxact:vendorExtensions>"
+                "<kactus2:version>3.0.0</kactus2:version>"
+                "<kactus2:hierComConnections>"
+                    "<kactus2:hierComConnection interfaceRef=\"topInterface\">"
+                        "<ipxact:name>hierComConnection</ipxact:name>"
+                        "<ipxact:displayName>display</ipxact:displayName>"
+                        "<ipxact:description>description</ipxact:description>"
+                        "<kactus2:activeComInterface componentRef=\"applicationOne\" comRef=\"busOne\"/>"
+                        "<kactus2:position x=\"1\" y=\"1\"/>"
+                        "<kactus2:direction x=\"10\" y=\"10\"/>"
+                        "<kactus2:route offPage=\"false\">"
+                            "<kactus2:position x=\"1\" y=\"1\"/>"
+                        "</kactus2:route>"
+                    "</kactus2:hierComConnection>"
+                "</kactus2:hierComConnections>"
+            "</ipxact:vendorExtensions>"
+        "</ipxact:design>");
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    DesignReader designReader;
+    QSharedPointer<Design> testDesign = designReader.createDesignFrom(document);
+
+    QCOMPARE(testDesign->getVendorExtensions()->size(), 2);
+    QCOMPARE(testDesign->getVersion(), QString("3.0.0"));
+
+    QList<QSharedPointer<HierComInterconnection> > hierComConnections = testDesign->getHierComConnections();
+    QCOMPARE(hierComConnections.size(), 1);
+    QCOMPARE(hierComConnections.first()->name(), QString("hierComConnection"));
+    QCOMPARE(hierComConnections.first()->displayName(), QString("display"));
+    QCOMPARE(hierComConnections.first()->description(), QString("description"));
+
+    QCOMPARE(hierComConnections.first()->getTopInterfaceRef(), QString("topInterface"));
+    QCOMPARE(hierComConnections.first()->getInterface()->getComponentReference(), QString("applicationOne"));
+    QCOMPARE(hierComConnections.first()->getInterface()->getBusReference(), QString("busOne"));
+    
+    QCOMPARE(hierComConnections.first()->getPosition().x(), qreal(1));
+    QCOMPARE(hierComConnections.first()->getPosition().y(), qreal(1));
+    QCOMPARE(hierComConnections.first()->getDirection().x(), float(10));
+    QCOMPARE(hierComConnections.first()->getDirection().y(), float(10));
+
+    QCOMPARE(hierComConnections.first()->getRoute().size(), 1);
+    QCOMPARE(hierComConnections.first()->getRoute().first().x(), qreal(1));
+    QCOMPARE(hierComConnections.first()->getRoute().first().y(), qreal(1));
 }
 
 QTEST_APPLESS_MAIN(tst_DesignReader)

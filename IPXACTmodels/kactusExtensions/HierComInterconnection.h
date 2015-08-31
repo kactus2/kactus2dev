@@ -12,11 +12,12 @@
 #ifndef HIERCOMINTERCONNECTION_H
 #define HIERCOMINTERCONNECTION_H
 
-#include <QVector2D>
-
 #include <IPXACTmodels/Design/Interconnection.h>
 
 #include <IPXACTmodels/VendorExtension.h>
+
+#include <QVector2D>
+#include <QDomNode>
 
 //-----------------------------------------------------------------------------
 //! Class encapsulating COM dependency connection data.
@@ -51,6 +52,13 @@ public:
      *  Copy constructor.
      */
     HierComInterconnection(HierComInterconnection const& rhs);
+
+    /*!
+     *  The QDomNode constructor.
+     *
+     *      @param [in] connectionNode  The node containing the hierarchical com connection.
+     */
+    HierComInterconnection(QDomNode& connectionNode);
 
     /*!
      *  Destructor.
@@ -126,6 +134,20 @@ public:
      *  Returns the direction of the interface in the top-level design diagram.
      */
     QVector2D const& getDirection() const;
+
+    /*!
+     *  Set the position of the interface.
+     *
+     *      @param [in] newPosition     The new position for the interface.
+     */
+    void setPosition(QPointF const& newPosition);
+
+    /*!
+     *  Set the direction of the interface.
+     *
+     *      @param [in] newDirection    The new direction for the interface.
+     */
+    void setDirection(QVector2D const& newDirection);
 
     /*!
      *  Assignment operator.

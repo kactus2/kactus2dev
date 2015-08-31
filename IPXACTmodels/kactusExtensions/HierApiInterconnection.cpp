@@ -49,6 +49,68 @@ direction_(rhs.position_)
 
 }
 
+//-----------------------------------------------------------------------------
+// Function: HierApiInterconnection::HierApiInterconnection()
+//-----------------------------------------------------------------------------
+HierApiInterconnection::HierApiInterconnection(QDomNode& connectionNode) :
+Interconnection(),
+topInterfaceRef_(),
+position_(),
+direction_()
+{
+    setName(connectionNode.firstChildElement("ipxact:name").firstChild().nodeValue());
+    setDisplayName(connectionNode.firstChildElement("ipxact:displayName").firstChild().nodeValue());
+    setDescription(connectionNode.firstChildElement("ipxact:description").firstChild().nodeValue());
+
+    QDomNamedNodeMap connectionAttributes = connectionNode.attributes();
+    setTopInterfaceRef(connectionAttributes.namedItem("interfaceRef").nodeValue());
+
+    QDomElement apiInterfaceElement = connectionNode.firstChildElement("kactus2:activeApiInterface");
+    QDomNamedNodeMap interfaceAttributes = apiInterfaceElement.attributes();
+    QString interfaceComponentRef = interfaceAttributes.namedItem("componentRef").nodeValue();
+    QString interfaceApiRef = interfaceAttributes.namedItem("apiRef").nodeValue();
+    QSharedPointer<ActiveInterface> newApiInterface(new ActiveInterface(interfaceComponentRef, interfaceApiRef));
+    setInterface(newApiInterface);
+
+    QDomElement positionElement = connectionNode.firstChildElement("kactus2:position");
+    QDomNamedNodeMap positionAttributers = positionElement.attributes();
+    int positionX = positionAttributers.namedItem("x").nodeValue().toInt();
+    int positionY = positionAttributers.namedItem("y").nodeValue().toInt();
+    setPosition(QPointF(positionX, positionY));
+
+    QDomElement directionElement = connectionNode.firstChildElement("kactus2:direction");
+    QDomNamedNodeMap directionAttributes = directionElement.attributes();
+    int directionX = directionAttributes.namedItem("x").nodeValue().toInt();
+    int directionY = directionAttributes.namedItem("y").nodeValue().toInt();
+    setDirection(QVector2D(directionX, directionY));
+
+    QDomElement routeElement = connectionNode.firstChildElement("kactus2:route");
+    if (!routeElement.isNull())
+    {
+        QList<QPointF> newRoute;
+        if (routeElement.attribute("kactus2:offPage") == "true")
+        {
+            setOffPage(true);
+        }
+        else
+        {
+            setOffPage(false);
+        }
+
+        QDomNodeList positionList = routeElement.childNodes();
+        for (int i = 0; i < positionList.count(); ++i)
+        {
+            QDomNode routePositionNode = positionList.at(i);
+            QDomNamedNodeMap routePositionAttributes = routePositionNode.attributes();
+            int routePositionX = routePositionAttributes.namedItem("x").nodeValue().toInt();
+            int routePositionY = routePositionAttributes.namedItem("y").nodeValue().toInt();
+            newRoute.append(QPointF(routePositionX, routePositionY));
+        }
+
+        setRoute(newRoute);
+    }
+}
+
 /*
 //-----------------------------------------------------------------------------
 // Function: HierApiDependency::HierApiDependency()
@@ -146,7 +208,7 @@ HierApiInterconnection* HierApiInterconnection::clone() const
 //-----------------------------------------------------------------------------
 QString HierApiInterconnection::type() const
 {
-    return QString("kactus2:hierapiDependency");
+    return QString("kactus2:hierApiDependency");
 }
 
 //-----------------------------------------------------------------------------
@@ -349,4 +411,20 @@ void HierApiInterconnection::writeVectorDirection(QXmlStreamWriter& writer) cons
     writer.writeEmptyElement("kactus2:direction");
     writer.writeAttribute("x", QString::number(int(direction_.x())));
     writer.writeAttribute("y", QString::number(int(direction_.y())));
+}
+
+//-----------------------------------------------------------------------------
+// Function: HierApiInterconnection::setPosition()
+//-----------------------------------------------------------------------------
+void HierApiInterconnection::setPosition(QPointF const& newPosition)
+{
+    position_ = newPosition;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HierApiInterconnection::setDirection()
+//-----------------------------------------------------------------------------
+void HierApiInterconnection::setDirection(QVector2D const& newDirection)
+{
+    direction_ = newDirection;
 }

@@ -62,6 +62,12 @@ protected:
      */
     void parseVLNVElements(QDomNode const& documentNode, QSharedPointer<Document> document, VLNV::IPXactType type) const;
 
+    /*!
+     *  Parses the VLNV from XML to attributes of an element.
+     *
+     *      @param [in] vlnvNode    The XML description of the VLNV.
+     *      @param [in] vlnvType    The type of the VLNV.
+     */
     VLNV parseVLNVAttributes(QDomNode const& vlnvNode, VLNV::IPXactType vlnvType) const;
 
     /*!
