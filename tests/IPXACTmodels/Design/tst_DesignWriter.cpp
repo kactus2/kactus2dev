@@ -34,6 +34,7 @@ private slots:
 
     void testWriteSimpleDesign();
     void testWriteComponentInstances();
+    void testWriteComponentInstanceExtensions();
     void testWriteInterconnections();
     void testWriteMonitorInterconnections();
     void testWriteAdHocConnections();
@@ -134,7 +135,6 @@ void tst_DesignWriter::testWriteSimpleDesign()
     expectedOutput.clear();
     output.clear();
 
-    //designConfiguration_->setDescription("TestDescription");
     testDesign_->setDescription("testDescription");
     expectedOutput = 
         "<?xml version=\"1.0\"?>\n"
@@ -152,7 +152,6 @@ void tst_DesignWriter::testWriteSimpleDesign()
         "</ipxact:design>\n"
         ;
 
-    //designConfigurationWriter.writeDesignConfiguration(xmlStreamWriter, designConfiguration_);
     designWriter.writeDesign(xmlStreamWriter, testDesign_);
 
     compareOutputToExpected(output, expectedOutput);
@@ -176,19 +175,9 @@ void tst_DesignWriter::testWriteComponentInstances()
         new ConfigurableElementValue("10", "testReferenceID"));
     testComponentReference->getConfigurableElementValues()->append(componentElement);
 
-    QDomDocument document;
-    QDomElement extensionNode = document.createElement("testExtension");
-    extensionNode.setAttribute("testExtensionAttribute", "extension");
-    extensionNode.appendChild(document.createTextNode("testValue"));
-    QSharedPointer<GenericVendorExtension> testExtension(new GenericVendorExtension(extensionNode));
-
-    QSharedPointer<ComponentInstance> testComponentInstance(new ComponentInstance());
-    testComponentInstance->setInstanceName("testInstance");
-    testComponentInstance->setDisplayName("displayName");
-    testComponentInstance->setDescription("described");
+    QSharedPointer<ComponentInstance> testComponentInstance(new ComponentInstance("testInstance", "displayName",
+        "described", testComponentReference, QPointF(10,10), "testUUID"));
     testComponentInstance->setIsPresent("2-1");
-    testComponentInstance->setComponentRef(testComponentReference);
-    testComponentInstance->getVendorExtensions()->append(testExtension);
 
     testDesign_->getComponentInstances()->append(testComponentInstance);
 
@@ -218,7 +207,95 @@ void tst_DesignWriter::testWriteComponentInstances()
                         "\t\t\t\t</ipxact:configurableElementValues>\n"
                     "\t\t\t</ipxact:componentRef>\n"
                     "\t\t\t<ipxact:vendorExtensions>\n"
-                        "\t\t\t\t<testExtension testExtensionAttribute=\"extension\">testValue</testExtension>\n"
+                        "\t\t\t\t<kactus2:position x=\"10\" y=\"10\"/>\n"
+                        "\t\t\t\t<kactus2:uuid>testUUID</kactus2:uuid>\n"
+                    "\t\t\t</ipxact:vendorExtensions>\n"
+                "\t\t</ipxact:componentInstance>\n"
+            "\t</ipxact:componentInstances>\n"
+        "</ipxact:design>\n"
+        );
+
+    DesignWriter designWriter;
+    designWriter.writeDesign(xmlStreamWriter, testDesign_);
+
+    compareOutputToExpected(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_DesignWriter::testWriteComponentInstanceExtensions()
+//-----------------------------------------------------------------------------
+void tst_DesignWriter::testWriteComponentInstanceExtensions()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    xmlStreamWriter.setAutoFormatting(true);
+    xmlStreamWriter.setAutoFormattingIndent(-1);
+
+    QSharedPointer<ConfigurableVLNVReference> testComponentReference (
+        new ConfigurableVLNVReference(VLNV::COMPONENT, "TUT", "TestLibrary", "testComponent", "1.0"));
+
+    QSharedPointer<ConfigurableElementValue> componentElement (
+        new ConfigurableElementValue("10", "testReferenceID"));
+    testComponentReference->getConfigurableElementValues()->append(componentElement);
+
+    QSharedPointer<ComponentInstance> testComponentInstance(new ComponentInstance("testInstance", "", "",
+        testComponentReference, QPointF(10,10), "testUUID"));
+
+    testComponentInstance->setComponentRef(testComponentReference);
+    testComponentInstance->setImportRef("importSource");
+    testComponentInstance->updateBusInterfacePosition("testInterface", QPointF(4,4));
+    testComponentInstance->updateAdHocPortPosition("adHocPort", QPointF(3,3));
+    testComponentInstance->updateApiInterfacePosition("apiInterface", QPointF(2,2));
+    testComponentInstance->updateComInterfacePosition("comInterface", QPointF(1,1));
+
+    QMap<QString, QString> swProperties;
+    swProperties.insert("testSWProperty", "8");
+    testComponentInstance->setPropertyValues(swProperties);
+
+    testDesign_->getComponentInstances()->append(testComponentInstance);
+
+    QString expectedOutput(
+        "<?xml version=\"1.0\"?>\n"
+        "<ipxact:design "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
+            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:library>TestLibrary</ipxact:library>\n"
+            "\t<ipxact:name>TestDesign</ipxact:name>\n"
+            "\t<ipxact:version>0.1</ipxact:version>\n"
+            "\t<ipxact:componentInstances>\n"
+                "\t\t<ipxact:componentInstance>\n"
+                    "\t\t\t<ipxact:instanceName>testInstance</ipxact:instanceName>\n"
+                    "\t\t\t<ipxact:componentRef vendor=\"TUT\" library=\"TestLibrary\" name=\"testComponent\""
+                        " version=\"1.0\">\n"
+                        "\t\t\t\t<ipxact:configurableElementValues>\n"
+                            "\t\t\t\t\t<ipxact:configurableElementValue referenceId=\"testReferenceID\">10"
+                                "</ipxact:configurableElementValue>\n"
+                        "\t\t\t\t</ipxact:configurableElementValues>\n"
+                    "\t\t\t</ipxact:componentRef>\n"
+                    "\t\t\t<ipxact:vendorExtensions>\n"
+                        "\t\t\t\t<kactus2:position x=\"10\" y=\"10\"/>\n"
+                        "\t\t\t\t<kactus2:uuid>testUUID</kactus2:uuid>\n"
+                        "\t\t\t\t<kactus2:imported importRef=\"importSource\"/>\n"
+                        "\t\t\t\t<kactus2:portPositions>\n"
+                            "\t\t\t\t\t<kactus2:portPosition busRef=\"testInterface\" x=\"4\" y=\"4\"/>\n"
+                        "\t\t\t\t</kactus2:portPositions>\n"
+                        "\t\t\t\t<kactus2:adHocVisibilities>\n"
+                            "\t\t\t\t\t<kactus2:adHocVisible portName=\"adHocPort\" x=\"3\" y=\"3\"/>\n"
+                        "\t\t\t\t</kactus2:adHocVisibilities>\n"
+                        "\t\t\t\t<kactus2:apiInterfacePositions>\n"
+                            "\t\t\t\t\t<kactus2:apiInterfacePosition apiRef=\"apiInterface\" x=\"2\" y=\"2\"/>\n"
+                        "\t\t\t\t</kactus2:apiInterfacePositions>\n"
+                        "\t\t\t\t<kactus2:comInterfacePositions>\n"
+                            "\t\t\t\t\t<kactus2:comInterfacePosition comRef=\"comInterface\" x=\"1\" y=\"1\"/>\n"
+                        "\t\t\t\t</kactus2:comInterfacePositions>\n"
+                        "\t\t\t\t<kactus2:propertyValues>\n"
+                            "\t\t\t\t\t<kactus2:propertyValue name=\"testSWProperty\" value=\"8\"/>\n"
+                        "\t\t\t\t</kactus2:propertyValues>\n"
                     "\t\t\t</ipxact:vendorExtensions>\n"
                 "\t\t</ipxact:componentInstance>\n"
             "\t</ipxact:componentInstances>\n"

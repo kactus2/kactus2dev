@@ -37,11 +37,12 @@ public:
      *      @param [in] instanceName    The name of the component instance.
      *      @param [in] displayName     The display name.
      *      @param [in] description     Description of the instance.
-     *      @param [in] componentRef    The name of the referenced component.
+     *      @param [in] componentRef    The referenced component.
      *      @param [in] position        The position of the component instance.
      *      @param [in] uuid            The identifier of the instance.
      */
-    ComponentInstance(QString instanceName, QString displayName, QString description, VLNV const& componentRef,
+    ComponentInstance(QString instanceName, QString displayName, QString description,
+                      QSharedPointer<ConfigurableVLNVReference> componentRef,
                       QPointF const& position, const QString& uuid);
 
     /*!
@@ -119,13 +120,6 @@ public:
     void setPosition(QPointF const& pos);
 
     /*!
-     *  Sets the flag whether the instance is an imported one and should be auto-synced.
-     *
-     *      @param [in] imported If true, the instance is set as imported.
-     */
-    void setImported(bool imported);
-
-    /*!
      *  Sets the name of the import source instance.
      *
      *      @param [in] nameRef The name of the import source instance.
@@ -172,13 +166,6 @@ public:
     void updateComInterfacePosition(QString const& name, QPointF const& pos);
 
     /*!
-     *  Sets the port ad-hoc visibilities.
-     *
-     *      @param [in] visibilities The port ad-hoc visibilities to set.
-     */
-    void setPortAdHocVisibilities(QMap<QString, bool> const& visibilities);
-
-    /*!
      *  Returns the name of the instance.
      */
     QString const& getInstanceName() const;
@@ -206,7 +193,7 @@ public:
     /*!
      *  Returns the global position of the instance in the design.
      */
-    QPointF const& getPosition() const;
+    QPointF getPosition() const;
 
     /*!
      *  Returns true if the instance is an imported one.
@@ -216,37 +203,37 @@ public:
     /*!
      *  Returns the name of the import source instance.
      */
-    QString const& getImportRef() const;
+    QString getImportRef() const;
 
     /*!
      *  Returns the property values.
      */
-    QMap<QString, QString> const& getPropertyValues() const;
+    QMap<QString, QString> getPropertyValues() const;
 
     /*!
      *  Returns the local bus interface positions of the instance in the design.
      */
-    QMap<QString, QPointF> const& getBusInterfacePositions() const;
+    QMap<QString, QPointF> getBusInterfacePositions() const;
 
     /*!
      *  Returns the local ad-hoc port positions of the instance in the design.
      */
-    QMap<QString, QPointF> const& getAdHocPortPositions() const;
+    QMap<QString, QPointF> getAdHocPortPositions() const;
 
     /*!
      *  Returns the local API interface positions of the instance in the design.
      */
-    QMap<QString, QPointF> const& getApiInterfacePositions() const;
+    QMap<QString, QPointF> getApiInterfacePositions() const;
 
     /*!
      *  Returns the local COM interface positions of the instance in the design.
      */
-    QMap<QString, QPointF> const& getComInterfacePositions() const;
+    QMap<QString, QPointF> getComInterfacePositions() const;
 
     /*!
      *  Returns the port ad-hoc visibilities.
      */
-    QMap<QString, bool> const& getPortAdHocVisibilities() const;
+    QMap<QString, bool> getPortAdHocVisibilities() const;
 
     /*!
      *  Assignment operator.
@@ -288,6 +275,35 @@ private:
     */
     void parsePropertyValues(QDomNode& node);
     
+    /*!
+     *  Set the universally unique identifier (Kactus2 extension).
+     *
+     *      @param [in] newUuid     The new unique identifier.
+     */
+    void setUuid(QString const& newUuid);
+
+    /*!
+     *  Update a positions map extension (Kactus2 extension).
+     *
+     *      @param [in] newReferenceName        The name of the new reference.
+     *      @param [in] newPosition             The position of the new reference.
+     *      @param [in] groupIdentifier         The identifier for the group.
+     *      @param [in] itemIdentifier          The identifier for the item.
+     *      @param [in] referenceIdentifier     The identifier for the reference.
+     */
+    void updatePositionsMap(QString const& newReferenceName, QPointF const& newPosition,
+        QString const& groupIdentifier, QString const& itemIdentifier, QString const& referenceIdentifier) const;
+
+    /*!
+     *  Get a map of positions (Kactus2 extension).
+     *
+     *      @param [in] groupIdentifier         The identifier of the position group.
+     *      @param [in] itemIdentifier          The identifier of the position item.
+     *      @param [in] referenceIdentifier     The identifier of the position reference.
+     */
+    QMap<QString, QPointF> getPositionMap(QString const& groupIdentifier, QString const& itemIdentifier,
+        QString const& referenceIdentifier) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -306,36 +322,6 @@ private:
 
     //! The referenced component.
     QSharedPointer<ConfigurableVLNVReference> componentRef_;
-
-    //! The global position of the instance in the design (kactus2:position).
-    QPointF pos_;
-
-    //! If true, the instance is an imported one (kactus2:imported).
-    bool imported_;
-
-    //! The name of the import source instance (kactus2:importRef).
-    QString importRef_;
-
-    //! Port positions for the component instance's bus interface (kactus2:portPositions).
-    QMap<QString, QPointF> portPositions_;
-
-    //! Positions for the visible ad-hoc ports.
-    QMap<QString, QPointF> adHocPortPositions_;
-
-    //! API interface positions.
-    QMap<QString, QPointF> apiInterfacePositions_;
-
-    //! COM interface positions.
-    QMap<QString, QPointF> comInterfacePositions_;
-
-    //! Ad-hoc visibility of each port (kactus2:adHocVisibilities).
-    QMap<QString, bool> portAdHocVisibilities_;
-
-    //! SW property values for this instance (kactus2:propertyValues).
-    QMap<QString, QString> swPropertyValues_;
-
-	//! \brief The unique id used to identify the instance.
-	 QString uuid_;
 };
 
 //-----------------------------------------------------------------------------

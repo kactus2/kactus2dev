@@ -644,10 +644,10 @@ QMap<QString, QPointF> Design::getAdHocPortPositions() const
         QSharedPointer<Kactus2Placeholder> portPosition = extension.dynamicCast<Kactus2Placeholder>();
 
         QString portName = portPosition->getAttributeValue("portName");
-        int x_position = portPosition->getAttributeValue("x").toInt();
-        int y_position = portPosition->getAttributeValue("y").toInt();
+        int positionX = portPosition->getAttributeValue("x").toInt();
+        int positionY = portPosition->getAttributeValue("y").toInt();
 
-        QPointF newPosition(x_position, y_position);
+        QPointF newPosition(positionX, positionY);
         portAdHocPositions.insert(portName, newPosition);
     }
 
@@ -748,13 +748,9 @@ void Design::setAdHocPortPositions(QMap<QString, QPointF> const& val)
 
             QSharedPointer<Kactus2Placeholder> newAdHocPort (new Kactus2Placeholder("kactus2:adHocVisible"));
 
-            QString portName = positionIterator.key();
-            int positionX = positionIterator.value().x();
-            int positionY = positionIterator.value().y();
-
-            newAdHocPort->setAttribute("portName", portName);
-            newAdHocPort->setAttribute("x", QString::number(positionX));
-            newAdHocPort->setAttribute("y", QString::number(positionY));
+            newAdHocPort->setAttribute("portName", positionIterator.key());
+            newAdHocPort->setAttribute("x", QString::number(positionIterator.value().x()));
+            newAdHocPort->setAttribute("y", QString::number(positionIterator.value().y()));
 
             portAdHocs->addToGroup(newAdHocPort);
         }
@@ -1269,25 +1265,4 @@ void Design::copySharedLists(Design const& other)
             adHocConnections_->append(copy);
         }
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: Design::getGroupedExtensionsByType()
-//-----------------------------------------------------------------------------
-QList<QSharedPointer<VendorExtension> > Design::getGroupedExtensionsByType(QString const& groupName,
-    QString const& extensionType) const
-{
-    QList<QSharedPointer<VendorExtension> > typedExtensions;
-
-    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
-    {
-        if (extension->type() == groupName)
-        {
-            QSharedPointer<Kactus2Group> extensionGroup = extension.dynamicCast<Kactus2Group>();
-            typedExtensions = extensionGroup->getByType(extensionType);
-            break;
-        }
-    }
-
-    return typedExtensions;
 }

@@ -409,15 +409,6 @@ private:
      */
     void copySharedLists(Design const& other);
 
-    /*!
-     *  Get a list of grouped vendor extensions.
-     *
-     *      @param [in] groupName       The name of the vendor extension group.
-     *      @param [in] extensionType   The type of the target vendor extension.
-     */
-    QList<QSharedPointer<VendorExtension> > getGroupedExtensionsByType(QString const& groupName,
-        QString const& extensionType) const;
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

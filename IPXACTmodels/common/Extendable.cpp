@@ -12,7 +12,7 @@
 #include "Extendable.h"
 
 #include <IPXACTmodels/VendorExtension.h>
-
+#include <IPXACTmodels/kactusExtensions/Kactus2Group.h>
 
 //-----------------------------------------------------------------------------
 // Function: Extendable::~Extendable()
@@ -71,4 +71,25 @@ void Extendable::copyVendorExtensions(Extendable const& other)
     {
         vendorExtensions_->append(QSharedPointer<VendorExtension>(extension->clone()));
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: Design::getGroupedExtensionsByType()
+//-----------------------------------------------------------------------------
+QList<QSharedPointer<VendorExtension> > Extendable::getGroupedExtensionsByType(QString const& groupName,
+    QString const& extensionType) const
+{
+    QList<QSharedPointer<VendorExtension> > typedExtensions;
+
+    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    {
+        if (extension->type() == groupName)
+        {
+            QSharedPointer<Kactus2Group> extensionGroup = extension.dynamicCast<Kactus2Group>();
+            typedExtensions = extensionGroup->getByType(extensionType);
+            break;
+        }
+    }
+
+    return typedExtensions;
 }

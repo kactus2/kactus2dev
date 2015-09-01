@@ -52,6 +52,17 @@ protected:
      */
     void copyVendorExtensions(Extendable const& other);
 
+    /*!
+     *  Get a list of grouped extensions.
+     *
+     *      @param [in] groupName       Identifier of the extension group.
+     *      @param [in] extensionType   Identifier of the extension item.
+     *
+     *      @return A list of extensions belonging to a group.
+     */
+    QList<QSharedPointer<VendorExtension> > getGroupedExtensionsByType(QString const& groupName,
+        QString const& extensionType) const;
+
 private:
 
     //! Any vendor extensions for the element.
