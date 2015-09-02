@@ -196,7 +196,16 @@ public:
     QPointF getPosition() const;
 
     /*!
+     *  Set the imported value for the component instance.
+     *
+     *      @param [in] isImported  True if the component is imported, false otherwise.
+     */
+    void setImported(bool isImported);
+
+    /*!
      *  Returns true if the instance is an imported one.
+     *
+     *      @return True if the component is imported, false otherwise.
      */
     bool isImported() const;
 

@@ -253,11 +253,16 @@ void tst_DesignWriter::testWriteComponentInstanceExtensions()
     testComponentInstance->updateApiInterfacePosition("apiInterface", QPointF(2,2));
     testComponentInstance->updateComInterfacePosition("comInterface", QPointF(1,1));
 
+    QSharedPointer<ComponentInstance> otherComponentInstance(new ComponentInstance("otherInstance", "", "",
+        testComponentReference, QPointF(1,1), "otherUUID"));
+    otherComponentInstance->setImported(true);
+
     QMap<QString, QString> swProperties;
     swProperties.insert("testSWProperty", "8");
     testComponentInstance->setPropertyValues(swProperties);
 
     testDesign_->getComponentInstances()->append(testComponentInstance);
+    testDesign_->getComponentInstances()->append(otherComponentInstance);
 
     QString expectedOutput(
         "<?xml version=\"1.0\"?>\n"
@@ -300,6 +305,21 @@ void tst_DesignWriter::testWriteComponentInstanceExtensions()
                         "\t\t\t\t<kactus2:propertyValues>\n"
                             "\t\t\t\t\t<kactus2:propertyValue name=\"testSWProperty\" value=\"8\"/>\n"
                         "\t\t\t\t</kactus2:propertyValues>\n"
+                    "\t\t\t</ipxact:vendorExtensions>\n"
+                "\t\t</ipxact:componentInstance>\n"
+                "\t\t<ipxact:componentInstance>\n"
+                    "\t\t\t<ipxact:instanceName>otherInstance</ipxact:instanceName>\n"
+                    "\t\t\t<ipxact:componentRef vendor=\"TUT\" library=\"TestLibrary\" name=\"testComponent\""
+                        " version=\"1.0\">\n"
+                        "\t\t\t\t<ipxact:configurableElementValues>\n"
+                            "\t\t\t\t\t<ipxact:configurableElementValue referenceId=\"testReferenceID\">10"
+                                "</ipxact:configurableElementValue>\n"
+                        "\t\t\t\t</ipxact:configurableElementValues>\n"
+                    "\t\t\t</ipxact:componentRef>\n"
+                    "\t\t\t<ipxact:vendorExtensions>\n"
+                        "\t\t\t\t<kactus2:position x=\"1\" y=\"1\"/>\n"
+                        "\t\t\t\t<kactus2:uuid>otherUUID</kactus2:uuid>\n"
+                        "\t\t\t\t<kactus2:imported/>\n"
                     "\t\t\t</ipxact:vendorExtensions>\n"
                 "\t\t</ipxact:componentInstance>\n"
             "\t</ipxact:componentInstances>\n"
@@ -406,7 +426,54 @@ void tst_DesignWriter::testWriteInterconnections()
 //-----------------------------------------------------------------------------
 void tst_DesignWriter::testWriteInterconnectionExtensions()
 {
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
 
+    xmlStreamWriter.setAutoFormatting(true);
+    xmlStreamWriter.setAutoFormattingIndent(-1);
+
+    QSharedPointer<ActiveInterface> testStartInterface(new ActiveInterface("componentRef", "busRef"));
+
+    QSharedPointer<HierInterface> testHierInterface(new HierInterface("hierBusRef"));
+
+    QSharedPointer<Interconnection> testInterconnection(new Interconnection(
+        "testActiveHierActive", testStartInterface, "", ""));
+    testInterconnection->getHierInterfaces()->append(testHierInterface);
+    testInterconnection->setOffPage(true);
+
+    QList<QPointF> interconnectionRoute;
+    interconnectionRoute.append(QPointF(1,1));
+    interconnectionRoute.append(QPointF(1,2));
+    testInterconnection->setRoute(interconnectionRoute);
+
+    testDesign_->getInterconnections()->append(testInterconnection);
+
+    QString expectedOutput(
+        "<?xml version=\"1.0\"?>\n"
+        "<ipxact:design "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
+            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:library>TestLibrary</ipxact:library>\n"
+            "\t<ipxact:name>TestDesign</ipxact:name>\n"
+            "\t<ipxact:version>0.1</ipxact:version>\n"
+            "\t<ipxact:interconnections>\n"
+                "\t\t<ipxact:interconnection>\n"
+                    "\t\t\t<ipxact:name>testActiveHierActive</ipxact:name>\n"
+                    "\t\t\t<ipxact:activeInterface componentRef=\"componentRef\" busRef=\"busRef\"/>\n"
+                    "\t\t\t<ipxact:hierInterface busRef=\"hierBusRef\"/>\n"
+                "\t\t</ipxact:interconnection>\n"
+            "\t</ipxact:interconnections>\n"
+        "</ipxact:design>\n"
+        );
+
+    DesignWriter designWriter;
+    designWriter.writeDesign(xmlStreamWriter, testDesign_);
+
+    compareOutputToExpected(output, expectedOutput);
 }
 
 //-----------------------------------------------------------------------------

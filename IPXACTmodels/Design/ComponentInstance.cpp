@@ -399,6 +399,28 @@ QPointF ComponentInstance::getPosition() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComponentInstance::setImported()
+//-----------------------------------------------------------------------------
+void ComponentInstance::setImported(bool isImported)
+{
+    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    {
+        if (extension->type().compare("kactus2:imported") == 0)
+        {
+            getVendorExtensions()->removeAll(extension);
+            break;
+        }
+    }
+
+    if (isImported)
+    {
+        QSharedPointer<Kactus2Placeholder> importExtension (new Kactus2Placeholder("kactus2:imported"));
+
+        getVendorExtensions()->append(importExtension);
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComponentInstance::isImported()
 //-----------------------------------------------------------------------------
 bool ComponentInstance::isImported() const
