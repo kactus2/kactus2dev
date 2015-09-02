@@ -52,9 +52,9 @@
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
-#include <IPXACTmodels/SWInstance.h>
+#include <IPXACTmodels/kactusExtensions/SWInstance.h>
 #include <IPXACTmodels/component.h>
-#include <IPXACTmodels/design.h>
+#include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/model.h>
 #include <IPXACTmodels/businterface.h>
 #include <IPXACTmodels/ApiInterface.h>
@@ -94,13 +94,13 @@ SystemDesignDiagram::~SystemDesignDiagram()
 QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
 {
     QSharedPointer<Design> design = DesignDiagram::createDesign(vlnv);
-
-    QList<ComponentInstance> instances;
+    /*
+    QSharedPointer<QList<QSharedPointer<ComponentInstance> > > instances(new QList<QSharedPointer<ComponentInstance> >());
     QList<SWInstance> swInstances;
-    QList<ApiConnection> apiDependencies;
-    QList<HierApiDependency> hierApiDependencies;
-    QList<ComConnection> comConnections;
-    QList<HierComConnection> hierComConnections;
+    QList<ApiInterconnection> apiDependencies;
+    //QList<HierApiDependency> hierApiDependencies;
+    QList<ComInterconnection> comConnections;
+    //QList<HierComConnection> hierComConnections;
     QList<ColumnDesc> columns;
 
     foreach (QGraphicsItem const* item, items())
@@ -113,7 +113,7 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
                 mappingItem->description(),
                 *mappingItem->componentModel()->getVlnv(),
                 mappingItem->scenePos(), mappingItem->getUuid());
-            instance.setConfigurableElementValues(mappingItem->getConfigurableElements());
+            QMap<QString, QString>(), //TODO: instance.setConfigurableElementValues(mappingItem->getConfigurableElements());
             instance.setImported(mappingItem->isImported());
             instance.setImportRef(mappingItem->getImportRef());
             instance.setPropertyValues(mappingItem->getPropertyValues());
@@ -139,7 +139,7 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
                     mappingItem->getSWPort(comIf->name(), SWConnectionEndpoint::ENDPOINT_TYPE_COM)->pos());
             }
 
-            instances.append(instance);
+            instances->append(instance);
         }
         else if (item->type() == SWComponentItem::Type)
         {
@@ -217,12 +217,10 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
             {
                 if (endpoint1->encompassingComp() != 0 && endpoint2->encompassingComp() != 0)
                 {
-                    ApiInterfaceRef providerRef(endpoint1->encompassingComp()->name(),
-                        endpoint1->name());
-                    ApiInterfaceRef requesterRef(endpoint2->encompassingComp()->name(),
-                        endpoint2->name());
+                    QSharedPointer<ActiveInterface> providerRef(new ActiveInterface(endpoint1->encompassingComp()->name(), endpoint1->name()));
+                    QSharedPointer<ActiveInterface> requesterRef(new ActiveInterface(endpoint2->encompassingComp()->name(), endpoint2->name()));
 
-                    ApiConnection dependency(conn->name(), QString(), conn->description(),
+                    ApiInterconnection dependency(conn->name(), QString(), conn->description(),
                         providerRef, requesterRef, conn->route());
                     dependency.setImported(conn->isImported());
                     dependency.setOffPage(conn->endpoint1()->type() == SWOffPageConnectorItem::Type);
@@ -231,7 +229,7 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
                 }
                 else
                 {
-                    ConnectionEndpoint* compPort = endpoint1;
+                   //TODO: ConnectionEndpoint* compPort = endpoint1;
                     ConnectionEndpoint* hierPort = endpoint2;
 
                     if (compPort->encompassingComp() == 0)
@@ -254,6 +252,7 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
             }
             else// if (conn->getConnectionType() == SWConnectionEndpoint::ENDPOINT_TYPE_COM)
             {
+               
                 if (endpoint1->encompassingComp() != 0 && endpoint2->encompassingComp() != 0)
                 {
                     ComInterfaceRef ref1(endpoint1->encompassingComp()->name(),
@@ -294,7 +293,7 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
             }
         }
     }
-
+/*
     foreach (GraphicsColumn* column, getLayout()->getColumns())
     {
         columns.append(column->getColumnDesc());
@@ -306,7 +305,7 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
     design->setHierApiDependencies(hierApiDependencies);
     design->setComConnections(comConnections);
     design->setHierComConnections(hierComConnections);
-    design->setColumns(columns);   
+    design->setColumns(columns);   */
 
     return design;
 }
@@ -322,7 +321,7 @@ void SystemDesignDiagram::updateHierComponent()
 //-----------------------------------------------------------------------------
 // Function: SystemDesignDiagram::addColumn()
 //-----------------------------------------------------------------------------
-void SystemDesignDiagram::addColumn(ColumnDesc const& desc)
+void SystemDesignDiagram::addColumn(QSharedPointer<ColumnDesc> desc)
 {
     SystemColumn* column = new SystemColumn(desc, getLayout().data());
 
@@ -636,12 +635,13 @@ void SystemDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
                     }
                 }
 
-                ColumnDesc desc(dialog.name(), dialog.getContentType(), dialog.getAllowedItems(), columnWidth);
+                QSharedPointer<ColumnDesc> desc(new ColumnDesc(dialog.name(), dialog.getContentType(),
+                    dialog.getAllowedItems(), columnWidth));
 
                 // Keep the previous width if the content type did not change.
-                if (dialog.getContentType() == column->getColumnDesc().getContentType())
+                if (dialog.getContentType() == column->getColumnDesc()->getContentType())
                 {
-                    desc.setWidth(column->getColumnDesc().getWidth());
+                    desc->setWidth(column->getColumnDesc()->getWidth());
                 }
 
                 QSharedPointer<QUndoCommand> cmd(new GraphicsColumnChangeCommand(column, desc));
@@ -1329,25 +1329,25 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
 {
     if (design->getColumns().isEmpty())
     {
-        QList<ColumnDesc> columns;
+        QList<QSharedPointer<ColumnDesc> > columns;
 
         if (onlySW_)
         {
-            columns.append(ColumnDesc("Low-level", COLUMN_CONTENT_COMPONENTS, 0, SW_COLUMN_WIDTH));
-            columns.append(ColumnDesc("Middle-level", COLUMN_CONTENT_COMPONENTS, 0, SW_COLUMN_WIDTH));
-            columns.append(ColumnDesc("High-level", COLUMN_CONTENT_COMPONENTS, 0, SW_COLUMN_WIDTH));
-            columns.append(ColumnDesc("Out", COLUMN_CONTENT_IO, 0, IO_COLUMN_WIDTH));
+            columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("Low-level", COLUMN_CONTENT_COMPONENTS, 0, SW_COLUMN_WIDTH)));
+            columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("Middle-level", COLUMN_CONTENT_COMPONENTS, 0, SW_COLUMN_WIDTH)));
+            columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("High-level", COLUMN_CONTENT_COMPONENTS, 0, SW_COLUMN_WIDTH)));
+            columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("Out", COLUMN_CONTENT_IO, 0, IO_COLUMN_WIDTH)));
         }
         else
         {
-            columns.append(ColumnDesc("SW Components", COLUMN_CONTENT_COMPONENTS, 0, SYSTEM_COLUMN_WIDTH));
-            columns.append(ColumnDesc("SW Components", COLUMN_CONTENT_COMPONENTS, 0, SYSTEM_COLUMN_WIDTH));
+            columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("SW Components", COLUMN_CONTENT_COMPONENTS, 0, SYSTEM_COLUMN_WIDTH)));
+            columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("SW Components", COLUMN_CONTENT_COMPONENTS, 0, SYSTEM_COLUMN_WIDTH)));
         }
 
         design->setColumns(columns);
     }
 
-    foreach(ColumnDesc const& desc, design->getColumns())
+    foreach(QSharedPointer<ColumnDesc> desc, design->getColumns())
     {
         SystemColumn* column = new SystemColumn(desc, getLayout().data());
         getLayout()->addColumn(column, true);
@@ -1356,34 +1356,33 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
     unsigned int colIndex = 0;
 
     // Create (HW) component instances.
-    foreach (ComponentInstance const& instance, design->getComponentInstances())
+    foreach (QSharedPointer<ComponentInstance> instance, *design->getComponentInstances())
     {
-        QSharedPointer<Document> libComponent = getLibraryInterface()->getModel(instance.getComponentRef());
+        QSharedPointer<Document> libComponent = getLibraryInterface()->getModel(*instance->getComponentRef());
         QSharedPointer<Component> component = libComponent.staticCast<Component>();
 
         if (!component)
         {
-            emit errorMessage(tr("The component '%1' instantiated in the design '%2' "
-                "was not found in the library").arg(
-                instance.getComponentRef().getName()).arg(design->getVlnv()->getName()));
+            emit errorMessage(tr("The component '%1' instantiated in the design '%2' was not found in " 
+                "the library").arg(instance->getComponentRef()->getName(), design->getVlnv().getName()));
 
-            // Create an unpackaged component so that we can still visualize the component instance.
-            component = QSharedPointer<Component>(new Component(instance.getComponentRef()));
+            // Create an unpackaged component so that we can still visualize the component instance->
+            component = QSharedPointer<Component>(new Component(*instance->getComponentRef()));
             component->setComponentImplementation(KactusAttribute::HW);
         }
 
-        HWMappingItem* item = new HWMappingItem(getLibraryInterface(), component, instance.getInstanceName(),
-            instance.getDisplayName(), instance.getDescription(),
-            instance.getUuid(), instance.getConfigurableElementValues());
-        item->setImported(instance.isImported());
-        item->setImportRef(instance.getImportRef());
-        item->setPropertyValues(instance.getPropertyValues());
+        HWMappingItem* item = new HWMappingItem(getLibraryInterface(), component, instance->getInstanceName(),
+            instance->getDisplayName(), instance->getDescription(),
+            instance->getUuid(), QMap<QString, QString>()); //instance->getConfigurableElementValues());
+        item->setImported(instance->isImported());
+        item->setImportRef(instance->getImportRef());
+        item->setPropertyValues(instance->getPropertyValues());
 
         connect(item, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
 
         // Setup custom port positions.
         {
-            QMapIterator<QString, QPointF> itrPortPos(instance.getApiInterfacePositions());
+            QMapIterator<QString, QPointF> itrPortPos(instance->getApiInterfacePositions());
 
             while (itrPortPos.hasNext())
             {
@@ -1393,7 +1392,7 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
                 // If the port was not found, create it if the component is not packetized.
                 if (port == 0)
                 {
-                    if (instance.getComponentRef().isValid())
+                    if (instance->getComponentRef()->isValid())
                     {
                         continue;
                     }
@@ -1408,7 +1407,7 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
         }
 
         {
-            QMapIterator<QString, QPointF> itrPortPos(instance.getComInterfacePositions());
+            QMapIterator<QString, QPointF> itrPortPos(instance->getComInterfacePositions());
 
             while (itrPortPos.hasNext())
             {
@@ -1418,7 +1417,7 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
                 // If the port was not found, create it.
                 if (port == 0)
                 {
-                    if (instance.getComponentRef().isValid())
+                    if (instance->getComponentRef()->isValid())
                     {
                         continue;
                     }
@@ -1433,16 +1432,16 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
         }
 
         // Check if the position is not found.
-        if (instance.getPosition().isNull())
+        if (instance->getPosition().isNull())
         {
             getLayout()->getColumns().at(colIndex)->addItem(item);
             colIndex = (colIndex + 1) % getLayout()->getColumns().size();
         }
         else
         {
-            item->setPos(instance.getPosition());
+            item->setPos(instance->getPosition());
 
-            GraphicsColumn* column = getLayout()->findColumnAt(instance.getPosition());
+            GraphicsColumn* column = getLayout()->findColumnAt(instance->getPosition());
 
             if (column != 0)
             {
@@ -1459,58 +1458,57 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
     }
 
     // Create SW instances.
-    foreach (SWInstance const& instance, design->getSWInstances())
+    foreach (QSharedPointer<SWInstance> instance, design->getSWInstances())
     {
         QSharedPointer<Component> component;
 
-        if (!instance.getComponentRef().isEmpty())
+        if (!instance->getComponentRef()->isEmpty())
         {
-             component = getLibraryInterface()->getModel(instance.getComponentRef()).dynamicCast<Component>();
+             component = getLibraryInterface()->getModel(*instance->getComponentRef()).dynamicCast<Component>();
 
-             if (!component && instance.getComponentRef().isValid())
+             if (!component && instance->getComponentRef()->isValid())
              {
-                 emit errorMessage(tr("The SW component '%1' instantiated in the design '%2' "
-                     "was not found in the library").arg(
-                     instance.getComponentRef().getName()).arg(design->getVlnv()->getName()));
+                 emit errorMessage(tr("The SW component '%1' instantiated in the design '%2' was not found in "
+                     "the library").arg(instance->getComponentRef()->getName(), design->getVlnv().getName()));
              }           
         }
         
         if(!component)
         {
-            // Create an unpackaged component so that we can still visualize the component instance.
-            component = QSharedPointer<Component>(new Component(instance.getComponentRef()));
+            // Create an unpackaged component so that we can still visualize the component instance->
+            component = QSharedPointer<Component>(new Component(*instance->getComponentRef()));
             component->setComponentImplementation(KactusAttribute::SW);
         }
 
-        SWComponentItem* item = new SWComponentItem(getLibraryInterface(), component, instance.getInstanceName(),
-            instance.getDisplayName(), instance.getDescription());
+        SWComponentItem* item = new SWComponentItem(getLibraryInterface(), component, instance->getInstanceName(),
+            instance->getDisplayName(), instance->getDescription());
         connect(item, SIGNAL(openCSource(ComponentItem*)), this, SIGNAL(openCSource(ComponentItem*)));
         connect(item, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
 
-        item->setImported(instance.isImported());
-        item->setImportRef(instance.getImportRef());
-        item->setPos(instance.getPosition());
-        item->setPropertyValues(instance.getPropertyValues());
-        item->setFileSetRef(instance.getFileSetRef());
-        item->setApiInterfacePositions(instance.getApiInterfacePositions(), true);
-        item->setComInterfacePositions(instance.getComInterfacePositions(), true);
+        item->setImported(instance->isImported());
+        item->setImportRef(instance->getImportRef());
+        item->setPos(instance->getPosition());
+        item->setPropertyValues(instance->getPropertyValues());
+        item->setFileSetRef(instance->getFileSetRef());
+        item->setApiInterfacePositions(instance->getApiInterfacePositions(), true);
+        item->setComInterfacePositions(instance->getComInterfacePositions(), true);
 
-        if (instance.isDraft())
+        if (instance->isDraft())
         {
             item->setDraft();
         }
 
-        if (instance.getMapping().isEmpty())
+        if (instance->getMapping().isEmpty())
         {
             // Check if the position is not found.
-            if (instance.getPosition().isNull())
+            if (instance->getPosition().isNull())
             {
                 getLayout()->getColumns().at(colIndex)->addItem(item);
                 colIndex = (colIndex + 1) % getLayout()->getColumns().size();
             }
             else
             {
-                GraphicsColumn* column = getLayout()->findColumnAt(instance.getPosition());
+                GraphicsColumn* column = getLayout()->findColumnAt(instance->getPosition());
 
                 if (column != 0)
                 {
@@ -1525,8 +1523,8 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
         }
         else
         {
-            // Otherwise the mapping has been specified. Find the corresponding HW component instance.
-            HWMappingItem* mappingItem = getHWComponentByUUID(instance.getMapping());
+            // Otherwise the mapping has been specified. Find the corresponding HW component instance->
+            HWMappingItem* mappingItem = getHWComponentByUUID(instance->getMapping());
 
             if (mappingItem != 0)
             {
@@ -1581,65 +1579,65 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
 //-----------------------------------------------------------------------------
 void SystemDesignDiagram::loadComConnections(QSharedPointer<Design> design)
 {
-    foreach (ComConnection const& conn, design->getComConnections())
+    foreach (QSharedPointer<ComInterconnection> conn, design->getComConnections())
     {
         // Find the referenced components.
-        SystemComponentItem* comp1 = getComponent(conn.getInterface1().componentRef);
+        SystemComponentItem* comp1 = getComponent(conn->getInterface1()->getComponentReference());
 
         if (comp1 == 0)
         {
             emit errorMessage(tr("Component '%1' was not found in the design").arg(
-                conn.getInterface1().componentRef));
+                conn->getInterface1()->getComponentReference()));
             continue;
         }
 
-        SystemComponentItem* comp2 = getComponent(conn.getInterface2().componentRef);
+        SystemComponentItem* comp2 = getComponent(conn->getInterface2()->getComponentReference());
 
         if (comp2 == 0)
         {
             emit errorMessage(tr("Component '%1' was not found in the design").arg(
-                conn.getInterface2().componentRef));
+                conn->getInterface2()->getComponentReference()));
             continue;
         }
 
         // Find the connected ports in the components.
-        ConnectionEndpoint* port1 = comp1->getSWPort(conn.getInterface1().comRef,
+        ConnectionEndpoint* port1 = comp1->getSWPort(conn->getInterface1()->getBusReference(),
             SWConnectionEndpoint::ENDPOINT_TYPE_COM);
 
         if (port1 == 0)
         {
             emit errorMessage(tr("COM interface '%1' was not found in the component '%2'").arg(
-                conn.getInterface1().comRef).arg(conn.getInterface1().componentRef));
+                conn->getInterface1()->getBusReference()).arg(conn->getInterface1()->getComponentReference()));
 
-            port1 = createMissingPort(conn.getInterface1().comRef, ConnectionEndpoint::ENDPOINT_TYPE_UNDEFINED,
+            port1 = createMissingPort(conn->getInterface1()->getBusReference(), ConnectionEndpoint::ENDPOINT_TYPE_UNDEFINED,
                 comp1, design);
         }
 
-        ConnectionEndpoint* port2 = comp2->getSWPort(conn.getInterface2().comRef,
+        ConnectionEndpoint* port2 = comp2->getSWPort(conn->getInterface2()->getBusReference(),
             SWConnectionEndpoint::ENDPOINT_TYPE_COM);
 
         if (port2 == 0)
         {
             emit errorMessage(tr("COM interface '%1' was not found in the component '%2'").arg(
-                conn.getInterface2().comRef).arg(conn.getInterface2().componentRef));
+                conn->getInterface2()->getBusReference()).arg(conn->getInterface2()->getComponentReference()));
 
-            port2 = createMissingPort(conn.getInterface2().comRef, ConnectionEndpoint::ENDPOINT_TYPE_UNDEFINED,
+            port2 = createMissingPort(conn->getInterface2()->getBusReference(), ConnectionEndpoint::ENDPOINT_TYPE_UNDEFINED,
                 comp2, design);
         }
 
-        if (conn.isOffPage())
+        if (conn->isOffPage())
         {
             port1 = port1->getOffPageConnector();
             port2 = port2->getOffPageConnector();
         }
 
         GraphicsConnection* connection = new GraphicsConnection(port1, port2, true,
-            conn.name(),
-            conn.getDisplayName(),
-            conn.getDescription(), this);
-        connection->setRoute(conn.getRoute());
+            conn->name(),
+            conn->displayName(),
+            conn->description(), this);
+        connection->setRoute(conn->getRoute());
 
-        if (conn.isOffPage())
+        if (conn->isOffPage())
         {
             connection->setVisible(false);
         }
@@ -1652,7 +1650,7 @@ void SystemDesignDiagram::loadComConnections(QSharedPointer<Design> design)
     }
 
     // Load hierarchical COM connections.
-    foreach (HierComConnection const& hierConn, design->getHierComConnections())
+    /*foreach (HierComConnection const& hierConn, design->getHierComConnections())
     {
         QSharedPointer<ComInterface> comIf =
             getEditedComponent()->getComInterface(hierConn.getInterfaceRef());
@@ -1747,7 +1745,7 @@ void SystemDesignDiagram::loadComConnections(QSharedPointer<Design> design)
 
         addItem(connection);
         connection->updatePosition();
-    }
+    }*/
 }
 
 //-----------------------------------------------------------------------------
@@ -1755,66 +1753,66 @@ void SystemDesignDiagram::loadComConnections(QSharedPointer<Design> design)
 //-----------------------------------------------------------------------------
 void SystemDesignDiagram::loadApiDependencies(QSharedPointer<Design> design)
 {
-    foreach (ApiConnection const& dependency, design->getApiDependencies())
+    foreach (QSharedPointer<ApiInterconnection> dependency, design->getApiConnections())
     {
-        // Find the referenced components.
-        SystemComponentItem* comp1 = getComponent(dependency.getInterface1().componentRef);
+        // Find the referenced components.        
+        SystemComponentItem* comp1 = getComponent(dependency->getInterface1()->getComponentReference());
 
         if (comp1 == 0)
         {
             emit errorMessage(tr("Component '%1' was not found in the design").arg(
-                dependency.getInterface1().componentRef));
+                dependency->getInterface1()->getComponentReference()));
             continue;
         }
 
-        SystemComponentItem* comp2 = getComponent(dependency.getInterface2().componentRef);
+        SystemComponentItem* comp2 = getComponent(dependency->getInterface2()->getComponentReference());
 
         if (comp2 == 0)
         {
             emit errorMessage(tr("Component '%1' was not found in the design").arg(
-                dependency.getInterface2().componentRef));
+                dependency->getInterface2()->getComponentReference()));
             continue;
         }
 
         // Find the connected ports in the components.
-        ConnectionEndpoint* port1 = static_cast<SWPortItem*>(comp1->getSWPort(dependency.getInterface1().apiRef,
+        ConnectionEndpoint* port1 = static_cast<SWPortItem*>(comp1->getSWPort(dependency->getInterface1()->getBusReference(),
             SWConnectionEndpoint::ENDPOINT_TYPE_API));
 
         if (port1 == 0)
         {
             emit errorMessage(tr("API interface '%1' was not found in the component '%2'").arg(
-                dependency.getInterface1().apiRef).arg(dependency.getInterface1().componentRef));
+                dependency->getInterface1()->getBusReference()).arg(dependency->getInterface1()->getComponentReference()));
 
-            port1 = createMissingPort(dependency.getInterface1().apiRef,
+            port1 = createMissingPort(dependency->getInterface1()->getBusReference(),
                 SWConnectionEndpoint::ENDPOINT_TYPE_API, comp1, design);
         }
 
-        ConnectionEndpoint* port2 = static_cast<SWPortItem*>(comp2->getSWPort(dependency.getInterface2().apiRef,
+        ConnectionEndpoint* port2 = static_cast<SWPortItem*>(comp2->getSWPort(dependency->getInterface2()->getBusReference(),
             SWConnectionEndpoint::ENDPOINT_TYPE_API));
 
         if (port2 == 0)
         {
             emit errorMessage(tr("API interface '%1' was not found in the component '%2'").arg(
-                dependency.getInterface2().apiRef).arg(dependency.getInterface2().componentRef));
+                dependency->getInterface2()->getBusReference()).arg(dependency->getInterface2()->getComponentReference()));
 
-            port2 = createMissingPort(dependency.getInterface2().apiRef,
+            port2 = createMissingPort(dependency->getInterface2()->getBusReference(),
                 SWConnectionEndpoint::ENDPOINT_TYPE_API, comp2, design);
         }
 
-        if (dependency.isOffPage())
+        if (dependency->isOffPage())
         {
             port1 = port1->getOffPageConnector();
             port2 = port2->getOffPageConnector();
         }
 
         GraphicsConnection* connection = new GraphicsConnection(port1, port2, true,
-            dependency.name(),
-            dependency.getDisplayName(),
-            dependency.getDescription(), this);
-        connection->setRoute(dependency.getRoute());
-        connection->setImported(dependency.isImported());
+            dependency->name(),
+            dependency->displayName(),
+            dependency->description(), this);
+        connection->setRoute(dependency->getRoute());
+        connection->setImported(dependency->isImported());
 
-        if (dependency.isOffPage())
+        if (dependency->isOffPage())
         {
             connection->setVisible(false);
         }
@@ -1827,7 +1825,7 @@ void SystemDesignDiagram::loadApiDependencies(QSharedPointer<Design> design)
     }
 
     // Load hierarchical dependencies.
-    foreach (HierApiDependency const& dependency, design->getHierApiDependencies())
+   /* foreach (HierApiDependency const& dependency, design->getHierApiDependencies())
     {
         QSharedPointer<ApiInterface> apiIf =
             getEditedComponent()->getApiInterface(dependency.getInterfaceRef());
@@ -1922,7 +1920,7 @@ void SystemDesignDiagram::loadApiDependencies(QSharedPointer<Design> design)
 
         addItem(connection);
         connection->updatePosition();
-    }
+    }*/
 }
 
 //-----------------------------------------------------------------------------
@@ -1998,17 +1996,17 @@ SWPortItem* SystemDesignDiagram::createMissingPort(QString const& portName, Conn
     SWPortItem* port = new SWPortItem(portName, component);
     component->addPort(port);
 
-    foreach (ComponentInstance const& instance, design->getComponentInstances())
+    foreach (QSharedPointer<ComponentInstance> instance, *design->getComponentInstances())
     {
-        if (instance.getInstanceName() == component->name())
+        if (instance->getInstanceName() == component->name())
         {
             if (type == ConnectionEndpoint::ENDPOINT_TYPE_API)
             {
-                port->setPos(instance.getApiInterfacePositions().value(portName));
+                port->setPos(instance->getApiInterfacePositions().value(portName));
             }
             else if (type == ConnectionEndpoint::ENDPOINT_TYPE_COM)
             {
-                port->setPos(instance.getComInterfacePositions().value(portName));
+                port->setPos(instance->getComInterfacePositions().value(portName));
             }
 
             component->onMovePort(port);
@@ -2016,17 +2014,17 @@ SWPortItem* SystemDesignDiagram::createMissingPort(QString const& portName, Conn
         }
     }
 
-    foreach (SWInstance const& instance, design->getSWInstances())
+    foreach (QSharedPointer<SWInstance> instance, design->getSWInstances())
     {
-        if (instance.getInstanceName() == component->name())
+        if (instance->getInstanceName() == component->name())
         {
             if (type == ConnectionEndpoint::ENDPOINT_TYPE_API)
             {
-                port->setPos(instance.getApiInterfacePositions().value(portName));
+                port->setPos(instance->getApiInterfacePositions().value(portName));
             }
             else if (type == ConnectionEndpoint::ENDPOINT_TYPE_COM)
             {
-                port->setPos(instance.getComInterfacePositions().value(portName));
+                port->setPos(instance->getComInterfacePositions().value(portName));
             }
 
             component->onMovePort(port);
@@ -2047,109 +2045,107 @@ void SystemDesignDiagram::importDesign(QSharedPointer<Design> design, IGraphicsI
     QMap<QString, QString> nameMappings;
 
     // Import SW instances.
-    foreach (SWInstance const& instance, design->getSWInstances())
+    foreach (QSharedPointer<SWInstance> instance, design->getSWInstances())
     {
-        QSharedPointer<Document> libComponent = getLibraryInterface()->getModel(instance.getComponentRef());
+        QSharedPointer<Document> libComponent = getLibraryInterface()->getModel(*instance->getComponentRef());
         QSharedPointer<Component> component = libComponent.staticCast<Component>();
 
         if (!component)
         {
             emit errorMessage(tr("SW component %1 instantiated in the imported design was not "
-                                 "found in the library").arg(instance.getComponentRef().toString()));
+                                 "found in the library").arg(instance->getComponentRef()->toString()));
 
-            // Create an unpackaged component so that we can still visualize the component instance.
-            component = QSharedPointer<Component>(new Component(instance.getComponentRef()));
+            // Create an unpackaged component so that we can still visualize the component instance->
+            component = QSharedPointer<Component>(new Component(*instance->getComponentRef()));
             component->setComponentImplementation(KactusAttribute::SW);
         }
 
-        // Determine a unique name for the instance.
-        QString instanceName = instance.getInstanceName();
+        // Determine a unique name for the instance->
+        QString instanceName = instance->getInstanceName();
 
         if (getComponent(instanceName) != 0)
         {
             instanceName = createInstanceName(instanceName);
         }
 
-        nameMappings.insert(instance.getInstanceName(), instanceName);
+        nameMappings.insert(instance->getInstanceName(), instanceName);
 
         SWComponentItem* item = new SWComponentItem(getLibraryInterface(), component, instanceName,
-                                                    instance.getDisplayName(), instance.getDescription());
-        item->setImported(instance.isImported());
-        item->setImportRef(instance.getImportRef());
+                                                    instance->getDisplayName(), instance->getDescription());
+        item->setImported(instance->isImported());
+        item->setImportRef(instance->getImportRef());
         item->setPos(stack->mapStackFromScene(guidePos));
-        item->setPropertyValues(instance.getPropertyValues());
-        item->setFileSetRef(instance.getFileSetRef());
-        item->setApiInterfacePositions(instance.getApiInterfacePositions(), true);
-        item->setComInterfacePositions(instance.getComInterfacePositions(), true);
+        item->setPropertyValues(instance->getPropertyValues());
+        item->setFileSetRef(instance->getFileSetRef());
+        item->setApiInterfacePositions(instance->getApiInterfacePositions(), true);
+        item->setComInterfacePositions(instance->getComInterfacePositions(), true);
 
         connect(item, SIGNAL(openCSource(ComponentItem*)), this, SIGNAL(openCSource(ComponentItem*)));
         connect(item, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
         
         // Add the instance to the specified stack.
         stack->addItem(item);
-        addInstanceName(instance.getInstanceName());
+        addInstanceName(instance->getInstanceName());
     }
 
     // Import API dependencies.
-    foreach (ApiConnection const& dependency, design->getApiDependencies())
+    foreach (QSharedPointer<ApiInterconnection> dependency, design->getApiConnections())
     {
         // Find the referenced components.
-        SystemComponentItem* comp1 = getComponent(nameMappings.value(dependency.getInterface1().componentRef));
+        SystemComponentItem* comp1 = getComponent(nameMappings.value(dependency->getInterface1()->getComponentReference()));
 
         if (comp1 == 0)
         {
             emit errorMessage(tr("Component '%1' was not found in the design").arg(
-                nameMappings.value(dependency.getInterface1().componentRef)));
+                nameMappings.value(dependency->getInterface1()->getComponentReference())));
             continue;
         }
 
-        SystemComponentItem* comp2 = getComponent(nameMappings.value(dependency.getInterface2().componentRef));
+        SystemComponentItem* comp2 = getComponent(nameMappings.value(dependency->getInterface2()->getComponentReference()));
 
         if (comp2 == 0)
         {
             emit errorMessage(tr("Component '%1' was not found in the design").arg(
-                nameMappings.value(dependency.getInterface2().componentRef)));
+                nameMappings.value(dependency->getInterface2()->getComponentReference())));
             continue;
         }
 
         // Find the connected ports in the components.
-        ConnectionEndpoint* port1 = static_cast<SWPortItem*>(comp1->getSWPort(dependency.getInterface1().apiRef,
+        ConnectionEndpoint* port1 = static_cast<SWPortItem*>(comp1->getSWPort(dependency->getInterface1()->getBusReference(),
             SWConnectionEndpoint::ENDPOINT_TYPE_API));
 
         if (port1 == 0)
         {
             emit errorMessage(tr("API interface '%1' was not found in the component '%2'").arg(
-                dependency.getInterface1().apiRef).arg(dependency.getInterface1().componentRef));
+                dependency->getInterface1()->getBusReference()).arg(dependency->getInterface1()->getComponentReference()));
 
-            port1 = createMissingPort(dependency.getInterface1().apiRef,
+            port1 = createMissingPort(dependency->getInterface1()->getBusReference(),
                 SWConnectionEndpoint::ENDPOINT_TYPE_API, comp1, design);
         }
 
-        ConnectionEndpoint* port2 = static_cast<SWPortItem*>(comp2->getSWPort(dependency.getInterface2().apiRef,
+        ConnectionEndpoint* port2 = static_cast<SWPortItem*>(comp2->getSWPort(dependency->getInterface2()->getBusReference(),
             SWConnectionEndpoint::ENDPOINT_TYPE_API));
 
         if (port2 == 0)
         {
             emit errorMessage(tr("API interface '%1' was not found in the component '%2'").arg(
-                dependency.getInterface2().apiRef).arg(dependency.getInterface2().componentRef));
+                dependency->getInterface2()->getBusReference()).arg(dependency->getInterface2()->getComponentReference()));
 
-            port2 = createMissingPort(dependency.getInterface2().apiRef,
+            port2 = createMissingPort(dependency->getInterface2()->getBusReference(),
                 SWConnectionEndpoint::ENDPOINT_TYPE_API, comp2, design);
         }
 
-        if (dependency.isOffPage())
+        if (dependency->isOffPage())
         {
             port1 = port1->getOffPageConnector();
             port2 = port2->getOffPageConnector();
         }
 
         GraphicsConnection* connection = new GraphicsConnection(port1, port2, true,
-            dependency.name(),
-            dependency.getDisplayName(),
-            dependency.getDescription(), this);
-        connection->setImported(dependency.isImported());
+            dependency->name(), dependency->displayName(), dependency->description(), this);
+        connection->setImported(dependency->isImported());
 
-        if (dependency.isOffPage())
+        if (dependency->isOffPage())
         {
             connection->setVisible(false);
         }
@@ -2162,60 +2158,60 @@ void SystemDesignDiagram::importDesign(QSharedPointer<Design> design, IGraphicsI
     }
 
     // Import COM connections.
-    foreach (ComConnection const& conn, design->getComConnections())
+    foreach (QSharedPointer<ComInterconnection> conn, design->getComConnections())
     {
         // Find the referenced components.
-        SystemComponentItem* comp1 = getComponent(nameMappings.value(conn.getInterface1().componentRef));
+        SystemComponentItem* comp1 = getComponent(nameMappings.value(conn->getInterface1()->getComponentReference()));
 
         if (comp1 == 0)
         {
             emit errorMessage(tr("Component '%1' was not found in the design").arg(
-                nameMappings.value(conn.getInterface1().componentRef)));
+                nameMappings.value(conn->getInterface1()->getComponentReference())));
             continue;
         }
 
-        SystemComponentItem* comp2 = getComponent(nameMappings.value(conn.getInterface2().componentRef));
+        SystemComponentItem* comp2 = getComponent(nameMappings.value(conn->getInterface2()->getComponentReference()));
 
         if (comp2 == 0)
         {
             emit errorMessage(tr("Component '%1' was not found in the design").arg(
-                nameMappings.value(conn.getInterface2().componentRef)));
+                nameMappings.value(conn->getInterface2()->getComponentReference())));
             continue;
         }
 
         // Find the connected ports in the components.
-        ConnectionEndpoint* port1 = comp1->getSWPort(conn.getInterface1().comRef,
+        ConnectionEndpoint* port1 = comp1->getSWPort(conn->getInterface1()->getBusReference(),
             SWConnectionEndpoint::ENDPOINT_TYPE_COM);
 
         if (port1 == 0)
         {
             emit errorMessage(tr("API interface '%1' was not found in the component '%2'").arg(
-                conn.getInterface1().comRef).arg(conn.getInterface1().componentRef));
+                conn->getInterface1()->getBusReference()).arg(conn->getInterface1()->getComponentReference()));
             continue;
         }
 
-        ConnectionEndpoint* port2 = comp2->getSWPort(conn.getInterface2().comRef,
+        ConnectionEndpoint* port2 = comp2->getSWPort(conn->getInterface2()->getBusReference(),
             SWConnectionEndpoint::ENDPOINT_TYPE_COM);
 
         if (port2 == 0)
         {
             emit errorMessage(tr("API interface '%1' was not found in the component '%2'").arg(
-                conn.getInterface2().comRef).arg(conn.getInterface2().componentRef));
+                conn->getInterface2()->getBusReference()).arg(conn->getInterface2()->getComponentReference()));
             continue;
         }
 
-        if (conn.isOffPage())
+        if (conn->isOffPage())
         {
             port1 = port1->getOffPageConnector();
             port2 = port2->getOffPageConnector();
         }
 
         GraphicsConnection* connection = new GraphicsConnection(port1, port2, true,
-                                                                conn.name(),
-                                                                conn.getDisplayName(),
-                                                                conn.getDescription(), this);
+                                                                conn->name(),
+                                                                conn->displayName(),
+                                                                conn->description(), this);
 
-        if (conn.isOffPage())
+        if (conn->isOffPage())
         {
             connection->setVisible(false);
         }

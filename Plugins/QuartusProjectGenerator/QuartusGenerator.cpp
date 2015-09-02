@@ -8,10 +8,12 @@
 
 #include <library/LibraryManager/libraryhandler.h>
 
+#include <IPXACTmodels/Design/Design.h>
+
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+
 #include <IPXACTmodels/vlnv.h>
 #include <IPXACTmodels/component.h>
-#include <IPXACTmodels/design.h>
-#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 #include <IPXACTmodels/librarycomponent.h>
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/file.h>
@@ -469,10 +471,9 @@ void QuartusGenerator::readDesign(const QSharedPointer<Design> design,
 {
 	Q_ASSERT_X(design, "ModelsimGenerator::readDesign", "Null Design-pointer given as parameter");
 
-	QList<ComponentInstance> instances = design->getComponentInstances();
-	foreach (ComponentInstance const& instance, instances)
+	foreach (QSharedPointer<ComponentInstance> instance, *design->getComponentInstances())
     {
-		VLNV vlnv = instance.getComponentRef();
+		VLNV vlnv = *instance->getComponentRef();
 
 		if (!handler_->contains(vlnv))
         {
@@ -496,17 +497,17 @@ void QuartusGenerator::readDesign(const QSharedPointer<Design> design,
 
 		QString viewName;
 
-		if (desConf && desConf->hasActiveView(instance.getInstanceName()))
+		if (desConf && desConf->hasActiveView(instance->getInstanceName()))
         {
             QMap<QString, QString> viewOverrides = desConf->getKactus2ViewOverrides();
 
-            viewName = viewOverrides.value(instance.getUuid(), desConf->getActiveView(instance.getInstanceName()));
+            viewName = viewOverrides.value(instance->getUuid(), desConf->getActiveView(instance->getInstanceName()));
 		}
 		// if design configuration is not used or view was not found
 		else
         {
             emit noticeMessage(tr("No active view selected for instance %1 of component %2.").
-                arg(instance.getInstanceName(), vlnv.toString()));
+                arg(instance->getInstanceName(), vlnv.toString()));
 		}
 
 		parseFiles(component, viewName);

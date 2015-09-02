@@ -13,7 +13,7 @@
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/ApiDefinition.h>
 #include <IPXACTmodels/ComDefinition.h>
-#include <IPXACTmodels/design.h>
+#include <IPXACTmodels/Design/Design.h>
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 

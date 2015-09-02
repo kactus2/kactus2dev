@@ -37,7 +37,8 @@ HEADERS += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h \
     ../../../IPXACTmodels/AbstractionDefinition/TransactionalAbstraction.h \
     ../../../IPXACTmodels/AbstractionDefinition/TransactionalAbstractionWriter.h \
     ../../../IPXACTmodels/AbstractionDefinition/TransactionalPort.h \
-    ../../../IPXACTmodels/common/Protocol.h
+    ../../../IPXACTmodels/common/Protocol.h \
+    ../../../IPXACTmodels/kactusExtensions/Kactus2Group.h
 SOURCES += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.cpp \
     ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinitionWriter.cpp \
     ../../../IPXACTmodels/common/Array.cpp \
@@ -69,4 +70,5 @@ SOURCES += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.cpp
     ../../../IPXACTmodels/AbstractionDefinition/TransactionalAbstractionWriter.cpp \
     ../../../IPXACTmodels/AbstractionDefinition/TransactionalPort.cpp \
     ../../../IPXACTmodels/AbstractionDefinition/TransactionalAbstraction.cpp \
-    ../../../IPXACTmodels/common/Protocol.cpp
+    ../../../IPXACTmodels/common/Protocol.cpp \
+    ../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp

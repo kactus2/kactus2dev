@@ -16,8 +16,8 @@
 
 #include <IPXACTmodels/common/Document.h>
 
-#include <IPXACTmodels/design.h>
-#include <IPXACTmodels/librarycomponent.h>
+#include <IPXACTmodels/Design/Design.h>
+
 #include <IPXACTmodels/vlnv.h>
 
 #include <QObject>
@@ -330,7 +330,7 @@ private:
     LibraryMock& operator=(LibraryMock const& rhs);
 
     //! The components in the library.
-    QMap<VLNV, QSharedPointer<LibraryComponent> > components_;
+    QMap<VLNV, QSharedPointer<Document> > components_;
 
     //! The paths to components in the library.
     QMap<VLNV, QString > paths_;

@@ -7,7 +7,7 @@
 
 #include "documentgenerator.h"
 
-#include <IPXACTmodels/design.h>
+#include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/librarycomponent.h>
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/common/Parameter.h>
@@ -19,7 +19,7 @@
 #include <IPXACTmodels/file.h>
 #include <IPXACTmodels/buildcommand.h>
 #include <IPXACTmodels/view.h>
-#include <IPXACTmodels/design.h>
+#include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 #include <IPXACTmodels/memorymap.h>
@@ -169,16 +169,16 @@ void DocumentGenerator::parseChildItems( QList<VLNV>& objects )
 		if (!design)
 			continue;
 
-		QList<ComponentInstance> instances = design->getComponentInstances();
-		foreach (ComponentInstance const& instance, instances)
+
+		foreach (QSharedPointer<ComponentInstance> instance, *design->getComponentInstances())
         {
-            if (!objects.contains(instance.getComponentRef()) && handler_->contains(instance.getComponentRef()) &&
-                handler_->getDocumentType(instance.getComponentRef()) == VLNV::COMPONENT)
+            if (!objects.contains(*instance->getComponentRef()) && handler_->contains(*instance->getComponentRef()) &&
+                handler_->getDocumentType(*instance->getComponentRef()) == VLNV::COMPONENT)
             {
     			// create a new instance of document generator and add it to child list
-			    objects.append(instance.getComponentRef());
+			    objects.append(*instance->getComponentRef());
 			    QSharedPointer<DocumentGenerator> docGenerator(new DocumentGenerator(handler_,
-                    instance.getComponentRef(), objects, designWidgetFactory_, expressionFormatterFactory_, this));
+                    *instance->getComponentRef(), objects, designWidgetFactory_, expressionFormatterFactory_, this));
 			    childInstances_.append(docGenerator);
             }
 		}
@@ -1005,14 +1005,14 @@ void DocumentGenerator::writeView( QSharedPointer<View> view, QTextStream& strea
 		
 		libComp = handler_->getModel(designVLNV);
 		design = libComp.staticCast<Design>();
-		designVLNV = *design->getVlnv();
+		designVLNV = design->getVlnv();
 	}
 
 	// if the hierarchical reference was directly for a design
 	else if (handler_->getDocumentType(vlnv) == VLNV::DESIGN) {
 		libComp = handler_->getModel(vlnv);
 		design = libComp.staticCast<Design>();
-		designVLNV = *design->getVlnv();
+		designVLNV = design->getVlnv();
 	}
 	
 	// if hierarchical reference was for wrong type
@@ -1075,10 +1075,10 @@ void DocumentGenerator::writeView( QSharedPointer<View> view, QTextStream& strea
 
 	stream << "\t\t\t</p>" << endl;
 
-	const QList<ComponentInstance> instances = design->getComponentInstances();
+	QSharedPointer<QList<QSharedPointer<ComponentInstance> > > instances = design->getComponentInstances();
 	
 	// if design does not contain instances
-	if (instances.isEmpty()) {
+	if (instances->isEmpty()) {
 		return;
 	}
 
@@ -1090,41 +1090,50 @@ void DocumentGenerator::writeView( QSharedPointer<View> view, QTextStream& strea
 	instanceHeaders.append("Description");
 	writeTableElement(instanceHeaders, "Component instantiations within this design", stream);
 
-	foreach (ComponentInstance const& instance, instances) {
+	foreach (QSharedPointer<ComponentInstance> instance, *instances)
+    {
 		stream << "\t\t\t\t<tr>" << endl;
 
-		stream << "\t\t\t\t\t<td>" << instance.getInstanceName() << "</td>" << endl;
-		stream << "\t\t\t\t\t<td><a href=\"#" << instance.getComponentRef().toString(":") 
-			<< "\">" << instance.getComponentRef().toString(" - ") << "</a></td>" << endl;
+		stream << "\t\t\t\t\t<td>" << instance->getInstanceName() << "</td>" << endl;
+		stream << "\t\t\t\t\t<td><a href=\"#" << instance->getComponentRef()->toString(":") 
+			<< "\">" << instance->getComponentRef()->toString(" - ") << "</a></td>" << endl;
 		
-        VLNV tempVlnv = instance.getComponentRef();
+        VLNV tempVlnv = *instance->getComponentRef();
 
         QSharedPointer<Document> libComp = handler_->getModel(tempVlnv);
         QSharedPointer<Component> component = libComp.staticCast<Component>();
 
         ExpressionFormatter* equationFormatter = expressionFormatterFactory_->makeExpressionFormatter(component);
 
-		QMap<QString, QString> confElements = instance.getConfigurableElementValues();
-		stream << "\t\t\t\t\t<td>" << endl;
-		for (QMap<QString, QString>::iterator i = confElements.begin();
-			i != confElements.end(); ++i) {
-                stream << "\t\t\t\t\t" << equationFormatter->formatReferringExpression(i.key()) << " = " <<
-                    equationFormatter->formatReferringExpression(i.value());
+		//QMap<QString, QString> confElements = instance->getConfigurableElementValues();
+        QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > >  confElements = instance->getConfigurableElementValues();
 
-				if (i != --confElements.end()) {
-					stream << "<br>";
-				}
-				stream << endl;
-		}
-		stream << "\t\t\t\t\t</td>" << endl;
+        stream << "\t\t\t\t\t<td>" << endl;
+        foreach(QSharedPointer<ConfigurableElementValue> configurableElement, *confElements)
+        {
+            stream << "\t\t\t\t\t" 
+                << equationFormatter->formatReferringExpression(configurableElement->getReferenceId()) 
+                << " = " 
+                << equationFormatter->formatReferringExpression(configurableElement->getConfigurableValue());
+
+               
+            if (configurableElement != confElements->last())
+            {
+                stream << "<br>";
+            }
+            stream << endl;
+        }
+
+        stream << "\t\t\t\t\t</td>" << endl;
+
 
 		stream << "\t\t\t\t\t<td>";
 		if (desConf) {
-			stream << desConf->getActiveView(instance.getInstanceName());
+			stream << desConf->getActiveView(instance->getInstanceName());
 		}
 		stream << "</td>" << endl;
 
-		stream << "\t\t\t\t\t<td>" << instance.getDescription() << "</td>" << endl;
+		stream << "\t\t\t\t\t<td>" << instance->getDescription() << "</td>" << endl;
 
 		stream << "\t\t\t\t</tr>" << endl;
 	}

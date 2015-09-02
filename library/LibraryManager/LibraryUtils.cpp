@@ -12,7 +12,7 @@
 #include "LibraryUtils.h"
 
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
-#include <IPXACTmodels/design.h>
+#include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/model.h>
 
@@ -72,88 +72,76 @@ bool getDesign(LibraryInterface* lh, VLNV& designVLNV,
 //-----------------------------------------------------------------------------
 int getConnectionIndex(QList<Interconnection> const& connections, QString const& name)
 {
-    int index = -1;
-
     // Search for a match in the list.
     for (int i = 0; i < connections.size(); ++i)
     {
-        if (connections[i].name() == name)
+        if (connections.at(i).name() == name)
         {
-            index = i;
-            break;
+            return i;
         }
     }
 
-    return index;
+    return -1;
 }
 
 //-----------------------------------------------------------------------------
 // Function: getInstanceIndex()
 //-----------------------------------------------------------------------------
-int getInstanceIndex(QList<ComponentInstance> const& instances, QString const& instanceName)
+int getInstanceIndex(QList<QSharedPointer<ComponentInstance> > instances, QString const& instanceName)
 {
-    int index = -1;
-
     // Search for a match in the list.
     for (int i = 0; i < instances.size(); ++i)
     {
-        if (instances[i].getInstanceName() == instanceName)
+        if (instances.at(i)->getInstanceName() == instanceName)
         {
-            index = i;
-            break;
+            return i;
         }
     }
 
-    return index;
+    return -1;
 }
 
 //-----------------------------------------------------------------------------
 // Function: getInstanceIndexByUUID()
 //-----------------------------------------------------------------------------
-int getInstanceIndexByUUID(QList<ComponentInstance> const& instances, QString const& uuid)
+int getInstanceIndexByUUID(QList<QSharedPointer<ComponentInstance> > instances, QString const& uuid)
 {
-    int index = -1;
-
     // Search for a match in the list.
     for (int i = 0; i < instances.size(); ++i)
     {
-        if (instances[i].getUuid() == uuid)
+        if (instances.at(i)->getUuid() == uuid)
         {
-            index = i;
-            break;
+            return i;
         }
     }
 
-    return index;
+    return -1;
 }
 
 
 //-----------------------------------------------------------------------------
 // Function: getInstanceIndex()
 //-----------------------------------------------------------------------------
-int getInstanceIndex(QList<SWInstance> const& instances, QString const& importRef,
+int getInstanceIndex(QList<QSharedPointer<SWInstance> > instances, QString const& importRef,
                      QString const& mapping)
 {
-    int index = -1;
-
     // Search for a match in the list.
     for (int i = 0; i < instances.size(); ++i)
     {
-        if (instances[i].getImportRef() == importRef && instances[i].getMapping() == mapping)
+        if (instances[i]->getImportRef() == importRef && instances[i]->getMapping() == mapping)
         {
-            index = i;
-            break;
+            return i;
         }
     }
 
-    return index;
+    return -1;
 }
 
 //-----------------------------------------------------------------------------
 // Function: parseProgrammableElements()
 //-----------------------------------------------------------------------------
 void parseProgrammableElementsV2(LibraryInterface* lh, VLNV designVLNV,
-                                 QList<ComponentInstance>& elements)
+                                 QList<QSharedPointer<ComponentInstance> >& elements)
 {
     QSharedPointer<Design const> compDesign;
     QSharedPointer<DesignConfiguration const> designConf;
@@ -168,11 +156,11 @@ void parseProgrammableElementsV2(LibraryInterface* lh, VLNV designVLNV,
     }
 
     // Go through all component instances and search for programmable elements.
-    foreach (ComponentInstance const& instance, compDesign->getComponentInstances())
+    foreach (QSharedPointer<ComponentInstance> instance, *compDesign->getComponentInstances())
     {
-        if (!instance.isDraft())
+        if (!instance->isDraft())
         {
-            QSharedPointer<Document> libComp = lh->getModel(instance.getComponentRef());
+            QSharedPointer<Document> libComp = lh->getModel(*instance->getComponentRef());
             QSharedPointer<Component> childComp = libComp.staticCast<Component>();
 
             if (childComp)
@@ -181,18 +169,18 @@ void parseProgrammableElementsV2(LibraryInterface* lh, VLNV designVLNV,
                 // or COM interfaces.
                 if ((!childComp->isHierarchical() && childComp->isCpu()) || !childComp->getComInterfaces().isEmpty())
                 {
-                    ComponentInstance copy = instance;
+                    QSharedPointer<ComponentInstance> copy(new ComponentInstance(*instance));
 
-                    // Determine a unique name for the instance.
-                    QString instanceName = instance.getInstanceName();
+                    // Determine a unique name for the instance->
+                    QString instanceName = instance->getInstanceName();
                     int runningNumber = 1;
 
                     while (getInstanceIndex(elements, instanceName) != -1)
                     {
-                        instanceName = instance.getInstanceName() + "_" + QString::number(runningNumber);
+                        instanceName = instance->getInstanceName() + "_" + QString::number(runningNumber);
                     }
 
-                    copy.setInstanceName(instanceName);
+                    copy->setInstanceName(instanceName);
                     elements.append(copy);
                 }
                 else
@@ -201,7 +189,7 @@ void parseProgrammableElementsV2(LibraryInterface* lh, VLNV designVLNV,
 
                     if (designConf != 0)
                     {
-                        view = designConf->getActiveView(instance.getInstanceName());
+                        view = designConf->getActiveView(instance->getInstanceName());
                     }
 
                     // Otherwise parse the hierarchical components recursively.
@@ -215,25 +203,24 @@ void parseProgrammableElementsV2(LibraryInterface* lh, VLNV designVLNV,
 //-----------------------------------------------------------------------------
 // Function: addNewInstances()
 //-----------------------------------------------------------------------------
-void addNewInstancesV2(QList<ComponentInstance> const& elements,
-                       LibraryInterface* lh,
-                       QList<ComponentInstance>& hwInstances,
-                       QList<SWInstance>& swInstances,
-                       QList<ApiConnection>& apiDependencies)
+void addNewInstancesV2(LibraryInterface* lh, QList<QSharedPointer<ComponentInstance> > elements,
+                       QSharedPointer<QList<QSharedPointer<ComponentInstance> > > hwInstances,
+                       QList<QSharedPointer<SWInstance> > swInstances,
+                       QList<QSharedPointer<ApiInterconnection> > apiDependencies)
 {
-    foreach (ComponentInstance const& element, elements)
+    foreach (QSharedPointer<ComponentInstance> element, elements)
     {
         // Duplicate the component instance and set its import reference.
-        ComponentInstance instance(element.getInstanceName(), element.getDisplayName(),
-                                   element.getDescription(), element.getComponentRef(),
-                                   QPointF(0, 0), element.getUuid());
-        instance.setImported(true);
+        QSharedPointer<ComponentInstance> instance(new ComponentInstance(element->getInstanceName(), 
+            element->getDisplayName(), element->getDescription(), element->getComponentRef(),
+            QPointF(0, 0), element->getUuid()));
+        instance->setImported(true);
 
         // Add the newly created HW component to the list of HW instances.
-        hwInstances.append(instance);
+        hwInstances->append(instance);
 
         // Import SW components from SW design if found.
-        QSharedPointer<Document const> libComp = lh->getModelReadOnly(instance.getComponentRef());
+        QSharedPointer<Document const> libComp = lh->getModelReadOnly(*instance->getComponentRef());
         QSharedPointer<Component const> component = libComp.staticCast<Component const>();
 
         if (component != 0 && component->hasSWViews())
@@ -247,15 +234,15 @@ void addNewInstancesV2(QList<ComponentInstance> const& elements,
                 continue;
             }
 
-            foreach (SWInstance instance, swDesign->getSWInstances())
+            foreach (QSharedPointer<SWInstance> instance, swDesign->getSWInstances())
             {
-                instance.setPosition(QPointF());
-                instance.setImported(true);
-                instance.setMapping(element.getUuid());
+                instance->setPosition(QPointF());
+                instance->setImported(true);
+                instance->setMapping(element->getUuid());
                 swInstances.append(instance);
             }
 
-            foreach (ApiConnection const& dependency, swDesign->getApiDependencies())
+            foreach (QSharedPointer<ApiInterconnection> dependency, swDesign->getApiConnections())
             {
                 apiDependencies.append(dependency);
             }
@@ -269,38 +256,39 @@ void addNewInstancesV2(QList<ComponentInstance> const& elements,
 void generateSystemDesignV2(LibraryInterface* lh, VLNV const& designVLNV, Design& sysDesign)
 {
     // Parse all programmable elements from the HW component.
-    QList<ComponentInstance> elements;
+    QList<QSharedPointer<ComponentInstance> > elements;
     parseProgrammableElementsV2(lh, designVLNV, elements);
 
     // Add them as instances to the system design.
-    QList<ComponentInstance> hwInstances;
-    QList<SWInstance> swInstances;
-    QList<ApiConnection> apiDependencies;
-    addNewInstancesV2(elements, lh, hwInstances, swInstances, apiDependencies);
+    QSharedPointer<QList<QSharedPointer<ComponentInstance> > > 
+        hwInstances(new QList<QSharedPointer<ComponentInstance> >());
+    QList<QSharedPointer<SWInstance> > swInstances;
+    QList<QSharedPointer<ApiInterconnection> > apiDependencies;
+    addNewInstancesV2(lh, elements, hwInstances, swInstances, apiDependencies);
 
     sysDesign.setComponentInstances(hwInstances);
     sysDesign.setSWInstances(swInstances);
-    sysDesign.setApiDependencies(apiDependencies);
+    sysDesign.setApiConnections(apiDependencies);
 }
 
 //-----------------------------------------------------------------------------
 // Function: getMatchingApiDependency()
 //-----------------------------------------------------------------------------
-int getMatchingApiDependency(QList<ApiConnection> const& apiDependencies,
-                             QList<SWInstance> const& swInstances,
-                             ApiConnection const& dependency, QString const& mapping) 
+int getMatchingApiDependency(QList<QSharedPointer<ApiInterconnection> > apiDependencies,
+                             QList<QSharedPointer<SWInstance> > swInstances,
+                             QSharedPointer<ApiInterconnection> dependency, QString const& mapping) 
 {
     int index = -1;
 
     // Retrieve the full names for the connected components in the system design.
-    int instanceIndex1 = getInstanceIndex(swInstances, dependency.getInterface1().componentRef, mapping);
+    int instanceIndex1 = getInstanceIndex(swInstances, dependency->getInterface1()->getComponentReference(), mapping);
 
     if (instanceIndex1 == -1)
     {
         return -1;
     }
     
-    int instanceIndex2 = getInstanceIndex(swInstances, dependency.getInterface2().componentRef, mapping);
+    int instanceIndex2 = getInstanceIndex(swInstances, dependency->getInterface2()->getComponentReference(), mapping);
     
     if (instanceIndex2 == -1)
     {
@@ -310,10 +298,10 @@ int getMatchingApiDependency(QList<ApiConnection> const& apiDependencies,
     // Search for a match in the list.
     for (int i = 0; i < apiDependencies.size(); ++i)
     {
-        if (apiDependencies[i].getInterface1().componentRef == swInstances[instanceIndex1].getInstanceName() &&
-            apiDependencies[i].getInterface2().componentRef == swInstances[instanceIndex2].getInstanceName() &&
-            apiDependencies[i].getInterface1().apiRef == dependency.getInterface1().apiRef &&
-            apiDependencies[i].getInterface2().apiRef == dependency.getInterface2().apiRef)
+        if (apiDependencies[i]->getInterface1()->getComponentReference() == swInstances[instanceIndex1]->getInstanceName() &&
+            apiDependencies[i]->getInterface2()->getComponentReference() == swInstances[instanceIndex2]->getInstanceName() &&
+            apiDependencies[i]->getInterface1()->getBusReference() == dependency->getInterface1()->getBusReference() &&
+            apiDependencies[i]->getInterface2()->getBusReference() == dependency->getInterface2()->getBusReference())
         {
             index = i;
             break;
@@ -331,23 +319,24 @@ void updateSystemDesignV2(LibraryInterface* lh,
                           QSharedPointer<DesignConfiguration> designConf)
 {
     // Parse all programmable elements from the HW design.
-    QList<ComponentInstance> elements;
+    QList<QSharedPointer<ComponentInstance> >  elements;
     parseProgrammableElementsV2(lh, hwDesignVLNV, elements);
 
     // Reflect changes in the programmable elements to the system design.
-    QList<ComponentInstance> hwInstances;
-    QList<SWInstance> swInstances;
-    QList<ApiConnection> apiDependencies;
+    QSharedPointer<QList<QSharedPointer<ComponentInstance> > > 
+        hwInstances(new QList<QSharedPointer<ComponentInstance> >());
+    QList<QSharedPointer<SWInstance> > swInstances;
+    QList<QSharedPointer<ApiInterconnection> > apiDependencies;
 
     // 1. PHASE: Check already existing elements against the new list and remove those that
     // are no longer part of the new element list.
-    foreach (ComponentInstance const& hwInstance, sysDesign.getComponentInstances())
+    foreach (QSharedPointer<ComponentInstance> hwInstance, *sysDesign.getComponentInstances())
     {
         // Imported ones should be checked.
-        if (hwInstance.isImported())
+        if (hwInstance->isImported())
         {
             // Search for the corresponding element in the new list based on the UUID.
-            int index = getInstanceIndexByUUID(elements, hwInstance.getUuid());
+            int index = getInstanceIndexByUUID(elements, hwInstance->getUuid());
 
             // If the element was removed, it is not added to the updated design.
             if (index == -1)
@@ -355,9 +344,9 @@ void updateSystemDesignV2(LibraryInterface* lh,
                 continue;
             }
 
-            ComponentInstance instanceCopy = hwInstance;
-            instanceCopy.setComponentRef(elements[index].getComponentRef());
-            hwInstances.append(instanceCopy);
+            QSharedPointer<ComponentInstance> instanceCopy(new ComponentInstance(*hwInstance));
+            instanceCopy->setComponentRef(elements[index]->getComponentRef());
+            hwInstances->append(instanceCopy);
 
             // Remove the element from the element list since it has been processed.
             elements.removeAt(index);
@@ -365,44 +354,45 @@ void updateSystemDesignV2(LibraryInterface* lh,
         else
         {
             // Non-imported instances are always kept.
-            hwInstances.append(hwInstance);
+            hwInstances->append(hwInstance);
         }
     }
 
     // 2. PHASE: Add fresh new elements.
-    foreach (ComponentInstance const& element, elements)
+    foreach (QSharedPointer<ComponentInstance> element, elements)
     {
         // Duplicate the component instance and set its kts_hw_ref.
-        ComponentInstance instance(element.getInstanceName(), element.getDisplayName(),
-                                   element.getDescription(), element.getComponentRef(), QPointF(0, 0), element.getUuid());
-        instance.setImported(true);
+       QSharedPointer<ComponentInstance> instance(new ComponentInstance(element->getInstanceName(),
+           element->getDisplayName(), element->getDescription(), element->getComponentRef(), 
+           QPointF(0, 0), element->getUuid()));
+        instance->setImported(true);
 
-        hwInstances.append(instance);
+        hwInstances->append(instance);
     }
 
-    QList<SWInstance> oldSWInstances = sysDesign.getSWInstances();
-    QList<ApiConnection> oldApiDependencies = sysDesign.getApiDependencies();
+    QList<QSharedPointer<SWInstance> > oldSWInstances = sysDesign.getSWInstances();
+    QList<QSharedPointer<ApiInterconnection> > oldApiDependencies = sysDesign.getApiConnections();
 
     // 3. PHASE: Copy non-imported instances from the old list to the new list.
-    foreach (SWInstance const& swInstance, oldSWInstances)
+    foreach (QSharedPointer<SWInstance> swInstance, oldSWInstances)
     {
-        if (!swInstance.isImported())
+        if (!swInstance->isImported())
         {
             swInstances.append(swInstance);
         }
     }
 
     // 4. PHASE: Parse SW designs from active SW views to retrieve the imported SW instances.
-    foreach (ComponentInstance const& hwInstance, hwInstances)
+    foreach (QSharedPointer<ComponentInstance> hwInstance, *hwInstances)
     {
-        QSharedPointer<Document const> libComp = lh->getModelReadOnly(hwInstance.getComponentRef());
+        QSharedPointer<Document const> libComp = lh->getModelReadOnly(*hwInstance->getComponentRef());
         QSharedPointer<Component const> component = libComp.staticCast<Component const>();
 
         QString viewName = "";
 
         if (designConf != 0)
         {
-            viewName = designConf->getActiveView(hwInstance.getInstanceName());
+            viewName = designConf->getActiveView(hwInstance->getInstanceName());
         }
 
         if (component != 0 && component->hasSWViews())
@@ -417,16 +407,15 @@ void updateSystemDesignV2(LibraryInterface* lh,
                 continue;
             }
 
-            foreach (SWInstance swInstance, swDesign->getSWInstances())
+            foreach (QSharedPointer<SWInstance> swInstance, swDesign->getSWInstances())
             {
                 // Check if the instance already exists in the old system design.
-                int index = getInstanceIndex(oldSWInstances, swInstance.getInstanceName(), hwInstance.getUuid());
+                int index = getInstanceIndex(oldSWInstances, swInstance->getInstanceName(), hwInstance->getUuid());
 
-                if (index != -1 && oldSWInstances[index].isImported())
+                if (index != -1 && oldSWInstances[index]->isImported())
                 {
-                    VLNV componentRef = swInstance.getComponentRef();
                     swInstance = oldSWInstances[index];
-                    swInstance.setComponentRef(componentRef);
+                    swInstance->setComponentRef(swInstance->getComponentRef());
 
                     swInstances.append(swInstance);
                     oldSWInstances.removeAt(index);
@@ -434,35 +423,38 @@ void updateSystemDesignV2(LibraryInterface* lh,
                 else
                 {
                     // Otherwise add the SW instance as a fresh new one.
-                    swInstance.setImported(true);
-                    swInstance.setPosition(QPointF());
-                    swInstance.setImportRef(swInstance.getInstanceName());
-                    swInstance.setMapping(hwInstance.getUuid());
-                    swInstance.setDisplayName(swInstance.getInstanceName());
-                    swInstance.setInstanceName(hwInstance.getInstanceName() + "_" + swInstance.getInstanceName());
+                    swInstance->setPosition(QPointF());
+                    swInstance->setImportRef(swInstance->getInstanceName());
+                    swInstance->setMapping(hwInstance->getUuid());
+                    swInstance->setDisplayName(swInstance->getInstanceName());
+                    swInstance->setInstanceName(hwInstance->getInstanceName() + "_" + swInstance->getInstanceName());
                     swInstances.append(swInstance);
                 }
             }
 
-            foreach (ApiConnection dependency, swDesign->getApiDependencies())
+            foreach (QSharedPointer<ApiInterconnection> dependency, swDesign->getApiConnections())
             {
                 int connIndex = getMatchingApiDependency(oldApiDependencies, swInstances,
-                                                         dependency, hwInstance.getInstanceName());
+                                                         dependency, hwInstance->getInstanceName());
 
-                if (connIndex != -1 && oldApiDependencies[connIndex].isImported())
+                if (connIndex != -1 && oldApiDependencies[connIndex]->isImported())
                 {
                     apiDependencies.append(oldApiDependencies[connIndex]);
                     oldApiDependencies.removeAt(connIndex);
                 }
                 else
                 {
-                    dependency.setName(hwInstance.getInstanceName() + "_" + dependency.name());
-                    dependency.setInterface1(ApiInterfaceRef(hwInstance.getInstanceName() + "_" + dependency.getInterface1().componentRef,
-                                                             dependency.getInterface1().apiRef));
-                    dependency.setInterface2(ApiInterfaceRef(hwInstance.getInstanceName() + "_" + dependency.getInterface2().componentRef,
-                                                             dependency.getInterface2().apiRef));
-                    dependency.setRoute(QList<QPointF>());
-                    dependency.setImported(true);
+                    dependency->setName(hwInstance->getInstanceName() + "_" + dependency->name());
+                    dependency->setInterface1(
+                        QSharedPointer<ActiveInterface>(new ActiveInterface(
+                        hwInstance->getInstanceName() + "_" + dependency->getInterface1()->getComponentReference(),
+                        dependency->getInterface1()->getBusReference())));
+                    dependency->setInterface2(
+                        QSharedPointer<ActiveInterface>(new ActiveInterface(
+                        hwInstance->getInstanceName() + "_" + dependency->getInterface2()->getComponentReference(),
+                        dependency->getInterface2()->getBusReference())));
+                    dependency->setRoute(QList<QPointF>());
+                    dependency->setImported(true);
                     apiDependencies.append(dependency);
                 }
             }
@@ -470,9 +462,9 @@ void updateSystemDesignV2(LibraryInterface* lh,
     }
 
     // 5. PHASE: Copy non-imported API dependencies from the old list to the new list.
-    foreach (ApiConnection const& dependency, oldApiDependencies)
+    foreach (QSharedPointer<ApiInterconnection> dependency, oldApiDependencies)
     {
-        if (!dependency.isImported())
+        if (!dependency->isImported())
         {
             apiDependencies.append(dependency);
         }
@@ -480,5 +472,5 @@ void updateSystemDesignV2(LibraryInterface* lh,
 
     sysDesign.setComponentInstances(hwInstances);
     sysDesign.setSWInstances(swInstances);
-    sysDesign.setApiDependencies(apiDependencies);
+    sysDesign.setApiConnections(apiDependencies);
 }

@@ -32,7 +32,7 @@
 //-----------------------------------------------------------------------------
 // Function: HWColumn()
 //-----------------------------------------------------------------------------
-HWColumn::HWColumn(ColumnDesc const& desc, GraphicsColumnLayout* layout)
+HWColumn::HWColumn(QSharedPointer<ColumnDesc> desc, GraphicsColumnLayout* layout)
     : GraphicsColumn(desc, layout)
 {
 }

@@ -377,6 +377,7 @@ attributes_(),
 author_()
 {
 	LibraryComponent::vlnv_->setType(VLNV::COMPONENT);
+    Document::setVlnv(*vlnv_);
 }
 
 //-----------------------------------------------------------------------------

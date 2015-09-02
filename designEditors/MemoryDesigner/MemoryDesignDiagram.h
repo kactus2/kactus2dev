@@ -76,7 +76,7 @@ public:
      *
      *      @param [in] desc The column description.
      */
-    void addColumn(ColumnDesc const& desc);
+    void addColumn(QSharedPointer<ColumnDesc> desc);
 
     /*!
      *  Begins a resize of an address (sub)section.

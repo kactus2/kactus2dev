@@ -16,6 +16,8 @@
 #include "IGraphicsItemStack.h"
 #include "../layouts/IVGraphicsLayout.h"
 
+#include <IPXACTmodels/kactusExtensions/ColumnDesc.h>
+
 #include <designEditors/common/ColumnTypes.h>
 
 #include <QGraphicsRectItem>
@@ -44,7 +46,7 @@ public:
      *      @param [in] desc    The column description.
      *      @param [in] layout  The parent column layout.
      */
-    GraphicsColumn(ColumnDesc const& desc, GraphicsColumnLayout* layout);
+    GraphicsColumn(QSharedPointer<ColumnDesc> desc, GraphicsColumnLayout* layout);
 
     /*!
      *  Destructor.
@@ -61,7 +63,7 @@ public:
     /*!
      *  Sets the column description.
      */
-    void setColumnDesc(ColumnDesc const& desc);
+    void setColumnDesc(QSharedPointer<ColumnDesc> desc);
 
     /*!
      *  Sets the column width.
@@ -90,7 +92,7 @@ public:
     /*!
      *  Returns the column description.
      */
-    ColumnDesc const& getColumnDesc() const;
+    QSharedPointer<ColumnDesc> getColumnDesc() const;
 
     /*!
      *  Returns the parent layout.
@@ -256,7 +258,7 @@ private:
     GraphicsColumnLayout* layout_;
 
     //! The column description.
-    ColumnDesc desc_;
+    QSharedPointer<ColumnDesc> desc_;
 
     //! The column name label.
     QGraphicsTextItem* nameLabel_;

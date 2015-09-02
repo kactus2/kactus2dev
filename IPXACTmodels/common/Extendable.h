@@ -12,6 +12,8 @@
 #ifndef EXTENDABLE_H
 #define EXTENDABLE_H
 
+#include <IPXACTmodels/ipxactmodels_global.h>
+
 #include <QList>
 #include <QSharedPointer>
 
@@ -20,7 +22,7 @@ class VendorExtension;
 //-----------------------------------------------------------------------------
 //! Base class for all IP-XACT implementations with vendor extensions.
 //-----------------------------------------------------------------------------
-class Extendable 
+class IPXACTMODELS_EXPORT Extendable 
 {
 public:
 

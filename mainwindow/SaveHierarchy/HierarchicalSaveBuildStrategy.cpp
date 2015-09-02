@@ -17,9 +17,11 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/design.h>
+#include <IPXACTmodels/Design/Design.h>
+
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+
+#include <IPXACTmodels/component.h>
 #include <IPXACTmodels/librarycomponent.h>
 #include <IPXACTmodels/SWView.h>
 #include <IPXACTmodels/SystemView.h>
@@ -379,30 +381,22 @@ void HierarchicalSaveBuildStrategy::updateComponentReferences(QSharedPointer<Com
 void HierarchicalSaveBuildStrategy::updateDesignReferences(QSharedPointer<Design> design,
     VLNV childVLNV, VLNV newChildVLNV) const
 {
-    QList<ComponentInstance> updatedInstances;
-    foreach (ComponentInstance instance, design->getComponentInstances())
+    foreach (QSharedPointer<ComponentInstance> instance, *design->getComponentInstances())
     {
-        if (instance.getComponentRef() == childVLNV)
+        if (*instance->getComponentRef() == childVLNV)
         {
-            instance.setComponentRef(newChildVLNV);
+            instance->setComponentRef(QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(newChildVLNV)));
         }
-
-        updatedInstances.append(instance);
     }
 
-    QList<SWInstance> updatedSWInstances;
-    foreach (SWInstance instance, design->getSWInstances())
+    foreach (QSharedPointer<SWInstance> instance, design->getSWInstances())
     {
-        if (instance.getComponentRef() == childVLNV)
+        if (*instance->getComponentRef() == childVLNV)
         {
-            instance.setComponentRef(newChildVLNV);
+            instance->setComponentRef(
+                QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(newChildVLNV)));
         }
-
-        updatedSWInstances.append(instance);
     }
-
-    design->setComponentInstances(updatedInstances);
-    design->setSWInstances(updatedSWInstances);
 }
 
 //-----------------------------------------------------------------------------

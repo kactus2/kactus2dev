@@ -69,6 +69,12 @@
     <Filter Include="Source Files\designConfiguration">
       <UniqueIdentifier>{3756b817-3a7e-4d61-aaeb-4228dc0db3b6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Design">
+      <UniqueIdentifier>{3105a439-452c-4dc3-9807-e87a57bfc118}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Design">
+      <UniqueIdentifier>{b950dcd0-9d3d-40cb-a908-a4b49e4c0001}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="XmlUtils.cpp">
@@ -80,13 +86,7 @@
     <ClCompile Include="addressspace.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AdHocConnection.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="alternateregister.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ApiDefinition.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ApiFunction.cpp">
@@ -119,12 +119,6 @@
     <ClCompile Include="choice.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ColumnDesc.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ComConnection.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ComDefinition.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -137,16 +131,10 @@
     <ClCompile Include="componentgenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ComponentInstance.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ComProperty.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="cpu.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="design.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="designconfabstractor.cpp">
@@ -186,21 +174,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GenericVendorExtension.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="HierApiDependency.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="HierComConnection.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="HierConnection.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Interconnection.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Interface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="librarycomponent.cpp">
@@ -272,9 +245,6 @@
     <ClCompile Include="swbuildcommand.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SWInstance.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SWView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -312,9 +282,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Enumeration.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ApiConnection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="validators\namevalidator.cpp">
@@ -587,6 +554,93 @@
     <ClCompile Include="AbstractionDefinition\TransactionalAbstractionReader.cpp">
       <Filter>Source Files\AbstractionDefinition</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_DesignReader.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_DesignReader.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_DesignWriter.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_DesignWriter.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Design\MonitorInterface.cpp">
+      <Filter>Source Files\Design</Filter>
+    </ClCompile>
+    <ClCompile Include="Design\PortReference.cpp">
+      <Filter>Source Files\Design</Filter>
+    </ClCompile>
+    <ClCompile Include="Design\ActiveInterface.cpp">
+      <Filter>Source Files\Design</Filter>
+    </ClCompile>
+    <ClCompile Include="Design\AdHocConnection.cpp">
+      <Filter>Source Files\Design</Filter>
+    </ClCompile>
+    <ClCompile Include="Design\ComponentInstance.cpp">
+      <Filter>Source Files\Design</Filter>
+    </ClCompile>
+    <ClCompile Include="Design\Design.cpp">
+      <Filter>Source Files\Design</Filter>
+    </ClCompile>
+    <ClCompile Include="Design\DesignReader.cpp">
+      <Filter>Source Files\Design</Filter>
+    </ClCompile>
+    <ClCompile Include="Design\DesignWriter.cpp">
+      <Filter>Source Files\Design</Filter>
+    </ClCompile>
+    <ClCompile Include="Design\HierInterface.cpp">
+      <Filter>Source Files\Design</Filter>
+    </ClCompile>
+    <ClCompile Include="Design\Interconnection.cpp">
+      <Filter>Source Files\Design</Filter>
+    </ClCompile>
+    <ClCompile Include="Design\MonitorInterconnection.cpp">
+      <Filter>Source Files\Design</Filter>
+    </ClCompile>
+    <ClCompile Include="common\PartSelect.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusExtensions\SWInstance.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusExtensions\ColumnDesc.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="ApiDefinition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusExtensions\ApiInterconnection.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusExtensions\ComInterconnection.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="Design\ComponentInstanceReader.cpp">
+      <Filter>Source Files\Design</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_ComponentInstanceReader.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_ComponentInstanceReader.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusExtensions\HierApiInterconnection.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusExtensions\HierComInterconnection.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="Design\ComponentInstanceWriter.cpp">
+      <Filter>Source Files\Design</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_ComponentInstanceWriter.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_ComponentInstanceWriter.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ipxactmodels_global.h">
@@ -599,9 +653,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="addressspace.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AdHocConnection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="alternateregister.h">
@@ -640,12 +691,6 @@
     <ClInclude Include="choice.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ColumnDesc.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ComConnection.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ComDefinition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -658,16 +703,10 @@
     <ClInclude Include="componentgenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ComponentInstance.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ComProperty.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cpu.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="design.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="designconfabstractor.h">
@@ -707,21 +746,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GenericVendorExtension.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="HierApiDependency.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="HierComConnection.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="HierConnection.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Interconnection.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Interface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="librarycomponent.h">
@@ -796,9 +820,6 @@
     <ClInclude Include="swbuildcommand.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SWInstance.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SWView.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -839,9 +860,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Enumeration.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ApiConnection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="kactusExtensions\ComponentInstantiation.h">
@@ -961,6 +979,54 @@
     <ClInclude Include="validators\ModelParameterValidator.h">
       <Filter>Header Files\validators</Filter>
     </ClInclude>
+    <ClInclude Include="Design\ActiveInterface.h">
+      <Filter>Header Files\Design</Filter>
+    </ClInclude>
+    <ClInclude Include="Design\AdHocConnection.h">
+      <Filter>Header Files\Design</Filter>
+    </ClInclude>
+    <ClInclude Include="Design\ComponentInstance.h">
+      <Filter>Header Files\Design</Filter>
+    </ClInclude>
+    <ClInclude Include="Design\Design.h">
+      <Filter>Header Files\Design</Filter>
+    </ClInclude>
+    <ClInclude Include="Design\HierInterface.h">
+      <Filter>Header Files\Design</Filter>
+    </ClInclude>
+    <ClInclude Include="Design\Interconnection.h">
+      <Filter>Header Files\Design</Filter>
+    </ClInclude>
+    <ClInclude Include="Design\MonitorInterconnection.h">
+      <Filter>Header Files\Design</Filter>
+    </ClInclude>
+    <ClInclude Include="Design\MonitorInterface.h">
+      <Filter>Header Files\Design</Filter>
+    </ClInclude>
+    <ClInclude Include="Design\PortReference.h">
+      <Filter>Header Files\Design</Filter>
+    </ClInclude>
+    <ClInclude Include="common\PartSelect.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusExtensions\SWInstance.h">
+      <Filter>Header Files\kactusExtensions</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusExtensions\ColumnDesc.h">
+      <Filter>Header Files\kactusExtensions</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusExtensions\ApiInterconnection.h">
+      <Filter>Header Files\kactusExtensions</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusExtensions\ComInterconnection.h">
+      <Filter>Header Files\kactusExtensions</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusExtensions\HierApiInterconnection.h">
+      <Filter>Header Files\kactusExtensions</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusExtensions\HierComInterconnection.h">
+      <Filter>Header Files\kactusExtensions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="validators\namevalidator.h">
@@ -1013,6 +1079,18 @@
     </CustomBuild>
     <CustomBuild Include="AbstractionDefinition\TransactionalAbstractionReader.h">
       <Filter>Header Files\AbstractionDefinition</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Design\DesignReader.h">
+      <Filter>Header Files\Design</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Design\DesignWriter.h">
+      <Filter>Header Files\Design</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Design\ComponentInstanceReader.h">
+      <Filter>Header Files\Design</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Design\ComponentInstanceWriter.h">
+      <Filter>Header Files\Design</Filter>
     </CustomBuild>
   </ItemGroup>
 </Project>

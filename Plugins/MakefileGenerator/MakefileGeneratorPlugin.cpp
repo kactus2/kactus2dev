@@ -14,10 +14,13 @@
 #include "MakefileGeneratorPlugin.h"
 
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
-#include <IPXACTmodels/design.h>
+
+#include <IPXACTmodels/Design/Design.h>
+
+#include <IPXACTmodels/SystemView.h>
+
 #include <QMessageBox>
 #include <QCoreApplication>
-#include <IPXACTmodels/SystemView.h>
 
 //-----------------------------------------------------------------------------
 // Function: MakefileGeneratorPlugin::MakefileGeneratorPlugin()

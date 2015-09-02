@@ -25,7 +25,7 @@
 
 #include <IPXACTmodels/librarycomponent.h>
 #include <IPXACTmodels/component.h>
-#include <IPXACTmodels/design.h>
+#include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 #include <IPXACTmodels/model.h>
 #include <IPXACTmodels/view.h>
@@ -761,7 +761,8 @@ void HWDesignWidget::addColumn()
             columnWidth = HWDesignDiagram::IO_COLUMN_WIDTH;
         }
 
-        ColumnDesc desc(dialog.name(), dialog.getContentType(), dialog.getAllowedItems(), columnWidth);
+        QSharedPointer<ColumnDesc> desc(new ColumnDesc(dialog.name(), dialog.getContentType(), dialog.getAllowedItems(), 
+            columnWidth));
         getDiagram()->addColumn(desc);
     }
 }

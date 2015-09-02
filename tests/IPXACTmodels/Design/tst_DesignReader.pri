@@ -19,6 +19,7 @@ HEADERS += ../../../IPXACTmodels/Design/ActiveInterface.h \
     ../../../IPXACTmodels/common/Extendable.h \
     ../../../IPXACTmodels/Design/HierInterface.h \
     ../../../IPXACTmodels/Design/Interconnection.h \
+    ../../../IPXACTmodels/kactusExtensions/Kactus2Group.h \
     ../../../IPXACTmodels/kactusExtensions/KactusAttribute.h \
     ../../../IPXACTmodels/Design/MonitorInterconnection.h \
     ../../../IPXACTmodels/Design/MonitorInterface.h \
@@ -32,16 +33,7 @@ HEADERS += ../../../IPXACTmodels/Design/ActiveInterface.h \
     ../../../IPXACTmodels/common/DocumentReader.h \
     ../../../IPXACTmodels/common/ParameterReader.h \
     ../../../IPXACTmodels/validators/namevalidator.h \
-    ../../../IPXACTmodels/kactusExtensions/HierComInterconnection.h \
-    ../../../IPXACTmodels/kactusExtensions/ApiInterconnection.h \
-    ../../../IPXACTmodels/kactusExtensions/ComInterconnection.h \
-    ../../../IPXACTmodels/kactusExtensions/HierApiInterconnection.h \
-    ../../../IPXACTmodels/kactusExtensions/ColumnDesc.h \
-    ../../../IPXACTmodels/kactusExtensions/SWInstance.h \
-    ../../../IPXACTmodels/ComInterface.h \
-    ../../../IPXACTmodels/XmlUtils.h \
-    ../../../IPXACTmodels/ComProperty.h \
-    ../../../IPXACTmodels/generaldeclarations.h \
+    ../../../IPXACTmodels/VendorExtension.h \
     ../../../IPXACTmodels/Design/ComponentInstanceReader.h
 SOURCES += ../../../IPXACTmodels/Design/ActiveInterface.cpp \
     ../../../IPXACTmodels/Design/AdHocConnection.cpp \
@@ -57,6 +49,7 @@ SOURCES += ../../../IPXACTmodels/Design/ActiveInterface.cpp \
     ../../../IPXACTmodels/common/Extendable.cpp \
     ../../../IPXACTmodels/Design/HierInterface.cpp \
     ../../../IPXACTmodels/Design/Interconnection.cpp \
+    ../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
     ../../../IPXACTmodels/kactusExtensions/KactusAttribute.cpp \
     ../../../IPXACTmodels/Design/MonitorInterconnection.cpp \
     ../../../IPXACTmodels/Design/MonitorInterface.cpp \
@@ -69,14 +62,4 @@ SOURCES += ../../../IPXACTmodels/Design/ActiveInterface.cpp \
     ../../../IPXACTmodels/common/Vector.cpp \
     ../../../IPXACTmodels/validators/namevalidator.cpp \
     ./tst_DesignReader.cpp \
-    ../../../IPXACTmodels/kactusExtensions/ApiInterconnection.cpp \
-    ../../../IPXACTmodels/kactusExtensions/ComInterconnection.cpp \
-    ../../../IPXACTmodels/kactusExtensions/HierApiInterconnection.cpp \
-    ../../../IPXACTmodels/kactusExtensions/HierComInterconnection.cpp \
-    ../../../IPXACTmodels/kactusExtensions/ColumnDesc.cpp \
-    ../../../IPXACTmodels/kactusExtensions/SWInstance.cpp \
-    ../../../IPXACTmodels/ComInterface.cpp \
-    ../../../IPXACTmodels/XmlUtils.cpp \
-    ../../../IPXACTmodels/ComProperty.cpp \
-    ../../../IPXACTmodels/generaldeclarations.cpp \
     ../../../IPXACTmodels/Design/ComponentInstanceReader.cpp

@@ -110,7 +110,7 @@ void GraphicsColumnAddCommand::redo()
 //-----------------------------------------------------------------------------
 // Function: GraphicsColumnChangeCommand()
 //-----------------------------------------------------------------------------
-GraphicsColumnChangeCommand::GraphicsColumnChangeCommand(GraphicsColumn* column, ColumnDesc const& newDesc,
+GraphicsColumnChangeCommand::GraphicsColumnChangeCommand(GraphicsColumn* column, QSharedPointer<ColumnDesc> newDesc,
                                          QUndoCommand* parent) : QUndoCommand(parent),
                                          column_(column),
                                          oldDesc_(column->getColumnDesc()),
@@ -150,7 +150,7 @@ GraphicsColumnResizeCommand::GraphicsColumnResizeCommand(GraphicsColumn* column,
     : QUndoCommand(parent),
       column_(column),
       oldWidth_(oldWidth),
-      newWidth_(column_->getColumnDesc().getWidth())
+      newWidth_(column_->getColumnDesc()->getWidth())
 {
 }
 

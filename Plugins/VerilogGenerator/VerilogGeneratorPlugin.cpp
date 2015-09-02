@@ -20,7 +20,9 @@
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <IPXACTmodels/fileset.h>
-#include <IPXACTmodels/design.h>
+
+#include <IPXACTmodels/Design/Design.h>
+
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
 #include <QDateTime>

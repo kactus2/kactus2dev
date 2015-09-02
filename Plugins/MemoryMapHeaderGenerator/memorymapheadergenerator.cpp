@@ -184,7 +184,7 @@ void MemoryMapHeaderGenerator::runGenerator( IPluginUtility* utility, QSharedPoi
     {
 		Q_ASSERT(design);
 
-		KactusAttribute::Implementation implementation = comp->getViewType(*design->getVlnv());
+		KactusAttribute::Implementation implementation = comp->getViewType(design->getVlnv());
 
 		// if the generator is run on a hierarchical HW component
 		if (implementation == KactusAttribute::HW)

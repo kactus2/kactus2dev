@@ -79,17 +79,14 @@ void Extendable::copyVendorExtensions(Extendable const& other)
 QList<QSharedPointer<VendorExtension> > Extendable::getGroupedExtensionsByType(QString const& groupName,
     QString const& extensionType) const
 {
-    QList<QSharedPointer<VendorExtension> > typedExtensions;
-
     foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
         if (extension->type() == groupName)
         {
             QSharedPointer<Kactus2Group> extensionGroup = extension.dynamicCast<Kactus2Group>();
-            typedExtensions = extensionGroup->getByType(extensionType);
-            break;
+            return extensionGroup->getByType(extensionType);
         }
     }
 
-    return typedExtensions;
+    return QList<QSharedPointer<VendorExtension> >();
 }

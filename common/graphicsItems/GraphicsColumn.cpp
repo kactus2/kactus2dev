@@ -35,7 +35,7 @@
 //-----------------------------------------------------------------------------
 // Function: GraphicsColumn()
 //-----------------------------------------------------------------------------
-GraphicsColumn::GraphicsColumn(ColumnDesc const& desc, GraphicsColumnLayout* layout)
+GraphicsColumn::GraphicsColumn(QSharedPointer<ColumnDesc> desc, GraphicsColumnLayout* layout)
     : QGraphicsRectItem(0),
       layout_(layout),
       desc_(),
@@ -75,7 +75,7 @@ GraphicsColumn::~GraphicsColumn()
 //-----------------------------------------------------------------------------
 void GraphicsColumn::setName(QString const& name)
 {
-    desc_.setName(name);
+    desc_->setName(name);
     updateNameLabel();
 }
 
@@ -93,7 +93,7 @@ void GraphicsColumn::addItem(QGraphicsItem* item, bool load)
     // Map the position to the column's local coordinate system
     // and constrain the item to the horizontal center of the column.
     QPointF pos = mapFromScene(item->scenePos());
-    pos.setX(desc_.getWidth() / 2.0);
+    pos.setX(desc_->getWidth() / 2.0);
 
     // Set the column as the parent of the item.
     item->setParentItem(this);
@@ -123,7 +123,7 @@ void GraphicsColumn::addItem(QGraphicsItem* item, bool load)
         if (itemLayout_ != 0)
         {
             itemLayout_->updateItemMove(items_, item, MIN_Y_PLACEMENT);
-            itemLayout_->setItemPos(items_, item, desc_.getWidth() / 2, MIN_Y_PLACEMENT);
+            itemLayout_->setItemPos(items_, item, desc_->getWidth() / 2, MIN_Y_PLACEMENT);
         }
     }
 }
@@ -138,7 +138,7 @@ void GraphicsColumn::removeItem(QGraphicsItem* item)
 
     if (itemLayout_ != 0)
     {
-        itemLayout_->updateItemPositions(items_, desc_.getWidth() / 2, MIN_Y_PLACEMENT);
+        itemLayout_->updateItemPositions(items_, desc_->getWidth() / 2, MIN_Y_PLACEMENT);
     }
 }
 
@@ -148,7 +148,7 @@ void GraphicsColumn::removeItem(QGraphicsItem* item)
 void GraphicsColumn::setOffsetY(qreal y)
 {
     // Update the rectangle and the label position.
-    setRect(0, y, desc_.getWidth(), HEIGHT);
+    setRect(0, y, desc_->getWidth(), HEIGHT);
     nameLabel_->setPos(nameLabel_->x(), 5 + y);
 }
 
@@ -186,7 +186,7 @@ void GraphicsColumn::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
     if (mouseNearResizeArea_)
     {
-        if (desc_.getWidth() != oldWidth_)
+        if (desc_->getWidth() != oldWidth_)
         {
             QSharedPointer<QUndoCommand> cmd(new GraphicsColumnResizeCommand(this, oldWidth_));
             static_cast<DesignDiagram*>(scene())->getEditProvider().addCommand(cmd);
@@ -240,7 +240,7 @@ void GraphicsColumn::onMoveItem(QGraphicsItem* item)
 
                 if (itemLayout_ != 0)
                 {
-                    itemLayout_->updateItemPositions(items_, desc_.getWidth() / 2, MIN_Y_PLACEMENT);
+                    itemLayout_->updateItemPositions(items_, desc_->getWidth() / 2, MIN_Y_PLACEMENT);
                 }
 
                 setZValue(0.0);
@@ -339,7 +339,7 @@ void GraphicsColumn::onReleaseItem(QGraphicsItem* item)
 
     if (itemLayout_ != 0)
     {
-        itemLayout_->setItemPos(items_, item, desc_.getWidth() / 2, MIN_Y_PLACEMENT);
+        itemLayout_->setItemPos(items_, item, desc_->getWidth() / 2, MIN_Y_PLACEMENT);
     }
 }
 
@@ -351,7 +351,7 @@ void GraphicsColumn::updateItemPositions()
     // Just update the item positions.
     if (itemLayout_ != 0)
     {
-        itemLayout_->updateItemPositions(items_, desc_.getWidth() / 2, MIN_Y_PLACEMENT);
+        itemLayout_->updateItemPositions(items_, desc_->getWidth() / 2, MIN_Y_PLACEMENT);
     }
 }
 
@@ -360,7 +360,7 @@ void GraphicsColumn::updateItemPositions()
 //-----------------------------------------------------------------------------
 QString const& GraphicsColumn::name() const
 {
-    return desc_.name();
+    return desc_->name();
 }
 
 //-----------------------------------------------------------------------------
@@ -392,7 +392,7 @@ void GraphicsColumn::mousePressEvent(QGraphicsSceneMouseEvent* event)
     if (mouseNearResizeArea_)
     {
         // Save the old width before resize.
-        oldWidth_ = desc_.getWidth();
+        oldWidth_ = desc_->getWidth();
     }
     else
     {
@@ -424,7 +424,7 @@ QPointF GraphicsColumn::mapStackFromScene(QPointF const& pos) const
 //-----------------------------------------------------------------------------
 bool GraphicsColumn::isItemAllowed(QGraphicsItem* item) const
 {
-    return isItemAllowed(item, desc_.getAllowedItems());
+    return isItemAllowed(item, desc_->getAllowedItems());
 }
 
 //-----------------------------------------------------------------------------
@@ -448,13 +448,13 @@ GraphicsColumnLayout& GraphicsColumn::getLayout()
 //-----------------------------------------------------------------------------
 ColumnContentType GraphicsColumn::getContentType() const
 {
-    return desc_.getContentType();
+    return desc_->getContentType();
 }
 
 //-----------------------------------------------------------------------------
 // Function: GraphicsColumn::getColumnDesc()
 //-----------------------------------------------------------------------------
-ColumnDesc const& GraphicsColumn::getColumnDesc() const
+QSharedPointer<ColumnDesc> GraphicsColumn::getColumnDesc() const
 {
     return desc_;
 }
@@ -462,27 +462,27 @@ ColumnDesc const& GraphicsColumn::getColumnDesc() const
 //-----------------------------------------------------------------------------
 // Function: GraphicsColumn::setColumnDesc()
 //-----------------------------------------------------------------------------
-void GraphicsColumn::setColumnDesc(ColumnDesc const& desc)
+void GraphicsColumn::setColumnDesc(QSharedPointer<ColumnDesc> desc)
 {
     desc_ = desc;
 
-    switch (desc.getContentType())
+    switch (desc->getContentType())
     {
     case COLUMN_CONTENT_IO:
         {
-            desc_.setAllowedItems(CIT_INTERFACE);
+            desc_->setAllowedItems(CIT_INTERFACE);
             break;
         }
 
     case COLUMN_CONTENT_COMPONENTS:
         {
-            desc_.setAllowedItems(CIT_COMPONENT);
+            desc_->setAllowedItems(CIT_COMPONENT);
             break;
         }
 
     case COLUMN_CONTENT_BUSES:
         {
-            desc_.setAllowedItems(CIT_CHANNEL | CIT_BRIDGE);
+            desc_->setAllowedItems(CIT_CHANNEL | CIT_BRIDGE);
             break;
         }
 
@@ -492,7 +492,7 @@ void GraphicsColumn::setColumnDesc(ColumnDesc const& desc)
         }
     }
 
-    if (desc.getContentType() == COLUMN_CONTENT_IO)
+    if (desc->getContentType() == COLUMN_CONTENT_IO)
     {
         itemLayout_ = QSharedPointer<IVGraphicsLayout<QGraphicsItem> >(new VCollisionLayout<QGraphicsItem>(IO_SPACING));
     }
@@ -501,12 +501,12 @@ void GraphicsColumn::setColumnDesc(ColumnDesc const& desc)
         itemLayout_ = QSharedPointer<IVGraphicsLayout<QGraphicsItem> >(new VStackedLayout<QGraphicsItem>(SPACING));
     }
 
-    setRect(0, 0, desc_.getWidth(), HEIGHT);
+    setRect(0, 0, desc_->getWidth(), HEIGHT);
     layout_->updateColumnPositions();
 
     foreach (QGraphicsItem* item, items_)
     {
-        item->setX(desc_.getWidth() / 2);
+        item->setX(desc_->getWidth() / 2);
     }
 
     updateNameLabel();
@@ -517,14 +517,14 @@ void GraphicsColumn::setColumnDesc(ColumnDesc const& desc)
 //-----------------------------------------------------------------------------
 void GraphicsColumn::setWidth(unsigned int width)
 {
-    desc_.setWidth(width);
+    desc_->setWidth(width);
 
-    setRect(0, 0, desc_.getWidth(), HEIGHT);
+    setRect(0, 0, desc_->getWidth(), HEIGHT);
     layout_->updateColumnPositions();
 
     foreach (QGraphicsItem* item, items_)
     {
-        item->setX(desc_.getWidth() / 2);
+        item->setX(desc_->getWidth() / 2);
     }
 
     updateNameLabel();
@@ -535,9 +535,9 @@ void GraphicsColumn::setWidth(unsigned int width)
 //-----------------------------------------------------------------------------
 void GraphicsColumn::updateNameLabel()
 {
-    nameLabel_->setHtml("<center>" + desc_.name() + "</center>");
-    nameLabel_->setTextWidth(qMax<unsigned int>(140, desc_.getWidth()));
-    nameLabel_->setPos((desc_.getWidth() - nameLabel_->textWidth()) / 2.0, 5.0);
+    nameLabel_->setHtml("<center>" + desc_->name() + "</center>");
+    nameLabel_->setTextWidth(qMax<unsigned int>(140, desc_->getWidth()));
+    nameLabel_->setPos((desc_->getWidth() - nameLabel_->textWidth()) / 2.0, 5.0);
 }
 
 //-----------------------------------------------------------------------------
@@ -668,7 +668,7 @@ void GraphicsColumn::switchColumn(QGraphicsItem* item, GraphicsColumn* column)
 
     if (itemLayout_ != 0)
     {
-        itemLayout_->updateItemPositions(items_, desc_.getWidth() / 2, MIN_Y_PLACEMENT);
+        itemLayout_->updateItemPositions(items_, desc_->getWidth() / 2, MIN_Y_PLACEMENT);
     }
 
     setZValue(0.0);

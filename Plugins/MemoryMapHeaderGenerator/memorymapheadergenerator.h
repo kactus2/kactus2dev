@@ -18,7 +18,9 @@
 
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/librarycomponent.h>
-#include <IPXACTmodels/design.h>
+
+#include <IPXACTmodels/Design/Design.h>
+
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
 #include <QObject>

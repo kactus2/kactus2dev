@@ -17,10 +17,12 @@
 #include <Plugins/PluginSystem/PluginUtilityAdapter.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/GeneratorConfiguration.h>
 
+#include <IPXACTmodels/Design/Design.h>
+
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
 #include <IPXACTmodels/component.h>
-#include <IPXACTmodels/design.h>
+
 #include <IPXACTmodels/fileset.h>
 
 #include <tests/MockObjects/LibraryMock.h>
@@ -162,7 +164,7 @@ void tst_VerilogGenerator::testFilesetIsCreatedWhenRunForDesign()
     QSharedPointer<Design> targetDesign = createTestDesign();
 
     View* structuralView = new View(viewName);
-    structuralView->setHierarchyRef(*targetDesign->getVlnv());
+    structuralView->setHierarchyRef(targetDesign->getVlnv());
     targetComponent->addView(structuralView);
 
     runGenerator(&utilityMock_, targetComponent, QSharedPointer<LibraryComponent>(), targetDesign);
@@ -211,7 +213,7 @@ void tst_VerilogGenerator::testStructuralViewIsCreatedWhenRunForDesign()
     QSharedPointer<Design> targetDesign = createTestDesign();
 
     View* structuralView = new View(viewName);
-    structuralView->setHierarchyRef(*targetDesign->getVlnv());
+    structuralView->setHierarchyRef(targetDesign->getVlnv());
     targetComponent->addView(structuralView);
 
     runGenerator(&utilityMock_, targetComponent, QSharedPointer<LibraryComponent>(0), targetDesign);
@@ -242,10 +244,10 @@ void tst_VerilogGenerator::testStructuralViewIsCreatedWhenRunWithDesignConfigura
     QSharedPointer<DesignConfiguration> targetDesignConfig = createTestDesignConfig();
     QSharedPointer<Design> targetDesign = createTestDesign();
 
-    targetDesignConfig->setDesignRef(*targetDesign->getVlnv());
+    targetDesignConfig->setDesignRef(targetDesign->getVlnv());
 
     View* structuralView = new View(viewName);
-    structuralView->setHierarchyRef(*targetDesignConfig->getVlnv());
+    structuralView->setHierarchyRef(targetDesignConfig->getVlnv());
     targetComponent->addView(structuralView);
 
     runGenerator(&utilityMock_, targetComponent, targetDesignConfig, targetDesign);
@@ -274,12 +276,12 @@ void tst_VerilogGenerator::testTopLevelViewIsSetWhenMultipleFlatViews()
     QSharedPointer<DesignConfiguration> targetDesignConfig = createTestDesignConfig();
     QSharedPointer<Design> targetDesign = createTestDesign();
 
-    targetDesignConfig->setDesignRef(*targetDesign->getVlnv());
+    targetDesignConfig->setDesignRef(targetDesign->getVlnv());
     
     targetComponent->createEmptyFlatView();
 
     View* structuralView = new View("structural");
-    structuralView->setHierarchyRef(*targetDesignConfig->getVlnv());
+    structuralView->setHierarchyRef(targetDesignConfig->getVlnv());
     targetComponent->addView(structuralView);
 
     runGenerator(&utilityMock_, targetComponent, targetDesignConfig, targetDesign);
@@ -360,7 +362,7 @@ void tst_VerilogGenerator::testFlatViewsArePossibleForTopComponent()
     targetComponent->addView(secondView);
 
     View* hierView = new View("hierView");
-    hierView->setHierarchyRef(*targetDesign->getVlnv());
+    hierView->setHierarchyRef(targetDesign->getVlnv());
     targetComponent->addView(hierView);
 
     QStringList possibleViews = findPossibleViewNames(targetComponent, QSharedPointer<LibraryComponent>(0), 
@@ -386,7 +388,7 @@ void tst_VerilogGenerator::testRefenecedDesignViewIsPossible()
     targetComponent->addView(secondView);
 
     View* hierView = new View("hierView");
-    hierView->setHierarchyRef(*targetDesign->getVlnv());
+    hierView->setHierarchyRef(targetDesign->getVlnv());
     targetComponent->addView(hierView);
 
     QStringList possibleViews = findPossibleViewNames(targetComponent, targetDesign, 
@@ -404,17 +406,17 @@ void tst_VerilogGenerator::testRefenecedDesignConfigurationViewIsPossible()
     QSharedPointer<Component> targetComponent = createTestComponent();
     QSharedPointer<Design> targetDesign = createTestDesign();
     QSharedPointer<DesignConfiguration> targetConfiguration = createTestDesignConfig();
-    targetConfiguration->setDesignRef(*targetDesign->getVlnv());
+    targetConfiguration->setDesignRef(targetDesign->getVlnv());
 
     View* flatView = new View("flat");
     targetComponent->addView(flatView);
 
     View* designView = new View("designView");
-    designView->setHierarchyRef(*targetDesign->getVlnv());
+    designView->setHierarchyRef(targetDesign->getVlnv());
     targetComponent->addView(designView);
 
     View* designConfigView = new View("designConfigView");
-    designConfigView->setHierarchyRef(*targetConfiguration->getVlnv());
+    designConfigView->setHierarchyRef(targetConfiguration->getVlnv());
     targetComponent->addView(designConfigView);
 
     QStringList possibleViews = findPossibleViewNames(targetComponent, targetDesign, targetConfiguration);
@@ -431,17 +433,17 @@ void tst_VerilogGenerator::testDelegationToImplementationViewIsPossible()
     QSharedPointer<Component> targetComponent = createTestComponent();
     QSharedPointer<Design> targetDesign = createTestDesign();
     QSharedPointer<DesignConfiguration> targetConfiguration = createTestDesignConfig();
-    targetConfiguration->setDesignRef(*targetDesign->getVlnv());
+    targetConfiguration->setDesignRef(targetDesign->getVlnv());
 
     View* rtlView = new View("rtl");
     targetComponent->addView(rtlView);
 
     View* designView = new View("designView");
-    designView->setHierarchyRef(*targetDesign->getVlnv());
+    designView->setHierarchyRef(targetDesign->getVlnv());
     targetComponent->addView(designView);
 
     View* designConfigView = new View("designConfigView");
-    designConfigView->setHierarchyRef(*targetConfiguration->getVlnv());
+    designConfigView->setHierarchyRef(targetConfiguration->getVlnv());
     designConfigView->setTopLevelView("rtl");
     targetComponent->addView(designConfigView);
 

@@ -12,8 +12,9 @@
 #ifndef GRAPHICSCOLUMNUNDOCOMMANDS_H
 #define GRAPHICSCOLUMNUNDOCOMMANDS_H
 
-#include <IPXACTmodels/ColumnDesc.h>
+#include <IPXACTmodels/kactusExtensions/ColumnDesc.h>
 
+#include <QSharedPointer>
 #include <QUndoCommand>
 #include <QPointF>
 
@@ -136,7 +137,7 @@ public:
      *      @param [in] column   The column.
      *      @param [in] newDesc  The column's new description.
      */
-    GraphicsColumnChangeCommand(GraphicsColumn* column, ColumnDesc const& newDesc,
+    GraphicsColumnChangeCommand(GraphicsColumn* column, QSharedPointer<ColumnDesc> newDesc,
                                 QUndoCommand* parent = 0);
 
     /*!
@@ -167,10 +168,10 @@ private:
     GraphicsColumn* column_;
 
     //! The column's old description.
-    ColumnDesc oldDesc_;
+    QSharedPointer<ColumnDesc> oldDesc_;
 
     //! The column's new description.
-    ColumnDesc newDesc_;
+    QSharedPointer<ColumnDesc> newDesc_;
 };
 
 //-----------------------------------------------------------------------------

@@ -142,7 +142,7 @@ public:
     //-----------------------------------------------------------------------------
     struct ColumnCopyData
     {
-        ColumnDesc desc;                            //!< Column description.
+        QSharedPointer<ColumnDesc> desc;            //!< Column description.
         ComponentCollectionCopyData components;     //!< Components.
         PortCollectionCopyData interfaces;          //!< COM/API interfaces.
 
@@ -207,7 +207,7 @@ public:
      *
      *      @param [in] desc The column description.
      */
-    void addColumn(ColumnDesc const& desc);
+    void addColumn(QSharedPointer<ColumnDesc> desc);
 
 public slots:
 

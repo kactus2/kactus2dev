@@ -104,6 +104,8 @@ protected:
      */
     void showErrorForReservedVLVN(VLNV const& vlnv);
 
+    QString type2Show(VLNV::IPXactType const& type);
+
     //! VLNV editor.
     VLNVEditor* vlnvEditor_;
 

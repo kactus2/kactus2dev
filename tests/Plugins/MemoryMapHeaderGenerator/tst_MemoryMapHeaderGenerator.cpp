@@ -16,6 +16,10 @@
 
 #include <tests/MockObjects/LibraryMock.h>
 
+#include <IPXACTmodels/Design/Design.h>
+#include <IPXACTmodels/Design/ComponentInstance.h>
+#include <IPXACTmodels/Design/Interconnection.h>
+
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
 #include <IPXACTmodels/addressblock.h>
@@ -24,13 +28,10 @@
 #include <IPXACTmodels/addressspace.h>
 #include <IPXACTmodels/memorymap.h>
 #include <IPXACTmodels/memorymapitem.h>
-#include <IPXACTmodels/design.h>
-#include <IPXACTmodels/ComponentInstance.h>
 #include <IPXACTmodels/businterface.h>
 #include <IPXACTmodels/masterinterface.h>
 #include <IPXACTmodels/slaveinterface.h>
 #include <IPXACTmodels/cpu.h>
-#include <IPXACTmodels/Interconnection.h>
 #include <IPXACTmodels/SystemView.h>
 #include <IPXACTmodels/channel.h>
 #include <IPXACTmodels/mirroredslaveinterface.h>
@@ -217,7 +218,7 @@ void tst_MemoryMapHeaderGenerator::testLocalMemoryMapHeaderGeneration()
 
     QWidget parentWidget;
     PluginUtilityAdapter adapter(&library_, &parentWidget, this);
-    QSharedPointer<LibraryComponent> libComponent = library_.getModel(*topComponent_->getVlnv());
+    QSharedPointer<Document> libComponent = library_.getModel(*topComponent_->getVlnv());
 
     QSignalSpy generatorSpy(&adapter, SIGNAL(infoMessage(QString const&)));
 
@@ -343,7 +344,7 @@ void tst_MemoryMapHeaderGenerator::testGenerationWithHexadecimalRegisterOffset()
 
     QWidget parentWidget;
     PluginUtilityAdapter adapter(&library_, &parentWidget, this);
-    QSharedPointer<LibraryComponent> libComponent = library_.getModel(*topComponent_->getVlnv());
+    QSharedPointer<Document> libComponent = library_.getModel(*topComponent_->getVlnv());
 
     headerGenerator_->runGenerator(&adapter, libComponent);
 
@@ -443,7 +444,7 @@ void tst_MemoryMapHeaderGenerator::testGenerationWithReferencingRegisterOffset()
 
     QWidget parentWidget;
     PluginUtilityAdapter adapter(&library_, &parentWidget, this);
-    QSharedPointer<LibraryComponent> libComponent = library_.getModel(*topComponent_->getVlnv());
+    QSharedPointer<Document> libComponent = library_.getModel(*topComponent_->getVlnv());
 
     headerGenerator_->runGenerator(&adapter, libComponent);
 
@@ -557,7 +558,7 @@ void tst_MemoryMapHeaderGenerator::testLocalMemoryMapAddressBlockIsMemoryOrReser
 
     QWidget parentWidget;
     PluginUtilityAdapter adapter(&library_, &parentWidget, this);
-    QSharedPointer<LibraryComponent> libComponent = library_.getModel(*topComponent_->getVlnv());
+    QSharedPointer<Document> libComponent = library_.getModel(*topComponent_->getVlnv());
 
     headerGenerator_->runGenerator(&adapter, libComponent);
 
@@ -648,7 +649,7 @@ void tst_MemoryMapHeaderGenerator::testDesignMemoryMapHeaderGeneration()
     library_.writeModelToFile("C:/Test/TestLibrary/TestComponent/1.0/testDesign.1.0.xml", topComponent_);
     
     View* headerTestView = new View("headerView");
-    headerTestView->setHierarchyRef(*headerDesign->getVlnv());
+    headerTestView->setHierarchyRef(headerDesign->getVlnv());
     topComponent_->addView(headerTestView);
 
     QFileInfo saveFileInfo (targetPath_);
@@ -766,37 +767,60 @@ void tst_MemoryMapHeaderGenerator::testMemoryMapHeaderGenerationInDesignWithMult
     library_.addComponent(headerDesign);
     library_.writeModelToFile("C:/Test/TestLibrary/TestComponent/1.0/testDesign.1.0.xml", topComponent_);
 
-    ComponentInstance masterInstance ("masterInstance_0", "", "", *masterComponent->getVlnv(), QPointF(),
-        "masterID");
-    ComponentInstance slaveInstanceOne ("slaveInstance_0", "", "", *slaveComponent->getVlnv(), QPointF(),
-        "slaveID_0");
-    ComponentInstance slaveInstanceTwo ("slaveInstance_1", "", "", *slaveComponent->getVlnv(), QPointF(),
-        "slaveID_1");
-    ComponentInstance slaveInstanceThree ("slaveInstanceTwo_0", "", "", *slaveComponentTwo->getVlnv(), QPointF(),
-        "slaveIDTwo_0");
-    QList<ComponentInstance> componentInstances;
-    componentInstances.append(masterInstance);
-    componentInstances.append(slaveInstanceOne);
-    componentInstances.append(slaveInstanceTwo);
-    componentInstances.append(slaveInstanceThree);
+    QSharedPointer<ComponentInstance> masterInstance (new ComponentInstance(
+        "masterInstance_0", "", "", 
+        QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(*masterComponent->getVlnv())), 
+        QPointF(), "masterID"));
+    QSharedPointer<ComponentInstance> slaveInstanceOne (new ComponentInstance(
+        "slaveInstance_0", "", "", 
+        QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(*slaveComponent->getVlnv())), 
+        QPointF(), "slaveID_0"));
+    QSharedPointer<ComponentInstance> slaveInstanceTwo (new ComponentInstance(
+        "slaveInstance_1", "", "", 
+        QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(*slaveComponent->getVlnv())), 
+        QPointF(), "slaveID_1"));
+    QSharedPointer<ComponentInstance> slaveInstanceThree (new ComponentInstance(
+        "slaveInstanceTwo_0", "", "", 
+        QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(*slaveComponentTwo->getVlnv())),
+        QPointF(), "slaveIDTwo_0"));
+    
+    QSharedPointer<QList<QSharedPointer<ComponentInstance> > > componentInstances(
+        new QList<QSharedPointer<ComponentInstance> >());
+    componentInstances->append(masterInstance);
+    componentInstances->append(slaveInstanceOne);
+    componentInstances->append(slaveInstanceTwo);
+    componentInstances->append(slaveInstanceThree);
     headerDesign->setComponentInstances(componentInstances);
 
-    Interface interfaceMaster (masterInstance.getInstanceName(), masterComponent->getBusInterfaceNames().at(0));
-    Interface interfaceSlaveOne (slaveInstanceOne.getInstanceName(), slaveComponent->getBusInterfaceNames().at(0));
-    Interface interfaceSlaveTwo (slaveInstanceTwo.getInstanceName(), slaveComponent->getBusInterfaceNames().at(0));
-    Interface interfaceSlaveThree (slaveInstanceThree.getInstanceName(), slaveComponent->getBusInterfaceNames().at(0));
+    QSharedPointer<ActiveInterface> interfaceMaster (
+        new ActiveInterface(masterInstance->getInstanceName(), masterComponent->getBusInterfaceNames().at(0)));
+    QSharedPointer<ActiveInterface> interfaceSlaveOne (new ActiveInterface(
+        slaveInstanceOne->getInstanceName(), slaveComponent->getBusInterfaceNames().at(0)));
+    QSharedPointer<ActiveInterface> interfaceSlaveTwo (new ActiveInterface(
+        slaveInstanceTwo->getInstanceName(), slaveComponent->getBusInterfaceNames().at(0)));
+    QSharedPointer<ActiveInterface> interfaceSlaveThree (new ActiveInterface(
+        slaveInstanceThree->getInstanceName(), slaveComponent->getBusInterfaceNames().at(0)));
 
-    Interconnection masterSlaveOneConnection("masterSlaveOne", interfaceMaster, interfaceSlaveOne);
-    Interconnection masterSlaveTwoConnection("masterSlaveTwo", interfaceMaster, interfaceSlaveTwo);
-    Interconnection masterSlaveThreeConnection("msaterSlaveThree", interfaceMaster, interfaceSlaveThree);
-    QList <Interconnection> interconnectionList;
-    interconnectionList.append(masterSlaveOneConnection);
-    interconnectionList.append(masterSlaveTwoConnection);
-    interconnectionList.append(masterSlaveThreeConnection);
-    headerDesign->setInterconnections(interconnectionList);
+    QSharedPointer<Interconnection> masterSlaveOneConnection(
+        new Interconnection("masterSlaveOne", interfaceMaster));
+    masterSlaveOneConnection->getActiveInterfaces()->append(interfaceSlaveOne);
+
+    QSharedPointer<Interconnection> masterSlaveTwoConnection(new Interconnection(
+        "masterSlaveTwo", interfaceMaster));
+    masterSlaveTwoConnection->getActiveInterfaces()->append(interfaceSlaveTwo);
+
+    QSharedPointer<Interconnection> masterSlaveThreeConnection(new Interconnection(
+        "msaterSlaveThree", interfaceMaster));
+    masterSlaveThreeConnection->getActiveInterfaces()->append(interfaceSlaveThree);
+
+    QSharedPointer<QList<QSharedPointer<Interconnection> > >  interconnectionList = 
+        headerDesign->getInterconnections();
+    interconnectionList->append(masterSlaveOneConnection);
+    interconnectionList->append(masterSlaveTwoConnection);
+    interconnectionList->append(masterSlaveThreeConnection);
     
     View* headerTestView = new View("headerView");
-    headerTestView->setHierarchyRef(*headerDesign->getVlnv());
+    headerTestView->setHierarchyRef(headerDesign->getVlnv());
     topComponent_->addView(headerTestView);
 
     QFileInfo saveFileInfo (targetPath_);
@@ -830,7 +854,7 @@ void tst_MemoryMapHeaderGenerator::testMemoryMapHeaderGenerationInDesignWithMult
         "#define " + headerDefine + "\n"
         "\n"
         "/*\n"
-        " * Instance: " + slaveInstanceOne.getInstanceName() + " Interface: " +
+        " * Instance: " + slaveInstanceOne->getInstanceName() + " Interface: " +
             slaveComponent->getBusInterfaceNames().at(0) + "\n"
         " * Instance base address: 0x0\n"
         " * Source component: " + slaveComponent->getVlnv()->toString(":") + "\n"
@@ -844,10 +868,10 @@ void tst_MemoryMapHeaderGenerator::testMemoryMapHeaderGenerationInDesignWithMult
         " * Register name: slaveRegister\n"
         " * Offset: 4\n"
         "*/\n"
-        "#define " + slaveInstanceOne.getInstanceName().toUpper() + "_SLAVEREGISTER 0x4\n"
+        "#define " + slaveInstanceOne->getInstanceName().toUpper() + "_SLAVEREGISTER 0x4\n"
         "\n"
         "/*\n"
-        " * Instance: " + slaveInstanceTwo.getInstanceName() + " Interface: " +
+        " * Instance: " + slaveInstanceTwo->getInstanceName() + " Interface: " +
             slaveComponent->getBusInterfaceNames().at(0) + "\n"
         " * Instance base address: 0x0\n"
         " * Source component: " + slaveComponent->getVlnv()->toString(":") + "\n"
@@ -861,10 +885,10 @@ void tst_MemoryMapHeaderGenerator::testMemoryMapHeaderGenerationInDesignWithMult
         " * Register name: slaveRegister\n"
         " * Offset: 4\n"
         "*/\n"
-        "#define " + slaveInstanceTwo.getInstanceName().toUpper() + "_SLAVEREGISTER 0x4\n"
+        "#define " + slaveInstanceTwo->getInstanceName().toUpper() + "_SLAVEREGISTER 0x4\n"
         "\n"
         "/*\n"
-        " * Instance: " + slaveInstanceThree.getInstanceName() + " Interface: " +
+        " * Instance: " + slaveInstanceThree->getInstanceName() + " Interface: " +
             slaveComponentTwo->getBusInterfaceNames().at(0) + "\n"
         " * Instance base address: 0x0\n"
         " * Source component: " + slaveComponentTwo->getVlnv()->toString(":") + "\n"
@@ -878,7 +902,7 @@ void tst_MemoryMapHeaderGenerator::testMemoryMapHeaderGenerationInDesignWithMult
         " * Register name: slaveRegister\n"
         " * Offset: 8\n"
         "*/\n"
-        "#define " + slaveInstanceThree.getInstanceName().toUpper() + "_SLAVEREGISTER 0x8\n"
+        "#define " + slaveInstanceThree->getInstanceName().toUpper() + "_SLAVEREGISTER 0x8\n"
         "\n"
         );
 
@@ -934,7 +958,7 @@ void tst_MemoryMapHeaderGenerator::testDesignMemoryMapHeaderWithReferences()
     library_.writeModelToFile("C:/Test/TestLibrary/TestComponent/1.0/testDesign.1.0.xml", topComponent_);
     
     View* headerTestView = new View("headerView");
-    headerTestView->setHierarchyRef(*headerDesign->getVlnv());
+    headerTestView->setHierarchyRef(headerDesign->getVlnv());
     topComponent_->addView(headerTestView);
 
     QFileInfo saveFileInfo (targetPath_);
@@ -1040,7 +1064,7 @@ void tst_MemoryMapHeaderGenerator::testDesignMemoryMapHeaderWithMasterReference(
     library_.writeModelToFile("C:/Test/TestLibrary/TestComponent/1.0/testDesign.1.0.xml", topComponent_);
     
     View* headerTestView = new View("headerView");
-    headerTestView->setHierarchyRef(*headerDesign->getVlnv());
+    headerTestView->setHierarchyRef(headerDesign->getVlnv());
     topComponent_->addView(headerTestView);
 
     QFileInfo saveFileInfo (targetPath_);
@@ -1168,28 +1192,31 @@ void tst_MemoryMapHeaderGenerator::testDesignMemoryMapHeaderWithConfigurableElem
     QSharedPointer<DesignConfiguration> headerDesignConfiguration (new DesignConfiguration(VLNV(
         VLNV::DESIGNCONFIGURATION, "TUT", "TestLibrary", "testDesignConfiguration", "1.0")));
 
-    ComponentInstance masterInstance ("masterInstance_0", "", "", *masterComponent->getVlnv(), QPointF(),
-        "masterID");
-    ComponentInstance slaveInstance ("slaveInstance_0", "", "", *slaveComponent->getVlnv(), QPointF(), "slaveID");
+    QSharedPointer<ComponentInstance> masterInstance (new ComponentInstance("masterInstance_0", "", "", 
+        QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(*masterComponent->getVlnv())),
+        QPointF(), "masterID"));
+    QSharedPointer<ComponentInstance> slaveInstance (new ComponentInstance("slaveInstance_0", "", "", 
+        QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(*slaveComponent->getVlnv())),
+        QPointF(), "slaveID"));
 
     QMap<QString, QString> slaveConfigurableElements;
     slaveConfigurableElements.insert("param_ID", "4");
     slaveConfigurableElements.insert("other_ID", "param_ID + 20");
 
-    QList<ComponentInstance> componentInstances;
-    componentInstances.append(masterInstance);
-    componentInstances.append(slaveInstance);
-    headerDesign->setComponentInstances(componentInstances);
+    headerDesign->getComponentInstances()->append(masterInstance);
+    headerDesign->getComponentInstances()->append(slaveInstance);
 
-    headerDesignConfiguration->setConfigurableElementValues(slaveInstance.getUuid(), slaveConfigurableElements);
+    headerDesignConfiguration->setConfigurableElementValues(slaveInstance->getUuid(), slaveConfigurableElements);
 
-    Interface interfaceMaster (masterInstance.getInstanceName(), masterComponent->getBusInterfaceNames().at(0));
-    Interface interfaceSlave (slaveInstance.getInstanceName(), slaveComponent->getBusInterfaceNames().at(0));
+    QSharedPointer<ActiveInterface> interfaceMaster(
+        new ActiveInterface(masterInstance->getInstanceName(), masterComponent->getBusInterfaceNames().at(0)));
+    QSharedPointer<ActiveInterface> interfaceSlave (
+        new ActiveInterface(slaveInstance->getInstanceName(), slaveComponent->getBusInterfaceNames().at(0)));
 
-    Interconnection masterSlaveConnection("masterSlaveConnection", interfaceMaster, interfaceSlave);
-    QList<Interconnection> interconnectionList;
-    interconnectionList.append(masterSlaveConnection);
-    headerDesign->setInterconnections(interconnectionList);
+    QSharedPointer<Interconnection> masterSlaveConnection(new Interconnection("masterSlaveConnection", interfaceMaster));
+    masterSlaveConnection->getActiveInterfaces()->append(interfaceSlave);
+
+    headerDesign->getInterconnections()->append(masterSlaveConnection);
 
     library_.addComponent(masterComponent);
     library_.writeModelToFile("C:/Test/TestLibrary/TestComponent/1.0/masterComponent.1.0.xml", topComponent_);
@@ -1202,7 +1229,7 @@ void tst_MemoryMapHeaderGenerator::testDesignMemoryMapHeaderWithConfigurableElem
         topComponent_);
 
     View* headerTestView = new View("headerView");
-    headerTestView->setHierarchyRef(*headerDesignConfiguration->getVlnv());
+    headerTestView->setHierarchyRef(headerDesignConfiguration->getVlnv());
     topComponent_->addView(headerTestView);
 
     QFileInfo saveFileInfo (targetPath_);
@@ -1313,7 +1340,7 @@ void tst_MemoryMapHeaderGenerator::testDesignMemoryMapHeaderWithChannel()
     library_.writeModelToFile("C:/Test/TestLibrary/TestComponent/1.0/channelDesign.1.0.xml", topComponent_);
 
     View* headerTestView = new View("headerView");
-    headerTestView->setHierarchyRef(*headerDesign->getVlnv());
+    headerTestView->setHierarchyRef(headerDesign->getVlnv());
     topComponent_->addView(headerTestView);
 
     QFileInfo saveFileInfo (targetPath_);
@@ -1426,7 +1453,7 @@ void tst_MemoryMapHeaderGenerator::testChannelDesignWithReferences()
     library_.writeModelToFile("C:/Test/TestLibrary/TestComponent/1.0/channelDesign.1.0.xml", topComponent_);
 
     View* headerTestView = new View("headerView");
-    headerTestView->setHierarchyRef(*headerDesign->getVlnv());
+    headerTestView->setHierarchyRef(headerDesign->getVlnv());
     topComponent_->addView(headerTestView);
 
     QFileInfo saveFileInfo (targetPath_);
@@ -1528,8 +1555,8 @@ void tst_MemoryMapHeaderGenerator::testDesignMemoryMapHeaderWithBridge()
     library_.addComponent(headerDesign);
     library_.writeModelToFile("C:/Test/TestLibrary/TestComponent/1.0/bridgeDesign.1.0.xml", topComponent_);
 
-        View* headerTestView = new View("headerView");
-    headerTestView->setHierarchyRef(*headerDesign->getVlnv());
+    View* headerTestView = new View("headerView");
+    headerTestView->setHierarchyRef(headerDesign->getVlnv());
     topComponent_->addView(headerTestView);
 
     QFileInfo saveFileInfo (targetPath_);
@@ -1647,8 +1674,8 @@ void tst_MemoryMapHeaderGenerator::testDesignMemoryMapHeaderWithOpaqueBridge()
     library_.addComponent(headerDesign);
     library_.writeModelToFile("C:/Test/TestLibrary/TestComponent/1.0/bridgeDesign.1.0.xml", topComponent_);
 
-        View* headerTestView = new View("headerView");
-    headerTestView->setHierarchyRef(*headerDesign->getVlnv());
+    View* headerTestView = new View("headerView");
+    headerTestView->setHierarchyRef(headerDesign->getVlnv());
     topComponent_->addView(headerTestView);
 
     QFileInfo saveFileInfo (targetPath_);
@@ -1975,21 +2002,28 @@ QSharedPointer<Design> tst_MemoryMapHeaderGenerator::createTestHWDesign(QString 
 {
     QSharedPointer<Design> newDesign(new Design(VLNV(VLNV::DESIGN, "TUT", "TestLibrary", designName, "1.0")));
 
-    ComponentInstance masterInstance ("masterInstance_0", "", "", *masterComponent->getVlnv(), QPointF(),
-        "masterID");
-    ComponentInstance slaveInstance ("slaveInstance_0", "", "", *slaveComponent->getVlnv(), QPointF(), "slaveID");
-    QList<ComponentInstance> componentInstances;
-    componentInstances.append(masterInstance);
-    componentInstances.append(slaveInstance);
-    newDesign->setComponentInstances(componentInstances);
+    QSharedPointer<ComponentInstance> masterInstance (
+        new ComponentInstance("masterInstance_0", "", "", 
+        QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(*masterComponent->getVlnv())),
+        QPointF(), "masterID"));
+    QSharedPointer<ComponentInstance> slaveInstance (
+        new ComponentInstance("slaveInstance_0", "", "", 
+        QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(*slaveComponent->getVlnv())),
+        QPointF(), "slaveID"));
+    
+    newDesign->getComponentInstances()->append(masterInstance);
+    newDesign->getComponentInstances()->append(slaveInstance);
 
-    Interface interfaceMaster (masterInstance.getInstanceName(), masterComponent->getBusInterfaceNames().at(0));
-    Interface interfaceSlave (slaveInstance.getInstanceName(), slaveComponent->getBusInterfaceNames().at(0));
+    QSharedPointer<ActiveInterface> interfaceMaster (
+        new ActiveInterface(masterInstance->getInstanceName(), masterComponent->getBusInterfaceNames().at(0)));
+    QSharedPointer<ActiveInterface> interfaceSlave (
+        new ActiveInterface(slaveInstance->getInstanceName(), slaveComponent->getBusInterfaceNames().at(0)));
 
-    Interconnection masterSlaveConnection("masterSlaveConnection", interfaceMaster, interfaceSlave);
-    QList<Interconnection> interconnectionList;
-    interconnectionList.append(masterSlaveConnection);
-    newDesign->setInterconnections(interconnectionList);
+    QSharedPointer<Interconnection> masterSlaveConnection(
+        new Interconnection("masterSlaveConnection", interfaceMaster));
+    masterSlaveConnection->getActiveInterfaces()->append(interfaceSlave);
+
+    newDesign->getInterconnections()->append(masterSlaveConnection);
 
     return newDesign;
 }
@@ -2068,32 +2102,38 @@ QSharedPointer<Design> tst_MemoryMapHeaderGenerator::createTestMiddleDesign(QStr
 {
     QSharedPointer<Design> newDesign(new Design(VLNV(VLNV::DESIGN, "TUT", "TestLibrary", designName, "1.0")));
 
-    ComponentInstance masterInstance ("masterInstance_0", "", "", *masterComponent->getVlnv(), QPointF(),
-        "masterID");
-    ComponentInstance slaveInstance ("slaveInstance_0", "", "", *slaveComponent->getVlnv(), QPointF(), "slaveID");
-    ComponentInstance channelInstance ("channelInstance_0", "", "", *middleComponent->getVlnv(), QPointF(),
-        "middleID");
-    QList<ComponentInstance> componentInstances;
-    componentInstances.append(masterInstance);
-    componentInstances.append(slaveInstance);
-    componentInstances.append(channelInstance);
-    newDesign->setComponentInstances(componentInstances);
+    QSharedPointer<ComponentInstance> masterInstance (new ComponentInstance("masterInstance_0", "", "", 
+        QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(*masterComponent->getVlnv())),
+        QPointF(), "masterID"));
+    QSharedPointer<ComponentInstance> slaveInstance (new ComponentInstance("slaveInstance_0", "", "", 
+        QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(*slaveComponent->getVlnv())),
+        QPointF(), "slaveID"));
+    QSharedPointer<ComponentInstance> channelInstance (new ComponentInstance("channelInstance_0", "", "", 
+        QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(*middleComponent->getVlnv())),
+        QPointF(), "middleID"));
 
-    Interface interfaceMaster (masterInstance.getInstanceName(), masterComponent->getBusInterfaceNames().at(0));
-    Interface interfaceMiddleFirst (channelInstance.getInstanceName(),
-        middleComponent->getBusInterfaceNames().at(0));
-    Interface interfaceMiddleSecond (channelInstance.getInstanceName(),
-        middleComponent->getBusInterfaceNames().at(1));
-    Interface interfaceSlave (slaveInstance.getInstanceName(), slaveComponent->getBusInterfaceNames().at(0));
+    QSharedPointer<QList<QSharedPointer<ComponentInstance> > > componentInstances = newDesign->getComponentInstances();
+    componentInstances->append(masterInstance);
+    componentInstances->append(slaveInstance);
+    componentInstances->append(channelInstance);    
 
-    Interconnection masterMiddleConnect("masterMirrored", interfaceMaster, interfaceMiddleFirst);
-    Interconnection middleSlaveConnect("mirroredSlave", interfaceMiddleSecond, interfaceSlave);
+    QSharedPointer<ActiveInterface> interfaceMaster (new ActiveInterface(masterInstance->getInstanceName(),
+        masterComponent->getBusInterfaceNames().at(0)));
+    QSharedPointer<ActiveInterface> interfaceMiddleFirst (new ActiveInterface(channelInstance->getInstanceName(),
+        middleComponent->getBusInterfaceNames().at(0)));
+    QSharedPointer<ActiveInterface> interfaceMiddleSecond (new ActiveInterface(channelInstance->getInstanceName(),
+        middleComponent->getBusInterfaceNames().at(1)));
+    QSharedPointer<ActiveInterface> interfaceSlave (new ActiveInterface(slaveInstance->getInstanceName(), 
+        slaveComponent->getBusInterfaceNames().at(0)));
 
-    QList<Interconnection> interconnectionList;
-    interconnectionList.append(masterMiddleConnect);
-    interconnectionList.append(middleSlaveConnect);
+    QSharedPointer<Interconnection> masterMiddleConnect(new Interconnection("masterMirrored", interfaceMaster));
+    masterMiddleConnect->getActiveInterfaces()->append(interfaceMiddleFirst);
 
-    newDesign->setInterconnections(interconnectionList);
+    QSharedPointer<Interconnection> middleSlaveConnect(new Interconnection("mirroredSlave", interfaceMiddleSecond));
+    middleSlaveConnect->getActiveInterfaces()->append(interfaceSlave);
+
+    newDesign->getInterconnections()->append(masterMiddleConnect);
+    newDesign->getInterconnections()->append(middleSlaveConnect);
 
     return newDesign;
 }

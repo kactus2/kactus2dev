@@ -17,6 +17,8 @@ HEADERS += ../../../IPXACTmodels/Design/ActiveInterface.h \
     ../../../IPXACTmodels/Design/Design.h \
     ../../../IPXACTmodels/common/Document.h \
     ../../../IPXACTmodels/common/Extendable.h \
+    ../../../IPXACTmodels/kactusExtensions/HierApiInterconnection.h \
+    ../../../IPXACTmodels/kactusExtensions/HierComInterconnection.h \
     ../../../IPXACTmodels/Design/HierInterface.h \
     ../../../IPXACTmodels/Design/Interconnection.h \
     ../../../IPXACTmodels/kactusExtensions/KactusAttribute.h \
@@ -34,18 +36,7 @@ HEADERS += ../../../IPXACTmodels/Design/ActiveInterface.h \
     ../../../IPXACTmodels/common/NameGroupWriter.h \
     ../../../IPXACTmodels/common/ParameterWriter.h \
     ../../../IPXACTmodels/validators/namevalidator.h \
-    ../../../IPXACTmodels/kactusExtensions/ColumnDesc.h \
-    ../../../IPXACTmodels/kactusExtensions/SWInstance.h \
-    ../../../IPXACTmodels/ComInterface.h \
-    ../../../IPXACTmodels/ComProperty.h \
-    ../../../IPXACTmodels/generaldeclarations.h \
-    ../../../IPXACTmodels/kactusExtensions/Kactus2Placeholder.h \
-    ../../../IPXACTmodels/kactusExtensions/Kactus2Group.h \
-    ../../../IPXACTmodels/Design/ComponentInstanceWriter.h \
-    ../../../IPXACTmodels/kactusExtensions/ComInterconnection.h \
-    ../../../IPXACTmodels/kactusExtensions/ApiInterconnection.h \
-    ../../../IPXACTmodels/kactusExtensions/HierComInterconnection.h \
-    ../../../IPXACTmodels/kactusExtensions/HierApiInterconnection.h
+    ../../../IPXACTmodels/Design/ComponentInstanceWriter.h
 SOURCES += ../../../IPXACTmodels/Design/ActiveInterface.cpp \
     ../../../IPXACTmodels/Design/AdHocConnection.cpp \
     ../../../IPXACTmodels/common/Array.cpp \
@@ -58,6 +49,8 @@ SOURCES += ../../../IPXACTmodels/Design/ActiveInterface.cpp \
     ../../../IPXACTmodels/common/Document.cpp \
     ../../../IPXACTmodels/common/DocumentWriter.cpp \
     ../../../IPXACTmodels/common/Extendable.cpp \
+    ../../../IPXACTmodels/kactusExtensions/HierApiInterconnection.cpp \
+    ../../../IPXACTmodels/kactusExtensions/HierComInterconnection.cpp \
     ../../../IPXACTmodels/Design/HierInterface.cpp \
     ../../../IPXACTmodels/Design/Interconnection.cpp \
     ../../../IPXACTmodels/kactusExtensions/KactusAttribute.cpp \
@@ -74,15 +67,4 @@ SOURCES += ../../../IPXACTmodels/Design/ActiveInterface.cpp \
     ../../../IPXACTmodels/XmlUtils.cpp \
     ../../../IPXACTmodels/validators/namevalidator.cpp \
     ./tst_DesignWriter.cpp \
-    ../../../IPXACTmodels/kactusExtensions/ColumnDesc.cpp \
-    ../../../IPXACTmodels/kactusExtensions/SWInstance.cpp \
-    ../../../IPXACTmodels/ComInterface.cpp \
-    ../../../IPXACTmodels/ComProperty.cpp \
-    ../../../IPXACTmodels/generaldeclarations.cpp \
-    ../../../IPXACTmodels/kactusExtensions/Kactus2Placeholder.cpp \
-    ../../../IPXACTmodels/Design/ComponentInstanceWriter.cpp \
-    ../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
-    ../../../IPXACTmodels/kactusExtensions/ComInterconnection.cpp \
-    ../../../IPXACTmodels/kactusExtensions/ApiInterconnection.cpp \
-    ../../../IPXACTmodels/kactusExtensions/HierComInterconnection.cpp \
-    ../../../IPXACTmodels/kactusExtensions/HierApiInterconnection.cpp
+    ../../../IPXACTmodels/Design/ComponentInstanceWriter.cpp

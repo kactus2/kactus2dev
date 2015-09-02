@@ -23,7 +23,7 @@
 #include <library/LibraryManager/LibraryUtils.h>
 
 #include <IPXACTmodels/component.h>
-#include <IPXACTmodels/design.h>
+#include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
 #include <QScrollBar>
@@ -213,8 +213,8 @@ void MemoryDesignWidget::addColumn()
 
     if (dialog.exec() == QDialog::Accepted)
     {
-        getDiagram()->addColumn(ColumnDesc(dialog.name(), COLUMN_CONTENT_COMPONENTS, 0,
-                                           MemoryDesignDiagram::COLUMN_WIDTH));
+        getDiagram()->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc(dialog.name(), COLUMN_CONTENT_COMPONENTS, 
+            0, MemoryDesignDiagram::COLUMN_WIDTH)));
     }
 }
 

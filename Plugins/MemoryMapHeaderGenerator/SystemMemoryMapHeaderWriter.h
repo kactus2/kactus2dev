@@ -17,9 +17,12 @@
 #include "systemheadersavemodel.h"
 
 #include <IPXACTmodels/component.h>
-#include <IPXACTmodels/design.h>
-#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 #include <IPXACTmodels/SystemView.h>
+
+#include <IPXACTmodels/Design/Design.h>
+
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+
 
 #include <QObject>
 #include <QSharedPointer>

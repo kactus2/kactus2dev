@@ -1,7 +1,13 @@
-/* 
- *
- * 		filename: HWDesignDiagram.h
- */
+//-----------------------------------------------------------------------------
+// File: HWDesignDiagram.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: 
+// Date: 
+//
+// Description:
+// HWDesignDiagram is a graphical view to a design.
+//-----------------------------------------------------------------------------
 
 #ifndef HWDESIGNDIAGRAM_H
 #define HWDESIGNDIAGRAM_H
@@ -11,7 +17,7 @@
 #include <designEditors/common/ComponentDesignDiagram.h>
 
 #include <IPXACTmodels/businterface.h>
-#include <IPXACTmodels/ColumnDesc.h>
+#include <IPXACTmodels/kactusExtensions/ColumnDesc.h>
 
 #include <QMap>
 #include <QVector>
@@ -40,7 +46,7 @@ class HWConnection;
 class HWConnectionEndpoint;
 class Interconnection;
 class LibraryInterface;
-class PortRef;
+class PortReference;
 class VLNV;
 
 /*! \brief HWDesignDiagram is a graphical view to a design
@@ -153,7 +159,7 @@ public:
     //-----------------------------------------------------------------------------
     struct ColumnCopyData
     {
-        ColumnDesc desc;                            //!< Column description.
+        QSharedPointer<ColumnDesc> desc;            //!< Column description.
         ComponentCollectionCopyData components;     //!< Components.
         BusInterfaceCollectionCopyData interfaces;  //!< Top-level bus interfaces.
 
@@ -231,7 +237,7 @@ public:
      *
      *      @param [in] desc The column description.
      */
-    void addColumn(ColumnDesc const& desc);
+    void addColumn(QSharedPointer<ColumnDesc> desc);
 
     /*!
      *  Called when a port's ad-hoc visibility has been changed.
@@ -458,7 +464,7 @@ private:
      *      @param [in] instance    The instance to create item for.
      *      @param [in] design      The design containing the instance.
      */
-    void createComponentItem(ComponentInstance const& instance, QSharedPointer<Design> design);
+    void createComponentItem(QSharedPointer<ComponentInstance> instance, QSharedPointer<Design> design);
 
     /*!
      *  Finds a port item on a component item or creates one if not found.
@@ -491,7 +497,7 @@ private:
      *      @param [in] interconnection     The interconnection to create item for.
      *      @param [in] design              The design containing the interconnection.
      */
-    void createInterconnection(Interconnection const& interconnection, QSharedPointer<Design> design);
+    void createInterconnection(QSharedPointer<Interconnection> interconnection, QSharedPointer<Design> design);
 
     /*!
      *  Creates a graphics item for hierarchical interconnection and adds it to the diagram.
@@ -499,7 +505,7 @@ private:
      *      @param [in] hierConn    The hierarchical interconnection to create item for.
      *      @param [in] design      The design containing the interconnection.
      */
-    void createHierarchicalConnection(HierConnection const& hierConn, QSharedPointer<Design> design);
+    //void createHierarchicalConnection(HierConnection const& hierConn, QSharedPointer<Design> design);
 
     /*!
      *  Creates the hierarchical ad-hoc port items in the diagram.
@@ -523,8 +529,8 @@ private:
      *      @param [in] primaryPort         The connected hierarchical port or component instance port.
      *      @param [in] primaryPortItem     The port item for the primary port.
      */
-    void creatConnectionForAdHocPorts(AdHocConnection const& adHocConnection, PortRef const& internalPort, 
-        PortRef const& primaryPort, ConnectionEndpoint* primaryPortItem);
+    void createConnectionForAdHocPorts(AdHocConnection const& adHocConnection, QSharedPointer<PortReference> internalPort, 
+        QSharedPointer<PortReference> primaryPort, ConnectionEndpoint* primaryPortItem);
     /*!
      *  Copies component instances in a format which can be saved to clipboard.
      *

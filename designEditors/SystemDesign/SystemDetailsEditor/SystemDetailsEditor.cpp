@@ -21,8 +21,9 @@
 
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 #include <IPXACTmodels/SystemView.h>
-#include <IPXACTmodels/design.h>
-#include <IPXACTmodels/SWInstance.h>
+#include <IPXACTmodels/Design/Design.h>
+
+#include <IPXACTmodels/kactusExtensions/SWInstance.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 
@@ -449,13 +450,13 @@ void SystemDetailsEditor::exportSW()
     QSharedPointer<Design> design = designWidget_->getDiagram()->createDesign(designVLNV);
 
     // Export only SW instances.
-    design->setComponentInstances(QList<ComponentInstance>());
+    design->setComponentInstances(QSharedPointer<QList<QSharedPointer<ComponentInstance> > >());
 
-    QList<SWInstance> swInstances = design->getSWInstances();
+    QList<QSharedPointer<SWInstance> > swInstances = design->getSWInstances();
 
     for (int i = 0; i < swInstances.size(); ++i)
     {
-        swInstances[i].setMapping("");
+        swInstances[i]->setMapping("");
     }
 
     design->setSWInstances(swInstances);

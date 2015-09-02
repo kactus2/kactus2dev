@@ -16,10 +16,13 @@
 
 #include <Plugins/PluginSystem/IPluginUtility.h>
 
+#include <IPXACTmodels/Design/Design.h>
+
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
-#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
-#include <IPXACTmodels/design.h>
+
 #include <IPXACTmodels/vlnv.h>
 
 #include <QtPlugin>
@@ -217,7 +220,7 @@ QString QuartusProjectGenerator::getOpenViewName(QSharedPointer<Document> libDes
     foreach (QSharedPointer<View> currentView, component->getViews())
     {
         if ((desConf && currentView->getHierarchyRef() == desConf->getVlnv()) ||
-            (design && currentView->getHierarchyRef() == *design->getVlnv()))
+            (design && currentView->getHierarchyRef() == design->getVlnv()))
         {
             return currentView->name();
         }

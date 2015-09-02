@@ -32,7 +32,7 @@
 #include <library/LibraryManager/LibraryUtils.h>
 
 #include <IPXACTmodels/component.h>
-#include <IPXACTmodels/design.h>
+#include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 #include <IPXACTmodels/SystemView.h>
 
@@ -431,12 +431,12 @@ void SystemDesignWidget::addColumn()
         {
             if (dialog.getContentType() == COLUMN_CONTENT_IO)
             {
-                ColumnDesc desc(dialog.name(), dialog.getContentType(), 0, SystemDesignDiagram::IO_COLUMN_WIDTH);
+                QSharedPointer<ColumnDesc> desc(new ColumnDesc(dialog.name(), dialog.getContentType(), 0, SystemDesignDiagram::IO_COLUMN_WIDTH));
                 getDiagram()->addColumn(desc);
             }
             else
             {
-                ColumnDesc desc(dialog.name(), dialog.getContentType(), 0, SystemDesignDiagram::SW_COLUMN_WIDTH);
+                QSharedPointer<ColumnDesc> desc(new ColumnDesc(dialog.name(), dialog.getContentType(), 0, SystemDesignDiagram::SW_COLUMN_WIDTH));
                 getDiagram()->addColumn(desc);
             }
         }
@@ -448,8 +448,8 @@ void SystemDesignWidget::addColumn()
 
         if (dialog.exec() == QDialog::Accepted)
         {
-            getDiagram()->addColumn(ColumnDesc(dialog.name(), COLUMN_CONTENT_COMPONENTS, 0,
-                                               SystemDesignDiagram::SYSTEM_COLUMN_WIDTH));
+            getDiagram()->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc(dialog.name(),
+                COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SYSTEM_COLUMN_WIDTH)));
         }
     }
 }

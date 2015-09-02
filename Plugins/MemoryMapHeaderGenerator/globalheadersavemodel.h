@@ -10,7 +10,8 @@
 
 #include <IPXACTmodels/vlnv.h>
 #include <IPXACTmodels/component.h>
-#include <IPXACTmodels/design.h>
+
+#include <IPXACTmodels/Design/Design.h>
 
 #include <QAbstractTableModel>
 #include <QString>

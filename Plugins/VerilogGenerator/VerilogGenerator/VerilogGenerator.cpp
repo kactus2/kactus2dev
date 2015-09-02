@@ -140,7 +140,7 @@ bool VerilogGenerator::nothingToWrite() const
 //-----------------------------------------------------------------------------
 void VerilogGenerator::createWiresForInterconnections()
 {
-    foreach(Interface const&  primaryInterface, getPrimaryInterfacesForInterconnections())
+    foreach(QSharedPointer<ActiveInterface> primaryInterface, getPrimaryInterfacesForInterconnections())
     {
         createWiresForInterface(primaryInterface);
     }
@@ -149,24 +149,28 @@ void VerilogGenerator::createWiresForInterconnections()
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::getPrimaryInterfacesForInterconnections()
 //-----------------------------------------------------------------------------
-QList<Interface> VerilogGenerator::getPrimaryInterfacesForInterconnections()
+QList<QSharedPointer<ActiveInterface> > VerilogGenerator::getPrimaryInterfacesForInterconnections()
 {
-    QList<Interface> connectedStartInterfaces;
+    QList<QSharedPointer<ActiveInterface> > connectedStartInterfaces;
 
-    foreach(Interconnection const& connection, design_->getInterconnections())
+    foreach(QSharedPointer<Interconnection> connection, *design_->getInterconnections())
     {       
-        Interface startInterface = connection.getInterfaces().first;
-
-        if (interfaceModeForInterface(connection.getInterfaces().second) == General::MASTER ||
-            interfaceModeForInterface(connection.getInterfaces().second) == General::MIRROREDSLAVE)
+        if(!connection->getActiveInterfaces()->isEmpty())
         {
-            startInterface = connection.getInterfaces().second;
-        }               
+            QSharedPointer<ActiveInterface> startInterface = connection->getStartInterface();
 
-        if (!connectedStartInterfaces.contains(startInterface))
-        {
-            connectedStartInterfaces.append(startInterface);
+            if (interfaceModeForInterface(connection->getActiveInterfaces()->first()) == General::MASTER ||
+                interfaceModeForInterface(connection->getActiveInterfaces()->first()) == General::MIRROREDSLAVE)
+            {
+                startInterface = connection->getActiveInterfaces()->first();
+            }               
+
+            if (!connectedStartInterfaces.contains(startInterface))
+            {
+                connectedStartInterfaces.append(startInterface);
+            }
         }
+
     }
 
     return connectedStartInterfaces;
@@ -175,7 +179,7 @@ QList<Interface> VerilogGenerator::getPrimaryInterfacesForInterconnections()
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::createWiresForLogicalSignalsInInterface()
 //-----------------------------------------------------------------------------
-void VerilogGenerator::createWiresForInterface(Interface const& interface)
+void VerilogGenerator::createWiresForInterface(QSharedPointer<ActiveInterface> interface)
 {
     QSharedPointer<BusInterface> busInterface = getBusinterfaceForInterface(interface);
     QStringList logicalSignalsInInterface = busInterface->getLogicalPortNames();
@@ -191,7 +195,7 @@ void VerilogGenerator::createWiresForInterface(Interface const& interface)
 // Function: VerilogGenerator::createWireForLogicalSignalInInterface()
 //-----------------------------------------------------------------------------
 void VerilogGenerator::createWireForLogicalSignalInInterface(QString const& logicalSignal, 
-    Interface const& interface)
+    QSharedPointer<ActiveInterface> interface)
 {
     QString wireName = generateWireName(interface, logicalSignal);
     int wireSize = findWireSize(interface, logicalSignal); 
@@ -205,18 +209,19 @@ void VerilogGenerator::createWireForLogicalSignalInInterface(QString const& logi
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::generateWireName()
 //-----------------------------------------------------------------------------
-QString VerilogGenerator::generateWireName(Interface const& primaryInterface, QString const& logicalPort)
+QString VerilogGenerator::generateWireName(QSharedPointer<ActiveInterface> primaryInterface, QString const& logicalPort)
 {
     QString wireName = "";
 
-    if (design_->getConnectedInterfaces(primaryInterface).count() == 1)
+   /* if (design_->getConnectedInterfaces(primaryInterface).count() == 1)
     {
         wireName = findConnectionNameForInterface(primaryInterface) + "_" + logicalPort;
     }	
     else
-    {
-        wireName = primaryInterface.getComponentRef() + "_" + primaryInterface.getBusRef() + "_" + logicalPort;
-    }
+    {*/
+        wireName = primaryInterface->getComponentReference() + "_" + 
+            primaryInterface->getBusReference() + "_" + logicalPort;
+   // }
 
     return wireName;
 }
@@ -224,13 +229,13 @@ QString VerilogGenerator::generateWireName(Interface const& primaryInterface, QS
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::findConnectionNameForInterface()
 //-----------------------------------------------------------------------------
-QString VerilogGenerator::findConnectionNameForInterface(Interface interface)
+QString VerilogGenerator::findConnectionNameForInterface(QSharedPointer<ActiveInterface> interface)
 {    
-    foreach(Interconnection connection, design_->getInterconnections())
+    foreach(QSharedPointer<Interconnection> connection, *design_->getInterconnections())
     {
-        if (connection.getInterfaces().first == interface || connection.getInterfaces().second == interface)
+        if (connection->getStartInterface() == interface || connection->getActiveInterfaces()->first() == interface)
         {
-            return connection.name();
+            return connection->name();
         }
     }
 
@@ -240,15 +245,15 @@ QString VerilogGenerator::findConnectionNameForInterface(Interface interface)
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::findWireSize()
 //-----------------------------------------------------------------------------
-int VerilogGenerator::findWireSize(Interface const& primaryInterface, QString const& logicalName)
+int VerilogGenerator::findWireSize(QSharedPointer<ActiveInterface> primaryInterface, QString const& logicalName)
 {
     int highestBound =  findHighestMappedLogicalIndexInInterface(logicalName, primaryInterface);
 
-    foreach(Interface connectedInterface, design_->getConnectedInterfaces(primaryInterface))
+   /* foreach(QSharedPointer<ActiveInterface> connectedInterface, design_->getConnectedInterfaces(primaryInterface))
     {
         int highestBoundInInterface = findHighestMappedLogicalIndexInInterface(logicalName, connectedInterface);
         highestBound = qMax(highestBound, highestBoundInInterface);
-    }
+    }*/
 
     return highestBound + 1;
 }
@@ -257,12 +262,12 @@ int VerilogGenerator::findWireSize(Interface const& primaryInterface, QString co
 // Function: VerilogGenerator::findHighestMappedLogicalIndexInInterface()
 //-----------------------------------------------------------------------------
 int VerilogGenerator::findHighestMappedLogicalIndexInInterface(QString const& logicalName, 
-    Interface const& interface)
+    QSharedPointer<ActiveInterface> interface)
 {
     int highestBound = 0;
     foreach(QSharedPointer<PortMap> startPortMap, findPortMapsForLogicalPortInInterface(logicalName, interface))
     {
-        General::PortBounds logicalBounds = logicalBoundsInInstance(interface.getComponentRef(), startPortMap);
+        General::PortBounds logicalBounds = logicalBoundsInInstance(interface->getComponentReference(), startPortMap);
         highestBound = qMax(highestBound, qMax(logicalBounds.left_, logicalBounds.right_));
     }	
     
@@ -303,7 +308,7 @@ QSharedPointer<Component> VerilogGenerator::getComponentForInstance(QString cons
 // Function: VerilogGenerator::findPortMapsForLogicalPortInInterface()
 //-----------------------------------------------------------------------------
 QList<QSharedPointer<PortMap> > VerilogGenerator::findPortMapsForLogicalPortInInterface(QString const& logicalPort, 
-    Interface const& interface) const
+    QSharedPointer<ActiveInterface> interface) const
 {
     QList<QSharedPointer<PortMap> > portMaps;
     foreach(QSharedPointer<PortMap> slavePortMap, getBusinterfaceForInterface(interface)->getPortMaps())
@@ -320,22 +325,22 @@ QList<QSharedPointer<PortMap> > VerilogGenerator::findPortMapsForLogicalPortInIn
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::mapConnectedInstances()
 //-----------------------------------------------------------------------------
-void VerilogGenerator::connectPortsInConnectedInstancesToWire(Interface const& startInterface, 
+void VerilogGenerator::connectPortsInConnectedInstancesToWire(QSharedPointer<ActiveInterface> startInterface, 
     QString const& logicalPort, QString const& wireName, int const& wireSize)
 {
-    foreach(Interface endInterface, design_->getConnectedInterfaces(startInterface))
+    /*foreach(QSharedPointer<ActiveInterface> endInterface, design_->getConnectedInterfaces(startInterface))
     {
         connectPortsInInterfaceToWire(endInterface, logicalPort, wireName, wireSize);
-    }
+    }*/
 }
 
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::connectPortsInInterfaceToWire()
 //-----------------------------------------------------------------------------
-void VerilogGenerator::connectPortsInInterfaceToWire(Interface const& interface, QString const& logicalPort, 
+void VerilogGenerator::connectPortsInInterfaceToWire(QSharedPointer<ActiveInterface> interface, QString const& logicalPort, 
     QString const& wireName, int const& wireSize)
 {
-    QString instanceName = interface.getComponentRef();
+    QString instanceName = interface->getComponentReference();
     foreach(QSharedPointer<PortMap> endPortMap, findPortMapsForLogicalPortInInterface(logicalPort, interface))
     {
         connectInstancePortToWire(instanceName, endPortMap, wireName, wireSize);
@@ -378,7 +383,7 @@ void VerilogGenerator::addWriterForWire(QString wireName, int wireSize)
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::interfaceModeForInterface()
 //-----------------------------------------------------------------------------
-General::InterfaceMode VerilogGenerator::interfaceModeForInterface(Interface const& interface)
+General::InterfaceMode VerilogGenerator::interfaceModeForInterface(QSharedPointer<ActiveInterface> interface)
 {
     General::InterfaceMode mode = General::INTERFACE_MODE_COUNT;
 
@@ -394,14 +399,14 @@ General::InterfaceMode VerilogGenerator::interfaceModeForInterface(Interface con
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::getBusinterfaceForInterface()
 //-----------------------------------------------------------------------------
-QSharedPointer<BusInterface> VerilogGenerator::getBusinterfaceForInterface(Interface const& interface) const
+QSharedPointer<BusInterface> VerilogGenerator::getBusinterfaceForInterface(QSharedPointer<ActiveInterface> interface) const
 {
     QSharedPointer<BusInterface> busInterface;    
-    QSharedPointer<Component> component = getComponentForInstance(interface.getComponentRef());
+    QSharedPointer<Component> component = getComponentForInstance(interface->getComponentReference());
 
     if (component)
     {
-        busInterface = component->getBusInterface(interface.getBusRef());
+        busInterface = component->getBusInterface(interface->getBusReference());
     }
 
     return busInterface;
@@ -412,16 +417,16 @@ QSharedPointer<BusInterface> VerilogGenerator::getBusinterfaceForInterface(Inter
 //-----------------------------------------------------------------------------
 void VerilogGenerator::createWritersForComponentInstances()
 {
-    foreach(ComponentInstance instance, design_->getComponentInstances())
+    foreach(QSharedPointer<ComponentInstance> instance, *design_->getComponentInstances())
     {
-        QSharedPointer<Component> component = getComponentForInstance(instance.getInstanceName());
+        QSharedPointer<Component> component = getComponentForInstance(instance->getInstanceName());
 
         if (component)
         {
             QSharedPointer<ComponentInstanceVerilogWriter> instanceWriter(
                 new ComponentInstanceVerilogWriter(instance, component, sorter_, 
                 createFormatterForComponent(component)));
-            instanceWriters_.insert(instance.getInstanceName(), instanceWriter);            
+            instanceWriters_.insert(instance->getInstanceName(), instanceWriter);            
         }
     }
 }
@@ -431,7 +436,25 @@ void VerilogGenerator::createWritersForComponentInstances()
 //-----------------------------------------------------------------------------
 void VerilogGenerator::connectHierarchicalConnectionsToInstances()
 {
-    foreach(HierConnection connection, design_->getHierarchicalConnections())
+    foreach(QSharedPointer<Interconnection> connection, *design_->getInterconnections())
+    {
+        if (!connection->getHierInterfaces()->isEmpty())
+        {
+            QSharedPointer<HierInterface> topInterface = connection->getHierInterfaces()->first();
+
+            QSharedPointer<BusInterface> topBusInterface = topComponent_->getBusInterface(topInterface->getBusReference());
+
+            QString connectedInstance = connection->getStartInterface()->getComponentReference();
+            QSharedPointer<Component> instanceComponent = getComponentForInstance(connectedInstance);
+
+            if (topBusInterface && instanceComponent)
+            {            
+                connectTopBusInterfaceToInterfaceInInstance(topBusInterface, connection->getStartInterface());
+            }
+        }
+    }
+
+    /*foreach(HierConnection connection, design_->getHierarchicalConnections())
     {
         QSharedPointer<BusInterface> topBusInterface = topComponent_->getBusInterface(connection.getInterfaceRef());
 
@@ -442,16 +465,16 @@ void VerilogGenerator::connectHierarchicalConnectionsToInstances()
         {            
             connectTopBusInterfaceToInterfaceInInstance(topBusInterface, connection.getInterface());
         }
-    }
+    }*/
 }
 
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::connectTopBusInterfaceToInterfaceInInstance()
 //-----------------------------------------------------------------------------
-void VerilogGenerator::connectTopBusInterfaceToInterfaceInInstance(QSharedPointer<BusInterface> topBusInterface, 
-    Interface const& instanceInterface)
+void VerilogGenerator::connectTopBusInterfaceToInterfaceInInstance(QSharedPointer<BusInterface> topIf, 
+    QSharedPointer<ActiveInterface> instanceInterface)
 {
-    QString instanceName = instanceInterface.getComponentRef();    
+    QString instanceName = instanceInterface->getComponentReference();    
     if (!instanceWriters_.contains(instanceName))
     {
         return;
@@ -459,9 +482,9 @@ void VerilogGenerator::connectTopBusInterfaceToInterfaceInInstance(QSharedPointe
 
     QSharedPointer<ComponentInstanceVerilogWriter> instanceWriter = instanceWriters_.value(instanceName);
 
-    QSharedPointer<Component> instanceComponent = getComponentForInstance(instanceInterface.getComponentRef());
+    QSharedPointer<Component> instanceComponent = getComponentForInstance(instanceInterface->getComponentReference());
 
-    foreach(QSharedPointer<PortMap> topMap, topBusInterface->getPortMaps())
+    foreach(QSharedPointer<PortMap> topMap, topIf->getPortMaps())
     {
         foreach(QSharedPointer<PortMap> instancePortMap, 
             findPortMapsForLogicalPortInInterface(topMap->logicalPort(), instanceInterface))
@@ -481,9 +504,9 @@ void VerilogGenerator::connectTopBusInterfaceToInterfaceInInstance(QSharedPointe
                 topComponent_->getPortRightBound(instancePort));
 
             if (canConnectForFullWidth(instancePortWidth, topPortWidth, alignment))
-            {
+            {*/
                 instanceWriter->assignPortForFullWidth(instancePort, topPort);
-            }
+            /*}
             else
             {
                 instanceWriter->assignPortForRange(instancePort, topPort, alignment.port2Left_, alignment.port2Right_);    
@@ -508,7 +531,7 @@ bool VerilogGenerator::canConnectForFullWidth(int instancePortWidth, int topPort
 //-----------------------------------------------------------------------------
 void VerilogGenerator::connectAndWireAdHocConnections()
 {
-    foreach(AdHocConnection const& adHocConnection, design_->getAdHocConnections())
+    foreach(QSharedPointer<AdHocConnection> adHocConnection, *design_->getAdHocConnections())
     {
         if (isHierarchicalAdHocConnection(adHocConnection))
         {
@@ -524,24 +547,25 @@ void VerilogGenerator::connectAndWireAdHocConnections()
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::isHierarchicalAdHocConnection()
 //-----------------------------------------------------------------------------
-bool VerilogGenerator::isHierarchicalAdHocConnection(AdHocConnection const& adHocConnection)
+bool VerilogGenerator::isHierarchicalAdHocConnection(QSharedPointer<AdHocConnection> adHocConnection)
 {
-    return !adHocConnection.externalPortReferences().isEmpty();
+    return !adHocConnection->getExternalPortReferences()->isEmpty();
 }
 
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::connectInstancePortsTopPorts()
 //-----------------------------------------------------------------------------
-void VerilogGenerator::connectInstancePortsTopPort(AdHocConnection const& adHocConnection)
+void VerilogGenerator::connectInstancePortsTopPort(QSharedPointer<AdHocConnection> adHocConnection)
 {
-    PortRef topReference = adHocConnection.externalPortReferences().first();
+    QSharedPointer<PortReference> topReference = adHocConnection->getExternalPortReferences()->first();
 
-    foreach(PortRef instanceReference, adHocConnection.internalPortReferences())
+    foreach(QSharedPointer<PortReference> instanceReference, *adHocConnection->getInternalPortReferences())
     {
-        if (instanceWriters_.contains(instanceReference.getComponentRef()))
+        if (instanceWriters_.contains(instanceReference->getComponentRef()))
         {
-            QSharedPointer<ComponentInstanceVerilogWriter> instanceWriter = instanceWriters_.value(instanceReference.getComponentRef());
-            instanceWriter->assignPortForFullWidth(instanceReference.getPortRef(), topReference.getPortRef());
+            QSharedPointer<ComponentInstanceVerilogWriter> instanceWriter = 
+                instanceWriters_.value(instanceReference->getComponentRef());
+            instanceWriter->assignPortForFullWidth(instanceReference->getPortRef(), topReference->getPortRef());
         }
     }
 }
@@ -549,11 +573,11 @@ void VerilogGenerator::connectInstancePortsTopPort(AdHocConnection const& adHocC
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::shouldCreateWireForAdHocConnection()
 //-----------------------------------------------------------------------------
-bool VerilogGenerator::shouldCreateWireForAdHocConnection(AdHocConnection const& adHocConnection)
+bool VerilogGenerator::shouldCreateWireForAdHocConnection(QSharedPointer<AdHocConnection> adHocConnection)
 {
-    foreach(PortRef instanceReference, adHocConnection.internalPortReferences())
+    foreach(QSharedPointer<PortReference> instanceReference, *adHocConnection->getInternalPortReferences())
     {
-        QSharedPointer<Component> component = getComponentForInstance(instanceReference.getComponentRef());
+        QSharedPointer<Component> component = getComponentForInstance(instanceReference->getComponentRef());
         if (component)
         {
             return true;
@@ -566,9 +590,9 @@ bool VerilogGenerator::shouldCreateWireForAdHocConnection(AdHocConnection const&
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::createWireForAdHocConnection()
 //-----------------------------------------------------------------------------
-void VerilogGenerator::createWireForAdHocConnection(AdHocConnection const& adHocConnection)
+void VerilogGenerator::createWireForAdHocConnection(QSharedPointer<AdHocConnection> adHocConnection)
 {
-    QString wireName = adHocConnection.name();
+    QString wireName = adHocConnection->name();
     int wireSize = findWireSizeForAdHocConnection(adHocConnection);
     
     addWriterForWire(wireName, wireSize);
@@ -579,23 +603,25 @@ void VerilogGenerator::createWireForAdHocConnection(AdHocConnection const& adHoc
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::findWireSizeForAdHocConnection()
 //-----------------------------------------------------------------------------
-int VerilogGenerator::findWireSizeForAdHocConnection(AdHocConnection const& adHocConnection) const
+int VerilogGenerator::findWireSizeForAdHocConnection(QSharedPointer<AdHocConnection> adHocConnection) const
 {
     int wireSize = 1;
-    foreach(PortRef internalRef, adHocConnection.internalPortReferences())
+    foreach(QSharedPointer<PortReference> internalRef, *adHocConnection->getInternalPortReferences())
     {
         int portSize = 1;
-        if (internalRef.getLeft() == -1 || internalRef.getRight() == -1)
+
+        QSharedPointer<PartSelect> part = internalRef->getPartSelect();
+        if (part.isNull())
         {
-            QSharedPointer<Component> component = getComponentForInstance(internalRef.getComponentRef());
+            QSharedPointer<Component> component = getComponentForInstance(internalRef->getComponentRef());
             if (component)
             {
-                portSize = component->getPortWidth(internalRef.getPortRef());
+                portSize = component->getPortWidth(internalRef->getPortRef());
             }
         }
         else
         {
-            portSize = abs(internalRef.getLeft() - internalRef.getRight()) + 1;
+            portSize = abs(part->getLeftRange().toInt() - part->getRightRange().toInt()) + 1;
         }
         wireSize = qMax(wireSize, portSize);
     }	
@@ -605,15 +631,15 @@ int VerilogGenerator::findWireSizeForAdHocConnection(AdHocConnection const& adHo
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::connectPortsInAdHocConnectionToWire()
 //-----------------------------------------------------------------------------
-void VerilogGenerator::connectPortsInAdHocConnectionToWire(AdHocConnection const& adHocConnection, 
+void VerilogGenerator::connectPortsInAdHocConnectionToWire(QSharedPointer<AdHocConnection> adHocConnection, 
     QString const& wireName)
 {
-    foreach(PortRef internalRef, adHocConnection.internalPortReferences())
+    foreach(QSharedPointer<PortReference> internalRef, *adHocConnection->getInternalPortReferences())
     {
-        if (instanceWriters_.contains(internalRef.getComponentRef()))
+        if (instanceWriters_.contains(internalRef->getComponentRef()))
         {
-            QSharedPointer<ComponentInstanceVerilogWriter> instanceWriter = instanceWriters_.value(internalRef.getComponentRef());
-            instanceWriter->assignPortForFullWidth(internalRef.getPortRef(), wireName);
+            QSharedPointer<ComponentInstanceVerilogWriter> instanceWriter = instanceWriters_.value(internalRef->getComponentRef());
+            instanceWriter->assignPortForFullWidth(internalRef->getPortRef(), wireName);
         }
     }
 }

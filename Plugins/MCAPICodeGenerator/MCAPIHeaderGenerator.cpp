@@ -90,7 +90,7 @@ QString MCAPIHeaderGenerator::createIndentString()
 //-----------------------------------------------------------------------------
 // Function: generateInstanceHeader()
 //-----------------------------------------------------------------------------
-void MCAPIHeaderGenerator::generateInstanceHeader(QString& directory, MCAPIParser::NodeData& nodeData)
+void MCAPIHeaderGenerator::generateInstanceHeader(QString const& directory, MCAPIParser::NodeData const& nodeData)
 {
     // Create folder for the instance.
     QDir path;
@@ -140,7 +140,7 @@ void MCAPIHeaderGenerator::generateInstanceHeader(QString& directory, MCAPIParse
 // Function: MCAPIHeaderGenerator::addGeneratedMCAPIToFileset()
 //-----------------------------------------------------------------------------
 void MCAPIHeaderGenerator::addGeneratedMCAPIToFileset(QString directory, QSharedPointer<Component> topComponent,
-    SWInstance& instance, QSharedPointer<DesignConfiguration const> desgConf)
+    QSharedPointer<SWInstance> instance, QSharedPointer<DesignConfiguration const> desgConf)
 {
     QString sysViewName;
 
@@ -157,16 +157,16 @@ void MCAPIHeaderGenerator::addGeneratedMCAPIToFileset(QString directory, QShared
     QString fileSetName;
 
     // Check if the software instance has and existing fileSet reference. 
-    if ( instance.getFileSetRef().isEmpty() )
+    if ( instance->getFileSetRef().isEmpty() )
     {
         // If not, make a new one.
-        fileSetName = sysViewName + "_" + instance.getInstanceName() + "_headers";
-        instance.setFileSetRef( fileSetName );
+        fileSetName = sysViewName + "_" + instance->getInstanceName() + "_headers";
+        instance->setFileSetRef( fileSetName );
     }
     else
     {
         // If there is pre-existing reference, use it.
-        fileSetName = instance.getFileSetRef();
+        fileSetName = instance->getFileSetRef();
     }
 
     // Obtain the the fileSet by name and set it as a source file group.

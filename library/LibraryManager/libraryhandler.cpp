@@ -24,12 +24,14 @@
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 #include <IPXACTmodels/BusDefinition/BusDefinitionWriter.h>
 
+#include <IPXACTmodels/Design/Design.h>
+#include <IPXACTmodels/Design/DesignWriter.h>
+
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 #include <IPXACTmodels/designConfiguration/DesignConfigurationWriter.h>
 
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/librarycomponent.h>
-#include <IPXACTmodels/design.h>
 #include <IPXACTmodels/vlnv.h>
 
 #include <QString>
@@ -304,7 +306,7 @@ fileList& handledFiles, bool& yesToAll, bool& noToAll) {
 	QDir vlnvTarget;
 
 	// get the path that matches the VLNV structure
-	QString dirPath = vlnv.createDirPath();
+	QString dirPath = vlnv.toString("/");
 
 	// and create the path to the target directory
 	if (!vlnvTarget.mkpath(dirPath)) {
@@ -659,6 +661,12 @@ bool LibraryHandler::writeModelToFile( const QString path,
         DesignConfigurationWriter designConfigurationWriter;
         QSharedPointer<DesignConfiguration> designConfiguration = model.dynamicCast<DesignConfiguration>();
         designConfigurationWriter.writeDesignConfiguration(xmlWriter, designConfiguration);
+    }
+    else if (model->getVlnv().getType() == VLNV::DESIGN)
+    {
+        DesignWriter designWriter;
+        QSharedPointer<Design> design = model.dynamicCast<Design>();
+        designWriter.writeDesign(xmlWriter, design);
     }
     //model->write(newFile);
 

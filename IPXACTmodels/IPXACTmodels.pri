@@ -7,15 +7,23 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./validators/ModelParameterValidator.h \
+HEADERS += ./Design/MonitorInterface.h \
+    ./Design/PortReference.h \
+    ./Design/HierInterface.h \
+    ./Design/DesignReader.h \
+    ./Design/ActiveInterface.h \
+    ./Design/MonitorInterconnection.h \
+    ./Design/Interconnection.h \
+    ./kactusExtensions/ColumnDesc.h \
+    ./Design/Design.h \
+    ./validators/ModelParameterValidator.h \
     ./validators/ParameterValidator2014.h \
     ../resource.h \
     ./AbstractMemoryMap.h \
     ./addressblock.h \
     ./addressspace.h \
-    ./AdHocConnection.h \
+    ./kactusExtensions/ApiInterconnection.h \
     ./alternateregister.h \
-    ./ApiConnection.h \
     ./ApiDefinition.h \
     ./ApiFunction.h \
     ./ApiFunctionParameter.h \
@@ -27,18 +35,17 @@ HEADERS += ./validators/ModelParameterValidator.h \
     ./businterface.h \
     ./channel.h \
     ./choice.h \
-    ./ColumnDesc.h \
-    ./ComConnection.h \
+    ./Design/DesignWriter.h \
     ./ComDefinition.h \
     ./ComInterface.h \
     ./common/Assertion.h \
     ./common/BooleanValue.h \
     ./component.h \
     ./componentgenerator.h \
-    ./ComponentInstance.h \
+    ./kactusExtensions/SWInstance.h \
     ./ComProperty.h \
     ./cpu.h \
-    ./design.h \
+    ./Design/AdHocConnection.h \
     ./designconfabstractor.h \
     ./enumeratedvalue.h \
     ./Enumeration.h \
@@ -53,11 +60,7 @@ HEADERS += ./validators/ModelParameterValidator.h \
     ./generatorchain.h \
     ./generatorchainselector.h \
     ./GenericVendorExtension.h \
-    ./HierApiDependency.h \
-    ./HierComConnection.h \
-    ./HierConnection.h \
-    ./Interconnection.h \
-    ./Interface.h \
+    ./Design/ComponentInstanceReader.h \
     ./ipxactmodels_global.h \
     ./librarycomponent.h \
     ./masterinterface.h \
@@ -84,11 +87,10 @@ HEADERS += ./validators/ModelParameterValidator.h \
     ./slaveinterface.h \
     ./subspacemap.h \
     ./swbuildcommand.h \
-    ./SWInstance.h \
+    ./Design/ComponentInstance.h \
     ./SWView.h \
     ./SystemView.h \
     ./transactional.h \
-    ./transactionalabstraction.h \
     ./VendorExtension.h \
     ./view.h \
     ./vlnv.h \
@@ -104,6 +106,7 @@ HEADERS += ./validators/ModelParameterValidator.h \
     ./kactusExtensions/Kactus2Vector.h \
     ./kactusExtensions/KactusAttribute.h \
     ./kactusExtensions/ModuleParameter.h \
+    ./AbstractionDefinition/TransactionalAbstractionReader.h \
     ./validators/BinaryValidator.h \
     ./validators/namevalidator.h \
     ./validators/NMTokenValidator.h \
@@ -146,14 +149,17 @@ HEADERS += ./validators/ModelParameterValidator.h \
     ./AbstractionDefinition/TransactionalAbstraction.h \
     ./AbstractionDefinition/TransactionalAbstractionWriter.h \
     ./AbstractionDefinition/TransactionalPort.h \
-    ./common/Protocol.h
+    ./common/Protocol.h \
+    ./common/PartSelect.h \
+    ./kactusExtensions/ComInterconnection.h \
+    ./kactusExtensions/HierApiInterconnection.h \
+    ./kactusExtensions/HierComInterconnection.h \
+    ./Design/ComponentInstanceWriter.h
 SOURCES += ./AbstractMemoryMap.cpp \
     ./addressblock.cpp \
     ./addressspace.cpp \
-    ./AdHocConnection.cpp \
-    ./alternateregister.cpp \
-    ./ApiConnection.cpp \
     ./ApiDefinition.cpp \
+    ./alternateregister.cpp \
     ./ApiFunction.cpp \
     ./ApiFunctionParameter.cpp \
     ./ApiInterface.cpp \
@@ -164,16 +170,13 @@ SOURCES += ./AbstractMemoryMap.cpp \
     ./businterface.cpp \
     ./channel.cpp \
     ./choice.cpp \
-    ./ColumnDesc.cpp \
-    ./ComConnection.cpp \
     ./ComDefinition.cpp \
     ./ComInterface.cpp \
     ./component.cpp \
     ./componentgenerator.cpp \
-    ./ComponentInstance.cpp \
+    ./kactusExtensions/ColumnDesc.cpp \
     ./ComProperty.cpp \
     ./cpu.cpp \
-    ./design.cpp \
     ./designconfabstractor.cpp \
     ./enumeratedvalue.cpp \
     ./Enumeration.cpp \
@@ -188,11 +191,6 @@ SOURCES += ./AbstractMemoryMap.cpp \
     ./generatorchain.cpp \
     ./generatorchainselector.cpp \
     ./GenericVendorExtension.cpp \
-    ./HierApiDependency.cpp \
-    ./HierComConnection.cpp \
-    ./HierConnection.cpp \
-    ./Interconnection.cpp \
-    ./Interface.cpp \
     ./librarycomponent.cpp \
     ./masterinterface.cpp \
     ./memoryblockdata.cpp \
@@ -218,11 +216,10 @@ SOURCES += ./AbstractMemoryMap.cpp \
     ./slaveinterface.cpp \
     ./subspacemap.cpp \
     ./swbuildcommand.cpp \
-    ./SWInstance.cpp \
     ./SWView.cpp \
     ./SystemView.cpp \
     ./transactional.cpp \
-    ./transactionalabstraction.cpp \
+    ./Design/PortReference.cpp \
     ./view.cpp \
     ./vlnv.cpp \
     ./wire.cpp \
@@ -279,8 +276,27 @@ SOURCES += ./AbstractMemoryMap.cpp \
     ./designConfiguration/InterfaceRef.cpp \
     ./designConfiguration/MultipleAbstractorInstances.cpp \
     ./designConfiguration/ViewConfiguration.cpp \
+    ./kactusExtensions/SWInstance.cpp \
+    ./Design/ComponentInstanceReader.cpp \
     ./AbstractionDefinition/TransactionalPort.cpp \
+    ./Design/MonitorInterface.cpp \
     ./AbstractionDefinition/TransactionalAbstractionWriter.cpp \
     ./validators/ParameterValidator2014.cpp \
     ./validators/ModelParameterValidator.cpp \
-    ./common/Protocol.cpp
+    ./common/Protocol.cpp \
+    ./AbstractionDefinition/TransactionalAbstractionReader.cpp \
+    ./Design/ActiveInterface.cpp \
+    ./Design/AdHocConnection.cpp \
+    ./Design/ComponentInstance.cpp \
+    ./Design/Design.cpp \
+    ./Design/DesignReader.cpp \
+    ./Design/DesignWriter.cpp \
+    ./Design/HierInterface.cpp \
+    ./Design/Interconnection.cpp \
+    ./Design/MonitorInterconnection.cpp \
+    ./common/PartSelect.cpp \
+    ./kactusExtensions/ApiInterconnection.cpp \
+    ./kactusExtensions/ComInterconnection.cpp \
+    ./kactusExtensions/HierApiInterconnection.cpp \
+    ./kactusExtensions/HierComInterconnection.cpp \
+    ./Design/ComponentInstanceWriter.cpp

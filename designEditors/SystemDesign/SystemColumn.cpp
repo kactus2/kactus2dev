@@ -23,9 +23,10 @@
 //-----------------------------------------------------------------------------
 // Function: SystemColumn()
 //-----------------------------------------------------------------------------
-SystemColumn::SystemColumn(ColumnDesc const& desc, GraphicsColumnLayout* layout)
+SystemColumn::SystemColumn(QSharedPointer<ColumnDesc> desc, GraphicsColumnLayout* layout)
     : GraphicsColumn(desc, layout)
 {
+
 }
 
 //-----------------------------------------------------------------------------

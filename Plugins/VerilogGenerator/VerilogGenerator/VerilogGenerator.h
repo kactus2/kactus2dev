@@ -14,9 +14,10 @@
 
 #include "../veriloggeneratorplugin_global.h"
 
+#include <IPXACTmodels/Design/Design.h>
+
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/generaldeclarations.h>
-#include <IPXACTmodels/design.h>
 #include <IPXACTmodels/PortMap.h>
 
 #include <QTextStream>
@@ -102,7 +103,7 @@ private:
      *
      *      @param [in] interface   The interface for which to create wires.
      */
-    void createWiresForInterface(Interface const& interface);
+    void createWiresForInterface(QSharedPointer<ActiveInterface> interface);
 
         /*!
      *  Creates wires for a given logical signal in a given interface.
@@ -110,7 +111,7 @@ private:
      *      @param [in] logicalSignal   The logical signal for which to create wires.
      *      @param [in] interface       The interface for which to create wires.
      */
-    void createWireForLogicalSignalInInterface(QString const& logicalSignal, Interface const& interface);
+    void createWireForLogicalSignalInInterface(QString const& logicalSignal, QSharedPointer<ActiveInterface> interface);
 
     /*!
      *  Gets the primary side interfaces in all interconnections. A primary interface e.g. master is potentially 
@@ -118,7 +119,7 @@ private:
      *
      *      @return All primary side interfaces.
      */
-    QList<Interface> getPrimaryInterfacesForInterconnections();
+    QList<QSharedPointer<ActiveInterface> > getPrimaryInterfacesForInterconnections();
 
     /*!
      *  Generates a name for a wire.
@@ -128,7 +129,7 @@ private:
      *
      *      @return Generated name for a wire.
      */
-    QString generateWireName(Interface const& primaryInterface, QString const& logicalPort);
+    QString generateWireName(QSharedPointer<ActiveInterface> primaryInterface, QString const& logicalPort);
 
     /*!
      *  Finds the name of the interconnection for an interface.
@@ -137,7 +138,7 @@ private:
      *
      *      @return The name of the interconnection.
      */
-    QString findConnectionNameForInterface(Interface interface);
+    QString findConnectionNameForInterface(QSharedPointer<ActiveInterface> interface);
 
     /*!
      *  Finds the appropriate size for a wire.
@@ -147,7 +148,7 @@ private:
      *
      *      @return The size for the wire.
      */
-    int findWireSize(Interface const& primaryInterface, QString const& logicalName);
+    int findWireSize(QSharedPointer<ActiveInterface> primaryInterface, QString const& logicalName);
     
     /*!
      *  Finds the highest connected logical bit index for a logical signal in a given interface.
@@ -157,7 +158,7 @@ private:
      *
      *      @return The highest connected logical bit index in the interface.
      */
-    int findHighestMappedLogicalIndexInInterface(QString const& logicalName, Interface const& interface);
+    int findHighestMappedLogicalIndexInInterface(QString const& logicalName, QSharedPointer<ActiveInterface> interface);
 
     /*!
      *  Finds the logical bounds for a port map in an instance.
@@ -188,7 +189,7 @@ private:
      *      @return The port maps for the logcial signal in the interface.
      */
     QList<QSharedPointer<PortMap> > findPortMapsForLogicalPortInInterface(QString const& logicalPort,
-        Interface const& interface) const;
+        QSharedPointer<ActiveInterface> interface) const;
 
     /*!
      *  Connects a wire to all instances connected to the given interface.
@@ -198,7 +199,7 @@ private:
      *      @param [in] wireName        The name of the wire to map.
      *      @param [in] wireSize        The size of the wire to map.
      */
-    void connectPortsInConnectedInstancesToWire(Interface const& startInterface, QString const& logicalPort, 
+    void connectPortsInConnectedInstancesToWire(QSharedPointer<ActiveInterface> startInterface, QString const& logicalPort, 
         QString const& wireName, int const& wireSize);
 
     /*!
@@ -211,7 +212,7 @@ private:
      *
      *      @return <Description>.
      */
-    void connectPortsInInterfaceToWire(Interface const& interface, QString const& logicalPort,
+    void connectPortsInInterfaceToWire(QSharedPointer<ActiveInterface> interface, QString const& logicalPort,
         QString const& wireName, int const& wireSize);
 
     /*!
@@ -240,7 +241,7 @@ private:
      *
      *      @return The interface mode of the bus interface in the component referenced in the interface.
      */
-    General::InterfaceMode interfaceModeForInterface(Interface const& interface);
+    General::InterfaceMode interfaceModeForInterface(QSharedPointer<ActiveInterface> interface);
 
     /*!
      *  Finds the bus interface referenced by an interface.
@@ -249,7 +250,7 @@ private:
      *
      *      @return The referenced bus interface.
      */
-    QSharedPointer<BusInterface> getBusinterfaceForInterface(Interface const& interface) const;
+    QSharedPointer<BusInterface> getBusinterfaceForInterface(QSharedPointer<ActiveInterface> interface) const;
 
     /*!
      *  Parses all the component instances in the design.
@@ -269,7 +270,7 @@ private:
      *      @param [in] instanceInterface   The connected interface.
      */
     void connectTopBusInterfaceToInterfaceInInstance(QSharedPointer<BusInterface> topIf,
-        Interface const& instanceInterface);  
+        QSharedPointer<ActiveInterface> instanceInterface);  
     
     /*!
      *  Checks if an instance port can be directly connected to a top port.
@@ -295,14 +296,14 @@ private:
      *
      *      @return True, if the ad-hoc connection is hierarchical, otherwise false.
      */
-    bool isHierarchicalAdHocConnection(AdHocConnection const &adHocConnection);
+    bool isHierarchicalAdHocConnection(QSharedPointer<AdHocConnection> adHocConnection);
 
     /*!
      *  Adds port connection to all component instances connected by the given hierarchical ad-hoc connection.
      *
      *      @param [in] adHocConnection   The ad-hoc connection whose connected instances to map.
      */
-    void connectInstancePortsTopPort(AdHocConnection const& adHocConnection);
+    void connectInstancePortsTopPort(QSharedPointer<AdHocConnection> adHocConnection);
 
     /*!
      *  Checks if a wire should be created to represent the given ad-hoc connection.
@@ -311,7 +312,7 @@ private:
      *
      *      @return True, if a wire should be created, otherwise false.
      */
-    bool shouldCreateWireForAdHocConnection(AdHocConnection const& adHocConnection);
+    bool shouldCreateWireForAdHocConnection(QSharedPointer<AdHocConnection> adHocConnection);
 
     /*!
      *  Creates a wire writer to represent the given ad-hoc connection and connects ports in 
@@ -319,7 +320,7 @@ private:
      *
      *      @param [in] adHocConnection   The ad-hoc connection to create as wire and to connect.
      */
-    void createWireForAdHocConnection(AdHocConnection const& adHocConnection);
+    void createWireForAdHocConnection(QSharedPointer<AdHocConnection> adHocConnection);
 
     /*!
      *  Finds the required size for a wire representing a given ad-hoc connection.
@@ -328,7 +329,7 @@ private:
      *
      *      @return The size of the wire required to represent the ad-hoc connection.
      */
-    int findWireSizeForAdHocConnection(AdHocConnection const &adHocConnection) const;
+    int findWireSizeForAdHocConnection(QSharedPointer<AdHocConnection> adHocConnection) const;
 
     /*!
      *  Connects all ports referenced in an ad-hoc connection to the given wire name.
@@ -336,7 +337,7 @@ private:
      *      @param [in] adHocConnection     The ad-hoc connection whose referenced ports to connect.
      *      @param [in] wireName            The name of the wire to connect.
      */
-    void connectPortsInAdHocConnectionToWire(AdHocConnection const& adHocConnection, QString const& wireName);
+    void connectPortsInAdHocConnectionToWire(QSharedPointer<AdHocConnection> adHocConnection, QString const& wireName);
 
      /*!
       *  Adds the generated writers to the top writer in correct order.            

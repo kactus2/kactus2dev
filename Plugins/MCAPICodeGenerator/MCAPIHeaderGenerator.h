@@ -14,8 +14,12 @@
 
 #include <IPXACTmodels/ComDefinition.h>
 #include <IPXACTmodels/ComInterface.h>
-#include <IPXACTmodels/design.h>
+
+#include <IPXACTmodels/Design/Design.h>
+#include <IPXACTmodels/Design/PortReference.h>
+
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+
 #include <Plugins/PluginSystem/IPluginUtility.h>
 
 #include <MCAPIParser.h>
@@ -62,7 +66,7 @@ private:
      *      @param [in] filename   The name of the source file to write.
      *      @param [in] nodeData   MCAPI node data associated with the instance.
      */
-    void generateInstanceHeader(QString& directory, MCAPIParser::NodeData& nodeData);
+    void generateInstanceHeader(QString const& directory, MCAPIParser::NodeData const& nodeData);
 
     /*!
      *  Add generated MCAPI code files to the fileSet of the associated component.
@@ -73,7 +77,7 @@ private:
      *      @param [in] desgConf   The design configuration associated with the design.
      */
      void addGeneratedMCAPIToFileset(QString directory, QSharedPointer<Component> topComponent,
-        SWInstance& instance, QSharedPointer<DesignConfiguration const> desgConf);
+        QSharedPointer<SWInstance> instance, QSharedPointer<DesignConfiguration const> desgConf);
 
     /*!
      *  Find connections of given software instance and returns a list of pairs, where the first is from the
@@ -84,8 +88,9 @@ private:
      *      @param [in] component   The software component of ourInstance.
      *      @return List of "our" interfaces paired with their connected interfaces.
      */
-     QList<QPair<QSharedPointer<ComInterface>, ComInterfaceRef> > findConnectedComInterfaces(
-        QSharedPointer<const Design> design, SWInstance &ourInstance, QSharedPointer<Component> component );
+     QList<QPair<QSharedPointer<ComInterface>, PortReference> > findConnectedComInterfaces(
+        QSharedPointer<const Design> design, QSharedPointer<SWInstance> ourInstance,
+        QSharedPointer<Component> component );
 
      /*!
      *  Writes remote endpoint of 'ourInterface' and endpoint definitions of both given interfaces.

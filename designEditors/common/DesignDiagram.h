@@ -16,7 +16,8 @@
 #include <designEditors/common/DrawMode.h>
 
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
-#include <IPXACTmodels/ColumnDesc.h>
+
+#include <IPXACTmodels/kactusExtensions/ColumnDesc.h>
 
 #include <QAction>
 #include <QGraphicsScene>
@@ -154,7 +155,7 @@ public:
      *
      *      @param [in] desc The column description.
      */
-    virtual void addColumn(ColumnDesc const& desc) = 0;
+    virtual void addColumn(QSharedPointer<ColumnDesc> desc) = 0;
 
     /*!
      *  Returns the current draw mode.
@@ -558,11 +559,7 @@ private:
     //! If true, the diagram is locked and cannot be modified.
     bool locked_;
 
-	//! Contains the XML header comments of the design.
-	QStringList XMLComments_;
-
-    //! The design vendor extensions.
-    QList<QSharedPointer<VendorExtension> > vendorExtensions_;
+    QSharedPointer<Design> design_;
     
     interactionMode interactionMode_;
 

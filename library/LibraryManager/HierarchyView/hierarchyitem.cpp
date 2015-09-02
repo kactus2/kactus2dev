@@ -333,7 +333,7 @@ VLNV HierarchyItem::getVLNV() const {
 	else if ((type_ == HierarchyItem::HW_DESIGN ||
 		type_ == HierarchyItem::SW_DESIGN ||
 		type_ == HierarchyItem::SYS_DESIGN) && design_) {
-		return *design_->getVlnv();
+		return design_->getVlnv();
 	}
 
 	return VLNV();

@@ -850,7 +850,7 @@ void ComponentDesignDiagram::addInterfaceAt(QPointF const& position)
     GraphicsColumn* column = getLayout()->findColumnAt(position);
 
     // Add a new diagram interface to the column it it is allowed.
-    if (column != 0 && column->getColumnDesc().getAllowedItems() & CIT_INTERFACE)
+    if (column != 0 && column->getColumnDesc()->getAllowedItems() & CIT_INTERFACE)
     {
         addTopLevelInterface(column, position);
     }

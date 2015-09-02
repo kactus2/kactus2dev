@@ -17,7 +17,7 @@
 
 #include <IPXACTmodels/vlnv.h>
 #include <IPXACTmodels/component.h>
-#include <IPXACTmodels/design.h>
+#include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Placeholder.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Group.h>
@@ -151,16 +151,16 @@ void ViewConfigurer::setupLayout()
 void ViewConfigurer::createChildTreeWidgetItems(QSharedPointer<Design> currentDesign,
     QSharedPointer<DesignConfiguration> currentDesignConfiguration, QTreeWidgetItem* parentItem)
 {
-    foreach (ComponentInstance currentInstance, currentDesign->getComponentInstances())
+    foreach (QSharedPointer<ComponentInstance> currentInstance, *currentDesign->getComponentInstances())
     {
-        VLNV componentReference = currentInstance.getComponentRef();
+        VLNV componentReference = *currentInstance->getComponentRef();
         QSharedPointer<Component> component = libraryHandler_->getModel(componentReference).dynamicCast<Component>();
 
-        QString instanceViewName = currentDesignConfiguration->getActiveView(currentInstance.getInstanceName());
+        QString instanceViewName = currentDesignConfiguration->getActiveView(currentInstance->getInstanceName());
 
         QTreeWidgetItem* instanceItem (new QTreeWidgetItem(parentItem));
         instanceItem->setText(ViewConfigurerColumns::ITEM_VLNV, componentReference.toString(":"));
-        instanceItem->setText(ViewConfigurerColumns::INSTANCE_NAME, currentInstance.getInstanceName());
+        instanceItem->setText(ViewConfigurerColumns::INSTANCE_NAME, currentInstance->getInstanceName());
 
         if (instanceViewName.isEmpty())
         {
@@ -171,7 +171,7 @@ void ViewConfigurer::createChildTreeWidgetItems(QSharedPointer<Design> currentDe
         }
 
         instanceItem->setText(ViewConfigurerColumns::INSTANCE_VIEW, instanceViewName);
-        instanceItem->setText(ViewConfigurerColumns::INSTANCE_ID, currentInstance.getUuid());
+        instanceItem->setText(ViewConfigurerColumns::INSTANCE_ID, currentInstance->getUuid());
 
         instanceItem->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
 

@@ -15,7 +15,7 @@
 #include "libraryinterface.h"
 
 #include <IPXACTmodels/librarycomponent.h>
-#include <IPXACTmodels/design.h>
+#include <IPXACTmodels/Design/Design.h>
 
 //-----------------------------------------------------------------------------
 // Function: LibraryTreeFilter::LibraryTreeFilter()

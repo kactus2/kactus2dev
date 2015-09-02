@@ -24,10 +24,10 @@
 //-----------------------------------------------------------------------------
 // Function: MemoryColumn()
 //-----------------------------------------------------------------------------
-MemoryColumn::MemoryColumn(ColumnDesc const& desc, GraphicsColumnLayout* layout)
+MemoryColumn::MemoryColumn(QSharedPointer<ColumnDesc> desc, GraphicsColumnLayout* layout)
     : GraphicsColumn(desc, layout)
 {
-    if (desc.getContentType() == COLUMN_CONTENT_BUSES)
+    if (desc->getContentType() == COLUMN_CONTENT_BUSES)
     {
         setItemLayout(QSharedPointer< IVGraphicsLayout<QGraphicsItem> >(new VStackedLayout<QGraphicsItem>(10.0)));
     }

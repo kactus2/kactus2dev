@@ -12,13 +12,15 @@
 #include <QtTest>
 
 #include <IPXACTmodels/component.h>
-#include <IPXACTmodels/ComponentInstance.h>
-#include <IPXACTmodels/design.h>
+
 #include <IPXACTmodels/SWView.h>
 #include <IPXACTmodels/SystemView.h>
 #include <IPXACTmodels/file.h>
 #include <IPXACTmodels/fileset.h>
 #include <IPXACTmodels/ApiInterface.h>
+
+#include <IPXACTmodels/Design/Design.h>
+#include <IPXACTmodels/Design/ComponentInstance.h>
 
 #include <tests/MockObjects/LibraryMock.h>
 
@@ -70,15 +72,20 @@ private slots:
 private:
     void getFile(QSharedPointer<File>& file, QSharedPointer<Component> component, QString fileName);
 
-    QSharedPointer<Component> createSW(QString swName, QString hwInstanceName, QSharedPointer<Design> design, QString softViewName, QMap<QString,QString>& activeViews, SWView*& softView, QString swInstanceName);
+    QSharedPointer<Component> createSW(QString swName, QString hwInstanceName, QSharedPointer<Design> design,
+        QString softViewName, QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews, 
+        SWView*& softView, QString swInstanceName);
 
     QSharedPointer<FileSet> addFileSet(QSharedPointer<Component> component, QString fileSetName, SWView*& view);
 
-    void addFileToSet(QSharedPointer<FileSet> fileSet, QString fileName, QString fileType="cSource", bool isInclude=false);
+    void addFileToSet(QSharedPointer<FileSet> fileSet, QString fileName, QString fileType="cSource",
+        bool isInclude=false);
 
     void createSWSWView(SWView* softView, QString softViewName, QSharedPointer<Component> sw);
 
-    QSharedPointer<Component> createHW(QString hwInstanceName, QSharedPointer<Design> design, QString hardViewName, QMap<QString,QString>& activeViews, SWView*& hardView, QString hwName="hardware");
+    QSharedPointer<Component> createHW(QString hwInstanceName, QSharedPointer<Design> design, QString hardViewName, 
+        QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews, SWView*& hardView, 
+        QString hwName="hardware");
 
     QSharedPointer<Component> createDesign(QSharedPointer<Design> &design, QSharedPointer<DesignConfiguration> &desgconf);
 
@@ -111,7 +118,8 @@ void tst_MakefileGenerator::baseCase()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QMap<QString,QString> activeViews;
+    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(
+        new QList<QSharedPointer<ViewConfiguration> > ());
     SWView* hardView;
     SWView* softView;
 
@@ -151,7 +159,8 @@ void tst_MakefileGenerator::fileBuildOverride()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QMap<QString,QString> activeViews;
+    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(new
+        QList<QSharedPointer<ViewConfiguration> >());
     SWView* hardView;
     SWView* softView;
 
@@ -192,7 +201,8 @@ void tst_MakefileGenerator::fileSetBuildOverride()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QMap<QString,QString> activeViews;
+    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(new
+        QList<QSharedPointer<ViewConfiguration> >());
     SWView* hardView;
     SWView* softView;
 
@@ -234,7 +244,8 @@ void tst_MakefileGenerator::fileFlagReplace()
     QString hwInstanceName = "hardware_0";
     QString hardViewName = "firmware";
 
-    QMap<QString,QString> activeViews;
+    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(new
+        QList<QSharedPointer<ViewConfiguration> >());
     SWView* hardView;
     SWView* softView;
 
@@ -274,7 +285,8 @@ void tst_MakefileGenerator::fileSetFlagReplace()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QMap<QString,QString> activeViews;
+    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(new
+        QList<QSharedPointer<ViewConfiguration> >());
     SWView* hardView;
     SWView* softView;
 
@@ -313,7 +325,8 @@ void tst_MakefileGenerator::includeFile()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QMap<QString,QString> activeViews;
+    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(new
+        QList<QSharedPointer<ViewConfiguration> >());
     SWView* hardView;
     SWView* softView;
 
@@ -357,7 +370,8 @@ void tst_MakefileGenerator::swSWViewFlagReplace()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QMap<QString,QString> activeViews;
+    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(new
+        QList<QSharedPointer<ViewConfiguration> >());
     SWView* hardView;
     SWView* softView;
 
@@ -399,7 +413,8 @@ void tst_MakefileGenerator::hwBuilder()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QMap<QString,QString> activeViews;
+    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(new
+        QList<QSharedPointer<ViewConfiguration> >());
     SWView* hardView;
     SWView* softView;
 
@@ -446,7 +461,8 @@ void tst_MakefileGenerator::hwBuilderWithNoSoftView()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QMap<QString,QString> activeViews;
+    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(new
+        QList<QSharedPointer<ViewConfiguration> >());
     SWView* hardView;
     SWView* softView;
 
@@ -492,7 +508,8 @@ void tst_MakefileGenerator::hwRef()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QMap<QString,QString> activeViews;
+    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(new
+        QList<QSharedPointer<ViewConfiguration> >());
     SWView* hardView;
     SWView* softView;
 
@@ -539,7 +556,8 @@ void tst_MakefileGenerator::hwandswRef()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QMap<QString,QString> activeViews;
+    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(new
+        QList<QSharedPointer<ViewConfiguration> >());
     SWView* hardView;
     SWView* softView;
 
@@ -596,7 +614,8 @@ void tst_MakefileGenerator::instanceHeaders()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QMap<QString,QString> activeViews;
+    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(new
+        QList<QSharedPointer<ViewConfiguration> >());
     SWView* hardView;
     SWView* softView;
 
@@ -640,7 +659,8 @@ void tst_MakefileGenerator::multipleFiles()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QMap<QString,QString> activeViews;
+    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(new
+        QList<QSharedPointer<ViewConfiguration> >());
     SWView* hardView;
     SWView* softView;
 
@@ -695,7 +715,8 @@ void tst_MakefileGenerator::multipleFileSets()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QMap<QString,QString> activeViews;
+    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(new
+        QList<QSharedPointer<ViewConfiguration> >());
     SWView* hardView;
     SWView* softView;
 
@@ -749,7 +770,8 @@ void tst_MakefileGenerator::multipleComponents()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QMap<QString,QString> activeViews;
+    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(new
+        QList<QSharedPointer<ViewConfiguration> >());
     SWView* hardView;
     SWView* asoftView;
     SWView* bsoftView;
@@ -806,7 +828,8 @@ void tst_MakefileGenerator::noFilesComponent()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QMap<QString,QString> activeViews;
+    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(new
+        QList<QSharedPointer<ViewConfiguration> >());
     SWView* hardView;
     SWView* asoftView;
     SWView* bsoftView;
@@ -854,7 +877,8 @@ void tst_MakefileGenerator::multipleHardWare()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QMap<QString,QString> activeViews;
+    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(new
+        QList<QSharedPointer<ViewConfiguration> >());
     SWView* ahardView;
     SWView* bhardView;
     SWView* asoftView;
@@ -914,7 +938,8 @@ void tst_MakefileGenerator::multipleHardWareMedRefs()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QMap<QString,QString> activeViews;
+    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(new
+        QList<QSharedPointer<ViewConfiguration> >());
     SWView* ahardView;
     SWView* bhardView;
     SWView* asoftView;
@@ -980,7 +1005,8 @@ void tst_MakefileGenerator::noHardWare()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QMap<QString,QString> activeViews;
+    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(new
+        QList<QSharedPointer<ViewConfiguration> >());
     SWView* softView;
 
     QSharedPointer<Component> sw = createSW("software", "", design, "default", activeViews, softView,"software_0");
@@ -1014,7 +1040,8 @@ void tst_MakefileGenerator::noFileType()
 	QSharedPointer<DesignConfiguration> desgconf;
 	QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-	QMap<QString,QString> activeViews;
+    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(new
+        QList<QSharedPointer<ViewConfiguration> >());
 	SWView* hardView;
 	SWView* softView;
 
@@ -1068,7 +1095,8 @@ void tst_MakefileGenerator::multipleInstances()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QMap<QString,QString> activeViews;
+    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(new
+        QList<QSharedPointer<ViewConfiguration> >());
     SWView* hardView;
     SWView* softView;
 
@@ -1078,15 +1106,19 @@ void tst_MakefileGenerator::multipleInstances()
 
     QSharedPointer<Component> sw = createSW("stackware", hwInstanceName, design, "default", activeViews, softView,"stackware_0");
 
-    VLNV* swvlvnv = sw->getVlnv();
-    SWInstance softInstance;
-    softInstance.setInstanceName("stackware_1");
-    softInstance.setComponentRef(*swvlvnv);
-    softInstance.setMapping(hwInstanceName);
+    QSharedPointer<ConfigurableVLNVReference> swvlvnv(new ConfigurableVLNVReference(*sw->getVlnv()));
+    QSharedPointer<SWInstance> softInstance(new SWInstance());
+    softInstance->setInstanceName("stackware_1");
+    softInstance->setComponentRef(swvlvnv);
+    softInstance->setMapping(hwInstanceName);
 
-    activeViews.insert("stackware_1","default");
+    QSharedPointer<ViewConfiguration> activeView(new ViewConfiguration());
+    activeView->setInstanceName("stackware_1");
+    activeView->setViewReference("default");
 
-    QList<SWInstance> swInstances = design->getSWInstances();
+    activeViews->append(activeView);
+
+    QList<QSharedPointer<SWInstance> > swInstances = design->getSWInstances();
     swInstances.append(softInstance);
     design->setSWInstances(swInstances);
     library_.writeModelToFile("polku/stackware",sw);
@@ -1123,7 +1155,8 @@ void tst_MakefileGenerator::apiUsage()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QMap<QString,QString> activeViews;
+    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(new
+        QList<QSharedPointer<ViewConfiguration> >());
     SWView* hardView;
     SWView* asoftView;
     SWView* bsoftView;
@@ -1144,12 +1177,12 @@ void tst_MakefileGenerator::apiUsage()
     banaani->setName("banaani");
     bsw->addApiInterface( banaani );
 
-    QList<ApiConnection> deps = design->getApiDependencies();
-    ApiConnection dependency;
-    dependency.setInterface1(ApiInterfaceRef("crapware_0","apina"));
-    dependency.setInterface2(ApiInterfaceRef("stackware_0","banaani"));
+    QList<QSharedPointer<ApiInterconnection> > deps = design->getApiConnections();
+    QSharedPointer<ApiInterconnection> dependency(new ApiInterconnection());
+    dependency->setInterface1(QSharedPointer<ActiveInterface>(new ActiveInterface("crapware_0","apina")));
+    dependency->setInterface2(QSharedPointer<ActiveInterface>(new ActiveInterface("stackware_0","banaani")));
     deps.append(dependency);
-    design->setApiDependencies(deps);
+    design->setApiConnections(deps);
 
     QSharedPointer<FileSet> afileSet = addFileSet(asw, "alphaFileSet", asoftView);
     QSharedPointer<FileSet> bfileSet = addFileSet(bsw, "betaFileSet", bsoftView);
@@ -1193,7 +1226,8 @@ void tst_MakefileGenerator::threeLevelStack()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QMap<QString,QString> activeViews;
+    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(new
+        QList<QSharedPointer<ViewConfiguration> >());
     SWView* hardView;
     SWView* asoftView;
     SWView* bsoftView;
@@ -1226,16 +1260,16 @@ void tst_MakefileGenerator::threeLevelStack()
     driverStack->setName("driverStack");
     gsw->addApiInterface( driverStack );
 
-    QList<ApiConnection> deps = design->getApiDependencies();
-    ApiConnection dependency1;
-    dependency1.setInterface1(ApiInterfaceRef("crapware_0","apina"));
-    dependency1.setInterface2(ApiInterfaceRef("stackware_0","banaani"));
+    QList<QSharedPointer<ApiInterconnection> > deps = design->getApiConnections();
+    QSharedPointer<ApiInterconnection> dependency1(new ApiInterconnection());
+    dependency1->setInterface1(QSharedPointer<ActiveInterface>(new ActiveInterface("crapware_0","apina")));
+    dependency1->setInterface2(QSharedPointer<ActiveInterface>(new ActiveInterface("stackware_0","banaani")));
     deps.append(dependency1);
-    ApiConnection dependency2;
-    dependency2.setInterface1(ApiInterfaceRef("stackware_0","stackDriver"));
-    dependency2.setInterface2(ApiInterfaceRef("driver_0","driverStack"));
+    QSharedPointer<ApiInterconnection> dependency2(new ApiInterconnection());
+    dependency2->setInterface1(QSharedPointer<ActiveInterface>(new ActiveInterface("stackware_0","stackDriver")));
+    dependency2->setInterface2(QSharedPointer<ActiveInterface>(new ActiveInterface("driver_0","driverStack")));
     deps.append(dependency2);
-    design->setApiDependencies(deps);
+    design->setApiConnections(deps);
 
     QSharedPointer<FileSet> afileSet = addFileSet(asw, "alphaFileSet", asoftView);
     QSharedPointer<FileSet> bfileSet = addFileSet(bsw, "betaFileSet", bsoftView);
@@ -1285,7 +1319,8 @@ void tst_MakefileGenerator::fullCircularapiUsage()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QMap<QString,QString> activeViews;
+    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(new
+        QList<QSharedPointer<ViewConfiguration> >());
     SWView* hardView;
     SWView* asoftView;
     SWView* bsoftView;
@@ -1327,20 +1362,20 @@ void tst_MakefileGenerator::fullCircularapiUsage()
     upBottom->setName("upBottom");
     asw->addApiInterface( upBottom );
 
-    QList<ApiConnection> deps = design->getApiDependencies();
-    ApiConnection dependency1;
-    dependency1.setInterface1(ApiInterfaceRef("topware_0","apina"));
-    dependency1.setInterface2(ApiInterfaceRef("stackware_0","banaani"));
+    QList<QSharedPointer<ApiInterconnection> > deps = design->getApiConnections();
+    QSharedPointer<ApiInterconnection> dependency1(new ApiInterconnection());
+    dependency1->setInterface1(QSharedPointer<ActiveInterface>(new ActiveInterface("topware_0","apina")));
+    dependency1->setInterface2(QSharedPointer<ActiveInterface>(new ActiveInterface("stackware_0","banaani")));
     deps.append(dependency1);
-    ApiConnection dependency2;
-    dependency2.setInterface1(ApiInterfaceRef("stackware_0","stackDriver"));
-    dependency2.setInterface2(ApiInterfaceRef("driver_0","driverStack"));
+    QSharedPointer<ApiInterconnection> dependency2(new ApiInterconnection());
+    dependency2->setInterface1(QSharedPointer<ActiveInterface>(new ActiveInterface("stackware_0","stackDriver")));
+    dependency2->setInterface2(QSharedPointer<ActiveInterface>(new ActiveInterface("driver_0","driverStack")));
     deps.append(dependency2);
-    ApiConnection dependency3;
-    dependency3.setInterface1(ApiInterfaceRef("topware_0","upBottom"));
-    dependency3.setInterface2(ApiInterfaceRef("driver_0","bottomUp"));
+    QSharedPointer<ApiInterconnection> dependency3(new ApiInterconnection());
+    dependency3->setInterface1(QSharedPointer<ActiveInterface>(new ActiveInterface("topware_0","upBottom")));
+    dependency3->setInterface2(QSharedPointer<ActiveInterface>(new ActiveInterface("driver_0","bottomUp")));
     deps.append(dependency3);
-    design->setApiDependencies(deps);
+    design->setApiConnections(deps);
 
     QSharedPointer<FileSet> afileSet = addFileSet(asw, "alphaFileSet", asoftView);
     QSharedPointer<FileSet> bfileSet = addFileSet(bsw, "betaFileSet", bsoftView);
@@ -1383,7 +1418,8 @@ void tst_MakefileGenerator::circularapiUsage()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QMap<QString,QString> activeViews;
+    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(new
+        QList<QSharedPointer<ViewConfiguration> >());
     SWView* hardView;
     SWView* asoftView;
     SWView* bsoftView;
@@ -1425,20 +1461,20 @@ void tst_MakefileGenerator::circularapiUsage()
     upBottom->setName("upBottom");
     bsw->addApiInterface( upBottom );
 
-    QList<ApiConnection> deps = design->getApiDependencies();
-    ApiConnection dependency1;
-    dependency1.setInterface1(ApiInterfaceRef("crapware_0","apina"));
-    dependency1.setInterface2(ApiInterfaceRef("stackware_0","banaani"));
+    QList<QSharedPointer<ApiInterconnection> > deps = design->getApiConnections();
+    QSharedPointer<ApiInterconnection> dependency1(new ApiInterconnection());
+    dependency1->setInterface1(QSharedPointer<ActiveInterface>(new ActiveInterface("crapware_0","apina")));
+    dependency1->setInterface2(QSharedPointer<ActiveInterface>(new ActiveInterface("stackware_0","banaani")));
     deps.append(dependency1);
-    ApiConnection dependency2;
-    dependency2.setInterface1(ApiInterfaceRef("stackware_0","stackDriver"));
-    dependency2.setInterface2(ApiInterfaceRef("driver_0","driverStack"));
+    QSharedPointer<ApiInterconnection> dependency2(new ApiInterconnection());
+    dependency2->setInterface1(QSharedPointer<ActiveInterface>(new ActiveInterface("stackware_0","stackDriver")));
+    dependency2->setInterface2(QSharedPointer<ActiveInterface>(new ActiveInterface("driver_0","driverStack")));
     deps.append(dependency2);
-    ApiConnection dependency3;
-    dependency3.setInterface1(ApiInterfaceRef("stackware_0","upBottom"));
-    dependency3.setInterface2(ApiInterfaceRef("driver_0","bottomUp"));
+    QSharedPointer<ApiInterconnection> dependency3(new ApiInterconnection());
+    dependency3->setInterface1(QSharedPointer<ActiveInterface>(new ActiveInterface("stackware_0","upBottom")));
+    dependency3->setInterface2(QSharedPointer<ActiveInterface>(new ActiveInterface("driver_0","bottomUp")));
     deps.append(dependency3);
-    design->setApiDependencies(deps);
+    design->setApiConnections(deps);
 
     QSharedPointer<FileSet> afileSet = addFileSet(asw, "alphaFileSet", asoftView);
     QSharedPointer<FileSet> bfileSet = addFileSet(bsw, "betaFileSet", bsoftView);
@@ -1518,16 +1554,19 @@ void tst_MakefileGenerator::addFileToSet(QSharedPointer<FileSet> fileSet, QStrin
     file->setIncludeFile( isInclude );
 }
 
-QSharedPointer<Component> tst_MakefileGenerator::createSW(QString swName, QString hwInstanceName, QSharedPointer<Design> design, QString softViewName, QMap<QString,QString>& activeViews, SWView*& softView, QString swInstanceName)
+QSharedPointer<Component> tst_MakefileGenerator::createSW(QString swName, QString hwInstanceName, 
+    QSharedPointer<Design> design, QString softViewName, 
+    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews, 
+    SWView*& softView, QString swInstanceName)
 {
     VLNV swvlvnv("","vendor","lib",swName,"1.0");
     QSharedPointer<Component> sw = QSharedPointer<Component>(new Component(swvlvnv));
-    SWInstance softInstance;
-    softInstance.setInstanceName(swInstanceName);
-    softInstance.setComponentRef(swvlvnv);
-    softInstance.setMapping(hwInstanceName);
+    QSharedPointer<SWInstance> softInstance(new SWInstance());
+    softInstance->setInstanceName(swInstanceName);
+    softInstance->setComponentRef(QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(swvlvnv)));
+    softInstance->setMapping(hwInstanceName);
 
-    QList<SWInstance> swInstances = design->getSWInstances();
+    QList<QSharedPointer<SWInstance> > swInstances = design->getSWInstances();
     swInstances.append(softInstance);
     design->setSWInstances(swInstances);
     library_.addComponent(sw);
@@ -1537,20 +1576,28 @@ QSharedPointer<Component> tst_MakefileGenerator::createSW(QString swName, QStrin
     softView->setName(softViewName);
     sw->addSWView(softView);
 
-    activeViews.insert(swInstanceName,softViewName);
+    QSharedPointer<ViewConfiguration> activeView(new ViewConfiguration());
+    activeView->setInstanceName(swInstanceName);
+    activeView->setViewReference(softViewName);
+    activeViews->append(activeView);
 
     return sw;
 }
 
-QSharedPointer<Component> tst_MakefileGenerator::createHW(QString hwInstanceName, QSharedPointer<Design> design, QString hardViewName, QMap<QString,QString>& activeViews, SWView*& hardView, QString hwName/*="hardware"*/)
+QSharedPointer<Component> tst_MakefileGenerator::createHW(QString hwInstanceName, 
+    QSharedPointer<Design> design, QString hardViewName, 
+    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews, 
+    SWView*& hardView, QString hwName/*="hardware"*/)
 {
     VLNV hwvlvnv("","vendor","lib",hwName,"1.0");
     QSharedPointer<Component> hw = QSharedPointer<Component>(new Component(hwvlvnv));
-    ComponentInstance hwInstance(hwInstanceName,"","esim",hwvlvnv,QPointF(),hwInstanceName);
+    QSharedPointer<ComponentInstance> hwInstance(new ComponentInstance(hwInstanceName,"","esim",
+        QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(hwvlvnv)), 
+        QPointF(), hwInstanceName));
 
-    QList<ComponentInstance> instances = design->getComponentInstances();
-    instances.append(hwInstance);
-    design->setComponentInstances(instances);
+    QSharedPointer<QList<QSharedPointer<ComponentInstance> > > instances = design->getComponentInstances();
+    instances->append(hwInstance);
+
     library_.addComponent(hw);
     library_.writeModelToFile("polku/" + hwName,hw);
 
@@ -1558,7 +1605,10 @@ QSharedPointer<Component> tst_MakefileGenerator::createHW(QString hwInstanceName
     hardView->setName(hardViewName);
     hw->addSWView(hardView);
 
-    activeViews.insert(hwInstanceName,hardViewName);
+    QSharedPointer<ViewConfiguration> activeView(new ViewConfiguration());
+    activeView->setInstanceName(hwInstanceName);
+    activeView->setViewReference(hardViewName);
+    activeViews->append(activeView);
 
     return hw;
 }

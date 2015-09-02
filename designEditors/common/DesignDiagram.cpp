@@ -28,17 +28,18 @@
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <IPXACTmodels/component.h>
-#include <IPXACTmodels/design.h>
+#include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/GenericVendorExtension.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Group.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Position.h>
 
-#include <QWidget>
-#include <QPainter>
-#include <QMenu>
-#include <QGraphicsItem>
-#include <QSharedPointer>
 #include <QApplication>
+#include <QGraphicsItem>
+#include <QMenu>
+#include <QPainter>
+#include <QSharedPointer>
+#include <QWidget>
+
 //-----------------------------------------------------------------------------
 // Function: DesignDiagram::DesignDiagram()
 //-----------------------------------------------------------------------------
@@ -55,8 +56,7 @@ DesignDiagram::DesignDiagram(LibraryInterface* lh,
       instanceNames_(),
       loading_(false),
       locked_(false),
-	  XMLComments_(),
-    vendorExtensions_(),
+      design_(),
     interactionMode_(NORMAL),
     associationLine_(0)
 {
@@ -90,16 +90,8 @@ void DesignDiagram::clearScene()
 bool DesignDiagram::setDesign(QSharedPointer<Component> component, QSharedPointer<Design> design,
                               QSharedPointer<DesignConfiguration> designConf)
 {
-	// save the XML header from the design
-	XMLComments_ = design->getTopComments();
-
-    vendorExtensions_ = design->getVendorExtensions();
-
     // Clear the edit provider.
     editProvider_.clear();
-
-    // clear the previous design configuration
-    designConf_.clear();
 
     // Deselect items.
     emit clearItemSelection();
@@ -112,6 +104,7 @@ bool DesignDiagram::setDesign(QSharedPointer<Component> component, QSharedPointe
 
     // Set the new component and open the design.
     component_ = component;
+    design_ = design;
     designConf_ = designConf;
 
     loading_ = true;
@@ -265,10 +258,10 @@ void DesignDiagram::onComponentInstanceRemoved(ComponentItem* item)
 //-----------------------------------------------------------------------------
 void DesignDiagram::onVendorExtensionAdded(QSharedPointer<VendorExtension> extension)
 {
-    if (!vendorExtensions_.contains(extension))
+    if (design_ && !design_->getVendorExtensions()->contains(extension))
     {
-        vendorExtensions_.append(extension);
-    }    
+        design_->getVendorExtensions()->append(extension);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -276,7 +269,10 @@ void DesignDiagram::onVendorExtensionAdded(QSharedPointer<VendorExtension> exten
 //-----------------------------------------------------------------------------
 void DesignDiagram::onVendorExtensionRemoved(QSharedPointer<VendorExtension> extension)
 {
-    vendorExtensions_.removeAll(extension);
+    if (design_)
+    {
+        design_->getVendorExtensions()->removeAll(extension);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -531,10 +527,9 @@ DesignWidget* DesignDiagram::getParent() const
 //-----------------------------------------------------------------------------
 // Function: DesignDiagram::createDesign()
 //-----------------------------------------------------------------------------
-QSharedPointer<Design> DesignDiagram::createDesign( VLNV const& vlnv ) const {
+QSharedPointer<Design> DesignDiagram::createDesign(VLNV const& vlnv) const
+{
 	QSharedPointer<Design> design(new Design(vlnv));
-	design->setTopComments(XMLComments_);
-    design->setVendorExtensions(vendorExtensions_);
 	return design;
 }
 
@@ -615,7 +610,7 @@ void DesignDiagram::clearLayout()
 //-----------------------------------------------------------------------------
 void DesignDiagram::loadStickyNotes()
 {
-    foreach(QSharedPointer<VendorExtension> extension, vendorExtensions_)
+    foreach(QSharedPointer<VendorExtension> extension, *design_->getVendorExtensions())
     {
         if (extension->type() == "kactus2:note")
         {
@@ -628,7 +623,7 @@ void DesignDiagram::loadStickyNotes()
                 
             loadNoteAssociations(note);          
 
-            vendorExtensions_.removeAll(extension); //<! extension is replaced by one created by Sticky Note.
+            design_->getVendorExtensions()->removeAll(extension); //<! extension is replaced by one created by Sticky Note.
         }
     }
 }

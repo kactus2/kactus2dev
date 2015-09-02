@@ -141,22 +141,22 @@ VLNV LibraryComponent::findVLNV(QDomDocument &doc)
 	type = XmlUtils::removeWhiteSpace(type);
 
 	// the vendor information
-	QDomNodeList vendorList = doc.elementsByTagName(SPIRIT_VENDOR);
+	QDomNodeList vendorList = doc.elementsByTagName("spirit:vendor");
 	QString vendor(vendorList.item(0).childNodes().item(0).nodeValue());
 	vendor = XmlUtils::removeWhiteSpace(vendor);
 
 	// the library information
-	QDomNodeList libraryList = doc.elementsByTagName(SPIRIT_LIBRARY);
+	QDomNodeList libraryList = doc.elementsByTagName("spirit:library");
 	QString library(libraryList.item(0).childNodes().item(0).nodeValue());
 	library = XmlUtils::removeWhiteSpace(library);
 
 	// The name information
-	QDomNodeList nameList = doc.elementsByTagName(SPIRIT_NAME);
+	QDomNodeList nameList = doc.elementsByTagName("spirit:name");
 	QString name(nameList.item(0).childNodes().item(0).nodeValue());
 	name = XmlUtils::removeWhiteSpace(name);
 
 	// The version information
-	QDomNodeList versionList = doc.elementsByTagName(SPIRIT_VERSION);
+	QDomNodeList versionList = doc.elementsByTagName("spirit:version");
 	QString version(versionList.item(0).childNodes().item(0).nodeValue());
 	version = XmlUtils::removeWhiteSpace(version);
 

@@ -38,7 +38,7 @@ public:
      *      @param [in] name          The column description.
      *      @param [in] layout        The parent column layout.
      */
-    SystemColumn(ColumnDesc const& desc, GraphicsColumnLayout* layout);
+    SystemColumn(QSharedPointer<ColumnDesc> desc, GraphicsColumnLayout* layout);
 
     /*!
      *  Destructor.

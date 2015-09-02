@@ -142,11 +142,40 @@ QString NewPage::selectedPath() const
 //-----------------------------------------------------------------------------
 void NewPage::showErrorForReservedVLVN(VLNV const& vlnv)
 {
-    QString type = VLNV::type2Show(vlnv.getType());
+    QString type = type2Show(vlnv.getType());
     QMessageBox msgBox(QMessageBox::Critical, QCoreApplication::applicationName(),
         tr("The %1 cannot be created because the VLNV %2" 
         " already exists in the library.").arg(type, vlnv.toString()), QMessageBox::Ok, this);
     msgBox.exec();
+}
+
+//-----------------------------------------------------------------------------
+// Function: NewPage::type2Show()
+//-----------------------------------------------------------------------------
+QString NewPage::type2Show(VLNV::IPXactType const& type)
+{
+    switch (type) {
+    case VLNV::BUSDEFINITION:
+        return QObject::tr("Bus Definition");
+    case VLNV::COMPONENT:
+        return QObject::tr("Component");
+    case VLNV::DESIGN:
+        return QObject::tr("Design");
+    case VLNV::GENERATORCHAIN:
+        return QObject::tr("Generator Chain");
+    case VLNV::ABSTRACTOR:
+        return QObject::tr("Abstractor");
+    case VLNV::DESIGNCONFIGURATION:
+        return QObject::tr("Design Configuration");
+    case VLNV::ABSTRACTIONDEFINITION:
+        return QObject::tr("Abstraction Definition");
+    case VLNV::COMDEFINITION:
+        return QObject::tr("COM Definition");
+    case VLNV::APIDEFINITION:
+        return QObject::tr("API Definition");
+    default:
+        return QObject::tr("Invalid");
+    }
 }
 
 //-----------------------------------------------------------------------------

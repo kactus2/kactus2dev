@@ -56,7 +56,7 @@ ColumnEditDialog::ColumnEditDialog(QWidget* parent, bool sw, GraphicsColumn cons
     {
         setWindowTitle(tr("Edit Column"));
         nameEdit_->setText(column_->name());
-        setAllowedItems(column_->getColumnDesc().getAllowedItems());
+        setAllowedItems(column_->getColumnDesc()->getAllowedItems());
 
         QString typeName = types_.key(column_->getContentType(), tr("IO"));
         typeCombo_->setCurrentIndex(typeCombo_->findText(typeName));

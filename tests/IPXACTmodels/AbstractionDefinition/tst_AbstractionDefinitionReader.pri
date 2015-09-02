@@ -12,6 +12,8 @@ HEADERS += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h \
     ../../../IPXACTmodels/common/Assertion.h \
     ../../../IPXACTmodels/common/BooleanValue.h \
     ../../../IPXACTmodels/common/CellSpecification.h \
+    ../../../IPXACTmodels/common/ConfigurableElementValue.h \
+    ../../../IPXACTmodels/common/ConfigurableVLNVReference.h \
     ../../../IPXACTmodels/common/Document.h \
     ../../../IPXACTmodels/common/Extendable.h \
     ../../../IPXACTmodels/GenericVendorExtension.h \
@@ -37,14 +39,15 @@ HEADERS += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h \
     ../../../IPXACTmodels/common/ParameterReader.h \
     ../../../IPXACTmodels/AbstractionDefinition/TransactionalAbstractionReader.h \
     ../../../IPXACTmodels/AbstractionDefinition/WireAbstractionReader.h \
-    ../../../IPXACTmodels/common/ConfigurableElementValue.h \
-    ../../../IPXACTmodels/common/ConfigurableVLNVReference.h
+    ../../../IPXACTmodels/kactusExtensions/Kactus2Group.h
 SOURCES += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.cpp \
     ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinitionReader.cpp \
     ../../../IPXACTmodels/common/Array.cpp \
     ../../../IPXACTmodels/common/Assertion.cpp \
     ../../../IPXACTmodels/common/BooleanValue.cpp \
     ../../../IPXACTmodels/common/CellSpecification.cpp \
+    ../../../IPXACTmodels/common/ConfigurableElementValue.cpp \
+    ../../../IPXACTmodels/common/ConfigurableVLNVReference.cpp \
     ../../../IPXACTmodels/common/Document.cpp \
     ../../../IPXACTmodels/common/DocumentReader.cpp \
     ../../../IPXACTmodels/common/Extendable.cpp \
@@ -70,5 +73,4 @@ SOURCES += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.cpp
     ../../../IPXACTmodels/generaldeclarations.cpp \
     ./tst_AbstractionDefinitionReader.cpp \
     ../../../IPXACTmodels/vlnv.cpp \
-    ../../../IPXACTmodels/common/ConfigurableVLNVReference.cpp \
-    ../../../IPXACTmodels/common/ConfigurableElementValue.cpp
+    ../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp

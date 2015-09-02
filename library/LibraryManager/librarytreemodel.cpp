@@ -11,7 +11,7 @@
 
 #include <IPXACTmodels/librarycomponent.h>
 #include <IPXACTmodels/component.h>
-#include <IPXACTmodels/design.h>
+#include <IPXACTmodels/Design/Design.h>
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 

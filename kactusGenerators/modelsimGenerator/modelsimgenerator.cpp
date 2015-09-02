@@ -10,7 +10,7 @@
 #include <library/LibraryManager/libraryhandler.h>
 
 #include <IPXACTmodels/component.h>
-#include <IPXACTmodels/design.h>
+#include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 #include <IPXACTmodels/librarycomponent.h>
 #include <IPXACTmodels/generaldeclarations.h>
@@ -441,20 +441,16 @@ void ModelsimGenerator::readDesign( const QSharedPointer<Design> design,
 	Q_ASSERT_X(design, "ModelsimGenerator::readDesign",
 		"Null Design-pointer given as parameter");
 
-	// read each component
-	QList<ComponentInstance> instances = design->getComponentInstances();
-	foreach (ComponentInstance const& instance, instances) {
+	foreach (QSharedPointer<ComponentInstance> instance, *design->getComponentInstances())
+    {
 
-		VLNV vlnv = instance.getComponentRef();
+		VLNV vlnv = *instance->getComponentRef();
 
 		// if component can't be found within library
-		if (!handler_->contains(vlnv)) {
-			emit errorMessage(tr("Component %1:%2:%3:%4 was not found within "
-				"library, stopping generation").arg(
-				vlnv.getVendor()).arg(
-				vlnv.getLibrary()).arg(
-				vlnv.getName()).arg(
-				vlnv.getVersion()));
+		if (!handler_->contains(vlnv))
+        {
+			emit errorMessage(tr("Component %1 was not found within library, stopping generation").arg(
+                vlnv.toString()));
 			continue;
 		}
 
@@ -463,44 +459,39 @@ void ModelsimGenerator::readDesign( const QSharedPointer<Design> design,
 		
 		// if library item is component
 		if (libComp->getVlnv().getType() == VLNV::COMPONENT)
+        {
 			component = libComp.staticCast<Component>();
-		
-		// if item was not component
-		else {
-			emit errorMessage(tr("Referenced item %1:%2:%3:%4 was not a component").arg(
-				vlnv.getVendor()).arg(
-				vlnv.getLibrary()).arg(
-				vlnv.getName()).arg(
-				vlnv.getVersion()));
+        }
+		else
+        {
+			emit errorMessage(tr("Referenced item %1 was not a component").arg(vlnv.toString()));
 			continue;
 		}
 
 		QString viewName;
 		
 		// if design configuration is used
-		if (desConf && desConf->hasActiveView(instance.getInstanceName())) {
-			viewName = desConf->getActiveView(instance.getInstanceName());
+		if (desConf && desConf->hasActiveView(instance->getInstanceName()))
+        {
+			viewName = desConf->getActiveView(instance->getInstanceName());
 		}
 		// if design configuration is not used or view was not found
-		else {
-
+		else
+        {
 			// if component only has one view
 			if (component->viewCount() == 1)
+            {
 				viewName = component->getViews().first()->name();
-
+            }
 			// if component has multiple views
-			else if (component->viewCount() > 1) {
-				
+			else if (component->viewCount() > 1)
+            {				
 				// ask user to select the view
 				viewName = ComboSelector::selectView(component, parent_);
 
-				if (viewName.isEmpty()) {
-					emit noticeMessage(tr("No view selected for component "
-						"%1:%2:%3:%4, skipping").arg(
-						vlnv.getVendor()).arg(
-						vlnv.getLibrary()).arg(
-						vlnv.getName()).arg(
-						vlnv.getVersion()));
+				if (viewName.isEmpty())
+                {
+					emit noticeMessage(tr("No view selected for component %1, skipping").arg(vlnv.toString()));
 					continue;
 				}
 			}

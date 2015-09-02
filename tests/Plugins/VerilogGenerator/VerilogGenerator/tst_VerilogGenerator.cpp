@@ -12,14 +12,16 @@
 #include <QtTest>
 
 #include <IPXACTmodels/component.h>
-#include <IPXACTmodels/ComponentInstance.h>
+
 #include <IPXACTmodels/businterface.h>
-#include <IPXACTmodels/design.h>
 #include <IPXACTmodels/model.h>
 #include <IPXACTmodels/modelparameter.h>
 #include <IPXACTmodels/port.h>
 #include <IPXACTmodels/PortMap.h>
 #include <IPXACTmodels/vlnv.h>
+
+#include <IPXACTmodels/Design/Design.h>
+#include <IPXACTmodels/Design/ComponentInstance.h>
 
 #include <IPXACTmodels/kactusExtensions/ModuleParameter.h>
 
@@ -356,10 +358,14 @@ void tst_VerilogGenerator::testHierarchicalConnections()
 void tst_VerilogGenerator::createHierarchicalConnection(QString const& topInterfaceRef, 
     QString const& instanceInterfaceRef)
 {
-    HierConnection connection(topInterfaceRef, Interface("instance1", instanceInterfaceRef));    
-    QList<HierConnection> hierConnections = design_->getHierarchicalConnections();
-    hierConnections.append(connection);
-    design_->setHierarchicalConnections(hierConnections);
+    QSharedPointer<Interconnection> hierachicalConnection(new Interconnection());
+    QSharedPointer<ActiveInterface> instanceInterface(new ActiveInterface("instance1", instanceInterfaceRef));
+    hierachicalConnection->setStartInterface(instanceInterface);
+    
+    QSharedPointer<HierInterface> topInterface(new HierInterface(topInterfaceRef));
+    hierachicalConnection->getHierInterfaces()->append(topInterface);
+   
+    design_->getInterconnections()->append(hierachicalConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -485,11 +491,11 @@ void tst_VerilogGenerator::addTestComponentToLibrary(VLNV vlnv)
 //-----------------------------------------------------------------------------
 void tst_VerilogGenerator::addInstanceToDesign(QString instanceName, VLNV instanceVlnv)
 {
-    ComponentInstance instance(instanceName, "", "", instanceVlnv, QPointF(), "");
+    QSharedPointer<ComponentInstance> instance(new ComponentInstance(instanceName, "", "", 
+        QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(instanceVlnv)), 
+        QPointF(), ""));
 
-    QList<ComponentInstance> componentInstances = design_->getComponentInstances();
-    componentInstances.append(instance);
-    design_->setComponentInstances(componentInstances);
+    design_->getComponentInstances()->append(instance);
 }
 
 //-----------------------------------------------------------------------------
@@ -571,14 +577,13 @@ void tst_VerilogGenerator::addReceiverComponentToLibrary(VLNV receiverVLNV, Gene
 void tst_VerilogGenerator::addConnectionToDesign(QString fromInstance, QString fromInterface, 
     QString toInstance, QString toInterface)
 {
-    Interface firstInterface(fromInstance, fromInterface);
-    Interface secondInterface(toInstance, toInterface);
+    QSharedPointer<ActiveInterface> firstInterface(new ActiveInterface(fromInstance, fromInterface));
+    QSharedPointer<ActiveInterface> secondInterface(new ActiveInterface(toInstance, toInterface));
 
-    Interconnection connection(fromInstance + "_to_" + toInstance, firstInterface, secondInterface);
+    QSharedPointer<Interconnection> connection(new Interconnection(fromInstance + "_to_" + toInstance, firstInterface));
+    connection->getActiveInterfaces()->append(secondInterface);
 
-    QList<Interconnection> connections = design_->getInterconnections();
-    connections.append(connection);
-    design_->setInterconnections(connections);
+    design_->getInterconnections()->append(connection);
 }
 
 //-----------------------------------------------------------------------------
@@ -876,31 +881,33 @@ void tst_VerilogGenerator::addAdhocConnection(QString const& connectionName,
     QString const& sourceInstance, QString const& sourcePort, 
     QString const& targetInstance, QString const& targetPort)
 {
-    QList<PortRef> internalRefs;
+    QSharedPointer<QList<QSharedPointer<PortReference> > > internalRefs(
+        new QList<QSharedPointer<PortReference> >());
 
-    QList<AdHocConnection> adHocConnections = design_->getAdHocConnections();
-    for (int i = 0; i < adHocConnections.size(); i++)
+    QSharedPointer<QList<QSharedPointer<AdHocConnection> > > adHocConnections = design_->getAdHocConnections();
+    for (int i = 0; i < adHocConnections->size(); i++)
     {
-        if (adHocConnections.at(i).name() == connectionName)
+        if (adHocConnections->at(i)->name() == connectionName)
         {
-            internalRefs  = adHocConnections.at(i).internalPortReferences();
-            adHocConnections.removeAt(i);
+            internalRefs  = adHocConnections->at(i)->getInternalPortReferences();
+            adHocConnections->removeAt(i);
             break;
         }
     }
 
-    PortRef fromRef(sourcePort, sourceInstance);
-    PortRef toRef(targetPort, targetInstance);
+    QSharedPointer<PortReference> fromRef(new PortReference(sourcePort, sourceInstance));
+    QSharedPointer<PortReference> toRef(new PortReference(targetPort, targetInstance));
     
-    if (internalRefs.isEmpty())
+    if (internalRefs->isEmpty())
     {
-        internalRefs.append(fromRef);        
+        internalRefs->append(fromRef);        
     }
-    internalRefs.append(toRef);
+    internalRefs->append(toRef);
 
-    AdHocConnection connection(connectionName, "", "", "", internalRefs);
-    adHocConnections.append(connection);
-    design_->setAdHocConnections(adHocConnections);
+    QSharedPointer<AdHocConnection> connection(new AdHocConnection(connectionName));
+    connection->setInternalPortReferences(internalRefs);
+
+    design_->getAdHocConnections()->append(connection);
 }
 
 //-----------------------------------------------------------------------------
@@ -933,19 +940,15 @@ void tst_VerilogGenerator::testHierarchicalAdhocConnection()
 void tst_VerilogGenerator::addHierAdhocConnection(QString const& topPort, 
     QString const& targetInstance, QString const& targetPort)
 {    
-    PortRef topRef(topPort);
-    QList<PortRef> externalRefs;
-    externalRefs.append(topRef);
+    QSharedPointer<PortReference> topRef(new PortReference(topPort));
 
-    PortRef toRef(targetPort, targetInstance);
-    QList<PortRef> internalRefs;
-    internalRefs.append(toRef);
+    QSharedPointer<PortReference> toRef(new PortReference(targetPort, targetInstance));
 
-    AdHocConnection connection("", "", "", "", internalRefs, externalRefs);
+    QSharedPointer<AdHocConnection> connection(new AdHocConnection(""));
+    connection->getExternalPortReferences()->append(toRef);
+    connection->getInternalPortReferences()->append(topRef);
 
-    QList<AdHocConnection> adHocConnections = design_->getAdHocConnections();
-    adHocConnections.append(connection);
-    design_->setAdHocConnections(adHocConnections);
+    design_->getAdHocConnections()->append(connection);
 }
 
 //-----------------------------------------------------------------------------
@@ -977,11 +980,10 @@ void tst_VerilogGenerator::testDescriptionAndVLNVIsPrintedAboveInstance()
     QSharedPointer<Component> refComponent(new Component(instanceVLNV));
     library_.addComponent(refComponent);
 
-    ComponentInstance instance("instance1", "", description, instanceVLNV, QPointF(), "");
+    QSharedPointer<ComponentInstance> instance(new ComponentInstance("instance1", "", description, 
+        QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(instanceVLNV)), QPointF(), ""));
 
-    QList<ComponentInstance> componentInstances = design_->getComponentInstances();
-    componentInstances.append(instance);
-    design_->setComponentInstances(componentInstances);
+    design_->getComponentInstances()->append(instance);
 
     runGenerator();
 

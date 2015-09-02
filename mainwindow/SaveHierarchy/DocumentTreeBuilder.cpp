@@ -14,7 +14,7 @@
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <IPXACTmodels/component.h>
-#include <IPXACTmodels/design.h>
+#include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
 #include <IPXACTmodels/librarycomponent.h>
@@ -162,20 +162,20 @@ QObject* DocumentTreeBuilder::createFromDesign(VLNV const& designRef) const
         designNode->setProperty("implementation", "HW");
     }
 
-    foreach (ComponentInstance swInstance, design->getComponentInstances())
+    foreach (QSharedPointer<ComponentInstance> hwInstance, *design->getComponentInstances())
     {
-        QObject* instanceNode = createFrom(swInstance.getComponentRef());
+        QObject* instanceNode = createFrom(*hwInstance->getComponentRef());
         instanceNode->setParent(designNode);
 
-        instanceNode->setProperty("instanceName", swInstance.getInstanceName());
+        instanceNode->setProperty("instanceName", hwInstance->getInstanceName());
     }
 
-    foreach (SWInstance swInstance, design->getSWInstances())
+    foreach (QSharedPointer<SWInstance> swInstance, design->getSWInstances())
     {
-        QObject* swInstanceNode = createFrom(swInstance.getComponentRef());
+        QObject* swInstanceNode = createFrom(*swInstance->getComponentRef());
         swInstanceNode->setParent(designNode);
 
-        swInstanceNode->setProperty("instanceName", swInstance.getInstanceName());
+        swInstanceNode->setProperty("instanceName", swInstance->getInstanceName());
     }
 
     return designNode;

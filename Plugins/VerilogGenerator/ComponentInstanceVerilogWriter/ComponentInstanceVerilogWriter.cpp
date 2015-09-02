@@ -21,7 +21,7 @@ namespace
 //-----------------------------------------------------------------------------
 // Function: ComponentInstanceVerilogWriter::ComponentInstanceVerilogWriter()
 //-----------------------------------------------------------------------------
-ComponentInstanceVerilogWriter::ComponentInstanceVerilogWriter(ComponentInstance const& instance,
+ComponentInstanceVerilogWriter::ComponentInstanceVerilogWriter(QSharedPointer<const ComponentInstance> instance,
     QSharedPointer<const Component> referencedComponent, QSharedPointer<const PortSorter> sorter,
     QSharedPointer<ExpressionFormatter> expressionFormatter) :
 componentInstance_(instance), 
@@ -51,7 +51,7 @@ void ComponentInstanceVerilogWriter::write(QTextStream& outputStream) const
 
     QString instanceString = "<component> <parameters><instanceName>(<portConnections>);";
 
-    instanceString.replace("<component>", componentInstance_.getComponentRef().getName());
+    instanceString.replace("<component>", componentInstance_->getComponentRef()->getName());
     instanceString.replace("<parameters>", parameterAssignments());
     instanceString.replace("<instanceName>", formattedInstanceName());
     instanceString.replace("<portConnections>", portConnections());
@@ -90,9 +90,9 @@ bool ComponentInstanceVerilogWriter::nothingToWrite() const
 //-----------------------------------------------------------------------------
 QString ComponentInstanceVerilogWriter::formattedInstanceName() const
 {
-    QString instanceName = componentInstance_.getInstanceName();
+    QString instanceName = componentInstance_->getInstanceName();
 
-    if (!componentInstance_.getConfigurableElementValues().isEmpty())
+    if (!componentInstance_->getConfigurableElementValues()->isEmpty())
     {
         instanceName.prepend(indentation());
     }
@@ -113,7 +113,7 @@ QString ComponentInstanceVerilogWriter::indentation() const
 //-----------------------------------------------------------------------------
 QString ComponentInstanceVerilogWriter::parameterAssignments() const
 {
-    if (componentInstance_.getConfigurableElementValues().isEmpty())
+    if (componentInstance_->getConfigurableElementValues()->isEmpty())
     {
         return "";
     }
@@ -121,13 +121,13 @@ QString ComponentInstanceVerilogWriter::parameterAssignments() const
     QString instanceParameters("#(\n<namesAndValues>)\n");
 
     QStringList assignments;
-    foreach(QString parameterID, componentInstance_.getConfigurableElementValues().keys())
+    foreach(QSharedPointer<ConfigurableElementValue> parameter, *componentInstance_->getConfigurableElementValues())
     {
         QString assignment(indentation().repeated(2) + ".<parameter>(<value>)");
-        assignment.replace("<parameter>", expressionFormatter_->formatReferringExpression(parameterID).
-            leftJustified(20));
-        assignment.replace("<value>", expressionFormatter_->formatReferringExpression(
-            componentInstance_.getConfElementValue(parameterID)));
+        assignment.replace("<parameter>", 
+            expressionFormatter_->formatReferringExpression(parameter->getReferenceId()).leftJustified(20));
+        assignment.replace("<value>", 
+            expressionFormatter_->formatReferringExpression(parameter->getConfigurableValue()));
         assignments.append(assignment);
     }
 

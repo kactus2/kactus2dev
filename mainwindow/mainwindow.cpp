@@ -81,7 +81,7 @@
 #include <IPXACTmodels/view.h>
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/model.h>
-#include <IPXACTmodels/design.h>
+#include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
@@ -92,7 +92,8 @@
 #include <IPXACTmodels/ApiInterface.h>
 #include <IPXACTmodels/SWView.h>
 #include <IPXACTmodels/SystemView.h>
-#include <IPXACTmodels/SWInstance.h>
+
+#include <IPXACTmodels/kactusExtensions/SWInstance.h>
 
 #include <Plugins/PluginSystem/IGeneratorPlugin.h>
 #include <Plugins/PluginSystem/IPluginUtility.h>
@@ -2262,12 +2263,12 @@ void MainWindow::createDesignForExistingComponent(VLNV const& vlnv)
     newDesign->setDesignImplementation(KactusAttribute::HW);
     newDesign->setVersion(VERSION_FILESTR);
     
-    QList<ColumnDesc> columns;
+    QList<QSharedPointer<ColumnDesc> > columns;
 
-    columns.append(ColumnDesc("IO", COLUMN_CONTENT_IO, 0, HWDesignDiagram::IO_COLUMN_WIDTH));
-    columns.append(ColumnDesc("Buses", COLUMN_CONTENT_BUSES, 0, HWDesignDiagram::COMPONENT_COLUMN_WIDTH));
-    columns.append(ColumnDesc("Components", COLUMN_CONTENT_COMPONENTS, 0, HWDesignDiagram::COMPONENT_COLUMN_WIDTH));
-    columns.append(ColumnDesc("IO", COLUMN_CONTENT_IO, 0, HWDesignDiagram::IO_COLUMN_WIDTH));
+    columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("IO", COLUMN_CONTENT_IO, 0, HWDesignDiagram::IO_COLUMN_WIDTH)));
+    columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("Buses", COLUMN_CONTENT_BUSES, 0, HWDesignDiagram::COMPONENT_COLUMN_WIDTH)));
+    columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("Components", COLUMN_CONTENT_COMPONENTS, 0, HWDesignDiagram::COMPONENT_COLUMN_WIDTH)));
+    columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("IO", COLUMN_CONTENT_IO, 0, HWDesignDiagram::IO_COLUMN_WIDTH)));
 
     newDesign->setColumns(columns);
 
@@ -2337,12 +2338,12 @@ void MainWindow::createSWDesign(VLNV const& vlnv, QString const& directory)
     designConf->setDesignConfigImplementation(KactusAttribute::SW);
     designConf->setVersion(VERSION_FILESTR);
 
-    QList<ColumnDesc> columns;
+    QList<QSharedPointer<ColumnDesc> > columns;
 
-    columns.append(ColumnDesc("Low-level", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SW_COLUMN_WIDTH));
-    columns.append(ColumnDesc("Middle-level", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SW_COLUMN_WIDTH));
-    columns.append(ColumnDesc("High-level", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SW_COLUMN_WIDTH));
-    columns.append(ColumnDesc("Out", COLUMN_CONTENT_IO, 0, SystemDesignDiagram::IO_COLUMN_WIDTH));
+    columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("Low-level", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SW_COLUMN_WIDTH)));
+    columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("Middle-level", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SW_COLUMN_WIDTH)));
+    columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("High-level", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SW_COLUMN_WIDTH)));
+    columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("Out", COLUMN_CONTENT_IO, 0, SystemDesignDiagram::IO_COLUMN_WIDTH)));
     design->setColumns(columns);
 
     // Create the files.
@@ -2440,19 +2441,19 @@ void MainWindow::createSWDesign(VLNV const& vlnv)
     newDesign->setDesignImplementation(KactusAttribute::SW);
     newDesign->setVersion(VERSION_FILESTR);
 
-    QList<ColumnDesc> columns;
+    QList<QSharedPointer<ColumnDesc> > columns;
 
     if (component->getComponentImplementation() == KactusAttribute::SW)
     {
-        columns.append(ColumnDesc("Low-level", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SW_COLUMN_WIDTH));
-        columns.append(ColumnDesc("Middle-level", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SW_COLUMN_WIDTH));
-        columns.append(ColumnDesc("High-level", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SW_COLUMN_WIDTH));
-        columns.append(ColumnDesc("Out", COLUMN_CONTENT_IO, 0, SystemDesignDiagram::IO_COLUMN_WIDTH));
+        columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("Low-level", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SW_COLUMN_WIDTH)));
+        columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("Middle-level", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SW_COLUMN_WIDTH)));
+        columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("High-level", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SW_COLUMN_WIDTH)));
+        columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("Out", COLUMN_CONTENT_IO, 0, SystemDesignDiagram::IO_COLUMN_WIDTH)));
     }
     else
     {
-        columns.append(ColumnDesc("Pre-mapped SW", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SW_COLUMN_WIDTH));
-        columns.append(ColumnDesc("Pre-mapped SW", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SW_COLUMN_WIDTH));
+        columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("Pre-mapped SW", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SW_COLUMN_WIDTH)));
+        columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("Pre-mapped SW", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SW_COLUMN_WIDTH)));
     }
 
     newDesign->setColumns(columns);
@@ -2564,9 +2565,9 @@ void MainWindow::createSystem(VLNV const& compVLNV, QString const& viewName, VLN
     sysDesign->setDesignImplementation(KactusAttribute::SYSTEM);
     sysDesign->setVersion(VERSION_FILESTR);
 
-    QList<ColumnDesc> columns;
-    columns.append(ColumnDesc("SW Components", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SYSTEM_COLUMN_WIDTH));
-    columns.append(ColumnDesc("SW Components", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SYSTEM_COLUMN_WIDTH));
+    QList<QSharedPointer<ColumnDesc> > columns;
+    columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("SW Components", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SYSTEM_COLUMN_WIDTH)));
+    columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("SW Components", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SYSTEM_COLUMN_WIDTH)));
     sysDesign->setColumns(columns);
     
 	generateSystemDesignV2(libraryHandler_, parentComp->getHierRef(viewName), *sysDesign);
@@ -2681,9 +2682,9 @@ void MainWindow::createSystemDesign(VLNV const& vlnv)
     newDesign->setDesignImplementation(KactusAttribute::SYSTEM);
     newDesign->setVersion(VERSION_FILESTR);
 
-    QList<ColumnDesc> columns;
-    columns.append(ColumnDesc("SW Components", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SYSTEM_COLUMN_WIDTH));
-    columns.append(ColumnDesc("SW Components", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SYSTEM_COLUMN_WIDTH));
+    QList<QSharedPointer<ColumnDesc> > columns;
+    columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("SW Components", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SYSTEM_COLUMN_WIDTH)));
+    columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("SW Components", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SYSTEM_COLUMN_WIDTH)));
     newDesign->setColumns(columns);
 
     generateSystemDesignV2(libraryHandler_, component->getHierRef(), *newDesign);
