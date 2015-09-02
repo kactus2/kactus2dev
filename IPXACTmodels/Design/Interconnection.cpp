@@ -11,6 +11,8 @@
 
 #include "Interconnection.h"
 
+#include <IPXACTmodels/kactusExtensions/Kactus2Placeholder.h>
+
 //-----------------------------------------------------------------------------
 // Function: Interconnection::Interconnection()
 //-----------------------------------------------------------------------------
@@ -21,8 +23,6 @@ Extendable(),
 startInterface_(startInterface),
 activeInterfaces_(new QList<QSharedPointer<ActiveInterface> > ()),
 hierInterfaces_(new QList<QSharedPointer<HierInterface> > ()),
-route_(),
-offPage_(false),
 isPresent_()
 {
 
@@ -37,8 +37,6 @@ Extendable(),
 startInterface_(new ActiveInterface()),
 activeInterfaces_(new QList<QSharedPointer<ActiveInterface> > ()),
 hierInterfaces_(new QList<QSharedPointer<HierInterface> > ()),
-route_(),
-offPage_(false),
 isPresent_()
 {
 
@@ -53,8 +51,6 @@ Extendable(other),
 startInterface_(new ActiveInterface(*other.startInterface_.data())),
 activeInterfaces_(new QList<QSharedPointer<ActiveInterface> > ()),
 hierInterfaces_(new QList<QSharedPointer<HierInterface> > ()),
-route_(other.route_),
-offPage_(other.offPage_),
 isPresent_(other.isPresent_)
 {
     foreach (QSharedPointer<ActiveInterface> singleInterface, *other.activeInterfaces_)
@@ -98,8 +94,6 @@ Interconnection& Interconnection::operator=( const Interconnection& other)
         NameGroup::operator=(other);
         Extendable::operator=(other);
 
-        route_ = other.route_;
-        offPage_ = other.offPage_;
         isPresent_ = other.isPresent_;
 
         startInterface_.clear();
@@ -136,7 +130,15 @@ Interconnection& Interconnection::operator=( const Interconnection& other)
 //-----------------------------------------------------------------------------
 bool Interconnection::isOffPage() const
 {
-    return offPage_;
+    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    {
+        if (extension->type().compare("kactus2:offPage") == 0)
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -144,24 +146,22 @@ bool Interconnection::isOffPage() const
 //-----------------------------------------------------------------------------
 void Interconnection::setOffPage(bool offpage)
 {
-    offPage_ = offpage;
+    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    {
+        if (extension->type().compare("kactus2:offPage") == 0)
+        {
+            getVendorExtensions()->removeAll(extension);
+            break;
+        }
+    }
+
+    if (offpage)
+    {
+        QSharedPointer<Kactus2Placeholder> offPageExtension (new Kactus2Placeholder("kactus2:offPage"));
+        getVendorExtensions()->append(offPageExtension);
+    }
 }
 
-//-----------------------------------------------------------------------------
-// Function: Interconnection::getRoute()
-//-----------------------------------------------------------------------------
-QList<QPointF> Interconnection::getRoute() const
-{
-    return route_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: Interconnection::setRoute()
-//-----------------------------------------------------------------------------
-void Interconnection::setRoute(QList<QPointF> route)
-{
-    route_ = route;
-}
 /*
 //-----------------------------------------------------------------------------
 // Function: Interconnection::isValid()

@@ -409,3 +409,19 @@ void HierComInterconnection::setDirection(QVector2D const& newDirection)
 {
     direction_ = newDirection;
 }
+
+//-----------------------------------------------------------------------------
+// Function: HierComInterconnection::setRoute()
+//-----------------------------------------------------------------------------
+void HierComInterconnection::setRoute(QList<QPointF> newRoute)
+{
+    getInterface()->setRoute(newRoute);
+}
+
+//-----------------------------------------------------------------------------
+// Function: HierComInterconnection::getRoute()
+//-----------------------------------------------------------------------------
+QList<QPointF> HierComInterconnection::getRoute() const
+{
+    return getInterface()->getRoute();
+}

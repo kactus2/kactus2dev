@@ -124,6 +124,20 @@ public:
      */
     void setDescription(QString const& newDescription);
 
+    /*!
+     *  Set the route to this interface.
+     *
+     *      @param [in] newRoute    The new route.
+     */
+    void setRoute(QList<QPointF> newRoute);
+
+    /*!
+     *  Get the route to this interface.
+     *
+     *      @return The route to this interface.
+     */
+    QList<QPointF> getRoute() const;
+
 private:
 
     //-----------------------------------------------------------------------------

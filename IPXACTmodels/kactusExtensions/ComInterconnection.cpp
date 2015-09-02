@@ -27,8 +27,8 @@ ComInterconnection::ComInterconnection(QString const& name, QString const& displ
     QSharedPointer<ActiveInterface> ref1, QSharedPointer<ActiveInterface> ref2, QList<QPointF> const& route) :
 Interconnection(name, ref1, displayName, description)
 {
-    setRoute(route);
     setInterface2(ref2);
+    setRoute(route);
 }
 
 //-----------------------------------------------------------------------------
@@ -373,4 +373,20 @@ QSharedPointer<ActiveInterface> ComInterconnection::getInterface2() const
     {
         return getActiveInterfaces()->first();
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComInterconnection::setRoute()
+//-----------------------------------------------------------------------------
+void ComInterconnection::setRoute(QList<QPointF> newRoute)
+{
+    getInterface2()->setRoute(newRoute);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComInterconnection::getRoute()
+//-----------------------------------------------------------------------------
+QList<QPointF> ComInterconnection::getRoute() const
+{
+    return getInterface2()->getRoute();
 }

@@ -18,15 +18,12 @@ CONFIG += testcase console
 DEFINES += IPXACTMODELS_LIB
 
 win32:CONFIG(release, debug|release) {
-    LIBS += -L$$PWD/../../../executable/ -lIPXACTmodels
     DESTDIR = ./release
 }
 else:win32:CONFIG(debug, debug|release) {
-    LIBS += -L$$PWD/../../../executable/ -lIPXACTmodelsd
     DESTDIR = ./debug
 }
 else:unix {
-    LIBS += -L$$PWD/../../../executable/ -lIPXACTmodels
     DESTDIR = ./release
 }
 

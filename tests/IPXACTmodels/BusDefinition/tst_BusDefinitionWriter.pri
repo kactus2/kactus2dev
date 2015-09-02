@@ -12,6 +12,7 @@ HEADERS += ../../../IPXACTmodels/common/Array.h \
     ../../../IPXACTmodels/common/BooleanValue.h \
     ../../../IPXACTmodels/BusDefinition/BusDefinition.h \
     ../../../IPXACTmodels/common/Document.h \
+    ../../../IPXACTmodels/common/Extendable.h \
     ../../../IPXACTmodels/GenericVendorExtension.h \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Value.h \
     ../../../IPXACTmodels/kactusExtensions/KactusAttribute.h \
@@ -24,7 +25,7 @@ HEADERS += ../../../IPXACTmodels/common/Array.h \
     ../../../IPXACTmodels/common/DocumentWriter.h \
     ../../../IPXACTmodels/common/NameGroupWriter.h \
     ../../../IPXACTmodels/common/ParameterWriter.h \
-    ../../../IPXACTmodels/common/Extendable.h
+    ../../../IPXACTmodels/kactusExtensions/Kactus2Group.h
 SOURCES += ../../../IPXACTmodels/common/Array.cpp \
     ../../../IPXACTmodels/common/Assertion.cpp \
     ../../../IPXACTmodels/common/BooleanValue.cpp \
@@ -32,6 +33,7 @@ SOURCES += ../../../IPXACTmodels/common/Array.cpp \
     ../../../IPXACTmodels/BusDefinition/BusDefinitionWriter.cpp \
     ../../../IPXACTmodels/common/Document.cpp \
     ../../../IPXACTmodels/common/DocumentWriter.cpp \
+    ../../../IPXACTmodels/common/Extendable.cpp \
     ../../../IPXACTmodels/GenericVendorExtension.cpp \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Value.cpp \
     ../../../IPXACTmodels/kactusExtensions/KactusAttribute.cpp \
@@ -43,4 +45,4 @@ SOURCES += ../../../IPXACTmodels/common/Array.cpp \
     ../../../IPXACTmodels/common/Vector.cpp \
     ./tst_BusDefinitionWriter.cpp \
     ../../../IPXACTmodels/vlnv.cpp \
-    ../../../IPXACTmodels/common/Extendable.cpp
+    ../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp

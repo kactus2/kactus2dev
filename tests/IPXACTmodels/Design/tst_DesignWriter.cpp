@@ -444,7 +444,7 @@ void tst_DesignWriter::testWriteInterconnectionExtensions()
     QList<QPointF> interconnectionRoute;
     interconnectionRoute.append(QPointF(1,1));
     interconnectionRoute.append(QPointF(1,2));
-    testInterconnection->setRoute(interconnectionRoute);
+    testHierInterface->setRoute(interconnectionRoute);
 
     testDesign_->getInterconnections()->append(testInterconnection);
 
@@ -464,7 +464,17 @@ void tst_DesignWriter::testWriteInterconnectionExtensions()
                 "\t\t<ipxact:interconnection>\n"
                     "\t\t\t<ipxact:name>testActiveHierActive</ipxact:name>\n"
                     "\t\t\t<ipxact:activeInterface componentRef=\"componentRef\" busRef=\"busRef\"/>\n"
-                    "\t\t\t<ipxact:hierInterface busRef=\"hierBusRef\"/>\n"
+                    "\t\t\t<ipxact:hierInterface busRef=\"hierBusRef\">\n"
+                        "\t\t\t\t<ipxact:vendorExtensions>\n"
+                            "\t\t\t\t\t<kactus2:route>\n"
+                                "\t\t\t\t\t\t<kactus2:position x=\"1\" y=\"1\"/>\n"
+                                "\t\t\t\t\t\t<kactus2:position x=\"1\" y=\"2\"/>\n"
+                            "\t\t\t\t\t</kactus2:route>\n"
+                        "\t\t\t\t</ipxact:vendorExtensions>\n"
+                    "\t\t\t</ipxact:hierInterface>\n"
+                    "\t\t\t<ipxact:vendorExtensions>\n"
+                        "\t\t\t\t<kactus2:offPage/>\n"
+                    "\t\t\t</ipxact:vendorExtensions>\n"
                 "\t\t</ipxact:interconnection>\n"
             "\t</ipxact:interconnections>\n"
         "</ipxact:design>\n"
@@ -1157,14 +1167,12 @@ void tst_DesignWriter::testWriteComConnections()
     QSharedPointer<ActiveInterface> testStartInterface(new ActiveInterface("applicationOne", "busOne"));
     QSharedPointer<ActiveInterface> testEndInterface(new ActiveInterface("applicationTwo", "busTwo"));
 
-    QPointF pointOne;
-    pointOne.setX(1);
-    pointOne.setY(1);
     QList<QPointF> points;
-    points.append(pointOne);
+    points.append(QPointF(1,1));
+    points.append(QPointF(2,1));
 
-    QSharedPointer<ComInterconnection> testComConnection(new ComInterconnection("comConnect", "display", "description",
-        testStartInterface, testEndInterface, points));
+    QSharedPointer<ComInterconnection> testComConnection(new ComInterconnection("comConnect", "display",
+        "description", testStartInterface, testEndInterface, points));
 
     QList<QSharedPointer<ComInterconnection> > comConnectionList;
     comConnectionList.append(testComConnection);
@@ -1200,9 +1208,10 @@ void tst_DesignWriter::testWriteComConnections()
                         "\t\t\t\t<ipxact:description>description</ipxact:description>\n"
                         "\t\t\t\t<kactus2:activeComInterface componentRef=\"applicationOne\" comRef=\"busOne\"/>\n"
                         "\t\t\t\t<kactus2:activeComInterface componentRef=\"applicationTwo\" comRef=\"busTwo\"/>\n"
-                        "\t\t\t\t<kactus2:route offPage=\"false\">\n"
-                            "\t\t\t\t\t<kactus2:position x=\"1\" y=\"1\"/>\n"
-                        "\t\t\t\t</kactus2:route>\n"
+                         "\t\t\t\t<kactus2:route offPage=\"false\">\n"
+                             "\t\t\t\t\t<kactus2:position x=\"1\" y=\"1\"/>\n"
+                             "\t\t\t\t\t<kactus2:position x=\"2\" y=\"1\"/>\n"
+                         "\t\t\t\t</kactus2:route>\n"
                     "\t\t\t</kactus2:comConnection>\n"
                 "\t\t</kactus2:comConnections>\n"
             "\t</ipxact:vendorExtensions>\n"

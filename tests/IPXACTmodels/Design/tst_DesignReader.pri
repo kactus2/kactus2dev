@@ -9,14 +9,19 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 HEADERS += ../../../IPXACTmodels/Design/ActiveInterface.h \
     ../../../IPXACTmodels/Design/AdHocConnection.h \
+    ../../../IPXACTmodels/kactusExtensions/ApiInterconnection.h \
     ../../../IPXACTmodels/common/Array.h \
     ../../../IPXACTmodels/common/Assertion.h \
+    ../../../IPXACTmodels/kactusExtensions/ColumnDesc.h \
+    ../../../IPXACTmodels/kactusExtensions/ComInterconnection.h \
     ../../../IPXACTmodels/Design/ComponentInstance.h \
     ../../../IPXACTmodels/common/ConfigurableElementValue.h \
     ../../../IPXACTmodels/common/ConfigurableVLNVReference.h \
     ../../../IPXACTmodels/Design/Design.h \
     ../../../IPXACTmodels/common/Document.h \
     ../../../IPXACTmodels/common/Extendable.h \
+    ../../../IPXACTmodels/kactusExtensions/HierApiInterconnection.h \
+    ../../../IPXACTmodels/kactusExtensions/HierComInterconnection.h \
     ../../../IPXACTmodels/Design/HierInterface.h \
     ../../../IPXACTmodels/Design/Interconnection.h \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Group.h \
@@ -29,17 +34,30 @@ HEADERS += ../../../IPXACTmodels/Design/ActiveInterface.h \
     ../../../IPXACTmodels/Design/PortReference.h \
     ../../../IPXACTmodels/common/Range.h \
     ../../../IPXACTmodels/common/Vector.h \
+    ../../../IPXACTmodels/VendorExtension.h \
+    ../../../IPXACTmodels/vlnv.h \
+    ../../../IPXACTmodels/Design/ComponentInstanceReader.h \
     ../../../IPXACTmodels/Design/DesignReader.h \
     ../../../IPXACTmodels/common/DocumentReader.h \
     ../../../IPXACTmodels/common/ParameterReader.h \
     ../../../IPXACTmodels/validators/namevalidator.h \
-    ../../../IPXACTmodels/VendorExtension.h \
-    ../../../IPXACTmodels/Design/ComponentInstanceReader.h
+    ../../../IPXACTmodels/kactusExtensions/Kactus2Placeholder.h \
+    ../../../IPXACTmodels/kactusExtensions/Kactus2Value.h \
+    ../../../IPXACTmodels/XmlUtils.h \
+    ../../../IPXACTmodels/kactusExtensions/SWInstance.h \
+    ../../../IPXACTmodels/GenericVendorExtension.h \
+    ../../../IPXACTmodels/ComInterface.h \
+    ../../../IPXACTmodels/generaldeclarations.h \
+    ../../../IPXACTmodels/ComProperty.h
 SOURCES += ../../../IPXACTmodels/Design/ActiveInterface.cpp \
     ../../../IPXACTmodels/Design/AdHocConnection.cpp \
+    ../../../IPXACTmodels/kactusExtensions/ApiInterconnection.cpp \
     ../../../IPXACTmodels/common/Array.cpp \
     ../../../IPXACTmodels/common/Assertion.cpp \
+    ../../../IPXACTmodels/kactusExtensions/ColumnDesc.cpp \
+    ../../../IPXACTmodels/kactusExtensions/ComInterconnection.cpp \
     ../../../IPXACTmodels/Design/ComponentInstance.cpp \
+    ../../../IPXACTmodels/Design/ComponentInstanceReader.cpp \
     ../../../IPXACTmodels/common/ConfigurableElementValue.cpp \
     ../../../IPXACTmodels/common/ConfigurableVLNVReference.cpp \
     ../../../IPXACTmodels/Design/Design.cpp \
@@ -47,6 +65,8 @@ SOURCES += ../../../IPXACTmodels/Design/ActiveInterface.cpp \
     ../../../IPXACTmodels/common/Document.cpp \
     ../../../IPXACTmodels/common/DocumentReader.cpp \
     ../../../IPXACTmodels/common/Extendable.cpp \
+    ../../../IPXACTmodels/kactusExtensions/HierApiInterconnection.cpp \
+    ../../../IPXACTmodels/kactusExtensions/HierComInterconnection.cpp \
     ../../../IPXACTmodels/Design/HierInterface.cpp \
     ../../../IPXACTmodels/Design/Interconnection.cpp \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
@@ -62,4 +82,12 @@ SOURCES += ../../../IPXACTmodels/Design/ActiveInterface.cpp \
     ../../../IPXACTmodels/common/Vector.cpp \
     ../../../IPXACTmodels/validators/namevalidator.cpp \
     ./tst_DesignReader.cpp \
-    ../../../IPXACTmodels/Design/ComponentInstanceReader.cpp
+    ../../../IPXACTmodels/vlnv.cpp \
+    ../../../IPXACTmodels/kactusExtensions/Kactus2Placeholder.cpp \
+    ../../../IPXACTmodels/kactusExtensions/Kactus2Value.cpp \
+    ../../../IPXACTmodels/XmlUtils.cpp \
+    ../../../IPXACTmodels/kactusExtensions/SWInstance.cpp \
+    ../../../IPXACTmodels/GenericVendorExtension.cpp \
+    ../../../IPXACTmodels/ComInterface.cpp \
+    ../../../IPXACTmodels/generaldeclarations.cpp \
+    ../../../IPXACTmodels/ComProperty.cpp

@@ -99,6 +99,15 @@ private:
         const;
 
     /*!
+     *  Reads interconnection extensions.
+     *
+     *      @param [in] interconnectionNode     XML description of the interconnection.
+     *      @param [in] interconnection         The new interconnection item.
+     */
+    void parseInterconnectionExtensions(const QDomNode& interconnectionNode,
+        QSharedPointer<Interconnection> interconnection) const;
+
+    /*!
      *  Reads an active interface.
      *
      *      @param [in] interfaceNode   The XML description of the active interface.
@@ -113,6 +122,15 @@ private:
      *      @param [in] newInterface    The new interface item.
      */
     void parseHierInterface(const QDomNode& interfaceNode, QSharedPointer<HierInterface> newInterface) const;
+
+    /*!
+     *  Reads interface extensions.
+     *
+     *      @param [in] interfaceNode   XML description of the hierarchical interface.
+     *      @param [in] newInterface    The new interface item.
+     */
+    void parseHierInterfaceExtensions(const QDomNode& interfaceNode, QSharedPointer<HierInterface> newInterface)
+        const;
 
     /*!
      *  Reads a monitor interconnection.

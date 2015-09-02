@@ -23,9 +23,13 @@ public:
 
 private slots:
     void testReadSimpleDesign();
+
     void testReadComponentInstances();
     void testReadComponentInstanceExtensions();
+
     void testReadInterconnections();
+    void testReadInterconnectionExtensions();
+
     void testReadMonitorInterconnections();
     void testReadAdHocConnections();
 
@@ -336,6 +340,67 @@ void tst_DesignReader::testReadInterconnections()
 
     QCOMPARE(testConnection->getVendorExtensions()->size(), 1);
     QCOMPARE(testConnection->getVendorExtensions()->first()->type(), QString("testExtension"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_DesignReader::testReadInterconnectionExtensions()
+//-----------------------------------------------------------------------------
+void tst_DesignReader::testReadInterconnectionExtensions()
+{
+    QString documentContent(
+        "<ipxact:design xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
+            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:library>TestLibrary</ipxact:library>"
+            "<ipxact:name>TestDesign</ipxact:name>"
+            "<ipxact:version>0.1</ipxact:version>"
+            "<ipxact:interconnections>"
+                "<ipxact:interconnection>"
+                    "<ipxact:name>testActiveHier</ipxact:name>"
+                    "<ipxact:activeInterface componentRef=\"componentRef\" busRef=\"busRef\"/>"
+                    "<ipxact:hierInterface busRef=\"hierBusRef\">"
+                        "<ipxact:vendorExtensions>"
+                            "<kactus2:route>"
+                                "<kactus2:position x=\"1\" y=\"1\"/>"
+                                "<kactus2:position x=\"1\" y=\"2\"/>"
+                            "</kactus2:route>"
+                        "</ipxact:vendorExtensions>"
+                    "</ipxact:hierInterface>"
+                    "<ipxact:vendorExtensions>"
+                        "<kactus2:offPage/>"
+                    "</ipxact:vendorExtensions>"
+                "</ipxact:interconnection>"
+            "</ipxact:interconnections>"
+        "</ipxact:design>");
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    DesignReader reader;
+    QSharedPointer<Design> testDesign = reader.createDesignFrom(document);
+
+    QCOMPARE(testDesign->getInterconnections()->size(), 1);
+
+    QSharedPointer<Interconnection> interconnection = testDesign->getInterconnections()->first();
+    QCOMPARE(interconnection->name(), QString("testActiveHier"));
+
+    QCOMPARE(interconnection->getStartInterface()->getComponentReference(), QString("componentRef"));
+    QCOMPARE(interconnection->getStartInterface()->getBusReference(), QString("busRef"));
+    QCOMPARE(interconnection->isOffPage(), true);
+
+    QCOMPARE(interconnection->getActiveInterfaces()->size(), 0);
+
+    QCOMPARE(interconnection->getHierInterfaces()->size(), 1);
+    QCOMPARE(interconnection->getHierInterfaces()->first()->getBusReference(), QString("hierBusRef"));
+
+    QCOMPARE(interconnection->getHierInterfaces()->first()->getRoute().size(), 2);
+    QCOMPARE(interconnection->getHierInterfaces()->first()->getRoute().first().x(), qreal(1));
+    QCOMPARE(interconnection->getHierInterfaces()->first()->getRoute().first().x(), qreal(1));
+    QCOMPARE(interconnection->getHierInterfaces()->first()->getRoute().last().x(), qreal(1));
+    QCOMPARE(interconnection->getHierInterfaces()->first()->getRoute().last().y(), qreal(2));
 }
 
 //-----------------------------------------------------------------------------

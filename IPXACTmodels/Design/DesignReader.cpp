@@ -157,9 +157,26 @@ void DesignReader::parseComponentInterconnection(const QDomNode& interconnection
         }
     }
 
-    parseVendorExtensions(interconnectionNode, newInterconnection);
+    parseInterconnectionExtensions(interconnectionNode, newInterconnection);
 
     newDesign->getInterconnections()->append(newInterconnection);
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignReader::parseComponentInterconnectionExtensions()
+//-----------------------------------------------------------------------------
+void DesignReader::parseInterconnectionExtensions(const QDomNode& interconnectionNode,
+    QSharedPointer<Interconnection> interconnection) const
+{
+    QDomNode extensionNode = interconnectionNode.firstChildElement("ipxact:vendorExtensions"); 
+    QDomElement offPageElement = extensionNode.firstChildElement("kactus2:offPage");
+
+    if (!offPageElement.isNull())
+    {
+        interconnection->setOffPage(true);
+    }
+
+    parseVendorExtensions(interconnectionNode, interconnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -195,6 +212,37 @@ void DesignReader::parseHierInterface(const QDomNode& interfaceNode, QSharedPoin
     newInterface->setBusReference(attributeMap.namedItem("busRef").nodeValue());
     newInterface->setIsPresent(interfaceNode.firstChildElement("ipxact:isPresent").firstChild().nodeValue());
     newInterface->setDescription(interfaceNode.firstChildElement("ipxact:description").firstChild().nodeValue());
+
+    parseHierInterfaceExtensions(interfaceNode, newInterface);
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignReader::parseHierInterfaceExtensions()
+//-----------------------------------------------------------------------------
+void DesignReader::parseHierInterfaceExtensions(const QDomNode& interfaceNode,
+    QSharedPointer<HierInterface> newInterface) const
+{
+    QDomNode extensionsNode = interfaceNode.firstChildElement("ipxact:vendorExtensions");
+
+    QDomElement routeElement = extensionsNode.firstChildElement("kactus2:route");
+    if (!routeElement.isNull())
+    {
+        QList<QPointF> newRoute;
+
+        QDomNodeList positionNodesList = routeElement.elementsByTagName("kactus2:position");
+
+        for (int positionIndex = 0; positionIndex < positionNodesList.count(); ++positionIndex)
+        {
+            QDomNode positionNode = positionNodesList.at(positionIndex);
+            QDomNamedNodeMap positionAttributes = positionNode.attributes();
+            int positionX = positionAttributes.namedItem("x").nodeValue().toInt();
+            int positionY = positionAttributes.namedItem("y").nodeValue().toInt();
+
+            newRoute.append(QPointF(positionX, positionY));
+        }
+
+        newInterface->setRoute(newRoute);
+    }
 
     parseVendorExtensions(interfaceNode, newInterface);
 }

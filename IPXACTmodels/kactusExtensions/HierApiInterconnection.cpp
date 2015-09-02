@@ -428,3 +428,19 @@ void HierApiInterconnection::setDirection(QVector2D const& newDirection)
 {
     direction_ = newDirection;
 }
+
+//-----------------------------------------------------------------------------
+// Function: HierApiInterconnection::setRoute()
+//-----------------------------------------------------------------------------
+void HierApiInterconnection::setRoute(QList<QPointF> newRoute)
+{
+    getInterface()->setRoute(newRoute);
+}
+
+//-----------------------------------------------------------------------------
+// Function: HierApiInterconnection::getRoute()
+//-----------------------------------------------------------------------------
+QList<QPointF> HierApiInterconnection::getRoute() const
+{
+    return getInterface()->getRoute();
+}

@@ -74,20 +74,6 @@ public:
      */
     void setOffPage(bool offpage);
 
-    /*!
-     *  Gets the route of the connection.     
-     *
-     *      @return The route of the connection.
-     */
-    QList<QPointF> getRoute() const;
-
-    /*!
-     *  Sets the route of the connection.
-     *
-     *      @param [in] route   The route to set.
-     */
-    void setRoute(QList<QPointF> route);
-
     /*! Check if the interconnection is in a valid state.
     * 
     *       @param [in] instanceNames       List of component instance names contained in the design.
@@ -172,12 +158,6 @@ private:
 
     //! A list of hier interfaces.
     QSharedPointer<QList<QSharedPointer<HierInterface> > > hierInterfaces_;
-
-    //! The diagram route for the interconnection.
-    QList<QPointF> route_;
-
-    //! If true, the route is treated as an off-page connection.
-    bool offPage_;
 
     //! The presence.
     QString isPresent_;

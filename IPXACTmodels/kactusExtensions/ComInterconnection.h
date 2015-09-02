@@ -122,6 +122,20 @@ public:
      *      @return Pointer to the end interface.
      */
     QSharedPointer<ActiveInterface> getInterface2() const;
+
+    /*!
+     *  Set a route for the connection.
+     *
+     *      @param [in] newRoute    The new route.
+     */
+    void setRoute(QList<QPointF> newRoute);
+
+    /*!
+     *  Get the route for the connection.
+     *
+     *      @return A list of positions determininig the route.
+     */
+    QList<QPointF> getRoute() const;
 };
 
 //-----------------------------------------------------------------------------

@@ -159,6 +159,20 @@ public:
      */
     HierApiInterconnection& operator=(HierApiInterconnection const& rhs);
 
+    /*!
+     *  Set a route for the connection.
+     *
+     *      @param [in] newRoute    The new route.
+     */
+    void setRoute(QList<QPointF> newRoute);
+
+    /*!
+     *  Get the route for the connection.
+     *
+     *      @return A list of positions determininig the route.
+     */
+    QList<QPointF> getRoute() const;
+
 private:
 
     /*!

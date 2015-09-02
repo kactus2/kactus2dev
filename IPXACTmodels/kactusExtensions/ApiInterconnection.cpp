@@ -354,3 +354,19 @@ ApiInterconnection& ApiInterconnection::operator=(ApiInterconnection const& othe
 
     return *this;
 }
+
+//-----------------------------------------------------------------------------
+// Function: ApiInterconnection::setRoute()
+//-----------------------------------------------------------------------------
+void ApiInterconnection::setRoute(QList<QPointF> newRoute)
+{
+    getInterface2()->setRoute(newRoute);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ApiInterconnection::getRoute()
+//-----------------------------------------------------------------------------
+QList<QPointF> ApiInterconnection::getRoute() const
+{
+    return getInterface2()->getRoute();
+}
