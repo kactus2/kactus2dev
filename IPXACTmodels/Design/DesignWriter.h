@@ -72,24 +72,6 @@ private:
     void writeComponentInstances(QXmlStreamWriter& writer, QSharedPointer<Design> design) const;
 
     /*!
-     *  Write a single component instance.
-     *
-     *      @param [in] writer      The used XML writer.
-     *      @param [in] instance    The selected instance.
-     */
-    void writeSingleComponentInstance(QXmlStreamWriter& writer, QSharedPointer<ComponentInstance> instance) const;
-
-    /*!
-     *  Write a configurable VLNV.
-     *
-     *      @param [in] writer          The used XML writer.
-     *      @param [in] VLNVreference   The configurable VLNV.
-     *      @param [in] xmlElementName  The name of the XML element.
-     */
-    void writeConfigurableVLNVReference(QXmlStreamWriter& writer,
-        QSharedPointer<ConfigurableVLNVReference> VLNVreference, QString const& xmlElementName) const;
-
-    /*!
      *  Write the design interconnections.
      *
      *      @param [in] writer  The used XML writer.

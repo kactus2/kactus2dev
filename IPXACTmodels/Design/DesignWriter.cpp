@@ -12,6 +12,7 @@
 #include "DesignWriter.h"
 
 #include <IPXACTmodels/common/NameGroupWriter.h>
+#include <IPXACTmodels/Design/ComponentInstanceWriter.h>
 
 //-----------------------------------------------------------------------------
 // Function: DesignWriter::DesignWriter()
@@ -79,71 +80,15 @@ void DesignWriter::writeComponentInstances(QXmlStreamWriter& writer, QSharedPoin
     {
         writer.writeStartElement("ipxact:componentInstances");
 
+        ComponentInstanceWriter instanceWriter;
+
         foreach (QSharedPointer<ComponentInstance> instance, *design->getComponentInstances())
         {
-            writeSingleComponentInstance(writer, instance);
+            instanceWriter.writeComponentInstance(writer, instance);
         }
 
         writer.writeEndElement(); // ipxact:componentInstances
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: DesignWriter::writeSingleComponentInstance()
-//-----------------------------------------------------------------------------
-void DesignWriter::writeSingleComponentInstance(QXmlStreamWriter& writer,
-    QSharedPointer<ComponentInstance> instance) const
-{
-    writer.writeStartElement("ipxact:componentInstance");
-    writer.writeTextElement("ipxact:instanceName", instance->getInstanceName());
-
-    if (!instance->getDisplayName().isEmpty())
-    {
-        writer.writeTextElement("ipxact:displayName", instance->getDisplayName());
-    }
-    if (!instance->getDescription().isEmpty())
-    {
-        writer.writeTextElement("ipxact:description", instance->getDescription());
-    }
-
-    writeIsPresent(writer, instance->getIsPresent());
-
-    writeConfigurableVLNVReference(writer, instance->getComponentRef(), "ipxact:componentRef");
-
-    if (!instance->getVendorExtensions()->isEmpty())
-    {
-        writeVendorExtensions(writer, instance);
-    }
-
-    writer.writeEndElement(); // ipxact:componentInstance
-}
-
-//-----------------------------------------------------------------------------
-// Function: DesignWriter::writeConfigurableVLNVReference()
-//-----------------------------------------------------------------------------
-void DesignWriter::writeConfigurableVLNVReference(QXmlStreamWriter& writer,
-    QSharedPointer<ConfigurableVLNVReference> VLNVreference, QString const& xmlElementName) const
-{
-    writer.writeStartElement(xmlElementName);
-
-    writeVLNVAttributes(writer, *VLNVreference);
-
-    if (!VLNVreference->getConfigurableElementValues()->isEmpty())
-    {
-        writer.writeStartElement("ipxact:configurableElementValues");
-
-        foreach (QSharedPointer<ConfigurableElementValue> configurableElement,
-            *VLNVreference->getConfigurableElementValues())
-        {
-            writer.writeStartElement("ipxact:configurableElementValue");
-            writer.writeAttribute("referenceId", configurableElement->getReferenceId());
-            writer.writeCharacters(configurableElement->getConfigurableValue());
-            writer.writeEndElement(); // ipxact:configurableElementValue
-        }
-        writer.writeEndElement(); // ipxact:configurableElementValues
-    }
-
-    writer.writeEndElement(); // xmlElementName
 }
 
 //-----------------------------------------------------------------------------

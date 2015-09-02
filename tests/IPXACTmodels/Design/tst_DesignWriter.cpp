@@ -33,9 +33,13 @@ private slots:
     void cleanup();
 
     void testWriteSimpleDesign();
+
     void testWriteComponentInstances();
     void testWriteComponentInstanceExtensions();
+
     void testWriteInterconnections();
+    void testWriteInterconnectionExtensions();
+
     void testWriteMonitorInterconnections();
     void testWriteAdHocConnections();
 
@@ -395,6 +399,14 @@ void tst_DesignWriter::testWriteInterconnections()
     designWriter.writeDesign(xmlStreamWriter, testDesign_);
 
     compareOutputToExpected(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_DesignWriter::testWriteInterconnectionExtensions()
+//-----------------------------------------------------------------------------
+void tst_DesignWriter::testWriteInterconnectionExtensions()
+{
+
 }
 
 //-----------------------------------------------------------------------------
