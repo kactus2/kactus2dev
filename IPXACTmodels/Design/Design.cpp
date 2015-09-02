@@ -467,17 +467,7 @@ QList<VLNV> Design::getDependentVLNVs() const
     foreach (QSharedPointer<ComponentInstance> instance, *componentInstances_)
     {
 		// if the pointer is valid and it is not already added to the list of
-		// component instances (two instances of same component are not added
-		// twice)
-        /*
-		if ((componentInstances_.at(i).getComponentRef().isValid()) &&
-			(!instanceList.contains(componentInstances_.at(i).getComponentRef()))) {
-
-				// add the component VLNV to the list
-				instanceList.append(componentInstances_.at(i).getComponentRef());
-		}
-        */
-
+		// component instances (two instances of same component are not added twice)
         QSharedPointer<ConfigurableVLNVReference> componentReference = instance->getComponentRef();
 
         if (componentReference->isValid() && !instanceList.contains(*componentReference))
@@ -493,10 +483,9 @@ QList<VLNV> Design::getDependentVLNVs() const
     {
         QSharedPointer<SWInstance> swInstance = extension.dynamicCast<SWInstance>();
 
-        if (swInstance->getComponentRef().isValid() &&
-            !instanceList.contains(swInstance->getComponentRef()))
+        if (swInstance->getComponentRef()->isValid() && !instanceList.contains(*swInstance->getComponentRef()))
         {
-            instanceList.append(swInstance->getComponentRef());
+            instanceList.append(*swInstance->getComponentRef());
         }
     }
 
@@ -809,7 +798,7 @@ QList<VLNV> Design::getComponents() const
         QSharedPointer<SWInstance> swInstance = extensions.dynamicCast<SWInstance>();
         if (swInstance->isDraft())
         {
-            list.append(swInstance->getComponentRef());
+            list.append(*swInstance->getComponentRef());
         }
     }
 

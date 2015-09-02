@@ -10,6 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include "DesignReader.h"
+#include "ComponentInstanceReader.h"
 
 //-----------------------------------------------------------------------------
 // Function: DesignReader::DesignReader()
@@ -66,31 +67,16 @@ void DesignReader::parseComponentInstances(const QDomNode& designNode, QSharedPo
     QDomNode componentInstancesNode = designNode.firstChildElement("ipxact:componentInstances");
 
     QDomNodeList instanceNodes = componentInstancesNode.childNodes();
+    ComponentInstanceReader instanceReader;
 
     for (int i = 0; i < instanceNodes.size(); ++i)
     {
         QDomNode singleInstanceNode = instanceNodes.at(i);
 
-        QString instanceName = singleInstanceNode.firstChildElement("ipxact:instanceName").firstChild().nodeValue();
-        QString displayName = singleInstanceNode.firstChildElement("ipxact:displayName").firstChild().nodeValue();
-        QString description = singleInstanceNode.firstChildElement("ipxact:description").firstChild().nodeValue();
-        QString isPresent = singleInstanceNode.firstChildElement("ipxact:isPresent").firstChild().nodeValue();
+        QSharedPointer<ComponentInstance> newComponentInstance =
+            instanceReader.createComponentInstanceFrom(singleInstanceNode);
 
-        QSharedPointer<ComponentInstance> componentInstance (new ComponentInstance());
-        componentInstance->setInstanceName(instanceName);
-        componentInstance->setDisplayName(displayName);
-        componentInstance->setDescription(description);
-        componentInstance->setIsPresent(isPresent);
-
-        QDomNode componentRefNode = singleInstanceNode.firstChildElement("ipxact:componentRef");
-        QSharedPointer<ConfigurableVLNVReference> componentRef =
-            parseConfigurableVLNVReference(componentRefNode, VLNV::COMPONENT);
-
-        componentInstance->setComponentRef(componentRef);
-
-        parseVendorExtensions(singleInstanceNode, componentInstance);
-
-        newDesign->getComponentInstances()->append(componentInstance);
+        newDesign->getComponentInstances()->append(newComponentInstance);
     }
 }
 

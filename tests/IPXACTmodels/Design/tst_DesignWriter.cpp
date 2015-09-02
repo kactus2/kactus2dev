@@ -814,13 +814,25 @@ void tst_DesignWriter::testWriteColumns()
 //-----------------------------------------------------------------------------
 void tst_DesignWriter::testWriteSWInstances()
 {
-    VLNV componentRef(VLNV::COMPONENT, "TUT", "TestLibrary", "refComponent", "1.1");
+    QSharedPointer<ConfigurableVLNVReference> testComponentReference (
+        new ConfigurableVLNVReference(VLNV::COMPONENT, "TUT", "TestLibrary", "refComponent", "1.1"));
 
     QSharedPointer<SWInstance> testInstance(new SWInstance());
     testInstance->setInstanceName("testInstance");
     testInstance->setDisplayName("testDisplay");
     testInstance->setDescription("testDescription");
-    testInstance->setComponentRef(componentRef);
+    testInstance->setComponentRef(testComponentReference);
+    testInstance->setFileSetRef("filesetRef");
+    testInstance->setMapping("hwRef");
+    testInstance->setPosition(QPointF(1,2));
+    testInstance->setImportRef("importer");
+    testInstance->setDraft(true);
+    testInstance->updateApiInterfacePosition("newApi", QPointF(0,1));
+    testInstance->updateComInterfacePosition("newCom", QPointF(1,1));
+
+    QMap<QString, QString> propertyValues;
+    propertyValues.insert("testProperty", "value");
+    testInstance->setPropertyValues(propertyValues);
 
     QList<QSharedPointer<SWInstance> > swInstances;
     swInstances.append(testInstance);
@@ -856,8 +868,20 @@ void tst_DesignWriter::testWriteSWInstances()
                         "\t\t\t\t<kactus2:description>testDescription</kactus2:description>\n"
                         "\t\t\t\t<kactus2:componentRef vendor=\"TUT\" library=\"TestLibrary\" "
                             "name=\"refComponent\" version=\"1.1\"/>\n"
-                        "\t\t\t\t<kactus2:mapping kactus2:hwRef=\"\"/>\n"
-                        "\t\t\t\t<kactus2:position x=\"0\" y=\"0\"/>\n"
+                        "\t\t\t\t<kactus2:fileSetRef>filesetRef</kactus2:fileSetRef>\n"
+                        "\t\t\t\t<kactus2:mapping hwRef=\"hwRef\"/>\n"
+                        "\t\t\t\t<kactus2:position x=\"1\" y=\"2\"/>\n"
+                        "\t\t\t\t<kactus2:imported importRef=\"importer\"/>\n"
+                        "\t\t\t\t<kactus2:draft/>\n"
+                        "\t\t\t\t<kactus2:propertyValues>\n"
+                            "\t\t\t\t\t<kactus2:propertyValue name=\"testProperty\" value=\"value\"/>\n"
+                        "\t\t\t\t</kactus2:propertyValues>\n"
+                        "\t\t\t\t<kactus2:apiInterfacePositions>\n"
+                            "\t\t\t\t\t<kactus2:apiInterfacePosition apiRef=\"newApi\" x=\"0\" y=\"1\"/>\n"
+                        "\t\t\t\t</kactus2:apiInterfacePositions>\n"
+                        "\t\t\t\t<kactus2:comInterfacePositions>\n"
+                            "\t\t\t\t\t<kactus2:comInterfacePosition comRef=\"newCom\" x=\"1\" y=\"1\"/>\n"
+                        "\t\t\t\t</kactus2:comInterfacePositions>\n"
                     "\t\t\t</kactus2:swInstance>\n"
                 "\t\t</kactus2:swInstances>\n"
             "\t</ipxact:vendorExtensions>\n"

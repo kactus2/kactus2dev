@@ -421,7 +421,7 @@ QString ComponentInstance::getImportRef() const
 {
     foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type().compare("kactus2:imported"))
+        if (extension->type().compare("kactus2:imported") == 0)
         {
             QSharedPointer<Kactus2Placeholder> importExtension = extension.dynamicCast<Kactus2Placeholder>();
             return importExtension->getAttributeValue("importRef");
@@ -592,6 +592,30 @@ bool ComponentInstance::isDraft() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComponentInstance::setDraft()
+//-----------------------------------------------------------------------------
+void ComponentInstance::setDraft(bool instanceIsDraft)
+{
+    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    {
+        if (extension->type() == "kactus2:draft")
+        {
+            if (!instanceIsDraft)
+            {
+                getVendorExtensions()->removeAll(extension);
+            }
+            return;
+        }
+    }
+
+    if (instanceIsDraft)
+    {
+        QSharedPointer<Kactus2Placeholder> draftExtension (new Kactus2Placeholder("kactus2:draft"));
+        getVendorExtensions()->append(draftExtension);
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComponentInstance::getIsPresent()
 //-----------------------------------------------------------------------------
 QString ComponentInstance::getIsPresent() const
@@ -677,7 +701,7 @@ QMap<QString, QPointF> ComponentInstance::getPositionMap(QString const& groupIde
 
     foreach (QSharedPointer<VendorExtension> extension, positionList)
     {
-        QSharedPointer<Kactus2Placeholder> positionExtension (new Kactus2Placeholder(itemIdentifier));
+        QSharedPointer<Kactus2Placeholder> positionExtension = extension.dynamicCast<Kactus2Placeholder>();
         QString referenceName = positionExtension->getAttributeValue(referenceIdentifier);
         int positionX = positionExtension->getAttributeValue("x").toInt();
         int positionY = positionExtension->getAttributeValue("y").toInt();

@@ -18,6 +18,8 @@
 
 #include <IPXACTmodels/ComInterface.h>
 
+#include <IPXACTmodels/Design/ComponentInstance.h>
+
 #include <QString>
 #include <QPointF>
 #include <QList>
@@ -29,7 +31,7 @@
 //-----------------------------------------------------------------------------
 //! SW instance class for extending IP-XACT designs.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT SWInstance : public VendorExtension
+class IPXACTMODELS_EXPORT SWInstance : public VendorExtension, public ComponentInstance
 {
 public:
     /*!
@@ -80,8 +82,8 @@ public:
      *      @param [in]  instanceNames  The list of HW UUIDs in the containing design.
      *      @param [in]  parentId       The identifier of the containing design.
      */
-    bool isValid(QStringList& errorList, QStringList const& hwUUIDs,
-                 QString const& parentId) const;
+    //bool isValid(QStringList& errorList, QStringList const& hwUUIDs,
+    //             QString const& parentId) const;
 
 	/*! \brief Check if the software instance is in valid state.
 	 *
@@ -89,35 +91,7 @@ public:
 	 *
 	 * \return bool True if the SW instance is in valid state.
 	*/
-	bool isValid(const QStringList& hwUUIDs) const;
-
-    /*!
-     *  Sets the name of the SW instance.
-     *
-     *      @param [in] name The name to set.
-     */
-    void setInstanceName(QString const& name);
-
-    /*!
-     *  Sets the display name of the SW instance.
-     *
-     *      @param [in] displayName The display name to set.
-     */
-    void setDisplayName(QString const& displayName);
-
-    /*!
-     *  Sets the description of the SW instance.
-     *
-     *      @param [in] description The description to set.
-     */
-    void setDescription(QString const& description);
-
-    /*!
-     *  Sets the component reference.
-     *
-     *      @param [in] vlnv The referenced component VLNV.
-     */
-    void setComponentRef(VLNV const& vlnv);
+	//bool isValid(const QStringList& hwUUIDs) const;
 
     /*!
      *  Sets the file set reference.
@@ -134,70 +108,6 @@ public:
     void setMapping(QString const& hwRef);
 
     /*!
-     *  Sets the global position of the SW instance.
-     *
-     *      @param [in] pos The global position in the design, in pixels.
-     */
-    void setPosition(QPointF const& pos);
-
-    /*!
-     *  Sets the flag whether the instance is an imported one and should be auto-synced.
-     *
-     *      @param [in] imported If true, the instance is set as imported.
-     */
-    void setImported(bool imported);
-
-    /*!
-     *  Sets the name of the import source instance.
-     *
-     *      @param [in] nameRef The name of the import source instance.
-     */
-    void setImportRef(QString const& nameRef);
-
-    /*!
-     *  Sets the property values.
-     *
-     *      @param [in] values The property values.
-     */
-    void setPropertyValues(QMap<QString, QString> const& values);
-
-    /*!
-     *  Updates the position of the API interface with the given name.
-     *
-     *      @param [in] name The name of the API interface.
-     *      @param [in] pos  The local position of the API interface.
-     */
-    void updateApiInterfacePosition(QString const& name, QPointF const& pos);
-
-    /*!
-     *  Updates the position of the API interface with the given name.
-     *
-     *      @param [in] name The name of the API interface.
-     *      @param [in] pos  The local position of the API interface.
-     */
-    void updateComInterfacePosition(QString const& name, QPointF const& pos);
-
-    /*!
-     *  Returns the name of the SW instance.
-     */
-    QString const& getInstanceName() const;
-    
-    /*!
-     *  Returns the display name of the SW instance.
-     */
-    QString const& getDisplayName() const;
-
-    /*!
-     *  Returns the description of the SW instance.
-     */
-    QString const& getDescription() const;
-
-    /*!
-     *  Returns the component reference.
-     */
-    VLNV const& getComponentRef() const;
-
-    /*!
      *  Returns the file set reference (i.e. the name of the referenced file set).
      */
     QString const& getFileSetRef() const;
@@ -206,48 +116,6 @@ public:
      *  Returns the name of the referenced HW component instance onto which the SW instance is mapped.
      */
     QString const& getMapping() const;
-
-    /*!
-     *  Returns the global position of the SW instance in the design.
-     */
-    QPointF const& getPosition() const;
-
-    /*!
-     *  Returns true if the instance is an imported one.
-     */
-    bool isImported() const;
-
-    /*!
-     *  Returns the name of the import source instance.
-     */
-    QString const& getImportRef() const;
-
-    /*!
-     *  Checks if the component instance is a draft.
-     *
-     *      @return True, if the instance is a draft, otherwise false.
-     */
-    bool isDraft() const;
-
-    /*!
-     *  Marks the instance as a draft.
-     */
-    void setDraft();
-
-    /*!
-     *  Returns the property values.
-     */
-    QMap<QString, QString> const& getPropertyValues() const;
-
-    /*!
-     *  Returns the local API interface positions of the SW instance in the design.
-     */
-    QMap<QString, QPointF> const& getApiInterfacePositions() const;
-
-    /*!
-     *  Returns the local COM interface positions of the SW instance in the design.
-     */
-    QMap<QString, QPointF> const& getComInterfacePositions() const;
 
     /*!
      *  Assignment operator.
@@ -288,25 +156,8 @@ private:
     void writeMappedPosition(QXmlStreamWriter& writer, QMap<QString, QPointF> const& positions,
         QString const& identifier, QString const& refIdentifier) const;
 
-    /*!
-     *  Write a single position.
-     *
-     *      @param [in] xmlWriter   The used XML writer.
-     *      @param [in] pos         The position to be written.
-     */
-    void writePosition(QXmlStreamWriter& xmlWriter, QPointF const& pos) const;
+    QMap<QString, QPointF> createMappedPositions(QDomNode& mapNode, QString const& referenceIdentifier) const;
 
-    /*!
-     *  Reads the mapped positions.
-     *
-     *      @param [in] node            The node containing the positions.
-     *      @param [in] identifier      The identifier for the positions.
-     *      @param [in] refIdentifier   The reference identifier for the positions.
-     *      @param [in] positions       The positions.
-     */
-    void parseMappedPosition(QDomNode& node, QString const& identifier, QString const& refIdentifier,
-        QMap<QString, QPointF>& positions);
-    
     /*!
      *  Reads a single point.
      *
@@ -319,23 +170,18 @@ private:
      *
      *      @param [in] node    The node containing the component reference.
      */
-    VLNV createComponentReference(const QDomNode& node);
+    QSharedPointer<ConfigurableVLNVReference> createComponentReference(const QDomNode& node) const;
+
+    /*!
+     *  Create a configurable element value from XML.
+     *
+     *      @param [in] configurableElementNode     XML description of the configurable element.
+     */
+    QSharedPointer<ConfigurableElementValue> parseConfigurableElement(QDomNode const& configurableElementNode) const;
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    //! The instance name.
-    QString instanceName_;
-
-    //! The display name.
-    QString displayName_;
-
-    //! The description of the SW instance.
-    QString desc_;
-
-    //! The VLNV reference to an SW component.
-    VLNV componentRef_;
 
     //! The file set reference.
     QString fileSetRef_;
@@ -343,29 +189,8 @@ private:
     //! HW reference for mapping.
     QString hwRef_;
 
-    //! The global position of the SW instance in the design.
-    QPointF pos_;
-
-    //! If true, the instance is an imported one.
-    bool imported_;
-
-    //! The name of the import source instance.
-    QString importRef_;
-
-    //! If true, the instance is a draft.
-    bool draft_;
-
     //! The "ad-hoc" communication interfaces.
     QList< QSharedPointer<ComInterface> > comInterfaces_;
-
-    //! The set property values.
-    QMap<QString, QString> propertyValues_;
-
-    //! API interface positions.
-    QMap<QString, QPointF> apiInterfacePositions_;
-
-    //! COM interface positions.
-    QMap<QString, QPointF> comInterfacePositions_;
 };
 
 //-----------------------------------------------------------------------------

@@ -239,20 +239,27 @@ public:
      *  Assignment operator.
      */
     ComponentInstance& operator=(ComponentInstance const& other);
+    
+    /*!
+     *  Get the Uuid of the instance.
+	 *
+     *     @return QString containing the uuid.
+	 */
+    QString getUuid() const;
 
-	 /*!
-	  *  Get the Uuid of the instance.
-	  *
-      *     @return QString containing the uuid.
-	  */
-	 QString getUuid() const;
-
-     /*!
-      *  Checks if the component instance is a draft.
-      *
-      *      @return True, if the instance is a draft, otherwise false.
-      */
-     bool isDraft() const;
+    /*!
+     *  Checks if the component instance is a draft.
+     *
+     *      @return True, if the instance is a draft, otherwise false.
+     */
+    bool isDraft() const;
+     
+    /*!
+     *  Set the draft status of a component instance (Kactus2 extension).
+     *
+     *      @param [in] instanceIsDraft     True for draft component instance, false for normal.
+     */
+    void setDraft(bool instanceIsDraft);
 
     /*!
      *  Get the presence of the instance.
@@ -260,7 +267,7 @@ public:
      *      @return A QString containing the presence.
      */
     QString getIsPresent() const;
-
+     
     /*!
      *  Set the presence of the instance.
      *
@@ -271,8 +278,8 @@ public:
 private:
     
     /*!
-    *  Parses the property values from the given XML node.
-    */
+     *  Parses the property values from the given XML node.
+     */
     void parsePropertyValues(QDomNode& node);
     
     /*!

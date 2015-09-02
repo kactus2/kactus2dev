@@ -41,7 +41,8 @@ HEADERS += ../../../IPXACTmodels/Design/ActiveInterface.h \
     ../../../IPXACTmodels/ComInterface.h \
     ../../../IPXACTmodels/XmlUtils.h \
     ../../../IPXACTmodels/ComProperty.h \
-    ../../../IPXACTmodels/generaldeclarations.h
+    ../../../IPXACTmodels/generaldeclarations.h \
+    ../../../IPXACTmodels/Design/ComponentInstanceReader.h
 SOURCES += ../../../IPXACTmodels/Design/ActiveInterface.cpp \
     ../../../IPXACTmodels/Design/AdHocConnection.cpp \
     ../../../IPXACTmodels/common/Array.cpp \
@@ -77,4 +78,5 @@ SOURCES += ../../../IPXACTmodels/Design/ActiveInterface.cpp \
     ../../../IPXACTmodels/ComInterface.cpp \
     ../../../IPXACTmodels/XmlUtils.cpp \
     ../../../IPXACTmodels/ComProperty.cpp \
-    ../../../IPXACTmodels/generaldeclarations.cpp
+    ../../../IPXACTmodels/generaldeclarations.cpp \
+    ../../../IPXACTmodels/Design/ComponentInstanceReader.cpp

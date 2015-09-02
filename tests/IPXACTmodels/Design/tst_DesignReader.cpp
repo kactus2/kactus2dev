@@ -24,6 +24,7 @@ public:
 private slots:
     void testReadSimpleDesign();
     void testReadComponentInstances();
+    void testReadComponentInstanceExtensions();
     void testReadInterconnections();
     void testReadMonitorInterconnections();
     void testReadAdHocConnections();
@@ -111,7 +112,7 @@ void tst_DesignReader::testReadComponentInstances()
                         "</ipxact:configurableElementValues>"
                     "</ipxact:componentRef>"
                     "<ipxact:vendorExtensions>"
-                        "<testExtension testExtensionAttribute=\"extension\">testValue</testExtension>"
+                        "<kactus2:uuid>testUUID</kactus2:uuid>"
                     "</ipxact:vendorExtensions>"
                 "</ipxact:componentInstance>"
             "</ipxact:componentInstances>"
@@ -143,7 +144,105 @@ void tst_DesignReader::testReadComponentInstances()
     QCOMPARE(componentRef->getConfigurableElementValues()->first()->getConfigurableValue(), QString("10"));
 
     QCOMPARE(testInstance->getVendorExtensions()->size(), 1);
-    QCOMPARE(testInstance->getVendorExtensions()->first()->type(), QString("testExtension"));
+    QCOMPARE(testInstance->getVendorExtensions()->first()->type(), QString("kactus2:uuid"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_DesignReader::testReadComponentInstanceExtensions()
+//-----------------------------------------------------------------------------
+void tst_DesignReader::testReadComponentInstanceExtensions()
+{
+    QString documentContent(
+        "<ipxact:design xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
+            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:library>TestLibrary</ipxact:library>"
+            "<ipxact:name>TestDesign</ipxact:name>"
+            "<ipxact:version>0.1</ipxact:version>"
+            "<ipxact:componentInstances>"
+                "<ipxact:componentInstance>"
+                    "<ipxact:instanceName>testInstance</ipxact:instanceName>"
+                    "<ipxact:componentRef vendor=\"TUT\" library=\"TestLibrary\" name=\"testComponent\""
+                        " version=\"1.0\">"
+                        "<ipxact:configurableElementValues>"
+                            "<ipxact:configurableElementValue referenceId=\"testReferenceID\">10"
+                            "</ipxact:configurableElementValue>"
+                        "</ipxact:configurableElementValues>"
+                    "</ipxact:componentRef>"
+                    "<ipxact:vendorExtensions>"
+                        "<kactus2:position x=\"10\" y=\"10\"/>"
+                        "<kactus2:uuid>testUUID</kactus2:uuid>"
+                        "<kactus2:imported importRef=\"importSource\"/>"
+                        "<kactus2:portPositions>"
+                            "<kactus2:portPosition busRef=\"testInterface\" x=\"4\" y=\"4\"/>"
+                        "</kactus2:portPositions>"
+                        "<kactus2:adHocVisibilities>"
+                            "<kactus2:adHocVisible portName=\"adHocPort\" x=\"3\" y=\"3\"/>"
+                        "</kactus2:adHocVisibilities>"
+                        "<kactus2:apiInterfacePositions>"
+                            "<kactus2:apiInterfacePosition apiRef=\"apiInterface\" x=\"2\" y=\"2\"/>"
+                        "</kactus2:apiInterfacePositions>"
+                        "<kactus2:comInterfacePositions>"
+                            "<kactus2:comInterfacePosition comRef=\"comInterface\" x=\"1\" y=\"1\"/>"
+                        "</kactus2:comInterfacePositions>"
+                        "<kactus2:propertyValues>"
+                            "<kactus2:propertyValue name=\"testSWProperty\" value=\"8\"/>"
+                        "</kactus2:propertyValues>"
+                    "</ipxact:vendorExtensions>"
+                "</ipxact:componentInstance>"
+            "</ipxact:componentInstances>"
+        "</ipxact:design>");
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    DesignReader reader;
+    QSharedPointer<Design> testDesign = reader.createDesignFrom(document);
+
+    QCOMPARE(testDesign->getComponentInstances()->size(), 1);
+
+    QSharedPointer<ComponentInstance> testInstance = testDesign->getComponentInstances()->first();
+
+    QCOMPARE(testInstance->getInstanceName(), QString("testInstance"));
+
+    QSharedPointer<ConfigurableVLNVReference> componentRef =
+        testDesign->getComponentInstances()->first()->getComponentRef();
+    QCOMPARE(componentRef->getName(), QString("testComponent"));
+
+    QCOMPARE(testInstance->getVendorExtensions()->size(), 8);
+    QCOMPARE(testInstance->getUuid(), QString("testUUID"));
+    QCOMPARE(testInstance->getPosition().x(), qreal(10));
+    QCOMPARE(testInstance->getPosition().y(), qreal(10));
+
+    QCOMPARE(testInstance->isImported(), true);
+    QCOMPARE(testInstance->getImportRef(), QString("importSource"));
+
+    QCOMPARE(testInstance->getBusInterfacePositions().count(), 1);
+    QCOMPARE(testInstance->getBusInterfacePositions().firstKey(), QString("testInterface"));
+    QCOMPARE(testInstance->getBusInterfacePositions().first().x(), qreal(4));
+    QCOMPARE(testInstance->getBusInterfacePositions().first().y(), qreal(4));
+
+    QCOMPARE(testInstance->getAdHocPortPositions().count(), 1);
+    QCOMPARE(testInstance->getAdHocPortPositions().firstKey(), QString("adHocPort"));
+    QCOMPARE(testInstance->getAdHocPortPositions().first().x(), qreal(3));
+    QCOMPARE(testInstance->getAdHocPortPositions().first().y(), qreal(3));
+
+    QCOMPARE(testInstance->getApiInterfacePositions().count(), 1);
+    QCOMPARE(testInstance->getApiInterfacePositions().firstKey(), QString("apiInterface"));
+    QCOMPARE(testInstance->getApiInterfacePositions().first().x(), qreal(2));
+    QCOMPARE(testInstance->getApiInterfacePositions().first().y(), qreal(2));
+
+    QCOMPARE(testInstance->getComInterfacePositions().count(), 1);
+    QCOMPARE(testInstance->getComInterfacePositions().firstKey(), QString("comInterface"));
+    QCOMPARE(testInstance->getComInterfacePositions().first().x(), qreal(1));
+    QCOMPARE(testInstance->getComInterfacePositions().first().y(), qreal(1));
+
+    QCOMPARE(testInstance->getPropertyValues().count(), 1);
+    QCOMPARE(testInstance->getPropertyValues().firstKey(), QString("testSWProperty"));
+    QCOMPARE(testInstance->getPropertyValues().first(), QString("8"));
 }
 
 //-----------------------------------------------------------------------------
@@ -597,10 +696,22 @@ void tst_DesignReader::testReadSWInstances()
                         "<kactus2:instanceName>testInstance</kactus2:instanceName>"
                         "<kactus2:displayName>testDisplay</kactus2:displayName>"
                         "<kactus2:description>testDescription</kactus2:description>"
-                        "<kactus2:componentRef vendor=\"TUT\" library=\"TestLibrary\" name=\"refComponent\" "
-                            "version=\"1.1\"/>"
-                        "<kactus2:mapping kactus2:hwRef=\"\"/>"
-                        "<kactus2:position x=\"0\" y=\"0\"/>"
+                        "<kactus2:componentRef vendor=\"TUT\" library=\"TestLibrary\" name=\"refComponent\""
+                            " version=\"1.1\"/>"
+                        "<kactus2:fileSetRef>filesetRef</kactus2:fileSetRef>"
+                        "<kactus2:mapping hwRef=\"hwRef\"/>"
+                        "<kactus2:position x=\"1\" y=\"2\"/>"
+                        "<kactus2:imported importRef=\"importer\"/>"
+                        "<kactus2:draft/>"
+                        "<kactus2:propertyValues>"
+                            "<kactus2:propertyValue name=\"testProperty\" value=\"value\"/>"
+                        "</kactus2:propertyValues>"
+                        "<kactus2:apiInterfacePositions>"
+                            "<kactus2:apiInterfacePosition apiRef=\"newApi\" x=\"0\" y=\"1\"/>"
+                        "</kactus2:apiInterfacePositions>"
+                        "<kactus2:comInterfacePositions>"
+                            "<kactus2:comInterfacePosition comRef=\"newCom\" x=\"1\" y=\"1\"/>"
+                        "</kactus2:comInterfacePositions>"
                     "</kactus2:swInstance>"
                 "</kactus2:swInstances>"
             "</ipxact:vendorExtensions>"
@@ -621,14 +732,33 @@ void tst_DesignReader::testReadSWInstances()
     QCOMPARE(swInstances.first()->getDisplayName(), QString("testDisplay"));
     QCOMPARE(swInstances.first()->getDescription(), QString("testDescription"));
 
-    QCOMPARE(swInstances.first()->getComponentRef().getVendor(), QString("TUT"));
-    QCOMPARE(swInstances.first()->getComponentRef().getLibrary(), QString("TestLibrary"));
-    QCOMPARE(swInstances.first()->getComponentRef().getName(), QString("refComponent"));
-    QCOMPARE(swInstances.first()->getComponentRef().getVersion(), QString("1.1"));
+    QCOMPARE(swInstances.first()->getComponentRef()->getVendor(), QString("TUT"));
+    QCOMPARE(swInstances.first()->getComponentRef()->getLibrary(), QString("TestLibrary"));
+    QCOMPARE(swInstances.first()->getComponentRef()->getName(), QString("refComponent"));
+    QCOMPARE(swInstances.first()->getComponentRef()->getVersion(), QString("1.1"));
 
-    QCOMPARE(swInstances.first()->getMapping(), QString(""));
-    QCOMPARE(swInstances.first()->getPosition().x(), qreal(0));
-    QCOMPARE(swInstances.first()->getPosition().y(), qreal(0));
+    QCOMPARE(swInstances.first()->getFileSetRef(), QString("filesetRef"));
+    QCOMPARE(swInstances.first()->getMapping(), QString("hwRef"));
+    QCOMPARE(swInstances.first()->getPosition().x(), qreal(1));
+    QCOMPARE(swInstances.first()->getPosition().y(), qreal(2));
+    
+    QCOMPARE(swInstances.first()->isImported(), true);
+    QCOMPARE(swInstances.first()->getImportRef(), QString("importer"));
+    
+    QCOMPARE(swInstances.first()->isDraft(), true);
+    QCOMPARE(swInstances.first()->getPropertyValues().count(), 1);
+    QCOMPARE(swInstances.first()->getPropertyValues().firstKey(), QString("testProperty"));
+    QCOMPARE(swInstances.first()->getPropertyValues().first(), QString("value"));
+
+    QCOMPARE(swInstances.first()->getApiInterfacePositions().count(), 1);
+    QCOMPARE(swInstances.first()->getApiInterfacePositions().firstKey(), QString("newApi"));
+    QCOMPARE(swInstances.first()->getApiInterfacePositions().first().x(), qreal(0));
+    QCOMPARE(swInstances.first()->getApiInterfacePositions().first().y(), qreal(1));
+
+    QCOMPARE(swInstances.first()->getComInterfacePositions().count(), 1);
+    QCOMPARE(swInstances.first()->getComInterfacePositions().firstKey(), QString("newCom"));
+    QCOMPARE(swInstances.first()->getComInterfacePositions().first().x(), qreal(1));
+    QCOMPARE(swInstances.first()->getComInterfacePositions().first().y(), qreal(1));
 }
 
 //-----------------------------------------------------------------------------
