@@ -34,6 +34,9 @@ private slots:
     void testReadParameters();
     void testReadAssertions();
     void testReadVendorExtensions();
+
+    void testReadConfigurableElementValues();
+    void testReadViewOverrides();
 };
 
 //-----------------------------------------------------------------------------
@@ -465,8 +468,8 @@ void tst_DesignConfigurationReader::testReadVendorExtensions()
             "<ipxact:vendorExtensions>"                
                 "<kactus2:version>3.0.0</kactus2:version>"
                 "<testExtension testExtensionAttribute=\"extension\">testValue</testExtension>"
-            "</ipxact:vendorExtensions>\n"
-        "</ipxact:designConfiguration>\n"
+            "</ipxact:vendorExtensions>"
+        "</ipxact:designConfiguration>"
         );
 
     QDomDocument document;
@@ -480,6 +483,100 @@ void tst_DesignConfigurationReader::testReadVendorExtensions()
     QCOMPARE(testDesignConfiguration->getVendorExtensions()->size(), 2);
     QCOMPARE(testDesignConfiguration->getVendorExtensions()->last()->type(), QString("testExtension"));
     QCOMPARE(testDesignConfiguration->getVersion(), QString("3.0.0"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_DesignConfigurationReader::testReadConfigurableElementValues()
+//-----------------------------------------------------------------------------
+void tst_DesignConfigurationReader::testReadConfigurableElementValues()
+{
+    QString documentContent(
+        "<?xml version=\"1.0\"?>"
+        "<ipxact:designConfiguration "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
+            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:library>TestLibrary</ipxact:library>"
+            "<ipxact:name>TestDesignConfiguration</ipxact:name>"
+            "<ipxact:version>0.1</ipxact:version>"
+            "<ipxact:vendorExtensions>"
+                "<kactus2:version>3.0.0</kactus2:version>"
+                "<kactus2:configurableElementValues>"
+                    "<kactus2:componentInstance>"
+                        "<kactus2:uuid>testInstance</kactus2:uuid>"
+                        "<kactus2:configurableElementValue referenceId=\"otherID\" value=\"4-4-4\"/>"
+                        "<kactus2:configurableElementValue referenceId=\"referencedID\""
+                            " value=\"referencedValue\"/>"
+                    "</kactus2:componentInstance>"
+                "</kactus2:configurableElementValues>"
+            "</ipxact:vendorExtensions>"
+        "</ipxact:designConfiguration>"
+        );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    DesignConfigurationReader designConfigurationReader;
+
+    QSharedPointer<DesignConfiguration> testDesignConfiguration =
+        designConfigurationReader.createDesignConfigurationFrom(document);
+
+    QCOMPARE(testDesignConfiguration->getVendorExtensions()->size(), 2);
+    QCOMPARE(testDesignConfiguration->getConfigurableElementValues("testInstance").size(), 2);
+
+    QMap<QString, QString> elements = testDesignConfiguration->getConfigurableElementValues("testInstance");
+    QCOMPARE(elements.count(), 2);
+    QCOMPARE(elements.firstKey(), QString("otherID"));
+    QCOMPARE(elements.first(), QString("4-4-4"));
+    QCOMPARE(elements.lastKey(), QString("referencedID"));
+    QCOMPARE(elements.last(), QString("referencedValue"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_DesignConfigurationReader::testReadViewOverrides()
+//-----------------------------------------------------------------------------
+void tst_DesignConfigurationReader::testReadViewOverrides()
+{
+    QString documentContent(
+        "<?xml version=\"1.0\"?>"
+        "<ipxact:designConfiguration "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
+            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:library>TestLibrary</ipxact:library>"
+            "<ipxact:name>TestDesignConfiguration</ipxact:name>"
+            "<ipxact:version>0.1</ipxact:version>"
+            "<ipxact:vendorExtensions>"
+                "<kactus2:version>3.0.0</kactus2:version>"
+                "<kactus2:viewOverrides>"
+                    "<kactus2:instanceView id=\"instanceId\" viewName=\"testView\"/>"
+                    "<kactus2:instanceView id=\"otherId\" viewName=\"otherView\"/>"
+                "</kactus2:viewOverrides>"
+            "</ipxact:vendorExtensions>"
+        "</ipxact:designConfiguration>"
+        );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    DesignConfigurationReader designConfigurationReader;
+
+    QSharedPointer<DesignConfiguration> testDesignConfiguration =
+        designConfigurationReader.createDesignConfigurationFrom(document);
+
+    QCOMPARE(testDesignConfiguration->getVendorExtensions()->size(), 2);
+
+    QCOMPARE(testDesignConfiguration->getKactus2ViewOverrides().count(), 2);
+    QCOMPARE(testDesignConfiguration->getKactus2ViewOverrides().firstKey(), QString("instanceId"));
+    QCOMPARE(testDesignConfiguration->getKactus2ViewOverrides().first(), QString("testView"));
+    QCOMPARE(testDesignConfiguration->getKactus2ViewOverrides().lastKey(), QString("otherId"));
+    QCOMPARE(testDesignConfiguration->getKactus2ViewOverrides().last(), QString("otherView"));
 }
 
 QTEST_APPLESS_MAIN(tst_DesignConfigurationReader)

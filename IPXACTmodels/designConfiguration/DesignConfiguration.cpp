@@ -36,8 +36,7 @@ Document(vlnv),
 designRef_(),
 generatorChainConfigurations_(new QList<QSharedPointer<ConfigurableVLNVReference> >),
 interconnectionConfigurations_(new QList<QSharedPointer<InterconnectionConfiguration> > ),
-viewConfigurations_(new QList<QSharedPointer<ViewConfiguration> > ),
-attributes_()
+viewConfigurations_(new QList<QSharedPointer<ViewConfiguration> > )
 {
     setVlnv(vlnv);
 }
@@ -50,8 +49,7 @@ Document(other),
 designRef_(other.designRef_),
 generatorChainConfigurations_(new QList<QSharedPointer<ConfigurableVLNVReference> >),
 interconnectionConfigurations_(new QList<QSharedPointer<InterconnectionConfiguration> >),
-viewConfigurations_(new QList<QSharedPointer<ViewConfiguration> >),
-attributes_(other.attributes_)
+viewConfigurations_(new QList<QSharedPointer<ViewConfiguration> >)
 {
     foreach (QSharedPointer<ConfigurableVLNVReference> generatorChainConf, *other.generatorChainConfigurations_)
     {
@@ -92,8 +90,7 @@ Document(),
 designRef_(),
 generatorChainConfigurations_(new QList<QSharedPointer<ConfigurableVLNVReference> >),
 interconnectionConfigurations_(new QList<QSharedPointer<InterconnectionConfiguration> >),
-viewConfigurations_(new QList<QSharedPointer<ViewConfiguration> > ),
-attributes_()
+viewConfigurations_(new QList<QSharedPointer<ViewConfiguration> > )
 {
 
 }
@@ -107,7 +104,6 @@ DesignConfiguration& DesignConfiguration::operator=( const DesignConfiguration& 
     {
 		Document::operator=(other);
 		designRef_ = other.designRef_;
-		attributes_ = other.attributes_;
 
         generatorChainConfigurations_->clear();
         foreach (QSharedPointer<ConfigurableVLNVReference> generatorChainConf, *other.generatorChainConfigurations_)
@@ -171,22 +167,6 @@ void DesignConfiguration::setVlnv(const VLNV& vlnv)
     VLNV designConfigurationVLNV(vlnv);
     designConfigurationVLNV.setType(VLNV::DESIGNCONFIGURATION);
     Document::setVlnv(vlnv);    
-}
-
-//-----------------------------------------------------------------------------
-// Function: DesignConfiguration::getAttributes()
-//-----------------------------------------------------------------------------
-const QMap<QString, QString>& DesignConfiguration::getAttributes()
-{
-    return attributes_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: DesignConfiguration::setAttributes()
-//-----------------------------------------------------------------------------
-void DesignConfiguration::setAttributes(const QMap<QString, QString>& attributes)
-{
-    attributes_ = attributes;
 }
 
 //-----------------------------------------------------------------------------

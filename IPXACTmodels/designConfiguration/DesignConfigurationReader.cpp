@@ -56,7 +56,7 @@ QSharedPointer<DesignConfiguration> DesignConfigurationReader::createDesignConfi
 
     parseAssertions(designConfigurationNode, newDesignConfiguration);
 
-    parseKactusAndVendorExtensions(designConfigurationNode, newDesignConfiguration);
+    parseDesignConfigurationExtensions(designConfigurationNode, newDesignConfiguration);
 
     return newDesignConfiguration;
 }
@@ -282,4 +282,84 @@ void DesignConfigurationReader::parseViewConfigurations(QDomDocument const& desi
 
         newDesignConfiguration->getViewConfigurations()->append(newViewConfiguration);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignConfigurationReader::parseDesignConfigurationExtensions()
+//-----------------------------------------------------------------------------
+void DesignConfigurationReader::parseDesignConfigurationExtensions(QDomNode const& designConfigurationNode,
+    QSharedPointer<DesignConfiguration> newDesignConfiguration) const
+{
+    QDomNode extensionsNode = designConfigurationNode.firstChildElement("ipxact:vendorExtensions");
+
+    QDomElement configurableElementsNode = extensionsNode.firstChildElement("kactus2:configurableElementValues");
+    if (!configurableElementsNode.isNull())
+    {
+        parseInstanceConfigurableElementValues(configurableElementsNode, newDesignConfiguration);
+    }
+
+    QDomElement viewOverridesNode = extensionsNode.firstChildElement("kactus2:viewOverrides");
+    if (!viewOverridesNode.isNull())
+    {
+        parseViewOverrides(viewOverridesNode, newDesignConfiguration);
+    }
+
+    parseKactusAndVendorExtensions(designConfigurationNode, newDesignConfiguration);
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignConfigurationReader::parseConfigurableElementValues()
+//-----------------------------------------------------------------------------
+void DesignConfigurationReader::parseInstanceConfigurableElementValues(QDomElement const& configurableElementsNode,
+    QSharedPointer<DesignConfiguration> newDesignConfiguration) const
+{
+    QDomNodeList componentInstanceList =
+        configurableElementsNode.elementsByTagName("kactus2:componentInstance");
+    for (int instanceIndex = 0; instanceIndex < componentInstanceList.count(); ++instanceIndex)
+    {
+        QDomNode instance = componentInstanceList.at(instanceIndex);
+        QDomElement instanceElement = instance.toElement();
+
+        if (!instanceElement.isNull())
+        {
+            QString instanceUUID = instanceElement.firstChildElement("kactus2:uuid").firstChild().nodeValue();
+            QMap<QString, QString> configurableElementValues;
+
+            QDomNodeList elementNodes = instanceElement.elementsByTagName("kactus2:configurableElementValue");
+            for (int elementIndex = 0; elementIndex < elementNodes.count(); ++elementIndex)
+            {
+                QDomNode singleElementNode = elementNodes.at(elementIndex);
+                QDomNamedNodeMap elementAttributes = singleElementNode.attributes();
+
+                QString referenceID = elementAttributes.namedItem("referenceId").nodeValue();
+                QString configuredValue = elementAttributes.namedItem("value").nodeValue();
+                configurableElementValues.insert(referenceID, configuredValue);
+            }
+
+            newDesignConfiguration->setConfigurableElementValues(instanceUUID, configurableElementValues);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignConfigurationReader::parseViewOverrides()
+//-----------------------------------------------------------------------------
+void DesignConfigurationReader::parseViewOverrides(QDomElement const& viewOverridesNode,
+    QSharedPointer<DesignConfiguration> newDesignConfiguration) const
+{
+    QMap<QString, QString> newViewOverrides;
+
+    QDomNodeList viewOverrideList = viewOverridesNode.elementsByTagName("kactus2:instanceView");
+    for (int overrideIndex = 0; overrideIndex < viewOverrideList.count(); ++overrideIndex)
+    {
+        QDomNode viewOverride = viewOverrideList.at(overrideIndex);
+
+        QDomNamedNodeMap overrideAttributes = viewOverride.attributes();
+        QString instanceID = overrideAttributes.namedItem("id").nodeValue();
+        QString viewName = overrideAttributes.namedItem("viewName").nodeValue();
+
+        newViewOverrides.insert(instanceID, viewName);
+    }
+
+    newDesignConfiguration->setKactus2ViewOverrides(newViewOverrides);
 }

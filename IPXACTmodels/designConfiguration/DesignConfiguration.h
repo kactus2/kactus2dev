@@ -111,20 +111,6 @@ public:
     QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > getViewConfigurations();
 
     /*!
-     *  Get the attributes.
-     *
-     *      @return A map containing the attribute key-value pairs.
-     */
-    const QMap<QString, QString>& getAttributes();
-
-    /*!
-     *  Set the attributes.
-     *
-     *      @param [in] attributes  A map of key-value pairs.
-     */
-    void setAttributes(const QMap<QString, QString>& attributes);
-
-    /*!
      *  Set the design reference.
      *
      *      @param [in] designRef   A VLNV tag that identifies the design.
@@ -273,9 +259,6 @@ private:
 
     //! A list containing pointers to the view configurations.
     QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > viewConfigurations_;
-
-    //! Contains the attributes for the design configuration.
-    QMap<QString, QString> attributes_;
 };
 
 #endif // DESIGNCONFIGURATION_H

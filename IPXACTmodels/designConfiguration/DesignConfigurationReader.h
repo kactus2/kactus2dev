@@ -138,6 +138,33 @@ private:
      */
     void parseViewConfigurations(QDomDocument const& designConfigurationDocument,
         QSharedPointer<DesignConfiguration> newDesignConfiguration) const;
+
+    /*!
+     *  Reads the design configuration extensions.
+     *
+     *      @param [in] designConfigurationNode     XML description of the design configuration.
+     *      @param [in] newDesignConfiguration      The new design configuration item.
+     */
+    void parseDesignConfigurationExtensions(QDomNode const& designConfigurationNode,
+        QSharedPointer<DesignConfiguration> newDesignConfiguration) const;
+
+    /*!
+     *  Reads the configurable element values of the component instances.
+     *
+     *      @param [in] configurableElementsNode    XML description of the configurable elements.
+     *      @param [in] newDesignConfiguration      The new design configuration item.
+     */
+    void parseInstanceConfigurableElementValues(QDomElement const& configurableElementsNode,
+        QSharedPointer<DesignConfiguration> newDesignConfiguration) const;
+
+    /*!
+     *  Reads the view overrides.
+     *
+     *      @param [in] viewOverridesNode       XML description of the view overrides.
+     *      @param [in] newDesignConfiguration  The new design configuration item.
+     */
+    void parseViewOverrides(QDomElement const& viewOverridesNode,
+        QSharedPointer<DesignConfiguration> newDesignConfiguration) const;
 };
 
 #endif // DESIGNCONFIGURATIONREADER_H

@@ -43,6 +43,9 @@ private slots:
     void testAssertion();
     void testVendorExtensions();
 
+    void testWriteConfigurableElementValues();
+    void testWriteViewOverrides();
+
 private:
 
     void compareOutputToExpected(QString const& output, QString const& expectedOutput);
@@ -538,6 +541,103 @@ void tst_DesignConfigurationWriter::testVendorExtensions()
             "\t\t<testExtension testExtensionAttribute=\"extension\">testValue</testExtension>\n"
             "\t\t<kactus2:version>3.0.0</kactus2:version>\n"
         "\t</ipxact:vendorExtensions>\n"
+        "</ipxact:designConfiguration>\n"
+        );
+
+    compareOutputToExpected(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_DesignConfigurationWriter::testWriteConfigurableElementValues()
+//-----------------------------------------------------------------------------
+void tst_DesignConfigurationWriter::testWriteConfigurableElementValues()
+{
+    QMap<QString, QString> configurableElementValues;
+    configurableElementValues.insert("referencedID","referencedValue");
+    configurableElementValues.insert("otherID", "4-4-4");
+
+    designConfiguration_->setVersion("3.0.0");
+    designConfiguration_->setConfigurableElementValues("testInstance", configurableElementValues);
+
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    xmlStreamWriter.setAutoFormatting(true);
+    xmlStreamWriter.setAutoFormattingIndent(-1);
+
+    DesignConfigurationWriter designConfigurationWriter;
+    designConfigurationWriter.writeDesignConfiguration(xmlStreamWriter, designConfiguration_);
+
+    QString expectedOutput(
+        "<?xml version=\"1.0\"?>\n"
+        "<ipxact:designConfiguration "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\""
+        ">\n"
+            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:library>TestLibrary</ipxact:library>\n"
+            "\t<ipxact:name>TestDesignConfiguration</ipxact:name>\n"
+            "\t<ipxact:version>0.1</ipxact:version>\n"
+            "\t<ipxact:vendorExtensions>\n"
+                "\t\t<kactus2:version>3.0.0</kactus2:version>\n"
+                "\t\t<kactus2:configurableElementValues>\n"
+                    "\t\t\t<kactus2:componentInstance>\n"
+                        "\t\t\t\t<kactus2:uuid>testInstance</kactus2:uuid>\n"
+                        "\t\t\t\t<kactus2:configurableElementValue referenceId=\"otherID\" value=\"4-4-4\"/>\n"
+                        "\t\t\t\t<kactus2:configurableElementValue referenceId=\"referencedID\""
+                            " value=\"referencedValue\"/>\n"
+                    "\t\t\t</kactus2:componentInstance>\n"
+                "\t\t</kactus2:configurableElementValues>\n"
+            "\t</ipxact:vendorExtensions>\n"
+        "</ipxact:designConfiguration>\n"
+        );
+
+    compareOutputToExpected(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_DesignConfigurationWriter::testWriteViewOverrides()
+//-----------------------------------------------------------------------------
+void tst_DesignConfigurationWriter::testWriteViewOverrides()
+{
+    QMap<QString, QString> viewOverrides;
+    viewOverrides.insert("instanceId", "testView");
+    viewOverrides.insert("otherId", "otherView");
+
+    designConfiguration_->setVersion("3.0.0");
+    designConfiguration_->setKactus2ViewOverrides(viewOverrides);
+
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    xmlStreamWriter.setAutoFormatting(true);
+    xmlStreamWriter.setAutoFormattingIndent(-1);
+
+    DesignConfigurationWriter designConfigurationWriter;
+    designConfigurationWriter.writeDesignConfiguration(xmlStreamWriter, designConfiguration_);
+
+    QString expectedOutput(
+        "<?xml version=\"1.0\"?>\n"
+        "<ipxact:designConfiguration "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
+            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:library>TestLibrary</ipxact:library>\n"
+            "\t<ipxact:name>TestDesignConfiguration</ipxact:name>\n"
+            "\t<ipxact:version>0.1</ipxact:version>\n"
+            "\t<ipxact:vendorExtensions>\n"
+                "\t\t<kactus2:version>3.0.0</kactus2:version>\n"
+                "\t\t<kactus2:viewOverrides>\n"
+                    "\t\t\t<kactus2:instanceView id=\"instanceId\" viewName=\"testView\"/>\n"
+                    "\t\t\t<kactus2:instanceView id=\"otherId\" viewName=\"otherView\"/>\n"
+                "\t\t</kactus2:viewOverrides>\n"
+            "\t</ipxact:vendorExtensions>\n"
         "</ipxact:designConfiguration>\n"
         );
 
