@@ -18,7 +18,7 @@ PortReference::PortReference(QString const& portRef, QString const& componentRef
 portRef_(portRef),
 componentRef_(componentRef),
 isPresent_(),
-partSelect_(new PartSelect())
+partSelect_()
 {
 
 }

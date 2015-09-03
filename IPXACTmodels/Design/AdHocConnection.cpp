@@ -11,6 +11,10 @@
 
 #include "AdHocConnection.h"
 
+#include <IPXACTmodels/kactusExtensions/Kactus2Placeholder.h>
+#include <IPXACTmodels/kactusExtensions/Kactus2Group.h>
+#include <IPXACTmodels/kactusExtensions/Kactus2Position.h>
+
 //-----------------------------------------------------------------------------
 // Function: AdHocConnection::AdHocConnection()
 //-----------------------------------------------------------------------------
@@ -25,11 +29,10 @@ Extendable(),
 isPresent_(),
 tiedValue_(tiedValue),
 internalPortReferences_(new QList<QSharedPointer<PortReference> > ()),
-externalPortReferences_(new QList<QSharedPointer<PortReference> > ()),
-route_(route),
-offPage_(offPage)
+externalPortReferences_(new QList<QSharedPointer<PortReference> > ())
 {
-
+    setOffPage(offPage);
+    setRoute(route);
 }
 
 //-----------------------------------------------------------------------------
@@ -41,9 +44,7 @@ Extendable(other),
 isPresent_(other.isPresent_),
 tiedValue_(other.tiedValue_),
 internalPortReferences_(new QList<QSharedPointer<PortReference> > ()),
-externalPortReferences_(new QList<QSharedPointer<PortReference> > ()),
-route_(other.route_),
-offPage_(other.offPage_)
+externalPortReferences_(new QList<QSharedPointer<PortReference> > ())
 {
     foreach (QSharedPointer<PortReference> interalReference, *other.internalPortReferences_)
     {
@@ -138,7 +139,26 @@ void AdHocConnection::setExternalPortReferences(QSharedPointer<QList<QSharedPoin
 //-----------------------------------------------------------------------------
 void AdHocConnection::setRoute(QList<QPointF> const& route)
 {
-    route_ = route;
+    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    {
+        if (extension->type() == "kactus2:route")
+        {
+            getVendorExtensions()->removeAll(extension);
+            break;
+        }
+    }
+
+    if (!route.isEmpty())
+    {
+        QSharedPointer<Kactus2Group> routeGroup (new Kactus2Group("kactus2:route"));
+        foreach (QPointF location, route)
+        {
+            QSharedPointer<Kactus2Position> routePoint (new Kactus2Position(location));
+            routeGroup->addToGroup(routePoint);
+        }
+
+        getVendorExtensions()->append(routeGroup);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -146,7 +166,18 @@ void AdHocConnection::setRoute(QList<QPointF> const& route)
 //-----------------------------------------------------------------------------
 QList<QPointF> AdHocConnection::getRoute() const
 {
-    return route_;
+    QList<QSharedPointer<VendorExtension> > routeExtensions =
+        getGroupedExtensionsByType("kactus2:route", "kactus2:position");
+
+    QList<QPointF> route;
+
+    foreach (QSharedPointer<VendorExtension> extension, routeExtensions)
+    {
+        QSharedPointer<Kactus2Position> position = extension.dynamicCast<Kactus2Position>();
+        route.append(position->position());
+    }
+
+    return route;
 }
 
 //-----------------------------------------------------------------------------
@@ -154,7 +185,15 @@ QList<QPointF> AdHocConnection::getRoute() const
 //-----------------------------------------------------------------------------
 bool AdHocConnection::isOffPage() const
 {
-    return offPage_;
+    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    {
+        if (extension->type() == "kactus2:offPage")
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -162,7 +201,23 @@ bool AdHocConnection::isOffPage() const
 //-----------------------------------------------------------------------------
 void AdHocConnection::setOffPage(bool offPage)
 {
-    offPage_ = offPage;
+    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    {
+        if (extension->type() == "kactus2:offPage")
+        {
+            if (!offPage)
+            {
+                getVendorExtensions()->removeAll(extension);
+            }
+            return;
+        }
+    }
+
+    if (offPage)
+    {
+        QSharedPointer<Kactus2Placeholder> offPageExtensions (new Kactus2Placeholder("kactus2:offPage"));
+        getVendorExtensions()->append(offPageExtensions);
+    }
 }
 
 /*

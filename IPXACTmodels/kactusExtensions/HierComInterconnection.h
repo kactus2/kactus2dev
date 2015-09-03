@@ -164,7 +164,7 @@ public:
     /*!
      *  Get the route for the connection.
      *
-     *      @return A list of positions determininig the route.
+     *      @return A list of positions determining the route.
      */
     QList<QPointF> getRoute() const;
 

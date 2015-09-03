@@ -12,6 +12,7 @@
 #include "DesignReader.h"
 #include "ComponentInstanceReader.h"
 
+#include <IPXACTmodels/kactusExtensions/Kactus2Position.h>
 
 //-----------------------------------------------------------------------------
 // Function: DesignReader::DesignReader()
@@ -305,44 +306,68 @@ void DesignReader::parseAdHocConnections(const QDomNode& designNode, QSharedPoin
 
     for (int adHocIndex = 0; adHocIndex < adHocNodeList.size(); ++adHocIndex)
     {
-        QDomNode currentAdHocNode = adHocNodeList.at(adHocIndex);
+        parseSingleAdHocConnection(adHocNodeList.at(adHocIndex), newDesign);
+    }
+}
 
-        QString name = currentAdHocNode.firstChildElement("ipxact:name").firstChild().nodeValue();
-        QString displayName = currentAdHocNode.firstChildElement("ipxact:displayName").firstChild().nodeValue();
-        QString description = currentAdHocNode.firstChildElement("ipxact:description").firstChild().nodeValue();
-        QString isPresent = currentAdHocNode.firstChildElement("ipxact:isPresent").firstChild().nodeValue();
-        QString tiedValue = currentAdHocNode.firstChildElement("ipxact:tiedValue").firstChild().nodeValue();
+//-----------------------------------------------------------------------------
+// Function: DesignReader::parseSingleAdHocConnection()
+//-----------------------------------------------------------------------------
+void DesignReader::parseSingleAdHocConnection(const QDomNode& adHocNode, QSharedPointer<Design> newDesign) const
+{
+    QString name = adHocNode.firstChildElement("ipxact:name").firstChild().nodeValue();
+    QString displayName = adHocNode.firstChildElement("ipxact:displayName").firstChild().nodeValue();
+    QString description = adHocNode.firstChildElement("ipxact:description").firstChild().nodeValue();
+    QString isPresent = adHocNode.firstChildElement("ipxact:isPresent").firstChild().nodeValue();
+    QString tiedValue = adHocNode.firstChildElement("ipxact:tiedValue").firstChild().nodeValue();
 
-        QSharedPointer<AdHocConnection> newAdHocConnection (new AdHocConnection(name, displayName, description,
-            tiedValue));
-        newAdHocConnection->setIsPresent(isPresent);
+    QSharedPointer<AdHocConnection> newAdHocConnection (new AdHocConnection(name, displayName, description,
+        tiedValue));
+    newAdHocConnection->setIsPresent(isPresent);
 
-        QDomElement portReferencesNode = currentAdHocNode.firstChildElement("ipxact:portReferences");
-        QDomNodeList internalReferenceNodes = portReferencesNode.elementsByTagName("ipxact:internalPortReference");
-        QDomNodeList externalReferenceNodes = portReferencesNode.elementsByTagName("ipxact:externalPortReference");
+    QDomElement portReferencesNode = adHocNode.firstChildElement("ipxact:portReferences");
+    QDomNodeList internalReferenceNodes = portReferencesNode.elementsByTagName("ipxact:internalPortReference");
+    QDomNodeList externalReferenceNodes = portReferencesNode.elementsByTagName("ipxact:externalPortReference");
 
-        for (int i = 0; i < internalReferenceNodes.size(); ++i)
-        {
-            QDomNode internalNode = internalReferenceNodes.at(i);
-            QSharedPointer<PortReference> internalReference = createPortReference(internalNode);
-            
-            QDomNamedNodeMap attributeMap = internalNode.attributes();
-            internalReference->setComponentRef(attributeMap.namedItem("componentRef").nodeValue());
+    parseInternalPortReferences(internalReferenceNodes, newAdHocConnection);
 
-            newAdHocConnection->getInternalPortReferences()->append(internalReference);
-        }
+    parseExternalPortReferences(externalReferenceNodes, newAdHocConnection);
 
-        for (int i = 0;i < externalReferenceNodes.size(); ++i)
-        {
-            QDomNode externalNode = externalReferenceNodes.at(i);
-            QSharedPointer<PortReference> externalReference = createPortReference(externalNode);
+    parseAdHocConnectionExtensions(adHocNode, newAdHocConnection);
 
-            newAdHocConnection->getExternalPortReferences()->append(externalReference);
-        }
+    newDesign->getAdHocConnections()->append(newAdHocConnection);
+}
 
-        parseVendorExtensions(currentAdHocNode, newAdHocConnection);
+//-----------------------------------------------------------------------------
+// Function: DesignReader::parseInternalPortReferences()
+//-----------------------------------------------------------------------------
+void DesignReader::parseInternalPortReferences(const QDomNodeList& internalNodes,
+    QSharedPointer<AdHocConnection> newAdHocConnection) const
+{
+    for (int i = 0; i < internalNodes.size(); ++i)
+    {
+        QDomNode internalNode = internalNodes.at(i);
+        QSharedPointer<PortReference> internalReference = createPortReference(internalNode);
 
-        newDesign->getAdHocConnections()->append(newAdHocConnection);
+        QDomNamedNodeMap attributeMap = internalNode.attributes();
+        internalReference->setComponentRef(attributeMap.namedItem("componentRef").nodeValue());
+
+        newAdHocConnection->getInternalPortReferences()->append(internalReference);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignReader::parseExternalPortReferences()
+//-----------------------------------------------------------------------------
+void DesignReader::parseExternalPortReferences(const QDomNodeList& externalNodes,
+    QSharedPointer<AdHocConnection> newAdHocConnection) const
+{
+    for (int i = 0;i < externalNodes.size(); ++i)
+    {
+        QDomNode externalNode = externalNodes.at(i);
+        QSharedPointer<PortReference> externalReference = createPortReference(externalNode);
+
+        newAdHocConnection->getExternalPortReferences()->append(externalReference);
     }
 }
 
@@ -389,6 +414,41 @@ QSharedPointer<PortReference> DesignReader::createPortReference(const QDomNode& 
     }
 
     return newPortReference;
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignReader::parseAdHocConnectionExtensions()
+//-----------------------------------------------------------------------------
+void DesignReader::parseAdHocConnectionExtensions(const QDomNode& adHocNode,
+    QSharedPointer<AdHocConnection> newAdHocConnection) const
+{
+    QDomNode extensionsNode = adHocNode.firstChildElement("ipxact:vendorExtensions");
+
+    QDomElement offPageElement = extensionsNode.firstChildElement("kactus2:offPage");
+    if (!offPageElement.isNull())
+    {
+        newAdHocConnection->setOffPage(true);
+    }
+
+    QDomElement routeElement = extensionsNode.firstChildElement("kactus2:route");
+    if (!routeElement.isNull())
+    {
+        QList<QPointF> route;
+
+        QDomNodeList positionNodes = routeElement.elementsByTagName("kactus2:position");
+        for (int i = 0; i < positionNodes.count(); ++i)
+        {
+            QDomNamedNodeMap positionAttributes = positionNodes.at(i).attributes();
+            int positionX = positionAttributes.namedItem("x").nodeValue().toInt();
+            int positionY = positionAttributes.namedItem("y").nodeValue().toInt();
+
+            route.append(QPointF(positionX, positionY));
+        }
+
+        newAdHocConnection->setRoute(route);
+    }
+
+    parseVendorExtensions(adHocNode, newAdHocConnection);
 }
 
 //-----------------------------------------------------------------------------

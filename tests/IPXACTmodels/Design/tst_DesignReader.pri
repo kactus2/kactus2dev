@@ -48,7 +48,8 @@ HEADERS += ../../../IPXACTmodels/Design/ActiveInterface.h \
     ../../../IPXACTmodels/GenericVendorExtension.h \
     ../../../IPXACTmodels/ComInterface.h \
     ../../../IPXACTmodels/generaldeclarations.h \
-    ../../../IPXACTmodels/ComProperty.h
+    ../../../IPXACTmodels/ComProperty.h \
+    ../../../IPXACTmodels/kactusExtensions/Kactus2Position.h
 SOURCES += ../../../IPXACTmodels/Design/ActiveInterface.cpp \
     ../../../IPXACTmodels/Design/AdHocConnection.cpp \
     ../../../IPXACTmodels/kactusExtensions/ApiInterconnection.cpp \
@@ -90,4 +91,5 @@ SOURCES += ../../../IPXACTmodels/Design/ActiveInterface.cpp \
     ../../../IPXACTmodels/GenericVendorExtension.cpp \
     ../../../IPXACTmodels/ComInterface.cpp \
     ../../../IPXACTmodels/generaldeclarations.cpp \
-    ../../../IPXACTmodels/ComProperty.cpp
+    ../../../IPXACTmodels/ComProperty.cpp \
+    ../../../IPXACTmodels/kactusExtensions/Kactus2Position.cpp

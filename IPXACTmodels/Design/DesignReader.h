@@ -163,11 +163,46 @@ private:
     void parseAdHocConnections(const QDomNode& designNode, QSharedPointer<Design> newDesign) const;
 
     /*!
+     *  Reads a single ad-hoc connection.
+     *
+     *      @param [in] adHocNode   XML description of an ad-hoc connection.
+     *      @param [in] newDesign   The new design item.
+     */
+    void parseSingleAdHocConnection(const QDomNode& adHocNode, QSharedPointer<Design> newDesign) const;
+
+    /*!
+     *  Reads the internal port references.
+     *
+     *      @param [in] internalNodes       XML description of the internal port references.
+     *      @param [in] newAdHocConnection  The new ad-hoc connection item.
+     */
+    void parseInternalPortReferences(const QDomNodeList& internalNodes,
+        QSharedPointer<AdHocConnection> newAdHocConnection) const;
+
+    /*!
+     *  Reads the external port references.
+     *
+     *      @param [in] externalNodes       XML description of the external port references.
+     *      @param [in] newAdHocConnection  The new ad-hoc connection item.
+     */
+    void parseExternalPortReferences(const QDomNodeList& externalNodes,
+        QSharedPointer<AdHocConnection> newAdHocConnection) const;
+
+    /*!
      *  Creates a port reference.
      *
      *      @param [in] portReferenceNode   The XML description of the port.
      */
     QSharedPointer<PortReference> createPortReference(const QDomNode& portReferenceNode) const;
+
+    /*!
+     *  Reads ad-hoc connection extensions.
+     *
+     *      @param [in] adHocNode           XML description of the ad-hoc connection.
+     *      @param [in] newAdHocConnection  The new ad-hoc connection item.
+     */
+    void parseAdHocConnectionExtensions(const QDomNode& adHocNode,
+        QSharedPointer<AdHocConnection> newAdHocConnection) const;
 
     /*!
      *  Reads the design vendor extensions.

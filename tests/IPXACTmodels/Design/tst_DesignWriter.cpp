@@ -41,7 +41,9 @@ private slots:
     void testWriteInterconnectionExtensions();
 
     void testWriteMonitorInterconnections();
+
     void testWriteAdHocConnections();
+    void testWriteAdHocConnectionExtensions();
 
     void testWriteParameters();
     void testWriteAssertions();
@@ -652,6 +654,73 @@ void tst_DesignWriter::testWriteAdHocConnections()
                     "\t\t\t</ipxact:portReferences>\n"
                     "\t\t\t<ipxact:vendorExtensions>\n"
                         "\t\t\t\t<testExtension testExtensionAttribute=\"extension\">testValue</testExtension>\n"
+                    "\t\t\t</ipxact:vendorExtensions>\n"
+                "\t\t</ipxact:adHocConnection>\n"
+            "\t</ipxact:adHocConnections>\n"
+        "</ipxact:design>\n"
+        );
+
+    DesignWriter designWriter;
+    designWriter.writeDesign(xmlStreamWriter, testDesign_);
+
+    compareOutputToExpected(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_DesignWriter::testWriteAdHocConnectionExtensions()
+//-----------------------------------------------------------------------------
+void tst_DesignWriter::testWriteAdHocConnectionExtensions()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    xmlStreamWriter.setAutoFormatting(true);
+    xmlStreamWriter.setAutoFormattingIndent(-1);
+
+    QSharedPointer<PortReference> testInternalPortRef (new PortReference("internalPort", "componentInstance"));
+
+    QSharedPointer<PortReference> testExternalPortRef (new PortReference("externalPort"));
+
+    QSharedPointer<AdHocConnection> testAdHocConnection (new AdHocConnection("adHoc", "", "", ""));
+    testAdHocConnection->getInternalPortReferences()->append(testInternalPortRef);
+    testAdHocConnection->getExternalPortReferences()->append(testExternalPortRef);
+    testAdHocConnection->setOffPage(true);
+
+    QList<QPointF> adHocRoute;
+    adHocRoute.append(QPointF(1,1));
+    adHocRoute.append(QPointF(4,1));
+    adHocRoute.append(QPointF(4,2));
+    testAdHocConnection->setRoute(adHocRoute);
+
+    testDesign_->getAdHocConnections()->append(testAdHocConnection);
+
+    QString expectedOutput(
+        "<?xml version=\"1.0\"?>\n"
+        "<ipxact:design "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
+            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:library>TestLibrary</ipxact:library>\n"
+            "\t<ipxact:name>TestDesign</ipxact:name>\n"
+            "\t<ipxact:version>0.1</ipxact:version>\n"
+            "\t<ipxact:adHocConnections>\n"
+                "\t\t<ipxact:adHocConnection>\n"
+                    "\t\t\t<ipxact:name>adHoc</ipxact:name>\n"
+                    "\t\t\t<ipxact:portReferences>\n"
+                        "\t\t\t\t<ipxact:internalPortReference componentRef=\"componentInstance\""
+                            " portRef=\"internalPort\"/>\n"
+                        "\t\t\t\t<ipxact:externalPortReference portRef=\"externalPort\"/>\n"
+                    "\t\t\t</ipxact:portReferences>\n"
+                    "\t\t\t<ipxact:vendorExtensions>\n"
+                        "\t\t\t\t<kactus2:offPage/>\n"
+                        "\t\t\t\t<kactus2:route>\n"
+                            "\t\t\t\t\t<kactus2:position x=\"1\" y=\"1\"/>\n"
+                            "\t\t\t\t\t<kactus2:position x=\"4\" y=\"1\"/>\n"
+                            "\t\t\t\t\t<kactus2:position x=\"4\" y=\"2\"/>\n"
+                        "\t\t\t\t</kactus2:route>\n"
                     "\t\t\t</ipxact:vendorExtensions>\n"
                 "\t\t</ipxact:adHocConnection>\n"
             "\t</ipxact:adHocConnections>\n"

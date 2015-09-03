@@ -31,7 +31,9 @@ private slots:
     void testReadInterconnectionExtensions();
 
     void testReadMonitorInterconnections();
+    
     void testReadAdHocConnections();
+    void testReadAdHocConnectionExtensions();
 
     void testReadParameters();
     void testReadAssertions();
@@ -574,6 +576,61 @@ void tst_DesignReader::testReadAdHocConnections()
     QSharedPointer<PartSelect> externalPartSelect = externalRef->getPartSelect();
     QCOMPARE(externalPartSelect->getLeftRange(), QString("0"));
     QCOMPARE(externalPartSelect->getRightRange(), QString("4"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_DesignReader::testReadAdHocConnectionExtensions()
+//-----------------------------------------------------------------------------
+void tst_DesignReader::testReadAdHocConnectionExtensions()
+{
+    QString documentContent(
+        "<ipxact:design xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
+            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:library>TestLibrary</ipxact:library>"
+            "<ipxact:name>TestDesign</ipxact:name>"
+            "<ipxact:version>0.1</ipxact:version>"
+            "<ipxact:adHocConnections>"
+                "<ipxact:adHocConnection>"
+                    "<ipxact:name>adHoc</ipxact:name>"
+                    "<ipxact:portReferences>"
+                        "<ipxact:internalPortReference componentRef=\"componentInstance\" portRef=\"internalPort\"/>"
+                        "<ipxact:externalPortReference portRef=\"externalPort\"/>"
+                    "</ipxact:portReferences>"
+                    "<ipxact:vendorExtensions>"
+                        "<kactus2:offPage/>"
+                        "<kactus2:route>"
+                            "<kactus2:position x=\"1\" y=\"1\"/>"
+                            "<kactus2:position x=\"4\" y=\"1\"/>"
+                            "<kactus2:position x=\"4\" y=\"2\"/>"
+                        "</kactus2:route>"
+                    "</ipxact:vendorExtensions>"
+                "</ipxact:adHocConnection>"
+            "</ipxact:adHocConnections>"
+        "</ipxact:design>");
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    DesignReader reader;
+    QSharedPointer<Design> testDesign = reader.createDesignFrom(document);
+
+    QCOMPARE(testDesign->getAdHocConnections()->size(), 1);
+
+    QSharedPointer<AdHocConnection> adHocConnection = testDesign->getAdHocConnections()->first();
+    QCOMPARE(adHocConnection->name(), QString("adHoc"));
+    QCOMPARE(adHocConnection->isOffPage(), true);
+
+    QCOMPARE(adHocConnection->getRoute().size(), 3);
+    QCOMPARE(adHocConnection->getRoute().at(0).x(), qreal(1));
+    QCOMPARE(adHocConnection->getRoute().at(0).y(), qreal(1));
+    QCOMPARE(adHocConnection->getRoute().at(1).x(), qreal(4));
+    QCOMPARE(adHocConnection->getRoute().at(1).y(), qreal(1));
+    QCOMPARE(adHocConnection->getRoute().at(2).x(), qreal(4));
+    QCOMPARE(adHocConnection->getRoute().at(2).y(), qreal(2));
 }
 
 //-----------------------------------------------------------------------------

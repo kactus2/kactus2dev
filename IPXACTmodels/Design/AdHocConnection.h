@@ -181,12 +181,5 @@ private:
 
     //! A list of port references of the encompassing component.
     QSharedPointer<QList<QSharedPointer<PortReference> > > externalPortReferences_;
-
-    //! The diagram route for the interconnection.
-    QList<QPointF> route_;
-
-    //! If true, the route is treated as an off-page connection.
-    bool offPage_;
-
 };
 #endif // ADHOCCONNECTION_H
