@@ -17,6 +17,7 @@ HEADERS += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h \
     ../../../IPXACTmodels/common/Document.h \
     ../../../IPXACTmodels/common/Extendable.h \
     ../../../IPXACTmodels/GenericVendorExtension.h \
+    ../../../IPXACTmodels/kactusExtensions/Kactus2Group.h \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Value.h \
     ../../../IPXACTmodels/kactusExtensions/KactusAttribute.h \
     ../../../IPXACTmodels/common/NameGroup.h \
@@ -39,7 +40,7 @@ HEADERS += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h \
     ../../../IPXACTmodels/common/ParameterReader.h \
     ../../../IPXACTmodels/AbstractionDefinition/TransactionalAbstractionReader.h \
     ../../../IPXACTmodels/AbstractionDefinition/WireAbstractionReader.h \
-    ../../../IPXACTmodels/kactusExtensions/Kactus2Group.h
+    ../../../IPXACTmodels/common/NameGroupReader.h
 SOURCES += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.cpp \
     ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinitionReader.cpp \
     ../../../IPXACTmodels/common/Array.cpp \
@@ -52,6 +53,7 @@ SOURCES += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.cpp
     ../../../IPXACTmodels/common/DocumentReader.cpp \
     ../../../IPXACTmodels/common/Extendable.cpp \
     ../../../IPXACTmodels/GenericVendorExtension.cpp \
+    ../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Value.cpp \
     ../../../IPXACTmodels/kactusExtensions/KactusAttribute.cpp \
     ../../../IPXACTmodels/common/NameGroup.cpp \
@@ -73,4 +75,4 @@ SOURCES += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.cpp
     ../../../IPXACTmodels/generaldeclarations.cpp \
     ./tst_AbstractionDefinitionReader.cpp \
     ../../../IPXACTmodels/vlnv.cpp \
-    ../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp
+    ../../../IPXACTmodels/common/NameGroupReader.cpp

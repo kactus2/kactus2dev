@@ -7,49 +7,57 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../IPXACTmodels/common/Array.h \
+HEADERS += ../../../IPXACTmodels/designConfiguration/AbstractorInstance.h \
+    ../../../IPXACTmodels/common/Array.h \
     ../../../IPXACTmodels/common/Assertion.h \
     ../../../IPXACTmodels/common/ConfigurableElementValue.h \
     ../../../IPXACTmodels/common/ConfigurableVLNVReference.h \
+    ../../../IPXACTmodels/designConfiguration/DesignConfiguration.h \
     ../../../IPXACTmodels/common/Document.h \
+    ../../../IPXACTmodels/common/Extendable.h \
+    ../../../IPXACTmodels/GenericVendorExtension.h \
+    ../../../IPXACTmodels/designConfiguration/InterconnectionConfiguration.h \
+    ../../../IPXACTmodels/designConfiguration/InterfaceRef.h \
+    ../../../IPXACTmodels/kactusExtensions/Kactus2Group.h \
+    ../../../IPXACTmodels/kactusExtensions/Kactus2Placeholder.h \
+    ../../../IPXACTmodels/kactusExtensions/Kactus2Value.h \
+    ../../../IPXACTmodels/kactusExtensions/KactusAttribute.h \
+    ../../../IPXACTmodels/designConfiguration/MultipleAbstractorInstances.h \
+    ../../../IPXACTmodels/common/NameGroup.h \
     ../../../IPXACTmodels/common/Parameter.h \
     ../../../IPXACTmodels/common/Range.h \
     ../../../IPXACTmodels/common/Vector.h \
-    ../../../IPXACTmodels/GenericVendorExtension.h \
     ../../../IPXACTmodels/VendorExtension.h \
-    ../../../IPXACTmodels/vlnv.h \
-    ../../../IPXACTmodels/common/Extendable.h \
-    ../../../IPXACTmodels/common/NameGroup.h \
-    ../../../IPXACTmodels/designConfiguration/AbstractorInstance.h \
-    ../../../IPXACTmodels/designConfiguration/DesignConfiguration.h \
-    ../../../IPXACTmodels/designConfiguration/InterconnectionConfiguration.h \
-    ../../../IPXACTmodels/designConfiguration/InterfaceRef.h \
-    ../../../IPXACTmodels/designConfiguration/MultipleAbstractorInstances.h \
     ../../../IPXACTmodels/designConfiguration/ViewConfiguration.h \
-    ../../../IPXACTmodels/kactusExtensions/KactusAttribute.h \
+    ../../../IPXACTmodels/vlnv.h \
     ../../../IPXACTmodels/designConfiguration/DesignConfigurationReader.h \
+    ../../../IPXACTmodels/common/DocumentReader.h \
     ../../../IPXACTmodels/common/ParameterReader.h \
-    ../../../IPXACTmodels/common/DocumentReader.h
-SOURCES += ../../../IPXACTmodels/common/Array.cpp \
+    ../../../IPXACTmodels/common/NameGroupReader.h
+SOURCES += ../../../IPXACTmodels/designConfiguration/AbstractorInstance.cpp \
+    ../../../IPXACTmodels/common/Array.cpp \
     ../../../IPXACTmodels/common/Assertion.cpp \
     ../../../IPXACTmodels/common/ConfigurableElementValue.cpp \
     ../../../IPXACTmodels/common/ConfigurableVLNVReference.cpp \
+    ../../../IPXACTmodels/designConfiguration/DesignConfiguration.cpp \
+    ../../../IPXACTmodels/designConfiguration/DesignConfigurationReader.cpp \
     ../../../IPXACTmodels/common/Document.cpp \
     ../../../IPXACTmodels/common/DocumentReader.cpp \
     ../../../IPXACTmodels/common/Extendable.cpp \
+    ../../../IPXACTmodels/GenericVendorExtension.cpp \
+    ../../../IPXACTmodels/designConfiguration/InterconnectionConfiguration.cpp \
+    ../../../IPXACTmodels/designConfiguration/InterfaceRef.cpp \
+    ../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
+    ../../../IPXACTmodels/kactusExtensions/Kactus2Placeholder.cpp \
+    ../../../IPXACTmodels/kactusExtensions/Kactus2Value.cpp \
+    ../../../IPXACTmodels/kactusExtensions/KactusAttribute.cpp \
+    ../../../IPXACTmodels/designConfiguration/MultipleAbstractorInstances.cpp \
     ../../../IPXACTmodels/common/NameGroup.cpp \
     ../../../IPXACTmodels/common/Parameter.cpp \
     ../../../IPXACTmodels/common/ParameterReader.cpp \
     ../../../IPXACTmodels/common/Range.cpp \
     ../../../IPXACTmodels/common/Vector.cpp \
-    ../../../IPXACTmodels/designConfiguration/AbstractorInstance.cpp \
-    ../../../IPXACTmodels/designConfiguration/DesignConfiguration.cpp \
-    ../../../IPXACTmodels/designConfiguration/DesignConfigurationReader.cpp \
-    ../../../IPXACTmodels/designConfiguration/InterconnectionConfiguration.cpp \
-    ../../../IPXACTmodels/designConfiguration/InterfaceRef.cpp \
-    ../../../IPXACTmodels/designConfiguration/MultipleAbstractorInstances.cpp \
     ../../../IPXACTmodels/designConfiguration/ViewConfiguration.cpp \
-    ../../../IPXACTmodels/GenericVendorExtension.cpp \
-    ../../../IPXACTmodels/kactusExtensions/KactusAttribute.cpp \
+    ./tst_DesignConfigurationReader.cpp \
     ../../../IPXACTmodels/vlnv.cpp \
-    ./tst_DesignConfigurationReader.cpp
+    ../../../IPXACTmodels/common/NameGroupReader.cpp

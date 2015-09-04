@@ -12,6 +12,7 @@
 #include "ParameterReader.h"
 
 #include <IPXACTmodels/common/Parameter.h>
+#include <IPXACTmodels/common/NameGroupReader.h>
 #include <IPXACTmodels/GenericVendorExtension.h>
 
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
@@ -73,9 +74,8 @@ void ParameterReader::parseAttributes(QDomNode const& parameterNode, QSharedPoin
 //-----------------------------------------------------------------------------
 void ParameterReader::parseNameGroup(QDomNode const& parameterNode, QSharedPointer<Parameter> parameter) const
 {
-    parameter->setName(parameterNode.firstChildElement("ipxact:name").firstChild().nodeValue());
-    parameter->setDisplayName(parameterNode.firstChildElement("ipxact:displayName").firstChild().nodeValue());
-    parameter->setDescription(parameterNode.firstChildElement("ipxact:description").firstChild().nodeValue());
+    NameGroupReader nameReader;
+    nameReader.parseNameGroup(parameterNode, parameter);
 }
 
 //-----------------------------------------------------------------------------

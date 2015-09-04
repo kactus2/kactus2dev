@@ -23,4 +23,6 @@ SUBDIRS += validators\tst_ParameterValidator.pro \
 		   DesignConfiguration\tst_DesignConfigurationWriter.pro \
 		   DesignConfiguration\tst_DesignConfigurationReader.pro \
 		   Design\tst_DesignWriter.pro \
-		   Design\tst_DesignReader.pro
+		   Design\tst_DesignReader.pro \
+		   Component\tst_ViewWriter.pro \
+		   Component\tst_ViewReader.pro

@@ -12,6 +12,7 @@
 #include "ParameterWriter.h"
 
 #include <IPXACTmodels/common/Parameter.h>
+#include <IPXACTmodels/common/NameGroupWriter.h>
 #include <IPXACTmodels/VendorExtension.h>
 
 #include <QSharedPointer>
@@ -70,17 +71,8 @@ void ParameterWriter::writeAttributes(QXmlStreamWriter& writer, QSharedPointer<P
 //-----------------------------------------------------------------------------
 void ParameterWriter::writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<Parameter> parameter) const
 {
-    writer.writeTextElement("ipxact:name", parameter->name());
-    
-    if (!parameter->displayName().isEmpty())
-    {
-        writer.writeTextElement("ipxact:displayName", parameter->displayName());
-    }
-
-    if (!parameter->description().isEmpty())
-    {
-        writer.writeTextElement("ipxact:description", parameter->description());
-    }
+    NameGroupWriter nameWriter;
+    nameWriter.writeNameGroup(writer, parameter);
 }
 
 //-----------------------------------------------------------------------------

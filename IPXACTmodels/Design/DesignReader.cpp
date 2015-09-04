@@ -12,6 +12,8 @@
 #include "DesignReader.h"
 #include "ComponentInstanceReader.h"
 
+#include <IPXACTmodels/common/NameGroupReader.h>
+
 #include <IPXACTmodels/kactusExtensions/Kactus2Position.h>
 
 //-----------------------------------------------------------------------------
@@ -104,9 +106,11 @@ void DesignReader::parseInterconnections(const QDomNode& designNode, QSharedPoin
 void DesignReader::parseSingleInterconnection(const QDomNode& interconnectionNode,
     QSharedPointer<Design> newDesign) const
 {
-    QString name = interconnectionNode.firstChildElement("ipxact:name").firstChild().nodeValue();
-    QString displayName = interconnectionNode.firstChildElement("ipxact:displayName").firstChild().nodeValue();
-    QString description = interconnectionNode.firstChildElement("ipxact:description").firstChild().nodeValue();
+    NameGroupReader nameReader;
+    QString name = nameReader.parseName(interconnectionNode);
+    QString displayName = nameReader.parseDisplayName(interconnectionNode);
+    QString description = nameReader.parseDescription(interconnectionNode);
+
     QString isPresent = interconnectionNode.firstChildElement("ipxact:isPresent").firstChild().nodeValue();
 
     if (interconnectionNode.nodeName() == "ipxact:interconnection")

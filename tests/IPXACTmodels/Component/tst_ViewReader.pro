@@ -1,17 +1,17 @@
 #-----------------------------------------------------------------------------
-# File: DesignConfigurationReader.pro
+# File: ViewReader.pro
 #-----------------------------------------------------------------------------
 # Project: Kactus 2
 # Author: Mikko Teuho
-# Date: 11.08.2015
+# Date: 04.09.2015
 #
 # Description:
-# Qt project file for running unit tests for a designConfigurationReader.
+# Qt project file template for running unit tests for ViewReader.
 #-----------------------------------------------------------------------------
 
 TEMPLATE = app
 
-TARGET = tst_DesignConfigurationReader
+TARGET = tst_ViewReader
 
 QT += core xml gui widgets testlib
 CONFIG += testcase console
@@ -38,4 +38,4 @@ OBJECTS_DIR += $$DESTDIR
 MOC_DIR += ./generatedFiles
 UI_DIR += ./generatedFiles
 RCC_DIR += ./generatedFiles
-include(tst_DesignConfigurationReader.pri)
+include(tst_ViewReader.pri)
