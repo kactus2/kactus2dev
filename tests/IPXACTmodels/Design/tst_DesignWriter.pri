@@ -29,6 +29,7 @@ HEADERS += ../../../IPXACTmodels/Design/ActiveInterface.h \
     ../../../IPXACTmodels/Design/Interconnection.h \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Group.h \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Placeholder.h \
+    ../../../IPXACTmodels/kactusExtensions/Kactus2Position.h \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Value.h \
     ../../../IPXACTmodels/kactusExtensions/KactusAttribute.h \
     ../../../IPXACTmodels/Design/MonitorInterconnection.h \
@@ -49,7 +50,7 @@ HEADERS += ../../../IPXACTmodels/Design/ActiveInterface.h \
     ../../../IPXACTmodels/common/NameGroupWriter.h \
     ../../../IPXACTmodels/common/ParameterWriter.h \
     ../../../IPXACTmodels/validators/namevalidator.h \
-    ../../../IPXACTmodels/kactusExtensions/Kactus2Position.h
+    ../../../IPXACTmodels/common/CommonItemsWriter.h
 SOURCES += ../../../IPXACTmodels/Design/ActiveInterface.cpp \
     ../../../IPXACTmodels/Design/AdHocConnection.cpp \
     ../../../IPXACTmodels/kactusExtensions/ApiInterconnection.cpp \
@@ -75,6 +76,7 @@ SOURCES += ../../../IPXACTmodels/Design/ActiveInterface.cpp \
     ../../../IPXACTmodels/Design/Interconnection.cpp \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Placeholder.cpp \
+    ../../../IPXACTmodels/kactusExtensions/Kactus2Position.cpp \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Value.cpp \
     ../../../IPXACTmodels/kactusExtensions/KactusAttribute.cpp \
     ../../../IPXACTmodels/Design/MonitorInterconnection.cpp \
@@ -93,4 +95,4 @@ SOURCES += ../../../IPXACTmodels/Design/ActiveInterface.cpp \
     ../../../IPXACTmodels/validators/namevalidator.cpp \
     ./tst_DesignWriter.cpp \
     ../../../IPXACTmodels/vlnv.cpp \
-    ../../../IPXACTmodels/kactusExtensions/Kactus2Position.cpp
+    ../../../IPXACTmodels/common/CommonItemsWriter.cpp

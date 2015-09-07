@@ -84,15 +84,6 @@ private:
         QSharedPointer<DesignConfiguration> designConfiguration) const;
 
     /*!
-     *  Write the configurable element values.
-     *
-     *      @param [in] writer          The used xml writer.
-     *      @param [in] configurables   A list of configurable element values.
-     */
-    void writeConfigurableElementValues(QXmlStreamWriter& writer,
-        QList<QSharedPointer<ConfigurableElementValue> > configurables) const;
-
-    /*!
      *  Write the interconnection configurations.
      *
      *      @param [in] writer                  The used xml writer.

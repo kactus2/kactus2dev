@@ -15,8 +15,12 @@ HEADERS += ../../../IPXACTmodels/designConfiguration/AbstractorInstance.h \
     ../../../IPXACTmodels/designConfiguration/DesignConfiguration.h \
     ../../../IPXACTmodels/common/Document.h \
     ../../../IPXACTmodels/common/Extendable.h \
+    ../../../IPXACTmodels/GenericVendorExtension.h \
     ../../../IPXACTmodels/designConfiguration/InterconnectionConfiguration.h \
     ../../../IPXACTmodels/designConfiguration/InterfaceRef.h \
+    ../../../IPXACTmodels/kactusExtensions/Kactus2Group.h \
+    ../../../IPXACTmodels/kactusExtensions/Kactus2Placeholder.h \
+    ../../../IPXACTmodels/kactusExtensions/Kactus2Value.h \
     ../../../IPXACTmodels/kactusExtensions/KactusAttribute.h \
     ../../../IPXACTmodels/designConfiguration/MultipleAbstractorInstances.h \
     ../../../IPXACTmodels/common/NameGroup.h \
@@ -24,15 +28,12 @@ HEADERS += ../../../IPXACTmodels/designConfiguration/AbstractorInstance.h \
     ../../../IPXACTmodels/common/Range.h \
     ../../../IPXACTmodels/common/Vector.h \
     ../../../IPXACTmodels/designConfiguration/ViewConfiguration.h \
+    ../../../IPXACTmodels/vlnv.h \
     ../../../IPXACTmodels/designConfiguration/DesignConfigurationWriter.h \
     ../../../IPXACTmodels/common/DocumentWriter.h \
     ../../../IPXACTmodels/common/NameGroupWriter.h \
     ../../../IPXACTmodels/common/ParameterWriter.h \
-    ../../../IPXACTmodels/vlnv.h \
-    ../../../IPXACTmodels/kactusExtensions/Kactus2Placeholder.h \
-    ../../../IPXACTmodels/kactusExtensions/Kactus2Value.h \
-    ../../../IPXACTmodels/kactusExtensions/Kactus2Group.h \
-    ../../../IPXACTmodels/GenericVendorExtension.h
+    ../../../IPXACTmodels/common/CommonItemsWriter.h
 SOURCES += ../../../IPXACTmodels/designConfiguration/AbstractorInstance.cpp \
     ../../../IPXACTmodels/common/Array.cpp \
     ../../../IPXACTmodels/common/Assertion.cpp \
@@ -43,8 +44,12 @@ SOURCES += ../../../IPXACTmodels/designConfiguration/AbstractorInstance.cpp \
     ../../../IPXACTmodels/common/Document.cpp \
     ../../../IPXACTmodels/common/DocumentWriter.cpp \
     ../../../IPXACTmodels/common/Extendable.cpp \
+    ../../../IPXACTmodels/GenericVendorExtension.cpp \
     ../../../IPXACTmodels/designConfiguration/InterconnectionConfiguration.cpp \
     ../../../IPXACTmodels/designConfiguration/InterfaceRef.cpp \
+    ../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
+    ../../../IPXACTmodels/kactusExtensions/Kactus2Placeholder.cpp \
+    ../../../IPXACTmodels/kactusExtensions/Kactus2Value.cpp \
     ../../../IPXACTmodels/kactusExtensions/KactusAttribute.cpp \
     ../../../IPXACTmodels/designConfiguration/MultipleAbstractorInstances.cpp \
     ../../../IPXACTmodels/common/NameGroup.cpp \
@@ -56,7 +61,4 @@ SOURCES += ../../../IPXACTmodels/designConfiguration/AbstractorInstance.cpp \
     ../../../IPXACTmodels/designConfiguration/ViewConfiguration.cpp \
     ./tst_DesignConfigurationWriter.cpp \
     ../../../IPXACTmodels/vlnv.cpp \
-    ../../../IPXACTmodels/kactusExtensions/Kactus2Placeholder.cpp \
-    ../../../IPXACTmodels/kactusExtensions/Kactus2Value.cpp \
-    ../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
-    ../../../IPXACTmodels/GenericVendorExtension.cpp
+    ../../../IPXACTmodels/common/CommonItemsWriter.cpp

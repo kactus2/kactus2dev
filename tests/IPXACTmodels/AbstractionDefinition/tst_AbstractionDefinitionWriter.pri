@@ -15,14 +15,18 @@ HEADERS += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h \
     ../../../IPXACTmodels/common/Document.h \
     ../../../IPXACTmodels/common/Extendable.h \
     ../../../IPXACTmodels/GenericVendorExtension.h \
+    ../../../IPXACTmodels/kactusExtensions/Kactus2Group.h \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Value.h \
     ../../../IPXACTmodels/kactusExtensions/KactusAttribute.h \
     ../../../IPXACTmodels/common/NameGroup.h \
     ../../../IPXACTmodels/common/Parameter.h \
     ../../../IPXACTmodels/AbstractionDefinition/PortAbstraction.h \
+    ../../../IPXACTmodels/common/Protocol.h \
     ../../../IPXACTmodels/common/Qualifier.h \
     ../../../IPXACTmodels/common/Range.h \
     ../../../IPXACTmodels/AbstractionDefinition/TimingConstraint.h \
+    ../../../IPXACTmodels/AbstractionDefinition/TransactionalAbstraction.h \
+    ../../../IPXACTmodels/AbstractionDefinition/TransactionalPort.h \
     ../../../IPXACTmodels/common/Vector.h \
     ../../../IPXACTmodels/AbstractionDefinition/WireAbstraction.h \
     ../../../IPXACTmodels/AbstractionDefinition/WireAbstractionWriter.h \
@@ -34,11 +38,9 @@ HEADERS += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h \
     ../../../IPXACTmodels/common/DocumentWriter.h \
     ../../../IPXACTmodels/common/NameGroupWriter.h \
     ../../../IPXACTmodels/common/ParameterWriter.h \
-    ../../../IPXACTmodels/AbstractionDefinition/TransactionalAbstraction.h \
     ../../../IPXACTmodels/AbstractionDefinition/TransactionalAbstractionWriter.h \
-    ../../../IPXACTmodels/AbstractionDefinition/TransactionalPort.h \
-    ../../../IPXACTmodels/common/Protocol.h \
-    ../../../IPXACTmodels/kactusExtensions/Kactus2Group.h
+    ../../../IPXACTmodels/common/CommonItemsWriter.h \
+    ../../../IPXACTmodels/common/ConfigurableElementValue.h
 SOURCES += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.cpp \
     ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinitionWriter.cpp \
     ../../../IPXACTmodels/common/Array.cpp \
@@ -49,6 +51,7 @@ SOURCES += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.cpp
     ../../../IPXACTmodels/common/DocumentWriter.cpp \
     ../../../IPXACTmodels/common/Extendable.cpp \
     ../../../IPXACTmodels/GenericVendorExtension.cpp \
+    ../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Value.cpp \
     ../../../IPXACTmodels/kactusExtensions/KactusAttribute.cpp \
     ../../../IPXACTmodels/common/NameGroup.cpp \
@@ -56,9 +59,13 @@ SOURCES += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.cpp
     ../../../IPXACTmodels/common/Parameter.cpp \
     ../../../IPXACTmodels/common/ParameterWriter.cpp \
     ../../../IPXACTmodels/AbstractionDefinition/PortAbstraction.cpp \
+    ../../../IPXACTmodels/common/Protocol.cpp \
     ../../../IPXACTmodels/common/Qualifier.cpp \
     ../../../IPXACTmodels/common/Range.cpp \
     ../../../IPXACTmodels/AbstractionDefinition/TimingConstraint.cpp \
+    ../../../IPXACTmodels/AbstractionDefinition/TransactionalAbstraction.cpp \
+    ../../../IPXACTmodels/AbstractionDefinition/TransactionalAbstractionWriter.cpp \
+    ../../../IPXACTmodels/AbstractionDefinition/TransactionalPort.cpp \
     ../../../IPXACTmodels/common/Vector.cpp \
     ../../../IPXACTmodels/AbstractionDefinition/WireAbstraction.cpp \
     ../../../IPXACTmodels/AbstractionDefinition/WireAbstractionWriter.cpp \
@@ -67,8 +74,5 @@ SOURCES += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.cpp
     ../../../IPXACTmodels/generaldeclarations.cpp \
     ./tst_AbstractionDefinitionWriter.cpp \
     ../../../IPXACTmodels/vlnv.cpp \
-    ../../../IPXACTmodels/AbstractionDefinition/TransactionalAbstractionWriter.cpp \
-    ../../../IPXACTmodels/AbstractionDefinition/TransactionalPort.cpp \
-    ../../../IPXACTmodels/AbstractionDefinition/TransactionalAbstraction.cpp \
-    ../../../IPXACTmodels/common/Protocol.cpp \
-    ../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp
+    ../../../IPXACTmodels/common/CommonItemsWriter.cpp \
+    ../../../IPXACTmodels/common/ConfigurableElementValue.cpp

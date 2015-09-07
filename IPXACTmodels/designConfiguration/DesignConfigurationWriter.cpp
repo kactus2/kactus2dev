@@ -109,30 +109,9 @@ void DesignConfigurationWriter::writeGeneratorChainConfiguration(QXmlStreamWrite
         VLNV currentChainVLNV = *currentChain;
         writeVLNVAttributes(writer, currentChainVLNV);
 
-        writeConfigurableElementValues(writer, *currentChain->getConfigurableElementValues());
+        writeConfigurableElementValues(writer, currentChain->getConfigurableElementValues());
 
         writer.writeEndElement(); // ipxact:generatorChainConfiguration
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: DesignConfigurationWriter::writeConfigurableElementValues()
-//-----------------------------------------------------------------------------
-void DesignConfigurationWriter::writeConfigurableElementValues(QXmlStreamWriter& writer,
-    QList<QSharedPointer<ConfigurableElementValue> > configurables) const
-{
-    if (!configurables.isEmpty())
-    {
-        writer.writeStartElement("ipxact:configurableElementValues");
-
-        foreach (QSharedPointer<ConfigurableElementValue> configurableElement, configurables)
-        {
-            writer.writeStartElement("ipxact:configurableElementValue");
-            writer.writeAttribute("referenceId", configurableElement->getReferenceId());
-            writer.writeCharacters(configurableElement->getConfigurableValue());
-            writer.writeEndElement(); // ipxact:configurableElementValue
-        }
-        writer.writeEndElement(); // ipxact:configurableElementValues
     }
 }
 
@@ -232,7 +211,7 @@ void DesignConfigurationWriter::writeAbstractorInstances(QXmlStreamWriter& write
         VLNV abstractorRefVLNV = *abstractorRef;
         writeVLNVAttributes(writer, abstractorRefVLNV);
 
-        writeConfigurableElementValues(writer, *abstractorRef->getConfigurableElementValues());
+        writeConfigurableElementValues(writer, abstractorRef->getConfigurableElementValues());
 
         writer.writeEndElement(); // ipxact:abstractorRef
 
@@ -262,7 +241,7 @@ void DesignConfigurationWriter::writeViewConfigurations(QXmlStreamWriter& writer
         writer.writeStartElement("ipxact:view");
         writer.writeAttribute("viewRef", configuration->getViewReference());
 
-        writeConfigurableElementValues(writer, *configuration->getViewConfigurableElements());
+        writeConfigurableElementValues(writer, configuration->getViewConfigurableElements());
 
         writer.writeEndElement(); // ipxact:view
 

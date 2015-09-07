@@ -14,6 +14,8 @@
 
 #include "View.h"
 
+#include <IPXACTmodels/ipxactmodels_global.h>
+
 #include <QXmlStreamWriter>
 #include <QObject>
 #include <QSharedPointer>

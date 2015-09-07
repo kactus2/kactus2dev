@@ -11,18 +11,12 @@
 
 #include "DocumentWriter.h"
 #include "Document.h"
-#include "Extendable.h"
-
-#include <IPXACTmodels/VendorExtension.h>
-#include <IPXACTmodels/vlnv.h>
-
-#include <IPXACTmodels/common/ParameterWriter.h>
-#include <IPXACTmodels/common/NameGroupWriter.h>
 
 //-----------------------------------------------------------------------------
 // Function: DocumentWriter::DocumentWriter()
 //-----------------------------------------------------------------------------
-DocumentWriter::DocumentWriter(QObject *parent): QObject(parent)
+DocumentWriter::DocumentWriter(QObject *parent):
+CommonItemsWriter(parent)
 {
 
 }
@@ -59,28 +53,6 @@ void DocumentWriter::writeNamespaceDeclarations(QXmlStreamWriter& writer) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: DocumentWriter::writeVLNVElements()
-//-----------------------------------------------------------------------------
-void DocumentWriter::writeVLNVElements(QXmlStreamWriter& writer, VLNV const& vlnv) const
-{
-    writer.writeTextElement("ipxact:vendor", vlnv.getVendor());
-    writer.writeTextElement("ipxact:library", vlnv.getLibrary());
-    writer.writeTextElement("ipxact:name", vlnv.getName());
-    writer.writeTextElement("ipxact:version", vlnv.getVersion());
-}
-
-//-----------------------------------------------------------------------------
-// Function: DocumentWriter::writeVLNVAttributes()
-//-----------------------------------------------------------------------------
-void DocumentWriter::writeVLNVAttributes(QXmlStreamWriter& writer, VLNV const& vlnv) const
-{
-    writer.writeAttribute("vendor", vlnv.getVendor());
-    writer.writeAttribute("library", vlnv.getLibrary());
-    writer.writeAttribute("name", vlnv.getName());
-    writer.writeAttribute("version", vlnv.getVersion());
-}
-
-//-----------------------------------------------------------------------------
 // Function: DocumentWriter::writeDescription()
 //-----------------------------------------------------------------------------
 void DocumentWriter::writeDescription(QXmlStreamWriter& writer, QSharedPointer<Document> document) const
@@ -96,17 +68,7 @@ void DocumentWriter::writeDescription(QXmlStreamWriter& writer, QSharedPointer<D
 //-----------------------------------------------------------------------------
 void DocumentWriter::writeParameters(QXmlStreamWriter& writer, QSharedPointer<Document> document) const
 {
-    if (!document->getParameters()->isEmpty())
-    {
-        writer.writeStartElement("ipxact:parameters");
-
-        ParameterWriter parameterWriter;
-        foreach (QSharedPointer<Parameter> parameter, *document->getParameters())
-        {
-            parameterWriter.writeParameter(writer, parameter);
-        }
-        writer.writeEndElement();
-    }
+    CommonItemsWriter::writeParameters(writer, document->getParameters());
 }
 
 //-----------------------------------------------------------------------------
@@ -114,48 +76,5 @@ void DocumentWriter::writeParameters(QXmlStreamWriter& writer, QSharedPointer<Do
 //-----------------------------------------------------------------------------
 void DocumentWriter::writeAssertions(QXmlStreamWriter& writer, QSharedPointer<Document> document) const
 {
-    if (!document->getAssertions()->isEmpty())
-    {
-        writer.writeStartElement("ipxact:assertions");
-
-        NameGroupWriter nameGroupWriter;
-        foreach (QSharedPointer<Assertion> assertion, *document->getAssertions())
-        {
-            writer.writeStartElement("ipxact:assertion");
-
-            nameGroupWriter.writeNameGroup(writer, assertion);
-            writer.writeTextElement("ipxact:assert", assertion->getAssert());
-
-            writer.writeEndElement(); // ipxact:assertion
-        }
-
-        writer.writeEndElement(); // ipxact:assertions
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: DocumentWriter::writeVendorExtensions()
-//-----------------------------------------------------------------------------
-void DocumentWriter::writeVendorExtensions(QXmlStreamWriter& writer, QSharedPointer<Extendable> element) const
-{
-    if (!element->getVendorExtensions()->isEmpty())
-    {
-        writer.writeStartElement("ipxact:vendorExtensions");
-        foreach (QSharedPointer<VendorExtension> extension, *element->getVendorExtensions())
-        {
-            extension->write(writer);
-        }
-        writer.writeEndElement(); // ipxact:vendorExtensions
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: DocumentWriter::writeIsPresent()
-//-----------------------------------------------------------------------------
-void DocumentWriter::writeIsPresent(QXmlStreamWriter& writer, QString const& isPresent) const
-{
-    if (!isPresent.isEmpty())
-    {
-        writer.writeTextElement("ipxact:isPresent", isPresent);
-    }
+    CommonItemsWriter::writeAssertions(writer, document->getAssertions());
 }
