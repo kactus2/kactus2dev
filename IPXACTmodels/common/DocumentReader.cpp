@@ -18,7 +18,7 @@
 // Function: DocumentReader::DocumentReader()
 //-----------------------------------------------------------------------------
 DocumentReader::DocumentReader(QObject* parent):
-QObject(parent)
+CommonItemsReader(parent)
 {
 
 }
@@ -58,30 +58,7 @@ void DocumentReader::parseTopComments(QDomNode const& documentNode, QSharedPoint
 void DocumentReader::parseVLNVElements(QDomNode const& documentNode, QSharedPointer<Document> document,
     VLNV::IPXactType type) const
 {
-    QString vendor = documentNode.firstChildElement("ipxact:vendor").firstChild().nodeValue();
-    QString library = documentNode.firstChildElement("ipxact:library").firstChild().nodeValue();
-    QString name = documentNode.firstChildElement("ipxact:name").firstChild().nodeValue();
-    QString version = documentNode.firstChildElement("ipxact:version").firstChild().nodeValue();
-
-    VLNV documentVLNV(type, vendor, library, name, version);
-    document->setVlnv(documentVLNV);
-}
-
-//-----------------------------------------------------------------------------
-// Function: DocumentReader::parseVLNVAttributes()
-//-----------------------------------------------------------------------------
-VLNV DocumentReader::parseVLNVAttributes(QDomNode const& vlnvNode, VLNV::IPXactType vlnvType) const
-{
-    QDomNamedNodeMap attributes = vlnvNode.attributes();
-
-    VLNV readVLNV;
-    readVLNV.setType(vlnvType);
-    readVLNV.setVendor(attributes.namedItem("vendor").nodeValue());
-    readVLNV.setLibrary(attributes.namedItem("library").nodeValue());
-    readVLNV.setName(attributes.namedItem("name").nodeValue());
-    readVLNV.setVersion(attributes.namedItem("version").nodeValue());
-
-    return readVLNV;
+    document->setVlnv(createVLNVFrom(documentNode, type));
 }
 
 //-----------------------------------------------------------------------------
@@ -97,13 +74,11 @@ void DocumentReader::parseDescription(QDomNode const& documentNode, QSharedPoint
 //-----------------------------------------------------------------------------
 void DocumentReader::parseParameters(QDomNode const& documentNode, QSharedPointer<Document> document) const
 {
-    QDomNodeList parameterNodes = documentNode.firstChildElement("ipxact:parameters").childNodes();
-    ParameterReader parameterReader;
+    QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters = parseAndCreateParameters(documentNode);
 
-    int parameterCount = parameterNodes.count();
-    for (int i = 0;i < parameterCount; i++)
+    foreach (QSharedPointer<Parameter> parameter, *newParameters)
     {
-        document->getParameters()->append(parameterReader.createParameterFrom(parameterNodes.at(i)));
+        document->getParameters()->append(parameter);
     }
 }
 
@@ -112,20 +87,10 @@ void DocumentReader::parseParameters(QDomNode const& documentNode, QSharedPointe
 //-----------------------------------------------------------------------------
 void DocumentReader::parseAssertions(QDomNode const& documentNode, QSharedPointer<Document> document) const
 {
-    QDomNodeList assertionNodes = documentNode.firstChildElement("ipxact:assertions").childNodes();
+    QSharedPointer<QList<QSharedPointer<Assertion> > > newAssertions = parseAndCreateAssertions(documentNode);
 
-    int assertionCount = assertionNodes.count();
-    for (int i = 0; i < assertionCount; i++)
+    foreach (QSharedPointer<Assertion> assertion, *newAssertions)
     {
-        QDomNode assertionNode = assertionNodes.at(i);
-
-        QSharedPointer<Assertion> assertion(new Assertion());
-        assertion->setName(assertionNode.firstChildElement("ipxact:name").firstChild().nodeValue());
-        assertion->setDisplayName(assertionNode.firstChildElement("ipxact:displayName").firstChild().nodeValue());
-        assertion->setDescription(assertionNode.firstChildElement("ipxact:description").firstChild().nodeValue());
-        
-        assertion->setAssert(assertionNode.firstChildElement("ipxact:assert").firstChild().nodeValue());
-
         document->getAssertions()->append(assertion);
     }
 }
@@ -145,76 +110,4 @@ void DocumentReader::parseKactusAndVendorExtensions(QDomNode const& documentNode
     }
 
     parseVendorExtensions(documentNode, document);
-}
-
-//-----------------------------------------------------------------------------
-// Function: DocumentReader::parseVendorExtensions()
-//-----------------------------------------------------------------------------
-void DocumentReader::parseVendorExtensions(QDomNode const& documentNode, QSharedPointer<Extendable> element) const
-{
-    QDomNodeList extensionNodes = documentNode.firstChildElement("ipxact:vendorExtensions").childNodes();
-
-    int extensionCount = extensionNodes.count();
-    for (int i = 0; i < extensionCount; i++)
-    {
-        QDomNode extensionNode = extensionNodes.at(i);
-
-        if (!extensionNode.nodeName().startsWith("kactus2:"))
-        {
-            QSharedPointer<VendorExtension> extension(new GenericVendorExtension(extensionNode));
-            element->getVendorExtensions()->append(extension);
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: DocumentReader::parseConfigurableVLNVReference()
-//-----------------------------------------------------------------------------
-QSharedPointer<ConfigurableVLNVReference> DocumentReader::parseConfigurableVLNVReference(
-    QDomNode const& configurableVLNVNode, VLNV::IPXactType type) const
-{
-    QDomNamedNodeMap attributeMap = configurableVLNVNode.attributes();
-
-    QString vendor = attributeMap.namedItem("vendor").nodeValue();
-    QString library = attributeMap.namedItem("library").nodeValue();
-    QString name = attributeMap.namedItem("name").nodeValue();
-    QString version = attributeMap.namedItem("version").nodeValue();
-
-    QSharedPointer<ConfigurableVLNVReference> vlnvReference(
-        new ConfigurableVLNVReference(type, vendor, library, name, version));
-
-    QDomNode configurableElementsNode = configurableVLNVNode.firstChildElement("ipxact:configurableElementValues");
-
-    QDomNodeList configurableElementNodeList = configurableElementsNode.childNodes();
-    for (int i = 0; i < configurableElementNodeList.size(); ++i)
-    {
-        QSharedPointer<ConfigurableElementValue> newConfigurableElementValue =
-            parseConfigurableElementValue(configurableElementNodeList.at(i));
-
-        vlnvReference->getConfigurableElementValues()->append(newConfigurableElementValue);
-    }
-
-    return vlnvReference;
-}
-
-//-----------------------------------------------------------------------------
-// Function: DocumentReader::parseConfigurableElementValue()
-//-----------------------------------------------------------------------------
-QSharedPointer<ConfigurableElementValue> DocumentReader::parseConfigurableElementValue(
-    QDomNode const& configurableElementNode) const
-{
-    QSharedPointer<ConfigurableElementValue> newConfigurableElementValue (new ConfigurableElementValue());
-
-    newConfigurableElementValue->setConfigurableValue(configurableElementNode.firstChild().nodeValue());
-
-    QDomNamedNodeMap attributeMap = configurableElementNode.attributes();
-
-    for (int i = 0; i < attributeMap.size(); ++i)
-    {
-        QDomNode attributeItem = attributeMap.item(i);
-        newConfigurableElementValue->insertAttribute(
-            attributeItem.nodeName(), attributeItem.firstChild().nodeValue());
-    }
-
-    return newConfigurableElementValue;
 }

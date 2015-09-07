@@ -48,9 +48,10 @@ HEADERS += ../../../IPXACTmodels/Design/ActiveInterface.h \
     ../../../IPXACTmodels/Design/ComponentInstanceReader.h \
     ../../../IPXACTmodels/Design/DesignReader.h \
     ../../../IPXACTmodels/common/DocumentReader.h \
+    ../../../IPXACTmodels/common/NameGroupReader.h \
     ../../../IPXACTmodels/common/ParameterReader.h \
     ../../../IPXACTmodels/validators/namevalidator.h \
-    ../../../IPXACTmodels/common/NameGroupReader.h
+    ../../../IPXACTmodels/common/CommonItemsReader.h
 SOURCES += ../../../IPXACTmodels/Design/ActiveInterface.cpp \
     ../../../IPXACTmodels/Design/AdHocConnection.cpp \
     ../../../IPXACTmodels/kactusExtensions/ApiInterconnection.cpp \
@@ -82,6 +83,7 @@ SOURCES += ../../../IPXACTmodels/Design/ActiveInterface.cpp \
     ../../../IPXACTmodels/Design/MonitorInterconnection.cpp \
     ../../../IPXACTmodels/Design/MonitorInterface.cpp \
     ../../../IPXACTmodels/common/NameGroup.cpp \
+    ../../../IPXACTmodels/common/NameGroupReader.cpp \
     ../../../IPXACTmodels/common/Parameter.cpp \
     ../../../IPXACTmodels/common/ParameterReader.cpp \
     ../../../IPXACTmodels/common/PartSelect.cpp \
@@ -94,4 +96,4 @@ SOURCES += ../../../IPXACTmodels/Design/ActiveInterface.cpp \
     ../../../IPXACTmodels/validators/namevalidator.cpp \
     ./tst_DesignReader.cpp \
     ../../../IPXACTmodels/vlnv.cpp \
-    ../../../IPXACTmodels/common/NameGroupReader.cpp
+    ../../../IPXACTmodels/common/CommonItemsReader.cpp

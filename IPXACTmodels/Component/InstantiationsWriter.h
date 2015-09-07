@@ -12,7 +12,6 @@
 #ifndef INSTANTIATIONSWRITER_H
 #define INSTANTIATIONSWRITER_H
 
-#include "InstantiationsWriter.h"
 #include "DesignInstantiation.h"
 
 #include <IPXACTmodels/common/CommonItemsWriter.h>

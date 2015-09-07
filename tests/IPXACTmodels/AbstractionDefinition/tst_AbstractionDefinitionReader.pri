@@ -37,10 +37,11 @@ HEADERS += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h \
     ../../../IPXACTmodels/vlnv.h \
     ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinitionReader.h \
     ../../../IPXACTmodels/common/DocumentReader.h \
+    ../../../IPXACTmodels/common/NameGroupReader.h \
     ../../../IPXACTmodels/common/ParameterReader.h \
     ../../../IPXACTmodels/AbstractionDefinition/TransactionalAbstractionReader.h \
     ../../../IPXACTmodels/AbstractionDefinition/WireAbstractionReader.h \
-    ../../../IPXACTmodels/common/NameGroupReader.h
+    ../../../IPXACTmodels/common/CommonItemsReader.h
 SOURCES += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.cpp \
     ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinitionReader.cpp \
     ../../../IPXACTmodels/common/Array.cpp \
@@ -57,6 +58,7 @@ SOURCES += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.cpp
     ../../../IPXACTmodels/kactusExtensions/Kactus2Value.cpp \
     ../../../IPXACTmodels/kactusExtensions/KactusAttribute.cpp \
     ../../../IPXACTmodels/common/NameGroup.cpp \
+    ../../../IPXACTmodels/common/NameGroupReader.cpp \
     ../../../IPXACTmodels/common/Parameter.cpp \
     ../../../IPXACTmodels/common/ParameterReader.cpp \
     ../../../IPXACTmodels/AbstractionDefinition/PortAbstraction.cpp \
@@ -75,4 +77,4 @@ SOURCES += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.cpp
     ../../../IPXACTmodels/generaldeclarations.cpp \
     ./tst_AbstractionDefinitionReader.cpp \
     ../../../IPXACTmodels/vlnv.cpp \
-    ../../../IPXACTmodels/common/NameGroupReader.cpp
+    ../../../IPXACTmodels/common/CommonItemsReader.cpp

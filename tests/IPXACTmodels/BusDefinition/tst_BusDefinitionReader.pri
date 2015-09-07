@@ -26,8 +26,9 @@ HEADERS += ../../../IPXACTmodels/common/Array.h \
     ../../../IPXACTmodels/vlnv.h \
     ../../../IPXACTmodels/BusDefinition/BusDefinitionReader.h \
     ../../../IPXACTmodels/common/DocumentReader.h \
+    ../../../IPXACTmodels/common/NameGroupReader.h \
     ../../../IPXACTmodels/common/ParameterReader.h \
-    ../../../IPXACTmodels/common/NameGroupReader.h
+    ../../../IPXACTmodels/common/CommonItemsReader.h
 SOURCES += ../../../IPXACTmodels/common/Array.cpp \
     ../../../IPXACTmodels/common/Assertion.cpp \
     ../../../IPXACTmodels/common/BooleanValue.cpp \
@@ -43,10 +44,11 @@ SOURCES += ../../../IPXACTmodels/common/Array.cpp \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Value.cpp \
     ../../../IPXACTmodels/kactusExtensions/KactusAttribute.cpp \
     ../../../IPXACTmodels/common/NameGroup.cpp \
+    ../../../IPXACTmodels/common/NameGroupReader.cpp \
     ../../../IPXACTmodels/common/Parameter.cpp \
     ../../../IPXACTmodels/common/ParameterReader.cpp \
     ../../../IPXACTmodels/common/Range.cpp \
     ../../../IPXACTmodels/common/Vector.cpp \
     ./tst_BusDefinitionReader.cpp \
     ../../../IPXACTmodels/vlnv.cpp \
-    ../../../IPXACTmodels/common/NameGroupReader.cpp
+    ../../../IPXACTmodels/common/CommonItemsReader.cpp

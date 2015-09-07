@@ -32,8 +32,9 @@ HEADERS += ../../../IPXACTmodels/designConfiguration/AbstractorInstance.h \
     ../../../IPXACTmodels/vlnv.h \
     ../../../IPXACTmodels/designConfiguration/DesignConfigurationReader.h \
     ../../../IPXACTmodels/common/DocumentReader.h \
+    ../../../IPXACTmodels/common/NameGroupReader.h \
     ../../../IPXACTmodels/common/ParameterReader.h \
-    ../../../IPXACTmodels/common/NameGroupReader.h
+    ../../../IPXACTmodels/common/CommonItemsReader.h
 SOURCES += ../../../IPXACTmodels/designConfiguration/AbstractorInstance.cpp \
     ../../../IPXACTmodels/common/Array.cpp \
     ../../../IPXACTmodels/common/Assertion.cpp \
@@ -53,6 +54,7 @@ SOURCES += ../../../IPXACTmodels/designConfiguration/AbstractorInstance.cpp \
     ../../../IPXACTmodels/kactusExtensions/KactusAttribute.cpp \
     ../../../IPXACTmodels/designConfiguration/MultipleAbstractorInstances.cpp \
     ../../../IPXACTmodels/common/NameGroup.cpp \
+    ../../../IPXACTmodels/common/NameGroupReader.cpp \
     ../../../IPXACTmodels/common/Parameter.cpp \
     ../../../IPXACTmodels/common/ParameterReader.cpp \
     ../../../IPXACTmodels/common/Range.cpp \
@@ -60,4 +62,4 @@ SOURCES += ../../../IPXACTmodels/designConfiguration/AbstractorInstance.cpp \
     ../../../IPXACTmodels/designConfiguration/ViewConfiguration.cpp \
     ./tst_DesignConfigurationReader.cpp \
     ../../../IPXACTmodels/vlnv.cpp \
-    ../../../IPXACTmodels/common/NameGroupReader.cpp
+    ../../../IPXACTmodels/common/CommonItemsReader.cpp

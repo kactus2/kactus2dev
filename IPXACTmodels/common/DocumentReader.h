@@ -16,6 +16,7 @@
 
 #include <IPXACTmodels/vlnv.h>
 
+#include <IPXACTmodels/common/CommonItemsReader.h>
 #include <IPXACTmodels/common/ConfigurableVLNVReference.h>
 #include <IPXACTmodels/common/ConfigurableElementValue.h>
 
@@ -26,7 +27,7 @@
 //-----------------------------------------------------------------------------
 //! Base class for XML readers.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT DocumentReader : public QObject
+class IPXACTMODELS_EXPORT DocumentReader : public CommonItemsReader
 {
     Q_OBJECT
 public:
@@ -63,14 +64,6 @@ protected:
     void parseVLNVElements(QDomNode const& documentNode, QSharedPointer<Document> document, VLNV::IPXactType type) const;
 
     /*!
-     *  Parses the VLNV from XML to attributes of an element.
-     *
-     *      @param [in] vlnvNode    The XML description of the VLNV.
-     *      @param [in] vlnvType    The type of the VLNV.
-     */
-    VLNV parseVLNVAttributes(QDomNode const& vlnvNode, VLNV::IPXactType vlnvType) const;
-
-    /*!
      *  Parses the description from XML to a document.
      *
      *      @param [in] documentNode    The XML description of the document.
@@ -102,31 +95,6 @@ protected:
      */
     virtual void parseKactusAndVendorExtensions(QDomNode const& documentNode,
         QSharedPointer<Document> document) const;
-    
-    /*!
-     *  Parses the vendor extensions from XML to a document.
-     *
-     *      @param [in] documentNode    The XML description of the document.
-     *      @param [in] element         The object in which the parsed vendor extensions are stored.
-     */
-    void parseVendorExtensions(QDomNode const& documentNode, QSharedPointer<Extendable> element) const;
-
-    /*!
-     *  Parses a configurable VLNV.
-     *
-     *      @param [in] configurableVLNVNode    The XML description of the configurable VLNV.
-     *      @param [in] type                    The type of the configurable VLNV.
-     */
-    QSharedPointer<ConfigurableVLNVReference> parseConfigurableVLNVReference(
-        QDomNode const& configurableVLNVNode, VLNV::IPXactType type) const;
-
-    /*!
-     *  Parses a single configurable element value.
-     *
-     *      @param [in] configurableElementNode     The XML description of the configurable element value.
-     */
-    QSharedPointer<ConfigurableElementValue> parseConfigurableElementValue(
-        QDomNode const& configurableElementNode) const;
 
 private:
 
