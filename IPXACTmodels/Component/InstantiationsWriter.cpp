@@ -41,20 +41,68 @@ void InstantiationsWriter::writeDesignInstantiation(QXmlStreamWriter& writer,
     NameGroupWriter nameWriter;
     nameWriter.writeNameGroup(writer, instantiation);
 
-    if (instantiation->getDesignReference())
-    {
-        writer.writeStartElement("ipxact:designRef");
-            //writeConfigurableVLNVReference(writer, instantiation->getDesignReference());
-
-        QSharedPointer<ConfigurableVLNVReference> designReference = instantiation->getDesignReference();
-
-        writeVLNVAttributes(writer, *designReference);
-        writeConfigurableElementValues(writer, designReference->getConfigurableElementValues());
-
-        writer.writeEndElement(); // ipxact:designRef
-    }
+    writeReference(writer, instantiation->getDesignReference(), "ipxact:designRef");
 
     writeVendorExtensions(writer, instantiation);
 
     writer.writeEndElement(); // ipxact:designInstantiation
+}
+
+//-----------------------------------------------------------------------------
+// Function: InstantiationsWriter::writeReference()
+//-----------------------------------------------------------------------------
+void InstantiationsWriter::writeReference(QXmlStreamWriter& writer,
+    QSharedPointer<ConfigurableVLNVReference> reference, QString const& elementName) const
+{
+    if (reference)
+    {
+        writer.writeStartElement(elementName);
+
+        writeVLNVAttributes(writer, *reference);
+        writeConfigurableElementValues(writer, reference->getConfigurableElementValues());
+
+        writer.writeEndElement(); // elementName
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: InstantiationsWriter::writeDesignConfigurationInstantiation()
+//-----------------------------------------------------------------------------
+void InstantiationsWriter::writeDesignConfigurationInstantiation(QXmlStreamWriter& writer,
+    QSharedPointer<DesignConfigurationInstantiation> instantiation) const
+{
+    writer.writeStartElement("ipxact:designConfigurationInstantiation");
+
+    NameGroupWriter nameWriter;
+    nameWriter.writeNameGroup(writer, instantiation);
+
+    writeLanguage(writer, instantiation->getLanguage(), instantiation->isLangugageStrict());
+
+    writeReference(writer, instantiation->getDesignConfigurationReference(), "ipxact:designConfigurationRef");
+
+    writeParameters(writer, instantiation->getParameters());
+
+    writeVendorExtensions(writer, instantiation);
+
+    writer.writeEndElement(); // ipxact:designConfigurationInstantiation
+}
+
+//-----------------------------------------------------------------------------
+// Function: InstantiationsWriter::writeLanguage()
+//-----------------------------------------------------------------------------
+void InstantiationsWriter::writeLanguage(QXmlStreamWriter& writer, QString const& language,
+    bool languageStrictness) const
+{
+    if (!language.isEmpty())
+    {
+        writer.writeStartElement("ipxact:language");
+
+        if (languageStrictness)
+        {
+            writer.writeAttribute("strict", "true");
+        }
+        writer.writeCharacters(language);
+
+        writer.writeEndElement(); // ipxact:language
+    }
 }

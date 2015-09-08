@@ -48,3 +48,54 @@ QSharedPointer<DesignInstantiation> InstantiationsReader::createDesignInstantiat
 
     return newInstantiation;
 }
+
+//-----------------------------------------------------------------------------
+// Function: InstantiationsReader::createDesignConfigurationInstantiationFrom()
+//-----------------------------------------------------------------------------
+QSharedPointer<DesignConfigurationInstantiation> InstantiationsReader::createDesignConfigurationInstantiationFrom(
+    QDomNode const& instantiationNode) const
+{
+    QSharedPointer<DesignConfigurationInstantiation> newInstantiation(new DesignConfigurationInstantiation());
+
+    NameGroupReader nameReader;
+    nameReader.parseNameGroup(instantiationNode, newInstantiation);
+
+    QDomNode configurationReferenceNode = instantiationNode.firstChildElement("ipxact:designConfigurationRef");
+    QSharedPointer<ConfigurableVLNVReference> configurationReference =
+        parseConfigurableVLNVReference(configurationReferenceNode, VLNV::DESIGNCONFIGURATION);
+    newInstantiation->setDesignConfigurationReference(configurationReference);
+
+    newInstantiation->setLanguage(getLanguageFrom(instantiationNode));
+    newInstantiation->setLanguageStrict(getLanguageStrictnessFrom(instantiationNode));
+
+    newInstantiation->setParameters(parseAndCreateParameters(instantiationNode));
+
+    parseVendorExtensions(instantiationNode, newInstantiation);
+
+    return newInstantiation;
+}
+
+//-----------------------------------------------------------------------------
+// Function: InstantiationsReader::getLanguageFrom()
+//-----------------------------------------------------------------------------
+QString InstantiationsReader::getLanguageFrom(QDomNode const& instantiationNode) const
+{
+    QDomElement languageNode = instantiationNode.firstChildElement("ipxact:language");
+    return languageNode.firstChild().nodeValue();
+}
+
+//-----------------------------------------------------------------------------
+// Function: InstantiationsReader::getLanguageStrictnessFrom()
+//-----------------------------------------------------------------------------
+bool InstantiationsReader::getLanguageStrictnessFrom(QDomNode const& instantiationNode) const
+{
+    QDomElement languageNode = instantiationNode.firstChildElement("ipxact:language");
+    if (!languageNode.attribute("strict").isNull())
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}

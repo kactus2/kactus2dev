@@ -15,7 +15,6 @@
 #include <IPXACTmodels/common/Assertion.h>
 #include <IPXACTmodels/common/ConfigurableVLNVReference.h>
 #include <IPXACTmodels/common/Document.h>
-#include <IPXACTmodels/common/Parameter.h>
 
 #include <IPXACTmodels/designConfiguration/InterconnectionConfiguration.h>
 #include <IPXACTmodels/designConfiguration/ViewConfiguration.h>
