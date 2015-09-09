@@ -24,7 +24,12 @@ HEADERS += ../../../IPXACTmodels/common/Array.h \
     ../../../IPXACTmodels/Component/InstantiationsWriter.h \
     ../../../IPXACTmodels/common/NameGroupWriter.h \
     ../../../IPXACTmodels/common/ParameterWriter.h \
-    ../../../IPXACTmodels/Component/DesignConfigurationInstantiation.h
+    ../../../IPXACTmodels/Component/DesignConfigurationInstantiation.h \
+    ../../../IPXACTmodels/common/ModuleParameter.h \
+    ../../../IPXACTmodels/common/BuildModel.h \
+    ../../../IPXACTmodels/common/FileBuilder.h \
+    ../../../IPXACTmodels/Component/ComponentInstantiation.h \
+    ../../../IPXACTmodels/common/ModuleParameterWriter.h
 SOURCES += ../../../IPXACTmodels/common/Array.cpp \
     ../../../IPXACTmodels/common/Assertion.cpp \
     ../../../IPXACTmodels/common/CommonItemsWriter.cpp \
@@ -43,4 +48,9 @@ SOURCES += ../../../IPXACTmodels/common/Array.cpp \
     ../../../IPXACTmodels/common/Vector.cpp \
     ./tst_InstantiationsWriter.cpp \
     ../../../IPXACTmodels/vlnv.cpp \
-    ../../../IPXACTmodels/Component/DesignConfigurationInstantiation.cpp
+    ../../../IPXACTmodels/Component/DesignConfigurationInstantiation.cpp \
+    ../../../IPXACTmodels/common/ModuleParameter.cpp \
+    ../../../IPXACTmodels/common/BuildModel.cpp \
+    ../../../IPXACTmodels/common/FileBuilder.cpp \
+    ../../../IPXACTmodels/Component/ComponentInstantiation.cpp \
+    ../../../IPXACTmodels/common/ModuleParameterWriter.cpp

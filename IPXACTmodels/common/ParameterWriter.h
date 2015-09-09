@@ -40,11 +40,7 @@ public:
      */
     void writeParameter(QXmlStreamWriter& writer, QSharedPointer<Parameter> parameter) const;
 
-private:
-
-    // Disable copying.
-    ParameterWriter(ParameterWriter const& rhs);
-    ParameterWriter& operator=(ParameterWriter const& rhs);
+protected:
 
     /*!
      *  Writes the attributes of a given parameter into xml.
@@ -93,6 +89,12 @@ private:
      *      @param [in] parameter   The parameter whose vendor extensions to write.
      */
     void writeVendorExtensions(QXmlStreamWriter& writer, QSharedPointer<Parameter> parameter) const;
+
+private:
+
+    // Disable copying.
+    ParameterWriter(ParameterWriter const& rhs);
+    ParameterWriter& operator=(ParameterWriter const& rhs);
 };
 
 #endif // PARAMETERWRITER_H
