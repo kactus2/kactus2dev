@@ -12,6 +12,7 @@
 #ifndef INSTANTIATIONSREADER_H
 #define INSTANTIATIONSREADER_H
 
+#include "ComponentInstantiation.h"
 #include "DesignInstantiation.h"
 #include "DesignConfigurationInstantiation.h"
 
@@ -55,9 +56,21 @@ public:
      *  Creates a new design configuration instantiation.
      *
      *      @param [in] instantiationNode   XML description of the instantiation.
+     *
+     *      @return The created design configuration instantiation.
      */
     QSharedPointer<DesignConfigurationInstantiation> createDesignConfigurationInstantiationFrom
         (QDomNode const& instantiationNode) const;
+
+    /*!
+     *  Creates a new component instantiation.
+     *
+     *      @param [in] instantiationNode   XML description of the instantiation.
+     *
+     *      @return The created component instantiation.
+     */
+    QSharedPointer<ComponentInstantiation> createComponentInstantiationFrom(QDomNode const& instantiationNode)
+        const;
 
 private:
 
@@ -72,7 +85,7 @@ private:
      *
      *      @return The used HDL.
      */
-    QString getLanguageFrom(QDomNode const& instantiationNode) const;
+    QString parseLanguageFrom(QDomNode const& instantiationNode) const;
 
     /*!
      *  Get the strictness of the used HDL from XML.
@@ -81,7 +94,43 @@ private:
      *
      *      @return True, if the language shall be strictly enforced, false otherwise.
      */
-    bool getLanguageStrictnessFrom(QDomNode const& instantiationNode) const;
+    bool parseLanguageStrictnessFrom(QDomNode const& instantiationNode) const;
+
+    /*!
+     *  Reads the name references from XML.
+     *
+     *      @param [in] instantiationNode   XML description of the instantiation.
+     *      @param [in] instantiation       The selected instantiation.
+     */
+    void parseNameReferences(QDomNode const& instantiationNode,
+        QSharedPointer<ComponentInstantiation> instantiation) const;
+
+    /*!
+     *  Reads the module parameter from XML.
+     *
+     *      @param [in] instantiationNode   XML description of the instantiation.
+     *      @param [in] instantiation       The selected instantiation.
+     */
+    void parseModuleParameters(QDomNode const& instantiationNode,
+        QSharedPointer<ComponentInstantiation> instantiation) const;
+
+    /*!
+     *  Reads the default file builders from XML.
+     *
+     *      @param [in] instantiationNode   XML description of the instantiation.
+     *      @param [in] instantiation       The selected instantiation.
+     */
+    void parseDefaultFileBuilders(QDomNode const& instantiationNode,
+        QSharedPointer<ComponentInstantiation> instantiation) const;
+
+    /*!
+     *  Reads the file set references from XLM.
+     *
+     *      @param [in] instantiationNode   XML description of the instantiation.
+     *      @param [in] instantiation       The selected instantiation.
+     */
+    void parseFileSetReferences(QDomNode const& instantiationNode,
+        QSharedPointer<ComponentInstantiation> instantiation) const;
 };
 
 #endif // VIEWREADER_H

@@ -142,9 +142,9 @@ private:
      *  Writes the file set references.
      *
      *      @param [in] writer      The used XML writer.
-     *      @param [in] references  The reference name, presence pairs.
+     *      @param [in] references  A list of referenced file set names.
      */
-    void writeFileSetReferences(QXmlStreamWriter& writer, QMap<QString, QString> references) const;
+    void writeFileSetReferences(QXmlStreamWriter& writer, QSharedPointer<QStringList> references) const;
 };
 
 #endif // INSTANTIATIONSWRITER_H

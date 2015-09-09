@@ -30,6 +30,16 @@ private slots:
     void readDesignConfigurationInstantiationLanguage();
     void readDesignConfigurationInstantiationParameters();
     void readDesignConfigurationInstantiationExtensions();
+
+    void readComponentInstantiation();
+    void readVirtualComponentInstantiation();
+    void readComponentInstantiationLanguage();
+    void readComponentInstantiationNameReferences();
+    void readComponentInstantiationModuleParameters();
+    void readComponentInstantiationDefaultFileBuilders();
+    void readComponentInstantiationFileSetReferences();
+    void readComponentInstantiationParameters();
+    void readComponentInstantiationExtensions();
 };
 
 //-----------------------------------------------------------------------------
@@ -293,6 +303,348 @@ void tst_InstantiationsReader::readDesignConfigurationInstantiationExtensions()
     InstantiationsReader instantiationsReader;
     QSharedPointer<DesignConfigurationInstantiation> testInstantiation =
         instantiationsReader.createDesignConfigurationInstantiationFrom(instantiationNode);
+
+    QCOMPARE(testInstantiation->name(), QString("testInstantiation"));
+
+    QCOMPARE(testInstantiation->getVendorExtensions()->size(), 1);
+    QCOMPARE(testInstantiation->getVendorExtensions()->first()->type(), QString("testExtension"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_InstantiationsReader::readComponentInstantiation()
+//-----------------------------------------------------------------------------
+void tst_InstantiationsReader::readComponentInstantiation()
+{
+    QString documentContent(
+        "<ipxact:componentInstantiation>"
+            "<ipxact:name>testInstantiation</ipxact:name>"
+            "<ipxact:displayName>displayed</ipxact:displayName>"
+            "<ipxact:description>described</ipxact:description>"
+        "</ipxact:designConfigurationInstantiation>"
+        );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QDomNode instantiationNode = document.firstChildElement("ipxact:componentInstantiation");
+
+    InstantiationsReader instantiationsReader;
+    QSharedPointer<ComponentInstantiation> testInstantiation =
+        instantiationsReader.createComponentInstantiationFrom(instantiationNode);
+
+    QCOMPARE(testInstantiation->name(), QString("testInstantiation"));
+    QCOMPARE(testInstantiation->displayName(), QString("displayed"));
+    QCOMPARE(testInstantiation->description(), QString("described"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_InstantiationsReader::readVirtualComponentInstantiation()
+//-----------------------------------------------------------------------------
+void tst_InstantiationsReader::readVirtualComponentInstantiation()
+{
+    QString documentContent(
+        "<ipxact:componentInstantiation>"
+            "<ipxact:name>testInstantiation</ipxact:name>"
+            "<ipxact:isVirtual>true</ipxact:isVirtual>"
+        "</ipxact:designConfigurationInstantiation>"
+        );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QDomNode instantiationNode = document.firstChildElement("ipxact:componentInstantiation");
+
+    InstantiationsReader instantiationsReader;
+    QSharedPointer<ComponentInstantiation> testInstantiation =
+        instantiationsReader.createComponentInstantiationFrom(instantiationNode);
+
+    QCOMPARE(testInstantiation->name(), QString("testInstantiation"));
+    QCOMPARE(testInstantiation->isVirtual(), true);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_InstantiationsReader::readComponentInstantiationLanguage()
+//-----------------------------------------------------------------------------
+void tst_InstantiationsReader::readComponentInstantiationLanguage()
+{
+    QString documentContent(
+        "<ipxact:componentInstantiation>"
+            "<ipxact:name>testInstantiation</ipxact:name>"
+            "<ipxact:language>verilog</ipxact:language>"
+        "</ipxact:designConfigurationInstantiation>"
+        );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QDomNode instantiationNode = document.firstChildElement("ipxact:componentInstantiation");
+
+    InstantiationsReader instantiationsReader;
+    QSharedPointer<ComponentInstantiation> testInstantiation =
+        instantiationsReader.createComponentInstantiationFrom(instantiationNode);
+
+    QCOMPARE(testInstantiation->name(), QString("testInstantiation"));
+    QCOMPARE(testInstantiation->getLanguage(), QString("verilog"));
+    QCOMPARE(testInstantiation->isLanguageStrict(), false);
+
+    documentContent = 
+        "<ipxact:componentInstantiation>"
+            "<ipxact:name>testInstantiation</ipxact:name>"
+            "<ipxact:language strict=\"true\">vhdl</ipxact:language>"
+        "</ipxact:componentInstantiation>"
+        ;
+
+    document.setContent(documentContent);
+    instantiationNode = document.firstChildElement("ipxact:componentInstantiation");
+
+    testInstantiation = instantiationsReader.createComponentInstantiationFrom(instantiationNode);
+
+    QCOMPARE(testInstantiation->name(), QString("testInstantiation"));
+    QCOMPARE(testInstantiation->getLanguage(), QString("vhdl"));
+    QCOMPARE(testInstantiation->isLanguageStrict(), true);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_InstantiationsReader::readComponentInstantiationNameReferences()
+//-----------------------------------------------------------------------------
+void tst_InstantiationsReader::readComponentInstantiationNameReferences()
+{
+    QString documentContent(
+        "<ipxact:componentInstantiation>"
+            "<ipxact:name>testInstantiation</ipxact:name>"
+            "<ipxact:libraryName>work</ipxact:libraryName>"
+            "<ipxact:packageName>componentVLNV_cmp_pkg</ipxact:packageName>"
+            "<ipxact:moduleName>componentVLNV</ipxact:moduleName>"
+            "<ipxact:architectureName>rtl</ipxact:architectureName>"
+            "<ipxact:configurationName>componentVLNV_rtl_cfg</ipxact:configurationName>"
+        "</ipxact:designConfigurationInstantiation>"
+        );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QDomNode instantiationNode = document.firstChildElement("ipxact:componentInstantiation");
+
+    InstantiationsReader instantiationsReader;
+    QSharedPointer<ComponentInstantiation> testInstantiation =
+        instantiationsReader.createComponentInstantiationFrom(instantiationNode);
+
+    QCOMPARE(testInstantiation->name(), QString("testInstantiation"));
+
+    QCOMPARE(testInstantiation->getLibraryName(), QString("work"));
+    QCOMPARE(testInstantiation->getPackageName(), QString("componentVLNV_cmp_pkg"));
+    QCOMPARE(testInstantiation->getModuleName(), QString("componentVLNV"));
+    QCOMPARE(testInstantiation->getArchitectureName(), QString("rtl"));
+    QCOMPARE(testInstantiation->getConfigurationName(), QString("componentVLNV_rtl_cfg"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_InstantiationsReader::readComponentInstantiationModuleParameters()
+//-----------------------------------------------------------------------------
+void tst_InstantiationsReader::readComponentInstantiationModuleParameters()
+{
+    QString documentContent(
+        "<ipxact:componentInstantiation>"
+            "<ipxact:name>testInstantiation</ipxact:name>"
+            "<ipxact:moduleName>componentVLNV</ipxact:moduleName>"
+            "<ipxact:moduleParameters>"
+                "<ipxact:moduleParameter choiceRef=\"testingChoice\" dataType=\"longInt\" maximum=\"403\""
+                        " minimum=\"3\" parameterId=\"testID\" usageType=\"int\">"
+                    "<ipxact:name>nameTest</ipxact:name>"
+                    "<ipxact:value>400</ipxact:value>"
+                    "<ipxact:isPresent>4-3</ipxact:isPresent>"
+                "</ipxact:moduleParameter>"
+            "</ipxact:moduleParameters>"
+        "</ipxact:designConfigurationInstantiation>"
+        );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QDomNode instantiationNode = document.firstChildElement("ipxact:componentInstantiation");
+
+    InstantiationsReader instantiationsReader;
+    QSharedPointer<ComponentInstantiation> testInstantiation =
+        instantiationsReader.createComponentInstantiationFrom(instantiationNode);
+
+    QCOMPARE(testInstantiation->name(), QString("testInstantiation"));
+    QCOMPARE(testInstantiation->getModuleName(), QString("componentVLNV"));
+
+    QCOMPARE(testInstantiation->getModuleParameters()->size(), 1);
+    QSharedPointer<ModuleParameter> moduleParameter = testInstantiation->getModuleParameters()->first();
+    QCOMPARE(moduleParameter->name(), QString("nameTest"));
+    QCOMPARE(moduleParameter->getValue(), QString("400"));
+    QCOMPARE(moduleParameter->getIsPresent(), QString("4-3"));
+
+    QCOMPARE(moduleParameter->getChoiceRef(), QString("testingChoice"));
+    QCOMPARE(moduleParameter->getDataType(), QString("longInt"));
+    QCOMPARE(moduleParameter->getMaximumValue(), QString("403"));
+    QCOMPARE(moduleParameter->getMinimumValue(), QString("3"));
+    QCOMPARE(moduleParameter->getValueId(), QString("testID"));
+    QCOMPARE(moduleParameter->getUsageType(), QString("int"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_InstantiationsReader::readComponentInstantiationDefaultFileBuilders()
+//-----------------------------------------------------------------------------
+void tst_InstantiationsReader::readComponentInstantiationDefaultFileBuilders()
+{
+    QString documentContent(
+        "<ipxact:componentInstantiation>"
+            "<ipxact:name>testInstantiation</ipxact:name>"
+            "<ipxact:defaultFileBuilder>"
+                "<ipxact:fileType>asmSource</ipxact:fileType>"
+                "<ipxact:command>riseFromYourGrave</ipxact:command>"
+                "<ipxact:flags>passedFlags</ipxact:flags>"
+                "<ipxact:replaceDefaultFlags>1-1+0</ipxact:replaceDefaultFlags>"
+            "</ipxact:defaultFileBuilder>"
+        "</ipxact:designConfigurationInstantiation>"
+        );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QDomNode instantiationNode = document.firstChildElement("ipxact:componentInstantiation");
+
+    InstantiationsReader instantiationsReader;
+    QSharedPointer<ComponentInstantiation> testInstantiation =
+        instantiationsReader.createComponentInstantiationFrom(instantiationNode);
+
+    QCOMPARE(testInstantiation->name(), QString("testInstantiation"));
+
+    QCOMPARE(testInstantiation->getDefaultFileBuilders()->size(), 1);
+
+    QSharedPointer<FileBuilder> defaultFileBuilder = testInstantiation->getDefaultFileBuilders()->first();
+    QCOMPARE(defaultFileBuilder->getFileType(), QString("asmSource"));
+    QCOMPARE(defaultFileBuilder->getUserFileType(), QString(""));
+    QCOMPARE(defaultFileBuilder->getCommand(), QString("riseFromYourGrave"));
+    QCOMPARE(defaultFileBuilder->getFlags(), QString("passedFlags"));
+    QCOMPARE(defaultFileBuilder->getReplaceDefaultFlags(), QString("1-1+0"));
+
+    documentContent =
+        "<ipxact:componentInstantiation>"
+            "<ipxact:name>testInstantiation</ipxact:name>"
+            "<ipxact:defaultFileBuilder>"
+                "<ipxact:fileType user=\"userFile\">user</ipxact:fileType>"
+                "<ipxact:command>riseFromYourGrave</ipxact:command>"
+                "<ipxact:flags>passedFlags</ipxact:flags>"
+                "<ipxact:replaceDefaultFlags>1-1+0</ipxact:replaceDefaultFlags>"
+            "</ipxact:defaultFileBuilder>"
+        "</ipxact:designConfigurationInstantiation>"
+        ;
+
+    document.setContent(documentContent);
+
+    instantiationNode = document.firstChildElement("ipxact:componentInstantiation");
+    testInstantiation = instantiationsReader.createComponentInstantiationFrom(instantiationNode);
+
+    QCOMPARE(testInstantiation->getDefaultFileBuilders()->size(), 1);
+
+    defaultFileBuilder = testInstantiation->getDefaultFileBuilders()->first();
+    QCOMPARE(defaultFileBuilder->getFileType(), QString("user"));
+    QCOMPARE(defaultFileBuilder->getUserFileType(), QString("userFile"));
+    QCOMPARE(defaultFileBuilder->getCommand(), QString("riseFromYourGrave"));
+    QCOMPARE(defaultFileBuilder->getFlags(), QString("passedFlags"));
+    QCOMPARE(defaultFileBuilder->getReplaceDefaultFlags(), QString("1-1+0"));
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_InstantiationsReader::readComponentInstantiationFileSetReferences()
+//-----------------------------------------------------------------------------
+void tst_InstantiationsReader::readComponentInstantiationFileSetReferences()
+{
+    QString documentContent(
+        "<ipxact:componentInstantiation>"
+            "<ipxact:name>testInstantiation</ipxact:name>"
+            "<ipxact:fileSetRef>"
+                "<ipxact:localName>otherFile</ipxact:localName>"
+            "</ipxact:fileSetRef>"
+            "<ipxact:fileSetRef>"
+                "<ipxact:localName>referencedFile</ipxact:localName>"
+            "</ipxact:fileSetRef>"
+        "</ipxact:designConfigurationInstantiation>"
+        );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QDomNode instantiationNode = document.firstChildElement("ipxact:componentInstantiation");
+
+    InstantiationsReader instantiationsReader;
+    QSharedPointer<ComponentInstantiation> testInstantiation =
+        instantiationsReader.createComponentInstantiationFrom(instantiationNode);
+
+    QCOMPARE(testInstantiation->name(), QString("testInstantiation"));
+
+    QCOMPARE(testInstantiation->getFileSetReferences()->count(), 2);
+    QCOMPARE(testInstantiation->getFileSetReferences()->first(), QString("otherFile"));
+    QCOMPARE(testInstantiation->getFileSetReferences()->last(), QString("referencedFile"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_InstantiationsReader::readComponentInstantiationParameters()
+//-----------------------------------------------------------------------------
+void tst_InstantiationsReader::readComponentInstantiationParameters()
+{
+    QString documentContent(
+        "<ipxact:componentInstantiation>"
+            "<ipxact:name>testInstantiation</ipxact:name>"
+            "<ipxact:parameters>"
+                "<ipxact:parameter parameterId=\"testID\">"
+                    "<ipxact:name>nameTest</ipxact:name>"
+                    "<ipxact:value>400</ipxact:value>"
+                "</ipxact:parameter>"
+                "<ipxact:parameter parameterId=\"otherID\">"
+                    "<ipxact:name>otherTest</ipxact:name>"
+                    "<ipxact:value>200</ipxact:value>"
+                "</ipxact:parameter>"
+            "</ipxact:parameters>"
+        "</ipxact:designConfigurationInstantiation>"
+        );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QDomNode instantiationNode = document.firstChildElement("ipxact:componentInstantiation");
+
+    InstantiationsReader instantiationsReader;
+    QSharedPointer<ComponentInstantiation> testInstantiation =
+        instantiationsReader.createComponentInstantiationFrom(instantiationNode);
+
+    QCOMPARE(testInstantiation->name(), QString("testInstantiation"));
+
+    QCOMPARE(testInstantiation->getParameters()->size(), 2);
+    QCOMPARE(testInstantiation->getParameters()->first()->getValueId(), QString("testID"));
+    QCOMPARE(testInstantiation->getParameters()->first()->name(), QString("nameTest"));
+    QCOMPARE(testInstantiation->getParameters()->first()->getValue(), QString("400"));
+    QCOMPARE(testInstantiation->getParameters()->last()->getValueId(), QString("otherID"));
+    QCOMPARE(testInstantiation->getParameters()->last()->name(), QString("otherTest"));
+    QCOMPARE(testInstantiation->getParameters()->last()->getValue(), QString("200"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_InstantiationsReader::readComponentInstantiationExtensions()
+//-----------------------------------------------------------------------------
+void tst_InstantiationsReader::readComponentInstantiationExtensions()
+{
+    QString documentContent(
+        "<ipxact:componentInstantiation>"
+            "<ipxact:name>testInstantiation</ipxact:name>"
+            "<ipxact:vendorExtensions>"
+                "<testExtension testExtensionAttribute=\"extension\">testValue</testExtension>"
+            "</ipxact:vendorExtensions>"
+        "</ipxact:designConfigurationInstantiation>"
+        );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QDomNode instantiationNode = document.firstChildElement("ipxact:componentInstantiation");
+
+    InstantiationsReader instantiationsReader;
+    QSharedPointer<ComponentInstantiation> testInstantiation =
+        instantiationsReader.createComponentInstantiationFrom(instantiationNode);
 
     QCOMPARE(testInstantiation->name(), QString("testInstantiation"));
 

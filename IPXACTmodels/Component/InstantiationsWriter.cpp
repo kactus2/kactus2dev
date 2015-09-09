@@ -247,28 +247,16 @@ void InstantiationsWriter::writeBuildModel(QXmlStreamWriter& writer, QSharedPoin
 //-----------------------------------------------------------------------------
 // Function: InstantiationsWriter::writeFileSetReferences()
 //-----------------------------------------------------------------------------
-void InstantiationsWriter::writeFileSetReferences(QXmlStreamWriter& writer, QMap<QString, QString> references)
+void InstantiationsWriter::writeFileSetReferences(QXmlStreamWriter& writer, QSharedPointer<QStringList> references)
     const
 {
-    if (!references.isEmpty())
+    if (!references->isEmpty())
     {
-        QMapIterator<QString, QString> referenceIterator(references);
-
-        while (referenceIterator.hasNext())
+        foreach (QString fileSetReference, *references)
         {
-            referenceIterator.next();
-
             writer.writeStartElement("ipxact:fileSetRef");
 
-            QString reference = referenceIterator.key();
-            QString isPresent = referenceIterator.value();
-
-            writer.writeTextElement("ipxact:localName", referenceIterator.key());
-
-            if (!referenceIterator.value().isEmpty())
-            {
-                writer.writeTextElement("ipxact:isPresent", referenceIterator.value());
-            }
+            writer.writeTextElement("ipxact:localName", fileSetReference);
 
             writer.writeEndElement(); // ipxact:fileSetRef
         }

@@ -521,8 +521,8 @@ void tst_InstantiationsWriter::writeComponentInstantiationLanguage()
     testComponentInstantiation->setLanguageStrictness(true);
     expectedOutput = 
         "<ipxact:componentInstantiation>"
-        "<ipxact:name>testComponentInstantiation</ipxact:name>"
-        "<ipxact:language strict=\"true\">vhdl</ipxact:language>"
+            "<ipxact:name>testComponentInstantiation</ipxact:name>"
+            "<ipxact:language strict=\"true\">vhdl</ipxact:language>"
         "</ipxact:componentInstantiation>"
         ;
 
@@ -669,23 +669,19 @@ void tst_InstantiationsWriter::writeComponentInstantiationFileSetReferences()
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
-    QMap<QString, QString> fileSetReferences;
-    fileSetReferences.insert("referencedFile", "4-3");
-    fileSetReferences.insert("otherFile", "");
-
     QSharedPointer<ComponentInstantiation> testComponentInstantiation
         (new ComponentInstantiation("testInstantiation"));
-    testComponentInstantiation->setFileSetReferences(fileSetReferences);
+    testComponentInstantiation->getFileSetReferences()->append("referencedFile");
+    testComponentInstantiation->getFileSetReferences()->append("otherFile");
 
     QString expectedOutput(
         "<ipxact:componentInstantiation>"
             "<ipxact:name>testInstantiation</ipxact:name>"
             "<ipxact:fileSetRef>"
-                "<ipxact:localName>otherFile</ipxact:localName>"
+                "<ipxact:localName>referencedFile</ipxact:localName>"
             "</ipxact:fileSetRef>"
             "<ipxact:fileSetRef>"
-                "<ipxact:localName>referencedFile</ipxact:localName>"
-                "<ipxact:isPresent>4-3</ipxact:isPresent>"
+                "<ipxact:localName>otherFile</ipxact:localName>"
             "</ipxact:fileSetRef>"
         "</ipxact:componentInstantiation>"
         );

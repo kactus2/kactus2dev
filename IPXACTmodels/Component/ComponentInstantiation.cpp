@@ -28,7 +28,7 @@ architectureName_(),
 configurationName_(),
 moduleParameters_(new QList<QSharedPointer<ModuleParameter> > ()),
 defaultFileBuilders_(new QList<QSharedPointer<FileBuilder> > ()),
-fileSetReferences_(),
+fileSetReferences_(new QStringList()),
 parameters_(new QList<QSharedPointer<Parameter> > ())
 {
 
@@ -50,11 +50,12 @@ architectureName_(other.architectureName_),
 configurationName_(other.configurationName_),
 moduleParameters_(new QList<QSharedPointer<ModuleParameter> > ()),
 defaultFileBuilders_(new QList<QSharedPointer<FileBuilder> > ()),
-fileSetReferences_(other.fileSetReferences_),
+fileSetReferences_(new QStringList),
 parameters_(new QList<QSharedPointer<Parameter> > ())
 {
     copyModuleParameters(other);
     copyDefaultFileBuilders(other);
+    copyFileSetReferences(other);
     copyParameters(other);
 }
 
@@ -81,8 +82,8 @@ ComponentInstantiation& ComponentInstantiation::operator=(const ComponentInstant
         copyModuleParameters(other);
         defaultFileBuilders_->clear();
         copyDefaultFileBuilders(other);
-
-        fileSetReferences_ = other.fileSetReferences_;
+        fileSetReferences_->clear();
+        copyFileSetReferences(other);
         parameters_->clear();
         copyParameters(other);
     }
@@ -97,6 +98,7 @@ ComponentInstantiation::~ComponentInstantiation()
 {
     moduleParameters_.clear();
     defaultFileBuilders_.clear();
+    fileSetReferences_.clear();
     parameters_.clear();
 }
 
@@ -267,7 +269,7 @@ void ComponentInstantiation::setDefaultFileBuilders(
 //-----------------------------------------------------------------------------
 // Function: ComponentInstantiation::getFileSetReferences()
 //-----------------------------------------------------------------------------
-QMap<QString, QString> ComponentInstantiation::getFileSetReferences() const
+QSharedPointer<QStringList> ComponentInstantiation::getFileSetReferences() const
 {
     return fileSetReferences_;
 }
@@ -275,7 +277,7 @@ QMap<QString, QString> ComponentInstantiation::getFileSetReferences() const
 //-----------------------------------------------------------------------------
 // Function: ComponentInstantiation::setFileSetReferences()
 //-----------------------------------------------------------------------------
-void ComponentInstantiation::setFileSetReferences(QMap<QString, QString> newFileSetReferences)
+void ComponentInstantiation::setFileSetReferences(QSharedPointer<QStringList> newFileSetReferences)
 {
     fileSetReferences_ = newFileSetReferences;
 }
@@ -325,6 +327,17 @@ void ComponentInstantiation::copyDefaultFileBuilders(const ComponentInstantiatio
             QSharedPointer<FileBuilder> copy = QSharedPointer<FileBuilder>(new FileBuilder(*fileBuilder.data()));
             defaultFileBuilders_->append(copy);
         }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentInstantiation::copyFileSetReferences()
+//-----------------------------------------------------------------------------
+void ComponentInstantiation::copyFileSetReferences(const ComponentInstantiation& other) const
+{
+    foreach (QString reference, *other.fileSetReferences_)
+    {
+        fileSetReferences_->append(reference);
     }
 }
 

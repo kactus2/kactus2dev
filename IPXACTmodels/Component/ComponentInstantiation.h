@@ -198,16 +198,16 @@ public:
     /*!
      *  Get the file set references.
      *
-     *      @return A QMap containing file set name, presence pairs.
+     *      @return Pointer to a list containing referenced file set names.
      */
-    QMap<QString, QString> getFileSetReferences() const;
+    QSharedPointer<QStringList> getFileSetReferences() const;
 
     /*!
      *  Set the file set references.
      *
-     *      @param [in] newFileSetReferences    Name, presence pairs of references.
+     *      @param [in] newFileSetReferences    The names of the referenced file sets.
      */
-    void setFileSetReferences(QMap<QString, QString> newFileSetReferences);
+    void setFileSetReferences(QSharedPointer<QStringList> newFileSetReferences);
 
     /*!
      *  Get the parameters.
@@ -234,6 +234,11 @@ private:
      *  Copy default file builders.
      */
     void copyDefaultFileBuilders(const ComponentInstantiation& other) const;
+
+    /*!
+     *  Copy file set references.
+     */
+    void copyFileSetReferences(const ComponentInstantiation& other) const;
 
     /*!
      *  Copy parameters.
@@ -274,8 +279,8 @@ private:
     //! A list of default file builders.
     QSharedPointer<QList<QSharedPointer<FileBuilder> > > defaultFileBuilders_;
 
-    //! A map of file set reference, file set presence pairs.
-    QMap<QString, QString> fileSetReferences_;
+    //! A list of file set references.
+    QSharedPointer<QStringList> fileSetReferences_;
 
     //! A list of instantiation parameters.
     QSharedPointer<QList<QSharedPointer<Parameter> > > parameters_;

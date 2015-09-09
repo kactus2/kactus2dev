@@ -41,12 +41,8 @@ public:
      */
     QSharedPointer<Parameter> createParameterFrom(QDomNode const& parameterNode) const;
 
-private:
+protected:
 
-	// Disable copying.
-	ParameterReader(ParameterReader const& rhs);
-	ParameterReader& operator=(ParameterReader const& rhs);
-   
     /*!
      *  Reads the attributes from XML to a parameter.
      *
@@ -94,6 +90,13 @@ private:
      *      @param [in/out] parameter   The parameter to insert the vendor extensions into.
      */
     void parseVendorExtensions(QDomNode const& parameterNode, QSharedPointer<Parameter> parameter) const;
+
+private:
+
+    // Disable copying.
+    ParameterReader(ParameterReader const& rhs);
+    ParameterReader& operator=(ParameterReader const& rhs);
+
 };
 
 #endif // PARAMETERREADER_H

@@ -24,7 +24,12 @@ HEADERS += ../../../IPXACTmodels/Component/DesignInstantiation.h \
     ../../../IPXACTmodels/common/Range.h \
     ../../../IPXACTmodels/common/Vector.h \
     ../../../IPXACTmodels/common/Array.h \
-    ../../../IPXACTmodels/Component/DesignConfigurationInstantiation.h
+    ../../../IPXACTmodels/Component/DesignConfigurationInstantiation.h \
+    ../../../IPXACTmodels/Component/ComponentInstantiation.h \
+    ../../../IPXACTmodels/common/ModuleParameter.h \
+    ../../../IPXACTmodels/common/FileBuilder.h \
+    ../../../IPXACTmodels/common/BuildModel.h \
+    ../../../IPXACTmodels/common/ModuleParameterReader.h
 SOURCES += ./tst_InstantiationsReader.cpp \
     ../../../IPXACTmodels/Component/DesignInstantiation.cpp \
     ../../../IPXACTmodels/vlnv.cpp \
@@ -43,4 +48,9 @@ SOURCES += ./tst_InstantiationsReader.cpp \
     ../../../IPXACTmodels/common/Range.cpp \
     ../../../IPXACTmodels/common/Vector.cpp \
     ../../../IPXACTmodels/common/Array.cpp \
-    ../../../IPXACTmodels/Component/DesignConfigurationInstantiation.cpp
+    ../../../IPXACTmodels/Component/DesignConfigurationInstantiation.cpp \
+    ../../../IPXACTmodels/Component/ComponentInstantiation.cpp \
+    ../../../IPXACTmodels/common/ModuleParameter.cpp \
+    ../../../IPXACTmodels/common/FileBuilder.cpp \
+    ../../../IPXACTmodels/common/BuildModel.cpp \
+    ../../../IPXACTmodels/common/ModuleParameterReader.cpp
