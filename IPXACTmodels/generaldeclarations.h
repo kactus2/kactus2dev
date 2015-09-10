@@ -26,74 +26,8 @@
  * This module holds the information structures that are used by many modules
  * in IP-Xact parsing that are not otherwise connected to each other.
  */
-namespace General {
-
-	//! \brief The file types specified in the IP-Xact
-	const QString FILE_TYPES[] = {
-		"asmSource",
-		"cSource",
-		"cppSource",
-		"eSource",
-		"OVASource",
-		"perlSource",
-		"pslSource",
-		"SVASource",
-		"tclSource",
-		"veraSource",
-		"systemCSource",
-		"systemCSource-2.0",
-		"systemCSource-2.0.1",
-		"systemCSource-2.1",
-		"systemCSource-2.2",
-		"systemVerilogSource",
-		"systemVerilogSource-3.0",
-		"systemVerilogSource-3.1",
-		"systemVerilogSource-3.1a",
-		"verilogSource",
-		"verilogSource-95",
-		"verilogSource-2001",
-		"vhdlSource",
-		"vhdlSource-87",
-		"vhdlSource-93",
-		"swObject",
-		"swObjectLibrary",
-		"vhdlBinaryLibrary",
-		"verilogBinaryLibrary",
-		"executableHdl",
-		"unelaboratedHdl",
-		"SDC",
-		"unknown"
-	};
-
-	//! \brief The number of supported file type definitions
-	const unsigned int FILE_TYPE_COUNT = 33;
-
-    /*! \brief Check if the file type is one of the specified ones.
-	 *
-	 * \param fileType The file type to check.
-	 *
-	 * \return True if the file type is one of the specified ones.
-	*/
-	IPXACTMODELS_EXPORT bool isIpXactFileType(const QString& fileType);
-
-	/*! \brief Get the file types which are associated with the given file suffix.
-	 *
-	 * \param settings The settings instance used to manage the Kactus2 settings.
-	 * \param fileSuffix The file suffix to identify the file type.
-	 *
-	 * \return QStringList containing the file types.
-	*/
-	IPXACTMODELS_EXPORT QStringList getFileTypes(QSettings& settings, const QString& fileSuffix);
-
-	/*! \brief Get the file types which are associated with the given file suffix.
-	 *
-	 * \param settings The settings instance used to manage the Kactus2 settings.
-	 * \param file Represents the file which's file types are searched.
-	 *
-	 * \return QStringList containing the file types.
-	*/
-	IPXACTMODELS_EXPORT QStringList getFileTypes(QSettings& settings, const QFileInfo& file);
-
+namespace General
+{
 /*!
  * Provides the capability to require or forbid a port to appear in a
  * bus interface.

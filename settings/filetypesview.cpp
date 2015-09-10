@@ -6,7 +6,7 @@
 */
 
 #include "filetypesview.h"
-#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/common/FileTypes.h>
 
 #include <QMenu>
 
@@ -38,7 +38,8 @@ void FileTypesView::contextMenuEvent( QContextMenuEvent* event ) {
 
 		// if the file type is user defined and not one of the file types specified
 		// by IP-XACT standard
-		if (!General::isIpXactFileType(selectedFileType)) {
+		if (!FileTypes::isIpXactFileType(selectedFileType))
+        {
 			menu.addAction(&removeAction_); 
 			
 			menu.addAction(&clearAction_);
@@ -87,7 +88,7 @@ void FileTypesView::keyPressEvent( QKeyEvent* event ) {
 
 			// if the file type is one of the standard ones, it can't be cleared
 			QString selectedFileType = selected.model()->data(selected, Qt::DisplayRole).toString();
-			if (General::isIpXactFileType(selectedFileType)) {
+			if (FileTypes::isIpXactFileType(selectedFileType)) {
 				return;
 			}
 		}

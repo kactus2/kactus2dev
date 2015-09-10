@@ -6,8 +6,9 @@
  */
 
 #include "comboselector.h"
-#include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/component.h>
+
+#include <IPXACTmodels/common/FileTypes.h>
 
 #include <QStringList>
 
@@ -81,8 +82,8 @@ const QString label /*= tr("Select a file type or set your own file type")*/ ) {
 
 	// add items to the box
 	QStringList comboItems;
-	for (unsigned int i = 0; i < General::FILE_TYPE_COUNT; ++i) {
-		comboItems.append(QString(General::FILE_TYPES[i]));
+	for (unsigned int i = 0; i < FileTypes::FILE_TYPE_COUNT; ++i) {
+		comboItems.append(QString(FileTypes::FILE_TYPES[i]));
 	}
 	selector.setComboBoxItems(comboItems);
 

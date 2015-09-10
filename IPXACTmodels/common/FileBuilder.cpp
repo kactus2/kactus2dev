@@ -10,29 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include "FileBuilder.h"
-
-/*
-// the constructor
-FileBuilder::FileBuilder(QDomNode &fileBuilderNode):
-BuildModel(fileBuilderNode), fileTypes_(), userFileTypes_() {
-
-	for (int i = 0; i < fileBuilderNode.childNodes().count(); ++i) {
-		QDomNode tempNode = fileBuilderNode.childNodes().at(i);
-
-		if (tempNode.nodeName() == QString("spirit:fileType")) {
-			fileTypes_.append(tempNode.childNodes().at(0).nodeValue());
-		}
-		else if (tempNode.nodeName() == QString("spirit:userFileType")) {
-			userFileTypes_.append(tempNode.childNodes().at(0).nodeValue());
-		}
-	}
-	// if mandatory field is missing
-// 	if ((fileTypes_.size() == 0) && (userFileTypes_.size() == 0)) {
-// 		throw Parse_error(QObject::tr(
-// 				"No file types found in spirit:fileBuilder"));
-// 	}
-	return;
-}*/
+#include "FileTypes.h"
 
 //-----------------------------------------------------------------------------
 // Function: FileBuilder::FileBuilder()
@@ -162,23 +140,7 @@ QString FileBuilder::getUserFileType() const
 //-----------------------------------------------------------------------------
 void FileBuilder::setFileType( const QString& newFileType )
 {
-	if ((newFileType == QString("asmSource")) || (newFileType == QString("cSource")) ||
-        (newFileType == QString("cppSource")) || (newFileType == QString("eSource")) ||
-        (newFileType == QString("OVASource")) || (newFileType == QString("perlSource")) ||
-        (newFileType == QString("pslSource")) || (newFileType == QString("SVASource")) ||
-        (newFileType == QString("tclSource")) || (newFileType == QString("veraSource")) ||
-        (newFileType == QString("systemCSource")) || (newFileType == QString("systemCSource-2.0")) ||
-        (newFileType == QString("systemCSource-2.0.1")) || (newFileType == QString("systemCSource-2.1")) ||
-        (newFileType == QString("systemCSource-2.2")) || (newFileType == QString("systemVerilogSource")) ||
-        (newFileType == QString("systemVerilogSource-3.0")) || (newFileType == QString("systemVerilogSource-3.1")) ||
-        (newFileType == QString("systemVerilogSource-3.1a")) || (newFileType == QString("verilogSource")) ||
-        (newFileType == QString("verilogSource-95")) || (newFileType == QString("verilogSource-2001")) ||
-        (newFileType == QString("vhdlSource")) || (newFileType == QString("vhdlSource-87")) ||
-        (newFileType == QString("vhdlSource-93")) ||
-        (newFileType == QString("swObject")) || (newFileType == QString("swObjectLibrary")) ||
-        (newFileType == QString("vhdlBinaryLibrary")) || (newFileType == QString("verilogBinaryLibrary")) ||
-        (newFileType == QString("executableHdl")) || (newFileType == QString("unelaboratedHdl")) ||
-        (newFileType == QString("SDC")) || (newFileType == QString("unknown"))) 
+    if (FileTypes::isIpXactFileType(newFileType))
     {
         fileType_ = newFileType;
         userFileType_.clear();

@@ -13,7 +13,7 @@
 
 #include "FileTypesModel.h"
 
-#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/common/FileTypes.h>
 
 #include <QComboBox>
 #include <QLineEdit>
@@ -49,12 +49,12 @@ QWidget* FileTypesDelegate::createEditor(QWidget* parent, QStyleOptionViewItem c
 				// contains all file types that have been defined already
 				QStringList usedTypes = index.model()->data(index, Qt::UserRole).toStringList();
 
-            for (unsigned int i = 0; i < General::FILE_TYPE_COUNT; ++i)
+            for (unsigned int i = 0; i < FileTypes::FILE_TYPE_COUNT; ++i)
             {
                 // if the file type is not yet defined then add it to the list of possible types
-                if (!usedTypes.contains(General::FILE_TYPES[i]))
+                if (!usedTypes.contains(FileTypes::FILE_TYPES[i]))
                 {
-                    combo->addItem(General::FILE_TYPES[i]);
+                    combo->addItem(FileTypes::FILE_TYPES[i]);
                 }
             }
             

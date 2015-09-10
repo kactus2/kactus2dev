@@ -887,53 +887,6 @@ QString General::getAbsolutePath(const QString& originalPath,
 	return originalDir.absoluteFilePath(relativePath);
 }
 
-bool General::isIpXactFileType( const QString& fileType ) {
-
-	// check all the pre-specified file types
-	for (unsigned int i = 0; i < General::FILE_TYPE_COUNT; ++i) {
-		
-		// if the file type is one of the specified ones
-		if (QString(General::FILE_TYPES[i]) == fileType) {
-			return true;
-		}
-	}
-	return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: generaldeclarations::getFileTypes()
-//-----------------------------------------------------------------------------
-QStringList General::getFileTypes( QSettings& settings, const QString& fileSuffix )
-{	
-    QStringList types;
-
-	settings.beginGroup("FileTypes");
-	foreach (QString const& type, settings.childGroups())
-    {
-		// Get the extensions associated with the file type.
-		QString extensions = settings.value(type + "/Extensions").toString();
-
-		foreach (QString extension, extensions.split(";", QString::SkipEmptyParts))
-        {
-			if (extension.compare(fileSuffix, Qt::CaseInsensitive) == 0)
-            {
-				types.append(type);
-			}
-		}
-	}
-    settings.endGroup();
-
-	return types;
-}
-
-//-----------------------------------------------------------------------------
-// Function: generaldeclarations::getFileTypes()
-//-----------------------------------------------------------------------------
-QStringList General::getFileTypes( QSettings& settings, const QFileInfo& file )
-{
-	return General::getFileTypes(settings, file.suffix());
-}
-
 General::ModifiedWrite General::str2ModifiedWrite( const QString& str ) {
 	
 	// check all defined strings

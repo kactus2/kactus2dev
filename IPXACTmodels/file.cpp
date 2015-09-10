@@ -11,6 +11,8 @@
 #include "fileset.h"
 #include "GenericVendorExtension.h"
 
+#include <IPXACTmodels/common/FileTypes.h>
+
 #include <QSharedPointer>
 #include <QString>
 #include <QList>
@@ -685,7 +687,7 @@ void File::setFileTypes( const QStringList& fileTypes ) {
 
 void File::setFileTypes( QSettings& settings ) {
 	QFileInfo info(name_);
-	QStringList types = General::getFileTypes(settings, info);
+	QStringList types = General::getFileTypes(settings, info.suffix());
 	setAllFileTypes(types);
 }
 
@@ -854,7 +856,7 @@ void File::setAllFileTypes( const QStringList& fileTypes ) {
 	foreach (QString fileType, fileTypes) {
 
 		// if the file type is one of the specified ones
-		if (General::isIpXactFileType(fileType)) {
+		if (FileTypes::isIpXactFileType(fileType)) {
 			fileTypes_.append(fileType);
 		}
 		// if the file type is user defined
