@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kactus2:apiDefinition>
+	<spirit:vendor>TUT</spirit:vendor>
+	<spirit:library>ip.swp.api</spirit:library>
+	<spirit:name>TLMW.apiDef</spirit:name>
+	<spirit:version>1.0</spirit:version>
+	<kactus2:comDefinitionRef spirit:vendor="" spirit:library="" spirit:name="" spirit:version=""/>
+	<kactus2:dataTypes/>
+	<kactus2:functions/>
+	<spirit:vendorExtensions>
+		<kactus2:version>2,8,27,0</kactus2:version>
+	</spirit:vendorExtensions>
+</kactus2:apiDefinition>

@@ -141,9 +141,7 @@
       </LinkTimeCodeGeneration>
     </Link>
     <PostBuildEvent>
-      <Command>verbuild version.h *.*.+.* -xFp -b0.0.0.0  -e10.10.9999.0 -s
-CreateHelp
-</Command>
+      <Command>verbuild version.h *.*.+.* -xFp -b0.0.0.0  -e10.10.9999.0 -s</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
