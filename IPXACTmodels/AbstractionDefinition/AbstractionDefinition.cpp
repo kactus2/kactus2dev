@@ -216,7 +216,7 @@ QStringList AbstractionDefinition::getPortNames(General::InterfaceMode mode) con
 //-----------------------------------------------------------------------------
 // Function: AbstractionDefinition::getPortDirection()
 //-----------------------------------------------------------------------------
-General::Direction AbstractionDefinition::getPortDirection(QString const& portName, General::InterfaceMode mode)
+DirectionTypes::Direction AbstractionDefinition::getPortDirection(QString const& portName, General::InterfaceMode mode)
 {
     foreach (QSharedPointer<PortAbstraction> port, *logicalPorts_)
     {
@@ -226,7 +226,7 @@ General::Direction AbstractionDefinition::getPortDirection(QString const& portNa
         }        
     }
 
-    return General::DIRECTION_INVALID;
+    return DirectionTypes::DIRECTION_INVALID;
 }
 
 //-----------------------------------------------------------------------------

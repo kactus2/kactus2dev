@@ -12,6 +12,8 @@
 #include "DocumentWriter.h"
 #include "Document.h"
 
+#include <IPXACTmodels/common/NameGroupWriter.h>
+
 //-----------------------------------------------------------------------------
 // Function: DocumentWriter::DocumentWriter()
 //-----------------------------------------------------------------------------
@@ -76,5 +78,21 @@ void DocumentWriter::writeParameters(QXmlStreamWriter& writer, QSharedPointer<Do
 //-----------------------------------------------------------------------------
 void DocumentWriter::writeAssertions(QXmlStreamWriter& writer, QSharedPointer<Document> document) const
 {
-    CommonItemsWriter::writeAssertions(writer, document->getAssertions());
+    if (!document->getAssertions()->isEmpty())
+    {
+        writer.writeStartElement("ipxact:assertions");
+
+        NameGroupWriter nameGroupWriter;
+        foreach (QSharedPointer<Assertion> assertion, *document->getAssertions())
+        {
+            writer.writeStartElement("ipxact:assertion");
+
+            nameGroupWriter.writeNameGroup(writer, assertion);
+            writer.writeTextElement("ipxact:assert", assertion->getAssert());
+
+            writer.writeEndElement(); // ipxact:assertion
+        }
+
+        writer.writeEndElement(); // ipxact:assertions
+    }
 }

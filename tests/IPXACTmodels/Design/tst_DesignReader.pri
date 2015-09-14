@@ -45,13 +45,14 @@ HEADERS += ../../../IPXACTmodels/Design/ActiveInterface.h \
     ../../../IPXACTmodels/XmlUtils.h \
     ../../../IPXACTmodels/generaldeclarations.h \
     ../../../IPXACTmodels/vlnv.h \
+    ../../../IPXACTmodels/common/CommonItemsReader.h \
     ../../../IPXACTmodels/Design/ComponentInstanceReader.h \
     ../../../IPXACTmodels/Design/DesignReader.h \
     ../../../IPXACTmodels/common/DocumentReader.h \
     ../../../IPXACTmodels/common/NameGroupReader.h \
     ../../../IPXACTmodels/common/ParameterReader.h \
     ../../../IPXACTmodels/validators/namevalidator.h \
-    ../../../IPXACTmodels/common/CommonItemsReader.h
+    ../../../IPXACTmodels/common/DirectionTypes.h
 SOURCES += ../../../IPXACTmodels/Design/ActiveInterface.cpp \
     ../../../IPXACTmodels/Design/AdHocConnection.cpp \
     ../../../IPXACTmodels/kactusExtensions/ApiInterconnection.cpp \
@@ -61,6 +62,7 @@ SOURCES += ../../../IPXACTmodels/Design/ActiveInterface.cpp \
     ../../../IPXACTmodels/kactusExtensions/ComInterconnection.cpp \
     ../../../IPXACTmodels/ComInterface.cpp \
     ../../../IPXACTmodels/ComProperty.cpp \
+    ../../../IPXACTmodels/common/CommonItemsReader.cpp \
     ../../../IPXACTmodels/Design/ComponentInstance.cpp \
     ../../../IPXACTmodels/Design/ComponentInstanceReader.cpp \
     ../../../IPXACTmodels/common/ConfigurableElementValue.cpp \
@@ -96,4 +98,4 @@ SOURCES += ../../../IPXACTmodels/Design/ActiveInterface.cpp \
     ../../../IPXACTmodels/validators/namevalidator.cpp \
     ./tst_DesignReader.cpp \
     ../../../IPXACTmodels/vlnv.cpp \
-    ../../../IPXACTmodels/common/CommonItemsReader.cpp
+    ../../../IPXACTmodels/common/DirectionTypes.cpp

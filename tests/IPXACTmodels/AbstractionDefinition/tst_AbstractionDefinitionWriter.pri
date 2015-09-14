@@ -12,6 +12,7 @@ HEADERS += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h \
     ../../../IPXACTmodels/common/Assertion.h \
     ../../../IPXACTmodels/common/BooleanValue.h \
     ../../../IPXACTmodels/common/CellSpecification.h \
+    ../../../IPXACTmodels/common/ConfigurableElementValue.h \
     ../../../IPXACTmodels/common/Document.h \
     ../../../IPXACTmodels/common/Extendable.h \
     ../../../IPXACTmodels/GenericVendorExtension.h \
@@ -35,18 +36,21 @@ HEADERS += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h \
     ../../../IPXACTmodels/generaldeclarations.h \
     ../../../IPXACTmodels/vlnv.h \
     ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinitionWriter.h \
+    ../../../IPXACTmodels/common/CommonItemsWriter.h \
     ../../../IPXACTmodels/common/DocumentWriter.h \
     ../../../IPXACTmodels/common/NameGroupWriter.h \
     ../../../IPXACTmodels/common/ParameterWriter.h \
     ../../../IPXACTmodels/AbstractionDefinition/TransactionalAbstractionWriter.h \
-    ../../../IPXACTmodels/common/CommonItemsWriter.h \
-    ../../../IPXACTmodels/common/ConfigurableElementValue.h
+    ../../../IPXACTmodels/common/DirectionTypes.h \
+    ../../../IPXACTmodels/common/ProtocolWriter.h
 SOURCES += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.cpp \
     ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinitionWriter.cpp \
     ../../../IPXACTmodels/common/Array.cpp \
     ../../../IPXACTmodels/common/Assertion.cpp \
     ../../../IPXACTmodels/common/BooleanValue.cpp \
     ../../../IPXACTmodels/common/CellSpecification.cpp \
+    ../../../IPXACTmodels/common/CommonItemsWriter.cpp \
+    ../../../IPXACTmodels/common/ConfigurableElementValue.cpp \
     ../../../IPXACTmodels/common/Document.cpp \
     ../../../IPXACTmodels/common/DocumentWriter.cpp \
     ../../../IPXACTmodels/common/Extendable.cpp \
@@ -74,5 +78,5 @@ SOURCES += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.cpp
     ../../../IPXACTmodels/generaldeclarations.cpp \
     ./tst_AbstractionDefinitionWriter.cpp \
     ../../../IPXACTmodels/vlnv.cpp \
-    ../../../IPXACTmodels/common/CommonItemsWriter.cpp \
-    ../../../IPXACTmodels/common/ConfigurableElementValue.cpp
+    ../../../IPXACTmodels/common/DirectionTypes.cpp \
+    ../../../IPXACTmodels/common/ProtocolWriter.cpp

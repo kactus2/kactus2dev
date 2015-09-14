@@ -13,7 +13,7 @@
 #ifndef COMINTERFACE_H
 #define COMINTERFACE_H
 
-#include "generaldeclarations.h"
+#include <IPXACTmodels/common/DirectionTypes.h>
 #include <IPXACTmodels/common/NameGroup.h>
 
 #include "ipxactmodels_global.h"
@@ -115,7 +115,7 @@ public:
      *
      *      @param [in] dir The direction.
      */
-    void setDirection(General::Direction dir);
+    void setDirection(DirectionTypes::Direction dir);
 
     /*!
      *  Sets the property values.
@@ -159,7 +159,7 @@ public:
     /*!
      *  Returns the direction.
      */
-    General::Direction getDirection() const;
+    DirectionTypes::Direction getDirection() const;
 
     /*!
      *  Returns the property values.
@@ -223,7 +223,7 @@ private:
     QString transferType_;
 
     //! Dependency direction.
-    General::Direction dir_;    
+    DirectionTypes::Direction dir_;    
 
     //! The set property values.
     QMap<QString, QString> propertyValues_;

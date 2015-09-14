@@ -157,9 +157,9 @@ void WireAbstractionWriter::writeWidth(QXmlStreamWriter& writer, QSharedPointer<
 //-----------------------------------------------------------------------------
 void WireAbstractionWriter::writeDirection(QXmlStreamWriter& writer, QSharedPointer<WirePort> wirePort) const
 {
-    if (wirePort->getDirection() != General::DIRECTION_INVALID)
+    if (wirePort->getDirection() != DirectionTypes::DIRECTION_INVALID)
     {
-        writer.writeTextElement("ipxact:direction", General::direction2Str(wirePort->getDirection()));
+        writer.writeTextElement("ipxact:direction", DirectionTypes::direction2Str(wirePort->getDirection()));
     }
 }
 

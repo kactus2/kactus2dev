@@ -107,30 +107,6 @@ private:
     void writeBusWidth(QXmlStreamWriter& writer, QSharedPointer<TransactionalPort> port) const;
        
     /*!
-     *  Writes the transactional port protocol on system/master/slave into XML.
-     *
-     *      @param [in] writer      The XML writer to use.
-     *      @param [in] port        The transactional port whose protocol to write.
-     */
-    void writeProtocol(QXmlStreamWriter& writer, QSharedPointer<TransactionalPort> port) const;
-       
-    /*!
-     *  Writes the transactional port protocol type on system/master/slave into XML.
-     *
-     *      @param [in] writer          The XML writer to use.
-     *      @param [in] portProtocol    The protocol whose type to write.
-     */
-    void writeProtocolType(QXmlStreamWriter& writer, QSharedPointer<Protocol> portProtocol) const;
-       
-    /*!
-     *  Writes the transactional port protocol payload on system/master/slave into XML.
-     *
-     *      @param [in] writer          The XML writer to use.
-     *      @param [in] portProtocol    The protocol whose payload to write.
-     */
-    void writePayload(QXmlStreamWriter& writer, QSharedPointer<Protocol> portProtocol) const;
-
-    /*!
      *  Writes the transactional port protocol vendor extensions on system/master/slave into XML.
      *
      *      @param [in] writer          The XML writer to use.

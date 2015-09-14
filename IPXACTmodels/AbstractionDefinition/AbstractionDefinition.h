@@ -15,6 +15,7 @@
 #include <IPXACTmodels/common/Document.h>
 #include <IPXACTmodels/common/Parameter.h>
 
+#include <IPXACTmodels/common/DirectionTypes.h>
 #include <IPXACTmodels/vlnv.h>
 
 #include <IPXACTmodels/ipxactmodels_global.h>
@@ -120,7 +121,7 @@ public:
      *
      *      @return The direction for the port in the given mode.
      */
-    General::Direction getPortDirection(QString const& portName, General::InterfaceMode mode);
+    DirectionTypes::Direction getPortDirection(QString const& portName, General::InterfaceMode mode);
 
     /*!
      *  Gets a logical port with the given name.

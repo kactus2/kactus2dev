@@ -15,6 +15,7 @@
 #include <IPXACTmodels/ipxactmodels_global.h>
 #include <IPXACTmodels/generaldeclarations.h>
 
+#include <IPXACTmodels/common/DirectionTypes.h>
 #include <IPXACTmodels/common/Qualifier.h>
 
 #include <QSharedPointer>
@@ -157,7 +158,7 @@ public:
      *
      *      @return The direction of the wire for the given interface mode.
      */
-    General::Direction getDirection(General::InterfaceMode mode) const;
+    DirectionTypes::Direction getDirection(General::InterfaceMode mode) const;
 
     /*!
      *  Gets the wire width for a given interface mode.

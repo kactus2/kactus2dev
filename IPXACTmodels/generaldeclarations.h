@@ -163,14 +163,6 @@ General::GroupSelectorOperator str2GroupSelector(QString str,
 		General::GroupSelectorOperator defaultValue);
 
 /*!
- * Is the port Wire or Transactional.
- */
-enum PortType {
-	WIRE,
-	TRANSACTIONAL
-};
-
-/*!
  * Endianness is used to indicate the endianness of a bus interface.
  */
 enum Endianness {
@@ -285,44 +277,6 @@ IPXACTMODELS_EXPORT General::DriverType str2DriverType(QString str, General::Dri
  * \return QString matching the driver type.
  */
 IPXACTMODELS_EXPORT QString driverType2Str(General::DriverType type);
-
-/*!
- * Specifies the direction of the port
- */
-enum Direction {
-	IN,
-	OUT,
-	INOUT,
-	DIRECTION_PHANTOM,
-	DIRECTION_INVALID
-};
-
-/*! \brief Convert the given direction to mirrored.
- *
- * \param originalDirection The direction to convert.
- *
- * \return General::Direction The mirrored version of the direction.
-*/
-IPXACTMODELS_EXPORT General::Direction convert2Mirrored(const General::Direction originalDirection);
-
-/*! \brief Convert the value of the QString into enum Direction
- *
- * if The str does not match any of the enum values the default value
- * specifies as parameter will be returned
- *
- * \param str QString containing the string to be converted
- * \param defaultValue The value that will be returned if no match is found
- * \return General::Direction that matches the str or default value.
- */
-IPXACTMODELS_EXPORT General::Direction str2Direction(QString str, General::Direction defaultValue);
-
-/*! \brief Convert the Direction value to QString.
- *
- * \param direction Direction value to be converted to QString.
- *
- * \return QString that matches the enum value.
- */
-IPXACTMODELS_EXPORT QString direction2Str(const General::Direction direction);
 
 /*! \brief Equals to spirit:usage element within spirit:memoryBlockData
  *

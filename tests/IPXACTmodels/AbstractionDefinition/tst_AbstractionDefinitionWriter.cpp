@@ -266,16 +266,16 @@ void tst_AbstractionDefinition::testWriteWirePortForAllModes()
     systemPort->setSystemGroup("system1");
     systemPort->setPresence(General::REQUIRED);
     systemPort->setWidth("1");
-    systemPort->setDirection(General::INOUT);
+    systemPort->setDirection(DirectionTypes::INOUT);
 
     QSharedPointer<WirePort> masterPort(new WirePort);
     masterPort->setPresence(General::OPTIONAL);
     masterPort->setWidth("expression");
-    masterPort->setDirection(General::IN);
+    masterPort->setDirection(DirectionTypes::IN);
 
     QSharedPointer<WirePort> slavePort(new WirePort);
     slavePort->setPresence(General::ILLEGAL);
-    slavePort->setDirection(General::OUT);
+    slavePort->setDirection(DirectionTypes::OUT);
 
     testPort->getWire()->addSystemPort(systemPort);
     testPort->getWire()->setMasterPort(masterPort);
@@ -351,13 +351,13 @@ void tst_AbstractionDefinition::testWriteMultipleSystemWirePorts()
     systemPort->setSystemGroup("system1");
     systemPort->setPresence(General::REQUIRED);
     systemPort->setWidth("1");
-    systemPort->setDirection(General::INOUT);
+    systemPort->setDirection(DirectionTypes::INOUT);
 
     QSharedPointer<WirePort> secondSystemPort(new WirePort);
     secondSystemPort->setSystemGroup("system2");
     secondSystemPort->setPresence(General::OPTIONAL);
     secondSystemPort->setWidth("16");
-    secondSystemPort->setDirection(General::INOUT);
+    secondSystemPort->setDirection(DirectionTypes::INOUT);
 
 
     testPort->setWire(QSharedPointer<WireAbstraction>(new WireAbstraction()));

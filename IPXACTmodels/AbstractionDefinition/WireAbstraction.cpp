@@ -250,7 +250,7 @@ General::DriverType WireAbstraction::getDriverType() const
 //-----------------------------------------------------------------------------
 // Function: WireAbstraction::getDirection()
 //-----------------------------------------------------------------------------
-General::Direction WireAbstraction::getDirection(General::InterfaceMode mode) const
+DirectionTypes::Direction WireAbstraction::getDirection(General::InterfaceMode mode) const
 {
     if (mode == General::MASTER && hasMasterPort())
     {
@@ -258,7 +258,7 @@ General::Direction WireAbstraction::getDirection(General::InterfaceMode mode) co
     } 
     else if (mode == General::MIRROREDMASTER && hasMasterPort())
     {
-        return General::convert2Mirrored(getMasterPort()->getDirection());
+        return DirectionTypes::convert2Mirrored(getMasterPort()->getDirection());
     }
     else if (mode == General::SLAVE && hasSlavePort())
     {
@@ -266,7 +266,7 @@ General::Direction WireAbstraction::getDirection(General::InterfaceMode mode) co
     }                       
     else if (mode == General::MIRROREDSLAVE && hasSlavePort())
     {
-        return General::convert2Mirrored(getSlavePort()->getDirection());
+        return DirectionTypes::convert2Mirrored(getSlavePort()->getDirection());
     }   
     else if (mode == General::SYSTEM && !getSystemPorts()->isEmpty())
     {
@@ -274,11 +274,11 @@ General::Direction WireAbstraction::getDirection(General::InterfaceMode mode) co
     } 
     else if (mode == General::MIRROREDSYSTEM && !getSystemPorts()->isEmpty())
     {
-        return General::convert2Mirrored(getSystemPorts()->first()->getDirection());
+        return DirectionTypes::convert2Mirrored(getSystemPorts()->first()->getDirection());
     }
     else
     {
-        return General::DIRECTION_INVALID;
+        return DirectionTypes::DIRECTION_INVALID;
     }
 }
 

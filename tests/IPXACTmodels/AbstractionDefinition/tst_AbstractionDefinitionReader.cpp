@@ -258,7 +258,7 @@ void tst_AbstractionDefinitionReader::testReadWirePort()
     QSharedPointer<WirePort> master = port->getWire()->getMasterPort();
     QCOMPARE(master->getPresence(), General::REQUIRED);
     QCOMPARE(master->getWidth(), QString("widthExpression"));
-    QCOMPARE(master->getDirection(), General::INOUT);
+    QCOMPARE(master->getDirection(), DirectionTypes::INOUT);
 }
 
 //-----------------------------------------------------------------------------
@@ -310,13 +310,13 @@ void tst_AbstractionDefinitionReader::testReadMultipleWireSystemPorts()
     QSharedPointer<QList<QSharedPointer<WirePort> > > systemPorts = port->getWire()->getSystemPorts();
     QCOMPARE(systemPorts->size(), 3);
 
-    QCOMPARE(systemPorts->at(0)->getDirection(), General::IN);
+    QCOMPARE(systemPorts->at(0)->getDirection(), DirectionTypes::IN);
     QCOMPARE(systemPorts->at(0)->getSystemGroup(), QString("testInGroup"));
 
-    QCOMPARE(systemPorts->at(1)->getDirection(), General::OUT);
+    QCOMPARE(systemPorts->at(1)->getDirection(), DirectionTypes::OUT);
     QCOMPARE(systemPorts->at(1)->getSystemGroup(), QString("testOutGroup"));
 
-    QCOMPARE(systemPorts->at(2)->getDirection(), General::INOUT);
+    QCOMPARE(systemPorts->at(2)->getDirection(), DirectionTypes::INOUT);
     QCOMPARE(systemPorts->at(2)->getSystemGroup(), QString("testInOutGroup"));
 }
 

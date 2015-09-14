@@ -22,7 +22,7 @@ WirePort::WirePort():
 systemGroupName_(),
     presence_(General::PRESENCE_UNKNOWN), 
     width_(),
-    direction_(General::DIRECTION_INVALID),
+    direction_(DirectionTypes::DIRECTION_INVALID),
     timingConstraint_(),
     driveConstraint_(),
     loadConstraint_(),
@@ -140,7 +140,7 @@ QString WirePort::getWidth() const
 //-----------------------------------------------------------------------------
 // Function: WirePort::setDirection()
 //-----------------------------------------------------------------------------
-void WirePort::setDirection(General::Direction direction)
+void WirePort::setDirection(DirectionTypes::Direction direction)
 {
     direction_ = direction;
 }
@@ -148,7 +148,7 @@ void WirePort::setDirection(General::Direction direction)
 //-----------------------------------------------------------------------------
 // Function: WirePort::getDirection()
 //-----------------------------------------------------------------------------
-General::Direction WirePort::getDirection() const
+DirectionTypes::Direction WirePort::getDirection() const
 {
     return direction_;
 }

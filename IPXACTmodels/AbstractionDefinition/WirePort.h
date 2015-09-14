@@ -17,6 +17,7 @@
 #include <IPXACTmodels/ipxactmodels_global.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/common/DirectionTypes.h>
 
 class TimingConstraint;
 class CellSpecification;
@@ -93,14 +94,14 @@ public:
      *
      *      @param [in] direction   The required direction.
      */
-    void setDirection(General::Direction direction);
+    void setDirection(DirectionTypes::Direction direction);
    
     /*!
      *  Gets a direction restriction for the port.
      *
      *      @return The required direction.
      */
-    General::Direction getDirection() const;
+    DirectionTypes::Direction getDirection() const;
     
     /*!
      *  Sets a timing constraint for the port.
@@ -205,7 +206,7 @@ private:
     QString width_;
 
     //! The direction restriction for the port.
-    General::Direction direction_;
+    DirectionTypes::Direction direction_;
 
     //! The timing constraint for the port.
     QSharedPointer<TimingConstraint> timingConstraint_;

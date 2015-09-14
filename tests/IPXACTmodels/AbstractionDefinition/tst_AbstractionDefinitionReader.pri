@@ -36,18 +36,20 @@ HEADERS += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h \
     ../../../IPXACTmodels/generaldeclarations.h \
     ../../../IPXACTmodels/vlnv.h \
     ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinitionReader.h \
+    ../../../IPXACTmodels/common/CommonItemsReader.h \
     ../../../IPXACTmodels/common/DocumentReader.h \
     ../../../IPXACTmodels/common/NameGroupReader.h \
     ../../../IPXACTmodels/common/ParameterReader.h \
     ../../../IPXACTmodels/AbstractionDefinition/TransactionalAbstractionReader.h \
     ../../../IPXACTmodels/AbstractionDefinition/WireAbstractionReader.h \
-    ../../../IPXACTmodels/common/CommonItemsReader.h
+    ../../../IPXACTmodels/common/DirectionTypes.h
 SOURCES += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.cpp \
     ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinitionReader.cpp \
     ../../../IPXACTmodels/common/Array.cpp \
     ../../../IPXACTmodels/common/Assertion.cpp \
     ../../../IPXACTmodels/common/BooleanValue.cpp \
     ../../../IPXACTmodels/common/CellSpecification.cpp \
+    ../../../IPXACTmodels/common/CommonItemsReader.cpp \
     ../../../IPXACTmodels/common/ConfigurableElementValue.cpp \
     ../../../IPXACTmodels/common/ConfigurableVLNVReference.cpp \
     ../../../IPXACTmodels/common/Document.cpp \
@@ -77,4 +79,4 @@ SOURCES += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.cpp
     ../../../IPXACTmodels/generaldeclarations.cpp \
     ./tst_AbstractionDefinitionReader.cpp \
     ../../../IPXACTmodels/vlnv.cpp \
-    ../../../IPXACTmodels/common/CommonItemsReader.cpp
+    ../../../IPXACTmodels/common/DirectionTypes.cpp

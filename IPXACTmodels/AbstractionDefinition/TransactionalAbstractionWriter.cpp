@@ -15,6 +15,7 @@
 #include "TransactionalPort.h"
 
 #include <IPXACTmodels/common/Protocol.h>
+#include <IPXACTmodels/common/ProtocolWriter.h>
 
 #include <IPXACTmodels/VendorExtension.h>
 
@@ -105,7 +106,8 @@ void TransactionalAbstractionWriter::writeTransactionalPort(QXmlStreamWriter& wr
 
     writeBusWidth(writer, port);
 
-    writeProtocol(writer, port);
+    ProtocolWriter protocolWriter;
+    protocolWriter.writeProtocol(writer, port->getProtocol());
 }
 
 //-----------------------------------------------------------------------------
@@ -174,80 +176,6 @@ void TransactionalAbstractionWriter::writeBusWidth(QXmlStreamWriter& writer,
     if (!port->getBusWidth().isEmpty())
     {
         writer.writeTextElement("ipxact:busWidth", port->getBusWidth());
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: TransactionalAbstractionWriter::writeProtocol()
-//-----------------------------------------------------------------------------
-void TransactionalAbstractionWriter::writeProtocol(QXmlStreamWriter& writer,
-    QSharedPointer<TransactionalPort> port) const
-{
-    if (port->hasProtocol())
-    {
-        QSharedPointer<Protocol> portProtocol = port->getProtocol();
-
-        writer.writeStartElement("ipxact:protocol");
-
-        writeProtocolType(writer, portProtocol);
-        writePayload(writer, portProtocol);
-
-        writer.writeEndElement();
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: TransactionalAbstractionWriter::writeProtocolType()
-//-----------------------------------------------------------------------------
-void TransactionalAbstractionWriter::writeProtocolType(QXmlStreamWriter& writer,
-    QSharedPointer<Protocol> portProtocol) const
-{
-    if (portProtocol->getProtocolType() == "tlm")
-    {
-        writer.writeTextElement("ipxact:protocolType", "tlm");
-    }
-    else
-    {
-        writer.writeStartElement("ipxact:protocolType");
-        writer.writeAttribute("custom", portProtocol->getProtocolType());
-        writer.writeCharacters("custom");
-        writer.writeEndElement();
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: TransactionalAbstractionWriter::writePayload()
-//-----------------------------------------------------------------------------
-void TransactionalAbstractionWriter::writePayload(QXmlStreamWriter& writer, 
-    QSharedPointer<Protocol> portProtocol) const
-{
-    if (!portProtocol->getPayloadType().isEmpty())
-    {
-        writer.writeStartElement("ipxact:payload");
-
-        if (!portProtocol->getPayloadName().isEmpty())
-        {
-            writer.writeTextElement("ipxact:name", portProtocol->getPayloadName());
-        }
-
-        writer.writeTextElement("ipxact:type", portProtocol->getPayloadType());
-
-        if (!portProtocol->getPayloadExtension().isEmpty())
-        {
-            writer.writeStartElement("ipxact:extension");
-         
-            if (portProtocol->hasMandatoryPayloadExtension())
-            {
-                writer.writeAttribute("mandatory", "true");
-            }
-            writer.writeCharacters(portProtocol->getPayloadExtension());
-
-            writer.writeEndElement();
-        }
-
-        writeVendorExtensions(writer, portProtocol);
-
-        writer.writeEndElement();
     }
 }
 

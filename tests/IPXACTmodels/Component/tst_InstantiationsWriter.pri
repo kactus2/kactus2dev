@@ -8,7 +8,6 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 
 HEADERS += ../../../IPXACTmodels/common/Array.h \
-    ../../../IPXACTmodels/common/Assertion.h \
     ../../../IPXACTmodels/common/BuildModel.h \
     ../../../IPXACTmodels/Component/ComponentInstantiation.h \
     ../../../IPXACTmodels/common/ConfigurableElementValue.h \
@@ -32,7 +31,6 @@ HEADERS += ../../../IPXACTmodels/common/Array.h \
     ../../../IPXACTmodels/common/ParameterWriter.h \
     ../../../IPXACTmodels/common/FileTypes.h
 SOURCES += ../../../IPXACTmodels/common/Array.cpp \
-    ../../../IPXACTmodels/common/Assertion.cpp \
     ../../../IPXACTmodels/common/BuildModel.cpp \
     ../../../IPXACTmodels/common/CommonItemsWriter.cpp \
     ../../../IPXACTmodels/Component/ComponentInstantiation.cpp \

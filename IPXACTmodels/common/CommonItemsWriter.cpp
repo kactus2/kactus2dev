@@ -80,31 +80,6 @@ void CommonItemsWriter::writeParameters(QXmlStreamWriter& writer,
 }
 
 //-----------------------------------------------------------------------------
-// Function: CommonItemsWriter::writeAssertions()
-//-----------------------------------------------------------------------------
-void CommonItemsWriter::writeAssertions(QXmlStreamWriter& writer,
-    QSharedPointer<QList<QSharedPointer<Assertion> > > assertions) const
-{
-    if (!assertions->isEmpty())
-    {
-        writer.writeStartElement("ipxact:assertions");
-
-        NameGroupWriter nameGroupWriter;
-        foreach (QSharedPointer<Assertion> assertion, *assertions)
-        {
-            writer.writeStartElement("ipxact:assertion");
-
-            nameGroupWriter.writeNameGroup(writer, assertion);
-            writer.writeTextElement("ipxact:assert", assertion->getAssert());
-
-            writer.writeEndElement(); // ipxact:assertion
-        }
-
-        writer.writeEndElement(); // ipxact:assertions
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: CommonItemsWriter::writeVendorExtensions()
 //-----------------------------------------------------------------------------
 void CommonItemsWriter::writeVendorExtensions(QXmlStreamWriter& writer, QSharedPointer<Extendable> element) const

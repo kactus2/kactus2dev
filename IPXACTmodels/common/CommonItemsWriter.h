@@ -69,15 +69,6 @@ protected:
         const;
 
     /*!
-     *  Writes the assertions of a given document into XML.
-     *
-     *      @param [in] writer      The used XML writer.
-     *      @param [in] assertions  A list of the assertions to be written.
-     */
-    void writeAssertions(QXmlStreamWriter& writer, QSharedPointer<QList<QSharedPointer<Assertion> > > assertions)
-        const;
-
-    /*!
      *  Writes the vendor extensions of a given element into XML.
      *
      *      @param [in] writer      The XML writer to use.

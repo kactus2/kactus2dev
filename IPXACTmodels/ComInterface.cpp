@@ -21,7 +21,7 @@ ComInterface::ComInterface()
     : nameGroup_(),
       comType_(), 
       transferType_(), 
-      dir_(General::INOUT),
+      dir_(DirectionTypes::INOUT),
       propertyValues_(),
       comImplementation_(),
       defaultPos_()
@@ -49,7 +49,7 @@ ComInterface::ComInterface(QDomNode& node)
     : nameGroup_(), 
       comType_(),
       transferType_(), 
-      dir_(General::INOUT),
+      dir_(DirectionTypes::INOUT),
       propertyValues_(),
       comImplementation_(),
       defaultPos_()
@@ -73,7 +73,7 @@ ComInterface::ComInterface(QDomNode& node)
         }
         else if (childNode.nodeName() == "kactus2:comDirection")
         {
-            dir_ = General::str2Direction(childNode.childNodes().at(0).nodeValue(), General::INOUT);
+            dir_ = DirectionTypes::str2Direction(childNode.childNodes().at(0).nodeValue(), DirectionTypes::INOUT);
         }
         else if (childNode.nodeName() == "kactus2:propertyValues")
         {
@@ -116,7 +116,7 @@ void ComInterface::write(QXmlStreamWriter& writer) const
     comType_.writeAsAttributes(writer);
 
     writer.writeTextElement("kactus2:transferType", transferType_);
-    writer.writeTextElement("kactus2:comDirection", General::direction2Str(dir_));
+    writer.writeTextElement("kactus2:comDirection", DirectionTypes::direction2Str(dir_));
 
     writer.writeStartElement("kactus2:propertyValues");
 
@@ -273,7 +273,7 @@ void ComInterface::setTransferType(QString const& transferType)
 //-----------------------------------------------------------------------------
 // Function: ComInterface::setDirection()
 //-----------------------------------------------------------------------------
-void ComInterface::setDirection(General::Direction dir)
+void ComInterface::setDirection(DirectionTypes::Direction dir)
 {
     dir_ = dir;
 }
@@ -329,7 +329,7 @@ QString const& ComInterface::getTransferType() const
 //-----------------------------------------------------------------------------
 // Function: ComInterface::getDirection()
 //-----------------------------------------------------------------------------
-General::Direction ComInterface::getDirection() const
+DirectionTypes::Direction ComInterface::getDirection() const
 {
     return dir_;
 }

@@ -349,63 +349,6 @@ QString General::presence2Str(General::Presence presence) {
 	}
 }
 
-General::Direction General::str2Direction(QString str,
-		General::Direction defaultValue) {
-
-	// convert QString into Direction
-	if (str == QString("in")) {
-		return General::IN;
-	}
-	else if (str == QString("out")) {
-		return General::OUT;
-	}
-	else if (str == QString("inout")) {
-		return General::INOUT;
-	}
-	else if (str == QString("phantom")) {
-		return General::DIRECTION_PHANTOM;
-	}
-	else {
-		return defaultValue;
-	}
-}
-
-QString General::direction2Str(const General::Direction direction) {
-	switch (direction) {
-	case General::IN: {
-		return QString("in");
-	}
-	case General::OUT: {
-		return QString("out");
-	}
-	case General::INOUT: {
-		return QString("inout");
-	}
-	case General::DIRECTION_PHANTOM: {
-		return QString("phantom");
-	}
-	// if DIRECTION_INVALID
-	default: {
-		return QString();
-	}
-	}
-}
-
-General::Direction General::convert2Mirrored(const Direction originalDirection ) {
-	switch (originalDirection) {
-		case General::IN: 
-			return General::OUT;
-		case General::OUT:
-			return General::IN;
-		case General::INOUT:
-			return General::INOUT;
-		case General::DIRECTION_PHANTOM:
-			return General::DIRECTION_PHANTOM;
-		default:
-			return General::DIRECTION_INVALID;
-	}
-}
-
 General::Access General::str2Access(QString str,
 		General::Access defaultValue) {
 	if (str == QString("read-write")) {

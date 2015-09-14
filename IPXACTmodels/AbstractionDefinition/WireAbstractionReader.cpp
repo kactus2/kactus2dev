@@ -134,8 +134,8 @@ QSharedPointer<WirePort> WireAbstractionReader::parseWirePort(QDomNode const& wi
     wirePort->setWidth(wirePortNode.firstChildElement("ipxact:width").firstChild().nodeValue());
 
     QDomNode directionNode = wirePortNode.firstChildElement("ipxact:direction");
-    wirePort->setDirection(General::str2Direction(directionNode.firstChild().nodeValue(),
-        General::DIRECTION_INVALID));
+    wirePort->setDirection(DirectionTypes::str2Direction(directionNode.firstChild().nodeValue(),
+        DirectionTypes::DIRECTION_INVALID));
 
     parseConstraints(wirePortNode, wirePort);
 
