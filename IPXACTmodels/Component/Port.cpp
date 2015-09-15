@@ -73,7 +73,8 @@ vendorExtensions_()
 //-----------------------------------------------------------------------------
 // Function: Port::Port()
 //-----------------------------------------------------------------------------
-Port::Port(QString const& portName, DirectionTypes::Direction direction) : 
+Port::Port(QString const& portName /* = QString() */,
+    DirectionTypes::Direction direction /* = DirectionTypes::IN */) :
 NameGroup(portName),
 Extendable(),
 isPresent_(),

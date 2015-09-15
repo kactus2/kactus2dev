@@ -74,16 +74,6 @@ protected:
         (QDomNode const& itemNode) const;
 
     /*!
-     *  Parses and creates assertions from XML.
-     *
-     *      @param [in] itemNode    XML description of the item containing the assertions.
-     *
-     *      @return A list of new assertions.
-     */
-    QSharedPointer<QList<QSharedPointer<Assertion> > > parseAndCreateAssertions
-        (QDomNode const& itemNode) const;
-
-    /*!
      *  Parses the vendor extensions from XML to a document.
      *
      *      @param [in] itemNode    The XML description of the document.

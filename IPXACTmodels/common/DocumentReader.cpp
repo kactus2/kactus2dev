@@ -87,11 +87,25 @@ void DocumentReader::parseParameters(QDomNode const& documentNode, QSharedPointe
 //-----------------------------------------------------------------------------
 void DocumentReader::parseAssertions(QDomNode const& documentNode, QSharedPointer<Document> document) const
 {
-    QSharedPointer<QList<QSharedPointer<Assertion> > > newAssertions = parseAndCreateAssertions(documentNode);
+    QDomNodeList assertionNodeList = documentNode.firstChildElement("ipxact:assertions").childNodes();
 
-    foreach (QSharedPointer<Assertion> assertion, *newAssertions)
+    if (!assertionNodeList.isEmpty())
     {
-        document->getAssertions()->append(assertion);
+        int assertionCount = assertionNodeList.count();
+        for (int i = 0; i < assertionCount; ++i)
+        {
+            QDomNode assertionNode = assertionNodeList.at(i);
+
+            QSharedPointer<Assertion> newAssertion (new Assertion());
+            newAssertion->setName(assertionNode.firstChildElement("ipxact:name").firstChild().nodeValue());
+            newAssertion->setDisplayName(assertionNode.firstChildElement("ipxact:displayName").firstChild().
+                nodeValue());
+            newAssertion->setDescription(assertionNode.firstChildElement("ipxact:description").firstChild().
+                nodeValue());
+            newAssertion->setAssert(assertionNode.firstChildElement("ipxact:assert").firstChild().nodeValue());
+
+            document->getAssertions()->append(newAssertion);
+        }
     }
 }
 

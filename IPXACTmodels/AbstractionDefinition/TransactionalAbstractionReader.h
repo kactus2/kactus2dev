@@ -84,14 +84,6 @@ private:
      *      @param [in/out] transactionalPort   The transactional port to insert the protocol into.
      */
     void parseProtocol(QDomNode const& portNode, QSharedPointer<TransactionalPort> transactionalPort) const;
-    
-    /*!
-     *  Reads the vendor extensions for protocol.
-     *
-     *      @param [in]     payloadNode     The XML description of the payload.
-     *      @param [in/out] protocol        The protocol to insert the vendor extensions into.
-     */
-    void parseVendorExtensions(QDomNode const& payloadNode, QSharedPointer<Protocol> protocol) const;
 
     /*!
      *  Reads the master port from XML to a transactional.

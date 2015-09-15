@@ -42,7 +42,7 @@ public:
 	 *      @param [in] portName    Name of the port.
 	 *      @param [in] direction   Direction of the port.
 	 */
-	Port(QString const& portName, DirectionTypes::Direction direction);
+	Port(QString const& portName = QString(), DirectionTypes::Direction direction = DirectionTypes::IN);
 
     /*!
      *  Copy constructor.

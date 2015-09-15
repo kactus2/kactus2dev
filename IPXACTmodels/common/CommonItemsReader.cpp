@@ -91,35 +91,6 @@ QSharedPointer<QList<QSharedPointer<Parameter> > > CommonItemsReader::parseAndCr
 }
 
 //-----------------------------------------------------------------------------
-// Function: CommonItemsReader::parseAndCreateAssertions()
-//-----------------------------------------------------------------------------
-QSharedPointer<QList<QSharedPointer<Assertion> > > CommonItemsReader::parseAndCreateAssertions(
-    QDomNode const& itemNode) const
-{
-    QDomNodeList assertionNodeList = itemNode.firstChildElement("ipxact:assertions").childNodes();
-    
-    QSharedPointer<QList<QSharedPointer<Assertion> > > newAssertions(new QList<QSharedPointer<Assertion> > ()); 
-
-    if (!assertionNodeList.isEmpty())
-    {
-        int assertionCount = assertionNodeList.count();
-        for (int i = 0; i < assertionCount; i++)
-        {
-            QDomNode assertionNode = assertionNodeList.at(i);
-
-            QSharedPointer<Assertion> assertion(new Assertion());
-            assertion->setName(assertionNode.firstChildElement("ipxact:name").firstChild().nodeValue());
-            assertion->setDisplayName(assertionNode.firstChildElement("ipxact:displayName").firstChild().nodeValue());
-            assertion->setDescription(assertionNode.firstChildElement("ipxact:description").firstChild().nodeValue());
-            assertion->setAssert(assertionNode.firstChildElement("ipxact:assert").firstChild().nodeValue());
-
-            newAssertions->append(assertion);
-        }
-    }
-    return newAssertions;
-}
-
-//-----------------------------------------------------------------------------
 // Function: CommonItemsReader::parseVendorExtensions()
 //-----------------------------------------------------------------------------
 void CommonItemsReader::parseVendorExtensions(QDomNode const& itemNode, QSharedPointer<Extendable> element)

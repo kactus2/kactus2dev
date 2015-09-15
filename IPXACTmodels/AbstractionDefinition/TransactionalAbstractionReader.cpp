@@ -14,6 +14,7 @@
 #include <IPXACTmodels/GenericVendorExtension.h>
 
 #include <IPXACTmodels/common/Protocol.h>
+#include <IPXACTmodels/common/ProtocolReader.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
 
@@ -134,41 +135,10 @@ void TransactionalAbstractionReader::parseProtocol(QDomNode const& portNode,
 
     if (!protocolNode.isNull())
     {
-        QSharedPointer<Protocol> protocol(new Protocol());
-
-        protocol->setProtocolType(protocolNode.firstChildElement("ipxact:protocolType").firstChild().nodeValue());
-
-        QDomNode payloadNode = protocolNode.firstChildElement("ipxact:payload");
-
-        protocol->setPayloadName(payloadNode.firstChildElement("ipxact:name").firstChild().nodeValue());
-        protocol->setPayloadType(payloadNode.firstChildElement("ipxact:type").firstChild().nodeValue());
-
-        bool mandatoryExtension = payloadNode.firstChildElement("ipxact:extension").attribute("mandatory") == "true";
-        protocol->setPayloadExtension(payloadNode.firstChildElement("ipxact:extension").firstChild().nodeValue(),
-            mandatoryExtension);
-
-        parseVendorExtensions(payloadNode, protocol);
-
-        transactionalPort->setProtocol(protocol);
+        ProtocolReader protocolReader;
+        transactionalPort->setProtocol(protocolReader.createProtocolFrom(protocolNode));
     }
 }
-
-//-----------------------------------------------------------------------------
-// Function: TransactionalAbstractionReader::parseVendorExtensions()
-//-----------------------------------------------------------------------------
-void TransactionalAbstractionReader::parseVendorExtensions(QDomNode const& payloadNode, 
-    QSharedPointer<Protocol> protocol) const
-{
-    QDomNodeList extensionNodes = payloadNode.firstChildElement("ipxact:vendorExtensions").childNodes();
-
-    int extensionCount = extensionNodes.count();
-    for (int i = 0; i < extensionCount; i++)
-    {
-        QSharedPointer<VendorExtension> extension(new GenericVendorExtension(extensionNodes.at(i)));
-        protocol->getVendorExtensions()->append(extension);
-    }
-}
-
 
 //-----------------------------------------------------------------------------
 // Function: TransactionalAbstractionReader::parseMaster()
