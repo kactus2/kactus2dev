@@ -8,15 +8,11 @@
 #define CPU_H_
 
 #include <IPXACTmodels/common/NameGroup.h>
-
-
-#include "ipxactmodels_global.h"
+#include <IPXACTmodels/common/Extendable.h>
 
 #include <QString>
 #include <QStringList>
-#include <QDomNode>
 #include <QSharedPointer>
-#include <QXmlStreamWriter>
 
 class Choice;
 class Parameter;
@@ -27,24 +23,13 @@ class VendorExtension;
  * Describes a containing component with a programmable core that has some
  * sized address space.
  */
-class IPXACTMODELS_EXPORT Cpu : public NameGroup {
+class IPXACTMODELS_EXPORT Cpu : public NameGroup, public Extendable {
 
 public:
     /*!
      *  Default constructor.
      */
     Cpu();
-
-	/*! \brief The constructor
-	 *
-	 * \param cpuNode A reference to a QDomNode to parse the information
-	 * from.
-	 *
-	 * Exception guarantee: basic
-	 * \exception Parse_error Occurs when a mandatory element is missing in
-	 * this class or one of it's member classes.
-	 */
-	Cpu(QDomNode &cpuNode);
 
 	//! \brief Copy constructor
 	Cpu(const Cpu &other);
@@ -57,15 +42,19 @@ public:
 	 */
 	~Cpu();
 
-	/*! \brief Write the contents of the class using the writer.
-	*
-	* Uses the specified writer to write the class contents into file as valid
-	* IP-Xact.
-	*
-	* \param writer A reference to a QXmlStreamWrite instance that is used to
-	* write the document into file.
-	*/
-	void write(QXmlStreamWriter& writer);
+    /*!
+     *  Gets the presence.
+     *
+     *      @return The presence value.
+     */
+    QString getIsPresent() const;
+
+    /*!
+     *  Set the presence.
+     *
+     *      @param [in] newIsPresent    The new presence value.
+     */
+    void setIsPresent(QString const& newIsPresent);
 
 	/*! \brief Check if the cpu is in a valid state.
 	 *
@@ -126,6 +115,9 @@ public:
 	void setParameters(QList<QSharedPointer<Parameter> > &parameters);
 
 private:
+
+	//! Presence of the view.
+	QString isPresent_;
 
 	/*! \brief References a name of an address space within component.
 	 * MANDATORY spirit:addressSpaceRef

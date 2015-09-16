@@ -8,7 +8,6 @@
 
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/common/ParameterWriter.h>
-#include "GenericVendorExtension.h"
 
 #include <IPXACTmodels/common/ParameterReader.h>
 
@@ -19,7 +18,6 @@
 #include <QObject>
 #include <QSharedPointer>
 #include <QXmlStreamWriter>
-#include "XmlUtils.h"
 
 //-----------------------------------------------------------------------------
 // Function: Cpu()
@@ -30,57 +28,6 @@ addressSpaceRefs_(),
 parameters_(),
 vendorExtensions_()
 {
-}
-
-Cpu::Cpu(QDomNode &cpuNode): 
-NameGroup(), 
-addressSpaceRefs_(),
-parameters_(),
-vendorExtensions_()
- {
-
-	for (int i = 0; i < cpuNode.childNodes().count(); ++i) {
-		QDomNode tempNode = cpuNode.childNodes().at(i);
-
-		// don't try to parse comments
-		if (tempNode.isComment()) {
-			continue;
-		}
-
-		if (tempNode.nodeName() == QString("spirit:addressSpaceRef")) {
-
-			// get the spirit:addressSpaceRef attribute
-			QDomNamedNodeMap attributeMap = tempNode.attributes();
-			QString str = attributeMap.namedItem(QString(
-					"spirit:addressSpaceRef")).childNodes().at(0).nodeValue();
-
-			// all was fine and attribute can be added
-			addressSpaceRefs_.append(str);
-		}
-		else if (tempNode.nodeName() == QString("spirit:parameters"))
-        {
-            ParameterReader reader;
-			// go through all parameters
-			for (int j = 0; j < tempNode.childNodes().count(); ++j) {
-
-				QDomNode parameterNode = tempNode.childNodes().at(j);
-
-				// dont parse comments
-				if (!parameterNode.isComment()) {
-					parameters_.append(QSharedPointer<Parameter>(reader.createParameterFrom(parameterNode)));
-				}
-			}
-		}
-        else if (tempNode.nodeName() == QString("spirit:vendorExtensions")) 
-        {
-            int extensionCount = tempNode.childNodes().count();
-            for (int j = 0; j < extensionCount; ++j) {
-                QDomNode extensionNode = tempNode.childNodes().at(j);
-
-                vendorExtensions_.append(QSharedPointer<VendorExtension>(new GenericVendorExtension(extensionNode)));
-            }
-        }
-	}
 }
 
 Cpu::Cpu( const Cpu &other ):
@@ -118,52 +65,20 @@ Cpu::~Cpu() {
 	parameters_.clear();
 }
 
-void Cpu::write(QXmlStreamWriter& writer) {
-	writer.writeStartElement("spirit:cpu");
+//-----------------------------------------------------------------------------
+// Function: View::getIsPresent()
+//-----------------------------------------------------------------------------
+QString Cpu::getIsPresent() const
+{
+	return isPresent_;
+}
 
-	writer.writeTextElement("spirit:name", name());
-
-	if (!displayName().isEmpty()) {
-		writer.writeTextElement("spirit:displayName", displayName());
-	}
-
-	if (!description().isEmpty()) {
-		writer.writeTextElement("spirit:description", description());
-	}
-
-    for (int i = 0; i < addressSpaceRefs_.size(); ++i) {
-
-        // the IP-Xact specification defines this to be empty element with
-        // mandatory attribute of same name. Maybe this will change in
-        // future.
-        writer.writeEmptyElement("spirit:addressSpaceRef");
-        writer.writeAttribute("spirit:addressSpaceRef",
-            addressSpaceRefs_.at(i));
-    }
-
-    if (parameters_.size() != 0)
-    {
-        writer.writeStartElement("ipxact:parameters");
-
-        ParameterWriter parameterWriter;
-        // write each parameter
-        for (int i = 0; i < parameters_.size(); ++i)
-        {
-            parameterWriter.writeParameter(writer, parameters_.at(i));
-        }
-
-        writer.writeEndElement(); // ipxact:parameters
-    }
-
-    if (!vendorExtensions_.isEmpty())
-    {
-        writer.writeStartElement("spirit:vendorExtensions");
-        XmlUtils::writeVendorExtensions(writer, vendorExtensions_);
-        writer.writeEndElement(); // spirit:vendorExtensions
-    }
-
-	writer.writeEndElement(); // spirit:cpu
-	return;
+//-----------------------------------------------------------------------------
+// Function: View::setIsPresent()
+//-----------------------------------------------------------------------------
+void Cpu::setIsPresent(QString const& newIsPresent)
+{
+	isPresent_ = newIsPresent;
 }
 
 bool Cpu::isValid(const QStringList& addrSpaceNames,
