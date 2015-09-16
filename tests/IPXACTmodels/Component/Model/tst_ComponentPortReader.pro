@@ -1,17 +1,17 @@
 #-----------------------------------------------------------------------------
-# File: tst_ComponenPortWriter.pro
+# File: tst_ComponentPortReader.pro
 #-----------------------------------------------------------------------------
 # Project: Kactus 2
 # Author: Mikko Teuho
-# Date: 09.09.2015
+# Date: 14.09.2015
 #
 # Description:
-# Qt project file template for running unit tests for ComponentPortWriter.
+# Qt project file template for running unit tests for component port reader.
 #-----------------------------------------------------------------------------
 
 TEMPLATE = app
 
-TARGET = tst_ComponentPortWriter
+TARGET = tst_ComponentPortReader
 
 QT += core xml gui widgets testlib
 CONFIG += testcase console
@@ -28,14 +28,14 @@ else:unix {
 }
 
 INCLUDEPATH += $$DESTDIR
-INCLUDEPATH += ../../../
+INCLUDEPATH += ../../../../
 
 DEPENDPATH += .
-DEPENDPATH += ../../../
+DEPENDPATH += ../../../../
 
 OBJECTS_DIR += $$DESTDIR
 
 MOC_DIR += ./generatedFiles
 UI_DIR += ./generatedFiles
 RCC_DIR += ./generatedFiles
-include(tst_ComponentPortWriter.pri)
+include(tst_ComponentPortReader.pri)

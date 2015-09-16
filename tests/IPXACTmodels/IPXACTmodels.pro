@@ -24,9 +24,4 @@ SUBDIRS += validators\tst_ParameterValidator.pro \
 		   DesignConfiguration\tst_DesignConfigurationReader.pro \
 		   Design\tst_DesignWriter.pro \
 		   Design\tst_DesignReader.pro \
-		   Component\tst_ViewWriter.pro \
-		   Component\tst_ViewReader.pro \
-		   Component\tst_InstantiationsWriter.pro \
-		   Component\tst_InstantiationsReader.pro \
-		   Component\tst_ComponentPortWriter.pro \
-		   Component\tst_ComponentPortReader.pro
+		   Component\Component.pro

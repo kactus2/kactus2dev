@@ -19,59 +19,6 @@
 #include <QObject>
 #include <QSharedPointer>
 
-/*
-Wire::Wire(QDomNode &wireNode): direction_(General::DIRECTION_INVALID), allLogicalDirectionsAllowed_(false),
-    vector_(), wireTypeDefs_(), defaultDriverValue_(), defaultValueAttributes_()
-{
-	// get attribute spirit:allLogicalDirectionsAllowed
-	QDomNamedNodeMap attributeMap = wireNode.attributes();
-	QString allLogicalDirectionsAllowed = attributeMap.namedItem(
-			QString("spirit:allLogicalDirectionsAllowed")).nodeValue();
-	allLogicalDirectionsAllowed_ =
-			General::str2Bool(allLogicalDirectionsAllowed, false);
-
-	// go through the child nodes of spirit:wire
-	for (int i = 0; i < wireNode.childNodes().count(); ++i) {
-		QDomNode tempNode = wireNode.childNodes().at(i);
-
-		if (tempNode.nodeName() ==	QString("spirit:direction")) {
-			direction_ = General::str2Direction(
-				XmlUtils::removeWhiteSpace(tempNode.childNodes().at(0).
-					nodeValue()),
-					General::DIRECTION_INVALID);
-		}
-
-		// get spirit:vector node and parse left and right values
-		else if (tempNode.nodeName() ==	QString("spirit:vector")) {
-			vector_ = QSharedPointer<Vector>(
-					new Vector("", ""));
-		}
-
-		// get spirit:wireTypeDefs
-		else if (tempNode.nodeName() ==	QString("spirit:wireTypeDefs")) {
-			for (int j = 0;	j < tempNode.childNodes().count(); ++j) {
-
-				QDomNode wireTypeNode =	tempNode.childNodes().at(j);
-				wireTypeDefs_.append(QSharedPointer<WireTypeDef>(
-						new WireTypeDef(wireTypeNode)));
-			}
-		}
-
-		// get spirit:driver
-		else if (tempNode.nodeName() == QString("spirit:driver")) {
-			for (int j = 0; j < tempNode.childNodes().count(); ++j) {
-				QDomNode driverNode = tempNode.childNodes().at(j);
-				if (driverNode.nodeName() == QString("spirit:defaultValue")) {
-					defaultDriverValue_ =
-							driverNode.childNodes().at(0).nodeValue();
-
-					defaultValueAttributes_ = XmlUtils::parseAttributes(driverNode);
-				}
-			}
-		}
-	}
-}*/
-
 //-----------------------------------------------------------------------------
 // Function: Wire::Wire()
 //-----------------------------------------------------------------------------

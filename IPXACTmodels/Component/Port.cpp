@@ -17,59 +17,6 @@
 #include <IPXACTmodels/kactusExtensions/Kactus2Position.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Value.h>
 
-/*
-// the constructor
-Port::Port(QDomNode &portNode): 
-NameGroup(), 
-portType_(General::WIRE),
-wire_(),
-transactional_(),
-portAccessHandle_(), 
-portAccessType_(),
-adHocVisible_(),
-defaultPos_(),
-configurableArray_(),
-vendorExtensions_()
-{
-    createAdHocVisibleExtension();
-    createPositionExtension();
-
-	for (int i = 0; i < portNode.childNodes().count(); ++i) {
-		QDomNode tempNode = portNode.childNodes().at(i);
-
-		if (tempNode.nodeName() == QString("spirit:wire")) 
-        {
-            portType_ = General::WIRE;
-			wire_ = QSharedPointer<Wire>(new Wire(tempNode));
-		}
-		else if (tempNode.nodeName() == QString("spirit:transactional")) 
-        {
-            portType_ = General::TRANSACTIONAL;
-			transactional_ = QSharedPointer<Transactional>(new Transactional(tempNode));
-		}
-
-		// get the portAccessHandle and portAccessType elements
-		else if (tempNode.nodeName() == QString("spirit:access")) 
-        {
-			for (int j = 0; j < tempNode.childNodes().count(); ++j) 
-            {
-                QDomNode accessNode = tempNode.childNodes().at(j);
-				if (accessNode.nodeName() == QString("spirit:portAccessHandle")) {
-					portAccessHandle_ = accessNode.childNodes().at(0).nodeValue();
-				}
-
-				else if (accessNode.nodeName() == QString("spirit:portAccessType")) {
-					portAccessType_ = accessNode.childNodes().at(0).nodeValue();
-				}
-			}
-		}
-        else if (tempNode.nodeName() == QString("spirit:vendorExtensions"))
-        {
-            parseVendorExtensions(tempNode);
-        }
-    }
-}*/
-
 //-----------------------------------------------------------------------------
 // Function: Port::Port()
 //-----------------------------------------------------------------------------

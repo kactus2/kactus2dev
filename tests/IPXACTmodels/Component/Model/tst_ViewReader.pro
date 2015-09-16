@@ -1,17 +1,17 @@
 #-----------------------------------------------------------------------------
-# File: tst_InstantiationsReader.pro
+# File: ViewReader.pro
 #-----------------------------------------------------------------------------
 # Project: Kactus 2
 # Author: Mikko Teuho
-# Date: 07.09.2015
+# Date: 04.09.2015
 #
 # Description:
-# Qt project file template for running unit tests for InstantiationReader.
+# Qt project file template for running unit tests for ViewReader.
 #-----------------------------------------------------------------------------
 
 TEMPLATE = app
 
-TARGET = tst_InstantiationsReader
+TARGET = tst_ViewReader
 
 QT += core xml gui widgets testlib
 CONFIG += testcase console
@@ -28,14 +28,14 @@ else:unix {
 }
 
 INCLUDEPATH += $$DESTDIR
-INCLUDEPATH += ../../../
+INCLUDEPATH += ../../../../
 
 DEPENDPATH += .
-DEPENDPATH += ../../../
+DEPENDPATH += ../../../../
 
 OBJECTS_DIR += $$DESTDIR
 
 MOC_DIR += ./generatedFiles
 UI_DIR += ./generatedFiles
 RCC_DIR += ./generatedFiles
-include(tst_InstantiationsReader.pri)
+include(tst_ViewReader.pri)
