@@ -6,7 +6,7 @@
 // Date: 05.08.2015
 //
 // Description:
-// <Short description of the class/file contents>
+// Kactus2 vendor extension for a boolean value, that can contain an unspecified value.
 //-----------------------------------------------------------------------------
 
 #ifndef BOOLEANVALUE_H
@@ -29,14 +29,34 @@ public:
 	//! The destructor.
 	~BooleanValue();
 
+    //! Assignment operator.
     BooleanValue& operator=(BooleanValue const& other);
 
+    /*!
+     *  Set a boolean value.
+     *
+     *      @param [in] value   The new boolean value.
+     */
     void setValue(bool value);
 
+    /*!
+     *  Get the contained value as a boolean value.
+     *
+     *      @return True for a BOOL_TRUE, otherwise false. 
+     */
     bool toBool() const;
 
-    QString toString();
+    /*!
+     *  Gets the value as a string.
+     *
+     *      @return String of the given value.
+     */
+    QString toString() const;
 
+    /*!
+     *  Set the value to unspecified.
+     */
+    void setUnspecified();
 
 private:
 
@@ -47,6 +67,7 @@ private:
         BOOL_UNSPECIFIED
     };
 
+    //! The containing value.
     Boolean value_;
 };
 

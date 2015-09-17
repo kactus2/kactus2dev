@@ -81,7 +81,7 @@ bool BooleanValue::toBool() const
 //-----------------------------------------------------------------------------
 // Function: BooleanValue::toString()
 //-----------------------------------------------------------------------------
-QString BooleanValue::toString()
+QString BooleanValue::toString() const
 {
     if (value_ == BOOL_TRUE)
     {
@@ -97,3 +97,10 @@ QString BooleanValue::toString()
     }    
 }
 
+//-----------------------------------------------------------------------------
+// Function: BooleanValue::setUnspecified()
+//-----------------------------------------------------------------------------
+void BooleanValue::setUnspecified()
+{
+    value_ = BOOL_UNSPECIFIED;
+}
