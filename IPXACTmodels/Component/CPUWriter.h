@@ -24,7 +24,7 @@
 //-----------------------------------------------------------------------------
 //! Writer class for IP-XACT CPU element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT CPUWriter : public QObject, public CommonItemsWriter
+class IPXACTMODELS_EXPORT CPUWriter : public CommonItemsWriter
 {
     Q_OBJECT
 

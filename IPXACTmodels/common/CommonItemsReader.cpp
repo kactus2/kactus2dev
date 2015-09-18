@@ -162,3 +162,18 @@ QSharedPointer<ConfigurableElementValue> CommonItemsReader::parseConfigurableEle
 
     return newConfigurableElementValue;
 }
+
+//-----------------------------------------------------------------------------
+// Function: CommonItemsReader::parseIsPresent()
+//-----------------------------------------------------------------------------
+QString CommonItemsReader::parseIsPresent(QDomElement const& isPresentElement) const
+{
+    if (!isPresentElement.isNull())
+    {
+        return isPresentElement.firstChild().nodeValue();
+    }
+    else
+    {
+        return QString();
+    }
+}

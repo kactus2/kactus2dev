@@ -11,22 +11,6 @@
 
 #include "BuildCommand.h"
 
-/*
-BuildCommand::BuildCommand(QDomNode &buildCommandNode):
-BuildModel(buildCommandNode), targetName_(QString()),
-targetNameAttributes_() {
-
-	for (int i = 0; i < buildCommandNode.childNodes().count(); ++i) {
-		QDomNode tempNode = buildCommandNode.childNodes().at(i);
-
-		if (tempNode.nodeName() == QString("spirit:targetName")) {
-			targetName_ = tempNode.childNodes().at(0).nodeValue();
-			targetNameAttributes_ = XmlUtils::parseAttributes(tempNode);
-		}
-	}
-	return;
-}*/
-
 //-----------------------------------------------------------------------------
 // Function: BuildCommand::BuildCommand()
 //-----------------------------------------------------------------------------

@@ -102,6 +102,15 @@ protected:
     QSharedPointer<ConfigurableElementValue> parseConfigurableElementValue(
         QDomNode const& configurableElementNode) const;
 
+    /*!
+     *  Parses the isPresent element.
+     *
+     *      @param [in] isPresentElement    The is present element.
+     *
+     *      @return A QString containing the isPresent element for the item.
+     */
+    QString parseIsPresent(QDomElement const& isPresentElement) const;
+
 private:
 
 	// Disable copying.

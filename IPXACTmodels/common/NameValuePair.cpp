@@ -22,27 +22,6 @@ value_(value)
 
 }
 
-/*
-File::Define::Define( QDomNode& defineNode ):
-nameGroup_(), value_(), vendorExtensions_() {
-
-	for (int i = 0; i < defineNode.childNodes().count(); ++i) {
-		QDomNode tempNode = defineNode.childNodes().at(i);
-
-		if (tempNode.nodeName() == QString("spirit:value")) {
-			value_ = tempNode.childNodes().at(0).nodeValue();
-        }
-        else if (tempNode.nodeName() == QString("spirit:vendorExtensions")) 
-        {
-            int extensionCount = tempNode.childNodes().count();
-            for (int j = 0; j < extensionCount; ++j) {
-                QDomNode extensionNode = tempNode.childNodes().at(j);
-                vendorExtensions_.append(QSharedPointer<VendorExtension>(new GenericVendorExtension(extensionNode)));
-            }
-        }
-	}
-}*/
-
 //-----------------------------------------------------------------------------
 // Function: NameValuePair::NameValuePair()
 //-----------------------------------------------------------------------------

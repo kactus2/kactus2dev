@@ -22,7 +22,7 @@
 //-----------------------------------------------------------------------------
 //! Reader class for IP-XACT CPU element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT CPUReader : public QObject, public CommonItemsReader
+class IPXACTMODELS_EXPORT CPUReader : public CommonItemsReader
 {
     Q_OBJECT
 
