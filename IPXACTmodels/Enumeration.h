@@ -14,9 +14,7 @@
 
 #include "ipxactmodels_global.h"
 
-#include <QDomNode>
 #include <QString>
-#include <QXmlStreamWriter>
 
 //-----------------------------------------------------------------------------
 //! Enumeration matches the spirit:enumeration element in IP-XACT.
@@ -79,13 +77,6 @@ public:
      *      @return The enumeration help text.
      */
     QString getHelp() const;
-
-    /*!
-     *  Writes the element to XML.
-     *
-     *      @param [in] writer   The writer to use for writing.
-     */
-    void write(QXmlStreamWriter& writer) const;
 
 private:
 

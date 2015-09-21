@@ -43,28 +43,6 @@ Enumeration::~Enumeration()
 }
 
 //-----------------------------------------------------------------------------
-// Function: Enumeration::write()
-//-----------------------------------------------------------------------------
-void Enumeration::write(QXmlStreamWriter& writer) const
-{
-    writer.writeStartElement("ipxact:enumeration");
-
-    if (!text_.isEmpty())
-    {
-        writer.writeAttribute("text", text_);
-    }
-
-    if (!help_.isEmpty())
-    {
-        writer.writeAttribute("help", help_);
-    }
-
-    writer.writeCharacters(value_);
-
-    writer.writeEndElement(); // spirit:enumeration
-}
-
-//-----------------------------------------------------------------------------
 // Function: Enumeration::setValue()
 //-----------------------------------------------------------------------------
 void Enumeration::setValue(QString const& value)

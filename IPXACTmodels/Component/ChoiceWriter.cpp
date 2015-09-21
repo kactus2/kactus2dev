@@ -43,7 +43,23 @@ void ChoiceWriter::writeChoice(QXmlStreamWriter& writer, QSharedPointer<Choice> 
 
 	for ( int i = 0; i < enumrs->size(); ++i )
 	{
-		enumrs->at(i)->write(writer);
+		QSharedPointer<Enumeration> enumr = enumrs->at(i);
+
+		writer.writeStartElement("ipxact:enumeration");
+
+		if (!enumr->getText().isEmpty())
+		{
+			writer.writeAttribute("text", enumr->getText());
+		}
+
+		if (!enumr->getHelp().isEmpty())
+		{
+			writer.writeAttribute("help", enumr->getHelp());
+		}
+
+		writer.writeCharacters(enumr->getValue());
+
+		writer.writeEndElement();
 	}
 
 	writer.writeEndElement();
