@@ -66,7 +66,7 @@ Cpu::~Cpu() {
 }
 
 //-----------------------------------------------------------------------------
-// Function: View::getIsPresent()
+// Function: Cpu::getIsPresent()
 //-----------------------------------------------------------------------------
 QString Cpu::getIsPresent() const
 {
@@ -74,7 +74,7 @@ QString Cpu::getIsPresent() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: View::setIsPresent()
+// Function: Cpu::setIsPresent()
 //-----------------------------------------------------------------------------
 void Cpu::setIsPresent(QString const& newIsPresent)
 {

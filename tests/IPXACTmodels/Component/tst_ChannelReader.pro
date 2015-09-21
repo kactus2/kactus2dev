@@ -1,12 +1,12 @@
 #-----------------------------------------------------------------------------
-# File: tst_CPUReader.pro
+# File: tst_ChannelReader.pro
 #-----------------------------------------------------------------------------
 # Project: Kactus 2
 # Author: Janne Virtanen
-# Date: 15.09.2015
+# Date: 21.09.2015
 #
 # Description:
-# Qt project file template for running unit tests for CPU reader.
+# Qt project file template for running unit tests for Channel reader.
 #-----------------------------------------------------------------------------
 
 TEMPLATE = app

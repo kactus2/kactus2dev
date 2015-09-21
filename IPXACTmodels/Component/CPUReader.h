@@ -56,7 +56,7 @@ private:
     /*!
      *  Reads the presence.
      *
-     *      @param [in] cpuNode    XML description of the view.
+     *      @param [in] cpuNode    XML description of the cpu.
      *      @param [in] newCPU     The new cpu item.
      */
     void parseIsPresent(QDomNode const& cpuNode, QSharedPointer<Cpu> newCPU) const;
@@ -64,7 +64,7 @@ private:
     /*!
      *  Reads the name group.
      *
-     *      @param [in] viewNode    XML description of the view.
+     *      @param [in] cpuNode    XML description of the cpu.
      *      @param [in] newCpu		The new cpu item.
      */
     void parseNameGroup(QDomNode const& cpuNode, QSharedPointer<Cpu> newCpu) const;

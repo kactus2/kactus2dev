@@ -31,3 +31,5 @@ SUBDIRS += validators\tst_ParameterValidator.pro \
 		   Component\tst_FileReader.pro \
 		   Component\tst_ChannelReader.pro \
 		   Component\tst_ChannelWriter.pro \
+		   Component\tst_ChoiceReader.pro \
+		   Component\tst_ChoiceWriter.pro \

@@ -47,8 +47,8 @@ void tst_CPUReader::testReadSimpleCPU()
     QString documentContent(
         "<ipxact:cpu>"
             "<ipxact:name>testCPU</ipxact:name>"
-            "<ipxact:displayName>viewDisplay</ipxact:displayName>"
-            "<ipxact:description>viewDescription</ipxact:description>"
+            "<ipxact:displayName>cpuDisplay</ipxact:displayName>"
+            "<ipxact:description>cpuDescription</ipxact:description>"
         "</ipxact:cpu>"
         );
 
@@ -56,14 +56,14 @@ void tst_CPUReader::testReadSimpleCPU()
     QDomDocument document;
     document.setContent(documentContent);
 
-    QDomNode viewNode = document.firstChildElement("ipxact:cpu");
+    QDomNode cpuNode = document.firstChildElement("ipxact:cpu");
 
     CPUReader CPUReader;
-    QSharedPointer<Cpu> testCPU = CPUReader.createCPUFrom(viewNode);
+    QSharedPointer<Cpu> testCPU = CPUReader.createCPUFrom(cpuNode);
 
     QCOMPARE(testCPU->name(), QString("testCPU"));
-    QCOMPARE(testCPU->displayName(), QString("viewDisplay"));
-    QCOMPARE(testCPU->description(), QString("viewDescription"));
+    QCOMPARE(testCPU->displayName(), QString("cpuDisplay"));
+    QCOMPARE(testCPU->description(), QString("cpuDescription"));
 }
 
 //-----------------------------------------------------------------------------
@@ -82,10 +82,10 @@ void tst_CPUReader::testReadIsPresent()
     QDomDocument document;
     document.setContent(documentContent);
 
-    QDomNode viewNode = document.firstChildElement("ipxact:cpu");
+    QDomNode cpuNode = document.firstChildElement("ipxact:cpu");
 
     CPUReader CPUReader;
-    QSharedPointer<Cpu> testCPU = CPUReader.createCPUFrom(viewNode);
+    QSharedPointer<Cpu> testCPU = CPUReader.createCPUFrom(cpuNode);
 
     QCOMPARE(testCPU->name(), QString("testCPU"));
     QCOMPARE(testCPU->getIsPresent(), QString("4-3"));
@@ -115,10 +115,10 @@ void tst_CPUReader::testReadParameter()
 	QDomDocument document;
 	document.setContent(documentContent);
 
-	QDomNode viewNode = document.firstChildElement("ipxact:cpu");
+	QDomNode cpuNode = document.firstChildElement("ipxact:cpu");
 
 	CPUReader CPUReader;
-	QSharedPointer<Cpu> testCPU = CPUReader.createCPUFrom(viewNode);
+	QSharedPointer<Cpu> testCPU = CPUReader.createCPUFrom(cpuNode);
 
 	QCOMPARE(testCPU->name(), QString("testCPU"));
 	QCOMPARE(testCPU->getIsPresent(), QString("4-3"));
@@ -161,10 +161,10 @@ void tst_CPUReader::testRead2Parameter()
 	QDomDocument document;
 	document.setContent(documentContent);
 
-	QDomNode viewNode = document.firstChildElement("ipxact:cpu");
+	QDomNode cpuNode = document.firstChildElement("ipxact:cpu");
 
 	CPUReader CPUReader;
-	QSharedPointer<Cpu> testCPU = CPUReader.createCPUFrom(viewNode);
+	QSharedPointer<Cpu> testCPU = CPUReader.createCPUFrom(cpuNode);
 
 	QCOMPARE(testCPU->name(), QString("testCPU5"));
 	QCOMPARE(testCPU->getIsPresent(), QString("s"));
@@ -193,10 +193,10 @@ void tst_CPUReader::testReadAddressSpaces()
 	QDomDocument document;
 	document.setContent(documentContent);
 
-	QDomNode viewNode = document.firstChildElement("ipxact:cpu");
+	QDomNode cpuNode = document.firstChildElement("ipxact:cpu");
 
 	CPUReader CPUReader;
-	QSharedPointer<Cpu> testCPU = CPUReader.createCPUFrom(viewNode);
+	QSharedPointer<Cpu> testCPU = CPUReader.createCPUFrom(cpuNode);
 
 	QCOMPARE(testCPU->name(), QString("joqCPU"));
 	QCOMPARE(testCPU->getAddressSpaceRefs().size(), 1);
@@ -221,10 +221,10 @@ void tst_CPUReader::testReadVendorExtension()
 	QDomDocument document;
 	document.setContent(documentContent);
 
-	QDomNode viewNode = document.firstChildElement("ipxact:cpu");
+	QDomNode cpuNode = document.firstChildElement("ipxact:cpu");
 
 	CPUReader CPUReader;
-	QSharedPointer<Cpu> testCPU = CPUReader.createCPUFrom(viewNode);
+	QSharedPointer<Cpu> testCPU = CPUReader.createCPUFrom(cpuNode);
 
 	QCOMPARE(testCPU->name(), QString("joqCPU"));
 	QCOMPARE(testCPU->getVendorExtensions()->first()->type(), QString("ulina"));

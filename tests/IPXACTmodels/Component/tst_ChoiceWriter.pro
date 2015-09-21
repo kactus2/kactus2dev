@@ -1,17 +1,17 @@
 #-----------------------------------------------------------------------------
-# File: tst_ChannelWriter.pro
+# File: tst_ChoiceWriter.pro
 #-----------------------------------------------------------------------------
 # Project: Kactus 2
 # Author: Janne Virtanen
 # Date: 21.09.2015
 #
 # Description:
-# Qt project file template for running unit tests for Channel writer.
+# Qt project file template for running unit tests for Choice writer.
 #-----------------------------------------------------------------------------
 
 TEMPLATE = app
 
-TARGET = tst_ChannelWriter
+TARGET = tst_ChoiceWriter
 
 QT += core xml gui widgets testlib
 CONFIG += testcase console
@@ -38,4 +38,4 @@ OBJECTS_DIR += $$DESTDIR
 MOC_DIR += ./generatedFiles
 UI_DIR += ./generatedFiles
 RCC_DIR += ./generatedFiles
-include(tst_ChannelWriter.pri)
+include(tst_ChoiceWriter.pri)

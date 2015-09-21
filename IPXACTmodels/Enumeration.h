@@ -29,13 +29,6 @@ public:
     Enumeration();
 
     /*!
-     *  The constructor.
-     *
-     *      @param [in] enumerationNode   The DOM node describing the enumeration.
-     */
-    Enumeration(QDomNode const& enumerationNode);
-
-    /*!
      *  The copy constructor.
      *
      *      @param [in] other   The enumeration to copy.

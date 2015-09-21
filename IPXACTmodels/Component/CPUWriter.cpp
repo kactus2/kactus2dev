@@ -32,7 +32,7 @@ CPUWriter::~CPUWriter()
 }
 
 //-----------------------------------------------------------------------------
-// Function: CPUWriter::createViewFrom()
+// Function: CPUWriter::writeCPU()
 //-----------------------------------------------------------------------------
 void CPUWriter::writeCPU(QXmlStreamWriter& writer, QSharedPointer<Cpu> cpu) const
 {

@@ -116,7 +116,7 @@ public:
 
 private:
 
-	//! Presence of the view.
+	//! Presence of the CPU.
 	QString isPresent_;
 
 	/*! \brief References a name of an address space within component.

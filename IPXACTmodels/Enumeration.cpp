@@ -25,22 +25,6 @@ value_(),
 //-----------------------------------------------------------------------------
 // Function: Enumeration::Enumeration()
 //-----------------------------------------------------------------------------
-Enumeration::Enumeration(QDomNode const& enumerationNode):
-value_(), 
-    text_(),
-    help_()
-{
-    // get the name of the enumeration
-    value_ = enumerationNode.childNodes().at(0).nodeValue();
-
-    QDomNamedNodeMap attributeMap = enumerationNode.attributes();
-    text_ = attributeMap.namedItem("spirit:text").nodeValue();
-    help_ = attributeMap.namedItem("spirit:help").nodeValue();
-}
-
-//-----------------------------------------------------------------------------
-// Function: Enumeration::Enumeration()
-//-----------------------------------------------------------------------------
 Enumeration::Enumeration(Enumeration const& other):
 value_(other.value_),
     text_(other.text_),
@@ -63,16 +47,16 @@ Enumeration::~Enumeration()
 //-----------------------------------------------------------------------------
 void Enumeration::write(QXmlStreamWriter& writer) const
 {
-    writer.writeStartElement("spirit:enumeration");
+    writer.writeStartElement("ipxact:enumeration");
 
     if (!text_.isEmpty())
     {
-        writer.writeAttribute("spirit:text", text_);
+        writer.writeAttribute("text", text_);
     }
 
     if (!help_.isEmpty())
     {
-        writer.writeAttribute("spirit:help", help_);
+        writer.writeAttribute("help", help_);
     }
 
     writer.writeCharacters(value_);

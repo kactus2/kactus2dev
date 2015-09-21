@@ -10,12 +10,9 @@
 //-----------------------------------------------------------------------------
 
 #include "choice.h"
-#include "Enumeration.h"
-#include "XmlUtils.h"
 
 #include <QList>
 #include <QString>
-#include <QXmlStreamWriter>
 
 //-----------------------------------------------------------------------------
 // Function: Choice::Choice()
@@ -23,29 +20,6 @@
 Choice::Choice() : choiceName_(), enumerations_(new QList<QSharedPointer<Enumeration> >())
 {
     
-}
-
-//-----------------------------------------------------------------------------
-// Function: Choice::Choice()
-//-----------------------------------------------------------------------------
-Choice::Choice(QDomNode &choice) : choiceName_(), enumerations_(new QList<QSharedPointer<Enumeration> >())
-{
-    QDomNodeList children = choice.childNodes();
-    for (int i = 0; i < children.size(); ++i) {
-
-        // get name
-        if (children.at(i).nodeName() == QString("spirit:name"))
-        {
-            choiceName_ = children.at(i).childNodes().at(0).nodeValue();
-            choiceName_ = XmlUtils::removeWhiteSpace(choiceName_);
-        }
-
-        // get enumerations
-        else if (children.at(i).nodeName() == QString("spirit:enumeration"))
-        {
-            enumerations_->append(QSharedPointer<Enumeration>(new Enumeration(children.at((i)))));
-        }
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -87,23 +61,6 @@ Choice& Choice::operator=( const Choice& other )
 Choice::~Choice()
 {
 
-}
-
-//-----------------------------------------------------------------------------
-// Function: Choice::write()
-//-----------------------------------------------------------------------------
-void Choice::write(QXmlStreamWriter& writer) const
-{
-	writer.writeStartElement("spirit:choice");
-
-	writer.writeTextElement("spirit:name", choiceName_);
-
-    foreach (QSharedPointer<Enumeration> enumeration, *enumerations_)
-    {
-        enumeration->write(writer);
-    }
-
-	writer.writeEndElement(); // spirit:choice
 }
 
 //-----------------------------------------------------------------------------

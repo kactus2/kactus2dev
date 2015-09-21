@@ -43,7 +43,7 @@ public:
     ~CPUWriter();
 
     /*!
-     *  Write a view to an XML file.
+     *  Write a CPU to an XML file.
      *
      *      @param [in] writer  The used xml writer.
      *      @param [in] cpu		The cpu to be written.

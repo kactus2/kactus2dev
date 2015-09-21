@@ -13,19 +13,18 @@
 #ifndef CHOICE_H_
 #define CHOICE_H_
 
-#include "ipxactmodels_global.h"
+#include <IPXACTmodels/ipxactmodels_global.h>
+#include "../Enumeration.h"
 
-#include <QDomNode>
 #include <QSharedPointer>
 #include <QString>
 #include <QStringList>
 #include <QList>
-#include <QXmlStreamWriter>
 
 class Enumeration;
 
 //-----------------------------------------------------------------------------
-//! Equals the spirit:choice element in IP-Xact specification.
+//! Equals the ipxact:choice element in IP-Xact specification.
 //-----------------------------------------------------------------------------
 class IPXACTMODELS_EXPORT Choice
 {
@@ -35,12 +34,6 @@ public:
 	//! The default constructor.
 	Choice();
 
-	/*! The constructor.
-	 *
-	 *      @param [in] choice A QDomNode that can be used to parse the information from.
-	 */
-	Choice(QDomNode &choice);
-
 	//! Copy constructor
 	Choice(const Choice& other);
 
@@ -49,15 +42,6 @@ public:
 
 	//! The destructor
 	virtual ~Choice();
-
-	/*! Write the contents of the class using the writer.
-	*
-	* Uses the specified writer to write the class contents into file as valid IP-Xact.
-	*
-	*       @param [in] writer  A reference to a QXmlStreamWrite instance that is used to write the document 
-    *                           into file.
-	*/
-    void write(QXmlStreamWriter& writer) const;
 
 	/*! Check if the choice is in a valid state.
 	 *
