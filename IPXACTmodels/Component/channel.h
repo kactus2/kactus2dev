@@ -7,13 +7,9 @@
 #ifndef CHANNEL_H_
 #define CHANNEL_H_
 
-#include "ipxactmodels_global.h"
-
 #include <IPXACTmodels/common/NameGroup.h>
 
-#include <QXmlStreamWriter>
 #include <QString>
-#include <QDomNode>
 #include <QStringList>
 
 /*! \brief Equals the spirit:channel element in IP-Xact specification
@@ -24,17 +20,6 @@
 class IPXACTMODELS_EXPORT Channel : public NameGroup {
 
 public:
-
-	/*! \brief The constructor
-	 *
-	 * \param channelNode A reference to the QDomNode to parse the channel
-	 * information from.
-	 *
-	 * Exception guarantee: basic
-	 * \exception Parse_error Occurs when a mandatory element is missing in
-	 * this class or one of it's member classes.
-	 */
-	Channel(QDomNode &channelNode);
 
 	/*! \brief The default constructor
 	 *
@@ -51,15 +36,19 @@ public:
 	//! The destructor
 	~Channel();
 
-	/*! \brief Write the contents of the class using the writer.
-	*
-	* Uses the specified writer to write the class contents into file as valid
-	* IP-Xact.
-	*
-	* \param writer A reference to a QXmlStreamWrite instance that is used to
-	* write the document into file.
-	*/
-	void write(QXmlStreamWriter& writer);
+    /*!
+     *  Gets the presence.
+     *
+     *      @return The presence value.
+     */
+    QString getIsPresent() const;
+
+    /*!
+     *  Set the presence.
+     *
+     *      @param [in] newIsPresent    The new presence value.
+     */
+    void setIsPresent(QString const& newIsPresent);
 
 	/*! \brief Check if the channel is in a valid state.
 	 *
@@ -108,6 +97,8 @@ public:
 
 
 private:
+	//! Presence of the channel.
+	QString isPresent_;
 
 	//! \brief List of references to mirrored bus interfaces.
 	QStringList busInterfaces_;

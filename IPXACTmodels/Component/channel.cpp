@@ -6,46 +6,8 @@
 
 #include "channel.h"
 
-#include "XmlUtils.h"
-
-#include <QXmlStreamWriter>
-#include <QDomNode>
 #include <QString>
 #include <QList>
-
-Channel::Channel(QDomNode &channelNode): NameGroup(), busInterfaces_() {
-	// go through all the childnodes
-	for (int i = 0; i < channelNode.childNodes().count(); ++i) {
-
-		QDomNode tempNode = channelNode.childNodes().at(i);
-
-		// get the name
-		if (tempNode.nodeName() == QString("spirit:name")) {
-
-			// strip all whitespace characters
-			QString name = tempNode.childNodes().at(0).nodeValue();
-			setName(XmlUtils::removeWhiteSpace(name));
-		}
-
-		// get the display name
-		else if (tempNode.nodeName() == QString("spirit:displayName")) {
-			setDisplayName(tempNode.childNodes().at(0).nodeValue());
-		}
-
-		// get the description
-		else if (tempNode.nodeName() == QString("spirit:description")) {
-			setDescription(tempNode.childNodes().at(0).nodeValue());
-		}
-
-		// get the bus interface refs
-		else if (tempNode.nodeName() == QString("spirit:busInterfaceRef")) {
-
-			// appends string stripped of white space characters
-			QString temp = tempNode.childNodes().at(0).nodeValue();
-			busInterfaces_.append(XmlUtils::removeWhiteSpace(temp));
-		}
-	}
-}
 
 Channel::Channel(): NameGroup(), busInterfaces_() {
 }
@@ -67,28 +29,20 @@ Channel& Channel::operator=( const Channel& other ) {
 Channel::~Channel() {
 }
 
-void Channel::write(QXmlStreamWriter& writer) {
-	writer.writeStartElement("spirit:channel");
+//-----------------------------------------------------------------------------
+// Function: Channel::getIsPresent()
+//-----------------------------------------------------------------------------
+QString Channel::getIsPresent() const
+{
+	return isPresent_;
+}
 
-	writer.writeTextElement("spirit:name", name());
-
-	// optional element
-	if (!displayName().isEmpty()) {
-		writer.writeTextElement("spirit:displayName", displayName());
-	}
-
-	// optional element
-	if (!description().isEmpty()) {
-		writer.writeTextElement("spirit:description", description());
-	}
-
-	for (int i = 0; i < busInterfaces_.size(); ++i)
-    {
-        writer.writeTextElement("spirit:busInterfaceRef", busInterfaces_.at(i));
-	}
-
-	writer.writeEndElement(); // spirit:channel
-	return;
+//-----------------------------------------------------------------------------
+// Function: Channel::setIsPresent()
+//-----------------------------------------------------------------------------
+void Channel::setIsPresent(QString const& newIsPresent)
+{
+	isPresent_ = newIsPresent;
 }
 
 bool Channel::isValid(const QStringList& interfaceNames,

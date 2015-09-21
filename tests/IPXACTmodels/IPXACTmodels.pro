@@ -28,4 +28,6 @@ SUBDIRS += validators\tst_ParameterValidator.pro \
 		   Component\tst_CPUReader.pro \
 		   Component\tst_CPUWriter.pro \
 		   Component\tst_FileWriter.pro \
-		   Component\tst_FileReader.pro
+		   Component\tst_FileReader.pro \
+		   Component\tst_ChannelReader.pro \
+		   Component\tst_ChannelWriter.pro \
