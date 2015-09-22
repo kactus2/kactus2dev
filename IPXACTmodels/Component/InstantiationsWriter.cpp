@@ -11,6 +11,7 @@
 
 #include "InstantiationsWriter.h"
 
+#include <IPXACTmodels/common/FileBuilderWriter.h>
 #include <IPXACTmodels/common/ModuleParameterWriter.h>
 #include <IPXACTmodels/common/NameGroupWriter.h>
 
@@ -195,52 +196,14 @@ void InstantiationsWriter::writeModuleParameters(QXmlStreamWriter& writer,
 void InstantiationsWriter::writeDefaultFileBuilders(QXmlStreamWriter& writer,
     QSharedPointer<QList<QSharedPointer<FileBuilder> > > defautlFileBuilders) const
 {
-    foreach (QSharedPointer<FileBuilder> fileBuilder, *defautlFileBuilders)
+    if (!defautlFileBuilders->isEmpty())
     {
-        writer.writeStartElement("ipxact:defaultFileBuilder");
+        FileBuilderWriter fileBuilderWriter;
 
-        writeFileType(writer, fileBuilder);
-
-        writeBuildModel(writer, fileBuilder);
-
-        writeVendorExtensions(writer, fileBuilder);
-
-        writer.writeEndElement(); // ipxact:defaultFileBuilder
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: InstantiationsWriter::writeFileType()
-//-----------------------------------------------------------------------------
-void InstantiationsWriter::writeFileType(QXmlStreamWriter& writer, QSharedPointer<FileBuilder> fileBuilder) const
-{
-    writer.writeStartElement("ipxact:fileType");
-
-    if (fileBuilder->getFileType() == "user")
-    {
-        writer.writeAttribute("user", fileBuilder->getUserFileType());
-    }
-    writer.writeCharacters(fileBuilder->getFileType());
-
-    writer.writeEndElement(); // ipxact:fileType
-}
-
-//-----------------------------------------------------------------------------
-// Function: InstantiationsWriter::writeBuildModel()
-//-----------------------------------------------------------------------------
-void InstantiationsWriter::writeBuildModel(QXmlStreamWriter& writer, QSharedPointer<FileBuilder> fileBuilder) const
-{
-    if (!fileBuilder->getCommand().isEmpty())
-    {
-        writer.writeTextElement("ipxact:command", fileBuilder->getCommand());
-    }
-    if (!fileBuilder->getFlags().isEmpty())
-    {
-        writer.writeTextElement("ipxact:flags", fileBuilder->getFlags());
-    }
-    if (!fileBuilder->getReplaceDefaultFlags().isEmpty())
-    {
-        writer.writeTextElement("ipxact:replaceDefaultFlags", fileBuilder->getReplaceDefaultFlags());
+        foreach (QSharedPointer<FileBuilder> fileBuilder, *defautlFileBuilders)
+        {
+            fileBuilderWriter.writeDefaultFileBuilder(writer, fileBuilder);
+        }
     }
 }
 

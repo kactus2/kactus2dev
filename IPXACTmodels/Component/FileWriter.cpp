@@ -106,7 +106,7 @@ void FileWriter::writeFileTypes(QXmlStreamWriter& writer, QSharedPointer<File> f
         else
         {
             writer.writeAttribute("user", fileType);
-            writer.writeCharacters("custom");
+            writer.writeCharacters("user");
         }
 
         writer.writeEndElement(); // ipxact:fileType

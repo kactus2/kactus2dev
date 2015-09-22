@@ -17,6 +17,7 @@
 #include <QString>
 #include <QSettings>
 #include <QStringList>
+#include <QFileInfo>
 
 //-----------------------------------------------------------------------------
 //! NameSpace FileTypes is used to store functions related to file types.
@@ -81,6 +82,17 @@ namespace FileTypes
      *      @return QStringlist containing the file types.
 	 */
 	IPXACTMODELS_EXPORT QStringList getFileTypes(QSettings& settings, const QString& fileSuffix);
+
+    /*!
+	 *  Get the file types which are associated with the given file suffix.
+	 *
+	 *      @param [in] settings    The settings instance used to manage the Kactus2 settings.
+	 *      @param [in] file        Represents the file which file types are searched.
+     *
+     *      @return The file types.
+	 */
+	IPXACTMODELS_EXPORT QStringList getFileTypes(QSettings& settings, const QFileInfo& file);
+
 }
 
 #endif // FILETYPES_H

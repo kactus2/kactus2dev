@@ -7,50 +7,52 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../../IPXACTmodels/common/NameGroupWriter.h \
-    ../../../../IPXACTmodels/common/ParameterWriter.h \
-    ../../../../IPXACTmodels/common/CommonItemsWriter.h \
-    ../../../../IPXACTmodels/Component/InstantiationsWriter.h \
-    ../../../../IPXACTmodels/Component/DesignConfigurationInstantiation.h \
+HEADERS += ../../../../IPXACTmodels/common/Array.h \
+    ../../../../IPXACTmodels/common/BuildModel.h \
+    ../../../../IPXACTmodels/Component/ComponentInstantiation.h \
     ../../../../IPXACTmodels/common/ConfigurableElementValue.h \
     ../../../../IPXACTmodels/common/ConfigurableVLNVReference.h \
+    ../../../../IPXACTmodels/Component/DesignConfigurationInstantiation.h \
     ../../../../IPXACTmodels/Component/DesignInstantiation.h \
-    ../../../../IPXACTmodels/vlnv.h \
-    ../../../../IPXACTmodels/common/FileTypes.h \
-    ../../../../IPXACTmodels/common/BuildModel.h \
+    ../../../../IPXACTmodels/common/Extendable.h \
     ../../../../IPXACTmodels/common/FileBuilder.h \
-    ../../../../IPXACTmodels/common/Array.h \
-    ../../../../IPXACTmodels/common/Vector.h \
-    ../../../../IPXACTmodels/common/Range.h \
-    ../../../../IPXACTmodels/common/Parameter.h \
+    ../../../../IPXACTmodels/common/FileTypes.h \
+    ../../../../IPXACTmodels/GenericVendorExtension.h \
+    ../../../../IPXACTmodels/kactusExtensions/Kactus2Group.h \
     ../../../../IPXACTmodels/common/ModuleParameter.h \
     ../../../../IPXACTmodels/common/NameGroup.h \
-    ../../../../IPXACTmodels/kactusExtensions/Kactus2Group.h \
-    ../../../../IPXACTmodels/common/Extendable.h \
-    ../../../../IPXACTmodels/Component/ComponentInstantiation.h \
+    ../../../../IPXACTmodels/common/Parameter.h \
+    ../../../../IPXACTmodels/common/Range.h \
+    ../../../../IPXACTmodels/common/Vector.h \
+    ../../../../IPXACTmodels/vlnv.h \
+    ../../../../IPXACTmodels/common/CommonItemsWriter.h \
+    ../../../../IPXACTmodels/Component/InstantiationsWriter.h \
     ../../../../IPXACTmodels/common/ModuleParameterWriter.h \
-    ../../../../IPXACTmodels/GenericVendorExtension.h
-SOURCES += ../../../../IPXACTmodels/common/NameGroupWriter.cpp \
-    ../../../../IPXACTmodels/common/ParameterWriter.cpp \
-    ../../../../IPXACTmodels/Component/InstantiationsWriter.cpp \
-    ../../../../IPXACTmodels/Component/DesignConfigurationInstantiation.cpp \
+    ../../../../IPXACTmodels/common/NameGroupWriter.h \
+    ../../../../IPXACTmodels/common/ParameterWriter.h \
+    ../../../../IPXACTmodels/common/FileBuilderWriter.h
+SOURCES += ../../../../IPXACTmodels/common/Array.cpp \
+    ../../../../IPXACTmodels/common/BuildModel.cpp \
+    ../../../../IPXACTmodels/common/CommonItemsWriter.cpp \
+    ../../../../IPXACTmodels/Component/ComponentInstantiation.cpp \
     ../../../../IPXACTmodels/common/ConfigurableElementValue.cpp \
     ../../../../IPXACTmodels/common/ConfigurableVLNVReference.cpp \
+    ../../../../IPXACTmodels/Component/DesignConfigurationInstantiation.cpp \
     ../../../../IPXACTmodels/Component/DesignInstantiation.cpp \
-    ../../../../IPXACTmodels/vlnv.cpp \
-    ../../../../IPXACTmodels/common/CommonItemsWriter.cpp \
-    ../../../../IPXACTmodels/common/FileTypes.cpp \
-    ../../../../IPXACTmodels/common/BuildModel.cpp \
-    ../../../../IPXACTmodels/common/FileBuilder.cpp \
-    ../../../../IPXACTmodels/common/Array.cpp \
-    ../../../../IPXACTmodels/common/Vector.cpp \
-    ../../../../IPXACTmodels/common/Range.cpp \
-    ../../../../IPXACTmodels/common/Parameter.cpp \
-    ../../../../IPXACTmodels/common/ModuleParameter.cpp \
-    ../../../../IPXACTmodels/common/NameGroup.cpp \
-    ../../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
     ../../../../IPXACTmodels/common/Extendable.cpp \
-    ./tst_InstantiationsWriter.cpp \
-    ../../../../IPXACTmodels/Component/ComponentInstantiation.cpp \
+    ../../../../IPXACTmodels/common/FileBuilder.cpp \
+    ../../../../IPXACTmodels/common/FileTypes.cpp \
+    ../../../../IPXACTmodels/GenericVendorExtension.cpp \
+    ../../../../IPXACTmodels/Component/InstantiationsWriter.cpp \
+    ../../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
+    ../../../../IPXACTmodels/common/ModuleParameter.cpp \
     ../../../../IPXACTmodels/common/ModuleParameterWriter.cpp \
-    ../../../../IPXACTmodels/GenericVendorExtension.cpp
+    ../../../../IPXACTmodels/common/NameGroup.cpp \
+    ../../../../IPXACTmodels/common/NameGroupWriter.cpp \
+    ../../../../IPXACTmodels/common/Parameter.cpp \
+    ../../../../IPXACTmodels/common/ParameterWriter.cpp \
+    ../../../../IPXACTmodels/common/Range.cpp \
+    ../../../../IPXACTmodels/common/Vector.cpp \
+    ./tst_InstantiationsWriter.cpp \
+    ../../../../IPXACTmodels/vlnv.cpp \
+    ../../../../IPXACTmodels/common/FileBuilderWriter.cpp

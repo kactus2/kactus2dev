@@ -50,3 +50,11 @@ QStringList FileTypes::getFileTypes( QSettings& settings, const QString& fileSuf
 
 	return types;
 }
+
+//-----------------------------------------------------------------------------
+// Function: generaldeclarations::getFileTypes()
+//-----------------------------------------------------------------------------
+QStringList FileTypes::getFileTypes( QSettings& settings, const QFileInfo& file )
+{
+    return FileTypes::getFileTypes(settings, file.suffix());
+}

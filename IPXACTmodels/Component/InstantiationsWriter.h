@@ -123,22 +123,6 @@ private:
         QSharedPointer<QList<QSharedPointer<FileBuilder> > > defautlFileBuilders) const;
 
     /*!
-     *  Write the file type of the file builder.
-     *
-     *      @param [in] writer          The used XML writer.
-     *      @param [in] fileBuilder     The selected file builder.
-     */
-    void writeFileType(QXmlStreamWriter& writer, QSharedPointer<FileBuilder> fileBuilder) const;
-
-    /*!
-     *  Writes the build model of the file builder.
-     *
-     *      @param [in] writer          The used XML writer.
-     *      @param [in] fileBuilder     The selected file builder.
-     */
-    void writeBuildModel(QXmlStreamWriter& writer, QSharedPointer<FileBuilder> fileBuilder) const;
-
-    /*!
      *  Writes the file set references.
      *
      *      @param [in] writer      The used XML writer.

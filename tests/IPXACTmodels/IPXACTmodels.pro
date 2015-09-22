@@ -25,11 +25,3 @@ SUBDIRS += validators\tst_ParameterValidator.pro \
 		   Design\tst_DesignWriter.pro \
 		   Design\tst_DesignReader.pro \
 		   Component\Component.pro \
-		   Component\tst_CPUReader.pro \
-		   Component\tst_CPUWriter.pro \
-		   Component\tst_FileWriter.pro \
-		   Component\tst_FileReader.pro \
-		   Component\tst_ChannelReader.pro \
-		   Component\tst_ChannelWriter.pro \
-		   Component\tst_ChoiceReader.pro \
-		   Component\tst_ChoiceWriter.pro \

@@ -17,4 +17,13 @@ SUBDIRS += Model\tst_ViewWriter.pro \
 		   Model\tst_InstantiationsWriter.pro \
 		   Model\tst_InstantiationsReader.pro \
 		   Model\tst_ComponentPortWriter.pro \
-		   Model\tst_ComponentPortReader.pro
+		   Model\tst_ComponentPortReader.pro \
+		   tst_CPUReader.pro \
+		   tst_CPUWriter.pro \
+		   tst_FileWriter.pro \
+		   tst_FileReader.pro \
+		   tst_FileSetWriter.pro \
+		   tst_ChannelReader.pro \
+		   tst_ChannelWriter.pro \
+		   tst_ChoiceReader.pro \
+		   tst_ChoiceWriter.pro
