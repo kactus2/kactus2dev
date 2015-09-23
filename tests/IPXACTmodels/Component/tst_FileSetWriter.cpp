@@ -127,9 +127,7 @@ void tst_FileSetWriter::writeGroups()
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
-    QStringList groupList;
-    groupList.append("firstGroup");
-    testFileSet_->setGroups(groupList);
+    testFileSet_->getGroups()->append("firstGroup");
 
     QString expectedOutput(
         "<ipxact:fileSet>"

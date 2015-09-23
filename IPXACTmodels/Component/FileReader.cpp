@@ -114,7 +114,7 @@ void FileReader::parseFileTypes(QDomElement const& fileElement, QSharedPointer<F
         QDomNode fileTypeNode = fileTypeNodeList.at(fileTypeIndex);
         QString fileType = fileTypeNode.firstChild().nodeValue();
 
-        if (fileType == "custom")
+        if (fileType == "user")
         {
             QDomNamedNodeMap fileTypeAttributes = fileTypeNode.attributes();
             fileType = fileTypeAttributes.namedItem("user").nodeValue();

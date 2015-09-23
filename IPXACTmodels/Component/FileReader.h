@@ -179,4 +179,4 @@ private:
     void parseFileExtensions(QDomNode const& fileNode, QSharedPointer<File> newFile) const;
 };
 
-#endif // VIEWREADER_H
+#endif // FILEREADER_H

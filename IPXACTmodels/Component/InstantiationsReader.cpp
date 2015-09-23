@@ -12,6 +12,7 @@
 #include "InstantiationsReader.h"
 
 #include <IPXACTmodels/common/NameGroupReader.h>
+#include <IPXACTmodels/common/FileBuilderReader.h>
 
 #include <IPXACTmodels/common/ModuleParameterReader.h>
 
@@ -206,31 +207,16 @@ void InstantiationsReader::parseDefaultFileBuilders(QDomNode const& instantiatio
 
     QDomNodeList defaultFileBuilderNodeList = instantiationElement.elementsByTagName("ipxact:defaultFileBuilder");
 
-    for (int i = 0; i < defaultFileBuilderNodeList.count(); ++i)
+    if (!defaultFileBuilderNodeList.isEmpty())
     {
-        QDomNode defaultFileBuilderNode = defaultFileBuilderNodeList.at(i);
-        QSharedPointer<FileBuilder> defaultFileBuilder (new FileBuilder());
+        FileBuilderReader defaultFileBuilderReader;
 
-        QString fileType = defaultFileBuilderNode.firstChildElement("ipxact:fileType").firstChild().nodeValue();
-        if (fileType == "user")
+        for (int i = 0; i < defaultFileBuilderNodeList.count(); ++i)
         {
-            QDomElement fileTypeElement = defaultFileBuilderNode.firstChildElement("ipxact:fileType");
-            fileType = fileTypeElement.attribute("user");
+            QSharedPointer<FileBuilder> defaultFileBuilder =
+                defaultFileBuilderReader.createDefaultFileBuilderFrom(defaultFileBuilderNodeList.at(i));
+            instantiation->getDefaultFileBuilders()->append(defaultFileBuilder);
         }
-
-        QString command = defaultFileBuilderNode.firstChildElement("ipxact:command").firstChild().nodeValue();
-        QString flags = defaultFileBuilderNode.firstChildElement("ipxact:flags").firstChild().nodeValue();
-        QString replaceFlags =
-            defaultFileBuilderNode.firstChildElement("ipxact:replaceDefaultFlags").firstChild().nodeValue();
-
-        defaultFileBuilder->setFileType(fileType);
-        defaultFileBuilder->setCommand(command);
-        defaultFileBuilder->setFlags(flags);
-        defaultFileBuilder->setReplaceDefaultFlags(replaceFlags);
-
-        parseVendorExtensions(defaultFileBuilderNode, defaultFileBuilder);
-
-        instantiation->getDefaultFileBuilders()->append(defaultFileBuilder);
     }
 }
 

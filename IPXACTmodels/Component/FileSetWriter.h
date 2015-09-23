@@ -62,7 +62,7 @@ private:
      *      @param [in] writer  Used XML writer.
      *      @param [in] groups  The file set groups.
      */
-    void writeGroups(QXmlStreamWriter& writer, QStringList groups) const;
+    void writeGroups(QXmlStreamWriter& writer, QSharedPointer<QStringList> groups) const;
 
     /*!
      *  Write the files.
@@ -87,7 +87,7 @@ private:
      *      @param [in] writer          Used XML writer.
      *      @param [in] dependencies    The dependencies of the file set.
      */
-    void writeDependencies(QXmlStreamWriter& writer, QStringList const& dependencies) const;
+    void writeDependencies(QXmlStreamWriter& writer, QSharedPointer<QStringList> dependencies) const;
 
     /*!
      *  Write the functions.

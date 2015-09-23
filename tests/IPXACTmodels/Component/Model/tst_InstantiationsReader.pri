@@ -29,28 +29,30 @@ HEADERS += ../../../../IPXACTmodels/common/Array.h \
     ../../../../IPXACTmodels/Component/InstantiationsReader.h \
     ../../../../IPXACTmodels/common/ModuleParameterReader.h \
     ../../../../IPXACTmodels/common/NameGroupReader.h \
-    ../../../../IPXACTmodels/common/ParameterReader.h
+    ../../../../IPXACTmodels/common/ParameterReader.h \
+    ../../../../IPXACTmodels/common/FileBuilderReader.h
 SOURCES += ../../../../IPXACTmodels/common/Array.cpp \
     ../../../../IPXACTmodels/common/BuildModel.cpp \
     ../../../../IPXACTmodels/common/CommonItemsReader.cpp \
     ../../../../IPXACTmodels/Component/ComponentInstantiation.cpp \
     ../../../../IPXACTmodels/common/ConfigurableElementValue.cpp \
-    ../../../../IPXACTmodels/common/ModuleParameterReader.cpp \
-    ../../../../IPXACTmodels/Component/InstantiationsReader.cpp \
+    ../../../../IPXACTmodels/common/ConfigurableVLNVReference.cpp \
     ../../../../IPXACTmodels/Component/DesignConfigurationInstantiation.cpp \
-    ../../../../IPXACTmodels/common/FileTypes.cpp \
     ../../../../IPXACTmodels/Component/DesignInstantiation.cpp \
+    ../../../../IPXACTmodels/common/Extendable.cpp \
     ../../../../IPXACTmodels/common/FileBuilder.cpp \
-    ../../../../IPXACTmodels/common/Range.cpp \
+    ../../../../IPXACTmodels/common/FileTypes.cpp \
+    ../../../../IPXACTmodels/GenericVendorExtension.cpp \
+    ../../../../IPXACTmodels/Component/InstantiationsReader.cpp \
+    ../../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
     ../../../../IPXACTmodels/common/ModuleParameter.cpp \
-    ../../../../IPXACTmodels/common/Vector.cpp \
+    ../../../../IPXACTmodels/common/ModuleParameterReader.cpp \
+    ../../../../IPXACTmodels/common/NameGroup.cpp \
     ../../../../IPXACTmodels/common/NameGroupReader.cpp \
     ../../../../IPXACTmodels/common/Parameter.cpp \
-    ../../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
-    ../../../../IPXACTmodels/common/ConfigurableVLNVReference.cpp \
-    ../../../../IPXACTmodels/GenericVendorExtension.cpp \
-    ../../../../IPXACTmodels/common/Extendable.cpp \
     ../../../../IPXACTmodels/common/ParameterReader.cpp \
-    ../../../../IPXACTmodels/vlnv.cpp \
+    ../../../../IPXACTmodels/common/Range.cpp \
+    ../../../../IPXACTmodels/common/Vector.cpp \
     ./tst_InstantiationsReader.cpp \
-    ../../../../IPXACTmodels/common/NameGroup.cpp
+    ../../../../IPXACTmodels/vlnv.cpp \
+    ../../../../IPXACTmodels/common/FileBuilderReader.cpp

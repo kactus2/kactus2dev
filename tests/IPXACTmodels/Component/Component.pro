@@ -23,6 +23,7 @@ SUBDIRS += Model\tst_ViewWriter.pro \
 		   tst_FileWriter.pro \
 		   tst_FileReader.pro \
 		   tst_FileSetWriter.pro \
+		   tst_FileSetReader.pro \
 		   tst_ChannelReader.pro \
 		   tst_ChannelWriter.pro \
 		   tst_ChoiceReader.pro \

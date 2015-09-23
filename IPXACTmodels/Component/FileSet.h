@@ -81,14 +81,14 @@ public:
 	 *
 	 *      @reutnr The groups.
 	 */
-    QStringList getGroups() const;
+    QSharedPointer<QStringList> getGroups() const;
     
 	/*!
      *  Set the groups for this file  set
 	 *
 	 *      @param [in] groups  The new group names.
 	 */
-	void setGroups(const QStringList& groups);
+    void setGroups (QSharedPointer<QStringList> newGroups);
 
 	/*! Clear the previous groups and add a new group identifier.
 	 *
@@ -140,15 +140,15 @@ public:
 	 *
 	 *      @return Paths for the directories containing files on which this file set depends.
 	 */
-    QStringList getDependencies() const;
+    QSharedPointer<QStringList> getDependencies() const;
 
 	/*! 
      *  Set the dependencies for this file set
 	 *
 	 *      @param [in] dependencies    The new dependencies.
 	 */
-	void setDependencies(const QStringList& newDependencies);
-    
+    void setDependencies(QSharedPointer<QStringList> newDependencies);
+
 	/*! Add a new dependent directory to the file set.
 	 *
 	 *      @param [in] path    Relative path to the dependent directory to add.
@@ -337,12 +337,19 @@ private:
      */
     void copyFunctions(const FileSet& other);
 
+    /*!
+     *  Copies the groups and dependencies.
+     *
+     *      @param [in] other   The file set from which to copy the groups and dependencies.
+     */
+    void copyStringLists(const FileSet& other);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
 	//! Describes the function or purpose of the file set.
-	QStringList groups_;
+	QSharedPointer<QStringList> groups_;
 
 	//! The contained files.
 	QSharedPointer<QList<QSharedPointer<File> > > files_;
@@ -351,7 +358,7 @@ private:
 	QSharedPointer<QList<QSharedPointer<FileBuilder> > > defaultFileBuilders_;
 
 	//! Contains paths to directories containing dependency files
-	QStringList dependencies_;
+	QSharedPointer<QStringList> dependencies_;
 
 	//! The contained functions.
 	QSharedPointer<QList<QSharedPointer<Function> > > functions_;

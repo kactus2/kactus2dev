@@ -15,65 +15,21 @@
 #include <IPXACTmodels/common/FileTypes.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Value.h>
 
-/*
-//-----------------------------------------------------------------------------
-// Function: FileSet::FileSet()
-//-----------------------------------------------------------------------------
-FileSet::FileSet(QDomNode & fileSetNode):
-NameGroup(),
-	groups_(),
-files_(), 
-defaultFileBuilders_(),
-dependencies_(),
-functions_(),
-fileSetId_(),
-vendorExtensions_()
-{
-	for (int i = 0; i < fileSetNode.childNodes().count(); ++i) {
-		QDomNode tempNode = fileSetNode.childNodes().at(i);
-
-		if (tempNode.nodeName() == QString("spirit:group")) {
-			QString groupName = tempNode.childNodes().at(0).nodeValue();
-			groupName = XmlUtils::removeWhiteSpace(groupName);
-			groups_.append(groupName);
-		}
-
-		else if (tempNode.nodeName() == QString("spirit:file")) {
-			files_.append(QSharedPointer<File>(new File(tempNode, this)));
-		}
-
-		else if (tempNode.nodeName() == QString("spirit:defaultFileBuilder")) {
-			defaultFileBuilders_.append(QSharedPointer<FileBuilder>(new FileBuilder(tempNode)));
-		}
-
-		else if (tempNode.nodeName() == QString("spirit:dependency") ) {
-			dependencies_.append(tempNode.childNodes().at(0).nodeValue());
-		}
-
-		else if (tempNode.nodeName() == QString("spirit:function")) {
-			functions_.append(QSharedPointer<Function>(new Function(tempNode)));
-		}
-		else if (tempNode.nodeName() == QString("spirit:vendorExtensions")) {
-            parseVendorExtensions(tempNode);
-		}
-	}
-}*/
-
 //-----------------------------------------------------------------------------
 // Function: FileSet::FileSet()
 //-----------------------------------------------------------------------------
 FileSet::FileSet(const QString& name /* = QString() */, const QString& group /* = QString() */) :
 NameGroup(name),
 Extendable(),
-groups_(),
+groups_(new QStringList()),
 files_(new QList<QSharedPointer<File> > ()),
 defaultFileBuilders_(new QList<QSharedPointer<FileBuilder> > ()),
-dependencies_(),
+dependencies_(new QStringList()),
 functions_(new QList<QSharedPointer<Function> > ())
 {
     if (!group.isEmpty())
     {
-        groups_.append(group);
+        groups_->append(group);
     }
 }
 
@@ -83,15 +39,16 @@ functions_(new QList<QSharedPointer<Function> > ())
 FileSet::FileSet(const FileSet &other) :
 NameGroup(other),
 Extendable(other),
-groups_(other.groups_),
+groups_(new QStringList()),
 files_(new QList<QSharedPointer<File> > ()),
 defaultFileBuilders_(new QList<QSharedPointer<FileBuilder> > ()),
-dependencies_(other.dependencies_),
+dependencies_(new QStringList()),
 functions_(new QList<QSharedPointer<Function> > ())
 {
     copyFiles(other);
     copyDefaultFileBuilders(other);
     copyFunctions(other);
+    copyStringLists(other);
 }
 
 //-----------------------------------------------------------------------------
@@ -103,8 +60,6 @@ FileSet& FileSet::operator=(const FileSet& other)
     {
         NameGroup::operator=(other);
         Extendable::operator=(other);
-        groups_ = other.groups_;
-        dependencies_ = other.dependencies_;
 
         files_->clear();
         copyFiles(other);
@@ -112,6 +67,9 @@ FileSet& FileSet::operator=(const FileSet& other)
         copyDefaultFileBuilders(other);
         functions_->clear();
         copyFunctions(other);
+        groups_->clear();
+        dependencies_->clear();
+        copyStringLists(other);
     }
 
     return *this;
@@ -268,7 +226,7 @@ bool FileSet::isValid( bool checkChildren ) const
 //-----------------------------------------------------------------------------
 // Function: FileSet::getGroups()
 //-----------------------------------------------------------------------------
-QStringList FileSet::getGroups() const
+QSharedPointer<QStringList> FileSet::getGroups() const
 {
     return groups_;
 }
@@ -276,10 +234,10 @@ QStringList FileSet::getGroups() const
 //-----------------------------------------------------------------------------
 // Function: FileSet::setGroups()
 //-----------------------------------------------------------------------------
-void FileSet::setGroups(const QStringList& groups)
+void FileSet::setGroups(QSharedPointer<QStringList> newGroups)
 {
-    groups_.clear();
-    groups_ = groups;
+    groups_->clear();
+    groups_ = newGroups;
 }
 
 //-----------------------------------------------------------------------------
@@ -287,8 +245,8 @@ void FileSet::setGroups(const QStringList& groups)
 //-----------------------------------------------------------------------------
 void FileSet::setGroups( const QString& groupName )
 {
-    groups_.clear();
-    groups_.append(groupName);
+    groups_->clear();
+    groups_->append(groupName);
 }
 
 //-----------------------------------------------------------------------------
@@ -346,7 +304,7 @@ void FileSet::setDefaultFileBuilders(QSharedPointer<QList<QSharedPointer<FileBui
 //-----------------------------------------------------------------------------
 // Function: FileSet::getDependencies()
 //-----------------------------------------------------------------------------
-QStringList FileSet::getDependencies() const
+QSharedPointer<QStringList> FileSet::getDependencies() const
 {
     return dependencies_;
 }
@@ -354,10 +312,10 @@ QStringList FileSet::getDependencies() const
 //-----------------------------------------------------------------------------
 // Function: FileSet::setDependencies()
 //-----------------------------------------------------------------------------
-void FileSet::setDependencies(const QStringList &dependencies)
+void FileSet::setDependencies(QSharedPointer<QStringList> newDependencies)
 {
-    dependencies_.clear();
-    dependencies_ = dependencies;
+    dependencies_->clear();
+    dependencies_ = newDependencies;
 }
 
 //-----------------------------------------------------------------------------
@@ -365,7 +323,7 @@ void FileSet::setDependencies(const QStringList &dependencies)
 //-----------------------------------------------------------------------------
 void FileSet::addDependency( const QString& path )
 {
-    dependencies_.append(path);
+    dependencies_->append(path);
 }
 
 //-----------------------------------------------------------------------------
@@ -754,5 +712,21 @@ void FileSet::copyFunctions(const FileSet& other)
             QSharedPointer<Function> copy = QSharedPointer<Function>(new Function(*funcion.data()));
             functions_->append(copy);
         }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileSet::copyFunctions()
+//-----------------------------------------------------------------------------
+void FileSet::copyStringLists(const FileSet& other)
+{
+    foreach (QString singleGroup, *other.groups_)
+    {
+        groups_->append(singleGroup);
+    }
+
+    foreach (QString dependency, *other.dependencies_)
+    {
+        dependencies_->append(dependency);
     }
 }

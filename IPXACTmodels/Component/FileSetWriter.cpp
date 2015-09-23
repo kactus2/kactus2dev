@@ -61,9 +61,9 @@ void FileSetWriter::writeFileSet(QXmlStreamWriter& writer, QSharedPointer<FileSe
 //-----------------------------------------------------------------------------
 // Function: FileSetWriter::writeGroups()
 //-----------------------------------------------------------------------------
-void FileSetWriter::writeGroups(QXmlStreamWriter& writer, QStringList groups) const
+void FileSetWriter::writeGroups(QXmlStreamWriter& writer, QSharedPointer<QStringList> groups) const
 {
-    foreach (QString singleGroup, groups)
+    foreach (QString singleGroup, *groups)
     {
         writer.writeTextElement("ipxact:group", singleGroup);
     }
@@ -105,9 +105,9 @@ void FileSetWriter::writeDefaultFileBuilders(QXmlStreamWriter& writer,
 //-----------------------------------------------------------------------------
 // Function: FileSetWriter::writeDependencies()
 //-----------------------------------------------------------------------------
-void FileSetWriter::writeDependencies(QXmlStreamWriter& writer, QStringList const& dependencies) const
+void FileSetWriter::writeDependencies(QXmlStreamWriter& writer, QSharedPointer<QStringList> dependencies) const
 {
-    foreach (QString singleDependency, dependencies)
+    foreach (QString singleDependency, *dependencies)
     {
         writer.writeTextElement("ipxact:dependency", singleDependency);
     }
