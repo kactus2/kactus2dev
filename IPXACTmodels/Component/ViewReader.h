@@ -14,6 +14,8 @@
 
 #include "View.h"
 
+#include <IPXACTmodels/ipxactmodels_global.h>
+
 #include <QObject>
 #include <QSharedPointer>
 #include <QDomNode>
@@ -43,6 +45,8 @@ public:
      *  Creates a new view from a given view node.
      *
      *      @param [in] viewNode    XML description of the view.
+     *
+     *      @return The created view.
      */
     QSharedPointer<View> createViewFrom(QDomNode const& viewNode) const;
 

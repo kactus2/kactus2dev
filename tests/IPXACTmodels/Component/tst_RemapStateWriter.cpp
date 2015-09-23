@@ -123,7 +123,6 @@ void tst_RemapStateWriter::writeRemapPorts()
     QXmlStreamWriter xmlStreamWriter(&output);
 
     QSharedPointer<RemapPort> testRemapPort (new RemapPort("referencedPort"));
-    testRemapPort->setPortIndex("4*4-3");
     testRemapPort->setValue("newValue");
 
     QSharedPointer<RemapPort> otherRemapPort (new RemapPort("Fuu"));
@@ -138,7 +137,6 @@ void tst_RemapStateWriter::writeRemapPorts()
             "<ipxact:name>testRemapState</ipxact:name>"
             "<ipxact:remapPorts>"
                 "<ipxact:remapPort portRef=\"referencedPort\">"
-                    "<ipxact:portIndex>4*4-3</ipxact:portIndex>"
                     "<ipxact:value>newValue</ipxact:value>"
                 "</ipxact:remapPort>"
                 "<ipxact:remapPort portRef=\"Fuu\">"
