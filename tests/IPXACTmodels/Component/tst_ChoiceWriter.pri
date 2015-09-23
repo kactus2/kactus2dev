@@ -7,17 +7,16 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../IPXACTmodels/Component/choice.h \
-    ../../../IPXACTmodels/common/NameGroup.h \
-    ../../../IPXACTmodels/Component/ChoiceWriter.h \
-    ../../../IPXACTmodels/common/BuildModel.h \
+HEADERS += ../../../IPXACTmodels/common/BuildModel.h \
     ../../../IPXACTmodels/Component/ComponentInstantiation.h \
     ../../../IPXACTmodels/common/ConfigurableElementValue.h \
     ../../../IPXACTmodels/common/ConfigurableVLNVReference.h \
     ../../../IPXACTmodels/Component/DesignConfigurationInstantiation.h \
     ../../../IPXACTmodels/Component/DesignInstantiation.h \
+    ../../../IPXACTmodels/Enumeration.h \
     ../../../IPXACTmodels/common/Extendable.h \
     ../../../IPXACTmodels/common/FileBuilder.h \
+    ../../../IPXACTmodels/common/FileTypes.h \
     ../../../IPXACTmodels/GenericVendorExtension.h \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Group.h \
     ../../../IPXACTmodels/common/ModuleParameter.h \
@@ -25,30 +24,28 @@ HEADERS += ../../../IPXACTmodels/Component/choice.h \
     ../../../IPXACTmodels/common/Parameter.h \
     ../../../IPXACTmodels/common/Range.h \
     ../../../IPXACTmodels/common/Vector.h \
+    ../../../IPXACTmodels/XmlUtils.h \
+    ../../../IPXACTmodels/Component/choice.h \
     ../../../IPXACTmodels/vlnv.h \
+    ../../../IPXACTmodels/Component/ChoiceWriter.h \
     ../../../IPXACTmodels/common/CommonItemsWriter.h \
-    ../../../IPXACTmodels/Component/InstantiationsWriter.h \
     ../../../IPXACTmodels/common/ModuleParameterWriter.h \
     ../../../IPXACTmodels/common/NameGroupWriter.h \
-    ../../../IPXACTmodels/common/ParameterWriter.h \
-    ../../../IPXACTmodels/Enumeration.h \
-    ../../../IPXACTmodels/XmlUtils.h \
-    ../../../IPXACTmodels/common/FileTypes.h
-SOURCES += ./tst_ChoiceWriter.cpp \
-    ../../../IPXACTmodels/Component/choice.cpp \
-    ../../../IPXACTmodels/Component/ChoiceWriter.cpp \
-    ../../../IPXACTmodels/common/Array.cpp \
+    ../../../IPXACTmodels/common/ParameterWriter.h
+SOURCES += ../../../IPXACTmodels/common/Array.cpp \
     ../../../IPXACTmodels/common/BuildModel.cpp \
+    ../../../IPXACTmodels/Component/ChoiceWriter.cpp \
     ../../../IPXACTmodels/common/CommonItemsWriter.cpp \
     ../../../IPXACTmodels/Component/ComponentInstantiation.cpp \
     ../../../IPXACTmodels/common/ConfigurableElementValue.cpp \
     ../../../IPXACTmodels/common/ConfigurableVLNVReference.cpp \
     ../../../IPXACTmodels/Component/DesignConfigurationInstantiation.cpp \
     ../../../IPXACTmodels/Component/DesignInstantiation.cpp \
+    ../../../IPXACTmodels/Enumeration.cpp \
     ../../../IPXACTmodels/common/Extendable.cpp \
     ../../../IPXACTmodels/common/FileBuilder.cpp \
+    ../../../IPXACTmodels/common/FileTypes.cpp \
     ../../../IPXACTmodels/GenericVendorExtension.cpp \
-    ../../../IPXACTmodels/Component/InstantiationsWriter.cpp \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
     ../../../IPXACTmodels/common/ModuleParameter.cpp \
     ../../../IPXACTmodels/common/ModuleParameterWriter.cpp \
@@ -58,7 +55,7 @@ SOURCES += ./tst_ChoiceWriter.cpp \
     ../../../IPXACTmodels/common/ParameterWriter.cpp \
     ../../../IPXACTmodels/common/Range.cpp \
     ../../../IPXACTmodels/common/Vector.cpp \
-    ../../../IPXACTmodels/vlnv.cpp \
-    ../../../IPXACTmodels/Enumeration.cpp \
     ../../../IPXACTmodels/XmlUtils.cpp \
-    ../../../IPXACTmodels/common/FileTypes.cpp
+    ../../../IPXACTmodels/Component/choice.cpp \
+    ./tst_ChoiceWriter.cpp \
+    ../../../IPXACTmodels/vlnv.cpp

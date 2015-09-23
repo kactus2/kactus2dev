@@ -119,7 +119,7 @@ void tst_FileWriter::writeSimpleFile()
         "<ipxact:file>"
             "<ipxact:name>./testFile</ipxact:name>"
             "<ipxact:fileType>vhdlSource</ipxact:fileType>"
-            "<ipxact:fileType user=\"testUserFileType\">custom</ipxact:fileType>"
+            "<ipxact:fileType user=\"testUserFileType\">user</ipxact:fileType>"
         "</ipxact:file>"
         ;
 

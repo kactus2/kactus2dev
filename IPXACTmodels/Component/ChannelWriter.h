@@ -22,7 +22,7 @@
 //-----------------------------------------------------------------------------
 //! Writer class for IP-XACT Channel element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT ChannelWriter : public QObject, public CommonItemsWriter
+class IPXACTMODELS_EXPORT ChannelWriter : public CommonItemsWriter
 {
     Q_OBJECT
 

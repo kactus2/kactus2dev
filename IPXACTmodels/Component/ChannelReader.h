@@ -22,7 +22,7 @@
 //-----------------------------------------------------------------------------
 //! Reader class for IP-XACT Channel element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT ChannelReader : public QObject, public CommonItemsReader
+class IPXACTMODELS_EXPORT ChannelReader : public CommonItemsReader
 {
     Q_OBJECT
 

@@ -7,14 +7,7 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../IPXACTmodels/Component/choice.h \
-    ../../../IPXACTmodels/common/NameGroup.h \
-    ../../../IPXACTmodels/Component/ChoiceReader.h \
-    ../../../IPXACTmodels/common/Array.h \
-    ../../../IPXACTmodels/common/NameGroupReader.h \
-    ../../../IPXACTmodels/common/ParameterReader.h \
-    ../../../IPXACTmodels/common/CommonItemsReader.h \
-    ../../../IPXACTmodels/GenericVendorExtension.h \
+HEADERS += ../../../IPXACTmodels/common/Array.h \
     ../../../IPXACTmodels/common/Assertion.h \
     ../../../IPXACTmodels/common/BuildModel.h \
     ../../../IPXACTmodels/Component/ComponentInstantiation.h \
@@ -22,8 +15,10 @@ HEADERS += ../../../IPXACTmodels/Component/choice.h \
     ../../../IPXACTmodels/common/ConfigurableVLNVReference.h \
     ../../../IPXACTmodels/Component/DesignConfigurationInstantiation.h \
     ../../../IPXACTmodels/Component/DesignInstantiation.h \
+    ../../../IPXACTmodels/Enumeration.h \
     ../../../IPXACTmodels/common/Extendable.h \
     ../../../IPXACTmodels/common/FileBuilder.h \
+    ../../../IPXACTmodels/common/FileTypes.h \
     ../../../IPXACTmodels/GenericVendorExtension.h \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Group.h \
     ../../../IPXACTmodels/common/ModuleParameter.h \
@@ -31,38 +26,29 @@ HEADERS += ../../../IPXACTmodels/Component/choice.h \
     ../../../IPXACTmodels/common/Parameter.h \
     ../../../IPXACTmodels/common/Range.h \
     ../../../IPXACTmodels/common/Vector.h \
+    ../../../IPXACTmodels/XmlUtils.h \
+    ../../../IPXACTmodels/Component/choice.h \
     ../../../IPXACTmodels/vlnv.h \
+    ../../../IPXACTmodels/Component/ChoiceReader.h \
     ../../../IPXACTmodels/common/CommonItemsReader.h \
-    ../../../IPXACTmodels/Component/InstantiationsReader.h \
     ../../../IPXACTmodels/common/ModuleParameterReader.h \
     ../../../IPXACTmodels/common/NameGroupReader.h \
-    ../../../IPXACTmodels/common/ParameterReader.h \
-    ../../../IPXACTmodels/Enumeration.h \
-    ../../../IPXACTmodels/XmlUtils.h \
-    ../../../IPXACTmodels/common/FileTypes.h
-SOURCES += ./tst_ChoiceReader.cpp \
-    ../../../IPXACTmodels/Component/choice.cpp \
-    ../../../IPXACTmodels/common/Array.cpp \
-    ../../../IPXACTmodels/common/NameGroup.cpp \
-    ../../../IPXACTmodels/Component/ChoiceReader.cpp \
-    ../../../IPXACTmodels/common/NameGroupReader.cpp \
-    ../../../IPXACTmodels/common/ParameterReader.cpp \
-    ../../../IPXACTmodels/common/CommonItemsReader.cpp \
-    ../../../IPXACTmodels/GenericVendorExtension.cpp \
-    ../../../IPXACTmodels/vlnv.cpp \
-    ../../../IPXACTmodels/common/FileTypes.cpp \
+    ../../../IPXACTmodels/common/ParameterReader.h
+SOURCES += ../../../IPXACTmodels/common/Array.cpp \
     ../../../IPXACTmodels/common/Assertion.cpp \
     ../../../IPXACTmodels/common/BuildModel.cpp \
+    ../../../IPXACTmodels/Component/ChoiceReader.cpp \
     ../../../IPXACTmodels/common/CommonItemsReader.cpp \
     ../../../IPXACTmodels/Component/ComponentInstantiation.cpp \
     ../../../IPXACTmodels/common/ConfigurableElementValue.cpp \
     ../../../IPXACTmodels/common/ConfigurableVLNVReference.cpp \
     ../../../IPXACTmodels/Component/DesignConfigurationInstantiation.cpp \
     ../../../IPXACTmodels/Component/DesignInstantiation.cpp \
+    ../../../IPXACTmodels/Enumeration.cpp \
     ../../../IPXACTmodels/common/Extendable.cpp \
     ../../../IPXACTmodels/common/FileBuilder.cpp \
+    ../../../IPXACTmodels/common/FileTypes.cpp \
     ../../../IPXACTmodels/GenericVendorExtension.cpp \
-    ../../../IPXACTmodels/Component/InstantiationsReader.cpp \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
     ../../../IPXACTmodels/common/ModuleParameter.cpp \
     ../../../IPXACTmodels/common/ModuleParameterReader.cpp \
@@ -72,7 +58,7 @@ SOURCES += ./tst_ChoiceReader.cpp \
     ../../../IPXACTmodels/common/ParameterReader.cpp \
     ../../../IPXACTmodels/common/Range.cpp \
     ../../../IPXACTmodels/common/Vector.cpp \
-    ../../../IPXACTmodels/vlnv.cpp \
-    ../../../IPXACTmodels/Enumeration.cpp \
     ../../../IPXACTmodels/XmlUtils.cpp \
-    ../../../IPXACTmodels/common/FileTypes.cpp
+    ../../../IPXACTmodels/Component/choice.cpp \
+    ./tst_ChoiceReader.cpp \
+    ../../../IPXACTmodels/vlnv.cpp

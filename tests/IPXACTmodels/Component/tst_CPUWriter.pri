@@ -7,10 +7,7 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../IPXACTmodels/Component/cpu.h \
-    ../../../IPXACTmodels/common/NameGroup.h \
-    ../../../IPXACTmodels/Component/CPUWriter.h \
-    ../../../IPXACTmodels/common/BuildModel.h \
+HEADERS += ../../../IPXACTmodels/common/BuildModel.h \
     ../../../IPXACTmodels/Component/ComponentInstantiation.h \
     ../../../IPXACTmodels/common/ConfigurableElementValue.h \
     ../../../IPXACTmodels/common/ConfigurableVLNVReference.h \
@@ -18,6 +15,7 @@ HEADERS += ../../../IPXACTmodels/Component/cpu.h \
     ../../../IPXACTmodels/Component/DesignInstantiation.h \
     ../../../IPXACTmodels/common/Extendable.h \
     ../../../IPXACTmodels/common/FileBuilder.h \
+    ../../../IPXACTmodels/common/FileTypes.h \
     ../../../IPXACTmodels/GenericVendorExtension.h \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Group.h \
     ../../../IPXACTmodels/common/ModuleParameter.h \
@@ -25,18 +23,16 @@ HEADERS += ../../../IPXACTmodels/Component/cpu.h \
     ../../../IPXACTmodels/common/Parameter.h \
     ../../../IPXACTmodels/common/Range.h \
     ../../../IPXACTmodels/common/Vector.h \
+    ../../../IPXACTmodels/Component/cpu.h \
     ../../../IPXACTmodels/vlnv.h \
+    ../../../IPXACTmodels/Component/CPUWriter.h \
     ../../../IPXACTmodels/common/CommonItemsWriter.h \
-    ../../../IPXACTmodels/Component/InstantiationsWriter.h \
     ../../../IPXACTmodels/common/ModuleParameterWriter.h \
     ../../../IPXACTmodels/common/NameGroupWriter.h \
-    ../../../IPXACTmodels/common/ParameterWriter.h \
-    ../../../IPXACTmodels/common/FileTypes.h
-SOURCES += ./tst_CPUWriter.cpp \
-    ../../../IPXACTmodels/Component/cpu.cpp \
-    ../../../IPXACTmodels/Component/CPUWriter.cpp \
-    ../../../IPXACTmodels/common/Array.cpp \
+    ../../../IPXACTmodels/common/ParameterWriter.h
+SOURCES += ../../../IPXACTmodels/common/Array.cpp \
     ../../../IPXACTmodels/common/BuildModel.cpp \
+    ../../../IPXACTmodels/Component/CPUWriter.cpp \
     ../../../IPXACTmodels/common/CommonItemsWriter.cpp \
     ../../../IPXACTmodels/Component/ComponentInstantiation.cpp \
     ../../../IPXACTmodels/common/ConfigurableElementValue.cpp \
@@ -45,8 +41,8 @@ SOURCES += ./tst_CPUWriter.cpp \
     ../../../IPXACTmodels/Component/DesignInstantiation.cpp \
     ../../../IPXACTmodels/common/Extendable.cpp \
     ../../../IPXACTmodels/common/FileBuilder.cpp \
+    ../../../IPXACTmodels/common/FileTypes.cpp \
     ../../../IPXACTmodels/GenericVendorExtension.cpp \
-    ../../../IPXACTmodels/Component/InstantiationsWriter.cpp \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
     ../../../IPXACTmodels/common/ModuleParameter.cpp \
     ../../../IPXACTmodels/common/ModuleParameterWriter.cpp \
@@ -56,5 +52,6 @@ SOURCES += ./tst_CPUWriter.cpp \
     ../../../IPXACTmodels/common/ParameterWriter.cpp \
     ../../../IPXACTmodels/common/Range.cpp \
     ../../../IPXACTmodels/common/Vector.cpp \
-    ../../../IPXACTmodels/vlnv.cpp \
-    ../../../IPXACTmodels/common/FileTypes.cpp
+    ../../../IPXACTmodels/Component/cpu.cpp \
+    ./tst_CPUWriter.cpp \
+    ../../../IPXACTmodels/vlnv.cpp

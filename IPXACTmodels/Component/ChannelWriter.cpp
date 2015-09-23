@@ -17,7 +17,7 @@
 // Function: ChannelWriter::ChannelWriter()
 //-----------------------------------------------------------------------------
 ChannelWriter::ChannelWriter(QObject* parent /* = 0 */) :
-QObject(parent), CommonItemsWriter(parent)
+CommonItemsWriter(parent)
 {
 
 }
