@@ -12,30 +12,6 @@
 #include "RemapState.h"
 #include "RemapPort.h"
 
-/*
-//-----------------------------------------------------------------------------
-// Function: remapstate::RemapState()
-//-----------------------------------------------------------------------------
-RemapState::RemapState(QDomNode &remapNode):
-NameGroup(),
-remapPorts_(new QList<QSharedPointer<RemapPort> >())
-{
-	for (int i = 0; i < remapNode.childNodes().count(); ++i) {
-
-		QDomNode tempNode = remapNode.childNodes().at(i);
-
-		if (tempNode.nodeName() == QString("spirit:remapPorts")) {
-
-			// go through all the remapPorts
-			for (int j = 0; j < tempNode.childNodes().count(); ++j) {
-				QDomNode remapPortNode = tempNode.childNodes().at(j);
-				remapPorts_->append(QSharedPointer<RemapPort>(
-						new RemapPort(remapPortNode)));
-			}
-		}
-	}
-}*/
-
 //-----------------------------------------------------------------------------
 // Function: RemapState::RemapState()
 //-----------------------------------------------------------------------------

@@ -18,6 +18,8 @@ SUBDIRS += Model\tst_ViewWriter.pro \
 		   Model\tst_InstantiationsReader.pro \
 		   Model\tst_ComponentPortWriter.pro \
 		   Model\tst_ComponentPortReader.pro \
+		   MemoryMaps\tst_EnumeratedValueWriter.pro \
+		   MemoryMaps\tst_EnumeratedValueReader.pro \
 		   tst_CPUReader.pro \
 		   tst_CPUWriter.pro \
 		   tst_FileWriter.pro \
