@@ -21,6 +21,7 @@ SUBDIRS += Model\tst_ViewWriter.pro \
 		   MemoryMaps\tst_EnumeratedValueWriter.pro \
 		   MemoryMaps\tst_EnumeratedValueReader.pro \
 		   MemoryMaps\tst_FieldWriter.pro \
+		   MemoryMaps\tst_FieldReader.pro \
 		   tst_CPUReader.pro \
 		   tst_CPUWriter.pro \
 		   tst_FileWriter.pro \

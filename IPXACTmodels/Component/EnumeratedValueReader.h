@@ -23,7 +23,7 @@
 class EnumeratedValue;
 
 //-----------------------------------------------------------------------------
-//! Reader class for IP-XACT remap state element.
+//! Reader class for IP-XACT enumerated value element.
 //-----------------------------------------------------------------------------
 class IPXACTMODELS_EXPORT EnumeratedValueReader : public CommonItemsReader
 {
