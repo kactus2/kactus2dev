@@ -6,7 +6,7 @@
 // Date: 23.09.2015
 //
 // Description:
-// Describes the ipxact:enumeratedValue element of a register.
+// Describes the ipxact:enumeratedValue element of a field.
 //-----------------------------------------------------------------------------
 
 #include "EnumeratedValue.h"

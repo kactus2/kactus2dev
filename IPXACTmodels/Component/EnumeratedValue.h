@@ -6,7 +6,7 @@
 // Date: 23.09.2015
 //
 // Description:
-// Describes the ipxact:enumeratedValue element of a register.
+// Describes the ipxact:enumeratedValue element of a field.
 //-----------------------------------------------------------------------------
 
 #ifndef ENUMERATEDVALUE_H
@@ -20,7 +20,7 @@
 #include <QString>
 
 //-----------------------------------------------------------------------------
-//! Describes the ipxact:enumeratedValue element of a register.
+//! Describes the ipxact:enumeratedValue element of a field.
 //-----------------------------------------------------------------------------
 class IPXACTMODELS_EXPORT EnumeratedValue : public NameGroup, public Extendable
 {

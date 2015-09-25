@@ -20,6 +20,7 @@ SUBDIRS += Model\tst_ViewWriter.pro \
 		   Model\tst_ComponentPortReader.pro \
 		   MemoryMaps\tst_EnumeratedValueWriter.pro \
 		   MemoryMaps\tst_EnumeratedValueReader.pro \
+		   MemoryMaps\tst_FieldWriter.pro \
 		   tst_CPUReader.pro \
 		   tst_CPUWriter.pro \
 		   tst_FileWriter.pro \
