@@ -8,6 +8,7 @@
 #define WIRE_H_
 
 #include "generaldeclarations.h"
+#include "common/DirectionTypes.h"
 
 #include "ipxactmodels_global.h"
 
@@ -131,7 +132,7 @@ public:
 	 * \param allLogicalDirections Specified is all logical directions are allowed.
 	 *
 	*/
-	Wire(General::Direction direction, int leftBound, int rightBound,
+	Wire(DirectionTypes::Direction direction, int leftBound, int rightBound,
 		const QString& defaultValue, bool allLogicalDirections);
 
     /*!
@@ -196,7 +197,7 @@ public:
 	 *
 	 * \return Enum Direction that specifies the direction
 	 */
-	General::Direction getDirection() const;
+	DirectionTypes::Direction getDirection() const;
 
 	/*! \brief Get the vector element of this port
 	 *
@@ -220,7 +221,7 @@ public:
 	 *
 	 * \param direction The direction to be set.
 	 */
-	void setDirection(General::Direction direction);
+	void setDirection(DirectionTypes::Direction direction);
 
 	/*! \brief Set the vector element for this port
 	 *
@@ -373,7 +374,7 @@ private:
 	 * MANDATORY spirit:direction
 	 * Specifies the direction of this port.
 	 */
-	General::Direction direction_;
+	DirectionTypes::Direction direction_;
 
 	/*!
 	 * OPTIONAL spirit:allLogicalDirectionsAllowed

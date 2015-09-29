@@ -104,7 +104,7 @@ bool Wire::WireTypeDef::isValid( QStringList& errorList,
 	return true;
 }
 
-Wire::Wire(QDomNode &wireNode): direction_(General::DIRECTION_INVALID),
+Wire::Wire(QDomNode &wireNode): direction_(DirectionTypes::DIRECTION_INVALID),
 		allLogicalDirectionsAllowed_(false), vector_(), wireTypeDefs_(),
 		defaultDriverValue_(), defaultValueAttributes_() {
 
@@ -120,10 +120,10 @@ Wire::Wire(QDomNode &wireNode): direction_(General::DIRECTION_INVALID),
 		QDomNode tempNode = wireNode.childNodes().at(i);
 
 		if (tempNode.nodeName() ==	QString("spirit:direction")) {
-			direction_ = General::str2Direction(
+			direction_ = DirectionTypes::str2Direction(
 				XmlUtils::removeWhiteSpace(tempNode.childNodes().at(0).
 					nodeValue()),
-					General::DIRECTION_INVALID);
+					DirectionTypes::DIRECTION_INVALID);
 		}
 
 		// get spirit:vector node and parse left and right values
@@ -208,13 +208,13 @@ Wire & Wire::operator=( const Wire &other ) {
 }
 
 
-Wire::Wire(): direction_(General::DIRECTION_INVALID),
+Wire::Wire(): direction_(DirectionTypes::DIRECTION_INVALID),
 allLogicalDirectionsAllowed_(false), vector_(), wireTypeDefs_(),
 defaultDriverValue_(), defaultValueAttributes_() {
 
 }
 
-Wire::Wire( General::Direction direction, 
+Wire::Wire( DirectionTypes::Direction direction, 
 		   int leftBound, 
 		   int rightBound, 
 		   const QString& defaultValue, 
@@ -240,7 +240,7 @@ void Wire::write( QXmlStreamWriter& writer, const QStringList& viewNames ) {
 	writer.writeAttribute("spirit:allLogicalDirectionsAllowed",
 			General::bool2Str(allLogicalDirectionsAllowed_));
 
-	writer.writeTextElement("spirit:direction", General::direction2Str(direction_));
+	writer.writeTextElement("spirit:direction", DirectionTypes::direction2Str(direction_));
 
 	// if optional element spirit:vector is defined
 	if (vector_) {
@@ -315,7 +315,7 @@ void Wire::write( QXmlStreamWriter& writer, const QStringList& viewNames ) {
 bool Wire::isValid(bool hasViews) const {
 
 	// if direction is not specified
-	if (direction_ == General::DIRECTION_INVALID)
+	if (direction_ == DirectionTypes::DIRECTION_INVALID)
 		return false;
 
 	// if vector exists but is not valid
@@ -345,7 +345,7 @@ bool Wire::isValid( bool hasViews,
 
 	bool valid = true;
 
-	if (direction_ == General::DIRECTION_INVALID) {
+	if (direction_ == DirectionTypes::DIRECTION_INVALID) {
 		errorList.append(QObject::tr("No direction set in wire within %1").arg(parentIdentifier));
 		valid = false;
 	}
@@ -371,7 +371,7 @@ bool Wire::isValid( bool hasViews,
 	return valid;
 }
 
-General::Direction Wire::getDirection() const {
+DirectionTypes::Direction Wire::getDirection() const {
 	return direction_;
 }
 
@@ -395,7 +395,7 @@ void Wire::setVector(Vector* vector) {
 	vector_ = QSharedPointer<Vector>(vector);
 }
 
-void Wire::setDirection(General::Direction direction) {
+void Wire::setDirection(DirectionTypes::Direction direction) {
 	direction_ = direction;
 }
 

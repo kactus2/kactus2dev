@@ -27,7 +27,7 @@
 // the constructor
 Port::Port(QDomNode &portNode): 
 NameGroup(), 
-portType_(General::WIRE),
+portType_(DirectionTypes::WIRE),
 wire_(),
 transactional_(),
 portAccessHandle_(), 
@@ -45,12 +45,12 @@ vendorExtensions_()
 
 		if (tempNode.nodeName() == QString("spirit:wire")) 
         {
-            portType_ = General::WIRE;
+            portType_ = DirectionTypes::WIRE;
 			wire_ = QSharedPointer<Wire>(new Wire(tempNode));
 		}
 		else if (tempNode.nodeName() == QString("spirit:transactional")) 
         {
-            portType_ = General::TRANSACTIONAL;
+            portType_ = DirectionTypes::TRANSACTIONAL;
 			transactional_ = QSharedPointer<Transactional>(new Transactional(tempNode));
 		}
 
@@ -165,7 +165,7 @@ Port & Port::operator=( const Port &other ) {
 //-----------------------------------------------------------------------------
 Port::Port():
 NameGroup(), 
-portType_(General::WIRE),
+portType_(DirectionTypes::WIRE),
 wire_(),
 transactional_(),
 portAccessHandle_(),
@@ -185,13 +185,13 @@ vendorExtensions_()
 // Function: Port::Port()
 //-----------------------------------------------------------------------------
 Port::Port( const QString& name, 
-		   General::Direction direction, 
+		   DirectionTypes::Direction direction, 
 		   int leftBound, 
 		   int rightBound, 
 		   const QString& defaultValue, 
 		   bool allLogicalDirections ):
 NameGroup(name), 
-portType_(General::WIRE),
+portType_(DirectionTypes::WIRE),
 wire_(), 
 transactional_(),
 portAccessHandle_(),
@@ -211,7 +211,7 @@ vendorExtensions_()
 // Function: Port::Port()
 //-----------------------------------------------------------------------------
 Port::Port( const QString& name,
-		   General::Direction direction, 
+		   DirectionTypes::Direction direction, 
 		   int leftBound,
 		   int rightBound,
 		   const QString& typeName, 
@@ -219,7 +219,7 @@ Port::Port( const QString& name,
 		   const QString& defaultValue,
 		   const QString& description ):
 NameGroup(name, QString(), description),
-portType_(General::WIRE),
+portType_(DirectionTypes::WIRE),
 wire_(),
 transactional_(),
 portAccessHandle_(),
@@ -268,13 +268,13 @@ void Port::write(QXmlStreamWriter& writer, const QStringList& viewNames)
 
 	// write the port type element (spirit:wire or spirit:transactional)
 	switch (portType_) {
-	case General::WIRE: {
+	case DirectionTypes::WIRE: {
 		if (wire_) {
 			wire_->write(writer, viewNames);
 		}
 		break;
 	}
-	case General::TRANSACTIONAL: {
+	case DirectionTypes::TRANSACTIONAL: {
 		if (transactional_) {
 			transactional_->write(writer);
 		}
@@ -317,11 +317,11 @@ bool Port::isValid(bool hasViews) const {
 		return false;
 
 	// if port is type wire but the element is not defined.
-	if (portType_ == General::WIRE && !wire_)
+	if (portType_ == DirectionTypes::WIRE && !wire_)
 		return false;
 
 	// if port is type transactional but element is not defined.
-	if (portType_ == General::TRANSACTIONAL && !transactional_)
+	if (portType_ == DirectionTypes::TRANSACTIONAL && !transactional_)
 		return false;
 
 	if (wire_)
@@ -342,13 +342,13 @@ bool Port::isValid( bool hasViews,
 		valid = false;
 	}
 
-	if (portType_ == General::WIRE && !wire_) {
+	if (portType_ == DirectionTypes::WIRE && !wire_) {
 		errorList.append(QObject::tr("Port is type wire but has no wire-element within %1").arg(
 			parentIdentifier));
 		valid = false;
 	}
 
-	if (portType_ == General::TRANSACTIONAL && !transactional_) {
+	if (portType_ == DirectionTypes::TRANSACTIONAL && !transactional_) {
 		errorList.append(QObject::tr("Port is type transactional but has no "
 			"transactional-element within %1").arg(parentIdentifier));
 		valid = false;
@@ -375,7 +375,7 @@ void Port::setTransactional(Transactional *transactional) {
 	}
 
 	// change the port type
-    portType_ = General::TRANSACTIONAL;
+    portType_ = DirectionTypes::TRANSACTIONAL;
 	transactional_ = QSharedPointer<Transactional>(transactional);
 }
 
@@ -383,7 +383,7 @@ Transactional *Port::getTransactional() const {
 	return transactional_.data();
 }
 
-General::PortType Port::getPortType() const {
+DirectionTypes::PortType Port::getPortType() const {
 	return portType_;
 }
 
@@ -403,7 +403,7 @@ void Port::setWire(Wire *wire) {
 	}
 
 	// change the port type
-    portType_ = General::WIRE;
+    portType_ = DirectionTypes::WIRE;
 	wire_ = QSharedPointer<Wire>(wire);
 }
 
@@ -470,18 +470,19 @@ void Port::setDefaultValue( const QString& defaultValue ) {
 	else {
 		wire_ = QSharedPointer<Wire>(new Wire());
 		wire_->setDefaultDriverValue(defaultValue);
-		portType_ = General::WIRE;
+		portType_ = DirectionTypes::WIRE;
 	}
 }
 
-General::Direction Port::getDirection() const {
+DirectionTypes::Direction Port::getDirection() const {
 	if (wire_) {
 		return wire_->getDirection();
 	}
-	return General::DIRECTION_INVALID;
+	return DirectionTypes::DIRECTION_INVALID;
 }
 
-bool Port::allLogicalDirectionsAllowed() const {
+bool Port::allLogicalDirectionsAllowed() const
+{
 	
 	if (wire_)
 		return wire_->getAllLogicalDirectionsAllowed();
@@ -489,7 +490,8 @@ bool Port::allLogicalDirectionsAllowed() const {
 	return false;
 }
 
-void Port::setDirection( General::Direction direction ) {
+void Port::setDirection( DirectionTypes::Direction direction )
+{
 
 	// if wire has been specified
 	if (wire_)
@@ -500,7 +502,7 @@ void Port::setDirection( General::Direction direction ) {
 	else 
     {
 		wire_ = QSharedPointer<Wire>(new Wire());
-		portType_ = General::WIRE;
+		portType_ = DirectionTypes::WIRE;
 		wire_->setDirection(direction);
 	}
 }
@@ -514,7 +516,7 @@ void Port::setLeftBound( int leftBound ) {
 	else {
 		wire_ = QSharedPointer<Wire>(new Wire());
 		wire_->setLeftBound(leftBound);
-		portType_ = General::WIRE;
+		portType_ = DirectionTypes::WIRE;
 	}
 }
 
@@ -526,7 +528,7 @@ void Port::setRightBound( int rightBound ) {
 	else {
 		wire_ = QSharedPointer<Wire>(new Wire());
 		wire_->setRightBound(rightBound);
-		portType_ = General::WIRE;
+		portType_ = DirectionTypes::WIRE;
 	}
 }
 
@@ -538,7 +540,7 @@ void Port::setLeftBoundExpression(QString const& expression)
     if (!wire_)
     {
         wire_ = QSharedPointer<Wire>(new Wire());
-        portType_ = General::WIRE;
+        portType_ = DirectionTypes::WIRE;
     }
 
     wire_->setLeftBoundExpression(expression);
@@ -552,7 +554,7 @@ void Port::setRightBoundExpression(QString const& expression)
     if (!wire_)
     {
         wire_ = QSharedPointer<Wire>(new Wire());
-        portType_ = General::WIRE;
+        portType_ = DirectionTypes::WIRE;
     }
 
     wire_->setRightBoundExpression(expression);
@@ -609,7 +611,7 @@ void Port::setAllLogicalDirectionsAllowed( bool allowed ) {
     {
 		wire_ = QSharedPointer<Wire>(new Wire());
 		wire_->setAllLogicalDirectionsAllowed(allowed);
-		portType_ = General::WIRE;
+		portType_ = DirectionTypes::WIRE;
 	}
 }
 
@@ -630,7 +632,7 @@ void Port::setTypeName( const QString& typeName, const QString& viewName /*= QSt
 	}
 	else {
 		wire_ = QSharedPointer<Wire>(new Wire());
-		portType_ = General::WIRE;
+		portType_ = DirectionTypes::WIRE;
 		wire_->setTypeName(typeName, viewName);
 	}
 }
@@ -659,7 +661,7 @@ void Port::setTypeDefinition( const QString& typeName, const QString& typeDefini
 	}
 	else {
 		wire_ = QSharedPointer<Wire>(new Wire());
-		portType_ = General::WIRE;
+		portType_ = DirectionTypes::WIRE;
 		wire_->setTypeDefinition(typeName, typeDefinition);
 	}
 }
@@ -687,7 +689,7 @@ void Port::useDefaultVhdlTypes() {
 	if (!wire_) 
     {
 		wire_ = QSharedPointer<Wire>(new Wire());
-		portType_ = General::WIRE;
+		portType_ = DirectionTypes::WIRE;
 	}
 
 	int size = getPortSize();

@@ -12,6 +12,7 @@
 
 #include <IPXACTmodels/common/NameGroup.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Array.h>
+#include <IPXACTmodels/common/DirectionTypes.h>
 
 #include <QString>
 #include <QDomNode>
@@ -70,7 +71,7 @@ public:
 	 * 
 	*/
 	Port(const QString& name, 
-		General::Direction direction,
+		DirectionTypes::Direction direction,
 		int leftBound, 
 		int rightBound, 
 		const QString& defaultValue,
@@ -89,7 +90,7 @@ public:
 	 *
 	*/
 	Port(const QString& name, 
-		General::Direction direction,
+		DirectionTypes::Direction direction,
 		int leftBound, 
 		int rightBound, 
 		const QString& typeName,
@@ -155,7 +156,7 @@ public:
 	 *
 	 * \return PortType: WIRE or TRANSACTIONAL
 	 */
-	General::PortType getPortType() const;
+	DirectionTypes::PortType getPortType() const;
 
 	/*! \brief Get pointer to the transactional element
 	 *
@@ -240,7 +241,7 @@ public:
      *
      * \return Enum direction defining the direction.
      */
-    General::Direction getDirection() const;
+    DirectionTypes::Direction getDirection() const;
 
 	/*! \brief Get the value of spirit:allLogicalDirectionsAllowed in spirit:wire
 	 *
@@ -254,7 +255,7 @@ public:
 	 *
 	 * \return void
 	*/
-	void setDirection(General::Direction direction);
+	void setDirection(DirectionTypes::Direction direction);
 
 	/*! \brief Set the left bound of the port
 	 *
@@ -522,7 +523,7 @@ private:
 	/*!
 	 * Defines the port type
 	 */
-	General::PortType portType_;
+	DirectionTypes::PortType portType_;
 
 	/*!
 	 * MANDATORY (wire OR Transactional must be found) (spirit:transactional)

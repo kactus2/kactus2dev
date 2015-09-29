@@ -7,21 +7,21 @@
 #ifndef BUSINTERFACE_H_
 #define BUSINTERFACE_H_
 
-#include"vlnv.h"
-#include "generaldeclarations.h"
-#include "common/Parameter.h"
+#include "../vlnv.h"
+#include "../generaldeclarations.h"
+#include "../common/Parameter.h"
 
-#include "ipxactmodels_global.h"
+#include "../ipxactmodels_global.h"
  
 #include <IPXACTmodels/common/NameGroup.h>
+#include <IPXACTmodels/common/Extendable.h>
 #include <IPXACTmodels/PortMap.h>
+#include <IPXACTmodels/common/ConfigurableVLNVReference.h>
 
-#include <QDomNode>
 #include <QString>
 #include <QList>
 #include <QSharedPointer>
 #include <QMap>
-#include <QXmlStreamWriter>
 #include <QStringList>
 #include <QPointF>
 
@@ -35,7 +35,8 @@ class MirroredSlaveInterface;
  *
  * BusInterface defines properties of the specific interface in a component.
  */
-class IPXACTMODELS_EXPORT BusInterface : public NameGroup {
+class IPXACTMODELS_EXPORT BusInterface : public NameGroup, public Extendable
+{
 
 public:
 
@@ -48,7 +49,8 @@ public:
 	 * \exception Parse_error Occurs when a mandatory element is missing in
 	 * this class or one of it's member classes.
 	 */
-	struct MonitorInterface {
+	struct MonitorInterface
+	{
 
 		/*! \brief MANDATORY spirit:interfaceMode
 		 * Defines the interface mode for which this monitor interface can be
@@ -61,31 +63,39 @@ public:
 		 */
 		QString group_;
 
-		/*! \brief The constructor
-		 *
-		 * \param monitorNode A reference to a QDomNode to parse the
-		 * information from.
-		 */
-		MonitorInterface(QDomNode& monitorNode);
-
 		/*! \brief The default contructor
 		 *
 		*/
 		IPXACTMODELS_EXPORT MonitorInterface();
 	};
-
-	/*! \brief The constructor
-	 *
-	 * \param busInterface A reference to a QDomNode to parse the information
-	 * from.
-	 * \param isBus A reference to a boolean variable in Component to specify
-	 * if the component is a bus or normal component.
-	 *
-	 * Exception guarantee: basic
-	 * \exception Parse_error Occurs when a mandatory element is missing in
-	 * this class or one of it's member classes.
+	
+	/*!
+	 * Class used to store portmaps and references associated with an abstraction type.
 	 */
-	BusInterface(QDomNode &busInterface);
+	class AbstractionType
+	{
+		public:
+			//! Specifies views where the abstraction type applies.
+			QString viewRef_;
+
+			//! Reference to an abstraction description for this abstractor instance.
+			QSharedPointer<ConfigurableVLNVReference> abstractionRef_;
+
+			/*!
+			 * Describes the mapping between the abstraction definition's
+			 * logical ports and components physical ports.
+			 */
+			QList<QSharedPointer<PortMap> > portMaps_;
+			
+			//! Default constructor
+			AbstractionType(){}
+
+			//! Copy constructor
+			AbstractionType(const AbstractionType &other);
+
+			//! Assignment operator
+			AbstractionType &operator=(const AbstractionType &other);
+	};
 
 	/*! \brief Default constructor
 	 *
@@ -103,15 +113,19 @@ public:
 	 */
 	~BusInterface();
 
-	/*! \brief Write the contents of the class using the writer.
-	*
-	* Uses the specified writer to write the class contents into file as valid
-	* IP-Xact.
-	*
-	* \param writer A reference to a QXmlStreamWrite instance that is used to
-	* write the document into file.
-	*/
-	void write(QXmlStreamWriter& writer);
+    /*!
+     *  Gets the presence.
+     *
+     *      @return The presence value.
+     */
+    QString getIsPresent() const;
+
+    /*!
+     *  Set the presence.
+     *
+     *      @param [in] newIsPresent    The new presence value.
+     */
+    void setIsPresent(QString const& newIsPresent);
 
 	/*! \brief Check if the bus interface is in a valid state.
 	 *
@@ -141,13 +155,6 @@ public:
 	*/
 	bool isValid(const QList<General::PortBounds>& physicalPorts, QStringList const& memoryMaps,
         QStringList const& addressSpaces, QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const;
-
-	/*! \brief get the vlnv to the abstraction definition
-	 *
-	 * \return The vlnv tag of the abstraction definition where this bus interface
-	 * is referenced.
-	 */
-	VLNV getAbstractionType() const;
 
 	/*! \brief Get the list of the bitSteering attributes
 	 *
@@ -205,13 +212,11 @@ public:
 	 */
 	QList<QSharedPointer<PortMap> >& getPortMaps();
 
-	/*! \brief Set the abstractionType for this interface
+	/*! \brief Get the abstraction types for this interface
 	 *
-	 * Calling this function deletes the old abstraction type element.
-	 *
-	 * \param abstractionType The vlnv of the abstraction definition
+	 * \return A QList holding the abstraction types for this interface.
 	 */
-	void setAbstractionType(const VLNV& abstractionType);
+	QList<QSharedPointer<AbstractionType> >& getAbstractionTypes();
 
 	/*! \brief set the bit steering attributes for this interface
 	 *
@@ -271,6 +276,14 @@ public:
 	 * \param portMaps A QList holding the port maps for this interface.
 	 */
     void setPortMaps(QList<QSharedPointer<PortMap> > const& portMaps);
+
+	/*! \brief Set the port maps for this interface
+	 *
+	 * Calling this function deletes the old abstraction types.
+	 *
+	 * \param abstractionTypes A QList holding the abstraction types for this interface.
+	 */
+    void setAbstractionTypes(QList<QSharedPointer<AbstractionType> > const& abstractionTypes);
 
 	/*! \brief Get the pointer to the master-element
 	 *
@@ -479,6 +492,8 @@ public:
 	QString getAddressSpaceRef() const;
 
 private:
+	//! Presence of the businterface.
+	QString isPresent_;
 
 	//! \brief Contains the attributes for the bus interface
 	QMap<QString, QString> attributes_;
@@ -487,11 +502,6 @@ private:
 	 * MANDATORY
 	 */
 	VLNV busType_;
-
-	/*! \brief Specifies abstraction definition this bus interface references.
-	 * OPTIONAL
-	 */
-	VLNV abstractionType_;
 
 	/*! \brief Describes further information on the mode for this interface.
 	 * OPTIONAL
@@ -504,13 +514,6 @@ private:
 	 * (false by default)
 	 */
 	bool connectionRequired_;
-
-	/*! \brief Contains the mapping of the ports.
-	 * OPTIONAL
-	 * Describes the mapping between the abstraction definition's
-	 * logical ports and components physical ports.
-	 */
-	QList<QSharedPointer<PortMap> > portMaps_;
 
 	/*!\brief Number of data bits addressable in the bus interface.
 	 * OPTIONAL
@@ -570,7 +573,10 @@ private:
 	QSharedPointer<MirroredSlaveInterface> mirroredSlave_;
 
     //! The default position in the parent component's graphical representation (optional).
-    QPointF defaultPos_;
+	QPointF defaultPos_;
+
+	//! List of abstraction types existing within this object.
+	QList<QSharedPointer<AbstractionType> > abstractionTypes_;
 };
 
 #endif /* BUSINTERFACE_H_ */

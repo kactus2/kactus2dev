@@ -33,5 +33,7 @@ SUBDIRS += Model\tst_ViewWriter.pro \
 		   tst_ChannelWriter.pro \
 		   tst_ChoiceReader.pro \
 		   tst_ChoiceWriter.pro \
+		   tst_businterfaceReader.pro \
+		   tst_businterfaceWriter.pro \
 		   tst_RemapStateWriter.pro \
 		   tst_RemapStateReader.pro

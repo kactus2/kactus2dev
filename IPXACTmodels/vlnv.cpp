@@ -278,10 +278,10 @@ QString VLNV::toString(QString const& separator) const
 //-----------------------------------------------------------------------------
 void VLNV::writeAsElements(QXmlStreamWriter& writer) const
 {
-    writer.writeTextElement("spirit:vendor", getVendor());
-    writer.writeTextElement("spirit:library", getLibrary());
-    writer.writeTextElement("spirit:name", getName());
-    writer.writeTextElement("spirit:version", getVersion());
+    writer.writeTextElement("ipxact:vendor", getVendor());
+    writer.writeTextElement("ipxact:library", getLibrary());
+    writer.writeTextElement("ipxact:name", getName());
+    writer.writeTextElement("ipxact:version", getVersion());
 }
 
 //-----------------------------------------------------------------------------
@@ -289,10 +289,10 @@ void VLNV::writeAsElements(QXmlStreamWriter& writer) const
 //-----------------------------------------------------------------------------
 void VLNV::writeAsAttributes(QXmlStreamWriter& writer) const
 {
-    writer.writeAttribute("spirit:vendor", getVendor());
-    writer.writeAttribute("spirit:library", getLibrary());
-    writer.writeAttribute("spirit:name", getName());
-    writer.writeAttribute("spirit:version", getVersion());
+    writer.writeAttribute("vendor", getVendor());
+    writer.writeAttribute("library", getLibrary());
+    writer.writeAttribute("name", getName());
+    writer.writeAttribute("version", getVersion());
 }
 
 //-----------------------------------------------------------------------------
@@ -411,7 +411,7 @@ VLNV::IPXactType VLNV::string2Type(QString const& type)
     {
 		return BUSDEFINITION;
 	}
-	else if (QString::compare(type, "spirit:abstractor", Qt::CaseInsensitive) == 0)
+	else if (QString::compare(type, "ipxact:abstractor", Qt::CaseInsensitive) == 0)
     {
 		return ABSTRACTOR;
 	}
@@ -427,7 +427,7 @@ VLNV::IPXactType VLNV::string2Type(QString const& type)
     {
 		return DESIGNCONFIGURATION;
 	}
-	else if (QString::compare(type, "spirit:generatorChain", Qt::CaseInsensitive) == 0)
+	else if (QString::compare(type, "ipxact:generatorChain", Qt::CaseInsensitive) == 0)
     {
 		return GENERATORCHAIN;
 	}
@@ -454,19 +454,19 @@ QString VLNV::IPXactType2String(IPXactType const& type)
 	switch (type)
     {
     case BUSDEFINITION:
-        return QObject::tr("spirit:busDefinition");
+        return QObject::tr("ipxact:busDefinition");
     case COMPONENT:
-        return QObject::tr("spirit:component");
+        return QObject::tr("ipxact:component");
     case DESIGN:
-        return QObject::tr("spirit:design");
+        return QObject::tr("ipxact:design");
     case GENERATORCHAIN:
-        return QObject::tr("spirit:generatorChain");
+        return QObject::tr("ipxact:generatorChain");
     case ABSTRACTOR:
-        return QObject::tr("spirit:abstractor");
+        return QObject::tr("ipxact:abstractor");
     case DESIGNCONFIGURATION:
-        return QObject::tr("spirit:designConfiguration");
+        return QObject::tr("ipxact:designConfiguration");
     case ABSTRACTIONDEFINITION:
-        return QObject::tr("spirit:abstractionDefinition");
+        return QObject::tr("ipxact:abstractionDefinition");
     case COMDEFINITION:
         return QObject::tr("kactus2:comDefinition");
     case APIDEFINITION:
@@ -483,10 +483,10 @@ VLNV VLNV::createVLNV(const QDomNode& node, IPXactType type)
 {
     // the vlnv info is found as attributes in the node
     QDomNamedNodeMap attributeMap = node.attributes();
-    QString vendor = attributeMap.namedItem("spirit:vendor").nodeValue();
-    QString library = attributeMap.namedItem("spirit:library").nodeValue();
-    QString name = attributeMap.namedItem("spirit:name").nodeValue();
-    QString version = attributeMap.namedItem("spirit:version").nodeValue();
+    QString vendor = attributeMap.namedItem("ipxact:vendor").nodeValue();
+    QString library = attributeMap.namedItem("ipxact:library").nodeValue();
+    QString name = attributeMap.namedItem("ipxact:name").nodeValue();
+    QString version = attributeMap.namedItem("ipxact:version").nodeValue();
 
     // if invalid vlnv tag
     if (vendor.isEmpty() || library.isEmpty() || name.isEmpty() || version.isEmpty()) 

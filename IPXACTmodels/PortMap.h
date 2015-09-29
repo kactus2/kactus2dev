@@ -17,6 +17,8 @@
 #include "generaldeclarations.h"
 
 #include <QSharedPointer>
+#include <IPXACTmodels/common/Range.h>
+#include <IPXACTmodels/common/PartSelect.h>
 
 class Port;
 class Vector;
@@ -31,21 +33,38 @@ class Vector;
 class IPXACTMODELS_EXPORT PortMap {
 
 public:
+	//! The logical port of the port map.
+	struct LogicalPort
+	{
+		//! The name associated with the port.
+		QString name_;
+		//! The range of the port.
+		QSharedPointer<Range> range_;
+
+		/*! \brief The default constructor.
+		 *
+		*/
+		IPXACTMODELS_EXPORT  LogicalPort(){}
+	};
+
+	//! The physical port of the port map.
+	struct PhysicalPort
+	{
+		//! The name associated with the port.
+		QString name_;
+		//! The selected physical port mapping.
+		QSharedPointer<PartSelect> partSelect_;
+
+		/*! \brief The default constructor.
+		 *
+		*/
+		IPXACTMODELS_EXPORT  PhysicalPort(){}
+	};
+
     /*! \brief Default constructor
 	 *
 	 */
 	PortMap();
-
-    /*! \brief The constructor
-	 *
-	 * \param portMap a reference to the QDomNode that can used to parse the
-	 * information from.
-	 *
-	 * Exception guarantee: basic
-	 * \exception Parse_error Occurs if a mandatory element is missing in
-	 * this portMap or one of it's members.
-	 */
-	PortMap(QDomNode &portMap);
 
 	//! \brief The copy constructor
 	PortMap(const PortMap& other);
@@ -60,175 +79,58 @@ public:
 	 * \return Reference to this PortMap
 	*/
 	PortMap& operator=(const PortMap& other);
-
-	/*! \brief Check if the port map is in a valid state.
-	 *
-	 * \param physicalPorts List of the physical ports of the component and their bounds.
-	 * \param errorList The list to add the possible error messages to.
-	 * \param parentIdentifier String from parent to help to identify the location of the error.
-	 *
-	 * \return bool True if the state is valid and writing is possible.
-	*/
-	bool isValid(const QList<General::PortBounds>& physicalPorts, 
-		QStringList& errorList, 
-		const QString& parentIdentifier) const;
-
-	/*! \brief Check if the port map is in a valid state.
-	 * 
-	 * \param physicalPorts List of the physical ports of the component and their bounds.
-	 * 
-	 * \return bool True if the state is valid and writing is possible.
-	*/
-	bool isValid(const QList<General::PortBounds>& physicalPorts) const;
-
-
-    /*!
-     *  Writes the port map element to xml.
-     *
-     *      @param [in] writer   The writer to use for writing.     
-     */
-    void write(QXmlStreamWriter& writer) const;
-
-    /*!
-     *  Gets the physical range in the port map.
-     *
-     *      @param [in] referencedPhysicalPort   The physical port referenced in the port map 
-     *                                           in the component containing the port map.
-     *
-     *      @return The physical range in the port map.
-     */
-    General::PortBounds getPhysicalRange(QSharedPointer<Port> referencedPhysicalPort) const;
-
-    /*!
-     *  Gets the logical range in the port map.
-     *
-     *      @param [in] referencedPhysicalPort   The physical port referenced in the port map 
-     *                                           in the component containing the port map.
-     *
-     *      @return The logical range in the port map.
-     */
-    General::PortBounds getLogicalRange(QSharedPointer<Port> referencedPhysicalPort) const;
     
     /*!
      *  Gets the name of the logical port in the port map.
      *
      *      @return The name of the logical port.
      */
-    QString logicalPort() const;
+    QSharedPointer<LogicalPort> getLogicalPort() const;
 
     /*!
      *  Sets the name of the logical port in the port map.
      *
      *      @param [in] logicalPort   The name to set.
      */
-    void setLogicalPort(QString const& logicalPort);
-
-    /*!
-     *  Gets the logical vector in the port map.
-     *
-     *      @return The logical vector.
-     */
-    QSharedPointer<Vector> logicalVector() const;
-
-    /*!
-     *  Gets the left bound for the logical port.
-     *
-     *      @return The left bound for the logical port or -1 if not set.
-     */
-    int getLogicalLeft() const;
-
-    /*!
-     *  Sets the left bound for the logical port.
-     *
-     *      @param [in] left   The left bound to set.
-     */
-    void setLogicalLeft(int left);
-
-    /*!
-     *  Gets the right bound for the logical port.
-     *
-     *      @return The right bound for the logical port or -1 if not set.
-     */
-    int getLogicalRight() const;
-
-    /*!
-     *  Sets the right bound for the logical port.
-     *
-     *      @param [in] right   The right bound to set.
-     */
-    void setLogicalRight(int right);
+    void setLogicalPort(QSharedPointer<LogicalPort> logicalPort);
 
     /*!
      *  Gets the name of the physical port in the port map.
      *
      *      @return The name of the physical port.
      */
-    QString physicalPort() const;
+    QSharedPointer<PhysicalPort> getPhysicalPort() const;
 
     /*!
      *  Sets the name of the physical port in the port map.
      *
      *      @param [in] physical   The name to set.
      */
-    void setPhysicalPort(QString const& physicalPort);
-
+    void setPhysicalPort(QSharedPointer<PhysicalPort> physicalPort);
+	
     /*!
-     *  Gets the physical vector in the port map.
+     *  Gets the logical tie off.
      *
-     *      @return The physical vector.
+     *     @return    The logical tie off.
      */
-    QSharedPointer<Vector> physicalVector() const;
-
+	QString getLogicalTieOff() const;
+	
     /*!
-     *  Gets the left bound for the physical port.
+     *  Sets the logical tie off.
      *
-     *      @return The left bound for the physical port or -1 if not set.
+     *      @param [in] logicalTieOff   The new logical tie off.
      */
-    int getPhysicalLeft() const;
-
-    /*!
-     *  Sets the left bound for the physical port.
-     *
-     *      @param [in] left   The right bound to set.
-     */
-    void setPhysicalLeft(int left);
-
-    /*!
-     *  Gets the right bound for the physical port.
-     *
-     *      @return The right bound for the physical port or -1 if not set.
-     */
-    int getPhysicalRight() const;
-
-    /*!
-     *  Sets the right bound for the physical port.
-     *
-     *      @param [in] right   The right bound to set.
-     */
-    void setPhysicalRight(int right);
+	void setLogicalTieOff(QString logicalTieOff);
 
 private:
 	//! MANDATORY Name of the logical port
-	QString logicalPort_;
+	QSharedPointer<LogicalPort> logicalPort_;
    
     //!MANDATORY Name of the physical port
-    QString physicalPort_;
+    QSharedPointer<PhysicalPort> physicalPort_;
          
-	/*! \brief The optional vector element for the logical Port
-	 *
-	 * If this element exists then the port is vectored and it's type is
-	 * std_logic_vector. This element specifies the left and right bound of the
-	 * vectored port.
-	 */
-	QSharedPointer<Vector> logicalVector_;
-
-    /*! \brief The optional vector element for the physical port.
-	 *
-	 * If this element exists then the port is vectored and it's type is
-	 * std_logic_vector. This element specifies the left and right bound of the
-	 * vectored port.
-	 */
-	QSharedPointer<Vector> physicalVector_;
+	//! The logical tie off.
+	QString logicalTieOff_;
 };
 
 #endif // PORTMAP_H

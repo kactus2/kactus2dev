@@ -5,274 +5,67 @@
  */
 
 #include "businterface.h"
-#include "generaldeclarations.h"
-#include "masterinterface.h"
-#include "mirroredslaveinterface.h"
-#include "slaveinterface.h"
-#include "PortMap.h"
-#include "XmlUtils.h"
-#include"vlnv.h"
-
-#include <IPXACTmodels/common/ParameterReader.h>
-#include <IPXACTmodels/common/ParameterWriter.h>
+#include "../generaldeclarations.h"
+#include "../masterinterface.h"
+#include "../mirroredslaveinterface.h"
+#include "../slaveinterface.h"
+#include "../PortMap.h"
+#include "../vlnv.h"
 
 #include <QString>
 #include <QList>
-#include <QDomNamedNodeMap>
 #include <QSharedPointer>
 #include <QObject>
-#include <QXmlStreamWriter>
 
 #include <QDebug>
 
 const int DEFAULT_BITS_IN_LAU = 8;
 
 // struct constructor
-BusInterface::MonitorInterface::MonitorInterface(QDomNode& monitorNode): 
-interfaceMode_(General::MONITOR),
-group_()
-{
-	// get the interfaceMode attribute
-	QDomNamedNodeMap attributeMap = monitorNode.attributes();
-	QString interfaceMode = attributeMap.namedItem(QString(
-			"spirit:interfaceMode")).nodeValue();
-	interfaceMode = XmlUtils::removeWhiteSpace(interfaceMode);
-
-	interfaceMode_ = General::str2Interfacemode(interfaceMode,
-			General::MONITOR);
-
-	// get the monitor group element
-	for (int i = 0; i < monitorNode.childNodes().count(); ++i) {
-		if (monitorNode.childNodes().at(i).nodeName() == QString(
-				"spirit:group")) {
-			group_ = monitorNode.childNodes().at(i).childNodes().at(0).
-					nodeValue();
-			group_ = XmlUtils::removeWhiteSpace(group_);
-		}
-	}
-}
-
 BusInterface::MonitorInterface::MonitorInterface(): 
-interfaceMode_(General::MONITOR),
-group_() {
+interfaceMode_(General::MONITOR), group_()
+{
 }
 
-// class constructor
-BusInterface::BusInterface(QDomNode &busInterface):
-NameGroup(),
-attributes_(),
-busType_(), abstractionType_(),
-interfaceMode_(General::INTERFACE_MODE_COUNT),
-connectionRequired_(false), portMaps_(),
-bitsInLau_(DEFAULT_BITS_IN_LAU),
-bitSteering_(General::BITSTEERING_UNSPECIFIED),
-bitSteeringAttributes_(),
-endianness_(General::LITTLE),
-parameters_(new QList<QSharedPointer<Parameter> >()),
-master_(), slave_(), system_(),
-monitor_() {
+BusInterface::AbstractionType::AbstractionType( const BusInterface::AbstractionType &other ):
+	abstractionRef_(other.abstractionRef_),
+	portMaps_()
+{
+	foreach (QSharedPointer<PortMap> portMap, other.portMaps_) {
+		if (portMap) {
+			QSharedPointer<PortMap> copy = QSharedPointer<PortMap>(
+				new PortMap(*portMap.data()));
+			portMaps_.append(copy);
+		}
+	}
+}
 
-	// get the attributes for the bus interface
-	QDomNamedNodeMap attributeMap = busInterface.attributes();
-	for (int j = 0; j < attributeMap.size(); ++j) {
-		QString name = attributeMap.item(j).nodeName();
-		QString value = attributeMap.item(j).nodeValue();
-		attributes_[name] = value;
+BusInterface::AbstractionType & BusInterface::AbstractionType::operator=( const BusInterface::AbstractionType &other )
+{
+	if (this != &other)
+	{	
+		abstractionRef_ = other.abstractionRef_;
+
+		portMaps_.clear();
+
+		foreach (QSharedPointer<PortMap> portMap, other.portMaps_)
+		{
+			if (portMap)
+			{
+				QSharedPointer<PortMap> copy = QSharedPointer<PortMap>(new PortMap(*portMap.data()));
+				portMaps_.append(copy);
+			}
+		}
 	}
 
-	// go through all the child nodes and call appropriate constructors
-	QDomNodeList children = busInterface.childNodes();
-
-	for (int i = 0; i < children.size(); ++i) {
-
-		// if node is a comment then skip it
-		if (children.at(i).isComment())
-			continue;
-
-		// get bus type
-		if (children.at(i).nodeName() == QString("spirit:busType")) {
-
-			QDomNode busTypeNode = children.at(i);
-
-			// create the vlnv and set a pointer for it
-			busType_ = VLNV::createVLNV(busTypeNode, VLNV::BUSDEFINITION);
-		}
-
-		// get abstraction type
-		else if (children.at(i).nodeName() ==
-				QString("spirit:abstractionType")) {
-			QDomNode abstractionNode = children.at(i);
-
-			// create the vlnv and set a pointer for it
-			abstractionType_ = VLNV::createVLNV(abstractionNode,
-							VLNV::ABSTRACTIONDEFINITION);
-		}
-
-		// get interface mode:
-
-		// master
-		else if (children.at(i).nodeName() == QString("spirit:master")) {
-			interfaceMode_ = General::MASTER;
-			QDomNode tempNode = children.at(i);
-
-			master_ = QSharedPointer<MasterInterface>(new MasterInterface(
-					tempNode));
-		}
-		// slave
-		else if (children.at(i).nodeName() == QString("spirit:slave")) {
-			interfaceMode_ = General::SLAVE;
-			QDomNode tempNode = children.at(i);
-
-			slave_ = QSharedPointer<SlaveInterface>(new SlaveInterface(
-					tempNode));
-		}
-		// mirroredMaster
-		else if (children.at(i).nodeName() ==
-				QString("spirit:mirroredMaster")) {
-			interfaceMode_ = General::MIRROREDMASTER;
-			QDomNode tempNode = children.at(i);
-
-			master_ = QSharedPointer<MasterInterface>(new MasterInterface(
-					tempNode));
-		}
-		// mirroredSlave
-		else if (children.at(i).nodeName() ==
-				QString("spirit:mirroredSlave")) {
-			interfaceMode_ = General::MIRROREDSLAVE;
-			QDomNode tempNode = children.at(i);
-
-			mirroredSlave_ = QSharedPointer<MirroredSlaveInterface>(
-					new MirroredSlaveInterface(tempNode));
-		}
-		// system
-		else if (children.at(i).nodeName() == QString("spirit:system")) {
-			interfaceMode_ = General::SYSTEM;
-
-			QDomNode tempNode = children.at(i);
-			for (int j = 0; j < tempNode.childNodes().count(); ++j) {
-				if (tempNode.childNodes().at(j).nodeName() ==
-						QString("spirit:group")) {
-					system_ = tempNode.childNodes().at(j).childNodes().at(0).
-							nodeValue();
-					system_ = XmlUtils::removeWhiteSpace(system_);
-				}
-			}
-		}
-		// mirroredSystem
-		else if (children.at(i).nodeName() ==
-				QString("spirit:mirroredSystem")) {
-			interfaceMode_ = General::MIRROREDSYSTEM;
-
-			QDomNode tempNode = children.at(i);
-			for (int j = 0; j < tempNode.childNodes().count(); ++j) {
-				if (tempNode.childNodes().at(j).nodeName() ==
-						QString("spirit:group")) {
-					system_ = tempNode.childNodes().at(j).childNodes().at(0).
-							nodeValue();
-					system_ = XmlUtils::removeWhiteSpace(system_);
-				}
-			}
-		}
-		// monitor
-		else if (children.at(i).nodeName() == QString("spirit:monitor")) {
-			interfaceMode_ = General::MONITOR;
-
-			QDomNode tempNode = children.at(i);
-			monitor_ = QSharedPointer<BusInterface::MonitorInterface>(
-					new BusInterface::MonitorInterface(tempNode));
-		}
-		// end of interface mode
-
-		// get connectionRequired
-		else if (children.at(i).nodeName() ==
-				QString("spirit:connectionRequired")) {
-
-			// if true is found then it is set but false is default value
-			QString connection = children.at(i).childNodes().at(0).nodeValue();
-			connectionRequired_ = General::str2Bool(connection, false);
-		}
-
-		// get port maps
-		else if (children.at(i).nodeName() == QString("spirit:portMaps")) {
-
-			// call constructors for all port map items
-			for (int j = 0; j < children.at(i).childNodes().count(); ++j) {
-
-				if (children.at(i).childNodes().at(j).isComment())
-					continue;
-
-				// call constructor and give the child node representing the
-				// single choice as parameter
-				QDomNode tempNode = children.at(i).childNodes().at(j);
-
-				PortMap *temp = new PortMap(tempNode);
-				portMaps_.append(QSharedPointer<PortMap>(temp));
-			}
-		}
-
-		// get bits in lau
-		else if (children.at(i).nodeName() == QString("spirit:bitsInLau")) {
-			bitsInLau_ = children.at(i).childNodes().at(0).nodeValue().toInt();
-		}
-
-		// get bit steering
-		else if (children.at(i).nodeName() == QString("spirit:bitSteering")) {
-			QString bitSteering = children.at(i).childNodes().at(0).
-					nodeValue();
-			bitSteering_ = General::str2BitSteering(bitSteering);
-
-			// get the attributes for bitSteering element
-			QDomNode tempNode = children.at(i);
-			bitSteeringAttributes_ = XmlUtils::parseAttributes(tempNode);
-		}
-
-		// get endianness
-		else if (children.at(i).nodeName() == QString("spirit:endianness")) {
-			endianness_ = General::str2Endianness(children.at(i).childNodes().
-					at(0).nodeValue(), General::LITTLE);
-		}
-
-		// get parameters
-		else if (children.at(i).nodeName() == QString("spirit:parameters"))
-        {
-            ParameterReader reader;
-			// go through all parameters
-			for (int j = 0; j < children.at(i).childNodes().count(); ++j) {
-
-				QDomNode parameterNode = children.at(i).childNodes().at(j);
-				parameters_->append(reader.createParameterFrom(parameterNode));
-			}
-		}
-        else if (children.at(i).nodeName() == "spirit:vendorExtensions")
-        {
-            for (int j = 0; j < children.at(i).childNodes().count(); ++j)
-            {
-                QDomNode extensionNode = children.at(i).childNodes().at(j);
-
-                // Search for kactus2 extensions.
-                if (extensionNode.nodeName() == "kactus2:extensions")
-                {
-                    for (int k = 0; k < extensionNode.childNodes().count(); ++k)
-                    {
-                        QDomNode childNode = extensionNode.childNodes().at(k);
-
-                        if (childNode.nodeName() == "kactus2:position")
-                        {
-                            defaultPos_.setX(childNode.attributes().namedItem("x").nodeValue().toInt());
-                            defaultPos_.setY(childNode.attributes().namedItem("y").nodeValue().toInt());
-                        }
-                    }
-                }
-            }
-        }
-	}
+	return *this;
 }
 
 BusInterface::BusInterface(): NameGroup(),
 		attributes_(),
-		busType_(), abstractionType_(),
+		busType_(),
         interfaceMode_(General::INTERFACE_MODE_COUNT),
-		connectionRequired_(false), portMaps_(),
+		connectionRequired_(false), abstractionTypes_(),
 		bitsInLau_(DEFAULT_BITS_IN_LAU),
 		bitSteering_(General::BITSTEERING_UNSPECIFIED),
 		bitSteeringAttributes_(),
@@ -289,10 +82,9 @@ BusInterface::BusInterface( const BusInterface &other ):
 NameGroup(other),
 attributes_(other.attributes_),
 busType_(other.busType_),
-abstractionType_(other.abstractionType_),
 interfaceMode_(other.interfaceMode_),
 connectionRequired_(other.connectionRequired_),
-portMaps_(),
+abstractionTypes_(),
 bitsInLau_(other.bitsInLau_),
 bitSteering_(other.bitSteering_),
 bitSteeringAttributes_(other.bitSteeringAttributes_),
@@ -305,11 +97,11 @@ monitor_(),
 mirroredSlave_(),
 defaultPos_(other.defaultPos_)
 {
-	foreach (QSharedPointer<PortMap> portMap, other.portMaps_) {
-		if (portMap) {
-			QSharedPointer<PortMap> copy = QSharedPointer<PortMap>(
-				new PortMap(*portMap.data()));
-			portMaps_.append(copy);
+	foreach (QSharedPointer<AbstractionType> abstractionType, other.abstractionTypes_) {
+		if (abstractionType) {
+			QSharedPointer<AbstractionType> copy = QSharedPointer<AbstractionType>(
+				new AbstractionType(*abstractionType.data()));
+			abstractionTypes_.append(copy);
 		}
 	}
 
@@ -346,7 +138,6 @@ BusInterface & BusInterface::operator=( const BusInterface &other )
 		NameGroup::operator=(other);
 		attributes_ = other.attributes_;
 		busType_ = other.busType_;
-		abstractionType_ = other.abstractionType_;
 		interfaceMode_ = other.interfaceMode_;
 		connectionRequired_ = other.connectionRequired_;
 		bitsInLau_ = other.bitsInLau_;
@@ -356,12 +147,13 @@ BusInterface & BusInterface::operator=( const BusInterface &other )
 		system_ = other.system_;
         defaultPos_ = other.defaultPos_;
 
-		portMaps_.clear();
-		foreach (QSharedPointer<PortMap> portMap, other.portMaps_) {
-			if (portMap) {
-				QSharedPointer<PortMap> copy = QSharedPointer<PortMap>(
-					new PortMap(*portMap.data()));
-				portMaps_.append(copy);
+		abstractionTypes_.clear();
+		foreach (QSharedPointer<AbstractionType> abstractionType, other.abstractionTypes_)
+		{
+			if (abstractionType)
+			{
+				QSharedPointer<AbstractionType> copy = QSharedPointer<AbstractionType>(new AbstractionType(*abstractionType.data()));
+				abstractionTypes_.append(copy);
 			}
 		}
 
@@ -407,7 +199,7 @@ BusInterface & BusInterface::operator=( const BusInterface &other )
 
 // the destructor
 BusInterface::~BusInterface() {
-	portMaps_.clear();
+	abstractionTypes_.clear();
 	bitSteeringAttributes_.clear();
 	parameters_->clear();
 	master_.clear();
@@ -415,174 +207,20 @@ BusInterface::~BusInterface() {
 	monitor_.clear();
 }
 
-void BusInterface::write(QXmlStreamWriter& writer) {
-	writer.writeStartElement("spirit:busInterface");
+//-----------------------------------------------------------------------------
+// Function: BusInterface::getIsPresent()
+//-----------------------------------------------------------------------------
+QString BusInterface::getIsPresent() const
+{
+	return isPresent_;
+}
 
-	if (!attributes_.isEmpty())
-		XmlUtils::writeAttributes(writer, attributes_);
-
-	writer.writeTextElement("spirit:name", name());
-
-	if (!displayName().isEmpty())
-		writer.writeTextElement("spirit:displayName", displayName());
-
-	if (!description().isEmpty())
-		writer.writeTextElement("spirit:description", description());
-
-	writer.writeEmptyElement("spirit:busType");
-	busType_.writeAsAttributes(writer);
-
-	writer.writeEmptyElement("spirit:abstractionType");
-	abstractionType_.writeAsAttributes(writer);
-
-	// write the interface mode
-    switch (interfaceMode_)
-    {
-    case General::MASTER:
-        {
-            if (master_) {
-                writer.writeStartElement("spirit:master");
-                master_->write(writer);
-                writer.writeEndElement(); // spirit:master
-            }
-            break;
-        }
-
-    case General::SLAVE:
-        {
-            if (slave_)
-            {
-                slave_->write(writer);
-            }
-            break;
-        }
-
-    case General::SYSTEM:
-        {
-            if (!system_.isEmpty())
-            {
-                writer.writeStartElement("spirit:system");
-                writer.writeTextElement("spirit:group", system_);
-                writer.writeEndElement(); // spirit:system
-            }
-            break;
-        }
-
-    case General::MIRROREDMASTER:
-        {
-            if (master_)
-            {
-                writer.writeStartElement("spirit:mirroredMaster");
-                master_->write(writer);
-                writer.writeEndElement(); // spirit:mirroredMaster
-            }
-            break;
-        }
-
-    case General::MIRROREDSLAVE:
-        {
-            if (mirroredSlave_)
-            {
-                mirroredSlave_->write(writer);
-            }
-            break;
-        }
-
-    case General::MIRROREDSYSTEM:
-        {
-            if (!system_.isEmpty())
-            {
-                writer.writeStartElement("spirit:mirroredSystem");
-                writer.writeTextElement("spirit:group", system_);
-                writer.writeEndElement(); // spirit:system
-            }
-            break;
-        }
-
-    case General::MONITOR:
-        {
-            if (monitor_) {
-                writer.writeStartElement("spirit:monitor");
-
-                writer.writeAttribute("spirit:interfaceMode",
-                                      General::interfaceMode2Str(monitor_->interfaceMode_));
-
-                // if mandatory group is defined
-                if (!monitor_->group_.isEmpty()) {
-                    writer.writeTextElement("spirit:group", monitor_->group_);
-                }
-                writer.writeEndElement(); // spirit:monitor
-            }
-            break;
-        }
-
-    default:
-        break;
-	}
-
-	writer.writeTextElement("spirit:connectionRequired",
-			General::bool2Str(connectionRequired_));
-
-	// if portMaps are defined
-	if (portMaps_.size() != 0) {
-		writer.writeStartElement("spirit:portMaps");
-
-		// write each port map
-		foreach(QSharedPointer<PortMap> portMap, portMaps_)
-        {
-            portMap->write(writer);
-		}
-
-		writer.writeEndElement(); // spirit:portMaps
-	} // portMaps have been written now
-
-	// write the bits in lau always
-	writer.writeTextElement("spirit:bitsInLau", QString::number(bitsInLau_));
-
-	// if the bitSteering has been defined
-	if (bitSteering_ != General::BITSTEERING_UNSPECIFIED) {
-
-		// start the spirit:bitSteering tag
-		writer.writeStartElement("spirit:bitSteering");
-
-		// write the attributes for the element
-		XmlUtils::writeAttributes(writer, bitSteeringAttributes_);
-
-		// write the value of the element and close the tag
-		writer.writeCharacters(General::bitSteering2Str(bitSteering_));
-		writer.writeEndElement(); // spirit:bitSteering
-	}
-
-	// always write the endianness part
-	writer.writeTextElement("spirit:endianness",
-			General::endianness2Str(endianness_));
-
-    if (parameters_->size() != 0)
-    {
-        writer.writeStartElement("ipxact:parameters");
-
-        ParameterWriter parameterWriter;
-        // write each parameter
-        for (int i = 0; i < parameters_->size(); ++i)
-        {
-            parameterWriter.writeParameter(writer, parameters_->at(i));
-        }
-
-        writer.writeEndElement(); // ipxact:parameters
-    }
-
-    if (!defaultPos_.isNull())
-    {
-        writer.writeStartElement("spirit:vendorExtensions");
-        writer.writeStartElement("kactus2:extensions");
-
-        XmlUtils::writePosition(writer, defaultPos_);
-
-        writer.writeEndElement(); // kactus2:extensions
-        writer.writeEndElement(); // spirit:vendorExtensions
-    }
-
-	writer.writeEndElement(); // spirit:busInterface
+//-----------------------------------------------------------------------------
+// Function: BusInterface::setIsPresent()
+//-----------------------------------------------------------------------------
+void BusInterface::setIsPresent(QString const& newIsPresent)
+{
+	isPresent_ = newIsPresent;
 }
 
 bool BusInterface::isValid( const QList<General::PortBounds>& physicalPorts, QStringList const& memoryMaps,
@@ -604,11 +242,6 @@ bool BusInterface::isValid( const QList<General::PortBounds>& physicalPorts, QSt
 	if (!busType_.isValid(errorList, QObject::tr("bus type in %1").arg(thisIdentifier))) {
 		valid = false;
 	}
-
-    if (!abstractionType_.isEmpty() &&
-        !abstractionType_.isValid(errorList, QObject::tr("abstraction type in %1").arg(thisIdentifier))) {
-        valid = false;
-    }
 
     if (interfaceMode_ == General::MASTER || interfaceMode_ == General::MIRROREDMASTER)
     {
@@ -680,11 +313,11 @@ bool BusInterface::isValid( const QList<General::PortBounds>& physicalPorts, QSt
         valid = false;
     }
 
-	foreach (QSharedPointer<PortMap> portMap, portMaps_) {
+	/*foreach (QSharedPointer<PortMap> portMap, abstractionTypes_.first()->portMaps_) {
 		if (!portMap->isValid(physicalPorts, errorList, thisIdentifier)) {
 			valid = false;
 		}
-	}
+	}*/
 
 //     ParameterValidator validator;
 //     foreach (QSharedPointer<Parameter> param, *parameters_)
@@ -754,11 +387,11 @@ bool BusInterface::isValid( const QList<General::PortBounds>& physicalPorts, QSt
         return false;
     }
 
-	foreach (QSharedPointer<PortMap> portMap, portMaps_) {
+	/*foreach (QSharedPointer<PortMap> portMap, abstractionTypes_.first()->portMaps_) {
 		if (!portMap->isValid(physicalPorts)) {
 			return false;
 		}
-	}
+	}*/
 
 //     ParameterValidator validator;
 //     foreach (QSharedPointer<Parameter> param, *parameters_)
@@ -776,10 +409,6 @@ General::BitSteering BusInterface::getBitSteering() const {
 	return bitSteering_;
 }
 
-VLNV BusInterface::getAbstractionType() const {
-	return abstractionType_;
-}
-
 General::InterfaceMode BusInterface::getInterfaceMode() const {
 	return interfaceMode_;
 }
@@ -787,10 +416,19 @@ General::InterfaceMode BusInterface::getInterfaceMode() const {
 void BusInterface::setPortMaps(
         QList<QSharedPointer<PortMap> > const& portMaps) {
 	// delete old port maps stored
-	portMaps_.clear();
+	abstractionTypes_.first()->portMaps_.clear();
 
 	// save new port maps
-        portMaps_ = portMaps;
+       abstractionTypes_.first()->portMaps_ = portMaps;
+}
+
+void BusInterface::setAbstractionTypes(
+	QList<QSharedPointer<BusInterface::AbstractionType> > const& abstractionTypes) {
+		// delete old port maps stored
+		abstractionTypes_.clear();
+
+		// save new port maps
+		abstractionTypes_ = abstractionTypes;
 }
 
 void BusInterface::setConnectionRequired(bool connectionRequired) {
@@ -818,12 +456,12 @@ QSharedPointer<QList<QSharedPointer<Parameter> > > BusInterface::getParameters()
 	return parameters_;
 }
 
-void BusInterface::setAbstractionType(const VLNV& abstractionType) {
-	abstractionType_ = abstractionType;
+QList<QSharedPointer<PortMap> >& BusInterface::getPortMaps() {
+	return abstractionTypes_.first()->portMaps_;
 }
 
-QList<QSharedPointer<PortMap> >& BusInterface::getPortMaps() {
-	return portMaps_;
+QList<QSharedPointer<BusInterface::AbstractionType> >& BusInterface::getAbstractionTypes() {
+	return abstractionTypes_;
 }
 
 void BusInterface::setBitSteeringAttributes(
@@ -1055,8 +693,9 @@ void BusInterface::setAttributes( const QMap<QString, QString>& attributes ) {
 QStringList BusInterface::getPhysicalPortNames() const {
 	// add each physical port name to the list
 	QStringList list;
-	foreach (QSharedPointer<PortMap> portMap, portMaps_) {
-		list.append(portMap->physicalPort());
+	foreach (QSharedPointer<PortMap> portMap, abstractionTypes_.first()->portMaps_)
+	{
+		list.append(portMap->getPhysicalPort()->name_);
 	}
 	return list;
 }
@@ -1065,8 +704,9 @@ QStringList BusInterface::getPhysicalPortNames() const {
 QStringList BusInterface::getLogicalPortNames() const {
 	// add each logical port name to the list
 	QStringList list;
-	foreach (QSharedPointer<PortMap> portMap, portMaps_) {
-		list.append(portMap->logicalPort());
+	foreach (QSharedPointer<PortMap> portMap, abstractionTypes_.first()->portMaps_)
+	{
+		list.append(portMap->getLogicalPort()->name_);
 	}
 	return list;
 }
@@ -1075,10 +715,11 @@ QStringList BusInterface::getLogicalPortNames() const {
 
 bool BusInterface::hasLogicalPort( const QString& logicalPortName ) const {
 
-	foreach (QSharedPointer<PortMap> portMap, portMaps_) {
-		
+	foreach (QSharedPointer<PortMap> portMap, abstractionTypes_.first()->portMaps_)
+	{
 		// if the port map contains the searched logical port.
-		if (portMap->logicalPort().compare(logicalPortName) == 0) {
+		if (portMap->getLogicalPort())
+		{
 			return true;
 		}
 	}
@@ -1088,11 +729,13 @@ bool BusInterface::hasLogicalPort( const QString& logicalPortName ) const {
 }
 
 
-bool BusInterface::hasPhysicalPort( const QString& physicalPortName ) const {
-	foreach (QSharedPointer<PortMap> portMap, portMaps_) {
-
+bool BusInterface::hasPhysicalPort( const QString& physicalPortName ) const
+{
+	foreach (QSharedPointer<PortMap> portMap, abstractionTypes_.first()->portMaps_)
+	{
 		// if the port map contains the searched logical port.
-		if (portMap->physicalPort().compare(physicalPortName) == 0) {
+		if (portMap->getPhysicalPort())
+		{
 			return true;
 		}
 	}
@@ -1101,12 +744,14 @@ bool BusInterface::hasPhysicalPort( const QString& physicalPortName ) const {
 	return false;
 }
 
-QString BusInterface::getLogicalPortName( const QString& physicalPortName ) const {
-	foreach (QSharedPointer<PortMap> portMap, portMaps_) {
-
+QString BusInterface::getLogicalPortName( const QString& physicalPortName ) const
+{
+	foreach (QSharedPointer<PortMap> portMap, abstractionTypes_.first()->portMaps_)
+	{
 		// if the port map contains the searched physical port.
-		if (portMap->physicalPort().compare(physicalPortName) == 0) {
-			return portMap->logicalPort();
+		if (portMap->getPhysicalPort()->name_.compare(physicalPortName) == 0)
+		{
+			return portMap->getLogicalPort()->name_;
 		}
 	}
 

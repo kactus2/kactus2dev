@@ -12,7 +12,6 @@
 #include <QString>
 #include <QMap>
 #include <QDomNode>
-#include <QXmlStreamWriter>
 
 /*! \brief Equals the spirit:master element in IP-Xact specification
  *
@@ -22,17 +21,6 @@
 class IPXACTMODELS_EXPORT MasterInterface {
 
 public:
-
-	/*! \brief The constructor
-	 *
-	 * \param masterNode A reference to a QDomNode to parse the information
-	 * from.
-	 *
-	 * Exception guarantee: basic
-	 * \exception Parse_error Occurs when a mandatory element is missing in
-	 * this class or one of it's member classes.
-	 */
-	MasterInterface(QDomNode& masterNode);
 
 	/*! \brief Default constructor
 	 *
@@ -49,16 +37,6 @@ public:
 	 *
 	 */
 	~MasterInterface();
-
-	/*! \brief Write the contents of the class using the writer.
-	*
-	* Uses the specified writer to write the class contents into file as valid
-	* IP-Xact.
-	*
-	* \param writer A reference to a QXmlStreamWriter instance that is used to
-	* write the document into file.
-	*/
-	void write(QXmlStreamWriter& writer);
 
 	/*! \brief Get the address space reference
 	 *

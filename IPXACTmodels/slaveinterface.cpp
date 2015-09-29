@@ -7,99 +7,14 @@
 #include "slaveinterface.h"
 #include "generaldeclarations.h"
 
-#include <IPXACTmodels/XmlUtils.h>
-
 #include <QString>
 #include <QList>
 #include <QSharedPointer>
-#include <QDomNode>
-#include <QDomNamedNodeMap>
 #include <QObject>
-#include <QXmlStreamWriter>
-
-// struct constructor
-SlaveInterface::Bridge::Bridge(QDomNode& bridgeNode):
-masterRef_(),
-opaque_(false) {
-
-	QDomNamedNodeMap attributeMap = bridgeNode.attributes();
-	masterRef_ = attributeMap.namedItem(QString("spirit:masterRef")).
-			nodeValue();
-	masterRef_ = XmlUtils::removeWhiteSpace(masterRef_);
-
-	QString opaque = attributeMap.namedItem(QString("spirit:opaque")).
-			nodeValue();
-	opaque = XmlUtils::removeWhiteSpace(opaque);
-
-	opaque_ = General::str2Bool(opaque, false);
-	return;
-}
 
 SlaveInterface::Bridge::Bridge():
-masterRef_(),
-opaque_(false) {
-}
-
-// struct constructor
-SlaveInterface::FileSetRefGroup::FileSetRefGroup(QDomNode& fileSetNode):
-group_(), 
-fileSetRefs_() {
-
-	// go through child nodes
-	for (int i = 0; i < fileSetNode.childNodes().count(); ++i) {
-		QDomNode tempNode = fileSetNode.childNodes().at(i);
-
-		if (tempNode.nodeName() == QString("spirit:group")) {
-
-			// strip whitespace characters
-			group_ = tempNode.childNodes().at(0).nodeValue();
-			group_ = XmlUtils::removeWhiteSpace(group_);
-		}
-
-		else if (tempNode.nodeName() == QString("spirit:fileSetRef")) {
-
-
-			// strip whitespace characters
-			QString temp = tempNode.childNodes().at(0).nodeValue();
-			temp = XmlUtils::removeWhiteSpace(temp);
-			fileSetRefs_.append(temp);
-		}
-	}
-	return;
-}
-
-// class constructor
-SlaveInterface::SlaveInterface(QDomNode& slaveNode):
-memoryMapRef_(),
-bridges_(),
-fileSetRefGroup_() {
-
-	// go through all child elements
-	for (int i = 0; i < slaveNode.childNodes().count(); ++i) {
-		QDomNode tempNode = slaveNode.childNodes().at(i);
-
-		if (tempNode.nodeName() == QString("spirit:memoryMapRef")) {
-			// the wanted value is an attribute
-			QDomNamedNodeMap attributeMap = tempNode.attributes();
-
-			// strip whitespace characters
-			memoryMapRef_ = attributeMap.namedItem(QString(
-					"spirit:memoryMapRef")).nodeValue();
-			memoryMapRef_ = XmlUtils::removeWhiteSpace(memoryMapRef_);
-		}
-
-		else if (tempNode.nodeName() == QString("spirit:bridge")) {
-			bridges_.append(QSharedPointer<SlaveInterface::Bridge>(
-					new SlaveInterface::Bridge(tempNode)));
-		}
-
-		else if (tempNode.nodeName() == QString("spirit:fileSetRefGroup")) {
-			fileSetRefGroup_.append(
-					QSharedPointer<SlaveInterface::FileSetRefGroup>(
-							new SlaveInterface::FileSetRefGroup(tempNode)));
-		}
-	}
-	return;
+masterRef_(), isPresent_()
+{
 }
 
 SlaveInterface::SlaveInterface():
@@ -158,37 +73,6 @@ SlaveInterface& SlaveInterface::operator=( const SlaveInterface& other ) {
 SlaveInterface::~SlaveInterface() {
 	bridges_.clear();
 	fileSetRefGroup_.clear();
-}
-
-void SlaveInterface::write(QXmlStreamWriter& writer) {
-	writer.writeStartElement("spirit:slave");
-
-	// if optional element is not empty
-	if (!memoryMapRef_.isEmpty()) {
-		writer.writeEmptyElement("spirit:memoryMapRef");
-		writer.writeAttribute("spirit:memoryMapRef", memoryMapRef_);
-	}
-
-	// write all spirit:bridge elements
-	for (int i = 0; i < bridges_.size(); ++i) {
-		writer.writeEmptyElement("spirit:bridge");
-		writer.writeAttribute("spirit:masterRef", bridges_.at(i)->masterRef_);
-		writer.writeAttribute("spirit:opaque", General::bool2Str(bridges_.at(i)->opaque_));
-	}
-
-	// write all filesetRefGroups
-	for (int i = 0; i < fileSetRefGroup_.size(); ++i) {
-		// write the name of the group
-		writer.writeTextElement("spirit:group",
-				fileSetRefGroup_.at(i)->group_);
-
-		// write all the fileSetRefs for this group
-		for (int i = 0; i < fileSetRefGroup_.at(i)->fileSetRefs_.size(); ++i) {
-			writer.writeTextElement("spirit:fileSetRef",
-					fileSetRefGroup_.at(i)->fileSetRefs_.at(i));
-		}
-	}
-	writer.writeEndElement(); // spirit:slave
 }
 
 bool SlaveInterface::isValid( QStringList& errorList, const QString& parentIdentifier ) const {

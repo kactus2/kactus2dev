@@ -23,7 +23,8 @@ class VendorExtension;
  * Describes a containing component with a programmable core that has some
  * sized address space.
  */
-class IPXACTMODELS_EXPORT Cpu : public NameGroup, public Extendable {
+class IPXACTMODELS_EXPORT Cpu : public NameGroup, public Extendable
+{
 
 public:
     /*!
@@ -128,13 +129,6 @@ private:
 	 * OPTIONAL spirit:parameters
 	 */
 	QList<QSharedPointer<Parameter> > parameters_;
-
-    /*!
-     * OPTIONAL spirit: vendorExtensions
-     * Cpu vendor extensions.
-     */
-    QList<QSharedPointer<VendorExtension> > vendorExtensions_;
-
 };
 
 #endif /* CPU_H_ */

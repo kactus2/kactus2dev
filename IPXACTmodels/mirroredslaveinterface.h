@@ -12,9 +12,7 @@
 #include <QString>
 #include <QMap>
 #include <QList>
-#include <QDomNode>
 #include <QSharedPointer>
-#include <QXmlStreamWriter>
 
 /*! \brief Equals the spirit:mirroredSlave element in IP-Xact specification
  *
@@ -30,18 +28,13 @@ public:
 	 */
 	struct RemapAddress {
 
-		/*! \brief MANDATORY spirit:remapAddress
+		/*! \brief MANDATORY ipxact:remapAddress
 		 * Specifies the address offset to apply to the connected slave
 		 * interface.
 		 */
 		QString remapAddress_;
 
-		/*! \brief OPTIONAL attribute spirit:prompt
-		 * Contains the string for the configuration
-		 */
-		QString prompt_;
-
-		/*! \brief OPTIONAL attribute spirit:state
+		/*! \brief OPTIONAL attribute state
 		 * Identifies remap state for which the remapAddress and range apply.
 		 */
 		QString state_;
@@ -61,7 +54,7 @@ public:
 		 * \exception Parse_error Occurs when a mandatory element is missing in
 		 * this class or one of it's member classes.
 		 */
-		RemapAddress(QDomNode& remapNode);
+		RemapAddress(){}
 
 		/*! \brief The constructor.
 		 *
@@ -70,17 +63,6 @@ public:
 		*/
 		RemapAddress(const QString& remapAddress);
 	};
-
-	/*! \brief The constructor
-	 *
-	 * \param mirrorNode A reference to a QDomNode to parse the information
-	 * from.
-	 *
-	 * Exception guarantee: basic
-	 * \exception Parse_error Occurs when a mandatory element is missing in
-	 * this class or one of it's member classes.
-	 */
-	MirroredSlaveInterface(QDomNode& mirrorNode);
 
 	/*! \brief The default constructor
 	 *
@@ -98,47 +80,17 @@ public:
 	 */
 	~MirroredSlaveInterface();
 
-	/*! \brief Write the contents of the class using the writer.
-	*
-	* Uses the specified writer to write the class contents into file as valid
-	* IP-Xact.
-	*
-	* \param writer A reference to a QXmlStreamWriter instance that is used to
-	* write the document into file.
-	*/
-	void write(QXmlStreamWriter& writer);
-
 	/*! \brief Get the range of the interface
 	 *
 	 * \return QString containing the range.
 	 */
 	QString getRange() const;
 
-	/*! \brief Get the range attributes
-	 *
-	 * \return Reference to QMap containing the attributes of the range
-	 * element.
-	 */
-	const QMap<QString,QString>& getRangeAttributes();
-
 	/*! \brief Set the range for this interface
 	 *
 	 * \param range A reference to a QString containing the range.
 	 */
 	void setRange(const QString& range);
-
-	/*! \brief Set the range attributes
-	 *
-	 * \param rangeAttributes Reference to QMap containing the attributes
-	 * for range.
-	 */
-	void setRangeAttributes(const QMap<QString,QString>& rangeAttributes);
-
-	/*! \brief Get the list of the remapAddresses
-	 *
-	 * \return Reference to QList containing pointers to the RemapAddresses.
-	 */
-    const QList<QSharedPointer<RemapAddress> >& getRemapAddresses();
 
 	/*! \brief Get the remap address of this mirrored slave interface for the given state.
 	 * 
@@ -148,14 +100,7 @@ public:
 	 * 
 	 * \return QString containing the remap address.
 	*/
-	 QString getRemapAddress(const QString& state = QString()) const;
-
-    /*! \brief Set the remapAddresses for the interface.
-     *
-     * \param remapAddresses A reference to QList containing pointers to the
-     * RemapAddresses.
-     */
-    void setRemapAddresses(const QList<QSharedPointer<RemapAddress> >& remapAddresses);
+	QList<QSharedPointer<RemapAddress> > getRemapAddresses() const;
 
 	/*! \brief Set a remap address for this mirrored slave interface.
 	 * 
@@ -164,7 +109,7 @@ public:
 	 * \param remapAddress The remap address to set.
 	 *
 	*/
-	void setRemapAddress(const QString& remapAddress);
+	void setRemapAddresses(const QList<QSharedPointer<RemapAddress> > remapAddresses);
 
 private:
 
@@ -172,12 +117,6 @@ private:
 	 * Specifies the address range to apply to the connected slave interface.
 	 */
 	QString range_;
-
-	/*! \brief OPTIONAL Contains the attributes for the spirit:mirroredSlave
-	 * key = attribute name
-	 * value = attribute value
-	 */
-	QMap<QString, QString> rangeAttributes_;
 
 	/*! \brief MANDATORY spirit:remapAddress
 	 * Contains the pointers to the remapAddress instances.

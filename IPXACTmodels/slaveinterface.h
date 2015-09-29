@@ -13,43 +13,28 @@
 #include <QList>
 #include <QStringList>
 #include <QSharedPointer>
-#include <QDomNode>
-#include <QXmlStreamWriter>
 
 /*! \brief Equals the spirit:slave element in IP-Xact specification.
  *
  * Slave interface is one that responds to transactions.
  */
-class IPXACTMODELS_EXPORT SlaveInterface {
-
+class IPXACTMODELS_EXPORT SlaveInterface
+{
 public:
 
 	/*! \brief Equals the spirit:bridge element in IP-Xact specification
 	 *
 	 * Contains a reference to a master interface.
 	 */
-	struct Bridge {
-
+	struct Bridge
+	{
 		/*! \brief MANDATORY spirit:masterRef
 		 * Reference to a master interface.
 		 */
 		QString masterRef_;
 
-		/*! \brief MANDATORY spirit:opaque
-		 * Defines the type of bridging.
-		 */
-		bool opaque_;
-
-		/*! \brief The constructor
-		 *
-		 * \param bridgeNode A reference to a QDomNode to parse the
-		 * information from.
-		 *
-		 * Exception guarantee: basic
-		 * \exception Parse_error Occurs when a mandatory element is missing in
-		 * this class or one of it's member classes.
-		 */
-		Bridge(QDomNode& bridgeNode);
+		//! Presence of the Bridge.
+		QString isPresent_;
 
 		/*! \brief The default constructor.
 		 *
@@ -62,8 +47,8 @@ public:
 	 * A reference to a fileset contained in this component that is associated
 	 * with this slave interface.
 	 */
-	struct FileSetRefGroup {
-
+	struct FileSetRefGroup
+	{
 		/*! \brief OPTIONAL spirit:group
 		 * Allows the definition of a group name for the fileSetRefGroup
 		 */
@@ -75,27 +60,9 @@ public:
 		QStringList fileSetRefs_;
 
 		/*! \brief The constructor
-		 *
-		 * \param fileSetNode A reference to a QDomNode to parse the
-		 * information from.
-		 *
-		 * Exception guarantee: basic
-		 * \exception Parse_error Occurs when a mandatory element is missing in
-		 * this class or one of it's member classes.
 		 */
-		FileSetRefGroup(QDomNode& fileSetNode);
+		FileSetRefGroup(){}
 	};
-
-	/*! \brief The constructor
-	 *
-	 * \param slaveNode A reference to a QDomNode to parse the information
-	 * from.
-	 *
-	 * Exception guarantee: basic
-	 * \exception Parse_error Occurs when a mandatory element is missing in
-	 * this class or one of it's member classes.
-	 */
-	SlaveInterface(QDomNode& slaveNode);
 
 	/*! \brief The default constructor
 	 *
@@ -112,16 +79,6 @@ public:
 	 *
 	 */
 	~SlaveInterface();
-
-	/*! \brief Write the contents of the class using the writer.
-	*
-	* Uses the specified writer to write the class contents into file as valid
-	* IP-Xact.
-	*
-	* \param writer A reference to a QXmlStreamWriter instance that is used to
-	* write the document into file.
-	*/
-	void write(QXmlStreamWriter& writer);
 
 	/*! \brief Check if the slave is in a valid state.
 	 *

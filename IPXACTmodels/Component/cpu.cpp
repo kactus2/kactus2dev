@@ -25,16 +25,14 @@
 Cpu::Cpu():
 NameGroup(),
 addressSpaceRefs_(),
-parameters_(),
-vendorExtensions_()
+parameters_()
 {
 }
 
 Cpu::Cpu( const Cpu &other ):
 NameGroup(other),
 addressSpaceRefs_(other.addressSpaceRefs_),
-parameters_(),
-vendorExtensions_(other.vendorExtensions_)
+parameters_()
 {
 	foreach (QSharedPointer<Parameter> param, other.parameters_) {
 		if (param) {
@@ -48,7 +46,6 @@ Cpu & Cpu::operator=( const Cpu &other ) {
 	if (this != &other) {
 		NameGroup::operator=(other);
 		addressSpaceRefs_ = other.addressSpaceRefs_;
-        vendorExtensions_ = other.vendorExtensions_;
 
 		parameters_.clear();
 		foreach (QSharedPointer<Parameter> param, other.parameters_) {
