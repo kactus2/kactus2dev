@@ -12,46 +12,6 @@
 #include "RegisterDefinition.h"
 #include "Field.h"
 
-/*
-RegisterDefinition::RegisterDefinition(QDomNode& registerDefNode ):
-typeIdentifier_(), 
-size_(0),
-sizeAttributes_(),
-volatile_(General::BOOL_UNSPECIFIED),
-access_(General::ACCESS_COUNT),
-reset_(), 
-fields_() {
-
-	for (int i = 0; i < registerDefNode.childNodes().count(); ++i) {
-		QDomNode tempNode = registerDefNode.childNodes().at(i);
-
-		if (tempNode.nodeName() == QString("spirit:typeIdentifier")) {
-			typeIdentifier_ = tempNode.childNodes().at(0).nodeValue();
-			typeIdentifier_ = XmlUtils::removeWhiteSpace(typeIdentifier_);
-		}
-		else if (tempNode.nodeName() == QString("spirit:size")) {
-			size_ = tempNode.childNodes().at(0).nodeValue().toInt();
-			sizeAttributes_ = XmlUtils::parseAttributes(tempNode);
-		}
-		else if (tempNode.nodeName() == QString("spirit:volatile")) {
-			volatile_ = General::str2BooleanValue(
-					tempNode.childNodes().at(0).nodeValue());
-		}
-		else if (tempNode.nodeName() == QString("spirit:access")) {
-			access_ = General::str2Access(
-					tempNode.childNodes().at(0).nodeValue(),
-					General::ACCESS_COUNT);
-		}
-		else if (tempNode.nodeName() == QString("spirit:reset")) {
-			reset_ = QSharedPointer<Reset>(new Reset(tempNode));
-		}
-		else if (tempNode.nodeName() == QString("spirit:field")) {
-
-			fields_.append(QSharedPointer<Field>(new Field(tempNode)));
-		}
-	}
-}*/
-
 //-----------------------------------------------------------------------------
 // Function: RegisterDefinition::RegisterDefinition()
 //-----------------------------------------------------------------------------

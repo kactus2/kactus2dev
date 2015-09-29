@@ -11,37 +11,6 @@
 
 #include "AlternateRegister.h"
 
-/*
-//-----------------------------------------------------------------------------
-// Function: AlternateRegister::AlternateRegister()
-//-----------------------------------------------------------------------------
-AlternateRegister::AlternateRegister(QDomNode& registerNode):
-RegisterModel(registerNode), alternateGroups_(), alternateRegisterDef_(),
-vendorExtensions_()
-{
-
-	for (int i = 0; i < registerNode.childNodes().count(); ++i) {
-		QDomNode tempNode = registerNode.childNodes().at(i);
-
-		if (tempNode.nodeName() == QString("spirit:alternateGroups")) {
-
-			for (int j = 0; j < tempNode.childNodes().count(); ++j) {
-				QString groupName = tempNode.childNodes().at(j).nodeValue();
-				alternateGroups_.append(XmlUtils::removeWhiteSpace(groupName));
-			}
-		}
-        else if (tempNode.nodeName() == QString("spirit:vendorExtensions")) 
-        {
-            int extensionCount = tempNode.childNodes().count();
-            for (int j = 0; j < extensionCount; ++j) {
-                QDomNode extensionNode = tempNode.childNodes().at(j);
-                vendorExtensions_.append(QSharedPointer<VendorExtension>(new GenericVendorExtension(extensionNode)));
-            }
-        }
-	}
-	alternateRegisterDef_ = QSharedPointer<RegisterDefinition>(new RegisterDefinition(registerNode));
-}*/
-
 //-----------------------------------------------------------------------------
 // Function: AlternateRegister::AlternateRegister()
 //-----------------------------------------------------------------------------

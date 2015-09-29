@@ -13,33 +13,6 @@
 
 #include <IPXACTmodels/common/Parameter.h>
 
-/*
-RegisterModel::RegisterModel(QDomNode& registerNode):
-NameGroup(), 
-    id_(), 
-parameters_() {
-
-	// get the spirit:id attribute
-	QDomNamedNodeMap attributeMap = registerNode.attributes();
-	id_ = attributeMap.namedItem(QString("spirit:id")).nodeValue();
-	id_ = XmlUtils::removeWhiteSpace(id_);
-
-	// go through child nodes and parse info
-	for (int i = 0; i < registerNode.childNodes().count(); ++i) {
-		QDomNode tempNode = registerNode.childNodes().at(i);
-
-		if (tempNode.nodeName() == QString("spirit:parameters")) {
-            ParameterReader reader;
-			// parse each parameter
-			for (int j = 0; j < tempNode.childNodes().count(); ++j) {
-				QDomNode parameterNode = tempNode.childNodes().at(j);
-
-				parameters_.append(QSharedPointer<Parameter>(reader.createParameterFrom(parameterNode)));
-			}
-		}
-	}
-}*/
-
 //-----------------------------------------------------------------------------
 // Function: RegisterBase::RegisterBase()
 //-----------------------------------------------------------------------------

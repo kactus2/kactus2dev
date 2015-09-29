@@ -12,48 +12,6 @@
 #include "Register.h"
 #include "AlternateRegister.h"
 
-/*
-//-----------------------------------------------------------------------------
-// Function: Register::Register()
-//-----------------------------------------------------------------------------
-Register::Register(QDomNode& registerNode):
-RegisterModel(registerNode),
-dim_(-1),
-addressOffset_(),
-alternateRegisters_(), 
-registerDefinition_(registerNode),
-vendorExtensions_(),
-dimensionExpression_(),
-isPresentExpression_()
-{
-
-	for (int i = 0; i < registerNode.childNodes().count(); ++i) {
-		QDomNode tempNode = registerNode.childNodes().at(i);
-
-		if (tempNode.nodeName() == QString("spirit:dim")) {
-			dim_ = tempNode.childNodes().at(0).nodeValue().toInt();
-		}
-		else if (tempNode.nodeName() == QString("spirit:addressOffset")) {
-			addressOffset_ = tempNode.childNodes().at(0).nodeValue();
-			//addressOffset_ = XmlUtils::removeWhiteSpace(addressOffset_);
-		}
-		else if (tempNode.nodeName() == QString("spirit:alternateRegisters")) {
-
-			// parse each alternate register
-			for (int j = 0; j < tempNode.childNodes().count(); ++j) {
-				QDomNode alternateRegNode = tempNode.childNodes().at(j);
-
-				alternateRegisters_.append(QSharedPointer<AlternateRegister>(
-						new AlternateRegister(alternateRegNode)));
-			}
-		}
-        else if (tempNode.nodeName() == QString("spirit:vendorExtensions")) 
-        {
-            parseVendorExtensions(tempNode);
-        }
-	}
-}*/
-
 //-----------------------------------------------------------------------------
 // Function: Register::Register()
 //-----------------------------------------------------------------------------

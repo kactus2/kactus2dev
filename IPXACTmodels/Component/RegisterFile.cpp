@@ -16,55 +16,6 @@
 #include <QMap>
 #include <QSharedPointer>
 
-/*
-RegisterFile::RegisterFile(QDomNode& registerNode): RegisterModel(registerNode),
-dim_(-1), addressOffset_(), typeIdentifier_(), range_(0), rangeAttributes_(),
-registerData_(),
-vendorExtensions_()
-{
-
-	for (int i = 0; i < registerNode.childNodes().count(); ++i) {
-		QDomNode tempNode = registerNode.childNodes().at(i);
-
-		if (tempNode.nodeName() == QString("spirit:dim")) {
-			dim_ = tempNode.childNodes().at(0).nodeValue().toInt();
-		}
-		else if (tempNode.nodeName() == QString("spirit:addressOffset")) {
-			addressOffset_ = tempNode.childNodes().at(0).nodeValue();
-			addressOffset_ = XmlUtils::removeWhiteSpace(addressOffset_);
-		}
-		else if (tempNode.nodeName() == QString("spirit:typeIdentifier")) {
-			typeIdentifier_ = tempNode.childNodes().at(0).nodeValue();
-			typeIdentifier_ = XmlUtils::removeWhiteSpace(typeIdentifier_);
-		}
-		else if (tempNode.nodeName() == QString("spirit:range")) {
-			range_ = tempNode.childNodes().at(0).nodeValue().toInt();
-			rangeAttributes_ = XmlUtils::parseAttributes(tempNode);
-		}
-		else if (tempNode.nodeName() == QString("spirit:register")) {
-			
-			Register* reg = new Register(tempNode);
-			registerData_.insert(reg->name(), QSharedPointer<Register>(
-				reg));
-		}
-		else if (tempNode.nodeName() == QString("spirit:registerFile")) {
-			RegisterFile* reg = new RegisterFile(tempNode);
-
-			registerData_.insert(reg->name(),
-				QSharedPointer<RegisterFile>(reg));
-		}
-        else if (tempNode.nodeName() == QString("spirit:vendorExtensions")) 
-        {
-            int extensionCount = tempNode.childNodes().count();
-            for (int j = 0; j < extensionCount; ++j) {
-                QDomNode extensionNode = tempNode.childNodes().at(j);
-                vendorExtensions_.append(QSharedPointer<VendorExtension>(new GenericVendorExtension(extensionNode)));
-            }
-        }
-	}
-	return;
-}*/
-
 //-----------------------------------------------------------------------------
 // Function: RegisterFile::RegisterFile()
 //-----------------------------------------------------------------------------
