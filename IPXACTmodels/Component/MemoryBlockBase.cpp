@@ -13,36 +13,6 @@
 
 #include <IPXACTmodels/common/Parameter.h>
 
-/*
-//-----------------------------------------------------------------------------
-// Function: memorymapitem::MemoryMapItem()
-//-----------------------------------------------------------------------------
-MemoryMapItem::MemoryMapItem(QDomNode &memoryMapNode): 
-NameGroup(),
-attributes_(),
-baseAddress_(), 
-baseAddrAttributes_() {
-
-	// parse the attributes
-	attributes_ = XmlUtils::parseAttributes(memoryMapNode);
-
-	for (int i = 0; i < memoryMapNode.childNodes().count(); ++i) {
-
-		QDomNode tempNode = memoryMapNode.childNodes().at(i);
-
-		// get addressUnitBits
-        if (tempNode.nodeName() == QString("spirit:baseAddress"))
-        {
-			// get base address
-			baseAddress_ = tempNode.childNodes().at(0).nodeValue();
-
-			// get the base address attributes
-			baseAddrAttributes_ = XmlUtils::parseAttributes(tempNode);
-		}
-	}
-	return;
-}*/
-
 //-----------------------------------------------------------------------------
 // Function: MemoryBlockBase::MemoryBlockBase()
 //-----------------------------------------------------------------------------

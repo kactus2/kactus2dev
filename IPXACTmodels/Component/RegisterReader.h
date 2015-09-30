@@ -50,7 +50,7 @@ public:
     /*!
      *  Creates a new register from a given register node.
      *
-     *      @param [in] fieldNode   XML description of the register.
+     *      @param [in] registerNode    XML description of the register.
      *
      *      @return The created register.
      */
