@@ -11,31 +11,6 @@
 
 #include "MemoryMapBase.h"
 
-/*
-//-----------------------------------------------------------------------------
-// Function: AbstractMemoryMap::AbstractMemoryMap()
-//-----------------------------------------------------------------------------
-AbstractMemoryMap::AbstractMemoryMap(QDomNode &abstractMemoryMapNode):
-NameGroup(),
-id_(),
-items_()
-{
-    for (int i = 0; i < abstractMemoryMapNode.childNodes().count(); ++i)
-    {
-        QDomNamedNodeMap attributeMap = abstractMemoryMapNode.attributes();
-        id_ = attributeMap.namedItem("spirit:id").nodeValue();
-        id_ = XmlUtils::removeWhiteSpace(id_);
-
-        QDomNode tempNode = abstractMemoryMapNode.childNodes().at(i);
-
-        if (tempNode.nodeName() == QString("spirit:addressBlock"))
-        {
-            AddressBlock* temp = new AddressBlock(tempNode);
-            items_.append(QSharedPointer<AddressBlock>(temp));
-        }
-    }
-}*/
-
 //-----------------------------------------------------------------------------
 // Function: MemoryMapBase::MemoryMapBase()
 //-----------------------------------------------------------------------------

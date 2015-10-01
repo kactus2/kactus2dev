@@ -11,25 +11,6 @@
 
 #include "MemoryRemap.h"
 
-/*
-//-----------------------------------------------------------------------------
-// Function: MemoryRemap::MemoryRemap()
-//-----------------------------------------------------------------------------
-MemoryRemap::MemoryRemap(QDomNode& memoryRemapNode):
-AbstractMemoryMap(memoryRemapNode),
-remapState_()
-{
-    for (int i = 0; i < memoryRemapNode.childNodes().count(); ++i)
-    {
-        QDomNode tempNode = memoryRemapNode.childNodes().at(i);
-
-        if (tempNode.nodeName() == QString("spirit:remapState"))
-        {
-            remapState_ = tempNode.childNodes().at(0).nodeValue();
-        }
-    }
-}*/
-
 //-----------------------------------------------------------------------------
 // Function: MemoryRemap::MemoryRemap()
 //-----------------------------------------------------------------------------

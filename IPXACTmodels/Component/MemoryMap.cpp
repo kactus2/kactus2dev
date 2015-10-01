@@ -13,48 +13,6 @@
 
 #include "MemoryRemap.h"
 
-/*
-//-----------------------------------------------------------------------------
-// Function: memorymap::MemoryMap()
-//-----------------------------------------------------------------------------
-MemoryMap::MemoryMap(QDomNode &memoryMapNode):
-AbstractMemoryMap(memoryMapNode),
-addressUnitBits_(8),
-vendorExtensions_(),
-memoryRemaps_(new QList<QSharedPointer<MemoryRemap> >())
-{
-	for (int i = 0; i < memoryMapNode.childNodes().count(); ++i)
-    {
-		QDomNode tempNode = memoryMapNode.childNodes().at(i);
-
-		if (tempNode.nodeName() == QString("spirit:addressUnitBits"))
-        {
-			addressUnitBits_ = tempNode.childNodes().at(0).nodeValue().toInt();
-		}
-
-        else if (tempNode.nodeName() == QString("spirit:memoryRemaps"))
-        {
-            int remapCount = tempNode.childNodes().count();
-            for (int j = 0; j < remapCount; ++j)
-            {
-                QDomNode remapNode = tempNode.childNodes().at(j);
-                QSharedPointer<MemoryRemap> memoryRemap (new MemoryRemap(remapNode));
-                memoryRemaps_->append(memoryRemap);
-            }
-        }
-
-        else if (tempNode.nodeName() == QString("spirit:vendorExtensions")) 
-        {
-            int extensionCount = tempNode.childNodes().count();
-            for (int j = 0; j < extensionCount; ++j)
-            {
-                QDomNode extensionNode = tempNode.childNodes().at(j);
-                vendorExtensions_.append(QSharedPointer<VendorExtension>(new GenericVendorExtension(extensionNode)));
-            }
-        }
-	}
-}*/
-
 //-----------------------------------------------------------------------------
 // Function: MemoryMap::MemoryMap()
 //-----------------------------------------------------------------------------

@@ -23,7 +23,7 @@
 class AddressBlock;
 
 //-----------------------------------------------------------------------------
-// Reader class for ipxact:addressBlock element.
+//! Reader class for ipxact:addressBlock element.
 //-----------------------------------------------------------------------------
 class IPXACTMODELS_EXPORT AddressBlockReader : public CommonItemsReader
 {
