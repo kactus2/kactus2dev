@@ -26,6 +26,7 @@ SUBDIRS += Model\tst_ViewWriter.pro \
 		   MemoryMaps\tst_RegisterReader.pro \
 		   MemoryMaps\tst_AddressBlockWriter.pro \
 		   MemoryMaps\tst_AddressBlockReader.pro \
+		   MemoryMaps\tst_MemoryMapWriter.pro \
 		   tst_CPUReader.pro \
 		   tst_CPUWriter.pro \
 		   tst_FileWriter.pro \
