@@ -494,13 +494,11 @@ struct ClockStruct {
 	 * Contains the attributes set for the containing element
 	 */
 	QMap<QString, QString> attributes_;
-
-	/*! \brief The constructor
-	 *
-	 * \param clockNode A reference to a QDomNode to parse the information
-	 * from.
+	
+	/*! 
+	 * The constructor
 	 */
-	ClockStruct(QDomNode &clockNode);
+	ClockStruct(){}
 
 	/*! \brief The constructor
 	 *
@@ -544,13 +542,11 @@ struct ClockPulseValue {
 	 * Contains the attributes set for the containing element.
 	 */
 	QMap<QString, QString> attributes_;
-
-	/*! \brief The constructor
-	 *
-	 * \param clockNode A reference to a QDomNode to parse the information
-	 * from.
+	
+	/*! 
+	 * The constructor
 	 */
-	ClockPulseValue(QDomNode &clockNode);
+	ClockPulseValue(){}
 
 	/*! \brief The constructor
 	 *

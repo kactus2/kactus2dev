@@ -45,4 +45,6 @@ SUBDIRS += Model\tst_ViewWriter.pro \
 		   tst_RemapStateWriter.pro \
 		   tst_RemapStateReader.pro \
 		   tst_AddressSpaceReader.pro \
-		   tst_AddressSpaceWriter.pro
+		   tst_AddressSpaceWriter.pro \
+		   tst_OtherClockDriverReader.pro \
+		   tst_OtherClockDriverWriter.pro

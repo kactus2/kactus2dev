@@ -571,37 +571,6 @@ QString General::booleanValue2Str(const General::BooleanValue value) {
 	}
 }
 
-General::ClockStruct::ClockStruct(QDomNode &clockNode):
-value_(0),
-timeUnit_(General::NS),
-attributes_() {
-
-	QString value = clockNode.childNodes().at(0).nodeValue();
-	value = XmlUtils::removeWhiteSpace(value);
-	bool ok = false;
-	value_ = value.toDouble(&ok);
-
-
-	// get the attributes
-	QDomNamedNodeMap attributeMap = clockNode.attributes();
-	for (int i = 0; i < attributeMap.size(); ++i) {
-		QDomNode tempNode = attributeMap.item(i);
-
-		// get spirit:units attribute value
-		if (tempNode.nodeName() == QString("spirit:units")) {
-			timeUnit_ = General::str2TimeUnit(tempNode.childNodes().at(i).
-					nodeValue(),General::NS);
-		}
-
-		// other attributes go to QMap
-		else {
-			QString name = tempNode.nodeName();
-			QString value = tempNode.nodeValue();
-			attributes_[name] = value;
-		}
-	}
-}
-
 General::ClockStruct::ClockStruct( double value ):
 value_(value),
 timeUnit_(General::NS),
@@ -621,18 +590,6 @@ General::ClockStruct& General::ClockStruct::operator=( const ClockStruct& other 
 		attributes_ = other.attributes_;
 	}
 	return *this;
-}
-
-General::ClockPulseValue::ClockPulseValue(QDomNode &clockNode): 
-value_(2),
-attributes_() {
-
-	QString value = clockNode.childNodes().at(0).nodeValue();
-	bool ok = false;
-	value_ = value.toInt(&ok);
-
-	// get the attributes
-	//XmlUtils::parseAttributes(clockNode, attributes_);
 }
 
 General::ClockPulseValue::ClockPulseValue( unsigned int value ):

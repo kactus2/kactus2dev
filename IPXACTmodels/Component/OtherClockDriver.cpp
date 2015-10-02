@@ -5,57 +5,12 @@
  */
 
 #include "otherclockdriver.h"
-#include "generaldeclarations.h"
-#include "XmlUtils.h"
+#include "../generaldeclarations.h"
 
 #include <QString>
 #include <QList>
-#include <QDomNode>
-#include <QDomNamedNodeMap>
 #include <QObject>
 #include <QSharedPointer>
-#include <QXmlStreamWriter>
-
-// the constructor
-OtherClockDriver::OtherClockDriver(QDomNode &clockNode):
-clockName_(QString()),
-clockSource_(QString()),
-clockPeriod_(0),
-clockPulseOffset_(0),
-clockPulseValue_(0),
-clockPulseDuration_(0) {
-
-	// get the attribute spirit:clockName & spirit:clockSource
-	QDomNamedNodeMap attributeMap = clockNode.attributes();
-
-	clockName_ = attributeMap.namedItem(QString(
-			"spirit:clockName")).nodeValue();
-	clockName_ = XmlUtils::removeWhiteSpace(clockName_);
-	clockSource_ = attributeMap.namedItem(QString("spirit:clockSource")).
-			nodeValue();
-
-	for (int i = 0; i < clockNode.childNodes().count(); ++i) {
-		QDomNode tempNode = clockNode.childNodes().at(i);
-
-		if (tempNode.nodeName() == QString("spirit:clockPeriod")) {
-			clockPeriod_ = QSharedPointer<General::ClockStruct>(
-					new General::ClockStruct(tempNode));
-		}
-		else if (tempNode.nodeName() == QString("spirit:clockPulseOffset")) {
-			clockPulseOffset_ = QSharedPointer<General::ClockStruct>(
-					new General::ClockStruct(tempNode));
-		}
-		else if (tempNode.nodeName() == QString("spirit:clockPulseValue")) {
-			clockPulseValue_ = QSharedPointer<General::ClockPulseValue>(
-					new General::ClockPulseValue(tempNode));
-		}
-		else if (tempNode.nodeName() == QString("spirit:clockPulseDuration")){
-			clockPulseDuration_ = QSharedPointer<General::ClockStruct>(
-					new General::ClockStruct(tempNode));
-		}
-	}
-	return;
-}
 
 OtherClockDriver::OtherClockDriver(): 
 clockName_(),
@@ -136,69 +91,6 @@ OtherClockDriver & OtherClockDriver::operator=( const OtherClockDriver &other ) 
 
 // the destructor
 OtherClockDriver::~OtherClockDriver() {
-}
-
-void OtherClockDriver::write(QXmlStreamWriter& writer) {
-	writer.writeStartElement("spirit:otherClockDriver");
-	writer.writeAttribute("spirit:clockName", clockName_);
-	
-	// if optional attribute clockSource exists
-	if (!clockSource_.isEmpty()) {
-		writer.writeAttribute("spirit:clockSource", clockSource_);
-	}
-
-    if (clockPeriod_) {
-		// start the spirit:clockPeriod tag
-		writer.writeStartElement("spirit:clockPeriod");
-
-		// write the attributes for the element
-		writer.writeAttribute("spirit:units",
-				General::timeUnit2Str(clockPeriod_->timeUnit_));
-
-		// write the value of the element and close the tag
-                writer.writeCharacters(QString::number(clockPeriod_->value_));
-		writer.writeEndElement(); // spirit:clockPeriod
-	}
-
-	if (clockPulseOffset_) {
-		// start the spirit:clockPulseOffset tag
-		writer.writeStartElement("spirit:clockPulseOffset");
-
-		// write the attributes for the element
-		writer.writeAttribute("spirit:units",
-						General::timeUnit2Str(clockPeriod_->timeUnit_));
-
-		// write the value of the element and close the tag
-                writer.writeCharacters(QString::number(clockPulseOffset_->value_));
-		writer.writeEndElement(); // spirit:clockPulseOffset
-	}
-
-    if (clockPulseValue_) {
-		// start the spirit:clockPulseValue tag
-		writer.writeStartElement("spirit:clockPulseValue");
-
-		// write the attributes for the element
-		XmlUtils::writeAttributes(writer, clockPulseValue_->attributes_);
-
-		// write the value of the element and close the tag
-                writer.writeCharacters(QString::number(clockPulseValue_->value_));
-		writer.writeEndElement(); // spirit:clockPulseValue
-	}
-
-    if (clockPulseDuration_) {
-		// start the spirit:clockPulseDuration tag
-		writer.writeStartElement("spirit:clockPulseDuration");
-
-		// write the attributes for the element
-		writer.writeAttribute("spirit:units",
-						General::timeUnit2Str(clockPeriod_->timeUnit_));
-
-		// write the value of the element and close the tag
-                writer.writeCharacters(QString::number(clockPulseDuration_->value_));
-		writer.writeEndElement(); // spirit:clockPulseDuration
-	}
-
-	writer.writeEndElement(); // spirit:otherClockDriver
 }
 
 bool OtherClockDriver::isValid( QStringList& errorList, const QString& parentIdentifier ) const {
