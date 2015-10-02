@@ -15,6 +15,8 @@
 #include <IPXACTmodels/ipxactmodels_global.h>
 #include <IPXACTmodels/common/CommonItemsWriter.h>
 
+#include "MemoryMapBaseWriter.h"
+
 #include <QXmlStreamWriter>
 #include <QObject>
 #include <QSharedPointer>
@@ -26,7 +28,7 @@ class MemoryMapBase;
 //-----------------------------------------------------------------------------
 //! Writer class for ipxact:memoryMap element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT MemoryMapWriter : public CommonItemsWriter
+class IPXACTMODELS_EXPORT MemoryMapWriter : public MemoryMapBaseWriter
 {
     Q_OBJECT
 
@@ -57,22 +59,6 @@ private:
     //! No copying allowed.
     MemoryMapWriter(MemoryMapWriter const& rhs);
     MemoryMapWriter& operator=(MemoryMapWriter const& rhs);
-
-    /*!
-     *  Write the name group.
-     *
-     *      @param [in] writer          Used XML writer.
-     *      @param [in] memoryMapBase   The selected memory map base.
-     */
-    void writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<MemoryMapBase> memoryMapBase) const;
-
-    /*!
-     *  Write the memory blocks.
-     *
-     *      @param [in] writer          Used XML writer.
-     *      @param [in] memoryMapBase   The selected memory map base.
-     */
-    void writeMemoryBlocks(QXmlStreamWriter& writer, QSharedPointer<MemoryMapBase> memoryMapBase) const;
 
     /*!
      *  Write the memory remaps.

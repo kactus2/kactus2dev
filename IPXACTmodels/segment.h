@@ -10,11 +10,10 @@
 #define SEGMENT_H_
 
 #include <IPXACTmodels/common/NameGroup.h>
+#include <IPXACTmodels/common/Extendable.h>
 
 #include "ipxactmodels_global.h"
 
-#include <QXmlStreamWriter>
-#include <QDomNode>
 #include <QString>
 #include <QMap>
 
@@ -23,16 +22,9 @@ class VendorExtension;
 /*! \brief Segment describes the location and size of an area in containing address space.
  *
  */
-class IPXACTMODELS_EXPORT Segment : public NameGroup{
+class IPXACTMODELS_EXPORT Segment : public NameGroup, public Extendable{
 
 public:
-
-	/*! \brief The constructor
-	 *
-	 * \param addrSpaceNode The node that contains the details of the segment.
-	 *
-	*/
-	Segment(QDomNode &segmentNode);
 
 	/*! \brief The default constructor
 	 *
@@ -48,15 +40,19 @@ public:
 	//! \brief The assignment operator
 	Segment& operator=(const Segment& other);
 
-	/*! \brief Write the contents of the class using the writer.
-	*
-	* Uses the specified writer to writer the class contents into file as valid
-	* IP-Xact.
-	*
-	* \param writer A reference to a QXmlStreamWrite instance that is used to
-	* write the document into file.
-	*/
-	void write(QXmlStreamWriter& writer);
+    /*!
+     *  Gets the presence.
+     *
+     *      @return The presence value.
+     */
+    QString getIsPresent() const;
+
+    /*!
+     *  Set the presence.
+     *
+     *      @param [in] newIsPresent    The new presence value.
+     */
+    void setIsPresent(QString const& newIsPresent);
 
 	/*! \brief Check if the address space is in a valid state.
 	 *
@@ -113,7 +109,22 @@ public:
 	*/
 	void setRange(const QString& range);
 
+	/*! \brief Set the attributes of the address offset.
+	 *
+	 * \param offsetAttributes QMap containing the attributes as name-value pairs.
+	*/
+	void setOffsetAttributes( QMap<QString, QString> offsetAttributes );
+
+	/*! \brief Set the attributes of the range.
+	 *
+	 * \param rangeAttributes QMap containing the attributes as name-value pairs.
+	*/
+	void setRangeAttributes( QMap<QString, QString> rangeAttributes );
+
 private:
+
+	//! Presence of the CPU.
+	QString isPresent_;
 
 	//! \brief The offset of the segment from the beginning of the containing address space.
 	QString addressOffset_;

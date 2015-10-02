@@ -28,6 +28,8 @@ SUBDIRS += Model\tst_ViewWriter.pro \
 		   MemoryMaps\tst_AddressBlockReader.pro \
 		   MemoryMaps\tst_MemoryMapWriter.pro \
 		   MemoryMaps\tst_MemoryMapReader.pro \
+		   MemoryMaps\tst_MemoryMapBaseReader.pro \
+		   MemoryMaps\tst_MemoryMapBaseWriter.pro \
 		   tst_CPUReader.pro \
 		   tst_CPUWriter.pro \
 		   tst_FileWriter.pro \
@@ -41,4 +43,6 @@ SUBDIRS += Model\tst_ViewWriter.pro \
 		   tst_businterfaceReader.pro \
 		   tst_businterfaceWriter.pro \
 		   tst_RemapStateWriter.pro \
-		   tst_RemapStateReader.pro
+		   tst_RemapStateReader.pro \
+		   tst_AddressSpaceReader.pro \
+		   tst_AddressSpaceWriter.pro

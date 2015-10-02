@@ -23,7 +23,7 @@
 // Function: MemoryMapReader::MemoryMapReader()
 //-----------------------------------------------------------------------------
 MemoryMapReader::MemoryMapReader(QObject* parent /* = 0 */):
-CommonItemsReader(parent)
+MemoryMapBaseReader(parent)
 {
 
 }
@@ -43,11 +43,7 @@ QSharedPointer<MemoryMap> MemoryMapReader::createMemoryMapFrom(QDomNode const& m
 {
     QSharedPointer<MemoryMap> newMemoryMap(new MemoryMap());
 
-    parseNameGroup(memoryMapNode, newMemoryMap);
-
-    parsePresence(memoryMapNode, newMemoryMap);
-
-    parseMemoryBlocks(memoryMapNode, newMemoryMap);
+	readMemoryMapBase(memoryMapNode, newMemoryMap);
 
     parseMemoryRemaps(memoryMapNode, newMemoryMap);
 
@@ -58,30 +54,6 @@ QSharedPointer<MemoryMap> MemoryMapReader::createMemoryMapFrom(QDomNode const& m
     parseVendorExtensions(memoryMapNode, newMemoryMap);
 
     return newMemoryMap;
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryMapReader::parseNameGroup()
-//-----------------------------------------------------------------------------
-void MemoryMapReader::parseNameGroup(QDomNode const& memoryMapBaseNode,
-    QSharedPointer<MemoryMapBase> newMemoryMapBase) const
-{
-    NameGroupReader nameGroupReader;
-    nameGroupReader.parseNameGroup(memoryMapBaseNode, newMemoryMapBase);
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryMapReader::parsePresence()
-//-----------------------------------------------------------------------------
-void MemoryMapReader::parsePresence(QDomNode const& memoryMapBaseNode,
-    QSharedPointer<MemoryMapBase> newMemoryMapBase) const
-{
-    QDomNode isPresentNode = memoryMapBaseNode.firstChildElement("ipxact:isPresent");
-    if (!isPresentNode.isNull())
-    {
-        QString isPresent = isPresentNode.firstChild().nodeValue();
-        newMemoryMapBase->setIsPresent(isPresent);
-    }
 }
 
 //-----------------------------------------------------------------------------

@@ -7,47 +7,13 @@
 
 #include "segment.h"
 
-#include <generaldeclarations.h>
+#include "generaldeclarations.h"
 
 #include "GenericVendorExtension.h"
 #include "XmlUtils.h"
 #include "VendorExtension.h"
 
 #include <QStringList>
-
-Segment::Segment( QDomNode &segmentNode ):
-NameGroup(),
-addressOffset_(),
-offsetAttributes_(),
-range_(),
-rangeAttributes_(),
-vendorExtensions_()
-{
-
-	for (int i = 0; i < segmentNode.childNodes().count(); ++i) {
-		QDomNode tempNode = segmentNode.childNodes().at(i);
-
-		if (tempNode.nodeName() == QString("spirit:addressOffset")) {
-			addressOffset_ = tempNode.childNodes().at(0).nodeValue();
-
-			offsetAttributes_ = XmlUtils::parseAttributes(tempNode);
-		}
-
-		else if (tempNode.nodeName() == QString("spirit:range")) {
-			range_ = tempNode.childNodes().at(0).nodeValue();
-
-			rangeAttributes_ = XmlUtils::parseAttributes(tempNode);
-		}
-        else if (tempNode.nodeName() == QString("spirit:vendorExtensions")) 
-        {
-            int extensionCount = tempNode.childNodes().count();
-            for (int j = 0; j < extensionCount; ++j) {
-                QDomNode extensionNode = tempNode.childNodes().at(j);
-                vendorExtensions_.append(QSharedPointer<VendorExtension>(new GenericVendorExtension(extensionNode)));
-            }
-        }
-	}
-}
 
 Segment::Segment():
 NameGroup(),
@@ -86,48 +52,20 @@ Segment& Segment::operator=( const Segment& other ) {
 	return *this;
 }
 
-void Segment::write( QXmlStreamWriter& writer ) {
+//-----------------------------------------------------------------------------
+// Function: Segment::getIsPresent()
+//-----------------------------------------------------------------------------
+QString Segment::getIsPresent() const
+{
+	return isPresent_;
+}
 
-	writer.writeStartElement("spirit:segment");
-
-	if (!name().isEmpty()) {
-		writer.writeTextElement("spirit:name", name());
-	}
-
-	if (!displayName().isEmpty()) {
-		writer.writeTextElement("spirit:displayName", displayName());
-	}
-
-	if (!description().isEmpty()) {
-		writer.writeTextElement("spirit:description", description());
-	}
-
-	if (!addressOffset_.isEmpty()) {
-		writer.writeStartElement("spirit:addressOffset");
-		
-		XmlUtils::writeAttributes(writer, offsetAttributes_);
-		writer.writeCharacters(addressOffset_);
-
-		writer.writeEndElement(); // spirit:addressOffset
-	}
-
-	if (!range_.isEmpty()) {
-		writer.writeStartElement("spirit:range");
-
-		XmlUtils::writeAttributes(writer, rangeAttributes_);
-		writer.writeCharacters(range_);
-
-		writer.writeEndElement(); // spirit:range
-	}
-
-    if (!vendorExtensions_.isEmpty())
-    {
-        writer.writeStartElement("spirit:vendorExtensions");
-        XmlUtils::writeVendorExtensions(writer, vendorExtensions_);
-        writer.writeEndElement(); // spirit:vendorExtensions
-    }
-
-	writer.writeEndElement(); // spirit:segment
+//-----------------------------------------------------------------------------
+// Function: Segment::setIsPresent()
+//-----------------------------------------------------------------------------
+void Segment::setIsPresent(QString const& newIsPresent)
+{
+	isPresent_ = newIsPresent;
 }
 
 bool Segment::isValid( QStringList& errorList, const QString& parentIdentifier ) const {
@@ -191,4 +129,14 @@ void Segment::setOffset( const QString& addressOffset ) {
 
 void Segment::setRange( const QString& range ) {
 	range_ = range;
+}
+
+void Segment::setOffsetAttributes( QMap<QString, QString> offsetAttributes )
+{
+	offsetAttributes_ = offsetAttributes;
+}
+
+void Segment::setRangeAttributes( QMap<QString, QString> rangeAttributes )
+{
+	rangeAttributes_ = rangeAttributes;
 }

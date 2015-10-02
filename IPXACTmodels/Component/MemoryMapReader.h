@@ -15,6 +15,7 @@
 #include <IPXACTmodels/ipxactmodels_global.h>
 
 #include <IPXACTmodels/common/CommonItemsReader.h>
+#include "MemoryMapBaseReader.h"
 
 #include <QObject>
 #include <QSharedPointer>
@@ -27,7 +28,7 @@ class MemoryRemap;
 //-----------------------------------------------------------------------------
 //! Reader class for ipxact:memoryMap element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT MemoryMapReader : public CommonItemsReader
+class IPXACTMODELS_EXPORT MemoryMapReader : public MemoryMapBaseReader
 {
     Q_OBJECT
 
@@ -59,22 +60,6 @@ private:
     //! No copying allowed.
     MemoryMapReader(MemoryMapReader const& rhs);
     MemoryMapReader& operator=(MemoryMapReader const& rhs);
-
-    /*!
-     *  Reads the name group.
-     *
-     *      @param [in] memoryMapBaseNode   XML description of the memory map base.
-     *      @param [in] newMemoryMapBase    The new memory map base item.
-     */
-    void parseNameGroup(QDomNode const& memoryMapBaseNode, QSharedPointer<MemoryMapBase> newMemoryMapBase) const;
-
-    /*!
-     *  Reads the isPresent value.
-     *
-     *      @param [in] memoryMapBaseNode   XML description of the memory map base.
-     *      @param [in] newMemoryMapBase    The new memory map base item.
-     */
-    void parsePresence(QDomNode const& memoryMapBaseNode, QSharedPointer<MemoryMapBase> newMemoryMapBase) const;
 
     /*!
      *  Reads the contained memory blocks.

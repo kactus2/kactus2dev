@@ -23,7 +23,7 @@
 // Function: MemoryMapWriter::MemoryMapWriter()
 //-----------------------------------------------------------------------------
 MemoryMapWriter::MemoryMapWriter(QObject* parent /* = 0 */):
-CommonItemsWriter(parent)
+MemoryMapBaseWriter(parent)
 {
 
 }
@@ -43,11 +43,7 @@ void MemoryMapWriter::writeMemoryMap(QXmlStreamWriter& writer, QSharedPointer<Me
 {
     writer.writeStartElement("ipxact:memoryMap");
 
-    writeNameGroup(writer, memoryMap);
-
-    writeIsPresent(writer, memoryMap->getIsPresent());
-
-    writeMemoryBlocks(writer, memoryMap);
+	writeMemoryMapBase(writer, memoryMap);
 
     writeMemoryRemaps(writer, memoryMap);
 
@@ -58,36 +54,6 @@ void MemoryMapWriter::writeMemoryMap(QXmlStreamWriter& writer, QSharedPointer<Me
     writeVendorExtensions(writer, memoryMap);
 
     writer.writeEndElement(); // ipxact:memoryMap
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryMapWriter::writeNameGroup()
-//-----------------------------------------------------------------------------
-void MemoryMapWriter::writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<MemoryMapBase> memoryMapBase) const
-{
-    NameGroupWriter nameGroupWriter;
-    nameGroupWriter.writeNameGroup(writer, memoryMapBase);
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryMapWriter::writeMemoryBlocks()
-//-----------------------------------------------------------------------------
-void MemoryMapWriter::writeMemoryBlocks(QXmlStreamWriter& writer, QSharedPointer<MemoryMapBase> memoryMapBase)
-    const
-{
-    if (!memoryMapBase->getMemoryBlocks()->isEmpty())
-    {
-        AddressBlockWriter addressBlockWriter;
-
-        foreach (QSharedPointer<MemoryBlockBase> memoryBlock, *memoryMapBase->getMemoryBlocks())
-        {
-            QSharedPointer<AddressBlock> addressBlock = memoryBlock.dynamicCast<AddressBlock>();
-            if (addressBlock)
-            {
-                addressBlockWriter.writeAddressBlock(writer, addressBlock);
-            }
-        }
-    }
 }
 
 //-----------------------------------------------------------------------------

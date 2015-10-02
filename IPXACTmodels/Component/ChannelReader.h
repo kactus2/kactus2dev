@@ -43,7 +43,7 @@ public:
     /*!
      *  Creates a new channel from a given channel node.
      *
-     *      @param [in] channelNode    XML description of the vhannel.
+     *      @param [in] channelNode    XML description of the channel.
      */
     QSharedPointer<Channel> createChannelFrom(QDomNode const& channelNode) const;
 
