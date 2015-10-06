@@ -58,7 +58,7 @@ private:
     /*!
      *  Reads the presence.
      *
-     *      @param [in] businterfaceNode    XML description of the view.
+     *      @param [in] businterfaceNode    XML description.
      *      @param [in] newbusinterface     The new businterface item.
      */
     void parseIsPresent(QDomNode const& businterfaceNode, QSharedPointer<BusInterface> newbusinterface) const;
@@ -66,7 +66,7 @@ private:
     /*!
      *  Reads the name group.
      *
-     *      @param [in] businterfaceNode    XML description of the view.
+     *      @param [in] businterfaceNode    XML description.
      *      @param [in] newbusinterface		The new businterface item.
      */
 	void parseNameGroup(QDomNode const& businterfaceNode, QSharedPointer<BusInterface> newbusinterface) const;

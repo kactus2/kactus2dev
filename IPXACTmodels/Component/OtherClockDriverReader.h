@@ -3,7 +3,7 @@
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Janne Virtanen
-// Date: 21.09.2015
+// Date: 02.10.2015
 //
 // Description:
 // Reader class for IP-XACT OtherClockDriver element.
@@ -47,13 +47,18 @@ public:
      */
     QSharedPointer<OtherClockDriver> createOtherClockDriverFrom(QDomNode const& otherClockDriverNode) const;
 
-	General::ClockStruct* readClockStruct(QDomNode &clockNode) const;
-
 private:
 
     //! No copying allowed.
     OtherClockDriverReader(OtherClockDriverReader const& rhs);
-    OtherClockDriverReader& operator=(OtherClockDriverReader const& rhs);
+	OtherClockDriverReader& operator=(OtherClockDriverReader const& rhs);
+
+	/*!
+	 *  Extracts clock struct from XML.
+	 *
+	 *      @param [in] clockNode			XML description of the clock node.
+	 */
+	General::ClockStruct* readClockStruct(QDomNode &clockNode) const;
 };
 
 #endif // OtherClockDriverReader_H

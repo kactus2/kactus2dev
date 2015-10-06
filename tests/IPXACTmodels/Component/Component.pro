@@ -47,4 +47,6 @@ SUBDIRS += Model\tst_ViewWriter.pro \
 		   tst_AddressSpaceReader.pro \
 		   tst_AddressSpaceWriter.pro \
 		   tst_OtherClockDriverReader.pro \
-		   tst_OtherClockDriverWriter.pro
+		   tst_OtherClockDriverWriter.pro \
+		   tst_ComponentGeneratorReader.pro \
+		   tst_ComponentGeneratorWriter.pro
