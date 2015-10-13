@@ -1,244 +1,183 @@
-/* 
- *
- *  Created on: 9.8.2010
- *      Author: Antti Kamppi
- */
+//-----------------------------------------------------------------------------
+// File: ComponentGenerator.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Janne Virtanen
+// Date: 05.10.2015
+//
+// Description:
+// Implementation for ipxact:componentGenerator element.
+//-----------------------------------------------------------------------------
 
-#ifndef COMPONENTGENERATOR_H_
-#define COMPONENTGENERATOR_H_
+#ifndef COMPONENTGENERATOR_H
+#define COMPONENTGENERATOR_H
 
-#include <IPXACTmodels/generator.h>
 #include <IPXACTmodels/ipxactmodels_global.h>
+
+#include <IPXACTmodels/common/BooleanValue.h>
 #include <IPXACTmodels/common/Extendable.h>
+#include <IPXACTmodels/common/NameGroup.h>
 #include <IPXACTmodels/generaldeclarations.h>
 
 #include <QList>
 #include <QString>
 
 class Choice;
-
-/*! \brief Equals the spirit:componentGenerator element in IP-Xact specification
- *
- * Defines a generator that is assigned and may be run on this component.
- * This class is a generalization of class Generator and uses it's services.
- */
+class Parameter;
+//-----------------------------------------------------------------------------
+//! Implementation for ipxact:componentGenerator element.
+//-----------------------------------------------------------------------------
 class IPXACTMODELS_EXPORT ComponentGenerator : public NameGroup, public Extendable
 {
 
 public:
 
-	//! \brief Indicates the type of API used by the generator.
-	enum ApiType {
+	//! Indicates the type of API used by the generator.
+	enum ApiType 
+    {
 		TGI_2014_BASE,
 		TGI_2014_EXTENDED,
 		TGI_2009,
-		NONE
+		NONE,
+        EMPTY_API_TYPE
 	};
 
-	/*! \brief Used the specify how the generator is  run
-	 * Specifies if the generator shall be run once for all instances or
-	 * once for each instance of this component.
-	 */
-	enum Instance {
+	//! Specifies if the generator shall be run once for all instances or once for each instance of this component.
+	enum Scope
+    {
 		INSTANCE,
-		ENTITY
+		ENTITY,
+        NO_SCOPE
 	};
 
-	//! \brief The constructor
+	//! The constructor.
 	ComponentGenerator();
 
-	//! \brief Copy constructor
+	//! Copy constructor.
 	ComponentGenerator(const ComponentGenerator &other);
 
-	//! \brief Assignment operator
+	//! Assignment operator.
 	ComponentGenerator &operator=(const ComponentGenerator &other);
 
-	/*! \brief The destructor
-	 *
-	 */
+	//! The destructor.
 	~ComponentGenerator();
 
-	/*! \brief Check if the component generator is in a valid state.
+    	/*! Set the hidden setting for this component generator.
 	 *
-     * \param componentChoices  Choices in the containing component.
-	 * \param errorList The list to add the possible error messages to.
-	 * \param parentIdentifier String from parent to help to identify the location of the error.
-	 *
-	 * \return bool True if the state is valid and writing is possible.
-	*/
-	bool isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
-        QStringList& errorList, 
-		const QString& parentIdentifier) const;
-
-	/*! \brief Check if the component generator is in a valid state.
-	 *
-     * \param componentChoices  Choices in the containing component.
-     *
-	 * \return bool True if the state is valid and writing is possible.
-	*/
-	bool isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const;
-
-	/*! \brief Get list of the groups for this Component Generator
-	 *
-	 * \return QList containing the names of the groups this generator belongs
-	 * to
-	 */
-	const QList<QString>& getGroups();
-
-	/*! \brief Get the scope of this Component Generator
-	 *
-	 * \return enum Instance containing the scope.
-	 */
-	Instance getScope() const;
-
-	/*! \brief Set the groups for this Component Generator
-	 *
-	 * Calling this function will delete the old groups.
-	 *
-	 * \param groups QList containing names of the groups for this generator.
-	 */
-	void setGroups(QList<QString> &groups);
-
-	/*! \brief Set the scope of this Component Generator.
-	 *
-	 * \param scope The scope to be set.
-	 */
-	void setScope(Instance scope);
-
-	/*! \brief Get the API type of the generator
-	 *
-	 * \return enum ApiType containing the API type.
-	 */
-	ApiType getApiType() const;
-
-	/*! \brief Get the path of the generator executable
-	 *
-	 * \return QString containing the path
-	 */
-	QString getGeneratorExe() const;
-
-	/*! \brief Get the hidden setting of this Component Generator
-	 *
-	 * \return boolean value of the hidden setting
-	 */
-	bool getHidden() const;
-
-	/*! \brief Get list of the parameters for this Component Generator
-	 *
-	 * \return QList containing pointers to the parameters.
-	 */
-	const QList<QSharedPointer<Parameter> >& getParameters();
-
-	/*! \brief Get the phase of this Component Generator
-	 *
-	 *	Negative phase number means undefined phase.
-	 *
-	 * \return Double containing the phase number.
-	 */
-	double getPhase() const;
-
-	/*! \brief Set the ApiType for this Component Generator
-	 *
-	 * \param apiType enum ApiType containing the API type.
-	 */
-	void setApiType(ApiType apiType);
-
-	/*! \brief Set the path to the generator executable for this generator.
-	 *
-	 * \param generatorExe QString containing the path to the generator
-	 * executable.
-	 */
-	void setGeneratorExe(const QString &generatorExe);
-
-	/*! Set the hidden setting for this Component Generator.
-	 *
-	 * \param hidden boolean value of the hidden element.
+	 *      @param [in] hidden  The hidden value to set.
 	 */
 	void setHidden(bool hidden);
 
-	/*! \brief Set the parameters for this Component Generator.
+	/*! Get the hidden setting of this component generator.
 	 *
-	 * Calling this function will delete the old parameters.
-	 *
-	 * \param parameters QList containing pointers to the new parameters.
+	 *      @return The hidden setting.
 	 */
-	void setParameters(const QList<QSharedPointer<Parameter> > &parameters);
+	BooleanValue getHidden() const;
 
-	/*! \brief Set the phase of this Component Generator
+	/*! Set the scope of this component generator.
 	 *
-	 * Negative phase number means undefined phase.
-	 *
-	 * \param phase Double type value of the phase.
+	 *      @param [in] scope The scope to be set.
 	 */
-	void setPhase(double phase);
+	void setScope(Scope scope);
 
-	/*! \brief Get the supported transport methods.
+	/*! Get the scope of this component generator.
 	 *
-	 * \return See above.
+	 *      @return  The scope of the generator.
 	 */
-	const QStringList& getTransportMethods() const;
+	Scope getScope() const;
 
-	/*! \brief Set the supported transport methods.
+	/*! Set the phase for the component generator.
 	 *
-	 * \param See above.
+	 *      @param [in] phase   The phase value to set.
 	 */
-	void setTransportMethods(QStringList transportMethods);
+	void setPhase(QString const& phaseExpression);
+
+    /*! Get the phase of the component generator.
+	 *
+	 *      @return The generator phase.
+	 */
+	QString getPhase() const;
+
+	/*! Get the parameters for this component generator.
+	 *
+	 *      @return QList containing pointers to the parameters.
+	 */
+	QSharedPointer<QList<QSharedPointer<Parameter> > > getParameters();
+    
+	/*! Set the ApiType for this Component Generator
+	 *
+	 *      @param [in] apiType enum ApiType containing the API type.
+	 */
+	void setApiType(ApiType apiType);
+
+    /*! Get the API type of the generator.
+	 *
+	 *      @return The generator API type.
+	 */
+	ApiType getApiType() const;
+
+    /*! Set the supported transport methods.
+	 *
+	 *      @param [in] transportMethods The transport methods to set.
+	 */
+	void setTransportMethods(QStringList const& transportMethods);
+
+	/*! Get the supported transport methods.
+	 *
+	 *      @return The supported transport methods.
+	 */
+	QStringList getTransportMethods() const;
+    
+	/*! Set the path to the generator executable for this generator.
+	 *
+	 *      @param [in] generatorExe The path to the generator executable.
+	 */
+	void setGeneratorExe(QString const& generatorExe);
+
+	/*! Get the path of the generator executable.
+	 *
+	 *      @return The generator executable path.
+	 */
+	QString getGeneratorExe() const;
+
+	/*! Set the groups for this component generator.
+	 *
+	 *      @param [in] groups The names of the groups for this generator.
+	 */
+	void setGroups(QStringList const& groups);
+
+	/*! Get list of the groups for this Component Generator
+	 *
+	 *      @return The names of the groups this generator belongs to.
+	 */
+	QStringList getGroups() const;
 
 private:
 
-	/*! \brief OPTIONAL spirit:scope
-	 * Indicates if the generator shall be run once for all instances or once
-	 * for each instance of this component.
-	 */
-	Instance scope_;
+	//! Specifies if this generator can be run as standalone or if it must be run as part of a generator chain.
+	BooleanValue hidden_;
+    
+	//! Indicates if the generator shall be run once for all instances or once for each instance of this component.
+	Scope scope_;
 
-	/*! \brief OPTIONAL spirit:group
-	 * An unbounded list of names used to assign this generator to a group
-	 * with other generators.
-	 */
-	QList<QString> groups_;
+	//! Determines the generator phase in a sequence of generator runs. 
+	QString phase_;
 
-	/*!
-	 * OPTIONAL spirit:hidden
-	 * Specifies if this generator can be run as standalone or if it must be
-	 * run as part of a generator chain.
-	 */
-	bool hidden_;
+	// Specifies any component generator specific parameters.
+	QSharedPointer<QList<QSharedPointer<Parameter> > > parameters_;
 
-	/*!
-	 * OPTIONAL spirit:phase
-	 * Determines the sequence in which the generators are run
-	 */
-	double phase_;
-
-	/*!
-	 * OPTIONAL spirit:parameters
-	 * Specifies any ComponentGenerator parameters.
-	 */
-	QList<QSharedPointer<Parameter> > parameters_;
-
-	/*!
-	 * OPTIONAL spirit:apiType
-	 * Indicates the type of API used by the generator.
-	 */
+	//! Indicates the type of API used by the generator.
 	ApiType apiType_;
+    
+    //! The alternate SOAP transport protocols supported by the component generator.
+	QStringList transportMethods_;
 
-	/*!
-	 * MANDATORY spirit:generatorExe
-	 * Contains the path to the generator executable.
-	 */
+	//! The path to the generator executable.
 	QString generatorExe_;
 
-    /*!
-     * OPTIONAL spirit: vendorExtensions
-     * Generator vendor extensions.
-     */
-    QList<QSharedPointer<VendorExtension> > vendorExtensions_;
+    //! Names for assigning this generator to a group with other generators.
+	QList<QString> groups_;
 
-    /*!
-     * The alternate SOAP transport protocols.
-     */
-	QStringList transportMethods_;
 };
 
-#endif /* COMPONENTGENERATOR_H_ */
+#endif /* COMPONENTGENERATOR_H */

@@ -10,9 +10,13 @@
 //-----------------------------------------------------------------------------
 
 #include <IPXACTmodels/Component/ComponentGeneratorWriter.h>
-#include <IPXACTmodels/VendorExtension.h>
+
 #include <IPXACTmodels/common/Parameter.h>
+
 #include <IPXACTmodels/GenericVendorExtension.h>
+#include <IPXACTmodels/VendorExtension.h>
+
+#include <IPXACTmodels/kactusExtensions/Kactus2Placeholder.h>
 
 #include <QtTest>
 
@@ -34,6 +38,7 @@ private slots:
 	void testWriteGeneratorExe();
 	void testWriteGroups();
 	void testWriteParameter();
+    void testWriteCompleteGenerator();
 
 private:
 
@@ -69,18 +74,18 @@ void tst_ComponentGeneratorWriter::cleanup()
 //-----------------------------------------------------------------------------
 void tst_ComponentGeneratorWriter::testWriteAttributes()
 {
-	QString output;
-	QXmlStreamWriter xmlStreamWriter(&output);
-
+    testComponentGenerator_->setName("testGenerator");
 	testComponentGenerator_->setHidden(true);
 	testComponentGenerator_->setScope(ComponentGenerator::ENTITY);
 
 	QString expectedOutput(
 		"<ipxact:componentGenerator hidden=\"true\" scope=\"entity\">"
-		"<ipxact:name></ipxact:name>"
-		"<ipxact:apiType>TGI_2014_BASE</ipxact:apiType>"
+		    "<ipxact:name>testGenerator</ipxact:name>"		
 		"</ipxact:componentGenerator>"
 		);
+
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
 
 	ComponentGeneratorWriter ComponentGeneratorWriter;
 	ComponentGeneratorWriter.writeComponentGenerator(xmlStreamWriter, testComponentGenerator_);
@@ -92,21 +97,20 @@ void tst_ComponentGeneratorWriter::testWriteAttributes()
 //-----------------------------------------------------------------------------
 void tst_ComponentGeneratorWriter::testWriteComponentGenerator()
 {
-	QString output;
-	QXmlStreamWriter xmlStreamWriter(&output);
-
 	testComponentGenerator_->setName("test");
 	testComponentGenerator_->setDisplayName("testDisplay");
 	testComponentGenerator_->setDescription("testDescription");
 
 	QString expectedOutput(
-		"<ipxact:componentGenerator hidden=\"false\" scope=\"instance\">"
-		"<ipxact:name>test</ipxact:name>"
-		"<ipxact:displayName>testDisplay</ipxact:displayName>"
-		"<ipxact:description>testDescription</ipxact:description>"
-		"<ipxact:apiType>TGI_2014_BASE</ipxact:apiType>"
+		"<ipxact:componentGenerator>"
+		    "<ipxact:name>test</ipxact:name>"
+		    "<ipxact:displayName>testDisplay</ipxact:displayName>"
+		    "<ipxact:description>testDescription</ipxact:description>"
 		"</ipxact:componentGenerator>"
 		);
+
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
 
 	ComponentGeneratorWriter ComponentGeneratorWriter;
 	ComponentGeneratorWriter.writeComponentGenerator(xmlStreamWriter, testComponentGenerator_);
@@ -118,18 +122,18 @@ void tst_ComponentGeneratorWriter::testWriteComponentGenerator()
 //-----------------------------------------------------------------------------
 void tst_ComponentGeneratorWriter::testWritePhase()
 {
-	QString output;
-	QXmlStreamWriter xmlStreamWriter(&output);
-
-	testComponentGenerator_->setPhase(13.37);
+    testComponentGenerator_->setName("testGenerator");
+	testComponentGenerator_->setPhase("13.37");
 
 	QString expectedOutput(
-		"<ipxact:componentGenerator hidden=\"false\" scope=\"instance\">"
-		"<ipxact:name></ipxact:name>"
-		"<ipxact:phase>13.37</ipxact:phase>"
-		"<ipxact:apiType>TGI_2014_BASE</ipxact:apiType>"
+		"<ipxact:componentGenerator>"
+		    "<ipxact:name>testGenerator</ipxact:name>"
+		    "<ipxact:phase>13.37</ipxact:phase>"
 		"</ipxact:componentGenerator>"
 		);
+
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
 
 	ComponentGeneratorWriter ComponentGeneratorWriter;
 	ComponentGeneratorWriter.writeComponentGenerator(xmlStreamWriter, testComponentGenerator_);
@@ -141,17 +145,18 @@ void tst_ComponentGeneratorWriter::testWritePhase()
 //-----------------------------------------------------------------------------
 void tst_ComponentGeneratorWriter::testWriteAPI()
 {
-	QString output;
-	QXmlStreamWriter xmlStreamWriter(&output);
-
+    testComponentGenerator_->setName("testGenerator");
 	testComponentGenerator_->setApiType(ComponentGenerator::TGI_2014_EXTENDED);
 
 	QString expectedOutput(
-		"<ipxact:componentGenerator hidden=\"false\" scope=\"instance\">"
-		"<ipxact:name></ipxact:name>"
-		"<ipxact:apiType>TGI_2014_EXTENDED</ipxact:apiType>"
+		"<ipxact:componentGenerator>"
+		    "<ipxact:name>testGenerator</ipxact:name>"
+		    "<ipxact:apiType>TGI_2014_EXTENDED</ipxact:apiType>"
 		"</ipxact:componentGenerator>"
 		);
+
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
 
 	ComponentGeneratorWriter ComponentGeneratorWriter;
 	ComponentGeneratorWriter.writeComponentGenerator(xmlStreamWriter, testComponentGenerator_);
@@ -163,18 +168,18 @@ void tst_ComponentGeneratorWriter::testWriteAPI()
 //-----------------------------------------------------------------------------
 void tst_ComponentGeneratorWriter::testWriteGeneratorExe()
 {
-	QString output;
-	QXmlStreamWriter xmlStreamWriter(&output);
-
-	testComponentGenerator_->setGeneratorExe("baker street");
+    testComponentGenerator_->setName("testGenerator");
+	testComponentGenerator_->setGeneratorExe("/bin/bash.exe");
 
 	QString expectedOutput(
-		"<ipxact:componentGenerator hidden=\"false\" scope=\"instance\">"
-		"<ipxact:name></ipxact:name>"
-		"<ipxact:apiType>TGI_2014_BASE</ipxact:apiType>"
-		"<ipxact:generatorExe>baker street</ipxact:generatorExe>"
+		"<ipxact:componentGenerator>"
+		    "<ipxact:name>testGenerator</ipxact:name>"
+		    "<ipxact:generatorExe>/bin/bash.exe</ipxact:generatorExe>"
 		"</ipxact:componentGenerator>"
 		);
+
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
 
 	ComponentGeneratorWriter ComponentGeneratorWriter;
 	ComponentGeneratorWriter.writeComponentGenerator(xmlStreamWriter, testComponentGenerator_);
@@ -186,22 +191,23 @@ void tst_ComponentGeneratorWriter::testWriteGeneratorExe()
 //-----------------------------------------------------------------------------
 void tst_ComponentGeneratorWriter::testWriteGroups()
 {
-	QString output;
-	QXmlStreamWriter xmlStreamWriter(&output);
+    testComponentGenerator_->setName("testGenerator");
 
 	QStringList groups;
-	groups.append("esa");
-	groups.append("pekka");
+	groups.append("makeGenerator");
+	groups.append("hdlGenerator");
 	testComponentGenerator_->setGroups(groups);
 
 	QString expectedOutput(
-		"<ipxact:componentGenerator hidden=\"false\" scope=\"instance\">"
-		"<ipxact:name></ipxact:name>"
-		"<ipxact:apiType>TGI_2014_BASE</ipxact:apiType>"
-		"<ipxact:group>esa</ipxact:group>"
-		"<ipxact:group>pekka</ipxact:group>"
+		"<ipxact:componentGenerator>"
+		    "<ipxact:name>testGenerator</ipxact:name>"
+		    "<ipxact:group>makeGenerator</ipxact:group>"
+		    "<ipxact:group>hdlGenerator</ipxact:group>"
 		"</ipxact:componentGenerator>"
 		);
+
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
 
 	ComponentGeneratorWriter ComponentGeneratorWriter;
 	ComponentGeneratorWriter.writeComponentGenerator(xmlStreamWriter, testComponentGenerator_);
@@ -213,40 +219,98 @@ void tst_ComponentGeneratorWriter::testWriteGroups()
 //-----------------------------------------------------------------------------
 void tst_ComponentGeneratorWriter::testWriteParameter()
 {
-	QString output;
-	QXmlStreamWriter xmlStreamWriter(&output);
+	QSharedPointer<Parameter> testParameter(new Parameter());
+	testParameter->setName("generatorParameter");
+	testParameter->setValueId("id1");
+	testParameter->setValue("5");
+	testParameter->setType("shortint");
+	testParameter->setAttribute("prompt", "Parm 1");
+	testParameter->setAttribute("resolve", "user");
+	testParameter->setDescription("First generator parameter.");
 
-	QSharedPointer<Parameter> para1(new Parameter());
-	para1->setName("Esko");
-	para1->setValueId("joq");
-	para1->setValue("5");
-	para1->setType("shortint");
-	para1->setAttribute("prompt", "Parm 1");
-	para1->setAttribute("resolve", "user");
-	para1->setDescription("First generator parameter.");
-
-	QList<QSharedPointer<Parameter> > parameters;
-	parameters.append(para1);
-	testComponentGenerator_->setParameters(parameters);
+	testComponentGenerator_->getParameters()->append(testParameter);
 
 	QString expectedOutput(
-		"<ipxact:componentGenerator hidden=\"false\" scope=\"instance\">"
-		"<ipxact:name></ipxact:name>"
-		"<ipxact:apiType>TGI_2014_BASE</ipxact:apiType>"
-		"<ipxact:parameters>"
-		"<ipxact:parameter parameterId=\"joq\" prompt=\"Parm 1\""
-		" resolve=\"user\" type=\"shortint\">"
-		"<ipxact:name>Esko</ipxact:name>"
-		"<ipxact:description>First generator parameter.</ipxact:description>"
-		"<ipxact:value>5</ipxact:value>"
-		"</ipxact:parameter>"
-		"</ipxact:parameters>"
+		"<ipxact:componentGenerator>"
+		    "<ipxact:name></ipxact:name>"
+		    "<ipxact:parameters>"
+		        "<ipxact:parameter parameterId=\"id1\" prompt=\"Parm 1\" resolve=\"user\" type=\"shortint\">"
+		            "<ipxact:name>generatorParameter</ipxact:name>"
+		            "<ipxact:description>First generator parameter.</ipxact:description>"
+		            "<ipxact:value>5</ipxact:value>"
+		        "</ipxact:parameter>"
+		    "</ipxact:parameters>"
 		"</ipxact:componentGenerator>"
 		);
+
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
 
 	ComponentGeneratorWriter ComponentGeneratorWriter;
 	ComponentGeneratorWriter.writeComponentGenerator(xmlStreamWriter, testComponentGenerator_);
 	QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentGeneratorWriter::testWriteCompleteGenerator()
+//-----------------------------------------------------------------------------
+void tst_ComponentGeneratorWriter::testWriteCompleteGenerator()
+{
+    testComponentGenerator_->setHidden(false);
+    testComponentGenerator_->setScope(ComponentGenerator::INSTANCE);
+    testComponentGenerator_->setName("fullGenerator");
+    testComponentGenerator_->setPhase("id1");
+    
+    QSharedPointer<Parameter> testParameter(new Parameter());
+    testParameter->setName("phaseParameter");
+    testParameter->setValueId("id1");
+    testParameter->setValue("1");
+ 
+    testComponentGenerator_->getParameters()->append(testParameter);
+
+    testComponentGenerator_->setApiType(ComponentGenerator::TGI_2009);
+    
+    QStringList transportMethods;
+    transportMethods << "file";
+    testComponentGenerator_->setTransportMethods(transportMethods);
+
+    testComponentGenerator_->setGeneratorExe("/bin/tools/generators/do_all.exe");
+    
+    QSharedPointer<VendorExtension> testExtension(new Kactus2Placeholder("kactus2:testExtension"));
+    testComponentGenerator_->getVendorExtensions()->append(testExtension);
+
+    QStringList testGroups;
+    testGroups << "globalGenerators";
+    testComponentGenerator_->setGroups(testGroups);
+
+    QString expectedOutput(
+        "<ipxact:componentGenerator hidden=\"false\" scope=\"instance\">"
+            "<ipxact:name>fullGenerator</ipxact:name>"
+            "<ipxact:phase>id1</ipxact:phase>"
+            "<ipxact:parameters>"
+                "<ipxact:parameter parameterId=\"id1\">"
+                    "<ipxact:name>phaseParameter</ipxact:name>"
+                    "<ipxact:value>1</ipxact:value>"
+                "</ipxact:parameter>"
+            "</ipxact:parameters>"
+            "<ipxact:apiType>TGI_2009</ipxact:apiType>"
+            "<ipxact:transportMethods>"
+                "<ipxact:transportMethod>file</ipxact:transportMethod>"
+            "</ipxact:transportMethods>"
+            "<ipxact:generatorExe>/bin/tools/generators/do_all.exe</ipxact:generatorExe>"
+            "<ipxact:vendorExtensions>"
+                "<kactus2:testExtension/>"
+            "</ipxact:vendorExtensions>"
+            "<ipxact:group>globalGenerators</ipxact:group>"            
+        "</ipxact:componentGenerator>"
+        );
+
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    ComponentGeneratorWriter ComponentGeneratorWriter;
+    ComponentGeneratorWriter.writeComponentGenerator(xmlStreamWriter, testComponentGenerator_);
+    QCOMPARE(output, expectedOutput);
 }
 
 QTEST_APPLESS_MAIN(tst_ComponentGeneratorWriter)

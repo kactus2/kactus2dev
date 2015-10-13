@@ -1,197 +1,208 @@
-/* 
- *
- *  Created on: 9.8.2010
- *      Author: Antti Kamppi
- */
+//-----------------------------------------------------------------------------
+// File: ComponentGenerator.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Janne Virtanen
+// Date: 05.10.2015
+//
+// Description:
+// Implementation for ipxact:componentGenerator element.
+//-----------------------------------------------------------------------------
 
-#include "componentgenerator.h"
+#include "ComponentGenerator.h"
 
 #include <IPXACTmodels/common/Parameter.h>
 
 #include <QList>
+#include <QSharedPointer>
 #include <QString>
 
-// the constructor
+//-----------------------------------------------------------------------------
+// Function: ComponentGenerator::ComponentGenerator()
+//-----------------------------------------------------------------------------
 ComponentGenerator::ComponentGenerator():
-scope_(ComponentGenerator::INSTANCE),
-groups_(), NameGroup(), hidden_(false),
-phase_(-1), parameters_(), apiType_(ComponentGenerator::TGI_2014_BASE),
-generatorExe_(), vendorExtensions_()
+NameGroup(),
+    Extendable(),
+    hidden_(),
+    scope_(ComponentGenerator::NO_SCOPE),
+    phase_(), 
+    parameters_(new QList<QSharedPointer<Parameter> >()),
+    apiType_(ComponentGenerator::EMPTY_API_TYPE),
+    generatorExe_(),
+    groups_()
 {
 }
 
-ComponentGenerator::ComponentGenerator( const ComponentGenerator &other ):
-scope_(other.scope_),
-	groups_(other.groups_),
-	NameGroup(other),
-	hidden_(other.hidden_),
-	phase_(other.phase_),
-	parameters_(),
-	apiType_(other.apiType_),
-	generatorExe_(other.generatorExe_),
-	vendorExtensions_(other.vendorExtensions_)
+//-----------------------------------------------------------------------------
+// Function: ComponentGenerator::ComponentGenerator()
+//-----------------------------------------------------------------------------
+ComponentGenerator::ComponentGenerator(ComponentGenerator const& other):
+NameGroup(other),
+    Extendable(other),
+    hidden_(other.hidden_),
+    scope_(other.scope_),
+    phase_(other.phase_),
+    parameters_(new QList<QSharedPointer<Parameter> >()),
+    apiType_(other.apiType_),
+    generatorExe_(other.generatorExe_),
+    groups_(other.groups_)
 {
-		foreach (QSharedPointer<Parameter> param, other.parameters_)
-		{
-			if (param) {
-				QSharedPointer<Parameter> copy = QSharedPointer<Parameter>(
-					new Parameter(*param.data()));
-				parameters_.append(copy);
-			}
-		}
+    foreach (QSharedPointer<Parameter> parameter, *other.parameters_)
+    {
+        QSharedPointer<Parameter> copy = QSharedPointer<Parameter>(new Parameter(*parameter.data()));
+        parameters_->append(copy);
+    }
 }
 
-ComponentGenerator& ComponentGenerator::operator=( const ComponentGenerator &other ) {
-	if (this != &other) {
-		scope_ = other.scope_;
-		groups_ = other.groups_;
+//-----------------------------------------------------------------------------
+// Function: ComponentGenerator::operator=()
+//-----------------------------------------------------------------------------    
+ComponentGenerator& ComponentGenerator::operator=(ComponentGenerator const& other)
+{
+	if (this != &other)
+    {
 		NameGroup::operator=(other);
-		hidden_ = other.hidden_;
+        Extendable::operator=(other);
+        hidden_ = other.hidden_;
+        scope_ = other.scope_;
 		phase_ = other.phase_;
 		apiType_ = other.apiType_;
-		generatorExe_ = other.generatorExe_;
-		vendorExtensions_ = other.vendorExtensions_;
+        generatorExe_ = other.generatorExe_;
+        groups_ = other.groups_;
 
-		parameters_.clear();
-		foreach (QSharedPointer<Parameter> param, other.parameters_)
-		{
-			if (param) {
-				QSharedPointer<Parameter> copy = QSharedPointer<Parameter>(
-					new Parameter(*param.data()));
-				parameters_.append(copy);
-			}
-		}
-	}
-	return *this;
+        parameters_->clear();
+        foreach (QSharedPointer<Parameter> parameter, *other.parameters_)
+        {
+            QSharedPointer<Parameter> copy = QSharedPointer<Parameter>(new Parameter(*parameter.data()));
+            parameters_->append(copy);
+        }
+    }
+
+    return *this;
 }
 
-// the destructor
-ComponentGenerator::~ComponentGenerator() {
-}
-
-bool ComponentGenerator::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
-    QStringList& errorList, const QString& parentIdentifier ) const {
-	bool valid = true;
-
-	if (name().isEmpty()) {
-		errorList.append(QObject::tr("No name specified for component generator"
-			" within %1").arg(parentIdentifier));
-		valid = false;
-	}
-
-//     ParameterValidator validator;
-//     foreach (QSharedPointer<Parameter> param, parameters_)
-//     {
-//         errorList.append(validator.findErrorsIn(param.data(), QObject::tr("component generator %1").arg(name()),
-//             componentChoices));
-//         if (!validator.validate(param.data(), componentChoices)) 
-//         {
-//             valid = false;
-//         }
-//     }
-
-	if (generatorExe_.isEmpty())
-    {
-		errorList.append(QObject::tr("No path to the generator executable specified"
-			" for component generator %1 within %2").arg(name()).arg(parentIdentifier));
-		valid = false;
-	}
-
-	return valid;
-}
-
-bool ComponentGenerator::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const
+//-----------------------------------------------------------------------------
+// Function: ComponentGenerator::~ComponentGenerator()
+//-----------------------------------------------------------------------------
+ComponentGenerator::~ComponentGenerator()
 {
-	if (name().isEmpty())
-	{
-		return false;
-	}
-
-//     ParameterValidator validator;
-//     foreach (QSharedPointer<Parameter> param, parameters_)
-//     {
-//         if (!validator.validate(param.data(), componentChoices)) 
-//         {
-//             return false;
-//         }
-//     }
-
-	if (generatorExe_.isEmpty()) {
-		return false;
-	}
-	return true;
 }
 
-ComponentGenerator::Instance ComponentGenerator::getScope() const {
+//-----------------------------------------------------------------------------
+// Function: ComponentGenerator::setHidden()
+//-----------------------------------------------------------------------------
+void ComponentGenerator::setHidden(bool hidden)
+{
+    hidden_.setValue(hidden);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentGenerator::getHidden()
+//-----------------------------------------------------------------------------
+BooleanValue ComponentGenerator::getHidden() const
+{
+    return hidden_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentGenerator::setScope()
+//-----------------------------------------------------------------------------
+void ComponentGenerator::setScope(Scope scope)
+{
+    scope_ = scope;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentGenerator::getScope()
+//-----------------------------------------------------------------------------
+ComponentGenerator::Scope ComponentGenerator::getScope() const
+{
 	return scope_;
 }
 
-const QList<QString>& ComponentGenerator::getGroups() {
-	return groups_;
-}
-
-void ComponentGenerator::setGroups(QList<QString> &groups) {
-	// delete old groups
-	groups_.clear();
-
-	// save the new groups
-	groups_ = groups;
-}
-
-void ComponentGenerator::setScope(Instance scope) {
-	scope_ = scope;
-}
-
-double ComponentGenerator::getPhase() const {
-	return phase_;
-}
-
-void ComponentGenerator::setHidden(bool hidden) {
-	hidden_ = hidden;
-}
-
-bool ComponentGenerator::getHidden() const {
-	return hidden_;
-}
-
-void ComponentGenerator::setPhase(double phase) {
-	phase_ = phase;
-}
-
-void ComponentGenerator::setGeneratorExe(const QString &generatorExe) {
-	generatorExe_ = generatorExe;
-}
-
-void ComponentGenerator::setParameters(const QList<QSharedPointer<Parameter> > &parameters) {
-	// delete old parameters
-	parameters_.clear();
-
-	// save the new parameters
-	parameters_ = parameters;
-}
-
-void ComponentGenerator::setApiType(ApiType apiType) {
-	apiType_ = apiType;
-}
-
-const QList<QSharedPointer<Parameter> >& ComponentGenerator::getParameters() {
-	return parameters_;
-}
-
-QString ComponentGenerator::getGeneratorExe() const {
-	return generatorExe_;
-}
-
-ComponentGenerator::ApiType ComponentGenerator::getApiType() const {
-	return apiType_;
-}
-
-void ComponentGenerator::setTransportMethods(QStringList transportMethods)
+//-----------------------------------------------------------------------------
+// Function: ComponentGenerator::setPhase()
+//-----------------------------------------------------------------------------
+void ComponentGenerator::setPhase(QString const& phaseExpression)
 {
-	transportMethods_ = transportMethods;
+    phase_ = phaseExpression;
 }
 
-const QStringList& ComponentGenerator::getTransportMethods() const
+//-----------------------------------------------------------------------------
+// Function: ComponentGenerator::getPhase()
+//-----------------------------------------------------------------------------
+QString ComponentGenerator::getPhase() const
 {
-	return transportMethods_;
+    return phase_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentGenerator::getParameters()
+//-----------------------------------------------------------------------------
+QSharedPointer<QList<QSharedPointer<Parameter> > > ComponentGenerator::getParameters()
+{
+    return parameters_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentGenerator::setApiType()
+//-----------------------------------------------------------------------------
+void ComponentGenerator::setApiType(ApiType apiType)
+{
+    apiType_ = apiType;
+}
+//-----------------------------------------------------------------------------
+// Function: ComponentGenerator::getApiType()
+//-----------------------------------------------------------------------------
+ComponentGenerator::ApiType ComponentGenerator::getApiType() const
+{
+    return apiType_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentGenerator::setTransportMethods()
+//-----------------------------------------------------------------------------
+void ComponentGenerator::setTransportMethods(QStringList const& transportMethods)
+{
+    transportMethods_ = transportMethods;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentGenerator::getTransportMethods()
+//-----------------------------------------------------------------------------
+QStringList ComponentGenerator::getTransportMethods() const
+{
+    return transportMethods_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentGenerator::setGeneratorExe()
+//-----------------------------------------------------------------------------
+void ComponentGenerator::setGeneratorExe(QString const& generatorExe)
+{
+    generatorExe_ = generatorExe;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentGenerator::getGeneratorExe()
+//-----------------------------------------------------------------------------
+QString ComponentGenerator::getGeneratorExe() const
+{
+    return generatorExe_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentGenerator::setGroups()
+//-----------------------------------------------------------------------------
+void ComponentGenerator::setGroups(QStringList const& groups)
+{
+    groups_ = groups;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentGenerator::getGroups()
+//-----------------------------------------------------------------------------
+QStringList ComponentGenerator::getGroups() const
+{
+    return groups_;
 }

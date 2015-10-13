@@ -8,16 +8,10 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 
 HEADERS += ../../../IPXACTmodels/common/Array.h \
-    ../../../IPXACTmodels/common/Assertion.h \
-    ../../../IPXACTmodels/common/BuildModel.h \
-    ../../../IPXACTmodels/Component/ComponentInstantiation.h \
+    ../../../IPXACTmodels/Component/ComponentGenerator.h \
     ../../../IPXACTmodels/common/ConfigurableElementValue.h \
     ../../../IPXACTmodels/common/ConfigurableVLNVReference.h \
-    ../../../IPXACTmodels/Component/DesignConfigurationInstantiation.h \
-    ../../../IPXACTmodels/Component/DesignInstantiation.h \
     ../../../IPXACTmodels/common/Extendable.h \
-    ../../../IPXACTmodels/common/FileBuilder.h \
-    ../../../IPXACTmodels/common/FileTypes.h \
     ../../../IPXACTmodels/GenericVendorExtension.h \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Group.h \
     ../../../IPXACTmodels/common/ModuleParameter.h \
@@ -25,27 +19,21 @@ HEADERS += ../../../IPXACTmodels/common/Array.h \
     ../../../IPXACTmodels/common/Parameter.h \
     ../../../IPXACTmodels/common/Range.h \
     ../../../IPXACTmodels/common/Vector.h \
-    ../../../IPXACTmodels/Component/ComponentGenerator.h \
     ../../../IPXACTmodels/vlnv.h \
-    ../../../IPXACTmodels/generaldeclarations.h \
-    ../../../IPXACTmodels/Component/ComponentGeneratorReader.h \
     ../../../IPXACTmodels/common/CommonItemsReader.h \
+    ../../../IPXACTmodels/Component/ComponentGeneratorReader.h \
     ../../../IPXACTmodels/common/ModuleParameterReader.h \
-    ../../../IPXACTmodels/XmlUtils.h \
     ../../../IPXACTmodels/common/NameGroupReader.h \
-    ../../../IPXACTmodels/common/ParameterReader.h
-SOURCES += ../../../IPXACTmodels/common/Array.cpp \
-    ../../../IPXACTmodels/common/Assertion.cpp \
-    ../../../IPXACTmodels/common/BuildModel.cpp \
-    ../../../IPXACTmodels/Component/ComponentGeneratorReader.cpp \
+    ../../../IPXACTmodels/common/ParameterReader.h \
+    ../../../IPXACTmodels/common/BooleanValue.h
+SOURCES += ../../../IPXACTmodels/common/BooleanValue.cpp \
+    ../../../IPXACTmodels/common/Array.cpp \
     ../../../IPXACTmodels/common/CommonItemsReader.cpp \
-    ../../../IPXACTmodels/Component/ComponentInstantiation.cpp \
+    ../../../IPXACTmodels/Component/ComponentGenerator.cpp \
+    ../../../IPXACTmodels/Component/ComponentGeneratorReader.cpp \
     ../../../IPXACTmodels/common/ConfigurableElementValue.cpp \
     ../../../IPXACTmodels/common/ConfigurableVLNVReference.cpp \
-    ../../../IPXACTmodels/Component/DesignConfigurationInstantiation.cpp \
-    ../../../IPXACTmodels/Component/DesignInstantiation.cpp \
     ../../../IPXACTmodels/common/Extendable.cpp \
-    ../../../IPXACTmodels/common/FileBuilder.cpp \
     ../../../IPXACTmodels/common/FileTypes.cpp \
     ../../../IPXACTmodels/GenericVendorExtension.cpp \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
@@ -58,7 +46,5 @@ SOURCES += ../../../IPXACTmodels/common/Array.cpp \
     ../../../IPXACTmodels/common/Range.cpp \
     ../../../IPXACTmodels/common/Vector.cpp \
     ../../../IPXACTmodels/generaldeclarations.cpp \
-    ../../../IPXACTmodels/Component/ComponentGenerator.cpp \
-    ../../../IPXACTmodels/XmlUtils.cpp \
     ./tst_ComponentGeneratorReader.cpp \
     ../../../IPXACTmodels/vlnv.cpp

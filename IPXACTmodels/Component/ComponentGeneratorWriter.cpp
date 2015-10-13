@@ -13,12 +13,11 @@
 
 #include <IPXACTmodels/common/NameGroupWriter.h>
 #include <IPXACTmodels/common/ParameterWriter.h>
-#include "../XmlUtils.h"
 
 //-----------------------------------------------------------------------------
 // Function: ComponentGeneratorWriter::ComponentGeneratorWriter()
 //-----------------------------------------------------------------------------
-ComponentGeneratorWriter::ComponentGeneratorWriter(QObject* parent /* = 0 */) :
+ComponentGeneratorWriter::ComponentGeneratorWriter(QObject* parent) :
 CommonItemsWriter(parent)
 {
 
@@ -46,90 +45,89 @@ void ComponentGeneratorWriter::writeComponentGenerator(QXmlStreamWriter& writer,
 	NameGroupWriter nameGroupWriter;
 	nameGroupWriter.writeNameGroup(writer, componentGenerator);
 
-	writeVendorExtensions( writer, componentGenerator );
+    if (!componentGenerator->getPhase().isEmpty())
+    {
+        writer.writeTextElement("ipxact:phase", componentGenerator->getPhase());
+    }
 
-	// Write phase, if exists.
-	if (componentGenerator->getPhase() >= 0)
-	{
-		writer.writeTextElement("ipxact:phase", QString::number(componentGenerator->getPhase()));
-	}
-	
-	writeApiType( writer, componentGenerator );
+    writeParameters(writer, componentGenerator->getParameters());
 
-	// Write generator exe.
-	if ( !componentGenerator->getGeneratorExe().isEmpty() )
+    writeApiType(writer, componentGenerator);
+
+    writeTransportMethods(writer, componentGenerator);
+
+	if (!componentGenerator->getGeneratorExe().isEmpty())
 	{
 		writer.writeTextElement("ipxact:generatorExe", componentGenerator->getGeneratorExe());
 	}
 
-	// Write groups.
-	for (int i = 0; i < componentGenerator->getGroups().size(); ++i)
-	{
-		writer.writeTextElement("ipxact:group", componentGenerator->getGroups().at(i));
-	}
+    writeVendorExtensions(writer, componentGenerator);
 
-	writeParameters (writer, componentGenerator );
+	foreach (QString const& group, componentGenerator->getGroups())
+	{
+		writer.writeTextElement("ipxact:group", group);
+	}
 
 	writer.writeEndElement();
 }
 
-void ComponentGeneratorWriter::writeAttributes(QXmlStreamWriter &writer,
+//-----------------------------------------------------------------------------
+// Function: ComponentGeneratorWriter::writeAttributes()
+//-----------------------------------------------------------------------------
+void ComponentGeneratorWriter::writeAttributes(QXmlStreamWriter& writer,
 	QSharedPointer<ComponentGenerator> componentGenerator) const
 {
-	writer.writeAttribute("hidden", General::bool2Str(componentGenerator->getHidden()));
+    BooleanValue hiddenValue = componentGenerator->getHidden();
+    if (!hiddenValue.toString().isEmpty())
+    {
+        writer.writeAttribute("hidden", componentGenerator->getHidden().toString());
+    }
 
-	if ( componentGenerator->getScope() == ComponentGenerator::ENTITY )
+	if (componentGenerator->getScope() == ComponentGenerator::ENTITY)
 	{
 		writer.writeAttribute("scope", "entity");
 	}
-	else
+	else if (componentGenerator->getScope() == ComponentGenerator::INSTANCE)
 	{
 		writer.writeAttribute("scope", "instance");
 	}
 }
 
-void ComponentGeneratorWriter::writeApiType(QXmlStreamWriter &writer,
+//-----------------------------------------------------------------------------
+// Function: ComponentGeneratorWriter::writeApiType()
+//-----------------------------------------------------------------------------
+void ComponentGeneratorWriter::writeApiType(QXmlStreamWriter& writer,
 	QSharedPointer<ComponentGenerator> componentGenerator) const
 {
-	// Branch based on the API type, TGI_2014_BASE is defined as default in the standard.
-	switch (componentGenerator->getApiType())
-	{
-	case ComponentGenerator::NONE:
-		{
-			writer.writeTextElement("ipxact:apiType", "none");
-			break;
-		}
-	case ComponentGenerator::TGI_2014_EXTENDED:
-		{
-			writer.writeTextElement("ipxact:apiType", "TGI_2014_EXTENDED");
-			break;
-		}
-	case ComponentGenerator::TGI_2009:
-		{
-			writer.writeTextElement("ipxact:apiType", "TGI_2009");
-			break;
-		}
-	default:
-		{
-			writer.writeTextElement("ipxact:apiType", "TGI_2014_BASE");
-		}
-	}
+    if (componentGenerator->getApiType() == ComponentGenerator::NONE)
+    {
+        writer.writeTextElement("ipxact:apiType", "none");
+    }
+    else if (componentGenerator->getApiType() == ComponentGenerator::TGI_2014_EXTENDED)
+    {
+        writer.writeTextElement("ipxact:apiType", "TGI_2014_EXTENDED");
+    }
+    else if (componentGenerator->getApiType() == ComponentGenerator::TGI_2009)
+    {
+        writer.writeTextElement("ipxact:apiType", "TGI_2009");
+    }
 }
 
-void ComponentGeneratorWriter::writeParameters(QXmlStreamWriter &writer,
-	QSharedPointer<ComponentGenerator> componentGenerator) const
+//-----------------------------------------------------------------------------
+// Function: ComponentGeneratorWriter::writeTransportMethods()
+//-----------------------------------------------------------------------------
+void ComponentGeneratorWriter::writeTransportMethods(QXmlStreamWriter& writer,
+    QSharedPointer<ComponentGenerator> componentGenerator) const
 {
-	if (componentGenerator->getParameters().size() != 0)
-	{
-		writer.writeStartElement("ipxact:parameters");
-
-		ParameterWriter parameterWriter;
-		// write each parameter
-		for (int i = 0; i < componentGenerator->getParameters().size(); ++i)
-		{
-			parameterWriter.writeParameter(writer, componentGenerator->getParameters().at(i));
-		}
-
-		writer.writeEndElement();
-	}
+    QStringList transportMethods = componentGenerator->getTransportMethods();
+    
+    if (!transportMethods.isEmpty())
+    {
+       writer.writeStartElement("ipxact:transportMethods");
+       foreach (QString const& method, transportMethods)
+       {
+           writer.writeTextElement("ipxact:transportMethod", method);
+       }
+       writer.writeEndElement();
+    }
 }

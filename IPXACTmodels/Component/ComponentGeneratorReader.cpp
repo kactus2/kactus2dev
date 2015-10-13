@@ -10,14 +10,14 @@
 //-----------------------------------------------------------------------------
 
 #include "ComponentGeneratorReader.h"
+
 #include <IPXACTmodels/common/NameGroupReader.h>
 #include <IPXACTmodels/common/ParameterReader.h>
-#include "../XmlUtils.h"
 
 //-----------------------------------------------------------------------------
 // Function: ComponentGeneratorReader::ComponentGeneratorReader()
 //-----------------------------------------------------------------------------
-ComponentGeneratorReader::ComponentGeneratorReader(QObject* parent /* = 0 */) :
+ComponentGeneratorReader::ComponentGeneratorReader(QObject* parent) :
 CommonItemsReader(parent)
 {
 
@@ -34,77 +34,37 @@ ComponentGeneratorReader::~ComponentGeneratorReader()
 //-----------------------------------------------------------------------------
 // Function: ComponentGeneratorReader::createComponentGeneratorFrom()
 //-----------------------------------------------------------------------------
-QSharedPointer<ComponentGenerator> ComponentGeneratorReader::createComponentGeneratorFrom
-	(QDomNode const& componentGeneratorNode) const
+QSharedPointer<ComponentGenerator> ComponentGeneratorReader::createComponentGeneratorFrom(
+    QDomNode const& componentGeneratorNode) const
 {
-	// Create the new ComponentGenerator.
 	QSharedPointer<ComponentGenerator> newComponentGenerator (new ComponentGenerator());
 
-	// Read name group, attributes and vendor extensions.
 	NameGroupReader nameReader;
 	nameReader.parseNameGroup(componentGeneratorNode, newComponentGenerator);
+
 	readAttributes(componentGeneratorNode, newComponentGenerator);
-	parseVendorExtensions(componentGeneratorNode,newComponentGenerator);
 
-	// These may occur multiple times.
-	QStringList groups;
-	QStringList transportMethods;
-	QList<QSharedPointer<Parameter > > parameters;
-.
-	// Go through all the child nodes of the component generator
-	for (int i = 0; i < componentGeneratorNode.childNodes().count(); ++i)
-	{
-		QDomNode tempNode = componentGeneratorNode.childNodes().at(i);
+    QDomElement phaseElement = componentGeneratorNode.firstChildElement("ipxact:phase");
+    if (!phaseElement.isNull())
+    {
+        newComponentGenerator->setPhase(phaseElement.childNodes().at(0).nodeValue());
+    }
 
-		// Add another group.
-		if (tempNode.nodeName() == QString("ipxact:group"))
-		{
-			QString groupName = tempNode.childNodes().at(0).nodeValue();
-			groupName = XmlUtils::removeWhiteSpace(groupName);
-			groups.append(groupName);
-		}
+    readParameters(componentGeneratorNode.firstChildElement("ipxact:parameters"), newComponentGenerator);
+        
+    readApiType(componentGeneratorNode.firstChildElement("ipxact:apiType"), newComponentGenerator);
+   
+    readTransportMethods(componentGeneratorNode.firstChildElement("ipxact:transportMethods"), newComponentGenerator);
 
-		// Parameters encountered: read.
-		else if (tempNode.nodeName() == QString("ipxact:parameters"))
-		{
-			readParameters(tempNode, parameters);
-		}
+    QDomElement exeElement = componentGeneratorNode.firstChildElement("ipxact:generatorExe");
+    if (!exeElement.isNull())
+    {
+        newComponentGenerator->setGeneratorExe(exeElement.childNodes().at(0).nodeValue());
+    }
 
-		// Read phase.
-		else if (tempNode.nodeName() == QString("ipxact:phase"))
-		{
-			newComponentGenerator->setPhase( tempNode.childNodes().at(0).nodeValue().toDouble() );
-		}
+    parseVendorExtensions(componentGeneratorNode, newComponentGenerator);
 
-		// Add another API type.
-		else if (tempNode.nodeName() == QString("ipxact:apiType"))
-		{
-			readApiType(tempNode, newComponentGenerator);
-		}
-
-		// Read generator exeutavble location.
-		else if (tempNode.nodeName() == QString("ipxact:generatorExe"))
-		{
-			newComponentGenerator->setGeneratorExe( tempNode.childNodes().at(0).nodeValue() );
-		}
-
-		// Add transport methods.
-		else if (tempNode.nodeName() == QString("ipxact:transportMethods"))
-		{
-			for (int j = 0; j < tempNode.childNodes().count(); ++j)
-			{
-				if (tempNode.childNodes().at(j).nodeName() == QString("ipxact:transportMethod"))
-				{
-					transportMethods.append( tempNode.childNodes().at(j).firstChild().nodeValue() );
-				}
-			}
-		}
-	}
-
-	// Set the lists for the created object.
-	newComponentGenerator->setGroups(groups);
-	newComponentGenerator->setParameters(parameters);
-	newComponentGenerator->setTransportMethods(transportMethods);
+    parseGroups(componentGeneratorNode, newComponentGenerator);
 
     return newComponentGenerator;
 }
@@ -112,63 +72,109 @@ QSharedPointer<ComponentGenerator> ComponentGeneratorReader::createComponentGene
 //-----------------------------------------------------------------------------
 // Function: ComponentGeneratorReader::readAttributes()
 //-----------------------------------------------------------------------------
-void ComponentGeneratorReader::readAttributes(QDomNode const &componentGeneratorNode,
+void ComponentGeneratorReader::readAttributes(QDomNode const& componentGeneratorNode,
 	QSharedPointer<ComponentGenerator> newComponentGenerator) const
 {
 	QDomNamedNodeMap attributeMap = componentGeneratorNode.attributes();
 
-	// The scope is instance by default.
-	QString scope = attributeMap.namedItem(QString("scope")).nodeValue();
-	if (scope == QString("entity"))
+	QString scope = attributeMap.namedItem("scope").nodeValue();
+	if (scope == QLatin1String("entity"))
 	{
-		newComponentGenerator->setScope( ComponentGenerator::ENTITY );
+		newComponentGenerator->setScope(ComponentGenerator::ENTITY);
 	}
-	else
+	else if (scope == QLatin1String("instance"))
 	{
-		newComponentGenerator->setScope( ComponentGenerator::INSTANCE );
+		newComponentGenerator->setScope(ComponentGenerator::INSTANCE);
 	}
 
-	// The "hidden" is false by default.
-	QString hidden = attributeMap.namedItem(QString("hidden")).childNodes().at(0).nodeValue();
-	newComponentGenerator->setHidden( General::str2Bool(hidden, false) );
+    QString hidden = attributeMap.namedItem("hidden").childNodes().at(0).nodeValue();
+    if (hidden == QLatin1String("true"))
+    {
+        newComponentGenerator->setHidden(true);
+    }
+    else if (hidden == QLatin1String("false"))
+    {
+        newComponentGenerator->setHidden(false);
+    }
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComponentGeneratorReader::readParameters()
 //-----------------------------------------------------------------------------
-void ComponentGeneratorReader::readParameters(QDomNode &tempNode,
-	QList<QSharedPointer<Parameter > > &parameters) const
+void ComponentGeneratorReader::readParameters(QDomNode const& parametersNode, 
+    QSharedPointer<ComponentGenerator> componentGenerator) const
 {
 	ParameterReader reader;
 
-	for (int j = 0; j < tempNode.childNodes().count(); ++j)
+    int parameterCount = parametersNode.childNodes().count();
+	for (int i = 0; i < parameterCount; i++)
 	{
-		QDomNode parameterNode = tempNode.childNodes().at(j);
-		parameters.append(reader.createParameterFrom(parameterNode));
+		QDomNode parameterNode = parametersNode.childNodes().at(i);
+		componentGenerator->getParameters()->append(reader.createParameterFrom(parameterNode));
 	}
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComponentGeneratorReader::readApiType()
 //-----------------------------------------------------------------------------
-void ComponentGeneratorReader::readApiType(QDomNode &tempNode,
+void ComponentGeneratorReader::readApiType(QDomNode const& apiTypeNode,
 	QSharedPointer<ComponentGenerator> newComponentGenerator) const
 {
-	// Select correct api type.
-	if (tempNode.childNodes().at(0).nodeValue() == QString("TGI_2014_BASE"))
+	QString apiType = apiTypeNode.childNodes().at(0).nodeValue();
+	if (apiType == QLatin1String("TGI_2014_BASE"))
 	{
-		newComponentGenerator->setApiType( ComponentGenerator::TGI_2014_BASE );
+		newComponentGenerator->setApiType(ComponentGenerator::TGI_2014_BASE);
 	}
-	else if (tempNode.childNodes().at(0).nodeValue() == QString("TGI_2014_EXTENDED"))
+	else if (apiType == QLatin1String("TGI_2014_EXTENDED"))
 	{
-		newComponentGenerator->setApiType( ComponentGenerator::TGI_2014_EXTENDED );
+		newComponentGenerator->setApiType(ComponentGenerator::TGI_2014_EXTENDED);
 	}
-	else if (tempNode.childNodes().at(0).nodeValue() == QString("TGI_2009"))
+	else if (apiType == QLatin1String("TGI_2009"))
 	{
-		newComponentGenerator->setApiType( ComponentGenerator::TGI_2009 );
+		newComponentGenerator->setApiType(ComponentGenerator::TGI_2009);
 	}
-	else
+	else if (apiType == QLatin1String("none"))
 	{
-		newComponentGenerator->setApiType( ComponentGenerator::NONE );
+		newComponentGenerator->setApiType(ComponentGenerator::NONE);
 	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentGeneratorReader::readTransportMethods()
+//-----------------------------------------------------------------------------
+void ComponentGeneratorReader::readTransportMethods(QDomElement const& methodsNode, 
+    QSharedPointer<ComponentGenerator> newComponentGenerator) const
+{
+    if (methodsNode.isNull())
+    {
+        return;
+    }
+
+    QStringList transportMethods;
+    int methodsCount = methodsNode.childNodes().count();
+    for (int i = 0; i < methodsCount; i++)
+    {
+        QDomNode methodNode = methodsNode.childNodes().at(i);
+        transportMethods.append(methodNode.firstChild().nodeValue());
+    }
+
+    newComponentGenerator->setTransportMethods(transportMethods);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentGeneratorReader::parseGroups()
+//-----------------------------------------------------------------------------
+void ComponentGeneratorReader::parseGroups(QDomNode const& componentGeneratorNode, 
+    QSharedPointer<ComponentGenerator> newComponentGenerator) const
+{
+    QDomNodeList groupNodes = componentGeneratorNode.toElement().elementsByTagName("ipxact:group");
+
+    QStringList groupNames;
+    int groupCount = groupNodes.count();
+    for (int i = 0; i < groupCount; i++)
+    {
+        groupNames.append(groupNodes.at(i).firstChild().nodeValue());
+    }
+
+    newComponentGenerator->setGroups(groupNames);
 }

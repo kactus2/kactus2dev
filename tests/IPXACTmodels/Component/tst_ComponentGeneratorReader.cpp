@@ -49,24 +49,33 @@ void tst_ComponentGeneratorReader::testReadSimpleComponentGenerator()
 {
     QString documentContent(
 		"<ipxact:componentGenerator>"
-		"<ipxact:name>test</ipxact:name>"
-		"<ipxact:displayName>Display</ipxact:displayName>"
-		"<ipxact:description>Description</ipxact:description>"
+		    "<ipxact:name>test</ipxact:name>"
+		    "<ipxact:displayName>Display</ipxact:displayName>"
+		    "<ipxact:description>Description</ipxact:description>"
+            "<ipxact:generatorExe>/bin/generator.exe</ipxact:generatorExe>"
         "</ipxact:componentGenerator>"
-        );
-
+    );
 
     QDomDocument document;
     document.setContent(documentContent);
 
-    QDomNode ComponentGeneratorNode = document.firstChildElement("ipxact:componentGenerator");
+    QDomNode componentGeneratorNode = document.firstChildElement("ipxact:componentGenerator");
 
-    ComponentGeneratorReader ComponentGeneratorReader;
-	QSharedPointer<ComponentGenerator> testComponentGenerator = ComponentGeneratorReader.createComponentGeneratorFrom(ComponentGeneratorNode);
+    ComponentGeneratorReader componentGeneratorReader;
+	QSharedPointer<ComponentGenerator> testComponentGenerator =
+        componentGeneratorReader.createComponentGeneratorFrom(componentGeneratorNode);
 
-	QCOMPARE(testComponentGenerator->name(), QString("test"));
-	QCOMPARE(testComponentGenerator->displayName(), QString("Display"));
-	QCOMPARE(testComponentGenerator->description(), QString("Description"));
+	QCOMPARE(testComponentGenerator->name(), QStringLiteral("test"));
+	QCOMPARE(testComponentGenerator->displayName(), QStringLiteral("Display"));
+	QCOMPARE(testComponentGenerator->description(), QStringLiteral("Description"));
+    QCOMPARE(testComponentGenerator->getGeneratorExe(), QStringLiteral("/bin/generator.exe"));
+    	
+    QVERIFY(testComponentGenerator->getHidden().toString().isEmpty());
+    QVERIFY(testComponentGenerator->getScope() == ComponentGenerator::NO_SCOPE);
+    QVERIFY(testComponentGenerator->getPhase().isEmpty());
+    QVERIFY(testComponentGenerator->getApiType() == ComponentGenerator::EMPTY_API_TYPE);    
+    QVERIFY(testComponentGenerator->getTransportMethods().isEmpty());
+    QVERIFY(testComponentGenerator->getGroups().isEmpty());
 }
 
 //-----------------------------------------------------------------------------
@@ -75,21 +84,21 @@ void tst_ComponentGeneratorReader::testReadSimpleComponentGenerator()
 void tst_ComponentGeneratorReader::testReadAttributes()
 {
 	QString documentContent(
-		"<ipxact:componentGenerator scope=\"entity\" hidden=\"true\">"
+		"<ipxact:componentGenerator hidden=\"true\" scope=\"entity\">"
 		"</ipxact:componentGenerator>"
-		);
-
+	);
 
 	QDomDocument document;
 	document.setContent(documentContent);
 
-	QDomNode ComponentGeneratorNode = document.firstChildElement("ipxact:componentGenerator");
+	QDomNode componentGeneratorNode = document.firstChildElement("ipxact:componentGenerator");
 
-	ComponentGeneratorReader ComponentGeneratorReader;
-	QSharedPointer<ComponentGenerator> testComponentGenerator = ComponentGeneratorReader.createComponentGeneratorFrom(ComponentGeneratorNode);
+	ComponentGeneratorReader componentGeneratorReader;
+	QSharedPointer<ComponentGenerator> testComponentGenerator = 
+        componentGeneratorReader.createComponentGeneratorFrom(componentGeneratorNode);
 
 	QCOMPARE(testComponentGenerator->getScope(), ComponentGenerator::ENTITY);
-	QCOMPARE(testComponentGenerator->getHidden(), true);
+	QCOMPARE(testComponentGenerator->getHidden().toBool(), true);
 }
 
 //-----------------------------------------------------------------------------
@@ -98,24 +107,27 @@ void tst_ComponentGeneratorReader::testReadAttributes()
 void tst_ComponentGeneratorReader::testReadGroups()
 {
 	QString documentContent(
-		"<ipxact:componentGenerator>"
-		"<ipxact:group>test</ipxact:group>"
-		"<ipxact:group>toka</ipxact:group>"
+        "<ipxact:componentGenerator scope=\"instance\">"
+		    "<ipxact:group>testGroup</ipxact:group>"
+		    "<ipxact:group>secondTestGroup</ipxact:group>"
 		"</ipxact:componentGenerator>"
-		);
+	);
 
 
 	QDomDocument document;
 	document.setContent(documentContent);
 
-	QDomNode ComponentGeneratorNode = document.firstChildElement("ipxact:componentGenerator");
+	QDomNode componentGeneratorNode = document.firstChildElement("ipxact:componentGenerator");
 
-	ComponentGeneratorReader ComponentGeneratorReader;
-	QSharedPointer<ComponentGenerator> testComponentGenerator = ComponentGeneratorReader.createComponentGeneratorFrom(ComponentGeneratorNode);
+	ComponentGeneratorReader componentGeneratorReader;
+	QSharedPointer<ComponentGenerator> testComponentGenerator = 
+        componentGeneratorReader.createComponentGeneratorFrom(componentGeneratorNode);
 
 	QCOMPARE(testComponentGenerator->getGroups().size(), 2);
-	QCOMPARE(testComponentGenerator->getGroups().first(), QString("test"));
-	QCOMPARE(testComponentGenerator->getGroups().last(), QString("toka"));
+	QCOMPARE(testComponentGenerator->getGroups().first(), QStringLiteral("testGroup"));
+	QCOMPARE(testComponentGenerator->getGroups().last(), QStringLiteral("secondTestGroup"));
+
+    QCOMPARE(testComponentGenerator->getScope(), ComponentGenerator::INSTANCE);
 }
 
 //-----------------------------------------------------------------------------
@@ -125,14 +137,13 @@ void tst_ComponentGeneratorReader::testReadParameters()
 {
 	QString documentContent(
 		"<ipxact:componentGenerator>"
-		"<ipxact:parameters>"
-		"<ipxact:parameter parameterId=\"joq\" prompt=\"Parm 1\""
-		"type=\"shortint\" resolve=\"user\">"
-		"<ipxact:name>Esko</ipxact:name>"
-		"<ipxact:description>First generator parameter.</ipxact:description>"
-		"<ipxact:value>5</ipxact:value>"
-		"</ipxact:parameter>"
-		"</ipxact:parameters>"
+		    "<ipxact:parameters>"
+		        "<ipxact:parameter parameterId=\"id\" prompt=\"Parm 1\" type=\"shortint\" resolve=\"user\">"
+		            "<ipxact:name>testParameter</ipxact:name>"
+		            "<ipxact:description>First generator parameter.</ipxact:description>"
+		            "<ipxact:value>5</ipxact:value>"
+		        "</ipxact:parameter>"
+		    "</ipxact:parameters>"
 		"</ipxact:componentGenerator>"
 		);
 
@@ -140,17 +151,18 @@ void tst_ComponentGeneratorReader::testReadParameters()
 	QDomDocument document;
 	document.setContent(documentContent);
 
-	QDomNode ComponentGeneratorNode = document.firstChildElement("ipxact:componentGenerator");
+	QDomNode componentGeneratorNode = document.firstChildElement("ipxact:componentGenerator");
 
-	ComponentGeneratorReader ComponentGeneratorReader;
-	QSharedPointer<ComponentGenerator> testComponentGenerator = ComponentGeneratorReader.createComponentGeneratorFrom(ComponentGeneratorNode);
+	ComponentGeneratorReader componentGeneratorReader;
+	QSharedPointer<ComponentGenerator> testComponentGenerator = 
+        componentGeneratorReader.createComponentGeneratorFrom(componentGeneratorNode);
 
-	QCOMPARE(testComponentGenerator->getParameters().first()->name(), QString("Esko"));
-	QCOMPARE(testComponentGenerator->getParameters().first()->getValueId(), QString("joq"));
-	QCOMPARE(testComponentGenerator->getParameters().first()->getValue(), QString("5"));
-	QCOMPARE(testComponentGenerator->getParameters().first()->getType(), QString("shortint"));
-	QCOMPARE(testComponentGenerator->getParameters().first()->getAttribute("prompt"), QString("Parm 1"));
-	QCOMPARE(testComponentGenerator->getParameters().first()->getAttribute("resolve"), QString("user"));
+	QCOMPARE(testComponentGenerator->getParameters()->first()->name(), QStringLiteral("testParameter"));
+	QCOMPARE(testComponentGenerator->getParameters()->first()->getValueId(), QStringLiteral("id"));
+	QCOMPARE(testComponentGenerator->getParameters()->first()->getValue(), QStringLiteral("5"));
+	QCOMPARE(testComponentGenerator->getParameters()->first()->getType(), QStringLiteral("shortint"));
+	QCOMPARE(testComponentGenerator->getParameters()->first()->getAttribute("prompt"), QStringLiteral("Parm 1"));
+	QCOMPARE(testComponentGenerator->getParameters()->first()->getAttribute("resolve"), QStringLiteral("user"));
 }
 
 //-----------------------------------------------------------------------------
@@ -160,20 +172,17 @@ void tst_ComponentGeneratorReader::testRead2Parameters()
 {
 	QString documentContent(
 		"<ipxact:componentGenerator>"
-		"<ipxact:parameters>"
-		"<ipxact:parameter parameterId=\"joq\" prompt=\"Parm 1\""
-		"type=\"shortint\" resolve=\"user\">"
-		"<ipxact:name>Esko</ipxact:name>"
-		"<ipxact:description>First generator parameter.</ipxact:description>"
-		"<ipxact:value>5</ipxact:value>"
-		"</ipxact:parameter>"
-		"<ipxact:parameter parameterId=\"ev0\" prompt=\"Parm 1\""
-		"type=\"shortint\" resolve=\"user\">"
-		"<ipxact:name>Mikko</ipxact:name>"
-		"<ipxact:description>First generator parameter.</ipxact:description>"
-		"<ipxact:value>1337</ipxact:value>"
-		"</ipxact:parameter>"
-		"</ipxact:parameters>"
+		    "<ipxact:parameters>"
+		        "<ipxact:parameter parameterId=\"id1\">"
+		            "<ipxact:name>testParameter</ipxact:name>"
+		            "<ipxact:description>First generator parameter.</ipxact:description>"
+		            "<ipxact:value>5</ipxact:value>"
+		        "</ipxact:parameter>"
+		        "<ipxact:parameter parameterId=\"id2\">"
+		            "<ipxact:name>secondTestParameter</ipxact:name>"
+		            "<ipxact:value>1337</ipxact:value>"
+		        "</ipxact:parameter>"
+		    "</ipxact:parameters>"
 		"</ipxact:componentGenerator>"
 		);
 
@@ -181,19 +190,20 @@ void tst_ComponentGeneratorReader::testRead2Parameters()
 	QDomDocument document;
 	document.setContent(documentContent);
 
-	QDomNode ComponentGeneratorNode = document.firstChildElement("ipxact:componentGenerator");
+	QDomNode componentGeneratorNode = document.firstChildElement("ipxact:componentGenerator");
 
-	ComponentGeneratorReader ComponentGeneratorReader;
-	QSharedPointer<ComponentGenerator> testComponentGenerator = ComponentGeneratorReader.createComponentGeneratorFrom(ComponentGeneratorNode);
+	ComponentGeneratorReader componentGeneratorReader;
+	QSharedPointer<ComponentGenerator> testComponentGenerator = 
+        componentGeneratorReader.createComponentGeneratorFrom(componentGeneratorNode);
 
-	QCOMPARE(testComponentGenerator->getParameters().first()->name(), QString("Esko"));
-	QCOMPARE(testComponentGenerator->getParameters().size(), 2);
-	QCOMPARE(testComponentGenerator->getParameters().first()->name(), QString("Esko"));
-	QCOMPARE(testComponentGenerator->getParameters().first()->getValueId(), QString("joq"));
-	QCOMPARE(testComponentGenerator->getParameters().first()->getValue(), QString("5"));
-	QCOMPARE(testComponentGenerator->getParameters().last()->name(), QString("Mikko"));
-	QCOMPARE(testComponentGenerator->getParameters().last()->getValueId(), QString("ev0"));
-	QCOMPARE(testComponentGenerator->getParameters().last()->getValue(), QString("1337"));
+	QCOMPARE(testComponentGenerator->getParameters()->size(), 2);
+	QCOMPARE(testComponentGenerator->getParameters()->first()->name(), QStringLiteral("testParameter"));
+	QCOMPARE(testComponentGenerator->getParameters()->first()->getValueId(), QStringLiteral("id1"));
+	QCOMPARE(testComponentGenerator->getParameters()->first()->getValue(), QStringLiteral("5"));
+
+	QCOMPARE(testComponentGenerator->getParameters()->last()->name(), QStringLiteral("secondTestParameter"));
+	QCOMPARE(testComponentGenerator->getParameters()->last()->getValueId(), QStringLiteral("id2"));
+	QCOMPARE(testComponentGenerator->getParameters()->last()->getValue(), QStringLiteral("1337"));
 }
 
 //-----------------------------------------------------------------------------
@@ -203,7 +213,7 @@ void tst_ComponentGeneratorReader::testReadPhase()
 {
 	QString documentContent(
 		"<ipxact:componentGenerator>"
-		"<ipxact:phase>13.37</ipxact:phase>"
+		    "<ipxact:phase>13.37</ipxact:phase>"
 		"</ipxact:componentGenerator>"
 		);
 
@@ -211,13 +221,13 @@ void tst_ComponentGeneratorReader::testReadPhase()
 	QDomDocument document;
 	document.setContent(documentContent);
 
-	QDomNode ComponentGeneratorNode = document.firstChildElement("ipxact:componentGenerator");
+	QDomNode componentGeneratorNode = document.firstChildElement("ipxact:componentGenerator");
 
-	ComponentGeneratorReader ComponentGeneratorReader;
+	ComponentGeneratorReader componentGeneratorReader;
 	QSharedPointer<ComponentGenerator> testComponentGenerator =
-		ComponentGeneratorReader.createComponentGeneratorFrom(ComponentGeneratorNode);
+		componentGeneratorReader.createComponentGeneratorFrom(componentGeneratorNode);
 
-	QCOMPARE(testComponentGenerator->getPhase(), 13.37);
+	QCOMPARE(testComponentGenerator->getPhase(), QStringLiteral("13.37"));
 }
 
 //-----------------------------------------------------------------------------
@@ -227,7 +237,7 @@ void tst_ComponentGeneratorReader::testReadApiType()
 {
 	QString documentContent(
 		"<ipxact:componentGenerator>"
-		"<ipxact:apiType>TGI_2014_EXTENDED</ipxact:apiType>"
+		    "<ipxact:apiType>TGI_2014_EXTENDED</ipxact:apiType>"
 		"</ipxact:componentGenerator>"
 		);
 
@@ -235,11 +245,11 @@ void tst_ComponentGeneratorReader::testReadApiType()
 	QDomDocument document;
 	document.setContent(documentContent);
 
-	QDomNode ComponentGeneratorNode = document.firstChildElement("ipxact:componentGenerator");
+	QDomNode componentGeneratorNode = document.firstChildElement("ipxact:componentGenerator");
 
-	ComponentGeneratorReader ComponentGeneratorReader;
+	ComponentGeneratorReader componentGeneratorReader;
 	QSharedPointer<ComponentGenerator> testComponentGenerator =
-		ComponentGeneratorReader.createComponentGeneratorFrom(ComponentGeneratorNode);
+		componentGeneratorReader.createComponentGeneratorFrom(componentGeneratorNode);
 
 	QCOMPARE(testComponentGenerator->getApiType(), ComponentGenerator::TGI_2014_EXTENDED);
 }
@@ -251,9 +261,9 @@ void tst_ComponentGeneratorReader::testReadVendorExtension()
 {
 	QString documentContent(
 		"<ipxact:componentGenerator>"
-		"<ipxact:vendorExtensions>"
-		"<ulina kolina=\"eaa\"/>"
-		"</ipxact:vendorExtensions>"
+		    "<ipxact:vendorExtensions>"
+		        "<testExtension attribute=\"value\"/>"
+		    "</ipxact:vendorExtensions>"
 		"</ipxact:componentGenerator>"
 		);
 
@@ -267,7 +277,7 @@ void tst_ComponentGeneratorReader::testReadVendorExtension()
 	QSharedPointer<ComponentGenerator> testComponentGenerator =
 		ComponentGeneratorReader.createComponentGeneratorFrom(ComponentGeneratorNode);
 
-	QCOMPARE(testComponentGenerator->getVendorExtensions()->first()->type(), QString("ulina"));
+	QCOMPARE(testComponentGenerator->getVendorExtensions()->first()->type(), QStringLiteral("testExtension"));
 }
 
 //-----------------------------------------------------------------------------
@@ -277,10 +287,9 @@ void tst_ComponentGeneratorReader::testReadTransportMethods()
 {
 	QString documentContent(
 		"<ipxact:componentGenerator>"
-		"<ipxact:transportMethods>"
-		"<ipxact:transportMethod>eka</ipxact:transportMethod>"
-		"<ipxact:transportMethod>toka</ipxact:transportMethod>"
-		"</ipxact:transportMethods>"
+		    "<ipxact:transportMethods>"
+		        "<ipxact:transportMethod>file</ipxact:transportMethod>"
+		    "</ipxact:transportMethods>"
 		"</ipxact:componentGenerator>"
 		);
 
@@ -294,9 +303,8 @@ void tst_ComponentGeneratorReader::testReadTransportMethods()
 	QSharedPointer<ComponentGenerator> testComponentGenerator =
 		ComponentGeneratorReader.createComponentGeneratorFrom(ComponentGeneratorNode);
 
-	QCOMPARE(testComponentGenerator->getTransportMethods().size(), 2);
-	QCOMPARE(testComponentGenerator->getTransportMethods().first(), QString("eka"));
-	QCOMPARE(testComponentGenerator->getTransportMethods().last(), QString("toka"));
+	QCOMPARE(testComponentGenerator->getTransportMethods().size(), 1);
+	QCOMPARE(testComponentGenerator->getTransportMethods().first(), QStringLiteral("file"));
 }
 
 QTEST_APPLESS_MAIN(tst_ComponentGeneratorReader)

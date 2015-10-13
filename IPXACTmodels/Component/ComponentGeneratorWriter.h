@@ -45,7 +45,7 @@ public:
     /*!
      *  Write a ComponentGenerator to an XML file.
      *
-     *      @param [in] writer  The used xml writer.
+     *      @param [in] writer                  The used xml writer.
      *      @param [in] ComponentGenerator		The ComponentGenerator to be written.
      */
 	void writeComponentGenerator(QXmlStreamWriter& writer, QSharedPointer<ComponentGenerator> componentGenerator) const;
@@ -57,28 +57,29 @@ private:
 	ComponentGeneratorWriter& operator=(ComponentGeneratorWriter const& rhs);
 
 	/*!
-	 *  The constructor.
+	 *  Writes the component generator attributes to XML.
 	 *
 	 *      @param [in] writer					The used xml writer.
-	 *      @param [in] componentGenerator		The created component generator.
+	 *      @param [in] componentGenerator		The component generator whose attributes to write.
 	 */
-	void writeAttributes(QXmlStreamWriter &writer, QSharedPointer<ComponentGenerator> componentGenerator) const;
+	void writeAttributes(QXmlStreamWriter& writer, QSharedPointer<ComponentGenerator> componentGenerator) const;
 
 	/*!
-	 *  The constructor.
+	 *  Writes the component generator API type to XML.
 	 *
 	 *      @param [in] writer					The used xml writer.
-	 *      @param [in] componentGenerator		The created component generator.
+	 *      @param [in] componentGenerator		The component generator whose API type to write.
 	 */
-	void writeApiType(QXmlStreamWriter &writer, QSharedPointer<ComponentGenerator> componentGenerator) const;
-
+	void writeApiType(QXmlStreamWriter& writer, QSharedPointer<ComponentGenerator> componentGenerator) const;
+    
 	/*!
-	 *  The constructor.
+	 *  Writes the component generator transport methods to XML.
 	 *
 	 *      @param [in] writer					The used xml writer.
-	 *      @param [in] componentGenerator		The created component generator.
+	 *      @param [in] componentGenerator		The component generator whose transport mehtods to write.
 	 */
-	void writeParameters(QXmlStreamWriter &writer, QSharedPointer<ComponentGenerator> componentGenerator) const;
+    void writeTransportMethods(QXmlStreamWriter& writer,
+        QSharedPointer<ComponentGenerator> componentGenerator) const;
 };
 
 #endif // ComponentGeneratorWriter_H
