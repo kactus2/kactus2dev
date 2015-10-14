@@ -158,6 +158,13 @@ public:
      */
     void setDesignConfigurationInstantiationRef(QString const& newInstantiationRef);
 
+    /*!
+     *  Check if the view is hierarchical.
+     *
+     *      @return True, if the view is hierarchical, false otherwise.
+     */
+    bool isHierarchical() const;
+
 private:
 
     //-----------------------------------------------------------------------------

@@ -398,6 +398,13 @@ public:
 	 */
 	bool isVhdlFile() const;
 
+    /*!
+     *  Check if the file is a verilog file.
+     *
+     *      @return True if the file is a verilog file.
+     */
+    bool isVerilogFile() const;
+
 	/*!
      *  Set a build command for the file
 	 *

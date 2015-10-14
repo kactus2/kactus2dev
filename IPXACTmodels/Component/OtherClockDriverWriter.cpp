@@ -11,15 +11,11 @@
 
 #include "OtherClockDriverWriter.h"
 
-#include <IPXACTmodels/common/NameGroupWriter.h>
-#include <IPXACTmodels/common/ParameterWriter.h>
-#include "../XmlUtils.h"
-
 //-----------------------------------------------------------------------------
 // Function: OtherClockDriverWriter::OtherClockDriverWriter()
 //-----------------------------------------------------------------------------
 OtherClockDriverWriter::OtherClockDriverWriter(QObject* parent /* = 0 */) :
-CommonItemsWriter(parent)
+QObject(parent)
 {
 
 }
@@ -39,74 +35,47 @@ void OtherClockDriverWriter::writeOtherClockDriver(QXmlStreamWriter& writer, QSh
 {
 	writer.writeStartElement("ipxact:otherClockDriver");
 
-	if (!otherClockDriver->getClockName().isEmpty())
-	{
-		writer.writeAttribute("clockName", otherClockDriver->getClockName());
-	}
+    writeClockDriverAttributes(writer, otherClockDriver);
 
-	// If optional attribute clockSource exists.
-	if (!otherClockDriver->getClockSource().isEmpty())
-	{
-		writer.writeAttribute("clockSource", otherClockDriver->getClockSource());
-	}
+    writeClockUnit(writer, otherClockDriver->getClockPeriod(), "ipxact:clockPeriod");
 
-	if (otherClockDriver->getClockPeriod())
-	{
-		// Start the ipxact:clockPeriod tag.
-		writer.writeStartElement("ipxact:clockPeriod");
+    writeClockUnit(writer, otherClockDriver->getClockPulseOffset(), "ipxact:clockPulseOffset");
 
-		// Write the attributes for the element.
-		writer.writeAttribute("units",
-			General::timeUnit2Str(otherClockDriver->getClockPeriod()->timeUnit_));
-		XmlUtils::writeAttributes(writer, otherClockDriver->getClockPeriod()->attributes_);
+    writer.writeTextElement("ipxact:clockPulseValue", otherClockDriver->getClockPulseValue());
 
-		// Write the value of the element and close the tag.
-		writer.writeCharacters(QString::number(otherClockDriver->getClockPeriod()->value_));
-		writer.writeEndElement();
-	}
-
-	if (otherClockDriver->getClockPulseOffset())
-	{
-		// Start the ipxact:clockPulseOffset tag.
-		writer.writeStartElement("ipxact:clockPulseOffset");
-
-		// Write the attributes for the element.
-		writer.writeAttribute("units",
-			General::timeUnit2Str(otherClockDriver->getClockPulseOffset()->timeUnit_));
-		XmlUtils::writeAttributes(writer, otherClockDriver->getClockPulseOffset()->attributes_);
-
-		// Write the value of the element and close the tag.
-		writer.writeCharacters(QString::number(otherClockDriver->getClockPulseOffset()->value_));
-		writer.writeEndElement();
-	}
-
-	if (otherClockDriver->getClockPulseValue())
-	{
-		// Start the ipxact:clockPulseValue tag.
-		writer.writeStartElement("ipxact:clockPulseValue");
-
-		// Write the attributes for the element.
-		XmlUtils::writeAttributes(writer, otherClockDriver->getClockPulseValue()->attributes_);
-
-		// Write the value of the element and close the tag.
-		writer.writeCharacters(QString::number(otherClockDriver->getClockPulseValue()->value_));
-		writer.writeEndElement();
-	}
-
-	if (otherClockDriver->getClockPulseDuration())
-	{
-		// Start the ipxact:clockPulseDuration tag.
-		writer.writeStartElement("ipxact:clockPulseDuration");
-
-		// Write the attributes for the element.
-		writer.writeAttribute("units",
-			General::timeUnit2Str(otherClockDriver->getClockPulseDuration()->timeUnit_));
-		XmlUtils::writeAttributes(writer, otherClockDriver->getClockPulseDuration()->attributes_);
-
-		// Write the value of the element and close the tag.
-		writer.writeCharacters(QString::number(otherClockDriver->getClockPulseDuration()->value_));
-		writer.writeEndElement();
-	}
+    writeClockUnit(writer, otherClockDriver->getClockPulseDuration(), "ipxact:clockPulseDuration");
 
 	writer.writeEndElement();
+}
+
+//-----------------------------------------------------------------------------
+// Function: OtherClockDriverWriter::writeClockDriverAttributes()
+//-----------------------------------------------------------------------------
+void OtherClockDriverWriter::writeClockDriverAttributes(QXmlStreamWriter& writer,
+    QSharedPointer<OtherClockDriver> otherClockDriver) const
+{
+    writer.writeAttribute("clockName", otherClockDriver->getClockName());
+
+    if (!otherClockDriver->getClockSource().isEmpty())
+    {
+        writer.writeAttribute("clockSource", otherClockDriver->getClockSource());
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: OtherClockDriverWriter::writeClockUnit()
+//-----------------------------------------------------------------------------
+void OtherClockDriverWriter::writeClockUnit(QXmlStreamWriter& writer, QSharedPointer<ClockUnit> clockUnit,
+    QString const& elementName) const
+{
+    writer.writeStartElement(elementName);
+
+    if (clockUnit->getTimeUnit() != ClockUnit::TIMEUNIT_UNSPECIFIED)
+    {
+        writer.writeAttribute("units", clockUnit->timeUnitToString());
+    }
+
+    writer.writeCharacters(clockUnit->getValue());
+
+    writer.writeEndElement(); // elementName
 }

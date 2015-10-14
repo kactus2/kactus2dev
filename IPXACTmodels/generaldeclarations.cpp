@@ -256,18 +256,20 @@ General::Endianness General::str2Endianness(QString str,
 	}
 }
 
-QString General::endianness2Str(const General::Endianness endianness) {
-	switch (endianness) {
-	case General::BIG: {
-		return QString("big");
-	}
-	case General::LITTLE: {
-		return QString("little");
-	}
-	default: { // this should never happen
-		return QString();
-	}
-	}
+QString General::endianness2Str(const General::Endianness endianness)
+{
+    if (endianness == General::BIG)
+    {
+        return QString("big");
+    }
+    else if (endianness == General::LITTLE)
+    {
+        return QString("little");
+    }
+    else
+    {
+        return QString();
+    }
 }
 
 General::Initiative General::str2Initiative(QString str,
@@ -442,31 +444,6 @@ General::GroupSelectorOperator General::str2GroupSelector(QString str,
 	}
 }
 
-General::TimeUnit General::str2TimeUnit(QString str,
-		General::TimeUnit defaultValue) {
-
-	if (str.compare(QString("ps"), Qt::CaseInsensitive) == 0) {
-		return General::PS;
-	}
-	else if (str.compare(QString("ns"), Qt::CaseInsensitive) == 0) {
-		return General::NS;
-	}
-	else {
-		return defaultValue;
-	}
-}
-
-QString General::timeUnit2Str(General::TimeUnit& timeUnit) {
-	switch (timeUnit) {
-	case General::PS: {
-		return QString("ps");
-	}
-	default: {
-		return QString("ns");
-	}
-	}
-}
-
 General::DriverType General::str2DriverType(QString str, General::DriverType defaultValue)
 {
 	if (str == "any")
@@ -570,47 +547,6 @@ QString General::booleanValue2Str(const General::BooleanValue value) {
 	}
 	}
 }
-
-General::ClockStruct::ClockStruct( double value ):
-value_(value),
-timeUnit_(General::NS),
-attributes_() {
-}
-
-General::ClockStruct::ClockStruct( const ClockStruct& other ):
-value_(other.value_),
-timeUnit_(other.timeUnit_),
-attributes_(other.attributes_) {
-}
-
-General::ClockStruct& General::ClockStruct::operator=( const ClockStruct& other ) {
-	if (this != &other) {
-		value_ = other.value_;
-		timeUnit_ = other.timeUnit_;
-		attributes_ = other.attributes_;
-	}
-	return *this;
-}
-
-General::ClockPulseValue::ClockPulseValue( unsigned int value ):
-value_(value), 
-attributes_() {
-
-}
-
-General::ClockPulseValue::ClockPulseValue( const ClockPulseValue& other ):
-value_(other.value_),
-attributes_(other.attributes_) {
-}
-
-General::ClockPulseValue& General::ClockPulseValue::operator=( const ClockPulseValue& other ) {
-	if (this != &other) {
-		value_ = other.value_;
-		attributes_ = other.attributes_;
-	}
-	return *this;
-}
-
 
 General::InterfaceMode General::str2Interfacemode(const QString& str, InterfaceMode defaultValue) {
 	

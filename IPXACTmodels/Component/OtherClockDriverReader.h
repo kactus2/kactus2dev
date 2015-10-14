@@ -14,15 +14,16 @@
 
 #include "OtherClockDriver.h"
 
+#include <IPXACTmodels/common/ClockUnit.h>
+
 #include <QObject>
 #include <QSharedPointer>
 #include <QDomNode>
-#include <IPXACTmodels/common/CommonItemsReader.h>
 
 //-----------------------------------------------------------------------------
 //! Reader class for IP-XACT OtherClockDriver element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT OtherClockDriverReader : public CommonItemsReader
+class IPXACTMODELS_EXPORT OtherClockDriverReader : public QObject
 {
     Q_OBJECT
 
@@ -53,12 +54,31 @@ private:
     OtherClockDriverReader(OtherClockDriverReader const& rhs);
 	OtherClockDriverReader& operator=(OtherClockDriverReader const& rhs);
 
-	/*!
-	 *  Extracts clock struct from XML.
-	 *
-	 *      @param [in] clockNode			XML description of the clock node.
-	 */
-	General::ClockStruct* readClockStruct(QDomNode &clockNode) const;
+    /*!
+     *  Parse the clock driver attributes.
+     *
+     *      @param [in] otherClockDriverNode    XML description of the other clock driver.
+     *      @param [in] newOtherClockDriver     The new other clock driver.
+     */
+    void parseClockDriverAttributes(QDomNode const& otherClockDriverNode,
+        QSharedPointer<OtherClockDriver> newOtherClockDriver) const;
+
+    /*!
+     *  Parse a clock unit.
+     *
+     *      @param [in] otherClockDriverNode    XML description of the other clock driver.
+     *      @param [in] elementName             The name of the clock unit element.
+     */
+    QSharedPointer<ClockUnit> parseClockUnit(QDomNode const& otherClockDriverNode, QString const& elementName) const;
+
+    /*!
+     *  Parse the clock pulse value.
+     *
+     *      @param [in] otherClockDriverNode    XML description of the other clock driver.
+     *      @param [in] newOtherClockDriver     The new other clock driver.
+     */
+    void parseClockPulseValue(QDomNode const& otherClockDriverNode,
+        QSharedPointer<OtherClockDriver> newOtherClockDriver) const;
 };
 
 #endif // OtherClockDriverReader_H

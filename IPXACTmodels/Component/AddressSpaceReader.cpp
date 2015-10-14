@@ -14,7 +14,6 @@
 #include <IPXACTmodels/common/NameGroupReader.h>
 #include <IPXACTmodels/common/ParameterReader.h>
 #include <IPXACTmodels/Component/MemoryMapBaseReader.h>
-#include "../XmlUtils.h"
 
 //-----------------------------------------------------------------------------
 // Function: AddressSpaceReader::AddressSpaceReader()
@@ -38,130 +37,163 @@ AddressSpaceReader::~AddressSpaceReader()
 //-----------------------------------------------------------------------------
 QSharedPointer<AddressSpace> AddressSpaceReader::createAddressSpaceFrom(QDomNode const& addressSpaceNode) const
 {
-	// Create the new CPU.
 	QSharedPointer<AddressSpace> newAddressSpace (new AddressSpace());
 
-	// Parse presence, name group, and vendor extensions with pre-existing parsers.
-	// CPU has no vendor extensions supported by Kactus2.
+    parseNameGroup(addressSpaceNode, newAddressSpace);
+
 	newAddressSpace->setIsPresent(parseIsPresent(addressSpaceNode.firstChildElement("ipxact:isPresent")));
-	NameGroupReader nameReader;
-	nameReader.parseNameGroup(addressSpaceNode, newAddressSpace);
-	parseVendorExtensions(addressSpaceNode, newAddressSpace);
 
-	QList<QSharedPointer<Parameter> >& parameters = newAddressSpace->getParameters();
-	QList<QSharedPointer<Segment> > segments;
+    readBlockSize(addressSpaceNode, newAddressSpace);
 
-	for (int i = 0; i < addressSpaceNode.childNodes().count(); ++i)
-	{
-		QDomNode tempNode = addressSpaceNode.childNodes().at(i);
+    readSegments(addressSpaceNode, newAddressSpace);
 
-		// Do not try to parse comments.
-		if (tempNode.isComment())
-		{
-			continue;
-		}
+    parseAddressUnitBits(addressSpaceNode, newAddressSpace);
 
-		// Branch based on nodename.
-		if (tempNode.nodeName() == QString("ipxact:parameters"))
-		{
-			readParameters(tempNode, parameters);
-		}
-		else if (tempNode.nodeName() == QString("ipxact:blockSize"))
-		{
-			readBlockSize(tempNode, newAddressSpace);
-		}
-		else if (tempNode.nodeName() == QString("ipxact:addressUnitBits"))
-		{
-			newAddressSpace->setAddressUnitBits( tempNode.childNodes().at(0).nodeValue().toInt() );
-		}
-		else if (tempNode.nodeName() == QString("ipxact:segments"))
-		{
-			readSegments(tempNode, segments);
-		}
-		else if (tempNode.nodeName() == QString("ipxact:localMemoryMap"))
-		{
-			MemoryMapBaseReader reader;
-			QSharedPointer<MemoryMapBase> mmb( new MemoryMapBase() );
-			reader.readMemoryMapBase(tempNode, mmb);
-			newAddressSpace->setLocalMemoryMap( mmb );
-		}
-	}
+    parseLocalMemoryMap(addressSpaceNode, newAddressSpace);
 
-	newAddressSpace->setSegments( segments );
+    readParameters(addressSpaceNode, newAddressSpace);
+
+    parseVendorExtensions(addressSpaceNode, newAddressSpace);
 
     return newAddressSpace;
 }
 
-void AddressSpaceReader::readParameters(QDomNode &tempNode, QList<QSharedPointer<Parameter> > &parameters) const
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceReader::parseNameGroup()
+//-----------------------------------------------------------------------------
+void AddressSpaceReader::parseNameGroup(QDomNode const& addressSpaceNode,
+    QSharedPointer<AddressSpace> newAddressSpace) const
 {
-	// Use pre-existing parameter reader for reading parameters.
-	ParameterReader reader;
-
-	// Go through all parameters.
-	for (int j = 0; j < tempNode.childNodes().count(); ++j)
-	{
-		QDomNode parameterNode = tempNode.childNodes().at(j);
-
-		// Do not try to parse comments.
-		if (!parameterNode.isComment())
-		{
-			parameters.append(QSharedPointer<Parameter>(reader.createParameterFrom(parameterNode)));
-		}
-	}
+    NameGroupReader nameReader;
+    nameReader.parseNameGroup(addressSpaceNode, newAddressSpace);
 }
 
-void AddressSpaceReader::readBlockSize(QDomNode &tempNode, QSharedPointer<AddressSpace> newAddressSpace) const
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceReader::readBlockSize()
+//-----------------------------------------------------------------------------
+void AddressSpaceReader::readBlockSize(QDomNode const& addressSpaceNode,
+    QSharedPointer<AddressSpace> newAddressSpace) const
 {
-	for (int j = 0; j < tempNode.childNodes().count(); ++j)
-	{
-		// A block has a range and width.
-		if (tempNode.childNodes().at(j).nodeName() == QString("ipxact:range"))
-		{
-			QString leftRange = tempNode.childNodes().at(j).firstChildElement("ipxact:left").firstChild().nodeValue();
-			QString rightRange = tempNode.childNodes().at(j).firstChildElement("ipxact:right").firstChild().nodeValue();
+    QDomElement rangeElement = addressSpaceNode.firstChildElement("ipxact:range");
+    QString range = rangeElement.firstChild().nodeValue();
+    newAddressSpace->setRange(range);
 
-			newAddressSpace->setRange( QSharedPointer<Range>(new Range(leftRange, rightRange) ) );
-		}
-		else if (tempNode.childNodes().at(j).nodeName() == QString("ipxact:width"))
-		{
-			newAddressSpace->setWidth( tempNode.childNodes().at(j).firstChild().nodeValue().toInt() );
-		}
-	}
+    QDomElement widthElement = addressSpaceNode.firstChildElement("ipxact:width");
+    QString width = widthElement.firstChild().nodeValue();
+    newAddressSpace->setWidth(width);
 }
 
-void AddressSpaceReader::readSegments(QDomNode &tempNode, QList<QSharedPointer<Segment> > &segments) const
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceReader::readSegments()
+//-----------------------------------------------------------------------------
+void AddressSpaceReader::readSegments(QDomNode const& addressSpaceNode,
+    QSharedPointer<AddressSpace> newAddressSpace) const
 {
-	for (int j = 0; j < tempNode.childNodes().count(); ++j)
-	{
-		QDomNode segmentNode = tempNode.childNodes().at(j);
-		QSharedPointer<Segment> newSegment(new Segment());
+    QDomElement segmentsElement = addressSpaceNode.firstChildElement("ipxact:segments");
 
-		parseVendorExtensions(segmentNode, newSegment);
-		NameGroupReader nameReader;
-		nameReader.parseNameGroup(segmentNode, newSegment);
-		newSegment->setIsPresent( parseIsPresent(segmentNode.firstChildElement("ipxact:isPresent")) );
+    QDomNodeList segmentNodeList = segmentsElement.elementsByTagName("ipxact:segment");
 
-		for (int i = 0; i < segmentNode.childNodes().count(); ++i)
-		{
-			QDomNode tempNode = segmentNode.childNodes().at(i);
+    if (!segmentNodeList.isEmpty())
+    {
+        NameGroupReader nameReader;
+        
+        for (int i = 0; i < segmentNodeList.count(); ++i)
+        {
+            QDomNode segmentNode = segmentNodeList.at(i);
+            QSharedPointer<Segment> newSegment(new Segment());
 
-			// Read address off set along its paramaters.
-			if (tempNode.nodeName() == QString("ipxact:addressOffset"))
-			{
-				newSegment->setOffset( tempNode.childNodes().at(0).nodeValue() );
+            nameReader.parseNameGroup(segmentNode, newSegment);
 
-				newSegment->setOffsetAttributes( XmlUtils::parseAttributes(tempNode) );
-			}
+            QDomElement isPresentElement = segmentNode.firstChildElement("ipxact:isPresent");
+            if (!isPresentElement.isNull())
+            {
+                newSegment->setIsPresent(isPresentElement.firstChild().nodeValue());
+            }
 
-			// Read range off set along its paramaters.
-			else if (tempNode.nodeName() == QString("ipxact:range"))
-			{
-				newSegment->setRange( tempNode.childNodes().at(0).nodeValue() );
+            QDomElement addressOffsetElement = segmentNode.firstChildElement("ipxact:addressOffset");
+            newSegment->setOffset(addressOffsetElement.firstChild().nodeValue());
 
-				newSegment->setRangeAttributes( XmlUtils::parseAttributes(tempNode) );
-			}
-		}
+            QDomNamedNodeMap offsetAttributes = addressOffsetElement.attributes();
+            if (!offsetAttributes.isEmpty())
+            {
+                QMap<QString, QString> newOffsetAttributes;
+                for (int i = 0 ; i < offsetAttributes.count(); ++i)
+                {
+                    QDomNode attributeNode = offsetAttributes.item(i);
+                    QString key = attributeNode.nodeName();
+                    QString value = attributeNode.firstChild().nodeValue();
 
-		segments.append(newSegment);
-	}
+                    newOffsetAttributes.insert(key, value);
+                }
+                newSegment->setOffsetAttributes(newOffsetAttributes);
+            }
+
+            QDomElement rangeElement = segmentNode.firstChildElement("ipxact:range");
+            newSegment->setRange(rangeElement.firstChild().nodeValue());
+
+            QDomNamedNodeMap rangeAttributes = rangeElement.attributes();
+            if (!rangeAttributes.isEmpty())
+            {
+                QMap<QString, QString> newRangeAttributes;
+                for (int i = 0 ; i < rangeAttributes.count(); ++i)
+                {
+                    QDomNode attributeNode = rangeAttributes.item(i);
+                    QString key = attributeNode.nodeName();
+                    QString value = attributeNode.firstChild().nodeValue();
+
+                    newRangeAttributes.insert(key, value);
+                }
+                newSegment->setRangeAttributes(newRangeAttributes);
+            }
+
+            parseVendorExtensions(segmentNode, newSegment);
+
+            newAddressSpace->getSegments()->append(newSegment);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceReader::parseAddressUnitBits()
+//-----------------------------------------------------------------------------
+void AddressSpaceReader::parseAddressUnitBits(QDomNode const& addressSpaceNode,
+    QSharedPointer<AddressSpace> newAddressSpace) const
+{
+    QDomElement addressUnitElement = addressSpaceNode.firstChildElement("ipxact:addressUnitBits");
+    if (!addressUnitElement.isNull())
+    {
+        QString addressUnitBits = addressUnitElement.firstChild().nodeValue();
+        newAddressSpace->setAddressUnitBits(addressUnitBits);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceReader::parseLocalMemoryMap()
+//-----------------------------------------------------------------------------
+void AddressSpaceReader::parseLocalMemoryMap(QDomNode const& addressSpaceNode,
+    QSharedPointer<AddressSpace> newAddressSpace) const
+{
+    QDomNode localMemoryMapNode = addressSpaceNode.firstChildElement("ipxact:localMemoryMap");
+    if (!localMemoryMapNode.isNull())
+    {
+        QSharedPointer<MemoryMapBase> newLocalMemoryMap(new MemoryMapBase());
+
+        MemoryMapBaseReader localReader;
+        localReader.readMemoryMapBase(localMemoryMapNode, newLocalMemoryMap);
+        newAddressSpace->setLocalMemoryMap(newLocalMemoryMap);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceReader::readParameters()
+//-----------------------------------------------------------------------------
+void AddressSpaceReader::readParameters(QDomNode const& addressSpaceNode,
+    QSharedPointer<AddressSpace> newAddressSpace) const
+{
+    QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters = parseAndCreateParameters(addressSpaceNode);
+
+    if (!newParameters->isEmpty())
+    {
+        newAddressSpace->setParameters(newParameters);
+    }
 }

@@ -1,119 +1,87 @@
-/* 
- *
- *  Created on: 28.7.2010
- *      Author: Antti Kamppi
- */
+//-----------------------------------------------------------------------------
+// File: AddressSpace.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: 
+// Date:
+//
+// Description:
+// Describes the ipxact:addressSpace element.
+//-----------------------------------------------------------------------------
 
 #include "AddressSpace.h"
-#include "../GenericVendorExtension.h"
 
-#include <common/utils.h>
+#include <IPXACTmodels/GenericVendorExtension.h>
 
 #include <IPXACTmodels/common/Parameter.h>
-#include <IPXACTmodels/common/ParameterReader.h>
-#include <IPXACTmodels/common/ParameterWriter.h>
-#include <IPXACTmodels/generaldeclarations.h>
 
-#include <QDomNode>
-#include <QDomNamedNodeMap>
-#include <QSharedPointer>
-#include <QString>
-#include <QObject>
-#include <QList>
-#include <QXmlStreamWriter>
+//-----------------------------------------------------------------------------
+// Function: AddressSpace::()
+//-----------------------------------------------------------------------------
+AddressSpace::AddressSpace(QString const& name, QString const& range, QString const& width) :
+NameGroup(name),
+Extendable(),
+range_(range),
+width_(width),
+segments_(new QList<QSharedPointer<Segment> > ()),
+addressUnitBits_(),
+localMemoryMap_(0),
+parameters_(new QList<QSharedPointer<Parameter> > ())
+{
 
-const int DEFAULT_ADDRESS_UNIT_BITS = 8;
+}
 
+//-----------------------------------------------------------------------------
+// Function: AddressSpace::AddressSpace()
+//-----------------------------------------------------------------------------
 AddressSpace::AddressSpace( const AddressSpace &other ):
 NameGroup(other),
+Extendable(other),
 range_(other.range_),
 width_(other.width_),
-segments_(),
+segments_(new QList<QSharedPointer<Segment> > ()),
 addressUnitBits_(other.addressUnitBits_),
 localMemoryMap_(),
-parameters_(),
-vendorExtensions_(other.vendorExtensions_)
- {
-	if (other.localMemoryMap_)
-	{
-		localMemoryMap_ = QSharedPointer<MemoryMapBase>(
-			new MemoryMapBase(*other.localMemoryMap_.data()));
-	}
-
-	parameters_.clear();
-	foreach (QSharedPointer<Parameter> param, other.parameters_)
-	{
-		if (param) {
-			QSharedPointer<Parameter> copy = QSharedPointer<Parameter>(
-				new Parameter(*param.data()));
-			parameters_.append(copy);
-		}
-	}
-
-	segments_.clear();
-	foreach (QSharedPointer<Segment> segment, other.segments_)
-	{
-		if (segment) {
-			QSharedPointer<Segment> copy = QSharedPointer<Segment>(
-				new Segment(*segment.data()));
-			segments_.append(copy);
-		}
-	}
-}
-
-AddressSpace::AddressSpace():
-NameGroup(),
-range_(),
-width_(-1), 
-segments_(),
-addressUnitBits_(DEFAULT_ADDRESS_UNIT_BITS), 
-localMemoryMap_(0),
-parameters_(),
-vendorExtensions_()
+parameters_(new QList<QSharedPointer<Parameter> > ())
 {
+    copyLocalMemoryMap(other);
+    copySegments(other);
+    copyParameters(other);
 }
 
-AddressSpace & AddressSpace::operator=( const AddressSpace &other ) {
-	if (this != &other) {
+//-----------------------------------------------------------------------------
+// Function: AddressSpace::operator=()
+//-----------------------------------------------------------------------------
+AddressSpace & AddressSpace::operator=( const AddressSpace &other )
+{
+	if (this != &other)
+    {
 		NameGroup::operator=(other);
+        Extendable::operator=(other);
 		range_ = other.range_;
 		width_ = other.width_;
 		addressUnitBits_ = other.addressUnitBits_;
-        vendorExtensions_ = other.vendorExtensions_;
 
-		if (other.localMemoryMap_) {
-			localMemoryMap_ = QSharedPointer<MemoryMapBase>(
-				new MemoryMapBase(*other.localMemoryMap_.data()));
-		}
-		else
-			localMemoryMap_ = QSharedPointer<MemoryMapBase>();
+        localMemoryMap_.clear();
+        copyLocalMemoryMap(other);
 
-		parameters_.clear();
-		foreach (QSharedPointer<Parameter> param, other.parameters_)
-		{
-			if (param) {
-				QSharedPointer<Parameter> copy = QSharedPointer<Parameter>(
-					new Parameter(*param.data()));
-				parameters_.append(copy);
-			}
-		}
+        segments_->clear();
+        copySegments(other);
 
-		segments_.clear();
-		foreach (QSharedPointer<Segment> segment, other.segments_)
-		{
-			if (segment) {
-				QSharedPointer<Segment> copy = QSharedPointer<Segment>(
-					new Segment(*segment.data()));
-				segments_.append(copy);
-			}
-		}
+        parameters_->clear();
+        copyParameters(other);
 	}
 	return *this;
 }
 
-// the destructor
-AddressSpace::~AddressSpace() {
+//-----------------------------------------------------------------------------
+// Function: AddressSpace::~AddressSpace()
+//-----------------------------------------------------------------------------
+AddressSpace::~AddressSpace()
+{
+    localMemoryMap_.clear();
 	segments_.clear();
+    parameters_.clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -135,6 +103,7 @@ void AddressSpace::setIsPresent(QString const& newIsPresent)
 //-----------------------------------------------------------------------------
 // Function: addressspace::isValid()
 //-----------------------------------------------------------------------------
+/*
 bool AddressSpace::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
     QStringList remapStateNames, QStringList& errorList, const QString& parentIdentifier ) const
 {
@@ -184,10 +153,10 @@ bool AddressSpace::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > compo
 //             valid = false;
 //         }
 //     }
-
+/*
 	return valid;
-}
-
+}*/
+/*
 //-----------------------------------------------------------------------------
 // Function: addressspace::isValid()
 //-----------------------------------------------------------------------------
@@ -229,81 +198,154 @@ bool AddressSpace::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > compo
 //             return false;
 //         }
 //     }
-	return true;
+/*	return true;
+}*/
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpace::setAddressUnitBits()
+//-----------------------------------------------------------------------------
+void AddressSpace::setAddressUnitBits(QString const& newAddressUnitBits)
+{
+	addressUnitBits_ = newAddressUnitBits;
 }
 
-void AddressSpace::setAddressUnitBits(unsigned int addressUnitBits) {
-	addressUnitBits_ = addressUnitBits;
-}
-
-unsigned int AddressSpace::getAddressUnitBits() const {
+//-----------------------------------------------------------------------------
+// Function: AddressSpace::getAddressUnitBits()
+//-----------------------------------------------------------------------------
+QString AddressSpace::getAddressUnitBits() const
+{
 	return addressUnitBits_;
 }
 
-void AddressSpace::setRange(const QSharedPointer<Range> range) {
-	range_ = range;
+//-----------------------------------------------------------------------------
+// Function: AddressSpace::setRange()
+//-----------------------------------------------------------------------------
+void AddressSpace::setRange(QString const& newRange)
+{
+	range_ = newRange;
 }
 
-QSharedPointer<Range> AddressSpace::getRange() const
+//-----------------------------------------------------------------------------
+// Function: AddressSpace::getRange()
+//-----------------------------------------------------------------------------
+QString AddressSpace::getRange() const
 {
 	return range_;
 }
 
-int AddressSpace::getWidth() const {
+//-----------------------------------------------------------------------------
+// Function: AddressSpace::getWidth()
+//-----------------------------------------------------------------------------
+QString AddressSpace::getWidth() const
+{
 	return width_;
 }
 
-void AddressSpace::setWidth(int width) {
-	width_ = width;
+//-----------------------------------------------------------------------------
+// Function: AddressSpace::setWidth()
+//-----------------------------------------------------------------------------
+void AddressSpace::setWidth(QString const& newWidth)
+{
+	width_ = newWidth;
 }
 
-QSharedPointer<MemoryMapBase> AddressSpace::getLocalMemoryMap() {
-	if (!localMemoryMap_)
-	{
-		localMemoryMap_ = QSharedPointer<MemoryMapBase>(new MemoryMapBase());
-	}
+//-----------------------------------------------------------------------------
+// Function: AddressSpace::getLocalMemoryMap()
+//-----------------------------------------------------------------------------
+QSharedPointer<MemoryMapBase> AddressSpace::getLocalMemoryMap()
+{
 	return localMemoryMap_;
 }
 
+//-----------------------------------------------------------------------------
+// Function: AddressSpace::hasLocalMemoryMap()
+//-----------------------------------------------------------------------------
 bool AddressSpace::hasLocalMemoryMap() const
 {
     return localMemoryMap_;
 }
 
-void AddressSpace::setLocalMemoryMap( QSharedPointer<MemoryMapBase> localMemoryMap ) {
-	if (localMemoryMap_) {
+//-----------------------------------------------------------------------------
+// Function: AddressSpace::setLocalMemoryMap()
+//-----------------------------------------------------------------------------
+void AddressSpace::setLocalMemoryMap( QSharedPointer<MemoryMapBase> localMemoryMap )
+{
+	if (localMemoryMap_)
+    {
 		localMemoryMap_.clear();
 	}
 	localMemoryMap_ = localMemoryMap;
 }
 
-QList<QSharedPointer<Segment> >& AddressSpace::getSegments() {
+//-----------------------------------------------------------------------------
+// Function: AddressSpace::()
+//-----------------------------------------------------------------------------
+QSharedPointer<QList<QSharedPointer<Segment> > > AddressSpace::getSegments() const
+{
 	return segments_;
 }
 
-const QList<QSharedPointer<Segment> >& AddressSpace::getSegments() const {
-	return segments_;
-}
-
-void AddressSpace::setSegments( const QList<QSharedPointer<Segment> >& segments ) {
+//-----------------------------------------------------------------------------
+// Function: AddressSpace::setSegments()
+//-----------------------------------------------------------------------------
+void AddressSpace::setSegments(QSharedPointer<QList<QSharedPointer<Segment> > > segments)
+{
 	segments_ = segments;
 }
 
-QList<QSharedPointer<Parameter> >& AddressSpace::getParameters() {
-	return parameters_;
-}
-
-const QList<QSharedPointer<Parameter> >& AddressSpace::getParameters() const {
-	return parameters_;
-}
-
-quint64 AddressSpace::getLastAddress() const
+//-----------------------------------------------------------------------------
+// Function: AddressSpace::getParameters()
+//-----------------------------------------------------------------------------
+QSharedPointer<QList<QSharedPointer<Parameter> > > AddressSpace::getParameters() const
 {
-	quint64 range = General::str2Uint(range_->getRight());
-	
-	// if range is undefined
-	if (range <= 0) {
-		return 0;
-	}
-	return range - 1;
+	return parameters_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpace::setParameters()
+//-----------------------------------------------------------------------------
+void AddressSpace::setParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters)
+{
+    parameters_ = newParameters;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpace::copyLocalMemoryMap()
+//-----------------------------------------------------------------------------
+void AddressSpace::copyLocalMemoryMap(const AddressSpace& other)
+{
+    if (other.localMemoryMap_)
+    {
+        localMemoryMap_ = QSharedPointer<MemoryMapBase>(new MemoryMapBase(*other.localMemoryMap_.data()));
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpace::copySegments()
+//-----------------------------------------------------------------------------
+void AddressSpace::copySegments(const AddressSpace& other)
+{
+    foreach (QSharedPointer<Segment> segment, *other.segments_)
+    {
+        if (segment)
+        {
+            QSharedPointer<Segment> copy = QSharedPointer<Segment>(new Segment(*segment.data()));
+            segments_->append(copy);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpace::copyParameters()
+//-----------------------------------------------------------------------------
+void AddressSpace::copyParameters(const AddressSpace& other)
+{
+    foreach (QSharedPointer<Parameter> parameter, *other.parameters_)
+    {
+        if (parameter)
+        {
+            QSharedPointer<Parameter> copy = QSharedPointer<Parameter>(new Parameter(*parameter.data()));
+            parameters_->append(copy);
+        }
+    }
 }

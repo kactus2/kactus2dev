@@ -9,9 +9,12 @@
 // Unit test for class OtherClockDriverWriter.
 //-----------------------------------------------------------------------------
 
-#include <IPXACTmodels/Component/OtherClockDriverWriter.h>
-#include <IPXACTmodels/VendorExtension.h>
 #include <IPXACTmodels/common/Parameter.h>
+#include <IPXACTmodels/common/ClockUnit.h>
+
+#include <IPXACTmodels/Component/OtherClockDriverWriter.h>
+
+#include <IPXACTmodels/VendorExtension.h>
 #include <IPXACTmodels/GenericVendorExtension.h>
 
 #include <QtTest>
@@ -73,10 +76,10 @@ void tst_OtherClockDriverWriter::testWriteOtherClockDriver()
 
 	QString expectedOutput(
 		"<ipxact:otherClockDriver clockName=\"Marko\" clockSource=\"Ari\">"
-		"<ipxact:clockPeriod units=\"ns\">0</ipxact:clockPeriod>"
-		"<ipxact:clockPulseOffset units=\"ns\">0</ipxact:clockPulseOffset>"
-		"<ipxact:clockPulseValue>0</ipxact:clockPulseValue>"
-		"<ipxact:clockPulseDuration units=\"ns\">0</ipxact:clockPulseDuration>"
+        "<ipxact:clockPeriod></ipxact:clockPeriod>"
+        "<ipxact:clockPulseOffset></ipxact:clockPulseOffset>"
+        "<ipxact:clockPulseValue></ipxact:clockPulseValue>"
+        "<ipxact:clockPulseDuration></ipxact:clockPulseDuration>"
 		"</ipxact:otherClockDriver>"
 		);
 
@@ -93,19 +96,17 @@ void tst_OtherClockDriverWriter::testWriteClockPeriod()
 	QString output;
 	QXmlStreamWriter xmlStreamWriter(&output);
 
-	General::ClockStruct* cs = new General::ClockStruct();
-	cs->timeUnit_ = General::PS;
-	cs->attributes_.insert("joku","jotain");
-	cs->value_ = 6;
+    QSharedPointer<ClockUnit> clockPeriod (new ClockUnit("6"));
+    clockPeriod->setTimeUnit(ClockUnit::PS);
 
-	testOtherClockDriver_->setClockPeriod(cs);
+    testOtherClockDriver_->setClockPeriod(clockPeriod);
 
 	QString expectedOutput(
-		"<ipxact:otherClockDriver>"
-		"<ipxact:clockPeriod units=\"ps\" joku=\"jotain\">6</ipxact:clockPeriod>"
-		"<ipxact:clockPulseOffset units=\"ns\">0</ipxact:clockPulseOffset>"
-		"<ipxact:clockPulseValue>0</ipxact:clockPulseValue>"
-		"<ipxact:clockPulseDuration units=\"ns\">0</ipxact:clockPulseDuration>"
+		"<ipxact:otherClockDriver clockName=\"\">"
+    		"<ipxact:clockPeriod units=\"ps\">6</ipxact:clockPeriod>"
+	    	"<ipxact:clockPulseOffset></ipxact:clockPulseOffset>"
+		    "<ipxact:clockPulseValue></ipxact:clockPulseValue>"
+    		"<ipxact:clockPulseDuration></ipxact:clockPulseDuration>"
 		"</ipxact:otherClockDriver>"
 		);
 
@@ -122,27 +123,22 @@ void tst_OtherClockDriverWriter::testWriteClockPulses()
 	QString output;
 	QXmlStreamWriter xmlStreamWriter(&output);
 
-	General::ClockStruct* cpo = new General::ClockStruct();
-	cpo->value_ = 1;
-	cpo->timeUnit_ = General::NS;
-	testOtherClockDriver_->setClockPulseOffset( cpo );
+    QSharedPointer<ClockUnit> pulseOffset (new ClockUnit("1"));
+    pulseOffset->setTimeUnit(ClockUnit::NS);
 
-	General::ClockStruct* cpd = new General::ClockStruct();
-	cpd->value_ = 3;
-	cpd->timeUnit_ = General::PS;
-	cpd->attributes_.insert("joku","jotain");
-	testOtherClockDriver_->setClockPulseDuration( cpd );
+    QSharedPointer<ClockUnit> pulseDuration (new ClockUnit("3"));
+    pulseDuration->setTimeUnit(ClockUnit::PS);
 
-	General::ClockPulseValue* cpv = new General::ClockPulseValue();
-	cpv->value_ = 2;
-	testOtherClockDriver_->setClockPulseValue( cpv );
+    testOtherClockDriver_->setClockPulseOffset(pulseOffset);
+    testOtherClockDriver_->setClockPulseDuration(pulseDuration);
+    testOtherClockDriver_->setClockPulseValue("2");
 
 	QString expectedOutput(
-		"<ipxact:otherClockDriver>"
-		"<ipxact:clockPeriod units=\"ns\">0</ipxact:clockPeriod>"
-		"<ipxact:clockPulseOffset units=\"ns\">1</ipxact:clockPulseOffset>"
-		"<ipxact:clockPulseValue>2</ipxact:clockPulseValue>"
-		"<ipxact:clockPulseDuration units=\"ps\" joku=\"jotain\">3</ipxact:clockPulseDuration>"
+		"<ipxact:otherClockDriver clockName=\"\">"
+    		"<ipxact:clockPeriod></ipxact:clockPeriod>"
+	    	"<ipxact:clockPulseOffset units=\"ns\">1</ipxact:clockPulseOffset>"
+		    "<ipxact:clockPulseValue>2</ipxact:clockPulseValue>"
+    		"<ipxact:clockPulseDuration units=\"ps\">3</ipxact:clockPulseDuration>"
 		"</ipxact:otherClockDriver>"
 		);
 

@@ -97,9 +97,6 @@ void tst_businterfaceWriter::testWritebusinterfaceNameGroup()
 		"<ipxact:displayName>testDisplay</ipxact:displayName>"
 		"<ipxact:description>testDescription</ipxact:description>"
 		"<ipxact:busType vendor=\"\" library=\"\" name=\"\" version=\"\"/>"
-		"<ipxact:connectionRequired>false</ipxact:connectionRequired>"
-		"<ipxact:bitsInLau>8</ipxact:bitsInLau>"
-		"<ipxact:endianness>little</ipxact:endianness>"
 		"</ipxact:busInterface>"
 		;
 
@@ -122,9 +119,6 @@ void tst_businterfaceWriter::testWriteIsPresent()
 		"<ipxact:name>testbusinterface</ipxact:name>"
 		"<ipxact:isPresent>4-3</ipxact:isPresent>"
 		"<ipxact:busType vendor=\"\" library=\"\" name=\"\" version=\"\"/>"
-		"<ipxact:connectionRequired>false</ipxact:connectionRequired>"
-		"<ipxact:bitsInLau>8</ipxact:bitsInLau>"
-		"<ipxact:endianness>little</ipxact:endianness>"
 		"</ipxact:busInterface>"
 		);
 
@@ -146,9 +140,6 @@ void tst_businterfaceWriter::testWriteAttributes()
 		"<ipxact:busInterface joq=\"jotain\">"
 		"<ipxact:name>testbusinterface</ipxact:name>"
 		"<ipxact:busType vendor=\"\" library=\"\" name=\"\" version=\"\"/>"
-		"<ipxact:connectionRequired>false</ipxact:connectionRequired>"
-		"<ipxact:bitsInLau>8</ipxact:bitsInLau>"
-		"<ipxact:endianness>little</ipxact:endianness>"
 		"</ipxact:busInterface>"
 		);
 
@@ -174,9 +165,6 @@ void tst_businterfaceWriter::testWriteBusType()
 		"<ipxact:busInterface>"
 		"<ipxact:name>testbusinterface</ipxact:name>"
 		"<ipxact:busType vendor=\"1\" library=\"2\" name=\"3\" version=\"4\"/>"
-		"<ipxact:connectionRequired>false</ipxact:connectionRequired>"
-		"<ipxact:bitsInLau>8</ipxact:bitsInLau>"
-		"<ipxact:endianness>little</ipxact:endianness>"
 		"</ipxact:busInterface>"
 		);
 
@@ -201,8 +189,6 @@ void tst_businterfaceWriter::testWriteConnectionRequired()
 		"<ipxact:name>testbusinterface</ipxact:name>"
 		"<ipxact:busType vendor=\"\" library=\"\" name=\"\" version=\"\"/>"
 		"<ipxact:connectionRequired>true</ipxact:connectionRequired>"
-		"<ipxact:bitsInLau>8</ipxact:bitsInLau>"
-		"<ipxact:endianness>little</ipxact:endianness>"
 		"</ipxact:busInterface>"
 		);
 
@@ -226,13 +212,11 @@ void tst_businterfaceWriter::testWriteBitsInLau()
 		"<ipxact:busInterface>"
 		"<ipxact:name>testbusinterface</ipxact:name>"
 		"<ipxact:busType vendor=\"\" library=\"\" name=\"\" version=\"\"/>"
-		"<ipxact:connectionRequired>false</ipxact:connectionRequired>"
 		"<ipxact:bitsInLau>16</ipxact:bitsInLau>"
-		"<ipxact:endianness>little</ipxact:endianness>"
 		"</ipxact:busInterface>"
 		);
 
-	testbusinterface_->setBitsInLau(16);
+	testbusinterface_->setBitsInLau("16");
 
 	businterfaceWriter businterfaceWriter;
 	businterfaceWriter.writebusinterface(xmlStreamWriter, testbusinterface_);
@@ -252,9 +236,6 @@ void tst_businterfaceWriter::testWriteBitSteering()
 		"<ipxact:busInterface>"
 		"<ipxact:name>testbusinterface</ipxact:name>"
 		"<ipxact:busType vendor=\"\" library=\"\" name=\"\" version=\"\"/>"
-		"<ipxact:connectionRequired>false</ipxact:connectionRequired>"
-		"<ipxact:bitsInLau>8</ipxact:bitsInLau>"
-		"<ipxact:endianness>little</ipxact:endianness>"
 		"<ipxact:bitSteering joq=\"jotain\">on</ipxact:bitSteering>"
 		"</ipxact:busInterface>"
 		);
@@ -282,8 +263,6 @@ void tst_businterfaceWriter::testWriteEndianness()
 		"<ipxact:busInterface>"
 		"<ipxact:name>testbusinterface</ipxact:name>"
 		"<ipxact:busType vendor=\"\" library=\"\" name=\"\" version=\"\"/>"
-		"<ipxact:connectionRequired>false</ipxact:connectionRequired>"
-		"<ipxact:bitsInLau>8</ipxact:bitsInLau>"
 		"<ipxact:endianness>big</ipxact:endianness>"
 		"</ipxact:busInterface>"
 		);
@@ -308,9 +287,6 @@ void tst_businterfaceWriter::testWriteParameters()
 		"<ipxact:busInterface>"
 		"<ipxact:name>testbusinterface</ipxact:name>"
 		"<ipxact:busType vendor=\"\" library=\"\" name=\"\" version=\"\"/>"
-		"<ipxact:connectionRequired>false</ipxact:connectionRequired>"
-		"<ipxact:bitsInLau>8</ipxact:bitsInLau>"
-		"<ipxact:endianness>little</ipxact:endianness>"
 		"<ipxact:parameters>"
 		"<ipxact:parameter parameterId=\"joq\" prompt=\"Parm 1\" resolve=\"user\" type=\"shortint\">"
 		"<ipxact:name>Esko</ipxact:name>"
@@ -365,19 +341,10 @@ void tst_businterfaceWriter::testWriteVendorExtensions()
 	QString expectedOutput(
 		"<ipxact:busInterface>"
 		"<ipxact:name>testbusinterface</ipxact:name>"
-		"<ipxact:vendorExtensions>"
-		"<ulina kolina=\"eaa\">"
-		"testValue"
-		"</ulina>"
-		"</ipxact:vendorExtensions>"
 		"<ipxact:busType vendor=\"\" library=\"\" name=\"\" version=\"\"/>"
-		"<ipxact:connectionRequired>false</ipxact:connectionRequired>"
-		"<ipxact:bitsInLau>8</ipxact:bitsInLau>"
-		"<ipxact:endianness>little</ipxact:endianness>"
 		"<ipxact:vendorExtensions>"
-		"<kactus2:extensions>"
-		"<kactus2:position x=\"1\" y=\"5\"/>"
-		"</kactus2:extensions>"
+            "<ulina kolina=\"eaa\">testValue</ulina>"
+           	"<kactus2:position x=\"1\" y=\"5\"/>"
 		"</ipxact:vendorExtensions>"
 		"</ipxact:busInterface>"
 		);
@@ -410,9 +377,6 @@ void tst_businterfaceWriter::testWriteAbstractionReference()
 		"<ipxact:busInterface>"
 		"<ipxact:name>testbusinterface</ipxact:name>"
 		"<ipxact:busType vendor=\"\" library=\"\" name=\"\" version=\"\"/>"
-		"<ipxact:connectionRequired>false</ipxact:connectionRequired>"
-		"<ipxact:bitsInLau>8</ipxact:bitsInLau>"
-		"<ipxact:endianness>little</ipxact:endianness>"
 		"<ipxact:abstractionTypes>"
 		"<ipxact:abstractionType>"
 		"<ipxact:viewRef>joku</ipxact:viewRef>"
@@ -427,10 +391,8 @@ void tst_businterfaceWriter::testWriteAbstractionReference()
 	at->viewRef_ = "joku";
 	at->abstractionRef_ = QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(VLNV::ABSTRACTIONDEFINITION,
 		"accellera.org","Sample","SampleAbstractionDefinition_TLM","1.0"));
-	QList< QSharedPointer<BusInterface::AbstractionType> > abstypes;
-	abstypes.append(at);
 
-	testbusinterface_->setAbstractionTypes(abstypes);
+    testbusinterface_->getAbstractionTypes()->append(at);
 
 	businterfaceWriter businterfaceWriter;
 	businterfaceWriter.writebusinterface(xmlStreamWriter, testbusinterface_);
@@ -448,70 +410,65 @@ void tst_businterfaceWriter::testWritePortMaps()
 
 	QString expectedOutput(
 		"<ipxact:busInterface>"
-		"<ipxact:name>testbusinterface</ipxact:name>"
-		"<ipxact:busType vendor=\"\" library=\"\" name=\"\" version=\"\"/>"
-		"<ipxact:connectionRequired>false</ipxact:connectionRequired>"
-		"<ipxact:bitsInLau>8</ipxact:bitsInLau>"
-		"<ipxact:endianness>little</ipxact:endianness>"
-		"<ipxact:abstractionTypes>"
-		"<ipxact:abstractionType>"
-		"<ipxact:portMaps>"
-		"<ipxact:portMap>"
-		"<ipxact:logicalTieOff>eoae</ipxact:logicalTieOff>"
-		"<ipxact:logicalPort>"
-		"<ipxact:name>CLK</ipxact:name>"
-		"<ipxact:range>"
-		"<ipxact:left>vasen</ipxact:left>"
-		"<ipxact:right>oikea</ipxact:right>"
-		"</ipxact:range>"
-		"</ipxact:logicalPort>"
-		"<ipxact:physicalPort>"
-		"<ipxact:name>clk</ipxact:name>"
-		"<ipxact:partSelect>"
-		"<ipxact:range>"
-		"<ipxact:left>vasen</ipxact:left>"
-		"<ipxact:right>oikea</ipxact:right>"
-		"</ipxact:range>"
-		"<ipxact:indices>"
-		"<ipxact:index>eka</ipxact:index>"
-		"<ipxact:index>toka</ipxact:index>"
-		"</ipxact:indices>"
-		"</ipxact:partSelect>"
-		"</ipxact:physicalPort>"
-		"</ipxact:portMap>"
-		"</ipxact:portMaps>"
-		"</ipxact:abstractionType>"
-		"</ipxact:abstractionTypes>"
+    		"<ipxact:name>testbusinterface</ipxact:name>"
+	    	"<ipxact:busType vendor=\"\" library=\"\" name=\"\" version=\"\"/>"
+    		"<ipxact:abstractionTypes>"
+    	    	"<ipxact:abstractionType>"
+    	    	    "<ipxact:portMaps>"
+                		"<ipxact:portMap>"
+                    		"<ipxact:logicalTieOff>eoae</ipxact:logicalTieOff>"
+                    		"<ipxact:logicalPort>"
+                        		"<ipxact:name>CLK</ipxact:name>"
+                        		"<ipxact:range>"
+                            		"<ipxact:left>vasen</ipxact:left>"
+                            		"<ipxact:right>oikea</ipxact:right>"
+                        		"</ipxact:range>"
+                    		"</ipxact:logicalPort>"
+                    		"<ipxact:physicalPort>"
+                        		"<ipxact:name>clk</ipxact:name>"
+                        		"<ipxact:partSelect>"
+                            		"<ipxact:range>"
+                                		"<ipxact:left>vasen</ipxact:left>"
+                                		"<ipxact:right>oikea</ipxact:right>"
+                            		"</ipxact:range>"
+                            		"<ipxact:indices>"
+                                		"<ipxact:index>eka</ipxact:index>"
+                                		"<ipxact:index>toka</ipxact:index>"
+                            		"</ipxact:indices>"
+                        		"</ipxact:partSelect>"
+                    		"</ipxact:physicalPort>"
+                		"</ipxact:portMap>"
+            		"</ipxact:portMaps>"
+        		"</ipxact:abstractionType>"
+    		"</ipxact:abstractionTypes>"
 		"</ipxact:busInterface>"
 		);
 
-	QSharedPointer<BusInterface::AbstractionType> at( new BusInterface::AbstractionType );
-	QList< QSharedPointer<BusInterface::AbstractionType> > abstypes;
-	abstypes.append(at);
+	QSharedPointer<BusInterface::AbstractionType> abstractionType( new BusInterface::AbstractionType );
 
-	QSharedPointer<PortMap::LogicalPort> lport( new PortMap::LogicalPort );
-	QSharedPointer<PortMap::PhysicalPort> pport( new PortMap::PhysicalPort );
+	QSharedPointer<PortMap::LogicalPort> logicalPort( new PortMap::LogicalPort );
+	QSharedPointer<PortMap::PhysicalPort> physicalPort( new PortMap::PhysicalPort );
 
-	lport->name_ = "CLK";
-	pport->name_ = "clk";
+	logicalPort->name_ = "CLK";
+	physicalPort->name_ = "clk";
 
-	lport->range_ = QSharedPointer<Range>( new Range( "vasen", "oikea" ) );
+	logicalPort->range_ = QSharedPointer<Range>( new Range( "vasen", "oikea" ) );
 
 	QSharedPointer<PartSelect> ps( new PartSelect("vasen","oikea") );
-	pport->partSelect_ = ps;
+	physicalPort->partSelect_ = ps;
 
 	QSharedPointer<QStringList> indices( new QStringList() );
 	indices->append("eka");
 	indices->append("toka");
-	pport->partSelect_->setIndices(indices);
+	physicalPort->partSelect_->setIndices(indices);
 
-	QSharedPointer<PortMap> pm( new PortMap() );
-	pm->setLogicalPort( lport );
-	pm->setPhysicalPort( pport );
-	at->portMaps_.append(pm); 
-	pm->setLogicalTieOff("eoae");
+	QSharedPointer<PortMap> portMap( new PortMap() );
+	portMap->setLogicalPort( logicalPort );
+	portMap->setPhysicalPort( physicalPort );
+    abstractionType->portMaps_->append(portMap);
+	portMap->setLogicalTieOff("eoae");
 
-	testbusinterface_->setAbstractionTypes(abstypes);
+    testbusinterface_->getAbstractionTypes()->append(abstractionType);
 
 	businterfaceWriter businterfaceWriter;
 	businterfaceWriter.writebusinterface(xmlStreamWriter, testbusinterface_);
@@ -531,9 +488,6 @@ void tst_businterfaceWriter::testWritePortMaps2()
 		"<ipxact:busInterface>"
 		"<ipxact:name>testbusinterface</ipxact:name>"
 		"<ipxact:busType vendor=\"\" library=\"\" name=\"\" version=\"\"/>"
-		"<ipxact:connectionRequired>false</ipxact:connectionRequired>"
-		"<ipxact:bitsInLau>8</ipxact:bitsInLau>"
-		"<ipxact:endianness>little</ipxact:endianness>"
 		"<ipxact:abstractionTypes>"
 		"<ipxact:abstractionType>"
 		"<ipxact:portMaps>"
@@ -565,9 +519,6 @@ void tst_businterfaceWriter::testWritePortMaps2()
 
 	QSharedPointer<BusInterface::AbstractionType> at( new BusInterface::AbstractionType );
 	QSharedPointer<BusInterface::AbstractionType> at2( new BusInterface::AbstractionType );
-	QList< QSharedPointer<BusInterface::AbstractionType> > abstypes;
-	abstypes.append(at);
-	abstypes.append(at2);
 
 	QSharedPointer<PortMap::LogicalPort> lport1( new PortMap::LogicalPort );
 	QSharedPointer<PortMap::PhysicalPort> pport1( new PortMap::PhysicalPort );
@@ -577,7 +528,7 @@ void tst_businterfaceWriter::testWritePortMaps2()
 	QSharedPointer<PortMap> pm( new PortMap() );
 	pm->setLogicalPort(lport1);
 	pm->setPhysicalPort(pport1);
-	at->portMaps_.append(pm); 
+    at->portMaps_->append(pm);
 
 	QSharedPointer<PortMap::LogicalPort> lport2( new PortMap::LogicalPort );
 	QSharedPointer<PortMap::PhysicalPort> pport2( new PortMap::PhysicalPort );
@@ -587,9 +538,10 @@ void tst_businterfaceWriter::testWritePortMaps2()
 	QSharedPointer<PortMap> pm2( new PortMap() );
 	pm2->setLogicalPort(lport2);
 	pm2->setPhysicalPort(pport2);
-	at2->portMaps_.append(pm2); 
+    at2->portMaps_->append(pm2);
 
-	testbusinterface_->setAbstractionTypes(abstypes);
+    testbusinterface_->getAbstractionTypes()->append(at);
+    testbusinterface_->getAbstractionTypes()->append(at2);
 
 	businterfaceWriter businterfaceWriter;
 	businterfaceWriter.writebusinterface(xmlStreamWriter, testbusinterface_);
@@ -609,9 +561,6 @@ void tst_businterfaceWriter::testWriteMaster()
 		"<ipxact:busInterface>"
 		"<ipxact:name>testbusinterface</ipxact:name>"
 		"<ipxact:busType vendor=\"\" library=\"\" name=\"\" version=\"\"/>"
-		"<ipxact:connectionRequired>false</ipxact:connectionRequired>"
-		"<ipxact:bitsInLau>8</ipxact:bitsInLau>"
-		"<ipxact:endianness>little</ipxact:endianness>"
 		"<ipxact:master>"
 		"<ipxact:addressSpaceRef ipxact:addressSpaceRef=\"apb\"/>"
 		"</ipxact:master>"
@@ -642,9 +591,6 @@ void tst_businterfaceWriter::testWriteSlave()
 		"<ipxact:busInterface>"
 		"<ipxact:name>testbusinterface</ipxact:name>"
 		"<ipxact:busType vendor=\"\" library=\"\" name=\"\" version=\"\"/>"
-		"<ipxact:connectionRequired>false</ipxact:connectionRequired>"
-		"<ipxact:bitsInLau>8</ipxact:bitsInLau>"
-		"<ipxact:endianness>little</ipxact:endianness>"
 		"<ipxact:slave>"
 		"<ipxact:memoryMapRef memoryMapRef=\"ambaAHB\"/>"
 		"<ipxact:transparentBridge masterRef=\"joq\">"
@@ -700,9 +646,6 @@ void tst_businterfaceWriter::testWriteSystem()
 		"<ipxact:busInterface>"
 		"<ipxact:name>testbusinterface</ipxact:name>"
 		"<ipxact:busType vendor=\"\" library=\"\" name=\"\" version=\"\"/>"
-		"<ipxact:connectionRequired>false</ipxact:connectionRequired>"
-		"<ipxact:bitsInLau>8</ipxact:bitsInLau>"
-		"<ipxact:endianness>little</ipxact:endianness>"
 		"<ipxact:system>"
 		"<ipxact:group>esa</ipxact:group>"
 		"</ipxact:system>"
@@ -728,14 +671,11 @@ void tst_businterfaceWriter::testWriteMirroredSystem()
 
 	QString expectedOutput(
 		"<ipxact:busInterface>"
-		"<ipxact:name>testbusinterface</ipxact:name>"
-		"<ipxact:busType vendor=\"\" library=\"\" name=\"\" version=\"\"/>"
-		"<ipxact:connectionRequired>false</ipxact:connectionRequired>"
-		"<ipxact:bitsInLau>8</ipxact:bitsInLau>"
-		"<ipxact:endianness>little</ipxact:endianness>"
-		"<ipxact:mirroredSystem>"
-		"<ipxact:group>esa</ipxact:group>"
-		"</ipxact:mirroredSystem>"
+    		"<ipxact:name>testbusinterface</ipxact:name>"
+	    	"<ipxact:busType vendor=\"\" library=\"\" name=\"\" version=\"\"/>"
+	    	"<ipxact:mirroredSystem>"
+	    	    "<ipxact:group>esa</ipxact:group>"
+    		"</ipxact:mirroredSystem>"
 		"</ipxact:busInterface>"
 		);
 
@@ -760,9 +700,6 @@ void tst_businterfaceWriter::testWriteMonitor()
 		"<ipxact:busInterface>"
 		"<ipxact:name>testbusinterface</ipxact:name>"
 		"<ipxact:busType vendor=\"\" library=\"\" name=\"\" version=\"\"/>"
-		"<ipxact:connectionRequired>false</ipxact:connectionRequired>"
-		"<ipxact:bitsInLau>8</ipxact:bitsInLau>"
-		"<ipxact:endianness>little</ipxact:endianness>"
 		"<ipxact:monitor interfaceMode=\"system\">"
 		"<ipxact:group>esa</ipxact:group>"
 		"</ipxact:monitor>"
@@ -794,9 +731,6 @@ void tst_businterfaceWriter::testWriteMirroredSlave()
 		"<ipxact:busInterface>"
 		"<ipxact:name>testbusinterface</ipxact:name>"
 		"<ipxact:busType vendor=\"\" library=\"\" name=\"\" version=\"\"/>"
-		"<ipxact:connectionRequired>false</ipxact:connectionRequired>"
-		"<ipxact:bitsInLau>8</ipxact:bitsInLau>"
-		"<ipxact:endianness>little</ipxact:endianness>"
 		"<ipxact:mirroredSlave>"
 		"<ipxact:baseAddresses>"
 		"<ipxact:remapAddress state=\"decayed\" joku=\"jotain\">"
@@ -850,9 +784,6 @@ void tst_businterfaceWriter::testWriteMirroredMaster()
 		"<ipxact:busInterface>"
 		"<ipxact:name>testbusinterface</ipxact:name>"
 		"<ipxact:busType vendor=\"\" library=\"\" name=\"\" version=\"\"/>"
-		"<ipxact:connectionRequired>false</ipxact:connectionRequired>"
-		"<ipxact:bitsInLau>8</ipxact:bitsInLau>"
-		"<ipxact:endianness>little</ipxact:endianness>"
 		"<ipxact:mirroredMaster>"
 		"<ipxact:addressSpaceRef ipxact:addressSpaceRef=\"apb\"/>"
 		"</ipxact:mirroredMaster>"

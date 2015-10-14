@@ -93,7 +93,6 @@ public:
 	/*! Clear the previous groups and add a new group identifier.
 	 *
 	 *      @param [in] groupName   The group identifier which is set after clearing.
-	 *
 	 */
 	void setGroups(const QString& groupName);
     

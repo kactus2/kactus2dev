@@ -62,10 +62,10 @@ QSharedPointer<BusInterface> businterfaceReader::createbusinterfaceFrom(QDomNode
 	// Parse presence, name group, and vendor extensions with pre-existing parsers.
 	parseIsPresent(businterfaceNode, newbusinterface);
 	parseNameGroup(businterfaceNode, newbusinterface);
-	parseVendorExtensions(businterfaceNode, newbusinterface);
 
 	// All abstraction types will be added here.
-	QList<QSharedPointer<BusInterface::AbstractionType>> abstractionTypes;
+    QSharedPointer<QList<QSharedPointer<BusInterface::AbstractionType> > > abstractionTypes
+        (new QList<QSharedPointer<BusInterface::AbstractionType> > ());
 
 	// Go through all the child nodes and call appropriate constructors.
 	QDomNodeList children = businterfaceNode.childNodes();
@@ -107,7 +107,8 @@ QSharedPointer<BusInterface> businterfaceReader::createbusinterfaceFrom(QDomNode
 		// Get bits in lau.
 		else if (children.at(i).nodeName() == QString("ipxact:bitsInLau"))
 		{
-			newbusinterface->setBitsInLau( children.at(i).childNodes().at(0).nodeValue().toInt() );
+            QString bitsInLau = children.at(i).firstChild().nodeValue();
+            newbusinterface->setBitsInLau(bitsInLau);
 		}
 
 		// Get the bit steering.
@@ -141,36 +142,10 @@ QSharedPointer<BusInterface> businterfaceReader::createbusinterfaceFrom(QDomNode
 				parameters->append(reader.createParameterFrom(parameterNode));
 			}
 		}
-
-		// Search for Kactus2 vendor extensions. Others are culled by another function.
-		else if (children.at(i).nodeName() == "ipxact:vendorExtensions")
-		{
-			for (int j = 0; j < children.at(i).childNodes().count(); ++j)
-			{
-				QDomNode extensionNode = children.at(i).childNodes().at(j);
-
-				// The Kactus2 extensions should be under this node.
-				if (extensionNode.nodeName() == "kactus2:extensions")
-				{
-					for (int k = 0; k < extensionNode.childNodes().count(); ++k)
-					{
-						QDomNode childNode = extensionNode.childNodes().at(k);
-
-						// Default position is the possible extension.
-						if (childNode.nodeName() == "kactus2:position")
-						{
-							QPointF dpoint;
-							dpoint.setX(childNode.attributes().namedItem("x").nodeValue().toInt());
-							dpoint.setY(childNode.attributes().namedItem("y").nodeValue().toInt());
-							newbusinterface->setDefaultPos(dpoint);
-						}
-					}
-				}
-			}
-		}
 	}
 
-	// Set the abstraction types.
+    readBusInterfaceExtensions(businterfaceNode, newbusinterface);
+
 	newbusinterface->setAbstractionTypes(abstractionTypes);
 
     return newbusinterface;
@@ -198,8 +173,11 @@ void businterfaceReader::parseNameGroup(QDomNode const& businterfaceNode,
 	nameReader.parseNameGroup(businterfaceNode, newbusinterface);
 }
 
+//-----------------------------------------------------------------------------
+// Function: businterfaceReader::readAbstractionTypes()
+//-----------------------------------------------------------------------------
 void businterfaceReader::readAbstractionTypes(QDomNode& inspected,
-	QList<QSharedPointer<BusInterface::AbstractionType>> &abstractionTypes) const
+    QSharedPointer<QList<QSharedPointer<BusInterface::AbstractionType> > > abstractionTypes) const
 {
 	for (int j = 0; j < inspected.childNodes().count(); ++j)
 	{
@@ -208,9 +186,8 @@ void businterfaceReader::readAbstractionTypes(QDomNode& inspected,
 		// Search for Kactus2 extensions. Others are culled by another function.
 		if (abstractionNode.nodeName() == "ipxact:abstractionType")
 		{
-			QSharedPointer<BusInterface::AbstractionType> newAbstractionType(
-				new BusInterface::AbstractionType());
-			abstractionTypes.append(newAbstractionType);
+			QSharedPointer<BusInterface::AbstractionType> newAbstractionType(new BusInterface::AbstractionType());
+            abstractionTypes->append(newAbstractionType);
 
 			for (int k = 0; k < abstractionNode.childNodes().count(); ++k)
 			{
@@ -240,7 +217,11 @@ void businterfaceReader::readAbstractionTypes(QDomNode& inspected,
 	}
 }
 
-void businterfaceReader::readPortMaps(QDomNode &inspected, QSharedPointer<BusInterface::AbstractionType> newAbstractionType) const
+//-----------------------------------------------------------------------------
+// Function: businterfaceReader::readPortMaps()
+//-----------------------------------------------------------------------------
+void businterfaceReader::readPortMaps(QDomNode &inspected,
+    QSharedPointer<BusInterface::AbstractionType> newAbstractionType) const
 {
 	// Call constructors for all port map items.
 	for (int l = 0; l < inspected.childNodes().count(); ++l)
@@ -254,8 +235,8 @@ void businterfaceReader::readPortMaps(QDomNode &inspected, QSharedPointer<BusInt
 		// Call constructor and give the child node representing the single choice as parameter.
 		QDomNode portNode = inspected.childNodes().at(l);
 
-		PortMap *newPort = new PortMap();
-		newAbstractionType->portMaps_.append(QSharedPointer<PortMap>(newPort));
+        QSharedPointer<PortMap> newPort (new PortMap());
+        newAbstractionType->portMaps_->append(newPort);
 
 		for (int i = 0; i < portNode.childNodes().count(); ++i)
 		{
@@ -277,7 +258,10 @@ void businterfaceReader::readPortMaps(QDomNode &inspected, QSharedPointer<BusInt
 	}
 }
 
-void businterfaceReader::readLogicalPort(QDomNode &tempNode, PortMap * newPort) const
+//-----------------------------------------------------------------------------
+// Function: businterfaceReader::readLogicalPort()
+//-----------------------------------------------------------------------------
+void businterfaceReader::readLogicalPort(QDomNode& tempNode, QSharedPointer<PortMap> newPort) const
 {
 	QSharedPointer<PortMap::LogicalPort> newLogPort( new PortMap::LogicalPort() );
 
@@ -303,7 +287,10 @@ void businterfaceReader::readLogicalPort(QDomNode &tempNode, PortMap * newPort) 
 	newPort->setLogicalPort( newLogPort );
 }
 
-void businterfaceReader::readPhysicalPort(QDomNode &tempNode, PortMap * newPort) const
+//-----------------------------------------------------------------------------
+// Function: businterfaceReader::readPhysicalPort()
+//-----------------------------------------------------------------------------
+void businterfaceReader::readPhysicalPort(QDomNode& tempNode, QSharedPointer<PortMap> newPort) const
 {
 	QSharedPointer<PortMap::PhysicalPort> newPhysPort( new PortMap::PhysicalPort() );
 
@@ -656,4 +643,22 @@ void businterfaceReader::readMonitorInterface(QDomNode& inpstected,
 			newmode->group_ = XmlUtils::removeWhiteSpace(newmode->group_);
 		}
 	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: businterfaceReader::readBusInterfaceExtensions()
+//-----------------------------------------------------------------------------
+void businterfaceReader::readBusInterfaceExtensions(QDomNode const& interfaceNode,
+    QSharedPointer<BusInterface> newInterface) const
+{
+    QDomNode extensionsNode = interfaceNode.firstChildElement("ipxact:vendorExtensions");
+    QDomElement positionElement = extensionsNode.firstChildElement("kactus2:position");
+    if (!positionElement.isNull())
+    {
+        int positionX = positionElement.attribute("x").toInt();
+        int positionY = positionElement.attribute("y").toInt();
+        newInterface->setDefaultPos(QPointF(positionX, positionY));
+    }
+
+    parseVendorExtensions(interfaceNode, newInterface);
 }

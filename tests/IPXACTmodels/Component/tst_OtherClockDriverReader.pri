@@ -22,22 +22,22 @@ HEADERS += ../../../IPXACTmodels/common/Array.h \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Group.h \
     ../../../IPXACTmodels/common/ModuleParameter.h \
     ../../../IPXACTmodels/common/NameGroup.h \
+    ../../../IPXACTmodels/Component/OtherClockDriver.h \
     ../../../IPXACTmodels/common/Parameter.h \
     ../../../IPXACTmodels/common/Range.h \
     ../../../IPXACTmodels/common/Vector.h \
-    ../../../IPXACTmodels/Component/OtherClockDriver.h \
-    ../../../IPXACTmodels/vlnv.h \
+    ../../../IPXACTmodels/XmlUtils.h \
     ../../../IPXACTmodels/generaldeclarations.h \
-    ../../../IPXACTmodels/Component/OtherClockDriverReader.h \
+    ../../../IPXACTmodels/vlnv.h \
     ../../../IPXACTmodels/common/CommonItemsReader.h \
     ../../../IPXACTmodels/common/ModuleParameterReader.h \
-    ../../../IPXACTmodels/XmlUtils.h \
     ../../../IPXACTmodels/common/NameGroupReader.h \
-    ../../../IPXACTmodels/common/ParameterReader.h
+    ../../../IPXACTmodels/Component/OtherClockDriverReader.h \
+    ../../../IPXACTmodels/common/ParameterReader.h \
+    ../../../IPXACTmodels/common/ClockUnit.h
 SOURCES += ../../../IPXACTmodels/common/Array.cpp \
     ../../../IPXACTmodels/common/Assertion.cpp \
     ../../../IPXACTmodels/common/BuildModel.cpp \
-    ../../../IPXACTmodels/Component/OtherClockDriverReader.cpp \
     ../../../IPXACTmodels/common/CommonItemsReader.cpp \
     ../../../IPXACTmodels/Component/ComponentInstantiation.cpp \
     ../../../IPXACTmodels/common/ConfigurableElementValue.cpp \
@@ -53,12 +53,14 @@ SOURCES += ../../../IPXACTmodels/common/Array.cpp \
     ../../../IPXACTmodels/common/ModuleParameterReader.cpp \
     ../../../IPXACTmodels/common/NameGroup.cpp \
     ../../../IPXACTmodels/common/NameGroupReader.cpp \
+    ../../../IPXACTmodels/Component/OtherClockDriver.cpp \
+    ../../../IPXACTmodels/Component/OtherClockDriverReader.cpp \
     ../../../IPXACTmodels/common/Parameter.cpp \
     ../../../IPXACTmodels/common/ParameterReader.cpp \
     ../../../IPXACTmodels/common/Range.cpp \
     ../../../IPXACTmodels/common/Vector.cpp \
-    ../../../IPXACTmodels/generaldeclarations.cpp \
-    ../../../IPXACTmodels/Component/OtherClockDriver.cpp \
     ../../../IPXACTmodels/XmlUtils.cpp \
+    ../../../IPXACTmodels/generaldeclarations.cpp \
     ./tst_OtherClockDriverReader.cpp \
-    ../../../IPXACTmodels/vlnv.cpp
+    ../../../IPXACTmodels/vlnv.cpp \
+    ../../../IPXACTmodels/common/ClockUnit.cpp

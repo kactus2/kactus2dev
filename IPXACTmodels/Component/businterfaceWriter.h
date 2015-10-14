@@ -70,14 +70,30 @@ private:
      */
 	void writeIsPresent(QXmlStreamWriter& writer, QSharedPointer<BusInterface> businterface) const;
 
-	/*!
-	 *  Write the default position of businterface.
-	 *
-	 *      @param [in] businterface		The businterface to be written.		
-	 *      @param [in] writer				The used xml writer.
-	 */
-	void writeDefaultPos(QSharedPointer<BusInterface> businterface, QXmlStreamWriter &writer) const;
-	
+    /*!
+     *  Writes the connection requirement.
+     *
+     *      @param [in] writer          The used XML writer.
+     *      @param [in] busInterface    The bus interface to be written.
+     */
+    void writeConnectionRequired(QXmlStreamWriter& writer, QSharedPointer<BusInterface> busInterface) const;
+
+    /*!
+     *  Writes the bits in lau.
+     *
+     *      @param [in] writer          The used XML writer.
+     *      @param [in] busInterface    The bus interface to be written.
+     */
+    void writeBitsInLau(QXmlStreamWriter& writer, QSharedPointer<BusInterface> busInterface) const;
+
+    /*!
+     *  Writes the endianness.
+     *
+     *      @param [in] writer          The used XML writer.
+     *      @param [in] busInterface    The bus interface to be written.
+     */
+    void writeEndianness(QXmlStreamWriter& writer, QSharedPointer<BusInterface> busInterface) const;
+
 	/*!
 	 *  Write the parameters of businterface.
 	 *

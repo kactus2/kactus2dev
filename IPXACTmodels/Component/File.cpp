@@ -682,6 +682,24 @@ bool File::isVhdlFile() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: File::isVerilogFile()
+//-----------------------------------------------------------------------------
+bool File::isVerilogFile() const
+{
+    foreach (QString fileType, *fileTypes_)
+    {
+        if (fileType.compare(QString("verilogSource"), Qt::CaseInsensitive) == 0 ||
+            fileType.compare(QString("verilogSource-95"), Qt::CaseInsensitive) == 0 ||
+            fileType.compare(QString("verilogSource-2001"), Qt::CaseInsensitive) == 0 )
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
 // Function: File::setCommand()
 //-----------------------------------------------------------------------------
 void File::setCommand( const QString& buildCommand )

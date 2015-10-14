@@ -1,44 +1,48 @@
-/* 
- *
- *  Created on: 6.8.2010
- *      Author: Antti Kamppi
- */
+//-----------------------------------------------------------------------------
+// File: OtherClockDriver.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: 
+// Date: 
+//
+// Description:
+// Class for ipxact:otherClockDriver element.
+//-----------------------------------------------------------------------------
 
-#ifndef OTHERCLOCKDRIVER_H_
-#define OTHERCLOCKDRIVER_H_
+#ifndef OTHERCLOCKDRIVER_H
+#define OTHERCLOCKDRIVER_H
 
-#include "../generaldeclarations.h"
+#include <IPXACTmodels/ipxactmodels_global.h>
 
-#include "../ipxactmodels_global.h"
+#include <IPXACTmodels/common/ClockUnit.h>
 
 #include <QList>
 #include <QString>
 #include <QSharedPointer>
 
-/*! \brief Equals the spirit:otherClockDriver element in IP-Xact specification
- *
- * Consists of a number of sub-elements which define the format of the clock
- * waveform.
- */
-class IPXACTMODELS_EXPORT OtherClockDriver {
+//-----------------------------------------------------------------------------
+//! Class for ipxact:otherClockDriver element.
+//-----------------------------------------------------------------------------
+class IPXACTMODELS_EXPORT OtherClockDriver
+{
 
 public:
 
-	/*! \brief The default constructor.
-	 * 
-	 * Constructs an empty element which is in invalid state.
+	/*!
+	 *  The constructor.
 	 *
-	*/
-	OtherClockDriver();
+	 *      @param [in] clockName   The name of the clock driver.
+	 */
+	OtherClockDriver(QString const& clockName = QString());
 
-	//! \brief Copy constructor
+	//! Copy constructor.
 	OtherClockDriver(const OtherClockDriver &other);
 
-	//! \brief Assignment operator
+	//! Assignment operator.
 	OtherClockDriver &operator=(const OtherClockDriver &other);
 
-	/*! \brief The destructor
-	 *
+	/*!
+     *  The destructor.
 	 */
 	~OtherClockDriver();
 
@@ -49,131 +53,128 @@ public:
 	*
 	* \return bool True if the state is valid and writing is possible.
 	*/
-	bool isValid(QStringList& errorList, 
-		const QString& parentIdentifier) const;
+	//bool isValid(QStringList& errorList, const QString& parentIdentifier) const;
 
 	/*! \brief Check if the OtherClockDriver-element is in valid state.
 	*
 	* \return True if the instance is in valid state.
 	*/
-	bool isValid() const;
+	//bool isValid() const;
 
-	/*! \brief Get the name of the clock
+	/*!
+     *  Get the name of the clock.
 	 *
-	 * \return QString containing the name
+	 *      @return QString containing the name
 	 */
 	QString getClockName() const;
-
-	/*! \brief Get the clock period
+    
+	/*!
+     *  Set the clock name.
 	 *
-	 * \return A pointer to the struct containing the clock period info
+	 *      @param [in] clockName   The new name of the clock.
 	 */
-	General::ClockStruct *getClockPeriod();
-
-	/*! \brief Get the clock pulse duration
+	void setClockName(QString const& clockName);
+    
+	/*!
+     *  Get the clock source.
 	 *
-	 * \return A pointer to the struct containing the clock pulse duration.
-	 */
-	General::ClockStruct *getClockPulseDuration();
-
-	/*! \brief Get the clock pulse offset
-	 *
-	 * \return A pointer to the struct containing the clock pulse offset.
-	 */
-	General::ClockStruct *getClockPulseOffset();
-
-	/*! \brief Get the clock pulse value
-	 *
-	 * \return A pointer to the struct containing the clock pulse value.
-	 */
-	General::ClockPulseValue *getClockPulseValue();
-
-	/*! \brief Get the clock source
-	 *
-	 * \return QString containing the path and name of the clock generation
-	 * cell.
+	 *      @return QString containing the path and name of the clock generation cell.
 	 */
 	QString getClockSource() const;
-
-	/*! \brief Set the clock name
+    
+	/*!
+     *  Set the clock source.
 	 *
-	 * \param clockName Set the name of the clock name.
+	 *      @param [in] clockSource     QString containing the name and path of the clock generation cell.
 	 */
-	void setClockName(const QString &clockName);
+	void setClockSource(QString const& clockSource);
 
-	/*! \brief Set the clock period
+	/*!
+     *  Get the clock period.
 	 *
-	 * \param clockPeriod A pointer to the struct containing the clock period.
+	 *      @return A pointer to the clock period.
 	 */
-	void setClockPeriod(General::ClockStruct *clockPeriod);
+    QSharedPointer<ClockUnit> getClockPeriod() const;
 
-	/*! \brief Set the clock pulse duration
+	/*!
+     *  Set the clock period.
 	 *
-	 * \param clockPulseDuration A pointer to the struct containing the
-	 * clock pulse duration.
+	 *      @param [in] clockPeriod     A pointer to the new clock period.
 	 */
-	void setClockPulseDuration(General::ClockStruct *clockPulseDuration);
+    void setClockPeriod(QSharedPointer<ClockUnit> newClockPeriod);
 
-	/*! \brief Set the clock pulse offset
+	/*!
+     *  Get the clock pulse offset.
 	 *
-	 * \param clockPulseOffset A pointer to the struct containing the clock
-	 * pulse offset.
+	 *      @return Pointer to the clock pulse offset.
 	 */
-	void setClockPulseOffset(General::ClockStruct *clockPulseOffset);
+    QSharedPointer<ClockUnit> getClockPulseOffset() const;
+    
+	/*!
+     *  Set the clock pulse offset.
+	 *
+	 *      @param [in] clockPulseOffset    Pointer to the new clock pulse offset.
+	 */
+    void setClockPulseOffset(QSharedPointer<ClockUnit> newClockPulseOffset);
 
-	/*! \brief Set the clock pulse value
+	/*!
+     *  Get the clock pulse value.
 	 *
-	 * \param A pointer to the struct containing the clock pulse value.
+	 *      @return The clock pulse value.
 	 */
-	void setClockPulseValue(General::ClockPulseValue *clockPulseValue);
+    QString getClockPulseValue() const;
+    
+	/*!
+     *  Set the clock pulse value.
+	 *
+	 *      @param [in]     The new clock pulse value.
+	 */
+    void setClockPulseValue(QString const& newClockPulseValue);
 
-	/*! \brief Set the clock source
+	/*!
+     *  Get the clock pulse duration.
 	 *
-	 * \param clockSource QString containing the name and path of the clock
-	 * generation cell.
+	 *      @return A pointer to the new clock pulse duration.
 	 */
-	void setClockSource(const QString &clockSource);
+    QSharedPointer<ClockUnit> getClockPulseDuration() const;
+
+	/*!
+     *  Set the clock pulse duration.
+	 *
+	 *      @param [in] clockPulseDuration  A pointer to the new clock pulse duration.
+	 */
+    void setClockPulseDuration(QSharedPointer<ClockUnit> newClockPulseDuration);
 
 private:
 
-	/*!
-	 * MANDATORY spirit:clockName
-	 * The name of the clock for reference by a constraint
-	 */
+    /*!
+     *  Copy the clock data.
+     *
+     *      @param [in] other   The other clock driver being copied.
+     */
+    void copyClockData(const OtherClockDriver &other);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+	//! The name of the clock for reference by a constraint.
 	QString clockName_;
 
-	/*!
-	 * OPTIONAL spirit:clockSource
-	 * Defines the physical path and name of the clock generation cell
-	 */
+	//! Defines the physical path and name of the clock generation cell.
 	QString clockSource_;
 
-	/*!
-	 * MANDATORY spirit:clockPeriod
-	 * Specifies the overall length of one cycle of the waveform.
-	 */
-	QSharedPointer<General::ClockStruct> clockPeriod_;
+	//! Specifies the overall length of one cycle of the waveform.
+    QSharedPointer<ClockUnit> clockPeriod_;
 
-	/*!
-	 * MANDATORY spirit:clockPulseOffset
-	 * Specifies the time delay from the start of the waveform to the first
-	 * transition.
-	 */
-	QSharedPointer<General::ClockStruct> clockPulseOffset_;
+	//! Specifies the time delay from the start of the waveform to the first transition.
+    QSharedPointer<ClockUnit> clockPulseOffset_;
 
-	/*!
-	 * MANDATORY spirit:clockPulseValue
-	 * Specifies the logic value to which the port transitions
-	 */
-	QSharedPointer<General::ClockPulseValue> clockPulseValue_;
+	//! Specifies the logic value to which the port transitions.
+    QString clockPulseValue_;
 
-	/*!
-	 * MANDATORY spirit:clockPulseDuration
-	 * Specifies how long the waveform remains at the value specified by
-	 * clockPulseValue
-	 */
-	QSharedPointer<General::ClockStruct> clockPulseDuration_;
-
+	//! Specifies how long the waveform remains at the value specified by clockPulseValue.
+    QSharedPointer<ClockUnit> clockPulseDuration_;
 };
 
-#endif /* OTHERCLOCKDRIVER_H_ */
+#endif // OTHERCLOCKDRIVER_H

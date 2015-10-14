@@ -1,22 +1,28 @@
-/* 
- *
- *  Created on: 27.7.2010
- *      Author: Antti Kamppi
- */
+//-----------------------------------------------------------------------------
+// File: AddressSpace.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: 
+// Date:
+//
+// Description:
+// Describes the ipxact:busInterface element.
+//-----------------------------------------------------------------------------
 
-#ifndef BUSINTERFACE_H_
-#define BUSINTERFACE_H_
+#ifndef BUSINTERFACE_H
+#define BUSINTERFACE_H
 
-#include "../vlnv.h"
-#include "../generaldeclarations.h"
-#include "../common/Parameter.h"
+#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/ipxactmodels_global.h>
 
-#include "../ipxactmodels_global.h"
- 
+#include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/common/NameGroup.h>
 #include <IPXACTmodels/common/Extendable.h>
 #include <IPXACTmodels/PortMap.h>
 #include <IPXACTmodels/common/ConfigurableVLNVReference.h>
+
+#include <IPXACTmodels/common/BooleanValue.h>
 
 #include <QString>
 #include <QList>
@@ -25,91 +31,72 @@
 #include <QStringList>
 #include <QPointF>
 
-class Choice;
 class MasterInterface;
 class SlaveInterface;
 class MonitorInterface;
 class MirroredSlaveInterface;
 
-/*! \brief Equals the spirit:busInterface element in IP-Xact specification.
- *
- * BusInterface defines properties of the specific interface in a component.
- */
+//-----------------------------------------------------------------------------
+//! Describes the ipxact:busInterface element.
+//-----------------------------------------------------------------------------
 class IPXACTMODELS_EXPORT BusInterface : public NameGroup, public Extendable
 {
 
 public:
 
-	/*! \brief Equals the spirit:monitor element in IP-Xact specification.
-	 *
-	 * MonitorInterface holds info on what kind of interface types this
-	 * monitor can be connected to.
-	 *
-	 * Exception guarantee: basic
-	 * \exception Parse_error Occurs when a mandatory element is missing in
-	 * this class or one of it's member classes.
-	 */
+	//! Equals the spirit:monitor element in IP-Xact specification.
 	struct MonitorInterface
 	{
 
-		/*! \brief MANDATORY spirit:interfaceMode
-		 * Defines the interface mode for which this monitor interface can be
-		 * connected to.
-		 */
+		//! Defines the interface mode for which this monitor interface can be connected to.
 		General::InterfaceMode interfaceMode_;
 
-		/*! \brief OPTIONAL spirit:group
-		 * Defines the name of the system group for this monitor interface.
-		 */
+		//! Defines the name of the system group for this monitor interface.
 		QString group_;
 
-		/*! \brief The default contructor
-		 *
-		*/
+		//! The default constructor.
 		IPXACTMODELS_EXPORT MonitorInterface();
 	};
 	
 	/*!
-	 * Class used to store portmaps and references associated with an abstraction type.
+	 * Class used to store port maps and references associated with an abstraction type.
 	 */
 	class AbstractionType
 	{
 		public:
+
 			//! Specifies views where the abstraction type applies.
 			QString viewRef_;
 
 			//! Reference to an abstraction description for this abstractor instance.
 			QSharedPointer<ConfigurableVLNVReference> abstractionRef_;
 
-			/*!
-			 * Describes the mapping between the abstraction definition's
-			 * logical ports and components physical ports.
-			 */
-			QList<QSharedPointer<PortMap> > portMaps_;
-			
-			//! Default constructor
-			AbstractionType(){}
+			//! Describes the mapping between the abstraction definition's logical ports and components physical ports.
+			QSharedPointer<QList<QSharedPointer<PortMap> > > portMaps_;
 
-			//! Copy constructor
+			//! Default constructor.
+			AbstractionType();
+
+			//! Copy constructor.
 			AbstractionType(const AbstractionType &other);
 
-			//! Assignment operator
+			//! Assignment operator.
 			AbstractionType &operator=(const AbstractionType &other);
 	};
 
-	/*! \brief Default constructor
-	 *
+	/*!
+     *  Default constructor.
 	 */
 	BusInterface();
 
-	//! \brief Copy constructor
+	//! Copy constructor.
 	BusInterface(const BusInterface &other);
 
-	//! \brief Assignment operator
+	//! Assignment operator.
 	BusInterface &operator=(const BusInterface &other);
 
-	/*! \brief The destructor
-	 *
+	/*!
+     *  The destructor.
 	 */
 	~BusInterface();
 
@@ -138,11 +125,9 @@ public:
 	 *
 	 * \return bool True if the state is valid and writing is possible.
 	*/
-	bool isValid(const QList<General::PortBounds>& physicalPorts, QStringList const& memoryMaps,
-        QStringList const& addressSpaces,
-        QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
-		QStringList& errorList, 
-		const QString& parentIdentifier) const;
+// 	bool isValid(const QList<General::PortBounds>& physicalPorts, QStringList const& memoryMaps,
+//         QStringList const& addressSpaces, QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
+// 		QStringList& errorList, const QString& parentIdentifier) const;
 
 	/*! \brief Check if the bus interface is in a valid state.
 	 * 
@@ -153,303 +138,278 @@ public:
 	 * 
 	 * \return bool True if the state is valid and writing is possible.
 	*/
-	bool isValid(const QList<General::PortBounds>& physicalPorts, QStringList const& memoryMaps,
-        QStringList const& addressSpaces, QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const;
+// 	bool isValid(const QList<General::PortBounds>& physicalPorts, QStringList const& memoryMaps,
+//         QStringList const& addressSpaces, QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const;
 
-	/*! \brief Get the list of the bitSteering attributes
+	/*!
+     *  Get the list of the bitSteering attributes.
 	 *
-	 * \return A QMap containing the attributes for bitSteering element
+	 *      @return A QMap containing the attributes for bitSteering element.
 	 */
 	const QMap<QString, QString>& getBitSteeringAttributes();
 
-	/*! \brief Is the bitSteering on or off
+	/*!
+     *  Is the bitSteering on or off.
 	 *
-	 * \return General::BitSteering enum which is true/false/unspecified.
+	 *      @return General::BitSteering enum which is true/false/unspecified.
 	 */
 	General::BitSteering getBitSteering() const;
 
-	/*! \brief Get bits in lau value
+	/*!
+     *  Get bits in lau value.
 	 *
-	 * \return The spirit:bitsInLau value
+	 *      @return The bits in lau value.
 	 */
-	unsigned int getBitsInLau() const;
+    QString getBitsInLau() const;
 
-	/*! \brief Get the vlnv to the bus definition
+	/*!
+     *  Get the vlnv to the bus definition.
 	 *
-	 * \return The vlnv tag of the bus definition that this bus interface is
-	 * referenced.
+	 *      @return The vlnv tag of the bus definition that this bus interface references.
 	 */
 	VLNV getBusType() const;
 
-	/*! \brief Can this interface be left unconnected
+	/*!
+     *  Can this interface be left unconnected.
 	 *
-	 * \return boolean, true if interface must be connected, else if interface
-	 * can be left unconnected.
+     *      @return Qstring of true, false or empty. Empty means an unspecified requirement.
 	 */
-	bool getConnectionRequired() const;
+    QString getConnectionRequired() const;
 
-	/*! \brief Get the endianness of the bus interface
+	/*!
+     *  Get the endianness of the bus interface.
 	 *
-	 * \return BIG or LITTLE
+	 *      @return BIG, LITTLE or UNSPECIFIED.
 	 */
 	General::Endianness getEndianness() const;
 
-	/*! \brief Get the mode of this interface
+	/*!
+     *  Get the mode of this interface.
 	 *
-	 * \return The interface mode
+	 *      @return The interface mode.
 	 */
 	General::InterfaceMode getInterfaceMode() const;
 
-	/*! \brief Get the parameters of the bus interface
+	/*!
+     *  Get the parameters of the bus interface.
 	 *
-	 * \return A QList holding the parameters for this interface.
+	 *      @return Pointer to a list holding the parameters for this interface.
 	 */
 	QSharedPointer<QList<QSharedPointer<Parameter> > > getParameters() const;
 
-	/*! \brief Get the port maps for this interface
+	/*!
+     *  Get the port maps of this interface.
 	 *
-	 * \return A QList holding the port maps for this interface.
+	 *      @return Pointer to a list holding the port maps for this interface.
 	 */
-	QList<QSharedPointer<PortMap> >& getPortMaps();
+    QSharedPointer<QList<QSharedPointer<PortMap> > > getPortMaps() const;
 
-	/*! \brief Get the abstraction types for this interface
+	/*!
+     *  Get the abstraction types for this interface.
 	 *
-	 * \return A QList holding the abstraction types for this interface.
+	 *      @return Pointer to a list containing the abstraction types for this interface.
 	 */
-	QList<QSharedPointer<AbstractionType> >& getAbstractionTypes();
+    QSharedPointer<QList<QSharedPointer<AbstractionType> > > getAbstractionTypes() const;
 
-	/*! \brief set the bit steering attributes for this interface
+	/*!
+     *  Set the bit steering attributes for this interface.
 	 *
-	 * Calling this function removes old bit steering attributes.
-	 *
-	 * \param bitSteeringAttributes A QList holding the attributes
+	 *      @param [in] bitSteeringAttributes   A QMap holding the new attributes.
 	 */
 	void setBitSteeringAttributes(QMap<QString, QString>& bitSteeringAttributes);
 
-	/*! \brief Set the bit steering for this interface
+	/*!
+     *  Set the bit steering for this interface.
 	 *
-	 * \param bitSteering Enum General::BitSteering
+	 *      @param [in] bitSteering     The new bitSteering value.
 	 */
 	void setBitSteering(General::BitSteering bitSteering);
 
-	/*! \brief Set the bits in lau value
+	/*!
+     *  Set the bits in lau value.
 	 *
-	 * \param bitsInLau The wanted bits in lau value
+	 *      @param [in] newBitsInLau    The new bits for the lau value.
 	 */
-	void setBitsInLau(unsigned int bitsInLau);
+    void setBitsInLau(QString const& newBitsInLau);
 
-	/*! \brief Set the bus definition for this interface
+	/*!
+     *  Set the bus definition for this interface.
 	 *
-	 * Calling this function deletes the old bus type element.
-	 *
-	 * \param busType The vlnv of the bus definition
+	 *      @param busType The vlnv of the bus definition.
 	 */
 	void setBusType(const VLNV& busType);
 
-	/*! \brief Set the connectionRequired value
+	/*!
+     *  Set the connectionRequired value.
 	 *
-	 * \param connectionRequired, true or false
+	 *      @param [in] connectionRequired  True or false.
 	 */
 	void setConnectionRequired(bool connectionRequired);
 
-	/*! \brief Set the endianness for this interface
+    /*!
+     *  Set the connection requirement to unspecified.
+     */
+    void clearConnectionRequired();
+
+	/*!
+     *  Set the endianness for this interface.
 	 *
-	 * \param endianness, BIG or LITTLE.
+     *      @param [in] endianness  BIG, LITTLE or UNSPECIFIED.
 	 */
 	void setEndianness(General::Endianness endianness);
 
-	/*! \brief Set the interface mode for this interface
+	/*!
+     *  Set the interface mode for this interface.
 	 *
-	 * Note: Calling this function will erase the defined elemets that are
-	 * associated with previous interface types. I.e if new interface mode is 
-	 * master and previous was slave then the slave settings are lost when function
-	 * is called.
-	 * 
-	 * \param interfaceMode The interface mode
+	 *      @param [in] interfaceMode   The new interface mode.
 	 */
 	void setInterfaceMode(General::InterfaceMode interfaceMode);
 
-	/*! \brief Set the port maps for this interface
+	/*!
+     *  Set the port maps for this interface.
 	 *
-	 * Calling this function deletes the old port maps.
-	 *
-	 * \param portMaps A QList holding the port maps for this interface.
+	 *      @param [in] portMaps    Pointer to a list containing the port maps for this interface.
 	 */
-    void setPortMaps(QList<QSharedPointer<PortMap> > const& portMaps);
+    void setPortMaps(QSharedPointer<QList<QSharedPointer<PortMap> > > portMaps);
 
-	/*! \brief Set the port maps for this interface
+	/*!
+     *  Set the port maps for this interface.
 	 *
-	 * Calling this function deletes the old abstraction types.
-	 *
-	 * \param abstractionTypes A QList holding the abstraction types for this interface.
+	 *      @param [in] abstractionTypes    Pointer to a list containing the abstraction types for this interface.
 	 */
-    void setAbstractionTypes(QList<QSharedPointer<AbstractionType> > const& abstractionTypes);
+    void setAbstractionTypes(QSharedPointer<QList<QSharedPointer<AbstractionType> > > abstractionTypes);
 
-	/*! \brief Get the pointer to the master-element
+	/*!
+     *  Get the pointer to the master-element.
 	 *
-	 * \return A pointer to the master-instance of the interface.
-	 */
-	const QSharedPointer<MasterInterface> getMaster() const;
-
-	/*! \brief Get the pointer to the master-element
-	 *
-	 * \return A pointer to the master-instance of the interface.
+	 *      @return A pointer to the master-instance of the interface.
 	 */
 	QSharedPointer<MasterInterface> getMaster();
 
-	/*! \brief Set the master element for this interface
-	*
-	* Calling this function will delete old master, slave, mirroredSlave,
-	* system and monitor instances.
-	* setInterfaceMode must be called after this function to define the
-	* type of the businterface as master or mirroredMaster.
-	*
-	* \param master A pointer to the new master instance
-	*/
+	/*!
+     *  Set the master element for this interface.
+     *
+	 *      @param [in] master  A pointer to the new master interface.
+	 */
 	void setMaster(QSharedPointer<MasterInterface> master);
 
-	/*! \brief Get the pointer to the monitor instance
+	/*!
+     *  Get the pointer to the monitor interface.
 	 *
-	 * \return A pointer to the monitor instance of the interface.
-	 */
-	const QSharedPointer<MonitorInterface> getMonitor() const;
-
-	/*! \brief Get the pointer to the monitor instance
-	 *
-	 * \return A pointer to the monitor instance of the interface.
+	 *      @return A pointer to the monitor interface.
 	 */
 	QSharedPointer<MonitorInterface> getMonitor();
 
-	/*! \brief Set the monitor element for this interface
-	*
-	* Calling this function will delete old master, slave, mirroredSlave,
-	* system and monitor instances.
-	* This function changes the interfaceMode as GENERAL::MONITOR
-	*
-	* \param monitor A pointer to the new monitor instance.
-	*/
+	/*!
+     *  Set the monitor element for this interface.
+	 *
+	 *      @param [in] monitor     A pointer to the new monitor instance.
+	 */
 	void setMonitor(QSharedPointer<MonitorInterface> monitor);
 
-	/*! \brief Get the pointer to the slave instance of the interface.
+	/*!
+     *  Get the pointer to the slave instance of the interface.
 	 *
-	 * \return A pointer to the slave instance of the interface.
-	 */
-	const QSharedPointer<SlaveInterface> getSlave() const;
-
-	/*! \brief Get the pointer to the slave instance of the interface.
-	 *
-	 * \return A pointer to the slave instance of the interface.
+	 *      @return A pointer to the slave instance of the interface.
 	 */
 	QSharedPointer<SlaveInterface> getSlave();
 
-	/*! \brief Set the slave element for this interface.
-	*
-	* Calling this function will delete old master, slave, mirroredSlave,
-	* system and monitor instances.
-	* This function changes the interfaceMode as GENERAL::SLAVE
-	*
-	* \param slave A pointer to the new slave instance.
-	*/
+	/*!
+     *  Set the slave element for this interface.
+	 *
+	 *      @param [in] slave   A pointer to the new slave interface.
+	 */
 	void setSlave(QSharedPointer<SlaveInterface> slave);
 
-	/*! \brief Get the system group
+	/*!
+     *  Get the system group.
 	 *
-	 * \return QString containing the system's group element.
+	 *      @return QString containing the system's group element.
 	 */
 	QString getSystem() const;
 
-	/*! \brief Set the system element for this interface.
-	*
-	* Calling this function will delete old master, slave, mirroredSlave,
-	* system and monitor instances.
-	* setInterfaceMode must be called after this function to define the
-	* type of the businterface as system or mirroredSystem.
-	*
-	* \param system A pointer to the new system instance.
-	*/
+	/*!
+     *  Set the system element for this interface.
+     *
+	 *      @param [in] system  A pointer to the new system instance.
+	 */
 	void setSystem(const QString& system);
 
-	/*! \brief Get the pointer to the mirroredSlace element
-	*
-	* \return A pointer to the mirroredSlave element of this interface.
-	*/
-	const QSharedPointer<MirroredSlaveInterface> getMirroredSlave() const;
-
-	/*! \brief Get the pointer to the mirroredSlace element
-	*
-	* \return A pointer to the mirroredSlave element of this interface.
-	*/
+	/*!
+     *  Get the pointer to the mirroredSlace element
+	 *
+	 *      @return A pointer to the mirroredSlave element of this interface.
+	 */
 	QSharedPointer<MirroredSlaveInterface> getMirroredSlave();
 
-	/*! \brief Set the mirroredSlave element for this interface.
-	*
-	* Calling this function will delete old master, slave, mirroredSlave,
-	* system and monitor instances.
-	* This function changes the interfaceMode to GENERAL::MIRROREDSLAVE.
-	*
-	* \param mirroredSlave A pointer to the new mirroredSlave instance.
-	*/
+	/*!
+     *  Set the mirroredSlave element for this interface.
+     *
+	 *      @param [in] mirroredSlave   A pointer to the new mirroredSlave instance.
+	 */
 	void setMirroredSlave(QSharedPointer<MirroredSlaveInterface> mirroredSlave);
 
-	/*! \brief Does this bus interface have a bridge element defined
+	/*!
+     *  Does this bus interface have a bridge element defined.
 	 *
-	 * \return True if bridge is found, otherwise false.
+	 *      @return True if a bridge is found, otherwise false.
 	 */
 	bool hasBridge() const;
 
-	/*! \brief Get the attributes of the bus interface.
-	 * 
-	 * Key = name of the attribute
-	 * Value = value of the attribute
+	/*!
+     *  Get the attributes of the bus interface.
 	 *
-	 * \return QMap containing the attributes.
-	*/
+	 *      @return QMap containing the attributes.
+ 	 */
 	const QMap<QString, QString>& getAttributes() const;
 
-	/*! \brief Set the attributes for the bus interface.
+	/*!
+     *  Set the attributes for the bus interface.
 	 * 
-	 * Key = name of the attribute
-	 * Value = value of the attribute
-	 * 
-	 * \param attributes QMap containing the attributes.
+	 *      @param [in] attributes  QMap containing the attributes.
 	 *
-	*/
+	 */
 	void setAttributes(const QMap<QString, QString>& attributes);
 
-	/*! \brief Get list of the physical port names contained in this interface.
+	/*!
+     *  Get list of the physical port names contained in this interface.
 	 *
-	 * \return QStringList Contains the physical port names.
-	*/
+	 *      @return QStringList Contains the physical port names.
+	 */
 	QStringList getPhysicalPortNames() const;
 
-	/*! \brief Get list of the logical port names contained in this interface.
+	/*!
+     *  Get list of the logical port names contained in this interface.
 	 *
-	 * \return QStringList Contains the logical port names.
-	*/
+	 *      @return QStringList Contains the logical port names.
+	 */
 	QStringList getLogicalPortNames() const;
 
-	/*! \brief Check if the bus interface contains the specified logical port.
+	/*!
+     *  Check if the bus interface contains the specified logical port.
 	 *
-	 * \param logicalPortName Contains the name of the logical port to search for.
+	 *      @param [in] logicalPortName     Contains the name of the logical port to search for.
 	 *
-	 * \return bool True if the logical port is found.
-	*/
+	 *      @return True if the logical port is found, false otherwise.
+	 */
 	bool hasLogicalPort(const QString& logicalPortName) const;
 
-	/*! \brief Get the name of the logical port mapped to specified physical port.
+	/*!
+     *  Get the name of the logical port mapped to specified physical port.
 	 *
-	 * \param physicalPortName The name of the physical port that's mapping is searched.
+	 *      @param [in] physicalPortName    The name of the physical port that's mapping is searched.
 	 *
-	 * \return QString contains the name of the logical port mapped with the physical.
-	*/
+	 *      @return The name of the logical port mapped with the physical.
+	 */
 	QString getLogicalPortName(const QString& physicalPortName) const;
 
-	/*! \brief Check if the bus interface contains the specified physical port.
+	/*!
+     *  Check if the bus interface contains the specified physical port.
 	 *
-	 * \param physicalPortName Contains the name of the physical port to search for.
+	 *      @param [in] physicalPortName    Contains the name of the physical port to search for.
 	 *
-	 * \return bool True if the physical port is found in the port maps.
-	*/
+	 *      @return True if the physical port is found in the port maps, false otherwise.
+	 */
 	bool hasPhysicalPort(const QString& physicalPortName) const;
 
     /*!
@@ -471,112 +431,99 @@ public:
 
     /*!
      *  Returns the default position in the parent component's graphical representation.
+     *
+     *      @return The default position.
      */
-    QPointF const& getDefaultPos() const;
+    QPointF const& getDefaultPos();
 
-	/*! \brief Get the memory map reference of a slave interface.
+	/*!
+     *  Get the memory map reference of a slave interface.
 	 *
-	 * If the interface mode is other than General::SLAVE then empty QString is returned.
-	 *
-	 * \return QString containing the name of the memory map referenced by interface.
-	*/
+	 *      @return The name of the memory map referenced by slave interface.
+	 */
 	QString getMemoryMapRef() const;
 
-	/*! \brief Get the address space reference of a master or mirrored master interface.
+	/*!
+     *  Get the address space reference of a master or mirrored master interface.
 	 *
-	 * If the interface mode is other than General::MASTER or General::MIRROREDMASTER
-	 * then empty QString is returned.
-	 *
-	 * \return QString containing the name of the address space referenced by interface.
-	*/
+	 *      @return The name of the address space referenced by interface.
+	 */
 	QString getAddressSpaceRef() const;
 
 private:
+
+    /*!
+     *  Copy the abstraction types.
+     *
+     *      @param [in] other   The bus interface being copied.
+     */
+    void copyAbstractionTypes(const BusInterface& other);
+
+    /*!
+     *  Copy the parameters.
+     *
+     *      @param [in] other   The bus interface being copied.
+     */
+    void copyParameters(const BusInterface& other);
+
+    /*!
+     *  Copy the interface modes.
+     *
+     *      @param [in] other   The bus interface being copied.
+     */
+    void copyInterfaceModes(const BusInterface& other);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
 	//! Presence of the businterface.
 	QString isPresent_;
 
-	//! \brief Contains the attributes for the bus interface
+	//! Contains the attributes for the bus interface.
 	QMap<QString, QString> attributes_;
 	
-	/*! \brief The vlnv of the bus definition this bus interface is referenced.
-	 * MANDATORY
-	 */
+	//! The vlnv of the bus definition this bus interface is referenced.
 	VLNV busType_;
 
-	/*! \brief Describes further information on the mode for this interface.
-	 * OPTIONAL
-	 */
+	//! Describes further information on the mode for this interface.
 	General::InterfaceMode interfaceMode_;
 
-	/*! \brief Specifies if the busInterface can be unconnected.
-	 * OPTIONAL
-	 * If false, this interface may be left unconnected.
-	 * (false by default)
-	 */
-	bool connectionRequired_;
+	//! Specifies if the busInterface can be unconnected.
+    BooleanValue connectionRequired_;
 
-	/*!\brief Number of data bits addressable in the bus interface.
-	 * OPTIONAL
-	 * Describes the number of data bits that are addressable by the
-	 * LSB in the bus interface
-	 * (default value 8)
-	 */
-	unsigned int bitsInLau_;
+	//! Number of data bits addressable in the bus interface.
+    QString bitsInLau_;
 
-	/*! \brief Is bitSteering used.
-	 * OPTIONAL
-	 * Does this interface have the ability to dynamically align data
-	 * on different byte channels on data bus.
-	 */
+	//! Is bitSteering used.
 	General::BitSteering bitSteering_;
 
-	/*! \brief The parameters set as attributes for the bit steering
-	 */
+	//! The parameters set as attributes for the bit steering.
 	QMap<QString, QString> bitSteeringAttributes_;
 
-	/*! \brief Indicates the endianness of the bus interface.
-	 * OPTIONAL
-	 * (default value little)
-	 */
+	//! Indicates the endianness of the bus interface.
 	General::Endianness endianness_;
 
-	/*! \brief Specifies any parameter data values for this bus interface.
-	 * OPTIONAL
-	 */
+	//! Specifies any parameter data values for this bus interface.
 	QSharedPointer<QList<QSharedPointer<Parameter> > > parameters_;
 
-	/*! \brief spirit:master or spirit:mirroredMaster
-	 * (one of five is mandatory)
-	 * A pointer to the master instance
-	 */
+	//! A pointer to the master / mirrored master instance
 	QSharedPointer<MasterInterface> master_;
 
-	/*! \brief spirit:slave (one of the five is mandatory)
-	 * A pointer to the slave instance.
-	 */
+	//! A pointer to the slave instance.
 	QSharedPointer<SlaveInterface> slave_;
 
-	/*! \brief spirit:system or spirit:mirroredSystem
-	 * (one of five is mandatory)
-	 * name of the group.
-	 */
+	//! The system or mirrored system instance.
 	QString system_;
 
-	/*! \brief spirit:monitor (one of five is mandatory)
-	 * A pointer to the monitor instance.
-	 */
+	//! A pointer to the monitor instance.
 	QSharedPointer<MonitorInterface> monitor_;
 
-	/*! \brief spirit:mirroredSlave (one of five is mandatory)
-	 * A pointer to the mirroredSlave instance.
-	 */
+	//! A pointer to the mirroredSlave instance.
 	QSharedPointer<MirroredSlaveInterface> mirroredSlave_;
 
-    //! The default position in the parent component's graphical representation (optional).
-	QPointF defaultPos_;
-
 	//! List of abstraction types existing within this object.
-	QList<QSharedPointer<AbstractionType> > abstractionTypes_;
+	QSharedPointer<QList<QSharedPointer<AbstractionType> > > abstractionTypes_;
 };
 
-#endif /* BUSINTERFACE_H_ */
+#endif // BUSINTERFACE_H

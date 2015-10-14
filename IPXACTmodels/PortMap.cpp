@@ -47,6 +47,16 @@ PortMap::~PortMap()
 //-----------------------------------------------------------------------------
 PortMap& PortMap::operator=( const PortMap& other )
 {
+    if (this != &other)
+    {
+        logicalPort_.clear();
+        logicalPort_ = QSharedPointer<PortMap::LogicalPort> (new PortMap::LogicalPort(*other.logicalPort_.data()));
+        physicalPort_.clear();
+        physicalPort_ =
+            QSharedPointer<PortMap::PhysicalPort> (new PortMap::PhysicalPort(*other.physicalPort_.data()));
+        logicalTieOff_ = other.logicalTieOff_;
+    }
+
 	return *this;
 }
 

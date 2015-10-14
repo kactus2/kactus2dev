@@ -19,12 +19,13 @@
 #include <QXmlStreamWriter>
 #include <QObject>
 #include <QSharedPointer>
-#include <IPXACTmodels/common/CommonItemsWriter.h>
+
+class ClockUnit;
 
 //-----------------------------------------------------------------------------
 //! Writer class for IP-XACT OtherClockDriver element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT OtherClockDriverWriter : public CommonItemsWriter
+class IPXACTMODELS_EXPORT OtherClockDriverWriter : public QObject
 {
     Q_OBJECT
 
@@ -55,6 +56,24 @@ private:
     //! No copying allowed.
     OtherClockDriverWriter(OtherClockDriverWriter const& rhs);
     OtherClockDriverWriter& operator=(OtherClockDriverWriter const& rhs);
+
+    /*!
+     *  Write the other clock driver attributes.
+     *
+     *      @param [in] writer              The used XML writer.
+     *      @param [in] otherClockDriver    The new other clock driver.
+     */
+    void writeClockDriverAttributes(QXmlStreamWriter& writer, QSharedPointer<OtherClockDriver> otherClockDriver) const;
+
+    /*!
+     *  Write a clock unit.
+     *
+     *      @param [in] writer          The used XML writer.
+     *      @param [in] clockUnit       The new other clock driver.
+     *      @param [in] elementName     The name of the element being written.
+     */
+    void writeClockUnit(QXmlStreamWriter& writer, QSharedPointer<ClockUnit> clockUnit, QString const& elementName)
+        const;
 };
 
 #endif // OtherClockDriverWriter_H

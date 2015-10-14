@@ -146,6 +146,14 @@ QSharedPointer<QList<QSharedPointer<Parameter> > > Document::getParameters() con
 }
 
 //-----------------------------------------------------------------------------
+// Function: Document::hasParameters()
+//-----------------------------------------------------------------------------
+bool Document::hasParameters() const
+{
+    return !parameters_->isEmpty();
+}
+
+//-----------------------------------------------------------------------------
 // Function: DesignConfiguration::getAssertions()
 //-----------------------------------------------------------------------------
 QSharedPointer<QList<QSharedPointer<Assertion> > > Document::getAssertions() const

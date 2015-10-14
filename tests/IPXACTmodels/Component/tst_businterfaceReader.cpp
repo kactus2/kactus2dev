@@ -63,18 +63,18 @@ tst_businterfaceReader::tst_businterfaceReader()
 void tst_businterfaceReader::testReadSimplebusinterface()
 {
     QString documentContent(
-        "<ipxact:businterface>"
+        "<ipxact:busInterface>"
             "<ipxact:name>businterface</ipxact:name>"
             "<ipxact:displayName>viewDisplay</ipxact:displayName>"
             "<ipxact:description>viewDescription</ipxact:description>"
-        "</ipxact:businterface>"
+        "</ipxact:busInterface>"
         );
 
 
     QDomDocument document;
     document.setContent(documentContent);
 
-    QDomNode businterfaceNode = document.firstChildElement("ipxact:businterface");
+    QDomNode businterfaceNode = document.firstChildElement("ipxact:busInterface");
 
     businterfaceReader businterfaceReader;
     QSharedPointer<BusInterface> testbusinterface = businterfaceReader.createbusinterfaceFrom(businterfaceNode);
@@ -90,17 +90,17 @@ void tst_businterfaceReader::testReadSimplebusinterface()
 void tst_businterfaceReader::testReadIsPresent()
 {
     QString documentContent(
-        "<ipxact:businterface>"
+        "<ipxact:busInterface>"
             "<ipxact:name>testbusinterface</ipxact:name>"
             "<ipxact:isPresent>4-3</ipxact:isPresent>"
-        "</ipxact:businterface>"
+        "</ipxact:busInterface>"
         );
 
 
     QDomDocument document;
     document.setContent(documentContent);
 
-    QDomNode businterfaceNode = document.firstChildElement("ipxact:businterface");
+    QDomNode businterfaceNode = document.firstChildElement("ipxact:busInterface");
 
     businterfaceReader businterfaceReader;
     QSharedPointer<BusInterface> testbusinterface = businterfaceReader.createbusinterfaceFrom(businterfaceNode);
@@ -115,17 +115,17 @@ void tst_businterfaceReader::testReadIsPresent()
 void tst_businterfaceReader::testReadBusType()
 {
 	QString documentContent(
-		"<ipxact:businterface>"
+		"<ipxact:busInterface>"
 		"<ipxact:busType ipxact:vendor=\"joq.org\""
 		"ipxact:library=\"busdef.clock\" ipxact:name=\"clock\" ipxact:version=\"1.0\"/>"
-		"</ipxact:businterface>"
+		"</ipxact:busInterface>"
 		);
 
 
 	QDomDocument document;
 	document.setContent(documentContent);
 
-	QDomNode businterfaceNode = document.firstChildElement("ipxact:businterface");
+	QDomNode businterfaceNode = document.firstChildElement("ipxact:busInterface");
 
 	businterfaceReader businterfaceReader;
 	QSharedPointer<BusInterface> testbusinterface = businterfaceReader.createbusinterfaceFrom(businterfaceNode);
@@ -141,7 +141,7 @@ void tst_businterfaceReader::testReadBusType()
 void tst_businterfaceReader::testReadSlave()
 {
 	QString documentContent(
-		"<ipxact:businterface>"
+		"<ipxact:busInterface>"
 		"<ipxact:slave>"
 		"<ipxact:memoryMapRef memoryMapRef=\"ambaAHB\"/>"
 		"<ipxact:transparentBridge masterRef=\"joq\">"
@@ -153,14 +153,14 @@ void tst_businterfaceReader::testReadSlave()
 		"<ipxact:fileSetRef>toka</ipxact:fileSetRef>"
 		"</ipxact:fileSetRefGroup>"
 		"</ipxact:slave>"
-		"</ipxact:businterface>"
+		"</ipxact:busInterface>"
 		);
 
 
 	QDomDocument document;
 	document.setContent(documentContent);
 
-	QDomNode businterfaceNode = document.firstChildElement("ipxact:businterface");
+	QDomNode businterfaceNode = document.firstChildElement("ipxact:busInterface");
 
 	businterfaceReader businterfaceReader;
 	QSharedPointer<BusInterface> testbusinterface = businterfaceReader.createbusinterfaceFrom(businterfaceNode);
@@ -183,18 +183,18 @@ void tst_businterfaceReader::testReadSlave()
 void tst_businterfaceReader::testReadMaster()
 {
 	QString documentContent(
-		"<ipxact:businterface>"
+		"<ipxact:busInterface>"
 		"<ipxact:master>"
 		"<ipxact:addressSpaceRef ipxact:addressSpaceRef=\"apb\"/>"
 		"</ipxact:master>"
-		"</ipxact:businterface>"
+		"</ipxact:busInterface>"
 		);
 
 
 	QDomDocument document;
 	document.setContent(documentContent);
 
-	QDomNode businterfaceNode = document.firstChildElement("ipxact:businterface");
+	QDomNode businterfaceNode = document.firstChildElement("ipxact:busInterface");
 
 	businterfaceReader businterfaceReader;
 	QSharedPointer<BusInterface> testbusinterface = businterfaceReader.createbusinterfaceFrom(businterfaceNode);
@@ -208,18 +208,18 @@ void tst_businterfaceReader::testReadMaster()
 void tst_businterfaceReader::testReadSystem()
 {
 	QString documentContent(
-		"<ipxact:businterface>"
+		"<ipxact:busInterface>"
 		"<ipxact:system>"
 		"<ipxact:group>esa</ipxact:group>"
 		"</ipxact:system>"
-		"</ipxact:businterface>"
+		"</ipxact:busInterface>"
 		);
 
 
 	QDomDocument document;
 	document.setContent(documentContent);
 
-	QDomNode businterfaceNode = document.firstChildElement("ipxact:businterface");
+	QDomNode businterfaceNode = document.firstChildElement("ipxact:busInterface");
 
 	businterfaceReader businterfaceReader;
 	QSharedPointer<BusInterface> testbusinterface = businterfaceReader.createbusinterfaceFrom(businterfaceNode);
@@ -233,7 +233,7 @@ void tst_businterfaceReader::testReadSystem()
 void tst_businterfaceReader::testReadMirroredSlave()
 {
 	QString documentContent(
-		"<ipxact:businterface>"
+		"<ipxact:busInterface>"
 		"<ipxact:mirroredSlave>"
 		"<ipxact:baseAddresses>"
 		"<ipxact:remapAddress state=\"decayed\" joku=\"jotain\">"
@@ -243,14 +243,14 @@ void tst_businterfaceReader::testReadMirroredSlave()
 	    "<ipxact:range>0x00010000</ipxact:range>"
 	    "</ipxact:baseAddresses>"
 	    "</ipxact:mirroredSlave>"
-		"</ipxact:businterface>"
+		"</ipxact:busInterface>"
 		);
 
 
 	QDomDocument document;
 	document.setContent(documentContent);
 
-	QDomNode businterfaceNode = document.firstChildElement("ipxact:businterface");
+	QDomNode businterfaceNode = document.firstChildElement("ipxact:busInterface");
 
 	businterfaceReader businterfaceReader;
 	QSharedPointer<BusInterface> testbusinterface = businterfaceReader.createbusinterfaceFrom(businterfaceNode);
@@ -272,18 +272,18 @@ void tst_businterfaceReader::testReadMirroredSlave()
 void tst_businterfaceReader::testReadMirroredMaster()
 {
 	QString documentContent(
-		"<ipxact:businterface>"
+		"<ipxact:busInterface>"
 		"<ipxact:mirroredMaster>"
 		"<ipxact:addressSpaceRef ipxact:addressSpaceRef=\"apb\"/>"
 		"</ipxact:mirroredMaster>"
-		"</ipxact:businterface>"
+		"</ipxact:busInterface>"
 		);
 
 
 	QDomDocument document;
 	document.setContent(documentContent);
 
-	QDomNode businterfaceNode = document.firstChildElement("ipxact:businterface");
+	QDomNode businterfaceNode = document.firstChildElement("ipxact:busInterface");
 
 	businterfaceReader businterfaceReader;
 	QSharedPointer<BusInterface> testbusinterface = businterfaceReader.createbusinterfaceFrom(businterfaceNode);
@@ -297,18 +297,18 @@ void tst_businterfaceReader::testReadMirroredMaster()
 void tst_businterfaceReader::testReadMirroredSystem()
 {
 	QString documentContent(
-		"<ipxact:businterface>"
+		"<ipxact:busInterface>"
 		"<ipxact:mirroredSystem>"
 		"<ipxact:group>esa</ipxact:group>"
 		"</ipxact:mirroredSystem>"
-		"</ipxact:businterface>"
+		"</ipxact:busInterface>"
 		);
 
 
 	QDomDocument document;
 	document.setContent(documentContent);
 
-	QDomNode businterfaceNode = document.firstChildElement("ipxact:businterface");
+	QDomNode businterfaceNode = document.firstChildElement("ipxact:busInterface");
 
 	businterfaceReader businterfaceReader;
 	QSharedPointer<BusInterface> testbusinterface = businterfaceReader.createbusinterfaceFrom(businterfaceNode);
@@ -322,18 +322,18 @@ void tst_businterfaceReader::testReadMirroredSystem()
 void tst_businterfaceReader::testReadMonitor()
 {
 	QString documentContent(
-		"<ipxact:businterface>"
+		"<ipxact:busInterface>"
 		"<ipxact:monitor interfaceMode=\"system\">"
 		"<ipxact:group>esa</ipxact:group>"
 		"</ipxact:monitor>"
-		"</ipxact:businterface>"
+		"</ipxact:busInterface>"
 		);
 
 
 	QDomDocument document;
 	document.setContent(documentContent);
 
-	QDomNode businterfaceNode = document.firstChildElement("ipxact:businterface");
+	QDomNode businterfaceNode = document.firstChildElement("ipxact:busInterface");
 
 	businterfaceReader businterfaceReader;
 	QSharedPointer<BusInterface> testbusinterface = businterfaceReader.createbusinterfaceFrom(businterfaceNode);
@@ -348,14 +348,14 @@ void tst_businterfaceReader::testReadMonitor()
 void tst_businterfaceReader::testReadAttributes()
 {
 	QString documentContent(
-		"<ipxact:businterface joku=\"jotain\">"
-		"</ipxact:businterface>"
+		"<ipxact:busInterface joku=\"jotain\">"
+		"</ipxact:busInterface>"
 		);
 
 	QDomDocument document;
 	document.setContent(documentContent);
 
-	QDomNode businterfaceNode = document.firstChildElement("ipxact:businterface");
+	QDomNode businterfaceNode = document.firstChildElement("ipxact:busInterface");
 
 	businterfaceReader businterfaceReader;
 	QSharedPointer<BusInterface> testbusinterface = businterfaceReader.createbusinterfaceFrom(businterfaceNode);
@@ -370,20 +370,20 @@ void tst_businterfaceReader::testReadAttributes()
 void tst_businterfaceReader::testReadConnectionRequired()
 {
 	QString documentContent(
-		"<ipxact:businterface>"
+		"<ipxact:busInterface>"
 		"<ipxact:connectionRequired>true</ipxact:connectionRequired>"
-		"</ipxact:businterface>"
+		"</ipxact:busInterface>"
 		);
 
 	QDomDocument document;
 	document.setContent(documentContent);
 
-	QDomNode businterfaceNode = document.firstChildElement("ipxact:businterface");
+	QDomNode businterfaceNode = document.firstChildElement("ipxact:busInterface");
 
 	businterfaceReader businterfaceReader;
 	QSharedPointer<BusInterface> testbusinterface = businterfaceReader.createbusinterfaceFrom(businterfaceNode);
 
-	QCOMPARE(testbusinterface->getConnectionRequired(), true);
+    QCOMPARE(testbusinterface->getConnectionRequired(), QString("true"));
 }
 
 //-----------------------------------------------------------------------------
@@ -392,20 +392,20 @@ void tst_businterfaceReader::testReadConnectionRequired()
 void tst_businterfaceReader::testReadBitsInLau()
 {
 	QString documentContent(
-		"<ipxact:businterface>"
+		"<ipxact:busInterface>"
 		"<ipxact:bitsInLau>1234</ipxact:bitsInLau>"
-		"</ipxact:businterface>"
+		"</ipxact:busInterface>"
 		);
 
 	QDomDocument document;
 	document.setContent(documentContent);
 
-	QDomNode businterfaceNode = document.firstChildElement("ipxact:businterface");
+	QDomNode businterfaceNode = document.firstChildElement("ipxact:busInterface");
 
 	businterfaceReader businterfaceReader;
 	QSharedPointer<BusInterface> testbusinterface = businterfaceReader.createbusinterfaceFrom(businterfaceNode);
 
-	QCOMPARE(testbusinterface->getBitsInLau(), unsigned int(1234));
+    QCOMPARE(testbusinterface->getBitsInLau(), QString("1234"));
 }
 
 //-----------------------------------------------------------------------------
@@ -414,20 +414,20 @@ void tst_businterfaceReader::testReadBitsInLau()
 void tst_businterfaceReader::testReadBitSteering()
 {
 	QString documentContent(
-		"<ipxact:businterface>"
+		"<ipxact:busInterface>"
 		"<ipxact:bitSteering joku=\"jotain\">on</ipxact:bitSteering>"
-		"</ipxact:businterface>"
+		"</ipxact:busInterface>"
 		);
 
 	QDomDocument document;
 	document.setContent(documentContent);
 
-	QDomNode businterfaceNode = document.firstChildElement("ipxact:businterface");
+	QDomNode businterfaceNode = document.firstChildElement("ipxact:busInterface");
 
 	businterfaceReader businterfaceReader;
 	QSharedPointer<BusInterface> testbusinterface = businterfaceReader.createbusinterfaceFrom(businterfaceNode);
 
-	QCOMPARE(testbusinterface->getBitSteering(), General::BitSteering::ON);
+	QCOMPARE(testbusinterface->getBitSteering(), General::ON);
 	QCOMPARE(testbusinterface->getBitSteeringAttributes().firstKey(), QString("joku"));
 	QCOMPARE(testbusinterface->getBitSteeringAttributes().first(), QString("jotain"));
 }
@@ -438,20 +438,20 @@ void tst_businterfaceReader::testReadBitSteering()
 void tst_businterfaceReader::testReadEndianness()
 {
 	QString documentContent(
-		"<ipxact:businterface>"
+		"<ipxact:busInterface>"
 		"<ipxact:endianness>big</ipxact:endianness>"
-		"</ipxact:businterface>"
+		"</ipxact:busInterface>"
 		);
 
 	QDomDocument document;
 	document.setContent(documentContent);
 
-	QDomNode businterfaceNode = document.firstChildElement("ipxact:businterface");
+	QDomNode businterfaceNode = document.firstChildElement("ipxact:busInterface");
 
 	businterfaceReader businterfaceReader;
 	QSharedPointer<BusInterface> testbusinterface = businterfaceReader.createbusinterfaceFrom(businterfaceNode);
 
-	QCOMPARE(testbusinterface->getEndianness(), General::Endianness::BIG);
+	QCOMPARE(testbusinterface->getEndianness(), General::BIG);
 }
 
 //-----------------------------------------------------------------------------
@@ -460,7 +460,7 @@ void tst_businterfaceReader::testReadEndianness()
 void tst_businterfaceReader::testReadParameters()
 {
 	QString documentContent(
-		"<ipxact:businterface>"
+		"<ipxact:busInterface>"
 		"<ipxact:parameters>"
 		"<ipxact:parameter parameterId=\"joq\" prompt=\"Parm 1\""
 		"type=\"shortint\" resolve=\"user\">"
@@ -475,13 +475,13 @@ void tst_businterfaceReader::testReadParameters()
 		"<ipxact:value>1337</ipxact:value>"
 		"</ipxact:parameter>"
 		"</ipxact:parameters>"
-		"</ipxact:businterface>"
+		"</ipxact:busInterface>"
 		);
 
 	QDomDocument document;
 	document.setContent(documentContent);
 
-	QDomNode businterfaceNode = document.firstChildElement("ipxact:businterface");
+	QDomNode businterfaceNode = document.firstChildElement("ipxact:busInterface");
 
 	businterfaceReader businterfaceReader;
 	QSharedPointer<BusInterface> testbusinterface = businterfaceReader.createbusinterfaceFrom(businterfaceNode);
@@ -501,26 +501,27 @@ void tst_businterfaceReader::testReadParameters()
 void tst_businterfaceReader::testReadVendorExtensions()
 {
 	QString documentContent(
-		"<ipxact:businterface>"
-		"<ipxact:vendorExtensions>"
-		"<ulina kolina=\"eaa\"/>"
-		"<kactus2:extensions>"
-		"<kactus2:position x=\"1\" y=\"5\" />"
-		"</kactus2:extensions>"
-		"</ipxact:vendorExtensions>"
-		"</ipxact:businterface>"
+		"<ipxact:busInterface>"
+		    "<ipxact:vendorExtensions>"
+        		"<ulina kolina=\"eaa\"/>"
+	        	"<kactus2:position x=\"1\" y=\"5\" />"
+	    	"</ipxact:vendorExtensions>"
+		"</ipxact:busInterface>"
 		);
 
 	QDomDocument document;
 	document.setContent(documentContent);
 
-	QDomNode businterfaceNode = document.firstChildElement("ipxact:businterface");
+	QDomNode businterfaceNode = document.firstChildElement("ipxact:busInterface");
 
 	businterfaceReader businterfaceReader;
 	QSharedPointer<BusInterface> testbusinterface = businterfaceReader.createbusinterfaceFrom(businterfaceNode);
 
-	QCOMPARE(testbusinterface->getVendorExtensions()->first()->type(), QString("ulina"));
-	QCOMPARE(testbusinterface->getDefaultPos(), QPointF(1,5));
+	QCOMPARE(testbusinterface->getVendorExtensions()->last()->type(), QString("ulina"));
+    QCOMPARE(testbusinterface->getVendorExtensions()->first()->type(), QString("kactus2:position"));
+	QCOMPARE(testbusinterface->getDefaultPos().isNull(), false);
+    QCOMPARE(testbusinterface->getDefaultPos().x(), qreal(1));
+    QCOMPARE(testbusinterface->getDefaultPos().y(), qreal(5));
 }
 
 //-----------------------------------------------------------------------------
@@ -529,28 +530,26 @@ void tst_businterfaceReader::testReadVendorExtensions()
 void tst_businterfaceReader::testReadVendorExtensions2()
 {
 	QString documentContent(
-		"<ipxact:businterface>"
+		"<ipxact:busInterface>"
 		"<ipxact:vendorExtensions>"
-		"<ulina kolina=\"eaa\"/>"
-		"</ipxact:vendorExtensions>"
-		"<ipxact:vendorExtensions>"
-		"<kactus2:extensions>"
-		"<kactus2:position x=\"1\" y=\"5\" />"
-		"</kactus2:extensions>"
-		"</ipxact:vendorExtensions>"
-		"</ipxact:businterface>"
+    		    "<ulina kolina=\"eaa\"/>"
+    	    	"<kactus2:position x=\"1\" y=\"5\" />"
+	    	"</ipxact:vendorExtensions>"
+		"</ipxact:busInterface>"
 		);
 
 	QDomDocument document;
 	document.setContent(documentContent);
 
-	QDomNode businterfaceNode = document.firstChildElement("ipxact:businterface");
+	QDomNode businterfaceNode = document.firstChildElement("ipxact:busInterface");
 
 	businterfaceReader businterfaceReader;
 	QSharedPointer<BusInterface> testbusinterface = businterfaceReader.createbusinterfaceFrom(businterfaceNode);
 
-	QCOMPARE(testbusinterface->getVendorExtensions()->first()->type(), QString("ulina"));
-	QCOMPARE(testbusinterface->getDefaultPos(), QPointF(1,5));
+	QCOMPARE(testbusinterface->getVendorExtensions()->first()->type(), QString("kactus2:position"));
+    QCOMPARE(testbusinterface->getDefaultPos().x(), qreal(1));
+    QCOMPARE(testbusinterface->getDefaultPos().y(), qreal(5));
+    QCOMPARE(testbusinterface->getVendorExtensions()->last()->type(), QString("ulina"));
 }
 
 //-----------------------------------------------------------------------------
@@ -559,7 +558,7 @@ void tst_businterfaceReader::testReadVendorExtensions2()
 void tst_businterfaceReader::testReadAbstractionReference()
 {
 	QString documentContent(
-		"<ipxact:businterface>"
+		"<ipxact:busInterface>"
 		"<ipxact:abstractionTypes>"
 		"<ipxact:abstractionType>"
 		"<ipxact:viewRef>joku</ipxact:viewRef>"
@@ -567,22 +566,22 @@ void tst_businterfaceReader::testReadAbstractionReference()
 		"name=\"SampleAbstractionDefinition_TLM\" version=\"1.0\"/>"
 		"</ipxact:abstractionType>"
 		"</ipxact:abstractionTypes>"
-		"</ipxact:businterface>"
+		"</ipxact:busInterface>"
 		);
 
 	QDomDocument document;
 	document.setContent(documentContent);
 
-	QDomNode businterfaceNode = document.firstChildElement("ipxact:businterface");
+	QDomNode businterfaceNode = document.firstChildElement("ipxact:busInterface");
 
 	businterfaceReader businterfaceReader;
 	QSharedPointer<BusInterface> testbusinterface = businterfaceReader.createbusinterfaceFrom(businterfaceNode);
 
-	QCOMPARE(testbusinterface->getAbstractionTypes().first()->viewRef_, QString("joku"));
-	QCOMPARE(testbusinterface->getAbstractionTypes().first()->abstractionRef_->getVendor(), QString("accellera.org"));
-	QCOMPARE(testbusinterface->getAbstractionTypes().first()->abstractionRef_->getName(), QString("SampleAbstractionDefinition_TLM"));
-	QCOMPARE(testbusinterface->getAbstractionTypes().first()->abstractionRef_->getLibrary(), QString("Sample"));
-	QCOMPARE(testbusinterface->getAbstractionTypes().first()->abstractionRef_->getVersion(), QString("1.0"));
+	QCOMPARE(testbusinterface->getAbstractionTypes()->first()->viewRef_, QString("joku"));
+	QCOMPARE(testbusinterface->getAbstractionTypes()->first()->abstractionRef_->getVendor(), QString("accellera.org"));
+	QCOMPARE(testbusinterface->getAbstractionTypes()->first()->abstractionRef_->getName(), QString("SampleAbstractionDefinition_TLM"));
+	QCOMPARE(testbusinterface->getAbstractionTypes()->first()->abstractionRef_->getLibrary(), QString("Sample"));
+	QCOMPARE(testbusinterface->getAbstractionTypes()->first()->abstractionRef_->getVersion(), QString("1.0"));
 }
 
 //-----------------------------------------------------------------------------
@@ -591,7 +590,7 @@ void tst_businterfaceReader::testReadAbstractionReference()
 void tst_businterfaceReader::testReadPortMaps()
 {
 	QString documentContent(
-		"<ipxact:businterface>"
+		"<ipxact:busInterface>"
 		"<ipxact:abstractionTypes>"
 		"<ipxact:abstractionType>"
 		"<ipxact:portMaps>"
@@ -621,34 +620,34 @@ void tst_businterfaceReader::testReadPortMaps()
 		"</ipxact:portMaps>"
 		"</ipxact:abstractionType>"
 		"</ipxact:abstractionTypes>"
-		"</ipxact:businterface>"
+		"</ipxact:busInterface>"
 		);
 
 	QDomDocument document;
 	document.setContent(documentContent);
 
-	QDomNode businterfaceNode = document.firstChildElement("ipxact:businterface");
+	QDomNode businterfaceNode = document.firstChildElement("ipxact:busInterface");
 
 	businterfaceReader businterfaceReader;
 	QSharedPointer<BusInterface> testbusinterface = businterfaceReader.createbusinterfaceFrom(businterfaceNode);
 
-	QCOMPARE(testbusinterface->getAbstractionTypes().first()->portMaps_.first()->getLogicalPort()->name_, QString("CLK"));
-	QCOMPARE(testbusinterface->getAbstractionTypes().first()->portMaps_.first()->getLogicalPort()->range_->getLeft(), QString("vasen"));
-	QCOMPARE(testbusinterface->getAbstractionTypes().first()->portMaps_.first()->getLogicalPort()->range_->getRight(), QString("oikea"));
+	QCOMPARE(testbusinterface->getAbstractionTypes()->first()->portMaps_->first()->getLogicalPort()->name_, QString("CLK"));
+	QCOMPARE(testbusinterface->getAbstractionTypes()->first()->portMaps_->first()->getLogicalPort()->range_->getLeft(), QString("vasen"));
+	QCOMPARE(testbusinterface->getAbstractionTypes()->first()->portMaps_->first()->getLogicalPort()->range_->getRight(), QString("oikea"));
 
-	QCOMPARE(testbusinterface->getAbstractionTypes().first()->portMaps_.first()->getPhysicalPort()->name_, QString("clk"));
-	QCOMPARE(testbusinterface->getAbstractionTypes().first()->portMaps_.first()->getPhysicalPort()->
+	QCOMPARE(testbusinterface->getAbstractionTypes()->first()->portMaps_->first()->getPhysicalPort()->name_, QString("clk"));
+	QCOMPARE(testbusinterface->getAbstractionTypes()->first()->portMaps_->first()->getPhysicalPort()->
 		partSelect_->getLeftRange(), QString("vasen"));
-	QCOMPARE(testbusinterface->getAbstractionTypes().first()->portMaps_.first()->getPhysicalPort()->
+	QCOMPARE(testbusinterface->getAbstractionTypes()->first()->portMaps_->first()->getPhysicalPort()->
 		partSelect_->getRightRange(), QString("oikea"));
 
-	QSharedPointer<QStringList > indices = testbusinterface->getAbstractionTypes().first()->portMaps_.first()->
+	QSharedPointer<QStringList > indices = testbusinterface->getAbstractionTypes()->first()->portMaps_->first()->
 		getPhysicalPort()->partSelect_->getIndices();
 
 	QCOMPARE(indices->first(), QString("eka"));
 	QCOMPARE(indices->last(), QString("toka"));
 
-	QCOMPARE(testbusinterface->getAbstractionTypes().first()->portMaps_.first()->getLogicalTieOff(), QString("eoae") );
+	QCOMPARE(testbusinterface->getAbstractionTypes()->first()->portMaps_->first()->getLogicalTieOff(), QString("eoae") );
 }
 
 //-----------------------------------------------------------------------------
@@ -657,7 +656,7 @@ void tst_businterfaceReader::testReadPortMaps()
 void tst_businterfaceReader::testReadPortMaps2()
 {
 	QString documentContent(
-		"<ipxact:businterface>"
+		"<ipxact:busInterface>"
 		"<ipxact:abstractionTypes>"
 		"<ipxact:abstractionType>"
 		"<ipxact:portMaps>"
@@ -684,21 +683,21 @@ void tst_businterfaceReader::testReadPortMaps2()
 		"</ipxact:portMaps>"
 		"</ipxact:abstractionType>"
 		"</ipxact:abstractionTypes>"
-		"</ipxact:businterface>"
+		"</ipxact:busInterface>"
 		);
 
 	QDomDocument document;
 	document.setContent(documentContent);
 
-	QDomNode businterfaceNode = document.firstChildElement("ipxact:businterface");
+	QDomNode businterfaceNode = document.firstChildElement("ipxact:busInterface");
 
 	businterfaceReader businterfaceReader;
 	QSharedPointer<BusInterface> testbusinterface = businterfaceReader.createbusinterfaceFrom(businterfaceNode);
 
-	QCOMPARE(testbusinterface->getAbstractionTypes().first()->portMaps_.first()->getLogicalPort()->name_, QString("CLK"));
-	QCOMPARE(testbusinterface->getAbstractionTypes().first()->portMaps_.first()->getPhysicalPort()->name_, QString("clk"));
-	QCOMPARE(testbusinterface->getAbstractionTypes().last()->portMaps_.first()->getLogicalPort()->name_, QString("joq"));
-	QCOMPARE(testbusinterface->getAbstractionTypes().last()->portMaps_.first()->getPhysicalPort()->name_, QString("jotain"));
+	QCOMPARE(testbusinterface->getAbstractionTypes()->first()->portMaps_->first()->getLogicalPort()->name_, QString("CLK"));
+	QCOMPARE(testbusinterface->getAbstractionTypes()->first()->portMaps_->first()->getPhysicalPort()->name_, QString("clk"));
+	QCOMPARE(testbusinterface->getAbstractionTypes()->last()->portMaps_->first()->getLogicalPort()->name_, QString("joq"));
+	QCOMPARE(testbusinterface->getAbstractionTypes()->last()->portMaps_->first()->getPhysicalPort()->name_, QString("jotain"));
 }
 
 QTEST_APPLESS_MAIN(tst_businterfaceReader)

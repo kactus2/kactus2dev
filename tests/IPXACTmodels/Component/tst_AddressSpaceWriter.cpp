@@ -87,13 +87,8 @@ void tst_AddressSpaceWriter::testWriteAddressSpaceNameGroup()
 		"<ipxact:name>testAddressSpace</ipxact:name>"
 		"<ipxact:displayName>testDisplay</ipxact:displayName>"
 		"<ipxact:description>testDescription</ipxact:description>"
-		"<ipxact:blockSize>"
-		"<ipxact:width>-1</ipxact:width>"
-		"</ipxact:blockSize>"
-		"<ipxact:addressUnitBits>8</ipxact:addressUnitBits>"
-		"<ipxact:localMemoryMap>"
-		"<ipxact:name></ipxact:name>"
-		"</ipxact:localMemoryMap>"
+        "<ipxact:range></ipxact:range>"
+		"<ipxact:width></ipxact:width>"
 		"</ipxact:addressSpace>"
 		;
 
@@ -116,13 +111,8 @@ void tst_AddressSpaceWriter::testWriteIsPresent()
 		"<ipxact:addressSpace>"
 		"<ipxact:name>testAddressSpace</ipxact:name>"
 		"<ipxact:isPresent>4-3</ipxact:isPresent>"
-		"<ipxact:blockSize>"
-		"<ipxact:width>-1</ipxact:width>"
-		"</ipxact:blockSize>"
-		"<ipxact:addressUnitBits>8</ipxact:addressUnitBits>"
-		"<ipxact:localMemoryMap>"
-		"<ipxact:name></ipxact:name>"
-		"</ipxact:localMemoryMap>"
+        "<ipxact:range></ipxact:range>"
+        "<ipxact:width></ipxact:width>"
 		"</ipxact:addressSpace>"
 		);
 
@@ -151,13 +141,14 @@ void tst_AddressSpaceWriter::testWriteParameter()
 	para1->setAttribute("resolve", "user");
 	para1->setDescription("First generator parameter.");
 
-	QList<QSharedPointer<Parameter> >& parameters = testAddressSpace_->getParameters();
-	parameters.append(para1);
+    testAddressSpace_->getParameters()->append(para1);
 
 	QString expectedOutput(
 		"<ipxact:addressSpace>"
 		"<ipxact:name>testAddressSpace</ipxact:name>"
 		"<ipxact:isPresent>4-3</ipxact:isPresent>"
+        "<ipxact:range></ipxact:range>"
+        "<ipxact:width></ipxact:width>"
 		"<ipxact:parameters>"
 		"<ipxact:parameter parameterId=\"joq\" prompt=\"Parm 1\""
 		" resolve=\"user\" type=\"shortint\">"
@@ -166,13 +157,6 @@ void tst_AddressSpaceWriter::testWriteParameter()
 		"<ipxact:value>5</ipxact:value>"
 		"</ipxact:parameter>"
 		"</ipxact:parameters>"
-		"<ipxact:blockSize>"
-		"<ipxact:width>-1</ipxact:width>"
-		"</ipxact:blockSize>"
-		"<ipxact:addressUnitBits>8</ipxact:addressUnitBits>"
-		"<ipxact:localMemoryMap>"
-		"<ipxact:name></ipxact:name>"
-		"</ipxact:localMemoryMap>"
 		"</ipxact:addressSpace>"
 		);
 
@@ -204,18 +188,13 @@ void tst_AddressSpaceWriter::testWriteVendorExtension()
 	QString expectedOutput(
 		"<ipxact:addressSpace>"
 		"<ipxact:name>joq</ipxact:name>"
+        "<ipxact:range></ipxact:range>"
+        "<ipxact:width></ipxact:width>"
 		"<ipxact:vendorExtensions>"
 		"<ulina kolina=\"eaa\">"
 		"testValue"
 		"</ulina>"
 		"</ipxact:vendorExtensions>"
-		"<ipxact:blockSize>"
-		"<ipxact:width>-1</ipxact:width>"
-		"</ipxact:blockSize>"
-		"<ipxact:addressUnitBits>8</ipxact:addressUnitBits>"
-		"<ipxact:localMemoryMap>"
-		"<ipxact:name></ipxact:name>"
-		"</ipxact:localMemoryMap>"
 		"</ipxact:addressSpace>"
 		);
 
@@ -235,23 +214,14 @@ void tst_AddressSpaceWriter::testWriteBlockSize()
 	QString output;
 	QXmlStreamWriter xmlStreamWriter(&output);
 
-	testAddressSpace_->setRange(QSharedPointer<Range>( new Range("vasen","oikea")));
-	testAddressSpace_->setWidth(123);
+    testAddressSpace_->setRange("testRange");
+	testAddressSpace_->setWidth("123");
 
 	QString expectedOutput(
 		"<ipxact:addressSpace>"
 		"<ipxact:name>testAddressSpace</ipxact:name>"
-		"<ipxact:blockSize>"
-		"<ipxact:range>"
-		"<ipxact:left>vasen</ipxact:left>"
-		"<ipxact:right>oikea</ipxact:right>"
-		"</ipxact:range>"
-		"<ipxact:width>123</ipxact:width>"
-		"</ipxact:blockSize>"
-		"<ipxact:addressUnitBits>8</ipxact:addressUnitBits>"
-		"<ipxact:localMemoryMap>"
-		"<ipxact:name></ipxact:name>"
-		"</ipxact:localMemoryMap>"
+        "<ipxact:range>testRange</ipxact:range>"
+        "<ipxact:width>123</ipxact:width>"
 		"</ipxact:addressSpace>"
 		);
 
@@ -269,18 +239,14 @@ void tst_AddressSpaceWriter::testWriteAddressUnitBits()
 	QString output;
 	QXmlStreamWriter xmlStreamWriter(&output);
 
-	testAddressSpace_->setAddressUnitBits(44);
+	testAddressSpace_->setAddressUnitBits("44");
 
 	QString expectedOutput(
 		"<ipxact:addressSpace>"
 		"<ipxact:name>testAddressSpace</ipxact:name>"
-		"<ipxact:blockSize>"
-		"<ipxact:width>-1</ipxact:width>"
-		"</ipxact:blockSize>"
+        "<ipxact:range></ipxact:range>"
+        "<ipxact:width></ipxact:width>"
 		"<ipxact:addressUnitBits>44</ipxact:addressUnitBits>"
-		"<ipxact:localMemoryMap>"
-		"<ipxact:name></ipxact:name>"
-		"</ipxact:localMemoryMap>"
 		"</ipxact:addressSpace>"
 		);
 
@@ -312,18 +278,14 @@ void tst_AddressSpaceWriter::testWriteSegments()
 	seg2->setOffset("0x00000080");
 	seg2->setRange("64");
 
-	QList<QSharedPointer<Segment> > segs;
-	segs.append(seg1);
-	segs.append(seg2);
-	testAddressSpace_->setSegments(segs);
+    testAddressSpace_->getSegments()->append(seg1);
+    testAddressSpace_->getSegments()->append(seg2);
 
 	QString expectedOutput(
 		"<ipxact:addressSpace>"
 		"<ipxact:name>testAddressSpace</ipxact:name>"
-		"<ipxact:blockSize>"
-		"<ipxact:width>-1</ipxact:width>"
-		"</ipxact:blockSize>"
-		"<ipxact:addressUnitBits>8</ipxact:addressUnitBits>"
+        "<ipxact:range></ipxact:range>"
+        "<ipxact:width></ipxact:width>"
 		"<ipxact:segments>"
 		"<ipxact:segment>"
 		"<ipxact:name>segment1</ipxact:name>"
@@ -340,9 +302,6 @@ void tst_AddressSpaceWriter::testWriteSegments()
 		"<ipxact:range>64</ipxact:range>"
 		"</ipxact:segment>"
 		"</ipxact:segments>"
-		"<ipxact:localMemoryMap>"
-		"<ipxact:name></ipxact:name>"
-		"</ipxact:localMemoryMap>"
 		"</ipxact:addressSpace>"
 		);
 
@@ -386,10 +345,8 @@ void tst_AddressSpaceWriter::writeAddressBlocks()
 	QString expectedOutput(
 		"<ipxact:addressSpace>"
 		"<ipxact:name>testAddressSpace</ipxact:name>"
-		"<ipxact:blockSize>"
-		"<ipxact:width>-1</ipxact:width>"
-		"</ipxact:blockSize>"
-		"<ipxact:addressUnitBits>8</ipxact:addressUnitBits>"
+        "<ipxact:range></ipxact:range>"
+        "<ipxact:width></ipxact:width>"
 		"<ipxact:localMemoryMap>"
 		"<ipxact:name></ipxact:name>"
 		"<ipxact:addressBlock>"

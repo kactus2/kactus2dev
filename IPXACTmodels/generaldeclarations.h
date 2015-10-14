@@ -167,7 +167,8 @@ General::GroupSelectorOperator str2GroupSelector(QString str,
  */
 enum Endianness {
 	BIG,
-	LITTLE
+	LITTLE,
+    ENDIANNESS_UNSPECIFIED
 };
 
 /*! \brief Convert the value of the QString into enum Endianness
@@ -190,33 +191,6 @@ IPXACTMODELS_EXPORT General::Endianness str2Endianness(QString str,
  * \return QString that matches the enum value.
  */
 IPXACTMODELS_EXPORT QString endianness2Str(const General::Endianness endianness);
-
-/*! \brief Specifies the time unit of a time value
- *
- */
-enum TimeUnit {
-	NS, //! nanosecond
-	PS  //! picosecond
-};
-
-/*! \brief Convert the value of the QString into enum TimeUnit
- *
- * if The str does not match any of the enum values the default value
- * specifies as parameter will be returned
- *
- * \param str QString containing the string to be converted
- * \param defaultValue The value that will be returned if no match is found
- * \return General::TimeUnit that matches the str or default value.
- */
-IPXACTMODELS_EXPORT General::TimeUnit str2TimeUnit(QString str, General::TimeUnit defaultValue);
-
-/*! \brief Convert the value of the time unit to QString
- *
- * \param timeUnit A reference to a General::TimeUnit enum.
- *
- * \return QString, "ns" if timeUnit is 'NS'. "ps" if timeUnit is 'PS'.
- */
-IPXACTMODELS_EXPORT QString timeUnit2Str(General::TimeUnit& timeUnit);
 
 /*! \brief  Defines the type of access.
  *
@@ -475,101 +449,6 @@ IPXACTMODELS_EXPORT General::TestConstraint str2TestConstraint(const QString& st
  * spirit:clockPulseOffset
  * spirit:clockPulseDuration
  */
-struct ClockStruct {
-
-	/*!
-	 * MANDATORY
-	 * Specifies the value of the element defined in this struct
-	 */
-	double value_;
-
-	/*!
-	 * OPTIONAL
-	 * default = NS
-	 */
-	General::TimeUnit timeUnit_;
-
-	/*!
-	 * MANDATORY
-	 * Contains the attributes set for the containing element
-	 */
-	QMap<QString, QString> attributes_;
-	
-	/*! 
-	 * The constructor
-	 */
-	ClockStruct(){}
-
-	/*! \brief The constructor
-	 *
-	 * \param value The value to set for the struct
-	 *
-	*/
-	ClockStruct(double value);
-
-	/*! \brief The copy constructor
-	 *
-	 * \param other Reference to the ClockStruct to copy
-	 *
-	*/
-	ClockStruct(const ClockStruct& other);
-
-	/*! \brief The assignment operator
-	 *
-	 * \param other Reference to the ClockStruct to assign.
-	 *
-	 * \return Reference to this clock struct.
-	*/
-	ClockStruct& operator=(const ClockStruct& other);
-};
-
-/*! \brief Equals the spirit:clockPulseValue element in IP-Xact specification
- *
- * Specifies the logic value to which the port transitions. The value of the
- * port after the first clock edge.
- */
-struct ClockPulseValue {
-
-	/*!
-	 * MANDATORY
-	 * Specifies the value of the spirit:clockPulseValue element
-	 * The value shall be 0 or 1.
-	 */
-	unsigned int value_;
-
-	/*!
-	 * MANDATORY
-	 * Contains the attributes set for the containing element.
-	 */
-	QMap<QString, QString> attributes_;
-	
-	/*! 
-	 * The constructor
-	 */
-	ClockPulseValue(){}
-
-	/*! \brief The constructor
-	 *
-	 * \param value The value for the clock pulse
-	 *
-	*/
-	ClockPulseValue(unsigned int value);
-
-	/*! \brief The copy constructor
-	 *
-	 * \param other Reference to the ClockPulseValue to copy
-	 *
-	*/
-	ClockPulseValue(const ClockPulseValue& other);
-
-	/*! \brief The assignment operator.
-	 *
-	 * \param other Reference to the ClockPulseValue to assign.
-	 *
-	 * \return Reference to this ClockPulseValue.
-	*/
-	ClockPulseValue& operator=(const ClockPulseValue& other);
-};
 
 //! \brief Specifies a port name and it's bounds.
 struct PortBounds {

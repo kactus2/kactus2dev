@@ -39,60 +39,26 @@ QSharedPointer<Cpu> CPUReader::createCPUFrom(QDomNode const& cpuNode) const
 	// Create the new CPU.
 	QSharedPointer<Cpu> newCpu (new Cpu());
 
-	// Parse presence, name group, and vendor extensions with pre-existing parsers.
-	// CPU has no vendor extensions supported by Kactus2.
-	parseIsPresent(cpuNode, newCpu);
 	parseNameGroup(cpuNode, newCpu);
-	parseVendorExtensions( cpuNode, newCpu );
 
-	// The intermediate lists for parsed child nodes.
-	QStringList addressSpaceRefs;
-	QList<QSharedPointer<Parameter> > parameters;
+    parseIsPresent(cpuNode, newCpu);
 
-	for (int i = 0; i < cpuNode.childNodes().count(); ++i)
-	{
-		QDomNode tempNode = cpuNode.childNodes().at(i);
+    parseAddressSpaceRefs(cpuNode, newCpu);
 
-		// Do not try to parse comments.
-		if (tempNode.isComment())
-		{
-			continue;
-		}
+    parseParameters(cpuNode, newCpu);
 
-		if (tempNode.nodeName() == QString("ipxact:addressSpaceRef"))
-		{
-			// Get the addressSpaceRef attribute.
-			QDomNamedNodeMap attributeMap = tempNode.attributes();
-			QString str = attributeMap.namedItem(QString(
-				"addressSpaceRef")).childNodes().at(0).nodeValue();
-
-			// All was fine and attribute can be added.
-			addressSpaceRefs.append(str);
-		}
-		else if (tempNode.nodeName() == QString("ipxact:parameters"))
-		{
-			// Use pre-existing parameter reader for reading parameters.
-			ParameterReader reader;
-
-			// Go through all parameters
-			for (int j = 0; j < tempNode.childNodes().count(); ++j)
-			{
-				QDomNode parameterNode = tempNode.childNodes().at(j);
-
-				// Do not try to parse comments.
-				if (!parameterNode.isComment())
-				{
-					parameters.append(QSharedPointer<Parameter>(reader.createParameterFrom(parameterNode)));
-				}
-			}
-		}
-	}
-
-	// Finally, set the parsed data as the CPU data.
-	newCpu->setAddressSpaceRefs( addressSpaceRefs );
-	newCpu->setParameters( parameters );
+    parseVendorExtensions( cpuNode, newCpu );
 
     return newCpu;
+}
+
+//-----------------------------------------------------------------------------
+// Function: CPUReader::parseNameGroup()
+//-----------------------------------------------------------------------------
+void CPUReader::parseNameGroup(QDomNode const& cpuNode, QSharedPointer<Cpu> newCpu) const
+{
+    NameGroupReader nameReader;
+    nameReader.parseNameGroup(cpuNode, newCpu);
 }
 
 //-----------------------------------------------------------------------------
@@ -108,10 +74,39 @@ void CPUReader::parseIsPresent(QDomNode const& cpuNode, QSharedPointer<Cpu> newC
 }
 
 //-----------------------------------------------------------------------------
-// Function: CPUReader::parseNameGroup()
+// Function: CPUReader::parseAddressSpaceRefs()
 //-----------------------------------------------------------------------------
-void CPUReader::parseNameGroup(QDomNode const& cpuNode, QSharedPointer<Cpu> newCpu) const
+void CPUReader::parseAddressSpaceRefs(QDomNode const& cpuNode, QSharedPointer<Cpu> newCpu) const
 {
-    NameGroupReader nameReader;
-    nameReader.parseNameGroup(cpuNode, newCpu);
+    QDomNodeList referenceNodes = cpuNode.toElement().elementsByTagName("ipxact:addressSpaceRef");
+
+    for (int spaceIndex = 0; spaceIndex < referenceNodes.count(); ++spaceIndex)
+    {
+        QDomElement addressSpaceElement = referenceNodes.at(spaceIndex).toElement();
+
+        QString reference = addressSpaceElement.attribute("addressSpaceRef");
+        QSharedPointer<Cpu::AddressSpaceRef> newAddressSpaceReference (new Cpu::AddressSpaceRef(reference));
+
+        QDomElement isPresentElement = addressSpaceElement.firstChildElement("ipxact:isPresent");
+        if (!isPresentElement.isNull())
+        {
+            QString isPresent = isPresentElement.firstChild().nodeValue();
+            newAddressSpaceReference->setIsPresent(isPresent);
+        }
+
+        newCpu->getAddressSpaceReferences()->append(newAddressSpaceReference);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: CPUReader::parseParameters()
+//-----------------------------------------------------------------------------
+void CPUReader::parseParameters(QDomNode const& cpuNode, QSharedPointer<Cpu> newCpu) const
+{
+    QSharedPointer<QList<QSharedPointer<Parameter> > > parameters = parseAndCreateParameters(cpuNode);
+
+    if (!parameters->isEmpty())
+    {
+        newCpu->setParameters(parameters);
+    }
 }

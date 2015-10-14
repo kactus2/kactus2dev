@@ -98,6 +98,13 @@ public:
     QSharedPointer<QList<QSharedPointer<Parameter> > > getParameters() const;
 
     /*!
+     *  Check if the document contains any parameters.
+     *
+     *      @return True, if parameters are found, false otherwise.
+     */
+    bool hasParameters() const;
+
+    /*!
      *  Get the assertions.
      *
      *      @return The assertions for the document.

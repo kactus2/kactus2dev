@@ -10,14 +10,14 @@
 //-----------------------------------------------------------------------------
 
 #include "OtherClockDriverReader.h"
-#include <IPXACTmodels/common/NameGroupReader.h>
-#include "../XmlUtils.h"
+
+#include <IPXACTmodels/common/ClockUnit.h>
 
 //-----------------------------------------------------------------------------
 // Function: OtherClockDriverReader::OtherClockDriverReader()
 //-----------------------------------------------------------------------------
 OtherClockDriverReader::OtherClockDriverReader(QObject* parent /* = 0 */) :
-CommonItemsReader(parent)
+QObject(parent)
 {
 
 }
@@ -36,88 +36,63 @@ OtherClockDriverReader::~OtherClockDriverReader()
 QSharedPointer<OtherClockDriver> OtherClockDriverReader::createOtherClockDriverFrom
 	(QDomNode const& otherClockDriverNode) const
 {
-	// Create the new CPU.
 	QSharedPointer<OtherClockDriver> newOtherClockDriver (new OtherClockDriver());
 
-	QDomNamedNodeMap attributeMap = otherClockDriverNode.attributes();
+    parseClockDriverAttributes(otherClockDriverNode, newOtherClockDriver);
 
-	QString clockName = attributeMap.namedItem(QString("clockName")).nodeValue();
-	clockName = XmlUtils::removeWhiteSpace(clockName);
-	QString clockSource = attributeMap.namedItem(QString("clockSource")).nodeValue();
+    newOtherClockDriver->setClockPeriod(parseClockUnit(otherClockDriverNode, "ipxact:clockPeriod"));
 
-	newOtherClockDriver->setClockName(clockName);
-	newOtherClockDriver->setClockSource(clockSource);
+    newOtherClockDriver->setClockPulseOffset(parseClockUnit(otherClockDriverNode, "ipxact:clockPulseOffset"));
 
-	for (int i = 0; i < otherClockDriverNode.childNodes().count(); ++i)
-	{
-		QDomNode tempNode = otherClockDriverNode.childNodes().at(i);
+    parseClockPulseValue(otherClockDriverNode, newOtherClockDriver);
 
-		if (tempNode.nodeName() == QString("ipxact:clockPeriod"))
-		{
-			General::ClockStruct* newClockStruct = readClockStruct(tempNode);
-
-			newOtherClockDriver->setClockPeriod(newClockStruct);
-		}
-
-		else if (tempNode.nodeName() == QString("ipxact:clockPulseOffset"))
-		{
-			General::ClockStruct* newClockStruct = readClockStruct(tempNode);
-
-			newOtherClockDriver->setClockPulseOffset(newClockStruct);
-		}
-
-		else if (tempNode.nodeName() == QString("ipxact:clockPulseValue"))
-		{
-			General::ClockPulseValue* newClockPulseValue = new General::ClockPulseValue();
-
-			QString value = tempNode.childNodes().at(0).nodeValue();
-			bool ok = false;
-			newClockPulseValue->value_ = value.toInt(&ok);
-			newOtherClockDriver->setClockPulseValue(newClockPulseValue);
-		}
-
-		else if (tempNode.nodeName() == QString("ipxact:clockPulseDuration"))
-		{
-			General::ClockStruct* newClockStruct = readClockStruct(tempNode);
-
-			newOtherClockDriver->setClockPulseDuration(newClockStruct);
-		}
-	}
+    newOtherClockDriver->setClockPulseDuration(parseClockUnit(otherClockDriverNode, "ipxact:clockPulseDuration"));
 
     return newOtherClockDriver;
 }
 
-General::ClockStruct* OtherClockDriverReader::readClockStruct(QDomNode &clockNode) const
+//-----------------------------------------------------------------------------
+// Function: OtherClockDriverReader::parseClockDriverAttributes()
+//-----------------------------------------------------------------------------
+void OtherClockDriverReader::parseClockDriverAttributes(QDomNode const& otherClockDriverNode,
+    QSharedPointer<OtherClockDriver> newOtherClockDriver) const
 {
-	General::ClockStruct* newClockStruct = new General::ClockStruct();
+    QString name = otherClockDriverNode.toElement().attribute("clockName");
+    newOtherClockDriver->setClockName(name);
 
-	QString value = clockNode.childNodes().at(0).nodeValue();
-	value = XmlUtils::removeWhiteSpace(value);
-	bool ok = false;
-	newClockStruct->value_ = value.toDouble(&ok);
+    if (otherClockDriverNode.toElement().hasAttribute("clockSource"))
+    {
+        QString clockSource = otherClockDriverNode.toElement().attribute("clockSource");
+        newOtherClockDriver->setClockSource(clockSource);
+    }
+}
 
-	// Get the attributes.
-	QDomNamedNodeMap attributeMap = clockNode.attributes();
+//-----------------------------------------------------------------------------
+// Function: OtherClockDriverReader::parseClockUnit()
+//-----------------------------------------------------------------------------
+QSharedPointer<ClockUnit> OtherClockDriverReader::parseClockUnit(QDomNode const& otherClockDriverNode,
+    QString const& elementName) const
+{
+    QDomElement childElement = otherClockDriverNode.firstChildElement(elementName);
 
-	for (int i = 0; i < attributeMap.size(); ++i)
-	{
-		QDomNode tempNode = attributeMap.item(i);
+    QString value = childElement.firstChild().nodeValue();
+    QSharedPointer<ClockUnit> newClockUnit (new ClockUnit(value));
 
-		// Get attribute value
-		if (tempNode.nodeName() == QString("units"))
-		{
-			newClockStruct->timeUnit_ = General::str2TimeUnit(tempNode.childNodes().at(i).
-				nodeValue(),General::NS);
-		}
+    if (childElement.hasAttribute("units"))
+    {
+        QString timeUnit = childElement.attribute("units");
+        newClockUnit->setTimeUnit(timeUnit);
+    }
 
-		// Other attributes go to QMap.
-		else
-		{
-			QString name = tempNode.nodeName();
-			QString value = tempNode.nodeValue();
-			newClockStruct->attributes_[name] = value;
-		}
-	}
+    return newClockUnit;
+}
 
-	return newClockStruct;
+//-----------------------------------------------------------------------------
+// Function: OtherClockDriverReader::parseClockDriverAttributes()
+//-----------------------------------------------------------------------------
+void OtherClockDriverReader::parseClockPulseValue(QDomNode const& otherClockDriverNode,
+    QSharedPointer<OtherClockDriver> newOtherClockDriver) const
+{
+    QString pulseValue = otherClockDriverNode.firstChildElement("ipxact:clockPulseValue").firstChild().nodeValue();
+    newOtherClockDriver->setClockPulseValue(pulseValue);
 }

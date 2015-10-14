@@ -77,8 +77,9 @@ private:
      *      @param [in] inspected			The potential XML-node to yield abstraction types.
 	 *      @param [in] abstractionTypes    Each extracted abstraction type is appended to this list.
      */
-	void readAbstractionTypes(QDomNode& inspected, QList<QSharedPointer<BusInterface::AbstractionType>> &abstractionTypes) const;
-	
+	void readAbstractionTypes(QDomNode& inspected,
+        QSharedPointer<QList<QSharedPointer<BusInterface::AbstractionType> > > abstractionTypes) const;
+
     /*!
      *  Tries to extract port maps from the parameter inspected and append them to parameter newAbstractionType.
      *
@@ -93,7 +94,7 @@ private:
 	 *      @param [in] tempNode			The XML-node to yield port.
 	 *      @param [in] newPort				The port map, which port is being set.
 	 */
-	void readLogicalPort(QDomNode &tempNode, PortMap * newPort) const;
+    void readLogicalPort(QDomNode& tempNode, QSharedPointer<PortMap> newPort) const;
 
 	/*!
 	 *  Extracts a physical port from parameter tempNode and sets it to parameter newPort.
@@ -101,7 +102,7 @@ private:
 	 *      @param [in] tempNode			The XML-node to yield port.
 	 *      @param [in] newPort				The port map, which port is being set.
 	 */
-	void readPhysicalPort(QDomNode &tempNode, PortMap * newPort) const;
+    void readPhysicalPort(QDomNode& tempNode, QSharedPointer<PortMap> newPort) const;
 
     /*!
      *  Tries to read interface mode from parameter inspected and set it to the parameter newbusinterface.
@@ -142,6 +143,14 @@ private:
 	*      @param [in] newmode				The interface object, which fields will be assigned.
 	*/
 	void readMonitorInterface(QDomNode& inpstected, QSharedPointer<BusInterface::MonitorInterface> newmode) const;
+
+    /*!
+     *  Read the extensions of the bus interface.
+     *
+     *      @param [in] interfaceNode   XML description of the bus interface.
+     *      @param [in] newInterface    The new bus interface item.
+     */
+    void readBusInterfaceExtensions(QDomNode const& interfaceNode, QSharedPointer<BusInterface> newInterface) const;
 };
 
 #endif // businterfaceReader_H

@@ -153,8 +153,7 @@ void tst_CPUWriter::testWriteParameter()
 	para1->setAttribute("resolve", "user");
 	para1->setDescription("First generator parameter.");
 
-	QList<QSharedPointer<Parameter> >& parameters = testCPU_->getParameters();
-	parameters.append(para1);
+    testCPU_->getParameters()->append(para1);
 
 	QString expectedOutput(
 		"<ipxact:cpu>"
@@ -187,14 +186,17 @@ void tst_CPUWriter::testWriteAddressSpaces()
 
 	testCPU_->setName("joqCPU");
 
-	QStringList addressSpaces;
-	addressSpaces.append("default_interconnect");
-	testCPU_->setAddressSpaceRefs(addressSpaces);
+    QSharedPointer<Cpu::AddressSpaceRef> addressReference (new Cpu::AddressSpaceRef("lackOfImagination"));
+    addressReference->setIsPresent("spacePresence");
+
+    testCPU_->getAddressSpaceReferences()->append(addressReference);
 
 	QString expectedOutput(
 		"<ipxact:cpu>"
-		"<ipxact:name>joqCPU</ipxact:name>"
-		"<ipxact:addressSpaceRef addressSpaceRef=\"default_interconnect\"/>"
+    		"<ipxact:name>joqCPU</ipxact:name>"
+	    	"<ipxact:addressSpaceRef addressSpaceRef=\"lackOfImagination\">"
+            "<ipxact:isPresent>spacePresence</ipxact:isPresent>"
+            "</ipxact:addressSpaceRef>"
 		"</ipxact:cpu>"
 		);
 

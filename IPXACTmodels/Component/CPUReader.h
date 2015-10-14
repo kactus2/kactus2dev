@@ -54,6 +54,14 @@ private:
     CPUReader& operator=(CPUReader const& rhs);
 
     /*!
+     *  Reads the name group.
+     *
+     *      @param [in] cpuNode    XML description of the cpu.
+     *      @param [in] newCpu		The new cpu item.
+     */
+    void parseNameGroup(QDomNode const& cpuNode, QSharedPointer<Cpu> newCpu) const;
+
+    /*!
      *  Reads the presence.
      *
      *      @param [in] cpuNode    XML description of the cpu.
@@ -62,12 +70,20 @@ private:
     void parseIsPresent(QDomNode const& cpuNode, QSharedPointer<Cpu> newCPU) const;
 
     /*!
-     *  Reads the name group.
+     *  Reads the address space references.
      *
      *      @param [in] cpuNode    XML description of the cpu.
-     *      @param [in] newCpu		The new cpu item.
+     *      @param [in] newCPU     The new cpu item.
      */
-    void parseNameGroup(QDomNode const& cpuNode, QSharedPointer<Cpu> newCpu) const;
+    void parseAddressSpaceRefs(QDomNode const& cpuNode, QSharedPointer<Cpu> newCpu) const;
+
+    /*!
+     *  Reads the parameters.
+     *
+     *      @param [in] cpuNode    XML description of the cpu.
+     *      @param [in] newCPU     The new cpu item.
+     */
+    void parseParameters(QDomNode const& cpuNode, QSharedPointer<Cpu> newCpu) const;
 };
 
 #endif // CPUReader_H

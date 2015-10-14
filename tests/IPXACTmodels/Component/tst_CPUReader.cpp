@@ -28,6 +28,7 @@ private slots:
 	void testReadParameter();
 	void testRead2Parameter();
 	void testReadAddressSpaces();
+    void testReadAddressSpaceReference();
 	void testReadVendorExtension();
 };
 
@@ -98,16 +99,15 @@ void tst_CPUReader::testReadParameter()
 {
 	QString documentContent(
 		"<ipxact:cpu>"
-		"<ipxact:name>testCPU</ipxact:name>"
-		"<ipxact:isPresent>4-3</ipxact:isPresent>"
-		"<ipxact:parameters>"
-		"<ipxact:parameter parameterId=\"joq\" prompt=\"Parm 1\""
-		"type=\"shortint\" resolve=\"user\">"
-		"<ipxact:name>Esko</ipxact:name>"
-		"<ipxact:description>First generator parameter.</ipxact:description>"
-		"<ipxact:value>5</ipxact:value>"
-		"</ipxact:parameter>"
-		"</ipxact:parameters>"
+    		"<ipxact:name>testCPU</ipxact:name>"
+	    	"<ipxact:isPresent>4-3</ipxact:isPresent>"
+		    "<ipxact:parameters>"
+        		"<ipxact:parameter parameterId=\"joq\" prompt=\"Parm 1\"type=\"shortint\" resolve=\"user\">"
+            		"<ipxact:name>Esko</ipxact:name>"
+        	    	"<ipxact:description>First generator parameter.</ipxact:description>"
+        		    "<ipxact:value>5</ipxact:value>"
+        		"</ipxact:parameter>"
+    		"</ipxact:parameters>"
 		"</ipxact:cpu>"
 		);
 
@@ -122,13 +122,13 @@ void tst_CPUReader::testReadParameter()
 
 	QCOMPARE(testCPU->name(), QString("testCPU"));
 	QCOMPARE(testCPU->getIsPresent(), QString("4-3"));
-	QCOMPARE(testCPU->getParameters().size(), 1);
-	QCOMPARE(testCPU->getParameters().first()->name(), QString("Esko"));
-	QCOMPARE(testCPU->getParameters().first()->getValueId(), QString("joq"));
-	QCOMPARE(testCPU->getParameters().first()->getValue(), QString("5"));
-	QCOMPARE(testCPU->getParameters().first()->getType(), QString("shortint"));
-	QCOMPARE(testCPU->getParameters().first()->getAttribute("prompt"), QString("Parm 1"));
-	QCOMPARE(testCPU->getParameters().first()->getAttribute("resolve"), QString("user"));
+	QCOMPARE(testCPU->getParameters()->size(), 1);
+	QCOMPARE(testCPU->getParameters()->first()->name(), QString("Esko"));
+	QCOMPARE(testCPU->getParameters()->first()->getValueId(), QString("joq"));
+	QCOMPARE(testCPU->getParameters()->first()->getValue(), QString("5"));
+	QCOMPARE(testCPU->getParameters()->first()->getType(), QString("shortint"));
+	QCOMPARE(testCPU->getParameters()->first()->getAttribute("prompt"), QString("Parm 1"));
+	QCOMPARE(testCPU->getParameters()->first()->getAttribute("resolve"), QString("user"));
 }
 
 //-----------------------------------------------------------------------------
@@ -138,22 +138,20 @@ void tst_CPUReader::testRead2Parameter()
 {
 	QString documentContent(
 		"<ipxact:cpu>"
-		"<ipxact:name>testCPU5</ipxact:name>"
-		"<ipxact:isPresent>s</ipxact:isPresent>"
-		"<ipxact:parameters>"
-		"<ipxact:parameter parameterId=\"joq\" prompt=\"Parm 1\""
-		"type=\"shortint\" resolve=\"user\">"
-		"<ipxact:name>Esko</ipxact:name>"
-		"<ipxact:description>First generator parameter.</ipxact:description>"
-		"<ipxact:value>5</ipxact:value>"
-		"</ipxact:parameter>"
-		"<ipxact:parameter parameterId=\"ev0\" prompt=\"Parm 1\""
-		"type=\"shortint\" resolve=\"user\">"
-		"<ipxact:name>Mikko</ipxact:name>"
-		"<ipxact:description>First generator parameter.</ipxact:description>"
-		"<ipxact:value>1337</ipxact:value>"
-		"</ipxact:parameter>"
-		"</ipxact:parameters>"
+    		"<ipxact:name>testCPU5</ipxact:name>"
+	    	"<ipxact:isPresent>s</ipxact:isPresent>"
+		    "<ipxact:parameters>"
+        		"<ipxact:parameter parameterId=\"joq\" prompt=\"Parm 1\"type=\"shortint\" resolve=\"user\">"
+            		"<ipxact:name>Esko</ipxact:name>"
+            		"<ipxact:description>First generator parameter.</ipxact:description>"
+            		"<ipxact:value>5</ipxact:value>"
+        		"</ipxact:parameter>"
+        		"<ipxact:parameter parameterId=\"ev0\" prompt=\"Parm 1\"type=\"shortint\" resolve=\"user\">"
+            		"<ipxact:name>Mikko</ipxact:name>"
+            		"<ipxact:description>First generator parameter.</ipxact:description>"
+            		"<ipxact:value>1337</ipxact:value>"
+        		"</ipxact:parameter>"
+    		"</ipxact:parameters>"
 		"</ipxact:cpu>"
 		);
 
@@ -168,13 +166,13 @@ void tst_CPUReader::testRead2Parameter()
 
 	QCOMPARE(testCPU->name(), QString("testCPU5"));
 	QCOMPARE(testCPU->getIsPresent(), QString("s"));
-	QCOMPARE(testCPU->getParameters().size(), 2);
-	QCOMPARE(testCPU->getParameters().first()->name(), QString("Esko"));
-	QCOMPARE(testCPU->getParameters().first()->getValueId(), QString("joq"));
-	QCOMPARE(testCPU->getParameters().first()->getValue(), QString("5"));
-	QCOMPARE(testCPU->getParameters().last()->name(), QString("Mikko"));
-	QCOMPARE(testCPU->getParameters().last()->getValueId(), QString("ev0"));
-	QCOMPARE(testCPU->getParameters().last()->getValue(), QString("1337"));
+	QCOMPARE(testCPU->getParameters()->size(), 2);
+	QCOMPARE(testCPU->getParameters()->first()->name(), QString("Esko"));
+	QCOMPARE(testCPU->getParameters()->first()->getValueId(), QString("joq"));
+	QCOMPARE(testCPU->getParameters()->first()->getValue(), QString("5"));
+	QCOMPARE(testCPU->getParameters()->last()->name(), QString("Mikko"));
+	QCOMPARE(testCPU->getParameters()->last()->getValueId(), QString("ev0"));
+	QCOMPARE(testCPU->getParameters()->last()->getValue(), QString("1337"));
 }
 
 //-----------------------------------------------------------------------------
@@ -201,6 +199,35 @@ void tst_CPUReader::testReadAddressSpaces()
 	QCOMPARE(testCPU->name(), QString("joqCPU"));
 	QCOMPARE(testCPU->getAddressSpaceRefs().size(), 1);
 	QCOMPARE(testCPU->getAddressSpaceRefs().first(), QString("default_interconnect"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_CPUReader::testReadAddressSpaceReference()
+//-----------------------------------------------------------------------------
+void tst_CPUReader::testReadAddressSpaceReference()
+{
+    QString documentContent(
+        "<ipxact:cpu>"
+            "<ipxact:name>joqCPU</ipxact:name>"
+            "<ipxact:addressSpaceRef addressSpaceRef=\"default_interconnect\">"
+                "<ipxact:isPresent>Balduran</ipxact:isPresent>"
+            "</ipxact:addressSpaceRef>"
+        "</ipxact:cpu>"
+        );
+
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QDomNode cpuNode = document.firstChildElement("ipxact:cpu");
+
+    CPUReader CPUReader;
+    QSharedPointer<Cpu> testCPU = CPUReader.createCPUFrom(cpuNode);
+
+    QCOMPARE(testCPU->name(), QString("joqCPU"));
+    QCOMPARE(testCPU->getAddressSpaceReferences()->size(), 1);
+    QCOMPARE(testCPU->getAddressSpaceReferences()->first()->getAddressSpaceRef(), QString("default_interconnect"));
+    QCOMPARE(testCPU->getAddressSpaceReferences()->first()->getIsPresent(), QString("Balduran"));
 }
 
 //-----------------------------------------------------------------------------

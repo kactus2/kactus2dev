@@ -53,24 +53,26 @@ void businterfaceWriter::writebusinterface(QXmlStreamWriter& writer, QSharedPoin
 	// Start the element, write name group, presence and, vendor extensions with pre-existing writers.
 	writeNameGroup(writer, businterface);
 	writeIsPresent(writer, businterface);
-	writeVendorExtensions( writer, businterface );
 
-	// Write always bus type, conection requirement the bits in lau, and endianess.
-	writer.writeEmptyElement("ipxact:busType");
-	businterface->getBusType().writeAsAttributes(writer);
+    // Write always bus type, conection requirement the bits in lau, and endianess.
+    writer.writeEmptyElement("ipxact:busType");
+    businterface->getBusType().writeAsAttributes(writer);
 
-	writer.writeTextElement("ipxact:connectionRequired",
-		General::bool2Str(businterface->getConnectionRequired()));
+    writeAbstractionTypes(businterface, writer);
 
-	writer.writeTextElement("ipxact:bitsInLau", QString::number(businterface->getBitsInLau()));
-	writer.writeTextElement("ipxact:endianness", General::endianness2Str(businterface->getEndianness()));
+    writeInterfaceMode(businterface, writer);
 
-	// Less mandatory, yet more complicated elements.
-	writeBitSteering(businterface, writer);
+    writeConnectionRequired(writer, businterface);
+
+    writeBitsInLau(writer, businterface);
+
+    writeBitSteering(businterface, writer);
+
+    writeEndianness(writer, businterface);
+
 	writeParameters(businterface, writer);
-	writeDefaultPos(businterface, writer);
-	writeInterfaceMode(businterface, writer);
-	writeAbstractionTypes(businterface, writer);
+
+    writeVendorExtensions( writer, businterface );
 
 	writer.writeEndElement(); // ipxact:busInterface
 }
@@ -96,20 +98,39 @@ void businterfaceWriter::writeIsPresent(QXmlStreamWriter& writer, QSharedPointer
 }
 
 //-----------------------------------------------------------------------------
-// Function: businterfaceWriter::writeDefaultPos()
+// Function: businterfaceWriter::writeConnectionRequired()
 //-----------------------------------------------------------------------------
-void businterfaceWriter::writeDefaultPos(QSharedPointer<BusInterface> businterface, QXmlStreamWriter &writer) const
+void businterfaceWriter::writeConnectionRequired(QXmlStreamWriter& writer,
+    QSharedPointer<BusInterface> busInterface) const
 {
-	if (!businterface->getDefaultPos().isNull())
-	{
-		writer.writeStartElement("ipxact:vendorExtensions");
-		writer.writeStartElement("kactus2:extensions");
+    if (!busInterface->getConnectionRequired().isEmpty())
+    {
+        writer.writeTextElement("ipxact:connectionRequired", busInterface->getConnectionRequired());
+    }
+}
 
-		XmlUtils::writePosition(writer, businterface->getDefaultPos());
+//-----------------------------------------------------------------------------
+// Function: businterfaceWriter::writeBitsInLau()
+//-----------------------------------------------------------------------------
+void businterfaceWriter::writeBitsInLau(QXmlStreamWriter& writer, QSharedPointer<BusInterface> busInterface) const
+{
+    //writer.writeTextElement("ipxact:bitsInLau", QString::number(businterface->getBitsInLau()));
+    if (!busInterface->getBitsInLau().isEmpty())
+    {
+        writer.writeTextElement("ipxact:bitsInLau", busInterface->getBitsInLau());
+    }
+}
 
-		writer.writeEndElement();
-		writer.writeEndElement(); 
-	}
+//-----------------------------------------------------------------------------
+// Function: businterfaceWriter::writeEndianness()
+//-----------------------------------------------------------------------------
+void businterfaceWriter::writeEndianness(QXmlStreamWriter& writer, QSharedPointer<BusInterface> busInterface) const
+{
+    if (busInterface->getEndianness() != General::ENDIANNESS_UNSPECIFIED)
+    {
+        QString endiannessString = General::endianness2Str(busInterface->getEndianness());
+        writer.writeTextElement("ipxact:endianness", endiannessString);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -159,12 +180,12 @@ void businterfaceWriter::writeBitSteering(QSharedPointer<BusInterface> businterf
 void businterfaceWriter::writeAbstractionTypes(QSharedPointer<BusInterface> businterface, QXmlStreamWriter &writer) const
 {
 	// Write each abstraction type.
-	if ( businterface->getAbstractionTypes().size() > 0 )
+    if (!businterface->getAbstractionTypes()->isEmpty())
 	{
 		writer.writeStartElement("ipxact:abstractionTypes");
 
 		foreach ( QSharedPointer<BusInterface::AbstractionType> abstractionType,
-			businterface->getAbstractionTypes() )
+            *businterface->getAbstractionTypes() )
 		{
 			writer.writeStartElement("ipxact:abstractionType");
 
@@ -183,11 +204,11 @@ void businterfaceWriter::writeAbstractionTypes(QSharedPointer<BusInterface> busi
 			}
 
 			// Write each port map.
-			if ( abstractionType->portMaps_.size() > 0 )
+            if (!abstractionType->portMaps_->isEmpty())
 			{
 				writer.writeStartElement("ipxact:portMaps");
 
-				foreach ( QSharedPointer<PortMap> portMap, abstractionType->portMaps_ )
+				foreach ( QSharedPointer<PortMap> portMap, *abstractionType->portMaps_ )
 				{
 					writer.writeStartElement("ipxact:portMap");
 

@@ -20,45 +20,98 @@
 #include <QXmlStreamWriter>
 
 //-----------------------------------------------------------------------------
+// Function: cpu::AddressSpaceRef::AddressSpaceRef()
+//-----------------------------------------------------------------------------
+Cpu::AddressSpaceRef::AddressSpaceRef(QString const& addressSpaceReference /* = QString() */) :
+addressSpaceRef_(addressSpaceReference),
+isPresent_()
+{
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: cpu::getAddressSpaceRef()
+//-----------------------------------------------------------------------------
+QString Cpu::AddressSpaceRef::getAddressSpaceRef() const
+{
+    return addressSpaceRef_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: cpu::AddressSpaceRef::setAddressSpaceRef()
+//-----------------------------------------------------------------------------
+void Cpu::AddressSpaceRef::setAddressSpaceRef(QString const& newAddressSpaceRef)
+{
+    addressSpaceRef_ = newAddressSpaceRef;
+}
+
+//-----------------------------------------------------------------------------
+// Function: cpu::AddressSpaceRef::getIsPresent()
+//-----------------------------------------------------------------------------
+QString Cpu::AddressSpaceRef::getIsPresent() const
+{
+    return isPresent_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: cpu::setIsPresent()
+//-----------------------------------------------------------------------------
+void Cpu::AddressSpaceRef::setIsPresent(QString const& newIsPresent)
+{
+    isPresent_ = newIsPresent;
+}
+
+//-----------------------------------------------------------------------------
 // Function: Cpu()
 //-----------------------------------------------------------------------------
-Cpu::Cpu():
-NameGroup(),
-addressSpaceRefs_(),
-parameters_()
+Cpu::Cpu(QString const& name /* = QString() */) :
+NameGroup(name),
+Extendable(),
+isPresent_(),
+addressSpaceRefs_(new QList<QSharedPointer<AddressSpaceRef> > ()),
+parameters_(new QList<QSharedPointer<Parameter> > ())
 {
+
 }
 
+//-----------------------------------------------------------------------------
+// Function: cpu::Cpu()
+//-----------------------------------------------------------------------------
 Cpu::Cpu( const Cpu &other ):
 NameGroup(other),
-addressSpaceRefs_(other.addressSpaceRefs_),
-parameters_()
+Extendable(other),
+isPresent_(other.isPresent_),
+addressSpaceRefs_(new QList<QSharedPointer<AddressSpaceRef> > ()),
+parameters_(new QList<QSharedPointer<Parameter> > ())
 {
-	foreach (QSharedPointer<Parameter> param, other.parameters_) {
-		if (param) {
-			QSharedPointer<Parameter> copy(new Parameter(*param.data()));
-			parameters_.append(copy);
-		}
-	}
+    copyParameters(other);
+    copyAddressSpaceRefs(other);
 }
 
-Cpu & Cpu::operator=( const Cpu &other ) {
-	if (this != &other) {
+//-----------------------------------------------------------------------------
+// Function: cpu::operator=()
+//-----------------------------------------------------------------------------
+Cpu & Cpu::operator=( const Cpu &other )
+{
+	if (this != &other)
+    {
 		NameGroup::operator=(other);
-		addressSpaceRefs_ = other.addressSpaceRefs_;
+        Extendable::operator=(other);
 
-		parameters_.clear();
-		foreach (QSharedPointer<Parameter> param, other.parameters_) {
-			if (param) {
-				QSharedPointer<Parameter> copy(new Parameter(*param.data()));
-				parameters_.append(copy);
-			}
-		}
+        addressSpaceRefs_->clear();
+        copyAddressSpaceRefs(other);
+        parameters_->clear();
+        copyParameters(other);
 	}
 	return *this;
 }
 
-Cpu::~Cpu() {
+//-----------------------------------------------------------------------------
+// Function: cpu::~Cpu()
+//-----------------------------------------------------------------------------
+Cpu::~Cpu()
+{
+    addressSpaceRefs_.clear();
 	parameters_.clear();
 }
 
@@ -77,7 +130,7 @@ void Cpu::setIsPresent(QString const& newIsPresent)
 {
 	isPresent_ = newIsPresent;
 }
-
+/*
 bool Cpu::isValid(const QStringList& addrSpaceNames,
     QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
 				  QStringList& errorList, 
@@ -120,7 +173,7 @@ bool Cpu::isValid(const QStringList& addrSpaceNames,
 
 	return valid;
 }
-
+*//*
 bool Cpu::isValid(const QStringList& addrSpaceNames, 
     QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const 
 {
@@ -152,29 +205,82 @@ bool Cpu::isValid(const QStringList& addrSpaceNames,
 
 	return true;
 }
-
-QList<QSharedPointer<Parameter> >& Cpu::getParameters() {
+*/
+//-----------------------------------------------------------------------------
+// Function: cpu::getParameters()
+//-----------------------------------------------------------------------------
+QSharedPointer<QList<QSharedPointer<Parameter> > > Cpu::getParameters()
+{
 	return parameters_;
 }
 
-const QList<QSharedPointer<Parameter> >& Cpu::getParameters() const {
-	return parameters_;
+//-----------------------------------------------------------------------------
+// Function: cpu::setParameters()
+//-----------------------------------------------------------------------------
+void Cpu::setParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters)
+{
+    parameters_->clear();
+    parameters_ = newParameters;
 }
 
-void Cpu::setParameters(QList<QSharedPointer<Parameter> > &parameters) {
-	// delete the old parameters
-	parameters_.clear();
+//-----------------------------------------------------------------------------
+// Function: cpu::getAddressSpaceRefs()
+//-----------------------------------------------------------------------------
+QStringList Cpu::getAddressSpaceRefs() const
+{
+    QStringList references;
 
-	// save the new parameteres
-	parameters_ = parameters;
+    foreach (QSharedPointer<Cpu::AddressSpaceRef> addressSpaceRef, *addressSpaceRefs_)
+    {
+        references.append(addressSpaceRef->getAddressSpaceRef());
+    }
+
+    return references;
 }
 
-const QStringList& Cpu::getAddressSpaceRefs() {
-	return addressSpaceRefs_;
+//-----------------------------------------------------------------------------
+// Function: cpu::getAddressSpaceReferences()
+//-----------------------------------------------------------------------------
+QSharedPointer<QList<QSharedPointer<Cpu::AddressSpaceRef> > > Cpu::getAddressSpaceReferences() const
+{
+    return addressSpaceRefs_;
 }
 
-void Cpu::setAddressSpaceRefs(const QStringList& addressSpaceRefs) {
-	// remove old addressSpaceRefs
-	addressSpaceRefs_.clear();
-	addressSpaceRefs_ = addressSpaceRefs;
+//-----------------------------------------------------------------------------
+// Function: cpu::setAddressSpaceRefs()
+//-----------------------------------------------------------------------------
+void Cpu::setAddressSpaceReferences(QSharedPointer<QList<QSharedPointer<AddressSpaceRef> > > newAddressSpaceRefs)
+{
+	addressSpaceRefs_->clear();
+	addressSpaceRefs_ = newAddressSpaceRefs;
+}
+
+//-----------------------------------------------------------------------------
+// Function: cpu::copyParameters()
+//-----------------------------------------------------------------------------
+void Cpu::copyParameters(const Cpu& other)
+{
+    foreach (QSharedPointer<Parameter> param, *other.parameters_)
+    {
+        if (param)
+        {
+            QSharedPointer<Parameter> copy(new Parameter(*param.data()));
+            parameters_->append(copy);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: cpu::copyAddressSpaceRefs()
+//-----------------------------------------------------------------------------
+void Cpu::copyAddressSpaceRefs(const Cpu& other)
+{
+    foreach (QSharedPointer<Cpu::AddressSpaceRef> reference, *other.addressSpaceRefs_)
+    {
+        if (reference)
+        {
+            QSharedPointer<Cpu::AddressSpaceRef> copy (new AddressSpaceRef(*reference.data()));
+            addressSpaceRefs_->append(copy);
+        }
+    }
 }

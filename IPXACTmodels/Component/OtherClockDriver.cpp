@@ -1,98 +1,70 @@
-/* 
- *
- *  Created on: 6.8.2010
- *      Author: Antti Kamppi
- */
+//-----------------------------------------------------------------------------
+// File: OtherClockDriver.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: 
+// Date: 
+//
+// Description:
+// Writer class for ipxact:otherClockDriver element.
+//-----------------------------------------------------------------------------
 
-#include "otherclockdriver.h"
-#include "../generaldeclarations.h"
+#include "OtherClockDriver.h"
 
-#include <QString>
-#include <QList>
-#include <QObject>
-#include <QSharedPointer>
-
-OtherClockDriver::OtherClockDriver(): 
-clockName_(),
-clockSource_(QString()),
-clockPeriod_(0),
-clockPulseOffset_(0),
-clockPulseValue_(0), 
-clockPulseDuration_(0) {
+//-----------------------------------------------------------------------------
+// Function: OtherClockDriver::OtherClockDriver()
+//-----------------------------------------------------------------------------
+OtherClockDriver::OtherClockDriver(QString const& clockName /* = QString() */) :
+clockName_(clockName),
+clockSource_(),
+clockPeriod_(new ClockUnit()),
+clockPulseOffset_(new ClockUnit()),
+clockPulseValue_(),
+clockPulseDuration_(new ClockUnit())
+{
 
 }
 
+//-----------------------------------------------------------------------------
+// Function: OtherClockDriver::OtherClockDriver()
+//-----------------------------------------------------------------------------
 OtherClockDriver::OtherClockDriver( const OtherClockDriver &other ):
 clockName_(other.clockName_),
 clockSource_(other.clockSource_),
-clockPeriod_(),
-clockPulseOffset_(),
-clockPulseValue_(),
-clockPulseDuration_() {
-
-	if (other.clockPeriod_) {
-		clockPeriod_ = QSharedPointer<General::ClockStruct>(
-			new General::ClockStruct(*other.clockPeriod_.data()));
-	}
-
-	if (other.clockPulseOffset_) {
-		clockPulseOffset_ = QSharedPointer<General::ClockStruct>(
-			new General::ClockStruct(*other.clockPulseOffset_.data()));
-	}
-
-	if (other.clockPulseValue_) {
-		clockPulseValue_ = QSharedPointer<General::ClockPulseValue>(
-			new General::ClockPulseValue(*other.clockPulseValue_.data()));
-	}
-
-	if (other.clockPulseDuration_) {
-		clockPulseDuration_ = QSharedPointer<General::ClockStruct>(
-			new General::ClockStruct(*other.clockPulseDuration_.data()));
-	}
+clockPeriod_(new ClockUnit()),
+clockPulseOffset_(new ClockUnit()),
+clockPulseValue_(other.clockPulseValue_),
+clockPulseDuration_(new ClockUnit())
+{
+    copyClockData(other);
 }
 
-
-OtherClockDriver & OtherClockDriver::operator=( const OtherClockDriver &other ) {
-	if (this != &other) {
+//-----------------------------------------------------------------------------
+// Function: OtherClockDriver::operator=()
+//-----------------------------------------------------------------------------
+OtherClockDriver & OtherClockDriver::operator=( const OtherClockDriver &other )
+{
+	if (this != &other)
+    {
 		clockName_ = other.clockName_;
 		clockSource_ = other.clockSource_;
+        clockPulseValue_ = other.clockPulseValue_;
 
-		if (other.clockPeriod_) {
-			clockPeriod_ = QSharedPointer<General::ClockStruct>(
-				new General::ClockStruct(*other.clockPeriod_.data()));
-		}
-		else
-			clockPeriod_ = QSharedPointer<General::ClockStruct>();
-
-		if (other.clockPulseOffset_) {
-			clockPulseOffset_ = QSharedPointer<General::ClockStruct>(
-				new General::ClockStruct(*other.clockPulseOffset_.data()));
-		}
-		else
-			clockPulseOffset_ = QSharedPointer<General::ClockStruct>();
-
-		if (other.clockPulseValue_) {
-			clockPulseValue_ = QSharedPointer<General::ClockPulseValue>(
-				new General::ClockPulseValue(*other.clockPulseValue_.data()));
-		}
-		else
-			clockPulseValue_ = QSharedPointer<General::ClockPulseValue>();
-
-		if (other.clockPulseDuration_) {
-			clockPulseDuration_ = QSharedPointer<General::ClockStruct>(
-				new General::ClockStruct(*other.clockPulseDuration_.data()));
-		}
-		else
-			clockPulseDuration_ = QSharedPointer<General::ClockStruct>();
+        copyClockData(other);
 	}
 	return *this;
 }
 
-
-// the destructor
-OtherClockDriver::~OtherClockDriver() {
+//-----------------------------------------------------------------------------
+// Function: OtherClockDriver::()
+//-----------------------------------------------------------------------------
+OtherClockDriver::~OtherClockDriver()
+{
+    clockPeriod_.clear();
+    clockPulseOffset_.clear();
+    clockPulseDuration_.clear();
 }
-
+/*
 bool OtherClockDriver::isValid( QStringList& errorList, const QString& parentIdentifier ) const {
 	bool valid = true;
 
@@ -133,7 +105,7 @@ bool OtherClockDriver::isValid( QStringList& errorList, const QString& parentIde
 
 	return valid;
 }
-
+*//*
 bool OtherClockDriver::isValid() const {
 
 	if (clockName_.isEmpty())
@@ -150,92 +122,121 @@ bool OtherClockDriver::isValid() const {
 		return false;
 	else 
 		return true;
-}
+}*/
 
-QString OtherClockDriver::getClockName() const {
+//-----------------------------------------------------------------------------
+// Function: OtherClockDriver::getClockName()
+//-----------------------------------------------------------------------------
+QString OtherClockDriver::getClockName() const
+{
 	return clockName_;
 }
 
-void OtherClockDriver::setClockName(const QString &clockName) {
+//-----------------------------------------------------------------------------
+// Function: OtherClockDriver::setClockName()
+//-----------------------------------------------------------------------------
+void OtherClockDriver::setClockName(QString const& clockName)
+{
 	clockName_ = clockName;
 }
 
-void OtherClockDriver::setClockPulseDuration(
-		General::ClockStruct *clockPulseDuration) {
-	// delete the old clock pulse duration
-	if (clockPulseDuration_) {
-		clockPulseDuration_.clear();
-	}
-	clockPulseDuration_ = QSharedPointer<General::ClockStruct>(
-			clockPulseDuration);
+//-----------------------------------------------------------------------------
+// Function: OtherClockDriver::getClockSource()
+//-----------------------------------------------------------------------------
+QString OtherClockDriver::getClockSource() const
+{
+    return clockSource_;
 }
 
-General::ClockStruct *OtherClockDriver::getClockPeriod()  {
-	
-	if (clockPeriod_)
-		return clockPeriod_.data();
-
-	clockPeriod_ = QSharedPointer<General::ClockStruct>(new General::ClockStruct(0));
-	return clockPeriod_.data();
+//-----------------------------------------------------------------------------
+// Function: OtherClockDriver::setClockSource()
+//-----------------------------------------------------------------------------
+void OtherClockDriver::setClockSource(QString const& clockSource)
+{
+    clockSource_ = clockSource;
 }
 
-void OtherClockDriver::setClockPeriod(General::ClockStruct *clockPeriod) {
-	// delete the old clock period
-	if (clockPeriod_) {
-		clockPeriod_.clear();
-	}
-	clockPeriod_ = QSharedPointer<General::ClockStruct>(clockPeriod);
+//-----------------------------------------------------------------------------
+// Function: OtherClockDriver::getClockPeriod()
+//-----------------------------------------------------------------------------
+QSharedPointer<ClockUnit> OtherClockDriver::getClockPeriod() const
+{
+    return clockPeriod_;
 }
 
-General::ClockStruct *OtherClockDriver::getClockPulseOffset() {
-	if (clockPulseOffset_)
-		return clockPulseOffset_.data();
-
-	clockPulseOffset_ = QSharedPointer<General::ClockStruct>(new General::ClockStruct(0));
-	return clockPulseOffset_.data();
+//-----------------------------------------------------------------------------
+// Function: OtherClockDriver::setClockPeriod()
+//-----------------------------------------------------------------------------
+void OtherClockDriver::setClockPeriod(QSharedPointer<ClockUnit> newClockPeriod)
+{
+    clockPeriod_ = newClockPeriod;
 }
 
-void OtherClockDriver::setClockPulseOffset(
-		General::ClockStruct *clockPulseOffset) {
-	// delete the old clock pulse offset
-	if (clockPulseOffset_) {
-		clockPulseOffset_.clear();
-	}
-	clockPulseOffset_ = QSharedPointer<General::ClockStruct>(clockPulseOffset);
+//-----------------------------------------------------------------------------
+// Function: OtherClockDriver::getClockPulseOffset()
+//-----------------------------------------------------------------------------
+QSharedPointer<ClockUnit> OtherClockDriver::getClockPulseOffset() const
+{
+    return clockPulseOffset_;
 }
 
-void OtherClockDriver::setClockSource(const QString &clockSource) {
-	clockSource_ = clockSource;
+//-----------------------------------------------------------------------------
+// Function: OtherClockDriver::setClockPulseOffset()
+//-----------------------------------------------------------------------------
+void OtherClockDriver::setClockPulseOffset(QSharedPointer<ClockUnit> newClockPulseOffset)
+{
+    clockPulseOffset_ = newClockPulseOffset;
 }
 
-General::ClockPulseValue *OtherClockDriver::getClockPulseValue() {
-	if (clockPulseValue_)
-		return clockPulseValue_.data();
-
-	clockPulseValue_ = QSharedPointer<General::ClockPulseValue>(
-		new General::ClockPulseValue(0));
-	return clockPulseValue_.data();
+//-----------------------------------------------------------------------------
+// Function: OtherClockDriver::getClockPulseValue()
+//-----------------------------------------------------------------------------
+QString OtherClockDriver::getClockPulseValue() const
+{
+    return clockPulseValue_;
 }
 
-QString OtherClockDriver::getClockSource() const {
-	return clockSource_;
+//-----------------------------------------------------------------------------
+// Function: OtherClockDriver::setClockPulseValue()
+//-----------------------------------------------------------------------------
+void OtherClockDriver::setClockPulseValue(QString const& newClockPulseValue)
+{
+    clockPulseValue_ = newClockPulseValue;
 }
 
-void OtherClockDriver::setClockPulseValue(
-		General::ClockPulseValue *clockPulseValue) {
-	// delete the old clock pulse value
-	if (clockPulseValue_) {
-		clockPulseValue_.clear();
-	}
-	clockPulseValue_ = QSharedPointer<General::ClockPulseValue>(clockPulseValue);
+//-----------------------------------------------------------------------------
+// Function: OtherClockDriver::getClockPulseDuration()
+//-----------------------------------------------------------------------------
+QSharedPointer<ClockUnit> OtherClockDriver::getClockPulseDuration() const
+{
+    return clockPulseDuration_;
 }
 
-General::ClockStruct *OtherClockDriver::getClockPulseDuration() {
-	
-	if (clockPulseDuration_)
-		return clockPulseDuration_.data();
+//-----------------------------------------------------------------------------
+// Function: OtherClockDriver::setClockPulseDuration()
+//-----------------------------------------------------------------------------
+void OtherClockDriver::setClockPulseDuration(QSharedPointer<ClockUnit> newClockPulseDuration)
+{
+    clockPulseDuration_ = newClockPulseDuration;
+}
 
-	clockPulseDuration_ = QSharedPointer<General::ClockStruct>(
-		new General::ClockStruct(0));
-	return clockPulseDuration_.data();
+//-----------------------------------------------------------------------------
+// Function: OtherClockDriver::copyClockData()
+//-----------------------------------------------------------------------------
+void OtherClockDriver::copyClockData(const OtherClockDriver &other)
+{
+    if (other.clockPeriod_)
+    {
+        clockPeriod_ = QSharedPointer<ClockUnit>(new ClockUnit(*other.clockPeriod_.data()));
+    }
+
+    if (other.clockPulseOffset_)
+    {
+        clockPulseOffset_ = QSharedPointer<ClockUnit>(new ClockUnit(*other.clockPulseOffset_.data()));
+    }
+
+    if (other.clockPulseDuration_)
+    {
+        clockPulseDuration_ = QSharedPointer<ClockUnit>(new ClockUnit(*other.clockPulseDuration_.data()));
+    }
 }

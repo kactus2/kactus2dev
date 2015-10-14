@@ -130,13 +130,13 @@ void tst_AddressSpaceReader::testReadParameters()
 	AddressSpaceReader addressSpaceReader;
 	QSharedPointer<AddressSpace> testAddressSpace = addressSpaceReader.createAddressSpaceFrom(AddressSpaceNode);
 
-	QCOMPARE(testAddressSpace->getParameters().size(), 2);
-	QCOMPARE(testAddressSpace->getParameters().first()->name(), QString("Esko"));
-	QCOMPARE(testAddressSpace->getParameters().first()->getValueId(), QString("joq"));
-	QCOMPARE(testAddressSpace->getParameters().first()->getValue(), QString("5"));
-	QCOMPARE(testAddressSpace->getParameters().last()->name(), QString("Mikko"));
-	QCOMPARE(testAddressSpace->getParameters().last()->getValueId(), QString("ev0"));
-	QCOMPARE(testAddressSpace->getParameters().last()->getValue(), QString("1337"));
+	QCOMPARE(testAddressSpace->getParameters()->size(), 2);
+	QCOMPARE(testAddressSpace->getParameters()->first()->name(), QString("Esko"));
+	QCOMPARE(testAddressSpace->getParameters()->first()->getValueId(), QString("joq"));
+	QCOMPARE(testAddressSpace->getParameters()->first()->getValue(), QString("5"));
+	QCOMPARE(testAddressSpace->getParameters()->last()->name(), QString("Mikko"));
+	QCOMPARE(testAddressSpace->getParameters()->last()->getValueId(), QString("ev0"));
+	QCOMPARE(testAddressSpace->getParameters()->last()->getValue(), QString("1337"));
 }
 
 //-----------------------------------------------------------------------------
@@ -146,13 +146,8 @@ void tst_AddressSpaceReader::testReadBlockSize()
 {
 	QString documentContent(
 		"<ipxact:addressSpace>"
-		"<ipxact:blockSize>"
-		"<ipxact:range>"
-		"<ipxact:left>vasen</ipxact:left>"
-		"<ipxact:right>oikea</ipxact:right>"
-		"</ipxact:range>"
+		"<ipxact:range>testRange</ipxact:range>"
 		"<ipxact:width>123</ipxact:width>"
-		"</ipxact:blockSize>"
 		"</ipxact:addressSpace>"
 		);
 
@@ -165,9 +160,8 @@ void tst_AddressSpaceReader::testReadBlockSize()
 	AddressSpaceReader AddressSpaceReader;
 	QSharedPointer<AddressSpace> testAddressSpace = AddressSpaceReader.createAddressSpaceFrom(AddressSpaceNode);
 
-	QCOMPARE(testAddressSpace->getRange()->getLeft(), QString("vasen"));
-	QCOMPARE(testAddressSpace->getRange()->getRight(), QString("oikea"));
-	QCOMPARE(testAddressSpace->getWidth(), 123);
+    QCOMPARE(testAddressSpace->getRange(), QString("testRange"));
+	QCOMPARE(testAddressSpace->getWidth(), QString("123"));
 }
 
 //-----------------------------------------------------------------------------
@@ -190,7 +184,7 @@ void tst_AddressSpaceReader::testReadAddressUnitBits()
 	AddressSpaceReader AddressSpaceReader;
 	QSharedPointer<AddressSpace> testAddressSpace = AddressSpaceReader.createAddressSpaceFrom(AddressSpaceNode);
 
-	QCOMPARE(testAddressSpace->getAddressUnitBits(), (unsigned int)15);
+	QCOMPARE(testAddressSpace->getAddressUnitBits(), QString("15"));
 }
 
 //-----------------------------------------------------------------------------
@@ -251,9 +245,9 @@ void tst_AddressSpaceReader::testReadSegments()
 	AddressSpaceReader AddressSpaceReader;
 	QSharedPointer<AddressSpace> testAddressSpace = AddressSpaceReader.createAddressSpaceFrom(addressSpaceNode);
 
-	QCOMPARE(testAddressSpace->getSegments().size(), 2);
+	QCOMPARE(testAddressSpace->getSegments()->size(), 2);
 
-	QSharedPointer<Segment> segment1 = testAddressSpace->getSegments().first();
+	QSharedPointer<Segment> segment1 = testAddressSpace->getSegments()->first();
 
 	QCOMPARE(segment1->getIsPresent(), QString("4-3"));
 	QCOMPARE(segment1->getAddressOffset(), QString("0x10000000"));
@@ -263,7 +257,7 @@ void tst_AddressSpaceReader::testReadSegments()
 	QCOMPARE(segment1->getRangeAttributes().firstKey(), QString("joku"));
 	QCOMPARE(segment1->getRangeAttributes().first(), QString("jotain"));
 
-	QSharedPointer<Segment> segment2 = testAddressSpace->getSegments().last();
+	QSharedPointer<Segment> segment2 = testAddressSpace->getSegments()->last();
 
 	QCOMPARE(segment2->name(), QString("segment2"));
 	QCOMPARE(segment2->description(), QString("description"));

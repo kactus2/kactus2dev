@@ -16,10 +16,11 @@
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
+#include <IPXACTmodels/common/CommonItemsWriter.h>
+
 #include <QXmlStreamWriter>
 #include <QObject>
 #include <QSharedPointer>
-#include <IPXACTmodels/common/CommonItemsWriter.h>
 
 //-----------------------------------------------------------------------------
 //! Writer class for IP-XACT AddressSpace element.
@@ -57,18 +58,10 @@ private:
 	AddressSpaceWriter& operator=(AddressSpaceWriter const& rhs);
 
 	/*!
-	 *  Writes parameters of the item.
-	 *
-	 *      @param [in] addressSpace		The address space which is to be written to XML.
-	 *      @param [in] writer				The writer use to write XLM.
-	 */
-	void writeParameters(QSharedPointer<AddressSpace> addressSpace, QXmlStreamWriter &writer) const;
-
-	/*!
 	 *  Writes block size of the item.
 	 *
-	 *      @param [in] writer				The writer use to write XLM.
-	 *      @param [in] addressSpace		The address space which is to be written to XML.
+	 *      @param [in] writer				The used writer.
+	 *      @param [in] addressSpace		The address space being written.
 	 */
 	void writeBlockSize(QXmlStreamWriter &writer, QSharedPointer<AddressSpace> addressSpace) const;
 
@@ -79,6 +72,22 @@ private:
 	 *      @param [in] writer				The writer use to write XLM.
 	 */
 	void writeSegments(QSharedPointer<AddressSpace> addressSpace, QXmlStreamWriter &writer) const;
+
+	/*!
+	 *  Writes address unit bits.
+	 *
+	 *      @param [in] writer				The used writer.
+	 *      @param [in] addressSpace		The address space being written.
+	 */
+    void writeAddressUnitBits(QXmlStreamWriter& writer, QSharedPointer<AddressSpace> addressSpace) const;
+
+	/*!
+	 *  Writes the local memory map.
+	 *
+	 *      @param [in] writer				The used writer.
+	 *      @param [in] addressSpace		The address space being written.
+	 */
+    void writeLocalMemoryMap(QXmlStreamWriter& writer, QSharedPointer<AddressSpace> addressSpace) const;
 };
 
 #endif // AddressSpaceWriter_H

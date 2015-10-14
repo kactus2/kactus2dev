@@ -71,6 +71,15 @@ private:
      *      @param [in] cpu		The cpu to be written.
      */
     void writeIsPresent(QXmlStreamWriter& writer, QSharedPointer<Cpu> cpu) const;
+
+    /*!
+     *  Writes the address space references.
+     *
+     *      @param [in] writer  The used xml writer.
+     *      @param [in] cpu		The cpu to be written.
+     */
+    void writeAddressSpaceRefs(QXmlStreamWriter& writer, QSharedPointer<Cpu> cpu) const;
+
 };
 
 #endif // CPUWriter_H

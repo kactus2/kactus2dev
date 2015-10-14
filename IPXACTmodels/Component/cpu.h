@@ -4,8 +4,8 @@
  *      Author: Antti Kamppi
  */
 
-#ifndef CPU_H_
-#define CPU_H_
+#ifndef CPU_H
+#define CPU_H
 
 #include <IPXACTmodels/common/NameGroup.h>
 #include <IPXACTmodels/common/Extendable.h>
@@ -27,19 +27,67 @@ class IPXACTMODELS_EXPORT Cpu : public NameGroup, public Extendable
 {
 
 public:
+
+    //! Cpu address space reference.
+    struct AddressSpaceRef
+    {
+        //! The address space reference.
+        QString addressSpaceRef_;
+
+        //! The presence.
+        QString isPresent_;
+
+        /*!
+         *  The constructor.
+         *
+         *      @param [in] addressSpaceReference   The address space reference.
+         */
+        IPXACTMODELS_EXPORT AddressSpaceRef(QString const& addressSpaceReference = QString());
+
+        /*!
+         *  Get the address space reference.
+         *
+         *      @return Address space reference.
+         */
+        QString getAddressSpaceRef() const;
+
+        /*!
+         *  Set the address space reference.
+         *
+         *      @param [in] newAddressSpaceRef  The new address space reference.
+         */
+        void setAddressSpaceRef(QString const& newAddressSpaceRef);
+
+        /*!
+         *  Get the is present.
+         *
+         *      @return Is present value.
+         */
+        QString getIsPresent() const;
+
+        /*!
+         *  Set the is present value.
+         *
+         *      @param [in] newIsPresent    The new is present value.
+         */
+        void setIsPresent(QString const& newIsPresent);
+    };
+
     /*!
      *  Default constructor.
+     *
+     *      @param [in] name    Name of the cpu.
      */
-    Cpu();
+    Cpu(QString const& name = QString());
 
-	//! \brief Copy constructor
+	//! Copy constructor.
 	Cpu(const Cpu &other);
 
-	//! \brief Assignment operator
+	//! Assignment operator.
 	Cpu &operator=(const Cpu &other);
 
-	/*! \brief The destructor
-	 *
+	/*!
+     *  The destructor.
 	 */
 	~Cpu();
 
@@ -66,10 +114,9 @@ public:
 	 *
 	 * \return bool True if the state is valid and writing is possible.
 	*/
-	bool isValid(const QStringList& addrSpaceNames,
-        QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
-		QStringList& errorList, 
-		const QString& parentIdentifier) const;
+// 	bool isValid(const QStringList& addrSpaceNames,
+//         QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices, QStringList& errorList,
+//         const QString& parentIdentifier) const;
 
 	/*! \brief Check if the cpu is in a valid state.
 	 * 
@@ -78,57 +125,68 @@ public:
 	 * 
 	 * \return bool True if the state is valid and writing is possible.
 	*/
-	bool isValid(const QStringList& addrSpaceNames,
-        QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const;
+// 	bool isValid(const QStringList& addrSpaceNames,
+//         QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const;
 
-	/*! \brief Get list of the address space references for this cpu
+	/*!
+     *  Get list of the address space references for this cpu.
 	 *
-	 * \return QList containing the addressSpaceRefs
+	 *      @return A list containing the addressSpaceRefs.
 	 */
-	const QStringList& getAddressSpaceRefs();
+    QStringList getAddressSpaceRefs() const;
 
-	/*! \brief Get the parameters of the cpu
-	 *
-	 * \return QList containing pointers to the parameters for the cpu.
-	 */
-	QList<QSharedPointer<Parameter> >& getParameters();
+    /*!
+     *  Get the address space references.
+     *
+     *      @return Pointer to a list of address space references.
+     */
+    QSharedPointer<QList<QSharedPointer<Cpu::AddressSpaceRef> > > getAddressSpaceReferences() const;
 
-	/*! \brief Get the parameters of the cpu
-	 *
-	 * \return QList containing pointers to the parameters for the cpu.
-	 */
-	const QList<QSharedPointer<Parameter> >& getParameters() const;
+    /*!
+     *  Set the address space references.
+     *
+     *      @param [in] newAddressSpaceRefs     Pointer to a list containing the new address space references.
+     */
+    void setAddressSpaceReferences(QSharedPointer<QList<QSharedPointer<AddressSpaceRef> > > newAddressSpaceRefs);
 
-	/*! \brief Set the addressSpaceRefs for the cpu
+	/*!
+     *  Get the parameters of the cpu.
 	 *
-	 * Calling this function will delete the old address space refs
-	 *
-	 * \param addressSpaceRefs QList containing the address space refs
+	 *      @return Pointer to a list containing pointers to the parameters for the cpu.
 	 */
-	void setAddressSpaceRefs(const QStringList &addressSpaceRefs);
+	QSharedPointer<QList<QSharedPointer<Parameter> > >  getParameters();
 
-	/*! \brief Set the parameters for the cpu
+	/*!
+     *  Set the parameters for the cpu.
 	 *
-	 * Calling this function will delete the old parameters.
-	 *
-	 * \param parameter QList containing pointers to the parameters.
+	 *      @param [in] parameters  Pointer to a list containing pointers to the parameters.
 	 */
-	void setParameters(QList<QSharedPointer<Parameter> > &parameters);
+    void setParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters);
 
 private:
+
+    /*!
+     *  Copy the parameters.
+     *
+     *      @param [in] other   The cpu being copied.
+     */
+    void copyParameters(const Cpu& other);
+
+    /*!
+     *  Copy the address space references.
+     *
+     *      @param [in] other   The cpu being copied.
+     */
+    void copyAddressSpaceRefs(const Cpu& other);
 
 	//! Presence of the CPU.
 	QString isPresent_;
 
-	/*! \brief References a name of an address space within component.
-	 * MANDATORY spirit:addressSpaceRef
-	 */
-	QStringList addressSpaceRefs_;
+	//! References a name of an address space within component.
+    QSharedPointer<QList<QSharedPointer<AddressSpaceRef> > > addressSpaceRefs_;
 
-	/*! \brief Specifies any cpu-type parameters.
-	 * OPTIONAL spirit:parameters
-	 */
-	QList<QSharedPointer<Parameter> > parameters_;
+	//! Specifies any cpu-type parameters.
+	QSharedPointer<QList<QSharedPointer<Parameter> > > parameters_;
 };
 
-#endif /* CPU_H_ */
+#endif // CPU_H

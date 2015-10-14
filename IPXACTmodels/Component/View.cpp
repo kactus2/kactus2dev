@@ -258,3 +258,11 @@ void View::setDesignConfigurationInstantiationRef(QString const& newInstantiatio
 {
     designConfigurationInstantiationRef_ = newInstantiationRef;
 }
+
+//-----------------------------------------------------------------------------
+// Function: View::isHierarchical()
+//-----------------------------------------------------------------------------
+bool View::isHierarchical() const
+{
+    return !designInstantiationRef_.isEmpty() || !designConfigurationInstantiationRef_.isEmpty();
+}

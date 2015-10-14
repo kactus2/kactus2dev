@@ -38,40 +38,18 @@ void CPUWriter::writeCPU(QXmlStreamWriter& writer, QSharedPointer<Cpu> cpu) cons
 {
 	// Start the element, write name group, presence and, vendor extensions with pre-existing writers.
 	writer.writeStartElement("ipxact:cpu");
-	writeNameGroup(writer, cpu);
-	writeIsPresent(writer, cpu);
-	writeVendorExtensions( writer, cpu );
+	
+    writeNameGroup(writer, cpu);
 
-	// Acquire references for address space and parameter lists.
-	const QStringList& addressSpaceRefs = cpu->getAddressSpaceRefs();
-	QList<QSharedPointer<Parameter> >& parameters = cpu->getParameters();
+    writeIsPresent(writer, cpu);
 
-	// Write all address spaces.
-	for (int i = 0; i < addressSpaceRefs.size(); ++i)
-	{
-		// It is simply a name.
-		writer.writeEmptyElement("ipxact:addressSpaceRef");
-		writer.writeAttribute("addressSpaceRef", addressSpaceRefs.at(i));
-	}
+    writeAddressSpaceRefs(writer, cpu);
 
-	if (parameters.size() != 0)
-	{
-		writer.writeStartElement("ipxact:parameters");
+    writeParameters(writer, cpu->getParameters());
 
-		// Use pre-existing writer for parameters.
-		ParameterWriter parameterWriter;
-		// Write each parameter.
-		for (int i = 0; i < parameters.size(); ++i)
-		{
-			parameterWriter.writeParameter(writer, parameters.at(i));
-		}
+    writeVendorExtensions( writer, cpu );
 
-		writer.writeEndElement(); 
-	}
-
-
-	writer.writeEndElement();
-	return;
+	writer.writeEndElement(); // ipxact:cpu
 }
 
 //-----------------------------------------------------------------------------
@@ -92,4 +70,24 @@ void CPUWriter::writeIsPresent(QXmlStreamWriter& writer, QSharedPointer<Cpu> cpu
 	{
 		writer.writeTextElement("ipxact:isPresent", cpu->getIsPresent());
 	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: CPUWriter::writeAddressSpaceRefs()
+//-----------------------------------------------------------------------------
+void CPUWriter::writeAddressSpaceRefs(QXmlStreamWriter& writer, QSharedPointer<Cpu> cpu) const
+{
+    foreach (QSharedPointer<Cpu::AddressSpaceRef> reference, *cpu->getAddressSpaceReferences())
+    {
+        writer.writeStartElement("ipxact:addressSpaceRef");
+
+        writer.writeAttribute("addressSpaceRef", reference->getAddressSpaceRef());
+
+        if (!reference->getIsPresent().isEmpty())
+        {
+            writer.writeTextElement("ipxact:isPresent", reference->getIsPresent());
+        }
+
+        writer.writeEndElement(); // ipxact:addressSpaceRef
+    }
 }

@@ -20,21 +20,21 @@ HEADERS += ../../../IPXACTmodels/common/BuildModel.h \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Group.h \
     ../../../IPXACTmodels/common/ModuleParameter.h \
     ../../../IPXACTmodels/common/NameGroup.h \
+    ../../../IPXACTmodels/Component/OtherClockDriver.h \
     ../../../IPXACTmodels/common/Parameter.h \
     ../../../IPXACTmodels/common/Range.h \
     ../../../IPXACTmodels/common/Vector.h \
-    ../../../IPXACTmodels/Component/OtherClockDriver.h \
-    ../../../IPXACTmodels/vlnv.h \
+    ../../../IPXACTmodels/XmlUtils.h \
     ../../../IPXACTmodels/generaldeclarations.h \
-    ../../../IPXACTmodels/Component/OtherClockDriverWriter.h \
+    ../../../IPXACTmodels/vlnv.h \
     ../../../IPXACTmodels/common/CommonItemsWriter.h \
     ../../../IPXACTmodels/common/ModuleParameterWriter.h \
-    ../../../IPXACTmodels/XmlUtils.h \
     ../../../IPXACTmodels/common/NameGroupWriter.h \
-    ../../../IPXACTmodels/common/ParameterWriter.h
+    ../../../IPXACTmodels/Component/OtherClockDriverWriter.h \
+    ../../../IPXACTmodels/common/ParameterWriter.h \
+    ../../../IPXACTmodels/common/ClockUnit.h
 SOURCES += ../../../IPXACTmodels/common/Array.cpp \
     ../../../IPXACTmodels/common/BuildModel.cpp \
-    ../../../IPXACTmodels/Component/OtherClockDriverWriter.cpp \
     ../../../IPXACTmodels/common/CommonItemsWriter.cpp \
     ../../../IPXACTmodels/Component/ComponentInstantiation.cpp \
     ../../../IPXACTmodels/common/ConfigurableElementValue.cpp \
@@ -44,18 +44,20 @@ SOURCES += ../../../IPXACTmodels/common/Array.cpp \
     ../../../IPXACTmodels/common/Extendable.cpp \
     ../../../IPXACTmodels/common/FileBuilder.cpp \
     ../../../IPXACTmodels/common/FileTypes.cpp \
-    ../../../IPXACTmodels/generaldeclarations.cpp \
     ../../../IPXACTmodels/GenericVendorExtension.cpp \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
     ../../../IPXACTmodels/common/ModuleParameter.cpp \
     ../../../IPXACTmodels/common/ModuleParameterWriter.cpp \
     ../../../IPXACTmodels/common/NameGroup.cpp \
     ../../../IPXACTmodels/common/NameGroupWriter.cpp \
+    ../../../IPXACTmodels/Component/OtherClockDriver.cpp \
+    ../../../IPXACTmodels/Component/OtherClockDriverWriter.cpp \
     ../../../IPXACTmodels/common/Parameter.cpp \
     ../../../IPXACTmodels/common/ParameterWriter.cpp \
     ../../../IPXACTmodels/common/Range.cpp \
     ../../../IPXACTmodels/common/Vector.cpp \
-    ../../../IPXACTmodels/Component/OtherClockDriver.cpp \
     ../../../IPXACTmodels/XmlUtils.cpp \
+    ../../../IPXACTmodels/generaldeclarations.cpp \
     ./tst_OtherClockDriverWriter.cpp \
-    ../../../IPXACTmodels/vlnv.cpp
+    ../../../IPXACTmodels/vlnv.cpp \
+    ../../../IPXACTmodels/common/ClockUnit.cpp

@@ -30,6 +30,7 @@ SUBDIRS += Model\tst_ViewWriter.pro \
 		   MemoryMaps\tst_MemoryMapReader.pro \
 		   MemoryMaps\tst_MemoryMapBaseReader.pro \
 		   MemoryMaps\tst_MemoryMapBaseWriter.pro \
+		   tst_ComponentWriter.pro \
 		   tst_CPUReader.pro \
 		   tst_CPUWriter.pro \
 		   tst_FileWriter.pro \
