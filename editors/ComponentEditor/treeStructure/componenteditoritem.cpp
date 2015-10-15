@@ -1,18 +1,30 @@
-/* 
- *  	Created on: 7.5.2012
- *      Author: Antti Kamppi
- * 		filename: componenteditoritem.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: componenteditoritem.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 07.05.2012
+//
+// Description:
+// ComponentEditorItem is one item in the navigation tree in component editor.
+//-----------------------------------------------------------------------------
 
 #include "componenteditoritem.h"
 #include "componenteditortreemodel.h"
+
 #include <editors/ComponentEditor/itemeditor.h>
 #include <editors/ComponentEditor/itemvisualizer.h>
+
+#include <library/LibraryManager/libraryinterface.h>
+
+#include <IPXACTmodels/Component/Component.h>
 
 #include <QApplication>
 #include <QIcon>
 
+//-----------------------------------------------------------------------------
+// Function: componenteditoritem::ComponentEditorItem()
+//-----------------------------------------------------------------------------
 ComponentEditorItem::ComponentEditorItem(ComponentEditorTreeModel* model,
 										 LibraryInterface* libHandler,
 										 QSharedPointer<Component> component,
@@ -62,6 +74,9 @@ parent_(parent)
 		model, SIGNAL(openComDefinition(const VLNV&)), Qt::UniqueConnection);
 }
 
+//-----------------------------------------------------------------------------
+// Function: componenteditoritem::ComponentEditorItem()
+//-----------------------------------------------------------------------------
 ComponentEditorItem::ComponentEditorItem( LibraryInterface* libHandler, 
 										 QSharedPointer<Component> component, 
 										 ComponentEditorTreeModel* parent ):
@@ -73,66 +88,107 @@ childItems_(),
 editor_(NULL),
 locked_(true),
 highlight_(false),
-parent_(NULL) {
-
+parent_(NULL)
+{
 	connect(this, SIGNAL(contentChanged(ComponentEditorItem*)),
 		parent, SLOT(onContentChanged(ComponentEditorItem*)), Qt::UniqueConnection);
 }
 
-ComponentEditorItem::~ComponentEditorItem() {
+//-----------------------------------------------------------------------------
+// Function: componenteditoritem::~ComponentEditorItem()
+//-----------------------------------------------------------------------------
+ComponentEditorItem::~ComponentEditorItem()
+{
 	childItems_.clear();
-	if (editor_) {
+	if (editor_)
+    {
 		delete editor_;
 		editor_ = NULL;
 	}
 }
 
-int ComponentEditorItem::row() const {
-	if (parent_) {
+//-----------------------------------------------------------------------------
+// Function: componenteditoritem::row()
+//-----------------------------------------------------------------------------
+int ComponentEditorItem::row() const
+{
+	if (parent_)
+    {
 		return parent_->getIndexOf(this);
 	}
 	return -1;
 }
 
-int ComponentEditorItem::getIndexOf( const ComponentEditorItem* child ) const {
-
-	for (int i = 0; i < childItems_.size(); ++i) {
-		if (childItems_.at(i).data() == child) {
+//-----------------------------------------------------------------------------
+// Function: componenteditoritem::getIndexOf()
+//-----------------------------------------------------------------------------
+int ComponentEditorItem::getIndexOf( const ComponentEditorItem* child ) const
+{
+	for (int i = 0; i < childItems_.size(); ++i)
+    {
+		if (childItems_.at(i).data() == child)
+        {
 			return i;
 		}
 	}
 	return -1;
 }
 
-int ComponentEditorItem::rowCount() const {
+//-----------------------------------------------------------------------------
+// Function: componenteditoritem::rowCount()
+//-----------------------------------------------------------------------------
+int ComponentEditorItem::rowCount() const
+{
 	return childItems_.count();
 }
 
-bool ComponentEditorItem::hasChildren() const {
+//-----------------------------------------------------------------------------
+// Function: componenteditoritem::hasChildren()
+//-----------------------------------------------------------------------------
+bool ComponentEditorItem::hasChildren() const
+{
 	return !childItems_.isEmpty();
 }
 
-QSharedPointer<ComponentEditorItem> ComponentEditorItem::child( const int index ) {
-	if (index < 0 || childItems_.count() < index) {
+//-----------------------------------------------------------------------------
+// Function: componenteditoritem::child()
+//-----------------------------------------------------------------------------
+QSharedPointer<ComponentEditorItem> ComponentEditorItem::child( const int index )
+{
+	if (index < 0 || childItems_.count() < index)
+    {
 		return QSharedPointer<ComponentEditorItem>();
 	}
 
 	return childItems_.at(index);
 }
 
-ComponentEditorItem* ComponentEditorItem::parent() {
+//-----------------------------------------------------------------------------
+// Function: componenteditoritem::parent()
+//-----------------------------------------------------------------------------
+ComponentEditorItem* ComponentEditorItem::parent()
+{
 	return parent_;
 }
 
-QFont ComponentEditorItem::getFont() const {
+//-----------------------------------------------------------------------------
+// Function: componenteditoritem::getFont()
+//-----------------------------------------------------------------------------
+QFont ComponentEditorItem::getFont() const
+{
 	return QApplication::font();	
 }
 
-bool ComponentEditorItem::isValid() const {
-	
+//-----------------------------------------------------------------------------
+// Function: componenteditoritem::isValid()
+//-----------------------------------------------------------------------------
+bool ComponentEditorItem::isValid() const
+{
 	// if at least one child is not valid then this is not valid
-	foreach (QSharedPointer<ComponentEditorItem> childItem, childItems_) {
-		if (!childItem->isValid()) {
+	foreach (QSharedPointer<ComponentEditorItem> childItem, childItems_)
+    {
+		if (!childItem->isValid())
+        {
 			return false;
 		}
 	}
@@ -157,7 +213,11 @@ bool ComponentEditorItem::highlight() const
     return highlight_;
 }
 
-ItemVisualizer* ComponentEditorItem::visualizer() {
+//-----------------------------------------------------------------------------
+// Function: componenteditoritem::visualizer()
+//-----------------------------------------------------------------------------
+ItemVisualizer* ComponentEditorItem::visualizer()
+{
 	return NULL;
 }
 
@@ -167,7 +227,8 @@ ItemVisualizer* ComponentEditorItem::visualizer() {
 void ComponentEditorItem::onEditorChanged()
 {
 	// if there is a valid parent then update it also
-	if (parent_) {
+	if (parent_)
+    {
 		emit contentChanged(parent_);
 	}
 	
@@ -215,28 +276,49 @@ void ComponentEditorItem::setLocked(bool locked)
 	locked_ = locked;
 }
 
-void ComponentEditorItem::refreshEditor() {
-	if (editor_) {
+//-----------------------------------------------------------------------------
+// Function: componenteditoritem::refreshEditor()
+//-----------------------------------------------------------------------------
+void ComponentEditorItem::refreshEditor()
+{
+	if (editor_)
+    {
 		editor_->refresh();
 	}
 }
 
-void ComponentEditorItem::onAddChild( int index ) {
+//-----------------------------------------------------------------------------
+// Function: componenteditoritem::onAddChild()
+//-----------------------------------------------------------------------------
+void ComponentEditorItem::onAddChild( int index )
+{
 	emit createChild(this, index);
 }
 
-void ComponentEditorItem::onRemoveChild( int index ) {
+//-----------------------------------------------------------------------------
+// Function: componenteditoritem::onRemoveChild()
+//-----------------------------------------------------------------------------
+void ComponentEditorItem::onRemoveChild( int index )
+{
 	emit removeChild(this, index);
 }
 
-void ComponentEditorItem::onMoveChild( int source, int target ) {
+//-----------------------------------------------------------------------------
+// Function: componenteditoritem::onMoveChild()
+//-----------------------------------------------------------------------------
+void ComponentEditorItem::onMoveChild( int source, int target )
+{
 	emit moveChild(this, source, target);
 }
 
-void ComponentEditorItem::moveChild( const int sourceIndex, int targetIndex ) {
-
+//-----------------------------------------------------------------------------
+// Function: componenteditoritem::moveChild()
+//-----------------------------------------------------------------------------
+void ComponentEditorItem::moveChild( const int sourceIndex, int targetIndex )
+{
 	// if the source index can not be used to identify an item
-	if (sourceIndex < 0 || sourceIndex >= childItems_.count()) {
+	if (sourceIndex < 0 || sourceIndex >= childItems_.count())
+    {
 		return;
 	}
 
@@ -246,11 +328,19 @@ void ComponentEditorItem::moveChild( const int sourceIndex, int targetIndex ) {
 	childItems_.insert(targetIndex, itemToMove);
 }
 
-void ComponentEditorItem::createChild( int /*index*/ ) {
+//-----------------------------------------------------------------------------
+// Function: componenteditoritem::createChild()
+//-----------------------------------------------------------------------------
+void ComponentEditorItem::createChild( int /*index*/ )
+{
 	// This must be implemented in sub classes to create the correct type of child.
 }
 
-void ComponentEditorItem::removeChild( int index ) {
+//-----------------------------------------------------------------------------
+// Function: componenteditoritem::removeChild()
+//-----------------------------------------------------------------------------
+void ComponentEditorItem::removeChild( int index )
+{
 	Q_ASSERT(index >= 0);
 	Q_ASSERT(index < childItems_.size());
 
@@ -261,11 +351,18 @@ void ComponentEditorItem::removeChild( int index ) {
 	childItems_.removeAt(index);
 }
 
-bool ComponentEditorItem::canBeOpened() const {
+//-----------------------------------------------------------------------------
+// Function: componenteditoritem::canBeOpened()
+//-----------------------------------------------------------------------------
+bool ComponentEditorItem::canBeOpened() const
+{
 	// Normally items can't be opened
 	return false;
 }
 
+//-----------------------------------------------------------------------------
+// Function: componenteditoritem::openItem()
+//-----------------------------------------------------------------------------
 void ComponentEditorItem::openItem()
 {
 	// Normally items can't be opened
@@ -280,31 +377,53 @@ QList<QAction* > ComponentEditorItem::actions() const
     return QList<QAction*>();
 }
 
-QGraphicsItem* ComponentEditorItem::getGraphicsItem() {
+//-----------------------------------------------------------------------------
+// Function: componenteditoritem::getGraphicsItem()
+//-----------------------------------------------------------------------------
+QGraphicsItem* ComponentEditorItem::getGraphicsItem()
+{
 	return NULL;
 }
 
-void ComponentEditorItem::updateGraphics() {
+//-----------------------------------------------------------------------------
+// Function: componenteditoritem::updateGraphics()
+//-----------------------------------------------------------------------------
+void ComponentEditorItem::updateGraphics()
+{
 	return;
 }
 
-void ComponentEditorItem::removeGraphicsItem() {
+//-----------------------------------------------------------------------------
+// Function: componenteditoritem::removeGraphicsItem()
+//-----------------------------------------------------------------------------
+void ComponentEditorItem::removeGraphicsItem()
+{
 	return;
 }
 
+//-----------------------------------------------------------------------------
+// Function: componenteditoritem::hasIcon()
+//-----------------------------------------------------------------------------
 bool ComponentEditorItem::hasIcon() const
 {
     // Normally items have no icon.
     return false;
 }
 
+//-----------------------------------------------------------------------------
+// Function: componenteditoritem::getIcon()
+//-----------------------------------------------------------------------------
 QIcon ComponentEditorItem::getIcon() const
 {
     // Normally items have no default icon.
     return QIcon();
 }
 
-void ComponentEditorItem::onSelectRequest() {    
+//-----------------------------------------------------------------------------
+// Function: componenteditoritem::onSelectRequest()
+//-----------------------------------------------------------------------------
+void ComponentEditorItem::onSelectRequest()
+{
 	emit selectItem(this);
 }
 

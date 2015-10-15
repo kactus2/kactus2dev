@@ -1,26 +1,44 @@
-/* 
- *
- *  Created on: 2.2.2011
- *      Author: Antti Kamppi
- * 		filename: itemeditor.cpp
- */
+//-----------------------------------------------------------------------------
+// File: itemeditor.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 02.02.2011
+//
+// Description:
+// ItemEditor is a base class for editors in Component Editor module..
+//-----------------------------------------------------------------------------
 
 #include "itemeditor.h"
-#include <IPXACTmodels/component.h>
+
+#include <IPXACTmodels/Component/Component.h>
+
 #include <library/LibraryManager/libraryinterface.h>
 
-ItemEditor::ItemEditor( QSharedPointer<Component> component,
-	LibraryInterface* handler,
-	QWidget *parent): 
+//-----------------------------------------------------------------------------
+// Function: itemeditor::ItemEditor()
+//-----------------------------------------------------------------------------
+ItemEditor::ItemEditor( QSharedPointer<Component> component, LibraryInterface* handler, QWidget *parent): 
 QWidget(parent), 
 component_(component),
-handler_(handler) {
+handler_(handler)
+{
+
 }
 
-ItemEditor::~ItemEditor() {
+//-----------------------------------------------------------------------------
+// Function: itemeditor::~ItemEditor()
+//-----------------------------------------------------------------------------
+ItemEditor::~ItemEditor()
+{
+
 }
 
-QSharedPointer<Component> ItemEditor::component() const {
+//-----------------------------------------------------------------------------
+// Function: itemeditor::component()
+//-----------------------------------------------------------------------------
+QSharedPointer<Component> ItemEditor::component() const
+{
 	return component_;
 }
 
@@ -41,6 +59,10 @@ void ItemEditor::setProtection(bool locked)
     setDisabled(locked);
 }
 
-LibraryInterface* ItemEditor::handler() const {
+//-----------------------------------------------------------------------------
+// Function: itemeditor::handler()
+//-----------------------------------------------------------------------------
+LibraryInterface* ItemEditor::handler() const
+{
 	return handler_;
 }
