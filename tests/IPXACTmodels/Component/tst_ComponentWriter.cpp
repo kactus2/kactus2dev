@@ -31,6 +31,13 @@
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/common/Assertion.h>
 
+#include <IPXACTmodels/kactusExtensions/SWView.h>
+#include <IPXACTmodels/kactusExtensions/ComProperty.h>
+#include <IPXACTmodels/kactusExtensions/SystemView.h>
+#include <IPXACTmodels/kactusExtensions/ComInterface.h>
+#include <IPXACTmodels/kactusExtensions/ApiInterface.h>
+#include <IPXACTmodels/kactusExtensions/FileDependency.h>
+
 #include <IPXACTmodels/GenericVendorExtension.h>
 
 #include <QtTest>
@@ -70,6 +77,13 @@ private slots:
     void writeParameters();
     void writeAssertions();
     void writeVendorExtensions();
+
+    void writeSwViews();
+    void writeSwProperties();
+    void writeSystemViews();
+    void writeComInterfaces();
+    void writeApiInterfaces();
+    void writeFileDependencies();
 
 private:
 
@@ -899,6 +913,366 @@ void tst_ComponentWriter::writeVendorExtensions()
             "\t<ipxact:vendorExtensions>\n"
                 "\t\t<testExtension testExtensionAttribute=\"extension\">testValue</testExtension>\n"
                 "\t\t<kactus2:version>3.0.0</kactus2:version>\n"
+            "\t</ipxact:vendorExtensions>\n"
+        "</ipxact:component>\n"
+        );
+
+    ComponentWriter componentWriter;
+    componentWriter.writeComponent(xmlStreamWriter, testComponent_);
+
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentWriter::writeSwViews()
+//-----------------------------------------------------------------------------
+void tst_ComponentWriter::writeSwViews()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    xmlStreamWriter.setAutoFormatting(true);
+    xmlStreamWriter.setAutoFormattingIndent(-1);
+
+    VLNV hierarchyVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "hierarchy", "0.3");
+
+    QSharedPointer<SWView> testSW (new SWView("swView"));
+    testSW->setDisplayName("displayed");
+    testSW->setDescription("described");
+    testSW->addFileSetRef("fileSet");
+    testSW->setHierarchyRef(hierarchyVLNV);
+
+    QList<QSharedPointer<SWView> > swViewList;
+    swViewList.append(testSW);
+
+    testComponent_->setVersion("3.0.0");
+    testComponent_->setSWViews(swViewList);
+
+    QString expectedOutput(
+        "<?xml version=\"1.0\"?>\n"
+        "<ipxact:component "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
+            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:library>TestLibrary</ipxact:library>\n"
+            "\t<ipxact:name>TestComponent</ipxact:name>\n"
+            "\t<ipxact:version>0.11</ipxact:version>\n"
+            "\t<ipxact:vendorExtensions>\n"
+                "\t\t<kactus2:version>3.0.0</kactus2:version>\n"
+                "\t\t<kactus2:swViews>\n"
+                    "\t\t\t<kactus2:swView>\n"
+                        "\t\t\t\t<ipxact:name>swView</ipxact:name>\n"
+                        "\t\t\t\t<ipxact:displayName>displayed</ipxact:displayName>\n"
+                        "\t\t\t\t<ipxact:description>described</ipxact:description>\n"
+                        "\t\t\t\t<kactus2:hierarchyRef vendor=\"TUT\" library=\"TestLibrary\" name=\"hierarchy\" "
+                            "version=\"0.3\"/>\n"
+                        "\t\t\t\t<kactus2:fileSetRef>fileSet</kactus2:fileSetRef>\n"
+                    "\t\t\t</kactus2:swView>\n"
+                "\t\t</kactus2:swViews>\n"
+            "\t</ipxact:vendorExtensions>\n"
+        "</ipxact:component>\n"
+        );
+
+    ComponentWriter componentWriter;
+    componentWriter.writeComponent(xmlStreamWriter, testComponent_);
+
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentWriter::writeSwProperties()
+//-----------------------------------------------------------------------------
+void tst_ComponentWriter::writeSwProperties()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    xmlStreamWriter.setAutoFormatting(true);
+    xmlStreamWriter.setAutoFormattingIndent(-1);
+
+    QSharedPointer<ComProperty> swProperty (new ComProperty());
+    swProperty->setName("Priority");
+    swProperty->setRequired(true);
+    swProperty->setType("override.");
+    swProperty->setDefaultValue("New behaviour");
+    swProperty->setDescription("dictated");
+
+    QList<QSharedPointer<ComProperty> > properties;
+    properties.append(swProperty);
+
+    testComponent_->setVersion("3.0.0");
+    testComponent_->setSWProperties(properties);
+
+    QString expectedOutput(
+        "<?xml version=\"1.0\"?>\n"
+        "<ipxact:component "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
+            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:library>TestLibrary</ipxact:library>\n"
+            "\t<ipxact:name>TestComponent</ipxact:name>\n"
+            "\t<ipxact:version>0.11</ipxact:version>\n"
+            "\t<ipxact:vendorExtensions>\n"
+                "\t\t<kactus2:version>3.0.0</kactus2:version>\n"
+                "\t\t<kactus2:properties>\n"
+                    "\t\t\t<kactus2:property name=\"Priority\" required=\"true\" propertyType=\"override.\""
+                        " defaultValue=\"New behaviour\" description=\"dictated\"/>\n"
+                "\t\t</kactus2:properties>\n"
+            "\t</ipxact:vendorExtensions>\n"
+        "</ipxact:component>\n"
+        );
+
+    ComponentWriter componentWriter;
+    componentWriter.writeComponent(xmlStreamWriter, testComponent_);
+
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentWriter::writeSystemViews()
+//-----------------------------------------------------------------------------
+void tst_ComponentWriter::writeSystemViews()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    xmlStreamWriter.setAutoFormatting(true);
+    xmlStreamWriter.setAutoFormattingIndent(-1);
+
+    VLNV hierarchyVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "hierarchy", "0.3");
+
+    QStringList fileSetReferences;
+    fileSetReferences.append("burn");
+
+    QSharedPointer<SystemView> testSystem (new SystemView("system"));
+    testSystem->setDisplayName("crash");
+    testSystem->setDescription("BSOD");
+    testSystem->setHierarchyRef(hierarchyVLNV);
+    testSystem->setHWViewRef("malfunction");
+    testSystem->setFileSetRefs(fileSetReferences);
+
+    QList<QSharedPointer<SystemView> > systemViews;
+    systemViews.append(testSystem);
+
+    testComponent_->setVersion("3.0.0");
+    testComponent_->setSystemViews(systemViews);
+
+    QString expectedOutput(
+        "<?xml version=\"1.0\"?>\n"
+        "<ipxact:component "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
+            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:library>TestLibrary</ipxact:library>\n"
+            "\t<ipxact:name>TestComponent</ipxact:name>\n"
+            "\t<ipxact:version>0.11</ipxact:version>\n"
+            "\t<ipxact:vendorExtensions>\n"
+                "\t\t<kactus2:version>3.0.0</kactus2:version>\n"
+                "\t\t<kactus2:systemViews>\n"
+                    "\t\t\t<kactus2:systemView>\n"
+                        "\t\t\t\t<ipxact:name>system</ipxact:name>\n"
+                        "\t\t\t\t<ipxact:displayName>crash</ipxact:displayName>\n"
+                        "\t\t\t\t<ipxact:description>BSOD</ipxact:description>\n"
+                        "\t\t\t\t<kactus2:hierarchyRef vendor=\"TUT\" library=\"TestLibrary\" name=\"hierarchy\" "
+                            "version=\"0.3\"/>\n"
+                        "\t\t\t\t<kactus2:hwViewRef>malfunction</kactus2:hwViewRef>\n"
+                        "\t\t\t\t<kactus2:fileSetRef>burn</kactus2:fileSetRef>\n"
+                    "\t\t\t</kactus2:systemView>\n"
+                "\t\t</kactus2:systemViews>\n"
+            "\t</ipxact:vendorExtensions>\n"
+        "</ipxact:component>\n"
+        );
+
+    ComponentWriter componentWriter;
+    componentWriter.writeComponent(xmlStreamWriter, testComponent_);
+
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentWriter::writeComInterfaces()
+//-----------------------------------------------------------------------------
+void tst_ComponentWriter::writeComInterfaces()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    xmlStreamWriter.setAutoFormatting(true);
+    xmlStreamWriter.setAutoFormattingIndent(-1);
+
+    VLNV hierarchyVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "hierarchy", "0.3");
+
+    QMap<QString, QString> propertyValues;
+    propertyValues.insert("spathi", "eluder");
+
+    QSharedPointer<ComInterface> testComInterface (new ComInterface());
+    testComInterface->setName("coms");
+    testComInterface->setDisplayName("spec");
+    testComInterface->setDescription("ops");
+    testComInterface->setComType(hierarchyVLNV);
+    testComInterface->setTransferType("Transfer");
+    testComInterface->setDirection(DirectionTypes::IN);
+    testComInterface->setPropertyValues(propertyValues);
+    testComInterface->setComImplementation(hierarchyVLNV);
+
+    QList<QSharedPointer<ComInterface> > comInterfaces;
+    comInterfaces.append(testComInterface);
+
+    testComponent_->setVersion("3.0.0");
+    testComponent_->setComInterfaces(comInterfaces);
+
+    QString expectedOutput(
+        "<?xml version=\"1.0\"?>\n"
+        "<ipxact:component "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
+            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:library>TestLibrary</ipxact:library>\n"
+            "\t<ipxact:name>TestComponent</ipxact:name>\n"
+            "\t<ipxact:version>0.11</ipxact:version>\n"
+            "\t<ipxact:vendorExtensions>\n"
+                "\t\t<kactus2:version>3.0.0</kactus2:version>\n"
+                "\t\t<kactus2:comInterfaces>\n"
+                    "\t\t\t<kactus2:comInterface>\n"
+                        "\t\t\t\t<ipxact:name>coms</ipxact:name>\n"
+                        "\t\t\t\t<ipxact:displayName>spec</ipxact:displayName>\n"
+                        "\t\t\t\t<ipxact:description>ops</ipxact:description>\n"
+                        "\t\t\t\t<kactus2:comType vendor=\"TUT\" library=\"TestLibrary\" name=\"hierarchy\" "
+                            "version=\"0.3\"/>\n"
+                        "\t\t\t\t<kactus2:transferType>Transfer</kactus2:transferType>\n"
+                        "\t\t\t\t<kactus2:comDirection>in</kactus2:comDirection>\n"
+                        "\t\t\t\t<kactus2:propertyValues>\n"
+                            "\t\t\t\t\t<kactus2:propertyValue name=\"spathi\" value=\"eluder\"/>\n"
+                        "\t\t\t\t</kactus2:propertyValues>\n"
+                        "\t\t\t\t<kactus2:comImplementationRef vendor=\"TUT\" library=\"TestLibrary\" "
+                            "name=\"hierarchy\" version=\"0.3\"/>\n"
+                    "\t\t\t</kactus2:comInterface>\n"
+                "\t\t</kactus2:comInterfaces>\n"
+            "\t</ipxact:vendorExtensions>\n"
+        "</ipxact:component>\n"
+        );
+
+    ComponentWriter componentWriter;
+    componentWriter.writeComponent(xmlStreamWriter, testComponent_);
+
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentWriter::writeApiInterfaces()
+//-----------------------------------------------------------------------------
+void tst_ComponentWriter::writeApiInterfaces()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    xmlStreamWriter.setAutoFormatting(true);
+    xmlStreamWriter.setAutoFormattingIndent(-1);
+
+    VLNV hierarchyVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "hierarchy", "0.3");
+
+    QSharedPointer<ApiInterface> testApiInterface (new ApiInterface());
+    testApiInterface->setName("api");
+    testApiInterface->setApiType(hierarchyVLNV);
+
+
+    QList<QSharedPointer<ApiInterface> > apiInterfaces;
+    apiInterfaces.append(testApiInterface);
+
+    testComponent_->setVersion("3.0.0");
+    testComponent_->setApiInterfaces(apiInterfaces);
+
+    QString expectedOutput(
+        "<?xml version=\"1.0\"?>\n"
+        "<ipxact:component "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
+            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:library>TestLibrary</ipxact:library>\n"
+            "\t<ipxact:name>TestComponent</ipxact:name>\n"
+            "\t<ipxact:version>0.11</ipxact:version>\n"
+            "\t<ipxact:vendorExtensions>\n"
+                "\t\t<kactus2:version>3.0.0</kactus2:version>\n"
+                "\t\t<kactus2:apiInterfaces>\n"
+                    "\t\t\t<kactus2:apiInterface>\n"
+                        "\t\t\t\t<ipxact:name>api</ipxact:name>\n"
+                        "\t\t\t\t<kactus2:apiType vendor=\"TUT\" library=\"TestLibrary\" name=\"hierarchy\" "
+                            "version=\"0.3\"/>\n"
+                        "\t\t\t\t<kactus2:dependencyDirection>provider</kactus2:dependencyDirection>\n"
+                    "\t\t\t</kactus2:apiInterface>\n"
+               "\t\t</kactus2:apiInterfaces>\n"
+            "\t</ipxact:vendorExtensions>\n"
+        "</ipxact:component>\n"
+        );
+
+    ComponentWriter componentWriter;
+    componentWriter.writeComponent(xmlStreamWriter, testComponent_);
+
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentWriter::writeFileDependencies()
+//-----------------------------------------------------------------------------
+void tst_ComponentWriter::writeFileDependencies()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    xmlStreamWriter.setAutoFormatting(true);
+    xmlStreamWriter.setAutoFormattingIndent(-1);
+
+    QSharedPointer<FileDependency> pendingDependency (new FileDependency());
+    pendingDependency->setManual(true);
+    pendingDependency->setBidirectional(true);
+    pendingDependency->setLocked(false);
+    pendingDependency->setFile1("super");
+    pendingDependency->setFile2("melee");
+    pendingDependency->setDescription("Immediately obvious to the most casual observer");
+
+    QList<QSharedPointer<FileDependency> > fileDependencies;
+    fileDependencies.append(pendingDependency);
+
+    testComponent_->setVersion("3.0.0");
+    testComponent_->setPendingFileDependencies(fileDependencies);
+
+    QString expectedOutput(
+        "<?xml version=\"1.0\"?>\n"
+        "<ipxact:component "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
+            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:library>TestLibrary</ipxact:library>\n"
+            "\t<ipxact:name>TestComponent</ipxact:name>\n"
+            "\t<ipxact:version>0.11</ipxact:version>\n"
+            "\t<ipxact:vendorExtensions>\n"
+                "\t\t<kactus2:version>3.0.0</kactus2:version>\n"
+                "\t\t<kactus2:fileDependencies>\n"
+                    "\t\t\t<kactus2:fileDependency manual=\"true\" bidirectional=\"true\" locked=\"false\">\n"
+                        "\t\t\t\t<kactus2:fileRef1>super</kactus2:fileRef1>\n"
+                        "\t\t\t\t<kactus2:fileRef2>melee</kactus2:fileRef2>\n"
+                        "\t\t\t\t<ipxact:description>Immediately obvious to the most casual observer"
+                            "</ipxact:description>\n"
+                    "\t\t\t</kactus2:fileDependency>\n"
+                "\t\t</kactus2:fileDependencies>\n"
             "\t</ipxact:vendorExtensions>\n"
         "</ipxact:component>\n"
         );

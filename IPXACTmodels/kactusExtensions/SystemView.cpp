@@ -145,7 +145,7 @@ void SystemView::write(QXmlStreamWriter& writer) const
     }
 
     // write spirit:hierarchyRef if one exists
-    writer.writeEmptyElement("spirit:hierarchyRef");
+    writer.writeEmptyElement("kactus2:hierarchyRef");
     hierarchyRef_.writeAsAttributes(writer);
 
     // Write HW view reference.

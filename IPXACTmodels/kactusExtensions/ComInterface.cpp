@@ -162,8 +162,8 @@ void ComInterface::write(QXmlStreamWriter& writer) const
         iter.next();
 
         writer.writeEmptyElement("kactus2:propertyValue");
-        writer.writeAttribute("kactus2:name", iter.key());
-        writer.writeAttribute("kactus2:value", iter.value());
+        writer.writeAttribute("name", iter.key());
+        writer.writeAttribute("value", iter.value());
     }
 
     writer.writeEndElement(); // kactus2:propertyValues

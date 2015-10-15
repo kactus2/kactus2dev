@@ -93,7 +93,7 @@ QSharedPointer<BusInterface> businterfaceReader::createbusinterfaceFrom(QDomNode
 			QDomNode busTypeNode = children.at(i);
 
 			// Create the vlnv and set a pointer for it.
-			newbusinterface->setBusType( VLNV::createVLNV(busTypeNode, VLNV::BUSDEFINITION) );
+            newbusinterface->setBusType(parseVLNVAttributes(busTypeNode, VLNV::BUSDEFINITION));
 		}
 
 		// Get bool connectionRequired.

@@ -167,6 +167,14 @@ private:
      *      @param [in] component   The component being written.
      */
     void writeOtherClockDrivers(QXmlStreamWriter& writer, QSharedPointer<Component> component) const;
+
+    /*!
+     *  Write the other component extensions.
+     *
+     *      @param [in] writer      The used XML writer.
+     *      @param [in] component   The component being written.
+     */
+    void writeComponentExtensions(QXmlStreamWriter& writer, QSharedPointer<Component> component) const;
 };
 
 #endif // COMPONENTWRITER_H

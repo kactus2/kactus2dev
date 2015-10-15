@@ -122,13 +122,13 @@ QString FileDependency::type() const
 void FileDependency::write(QXmlStreamWriter& writer) const
 {
     writer.writeStartElement("kactus2:fileDependency");
-    writer.writeAttribute("kactus2:manual", General::bool2Str(manual_));
-    writer.writeAttribute("kactus2:bidirectional", General::bool2Str(bidirectional_));
-    writer.writeAttribute("kactus2:locked", General::bool2Str(locked_));
+    writer.writeAttribute("manual", General::bool2Str(manual_));
+    writer.writeAttribute("bidirectional", General::bool2Str(bidirectional_));
+    writer.writeAttribute("locked", General::bool2Str(locked_));
 
     writer.writeTextElement("kactus2:fileRef1", file1_);
     writer.writeTextElement("kactus2:fileRef2", file2_);
-    writer.writeTextElement("spirit:description", desc_);
+    writer.writeTextElement("ipxact:description", desc_);
 
     writer.writeEndElement(); // kactus2:fileDependency
 }

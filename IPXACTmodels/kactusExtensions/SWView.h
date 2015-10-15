@@ -157,16 +157,19 @@ public:
 	void addFileSetRef(const QString& fileSetName);
 
 	//! Get the SW build commands of the SW view.
-	QList<QSharedPointer<SWBuildCommand> >& getSWBuildCommands();
+    QSharedPointer<QList<QSharedPointer<SWBuildCommand> > > getSWBuildCommands() const;
 
-	//! Get the SW build commands of the SW view.
-	const QList<QSharedPointer<SWBuildCommand> >& getSWBuildCommands() const;
+    /*!
+     *  Set the sw build commands.
+     *
+     *      @param [in] newSWBuildCommands  Pointer to a list of new sw build commands.
+     */
+    void setSWBuildCommands(QSharedPointer<QList<QSharedPointer<SWBuildCommand> > > newSWBuildCommands);
 
 	//! Get the build command for the board support package.
 	QSharedPointer<BSPBuildCommand> getBSPBuildCommand();
 
-	//! Get the build command for the board support package.
-	const QSharedPointer<BSPBuildCommand> getBSPBuildCommand() const;
+    void setBSPBuildCommand(QSharedPointer<BSPBuildCommand> newCommand);
 
     /*!
      *  Set the status of the view in HW component.
@@ -207,7 +210,7 @@ private:
 	QStringList filesetRefs_;
 
 	//! Contains the SW build commands for SW view.
-	QList<QSharedPointer<SWBuildCommand> > swBuildCommands_;
+    QSharedPointer<QList<QSharedPointer<SWBuildCommand> > > swBuildCommands_;
 
 	//! Contains the command options to build the BSP package for HW component.
 	QSharedPointer<BSPBuildCommand> bspCommand_;

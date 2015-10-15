@@ -86,11 +86,11 @@ QString ComProperty::type() const
 void ComProperty::write(QXmlStreamWriter& writer) const
 {
     writer.writeEmptyElement("kactus2:property");
-    writer.writeAttribute("kactus2:name", name_);
-    writer.writeAttribute("kactus2:required", General::bool2Str(required_));
-    writer.writeAttribute("kactus2:propertyType", type_);
-    writer.writeAttribute("kactus2:defaultValue", defaultValue_);
-    writer.writeAttribute("kactus2:description", desc_);
+    writer.writeAttribute("name", name_);
+    writer.writeAttribute("required", General::bool2Str(required_));
+    writer.writeAttribute("propertyType", type_);
+    writer.writeAttribute("defaultValue", defaultValue_);
+    writer.writeAttribute("description", desc_);
 }
 
 //-----------------------------------------------------------------------------

@@ -89,7 +89,7 @@ void ComponentWriter::writeComponent(QXmlStreamWriter& writer, QSharedPointer<Co
 
     writeAssertions(writer, component);
 
-    writeVendorExtensions(writer, component);
+    writeComponentExtensions(writer, component);
 
     writer.writeEndElement(); // ipxact:component
 
@@ -383,4 +383,17 @@ void ComponentWriter::writeOtherClockDrivers(QXmlStreamWriter& writer, QSharedPo
 
         writer.writeEndElement(); // ipxact:otherClockDrivers
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentWriter::writeComponentExtensions()
+//-----------------------------------------------------------------------------
+void ComponentWriter::writeComponentExtensions(QXmlStreamWriter& writer, QSharedPointer<Component> component) const
+{
+    if (!component->getPendingFileDependencies().isEmpty())
+    {
+        component->setFileDependendencies(component->getPendingFileDependencies());
+    }
+
+    writeVendorExtensions(writer, component);
 }

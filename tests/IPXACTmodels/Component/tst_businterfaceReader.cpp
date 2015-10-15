@@ -116,8 +116,7 @@ void tst_businterfaceReader::testReadBusType()
 {
 	QString documentContent(
 		"<ipxact:busInterface>"
-		"<ipxact:busType ipxact:vendor=\"joq.org\""
-		"ipxact:library=\"busdef.clock\" ipxact:name=\"clock\" ipxact:version=\"1.0\"/>"
+		"<ipxact:busType vendor=\"joq.org\" library=\"busdef.clock\" name=\"clock\" version=\"1.0\"/>"
 		"</ipxact:busInterface>"
 		);
 
