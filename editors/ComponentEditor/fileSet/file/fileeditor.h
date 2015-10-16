@@ -1,14 +1,18 @@
-/* 
- *
- *  Created on: 5.2.2011
- *      Author: Antti Kamppi
- * 		filename: fileeditor.h
- */
+//-----------------------------------------------------------------------------
+// File: fileeditor.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 5.2.2011
+//
+// Description:
+// Editor for the details of a file.
+//-----------------------------------------------------------------------------
 
 #ifndef FILEEDITOR_H
 #define FILEEDITOR_H
 
-#include "../../itemeditor.h"
+#include <editors/ComponentEditor/itemeditor.h>
 
 #include "filenameeditor.h"
 #include "filegeneraleditor.h"
@@ -18,18 +22,15 @@
 #include <common/widgets/listManager/dirlistmanager.h>
 #include <common/widgets/listManager/listmanager.h>
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/file.h>
-
 #include <QWidget>
-#include <QFileInfo>
-#include <QTabWidget>
 #include <QSharedPointer>
 
 class LibraryInterface;
+class Component;
+class File;
 
 //-----------------------------------------------------------------------------
-// Editor for the details of a file.
+//! Editor for the details of a file.
 //-----------------------------------------------------------------------------
 class FileEditor : public ItemEditor
 {
@@ -37,30 +38,30 @@ class FileEditor : public ItemEditor
 
 public:
 
-	/*! \brief The constructor
+	/*!
+     *  The constructor.
 	 *
-	 * \param handler Pointer to the instance that manages the library.
-	 * \param component Pointer to the component being edited.
-	 * \param file Pointer to the file that is edited.
-	 * \param parent Pointer to the owner of this widget.
-	 *
-	*/
-	FileEditor(LibraryInterface* handler,
-		QSharedPointer<Component> component, 
-		QSharedPointer<File> file,
-		QWidget *parent = 0);
+	 *      @param [in] handler     Pointer to the instance that manages the library.
+	 *      @param [in] component   Pointer to the component being edited.
+	 *      @param [in] file        Pointer to the file that is edited.
+	 *      @param [in] parent      Pointer to the owner of this widget.
+	 */
+	FileEditor(LibraryInterface* handler, QSharedPointer<Component> component, QSharedPointer<File> file,
+        QWidget *parent = 0);
 
-	//! \brief The destructor
+	//! The destructor.
 	virtual ~FileEditor();
 
-	/*! \brief Check for the validity of the edited item.
-	* 
-	* \return True if item is valid.
-	*/
+	/*!
+     *  Check for the validity of the edited item.
+	 * 
+	 *      @return True if item is valid.
+	 */
 	virtual bool isValid() const;
 
-	/*! \brief Reload the information from the model to the editor.
-	*/
+	/*!
+     *  Reload the information from the model to the editor.
+	 */
 	virtual void refresh();
 
 signals:
@@ -104,10 +105,8 @@ private slots:
 
 private:
 
-	//! No copying
+	//! No copying. No assignment.
 	FileEditor(const FileEditor& other);
-
-	//! No assignment
 	FileEditor& operator=(const FileEditor& other);
 
     /*!

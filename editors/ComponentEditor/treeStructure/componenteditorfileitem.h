@@ -13,62 +13,70 @@
 #define COMPONENTEDITORFILEITEM_H
 
 #include "componenteditoritem.h"
-#include <IPXACTmodels/file.h>
 
 #include <QRegExpValidator>
 
+class File;
+class Component;
+class LibraryInterface;
 
-class ComponentEditorFileItem : public ComponentEditorItem {
+//-----------------------------------------------------------------------------
+//! The item for a single file in component editor's navigation tree.
+//-----------------------------------------------------------------------------
+class ComponentEditorFileItem : public ComponentEditorItem
+{
 	Q_OBJECT
 
 public:
 
-	/*! \brief The constructor
+	/*!
+     *  The constructor.
 	 *
-	 * \param file Pointer to the file being edited.
-	 * \param model Pointer to the model that owns the items.
-	 * \param libHandler Pointer to the instance that manages the library.
-	 * \param component Pointer to the component being edited.
-	 * \param parent Pointer to the parent item.
-	 *
-	*/
-	ComponentEditorFileItem(QSharedPointer<File> file,
-		ComponentEditorTreeModel* model,
-		LibraryInterface* libHandler,
-		QSharedPointer<Component> component,
-		ComponentEditorItem* parent);
+	 *      @param [in] file        Pointer to the file being edited.
+	 *      @param [in] model       Pointer to the model that owns the items.
+	 *      @param [in] libHandler  Pointer to the instance that manages the library.
+	 *      @param [in] component   Pointer to the component being edited.
+	 *      @param [in] parent      Pointer to the parent item.
+	 */
+	ComponentEditorFileItem(QSharedPointer<File> file, ComponentEditorTreeModel* model,
+        LibraryInterface* libHandler, QSharedPointer<Component> component, ComponentEditorItem* parent);
 
-	//! \brief The destructor
+	//! The destructor.
 	virtual ~ComponentEditorFileItem();
 
-	/*! \brief Get the tool tip for the item.
+	/*!
+     *  Get the tool tip for the item.
 	 * 
-	 * \return The text for the tool tip to print to user.
-	*/
+	 *      @return The text for the tool tip to print to user.
+	 */
 	virtual QString getTooltip() const;
 
-	/*! \brief Get the text to be displayed to user in the tree for this item.
+	/*!
+     *  Get the text to be displayed to user in the tree for this item.
 	 *
-	 * \return QString Contains the text to display.
-	*/
+	 *      @return QString Contains the text to display.
+	 */
 	virtual QString text() const;
 
-	/*! \brief Check the validity of this item and sub items.
+	/*!
+     *  Check the validity of this item and sub items.
 	 *
-	 * \return bool True if item is in valid state.
-	*/
+	 *      @return bool True if item is in valid state.
+	 */
 	virtual bool isValid() const;
 
-	/*! \brief Get pointer to the editor of this item.
+	/*!
+     *  Get pointer to the editor of this item.
 	 *
-	 * \return Pointer to the editor to use for this item.
-	*/
+	 *      @return Pointer to the editor to use for this item.
+	 */
 	virtual ItemEditor* editor();
 
-	/*! \brief Tells if the item can be opened or not.
+	/*!
+     *  Tells if the item can be opened or not.
 	 * 
-	 * Files can always be opened and this function returns true.
-	*/
+	 *      @return Files can always be opened and this function returns true.
+	 */
 	virtual bool canBeOpened() const;
 
     /*!
@@ -91,19 +99,18 @@ public slots:
 
 protected slots:
 
-	/*! \brief Handler for editor's contentChanged signal.
-	 *
-	*/
+	/*!
+     *  Handler for editor's contentChanged signal.
+	 */
 	virtual void onEditorChanged();
 
 	//! Opens the folder that contains the file.
 	void onOpenContainingFolder();
 
 private:
-	//! \brief No copying
+	
+    //! No copying. No assignment.
 	ComponentEditorFileItem(const ComponentEditorFileItem& other);
-
-	//! \brief No assignment
 	ComponentEditorFileItem& operator=(const ComponentEditorFileItem& other);
    
     //! Finds the absolute path of the file represented by the item.
@@ -117,7 +124,9 @@ private:
     void runInApplication(QString const& applicationPath);
 
     /*!
-     *  Returns true if the item should be opened in Kactus2 CSource editor.
+     *  Checks if the item should be opened in Katus2 CSource editor.
+     *
+     *      @return True if the item should be opened, false otherwise.
      */
     virtual bool useKactusCSourceEditor() const;
 
@@ -144,7 +153,11 @@ private:
      */
 	QString resolveEnvironmentVariables(QString const& text) const;
 
-    //! \brief Pointer to the file being edited.
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! Pointer to the file being edited.
 	QSharedPointer<File> file_;
 
     //! Action to open the file for editing with default editor.

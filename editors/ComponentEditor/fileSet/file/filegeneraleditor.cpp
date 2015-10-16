@@ -1,19 +1,27 @@
-/* 
- *
- *  Created on: 6.2.2011
- *      Author: Antti Kamppi
- * 		filename: filegeneraleditor.cpp
- */
+//-----------------------------------------------------------------------------
+// File: filegeneraleditor.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 6.2.2011
+//
+// Description:
+// FileGeneralEditor is a widget to edit File's general settings.
+//-----------------------------------------------------------------------------
 
 #include "filegeneraleditor.h"
 
 #include <common/utils.h>
 
+#include <IPXACTmodels/Component/File.h>
+
 #include <QLabel>
 #include <QGridLayout>
 
-FileGeneralEditor::FileGeneralEditor(QWidget *parent, 
-									 QSharedPointer<File> file): 
+//-----------------------------------------------------------------------------
+// Function: filegeneraleditor::FileGeneralEditor()
+//-----------------------------------------------------------------------------
+FileGeneralEditor::FileGeneralEditor(QWidget *parent, QSharedPointer<File> file):
 QGroupBox(tr("General options"), parent), 
 file_(file),
 logicalName_(this), 
@@ -48,29 +56,49 @@ externalDec_(tr("File contains external declarations"), this)
 	refresh();
 }
 
-FileGeneralEditor::~FileGeneralEditor() {
+//-----------------------------------------------------------------------------
+// Function: filegeneraleditor::~FileGeneralEditor()
+//-----------------------------------------------------------------------------
+FileGeneralEditor::~FileGeneralEditor()
+{
 
 }
 
-void FileGeneralEditor::refresh() {
+//-----------------------------------------------------------------------------
+// Function: filegeneraleditor::refresh()
+//-----------------------------------------------------------------------------
+void FileGeneralEditor::refresh()
+{
 	logicalName_.setText(file_->getLogicalName());
-	logicalDefault_.setChecked(file_->getLogicalNameDefault());
-	includeFile_.setChecked(file_->getIncludeFile());
-	externalDec_.setChecked(file_->getExternalDeclarations());
+    logicalDefault_.setChecked(file_->isLogicalNameDefault());
+    includeFile_.setChecked(file_->isIncludeFile());
+    externalDec_.setChecked(file_->hasExternalDeclarations());
 }
 
-void FileGeneralEditor::onLogicalNameChanged() {
+//-----------------------------------------------------------------------------
+// Function: filegeneraleditor::onLogicalNameChanged()
+//-----------------------------------------------------------------------------
+void FileGeneralEditor::onLogicalNameChanged()
+{
 	file_->setLogicalName(logicalName_.text());
 	file_->setLogicalNameDefault(logicalDefault_.isChecked());
 	emit contentChanged();
 }
 
-void FileGeneralEditor::onIncludeFileChanged() {
+//-----------------------------------------------------------------------------
+// Function: filegeneraleditor::onIncludeFileChanged()
+//-----------------------------------------------------------------------------
+void FileGeneralEditor::onIncludeFileChanged()
+{
 	file_->setIncludeFile(includeFile_.isChecked());
 	emit contentChanged();
 }
 
-void FileGeneralEditor::onExternalDecChanged() {
+//-----------------------------------------------------------------------------
+// Function: filegeneraleditor::onExternalDecChanged()
+//-----------------------------------------------------------------------------
+void FileGeneralEditor::onExternalDecChanged()
+{
 	file_->setExternalDeclarations(externalDec_.isChecked());
 	emit contentChanged();
 }

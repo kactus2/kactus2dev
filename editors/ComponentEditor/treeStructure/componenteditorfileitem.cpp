@@ -12,8 +12,11 @@
 #include "componenteditorfileitem.h"
 
 #include <editors/ComponentEditor/fileSet/file/fileeditor.h>
-#include <IPXACTmodels/component.h>
 #include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/Component/File.h>
+#include <IPXACTmodels/Component/Component.h>
+
+#include <library/LibraryManager/libraryinterface.h>
 
 #include <QDesktopServices>
 #include <QFileInfo>
@@ -27,11 +30,8 @@
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorFileItem::ComponentEditorFileItem()
 //-----------------------------------------------------------------------------
-ComponentEditorFileItem::ComponentEditorFileItem(QSharedPointer<File> file,
-												 ComponentEditorTreeModel* model,
-												 LibraryInterface* libHandler,
-												 QSharedPointer<Component> component,
-												 ComponentEditorItem* parent):
+ComponentEditorFileItem::ComponentEditorFileItem(QSharedPointer<File> file, ComponentEditorTreeModel* model,
+    LibraryInterface* libHandler, QSharedPointer<Component> component, ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 file_(file),
 editAction_(new QAction(tr("Edit"), this)),
@@ -66,6 +66,7 @@ QString ComponentEditorFileItem::text() const
 //-----------------------------------------------------------------------------
 bool ComponentEditorFileItem::isValid() const
 {
+    /*
 	// if the file is not valid
 	if (!file_->isValid(true)) {
 		return false;
@@ -92,7 +93,9 @@ bool ComponentEditorFileItem::isValid() const
 
     // check if the file exists in the file system
     QFileInfo fileInfo(absPath);
-    return fileInfo.exists();
+    return fileInfo.exists();*/
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -100,7 +103,8 @@ bool ComponentEditorFileItem::isValid() const
 //-----------------------------------------------------------------------------
 ItemEditor* ComponentEditorFileItem::editor()
 {
-	if (!editor_) {
+	if (!editor_)
+    {
 		editor_ = new FileEditor(libHandler_, component_, file_);
 		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
@@ -189,10 +193,11 @@ QList<QAction*> ComponentEditorFileItem::actions() const
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorFileItem::onEditorChanged()
 //-----------------------------------------------------------------------------
-void ComponentEditorFileItem::onEditorChanged() {
-	
+void ComponentEditorFileItem::onEditorChanged()
+{
 	// on file also the grand parent must be updated
-	if (parent() && parent()->parent()) {
+	if (parent() && parent()->parent())
+    {
 		emit contentChanged(parent()->parent());
 	}
 
@@ -206,7 +211,7 @@ void ComponentEditorFileItem::onEditorChanged() {
 QString ComponentEditorFileItem::fileAbsolutePath() const
 {
     const QString relPath = file_->name();
-    const QString xmlPath = libHandler_->getPath(*component_->getVlnv());
+    const QString xmlPath = libHandler_->getPath(component_->getVlnv());
 
     return General::getAbsolutePath(xmlPath, relPath);
 }
@@ -227,7 +232,7 @@ bool ComponentEditorFileItem::useKactusCSourceEditor() const
 {
 	QSettings settings;
 
-	foreach(QString fileType, file_->getAllFileTypes())
+	foreach(QString fileType, *file_->getFileTypes())
 	{
 		QString key = "FileTypes/" + fileType + "/EditInKactus";
 
@@ -255,7 +260,7 @@ QString ComponentEditorFileItem::executablePath() const
 {
     QSettings settings;
 
-    foreach(QString fileType, file_->getAllFileTypes())
+    foreach(QString fileType, *file_->getFileTypes())
     {
         QString key = "FileTypes/" + fileType + "/Executable";
         QString executableName = settings.value(key).toString();

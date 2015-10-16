@@ -1,31 +1,49 @@
-/* 
- *	Created on:	26.4.2013
- *	Author:		Antti Kamppi
- *	File name:	dirlistmanagermodel.cpp
- *	Project:		Kactus 2
-*/
+//-----------------------------------------------------------------------------
+// File: dirlistmanagermodel.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 26.04.2013
+//
+// Description:
+// The model which re-implements the validity check of dir paths.
+//-----------------------------------------------------------------------------
 
 #include "dirlistmanagermodel.h"
+
 #include <library/LibraryManager/libraryinterface.h>
+
 #include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/Component/Component.h>
 
 #include <QFileInfo>
 #include <QColor>
 #include <QIcon>
 #include <QPixmap>
 
-DirListManagerModel::DirListManagerModel(LibraryInterface* handler, 
-	QSharedPointer<Component> component,
-	QObject *parent, 
-	const QStringList& items):
+//-----------------------------------------------------------------------------
+// Function: dirlistmanagermodel::DirListManagerModel()
+//-----------------------------------------------------------------------------
+DirListManagerModel::DirListManagerModel(LibraryInterface* handler, QSharedPointer<Component> component,
+    QObject *parent, const QStringList& items):
 ListManagerModel(parent, items),
 handler_(handler),
-component_(component) {
+component_(component)
+{
+
 }
 
-DirListManagerModel::~DirListManagerModel() {
+//-----------------------------------------------------------------------------
+// Function: dirlistmanagermodel::~DirListManagerModel()
+//-----------------------------------------------------------------------------
+DirListManagerModel::~DirListManagerModel()
+{
+
 }
 
+//-----------------------------------------------------------------------------
+// Function: dirlistmanagermodel::data()
+//-----------------------------------------------------------------------------
 QVariant DirListManagerModel::data( const QModelIndex& index, int role /*= Qt::DisplayRole*/ ) const
 {
 	if (!index.isValid())
@@ -70,7 +88,7 @@ QVariant DirListManagerModel::data( const QModelIndex& index, int role /*= Qt::D
 //-----------------------------------------------------------------------------
 bool DirListManagerModel::directoryExistsForPath(QString const& relativePath) const
 {
-    QString xmlPath = handler_->getPath(*component_->getVlnv());
+    QString xmlPath = handler_->getPath(component_->getVlnv());
     QString absDirPath = General::getAbsolutePath(xmlPath, relativePath);
 
     QFileInfo dirInfo(absDirPath);

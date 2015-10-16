@@ -1,14 +1,16 @@
-/* 
- *
- *  Created on: 6.2.2011
- *      Author: Antti Kamppi
- * 		filename: filegeneraleditor.h
- */
+//-----------------------------------------------------------------------------
+// File: filegeneraleditor.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 6.2.2011
+//
+// Description:
+// FileGeneralEditor is a widget to edit File's general settings.
+//-----------------------------------------------------------------------------
 
 #ifndef FILEGENERALEDITOR_H
 #define FILEGENERALEDITOR_H
-
-#include <IPXACTmodels/file.h>
 
 #include <QGroupBox>
 #include <QLineEdit>
@@ -16,68 +18,68 @@
 #include <QPlainTextEdit>
 #include <QSharedPointer>
 
-/*! \brief FileGeneralEditor is a widget to edit File's general settings.
- *
- */
-class FileGeneralEditor : public QGroupBox {
+class File;
+
+//-----------------------------------------------------------------------------
+//! FileGeneralEditor is a widget to edit File's general settings.
+//-----------------------------------------------------------------------------
+class FileGeneralEditor : public QGroupBox
+{
 	Q_OBJECT
 
 public:
 
-	/*! \brief The constructor
+	/*!
+     *  The constructor.
 	 *
-	 * \param parent Pointer to the owner of this widget
-	 * \param file Pointer to the file that is being edited.
-	 *
-	*/
-	FileGeneralEditor(QWidget *parent, 
-		QSharedPointer<File> file);
+	 *      @param [in] parent  Pointer to the owner of this widget
+	 *      @param [in] file    Pointer to the file that is being edited.
+	 */
+	FileGeneralEditor(QWidget *parent, QSharedPointer<File> file);
 
-	//! \brief The destructor
+	//! The destructor.
 	virtual ~FileGeneralEditor();
 	
-	/*! \brief Restore the settings from the model.
-	 *
-	*/
+	/*!
+     *  Restore the settings from the model.
+	 */
 	void refresh();
 
 signals:
 
-	//! \brief Emitted when the contents on one of the elements change.
+	//! Emitted when the contents on one of the elements change.
 	void contentChanged();
 
 private slots:
 
-	//! \brief Handler for changes in logical name.
+	//! Handler for changes in logical name.
 	void onLogicalNameChanged();
 
-	//! \brief Handler for changes in include file setting.
+	//! Handler for changes in include file setting.
 	void onIncludeFileChanged();
 
-	//! \brief Handler for external declarations changes.
+	//! Handler for external declarations changes.
 	void onExternalDecChanged();
 
 private:
 
-	//! \brief No copying
+	//! No copying. No assignment. No regret.
 	FileGeneralEditor(const FileGeneralEditor& other);
-
-	//! No assignment
 	FileGeneralEditor& operator=(const FileGeneralEditor& other);
 	
-	//! \brief Pointer to the file instance that is modified.
+	//! Pointer to the file instance that is modified.
 	QSharedPointer<File> file_;
 
-	//! \brief The editor to set the logical name for the file.
+	//! The editor to set the logical name for the file.
 	QLineEdit logicalName_;
 
-	//! \brief The check box to set the logical name as default or not.
+	//! The check box to set the logical name as default or not.
 	QCheckBox logicalDefault_;
 
-	//! \brief The check box to set the file as include file or not.
+	//! The check box to set the file as include file or not.
 	QCheckBox includeFile_;
 
-	//! \brief The check box to inform that file contains external declarations.
+	//! The check box to inform that file contains external declarations.
 	QCheckBox externalDec_;
 };
 

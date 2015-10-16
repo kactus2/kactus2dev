@@ -11,21 +11,19 @@
 
 #include "filenameeditor.h"
 
-#include <IPXACTmodels/file.h>
+#include <IPXACTmodels/Component/File.h>
 
-#include <QVBoxLayout>
-#include <QHBoxLayout>
 #include <QGridLayout>
 #include <QLabel>
 
 //-----------------------------------------------------------------------------
 // Function: FileNameEditor::FileNameEditor()
 //-----------------------------------------------------------------------------
-FileNameEditor::FileNameEditor(QSharedPointer<File> file, QWidget* parent)
-    : QGroupBox(tr("File name and path"), parent), 
-      fileNameLabel_(file->name(), this),
-      descriptionEditor_(this),
-      file_(file)
+FileNameEditor::FileNameEditor(QSharedPointer<File> file, QWidget* parent) :
+QGroupBox(tr("File name and path"), parent),
+fileNameLabel_(file->name(), this),
+descriptionEditor_(this),
+file_(file)
 {
     setMaximumHeight(100);
     

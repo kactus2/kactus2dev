@@ -1,25 +1,28 @@
-/* 
- *
- *  Created on: 5.2.2011
- *      Author: Antti Kamppi
- * 		filename: fileeditor.cpp
- */
+//-----------------------------------------------------------------------------
+// File: fileeditor.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 5.2.2011
+//
+// Description:
+// Editor for the details of a file.
+//-----------------------------------------------------------------------------
 
 #include "fileeditor.h"
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/file.h>
 #include <library/LibraryManager/libraryinterface.h>
+
+#include <IPXACTmodels/Component/File.h>
+#include <IPXACTmodels/Component/Component.h>
 
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
 // Function: fileeditor::FileEditor()
 //-----------------------------------------------------------------------------
-FileEditor::FileEditor( LibraryInterface* handler,
-					   QSharedPointer<Component> component, 
-					   QSharedPointer<File> file, 
-					   QWidget *parent ):
+FileEditor::FileEditor( LibraryInterface* handler, QSharedPointer<Component> component, QSharedPointer<File> file,
+    QWidget *parent ):
 ItemEditor(component, handler, parent),
 file_(file),
 nameEditor_(file_, this),
@@ -81,9 +84,10 @@ void FileEditor::refresh()
     generalEditor_.refresh();
     fileTypeEditor_.restore();
     buildCommand_.refresh();
-    dependenciesEditor_.setItems(file_->getDependencies());
-    exportedNamesEditor_.setItems(file_->getExportedNames());
-    imageTypesEditor_.setItems(file_->getImageTypes());
+
+    dependenciesEditor_.setItems(*file_->getDependencies().data());
+    exportedNamesEditor_.setItems(*file_->getExportedNames().data());
+    imageTypesEditor_.setItems(*file_->getImageTypes().data());
 }
 
 //-----------------------------------------------------------------------------
@@ -101,7 +105,13 @@ void FileEditor::showEvent(QShowEvent* event)
 void FileEditor::onFileTypesChanged()
 {
     QStringList fileTypes = fileTypeEditor_.items();
-    file_->setAllFileTypes(fileTypes);
+
+    file_->clearFileTypes();
+    foreach (QString item, fileTypes)
+    {
+        file_->getFileTypes()->append(item);
+    }
+
     emit contentChanged();
 }
 
@@ -110,7 +120,13 @@ void FileEditor::onFileTypesChanged()
 //-----------------------------------------------------------------------------
 void FileEditor::onDependenciesChanged()
 {
-    file_->setDependencies(dependenciesEditor_.items());
+    QStringList dependencies = dependenciesEditor_.items();
+    file_->getDependencies()->clear();
+    foreach (QString item, dependencies)
+    {
+        file_->getDependencies()->append(item);
+    }
+
     emit contentChanged();
 }
 
@@ -119,7 +135,13 @@ void FileEditor::onDependenciesChanged()
 //-----------------------------------------------------------------------------
 void FileEditor::onExportedNamesChanged()
 {
-    file_->setExportedNames(exportedNamesEditor_.items());
+    QStringList exportedNames = exportedNamesEditor_.items();
+    file_->getExportedNames()->clear();
+    foreach (QString item, exportedNames)
+    {
+        file_->getExportedNames()->append(item);
+    }
+
     emit contentChanged();
 }
 
@@ -128,7 +150,13 @@ void FileEditor::onExportedNamesChanged()
 //-----------------------------------------------------------------------------
 void FileEditor::onImageTypesChanged()
 {
-    file_->setImageTypes(imageTypesEditor_.items());
+    QStringList imageTypes = imageTypesEditor_.items();
+    file_->getImageTypes()->clear();
+    foreach (QString item, imageTypes)
+    {
+        file_->getImageTypes()->append(item);
+    }
+
     emit contentChanged();
 }
 

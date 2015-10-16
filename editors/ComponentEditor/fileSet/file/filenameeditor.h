@@ -13,14 +13,13 @@
 #define FILENAMEEDITOR_H
 
 #include <QGroupBox>
-#include <QString>
 #include <QSharedPointer>
 #include <QLabel>
 #include <QPlainTextEdit>
 
 class File;
 //-----------------------------------------------------------------------------
-// Class FileNameEditor.
+//! FileNameEditor is a widget to display the name element in FileSet.
 //-----------------------------------------------------------------------------
 class FileNameEditor : public QGroupBox 
 {
@@ -64,10 +63,8 @@ private slots:
 
 private:
 
-	//! No copying
+	//! No copying. No assignment.
 	FileNameEditor(const FileNameEditor& other);
-
-	//! No assignment
 	FileNameEditor& operator=(const FileNameEditor& other);
 	
 	//! The label to display the file name.
