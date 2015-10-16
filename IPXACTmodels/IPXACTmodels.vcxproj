@@ -158,8 +158,6 @@
     <ClCompile Include="BusDefinition\BusDefinitionReader.cpp" />
     <ClCompile Include="BusDefinition\BusDefinitionWriter.cpp" />
     <ClCompile Include="businterface.cpp" />
-    <ClCompile Include="channel.cpp" />
-    <ClCompile Include="choice.cpp" />
     <ClCompile Include="ComDefinition.cpp" />
     <ClCompile Include="ComInterface.cpp" />
     <ClCompile Include="common\Array.cpp" />
@@ -184,7 +182,6 @@
     <ClCompile Include="common\Vector.cpp" />
     <ClCompile Include="componentgenerator.cpp" />
     <ClCompile Include="ComProperty.cpp" />
-    <ClCompile Include="cpu.cpp" />
     <ClCompile Include="designconfabstractor.cpp" />
     <ClCompile Include="designConfiguration\AbstractorInstance.cpp" />
     <ClCompile Include="designConfiguration\DesignConfiguration.cpp" />
@@ -592,8 +589,6 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_XML_LIB -DIPXACTMODELS_LIB -D_WINDLL "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(SolutionDir)\."</Command>
     </CustomBuild>
     <ClInclude Include="businterface.h" />
-    <ClInclude Include="channel.h" />
-    <ClInclude Include="choice.h" />
     <ClInclude Include="ComDefinition.h" />
     <ClInclude Include="ComInterface.h" />
     <ClInclude Include="common\Array.h" />
@@ -703,7 +698,6 @@
     <ClInclude Include="common\Vector.h" />
     <ClInclude Include="componentgenerator.h" />
     <ClInclude Include="ComProperty.h" />
-    <ClInclude Include="cpu.h" />
     <ClInclude Include="designconfabstractor.h" />
     <ClInclude Include="designConfiguration\AbstractorInstance.h" />
     <ClInclude Include="designConfiguration\DesignConfiguration.h" />

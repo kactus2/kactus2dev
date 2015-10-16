@@ -50,7 +50,7 @@ public:
     /*!
      *  Returns the properties.
      */
-    QList< QSharedPointer<ComProperty> > const& getProperties() const;
+    QList< QSharedPointer<ComProperty> >getProperties() const;
 
     /*!
      *  Returns the number of rows in the model.

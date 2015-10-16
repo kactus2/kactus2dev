@@ -113,12 +113,6 @@
     <ClCompile Include="businterface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="channel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="choice.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ComDefinition.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -129,9 +123,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ComProperty.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="cpu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="designconfabstractor.cpp">
@@ -682,12 +673,6 @@
     <ClInclude Include="businterface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="channel.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="choice.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ComDefinition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -698,9 +683,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ComProperty.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cpu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="designconfabstractor.h">

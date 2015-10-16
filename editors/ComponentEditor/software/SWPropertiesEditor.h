@@ -12,13 +12,18 @@
 #ifndef SWPROPERTIESEDITOR_H
 #define SWPROPERTIESEDITOR_H
 
-#include <editors/ComDefinitionEditor/ComPropertyModel.h>
 #include <editors/ComponentEditor/itemeditor.h>
+
+#include <editors/ComDefinitionEditor/ComPropertyModel.h>
+
 #include <common/views/EditableTableView/editabletableview.h>
 
-#include <QSortFilterProxyModel>
 #include <QSharedPointer>
+#include <QShowEvent>
+#include <QSortFilterProxyModel>
+#include <QString>
 
+class Component;
 class LibraryInterface;
 
 //-----------------------------------------------------------------------------
@@ -30,20 +35,13 @@ class SWPropertiesEditor : public ItemEditor
 
 public:
 	
-	/*! \brief The constructor
+	/*! The constructor
 	 *
-	 * Method: 		SWPropertiesEditor
-	 * Full name:	SWPropertiesEditor::SWPropertiesEditor
-	 * Access:		private 
-	 *
-	 * \param component Pointer to the component being edited.
-	 * \param handler Pointer to the instance managing the library.
-	 * \param parent Pointer to the owner of the editor.
-	 *
+	 *      @param [in] component   The component being edited.
+	 *      @param [in] handler     The instance managing the library.
+	 *      @param [in] parent      The owner of the editor.
 	*/
-	SWPropertiesEditor(QSharedPointer<Component> component,
-		LibraryInterface* handler,
-		QWidget *parent = 0);
+	SWPropertiesEditor(QSharedPointer<Component> component,	LibraryInterface* handler, QWidget *parent = 0);
 	
 	/*!
      *  Destructor.
@@ -57,18 +55,18 @@ public:
 	 */
 	virtual bool isValid() const;
 
-	/*! \brief Reload the information from the model to the editor.
+	/*! Reload the information from the model to the editor.
 	*/
 	virtual void refresh();
 
 protected:
 
-	//! \brief Handler for widget's show event
+	//! Handler for widget's show event.
 	virtual void showEvent(QShowEvent* event);
 
 private slots:
 
-	//! \brief Handler for changes in properties.
+	//! Handler for changes in properties.
 	void onPropertyChange();
 
 private:

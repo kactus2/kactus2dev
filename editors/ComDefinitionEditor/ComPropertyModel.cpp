@@ -11,15 +11,17 @@
 
 #include "ComPropertyModel.h"
 
-#include "ComPropertyDelegate.h"
+#include "ComPropertyColumns.h"
 
 #include <IPXACTmodels/ComProperty.h>
 
 #include <QColor>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QColor>
 
-QString const ComPropertyModel::IP_ADDRESS_REGEX("^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$");
+QString const ComPropertyModel::IP_ADDRESS_REGEX("^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\."
+    "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\."
+    "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$");
 
 //-----------------------------------------------------------------------------
 // Function: ComPropertyModel::ComPropertyModel()
@@ -46,9 +48,9 @@ void ComPropertyModel::setProperties(QList< QSharedPointer<ComProperty> > const&
 
     table_.clear();
 
-    foreach (QSharedPointer<ComProperty> prop, properties)
+    foreach (QSharedPointer<ComProperty> comProperty, properties)
     {
-        table_.append(QSharedPointer<ComProperty>(new ComProperty(*prop.data())));
+        table_.append(QSharedPointer<ComProperty>(new ComProperty(*comProperty.data())));
     }
 
     endResetModel();
@@ -57,7 +59,7 @@ void ComPropertyModel::setProperties(QList< QSharedPointer<ComProperty> > const&
 //-----------------------------------------------------------------------------
 // Function: ComPropertyModel::getProperties()
 //-----------------------------------------------------------------------------
-QList< QSharedPointer<ComProperty> > const& ComPropertyModel::getProperties() const
+QList< QSharedPointer<ComProperty> > ComPropertyModel::getProperties() const
 {
     return table_;
 }
@@ -65,7 +67,7 @@ QList< QSharedPointer<ComProperty> > const& ComPropertyModel::getProperties() co
 //-----------------------------------------------------------------------------
 // Function: ComPropertyModel::rowCount()
 //-----------------------------------------------------------------------------
-int ComPropertyModel::rowCount(QModelIndex const& parent /*= QModelIndex()*/) const
+int ComPropertyModel::rowCount(QModelIndex const& parent) const
 {
     if (parent.isValid())
     {
@@ -78,98 +80,98 @@ int ComPropertyModel::rowCount(QModelIndex const& parent /*= QModelIndex()*/) co
 //-----------------------------------------------------------------------------
 // Function: ComPropertyModel::columnCount()
 //-----------------------------------------------------------------------------
-int ComPropertyModel::columnCount(QModelIndex const& parent /*= QModelIndex()*/) const
+int ComPropertyModel::columnCount(QModelIndex const& parent) const
 {
     if (parent.isValid())
     {
         return 0;
     }
 
-    return PROPERTY_COL_COUNT;
+    return ComPropertyColumns::COLUMN_COUNT;
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComPropertyModel::data()
 //-----------------------------------------------------------------------------
-QVariant ComPropertyModel::data(QModelIndex const& index, int role /*= Qt::DisplayRole*/) const
+QVariant ComPropertyModel::data(QModelIndex const& index, int role) const
 {
-    if (!index.isValid())
-    {
-        return QVariant();
-    }
-    else if (index.row() < 0 || index.row() >= table_.size())
+    if (!index.isValid() || index.row() < 0 || index.row() >= table_.size())
     {
         return QVariant();
     }
 
     if (role == Qt::DisplayRole)
     {
-        switch (index.column())
+        if (index.column() == ComPropertyColumns::NAME)
         {
-        case PROPERTY_COL_NAME:
             return table_.at(index.row())->name();
-
-        case PROPERTY_COL_REQUIRED:
+        }
+        else if (index.column() == ComPropertyColumns::REQUIRED)
+        {
             return table_.at(index.row())->isRequired();
-
-        case PROPERTY_COL_TYPE:
+        }
+        else if (index.column() == ComPropertyColumns::TYPE)
+        {
             return table_.at(index.row())->getType();
-
-        case PROPERTY_COL_DEFAULT:
+        }
+        else if (index.column() == ComPropertyColumns::DEFAULT_VALUE)
+        {
             return table_.at(index.row())->getDefaultValue();
-
-        case PROPERTY_COL_DESC:
+        }
+        else if (index.column() == ComPropertyColumns::DESCRIPTION)
+        {
             return table_.at(index.row())->getDescription();
-        
-        default:
+        }
+        else
+        {
             return QVariant();
         }
     }
     else if (role == Qt::TextColorRole)
     {
-        switch (index.column())
+        if (index.column() == ComPropertyColumns::DEFAULT_VALUE)
         {
-        case PROPERTY_COL_DEFAULT:
+            // Validate the default value against the data type.
+            QString const& value = table_.at(index.row())->getDefaultValue();
+            QString const& type = table_.at(index.row())->getType();
+            bool ok = true;
+
+            if (type == QLatin1String("integer"))
             {
-                // Validate the default value against the data type.
-                QString const& value = table_.at(index.row())->getDefaultValue();
-                QString const& type = table_.at(index.row())->getType();
-                bool ok = true;
-
-                if (type == "integer")
-                {
-                    value.toInt(&ok);
-                }
-                else if (type == "ip_address")
-                {
-                    ok = value.contains(QRegExp(IP_ADDRESS_REGEX));
-                }
-
-                if (ok)
-                {
-                    return QColor(Qt::black);
-                }
-                else
-                {
-                    return QColor(Qt::red);
-                }
+                value.toInt(&ok);
+            }
+            else if (type == QLatin1String("ip_address"))
+            {
+                ok = value.contains(QRegularExpression(IP_ADDRESS_REGEX));
             }
 
-        default:
+            if (ok)
+            {
+                return QColor(Qt::black);
+            }
+            else
+            {
+                return QColor(Qt::red);
+            }
+        }
+
+        else
+        {
             return QColor(Qt::black);
         }
     }
-	else if (Qt::BackgroundRole == role) {
-		switch (index.column()) {
-			case PROPERTY_COL_NAME:
-			case PROPERTY_COL_REQUIRED:
-			case PROPERTY_COL_TYPE: {
-				return QColor("LemonChiffon");
-									}
-			default: {
-				return QColor("white");
-					 }
-		}
+	else if (role == Qt::BackgroundRole)
+    {
+        if (index.column() == ComPropertyColumns::NAME ||
+            index.column() == ComPropertyColumns::REQUIRED ||
+            index.column() == ComPropertyColumns::TYPE)
+        {
+            return QColor("LemonChiffon");
+        }
+        else
+        {
+            return QColor("white");
+        }
 	}
     else
     {
@@ -182,33 +184,30 @@ QVariant ComPropertyModel::data(QModelIndex const& index, int role /*= Qt::Displ
 //-----------------------------------------------------------------------------
 QVariant ComPropertyModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    if (orientation != Qt::Horizontal)
+    if (orientation != Qt::Horizontal && role != Qt::DisplayRole)
     {
         return QVariant();
     }
 
-    if (role == Qt::DisplayRole)
+    if (section == ComPropertyColumns::NAME)
     {
-        switch (section)
-        {
-        case PROPERTY_COL_NAME:
-            return tr("Name");
-
-        case PROPERTY_COL_REQUIRED:
-            return tr("Required");
-
-        case PROPERTY_COL_TYPE:
-            return tr("Type");
-
-        case PROPERTY_COL_DEFAULT:
-            return tr("Default Value");
-
-        case PROPERTY_COL_DESC:
-            return tr("Description");
-
-        default:
-            return QVariant();
-        }
+        return tr("Name");
+    }
+    else if (section == ComPropertyColumns::REQUIRED)
+    {
+        return tr("Required");
+    }
+    else if (section == ComPropertyColumns::TYPE)
+    {
+        return tr("Type");
+    }
+    else if (section == ComPropertyColumns::DEFAULT_VALUE)
+    {
+        return tr("Default Value");
+    }
+    else if (section == ComPropertyColumns::DESCRIPTION)
+    {
+        return tr("Description");
     }
     else
     {
@@ -232,64 +231,41 @@ Qt::ItemFlags ComPropertyModel::flags(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 // Function: ComPropertyModel::setData()
 //-----------------------------------------------------------------------------
-bool ComPropertyModel::setData(QModelIndex const& index, QVariant const& value, int role /*= Qt::EditRole*/)
+bool ComPropertyModel::setData(QModelIndex const& index, QVariant const& value, int role)
 {
-    if (!index.isValid())
-    {
-        return false;
-    }
-    else if (index.row() < 0 || index.row() >= table_.size())
+    if (!index.isValid() || index.row() < 0 || index.row() >= table_.size() || role != Qt::EditRole)
     {
         return false;
     }
 
-    if (role == Qt::EditRole)
+    if (index.column() == ComPropertyColumns::NAME)
     {
-        switch (index.column())
-        {
-        case PROPERTY_COL_NAME:
-            {
-                table_[index.row()]->setName(value.toString());
-                break;
-            }
-            
-
-        case PROPERTY_COL_REQUIRED:
-            {
-                table_[index.row()]->setRequired(value.toBool());
-                break;
-            }
-
-        case PROPERTY_COL_TYPE:
-            {
-                table_[index.row()]->setType(value.toString());
-                break;
-            }
-
-        case PROPERTY_COL_DEFAULT:
-            {
-                table_[index.row()]->setDefaultValue(value.toString());
-                break;
-            }
-
-        case PROPERTY_COL_DESC:
-            {
-                table_[index.row()]->setDescription(value.toString());
-                break;
-            }
-
-        default:
-            return false;
-        }
-
-        emit dataChanged(index, index);
-        emit contentChanged();
-        return true;
+        table_[index.row()]->setName(value.toString());
+    }
+    else if (index.column() == ComPropertyColumns::REQUIRED)
+    {
+        table_[index.row()]->setRequired(value.toBool());
+    }
+    else if (index.column() == ComPropertyColumns::TYPE)
+    {
+        table_[index.row()]->setType(value.toString());
+    }
+    else if (index.column() == ComPropertyColumns::DEFAULT_VALUE)
+    {
+        table_[index.row()]->setDefaultValue(value.toString());
+    }
+    else if (index.column() == ComPropertyColumns::DESCRIPTION)
+    {
+        table_[index.row()]->setDescription(value.toString());
     }
     else
     {
         return false;
     }
+
+    emit dataChanged(index, index);
+    emit contentChanged();
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -355,18 +331,13 @@ void ComPropertyModel::onRemove(QModelIndex const& index)
 //-----------------------------------------------------------------------------
 void ComPropertyModel::onRemoveItem(QModelIndex const& index )
 {
-    // don't remove anything if index is invalid
-    if (!index.isValid())
-    {
-        return;
-    }
-    // make sure the row number if valid
-    else if (index.row() < 0 || index.row() >= table_.size())
+    // Don't remove anything if index or row is invalid.
+    if (!index.isValid() || index.row() < 0 || index.row() >= table_.size())
     {
         return;
     }
 
-    // remove the indexed configurable element
+    // Remove the indexed property.
     beginRemoveRows(QModelIndex(), index.row(), index.row());
     table_.removeAt(index.row());
     endRemoveRows();

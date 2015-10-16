@@ -10,23 +10,27 @@
 //-----------------------------------------------------------------------------
 
 #include "SWPropertiesEditor.h"
+
 #include <common/widgets/summaryLabel/summarylabel.h>
+
 #include <editors/ComDefinitionEditor/ComPropertyDelegate.h>
-#include <IPXACTmodels/ComProperty.h>
+
 #include <library/LibraryManager/libraryinterface.h>
+
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/ComProperty.h>
 
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
 // Function: SWPropertiesEditor::SWPropertiesEditor()
 //-----------------------------------------------------------------------------
-SWPropertiesEditor::SWPropertiesEditor(QSharedPointer<Component> component, 
-	LibraryInterface* handler,
-									   QWidget *parent): 
+SWPropertiesEditor::SWPropertiesEditor(QSharedPointer<Component> component, LibraryInterface* handler,
+    QWidget *parent): 
 ItemEditor(component, handler, parent),
-view_(this),
-filter_(this),
-model_(this)
+    view_(this),
+    filter_(this),
+    model_(this)
 {
     // Set the model source and other options for the view.
     filter_.setSourceModel(&model_);
@@ -36,9 +40,9 @@ model_(this)
     // Set case-insensitive sorting.
     filter_.setSortCaseSensitivity(Qt::CaseInsensitive);
 
-	const QString compPath = ItemEditor::handler()->getDirectoryPath(*ItemEditor::component()->getVlnv());
-	QString defPath = QString("%1/swPropertiesListing.csv").arg(compPath);
-	view_.setDefaultImportExportPath(defPath);
+	const QString componentPath = handler->getDirectoryPath(component->getVlnv());
+	QString defaultPath = QString("%1/swPropertiesListing.csv").arg(componentPath);
+	view_.setDefaultImportExportPath(defaultPath);
 	view_.setAllowImportExport(true);
     view_.setSortingEnabled(true);
     view_.setItemsDraggable(false);
@@ -54,8 +58,7 @@ model_(this)
 
     refresh();
 
-    connect(&model_, SIGNAL(contentChanged()),
-            this, SLOT(onPropertyChange()), Qt::UniqueConnection);
+    connect(&model_, SIGNAL(contentChanged()), this, SLOT(onPropertyChange()), Qt::UniqueConnection);
     connect(&view_, SIGNAL(addItem(const QModelIndex&)),
             &model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
     connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
@@ -77,11 +80,19 @@ bool SWPropertiesEditor::isValid() const
     return model_.isValid();
 }
 
-void SWPropertiesEditor::refresh() {
+//-----------------------------------------------------------------------------
+// Function: SWPropertiesEditor::refresh()
+//-----------------------------------------------------------------------------
+void SWPropertiesEditor::refresh()
+{
 	 model_.setProperties(component()->getSWProperties());
 }
 
-void SWPropertiesEditor::onPropertyChange() {
+//-----------------------------------------------------------------------------
+// Function: SWPropertiesEditor::onPropertyChange()
+//-----------------------------------------------------------------------------
+void SWPropertiesEditor::onPropertyChange()
+{
 	QList< QSharedPointer<ComProperty> > properties;
 
 	foreach (QSharedPointer<ComProperty> prop, model_.getProperties())
@@ -93,7 +104,11 @@ void SWPropertiesEditor::onPropertyChange() {
 	emit contentChanged();
 }
 
-void SWPropertiesEditor::showEvent( QShowEvent* event ) {
+//-----------------------------------------------------------------------------
+// Function: SWPropertiesEditor::showEvent()
+//-----------------------------------------------------------------------------
+void SWPropertiesEditor::showEvent(QShowEvent* event)
+{
 	QWidget::showEvent(event);
 	emit helpUrlRequested("componenteditor/swproperties.html");
 }

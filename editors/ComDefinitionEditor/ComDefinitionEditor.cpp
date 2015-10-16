@@ -63,6 +63,14 @@ ComDefinitionEditor::~ComDefinitionEditor()
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComDefinitionEditor::getIdentifyingVLNV()
+//-----------------------------------------------------------------------------
+VLNV ComDefinitionEditor::getIdentifyingVLNV() const
+{
+    return getDocumentVLNV();
+}
+
+//-----------------------------------------------------------------------------
 // Function: setProtection()
 //-----------------------------------------------------------------------------
 void ComDefinitionEditor::setProtection(bool locked)
@@ -172,9 +180,5 @@ void ComDefinitionEditor::showEvent(QShowEvent* event)
 {
     TabDocument::showEvent(event);
     emit helpUrlRequested("definitions/comdefinition.html");
-}
-
-VLNV ComDefinitionEditor::getIdentifyingVLNV() const {
-	return getDocumentVLNV();
 }
 

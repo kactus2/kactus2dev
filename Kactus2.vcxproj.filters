@@ -6110,6 +6110,9 @@
     <ClInclude Include="editors\BusEditor\LogicalPortColumns.h">
       <Filter>Header Files\editors\BusEditor</Filter>
     </ClInclude>
+    <ClInclude Include="editors\ComDefinitionEditor\ComPropertyColumns.h">
+      <Filter>Header Files\editors\ComDefinitionEditor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="designEditors\common\DiagramUtil.inl">

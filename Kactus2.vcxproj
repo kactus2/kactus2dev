@@ -2162,6 +2162,7 @@ CreateHelp
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_DLL -DQT_HELP_LIB  "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog" "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp" "-I.\editors\ComponentEditor\common" "-I.\editors\ComponentEditor\addressSpaces" "-I.\mainwindow"</Command>
     </CustomBuild>
     <ClInclude Include="editors\BusEditor\LogicalPortColumns.h" />
+    <ClInclude Include="editors\ComDefinitionEditor\ComPropertyColumns.h" />
     <ClInclude Include="editors\ComponentEditor\addressSpaces\AddressSpaceColumns.h" />
     <ClInclude Include="editors\ComponentEditor\addressSpaces\AddressSpaceExpressionsGatherer.h" />
     <ClInclude Include="editors\ComponentEditor\busInterfaces\BusInterfaceColumns.h" />
