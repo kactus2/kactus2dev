@@ -53,11 +53,11 @@ public:
      */
     void updatePreview();
 
-	/*! \brief Get the bounding rect of all items on the scene.
+	/*!
+     *  Get the bounding rect of all items on the scene.
 	 *
-	 *
-	 * \return QRectF The rect that bounds all items.
-	*/
+	 *      @return QRectF The rect that bounds all items.
+	 */
 	QRectF itemsBoundingRect() const;
 
 public slots:

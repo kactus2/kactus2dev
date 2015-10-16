@@ -164,16 +164,24 @@ public:
      */
     QString getVersion() const;
 
-protected:
-
+    /*!
+     *  Check if the document has Kactus attributes.
+     *
+     *      @return True, if the document has Kactus attributes, otherwise false.
+     */
     bool hasKactusAttributes() const;
 
+    /*!
+     *  Check if the document contains an implementation Kactus attribute.
+     *
+     *      @return True, if an implementation attribute exists, otherwise false.
+     */
     bool hasImplementation() const;
 
     /*!
      *  Sets the implementation type for the document.
      *
-     *      @param [in] implementation   The implementation type to set.
+     *      @param [in] implementation   The new implementation type.
      */
     void setImplementation(KactusAttribute::Implementation implementation);
 
@@ -184,16 +192,46 @@ protected:
      */
     KactusAttribute::Implementation getImplementation() const;
 
+    /*!
+     *  Check if the document has a determined product hierarchy.
+     *
+     *      @return True, if a product hierarchy exists, otherwise false.
+     */
     bool hasProductHierarchy() const;
 
+    /*!
+     *  Set a new product hierarchy.
+     *
+     *      @param [in] productHierarchy    The new product hierarchy value.
+     */
     void setHierarchy(KactusAttribute::ProductHierarchy productHierarchy);
   
+    /*!
+     *  Get the product hierarhcy of the document.
+     *
+     *      @return The product hierarchy of the document.
+     */
     KactusAttribute::ProductHierarchy getHierarchy() const;
 
+    /*!
+     *  Check if the document has a firmness attribute.
+     *
+     *      @return True, if a firmness attribute exists, otherwise false.
+     */
     bool hasFirmness() const;
 
+    /*!
+     *  Get the firmness attribute.
+     *
+     *      @return The firmness value of the document.
+     */
     KactusAttribute::Firmness getFirmness() const;
 
+    /*!
+     *  Set the firmness attribute.
+     *
+     *      @param [in] firmness    The new firmness value.
+     */
     void setFirmness(KactusAttribute::Firmness firmness);
 
 private:

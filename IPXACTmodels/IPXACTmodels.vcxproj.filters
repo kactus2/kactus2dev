@@ -125,9 +125,6 @@
     <ClCompile Include="ComInterface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="component.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="componentgenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -695,9 +692,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ComInterface.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="component.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="componentgenerator.h">

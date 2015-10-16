@@ -182,7 +182,6 @@
     <ClCompile Include="common\Qualifier.cpp" />
     <ClCompile Include="common\Range.cpp" />
     <ClCompile Include="common\Vector.cpp" />
-    <ClCompile Include="component.cpp" />
     <ClCompile Include="componentgenerator.cpp" />
     <ClCompile Include="ComProperty.cpp" />
     <ClCompile Include="cpu.cpp" />
@@ -702,7 +701,6 @@
     <ClInclude Include="common\Qualifier.h" />
     <ClInclude Include="common\Range.h" />
     <ClInclude Include="common\Vector.h" />
-    <ClInclude Include="component.h" />
     <ClInclude Include="componentgenerator.h" />
     <ClInclude Include="ComProperty.h" />
     <ClInclude Include="cpu.h" />

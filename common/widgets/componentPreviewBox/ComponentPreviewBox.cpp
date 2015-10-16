@@ -12,17 +12,18 @@
 #include "ComponentPreviewBox.h"
 
 #include <designEditors/SystemDesign/SWComponentItem.h>
-
 #include <designEditors/HWDesign/HWComponentItem.h>
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/librarycomponent.h>
 #include <designEditors/common/diagramgrid.h>
+
 #include <library/LibraryManager/libraryinterface.h>
+
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/librarycomponent.h>
 
 #include <QPainter>
 #include <QRectF>
 
-//! \brief The minimum size for the preview box
+//! The minimum size for the preview box.
 static const int MIN_BOX_HEIGHT = 120;
 
 //-----------------------------------------------------------------------------
@@ -105,14 +106,13 @@ void ComponentPreviewBox::updatePreview()
     {
         ComponentItem* item = 0;
 
-        if (component_->getComponentImplementation() == KactusAttribute::HW)
+        if (component_->getImplementation() == KactusAttribute::HW)
         {
-
-            item = new HWComponentItem(lh_, component_, component_->getVlnv()->getName());
+            item = new HWComponentItem(lh_, component_, component_->getVlnv().getName());
         }
-        else if (component_->getComponentImplementation() == KactusAttribute::SW)
+        else if (component_->getImplementation() == KactusAttribute::SW)
         {
-            item = new SWComponentItem(lh_, component_, component_->getVlnv()->getName());
+            item = new SWComponentItem(lh_, component_, component_->getVlnv().getName());
         }
 
         if (item != 0)

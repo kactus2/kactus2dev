@@ -14,30 +14,29 @@
 #include <common/widgets/kactusAttributeEditor/KactusAttributeEditor.h>
 #include <common/widgets/componentPreviewBox/ComponentPreviewBox.h>
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/librarycomponent.h>
 #include <library/LibraryManager/libraryinterface.h>
+
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/librarycomponent.h>
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QGroupBox>
-#include <QLabel>
 #include <QStringList>
 #include <QLineEdit>
 
 //-----------------------------------------------------------------------------
 // Function: GeneralEditor()
 //-----------------------------------------------------------------------------
-GeneralEditor::GeneralEditor(LibraryInterface* libHandler,
-							 QSharedPointer<Component> component,
-							 QWidget *parent):
+GeneralEditor::GeneralEditor(LibraryInterface* libHandler, QSharedPointer<Component> component, QWidget *parent):
 ItemEditor(component, libHandler, parent),
 vlnvDisplayer_(0),
 attributeEditor_(0),
 authorEditor_(0),
 descEditor_(NULL),
 headerEditor_(NULL),
-previewBox_(0) {
+previewBox_(0)
+{
     Q_ASSERT(libHandler != 0);
     Q_ASSERT(component != 0);
 
@@ -45,9 +44,9 @@ previewBox_(0) {
     QVBoxLayout* layout = new QVBoxLayout();
 	layout->setContentsMargins(0, 0, 0, 0);
 
-	const QString xmlPath = libHandler->getPath(*component->getVlnv());
+    const QString xmlPath = libHandler->getPath(component->getVlnv());
 
-    vlnvDisplayer_ = new VLNVDisplayer(this, *component->getVlnv());
+    vlnvDisplayer_ = new VLNVDisplayer(this, component->getVlnv());
 	vlnvDisplayer_->setPath(xmlPath);
 
     attributeEditor_ = new KactusAttributeEditor(this);
@@ -80,14 +79,11 @@ previewBox_(0) {
 
     // Connect the contentChanged() signals.
     connect(previewBox_, SIGNAL(endpointsRearranged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(attributeEditor_, SIGNAL(contentChanged()),
-            this, SLOT(onAttributesChange()), Qt::UniqueConnection);
-    connect(descEditor_, SIGNAL(contentChanged()),
-            this, SLOT(onDescriptionChange()), Qt::UniqueConnection);
-	connect(headerEditor_, SIGNAL(contentChanged()),
-		this, SLOT(onHeaderChange()), Qt::UniqueConnection);
+    connect(attributeEditor_, SIGNAL(contentChanged()), this, SLOT(onAttributesChange()), Qt::UniqueConnection);
+    connect(descEditor_, SIGNAL(contentChanged()), this, SLOT(onDescriptionChange()), Qt::UniqueConnection);
+	connect(headerEditor_, SIGNAL(contentChanged()), this, SLOT(onHeaderChange()), Qt::UniqueConnection);
     connect(authorEditor_, SIGNAL(textChanged(const QString &)),
-		this, SLOT(onAuthorChange()), Qt::UniqueConnection);
+        this, SLOT(onAuthorChange()), Qt::UniqueConnection);
 
     refresh();
 }
@@ -97,6 +93,7 @@ previewBox_(0) {
 //-----------------------------------------------------------------------------
 GeneralEditor::~GeneralEditor()
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -112,12 +109,12 @@ bool GeneralEditor::isValid() const
 //-----------------------------------------------------------------------------
 void GeneralEditor::refresh()
 {
-	disconnect(attributeEditor_, SIGNAL(contentChanged()),
-		this, SLOT(onAttributesChange()));
-	if (component()->getComponentImplementation() == KactusAttribute::HW)
+	disconnect(attributeEditor_, SIGNAL(contentChanged()), this, SLOT(onAttributesChange()));
+
+    if (component()->getImplementation() == KactusAttribute::HW)
 	{
-		KactusAttribute::ProductHierarchy prodHier = component()->getComponentHierarchy();
-		KactusAttribute::Firmness firmness = component()->getComponentFirmness();
+        KactusAttribute::ProductHierarchy prodHier = component()->getHierarchy();
+        KactusAttribute::Firmness firmness = component()->getFirmness();
 		attributeEditor_->setAttributes(prodHier, firmness);
 	}
 	else
@@ -125,30 +122,24 @@ void GeneralEditor::refresh()
 		attributeEditor_->hideAttributes();
 	}
 
-	attributeEditor_->setImplementation(component()->getComponentImplementation());
-	connect(attributeEditor_, SIGNAL(contentChanged()),
-		this, SLOT(onAttributesChange()), Qt::UniqueConnection);
+    attributeEditor_->setImplementation(component()->getImplementation());
+	connect(attributeEditor_, SIGNAL(contentChanged()), this, SLOT(onAttributesChange()), Qt::UniqueConnection);
 
-	disconnect(authorEditor_, SIGNAL(textChanged(const QString &)),
-		this, SLOT(onAuthorChange()));
+	disconnect(authorEditor_, SIGNAL(textChanged(const QString &)), this, SLOT(onAuthorChange()));
     QString author = component()->getAuthor();
 	authorEditor_->setText(component()->getAuthor());
 	connect(authorEditor_, SIGNAL(textChanged(const QString &)),
-		this, SLOT(onAuthorChange()), Qt::UniqueConnection);
+        this, SLOT(onAuthorChange()), Qt::UniqueConnection);
 
-	disconnect(descEditor_, SIGNAL(contentChanged()),
-		this, SLOT(onDescriptionChange()));
+	disconnect(descEditor_, SIGNAL(contentChanged()), this, SLOT(onDescriptionChange()));
 	descEditor_->setDescription(component()->getDescription());
-	connect(descEditor_, SIGNAL(contentChanged()),
-		this, SLOT(onDescriptionChange()), Qt::UniqueConnection);
+	connect(descEditor_, SIGNAL(contentChanged()), this, SLOT(onDescriptionChange()), Qt::UniqueConnection);
 
-	disconnect(headerEditor_, SIGNAL(contentChanged()),
-		this, SLOT(onHeaderChange()));
+	disconnect(headerEditor_, SIGNAL(contentChanged()), this, SLOT(onHeaderChange()));
 	QStringList comments = component()->getTopComments();
 	QString comment = comments.join("\n");
 	headerEditor_->setDescription(comment);
-	connect(headerEditor_, SIGNAL(contentChanged()),
-		this, SLOT(onHeaderChange()), Qt::UniqueConnection);
+	connect(headerEditor_, SIGNAL(contentChanged()), this, SLOT(onHeaderChange()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -156,10 +147,10 @@ void GeneralEditor::refresh()
 //-----------------------------------------------------------------------------
 void GeneralEditor::onAttributesChange()
 {
-	if (component()->getComponentImplementation() == KactusAttribute::HW)
+    if (component()->getImplementation() == KactusAttribute::HW)
 	{
-		component()->setComponentHierarchy(attributeEditor_->getProductHierarchy());
-		component()->setComponentFirmness(attributeEditor_->getFirmness());
+        component()->setHierarchy(attributeEditor_->getProductHierarchy());
+        component()->setFirmness(attributeEditor_->getFirmness());
 	}
 	emit contentChanged();
 
