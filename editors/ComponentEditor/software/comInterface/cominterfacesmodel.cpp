@@ -1,229 +1,277 @@
-/* 
- *  	Created on: 28.6.2012
- *      Author: Antti Kamppi
- * 		filename: cominterfacesmodel.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: cominterfacesmodel.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 28.06.2012
+//
+// Description:
+// The model that manages the COM interfaces.
+//-----------------------------------------------------------------------------
 
 #include "cominterfacesmodel.h"
-#include "cominterfacesdelegate.h"
-#include <IPXACTmodels/generaldeclarations.h>
+
+#include "ComInterfaceColumns.h"
+
 #include <library/LibraryManager/libraryinterface.h>
-#include <IPXACTmodels/vlnv.h>
+
+#include <IPXACTmodels/common/DirectionTypes.h>
+
+#include <IPXACTmodels/Component/Component.h>
+
 #include <IPXACTmodels/ComDefinition.h>
+#include <IPXACTmodels/vlnv.h>
 
 #include <QColor>
 #include <QMimeData>
 
-ComInterfacesModel::ComInterfacesModel(LibraryInterface* libHandler,
-									   QSharedPointer<Component> component,
-									   QObject *parent):
+//-----------------------------------------------------------------------------
+// Function: ComInterfacesModel::ComInterfacesModel()
+//-----------------------------------------------------------------------------
+ComInterfacesModel::ComInterfacesModel(LibraryInterface* libHandler, QSharedPointer<Component> component,
+    QObject *parent):
 QAbstractTableModel(parent),
-libHandler_(libHandler),
-comIfs_(component->getComInterfaces()) {
-
-	Q_ASSERT(component);
-	Q_ASSERT(libHandler_);
+    libHandler_(libHandler),
+    comIfs_(component->getComInterfaces())
+{
+    Q_ASSERT(component);
+    Q_ASSERT(libHandler_);
 }
 
-ComInterfacesModel::~ComInterfacesModel() {
+//-----------------------------------------------------------------------------
+// Function: ComInterfacesModel::~ComInterfacesModel()
+//-----------------------------------------------------------------------------
+ComInterfacesModel::~ComInterfacesModel()
+{
 }
 
-int ComInterfacesModel::rowCount( const QModelIndex& parent /*= QModelIndex()*/ ) const {
-	if (parent.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: ComInterfacesModel::rowCount()
+//-----------------------------------------------------------------------------
+int ComInterfacesModel::rowCount(QModelIndex const& parent) const
+{
+	if (parent.isValid())
+    {
 		return 0;
 	}
+
 	return comIfs_.size();
 }
 
-int ComInterfacesModel::columnCount( const QModelIndex& parent /*= QModelIndex()*/ ) const {
-	if (parent.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: ComInterfacesModel::columnCount()
+//-----------------------------------------------------------------------------
+int ComInterfacesModel::columnCount(QModelIndex const& parent) const
+{
+	if (parent.isValid())
+    {
 		return 0;
 	}
-	return ComInterfacesDelegate::COLUMN_COUNT;
+
+	return ComInterfaceColumns::COLUMN_COUNT;
 }
 
-Qt::ItemFlags ComInterfacesModel::flags( const QModelIndex& index ) const {
-	if (!index.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: ComInterfacesModel::flags()
+//-----------------------------------------------------------------------------
+Qt::ItemFlags ComInterfacesModel::flags(QModelIndex const& index) const
+{
+	if (!index.isValid())
+    {
 		return Qt::NoItemFlags;
 	}
 
 	// Com definition column can only be dropped..
-	if (ComInterfacesDelegate::COM_DEF_COLUMN == index.column()) {
+	if (ComInterfaceColumns::COM_DEFINITION == index.column())
+    {
 		return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
 	}
 
 	return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
 }
 
-QVariant ComInterfacesModel::headerData( int section, Qt::Orientation orientation, int role /*= Qt::DisplayRole*/ ) const {
-	if (orientation != Qt::Horizontal) {
-		return QVariant();
-	}
-	if (Qt::DisplayRole == role) {
+//-----------------------------------------------------------------------------
+// Function: ComInterfacesModel::headerData()
+//-----------------------------------------------------------------------------
+QVariant ComInterfacesModel::headerData( int section, Qt::Orientation orientation, int role) const
+{
+    if (orientation != Qt::Horizontal && role != Qt::DisplayRole) 
+    {
+        return QVariant();
+    }
 
-		switch (section) {
-			case ComInterfacesDelegate::NAME_COLUMN: {
-				return tr("Name");
-												}
-			case ComInterfacesDelegate::COM_DEF_COLUMN: {
-				return tr("COM definition");
-														}
-			case ComInterfacesDelegate::TRANSFER_TYPE_COLUMN: {
-				return tr("Transfer type");
-													 }
-			case ComInterfacesDelegate::DIRECTION_COLUMN: {
-				return tr("Direction");
-													   }
-			case ComInterfacesDelegate::DESCRIPTION_COLUMN: {
-				return tr("Description");
-													   }
-			default: {
-				return QVariant();
-					 }
-		}
-	}
-	else {
-		return QVariant();
-	}
+    if (section == ComInterfaceColumns::NAME)
+    {
+        return tr("Name");
+    }
+    else if (section == ComInterfaceColumns::COM_DEFINITION)
+    {
+        return tr("COM definition");
+    }
+    else if (section == ComInterfaceColumns::TRANSFER_TYPE)
+    {
+        return tr("Transfer type");
+    }
+    else if (section == ComInterfaceColumns::DIRECTION)
+    {
+        return tr("Direction");
+    }
+    else if (section == ComInterfaceColumns::DESCRIPTION)
+    {
+        return tr("Description");
+    }
+    else
+    {
+        return QVariant();
+    }
 }
 
-QVariant ComInterfacesModel::data( const QModelIndex& index, int role /*= Qt::DisplayRole*/ ) const {
-	if (!index.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: ComInterfacesModel::data()
+//-----------------------------------------------------------------------------
+QVariant ComInterfacesModel::data(QModelIndex const& index, int role) const
+{
+	if (!index.isValid() || index.row() < 0 || index.row() >= comIfs_.size())
+    {
 		return QVariant();
 	}
-	else if (index.row() < 0 || index.row() >= comIfs_.size()) {
-		return QVariant();
-	}
 
-	if (Qt::DisplayRole == role) {
+	if (role == Qt::DisplayRole)
+    {
+        if (index.column() == ComInterfaceColumns::NAME)
+        {
+            return comIfs_.at(index.row())->name();
+        }
+        else if (index.column() == ComInterfaceColumns::COM_DEFINITION)
+        {
+            return comIfs_.at(index.row())->getComType().toString(":");
+        }
+        else if (index.column() == ComInterfaceColumns::TRANSFER_TYPE)
+        {
+            return comIfs_.at(index.row())->getTransferType();
+        }
+        else if (index.column() == ComInterfaceColumns::DIRECTION)
+        {
+            return DirectionTypes::direction2Str(comIfs_.at(index.row())->getDirection());
+        }
+        else if (index.column() == ComInterfaceColumns::DESCRIPTION)
+        {
+            return comIfs_.at(index.row())->getDescription();
+        }
+        else
+        {
+            return QVariant();
+        }
 
-		switch (index.column()) {
-			case ComInterfacesDelegate::NAME_COLUMN: {
-				return comIfs_.at(index.row())->name();
-												}
-			case ComInterfacesDelegate::COM_DEF_COLUMN: {
-				return comIfs_.at(index.row())->getComType().toString(":");
-														}
-			case ComInterfacesDelegate::TRANSFER_TYPE_COLUMN: {
-				return comIfs_.at(index.row())->getTransferType();
-													 }
-			case ComInterfacesDelegate::DIRECTION_COLUMN: {
-				return General::direction2Str(comIfs_.at(index.row())->getDirection());
-													   }
-			case ComInterfacesDelegate::DESCRIPTION_COLUMN: {
-				return comIfs_.at(index.row())->getDescription();
-															}
-			default: {
-				return QVariant();
-					 }
-		}
-	}
-	else if (ComInterfacesDelegate::TRANSFER_TYPE_OPTIONS == role) {
-		// find the vlnv of the com interface
-		VLNV comDefVLNV = comIfs_.at(index.row())->getComType();
-		
-		// if the com def is not defined
-		if (!comDefVLNV.isValid()) {
-			return QStringList();
-		}
-		// if the com def does not exist in the library.
-		else if (!libHandler_->contains(comDefVLNV)) {
-			return QStringList();
-		}
-		// if the object is not a com definition
-		else if (libHandler_->getDocumentType(comDefVLNV) != VLNV::COMDEFINITION) {
-			return QStringList();
-		}
+    }
+    else if (role == ComInterfaceColumns::TRANSFER_TYPE_OPTIONS)
+    {
+        // find the vlnv of the com interface
+        VLNV comDefVLNV = comIfs_.at(index.row())->getComType();
 
-		// parse the com definition
-		QSharedPointer<Document const> libComp = libHandler_->getModelReadOnly(comDefVLNV);
-		const QSharedPointer<ComDefinition const> comDef = libComp.staticCast<ComDefinition const>();
-		
-		// and return the transfer types specified in the com definition
-		return comDef->getTransferTypes();
-	}
-	else if (Qt::ForegroundRole == role) {
+        // if the com def is not defined
+        if (!comDefVLNV.isValid() || !libHandler_->contains(comDefVLNV) || 
+            libHandler_->getDocumentType(comDefVLNV) != VLNV::COMDEFINITION)
+        {
+            return QStringList();
+        }
 
-		if (comIfs_.at(index.row())->isValid()) {
-			return QColor("black");
-		}
-		else {
-			return QColor("red");
-		}
-	}
-	else if (Qt::BackgroundRole == role) {
-		switch (index.column()) {
-			case ComInterfacesDelegate::NAME_COLUMN:
-			case ComInterfacesDelegate::DIRECTION_COLUMN: {
-				return QColor("LemonChiffon");
-													 }
-			default:
-				return QColor("white");
-		}
-	}
-	else {
-		return QVariant();
-	}
+        // parse the com definition
+        QSharedPointer<Document const> libComp = libHandler_->getModelReadOnly(comDefVLNV);
+        const QSharedPointer<ComDefinition const> comDef = libComp.staticCast<ComDefinition const>();
+
+        // and return the transfer types specified in the com definition
+        return comDef->getTransferTypes();
+    }
+    else if (role == Qt::ForegroundRole)
+    {
+        if (comIfs_.at(index.row())->isValid())
+        {
+            return QColor("black");
+        }
+        else
+        {
+            return QColor("red");
+        }
+    }
+    else if (role == Qt::BackgroundRole)
+    {
+        if (index.column() == ComInterfaceColumns::NAME ||
+            index.column() == ComInterfaceColumns::DIRECTION)
+        {
+            return QColor("LemonChiffon");
+        }
+        else
+        {
+            return QColor("white");
+        }
+    }
+    else
+    {
+        return QVariant();
+    }
 }
 
-bool ComInterfacesModel::setData( const QModelIndex& index, const QVariant& value, int role /*= Qt::EditRole*/ ) {
-	if (!index.isValid()) {
-		return false;
-	}
-	else if (index.row() < 0 || index.row() >= comIfs_.size()) {
+//-----------------------------------------------------------------------------
+// Function: ComInterfacesModel::setData()
+//-----------------------------------------------------------------------------
+bool ComInterfacesModel::setData(QModelIndex const& index, const QVariant& value, int role)
+{
+	if (!index.isValid() || index.row() < 0 || index.row() >= comIfs_.size() || role != Qt::EditRole)
+    {
 		return false;
 	}
 
-	if (Qt::EditRole == role) {
 
-		switch (index.column()) {
-			case ComInterfacesDelegate::NAME_COLUMN: {
-				comIfs_[index.row()]->setName(value.toString());
-				break;
-												}
-			case ComInterfacesDelegate::COM_DEF_COLUMN: {
-				VLNV comDef = VLNV(VLNV::COMDEFINITION, value.toString(), ":");
-				comIfs_[index.row()]->setComType(comDef);
-				break;
-														}
-			case ComInterfacesDelegate::TRANSFER_TYPE_COLUMN: {
-				comIfs_[index.row()]->setTransferType(value.toString());
-				break;
-													 }
-			case ComInterfacesDelegate::DIRECTION_COLUMN: {
-				comIfs_[index.row()]->setDirection(General::str2Direction(value.toString(), General::IN));
-				break;
-													   }
-			case ComInterfacesDelegate::DESCRIPTION_COLUMN: {
-				comIfs_[index.row()]->setDescription(value.toString());
-				break;
-															}
-			default: {
-				return false;
-					 }
-		}
+    if (index.column() == ComInterfaceColumns::NAME)
+    {
+        comIfs_[index.row()]->setName(value.toString());
+    }                                    
+    else if (index.column() == ComInterfaceColumns::COM_DEFINITION)
+    {
+        VLNV comDef = VLNV(VLNV::COMDEFINITION, value.toString(), ":");
+        comIfs_[index.row()]->setComType(comDef);
+    }
+    else if (index.column() == ComInterfaceColumns::TRANSFER_TYPE)
+    {
+        comIfs_[index.row()]->setTransferType(value.toString());
+    }
+    else if (index.column() == ComInterfaceColumns::DIRECTION)
+    {
+        comIfs_[index.row()]->setDirection(DirectionTypes::str2Direction(value.toString(), DirectionTypes::IN));
+    }
+    else if (index.column() == ComInterfaceColumns::DESCRIPTION)
+    {
+        comIfs_[index.row()]->setDescription(value.toString());
+    }
+    else
+    {
+        return false;
+    }
 
-		emit dataChanged(index, index);
-		emit contentChanged();
-		return true;
-	}
-	else {
-		return false;
-	}
+    emit dataChanged(index, index);
+    emit contentChanged();
+    return true;
 }
 
-bool ComInterfacesModel::isValid() const {
-	foreach (QSharedPointer<ComInterface> comIf, comIfs_) {
-		if (!comIf->isValid()) {
+//-----------------------------------------------------------------------------
+// Function: ComInterfacesModel::isValid()
+//-----------------------------------------------------------------------------
+bool ComInterfacesModel::isValid() const
+{
+	foreach (QSharedPointer<ComInterface> comIf, comIfs_)
+    {
+		if (!comIf->isValid())
+        {
 			return false;
 		}
 	}
+
 	return true;
 }
 
 //-----------------------------------------------------------------------------
-// Function: supportedDropActions()
+// Function: ComInterfacesModel::supportedDropActions()
 //-----------------------------------------------------------------------------
 Qt::DropActions ComInterfacesModel::supportedDropActions() const
 {
@@ -231,7 +279,7 @@ Qt::DropActions ComInterfacesModel::supportedDropActions() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: mimeTypes()
+// Function: ComInterfacesModel::mimeTypes()
 //-----------------------------------------------------------------------------
 QStringList ComInterfacesModel::mimeTypes() const
 {
@@ -241,39 +289,33 @@ QStringList ComInterfacesModel::mimeTypes() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: dropMimeData()
+// Function: ComInterfacesModel::dropMimeData()
 //-----------------------------------------------------------------------------
-bool ComInterfacesModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, 
-    const QModelIndex &parent)
+bool ComInterfacesModel::dropMimeData(QMimeData const* data, Qt::DropAction action, int row, int column, 
+    QModelIndex const& parent)
 {
-    if ( action == Qt::IgnoreAction)
+    if (action == Qt::IgnoreAction)
     {
         return true;
     }
 
     // Dropped data must be directly on parent.
-    if ( row != -1 || column != -1 || !parent.isValid() )
-    {
-        return false;
-    }
-
-    if ( row > rowCount() )
+    if ( row != -1 || column != -1 || !parent.isValid() || row > rowCount())
     {
         return false;
     }
 
     QVariant variant = data->imageData();
-
-    if ( !variant.canConvert<VLNV>())
+    if (!variant.canConvert<VLNV>())
     {
         return false;
     }
 
     VLNV vlnv = variant.value<VLNV>();
 
-    if ( parent.column() == ComInterfacesDelegate::COM_DEF_COLUMN)
+    if (parent.column() == ComInterfaceColumns::COM_DEFINITION)
     {
-        if ( vlnv.getType() != VLNV::COMDEFINITION )
+        if (vlnv.getType() != VLNV::COMDEFINITION)
         {
             return false;
         }
@@ -285,11 +327,16 @@ bool ComInterfacesModel::dropMimeData(const QMimeData *data, Qt::DropAction acti
     return true;
 }
 
-void ComInterfacesModel::onAddItem( const QModelIndex& index ) {
+//-----------------------------------------------------------------------------
+// Function: ComInterfacesModel::onAddItem()
+//-----------------------------------------------------------------------------
+void ComInterfacesModel::onAddItem(QModelIndex const& index)
+{
 	int row = comIfs_.size();
 
 	// if the index is valid then add the item to the correct position
-	if (index.isValid()) {
+	if (index.isValid())
+    {
 		row = index.row();
 	}
 
@@ -304,13 +351,14 @@ void ComInterfacesModel::onAddItem( const QModelIndex& index ) {
 	emit contentChanged();
 }
 
-void ComInterfacesModel::onRemoveItem( const QModelIndex& index ) {
+//-----------------------------------------------------------------------------
+// Function: ComInterfacesModel::onRemoveItem()
+//-----------------------------------------------------------------------------
+void ComInterfacesModel::onRemoveItem(QModelIndex const& index)
+{
 	// don't remove anything if index is invalid
-	if (!index.isValid()) {
-		return;
-	}
-	// make sure the row number if valid
-	else if (index.row() < 0 || index.row() >= comIfs_.size()) {
+	if (!index.isValid() || index.row() < 0 || index.row() >= comIfs_.size())
+    {
 		return;
 	}
 

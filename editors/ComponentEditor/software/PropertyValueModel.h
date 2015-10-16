@@ -45,7 +45,7 @@ public:
      *
      *      @param [in] properties The list of allowed properties.
      */
-    void setAllowedProperties(QList< QSharedPointer<ComProperty> > const* properties);
+    void setAllowedProperties(QList< QSharedPointer<ComProperty> > properties);
 
     /*!
      *  Sets the data for editing.
@@ -162,7 +162,7 @@ private:
 	QList<NameValuePair> table_;
 
     //! The list of allowed properties.
-    QList< QSharedPointer<ComProperty> > const* allowedProperties_;
+    QList< QSharedPointer<ComProperty> > allowedProperties_;
 };
 
 //-----------------------------------------------------------------------------

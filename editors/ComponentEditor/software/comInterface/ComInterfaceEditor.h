@@ -12,11 +12,13 @@
 #ifndef COMINTERFACEEDITOR_H
 #define COMINTERFACEEDITOR_H
 
-#include <editors/ComponentEditor/software/PropertyValueEditor.h>
 #include <editors/ComponentEditor/itemeditor.h>
 
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
+
+#include <editors/ComponentEditor/software/PropertyValueEditor.h>
+
 #include <IPXACTmodels/ComInterface.h>
 #include <IPXACTmodels/component.h>
 
@@ -35,18 +37,16 @@ class ComInterfaceEditor : public ItemEditor
 
 public:
 
-	/*! \brief The constructor
+	/*! The constructor
 	 *
-	 * \param libHandler Pointer to the instance that manages the library.
-	 * \param component Pointer to component being edited.
-	 * \param comInterface Pointer to COM interface being edited.
-	 * \param parent The parent widget.
+	 *      @param [in] libHandler      The instance that manages the library.
+	 *      @param [in] component       The component being edited.
+	 *      @param [in] comInterface    The COM interface being edited.
+	 *      @param [in] parent          The parent widget.
 	 *
 	*/
-	ComInterfaceEditor(LibraryInterface* libHandler, 
-		QSharedPointer<Component> component, 
-		QSharedPointer<ComInterface> comInterface,
-		QWidget *parent = 0);
+	ComInterfaceEditor(LibraryInterface* libHandler, QSharedPointer<Component> component, 
+		QSharedPointer<ComInterface> comInterface, QWidget *parent = 0);
 
     /*!
      *  Destructor.
@@ -60,13 +60,13 @@ public:
 	 */
 	bool isValid() const;
 
-	/*! \brief Reload the information from the model to the editor.
+	/*! Reload the information from the model to the editor.
 	*/
 	virtual void refresh();
 
 protected:
 
-	//! \brief Handler for widget's show event
+	//! Handler for widget's show event
 	virtual void showEvent(QShowEvent* event);
     
 private slots:
@@ -76,22 +76,35 @@ private slots:
      */
     void onComDefinitionChanged();
 
-	//! \brief Handler for changes in transfer type.
+	//! Handler for changes in transfer type.
 	void onTransferTypeChange();
 
-	//! \brief Handler for changes in direction.
+	//! Handler for changes in direction.
 	void onDirectionChange(int index);
 
-	//! \brief Handler for changes in properties editor.
+	//! Handler for changes in properties editor.
 	void onPropertiesChange();
 
-	//! \brief Handler for changes in COM implementation reference.
+	//! Handler for changes in COM implementation reference.
 	void onComImplementationChange();
 
 private:
     // Disable copying.
     ComInterfaceEditor(ComInterfaceEditor const& rhs);
     ComInterfaceEditor& operator=(ComInterfaceEditor const& rhs);
+    
+    /*!
+     *  Updates the editors for showing values associated with the given COM definition.
+     *
+     *      @param [in] comDefinitionVLNV   The COM definition to update the editors for.
+     */
+    void updateEditorsForComDefinition(VLNV const& comDefinitionVLNV);
+    
+    //! Clears the editors when no COM definition has been set.
+    void clearEditors();
+
+    //! Sets the editor layout.
+    void setupLayout();
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -100,14 +113,14 @@ private:
     //! The library handler.
     LibraryInterface* libInterface_;
 
-    //! Pointer to the bus interface being edited.
+    //! The COM interface being edited.
     ComInterface* comIf_;
 
     //! Contains the name, display name and description of the COM interface.
     NameGroupEditor nameEditor_;
 
     //! Editor for setting the COM definition.
-    VLNVEditor* comType_;
+    VLNVEditor* comTypeEditor_;
 
     //! Details group box.
     QGroupBox detailsGroup_;
@@ -121,7 +134,7 @@ private:
     //! The property value editor.
     PropertyValueEditor propertyValueEditor_;
 
-	//! \brief Editor to set the COM implementation reference.
+	//! Editor to set the COM implementation reference.
 	 VLNVEditor* comImplementation_;
 };
 

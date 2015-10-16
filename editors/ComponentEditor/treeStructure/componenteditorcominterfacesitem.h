@@ -1,29 +1,35 @@
-/* 
- *  	Created on: 9.5.2012
- *      Author: Antti Kamppi
- * 		filename: componenteditorcominterfacesitem.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: componenteditorcominterfacesitem.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 09.05.2012
+//
+// Description:
+// The COM interfaces-item in the component editor's navigation tree.
+//-----------------------------------------------------------------------------
 
 #ifndef COMPONENTEDITORCOMINTERFACESITEM_H
 #define COMPONENTEDITORCOMINTERFACESITEM_H
 
 #include "componenteditoritem.h"
 
-/*! \brief The COM interfaces-item in the component editor's navigation tree.
- *
- */
-class ComponentEditorComInterfacesItem : public ComponentEditorItem {
+class ComInterface;
+//-----------------------------------------------------------------------------
+//! The COM interfaces-item in the component editor's navigation tree.
+//-----------------------------------------------------------------------------
+class ComponentEditorComInterfacesItem : public ComponentEditorItem
+{
 	Q_OBJECT
 
 public:
 
-	/*! \brief The constructor
+	/*! The constructor
 	 *
-	 * \param model Pointer to the model that owns the items.
-	 * \param libHandler Pointer to the instance that manages the library.
-	 * \param component Pointer to the component being edited.
-	 * \param parent Pointer to the parent item.
+	 *      @param [in] model       The model that owns the items.
+	 *      @param [in] libHandler  The instance that manages the library.
+	 *      @param [in] component   The component being edited.
+	 *      @param [in] parent      The parent item.
 	 *
 	*/
 	ComponentEditorComInterfacesItem(ComponentEditorTreeModel* model,
@@ -31,50 +37,50 @@ public:
 		QSharedPointer<Component> component,
 		ComponentEditorItem* parent);
 
-	//! \brief The destructor
+	//! The destructor
 	virtual ~ComponentEditorComInterfacesItem();
 
-	/*! \brief Get the font to be used for text of this item.
+	/*! Get the font to be used for text of this item.
 	*
 	* The font is bold, if COM interfaces exist, otherwise not bold.
 	*
-	* \return QFont instance that defines the font to be used.
+	*      @return QFont instance that defines the font to be used.
 	*/
 	virtual QFont getFont() const;
 
-	/*! \brief Get the tool tip for the item.
+	/*! Get the tool tip for the item.
 	 * 
-	 * \return The text for the tool tip to print to user.
+	 *      @return The text for the tool tip to print to user.
 	*/
 	virtual QString getTooltip() const;
 
-	/*! \brief Get the text to be displayed to user in the tree for this item.
+	/*! Get the text to be displayed to user in the tree for this item.
 	 *
-	 * \return QString Contains the text to display.
+	 *      @return QString Contains the text to display.
 	*/
 	virtual QString text() const;
 
-	/*! \brief Get pointer to the editor of this item.
+	/*! Get The editor of this item.
 	 *
-	 * \return Pointer to the editor to use for this item.
+	 *      @return The editor to use for this item.
 	*/
 	virtual ItemEditor* editor();
 
-	/*! \brief Add a new child to the item.
+	/*! Add a new child to the item.
 	 * 
-	 * \param index The index to add the child into.
+	 *      @param [in] index The index to add the child into.
 	 *
 	*/
 	virtual void createChild(int index);
 
 private:
-	//! \brief No copying
+	//! No copying
 	ComponentEditorComInterfacesItem(const ComponentEditorComInterfacesItem& other);
 
-	//! \brief No assignment
+	//! No assignment
 	ComponentEditorComInterfacesItem& operator=(const ComponentEditorComInterfacesItem& other);
 
-	//! \brief The interfaces being edited.
+	//! The interfaces being edited.
 	QList<QSharedPointer<ComInterface> >& interfaces_;
 };
 

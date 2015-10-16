@@ -1,142 +1,171 @@
-/* 
- *  	Created on: 28.6.2012
- *      Author: Antti Kamppi
- * 		filename: cominterfacesdelegate.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: cominterfacesdelegate.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 28.06.2012
+//
+// Description:
+// Delegate class for component COM interfaces.
+//-----------------------------------------------------------------------------
 
 #include "cominterfacesdelegate.h"
+
+#include "ComInterfaceColumns.h"
 
 #include <QLineEdit>
 #include <QComboBox>
 #include <QStringList>
 
+//-----------------------------------------------------------------------------
+// Function: ComInterfacesDelegate::ComInterfacesDelegate()
+//-----------------------------------------------------------------------------
 ComInterfacesDelegate::ComInterfacesDelegate(QObject *parent):
-QStyledItemDelegate(parent) {
+QStyledItemDelegate(parent)
+{
 }
 
-ComInterfacesDelegate::~ComInterfacesDelegate() {
+//-----------------------------------------------------------------------------
+// Function: ComInterfacesDelegate::~ComInterfacesDelegate()
+//-----------------------------------------------------------------------------
+ComInterfacesDelegate::~ComInterfacesDelegate()
+{
 }
 
-QWidget* ComInterfacesDelegate::createEditor( QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index ) const {
-	switch (index.column()) {
-		case NAME_COLUMN: 
-		case DESCRIPTION_COLUMN: {
-			QLineEdit* edit = new QLineEdit(parent);
-			connect(edit, SIGNAL(editingFinished()),
-				this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
-			return edit;
-								 }
-		case COM_DEF_COLUMN: {
-			Q_ASSERT(false);
-			return NULL;
-							 }
-		case TRANSFER_TYPE_COLUMN: {
-			QComboBox* combo = new QComboBox(parent);
-			return combo;
-								   }
-		case DIRECTION_COLUMN: {
-			QComboBox* combo = new QComboBox(parent);
-			combo->addItem(tr("in"));
-			combo->addItem(tr("out"));
-			combo->addItem(tr("inout"));
-			combo->setCurrentIndex(0);
-			return combo;
-							   }
-		default: {
-			return QStyledItemDelegate::createEditor(parent, option, index);
-				 }
-	}
+//-----------------------------------------------------------------------------
+// Function: ComInterfacesDelegate::createEditor()
+//-----------------------------------------------------------------------------
+QWidget* ComInterfacesDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const& option,
+    QModelIndex const& index) const
+{
+    if (index.column() == ComInterfaceColumns::NAME ||
+        index.column() == ComInterfaceColumns::DESCRIPTION)
+    {
+        QLineEdit* edit = new QLineEdit(parent);
+        connect(edit, SIGNAL(editingFinished()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
+        return edit;
+    }
+    else if (index.column() == ComInterfaceColumns::COM_DEFINITION)
+    {
+        Q_ASSERT(false);
+        return 0;
+    }
+    else if (index.column() == ComInterfaceColumns::TRANSFER_TYPE)
+    {
+        QComboBox* combo = new QComboBox(parent);
+        return combo;
+    }
+    else if (index.column() == ComInterfaceColumns::DIRECTION)
+    {
+        QComboBox* combo = new QComboBox(parent);
+        combo->addItem(tr("in"));
+        combo->addItem(tr("out"));
+        combo->addItem(tr("inout"));
+        combo->setCurrentIndex(0);
+        return combo;
+    }
+    else
+    {
+        return QStyledItemDelegate::createEditor(parent, option, index);
+    }	
 }
 
-void ComInterfacesDelegate::setEditorData( QWidget* editor, const QModelIndex& index ) const {
-	switch (index.column()) {
-		case NAME_COLUMN: 
-		case DESCRIPTION_COLUMN: {
-			QLineEdit* edit = qobject_cast<QLineEdit*>(editor);
-			Q_ASSERT(edit);
+//-----------------------------------------------------------------------------
+// Function: ComInterfacesDelegate::setEditorData()
+//-----------------------------------------------------------------------------
+void ComInterfacesDelegate::setEditorData(QWidget* editor, QModelIndex const& index) const
+{
+    if (index.column() == ComInterfaceColumns::NAME ||
+        index.column() == ComInterfaceColumns::DESCRIPTION)
+    {
+        QLineEdit* edit = qobject_cast<QLineEdit*>(editor);
+        Q_ASSERT(edit);
 
-			const QString text = index.model()->data(index, Qt::DisplayRole).toString();
-			edit->setText(text);
-			break;
-								 }
-		case COM_DEF_COLUMN: {
-			Q_ASSERT(false);
-			break;
-							 }
-		case TRANSFER_TYPE_COLUMN: {
-			QComboBox* combo = qobject_cast<QComboBox*>(editor);
-			Q_ASSERT(combo);
+        const QString text = index.data(Qt::DisplayRole).toString();
+        edit->setText(text);
+    }
+    else if (index.column() == ComInterfaceColumns::COM_DEFINITION)
+    {
+        Q_ASSERT(false);
 
-			// remove the previous items
-			combo->clear();
+    }
+    else if (index.column() == ComInterfaceColumns::TRANSFER_TYPE)
+    {
+        QComboBox* combo = qobject_cast<QComboBox*>(editor);
+        Q_ASSERT(combo);
 
-			// add the possible options for transfer types.
-			QStringList types = index.model()->data(index, TRANSFER_TYPE_OPTIONS).toStringList();
-			combo->addItem("");
-			combo->addItems(types);
+        // remove the previous items
+        combo->clear();
 
-			// select the right option
-			QString selected = index.model()->data(index, Qt::DisplayRole).toString();
-			int comboIndex = combo->findText(selected);
-			combo->setCurrentIndex(comboIndex);
-			break;
-								   }
-		case DIRECTION_COLUMN: {
-			QComboBox* combo = qobject_cast<QComboBox*>(editor);
-			Q_ASSERT(combo);
+        // add the possible options for transfer types.
+        QStringList types = index.data(ComInterfaceColumns::TRANSFER_TYPE_OPTIONS).toStringList();
+        combo->addItem("");
+        combo->addItems(types);
 
-			QString dir = index.model()->data(index, Qt::DisplayRole).toString();
-			int comboIndex = combo->findText(dir);
-			combo->setCurrentIndex(comboIndex);
-			break;
-							   }
-		default: {
-			QStyledItemDelegate::setEditorData(editor, index);
-			break;
-				 }
-	}
+        // select the right option
+        QString selected = index.data(Qt::DisplayRole).toString();
+        combo->setCurrentIndex(combo->findText(selected));
+    }
+    else if (index.column() == ComInterfaceColumns::DIRECTION)
+    {
+        QComboBox* combo = qobject_cast<QComboBox*>(editor);
+        Q_ASSERT(combo);
+
+        QString direction = index.data(Qt::DisplayRole).toString();
+        combo->setCurrentIndex(combo->findText(direction));
+    }
+    else
+    {
+        QStyledItemDelegate::setEditorData(editor, index);
+    }
 }
 
-void ComInterfacesDelegate::setModelData( QWidget* editor, QAbstractItemModel* model, const QModelIndex& index ) const {
-	switch (index.column()) {
-		case NAME_COLUMN: 
-		case DESCRIPTION_COLUMN: {
-			QLineEdit* edit = qobject_cast<QLineEdit*>(editor);
-			Q_ASSERT(edit);
+//-----------------------------------------------------------------------------
+// Function: ComInterfacesDelegate::setModelData()
+//-----------------------------------------------------------------------------
+void ComInterfacesDelegate::setModelData( QWidget* editor, QAbstractItemModel* model, 
+    QModelIndex const& index ) const
+{
+    if (index.column() == ComInterfaceColumns::NAME ||
+        index.column() == ComInterfaceColumns::DESCRIPTION)
+    {
+        QLineEdit* edit = qobject_cast<QLineEdit*>(editor);
+        Q_ASSERT(edit);
 
-			QString text = edit->text();
-			model->setData(index, text, Qt::EditRole);
-			break;
-								 }
-		case COM_DEF_COLUMN: {
-			Q_ASSERT(false);
-			break;
-							 }
-		case TRANSFER_TYPE_COLUMN: {
-			QComboBox* combo = qobject_cast<QComboBox*>(editor);
-			Q_ASSERT(combo);
+        QString text = edit->text();
+        model->setData(index, text, Qt::EditRole);
+    }
+    else if (index.column() == ComInterfaceColumns::COM_DEFINITION)
+    {
+        Q_ASSERT(false);
+    }
+    else if (index.column() == ComInterfaceColumns::TRANSFER_TYPE)
+    {
+        QComboBox* combo = qobject_cast<QComboBox*>(editor);
+        Q_ASSERT(combo);
 
-			QString type = combo->currentText();
-			model->setData(index, type, Qt::EditRole);
-			break;
-								   }
-		case DIRECTION_COLUMN: {
-			QComboBox* combo = qobject_cast<QComboBox*>(editor);
-			Q_ASSERT(combo);
+        QString type = combo->currentText();
+        model->setData(index, type, Qt::EditRole);
+    }
+    else if (index.column() == ComInterfaceColumns::DIRECTION)
+    {
+        QComboBox* combo = qobject_cast<QComboBox*>(editor);
+        Q_ASSERT(combo);
 
-			QString dir = combo->currentText();
-			model->setData(index, dir, Qt::EditRole);
-			break;
-							   }
-		default: {
-			QStyledItemDelegate::setModelData(editor, model, index);
-			break;
-				 }
-	}
+        QString dir = combo->currentText();
+        model->setData(index, dir, Qt::EditRole);
+    }
+    else
+    {
+        QStyledItemDelegate::setModelData(editor, model, index);
+    }
 }
 
-void ComInterfacesDelegate::commitAndCloseEditor() {
+//-----------------------------------------------------------------------------
+// Function: ComInterfacesDelegate::commitAndCloseEditor()
+//-----------------------------------------------------------------------------
+void ComInterfacesDelegate::commitAndCloseEditor()
+{
 	QWidget* edit = qobject_cast<QWidget*>(sender());
 	Q_ASSERT(edit);
 

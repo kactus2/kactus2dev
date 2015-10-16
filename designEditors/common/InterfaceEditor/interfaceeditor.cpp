@@ -260,7 +260,7 @@ void InterfaceEditor::setInterface( ConnectionEndpoint* interface ) {
 
         if (comDef_ != 0)
         {
-            propertyValueEditor_.setAllowedProperties(&comDef_->getProperties());
+            propertyValueEditor_.setAllowedProperties(comDef_->getProperties());
         }
 
         connect(&propertyValueEditor_, SIGNAL(contentChanged()),

@@ -1,87 +1,92 @@
-/* 
- *  	Created on: 28.6.2012
- *      Author: Antti Kamppi
- * 		filename: cominterfaceseditor.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: cominterfaceseditor.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 28.06.2012
+//
+// Description:
+// The editor to add/remove/edit the COM interfaces of a component.
+//-----------------------------------------------------------------------------
 
 #ifndef COMINTERFACESEDITOR_H
 #define COMINTERFACESEDITOR_H
 
-#include <common/views/EditableTableView/editabletableview.h>
-#include <IPXACTmodels/component.h>
-#include <editors/ComponentEditor/itemeditor.h>
 #include "cominterfacesmodel.h"
+
+#include <editors/ComponentEditor/itemeditor.h>
+
+#include <common/views/EditableTableView/editabletableview.h>
 
 #include <QSharedPointer>
 #include <QSortFilterProxyModel>
 
+class Component;
 class LibraryInterface;
 
-/*! \brief The editor to add/remove/edit the COM interfaces of a component.
- *
- */
-class ComInterfacesEditor : public ItemEditor {
+//-----------------------------------------------------------------------------
+//! The editor to add/remove/edit the COM interfaces of a component.
+//-----------------------------------------------------------------------------
+class ComInterfacesEditor : public ItemEditor
+{
 	Q_OBJECT
 
 public:
 
-	//! \brief The width of the name column.
+	//! The width of the name column.
 	static const int NAME_COLUMN_WIDTH = 100;
 
-	//! \brief The width of the com definition column.
+	//! The width of the com definition column.
 	static const int COM_DEF_COLUMN_WIDTH = 200;
 
-	//! \brief The width of the transfer type column.
+	//! The width of the transfer type column.
 	static const int TRANSFER_COLUMN_WIDTH = 100;
 
-	//! \brief The width of the direction column.
+	//! The width of the direction column.
 	static const int DIRECTION_COLUMN_WIDTH = 100;
 
-	/*! \brief The constructor
+	/*! The constructor
 	 *
-	 * \param libHandler Pointer to the instance that manages the library.
-	 * \param component Pointer to the component being edited.
-	 * \param parent Pointer to the parent of this editor.
+	 *      @param [in] libHandler The instance that manages the library.
+	 *      @param [in] component   The component being edited.
+	 *      @param [in] parent      The parent of this editor.
 	 *
 	*/
-	ComInterfacesEditor(LibraryInterface* libHandler,
-		QSharedPointer<Component> component,
-				QWidget* parent = 0);
+	ComInterfacesEditor(LibraryInterface* libHandler, QSharedPointer<Component> component, QWidget* parent = 0);
 	
-	//! \brief The destructor
+	//! The destructor
 	virtual ~ComInterfacesEditor();
 
-	/*! \brief Check for the validity of the editor
+	/*! Check for the validity of the editor
 	* 
-	* \return True if the editor is in valid state.
+	*      @return True if the editor is in valid state.
 	*/
 	virtual bool isValid() const;
 
-	/*! \brief Reload the information from the model to the editor.
+	/*! Reload the information from the model to the editor.
 	*/
 	virtual void refresh();
 
 protected:
 
-	//! \brief Handler for widget's show event
+	//! Handler for widget's show event
 	virtual void showEvent(QShowEvent* event);
 
 private:
 	
-	//! \brief No copying
+	//! No copying
 	ComInterfacesEditor(const ComInterfacesEditor& other);
 
-	//! \brief No assignment
+	//! No assignment
 	ComInterfacesEditor& operator=(const ComInterfacesEditor& other);
 
-	//! \brief The view to display the COM interfaces.
+	//! The view to display the COM interfaces.
 	EditableTableView view_;
 
-	//! \brief The model that does the sorting.
+	//! The model that does the sorting.
 	QSortFilterProxyModel proxy_;
 
-	//! \brief The model that manages the COM interfaces.
+	//! The model that manages the COM interfaces.
 	ComInterfacesModel model_;
 };
 

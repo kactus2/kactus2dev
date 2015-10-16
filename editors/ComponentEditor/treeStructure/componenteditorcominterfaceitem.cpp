@@ -1,41 +1,64 @@
-/* 
- *  	Created on: 16.5.2012
- *      Author: Antti Kamppi
- * 		filename: componenteditorcominterfaceitem.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: componenteditorcominterfaceitem.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 16.5.2012
+//
+// Description:
+// The item for a single COM interface in component editor's navigation tree.
+//-----------------------------------------------------------------------------
 
 #include "componenteditorcominterfaceitem.h"
+
+#include <library/LibraryManager/libraryinterface.h>
+
 #include <editors/ComponentEditor/software/comInterface/ComInterfaceEditor.h>
 
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorComInterfaceItem::ComponentEditorComInterfaceItem()
+//-----------------------------------------------------------------------------
 ComponentEditorComInterfaceItem::ComponentEditorComInterfaceItem(QSharedPointer<ComInterface> comInterface,
-																 ComponentEditorTreeModel* model,
-																 LibraryInterface* libHandler,
-																 QSharedPointer<Component> component,
-																 ComponentEditorItem* parent):
+    ComponentEditorTreeModel* model, LibraryInterface* libHandler,
+    QSharedPointer<Component> component, ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-interface_(comInterface),
-editAction_(new QAction(tr("Edit"), this))
+    interface_(comInterface),
+    editAction_(new QAction(tr("Edit"), this))
 {
     connect(editAction_, SIGNAL(triggered(bool)), this, SLOT(openItem()), Qt::UniqueConnection);
 }
 
-ComponentEditorComInterfaceItem::~ComponentEditorComInterfaceItem() {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorComInterfaceItem::~ComponentEditorComInterfaceItem()
+//-----------------------------------------------------------------------------
+ComponentEditorComInterfaceItem::~ComponentEditorComInterfaceItem()
+{
 }
 
-QString ComponentEditorComInterfaceItem::text() const {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorComInterfaceItem::text()
+//-----------------------------------------------------------------------------
+QString ComponentEditorComInterfaceItem::text() const
+{
 	return interface_->name();
 }
 
-bool ComponentEditorComInterfaceItem::isValid() const {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorComInterfaceItem::isValid()
+//-----------------------------------------------------------------------------
+bool ComponentEditorComInterfaceItem::isValid() const
+{
 	// check that the COM interface is valid
-	if (!interface_->isValid()) {
+	if (!interface_->isValid()) 
+    {
 		return false;
 	}
 
 	// check that if there is a COM definition it is found
-	else if (interface_->getComType().isValid()) {
-		if (!libHandler_->contains(interface_->getComType())) {
+	else if (interface_->getComType().isValid())
+    {
+		if (!libHandler_->contains(interface_->getComType()))
+        {
 			return false;
 		}
 	}
@@ -43,29 +66,35 @@ bool ComponentEditorComInterfaceItem::isValid() const {
 	return true;
 }
 
-ItemEditor* ComponentEditorComInterfaceItem::editor() {
-	if (!editor_) {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorComInterfaceItem::editor()
+//-----------------------------------------------------------------------------
+ItemEditor* ComponentEditorComInterfaceItem::editor()
+{
+	if (!editor_)
+    {
 		editor_ = new ComInterfaceEditor(libHandler_, component_, interface_);
 		editor_->setProtection(locked_);
-		connect(editor_, SIGNAL(contentChanged()),
-			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
-		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
-			this, SIGNAL(helpUrlRequested(QString const&)));
+		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
 	}
 	return editor_;
 }
 
-QString ComponentEditorComInterfaceItem::getTooltip() const {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorComInterfaceItem::getTooltip()
+//-----------------------------------------------------------------------------
+QString ComponentEditorComInterfaceItem::getTooltip() const
+{
 	return tr("Specifies a virtual communication interface for the component");
 }
 
-bool ComponentEditorComInterfaceItem::canBeOpened() const {
-	if (interface_->getComType().isValid()) {
-		return libHandler_->contains(interface_->getComType());
-	}
-	else {
-		return false;
-	}
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorComInterfaceItem::canBeOpened()
+//-----------------------------------------------------------------------------
+bool ComponentEditorComInterfaceItem::canBeOpened() const
+{
+    return interface_->getComType().isValid() && libHandler_->contains(interface_->getComType());
 }
 
 //-----------------------------------------------------------------------------

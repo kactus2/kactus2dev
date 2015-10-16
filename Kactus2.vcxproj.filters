@@ -6113,6 +6113,9 @@
     <ClInclude Include="editors\ComDefinitionEditor\ComPropertyColumns.h">
       <Filter>Header Files\editors\ComDefinitionEditor</Filter>
     </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\software\comInterface\ComInterfaceColumns.h">
+      <Filter>Header Files\editors\ComponentEditor\software\comInterface</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="designEditors\common\DiagramUtil.inl">

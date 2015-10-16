@@ -34,8 +34,7 @@ PropertyValueEditor::PropertyValueEditor(QWidget* parent)
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->addWidget(&view_);
 
-    connect(&model_, SIGNAL(contentChanged()),
-            this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(&model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(&view_, SIGNAL(addItem(const QModelIndex&)),
             &model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
     connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
@@ -52,7 +51,7 @@ PropertyValueEditor::~PropertyValueEditor()
 //-----------------------------------------------------------------------------
 // Function: PropertyValueEditor::setAllowedProperties()
 //-----------------------------------------------------------------------------
-void PropertyValueEditor::setAllowedProperties(QList< QSharedPointer<ComProperty> > const* properties)
+void PropertyValueEditor::setAllowedProperties(QList< QSharedPointer<ComProperty> > properties)
 {
     delegate_.setAllowedProperties(properties);
     model_.setAllowedProperties(properties);
