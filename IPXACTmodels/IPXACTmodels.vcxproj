@@ -181,6 +181,7 @@
     <ClCompile Include="common\Range.cpp" />
     <ClCompile Include="common\Vector.cpp" />
     <ClCompile Include="componentgenerator.cpp" />
+    <ClCompile Include="Component\OtherClockDriver.cpp" />
     <ClCompile Include="ComProperty.cpp" />
     <ClCompile Include="designconfabstractor.cpp" />
     <ClCompile Include="designConfiguration\AbstractorInstance.cpp" />
@@ -697,6 +698,7 @@
     <ClInclude Include="common\Range.h" />
     <ClInclude Include="common\Vector.h" />
     <ClInclude Include="componentgenerator.h" />
+    <ClInclude Include="Component\OtherClockDriver.h" />
     <ClInclude Include="ComProperty.h" />
     <ClInclude Include="designconfabstractor.h" />
     <ClInclude Include="designConfiguration\AbstractorInstance.h" />

@@ -17,10 +17,10 @@
 //-----------------------------------------------------------------------------
 // Function: CPUWriter::CPUWriter()
 //-----------------------------------------------------------------------------
-CPUWriter::CPUWriter(QObject* parent /* = 0 */) :
+CPUWriter::CPUWriter(QObject* parent) :
 CommonItemsWriter(parent)
 {
-
+    
 }
 
 //-----------------------------------------------------------------------------
@@ -36,7 +36,7 @@ CPUWriter::~CPUWriter()
 //-----------------------------------------------------------------------------
 void CPUWriter::writeCPU(QXmlStreamWriter& writer, QSharedPointer<Cpu> cpu) const
 {
-	// Start the element, write name group, presence and, vendor extensions with pre-existing writers.
+	// Start the element, write name group, presence and vendor extensions with pre-existing writers.
 	writer.writeStartElement("ipxact:cpu");
 	
     writeNameGroup(writer, cpu);

@@ -9,10 +9,12 @@
 // Unit test for class CPUWriter.
 //-----------------------------------------------------------------------------
 
-#include <IPXACTmodels/Component/CPUWriter.h>
-#include <IPXACTmodels/VendorExtension.h>
 #include <IPXACTmodels/common/Parameter.h>
+
+#include <IPXACTmodels/Component/CPUWriter.h>
+
 #include <IPXACTmodels/GenericVendorExtension.h>
+#include <IPXACTmodels/VendorExtension.h>
 
 #include <QtTest>
 
@@ -73,7 +75,7 @@ void tst_CPUWriter::testWriteCPUNameGroup()
 
 	QString expectedOutput(
 		"<ipxact:cpu>"
-		"<ipxact:name>testCpu</ipxact:name>"
+		    "<ipxact:name>testCpu</ipxact:name>"
 		"</ipxact:cpu>"
 		);
 
@@ -87,10 +89,9 @@ void tst_CPUWriter::testWriteCPUNameGroup()
 	testCPU_->setDisplayName("testDisplay");
 	expectedOutput = 
 		"<ipxact:cpu>"
-		"<ipxact:name>testCpu</ipxact:name>"
-		"<ipxact:displayName>testDisplay</ipxact:displayName>"
-		"</ipxact:cpu>"
-		;
+		    "<ipxact:name>testCpu</ipxact:name>"
+		    "<ipxact:displayName>testDisplay</ipxact:displayName>"
+		"</ipxact:cpu>";
 
 	cpuWriter.writeCPU(xmlStreamWriter, testCPU_);
 	QCOMPARE(output, expectedOutput);
@@ -101,11 +102,10 @@ void tst_CPUWriter::testWriteCPUNameGroup()
 	testCPU_->setDescription("testDescription");
 	expectedOutput = 
 		"<ipxact:cpu>"
-		"<ipxact:name>testCpu</ipxact:name>"
-		"<ipxact:displayName>testDisplay</ipxact:displayName>"
-		"<ipxact:description>testDescription</ipxact:description>"
-		"</ipxact:cpu>"
-		;
+		    "<ipxact:name>testCpu</ipxact:name>"
+		    "<ipxact:displayName>testDisplay</ipxact:displayName>"
+		    "<ipxact:description>testDescription</ipxact:description>"
+		"</ipxact:cpu>";
 
 	cpuWriter.writeCPU(xmlStreamWriter, testCPU_);
 	QCOMPARE(output, expectedOutput);
@@ -123,8 +123,8 @@ void tst_CPUWriter::testWriteIsPresent()
 
 	QString expectedOutput(
 		"<ipxact:cpu>"
-		"<ipxact:name>testCpu</ipxact:name>"
-		"<ipxact:isPresent>4-3</ipxact:isPresent>"
+		    "<ipxact:name>testCpu</ipxact:name>"
+		    "<ipxact:isPresent>4-3</ipxact:isPresent>"
 		"</ipxact:cpu>"
 		);
 
@@ -145,8 +145,8 @@ void tst_CPUWriter::testWriteParameter()
 	testCPU_->setIsPresent("4-3");
 
 	QSharedPointer<Parameter> para1(new Parameter());
-	para1->setName("Esko");
-	para1->setValueId("joq");
+	para1->setName("testParameter");
+	para1->setValueId("id1");
 	para1->setValue("5");
 	para1->setType("shortint");
 	para1->setAttribute("prompt", "Parm 1");
@@ -157,16 +157,15 @@ void tst_CPUWriter::testWriteParameter()
 
 	QString expectedOutput(
 		"<ipxact:cpu>"
-		"<ipxact:name>testCpu</ipxact:name>"
-		"<ipxact:isPresent>4-3</ipxact:isPresent>"
-		"<ipxact:parameters>"
-		"<ipxact:parameter parameterId=\"joq\" prompt=\"Parm 1\""
-		" resolve=\"user\" type=\"shortint\">"
-		"<ipxact:name>Esko</ipxact:name>"
-		"<ipxact:description>First generator parameter.</ipxact:description>"
-		"<ipxact:value>5</ipxact:value>"
-		"</ipxact:parameter>"
-		"</ipxact:parameters>"
+		    "<ipxact:name>testCpu</ipxact:name>"
+		    "<ipxact:isPresent>4-3</ipxact:isPresent>"
+		    "<ipxact:parameters>"
+		        "<ipxact:parameter parameterId=\"id1\" prompt=\"Parm 1\" resolve=\"user\" type=\"shortint\">"
+		            "<ipxact:name>testParameter</ipxact:name>"
+		            "<ipxact:description>First generator parameter.</ipxact:description>"
+		            "<ipxact:value>5</ipxact:value>"
+		        "</ipxact:parameter>"
+		    "</ipxact:parameters>"
 		"</ipxact:cpu>"
 		);
 
@@ -184,7 +183,7 @@ void tst_CPUWriter::testWriteAddressSpaces()
 	QString output;
 	QXmlStreamWriter xmlStreamWriter(&output);
 
-	testCPU_->setName("joqCPU");
+	testCPU_->setName("cpuWithAddressSpace");
 
     QSharedPointer<Cpu::AddressSpaceRef> addressReference (new Cpu::AddressSpaceRef("lackOfImagination"));
     addressReference->setIsPresent("spacePresence");
@@ -193,12 +192,11 @@ void tst_CPUWriter::testWriteAddressSpaces()
 
 	QString expectedOutput(
 		"<ipxact:cpu>"
-    		"<ipxact:name>joqCPU</ipxact:name>"
-	    	"<ipxact:addressSpaceRef addressSpaceRef=\"lackOfImagination\">"
-            "<ipxact:isPresent>spacePresence</ipxact:isPresent>"
-            "</ipxact:addressSpaceRef>"
-		"</ipxact:cpu>"
-		);
+    		"<ipxact:name>cpuWithAddressSpace</ipxact:name>"
+	    	    "<ipxact:addressSpaceRef addressSpaceRef=\"lackOfImagination\">"
+                    "<ipxact:isPresent>spacePresence</ipxact:isPresent>"
+                "</ipxact:addressSpaceRef>"
+		"</ipxact:cpu>");
 
 	CPUWriter cpuWriter;
 	cpuWriter.writeCPU(xmlStreamWriter, testCPU_);
@@ -212,8 +210,8 @@ void tst_CPUWriter::testWriteAddressSpaces()
 void tst_CPUWriter::testWriteVendorExtension()
 {
 	QDomDocument document;
-	QDomElement extensionNode = document.createElement("ulina");
-	extensionNode.setAttribute("kolina", "eaa");
+	QDomElement extensionNode = document.createElement("testExtension");
+	extensionNode.setAttribute("testAttribute", "true");
 	extensionNode.appendChild(document.createTextNode("testValue"));
 
 	QSharedPointer<GenericVendorExtension> testExtension(new GenericVendorExtension(extensionNode));
@@ -223,16 +221,12 @@ void tst_CPUWriter::testWriteVendorExtension()
 	QString output;
 	QXmlStreamWriter xmlStreamWriter(&output);
 
-	testCPU_->setName("joq");
-
 	QString expectedOutput(
 		"<ipxact:cpu>"
-		"<ipxact:name>joq</ipxact:name>"
-		"<ipxact:vendorExtensions>"
-		"<ulina kolina=\"eaa\">"
-		"testValue"
-		"</ulina>"
-		"</ipxact:vendorExtensions>"
+		    "<ipxact:name>testCpu</ipxact:name>"
+		    "<ipxact:vendorExtensions>"
+		        "<testExtension testAttribute=\"true\">testValue</testExtension>"
+		    "</ipxact:vendorExtensions>"
 		"</ipxact:cpu>"
 		);
 

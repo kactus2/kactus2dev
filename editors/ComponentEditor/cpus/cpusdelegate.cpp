@@ -1,111 +1,134 @@
-/* 
- *  	Created on: 14.6.2012
- *      Author: Antti Kamppi
- * 		filename: cpusdelegate.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: cpusdelegate.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 14.06.2012
+//
+// Description:
+// The delegate to provide editors to add/remove/edit the cpus of a component.
+//-----------------------------------------------------------------------------
 
 #include "cpusdelegate.h"
+
+#include "CpuColumns.h"
+
 #include <common/widgets/EnumCollectionEditor/EnumCollectionEditor.h>
-#include "addressspacerefdelegate.h"
+
+#include <IPXACTmodels/Component/Component.h>
 
 #include <QLineEdit>
 #include <QStringList>
 #include <QString>
 
-CpusDelegate::CpusDelegate( QSharedPointer<Component> component,
-						   QObject *parent ):
+//-----------------------------------------------------------------------------
+// Function: CpusDelegate::CpusDelegate()
+//-----------------------------------------------------------------------------
+CpusDelegate::CpusDelegate(QSharedPointer<Component> component, QObject* parent):
 QStyledItemDelegate(parent),
-component_(component) {
-	Q_ASSERT(component);
+    component_(component)
+{
+    Q_ASSERT(component);
 }
 
-CpusDelegate::~CpusDelegate() {
+//-----------------------------------------------------------------------------
+// Function: CpusDelegate::~CpusDelegate()
+//-----------------------------------------------------------------------------
+CpusDelegate::~CpusDelegate()
+{
 }
 
-QWidget* CpusDelegate::createEditor( QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index ) const {
-
-	switch (index.column()) {
-		case CpusDelegate::NAME_COLUMN:
-		case CpusDelegate::DISPLAY_NAME_COLUMN:
-		case CpusDelegate::DESCRIPTION_COLUMN: {
-			QLineEdit* edit = new QLineEdit(parent);
-			connect(edit, SIGNAL(editingFinished()),
-				this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
-			return edit;
-											   }
-		case CpusDelegate::ADDRSPACE_COLUMN: {
-            EnumCollectionEditor* editor = new EnumCollectionEditor(parent);
-            return editor;
-											 }
-		default: {
-			return QStyledItemDelegate::createEditor(parent, option, index);
-				 }
-	}
+//-----------------------------------------------------------------------------
+// Function: CpusDelegate::createEditor()
+//-----------------------------------------------------------------------------
+QWidget* CpusDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const& option, 
+    QModelIndex const& index) const
+{
+    if (index.column() == CpuColumns::NAME_COLUMN ||
+        index.column() == CpuColumns::DISPLAY_NAME_COLUMN ||
+        index.column() ==  CpuColumns::DESCRIPTION_COLUMN)
+    {
+        QLineEdit* lineEdit = new QLineEdit(parent);
+        connect(lineEdit, SIGNAL(editingFinished()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
+        return lineEdit;
+    }
+    else if (index.column() == CpuColumns::ADDRSPACE_COLUMN)
+    {
+        EnumCollectionEditor* editor = new EnumCollectionEditor(parent);
+        return editor;
+    }
+    else
+    {
+        return QStyledItemDelegate::createEditor(parent, option, index);
+    }	
 }
 
-void CpusDelegate::setEditorData( QWidget* editor, const QModelIndex& index ) const {
-	switch (index.column()) {
-		case CpusDelegate::NAME_COLUMN:
-		case CpusDelegate::DISPLAY_NAME_COLUMN:
-		case CpusDelegate::DESCRIPTION_COLUMN: {
-			QLineEdit* edit = qobject_cast<QLineEdit*>(editor);
-			Q_ASSERT(edit);
+//-----------------------------------------------------------------------------
+// Function: CpusDelegate::setEditorData()
+//-----------------------------------------------------------------------------
+void CpusDelegate::setEditorData(QWidget* editor, QModelIndex const& index) const
+{
+    if (index.column() == CpuColumns::NAME_COLUMN ||
+        index.column() == CpuColumns::DISPLAY_NAME_COLUMN ||
+        index.column() ==  CpuColumns::DESCRIPTION_COLUMN)
+    {
+        QLineEdit* edit = qobject_cast<QLineEdit*>(editor);
+        Q_ASSERT(edit);
 
-			const QString text = index.model()->data(index, Qt::DisplayRole).toString();
-			edit->setText(text);
-			break;
-											   }
-		case CpusDelegate::ADDRSPACE_COLUMN: {
-			
-            EnumCollectionEditor* collectionEditor = static_cast<EnumCollectionEditor*>(editor);
-            Q_ASSERT(collectionEditor != 0);
+        const QString text = index.data(Qt::DisplayRole).toString();
+        edit->setText(text);
+    }
+    else if (index.column() == CpuColumns::ADDRSPACE_COLUMN)
+    {			
+        EnumCollectionEditor* collectionEditor = static_cast<EnumCollectionEditor*>(editor);
+        Q_ASSERT(collectionEditor != 0);
 
-            QStringList addrSpaces = index.model()->data(index, CpusDelegate::USER_DISPLAY_ROLE).toStringList();
-
-            foreach (QString const& name, component_->getAddressSpaceNames())
-            {
-                collectionEditor->addItem(name, addrSpaces.contains(name));
-            }
-
-			break;
-											 }
-		default: {
-			QStyledItemDelegate::setEditorData(editor, index);
-			break;
-				 }
-	}
+        QStringList addrSpaces = index.data(CpuColumns::USER_DISPLAY_ROLE).toStringList();
+        foreach (QString const& name, component_->getAddressSpaceNames())
+        {
+            collectionEditor->addItem(name, addrSpaces.contains(name));
+        }
+    }
+    else
+    {
+        QStyledItemDelegate::setEditorData(editor, index);
+    }
 }
 
-void CpusDelegate::setModelData( QWidget* editor, QAbstractItemModel* model, const QModelIndex& index ) const {
-	switch (index.column()) {
-		case CpusDelegate::NAME_COLUMN:
-		case CpusDelegate::DISPLAY_NAME_COLUMN:
-		case CpusDelegate::DESCRIPTION_COLUMN: {
-			QLineEdit* edit = qobject_cast<QLineEdit*>(editor);
-			Q_ASSERT(edit);
+//-----------------------------------------------------------------------------
+// Function: CpusDelegate::setModelData()
+//-----------------------------------------------------------------------------
+void CpusDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index) const
+{
+    if (index.column() == CpuColumns::NAME_COLUMN ||
+        index.column() == CpuColumns::DISPLAY_NAME_COLUMN ||
+        index.column() ==  CpuColumns::DESCRIPTION_COLUMN)
+    {
+        QLineEdit* edit = qobject_cast<QLineEdit*>(editor);
+        Q_ASSERT(edit);
 
-			QString text = edit->text();
-			model->setData(index, text, Qt::EditRole);
-			break;
-											   }
-		case CpusDelegate::ADDRSPACE_COLUMN: {
-            EnumCollectionEditor* collectionEditor = static_cast<EnumCollectionEditor*>(editor);
-            Q_ASSERT(collectionEditor != 0);
+        QString text = edit->text();
+        model->setData(index, text, Qt::EditRole);
+    }
+    else if (index.column() == CpuColumns::ADDRSPACE_COLUMN)
+    {
+        EnumCollectionEditor* collectionEditor = static_cast<EnumCollectionEditor*>(editor);
+        Q_ASSERT(collectionEditor != 0);
 
-			QStringList addrSpaces = collectionEditor->getSelectedItems();
-			model->setData(index, addrSpaces, CpusDelegate::USER_EDIT_ROLE);
-
-			break;
-											 }
-		default: {
-			QStyledItemDelegate::setModelData(editor, model, index);
-			break;
-				 }
-	}
+        QStringList addrSpaces = collectionEditor->getSelectedItems();
+        model->setData(index, addrSpaces, CpuColumns::USER_EDIT_ROLE);
+    }
+    else
+    {
+        QStyledItemDelegate::setModelData(editor, model, index);
+    }
 }
 
-void CpusDelegate::commitAndCloseEditor() {
+//-----------------------------------------------------------------------------
+// Function: CpusDelegate::commitAndCloseEditor()
+//-----------------------------------------------------------------------------
+void CpusDelegate::commitAndCloseEditor()
+{
 	QWidget* edit = qobject_cast<QWidget*>(sender());
 	Q_ASSERT(edit);
 

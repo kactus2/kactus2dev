@@ -107,6 +107,6 @@ void CPUReader::parseParameters(QDomNode const& cpuNode, QSharedPointer<Cpu> new
 
     if (!parameters->isEmpty())
     {
-        newCpu->setParameters(parameters);
+        newCpu->getParameters()->append(*parameters);
     }
 }
