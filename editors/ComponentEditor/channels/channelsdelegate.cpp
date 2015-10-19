@@ -1,116 +1,136 @@
-/* 
- *  	Created on: 14.6.2012
- *      Author: Antti Kamppi
- * 		filename: channelsdelegate.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: channelsdelegate.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 14.06.2012
+//
+// Description:
+// The delegate that provides editors to edit the channels of a component.
+//-----------------------------------------------------------------------------
 
 #include "channelsdelegate.h"
+#include "ChannelColumns.h"
+
 #include <common/widgets/EnumCollectionEditor/EnumCollectionEditor.h>
-#include "channelinterfacemanagerdelegate.h"
+
+#include <IPXACTmodels/Component/Component.h>
 
 #include <QLineEdit>
 #include <QString>
 
-ChannelsDelegate::ChannelsDelegate(QSharedPointer<Component> component,
-								   QObject *parent):
+//-----------------------------------------------------------------------------
+// Function: ChannelsDelegate::ChannelsDelegate()
+//-----------------------------------------------------------------------------
+ChannelsDelegate::ChannelsDelegate(QSharedPointer<Component> component, QObject* parent):
 QStyledItemDelegate(parent),
-component_(component) {
-
-	Q_ASSERT(component_);
+    component_(component)
+{
+    Q_ASSERT(component_);
 }
 
-ChannelsDelegate::~ChannelsDelegate() {
+//-----------------------------------------------------------------------------
+// Function: ChannelsDelegate::~ChannelsDelegate()
+//-----------------------------------------------------------------------------
+ChannelsDelegate::~ChannelsDelegate()
+{
 }
 
-QWidget* ChannelsDelegate::createEditor( QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index ) const {
-
-	switch (index.column()) {
-		case ChannelsDelegate::NAME_COLUMN:
-		case ChannelsDelegate::DISPLAY_NAME_COLUMN:
-		case ChannelsDelegate::DESCRIPTION_COLUMN: {
-			QLineEdit* edit = new QLineEdit(parent);
-			connect(edit, SIGNAL(editingFinished()),
-				this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
-			return edit;
-												   }
-		case ChannelsDelegate::INTERFACE_COLUMN: {
-			EnumCollectionEditor* editor = new EnumCollectionEditor(parent);
-			return editor;
-												 }
-		default: {
-			return QStyledItemDelegate::createEditor(parent, option, index);
-				 }
-	}
+//-----------------------------------------------------------------------------
+// Function: ChannelsDelegate::createEditor()
+//-----------------------------------------------------------------------------
+QWidget* ChannelsDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const& option, 
+    QModelIndex const& index) const
+{
+    if (index.column() == ChannelColumns::NAME_COLUMN ||
+        index.column() == ChannelColumns::DISPLAY_NAME_COLUMN ||
+        index.column() == ChannelColumns::DESCRIPTION_COLUMN)
+    {
+        QLineEdit* lineEdit = new QLineEdit(parent);
+        connect(lineEdit, SIGNAL(editingFinished()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
+        return lineEdit;
+    }
+    else if (index.column() == ChannelColumns::INTERFACE_COLUMN) 
+    {
+        return new EnumCollectionEditor(parent);
+    }
+    else
+    {
+        return QStyledItemDelegate::createEditor(parent, option, index);
+    }
 }
 
-void ChannelsDelegate::setEditorData( QWidget* editor, const QModelIndex& index ) const {
-	switch (index.column()) {
-		case ChannelsDelegate::NAME_COLUMN:
-		case ChannelsDelegate::DISPLAY_NAME_COLUMN:
-		case ChannelsDelegate::DESCRIPTION_COLUMN:
-            {
-			    QLineEdit* edit = qobject_cast<QLineEdit*>(editor);
-			    Q_ASSERT(edit);
+//-----------------------------------------------------------------------------
+// Function: ChannelsDelegate::setEditorData()
+//-----------------------------------------------------------------------------
+void ChannelsDelegate::setEditorData(QWidget* editor, QModelIndex const& index) const
+{
+    if (index.column() == ChannelColumns::NAME_COLUMN ||
+        index.column() == ChannelColumns::DISPLAY_NAME_COLUMN ||
+        index.column() == ChannelColumns::DESCRIPTION_COLUMN)
+    {
+        QLineEdit* edit = qobject_cast<QLineEdit*>(editor);
+        Q_ASSERT(edit);
 
-			    const QString text = index.model()->data(index, Qt::DisplayRole).toString();
-			    edit->setText(text);
-			    break;
-            }
+        const QString text = index.data(Qt::DisplayRole).toString();
+        edit->setText(text);
+    }
 
-		case ChannelsDelegate::INTERFACE_COLUMN:
-            {
-                EnumCollectionEditor* collectionEditor = static_cast<EnumCollectionEditor*>(editor);
-                Q_ASSERT(collectionEditor != 0);
+    else if (index.column() == ChannelColumns::INTERFACE_COLUMN) 
+    {
+        EnumCollectionEditor* collectionEditor = static_cast<EnumCollectionEditor*>(editor);
+        Q_ASSERT(collectionEditor != 0);
 
-                QStringList selectedInterfaces =
-                    index.model()->data(index, ChannelsDelegate::USER_DISPLAY_ROLE).toStringList();
+        QStringList selectedInterfaces =
+            index.data(ChannelColumns::USER_DISPLAY_ROLE).toStringList();
 
-                foreach (QString const& name, component_->getBusInterfaceNames())
-                {
-                    collectionEditor->addItem(name, selectedInterfaces.contains(name));
-                }
+        foreach (QString const& name, component_->getBusInterfaceNames())
+        {
+            collectionEditor->addItem(name, selectedInterfaces.contains(name));
+        }
+    }
 
-                break;
-            }
+    else
+    {
+        QStyledItemDelegate::setEditorData(editor, index);
 
-		default:
-            {
-			    QStyledItemDelegate::setEditorData(editor, index);
-			    break;
-            }
-	}
+    }
 }
 
-void ChannelsDelegate::setModelData( QWidget* editor, QAbstractItemModel* model, const QModelIndex& index ) const {
-	switch (index.column()) {
-		case ChannelsDelegate::NAME_COLUMN:
-		case ChannelsDelegate::DISPLAY_NAME_COLUMN:
-		case ChannelsDelegate::DESCRIPTION_COLUMN: {
-			QLineEdit* edit = qobject_cast<QLineEdit*>(editor);
-			Q_ASSERT(edit);
+//-----------------------------------------------------------------------------
+// Function: ChannelsDelegate::setModelData()
+//-----------------------------------------------------------------------------
+void ChannelsDelegate::setModelData( QWidget* editor, QAbstractItemModel* model, QModelIndex const& index ) const
+{
+    if (index.column() == ChannelColumns::NAME_COLUMN ||
+        index.column() == ChannelColumns::DISPLAY_NAME_COLUMN ||
+        index.column() == ChannelColumns::DESCRIPTION_COLUMN)
+    {
+        QLineEdit* edit = qobject_cast<QLineEdit*>(editor);
+        Q_ASSERT(edit);
 
-			QString text = edit->text();
-			model->setData(index, text, Qt::EditRole);
-			break;
-												   }
-		case ChannelsDelegate::INTERFACE_COLUMN: {
-            EnumCollectionEditor* collectionEditor = static_cast<EnumCollectionEditor*>(editor);
-            Q_ASSERT(collectionEditor != 0);
+        QString text = edit->text();
+        model->setData(index, text, Qt::EditRole);
+    }
+    else if (index.column() == ChannelColumns::INTERFACE_COLUMN) 
+    {
+        EnumCollectionEditor* collectionEditor = static_cast<EnumCollectionEditor*>(editor);
+        Q_ASSERT(collectionEditor != 0);
 
-			QStringList interfaces = collectionEditor->getSelectedItems();
-			model->setData(index, interfaces, ChannelsDelegate::USER_EDIT_ROLE);
-
-			break;
-												 }
-		default: {
-			QStyledItemDelegate::setModelData(editor, model, index);
-			break;
-				 }
-	}
+        QStringList interfaces = collectionEditor->getSelectedItems();
+        model->setData(index, interfaces, ChannelColumns::USER_EDIT_ROLE);
+    }
+    else
+    {
+        QStyledItemDelegate::setModelData(editor, model, index);
+    }
 }
 
-void ChannelsDelegate::commitAndCloseEditor() {
+//-----------------------------------------------------------------------------
+// Function: ChannelsDelegate::commitAndCloseEditor()
+//-----------------------------------------------------------------------------
+void ChannelsDelegate::commitAndCloseEditor()
+{
 	QWidget* edit = qobject_cast<QWidget*>(sender());
 	Q_ASSERT(edit);
 

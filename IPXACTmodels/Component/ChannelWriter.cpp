@@ -16,7 +16,7 @@
 //-----------------------------------------------------------------------------
 // Function: ChannelWriter::ChannelWriter()
 //-----------------------------------------------------------------------------
-ChannelWriter::ChannelWriter(QObject* parent /* = 0 */) :
+ChannelWriter::ChannelWriter(QObject* parent) :
 CommonItemsWriter(parent)
 {
 
@@ -35,19 +35,15 @@ ChannelWriter::~ChannelWriter()
 //-----------------------------------------------------------------------------
 void ChannelWriter::writeChannel(QXmlStreamWriter& writer, QSharedPointer<Channel> channel) const
 {
-	// Start the element, write name group, presence and, vendor extensions with pre-existing writers.
+	// Start the element, write name group and presence.
 	writer.writeStartElement("ipxact:channel");
 	writeNameGroup(writer, channel);
 	writeIsPresent(writer, channel);
 
-	// Acquire reference for bus interface reference list.
-	const QStringList& busIfRefs = channel->getInterfaces();
-
-	// Write all address spaces.
-	for (int i = 0; i < busIfRefs.size(); ++i)
+	foreach (QString const& busInterfaceReference, channel->getInterfaces())
 	{
 		writer.writeStartElement("ipxact:busInterfaceRef");
-		writer.writeTextElement("ipxact:localName", busIfRefs.at(i));
+		writer.writeTextElement("ipxact:localName", busInterfaceReference);
 		writer.writeEndElement();
 	}
 

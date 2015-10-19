@@ -49,7 +49,6 @@ void tst_ChannelReader::testReadSimpleChannel()
         "</ipxact:channel>"
         );
 
-
     QDomDocument document;
     document.setContent(documentContent);
 
@@ -95,11 +94,11 @@ void tst_ChannelReader::testReadBusIfRef()
 {
 	QString documentContent(
 		"<ipxact:channel>"
-		"<ipxact:name>testChannel</ipxact:name>"
-		"<ipxact:isPresent>4-3</ipxact:isPresent>"
-		"<ipxact:busInterfaceRef>"
-		"<ipxact:localName>eaaa</ipxact:localName>"
-		"</ipxact:busInterfaceRef>"
+		    "<ipxact:name>testChannel</ipxact:name>"
+		    "<ipxact:isPresent>4-3</ipxact:isPresent>"
+		    "<ipxact:busInterfaceRef>"
+		        "<ipxact:localName>interface1</ipxact:localName>"
+		    "</ipxact:busInterfaceRef>"
 		"</ipxact:channel>"
 		);
 
@@ -114,7 +113,7 @@ void tst_ChannelReader::testReadBusIfRef()
 	QCOMPARE(testChannel->name(), QString("testChannel"));
 	QCOMPARE(testChannel->getIsPresent(), QString("4-3"));
 	QCOMPARE(testChannel->getInterfaces().size(), 1);
-	QCOMPARE(testChannel->getInterfaces().first(), QString("eaaa"));
+	QCOMPARE(testChannel->getInterfaces().first(), QString("interface1"));
 }
 
 //-----------------------------------------------------------------------------
@@ -124,14 +123,14 @@ void tst_ChannelReader::testReadBusIfRef2()
 {
 	QString documentContent(
 		"<ipxact:channel>"
-		"<ipxact:name>Esko</ipxact:name>"
-		"<ipxact:isPresent>evo</ipxact:isPresent>"
-		"<ipxact:busInterfaceRef>"
-		"<ipxact:localName>eaaa</ipxact:localName>"
-		"</ipxact:busInterfaceRef>"
-		"<ipxact:busInterfaceRef>"
-		"<ipxact:localName>joq</ipxact:localName>"
-		"</ipxact:busInterfaceRef>"
+		"   <ipxact:name>testChannel</ipxact:name>"
+		    "<ipxact:isPresent>expression</ipxact:isPresent>"
+		    "<ipxact:busInterfaceRef>"
+		        "<ipxact:localName>firstInterface</ipxact:localName>"
+		    "</ipxact:busInterfaceRef>"
+		    "<ipxact:busInterfaceRef>"
+		        "<ipxact:localName>secondInterface</ipxact:localName>"
+		    "</ipxact:busInterfaceRef>"
 		"</ipxact:channel>"
 		);
 
@@ -143,11 +142,11 @@ void tst_ChannelReader::testReadBusIfRef2()
 	ChannelReader ChannelReader;
 	QSharedPointer<Channel> testChannel = ChannelReader.createChannelFrom(channelNode);
 
-	QCOMPARE(testChannel->name(), QString("Esko"));
-	QCOMPARE(testChannel->getIsPresent(), QString("evo"));
+	QCOMPARE(testChannel->name(), QString("testChannel"));
+	QCOMPARE(testChannel->getIsPresent(), QString("expression"));
 	QCOMPARE(testChannel->getInterfaces().size(), 2);
-	QCOMPARE(testChannel->getInterfaces().first(), QString("eaaa"));
-	QCOMPARE(testChannel->getInterfaces().last(), QString("joq"));
+	QCOMPARE(testChannel->getInterfaces().first(), QString("firstInterface"));
+	QCOMPARE(testChannel->getInterfaces().last(), QString("secondInterface"));
 }
 
 QTEST_APPLESS_MAIN(tst_ChannelReader)

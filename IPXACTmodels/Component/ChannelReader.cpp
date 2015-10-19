@@ -10,12 +10,13 @@
 //-----------------------------------------------------------------------------
 
 #include "ChannelReader.h"
+
 #include <IPXACTmodels/common/NameGroupReader.h>
 
 //-----------------------------------------------------------------------------
 // Function: ChannelReader::ChannelReader()
 //-----------------------------------------------------------------------------
-ChannelReader::ChannelReader(QObject* parent /* = 0 */) :
+ChannelReader::ChannelReader(QObject* parent) :
 CommonItemsReader(parent)
 {
 
@@ -34,38 +35,24 @@ ChannelReader::~ChannelReader()
 //-----------------------------------------------------------------------------
 QSharedPointer<Channel> ChannelReader::createChannelFrom(QDomNode const& channelNode) const
 {
-	// Create the new CPU.
+	// Create the new channel.
 	QSharedPointer<Channel> newChannel (new Channel());
 
-	// Parse presence, name group, and vendor extensions with pre-existing parsers.
-	// CPU has no vendor extensions supported by Kactus2.
+	// Parse presence and name group with pre-existing parsers.
+	// Channel has no vendor extensions supported by Kactus2.
 	parseIsPresent(channelNode, newChannel);
 	parseNameGroup(channelNode, newChannel);
 
 	// The intermediate list for parsed child nodes.
 	QStringList busInterfaces;
 
-	// Go through all the childnodes.
-	for (int i = 0; i < channelNode.childNodes().count(); ++i)
-	{
-		QDomNode tempNode = channelNode.childNodes().at(i);
-
-		// Get the bus interface refs.
-		if (tempNode.nodeName() == QString("ipxact:busInterfaceRef"))
-		{
-			// Go through the child nodes of the ref.
-			for (int j = 0; j < tempNode.childNodes().count(); ++j)
-			{
-				QDomNode nameNode = tempNode.childNodes().at(j);
-
-				// Find the name of the reference.
-				if (nameNode.nodeName() == QString("ipxact:localName"))
-				{
-					busInterfaces.append(nameNode.childNodes().at(0).nodeValue());
-				}
-			}
-		}
-	}
+    QDomNodeList interfaceReferenceNodes = channelNode.toElement().elementsByTagName("ipxact:busInterfaceRef");
+    for (int i = 0; i < interfaceReferenceNodes.count(); i++)
+    {
+        QDomNode nameNode = interfaceReferenceNodes.at(i).toElement().firstChildElement("ipxact:localName");
+            
+        busInterfaces.append(nameNode.firstChild().nodeValue());
+    }
 
 	// Finally, set the parsed data as the channel data.
 	newChannel->setInterfaces( busInterfaces );

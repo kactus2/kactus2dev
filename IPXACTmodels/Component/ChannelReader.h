@@ -14,10 +14,11 @@
 
 #include "channel.h"
 
+#include <IPXACTmodels/common/CommonItemsReader.h>
+
+#include <QDomNode>
 #include <QObject>
 #include <QSharedPointer>
-#include <QDomNode>
-#include <IPXACTmodels/common/CommonItemsReader.h>
 
 //-----------------------------------------------------------------------------
 //! Reader class for IP-XACT Channel element.

@@ -1,210 +1,257 @@
-/* 
- *  	Created on: 14.6.2012
- *      Author: Antti Kamppi
- * 		filename: channelsmodel.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: channelsmodel.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 14.06.2012
+//
+// Description:
+// The model class to manage the objects for channels editor.
+//-----------------------------------------------------------------------------
 
 #include "channelsmodel.h"
-#include "channelsdelegate.h"
+
+#include "ChannelColumns.h"
+
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/channel.h>
 
 #include <QStringList>
 #include <QColor>
 
-ChannelsModel::ChannelsModel( QSharedPointer<Component> component, 
-							 QObject *parent ):
+//-----------------------------------------------------------------------------
+// Function: ChannelsModel::ChannelsModel()
+//-----------------------------------------------------------------------------
+ChannelsModel::ChannelsModel(QSharedPointer<Component> component, QObject* parent ):
 QAbstractTableModel(parent),
-component_(component),
-channels_(component->getChannels()) {
+    component_(component),
+    channels_(component->getChannels())
+{
 
-	Q_ASSERT(component);
 }
 
-ChannelsModel::~ChannelsModel() {
+//-----------------------------------------------------------------------------
+// Function: ChannelsModel::~ChannelsModel()
+//-----------------------------------------------------------------------------
+ChannelsModel::~ChannelsModel()
+{
 }
 
-int ChannelsModel::rowCount( const QModelIndex& parent /*= QModelIndex()*/ ) const {
-	if (parent.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: ChannelsModel::rowCount()
+//-----------------------------------------------------------------------------
+int ChannelsModel::rowCount(QModelIndex const& parent) const
+{
+	if (parent.isValid())
+    {
 		return 0;
 	}
-	return channels_.size();
+
+	return channels_->size();
 }
 
-int ChannelsModel::columnCount( const QModelIndex& parent /*= QModelIndex()*/ ) const {
-	if (parent.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: ChannelsModel::columnCount()
+//-----------------------------------------------------------------------------
+int ChannelsModel::columnCount(QModelIndex const& parent) const
+{
+	if (parent.isValid())
+    {
 		return 0;
 	}
-	return ChannelsDelegate::COLUMN_COUNT;
+
+	return ChannelColumns::COLUMN_COUNT;
 }
 
-Qt::ItemFlags ChannelsModel::flags( const QModelIndex& index ) const {
-	if (!index.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: ChannelsModel::flags()
+//-----------------------------------------------------------------------------
+Qt::ItemFlags ChannelsModel::flags(QModelIndex const& index) const
+{
+	if (!index.isValid())
+    {
 		return Qt::NoItemFlags;
 	}
+
 	return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
 }
 
-QVariant ChannelsModel::headerData( int section, Qt::Orientation orientation, int role /*= Qt::DisplayRole*/ ) const {
-	if (orientation != Qt::Horizontal) {
-		return QVariant();
-	}
-	if (Qt::DisplayRole == role) {
+//-----------------------------------------------------------------------------
+// Function: ChannelsModel::headerData()
+//-----------------------------------------------------------------------------
+QVariant ChannelsModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+    if (orientation != Qt::Horizontal && role != Qt::DisplayRole)
+    {
+        return QVariant();
+    }
 
-		switch (section) {
-			case ChannelsDelegate::NAME_COLUMN: {
-				return tr("Name");
-													 }
-			case ChannelsDelegate::DISPLAY_NAME_COLUMN: {
-				return tr("Display name");
-														  }
-			case ChannelsDelegate::INTERFACE_COLUMN: {
-				return tr("Interface\nreferences");
-													  }
-			case ChannelsDelegate::DESCRIPTION_COLUMN: {
-				return tr("Description");
-													  }
-			default: {
-				return QVariant();
-					 }
-		}
-	}
-	else {
-		return QVariant();
-	}
+    if (section == ChannelColumns::NAME_COLUMN)
+    {
+        return tr("Name");
+    }
+    else if (section == ChannelColumns::DISPLAY_NAME_COLUMN)
+    {
+        return tr("Display name");
+    }
+    else if (section == ChannelColumns::INTERFACE_COLUMN) 
+    {
+        return tr("Interface\nreferences");
+    }
+    else if (section == ChannelColumns::DESCRIPTION_COLUMN)
+    {
+        return tr("Description");
+    }
+    else
+    {
+        return QVariant();
+    }
 }
 
-QVariant ChannelsModel::data( const QModelIndex& index, int role /*= Qt::DisplayRole*/ ) const {
-	if (!index.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: ChannelsModel::data()
+//-----------------------------------------------------------------------------
+QVariant ChannelsModel::data(QModelIndex const& index, int role) const
+{
+	if (!index.isValid() || index.row() < 0 || index.row() >= channels_->size())
+    {
 		return QVariant();
-	}
-	else if (index.row() < 0 || index.row() >= channels_.size()) {
-		return QVariant();
-	}
+    }
 
-	if (Qt::DisplayRole == role) {
+    if (role == Qt::DisplayRole)
+    {
+        if (index.column() == ChannelColumns::NAME_COLUMN)
+        {
+            return channels_->at(index.row())->name();
+        }
+        else if (index.column() == ChannelColumns::DISPLAY_NAME_COLUMN)
+        {
+            return channels_->at(index.row())->displayName();
+        }
+        else if (index.column() == ChannelColumns::INTERFACE_COLUMN)
+        {
+            QStringList interfaceNames = channels_->at(index.row())->getInterfaces();
+            return interfaceNames.join(' ');
+        }
+        else if (index.column() == ChannelColumns::DESCRIPTION_COLUMN)
+        {
+            return channels_->at(index.row())->description();
+        }
+        else
+        {
+            return QVariant();
+        }
 
-		switch (index.column()) {
-			case ChannelsDelegate::NAME_COLUMN: {
-				return channels_.at(index.row())->name();
-													 }
-			case ChannelsDelegate::DISPLAY_NAME_COLUMN: {
-				return channels_.at(index.row())->displayName();
-														  }
-			case ChannelsDelegate::INTERFACE_COLUMN: {
-				// each group name if in it's own index
-				QStringList interfaceNames = channels_.at(index.row())->getInterfaces();
+    }
 
-				// concatenate the names to a single string with spaces in between
-				QString str;
-				foreach (QString interfaceName, interfaceNames) {
-					str += interfaceName;
-					str += " ";
-				}
-
-				// return the string with all group names
-				return str;
-													  }
-			case ChannelsDelegate::DESCRIPTION_COLUMN: {
-				return channels_.at(index.row())->description();
-													  }
-			default: {
-				return QVariant();
-					 }
-		}
-	}
 	// user display role for interface column returns a QStringList
-	else if (ChannelsDelegate::USER_DISPLAY_ROLE == role && 
-		index.column() == ChannelsDelegate::INTERFACE_COLUMN) {
-		return channels_.at(index.row())->getInterfaces();
+	else if (role == ChannelColumns::USER_DISPLAY_ROLE && index.column() == ChannelColumns::INTERFACE_COLUMN)
+    {
+		return channels_->at(index.row())->getInterfaces();
 	}
-	else if (Qt::ForegroundRole == role) {
+
+	else if (role == Qt::ForegroundRole)
+    {
 
 		// interface names are needed to check that references to bus interfaces are valid
-		QStringList interfaceNames = component_->getBusInterfaceNames();
+		//QStringList interfaceNames = component_->getBusInterfaceNames();
 
-		if (channels_.at(index.row())->isValid(interfaceNames)) {
+		/*if (channels_->at(index.row())->isValid(interfaceNames))
+        {*/
 			return QColor("black");
-		}
-		else {
+		/*}
+		else
+        {
 			return QColor("red");
-		}
+		}*/
 	}
-	else if (Qt::BackgroundRole == role) {
-		switch (index.column()) {
-			case ChannelsDelegate::NAME_COLUMN:
-			case ChannelsDelegate::INTERFACE_COLUMN: {
-				return QColor("LemonChiffon");
-												 }
-			default:
-				return QColor("white");
-		}
-	}
-	else {
+
+	else if (role == Qt::BackgroundRole)
+    {
+        if (index.column() == ChannelColumns::NAME_COLUMN || index.column() == ChannelColumns::INTERFACE_COLUMN)
+        {
+            return QColor("LemonChiffon");
+        }
+        else
+        {
+            return QColor("white");
+        }
+    }
+	else 
+    {
 		return QVariant();
 	}
 }
 
-bool ChannelsModel::setData( const QModelIndex& index, const QVariant& value, int role /*= Qt::EditRole*/ ) {
-	if (!index.isValid()) {
-		return false;
-	}
-	else if (index.row() < 0 || index.row() >= channels_.size()) {
+//-----------------------------------------------------------------------------
+// Function: ChannelsModel::setData()
+//-----------------------------------------------------------------------------
+bool ChannelsModel::setData(QModelIndex const& index, QVariant const& value, int role)
+{
+	if (!index.isValid() || index.row() < 0 || index.row() >= channels_->size())
+    {
 		return false;
 	}
 
-	if (Qt::EditRole == role) {
+	if (role == Qt::EditRole)
+    {
+        if (index.column() ==  ChannelColumns::NAME_COLUMN)
+        {
+            channels_->at(index.row())->setName(value.toString());
+        }
+        else if (index.column() == ChannelColumns::DISPLAY_NAME_COLUMN)
+        {
+            channels_->at(index.row())->setDisplayName(value.toString());		
+        }
+        else if (index.column() == ChannelColumns::INTERFACE_COLUMN)
+        {
+            QString str = value.toString();
+            QStringList interfaceNames = str.split(' ', QString::SkipEmptyParts);
+            channels_->at(index.row())->setInterfaces(interfaceNames);
+        }
+        else if (index.column() == ChannelColumns::DESCRIPTION_COLUMN)
+        {
+            channels_->at(index.row())->setDescription(value.toString());
+        }
+        else
+        {
+            return false;
+        }
 
-		switch (index.column()) {
-			case ChannelsDelegate::NAME_COLUMN: {
-				channels_[index.row()]->setName(value.toString());
-				break;
-													 }
-			case ChannelsDelegate::DISPLAY_NAME_COLUMN: {
-				channels_[index.row()]->setDisplayName(value.toString());
-				break;
-														  }
-			case ChannelsDelegate::INTERFACE_COLUMN: {
-				QString str = value.toString();
-				QStringList interfaceNames = str.split(' ', QString::SkipEmptyParts);
-				channels_[index.row()]->setInterfaces(interfaceNames);
-				break;
-													  }
-			case ChannelsDelegate::DESCRIPTION_COLUMN: {
-				channels_[index.row()]->setDescription(value.toString());
-				break;
-													  }
-			default: {
-				return false;
-					 }
-		}
 
 		emit dataChanged(index, index);
 		emit contentChanged();
 		return true;
 	}
 	// user edit role for interface column operates on QStringList
-	else if (ChannelsDelegate::USER_EDIT_ROLE == role &&
-		ChannelsDelegate::INTERFACE_COLUMN == index.column()) {
-		channels_[index.row()]->setInterfaces(value.toStringList());
+	else if (role == ChannelColumns::USER_EDIT_ROLE && ChannelColumns::INTERFACE_COLUMN == index.column())
+    {
+		channels_->at(index.row())->setInterfaces(value.toStringList());
 		emit dataChanged(index, index);
 		emit contentChanged();
 		return true;
 	}
-	else {
+	else
+    {
 		return false;
 	}
 }
 
-void ChannelsModel::onAddItem( const QModelIndex& index ) {
-	int row = channels_.size();
+//-----------------------------------------------------------------------------
+// Function: ChannelsModel::onAddItem()
+//-----------------------------------------------------------------------------
+void ChannelsModel::onAddItem(QModelIndex const& index)
+{
+	int row = channels_->size();
 
 	// if the index is valid then add the item to the correct position
-	if (index.isValid()) {
+	if (index.isValid())
+    {
 		row = index.row();
 	}
 
 	beginInsertRows(QModelIndex(), row, row);
-	channels_.insert(row, QSharedPointer<Channel>(new Channel()));
+	channels_->insert(row, QSharedPointer<Channel>(new Channel()));
 	endInsertRows();
 
 	// inform navigation tree that file set is added
@@ -214,19 +261,20 @@ void ChannelsModel::onAddItem( const QModelIndex& index ) {
 	emit contentChanged();
 }
 
-void ChannelsModel::onRemoveItem( const QModelIndex& index ) {
+//-----------------------------------------------------------------------------
+// Function: ChannelsModel::onRemoveItem()
+//-----------------------------------------------------------------------------
+void ChannelsModel::onRemoveItem(QModelIndex const& index)
+{
 	// don't remove anything if index is invalid
-	if (!index.isValid()) {
-		return;
-	}
-	// make sure the row number if valid
-	else if (index.row() < 0 || index.row() >= channels_.size()) {
+	if (!index.isValid() || index.row() < 0 || index.row() >= channels_->size())
+    {
 		return;
 	}
 
 	// remove the specified item
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
-	channels_.removeAt(index.row());
+	channels_->removeAt(index.row());
 	endRemoveRows();
 
 	// inform navigation tree that file set has been removed
@@ -236,17 +284,21 @@ void ChannelsModel::onRemoveItem( const QModelIndex& index ) {
 	emit contentChanged();
 }
 
-bool ChannelsModel::isValid() const {
-
+//-----------------------------------------------------------------------------
+// Function: ChannelsModel::isValid()
+//-----------------------------------------------------------------------------
+bool ChannelsModel::isValid() const
+{
 	// interface names are needed to check that references to bus interfaces are valid
-	QStringList interfaceNames = component_->getBusInterfaceNames();
+	/*QStringList interfaceNames = component_->getBusInterfaceNames();
 
 	// if at least one address space is invalid
-	foreach (QSharedPointer<Channel> channel, channels_) {
+	foreach (QSharedPointer<Channel> channel, channels_)
+    {
 		if (!channel->isValid(interfaceNames)) {
 			return false;
 		}
-	}
+	}*/
 	// all address spaces were valid
 	return true;
 }

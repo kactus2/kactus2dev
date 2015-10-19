@@ -69,7 +69,7 @@ void tst_ChannelWriter::testWriteChannelNameGroup()
 
 	QString expectedOutput(
 		"<ipxact:channel>"
-		"<ipxact:name>testChannel</ipxact:name>"
+		    "<ipxact:name>testChannel</ipxact:name>"
 		"</ipxact:channel>"
 		);
 
@@ -83,10 +83,9 @@ void tst_ChannelWriter::testWriteChannelNameGroup()
 	testChannel_->setDisplayName("testDisplay");
 	expectedOutput = 
 		"<ipxact:channel>"
-		"<ipxact:name>testChannel</ipxact:name>"
-		"<ipxact:displayName>testDisplay</ipxact:displayName>"
-		"</ipxact:channel>"
-		;
+		    "<ipxact:name>testChannel</ipxact:name>"
+		    "<ipxact:displayName>testDisplay</ipxact:displayName>"
+		"</ipxact:channel>";
 
 	ChannelWriter.writeChannel(xmlStreamWriter, testChannel_);
 	QCOMPARE(output, expectedOutput);
@@ -97,11 +96,10 @@ void tst_ChannelWriter::testWriteChannelNameGroup()
 	testChannel_->setDescription("testDescription");
 	expectedOutput = 
 		"<ipxact:channel>"
-		"<ipxact:name>testChannel</ipxact:name>"
-		"<ipxact:displayName>testDisplay</ipxact:displayName>"
-		"<ipxact:description>testDescription</ipxact:description>"
-		"</ipxact:channel>"
-		;
+		    "<ipxact:name>testChannel</ipxact:name>"
+		    "<ipxact:displayName>testDisplay</ipxact:displayName>"
+		    "<ipxact:description>testDescription</ipxact:description>"
+		"</ipxact:channel>";
 
 	ChannelWriter.writeChannel(xmlStreamWriter, testChannel_);
 	QCOMPARE(output, expectedOutput);
@@ -119,8 +117,8 @@ void tst_ChannelWriter::testWriteIsPresent()
 
 	QString expectedOutput(
 		"<ipxact:channel>"
-		"<ipxact:name>testChannel</ipxact:name>"
-		"<ipxact:isPresent>4-3</ipxact:isPresent>"
+		    "<ipxact:name>testChannel</ipxact:name>"
+		    "<ipxact:isPresent>4-3</ipxact:isPresent>"
 		"</ipxact:channel>"
 		);
 
@@ -138,7 +136,7 @@ void tst_ChannelWriter::testWriteBusRef()
 	QString output;
 	QXmlStreamWriter xmlStreamWriter(&output);
 
-	testChannel_->setIsPresent("evo");
+	testChannel_->setIsPresent("expression");
 
 	QStringList refs = testChannel_->getInterfaces();
 	refs.append("Joku");
@@ -147,10 +145,10 @@ void tst_ChannelWriter::testWriteBusRef()
 	QString expectedOutput(
 		"<ipxact:channel>"
 		"<ipxact:name>testChannel</ipxact:name>"
-		"<ipxact:isPresent>evo</ipxact:isPresent>"
-		"<ipxact:busInterfaceRef>"
-		"<ipxact:localName>Joku</ipxact:localName>"
-		"</ipxact:busInterfaceRef>"
+		    "<ipxact:isPresent>expression</ipxact:isPresent>"
+		    "<ipxact:busInterfaceRef>"
+		        "<ipxact:localName>Joku</ipxact:localName>"
+		    "</ipxact:busInterfaceRef>"
 		"</ipxact:channel>"
 		);
 
@@ -168,7 +166,7 @@ void tst_ChannelWriter::testWriteBusRef2()
 	QString output;
 	QXmlStreamWriter xmlStreamWriter(&output);
 
-	testChannel_->setIsPresent("evo");
+	testChannel_->setIsPresent("expression");
 
 	QStringList refs = testChannel_->getInterfaces();
 	refs.append("Joku");
@@ -177,14 +175,14 @@ void tst_ChannelWriter::testWriteBusRef2()
 
 	QString expectedOutput(
 		"<ipxact:channel>"
-		"<ipxact:name>testChannel</ipxact:name>"
-		"<ipxact:isPresent>evo</ipxact:isPresent>"
-		"<ipxact:busInterfaceRef>"
-		"<ipxact:localName>Joku</ipxact:localName>"
-		"</ipxact:busInterfaceRef>"
-		"<ipxact:busInterfaceRef>"
-		"<ipxact:localName>jotain</ipxact:localName>"
-		"</ipxact:busInterfaceRef>"
+		    "<ipxact:name>testChannel</ipxact:name>"
+		    "<ipxact:isPresent>expression</ipxact:isPresent>"
+		    "<ipxact:busInterfaceRef>"
+		        "<ipxact:localName>Joku</ipxact:localName>"
+		    "</ipxact:busInterfaceRef>"
+		    "<ipxact:busInterfaceRef>"
+		        "<ipxact:localName>jotain</ipxact:localName>"
+		    "</ipxact:busInterfaceRef>"
 		"</ipxact:channel>"
 		);
 

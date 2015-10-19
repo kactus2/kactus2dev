@@ -31,7 +31,7 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] parent  The owner of this reader.
+     *      @param [in] parent  The owner of this writer.
      */
     ChannelWriter(QObject* parent = 0);
 
@@ -41,10 +41,10 @@ public:
     ~ChannelWriter();
 
     /*!
-     *  Write a view to an XML file.
+     *  Write a channel to an XML file.
      *
-     *      @param [in] writer  The used xml writer.
-     *      @param [in] Channel		The Channel to be written.
+     *      @param [in] writer      The used xml writer.
+     *      @param [in] channel		The channel to be written.
      */
     void writeChannel(QXmlStreamWriter& writer, QSharedPointer<Channel> channel) const;
 
@@ -57,16 +57,16 @@ private:
     /*!
      *  Writes the name group to an XML file.
      *
-     *      @param [in] writer  The used xml writer.
-     *      @param [in] Channel		The Channel to be written.
+     *      @param [in] writer      The used xml writer.
+     *      @param [in] channel		The channel to be written.
      */
     void writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<Channel> channel) const;
 
     /*!
      *  Writes the presence to an XML file.
      *
-     *      @param [in] writer  The used xml writer.
-     *      @param [in] Channel		The Channel to be written.
+     *      @param [in] writer      The used xml writer.
+     *      @param [in] channel		The channel to be written.
      */
     void writeIsPresent(QXmlStreamWriter& writer, QSharedPointer<Channel> channel) const;
 };
