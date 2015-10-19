@@ -1,255 +1,307 @@
-/* 
- *
- *  Created on: 4.4.2011
- *      Author: Antti Kamppi
- * 		filename: otherclockdriversmodel.cpp
- */
+//-----------------------------------------------------------------------------
+// File: otherclockdriversmodel.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 04.04.2011
+//
+// Description:
+// Table model that contains the items to edit otherClockDrivers of a component.
+//-----------------------------------------------------------------------------
 
 #include "otherclockdriversmodel.h"
 
-#include <IPXACTmodels/component.h>
+#include "OtherClockDriverColumns.h"
+
 #include <IPXACTmodels/generaldeclarations.h>
-#include <IPXACTmodels/otherclockdriver.h>
+
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/OtherClockDriver.h>
 
 #include <QColor>
 
-OtherClockDriversModel::OtherClockDriversModel(QSharedPointer<Component> component, 
-											   QObject *parent): 
+//-----------------------------------------------------------------------------
+// Function: OtherClockDriversModel::OtherClockDriversModel()
+//-----------------------------------------------------------------------------
+OtherClockDriversModel::OtherClockDriversModel(QSharedPointer<Component> component, QObject *parent): 
 QAbstractTableModel(parent),
 component_(component), 
-table_(component->getOtherClockDrivers()) {
-
-	Q_ASSERT_X(component, "OtherClockDrivers constructor",
-		"Null Component-pointer given as parameter");
+table_(component->getOtherClockDrivers())
+{
 
 }
 
-OtherClockDriversModel::~OtherClockDriversModel() {
+//-----------------------------------------------------------------------------
+// Function: OtherClockDriversModel::~OtherClockDriversModel()
+//-----------------------------------------------------------------------------
+OtherClockDriversModel::~OtherClockDriversModel()
+{
 }
 
-int OtherClockDriversModel::rowCount( const QModelIndex& parent /*= QModelIndex() */ ) const {
-
+//-----------------------------------------------------------------------------
+// Function: OtherClockDriversModel::rowCount()
+//-----------------------------------------------------------------------------
+int OtherClockDriversModel::rowCount(QModelIndex const&  parent) const
+{
 	if (parent.isValid())
+    {
 		return 0;
+    }
 
-	return table_.size();
+	return table_->size();
 }
 
-int OtherClockDriversModel::columnCount( const QModelIndex& parent /*= QModelIndex() */ ) const {
-
+//-----------------------------------------------------------------------------
+// Function: OtherClockDriversModel::columnCount()
+//-----------------------------------------------------------------------------
+int OtherClockDriversModel::columnCount(QModelIndex const&  parent) const
+{
 	if (parent.isValid())
+    {
 		return 0;
+    }
 
-	return 9;
+	return OtherClockDriverColumns::COLUMN_COUNT;
 }
 
-QVariant OtherClockDriversModel::data( const QModelIndex& index, 
-									  int role /*= Qt::DisplayRole */ ) const {
-	
-
-	if (!index.isValid())
+//-----------------------------------------------------------------------------
+// Function: OtherClockDriversModel::data()
+//-----------------------------------------------------------------------------
+QVariant OtherClockDriversModel::data(QModelIndex const&  index, int role) const
+{
+	if (!index.isValid() || index.row() < 0 || index.row() >= table_->size())
+    {
 		return QVariant();
+    }
 
-	// if row is invalid
-	else if (index.row() < 0 || index.row() >= table_.size())
-		return QVariant();
+	if (role == Qt::DisplayRole)
+    {
+        if (index.column() == OtherClockDriverColumns::NAME)
+        {
+            return table_->at(index.row())->getClockName();
+        }
+        else if (index.column() == OtherClockDriverColumns::CLOCK_SOURCE)
+        {
+            return table_->at(index.row())->getClockSource();
+        }
+        else if (index.column() == OtherClockDriverColumns::CLOCK_PERIOD)
+        {
+            return table_->at(index.row())->getClockPeriod()->getValue();
+        }
+        else if (index.column() == OtherClockDriverColumns::CLOCK_PERIOD_UNIT)
+        {
+            return table_->at(index.row())->getClockPeriod()->timeUnitToString();
+        }
+        else if (index.column() == OtherClockDriverColumns::PULSE_OFFSET)
+        {
+            return table_->at(index.row())->getClockPulseOffset()->getValue();
+        }
+        else if (index.column() == OtherClockDriverColumns::PULSE_OFFSET_UNIT)
+        {
+            return table_->at(index.row())->getClockPulseOffset()->timeUnitToString();
+        }
+        else if (index.column() == OtherClockDriverColumns::PULSE_VALUE)
+        {
+            return table_->at(index.row())->getClockPulseValue();
+        }
+        else if (index.column() == OtherClockDriverColumns::PULSE_DURATION)
+        {
+            return table_->at(index.row())->getClockPulseDuration()->getValue();
+        }
+        else if (index.column() == OtherClockDriverColumns::PULSE_DURATION_UNIT)
+        {
+            return table_->at(index.row())->getClockPulseDuration()->timeUnitToString();
+        }
+        else
+        {
+            return QVariant();
+        }
+    }
+    else if (role == Qt::BackgroundRole)
+    {
+        if (index.column() == OtherClockDriverColumns::NAME ||
+            index.column() == OtherClockDriverColumns::CLOCK_PERIOD ||
+            index.column() == OtherClockDriverColumns::PULSE_OFFSET ||
+            index.column() == OtherClockDriverColumns::PULSE_VALUE ||
+            index.column() == OtherClockDriverColumns::PULSE_DURATION)
+        {
+            return QColor("LemonChiffon");
+        }
+        else
+            return QColor("white");
+    }
 
-	if (role == Qt::DisplayRole) {
-
-		switch (index.column()) {
-			case 0:
-				return table_.at(index.row())->getClockName();
-			case 1:
-				return table_.at(index.row())->getClockSource();
-			case 2:
-				return table_.at(index.row())->getClockPeriod()->value_;
-			case 3:
-				return General::timeUnit2Str(
-					table_.at(index.row())->getClockPeriod()->timeUnit_);
-			case 4:
-				return table_.at(index.row())->getClockPulseOffset()->value_;
-			case 5:
-				return General::timeUnit2Str(
-					table_.at(index.row())->getClockPulseOffset()->timeUnit_);
-			case 6:
-				return table_.at(index.row())->getClockPulseValue()->value_;
-			case 7:
-				return table_.at(index.row())->getClockPulseDuration()->value_;
-			case 8:
-				return General::timeUnit2Str(
-					table_.at(index.row())->getClockPulseDuration()->timeUnit_);
-			default:
-				return QVariant();
-
+    else if (role == Qt::ForegroundRole)
+    {
+        /*if (table_->at(index.row())->isValid())
+        {
+            return QColor("black");
 		}
-	}
-	else if (Qt::BackgroundRole == role) {
-		switch (index.column()) {
-			case 0:
-			case 2:
-			case 4:
-			case 6:
-			case 7: {
-				return QColor("LemonChiffon");
-					}
-			default:
-				return QColor("white");
-		}
-	}
-	else if (Qt::ForegroundRole == role) {
-		if (table_.at(index.row())->isValid()) {
-			return QColor("black");
-		}
-		else {
+		else
+        {*/
 			return QColor("red");
-		}
+		//}
 	}
 
-	// is unsupported role
-	else {
+	else
+    {
 		return QVariant();
 	}
 }
 
-QVariant OtherClockDriversModel::headerData( int section, 
-											Qt::Orientation orientation, 
-											int role /*= Qt::DisplayRole */ ) const {
-	
-	if (orientation != Qt::Horizontal)
+//-----------------------------------------------------------------------------
+// Function: OtherClockDriversModel::headerData()
+//-----------------------------------------------------------------------------
+QVariant OtherClockDriversModel::headerData(int section, Qt::Orientation orientation, int role) const
+{	
+	if (orientation != Qt::Horizontal && role != Qt::DisplayRole)
+    {
 		return QVariant();
+    }
 
-	if (role == Qt::DisplayRole) {
-
-		switch (section) {
-			case 0: 
-				return tr("Clock\nname");
-			case 1:
-				return tr("Clock\nsource");
-			case 2:
-				return tr("Clock\nperiod");
-			case 3:
-				return tr("Period\nunit");
-			case 4:
-				return tr("Pulse\noffset");
-			case 5:
-				return tr("Offset\nunit");
-			case 6:
-				return tr("Pulse\nvalue");
-			case 7:
-				return tr("Pulse\nduration");
-			case 8:
-				return tr("Duration\nunit");
-			default:
-				return QVariant();
-
-		}
-	}
-
-	// is unsupported role
-	else {
-		return QVariant();
-	}
+    if (section == OtherClockDriverColumns::NAME)
+    {
+        return tr("Clock\nname");
+    }
+    else if (section == OtherClockDriverColumns::CLOCK_SOURCE)
+    {
+        return tr("Clock\nsource");
+    }
+    else if (section == OtherClockDriverColumns::CLOCK_PERIOD)
+    {
+        return tr("Clock\nperiod");
+    }
+    else if (section == OtherClockDriverColumns::CLOCK_PERIOD_UNIT)
+    {
+        return tr("Period\nunit");
+    }
+    else if (section == OtherClockDriverColumns::PULSE_OFFSET)
+    {
+        return tr("Pulse\noffset");
+    }
+    else if (section == OtherClockDriverColumns::PULSE_OFFSET_UNIT)
+    {
+        return tr("Offset\nunit");
+    }
+    else if (section == OtherClockDriverColumns::PULSE_VALUE)
+    {
+        return tr("Pulse\nvalue");
+    }
+    else if (section == OtherClockDriverColumns::PULSE_DURATION)
+    {
+        return tr("Pulse\nduration");
+    }
+    else if (section == OtherClockDriverColumns::PULSE_DURATION_UNIT)
+    {
+        return tr("Duration\nunit");
+    }
+    else
+    {
+        return QVariant();
+    }
 }
 
-bool OtherClockDriversModel::setData( const QModelIndex& index, 
-									 const QVariant& value, 
-									 int role /*= Qt::EditRole */ ) {
+//-----------------------------------------------------------------------------
+// Function: OtherClockDriversModel::setData()
+//-----------------------------------------------------------------------------
+bool OtherClockDriversModel::setData(QModelIndex const& index, QVariant const& value, int role)
+{
+    if (!index.isValid() || index.row() < 0 || index.row() >= table_->size() || role != Qt::EditRole)
+    {
+        return false;
+    }
 
+    if (index.column() == OtherClockDriverColumns::NAME)
+    {
+        table_->value(index.row())->setClockName(value.toString());
+    }
+    else if (index.column() == 1)
+    {
+        table_->value(index.row())->setClockSource(value.toString());
+    }
+    else if (index.column() == 2)
+    {
+        table_->value(index.row())->getClockPeriod()->setValue(value.toString());
+    }
+    else if (index.column() == 3)
+    {
+        table_->value(index.row())->getClockPeriod()->setTimeUnit(value.toString());
+    }
+    else if (index.column() == 4)
+    {
+        table_->value(index.row())->getClockPulseOffset()->setValue(value.toString());        
+    }
+    else if (index.column() == 5)
+    {
+        table_->value(index.row())->getClockPulseOffset()->setTimeUnit(value.toString());
+    }
+    else if (index.column() == 6)
+    {
+        table_->value(index.row())->setClockPulseValue(value.toString());
+    }
+    else if (index.column() == 7)
+    {
+        table_->value(index.row())->getClockPulseDuration()->setValue(value.toString());
+    }
+    else if (index.column() == 8)
+    {
+        table_->value(index.row())->getClockPulseDuration()->setTimeUnit(value.toString());
+    }
+    else
+    {
+        return false;
+    }
+
+    emit dataChanged(index, index);
+    emit contentChanged();
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: OtherClockDriversModel::flags()
+//-----------------------------------------------------------------------------
+Qt::ItemFlags OtherClockDriversModel::flags(QModelIndex const&  index) const
+{
 	if (!index.isValid())
-		return false;
-
-	// if row is invalid
-	else if (index.row() < 0 || index.row() >= table_.size())
-		return false;
-
-	if (role == Qt::EditRole) {
-
-		switch (index.column()) {
-			case 0: {
-				table_.value(index.row())->setClockName(value.toString());
-				break;
-					}
-			case 1: {
-				table_.value(index.row())->setClockSource(value.toString());
-				break;
-					}
-			case 2: {
-				table_.value(index.row())->getClockPeriod()->value_ = value.toDouble();
-				break;
-					}
-			case 3: {
-				table_.value(index.row())->getClockPeriod()->timeUnit_ = 
-					General::str2TimeUnit(value.toString(), General::NS);
-				break;
-					}
-			case 4: {
-				table_.value(index.row())->getClockPulseOffset()->value_ = value.toDouble();
-				break;
-					}
-			case 5: {
-				table_.value(index.row())->getClockPulseOffset()->timeUnit_ =
-					General::str2TimeUnit(value.toString(), General::NS);
-				break;
-					}
-			case 6: {
-				table_.value(index.row())->getClockPulseValue()->value_ = value.toInt();
-				break;
-					}
-			case 7: {
-				table_.value(index.row())->getClockPulseDuration()->value_ = value.toDouble();
-				break;
-					}
-			case 8: {
-				table_.value(index.row())->getClockPulseDuration()->timeUnit_ =
-					General::str2TimeUnit(value.toString(), General::NS);
-				break;
-					}
-			default:
-				return false;
-		}
-
-		emit dataChanged(index, index);
-		emit contentChanged();
-		return true;
-	}
-
-	// if unsupported role
-	else {
-		return false;
-	}
-}
-
-Qt::ItemFlags OtherClockDriversModel::flags( const QModelIndex& index ) const {
-
-	if (!index.isValid())
+    {
 		return Qt::NoItemFlags;
+    }
 
 	return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
-bool OtherClockDriversModel::isValid() const {
-
+//-----------------------------------------------------------------------------
+// Function: OtherClockDriversModel::isValid()
+//-----------------------------------------------------------------------------
+bool OtherClockDriversModel::isValid() const
+{
 	// check all items in the model
-	foreach (QSharedPointer<OtherClockDriver> driver, table_) {
-
+	/*foreach (QSharedPointer<OtherClockDriver> driver, table_)
+    {
 		// if one item is not valid
 		if (!driver->isValid())
 			return false;
-	}
+	}*/
 
 	// all items were valid
 	return true;
 }
 
-void OtherClockDriversModel::onRemoveRow( int row ) {
+//-----------------------------------------------------------------------------
+// Function: OtherClockDriversModel::onRemoveRow()
+//-----------------------------------------------------------------------------
+void OtherClockDriversModel::onRemoveRow(int row)
+{
 	// if row is invalid
-	if (row < 0 || row >= table_.size())
+	if (row < 0 || row >= table_->size())
+    {
 		return;
+    }
 
 	beginRemoveRows(QModelIndex(), row, row);
 
 	// remove the object from the map
-	table_.removeAt(row);
+	table_->removeAt(row);
 
 	endRemoveRows();
 
@@ -257,46 +309,54 @@ void OtherClockDriversModel::onRemoveRow( int row ) {
 	emit contentChanged();
 }
 
-void OtherClockDriversModel::onRemoveItem( const QModelIndex& index ) {
+//-----------------------------------------------------------------------------
+// Function: OtherClockDriversModel::onRemoveItem()
+//-----------------------------------------------------------------------------
+void OtherClockDriversModel::onRemoveItem(QModelIndex const&  index)
+{
 	// don't remove anything if index is invalid
-	if (!index.isValid()) {
+	if (!index.isValid() || index.row() < 0 || index.row() >= table_->size())
+    {
 		return;
-	}
-	// make sure the row number if valid
-	else if (index.row() < 0 || index.row() >= table_.size()) {
-		return;
-	}
+    }
 
 	// remove the specified item
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
-	table_.removeAt(index.row());
+	table_->removeAt(index.row());
 	endRemoveRows();
 
 	// tell also parent widget that contents have been changed
 	emit contentChanged();
 }
 
-void OtherClockDriversModel::onAddRow() {
-	beginInsertRows(QModelIndex(), table_.size(), table_.size());
-
-	table_.append(QSharedPointer<OtherClockDriver>(new OtherClockDriver()));
-
+//-----------------------------------------------------------------------------
+// Function: OtherClockDriversModel::onAddRow()
+//-----------------------------------------------------------------------------
+void OtherClockDriversModel::onAddRow()
+{
+	beginInsertRows(QModelIndex(), table_->size(), table_->size());
+	table_->append(QSharedPointer<OtherClockDriver>(new OtherClockDriver()));
 	endInsertRows();
 
 	// tell also parent widget that contents have been changed
 	emit contentChanged();
 }
 
-void OtherClockDriversModel::onAddItem( const QModelIndex& index ) {
-	int row = table_.size();
+//-----------------------------------------------------------------------------
+// Function: OtherClockDriversModel::onAddItem()
+//-----------------------------------------------------------------------------
+void OtherClockDriversModel::onAddItem(QModelIndex const& index)
+{
+	int row = table_->size();
 
 	// if the index is valid then add the item to the correct position
-	if (index.isValid()) {
+	if (index.isValid())
+    {
 		row = index.row();
 	}
 
 	beginInsertRows(QModelIndex(), row, row);
-	table_.insert(row, QSharedPointer<OtherClockDriver>(new OtherClockDriver()));
+	table_->insert(row, QSharedPointer<OtherClockDriver>(new OtherClockDriver()));
 	endInsertRows();
 
 	// tell also parent widget that contents have been changed

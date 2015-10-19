@@ -1,81 +1,83 @@
-/* 
- *  	Created on: 9.5.2012
- *      Author: Antti Kamppi
- * 		filename: componenteditorotherclocksitem.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: componenteditorotherclocksitem.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 09.05.2012
+//
+// Description:
+// The Other clock drivers-item in the component editor's navigation tree.
+//-----------------------------------------------------------------------------
 
 #ifndef COMPONENTEDITOROTHERCLOCKSITEM_H
 #define COMPONENTEDITOROTHERCLOCKSITEM_H
 
 #include "componenteditoritem.h"
-#include <IPXACTmodels/otherclockdriver.h>
 
-/*! \brief The Other clock drivers-item in the component editor's navigation tree.
- *
- */
-class ComponentEditorOtherClocksItem : public ComponentEditorItem {
+class Component;
+class OtherClockDriver;
+
+//-----------------------------------------------------------------------------
+//! The Other clock drivers-item in the component editor's navigation tree.
+//-----------------------------------------------------------------------------
+class ComponentEditorOtherClocksItem : public ComponentEditorItem
+{
 	Q_OBJECT
 
 public:
 
-	/*! \brief The constructor
+	/*! The constructor
 	 *
-	 * \param model Pointer to the model that owns the items.
-	 * \param libHandler Pointer to the instance that manages the library.
-	 * \param component Pointer to the component being edited.
-	 * \param parent Pointer to the parent item.
-	 *
+	 *      @param [in] model       The model that owns the items.
+	 *      @param [in] libHandler  The instance that manages the library.
+	 *      @param [in] component   The component being edited.
+	 *      @param [in] parent      The parent item.
 	*/
-	ComponentEditorOtherClocksItem(ComponentEditorTreeModel* model,
-		LibraryInterface* libHandler,
-		QSharedPointer<Component> component,
-		ComponentEditorItem* parent);
+	ComponentEditorOtherClocksItem(ComponentEditorTreeModel* model, LibraryInterface* libHandler,
+		QSharedPointer<Component> component, ComponentEditorItem* parent);
 
-	//! \brief The destructor
+	//! The destructor
 	virtual ~ComponentEditorOtherClocksItem();
 
-	/*! \brief Get the font to be used for text of this item.
+	/*! Get the font to be used for text of this item.
 	*
 	* The font is bold, if other clock drivers exist, otherwise not bold.
 	*
-	* \return QFont instance that defines the font to be used.
+	*      @return The instance that defines the font to be used.
 	*/
 	virtual QFont getFont() const;
 
-	/*! \brief Get the tool tip for the item.
+	/*! Get the tool tip for the item.
 	 * 
-	 * \return The text for the tool tip to print to user.
+	 *      @return The text for the tool tip to print to user.
 	*/
 	virtual QString getTooltip() const;
 
-	/*! \brief Get the text to be displayed to user in the tree for this item.
+	/*! Get the text to be displayed to user in the tree for this item.
 	 *
-	 * \return QString Contains the text to display.
+	 *      @return The text to display.
 	*/
 	virtual QString text() const;
 
-	/*! \brief Check the validity of this item and sub items.
+	/*! Check the validity of this item and sub items.
 	 *
-	 * \return bool True if item is in valid state.
+	 *      @return True if item is in valid state.
 	*/
 	virtual bool isValid() const;
 
-	/*! \brief Get pointer to the editor of this item.
+	/*! Get The editor of this item.
 	 *
-	 * \return Pointer to the editor to use for this item.
+	 *      @return The editor to use for this item.
 	*/
 	virtual ItemEditor* editor();
 
 private:
-	//! \brief No copying
+	//! No copying
 	ComponentEditorOtherClocksItem(const ComponentEditorOtherClocksItem& other);
-
-	//! \brief No assignment
 	ComponentEditorOtherClocksItem& operator=(const ComponentEditorOtherClocksItem& other);
 
-	//! \brief The other clock drivers to edit
-	QList<QSharedPointer<OtherClockDriver> >& otherClocks_;
+	//! The other clock drivers to edit.
+	QSharedPointer<QList<QSharedPointer<OtherClockDriver> > > otherClocks_;
 };
 
 #endif // COMPONENTEDITOROTHERCLOCKSITEM_H

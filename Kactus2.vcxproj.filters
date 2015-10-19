@@ -6116,6 +6116,9 @@
     <ClInclude Include="editors\ComponentEditor\software\comInterface\ComInterfaceColumns.h">
       <Filter>Header Files\editors\ComponentEditor\software\comInterface</Filter>
     </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\otherClockDrivers\OtherClockDriverColumns.h">
+      <Filter>Header Files\editors\ComponentEditor\otherClockDrivers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="designEditors\common\DiagramUtil.inl">

@@ -1,56 +1,59 @@
-/* 
- *
- *  Created on: 4.4.2011
- *      Author: Antti Kamppi
- * 		filename: otherclockdriverseditor.cpp
- */
+//-----------------------------------------------------------------------------
+// File: otherclockdriverseditor.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 04.04.2011
+//
+// Description:
+// Editor for otherClockDrivers of a component.
+//-----------------------------------------------------------------------------
 
 #include "otherclockdriverseditor.h"
-#include <common/widgets/summaryLabel/summarylabel.h>
+
 #include "clockdriversdelegate.h"
+
+#include <common/widgets/summaryLabel/summarylabel.h>
+
 #include <library/LibraryManager/libraryinterface.h>
+
+#include <IPXACTmodels/Component/Component.h>
 
 #include <QVBoxLayout>
 
-OtherClockDriversEditor::OtherClockDriversEditor(QSharedPointer<Component> component,
-	LibraryInterface* handler,
-												 QWidget *parent): 
+//-----------------------------------------------------------------------------
+// Function: OtherClockDriversEditor::OtherClockDriversEditor()
+//-----------------------------------------------------------------------------
+OtherClockDriversEditor::OtherClockDriversEditor(QSharedPointer<Component> component, LibraryInterface* handler,
+    QWidget *parent): 
 ItemEditor(component, handler, parent),
-view_(this), 
-model_(component, this) {
-
-	connect(&model_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&model_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&model_, SIGNAL(errorMessage(const QString&)),
-		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
+    view_(this), 
+    model_(component, this)
+{
+    connect(&model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(&model_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
+        this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(&model_, SIGNAL(errorMessage(const QString&)),
+        this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(noticeMessage(const QString&)),
-		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
+        this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 	connect(&view_, SIGNAL(addItem(const QModelIndex&)),
 		&model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
 	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
 		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 
-	const QString compPath = ItemEditor::handler()->getDirectoryPath(*ItemEditor::component()->getVlnv());
-	QString defPath = QString("%1/otherClocksListing.csv").arg(compPath);
-	view_.setDefaultImportExportPath(defPath);
+	const QString componentPath = handler->getDirectoryPath(component->getVlnv());
+	QString defaultPath = QString("%1/otherClocksListing.csv").arg(componentPath);
+	view_.setDefaultImportExportPath(defaultPath);
 	view_.setAllowImportExport(true);
 
-	// set view to be sortable
 	view_.setSortingEnabled(true);
-
-	// items can not be dragged
 	view_.setItemsDraggable(false);
-
 	view_.setItemDelegate(new ClockDriversDelegate(this));
 
-	// set proxy to do the sorting automatically
-	proxy_ = new QSortFilterProxyModel(this);
-
-	// set source model for proxy
+	// Set proxy to do the sorting automatically.
+	proxy_ = new QSortFilterProxyModel(this);	
 	proxy_->setSourceModel(&model_);
-	// set proxy to be the source for the view
 	view_.setModel(proxy_);
 
     // Set case-insensitive sorting.
@@ -71,18 +74,34 @@ model_(component, this) {
 	refresh();
 }
 
-OtherClockDriversEditor::~OtherClockDriversEditor() {
+//-----------------------------------------------------------------------------
+// Function: OtherClockDriversEditor::~OtherClockDriversEditor()
+//-----------------------------------------------------------------------------
+OtherClockDriversEditor::~OtherClockDriversEditor()
+{
 }
 
-bool OtherClockDriversEditor::isValid() const {
+//-----------------------------------------------------------------------------
+// Function: OtherClockDriversEditor::isValid()
+//-----------------------------------------------------------------------------
+bool OtherClockDriversEditor::isValid() const
+{
 	return model_.isValid();
 }
 
-void OtherClockDriversEditor::refresh() {
+//-----------------------------------------------------------------------------
+// Function: OtherClockDriversEditor::refresh()
+//-----------------------------------------------------------------------------
+void OtherClockDriversEditor::refresh()
+{
 	view_.update();
 }
 
-void OtherClockDriversEditor::showEvent( QShowEvent* event ) {
+//-----------------------------------------------------------------------------
+// Function: OtherClockDriversEditor::showEvent()
+//-----------------------------------------------------------------------------
+void OtherClockDriversEditor::showEvent(QShowEvent* event)
+{
 	QWidget::showEvent(event);
 	emit helpUrlRequested("componenteditor/otherclockdrivers.html");
 }
