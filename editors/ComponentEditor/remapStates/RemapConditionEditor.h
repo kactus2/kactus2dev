@@ -20,8 +20,8 @@
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 
-#include <IPXACTmodels/remapport.h>
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/RemapPort.h>
 
 #include <QGroupBox>
 #include <QSharedPointer>

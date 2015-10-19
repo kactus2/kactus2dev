@@ -12,7 +12,6 @@
 #ifndef REMAPCONDITIONMODEL_H
 #define REMAPCONDITIONMODEL_H
 
-#include <IPXACTmodels/remapport.h>
 
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/ParameterFinder.h>
@@ -20,7 +19,8 @@
 #include <editors/ComponentEditor/common/ReferencingTableModel.h>
 #include <editors/ComponentEditor/common/ParameterizableTable.h>
 
-#include <IPXACTmodels/port.h>
+#include <IPXACTmodels/Component/Port.h>
+#include <IPXACTmodels/Component/RemapPort.h>
 
 #include <QAbstractTableModel>
 #include <QList>
@@ -46,7 +46,7 @@ public:
      *     @param [in] parent                  The owner of this model.
      */
     RemapConditionModel(QSharedPointer<QList<QSharedPointer<RemapPort> > > remapPorts,
-        QList<QSharedPointer<Port> > componentPorts,
+        QSharedPointer<QList<QSharedPointer<Port> > > componentPorts,
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
@@ -127,7 +127,7 @@ public:
      *
      *     @param [in] newPorts    The new ports for the model.
      */
-    void updatePorts(QList<QSharedPointer<Port> > newPorts);
+    void updatePorts(QSharedPointer<QList<QSharedPointer<Port> > > newPorts);
 
     /*!
      *  Get the currently available, non-selected ports.
@@ -287,7 +287,7 @@ private:
    QSharedPointer<ExpressionFormatter> expressionFormatter_;
 
    //! A list of ports in the component.
-   QList<QSharedPointer<Port> > componentPorts_;
+   QSharedPointer<QList<QSharedPointer<Port> > > componentPorts_;
 };
 
 #endif // REMAPCONDITIONMODEL_H

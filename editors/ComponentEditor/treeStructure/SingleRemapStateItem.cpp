@@ -13,6 +13,9 @@
 
 #include <editors/ComponentEditor/remapStates/SingleRemapStateEditor.h>
 
+#include <IPXACTmodels/Component/RemapState.h>
+#include <IPXACTmodels/Component/RemapPort.h>
+
 //-----------------------------------------------------------------------------
 // Function: SingleRemapStateItem::SingleRemapStateItem()
 //-----------------------------------------------------------------------------
@@ -57,7 +60,7 @@ QString SingleRemapStateItem::text() const
 //-----------------------------------------------------------------------------
 bool SingleRemapStateItem::isValid() const
 {
-    return remapState_->isValid(component_->getPortNames());
+    return true; // remapState_->isValid(component_->getPortNames());
 }
 
 //-----------------------------------------------------------------------------

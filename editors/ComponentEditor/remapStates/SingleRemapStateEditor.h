@@ -17,8 +17,7 @@
 
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
 
-#include <IPXACTmodels/remapstate.h>
-
+class RemapState;
 //-----------------------------------------------------------------------------
 //! Editor to edit a remap state within a component.
 //-----------------------------------------------------------------------------

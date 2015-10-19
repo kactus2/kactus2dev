@@ -11,7 +11,11 @@
 
 #include "SingleRemapStateEditor.h"
 
+#include <IPXACTmodels/Component/RemapState.h>
+
 #include <QScrollArea>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
 // Function: SingleRemapStateEditor::SingleRemapStateEditor()

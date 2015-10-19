@@ -14,8 +14,7 @@
 
 #include "componenteditoritem.h"
 
-#include <IPXACTmodels/remapstate.h>
-
+class RemapState;
 //-----------------------------------------------------------------------------
 //! The remap states-item used in the component editor navigation tree.
 //-----------------------------------------------------------------------------

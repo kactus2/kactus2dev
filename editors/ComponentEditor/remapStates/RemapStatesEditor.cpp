@@ -14,6 +14,8 @@
 #include <common/widgets/summaryLabel/summarylabel.h>
 #include <common/delegates/LineEditDelegate/lineeditdelegate.h>
 
+#include <IPXACTmodels/Component/Component.h>
+
 #include <QVBoxLayout>
 #include <QSortFilterProxyModel>
 
@@ -21,7 +23,7 @@
 // Function: RemapStatesEditor::RemapStatesEditor()
 //-----------------------------------------------------------------------------
 RemapStatesEditor::RemapStatesEditor(QSharedPointer<Component> component, LibraryInterface* handler,
-    QWidget* parent /* = 0 */):
+    QWidget* parent):
 ItemEditor(component, handler, parent),
 view_(this),
 model_(component->getRemapStates(), this)

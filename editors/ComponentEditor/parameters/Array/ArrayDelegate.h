@@ -14,7 +14,7 @@
 
 #include <editors/ComponentEditor/parameters/ChoiceCreatorDelegate.h>
 
-#include <IPXACTmodels/choice.h>
+#include <IPXACTmodels/Component/choice.h>
 
 #include <QCompleter>
 

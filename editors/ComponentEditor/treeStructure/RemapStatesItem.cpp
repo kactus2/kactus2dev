@@ -14,6 +14,9 @@
 
 #include <editors/ComponentEditor/remapStates/RemapStatesEditor.h>
 
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/RemapState.h>
+
 //-----------------------------------------------------------------------------
 // Function: RemapStatesItem::RemapStatesItem()
 //-----------------------------------------------------------------------------

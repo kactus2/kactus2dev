@@ -18,7 +18,7 @@
 // Function: RemapConditionModel::RemapConditionModel()
 //-----------------------------------------------------------------------------
 RemapConditionModel::RemapConditionModel(QSharedPointer<QList<QSharedPointer<RemapPort> > > remapPorts,
-    QList<QSharedPointer<Port> > componentPorts, QSharedPointer<ExpressionParser> expressionParser,
+    QSharedPointer<QList<QSharedPointer<Port> > > componentPorts, QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
     QObject* parent):
 ReferencingTableModel(parameterFinder, parent),
@@ -51,7 +51,7 @@ void RemapConditionModel::setupVisibleRemapPorts()
     foreach (QSharedPointer<RemapPort> remapStatePortPointer, *remapPortsOfRemapState_)
     {
         int arrayIndex = getArrayStartIndex(remapStatePortPointer->getPortNameRef());
-        arrayIndex = remapStatePortPointer->getPortIndex() - arrayIndex; 
+        arrayIndex = remapStatePortPointer->getPortIndex().toInt() - arrayIndex; 
 
         if (!remapPortIsAlreadyVisible(remapStatePortPointer, arrayIndex))
         {
@@ -82,12 +82,12 @@ void RemapConditionModel::setupVisibleRemapPorts()
 //-----------------------------------------------------------------------------
 int RemapConditionModel::getArrayStartIndex(QString const& remapPortName)
 {
-    foreach (QSharedPointer<Port> targetPort, componentPorts_)
+    foreach (QSharedPointer<Port> targetPort, *componentPorts_)
     {
         if (targetPort->name() == remapPortName)
         {
-            int arrayLeft = formattedValueFor(targetPort->getLeftBoundExpression()).toInt();
-            int arrayRight = formattedValueFor(targetPort->getRightBoundExpression()).toInt();
+            int arrayLeft = formattedValueFor(targetPort->getLeftBound()).toInt();
+            int arrayRight = formattedValueFor(targetPort->getRightBound()).toInt();
 
             if (arrayLeft < arrayRight)
             {
@@ -135,12 +135,12 @@ bool RemapConditionModel::remapPortIsAlreadyVisible(QSharedPointer<RemapPort> re
 //-----------------------------------------------------------------------------
 QString RemapConditionModel::getEndOfArray(QString const& remapPortName, int newPortIndex)
 {
-    foreach (QSharedPointer<Port> targetPort, componentPorts_)
+    foreach (QSharedPointer<Port> targetPort, *componentPorts_)
     {
         if (targetPort->name() == remapPortName)
         {
-            QString leftBound = parseExpressionToDecimal(targetPort->getLeftBoundExpression());
-            QString rightBound = parseExpressionToDecimal(targetPort->getRightBoundExpression());
+            QString leftBound = parseExpressionToDecimal(targetPort->getLeftBound());
+            QString rightBound = parseExpressionToDecimal(targetPort->getRightBound());
 
             int portWidth = abs(leftBound.toInt() - rightBound.toInt()) + 1;
             int commasLeft = portWidth - newPortIndex - 1;
@@ -161,7 +161,7 @@ QString RemapConditionModel::getEndOfArray(QString const& remapPortName, int new
 //-----------------------------------------------------------------------------
 // Function: RemapConditionModel::rowCount()
 //-----------------------------------------------------------------------------
-int RemapConditionModel::rowCount(QModelIndex const& parent /* = QModelIndex() */) const
+int RemapConditionModel::rowCount(QModelIndex const& parent) const
 {
     if (parent.isValid())
     {
@@ -174,7 +174,7 @@ int RemapConditionModel::rowCount(QModelIndex const& parent /* = QModelIndex() *
 //-----------------------------------------------------------------------------
 // Function: RemapConditionModel::columnCount()
 //-----------------------------------------------------------------------------
-int RemapConditionModel::columnCount(QModelIndex const& parent /* = QModelIndex() */) const
+int RemapConditionModel::columnCount(QModelIndex const& parent) const
 {
     if (parent.isValid())
     {
@@ -187,7 +187,7 @@ int RemapConditionModel::columnCount(QModelIndex const& parent /* = QModelIndex(
 //-----------------------------------------------------------------------------
 // Function: RemapConditionModel::data()
 //-----------------------------------------------------------------------------
-QVariant RemapConditionModel::data(QModelIndex const& index, int role /* = Qt::DisplayRole */) const
+QVariant RemapConditionModel::data(QModelIndex const& index, int role) const
 {
     if (!index.isValid() || index.row() < 0 || index.row() >= rowCount())
     {
@@ -280,11 +280,11 @@ QVariant RemapConditionModel::valueForIndex(QModelIndex const& index) const
     {
         if (!remapPort->getPortNameRef().isEmpty())
         {
-            foreach (QSharedPointer<Port> targetPort, componentPorts_)
+            foreach (QSharedPointer<Port> targetPort, *componentPorts_)
             {
                 if (targetPort->name() == remapPort->getPortNameRef())
                 {
-                    return(targetPort->getLeftBoundExpression());
+                    return(targetPort->getLeftBound());
                 }
             }
         }
@@ -293,11 +293,11 @@ QVariant RemapConditionModel::valueForIndex(QModelIndex const& index) const
     {
         if (!remapPort->getPortNameRef().isEmpty())
         {
-            foreach (QSharedPointer<Port> targetPort, componentPorts_)
+            foreach (QSharedPointer<Port> targetPort, *componentPorts_)
             {
                 if (targetPort->name() == remapPort->getPortNameRef())
                 {
-                    return targetPort->getRightBoundExpression();
+                    return targetPort->getRightBound();
                 }
             }
         }
@@ -321,8 +321,7 @@ QVariant RemapConditionModel::expressionOrValueForIndex(QModelIndex const& index
 //-----------------------------------------------------------------------------
 // Function: RemapConditionModel::headerData()
 //-----------------------------------------------------------------------------
-QVariant RemapConditionModel::headerData(int section, Qt::Orientation orientation,
-    int role /* = Qt::DisplayRole */) const
+QVariant RemapConditionModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
     {
@@ -424,8 +423,7 @@ bool RemapConditionModel::isValid() const
 {
     foreach (QSharedPointer<RemapPort> remapPort, *remapPortsOfRemapState_)
     {
-        if (remapPort->getValue().isEmpty() || remapPort->getPortNameRef().isEmpty() ||
-            remapPort->getPortIndex() < -1)
+        if (remapPort->getValue().isEmpty() || remapPort->getPortNameRef().isEmpty())
         {
             return false;
         }
@@ -501,7 +499,7 @@ void RemapConditionModel::save()
                     QSharedPointer<RemapPort> newRemapPort (new RemapPort());
                     newRemapPort->setPortNameRef(visibleRemapPort->getPortNameRef());
                     newRemapPort->setValue(portValues.at(i));
-                    newRemapPort->setPortIndex(i + arrayStartIndex);
+                    newRemapPort->setPortIndex(QString::number(i + arrayStartIndex));
 
                     remapPortsOfRemapState_->append(newRemapPort);
                 }
@@ -537,7 +535,7 @@ bool RemapConditionModel::validateIndex(QModelIndex const& index) const
 
     if (index.column() == RemapConditionColumns::NAME_COLUMN)
     {
-        foreach (QSharedPointer<Port> targetPort, componentPorts_)
+        foreach (QSharedPointer<Port> targetPort, *componentPorts_)
         {
             if (targetPort->name() == targetRemapPort->getPortNameRef())
             {
@@ -592,7 +590,7 @@ bool RemapConditionModel::validateIndex(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 // Function: RemapConditionModel::updatePorts()
 //-----------------------------------------------------------------------------
-void RemapConditionModel::updatePorts(QList<QSharedPointer<Port> > newPorts)
+void RemapConditionModel::updatePorts(QSharedPointer<QList<QSharedPointer<Port> > > newPorts)
 {
     componentPorts_ = newPorts;
 
@@ -613,7 +611,7 @@ QStringList RemapConditionModel::getAvailablePorts()
 
     QStringList availablePorts;
 
-    foreach (QSharedPointer<Port> targetPort, componentPorts_)
+    foreach (QSharedPointer<Port> targetPort, *componentPorts_)
     {
         if (!usedPorts.contains(targetPort->name()))
         {

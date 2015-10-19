@@ -12,12 +12,11 @@
 #ifndef REMAPSTATESMODEL_H
 #define REMAPSTATESMODEL_H
 
-#include <IPXACTmodels/remapstate.h>
-
 #include <QAbstractTableModel>
 #include <QList>
 #include <QSharedPointer>
 
+class RemapState;
 //-----------------------------------------------------------------------------
 //! The model to manage the remap states summary.
 //-----------------------------------------------------------------------------
