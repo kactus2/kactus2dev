@@ -12,15 +12,13 @@
 #include "MakefileGenerator.h"
 #include "MakefileParser.h"
 #include "MakefileGeneratorPlugin.h"
+#include "CompileConflictDialog.h"
 
-#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
-
-#include <IPXACTmodels/Design/Design.h>
-
-#include <IPXACTmodels/SystemView.h>
-
+#include <IPXACTmodels/design.h>
+#include <IPXACTmodels/designconfiguration.h>
 #include <QMessageBox>
 #include <QCoreApplication>
+#include <IPXACTmodels/SystemView.h>
 
 //-----------------------------------------------------------------------------
 // Function: MakefileGeneratorPlugin::MakefileGeneratorPlugin()
@@ -105,9 +103,9 @@ QIcon MakefileGeneratorPlugin::getIcon() const
 //-----------------------------------------------------------------------------
 // Function: MakefileGeneratorPlugin::checkGeneratorSupport()
 //-----------------------------------------------------------------------------
-bool MakefileGeneratorPlugin::checkGeneratorSupport( QSharedPointer<Document const> libComp,
-    QSharedPointer<Document const> libDesConf,
-    QSharedPointer<Document const> libDes ) const {
+bool MakefileGeneratorPlugin::checkGeneratorSupport( QSharedPointer<LibraryComponent const> libComp,
+    QSharedPointer<LibraryComponent const> libDesConf,
+    QSharedPointer<LibraryComponent const> libDes ) const {
 
     QSharedPointer<DesignConfiguration const> desgConf = libDesConf.dynamicCast<DesignConfiguration const>();
 
@@ -118,25 +116,25 @@ bool MakefileGeneratorPlugin::checkGeneratorSupport( QSharedPointer<Document con
 // Function: MakefileGeneratorPlugin::runGenerator()
 //-----------------------------------------------------------------------------
 void MakefileGeneratorPlugin::runGenerator( IPluginUtility* utility, 
-    QSharedPointer<Document> libComp,
-    QSharedPointer<Document> libDesConf,
-    QSharedPointer<Document> libDes)
+    QSharedPointer<LibraryComponent> libComp,
+    QSharedPointer<LibraryComponent> libDesConf,
+    QSharedPointer<LibraryComponent> libDes)
 {
     QSharedPointer<const Design> design = libDes.dynamicCast<Design const>();
     QSharedPointer<Component> comp = libComp.dynamicCast<Component>();
     QSharedPointer<DesignConfiguration const> desgConf = libDesConf.dynamicCast<DesignConfiguration const>();
     
-    QString targetDir = QFileInfo(utility->getLibraryInterface()->getPath(libDes->getVlnv())).absolutePath(); 
-	QString topDir = QFileInfo(utility->getLibraryInterface()->getPath(libComp->getVlnv())).absolutePath(); 
+    QString targetDir = QFileInfo(utility->getLibraryInterface()->getPath(*libDes->getVlnv())).absolutePath(); 
+	QString topDir = QFileInfo(utility->getLibraryInterface()->getPath(*libComp->getVlnv())).absolutePath(); 
 
 	// Find the name of the system view pointing to the design configuration.
 	QString sysViewName;
 
 	foreach ( QSharedPointer<SystemView> view, comp->getSystemViews() )
 	{
-        if ( view->getHierarchyRef() == desgConf->getVlnv() )
+		if ( view->getHierarchyRef() == *desgConf->getVlnv() )
 		{
-			sysViewName = view->name();
+			sysViewName = view->getName();
 			break;
 		}
 	}
@@ -162,11 +160,29 @@ void MakefileGeneratorPlugin::runGenerator( IPluginUtility* utility,
             QMessageBox::Yes | QMessageBox::No, utility->getParentWidget());
         msgBox.setDetailedText(detailMsg);
 
-        // If user did not want to replace the files.
-        if (msgBox.exec() == QMessageBox::No) {
+        // Return, if user did not want to replace the files.
+        if (msgBox.exec() == QMessageBox::No)
+		{
+			utility->printInfo( "Makefile generation terminated by user due to overwriting.");
             return;
         }
     }
+
+	QVector<QSet<QSharedPointer<MakefileParser::MakeObjectData> > > conflicts = parser.findConflicts();
+
+	if ( conflicts.size() > 0 )
+	{
+		CompileConflictDialog dialog(conflicts, utility->getParentWidget());
+
+		utility->printError( "Conflicting source files in system design!");
+
+		// Return, if user did not want to proceed after seeing the conflicts
+		if ( dialog.exec() == QDialog::Rejected )
+		{
+			utility->printInfo( "Makefile generation terminated by user due to conflicts.");
+			return;
+		}
+	}
 
     MakefileGenerator generator( parser, utility );
     generator.generate(targetDir, topDir, sysViewName);

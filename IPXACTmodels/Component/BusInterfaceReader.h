@@ -12,7 +12,7 @@
 #ifndef businterfaceReader_H
 #define businterfaceReader_H
 
-#include "businterface.h"
+#include "BusInterface.h"
 
 #include <QObject>
 #include <QSharedPointer>

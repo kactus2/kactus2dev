@@ -14,7 +14,7 @@
 #define COMDEFINITION_H
 
 #include "librarycomponent.h"
-#include "ComProperty.h"
+#include <IPXACTmodels/kactusExtensions/ComProperty.h>
 
 #include "ipxactmodels_global.h"
 

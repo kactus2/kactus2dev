@@ -13,7 +13,7 @@
 
 #include <IPXACTmodels/common/Parameter.h>
 
-#include <IPXACTmodels/choice.h>
+#include <IPXACTmodels/Component/choice.h>
 #include <IPXACTmodels/Enumeration.h>
 
 #include <editors/ComponentEditor/common/ExpressionParser.h>

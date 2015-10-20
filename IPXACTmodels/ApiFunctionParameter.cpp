@@ -20,7 +20,7 @@ ApiFunctionParameter::ApiFunctionParameter()
     : name_(),
       type_(),
       comTransferType_(),
-      comDirection_(General::DIRECTION_INVALID),
+      comDirection_(DirectionTypes::DIRECTION_INVALID),
       contentSource_(),
       dependentParamIndex_(-1),
       desc_()
@@ -48,7 +48,7 @@ ApiFunctionParameter::ApiFunctionParameter(QDomNode& node)
     : name_(),
       type_(),
       comTransferType_(),
-      comDirection_(General::DIRECTION_INVALID),
+      comDirection_(DirectionTypes::DIRECTION_INVALID),
       contentSource_(),
       dependentParamIndex_(-1),
       desc_()
@@ -58,7 +58,7 @@ ApiFunctionParameter::ApiFunctionParameter(QDomNode& node)
     name_ = node.attributes().namedItem("kactus2:name").nodeValue();
     type_ = node.attributes().namedItem("kactus2:type").nodeValue();
     comTransferType_ = node.attributes().namedItem("kactus2:transferType").nodeValue();
-    comDirection_ = General::str2Direction(node.attributes().namedItem("kactus2:comDirection").nodeValue(), General::DIRECTION_INVALID);
+    comDirection_ = DirectionTypes::str2Direction(node.attributes().namedItem("kactus2:comDirection").nodeValue(), DirectionTypes::DIRECTION_INVALID);
     contentSource_ = node.attributes().namedItem("kactus2:contentSource").nodeValue();
     dependentParamIndex_ = node.attributes().namedItem("kactus2:dependentParamIndex").nodeValue().toInt();
     desc_ = node.attributes().namedItem("kactus2:description").nodeValue();
@@ -81,9 +81,9 @@ void ApiFunctionParameter::write(QXmlStreamWriter& writer)
     writer.writeAttribute("kactus2:type", type_);
     writer.writeAttribute("kactus2:transferType", comTransferType_);
 
-    if (comDirection_ != General::DIRECTION_INVALID)
+    if (comDirection_ != DirectionTypes::DIRECTION_INVALID)
     {
-        writer.writeAttribute("kactus2:comDirection", General::direction2Str(comDirection_));
+        writer.writeAttribute("kactus2:comDirection", DirectionTypes::direction2Str(comDirection_));
     }
 
     writer.writeAttribute("kactus2:contentSource", contentSource_);
@@ -149,7 +149,7 @@ void ApiFunctionParameter::setComTransferType(QString const& comTransferType)
 //-----------------------------------------------------------------------------
 // Function: ApiFunctionParameter::setComDirection()
 //-----------------------------------------------------------------------------
-void ApiFunctionParameter::setComDirection(General::Direction comDirection)
+void ApiFunctionParameter::setComDirection(DirectionTypes::Direction comDirection)
 {
     comDirection_ = comDirection;
 }
@@ -205,7 +205,7 @@ QString const& ApiFunctionParameter::getComTransferType() const
 //-----------------------------------------------------------------------------
 // Function: ApiFunctionParameter::getComDirection()
 //-----------------------------------------------------------------------------
-General::Direction ApiFunctionParameter::getComDirection() const
+DirectionTypes::Direction ApiFunctionParameter::getComDirection() const
 {
     return comDirection_;
 }

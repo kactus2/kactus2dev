@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: MakefilParser.h
+// File: MakefileParser.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Janne Virtanen
@@ -15,13 +15,12 @@
 #include <QString>
 
 #include <IPXACTmodels/Design/Design.h>
-
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
-
-#include <IPXACTmodels/file.h>
-#include <IPXACTmodels/fileset.h>
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/SWView.h>
+#include <IPXACTmodels/Component/file.h>
+#include <IPXACTmodels/Component/fileset.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/BuildCommand.h>
+#include <IPXACTmodels/kactusExtensions/SWView.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 
@@ -30,22 +29,29 @@ class MakefileParser
 public:
 
     // A struct containing needed data of a single file parsed to be used in a makefile.
+	// Provided that it is not a header file, it likely yields an object file.
     struct MakeObjectData
     {
         // The file which data is parsed here.
         QSharedPointer<File> file;
         // The build command directly associated with the file.
-        BuildCommand* fileBuildCmd;
-        // The build command of the file set where file belong to.
+        QSharedPointer<BuildCommand> fileBuildCmd;
+        // The build command of the file set where file belongs to.
         QSharedPointer<FileBuilder> fileSetBuildCmd;
         // The build command of the active software view of the software instance.
         QSharedPointer<SWBuildCommand> swBuildCmd;
 		// The resolved compiler for the object file.
 		QString compiler;
+		// The resolved flags for the object file.
+		QString flags;
         // The absolute path of the file.
         QString path;
         // The name of the file.
         QString fileName;
+		// The software instance where the file is included.
+		QString instanceName;
+		// File set where the file is included.
+		QSharedPointer<FileSet> fileSet;
     };
 
     // A struct containing needed data of a single make file.
@@ -53,8 +59,6 @@ public:
     {
         // Parsed files found in software views of software components.
         QList<QSharedPointer<MakeObjectData> > swObjects;
-        // Parsed files found in software views of hardware components.
-        QList<QSharedPointer<MakeObjectData> > hwObjects;
         // The build command of the active software view of the hardware instance.
         QSharedPointer<SWBuildCommand> hwBuildCmd;
         // Flags passed down from software views.
@@ -71,22 +75,22 @@ public:
         QSharedPointer<FileSet> fileSet;
     };
 
-    //! The constructor.
     MakefileParser();
 
-    //! The destructor.
     ~MakefileParser();
 
-    // Returns all parsed MakeFileData.
-    QList<MakeFileData> getParsedData() const;
+    // Returns reference to all parsed MakeFileData.
+    const QList<MakeFileData>& getParsedData();
 
     // Return the general file set.
-    QSharedPointer<FileSet> getGeneralFileSet() const;
+    const QSharedPointer<FileSet>& getGeneralFileSet();
 
     // Returns list of all files to be replaced.
-    QStringList getReplacedFiles();
+    const QStringList& getReplacedFiles();
 
-    // Returns a list of all file names which may be generated but does exist
+	// List of conflicts: Each set contains the parsed metadata of files
+	// that are included multiple times.
+	QVector<QSet<QSharedPointer<MakeObjectData> > > findConflicts() const;
 
     /*!
      *  Parses all software components from the design for the data needed in makefiles.
@@ -103,10 +107,6 @@ public:
         QString sysViewName, QString targetPath = "" );
 
 private:
-
-    // Disable copying.
-    MakefileParser(MakefileParser const& rhs);
-    MakefileParser& operator=(MakefileParser const& rhs);
 
     /*!
      *  Checks if softInstance is the topmost instance in its stack.
@@ -128,11 +128,11 @@ private:
      *      @param [in] desgConf   The design configuration object associated with the design.
      *      @param [in] sysViewName   The name of the system view associated with the design.
      *      @param [in] softInstance   The software instance which instance headers are to be found.
-     *      @param [out] makeData   The make data associated with the makefile as whole.
+     *      @param [in] makeData   The make data associated with the makefile as whole.
      */
      void findInstanceHeaders(LibraryInterface* library, QSharedPointer<Component> topComponent,
-         QSharedPointer<DesignConfiguration const> desgConf, QString sysViewName, 
-         QSharedPointer<SWInstance> softInstance, MakeFileData &makeData);
+         QSharedPointer<DesignConfiguration const> desgConf, QString sysViewName, QSharedPointer<SWInstance> softInstance,
+         MakeFileData &makeData);
 
     /*!
      *  Finds active software view of the given hardware instance and parses its files.
@@ -157,7 +157,7 @@ private:
      *      @param [in] design   The design object.
      *      @param [in] library   The library containing all components in the design.
      *      @param [in] desgConf   The design configuration object associated with the design.
-     *      @param [in/out] makeData   The make data associated with the makefile as whole.
+     *      @param [in] makeData   The make data associated with the makefile as whole.
      */
      void parseStackObjects(QSharedPointer<Component> softComponent, QSharedPointer<SWView> softView,
          QSharedPointer<SWInstance> softInstance, QSharedPointer<const Design> design, LibraryInterface* library,
@@ -169,21 +169,37 @@ private:
      *      @param [in] library   The library containing all components in the design.
      *      @param [in] view   The software view which filesets are parsed.
      *      @param [in] component   The component of softInstance.
-     *      @param [in/out] makeData   The make data associated with the makefile as whole.
+     *      @param [in] makeData   The make data associated with the makefile as whole.
      *      @param [in] objects   The collection of the parsed data of the files.
      *      @param [in] pickSWView   True, if flags corresponding file type are culled from the software view.
      */
-      void parseMakeObjects(LibraryInterface* library, QSharedPointer<SWView> view,
+      void parseMakeObjects(LibraryInterface* library, QSharedPointer<SWView> view, QString instanceName,
           QSharedPointer<Component> component, MakeFileData &makeData, QList<QSharedPointer<MakeObjectData> >& objects,
           bool pickSWView);
+
+	/*!
+	*  Parses all files of parameters fset, adding the to parameters objects.
+	*  Parsing involves defining the file as header, and determining its relevant build commands and path.
+	*
+	*      @param [in] fset				The inspected file set
+	*      @param [in] objects			The list of parsed objects, where the file data will be appended.
+	*      @param [in] library			The library containing all components in the design.
+	*      @param [in] component		The component of softInstance.
+	*      @param [in] makeData			The make data associated with the makefile as whole.
+	*      @param [in] pickSWView		True, if flags corresponding file type are culled from the software view.
+	*      @param [in] view				The software view which filesets are parsed.
+	*/
+	  void parseFileSet(QSharedPointer<FileSet> fset, QString instanceName, QList<QSharedPointer<MakeObjectData> > &objects,
+		  LibraryInterface* library, QSharedPointer<Component> component, MakeFileData &makeData, bool pickSWView,
+		  QSharedPointer<SWView> view);
 
     /*!
      *  Tries to find a software instance by name and the component associated with it.
      *
-     *      @param [in] library             The library containing all components in the design.
-     *      @param [in] design              The design object.
-     *      @param [in] instanceName        Name of the searched software instance.
-     *      @param [out] targetInstance     The found software instance.
+     *      @param [in] library   The library containing all components in the design.
+     *      @param [in] design   The design object.
+     *      @param [in] instanceName   Name of the searched software instance.
+     *      @param [in] targetInstance   The found software instance.
      *
      *      @return The component of the found instance.
      */
@@ -193,25 +209,32 @@ private:
     /*!
      *  Tries to find build commands corresponding parsed files in the makeData.
      *
-     *      @param [in/out] makeData   The make data associated with the makefile as whole.
+     *      @param [in] makeData   The make data associated with the makefile as whole.
+     *      @param [in] softView   Software view of the software component.
      *      @param [in] hardView   Software view of the hardware component.
      */
-     void findHardwareBuildCommand(MakeFileData& makeData, QSharedPointer<SWView> hardView);
+     void findHardwareBuildCommand(MakeFileData &makeData, QSharedPointer<SWView> softView, QSharedPointer<SWView> hardView);
 
     /*!
      *  Gets the compiler used for the file.
      *
      *      @param [in] mod   The make data associated with the object file.
+	 *      @param [in] hardView   Software view of the associated hardware component.
+	 */
+	 QString getFileCompiler(QSharedPointer<MakeObjectData> mod, QSharedPointer<SWView> hardView) const;
+
+    /*!
+     *  Gets concatenated the build flags of the file with those fileSet and software views.
+     *
+     *      @param [in] mod   The make data associated with the object file.
      *      @param [in] mfd   The make data associated with the makefile as whole.
      */
-     QString getFileCompiler(QSharedPointer<MakeObjectData> mod, MakeFileData &mfd) const;
+     QString getFileFlags(QSharedPointer<Component> component, QSharedPointer<MakeObjectData> &mod, MakeFileData &mfd) const;
 
      //! Collection of data sets, one for each make file.
-     QList<MakeFileData> parsedData_;
-
+	 QList<MakeFileData> parsedData_;
      //! The fileSet for the main makefile and the launcher.
      QSharedPointer<FileSet> generalFileSet_;
-
      //! List of files that may be replaced
      QStringList replacedFiles_;
 };

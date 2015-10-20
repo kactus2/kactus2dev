@@ -16,9 +16,11 @@
 #include <IPXACTmodels/ipxactmodels_global.h>
 #include <IPXACTmodels/VendorExtension.h>
 
-#include <IPXACTmodels/ComInterface.h>
+#include <IPXACTmodels/kactusExtensions/ComInterface.h>
 
 #include <IPXACTmodels/Design/ComponentInstance.h>
+#include <IPXACTmodels/common/ConfigurableVLNVReference.h>
+#include <IPXACTmodels/common/ConfigurableElementValue.h>
 
 #include <QString>
 #include <QPointF>

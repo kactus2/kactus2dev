@@ -7,12 +7,19 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../Plugins/MakefileGenerator/MakefileGenerator.h \
+HEADERS += ../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
+    ../../../editors/ComponentEditor/common/ListParameterFinder.h \
+    ../../../Plugins/MakefileGenerator/MakefileGenerator.h \
     ../../../Plugins/MakefileGenerator/MakefileParser.h \
     ../../MockObjects/LibraryMock.h \
-    ../../../Plugins/PluginSystem/PluginUtilityAdapter.h
-SOURCES += ../../MockObjects/LibraryMock.cpp \
+    ../../../Plugins/PluginSystem/PluginUtilityAdapter.h \
+    ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
+    ../../../editors/ComponentEditor/common/SystemVerilogSyntax.h
+SOURCES += ../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
+    ../../MockObjects/LibraryMock.cpp \
+    ../../../editors/ComponentEditor/common/ListParameterFinder.cpp \
     ../../../Plugins/MakefileGenerator/MakefileGenerator.cpp \
     ../../../Plugins/MakefileGenerator/MakefileParser.cpp \
+    ../../../Plugins/PluginSystem/PluginUtilityAdapter.cpp \
     ./tst_MakefileGenerator.cpp \
-    ../../../Plugins/PluginSystem/PluginUtilityAdapter.cpp
+    ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp

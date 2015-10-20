@@ -49,6 +49,9 @@
     <ClCompile Include="GeneratedFiles\Release\moc_MakefileGeneratorPlugin.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="CompileConflictDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MakefileGenerator.h">
@@ -58,6 +61,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MakefileParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CompileConflictDialog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

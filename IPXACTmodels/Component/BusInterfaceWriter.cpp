@@ -9,7 +9,7 @@
 // Writer class for IP-XACT businterface element.
 //-----------------------------------------------------------------------------
 
-#include "businterfaceWriter.h"
+#include "BusinterfaceWriter.h"
 #include "../masterinterface.h"
 #include "../XmlUtils.h"
 #include "../masterinterface.h"

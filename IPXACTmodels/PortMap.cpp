@@ -12,7 +12,7 @@
 #include "PortMap.h"
 
 #include <IPXACTmodels/common/Vector.h>
-#include "port.h"
+#include <IPXACTmodels/Component/Port.h>
 
 //-----------------------------------------------------------------------------
 // Function: PortMap::PortMap()

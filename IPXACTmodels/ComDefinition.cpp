@@ -12,7 +12,7 @@
 
 #include "ComDefinition.h"
 
-#include "ComProperty.h"
+#include <IPXACTmodels/kactusExtensions/ComProperty.h>
 
 //-----------------------------------------------------------------------------
 // Function: ComDefinition::ComDefinition()

@@ -12,7 +12,7 @@
 #ifndef APIFUNCTIONPARAMETER_H
 #define APIFUNCTIONPARAMETER_H
 
-#include "generaldeclarations.h"
+#include <IPXACTmodels/common/DirectionTypes.h>
 
 #include "ipxactmodels_global.h"
 
@@ -94,7 +94,7 @@ public:
      *
      *      @param [in] comDirection The COM direction to set.
      */
-    void setComDirection(General::Direction comDirection);
+    void setComDirection(DirectionTypes::Direction comDirection);
 
     /*!
      *  Sets the COM content source.
@@ -136,7 +136,7 @@ public:
     /*!
      *  Returns the allowed COM direction.
      */
-    General::Direction getComDirection() const;
+    DirectionTypes::Direction getComDirection() const;
 
     /*!
      *  Returns the name of the COM content source.
@@ -173,7 +173,7 @@ private:
     QString comTransferType_;
 
     //! COM direction.
-    General::Direction comDirection_;
+    DirectionTypes::Direction comDirection_;
 
     //! The name of the source for content assist.
     QString contentSource_;

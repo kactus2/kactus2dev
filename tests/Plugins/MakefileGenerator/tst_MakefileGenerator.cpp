@@ -11,16 +11,15 @@
 
 #include <QtTest>
 
-#include <IPXACTmodels/component.h>
-
-#include <IPXACTmodels/SWView.h>
-#include <IPXACTmodels/SystemView.h>
-#include <IPXACTmodels/file.h>
-#include <IPXACTmodels/fileset.h>
-#include <IPXACTmodels/ApiInterface.h>
-
-#include <IPXACTmodels/Design/Design.h>
+#include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Design/ComponentInstance.h>
+#include <IPXACTmodels/Design/Design.h>
+#include <IPXACTmodels/kactusExtensions/SWView.h>
+#include <IPXACTmodels/kactusExtensions/SystemView.h>
+#include <IPXACTmodels/Component/file.h>
+#include <IPXACTmodels/Component/fileset.h>
+#include <IPXACTmodels/kactusExtensions/ApiInterconnection.h>
+#include <IPXACTmodels/kactusExtensions/ApiInterface.h>
 
 #include <tests/MockObjects/LibraryMock.h>
 
@@ -64,28 +63,31 @@ private slots:
 	void noHardWare();
 	void noFileType();
     void multipleInstances();
+
     void apiUsage();
     void threeLevelStack();
     void fullCircularapiUsage();
-    void circularapiUsage();
+	void circularapiUsage();
+
+	void sameFile();
+	void sameFileSeparateExe();
+	void sameFileDiffCompiler();
+	void sameFileDiffFlags();
 
 private:
     void getFile(QSharedPointer<File>& file, QSharedPointer<Component> component, QString fileName);
 
-    QSharedPointer<Component> createSW(QString swName, QString hwInstanceName, QSharedPointer<Design> design,
-        QString softViewName, QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews, 
-        SWView*& softView, QString swInstanceName);
+    QSharedPointer<Component> createSW(QString swName, QString hwInstanceName, QSharedPointer<Design> design, QString softViewName,
+		 QSharedPointer<DesignConfiguration> desgconf, QSharedPointer<SWView>& softView, QString swInstanceName);
 
-    QSharedPointer<FileSet> addFileSet(QSharedPointer<Component> component, QString fileSetName, SWView*& view);
+    QSharedPointer<FileSet> addFileSet(QSharedPointer<Component> component, QString fileSetName, QSharedPointer<SWView>& view);
 
-    void addFileToSet(QSharedPointer<FileSet> fileSet, QString fileName, QString fileType="cSource",
-        bool isInclude=false);
+    QSharedPointer<File> addFileToSet(QSharedPointer<FileSet> fileSet, QString fileName, QString fileType="cSource", bool isInclude=false);
 
-    void createSWSWView(SWView* softView, QString softViewName, QSharedPointer<Component> sw);
+    void createSWSWView(QSharedPointer<SWView> softView, QString softViewName, QSharedPointer<Component> sw);
 
-    QSharedPointer<Component> createHW(QString hwInstanceName, QSharedPointer<Design> design, QString hardViewName, 
-        QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews, SWView*& hardView, 
-        QString hwName="hardware");
+    QSharedPointer<Component> createHW(QString hwInstanceName, QSharedPointer<Design> design, QString hardViewName,
+		 QSharedPointer<DesignConfiguration> desgconf, QSharedPointer<SWView>& hardView, QString hwName="hardware");
 
     QSharedPointer<Component> createDesign(QSharedPointer<Design> &design, QSharedPointer<DesignConfiguration> &desgconf);
 
@@ -95,7 +97,11 @@ private:
 
     void addFileSetBuilder(QSharedPointer<FileSet> fileSet, QString command, QString fileType, QString flags, bool replace);
 
-    void addCmd2View(SWView* view, QString command, QString fileType, QString flags, bool replace);
+	void addCmd2View(QSharedPointer<SWView> view, QString command, QString fileType, QString flags, bool replace);
+
+	void addAPI(QSharedPointer<Component> asw, QString name, DependencyDirection dir);
+
+	void addAPIConnection(QSharedPointer<Design> design, QString com1, QString bus1, QString com2, QString bus2);
 
     //! The test mock for library interface.
     LibraryMock library_;
@@ -118,24 +124,19 @@ void tst_MakefileGenerator::baseCase()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(
-        new QList<QSharedPointer<ViewConfiguration> > ());
-    SWView* hardView;
-    SWView* softView;
+    QSharedPointer<SWView> hardView;
+    QSharedPointer<SWView> softView;
 
-    createHW("hardware_0", design, "firmware", activeViews, hardView);
+    createHW("hardware_0", design, "firmware", desgconf, hardView);
     addCmd2View(hardView, "gcc", "cSource", "-hw", false);
 
-    QSharedPointer<Component> sw = createSW("software", "hardware_0", design, "default", activeViews, softView,"software_0");
+    QSharedPointer<Component> sw = createSW("software", "hardware_0", design, "default", desgconf, softView, "software_0");
 
     QString fileSetName = "someFileSet";
-    addFileSet(sw, fileSetName, softView);
+    QSharedPointer<FileSet> fileSet = addFileSet(sw, fileSetName, softView);
 
-    QSharedPointer<FileSet> fileSet = sw->getFileSet(fileSetName);
     addFileToSet(fileSet, "array.c");
     addCmd2View(softView, "gcc", "cSource", "-sw", false);
-
-    desgconf->setViewConfigurations(activeViews);
 
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design, outputDir_ );
@@ -159,31 +160,25 @@ void tst_MakefileGenerator::fileBuildOverride()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(new
-        QList<QSharedPointer<ViewConfiguration> >());
-    SWView* hardView;
-    SWView* softView;
+    QSharedPointer<SWView> hardView;
+    QSharedPointer<SWView> softView;
 
     QString hwInstanceName = "hardware_0";
     QString hardViewName = "firmware";
-    createHW(hwInstanceName, design, hardViewName, activeViews, hardView);
+    createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
 
     QString swInstanceName = "software_0";
     QString softViewName = "default";
 
-    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, activeViews, softView,swInstanceName);
+    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, desgconf, softView,swInstanceName);
 
     QString fileSetName = "someFileSet";
     QSharedPointer<FileSet> fileSet = addFileSet(sw, fileSetName, softView);
 
-    addFileToSet(fileSet, "array.c");
+    QSharedPointer<File> file = addFileToSet(fileSet, "array.c");
     addCmd2View(softView, "gcc -o", "cSource", "-sw", false);
 
-    QSharedPointer<File> file;
-    getFile(file, sw, "array.c");
     setFileBuilder(file, "python", "-l", false);
-
-    desgconf->setViewConfigurations(activeViews);
 
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
@@ -201,19 +196,17 @@ void tst_MakefileGenerator::fileSetBuildOverride()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(new
-        QList<QSharedPointer<ViewConfiguration> >());
-    SWView* hardView;
-    SWView* softView;
+    QSharedPointer<SWView> hardView;
+    QSharedPointer<SWView> softView;
 
     QString hwInstanceName = "hardware_0";
     QString hardViewName = "firmware";
-    createHW(hwInstanceName, design, hardViewName, activeViews, hardView);
+    createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
 
     QString swInstanceName = "software_0";
     QString softViewName = "default";
 
-    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, activeViews, softView,swInstanceName);
+    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, desgconf, softView,swInstanceName);
 
     QString fileSetName = "someFileSet";
     QSharedPointer<FileSet> fileSet = addFileSet(sw, fileSetName, softView);
@@ -221,8 +214,6 @@ void tst_MakefileGenerator::fileSetBuildOverride()
     addFileToSet(fileSet, "array.c");
     addCmd2View(softView, "gcc -o", "cSource", "-sw", false);
     addFileSetBuilder(fileSet, "javac -beef", "cSource", "-lrt", false);
-
-    desgconf->setViewConfigurations(activeViews);
 
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
@@ -244,29 +235,23 @@ void tst_MakefileGenerator::fileFlagReplace()
     QString hwInstanceName = "hardware_0";
     QString hardViewName = "firmware";
 
-    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(new
-        QList<QSharedPointer<ViewConfiguration> >());
-    SWView* hardView;
-    SWView* softView;
+    QSharedPointer<SWView> hardView;
+    QSharedPointer<SWView> softView;
 
-    createHW(hwInstanceName, design, hardViewName, activeViews, hardView);
+    createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
 
     QString swInstanceName = "software_0";
     QString softViewName = "default";
 
-    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, activeViews, softView,swInstanceName);
+    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, desgconf, softView,swInstanceName);
 
     QString fileSetName = "someFileSet";
     QSharedPointer<FileSet> fileSet = addFileSet(sw, fileSetName, softView);
 
-    addFileToSet(fileSet, "array.c");
+    QSharedPointer<File> file = addFileToSet(fileSet, "array.c");
     addCmd2View(softView, "gcc", "cSource", "-sw", false);
 
-    QSharedPointer<File> file;
-    getFile(file, sw, "array.c");
     setFileBuilder(file, "", "-u", true);
-
-    desgconf->setViewConfigurations(activeViews);
 
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
@@ -285,19 +270,17 @@ void tst_MakefileGenerator::fileSetFlagReplace()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(new
-        QList<QSharedPointer<ViewConfiguration> >());
-    SWView* hardView;
-    SWView* softView;
+    QSharedPointer<SWView> hardView;
+    QSharedPointer<SWView> softView;
 
     QString hwInstanceName = "hardware_0";
     QString hardViewName = "firmware";
-    createHW(hwInstanceName, design, hardViewName, activeViews, hardView);
+    createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
 
     QString swInstanceName = "software_0";
     QString softViewName = "default";
 
-    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, activeViews, softView,swInstanceName);
+    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, desgconf, softView,swInstanceName);
 
     QString fileSetName = "someFileSet";
     QSharedPointer<FileSet> fileSet = addFileSet(sw, fileSetName, softView);
@@ -305,8 +288,6 @@ void tst_MakefileGenerator::fileSetFlagReplace()
     addFileToSet(fileSet, "array.c");
     addCmd2View(softView, "gcc", "cSource", "-sw", false);
     addFileSetBuilder(fileSet, "javac -beef", "cSource", "-lrt", true);
-
-    desgconf->setViewConfigurations(activeViews);
 
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
@@ -325,31 +306,25 @@ void tst_MakefileGenerator::includeFile()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(new
-        QList<QSharedPointer<ViewConfiguration> >());
-    SWView* hardView;
-    SWView* softView;
+    QSharedPointer<SWView> hardView;
+    QSharedPointer<SWView> softView;
 
     QString hwInstanceName = "hardware_0";
     QString hardViewName = "firmware";
-    createHW(hwInstanceName, design, hardViewName, activeViews, hardView);
+    createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
 
     QString swInstanceName = "software_0";
     QString softViewName = "default";
 
-    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, activeViews, softView,swInstanceName);
+    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, desgconf, softView,swInstanceName);
 
-    QString fileSetName = "someFileSet";
-    addFileSet(sw, fileSetName, softView);
+    QSharedPointer<FileSet> fileSet = addFileSet(sw, "someFileSet", softView);
 
-    QSharedPointer<FileSet> fileSet = sw->getFileSet(fileSetName);
     addFileToSet(fileSet, "array.c");
     addFileToSet(fileSet, "array.h", "cSource", true);
 
     addCmd2View(hardView, "gcc", "cSource", "-hw", false);
     addCmd2View(softView, "gcc", "cSource", "-sw", false);
-
-    desgconf->setViewConfigurations(activeViews);
 
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
@@ -370,30 +345,24 @@ void tst_MakefileGenerator::swSWViewFlagReplace()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(new
-        QList<QSharedPointer<ViewConfiguration> >());
-    SWView* hardView;
-    SWView* softView;
+    QSharedPointer<SWView> hardView;
+    QSharedPointer<SWView> softView;
 
     QString hwInstanceName = "hardware_0";
     QString hardViewName = "firmware";
-    createHW(hwInstanceName, design, hardViewName, activeViews, hardView);
+    createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
 
     QString swInstanceName = "software_0";
     QString softViewName = "default";
 
-    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, activeViews, softView,swInstanceName);
+    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, desgconf, softView,swInstanceName);
 
-    QString fileSetName = "someFileSet";
-    addFileSet(sw, fileSetName, softView);
+    QSharedPointer<FileSet> fileSet = addFileSet(sw, "someFileSet", softView);
 
-    QSharedPointer<FileSet> fileSet = sw->getFileSet(fileSetName);
     addFileToSet(fileSet, "array.c");
 
     addCmd2View(hardView, "gcc", "cSource", "-hw", false);
     addCmd2View(softView, "gcc", "cSource", "-sw", true);
-
-    desgconf->setViewConfigurations(activeViews);
 
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
@@ -413,35 +382,27 @@ void tst_MakefileGenerator::hwBuilder()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(new
-        QList<QSharedPointer<ViewConfiguration> >());
-    SWView* hardView;
-    SWView* softView;
+    QSharedPointer<SWView> hardView;
+    QSharedPointer<SWView> softView;
 
     QString hwInstanceName = "hardware_0";
     QString hardViewName = "firmware";
-    createHW(hwInstanceName, design, hardViewName, activeViews, hardView);
+    createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
 
     QString swInstanceName = "software_0";
     QString softViewName = "default";
 
-    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, activeViews, softView,swInstanceName);
+    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, desgconf, softView,swInstanceName);
 
-    QString fileSetName = "someFileSet";
-    addFileSet(sw, fileSetName, softView);
+    QSharedPointer<FileSet> fileSet = addFileSet(sw, "someFileSet", softView);
 
-    QSharedPointer<FileSet> fileSet = sw->getFileSet(fileSetName);
-    addFileToSet(fileSet, "array.c");
+    QSharedPointer<File> file = addFileToSet(fileSet, "array.c");
     addFileSetBuilder(fileSet, "", "cSource", "-lrt", false);
 
     addCmd2View(hardView, "super_asm", "cSource", "-hw", false);
     addCmd2View(softView, "", "cSource", "-sw", false);
 
-    QSharedPointer<File> file;
-    getFile(file, sw, "array.c");
     setFileBuilder(file, "", "-u", false);
-
-    desgconf->setViewConfigurations(activeViews);
 
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
@@ -461,34 +422,26 @@ void tst_MakefileGenerator::hwBuilderWithNoSoftView()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(new
-        QList<QSharedPointer<ViewConfiguration> >());
-    SWView* hardView;
-    SWView* softView;
+    QSharedPointer<SWView> hardView;
+    QSharedPointer<SWView> softView;
 
     QString hwInstanceName = "hardware_0";
     QString hardViewName = "firmware";
-    createHW(hwInstanceName, design, hardViewName, activeViews, hardView);
+    createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
 
     QString swInstanceName = "software_0";
     QString softViewName = "default";
 
-    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, activeViews, softView,swInstanceName);
+    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, desgconf, softView,swInstanceName);
 
-    QString fileSetName = "someFileSet";
-    addFileSet(sw, fileSetName, softView);
+    QSharedPointer<FileSet> fileSet = addFileSet(sw, "someFileSet", softView);
 
-    QSharedPointer<FileSet> fileSet = sw->getFileSet(fileSetName);
-    addFileToSet(fileSet, "array.c");
+    QSharedPointer<File> file = addFileToSet(fileSet, "array.c");
     addFileSetBuilder(fileSet, "", "cSource", "-lrt", false);
 
     addCmd2View(hardView, "super_asm", "cSource", "-hw", false);
 
-    QSharedPointer<File> file;
-    getFile(file, sw, "array.c");
     setFileBuilder(file, "", "-u", false);
-
-    desgconf->setViewConfigurations(activeViews);
 
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
@@ -508,24 +461,20 @@ void tst_MakefileGenerator::hwRef()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(new
-        QList<QSharedPointer<ViewConfiguration> >());
-    SWView* hardView;
-    SWView* softView;
+    QSharedPointer<SWView> hardView;
+    QSharedPointer<SWView> softView;
 
     QString hwInstanceName = "hardware_0";
     QString hardViewName = "firmware";
-    QSharedPointer<Component> hw = createHW(hwInstanceName, design, hardViewName, activeViews, hardView);
+    QSharedPointer<Component> hw = createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
 
     QString swInstanceName = "software_0";
     QString softViewName = "default";
 
-    createSW("software", hwInstanceName, design, softViewName, activeViews, softView,swInstanceName);
+    createSW("software", hwInstanceName, design, softViewName, desgconf, softView,swInstanceName);
 
-    QString fileSetName = "someFileSet";
-    addFileSet(hw, fileSetName, hardView);
+    QSharedPointer<FileSet> fileSet = addFileSet(hw, "someFileSet", hardView);
 
-    QSharedPointer<FileSet> fileSet = hw->getFileSet(fileSetName);
     addFileToSet(fileSet, "array.c");
     addFileSetBuilder(fileSet, "", "cSource", "-lrt", false);
 
@@ -535,8 +484,6 @@ void tst_MakefileGenerator::hwRef()
     QSharedPointer<File> file;
     getFile(file, hw, "array.c");
     setFileBuilder(file, "", "-u", false);
-
-    desgconf->setViewConfigurations(activeViews);
 
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
@@ -556,14 +503,12 @@ void tst_MakefileGenerator::hwandswRef()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(new
-        QList<QSharedPointer<ViewConfiguration> >());
-    SWView* hardView;
-    SWView* softView;
+    QSharedPointer<SWView> hardView;
+    QSharedPointer<SWView> softView;
 
     QString hwInstanceName = "hardware_0";
     QString hardViewName = "firmware";
-    QSharedPointer<Component> hw = createHW(hwInstanceName, design, hardViewName, activeViews, hardView);
+    QSharedPointer<Component> hw = createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
 
     QString swInstanceName = "software_0";
     QString softViewName = "default";
@@ -578,7 +523,7 @@ void tst_MakefileGenerator::hwandswRef()
     getFile(hfile, hw, "harray.c");
     setFileBuilder(hfile, "", "-hu", false);
 
-    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, activeViews, softView,swInstanceName);
+    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, desgconf, softView,swInstanceName);
 
     QString sfileSetName = "softFileSet";
     addFileSet(sw, sfileSetName, softView);
@@ -592,15 +537,13 @@ void tst_MakefileGenerator::hwandswRef()
     getFile(sfile, sw, "sarray.c");
     setFileBuilder(sfile, "", "-su", false);
 
-    desgconf->setViewConfigurations(activeViews);
-
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
     MakefileGenerator generator( parser, &utilityMock_ );
 
     generator.generate(outputDir_,outputDir_,"tsydemi");
 
-    verifyOutputContains("software_0", "_OBJ= sarray.c.o harray.c.o");
+    verifyOutputContains("software_0", "_OBJ= harray.c.o sarray.c.o");
     verifyOutputContains("software_0", "EBUILDER= super_asm");
     verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hw -sw");
     verifyOutputContains("software_0", "super_asm -c -o $(ODIR)/sarray.c.o ../../sarray.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -su -sset -sw -hw");
@@ -614,19 +557,17 @@ void tst_MakefileGenerator::instanceHeaders()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(new
-        QList<QSharedPointer<ViewConfiguration> >());
-    SWView* hardView;
-    SWView* softView;
+    QSharedPointer<SWView> hardView;
+    QSharedPointer<SWView> softView;
 
     QString hwInstanceName = "hardware_0";
     QString hardViewName = "firmware";
-    createHW(hwInstanceName, design, hardViewName, activeViews, hardView);
+    createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
 
     QString swInstanceName = "software_0";
     QString softViewName = "default";
 
-    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, activeViews, softView,swInstanceName);
+    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, desgconf, softView,swInstanceName);
 
     QString fileSetName = "someFileSet";
     addFileSet(sw, fileSetName, softView);
@@ -634,16 +575,15 @@ void tst_MakefileGenerator::instanceHeaders()
     addFileToSet(fileSet, "array.c");
 
     QString topFileSetName = "software_0_headers";
-    QSharedPointer<FileSet> topFileSet = topComponent->getFileSet(topFileSetName);
+	QSharedPointer<FileSet> topFileSet = addFileSet(topComponent,topFileSetName,QSharedPointer<SWView>());
     addFileToSet(topFileSet, "array.h", "cSource", true);
+
     QString topFileSetName2 = "esa-pekka";
-    QSharedPointer<FileSet> topFileSet2 = topComponent->getFileSet(topFileSetName2);
+    QSharedPointer<FileSet> topFileSet2 = addFileSet(topComponent,topFileSetName2,QSharedPointer<SWView>());
     addFileToSet(topFileSet2, "joku.h", "cSource", true);
 
     addCmd2View(hardView, "gcc", "cSource", "-hw", false);
     addCmd2View(softView, "gcc", "cSource", "-sw", false);
-
-    desgconf->setViewConfigurations(activeViews);
 
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
@@ -659,19 +599,17 @@ void tst_MakefileGenerator::multipleFiles()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(new
-        QList<QSharedPointer<ViewConfiguration> >());
-    SWView* hardView;
-    SWView* softView;
+    QSharedPointer<SWView> hardView;
+    QSharedPointer<SWView> softView;
 
     QString hwInstanceName = "hardware_0";
     QString hardViewName = "firmware";
-    createHW(hwInstanceName, design, hardViewName, activeViews, hardView);
+    createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
 
     QString swInstanceName = "software_0";
     QString softViewName = "default";
 
-    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, activeViews, softView,swInstanceName);
+    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, desgconf, softView,swInstanceName);
 
     QString fileSetName = "someFileSet";
     addFileSet(sw, fileSetName, softView);
@@ -690,8 +628,6 @@ void tst_MakefileGenerator::multipleFiles()
     QSharedPointer<File> file;
     getFile(file, sw, "support.c");
     setFileBuilder(file, "continental", "-y", false);
-
-    desgconf->setViewConfigurations(activeViews);
 
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
@@ -715,19 +651,18 @@ void tst_MakefileGenerator::multipleFileSets()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(new
-        QList<QSharedPointer<ViewConfiguration> >());
-    SWView* hardView;
-    SWView* softView;
+    QMap<QString,QString> activeViews;
+    QSharedPointer<SWView> hardView;
+    QSharedPointer<SWView> softView;
 
     QString hwInstanceName = "hardware_0";
     QString hardViewName = "firmware";
-    createHW(hwInstanceName, design, hardViewName, activeViews, hardView);
+    createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
 
     QString swInstanceName = "software_0";
     QString softViewName = "default";
 
-    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, activeViews, softView,swInstanceName);
+    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, desgconf, softView,swInstanceName);
 
     QSharedPointer<FileSet> afileSet = addFileSet(sw, "alphaFileSet", softView);
     QSharedPointer<FileSet> bfileSet = addFileSet(sw, "betaFileSet", softView);
@@ -745,8 +680,6 @@ void tst_MakefileGenerator::multipleFileSets()
     QSharedPointer<File> file;
     getFile(file, sw, "support.c");
     setFileBuilder(file, "continental", "-y", false);
-
-    desgconf->setViewConfigurations(activeViews);
 
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
@@ -770,18 +703,16 @@ void tst_MakefileGenerator::multipleComponents()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(new
-        QList<QSharedPointer<ViewConfiguration> >());
-    SWView* hardView;
-    SWView* asoftView;
-    SWView* bsoftView;
+    QSharedPointer<SWView> hardView;
+    QSharedPointer<SWView> asoftView;
+    QSharedPointer<SWView> bsoftView;
 
     QString hwInstanceName = "hardware_0";
     QString hardViewName = "firmware";
-    createHW(hwInstanceName, design, hardViewName, activeViews, hardView);
+    createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
 
-    QSharedPointer<Component> asw = createSW("crapware", hwInstanceName, design, "default", activeViews, asoftView,"crapware_0");
-    QSharedPointer<Component> bsw = createSW("stackware", hwInstanceName, design, "default", activeViews, bsoftView,"stackware_0");
+    QSharedPointer<Component> asw = createSW("crapware", hwInstanceName, design, "default", desgconf, asoftView,"crapware_0");
+    QSharedPointer<Component> bsw = createSW("stackware", hwInstanceName, design, "default", desgconf, bsoftView,"stackware_0");
 
     QSharedPointer<FileSet> afileSet = addFileSet(asw, "alphaFileSet", asoftView);
     QSharedPointer<FileSet> bfileSet = addFileSet(bsw, "betaFileSet", bsoftView);
@@ -799,8 +730,6 @@ void tst_MakefileGenerator::multipleComponents()
     QSharedPointer<File> file;
     getFile(file, asw, "support.c");
     setFileBuilder(file, "continental", "-y", false);
-
-    desgconf->setViewConfigurations(activeViews);
 
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
@@ -828,18 +757,16 @@ void tst_MakefileGenerator::noFilesComponent()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(new
-        QList<QSharedPointer<ViewConfiguration> >());
-    SWView* hardView;
-    SWView* asoftView;
-    SWView* bsoftView;
+    QSharedPointer<SWView> hardView;
+    QSharedPointer<SWView> asoftView;
+    QSharedPointer<SWView> bsoftView;
 
     QString hwInstanceName = "hardware_0";
     QString hardViewName = "firmware";
-    createHW(hwInstanceName, design, hardViewName, activeViews, hardView);
+    createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
 
-    QSharedPointer<Component> asw = createSW("whatware", hwInstanceName, design, "default", activeViews, asoftView,"whatware_0");
-    QSharedPointer<Component> bsw = createSW("stackware", hwInstanceName, design, "default", activeViews, bsoftView,"stackware_0");
+    QSharedPointer<Component> asw = createSW("whatware", hwInstanceName, design, "default", desgconf, asoftView,"whatware_0");
+    QSharedPointer<Component> bsw = createSW("stackware", hwInstanceName, design, "default", desgconf, bsoftView,"stackware_0");
 
     QSharedPointer<FileSet> afileSet = addFileSet(asw, "alphaFileSet", asoftView);
     QSharedPointer<FileSet> bfileSet = addFileSet(bsw, "betaFileSet", bsoftView);
@@ -850,8 +777,6 @@ void tst_MakefileGenerator::noFilesComponent()
 
     addCmd2View(hardView, "hopo", "cSource", "-hw", false);
     addCmd2View(bsoftView, "asm-meister", "cSource", "-bmw", false);
-
-    desgconf->setViewConfigurations(activeViews);
 
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
@@ -877,18 +802,16 @@ void tst_MakefileGenerator::multipleHardWare()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(new
-        QList<QSharedPointer<ViewConfiguration> >());
-    SWView* ahardView;
-    SWView* bhardView;
-    SWView* asoftView;
-    SWView* bsoftView;
+    QSharedPointer<SWView> ahardView;
+    QSharedPointer<SWView> bhardView;
+    QSharedPointer<SWView> asoftView;
+    QSharedPointer<SWView> bsoftView;
 
-    createHW("Lenit_0", design, "firmware", activeViews, ahardView, "Lenit");
-    createHW("MAR_0", design, "firmware", activeViews, bhardView, "MAR");
+    createHW("Lenit_0", design, "firmware", desgconf, ahardView, "Lenit");
+    createHW("MAR_0", design, "firmware", desgconf, bhardView, "MAR");
 
-    QSharedPointer<Component> asw = createSW("crapware", "Lenit_0", design, "default", activeViews, asoftView,"crapware_0");
-    QSharedPointer<Component> bsw = createSW("stackware", "MAR_0", design, "default", activeViews, bsoftView,"stackware_0");
+    QSharedPointer<Component> asw = createSW("crapware", "Lenit_0", design, "default", desgconf, asoftView,"crapware_0");
+    QSharedPointer<Component> bsw = createSW("stackware", "MAR_0", design, "default", desgconf, bsoftView,"stackware_0");
 
     QSharedPointer<FileSet> afileSet = addFileSet(asw, "alphaFileSet", asoftView);
     QSharedPointer<FileSet> bfileSet = addFileSet(bsw, "betaFileSet", bsoftView);
@@ -909,8 +832,6 @@ void tst_MakefileGenerator::multipleHardWare()
     QSharedPointer<File> file;
     getFile(file, asw, "support.c");
     setFileBuilder(file, "continental", "-y", false);
-
-    desgconf->setViewConfigurations(activeViews);
 
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
@@ -938,18 +859,16 @@ void tst_MakefileGenerator::multipleHardWareMedRefs()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(new
-        QList<QSharedPointer<ViewConfiguration> >());
-    SWView* ahardView;
-    SWView* bhardView;
-    SWView* asoftView;
-    SWView* bsoftView;
+    QSharedPointer<SWView> ahardView;
+    QSharedPointer<SWView> bhardView;
+    QSharedPointer<SWView> asoftView;
+    QSharedPointer<SWView> bsoftView;
 
-    QSharedPointer<Component> hw = createHW("Lenit_0", design, "firmware", activeViews, ahardView, "Lenit");
-    createHW("MAR_0", design, "firmware", activeViews, bhardView, "MAR");
+    QSharedPointer<Component> hw = createHW("Lenit_0", design, "firmware", desgconf, ahardView, "Lenit");
+    createHW("MAR_0", design, "firmware", desgconf, bhardView, "MAR");
 
-    QSharedPointer<Component> asw = createSW("crapware", "Lenit_0", design, "default", activeViews, asoftView,"crapware_0");
-    QSharedPointer<Component> bsw = createSW("stackware", "MAR_0", design, "default", activeViews, bsoftView,"stackware_0");
+    QSharedPointer<Component> asw = createSW("crapware", "Lenit_0", design, "default", desgconf, asoftView,"crapware_0");
+    QSharedPointer<Component> bsw = createSW("stackware", "MAR_0", design, "default", desgconf, bsoftView,"stackware_0");
 
     QSharedPointer<FileSet> afileSet = addFileSet(asw, "alphaFileSet", asoftView);
     QSharedPointer<FileSet> bfileSet = addFileSet(bsw, "betaFileSet", bsoftView);
@@ -977,8 +896,6 @@ void tst_MakefileGenerator::multipleHardWareMedRefs()
     getFile(file, asw, "support.c");
     setFileBuilder(file, "continental", "-y", false);
 
-    desgconf->setViewConfigurations(activeViews);
-
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
     MakefileGenerator generator( parser, &utilityMock_ );
@@ -987,7 +904,7 @@ void tst_MakefileGenerator::multipleHardWareMedRefs()
 
     verifyOutputContains("crapware_0", "EBUILDER= hopo");
     verifyOutputContains("crapware_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -ahw");
-    verifyOutputContains("crapware_0", "_OBJ= array.c.o support.c.o");
+    verifyOutputContains("crapware_0", "_OBJ= harray.c.o array.c.o support.c.o");
     verifyOutputContains("crapware_0", "hopo -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -ahw");
     verifyOutputContains("crapware_0", "continental -c -o $(ODIR)/support.c.o ../../support.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -y -ahw");
 
@@ -1005,11 +922,9 @@ void tst_MakefileGenerator::noHardWare()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(new
-        QList<QSharedPointer<ViewConfiguration> >());
-    SWView* softView;
+    QSharedPointer<SWView> softView;
 
-    QSharedPointer<Component> sw = createSW("software", "", design, "default", activeViews, softView,"software_0");
+    QSharedPointer<Component> sw = createSW("software", "", design, "default", desgconf, softView,"software_0");
 
     QString fileSetName = "someFileSet";
     addFileSet(sw, fileSetName, softView);
@@ -1017,8 +932,6 @@ void tst_MakefileGenerator::noHardWare()
     QSharedPointer<FileSet> fileSet = sw->getFileSet(fileSetName);
     addFileToSet(fileSet, "array.c");
     addCmd2View(softView, "gcc", "cSource", "-sw", false);
-
-    desgconf->setViewConfigurations(activeViews);
 
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
@@ -1040,19 +953,17 @@ void tst_MakefileGenerator::noFileType()
 	QSharedPointer<DesignConfiguration> desgconf;
 	QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(new
-        QList<QSharedPointer<ViewConfiguration> >());
-	SWView* hardView;
-	SWView* softView;
+	QSharedPointer<SWView> hardView;
+	QSharedPointer<SWView> softView;
 
 	QString hwInstanceName = "hardware_0";
 	QString hardViewName = "firmware";
-	createHW(hwInstanceName, design, hardViewName, activeViews, hardView);
+	createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
 
 	QString swInstanceName = "software_0";
 	QString softViewName = "default";
 
-	QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, activeViews, softView,swInstanceName);
+	QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, desgconf, softView,swInstanceName);
 
 	QString fileSetName = "someFileSet";
 	addFileSet(sw, fileSetName, softView);
@@ -1071,8 +982,6 @@ void tst_MakefileGenerator::noFileType()
 	QSharedPointer<File> file;
 	getFile(file, sw, "support.c");
 	setFileBuilder(file, "continental", "-y", false);
-
-	desgconf->setViewConfigurations(activeViews);
 
 	MakefileParser parser;
 	parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
@@ -1095,28 +1004,22 @@ void tst_MakefileGenerator::multipleInstances()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(new
-        QList<QSharedPointer<ViewConfiguration> >());
-    SWView* hardView;
-    SWView* softView;
+    QSharedPointer<SWView> hardView;
+    QSharedPointer<SWView> softView;
 
     QString hwInstanceName = "hardware_0";
     QString hardViewName = "firmware";
-    createHW(hwInstanceName, design, hardViewName, activeViews, hardView);
+    createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
 
-    QSharedPointer<Component> sw = createSW("stackware", hwInstanceName, design, "default", activeViews, softView,"stackware_0");
+    QSharedPointer<Component> sw = createSW("stackware", hwInstanceName, design, "default", desgconf, softView,"stackware_0");
 
-    QSharedPointer<ConfigurableVLNVReference> swvlvnv(new ConfigurableVLNVReference(*sw->getVlnv()));
-    QSharedPointer<SWInstance> softInstance(new SWInstance());
+    QSharedPointer<ConfigurableVLNVReference> swvlvnv( new ConfigurableVLNVReference(sw->getVlnv()) );
+    QSharedPointer<SWInstance> softInstance(new SWInstance);
     softInstance->setInstanceName("stackware_1");
     softInstance->setComponentRef(swvlvnv);
     softInstance->setMapping(hwInstanceName);
 
-    QSharedPointer<ViewConfiguration> activeView(new ViewConfiguration());
-    activeView->setInstanceName("stackware_1");
-    activeView->setViewReference("default");
-
-    activeViews->append(activeView);
+    desgconf->addViewConfiguration("stackware_1","default");
 
     QList<QSharedPointer<SWInstance> > swInstances = design->getSWInstances();
     swInstances.append(softInstance);
@@ -1132,8 +1035,6 @@ void tst_MakefileGenerator::multipleInstances()
 
     addCmd2View(hardView, "hopo", "cSource", "-hw", false);
     addCmd2View(softView, "asm-meister", "cSource", "-bmw", false);
-
-    desgconf->setViewConfigurations(activeViews);
 
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
@@ -1155,34 +1056,22 @@ void tst_MakefileGenerator::apiUsage()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(new
-        QList<QSharedPointer<ViewConfiguration> >());
-    SWView* hardView;
-    SWView* asoftView;
-    SWView* bsoftView;
+    QSharedPointer<SWView> hardView;
+    QSharedPointer<SWView> asoftView;
+    QSharedPointer<SWView> bsoftView;
 
     QString hwInstanceName = "hardware_0";
     QString hardViewName = "firmware";
-    createHW(hwInstanceName, design, hardViewName, activeViews, hardView);
+    createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
 
-    QSharedPointer<Component> asw = createSW("crapware", hwInstanceName, design, "default", activeViews, asoftView,"crapware_0");
-    QSharedPointer<ApiInterface> apina = QSharedPointer<ApiInterface>(new ApiInterface );
-    apina->setDependencyDirection(DEPENDENCY_REQUESTER);
-    apina->setName("apina");
-    asw->addApiInterface( apina );
+	QSharedPointer<Component> asw = createSW("crapware", hwInstanceName, design, "default", desgconf, asoftView,"crapware_0");
+	addAPI(asw, "apina", DEPENDENCY_REQUESTER);
 
-    QSharedPointer<Component> bsw = createSW("stackware", hwInstanceName, design, "default", activeViews, bsoftView,"stackware_0");
-    QSharedPointer<ApiInterface> banaani = QSharedPointer<ApiInterface>(new ApiInterface );
-    banaani->setDependencyDirection(DEPENDENCY_PROVIDER);
-    banaani->setName("banaani");
-    bsw->addApiInterface( banaani );
+	QSharedPointer<Component> bsw = createSW("stackware", hwInstanceName, design, "default", desgconf, bsoftView,"stackware_0");
+	addAPI(bsw, "banaani", DEPENDENCY_PROVIDER);
 
     QList<QSharedPointer<ApiInterconnection> > deps = design->getApiConnections();
-    QSharedPointer<ApiInterconnection> dependency(new ApiInterconnection());
-    dependency->setInterface1(QSharedPointer<ActiveInterface>(new ActiveInterface("crapware_0","apina")));
-    dependency->setInterface2(QSharedPointer<ActiveInterface>(new ActiveInterface("stackware_0","banaani")));
-    deps.append(dependency);
-    design->setApiConnections(deps);
+	addAPIConnection(design,"crapware_0","apina","stackware_0","banaani");
 
     QSharedPointer<FileSet> afileSet = addFileSet(asw, "alphaFileSet", asoftView);
     QSharedPointer<FileSet> bfileSet = addFileSet(bsw, "betaFileSet", bsoftView);
@@ -1201,10 +1090,15 @@ void tst_MakefileGenerator::apiUsage()
     getFile(file, asw, "support.c");
     setFileBuilder(file, "continental", "-y", false);
 
-    desgconf->setViewConfigurations(activeViews);
-
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
+
+	const QList<MakefileParser::MakeFileData> datas = parser.getParsedData();
+	QCOMPARE( datas.size(), 1 );
+	MakefileParser::MakeFileData data = datas.first();
+	QCOMPARE( data.swObjects.size(), 6 );
+
+
     MakefileGenerator generator( parser, &utilityMock_ );
 
     generator.generate(outputDir_,outputDir_,"tsydemi");
@@ -1226,50 +1120,28 @@ void tst_MakefileGenerator::threeLevelStack()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(new
-        QList<QSharedPointer<ViewConfiguration> >());
-    SWView* hardView;
-    SWView* asoftView;
-    SWView* bsoftView;
-    SWView* gsoftView;
+    QSharedPointer<SWView> hardView;
+    QSharedPointer<SWView> asoftView;
+    QSharedPointer<SWView> bsoftView;
+    QSharedPointer<SWView> gsoftView;
 
     QString hwInstanceName = "hardware_0";
     QString hardViewName = "firmware";
-    createHW(hwInstanceName, design, hardViewName, activeViews, hardView);
+    createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
 
-    QSharedPointer<Component> asw = createSW("crapware", hwInstanceName, design, "default", activeViews, asoftView,"crapware_0");
-    QSharedPointer<ApiInterface> apina = QSharedPointer<ApiInterface>(new ApiInterface );
-    apina->setDependencyDirection(DEPENDENCY_REQUESTER);
-    apina->setName("apina");
-    asw->addApiInterface( apina );
+	QSharedPointer<Component> asw = createSW("crapware", hwInstanceName, design, "default", desgconf, asoftView,"crapware_0");
+	addAPI(asw, "apina", DEPENDENCY_REQUESTER);
 
-    QSharedPointer<Component> bsw = createSW("stackware", hwInstanceName, design, "default", activeViews, bsoftView,"stackware_0");
-    QSharedPointer<ApiInterface> banaani = QSharedPointer<ApiInterface>(new ApiInterface );
-    banaani->setDependencyDirection(DEPENDENCY_PROVIDER);
-    banaani->setName("banaani");
-    bsw->addApiInterface( banaani );
+	QSharedPointer<Component> bsw = createSW("stackware", hwInstanceName, design, "default", desgconf, bsoftView,"stackware_0");
+	addAPI(bsw, "banaani", DEPENDENCY_PROVIDER);
 
-    QSharedPointer<Component> gsw = createSW("driver", hwInstanceName, design, "default", activeViews, gsoftView,"driver_0");
+    QSharedPointer<Component> gsw = createSW("driver", hwInstanceName, design, "default", desgconf, gsoftView,"driver_0");
 
-    QSharedPointer<ApiInterface> stackDriver = QSharedPointer<ApiInterface>(new ApiInterface );
-    stackDriver->setDependencyDirection(DEPENDENCY_REQUESTER);
-    stackDriver->setName("stackDriver");
-    bsw->addApiInterface( stackDriver );
-    QSharedPointer<ApiInterface> driverStack = QSharedPointer<ApiInterface>(new ApiInterface );
-    driverStack->setDependencyDirection(DEPENDENCY_PROVIDER);
-    driverStack->setName("driverStack");
-    gsw->addApiInterface( driverStack );
+	addAPI(bsw, "stackDriver", DEPENDENCY_REQUESTER);
+	addAPI(gsw, "driverStack", DEPENDENCY_PROVIDER);
 
-    QList<QSharedPointer<ApiInterconnection> > deps = design->getApiConnections();
-    QSharedPointer<ApiInterconnection> dependency1(new ApiInterconnection());
-    dependency1->setInterface1(QSharedPointer<ActiveInterface>(new ActiveInterface("crapware_0","apina")));
-    dependency1->setInterface2(QSharedPointer<ActiveInterface>(new ActiveInterface("stackware_0","banaani")));
-    deps.append(dependency1);
-    QSharedPointer<ApiInterconnection> dependency2(new ApiInterconnection());
-    dependency2->setInterface1(QSharedPointer<ActiveInterface>(new ActiveInterface("stackware_0","stackDriver")));
-    dependency2->setInterface2(QSharedPointer<ActiveInterface>(new ActiveInterface("driver_0","driverStack")));
-    deps.append(dependency2);
-    design->setApiConnections(deps);
+	addAPIConnection(design, "crapware_0","apina","stackware_0","banaani");
+	addAPIConnection(design, "stackware_0","stackDriver","driver_0","driverStack");
 
     QSharedPointer<FileSet> afileSet = addFileSet(asw, "alphaFileSet", asoftView);
     QSharedPointer<FileSet> bfileSet = addFileSet(bsw, "betaFileSet", bsoftView);
@@ -1291,8 +1163,6 @@ void tst_MakefileGenerator::threeLevelStack()
     getFile(file, asw, "support.c");
     setFileBuilder(file, "continental", "-y", false);
     addFileSetBuilder(bfileSet,"jaska","cSource","-g",false);
-
-    desgconf->setViewConfigurations(activeViews);
 
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
@@ -1319,63 +1189,30 @@ void tst_MakefileGenerator::fullCircularapiUsage()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(new
-        QList<QSharedPointer<ViewConfiguration> >());
-    SWView* hardView;
-    SWView* asoftView;
-    SWView* bsoftView;
-    SWView* gsoftView;
+    QSharedPointer<SWView> hardView;
+    QSharedPointer<SWView> asoftView;
+    QSharedPointer<SWView> bsoftView;
+    QSharedPointer<SWView> gsoftView;
 
     QString hwInstanceName = "hardware_0";
     QString hardViewName = "firmware";
-    createHW(hwInstanceName, design, hardViewName, activeViews, hardView);
+    createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
 
-    QSharedPointer<Component> asw = createSW("topware", hwInstanceName, design, "default", activeViews, asoftView,"topware_0");
-    QSharedPointer<ApiInterface> apina = QSharedPointer<ApiInterface>(new ApiInterface );
-    apina->setDependencyDirection(DEPENDENCY_REQUESTER);
-    apina->setName("apina");
-    asw->addApiInterface( apina );
+	QSharedPointer<Component> asw = createSW("topware", hwInstanceName, design, "default", desgconf, asoftView,"topware_0");
+	addAPI(asw, "apina", DEPENDENCY_REQUESTER);
 
-    QSharedPointer<Component> bsw = createSW("stackware", hwInstanceName, design, "default", activeViews, bsoftView,"stackware_0");
-    QSharedPointer<ApiInterface> banaani = QSharedPointer<ApiInterface>(new ApiInterface );
-    banaani->setDependencyDirection(DEPENDENCY_PROVIDER);
-    banaani->setName("banaani");
-    bsw->addApiInterface( banaani );
+	QSharedPointer<Component> bsw = createSW("stackware", hwInstanceName, design, "default", desgconf, bsoftView,"stackware_0");
+	addAPI(asw, "banaani", DEPENDENCY_PROVIDER);
 
-    QSharedPointer<Component> gsw = createSW("driver", hwInstanceName, design, "default", activeViews, gsoftView,"driver_0");
+	QSharedPointer<Component> gsw = createSW("driver", hwInstanceName, design, "default", desgconf, gsoftView,"driver_0");
+	addAPI(bsw, "stackDriver", DEPENDENCY_REQUESTER);
+	addAPI(gsw, "driverStack", DEPENDENCY_PROVIDER);
+	addAPI(gsw, "bottomUp", DEPENDENCY_REQUESTER);
+	addAPI(asw, "upBottom", DEPENDENCY_PROVIDER);
 
-    QSharedPointer<ApiInterface> stackDriver = QSharedPointer<ApiInterface>(new ApiInterface );
-    stackDriver->setDependencyDirection(DEPENDENCY_REQUESTER);
-    stackDriver->setName("stackDriver");
-    bsw->addApiInterface( stackDriver );
-    QSharedPointer<ApiInterface> driverStack = QSharedPointer<ApiInterface>(new ApiInterface );
-    driverStack->setDependencyDirection(DEPENDENCY_PROVIDER);
-    driverStack->setName("driverStack");
-    gsw->addApiInterface( driverStack );
-
-    QSharedPointer<ApiInterface> bottomUp = QSharedPointer<ApiInterface>(new ApiInterface );
-    bottomUp->setDependencyDirection(DEPENDENCY_REQUESTER);
-    bottomUp->setName("bottomUp");
-    gsw->addApiInterface( bottomUp );
-    QSharedPointer<ApiInterface> upBottom = QSharedPointer<ApiInterface>(new ApiInterface );
-    upBottom->setDependencyDirection(DEPENDENCY_PROVIDER);
-    upBottom->setName("upBottom");
-    asw->addApiInterface( upBottom );
-
-    QList<QSharedPointer<ApiInterconnection> > deps = design->getApiConnections();
-    QSharedPointer<ApiInterconnection> dependency1(new ApiInterconnection());
-    dependency1->setInterface1(QSharedPointer<ActiveInterface>(new ActiveInterface("topware_0","apina")));
-    dependency1->setInterface2(QSharedPointer<ActiveInterface>(new ActiveInterface("stackware_0","banaani")));
-    deps.append(dependency1);
-    QSharedPointer<ApiInterconnection> dependency2(new ApiInterconnection());
-    dependency2->setInterface1(QSharedPointer<ActiveInterface>(new ActiveInterface("stackware_0","stackDriver")));
-    dependency2->setInterface2(QSharedPointer<ActiveInterface>(new ActiveInterface("driver_0","driverStack")));
-    deps.append(dependency2);
-    QSharedPointer<ApiInterconnection> dependency3(new ApiInterconnection());
-    dependency3->setInterface1(QSharedPointer<ActiveInterface>(new ActiveInterface("topware_0","upBottom")));
-    dependency3->setInterface2(QSharedPointer<ActiveInterface>(new ActiveInterface("driver_0","bottomUp")));
-    deps.append(dependency3);
-    design->setApiConnections(deps);
+	addAPIConnection(design, "topware_0","apina","stackware_0","banaani");
+	addAPIConnection(design, "stackware_0","stackDriver","driver_0","driverStack");
+	addAPIConnection(design, "topware_0","upBottom","driver_0","bottomUp");
 
     QSharedPointer<FileSet> afileSet = addFileSet(asw, "alphaFileSet", asoftView);
     QSharedPointer<FileSet> bfileSet = addFileSet(bsw, "betaFileSet", bsoftView);
@@ -1397,8 +1234,6 @@ void tst_MakefileGenerator::fullCircularapiUsage()
     getFile(file, asw, "support.c");
     setFileBuilder(file, "continental", "-y", false);
     addFileSetBuilder(bfileSet,"jaska","cSource","-g",false);
-
-    desgconf->setViewConfigurations(activeViews);
 
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
@@ -1418,63 +1253,38 @@ void tst_MakefileGenerator::circularapiUsage()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews(new
-        QList<QSharedPointer<ViewConfiguration> >());
-    SWView* hardView;
-    SWView* asoftView;
-    SWView* bsoftView;
-    SWView* gsoftView;
+    QSharedPointer<SWView> hardView;
+    QSharedPointer<SWView> asoftView;
+    QSharedPointer<SWView> bsoftView;
+    QSharedPointer<SWView> gsoftView;
 
     QString hwInstanceName = "hardware_0";
     QString hardViewName = "firmware";
-    createHW(hwInstanceName, design, hardViewName, activeViews, hardView);
+    createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
 
-    QSharedPointer<Component> asw = createSW("crapware", hwInstanceName, design, "default", activeViews, asoftView,"crapware_0");
-    QSharedPointer<ApiInterface> apina = QSharedPointer<ApiInterface>(new ApiInterface );
-    apina->setDependencyDirection(DEPENDENCY_REQUESTER);
-    apina->setName("apina");
-    asw->addApiInterface( apina );
+    QSharedPointer<Component> asw = createSW("crapware", hwInstanceName, design, "default", desgconf, asoftView,"crapware_0");
+	addAPI(asw, "apina", DEPENDENCY_REQUESTER);
 
-    QSharedPointer<Component> bsw = createSW("stackware", hwInstanceName, design, "default", activeViews, bsoftView,"stackware_0");
-    QSharedPointer<ApiInterface> banaani = QSharedPointer<ApiInterface>(new ApiInterface );
-    banaani->setDependencyDirection(DEPENDENCY_PROVIDER);
-    banaani->setName("banaani");
-    bsw->addApiInterface( banaani );
+	QSharedPointer<Component> bsw = createSW("stackware", hwInstanceName, design, "default", desgconf, bsoftView,"stackware_0");
+	addAPI(bsw, "banaani", DEPENDENCY_PROVIDER);
 
-    QSharedPointer<Component> gsw = createSW("driver", hwInstanceName, design, "default", activeViews, gsoftView,"driver_0");
+    QSharedPointer<Component> gsw = createSW("driver", hwInstanceName, design, "default", desgconf, gsoftView,"driver_0");
 
     QSharedPointer<ApiInterface> stackDriver = QSharedPointer<ApiInterface>(new ApiInterface );
-    stackDriver->setDependencyDirection(DEPENDENCY_REQUESTER);
-    stackDriver->setName("stackDriver");
-    bsw->addApiInterface( stackDriver );
-    QSharedPointer<ApiInterface> driverStack = QSharedPointer<ApiInterface>(new ApiInterface );
-    driverStack->setDependencyDirection(DEPENDENCY_PROVIDER);
-    driverStack->setName("driverStack");
-    gsw->addApiInterface( driverStack );
+	addAPI(bsw, "stackDriver", DEPENDENCY_REQUESTER);
 
-    QSharedPointer<ApiInterface> bottomUp = QSharedPointer<ApiInterface>(new ApiInterface );
-    bottomUp->setDependencyDirection(DEPENDENCY_REQUESTER);
-    bottomUp->setName("bottomUp");
-    gsw->addApiInterface( bottomUp );
-    QSharedPointer<ApiInterface> upBottom = QSharedPointer<ApiInterface>(new ApiInterface );
-    upBottom->setDependencyDirection(DEPENDENCY_PROVIDER);
-    upBottom->setName("upBottom");
-    bsw->addApiInterface( upBottom );
+	QSharedPointer<ApiInterface> driverStack = QSharedPointer<ApiInterface>(new ApiInterface );
+	addAPI(gsw, "driverStack", DEPENDENCY_PROVIDER);
 
-    QList<QSharedPointer<ApiInterconnection> > deps = design->getApiConnections();
-    QSharedPointer<ApiInterconnection> dependency1(new ApiInterconnection());
-    dependency1->setInterface1(QSharedPointer<ActiveInterface>(new ActiveInterface("crapware_0","apina")));
-    dependency1->setInterface2(QSharedPointer<ActiveInterface>(new ActiveInterface("stackware_0","banaani")));
-    deps.append(dependency1);
-    QSharedPointer<ApiInterconnection> dependency2(new ApiInterconnection());
-    dependency2->setInterface1(QSharedPointer<ActiveInterface>(new ActiveInterface("stackware_0","stackDriver")));
-    dependency2->setInterface2(QSharedPointer<ActiveInterface>(new ActiveInterface("driver_0","driverStack")));
-    deps.append(dependency2);
-    QSharedPointer<ApiInterconnection> dependency3(new ApiInterconnection());
-    dependency3->setInterface1(QSharedPointer<ActiveInterface>(new ActiveInterface("stackware_0","upBottom")));
-    dependency3->setInterface2(QSharedPointer<ActiveInterface>(new ActiveInterface("driver_0","bottomUp")));
-    deps.append(dependency3);
-    design->setApiConnections(deps);
+	QSharedPointer<ApiInterface> bottomUp = QSharedPointer<ApiInterface>(new ApiInterface );
+	addAPI(gsw, "bottomUp", DEPENDENCY_REQUESTER);
+
+	QSharedPointer<ApiInterface> upBottom = QSharedPointer<ApiInterface>(new ApiInterface );
+	addAPI(bsw, "upBottom", DEPENDENCY_PROVIDER);;
+
+	addAPIConnection(design, "crapware_0","apina","stackware_0","banaani");
+	addAPIConnection(design, "stackware_0","stackDriver","driver_0","driverStack");
+	addAPIConnection(design, "stackware_0","upBottom","driver_0","bottomUp");
 
     QSharedPointer<FileSet> afileSet = addFileSet(asw, "alphaFileSet", asoftView);
     QSharedPointer<FileSet> bfileSet = addFileSet(bsw, "betaFileSet", bsoftView);
@@ -1497,8 +1307,6 @@ void tst_MakefileGenerator::circularapiUsage()
     setFileBuilder(file, "continental", "-y", false);
     addFileSetBuilder(bfileSet,"jaska","cSource","-g",false);
 
-    desgconf->setViewConfigurations(activeViews);
-
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
     MakefileGenerator generator( parser, &utilityMock_ );
@@ -1517,6 +1325,195 @@ void tst_MakefileGenerator::circularapiUsage()
     verifyOutputContains("crapware_0", "hopo -c -o $(ODIR)/ok.c.o ../../ok.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hw");
 }
 
+// Same file in separate executables should not cause conflict
+void tst_MakefileGenerator::sameFileSeparateExe()
+{
+	QSharedPointer<Design> design;
+	QSharedPointer<DesignConfiguration> desgconf;
+	QSharedPointer<Component> topComponent = createDesign(design, desgconf);
+
+	QSharedPointer<SWView> hardView;
+	QSharedPointer<SWView> asoftView;
+	QSharedPointer<SWView> bsoftView;
+
+	QString hwInstanceName = "hardware_0";
+	QString hardViewName = "firmware";
+	createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
+
+	QSharedPointer<Component> asw = createSW("crapware", hwInstanceName, design, "default", desgconf, asoftView,"crapware_0");
+	QSharedPointer<Component> bsw = createSW("stackware", hwInstanceName, design, "default", desgconf, bsoftView,"stackware_0");
+
+	QSharedPointer<FileSet> afileSet = addFileSet(asw, "alphaFileSet", asoftView);
+	QSharedPointer<FileSet> bfileSet = addFileSet(bsw, "betaFileSet", bsoftView);
+
+	addFileToSet(afileSet, "array.c");
+	addFileToSet(afileSet, "support.c");
+	addFileToSet(bfileSet, "array.c");
+	addFileToSet(bfileSet, "support.c");
+
+	addCmd2View(hardView, "hopo", "cSource", "-hw", false);
+	addCmd2View(bsoftView, "asm-meister", "cSource", "-bmw", false);
+
+	MakefileParser parser;
+	parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
+
+	QCOMPARE( parser.findConflicts().size(), 0 );
+}
+
+// Must detect if the same file is used by multiple component instances or file sets!
+void tst_MakefileGenerator::sameFileDiffCompiler()
+{
+	QSharedPointer<Design> design;
+	QSharedPointer<DesignConfiguration> desgconf;
+	QSharedPointer<Component> topComponent = createDesign(design, desgconf);
+
+	QSharedPointer<SWView> hardView;
+	QSharedPointer<SWView> softView;
+
+	QString hwInstanceName = "hardware_0";
+	QString hardViewName = "firmware";
+	createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
+
+	QString swInstanceName = "software_0";
+	QString softViewName = "default";
+
+	QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, desgconf, softView,swInstanceName);
+
+	QSharedPointer<FileSet> afileSet = addFileSet(sw, "alphaFileSet", softView);
+	QSharedPointer<FileSet> bfileSet = addFileSet(sw, "betaFileSet", softView);
+
+	addFileToSet(afileSet, "array.c");
+	addFileToSet(afileSet, "support.c");
+	addFileToSet(bfileSet, "array.c");
+	addFileToSet(bfileSet, "support.c");
+
+	addCmd2View(softView, "gcc", "cSource", "-sw", false);
+
+	addFileSetBuilder(afileSet, "javac -beef", "cSource", "-lrt -pthread", false);
+	addFileSetBuilder(bfileSet, "", "cSource", "-pthread -lrt", false);
+
+	MakefileParser parser;
+	parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
+
+	QVector<QSet<QSharedPointer<MakefileParser::MakeObjectData> > > conflicts = parser.findConflicts();
+
+	QCOMPARE( conflicts.size(), 2 );
+
+	QCOMPARE( conflicts.first().size(), 2 );
+	QCOMPARE( conflicts.last().size(), 2 );
+	QSharedPointer<MakefileParser::MakeObjectData> eka = *(conflicts.first().begin());
+	QSharedPointer<MakefileParser::MakeObjectData> toka = *(conflicts.first().end() - 1);
+	QCOMPARE( eka->path, toka->path );
+	QCOMPARE( eka->fileName, toka->fileName );
+
+	QCOMPARE( eka->fileName, QString("array.c") );
+
+	eka = *(conflicts.last().begin());
+	toka = *(conflicts.last().end() - 1);
+	QCOMPARE( eka->path, toka->path );
+	QCOMPARE( eka->fileName, toka->fileName );
+
+	QCOMPARE( eka->fileName, QString("support.c") );
+}
+
+// Must detect if the same file is used by multiple component instances or file sets!
+void tst_MakefileGenerator::sameFileDiffFlags()
+{
+	QSharedPointer<Design> design;
+	QSharedPointer<DesignConfiguration> desgconf;
+	QSharedPointer<Component> topComponent = createDesign(design, desgconf);
+
+	QSharedPointer<SWView> hardView;
+	QSharedPointer<SWView> softView;
+
+	QString hwInstanceName = "hardware_0";
+	QString hardViewName = "firmware";
+	createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
+
+	QString swInstanceName = "software_0";
+	QString softViewName = "default";
+
+	QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, desgconf, softView,swInstanceName);
+
+	QSharedPointer<FileSet> afileSet = addFileSet(sw, "alphaFileSet", softView);
+	QSharedPointer<FileSet> bfileSet = addFileSet(sw, "betaFileSet", softView);
+
+	addFileToSet(afileSet, "array.c");
+	addFileToSet(afileSet, "support.c");
+	addFileToSet(bfileSet, "array.c");
+	addFileToSet(bfileSet, "support.c");
+
+	addCmd2View(hardView, "gcc", "cSource", "-hw", false);
+	addCmd2View(softView, "gcc", "cSource", "-sw", false);
+
+	addFileSetBuilder(afileSet, "javac -beef", "cSource", "-lrt -pthread", false);
+	addFileSetBuilder(bfileSet, "javac -beef", "cSource", "-pthread", false);
+
+	MakefileParser parser;
+	parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
+
+	QVector<QSet<QSharedPointer<MakefileParser::MakeObjectData> > > conflicts = parser.findConflicts();
+
+	QCOMPARE( conflicts.size(), 2 );
+
+	QCOMPARE( conflicts.first().size(), 2 );
+	QCOMPARE( conflicts.last().size(), 2 );
+	QSharedPointer<MakefileParser::MakeObjectData> eka = *(conflicts.first().begin());
+	QSharedPointer<MakefileParser::MakeObjectData> toka = *(conflicts.first().end() - 1);
+	QCOMPARE( eka->path, toka->path );
+	QCOMPARE( eka->fileName, toka->fileName );
+
+	QCOMPARE( eka->fileName, QString("array.c") );
+
+	eka = *(conflicts.last().begin());
+	toka = *(conflicts.last().end() - 1);
+	QCOMPARE( eka->path, toka->path );
+	QCOMPARE( eka->fileName, toka->fileName );
+
+	QCOMPARE( eka->fileName, QString("support.c") );
+}
+
+// If the files are completely same, that is, have the same flags, compiler, and include status, no conflict.
+void tst_MakefileGenerator::sameFile()
+{
+	QSharedPointer<Design> design;
+	QSharedPointer<DesignConfiguration> desgconf;
+	QSharedPointer<Component> topComponent = createDesign(design, desgconf);
+
+	QSharedPointer<SWView> hardView;
+	QSharedPointer<SWView> softView;
+
+	QString hwInstanceName = "hardware_0";
+	QString hardViewName = "firmware";
+	createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
+
+	QString swInstanceName = "software_0";
+	QString softViewName = "default";
+
+	QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, desgconf, softView,swInstanceName);
+
+	QSharedPointer<FileSet> afileSet = addFileSet(sw, "alphaFileSet", softView);
+	QSharedPointer<FileSet> bfileSet = addFileSet(sw, "betaFileSet", softView);
+
+	addFileToSet(afileSet, "array.c");
+	addFileToSet(afileSet, "support.c", "cSource", true);
+	addFileToSet(bfileSet, "array.c");
+	addFileToSet(bfileSet, "support.c", "cSource", true);
+
+	addCmd2View(hardView, "gcc", "cSource", "-hw", false);
+	addCmd2View(softView, "gcc", "cSource", "-sw", false);
+
+	addFileSetBuilder(afileSet, "javac -beef", "cSource", "-lrt -pthread", false);
+	addFileSetBuilder(bfileSet, "javac -beef", "cSource", "-pthread -lrt", false);
+
+	MakefileParser parser;
+	parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
+
+	QVector<QSet<QSharedPointer<MakefileParser::MakeObjectData> > > conflicts = parser.findConflicts();
+
+	QCOMPARE( conflicts.size(), 0 );
+}
+
 QSharedPointer<Component> tst_MakefileGenerator::createDesign(QSharedPointer<Design> &design,
     QSharedPointer<DesignConfiguration> &desgconf)
 {
@@ -1528,42 +1525,43 @@ QSharedPointer<Component> tst_MakefileGenerator::createDesign(QSharedPointer<Des
 
     VLNV topvlvnv("","vendor","lib","master-plan","1.0");
     QSharedPointer<Component> top = QSharedPointer<Component>(new Component(topvlvnv));
-    top->setComponentImplementation(KactusAttribute::SYSTEM);
+    top->setImplementation(KactusAttribute::SYSTEM);
     library_.addComponent(top);
     library_.writeModelToFile("polku/master-plan",top);
 
-    outputDir_ = QFileInfo(library_.getPath(*top->getVlnv())).absolutePath();
+    outputDir_ = QFileInfo(library_.getPath(topvlvnv)).absolutePath();
 
-    SystemView* sw = new SystemView("sysview");
+    QSharedPointer<SystemView> sw( new SystemView("sysview") );
     sw->setHierarchyRef(dgvlnv);
-    top->addSystemView(sw);
+	QList<QSharedPointer<SystemView> > sviews;
+	sviews.append(sw);
+	top->setSystemViews(sviews);
 
     return top;
 }
 
-void tst_MakefileGenerator::addFileToSet(QSharedPointer<FileSet> fileSet, QString fileName, QString fileType/*="cSource"*/, bool isInclude/*=false*/)
+QSharedPointer<File> tst_MakefileGenerator::addFileToSet(QSharedPointer<FileSet> fileSet, QString fileName, QString fileType/*="cSource"*/, bool isInclude/*=false*/)
 {
     QSettings settings;
 
     QSharedPointer<File> file;
-    QStringList types;
-    types.append(fileType);
 
     file = fileSet->addFile(fileName, settings);
-    file->setAllFileTypes( types );
+    file->addFileType(fileType);
     file->setIncludeFile( isInclude );
+
+	return file;
 }
 
-QSharedPointer<Component> tst_MakefileGenerator::createSW(QString swName, QString hwInstanceName, 
-    QSharedPointer<Design> design, QString softViewName, 
-    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews, 
-    SWView*& softView, QString swInstanceName)
+QSharedPointer<Component> tst_MakefileGenerator::createSW(QString swName, QString hwInstanceName, QSharedPointer<Design> design,
+	QString softViewName,  QSharedPointer<DesignConfiguration> desgconf, QSharedPointer<SWView>& softView, QString swInstanceName)
 {
     VLNV swvlvnv("","vendor","lib",swName,"1.0");
+	QSharedPointer<ConfigurableVLNVReference> swvlvnv2( new ConfigurableVLNVReference( swvlvnv ) );
     QSharedPointer<Component> sw = QSharedPointer<Component>(new Component(swvlvnv));
-    QSharedPointer<SWInstance> softInstance(new SWInstance());
+    QSharedPointer<SWInstance> softInstance( new SWInstance );
     softInstance->setInstanceName(swInstanceName);
-    softInstance->setComponentRef(QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(swvlvnv)));
+    softInstance->setComponentRef(swvlvnv2);
     softInstance->setMapping(hwInstanceName);
 
     QList<QSharedPointer<SWInstance> > swInstances = design->getSWInstances();
@@ -1572,43 +1570,39 @@ QSharedPointer<Component> tst_MakefileGenerator::createSW(QString swName, QStrin
     library_.addComponent(sw);
     library_.writeModelToFile("polku/" + swName,sw);
 
-    softView = new SWView();
-    softView->setName(softViewName);
-    sw->addSWView(softView);
+    softView = QSharedPointer<SWView>( new SWView() );
+	softView->setName(softViewName);
+	QList<QSharedPointer<SWView> > views;
+	views.append(softView);
+	sw->setSWViews(views);
 
-    QSharedPointer<ViewConfiguration> activeView(new ViewConfiguration());
-    activeView->setInstanceName(swInstanceName);
-    activeView->setViewReference(softViewName);
-    activeViews->append(activeView);
+	desgconf->addViewConfiguration(swInstanceName,softViewName);
 
     return sw;
 }
 
-QSharedPointer<Component> tst_MakefileGenerator::createHW(QString hwInstanceName, 
-    QSharedPointer<Design> design, QString hardViewName, 
-    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > activeViews, 
-    SWView*& hardView, QString hwName/*="hardware"*/)
+QSharedPointer<Component> tst_MakefileGenerator::createHW(QString hwInstanceName, QSharedPointer<Design> design,
+	QString hardViewName, QSharedPointer<DesignConfiguration> desgconf, QSharedPointer<SWView>& hardView,
+	QString hwName/*="hardware"*/)
 {
-    VLNV hwvlvnv("","vendor","lib",hwName,"1.0");
+	VLNV hwvlvnv("","vendor","lib",hwName,"1.0");
+	QSharedPointer<ConfigurableVLNVReference> hwvlvnv2( new ConfigurableVLNVReference( hwvlvnv ) );
     QSharedPointer<Component> hw = QSharedPointer<Component>(new Component(hwvlvnv));
-    QSharedPointer<ComponentInstance> hwInstance(new ComponentInstance(hwInstanceName,"","esim",
-        QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(hwvlvnv)), 
-        QPointF(), hwInstanceName));
+    QSharedPointer<ComponentInstance> hwInstance(new ComponentInstance(
+		hwInstanceName,"","esim",hwvlvnv2,QPointF(),hwInstanceName ) );
 
     QSharedPointer<QList<QSharedPointer<ComponentInstance> > > instances = design->getComponentInstances();
     instances->append(hwInstance);
-
     library_.addComponent(hw);
     library_.writeModelToFile("polku/" + hwName,hw);
 
-    hardView = new SWView;
+    hardView = QSharedPointer<SWView>( new SWView );
     hardView->setName(hardViewName);
-    hw->addSWView(hardView);
+	QList<QSharedPointer<SWView> > views;
+	views.append(hardView);
+    hw->setSWViews(views);
 
-    QSharedPointer<ViewConfiguration> activeView(new ViewConfiguration());
-    activeView->setInstanceName(hwInstanceName);
-    activeView->setViewReference(hardViewName);
-    activeViews->append(activeView);
+	desgconf->addViewConfiguration(hwInstanceName,hardViewName);
 
     return hw;
 }
@@ -1658,9 +1652,9 @@ void tst_MakefileGenerator::verifyOutputContains(QString instanceName, QString c
 
 void tst_MakefileGenerator::getFile(QSharedPointer<File>& file, QSharedPointer<Component> component, QString fileName)
 {
-    foreach( QSharedPointer<FileSet> fset, component->getFileSets())
+    foreach( QSharedPointer<FileSet> fset, *component->getFileSets())
     {
-        foreach( QSharedPointer<File> possibleFile, fset->getFiles())
+        foreach( QSharedPointer<File> possibleFile, *fset->getFiles())
         {
             if ( possibleFile->name() == fileName )
             {
@@ -1671,49 +1665,88 @@ void tst_MakefileGenerator::getFile(QSharedPointer<File>& file, QSharedPointer<C
     }
 }
 
-void tst_MakefileGenerator::addCmd2View(SWView* view, QString command, QString fileType,
+void tst_MakefileGenerator::addCmd2View(QSharedPointer<SWView> view, QString command, QString fileType,
     QString flags, bool replace)
 {
-    QList<QSharedPointer<SWBuildCommand> >& coms = view->getSWBuildCommands();
+    QSharedPointer<QList<QSharedPointer<SWBuildCommand> > > coms = view->getSWBuildCommands();
     QSharedPointer<SWBuildCommand> cmd = QSharedPointer<SWBuildCommand>(new SWBuildCommand());
     cmd->setCommand(command);
     cmd->setFileType(fileType);
     cmd->setFlags(flags);
     cmd->setReplaceDefaultFlags(replace);
-    coms.append(cmd);
+	coms->append(cmd);
 }
 
-QSharedPointer<FileSet> tst_MakefileGenerator::addFileSet(QSharedPointer<Component> component, QString fileSetName, SWView*& view)
+QSharedPointer<FileSet> tst_MakefileGenerator::addFileSet(QSharedPointer<Component> component, QString fileSetName, QSharedPointer<SWView>& view)
 {
-    QSharedPointer<FileSet> fileSet = component->getFileSet(fileSetName);
-    fileSet->setGroups("sourceFiles");
-    QStringList fileSets = view->getFileSetRefs();
-    fileSets.append(fileSetName);
-    view->setFileSetRefs(fileSets);
+    QSharedPointer<FileSet> fileSet( new FileSet(fileSetName,"sourceFiles") );
+
+	if ( view )
+	{
+		QStringList fileSets = view->getFileSetRefs();
+		fileSets.append(fileSetName);
+		view->setFileSetRefs(fileSets);
+	}
+	
+	QSharedPointer< QList< QSharedPointer<FileSet> > > sets = component->getFileSets();
+	sets->append(fileSet);
 
     return fileSet;
 }
 
 void tst_MakefileGenerator::addFileSetBuilder(QSharedPointer<FileSet> fileSet, QString command, QString fileType, QString flags, bool replace)
 {
-    QList<QSharedPointer<FileBuilder> > fblist = fileSet->getDefaultFileBuilders();
+    QSharedPointer<QList<QSharedPointer<FileBuilder> > > fblist = fileSet->getDefaultFileBuilders();
     QSharedPointer<FileBuilder> fb = QSharedPointer<FileBuilder>(new FileBuilder);
     fb->setCommand( command);
     fb->setFileType(fileType);
     fb->setFlags(flags);
-    fb->setReplaceDefaultFlags(replace);
-    fblist.append(fb);
-    fileSet->setDefaultFileBuilders(fblist);
+    fb->setReplaceDefaultFlags("false");
+
+	if ( replace )
+	{
+		fb->setReplaceDefaultFlags("true");
+	}
+
+	fblist->append(fb);
 }
 
 void tst_MakefileGenerator::setFileBuilder(QSharedPointer<File> file, QString command, QString flags, bool replace)
 {
-    BuildCommand* buildCmd = new BuildCommand();
+    QSharedPointer<BuildCommand> buildCmd( new BuildCommand() );
     buildCmd->setCommand(command);
     buildCmd->setFlags(flags);
-    buildCmd->setReplaceDefaultFlags(replace);
+    buildCmd->setReplaceDefaultFlags("false");
+
+	if ( replace )
+	{
+		buildCmd->setReplaceDefaultFlags("true");
+	}
 
     file->setBuildcommand( buildCmd );
+}
+
+void tst_MakefileGenerator::addAPI(QSharedPointer<Component> asw, QString name, DependencyDirection dir)
+{
+	QSharedPointer<ApiInterface> apina = QSharedPointer<ApiInterface>(new ApiInterface );
+	QList<QSharedPointer<ApiInterface> > apit = asw->getApiInterfaces();
+	apina->setDependencyDirection(dir);
+	apina->setName(name);
+	apit.append(apina);
+	asw->setApiInterfaces( apit );
+}
+
+void tst_MakefileGenerator::addAPIConnection(QSharedPointer<Design> design, QString com1,
+	QString bus1, QString com2, QString bus2)
+{
+	QList<QSharedPointer<ApiInterconnection> > deps = design->getApiConnections();
+	QSharedPointer<ApiInterconnection> dependency1( new ApiInterconnection );
+	QSharedPointer<ActiveInterface> air1( new ActiveInterface(com1,bus1));
+	QSharedPointer<ActiveInterface> air2( new ActiveInterface(com2,bus2));
+	dependency1->setInterface1(air1);
+	dependency1->setInterface2(air2);
+	deps.append(dependency1);
+	design->setApiConnections(deps);
 }
 
 QTEST_APPLESS_MAIN(tst_MakefileGenerator)

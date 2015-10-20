@@ -27,7 +27,7 @@
 #include <QPointF>
 #include <QSharedPointer>
 
-#include <IPXACTmodels/ComProperty.h>
+#include <IPXACTmodels/kactusExtensions/ComProperty.h>
 
 //-----------------------------------------------------------------------------
 //! COM interface class for defining properties of a specific COM interface

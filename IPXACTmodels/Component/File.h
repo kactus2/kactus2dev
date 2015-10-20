@@ -12,7 +12,8 @@
 #ifndef FILE_H
 #define FILE_H
 
-#include "BuildCommand.h"
+#include <IPXACTmodels/common/BuildModel.h>
+#include <IPXACTmodels/Component/BuildCommand.h>
 
 #include <IPXACTmodels/common/NameValuePair.h>
 #include <IPXACTmodels/common/Extendable.h>

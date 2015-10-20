@@ -12,7 +12,7 @@
 #ifndef FILEBUILDER_H
 #define FILEBUILDER_H
 
-#include "BuildModel.h"
+#include <IPXACTmodels/common/BuildModel.h>
 
 #include <IPXACTmodels/common/Extendable.h>
 

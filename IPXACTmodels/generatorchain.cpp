@@ -9,7 +9,7 @@
 #include "generatorchainselector.h"
 #include "generator.h"
 #include "librarycomponent.h"
-#include "choice.h"
+#include <IPXACTmodels/Component/choice.h>
 #include "XmlUtils.h"
 
 
@@ -120,8 +120,8 @@ attributes_() {
 			// go through all choices
 			for (int j = 0; j < tempNode.childNodes().count(); ++j) {
 				QDomNode choiceNode = tempNode.childNodes().at(j);
-				choices_.append(QSharedPointer<Choice>(
-					new Choice(choiceNode)));
+				//choices_.append(QSharedPointer<Choice>(
+				//	new Choice(choiceNode)));
 			}
 		}
 	}

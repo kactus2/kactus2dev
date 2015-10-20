@@ -9,7 +9,7 @@
 // Reader class for IP-XACT businterface element.
 //-----------------------------------------------------------------------------
 
-#include "businterfaceReader.h"
+#include "BusInterfaceReader.h"
 #include "../masterinterface.h"
 #include "../XmlUtils.h"
 #include "../masterinterface.h"

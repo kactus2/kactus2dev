@@ -9,7 +9,7 @@
 
 #include "generaldeclarations.h"
 #include "librarycomponent.h"
-#include "choice.h"
+#include <IPXACTmodels/Component/choice.h>
 
 #include "ipxactmodels_global.h"
 
