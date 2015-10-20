@@ -11,10 +11,10 @@
 
 #include "ComponentParameterFinder.h"
 
-#include <IPXACTmodels/addressblock.h>
-#include <IPXACTmodels/businterface.h>
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/memorymap.h>
+#include <IPXACTmodels/Component/addressblock.h>
+#include <IPXACTmodels/Component/businterface.h>
+#include <IPXACTmodels/Component/component.h>
+#include <IPXACTmodels/Component/memorymap.h>
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/registermodel.h>
 

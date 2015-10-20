@@ -12,7 +12,7 @@
 #ifndef MEMORYREMAPEXPRESSIONGATHERER_H
 #define MEMORYREMAPEXPRESSIONGATHERER_H
 
-#include <IPXACTmodels/AbstractMemoryMap.h>
+#include <IPXACTmodels/Component/MemoryMapBase>
 
 #include <QSharedPointer>
 #include <QStringList>

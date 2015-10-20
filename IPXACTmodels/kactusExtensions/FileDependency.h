@@ -13,8 +13,9 @@
 #define FILEDEPENDENCY_H
 
 #include <IPXACTmodels/ipxactmodels_global.h>
-
 #include <IPXACTmodels/VendorExtension.h>
+
+#include <editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyItem.h>
 
 #include <QString>
 #include <QDomNode>

@@ -7,97 +7,47 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./Design/MonitorInterface.h \
-    ./Design/PortReference.h \
-    ./Design/HierInterface.h \
-    ./Design/DesignReader.h \
-    ./Design/ActiveInterface.h \
-    ./Design/MonitorInterconnection.h \
-    ./Design/Interconnection.h \
-    ./kactusExtensions/ColumnDesc.h \
-    ./Design/Design.h \
-    ./validators/ModelParameterValidator.h \
-    ./validators/ParameterValidator2014.h \
-    ../resource.h \
-    ./AbstractMemoryMap.h \
-    ./addressblock.h \
-    ./addressspace.h \
-    ./kactusExtensions/ApiInterconnection.h \
-    ./alternateregister.h \
-    ./ApiDefinition.h \
+HEADERS += ./ApiDefinition.h \
     ./ApiFunction.h \
     ./ApiFunctionParameter.h \
-    ./ApiInterface.h \
-    ./bank.h \
     ./bspbuildcommand.h \
     ./buildcommand.h \
-    ./buildmodel.h \
-    ./businterface.h \
-    ./channel.h \
-    ./choice.h \
-    ./Design/DesignWriter.h \
     ./ComDefinition.h \
-    ./ComInterface.h \
-    ./common/Assertion.h \
-    ./common/BooleanValue.h \
-    ./component.h \
-    ./componentgenerator.h \
-    ./kactusExtensions/SWInstance.h \
-    ./ComProperty.h \
-    ./cpu.h \
-    ./Design/AdHocConnection.h \
+    ./VendorExtension.h \
+    ./vlnv.h \
+    ./writevalueconstraint.h \
+    ./XmlUtils.h \
     ./designconfabstractor.h \
-    ./enumeratedvalue.h \
-    ./Enumeration.h \
-    ./field.h \
-    ./file.h \
-    ./filebuilder.h \
-    ./FileDependency.h \
-    ./fileset.h \
-    ./function.h \
     ./generaldeclarations.h \
     ./generator.h \
     ./generatorchain.h \
     ./generatorchainselector.h \
     ./GenericVendorExtension.h \
-    ./Design/ComponentInstanceReader.h \
     ./ipxactmodels_global.h \
     ./librarycomponent.h \
     ./masterinterface.h \
     ./memoryblockdata.h \
-    ./memorymap.h \
     ./memorymapitem.h \
-    ./MemoryRemap.h \
     ./mirroredslaveinterface.h \
-    ./model.h \
     ./modelparameter.h \
-    ./otherclockdriver.h \
-    ./port.h \
     ./PortMap.h \
     ./PortRef.h \
-    ./register.h \
-    ./registerdefinition.h \
-    ./registerfile.h \
     ./registermodel.h \
-    ./remapport.h \
-    ./remapstate.h \
     ./reset.h \
     ./segment.h \
     ./servicetypedef.h \
     ./slaveinterface.h \
     ./subspacemap.h \
     ./swbuildcommand.h \
-    ./Design/ComponentInstance.h \
-    ./SWView.h \
-    ./SystemView.h \
-    ./transactional.h \
-    ./VendorExtension.h \
-    ./view.h \
-    ./vlnv.h \
-    ./wire.h \
-    ./writevalueconstraint.h \
-    ./XmlUtils.h \
-    ./kactusExtensions/ComponentInstantiation.h \
+    ./kactusExtensions/ApiInterconnection.h \
+    ./kactusExtensions/ApiInterface.h \
+    ./kactusExtensions/ColumnDesc.h \
+    ./kactusExtensions/ComInterconnection.h \
+    ./kactusExtensions/ComInterface.h \
+    ./kactusExtensions/ComProperty.h \
+    ./kactusExtensions/FileDependency.h \
+    ./kactusExtensions/HierApiInterconnection.h \
+    ./kactusExtensions/HierComInterconnection.h \
     ./kactusExtensions/Kactus2Array.h \
     ./kactusExtensions/Kactus2Group.h \
     ./kactusExtensions/Kactus2Placeholder.h \
@@ -105,38 +55,67 @@ HEADERS += ./Design/MonitorInterface.h \
     ./kactusExtensions/Kactus2Value.h \
     ./kactusExtensions/Kactus2Vector.h \
     ./kactusExtensions/KactusAttribute.h \
-    ./kactusExtensions/ModuleParameter.h \
-    ./AbstractionDefinition/TransactionalAbstractionReader.h \
+    ./kactusExtensions/SWInstance.h \
+    ./kactusExtensions/SWView.h \
+    ./kactusExtensions/SystemView.h \
+    ./validators/ModelParameterValidator.h \
+    ./validators/ParameterValidator2014.h \
     ./validators/BinaryValidator.h \
     ./validators/namevalidator.h \
     ./validators/NMTokenValidator.h \
     ./common/Array.h \
+    ./common/Assertion.h \
+    ./common/BooleanValue.h \
+    ./common/BuildModel.h \
+    ./common/CellSpecification.h \
+    ./common/ClockUnit.h \
     ./common/ConfigurableElementValue.h \
     ./common/ConfigurableVLNVReference.h \
-    ./common/CellSpecification.h \
+    ./common/DirectionTypes.h \
     ./common/Document.h \
+    ./common/Enumeration.h \
     ./common/Extendable.h \
+    ./common/FileBuilder.h \
+    ./common/FileTypes.h \
+    ./common/ModuleParameter.h \
     ./common/NameGroup.h \
+    ./common/NameValuePair.h \
     ./common/Parameter.h \
+    ./common/PartSelect.h \
+    ./common/Protocol.h \
     ./common/Qualifier.h \
     ./common/Range.h \
+    ./common/TransactionalTypes.h \
     ./common/Vector.h \
-    ./common/DocumentWriter.h \
+    ./common/CommonItemsReader.h \
+    ./common/CommonItemsWriter.h \
     ./common/DocumentReader.h \
+    ./common/DocumentWriter.h \
+    ./common/FileBuilderReader.h \
+    ./common/FileBuilderWriter.h \
+    ./common/ModuleParameterReader.h \
+    ./common/ModuleParameterWriter.h \
+    ./common/NameGroupReader.h \
     ./common/NameGroupWriter.h \
     ./common/ParameterReader.h \
     ./common/ParameterWriter.h \
+    ./common/ProtocolReader.h \
+    ./common/ProtocolWriter.h \
     ./BusDefinition/BusDefinition.h \
     ./BusDefinition/BusDefinitionReader.h \
     ./BusDefinition/BusDefinitionWriter.h \
     ./AbstractionDefinition/AbstractionDefinition.h \
     ./AbstractionDefinition/PortAbstraction.h \
     ./AbstractionDefinition/TimingConstraint.h \
+    ./AbstractionDefinition/TransactionalAbstraction.h \
+    ./AbstractionDefinition/TransactionalPort.h \
     ./AbstractionDefinition/WireAbstraction.h \
     ./AbstractionDefinition/WireAbstractionWriter.h \
     ./AbstractionDefinition/WirePort.h \
-    ./AbstractionDefinition/AbstractionDefinitionWriter.h \
     ./AbstractionDefinition/AbstractionDefinitionReader.h \
+    ./AbstractionDefinition/AbstractionDefinitionWriter.h \
+    ./AbstractionDefinition/TransactionalAbstractionReader.h \
+    ./AbstractionDefinition/TransactionalAbstractionWriter.h \
     ./AbstractionDefinition/WireAbstractionReader.h \
     ./designConfiguration/AbstractorInstance.h \
     ./designConfiguration/DesignConfiguration.h \
@@ -146,46 +125,101 @@ HEADERS += ./Design/MonitorInterface.h \
     ./designConfiguration/ViewConfiguration.h \
     ./designConfiguration/DesignConfigurationReader.h \
     ./designConfiguration/DesignConfigurationWriter.h \
-    ./AbstractionDefinition/TransactionalAbstraction.h \
-    ./AbstractionDefinition/TransactionalAbstractionWriter.h \
-    ./AbstractionDefinition/TransactionalPort.h \
-    ./common/Protocol.h \
-    ./common/PartSelect.h \
-    ./kactusExtensions/ComInterconnection.h \
-    ./kactusExtensions/HierApiInterconnection.h \
-    ./kactusExtensions/HierComInterconnection.h \
-    ./Design/ComponentInstanceWriter.h
-SOURCES += ./AbstractMemoryMap.cpp \
-    ./addressblock.cpp \
-    ./addressspace.cpp \
-    ./ApiDefinition.cpp \
-    ./alternateregister.cpp \
+    ./Design/ActiveInterface.h \
+    ./Design/AdHocConnection.h \
+    ./Design/ComponentInstance.h \
+    ./Design/Design.h \
+    ./Design/HierInterface.h \
+    ./Design/Interconnection.h \
+    ./Design/MonitorInterconnection.h \
+    ./Design/MonitorInterface.h \
+    ./Design/PortReference.h \
+    ./Design/ComponentInstanceReader.h \
+    ./Design/ComponentInstanceWriter.h \
+    ./Design/DesignReader.h \
+    ./Design/DesignWriter.h \
+    ./Component/AddressBlock.h \
+    ./Component/AddressSpace.h \
+    ./Component/AlternateRegister.h \
+    ./Component/BuildCommand.h \
+    ./Component/BusInterface.h \
+    ./Component/Channel.h \
+    ./Component/Choice.h \
+    ./Component/Component.h \
+    ./Component/ComponentGenerator.h \
+    ./Component/ComponentInstantiation.h \
+    ./Component/Cpu.h \
+    ./Component/DesignConfigurationInstantiation.h \
+    ./Component/DesignInstantiation.h \
+    ./Component/EnumeratedValue.h \
+    ./Component/Field.h \
+    ./Component/File.h \
+    ./Component/FileSet.h \
+    ./Component/Function.h \
+    ./Component/MemoryBlockBase.h \
+    ./Component/MemoryMap.h \
+    ./Component/MemoryMapBase.h \
+    ./Component/MemoryRemap.h \
+    ./Component/Model.h \
+    ./Component/OtherClockDriver.h \
+    ./Component/Port.h \
+    ./Component/Register.h \
+    ./Component/RegisterBase.h \
+    ./Component/RegisterDefinition.h \
+    ./Component/RegisterFile.h \
+    ./Component/RemapPort.h \
+    ./Component/RemapState.h \
+    ./Component/Transactional.h \
+    ./Component/View.h \
+    ./Component/Wire.h \
+    ./Component/WireTypeDef.h \
+    ./Component/WriteValueConstraint.h \
+    ./Component/AddressBlockReader.h \
+    ./Component/AddressBlockWriter.h \
+    ./Component/AddressSpaceReader.h \
+    ./Component/AddressSpaceWriter.h \
+    ./Component/BusInterfaceReader.h \
+    ./Component/BusInterfaceWriter.h \
+    ./Component/ChannelReader.h \
+    ./Component/ChannelWriter.h \
+    ./Component/ChoiceReader.h \
+    ./Component/ChoiceWriter.h \
+    ./Component/ComponentGeneratorReader.h \
+    ./Component/ComponentGeneratorWriter.h \
+    ./Component/ComponentReader.h \
+    ./Component/ComponentWriter.h \
+    ./Component/CPUReader.h \
+    ./Component/CPUWriter.h \
+    ./Component/EnumeratedValueReader.h \
+    ./Component/EnumeratedValueWriter.h \
+    ./Component/FieldReader.h \
+    ./Component/FieldWriter.h \
+    ./Component/FileReader.h \
+    ./Component/FileSetReader.h \
+    ./Component/FileSetWriter.h \
+    ./Component/FileWriter.h \
+    ./Component/InstantiationsReader.h \
+    ./Component/InstantiationsWriter.h \
+    ./Component/MemoryMapBaseReader.h \
+    ./Component/MemoryMapBaseWriter.h \
+    ./Component/MemoryMapReader.h \
+    ./Component/MemoryMapWriter.h \
+    ./Component/OtherClockDriverReader.h \
+    ./Component/OtherClockDriverWriter.h \
+    ./Component/PortReader.h \
+    ./Component/PortWriter.h \
+    ./Component/RegisterReader.h \
+    ./Component/RegisterWriter.h \
+    ./Component/RemapStateReader.h \
+    ./Component/RemapStateWriter.h \
+    ./Component/ViewReader.h \
+    ./Component/ViewWriter.h
+SOURCES += ./ApiDefinition.cpp \
     ./ApiFunction.cpp \
     ./ApiFunctionParameter.cpp \
-    ./ApiInterface.cpp \
-    ./bank.cpp \
     ./bspbuildcommand.cpp \
-    ./buildcommand.cpp \
-    ./buildmodel.cpp \
-    ./businterface.cpp \
-    ./channel.cpp \
-    ./choice.cpp \
     ./ComDefinition.cpp \
-    ./ComInterface.cpp \
-    ./component.cpp \
-    ./componentgenerator.cpp \
-    ./kactusExtensions/ColumnDesc.cpp \
-    ./ComProperty.cpp \
-    ./cpu.cpp \
     ./designconfabstractor.cpp \
-    ./enumeratedvalue.cpp \
-    ./Enumeration.cpp \
-    ./field.cpp \
-    ./file.cpp \
-    ./filebuilder.cpp \
-    ./FileDependency.cpp \
-    ./fileset.cpp \
-    ./function.cpp \
     ./generaldeclarations.cpp \
     ./generator.cpp \
     ./generatorchain.cpp \
@@ -194,38 +228,29 @@ SOURCES += ./AbstractMemoryMap.cpp \
     ./librarycomponent.cpp \
     ./masterinterface.cpp \
     ./memoryblockdata.cpp \
-    ./memorymap.cpp \
     ./memorymapitem.cpp \
-    ./MemoryRemap.cpp \
     ./mirroredslaveinterface.cpp \
-    ./model.cpp \
     ./modelparameter.cpp \
-    ./otherclockdriver.cpp \
-    ./port.cpp \
     ./PortMap.cpp \
     ./PortRef.cpp \
-    ./register.cpp \
-    ./registerdefinition.cpp \
-    ./registerfile.cpp \
     ./registermodel.cpp \
-    ./remapport.cpp \
-    ./remapstate.cpp \
     ./reset.cpp \
     ./segment.cpp \
     ./servicetypedef.cpp \
     ./slaveinterface.cpp \
     ./subspacemap.cpp \
     ./swbuildcommand.cpp \
-    ./SWView.cpp \
-    ./SystemView.cpp \
-    ./transactional.cpp \
-    ./Design/PortReference.cpp \
-    ./view.cpp \
     ./vlnv.cpp \
-    ./wire.cpp \
-    ./writevalueconstraint.cpp \
     ./XmlUtils.cpp \
-    ./kactusExtensions/ComponentInstantiation.cpp \
+    ./kactusExtensions/ApiInterconnection.cpp \
+    ./kactusExtensions/ApiInterface.cpp \
+    ./kactusExtensions/ColumnDesc.cpp \
+    ./kactusExtensions/ComInterconnection.cpp \
+    ./kactusExtensions/ComInterface.cpp \
+    ./kactusExtensions/ComProperty.cpp \
+    ./kactusExtensions/FileDependency.cpp \
+    ./kactusExtensions/HierApiInterconnection.cpp \
+    ./kactusExtensions/HierComInterconnection.cpp \
     ./kactusExtensions/Kactus2Array.cpp \
     ./kactusExtensions/Kactus2Group.cpp \
     ./kactusExtensions/Kactus2Placeholder.cpp \
@@ -233,28 +258,51 @@ SOURCES += ./AbstractMemoryMap.cpp \
     ./kactusExtensions/Kactus2Value.cpp \
     ./kactusExtensions/Kactus2Vector.cpp \
     ./kactusExtensions/KactusAttribute.cpp \
-    ./kactusExtensions/ModuleParameter.cpp \
+    ./kactusExtensions/SWInstance.cpp \
+    ./kactusExtensions/SWView.cpp \
+    ./kactusExtensions/SystemView.cpp \
     ./validators/BinaryValidator.cpp \
-    ./AbstractionDefinition/TransactionalAbstraction.cpp \
+    ./validators/ModelParameterValidator.cpp \
     ./validators/namevalidator.cpp \
     ./validators/NMTokenValidator.cpp \
+    ./validators/ParameterValidator2014.cpp \
     ./common/Array.cpp \
     ./common/Assertion.cpp \
     ./common/BooleanValue.cpp \
+    ./common/BuildModel.cpp \
     ./common/CellSpecification.cpp \
+    ./common/ClockUnit.cpp \
+    ./common/CommonItemsReader.cpp \
+    ./common/CommonItemsWriter.cpp \
     ./common/ConfigurableElementValue.cpp \
     ./common/ConfigurableVLNVReference.cpp \
+    ./common/DirectionTypes.cpp \
     ./common/Document.cpp \
     ./common/DocumentReader.cpp \
     ./common/DocumentWriter.cpp \
+    ./common/Enumeration.cpp \
     ./common/Extendable.cpp \
+    ./common/FileBuilder.cpp \
+    ./common/FileBuilderReader.cpp \
+    ./common/FileBuilderWriter.cpp \
+    ./common/FileTypes.cpp \
+    ./common/ModuleParameter.cpp \
+    ./common/ModuleParameterReader.cpp \
+    ./common/ModuleParameterWriter.cpp \
     ./common/NameGroup.cpp \
+    ./common/NameGroupReader.cpp \
     ./common/NameGroupWriter.cpp \
+    ./common/NameValuePair.cpp \
     ./common/Parameter.cpp \
     ./common/ParameterReader.cpp \
     ./common/ParameterWriter.cpp \
+    ./common/PartSelect.cpp \
+    ./common/Protocol.cpp \
+    ./common/ProtocolReader.cpp \
+    ./common/ProtocolWriter.cpp \
     ./common/Qualifier.cpp \
     ./common/Range.cpp \
+    ./common/TransactionalTypes.cpp \
     ./common/Vector.cpp \
     ./BusDefinition/BusDefinition.cpp \
     ./BusDefinition/BusDefinitionReader.cpp \
@@ -264,6 +312,10 @@ SOURCES += ./AbstractMemoryMap.cpp \
     ./AbstractionDefinition/AbstractionDefinitionWriter.cpp \
     ./AbstractionDefinition/PortAbstraction.cpp \
     ./AbstractionDefinition/TimingConstraint.cpp \
+    ./AbstractionDefinition/TransactionalAbstraction.cpp \
+    ./AbstractionDefinition/TransactionalAbstractionReader.cpp \
+    ./AbstractionDefinition/TransactionalAbstractionWriter.cpp \
+    ./AbstractionDefinition/TransactionalPort.cpp \
     ./AbstractionDefinition/WireAbstraction.cpp \
     ./AbstractionDefinition/WireAbstractionReader.cpp \
     ./AbstractionDefinition/WireAbstractionWriter.cpp \
@@ -276,27 +328,92 @@ SOURCES += ./AbstractMemoryMap.cpp \
     ./designConfiguration/InterfaceRef.cpp \
     ./designConfiguration/MultipleAbstractorInstances.cpp \
     ./designConfiguration/ViewConfiguration.cpp \
-    ./kactusExtensions/SWInstance.cpp \
-    ./Design/ComponentInstanceReader.cpp \
-    ./AbstractionDefinition/TransactionalPort.cpp \
-    ./Design/MonitorInterface.cpp \
-    ./AbstractionDefinition/TransactionalAbstractionWriter.cpp \
-    ./validators/ParameterValidator2014.cpp \
-    ./validators/ModelParameterValidator.cpp \
-    ./common/Protocol.cpp \
-    ./AbstractionDefinition/TransactionalAbstractionReader.cpp \
     ./Design/ActiveInterface.cpp \
     ./Design/AdHocConnection.cpp \
     ./Design/ComponentInstance.cpp \
+    ./Design/ComponentInstanceReader.cpp \
+    ./Design/ComponentInstanceWriter.cpp \
     ./Design/Design.cpp \
     ./Design/DesignReader.cpp \
     ./Design/DesignWriter.cpp \
     ./Design/HierInterface.cpp \
     ./Design/Interconnection.cpp \
     ./Design/MonitorInterconnection.cpp \
-    ./common/PartSelect.cpp \
-    ./kactusExtensions/ApiInterconnection.cpp \
-    ./kactusExtensions/ComInterconnection.cpp \
-    ./kactusExtensions/HierApiInterconnection.cpp \
-    ./kactusExtensions/HierComInterconnection.cpp \
-    ./Design/ComponentInstanceWriter.cpp
+    ./Design/MonitorInterface.cpp \
+    ./Design/PortReference.cpp \
+    ./Component/AddressBlock.cpp \
+    ./Component/AddressBlockReader.cpp \
+    ./Component/AddressBlockWriter.cpp \
+    ./Component/AddressSpace.cpp \
+    ./Component/AddressSpaceReader.cpp \
+    ./Component/AddressSpaceWriter.cpp \
+    ./Component/AlternateRegister.cpp \
+    ./Component/BuildCommand.cpp \
+    ./Component/BusInterface.cpp \
+    ./Component/BusInterfaceReader.cpp \
+    ./Component/BusInterfaceWriter.cpp \
+    ./Component/Channel.cpp \
+    ./Component/ChannelReader.cpp \
+    ./Component/ChannelWriter.cpp \
+    ./Component/Choice.cpp \
+    ./Component/ChoiceReader.cpp \
+    ./Component/ChoiceWriter.cpp \
+    ./Component/Component.cpp \
+    ./Component/ComponentGenerator.cpp \
+    ./Component/ComponentGeneratorReader.cpp \
+    ./Component/ComponentGeneratorWriter.cpp \
+    ./Component/ComponentInstantiation.cpp \
+    ./Component/ComponentReader.cpp \
+    ./Component/ComponentWriter.cpp \
+    ./Component/Cpu.cpp \
+    ./Component/CPUReader.cpp \
+    ./Component/CPUWriter.cpp \
+    ./Component/DesignConfigurationInstantiation.cpp \
+    ./Component/DesignInstantiation.cpp \
+    ./Component/EnumeratedValue.cpp \
+    ./Component/EnumeratedValueReader.cpp \
+    ./Component/EnumeratedValueWriter.cpp \
+    ./Component/Field.cpp \
+    ./Component/FieldReader.cpp \
+    ./Component/FieldWriter.cpp \
+    ./Component/File.cpp \
+    ./Component/FileReader.cpp \
+    ./Component/FileSet.cpp \
+    ./Component/FileSetReader.cpp \
+    ./Component/FileSetWriter.cpp \
+    ./Component/FileWriter.cpp \
+    ./Component/Function.cpp \
+    ./Component/InstantiationsReader.cpp \
+    ./Component/InstantiationsWriter.cpp \
+    ./Component/MemoryBlockBase.cpp \
+    ./Component/MemoryMap.cpp \
+    ./Component/MemoryMapBase.cpp \
+    ./Component/MemoryMapBaseReader.cpp \
+    ./Component/MemoryMapBaseWriter.cpp \
+    ./Component/MemoryMapReader.cpp \
+    ./Component/MemoryMapWriter.cpp \
+    ./Component/MemoryRemap.cpp \
+    ./Component/Model.cpp \
+    ./Component/OtherClockDriver.cpp \
+    ./Component/OtherClockDriverReader.cpp \
+    ./Component/OtherClockDriverWriter.cpp \
+    ./Component/Port.cpp \
+    ./Component/PortReader.cpp \
+    ./Component/PortWriter.cpp \
+    ./Component/Register.cpp \
+    ./Component/RegisterBase.cpp \
+    ./Component/RegisterDefinition.cpp \
+    ./Component/RegisterFile.cpp \
+    ./Component/RegisterReader.cpp \
+    ./Component/RegisterWriter.cpp \
+    ./Component/RemapPort.cpp \
+    ./Component/RemapState.cpp \
+    ./Component/RemapStateReader.cpp \
+    ./Component/RemapStateWriter.cpp \
+    ./Component/Transactional.cpp \
+    ./Component/View.cpp \
+    ./Component/ViewReader.cpp \
+    ./Component/ViewWriter.cpp \
+    ./Component/Wire.cpp \
+    ./Component/WireTypeDef.cpp \
+    ./Component/WriteValueConstraint.cpp

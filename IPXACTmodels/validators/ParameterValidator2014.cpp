@@ -14,7 +14,7 @@
 #include <IPXACTmodels/common/Parameter.h>
 
 #include <IPXACTmodels/Component/choice.h>
-#include <IPXACTmodels/Enumeration.h>
+#include <IPXACTmodels/common/Enumeration.h>
 
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 

@@ -239,9 +239,6 @@
     <ClCompile Include="designconfabstractor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Enumeration.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="generaldeclarations.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1115,6 +1112,9 @@
     <ClCompile Include="common\Vector.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
+    <ClCompile Include="common\Enumeration.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BusDefinition\BusDefinition.h">
@@ -1187,9 +1187,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="designconfabstractor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Enumeration.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="generaldeclarations.h">
@@ -1529,6 +1526,9 @@
       <Filter>Header Files\common</Filter>
     </ClInclude>
     <ClInclude Include="common\Vector.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\Enumeration.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
   </ItemGroup>

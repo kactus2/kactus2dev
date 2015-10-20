@@ -51,7 +51,7 @@ QSharedPointer<Choice> ChoiceReader::createChoiceFrom(QDomNode const& ChoiceNode
 		// Get the enumerations.
 		else if (children.at(i).nodeName() == QString("ipxact:enumeration"))
 		{
-			QSharedPointer<Enumeration> enumr(new Enumeration());
+			QSharedPointer<Enumeration> enumr(new Enumeration);
 
 			QDomNode enumerationNode = children.at(i);
 

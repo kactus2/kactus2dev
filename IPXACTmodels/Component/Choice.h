@@ -14,13 +14,12 @@
 #define CHOICE_H_
 
 #include <IPXACTmodels/ipxactmodels_global.h>
+#include <IPXACTmodels/common/Enumeration.h>
 
 #include <QSharedPointer>
 #include <QString>
 #include <QStringList>
 #include <QList>
-
-class Enumeration;
 
 //-----------------------------------------------------------------------------
 //! Equals the ipxact:choice element in IP-Xact specification.

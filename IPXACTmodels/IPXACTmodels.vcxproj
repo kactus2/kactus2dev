@@ -164,6 +164,7 @@
     <ClCompile Include="common\Document.cpp" />
     <ClCompile Include="common\DocumentReader.cpp" />
     <ClCompile Include="common\DocumentWriter.cpp" />
+    <ClCompile Include="common\Enumeration.cpp" />
     <ClCompile Include="common\Extendable.cpp" />
     <ClCompile Include="common\FileBuilder.cpp" />
     <ClCompile Include="common\FileBuilderReader.cpp" />
@@ -285,7 +286,6 @@
     <ClCompile Include="Design\MonitorInterconnection.cpp" />
     <ClCompile Include="Design\MonitorInterface.cpp" />
     <ClCompile Include="Design\PortReference.cpp" />
-    <ClCompile Include="Enumeration.cpp" />
     <ClCompile Include="generaldeclarations.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_AbstractionDefinitionReader.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -1080,6 +1080,7 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_XML_LIB -DIPXACTMODELS_LIB -D_WINDLL "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(SolutionDir)\."</Command>
     </CustomBuild>
+    <ClInclude Include="common\Enumeration.h" />
     <ClInclude Include="common\Extendable.h" />
     <ClInclude Include="common\FileBuilder.h" />
     <CustomBuild Include="common\FileBuilderReader.h">
@@ -2269,7 +2270,6 @@
     <ClInclude Include="Design\MonitorInterconnection.h" />
     <ClInclude Include="Design\MonitorInterface.h" />
     <ClInclude Include="Design\PortReference.h" />
-    <ClInclude Include="Enumeration.h" />
     <ClInclude Include="generaldeclarations.h" />
     <ClInclude Include="generator.h" />
     <ClInclude Include="generatorchain.h" />
