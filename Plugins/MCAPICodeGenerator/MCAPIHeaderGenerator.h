@@ -13,7 +13,7 @@
 #define MCAPIHeaderGenerator_H
 
 #include <IPXACTmodels/ComDefinition.h>
-#include <IPXACTmodels/ComInterface.h>
+#include <IPXACTmodels/kactusExtensions/ComInterface.h>
 
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/Design/PortReference.h>
@@ -118,7 +118,7 @@ private:
      *      @param [in] direction   Direction string to be converted.
      *      @return The created enum.
      */
-     QString transferDirectionToEString(General::Direction direction);
+     QString transferDirectionToEString(DirectionTypes::Direction direction);
 
     /*!
      *  Converts transfer type string of Kactus2 to enum used by PMQ-MCAPI.

@@ -13,9 +13,6 @@
 
 #include <Plugins/VerilogSourceAnalyzer/VerilogSourceAnalyzer.h>
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/fileset.h>
-
 class tst_VerilogSourceAnalyzer : public QObject
 {
     Q_OBJECT
@@ -227,8 +224,10 @@ void tst_VerilogSourceAnalyzer::testFileInclude_data()
 void tst_VerilogSourceAnalyzer::testFileIncludeFromFilesetReturnsRelativePath()
 {
     QSharedPointer<Component> targetComponent(new Component);
-    QSharedPointer<FileSet> targetFileSet = targetComponent->getFileSet("includes");
-    targetFileSet->addFile("../includes/globals.v", QSettings());
+    QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets = targetComponent->getFileSets();
+	QSharedPointer<FileSet> targetFileSet( new FileSet("includes") );
+	targetFileSet->addFile("../includes/globals.v", QSettings());
+	fileSets->append( targetFileSet );
 
     writeTestFile("`include \"globals.v\"\n");
 
@@ -280,10 +279,14 @@ void tst_VerilogSourceAnalyzer::testAbsoluteFilePath()
 void tst_VerilogSourceAnalyzer::testSimilarFileNamesInFilesets()
 {
     QSharedPointer<Component> targetComponent(new Component);
-    QSharedPointer<FileSet> wrongFileSet = targetComponent->getFileSet("wrong");
-    wrongFileSet->addFile("includes/my_globals.v", QSettings());
-    QSharedPointer<FileSet> targetFileSet = targetComponent->getFileSet("includes");
-    targetFileSet->addFile("globals.v", QSettings());
+
+	QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets = targetComponent->getFileSets();
+	QSharedPointer<FileSet> wrongFileSet( new FileSet("wrong") );
+	QSharedPointer<FileSet> targetFileSet( new FileSet("includes") );
+	wrongFileSet->addFile("../includes/m_globals.v", QSettings());
+	targetFileSet->addFile("globals.v", QSettings());
+	fileSets->append( wrongFileSet );
+	fileSets->append( targetFileSet );
 
     writeTestFile("`include \"globals.v\"\n");
 

@@ -21,15 +21,15 @@
 #include <CSourceWriter.h>
 #include <editors/CSourceEditor/CSourceTextEdit.h>
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/fileset.h>
-#include <IPXACTmodels/file.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/fileset.h>
+#include <IPXACTmodels/Component/file.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 
-#include "IPXACTmodels/SWView.h"
+#include <IPXACTmodels/kactusExtensions/SWView.h>
 #include "common/dialogs/comboSelector/comboselector.h"
-#include "IPXACTmodels/SystemView.h"
+#include <IPXACTmodels/kactusExtensions/SystemView.h>
 
 //-----------------------------------------------------------------------------
 // Function: MCAPIHeaderGenerator::MCAPIHeaderGenerator()
@@ -180,11 +180,9 @@ void MCAPIHeaderGenerator::addGeneratedMCAPIToFileset(QString directory, QShared
     if ( !fileSet->contains(filePath) )
     {
         QSharedPointer<File> file;
-        QStringList types;
-        types.append("cSource");
         QSettings settings;
         file = fileSet->addFile(filePath, settings);
-        file->setAllFileTypes( types );
+        file->addFileType("cSource");
         file->setIncludeFile( true );
     }
 }
@@ -269,17 +267,17 @@ void MCAPIHeaderGenerator::writeEndpointDefList(CSourceWriter& writer, QStringLi
 //-----------------------------------------------------------------------------
 // Function: MCAPIHeaderGenerator::transferDirectionToEString()
 //-----------------------------------------------------------------------------
-QString MCAPIHeaderGenerator::transferDirectionToEString(General::Direction direction)
+QString MCAPIHeaderGenerator::transferDirectionToEString(DirectionTypes::Direction direction)
 {
-    if ( direction == General::IN )
+    if ( direction == DirectionTypes::IN )
     {
         return "CHAN_DIR_RECV";
     }
-    else if ( direction == General::OUT )
+    else if ( direction == DirectionTypes::OUT )
     {
         return "CHAN_DIR_SEND";
     }
-    else if ( direction == General::INOUT )
+    else if ( direction == DirectionTypes::INOUT )
     {
         return "CHAN_NO_DIR";
     }

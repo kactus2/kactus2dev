@@ -18,9 +18,8 @@
 
 #include "common/dialogs/comboSelector/comboselector.h"
 
-#include <IPXACTmodels/component.h>
-#include "IPXACTmodels/SWView.h"
-#include "IPXACTmodels/SystemView.h"
+#include "IPXACTmodels/kactusExtensions/SWView.h"
+#include "IPXACTmodels/kactusExtensions/SystemView.h"
 
 #include <IPXACTmodels/Design/PortReference.h>
 
@@ -164,7 +163,7 @@ bool MCAPIParser::canGenerateMCAPIComponent(QSharedPointer<Component> component)
         QSharedPointer<Document> libCom = utility_->getLibraryInterface()->getModel(comIf->getComType());
         QSharedPointer<ComDefinition> comDef = libCom.dynamicCast<ComDefinition>();
 
-        checkRequiredPropertiesSet(component->getVlnv()->toString(), comDef, comIf, errorList);
+        checkRequiredPropertiesSet(component->getVlnv().toString(), comDef, comIf, errorList);
     }
 
     // If errors exist, print about it and return false.

@@ -15,10 +15,10 @@
 #include "verilogsourceanalyzer_global.h"
 
 #include <Plugins/PluginSystem/ISourceAnalyzerPlugin.h>
-#include <QObject>
+#include <IPXACTmodels/Component/File.h>
+#include <IPXACTmodels/Component/FileSet.h>
+#include <IPXACTmodels/Component/Component.h>
 
-class Component;
-class FileSet;
 
 //-----------------------------------------------------------------------------
 //! Verilog source file analyzer for finding file dependencies.
@@ -162,7 +162,7 @@ private:
      */
     QList<FileDependencyDesc> getIncludeDependencies(QString const& fileContent, 
         QString const& fileAbsolutePath, QString const& xmlPath, 
-        QList<QSharedPointer<FileSet> > const& fileSets) const;
+        QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets) const;
 
     /*!
      *  Finds the absolute path for a given file in the file sets.
@@ -174,7 +174,7 @@ private:
      *      @return Absolute path to the file if found in the file sets, otherwise returns fileName.
      */
     QString findAbsolutePathInFileSets(QString fileName, QString const& xmlPath, 
-        QList<QSharedPointer<FileSet> > const& fileSets) const;
+        QSharedPointer< QList<QSharedPointer<FileSet> > > fileSets) const;
 
 };
 

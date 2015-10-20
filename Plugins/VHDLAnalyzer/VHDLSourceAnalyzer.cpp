@@ -10,21 +10,11 @@
 //-----------------------------------------------------------------------------
 
 #include "VHDLSourceAnalyzer.h"
-#include <IPXACTmodels/fileset.h>
-#include <IPXACTmodels/file.h>
+#include <IPXACTmodels/Component/fileset.h>
+#include <IPXACTmodels/Component/file.h>
 #include <IPXACTmodels/generaldeclarations.h>
 
-#include <QtPlugin>
-#include <QMessageBox>
-#include <QFileInfo>
-#include <QSettings>
-#include <QCoreApplication>
 #include <QCryptographicHash>
-#include <QTextStream>
-#include <QFileInfo>
-#include <QDir>
-
-#include <Plugins/PluginSystem/IPluginUtility.h>
 
 //-----------------------------------------------------------------------------
 // Function: VHDLSourceAnalyzer::VHDLSourceAnalyzer()
@@ -187,24 +177,24 @@ void VHDLSourceAnalyzer::endAnalysis(Component const* /*component*/, QString con
 void VHDLSourceAnalyzer::scanDefinitions(Component const* component, QString const& componentPath)
 {
     // Get all the file sets from the component.
-    QList< QSharedPointer<FileSet> > fileSets = component->getFileSets();
+    QSharedPointer< QList< QSharedPointer<FileSet> > > fileSets = component->getFileSets();
     
     // Scan all the file sets.
-    for (int j = 0; j < fileSets.size(); ++j)
+    for (int j = 0; j < fileSets->size(); ++j)
     {
-        QList< QSharedPointer<File> > files = fileSets.at(j)->getFiles();
+        QSharedPointer< QList< QSharedPointer<File> > > files = fileSets->at(j)->getFiles();
 
         // Go through all the files in the file set.
-        for (int i = 0; i < files.size(); ++i)
+        for (int i = 0; i < files->size(); ++i)
         {
             // Skip the file if it's not a VHDL source file.
-            if (!files.at(i)->getAllFileTypes().contains("vhdlSource"))
+            if (!files->at(i)->getFileTypes()->contains("vhdlSource"))
             {
                 continue;
             }
 
             // Try to open the file.
-            QString filename = General::getAbsolutePath(componentPath, files.at(i)->name());
+            QString filename = General::getAbsolutePath(componentPath, files->at(i)->name());
             QFile file(filename);
 
             if (!file.open(QIODevice::ReadOnly | QIODevice::Text))

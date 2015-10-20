@@ -17,8 +17,6 @@
 #include <QMessageBox>
 #include <QCoreApplication>
 
-#include <IPXACTmodels/component.h>
-
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <Plugins/PluginSystem/IPluginUtility.h>
@@ -111,8 +109,8 @@ bool MCAPICodeGeneratorPlugin::checkGeneratorSupport( QSharedPointer<Document co
     QSharedPointer<Component const> comp = libComp.dynamicCast<Component const>();
     QSharedPointer<DesignConfiguration const> desgConf = libDesConf.dynamicCast<DesignConfiguration const>();
 
-    return (comp != 0 && comp->getComponentImplementation() == KactusAttribute::SW) ||
-        ( libDes != 0 && desgConf != 0 && desgConf->getDesignConfigImplementation() == KactusAttribute::SYSTEM );
+    return (comp != 0 && comp->getImplementation() == KactusAttribute::SW) ||
+        ( libDes != 0 && desgConf != 0 && desgConf->getImplementation() == KactusAttribute::SYSTEM );
 }
 
 //-----------------------------------------------------------------------------
@@ -127,7 +125,7 @@ void MCAPICodeGeneratorPlugin::runGenerator( IPluginUtility* utility,
     QSharedPointer<Component> comp = libComp.dynamicCast<Component>();
     QSharedPointer<DesignConfiguration const> desgConf = libDesConf.dynamicCast<DesignConfiguration const>();
 
-    if ( comp != 0 && comp->getComponentImplementation() == KactusAttribute::SW )
+    if ( comp != 0 && comp->getImplementation() == KactusAttribute::SW )
     {
         MCAPIParser parser( utility );
         parser.parseMCAPIForComponent(comp);
@@ -136,7 +134,7 @@ void MCAPICodeGeneratorPlugin::runGenerator( IPluginUtility* utility,
         generator.generateMCAPIForComponent(dir, comp);
     }
     else if ( libDes != 0 && desgConf != 0 &&
-        desgConf->getDesignConfigImplementation() == KactusAttribute::SYSTEM )
+        desgConf->getImplementation() == KactusAttribute::SYSTEM )
     {
         MCAPIParser parser( utility );
         parser.parseTopLevel(design, comp, desgConf);
@@ -166,8 +164,8 @@ void MCAPICodeGeneratorPlugin::runGenerator( IPluginUtility* utility,
         }
 
         MCAPIHeaderGenerator generator( parser, utility );
-        VLNV* topVLNV = comp->getVlnv();
-        QString topDir = QFileInfo(utility->getLibraryInterface()->getPath(*topVLNV)).absolutePath();
+        VLNV topVLNV = comp->getVlnv();
+        QString topDir = QFileInfo(utility->getLibraryInterface()->getPath(topVLNV)).absolutePath();
         generator.generateTopLevel(design, comp, desgConf, topDir);
         utility->getLibraryInterface()->writeModelToFile(design);
     }

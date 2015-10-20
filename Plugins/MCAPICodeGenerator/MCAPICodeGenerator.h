@@ -13,12 +13,11 @@
 #define MCAPICODEGENERATOR_H
 
 #include <IPXACTmodels/ComDefinition.h>
-#include <IPXACTmodels/ComInterface.h>
+#include <IPXACTmodels/kactusExtensions/ComInterface.h>
 #include <Plugins/PluginSystem/IPluginUtility.h>
 
 #include <MCAPIParser.h>
 
-class Component;
 class CSourceWriter;
 
 //-----------------------------------------------------------------------------

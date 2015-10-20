@@ -12,14 +12,7 @@
 #ifndef VHDLSOURCEANALYZER_H
 #define VHDLSOURCEANALYZER_H
 
-#include <Plugins/PluginSystem/IPlugin.h>
 #include <Plugins/PluginSystem/ISourceAnalyzerPlugin.h>
-#include <QFileInfo>
-
-#include <QObject>
-#include <QString>
-#include <QStringList>
-#include <QMap>
 
 class IPluginUtility;
 

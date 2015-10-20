@@ -13,7 +13,8 @@
 #define MCAPIParser_H
 
 #include <IPXACTmodels/ComDefinition.h>
-#include <IPXACTmodels/ComInterface.h>
+#include <IPXACTmodels/kactusExtensions/ComInterface.h>
+#include <IPXACTmodels/Component/Component.h>
 
 #include <IPXACTmodels/Design/Design.h>
 
@@ -21,7 +22,6 @@
 
 #include <Plugins/PluginSystem/IPluginUtility.h>
 
-class Component;
 class CSourceWriter;
 
 //-----------------------------------------------------------------------------
@@ -40,7 +40,7 @@ public:
         QString handleName;
         QString scalarSize;
         QString transferType;
-        General::Direction direction;
+        DirectionTypes::Direction direction;
     };
 
     struct NodeData

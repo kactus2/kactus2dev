@@ -74,14 +74,14 @@ CompileConflictDialog::CompileConflictDialog(QVector<QSet<QSharedPointer<Makefil
 		{
 			conflictTable_.setItem(i, 0, new QTableWidgetItem( partisipant->fileName ) );
 			conflictTable_.setItem(i, 1, new QTableWidgetItem( partisipant->instanceName ) );
-			conflictTable_.setItem(i, 2, new QTableWidgetItem( partisipant->fileSet->getName() ) );
+			conflictTable_.setItem(i, 2, new QTableWidgetItem( partisipant->fileSet->name() ) );
 			conflictTable_.setItem(i, 4, new QTableWidgetItem( partisipant->compiler ) );
 			conflictTable_.setItem(i, 5, new QTableWidgetItem( partisipant->flags ) );
 
 			// The boolean variable include file is presented as a check box.
 			QTableWidgetItem* defCheckItem = new QTableWidgetItem();
 
-			if ( partisipant->file->getIncludeFile() )
+			if ( partisipant->file->isIncludeFile() )
 			{
 				defCheckItem->setCheckState(Qt::Checked);
 			}

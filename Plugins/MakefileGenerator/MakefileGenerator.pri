@@ -7,11 +7,20 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./MakefileGenerator.h \
+HEADERS += ./CompileConflictDialog.h \
+    ./MakefileGenerator.h \
     ./MakefileParser.h \
     ./makefilegenerator_global.h \
-    ./MakefileGeneratorPlugin.h
-SOURCES += ./MakefileGenerator.cpp \
+    ./MakefileGeneratorPlugin.h \
+    ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
+    ../../editors/ComponentEditor/common/SystemVerilogSyntax.h \
+    ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
+    ../../editors/ComponentEditor/common/ListParameterFinder.h
+SOURCES += ./CompileConflictDialog.cpp \
+    ./MakefileGenerator.cpp \
     ./MakefileGeneratorPlugin.cpp \
-    ./MakefileParser.cpp
+    ./MakefileParser.cpp \
+    ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
+    ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
+    ../../editors/ComponentEditor/common/ListParameterFinder.cpp
 RESOURCES += MakefileGenerator.qrc
