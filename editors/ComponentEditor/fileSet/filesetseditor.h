@@ -23,6 +23,7 @@
 
 class PluginManager;
 class LibraryInterface;
+class Component;
 
 //-----------------------------------------------------------------------------
 //! The editor to add/remove/edit file sets of a component.

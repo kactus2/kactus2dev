@@ -239,6 +239,7 @@ HEADERS += ./common/Global.h \
     ./editors/ApiDefinitionEditor/ApiFunctionModel.h \
     ./editors/ApiDefinitionEditor/ApiFunctionParameterDelegate.h \
     ./editors/ApiDefinitionEditor/ApiFunctionParameterModel.h \
+    ./editors/ComDefinitionEditor/ComPropertyColumns.h \
     ./editors/ComDefinitionEditor/ComDefinitionEditor.h \
     ./editors/ComDefinitionEditor/ComPropertyDelegate.h \
     ./editors/ComDefinitionEditor/ComPropertyEditor.h \
@@ -273,6 +274,7 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/parameters/Array/ArrayDelegate.h \
     ./editors/ComponentEditor/parameters/Array/ParameterArrayModel.h \
     ./editors/ComponentEditor/parameters/Array/ArrayView.h \
+    ./editors/ComponentEditor/otherClockDrivers/OtherClockDriverColumns.h \
     ./editors/ComponentEditor/otherClockDrivers/otherclockdriversmodel.h \
     ./editors/ComponentEditor/otherClockDrivers/clockdriversdelegate.h \
     ./editors/ComponentEditor/otherClockDrivers/otherclockdriverseditor.h \
@@ -326,6 +328,7 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/software/apiInterface/apiinterfacesmodel.h \
     ./editors/ComponentEditor/software/apiInterface/ApiInterfaceEditor.h \
     ./editors/ComponentEditor/software/apiInterface/apiinterfacesdelegate.h \
+    ./editors/ComponentEditor/software/comInterface/ComInterfaceColumns.h \
     ./editors/ComponentEditor/software/comInterface/cominterfaceseditor.h \
     ./editors/ComponentEditor/software/comInterface/cominterfacesmodel.h \
     ./editors/ComponentEditor/software/comInterface/ComInterfaceEditor.h \
@@ -361,6 +364,7 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacevisualizer.h \
     ./editors/ComponentEditor/addressSpaces/addressSpaceVisualizer/localaddrblockgraphitem.h \
     ./editors/ComponentEditor/addressSpaces/addressSpaceVisualizer/segmentgraphitem.h \
+    ./editors/ComponentEditor/cpus/CpuColumns.h \
     ./editors/ComponentEditor/cpus/addressspacerefdelegate.h \
     ./editors/ComponentEditor/cpus/cpusdelegate.h \
     ./editors/ComponentEditor/cpus/cpuseditor.h \
@@ -645,7 +649,11 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/vhdlGenerator/vhdlport.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./kactusGenerators/modelsimGenerator/modelsimgenerator.h
+    ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
+    ./editors/ComponentEditor/fileBuilders/FileBuilderColumns.h \
+    ./editors/ComponentEditor/fileSet/FileSetColumns.h \
+    ./editors/ComponentEditor/fileSet/file/FileColumns.h \
+    ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyColumns.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \

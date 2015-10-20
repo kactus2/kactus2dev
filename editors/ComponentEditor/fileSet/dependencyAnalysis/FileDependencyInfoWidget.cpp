@@ -11,7 +11,7 @@
 
 #include "FileDependencyInfoWidget.h"
 
-#include <IPXACTmodels/FileDependency.h>
+#include <IPXACTmodels/kactusExtensions/FileDependency.h>
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -21,13 +21,13 @@
 //-----------------------------------------------------------------------------
 // Function: FileDependencyInfoWidget::FileDependencyInfoWidget()
 //-----------------------------------------------------------------------------
-FileDependencyInfoWidget::FileDependencyInfoWidget(QWidget* parent) 
-    : QGroupBox(tr("Dependency Information"), parent),
-    descEdit_(this),
-    directionCheck_(tr("Bidirectional"), this),
-    lockedCheck_(tr("Locked"), this),
-    directionButton_(tr("Reverse Direction"), this),
-    dependency_(0)
+FileDependencyInfoWidget::FileDependencyInfoWidget(QWidget* parent):
+QGroupBox(tr("Dependency Information"), parent),
+descEdit_(this),
+directionCheck_(tr("Bidirectional"), this),
+lockedCheck_(tr("Locked"), this),
+directionButton_(tr("Reverse Direction"), this),
+dependency_(0)
 {
     directionCheck_.setFixedWidth(150);
     descEdit_.setMaximumHeight(80);
@@ -72,7 +72,7 @@ FileDependencyInfoWidget::~FileDependencyInfoWidget()
 //-----------------------------------------------------------------------------
 // Function: FileDependencyInfoWidget::setEditedDependency()
 //-----------------------------------------------------------------------------
-void FileDependencyInfoWidget::setEditedDependency(FileDependency* dependency)
+void FileDependencyInfoWidget::setEditedDependency(QSharedPointer<FileDependency> dependency)
 {
     dependency_ = dependency;
 
@@ -138,7 +138,7 @@ void FileDependencyInfoWidget::setEditedDependency(FileDependency* dependency)
 //-----------------------------------------------------------------------------
 // Function: FileDependencyInfoWidget::getEditedDependency()
 //-----------------------------------------------------------------------------
-FileDependency* FileDependencyInfoWidget::getEditedDependency() const
+QSharedPointer<FileDependency> FileDependencyInfoWidget::getEditedDependency() const
 {
     return dependency_;
 }
@@ -222,6 +222,9 @@ void FileDependencyInfoWidget::updateFileLabel()
     this->setTitle(fileLabelText);
 }
 
+//-----------------------------------------------------------------------------
+// Function: FileDependencyInfoWidget::lockEverything()
+//-----------------------------------------------------------------------------
 void FileDependencyInfoWidget::lockEverything(bool isLocked)
 {
     if (isLocked)

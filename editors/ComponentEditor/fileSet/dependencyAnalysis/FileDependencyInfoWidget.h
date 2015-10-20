@@ -44,13 +44,14 @@ public:
     /*!
      *  Returns the currently edited dependency.
      */
-    FileDependency* getEditedDependency() const;
+    QSharedPointer<FileDependency> getEditedDependency() const;
 
 signals:
+
     /*!
      *  Emitted when the dependency has been changed.
      */
-    void dependencyChanged(FileDependency* dependency);
+    void dependencyChanged(QSharedPointer<FileDependency> dependency);
 
 public slots:
     /*!
@@ -61,13 +62,32 @@ public slots:
      *      @remarks If the dependency is null, all contents of the widgets are cleared and
      *               the widgets are set to disabled mode.
      */
-    void setEditedDependency(FileDependency* dependency);
+    void setEditedDependency(QSharedPointer<FileDependency> dependency);
 
 private slots:
 
+    /*!
+     *  Handles a change in the direction..
+     *
+     *      @param [in] state   The new state for the direction.
+     */
     void directionCheckBoxChanged(int state);
+
+    /*!
+     *  Handles the change in the locked check.
+     *
+     *      @param [in] state   The new state.
+     */
     void lockedCheckChanged(int state);
+    
+    /*!
+     *  Handles the change in the description change.
+     */
     void descEditTextChanged();
+
+    /*!
+     *  Handles the reversing of the direction.
+     */
     void directionReversed();
 
 private:
@@ -75,7 +95,16 @@ private:
     FileDependencyInfoWidget(FileDependencyInfoWidget const& rhs);
     FileDependencyInfoWidget& operator=(FileDependencyInfoWidget const& rhs);
 
+    /*!
+     *  Update the file label.
+     */
     void updateFileLabel();
+
+    /*!
+     *  Locks / unlocks everything.
+     *
+     *      @param [in] isLocked    The lock status.
+     */
     void lockEverything(bool isLocked);
 
     //-----------------------------------------------------------------------------
@@ -95,8 +124,7 @@ private:
     QPushButton directionButton_;
 
     //! The currently edited dependency.
-    FileDependency* dependency_;
-
+    QSharedPointer<FileDependency> dependency_;
 };
 
 //-----------------------------------------------------------------------------

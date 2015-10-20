@@ -1,245 +1,288 @@
-/* 
- *  	Created on: 31.5.2012
- *      Author: Antti Kamppi
- * 		filename: filebuildersmodel.cpp
- *		Project: Kactus 2
- */
-
+//-----------------------------------------------------------------------------
+// File: filebuildersmodel.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 31.05.2012
+//
+// Description:
+// Model that contains the items to edit file builders.
+//-----------------------------------------------------------------------------
 
 #include "filebuildersmodel.h"
-#include "filebuildersdelegate.h"
+#include "FileBuilderColumns.h"
+
+#include <IPXACTmodels/common/FileBuilder.h>
 
 #include <QColor>
 
-FileBuildersModel::FileBuildersModel( QList<QSharedPointer<FileBuilder> >& fileBuilders, 
-									 QObject* parent ):
+//-----------------------------------------------------------------------------
+// Function: filebuildersmodel::FileBuildersModel()
+//-----------------------------------------------------------------------------
+FileBuildersModel::FileBuildersModel(QSharedPointer<QList<QSharedPointer<FileBuilder> > > fileBuilders,
+                                     QObject* parent):
 QAbstractTableModel(parent),
-fileBuilders_(fileBuilders) {
+fileBuilders_(fileBuilders)
+{
 
 }
 
-FileBuildersModel::~FileBuildersModel() {
+//-----------------------------------------------------------------------------
+// Function: filebuildersmodel::~FileBuildersModel()
+//-----------------------------------------------------------------------------
+FileBuildersModel::~FileBuildersModel()
+{
+
 }
 
-int FileBuildersModel::rowCount( const QModelIndex& parent /*= QModelIndex() */ ) const {
-	if (parent.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: filebuildersmodel::rowCount()
+//-----------------------------------------------------------------------------
+int FileBuildersModel::rowCount( const QModelIndex& parent /*= QModelIndex() */ ) const
+{
+	if (parent.isValid())
+    {
 		return 0;
 	}
-	return fileBuilders_.size();
+    return fileBuilders_->size();
 }
 
-int FileBuildersModel::columnCount( const QModelIndex& parent /*= QModelIndex() */ ) const {
-	if (parent.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: filebuildersmodel::columnCount()
+//-----------------------------------------------------------------------------
+int FileBuildersModel::columnCount( const QModelIndex& parent /*= QModelIndex() */ ) const
+{
+	if (parent.isValid())
+    {
 		return 0;
 	}
 
 	return 4;
 }
 
-QVariant FileBuildersModel::data( const QModelIndex& index, 
-								 int role /*= Qt::DisplayRole */ ) const {
-
-	if (!index.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: filebuildersmodel::data()
+//-----------------------------------------------------------------------------
+QVariant FileBuildersModel::data( const QModelIndex& index, int role /*= Qt::DisplayRole */ ) const
+{
+	if (!index.isValid())
+    {
 		return QVariant();
 	}
 
 	// if row is invalid
-	else if (index.row() < 0 || index.row() >= fileBuilders_.size()) {
+	else if (index.row() < 0 || index.row() >= fileBuilders_->size())
+    {
 		return QVariant();
 	}
 
-	if (Qt::DisplayRole == role) {
-		
-		switch (index.column()) {
-			case 0:
-				return fileBuilders_.at(index.row())->getFileType();
-			case 1:
-				return fileBuilders_.at(index.row())->getCommand();
-			case 2:
-				return fileBuilders_.at(index.row())->getFlags();
-			case 3:
-				return fileBuilders_.at(index.row())->getReplaceDefaultFlags();
-			default:
-				return QVariant();
-		}
+	if (Qt::DisplayRole == role)
+    {
+        if (index.column() == FileBuilderColumns::FILETYPE_COLUMN)
+        {
+            return fileBuilders_->at(index.row())->getFileType();
+        }
+        else if (index.column() == FileBuilderColumns::COMMAND_COLUMN)
+        {
+            return fileBuilders_->at(index.row())->getCommand();
+        }
+        else if (index.column() == FileBuilderColumns::FLAGS_COLUMN)
+        {
+            return fileBuilders_->at(index.row())->getFlags();
+        }
+        else if (index.column() == FileBuilderColumns::REPLACE_DEFAULT_COLUMN)
+        {
+            return fileBuilders_->at(index.row())->getReplaceDefaultFlags();
+        }
 	}
-	else if (Qt::CheckStateRole == role) {
-		if (index.column() == FileBuildersDelegate::REPLACE_DEFAULT_COLUMN) {
-			if (fileBuilders_.at(index.row())->getReplaceDefaultFlags()) {
-				return Qt::Checked;
-			}
-			else {
-				return Qt::Unchecked;
-			}
-		}
-		else {
-			return QVariant();
-		}
-	}
-	else if (Qt::BackgroundRole == role) {
-		if (index.column() == 0) {
+	else if (Qt::BackgroundRole == role)
+    {
+		if (index.column() == 0)
+        {
 			return QColor("LemonChiffon");
 		}
-		else {
+		else
+        {
 			return QColor("white");
 		}
 	}
-	else if (Qt::ForegroundRole == role) {
-		if (fileBuilders_.at(index.row())->isValid()) {
+	else if (Qt::ForegroundRole == role)
+    {
+// 		if (fileBuilders_->at(index.row())->isValid())
+//         {
 			return QColor("black");
-		}
-		else {
-			return QColor("red");
-		}
+// 		}
+// 		else
+//         {
+// 			return QColor("red");
+// 		}
 	}
-	// if unsupported role
-	else {
-		return QVariant();
-	}
+
+    return QVariant();
 }
 
-QVariant FileBuildersModel::headerData( int section, Qt::Orientation orientation, 
-									   int role /*= Qt::DisplayRole */ ) const {
-
-	if (orientation != Qt::Horizontal) {
+//-----------------------------------------------------------------------------
+// Function: filebuildersmodel::headerData()
+//-----------------------------------------------------------------------------
+QVariant FileBuildersModel::headerData( int section, Qt::Orientation orientation, int role /*= Qt::DisplayRole */ )
+    const
+{
+	if (orientation != Qt::Horizontal)
+    {
 		return QVariant();
 	}
 
-	if (Qt::DisplayRole == role) {
-
-		switch (section) {
-			case 0:
-				return tr("File type");
-			case 1:
-				return tr("Command");
-			case 2:
-				return tr("Flags");
-			case 3:
-				return tr("Replace default flags");
-			default:
-				return QVariant();
-		}
+	if (Qt::DisplayRole == role)
+    {
+        if (section == FileBuilderColumns::FILETYPE_COLUMN)
+        {
+            return tr("File type");
+        }
+        else if (section == FileBuilderColumns::COMMAND_COLUMN)
+        {
+            return tr("Command");
+        }
+        else if (section == FileBuilderColumns::FLAGS_COLUMN)
+        {
+            return tr("Flags");
+        }
+        else if (section == FileBuilderColumns::REPLACE_DEFAULT_COLUMN)
+        {
+            return tr("Replace default flags");
+        }
 	}
-	// if unsupported role
-	else
-		return QVariant();
+
+    return QVariant();
 }
 
-bool FileBuildersModel::setData( const QModelIndex& index, 
-								const QVariant& value, 
-								int role /*= Qt::EditRole */ ) {
-
-	if (!index.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: filebuildersmodel::setData()
+//-----------------------------------------------------------------------------
+bool FileBuildersModel::setData( const QModelIndex& index, const QVariant& value, int role /*= Qt::EditRole */ )
+{
+	if (!index.isValid())
+    {
 		return false;
 	}
 
 	// if row is invalid
-	else if (index.row() < 0 || index.row() >= fileBuilders_.size()) {
+	else if (index.row() < 0 || index.row() >= fileBuilders_->size())
+    {
 		return false;
 	}
 
-	if (Qt::EditRole == role) {
-
-		switch (index.column()) {
-			case 0: {
-				fileBuilders_.at(index.row())->setFileType(value.toString());
-				break;
-					}
-			case 1: {
-				fileBuilders_.at(index.row())->setCommand(value.toString());
-				break;
-					}
-			case 2: {
-				fileBuilders_.at(index.row())->setFlags(value.toString());
-				break;
-					}
-			case 3: {
-				fileBuilders_.at(index.row())->setReplaceDefaultFlags(value.toBool());
-				break;
-					}
-			default:
-				return false;
-		}
+	if (Qt::EditRole == role)
+    {
+        if (index.column() == FileBuilderColumns::FILETYPE_COLUMN)
+        {
+            fileBuilders_->at(index.row())->setFileType(value.toString());
+        }
+        else if (index.column() == FileBuilderColumns::COMMAND_COLUMN)
+        {
+            fileBuilders_->at(index.row())->setCommand(value.toString());
+        }
+        else if (index.column() == FileBuilderColumns::FLAGS_COLUMN)
+        {
+            fileBuilders_->at(index.row())->setFlags(value.toString());
+        }
+        else if (index.column() == FileBuilderColumns::REPLACE_DEFAULT_COLUMN)
+        {
+            fileBuilders_->at(index.row())->setReplaceDefaultFlags(value.toString());
+        }
 
 		emit contentChanged();
 		emit dataChanged(index, index);
 		return true;
 	}
-	else if (role == Qt::CheckStateRole) {
-		fileBuilders_.at(index.row())->setReplaceDefaultFlags(value == Qt::Checked);
-		emit dataChanged(index, index);
-		emit contentChanged();
-		return true;
-	}
-	// if unsupported role
-	else {
+	else
+    {
 		return false;
 	}
 }
 
-Qt::ItemFlags FileBuildersModel::flags( const QModelIndex& index ) const {
-
-	if (!index.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: filebuildersmodel::flags()
+//-----------------------------------------------------------------------------
+Qt::ItemFlags FileBuildersModel::flags( const QModelIndex& index ) const
+{
+	if (!index.isValid())
+    {
 		return Qt::NoItemFlags;
 	}
 	
 	Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 
 	// the replace default column is boolean and uses check box
-	if (index.column() == FileBuildersDelegate::REPLACE_DEFAULT_COLUMN) {
+	if (index.column() == FileBuilderColumns::REPLACE_DEFAULT_COLUMN)
+    {
 		flags |= Qt::ItemIsUserCheckable;
 	}
 	// others can be freely edited by user
-	else {
+	else
+    {
 		flags |= Qt::ItemIsEditable;
 	}
 
 	return flags;
 }
 
-bool FileBuildersModel::isValid() const {
-	
+//-----------------------------------------------------------------------------
+// Function: filebuildersmodel::isValid()
+//-----------------------------------------------------------------------------
+bool FileBuildersModel::isValid() const
+{
 	// check all file builders
-	foreach (QSharedPointer<FileBuilder> fileBuilder, fileBuilders_) {
-
+	foreach (QSharedPointer<FileBuilder> fileBuilder, *fileBuilders_)
+    {
 		// if one is invalid
-		if (!fileBuilder->isValid()) {
-			return false;
-		}
+// 		if (!fileBuilder->isValid()) {
+// 			return false;
+// 		}
 	}
 
 	return true;
 }
 
-void FileBuildersModel::onRemoveItem( const QModelIndex& index ) {
+//-----------------------------------------------------------------------------
+// Function: filebuildersmodel::onRemoveItem()
+//-----------------------------------------------------------------------------
+void FileBuildersModel::onRemoveItem( const QModelIndex& index )
+{
 	// don't remove anything if index is invalid
-	if (!index.isValid()) {
+	if (!index.isValid())
+    {
 		return;
 	}
 	// make sure the row number if valid
-	else if (index.row() < 0 || index.row() >= fileBuilders_.size()) {
+	else if (index.row() < 0 || index.row() >= fileBuilders_->size())
+    {
 		return;
 	}
 
 	// remove the specified item
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
-	fileBuilders_.removeAt(index.row());
+	fileBuilders_->removeAt(index.row());
 	endRemoveRows();
 
 	// tell also parent widget that contents have been changed
 	emit contentChanged();
 }
 
-void FileBuildersModel::onAddItem( const QModelIndex& index ) {
-	int row = fileBuilders_.size();
+//-----------------------------------------------------------------------------
+// Function: filebuildersmodel::onAddItem()
+//-----------------------------------------------------------------------------
+void FileBuildersModel::onAddItem( const QModelIndex& index )
+{
+	int row = fileBuilders_->size();
 
 	// if the index is valid then add the item to the correct position
-	if (index.isValid()) {
+	if (index.isValid())
+    {
 		row = index.row();
 	}
 
 	beginInsertRows(QModelIndex(), row, row);
-	fileBuilders_.insert(row, QSharedPointer<FileBuilder>(new FileBuilder()));
+	fileBuilders_->insert(row, QSharedPointer<FileBuilder>(new FileBuilder()));
 	endInsertRows();
 
 	// tell also parent widget that contents have been changed

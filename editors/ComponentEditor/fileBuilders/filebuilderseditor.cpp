@@ -1,20 +1,26 @@
-/* 
- *  	Created on: 31.5.2012
- *      Author: Antti Kamppi
- * 		filename: filebuilderseditor.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: filebuilderseditor.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 31.05.2012
+//
+// Description:
+// Editor to edit file builders.
+//-----------------------------------------------------------------------------
 
 #include "filebuilderseditor.h"
 #include "filebuildersdelegate.h"
+
+#include <IPXACTmodels/common/FileBuilder.h>
 
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
 // Function: FileBuildersEditor::FileBuildersEditor()
 //-----------------------------------------------------------------------------
-FileBuildersEditor::FileBuildersEditor(QList<QSharedPointer<FileBuilder> >& fileBuilders,
-									   QWidget* parent):
+FileBuildersEditor::FileBuildersEditor(QSharedPointer<QList<QSharedPointer<FileBuilder> > > fileBuilders,
+                                       QWidget* parent):
 QGroupBox(tr("Default file build commands"), parent),
 view_(this), 
 model_(fileBuilders, this), 
@@ -41,10 +47,9 @@ proxy_(this)
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(&view_);
 
-	connect(&model_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(errorMessage(const QString&)),
-		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
+        this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(noticeMessage(const QString&)),
 		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 

@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 31.5.2012
- *      Author: Antti Kamppi
- * 		filename: filebuilderseditor.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: filebuilderseditor.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 31.05.2012
+//
+// Description:
+// Editor to edit file builders.
+//-----------------------------------------------------------------------------
 
 #ifndef FILEBUILDERSEDITOR_H
 #define FILEBUILDERSEDITOR_H
@@ -15,63 +19,66 @@
 #include <QGroupBox>
 #include <QSortFilterProxyModel>
 #include <QTableView>
+#include <QObject>
 
-/*! \brief Editor to edit file builders.
- *
- */
-class FileBuildersEditor : public QGroupBox {
+class FileBuilder;
+
+//-----------------------------------------------------------------------------
+//! Editor to edit file builders.
+//-----------------------------------------------------------------------------
+class FileBuildersEditor : public QGroupBox
+{
 	Q_OBJECT
 
 public:
 
-	/*! \brief The constructor
+	/*!
+     *  The constructor.
 	 *
-	 * \param fileBuilders QList that contains the file builders to edit.
-	 * \param parent Pointer to the owner of this editor.
-	 *
-	*/
-	FileBuildersEditor(QList<QSharedPointer<FileBuilder> >& fileBuilders, QWidget* parent);
+	 *      @param [in] fileBuilders    QList that contains the file builders to edit.
+	 *      @param [in] parent          Pointer to the owner of this editor.
+	 */
+    FileBuildersEditor(QSharedPointer<QList<QSharedPointer<FileBuilder> > > fileBuilders, QWidget* parent);
 
-	//! \brief the destructor
+	//! The destructor.
 	virtual ~FileBuildersEditor();
 
-	/*! \brief Check for the validity of the edited file builders.
-	*
-	* \return True if all file builders are in valid state.
-	*/
+	/*!
+     *  Check for the validity of the edited file builders.
+	 *
+	 *      @return True if all file builders are in valid state.
+	 */
 	virtual bool isValid() const;
 
 public slots:
 
-	//! \brief Refresh the contents to display.
+	//! Refresh the contents to display.
 	void refresh();
 
 signals:
 
-	//! \brief Emit an error message to user.
+	//! Emit an error message to user.
 	void errorMessage(const QString& msg);
 
-	//! \brief Emit a notice to user.
+	//! Emit a notice to user.
 	void noticeMessage(const QString& msg);
 
-	//! \brief Inform that contents of this editor have changed.
+	//! Inform that contents of this editor have changed.
 	void contentChanged();
 
 private:
 
-	//! \brief No copying
+	//! No copying. No assignment.
 	FileBuildersEditor(const FileBuildersEditor& other);
-
-	//! No assignment
 	FileBuildersEditor& operator=(const FileBuildersEditor& other);
 
-	//! \brief The view that displays the parameters.
+	//! The view that displays the parameters.
 	EditableTableView view_;
 
-	//! \brief The model that holds the data to be displayed to the user
+	//! The model that holds the data to be displayed to the user.
 	FileBuildersModel model_;
 
-	//! \brief Pointer to the proxy that is used to sort the view
+	//! \brief Pointer to the proxy that is used to sort the view.
 	QSortFilterProxyModel proxy_;
 };
 

@@ -73,8 +73,8 @@ public:
      *      @param [in] fileType   The file type.
      *      @param [in] fileRefs   The file references.
      */
-    FileDependencyItem* addFile(Component* component, QString const& path,
-                                QString const& fileType, QList<File*> const& fileRefs);
+    QSharedPointer<FileDependencyItem> addFile(QSharedPointer<Component> component, QString const& path,
+        QString const& fileType, QList<QSharedPointer<File> > fileRefs);
 
     /*!
      *  Adds a folder item.
@@ -85,22 +85,22 @@ public:
      *      @param [in] index      Specifies the child insertion index for the folder.
      *                             If -1, the folder is appended at the end of the children.
      */
-    FileDependencyItem* addFolder(Component* component, QString const& path, ItemType type = ITEM_TYPE_FOLDER,
-                                  int index = -1);
+    QSharedPointer<FileDependencyItem> addFolder(QSharedPointer<Component> component, QString const& path,
+        ItemType type = ITEM_TYPE_FOLDER, int index = -1);
 
     /*!
      *  Inserts an item.
      *
      *      @param [in] item The item to insert.
      */
-    void insertItem(FileDependencyItem* item);
+    void insertItem(QSharedPointer<FileDependencyItem> item);
 
     /*!
      *  Removes an item.
      *
      *      @param [in] item The item to remove.
      */
-    void removeItem(FileDependencyItem* item);
+    void removeItem(QSharedPointer<FileDependencyItem> item);
 
     /*!
      *  Sets the status of the item.
@@ -129,7 +129,7 @@ public:
      *      @param [in] fileSets          The file sets where the file is assigned.
      *      @param [in] preserveMultiple  If true, the multiple file sets of child items are preserved.
      */
-    void setFileSets(QList<FileSet*> const& fileSets, bool preserveMultiple);
+    void setFileSets(QList<QSharedPointer<FileSet> > fileSets, bool preserveMultiple);
 
     /*!
      *  Refreshes the file references.
@@ -141,14 +141,7 @@ public:
      *
      *      @param [in] index The index of the child to retrieve.
      */
-    FileDependencyItem* getChild(int index);
-
-    /*!
-     *  Returns the child at the given index.
-     *
-     *      @param [in] index The index of the child to retrieve.
-     */
-    FileDependencyItem const* getChild(int index) const;
+    QSharedPointer<FileDependencyItem> getChild(int index) const;
 
     /*!
      *  Returns the number of child items.
@@ -163,7 +156,7 @@ public:
     /*!
      *  Returns the index of this item.
      */
-    int getIndex();
+    int getIndex(QSharedPointer<FileDependencyItem> item);
 
     /*!
      *  Returns the status of the item.
@@ -178,7 +171,7 @@ public:
     /*!
      *  Returns the file sets where the file is currently contained.
      */
-    QList<FileSet*> getFileSets() const;
+    QList<QSharedPointer<FileSet> > getFileSets() const;
 
     /*!
      *  Returns true if children have multiple (differing) filesets.
@@ -210,6 +203,8 @@ public:
      */
     bool isExternal() const;
 
+    QList<QSharedPointer<FileDependencyItem> > getChildItems() const;
+
 private:
     // Disable copying.
     FileDependencyItem(FileDependencyItem const& rhs);
@@ -224,8 +219,8 @@ private:
      *      @param [in] fileType   The file type.
      *      @param [in] fileRefs   The file references.
      */
-    FileDependencyItem(FileDependencyItem* parent, Component* component, QString const& path,
-                       QString const& fileType, QList<File*> const& fileRefs);
+    FileDependencyItem(FileDependencyItem* parent, QSharedPointer<Component> component,
+        QString const& path, QString const& fileType, QList<QSharedPointer<File> > fileRefs);
 
     /*!
      *  Constructor which creates a folder item.
@@ -235,8 +230,8 @@ private:
      *      @param [in] path       The path of the file/folder.
      *      @param [in] type       The folder item type.
      */
-    FileDependencyItem(FileDependencyItem* parent, Component* component, QString const& path,
-                       ItemType type = ITEM_TYPE_FOLDER);
+    FileDependencyItem(FileDependencyItem* parent, QSharedPointer<Component> component,
+        QString const& path, ItemType type = ITEM_TYPE_FOLDER);
     
     //-----------------------------------------------------------------------------
     // Data.
@@ -244,7 +239,7 @@ private:
 
     //! The parent item.
     FileDependencyItem* parent_;
-    
+
     //! The current status.
     FileDependencyStatus status_;
 
@@ -252,7 +247,8 @@ private:
     ItemType type_;
 
     //! The component being edited.
-    Component* component_;
+    //Component* component_;
+    QSharedPointer<Component> component_;
 
     //! The file path of the file/folder.
     QString path_;
@@ -264,11 +260,10 @@ private:
     QString fileType_;
 
     //! File pointers.
-    QList<File*> fileRefs_;
+    QList<QSharedPointer<File> > fileRefs_;
 
     //! The child items.
-    QList<FileDependencyItem*> children_;
-
+    QList<QSharedPointer<FileDependencyItem> > children_;
 };
 
 #endif // FILEDEPENDENCYITEM_H

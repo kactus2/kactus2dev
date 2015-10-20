@@ -251,7 +251,8 @@ FileDependency& FileDependency::operator=(FileDependency const& rhs)
 //-----------------------------------------------------------------------------
 // Function: FileDependency::setItemPointers()
 //-----------------------------------------------------------------------------
-void FileDependency::setItemPointers(FileDependencyItem* fileItem1, FileDependencyItem* fileItem2)
+void FileDependency::setItemPointers(QSharedPointer<FileDependencyItem> fileItem1,
+    QSharedPointer<FileDependencyItem> fileItem2)
 {
     fileItem1_ = fileItem1;
     fileItem2_ = fileItem2;
@@ -260,7 +261,7 @@ void FileDependency::setItemPointers(FileDependencyItem* fileItem1, FileDependen
 //-----------------------------------------------------------------------------
 // Function: FileDependency::getFileItem1()
 //-----------------------------------------------------------------------------
-FileDependencyItem* FileDependency::getFileItem1() const
+QSharedPointer<FileDependencyItem> FileDependency::getFileItem1() const
 {
     return fileItem1_;
 }
@@ -268,7 +269,7 @@ FileDependencyItem* FileDependency::getFileItem1() const
 //-----------------------------------------------------------------------------
 // Function: FileDependency::getFileItem2()
 //-----------------------------------------------------------------------------
-FileDependencyItem* FileDependency::getFileItem2() const
+QSharedPointer<FileDependencyItem> FileDependency::getFileItem2() const
 {
     return fileItem2_;
 }

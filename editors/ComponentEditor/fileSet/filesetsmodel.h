@@ -12,12 +12,12 @@
 #ifndef FILESETSMODEL_H
 #define FILESETSMODEL_H
 
-#include <IPXACTmodels/fileset.h>
-#include <IPXACTmodels/component.h>
-
 #include <QAbstractTableModel>
 #include <QList>
 #include <QSharedPointer>
+
+class FileSet;
+class Component;
 
 //-----------------------------------------------------------------------------
 //! The model class to manage the objects for FileSetsEditor.
@@ -151,7 +151,7 @@ private:
 	QSharedPointer<Component> component_;
 
 	//! The file sets to edit.
-	QList<QSharedPointer<FileSet> >& fileSets_;
+    QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets_;
 };
 
 #endif // FILESETSMODEL_H

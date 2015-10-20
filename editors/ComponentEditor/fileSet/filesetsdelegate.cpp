@@ -20,6 +20,7 @@
 FileSetsDelegate::FileSetsDelegate(QObject *parent):
 MultilineDescriptionDelegate(parent)
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -27,6 +28,7 @@ MultilineDescriptionDelegate(parent)
 //-----------------------------------------------------------------------------
 FileSetsDelegate::~FileSetsDelegate()
 {
+
 }
 
 //-----------------------------------------------------------------------------

@@ -188,17 +188,18 @@ public:
      *      @param [in] fileItem1 The file item corresponding to file1.
      *      @param [in] fileItem2 The file item corresponding to file2.
      */
-    void setItemPointers(FileDependencyItem* fileItem1, FileDependencyItem* fileItem2);
+    void setItemPointers(QSharedPointer<FileDependencyItem> fileItem1,
+        QSharedPointer<FileDependencyItem> fileItem2);
 
     /*!
      *  Returns the file item pointer for file1.
      */
-    FileDependencyItem* getFileItem1() const;
+    QSharedPointer<FileDependencyItem> getFileItem1() const;
 
     /*!
      *  Returns the file item pointer for file2.
      */
-    FileDependencyItem* getFileItem2() const;
+    QSharedPointer<FileDependencyItem> getFileItem2() const;
 
 private:
     //-----------------------------------------------------------------------------
@@ -227,8 +228,8 @@ private:
     Status status_;
 
     //! The file item pointers.
-    FileDependencyItem* fileItem1_;
-    FileDependencyItem* fileItem2_;
+    QSharedPointer<FileDependencyItem> fileItem1_;
+    QSharedPointer<FileDependencyItem> fileItem2_;
 };
 
 #endif // FILEDEPENDENCY_H

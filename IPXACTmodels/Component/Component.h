@@ -741,22 +741,6 @@ public:
     QList<QSharedPointer<File> > getFiles(QString const& fileName) const;
 
 	/*!
-     *  Get the files that are referenced by the specified file set.
-     *
-	 *      @param [in] fileSetName     The name of the file set that's files are needed.
-	 *
-	 *      @return QStringList containing the files referenced by the file set.
-	 */
-	QStringList getFiles(const QString fileSetName);
-
-	/*!
-     *  Get all files referenced by this component.
-	 *
-	 *      @return QStringList containing the file paths.
-	 */
-	QStringList getFiles() const;
-
-	/*!
      *  Find the files that match the specified file type.
 	 *
 	 *      @param [in] fileType    The file type to search within the files.

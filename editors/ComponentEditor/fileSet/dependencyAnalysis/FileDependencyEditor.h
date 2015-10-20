@@ -47,9 +47,8 @@ public:
      *      @param [in] pluginMgr     The plugin manager for accessing plugins.
      *      @param [in] parent        The parent widget.
      */
-    FileDependencyEditor(QSharedPointer<Component> component,
-                         QString const& basePath,
-                         PluginManager const& pluginMgr, QWidget* parent);
+    FileDependencyEditor(QSharedPointer<Component> component, QString const& basePath,
+        PluginManager const& pluginMgr, QWidget* parent);
 
     /*!
      *  Destructor.
@@ -171,6 +170,15 @@ private:
      */
     void finishScan();
     
+    /*!
+     *  Get the files matching the file path.
+     *
+     *      @param [in] filePath    The file path.
+     *
+     *      @return Files located within the given file path.
+     */
+    QList<QSharedPointer<File> > getFiles(QString const& filePath) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -212,10 +220,10 @@ private:
     QAction* runAnalysisAction_;
 
     //! Timer for file scanning.
-    QTimer* timer_;
+    QSharedPointer<QTimer> timer_;
 
     //! Progress widget for file scanning.
-    ScanProgressWidget* progWidget_;
+    QSharedPointer<ScanProgressWidget> progWidget_;
 };
 
 //-----------------------------------------------------------------------------

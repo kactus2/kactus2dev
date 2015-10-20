@@ -1370,37 +1370,6 @@ QList<QSharedPointer<File> > Component::getFiles(QString const& fileName) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: Component::getFiles()
-//-----------------------------------------------------------------------------
-QStringList Component::getFiles(const QString fileSetName)
-{
-    QStringList files;
-
-    foreach (QSharedPointer<FileSet> fileSet, *fileSets_)
-    {
-        if (fileSet->name() == fileSetName)
-        {
-            files += fileSet->getFileNames();
-        }
-    }
-    return files;
-}
-
-//-----------------------------------------------------------------------------
-// Function: Component::getFiles()
-//-----------------------------------------------------------------------------
-QStringList Component::getFiles() const
-{
-    QStringList files;
-
-    foreach (QSharedPointer<FileSet> fileSet, *fileSets_)
-    {
-        files += fileSet->getFileNames();
-    }
-    return files;
-}
-
-//-----------------------------------------------------------------------------
 // Function: Component::findFilesByFileType()
 //-----------------------------------------------------------------------------
 QStringList Component::findFilesByFileType( const QString& fileType ) const

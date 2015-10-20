@@ -10,34 +10,36 @@
 //-----------------------------------------------------------------------------
 
 #include "FileDependencyModel.h"
-
 #include "FileDependencyItem.h"
-
-#include <IPXACTmodels/fileset.h>
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/FileDependency.h>
+#include "FileDependencyColumns.h"
 
 #include <Plugins/PluginSystem/PluginManager.h>
 #include <Plugins/PluginSystem/ISourceAnalyzerPlugin.h>
 
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/FileSet.h>
+#include <IPXACTmodels/kactusExtensions/FileDependency.h>
+
 #include <QIcon>
-#include <QDir>
 #include <QCryptographicHash>
 
 //-----------------------------------------------------------------------------
 // Function: FileDependencyModel::FileDependencyModel()
 //-----------------------------------------------------------------------------
 FileDependencyModel::FileDependencyModel(PluginManager const& pluginMgr, QSharedPointer<Component> component,
-                                         QString const& basePath)
-    : pluginMgr_(pluginMgr),
-      component_(component),
-      basePath_(basePath),
-      root_(new FileDependencyItem()),
-      timer_(0),
-      curFolderIndex_(0),
-      curFileIndex_(0),
-      progressValue_(0),
-      dependencies_(component->getPendingFileDependencies())
+                                         QString const& basePath):
+pluginMgr_(pluginMgr),
+component_(component),
+basePath_(basePath),
+root_(new FileDependencyItem()),
+unspecifiedLocation_(),
+timer_(0),
+curFolderIndex_(0),
+curFileIndex_(0),
+progressValue_(0),
+usedPlugins_(),
+analyzerPluginMap_(),
+dependencies_(component->getPendingFileDependencies())
 {
     connect(this, SIGNAL(dependencyAdded(FileDependency*)), this, SIGNAL(dependenciesChanged()), Qt::UniqueConnection);
     connect(this, SIGNAL(dependencyChanged(FileDependency*)), this, SIGNAL(dependenciesChanged()), Qt::UniqueConnection);
@@ -49,43 +51,36 @@ FileDependencyModel::FileDependencyModel(PluginManager const& pluginMgr, QShared
 //-----------------------------------------------------------------------------
 FileDependencyModel::~FileDependencyModel()
 {
-    delete root_;
+    root_.clear();
 }
 
 //-----------------------------------------------------------------------------
 // Function: FileDependencyModel::headerData()
 //-----------------------------------------------------------------------------
 QVariant FileDependencyModel::headerData(int section, Qt::Orientation /*orientation*/,
-                                         int role /*= Qt::DisplayRole*/) const
+    int role /*= Qt::DisplayRole*/) const
 {
     if (role == Qt::DisplayRole)
     {
-        switch (section)
+        if (section == FileDependencyColumns::FILE_DEPENDENCY_COLUMN_STATUS)
         {
-        case FILE_DEPENDENCY_COLUMN_STATUS:
-            {
-                return tr("Status");
-            }
-
-        case FILE_DEPENDENCY_COLUMN_PATH:
-            {
-                return tr("Path");
-            }
-
-        case  FILE_DEPENDENCY_COLUMN_FILESETS:
-            {
-                return tr("Filesets");
-            }
-
-        case FILE_DEPENDENCY_COLUMN_CREATE:
-            {
-                return tr("#");
-            }
-
-        case FILE_DEPENDENCY_COLUMN_DEPENDENCIES:
-            {
-                return tr("Dependencies");
-            }
+            return tr("Status");
+        }
+        else if (section == FileDependencyColumns::FILE_DEPENDENCY_COLUMN_PATH)
+        {
+            return tr("Path");
+        }
+        else if (section == FileDependencyColumns::FILE_DEPENDENCY_COLUMN_FILESETS)
+        {
+            return tr("Filesets");
+        }
+        else if (section == FileDependencyColumns::FILE_DEPENDENCY_COLUMN_CREATE)
+        {
+            return tr("#");
+        }
+        else if (section == FileDependencyColumns::FILE_DEPENDENCY_COLUMN_DEPENDENCIES)
+        {
+            return tr("Dependencies");
         }
     }
     else if (role == Qt::TextAlignmentRole)
@@ -101,7 +96,7 @@ QVariant FileDependencyModel::headerData(int section, Qt::Orientation /*orientat
 //-----------------------------------------------------------------------------
 int FileDependencyModel::columnCount(const QModelIndex& /*parent = QModelIndex()*/) const
 {
-    return FILE_DEPENDENCY_COLUMN_COUNT;
+    return FileDependencyColumns::FILE_DEPENDENCY_COLUMN_COUNT;
 }
 
 //-----------------------------------------------------------------------------
@@ -124,21 +119,20 @@ int FileDependencyModel::rowCount(const QModelIndex& parent /*= QModelIndex()*/)
 //-----------------------------------------------------------------------------
 QModelIndex FileDependencyModel::index(int row, int column, const QModelIndex &parent /*= QModelIndex()*/) const
 {
-    FileDependencyItem* parentItem = root_;
+    FileDependencyItem* parentItem = root_.data();
 
     if (parent.isValid())
     {
         parentItem = static_cast<FileDependencyItem*>(parent.internalPointer());
     }
 
-    FileDependencyItem* child = parentItem->getChild(row);
-    
-    if (child == 0)
+    QSharedPointer<FileDependencyItem> child = parentItem->getChild(row);
+    if (child.isNull())
     {
         return QModelIndex();
     }
 
-    return createIndex(row, column, child);
+    return createIndex(row, column, child.data());
 }
 
 //-----------------------------------------------------------------------------
@@ -159,7 +153,14 @@ QModelIndex FileDependencyModel::parent(const QModelIndex &child) const
         return QModelIndex();
     }
 
-    int index = parent->getIndex();
+    int index = -1;
+    foreach (QSharedPointer<FileDependencyItem> childDependency, parent->getChildItems())
+    {
+        if (childDependency.data() == childItem)
+        {
+            index = parent->getIndex(childDependency);
+        }
+    }
 
     if (index < 0)
     {
@@ -183,33 +184,30 @@ bool FileDependencyModel::setData(const QModelIndex &index, const QVariant &valu
 
     if (role == Qt::EditRole)
     {
-        switch (index.column())
+        if (index.column() == FileDependencyColumns::FILE_DEPENDENCY_COLUMN_FILESETS)
         {
-        case FILE_DEPENDENCY_COLUMN_FILESETS:
+            QStringList fileSetNames = value.toStringList();
+
+            // Retrieve correct file sets from the component.
+            QList<QSharedPointer<FileSet> > fileSets;
+
+            foreach (QString const& name, fileSetNames)
             {
-                QStringList fileSetNames = value.toStringList();
-
-                // Retrieve correct file sets from the component.
-                QList<FileSet*> fileSets;
-
-                foreach (QString const& name, fileSetNames)
+                if (name != "[multiple]")
                 {
-                    if (name != "[multiple]")
-                    {
-                        QSharedPointer<FileSet> fileSet = component_->getFileSet(name);
-                        fileSets.append(fileSet.data());
-                    }
+                    QSharedPointer<FileSet> fileSet = component_->getFileSet(name);
+                    fileSets.append(fileSet);
                 }
-
-                // Determine whether multiple (colliding) filesets should be preserved.
-                bool multiple = fileSetNames.contains("[multiple]");
-
-                item->setFileSets(fileSets, multiple);
-
-                emit dataChanged(index, index);
-                emit contentChanged();
-                return true;
             }
+
+            // Determine whether multiple (colliding) filesets should be preserved.
+            bool multiple = fileSetNames.contains("[multiple]");
+
+            item->setFileSets(fileSets, multiple);
+
+            emit dataChanged(index, index);
+            emit contentChanged();
+            return true;
         }
     }
 
@@ -230,88 +228,78 @@ QVariant FileDependencyModel::data(const QModelIndex& index, int role /*= Qt::Di
 
     if (role == Qt::DisplayRole)
     {
-        switch (index.column())
+        if (index.column() == FileDependencyColumns::FILE_DEPENDENCY_COLUMN_PATH)
         {
-        case FILE_DEPENDENCY_COLUMN_PATH:
+            return item->getDisplayPath();
+        }
+        else if (index.column() == FileDependencyColumns::FILE_DEPENDENCY_COLUMN_FILESETS)
+        {
+            QList<QSharedPointer<FileSet> > fileSets = item->getFileSets();
+            bool multiple = item->hasMultipleFileSets();
+
+            if (item->isExternal())
             {
-                return item->getDisplayPath();
+                return QVariant();
             }
-
-        case FILE_DEPENDENCY_COLUMN_FILESETS:
+            else if (fileSets.isEmpty())
             {
-                QList<FileSet*> fileSets = item->getFileSets();
-                bool multiple = item->hasMultipleFileSets();
-
-                if (item->isExternal())
+                if (multiple)
                 {
-                    return QVariant();
-                }
-                else if (fileSets.empty())
-                {
-                    if (multiple)
-                    {
-                        return tr("[multiple]");
-                    }
-                    else
-                    {
-                        return tr("[none]");
-                    }
+                    return tr("[multiple]");
                 }
                 else
                 {
-                    QString str = fileSets[0]->name();
-
-                    for (int i = 1; i < fileSets.count(); ++i)
-                    {
-                        str += "; " + fileSets[i]->name();
-                    }
-
-                    if (multiple)
-                    {
-                        str += "; [multiple]";
-                    }
-
-                    return str;
+                    return tr("[none]");
                 }
+            }
+            else
+            {
+                QString str = fileSets[0]->name();
+
+                for (int i = 1; i < fileSets.count(); ++i)
+                {
+                    str += "; " + fileSets[i]->name();
+                }
+
+                if (multiple)
+                {
+                    str += "; [multiple]";
+                }
+
+                return str;
             }
         }
     }
     else if (role == Qt::DecorationRole)
     {
-        if (index.column() == FILE_DEPENDENCY_COLUMN_STATUS)
+        if (index.column() == FileDependencyColumns::FILE_DEPENDENCY_COLUMN_STATUS)
         {
             if (item->isExternal())
             {
                 return QVariant();
             }
 
-            switch (item->getStatus())
+            if (item->getStatus() == FILE_DEPENDENCY_STATUS_UNKNOWN)
             {
-            case FILE_DEPENDENCY_STATUS_UNKNOWN:
-                {
-                    return QIcon(":icons/common/graphics/traffic-light_gray.png");
-                }
-
-            case FILE_DEPENDENCY_STATUS_OK:
-                {
-                    return QIcon(":icons/common/graphics/traffic-light_green.png");
-                }
-
-            case FILE_DEPENDENCY_STATUS_CHANGED:
-                {
-                    return QIcon(":icons/common/graphics/traffic-light_yellow.png");
-                }
-
-            case FILE_DEPENDENCY_STATUS_CHANGED2:
-                {
-                    return QIcon(":icons/common/graphics/traffic-light_red.png");
-                }
+                return QIcon(":icons/common/graphics/traffic-light_gray.png");
+            }
+            else if (item->getStatus() == FILE_DEPENDENCY_STATUS_OK)
+            {
+                return QIcon(":icons/common/graphics/traffic-light_green.png");
+            }
+            else if (item->getStatus() == FILE_DEPENDENCY_STATUS_CHANGED)
+            {
+                return QIcon(":icons/common/graphics/traffic-light_yellow.png");
+            }
+            else if (item->getStatus() == FILE_DEPENDENCY_STATUS_CHANGED2)
+            {
+                return QIcon(":icons/common/graphics/traffic-light_red.png");
             }
         }
     }
     else if (role == Qt::SizeHintRole)
     {
-        if (index.column() == FILE_DEPENDENCY_COLUMN_STATUS)
+        if (index.column() == FileDependencyColumns::FILE_DEPENDENCY_COLUMN_STATUS)
         {
             return QSize(16, 16);
         }
@@ -351,7 +339,7 @@ QVariant FileDependencyModel::data(const QModelIndex& index, int role /*= Qt::Di
             }
         }
         
-        if (index.column() == FILE_DEPENDENCY_COLUMN_CREATE)
+        if (index.column() == FileDependencyColumns::FILE_DEPENDENCY_COLUMN_CREATE)
         {
             return QColor(240, 240, 240);
         }
@@ -365,7 +353,7 @@ QVariant FileDependencyModel::data(const QModelIndex& index, int role /*= Qt::Di
             fileSetNames.append("[multiple]");
         }
 
-        foreach (FileSet* fileSet, item->getFileSets())
+        foreach (QSharedPointer<FileSet> fileSet, item->getFileSets())
         {
             fileSetNames.append(fileSet->name());
         }
@@ -381,7 +369,7 @@ QVariant FileDependencyModel::data(const QModelIndex& index, int role /*= Qt::Di
 //-----------------------------------------------------------------------------
 bool FileDependencyModel::hasChildren(const QModelIndex& parent /*= QModelIndex()*/) const
 {
-    FileDependencyItem* parentItem = root_;
+    FileDependencyItem* parentItem = root_.data();
 
     if (parent.isValid())
     {
@@ -401,27 +389,28 @@ Qt::ItemFlags FileDependencyModel::flags(const QModelIndex& index) const
         return Qt::NoItemFlags;
     }
 
-    switch (index.column())
+    if (index.column() == FileDependencyColumns::FILE_DEPENDENCY_COLUMN_CREATE ||
+        index.column() == FileDependencyColumns::FILE_DEPENDENCY_COLUMN_DEPENDENCIES)
     {
-    case FILE_DEPENDENCY_COLUMN_CREATE:
-    case FILE_DEPENDENCY_COLUMN_DEPENDENCIES:
         return Qt::ItemIsSelectable;
+    }
 
-    case FILE_DEPENDENCY_COLUMN_FILESETS:
+    else if (index.column() == FileDependencyColumns::FILE_DEPENDENCY_COLUMN_FILESETS)
+    {
+        FileDependencyItem* item = static_cast<FileDependencyItem*>(index.internalPointer());
+
+        if (item->getType() == FileDependencyItem::ITEM_TYPE_FILE || item->getChildCount() > 0)
         {
-            FileDependencyItem* item = static_cast<FileDependencyItem*>(index.internalPointer());
-
-            if (item->getType() == FileDependencyItem::ITEM_TYPE_FILE || item->getChildCount() > 0)
-            {
-                return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
-            }
-            else
-            {
-                return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-            }
+            return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
         }
+        else
+        {
+            return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+        }
+    }
 
-    default:
+    else
+    {
         return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
     }
 }
@@ -438,8 +427,8 @@ void FileDependencyModel::startAnalysis()
     emit analysisProgressChanged(progressValue_ + 1);
 
     // Start the analysis timer.
-    timer_ = new QTimer(this);
-    connect(timer_, SIGNAL(timeout()), this, SLOT(performAnalysisStep()));
+    timer_ = QSharedPointer<QTimer> (new QTimer(this));
+    connect(timer_.data(), SIGNAL(timeout()), this, SLOT(performAnalysisStep()));
     timer_->start();
 }
 
@@ -451,8 +440,7 @@ void FileDependencyModel::stopAnalysis()
     if (timer_ != 0)
     {
         timer_->stop();
-        delete timer_;
-        timer_ = 0;
+        timer_.clear();
 
         // Reset the progress.
         emit analysisProgressChanged(0);
@@ -471,11 +459,11 @@ void FileDependencyModel::stopAnalysis()
 //-----------------------------------------------------------------------------
 // Function: FileDependencyModel::addFolder()
 //-----------------------------------------------------------------------------
-FileDependencyItem* FileDependencyModel::addFolder(QString const& path)
+QSharedPointer<FileDependencyItem> FileDependencyModel::addFolder(QString const& path)
 {
     if (root_->getChildCount() == 0 || root_->getChild(root_->getChildCount() - 1)->getPath() < path)
     {
-        return root_->addFolder(0, path);
+        return root_->addFolder(QSharedPointer<Component>(), path);
     }
     else
     {
@@ -483,11 +471,11 @@ FileDependencyItem* FileDependencyModel::addFolder(QString const& path)
         {
             if (root_->getChild(i)->getPath() > path)
             {
-                return root_->addFolder(0, path, FileDependencyItem::ITEM_TYPE_FOLDER, i);
+                return root_->addFolder(QSharedPointer<Component>(), path, FileDependencyItem::ITEM_TYPE_FOLDER, i);
             }
         }
 
-        return root_->addFolder(0, path);
+        return root_->addFolder(QSharedPointer<Component>(), path);
     }
 }
 
@@ -498,8 +486,8 @@ void FileDependencyModel::beginReset()
 {
     beginResetModel();
 
-    delete root_;
-    root_ = new FileDependencyItem();
+    root_.clear();
+    root_ = QSharedPointer<FileDependencyItem>(new FileDependencyItem());
 
     dependencies_.clear();
 }
@@ -512,11 +500,11 @@ void FileDependencyModel::endReset()
     // Add the existing dependencies to the model.
     foreach (QSharedPointer<FileDependency> dependency, component_->getFileDependencies())
     {
-        QSharedPointer<FileDependency> copy(new FileDependency(*dependency));
+        QSharedPointer<FileDependency> copy(new FileDependency(*dependency.data()));
         copy->setStatus(FileDependency::STATUS_UNCHANGED);
 
-        FileDependencyItem* fileItem1 = findFileItem(copy->getFile1());
-        FileDependencyItem* fileItem2 = findFileItem(copy->getFile2());
+        QSharedPointer<FileDependencyItem> fileItem1 = findFileItem(copy->getFile1());
+        QSharedPointer<FileDependencyItem> fileItem2 = findFileItem(copy->getFile2());
 
         // First item should always be valid. Otherwise the dependency should be discarded altogether.
         if (fileItem1 == 0)
@@ -538,7 +526,7 @@ void FileDependencyModel::endReset()
 
             // Search for a corresponding folder item.
             QString folderName = copy->getFile2().mid(0, endIndex + 1);
-            FileDependencyItem* parent = findFolderItem(folderName);
+            QSharedPointer<FileDependencyItem> parent = findFolderItem(folderName);
 
             // Create the folder item if not found.
             if (parent == 0)
@@ -552,18 +540,19 @@ void FileDependencyModel::endReset()
                     type = FileDependencyItem::ITEM_TYPE_UNKNOWN_LOCATION;
                 }
                 else if (root_->getChildCount() > 0 &&
-                         root_->getChild(root_->getChildCount() - 1)->getType() == FileDependencyItem::ITEM_TYPE_UNKNOWN_LOCATION)
+                         root_->getChild(root_->getChildCount() - 1)->getType() ==
+                         FileDependencyItem::ITEM_TYPE_UNKNOWN_LOCATION)
                 {
                     index = root_->getChildCount() - 1;
                 }
 
                 //beginInsertRows(getItemIndex(root_, 0), index, index);
-                parent = root_->addFolder(component_.data(), folderName, type, index);
+                parent = root_->addFolder(component_, folderName, type, index);
                 //endInsertRows();
             }
 
             //beginInsertRows(getItemIndex(parent, 0), parent->getChildCount(), parent->getChildCount());
-            fileItem2 = parent->addFile(component_.data(), copy->getFile2(), "", QList<File*>());
+            fileItem2 = parent->addFile(component_, copy->getFile2(), "", QList<QSharedPointer<File> > ());
             //endInsertRows();
         }
 
@@ -606,7 +595,7 @@ void FileDependencyModel::performAnalysisStep()
         // Run the dependency analysis for the current file.
         if (curFileIndex_ < root_->getChild(curFolderIndex_)->getChildCount())
         {
-            FileDependencyItem* fileItem = root_->getChild(curFolderIndex_)->getChild(curFileIndex_);
+            QSharedPointer<FileDependencyItem> fileItem = root_->getChild(curFolderIndex_)->getChild(curFileIndex_);
             analyze(fileItem);
 
             ++curFileIndex_;
@@ -617,9 +606,10 @@ void FileDependencyModel::performAnalysisStep()
         while (curFileIndex_ == root_->getChild(curFolderIndex_)->getChildCount())
         {
             // Update the status of the folder and continue to the next folder.
-            FileDependencyItem* folderItem = root_->getChild(curFolderIndex_);
+            QSharedPointer<FileDependencyItem> folderItem = root_->getChild(curFolderIndex_);
             folderItem->updateStatus();
-            emit dataChanged(getItemIndex(folderItem, 0), getItemIndex(folderItem, FILE_DEPENDENCY_COLUMN_DEPENDENCIES));
+            emit dataChanged(getItemIndex(folderItem, 0),
+                getItemIndex(folderItem, FileDependencyColumns::FILE_DEPENDENCY_COLUMN_DEPENDENCIES));
 
             ++curFolderIndex_;
             curFileIndex_ = 0;
@@ -665,7 +655,7 @@ int FileDependencyModel::getTotalStepCount() const
 //-----------------------------------------------------------------------------
 // Function: FileDependencyModel::updateData()
 //-----------------------------------------------------------------------------
-QModelIndex FileDependencyModel::getItemIndex(FileDependencyItem* item, int column) const
+QModelIndex FileDependencyModel::getItemIndex(QSharedPointer<FileDependencyItem> item, int column) const
 {
     if (item == 0)
     {
@@ -679,7 +669,7 @@ QModelIndex FileDependencyModel::getItemIndex(FileDependencyItem* item, int colu
         return QModelIndex();
     }
 
-    return createIndex(item->getIndex(), column, item);
+    return createIndex(parent->getIndex(item), column, item.data());
 }
 
 //-----------------------------------------------------------------------------
@@ -712,7 +702,7 @@ void FileDependencyModel::resolvePlugins()
 //-----------------------------------------------------------------------------
 // Function: FileDependencyModel::analyze()
 //-----------------------------------------------------------------------------
-void FileDependencyModel::analyze(FileDependencyItem* fileItem)
+void FileDependencyModel::analyze(QSharedPointer<FileDependencyItem> fileItem)
 {
     Q_ASSERT(fileItem != 0);
 
@@ -744,8 +734,7 @@ void FileDependencyModel::analyze(FileDependencyItem* fileItem)
         if (hash != lastHash)
         {
             // Retrieve the old dependencies.
-            QList<FileDependency*> oldDependencies;
-            findDependencies(fileItem->getPath(), oldDependencies);
+            QList<QSharedPointer<FileDependency> > oldDependencies = findDependencies(fileItem->getPath());
 
             // Scan the current dependencies.
             QList<FileDependencyDesc> dependencyDescs = plugin->getFileDependencies(component_.data(), 
@@ -760,8 +749,8 @@ void FileDependencyModel::analyze(FileDependencyItem* fileItem)
                     QFileInfo(QFileInfo(absPath).path() + "/" + desc.filename).canonicalFilePath());
 
                 // Retrieve the item pointers.
-                FileDependencyItem* fileItem1 = findFileItem(file1);
-                FileDependencyItem* fileItem2 = findFileItem(file2);
+                QSharedPointer<FileDependencyItem> fileItem1 = findFileItem(file1);
+                QSharedPointer<FileDependencyItem> fileItem2 = findFileItem(file2);
 
                 // First item should always be valid.
                 Q_ASSERT(fileItem1 != 0);
@@ -774,7 +763,7 @@ void FileDependencyModel::analyze(FileDependencyItem* fileItem)
                 }
 
                 // Check if the dependency already exists.
-                FileDependency* found = findDependency(oldDependencies, file1, file2);
+                QSharedPointer<FileDependency> found = findDependency(oldDependencies, file1, file2);
 
                 if (found == 0)
                 {
@@ -782,14 +771,14 @@ void FileDependencyModel::analyze(FileDependencyItem* fileItem)
                     if (fileItem2 == 0)
                     {
                         // Create the unspecified folder if not yet created.
-                        FileDependencyItem* folderItem = findFolderItem("$External$");
+                        QSharedPointer<FileDependencyItem> folderItem = findFolderItem("$External$");
 
                         if (folderItem == 0)
                         {
                             beginInsertRows(getItemIndex(root_, 0), root_->getChildCount(),
                                             root_->getChildCount());
 
-                            folderItem = root_->addFolder(component_.data(), "$External$",
+                            folderItem = root_->addFolder(component_, "$External$",
                                                           FileDependencyItem::ITEM_TYPE_UNKNOWN_LOCATION);
                             endInsertRows();
                         }
@@ -798,7 +787,7 @@ void FileDependencyModel::analyze(FileDependencyItem* fileItem)
 
                         beginInsertRows(getItemIndex(folderItem, 0),
                                         folderItem->getChildCount(), folderItem->getChildCount());
-                        fileItem2 = folderItem->addFile(component_.data(), file2, "", QList<File*>());
+                        fileItem2 = folderItem->addFile(component_, file2, "", QList<QSharedPointer<File> >());
                         endInsertRows();
                     }
 
@@ -825,7 +814,7 @@ void FileDependencyModel::analyze(FileDependencyItem* fileItem)
 
                         // Combine the descriptions.
                         found->setDescription(found->getDescription() + "\n" + desc.description);
-                        emit dependencyChanged(found);
+                        emit dependencyChanged(found.data());
 
                         dependenciesChanged = true;
                     }
@@ -837,7 +826,7 @@ void FileDependencyModel::analyze(FileDependencyItem* fileItem)
             }
 
             // Mark all existing old dependencies as removed.
-            foreach (FileDependency* dependency, oldDependencies)
+            foreach (QSharedPointer<FileDependency> dependency, oldDependencies)
             {
                 // If the dependency is a bidirectional one, change it to unidirectional one.
                 if (dependency->isBidirectional())
@@ -873,13 +862,13 @@ void FileDependencyModel::analyze(FileDependencyItem* fileItem)
                     }
 
                     dependenciesChanged = true;
-                    emit dependencyChanged(dependency);
+                    emit dependencyChanged(dependency.data());
                 }
                 else if (dependency->getFile1() == file1)
                 {
                     dependency->setStatus(FileDependency::STATUS_REMOVED);
                     dependenciesChanged = true;
-                    emit dependencyChanged(dependency);
+                    emit dependencyChanged(dependency.data());
                 }
             }
         }
@@ -927,14 +916,14 @@ void FileDependencyModel::analyze(FileDependencyItem* fileItem)
 
     fileItem->setLastHash(hash);
 
-    emit dataChanged(getItemIndex(fileItem, FILE_DEPENDENCY_COLUMN_STATUS),
-                     getItemIndex(fileItem, FILE_DEPENDENCY_COLUMN_STATUS));
+    emit dataChanged(getItemIndex(fileItem, FileDependencyColumns::FILE_DEPENDENCY_COLUMN_STATUS),
+                     getItemIndex(fileItem, FileDependencyColumns::FILE_DEPENDENCY_COLUMN_STATUS));
 }
 
 //-----------------------------------------------------------------------------
 // Function: FileDependencyModel::findItem()
 //-----------------------------------------------------------------------------
-FileDependencyItem* FileDependencyModel::findFileItem(QString const& path)
+QSharedPointer<FileDependencyItem> FileDependencyModel::findFileItem(QString const& path)
 {
     // Extract the folder part of the path.
     QFileInfo info(path);
@@ -949,13 +938,13 @@ FileDependencyItem* FileDependencyModel::findFileItem(QString const& path)
     // Search for a matching folder.
     for (int i = 0; i < root_->getChildCount(); ++i)
     {
-        FileDependencyItem* folderItem = root_->getChild(i);
+        QSharedPointer<FileDependencyItem> folderItem = root_->getChild(i);
 
         if (folderItem->getPath() == folderPath)
         {
             for (int j = 0; j < folderItem->getChildCount(); ++j)
             {
-                FileDependencyItem* fileItem = folderItem->getChild(j);
+                QSharedPointer<FileDependencyItem> fileItem = folderItem->getChild(j);
 
                 if (fileItem->getPath() == path)
                 {
@@ -965,25 +954,26 @@ FileDependencyItem* FileDependencyModel::findFileItem(QString const& path)
         }
     }
 
-    return 0;
+//     return 0;
+    return QSharedPointer<FileDependencyItem> ();
 }
 
 
 //-----------------------------------------------------------------------------
 // Function: FileDependencyModel::findExternalFileItem()
 //-----------------------------------------------------------------------------
-FileDependencyItem* FileDependencyModel::findExternalFileItem(QString& path)
+QSharedPointer<FileDependencyItem> FileDependencyModel::findExternalFileItem(QString& path)
 {
     // Search for the file from all external locations.
     for (int i = 0; i < root_->getChildCount(); ++i)
     {
-        FileDependencyItem* folderItem = root_->getChild(i);
+        QSharedPointer<FileDependencyItem> folderItem = root_->getChild(i);
 
         if (folderItem->isExternal())
         {
             for (int j = 0; j < folderItem->getChildCount(); ++j)
             {
-                FileDependencyItem* fileItem = folderItem->getChild(j);
+                QSharedPointer<FileDependencyItem> fileItem = folderItem->getChild(j);
 
                 // Check if the file's path ends with the path we're searching for.
                 if (fileItem->getPath().endsWith(path))
@@ -996,14 +986,14 @@ FileDependencyItem* FileDependencyModel::findExternalFileItem(QString& path)
         }
     }
 
-    return 0;
+    return QSharedPointer<FileDependencyItem>();
 }
 
 
 //-----------------------------------------------------------------------------
 // Function: FileDependencyModel::findFolderItem()
 //-----------------------------------------------------------------------------
-FileDependencyItem* FileDependencyModel::findFolderItem(QString const& path)
+QSharedPointer<FileDependencyItem> FileDependencyModel::findFolderItem(QString const& path)
 {
     // Search for a matching folder.
     for (int i = 0; i < root_->getChildCount(); ++i)
@@ -1014,16 +1004,16 @@ FileDependencyItem* FileDependencyModel::findFolderItem(QString const& path)
         }
     }
 
-    return 0;
+    return QSharedPointer<FileDependencyItem>();
 }
 
 //-----------------------------------------------------------------------------
 // Function: FileDependencyModel::findDependency()
 //-----------------------------------------------------------------------------
-FileDependency* FileDependencyModel::findDependency(QList<FileDependency*> const& dependencies,
-                                                    QString const& file1, QString const& file2) const
+QSharedPointer<FileDependency> FileDependencyModel::findDependency(
+    QList<QSharedPointer<FileDependency> > dependencies, QString const& file1, QString const& file2) const
 {
-    foreach (FileDependency* dependency, dependencies)
+    foreach (QSharedPointer<FileDependency> dependency, dependencies)
     {
         if ((dependency->getFile1() == file1 && dependency->getFile2() == file2) ||
             (dependency->getFile1() == file2 && dependency->getFile2() == file1))
@@ -1032,24 +1022,24 @@ FileDependency* FileDependencyModel::findDependency(QList<FileDependency*> const
         }
     }
 
-    return 0;
+    return QSharedPointer<FileDependency>();
 }
 
 //-----------------------------------------------------------------------------
 // Function: FileDependencyModel::findDependency()
 //-----------------------------------------------------------------------------
-FileDependency* FileDependencyModel::findDependency(QString const& file1, QString const& file2) const
+QSharedPointer<FileDependency> FileDependencyModel::findDependency(QString const& file1, QString const& file2) const
 {
     foreach (QSharedPointer<FileDependency> dependency, dependencies_)
     {
         if ((dependency->getFile1() == file1 && dependency->getFile2() == file2) ||
             (dependency->isBidirectional() && dependency->getFile1() == file2 && dependency->getFile2() == file1))
         {
-            return dependency.data();
+            return dependency;
         }
     }
 
-    return 0;
+    return QSharedPointer<FileDependency>();
 }
 
 //-----------------------------------------------------------------------------
@@ -1060,8 +1050,8 @@ void FileDependencyModel::addDependency(QSharedPointer<FileDependency> dependenc
     // Update the file item pointers if not yet up to date.
     if (dependency->getFileItem1() == 0 || dependency->getFileItem2() == 0)
     {
-        FileDependencyItem* fileItem1 = findFileItem(dependency->getFile1());
-        FileDependencyItem* fileItem2 = findFileItem(dependency->getFile2());
+        QSharedPointer<FileDependencyItem> fileItem1 = findFileItem(dependency->getFile1());
+        QSharedPointer<FileDependencyItem> fileItem2 = findFileItem(dependency->getFile2());
         dependency->setItemPointers(fileItem1, fileItem2);
     }
 
@@ -1072,13 +1062,13 @@ void FileDependencyModel::addDependency(QSharedPointer<FileDependency> dependenc
 //-----------------------------------------------------------------------------
 // Function: FileDependencyModel::removeDependency()
 //-----------------------------------------------------------------------------
-void FileDependencyModel::removeDependency(FileDependency* dependency)
+void FileDependencyModel::removeDependency(QSharedPointer<FileDependency> dependency)
 {
     foreach (QSharedPointer<FileDependency> dep, dependencies_)
     {
         if (dep == dependency)
         {
-            emit dependencyRemoved(dependency);
+            emit dependencyRemoved(dependency.data());
             dependencies_.removeOne(dep);
             break;
         }
@@ -1096,25 +1086,26 @@ QList< QSharedPointer<FileDependency> > FileDependencyModel::getDependencies() c
 //-----------------------------------------------------------------------------
 // Function: FileDependencyModel::findDependencies()
 //-----------------------------------------------------------------------------
-void FileDependencyModel::findDependencies(QString const& file, QList<FileDependency*>& dependencies) const
+QList<QSharedPointer<FileDependency> > FileDependencyModel::findDependencies(QString const& file) const
 {
-    dependencies.clear();
+    QList<QSharedPointer<FileDependency> > dependencies;
 
     foreach (QSharedPointer<FileDependency> dep, dependencies_)
     {
         if (dep->getFile1() == file || (/*dep->isBidirectional() &&*/ dep->getFile2() == file))
         {
-            dependencies.append(dep.data());
+            dependencies.append(dep);
         }
     }
+
+    return dependencies;
 }
 
 //-----------------------------------------------------------------------------
 // Function: FileDependencyModel::defineLocation()
 //-----------------------------------------------------------------------------
-void FileDependencyModel::defineLocation(FileDependencyItem* item, QString const& path)
+void FileDependencyModel::defineLocation(QSharedPointer<FileDependencyItem> item, QString const& path)
 {
-    // Only the location of externals files can be changed.
     if (!item->isExternal() || item->getType() != FileDependencyItem::ITEM_TYPE_FILE)
     {
         return;
@@ -1122,7 +1113,7 @@ void FileDependencyModel::defineLocation(FileDependencyItem* item, QString const
 
     // Search for a matching external folder.
     QString fullPath = "$" + path + "$";
-    FileDependencyItem* parent = findFolderItem(fullPath);
+    QSharedPointer<FileDependencyItem> parent = findFolderItem(fullPath);
 
     // Check if a new external folder needs to be created.
     if (parent == 0)
@@ -1131,8 +1122,7 @@ void FileDependencyModel::defineLocation(FileDependencyItem* item, QString const
 
         beginInsertRows(getItemIndex(root_, 0), index, index);
 
-        parent = root_->addFolder(component_.data(), fullPath,
-                                  FileDependencyItem::ITEM_TYPE_EXTERNAL_LOCATION, index);
+        parent = root_->addFolder(component_, fullPath, FileDependencyItem::ITEM_TYPE_EXTERNAL_LOCATION, index);
         endInsertRows();
     }
 
@@ -1142,7 +1132,7 @@ void FileDependencyModel::defineLocation(FileDependencyItem* item, QString const
 //-----------------------------------------------------------------------------
 // Function: FileDependencyModel::resetLocation()
 //-----------------------------------------------------------------------------
-void FileDependencyModel::resetLocation(FileDependencyItem* item)
+void FileDependencyModel::resetLocation(QSharedPointer<FileDependencyItem> item)
 {
     // Only the location of externals files can be changed.
     if (!item->isExternal() || item->getType() != FileDependencyItem::ITEM_TYPE_FILE)
@@ -1159,13 +1149,16 @@ void FileDependencyModel::resetLocation(FileDependencyItem* item)
 //-----------------------------------------------------------------------------
 // Function: FileDependencyModel::moveItem()
 //-----------------------------------------------------------------------------
-void FileDependencyModel::moveItem(FileDependencyItem* item, FileDependencyItem* parent)
+void FileDependencyModel::moveItem(QSharedPointer<FileDependencyItem> item,
+    QSharedPointer<FileDependencyItem> parent)
 {
-    FileDependencyItem* oldParent = item->getParent();
+    FileDependencyItem* oldParentPointer = item->getParent();
+    QSharedPointer<FileDependencyItem> oldParent = transformToSharedPointer(oldParentPointer, root_);
+
     QString oldPath = item->getPath();
 
     // Move the item into its new parent.
-    beginRemoveRows(getItemIndex(oldParent, 0), item->getIndex(), item->getIndex());
+    beginRemoveRows(getItemIndex(oldParent, 0), oldParent->getIndex(item), oldParent->getIndex(item));
     oldParent->removeItem(item);
     endRemoveRows();
 
@@ -1177,9 +1170,11 @@ void FileDependencyModel::moveItem(FileDependencyItem* item, FileDependencyItem*
     if (oldParent->getChildCount() == 0 &&
         oldParent->getType() == FileDependencyItem::ITEM_TYPE_EXTERNAL_LOCATION)
     {
-        beginRemoveRows(getItemIndex(root_, 0), oldParent->getIndex(), oldParent->getIndex());
+        beginRemoveRows(getItemIndex(root_, 0), oldParent->getIndex(item), oldParent->getIndex(item));
         root_->removeItem(oldParent);
-        delete oldParent;
+        delete oldParentPointer;
+        oldParentPointer = 0;
+        oldParent.clear();
         endRemoveRows();
     }
 
@@ -1189,7 +1184,7 @@ void FileDependencyModel::moveItem(FileDependencyItem* item, FileDependencyItem*
 //-----------------------------------------------------------------------------
 // Function: FileDependencyModel::onFileRelocated()
 //-----------------------------------------------------------------------------
-void FileDependencyModel::onExternalRelocated(FileDependencyItem* item, QString const& oldPath)
+void FileDependencyModel::onExternalRelocated(QSharedPointer<FileDependencyItem> item, QString const& oldPath)
 {
     foreach (QSharedPointer<FileDependency> dependency, dependencies_)
     {
@@ -1209,7 +1204,7 @@ void FileDependencyModel::refresh()
 {
     for (int i = 0; i < root_->getChildCount(); ++i)
     {
-        FileDependencyItem* folderItem = root_->getChild(i);
+        QSharedPointer<FileDependencyItem> folderItem = root_->getChild(i);
 
         if (folderItem->getType() == FileDependencyItem::ITEM_TYPE_FOLDER)
         {
@@ -1221,5 +1216,33 @@ void FileDependencyModel::refresh()
     }
 
     emit dataChanged(getItemIndex(root_->getChild(0), 0),
-                     getItemIndex(root_->getChild(root_->getChildCount() - 1), FILE_DEPENDENCY_COLUMN_DEPENDENCIES));
+                     getItemIndex(root_->getChild(root_->getChildCount() - 1),
+                     FileDependencyColumns::FILE_DEPENDENCY_COLUMN_DEPENDENCIES));
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileDependencyModel::transformToSharedPointer()
+//-----------------------------------------------------------------------------
+QSharedPointer<FileDependencyItem> FileDependencyModel::transformToSharedPointer(FileDependencyItem* targetItem,
+    QSharedPointer<FileDependencyItem> currentItem)
+{
+    if (currentItem.data() == targetItem)
+    {
+        return currentItem;
+    }
+
+    foreach (QSharedPointer<FileDependencyItem> childItem, currentItem->getChildItems())
+    {
+        if (childItem.data() == targetItem)
+        {
+            return childItem;
+        }
+        else
+        {
+            transformToSharedPointer(targetItem, currentItem);
+        }
+    }
+
+    // Not found.
+    return QSharedPointer<FileDependencyItem>();
 }

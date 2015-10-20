@@ -1,28 +1,32 @@
-/* 
- *
- *  Created on: 3.2.2011
- *      Author: Antti Kamppi
- * 		filename: fileseteditor.cpp
- */
+//-----------------------------------------------------------------------------
+// File: fileseteditor.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 03.02.2011
+//
+// Description:
+// FileSetEditor is an editor used to edit the details of a FileSet.
+//-----------------------------------------------------------------------------
 
 #include "fileseteditor.h"
+
 #include <library/LibraryManager/libraryinterface.h>
-#include <IPXACTmodels/component.h>
+
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/FileSet.h>
 
 #include <QStringList>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
-#include <QSizePolicy>
 
 //-----------------------------------------------------------------------------
 // Function: FileSetEditor::FileSetEditor()
 //-----------------------------------------------------------------------------
-FileSetEditor::FileSetEditor(LibraryInterface* handler,
-							 QSharedPointer<Component> component,
-							 QSharedPointer<FileSet> fileSet, 
-							 QWidget *parent ):
+FileSetEditor::FileSetEditor(LibraryInterface* handler, QSharedPointer<Component> component,
+                             QSharedPointer<FileSet> fileSet, QWidget *parent ):
 ItemEditor(component, handler, parent),
-baseLocation_(handler->getPath(*component->getVlnv())),
+baseLocation_(handler->getPath(component->getVlnv())),
 fileSet_(fileSet), 
 nameEditor_(fileSet, this),
 groupsEditor_(tr("Group identifiers"), this),
@@ -53,6 +57,7 @@ dependencies_(tr("Dependent directories"), handler, component, this)
 //-----------------------------------------------------------------------------
 FileSetEditor::~FileSetEditor()
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -72,14 +77,14 @@ void FileSetEditor::refresh()
 	nameEditor_.refresh();
 
 	// initialize groups 
-	groupsEditor_.initialize(fileSet_->getGroups());
+	groupsEditor_.initialize(*fileSet_->getGroups().data());
 
 	files_.refresh();
 
 	fileBuilderEditor_.refresh();
 
 	// initialize dependencies
-	dependencies_.initialize(fileSet_->getDependencies());
+	dependencies_.initialize(*fileSet_->getDependencies().data());
 }
 
 //-----------------------------------------------------------------------------
@@ -87,7 +92,13 @@ void FileSetEditor::refresh()
 //-----------------------------------------------------------------------------
 void FileSetEditor::onGroupsChange()
 {
-	fileSet_->setGroups(groupsEditor_.items());
+    QStringList groupList = groupsEditor_.items();
+    fileSet_->getGroups()->clear();
+    foreach (QString group, groupList)
+    {
+        fileSet_->getGroups()->append(group);
+    }
+
 	emit contentChanged();
 }
 
@@ -96,7 +107,12 @@ void FileSetEditor::onGroupsChange()
 //-----------------------------------------------------------------------------
 void FileSetEditor::onDependenciesChange()
 {
-	fileSet_->setDependencies(dependencies_.items());
+    QStringList dependencies = dependencies_.items();
+    fileSet_->getDependencies()->clear();
+    foreach (QString dependency, dependencies)
+    {
+        fileSet_->getDependencies()->append(dependency);
+    }
 	emit contentChanged();
 }
 
@@ -112,9 +128,9 @@ void FileSetEditor::showEvent( QShowEvent* event )
 //-----------------------------------------------------------------------------
 // Function: FileSetEditor::getFileSet()
 //-----------------------------------------------------------------------------
-FileSet* FileSetEditor::getFileSet()
+QSharedPointer<FileSet> FileSetEditor::getFileSet()
 {
-    return fileSet_.data();
+    return fileSet_;
 }
 
 //-----------------------------------------------------------------------------

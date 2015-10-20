@@ -24,20 +24,6 @@ class Component;
 class PluginManager;
 
 //-----------------------------------------------------------------------------
-//! Dependency headers.
-//-----------------------------------------------------------------------------
-enum FileDependencyColumn
-{
-    FILE_DEPENDENCY_COLUMN_TREE = 0,
-    FILE_DEPENDENCY_COLUMN_STATUS,
-    FILE_DEPENDENCY_COLUMN_PATH,
-    FILE_DEPENDENCY_COLUMN_FILESETS,
-    FILE_DEPENDENCY_COLUMN_CREATE,
-    FILE_DEPENDENCY_COLUMN_DEPENDENCIES,
-    FILE_DEPENDENCY_COLUMN_COUNT
-};
-
-//-----------------------------------------------------------------------------
 //! The data model for the file dependencies.
 //-----------------------------------------------------------------------------
 class FileDependencyModel : public QAbstractItemModel
@@ -53,7 +39,7 @@ public:
      *      @param [in] basePath   The component's base path.
      */
     FileDependencyModel(PluginManager const& pluginMgr, QSharedPointer<Component> component,
-                        QString const& basePath);
+        QString const& basePath);
 
     /*!
      *  Destructor.
@@ -77,7 +63,7 @@ public:
      *
      *      @param [in] dependency The file dependency to remove.
      */
-    void removeDependency(FileDependency* dependency);
+    void removeDependency(QSharedPointer<FileDependency> dependency);
 
     /*!
      *  Defines the location for the given item.
@@ -85,14 +71,14 @@ public:
      *      @param [in] item  The item whose location to define.
      *      @param [in] path  The path where the file resides.
      */
-    void defineLocation(FileDependencyItem* item, QString const& path);
+    void defineLocation(QSharedPointer<FileDependencyItem> item, QString const& path);
 
     /*!
      *  Resets the location of the given item.
      *
      *      @param [in] item  The item whose location to reset.
      */
-    void resetLocation(FileDependencyItem* item);
+    void resetLocation(QSharedPointer<FileDependencyItem> item);
 
     /*!
      *  Searches for a file item with the given path.
@@ -101,7 +87,7 @@ public:
      *
      *      @return The corresponding item of null if not found in the model.
      */
-    FileDependencyItem* findFileItem(QString const& path);
+    QSharedPointer<FileDependencyItem> findFileItem(QString const& path);
 
     /*!
      *  Searches for an external file item with the given path.
@@ -110,7 +96,7 @@ public:
      *
      *      @return The corresponding item of null if not found in the model.
      */
-    FileDependencyItem* findExternalFileItem(QString& path);
+    QSharedPointer<FileDependencyItem> findExternalFileItem(QString& path);
 
     /*!
      *  Searches for a folder item with the given path.
@@ -119,7 +105,7 @@ public:
      *
      *      @return The corresponding item of null if not found in the model.
      */
-    FileDependencyItem* findFolderItem(QString const& path);
+    QSharedPointer<FileDependencyItem> findFolderItem(QString const& path);
 
     /*!
      *  Searches for a dependency between the given files.
@@ -127,14 +113,14 @@ public:
      *      @param [in] file1 The first file.
      *      @param [in] file2 The second file.
      */
-    FileDependency* findDependency(QString const& file1, QString const& file2) const;
+    QSharedPointer<FileDependency> findDependency(QString const& file1, QString const& file2) const;
 
     /*!
      *  Returns the model index of the given file dependency item.
      *
      *      @param [in] item The file dependency item.
      */
-    QModelIndex getItemIndex(FileDependencyItem* item, int column) const;
+    QModelIndex getItemIndex(QSharedPointer<FileDependencyItem> item, int column) const;
 
     /*!
      *  Begins reset.
@@ -161,7 +147,7 @@ public:
      *
      *      @param [in] path The folder path.
      */
-    FileDependencyItem* addFolder(QString const& path);
+    QSharedPointer<FileDependencyItem> addFolder(QString const& path);
 
     /*!
      *  Return header data for the given header column.
@@ -172,8 +158,7 @@ public:
      *
      *      @return QVariant containing the data.
     */
-    virtual QVariant headerData(int section, Qt::Orientation orientation,
-    		                    int role = Qt::DisplayRole) const;
+    virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
     /*!
      *  Returns the number of columns in this model.
@@ -193,51 +178,63 @@ public:
     */
     virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
 
-    /*! \brief Get the model index of the specified object.
+    /*!
+     *  Get the model index of the specified object.
      *
-     * \param row Row number of the object.
-     * \param column Column number of the object.
-     * \param parent Model index of the parent of the object.
+     *      @param [in] row     Row number of the object.
+     *      @param [in] column  Column number of the object.
+     *      @param [in] parent  Model index of the parent of the object.
      *
-     * \return QModelIndex that identifies the object.
-    */
-    virtual QModelIndex index(int row, int column,
-    		const QModelIndex &parent = QModelIndex()) const;
+     *      @return QModelIndex that identifies the object.
+     */
+    virtual QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
 
-    /*! \brief Get the model index of the parent of the object
+    /*!
+     *  Get the model index of the parent of the object.
      *
-     * \param child Model index that identifies the child of the object.
+     *      @param [in] child   Model index that identifies the child of the object.
      *
-     * \return QModelIndex that identifies the parent of the given object.
-    */
+     *      @return QModelIndex that identifies the parent of the given object.
+     */
     virtual QModelIndex parent(const QModelIndex &child) const;
 
-    /*! \brief Get the data associated with given object.
+    /*!
+     *  Get the data associated with given object.
      *
-     * \param index Model index that identifies the object that's data is wanted.
-     * \param role Specifies the type of data wanted.
+     *      @param [in] index   Model index that identifies the object that's data is wanted.
+     *      @param [in] role    Specifies the type of data wanted.
      *
-     * \return QVariant Containing the requested data.
-    */
-    virtual QVariant data(const QModelIndex& index,
-    		              int role = Qt::DisplayRole) const;
+     *      @return QVariant Containing the requested data.
+     */
+    virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
 
+    /*!
+     *  Set the data associated with the given object.
+     *
+     *      @param [in] index   Model index identifying the object that's data is wanted.
+     *      @param [in] value   The new value to be set.
+     *      @param [in] role    Specifies the type of data inserted.
+     *
+     *      @return True, if the data was set successfully, false otherwise.
+     */
     virtual bool setData(const QModelIndex &index, const QVariant &value, int role /* = Qt::EditRole */);
 
-    /*! \brief Does the specified item have child items or not.
+    /*!
+     *  Does the specified item have child items or not.
      *
-     * \param parent Model index identifying the object that's children are asked.
+     *      @param [in] parent  Model index identifying the object that's children are asked.
      *
-     * \return True if object has child objects.
-    */
+     *      @return True if object has child objects.
+     */
     virtual bool hasChildren(const QModelIndex& parent = QModelIndex()) const;
 
-    /*! \brief Get the flags that identify possible methods for given object.
+    /*!
+     *  Get the flags that identify possible methods for given object.
      *
-     * \param index Model index identifying the object that's flags are requested.
+     *      @param [in] index   Model index identifying the object that's flags are requested.
      *
-     * \return Qt::ItemFlags that specify how the object can be handled.
-    */
+     *      @return Qt::ItemFlags that specify how the object can be handled.
+     */
     Qt::ItemFlags flags(const QModelIndex& index) const;
 
     /*!
@@ -308,7 +305,7 @@ private:
      *
      *      @param [in] fileItem The file item to analyze.
      */
-    void analyze(FileDependencyItem* fileItem);
+    void analyze(QSharedPointer<FileDependencyItem> fileItem);
 
     /*!
      *  Searches for a dependency between the given files in the given container.
@@ -317,8 +314,8 @@ private:
      *      @param [in] file1         File path of the first file.
      *      @param [in] file2         File path of the second file.
      */
-    FileDependency* findDependency(QList<FileDependency*> const& dependencies,
-                                   QString const& file1, QString const& file2) const;
+    QSharedPointer<FileDependency> findDependency(QList<QSharedPointer<FileDependency> > dependencies,
+        QString const& file1, QString const& file2) const;
 
     /*!
      *  Searches for all dependencies that reference the given file.
@@ -326,7 +323,7 @@ private:
      *      @param [in]  file          File path of the file.
      *      @param [out] dependencies  The found dependencies.
      */
-    void findDependencies(QString const& file, QList<FileDependency*>& dependencies) const;
+    QList<QSharedPointer<FileDependency> > findDependencies(QString const& file) const;
 
     /*!
      *  Moves the item to the new parent.
@@ -334,13 +331,22 @@ private:
      *      @param [in] item    The item to move.
      *      @param [in] parent  The new parent for the item.
      */
-    void moveItem(FileDependencyItem* item, FileDependencyItem* parent);
+    void moveItem(QSharedPointer<FileDependencyItem> item, QSharedPointer<FileDependencyItem> parent);
 
     /*!
      *  Updates dependencies due to file relocation.
      */
-    void onExternalRelocated(FileDependencyItem* item, QString const& oldPath);
-    
+    void onExternalRelocated(QSharedPointer<FileDependencyItem> item, QString const& oldPath);
+
+    /*!
+     *  Get the shared pointer of a target file dependency item.
+     *
+     *      @param [in] targetItem      Target file dependency item.
+     *      @param [in] currentItem     The currently searched file dependency item.
+     */
+    QSharedPointer<FileDependencyItem> transformToSharedPointer(FileDependencyItem* targetItem,
+        QSharedPointer<FileDependencyItem> currentItem);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -355,13 +361,13 @@ private:
     QString basePath_;
 
     //! The dependency tree root.
-    FileDependencyItem* root_;
+    QSharedPointer<FileDependencyItem> root_;
 
     //! The externals item (for fast access).
-    FileDependencyItem* unspecifiedLocation_;
+    QSharedPointer<FileDependencyItem> unspecifiedLocation_;
 
     //! The timer for running the analysis.
-    QTimer* timer_;
+    QSharedPointer<QTimer> timer_;
 
     //! The current folder scan index.
     int curFolderIndex_;
@@ -379,7 +385,7 @@ private:
     QMap<QString, ISourceAnalyzerPlugin*> analyzerPluginMap_;
 
     //! Dependency list.
-    QList< QSharedPointer<FileDependency> >& dependencies_;
+    QList<QSharedPointer<FileDependency> > dependencies_;
 };
 
 //-----------------------------------------------------------------------------
