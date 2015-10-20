@@ -12,7 +12,7 @@
 #include "ParameterArrayModel.h"
 #include "ArrayColumns.h"
 
-#include <IPXACTmodels/Enumeration.h>
+#include <IPXACTmodels/common/Enumeration.h>
 
 #include <QColor>
 

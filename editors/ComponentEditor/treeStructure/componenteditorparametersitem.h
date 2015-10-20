@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 9.5.2012
- *      Author: Antti Kamppi
- * 		filename: componenteditorparametersitem.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: componenteditorparametersitem.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 09.05.2012
+//
+// Description:
+// The parameters-item in the component editor navigation tree.
+//-----------------------------------------------------------------------------
 
 #ifndef COMPONENTEDITORPARAMETERITEM_H
 #define COMPONENTEDITORPARAMETERITEM_H
@@ -12,10 +16,14 @@
 
 #include <IPXACTmodels/common/Parameter.h>
 
-/*! \brief The parameters-item in the component editor navigation tree.
- *
- */
-class ComponentEditorParametersItem : public ComponentEditorItem {
+class Component;
+class Choice;
+
+//-----------------------------------------------------------------------------
+//! The parameters-item in the component editor navigation tree.
+//-----------------------------------------------------------------------------
+class ComponentEditorParametersItem : public ComponentEditorItem
+{
 	Q_OBJECT
 
 public:
@@ -39,49 +47,51 @@ public:
         QSharedPointer<ExpressionFormatter> expressionFormatter,
 		ComponentEditorItem* parent);
 
-	//! \brief The destructor
+	//! The destructor.
 	virtual ~ComponentEditorParametersItem();
 
-	/*! \brief Get the font to be used for text of this item.
-	*
-	* The font is bold, if parameters exist, otherwise not bold.
-	*
-	* \return QFont instance that defines the font to be used.
-	*/
+	/*!
+     *  Get the font to be used for text of this item.
+	 *
+	 *      @return QFont instance that defines the font to be used.
+	 */
 	virtual QFont getFont() const;
 
-	/*! \brief Get the tool tip for the item.
+	/*!
+     *  @Get the tool tip for the item.
 	 * 
-	 * \return The text for the tool tip to print to user.
-	*/
+	 *      @return The text for the tool tip to print to user.
+	 */
 	virtual QString getTooltip() const;
 
-	/*! \brief Get the text to be displayed to user in the tree for this item.
+	/*!
+     *  Get the text to be displayed to user in the tree for this item.
 	 *
-	 * \return QString Contains the text to display.
-	*/
+	 *      @return QString Contains the text to display.
+	 */
 	virtual QString text() const;
 
-	/*! \brief Check the validity of this item and sub items.
+	/*!
+     *  Check the validity of this item and sub items.
 	 *
-	 * \return bool True if item is in valid state.
-	*/
+	 *      @return True if item is in valid state.
+	 */
 	virtual bool isValid() const;
 
-	/*! \brief Get pointer to the editor of this item.
+	/*!
+     *  Get pointer to the editor of this item.
 	 *
-	 * \return Pointer to the editor to use for this item.
-	*/
+	 *      @return Pointer to the editor to use for this item.
+	 */
 	virtual ItemEditor* editor();
 
 private:
-	//! \brief No copying
-	ComponentEditorParametersItem(const ComponentEditorParametersItem& other);
 
-	//! \brief No assignment
+	//! No copying. No assignment.
+	ComponentEditorParametersItem(const ComponentEditorParametersItem& other);
 	ComponentEditorParametersItem& operator=(const ComponentEditorParametersItem& other);
 
-	//! \brief The list containing the parameters to edit.
+	//! The list containing the parameters to edit.
 	QSharedPointer<QList<QSharedPointer<Parameter> > > parameters_;
 };
 

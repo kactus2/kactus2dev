@@ -334,10 +334,10 @@ protected:
 
 private:
 
-	//! No copying
+	//! No copying.
 	AbstractParameterModel(const AbstractParameterModel& other);
 
-	//! No assignment
+	//! No assignment.
 	AbstractParameterModel& operator=(const AbstractParameterModel& other);
 
     /*!

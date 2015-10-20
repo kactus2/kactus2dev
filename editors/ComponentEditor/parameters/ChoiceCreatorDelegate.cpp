@@ -11,7 +11,8 @@
 
 #include "ChoiceCreatorDelegate.h"
 
-#include <IPXACTmodels/Enumeration.h>
+#include <IPXACTmodels/Component/Choice.h>
+#include <IPXACTmodels/common/Enumeration.h>
 
 #include <QComboBox>
 

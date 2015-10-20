@@ -3,7 +3,7 @@
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Antti Kamppi
-// Date: 4.4.2011
+// Date: 04.04.2011
 //
 // Description:
 // Table model that can be used to display parameters to be edited.
@@ -219,7 +219,6 @@ private:
 
 	//! No assignment
 	ParametersModel& operator=(const ParametersModel& other);
-   
 
 	//! The parameters to be edited.
 	QSharedPointer<QList<QSharedPointer<Parameter> > > parameters_;

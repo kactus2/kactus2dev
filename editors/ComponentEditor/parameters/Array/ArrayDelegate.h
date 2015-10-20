@@ -14,10 +14,9 @@
 
 #include <editors/ComponentEditor/parameters/ChoiceCreatorDelegate.h>
 
-#include <IPXACTmodels/Component/choice.h>
-
 #include <QCompleter>
 
+class Choice;
 //-----------------------------------------------------------------------------
 //! Delegate that provides widgets for editing arrays.
 //-----------------------------------------------------------------------------
@@ -114,10 +113,10 @@ protected:
 
 private:
 
-	//! No copying
+	//! No copying.
     ArrayDelegate(const ArrayDelegate& other);
 
-	//! No assignment
+	//! No assignment.
     ArrayDelegate& operator=(const ArrayDelegate& other);
 
 

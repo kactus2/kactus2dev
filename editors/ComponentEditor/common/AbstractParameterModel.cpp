@@ -13,9 +13,9 @@
 
 #include "ValueFormatter.h"
 
-#include <IPXACTmodels/choice.h>
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/Enumeration.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/choice.h>
+#include <IPXACTmodels/common/Enumeration.h>
 
 #include <IPXACTmodels/validators/ParameterValidator2014.h>
 

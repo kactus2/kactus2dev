@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: SystemVerilogValidator.h
+// File: ParameterValidator2014.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Esko Pekkarinen
@@ -52,6 +52,11 @@ public:
         QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices) const;
 
 
+    /*!
+     *  Check if the parameter has a valid name.
+     *
+     *      @param [in] parameter   The parameter being checked.
+     */
     bool hasValidName(Parameter const* parameter) const;
 
     /*!
@@ -111,14 +116,44 @@ public:
      */
     virtual bool hasValidMaximumValue(Parameter const* parameter) const;
          
+    /*!
+     *  Check if the parameter has a valid choice.
+     *
+     *      @param [in] parameter           The selected parameter.
+     *      @param [in] availableChoices    A list of available choices.
+     *
+     *      @return True, if the choice is valid, otherwise false.
+     */
     bool hasValidChoice(Parameter const* parameter, 
         QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices) const;
 
+    /*!
+     *  Check if the parameter has a valid value for a choice.
+     *
+     *      @param [in] parameter           The selected parameter.
+     *      @param [in] availableChoices    A list of available choices.
+     *
+     *      @return True if the value is valid for a choice, otherwise false.
+     */
     bool hasValidValueForChoice(Parameter const* parameter,
         QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices) const;
 
+    /*!
+     *  Check if the parameter has a valid resolve value.
+     *
+     *      @param [in] parameter   The selected parameter.
+     *
+     *      @return True, if the parameter has a valid resolve, otherwise false.
+     */
     bool hasValidResolve(Parameter const* parameter) const;
 
+    /*!
+     *  Check if the parameter has a valid ID.
+     *
+     *      @param [in] parameter   The selected parameter.
+     *
+     *      @return True, if the ID is valid, otherwise false.
+     */
     bool hasValidValueId(Parameter const* parameter) const;
     /*!
      *  Checks if the value of the given parameter is less than the specified minimum value.
@@ -183,7 +218,16 @@ protected:
      */    
     virtual qreal valueOf(QString const& value, QString const& type) const;
             
+    /*!
+     *  Finds possible errors in a parameter name.
+     *
+     *      @param [in] parameter   The parameter whose errors to find.
+     *      @param [in] context     Context to help locate the errors.
+     *
+     *      @return List of the found errors in the parameter name.
+     */
     QStringList findErrorsInName(Parameter const* parameter, QString const& context) const;
+
     /*!
      *  Finds possible errors in a parameter value.
      *
@@ -195,18 +239,58 @@ protected:
     virtual QStringList findErrorsInValue(Parameter const* parameter, QString const& context, 
         QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices) const;
           
-   
+    /*!
+     *  Finds the errors in minimum value.
+     *
+     *      @param [in] parameter   The parameter whose errors to find.
+     *      @param [in] context     Context to help locate the errors.
+     *
+     *      @return List of the found errors in the minimum value.
+     */
     QStringList findErrorsInMinimumValue(Parameter const* parameter, QString const& context) const;
 
+    /*!
+     *  Finds the errors in maximum value.
+     *
+     *      @param [in] parameter   The parameter whose errors to find.
+     *      @param [in] context     Context to help locate the errors.
+     *
+     *      @return List of the found errors in the maximum value.
+     */
     QStringList findErrorsInMaximumValue(Parameter const* parameter, QString const& context) const;
    
+    /*!
+     *  Check if the value is valid for format.
+     *
+     *      @param [in] value   The value being examined.
+     *      @param [in] format  Format used for the value.
+     *
+     *      @return True, if the value is in a valid format, false otherwise.
+     */
     bool hasValidValueForFormat(QString const& value, QString const& format) const;
    
-    QStringList findErrorsInChoice(Parameter const* parameter, QString const& context, QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices) const;
+    /*!
+     *  Finds the errors in choice value.
+     *
+     *      @param [in] parameter           The parameter whose errors to find.
+     *      @param [in] context             Context to help locate the errors.
+     *      @param [in] availableChoices    Pointer to a list of the available choices.
+     *
+     *      @return List of the found errors in choices.
+     */
+    QStringList findErrorsInChoice(Parameter const* parameter, QString const& context,
+        QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices) const;
     
+    /*!
+     *  Finds the errors in resolve value.
+     *
+     *      @param [in] parameter           The parameter whose errors to find.
+     *      @param [in] context             Context to help locate the errors.
+     *
+     *      @return List of the found errors in resolve value.
+     */
     QStringList findErrorsInResolve(Parameter const* parameter, QString const& context) const;
 
-    
     /*!
      *  Finds possible errors in a parameter value type.
      *

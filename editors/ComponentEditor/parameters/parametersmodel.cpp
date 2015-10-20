@@ -13,9 +13,8 @@
 
 #include "ParameterColumns.h"
 
-#include <IPXACTmodels/choice.h>
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/Enumeration.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/choice.h>
 
 #include <QColor>
 #include <QUuid>
