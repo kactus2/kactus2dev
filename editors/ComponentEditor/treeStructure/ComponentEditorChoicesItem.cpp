@@ -1,7 +1,19 @@
+//-----------------------------------------------------------------------------
+// File: ComponentEditorChoicesItem.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: 
+// Date: 
+//
+// Description:
+// The choices item in the component editor navigation tree.
+//-----------------------------------------------------------------------------
 
 #include "ComponentEditorChoicesItem.h"
 
 #include <editors/ComponentEditor/choices/ChoicesEditor.h>
+
+#include <IPXACTmodels/Component/Component.h>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorChoicesItem::ComponentEditorChoicesItem()
@@ -10,7 +22,7 @@ ComponentEditorChoicesItem::ComponentEditorChoicesItem(ComponentEditorTreeModel*
 												 LibraryInterface* libHandler,
 												 QSharedPointer<Component> component,
 												 ComponentEditorItem* parent ):
-ComponentEditorItem(model, libHandler, component, parent), component_(component)
+ComponentEditorItem(model, libHandler, component, parent)//, component_(component)
 {
 	
 }
@@ -71,8 +83,7 @@ ItemEditor* ComponentEditorChoicesItem::editor()
     {
         editor_ = new ChoicesEditor(component_);
         editor_->setProtection(locked_);
-        connect(editor_, SIGNAL(contentChanged()),
-            this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
             this, SIGNAL(helpUrlRequested(QString const&)), Qt::UniqueConnection);
     }

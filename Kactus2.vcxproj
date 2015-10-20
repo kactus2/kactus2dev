@@ -2166,6 +2166,7 @@ CreateHelp
     <ClInclude Include="editors\ComponentEditor\addressSpaces\AddressSpaceColumns.h" />
     <ClInclude Include="editors\ComponentEditor\addressSpaces\AddressSpaceExpressionsGatherer.h" />
     <ClInclude Include="editors\ComponentEditor\busInterfaces\BusInterfaceColumns.h" />
+    <ClInclude Include="editors\ComponentEditor\choices\ChoiceColumns.h" />
     <ClInclude Include="editors\ComponentEditor\common\ExpressionFormatter.h" />
     <ClInclude Include="editors\ComponentEditor\common\ExpressionFormatterFactory.h" />
     <ClInclude Include="editors\ComponentEditor\common\ExpressionFormatterFactoryImplementation.h" />

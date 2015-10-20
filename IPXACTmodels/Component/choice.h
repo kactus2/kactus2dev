@@ -14,7 +14,6 @@
 #define CHOICE_H_
 
 #include <IPXACTmodels/ipxactmodels_global.h>
-#include "../Enumeration.h"
 
 #include <QSharedPointer>
 #include <QString>

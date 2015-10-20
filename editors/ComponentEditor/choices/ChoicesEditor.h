@@ -14,13 +14,12 @@
 
 #include <editors/ComponentEditor/itemeditor.h>
 
-#include <IPXACTmodels/component.h>
-
 #include <QSortFilterProxyModel>
 #include <QSharedPointer>
 
 class EditableTableView;
 class ChoicesModel;
+class Component;
 
 //-----------------------------------------------------------------------------
 //! Editor for component choices.

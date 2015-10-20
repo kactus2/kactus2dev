@@ -6134,6 +6134,9 @@
     <ClInclude Include="editors\ComponentEditor\fileSet\dependencyAnalysis\FileDependencyColumns.h">
       <Filter>Header Files\editors\ComponentEditor\fileSet\dependencyAnalysis</Filter>
     </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\choices\ChoiceColumns.h">
+      <Filter>Header Files\editors\ComponentEditor\choices</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="designEditors\common\DiagramUtil.inl">

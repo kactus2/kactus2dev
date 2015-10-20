@@ -653,7 +653,8 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/fileBuilders/FileBuilderColumns.h \
     ./editors/ComponentEditor/fileSet/FileSetColumns.h \
     ./editors/ComponentEditor/fileSet/file/FileColumns.h \
-    ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyColumns.h
+    ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyColumns.h \
+    ./editors/ComponentEditor/choices/ChoiceColumns.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \

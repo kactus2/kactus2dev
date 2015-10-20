@@ -12,7 +12,7 @@
 #ifndef ENUMERATION_H
 #define ENUMERATION_H
 
-#include "ipxactmodels_global.h"
+#include <IPXACTmodels/ipxactmodels_global.h>
 
 #include <QString>
 
@@ -83,22 +83,13 @@ private:
 	// Disable assignment.
 	Enumeration& operator=(Enumeration const& rhs);
 
-    /*!
-	 * MANDATORY spirit:enumeration.
-	 * Value of the enumeration.
-	 */
+    //! Value of the enumeration.
 	QString value_;
 
-	/*!
-	 * OPTIONAL spirit:text.
-	 * If specified, text is displayed in place of the value. 
-	 */
+	//! If specified, text is displayed in place of the value. 
 	QString text_;
 
-	/*!
-	 * OPTIONAL spirit:help.
-	 * If specified, help is used to clarify the meaning of the enumeration.
-	 */
+	//! If specified, help is used to clarify the meaning of the enumeration.
 	QString help_;
 };
 

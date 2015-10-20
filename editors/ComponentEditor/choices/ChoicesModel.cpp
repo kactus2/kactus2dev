@@ -10,20 +10,11 @@
 //-----------------------------------------------------------------------------
 
 #include "ChoicesModel.h"
+#include "ChoiceColumns.h"
 
-#include <IPXACTmodels/choice.h>
+#include <IPXACTmodels/Component/choice.h>
 
 #include <QColor>
-
-namespace
-{
-    enum COLUMNS 
-    {
-        CHOICE_NAME = 0,
-        CHOICE_ENUMERATIONS,
-        COLUMN_COUNT
-    };
-}
 
 //-----------------------------------------------------------------------------
 // Function: ChoicesModel::ChoicesModel()
@@ -66,7 +57,7 @@ int ChoicesModel::columnCount(const QModelIndex& parent) const
 		return 0;
 	}
 
-	return COLUMN_COUNT;
+	return ChoiceColumns::COLUMN_COUNT;
 }
 
 //-----------------------------------------------------------------------------
@@ -89,11 +80,11 @@ QVariant ChoicesModel::headerData(int section, Qt::Orientation orientation, int 
 {
     if (Qt::DisplayRole == role && orientation == Qt::Horizontal)
     {
-        if (section == CHOICE_NAME)
+        if (section == ChoiceColumns::CHOICE_NAME)
         {
             return tr("Name");
         }
-        else if (section == CHOICE_ENUMERATIONS)
+        else if (section == ChoiceColumns::CHOICE_ENUMERATIONS)
         {
             return tr("Enumeration(s)");
         }
@@ -122,11 +113,11 @@ QVariant ChoicesModel::data( const QModelIndex& index, int role) const
 
     if (role == Qt::DisplayRole)
     {
-        if (index.column() == CHOICE_NAME)
+        if (index.column() == ChoiceColumns::CHOICE_NAME)
         {
             return choice->name();
         }
-        else if (index.column() == CHOICE_ENUMERATIONS) 
+        else if (index.column() == ChoiceColumns::CHOICE_ENUMERATIONS) 
         {
             return choice->getEnumerationValues().join(", ");
         }
@@ -137,7 +128,7 @@ QVariant ChoicesModel::data( const QModelIndex& index, int role) const
 	}
     else if (role == Qt::EditRole)
     {
-        if (index.column() == CHOICE_NAME) 
+        if (index.column() == ChoiceColumns::CHOICE_NAME) 
         {
             return choice->name();
         }
@@ -177,7 +168,7 @@ bool ChoicesModel::setData( const QModelIndex& index, const QVariant& value, int
 		return false;
 	}
 
-    if (role == Qt::EditRole && index.column() == CHOICE_NAME)
+    if (role == Qt::EditRole && index.column() == ChoiceColumns::CHOICE_NAME)
     {
         choices_->at(index.row())->setName(value.toString());
         emit dataChanged(index, index);

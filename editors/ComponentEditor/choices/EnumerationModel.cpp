@@ -11,7 +11,7 @@
 
 #include "EnumerationModel.h"
 
-#include <IPXACTmodels/Enumeration.h>
+#include <IPXACTmodels/common/Enumeration.h>
 
 #include <QColor>
 
@@ -29,10 +29,10 @@ namespace
 //-----------------------------------------------------------------------------
 // Function: EnumerationModel::EnumerationModel()
 //-----------------------------------------------------------------------------
-EnumerationModel::EnumerationModel(QSharedPointer<QList<QSharedPointer<Enumeration> > > enumerations, 
-    QObject *parent)
-    : QAbstractTableModel (parent),
-    enumerations_(enumerations)
+EnumerationModel::EnumerationModel(QSharedPointer<QList<QSharedPointer<Enumeration> > > enumerations,
+    QObject *parent):
+QAbstractTableModel (parent),
+enumerations_(enumerations)
 {
 
 }

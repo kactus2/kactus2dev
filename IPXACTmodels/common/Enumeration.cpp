@@ -15,9 +15,9 @@
 // Function: Enumeration::Enumeration()
 //-----------------------------------------------------------------------------
 Enumeration::Enumeration():
-value_(), 
-    text_(),
-    help_()
+value_(),
+text_(),
+help_()
 {
 
 }
@@ -27,8 +27,8 @@ value_(),
 //-----------------------------------------------------------------------------
 Enumeration::Enumeration(Enumeration const& other):
 value_(other.value_),
-    text_(other.text_),
-    help_(other.help_)
+text_(other.text_),
+help_(other.help_)
 {
 
 }

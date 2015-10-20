@@ -11,6 +11,8 @@
 
 #include "choice.h"
 
+#include <IPXACTmodels/common/Enumeration.h>
+
 #include <QList>
 #include <QString>
 
