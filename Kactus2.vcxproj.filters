@@ -6122,6 +6122,18 @@
     <ClInclude Include="editors\ComponentEditor\cpus\CpuColumns.h">
       <Filter>Header Files\editors\ComponentEditor\cpus</Filter>
     </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\fileBuilders\FileBuilderColumns.h">
+      <Filter>Header Files\editors\ComponentEditor\fileBuilders</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\fileSet\FileSetColumns.h">
+      <Filter>Header Files\editors\ComponentEditor\fileSet</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\fileSet\file\FileColumns.h">
+      <Filter>Header Files\editors\ComponentEditor\fileSet\file</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\fileSet\dependencyAnalysis\FileDependencyColumns.h">
+      <Filter>Header Files\editors\ComponentEditor\fileSet\dependencyAnalysis</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="designEditors\common\DiagramUtil.inl">

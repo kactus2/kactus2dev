@@ -2327,6 +2327,10 @@ CreateHelp
     <ClInclude Include="editors\ComponentEditor\common\SystemVerilogSyntax.h" />
     <ClInclude Include="editors\ComponentEditor\common\ValueFormatter.h" />
     <ClInclude Include="editors\ComponentEditor\cpus\CpuColumns.h" />
+    <ClInclude Include="editors\ComponentEditor\fileBuilders\FileBuilderColumns.h" />
+    <ClInclude Include="editors\ComponentEditor\fileSet\dependencyAnalysis\FileDependencyColumns.h" />
+    <ClInclude Include="editors\ComponentEditor\fileSet\FileSetColumns.h" />
+    <ClInclude Include="editors\ComponentEditor\fileSet\file\FileColumns.h" />
     <ClInclude Include="editors\ComponentEditor\memoryMaps\AddressBlockColumns.h" />
     <CustomBuild Include="editors\ComponentEditor\memoryMaps\ExpressionProxyModel.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
