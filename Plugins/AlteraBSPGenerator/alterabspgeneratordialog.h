@@ -11,15 +11,8 @@
 #include <commandLineGeneratorDialog/commandlinegeneratordialog.h>
 #include <common/widgets/viewSelector/viewselector.h>
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/SWView.h>
-
-#include <QSharedPointer>
-#include <QDialog>
-#include <QPushButton>
-#include <QLabel>
-#include <QString>
-#include <QStringList>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/kactusExtensions/SWView.h>
 
 class LibraryInterface;
 
