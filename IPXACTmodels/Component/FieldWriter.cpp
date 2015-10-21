@@ -144,9 +144,9 @@ void FieldWriter::writeTypeIdentifier(QXmlStreamWriter& writer, QSharedPointer<F
 //-----------------------------------------------------------------------------
 void FieldWriter::writeVolatile(QXmlStreamWriter& writer, QSharedPointer<Field> field) const
 {
-    if (field->isVolatile())
+    if (!field->getVolatile().toString().isEmpty())
     {
-        writer.writeTextElement("ipxact:volatile", "true");
+        writer.writeTextElement("ipxact:volatile", field->getVolatile().toString());
     }
 }
 

@@ -16,9 +16,6 @@
 
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
 
-#include <IPXACTmodels/field.h>
-#include <IPXACTmodels/component.h>
-
 #include <QSharedPointer>
 
 class FieldEditor;
@@ -31,6 +28,8 @@ class TestConstraintComboBox;
 class ParameterFinder;
 class WriteValueConstraintComboBox;
 class ExpressionParser;
+class Field;
+class Component;
 //-----------------------------------------------------------------------------
 //! Editor for editing the details of a single register.
 //-----------------------------------------------------------------------------
@@ -154,14 +153,14 @@ private slots:
      *
      *      @param [in] newWriteConstraintMin   The edited write constraint minimum value.
      */
-    void onWriteConstraintMinimumEdited(QString const& newWriteConstraintMin);
+    void onWriteConstraintMinimumEdited();
 
     /*!
      *  Sets the edited write constraint maximum value for the field.
      *
      *      @param [in] newWriteConstraintMax   The edited write constraint maximum value.
      */
-    void onWriteConstraintMaximumEdited(QString const& newWriteConstraintMax);
+    void onWriteConstraintMaximumEdited();
 
     /*!
      *  Sets the edited reset value for the field.
@@ -262,16 +261,16 @@ private:
     WriteValueConstraintComboBox* writeConstraintEditor_;
 
     //! The write constraint minimum value editor.
-    QLineEdit* writeConstraintMinLimit_;
+    ExpressionEditor* writeConstraintMinLimit_;
 
     //! The write constraint maximum value editor.
-    QLineEdit* writeConstraintMaxLimit_;
+    ExpressionEditor* writeConstraintMaxLimit_;
 
     //! Editor for the reset value of a field.
-    QLineEdit* resetValueEditor_;
+    ExpressionEditor* resetValueEditor_;
 
     //! Editor for the reset mask of a field.
-    QLineEdit* resetMaskEditor_;
+    ExpressionEditor* resetMaskEditor_;
 
     //! The field being edited.
     QSharedPointer<Field> field_;

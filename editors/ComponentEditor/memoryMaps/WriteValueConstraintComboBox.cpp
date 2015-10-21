@@ -11,6 +11,8 @@
 
 #include "WriteValueConstraintComboBox.h"
 
+#include <IPXACTmodels/Component/WriteValueConstraint.h>
+
 //-----------------------------------------------------------------------------
 // Function: WriteValueConstraintComboBox::WriteValueConstraintComboBox()
 //-----------------------------------------------------------------------------

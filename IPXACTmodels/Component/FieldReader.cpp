@@ -209,7 +209,14 @@ void FieldReader::parseVolatile(QDomElement const& fieldElement, QSharedPointer<
     QDomElement volatileElement = fieldElement.firstChildElement("ipxact:volatile");
     if (!volatileElement.isNull())
     {
-        newField->setVolatile(true);
+        if (volatileElement.firstChild().nodeValue() == QLatin1String("true"))
+        {
+            newField->setVolatile(true);
+        }
+        else
+        {
+            newField->setVolatile(false);
+        }
     }
 }
 

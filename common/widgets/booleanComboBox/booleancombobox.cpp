@@ -1,32 +1,69 @@
-/* 
- *
- *  Created on: 1.4.2011
- *      Author: Antti Kamppi
- * 		filename: booleancombobox.cpp
- */
+//-----------------------------------------------------------------------------
+// File: booleancombobox.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 01.04.2011
+//
+// Description:
+// Combo box that has "true", "false" or "unspecified" choices for user to select.
+//-----------------------------------------------------------------------------
 
 #include "booleancombobox.h"
 
-BooleanComboBox::BooleanComboBox(QWidget *parent): QComboBox(parent) {
-
+//-----------------------------------------------------------------------------
+// Function: booleancombobox::BooleanComboBox()
+//-----------------------------------------------------------------------------
+BooleanComboBox::BooleanComboBox(QWidget *parent):
+QComboBox(parent)
+{
 	addItem(tr("true"));  // index 0
 	addItem(tr("false")); // index 1
+    addItem(tr(""));
 }
 
-BooleanComboBox::~BooleanComboBox() {
+//-----------------------------------------------------------------------------
+// Function: booleancombobox::~BooleanComboBox()
+//-----------------------------------------------------------------------------
+BooleanComboBox::~BooleanComboBox()
+{
+
 }
 
-bool BooleanComboBox::getCurrentValue() const {
-
+//-----------------------------------------------------------------------------
+// Function: booleancombobox::getCurrentValue()
+//-----------------------------------------------------------------------------
+QString BooleanComboBox::getCurrentValue() const
+{
 	if (currentIndex() == 0)
-		return true;
-	else
-		return false;
+    {
+        return QStringLiteral("true");
+    }
+	else if (currentIndex() == 1)
+    {
+        return QStringLiteral("false");
+    }
+    else
+    {
+        return QStringLiteral("");
+    }
 }
 
-void BooleanComboBox::setCurrentValue( bool value ) {
-	if (value)
+//-----------------------------------------------------------------------------
+// Function: booleancombobox::setCurrentValue()
+//-----------------------------------------------------------------------------
+void BooleanComboBox::setCurrentValue(QString const& value)
+{
+	if (value == "true")
+    {
 		setCurrentIndex(0);
-	else
+    }
+	else if (value == "false")
+    {
 		setCurrentIndex(1);
+    }
+    else
+    {
+        setCurrentIndex(2);
+    }
 }

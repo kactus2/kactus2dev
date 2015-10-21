@@ -14,19 +14,23 @@
 
 #include <common/KactusColors.h>
 
+#include <editors/ComponentEditor/common/ExpressionParser.h>
+
 #include <QRectF>
 #include <QPen>
 
 //-----------------------------------------------------------------------------
 // Function: MemoryVisualizationItem::MemoryVisualizationItem()
 //-----------------------------------------------------------------------------
-MemoryVisualizationItem::MemoryVisualizationItem(QGraphicsItem* parent)
-    : ExpandableItem(parent),
-      firstFreeAddress_(-1),
-      lastFreeAddress_(-1),
-      childWidth_(VisualizerItem::DEFAULT_WIDTH),
-      conflicted_(false),
-      overlapped_(false)
+MemoryVisualizationItem::MemoryVisualizationItem(QSharedPointer<ExpressionParser> expressionParser,
+    QGraphicsItem* parent /* = 0 */):
+ExpandableItem(parent),
+firstFreeAddress_(-1),
+lastFreeAddress_(-1),
+childWidth_(VisualizerItem::DEFAULT_WIDTH),
+conflicted_(false),
+overlapped_(false),
+expressionParser_(expressionParser)
 {
     QPen pen(Qt::gray);
     setPen(pen);
@@ -38,6 +42,7 @@ MemoryVisualizationItem::MemoryVisualizationItem(QGraphicsItem* parent)
 //-----------------------------------------------------------------------------
 MemoryVisualizationItem::~MemoryVisualizationItem()
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -232,6 +237,14 @@ void MemoryVisualizationItem::reorganizeChildren()
 bool MemoryVisualizationItem::isPresent() const
 {
     return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: memoryvisualizationitem::parseExpression()
+//-----------------------------------------------------------------------------
+int MemoryVisualizationItem::parseExpression(QString const& expression) const
+{
+    return expressionParser_->parseExpression(expression).toUInt();
 }
 
 //-----------------------------------------------------------------------------
@@ -490,7 +503,7 @@ bool MemoryVisualizationItem::childrenOverlap(MemoryVisualizationItem* current, 
 //-----------------------------------------------------------------------------
 MemoryGapItem* MemoryVisualizationItem::createConflictItem(qint64 offset, qint64 lastAddress)
 {
-    MemoryGapItem* gap = new MemoryGapItem(this);
+    MemoryGapItem* gap = new MemoryGapItem(expressionParser_, this);
     gap->setWidth(childWidth_);
     gap->setConflicted(true);
     gap->setName("conflicted");
@@ -507,7 +520,7 @@ MemoryGapItem* MemoryVisualizationItem::createConflictItem(qint64 offset, qint64
 //-----------------------------------------------------------------------------
 MemoryGapItem* MemoryVisualizationItem::createMemoryGap(quint64 offset, quint64 lastAddress)
 {
-    MemoryGapItem* gap = new MemoryGapItem(this);
+    MemoryGapItem* gap = new MemoryGapItem(expressionParser_, this);
     gap->setWidth(childWidth_);
     gap->setStartAddress(offset);
     gap->setEndAddress(lastAddress);

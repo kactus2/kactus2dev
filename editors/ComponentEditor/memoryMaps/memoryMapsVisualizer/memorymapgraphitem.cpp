@@ -11,12 +11,10 @@
 
 #include "memorymapgraphitem.h"
 
-#include "addressblockgraphitem.h"
-
 #include <editors/ComponentEditor/visualization/memorygapitem.h>
 
-#include <IPXACTmodels/memorymapitem.h>
-#include <IPXACTmodels/addressblock.h>
+#include <IPXACTmodels/Component/MemoryBlockBase.h>
+#include <IPXACTmodels/Component/AddressBlock.h>
 
 #include <common/KactusColors.h>
 
@@ -26,10 +24,10 @@
 //-----------------------------------------------------------------------------
 // Function: MemoryMapGraphItem::MemoryMapGraphItem()
 //-----------------------------------------------------------------------------
-MemoryMapGraphItem::MemoryMapGraphItem(QSharedPointer<MemoryMap> parentMemoryMap,    
-    QSharedPointer<AbstractMemoryMap> memoryRemap,
+MemoryMapGraphItem::MemoryMapGraphItem(QSharedPointer<MemoryMap> parentMemoryMap,
+    QSharedPointer<MemoryMapBase> memoryRemap, QSharedPointer<ExpressionParser> expressionParser,
     QGraphicsItem* parent /* = 0 */):
-MemoryVisualizationItem(parent),
+MemoryVisualizationItem(expressionParser, parent),
 memoryMap_(memoryRemap),
 parentMemoryMap_(parentMemoryMap)
 {
@@ -71,7 +69,7 @@ void MemoryMapGraphItem::updateDisplay()
 
     // Set tooltip to show addresses in hexadecimals.
     setToolTip("<b>Name: </b>" + memoryMap_->name() + "<br>" +
-        "<b>AUB: </b>" + QString::number(parentMemoryMap_->getAddressUnitBits()) + "<br>" +
+        "<b>AUB: </b>" + getAddressUnitSize() + "<br>" +
         "<b>First address: </b>" + toHexString(offset) + "<br>" +
         "<b>Last address: </b>" + toHexString(lastAddress));
 }
@@ -119,7 +117,7 @@ int MemoryMapGraphItem::getBitWidth() const
 //-----------------------------------------------------------------------------
 unsigned int MemoryMapGraphItem::getAddressUnitSize() const 
 {
-    return parentMemoryMap_->getAddressUnitBits();
+    return parseExpression(parentMemoryMap_->getAddressUnitBits());
 }
 
 //-----------------------------------------------------------------------------

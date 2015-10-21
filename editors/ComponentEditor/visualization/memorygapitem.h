@@ -1,94 +1,103 @@
-/* 
- *  	Created on: 20.11.2012
- *      Author: Antti Kamppi
- * 		filename: memorygapitem.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: memorygapitem.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 20.11.2012
+//
+// Description:
+// The graphical item that represents a gap in the memory between objects.
+//-----------------------------------------------------------------------------
 
 #ifndef MEMORYGAPITEM_H
 #define MEMORYGAPITEM_H
 
 #include "memoryvisualizationitem.h"
 
-/*! \brief The graphical item that represents a gap in the memory between objects.
- *
- */
+class ExpressionParser;
+
+//-----------------------------------------------------------------------------
+//! The graphical item that represents a gap in the memory between objects.
+//-----------------------------------------------------------------------------
 class MemoryGapItem : public MemoryVisualizationItem
 {
 	Q_OBJECT
 
 public:
 
-	/*! \brief The constructor
+	/*!
+     *  The constructor.
 	 *
-	 * \param parent Pointer to the parent of the gap item.
-	 *
-	*/
-	MemoryGapItem(QGraphicsItem* parent);
+	 *      @param [in] parent  Pointer to the parent of the gap item.
+	 */
+	MemoryGapItem(QSharedPointer<ExpressionParser> expressionParser, QGraphicsItem* parent);
 	
-	//! \brief The destructor
+	//! The destructor.
 	virtual ~MemoryGapItem();
 
-	//! \brief Refresh the gap item.
+	//! Refresh the gap item.
 	virtual void refresh();
 
     //! Updates the labels and tooltip for the item.
     virtual void updateDisplay();
 
-	/*! \brief Get the offset of the item. 
+	/*!
+     *  Get the offset of the item. 
 	 *
-	 * \return int The offset of the item from the parent item's base address.
-	*/
+	 *      @return int The offset of the item from the parent item's base address.
+	 */
 	virtual quint64 getOffset() const;
 
-	/*! \brief Get the last address contained in the gap.
+	/*!
+     *  Get the last address contained in the gap.
 	 *
-	 * \return The last address.
-	*/
+	 *      @return The last address.
+	 */
 	virtual quint64 getLastAddress() const;
 
-	/*! \brief Get the bit width of the item.
+	/*!
+     *  Get the bit width of the item.
 	 * 
-	 * \return The bit width of the item.
-	*/
+	 *      @return The bit width of the item.
+	 */
 	virtual int getBitWidth() const;
 
-	/*! \brief Get number of bits the addressable unit contains.
+	/*!
+     *  Get number of bits the addressable unit contains.
 	 *
-	 * \return The size of least addressable unit.
-	*/
+	 *      @return The size of least addressable unit.
+	 */
 	virtual unsigned int getAddressUnitSize() const;
 
-	/*! \brief Set start address for the gap.
+	/*!
+     *  Set start address for the gap.
 	 *
-	 * \param address The address that limits the gap start.
-	 *
-	*/
+	 *      @param [in] address     The address that limits the gap start.
+	 */
 	void setStartAddress(quint64 address);
 
-	/*! \brief Set end address for the gap.
+	/*!
+     *  Set end address for the gap.
 	 *
-	 * \param address The address that limits the gap end.
-	 *
-	*/
+	 *      @param [in] address     The address that limits the gap end.
+	 */
 	void setEndAddress(quint64 address);
     
 protected:
 
-    //! \brief The start address of the gap.
+    //! The start address of the gap.
     quint64 start_;
 
-    //! \brief The end address of the gap.
+    //! The end address of the gap.
     quint64 end_;
 
 private:
 	
-	//! \brief No copying
+	//! No copying.
 	MemoryGapItem(const MemoryGapItem& other);
 
-	//! \brief No assignment
+	//! No assignment.
 	MemoryGapItem& operator=(const MemoryGapItem& other);
-
 };
 
 #endif // MEMORYGAPITEM_H

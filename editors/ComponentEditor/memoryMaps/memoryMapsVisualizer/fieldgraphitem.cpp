@@ -23,9 +23,8 @@
 //-----------------------------------------------------------------------------
 FieldGraphItem::FieldGraphItem( QSharedPointer<Field> field, QSharedPointer<ExpressionParser> expressionParser,
     QGraphicsItem* parent):
-MemoryVisualizationItem(parent),
-    field_(field),
-    expressionParser_(expressionParser)
+MemoryVisualizationItem(expressionParser, parent),
+field_(field)
 {
 	Q_ASSERT(field_);
 
@@ -46,7 +45,8 @@ MemoryVisualizationItem(parent),
 // Function: FieldGraphItem::~FieldGraphItem()
 //-----------------------------------------------------------------------------
 FieldGraphItem::~FieldGraphItem()
-{	
+{
+
 }
 
 //-----------------------------------------------------------------------------
@@ -73,8 +73,7 @@ void FieldGraphItem::updateDisplay()
 
     setDisplayOffset(leftBound);
     setDisplayLastAddress(rightBound);
-    setToolTip("<b>" + name() + "</b> [" + QString::number(leftBound) + ".." + 
-        QString::number(rightBound) + "]");
+    setToolTip("<b>" + name() + "</b> [" + QString::number(leftBound) + ".." + QString::number(rightBound) + "]");
 }
 
 //-----------------------------------------------------------------------------
@@ -82,7 +81,7 @@ void FieldGraphItem::updateDisplay()
 //-----------------------------------------------------------------------------
 quint64 FieldGraphItem::getOffset() const
 {
-	return expressionParser_->parseExpression(field_->getBitOffsetExpression()).toUInt();
+    return parseExpression(field_->getBitOffset());
 }
 
 //-----------------------------------------------------------------------------
@@ -90,7 +89,7 @@ quint64 FieldGraphItem::getOffset() const
 //-----------------------------------------------------------------------------
 int FieldGraphItem::getBitWidth() const
 {
-	return expressionParser_->parseExpression(field_->getBitWidthExpression()).toInt();
+    return parseExpression(field_->getBitWidth());
 }
 
 //-----------------------------------------------------------------------------
@@ -163,5 +162,6 @@ void FieldGraphItem::setConflicted(bool conflicted)
 //-----------------------------------------------------------------------------
 bool FieldGraphItem::isPresent() const
 {
-    return expressionParser_->parseExpression(field_->getIsPresentExpression()) == "1";
+//     return expressionParser_->parseExpression(field_->getIsPresentExpression()) == "1";
+    return parseExpression(field_->getIsPresent()) == 1;
 }

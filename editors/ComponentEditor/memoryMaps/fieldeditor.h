@@ -1,16 +1,18 @@
-/* 
- *  	Created on: 28.8.2012
- *      Author: Antti Kamppi
- * 		filename: fieldeditor.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: WriteValueConstraintComboBox.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 28.08.2012
+//
+// Description:
+// Editor for editing the enumerated values of a field.
+//-----------------------------------------------------------------------------
 
 #ifndef FIELDEDITOR_H
 #define FIELDEDITOR_H
 
 #include <editors/ComponentEditor/itemeditor.h>
-#include <IPXACTmodels/field.h>
-#include <IPXACTmodels/component.h>
 
 #include <QSharedPointer>
 #include <QSortFilterProxyModel>
@@ -19,7 +21,8 @@
 class EditableTableView;
 class EnumeratedValueModel;
 class LibraryInterface;
-
+class Field;
+class Component;
 //-----------------------------------------------------------------------------
 //! Editor for editing the enumerated values of a field.
 //-----------------------------------------------------------------------------

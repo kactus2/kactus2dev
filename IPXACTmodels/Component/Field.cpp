@@ -15,97 +15,6 @@
 #include <IPXACTmodels/Component/EnumeratedValue.h>
 #include <IPXACTmodels/Component/WriteValueConstraint.h>
 
-/*
-Field::Field(QDomNode& fieldNode): 
-NameGroup(),
-id_(), 
-bitOffset_(0), 
-typeIdentifier_(),
-bitWidth_(0),
-bitWidthAttributes_(),
-enumeratedValues_(), 
-parameters_(),
-volatile_(false),
-access_(General::ACCESS_COUNT),
-modifiedWrite_(General::MODIFIED_WRITE_COUNT),
-readAction_(General::READ_ACTION_COUNT),
-testable_(true),
-testConstraint_(General::TEST_UNCONSTRAINED),
-writeConstraint_(),
-vendorExtensions_(),
-offsetExpression_(),
-isPresentExpression_()
-{
-
-	// parse the spirit:id attribute
-	QDomNamedNodeMap attributeMap = fieldNode.attributes();
-	id_ = attributeMap.namedItem("spirit:id").nodeValue();
-	id_ = XmlUtils::removeWhiteSpace(id_);
-
-	// go through all nodes and parse them
-	for (int i = 0; i < fieldNode.childNodes().count(); ++i) {
-		QDomNode tempNode = fieldNode.childNodes().at(i);
-
-		if (tempNode.nodeName() == QString("spirit:bitOffset")) {
-			bitOffset_ = tempNode.childNodes().at(0).nodeValue().toInt();
-		}
-		else if (tempNode.nodeName() == QString("spirit:typeIdentifier")) {
-			typeIdentifier_ = tempNode.childNodes().at(0).nodeValue();
-			typeIdentifier_ = XmlUtils::removeWhiteSpace(typeIdentifier_);
-		}
-		else if (tempNode.nodeName() == QString("spirit:bitWidth")) {
-			bitWidth_ = tempNode.childNodes().at(0).nodeValue().toInt();
-			bitWidthAttributes_ = XmlUtils::parseAttributes(tempNode);
-		}
-		else if (tempNode.nodeName() == QString("spirit:enumeratedValues")) {
-
-			// parse each enumerated value
-			for (int j = 0; j < tempNode.childNodes().count(); ++j) {
-				QDomNode enumeratedNode = tempNode.childNodes().at(j);
-
-				enumeratedValues_.append(QSharedPointer<EnumeratedValue>(
-						new EnumeratedValue(enumeratedNode)));
-			}
-		}
-		else if (tempNode.nodeName() == QString("spirit:parameters")) 
-        {
-            ParameterReader reader;
-			// parse each parameter
-			for (int j = 0; j < tempNode.childNodes().count(); ++j) {
-				QDomNode parameterNode = tempNode.childNodes().at(j);
-
-				parameters_.append(reader.createParameterFrom(parameterNode));
-			}
-		}
-		else if (tempNode.nodeName() == QString("spirit:volatile")) {
-			volatile_ = General::str2Bool(tempNode.childNodes().at(0).nodeValue(), false);
-		}
-		else if (tempNode.nodeName() == QString("spirit:access")) {
-			access_ = General::str2Access(tempNode.childNodes().at(0).nodeValue(), General::ACCESS_COUNT);
-		}
-		else if (tempNode.nodeName() == QString("spirit:modifiedWriteValue")) {
-			modifiedWrite_ = General::str2ModifiedWrite(tempNode.childNodes().at(0).nodeValue());
-		}
-		else if (tempNode.nodeName() == QString("spirit:writeValueConstraint")) {
-			writeConstraint_ = QSharedPointer<WriteValueConstraint>(
-				new WriteValueConstraint(tempNode));
-		}
-		else if (tempNode.nodeName() == QString("spirit:readAction")) {
-			readAction_ = General::str2ReadAction(tempNode.childNodes().at(0).nodeValue());
-		}
-		else if (tempNode.nodeName() == QString("spirit:testable")) {
-			testable_ = General::str2Bool(tempNode.childNodes().at(0).nodeValue(), true);
-			QDomNamedNodeMap testAttributes = tempNode.attributes();
-			QString constraint = testAttributes.namedItem("spirit:testConstraint").nodeValue();
-			testConstraint_ = General::str2TestConstraint(constraint);
-		}
-        else if (tempNode.nodeName() == QString("spirit:vendorExtensions")) 
-        {
-            parseVendorExtensions(tempNode);
-        }
-	}
-}*/
-
 //-----------------------------------------------------------------------------
 // Function: Field::Field()
 //-----------------------------------------------------------------------------
@@ -120,7 +29,7 @@ resetValue_(),
 resetMask_(),
 typeIdentifier_(),
 bitWidth_(),
-volatile_(false),
+volatile_(),
 access_(General::ACCESS_COUNT),
 enumeratedValues_(new QList<QSharedPointer<EnumeratedValue> > ()),
 modifiedWrite_(General::MODIFIED_WRITE_COUNT),
@@ -439,7 +348,7 @@ void Field::setBitWidth(QString const& newBitWidth)
 //-----------------------------------------------------------------------------
 // Function: Field::getVolatile()
 //-----------------------------------------------------------------------------
-bool Field::isVolatile() const
+BooleanValue Field::getVolatile() const
 {
     return volatile_;
 }
@@ -449,7 +358,15 @@ bool Field::isVolatile() const
 //-----------------------------------------------------------------------------
 void Field::setVolatile( bool volatileValue )
 {
-    volatile_ = volatileValue;
+    volatile_.setValue(volatileValue);
+}
+
+//-----------------------------------------------------------------------------
+// Function: Field::clearVolatile()
+//-----------------------------------------------------------------------------
+void Field::clearVolatile()
+{
+    volatile_.setUnspecified();
 }
 
 //-----------------------------------------------------------------------------

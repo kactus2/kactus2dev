@@ -13,8 +13,9 @@
 #define MEMORYMAPSVISUALIZER_H
 
 #include <editors/ComponentEditor/itemvisualizer.h>
-#include <IPXACTmodels/memorymap.h>
-#include <IPXACTmodels/component.h>
+
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/MemoryMap.h>
 
 #include <QWidget>
 #include <QList>
@@ -25,9 +26,9 @@ class MemoryMapView;
 class MemoryMapScene;
 class MemoryMapGraphItem;
 
-/*! The widget to visualize a set of memory maps.
- *
- */
+//-----------------------------------------------------------------------------
+//! The widget to visualize a set of memory maps.
+//-----------------------------------------------------------------------------
 class MemoryMapsVisualizer : public ItemVisualizer
 {
 	Q_OBJECT

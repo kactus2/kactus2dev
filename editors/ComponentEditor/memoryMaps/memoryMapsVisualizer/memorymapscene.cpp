@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 17.4.2012
- *      Author: Antti Kamppi
- * 		filename: memorymapscene.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: memorymapscene.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 17.04.2012
+//
+// Description:
+// The graphics scene that contains the memory map graphics items.
+//-----------------------------------------------------------------------------
 
 #include "memorymapscene.h"
 #include "memorymapgraphitem.h"

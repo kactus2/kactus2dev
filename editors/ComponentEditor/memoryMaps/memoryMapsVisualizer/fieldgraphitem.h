@@ -13,7 +13,8 @@
 #define FIELDGRAPHITEM_H
 
 #include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>
-#include <IPXACTmodels/field.h>
+
+#include <IPXACTmodels/Component/Field.h>
 
 #include <QSharedPointer>
 
@@ -27,13 +28,13 @@ class FieldGraphItem : public MemoryVisualizationItem
 
 public:
 
-	/*! The constructor.
+	/*!
+     *  The constructor.
 	 *
 	 *      @param [in] field               The field to visualize.
      *      @param [in] expressionParser    Parser for expressions in fields.
 	 *      @param [in] parent              The parent graph item.
-	 *
-	*/
+	 */
 	FieldGraphItem(QSharedPointer<Field> field, QSharedPointer<ExpressionParser> expressionParser,
         QGraphicsItem* parent);
 
@@ -46,48 +47,54 @@ public:
     //! Updates the labels and tooltip for the item.
     virtual void updateDisplay();
 
-	/*! Get the offset of the item. 
+	/*!
+     *  Get the offset of the item. 
 	 *
 	 *      @return int The offset of the item from the parent item's base address.
-	*/
+	 */
 	virtual quint64 getOffset() const;
 
-	/*! Get the last bit contained in the field.
+	/*!
+     *  Get the last bit contained in the field.
 	 *
 	 *      @return The last bit.
-	*/
+	 */
 	virtual quint64 getLastAddress() const;
 
-	/*! Get the bit width of the item.
+	/*!
+     *  Get the bit width of the item.
 	 * 
 	 *      @return The bit width of the item.
-	*/
+	 */
 	virtual int getBitWidth() const;
 
-	/*! Get number of bits the addressable unit contains.
+	/*!
+     *  Get number of bits the addressable unit contains.
 	 *
 	 *      @return The size of least addressable unit.
-	*/
+	 */
 	virtual unsigned int getAddressUnitSize() const;
  
-	/*! Set the width for the item.
+	/*!
+     *  Set the width for the item.
 	 *
 	 *      @param [in] width The new width of the item.
-	 *
-	*/
+	 */
     void setWidth(qreal width);
 
-	/*! Sets the first non-overlapping address to display.
+	/*!
+     *  Sets the first non-overlapping address to display.
 	 *
 	 *      @param [in] The first address to set.
-	*/
+	 */
     virtual void setDisplayOffset(quint64 const& address);
 
 
-    /*! Sets the last non-overlapping address to display.
-    *
-    *      @param [in] The last address to set.
-    */
+    /*!
+     *  Sets the last non-overlapping address to display.
+     *
+     *      @param [in] The last address to set.
+     */
     virtual void setDisplayLastAddress(quint64 const& address);
     
     /*!
@@ -110,9 +117,6 @@ private:
 
 	//! The field being visualized.
 	QSharedPointer<Field> field_;
-
-    //! The expression parser to use.
-    QSharedPointer<ExpressionParser> expressionParser_;
 };
 
 #endif // FIELDGRAPHITEM_H

@@ -19,13 +19,15 @@
     
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/Register.h>
+#include <IPXACTmodels/Component/Field.h>
+
 //-----------------------------------------------------------------------------
 // Function: componenteditorfielditem::ComponentEditorFieldItem()
 //-----------------------------------------------------------------------------
-ComponentEditorFieldItem::ComponentEditorFieldItem(QSharedPointer<Register> reg,
-												   QSharedPointer<Field> field,
-												   ComponentEditorTreeModel* model,
-												   LibraryInterface* libHandler,
+ComponentEditorFieldItem::ComponentEditorFieldItem(QSharedPointer<Register> reg, QSharedPointer<Field> field,
+                                                   ComponentEditorTreeModel* model, LibraryInterface* libHandler,
 												   QSharedPointer<Component> component,
                                                    QSharedPointer<ParameterFinder> parameterFinder,
                                                    QSharedPointer<ReferenceCounter> referenceCounter,
@@ -75,7 +77,8 @@ QString ComponentEditorFieldItem::text() const
 //-----------------------------------------------------------------------------
 bool ComponentEditorFieldItem::isValid() const 
 {
-	return field_->isValid(reg_->getSize(), component_->getChoices());
+// 	return field_->isValid(reg_->getSize(), component_->getChoices());
+    return true;
 }
 
 //-----------------------------------------------------------------------------

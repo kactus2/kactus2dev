@@ -192,7 +192,12 @@ public:
 	 *
 	 *      @return The volatile state.
 	 */
-	bool isVolatile() const;
+    BooleanValue getVolatile() const;
+
+    /*!
+     *  Set the volatile value to unspecified.
+     */
+    void clearVolatile();
 
 	/*!
      *  Set the volatile state for the field.
@@ -413,7 +418,7 @@ private:
     QString bitWidth_;
 
     //! Contains the volatile value for the field.
-    bool volatile_;
+    BooleanValue volatile_;
 
     //! Contains the access type of the field.
     General::Access access_;

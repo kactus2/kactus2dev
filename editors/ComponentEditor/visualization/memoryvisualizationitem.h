@@ -19,7 +19,7 @@
 #include <QGraphicsSceneMouseEvent>
 
 class MemoryGapItem;
-
+class ExpressionParser;
 //-----------------------------------------------------------------------------
 //! A base class for graphics items to visualize memory objects.
 //-----------------------------------------------------------------------------
@@ -35,13 +35,15 @@ public:
 		CHILD_INDENTATION = GraphicsExpandCollapseItem::SIDE
 	};
 
-	/*! The constructor.
+	/*!
+     *  The constructor.
 	 *
-	 *      @param [in] parent The owner of the item.
-	*/
-	MemoryVisualizationItem(QGraphicsItem* parent = 0);
+     *      @param [in] expressionParser    The used expression parser.
+	 *      @param [in] parent              The owner of the item.
+	 */
+	MemoryVisualizationItem(QSharedPointer<ExpressionParser> expressionParser, QGraphicsItem* parent = 0);
 	
-	//! The destructor
+	//! The destructor.
 	virtual ~MemoryVisualizationItem();
 
     /*!
@@ -57,76 +59,85 @@ public:
     //! Updates the labels and tooltip for the item.
     virtual void updateDisplay() = 0;
 
-	/*! Get the offset of the item. 
+	/*!
+     *  Get the offset of the item. 
 	 *
 	 *      @return The offset of the item from the parent item's base address.
-	*/
+	 */
 	virtual quint64 getOffset() const = 0;
 
-	/*! Get the last address contained in the item.
+	/*!
+     *  Get the last address contained in the item.
 	 *
 	 *      @return The last address.
-	*/
+	 */
 	virtual quint64 getLastAddress() const = 0;
 
-	/*! Get the bit width of the item.
+	/*!
+     *  Get the bit width of the item.
 	 * 
 	 *      @return The bit width of the item.
-	*/
+	 */
 	virtual int getBitWidth() const = 0;
 
-	/*! Get number of bits the addressable unit contains.
+	/*!
+     *  Get number of bits the addressable unit contains.
 	 *
 	 *      @return The size of least addressable unit.
-	*/
+	 */
 	virtual unsigned int getAddressUnitSize() const = 0;
 
-	/*! Add a child visualization item for this item.
+	/*!
+     *  Add a child visualization item for this item.
 	 *
 	 *       @param [in] childItem Pointer to the child to add.
-	 *
-	*/
+	 */
 	virtual void addChild(MemoryVisualizationItem* childItem);
 
-	/*! Remove a child visualization item from this item.
+	/*!
+     *  Remove a child visualization item from this item.
 	 *
 	 *       @param [in] childItem Pointer to the child to remove.
-	 *
-	*/
+	 */
 	virtual void removeChild(MemoryVisualizationItem* childItem);
 
-	/*! Set the width for the item.
+	/*!
+     *  Set the width for the item.
 	 *
 	 *       @param [in] width The new width of the item.
-	 *
-	*/
+	 */
 	virtual void setWidth(qreal width);
 
-	/*! The bounding rect of the item.
+	/*!
+     *  The bounding rect of the item.
 	 *
 	 *      @return The rectangle that bounds the item and possible sub items.
-	*/
+	 */
 	virtual QRectF boundingRect() const;
 
-	/*! Sets the first non-overlapping address to display.
+	/*!
+     *  Sets the first non-overlapping address to display.
 	 *
 	 *       @param [in] The first address to set.
-	*/
+	 */
     virtual void setDisplayOffset(quint64 const& address);
 
-	/*! Get the first non-overlapping address of the item.
+	/*!
+     *  Get the first non-overlapping address of the item.
 	 *
 	 *      @return The first non-overlapping address.
 	 */
     virtual quint64 getDisplayOffset();
 
-	/*! Sets the last non-overlapping address to display.
+	/*!
+     *  Sets the last non-overlapping address to display.
 	 *
 	 *       @param [in] The last address to set.
 	 */
     virtual void setDisplayLastAddress(quint64 const& address);
 
-    /*! Get the last non-overlapping address of the item.
+    /*!
+     *  Get the last non-overlapping address of the item.
      *
      *      @return The last non-overlapping address.
      */
@@ -135,7 +146,8 @@ public:
 	//! Sets the item to be completely overlapped by adjacent items.
     virtual void setCompleteOverlap();
 
-    /*! Tells if the item is completely overlapped by other items.
+    /*!
+     *  Tells if the item is completely overlapped by other items.
      *
      *      @return True, if the item's memory is completely under other memory blocks, otherwise false.
      */
@@ -151,10 +163,11 @@ public:
      */
     bool isConflicted() const;
    
-    /*! Set new positions for child items.
+    /*!
+     *  Set new positions for child items.
 	 * 
 	 * The child items are organized in the order of their offset.
-	*/
+	 */
 	virtual void reorganizeChildren();
 
     /*!
@@ -184,6 +197,13 @@ protected slots:
 
 protected:
    
+    /*!
+     *  Parse a given expression.
+     *
+     *      @param [in] expression  The expression to be parsed.
+     */
+    int parseExpression(QString const& expression) const;
+
     //! Shows the expand/collapse icon if the item has any children. Otherwise the icon is hidden.
     void showExpandIconIfHasChildren();
 
@@ -200,18 +220,20 @@ protected:
 	//! Handler for mouse press events
 	virtual void mousePressEvent(QGraphicsSceneMouseEvent* event);
 
-	/*! Set text to the top left corner.
+	/*!
+     *  Set text to the top left corner.
 	 *
 	 * The function groups the hexadecimal digit into groups of 4 digits.
 	 *
 	 *       @param [in] text The text to display in the corner.
-	*/
+	 */
 	virtual void setLeftTopCorner(QString const& text);
 
-	/*! Set the address to be shown on the top left corner.
+	/*!
+     *  Set the address to be shown on the top left corner.
 	 *
 	 *       @param [in] address The address to be shown in hexadecimal form.
-	*/
+	 */
 	virtual void setLeftTopCorner(quint64 address);
 
     /*!
@@ -223,18 +245,20 @@ protected:
      */
     QString toHexString(quint64 address);
 
-	/*! Set text to the bottom left corner.
+	/*!
+     *  Set text to the bottom left corner.
 	 *
-	 * The function groups the hexadecimal digit into groups of 4 digits.
+	 *  The function groups the hexadecimal digit into groups of 4 digits.
 	 *
 	 *       @param [in] text The text to display in the corner.
-	*/
+	 */
 	virtual void setLeftBottomCorner(QString const& text);
 
-	/*! Set the address to be shown on the bottom left corner.
+	/*!
+     *  Set the address to be shown on the bottom left corner.
 	 *
 	 *       @param [in] address The address to be shown in hexadecimal form.
-	*/
+	 */
 	virtual void setLeftBottomCorner(quint64 address);
 
 	//! Contains the child memory items. The offset of the child is the key.
@@ -325,6 +349,9 @@ private:
 
     //! Tells if the item is completely overlapped by other items.
     bool overlapped_;
+
+    //! The used expression parser.
+    QSharedPointer<ExpressionParser> expressionParser_;
 };
 
 #endif // MEMORYVISUALIZATIONITEM_H

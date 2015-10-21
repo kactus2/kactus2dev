@@ -237,7 +237,7 @@ void tst_FieldReader::readVolatile()
     FieldReader fieldReader;
     QSharedPointer<Field> testField = fieldReader.createFieldFrom(fieldNode);
 
-    QCOMPARE(testField->isVolatile(), true);
+    QCOMPARE(testField->getVolatile().toString(), QString("true"));
 }
 
 //-----------------------------------------------------------------------------
