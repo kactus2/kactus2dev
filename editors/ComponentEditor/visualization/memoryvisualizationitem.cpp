@@ -248,6 +248,14 @@ int MemoryVisualizationItem::parseExpression(QString const& expression) const
 }
 
 //-----------------------------------------------------------------------------
+// Function: memoryvisualizationitem::getExpressionParser()
+//-----------------------------------------------------------------------------
+QSharedPointer<ExpressionParser> MemoryVisualizationItem::getExpressionParser() const
+{
+    return expressionParser_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: MemoryVisualizationItem::showExpandIconIfHasChildren()
 //-----------------------------------------------------------------------------
 void MemoryVisualizationItem::showExpandIconIfHasChildren()

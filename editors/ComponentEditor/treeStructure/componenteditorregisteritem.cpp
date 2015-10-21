@@ -1,12 +1,12 @@
 //-----------------------------------------------------------------------------
-// File: componenteditormemmapsitem.cpp
+// File: componenteditorregisteritem.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Antti Kamppi
-// Date: 09.05.2012
+// Date: 24.08.2012
 //
 // Description:
-// The Memory maps-item in the component navigation tree.
+// The item for single register in component editor's navigation tree.
 //-----------------------------------------------------------------------------
 
 #include "componenteditorregisteritem.h"
@@ -18,6 +18,10 @@
 #include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>
 
 #include <editors/ComponentEditor/common/ExpressionParser.h>
+
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/Register.h>
+#include <IPXACTmodels/Component/Field.h>
 
 #include <QApplication>
 
@@ -45,7 +49,7 @@ expressionParser_(expressionParser)
 
 	setObjectName(tr("ComponentEditorRegisterItem"));
 
-	foreach(QSharedPointer<Field> field, reg_->getFields())
+	foreach(QSharedPointer<Field> field, *reg_->getFields())
     {
 		if (field)
         {
@@ -88,7 +92,8 @@ QString ComponentEditorRegisterItem::text() const
 //-----------------------------------------------------------------------------
 bool ComponentEditorRegisterItem::isValid() const
 {
-	return reg_->isValid(component_->getChoices());
+// 	return reg_->isValid(component_->getChoices());
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -119,7 +124,7 @@ ItemEditor* ComponentEditorRegisterItem::editor()
 void ComponentEditorRegisterItem::createChild( int index )
 {
 	QSharedPointer<ComponentEditorFieldItem> fieldItem(new ComponentEditorFieldItem(
-		reg_, reg_->getFields().at(index), model_, libHandler_, component_, parameterFinder_, 
+		reg_, reg_->getFields()->at(index), model_, libHandler_, component_, parameterFinder_, 
         referenceCounter_, expressionParser_, this));
 	fieldItem->setLocked(locked_);
 	
@@ -257,7 +262,7 @@ void ComponentEditorRegisterItem::resizeGraphicsToCurrentDimensionSize()
         return;
     }
 
-    const int DIMENSION_SIZE = qMax(expressionParser_->parseExpression(reg_->getDimensionExpression()).toInt(), 1);
+    const int DIMENSION_SIZE = qMax(expressionParser_->parseExpression(reg_->getDimension()).toInt(), 1);
    
     for (int currentDimension = registerDimensions_.count(); currentDimension < DIMENSION_SIZE; currentDimension++)
     {

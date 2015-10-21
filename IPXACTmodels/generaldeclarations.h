@@ -416,11 +416,12 @@ enum TestConstraint {
 };
 
 //! \brief Contains the strings that match the enum TestConstraint values.
-const QString TEST_CONSTRAINT_STRINGS[] = {
+const QString TEST_CONSTRAINT_STRINGS[TESTCONSTRAINT_COUNT+1] = {
 	"unConstrained",
 	"restore",
 	"writeAsRead",
-	"readOnly"
+	"readOnly",
+    ""
 };
 
 /*! \brief Convert the enum value to a matching string.

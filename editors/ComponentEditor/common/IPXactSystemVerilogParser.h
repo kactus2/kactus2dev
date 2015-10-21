@@ -17,7 +17,6 @@
 #include <QSharedPointer>
 #include <QString>
 
-class Parameter;
 class ParameterFinder;
 
 //-----------------------------------------------------------------------------

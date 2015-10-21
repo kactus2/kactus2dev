@@ -204,6 +204,13 @@ protected:
      */
     int parseExpression(QString const& expression) const;
 
+    /*!
+     *  Get the used expression parser.
+     *
+     *      @return Pointer to the expression parser.
+     */
+    QSharedPointer<ExpressionParser> getExpressionParser() const;
+
     //! Shows the expand/collapse icon if the item has any children. Otherwise the icon is hidden.
     void showExpandIconIfHasChildren();
 

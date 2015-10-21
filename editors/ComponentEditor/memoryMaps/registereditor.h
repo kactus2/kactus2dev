@@ -1,15 +1,19 @@
-/* 
- *  	Created on: 24.8.2012
- *      Author: Antti Kamppi
- * 		filename: registereditor.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: registereditor.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 24.08.2012
+//
+// Description:
+// Editor for editing the details of fields in a register.
+//-----------------------------------------------------------------------------
 
 #ifndef REGISTEREDITOR_H
 #define REGISTEREDITOR_H
 
-#include <IPXACTmodels/register.h>
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/Register.h>
 
 #include <QSharedPointer>
 #include <QGroupBox>
@@ -46,17 +50,19 @@ public:
         QSharedPointer<ExpressionFormatter> expressionFormatter,
 		QWidget* parent = 0);
 
-	//! \brief The destructor
+	//! The destructor.
 	virtual ~RegisterEditor();
 
-	/*! \brief Check for the validity of the editor
-	* 
-	* \return True if the editor is in valid state.
-	*/
+	/*!
+     *  Check for the validity of the editor.
+	 * 
+	 *      @return True if the editor is in valid state.
+	 */
 	virtual bool isValid() const;
 
-	/*! \brief Reload the information from the model to the editor.
-	*/
+	/*!
+     *  Reload the information from the model to the editor.
+	 */
 	virtual void refresh();
 
 signals:
@@ -115,16 +121,16 @@ signals:
 
 private:
 
-	//! \brief No copying
+	//! No copying.
 	RegisterEditor(const RegisterEditor& other);
 
-	//! \brief No assignment
+	//! No assignment.
 	RegisterEditor& operator=(const RegisterEditor& other);
 
-	//! \brief Pointer to the view that displays the items.
+	//! Pointer to the view that displays the items.
 	EditableTableView* view_;
 
-	//! \brief Pointer to the model that manages the details of items.
+	//! Pointer to the model that manages the details of items.
 	RegisterTableModel* model_;
 };
 

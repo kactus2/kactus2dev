@@ -13,7 +13,8 @@
 #define REGISTERGRAPHITEM_H
 
 #include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>
-#include <IPXACTmodels/register.h>
+
+#include <IPXACTmodels/Component/Register.h>
 
 #include <QSharedPointer>
 
@@ -28,16 +29,17 @@ class RegisterGraphItem : public MemoryVisualizationItem
 
 public:
 
-	/*! The constructor
+	/*!
+     *  The constructor.
 	 *
 	 *      @param [in] reg                 The register that this graph item visualizes.
      *      @param [in] expressionParser    Parser for expressions in register fields.
 	 *      @param [in] parent              The parent of this graph item.
-	*/
+	 */
 	RegisterGraphItem(QSharedPointer<Register> reg, QSharedPointer<ExpressionParser> expressionParser,
         QGraphicsItem* parent);
 	
-	//! The destructor
+	//! The destructor.
 	virtual ~RegisterGraphItem();
 
 	//! Refresh the item, refresh and re-layout the sub-items and refresh parent item.
@@ -49,34 +51,39 @@ public:
 	//! Remove the item.
     virtual void removeChild(MemoryVisualizationItem* childItem );
 
-	/*! Get the offset of the item. 
+	/*!
+     *  Get the offset of the item. 
 	 *
 	 *      @return The offset of the item from the parent item's base address.
-	*/
+	 */
 	virtual quint64 getOffset() const;
 
-	/*! Get the last address contained in the item.
+	/*!
+     *  Get the last address contained in the item.
 	 *
 	 *      @return The last address.
-	*/
+	 */
 	virtual quint64 getLastAddress() const;
 
-	/*! Get the bit width of the item.
+	/*!
+     *  Get the bit width of the item.
 	 * 
 	 *      @return The bit width of the item.
-	*/
+	 */
 	virtual int getBitWidth() const;
 
-	/*! Get number of bits the addressable unit contains.
+	/*!
+     *  Get number of bits the addressable unit contains.
 	 *
 	 *      @return The size of least addressable unit.
-	*/
+	 */
 	virtual unsigned int getAddressUnitSize() const;
 
-    /*! Set the width for the item.
+    /*!
+     *  Set the width for the item.
 	 *
 	 *       @param [in] width The new width of the item.
-	*/
+	 */
     virtual void setWidth(qreal width);
 
     /*!
@@ -198,9 +205,6 @@ private:
 
     //! The index in the dimension the item represents.
     unsigned int dimensionIndex_;
-
-    //! Parser for expressions in register fields.
-    QSharedPointer<ExpressionParser> expressionParser_;
 };
 
 #endif // REGISTERGRAPHITEM_H

@@ -18,10 +18,7 @@
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 
 #include <common/KactusColors.h>
-#include <common/utils.h>
 #include <common/graphicsItems/visualizeritem.h>
-
-#include <IPXACTmodels/field.h>
 
 #include <QBrush>
 #include <QColor>
@@ -31,10 +28,9 @@
 //-----------------------------------------------------------------------------
 RegisterGraphItem::RegisterGraphItem(QSharedPointer<Register> reg,
     QSharedPointer<ExpressionParser> expressionParser, QGraphicsItem* parent):
-MemoryVisualizationItem(parent),
+MemoryVisualizationItem(expressionParser, parent),
 register_(reg),
-dimensionIndex_(0),
-expressionParser_(expressionParser)
+dimensionIndex_(0)
 {
 	Q_ASSERT(register_);
 
@@ -49,6 +45,7 @@ expressionParser_(expressionParser)
 //-----------------------------------------------------------------------------
 RegisterGraphItem::~RegisterGraphItem()
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -67,7 +64,7 @@ void RegisterGraphItem::updateDisplay()
 {
     QString name = register_->name();
 
-    if (expressionParser_->parseExpression(register_->getDimensionExpression()).toUInt() > 0)
+    if (parseExpression(register_->getDimension()) > 0)
     {
         name.append("[" + QString::number(dimensionIndex_) + "]");
     }
@@ -83,7 +80,7 @@ void RegisterGraphItem::updateDisplay()
     setToolTip("<b>Name: </b>" + register_->name() + "<br>" +
         "<b>First address: </b>" + toHexString(offset) + "<br>" +
         "<b>Last address: </b>" + toHexString(lastAddress) + "<br>" +
-        "<b>Size [bits]: </b>" + expressionParser_->parseExpression(register_->getSizeExpression()));
+        "<b>Size [bits]: </b>" + QString::number(getBitWidth()));
 }
 
 //-----------------------------------------------------------------------------
@@ -103,7 +100,7 @@ void RegisterGraphItem::removeChild( MemoryVisualizationItem* childItem )
 quint64 RegisterGraphItem::getOffset() const
 {
 	// the register offset from the address block
-	quint64 regOffset = expressionParser_->parseExpression(register_->getAddressOffset()).toUInt();
+    quint64 regOffset = parseExpression(register_->getAddressOffset());
 
 	// the address block's offset
 	MemoryVisualizationItem* blockItem = static_cast<MemoryVisualizationItem*>(parentItem());
@@ -135,7 +132,7 @@ quint64 RegisterGraphItem::getLastAddress() const
 //-----------------------------------------------------------------------------
 int RegisterGraphItem::getBitWidth() const
 {
-	return expressionParser_->parseExpression(register_->getSizeExpression()).toUInt();
+    return parseExpression(register_->getSize());
 }
 
 //-----------------------------------------------------------------------------
@@ -174,7 +171,7 @@ void RegisterGraphItem::setDimensionIndex(unsigned int index)
 //-----------------------------------------------------------------------------
 bool RegisterGraphItem::isPresent() const
 {
-     return expressionParser_->parseExpression(register_->getIsPresentExpression()) == "1";
+    return parseExpression(register_->getIsPresent()) == 1;
 }
 
 //-----------------------------------------------------------------------------
@@ -298,7 +295,7 @@ quint64 RegisterGraphItem::getSizeInAUB() const
     }
 
     // how many address unit are contained in the register
-    unsigned int bitSize = expressionParser_->parseExpression(register_->getSizeExpression()).toUInt();
+    unsigned int bitSize = parseExpression(register_->getSize());
     unsigned int size = bitSize / addrUnit;
     if (size*addrUnit < bitSize) 
     {
@@ -384,7 +381,7 @@ bool RegisterGraphItem::emptySpaceBeforeChild(MemoryVisualizationItem* current, 
 void RegisterGraphItem::createMemoryGap(quint64 startAddress, quint64 endAddress)
 {
     // create the gap item
-    FieldGapItem* gap = new FieldGapItem(tr("Reserved"), this);
+    FieldGapItem* gap = new FieldGapItem(tr("Reserved"), getExpressionParser(), this);
     gap->setStartAddress(startAddress);
     gap->setEndAddress(qMin(endAddress, quint64(getRegisterMSB(getBitWidth()))));
     gap->setPos(findPositionFor(gap));

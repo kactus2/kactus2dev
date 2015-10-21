@@ -69,7 +69,7 @@ void MemoryMapGraphItem::updateDisplay()
 
     // Set tooltip to show addresses in hexadecimals.
     setToolTip("<b>Name: </b>" + memoryMap_->name() + "<br>" +
-        "<b>AUB: </b>" + getAddressUnitSize() + "<br>" +
+        "<b>AUB: </b>" + QString::number(getAddressUnitSize()) + "<br>" +
         "<b>First address: </b>" + toHexString(offset) + "<br>" +
         "<b>Last address: </b>" + toHexString(lastAddress));
 }

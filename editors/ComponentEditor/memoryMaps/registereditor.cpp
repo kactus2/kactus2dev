@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 24.8.2012
- *      Author: Antti Kamppi
- * 		filename: registereditor.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: registereditor.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 24.08.2012
+//
+// Description:
+// Editor for editing the details of fields in a register.
+//-----------------------------------------------------------------------------
 
 #include "registereditor.h"
 
@@ -58,7 +62,7 @@ model_(0)
 	view_->setModel(proxy);
 
 	//! \brief Enable import/export csv file
-    const QString compPath = handler->getDirectoryPath(*component->getVlnv());
+    const QString compPath = handler->getDirectoryPath(component->getVlnv());
 	QString defPath = QString("%1/fieldListing.csv").arg(compPath);
     view_->setDefaultImportExportPath(defPath);
 	
@@ -81,7 +85,7 @@ model_(0)
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
 	connect(view_, SIGNAL(addItem(const QModelIndex&)),
-		model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
+        model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
 	connect(view_, SIGNAL(removeItem(const QModelIndex&)),
 		model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 

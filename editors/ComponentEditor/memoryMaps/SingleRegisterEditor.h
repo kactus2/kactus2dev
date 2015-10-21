@@ -18,8 +18,6 @@
 
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
 
-#include <IPXACTmodels/register.h>
-
 #include <QSharedPointer>
 #include <QSortFilterProxyModel>
 #include <QLineEdit>
@@ -31,6 +29,7 @@ class AccessComboBox;
 class BooleanComboBox;
 class ExpressionEditor;
 class ExpressionParser;
+class Register;
 //-----------------------------------------------------------------------------
 //! Editor for editing the details of a single register.
 //-----------------------------------------------------------------------------
@@ -121,20 +120,6 @@ private slots:
      */
     void onAccessSelected(QString const& newAccessValue);
 
-    /*!
-     *  Save the edited reset value to the register.
-     *
-     *      @param [in] newResetValue   The new value for the reset.
-     */
-    void onResetValueChanged();
-
-    /*!
-     *  Save the edited reset mask to the register.
-     *
-     *      @param [in] newResetMask    The new value for the reset mask.
-     */
-    void onResetMaskChanged();
-
 private:
 
 	//! No copying
@@ -199,12 +184,6 @@ private:
 
     //! The access selector.
     AccessComboBox* accessEditor_;
-
-    //! The reset value editor.
-    QLineEdit* resetValueEditor_;
-
-    //! The reset mask editor.
-    QLineEdit* resetMaskEditor_;
 
     //! The expression parser.
     QSharedPointer<ExpressionParser> expressionParser_;
