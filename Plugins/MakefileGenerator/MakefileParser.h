@@ -6,7 +6,7 @@
 // Date: 22.09.2014
 //
 // Description:
-// Makefile parser.
+// Parses design and its configuration for make file generation data.
 //-----------------------------------------------------------------------------
 
 #ifndef MakefileParser_H
@@ -27,7 +27,6 @@
 class MakefileParser
 {
 public:
-
     // A struct containing needed data of a single file parsed to be used in a makefile.
 	// Provided that it is not a header file, it likely yields an object file.
     struct MakeObjectData
@@ -80,7 +79,7 @@ public:
     ~MakefileParser();
 
     // Returns reference to all parsed MakeFileData.
-    const QList<MakeFileData>& getParsedData();
+    QList<MakeFileData>& getParsedData();
 
     // Return the general file set.
     const QSharedPointer<FileSet>& getGeneralFileSet();
@@ -220,6 +219,8 @@ private:
      *
      *      @param [in] mod   The make data associated with the object file.
 	 *      @param [in] hardView   Software view of the associated hardware component.
+	 *
+	 *      @return The resolved compiler for the file.
 	 */
 	 QString getFileCompiler(QSharedPointer<MakeObjectData> mod, QSharedPointer<SWView> hardView) const;
 
@@ -227,7 +228,9 @@ private:
      *  Gets concatenated the build flags of the file with those fileSet and software views.
      *
      *      @param [in] mod   The make data associated with the object file.
-     *      @param [in] mfd   The make data associated with the makefile as whole.
+	 *      @param [in] mfd   The make data associated with the makefile as whole.
+	 *
+	 *      @return The resolved flags for the file.
      */
      QString getFileFlags(QSharedPointer<Component> component, QSharedPointer<MakeObjectData> &mod, MakeFileData &mfd) const;
 

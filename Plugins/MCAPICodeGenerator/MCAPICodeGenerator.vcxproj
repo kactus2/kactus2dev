@@ -187,6 +187,7 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\common\NameGenerationPolicy.cpp" />
     <ClCompile Include="CSourceWriter.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_MCAPICodeGeneratorPlugin.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -300,6 +301,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\common\NameGenerationPolicy.h" />
     <ClInclude Include="CSourceWriter.h" />
     <ClInclude Include="MCAPIHeaderGenerator.h" />
     <ClInclude Include="MCAPIParser.h" />

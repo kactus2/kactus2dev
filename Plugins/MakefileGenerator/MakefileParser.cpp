@@ -6,17 +6,18 @@
 // Date: 22.09.2014
 //
 // Description:
-// Makefile parser.
+// Parses design and its configuration for make file generation data.
 //-----------------------------------------------------------------------------
 
 #include "MakefileParser.h"
 
-#include <IPXACTmodels/kactusExtensions/ApiInterface.h>
-#include <IPXACTmodels/kactusExtensions/ApiInterconnection.h>
-#include <IPXACTmodels/Component/ComponentInstantiation.h>
 #include <QSet>
+
+#include <IPXACTmodels/kactusExtensions/ApiInterface.h>
 #include "editors/ComponentEditor/common/ListParameterFinder.h"
 #include "editors/ComponentEditor/common/IPXactSystemVerilogParser.h"
+
+#include <Plugins/common/NameGenerationPolicy.h>
 
 //-----------------------------------------------------------------------------
 // Function: MakefileParser::MakefileParser()
@@ -35,7 +36,7 @@ MakefileParser::~MakefileParser()
 //-----------------------------------------------------------------------------
 // Function: MakefileParser::getParsedData()
 //-----------------------------------------------------------------------------
-const QList<MakefileParser::MakeFileData>& MakefileParser::getParsedData()
+QList<MakefileParser::MakeFileData>& MakefileParser::getParsedData()
 {
     return parsedData_;
 }
@@ -150,7 +151,7 @@ void MakefileParser::parse(LibraryInterface* library, QSharedPointer<Component> 
     QString sysViewName, QString targetPath /*= ""*/)
 {
     // Fabricate name for the fileSet of design-wide files.
-    QString fileSetName = sysViewName + "_general_files";
+    QString fileSetName = NameGenerationPolicy::systemViewFilesetName( sysViewName );
 
 	// Obtain the the fileSet by name and set it as a source file group.
 	QSharedPointer<FileSet> fileSet = topComponent->getFileSet(fileSetName);
@@ -330,7 +331,7 @@ void MakefileParser::findInstanceHeaders(LibraryInterface* library, QSharedPoint
     if ( fileSetName.isNull() )
     {
         // If not, make a new one.
-        fileSetName = sysViewName + "_" + softInstance->getInstanceName() + "_headers";
+        fileSetName = NameGenerationPolicy::instanceFilesetName( sysViewName, softInstance->getInstanceName() );
         softInstance->setFileSetRef( fileSetName );
     }
 
@@ -724,7 +725,7 @@ QString MakefileParser::getFileFlags(QSharedPointer<Component> component, QShare
 			cFlags += " " + mod->fileSetBuildCmd->getFlags();
 		}
 
-		if ( mod->fileSetBuildCmd == 0 || fileReplaceFlags != "true" )
+		if ( mod->fileSetBuildCmd == 0 || fileSetReplaceFlags != "true" )
 		{
 			if ( mod->swBuildCmd != 0 )
 			{

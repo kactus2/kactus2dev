@@ -130,7 +130,7 @@ void MakefileGenerator::generateInstanceMakefile(QString basePath, QString topPa
     QString relDir = General::getRelativePath(topPath,makePath);
 
     // Add the file to instance fileSet
-    if ( !fileSet->contains(relDir) )
+    if ( fileSet && !fileSet->contains(relDir) )
     {
         QSharedPointer<File> file;
         QSettings settings;
@@ -189,7 +189,7 @@ void MakefileGenerator::generateMainMakefile(QString basePath, QString topPath, 
     QString relDir = General::getRelativePath(topPath,dir);
 
     // Add the file to instance fileSet
-    if ( !generalFileSet_->contains(relDir) )
+    if ( generalFileSet_ && !generalFileSet_->contains(relDir) )
     {
         QSharedPointer<File> file;
         QSettings settings;
@@ -223,7 +223,7 @@ void MakefileGenerator::generateLauncher(QString basePath, QString topPath, QStr
     QString relDir = General::getRelativePath(topPath,dir);
 
     // Add the file to instance fileSet
-    if ( !generalFileSet_->contains(relDir) )
+    if ( generalFileSet_ && !generalFileSet_->contains(relDir) )
     {
         QSharedPointer<File> file;
         QSettings settings;
@@ -265,13 +265,12 @@ void MakefileGenerator::writeFinalFlagsAndBuilder(MakefileParser::MakeFileData &
 //-----------------------------------------------------------------------------
 void MakefileGenerator::writeObjectList(MakefileParser::MakeFileData &mfd, QTextStream& outStream) const
 {
-    // Since hardware and software fileSets are different entities, both have to be looped through.
     // Include files are skipped and the object file is simply original filename + ".o".
     outStream << "_OBJ=";
 
     foreach(QSharedPointer<MakefileParser::MakeObjectData> mod, mfd.swObjects)
     {
-        if ( !mod->file->isIncludeFile() && !mod->compiler.isEmpty() )
+        if ( ( !mod->file || !mod->file->isIncludeFile() ) && !mod->compiler.isEmpty() )
         {
             outStream << " " << mod->fileName << ".o";
         }
@@ -310,8 +309,8 @@ void MakefileGenerator::writeMakeObjects(QTextStream& outStream, QList<QSharedPo
 {
     foreach(QSharedPointer<MakefileParser::MakeObjectData> mod, objects)
     {
-        // Skip the include files. Those do not need their own object files.
-        if ( mod->file->isIncludeFile() || mod->compiler.isEmpty() )
+        // Skip the include files, as they do not get object files. Also compilerless files are skipped.
+        if ( ( mod->file && mod->file->isIncludeFile() ) || mod->compiler.isEmpty() )
         {
             continue;
         }

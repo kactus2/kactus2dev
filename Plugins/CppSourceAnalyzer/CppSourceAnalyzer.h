@@ -12,13 +12,7 @@
 #ifndef CPPSOURCEANALYZER_H
 #define CPPSOURCEANALYZER_H
 
-#include <Plugins/PluginSystem/IPlugin.h>
 #include <Plugins/PluginSystem/ISourceAnalyzerPlugin.h>
-#include <QFileInfo>
-
-#include <QObject>
-
-class IPluginUtility;
 
 //-----------------------------------------------------------------------------
 //! MCAPI code generator.

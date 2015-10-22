@@ -10,15 +10,12 @@
 //-----------------------------------------------------------------------------
 
 #include "MakefileGenerator.h"
-#include "MakefileParser.h"
 #include "MakefileGeneratorPlugin.h"
 #include "CompileConflictDialog.h"
 
-#include <IPXACTmodels/Design/Design.h>
-#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 #include <QMessageBox>
 #include <QCoreApplication>
-#include <IPXACTmodels/kactusExtensions//SystemView.h>
+#include <IPXACTmodels/kactusExtensions/SystemView.h>
 
 //-----------------------------------------------------------------------------
 // Function: MakefileGeneratorPlugin::MakefileGeneratorPlugin()

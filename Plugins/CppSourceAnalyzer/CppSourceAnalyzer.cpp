@@ -11,15 +11,8 @@
 
 #include "CppSourceAnalyzer.h"
 
-#include <QtPlugin>
-#include <QMessageBox>
-#include <QFileInfo>
-#include <QSettings>
-#include <QCoreApplication>
 #include <QCryptographicHash>
 #include <QTextStream>
-
-#include <Plugins/PluginSystem/IPluginUtility.h>
 
 //-----------------------------------------------------------------------------
 // Function: CppSourceAnalyzer::CppSourceAnalyzer()

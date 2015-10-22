@@ -9,17 +9,19 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 HEADERS += ../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
     ../../../editors/ComponentEditor/common/ListParameterFinder.h \
+    ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
+    ../../../editors/ComponentEditor/common/SystemVerilogSyntax.h \
+    ../../../Plugins/common/NameGenerationPolicy.h \
     ../../../Plugins/MakefileGenerator/MakefileGenerator.h \
     ../../../Plugins/MakefileGenerator/MakefileParser.h \
     ../../MockObjects/LibraryMock.h \
-    ../../../Plugins/PluginSystem/PluginUtilityAdapter.h \
-    ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
-    ../../../editors/ComponentEditor/common/SystemVerilogSyntax.h
+    ../../../Plugins/PluginSystem/PluginUtilityAdapter.h
 SOURCES += ../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
+    ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
+    ../../../Plugins/common/NameGenerationPolicy.cpp \
     ../../MockObjects/LibraryMock.cpp \
     ../../../editors/ComponentEditor/common/ListParameterFinder.cpp \
     ../../../Plugins/MakefileGenerator/MakefileGenerator.cpp \
     ../../../Plugins/MakefileGenerator/MakefileParser.cpp \
     ../../../Plugins/PluginSystem/PluginUtilityAdapter.cpp \
-    ./tst_MakefileGenerator.cpp \
-    ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp
+    ./tst_MakefileGenerator.cpp

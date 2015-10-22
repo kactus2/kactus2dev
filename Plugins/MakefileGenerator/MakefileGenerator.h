@@ -14,15 +14,6 @@
 
 #include "MakefileParser.h"
 
-#include <QString>
-
-#include <IPXACTmodels/Design/design.h>
-#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
-#include <IPXACTmodels/Component/File.h>
-#include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/kactusExtensions/SWView.h>
-
-#include <library/LibraryManager/libraryinterface.h>
 #include <Plugins/PluginSystem/IPluginUtility.h>
 
 class MakefileGenerator

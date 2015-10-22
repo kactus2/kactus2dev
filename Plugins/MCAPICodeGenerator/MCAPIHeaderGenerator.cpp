@@ -31,6 +31,8 @@
 #include "common/dialogs/comboSelector/comboselector.h"
 #include <IPXACTmodels/kactusExtensions/SystemView.h>
 
+#include <Plugins/common/NameGenerationPolicy.h>
+
 //-----------------------------------------------------------------------------
 // Function: MCAPIHeaderGenerator::MCAPIHeaderGenerator()
 //-----------------------------------------------------------------------------
@@ -160,7 +162,7 @@ void MCAPIHeaderGenerator::addGeneratedMCAPIToFileset(QString directory, QShared
     if ( instance->getFileSetRef().isEmpty() )
     {
         // If not, make a new one.
-        fileSetName = sysViewName + "_" + instance->getInstanceName() + "_headers";
+        fileSetName = NameGenerationPolicy::instanceFilesetName( sysViewName, instance->getInstanceName() );
         instance->setFileSetRef( fileSetName );
     }
     else
