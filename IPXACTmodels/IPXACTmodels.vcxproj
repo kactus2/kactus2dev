@@ -257,6 +257,7 @@
     <ClCompile Include="Component\RemapState.cpp" />
     <ClCompile Include="Component\RemapStateReader.cpp" />
     <ClCompile Include="Component\RemapStateWriter.cpp" />
+    <ClCompile Include="Component\Segment.cpp" />
     <ClCompile Include="Component\Transactional.cpp" />
     <ClCompile Include="Component\View.cpp" />
     <ClCompile Include="Component\ViewReader.cpp" />
@@ -880,7 +881,6 @@
     <ClCompile Include="PortRef.cpp" />
     <ClCompile Include="registermodel.cpp" />
     <ClCompile Include="reset.cpp" />
-    <ClCompile Include="segment.cpp" />
     <ClCompile Include="servicetypedef.cpp" />
     <ClCompile Include="slaveinterface.cpp" />
     <ClCompile Include="subspacemap.cpp" />
@@ -1989,6 +1989,7 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_XML_LIB -DIPXACTMODELS_LIB -D_WINDLL "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(SolutionDir)\."</Command>
     </CustomBuild>
+    <ClInclude Include="Component\Segment.h" />
     <ClInclude Include="Component\Transactional.h" />
     <ClInclude Include="Component\View.h" />
     <CustomBuild Include="Component\ViewReader.h">
@@ -2286,7 +2287,6 @@
     <ClInclude Include="PortRef.h" />
     <ClInclude Include="registermodel.h" />
     <ClInclude Include="reset.h" />
-    <ClInclude Include="segment.h" />
     <ClInclude Include="servicetypedef.h" />
     <ClInclude Include="slaveinterface.h" />
     <ClInclude Include="subspacemap.h" />

@@ -34,7 +34,7 @@ HEADERS += ./ApiDefinition.h \
     ./PortRef.h \
     ./registermodel.h \
     ./reset.h \
-    ./segment.h \
+    ./Component/Segment.h \
     ./servicetypedef.h \
     ./slaveinterface.h \
     ./subspacemap.h \
@@ -235,7 +235,7 @@ SOURCES += ./ApiDefinition.cpp \
     ./PortRef.cpp \
     ./registermodel.cpp \
     ./reset.cpp \
-    ./segment.cpp \
+    ./Component/Segment.cpp \
     ./servicetypedef.cpp \
     ./slaveinterface.cpp \
     ./subspacemap.cpp \

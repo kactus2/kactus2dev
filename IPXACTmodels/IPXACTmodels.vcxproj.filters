@@ -284,9 +284,6 @@
     <ClCompile Include="reset.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="segment.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="servicetypedef.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1115,6 +1112,9 @@
     <ClCompile Include="common\Enumeration.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
+    <ClCompile Include="Component\Segment.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BusDefinition\BusDefinition.h">
@@ -1235,9 +1235,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="reset.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="segment.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="servicetypedef.h">
@@ -1530,6 +1527,9 @@
     </ClInclude>
     <ClInclude Include="common\Enumeration.h">
       <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\Segment.h">
+      <Filter>Header Files\Component</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
