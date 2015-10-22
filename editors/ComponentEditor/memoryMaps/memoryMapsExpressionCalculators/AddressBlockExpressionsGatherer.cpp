@@ -12,8 +12,8 @@
 #include "AddressBlockExpressionsGatherer.h"
 #include "RegisterExpressionsGatherer.h"
 
-#include <IPXACTmodels/register.h>
-#include <IPXACTmodels/registermodel.h>
+#include <IPXACTmodels/Component/RegisterBase.h>
+#include <IPXACTmodels/Component/Register.h>
 
 //-----------------------------------------------------------------------------
 // Function: AddressBlockExpressionsGatherer::AddressBlockExpressionGatherer()
@@ -40,11 +40,11 @@ QStringList AddressBlockExpressionGatherer::getExpressions(QSharedPointer<Addres
 
     expressionList.append(currentAddressBlock->getBaseAddress());
     expressionList.append(currentAddressBlock->getRange());
-    expressionList.append(currentAddressBlock->getWidthExpression());
+    expressionList.append(currentAddressBlock->getWidth());
 
     RegisterExpressionsGatherer registerGatherer;
 
-    foreach (QSharedPointer<RegisterModel> registerModel, currentAddressBlock->getRegisterData())
+    foreach (QSharedPointer<RegisterBase> registerModel, *currentAddressBlock->getRegisterData())
     {
         QSharedPointer<Register> targetRegister = registerModel.dynamicCast<Register>();
 

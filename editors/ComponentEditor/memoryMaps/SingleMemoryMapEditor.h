@@ -19,13 +19,12 @@
 
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
 
-#include <IPXACTmodels/memorymap.h>
-#include <IPXACTmodels/AbstractMemoryMap.h>
-
 #include <QLineEdit>
 #include <QLabel>
 
 class Component;
+class MemoryMap;
+class MemoryMapBase;
 class ExpressionParser;
 //-----------------------------------------------------------------------------
 //! Editor for editing the details of a single memory map.
@@ -49,7 +48,7 @@ public:
      *      @param [in] parent                  Pointer to the owner of this editor.
      */
     SingleMemoryMapEditor(QSharedPointer<Component> component,
-        QSharedPointer<AbstractMemoryMap> memoryRemap,
+        QSharedPointer<MemoryMapBase> memoryRemap,
         QSharedPointer<MemoryMap> parentMemoryMap,
         LibraryInterface* libHandler,
         QSharedPointer<ParameterFinder> parameterFinder,
@@ -154,7 +153,7 @@ private:
     ReferenceSelector* remapStateSelector_;
 
     //! The memory remap being edited.
-    QSharedPointer<AbstractMemoryMap> memoryRemap_;
+    QSharedPointer<MemoryMapBase> memoryRemap_;
 
     //! The parent of the memory remap.
     QSharedPointer<MemoryMap> parentMemoryMap_;

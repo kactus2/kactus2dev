@@ -14,9 +14,6 @@
 
 #include "componenteditoritem.h"
 
-#include <IPXACTmodels/memorymap.h>
-#include <IPXACTmodels/AbstractMemoryMap.h>
-
 #include <QSharedPointer>
 #include <QList>
 
@@ -24,6 +21,9 @@ class MemoryMapEditor;
 class MemoryMapsVisualizer;
 class MemoryMapGraphItem;
 class ExpressionParser;
+class MemoryMap;
+class MemoryMapBase;
+class MemoryBlockBase;
 //-----------------------------------------------------------------------------
 //! The item for a single memory remap in component editor's navigation tree.
 //-----------------------------------------------------------------------------
@@ -47,7 +47,7 @@ public:
      *      @param [in] expressionParser        The expression parser to use.
      *      @param [in] parent                  The parent item.
      */
-    MemoryRemapItem(QSharedPointer<AbstractMemoryMap> memoryRemap,
+    MemoryRemapItem(QSharedPointer<MemoryMapBase> memoryRemap,
         QSharedPointer<MemoryMap> parentMemoryMap,
         ComponentEditorTreeModel* model,
         LibraryInterface* libHandler,
@@ -151,13 +151,13 @@ private:
     MemoryRemapItem& operator=(const MemoryRemapItem& other);
 
 	//! The memory remap being edited.
-    QSharedPointer<AbstractMemoryMap> memoryRemap_;
+    QSharedPointer<MemoryMapBase> memoryRemap_;
 
     //! The parent memory map of this memory remap.
     QSharedPointer<MemoryMap> parentMemoryMap_;
 
 	//! Contains the address blocks that are children of this tree item.
-	QList<QSharedPointer<MemoryMapItem> >& items_;
+    QSharedPointer<QList<QSharedPointer<MemoryBlockBase> > > memoryBlocks_;
 
 	//! The visualizer to display the memory maps
 	MemoryMapsVisualizer* visualizer_;

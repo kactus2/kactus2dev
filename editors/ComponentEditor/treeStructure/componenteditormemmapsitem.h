@@ -14,15 +14,17 @@
 
 #include "componenteditoritem.h"
 
-class MemoryMapsEditor;
+#include <QSharedPointer>
+
 class ComponentEditorTreeModel;
 class MemoryMapsVisualizer;
 class ExpressionParser;
-
+class MemoryMap;
 //-----------------------------------------------------------------------------
 //! The Memory maps-item in the component navigation tree.
 //-----------------------------------------------------------------------------
-class ComponentEditorMemMapsItem : public ComponentEditorItem {
+class ComponentEditorMemMapsItem : public ComponentEditorItem
+{
 	Q_OBJECT
 
 public:
@@ -48,45 +50,49 @@ public:
         QSharedPointer<ExpressionParser> expressionParser,
 		ComponentEditorItem* parent);
 
-	//! The destructor
+	//! The destructor.
 	virtual ~ComponentEditorMemMapsItem();
 
-	/*! Get the font to be used for text of this item.
-	*
-	* The font is bold, if memory maps exist, otherwise not bold.
-	*
-	*      @return QFont instance that defines the font to be used.
-	*/
+	/*!
+     *  Get the font to be used for text of this item.
+	 *
+	 *      @return QFont instance that defines the font to be used.
+	 */
 	virtual QFont getFont() const;
 
-	/*! Get the tool tip for the item.
+	/*!
+     *  Get the tool tip for the item.
 	 * 
 	 *      @return The text for the tool tip to print to user.
-	*/
+	 */
 	virtual QString getTooltip() const;
 
-	/*! Get the text to be displayed to user in the tree for this item.
+	/*!
+     *  Get the text to be displayed to user in the tree for this item.
 	 *
 	 *      @return QString Contains the text to display.
-	*/
+	 */
 	virtual QString text() const;
 
-	/*! Get The editor of this item.
+	/*!
+     *  Get The editor of this item.
 	 *
 	 *      @return The editor to use for this item.
-	*/
+	 */
 	virtual ItemEditor* editor();
 
-	/*! Add a new child to the item.
+	/*!
+     *  Add a new child to the item.
 	 * 
 	 *      @param [in] index The index to add the child into.
-	*/
+	 */
 	virtual void createChild(int index);
 
-	/*! Get The visualizer of memory maps.
+	/*!
+     *  Get The visualizer of memory maps.
 	 * 
 	 *      @return The visualizer to use for memory maps.
-	*/
+	 */
 	virtual ItemVisualizer* visualizer();
 
 public slots:
@@ -117,14 +123,14 @@ signals:
     void memoryRemapRemoved(int memoryRemapIndex, QSharedPointer<MemoryMap> parentMemoryMap);
 
 private:
-	//! No copying
+	//! No copying.
 	ComponentEditorMemMapsItem(const ComponentEditorMemMapsItem& other);
 
-	//! No assignment
+	//! No assignment.
 	ComponentEditorMemMapsItem& operator=(const ComponentEditorMemMapsItem& other);
 
 	//! Contains the memory maps being edited.
-	QList<QSharedPointer<MemoryMap> >& memoryMaps_;
+    QSharedPointer<QList<QSharedPointer<MemoryMap> > > memoryMaps_;
 
 	//! The visualizer to display the memory maps
 	MemoryMapsVisualizer* visualizer_;

@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 22.8.2012
- *      Author: Antti Kamppi
- * 		filename: memorymapeditor.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: Component.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 22.08.2012
+//
+// Description:
+// The editor to edit the address blocks of a single memory map.
+//-----------------------------------------------------------------------------
 
 #ifndef MEMORYMAPEDITOR_H
 #define MEMORYMAPEDITOR_H
@@ -12,7 +16,7 @@
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
-#include <IPXACTmodels/AbstractMemoryMap.h>
+#include <IPXACTmodels/Component/MemoryMapBase.h>
 
 #include <QSortFilterProxyModel>
 #include <QSharedPointer>
@@ -23,6 +27,7 @@ class MemoryMapModel;
 class MemoryMapProxy;
 class LibraryInterface;
 class ExpressionParser;
+class Component;
 //-----------------------------------------------------------------------------
 //! The editor to edit the address blocks of a single memory map.
 //-----------------------------------------------------------------------------
@@ -44,23 +49,25 @@ public:
 	 *      @param [in] parent                  The parent of this editor.
 	 */
 	MemoryMapEditor(QSharedPointer<Component> component, LibraryInterface* handler, 
-        QSharedPointer<AbstractMemoryMap> memoryRemap, 
+        QSharedPointer<MemoryMapBase> memoryRemap, 
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QSharedPointer<ExpressionParser> expressionParser,
         QWidget* parent = 0);
 	
-	//! \brief The destructor
+	//! The destructor.
 	virtual ~MemoryMapEditor();
 
-	/*! \brief Check for the validity of the editor
-	* 
-	* \return True if the editor is in valid state.
-	*/
+	/*!
+     *  Check for the validity of the editor.
+	 * 
+	 *      @return True if the editor is in valid state.
+	 */
 	virtual bool isValid() const;
 
-	/*! \brief Reload the information from the model to the editor.
-	*/
+	/*!
+     *  Reload the information from the model to the editor.
+	 */
 	virtual void refresh();
 
 signals:
@@ -119,16 +126,16 @@ signals:
 
 private:
 	
-	//! \brief No copying
+	//! No copying.
 	MemoryMapEditor(const MemoryMapEditor& other);
 
-	//! \brief No assignment
+	//! No assignment.
 	MemoryMapEditor& operator=(const MemoryMapEditor& other);
 
-	//! \brief The view to show the details of a memory map.
+	//! The view to show the details of a memory map.
 	EditableTableView* view_;
 
-	//! \brief The model that manages the items.
+	//! The model that manages the items.
 	MemoryMapModel* model_;
 };
 

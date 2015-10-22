@@ -1,22 +1,23 @@
-/* 
- *  	Created on: 22.8.2012
- *      Author: Antti Kamppi
- * 		filename: memorymapsdelegate.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: memorymapsdelegate.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 22.08.2012
+//
+// Description:
+// The delegate to provide editor for adding/removing/editing the memory maps of a component.
+//-----------------------------------------------------------------------------
 
 #include "memorymapsdelegate.h"
 
 #include <editors/ComponentEditor/memoryMaps/MemoryMapsColumns.h>
 #include <editors/ComponentEditor/common/ReferenceSelector/ReferenceSelector.h>
 
-#include <QKeyEvent>
 #include <QLineEdit>
 #include <QPainter>
 #include <QPen>
 #include <QRegularExpression>
-#include <QSpinBox>
-#include <QTextEdit>
 
 //-----------------------------------------------------------------------------
 // Function: memorymapsdelegate::MemoryMapsDelegate()

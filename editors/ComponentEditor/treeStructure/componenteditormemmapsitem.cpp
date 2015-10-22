@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 9.5.2012
- *      Author: Antti Kamppi
- * 		filename: componenteditormemmapsitem.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: componenteditormemmapsitem.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 09.05.2012
+//
+// Description:
+// The Memory maps-item in the component navigation tree.
+//-----------------------------------------------------------------------------
 
 #include "componenteditormemmapsitem.h"
 #include "componenteditormemmapitem.h"
@@ -11,6 +15,11 @@
 #include <editors/ComponentEditor/memoryMaps/memorymapseditor.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
 
+#include <IPXACTmodels/Component/MemoryMap.h>
+
+//-----------------------------------------------------------------------------
+// Function: componenteditormemmapsitem::ComponentEditorMemMapsItem()
+//-----------------------------------------------------------------------------
 ComponentEditorMemMapsItem::ComponentEditorMemMapsItem( ComponentEditorTreeModel* model,
 													   LibraryInterface* libHandler,
 													   QSharedPointer<Component> component,
@@ -30,7 +39,7 @@ expressionParser_(expressionParser)
 
 	setObjectName(tr("ComponentEditorMemMapsItem"));
 
-	foreach (QSharedPointer<MemoryMap> memoryMap, memoryMaps_)
+	foreach (QSharedPointer<MemoryMap> memoryMap, *memoryMaps_)
     {
 		QSharedPointer<ComponentEditorMemMapItem> memoryMapItem(new ComponentEditorMemMapItem(memoryMap, model,
             libHandler, component, referenceCounter_, parameterFinder_, expressionFormatter_, expressionParser_, this));
@@ -45,20 +54,33 @@ expressionParser_(expressionParser)
 	}
 }
 
-ComponentEditorMemMapsItem::~ComponentEditorMemMapsItem() {
-	if (visualizer_) {
+//-----------------------------------------------------------------------------
+// Function: componenteditormemmapsitem::~ComponentEditorMemMapsItem()
+//-----------------------------------------------------------------------------
+ComponentEditorMemMapsItem::~ComponentEditorMemMapsItem()
+{
+	if (visualizer_)
+    {
 		delete visualizer_;
 		visualizer_ = NULL;
 	}
 }
 
-QFont ComponentEditorMemMapsItem::getFont() const {
+//-----------------------------------------------------------------------------
+// Function: componenteditormemmapsitem::getFont()
+//-----------------------------------------------------------------------------
+QFont ComponentEditorMemMapsItem::getFont() const
+{
     QFont font(ComponentEditorItem::getFont());
-    font.setBold(!memoryMaps_.isEmpty());
+    font.setBold(!memoryMaps_->isEmpty());
     return font;
 }
 
-QString ComponentEditorMemMapsItem::text() const {
+//-----------------------------------------------------------------------------
+// Function: componenteditormemmapsitem::text()
+//-----------------------------------------------------------------------------
+QString ComponentEditorMemMapsItem::text() const
+{
 	return tr("Memory maps");
 }
 
@@ -93,7 +115,11 @@ ItemEditor* ComponentEditorMemMapsItem::editor()
 	return editor_;
 }
 
-QString ComponentEditorMemMapsItem::getTooltip() const {
+//-----------------------------------------------------------------------------
+// Function: componenteditormemmapsitem::getTooltip()
+//-----------------------------------------------------------------------------
+QString ComponentEditorMemMapsItem::getTooltip() const
+{
 	return tr("Contains the memory maps of the component");
 }
 
@@ -102,7 +128,7 @@ QString ComponentEditorMemMapsItem::getTooltip() const {
 //-----------------------------------------------------------------------------
 void ComponentEditorMemMapsItem::createChild( int index )
 {
-	QSharedPointer<ComponentEditorMemMapItem> memoryMapItem(new ComponentEditorMemMapItem(memoryMaps_.at(index),
+	QSharedPointer<ComponentEditorMemMapItem> memoryMapItem(new ComponentEditorMemMapItem(memoryMaps_->at(index),
         model_, libHandler_, component_, referenceCounter_, parameterFinder_, expressionFormatter_,
         expressionParser_, this));
 	memoryMapItem->setLocked(locked_);
@@ -120,7 +146,11 @@ void ComponentEditorMemMapsItem::createChild( int index )
 	}
 }
 
-ItemVisualizer* ComponentEditorMemMapsItem::visualizer() {
+//-----------------------------------------------------------------------------
+// Function: componenteditormemmapsitem::visualizer()
+//-----------------------------------------------------------------------------
+ItemVisualizer* ComponentEditorMemMapsItem::visualizer()
+{
 	return visualizer_;
 }
 

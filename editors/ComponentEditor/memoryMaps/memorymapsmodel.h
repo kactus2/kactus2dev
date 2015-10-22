@@ -1,23 +1,28 @@
-/* 
- *  	Created on: 21.8.2012
- *      Author: Antti Kamppi
- * 		filename: memorymapsmodel.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: memorymapsmodel.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 21.08.2012
+//
+// Description:
+// The model to manage the memory maps summary.
+//-----------------------------------------------------------------------------
 
 #ifndef MEMORYMAPSMODEL_H
 #define MEMORYMAPSMODEL_H
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/memorymap.h>
-#include <IPXACTmodels/MemoryRemap.h>
-
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 
-#include <QAbstractTableModel>
 #include <QAbstractItemModel>
 #include <QSharedPointer>
 #include <QColor>
+#include <QMap>
+
+class Component;
+class MemoryMapBase;
+class MemoryMap;
+class MemoryRemap;
 
 //-----------------------------------------------------------------------------
 //! The model to manage the memory maps summary.
@@ -216,7 +221,7 @@ private:
      *
      *      @param [in] memoryMap   The given memory map.
      */
-    QMap<QString, int> getReferencedParameters(QSharedPointer<AbstractMemoryMap> memoryMap) const;
+    QMap<QString, int> getReferencedParameters(QSharedPointer<MemoryMapBase> memoryMap) const;
 
     /*!
      *  Decrease the number of references when removing a memory map.
@@ -291,7 +296,7 @@ private:
     QSharedPointer<ParameterFinder> parameterFinder_;
 
 	//! Contains the memory maps to show in the summary.
-	QList<QSharedPointer<MemoryMap> >& rootMemoryMaps_;
+    QSharedPointer<QList<QSharedPointer<MemoryMap> > > rootMemoryMaps_;
 };
 
 #endif // MEMORYMAPSMODEL_H

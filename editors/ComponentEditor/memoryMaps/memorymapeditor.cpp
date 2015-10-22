@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 22.8.2012
- *      Author: Antti Kamppi
- * 		filename: memorymapeditor.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: Component.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 22.08.2012
+//
+// Description:
+// The editor to edit the address blocks of a single memory map.
+//-----------------------------------------------------------------------------
 
 #include "memorymapeditor.h"
 
@@ -20,13 +24,15 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
+#include <IPXACTmodels/Component/Component.h>
+
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
 // Function: MemoryMapEditor::MemoryMapEditor()
 //-----------------------------------------------------------------------------
 MemoryMapEditor::MemoryMapEditor(QSharedPointer<Component> component, LibraryInterface* handler,
-    QSharedPointer<AbstractMemoryMap> memoryRemap,
+    QSharedPointer<MemoryMapBase> memoryRemap,
     QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<ExpressionFormatter> expressionFormatter, 
     QSharedPointer<ExpressionParser> expressionParser,
@@ -54,7 +60,7 @@ model_(new MemoryMapModel(memoryRemap, component->getChoices(), expressionParser
 	view_->setModel(proxy);
 
 	//! \brief Enable import/export csv file
-    const QString compPath = handler->getDirectoryPath(*component->getVlnv());
+    const QString compPath = handler->getDirectoryPath(component->getVlnv());
 	QString defPath = QString("%1/addrBlockList.csv").arg(compPath);
 	view_->setDefaultImportExportPath(defPath);
 	view_->setAllowImportExport(true);

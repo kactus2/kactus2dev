@@ -12,11 +12,10 @@
 #ifndef MEMORYREMAPEXPRESSIONGATHERER_H
 #define MEMORYREMAPEXPRESSIONGATHERER_H
 
-#include <IPXACTmodels/Component/MemoryMapBase>
-
 #include <QSharedPointer>
 #include <QStringList>
 
+class MemoryMapBase;
 //-----------------------------------------------------------------------------
 //! Gathers expressions from a memory remap and its address blocks.
 //-----------------------------------------------------------------------------
@@ -42,16 +41,15 @@ public:
      *
      *      @return A list containing all the expressions used in a memory remap
      */
-    QStringList getExpressions(QSharedPointer<AbstractMemoryMap> memoryRemap) const;
+    QStringList getExpressions(QSharedPointer<MemoryMapBase> memoryRemap) const;
 
 private:
 	
-	//! No copying
+	//! No copying.
     MemoryRemapExpressionGatherer(const MemoryRemapExpressionGatherer& other);
 
-	//! No assignment
+	//! No assignment.
     MemoryRemapExpressionGatherer& operator=(const MemoryRemapExpressionGatherer& other);
-
 };
 
 #endif // MEMORYREMAPEXPRESSIONGATHERER_H

@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 11.4.2012
- *      Author: Antti Kamppi
- * 		filename: memorymapseditor.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: memorymapseditor.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 11.04.2012
+//
+// Description:
+// Editor for editing the memory maps of a component.
+//-----------------------------------------------------------------------------
 
 #include "memorymapseditor.h"
 #include "memorymapsmodel.h"
@@ -14,7 +18,9 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
-#include <IPXACTmodels/remapstate.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/MemoryMap.h>
+#include <IPXACTmodels/Component/RemapState.h>
 
 #include <QVBoxLayout>
 
@@ -43,7 +49,7 @@ delegate_()
     // Set case-insensitive sorting.
     proxy_->setSortCaseSensitivity(Qt::CaseInsensitive);
 
-	const QString compPath = ItemEditor::handler()->getDirectoryPath(*ItemEditor::component()->getVlnv());
+	const QString compPath = ItemEditor::handler()->getDirectoryPath(ItemEditor::component()->getVlnv());
 	QString defPath = QString("%1/memMapsList.csv").arg(compPath);
 	view_->setDefaultImportExportPath(defPath);
 	view_->setAllowImportExport(true);

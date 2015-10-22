@@ -11,14 +11,14 @@
 
 #include "componenteditormemmapitem.h"
 #include "MemoryRemapItem.h"
-#include "componenteditoraddrblockitem.h"
 
 #include <editors/ComponentEditor/memoryMaps/SingleMemoryMapEditor.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
-#include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapgraphitem.h>
 
-#include <IPXACTmodels/memorymapitem.h>
-#include <IPXACTmodels/addressblock.h>
+#include <IPXACTmodels/Component/MemoryMap.h>
+#include <IPXACTmodels/Component/MemoryRemap.h>
+#include <IPXACTmodels/Component/MemoryBlockBase.h>
+#include <IPXACTmodels/Component/AddressBlock.h>
 
 //-----------------------------------------------------------------------------
 // Function: componenteditormemmapitem::ComponentEditorMemMapItem()
@@ -91,9 +91,9 @@ bool ComponentEditorMemMapItem::isValid() const
 {
     bool isParentValid = ComponentEditorItem::isValid();
 
-    bool isMemoryMapValid = memoryMap_->isValid(component_->getChoices(), component_->getRemapStateNames());
+//     bool isMemoryMapValid = memoryMap_->isValid(component_->getChoices(), component_->getRemapStateNames());
 
-    return isParentValid && isMemoryMapValid;
+    return isParentValid; // && isMemoryMapValid;
 }
 
 //-----------------------------------------------------------------------------

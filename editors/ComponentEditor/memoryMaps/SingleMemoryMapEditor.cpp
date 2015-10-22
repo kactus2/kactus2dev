@@ -14,8 +14,11 @@
 #include <QScrollArea>
 #include <QLabel>
 
-#include <IPXACTmodels/remapstate.h>
-#include <IPXACTmodels/MemoryRemap.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/MemoryMapBase.h>
+#include <IPXACTmodels/Component/MemoryMap.h>
+#include <IPXACTmodels/Component/MemoryRemap.h>
+#include <IPXACTmodels/Component/RemapState.h>
 
 #include <QFormLayout>
 #include <QSplitter>
@@ -24,7 +27,7 @@
 // Function: SingleMemoryMapEditor::SingleMemoryMapEditor()
 //-----------------------------------------------------------------------------
 SingleMemoryMapEditor::SingleMemoryMapEditor(QSharedPointer<Component> component,
-    QSharedPointer<AbstractMemoryMap> memoryRemap, QSharedPointer<MemoryMap> parentMemoryMap,
+    QSharedPointer<MemoryMapBase> memoryRemap, QSharedPointer<MemoryMap> parentMemoryMap,
     LibraryInterface* libHandler, QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<ExpressionFormatter> expressionFormatter, 
     QSharedPointer<ExpressionParser> expressionParser,
@@ -39,8 +42,8 @@ remapStateSelector_(),
 memoryRemap_(memoryRemap),
 parentMemoryMap_(parentMemoryMap)
 {
-    addressUnitBitsEditor_->setValidator(
-        new QRegularExpressionValidator(QRegularExpression("\\d*"), addressUnitBitsEditor_));
+    addressUnitBitsEditor_->setValidator
+        (new QRegularExpressionValidator(QRegularExpression("\\d*"), addressUnitBitsEditor_));
 
     if (!isMemoryMap())
     {
@@ -85,24 +88,24 @@ bool SingleMemoryMapEditor::isValid() const
     bool nameIsValid = nameEditor_.isValid();
     bool memoryMapEditorIsValid = memoryMapEditor_->isValid();
 
-    bool memoryRemapIsValid = false;
+//     bool memoryRemapIsValid = false;
 
     if (isMemoryMap())
     {
-        memoryRemapIsValid =
-            parentMemoryMap_->isValid(component()->getChoices(), component()->getRemapStateNames());
+//         memoryRemapIsValid =
+//             parentMemoryMap_->isValid(component()->getChoices(), component()->getRemapStateNames());
     }
     else
     {
         QSharedPointer<MemoryRemap> transformedMemoryRemap = memoryRemap_.dynamicCast<MemoryRemap>();
         if (transformedMemoryRemap)
         {
-            memoryRemapIsValid =
-                transformedMemoryRemap->isValid(component()->getChoices(), component()->getRemapStateNames());
+//             memoryRemapIsValid =
+//                 transformedMemoryRemap->isValid(component()->getChoices(), component()->getRemapStateNames());
         }
     }
 
-    return nameIsValid && memoryMapEditorIsValid && memoryRemapIsValid;
+    return nameIsValid && memoryMapEditorIsValid; // && memoryRemapIsValid;
 }
 
 //-----------------------------------------------------------------------------
@@ -113,7 +116,7 @@ void SingleMemoryMapEditor::refresh()
     nameEditor_.refresh();
     memoryMapEditor_->refresh();
     refreshSlaveBinding();
-    addressUnitBitsEditor_->setText(QString::number(parentMemoryMap_->getAddressUnitBits()));
+    addressUnitBitsEditor_->setText(parentMemoryMap_->getAddressUnitBits());
 
     if (isMemoryMap())
     {
@@ -218,7 +221,7 @@ void SingleMemoryMapEditor::refreshSlaveBinding()
 //-----------------------------------------------------------------------------
 void SingleMemoryMapEditor::updateAddressUnitBits()
 {
-    parentMemoryMap_->setAddressUnitBits(addressUnitBitsEditor_->text().toUInt());
+    parentMemoryMap_->setAddressUnitBits(addressUnitBitsEditor_->text());
     emit addressUnitBitsChanged();
     emit contentChanged();
 }

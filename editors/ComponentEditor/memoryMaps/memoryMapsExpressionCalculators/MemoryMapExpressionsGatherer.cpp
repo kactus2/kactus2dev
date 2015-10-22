@@ -12,7 +12,8 @@
 #include "MemoryMapExpressionsGatherer.h"
 #include "MemoryRemapExpressionGatherer.h"
 
-#include <IPXACTmodels/MemoryRemap.h>
+#include <IPXACTmodels/Component/MemoryMap.h>
+#include <IPXACTmodels/Component/MemoryRemap.h>
 
 //-----------------------------------------------------------------------------
 // Function: MemoryMapExpressionsGatherer::MemoryMapExpressionGatherer()
