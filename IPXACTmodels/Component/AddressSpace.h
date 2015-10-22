@@ -13,7 +13,8 @@
 #define ADDRESSSPACE_H
 
 #include "MemoryMapBase.h"
-#include "../segment.h"
+
+#include <IPXACTmodels/Component/Segment.h>
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 #include <IPXACTmodels/common/Extendable.h>
@@ -21,7 +22,6 @@
 #include <QSharedPointer>
 #include <QString>
 #include <QList>
-#include <QMap>
 
 class Parameter;
 

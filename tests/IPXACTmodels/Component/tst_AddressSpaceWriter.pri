@@ -41,7 +41,7 @@ HEADERS += ../../../IPXACTmodels/AbstractMemoryMap.h \
     ../../../IPXACTmodels/Component/WriteValueConstraint.h \
     ../../../IPXACTmodels/XmlUtils.h \
     ../../../IPXACTmodels/generaldeclarations.h \
-    ../../../IPXACTmodels/segment.h \
+    ../../../IPXACTmodels/Component/Segment.h \
     ../../../IPXACTmodels/vlnv.h \
     ../../../IPXACTmodels/Component/AddressBlockWriter.h \
     ../../../IPXACTmodels/Component/AddressSpaceWriter.h \
@@ -96,6 +96,6 @@ SOURCES += ../../../IPXACTmodels/Component/AddressBlock.cpp \
     ../../../IPXACTmodels/Component/WriteValueConstraint.cpp \
     ../../../IPXACTmodels/XmlUtils.cpp \
     ../../../IPXACTmodels/generaldeclarations.cpp \
-    ../../../IPXACTmodels/segment.cpp \
+    ../../../IPXACTmodels/Component/Segment.cpp \
     ./tst_AddressSpaceWriter.cpp \
     ../../../IPXACTmodels/vlnv.cpp

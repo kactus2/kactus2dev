@@ -11,8 +11,6 @@
 
 #include "AddressSpace.h"
 
-#include <IPXACTmodels/GenericVendorExtension.h>
-
 #include <IPXACTmodels/common/Parameter.h>
 
 //-----------------------------------------------------------------------------

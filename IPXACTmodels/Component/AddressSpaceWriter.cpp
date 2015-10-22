@@ -13,8 +13,8 @@
 
 #include <IPXACTmodels/common/NameGroupWriter.h>
 #include <IPXACTmodels/common/ParameterWriter.h>
+
 #include <IPXACTmodels/Component/MemoryMapBaseWriter.h>
-#include "../XmlUtils.h"
 
 //-----------------------------------------------------------------------------
 // Function: AddressSpaceWriter::AddressSpaceWriter()
@@ -80,40 +80,60 @@ void AddressSpaceWriter::writeSegments(QSharedPointer<AddressSpace> addressSpace
 
 		foreach (QSharedPointer<Segment> segment, *addressSpace->getSegments())
 		{
-			writer.writeStartElement("ipxact:segment");
-
-            NameGroupWriter nameGroupWriter;
-			nameGroupWriter.writeNameGroup(writer, segment);
-
-			writeIsPresent(writer, segment->getIsPresent());
-
-			if (!segment->getAddressOffset().isEmpty())
-			{
-				writer.writeStartElement("ipxact:addressOffset");
-
-				XmlUtils::writeAttributes(writer, segment->getOffsetAttributes());
-				writer.writeCharacters(segment->getAddressOffset());
-
-				writer.writeEndElement();
-			}
-
-			if ( !segment->getRange().isEmpty() )
-			{
-				writer.writeStartElement("ipxact:range");
-
-				XmlUtils::writeAttributes(writer, segment->getRangeAttributes());
-				writer.writeCharacters(segment->getRange());
-
-				writer.writeEndElement();
-			}
-
-            writeVendorExtensions( writer, segment );
-
-			writer.writeEndElement();
+            writeSingleSegment(writer, segment);
 		}
 
-		writer.writeEndElement();
+		writer.writeEndElement(); // ipxact:segments
 	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceWriter::writeSingleSegment()
+//-----------------------------------------------------------------------------
+void AddressSpaceWriter::writeSingleSegment(QXmlStreamWriter& writer, QSharedPointer<Segment> segment) const
+{
+    writer.writeStartElement("ipxact:segment");
+
+    NameGroupWriter nameGroupWriter;
+    nameGroupWriter.writeNameGroup(writer, segment);
+
+    writeIsPresent(writer, segment->getIsPresent());
+
+    if (!segment->getAddressOffset().isEmpty())
+    {
+        writer.writeStartElement("ipxact:addressOffset");
+
+        writeAttributeMap(writer, segment->getOffsetAttributes());
+        writer.writeCharacters(segment->getAddressOffset());
+
+        writer.writeEndElement();
+    }
+
+    if ( !segment->getRange().isEmpty() )
+    {
+        writer.writeStartElement("ipxact:range");
+
+        writeAttributeMap(writer, segment->getRangeAttributes());
+        writer.writeCharacters(segment->getRange());
+
+        writer.writeEndElement();
+    }
+
+    writeVendorExtensions( writer, segment );
+
+    writer.writeEndElement(); // ipxact:segment
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceWriter::writeAttributeMap()
+//-----------------------------------------------------------------------------
+void AddressSpaceWriter::writeAttributeMap(QXmlStreamWriter& writer, QMap<QString, QString> attributes) const
+{
+    for (QMap<QString, QString>::const_iterator i = attributes.begin(); i != attributes.end(); ++i)
+    {        
+        writer.writeAttribute(i.key(), i.value());
+    }
+    return;
 }
 
 //-----------------------------------------------------------------------------

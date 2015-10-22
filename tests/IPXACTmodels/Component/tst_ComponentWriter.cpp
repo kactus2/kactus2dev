@@ -24,7 +24,7 @@
 #include <IPXACTmodels/Component/Port.h>
 #include <IPXACTmodels/Component/ComponentGenerator.h>
 #include <IPXACTmodels/Component/choice.h>
-#include <IPXACTmodels/Enumeration.h>
+#include <IPXACTmodels/common/Enumeration.h>
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/cpu.h>
 #include <IPXACTmodels/Component/OtherClockDriver.h>

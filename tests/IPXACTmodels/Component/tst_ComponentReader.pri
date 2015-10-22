@@ -61,7 +61,7 @@ HEADERS += ../../../IPXACTmodels/bspbuildcommand.h \
     ../../../IPXACTmodels/Component/View.h \
     ../../../IPXACTmodels/Component/Wire.h \
     ../../../IPXACTmodels/Component/WireTypeDef.h \
-    ../../../IPXACTmodels/Enumeration.h \
+    ../../../IPXACTmodels/common/Enumeration.h \
     ../../../IPXACTmodels/generaldeclarations.h \
     ../../../IPXACTmodels/kactusExtensions/ApiInterface.h \
     ../../../IPXACTmodels/kactusExtensions/ComInterface.h \
@@ -75,7 +75,7 @@ HEADERS += ../../../IPXACTmodels/bspbuildcommand.h \
     ../../../IPXACTmodels/masterinterface.h \
     ../../../IPXACTmodels/mirroredslaveinterface.h \
     ../../../IPXACTmodels/PortMap.h \
-    ../../../IPXACTmodels/segment.h \
+    ../../../IPXACTmodels/Component/Segment.h \
     ../../../IPXACTmodels/slaveinterface.h \
     ../../../IPXACTmodels/swbuildcommand.h \
     ../../../IPXACTmodels/common/Extendable.h \
@@ -199,7 +199,7 @@ SOURCES += ../../../IPXACTmodels/bspbuildcommand.cpp \
     ../../../IPXACTmodels/Component/Wire.cpp \
     ../../../IPXACTmodels/Component/WireTypeDef.cpp \
     ../../../IPXACTmodels/Component/WriteValueConstraint.cpp \
-    ../../../IPXACTmodels/Enumeration.cpp \
+    ../../../IPXACTmodels/common/Enumeration.cpp \
     ../../../IPXACTmodels/generaldeclarations.cpp \
     ../../../IPXACTmodels/GenericVendorExtension.cpp \
     ../../../IPXACTmodels/kactusExtensions/ApiInterface.cpp \
@@ -215,7 +215,7 @@ SOURCES += ../../../IPXACTmodels/bspbuildcommand.cpp \
     ../../../IPXACTmodels/masterinterface.cpp \
     ../../../IPXACTmodels/mirroredslaveinterface.cpp \
     ../../../IPXACTmodels/PortMap.cpp \
-    ../../../IPXACTmodels/segment.cpp \
+    ../../../IPXACTmodels/Component/Segment.cpp \
     ../../../IPXACTmodels/slaveinterface.cpp \
     ../../../IPXACTmodels/swbuildcommand.cpp \
     ../../../IPXACTmodels/vlnv.cpp \

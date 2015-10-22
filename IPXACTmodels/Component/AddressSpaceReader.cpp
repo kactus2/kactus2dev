@@ -104,52 +104,64 @@ void AddressSpaceReader::readSegments(QDomNode const& addressSpaceNode,
 
             nameReader.parseNameGroup(segmentNode, newSegment);
 
-            QDomElement isPresentElement = segmentNode.firstChildElement("ipxact:isPresent");
-            if (!isPresentElement.isNull())
-            {
-                newSegment->setIsPresent(isPresentElement.firstChild().nodeValue());
-            }
+            newSegment->setIsPresent(parseIsPresent(segmentNode.firstChildElement("ipxact:isPresent")));
 
-            QDomElement addressOffsetElement = segmentNode.firstChildElement("ipxact:addressOffset");
-            newSegment->setOffset(addressOffsetElement.firstChild().nodeValue());
+            parseAddressOffset(segmentNode, newSegment);
 
-            QDomNamedNodeMap offsetAttributes = addressOffsetElement.attributes();
-            if (!offsetAttributes.isEmpty())
-            {
-                QMap<QString, QString> newOffsetAttributes;
-                for (int i = 0 ; i < offsetAttributes.count(); ++i)
-                {
-                    QDomNode attributeNode = offsetAttributes.item(i);
-                    QString key = attributeNode.nodeName();
-                    QString value = attributeNode.firstChild().nodeValue();
-
-                    newOffsetAttributes.insert(key, value);
-                }
-                newSegment->setOffsetAttributes(newOffsetAttributes);
-            }
-
-            QDomElement rangeElement = segmentNode.firstChildElement("ipxact:range");
-            newSegment->setRange(rangeElement.firstChild().nodeValue());
-
-            QDomNamedNodeMap rangeAttributes = rangeElement.attributes();
-            if (!rangeAttributes.isEmpty())
-            {
-                QMap<QString, QString> newRangeAttributes;
-                for (int i = 0 ; i < rangeAttributes.count(); ++i)
-                {
-                    QDomNode attributeNode = rangeAttributes.item(i);
-                    QString key = attributeNode.nodeName();
-                    QString value = attributeNode.firstChild().nodeValue();
-
-                    newRangeAttributes.insert(key, value);
-                }
-                newSegment->setRangeAttributes(newRangeAttributes);
-            }
+            parseRange(segmentNode, newSegment);
 
             parseVendorExtensions(segmentNode, newSegment);
 
             newAddressSpace->getSegments()->append(newSegment);
         }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceReader::parseAddressOffset()
+//-----------------------------------------------------------------------------
+void AddressSpaceReader::parseAddressOffset(QDomNode const& segmentNode, QSharedPointer<Segment> newSegment) const
+{
+    QDomElement addressOffsetElement = segmentNode.firstChildElement("ipxact:addressOffset");
+    newSegment->setOffset(addressOffsetElement.firstChild().nodeValue());
+
+    QDomNamedNodeMap offsetAttributes = addressOffsetElement.attributes();
+    if (!offsetAttributes.isEmpty())
+    {
+        QMap<QString, QString> newOffsetAttributes;
+        for (int i = 0 ; i < offsetAttributes.count(); ++i)
+        {
+            QDomNode attributeNode = offsetAttributes.item(i);
+            QString key = attributeNode.nodeName();
+            QString value = attributeNode.firstChild().nodeValue();
+
+            newOffsetAttributes.insert(key, value);
+        }
+        newSegment->setOffsetAttributes(newOffsetAttributes);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceReader::parseRange()
+//-----------------------------------------------------------------------------
+void AddressSpaceReader::parseRange(QDomNode const& segmentNode, QSharedPointer<Segment> newSegment) const
+{
+    QDomElement rangeElement = segmentNode.firstChildElement("ipxact:range");
+    newSegment->setRange(rangeElement.firstChild().nodeValue());
+
+    QDomNamedNodeMap rangeAttributes = rangeElement.attributes();
+    if (!rangeAttributes.isEmpty())
+    {
+        QMap<QString, QString> newRangeAttributes;
+        for (int i = 0 ; i < rangeAttributes.count(); ++i)
+        {
+            QDomNode attributeNode = rangeAttributes.item(i);
+            QString key = attributeNode.nodeName();
+            QString value = attributeNode.firstChild().nodeValue();
+
+            newRangeAttributes.insert(key, value);
+        }
+        newSegment->setRangeAttributes(newRangeAttributes);
     }
 }
 

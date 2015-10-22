@@ -7,67 +7,79 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../IPXACTmodels/common/Array.h \
+HEADERS += ../../../IPXACTmodels/AbstractMemoryMap.h \
+    ../../../IPXACTmodels/Component/AddressBlock.h \
+    ../../../IPXACTmodels/Component/AddressSpace.h \
+    ../../../IPXACTmodels/Component/AlternateRegister.h \
+    ../../../IPXACTmodels/common/Array.h \
     ../../../IPXACTmodels/common/Assertion.h \
+    ../../../IPXACTmodels/common/BooleanValue.h \
     ../../../IPXACTmodels/common/BuildModel.h \
     ../../../IPXACTmodels/Component/ComponentInstantiation.h \
     ../../../IPXACTmodels/common/ConfigurableElementValue.h \
     ../../../IPXACTmodels/common/ConfigurableVLNVReference.h \
     ../../../IPXACTmodels/Component/DesignConfigurationInstantiation.h \
     ../../../IPXACTmodels/Component/DesignInstantiation.h \
+    ../../../IPXACTmodels/Component/EnumeratedValue.h \
     ../../../IPXACTmodels/common/Extendable.h \
+    ../../../IPXACTmodels/Component/Field.h \
     ../../../IPXACTmodels/common/FileBuilder.h \
     ../../../IPXACTmodels/common/FileTypes.h \
     ../../../IPXACTmodels/GenericVendorExtension.h \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Group.h \
+    ../../../IPXACTmodels/Component/MemoryBlockBase.h \
+    ../../../IPXACTmodels/Component/MemoryMapBase.h \
     ../../../IPXACTmodels/common/ModuleParameter.h \
     ../../../IPXACTmodels/common/NameGroup.h \
     ../../../IPXACTmodels/common/Parameter.h \
     ../../../IPXACTmodels/common/Range.h \
-    ../../../IPXACTmodels/common/Vector.h \
-    ../../../IPXACTmodels/Component/AddressSpace.h \
-    ../../../IPXACTmodels/Component/MemoryBlockBase.h \
-    ../../../IPXACTmodels/Component/MemoryMapBase.h \
-    ../../../IPXACTmodels/Component/MemoryMapBaseReader.h \
-    ../../../IPXACTmodels/common/BooleanValue.h \
-    ../../../IPXACTmodels/Component/AddressBlockReader.h \
-    ../../../IPXACTmodels/Component/AddressBlock.h \
+    ../../../IPXACTmodels/Component/Register.h \
     ../../../IPXACTmodels/Component/RegisterBase.h \
     ../../../IPXACTmodels/Component/RegisterDefinition.h \
-    ../../../IPXACTmodels/Component/Register.h \
     ../../../IPXACTmodels/Component/RegisterFile.h \
-    ../../../IPXACTmodels/Component/RegisterReader.h \
-    ../../../IPXACTmodels/vlnv.h \
-    ../../../IPXACTmodels/AbstractMemoryMap.h \
+    ../../../IPXACTmodels/common/Vector.h \
+    ../../../IPXACTmodels/Component/WriteValueConstraint.h \
     ../../../IPXACTmodels/XmlUtils.h \
-    ../../../IPXACTmodels/segment.h \
     ../../../IPXACTmodels/generaldeclarations.h \
+    ../../../IPXACTmodels/Component/Segment.h \
+    ../../../IPXACTmodels/vlnv.h \
+    ../../../IPXACTmodels/Component/AddressBlockReader.h \
     ../../../IPXACTmodels/Component/AddressSpaceReader.h \
     ../../../IPXACTmodels/common/CommonItemsReader.h \
+    ../../../IPXACTmodels/Component/EnumeratedValueReader.h \
+    ../../../IPXACTmodels/Component/FieldReader.h \
+    ../../../IPXACTmodels/Component/MemoryMapBaseReader.h \
     ../../../IPXACTmodels/common/ModuleParameterReader.h \
     ../../../IPXACTmodels/common/NameGroupReader.h \
-    ../../../IPXACTmodels/Component/AlternateRegister.h \
-    ../../../IPXACTmodels/Component/Field.h \
-    ../../../IPXACTmodels/Component/EnumeratedValue.h \
-    ../../../IPXACTmodels/Component/WriteValueConstraint.h \
-    ../../../IPXACTmodels/Component/FieldReader.h \
-    ../../../IPXACTmodels/Component/EnumeratedValueReader.h \
-    ../../../IPXACTmodels/common/ParameterReader.h
-SOURCES += ../../../IPXACTmodels/common/Array.cpp \
-    ../../../IPXACTmodels/common/Assertion.cpp \
-    ../../../IPXACTmodels/common/BuildModel.cpp \
+    ../../../IPXACTmodels/common/ParameterReader.h \
+    ../../../IPXACTmodels/Component/RegisterReader.h
+SOURCES += ../../../IPXACTmodels/Component/AddressBlock.cpp \
+    ../../../IPXACTmodels/Component/AddressBlockReader.cpp \
+    ../../../IPXACTmodels/Component/AddressSpace.cpp \
     ../../../IPXACTmodels/Component/AddressSpaceReader.cpp \
+    ../../../IPXACTmodels/Component/AlternateRegister.cpp \
+    ../../../IPXACTmodels/common/Array.cpp \
+    ../../../IPXACTmodels/common/Assertion.cpp \
+    ../../../IPXACTmodels/common/BooleanValue.cpp \
+    ../../../IPXACTmodels/common/BuildModel.cpp \
     ../../../IPXACTmodels/common/CommonItemsReader.cpp \
     ../../../IPXACTmodels/Component/ComponentInstantiation.cpp \
     ../../../IPXACTmodels/common/ConfigurableElementValue.cpp \
     ../../../IPXACTmodels/common/ConfigurableVLNVReference.cpp \
     ../../../IPXACTmodels/Component/DesignConfigurationInstantiation.cpp \
     ../../../IPXACTmodels/Component/DesignInstantiation.cpp \
+    ../../../IPXACTmodels/Component/EnumeratedValue.cpp \
+    ../../../IPXACTmodels/Component/EnumeratedValueReader.cpp \
     ../../../IPXACTmodels/common/Extendable.cpp \
+    ../../../IPXACTmodels/Component/Field.cpp \
+    ../../../IPXACTmodels/Component/FieldReader.cpp \
     ../../../IPXACTmodels/common/FileBuilder.cpp \
     ../../../IPXACTmodels/common/FileTypes.cpp \
     ../../../IPXACTmodels/GenericVendorExtension.cpp \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
+    ../../../IPXACTmodels/Component/MemoryBlockBase.cpp \
+    ../../../IPXACTmodels/Component/MemoryMapBase.cpp \
+    ../../../IPXACTmodels/Component/MemoryMapBaseReader.cpp \
     ../../../IPXACTmodels/common/ModuleParameter.cpp \
     ../../../IPXACTmodels/common/ModuleParameterReader.cpp \
     ../../../IPXACTmodels/common/NameGroup.cpp \
@@ -75,27 +87,15 @@ SOURCES += ../../../IPXACTmodels/common/Array.cpp \
     ../../../IPXACTmodels/common/Parameter.cpp \
     ../../../IPXACTmodels/common/ParameterReader.cpp \
     ../../../IPXACTmodels/common/Range.cpp \
-    ../../../IPXACTmodels/common/Vector.cpp \
-    ../../../IPXACTmodels/Component/AddressSpace.cpp \
-    ../../../IPXACTmodels/Component/MemoryBlockBase.cpp \
-    ../../../IPXACTmodels/Component/MemoryMapBase.cpp \
-    ../../../IPXACTmodels/Component/MemoryMapBaseReader.cpp \
-    ../../../IPXACTmodels/common/BooleanValue.cpp \
-    ../../../IPXACTmodels/Component/AddressBlockReader.cpp \
-    ../../../IPXACTmodels/Component/AddressBlock.cpp \
+    ../../../IPXACTmodels/Component/Register.cpp \
     ../../../IPXACTmodels/Component/RegisterBase.cpp \
     ../../../IPXACTmodels/Component/RegisterDefinition.cpp \
-    ../../../IPXACTmodels/Component/Register.cpp \
     ../../../IPXACTmodels/Component/RegisterFile.cpp \
     ../../../IPXACTmodels/Component/RegisterReader.cpp \
-    ../../../IPXACTmodels/XmlUtils.cpp \
-    ../../../IPXACTmodels/segment.cpp \
-    ../../../IPXACTmodels/generaldeclarations.cpp \
-    ../../../IPXACTmodels/Component/AlternateRegister.cpp \
-    ../../../IPXACTmodels/Component/Field.cpp \
-    ../../../IPXACTmodels/Component/EnumeratedValue.cpp \
+    ../../../IPXACTmodels/common/Vector.cpp \
     ../../../IPXACTmodels/Component/WriteValueConstraint.cpp \
-    ../../../IPXACTmodels/Component/FieldReader.cpp \
-    ../../../IPXACTmodels/Component/EnumeratedValueReader.cpp \
+    ../../../IPXACTmodels/XmlUtils.cpp \
+    ../../../IPXACTmodels/generaldeclarations.cpp \
+    ../../../IPXACTmodels/Component/Segment.cpp \
     ./tst_AddressSpaceReader.cpp \
     ../../../IPXACTmodels/vlnv.cpp

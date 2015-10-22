@@ -81,6 +81,22 @@ private:
     void readSegments(QDomNode const& addressSpaceNode, QSharedPointer<AddressSpace> newAddressSpace) const;
 
     /*!
+     *  Parse the address offset.
+     *
+     *      @param [in] segmentNode     XML description of a segment.
+     *      @param [in] newSegment      The new segment.
+     */
+    void parseAddressOffset(QDomNode const& segmentNode, QSharedPointer<Segment> newSegment) const;
+
+    /*!
+     *  Parse the range.
+     *
+     *      @param [in] segmentNode     XML description of a segment.
+     *      @param [in] newSegment      The new segment.
+     */
+    void parseRange(QDomNode const& segmentNode, QSharedPointer<Segment> newSegment) const;
+
+    /*!
      *  Parse the address unit bits.
      *
      *      @param [in] addressSpaceNode    XML description of the address space.

@@ -74,6 +74,22 @@ private:
 	void writeSegments(QSharedPointer<AddressSpace> addressSpace, QXmlStreamWriter &writer) const;
 
 	/*!
+	 *  Writes a single segment.
+	 *
+	 *      @param [in] writer		The used writer.
+	 *      @param [in] segment     The segment being written.
+	 */
+    void writeSingleSegment(QXmlStreamWriter& writer, QSharedPointer<Segment> segment) const;
+
+	/*!
+	 *  Writes block size of the item.
+	 *
+	 *      @param [in] writer				The used writer.
+	 *      @param [in] addressSpace		The written attributes.
+	 */
+    void writeAttributeMap(QXmlStreamWriter& writer, QMap<QString, QString> attributes) const;
+
+	/*!
 	 *  Writes address unit bits.
 	 *
 	 *      @param [in] writer				The used writer.
