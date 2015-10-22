@@ -14,21 +14,17 @@
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 
 #include <common/KactusColors.h>
-#include <common/utils.h>
 
 #include <QBrush>
-#include <QColor>
 
 //-----------------------------------------------------------------------------
 // Function: AddressBlockGraphItem::AddressBlockGraphItem()
 //-----------------------------------------------------------------------------
-AddressBlockGraphItem::AddressBlockGraphItem(QSharedPointer<AddressBlock> addrBlock, 
-    QSharedPointer<ExpressionParser> expressionParser,
-    QGraphicsItem *parent ):
-MemoryVisualizationItem(parent),
+AddressBlockGraphItem::AddressBlockGraphItem(QSharedPointer<AddressBlock> addrBlock,
+    QSharedPointer<ExpressionParser> expressionParser, QGraphicsItem *parent ):
+MemoryVisualizationItem(expressionParser, parent),
 addrBlock_(addrBlock),
-addrssableUnitBits_(0),
-expressionParser_(expressionParser)
+addrssableUnitBits_(0)
 {
 	Q_ASSERT(addrBlock_);
 	QBrush brush(KactusColors::ADDR_BLOCK_COLOR);
@@ -71,7 +67,7 @@ void AddressBlockGraphItem::updateDisplay()
     setToolTip("<b>Name: </b>" + addrBlock_->name() + "<br>" +
         "<b>Offset: </b>" + toHexString(offset) + "<br>" +
         "<b>Last address: </b>" + toHexString(lastAddress) + "<br>" +
-        "<b>Size [AUB]: </b>" + expressionParser_->parseExpression(addrBlock_->getRange()));
+        "<b>Size [AUB]: </b>" + parseExpression(addrBlock_->getRange()));
 }
 
 //-----------------------------------------------------------------------------
@@ -79,7 +75,7 @@ void AddressBlockGraphItem::updateDisplay()
 //-----------------------------------------------------------------------------
 quint64 AddressBlockGraphItem::getOffset() const
 {
-	return expressionParser_->parseExpression(addrBlock_->getBaseAddress()).toUInt();
+    return parseExpression(addrBlock_->getBaseAddress());
 }
 
 //-----------------------------------------------------------------------------
@@ -87,7 +83,7 @@ quint64 AddressBlockGraphItem::getOffset() const
 //-----------------------------------------------------------------------------
 int AddressBlockGraphItem::getBitWidth() const
 {
-	return expressionParser_->parseExpression(addrBlock_->getWidthExpression()).toInt();
+    return parseExpression(addrBlock_->getWidth());
 }
 
 //-----------------------------------------------------------------------------
@@ -112,7 +108,7 @@ unsigned int AddressBlockGraphItem::getAddressUnitSize() const
 quint64 AddressBlockGraphItem::getLastAddress() const
 {
     quint64 base = getOffset();
-    quint64 range = expressionParser_->parseExpression(addrBlock_->getRange()).toUInt();
+    quint64 range = parseExpression(addrBlock_->getRange());
 
     quint64 lastAddr = base + range;
 

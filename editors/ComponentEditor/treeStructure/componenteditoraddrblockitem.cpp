@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 23.8.2012
- *      Author: Antti Kamppi
- * 		filename: componenteditoraddrblockitem.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: componenteditoraddrblockitem.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 23.08.2012
+//
+// Description:
+// The item for a single address block in component editor's navigation tree.
+//-----------------------------------------------------------------------------
 
 #include "componenteditoraddrblockitem.h"
 #include "componenteditorregisteritem.h"
@@ -13,7 +17,8 @@
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.h>
 #include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>
 
-#include <IPXACTmodels/register.h>
+#include <IPXACTmodels/Component/RegisterBase.h>
+#include <IPXACTmodels/Component/Register.h>
 
 #include <QApplication>
 //-----------------------------------------------------------------------------
@@ -41,7 +46,7 @@ addressUnitBits_(0)
 
 	setObjectName(tr("ComponentEditorAddrBlockItem"));
 
-	foreach (QSharedPointer<RegisterModel> regModel, addrBlock->getRegisterData())
+    foreach (QSharedPointer<RegisterBase> regModel, *addrBlock->getRegisterData())
     {
 		QSharedPointer<Register> reg = regModel.dynamicCast<Register>();
 		
@@ -86,7 +91,7 @@ QString ComponentEditorAddrBlockItem::text() const
 //-----------------------------------------------------------------------------
 bool ComponentEditorAddrBlockItem::isValid() const 
 {
-	return addrBlock_->isValid(component_->getChoices());
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -122,7 +127,7 @@ ItemEditor* ComponentEditorAddrBlockItem::editor()
 //-----------------------------------------------------------------------------
 void ComponentEditorAddrBlockItem::createChild( int index )
 {
-	QSharedPointer<RegisterModel> regmodel = addrBlock_->getRegisterData()[index];
+    QSharedPointer<RegisterBase> regmodel = addrBlock_->getRegisterData()->at(index);
 	QSharedPointer<Register> reg = regmodel.dynamicCast<Register>();
 	if (reg)
     {

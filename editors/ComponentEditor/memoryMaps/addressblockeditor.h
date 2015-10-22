@@ -1,17 +1,20 @@
-/* 
- *  	Created on: 24.8.2012
- *      Author: Antti Kamppi
- * 		filename: addressblockeditor.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: addressblockeditor.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 24.08.2012
+//
+// Description:
+// Editor for editing the details of registers in an address block.
+//-----------------------------------------------------------------------------
 
 #ifndef ADDRESSBLOCKEDITOR_H
 #define ADDRESSBLOCKEDITOR_H
 
-#include <IPXACTmodels/addressblock.h>
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/AddressBlock.h>
 
-#include <QSortFilterProxyModel>
 #include <QSharedPointer>
 #include <QGroupBox>
 
@@ -47,17 +50,19 @@ public:
         QSharedPointer<ExpressionFormatter> expressionFormatter,
 		QWidget* parent = 0);
 
-	//! The destructor
+	//! The destructor.
 	virtual ~AddressBlockEditor();
 
-	/*! Check for the validity of the editor
-	* 
-	*       @return True if the editor is in valid state.
-	*/
+	/*!
+     *  Check for the validity of the editor.
+	 * 
+	 *       @return True if the editor is in valid state.
+	 */
 	virtual bool isValid() const;
 
-	/*! Reload the information from the model to the editor.
-	*/
+	/*!
+     *  Reload the information from the model to the editor.
+	 */
 	virtual void refresh();
 
 signals:
@@ -123,10 +128,10 @@ signals:
 
 private:
 	
-	//! No copying
+	//! No copying.
 	AddressBlockEditor(const AddressBlockEditor& other);
 
-	//! No assignment
+	//! No assignment.
 	AddressBlockEditor& operator=(const AddressBlockEditor& other);
 
 	//! The view to display the items.

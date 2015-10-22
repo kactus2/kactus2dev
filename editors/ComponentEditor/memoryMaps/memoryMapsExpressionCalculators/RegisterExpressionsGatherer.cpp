@@ -12,7 +12,8 @@
 #include "RegisterExpressionsGatherer.h"
 #include "FieldExpressionsGatherer.h"
 
-#include <IPXACTmodels/field.h>
+#include <IPXACTmodels/Component/Register.h>
+#include <IPXACTmodels/Component/Field.h>
 
 //-----------------------------------------------------------------------------
 // Function: RegisterExpressionsGatherer::RegisterExpressionsGatherer()
@@ -38,12 +39,13 @@ QStringList RegisterExpressionsGatherer::getExpressions(QSharedPointer<Register>
     QStringList expressionList;
 
     expressionList.append(currentRegister->getAddressOffset());
-    expressionList.append(currentRegister->getSizeExpression());
-    expressionList.append(currentRegister->getDimensionExpression());
+    expressionList.append(currentRegister->getSize());
+    expressionList.append(currentRegister->getDimension());
+    expressionList.append(currentRegister->getIsPresent());
 
     FieldExpressionsGatherer fieldGatherer;
 
-    foreach (QSharedPointer<Field> field, currentRegister->getFields())
+    foreach (QSharedPointer<Field> field, *currentRegister->getFields())
     {
         expressionList.append(fieldGatherer.getExpressions(field));
     }

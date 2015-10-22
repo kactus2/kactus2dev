@@ -33,8 +33,7 @@
 SingleAddressBlockEditor::SingleAddressBlockEditor(QSharedPointer<AddressBlock> addressBlock,
     QSharedPointer<Component> component, LibraryInterface* handler,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QSharedPointer<ExpressionParser> expressionParser,
-    QWidget* parent):
+    QSharedPointer<ExpressionParser> expressionParser, QWidget* parent):
 ItemEditor(component, handler, parent),
 nameEditor_(addressBlock, this, tr("Address block name and description")),
 registersEditor_(new AddressBlockEditor(addressBlock, component, handler, parameterFinder, expressionFormatter,
@@ -91,9 +90,9 @@ SingleAddressBlockEditor::~SingleAddressBlockEditor()
 bool SingleAddressBlockEditor::isValid() const
 {
     bool nameGroupIsValid = nameEditor_.isValid();
-    bool addressBlockIsValid = addressBlock_->isValid(component()->getChoices());
+//     bool addressBlockIsValid = addressBlock_->isValid(component()->getChoices());
 
-    return nameGroupIsValid && addressBlockIsValid;
+    return nameGroupIsValid; // && addressBlockIsValid;
 }
 
 //-----------------------------------------------------------------------------
@@ -114,7 +113,7 @@ void SingleAddressBlockEditor::refresh()
     registersEditor_->refresh();
 
     General::Usage usage = addressBlock_->getUsage();
-    registersEditor_->setEnabled(!addressBlock_->getRegisterData().isEmpty() ||
+    registersEditor_->setEnabled(!addressBlock_->getRegisterData()->isEmpty() ||
         (usage != General::RESERVED && usage != General::MEMORY));
     usageEditor_->setCurrentValue(usage);
 
@@ -124,13 +123,13 @@ void SingleAddressBlockEditor::refresh()
     baseAddressEditor_->setToolTip(formattedValueFor(addressBlock_->getBaseAddress()));
     rangeEditor_->setExpression(addressBlock_->getRange());
     rangeEditor_->setToolTip(formattedValueFor(addressBlock_->getRange()));
-    widthEditor_->setExpression(addressBlock_->getWidthExpression());
-    widthEditor_->setToolTip(formattedValueFor(addressBlock_->getWidthExpression()));
+    widthEditor_->setExpression(addressBlock_->getWidth());
+    widthEditor_->setToolTip(formattedValueFor(addressBlock_->getWidth()));
 
     changeExpressionEditorSignalBlockStatus(false);
 
     accessEditor_->setCurrentValue(addressBlock_->getAccess());
-    volatileEditor_->setCurrentValue(General::BooleanValue2Bool(addressBlock_->getVolatile(), true));
+    volatileEditor_->setCurrentValue(addressBlock_->getVolatile());
 }
 
 //-----------------------------------------------------------------------------
@@ -161,13 +160,11 @@ void SingleAddressBlockEditor::onRangeChanged()
 void SingleAddressBlockEditor::onWidthChanged()
 {
     widthEditor_->finishEditingCurrentWord();
-    addressBlock_->setWidthExpression(widthEditor_->getExpression());
 
-    QString formattedWidth = formattedValueFor(addressBlock_->getWidthExpression());
+    QString newWidth = widthEditor_->getExpression();
+    addressBlock_->setWidth(newWidth);
 
-    addressBlock_->setWidth(formattedWidth.toInt());
-
-    widthEditor_->setToolTip(formattedWidth);
+    widthEditor_->setToolTip(formattedValueFor(newWidth));
 }
 
 //-----------------------------------------------------------------------------
@@ -199,7 +196,7 @@ void SingleAddressBlockEditor::onUsageSelected(QString const& newUsage)
     General::Usage usage = General::str2Usage(newUsage, General::USAGE_COUNT);
 
     addressBlock_->setUsage(usage);
-    registersEditor_->setEnabled(!addressBlock_->getRegisterData().isEmpty() || 
+    registersEditor_->setEnabled(!addressBlock_->getRegisterData()->isEmpty() || 
         (usage != General::RESERVED && usage != General::MEMORY));
 
     emit contentChanged();
@@ -220,14 +217,18 @@ void SingleAddressBlockEditor::onAccessSelected(QString const& newAccess)
 //-----------------------------------------------------------------------------
 void SingleAddressBlockEditor::onVolatileSelected(QString const& newVolatileValue)
 {
-    bool addressBlockIsVolatile = false;
-
-    if (newVolatileValue == "true")
+    if (newVolatileValue == QLatin1String("true"))
     {
-        addressBlockIsVolatile = true;
+        addressBlock_->setVolatile(true);
     }
-
-    addressBlock_->setVolatile(General::bool2BooleanValue(addressBlockIsVolatile));
+    else if (newVolatileValue == QLatin1String("false"))
+    {
+        addressBlock_->setVolatile(false);
+    }
+    else
+    {
+        addressBlock_->clearVolatile();
+    }
 
     emit contentChanged();
 }

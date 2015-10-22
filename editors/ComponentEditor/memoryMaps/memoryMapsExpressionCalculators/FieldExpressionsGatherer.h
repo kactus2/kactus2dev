@@ -12,7 +12,7 @@
 #ifndef FIELDEXPRESSIONSGATHERER_H
 #define FIELDEXPRESSIONSGATHERER_H
 
-#include <IPXACTmodels/field.h>
+#include <IPXACTmodels/Component/Field.h>
 
 #include <QSharedPointer>
 #include <QStringList>

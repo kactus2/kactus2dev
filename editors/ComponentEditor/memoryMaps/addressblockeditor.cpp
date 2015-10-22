@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 24.8.2012
- *      Author: Antti Kamppi
- * 		filename: addressblockeditor.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: addressblockeditor.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 24.08.2012
+//
+// Description:
+// Editor for editing the details of registers in an address block.
+//-----------------------------------------------------------------------------
 
 #include "addressblockeditor.h"
 
@@ -50,15 +54,13 @@ model_(0)
     proxy->setColumnToAcceptExpressions(AddressBlockColumns::REGISTER_OFFSET);
     proxy->setColumnToAcceptExpressions(AddressBlockColumns::REGISTER_SIZE);
     proxy->setColumnToAcceptExpressions(AddressBlockColumns::REGISTER_DIMENSION);
-    proxy->setColumnToAcceptExpressions(AddressBlockColumns::RESET_VALUE);
-    proxy->setColumnToAcceptExpressions(AddressBlockColumns::RESET_MASK);
     proxy->setColumnToAcceptExpressions(AddressBlockColumns::IS_PRESENT);
 
     proxy->setSourceModel(model_);
 	view_->setModel(proxy);
 
 	//! Enable import/export csv file
-	const QString compPath = handler->getDirectoryPath(*component->getVlnv());
+	const QString compPath = handler->getDirectoryPath(component->getVlnv());
 	QString defPath = QString("%1/registerList.csv").arg(compPath);
 	view_->setDefaultImportExportPath(defPath);
 	view_->setAllowImportExport(true);
