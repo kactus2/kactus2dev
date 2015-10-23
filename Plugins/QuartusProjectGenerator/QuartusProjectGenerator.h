@@ -16,7 +16,7 @@
 
 #include <Plugins/PluginSystem/IGeneratorPlugin.h>
 #include <IPXACTmodels/librarycomponent.h>
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
 
 #include <QObject>
 #include <QSharedPointer>

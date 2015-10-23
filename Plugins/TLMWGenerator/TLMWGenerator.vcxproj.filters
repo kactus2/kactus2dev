@@ -36,65 +36,59 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="MCAPICodeGenerator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MCAPICodeGeneratorPlugin.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_MCAPICodeGeneratorPlugin.cpp">
+    <ClCompile Include="GeneratedFiles\Debug\moc_TLMWGeneratorPlugin.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_MCAPICodeGeneratorPlugin.cpp">
+    <ClCompile Include="GeneratedFiles\Release\moc_TLMWGeneratorPlugin.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Template\moc_MCAPICodeGeneratorPlugin.cpp">
+    <ClCompile Include="GeneratedFiles\Template\moc_TLMWGeneratorPlugin.cpp">
       <Filter>Generated Files\Template</Filter>
     </ClCompile>
-    <ClCompile Include="MCAPIParser.cpp">
+    <ClCompile Include="TLMWParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MCAPIHeaderGenerator.cpp">
+    <ClCompile Include="TLMWHeaderGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\qrc_MCAPICodeGenerator.cpp">
+    <ClCompile Include="GeneratedFiles\qrc_TLMWGenerator.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\NameGenerationPolicy.cpp">
+    <ClCompile Include="TLMWGeneratorPlugin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\common\CSourceWriter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\common\NameGenerationPolicy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="MCAPICodeGenerator.h">
+    <CustomBuild Include="TLMWGeneratorPlugin.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="MCAPICodeGeneratorPlugin.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="MCAPICodeGenerator.qrc">
+    <CustomBuild Include="TLMWGenerator.qrc">
       <Filter>Resource Files</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <None Include="mcapi.json" />
-    <None Include="McapiGenerator.png">
+    <None Include="TLMWGenerator.png">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="tlmw.json" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="MCAPIParser.h">
+    <ClInclude Include="TLMWHeaderGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MCAPIHeaderGenerator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\NameGenerationPolicy.h">
+    <ClInclude Include="TLMWParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\common\CSourceWriter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\NameGenerationPolicy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

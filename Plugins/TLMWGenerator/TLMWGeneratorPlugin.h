@@ -1,33 +1,36 @@
 //-----------------------------------------------------------------------------
-// File: MCAPICodeGeneratorPlugin.h
+// File: TLMWGeneratorPlugin.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Janne Virtanen
-// Date: 13.10.2014
+// Date: 13.7.2015
 //
 // Description:
-// MCAPI code generator plugin.
+// TLMW generator plugin.
 //-----------------------------------------------------------------------------
 
-#ifndef MCAPICodeGeneratorPlugin_H
-#define MCAPICodeGeneratorPlugin_H
+#ifndef TLMWGeneratorPlugin_H
+#define TLMWGeneratorPlugin_H
 
 #include <Plugins/PluginSystem/IGeneratorPlugin.h>
+#include <QObject>
+
+#include <TLMWParser.h>
 
 //-----------------------------------------------------------------------------
-//! MCAPI code generator.
+//! TLMW code generator.
 //-----------------------------------------------------------------------------
-class MCAPICodeGeneratorPlugin : public QObject, public IGeneratorPlugin
+class TLMWGeneratorPlugin : public QObject, public IGeneratorPlugin
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "kactus2.plugins.MCAPICodeGenerator" FILE "mcapi.json")
+    Q_PLUGIN_METADATA(IID "kactus2.plugins.TLMWGenerator" FILE "tlmw.json")
 
     Q_INTERFACES(IPlugin)
     Q_INTERFACES(IGeneratorPlugin)
 
 public:
-    MCAPICodeGeneratorPlugin();
-    ~MCAPICodeGeneratorPlugin();
+    TLMWGeneratorPlugin();
+    ~TLMWGeneratorPlugin();
 
     /*!
      *  Returns the name of the plugin.
@@ -100,4 +103,4 @@ public:
      virtual QList<IPlugin::ExternalProgramRequirement> getProgramRequirements();
 };
 
-#endif // MCAPICodeGeneratorPlugin_H
+#endif // TLMWGeneratorPlugin_H

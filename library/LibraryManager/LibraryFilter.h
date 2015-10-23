@@ -13,7 +13,7 @@
 #define LIBRARYFILTER_H
 
 #include <common/utils.h>
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 

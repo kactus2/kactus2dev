@@ -12,11 +12,8 @@
 #ifndef CSOURCEWRITER_H
 #define CSOURCEWRITER_H
 
-#include <common/Global.h>
-
 #include <QTextStream>
 #include <QFile>
-#include <QString>
 
 //-----------------------------------------------------------------------------
 //! CSourceWriter class.

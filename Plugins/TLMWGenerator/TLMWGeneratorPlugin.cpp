@@ -1,119 +1,117 @@
 //-----------------------------------------------------------------------------
-// File: MCAPICodeGeneratorPlugin.cpp
+// File: TLMWGeneratorPlugin.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Janne Virtanen
-// Date: 13.10.2014
+// Date: 13.7.2015
 //
 // Description:
-// MCAPI code generator plugin.
+// TLMW generator plugin.
 //-----------------------------------------------------------------------------
 
-#include "MCAPICodeGeneratorPlugin.h"
-#include "MCAPICodeGenerator.h"
-#include "MCAPIHeaderGenerator.h"
+#include "TLMWGeneratorPlugin.h"
+#include "TLMWHeaderGenerator.h"
 
-#include <QMessageBox>
 #include <QCoreApplication>
+#include <QMessageBox>
 
 #include <library/LibraryManager/libraryinterface.h>
 
 //-----------------------------------------------------------------------------
-// Function: MCAPICodeGeneratorPlugin::MCAPICodeGeneratorPlugin()
+// Function: TLMWCGeneratorPlugin::TLMWGeneratorPlugin()
 //-----------------------------------------------------------------------------
-MCAPICodeGeneratorPlugin::MCAPICodeGeneratorPlugin()
+TLMWGeneratorPlugin::TLMWGeneratorPlugin()
 {
 }
 
 //-----------------------------------------------------------------------------
-// Function: MCAPICodeGeneratorPlugin::~MCAPICodeGeneratorPlugin()
+// Function: TLMWGeneratorPlugin::~TLMWGeneratorPlugin()
 //-----------------------------------------------------------------------------
-MCAPICodeGeneratorPlugin::~MCAPICodeGeneratorPlugin()
+TLMWGeneratorPlugin::~TLMWGeneratorPlugin()
 {
 }
 
 //-----------------------------------------------------------------------------
-// Function: MCAPICodeGeneratorPlugin::getName()
+// Function: TLMWGeneratorPlugin::getName()
 //----------------------------------------------------------------------------
-QString MCAPICodeGeneratorPlugin::getName() const
+QString TLMWGeneratorPlugin::getName() const
 {
-    return "MCAPI Code Generator";
+    return "TLMW Generator";
 }
 
 //-----------------------------------------------------------------------------
-// Function: MCAPICodeGeneratorPlugin::getVersion()
+// Function: TLMWGeneratorPlugin::getVersion()
 //-----------------------------------------------------------------------------
-QString MCAPICodeGeneratorPlugin::getVersion() const
+QString TLMWGeneratorPlugin::getVersion() const
 {
-    return "1.1";
+    return "1.0";
 }
 
 //-----------------------------------------------------------------------------
-// Function: MCAPICodeGeneratorPlugin::getDescription()
+// Function: TLMWGeneratorPlugin::getDescription()
 //-----------------------------------------------------------------------------
-QString MCAPICodeGeneratorPlugin::getDescription() const
+QString TLMWGeneratorPlugin::getDescription() const
 {
-    return "Generates MCAPI code templates based on the metadata.";
+    return "Generates TLMW header files based on the metadata.";
 }
 
 //-----------------------------------------------------------------------------
-// Function: MCAPICodeGeneratorPlugin::getVendor()
+// Function: TLMWGeneratorPlugin::getVendor()
 //-----------------------------------------------------------------------------
-QString MCAPICodeGeneratorPlugin::getVendor() const
+QString TLMWGeneratorPlugin::getVendor() const
 {
     return tr("TUT");
 }
 
 //-----------------------------------------------------------------------------
-// Function: MCAPICodeGeneratorPlugin::getLicence()
+// Function: TLMWCodeGeneratorPlugin::getLicence()
 //-----------------------------------------------------------------------------
-QString MCAPICodeGeneratorPlugin::getLicence() const
+QString TLMWGeneratorPlugin::getLicence() const
 {
     return tr("GPL2");
 }
 
 //-----------------------------------------------------------------------------
-// Function: MCAPICodeGeneratorPlugin::getLicenceHolder()
+// Function: TLMWGeneratorPlugin::getLicenceHolder()
 //-----------------------------------------------------------------------------
-QString MCAPICodeGeneratorPlugin::getLicenceHolder() const
+QString TLMWGeneratorPlugin::getLicenceHolder() const
 {
     return tr("Public");
 }
 
 //-----------------------------------------------------------------------------
-// Function: MCAPICodeGeneratorPlugin::getSettingsWidget()
+// Function: TLMWGeneratorPlugin::getSettingsWidget()
 //-----------------------------------------------------------------------------
-PluginSettingsWidget* MCAPICodeGeneratorPlugin::getSettingsWidget()
+PluginSettingsWidget* TLMWGeneratorPlugin::getSettingsWidget()
 {
     return new PluginSettingsWidget();
 }
 
 //-----------------------------------------------------------------------------
-// Function: MCAPICodeGeneratorPlugin::getIcon()
+// Function: TLMWGeneratorPlugin::getIcon()
 //-----------------------------------------------------------------------------
-QIcon MCAPICodeGeneratorPlugin::getIcon() const
+QIcon TLMWGeneratorPlugin::getIcon() const
 {
-    return QIcon(":icons/McapiGenerator.png");
+    return QIcon(":icons/TLMWGenerator.png");
 }
 
 //-----------------------------------------------------------------------------
-// Function: MCAPICodeGeneratorPlugin::checkGeneratorSupport()
+// Function: TLMWGeneratorPlugin::checkGeneratorSupport()
 //-----------------------------------------------------------------------------
-bool MCAPICodeGeneratorPlugin::checkGeneratorSupport( QSharedPointer<Document const> libComp,
+bool TLMWGeneratorPlugin::checkGeneratorSupport( QSharedPointer<Document const> libComp,
     QSharedPointer<Document const> libDesConf,
     QSharedPointer<Document const> libDes ) const
 {
     QSharedPointer<Component const> comp = libComp.dynamicCast<Component const>();
     QSharedPointer<DesignConfiguration const> desgConf = libDesConf.dynamicCast<DesignConfiguration const>();
 
-    return (comp != 0 && comp->getImplementation() == KactusAttribute::SW) ||
-        ( libDes != 0 && desgConf != 0 && desgConf->getImplementation() == KactusAttribute::SYSTEM );
+    return ( libDes != 0 && desgConf != 0 && desgConf->getDesignConfigImplementation() == KactusAttribute::SYSTEM );
 }
 
 //-----------------------------------------------------------------------------
-// Function: MCAPICodeGeneratorPlugin::runGenerator()
+// Function: TLMWGeneratorPlugin::runGenerator()
 //-----------------------------------------------------------------------------
-void MCAPICodeGeneratorPlugin::runGenerator( IPluginUtility* utility, 
+void TLMWGeneratorPlugin::runGenerator( IPluginUtility* utility, 
     QSharedPointer<Document> libComp,
     QSharedPointer<Document> libDesConf,
     QSharedPointer<Document> libDes)
@@ -122,18 +120,10 @@ void MCAPICodeGeneratorPlugin::runGenerator( IPluginUtility* utility,
     QSharedPointer<Component> comp = libComp.dynamicCast<Component>();
     QSharedPointer<DesignConfiguration const> desgConf = libDesConf.dynamicCast<DesignConfiguration const>();
 
-    if ( comp != 0 && comp->getImplementation() == KactusAttribute::SW )
+	if ( libDes != 0 && desgConf != 0 &&
+        desgConf->getDesignConfigImplementation() == KactusAttribute::SYSTEM )
     {
-        MCAPIParser parser( utility );
-        parser.parseMCAPIForComponent(comp);
-        MCAPICodeGenerator generator( parser, utility );
-        QString dir = QFileInfo(utility->getLibraryInterface()->getPath(libComp->getVlnv())).absolutePath(); 
-        generator.generateMCAPIForComponent(dir, comp);
-    }
-    else if ( libDes != 0 && desgConf != 0 &&
-        desgConf->getImplementation() == KactusAttribute::SYSTEM )
-    {
-        MCAPIParser parser( utility );
+        TLMWParser parser( utility );
         parser.parseTopLevel(design, comp, desgConf);
 
         QStringList replacedFiles = parser.getReplacedFiles();
@@ -160,7 +150,7 @@ void MCAPICodeGeneratorPlugin::runGenerator( IPluginUtility* utility,
             }
         }
 
-        MCAPIHeaderGenerator generator( parser, utility );
+        TLMWHeaderGenerator generator( parser, utility );
         VLNV topVLNV = comp->getVlnv();
         QString topDir = QFileInfo(utility->getLibraryInterface()->getPath(topVLNV)).absolutePath();
         generator.generateTopLevel(design, comp, desgConf, topDir);
@@ -169,12 +159,12 @@ void MCAPICodeGeneratorPlugin::runGenerator( IPluginUtility* utility,
 
     utility->getLibraryInterface()->writeModelToFile(libComp);
 
-    utility->printInfo( "MCAPI generation complete.");
+    utility->printInfo( "TLMW generation complete.");
 }
 
 //-----------------------------------------------------------------------------
-// Function: MCAPICodeGeneratorPlugin::getProgramRequirements()
+// Function: TLMWGeneratorPlugin::getProgramRequirements()
 //-----------------------------------------------------------------------------
-QList<IPlugin::ExternalProgramRequirement> MCAPICodeGeneratorPlugin::getProgramRequirements() {
+QList<IPlugin::ExternalProgramRequirement> TLMWGeneratorPlugin::getProgramRequirements() {
     return QList<IPlugin::ExternalProgramRequirement>();
 }

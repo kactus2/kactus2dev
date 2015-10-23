@@ -18,11 +18,7 @@
 #include <Plugins/PluginSystem/ImportPlugin/ImportPlugin.h>
 #include <Plugins/PluginSystem/ImportPlugin/HighlightSource.h>
 
-#include <IPXACTmodels/generaldeclarations.h>
-
-#include <QObject>
-#include <QString>
-#include <QtPlugin>
+#include <IPXACTmodels/common/DirectionTypes.h>
 
 class Component;
 class Highlighter;
@@ -130,7 +126,7 @@ private:
      *
      *      @return The port direction.
      */
-    General::Direction parseDirection(QString const& direction);
+    DirectionTypes::Direction parseDirection(QString const& direction);
 
     //! The highlighter to use.
     Highlighter* highlighter_;

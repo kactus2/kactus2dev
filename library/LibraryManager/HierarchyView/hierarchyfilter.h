@@ -16,7 +16,7 @@
 
 #include <common/utils.h>
 
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
 
 #include <QSharedPointer>
 #include <QString>

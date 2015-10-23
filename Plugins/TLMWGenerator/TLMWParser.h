@@ -1,81 +1,69 @@
 //-----------------------------------------------------------------------------
-// File: MCAPIParser.h
+// File: TLMWParser.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Janne Virtanen
-// Date: 13.10.2014
+// Date: 13.7.2016
 //
 // Description:
-// MCAPI parser.
+// TLMW parser.
 //-----------------------------------------------------------------------------
 
-#ifndef MCAPIParser_H
-#define MCAPIParser_H
+#ifndef TLMWParser_H
+#define TLMWParser_H
 
+#include <Plugins/PluginSystem/IPluginUtility.h>
+#include <IPXACTmodels/Design/Design.h>
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+#include <IPXACTmodels/kactusExtensions/SWInstance.h>
 #include <IPXACTmodels/ComDefinition.h>
 #include <IPXACTmodels/Component/Component.h>
 
-#include <IPXACTmodels/Design/Design.h>
-
-#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
-
-#include <Plugins/PluginSystem/IPluginUtility.h>
-
-class CSourceWriter;
-
 //-----------------------------------------------------------------------------
-//! MCAPI code generator.
+//! TLMW generator.
 //-----------------------------------------------------------------------------
-class MCAPIParser
+class TLMWParser
 {
 public:
     struct EndPointData
     {
-        QString name;
-        QString remoteName;
-        QString portID;
-        QString nodeID;
-        QString domainID;
-        QString handleName;
-        QString scalarSize;
-        QString transferType;
-        DirectionTypes::Direction direction;
+		QString name;
+		QString connectionName;
+        QString transferSize;
     };
 
     struct NodeData
     {
         QSharedPointer<SWInstance> instance;
         QString name;
-        QString nodeID;
-        QString domainID;
         QString directory;
-        QList<QPair<EndPointData,EndPointData> > connections;
+        QList<QPair<EndPointData,QString> > connections;
     };
 
-    MCAPIParser( IPluginUtility* utility );
-    ~MCAPIParser();
+    TLMWParser( IPluginUtility* utility );
+    ~TLMWParser();
 
     /*!
-     *  Returns list MCAPI endpoints within a single software component.
+     *  Returns list TLMW endpoints within a single software component.
      */
-     QList<EndPointData> getComponentEndpoints();
+     const QList<EndPointData>& getComponentEndpoints();
 
     /*!
      *  Returns list nodes within a single system design, along with their connections to other nodes.
      */
-     QList<NodeData> getDesignNodes();
+     const QList<NodeData>& getDesignNodes();
 
     /*!
      *  Returns list of files replaced on the instance header generation.
      */
-     QStringList getReplacedFiles();
+     const QStringList& getReplacedFiles();
 
     /*!
-     *  Generates MCAPI code for the given component.
+     *  Generates TLMW code for the given component.
      *
      *      @param [in] component   The component, which is being parsed.
      */
-    void parseMCAPIForComponent(QSharedPointer<Component> component);
+    void parseTLMWForComponent(QSharedPointer<Component> component);
 
     /*!
      *  Generates source files associated with the top level component of the design.
@@ -90,12 +78,12 @@ public:
 private:
 
     /*!
-     *  Checks if MCAPI code may be generated for the given component.
+     *  Checks if TLMW code may be generated for the given component.
      *
      *      @param [in] component   The component, which is checked.
-     *      @return   True, if MCAPI code can be generated for the component.
+     *      @return   True, if TLMW code can be generated for the component.
      */
-    bool canGenerateMCAPIComponent(QSharedPointer<Component> component);
+    bool canGenerateTLMWComponent(QSharedPointer<Component> component);
 
      /*!
       *  Checks if all properties required in given ComDefintion are set in the given ComInterface.
@@ -117,30 +105,15 @@ private:
      *      @param [in] nodeData    Node associated with the instance.
      */
      void findEndpointDefinitions(QSharedPointer<const Design> design, QSharedPointer<SWInstance> ourInstance,
-         QSharedPointer<Component> component, NodeData& nodeData);
-
-    /*!
-     *  Find connections of given software instance and returns a list of pairs, where the first is from the
-     *  end of the given instance, and second the other end.
-     *
-     *      @param [in] design   The design where the software instance belongs to.
-     *      @param [in] ourInstance   The software instance, which connections are listed.
-     *      @param [in] component   The software component of ourInstance.
-     *
-     *      @return List of "our" interfaces paired with their connected interfaces.
-     */
-     QList<QPair<QSharedPointer<ComInterface>, PortReference> > findConnectedComInterfaces(
-        QSharedPointer<const Design> design, QSharedPointer<SWInstance> ourInstance, 
-        QSharedPointer<Component> component );
+         QSharedPointer<Component> ourComponent, NodeData& nodeData);
 
      /*!
       *  Parses data associated with an endpoint from given ComInterface and assigns it to the given endpoint.
       *
+      *      @param [in] epd   Struct that will contain the parsed data.
       *      @param [in] comIf   Source of the parsed data.
-      *
-      *      @return The parsed data.
       */
-      EndPointData parseEndpoint(QSharedPointer<ComInterface> comIf);
+      void parseEndpoint(EndPointData &epd, QSharedPointer<ComInterface> comIf);
 
     /*!
      *  Search for a software instance by name within a design.
@@ -149,16 +122,7 @@ private:
      *      @param [in] instanceName   The name of the searched software instance.
      *      @return The found software instance.
      */
-     QSharedPointer<SWInstance> searchInstance(QSharedPointer<const Design> design, QString const& instanceName);
-
-    /*!
-     *  Warns if all fields of endpoint identifier may be not found in given interface and its instance.
-     *
-     *      @param [in] targetInterface   Interface, which port ID is to be checked.
-     *      @param [in] targetInstance   Instance, which node ID and domain ID are to be checked.
-     */
-     void checkEndpointIdentifier(QSharedPointer<ComInterface> targetInterface,
-         QSharedPointer<SWInstance> targetInstance);
+     QSharedPointer<SWInstance> searchInstance(QSharedPointer<const Design> design, QString instanceName);
 
     /*!
      *  Warns if the transfer types of given interfaces are not compatible.
@@ -168,19 +132,19 @@ private:
      *      @param [in] ourInstance  Instance of connection in "our" end.
      *      @param [in] targetInstance   Instance of connection in "their" end.
      */
-     void checkTransferType(QSharedPointer<SWInstance> ourInstance, QSharedPointer<ComInterface> ourInterface, 
-         QSharedPointer<SWInstance> targetInstance, QSharedPointer<ComInterface> targetInterface);
+     void checkTransferType(QSharedPointer<ComInterface> ourInterface, QSharedPointer<ComInterface>
+         targetInterface, SWInstance &ourInstance, SWInstance &targetInstance);
 
     /*!
-     *   Warns if the scalar sizes of given interfaces are not compatible.
+     *   Warns if the maximum transfer sizes of given interfaces are not compatible.
      *
      *      @param [in] ourInterface   Interface of connection in "our" end.
      *      @param [in] targetInterface   Interface of connection in "their" end.
      *      @param [in] ourInstance   Instance of connection in "our" end.
      *      @param [in] targetInstance   Instance of connection in "their" end.
      */
-     void checkScalarSize(QSharedPointer<SWInstance> ourInstance, QSharedPointer<ComInterface> ourInterface, 
-         QSharedPointer<SWInstance> targetInstance, QSharedPointer<ComInterface> targetInterface);
+     void checkTransferSize(QSharedPointer<ComInterface> ourInterface, QSharedPointer<ComInterface> targetInterface,
+        QSharedPointer<SWInstance> ourInstance, QSharedPointer<SWInstance> targetInstance);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -188,15 +152,12 @@ private:
 
     //! Endpoints parsed from component.
     QList<EndPointData> componentEndpoints_;
-
     //! Nodes parsed from design.
     QList<NodeData> designNodes_;
-
     //! List of files that may be replaced
     QStringList replacedFiles_;
-
     //! The plugin utility.
     IPluginUtility* utility_;
 };
 
-#endif // MCAPIParser_H
+#endif // TLMWParser_H

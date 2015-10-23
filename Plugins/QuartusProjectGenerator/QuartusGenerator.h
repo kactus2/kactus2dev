@@ -8,11 +8,7 @@
 #define QUARTUSGENERATOR_H_
 
 #include <QObject>
-#include <QWidget>
-#include <QString>
 #include <QTextStream>
-#include <QStringList>
-#include <QSharedPointer>
 #include <QFile>
 
 class Component;
@@ -111,7 +107,7 @@ private:
 	 * \param fileSetNames Names of the file sets to use.
 	 *
 	*/
-	void parseFileSets(QSharedPointer<Component> component, const QStringList& fileSetNames);
+	void parseFileSets(QSharedPointer<Component> component, QSharedPointer<QStringList> fileSetNames);
 
     /*!
      *  Parse a single file.
@@ -135,7 +131,7 @@ private:
      *      @param [in] view        The hierarchical view.
      *      @param [in] component   The component of the hierarhical view.
      */
-    void parseFilesFromHierarchicalView(View* view, QSharedPointer<Component> component);
+    void parseFilesFromHierarchicalView(QSharedPointer<View> view, QSharedPointer<Component> component);
 
 	/*! \brief Read the design and possibly design configuration and parse them.
 	 * 

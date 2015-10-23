@@ -1,33 +1,37 @@
 //-----------------------------------------------------------------------------
-// File: MCAPIHeaderGenerator.h
+// File: TLMWHeaderGenerator.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Janne Virtanen
-// Date: 13.10.2014
+// Date: 13.7.2015
 //
 // Description:
-// MCAPI generator for instance specific headers.
+// TLMW generator for instance specific headers.
 //-----------------------------------------------------------------------------
 
-#ifndef MCAPIHeaderGenerator_H
-#define MCAPIHeaderGenerator_H
+#ifndef TLMWHeaderGenerator_H
+#define TLMWHeaderGenerator_H
 
-#include <MCAPIParser.h>
+#include <IPXACTmodels/ComDefinition.h>
+#include <Plugins/PluginSystem/IPluginUtility.h>
+#include <Plugins/common/CSourceWriter.h>
+
+#include <TLMWParser.h>
 
 //-----------------------------------------------------------------------------
-//! MCAPI code generator.
+//! TLMW generator.
 //-----------------------------------------------------------------------------
-class MCAPIHeaderGenerator
+class TLMWHeaderGenerator
 {
 public:
     /*!
      *  The constructor.
      *
-     *      @param [in] parser   A parser that has already parsed the design for MCAPI generation.
+     *      @param [in] parser   A parser that has already parsed the design for TLMW generation.
      *      @param [in] utility   The same IPluginUtility, which is fed to the plugin class as parameter.
      */
-     MCAPIHeaderGenerator( MCAPIParser& parser, IPluginUtility* utility );
-    ~MCAPIHeaderGenerator();
+     TLMWHeaderGenerator( TLMWParser& parser, IPluginUtility* utility );
+    ~TLMWHeaderGenerator();
 
     /*!
      *  Generates source files associated with the top level component of the design.
@@ -51,19 +55,19 @@ private:
      *  Generates a header file containing data specific to a software instance.
      *
      *      @param [in] filename   The name of the source file to write.
-     *      @param [in] nodeData   MCAPI node data associated with the instance.
+     *      @param [in] nodeData   TLMW node data associated with the instance.
      */
-    void generateInstanceHeader(QString const& directory, MCAPIParser::NodeData const& nodeData);
+    void generateInstanceHeader(QString& directory, TLMWParser::NodeData& nodeData);
 
     /*!
-     *  Add generated MCAPI code files to the fileSet of the associated component.
+     *  Add generated TLMW code files to the fileSet of the associated component.
      *
      *      @param [in] directory   The directory, where the files are inserted on the file system.
      *      @param [in] topComponent   The top level component associated with the design.
      *      @param [in] instance   The software instance, which instance header was generated.
      *      @param [in] desgConf   The design configuration associated with the design.
      */
-     void addGeneratedMCAPIToFileset(QString directory, QSharedPointer<Component> topComponent,
+     void addGeneratedTLMWToFileset(QString directory, QSharedPointer<Component> topComponent,
         QSharedPointer<SWInstance> instance, QSharedPointer<DesignConfiguration const> desgConf);
 
     /*!
@@ -76,8 +80,7 @@ private:
      *      @return List of "our" interfaces paired with their connected interfaces.
      */
      QList<QPair<QSharedPointer<ComInterface>, PortReference> > findConnectedComInterfaces(
-        QSharedPointer<const Design> design, QSharedPointer<SWInstance> ourInstance,
-        QSharedPointer<Component> component );
+        QSharedPointer<const Design> design, SWInstance &ourInstance, QSharedPointer<Component> component );
 
      /*!
      *  Writes remote endpoint of 'ourInterface' and endpoint definitions of both given interfaces.
@@ -88,8 +91,8 @@ private:
       *      @param [in] theirEnd   Data associated with end point in "their" end of connection.
       *      @param [in] endpointDefs   The list of endpoint definition names.
       */
-      void writeRemoteEndpoint(CSourceWriter &writer, MCAPIParser::EndPointData ourEnd,
-          MCAPIParser::EndPointData theirEnd, QStringList& endpointDefs);
+      void writeRemoteEndpoint(CSourceWriter &writer, TLMWParser::EndPointData ourEnd,
+          QString connectionName);
 
     /*!
      *  Writes the given endpoint definition names to array.
@@ -130,11 +133,11 @@ private:
     //-----------------------------------------------------------------------------
 
     //! Endpoints parsed from component
-    QList<MCAPIParser::EndPointData> componentEndpoints_;
+    QList<TLMWParser::EndPointData> componentEndpoints_;
     //! Nodes parsed from design.
-    QList<MCAPIParser::NodeData> designNodes_;
+    QList<TLMWParser::NodeData> designNodes_;
     //! The plugin utility.
     IPluginUtility* utility_;
 };
 
-#endif // MCAPIHeaderGenerator_H
+#endif // TLMWHeaderGenerator_H

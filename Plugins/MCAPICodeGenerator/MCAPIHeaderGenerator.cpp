@@ -11,24 +11,13 @@
 
 #include "MCAPIHeaderGenerator.h"
 
-#include <QMessageBox>
-#include <QFileInfo>
-#include <QSettings>
-#include <QCoreApplication>
 #include <QDir>
-#include <QObject>
 
-#include <CSourceWriter.h>
+#include <Plugins/common/CSourceWriter.h>
 #include <editors/CSourceEditor/CSourceTextEdit.h>
 
-#include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/fileset.h>
-#include <IPXACTmodels/Component/file.h>
 
-#include <library/LibraryManager/libraryinterface.h>
-
-#include <IPXACTmodels/kactusExtensions/SWView.h>
-#include "common/dialogs/comboSelector/comboselector.h"
 #include <IPXACTmodels/kactusExtensions/SystemView.h>
 
 #include <Plugins/common/NameGenerationPolicy.h>
