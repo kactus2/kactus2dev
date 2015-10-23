@@ -57,8 +57,6 @@ private:
     // Disable copying.
     SegmentDelegate(SegmentDelegate const& rhs);
     SegmentDelegate& operator=(SegmentDelegate const& rhs);  
-
-
 };
 
 #endif // SEGMENTDELEGATE_H

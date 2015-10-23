@@ -9,6 +9,9 @@
 // Common declarations for editing files.
 //-----------------------------------------------------------------------------
 
+#ifndef FILECOLUMNS_H
+#define FILECOLUMNS_H
+
 namespace FileColumns
 {
     //! The editable columns in the files editor.
@@ -21,3 +24,5 @@ namespace FileColumns
         COLUMN_COUNT
     };
 }
+
+#endif // FILECOLUMNS_H

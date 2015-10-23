@@ -11,8 +11,12 @@
 
 #include "componenteditoraddrspacesitem.h"
 #include "componenteditoraddrspaceitem.h"
+
 #include <editors/ComponentEditor/treeStructure/componenteditortreemodel.h>
 #include <editors/ComponentEditor/addressSpaces/addressspaceseditor.h>
+
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/AddressSpace.h>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorAddrSpacesItem::ComponentEditorAddrSpacesItem()
@@ -23,14 +27,15 @@ ComponentEditorAddrSpacesItem::ComponentEditorAddrSpacesItem(ComponentEditorTree
     QSharedPointer<ExpressionFormatter> expressionFormatter, 
     QSharedPointer<ExpressionParser> expressionParser, ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-addrSpaces_(component->getAddressSpaces()),
+addressSpaces_(component->getAddressSpaces()),
 expressionParser_(expressionParser)
 {
     setReferenceCounter(referenceCounter);
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);
 
-	foreach (QSharedPointer<AddressSpace> addrSpace, addrSpaces_) {
+	foreach (QSharedPointer<AddressSpace> addrSpace, *addressSpaces_)
+    {
 		QSharedPointer<ComponentEditorAddrSpaceItem> addrItem(
 			new ComponentEditorAddrSpaceItem(addrSpace, model, libHandler, component, referenceCounter_,
             parameterFinder_, expressionFormatter_, expressionParser_, this));	
@@ -43,6 +48,7 @@ expressionParser_(expressionParser)
 //-----------------------------------------------------------------------------
 ComponentEditorAddrSpacesItem::~ComponentEditorAddrSpacesItem()
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -51,7 +57,7 @@ ComponentEditorAddrSpacesItem::~ComponentEditorAddrSpacesItem()
 QFont ComponentEditorAddrSpacesItem::getFont() const
 {
     QFont font(ComponentEditorItem::getFont());
-    font.setBold(!addrSpaces_.empty());
+    font.setBold(!addressSpaces_->empty());
     return font;
 }
 
@@ -70,17 +76,14 @@ ItemEditor* ComponentEditorAddrSpacesItem::editor()
 {
 	if (!editor_)
     {
-		editor_ = new AddressSpacesEditor(component_, libHandler_, parameterFinder_, 
-            expressionFormatter_, expressionParser_);
+		editor_ = new AddressSpacesEditor(component_, libHandler_, parameterFinder_, expressionFormatter_,
+            expressionParser_);
 		editor_->setProtection(locked_);
-		connect(editor_, SIGNAL(contentChanged()), 
-			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
-		connect(editor_, SIGNAL(childAdded(int)),
-			this, SLOT(onAddChild(int)), Qt::UniqueConnection);
-		connect(editor_, SIGNAL(childRemoved(int)),
-			this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
-		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
-			this, SIGNAL(helpUrlRequested(QString const&)));
+
+		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(childAdded(int)), this, SLOT(onAddChild(int)), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(childRemoved(int)), this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
 		connect(editor_, SIGNAL(selectBusInterface(const QString&)),
 			model_, SLOT(onSelectBusInterface(const QString&)), Qt::UniqueConnection);
 
@@ -103,8 +106,8 @@ QString ComponentEditorAddrSpacesItem::getTooltip() const
 void ComponentEditorAddrSpacesItem::createChild( int index )
 {
 	QSharedPointer<ComponentEditorAddrSpaceItem> addrItem(
-		new ComponentEditorAddrSpaceItem(addrSpaces_.at(index), model_, libHandler_, component_, referenceCounter_,
-        parameterFinder_, expressionFormatter_, expressionParser_, this));
+		new ComponentEditorAddrSpaceItem(addressSpaces_->at(index), model_, libHandler_, component_,
+        referenceCounter_, parameterFinder_, expressionFormatter_, expressionParser_, this));
 	addrItem->setLocked(locked_);
 	childItems_.insert(index, addrItem);
 }

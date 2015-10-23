@@ -14,6 +14,9 @@
 #include <common/graphicsItems/visualizeritem.h>
 #include <common/widgets/summaryLabel/summarylabel.h>
 
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/AddressSpace.h>
+
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
@@ -50,6 +53,7 @@ scene_(new AddressSpaceScene(addrSpace, expressionParser, this))
 //-----------------------------------------------------------------------------
 AddressSpaceVisualizer::~AddressSpaceVisualizer()
 {
+
 }
 
 //-----------------------------------------------------------------------------

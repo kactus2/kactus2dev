@@ -20,9 +20,10 @@
 
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
+#include <IPXACTmodels/Component/AddressSpace.h>
+
 #include <QFormLayout>
 #include <QLabel>
-#include <QVariant>
 
 //-----------------------------------------------------------------------------
 // Function: AddressSpaceGeneralEditor::AddressSpaceGeneralEditor()
@@ -115,11 +116,10 @@ void AddressSpaceGeneralEditor::refresh(QStringList masterInterfaceNames)
     widthEditor_->blockSignals(true);
     rangeEditor_->blockSignals(true);
 
-	addrUnitEditor_.setText(QString::number(addrSpace_->getAddressUnitBits()));
-    addrSpace_->getLocalMemoryMap()->setAddressUnitBits(addrSpace_->getAddressUnitBits());
+    addrUnitEditor_.setText(addrSpace_->getAddressUnitBits());
 
-    widthEditor_->setExpression(addrSpace_->getWidthExpression());
-    widthEditor_->setToolTip(format(addrSpace_->getWidthExpression()));
+    widthEditor_->setExpression(addrSpace_->getWidth());
+    widthEditor_->setToolTip(format(addrSpace_->getWidth()));
 
 	rangeEditor_->setExpression(addrSpace_->getRange());
     rangeEditor_->setToolTip(format(addrSpace_->getRange()));
@@ -142,14 +142,10 @@ void AddressSpaceGeneralEditor::refresh(QStringList masterInterfaceNames)
 //-----------------------------------------------------------------------------
 void AddressSpaceGeneralEditor::onAddrUnitChanged()
 {
-    int aub = Utils::str2Int(addrUnitEditor_.text());
-    if (aub == 0)
-    {
-        aub = 8; //<! default to byte.
-    }
+    QString newAddressUnitBits = addrUnitEditor_.text();
+    addrSpace_->setAddressUnitBits(newAddressUnitBits);
 
-	addrSpace_->setAddressUnitBits(aub);
-    addrSpace_->getLocalMemoryMap()->setAddressUnitBits(aub);
+    addrUnitEditor_.setToolTip(format(newAddressUnitBits));
 
 	emit contentChanged();
 }
@@ -160,7 +156,8 @@ void AddressSpaceGeneralEditor::onAddrUnitChanged()
 void AddressSpaceGeneralEditor::onWidthChanged()
 {
     widthEditor_->finishEditingCurrentWord();
-    addrSpace_->setWidthExpression(widthEditor_->getExpression());   
+
+    addrSpace_->setWidth(widthEditor_->getExpression());   
     widthEditor_->setToolTip(format(widthEditor_->getExpression()));
 
 	emit contentChanged();

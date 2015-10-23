@@ -12,8 +12,6 @@
 #ifndef ADDRESSSPACEGENERALEDITOR_H
 #define ADDRESSSPACEGENERALEDITOR_H
 
-#include <IPXACTmodels/addressspace.h>
-
 #include <common/widgets/NumberLineEdit/numberlineedit.h>
 
 #include <QGroupBox>
@@ -23,6 +21,7 @@
 class ExpressionEditor;
 class ExpressionParser;
 class ParameterFinder;
+class AddressSpace;
 
 //-----------------------------------------------------------------------------
 //! Editor to set the general settings of an address space.
@@ -48,13 +47,14 @@ public:
         QSharedPointer<ExpressionParser> expressionParser,
         QWidget *parent);
 
-	//! The destructor
+	//! The destructor.
 	virtual ~AddressSpaceGeneralEditor();
 
-	/*! Check if the editor is in valid state and can be saved.
+	/*!
+     *  Check if the editor is in valid state and can be saved.
 	 *
 	 *      @return True if everything is ok.
-	*/
+	 */
 	bool isValid() const;
 
 	/*!
@@ -116,10 +116,9 @@ private slots:
     void onRangeChanged();
 
 private:
-	//! No copying
+	//! No copying. No assignment.
 	AddressSpaceGeneralEditor(const AddressSpaceGeneralEditor& other);
 	AddressSpaceGeneralEditor& operator=(const AddressSpaceGeneralEditor& other);
-   
     
     /*!
      *  Formats a given expression to human-readable format.

@@ -1,13 +1,20 @@
-/* 
- *  	Created on: 21.2.2012
- *      Author: Antti Kamppi
- * 		filename: addressspaceeditor.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: addressspaceeditor.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 21.2.2012
+//
+// Description:
+// Editor to edit and save settings of an address space within component editor.
+//-----------------------------------------------------------------------------
 
 #include "addressspaceeditor.h"
 
 #include <library/LibraryManager/libraryinterface.h>
+
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/AddressSpace.h>
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -18,22 +25,19 @@
 //-----------------------------------------------------------------------------
 // Function: AddressSpaceEditor::AddressSpaceEditor()
 //-----------------------------------------------------------------------------
-AddressSpaceEditor::AddressSpaceEditor(QSharedPointer<Component> component, 
-    LibraryInterface* handler,
-    QSharedPointer<AddressSpace> addrSpace,
-    QSharedPointer <ParameterFinder> parameterFinder,
-    QSharedPointer <ExpressionFormatter> expressionFormatter,
-    QSharedPointer<ExpressionParser> expressionParser,
-    QWidget* parent):
+AddressSpaceEditor::AddressSpaceEditor(QSharedPointer<Component> component, LibraryInterface* handler,
+                                       QSharedPointer<AddressSpace> addrSpace,
+                                       QSharedPointer <ParameterFinder> parameterFinder,
+                                       QSharedPointer <ExpressionFormatter> expressionFormatter,
+                                       QSharedPointer<ExpressionParser> expressionParser, QWidget* parent):
 ItemEditor(component, handler, parent),
-    addrSpace_(addrSpace),
-    nameEditor_(addrSpace, this),
-    generalEditor_(addrSpace, component->getMasterInterfaces(addrSpace_->name()), parameterFinder,
-                   expressionParser, this),
-    segmentsEditor_(addrSpace, component, handler->getDirectoryPath(*component->getVlnv()), parameterFinder,
-                    expressionParser, expressionFormatter, this),
-    localMemMapEditor_(addrSpace->getLocalMemoryMap(), component, handler, parameterFinder, expressionFormatter, 
-                       this)
+addrSpace_(addrSpace),
+nameEditor_(addrSpace, this),
+generalEditor_(addrSpace, component->getMasterInterfaces(addrSpace_->name()), parameterFinder, expressionParser,
+    this),
+segmentsEditor_(addrSpace, component, handler->getDirectoryPath(component->getVlnv()), parameterFinder,
+    expressionParser, expressionFormatter, this),
+localMemMapEditor_(addrSpace->getLocalMemoryMap(), component, handler, parameterFinder, expressionFormatter, this)
 {
 	Q_ASSERT(addrSpace_);
 
@@ -61,10 +65,8 @@ ItemEditor(component, handler, parent),
     connect(&localMemMapEditor_, SIGNAL(graphicsChanged()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
     connect(&localMemMapEditor_, SIGNAL(errorMessage(const QString&)),
         this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
-	connect(&localMemMapEditor_, SIGNAL(itemAdded(int)),
-		this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
-	connect(&localMemMapEditor_, SIGNAL(itemRemoved(int)),
-		this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
+	connect(&localMemMapEditor_, SIGNAL(itemAdded(int)), this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
+	connect(&localMemMapEditor_, SIGNAL(itemRemoved(int)), this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
 
     connect(&localMemMapEditor_, SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
@@ -81,6 +83,7 @@ ItemEditor(component, handler, parent),
 //-----------------------------------------------------------------------------
 AddressSpaceEditor::~AddressSpaceEditor()
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -88,7 +91,7 @@ AddressSpaceEditor::~AddressSpaceEditor()
 //-----------------------------------------------------------------------------
 bool AddressSpaceEditor::isValid() const
 {
-	return nameEditor_.isValid() && generalEditor_.isValid() && segmentsEditor_.isValid() && 
+	return nameEditor_.isValid() && generalEditor_.isValid() && segmentsEditor_.isValid() &&
         localMemMapEditor_.isValid();
 }
 

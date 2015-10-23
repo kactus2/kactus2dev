@@ -1,27 +1,28 @@
 //-----------------------------------------------------------------------------
-// File: FileSetColumns.h
+// File: SegmentColumns.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Mikko Teuho
-// Date: 19.10.2015
+// Date: 22.10.2015
 //
 // Description:
-// Common declarations for editing file sets.
+// Common declarations for segment table columns.
 //-----------------------------------------------------------------------------
 
-#ifndef FILESETCOLUMNS_H
-#define FILESETCOLUMNS_H
+#ifndef SEGMENTCOLUMNS_H
+#define SEGMENTCOLUMNS_H
 
-namespace FileSetColumns
+namespace SegmentColumns
 {
-    //! The editable columns in the file sets editor.
-    enum columns
+    //! Defines the columns for the address space table.
+    enum Column
     {
-        NAME_COLUMN = 0,
-        GROUP_COLUMN,
+        NAME = 0,
+        OFFSET,
+        RANGE,
         DESCRIPTION,
         COLUMN_COUNT
     };
 }
 
-#endif // FILESETCOLUMNS_H
+#endif // SEGMENTCOLUMNS_H

@@ -18,18 +18,20 @@ class ExpressionParser;
 //-----------------------------------------------------------------------------
 //! Visual item for overlapping memory segments and local memory blocks.
 //-----------------------------------------------------------------------------
-class AddressSpaceConflictedItem : public AddressSpaceGapItem {
+class AddressSpaceConflictedItem : public AddressSpaceGapItem
+{
 	Q_OBJECT
 
 public:
 
-    /*!
-     *  The constructor.
-     *
-     *      @param [in] addrSpace   Pointer to the address space containing the item.
-     *      @param [in] addrPos  Address alignment.
-     *      @param [in] parent  Pointer to the parent graph item.
-     */
+	/*!
+	 *  The constructor.
+	 *
+	 *      @param [in] addrPos             Address alignment.
+	 *      @param [in] addressSpaceWidth   Address space width.
+	 *      @param [in] expressionParser    The used expression parser.
+	 *      @param [in] parent              Pointer to the parent graph item.
+	 */
 	AddressSpaceConflictedItem(AddressPosition addrPos,
         QString const& addressSpaceWidth,
         QSharedPointer<ExpressionParser> expressionParser,

@@ -12,10 +12,10 @@
 #ifndef ADDRESSSPACEEXPRESSIONGATHERER_H
 #define ADDRESSSPACEEXPRESSIONGATHERER_H
 
-#include <IPXACTmodels/addressspace.h>
-
 #include <QSharedPointer>
 #include <QStringList>
+
+class AddressSpace;
 
 //-----------------------------------------------------------------------------
 //! Gathers expressions from an address space and its memory maps.
@@ -46,10 +46,10 @@ public:
 
 private:
 	
-	//! No copying
+	//! No copying.
     AddressSpaceExpressionGatherer(const AddressSpaceExpressionGatherer& other);
 
-	//! No assignment
+	//! No assignment.
     AddressSpaceExpressionGatherer& operator=(const AddressSpaceExpressionGatherer& other);
 };
 

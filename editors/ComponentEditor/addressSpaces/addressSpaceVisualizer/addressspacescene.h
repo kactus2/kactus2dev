@@ -12,7 +12,6 @@
 #ifndef ADDRESSSPACESCENE_H
 #define ADDRESSSPACESCENE_H
 
-#include <IPXACTmodels/addressspace.h>
 #include "addressspacegapitem.h"
 
 #include <QGraphicsScene>
@@ -21,6 +20,7 @@
 
 class AddressSpaceVisualizationItem;
 class ExpressionParser;
+class AddressSpace;
 
 //-----------------------------------------------------------------------------
 //! The graphics scene containing the segments and local memory map of an address space.
@@ -34,38 +34,44 @@ public:
     //! Margin between segments/blocks and segments/blocks outside address space. 
     static const unsigned int MARGIN = 10;
 
-	/*! The constructor.
+	/*!
+     *  The constructor.
 	 *
 	 *       @param [in] addrSpace         The address space being visualized.
      *       @param [in] expressionParser  The expression parser to use for local memory maps.
 	 *       @param [in] parent            The owner of the scene.
-	 *
-	*/
+	 */
 	AddressSpaceScene(QSharedPointer<AddressSpace> addrSpace, QSharedPointer<ExpressionParser> expressionParser,
 		QObject *parent);
 	
-	//! The destructor
+	//! The destructor.
 	virtual ~AddressSpaceScene();
 
-	/*! Refresh the address space visualization.
-	 *
-	*/
+	/*!
+     *  Refresh the address space visualization.
+	 */
 	virtual void refresh();
+
+	/*!
+     *  Get the last address contained in the item.
+	 *
+	 *      @return The last address.
+	 */
     quint64 addressSpaceLastAddress() const;
 
-	/*! Reposition the items on the visualization.
+	/*!
+     *  Reposition the items on the visualization.
 	 * 
-	 * The items are repositioned based on the offsets and new items are not 
-	 * created or old removed.
-	*/
+	 *  The items are repositioned based on the offsets and new items are not created or old removed.
+	 */
 	virtual void rePosition();
 
 private:
 	
-	//! No copying
+	//! No copying.
 	AddressSpaceScene(const AddressSpaceScene& other);
 
-	//! No assignment
+	//! No assignment.
 	AddressSpaceScene& operator=(const AddressSpaceScene& other);
 
     /*!
@@ -121,6 +127,7 @@ private:
 	//! Contains the local address blocks outside address space ordered by offsets
 	QMultiMap<quint64, AddressSpaceVisualizationItem*> exceedingAddrBlocks_;
 
+    //! The used expression parser.
     QSharedPointer<ExpressionParser> expressionParser_;
 };
 

@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 13.10.2012
- *      Author: Antti Kamppi
- * 		filename: localmemorymapeditor.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: localmemorymapeditor.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 13.10.2012
+//
+// Description:
+// LocalMemoryMapEditor is used to edit a local memory map of an address space.
+//-----------------------------------------------------------------------------
 
 #include "localmemorymapeditor.h"
 
@@ -21,27 +25,30 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/MemoryMapBase.h>
+
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
 // Function: LocalMemoryMapEditor::LocalMemoryMapEditor()
 //-----------------------------------------------------------------------------
-LocalMemoryMapEditor::LocalMemoryMapEditor(QSharedPointer<MemoryMap> memoryMap,
+LocalMemoryMapEditor::LocalMemoryMapEditor(QSharedPointer<MemoryMapBase> memoryMap,
                                            QSharedPointer<Component> component,
                                            LibraryInterface* handler,
                                            QSharedPointer<ParameterFinder> parameterFinder,
                                            QSharedPointer<ExpressionFormatter> expressionFormatter,
-                                           QWidget *parent)
-    : QGroupBox(tr("Local memory map"), parent),
-      localMemoryMap_(memoryMap),
-      nameEditor_(new NameGroupEditor(memoryMap, this)),
-      view_(new EditableTableView(this)),
-      model_(0),
-      component_(component),
-      handler_(handler)
+                                           QWidget *parent):
+QGroupBox(tr("Local memory map"), parent),
+localMemoryMap_(memoryMap),
+nameEditor_(new NameGroupEditor(memoryMap, this)),
+view_(new EditableTableView(this)),
+model_(0),
+component_(component),
+handler_(handler)
 {
     setCheckable(true);
-    setChecked(!localMemoryMap_->isEmpty());
+    setChecked(!localMemoryMap_->getMemoryBlocks()->isEmpty());
 
     nameEditor_->setTitle(tr("Memory map name and description"));
 
@@ -69,7 +76,7 @@ LocalMemoryMapEditor::LocalMemoryMapEditor(QSharedPointer<MemoryMap> memoryMap,
 	proxy->setSourceModel(model_);
 	view_->setModel(proxy);
 
-	const QString compPath = handler_->getDirectoryPath(*component_->getVlnv());
+	const QString compPath = handler_->getDirectoryPath(component_->getVlnv());
 	QString defPath = QString("%1/localAddrBlockList.csv").arg(compPath);
 	view_->setDefaultImportExportPath(defPath);
 	view_->setAllowImportExport(true);
@@ -118,6 +125,7 @@ LocalMemoryMapEditor::LocalMemoryMapEditor(QSharedPointer<MemoryMap> memoryMap,
 //-----------------------------------------------------------------------------
 LocalMemoryMapEditor::~LocalMemoryMapEditor()
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -144,7 +152,8 @@ void LocalMemoryMapEditor::refresh()
 //-----------------------------------------------------------------------------
 void LocalMemoryMapEditor::onCheckStateChanged()
 {
-    if (!isChecked() && !localMemoryMap_->isEmpty())
+//     if (!isChecked() && !localMemoryMap_->isEmpty())
+    if (!isChecked() && !localMemoryMap_->getMemoryBlocks()->isEmpty())
     {
         setChecked(true);
         emit errorMessage("Cannot unselect local memory map since all fields are not empty.");        

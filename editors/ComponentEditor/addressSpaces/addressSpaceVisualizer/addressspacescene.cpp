@@ -16,11 +16,12 @@
 #include "localaddrblockgraphitem.h"
 #include "AddressSpaceConflictedItem.h"
 
-#include <IPXACTmodels/memorymap.h>
-#include <IPXACTmodels/memorymapitem.h>
-#include <IPXACTmodels/addressblock.h>
-
 #include <editors/ComponentEditor/common/ExpressionParser.h>
+
+#include <IPXACTmodels/Component/AddressSpace.h>
+#include <IPXACTmodels/Component/MemoryMapBase.h>
+#include <IPXACTmodels/Component/MemoryBlockBase.h>
+#include <IPXACTmodels/Component/AddressBlock.h>
 
 #include <common/graphicsItems/visualizeritem.h>
 
@@ -28,7 +29,7 @@
 // Function: AddressSpaceScene()
 //-----------------------------------------------------------------------------
 AddressSpaceScene::AddressSpaceScene(QSharedPointer<AddressSpace> addrSpace,
-     QSharedPointer<ExpressionParser> expressionParser,
+                                     QSharedPointer<ExpressionParser> expressionParser,
 									 QObject *parent):
 QGraphicsScene(parent),
 addrSpace_(addrSpace),
@@ -38,6 +39,7 @@ exceedingSegments_(),
 exceedingAddrBlocks_(),
 expressionParser_(expressionParser)
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -45,6 +47,7 @@ expressionParser_(expressionParser)
 //-----------------------------------------------------------------------------
 AddressSpaceScene::~AddressSpaceScene() 
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -61,10 +64,10 @@ void AddressSpaceScene::refresh()
 
     quint64 addressSpaceEnd = addressSpaceLastAddress();
 
-    QList<QSharedPointer<Segment> >& segments = addrSpace_->getSegments();
-    foreach(QSharedPointer<Segment> current, segments)
+    QSharedPointer<QList<QSharedPointer<Segment> > > segments = addrSpace_->getSegments();
+    foreach(QSharedPointer<Segment> current, *segments)
     {
-        SegmentGraphItem* segItem = new SegmentGraphItem(current, addrSpace_->getWidthExpression(), expressionParser_);
+        SegmentGraphItem* segItem = new SegmentGraphItem(current, addrSpace_->getWidth(), expressionParser_);
         addItem(segItem);
 
         if ( segItem->getOffset() > addressSpaceEnd)
@@ -77,15 +80,15 @@ void AddressSpaceScene::refresh()
         }
     }
 
-    QSharedPointer<MemoryMap> localMap = addrSpace_->getLocalMemoryMap();
-    QList<QSharedPointer<MemoryMapItem> >& blocks = localMap->getItems();
-    foreach (QSharedPointer<MemoryMapItem> memItem, blocks)
+    QSharedPointer<MemoryMapBase> localMap = addrSpace_->getLocalMemoryMap();
+    QSharedPointer<QList<QSharedPointer<MemoryBlockBase> > > blocks = localMap->getMemoryBlocks();
+    foreach (QSharedPointer<MemoryBlockBase> block, *blocks)
     {
-        QSharedPointer<AddressBlock> addrBlock = memItem.dynamicCast<AddressBlock>();
-        if (addrBlock) {
-
+        QSharedPointer<AddressBlock> addrBlock = block.dynamicCast<AddressBlock>();
+        if (addrBlock)
+        {
             LocalAddrBlockGraphItem* blockItem = new LocalAddrBlockGraphItem(addrBlock, 
-                addrSpace_->getWidthExpression(), expressionParser_);
+                addrSpace_->getWidth(), expressionParser_);
             addItem(blockItem);
 
             if (blockItem->getOffset() > addressSpaceEnd)
@@ -123,8 +126,8 @@ void AddressSpaceScene::rePosition()
 	qreal blockCoord = 0;
 
 	// as long as there are both address blocks and segments left
-	while ((segIterator != segmentItems_.end()) && (blockIterator != addrBlockItems_.end())) {
-
+	while ((segIterator != segmentItems_.end()) && (blockIterator != addrBlockItems_.end()))
+    {
 		AddressSpaceVisualizationItem* seg = segIterator.value();
 		AddressSpaceVisualizationItem* block = blockIterator.value();
 
@@ -149,10 +152,12 @@ void AddressSpaceScene::rePosition()
 
 			// if there are previous items then make them reach the starting point for
 			// these new items
-			if (prevSeg) {
+			if (prevSeg)
+            {
 				prevSeg->setBottomCoordinate(yCoord);
 			}
-			if (prevBlock) {
+			if (prevBlock)
+            {
 				prevBlock->setBottomCoordinate(yCoord);
 			}
 
@@ -163,7 +168,8 @@ void AddressSpaceScene::rePosition()
 			// check if the items are different sizes
 			
 			// if block reaches further than segment
-            if (seg->getOverlappingBottom() < block->getOverlappingBottom()) {
+            if (seg->getOverlappingBottom() < block->getOverlappingBottom())
+            {
                 qreal segHeight = AddressSpaceVisualizationItem::SEGMENT_HEIGHT;      
                 // Segment displaying one address should be smaller.  
                 if (seg->getOverlappingTop() == seg->getOverlappingBottom())
@@ -195,7 +201,8 @@ void AddressSpaceScene::rePosition()
 			}
 
 			// if segment reaches further than block
-			else if (seg->getOverlappingBottom() > block->getOverlappingBottom()) {                
+			else if (seg->getOverlappingBottom() > block->getOverlappingBottom())
+            {                
                 qreal blockHeight = AddressSpaceVisualizationItem::SEGMENT_HEIGHT;
                 // Block displaying one address should be smaller.  
                 if (block->getOverlappingTop() == block->getOverlappingBottom())
@@ -225,7 +232,8 @@ void AddressSpaceScene::rePosition()
 				++blockIterator;
 			}
 			// if blocks are of same size
-			else {
+			else
+            {
                 qreal height = AddressSpaceVisualizationItem::SEGMENT_HEIGHT;
                  // Block and segment displaying one address should be smaller. 
                 if (seg->getOverlappingTop() == seg->getOverlappingBottom())
@@ -248,13 +256,13 @@ void AddressSpaceScene::rePosition()
 		}
 
 		// if the segment starts before the block
-		else if (seg->getOverlappingTop() < block->getOverlappingTop()) {
-
+		else if (seg->getOverlappingTop() < block->getOverlappingTop())
+        {
 			block->setPos(VisualizerItem::DEFAULT_WIDTH, blockCoord);
 
 			// if block reaches further than segment
-			if (seg->getOverlappingBottom() < block->getOverlappingBottom()) {
-                
+			if (seg->getOverlappingBottom() < block->getOverlappingBottom())
+            {
                 // Find the bottom of the segment.
                 blockCoord = seg->mapToScene(seg->rect().bottomRight()).y();
                 // If the next segment begins at the ending address of the block,
@@ -276,7 +284,8 @@ void AddressSpaceScene::rePosition()
 			}
 
 			// if segment reaches further than block
-			else if (seg->getOverlappingBottom() > block->getOverlappingBottom()) {
+			else if (seg->getOverlappingBottom() > block->getOverlappingBottom())
+            {
                 qreal blockHeight = AddressSpaceVisualizationItem::SEGMENT_HEIGHT;
                 if (block->getOverlappingTop() == block->getOverlappingBottom())
                 {
@@ -306,7 +315,8 @@ void AddressSpaceScene::rePosition()
 				++blockIterator;
 			}
 			// if blocks have the same ending address
-			else {
+			else
+            {
                 // Block displaying one address should be smaller. 
                 if ( block->getOverlappingTop() != block->getOverlappingBottom())
                 {
@@ -334,12 +344,13 @@ void AddressSpaceScene::rePosition()
 		}
 
 		// if the block starts before the segment
-		else if (seg->getOverlappingTop() > block->getOverlappingTop()) {
-			
+		else if (seg->getOverlappingTop() > block->getOverlappingTop())
+        {
 			seg->setPos(0, segCoord);
  
  			// if block reaches further than segment
-			if (seg->getOverlappingBottom() < block->getOverlappingBottom()) {
+			if (seg->getOverlappingBottom() < block->getOverlappingBottom())
+            {
                 qreal segHeight = AddressSpaceVisualizationItem::SEGMENT_HEIGHT;
                 // Segment displaying one address should be smaller.
                 if (seg->getOverlappingTop() == seg->getOverlappingBottom())
@@ -370,7 +381,8 @@ void AddressSpaceScene::rePosition()
 			}
 
 			// if segment reaches further than block
-			else if (seg->getOverlappingBottom() > block->getOverlappingBottom()) {
+			else if (seg->getOverlappingBottom() > block->getOverlappingBottom())
+            {
                 // Find the bottom of the block.
                 segCoord = block->mapToScene(block->rect().bottomRight()).y();
                 // If the next address block begins at the ending address of the segment,
@@ -391,7 +403,8 @@ void AddressSpaceScene::rePosition()
 				++blockIterator;
 			}
 			// if blocks have the same ending address
-            else {
+            else
+            {
                  // Block and segment displaying one address should be smaller.
                 if (seg->getOverlappingTop() != seg->getOverlappingBottom())
                 {
@@ -442,8 +455,8 @@ void AddressSpaceScene::updateMaps(QMultiMap<quint64, AddressSpaceVisualizationI
     QMultiMap<quint64, AddressSpaceVisualizationItem*> newMap;
 
     // go through all items and update the segment offsets and remove gaps
-    foreach (AddressSpaceVisualizationItem* item, itemMap) {
-
+    foreach (AddressSpaceVisualizationItem* item, itemMap)
+    {
         // if the item is gap item then remove it
         AddressSpaceGapItem* gap = dynamic_cast<AddressSpaceGapItem*>(item);
         if (gap)
@@ -479,9 +492,10 @@ void AddressSpaceScene::updateMaps(QMultiMap<quint64, AddressSpaceVisualizationI
         // if there is a gap between the last item and this item or first item
         // begins at address 1.
         if (item->getOffset() > lastAddress + 1 || 
-            (topItem == NULL && item->getOffset() == lastAddress + 1)) {
+            (topItem == NULL && item->getOffset() == lastAddress + 1))
+        {
             // create the gap item.
-            AddressSpaceGapItem* gap = new AddressSpaceGapItem(align, addrSpace_->getWidthExpression(), expressionParser_);
+            AddressSpaceGapItem* gap = new AddressSpaceGapItem(align, addrSpace_->getWidth(), expressionParser_);
             addItem(gap);
 
             // if the gap is at the start of the address space.
@@ -509,20 +523,21 @@ void AddressSpaceScene::updateMaps(QMultiMap<quint64, AddressSpaceVisualizationI
 	}
 
 	// add a gap to the end of the address space if last item < addr space size.
-	if (addressSpaceEnd > lastAddress || 
-        (newMap.empty() && newMap == segmentItems_ && !addrBlockItems_.empty() )) 
+	if (addressSpaceEnd > lastAddress || (newMap.empty() && newMap == segmentItems_ && !addrBlockItems_.empty() )) 
         {
 		// create the gap item.
-		AddressSpaceGapItem* gap = new AddressSpaceGapItem(align, addrSpace_->getWidthExpression(), expressionParser_);
+        AddressSpaceGapItem* gap = new AddressSpaceGapItem(align, addrSpace_->getWidth(), expressionParser_);
 		addItem(gap);
 
 	    // set the first address of the gap.
 		// if there were no address items then the end gap is also first gap.
-		if (lastAddress == 0 && topItem == NULL) {
+		if (lastAddress == 0 && topItem == NULL)
+        {
 			gap->setStartAddress(lastAddress, true);
 		}
 		// otherwise the last gap starts after the previous ended.
-		else {
+		else
+        {
 			gap->setStartAddress(lastAddress, false);
 		}
 
@@ -612,7 +627,8 @@ void AddressSpaceScene::resolveConflicts(AddressSpaceVisualizationItem* currentI
 
             // Add conflicting item.
             AddressSpaceConflictedItem* conflict = new AddressSpaceConflictedItem(
-                align, addrSpace_->getWidthExpression(), expressionParser_);
+                   align, addrSpace_->getWidth(), expressionParser_);
+
             addItem(conflict);                
             conflict->setStartAddress(currentItem->getOffset(),true);
             conflict->setEndAddress(conflictEnd,true); 

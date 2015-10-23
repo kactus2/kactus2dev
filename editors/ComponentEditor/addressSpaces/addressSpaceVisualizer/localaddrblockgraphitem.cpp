@@ -15,6 +15,8 @@
 
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 
+#include <IPXACTmodels/Component/AddressBlock.h>
+
 #include <QBrush>
 
 //-----------------------------------------------------------------------------
@@ -39,6 +41,7 @@ addrBlock_(block)
 //-----------------------------------------------------------------------------
 LocalAddrBlockGraphItem::~LocalAddrBlockGraphItem()
 {
+
 }
 
 //-----------------------------------------------------------------------------

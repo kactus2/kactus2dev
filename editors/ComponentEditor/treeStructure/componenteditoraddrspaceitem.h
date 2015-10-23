@@ -14,16 +14,16 @@
 
 #include "componenteditoritem.h"
 
-#include <IPXACTmodels/addressspace.h>
-#include <IPXACTmodels/memorymap.h>
-
 #include <editors/ComponentEditor/addressSpaces/addressspaceeditor.h>
 #include <editors/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacevisualizer.h>
 
 class LocalMemoryMapGraphItem;
 class MemoryMapsVisualizer;
 class ExpressionParser;
-
+class Component;
+class AddressSpace;
+class MemoryMapBase;
+class MemoryBlockBase;
 //-----------------------------------------------------------------------------
 //! The item for a single address space in the component editor's navigation tree.
 //-----------------------------------------------------------------------------
@@ -56,85 +56,91 @@ public:
         QSharedPointer<ExpressionParser> expressionParser,
 		ComponentEditorItem* parent);
 
-	//! The destructor
+	//! The destructor.
 	virtual ~ComponentEditorAddrSpaceItem();
 
-	/*! Get the tool tip for the item.
+	/*!
+     *  Get the tool tip for the item.
 	 * 
 	 *      @return The text for the tool tip to print to user.
-	*/
+	 */
 	virtual QString getTooltip() const;
 
-	/*! Get the text to be displayed to user in the tree for this item.
+	/*!
+     *  Get the text to be displayed to user in the tree for this item.
 	 *
 	 *      @return QString Contains the text to display.
-	*/
+	 */
 	virtual QString text() const;
 
-	/*! Check the validity of this item and sub items.
+	/*!
+     *  Check the validity of this item and sub items.
 	 *
 	 *      @return bool True if item is in valid state.
-	*/
+	 */
 	virtual bool isValid() const;
 
-	/*! Get pointer to the editor of this item.
+	/*!
+     *  Get pointer to the editor of this item.
 	 *
 	 *      @return The editor to use for this item.
-	*/
+	 */
 	virtual ItemEditor* editor();
 
-	/*! Add a new child to the item.
+	/*!
+     *  Add a new child to the item.
 	 * 
 	 *      @param [in] index The index to add the child into.
-	 *
-	*/
+	 */
 	virtual void createChild(int index);
 	
-	/*! Get the visualizer graphics item for the memory map.
+	/*!
+     *  Get the visualizer graphics item for the memory map.
 	 *
 	 *      @return QGraphicsItem* The graphics item.
-	*/
+	 */
 	virtual QGraphicsItem* getGraphicsItem();
 
-	/*! Update the graphics item of the memory map.
-	 *
-	*/
+	/*!
+     *  Update the graphics item of the memory map.
+	 */
 	virtual void updateGraphics();
 
-	/*! Remove the graphics item of the memory map.
-	 *
-	*/
+	/*!
+     *  Remove the graphics item of the memory map.
+	 */
 	virtual void removeGraphicsItem();
 
-	/*! Get pointer to the visualizer of this item.
-	 * 
+	/*!
+     *  Get pointer to the visualizer of this item.
 	 * 
 	 *      @return The visualizer to use for this item.
-	*/
+	 */
 	virtual ItemVisualizer* visualizer();
 
 protected slots:
 
-	/*! Handler for editor's contentChanged signal.
-	 *
-	*/
+	/*!
+     *  Handler for editor's contentChanged signal.
+	 */
 	virtual void onGraphicsChanged();
 
 private:
-	//! No copying
+
+	//! No copying.
 	ComponentEditorAddrSpaceItem(const ComponentEditorAddrSpaceItem& other);
 
-	//! No assignment
+	//! No assignment.
 	ComponentEditorAddrSpaceItem& operator=(const ComponentEditorAddrSpaceItem& other);
 
 	//! The address space being edited.
 	QSharedPointer<AddressSpace> addrSpace_;
 
 	//! The local memory map of the address space.
-	QSharedPointer<MemoryMap> localMemMap_;
+	QSharedPointer<MemoryMapBase> localMemMap_;
 
 	//! Contains the address blocks that are children of this tree item.
-	QList<QSharedPointer<MemoryMapItem> >& items_;
+    QSharedPointer<QList<QSharedPointer<MemoryBlockBase> > > memoryBlocks_;
 
 	//! The graph item of the local memory map.
 	LocalMemoryMapGraphItem* graphItem_;

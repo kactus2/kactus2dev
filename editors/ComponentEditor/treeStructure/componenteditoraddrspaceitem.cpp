@@ -1,16 +1,27 @@
-/* 
- *  	Created on: 10.5.2012
- *      Author: Antti Kamppi
- * 		filename: componenteditoraddrspaceitem.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: componenteditoraddrspaceitem.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 10.05.2012
+//
+// Description:
+// The item for a single address space in the component editor's navigation tree.
+//-----------------------------------------------------------------------------
 
 #include "componenteditoraddrspaceitem.h"
-#include <IPXACTmodels/addressblock.h>
 #include "componenteditoraddrblockitem.h"
+
+#include <editors/ComponentEditor/common/ExpressionParser.h>
 #include <editors/ComponentEditor/addressSpaces/localMemoryMap/localmemorymapgraphitem.h>
-#include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
 #include <editors/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacevisualizer.h>
+#include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
+
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/AddressSpace.h>
+#include <IPXACTmodels/Component/MemoryMapBase.h>
+#include <IPXACTmodels/Component/MemoryBlockBase.h>
+#include <IPXACTmodels/Component/AddressBlock.h>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorAddrSpaceItem::ComponentEditorAddrSpaceItem()
@@ -27,7 +38,7 @@ ComponentEditorAddrSpaceItem::ComponentEditorAddrSpaceItem(QSharedPointer<Addres
 ComponentEditorItem(model, libHandler, component, parent),
 addrSpace_(addrSpace),
 localMemMap_(addrSpace->getLocalMemoryMap()),
-items_(addrSpace->getLocalMemoryMap()->getItems()),
+memoryBlocks_(addrSpace->getLocalMemoryMap()->getMemoryBlocks()),
 graphItem_(NULL),
 localMemMapVisualizer_(new MemoryMapsVisualizer()),
 addrSpaceVisualizer_(new AddressSpaceVisualizer(addrSpace, expressionParser)),
@@ -39,21 +50,23 @@ expressionParser_(expressionParser)
 
 	setObjectName(tr("ComponentEditorAddrSpaceItem"));
 
-	graphItem_ = new LocalMemoryMapGraphItem(addrSpace_, localMemMap_);
+    graphItem_ = new LocalMemoryMapGraphItem(addrSpace_, localMemMap_, expressionParser_);
 	localMemMapVisualizer_->addMemoryMapItem(graphItem_);
 	graphItem_->refresh();
 
-	foreach (QSharedPointer<MemoryMapItem> memItem, items_)
+	foreach (QSharedPointer<MemoryBlockBase> block, *memoryBlocks_)
     {
 		// if the item is for address block then create child for it
-		QSharedPointer<AddressBlock> addrBlock = memItem.dynamicCast<AddressBlock>();
+		QSharedPointer<AddressBlock> addrBlock = block.dynamicCast<AddressBlock>();
 		if (addrBlock)
         {
-			QSharedPointer<ComponentEditorAddrBlockItem> addrBlockItem(
-				new ComponentEditorAddrBlockItem(addrBlock, model, libHandler, component, referenceCounter_,
+            QSharedPointer<ComponentEditorAddrBlockItem> addrBlockItem
+                (new ComponentEditorAddrBlockItem(addrBlock, model, libHandler, component, referenceCounter_,
                 parameterFinder_, expressionFormatter_,expressionParser_, this));
             
-            addrBlockItem->addressUnitBitsChanged(addrSpace_->getAddressUnitBits());
+            int addressUnitBits = expressionParser_->parseExpression(addrSpace_->getAddressUnitBits()).toInt();
+            addrBlockItem->addressUnitBitsChanged(addressUnitBits);
+
 			addrBlockItem->setVisualizer(localMemMapVisualizer_);
 			childItems_.append(addrBlockItem);
 		}
@@ -90,7 +103,8 @@ QString ComponentEditorAddrSpaceItem::text() const
 //-----------------------------------------------------------------------------
 bool ComponentEditorAddrSpaceItem::isValid() const
 {
-	return addrSpace_->isValid(component_->getChoices(), component_->getRemapStateNames());
+// 	return addrSpace_->isValid(component_->getChoices(), component_->getRemapStateNames());
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -129,21 +143,23 @@ QString ComponentEditorAddrSpaceItem::getTooltip() const
 //-----------------------------------------------------------------------------
 void ComponentEditorAddrSpaceItem::createChild(int index)
 {
-	QSharedPointer<MemoryMapItem> memItem = items_[index];
-	QSharedPointer<AddressBlock> addrBlock = memItem.dynamicCast<AddressBlock>();
+    QSharedPointer<MemoryBlockBase> block = memoryBlocks_->at(index);
+	QSharedPointer<AddressBlock> addrBlock = block.dynamicCast<AddressBlock>();
 	if (addrBlock)
     {
-		QSharedPointer<ComponentEditorAddrBlockItem> addrBlockItem(
-			new ComponentEditorAddrBlockItem(addrBlock, model_, libHandler_, component_, referenceCounter_,
+		QSharedPointer<ComponentEditorAddrBlockItem> addressBlockItem
+            (new ComponentEditorAddrBlockItem(addrBlock, model_, libHandler_, component_, referenceCounter_,
             parameterFinder_, expressionFormatter_, expressionParser_, this));
-		addrBlockItem->setLocked(locked_);
-        addrBlockItem->addressUnitBitsChanged(addrSpace_->getAddressUnitBits());
+		addressBlockItem->setLocked(locked_);
+
+        int adddressUnitBits = expressionParser_->parseExpression(addrSpace_->getAddressUnitBits()).toInt();
+        addressBlockItem->addressUnitBitsChanged(adddressUnitBits);
 
 		if (localMemMapVisualizer_)
         {
-			addrBlockItem->setVisualizer(localMemMapVisualizer_);
+			addressBlockItem->setVisualizer(localMemMapVisualizer_);
 		}
-		childItems_.insert(index, addrBlockItem);
+		childItems_.insert(index, addressBlockItem);
 	}
 }
 

@@ -9,6 +9,9 @@
 // Common declarations for editing choices.
 //-----------------------------------------------------------------------------
 
+#ifndef CHOICECOLUMNS_H
+#define CHOICECOLUMNS_H
+
 namespace ChoiceColumns
 {
     //! The editable columns in the choices editor.
@@ -19,3 +22,5 @@ namespace ChoiceColumns
         COLUMN_COUNT
     };
 }
+
+#endif // CHOICECOLUMNS_H

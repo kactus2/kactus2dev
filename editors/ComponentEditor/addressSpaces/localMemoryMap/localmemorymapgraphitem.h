@@ -13,7 +13,10 @@
 #define LOCALMEMORYMAPGRAPHITEM_H
 
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapgraphitem.h>
-#include <IPXACTmodels/addressspace.h>
+
+class ExpressionParser;
+class AddressSpace;
+class MemoryMapBase;
 
 //-----------------------------------------------------------------------------
 //! The graph item that visualizes a local memory map within address space.
@@ -32,27 +35,29 @@ public:
      *
     */
     LocalMemoryMapGraphItem(QSharedPointer<AddressSpace> addrSpace,
-        QSharedPointer<MemoryMap> localMemoryMap, 
+        QSharedPointer<MemoryMapBase> localMemoryMap,
+        QSharedPointer<ExpressionParser> expressionParser,
         QGraphicsItem* parent = 0);
     
-    //! The destructor
+    //! The destructor.
     virtual ~LocalMemoryMapGraphItem();
 
     //! Refresh the item and sub-items.
     virtual void refresh();
 
-    /*! Get number of bits the addressable unit contains.
+    /*!
+     *  Get number of bits the addressable unit contains.
      *
      *      @return The size of least addressable unit.
-    */
+     */
     virtual unsigned int getAddressUnitSize() const;
 
 private:
     
-    //! No copying
+    //! No copying.
     LocalMemoryMapGraphItem(const LocalMemoryMapGraphItem& other);
 
-    //! No assignment
+    //! No assignment.
     LocalMemoryMapGraphItem& operator=(const LocalMemoryMapGraphItem& other);
 
     //! The address space containing the local memory map.

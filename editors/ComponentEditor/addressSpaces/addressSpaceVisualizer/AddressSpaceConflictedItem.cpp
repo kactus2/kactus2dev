@@ -10,18 +10,14 @@
 //-----------------------------------------------------------------------------
 
 #include "AddressSpaceConflictedItem.h"
-#include <common/KactusColors.h>
-
-#include <QBrush>
 
 //-----------------------------------------------------------------------------
 // Function: AddressSpaceConflictedItem()
 //-----------------------------------------------------------------------------
-AddressSpaceConflictedItem::AddressSpaceConflictedItem(
-                                         AddressSpaceConflictedItem::AddressPosition addrPos,
-                                         QString const& addressSpaceWidth, 
-                                         QSharedPointer<ExpressionParser> expressionParser,
-										 QGraphicsItem* parent):
+AddressSpaceConflictedItem::AddressSpaceConflictedItem(AddressSpaceConflictedItem::AddressPosition addrPos,
+                                                       QString const& addressSpaceWidth,
+                                                       QSharedPointer<ExpressionParser> expressionParser,
+                                                       QGraphicsItem* parent):
 AddressSpaceGapItem(addrPos, addressSpaceWidth, expressionParser, parent)
 {
     //QBrush brush(KactusColors::DRAFT_COMPONENT);
@@ -33,7 +29,9 @@ AddressSpaceGapItem(addrPos, addressSpaceWidth, expressionParser, parent)
 //-----------------------------------------------------------------------------
 // Function: ~AddressSpaceConflictedItem()
 //-----------------------------------------------------------------------------
-AddressSpaceConflictedItem::~AddressSpaceConflictedItem() {
+AddressSpaceConflictedItem::~AddressSpaceConflictedItem()
+{
+
 }
 
 //-----------------------------------------------------------------------------
