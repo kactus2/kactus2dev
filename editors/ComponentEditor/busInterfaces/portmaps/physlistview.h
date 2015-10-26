@@ -16,8 +16,11 @@
 
 #include <QDropEvent>
 
-
-class PhysListView : public PortListView {
+//-----------------------------------------------------------------------------
+//! List view for physical ports.
+//-----------------------------------------------------------------------------
+class PhysListView : public PortListView
+{
 	Q_OBJECT
 
 public:
@@ -42,30 +45,25 @@ protected:
 	/* Handler for drop events on drag & drop.
 	 *
 	 *      @param event Pointer to the event object.
-	 *
-	*/
+	 */
 	virtual void dropEvent(QDropEvent* event);
 
     /*! Handler for mouse move events.
 	 *
-	 * @param [in] event Pointer to the event object.
+	 *      @param [in] event Pointer to the event object.
 	 *
-	*/
-
-    void mouseMoveEvent( QMouseEvent* event );
+	 */
+    void mouseMoveEvent(QMouseEvent* event);
 	
     /*! Handler for mouse press events.
 	 *
-	 * @param [in] event Pointer to the event object.
-	 *
-	*/
-    void mousePressEvent( QMouseEvent* event );
+	 *      @param [in] event Pointer to the event object.
+	 */
+    void mousePressEvent(QMouseEvent* event);
 
 private:
 	// No copying
 	PhysListView(const PhysListView& other);
-
-	// No assignment
 	PhysListView& operator=(const PhysListView& other);
 
 };

@@ -1,9 +1,13 @@
-/* 
- *
- *  Created on: 11.5.2011
- *      Author: Antti Kamppi
- * 		filename: physlistmodel.h
- */
+//-----------------------------------------------------------------------------
+// File: physlistmodel.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 11.05.2011
+//
+// Description:
+// Model to display the physical ports of a component.
+//-----------------------------------------------------------------------------
 
 #ifndef PHYSLISTMODEL_H
 #define PHYSLISTMODEL_H
@@ -13,53 +17,46 @@
 #include <QSharedPointer>
 
 class Component;
-class PortMapsTreeModel;
 
-/*! \brief Model to display the physical ports of a component.
- *
- */
+//-----------------------------------------------------------------------------
+//! Model to display the physical ports of a component.
+//-----------------------------------------------------------------------------
 class PhysListModel : public PortListModel {
 	Q_OBJECT
 
 public:
 
-	/*! \brief The constructor
+	/*! The constructor
 	 *
-	 * \param component Pointer to the component that's ports are displayed.
-	 * \param portMapsModel Pointer to the port maps model to ask if connection is possible.
-	 * \param parent Pointer to the owner of this model.
-	 *
-	*/
-	PhysListModel(QSharedPointer<Component> component, 
-		PortMapsTreeModel* portMapsModel,
-		QObject *parent);
+	 *      @param [in] component       The component that's ports are displayed.
+	 *      @param [in] parent          The owner of this model.
+	 */
+	PhysListModel(QSharedPointer<Component> component, QObject *parent);
 	
-	//! \brief The destructor
+	//! The destructor
 	virtual ~PhysListModel();
 
-	/*! \brief Refresh the list of physical ports.
+	/*! Refresh the list of physical ports.
 	 *
 	*/
 	virtual void refresh();
 
-	/*! \brief Get the data for the specified item for specified role.
+	/*! Get the data for the specified item for specified role.
 	 *
-	 * \param index Identifies the item that's data is wanted.
-	 * \param role Specifies what kind of data is wanted
+	 *      @param [in] index   Identifies the item that's data is wanted.
+	 *      @param [in] role    Specifies what kind of data is wanted
 	 *
-	 * \return QVariant containing the data
+	 *      @return The requested data.
 	*/
-	QVariant data(const QModelIndex& index, int role = Qt::DisplayRole ) const;
+	QVariant data(QModelIndex const& index, int role = Qt::DisplayRole) const;
 
 private:
 
-	//! \brief No copying
+	//! No copying
 	PhysListModel(const PhysListModel& other);
-
-	//! No assignment
 	PhysListModel& operator=(const PhysListModel& other);
 	
-	//! \brief Pointer to the component being edited.
+	//! The component being edited.
 	QSharedPointer<Component> component_;
 };
 

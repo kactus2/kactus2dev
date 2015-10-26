@@ -1,8 +1,13 @@
-/* 
- *
- *  Created on: 31.8.2010
- *      Author: Antti Kamppi
- */
+//-----------------------------------------------------------------------------
+// File: mirroredslaveinterface.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Esko Pekkarinen
+// Date: 20.10.2015
+//
+// Description:
+// Implementation of ipxact:mirroredSlave in bus interface.
+//-----------------------------------------------------------------------------
 
 #ifndef MIRROREDSLAVEINTERFACE_H_
 #define MIRROREDSLAVEINTERFACE_H_
@@ -14,114 +19,72 @@
 #include <QList>
 #include <QSharedPointer>
 
-/*! \brief Equals the spirit:mirroredSlave element in IP-Xact specification
- *
- * MirroredSlave can provide addition address offsets connected to the
- * slave interface.
- */
-class IPXACTMODELS_EXPORT MirroredSlaveInterface {
-
+//-----------------------------------------------------------------------------
+//! Implementation of ipxact:mirredSlave in bus interface.
+//-----------------------------------------------------------------------------
+class IPXACTMODELS_EXPORT MirroredSlaveInterface
+{
 public:
 
-	/*! \brief Equals the spirit:remapAddress element in IP-Xact specification
-	 *
-	 */
-	struct RemapAddress {
-
-		/*! \brief MANDATORY ipxact:remapAddress
-		 * Specifies the address offset to apply to the connected slave
-		 * interface.
-		 */
+	//! Implementation of ipxact:remapAddress element in mirrored slave.
+	struct RemapAddress
+    {
+		//! The address offset to apply to the connected slave interface.
 		QString remapAddress_;
 
-		/*! \brief OPTIONAL attribute state
-		 * Identifies remap state for which the remapAddress and range apply.
-		 */
+		//! The remap state for which the remapAddress and range apply.		 
 		QString state_;
 
-		/*! \brief Contains the attributes for the spirit:remapAddress
-		 * key = attribute name
-		 * value = attribute value
-		 */
+		//! Any other attributes specified for the remapAddress.		 
 		QMap<QString, QString> remapAttributes_;
 
-		/*! \brief The constructor
+		/*! The constructor.
 		 *
-		 * \param remapNode A reference to a QDomNode to parse the information
-		 * from.
-		 *
-		 * Exception guarantee: basic
-		 * \exception Parse_error Occurs when a mandatory element is missing in
-		 * this class or one of it's member classes.
-		 */
-		RemapAddress(){}
-
-		/*! \brief The constructor.
-		 *
-		 * \param remapAddress The remap address to set.
-		 *
+		 *      @param [in] remapAddress The remap address to set.
 		*/
-		RemapAddress(const QString& remapAddress);
+		RemapAddress(QString const& remapAddress);
 	};
 
-	/*! \brief The default constructor
-	 *
-	*/
+	//! The default constructor.
 	MirroredSlaveInterface();
 
-	//! \brief Copy constructor
+	//! Copy constructor
 	MirroredSlaveInterface(const MirroredSlaveInterface& other);
 
-	//! \brief Assignment operator
+	//! Assignment operator
 	MirroredSlaveInterface& operator=(const MirroredSlaveInterface& other);
 
-	/*! \brief The destructor
+	/*! The destructor
 	 *
 	 */
 	~MirroredSlaveInterface();
 
-	/*! \brief Get the range of the interface
+	/*! Get the range of the mirrored slave interface.
 	 *
-	 * \return QString containing the range.
+	 *      @return The range.
 	 */
 	QString getRange() const;
 
-	/*! \brief Set the range for this interface
+	/*! Set the range for this mirrored slave interface.
 	 *
-	 * \param range A reference to a QString containing the range.
+	 *      @param [in] range The range of the mirrored slave interface.
 	 */
-	void setRange(const QString& range);
+	void setRange(QString const& range);
 
-	/*! \brief Get the remap address of this mirrored slave interface for the given state.
-	 * 
-	 * \param state Identifies the state for which the remap address is specified.
-	 * 
-	 * If the state is left empty then the first remap address is returned.
-	 * 
-	 * \return QString containing the remap address.
-	*/
-	QList<QSharedPointer<RemapAddress> > getRemapAddresses() const;
-
-	/*! \brief Set a remap address for this mirrored slave interface.
-	 * 
-	 * Setting this will remove any previous remap addresses.
-	 * 
-	 * \param remapAddress The remap address to set.
+	/*!
+	 *  Get the remap addresses for the mirrored slave interface.
 	 *
-	*/
-	void setRemapAddresses(const QList<QSharedPointer<RemapAddress> > remapAddresses);
+	 *      @return The remap addresses.
+	 */
+	QSharedPointer<QList<QSharedPointer<RemapAddress> > > getRemapAddresses() const;
 
 private:
 
-	/*! \brief MANDATORY spirit:range
-	 * Specifies the address range to apply to the connected slave interface.
-	 */
+	//!  Specifies the address range to apply to the connected slave interface.
 	QString range_;
 
-	/*! \brief MANDATORY spirit:remapAddress
-	 * Contains the pointers to the remapAddress instances.
-	 */
-	QList<QSharedPointer<RemapAddress> > remapAddresses_;
+	//! The remap addresses for the slave interface.
+	QSharedPointer<QList<QSharedPointer<RemapAddress> > > remapAddresses_;
 };
 
 #endif /* MIRROREDSLAVEINTERFACE_H_ */

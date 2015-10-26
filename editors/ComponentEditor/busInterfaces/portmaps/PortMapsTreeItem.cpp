@@ -6,16 +6,13 @@
 // Date: 7.10.2013
 //
 // Description:
-// <Short description of the class/file contents>
+// Base class for port maps items.
 //-----------------------------------------------------------------------------
 
 #include "PortMapsTreeItem.h"
 
 
-#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
-
-#include <IPXACTmodels/businterface.h>
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
 
 //-----------------------------------------------------------------------------
 // Function: PortMapsTreeItem::PortMapsTreeItem()
@@ -74,7 +71,7 @@ QVariant PortMapsTreeItem::data(int) const
 //-----------------------------------------------------------------------------
 bool PortMapsTreeItem::isValid() const
 {    
-    // Item is valid, if all childs are valid.
+    // Item is valid, if all children are valid.
     for(int i = 0; i < getChildCount(); i++)
     {
         if (!getChild(i)->isValid())
@@ -83,23 +80,6 @@ bool PortMapsTreeItem::isValid() const
         }
     }
     return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: PortMapsTreeItem::isValid()
-//-----------------------------------------------------------------------------
-bool PortMapsTreeItem::isValid(QStringList& errorList) const
-{
-    bool valid = true;
-    // Item is valid, if all childs are valid.
-    for(int i = 0; i < getChildCount(); i++)
-    {
-        if (!getChild(i)->isValid(errorList))
-        {
-            valid = false;
-        }
-    }
-    return valid;
 }
 
 //-----------------------------------------------------------------------------

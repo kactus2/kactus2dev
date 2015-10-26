@@ -12,17 +12,19 @@
 
 #include <common/widgets/interfaceModeSelector/interfacemodeselector.h>
 
-#include <IPXACTmodels/businterface.h>
-#include <IPXACTmodels/component.h>
 #include <IPXACTmodels/generaldeclarations.h>
+
+#include <IPXACTmodels/Component/BusInterface.h>
 
 #include <QSharedPointer>
 #include <QComboBox>
 
+
+class Component;
 class BusIfGeneralTab;
 class LibraryInterface;
 
-/*! \brief Editor the edit a monitor settings of a bus interface.
+/*! Editor the edit a monitor settings of a bus interface.
  *
  */
 class BusIfInterfaceMonitor : public BusIfInterfaceModeEditor {
@@ -30,73 +32,68 @@ class BusIfInterfaceMonitor : public BusIfInterfaceModeEditor {
 
 public:
 
-	/*! \brief The constructor
+	/*! The constructor
 	 *
-	 * \param busif Pointer to the bus interface being edited.
-	 * \param component Pointer to the component being edited.
-	 * \param generalTab Pointer to the general tab.
-	 * \param libHandler Pointer to the library handler instance.
-	 * \param parent Pointer to the owner of this editor.
+	 *      @param [in] busif       The bus interface being edited.
+	 *      @param [in] component   The component being edited.
+	 *      @param [in] libHandler  The library handler instance.
+	 *      @param [in] parent      The owner of this editor.
 	 *
 	*/
 	BusIfInterfaceMonitor(QSharedPointer<BusInterface> busif, 
 		QSharedPointer<Component> component,
-		BusIfGeneralTab* generalTab,
 		LibraryInterface* libHandler,
 		QWidget *parent);
 	
-	//! \brief The destructor
+	//! The destructor
 	virtual ~BusIfInterfaceMonitor();
 
-	/*! \brief Check for the validity of the edited item.
+	/*! Check for the validity of the edited item.
 	*
-	* \return True if item is valid.
+	*      @return True if item is valid.
 	*/
 	virtual bool isValid() const;
 
-	/*! \brief Restore the changes made in the editor back to ones in the model.
+	/*! Restore the changes made in the editor back to ones in the model.
 	*
 	*/
 	virtual void refresh();
 
-	/*! \brief Get the interface mode of the editor
+	/*! Get the interface mode of the editor
 	 * 
-	 * \return General::InterfaceMode Specifies the interface mode.
+	 *      @return General::InterfaceMode Specifies the interface mode.
 	*/
 	virtual General::InterfaceMode getInterfaceMode() const;
 
-	//! \brief Save the interface mode-specific details to the bus interface.
+	//! Save the interface mode-specific details to the bus interface.
 	virtual void saveModeSpecific();
 
 private slots:
 
-	//! \brief When user changes the interface mode of the monitor.
+	//! When user changes the interface mode of the monitor.
 	void onInterfaceModeChange(General::InterfaceMode mode);
 
-	//! \brief Handler for system group changes.
-	void onSystemGroupChange(const QString& groupName);
+	//! Handler for system group changes.
+	void onSystemGroupChange(QString const& groupName);
 
 private:
 	
-	//! \brief No copying
+	//! No copying
 	BusIfInterfaceMonitor(const BusIfInterfaceMonitor& other);
 
 	//! No assignment
 	BusIfInterfaceMonitor& operator=(const BusIfInterfaceMonitor& other);
 
-	//! \brief Pointer to the widget that contains the selected bus Type
-	BusIfGeneralTab* generalTab_;
-
-	//! \brief Pointer to the instance that manages the library.
+	//! The instance that manages the library.
 	LibraryInterface* libHandler_;
 
-	//! \brief Pointer to the monitor element being edited.
+	//! The monitor element being edited.
 	QSharedPointer<BusInterface::MonitorInterface> monitor_;
 
-	//! \brief Combo box to select the interface type for monitor.
+	//! Combo box to select the interface type for monitor.
 	InterfaceModeSelector interfaceMode_;
 
-	//! \brief Combo box to select the group for system interface types.
+	//! Combo box to select the group for system interface types.
 	QComboBox systemGroup_;
 };
 

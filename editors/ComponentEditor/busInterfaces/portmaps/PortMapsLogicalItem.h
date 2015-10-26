@@ -14,13 +14,13 @@
 
 #include "PortMapsTreeItem.h"
 
+#include <IPXACTmodels/common/DirectionTypes.h>
+#include <IPXACTmodels/PortMap.h>
+
 #include <QObject>
 #include <QString>
 #include <QList>
 #include <QSharedPointer>
-
-#include <IPXACTmodels/generaldeclarations.h>
-#include <IPXACTmodels/PortMap.h>
 
 class AbstractionDefinition;
 class BusInterface;
@@ -41,7 +41,7 @@ public:
     PortMapsLogicalItem(PortMapsTreeItem* parent,
         QString const& logicalName,
         QSharedPointer<Component> component,
-        BusInterface* busif,
+        QSharedPointer<BusInterface> busif,
         QSharedPointer<AbstractionDefinition> absDef
     );
 
@@ -99,7 +99,7 @@ public:
      *
      *      @return The logical direction.
      */
-    General::Direction getDirection() const;
+    DirectionTypes::Direction getDirection() const;
 
 private:
     // Disable copying.
@@ -134,14 +134,14 @@ private:
     // Data.
     //-----------------------------------------------------------------------------  
 
-    //! Pointer to the logical port bus interface.
-    BusInterface* busIf_;
+    //! The logical port bus interface.
+    QSharedPointer<BusInterface> busIf_;
 
-    //! Pointer to the abstraction definition that is used.
+    //! The abstraction definition that is used.
     QSharedPointer<AbstractionDefinition> absDef_;
 
     //! The port maps of the logical port item.
-	QList<QSharedPointer<PortMap> >& portMaps_;
+	QSharedPointer<QList<QSharedPointer<PortMap> > > portMaps_;
 
     //! The left bound of the logical port.
     int right_;

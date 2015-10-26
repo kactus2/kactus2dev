@@ -8,21 +8,25 @@
 #include "bridgeseditor.h"
 #include "bridgesdelegate.h"
 
+#include <IPXACTmodels/Component/Component.h>
+
 #include <QVBoxLayout>
 
-BridgesEditor::BridgesEditor(QSharedPointer<SlaveInterface> slave, 
-							 QSharedPointer<Component> component,
-							 QWidget *parent):
+//-----------------------------------------------------------------------------
+// Function: BridgesEditor::BridgesEditor()
+//-----------------------------------------------------------------------------
+BridgesEditor::BridgesEditor(QSharedPointer<SlaveInterface> slave, QSharedPointer<Component> component,
+    QWidget* parent):
 QGroupBox(tr("Bridges"), parent),
-component_(component),
-view_(this),
-proxy_(this),
-model_(slave, this) {
+    component_(component),
+    view_(this),
+    proxy_(this),
+    model_(slave, this)
+{
+    view_.setItemDelegate(new BridgesDelegate(component_, this));
 
-	view_.setItemDelegate(new BridgesDelegate(component_, this));
-
-	// items can not be dragged
-	view_.setItemsDraggable(false);
+    // items can not be dragged
+    view_.setItemsDraggable(false);
 
 	proxy_.setSourceModel(&model_);
 	view_.setModel(&proxy_);
@@ -42,13 +46,25 @@ model_(slave, this) {
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 }
 
-BridgesEditor::~BridgesEditor() {
+//-----------------------------------------------------------------------------
+// Function: BridgesEditor::~BridgesEditor()
+//-----------------------------------------------------------------------------
+BridgesEditor::~BridgesEditor()
+{
 }
 
-bool BridgesEditor::isValid() const {
+//-----------------------------------------------------------------------------
+// Function: BridgesEditor::isValid()
+//-----------------------------------------------------------------------------
+bool BridgesEditor::isValid() const
+{
 	return model_.isValid();
 }
 
-void BridgesEditor::refresh( QSharedPointer<SlaveInterface> slave ) {
+//-----------------------------------------------------------------------------
+// Function: BridgesEditor::refresh()
+//-----------------------------------------------------------------------------
+void BridgesEditor::refresh(QSharedPointer<SlaveInterface> slave)
+{
 	model_.refresh(slave);
 }

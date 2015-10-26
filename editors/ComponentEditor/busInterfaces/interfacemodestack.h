@@ -13,8 +13,7 @@
 #include "busifinterfacemslave.h"
 #include "busifinterfaceslave.h"
 #include "busifinterfacesystem.h"
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/businterface.h>
+
 #include <IPXACTmodels/generaldeclarations.h>
 
 #include <editors/ComponentEditor/common/ParameterFinder.h>
@@ -22,13 +21,15 @@
 #include <QStackedWidget>
 #include <QSharedPointer>
 
-class LibraryInterface;
+class BusInterface;
+class Component;
+
 class BusIfGeneralTab;
 class ExpressionParser;
 
-/*! \brief This widget stack contains the different editors to edit interface mode specific details of bus interface.
- *
- */
+//-----------------------------------------------------------------------------
+//! This widget stack contains the different editors to edit interface mode specific details of bus interface.
+//-----------------------------------------------------------------------------
 class InterfaceModeStack : public QStackedWidget
 {
 	Q_OBJECT
@@ -38,38 +39,38 @@ public:
     /*!
 	 *  The constructor.
 	 *
-	 *      @param [in] busif               Pointer to the bus interface being edited.
-	 *      @param [in] component           Pointer to the component being edited.
-	 *      @param [in] parameterFinder     Pointer to the parameter finder.
-	 *      @param [in] handler             Pointer to the instance that manages the library.
-	 *      @param [in] expressionParser    Pointer to the expression parser.
-	 *      @param [in] parent              Pointer to the owner of this stack.
+	 *      @param [in] busif               The bus interface being edited.
+	 *      @param [in] component           The component being edited.
+	 *      @param [in] parameterFinder     The parameter finder.
+	 *      @param [in] handler             The instance that manages the library.
+	 *      @param [in] expressionParser    The expression parser.
+	 *      @param [in] parent              The owner of this stack.
 	 */
 	InterfaceModeStack(QSharedPointer<BusInterface> busif,
 		QSharedPointer<Component> component,
         QSharedPointer<ParameterFinder> parameterFinder,
 		LibraryInterface* handler,
         QSharedPointer<ExpressionParser> expressionParser,
-		BusIfGeneralTab* parent);
+		QWidget* parent);
 	
-	//! \brief The destructor
+	//! The destructor
 	virtual ~InterfaceModeStack();
 
-	//! \brief Refresh the contents of the stack's editors.
+	//! Refresh the contents of the stack's editors.
 	void refresh();
 
 public slots:
 
-	/*! \brief Select the correct editor for the given interface mode.
+	/*! Select the correct editor for the given interface mode.
 	 *
-	 * \param mode The mode for the bus interface.
+	 *      @param [in] mode The mode for the bus interface.
 	 *
 	*/
 	void setMode(General::InterfaceMode mode);
 
 signals:
 
-	//! \brief Emitted when the state of one of the editors change.
+	//! Emitted when the state of one of the editors change.
 	void contentChanged();
 
     /*!
@@ -88,19 +89,16 @@ signals:
 
 private:
 	
-	//! \brief No copying
+	//! No copying
 	InterfaceModeStack(const InterfaceModeStack& other);
 
-	//! \brief No assignment
+	//! No assignment
 	InterfaceModeStack& operator=(const InterfaceModeStack& other);
 
-	//! \brief Pointer to the bus interface being edited.
+	//! The bus interface being edited.
 	QSharedPointer<BusInterface> busif_;
 
-	//! \brief Pointer to the owner of this stack.
-	BusIfGeneralTab* parent_;
-
-	//! \brief The current mode of the interface.
+	//! The current mode of the interface.
 	General::InterfaceMode mode_;
 
     //! The master interface.

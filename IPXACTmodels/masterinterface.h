@@ -1,11 +1,16 @@
-/* 
- *
- *  Created on: 31.8.2010
- *      Author: Antti Kamppi
- */
+//-----------------------------------------------------------------------------
+// File: masterinterface.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 31.8.2010
+//
+// Description:
+// Implementation of ipxact:master in bus interface.
+//-----------------------------------------------------------------------------
 
-#ifndef MASTERINTERFACE_H_
-#define MASTERINTERFACE_H_
+#ifndef MASTERINTERFACE_H
+#define MASTERINTERFACE_H
 
 #include "ipxactmodels_global.h"
 
@@ -13,106 +18,78 @@
 #include <QMap>
 #include <QDomNode>
 
-/*! \brief Equals the spirit:master element in IP-Xact specification
- *
- *	This class also equals the spirit:mirroredMaster element.
- * Contains the elements that define the master interface.
- */
-class IPXACTMODELS_EXPORT MasterInterface {
+//-----------------------------------------------------------------------------
+//! Implementation of ipxact:master in bus interface.
+//-----------------------------------------------------------------------------
+class IPXACTMODELS_EXPORT MasterInterface
+{
 
 public:
 
-	/*! \brief Default constructor
-	 *
-	*/
+	//! Default constructor.
 	MasterInterface();
 
-	//! \brief Copy constructor
+	//! Copy constructor.
 	MasterInterface(const MasterInterface& other);
 
-	//! \brief Assignment operator
+	//! Assignment operator.
 	MasterInterface& operator=(const MasterInterface& other);
 
-	/*! \brief The destructor
-	 *
-	 */
+	//! The destructor.
 	~MasterInterface();
-
-	/*! \brief Get the address space reference
+    
+	/*! Set the address space reference.
 	 *
-	 * \return QString containing the address space name
+	 *      @param [in] addressSpaceRef     The name of the address space to reference.
+	 */
+	void setAddressSpaceRef(QString const& addressSpaceRef);
+
+	/*! Get the address space reference.
+	 *
+	 *      @return QString containing the address space name
 	 */
 	QString getAddressSpaceRef() const;
-
-	/*! \brief Get the base address
+    
+	/*! Set the base address.
 	 *
-	 * \return QString containing the base address
+	 *      @param [in]  baseAddress    The base address to set.
+	 */
+	void setBaseAddress(QString const& baseAddress);
+
+	/*! Get the base address.
+	 *
+	 *      @return The base address for the master interface.
 	 */
 	QString getBaseAddress() const;
 
-	/*! \brief Get the base address attributes
+	/*! Get the base address attributes.
 	 *
-	 * \return QMap containing the attributes for the base address element
+	 *      @return The attributes for the base address.
 	 */
-	const QMap<QString,QString>& getBaseAttributes();
+	QMap<QString,QString> getBaseAttributes() const;
 
-	/*! \brief Get the prompt attribute
+	/*! Get the prompt attribute
 	 *
-	 * \return QString containing the value of the attribute
+	 *      @return The value of the prompt attribute for base address.
 	 */
 	QString getPrompt() const;
 
-	/*! \brief Set the address space reference
+	/*! Set the base address attributes.
 	 *
-	 * \param addressSpaceRef A reference to a QString containing the name of
-	 * the address space
-	 */
-	void setAddressSpaceRef(const QString& addressSpaceRef);
-
-	/*! \brief Set the base address
-	 *
-	 * \param  baseAddress Q reference to a QString containing the base
-	 * address.
-	 */
-	void setBaseAddress(const QString& baseAddress);
-
-	/*! \brief Set the base address attributes
-	 *
-	 * \param baseAttributes A reference to a QMap containing the attributes
-	 * for the base address element.
+	 *      @param [in] baseAttributes  The attributes for the base address element to set.
 	 */
 	void setBaseAttributes(const QMap<QString,QString>& baseAttributes);
 
-	/*! \brief Set the prompt attribute value
-	 *
-	 * \param prompt A reference to a QString containing the value for the
-	 * prompt attribute.
-	 */
-	void setPrompt(const QString& prompt);
-
 private:
 
-	/*! \brief MANDATORY spirit:addressSpaceRef
-	 * References a name of an address space that defines the range and width
-	 * for transaction on this interface.
-	 */
+	//! The name of an address space that defines the range and width for transaction for the master interface.
 	QString addressSpaceRef_;
 
-	/*! \brief OPTIONAL spirit:baseAddress
-	 * Specifies the starting address of the address space.
-	 */
+	// The starting address of the address space.
 	QString baseAddress_;
 
-	/*! \brief OPTIONAL attribute spirit:prompt
-	 * Allows the setting of a string for the configuration.
-	 */
-	QString prompt_;
-
-	/*! \brief OPTIONAL attributes for the spirit:baseAddress
-	 * key = attribute name
-	 * value = attribute value
-	 */
+	//! Any other attributes for the base address.
 	QMap<QString, QString> baseAttributes_;
 };
 
-#endif /* MASTERINTERFACE_H_ */
+#endif // MASTERINTERFACE_H

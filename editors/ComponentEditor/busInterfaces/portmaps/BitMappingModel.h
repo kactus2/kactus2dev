@@ -12,14 +12,15 @@
 #ifndef BITMAPPINGMODEL_H
 #define BITMAPPINGMODEL_H
 
-#include <QList>
-#include <QAbstractTableModel>
-#include <QMimeData>
-#include <QSharedPointer>
+#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
-#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/PortMap.h>
+
+#include <QAbstractTableModel>
+#include <QList>
+#include <QMimeData>
+#include <QSharedPointer>
 
 class BusInterface;
 class Component;
@@ -43,7 +44,7 @@ public:
     };
 
     //! The constructor.
-    BitMappingModel(BusInterface* busif,
+    BitMappingModel(QSharedPointer<BusInterface> busif,
         QSharedPointer<Component> component,
         LibraryInterface* libHandler, 
         QObject* parent = 0);
@@ -184,7 +185,7 @@ public:
      *
      *      @param [in] portNames   The names of the ports to map.
      */
-    virtual void mapToEnd(QStringList portNames);
+    virtual void mapToEnd(QStringList const& portNames);
 
 signals:
 
@@ -330,7 +331,7 @@ private:
     QMap< QString, QList< QList<General::PortBounds> > > mappings_;
 
     //! Pointer to the bus interface being edited.
-    BusInterface* busif_;
+    QSharedPointer<BusInterface> busif_;
 
     //! Bus interface mode.
     General::InterfaceMode mode_;
@@ -339,7 +340,7 @@ private:
     QString logicalPort_;
 
     //! Pointer to the data structure within the model containing the port maps.
-    QList<QSharedPointer<PortMap> >& portMaps_;
+    QSharedPointer<QList<QSharedPointer<PortMap> > > portMaps_;
 
     //! Pointer to the component being edited.
     QSharedPointer<Component> component_;

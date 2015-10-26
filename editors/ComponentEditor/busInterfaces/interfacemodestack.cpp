@@ -6,7 +6,9 @@
  */
 
 #include "interfacemodestack.h"
-#include "busifgeneraltab.h"
+
+#include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/Component/Component.h>
 
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 
@@ -14,25 +16,24 @@
 // Function: interfacemodestack::InterfaceModeStack()
 //-----------------------------------------------------------------------------
 InterfaceModeStack::InterfaceModeStack(QSharedPointer<BusInterface> busif, QSharedPointer<Component> component,
-                                       QSharedPointer<ParameterFinder> parameterFinder, LibraryInterface* handler,
-                                       QSharedPointer<ExpressionParser> expressionParser, BusIfGeneralTab* parent):
+    QSharedPointer<ParameterFinder> parameterFinder, LibraryInterface* handler,
+    QSharedPointer<ExpressionParser> expressionParser, QWidget* parent):
 QStackedWidget(parent),
-busif_(busif),
-parent_(parent),
-mode_(busif->getInterfaceMode()),
-master_(General::MASTER, busif_, component, parameterFinder, expressionParser, this),
-slave_(busif, component, this),
-system_(General::SYSTEM, parent, handler, busif, component, this),
-mirroredMaster_(General::MIRROREDMASTER, busif, component, parameterFinder, expressionParser, this),
-mirroredSlave_(busif, component, parameterFinder, expressionParser, this),
-mirroredSystem_(General::MIRROREDSYSTEM, parent, handler, busif, component, this),
-monitor_(busif, component, parent, handler, this)
+    busif_(busif),
+    mode_(busif->getInterfaceMode()),
+    master_(General::MASTER, busif_, component, parameterFinder, expressionParser, this),
+    slave_(busif, component, this),
+    system_(General::SYSTEM, handler, busif, component, this),
+    mirroredMaster_(General::MIRROREDMASTER, busif, component, parameterFinder, expressionParser, this),
+    mirroredSlave_(busif, component, parameterFinder, expressionParser, this),
+    mirroredSystem_(General::MIRROREDSYSTEM, handler, busif, component, this),
+    monitor_(busif, component, handler, this)
 {
-	Q_ASSERT(busif_);
-	Q_ASSERT(component);
-	Q_ASSERT(parent);
+    Q_ASSERT(busif_);
+    Q_ASSERT(component);
+    Q_ASSERT(parent);
 
-	insertWidget(General::MASTER, &master_);
+    insertWidget(General::MASTER, &master_);
 	insertWidget(General::SLAVE, &slave_);
 	insertWidget(General::SYSTEM, &system_);
 	insertWidget(General::MIRROREDMASTER, &mirroredMaster_);

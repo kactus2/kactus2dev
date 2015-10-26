@@ -1,18 +1,19 @@
-/* 
- *
- *  Created on: 5.4.2011
- *      Author: Antti Kamppi
- * 		filename: businterfaceeditor.h
- */
+//-----------------------------------------------------------------------------
+// File: businterfaceeditor.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 05.04.2011
+//
+// Description:
+// Container for editors to edit a bus interface.
+//-----------------------------------------------------------------------------
 
 #ifndef BUSINTERFACEEDITOR_H
 #define BUSINTERFACEEDITOR_H
 
 #include "busifgeneraltab.h"
 #include "busifportmaptab.h"
-
-#include <IPXACTmodels/businterface.h>
-#include <IPXACTmodels/component.h>
 
 #include <editors/ComponentEditor/itemeditor.h>
 #include <editors/ComponentEditor/common/ParameterFinder.h>
@@ -22,12 +23,15 @@
 #include <QSharedPointer>
 #include <QTabWidget>
 
+class BusInterface;
+class Component;
 class LibraryInterface;
 
-/*! \brief Container for editors to edit a bus interface.
- *
- */
-class BusInterfaceEditor : public ItemEditor {
+//-----------------------------------------------------------------------------
+//! Container for editors to edit a bus interface.
+//-----------------------------------------------------------------------------
+class BusInterfaceEditor : public ItemEditor
+{
 	Q_OBJECT
 
 public:
@@ -35,14 +39,14 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] libHandler              Pointer to the library handler instance.
-	 *      @param [in] component               Pointer to the component being edited.
-	 *      @param [in] busif                   Pointer to the bus interface being edited.
-	 *      @param [in] parameterFinder         Pointer to the parameter finder.
-	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
-     *      @param [in] expressionParser        Pointer to the expression parser.
-	 *      @param [in] parent                  Pointer to the owner of this container.
-	 *      @param [in] parentWnd               Pointer to the parent window.
+	 *      @param [in] libHandler              The library handler instance.
+	 *      @param [in] component               The component being edited.
+	 *      @param [in] busif                   The bus interface being edited.
+	 *      @param [in] parameterFinder         The parameter finder.
+	 *      @param [in] expressionFormatter     The expression formatter.
+     *      @param [in] expressionParser        The expression parser.
+	 *      @param [in] parent                  The owner of this container.
+	 *      @param [in] parentWnd               The parent window.
 	 */
 	BusInterfaceEditor(LibraryInterface* libHandler,
 		QSharedPointer<Component> component, 
@@ -53,16 +57,16 @@ public:
 		QWidget* parent,
         QWidget* parentWnd);
 	
-	//! \brief The destructor
+	//! The destructor
 	virtual ~BusInterfaceEditor();
 
-	/*! \brief Check for the validity of the edited item.
+	/*! Check for the validity of the edited item.
 	*
-	* \return True if item is valid.
+	*      @return True if item is valid.
 	*/
 	virtual bool isValid() const;
 
-	/*! \brief Reload the information from the model to the editor.
+	/*! Reload the information from the model to the editor.
 	*/
 	virtual void refresh();
 
@@ -74,28 +78,28 @@ public:
     virtual void setProtection(bool locked);
 
 private slots:
-	//! \brief When tab page changes
+	//! When tab page changes
 	void onTabChange(int index);
 
 private:
 	
-	//! \brief No copying
+	//! No copying
 	BusInterfaceEditor(const BusInterfaceEditor& other);
 
 	//! No assignment
 	BusInterfaceEditor& operator=(const BusInterfaceEditor& other);
    
-	//! \brief Pointer to the bus interface being edited.
+	//! The bus interface being edited.
 	QSharedPointer<BusInterface> busif_;
 
-	//! \brief The widget that contains the editor for bus interface.
+	//! The widget that contains the editor for bus interface.
 	QTabWidget tabs_;
 
-	//! \brief The tab for general settings of bus interface
-	BusIfGeneralTab general_;
+	//! The tab for general settings of bus interface
+	BusIfGeneralTab generalEditor_;
 
-	//! \brief The tab for port maps of bus interface
-	BusIfPortmapTab portmaps_;
+	//! The tab for port maps of bus interface
+	BusIfPortmapTab portmapsEditor_;
 };
 
 #endif // BUSINTERFACEEDITOR_H

@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: AddressSpace.cpp
+// File: businterface.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: 
@@ -12,17 +12,16 @@
 #ifndef BUSINTERFACE_H
 #define BUSINTERFACE_H
 
-#include <IPXACTmodels/vlnv.h>
+#include "AbstractionType.h"
+
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/ipxactmodels_global.h>
 
-#include <IPXACTmodels/common/Parameter.h>
-#include <IPXACTmodels/common/NameGroup.h>
-#include <IPXACTmodels/common/Extendable.h>
-#include <IPXACTmodels/PortMap.h>
-#include <IPXACTmodels/common/ConfigurableVLNVReference.h>
-
 #include <IPXACTmodels/common/BooleanValue.h>
+#include <IPXACTmodels/common/ConfigurableVLNVReference.h>
+#include <IPXACTmodels/common/Extendable.h>
+#include <IPXACTmodels/common/NameGroup.h>
+#include <IPXACTmodels/common/Parameter.h>
 
 #include <QString>
 #include <QList>
@@ -44,10 +43,25 @@ class IPXACTMODELS_EXPORT BusInterface : public NameGroup, public Extendable
 
 public:
 
-	//! Equals the spirit:monitor element in IP-Xact specification.
+    //! The endianess of a bus interface.
+    enum Endianness
+    {
+        LITTLE_ENDIAN,
+        BIG_ENDIAN,
+        ENDIANNESS_UNSPECIFIED
+    };
+
+    //! The bit steering of a bus interface.
+    enum BitSteering
+    {
+        BITSTEERING_ON,
+        BITSTEERING_OFF,
+        BITSTEERING_UNSPECIFIED
+    };
+
+	//! Implementation of the ipxact:monitor element.
 	struct MonitorInterface
 	{
-
 		//! Defines the interface mode for which this monitor interface can be connected to.
 		General::InterfaceMode interfaceMode_;
 
@@ -56,32 +70,6 @@ public:
 
 		//! The default constructor.
 		IPXACTMODELS_EXPORT MonitorInterface();
-	};
-	
-	/*!
-	 * Class used to store port maps and references associated with an abstraction type.
-	 */
-	class AbstractionType
-	{
-		public:
-
-			//! Specifies views where the abstraction type applies.
-			QString viewRef_;
-
-			//! Reference to an abstraction description for this abstractor instance.
-			QSharedPointer<ConfigurableVLNVReference> abstractionRef_;
-
-			//! Describes the mapping between the abstraction definition's logical ports and components physical ports.
-			QSharedPointer<QList<QSharedPointer<PortMap> > > portMaps_;
-
-			//! Default constructor.
-			AbstractionType();
-
-			//! Copy constructor.
-			AbstractionType(const AbstractionType &other);
-
-			//! Assignment operator.
-			AbstractionType &operator=(const AbstractionType &other);
 	};
 
 	/*!
@@ -114,46 +102,19 @@ public:
      */
     void setIsPresent(QString const& newIsPresent);
 
-	/*! \brief Check if the bus interface is in a valid state.
-	 *
-	 * \param physicalPorts     List of the physical ports of the component and their bounds.
-	 * \param memoryMaps        List of the memory map names in the component.
-     * \param addressSpaces     List of the address space names in the component.
-     * \param componentChoices  Choices in the containing component.
-	 * \param errorList         The list to add the possible error messages to.
-	 * \param parentIdentifier  String from parent to help to identify the location of the error.
-	 *
-	 * \return bool True if the state is valid and writing is possible.
-	*/
-// 	bool isValid(const QList<General::PortBounds>& physicalPorts, QStringList const& memoryMaps,
-//         QStringList const& addressSpaces, QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
-// 		QStringList& errorList, const QString& parentIdentifier) const;
-
-	/*! \brief Check if the bus interface is in a valid state.
-	 * 
-	 * \param physicalPorts List of the physical ports of the component and their bounds.
-     * \param memoryMaps List of the memory map names in the component.
-     * \param addressSpaces     List of the address space names in the component.
-     * \param componentChoices  Choices in the containing component.
-	 * 
-	 * \return bool True if the state is valid and writing is possible.
-	*/
-// 	bool isValid(const QList<General::PortBounds>& physicalPorts, QStringList const& memoryMaps,
-//         QStringList const& addressSpaces, QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const;
-
 	/*!
      *  Get the list of the bitSteering attributes.
 	 *
 	 *      @return A QMap containing the attributes for bitSteering element.
 	 */
-	const QMap<QString, QString>& getBitSteeringAttributes();
+	QMap<QString, QString> getBitSteeringAttributes();
 
 	/*!
      *  Is the bitSteering on or off.
 	 *
-	 *      @return General::BitSteering enum which is true/false/unspecified.
+	 *      @return The bit of the bus interface.
 	 */
-	General::BitSteering getBitSteering() const;
+	BitSteering getBitSteering() const;
 
 	/*!
      *  Get bits in lau value.
@@ -181,7 +142,7 @@ public:
 	 *
 	 *      @return BIG, LITTLE or UNSPECIFIED.
 	 */
-	General::Endianness getEndianness() const;
+	Endianness getEndianness() const;
 
 	/*!
      *  Get the mode of this interface.
@@ -216,14 +177,14 @@ public:
 	 *
 	 *      @param [in] bitSteeringAttributes   A QMap holding the new attributes.
 	 */
-	void setBitSteeringAttributes(QMap<QString, QString>& bitSteeringAttributes);
+	void setBitSteeringAttributes(QMap<QString, QString> const& bitSteeringAttributes);
 
 	/*!
      *  Set the bit steering for this interface.
 	 *
 	 *      @param [in] bitSteering     The new bitSteering value.
 	 */
-	void setBitSteering(General::BitSteering bitSteering);
+	void setBitSteering(BitSteering bitSteering);
 
 	/*!
      *  Set the bits in lau value.
@@ -237,7 +198,7 @@ public:
 	 *
 	 *      @param busType The vlnv of the bus definition.
 	 */
-	void setBusType(const VLNV& busType);
+	void setBusType(VLNV const& busType);
 
 	/*!
      *  Set the connectionRequired value.
@@ -256,7 +217,7 @@ public:
 	 *
      *      @param [in] endianness  BIG, LITTLE or UNSPECIFIED.
 	 */
-	void setEndianness(General::Endianness endianness);
+	void setEndianness(Endianness endianness);
 
 	/*!
      *  Set the interface mode for this interface.
@@ -322,18 +283,18 @@ public:
 	void setSlave(QSharedPointer<SlaveInterface> slave);
 
 	/*!
-     *  Get the system group.
+     *  Get the system group name.
 	 *
-	 *      @return QString containing the system's group element.
+	 *      @return The system group name.
 	 */
 	QString getSystem() const;
 
 	/*!
      *  Set the system element for this interface.
      *
-	 *      @param [in] system  A pointer to the new system instance.
+	 *      @param [in] systemGroupName  The name of the system group to set.
 	 */
-	void setSystem(const QString& system);
+	void setSystem(QString const& systemGroupName);
 
 	/*!
      *  Get the pointer to the mirroredSlace element
@@ -361,15 +322,14 @@ public:
 	 *
 	 *      @return QMap containing the attributes.
  	 */
-	const QMap<QString, QString>& getAttributes() const;
+	QMap<QString, QString> getAttributes() const;
 
 	/*!
      *  Set the attributes for the bus interface.
 	 * 
 	 *      @param [in] attributes  QMap containing the attributes.
-	 *
 	 */
-	void setAttributes(const QMap<QString, QString>& attributes);
+	void setAttributes(QMap<QString, QString> const& attributes);
 
 	/*!
      *  Get list of the physical port names contained in this interface.
@@ -434,7 +394,7 @@ public:
      *
      *      @return The default position.
      */
-    QPointF const& getDefaultPos();
+    QPointF getDefaultPos();
 
 	/*!
      *  Get the memory map reference of a slave interface.
@@ -496,13 +456,13 @@ private:
     QString bitsInLau_;
 
 	//! Is bitSteering used.
-	General::BitSteering bitSteering_;
+	BitSteering bitSteering_;
 
 	//! The parameters set as attributes for the bit steering.
 	QMap<QString, QString> bitSteeringAttributes_;
 
 	//! Indicates the endianness of the bus interface.
-	General::Endianness endianness_;
+	Endianness endianness_;
 
 	//! Specifies any parameter data values for this bus interface.
 	QSharedPointer<QList<QSharedPointer<Parameter> > > parameters_;
@@ -513,8 +473,8 @@ private:
 	//! A pointer to the slave instance.
 	QSharedPointer<SlaveInterface> slave_;
 
-	//! The system or mirrored system instance.
-	QString system_;
+	//! The system or mirrored system group name.
+	QString systemGroup_;
 
 	//! A pointer to the monitor instance.
 	QSharedPointer<MonitorInterface> monitor_;

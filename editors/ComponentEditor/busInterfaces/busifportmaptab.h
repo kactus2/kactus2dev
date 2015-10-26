@@ -19,12 +19,12 @@
 #include "portmaps/PortMapsTreeModel.h"
 #include "portmaps/logicallistmodel.h"
 #include "portmaps/PortMapsTreeView.h"
-#include <IPXACTmodels/businterface.h>
-#include <IPXACTmodels/generaldeclarations.h>
-#include <IPXACTmodels/component.h>
+
 #include <editors/ComponentEditor/busInterfaces/portmaps/BitMappingModel.h>
 #include <editors/ComponentEditor/busInterfaces/portmaps/PortListSortProxyModel.h>
 #include <editors/ComponentEditor/busInterfaces/portmaps/BitMappingView.h>
+
+#include <IPXACTmodels/generaldeclarations.h>
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -37,43 +37,43 @@
 #include <QKeyEvent>
 #include <QSharedPointer>
 
+class BusInterface;
+class Component;
 class LibraryInterface;
 class PortMap;
 
-
-/*! Editor to set the port maps of a bus interface.
- *
- */
-class BusIfPortmapTab : public QWidget {
+//-----------------------------------------------------------------------------
+//! Tab for editing and viewing component port maps.
+//-----------------------------------------------------------------------------
+class BusIfPortmapTab : public QWidget
+{
 	Q_OBJECT
 
 public:
 
 	/*! The constructor
 	 *
-	 * @param libHandler Pointer to the instance that manages the library.
-	 * @param component Pointer to the component being edited.
-	 * @param busif Pointer to the bus interface being edited.
-	 * @param parent Pointer to the owner of the editor.
+	 *      @param [in] libHandler  The instance that manages the library.
+	 *      @param [in] component   The component being edited.
+	 *      @param [in] busif       The bus interface being edited.
+	 *      @param [in] parent      The owner of the editor.
 	 *
 	*/
-	BusIfPortmapTab(LibraryInterface* libHandler,
-		QSharedPointer<Component> component,
-		BusInterface* busif,
-		QWidget* parent);
+	BusIfPortmapTab(LibraryInterface* libHandler, QSharedPointer<Component> component, 
+        QSharedPointer<BusInterface> busif,	QWidget* parent);
 	
 	//! The destructor
 	virtual ~BusIfPortmapTab();
 
 	/*! Check for the validity of the edited item.
 	*
-	* @return True if item is valid.
+	*       @return True if item is valid.
 	*/
 	virtual bool isValid() const;
 
 	/*! Check for the validity of the edited item.
 	*
-    *      @param [inout] errorList   The list to add the possible error messages to.
+    *      @param [in/out] errorList   The list to add the possible error messages to.
     *
 	*      @return True if item is valid.
 	*/
@@ -142,8 +142,8 @@ private slots:
 
 	/*! Make connections between physical signals and logical signals.
 	 *
-	 * @param physicals List of physical signal names.
-	 * @param logicals List of logical signal names.
+	 *      @param physicals List of physical signal names.
+	 *      @param logicals List of logical signal names.
 	 *
 	*/
     void onMakeConnections(QStringList const& physicalPorts, QStringList const& logicalPorts);
@@ -220,13 +220,17 @@ private:
      */
     int getPhysicalSize(QString const& physicalPort);
 
-	//! Pointer to the bus interface being edited.
-	BusInterface* busif_;
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
-	//! Pointer to the component being edited.
+	//! The bus interface being edited.
+	QSharedPointer<BusInterface> busif_;
+
+	//! The component being edited.
 	QSharedPointer<Component> component_;
 
-	//! Pointer to the instance that manages the library.
+	//! The instance that manages the library.
 	LibraryInterface* libHandler_;
 
 	//! The model to manage the port maps.

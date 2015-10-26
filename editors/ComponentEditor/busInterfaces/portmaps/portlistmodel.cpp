@@ -1,144 +1,159 @@
-/* 
- *
- *  Created on: 10.5.2011
- *      Author: Antti Kamppi
- * 		filename: portlistmodel.cpp
- */
+//-----------------------------------------------------------------------------
+// File: portlistmodel.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 10.05.2011
+//
+// Description:
+// The base class for logical list model and physical list model.
+//-----------------------------------------------------------------------------
 
 #include "portlistmodel.h"
-#include "PortMapsTreeModel.h"
 
-#include <QDebug>
 #include <QPixmap>
 #include <QIcon>
 
-PortListModel::PortListModel(PortMapsTreeModel* portMapsModel, QObject *parent): 
+//-----------------------------------------------------------------------------
+// Function: PortListModel::PortListModel()
+//-----------------------------------------------------------------------------
+PortListModel::PortListModel(QObject *parent): 
 QAbstractListModel(parent), 
-list_(),
-portMapsModel_(portMapsModel) {
+list_()
+{
 }
 
-PortListModel::~PortListModel() {
+//-----------------------------------------------------------------------------
+// Function: PortListModel::~PortListModel()
+//-----------------------------------------------------------------------------
+PortListModel::~PortListModel()
+{
 }
 
-int PortListModel::rowCount( const QModelIndex& parent /*= QModelIndex()*/ ) const {
-	
+//-----------------------------------------------------------------------------
+// Function: PortListModel::rowCount()
+//-----------------------------------------------------------------------------
+int PortListModel::rowCount(QModelIndex const& parent) const 
+{
 	if (parent.isValid())
+    {
 		return 0;
+    }
+
 	return list_.size();
 }
 
-QVariant PortListModel::data( const QModelIndex& index, int role /*= Qt::DisplayRole */ ) const {
+//-----------------------------------------------------------------------------
+// Function: PortListModel::data()
+//-----------------------------------------------------------------------------
+QVariant PortListModel::data(QModelIndex const& index, int role) const
+{
+	if (!index.isValid() || index.row() < 0 || index.row() >= list_.size() || role != Qt::DisplayRole)
+    {
+		return QVariant();
+    }
 
-	if (!index.isValid())
-		return QVariant();
-	else if (index.row() < 0 || index.row() >= list_.size())
-		return QVariant();
-	
-	if (Qt::DisplayRole == role) {
-		return list_.at(index.row());
-	}
-    // if unsupported role
-	else
-		return QVariant();
+	return list_.at(index.row());
 }
 
-void PortListModel::addPort( const QString& portName ) {
-
+//-----------------------------------------------------------------------------
+// Function: PortListModel::addPort()
+//-----------------------------------------------------------------------------
+void PortListModel::addPort(QString const& portName)
+{
 	// if the port is already on the list
-	if (list_.contains(portName))
-		return;
-
-	// add the item to the list
-	beginInsertRows(QModelIndex(), list_.size(), list_.size());
-	list_.append(portName);
-	endInsertRows();
+	if (!list_.contains(portName))
+    {
+        beginInsertRows(QModelIndex(), list_.size(), list_.size());
+        list_.append(portName);
+        endInsertRows();
+    }
 }
 
-void PortListModel::removeItem( const QModelIndex& index ) {
-
+//-----------------------------------------------------------------------------
+// Function: PortListModel::addPort()
+//-----------------------------------------------------------------------------
+void PortListModel::removeItem(QModelIndex const& index)
+{
 	if (!index.isValid())
+    {
 		return;
+    }
 
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
 	list_.removeAt(index.row());
 	endRemoveRows();
 }
 
-void PortListModel::removeItems( const QModelIndexList& indexes ) {
-
+//-----------------------------------------------------------------------------
+// Function: PortListModel::removeItems()
+//-----------------------------------------------------------------------------
+void PortListModel::removeItems(QModelIndexList const& indexes)
+{
 	if (indexes.isEmpty())
+    {
 		return;
+    }
 
 	// first find the ports that were indexed
-	QStringList ports;
-	foreach (QModelIndex index, indexes) {
+	QStringList portsToRemove;
+    foreach (QModelIndex const& index, indexes)
+    {
+        if (index.isValid() && 0 <= index.row() && index.row() < list_.size())
+        {
+            portsToRemove.append(list_.at(index.row()));
+        }
+    }
 
-		// if index is not valid then proceed to next index.
-		if (!index.isValid())
-			continue;
-		
-		// if row is not valid
-		else if (index.row() < 0 || index.row() >= list_.size())
-			continue;
-
-		// append the indexed port to the list
-		ports.append(list_.at(index.row()));
-	}
-
-	beginResetModel();
-
-	// remove all indexed ports from the list
-	foreach (QString port, ports) {
-		list_.removeAll(port);
-	}
-	endResetModel();
+    removePorts(portsToRemove);
 }
 
-void PortListModel::removePorts( const QStringList& portList ) {
-
-	beginResetModel();
-
-	foreach (QString port, portList) {
-		// if the port is on the list
-		if (list_.contains(port))
-			list_.removeAll(port);
-	}
-	endResetModel();
+//-----------------------------------------------------------------------------
+// Function: PortListModel::removeItems()
+//-----------------------------------------------------------------------------
+void PortListModel::removePorts(QStringList const& portList)
+{
+    beginResetModel();
+    foreach (QString port, portList)
+    {
+        list_.removeAll(port);
+    }
+    endResetModel();
 }
 
-void PortListModel::removePort( const QString& port ) {
-
-	beginResetModel();
-
-	if (list_.contains(port)) {
-		list_.removeAll(port);
-	}
-	endResetModel();
+//-----------------------------------------------------------------------------
+// Function: PortListModel::removePort()
+//-----------------------------------------------------------------------------
+void PortListModel::removePort(QString const& port)
+{
+    beginResetModel();
+    list_.removeAll(port);
+    endResetModel();
 }
 
-void PortListModel::onMoveItems( const QStringList& portNames, 
-								const QModelIndex& targetIndex ) {
-
-	bool append = false;
-	if (portNames.isEmpty())
-		return;
-	else if (!targetIndex.isValid())
-		append = true;
+//-----------------------------------------------------------------------------
+// Function: PortListModel::onMoveItems()
+//-----------------------------------------------------------------------------
+void PortListModel::onMoveItems(QStringList const& portNames, QModelIndex const& targetIndex)
+{
+	bool append = !targetIndex.isValid();
 
 	QString targetItem;
-	// find the target item so items can be inserted before it even when it's
-	// index changes
+	// find the target item so items can be inserted before it even when it's index changes.
 	if (!append)
+    {
 		targetItem = list_.at(targetIndex.row());
+    }
 
 	beginResetModel();
 	// move each item
-	foreach (QString port, portNames) {
-		
+	foreach (QString const& port, portNames)
+    {
 		// if the source is the same as target
 		if (port == targetItem)
+        {
 			continue;
+        }
 
 		// first remove the port from the list
 		list_.removeAll(port);
@@ -146,9 +161,13 @@ void PortListModel::onMoveItems( const QStringList& portNames,
 		int index = 0;
 		// find the new place for the item
 		if (!append)
+        {
 			index = list_.indexOf(targetItem);
+        }
 		else 
+        {
 			index = list_.size();
+        }
 
 		// insert the port to the correct location
 		list_.insert(index, port);

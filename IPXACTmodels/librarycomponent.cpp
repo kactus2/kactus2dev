@@ -284,7 +284,7 @@ void LibraryComponent::setXMLNameSpaceAttributes( QMap<QString, QString>& attrib
 //-----------------------------------------------------------------------------
 void LibraryComponent::writeVendorExtensions(QXmlStreamWriter& writer) const
 {
-    XmlUtils::writeVendorExtensions(writer, vendorExtensions_);
+    //XmlUtils::writeVendorExtensions(writer, vendorExtensions_);
 }
 
 //-----------------------------------------------------------------------------

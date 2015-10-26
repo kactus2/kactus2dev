@@ -19,8 +19,10 @@
 
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 
-#include <IPXACTmodels/businterface.h>
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/Port.h>
+
 #include <IPXACTmodels/PortMap.h>
 #include <IPXACTmodels/vlnv.h>
 
@@ -33,11 +35,9 @@
 //-----------------------------------------------------------------------------
 // Function: PortMapsTreeModel::PortMapsTreeModel()
 //-----------------------------------------------------------------------------
-PortMapsTreeModel::PortMapsTreeModel(BusInterface* busif,
-    QSharedPointer<Component> component,
-    LibraryInterface* handler,
-    QObject *parent)
-    : QAbstractItemModel(parent),    
+PortMapsTreeModel::PortMapsTreeModel(QSharedPointer<BusInterface> busif, QSharedPointer<Component> component,
+    LibraryInterface* handler, QObject *parent): 
+QAbstractItemModel(parent),    
     component_(component),
     handler_(handler),
     root_(new PortMapsTreeItem()),
@@ -46,6 +46,7 @@ PortMapsTreeModel::PortMapsTreeModel(BusInterface* busif,
     interfaceMode_(General::MASTER),
     portMaps_(busif->getPortMaps())
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -59,31 +60,28 @@ PortMapsTreeModel::~PortMapsTreeModel()
 //-----------------------------------------------------------------------------
 // Function: PortMapsTreeModel::headerData()
 //-----------------------------------------------------------------------------
-QVariant PortMapsTreeModel::headerData(int section, Qt::Orientation /*orientation*/,
-                                         int role /*= Qt::DisplayRole*/) const
+QVariant PortMapsTreeModel::headerData(int section, Qt::Orientation, int role) const
 {
     if (role == Qt::DisplayRole)
     {
-        switch (section)
+        if (section == COLUMN_TREE)
         {
-        case COLUMN_TREE:
-            {
-                return tr("Logical Port");
-            }
-        case COLUMN_PHYSICAL:
-            {
-                return tr("Physical Port(s)");
-            }
-        case  COLUMN_WIDTH_LOGICAL:
-            {
-                return tr("Logical Width");
-            }
-        case  COLUMN_WIDTH_PHYSICAL:
-            {
-                return tr("Physical Width");
-            }
+            return tr("Logical Port");
+        }
+        else if (section == COLUMN_PHYSICAL)
+        {
+            return tr("Physical Port(s)");
+        }
+        else if (section ==  COLUMN_WIDTH_LOGICAL)
+        {
+            return tr("Logical Width");
+        }
+        else if (section ==  COLUMN_WIDTH_PHYSICAL)
+        {
+            return tr("Physical Width");
         }
     }
+
     else if (role == Qt::TextAlignmentRole)
     {
         return Qt::AlignCenter;
@@ -95,7 +93,7 @@ QVariant PortMapsTreeModel::headerData(int section, Qt::Orientation /*orientatio
 //-----------------------------------------------------------------------------
 // Function: PortMapsTreeModel::columnCount()
 //-----------------------------------------------------------------------------
-int PortMapsTreeModel::columnCount(const QModelIndex& /*parent = QModelIndex()*/) const
+int PortMapsTreeModel::columnCount(QModelIndex const& /*parent*/) const
 {
     return COLUMN_COUNT;
 }
@@ -103,7 +101,7 @@ int PortMapsTreeModel::columnCount(const QModelIndex& /*parent = QModelIndex()*/
 //-----------------------------------------------------------------------------
 // Function: PortMapsTreeModel::rowCount()
 //-----------------------------------------------------------------------------
-int PortMapsTreeModel::rowCount(const QModelIndex& parent /*= QModelIndex()*/) const
+int PortMapsTreeModel::rowCount(QModelIndex const& parent) const
 {
     if (parent.isValid())
     {
@@ -118,7 +116,7 @@ int PortMapsTreeModel::rowCount(const QModelIndex& parent /*= QModelIndex()*/) c
 //-----------------------------------------------------------------------------
 // Function: PortMapsTreeModel::index()
 //-----------------------------------------------------------------------------
-QModelIndex PortMapsTreeModel::index(int row, int column, const QModelIndex &parent /*= QModelIndex()*/) const
+QModelIndex PortMapsTreeModel::index(int row, int column, QModelIndex const& parent) const
 {
     PortMapsTreeItem* parentItem = root_;
 
@@ -168,7 +166,7 @@ QModelIndex PortMapsTreeModel::parent(QModelIndex const& child) const
 //-----------------------------------------------------------------------------
 // Function: PortMapsTreeModel::setData()
 //-----------------------------------------------------------------------------
-bool PortMapsTreeModel::setData(QModelIndex const&, QVariant const&, int  /* = Qt::EditRole */)
+bool PortMapsTreeModel::setData(QModelIndex const&, QVariant const&, int /*role*/)
 {
     return false;
 }
@@ -176,7 +174,7 @@ bool PortMapsTreeModel::setData(QModelIndex const&, QVariant const&, int  /* = Q
 //-----------------------------------------------------------------------------
 // Function: PortMapsTreeModel::data()
 //-----------------------------------------------------------------------------
-QVariant PortMapsTreeModel::data(const QModelIndex& index, int role /*= Qt::DisplayRole*/) const
+QVariant PortMapsTreeModel::data(QModelIndex const& index, int role) const
 {
     if (!index.isValid())
     {
@@ -199,23 +197,26 @@ QVariant PortMapsTreeModel::data(const QModelIndex& index, int role /*= Qt::Disp
                 return QIcon(":icons/common/graphics/cross.png");
             }
 
-            General::Direction direction = absDef_->getPortDirection(item->name(), interfaceMode_);      
-            switch( direction )
+            DirectionTypes::Direction direction = absDef_->getPortDirection(item->name(), interfaceMode_);      
+            if (direction == DirectionTypes::IN)
             {
-            case General::IN :
                 return QIcon(":icons/common/graphics/control-180.png");
-
-            case General::OUT :
+            }
+            else if (direction == DirectionTypes::OUT)
+            {
                 return QIcon(":icons/common/graphics/control.png");
-
-            case General::INOUT :
+            }
+            else if (direction == DirectionTypes::INOUT)
+            {
                 return QIcon(":icons/common/graphics/control-dual.png");
-
-            default:
+            }
+            else
+            {
                 return QIcon(":icons/common/graphics/cross.png");
             }
         }
-    }    
+    }  
+
     else if (role == Qt::ForegroundRole)
     {
         // Unmapped bit items are shown in gray.
@@ -235,6 +236,7 @@ QVariant PortMapsTreeModel::data(const QModelIndex& index, int role /*= Qt::Disp
             return QColor(Qt::black);
         }
     }
+
     else if (role == Qt::BackgroundRole)
     {
         if (item->getType() == PortMapsTreeItem::ITEM_LOGICAL_PORT)
@@ -242,36 +244,31 @@ QVariant PortMapsTreeModel::data(const QModelIndex& index, int role /*= Qt::Disp
             return QColor(230, 230, 230);
         }
     }
+
     else if (role == Qt::TextAlignmentRole)
     {
-        switch (index.column())
+        if (index.column() == COLUMN_WIDTH_LOGICAL || index.column() == COLUMN_WIDTH_PHYSICAL)
         {
-
-        case COLUMN_WIDTH_LOGICAL:
-        case COLUMN_WIDTH_PHYSICAL:
-            {
-                return Qt::AlignRight + Qt::AlignVCenter;
-            }
-        default:
-            {
-                return Qt::AlignLeft + Qt::AlignVCenter;
-            }
+            return Qt::AlignRight + Qt::AlignVCenter;
+        }
+        else
+        {
+            return Qt::AlignLeft + Qt::AlignVCenter;
         }
     }
+
     else if (role == Qt::SizeHintRole)
     {
         return QSize(100, 16);
     }   
+
     else if (role == Qt::ToolTipRole)
     {
         // Show all connected bits in tooltip.
         if (index.column() == COLUMN_PHYSICAL && item->getType() == PortMapsTreeItem::ITEM_BIT_MAP && 
             dynamic_cast<PortMapsBitMapItem*>(item)->isConnected())
-        {
-            QString portNames = "<p>";
-            portNames.append(item->data(COLUMN_PHYSICAL).toString());
-            portNames.append("</p>");           
-            return portNames;
+        {            
+            return  "<p>" + item->data(COLUMN_PHYSICAL).toString() + "</p>";
         }
     }
 
@@ -282,7 +279,7 @@ QVariant PortMapsTreeModel::data(const QModelIndex& index, int role /*= Qt::Disp
 //-----------------------------------------------------------------------------
 // Function: PortMapsTreeModel::hasChildren()
 //-----------------------------------------------------------------------------
-bool PortMapsTreeModel::hasChildren(const QModelIndex& parent /*= QModelIndex()*/) const
+bool PortMapsTreeModel::hasChildren(QModelIndex const& parent /*= QModelIndex()*/) const
 {
     PortMapsTreeItem* parentItem = root_;
 
@@ -297,7 +294,7 @@ bool PortMapsTreeModel::hasChildren(const QModelIndex& parent /*= QModelIndex()*
 //-----------------------------------------------------------------------------
 // Function: PortMapsTreeModel::flags()
 //-----------------------------------------------------------------------------
-Qt::ItemFlags PortMapsTreeModel::flags(const QModelIndex& index) const
+Qt::ItemFlags PortMapsTreeModel::flags(QModelIndex const& index) const
 {
     if (!index.isValid())
     {
@@ -318,14 +315,14 @@ void PortMapsTreeModel::reset()
     root_ = new PortMapsTreeItem();
 
     // Add existing mappings.
-    foreach (QSharedPointer<PortMap> portMap, portMaps_)
+    foreach (QSharedPointer<PortMap> portMap, *portMaps_)
     {
-
-        PortMapsLogicalItem* logicalItem = dynamic_cast<PortMapsLogicalItem*>(findItem(portMap->logicalPort()));
+        PortMapsLogicalItem* logicalItem = 
+            dynamic_cast<PortMapsLogicalItem*>(findItem(portMap->getLogicalPort()->name_));
 
         if (!logicalItem)
         {            
-            logicalItem = new PortMapsLogicalItem(root_, portMap->logicalPort(), component_, busif_, absDef_);
+            logicalItem = new PortMapsLogicalItem(root_, portMap->getLogicalPort()->name_, component_, busif_, absDef_);
             root_->addChild(logicalItem);
         }
 
@@ -340,18 +337,18 @@ void PortMapsTreeModel::reset()
 //-----------------------------------------------------------------------------
 void PortMapsTreeModel::createMap(QSharedPointer<PortMap> portMap)
 {
-    if (!portMaps_.contains(portMap))
+    if (!portMaps_->contains(portMap))
     {
-        portMaps_.append(portMap);
+        portMaps_->append(portMap);
         emit contentChanged();
     }
     
-    PortMapsLogicalItem* logicalItem = dynamic_cast<PortMapsLogicalItem*>(findItem(portMap->logicalPort()));
+    PortMapsLogicalItem* logicalItem = dynamic_cast<PortMapsLogicalItem*>(findItem(portMap->getLogicalPort()->name_));
 
     if (!logicalItem)
     {
         beginInsertRows(QModelIndex(), root_->getChildCount(), root_->getChildCount());
-        logicalItem = new PortMapsLogicalItem(root_, portMap->logicalPort(), component_, busif_, absDef_);
+        logicalItem = new PortMapsLogicalItem(root_, portMap->getLogicalPort()->name_, component_, busif_, absDef_);
         root_->addChild(logicalItem);
         endInsertRows();
     }
@@ -368,8 +365,9 @@ void PortMapsTreeModel::createMap(QSharedPointer<PortMap> portMap)
 QStringList PortMapsTreeModel::logicalPorts() const
 {
     QStringList list;
-    foreach (QSharedPointer<PortMap> portMap, portMaps_) {
-        list.append(portMap->logicalPort());
+    foreach (QSharedPointer<PortMap> portMap, *portMaps_)
+    {
+        list.append(portMap->getLogicalPort()->name_);
     }
     return list;
 }
@@ -377,23 +375,18 @@ QStringList PortMapsTreeModel::logicalPorts() const
 //-----------------------------------------------------------------------------
 // Function: PortMapsTreeModel::setAbsType()
 //-----------------------------------------------------------------------------
-void PortMapsTreeModel::setAbsType(const VLNV& vlnv, General::InterfaceMode mode)
+void PortMapsTreeModel::setAbsType(VLNV const& vlnv, General::InterfaceMode mode)
 {
     interfaceMode_ = mode;
 
-    if (!vlnv.isValid()) {
+    if (!vlnv.isValid())
+    {
         absDef_ = QSharedPointer<AbstractionDefinition>();
         return;
     }
 
-    // ask library to parse the model for abstraction definition
-    QSharedPointer<Document> libComb;
-    if (handler_->contains(vlnv)) 
-    {
-        libComb = handler_->getModel(vlnv);
-    }
-    // if library did not contain the vlnv
-    else
+    QSharedPointer<Document> libComb = handler_->getModel(vlnv);
+    if (!libComb)
     {
         return;
     }
@@ -485,16 +478,23 @@ bool PortMapsTreeModel::canCreateMap( const QString& physicalPort, const QString
     // if port maps has been defined then check that signal directions match
     if (absDef_) 
     {
-        General::Direction logicalDirection = absDef_->getPortDirection(logicalPort, interfaceMode_);
+        DirectionTypes::Direction logicalDirection = absDef_->getPortDirection(logicalPort, interfaceMode_);
 
-        General::Direction physDirection = component_->getPortDirection(physicalPort);
+        QSharedPointer<Port> port = component_->getPort(physicalPort);
+
+
+        DirectionTypes::Direction physDirection = DirectionTypes::DIRECTION_INVALID;
+        if (port)
+        {
+            physDirection = port->getDirection();
+        }
 
         // if directions don't match
         if (logicalDirection != physDirection && 
-            physDirection != General::INOUT && logicalDirection != General::INOUT) 
+            physDirection != DirectionTypes::INOUT && logicalDirection != DirectionTypes::INOUT) 
         {
-                emit errorMessage(tr("Directions between logical port \"%1\" and"
-                    " physical port \"%2\" did not match.").arg(logicalPort).arg(physicalPort));
+                emit errorMessage(tr("Directions between logical port \"%1\" and "
+                    "physical port \"%2\" did not match.").arg(logicalPort).arg(physicalPort));
                 return false;
         }
         else
@@ -514,13 +514,7 @@ bool PortMapsTreeModel::canCreateMap( const QString& physicalPort, const QString
 //-----------------------------------------------------------------------------
 void PortMapsTreeModel::restoreItem(QModelIndex const& index)
 {
-    if (!index.isValid())
-    {
-        return;
-    }
-
-    // Only logical items can be removed.
-    if (index.parent().isValid())
+    if (!index.isValid() || index.parent().isValid())
     {
         return;
     }
@@ -536,13 +530,7 @@ void PortMapsTreeModel::restoreItem(QModelIndex const& index)
 //-----------------------------------------------------------------------------
 void PortMapsTreeModel::removeItem(QModelIndex const& index)
 {
-    if (!index.isValid())
-    {
-        return;
-    }
-
-    // Only logical items can be removed.
-    if (index.parent().isValid())
+    if (!index.isValid() || index.parent().isValid())
     {
         return;
     }
@@ -566,39 +554,34 @@ void PortMapsTreeModel::removeItem(QModelIndex const& index)
 //-----------------------------------------------------------------------------
 void PortMapsTreeModel::removeMapping(QModelIndex const& index)
 {
-    if (!index.isValid())
-    {
-        return;
-    }
-
-    // Only logical items can be removed.
-    if (index.parent().isValid())
+    if (!index.isValid() || index.parent().isValid())
     {
         return;
     }
 
     PortMapsTreeItem* item = root_->getChild(index.row());
     QString logicalName = item->name();
-    QStringList physPorts;
-    foreach (QSharedPointer<PortMap> portMap, portMaps_)
+
+    QStringList physicalPorts;
+    foreach (QSharedPointer<PortMap> portMap, *portMaps_)
     {
-        if (portMap->logicalPort() == logicalName)
+        if (portMap->getLogicalPort()->name_ == logicalName)
         {
-            if (!physPorts.contains(portMap->physicalPort()))
+            if (!physicalPorts.contains(portMap->getPhysicalPort()->name_))
             {
-                physPorts.append(portMap->physicalPort());
+                physicalPorts.append(portMap->getPhysicalPort()->name_);
             }
-            portMaps_.removeAll(portMap);
+            portMaps_->removeAll(portMap);
         }
     }    
 
     // Search for disconnected physical ports.    
-    foreach (QString physicalName, physPorts)
+    foreach (QString const& physicalName, physicalPorts)
     {
         bool connected = false;
-        foreach (QSharedPointer<PortMap> portMap, portMaps_)
+        foreach (QSharedPointer<PortMap> portMap, *portMaps_)
         {
-            if (portMap->physicalPort() == physicalName)
+            if (portMap->getPhysicalPort()->name_ == physicalName)
             {
                 connected = true;
                 break;

@@ -178,7 +178,7 @@ void Generator::write(QXmlStreamWriter& writer) {
     if (!vendorExtensions_.isEmpty())
     {
         writer.writeStartElement("spirit:vendorExtensions");
-        XmlUtils::writeVendorExtensions(writer, vendorExtensions_);
+        //XmlUtils::writeVendorExtensions(writer, vendorExtensions_);
         writer.writeEndElement(); // spirit:vendorExtensions
     }
 

@@ -8,16 +8,18 @@
 #ifndef BRIDGESEDITOR_H
 #define BRIDGESEDITOR_H
 
-#include <common/views/EditableTableView/editabletableview.h>
-#include <IPXACTmodels/slaveinterface.h>
 #include "bridgesmodel.h"
-#include <IPXACTmodels/component.h>
+
+#include <common/views/EditableTableView/editabletableview.h>
+
+#include <IPXACTmodels/slaveinterface.h>
 
 #include <QGroupBox>
 #include <QSortFilterProxyModel>
 #include <QSharedPointer>
 
-/*! \brief Editor to edit the bridge-elements within a slave interface mode.
+class Component;
+/*! Editor to edit the bridge-elements within a slave interface mode.
  *
  */
 class BridgesEditor : public QGroupBox {
@@ -25,53 +27,51 @@ class BridgesEditor : public QGroupBox {
 
 public:
 
-	/*! \brief The constructor
+	/*! The constructor
 	 *
-	 * \param slave Pointer to the slave element being edited.
-	 * \param component Pointer to the component that owns the slave interface.
-	 * \param parent Pointer to the owner of this editor.
+	 *      @param [in] slave The slave element being edited.
+	 *      @param [in] component The component that owns the slave interface.
+	 *      @param [in] parent The owner of this editor.
 	 *
 	*/
-	BridgesEditor(QSharedPointer<SlaveInterface> slave,
-		QSharedPointer<Component> component,
-		QWidget *parent);
+	BridgesEditor(QSharedPointer<SlaveInterface> slave,	QSharedPointer<Component> component, QWidget* parent);
 	
-	//! \brief The destructor.
+	//! The destructor.
 	virtual ~BridgesEditor();
 
-	//! \brief Check if the editor is in valid state.
+	//! Check if the editor is in valid state.
 	bool isValid() const;
 
-	/*! \brief Refresh the editor to match the given slave interface.
+	/*! Refresh the editor to match the given slave interface.
 	 *
-	 * \param slave Pointer to the slave interface being edited.
+	 *      @param [in] slave The slave interface being edited.
 	 *
 	*/
 	void refresh(QSharedPointer<SlaveInterface> slave);
 
 signals:
 
-	//! \brief Emitted when the contents of the bridges change.
+	//! Emitted when the contents of the bridges change.
 	void contentChanged();
 
 private:
 	
-	//! \brief No copying
+	//! No copying
 	BridgesEditor(const BridgesEditor& other);
 
-	//! \brief No assignment
+	//! No assignment
 	BridgesEditor& operator=(const BridgesEditor& other);
 
-	//! \brief Pointer to the component being edited.
+	//! The component being edited.
 	QSharedPointer<Component> component_;
 
-	//! \brief The view to display the bridges.
+	//! The view to display the bridges.
 	EditableTableView view_;
 
-	//! \brief The proxy that does the sorting.
+	//! The proxy that does the sorting.
 	QSortFilterProxyModel proxy_;
 
-	//! \brief Model that manages the bridges.
+	//! Model that manages the bridges.
 	BridgesModel model_;
 };
 

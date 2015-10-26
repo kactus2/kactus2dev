@@ -12,7 +12,6 @@
 #ifndef BITMAPPINGVIEW_H
 #define BITMAPPINGVIEW_H
 
-#include <IPXACTmodels/component.h>
 
 #include <QDropEvent>
 #include <QTableView>
@@ -23,11 +22,13 @@
 #include <QContextMenuEvent>
 #include <QDragEnterEvent>
 
+class Component;
 
 //-----------------------------------------------------------------------------
 // class BitMappingView.
 //-----------------------------------------------------------------------------
-class BitMappingView : public QTableView {
+class BitMappingView : public QTableView
+{
 	Q_OBJECT
 
 public:

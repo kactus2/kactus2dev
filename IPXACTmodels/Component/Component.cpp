@@ -956,12 +956,11 @@ QList<VLNV> Component::getDependentVLNVs() const
             vlnvList.append(busif->getBusType());
         }
 
-        foreach (QSharedPointer<BusInterface::AbstractionType> abstractionType, *busif->getAbstractionTypes())
+        foreach (QSharedPointer<AbstractionType> abstractionType, *busif->getAbstractionTypes())
         {
-            if (abstractionType->abstractionRef_->isValid())
+            if (abstractionType->getAbstractionRef()->isValid())
             {
-                QSharedPointer<VLNV> abstractionRef = abstractionType->abstractionRef_;
-                vlnvList.append(*abstractionRef.data());
+                vlnvList.append(*abstractionType->getAbstractionRef().data());
             }
         }
 

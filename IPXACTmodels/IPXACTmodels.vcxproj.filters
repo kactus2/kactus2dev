@@ -254,9 +254,6 @@
     <ClCompile Include="GenericVendorExtension.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="librarycomponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="masterinterface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -288,9 +285,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="slaveinterface.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="subspacemap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="swbuildcommand.cpp">
@@ -1115,6 +1109,12 @@
     <ClCompile Include="Component\Segment.cpp">
       <Filter>Source Files\Component</Filter>
     </ClCompile>
+    <ClCompile Include="Component\AbstractionType.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="librarycomponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BusDefinition\BusDefinition.h">
@@ -1207,9 +1207,6 @@
     <ClInclude Include="ipxactmodels_global.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="librarycomponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="masterinterface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1241,9 +1238,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="slaveinterface.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="subspacemap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="swbuildcommand.h">
@@ -1530,6 +1524,12 @@
     </ClInclude>
     <ClInclude Include="Component\Segment.h">
       <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\AbstractionType.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="librarycomponent.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

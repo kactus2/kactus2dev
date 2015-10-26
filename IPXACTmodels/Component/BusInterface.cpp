@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: AddressSpace.cpp
+// File: businterface.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: 
@@ -12,9 +12,11 @@
 #include "businterface.h"
 
 #include <IPXACTmodels/generaldeclarations.h>
+
 #include <IPXACTmodels/masterinterface.h>
 #include <IPXACTmodels/mirroredslaveinterface.h>
 #include <IPXACTmodels/slaveinterface.h>
+
 #include <IPXACTmodels/PortMap.h>
 #include <IPXACTmodels/vlnv.h>
 
@@ -27,8 +29,6 @@
 #include <QSharedPointer>
 #include <QObject>
 
-#include <QDebug>
-
 //-----------------------------------------------------------------------------
 // Function: businterface::MonitorInterface::MonitorInterface()
 //-----------------------------------------------------------------------------
@@ -37,72 +37,6 @@ interfaceMode_(General::MONITOR),
 group_()
 {
 
-}
-
-//-----------------------------------------------------------------------------
-// Function: businterface::AbstractionType()
-//-----------------------------------------------------------------------------
-BusInterface::AbstractionType::AbstractionType():
-viewRef_(),
-abstractionRef_(),
-portMaps_(new QList<QSharedPointer<PortMap> > ())
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: businterface::AbstractionType()
-//-----------------------------------------------------------------------------
-BusInterface::AbstractionType::AbstractionType( const BusInterface::AbstractionType &other ):
-viewRef_(other.viewRef_),
-abstractionRef_(),
-portMaps_(new QList<QSharedPointer<PortMap> > ())
-{
-    if (other.abstractionRef_)
-    {
-        abstractionRef_ = QSharedPointer<ConfigurableVLNVReference>
-            (new ConfigurableVLNVReference(*other.abstractionRef_.data()));
-    }
-
-	foreach (QSharedPointer<PortMap> portMap, *other.portMaps_)
-    {
-        if (portMap)
-        {
-            QSharedPointer<PortMap> copy = QSharedPointer<PortMap>(new PortMap(*portMap.data()));
-            portMaps_->append(copy);
-		}
-	}
-}
-
-//-----------------------------------------------------------------------------
-// Function: businterface::AbstractionType::operator=()
-//-----------------------------------------------------------------------------
-BusInterface::AbstractionType & BusInterface::AbstractionType::operator=
-    ( const BusInterface::AbstractionType &other )
-{
-	if (this != &other)
-	{
-        viewRef_ = other.viewRef_;
-
-        abstractionRef_.clear();
-        if (other.abstractionRef_)
-        {
-            abstractionRef_ = QSharedPointer<ConfigurableVLNVReference>
-                (new ConfigurableVLNVReference(*other.abstractionRef_.data()));
-        }
-
-		portMaps_->clear();
-		foreach (QSharedPointer<PortMap> portMap, *other.portMaps_)
-		{
-			if (portMap)
-			{
-				QSharedPointer<PortMap> copy = QSharedPointer<PortMap>(new PortMap(*portMap.data()));
-				portMaps_->append(copy);
-			}
-		}
-	}
-
-	return *this;
 }
 
 //-----------------------------------------------------------------------------
@@ -117,13 +51,13 @@ interfaceMode_(General::INTERFACE_MODE_COUNT),
 connectionRequired_(),
 abstractionTypes_(new QList<QSharedPointer<AbstractionType> > ()),
 bitsInLau_(),
-bitSteering_(General::BITSTEERING_UNSPECIFIED),
+bitSteering_(BusInterface::BITSTEERING_UNSPECIFIED),
 bitSteeringAttributes_(),
-endianness_(General::ENDIANNESS_UNSPECIFIED),
+endianness_(BusInterface::ENDIANNESS_UNSPECIFIED),
 parameters_(new QList<QSharedPointer<Parameter> >()), 
 master_(QSharedPointer<MasterInterface>(new MasterInterface)),
 slave_(),
-system_(),
+systemGroup_(),
 monitor_()
 {
 
@@ -147,7 +81,7 @@ endianness_(other.endianness_),
 parameters_(new QList<QSharedPointer<Parameter> >()),
 master_(),
 slave_(),
-system_(other.system_),
+systemGroup_(other.systemGroup_),
 monitor_(),
 mirroredSlave_()
 {
@@ -173,7 +107,7 @@ BusInterface & BusInterface::operator=( const BusInterface &other )
 		bitSteering_ = other.bitSteering_;
 		bitSteeringAttributes_ = other.bitSteeringAttributes_;
 		endianness_ = other.endianness_;
-		system_ = other.system_;
+		systemGroup_ = other.systemGroup_;
 
         abstractionTypes_->clear();
         copyAbstractionTypes(other);
@@ -214,193 +148,11 @@ void BusInterface::setIsPresent(QString const& newIsPresent)
 {
 	isPresent_ = newIsPresent;
 }
-/*
-bool BusInterface::isValid( const QList<General::PortBounds>& physicalPorts, QStringList const& memoryMaps,
-    QStringList const& addressSpaces,
-    QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
-    QStringList& errorList,
-    const QString& parentIdentifier ) const 
-{
-    bool valid = true;
-    const QString thisIdentifier(QObject::tr("bus interface %1").arg(name()));
-
-	if (name().isEmpty()) {
-		errorList.append(QObject::tr("No name specified for bus interface within %1").arg(
-			parentIdentifier));
-		valid = false;
-	}
-
-	// check the bus type validity
-	if (!busType_.isValid(errorList, QObject::tr("bus type in %1").arg(thisIdentifier))) {
-		valid = false;
-	}
-
-    if (interfaceMode_ == General::MASTER || interfaceMode_ == General::MIRROREDMASTER)
-    {
-        if (!master_)
-        {
-            errorList.append(QObject::tr("The interface mode of %1 is "
-                "master/mirrored master but no element for it has been defined.").arg(
-                thisIdentifier));
-            valid = false;
-        }
-        else if (!master_->getAddressSpaceRef().isEmpty() && 
-            !addressSpaces.contains(master_->getAddressSpaceRef()))
-        {
-            errorList.append(QObject::tr("Bus interface %1 references address space %2 which is not "
-                "found within %3.").arg(name(), master_->getAddressSpaceRef(), parentIdentifier));
-            valid = false;
-        }
-
-    }
-    else if (interfaceMode_ == General::SLAVE)
-    {
-        if (!slave_)
-        {
-            errorList.append(QObject::tr("The interface mode of %1 is "
-                "slave but no element for it has been defined.").arg(
-                thisIdentifier));
-            valid = false;
-        }
-        else if (!slave_->getMemoryMapRef().isEmpty() && !memoryMaps.contains(slave_->getMemoryMapRef()))
-        {
-            errorList.append(QObject::tr("Bus interface %1 references memory map %2 which is not "
-                "found within %3.").arg(name(), slave_->getMemoryMapRef(), parentIdentifier));
-            valid = false;
-        }
-
-    }
-    else if (interfaceMode_ ==  General::MIRROREDSLAVE)
-    {
-        if (!mirroredSlave_) {
-            errorList.append(QObject::tr("The interface mode of %1 is "
-                "mirrored slave but no element for it has been defined.").arg(
-                thisIdentifier));
-            valid = false;
-        }
-    }
-    else if (interfaceMode_ ==  General::SYSTEM || General::MIRROREDSYSTEM)
-    {
-        if (system_.isEmpty())
-        {
-            errorList.append(QObject::tr("Interface mode is system/mirrored system"
-                " but no group has been specified for %1 within %2").arg(
-                thisIdentifier).arg(parentIdentifier));
-            valid = false;
-        }
-    }
-    else if (interfaceMode_ ==  General::MONITOR)
-    {
-        if (monitor_->interfaceMode_ == General::INTERFACE_MODE_COUNT)
-        {
-            errorList.append(QObject::tr("No interface mode set for monitor"
-                " within %1").arg(thisIdentifier));
-            valid = false;
-        }
-    }
-    // if the interface mode is invalid
-    else
-    {
-        errorList.append(QObject::tr("The interface mode of %1 is not specified.").arg(thisIdentifier));
-        valid = false;
-    }
-
-	/*foreach (QSharedPointer<PortMap> portMap, abstractionTypes_.first()->portMaps_) {
-		if (!portMap->isValid(physicalPorts, errorList, thisIdentifier)) {
-			valid = false;
-		}
-	}*/
-
-//     ParameterValidator validator;
-//     foreach (QSharedPointer<Parameter> param, *parameters_)
-//     {
-//         errorList.append(validator.findErrorsIn(param.data(), thisIdentifier, componentChoices));
-//         if (!validator.validate(param.data(), componentChoices)) 
-//         {
-//             valid = false;
-//         }
-//     }
-/*
-	return valid;
-}
-
-bool BusInterface::isValid( const QList<General::PortBounds>& physicalPorts, QStringList const& memoryMaps,
-    QStringList const& addressSpaces, QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const 
-{
-	if (name().isEmpty())
-    {
-		return false;
-	}
-
-	// check the bus type validity
-	if (!busType_.isValid())
-    {
-		return false;
-	}
-
-    if (interfaceMode_ == General::MASTER || interfaceMode_ == General::MIRROREDMASTER)
-    {
-        if (!master_ ||
-            (!master_->getAddressSpaceRef().isEmpty() && !addressSpaces.contains(master_->getAddressSpaceRef())))
-        {
-            return false;
-        }
-
-    }
-    else if (interfaceMode_ == General::SLAVE)
-    {
-        if (!slave_ || (!slave_->getMemoryMapRef().isEmpty() && !memoryMaps.contains(slave_->getMemoryMapRef()))) 
-        {
-            return false;
-        }
-    }
-    else if (interfaceMode_ == General::MIRROREDSLAVE)
-    {
-        if (!mirroredSlave_) {
-            return false;
-        }
-    }
-    else if (interfaceMode_ == General::SYSTEM || interfaceMode_ == General::MIRROREDSYSTEM)
-    {
-        if (system_.isEmpty())
-        {
-            return false;
-        }
-    }
-    else if (interfaceMode_ == General::MONITOR)
-    {
-        if (monitor_->interfaceMode_ == General::INTERFACE_MODE_COUNT) {
-            return false;
-        }
-    }
-    // if the interface mode is invalid
-    else
-    {
-        return false;
-    }
-
-	/*foreach (QSharedPointer<PortMap> portMap, abstractionTypes_.first()->portMaps_) {
-		if (!portMap->isValid(physicalPorts)) {
-			return false;
-		}
-	}*/
-
-//     ParameterValidator validator;
-//     foreach (QSharedPointer<Parameter> param, *parameters_)
-//     {
-//         if (!validator.validate(param.data(), componentChoices)) 
-//         {
-//             return false;
-//         }
-//     }
-/*
-	return true;
-}*/
 
 //-----------------------------------------------------------------------------
 // Function: businterface::getBitSteering()
 //-----------------------------------------------------------------------------
-General::BitSteering BusInterface::getBitSteering() const
+BusInterface::BitSteering BusInterface::getBitSteering() const
 {
 	return bitSteering_;
 }
@@ -418,8 +170,8 @@ General::InterfaceMode BusInterface::getInterfaceMode() const
 //-----------------------------------------------------------------------------
 void BusInterface::setPortMaps(QSharedPointer<QList<QSharedPointer<PortMap> > > portMaps)
 {
-    abstractionTypes_->first()->portMaps_->clear();
-    abstractionTypes_->first()->portMaps_ = portMaps;
+    abstractionTypes_->first()->getPortMaps()->clear();
+    abstractionTypes_->first()->getPortMaps() = portMaps;
 }
 
 //-----------------------------------------------------------------------------
@@ -450,7 +202,7 @@ void BusInterface::clearConnectionRequired()
 //-----------------------------------------------------------------------------
 // Function: businterface::setEndianness()
 //-----------------------------------------------------------------------------
-void BusInterface::setEndianness(General::Endianness endianness)
+void BusInterface::setEndianness(BusInterface::Endianness endianness)
 {
 	endianness_ = endianness;
 }
@@ -492,13 +244,13 @@ QSharedPointer<QList<QSharedPointer<Parameter> > > BusInterface::getParameters()
 //-----------------------------------------------------------------------------
 QSharedPointer<QList<QSharedPointer<PortMap> > > BusInterface::getPortMaps() const
 {
-	return abstractionTypes_->first()->portMaps_;
+	return abstractionTypes_->first()->getPortMaps();
 }
 
 //-----------------------------------------------------------------------------
 // Function: businterface::getAbstractionTypes()
 //-----------------------------------------------------------------------------
-QSharedPointer<QList<QSharedPointer<BusInterface::AbstractionType> > > BusInterface::getAbstractionTypes() const
+QSharedPointer<QList<QSharedPointer<AbstractionType> > > BusInterface::getAbstractionTypes() const
 {
 	return abstractionTypes_;
 }
@@ -506,7 +258,7 @@ QSharedPointer<QList<QSharedPointer<BusInterface::AbstractionType> > > BusInterf
 //-----------------------------------------------------------------------------
 // Function: businterface::setBitSteeringAttributes()
 //-----------------------------------------------------------------------------
-void BusInterface::setBitSteeringAttributes(QMap<QString, QString> &bitSteeringAttributes)
+void BusInterface::setBitSteeringAttributes(QMap<QString, QString> const& bitSteeringAttributes)
 {
 	bitSteeringAttributes_.clear();
 	bitSteeringAttributes_ = bitSteeringAttributes;
@@ -523,7 +275,7 @@ VLNV BusInterface::getBusType() const
 //-----------------------------------------------------------------------------
 // Function: businterface::getBitSteeringAttributes()
 //-----------------------------------------------------------------------------
-const QMap<QString, QString>& BusInterface::getBitSteeringAttributes()
+QMap<QString, QString> BusInterface::getBitSteeringAttributes()
 {
 	return bitSteeringAttributes_;
 }
@@ -531,7 +283,7 @@ const QMap<QString, QString>& BusInterface::getBitSteeringAttributes()
 //-----------------------------------------------------------------------------
 // Function: businterface::getEndianness()
 //-----------------------------------------------------------------------------
-General::Endianness BusInterface::getEndianness() const
+BusInterface::Endianness BusInterface::getEndianness() const
 {
 	return endianness_;
 }
@@ -547,7 +299,7 @@ void BusInterface::setInterfaceMode(General::InterfaceMode interfaceMode)
     {
         monitor_.clear();
         slave_.clear();
-        system_.clear();
+        systemGroup_.clear();
         mirroredSlave_.clear();
         if (!master_)
         {
@@ -558,7 +310,7 @@ void BusInterface::setInterfaceMode(General::InterfaceMode interfaceMode)
     {
         monitor_.clear();
         master_.clear();
-        system_.clear();
+        systemGroup_.clear();
         mirroredSlave_.clear();
         if (!slave_)
         {
@@ -571,14 +323,14 @@ void BusInterface::setInterfaceMode(General::InterfaceMode interfaceMode)
         slave_.clear();
         master_.clear();
         mirroredSlave_.clear();
-        system_ = "default";
+        systemGroup_ = "default";
     }
     else if (interfaceMode == General::MIRROREDSLAVE)
     {
         monitor_.clear();
         slave_.clear();
         master_.clear();
-        system_.clear();
+        systemGroup_.clear();
         if (!mirroredSlave_)
         {
             mirroredSlave_ = QSharedPointer<MirroredSlaveInterface>(new MirroredSlaveInterface());
@@ -588,7 +340,7 @@ void BusInterface::setInterfaceMode(General::InterfaceMode interfaceMode)
     {
         monitor_.clear();
         slave_.clear();
-        system_.clear();
+        systemGroup_.clear();
         mirroredSlave_.clear();
         if (!master_)
         {
@@ -601,13 +353,13 @@ void BusInterface::setInterfaceMode(General::InterfaceMode interfaceMode)
         slave_.clear();
         master_.clear();
         mirroredSlave_.clear();
-        system_ = "default";
+        systemGroup_ = "default";
     }
     else if (interfaceMode == General::MONITOR)
     {
         slave_.clear();
         master_.clear();
-        system_.clear();
+        systemGroup_.clear();
         mirroredSlave_.clear();
         if (!monitor_)
         {
@@ -619,7 +371,7 @@ void BusInterface::setInterfaceMode(General::InterfaceMode interfaceMode)
         monitor_.clear();
         slave_.clear();
         master_.clear();
-        system_.clear();
+        systemGroup_.clear();
         mirroredSlave_.clear();
 	}
 }
@@ -635,7 +387,7 @@ void BusInterface::setBusType(const VLNV& busType)
 //-----------------------------------------------------------------------------
 // Function: businterface::setBitSteering()
 //-----------------------------------------------------------------------------
-void BusInterface::setBitSteering(General::BitSteering bitSteering)
+void BusInterface::setBitSteering(BusInterface::BitSteering bitSteering)
 {
 	bitSteering_ = bitSteering;
 }
@@ -656,7 +408,7 @@ void BusInterface::setMaster( QSharedPointer<MasterInterface> master )
 	monitor_.clear();
 	slave_.clear();
 	master_.clear();
-	system_.clear();
+	systemGroup_.clear();
 	mirroredSlave_.clear();
 
 	master_ = master;
@@ -673,12 +425,12 @@ QSharedPointer<SlaveInterface> BusInterface::getSlave()
 //-----------------------------------------------------------------------------
 // Function: businterface::setSlave()
 //-----------------------------------------------------------------------------
-void BusInterface::setSlave( QSharedPointer<SlaveInterface> slave )
+void BusInterface::setSlave(QSharedPointer<SlaveInterface> slave)
 {
 	monitor_.clear();
 	slave_.clear();
 	master_.clear();
-	system_.clear();
+	systemGroup_.clear();
 	mirroredSlave_.clear();
 
 	interfaceMode_ = General::SLAVE;
@@ -690,21 +442,21 @@ void BusInterface::setSlave( QSharedPointer<SlaveInterface> slave )
 //-----------------------------------------------------------------------------
 QString BusInterface::getSystem() const
 {
-	return system_;
+	return systemGroup_;
 }
 
 //-----------------------------------------------------------------------------
 // Function: businterface::setSystem()
 //-----------------------------------------------------------------------------
-void BusInterface::setSystem(const QString& system)
+void BusInterface::setSystem(QString const& systemGroupName)
 {
 	monitor_.clear();
 	slave_.clear();
 	master_.clear();
-	system_.clear();
+	systemGroup_.clear();
 	mirroredSlave_.clear();
-
-	system_ = system;
+    
+	systemGroup_ = systemGroupName;
 }
 
 //-----------------------------------------------------------------------------
@@ -723,7 +475,7 @@ void BusInterface::setMonitor( QSharedPointer<BusInterface::MonitorInterface> mo
 	monitor_.clear();
 	slave_.clear();
 	master_.clear();
-	system_.clear();
+	systemGroup_.clear();
 	mirroredSlave_.clear();
 
 	interfaceMode_ = General::MONITOR;
@@ -746,7 +498,7 @@ void BusInterface::setMirroredSlave( QSharedPointer<MirroredSlaveInterface> mirr
 	monitor_.clear();
 	slave_.clear();
 	master_.clear();
-	system_.clear();
+	systemGroup_.clear();
 	mirroredSlave_.clear();
 
 	interfaceMode_ = General::MIRROREDSLAVE;
@@ -769,7 +521,7 @@ bool BusInterface::hasBridge() const
 //-----------------------------------------------------------------------------
 // Function: businterface::getAttributes()
 //-----------------------------------------------------------------------------
-const QMap<QString, QString>& BusInterface::getAttributes() const
+QMap<QString, QString> BusInterface::getAttributes() const
 {
 	return attributes_;
 }
@@ -777,7 +529,7 @@ const QMap<QString, QString>& BusInterface::getAttributes() const
 //-----------------------------------------------------------------------------
 // Function: businterface::setAttributes()
 //-----------------------------------------------------------------------------
-void BusInterface::setAttributes( const QMap<QString, QString>& attributes )
+void BusInterface::setAttributes(QMap<QString, QString> const& attributes)
 {
 	attributes_ = attributes;
 }
@@ -788,7 +540,7 @@ void BusInterface::setAttributes( const QMap<QString, QString>& attributes )
 QStringList BusInterface::getPhysicalPortNames() const
 {
 	QStringList list;
-	foreach (QSharedPointer<PortMap> portMap, *abstractionTypes_->first()->portMaps_)
+	foreach (QSharedPointer<PortMap> portMap, *abstractionTypes_->first()->getPortMaps())
 	{
 		list.append(portMap->getPhysicalPort()->name_);
 	}
@@ -801,7 +553,7 @@ QStringList BusInterface::getPhysicalPortNames() const
 QStringList BusInterface::getLogicalPortNames() const
 {
 	QStringList list;
-	foreach (QSharedPointer<PortMap> portMap, *abstractionTypes_->first()->portMaps_)
+	foreach (QSharedPointer<PortMap> portMap, *abstractionTypes_->first()->getPortMaps())
 	{
 		list.append(portMap->getLogicalPort()->name_);
 	}
@@ -813,7 +565,7 @@ QStringList BusInterface::getLogicalPortNames() const
 //-----------------------------------------------------------------------------
 bool BusInterface::hasLogicalPort( const QString& logicalPortName ) const
 {
-	foreach (QSharedPointer<PortMap> portMap, *abstractionTypes_->first()->portMaps_)
+	foreach (QSharedPointer<PortMap> portMap, *abstractionTypes_->first()->getPortMaps())
 	{
 		if (portMap->getLogicalPort()->name_ == logicalPortName)
 		{
@@ -829,7 +581,7 @@ bool BusInterface::hasLogicalPort( const QString& logicalPortName ) const
 //-----------------------------------------------------------------------------
 bool BusInterface::hasPhysicalPort( const QString& physicalPortName ) const
 {
-	foreach (QSharedPointer<PortMap> portMap, *abstractionTypes_->first()->portMaps_)
+	foreach (QSharedPointer<PortMap> portMap, *abstractionTypes_->first()->getPortMaps())
 	{
 		if (portMap->getPhysicalPort()->name_ == physicalPortName)
 		{
@@ -845,7 +597,7 @@ bool BusInterface::hasPhysicalPort( const QString& physicalPortName ) const
 //-----------------------------------------------------------------------------
 QString BusInterface::getLogicalPortName( const QString& physicalPortName ) const
 {
-	foreach (QSharedPointer<PortMap> portMap, *abstractionTypes_->first()->portMaps_)
+	foreach (QSharedPointer<PortMap> portMap, *abstractionTypes_->first()->getPortMaps())
 	{
 		if (portMap->getPhysicalPort()->name_.compare(physicalPortName) == 0)
 		{
@@ -956,7 +708,7 @@ void BusInterface::setDefaultPos(QPointF const& pos)
 //-----------------------------------------------------------------------------
 // Function: BusInterface::getDefaultPos()
 //-----------------------------------------------------------------------------
-QPointF const& BusInterface::getDefaultPos()
+QPointF BusInterface::getDefaultPos()
 {
     foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {

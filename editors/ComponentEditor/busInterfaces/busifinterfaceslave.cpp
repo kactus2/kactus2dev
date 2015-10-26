@@ -13,6 +13,9 @@
 
 #include <IPXACTmodels/generaldeclarations.h>
 
+#include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/Component/Component.h>
+
 #include <QFormLayout>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -66,7 +69,7 @@ bool BusIfInterfaceSlave::isValid() const
 //-----------------------------------------------------------------------------
 void BusIfInterfaceSlave::refresh()
 {
-	// if the model contains master-element
+	// if the model contains slave-element
 	if (busif_->getSlave())
     {
 		slave_ = busif_->getSlave();

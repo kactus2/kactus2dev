@@ -1,8 +1,13 @@
-/* 
- *
- *  Created on: 31.8.2010
- *      Author: Antti Kamppi
- */
+//-----------------------------------------------------------------------------
+// File: mirroredslaveinterface.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Esko Pekkarinen
+// Date: 20.10.2015
+//
+// Description:
+// Implementation of ipxact:mirroredSlave in bus interface.
+//-----------------------------------------------------------------------------
 
 #include "mirroredslaveinterface.h"
 
@@ -10,85 +15,87 @@
 #include <QString>
 #include <QObject>
 
-MirroredSlaveInterface::RemapAddress::RemapAddress(const QString& remapAddress):
+//-----------------------------------------------------------------------------
+// Function: MirroredSlaveInterface::RemapAddress::RemapAddress()
+//-----------------------------------------------------------------------------
+MirroredSlaveInterface::RemapAddress::RemapAddress(QString const& remapAddress):
 remapAddress_(remapAddress),
-state_(),
-remapAttributes_()
+    state_(),
+    remapAttributes_()
 {
 }
 
+//-----------------------------------------------------------------------------
+// Function: MirroredSlaveInterface::MirroredSlaveInterface()
+//-----------------------------------------------------------------------------
 MirroredSlaveInterface::MirroredSlaveInterface():
-range_(), remapAddresses_()
+range_(), remapAddresses_(new QList<QSharedPointer<RemapAddress> >())
 {
 }
 
-MirroredSlaveInterface::MirroredSlaveInterface( const MirroredSlaveInterface& other ):
+//-----------------------------------------------------------------------------
+// Function: MirroredSlaveInterface::MirroredSlaveInterface()
+//-----------------------------------------------------------------------------
+MirroredSlaveInterface::MirroredSlaveInterface(MirroredSlaveInterface const& other):
 range_(other.range_),
-remapAddresses_()
+    remapAddresses_(new QList<QSharedPointer<RemapAddress> >())
 {
-	foreach (QSharedPointer<RemapAddress> remapAddr, other.remapAddresses_)
-	{
-		if (remapAddr)
-		{
-			QSharedPointer<RemapAddress> copy = QSharedPointer<RemapAddress>(
-				new RemapAddress(*remapAddr.data()));
-			remapAddresses_.append(copy);
-		}
-	}
-
+    foreach (QSharedPointer<RemapAddress> remapAddr, *other.remapAddresses_)
+    {
+        QSharedPointer<RemapAddress> copy(new RemapAddress(*remapAddr.data()));
+        remapAddresses_->append(copy);
+    }
 }
 
-
-MirroredSlaveInterface& MirroredSlaveInterface::operator=( const MirroredSlaveInterface& other )
+//-----------------------------------------------------------------------------
+// Function: MirroredSlaveInterface::operator=()
+//-----------------------------------------------------------------------------
+MirroredSlaveInterface& MirroredSlaveInterface::operator=(MirroredSlaveInterface const& other)
 {
-	if (this != &other) {
-
+	if (this != &other)
+    {
 		range_ = other.range_;
 
-		remapAddresses_.clear();
-		foreach (QSharedPointer<RemapAddress> remapAddr, other.remapAddresses_)
-		{
-			if (remapAddr)
-			{
-				QSharedPointer<RemapAddress> copy = QSharedPointer<RemapAddress>(
-					new RemapAddress(*remapAddr.data()));
-				remapAddresses_.append(copy);
-			}
-		}
+        remapAddresses_->clear();
+        foreach (QSharedPointer<RemapAddress> remapAddr, *other.remapAddresses_)
+        {
+            QSharedPointer<RemapAddress> copy(new RemapAddress(*remapAddr.data()));
+            remapAddresses_->append(copy);
+        }
 
-	}
-	return *this;
+    }
+    return *this;
 }
 
-
-// the destructor
+//-----------------------------------------------------------------------------
+// Function: MirroredSlaveInterface::~MirroredSlaveInterface()
+//-----------------------------------------------------------------------------
 MirroredSlaveInterface::~MirroredSlaveInterface()
 {
 }
 
+//-----------------------------------------------------------------------------
+// Function: MirroredSlaveInterface::getRange()
+//-----------------------------------------------------------------------------
 QString MirroredSlaveInterface::getRange() const
 {
 	return range_;
 }
 
+//-----------------------------------------------------------------------------
+// Function: MirroredSlaveInterface::setRange()
+//-----------------------------------------------------------------------------
 void MirroredSlaveInterface::setRange(const QString& range)
 {
 	range_ = range;
 }
 
-//-----------------------------------------------------------------------------
-// Function: mirroredslaveinterface::setRemapAddress()
-//-----------------------------------------------------------------------------
-void MirroredSlaveInterface::setRemapAddresses( const QList<QSharedPointer<RemapAddress> > remapAddresses )
-{
-	remapAddresses_.clear();
-	remapAddresses_ = remapAddresses;
-}
 
 //-----------------------------------------------------------------------------
 // Function: mirroredslaveinterface::getRemapAddress()
 //-----------------------------------------------------------------------------
-QList<QSharedPointer<MirroredSlaveInterface::RemapAddress> > MirroredSlaveInterface::getRemapAddresses() const
+QSharedPointer<QList<QSharedPointer<MirroredSlaveInterface::RemapAddress> > > 
+    MirroredSlaveInterface::getRemapAddresses() const
 {
 	return remapAddresses_;
 }

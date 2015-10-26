@@ -1,17 +1,27 @@
-/* 
- *  	Created on: 14.5.2012
- *      Author: Antti Kamppi
- * 		filename: componenteditorbusinterfaceitem.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: componenteditorbusinterfaceitem.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 14.05.2012
+//
+// Description:
+// The item for single bus interface in the component editor's navigation tree.
+//-----------------------------------------------------------------------------
 
 #include "componenteditorbusinterfaceitem.h"
+
+#include <library/LibraryManager/libraryinterface.h>
 
 #include <editors/ComponentEditor/busInterfaces/businterfaceeditor.h>
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 
+#include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/PortMap.h>
 
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorBusInterfaceItem::ComponentEditorBusInterfaceItem()
+//-----------------------------------------------------------------------------
 ComponentEditorBusInterfaceItem::ComponentEditorBusInterfaceItem(QSharedPointer<BusInterface> busif,
     ComponentEditorTreeModel* model, LibraryInterface* libHandler, QSharedPointer<Component> component,
     QSharedPointer<ReferenceCounter> referenceCounter,
@@ -20,10 +30,10 @@ ComponentEditorBusInterfaceItem::ComponentEditorBusInterfaceItem(QSharedPointer<
     QSharedPointer<ExpressionParser> expressionParser,
     ComponentEditorItem* parent, QWidget* parentWnd):
 ComponentEditorItem(model, libHandler, component, parent),
-busif_(busif),
-parentWnd_(parentWnd),
-editAction_(new QAction(tr("Edit"), this)),
-expressionParser_(expressionParser)
+    busif_(busif),
+    parentWnd_(parentWnd),
+    editAction_(new QAction(tr("Edit"), this)),
+    expressionParser_(expressionParser)
 {
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);
@@ -32,28 +42,41 @@ expressionParser_(expressionParser)
     connect(editAction_, SIGNAL(triggered(bool)), this, SLOT(openItem()), Qt::UniqueConnection);
 }
 
-ComponentEditorBusInterfaceItem::~ComponentEditorBusInterfaceItem() {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorBusInterfaceItem::~ComponentEditorBusInterfaceItem()
+//-----------------------------------------------------------------------------
+ComponentEditorBusInterfaceItem::~ComponentEditorBusInterfaceItem()
+{
 }
 
-QString ComponentEditorBusInterfaceItem::text() const {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorBusInterfaceItem::text()
+//-----------------------------------------------------------------------------
+QString ComponentEditorBusInterfaceItem::text() const
+{
 	return busif_->name();
 }
 
-bool ComponentEditorBusInterfaceItem::isValid() const {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorBusInterfaceItem::isValid()
+//-----------------------------------------------------------------------------
+bool ComponentEditorBusInterfaceItem::isValid() const
+{
 	// check that the bus interface is valid
-	if (!busif_->isValid(component_->getPortBounds(), component_->getMemoryMapNames(), 
+	/*if (!busif_->isValid(component_->getPortBounds(), component_->getMemoryMapNames(), 
         component_->getAddressSpaceNames(), component_->getChoices()))
     {
 		return false;
 	}
 
 	// check that the bus definition is found
-	else if (!libHandler_->contains(busif_->getBusType())) {
+	else*/ if (!libHandler_->contains(busif_->getBusType()))
+    {
 		return false;
 	}
 
     // if there is an abstraction definition then check that it is found
-    else if (busif_->getAbstractionType().isValid()) {
+    /*else if (busif_->getAbstractionTypes().isValid()) {
         if (!libHandler_->contains(busif_->getAbstractionType())) {
             return false;
         }
@@ -77,18 +100,23 @@ bool ComponentEditorBusInterfaceItem::isValid() const {
                 }        
             }
         }
-    }
+    }*/
 
-    if (!component_->validateParameters(busif_->getParameters()))
+    /*if (!component_->validateParameters(busif_->getParameters()))
     {
         return false;
-    }
+    }*/
 
 	return true;
 }
 
-ItemEditor* ComponentEditorBusInterfaceItem::editor() {
-	if (!editor_) {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorBusInterfaceItem::editor()
+//-----------------------------------------------------------------------------
+ItemEditor* ComponentEditorBusInterfaceItem::editor()
+{
+	if (!editor_)
+    {
 		editor_ = new BusInterfaceEditor(libHandler_, component_, busif_, parameterFinder_, expressionFormatter_,
             expressionParser_, 0, parentWnd_);
 		editor_->setProtection(locked_);
@@ -105,18 +133,27 @@ ItemEditor* ComponentEditorBusInterfaceItem::editor() {
 	return editor_;
 }
 
-QString ComponentEditorBusInterfaceItem::getTooltip() const {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorBusInterfaceItem::getTooltip()
+//-----------------------------------------------------------------------------
+QString ComponentEditorBusInterfaceItem::getTooltip() const
+{
 	return tr("Defines properties of a specific interface in a component");
 }
 
-bool ComponentEditorBusInterfaceItem::canBeOpened() const {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorBusInterfaceItem::canBeOpened()
+//-----------------------------------------------------------------------------
+bool ComponentEditorBusInterfaceItem::canBeOpened() const
+{
 	// if the bus type is valid vlnv
-	if (busif_->getBusType().isValid()) {
-
+	if (busif_->getBusType().isValid())
+    {
 		// if bus definition exists then it can be opened
 		return libHandler_->contains(busif_->getBusType());
 	}
-	else {
+	else
+    {
 		return false;
 	}
 }
@@ -132,9 +169,12 @@ QList<QAction*> ComponentEditorBusInterfaceItem::actions() const
     return actionList;   
 }
 
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorBusInterfaceItem::openItem()
+//-----------------------------------------------------------------------------
 void ComponentEditorBusInterfaceItem::openItem() 
 {
 	VLNV busdefVLNV = busif_->getBusType();
-	VLNV absdefVLNV = busif_->getAbstractionType();
+	VLNV absdefVLNV = *busif_->getAbstractionTypes()->first()->getAbstractionRef();
 	emit openBus(busdefVLNV, absdefVLNV);
 }

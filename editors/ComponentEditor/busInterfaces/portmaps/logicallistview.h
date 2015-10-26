@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 7.7.2011
- *      Author: Antti Kamppi
- * 		filename: logicallistview.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: logicallistview.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 07.07.2011
+//
+// Description:
+// List view for logical ports.
+//-----------------------------------------------------------------------------
 
 #ifndef LOGICALLISTVIEW_H
 #define LOGICALLISTVIEW_H
@@ -12,7 +16,11 @@
 
 #include <QDropEvent>
 
-class LogicalListView : public PortListView {
+//-----------------------------------------------------------------------------
+//! List view for logical ports.
+//-----------------------------------------------------------------------------
+class LogicalListView : public PortListView
+{
 	Q_OBJECT
 
 public:
@@ -32,18 +40,14 @@ public slots:
      */
     void onPortRestored(QString const& portName);
 
-    /*!
-     *  Called when a port is removed from the port map.
-     *
-     */
+    //! Called when a port is removed from the port map.
     void onPortRemoved();
 
 protected:
 
 	/*! Handler for drop events on drag & drop.
 	 *
-	 * \param event Pointer to the event object.
-	 *
+	 *      @param [in] event The event object.
 	*/
 	virtual void dropEvent(QDropEvent* event);
 

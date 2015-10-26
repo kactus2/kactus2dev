@@ -1,9 +1,13 @@
-/* 
- *
- *  Created on: 10.5.2011
- *      Author: Antti Kamppi
- * 		filename: portlistmodel.h
- */
+//-----------------------------------------------------------------------------
+// File: portlistmodel.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 10.05.2011
+//
+// Description:
+// The base class for logical list model and physical list model.
+//-----------------------------------------------------------------------------
 
 #ifndef PORTLISTMODEL_H
 #define PORTLISTMODEL_H
@@ -11,102 +15,93 @@
 #include <QAbstractListModel>
 #include <QStringList>
 
-class PortMapsTreeModel;
-
-/*! \brief The base class for logical list model and physical list model.
- *
- */
-class PortListModel : public QAbstractListModel {
+//-----------------------------------------------------------------------------
+//! The base class for logical list model and physical list model.
+//-----------------------------------------------------------------------------
+class PortListModel : public QAbstractListModel
+{
 	Q_OBJECT
 
 public:
 
-	/*! \brief The constructor.
+	/*! The constructor.
 	 *
-	 * \param portMapsModel Pointer to the port maps model to ask if connection is possible.
-	 * \param parent Pointer to the owner of this model
-	 *
+	 *      @param [in] portMapsModel The port maps model to ask if connection is possible.
+	 *      @param [in] parent The owner of this model
 	*/
-	PortListModel(PortMapsTreeModel* portMapsModel, QObject *parent);
+	PortListModel(QObject *parent);
 	
-	//! \brief The destructor
+	//! The destructor
 	virtual ~PortListModel();
 
-	/*! \brief Get the number of rows in the model.
+	/*! Get the number of rows in the model.
 	 *
-	 * \param parent Model index of the parent of the item. Must be invalid
-	 * because this is not hierarchical model.
+	 *      @param [in] parent  Index of the parent of the item.
 	 *
-	 * \return Number of rows currently in the model.
+	 *      @return Number of rows currently in the model.
 	*/
-	int rowCount(const QModelIndex& parent = QModelIndex()) const ;
+	int rowCount(QModelIndex const& parent = QModelIndex()) const;
 
-	/*! \brief Get the data for the specified item for specified role.
+	/*! Get the data for the specified item for specified role.
 	 *
-	 * \param index Identifies the item that's data is wanted.
-	 * \param role Specifies what kind of data is wanted
+	 *      @param [in] index   Identifies the item that's data is wanted.
+	 *      @param [in] role    Specifies what kind of data is wanted
 	 *
-	 * \return QVariant containing the data
+	 *      @return QVariant containing the data
 	*/
-	QVariant data(const QModelIndex& index, int role = Qt::DisplayRole ) const;
+	QVariant data(QModelIndex const& index, int role = Qt::DisplayRole) const;
 
-	/*! \brief Refresh the list of ports.
-	 *
-	*/
+	//! Refresh the list of ports.
 	virtual void refresh() = 0;
 
-	/*! \brief Remove the given ports from the model
+	/*! Remove the given ports from the model
 	 *
-	 * \param portList List of port names to remove from the model
-	 *
-	*/
+	 *      @param [in] portList List of port names to remove from the model
+	 */
 	virtual void removePorts(const QStringList& portList);
 
-	/*! \brief Remove the given port from the model.
+	/*! Remove the given port from the model.
 	 *
-	 * \param port The name of the port
-	*/
-	virtual void removePort(const QString& port);
+	 *      @param [in] port The name of the port
+	 */
+	virtual void removePort(QString const& port);
 
 public slots:
 
-	//! \brief Add a new port to the list of ports.
-	virtual void addPort(const QString& portName);
+	//! Add a new port to the list of ports.
+	virtual void addPort(QString const& portName);
 
-	//! \brief Remove the port with given model index.
-	virtual void removeItem(const QModelIndex& index);
+	//! Remove the port with given model index.
+	virtual void removeItem(QModelIndex const& index);
 
-	//! \brief Remove the items with given model indexes from the list.
+	//! Remove the items with given model indexes from the list.
 	virtual void removeItems(const QModelIndexList& indexes);
 
-	//! \brief Move list of ports to a given index.
-	virtual void onMoveItems(const QStringList& portNames, const QModelIndex& targetIndex);
+	//! Move list of ports to a given index.
+	virtual void onMoveItems(const QStringList& portNames, QModelIndex const& targetIndex);
 
 signals:
 
-	//! \brief Emitted when contents of the model change
+	//! Emitted when contents of the model change
 	void contentChanged();
 
-	//! \brief Prints an error message to the user.
-	void errorMessage(const QString& msg) const;
+	//! Prints an error message to the user.
+	void errorMessage(QString const& msg) const;
 
-	//! \brief Prints a notification to user.
-	void noticeMessage(const QString& msg) const;
+	//! Prints a notification to user.
+	void noticeMessage(QString const& msg) const;
 
-	//! \brief Emitted to inform that a mapping should be created between ports.
-	//void createMap(const QString& logicalPort, const QString& physicalPort);
+	//! Emitted to inform that a mapping should be created between ports.
+	//void createMap(QString const& logicalPort, QString const& physicalPort);
 
 protected:
 
-	//! \brief Contains the items to be displayed in the view
+	//! Contains the items to be displayed in the view
 	QStringList list_;
-
-	//! \brief Pointer to the port maps model to ask if connection is possible.
-	PortMapsTreeModel* portMapsModel_;
 
 private:
 
-	//! \brief No copying
+	//! No copying
 	PortListModel(const PortListModel& other);
 
 	//! No assignment

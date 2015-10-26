@@ -1,14 +1,19 @@
-/* 
- *
- *  Created on: 5.4.2011
- *      Author: Antti Kamppi
- * 		filename: busifgeneraldetails.cpp
- */
+//-----------------------------------------------------------------------------
+// File: busifgeneraldetails.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 05.04.2011
+//
+// Description:
+// Editor to edit the bus interface details.
+//-----------------------------------------------------------------------------
 
 #include "busifgeneraldetails.h"
 
 #include <IPXACTmodels/generaldeclarations.h>
-#include <IPXACTmodels/businterface.h>
+
+#include <IPXACTmodels/Component/BusInterface.h>
 
 #include <QFormLayout>
 #include <QVBoxLayout>
@@ -18,6 +23,9 @@
 
 static const int MAX_BITS_IN_LAU = 2048;
 
+//-----------------------------------------------------------------------------
+// Function: BusIfGeneralDetails::BusIfGeneralDetails()
+//-----------------------------------------------------------------------------
 BusIfGeneralDetails::BusIfGeneralDetails(QSharedPointer<BusInterface> busif, QWidget* parent ):
 QGroupBox(tr("General") ,parent),
     busif_(busif),
@@ -25,125 +33,128 @@ QGroupBox(tr("General") ,parent),
     connRequired_(tr("Connection required"), this),
     bitsInLau_(this),
     endianness_(this),
-    bitSteering_(this),
-    bitSteeringEnabled_(tr("Enable"), this)
+    bitSteering_(this)
 {
 	Q_ASSERT(busif_);
 
-	bitsInLau_.setRange(0, MAX_BITS_IN_LAU);
-	bitsInLau_.setSingleStep(1);
 	bitsInLau_.setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
 	endianness_.setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-	endianness_.addItem(QString("little"));
+    endianness_.addItem(QString("little"));
 	endianness_.addItem(QString("big"));
-
+    	
 	bitSteering_.addItem(QString("on"));
 	bitSteering_.addItem(QString("off"));
+    bitSteering_.addItem(QString(""));
 
     connect(&modeSelector_, SIGNAL(modeSelected(General::InterfaceMode)),
         this, SIGNAL(modeSelected(General::InterfaceMode)), Qt::UniqueConnection);
 	connect(&connRequired_, SIGNAL(stateChanged(int)),
         this, SLOT(onConnectionRequiredChanged()), Qt::UniqueConnection);
-	connect(&bitsInLau_, SIGNAL(valueChanged(int)),
-		this, SLOT(onAddressableUnitChanged(int)), Qt::UniqueConnection);
+	connect(&bitsInLau_, SIGNAL(editingFinished()),
+		this, SLOT(onAddressableUnitChanged()), Qt::UniqueConnection);
 	connect(&endianness_, SIGNAL(currentIndexChanged(int)),
 		this, SLOT(onEndiannessChanged()), Qt::UniqueConnection);
 	connect(&bitSteering_, SIGNAL(currentIndexChanged(int)),
-		this, SLOT(onBitSteeringChanged()), Qt::UniqueConnection);
-	connect(&bitSteeringEnabled_, SIGNAL(toggled(bool)),
 		this, SLOT(onBitSteeringChanged()), Qt::UniqueConnection);
 
     setupLayout();
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusIfGeneralDetails::~BusIfGeneralDetails()
+//-----------------------------------------------------------------------------
 BusIfGeneralDetails::~BusIfGeneralDetails()
 {
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusIfGeneralDetails::isValid()
+//-----------------------------------------------------------------------------
 bool BusIfGeneralDetails::isValid() const
 {
-    if (modeSelector_.currentIndex() == -1)
-    {
-        return false;
-    }
-
-    return true;
+    return modeSelector_.currentIndex() != -1;
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusIfGeneralDetails::refresh()
+//-----------------------------------------------------------------------------
 void BusIfGeneralDetails::refresh()
 {
     modeSelector_.setMode(busif_->getInterfaceMode());
 
-	connRequired_.setChecked(busif_->getConnectionRequired());
+	connRequired_.setChecked(busif_->getConnectionRequired() == "1");
 
-	bitsInLau_.setValue(busif_->getBitsInLau());
+	bitsInLau_.setText(busif_->getBitsInLau());
 
-	int endiannessIndex = endianness_.findText(General::endianness2Str(busif_->getEndianness()));
-	endianness_.setCurrentIndex(endiannessIndex);
+    endianness_.setCurrentIndex(busif_->getEndianness());
 
-	// if bit steering is not specified
-	if (busif_->getBitSteering() == General::BITSTEERING_UNSPECIFIED)
-    {
-		bitSteering_.setDisabled(true);
-		bitSteering_.setCurrentIndex(-1);
-		bitSteeringEnabled_.setChecked(false);
-	}
-	// if bit steering is specified then set it to correct value
-	else
-    {
-		disconnect(&bitSteering_, SIGNAL(currentIndexChanged(int)),	this, SLOT(onBitSteeringChanged()));
-		disconnect(&bitSteeringEnabled_, SIGNAL(toggled(bool)),	this, SLOT(onBitSteeringChanged()));
+    disconnect(&bitSteering_, SIGNAL(currentIndexChanged(int)),	this, SLOT(onBitSteeringChanged()));
 
-		bitSteeringEnabled_.setChecked(true);
-		bitSteering_.setEnabled(true);
-		int bitSteeringIndex = bitSteering_.findText(General::bitSteering2Str(busif_->getBitSteering()));
-		bitSteering_.setCurrentIndex(bitSteeringIndex);
+    bitSteering_.setCurrentIndex(busif_->getBitSteering());
 
-		connect(&bitSteering_, SIGNAL(currentIndexChanged(int)),
-			this, SLOT(onBitSteeringChanged()), Qt::UniqueConnection);
-		connect(&bitSteeringEnabled_, SIGNAL(toggled(bool)),
-			this, SLOT(onBitSteeringChanged()), Qt::UniqueConnection);
-	}
+    connect(&bitSteering_, SIGNAL(currentIndexChanged(int)),
+        this, SLOT(onBitSteeringChanged()), Qt::UniqueConnection);
+
 }
 
-void BusIfGeneralDetails::onAddressableUnitChanged(int newValue)
+//-----------------------------------------------------------------------------
+// Function: BusIfGeneralDetails::onAddressableUnitChanged()
+//-----------------------------------------------------------------------------
+void BusIfGeneralDetails::onAddressableUnitChanged()
 {
-	busif_->setBitsInLau(newValue);
+	busif_->setBitsInLau(bitsInLau_.text());
 	emit contentChanged();
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusIfGeneralDetails::onEndiannessChanged()
+//-----------------------------------------------------------------------------
 void BusIfGeneralDetails::onEndiannessChanged()
 {
-	busif_->setEndianness(General::str2Endianness(endianness_.currentText(), General::LITTLE));
+    if (endianness_.currentText() == QLatin1String("little"))
+    {
+        busif_->setEndianness(BusInterface::LITTLE_ENDIAN);
+    }
+    else
+    {
+        busif_->setEndianness(BusInterface::BIG_ENDIAN);
+    }
+
 	emit contentChanged();
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusIfGeneralDetails::onBitSteeringChanged()
+//-----------------------------------------------------------------------------
 void BusIfGeneralDetails::onBitSteeringChanged()
 {
 	disconnect(&bitSteering_, SIGNAL(currentIndexChanged(int)),	this, SLOT(onBitSteeringChanged()));
-	disconnect(&bitSteeringEnabled_, SIGNAL(toggled(bool)),	this, SLOT(onBitSteeringChanged()));
-	
-	// if bit steering is checked then enable the combo box
-	bitSteering_.setEnabled(bitSteeringEnabled_.isChecked());
 
 	// if bit steering is enabled
-	if (bitSteeringEnabled_.isChecked()) {
-		busif_->setBitSteering(General::str2BitSteering(bitSteering_.currentText()));
+	if (bitSteering_.currentText() == QLatin1String("on"))
+    {
+		busif_->setBitSteering(BusInterface::BITSTEERING_ON);
 	}
 	// if it was disabled
-	else {
-		busif_->setBitSteering(General::BITSTEERING_UNSPECIFIED);
+	else if (bitSteering_.currentText() == QLatin1String("off"))
+	{
+        busif_->setBitSteering(BusInterface::BITSTEERING_OFF);
+	}
+    else
+    {
+		busif_->setBitSteering(BusInterface::BITSTEERING_UNSPECIFIED);
 	}
 
 	connect(&bitSteering_, SIGNAL(currentIndexChanged(int)),
 		this, SLOT(onBitSteeringChanged()), Qt::UniqueConnection);
-	connect(&bitSteeringEnabled_, SIGNAL(toggled(bool)),
-		this, SLOT(onBitSteeringChanged()), Qt::UniqueConnection);
 
 	emit contentChanged();
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusIfGeneralDetails::onConnectionRequiredChanged()
+//-----------------------------------------------------------------------------
 void BusIfGeneralDetails::onConnectionRequiredChanged()
 {
 	busif_->setConnectionRequired(connRequired_.isChecked());
@@ -169,7 +180,6 @@ void BusIfGeneralDetails::setupLayout()
     QHBoxLayout* bitSteeringLayout = new QHBoxLayout();
     bitSteeringLayout->addWidget(bitSteeringLabel);
     bitSteeringLayout->addWidget(&bitSteering_);
-    bitSteeringLayout->addWidget(&bitSteeringEnabled_, 0);
     bitSteeringLayout->addStretch();
 
     QVBoxLayout* topLayout = new QVBoxLayout(this);

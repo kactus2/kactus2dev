@@ -25,32 +25,6 @@
 
 #include <QDebug>
 
-General::BitSteering General::str2BitSteering(const QString& str) {
-	if (str == QString("on")) {
-		return General::ON;
-	}
-	else if (str == QString("off")) {
-		return General::OFF;
-	}
-	else {
-		return General::BITSTEERING_UNSPECIFIED;
-	}
-}
-
-QString General::bitSteering2Str(const General::BitSteering bitSteering) {
-	switch (bitSteering) {
-	case General::ON: {
-		return QString("on");
-	}
-	case General::OFF: {
-		return QString("off");
-	}
-	default: {
-		return QString();
-	}
-	}
-}
-
 General::PortBounds::PortBounds():
 portName_(),
 left_(0),
@@ -240,36 +214,6 @@ QString General::bool2Str(bool value) {
 	else {
 		return QString("false");
 	}
-}
-
-General::Endianness General::str2Endianness(QString str,
-		General::Endianness defaultValue) {
-
-	if (str == QString("big")) {
-		return General::BIG;
-	}
-	else if (str == QString("little")) {
-		return General::LITTLE;
-	}
-	else {
-		return defaultValue;
-	}
-}
-
-QString General::endianness2Str(const General::Endianness endianness)
-{
-    if (endianness == General::BIG)
-    {
-        return QString("big");
-    }
-    else if (endianness == General::LITTLE)
-    {
-        return QString("little");
-    }
-    else
-    {
-        return QString();
-    }
 }
 
 General::Initiative General::str2Initiative(QString str,

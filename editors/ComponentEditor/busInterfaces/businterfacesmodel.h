@@ -12,13 +12,12 @@
 #ifndef BUSINTERFACESMODEL_H
 #define BUSINTERFACESMODEL_H
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/businterface.h>
-
 #include <QAbstractTableModel>
 #include <QSharedPointer>
 #include <QList>
 
+class BusInterface;
+class Component;
 class LibraryInterface;
 class ParameterFinder;
 
@@ -218,7 +217,7 @@ private:
 	QSharedPointer<Component> component_;
 
 	//! The bus interfaces being edited.
-	QList<QSharedPointer<BusInterface> >& busifs_;
+	QSharedPointer<QList<QSharedPointer<BusInterface> > > busifs_;
 
     //! The parameter finder.
     QSharedPointer<ParameterFinder> parameterFinder_;

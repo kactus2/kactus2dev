@@ -1,81 +1,116 @@
-/* 
- *
- *  Created on: 31.8.2010
- *      Author: Antti Kamppi
- */
+//-----------------------------------------------------------------------------
+// File: masterinterface.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 31.8.2010
+//
+// Description:
+// Implementation of ipxact:master in bus interface.
+//-----------------------------------------------------------------------------
 
 #include "masterinterface.h"
-#include "XmlUtils.h"
-
 
 #include <QString>
 #include <QMap>
 #include <QObject>
 
+//-----------------------------------------------------------------------------
+// Function: MasterInterface::MasterInterface()
+//-----------------------------------------------------------------------------
 MasterInterface::MasterInterface():
 addressSpaceRef_(), 
-baseAddress_(),
-prompt_(QString("Base Address:")),
-baseAttributes_() {
+    baseAddress_(),
+    baseAttributes_()
+{
 }
 
-MasterInterface::MasterInterface( const MasterInterface& other ):
+//-----------------------------------------------------------------------------
+// Function: MasterInterface::MasterInterface()
+//-----------------------------------------------------------------------------
+MasterInterface::MasterInterface(MasterInterface const& other):
 addressSpaceRef_(other.addressSpaceRef_),
-baseAddress_(other.baseAddress_),
-prompt_(other.prompt_),
-baseAttributes_(other.baseAttributes_) {
+    baseAddress_(other.baseAddress_),
+    baseAttributes_(other.baseAttributes_)
+{
+}
+
+//-----------------------------------------------------------------------------
+// Function: MasterInterface::operator=()
+//-----------------------------------------------------------------------------
+MasterInterface& MasterInterface::operator=(MasterInterface const& other)
+{
+    if (this != &other)
+    {
+        addressSpaceRef_ = other.addressSpaceRef_;
+        baseAddress_ = other.baseAddress_;
+        baseAttributes_ = other.baseAttributes_;
+    }
+
+    return *this;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MasterInterface::~MasterInterface()
+//-----------------------------------------------------------------------------
+MasterInterface::~MasterInterface()
+{
+}
+
+//-----------------------------------------------------------------------------
+// Function: MasterInterface::setAddressSpaceRef()
+//-----------------------------------------------------------------------------
+void MasterInterface::setAddressSpaceRef(QString const& addressSpaceRef)
+{
+    addressSpaceRef_ = addressSpaceRef;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MasterInterface::getAddressSpaceRef()
+//-----------------------------------------------------------------------------
+QString MasterInterface::getAddressSpaceRef() const
+{
+    return addressSpaceRef_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MasterInterface::setBaseAddress()
+//-----------------------------------------------------------------------------
+void MasterInterface::setBaseAddress(QString const& baseAddress)
+{
+    baseAddress_ = baseAddress;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MasterInterface::getBaseAddress()
+//-----------------------------------------------------------------------------
+QString MasterInterface::getBaseAddress() const
+{
+    return baseAddress_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MasterInterface::setBaseAttributes()
+//-----------------------------------------------------------------------------
+void MasterInterface::setBaseAttributes(QMap<QString, QString> const& baseAttributes)
+{
+    baseAttributes_ = baseAttributes;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MasterInterface::getBaseAttributes()
+//-----------------------------------------------------------------------------
+QMap<QString,QString> MasterInterface::getBaseAttributes() const
+{
+    return baseAttributes_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MasterInterface::getPrompt()
+//-----------------------------------------------------------------------------
+QString MasterInterface::getPrompt() const
+{
+    return baseAttributes_.value("ipxact:prompt");
 }
 
 
-MasterInterface& MasterInterface::operator=( const MasterInterface& other ) {
-	if (this != &other) {
-		addressSpaceRef_ = other.addressSpaceRef_;
-		baseAddress_ = other.baseAddress_;
-		prompt_ = other.prompt_;
-		baseAttributes_ = other.baseAttributes_;
-	}
-	return *this;
-}
-
-
-// the destructor
-MasterInterface::~MasterInterface() {
-}
-
-QString MasterInterface::getAddressSpaceRef() const {
-	return addressSpaceRef_;
-}
-
-QString MasterInterface::getBaseAddress() const {
-	return baseAddress_;
-}
-
-const QMap<QString,QString>& MasterInterface::getBaseAttributes() {
-
-	return baseAttributes_;
-}
-
-QString MasterInterface::getPrompt() const {
-	// if base address is not specified then there is no prompt for it either
-	if (baseAddress_.isEmpty())
-		return QString();
-
-	return prompt_;
-}
-
-void MasterInterface::setAddressSpaceRef(const QString& addressSpaceRef) {
-	this->addressSpaceRef_ = addressSpaceRef;
-}
-
-void MasterInterface::setBaseAddress(const QString& baseAddress) {
-	this->baseAddress_ = baseAddress;
-}
-
-void MasterInterface::setBaseAttributes(const
-		QMap<QString,QString>& baseAttributes) {
-	this->baseAttributes_ = baseAttributes;
-}
-
-void MasterInterface::setPrompt(const QString& prompt) {
-	this->prompt_ = prompt;
-}

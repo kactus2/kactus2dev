@@ -18,13 +18,13 @@
 #include <QSharedPointer>
 
 #include <IPXACTmodels/generaldeclarations.h>
-#include <IPXACTmodels/PortMap.h>
 
 class AbstractionDefinition;
 class BusInterface;
 class Component;
 class LibraryInterface;
 class PortMapsTreeItem;
+class PortMap;
 class VLNV;
 
 //-----------------------------------------------------------------------------
@@ -53,10 +53,8 @@ public:
      *
      *      @param [in] component  The component to which this model is made.
      */
-    PortMapsTreeModel(BusInterface* busif,
-        QSharedPointer<Component> component,
-        LibraryInterface* handler,
-        QObject *parent);
+    PortMapsTreeModel(QSharedPointer<BusInterface> busif, QSharedPointer<Component> component,
+        LibraryInterface* handler, QObject *parent);
 
     /*!
      *  Destructor.
@@ -76,7 +74,7 @@ public:
 
 	/*! Create a port map for given port map
 	 *
-	 * @param [in] portMap Port map to add to model.
+	 *      @param [in] portMap Port map to add to model.
 	 *
 	*/
 	void createMap(QSharedPointer<PortMap> portMap);
@@ -114,50 +112,49 @@ public:
 
     /*! Get the model index of the specified object.
      *
-     * @param [in] row Row number of the object.
-     * @param [in] column Column number of the object.
-     * @param [in] parent Model index of the parent of the object.
+     *      @param [in] row Row number of the object.
+     *      @param [in] column Column number of the object.
+     *      @param [in] parent Model index of the parent of the object.
      *
-     * @return QModelIndex that identifies the object.
+     *      @return QModelIndex that identifies the object.
     */
     virtual QModelIndex index(int row, int column,
     		const QModelIndex &parent = QModelIndex()) const;
 
     /*! Get the model index of the parent of the object
      *
-     * @param [in] child Model index that identifies the child of the object.
+     *      @param [in] child Model index that identifies the child of the object.
      *
-     * @return QModelIndex that identifies the parent of the given object.
+     *      @return QModelIndex that identifies the parent of the given object.
     */
     virtual QModelIndex parent(QModelIndex const& child) const;
 
     /*! Get the data associated with given object.
      *
-     * @param [in] index Model index that identifies the object that's data is wanted.
-     * @param [in] role Specifies the type of data wanted.
+     *      @param [in] index Model index that identifies the object that's data is wanted.
+     *      @param [in] role Specifies the type of data wanted.
      *
-     * @return QVariant Containing the requested data.
+     *      @return QVariant Containing the requested data.
     */
-    virtual QVariant data(const QModelIndex& index,
-    		              int role = Qt::DisplayRole) const;
+    virtual QVariant data(QModelIndex const& index, int role = Qt::DisplayRole) const;
 
     virtual bool setData(const QModelIndex &index, const QVariant &value, int role /* = Qt::EditRole */);
 
     /*! Does the specified item have child items or not.
      *
-     * @param [in] parent Model index identifying the object that's children are asked.
+     *      @param [in] parent Model index identifying the object that's children are asked.
      *
-     * @return True if object has child objects.
+     *      @return True if object has child objects.
     */
-    virtual bool hasChildren(const QModelIndex& parent = QModelIndex()) const;
+    virtual bool hasChildren(QModelIndex const& parent = QModelIndex()) const;
 
     /*! Get the flags that identify possible methods for given object.
      *
-     * @param [in] index Model index identifying the object that's flags are requested.
+     *      @param [in] index Model index identifying the object that's flags are requested.
      *
-     * @return Qt::ItemFlags that specify how the object can be handled.
+     *      @return Qt::ItemFlags that specify how the object can be handled.
     */
-    Qt::ItemFlags flags(const QModelIndex& index) const;
+    Qt::ItemFlags flags(QModelIndex const& index) const;
 
     /*!
      *  Returns the number of files in the model.
@@ -182,21 +179,21 @@ public:
 
 	/*! Get list of logical ports in this model.
 	 *
-	 * @return QStringList containing the port names
+	 *      @return QStringList containing the port names
 	*/
 	QStringList logicalPorts() const;
 
 	/*! Set the abstraction definition that is used in this port map.
 	 *
-	 * @param [in] vlnv Identifies the abstraction definition.
+	 *      @param [in] vlnv Identifies the abstraction definition.
 	 *
 	*/
 	void setAbsType(const VLNV& vlnv, General::InterfaceMode mode);
 
 	/*! Check if the two ports can be mapped together.
 	 *
-	 * @param [in] physicalPort Identifies the physical port.
-	 * @param [in] logicalPort  Identifies the logical port.
+	 *      @param [in] physicalPort Identifies the physical port.
+	 *      @param [in] logicalPort  Identifies the logical port.
 	 *
 	 * @return True, if port mapping can be done, otherwise false.
 	*/
@@ -253,7 +250,6 @@ private:
     PortMapsTreeModel(PortMapsTreeModel const& rhs);
     PortMapsTreeModel& operator=(PortMapsTreeModel const& rhs);
 
-
     /*!
      * Returns a pointer to the item with a given name.
      *
@@ -287,7 +283,7 @@ private:
     PortMapsTreeItem* root_;
 
     //! Pointer to the bus interface being edited.
-    BusInterface* busif_;    
+    QSharedPointer<BusInterface> busif_;    
 
     //! Pointer to the abstraction definition that is used.
     QSharedPointer<AbstractionDefinition> absDef_;
@@ -296,7 +292,7 @@ private:
     General::InterfaceMode interfaceMode_;
 
     //! Pointer to the data structure within the model containing the port maps.
-    QList<QSharedPointer<PortMap> >& portMaps_;
+    QSharedPointer<QList<QSharedPointer<PortMap> > > portMaps_;
 };
 
 //-----------------------------------------------------------------------------

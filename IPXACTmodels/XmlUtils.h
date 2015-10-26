@@ -22,8 +22,6 @@
 #include <QVector2D>
 #include <QSharedPointer>
 
-class VendorExtension;
-
 //-----------------------------------------------------------------------------
 
 namespace XmlUtils
@@ -49,7 +47,7 @@ namespace XmlUtils
      * \return QString containing the string that has been stripped from
      * whitespaces and embedded whitespaces have been replaces with '_'
      */
-    IPXACTMODELS_EXPORT QString removeWhiteSpace(QString str);
+    IPXACTMODELS_EXPORT QString removeWhiteSpace(QString const& str);
 
     /*! Parses the attributes from the root of the given node to a QMap.
      *
@@ -79,15 +77,6 @@ namespace XmlUtils
     void parsePositionsMap(QDomNode& node, QString const& identifier,
                            QString const& refIdentifier, QMap<QString, QPointF>& positions);
 
-    /*!
-     *  Parses ad-hoc visibilities (and positions) from the given XML node.
-     *
-     *      @param [in]  node                   The XML node containing the ad-hoc information.
-     *      @param [out] portAdHocVisibilities  The read ad-hoc visibilities.
-     *      @param [out] adHocPortPositions     The read ad-hoc port positions.
-     */
-    void parseAdHocVisibilities(QDomNode& node, QMap<QString, bool>& portAdHocVisibilities,
-                                QMap<QString, QPointF>& adHocPortPositions);
 
     IPXACTMODELS_EXPORT QPointF parsePoint(QDomNode const& node);
 
@@ -108,18 +97,6 @@ namespace XmlUtils
     void writeDirection(QXmlStreamWriter& xmlWriter, QVector2D const& dir);
 
     /*!
-     *  Writes the given port ad-hoc visibilities along with the port positions to
-     *  a specific XML format.
-     *
-     *      @param [in] xmlWriter           The XML writer.
-     *      @param [in] adHocVisibilities   The ad-hoc visibilities to write.
-     *      @param [in] adHocPortPositions  The ad-hoc port positions to write.
-     */
-    void writeAdHocVisibilities(QXmlStreamWriter& xmlWriter,
-                                QMap<QString, bool> const& adHocVisibilities,
-                                QMap<QString, QPointF> const& adHocPortPositions);
-
-    /*!
      *  Writes the given positions map to the XML stream, using the given identifier
      *  as the XML node name for the child items and reference identifier for the key.
      *
@@ -131,14 +108,6 @@ namespace XmlUtils
     void writePositionsMap(QXmlStreamWriter& writer, QMap<QString, QPointF> const& positions,
                            QString const& identifier, QString const& refIdentifier);
 
-    /*!
-     *  Writes the vendor extensions to an XML using the given XML writer.
-     *
-     *      @param [in] writer              The writer to use.
-     *      @param [in] vendorExtensions    The vendor extensions to write.
-     */
-    void writeVendorExtensions(QXmlStreamWriter& writer, 
-                               QList<QSharedPointer<VendorExtension> > const& vendorExtensions);
     
 }
 

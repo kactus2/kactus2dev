@@ -58,31 +58,6 @@ IPXACTMODELS_EXPORT General::Presence str2Presence(QString str, General::Presenc
  */
 IPXACTMODELS_EXPORT QString presence2Str(General::Presence presence);
 
-enum BitSteering {
-	ON,
-	OFF,
-	BITSTEERING_UNSPECIFIED
-};
-
-/*! \brief Converts the QString to enum BitSteering
- *
- * If string doesn't match any enum value then BITSTEERING_UNSPECIFIED
- * is returned.
- *
- * \param str The QString that is converted to BitSteering.
- *
- * \return BitSteering value that matches string or BITSTEERING_UNSPECIFIED
- */
-IPXACTMODELS_EXPORT General::BitSteering str2BitSteering(const QString& str);
-
-/*! \brief Converts the enum BitSteering into QString
- *
- * \param bitSteering the enum value that is converted to QString
- *
- * \return QString that matches the bitSteering value
- */
-IPXACTMODELS_EXPORT QString bitSteering2Str(const General::BitSteering bitSteering);
-
 /*! \brief Convert the value of the QString into enum Presence
  *
  * if The str does not match any of the enum values the default value
@@ -162,35 +137,6 @@ enum GroupSelectorOperator {
 General::GroupSelectorOperator str2GroupSelector(QString str,
 		General::GroupSelectorOperator defaultValue);
 
-/*!
- * Endianness is used to indicate the endianness of a bus interface.
- */
-enum Endianness {
-	BIG,
-	LITTLE,
-    ENDIANNESS_UNSPECIFIED
-};
-
-/*! \brief Convert the value of the QString into enum Endianness
- *
- * If the str does not contain strings "big" or "little" then the
- * default value specifies in the parameter will be returned
- *
- * \param str QString containing the string to be converted
- * \param defaultValue The default value that will be returned if the
- * conversion was not successful
- * \return General:Endianness The value found in the string or defaultValue
- */
-IPXACTMODELS_EXPORT General::Endianness str2Endianness(QString str,
-		General::Endianness defaultValue);
-
-/*! \brief Convert the Endianness to QString
- *
- * \param endianness Endianness value that is converted to QString
- *
- * \return QString that matches the enum value.
- */
-IPXACTMODELS_EXPORT QString endianness2Str(const General::Endianness endianness);
 
 /*! \brief  Defines the type of access.
  *

@@ -9,21 +9,23 @@
 // Writer class for IP-XACT businterface element.
 //-----------------------------------------------------------------------------
 
-#include "BusinterfaceWriter.h"
+#include "businterfaceWriter.h"
 #include "../masterinterface.h"
 #include "../XmlUtils.h"
 #include "../masterinterface.h"
 #include "../mirroredslaveinterface.h"
 #include "../slaveinterface.h"
+
 #include <IPXACTmodels/common/NameGroupWriter.h>
+#include <IPXACTmodels/common/ParameterWriter.h>
+
 #include <QXmlStreamWriter>
 #include <QDomNamedNodeMap>
-#include <IPXACTmodels/common/ParameterWriter.h>
 
 //-----------------------------------------------------------------------------
 // Function: businterfaceWriter::businterfaceWriter()
 //-----------------------------------------------------------------------------
-businterfaceWriter::businterfaceWriter(QObject* parent /* = 0 */) :
+businterfaceWriter::businterfaceWriter(QObject* parent) :
 CommonItemsWriter(parent)
 {
 
@@ -49,30 +51,30 @@ void businterfaceWriter::writebusinterface(QXmlStreamWriter& writer, QSharedPoin
 	{
 		XmlUtils::writeAttributes(writer, businterface->getAttributes());
 	}
-
+    
 	// Start the element, write name group, presence and, vendor extensions with pre-existing writers.
 	writeNameGroup(writer, businterface);
 	writeIsPresent(writer, businterface);
 
-    // Write always bus type, conection requirement the bits in lau, and endianess.
+    // Write always bus type, connection requirement the bits in lau, and endianess.
     writer.writeEmptyElement("ipxact:busType");
-    businterface->getBusType().writeAsAttributes(writer);
+    writeVLNVAttributes(writer, businterface->getBusType());
 
-    writeAbstractionTypes(businterface, writer);
+    writeAbstractionTypes(writer, businterface);
 
-    writeInterfaceMode(businterface, writer);
+    writeInterfaceMode(writer, businterface);
 
     writeConnectionRequired(writer, businterface);
 
     writeBitsInLau(writer, businterface);
 
-    writeBitSteering(businterface, writer);
+    writeBitSteering(writer, businterface);
 
     writeEndianness(writer, businterface);
 
-	writeParameters(businterface, writer);
+	writeParameters(writer, businterface->getParameters());
 
-    writeVendorExtensions( writer, businterface );
+    writeVendorExtensions(writer, businterface);
 
 	writer.writeEndElement(); // ipxact:busInterface
 }
@@ -114,7 +116,6 @@ void businterfaceWriter::writeConnectionRequired(QXmlStreamWriter& writer,
 //-----------------------------------------------------------------------------
 void businterfaceWriter::writeBitsInLau(QXmlStreamWriter& writer, QSharedPointer<BusInterface> busInterface) const
 {
-    //writer.writeTextElement("ipxact:bitsInLau", QString::number(businterface->getBitsInLau()));
     if (!busInterface->getBitsInLau().isEmpty())
     {
         writer.writeTextElement("ipxact:bitsInLau", busInterface->getBitsInLau());
@@ -126,41 +127,27 @@ void businterfaceWriter::writeBitsInLau(QXmlStreamWriter& writer, QSharedPointer
 //-----------------------------------------------------------------------------
 void businterfaceWriter::writeEndianness(QXmlStreamWriter& writer, QSharedPointer<BusInterface> busInterface) const
 {
-    if (busInterface->getEndianness() != General::ENDIANNESS_UNSPECIFIED)
+    BusInterface::Endianness endianess = busInterface->getEndianness();
+    if (endianess == BusInterface::BIG_ENDIAN)
     {
-        QString endiannessString = General::endianness2Str(busInterface->getEndianness());
-        writer.writeTextElement("ipxact:endianness", endiannessString);
+        writer.writeTextElement("ipxact:endianness", "big");
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: businterfaceWriter::writeParameters()
-//-----------------------------------------------------------------------------
-void businterfaceWriter::writeParameters(QSharedPointer<BusInterface> businterface, QXmlStreamWriter &writer) const
-{
-	if (businterface->getParameters()->size() != 0)
-	{
-		writer.writeStartElement("ipxact:parameters");
-
-		// Write each parameter with the parameter writer.
-		ParameterWriter parameterWriter;
-
-		for (int i = 0; i < businterface->getParameters()->size(); ++i)
-		{
-			parameterWriter.writeParameter(writer, businterface->getParameters()->at(i));
-		}
-
-		writer.writeEndElement(); 
-	}
+    else if (endianess == BusInterface::LITTLE_ENDIAN)
+    {
+        writer.writeTextElement("ipxact:endianness", "little");
+    }
 }
 
 //-----------------------------------------------------------------------------
 // Function: businterfaceWriter::writeBitSteering()
 //-----------------------------------------------------------------------------
-void businterfaceWriter::writeBitSteering(QSharedPointer<BusInterface> businterface, QXmlStreamWriter &writer) const
+void businterfaceWriter::writeBitSteering(QXmlStreamWriter& writer,
+    QSharedPointer<BusInterface> businterface) const
 {
+    BusInterface::BitSteering bitSteering = businterface->getBitSteering();
+
 	// If the bitSteering has been defined.
-	if (businterface->getBitSteering() != General::BITSTEERING_UNSPECIFIED)
+	if (bitSteering != BusInterface::BITSTEERING_UNSPECIFIED)
 	{
 		// Start the ipxact:bitSteering tag.
 		writer.writeStartElement("ipxact:bitSteering");
@@ -169,7 +156,15 @@ void businterfaceWriter::writeBitSteering(QSharedPointer<BusInterface> businterf
 		XmlUtils::writeAttributes(writer, businterface->getBitSteeringAttributes());
 
 		// Write the value of the element and close the tag.
-		writer.writeCharacters(General::bitSteering2Str(businterface->getBitSteering()));
+        if (bitSteering == BusInterface::BITSTEERING_ON)
+        {
+            writer.writeCharacters("on");
+        }
+        else if (bitSteering == BusInterface::BITSTEERING_OFF)
+        {
+            writer.writeCharacters("off");
+        }
+
 		writer.writeEndElement();
 	}
 }
@@ -177,222 +172,184 @@ void businterfaceWriter::writeBitSteering(QSharedPointer<BusInterface> businterf
 //-----------------------------------------------------------------------------
 // Function: businterfaceWriter::writeAbstractionTypes()
 //-----------------------------------------------------------------------------
-void businterfaceWriter::writeAbstractionTypes(QSharedPointer<BusInterface> businterface, QXmlStreamWriter &writer) const
+void businterfaceWriter::writeAbstractionTypes(QXmlStreamWriter& writer,
+    QSharedPointer<BusInterface> businterface) const
 {
-	// Write each abstraction type.
     if (!businterface->getAbstractionTypes()->isEmpty())
 	{
 		writer.writeStartElement("ipxact:abstractionTypes");
 
-		foreach ( QSharedPointer<BusInterface::AbstractionType> abstractionType,
-            *businterface->getAbstractionTypes() )
+		foreach (QSharedPointer<AbstractionType> abstractionType, *businterface->getAbstractionTypes())
 		{
 			writer.writeStartElement("ipxact:abstractionType");
 
-			// Write view reference.
-			if ( !abstractionType->viewRef_.isEmpty() )
+			if (!abstractionType->getViewRef().isEmpty() )
 			{
-				writer.writeTextElement("ipxact:viewRef", abstractionType->viewRef_);
+				writer.writeTextElement("ipxact:viewRef", abstractionType->getViewRef());
 			}
 
-			// Write abstraction reference.
-			if ( abstractionType->abstractionRef_ )
-			{
-				writer.writeEmptyElement("ipxact:abstractionRef");
+            writer.writeEmptyElement("ipxact:abstractionRef");
+            writeVLNVAttributes(writer, *abstractionType->getAbstractionRef());
 
-				abstractionType->abstractionRef_->writeAsAttributes(writer);
-			}
+            writePortMaps(writer, abstractionType);
 
-			// Write each port map.
-            if (!abstractionType->portMaps_->isEmpty())
-			{
-				writer.writeStartElement("ipxact:portMaps");
-
-				foreach ( QSharedPointer<PortMap> portMap, *abstractionType->portMaps_ )
-				{
-					writer.writeStartElement("ipxact:portMap");
-
-					// Write logical tie off for the port map.
-					if ( !portMap->getLogicalTieOff().isEmpty() )
-					{
-						writer.writeTextElement("ipxact:logicalTieOff", portMap->getLogicalTieOff());
-					}
-
-					// Write ports for the port map.
-					writeLogicalPort(portMap, writer);
-
-					writePhysicalPort(portMap, writer);
-
-					writer.writeEndElement();
-				}
-
-				writer.writeEndElement();
-			}
-
-			writer.writeEndElement();
+			writer.writeEndElement(); // ipxact:abstractionType
 		}
 
-		writer.writeEndElement();
+		writer.writeEndElement(); // ipxact:abstractionTypes
 	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: businterfaceWriter::writePortMaps()
+//-----------------------------------------------------------------------------
+void businterfaceWriter::writePortMaps(QXmlStreamWriter& writer, 
+    QSharedPointer<AbstractionType> abstractionType) const
+{
+    if (!abstractionType->getPortMaps()->isEmpty())
+    {
+        writer.writeStartElement("ipxact:portMaps");
+
+        foreach (QSharedPointer<PortMap> portMap, *abstractionType->getPortMaps())
+        {
+            writer.writeStartElement("ipxact:portMap");
+
+            if (!portMap->getLogicalTieOff().isEmpty() )
+            {
+                writer.writeTextElement("ipxact:logicalTieOff", portMap->getLogicalTieOff());
+            }
+
+            // Write ports for the port map.
+            writeLogicalPort(writer, portMap->getLogicalPort());
+            writePhysicalPort(writer, portMap->getPhysicalPort());
+
+            writer.writeEndElement();
+        }
+
+        writer.writeEndElement();
+    }
 }
 
 //-----------------------------------------------------------------------------
 // Function: businterfaceWriter::writeLogicalPort()
 //-----------------------------------------------------------------------------
-void businterfaceWriter::writeLogicalPort(QSharedPointer<PortMap> portMap, QXmlStreamWriter &writer) const
+void businterfaceWriter::writeLogicalPort(QXmlStreamWriter& writer, 
+    QSharedPointer<PortMap::LogicalPort> logicalPort) const
 {
-	QSharedPointer<PortMap::LogicalPort> lport = portMap->getLogicalPort();
+    writer.writeStartElement("ipxact:logicalPort");
+    writer.writeTextElement("ipxact:name", logicalPort->name_);
 
-	if ( lport )
-	{
-		// Logical port exists: Write it, including its name.
-		writer.writeStartElement("ipxact:logicalPort");
-		writer.writeTextElement("ipxact:name", lport->name_);
+    // Write range of the logical port.
+    if (logicalPort->range_)
+    {
+        writer.writeStartElement("ipxact:range");
+        writer.writeTextElement("ipxact:left", logicalPort->range_->getLeft());
+        writer.writeTextElement("ipxact:right", logicalPort->range_->getRight());
+        writer.writeEndElement();
+    }
 
-		// Write range of the logical port.
-		if ( lport->range_ )
-		{
-			writer.writeStartElement("ipxact:range");
-
-			writer.writeTextElement("ipxact:left", lport->range_->getLeft());
-			writer.writeTextElement("ipxact:right", lport->range_->getRight());
-
-			writer.writeEndElement();
-		}
-
-		writer.writeEndElement();
-	}
+    writer.writeEndElement();
 }
 
 //-----------------------------------------------------------------------------
 // Function: businterfaceWriter::writePhysicalPort()
 //-----------------------------------------------------------------------------
-void businterfaceWriter::writePhysicalPort(QSharedPointer<PortMap> portMap, QXmlStreamWriter &writer) const
+void businterfaceWriter::writePhysicalPort(QXmlStreamWriter& writer, 
+    QSharedPointer<PortMap::PhysicalPort> physicalPort) const
 {
-	QSharedPointer<PortMap::PhysicalPort> pport = portMap->getPhysicalPort();
+    writer.writeStartElement("ipxact:physicalPort");
+    writer.writeTextElement("ipxact:name", physicalPort->name_);
 
-	if ( pport )
-	{
-		// Physical port exists: Write it, including its name.
-		writer.writeStartElement("ipxact:physicalPort");
-		writer.writeTextElement("ipxact:name", pport->name_);
+    QSharedPointer<PartSelect> partSelect = physicalPort->partSelect_;
 
-		QSharedPointer<PartSelect> partSelect = pport->partSelect_;
+    // Part select exists: Write its range.
+    if (partSelect)
+    {
+        writer.writeStartElement("ipxact:partSelect");
 
-		// Part select exists: Write its range.
-		if ( partSelect )
-		{
-			writer.writeStartElement("ipxact:partSelect");
+        writer.writeStartElement("ipxact:range");
+        writer.writeTextElement("ipxact:left", partSelect->getLeftRange());
+        writer.writeTextElement("ipxact:right", partSelect->getRightRange());
+        writer.writeEndElement();
 
-			writer.writeStartElement("ipxact:range");
+        // Write all indices of the part select.
+        if (!partSelect->getIndices()->isEmpty())
+        {
+            writer.writeStartElement("ipxact:indices");
 
-			writer.writeTextElement("ipxact:left", partSelect->getLeftRange());
-			writer.writeTextElement("ipxact:right", partSelect->getRightRange());
+            foreach (QString const& index, *partSelect->getIndices())
+            {
+                writer.writeTextElement("ipxact:index", index);
+            }
 
-			writer.writeEndElement();
+            writer.writeEndElement(); // ipxact:indices
+        }
 
-			// Write all indices of the part select.
-			if (!partSelect->getIndices()->isEmpty())
-			{
-				writer.writeStartElement("ipxact:indices");
+        writer.writeEndElement(); // ipxact:partSelect
+    }
 
-				foreach (QString index, *partSelect->getIndices())
-				{
-					writer.writeTextElement("ipxact:index", index);
-				}
-
-				writer.writeEndElement();
-			}
-
-			writer.writeEndElement(); 
-		}
-
-		writer.writeEndElement();
-	}
+    writer.writeEndElement(); // ipxact:physicalPort
 }
 
 //-----------------------------------------------------------------------------
 // Function: businterfaceWriter::writeInterfaceMode()
 //-----------------------------------------------------------------------------
-void businterfaceWriter::writeInterfaceMode(QSharedPointer<BusInterface> businterface, QXmlStreamWriter &writer) const
+void businterfaceWriter::writeInterfaceMode(QXmlStreamWriter& writer,
+    QSharedPointer<BusInterface> businterface) const
 {
+    General::InterfaceMode interfaceMode = businterface->getInterfaceMode();
+
 	// Select the correct writer function for the interface mode.
-	switch (businterface->getInterfaceMode())
-	{
-	case General::MASTER:
-		{
-			writeMasterInterface(businterface, writer, false);
+    if (interfaceMode == General::MASTER)
+    {
+        writeMasterInterface(writer, businterface->getMaster(), false);
+    }   
+    
+    else if(interfaceMode == General::MIRROREDMASTER)
+    {
+        writeMasterInterface(writer, businterface->getMaster(), true);
+    }
 
-			break;
-		}
+    else if(interfaceMode == General::SLAVE)
+    {
+        writeSlaveInterface(writer, businterface->getSlave());
+    }
 
-	case General::SLAVE:
-		{
-			writeSlaveInterface(businterface, writer);
+    else if(interfaceMode == General::MIRROREDSLAVE)
+    {
+        writeMirroredSlaveInterface(writer, businterface->getMirroredSlave());
+    }
 
-			break;
-		}
+    else if(interfaceMode == General::SYSTEM && !businterface->getSystem().isEmpty())
+    {
+        writer.writeStartElement("ipxact:system");
+        writer.writeTextElement("ipxact:group", businterface->getSystem());
+        writer.writeEndElement();
+    }
 
-	case General::SYSTEM:
-		{
-			if (!businterface->getSystem().isEmpty())
-			{
-				writer.writeStartElement("ipxact:system");
-				writer.writeTextElement("ipxact:group", businterface->getSystem());
-				writer.writeEndElement();
-			}
-			break;
-		}
+    else if(interfaceMode == General::MIRROREDSYSTEM && !businterface->getSystem().isEmpty())
+    {
+        writer.writeStartElement("ipxact:mirroredSystem");
+        writer.writeTextElement("ipxact:group", businterface->getSystem());
+        writer.writeEndElement(); 
+    }
 
-	case General::MIRROREDSLAVE:
-		{
-			writeMirroredSlaveInterface(businterface, writer);
-
-			break;
-		}
-
-	case General::MIRROREDSYSTEM:
-		{
-			if (!businterface->getSystem().isEmpty())
-			{
-				writer.writeStartElement("ipxact:mirroredSystem");
-				writer.writeTextElement("ipxact:group", businterface->getSystem());
-				writer.writeEndElement(); 
-			}
-			break;
-		}
-
-	case General::MIRROREDMASTER:
-		{
-			writeMasterInterface(businterface, writer, true);
-
-			break;
-		}
-
-	case General::MONITOR:
-		{
-			writeMonitorInterface(businterface, writer);
-
-			break;
-		}
-
-	default:
-		break;
-	}
+    else if(interfaceMode == General::MONITOR)
+    {
+        writeMonitorInterface(writer, businterface);
+    }
 }
 
 //-----------------------------------------------------------------------------
 // Function: businterfaceWriter::writeMasterInterface()
 //-----------------------------------------------------------------------------
-void businterfaceWriter::writeMasterInterface(QSharedPointer<BusInterface> businterface,
-	QXmlStreamWriter &writer, bool mirrored) const
+void businterfaceWriter::writeMasterInterface(QXmlStreamWriter& writer,
+    QSharedPointer<MasterInterface> masterInterface, bool mirrored) const
 {
-	QSharedPointer<MasterInterface> master = businterface->getMaster();
-
-	if (master)
+	if (masterInterface)
 	{
 		// Write interface type based on parameter.
-		if ( mirrored )
+		if (mirrored)
 		{
 			writer.writeStartElement("ipxact:mirroredMaster");
 		}
@@ -401,91 +358,49 @@ void businterfaceWriter::writeMasterInterface(QSharedPointer<BusInterface> busin
 			writer.writeStartElement("ipxact:master");
 		}
 
-		// Write address space reference if it exists.
-		if ( !master->getAddressSpaceRef().isEmpty() )
-		{
-			writer.writeStartElement("ipxact:addressSpaceRef");
-			writer.writeAttribute("ipxact:addressSpaceRef", master->getAddressSpaceRef());
-		}
+        if (!masterInterface->getAddressSpaceRef().isEmpty() ||
+            !masterInterface->getBaseAddress().isEmpty())
+        {
+            writer.writeStartElement("ipxact:addressSpaceRef");
 
-		// Write base address if it exists.
-		if (!master->getBaseAddress().isEmpty())
-		{
-			writer.writeStartElement("ipxact:baseAddress");
+            // Write address space reference if it exists.
+            if (!masterInterface->getAddressSpaceRef().isEmpty())
+            {			
+                writer.writeAttribute("ipxact:addressSpaceRef", masterInterface->getAddressSpaceRef());
+            }
 
-			// Write prompt attribute if it exist.
-			if (!master->getPrompt().isEmpty())
-			{
-				writer.writeAttribute("ipxact:prompt", master->getPrompt());
-			}
+            // Write base address if it exists.
+            if (!masterInterface->getBaseAddress().isEmpty())
+            {
+                writer.writeStartElement("ipxact:baseAddress");
 
-			// Write the rest of the attributes.
-			XmlUtils::writeAttributes(writer, master->getBaseAttributes());
+                // Write prompt attribute if it exist.
+                if (!masterInterface->getPrompt().isEmpty())
+                {
+                    writer.writeAttribute("ipxact:prompt", masterInterface->getPrompt());
+                }
 
-			// Write the value of the baseAddress element and close the tag.
-			writer.writeCharacters(master->getBaseAddress());
-			writer.writeEndElement();
-		}
+                // Write the rest of the attributes.
+                XmlUtils::writeAttributes(writer, masterInterface->getBaseAttributes());
 
-		writer.writeEndElement();
+                // Write the value of the baseAddress element and close the tag.
+                writer.writeCharacters(masterInterface->getBaseAddress());
+                writer.writeEndElement(); // ipxact:baseAddress
+            }
 
-		writer.writeEndElement();
+            writer.writeEndElement(); // ipxact:addressSpaceRef
+        }
+        
+		writer.writeEndElement(); // ipxact:(mirrored)Master
 	}
 }
 
-//-----------------------------------------------------------------------------
-// Function: businterfaceWriter::writeMirroredSlaveInterface()
-//-----------------------------------------------------------------------------
-void businterfaceWriter::writeMirroredSlaveInterface(QSharedPointer<BusInterface> businterface, QXmlStreamWriter &writer) const
-{
-	QSharedPointer<MirroredSlaveInterface> slave = businterface->getMirroredSlave();
-
-	if (slave)
-	{
-		writer.writeStartElement("ipxact:mirroredSlave");
-		writer.writeStartElement("ipxact:baseAddresses");
-
-		// Write all remap addresses.
-		for (int i = 0; i < slave->getRemapAddresses().size(); ++i)
-		{
-			QSharedPointer<MirroredSlaveInterface::RemapAddress> ra = slave->getRemapAddresses().at(i);
-
-			writer.writeStartElement("ipxact:remapAddress");
-
-			// Write state if it exists.
-			if (!ra->state_.isEmpty())
-			{
-				writer.writeAttribute("state", ra->state_);
-			}
-
-			// Write the rest of the attributes.
-			XmlUtils::writeAttributes(writer, ra->remapAttributes_);
-
-			writer.writeCharacters(ra->remapAddress_);
-			writer.writeEndElement();
-		}
-
-		// Write range if it exists.
-		if (!slave->getRange().isEmpty())
-		{
-			writer.writeStartElement("ipxact:range");
-
-			writer.writeCharacters(slave->getRange());
-			writer.writeEndElement();
-		}
-
-		writer.writeEndElement();
-		writer.writeEndElement();
-	}
-}
 
 //-----------------------------------------------------------------------------
 // Function: businterfaceWriter::writeSlaveInterface()
 //-----------------------------------------------------------------------------
-void businterfaceWriter::writeSlaveInterface(QSharedPointer<BusInterface> businterface, QXmlStreamWriter &writer) const
+void businterfaceWriter::writeSlaveInterface(QXmlStreamWriter& writer, QSharedPointer<SlaveInterface> slave) const
 {
-	QSharedPointer<SlaveInterface> slave = businterface->getSlave();
-
 	if (slave)
 	{
 		writer.writeStartElement("ipxact:slave");
@@ -498,49 +413,88 @@ void businterfaceWriter::writeSlaveInterface(QSharedPointer<BusInterface> busint
 		}
 
 		// Write all bridges.
-		for (int i = 0; i < slave->getBridges().size(); ++i)
+		foreach (QSharedPointer<SlaveInterface::Bridge> bridge, *slave->getBridges())
 		{
 			// Bridge has a master reference.
 			writer.writeStartElement("ipxact:transparentBridge");
-			writer.writeAttribute("masterRef", slave->getBridges().at(i)->masterRef_);
+			writer.writeAttribute("masterRef", bridge->masterRef_);
 
 			// Bridge has present.
-			if (!slave->getBridges().at(i)->isPresent_.isEmpty())
+			if (!bridge->isPresent_.isEmpty())
 			{
-				writer.writeTextElement("ipxact:isPresent", slave->getBridges().at(i)->isPresent_);
+				writer.writeTextElement("ipxact:isPresent", bridge->isPresent_);
 			}
 
 			writer.writeEndElement();
 		}
 
-		// Write file set refrence groups.
-		for (int i = 0; i < slave->getFileSetRefGroup().size(); ++i)
+		// Write file set reference groups.
+		foreach (QSharedPointer<SlaveInterface::FileSetRefGroup> filesetRef, *slave->getFileSetRefGroup())
 		{
-			QSharedPointer<SlaveInterface::FileSetRefGroup> fsrg =
-				slave->getFileSetRefGroup().at(i);
-
 			writer.writeStartElement("ipxact:fileSetRefGroup");
 
 			// Write the name of the group.
-			writer.writeTextElement("ipxact:group", fsrg->group_);
+			writer.writeTextElement("ipxact:group", filesetRef->group_);
 
 			// Write all the fileSetRefs for this group.
-			for (int j = 0; j < fsrg->fileSetRefs_.size(); ++j)
+			for (int j = 0; j < filesetRef->fileSetRefs_.size(); ++j)
 			{
-				writer.writeTextElement("ipxact:fileSetRef", fsrg->fileSetRefs_.at(j));
+				writer.writeTextElement("ipxact:fileSetRef", filesetRef->fileSetRefs_.at(j));
 			}
 
-			writer.writeEndElement();
+			writer.writeEndElement(); // ipxact:fileSetRefGroup
 		}
 
-		writer.writeEndElement();
+		writer.writeEndElement(); // ipaxct:slave
 	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: businterfaceWriter::writeMirroredSlaveInterface()
+//-----------------------------------------------------------------------------
+void businterfaceWriter::writeMirroredSlaveInterface(QXmlStreamWriter& writer,
+    QSharedPointer<MirroredSlaveInterface> mirroredSlave) const
+{
+    if (mirroredSlave)
+    {
+        writer.writeStartElement("ipxact:mirroredSlave");
+        writer.writeStartElement("ipxact:baseAddresses");
+
+        // Write all remap addresses.
+        foreach (QSharedPointer<MirroredSlaveInterface::RemapAddress> remapAddress, 
+            *mirroredSlave->getRemapAddresses())
+        {
+            writer.writeStartElement("ipxact:remapAddress");
+
+            // Write state if it exists.
+            if (!remapAddress->state_.isEmpty())
+            {
+                writer.writeAttribute("state", remapAddress->state_);
+            }
+
+            // Write the rest of the attributes.
+            XmlUtils::writeAttributes(writer, remapAddress->remapAttributes_);
+
+            writer.writeCharacters(remapAddress->remapAddress_);
+            writer.writeEndElement();
+        }
+
+        // Write range if it exists.
+        if (!mirroredSlave->getRange().isEmpty())
+        {
+            writer.writeTextElement("ipxact:range", mirroredSlave->getRange());
+        }
+
+        writer.writeEndElement(); // ipxact:baseAddresses
+        writer.writeEndElement(); // ipxact:mirroredSlave
+    }
 }
 
 //-----------------------------------------------------------------------------
 // Function: businterfaceWriter::writeMonitorInterface()
 //-----------------------------------------------------------------------------
-void businterfaceWriter::writeMonitorInterface(QSharedPointer<BusInterface> businterface, QXmlStreamWriter &writer) const
+void businterfaceWriter::writeMonitorInterface(QXmlStreamWriter& writer, 
+    QSharedPointer<BusInterface> businterface) const
 {
 	if (businterface->getMonitor())
 	{
@@ -548,13 +502,14 @@ void businterfaceWriter::writeMonitorInterface(QSharedPointer<BusInterface> busi
 
 		// Monitor has its interface mode as attribute.
 		writer.writeAttribute("interfaceMode",
-			General::interfaceMode2Str(businterface->getMonitor()->interfaceMode_));
+            General::interfaceMode2Str(businterface->getMonitor()->interfaceMode_));
 
 		// Write group if defined.
 		if (!businterface->getMonitor()->group_.isEmpty())
 		{
 			writer.writeTextElement("ipxact:group", businterface->getMonitor()->group_);
 		}
+
 		writer.writeEndElement();
 	}
 }

@@ -11,8 +11,9 @@
 
 #include "busifinterfacemaster.h"
 
-#include <IPXACTmodels/businterface.h>
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/Component/component.h>
+
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/masterinterface.h>
 

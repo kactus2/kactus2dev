@@ -12,10 +12,11 @@
 #ifndef PORTLISTSORTPROXYMODEL_H
 #define PORTLISTSORTPROXYMODEL_H
 
-#include <IPXACTmodels/generaldeclarations.h>
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/common/DirectionTypes.h>
+
 #include <QSortFilterProxyModel>
 
+class Component;
 //-----------------------------------------------------------------------------
 //! Sorting proxy for port list view.
 //-----------------------------------------------------------------------------
@@ -30,9 +31,9 @@ public:
 	 */  
     enum DirectionFilter
     {
-        IN = General::IN,
-        OUT = General::OUT,
-        INOUT = General::INOUT,
+        IN = DirectionTypes::IN,
+        OUT = DirectionTypes::OUT,
+        INOUT = DirectionTypes::INOUT,
         ANY
     };
 

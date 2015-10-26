@@ -1,11 +1,16 @@
-/* 
- *
- *  Created on: 31.8.2010
- *      Author: Antti Kamppi
- */
+//-----------------------------------------------------------------------------
+// File: slaveinterface.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Esko Pekkarinen
+// Date: 20.10.2015
+//
+// Description:
+// Implementation of ipxact:slave in bus interface.
+//-----------------------------------------------------------------------------
 
-#ifndef SLAVEINTERFACE_H_
-#define SLAVEINTERFACE_H_
+#ifndef SLAVEINTERFACE_H
+#define SLAVEINTERFACE_H
 
 #include "ipxactmodels_global.h"
 
@@ -14,180 +19,97 @@
 #include <QStringList>
 #include <QSharedPointer>
 
-/*! \brief Equals the spirit:slave element in IP-Xact specification.
- *
- * Slave interface is one that responds to transactions.
- */
+//-----------------------------------------------------------------------------
+//! Implementation of ipxact:slave in bus interface.
+//-----------------------------------------------------------------------------
 class IPXACTMODELS_EXPORT SlaveInterface
 {
 public:
 
-	/*! \brief Equals the spirit:bridge element in IP-Xact specification
-	 *
-	 * Contains a reference to a master interface.
-	 */
+    //! Implementation of ipxact:bridge element.
 	struct Bridge
 	{
-		/*! \brief MANDATORY spirit:masterRef
-		 * Reference to a master interface.
-		 */
+		//! Reference to a master interface.
 		QString masterRef_;
 
 		//! Presence of the Bridge.
 		QString isPresent_;
 
-		/*! \brief The default constructor.
-		 *
-		*/
-		IPXACTMODELS_EXPORT  Bridge();
+		//! The default constructor.		 
+		IPXACTMODELS_EXPORT Bridge();
 	};
 
-	/*! \brief Equals the spirit:fileSetRefGroup in IP-Xact specifitation.
-	 *
-	 * A reference to a fileset contained in this component that is associated
-	 * with this slave interface.
-	 */
+    //! Implementation of ipxact:fileSetRefGroup element.
 	struct FileSetRefGroup
 	{
-		/*! \brief OPTIONAL spirit:group
-		 * Allows the definition of a group name for the fileSetRefGroup
-		 */
+		//! The group name.
 		QString group_;
 
-		/*! \brief OPTIONAL spirit:fileSetRef
-		 * An unbounded list of references to a fileSet by name.
-		 */
+        //! The referenced fileset names.
 		QStringList fileSetRefs_;
 
-		/*! \brief The constructor
-		 */
-		FileSetRefGroup(){}
+		//! The constructor.	
+		FileSetRefGroup(): group_(), fileSetRefs_() {}
 	};
 
-	/*! \brief The default constructor
-	 *
-	*/
+	//! The default constructor.
 	SlaveInterface();
 
-	//! \brief Copy constructor
+	//! Copy constructor
 	SlaveInterface(const SlaveInterface& other);
 
-	//! \brief Assignment operator
+	//! Assignment operator
 	SlaveInterface& operator=(const SlaveInterface& other);
 	
-	/*! \brief The destructor
-	 *
-	 */
+	//! The destructor
 	~SlaveInterface();
-
-	/*! \brief Check if the slave is in a valid state.
+    
+    /*!  Get the name of the referenced memory map if any.
 	 *
-	 * \param errorList The list to add the possible error messages to.
-	 * \param parentIdentifier String from parent to help to identify the location of the error.
-	 *
-	 * \return bool True if the state is valid and writing is possible.
-	*/
-	bool isValid(QStringList& errorList, 
-		const QString& parentIdentifier) const;
-
-	/*! \brief Check if the slave is in a valid state.
-	 *
-	 * \return bool True if the state is valid and writing is possible.
-	*/
-	bool isValid() const;
-
-	/*! \brief Get list of the bridges for this component
-	 *
-	 * \return A reference to a QList containing pointers to the bridge
-	 * instances.
-	 */
-	const QList<QSharedPointer<Bridge> >& getBridges() const;
-
-	/*! \brief Get list of the bridges for this component
-	 *
-	 * \return A reference to a QList containing pointers to the bridge
-	 * instances.
-	 */
-	QList<QSharedPointer<Bridge> >& getBridges();
-
-	/*! \brief Get list of the master interfaces referred to through the contained bridge-elements.
-	 *
-	 * Method: 		getMasterReferences
-	 * Full name:	SlaveInterface::getMasterReferences
-	 * Access:		public 
-	 *
-	 *
-	 * \return QStringList containing the names of the referred master interfaces.
-	*/
-	QStringList getMasterReferences() const;
-
-	/*! \brief Check if the slave is connected to a master interface through bridge.
-	 *
-	 * Method: 		hasBridge
-	 * Full name:	SlaveInterface::hasBridge
-	 * Access:		public 
-	 *
-	 *
-	 * \return True if at least one bridge is found.
-	*/
-	bool hasBridge() const;
-
-	/*! \brief Get list of the fileSetRefGroups for this component
-	 *
-	 * \return A reference to a QList containing pointers to the
-	 * fileSetRefGroup instances.
-	 */
-	const QList<QSharedPointer<FileSetRefGroup> >& getFileSetRefGroup();
-
-	/*!  \brief Get the name of the memoryMap
-	 *
-	 * \return QString containing the name of the memory map defined in the
-	 * containing description.
+	 *      @return The name of the memory map referenced in the slave interface.
 	 */
 	QString getMemoryMapRef() const;
-
-	/*! \brief Set the bridges for this interface
+    
+	/*! Set the memory map for this interface.
 	 *
-	 * Calling this function will delete old bridge instances.
-	 *
-	 * \param bridges A reference to a QList containing pointers to the
-	 * new bridge instances.
+	 *      @param [in] memoryMapRef    The name of the memory map to reference.
 	 */
-	void setBridges(const QList<QSharedPointer<Bridge> >& bridges);
+	void setMemoryMapRef(QString const& memoryMapRef);
 
-	/*! \brief Set the references to the file sets
+	/*! Get the bridges for this slave interface.
 	 *
-	 * Calling this function will delete old FileSetRefGroup instances.
-	 *
-	 * \param fileSetRefGroup A reference to a QList containing pointers to
-	 * the new FileSetRefGroup instances.
+	 *      @return The bridges for this slave interface.
 	 */
-	void setFileSetRefGroup(const
-			QList<QSharedPointer<FileSetRefGroup> >& fileSetRefGroup);
+	QSharedPointer<QList<QSharedPointer<Bridge> > > getBridges() const;
+    
+	/*! Check if the slave is connected to a master interface through bridge.
+	 *
+	 *      @return True if at least one bridge is found, otherwise false.
+	 */
+	bool hasBridge() const;
 
-	/*! \brief Set the memory map for this interface
+	/*! Get list of the master interfaces referred to through the contained bridge-elements.
 	 *
-	 * \param memoryMapRef A reference to a QString containing the name of
-	 * the memory map.
+	 *      @return The names of the referred master interfaces.
 	 */
-	void setMemoryMapRef(const QString& memoryMapRef);
+	QStringList getMasterReferences() const;
+
+	/*! Get the fileSetRefGroups for this slave interface.
+	 *
+	 *      @return The fileSetRefGroups for this slave interface.
+	 */
+	QSharedPointer<QList<QSharedPointer<FileSetRefGroup> > > getFileSetRefGroup() const;
 
 private:
 
-	/*! \brief OPTIONAL spirit:memoryMapRef
-	 * Contains an attribute that references a memory map.
-	 */
+	//! The referenced memory map name.	 
 	QString memoryMapRef_;
 
-	/*! \brief OPTIONAL spirit:bridge
-	 * An unbounded list of references to master interface.
-	 */
-	QList<QSharedPointer<Bridge> > bridges_;
+	//! The bridges to master interfaces.
+	QSharedPointer<QList<QSharedPointer<Bridge> > > bridges_;
 
-	/*! \brief OPTIONAL spirit:fileSetRefGroup
-	 * A pointer to a fileSetRefGroup instance.
-	 */
-	QList<QSharedPointer<FileSetRefGroup> > fileSetRefGroup_;
+    //! The file set references for the slave interface.
+	QSharedPointer<QList<QSharedPointer<FileSetRefGroup> > > fileSetRefGroup_;
 };
 
-#endif /* SLAVEINTERFACE_H_ */
+#endif // SLAVEINTERFACE_H

@@ -109,7 +109,7 @@ void ComponentReader::parseBusInterfaces(QDomNode const& componentNode, QSharedP
 
     if (!busInterfaceElement.isNull())
     {
-        businterfaceReader busReader;
+        BusinterfaceReader busReader;
 
         QDomNodeList busInterfaceNodeList = busInterfaceElement.elementsByTagName("ipxact:busInterface");
         for (int interfaceIndex = 0; interfaceIndex < busInterfaceNodeList.count(); ++interfaceIndex)

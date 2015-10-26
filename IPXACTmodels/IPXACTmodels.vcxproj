@@ -241,6 +241,7 @@
     <ClCompile Include="Component\MemoryMapWriter.cpp" />
     <ClCompile Include="Component\MemoryRemap.cpp" />
     <ClCompile Include="Component\Model.cpp" />
+    <ClCompile Include="Component\AbstractionType.cpp" />
     <ClCompile Include="Component\OtherClockDriver.cpp" />
     <ClCompile Include="Component\OtherClockDriverReader.cpp" />
     <ClCompile Include="Component\OtherClockDriverWriter.cpp" />
@@ -883,7 +884,6 @@
     <ClCompile Include="reset.cpp" />
     <ClCompile Include="servicetypedef.cpp" />
     <ClCompile Include="slaveinterface.cpp" />
-    <ClCompile Include="subspacemap.cpp" />
     <ClCompile Include="swbuildcommand.cpp" />
     <ClCompile Include="validators\BinaryValidator.cpp" />
     <ClCompile Include="validators\ModelParameterValidator.cpp" />
@@ -1837,6 +1837,7 @@
     </CustomBuild>
     <ClInclude Include="Component\MemoryRemap.h" />
     <ClInclude Include="Component\Model.h" />
+    <ClInclude Include="Component\AbstractionType.h" />
     <ClInclude Include="Component\OtherClockDriver.h" />
     <CustomBuild Include="Component\OtherClockDriverReader.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
@@ -2068,6 +2069,7 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_XML_LIB -DIPXACTMODELS_LIB -D_WINDLL "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(SolutionDir)\."</Command>
     </CustomBuild>
+    <ClInclude Include="librarycomponent.h" />
     <ClInclude Include="validators\ModelParameterValidator.h" />
     <CustomBuild Include="validators\namevalidator.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
@@ -2277,7 +2279,6 @@
     <ClInclude Include="generatorchainselector.h" />
     <ClInclude Include="GenericVendorExtension.h" />
     <ClInclude Include="ipxactmodels_global.h" />
-    <ClInclude Include="librarycomponent.h" />
     <ClInclude Include="masterinterface.h" />
     <ClInclude Include="memoryblockdata.h" />
     <ClInclude Include="memorymapitem.h" />
@@ -2289,7 +2290,6 @@
     <ClInclude Include="reset.h" />
     <ClInclude Include="servicetypedef.h" />
     <ClInclude Include="slaveinterface.h" />
-    <ClInclude Include="subspacemap.h" />
     <ClInclude Include="swbuildcommand.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

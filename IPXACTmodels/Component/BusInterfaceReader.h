@@ -12,17 +12,18 @@
 #ifndef businterfaceReader_H
 #define businterfaceReader_H
 
-#include "BusInterface.h"
+#include "businterface.h"
 
 #include <QObject>
 #include <QSharedPointer>
 #include <QDomNode>
+
 #include <IPXACTmodels/common/CommonItemsReader.h>
 
 //-----------------------------------------------------------------------------
 //! Reader class for IP-XACT businterface element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT businterfaceReader : public CommonItemsReader
+class IPXACTMODELS_EXPORT BusinterfaceReader : public CommonItemsReader
 {
     Q_OBJECT
 
@@ -33,15 +34,15 @@ public:
      *
      *      @param [in] parent  The owner of this reader.
      */
-    businterfaceReader(QObject* parent = 0);
+    BusinterfaceReader(QObject* parent = 0);
 
     /*!
      *  The destructor.
      */
-    ~businterfaceReader();
+    ~BusinterfaceReader();
 
     /*!
-     *  Creates a new businterface from a given businterface node.
+     *  Creates a new businterface from a given bus interface XML description.
      *
 	 *      @param [in] businterfaceNode    XML description of the businterface.
 	 *
@@ -52,8 +53,8 @@ public:
 private:
 
     //! No copying allowed.
-    businterfaceReader(businterfaceReader const& rhs);
-    businterfaceReader& operator=(businterfaceReader const& rhs);
+    BusinterfaceReader(BusinterfaceReader const& rhs);
+    BusinterfaceReader& operator=(BusinterfaceReader const& rhs);
 
     /*!
      *  Reads the presence.
@@ -72,77 +73,80 @@ private:
 	void parseNameGroup(QDomNode const& businterfaceNode, QSharedPointer<BusInterface> newbusinterface) const;
 	
     /*!
-     *  Tries to extract abstraction types from the parameter inspected and append them to parameter abstractionTypes.
+     *  Parses the abstraction types for the bus interface.
      *
      *      @param [in] inspected			The potential XML-node to yield abstraction types.
-	 *      @param [in] abstractionTypes    Each extracted abstraction type is appended to this list.
+	 *      @param [in] busInterface        The new businterface item.
      */
-	void readAbstractionTypes(QDomNode& inspected,
-        QSharedPointer<QList<QSharedPointer<BusInterface::AbstractionType> > > abstractionTypes) const;
+	void parseAbstractionTypes(QDomElement const& abstractionTypesElement,
+        QSharedPointer<BusInterface> busInterface) const;
 
     /*!
-     *  Tries to extract port maps from the parameter inspected and append them to parameter newAbstractionType.
+     *  Tries to extract port maps from the parameter inspected and append them to parameter abstractionType.
      *
      *      @param [in] inspected			The potential XML-node to yield abstraction types.
-	 *      @param [in] newAbstractionType	The object that will receive extracted port maps as a field.
+	 *      @param [in] abstractionType	    The object that will receive extracted port maps as a field.
      */
-	void readPortMaps(QDomNode &inspected, QSharedPointer<BusInterface::AbstractionType> newAbstractionType) const;
+	void readPortMaps(QDomElement const& portMapsElement, QSharedPointer<AbstractionType> abstractionType) const;
 
 	/*!
-	 *  Extracts a logical port from parameter tempNode and sets it to parameter newPort.
+	 *  Extracts a logical port from parameter logicalPortElement and sets it to parameter portMap.
 	 *
-	 *      @param [in] tempNode			The XML-node to yield port.
-	 *      @param [in] newPort				The port map, which port is being set.
+	 *      @param [in] logicalPortElement			The XML-node to yield port.
+	 *      @param [in] portMap				        The port map, which port is being set.
 	 */
-    void readLogicalPort(QDomNode& tempNode, QSharedPointer<PortMap> newPort) const;
+    void readLogicalPort(QDomElement const& logicalPortElement, QSharedPointer<PortMap> portMap) const;
 
 	/*!
-	 *  Extracts a physical port from parameter tempNode and sets it to parameter newPort.
+	 *  Extracts a physical port from parameter physicalPortElement and sets it to parameter portMap.
 	 *
-	 *      @param [in] tempNode			The XML-node to yield port.
-	 *      @param [in] newPort				The port map, which port is being set.
+	 *      @param [in] physicalPortElement		The XML-node to yield port.
+	 *      @param [in] portMap				    The port map, which port is being set.
 	 */
-    void readPhysicalPort(QDomNode& tempNode, QSharedPointer<PortMap> newPort) const;
+    void readPhysicalPort(QDomElement const& physicalPortElement, QSharedPointer<PortMap> portMap) const;
 
     /*!
-     *  Tries to read interface mode from parameter inspected and set it to the parameter newbusinterface.
+     *  Tries to read interface mode from parameter busInterfaceElement and set it to newbusinterface.
      *
-     *      @param [in] inspected			The potential XML-node to yield interface mode.
-	 *      @param [in] newbusinterface		This interface will have the extracted interface mode.
+     *      @param [in] busInterfaceElement		The potential XML-node to yield interface mode.
+	 *      @param [in] newbusinterface		    This interface will have the extracted interface mode.
      */
-	void readInterfaceMode(QDomNode& inspected, QSharedPointer<BusInterface> newbusinterface) const;
+	void parseInterfaceMode(QDomElement const& busInterfaceElement, 
+        QSharedPointer<BusInterface> newbusinterface) const;
 	
 	/*!
 	*  Reads fields for a master interface struct from XML-input.
 	*
-	*      @param [in] inpstected			A reference to a QDomNode to parse the information from.
-	*      @param [in] newmode				The interface object, which fields will be assigned.
+	*      @param [in] masterInterfaceElement	The XML description to parse the information from.
+	*      @param [in] masterInterface			The interface object, which fields will be assigned.
 	*/
-	void readMasterInterface(QDomNode &inspected, QSharedPointer<MasterInterface> newmode) const;
+	void readMasterInterface(QDomElement const& masterInterfaceElement,
+        QSharedPointer<MasterInterface> masterInterface) const;
 	
 	/*!
 	*  Reads fields for a slave interface struct from XML-input.
 	*
-	*      @param [in] inpstected			A reference to a QDomNode to parse the information from.
-	*      @param [in] newmode				The interface object, which fields will be assigned.
+	*      @param [in] slaveIntefaceElement			The XML description to parse the information from.
+	*      @param [in] slaveInterface				The interface object, which fields will be assigned.
 	*/
-	void readSlaveInterface(QDomNode &inspected, QSharedPointer<SlaveInterface> newmode) const;
+	void readSlaveInterface(QDomElement const& slaveIntefaceElement, QSharedPointer<SlaveInterface> slaveInterface) const;
 	
 	/*!
 	*  Reads fields for a mirrored interface struct from XML-input.
 	*
-	*      @param [in] inpstected			A reference to a QDomNode to parse the information from.
-	*      @param [in] newmode				The interface object, which fields will be assigned.
+	*      @param [in] mirroredInterfaceElement		The XML description to parse the information from.
+	*      @param [in] mirroredSlaveInterface		The interface object, which fields will be assigned.
 	*/
-	void readMirroredSlaveInterface(QDomNode &inspected, QSharedPointer<MirroredSlaveInterface> newmode) const;
+	void parseMirroredSlaveInterface(QDomElement const& mirroredInterfaceElement,
+        QSharedPointer<MirroredSlaveInterface> mirroredSlaveInterface) const;
 
 	/*!
 	*  Reads fields for a monitor interface struct from XML-input.
 	*
-	*      @param [in] inpstected			A reference to a QDomNode to parse the information from.
+	*      @param [in] inpstected			The XML description to parse the information from.
 	*      @param [in] newmode				The interface object, which fields will be assigned.
 	*/
-	void readMonitorInterface(QDomNode& inpstected, QSharedPointer<BusInterface::MonitorInterface> newmode) const;
+	void parseMonitorInterface(QDomElement const& monitorElement, QSharedPointer<BusInterface::MonitorInterface> monitorInterface) const;
 
     /*!
      *  Read the extensions of the bus interface.

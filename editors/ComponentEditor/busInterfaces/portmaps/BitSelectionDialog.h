@@ -36,7 +36,7 @@ public:
 	 *      @param [in] maxBitsToMap        Maximum number of bits that can be mapped to logical.
 	 *      @param [in] parent              The parent widget.
 	 */
-	BitSelectionDialog(QString logicalPort, int logicalBeginIndex, QString physicalPort, 
+	BitSelectionDialog(QString const& logicalPort, int logicalBeginIndex, QString const& physicalPort, 
         int portSize, int maxBitsToMap, QWidget *parent = 0);
 
 	/*!

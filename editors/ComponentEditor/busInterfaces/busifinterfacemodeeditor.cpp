@@ -7,17 +7,24 @@
 
 #include "busifinterfacemodeeditor.h"
 
+//-----------------------------------------------------------------------------
+// Function: BusIfInterfaceModeEditor::BusIfInterfaceModeEditor()
+//-----------------------------------------------------------------------------
 BusIfInterfaceModeEditor::BusIfInterfaceModeEditor(QSharedPointer<BusInterface> busif,
-												   QSharedPointer<Component> component,
-												   const QString& title, 
-												   QWidget *parent):
+    QSharedPointer<Component> component,
+    QString const& title, 
+    QWidget *parent):
 QGroupBox(title, parent),
-busif_(busif),
-component_(component) {
-
-	Q_ASSERT(busif);
-	Q_ASSERT(component);
+    busif_(busif),
+    component_(component)
+{
+    Q_ASSERT(busif);
+    Q_ASSERT(component);
 }
 
-BusIfInterfaceModeEditor::~BusIfInterfaceModeEditor() {
+//-----------------------------------------------------------------------------
+// Function: BusIfInterfaceModeEditor::~BusIfInterfaceModeEditor()
+//-----------------------------------------------------------------------------
+BusIfInterfaceModeEditor::~BusIfInterfaceModeEditor()
+{
 }

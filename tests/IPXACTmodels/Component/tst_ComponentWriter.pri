@@ -222,4 +222,5 @@ SOURCES += ../../../IPXACTmodels/Component/AddressBlock.cpp \
     ../../../IPXACTmodels/slaveinterface.cpp \
     ../../../IPXACTmodels/swbuildcommand.cpp \
     ./tst_ComponentWriter.cpp \
-    ../../../IPXACTmodels/vlnv.cpp
+    ../../../IPXACTmodels/vlnv.cpp \
+    ../../../IPXACTmodels/Component/AbstractionType.cpp

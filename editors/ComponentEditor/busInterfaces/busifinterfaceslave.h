@@ -13,16 +13,17 @@
 #define BUSIFINTERFACESLAVE_H
 
 #include "busifinterfacemodeeditor.h"
+
 #include "bridgeseditor.h"
 
 #include <editors/ComponentEditor/common/ReferenceSelector/ReferenceSelector.h>
 
-#include <IPXACTmodels/businterface.h>
-#include <IPXACTmodels/component.h>
 #include <IPXACTmodels/slaveinterface.h>
 
 #include <QSharedPointer>
 
+class BusInterface;
+class Component;
 //-----------------------------------------------------------------------------
 //! Editor to the slave details of a bus interface.
 //-----------------------------------------------------------------------------
@@ -34,9 +35,9 @@ public:
 
 	/*! The constructor
 	 *
-	 *        @param [in]   busif Pointer to the bus interface being edited.
-	 *        @param [in]   component Pointer to the component being edited.
-	 *        @param [in]   parent Pointer to the owner of this editor.
+	 *        @param [in]   busif       The bus interface being edited.
+	 *        @param [in]   component   The component being edited.
+	 *        @param [in]   parent      The owner of this editor.
 	 *
 	*/
 	BusIfInterfaceSlave(QSharedPointer<BusInterface> busif,
@@ -79,7 +80,7 @@ private:
 	//! No assignment
 	BusIfInterfaceSlave& operator=(const BusIfInterfaceSlave& other);
 
-	//! Pointer to the slave interface mode being edited.
+	//! The slave interface mode being edited.
 	QSharedPointer<SlaveInterface> slave_;
 
 	//! The editor to select a memory map from the component.

@@ -8,73 +8,50 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 
 HEADERS += ../../../IPXACTmodels/common/Array.h \
-    ../../../IPXACTmodels/common/Assertion.h \
-    ../../../IPXACTmodels/common/BuildModel.h \
-    ../../../IPXACTmodels/Component/ComponentInstantiation.h \
     ../../../IPXACTmodels/common/ConfigurableElementValue.h \
     ../../../IPXACTmodels/common/ConfigurableVLNVReference.h \
-    ../../../IPXACTmodels/Component/DesignConfigurationInstantiation.h \
-    ../../../IPXACTmodels/Component/DesignInstantiation.h \
     ../../../IPXACTmodels/common/DirectionTypes.h \
     ../../../IPXACTmodels/common/Extendable.h \
-    ../../../IPXACTmodels/common/FileBuilder.h \
-    ../../../IPXACTmodels/common/FileTypes.h \
     ../../../IPXACTmodels/GenericVendorExtension.h \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Array.h \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Group.h \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Placeholder.h \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Position.h \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Value.h \
-    ../../../IPXACTmodels/common/ModuleParameter.h \
     ../../../IPXACTmodels/common/NameGroup.h \
     ../../../IPXACTmodels/common/Parameter.h \
     ../../../IPXACTmodels/common/PartSelect.h \
-    ../../../IPXACTmodels/Port.h \
     ../../../IPXACTmodels/PortMap.h \
     ../../../IPXACTmodels/common/Range.h \
-    ../../../IPXACTmodels/Transactional.h \
-    ../../../IPXACTmodels/common/Vector.h \
     ../../../IPXACTmodels/XmlUtils.h \
     ../../../IPXACTmodels/Component/businterface.h \
     ../../../IPXACTmodels/generaldeclarations.h \
     ../../../IPXACTmodels/masterinterface.h \
     ../../../IPXACTmodels/mirroredslaveinterface.h \
-    ../../../IPXACTmodels/servicetypedef.h \
     ../../../IPXACTmodels/slaveinterface.h \
     ../../../IPXACTmodels/vlnv.h \
-    ../../../IPXACTmodels/wire.h \
     ../../../IPXACTmodels/common/CommonItemsReader.h \
-    ../../../IPXACTmodels/Component/InstantiationsReader.h \
-    ../../../IPXACTmodels/common/ModuleParameterReader.h \
     ../../../IPXACTmodels/common/NameGroupReader.h \
     ../../../IPXACTmodels/common/NameGroupWriter.h \
     ../../../IPXACTmodels/common/ParameterReader.h \
     ../../../IPXACTmodels/common/ParameterWriter.h \
     ../../../IPXACTmodels/Component/businterfaceReader.h \
-    ../../../IPXACTmodels/common/FileBuilderReader.h \
-    ../../../IPXACTmodels/common/BooleanValue.h
-SOURCES += ../../../IPXACTmodels/common/Array.cpp \
-    ../../../IPXACTmodels/common/Assertion.cpp \
-    ../../../IPXACTmodels/common/BuildModel.cpp \
+    ../../../IPXACTmodels/common/BooleanValue.h \
+    ../../../IPXACTmodels/common/Vector.h \
+    ../../../IPXACTmodels/Component/AbstractionType.h
+SOURCES += ../../../IPXACTmodels/common/BooleanValue.cpp \
+    ../../../IPXACTmodels/common/Array.cpp \
     ../../../IPXACTmodels/common/CommonItemsReader.cpp \
-    ../../../IPXACTmodels/Component/ComponentInstantiation.cpp \
     ../../../IPXACTmodels/common/ConfigurableElementValue.cpp \
     ../../../IPXACTmodels/common/ConfigurableVLNVReference.cpp \
-    ../../../IPXACTmodels/Component/DesignConfigurationInstantiation.cpp \
-    ../../../IPXACTmodels/Component/DesignInstantiation.cpp \
     ../../../IPXACTmodels/common/DirectionTypes.cpp \
     ../../../IPXACTmodels/common/Extendable.cpp \
-    ../../../IPXACTmodels/common/FileBuilder.cpp \
-    ../../../IPXACTmodels/common/FileTypes.cpp \
     ../../../IPXACTmodels/GenericVendorExtension.cpp \
-    ../../../IPXACTmodels/Component/InstantiationsReader.cpp \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Array.cpp \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Placeholder.cpp \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Position.cpp \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Value.cpp \
-    ../../../IPXACTmodels/common/ModuleParameter.cpp \
-    ../../../IPXACTmodels/common/ModuleParameterReader.cpp \
     ../../../IPXACTmodels/common/NameGroup.cpp \
     ../../../IPXACTmodels/common/NameGroupReader.cpp \
     ../../../IPXACTmodels/common/NameGroupWriter.cpp \
@@ -82,10 +59,8 @@ SOURCES += ../../../IPXACTmodels/common/Array.cpp \
     ../../../IPXACTmodels/common/ParameterReader.cpp \
     ../../../IPXACTmodels/common/ParameterWriter.cpp \
     ../../../IPXACTmodels/common/PartSelect.cpp \
-    ../../../IPXACTmodels/Port.cpp \
     ../../../IPXACTmodels/PortMap.cpp \
     ../../../IPXACTmodels/common/Range.cpp \
-    ../../../IPXACTmodels/Transactional.cpp \
     ../../../IPXACTmodels/common/Vector.cpp \
     ../../../IPXACTmodels/XmlUtils.cpp \
     ../../../IPXACTmodels/Component/businterface.cpp \
@@ -93,10 +68,7 @@ SOURCES += ../../../IPXACTmodels/common/Array.cpp \
     ../../../IPXACTmodels/generaldeclarations.cpp \
     ../../../IPXACTmodels/masterinterface.cpp \
     ../../../IPXACTmodels/mirroredslaveinterface.cpp \
-    ../../../IPXACTmodels/servicetypedef.cpp \
     ../../../IPXACTmodels/slaveinterface.cpp \
     ./tst_businterfaceReader.cpp \
     ../../../IPXACTmodels/vlnv.cpp \
-    ../../../IPXACTmodels/wire.cpp \
-    ../../../IPXACTmodels/common/FileBuilderReader.cpp \
-    ../../../IPXACTmodels/common/BooleanValue.cpp
+    ../../../IPXACTmodels/Component/AbstractionType.cpp

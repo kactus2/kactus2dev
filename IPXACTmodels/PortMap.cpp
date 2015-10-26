@@ -6,7 +6,7 @@
 // Date: 28.08.2014
 //
 // Description:
-// Describes the mapping between the logical and physical ports.
+// Implementation for ipxact:portMap.
 //-----------------------------------------------------------------------------
 
 #include "PortMap.h"
@@ -28,7 +28,7 @@ logicalPort_(),
 //-----------------------------------------------------------------------------
 // Function: PortMap::PortMap()
 //-----------------------------------------------------------------------------
-PortMap::PortMap( const PortMap& other ): 
+PortMap::PortMap(PortMap const& other): 
 logicalPort_(other.logicalPort_),
 physicalPort_(other.physicalPort_),
 logicalTieOff_(other.logicalTieOff_)
@@ -45,15 +45,20 @@ PortMap::~PortMap()
 //-----------------------------------------------------------------------------
 // Function: PortMap::operator=()
 //-----------------------------------------------------------------------------
-PortMap& PortMap::operator=( const PortMap& other )
+PortMap& PortMap::operator=(PortMap const& other)
 {
     if (this != &other)
     {
         logicalPort_.clear();
-        logicalPort_ = QSharedPointer<PortMap::LogicalPort> (new PortMap::LogicalPort(*other.logicalPort_.data()));
+        logicalPort_ = QSharedPointer<PortMap::LogicalPort>(new PortMap::LogicalPort(*other.logicalPort_.data()));
+        
         physicalPort_.clear();
-        physicalPort_ =
-            QSharedPointer<PortMap::PhysicalPort> (new PortMap::PhysicalPort(*other.physicalPort_.data()));
+        if (!other.getPhysicalPort().isNull())
+        {  
+            physicalPort_ = QSharedPointer<PortMap::PhysicalPort>(new PortMap::PhysicalPort(
+                *other.physicalPort_.data()));
+        }
+      
         logicalTieOff_ = other.logicalTieOff_;
     }
 
@@ -103,7 +108,7 @@ QString PortMap::getLogicalTieOff() const
 //-----------------------------------------------------------------------------
 // Function: PortMap::setLogicalTiedOff()
 //-----------------------------------------------------------------------------
-void PortMap::setLogicalTieOff(QString logicalTieOff)
+void PortMap::setLogicalTieOff(QString const& logicalTieOff)
 {
 	logicalTieOff_ = logicalTieOff;
 }

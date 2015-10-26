@@ -6122,8 +6122,14 @@
     <ClInclude Include="editors\ComponentEditor\cpus\CpuColumns.h">
       <Filter>Header Files\editors\ComponentEditor\cpus</Filter>
     </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\channels\ChannelColumns.h">
+      <Filter>Header Files\editors\ComponentEditor\channels</Filter>
+    </ClInclude>
     <ClInclude Include="editors\ComponentEditor\fileBuilders\FileBuilderColumns.h">
       <Filter>Header Files\editors\ComponentEditor\fileBuilders</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\busInterfaces\BridgeColumns.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces</Filter>
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\fileSet\FileSetColumns.h">
       <Filter>Header Files\editors\ComponentEditor\fileSet</Filter>

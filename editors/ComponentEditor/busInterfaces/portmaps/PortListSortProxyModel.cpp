@@ -11,23 +11,23 @@
 
 #include "PortListSortProxyModel.h"
 
-#include <IPXACTmodels/businterface.h>
-#include <IPXACTmodels/component.h>
 #include <IPXACTmodels/PortMap.h>
+
+#include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/Component/Component.h>
 
 #include <QModelIndex>
 
 //-----------------------------------------------------------------------------
 // Function: PortListSortProxyModel()
 //-----------------------------------------------------------------------------
-PortListSortProxyModel::PortListSortProxyModel(QSharedPointer<Component> component,
-    QObject *parent) :
+PortListSortProxyModel::PortListSortProxyModel(QSharedPointer<Component> component, QObject *parent) :
 QSortFilterProxyModel(parent),
-component_(component),
-filterDirection_(ANY),
-hideConnected_(true),
-connectedPorts_(),
-filterPorts_()
+    component_(component),
+    filterDirection_(ANY),
+    hideConnected_(true),
+    connectedPorts_(),
+    filterPorts_()
 {
     onConnectionsReset();
 }

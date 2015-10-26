@@ -19,8 +19,6 @@
 #include <QList>
 #include <QSharedPointer>
 
-#include <IPXACTmodels/generaldeclarations.h>
-
 class AbstractionDefinition;
 class BusInterface;
 class Component;
@@ -38,7 +36,7 @@ public:
      *  Constructor for a physical port item.
      */
     PortMapsBitMapItem(PortMapsTreeItem* parent, QSharedPointer<Component> component, 
-        BusInterface* busIf, QString const& physicalName = QString());
+        QSharedPointer<BusInterface> busIf, QString const& physicalName = QString());
 
     /*!
      *  Destructor.
@@ -66,15 +64,6 @@ public:
      *      @return True, if item is valid, otherwise false.
      */
     virtual bool isValid() const;
-
-    /*!
-     *  Checks the validity of the item. 
-     *
-     *      @param [inout] errorList   The list to add the possible error messages to.
-     *
-     *      @return True, if the item is valid, otherwise false.
-     */
-    virtual bool isValid(QStringList& errorList) const;
 
     /*!
      *  Inserts an item.
@@ -141,7 +130,7 @@ private:
     };
 
     //! Pointer to the bus interface of the port map.
-    BusInterface* busIf_;
+    QSharedPointer<BusInterface> busIf_;
 
     //! The bit mappings of the logical port bit.
     QList<BitMapping> mappings_;

@@ -12,16 +12,22 @@
 #include "PortMapsBitMapItem.h"
 
 #include "PortMapsTreeModel.h"
+
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
-#include <IPXACTmodels/businterface.h>
-#include <IPXACTmodels/component.h>
+
+#include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/Port.h>
+
+#include <IPXACTmodels/common/DirectionTypes.h>
+
 #include "PortMapsLogicalItem.h"
 
 //-----------------------------------------------------------------------------
 // Function: PortMapsPhysicalItem::PortMapsPhysicalItem()
 //-----------------------------------------------------------------------------
 PortMapsBitMapItem::PortMapsBitMapItem(PortMapsTreeItem* parent, QSharedPointer<Component> component,
-    BusInterface* busIf, QString const& physicalName /*= QString()*/)
+    QSharedPointer<BusInterface> busIf, QString const& physicalName)
     : PortMapsTreeItem(parent, component, physicalName, PortMapsTreeItem::ITEM_BIT_MAP),
     busIf_(busIf),
     mappings_()
@@ -71,10 +77,10 @@ QVariant PortMapsBitMapItem::data(int section) const
 bool PortMapsBitMapItem::isValid() const
 {    
     // if abstraction def is not set, bit map items are invalid.
-    if (!busIf_->getAbstractionType().isValid())
+    /*if (!busIf_->getAbstractionTypes()->first()->isValid())
     {
         return false;
-    }
+    }*/
 
     if (isConnected())
     {
@@ -82,12 +88,12 @@ bool PortMapsBitMapItem::isValid() const
         if (parent)
         {
             // if port directions for any of the mapped physical ports do not match, the item is invalid.
-            General::Direction logDir = parent->getDirection();
+            DirectionTypes::Direction logDir = parent->getDirection();
             foreach (BitMapping bitMap, mappings_)
             {
-                General::Direction physDir =  component_->getPortDirection(bitMap.physName);
-                if (logDir != General::INOUT &&
-                    physDir != General::INOUT &&
+                DirectionTypes::Direction physDir =  component_->getPort(bitMap.physName)->getDirection();
+                if (logDir != DirectionTypes::INOUT &&
+                    physDir != DirectionTypes::INOUT &&
                     physDir != logDir) 
                 {
                     return false;
@@ -98,45 +104,6 @@ bool PortMapsBitMapItem::isValid() const
     
     // Bit map items have no children. No need to check them.
     return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: PortMapsBitMapItem::isValid()
-//-----------------------------------------------------------------------------
-bool PortMapsBitMapItem::isValid(QStringList& errorList) const
-{
-    bool valid = true;
-
-    // if abstraction def is not set, bit map items are invalid.
-    if (!busIf_->getAbstractionType().isValid())
-    {
-        // Missing abs def is reported on logical signal level.
-        valid = false;
-    }
-
-    if (isConnected())
-    {
-        PortMapsLogicalItem* parent = dynamic_cast<PortMapsLogicalItem*>(getParent());
-        if (parent)
-        {
-            // if port directions for any of the mapped physical ports do not match, the item is invalid.
-            General::Direction logDir = parent->getDirection();
-            foreach (BitMapping bitMap, mappings_)
-            {
-                General::Direction physDir =  component_->getPortDirection(bitMap.physName);
-                if (logDir != General::INOUT &&
-                    physDir != General::INOUT &&
-                    physDir != logDir) 
-                {
-                    QString error = tr("Direction between logical port %1 and physical port %2 did not match.");
-                    errorList.append(error.arg(parent->name(), bitMap.physName));
-                    valid = false;
-                }
-            }
-        }
-    }
-
-    return valid;
 }
 
 //-----------------------------------------------------------------------------
@@ -198,14 +165,14 @@ QString PortMapsBitMapItem::getPortConnections() const
     {
         foreach (BitMapping bitMap, mappings_)
         {
-            if (component_->getPortWidth(bitMap.physName) == 1)
+            /*if (component_->getPortWidth(bitMap.physName) == 1)
             {
                 portList.append(bitMap.physName);
             }
             else
-            {
+            {*/
                 portList.append(bitMap.physName + "(" + QString::number(bitMap.physIndex) + ")");
-            }
+            //}
         }
     }
 
