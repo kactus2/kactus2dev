@@ -6,24 +6,25 @@
 
 #include "QuartusGenerator.h"
 
-#include <library/LibraryManager/libraryhandler.h>
-
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
+#include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/View.h>
 #include <IPXACTmodels/Component/ComponentInstantiation.h>
 #include <IPXACTmodels/Component/DesignConfigurationInstantiation.h>
 #include <IPXACTmodels/Component/DesignInstantiation.h>
 
+#include <library/LibraryManager/libraryinterface.h>
+
 #include <QDateTime>
+#include <QDir>
 
 //-----------------------------------------------------------------------------
 // Function: QuartusGenerator::QuartusGenerator()
 //-----------------------------------------------------------------------------
 QuartusGenerator::QuartusGenerator(LibraryInterface *handler, QWidget *parent):
-QObject(parent), 
 files_(), 
 assignments_(),  
 handler_(handler),
@@ -297,7 +298,7 @@ void QuartusGenerator::parseFiles(QSharedPointer<Component> component, const QSt
 
 	if (view && !view->isHierarchical())
 	{
-		QSharedPointer<QStringList> fileSets;
+		QSharedPointer<QStringList> fileSets( new QStringList );
 
 		foreach ( QSharedPointer<ComponentInstantiation> insta, *component->getComponentInstantiations() )
 		{
@@ -435,21 +436,24 @@ void QuartusGenerator::parseFilesFromHierarchicalView(QSharedPointer<View> view,
 
 	foreach (QSharedPointer<View> currentView, *component->getViews())
 	{
+		foreach (QSharedPointer<DesignInstantiation> insta, *component->getDesignInstantiations() )
+		{
+			if ( currentView->getDesignInstantiationRef() == insta->name() )
+			{
+				vlnv = (*insta->getDesignReference());
+				break;
+			}
+		}
+	}
+
+	foreach (QSharedPointer<View> currentView, *component->getViews())
+	{
 		foreach ( QSharedPointer<DesignConfigurationInstantiation> insta,
 			*component->getDesignConfigurationInstantiations() )
 		{
 			if ( currentView->getDesignConfigurationInstantiationRef() == insta->name() )
 			{
 				vlnv = (*insta->getDesignConfigurationReference());
-				break;
-			}
-		}
-
-		foreach (QSharedPointer<DesignInstantiation> insta, *component->getDesignInstantiations() )
-		{
-			if ( currentView->getDesignInstantiationRef() == insta->name() )
-			{
-				vlnv = (*insta->getDesignReference());
 				break;
 			}
 		}
@@ -493,11 +497,22 @@ void QuartusGenerator::parseFilesFromHierarchicalView(QSharedPointer<View> view,
     QSharedPointer<Document> libComp = handler_->getModel(designVLNV);
     design = libComp.staticCast<Design>();
 
-    readDesign(design, designConf);
+	readDesign(design, designConf);
 
-     parseFiles(component, view->getComponentInstantiationRef());
+	QSharedPointer<QStringList> fileSets( new QStringList );
+
+	foreach ( QSharedPointer<ComponentInstantiation> insta, *component->getComponentInstantiations() )
+	{
+		if ( view->getComponentInstantiationRef() == insta->name() )
+		{
+			fileSets = insta->getFileSetReferences();
+			break;
+		}
+	}
+
+	parseFileSets(component, fileSets);
 }
-
+#include <QDebug>
 //-----------------------------------------------------------------------------
 // Function: QuartusGenerator::readDesign()
 //-----------------------------------------------------------------------------
@@ -530,7 +545,7 @@ void QuartusGenerator::readDesign(const QSharedPointer<Design> design,
 			continue;
 		}
 
-		QString viewName;
+		QString viewName;qDebug() << "taalla" << instance->getInstanceName() << endl;
 
 		if (desConf && desConf->hasActiveView(instance->getInstanceName()))
         {

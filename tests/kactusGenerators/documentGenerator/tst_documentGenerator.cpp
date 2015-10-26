@@ -21,8 +21,8 @@
 
 #include <common/utils.h>
 
-#include <IPXACTmodels/businterface.h>
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/design.h>
 #include <IPXACTmodels/fileset.h>
 #include <IPXACTmodels/model.h>
@@ -1322,7 +1322,7 @@ void tst_documentGenerator::testPortsWrittenWithOnlyTopComponent()
         "\t\t\t\t<tr>\n"
         "\t\t\t\t\t<td><a id=\"" + topComponent_->getVlnv()->toString() + ".port." + portRef->name() + "\">" +
         portRef->name() + "</a></td>\n"
-        "\t\t\t\t\t<td>" + General::direction2Str(portRef->getDirection()) + "</td>\n"
+        "\t\t\t\t\t<td>" + DirectionTypes::Direction2Str(portRef->getDirection()) + "</td>\n"
         "\t\t\t\t\t<td>" + QString::number(portRef->getPortSize()) + "</td>\n"
         "\t\t\t\t\t<td>parameter</td>\n"
         "\t\t\t\t\t<td>" + portRef->getRightBoundExpression() + "</td>\n"
@@ -1398,7 +1398,7 @@ void tst_documentGenerator::testBusInterfacesWrittenWithoutPorts()
         "\t\t\t<h3>0.1.1 " + busInterface->name() + "</h3>\n"
         "\t\t\t<p>\n"
         "\t\t\t" + getIndentString() + "<strong>Interface mode:</strong> " +
-        General::interfaceMode2Str(busInterface->getInterfaceMode()) + "<br>\n"
+        General::InterfaceMode2Str(busInterface->getInterfaceMode()) + "<br>\n"
         "\t\t\t" + getIndentString() + "<strong>Ports used in this interface:</strong>\n"
         );
 
@@ -1809,7 +1809,7 @@ QSharedPointer<Port> tst_documentGenerator::createTestPort(QString const& name, 
     QString const& rightBound, QString const& defaultValue, QString const& arrayLeft, QString const& arrayRight)
 {
     QSharedPointer<Port> newPort (new Port);
-    newPort->setDirection(General::DIRECTION_PHANTOM);
+    newPort->setDirection(DirectionTypes::DIRECTION_PHANTOM);
     newPort->setName(name);
     newPort->setLeftBoundExpression(leftBound);
     newPort->setRightBoundExpression(rightBound);

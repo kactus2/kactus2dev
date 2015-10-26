@@ -7,7 +7,6 @@
 #ifndef QUARTUSGENERATOR_H_
 #define QUARTUSGENERATOR_H_
 
-#include <QObject>
 #include <QTextStream>
 #include <QFile>
 

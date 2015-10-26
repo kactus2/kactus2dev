@@ -14,13 +14,7 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
-#include <IPXACTmodels/common/Document.h>
-
 #include <IPXACTmodels/Design/Design.h>
-
-#include <IPXACTmodels/vlnv.h>
-
-#include <QObject>
 
 class LibraryMock : public QObject, public LibraryInterface
 {

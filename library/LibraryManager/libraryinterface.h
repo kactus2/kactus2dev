@@ -16,7 +16,6 @@
 class Design;
 class LibraryItem;
 class Document;
-class Document;
 
 /*! \brief LibraryInterface defines an interface to operate the IP-Xact-library.
  * 
