@@ -14,8 +14,7 @@
 
 #include <editors/ComponentEditor/modelParameters/ModelParameterFactory.h>
 
-class ModelParameter;
-
+class ModuleParameter;
 //-----------------------------------------------------------------------------
 //! Implementation of ModelParameterFactory for Module parameters.
 //-----------------------------------------------------------------------------
@@ -34,7 +33,7 @@ public:
      *
      *      @return The created module parameter.
      */
-    ModelParameter* make() const;
+    ModuleParameter* make() const;
 
 private:
 

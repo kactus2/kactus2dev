@@ -1,59 +1,60 @@
-/* 
- *
- *  Created on: 15.4.2011
- *      Author: Antti Kamppi
- * 		filename: filesetrefeditor.h
- */
+//-----------------------------------------------------------------------------
+// File: filesetrefeditor.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 15.4.2011
+//
+// Description:
+// Editor to set the file set references of a view.
+//-----------------------------------------------------------------------------
 
 #ifndef FILESETREFEDITOR_H
 #define FILESETREFEDITOR_H
 
 #include <common/widgets/listManager/listmanager.h>
-#include <IPXACTmodels/component.h>
 
 #include <QSharedPointer>
 
-/*! \brief Editor to set the file set references of a view.
- *
- */
-class FileSetRefEditor : public ListManager {
+class Component;
+
+//-----------------------------------------------------------------------------
+//! Editor to set the file set references of a view.
+//-----------------------------------------------------------------------------
+class FileSetRefEditor : public ListManager
+{
 	Q_OBJECT
 
 public:
 
-	/*! \brief The constructor
+	/*!
+     *  The constructor.
 	 *
-	 * \param component Pointer to the component being edited.
-	 * \param title Title for the QGroupBox
-	 * \param parent Pointer to the owner of this editor.
-	 *
-	*/
-	FileSetRefEditor(QSharedPointer<Component> component,
-		const QString title = tr("List"), 
-		QWidget *parent = 0);
+	 *      @param [in] component   Pointer to the component being edited.
+	 *      @param [in] title       Title for the QGroupBox
+	 *      @param [in] parent      Pointer to the owner of this editor.
+	 */
+	FileSetRefEditor(QSharedPointer<Component> component, const QString title = tr("List"), QWidget *parent = 0);
 	
-	//! \brief The destructor
+	//! The destructor.
 	virtual ~FileSetRefEditor();
 
-	/*! \brief Initialize the file set reference editor.
+	/*!
+     *  Initialize the file set reference editor.
 	 *
-	 * This function must be called after creating the file set reference editor and before
-	 * using it.
-	 * 
-	 * \param items QStringList that contains the items to add to the widget.
-	 *
-	*/
+	 *      @param [in] items   QStringList that contains the items to add to the widget.
+	 */
 	virtual void initialize(const QStringList& items = QStringList());
 
 private:
 
-	//! \brief No copying
+	//! No copying.
 	FileSetRefEditor(const FileSetRefEditor& other);
 
-	//! No assignment
+	//! No assignment.
 	FileSetRefEditor& operator=(const FileSetRefEditor& other);
 
-	//! \brief Pointer to the component being edited.
+	//! Pointer to the component being edited.
 	QSharedPointer<Component> component_;
 };
 

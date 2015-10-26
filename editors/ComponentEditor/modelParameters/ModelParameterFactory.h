@@ -12,7 +12,7 @@
 #ifndef MODELPARAMETERFACTORY_H
 #define MODELPARAMETERFACTORY_H
 
-class ModelParameter;
+class ModuleParameter;
 
 //-----------------------------------------------------------------------------
 //! Interface for ModelParameter factory.
@@ -29,8 +29,7 @@ public:
      *
      *      @return The created model parameter.
      */
-    virtual ModelParameter* make() const = 0;
-
+    virtual ModuleParameter* make() const = 0;
 };
 
 #endif // MODELPARAMETERFACTORY_H

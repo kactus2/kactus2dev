@@ -1,61 +1,61 @@
-/* 
- *  	Created on: 7.2.2012
- *      Author: Antti Kamppi
- * 		filename: filesetrefmodel.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: filesetrefmodel.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 07.02.2012
+//
+// Description:
+// Model class to manage a list of file set references.
+//-----------------------------------------------------------------------------
 
 #ifndef FILESETREFMODEL_H
 #define FILESETREFMODEL_H
 
 #include <common/widgets/listManager/listmanagermodel.h>
-#include <IPXACTmodels/component.h>
 
 #include <QSharedPointer>
 
-/*! \brief FileSetRefModel is a model class to manage a list of file set references.
- *
- * This class can be used as a model class for a list view to implement a 
- * widget to manage a list of file set references.
- * 
- * The model uses same functions as it's base class ListManagerModel except it
- * reimplements the data() function to provide better error reporting of invalid
- * file set references.
- */
-class FileSetRefModel : public ListManagerModel {
+class Component;
+
+//-----------------------------------------------------------------------------
+//! Model class to manage a list of file set references.
+//-----------------------------------------------------------------------------
+class FileSetRefModel : public ListManagerModel
+{
 	Q_OBJECT
 
 public:
 
-	/*! \brief The constructor.
+	/*!
+     *  The constructor.
 	 *
-	 * \param parent Pointer to the owner of this model.
-	 * \param component Pointer to the component being edited.
-	 * \param items QStringList that contains the items to add.
-	 *
-	*/
-	FileSetRefModel(QObject *parent,
-		QSharedPointer<Component> component,
-		const QStringList& items = QStringList());
+	 *      @param [in] parent      Pointer to the owner of this model.
+	 *      @param [in] component   Pointer to the component being edited.
+	 *      @param [in] items       QStringList that contains the items to add.
+	 */
+	FileSetRefModel(QObject *parent, QSharedPointer<Component> component, const QStringList& items = QStringList());
 	
-	//! \brief The destructor
+	//! The destructor.
 	virtual ~FileSetRefModel();
 
-	/*! \brief Get the data stored for the specified item.
-	*
-	* \param index ModelIndex of the wanted item.
-	* \param role Specifies what kind of data is requested.
-	*/
+	/*!
+     *  Get the data stored for the specified item.
+	 *
+	 *      @param [in] index   ModelIndex of the wanted item.
+	 *      @param [in] role    Specifies what kind of data is requested.
+	 */
 	virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
 
 private:
-	//! \brief No copying
+
+	//! No copying.
 	FileSetRefModel(const FileSetRefModel& other);
 
-	//! \brief No assignment
+	//! No assignment.
 	FileSetRefModel& operator=(const FileSetRefModel& other);
 
-	//! \brief Pointer to the component being edited.
+	//! Pointer to the component being edited.
 	QSharedPointer<Component> component_;
 };
 

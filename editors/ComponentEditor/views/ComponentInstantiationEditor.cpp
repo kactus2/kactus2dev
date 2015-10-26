@@ -1,13 +1,19 @@
-/* 
- *
- *  Created on: 15.4.2011
- *      Author: Antti Kamppi
- * 		filename: flatviewgeneraltab.cpp
- */
+//-----------------------------------------------------------------------------
+// File: ComponentInstantiationEditor.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Mikko Teuho
+// Date: 26.10.2015
+//
+// Description:
+// Contains the GUI items to edit the settings of a view component instance.
+//-----------------------------------------------------------------------------
 
-#include "flatviewgeneraltab.h"
+#include "ComponentInstantiationEditor.h"
 
-#include <IPXACTmodels/view.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/View.h>
+#include <IPXACTmodels/Component/ComponentInstantiation.h>
 
 #include <QLabel>
 #include <QVBoxLayout>
@@ -15,26 +21,25 @@
 #include <QStringList>
 
 //-----------------------------------------------------------------------------
-// Function: FlatViewGeneralTab::FlatViewGeneralTab()
+// Function: ComponentInstantiationEditor::ComponentInstantiationEditor()
 //-----------------------------------------------------------------------------
-FlatViewGeneralTab::FlatViewGeneralTab(QSharedPointer<Component> component, 
-    QSharedPointer<View> view, QSharedPointer<ParameterFinder> parameterFinder, 
-    QSharedPointer<ExpressionFormatter> expressionFormatter,
-									   QWidget *parent): 
+ComponentInstantiationEditor::ComponentInstantiationEditor(QSharedPointer<Component> component,
+    QSharedPointer<View> view, QSharedPointer<ComponentInstantiation> componentInstantiation,
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QWidget *parent):
 QWidget(parent),
 component_(component),
-view_(view), 
+view_(view),
+componentInstantiation_(componentInstantiation),
 language_(this), 
 languageStrict_(tr("Strict"), this),
 modelName_(this),
 fileSetRefs_(component, tr("File set references"), this),
-fileBuilders_(view->getDefaultFileBuilders(), this),
-moduleParameters_(view->getModuleParameters(), component->getChoices(), parameterFinder, expressionFormatter, this),
-parameters_(view->getParameters(), component, parameterFinder, expressionFormatter, this)
+fileBuilders_(componentInstantiation->getDefaultFileBuilders(), this),
+moduleParameters_(componentInstantiation->getModuleParameters(), component->getChoices(), parameterFinder,
+                  expressionFormatter, this)
 {
 	fileSetRefs_.initialize();
-
-    parameters_.setTitle(tr("View-specific generator parameters"));
 
 	connect(&language_, SIGNAL(textEdited(const QString&)),	this, SLOT(onLanguageChange()), Qt::UniqueConnection);
 	connect(&languageStrict_, SIGNAL(toggled(bool)), this, SLOT(onLanguageChange()), Qt::UniqueConnection);
@@ -53,29 +58,21 @@ parameters_(view->getParameters(), component, parameterFinder, expressionFormatt
     connect(&moduleParameters_, SIGNAL(openReferenceTree(QString)),
         this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
 
-    connect(&parameters_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(&parameters_, SIGNAL(increaseReferences(QString)),
-        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
-    connect(&parameters_, SIGNAL(decreaseReferences(QString)),
-        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
-    connect(&parameters_, SIGNAL(openReferenceTree(QString)),
-        this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
-
     setupLayout();
 }
 
 //-----------------------------------------------------------------------------
-// Function: FlatViewGeneralTab::~FlatViewGeneralTab()
+// Function: ComponentInstantiationEditor::~ComponentInstantiationEditor()
 //-----------------------------------------------------------------------------
-FlatViewGeneralTab::~FlatViewGeneralTab()
+ComponentInstantiationEditor::~ComponentInstantiationEditor()
 {
 
 }
 
 //-----------------------------------------------------------------------------
-// Function: FlatViewGeneralTab::isValid()
+// Function: ComponentInstantiationEditor::isValid()
 //-----------------------------------------------------------------------------
-bool FlatViewGeneralTab::isValid() const
+bool ComponentInstantiationEditor::isValid() const
 {
 	// check the file set references that they are to valid file sets.
 	QStringList fileSetRefs = fileSetRefs_.items();
@@ -93,67 +90,71 @@ bool FlatViewGeneralTab::isValid() const
 		return false;
     }
 
-    return fileBuilders_.isValid() && moduleParameters_.isValid() && parameters_.isValid();
+    return fileBuilders_.isValid() && moduleParameters_.isValid();
 }
 
 //-----------------------------------------------------------------------------
-// Function: FlatViewGeneralTab::refresh()
+// Function: ComponentInstantiationEditor::refresh()
 //-----------------------------------------------------------------------------
-void FlatViewGeneralTab::refresh()
+void ComponentInstantiationEditor::refresh()
 {
-	language_.setText(view_->getLanguage());
-	languageStrict_.setChecked(view_->getLanguageStrict());
+    language_.setText(componentInstantiation_->getLanguage());
+    languageStrict_.setChecked(componentInstantiation_->isLanguageStrict());
 
-	modelName_.setText(view_->getModelName());
-	fileSetRefs_.setItems(view_->getFileSetRefs());
+    modelName_.setText(componentInstantiation_->getModuleName());
+    fileSetRefs_.setItems(*componentInstantiation_->getFileSetReferences().data());
 
     fileBuilders_.refresh();
-    parameters_.refresh();
 
     moduleParameters_.refresh();
 }
 
 //-----------------------------------------------------------------------------
-// Function: FlatViewGeneralTab::onLanguageChange()
+// Function: ComponentInstantiationEditor::onLanguageChange()
 //-----------------------------------------------------------------------------
-void FlatViewGeneralTab::onLanguageChange()
+void ComponentInstantiationEditor::onLanguageChange()
 {
-	view_->setLanguage(language_.text());
-	view_->setLanguageStrict(languageStrict_.isChecked());
+    componentInstantiation_->setLanguage(language_.text());
+    componentInstantiation_->setLanguageStrictness(languageStrict_.isChecked());
 	emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
-// Function: FlatViewGeneralTab::onModelNameChange()
+// Function: ComponentInstantiationEditor::onModelNameChange()
 //-----------------------------------------------------------------------------
-void FlatViewGeneralTab::onModelNameChange(QString const& newName)
+void ComponentInstantiationEditor::onModelNameChange(QString const& newName)
 {
-	view_->setModelName(newName);
+    componentInstantiation_->setModuleName(newName);
 	emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
-// Function: FlatViewGeneralTab::onFileSetRefChange()
+// Function: ComponentInstantiationEditor::onFileSetRefChange()
 //-----------------------------------------------------------------------------
-void FlatViewGeneralTab::onFileSetRefChange()
+void ComponentInstantiationEditor::onFileSetRefChange()
 {
-	view_->setFileSetRefs(fileSetRefs_.items());
+    componentInstantiation_->getFileSetReferences()->clear();
+    foreach (QString setReference, fileSetRefs_.items())
+    {
+        componentInstantiation_->getFileSetReferences()->append(setReference);
+    }
+
 	emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
-// Function: FlatViewGeneralTab::showEvent()
+// Function: ComponentInstantiationEditor::showEvent()
 //-----------------------------------------------------------------------------
-void FlatViewGeneralTab::showEvent(QShowEvent* event)
+void ComponentInstantiationEditor::showEvent(QShowEvent* event)
 {
 	QWidget::showEvent(event);
 	emit helpUrlRequested("componenteditor/flatview.html");
 }
 
 //-----------------------------------------------------------------------------
-// Function: FlatViewGeneralTab::setupLayout()
+// Function: ComponentInstantiationEditor::setupLayout()
 //-----------------------------------------------------------------------------
-void FlatViewGeneralTab::setupLayout()
+void ComponentInstantiationEditor::setupLayout()
 {
     // create the labels for user to identify the editors
     QLabel* languageLabel = new QLabel(tr("Language"), this);
@@ -179,6 +180,5 @@ void FlatViewGeneralTab::setupLayout()
     topLayout->addLayout(halfPageLayout);
     topLayout->addLayout(fileSetAndBuildLayout);
     topLayout->addWidget(&moduleParameters_, 1);
-    topLayout->addWidget(&parameters_, 1);
     topLayout->setContentsMargins(0, 0, 0, 0);
 }

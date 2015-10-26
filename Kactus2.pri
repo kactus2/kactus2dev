@@ -278,10 +278,12 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/otherClockDrivers/otherclockdriversmodel.h \
     ./editors/ComponentEditor/otherClockDrivers/clockdriversdelegate.h \
     ./editors/ComponentEditor/otherClockDrivers/otherclockdriverseditor.h \
+    ./editors/ComponentEditor/channels/ChannelColumns.h \
     ./editors/ComponentEditor/channels/channelinterfacemanagerdelegate.h \
     ./editors/ComponentEditor/channels/channelsdelegate.h \
     ./editors/ComponentEditor/channels/channelseditor.h \
     ./editors/ComponentEditor/channels/channelsmodel.h \
+    ./editors/ComponentEditor/busInterfaces/BridgeColumns.h \
     ./editors/ComponentEditor/busInterfaces/BusInterfaceColumns.h \
     ./editors/ComponentEditor/busInterfaces/bridgesmodel.h \
     ./editors/ComponentEditor/busInterfaces/busifgeneraldetails.h \
@@ -317,6 +319,7 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapsTreeItem.h \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapsTreeModel.h \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapsTreeView.h \
+    ./editors/ComponentEditor/fileBuilders/FileBuilderColumns.h \
     ./editors/ComponentEditor/fileBuilders/filebuildersdelegate.h \
     ./editors/ComponentEditor/fileBuilders/filebuilderseditor.h \
     ./editors/ComponentEditor/fileBuilders/filebuildersmodel.h \
@@ -347,6 +350,7 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/software/systemView/SystemViewsModel.h \
     ./editors/ComponentEditor/addressSpaces/AddressSpaceColumns.h \
     ./editors/ComponentEditor/addressSpaces/AddressSpaceExpressionsGatherer.h \
+    ./editors/ComponentEditor/addressSpaces/SegmentColumns.h \
     ./editors/ComponentEditor/addressSpaces/SegmentDelegate.h \
     ./editors/ComponentEditor/addressSpaces/addressspaceeditor.h \
     ./editors/ComponentEditor/addressSpaces/addressspacegeneraleditor.h \
@@ -369,11 +373,12 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/cpus/cpusdelegate.h \
     ./editors/ComponentEditor/cpus/cpuseditor.h \
     ./editors/ComponentEditor/cpus/cpusmodel.h \
+    ./editors/ComponentEditor/views/EnvIdentifiersColumns.h \
     ./editors/ComponentEditor/views/ModuleParameterFactoryImplementation.h \
     ./editors/ComponentEditor/views/ModuleParameterEditor.h \
+    ./editors/ComponentEditor/views/ComponentInstantiationEditor.h \
     ./editors/ComponentEditor/views/ViewsDelegate.h \
     ./editors/ComponentEditor/views/filesetrefmodel.h \
-    ./editors/ComponentEditor/views/flatviewgeneraltab.h \
     ./editors/ComponentEditor/views/hierarchyrefwidget.h \
     ./editors/ComponentEditor/views/vieweditor.h \
     ./editors/ComponentEditor/views/viewseditor.h \
@@ -383,12 +388,14 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/views/envidentifiersmodel.h \
     ./editors/ComponentEditor/views/filesetrefeditor.h \
     ./editors/ComponentEditor/views/filesetrefeditordelegate.h \
+    ./editors/ComponentEditor/fileSet/FileSetColumns.h \
     ./editors/ComponentEditor/fileSet/fileseteditor.h \
     ./editors/ComponentEditor/fileSet/filesetsdelegate.h \
     ./editors/ComponentEditor/fileSet/filesetseditor.h \
     ./editors/ComponentEditor/fileSet/filesetsmodel.h \
     ./editors/ComponentEditor/fileSet/groupmanager.h \
     ./editors/ComponentEditor/fileSet/groupmanagerdelegate.h \
+    ./editors/ComponentEditor/fileSet/file/FileColumns.h \
     ./editors/ComponentEditor/fileSet/file/filegeneraleditor.h \
     ./editors/ComponentEditor/fileSet/file/filenameeditor.h \
     ./editors/ComponentEditor/fileSet/file/filenamelineedit.h \
@@ -403,6 +410,7 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/fileSet/file/filedefinemodel.h \
     ./editors/ComponentEditor/fileSet/file/filedefineview.h \
     ./editors/ComponentEditor/fileSet/file/fileeditor.h \
+    ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyColumns.h \
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencySortFilter.h \
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyDelegate.h \
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyEditor.h \
@@ -496,6 +504,7 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/visualization/fieldgapitem.h \
     ./editors/ComponentEditor/visualization/memorygapitem.h \
     ./editors/ComponentEditor/visualization/memoryvisualizationitem.h \
+    ./editors/ComponentEditor/choices/ChoiceColumns.h \
     ./editors/ComponentEditor/choices/ChoicesEditor.h \
     ./editors/ComponentEditor/choices/ChoicesModel.h \
     ./editors/ComponentEditor/choices/ChoicesDelegate.h \
@@ -649,12 +658,7 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/vhdlGenerator/vhdlport.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
-    ./editors/ComponentEditor/fileBuilders/FileBuilderColumns.h \
-    ./editors/ComponentEditor/fileSet/FileSetColumns.h \
-    ./editors/ComponentEditor/fileSet/file/FileColumns.h \
-    ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyColumns.h \
-    ./editors/ComponentEditor/choices/ChoiceColumns.h
+    ./kactusGenerators/modelsimGenerator/modelsimgenerator.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -954,6 +958,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/ports/portsmodel.cpp \
     ./editors/ComponentEditor/ports/PortsView.cpp \
     ./editors/ComponentEditor/ports/PortTagEditorDelegate.cpp \
+    ./editors/ComponentEditor/views/ComponentInstantiationEditor.cpp \
     ./editors/ComponentEditor/views/envidentifiereditor.cpp \
     ./editors/ComponentEditor/views/envidentifiersdelegate.cpp \
     ./editors/ComponentEditor/views/envidentifiersmodel.cpp \

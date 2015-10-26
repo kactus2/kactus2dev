@@ -1,9 +1,13 @@
-/* 
- *
- *  Created on: 15.4.2011
- *      Author: Antti Kamppi
- * 		filename: flatviewgeneraltab.h
- */
+//-----------------------------------------------------------------------------
+// File: ComponentInstantiationEditor.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Mikko Teuho
+// Date: 26.10.2015
+//
+// Description:
+// Contains the GUI items to edit the settings of a view component instance.
+//-----------------------------------------------------------------------------
 
 #ifndef FLATVIEWGENERALTAB_H
 #define FLATVIEWGENERALTAB_H
@@ -11,11 +15,7 @@
 #include "filesetrefeditor.h"
 #include "ModuleParameterEditor.h"
 
-#include <common/widgets/ParameterGroupBox/parametergroupbox.h>
-
 #include <editors/ComponentEditor/fileBuilders/filebuilderseditor.h>
-
-#include <IPXACTmodels/view.h>
 
 #include <QWidget>
 #include <QLineEdit>
@@ -23,39 +23,42 @@
 #include <QCheckBox>
 
 class Component;
+class View;
+class ComponentInstantiation;
 class ExpressionFormatter;
 class ParameterFinder;
 
 //-----------------------------------------------------------------------------
 //! Contains the GUI items to edit the general settings of non-hierarchical view.
 //-----------------------------------------------------------------------------
-class FlatViewGeneralTab : public QWidget
+class ComponentInstantiationEditor : public QWidget
 {
 	Q_OBJECT
 
 public:
 
-	/*! The constructor
+	/*!
+     *  The constructor.
 	 *
 	 *        @param [in] component             The component that contains the view.
 	 *        @param [in] view                  The view being edited.
      *        @param [in] parameterFinder       Parameter finder for view parameter expressions.
      *        @param [in] expressionFormatter   Formatter for view parameter expressions.
 	 *        @param [in] parent                The owner of this widget.
-	 *
-	*/
-	FlatViewGeneralTab(QSharedPointer<Component> component, 
-        QSharedPointer<View> view, QSharedPointer<ParameterFinder> parameterFinder, 
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
+	 */
+	ComponentInstantiationEditor(QSharedPointer<Component> component, QSharedPointer<View> view,
+        QSharedPointer<ComponentInstantiation> componentInstantiation,
+        QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
 		QWidget *parent);
 	
-	//! The destructor
-	virtual ~FlatViewGeneralTab();
+	//! The destructor.
+	virtual ~ComponentInstantiationEditor();
 
-	/*! Check for the validity of the edited view
-	*
-	*       @return True if all model parameters are in valid state.
-	*/
+	/*!
+     *  Check for the validity of the edited view.
+	 *
+	 *      @return True if all model parameters are in valid state.
+	 */
 	virtual bool isValid() const;
 
 	//! Restore the settings from the model to this editor.
@@ -114,11 +117,11 @@ private slots:
 
 private:
 	
-	//! No copying
-	FlatViewGeneralTab(const FlatViewGeneralTab& other);
+	//! No copying.
+	ComponentInstantiationEditor(const ComponentInstantiationEditor& other);
 
-	//! No assignment
-	FlatViewGeneralTab& operator=(const FlatViewGeneralTab& other);
+	//! No assignment.
+	ComponentInstantiationEditor& operator=(const ComponentInstantiationEditor& other);
 
     //! Sets the widget layout.
     void setupLayout();
@@ -132,6 +135,9 @@ private:
 
 	//! Pointer to the view being edited.
 	QSharedPointer<View> view_;
+
+    //! Pointer to the edited component instantiation.
+    QSharedPointer<ComponentInstantiation> componentInstantiation_;
 
 	//! Editor to set the hardware description language.
 	QLineEdit language_;
@@ -150,9 +156,6 @@ private:
 
     //! Editor to set the module parameters of flat view.
     ModuleParameterEditor moduleParameters_;
-
-    //! Editor to set the parameters of flat view.
-    ParameterGroupBox parameters_;
 };
 
 #endif // FLATVIEWGENERALTAB_H

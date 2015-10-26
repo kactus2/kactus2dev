@@ -1,39 +1,56 @@
-/* 
- *
- *  Created on: 15.4.2011
- *      Author: Antti Kamppi
- * 		filename: filesetrefeditor.cpp
- */
+//-----------------------------------------------------------------------------
+// File: filesetrefeditor.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 15.4.2011
+//
+// Description:
+// Editor to set the file set references of a view.
+//-----------------------------------------------------------------------------
 
 #include "filesetrefeditor.h"
 
 #include "filesetrefeditordelegate.h"
 #include "filesetrefmodel.h"
 
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
 
 #include <QHBoxLayout>
 #include <QLayout>
 
-FileSetRefEditor::FileSetRefEditor(QSharedPointer<Component> component,
-								   const QString title /*= "List" */, 
-								   QWidget *parent /*= 0*/):
+//-----------------------------------------------------------------------------
+// Function: filesetrefeditor::FileSetRefEditor()
+//-----------------------------------------------------------------------------
+FileSetRefEditor::FileSetRefEditor(QSharedPointer<Component> component, const QString title /*= "List" */,
+                                   QWidget *parent /*= 0*/):
 ListManager(title, parent),
-component_(component) {
-
+component_(component)
+{
 	Q_ASSERT(component_);
 }
 
-FileSetRefEditor::~FileSetRefEditor() {
+//-----------------------------------------------------------------------------
+// Function: filesetrefeditor::~FileSetRefEditor()
+//-----------------------------------------------------------------------------
+FileSetRefEditor::~FileSetRefEditor()
+{
+
 }
 
-void FileSetRefEditor::initialize( const QStringList& items /*= QStringList()*/ ) {
+//-----------------------------------------------------------------------------
+// Function: filesetrefeditor::initialize()
+//-----------------------------------------------------------------------------
+void FileSetRefEditor::initialize( const QStringList& items /*= QStringList()*/ )
+{
 	// remove the previous model and view if there are one
-	if (model_) {
+	if (model_)
+    {
 		delete model_;
 		model_ = 0;
 	}
-	if (view_) {
+	if (view_)
+    {
 		delete view_;
 		view_ = 0;
 	}
@@ -54,15 +71,15 @@ void FileSetRefEditor::initialize( const QStringList& items /*= QStringList()*/ 
 		model_, SLOT(moveItem(const QModelIndex&, const QModelIndex&)), Qt::UniqueConnection);
 
 	// the signals from the model
-	connect(model_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
 	connect(model_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
 	QLayout* topLayout = layout();
 
-	if (!topLayout) {
+	if (!topLayout)
+    {
 		// the top layout of the widget
 		topLayout = new QHBoxLayout(this);
 	}

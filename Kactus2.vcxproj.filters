@@ -2824,9 +2824,6 @@
     <ClCompile Include="GeneratedFiles\moc_filesetrefmodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_flatviewgeneraltab.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_hierarchyrefwidget.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -4138,6 +4135,12 @@
     <ClCompile Include="GeneratedFiles\moc_BusInterfaceWizard.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ComponentInstantiationEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\views\ComponentInstantiationEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\views</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5361,9 +5364,6 @@
     <CustomBuild Include="editors\ComponentEditor\views\filesetrefmodel.h">
       <Filter>Header Files\editors\ComponentEditor\views</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\views\flatviewgeneraltab.h">
-      <Filter>Header Files\editors\ComponentEditor\views</Filter>
-    </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\views\hierarchyrefwidget.h">
       <Filter>Header Files\editors\ComponentEditor\views</Filter>
     </CustomBuild>
@@ -5696,6 +5696,9 @@
     </CustomBuild>
     <CustomBuild Include="wizards\BusInterfaceWizard\BusInterfaceWizard.h">
       <Filter>Header Files\wizards\BusInterfaceWizard</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\views\ComponentInstantiationEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\views</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
@@ -6142,6 +6145,12 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\choices\ChoiceColumns.h">
       <Filter>Header Files\editors\ComponentEditor\choices</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\addressSpaces\SegmentColumns.h">
+      <Filter>Header Files\editors\ComponentEditor\addressSpaces</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\views\EnvIdentifiersColumns.h">
+      <Filter>Header Files\editors\ComponentEditor\views</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,12 +1,24 @@
-/* 
- *  	Created on: 14.5.2012
- *      Author: Antti Kamppi
- * 		filename: componenteditorviewitem.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: componenteditorviewitem.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 14.05.2012
+//
+// Description:
+// The item for a single view in the component editor's navigation tree.
+//-----------------------------------------------------------------------------
 
 #include "componenteditorviewitem.h"
 #include <editors/ComponentEditor/views/vieweditor.h>
+
+#include <library/LibraryManager/libraryhandler.h>
+
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/View.h>
+#include <IPXACTmodels/Component/ComponentInstantiation.h>
+#include <IPXACTmodels/Component/DesignInstantiation.h>
+#include <IPXACTmodels/Component/DesignConfigurationInstantiation.h>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorViewItem()
@@ -19,8 +31,8 @@ ComponentEditorViewItem::ComponentEditorViewItem(QSharedPointer<View> view,
                                                  QSharedPointer<ExpressionFormatter> expresionFormatter,
 												 ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-    view_(view),
-    editAction_(new QAction(tr("Edit"), this))
+view_(view),
+editAction_(new QAction(tr("Edit"), this))
 {
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expresionFormatter);
@@ -35,22 +47,26 @@ ComponentEditorItem(model, libHandler, component, parent),
 //-----------------------------------------------------------------------------
 // Function: ~ComponentEditorViewItem()
 //-----------------------------------------------------------------------------
-ComponentEditorViewItem::~ComponentEditorViewItem() {
+ComponentEditorViewItem::~ComponentEditorViewItem()
+{
+
 }
 
 //-----------------------------------------------------------------------------
 // Function: text()
 //-----------------------------------------------------------------------------
-QString ComponentEditorViewItem::text() const {
+QString ComponentEditorViewItem::text() const
+{
 	return view_->name();
 }
 
 //-----------------------------------------------------------------------------
 // Function: isValid()
 //-----------------------------------------------------------------------------
-bool ComponentEditorViewItem::isValid() const {
+bool ComponentEditorViewItem::isValid() const
+{
 	// check that view is valid
-	if (!view_->isValid(component_->getFileSetNames(), component_->getChoices())) {
+/*	if (!view_->isValid(component_->getFileSetNames(), component_->getChoices())) {
 		return false;
 	}
 	// check that the reference can be found
@@ -61,7 +77,7 @@ bool ComponentEditorViewItem::isValid() const {
     if (!component_->validateParameters(view_->getParameters()))
     {
         return false;
-    }
+    }*/
 
 	// view was valid and the reference was found
 	return true;
@@ -70,14 +86,20 @@ bool ComponentEditorViewItem::isValid() const {
 //-----------------------------------------------------------------------------
 // Function: editor()
 //-----------------------------------------------------------------------------
-ItemEditor* ComponentEditorViewItem::editor() {
-	if (!editor_) {
-		editor_ = new ViewEditor(component_, view_, libHandler_, parameterFinder_, expressionFormatter_);
+ItemEditor* ComponentEditorViewItem::editor()
+{
+	if (!editor_)
+    {
+        QSharedPointer<ComponentInstantiation> componentInstantiation = getComponentInstantiation();
+        QSharedPointer<DesignInstantiation> designInstantiation = getDesignInstantiation();
+        QSharedPointer<DesignConfigurationInstantiation> designConfigurationInstantiation =
+            getDesignConfigurationInstantiation();
+
+        editor_ = new ViewEditor(component_, view_, componentInstantiation, designInstantiation,
+            designConfigurationInstantiation, libHandler_, parameterFinder_, expressionFormatter_);
 		editor_->setProtection(locked_);
-		connect(editor_, SIGNAL(contentChanged()),
-			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
-		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
-			this, SIGNAL(helpUrlRequested(QString const&)));
+		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
 
         connectItemEditorToReferenceCounter();
 
@@ -89,30 +111,38 @@ ItemEditor* ComponentEditorViewItem::editor() {
 //-----------------------------------------------------------------------------
 // Function: getTooltip()
 //-----------------------------------------------------------------------------
-QString ComponentEditorViewItem::getTooltip() const {
+QString ComponentEditorViewItem::getTooltip() const
+{
 	return tr("Specifies a representation level of the component");
 }
 
 //-----------------------------------------------------------------------------
 // Function: canBeOpened()
 //-----------------------------------------------------------------------------
-bool ComponentEditorViewItem::canBeOpened() const {
-	// if view is not hierarchical then it can't be opened
-	if (!view_->isHierarchical()) {
-		return false;
-	}
-	// if the library does not contain the referenced object
-	else if (!libHandler_->contains(view_->getHierarchyRef())) {
-		return false;
-	}
+bool ComponentEditorViewItem::canBeOpened() const
+{
+    if (view_->isHierarchical())
+    {
+        QSharedPointer<VLNV> referencedVLNV;
 
-	// check that the reference has not been changed
-	// if it has then there is no way to open the design because the changes have not
-	// been made to the library
-	QSharedPointer<Document const> libComp = libHandler_->getModelReadOnly(*component_->getVlnv());
-	QSharedPointer<Component const> comp = libComp.staticCast<Component const>();
-	VLNV originalRef = comp->getHierRef(view_->name());
-	return originalRef == view_->getHierarchyRef();
+        if (!view_->getDesignConfigurationInstantiationRef().isEmpty())
+        {
+            QSharedPointer<DesignConfigurationInstantiation> instantiation = getDesignConfigurationInstantiation();
+            referencedVLNV = instantiation->getDesignConfigurationReference();
+        }
+        else if (!view_->getDesignInstantiationRef().isEmpty())
+        {
+            QSharedPointer<DesignInstantiation> instantiation = getDesignInstantiation();
+            referencedVLNV = instantiation->getDesignReference();
+        }
+
+        QSharedPointer<Document const> libComp = libHandler_->getModelReadOnly(component_->getVlnv());
+        QSharedPointer<Component const> comp = libComp.staticCast<Component const>();
+        VLNV originalRef = comp->getHierRef(view_->name());
+        return originalRef == *referencedVLNV.data();
+    }
+
+    return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -129,13 +159,15 @@ QList<QAction*> ComponentEditorViewItem::actions() const
 //-----------------------------------------------------------------------------
 // Function: openItem()
 //-----------------------------------------------------------------------------
-void ComponentEditorViewItem::openItem() {
+void ComponentEditorViewItem::openItem()
+{
 	// if item can't be opened
-	if (!canBeOpened()) {
+	if (!canBeOpened())
+    {
 		return;
 	}
 	QString viewName = view_->name();
-	VLNV compVLNV = *component_->getVlnv();
+	VLNV compVLNV = component_->getVlnv();
 	emit openDesign(compVLNV, viewName);
 }
 
@@ -170,4 +202,54 @@ QIcon ComponentEditorViewItem::getIcon() const
     {
         return QIcon();
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: componenteditorviewitem::getComponentInstantiation()
+//-----------------------------------------------------------------------------
+QSharedPointer<ComponentInstantiation> ComponentEditorViewItem::getComponentInstantiation() const
+{
+    foreach (QSharedPointer<ComponentInstantiation> instantiation, *component_->getComponentInstantiations())
+    {
+        if (instantiation->name() == view_->getComponentInstantiationRef())
+        {
+            return instantiation;
+        }
+    }
+
+    return QSharedPointer<ComponentInstantiation> ();
+}
+
+//-----------------------------------------------------------------------------
+// Function: componenteditorviewitem::getDesignInstantiation()
+//-----------------------------------------------------------------------------
+QSharedPointer<DesignInstantiation> ComponentEditorViewItem::getDesignInstantiation() const
+{
+    foreach (QSharedPointer<DesignInstantiation> instantiation, *component_->getDesignInstantiations())
+    {
+        if (instantiation->name() == view_->getDesignInstantiationRef())
+        {
+            return instantiation;
+        }
+    }
+
+    return QSharedPointer<DesignInstantiation> ();
+}
+
+//-----------------------------------------------------------------------------
+// Function: componenteditorviewitem::getDesignConfigurationInstantiation()
+//-----------------------------------------------------------------------------
+QSharedPointer<DesignConfigurationInstantiation> ComponentEditorViewItem::getDesignConfigurationInstantiation()
+    const
+{
+    foreach (QSharedPointer<DesignConfigurationInstantiation> instantiation,
+        *component_->getDesignConfigurationInstantiations())
+    {
+        if (instantiation->name() == view_->getDesignConfigurationInstantiationRef())
+        {
+            return instantiation;
+        }
+    }
+
+    return QSharedPointer<DesignConfigurationInstantiation> ();
 }

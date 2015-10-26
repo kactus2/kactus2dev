@@ -16,10 +16,9 @@
 #include <QSortFilterProxyModel>
 
 class Choice;
-class ModelParameter;
+class ModuleParameter;
 class ModelParameterModel;
 class ParameterFinder;
-class ParametersModel;
 class ExpressionFormatter;
 
 //-----------------------------------------------------------------------------
@@ -30,8 +29,17 @@ class ModuleParameterEditor : public QGroupBox
     Q_OBJECT
 public:
 
-	//! The constructor.
-    ModuleParameterEditor(QSharedPointer<QList<QSharedPointer<ModelParameter> > > parameters,
+    /*!
+     *  The constructor.
+     *
+     *      @param [in] parameters              The selected module parameters.
+     *      @param [in] componentChoices        The component choices.
+     *      @param [in] parameterFinder         The selected parameter finder.
+     *      @param [in] expressionFormatter     The selected expression formatter.
+     *      @param [in] parent                  The owner of this editor.
+     */
+//     ModuleParameterEditor(QSharedPointer<QList<QSharedPointer<ModelParameter> > > parameters,
+    ModuleParameterEditor(QSharedPointer<QList<QSharedPointer<ModuleParameter> > > parameters,
         QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
@@ -41,12 +49,15 @@ public:
 	~ModuleParameterEditor();
 
     /*!
-     *  Checks if the contents of the editor is valid.
+     *  Checks if the contents of the editor are valid.
      *
      *      @return True, if contents is valid, otherwise false.
      */
     bool isValid() const;
 
+    /*!
+     *  Refresh the contents of the editor.
+     */
     void refresh();
 
 signals:
@@ -86,9 +97,10 @@ private:
 	ModuleParameterEditor(ModuleParameterEditor const& rhs);
 	ModuleParameterEditor& operator=(ModuleParameterEditor const& rhs);
   
+    //! The used sort filter proxy.
     QSortFilterProxyModel* proxy_;
 
-    //! The used for editing model parameters.
+    //! Used for editing model parameters.
     ModelParameterModel* model_;
 };
 

@@ -11,7 +11,7 @@
 
 #include "ModuleParameterFactoryImplementation.h"
 
-#include <IPXACTmodels/kactusExtensions/ModuleParameter.h>
+#include <IPXACTmodels/common/ModuleParameter.h>
 
 //-----------------------------------------------------------------------------
 // Function: ModuleParameterFactoryImplementation::ModuleParameterFactoryImplementation()
@@ -20,6 +20,7 @@ ModuleParameterFactoryImplementation::ModuleParameterFactoryImplementation()
 {
 
 }
+
 //-----------------------------------------------------------------------------
 // Function: ModuleParameterFactoryImplementation::~ModuleParameterFactoryImplementation()
 //-----------------------------------------------------------------------------
@@ -31,7 +32,7 @@ ModuleParameterFactoryImplementation::~ModuleParameterFactoryImplementation()
 //-----------------------------------------------------------------------------
 // Function: ModuleParameterFactoryImplementation::make()
 //-----------------------------------------------------------------------------
-ModelParameter* ModuleParameterFactoryImplementation::make() const
+ModuleParameter* ModuleParameterFactoryImplementation::make() const
 {
     return new ModuleParameter();
 }

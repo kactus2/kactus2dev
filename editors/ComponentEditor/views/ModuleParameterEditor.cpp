@@ -34,19 +34,19 @@
 //-----------------------------------------------------------------------------
 // Function: ModuleParameterEditor::ModuleParameterEditor()
 //-----------------------------------------------------------------------------
-ModuleParameterEditor::ModuleParameterEditor(QSharedPointer<QList<QSharedPointer<ModelParameter> > > parameters,
+ModuleParameterEditor::ModuleParameterEditor(QSharedPointer<QList<QSharedPointer<ModuleParameter> > > parameters,
     QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
     QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QWidget *parent)
-    : QGroupBox(tr("Module parameters"), parent), 
-    proxy_(new QSortFilterProxyModel(this)),
-    model_(0)
+    QWidget *parent):
+QGroupBox(tr("Module parameters"), parent),
+proxy_(new QSortFilterProxyModel(this)),
+model_(0)
 {
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
     
-    model_ = new ModelParameterModel(parameters, componentChoices, expressionParser, 
-        parameterFinder, expressionFormatter, this);
+    model_ = new ModelParameterModel(parameters, componentChoices, expressionParser, parameterFinder,
+        expressionFormatter, this);
     
     model_->setParameterFactory(QSharedPointer<ModelParameterFactory>(new ModuleParameterFactoryImplementation()));
 
@@ -69,7 +69,8 @@ ModuleParameterEditor::ModuleParameterEditor(QSharedPointer<QList<QSharedPointer
     connect(view, SIGNAL(removeItem(const QModelIndex&)),
         model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
     
-    ModelParameterEditorHeaderView* parameterHorizontalHeader = new ModelParameterEditorHeaderView(Qt::Horizontal, this);
+    ModelParameterEditorHeaderView* parameterHorizontalHeader =
+        new ModelParameterEditorHeaderView(Qt::Horizontal, this);
     view->setHorizontalHeader(parameterHorizontalHeader);
     view->horizontalHeader()->setSectionsClickable(true);
     view->horizontalHeader()->setStretchLastSection(true);
