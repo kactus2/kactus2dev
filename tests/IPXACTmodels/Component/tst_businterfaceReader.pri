@@ -7,7 +7,10 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../IPXACTmodels/common/Array.h \
+HEADERS += ../../../IPXACTmodels/Component/BusInterface.h \
+    ../../../IPXACTmodels/Component/AbstractionType.h \
+    ../../../IPXACTmodels/common/Array.h \
+    ../../../IPXACTmodels/common/BooleanValue.h \
     ../../../IPXACTmodels/common/ConfigurableElementValue.h \
     ../../../IPXACTmodels/common/ConfigurableVLNVReference.h \
     ../../../IPXACTmodels/common/DirectionTypes.h \
@@ -21,26 +24,24 @@ HEADERS += ../../../IPXACTmodels/common/Array.h \
     ../../../IPXACTmodels/common/NameGroup.h \
     ../../../IPXACTmodels/common/Parameter.h \
     ../../../IPXACTmodels/common/PartSelect.h \
-    ../../../IPXACTmodels/PortMap.h \
+    ../../../IPXACTmodels/Component/PortMap.h \
     ../../../IPXACTmodels/common/Range.h \
+    ../../../IPXACTmodels/common/Vector.h \
     ../../../IPXACTmodels/XmlUtils.h \
-    ../../../IPXACTmodels/Component/businterface.h \
     ../../../IPXACTmodels/generaldeclarations.h \
-    ../../../IPXACTmodels/masterinterface.h \
-    ../../../IPXACTmodels/mirroredslaveinterface.h \
-    ../../../IPXACTmodels/slaveinterface.h \
+    ../../../IPXACTmodels/Component/MasterInterface.h \
+    ../../../IPXACTmodels/Component/MirroredSlaveInterface.h \
+    ../../../IPXACTmodels/Component/SlaveInterface.h \
     ../../../IPXACTmodels/vlnv.h \
     ../../../IPXACTmodels/common/CommonItemsReader.h \
     ../../../IPXACTmodels/common/NameGroupReader.h \
     ../../../IPXACTmodels/common/NameGroupWriter.h \
     ../../../IPXACTmodels/common/ParameterReader.h \
     ../../../IPXACTmodels/common/ParameterWriter.h \
-    ../../../IPXACTmodels/Component/businterfaceReader.h \
-    ../../../IPXACTmodels/common/BooleanValue.h \
-    ../../../IPXACTmodels/common/Vector.h \
-    ../../../IPXACTmodels/Component/AbstractionType.h
-SOURCES += ../../../IPXACTmodels/common/BooleanValue.cpp \
+    ../../../IPXACTmodels/Component/BusInterfaceReader.h
+SOURCES += ../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../IPXACTmodels/common/Array.cpp \
+    ../../../IPXACTmodels/common/BooleanValue.cpp \
     ../../../IPXACTmodels/common/CommonItemsReader.cpp \
     ../../../IPXACTmodels/common/ConfigurableElementValue.cpp \
     ../../../IPXACTmodels/common/ConfigurableVLNVReference.cpp \
@@ -59,16 +60,15 @@ SOURCES += ../../../IPXACTmodels/common/BooleanValue.cpp \
     ../../../IPXACTmodels/common/ParameterReader.cpp \
     ../../../IPXACTmodels/common/ParameterWriter.cpp \
     ../../../IPXACTmodels/common/PartSelect.cpp \
-    ../../../IPXACTmodels/PortMap.cpp \
+    ../../../IPXACTmodels/Component/PortMap.cpp \
     ../../../IPXACTmodels/common/Range.cpp \
     ../../../IPXACTmodels/common/Vector.cpp \
     ../../../IPXACTmodels/XmlUtils.cpp \
-    ../../../IPXACTmodels/Component/businterface.cpp \
-    ../../../IPXACTmodels/Component/businterfaceReader.cpp \
+    ../../../IPXACTmodels/Component/BusInterfaceReader.cpp \
+    ../../../IPXACTmodels/Component/BusInterface.cpp \
     ../../../IPXACTmodels/generaldeclarations.cpp \
-    ../../../IPXACTmodels/masterinterface.cpp \
-    ../../../IPXACTmodels/mirroredslaveinterface.cpp \
-    ../../../IPXACTmodels/slaveinterface.cpp \
+    ../../../IPXACTmodels/Component/MasterInterface.cpp \
+    ../../../IPXACTmodels/Component/MirroredSlaveInterface.cpp \
+    ../../../IPXACTmodels/Component/SlaveInterface.cpp \
     ./tst_businterfaceReader.cpp \
-    ../../../IPXACTmodels/vlnv.cpp \
-    ../../../IPXACTmodels/Component/AbstractionType.cpp
+    ../../../IPXACTmodels/vlnv.cpp

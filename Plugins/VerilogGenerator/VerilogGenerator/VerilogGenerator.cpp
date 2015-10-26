@@ -16,10 +16,11 @@
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
-#include <IPXACTmodels/businterface.h>
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
+
+#include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/PortRef.h>
-#include <IPXACTmodels/PortMap.h>
+#include <IPXACTmodels/Component/PortMap.h>
 
 #include <Plugins/VerilogGenerator/common/WriterGroup.h>
 #include <Plugins/VerilogGenerator/CommentWriter/CommentWriter.h>

@@ -103,7 +103,7 @@ void ComponentWriter::writeBusInterfaces(QXmlStreamWriter& writer, QSharedPointe
 {
     if (!component->getBusInterfaces()->isEmpty())
     {
-        businterfaceWriter busWriter;
+        BusInterfaceWriter busWriter;
 
         writer.writeStartElement("ipxact:busInterfaces");
 

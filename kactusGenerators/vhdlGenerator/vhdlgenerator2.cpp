@@ -24,12 +24,14 @@
 #include <IPXACTmodels/librarycomponent.h>
 #include <IPXACTmodels/modelparameter.h>
 #include <IPXACTmodels/port.h>
-#include <IPXACTmodels/businterface.h>
+
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/fileset.h>
 #include <IPXACTmodels/file.h>
 #include <IPXACTmodels/PortRef.h>
-#include <IPXACTmodels/PortMap.h>
+
+#include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/Component/PortMap.h>
 
 #include <IPXACTmodels/Design/Interconnection.h>
 

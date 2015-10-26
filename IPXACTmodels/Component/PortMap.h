@@ -12,7 +12,7 @@
 #ifndef PORTMAP_H
 #define PORTMAP_H
 
-#include "ipxactmodels_global.h"
+#include <IPXACTmodels/ipxactmodels_global.h>
 
 #include <IPXACTmodels/common/Range.h>
 #include <IPXACTmodels/common/PartSelect.h>

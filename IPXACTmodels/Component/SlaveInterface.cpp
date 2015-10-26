@@ -9,7 +9,7 @@
 // Implementation of ipxact:slave in bus interface.
 //-----------------------------------------------------------------------------
 
-#include "slaveinterface.h"
+#include "SlaveInterface.h"
 
 #include <QString>
 #include <QList>

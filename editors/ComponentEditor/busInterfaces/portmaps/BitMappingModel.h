@@ -15,7 +15,6 @@
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
-#include <IPXACTmodels/PortMap.h>
 
 #include <QAbstractTableModel>
 #include <QList>
@@ -25,7 +24,7 @@
 class BusInterface;
 class Component;
 class LibraryInterface;
-
+class PortMap;
 //-----------------------------------------------------------------------------
 //! BitMappingModel class.
 //-----------------------------------------------------------------------------

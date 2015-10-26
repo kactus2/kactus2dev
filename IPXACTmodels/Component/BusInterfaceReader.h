@@ -19,7 +19,7 @@
 #include <QDomNode>
 
 #include <IPXACTmodels/common/CommonItemsReader.h>
-
+#include <IPXACTmodels/Component/PortMap.h>
 //-----------------------------------------------------------------------------
 //! Reader class for IP-XACT businterface element.
 //-----------------------------------------------------------------------------

@@ -17,27 +17,14 @@ HEADERS += ./ApiDefinition.h \
     ./vlnv.h \
     ./writevalueconstraint.h \
     ./XmlUtils.h \
-    ./designconfabstractor.h \
     ./generaldeclarations.h \
-    ./generator.h \
-    ./generatorchain.h \
-    ./generatorchainselector.h \
     ./GenericVendorExtension.h \
     ./ipxactmodels_global.h \
     ./librarycomponent.h \
-    ./masterinterface.h \
-    ./memoryblockdata.h \
-    ./memorymapitem.h \
-    ./mirroredslaveinterface.h \
-    ./modelparameter.h \
-    ./PortMap.h \
-    ./PortRef.h \
-    ./registermodel.h \
-    ./reset.h \
-    ./Component/Segment.h \
-    ./servicetypedef.h \
-    ./slaveinterface.h \
-    ./subspacemap.h \
+    ./Component/MasterInterface.h \
+    ./Component/MirroredSlaveInterface.h \
+    ./Component/PortMap.h \
+    ./Component/SlaveInterface.h \
     ./swbuildcommand.h \
     ./kactusExtensions/ApiInterconnection.h \
     ./kactusExtensions/ApiInterface.h \
@@ -58,7 +45,6 @@ HEADERS += ./ApiDefinition.h \
     ./kactusExtensions/SWInstance.h \
     ./kactusExtensions/SWView.h \
     ./kactusExtensions/SystemView.h \
-    ./validators/ModelParameterValidator.h \
     ./validators/ParameterValidator2014.h \
     ./validators/BinaryValidator.h \
     ./validators/namevalidator.h \
@@ -161,6 +147,7 @@ HEADERS += ./ApiDefinition.h \
     ./Component/MemoryMapBase.h \
     ./Component/MemoryRemap.h \
     ./Component/Model.h \
+    ./Component/AbstractionType.h \
     ./Component/OtherClockDriver.h \
     ./Component/Port.h \
     ./Component/Register.h \
@@ -169,6 +156,7 @@ HEADERS += ./ApiDefinition.h \
     ./Component/RegisterFile.h \
     ./Component/RemapPort.h \
     ./Component/RemapState.h \
+    ./Component/Segment.h \
     ./Component/Transactional.h \
     ./Component/View.h \
     ./Component/Wire.h \
@@ -219,26 +207,12 @@ SOURCES += ./ApiDefinition.cpp \
     ./ApiFunctionParameter.cpp \
     ./bspbuildcommand.cpp \
     ./ComDefinition.cpp \
-    ./designconfabstractor.cpp \
     ./generaldeclarations.cpp \
-    ./generator.cpp \
-    ./generatorchain.cpp \
-    ./generatorchainselector.cpp \
     ./GenericVendorExtension.cpp \
     ./librarycomponent.cpp \
-    ./masterinterface.cpp \
-    ./memoryblockdata.cpp \
-    ./memorymapitem.cpp \
-    ./mirroredslaveinterface.cpp \
-    ./modelparameter.cpp \
-    ./PortMap.cpp \
-    ./PortRef.cpp \
-    ./registermodel.cpp \
-    ./reset.cpp \
-    ./Component/Segment.cpp \
-    ./servicetypedef.cpp \
-    ./slaveinterface.cpp \
-    ./subspacemap.cpp \
+    ./Component/MirroredSlaveInterface.cpp \
+    ./Component/PortMap.cpp \
+    ./Component/SlaveInterface.cpp \
     ./swbuildcommand.cpp \
     ./vlnv.cpp \
     ./XmlUtils.cpp \
@@ -262,7 +236,6 @@ SOURCES += ./ApiDefinition.cpp \
     ./kactusExtensions/SWView.cpp \
     ./kactusExtensions/SystemView.cpp \
     ./validators/BinaryValidator.cpp \
-    ./validators/ModelParameterValidator.cpp \
     ./validators/namevalidator.cpp \
     ./validators/NMTokenValidator.cpp \
     ./validators/ParameterValidator2014.cpp \
@@ -394,6 +367,7 @@ SOURCES += ./ApiDefinition.cpp \
     ./Component/MemoryMapWriter.cpp \
     ./Component/MemoryRemap.cpp \
     ./Component/Model.cpp \
+    ./Component/AbstractionType.cpp \
     ./Component/OtherClockDriver.cpp \
     ./Component/OtherClockDriverReader.cpp \
     ./Component/OtherClockDriverWriter.cpp \
@@ -410,10 +384,12 @@ SOURCES += ./ApiDefinition.cpp \
     ./Component/RemapState.cpp \
     ./Component/RemapStateReader.cpp \
     ./Component/RemapStateWriter.cpp \
+    ./Component/Segment.cpp \
     ./Component/Transactional.cpp \
     ./Component/View.cpp \
     ./Component/ViewReader.cpp \
     ./Component/ViewWriter.cpp \
     ./Component/Wire.cpp \
     ./Component/WireTypeDef.cpp \
-    ./Component/WriteValueConstraint.cpp
+    ./Component/WriteValueConstraint.cpp \
+    ./Component/MasterInterface.cpp

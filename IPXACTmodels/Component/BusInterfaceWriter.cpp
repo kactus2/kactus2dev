@@ -9,40 +9,41 @@
 // Writer class for IP-XACT businterface element.
 //-----------------------------------------------------------------------------
 
-#include "businterfaceWriter.h"
-#include "../masterinterface.h"
-#include "../XmlUtils.h"
-#include "../masterinterface.h"
-#include "../mirroredslaveinterface.h"
-#include "../slaveinterface.h"
+#include "BusInterfaceWriter.h"
 
 #include <IPXACTmodels/common/NameGroupWriter.h>
 #include <IPXACTmodels/common/ParameterWriter.h>
+
+#include <IPXACTmodels/Component/MasterInterface.h>
+#include <IPXACTmodels/Component/MirroredSlaveInterface.h>
+#include <IPXACTmodels/Component/SlaveInterface.h>
+
+#include "../XmlUtils.h"
 
 #include <QXmlStreamWriter>
 #include <QDomNamedNodeMap>
 
 //-----------------------------------------------------------------------------
-// Function: businterfaceWriter::businterfaceWriter()
+// Function: BusInterfaceWriter::BusInterfaceWriter()
 //-----------------------------------------------------------------------------
-businterfaceWriter::businterfaceWriter(QObject* parent) :
+BusInterfaceWriter::BusInterfaceWriter(QObject* parent) :
 CommonItemsWriter(parent)
 {
 
 }
 
 //-----------------------------------------------------------------------------
-// Function: businterfaceWriter::~businterfaceWriter()
+// Function: BusInterfaceWriter::~BusInterfaceWriter()
 //-----------------------------------------------------------------------------
-businterfaceWriter::~businterfaceWriter()
+BusInterfaceWriter::~BusInterfaceWriter()
 {
 
 }
 
 //-----------------------------------------------------------------------------
-// Function: businterfaceWriter::writebusinterface()
+// Function: BusInterfaceWriter::writebusinterface()
 //-----------------------------------------------------------------------------
-void businterfaceWriter::writebusinterface(QXmlStreamWriter& writer, QSharedPointer<BusInterface> businterface) const
+void BusInterfaceWriter::writebusinterface(QXmlStreamWriter& writer, QSharedPointer<BusInterface> businterface) const
 {
 	writer.writeStartElement("ipxact:busInterface");
 
@@ -80,18 +81,18 @@ void businterfaceWriter::writebusinterface(QXmlStreamWriter& writer, QSharedPoin
 }
 
 //-----------------------------------------------------------------------------
-// Function: businterfaceWriter::writeNameGroup()
+// Function: BusInterfaceWriter::writeNameGroup()
 //-----------------------------------------------------------------------------
-void businterfaceWriter::writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<BusInterface> businterface) const
+void BusInterfaceWriter::writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<BusInterface> businterface) const
 {
 	NameGroupWriter nameGroupWriter;
 	nameGroupWriter.writeNameGroup(writer, businterface);
 }
 
 //-----------------------------------------------------------------------------
-// Function: businterfaceWriter::writeIsPresent()
+// Function: BusInterfaceWriter::writeIsPresent()
 //-----------------------------------------------------------------------------
-void businterfaceWriter::writeIsPresent(QXmlStreamWriter& writer, QSharedPointer<BusInterface> businterface) const
+void BusInterfaceWriter::writeIsPresent(QXmlStreamWriter& writer, QSharedPointer<BusInterface> businterface) const
 {
 	if (!businterface->getIsPresent().isEmpty())
 	{
@@ -100,9 +101,9 @@ void businterfaceWriter::writeIsPresent(QXmlStreamWriter& writer, QSharedPointer
 }
 
 //-----------------------------------------------------------------------------
-// Function: businterfaceWriter::writeConnectionRequired()
+// Function: BusInterfaceWriter::writeConnectionRequired()
 //-----------------------------------------------------------------------------
-void businterfaceWriter::writeConnectionRequired(QXmlStreamWriter& writer,
+void BusInterfaceWriter::writeConnectionRequired(QXmlStreamWriter& writer,
     QSharedPointer<BusInterface> busInterface) const
 {
     if (!busInterface->getConnectionRequired().isEmpty())
@@ -112,9 +113,9 @@ void businterfaceWriter::writeConnectionRequired(QXmlStreamWriter& writer,
 }
 
 //-----------------------------------------------------------------------------
-// Function: businterfaceWriter::writeBitsInLau()
+// Function: BusInterfaceWriter::writeBitsInLau()
 //-----------------------------------------------------------------------------
-void businterfaceWriter::writeBitsInLau(QXmlStreamWriter& writer, QSharedPointer<BusInterface> busInterface) const
+void BusInterfaceWriter::writeBitsInLau(QXmlStreamWriter& writer, QSharedPointer<BusInterface> busInterface) const
 {
     if (!busInterface->getBitsInLau().isEmpty())
     {
@@ -123,9 +124,9 @@ void businterfaceWriter::writeBitsInLau(QXmlStreamWriter& writer, QSharedPointer
 }
 
 //-----------------------------------------------------------------------------
-// Function: businterfaceWriter::writeEndianness()
+// Function: BusInterfaceWriter::writeEndianness()
 //-----------------------------------------------------------------------------
-void businterfaceWriter::writeEndianness(QXmlStreamWriter& writer, QSharedPointer<BusInterface> busInterface) const
+void BusInterfaceWriter::writeEndianness(QXmlStreamWriter& writer, QSharedPointer<BusInterface> busInterface) const
 {
     BusInterface::Endianness endianess = busInterface->getEndianness();
     if (endianess == BusInterface::BIG_ENDIAN)
@@ -139,9 +140,9 @@ void businterfaceWriter::writeEndianness(QXmlStreamWriter& writer, QSharedPointe
 }
 
 //-----------------------------------------------------------------------------
-// Function: businterfaceWriter::writeBitSteering()
+// Function: BusInterfaceWriter::writeBitSteering()
 //-----------------------------------------------------------------------------
-void businterfaceWriter::writeBitSteering(QXmlStreamWriter& writer,
+void BusInterfaceWriter::writeBitSteering(QXmlStreamWriter& writer,
     QSharedPointer<BusInterface> businterface) const
 {
     BusInterface::BitSteering bitSteering = businterface->getBitSteering();
@@ -170,9 +171,9 @@ void businterfaceWriter::writeBitSteering(QXmlStreamWriter& writer,
 }
 
 //-----------------------------------------------------------------------------
-// Function: businterfaceWriter::writeAbstractionTypes()
+// Function: BusInterfaceWriter::writeAbstractionTypes()
 //-----------------------------------------------------------------------------
-void businterfaceWriter::writeAbstractionTypes(QXmlStreamWriter& writer,
+void BusInterfaceWriter::writeAbstractionTypes(QXmlStreamWriter& writer,
     QSharedPointer<BusInterface> businterface) const
 {
     if (!businterface->getAbstractionTypes()->isEmpty())
@@ -201,9 +202,9 @@ void businterfaceWriter::writeAbstractionTypes(QXmlStreamWriter& writer,
 }
 
 //-----------------------------------------------------------------------------
-// Function: businterfaceWriter::writePortMaps()
+// Function: BusInterfaceWriter::writePortMaps()
 //-----------------------------------------------------------------------------
-void businterfaceWriter::writePortMaps(QXmlStreamWriter& writer, 
+void BusInterfaceWriter::writePortMaps(QXmlStreamWriter& writer, 
     QSharedPointer<AbstractionType> abstractionType) const
 {
     if (!abstractionType->getPortMaps()->isEmpty())
@@ -231,9 +232,9 @@ void businterfaceWriter::writePortMaps(QXmlStreamWriter& writer,
 }
 
 //-----------------------------------------------------------------------------
-// Function: businterfaceWriter::writeLogicalPort()
+// Function: BusInterfaceWriter::writeLogicalPort()
 //-----------------------------------------------------------------------------
-void businterfaceWriter::writeLogicalPort(QXmlStreamWriter& writer, 
+void BusInterfaceWriter::writeLogicalPort(QXmlStreamWriter& writer, 
     QSharedPointer<PortMap::LogicalPort> logicalPort) const
 {
     writer.writeStartElement("ipxact:logicalPort");
@@ -252,9 +253,9 @@ void businterfaceWriter::writeLogicalPort(QXmlStreamWriter& writer,
 }
 
 //-----------------------------------------------------------------------------
-// Function: businterfaceWriter::writePhysicalPort()
+// Function: BusInterfaceWriter::writePhysicalPort()
 //-----------------------------------------------------------------------------
-void businterfaceWriter::writePhysicalPort(QXmlStreamWriter& writer, 
+void BusInterfaceWriter::writePhysicalPort(QXmlStreamWriter& writer, 
     QSharedPointer<PortMap::PhysicalPort> physicalPort) const
 {
     writer.writeStartElement("ipxact:physicalPort");
@@ -292,9 +293,9 @@ void businterfaceWriter::writePhysicalPort(QXmlStreamWriter& writer,
 }
 
 //-----------------------------------------------------------------------------
-// Function: businterfaceWriter::writeInterfaceMode()
+// Function: BusInterfaceWriter::writeInterfaceMode()
 //-----------------------------------------------------------------------------
-void businterfaceWriter::writeInterfaceMode(QXmlStreamWriter& writer,
+void BusInterfaceWriter::writeInterfaceMode(QXmlStreamWriter& writer,
     QSharedPointer<BusInterface> businterface) const
 {
     General::InterfaceMode interfaceMode = businterface->getInterfaceMode();
@@ -341,9 +342,9 @@ void businterfaceWriter::writeInterfaceMode(QXmlStreamWriter& writer,
 }
 
 //-----------------------------------------------------------------------------
-// Function: businterfaceWriter::writeMasterInterface()
+// Function: BusInterfaceWriter::writeMasterInterface()
 //-----------------------------------------------------------------------------
-void businterfaceWriter::writeMasterInterface(QXmlStreamWriter& writer,
+void BusInterfaceWriter::writeMasterInterface(QXmlStreamWriter& writer,
     QSharedPointer<MasterInterface> masterInterface, bool mirrored) const
 {
 	if (masterInterface)
@@ -397,9 +398,9 @@ void businterfaceWriter::writeMasterInterface(QXmlStreamWriter& writer,
 
 
 //-----------------------------------------------------------------------------
-// Function: businterfaceWriter::writeSlaveInterface()
+// Function: BusInterfaceWriter::writeSlaveInterface()
 //-----------------------------------------------------------------------------
-void businterfaceWriter::writeSlaveInterface(QXmlStreamWriter& writer, QSharedPointer<SlaveInterface> slave) const
+void BusInterfaceWriter::writeSlaveInterface(QXmlStreamWriter& writer, QSharedPointer<SlaveInterface> slave) const
 {
 	if (slave)
 	{
@@ -450,9 +451,9 @@ void businterfaceWriter::writeSlaveInterface(QXmlStreamWriter& writer, QSharedPo
 }
 
 //-----------------------------------------------------------------------------
-// Function: businterfaceWriter::writeMirroredSlaveInterface()
+// Function: BusInterfaceWriter::writeMirroredSlaveInterface()
 //-----------------------------------------------------------------------------
-void businterfaceWriter::writeMirroredSlaveInterface(QXmlStreamWriter& writer,
+void BusInterfaceWriter::writeMirroredSlaveInterface(QXmlStreamWriter& writer,
     QSharedPointer<MirroredSlaveInterface> mirroredSlave) const
 {
     if (mirroredSlave)
@@ -491,9 +492,9 @@ void businterfaceWriter::writeMirroredSlaveInterface(QXmlStreamWriter& writer,
 }
 
 //-----------------------------------------------------------------------------
-// Function: businterfaceWriter::writeMonitorInterface()
+// Function: BusInterfaceWriter::writeMonitorInterface()
 //-----------------------------------------------------------------------------
-void businterfaceWriter::writeMonitorInterface(QXmlStreamWriter& writer, 
+void BusInterfaceWriter::writeMonitorInterface(QXmlStreamWriter& writer, 
     QSharedPointer<BusInterface> businterface) const
 {
 	if (businterface->getMonitor())

@@ -13,7 +13,7 @@
 #define HWDELETECOMMANDS_H
 
 #include <IPXACTmodels/generaldeclarations.h>
-#include <IPXACTmodels/PortMap.h>
+#include <IPXACTmodels/Component/PortMap.h>
 #include <IPXACTmodels/vlnv.h>
 
 #include <QUndoCommand>

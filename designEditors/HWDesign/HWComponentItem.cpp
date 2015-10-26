@@ -23,7 +23,7 @@
 #include <designEditors/HWDesign/AdHocEditor/AdHocEditor.h>
 
 #include <IPXACTmodels/component.h>
-#include <IPXACTmodels/businterface.h>
+#include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/model.h>
 #include <IPXACTmodels/modelparameter.h>
 #include <IPXACTmodels/view.h>

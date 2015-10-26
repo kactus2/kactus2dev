@@ -12,11 +12,10 @@
 #ifndef PORTMAPDIALOG_H
 #define PORTMAPDIALOG_H
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/businterface.h>
-
 #include <QDialog>
 
+class BusInterface;
+class Component;
 class LibraryInterface;
 class BusIfPortmapTab;
 
@@ -35,12 +34,9 @@ public:
      *      @param [in] otherBusIf    The bus interface in the other end of the connection.
      */
     PortmapDialog(LibraryInterface* libInterface, QSharedPointer<Component> component,
-                  BusInterface* busIf, BusInterface* otherBusIf,
-                  QWidget* parent = 0);
+                  BusInterface* busIf, BusInterface* otherBusIf, QWidget* parent = 0);
 
-    /*!
-     *  Destructor.
-     */
+    //! The destructor.
     ~PortmapDialog();
 
 public slots:

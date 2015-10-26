@@ -17,7 +17,7 @@
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 
 #include <IPXACTmodels/Component/BusInterface.h>
-#include <IPXACTmodels/PortMap.h>
+#include <IPXACTmodels/Component/PortMap.h>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorBusInterfaceItem::ComponentEditorBusInterfaceItem()

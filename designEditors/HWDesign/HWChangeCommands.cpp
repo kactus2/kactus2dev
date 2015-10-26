@@ -15,7 +15,7 @@
 #include "HWMoveCommands.h"
 #include "HWAddCommands.h"
 
-#include <IPXACTmodels/businterface.h>
+#include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/ComInterface.h>
 

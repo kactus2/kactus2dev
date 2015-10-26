@@ -56,7 +56,7 @@
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/model.h>
-#include <IPXACTmodels/businterface.h>
+#include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/ApiInterface.h>
 #include <IPXACTmodels/ComInterface.h>
 #include <IPXACTmodels/SystemView.h>

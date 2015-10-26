@@ -12,10 +12,10 @@
 #include "busifinterfacemaster.h"
 
 #include <IPXACTmodels/Component/BusInterface.h>
-#include <IPXACTmodels/Component/component.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/MasterInterface.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
-#include <IPXACTmodels/masterinterface.h>
 
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
 #include <editors/ComponentEditor/common/ExpressionParser.h>

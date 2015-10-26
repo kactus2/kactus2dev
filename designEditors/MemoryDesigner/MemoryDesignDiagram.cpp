@@ -46,11 +46,12 @@
 #include <IPXACTmodels/model.h>
 #include <IPXACTmodels/memorymap.h>
 #include <IPXACTmodels/addressspace.h>
-#include <IPXACTmodels/businterface.h>
-#include <IPXACTmodels/masterinterface.h>
-#include <IPXACTmodels/slaveinterface.h>
 #include <IPXACTmodels/channel.h>
-#include <IPXACTmodels/mirroredslaveinterface.h>
+
+#include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/Component/MasterInterface.h>
+#include <IPXACTmodels/Component/SlaveInterface.h>
+#include <IPXACTmodels/Component/MirroredSlaveInterface.h>
 
 
 //-----------------------------------------------------------------------------

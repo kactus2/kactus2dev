@@ -12,7 +12,7 @@
 
 #include <common/views/EditableTableView/editabletableview.h>
 
-#include <IPXACTmodels/slaveinterface.h>
+#include <IPXACTmodels/Component/SlaveInterface.h>
 
 #include <QGroupBox>
 #include <QSortFilterProxyModel>

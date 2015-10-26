@@ -24,7 +24,7 @@
 
 #include <IPXACTmodels/vlnv.h>
 #include <IPXACTmodels/component.h>
-#include <IPXACTmodels/businterface.h>
+#include <IPXACTmodels/Component/BusInterface.h>
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>

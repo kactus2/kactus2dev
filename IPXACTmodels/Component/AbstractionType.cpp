@@ -11,8 +11,9 @@
 
 #include "AbstractionType.h"
 
-#include <IPXACTmodels/PortMap.h>
 #include <IPXACTmodels/common/ConfigurableVLNVReference.h>
+
+#include <IPXACTmodels/Component/PortMap.h>
 
 //-----------------------------------------------------------------------------
 // Function: AbstractionType()

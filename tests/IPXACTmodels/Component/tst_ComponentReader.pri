@@ -7,7 +7,9 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../IPXACTmodels/Component/AddressBlock.h \
+HEADERS += ../../../IPXACTmodels/Component/BusInterfaceReader.h \
+    ../../../IPXACTmodels/Component/AbstractionType.h \
+    ../../../IPXACTmodels/Component/AddressBlock.h \
     ../../../IPXACTmodels/Component/AddressSpace.h \
     ../../../IPXACTmodels/Component/AlternateRegister.h \
     ../../../IPXACTmodels/kactusExtensions/ApiInterface.h \
@@ -29,7 +31,7 @@ HEADERS += ../../../IPXACTmodels/Component/AddressBlock.h \
     ../../../IPXACTmodels/common/DirectionTypes.h \
     ../../../IPXACTmodels/common/Document.h \
     ../../../IPXACTmodels/Component/EnumeratedValue.h \
-    ../../../IPXACTmodels/Enumeration.h \
+    ../../../IPXACTmodels/common/Enumeration.h \
     ../../../IPXACTmodels/common/Extendable.h \
     ../../../IPXACTmodels/Component/Field.h \
     ../../../IPXACTmodels/Component/File.h \
@@ -56,7 +58,7 @@ HEADERS += ../../../IPXACTmodels/Component/AddressBlock.h \
     ../../../IPXACTmodels/common/Parameter.h \
     ../../../IPXACTmodels/common/PartSelect.h \
     ../../../IPXACTmodels/Component/Port.h \
-    ../../../IPXACTmodels/PortMap.h \
+    ../../../IPXACTmodels/Component/PortMap.h \
     ../../../IPXACTmodels/common/Protocol.h \
     ../../../IPXACTmodels/common/Range.h \
     ../../../IPXACTmodels/Component/Register.h \
@@ -66,6 +68,7 @@ HEADERS += ../../../IPXACTmodels/Component/AddressBlock.h \
     ../../../IPXACTmodels/Component/RemapPort.h \
     ../../../IPXACTmodels/Component/RemapState.h \
     ../../../IPXACTmodels/kactusExtensions/SWView.h \
+    ../../../IPXACTmodels/Component/Segment.h \
     ../../../IPXACTmodels/kactusExtensions/SystemView.h \
     ../../../IPXACTmodels/Component/Transactional.h \
     ../../../IPXACTmodels/common/TransactionalTypes.h \
@@ -73,18 +76,15 @@ HEADERS += ../../../IPXACTmodels/Component/AddressBlock.h \
     ../../../IPXACTmodels/Component/View.h \
     ../../../IPXACTmodels/Component/Wire.h \
     ../../../IPXACTmodels/Component/WireTypeDef.h \
-    ../../../IPXACTmodels/common/Enumeration.h \
     ../../../IPXACTmodels/XmlUtils.h \
     ../../../IPXACTmodels/bspbuildcommand.h \
-    ../../../IPXACTmodels/Component/businterface.h \
+    ../../../IPXACTmodels/Component/BusInterface.h \
     ../../../IPXACTmodels/Component/channel.h \
     ../../../IPXACTmodels/Component/choice.h \
     ../../../IPXACTmodels/Component/cpu.h \
     ../../../IPXACTmodels/generaldeclarations.h \
-    ../../../IPXACTmodels/masterinterface.h \
-    ../../../IPXACTmodels/mirroredslaveinterface.h \
-    ../../../IPXACTmodels/Component/Segment.h \
-    ../../../IPXACTmodels/slaveinterface.h \
+    ../../../IPXACTmodels/Component/MirroredSlaveInterface.h \
+    ../../../IPXACTmodels/Component/SlaveInterface.h \
     ../../../IPXACTmodels/swbuildcommand.h \
     ../../../IPXACTmodels/vlnv.h \
     ../../../IPXACTmodels/Component/AddressBlockReader.h \
@@ -113,9 +113,9 @@ HEADERS += ../../../IPXACTmodels/Component/AddressBlock.h \
     ../../../IPXACTmodels/Component/RegisterReader.h \
     ../../../IPXACTmodels/Component/RemapStateReader.h \
     ../../../IPXACTmodels/Component/ViewReader.h \
-    ../../../IPXACTmodels/Component/businterfaceReader.h \
-    ../../../IPXACTmodels/Component/AbstractionType.h
-SOURCES += ../../../IPXACTmodels/Component/AddressBlock.cpp \
+    ../../../IPXACTmodels/Component/MasterInterface.h
+SOURCES += ../../../IPXACTmodels/Component/AbstractionType.cpp \
+    ../../../IPXACTmodels/Component/AddressBlock.cpp \
     ../../../IPXACTmodels/Component/AddressBlockReader.cpp \
     ../../../IPXACTmodels/Component/AddressSpace.cpp \
     ../../../IPXACTmodels/Component/AddressSpaceReader.cpp \
@@ -147,7 +147,7 @@ SOURCES += ../../../IPXACTmodels/Component/AddressBlock.cpp \
     ../../../IPXACTmodels/common/DocumentReader.cpp \
     ../../../IPXACTmodels/Component/EnumeratedValue.cpp \
     ../../../IPXACTmodels/Component/EnumeratedValueReader.cpp \
-    ../../../IPXACTmodels/Enumeration.cpp \
+    ../../../IPXACTmodels/common/Enumeration.cpp \
     ../../../IPXACTmodels/common/Extendable.cpp \
     ../../../IPXACTmodels/Component/Field.cpp \
     ../../../IPXACTmodels/Component/FieldReader.cpp \
@@ -185,7 +185,7 @@ SOURCES += ../../../IPXACTmodels/Component/AddressBlock.cpp \
     ../../../IPXACTmodels/common/ParameterReader.cpp \
     ../../../IPXACTmodels/common/PartSelect.cpp \
     ../../../IPXACTmodels/Component/Port.cpp \
-    ../../../IPXACTmodels/PortMap.cpp \
+    ../../../IPXACTmodels/Component/PortMap.cpp \
     ../../../IPXACTmodels/Component/PortReader.cpp \
     ../../../IPXACTmodels/common/Protocol.cpp \
     ../../../IPXACTmodels/common/ProtocolReader.cpp \
@@ -199,6 +199,7 @@ SOURCES += ../../../IPXACTmodels/Component/AddressBlock.cpp \
     ../../../IPXACTmodels/Component/RemapState.cpp \
     ../../../IPXACTmodels/Component/RemapStateReader.cpp \
     ../../../IPXACTmodels/kactusExtensions/SWView.cpp \
+    ../../../IPXACTmodels/Component/Segment.cpp \
     ../../../IPXACTmodels/kactusExtensions/SystemView.cpp \
     ../../../IPXACTmodels/Component/Transactional.cpp \
     ../../../IPXACTmodels/common/TransactionalTypes.cpp \
@@ -208,20 +209,17 @@ SOURCES += ../../../IPXACTmodels/Component/AddressBlock.cpp \
     ../../../IPXACTmodels/Component/Wire.cpp \
     ../../../IPXACTmodels/Component/WireTypeDef.cpp \
     ../../../IPXACTmodels/Component/WriteValueConstraint.cpp \
-    ../../../IPXACTmodels/common/Enumeration.cpp \
     ../../../IPXACTmodels/XmlUtils.cpp \
     ../../../IPXACTmodels/bspbuildcommand.cpp \
-    ../../../IPXACTmodels/Component/businterface.cpp \
-    ../../../IPXACTmodels/Component/businterfaceReader.cpp \
+    ../../../IPXACTmodels/Component/BusInterface.cpp \
+    ../../../IPXACTmodels/Component/BusInterfaceReader.cpp \
     ../../../IPXACTmodels/Component/channel.cpp \
     ../../../IPXACTmodels/Component/choice.cpp \
     ../../../IPXACTmodels/Component/cpu.cpp \
     ../../../IPXACTmodels/generaldeclarations.cpp \
-    ../../../IPXACTmodels/masterinterface.cpp \
-    ../../../IPXACTmodels/mirroredslaveinterface.cpp \
-    ../../../IPXACTmodels/Component/Segment.cpp \
-    ../../../IPXACTmodels/slaveinterface.cpp \
+    ../../../IPXACTmodels/Component/MasterInterface.cpp \
+    ../../../IPXACTmodels/Component/MirroredSlaveInterface.cpp \
+    ../../../IPXACTmodels/Component/SlaveInterface.cpp \
     ../../../IPXACTmodels/swbuildcommand.cpp \
     ./tst_ComponentReader.cpp \
-    ../../../IPXACTmodels/vlnv.cpp \
-    ../../../IPXACTmodels/Component/AbstractionType.cpp
+    ../../../IPXACTmodels/vlnv.cpp

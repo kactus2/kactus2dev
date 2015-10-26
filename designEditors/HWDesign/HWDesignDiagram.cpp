@@ -44,7 +44,7 @@
 
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
-#include <IPXACTmodels/businterface.h>
+#include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/model.h>

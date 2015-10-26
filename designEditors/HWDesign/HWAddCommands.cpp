@@ -16,11 +16,13 @@
 #include "HWComponentItem.h"
 #include "BusInterfaceItem.h"
 
-#include <common/graphicsItems/GraphicsColumn.h>
-#include <designEditors/common/DesignDiagram.h>
 #include <common/GenericEditProvider.h>
-#include <IPXACTmodels/businterface.h>
-#include <IPXACTmodels/PortMap.h>
+#include <common/graphicsItems/GraphicsColumn.h>
+
+#include <designEditors/common/DesignDiagram.h>
+
+#include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/Component/PortMap.h>
 
 //-----------------------------------------------------------------------------
 // Function: PortAddCommand()

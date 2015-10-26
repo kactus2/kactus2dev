@@ -14,14 +14,16 @@
 
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
-#include <IPXACTmodels/component.h>
 #include <IPXACTmodels/register.h>
 #include <IPXACTmodels/addressblock.h>
 #include <IPXACTmodels/AbstractMemoryMap.h>
 #include <IPXACTmodels/memorymap.h>
 #include <IPXACTmodels/MemoryRemap.h>
-#include <IPXACTmodels/mirroredslaveinterface.h>
-#include <IPXACTmodels/masterinterface.h>
+
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/MirroredSlaveInterface.h>
+#include <IPXACTmodels/Component/MasterInterface.h>
+
 #include <IPXACTmodels/addressspace.h>
 #include <IPXACTmodels/remapstate.h>
 #include <IPXACTmodels/remapport.h>

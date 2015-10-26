@@ -152,9 +152,6 @@
     <ClCompile Include="validators\ParameterValidator2014.cpp">
       <Filter>Source Files\validators</Filter>
     </ClCompile>
-    <ClCompile Include="validators\ModelParameterValidator.cpp">
-      <Filter>Source Files\validators</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_DesignReader.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
@@ -236,55 +233,10 @@
     <ClCompile Include="ComDefinition.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="designconfabstractor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="generaldeclarations.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="generator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="generatorchain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="generatorchainselector.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GenericVendorExtension.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="masterinterface.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="memoryblockdata.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="memorymapitem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="mirroredslaveinterface.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="modelparameter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PortMap.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PortRef.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="registermodel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="reset.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="servicetypedef.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="slaveinterface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="swbuildcommand.cpp">
@@ -1115,6 +1067,18 @@
     <ClCompile Include="librarycomponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Component\MasterInterface.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\MirroredSlaveInterface.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\PortMap.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\SlaveInterface.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BusDefinition\BusDefinition.h">
@@ -1186,58 +1150,13 @@
     <ClInclude Include="ComDefinition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="designconfabstractor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="generaldeclarations.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="generator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="generatorchain.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="generatorchainselector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GenericVendorExtension.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ipxactmodels_global.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="masterinterface.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="memoryblockdata.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="memorymapitem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="mirroredslaveinterface.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="modelparameter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PortMap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PortRef.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="registermodel.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="reset.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="servicetypedef.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="slaveinterface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="swbuildcommand.h">
@@ -1335,9 +1254,6 @@
     </ClInclude>
     <ClInclude Include="kactusExtensions\SystemView.h">
       <Filter>Header Files\kactusExtensions</Filter>
-    </ClInclude>
-    <ClInclude Include="validators\ModelParameterValidator.h">
-      <Filter>Header Files\validators</Filter>
     </ClInclude>
     <ClInclude Include="validators\ParameterValidator2014.h">
       <Filter>Header Files\validators</Filter>
@@ -1530,6 +1446,18 @@
     </ClInclude>
     <ClInclude Include="librarycomponent.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\MasterInterface.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\MirroredSlaveInterface.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\PortMap.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\SlaveInterface.h">
+      <Filter>Header Files\Component</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

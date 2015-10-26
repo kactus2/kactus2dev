@@ -16,7 +16,7 @@
 
 #include <designEditors/common/ComponentDesignDiagram.h>
 
-#include <IPXACTmodels/businterface.h>
+#include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/kactusExtensions/ColumnDesc.h>
 
 #include <QMap>

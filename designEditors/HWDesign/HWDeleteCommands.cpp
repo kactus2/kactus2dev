@@ -26,9 +26,9 @@
 #include <designEditors/common/Association/AssociationRemoveCommand.h>
 
 #include <IPXACTmodels/component.h>
-#include <IPXACTmodels/businterface.h>
-#include <IPXACTmodels/port.h>
-#include <IPXACTmodels/PortMap.h>
+#include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/Component/Port.h>
+#include <IPXACTmodels/Component/PortMap.h>
 
 //-----------------------------------------------------------------------------
 // Function: ColumnDeleteCommand()

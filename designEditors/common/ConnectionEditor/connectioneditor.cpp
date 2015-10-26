@@ -18,13 +18,16 @@
 #include <library/LibraryManager/libraryinterface.h>
 #include <IPXACTmodels/vlnv.h>
 
-#include <IPXACTmodels/businterface.h>
-#include <IPXACTmodels/component.h>
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
+
+#include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/PortMap.h>
+
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/ApiInterface.h>
 #include <IPXACTmodels/ComInterface.h>
-#include <IPXACTmodels/PortMap.h>
+
 #include <IPXACTmodels/common/Vector.h>
 
 #include <common/graphicsItems/ConnectionUndoCommands.h>

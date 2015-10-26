@@ -12,7 +12,7 @@
 #ifndef BRIDGESMODEL_H
 #define BRIDGESMODEL_H
 
-#include <IPXACTmodels/slaveinterface.h>
+#include <IPXACTmodels/Component/SlaveInterface.h>
 
 #include <QAbstractTableModel>
 #include <QSharedPointer>

@@ -12,7 +12,7 @@
 #ifndef MIRROREDSLAVEINTERFACE_H_
 #define MIRROREDSLAVEINTERFACE_H_
 
-#include "ipxactmodels_global.h"
+#include <IPXACTmodels/ipxactmodels_global.h>
 
 #include <QString>
 #include <QMap>

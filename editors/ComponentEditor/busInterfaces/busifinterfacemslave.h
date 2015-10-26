@@ -10,8 +10,6 @@
 
 #include "busifinterfacemodeeditor.h"
 
-#include <IPXACTmodels/mirroredslaveinterface.h>
-
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 
 #include <QSharedPointer>
@@ -21,7 +19,7 @@ class BusInterface;
 class Component;
 class ExpressionEditor;
 class ExpressionParser;
-
+class MirroredSlaveInterface;
 /*! Editor to edit mirrored slave details of a bus interface.
  *
  */

@@ -12,9 +12,10 @@
 #ifndef businterfaceWriter_H
 #define businterfaceWriter_H
 
-#include "businterface.h"
+#include "BusInterface.h"
 
 #include <IPXACTmodels/common/CommonItemsWriter.h>
+#include <IPXACTmodels/Component/PortMap.h>
 
 #include <QObject>
 #include <QSharedPointer>
@@ -23,7 +24,7 @@
 //-----------------------------------------------------------------------------
 //! Writer class for IP-XACT businterface element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT businterfaceWriter : public CommonItemsWriter
+class IPXACTMODELS_EXPORT BusInterfaceWriter : public CommonItemsWriter
 {
     Q_OBJECT
 
@@ -34,12 +35,12 @@ public:
      *
      *      @param [in] parent  The owner of this Writer.
      */
-    businterfaceWriter(QObject* parent = 0);
+    BusInterfaceWriter(QObject* parent = 0);
 
     /*!
      *  The destructor.
      */
-    ~businterfaceWriter();
+    ~BusInterfaceWriter();
 	
     /*!
      *  Write a businterface to an XML file.
@@ -52,8 +53,8 @@ public:
 private:
 
     //! No copying allowed.
-    businterfaceWriter(businterfaceWriter const& rhs);
-    businterfaceWriter& operator=(businterfaceWriter const& rhs);
+    BusInterfaceWriter(BusInterfaceWriter const& rhs);
+    BusInterfaceWriter& operator=(BusInterfaceWriter const& rhs);
 
     /*!
      *  Writes the name group to an XML file.
@@ -110,7 +111,13 @@ private:
 	 *      @param [in] businterface		The businterface to be written.		
 	 */
 	void writeAbstractionTypes(QXmlStreamWriter& writer, QSharedPointer<BusInterface> businterface) const;
-
+    	
+	/*!
+	 *  Write the port maps of an abstraction type.
+	 *
+     *      @param [in] writer				The used xml writer.
+	 *      @param [in] abstractionType		The abstraction type whose port maps to write.
+	 */
     void writePortMaps(QXmlStreamWriter& writer, QSharedPointer<AbstractionType> abstractionType) const;
 
 	/*!

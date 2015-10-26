@@ -15,7 +15,6 @@
 #include "PortMapsTreeItem.h"
 
 #include <IPXACTmodels/common/DirectionTypes.h>
-#include <IPXACTmodels/PortMap.h>
 
 #include <QObject>
 #include <QString>
@@ -25,6 +24,7 @@
 class AbstractionDefinition;
 class BusInterface;
 class Component;
+class PortMap;
 
 //-----------------------------------------------------------------------------
 //! Port maps tree item representing a logical port.

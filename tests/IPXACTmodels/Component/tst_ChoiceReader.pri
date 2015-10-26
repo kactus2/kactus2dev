@@ -15,7 +15,6 @@ HEADERS += ../../../IPXACTmodels/common/Array.h \
     ../../../IPXACTmodels/common/ConfigurableVLNVReference.h \
     ../../../IPXACTmodels/Component/DesignConfigurationInstantiation.h \
     ../../../IPXACTmodels/Component/DesignInstantiation.h \
-    ../../../IPXACTmodels/Enumeration.h \
     ../../../IPXACTmodels/common/Extendable.h \
     ../../../IPXACTmodels/common/FileBuilder.h \
     ../../../IPXACTmodels/common/FileTypes.h \
@@ -33,8 +32,10 @@ HEADERS += ../../../IPXACTmodels/common/Array.h \
     ../../../IPXACTmodels/common/CommonItemsReader.h \
     ../../../IPXACTmodels/common/ModuleParameterReader.h \
     ../../../IPXACTmodels/common/NameGroupReader.h \
-    ../../../IPXACTmodels/common/ParameterReader.h
-SOURCES += ../../../IPXACTmodels/common/Array.cpp \
+    ../../../IPXACTmodels/common/ParameterReader.h \
+    ../../../IPXACTmodels/common/Enumeration.h
+SOURCES += ../../../IPXACTmodels/common/Enumeration.cpp \
+    ../../../IPXACTmodels/common/Array.cpp \
     ../../../IPXACTmodels/common/Assertion.cpp \
     ../../../IPXACTmodels/common/BuildModel.cpp \
     ../../../IPXACTmodels/Component/ChoiceReader.cpp \
@@ -44,7 +45,6 @@ SOURCES += ../../../IPXACTmodels/common/Array.cpp \
     ../../../IPXACTmodels/common/ConfigurableVLNVReference.cpp \
     ../../../IPXACTmodels/Component/DesignConfigurationInstantiation.cpp \
     ../../../IPXACTmodels/Component/DesignInstantiation.cpp \
-    ../../../IPXACTmodels/Enumeration.cpp \
     ../../../IPXACTmodels/common/Extendable.cpp \
     ../../../IPXACTmodels/common/FileBuilder.cpp \
     ../../../IPXACTmodels/common/FileTypes.cpp \

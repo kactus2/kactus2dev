@@ -19,8 +19,8 @@
 
 #include <designEditors/HWDesign/BusPortItem.h>
 
-#include <IPXACTmodels/businterface.h>
-#include <IPXACTmodels/slaveinterface.h>
+#include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/Component/SlaveInterface.h>
 #include <IPXACTmodels/memorymap.h>
 
 #include <QFileInfo>

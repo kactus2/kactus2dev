@@ -14,8 +14,9 @@
 #include <editors/ComponentEditor/busInterfaces/busifportmaptab.h>
 #include <library/LibraryManager/libraryinterface.h>
 
-#include <IPXACTmodels/businterface.h>
-#include <IPXACTmodels/PortMap.h>
+#include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/PortMap.h>
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>

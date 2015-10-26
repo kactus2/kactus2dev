@@ -19,10 +19,11 @@
 
 #include <IPXACTmodels/common/Vector.h>
 
-#include <IPXACTmodels/businterface.h>
+#include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/Component/PortMap.h>
+
 #include <IPXACTmodels/file.h>
 #include <IPXACTmodels/fileset.h>
-#include <IPXACTmodels/PortMap.h>
 #include <IPXACTmodels/vlnv.h>
 
 #include <QApplication>

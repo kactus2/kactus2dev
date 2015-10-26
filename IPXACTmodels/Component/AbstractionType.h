@@ -13,7 +13,6 @@
 #define ABSTRACTION_TYPE_H
 
 #include <IPXACTmodels/ipxactmodels_global.h>
-#include <IPXACTmodels/PortMap.h>
 
 #include <QString>
 #include <QList>

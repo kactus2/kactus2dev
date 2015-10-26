@@ -1,112 +1,116 @@
 //-----------------------------------------------------------------------------
-// File: modelparameter.cpp
+// File: MasterInterface.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Antti Kamppi
-// Date: 2.8.2010
+// Date: 31.8.2010
 //
 // Description:
-// Equals the spirit:modelParameter element in IP-Xact specification.
+// Implementation of ipxact:master in bus interface.
 //-----------------------------------------------------------------------------
 
-#include "modelparameter.h"
+#include "MasterInterface.h"
 
 #include <QString>
-#include <QDomNode>
 #include <QMap>
 #include <QObject>
-#include <QDomNamedNodeMap>
-#include <QXmlStreamWriter>
-#include "XmlUtils.h"
 
 //-----------------------------------------------------------------------------
-// Function: ModelParameter::ModelParameter()
+// Function: MasterInterface::MasterInterface()
 //-----------------------------------------------------------------------------
-ModelParameter::ModelParameter(QDomNode &modelParameterNode): Parameter()
+MasterInterface::MasterInterface():
+addressSpaceRef_(), 
+    baseAddress_(),
+    baseAttributes_()
 {
-
 }
 
 //-----------------------------------------------------------------------------
-// Function: ModelParameter::ModelParameter()
+// Function: MasterInterface::MasterInterface()
 //-----------------------------------------------------------------------------
-ModelParameter::ModelParameter(): Parameter()
+MasterInterface::MasterInterface(MasterInterface const& other):
+addressSpaceRef_(other.addressSpaceRef_),
+    baseAddress_(other.baseAddress_),
+    baseAttributes_(other.baseAttributes_)
 {
-
 }
 
 //-----------------------------------------------------------------------------
-// Function: ModelParameter::ModelParameter()
+// Function: MasterInterface::operator=()
 //-----------------------------------------------------------------------------
-ModelParameter::ModelParameter(const ModelParameter &other ): Parameter(other)
+MasterInterface& MasterInterface::operator=(MasterInterface const& other)
 {
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: ModelParameter::operator=()
-//-----------------------------------------------------------------------------
-ModelParameter & ModelParameter::operator=(const ModelParameter &other)
-{
-	if (this != &other)
+    if (this != &other)
     {
-        Parameter::operator=(other);
-	}
-	return *this;
+        addressSpaceRef_ = other.addressSpaceRef_;
+        baseAddress_ = other.baseAddress_;
+        baseAttributes_ = other.baseAttributes_;
+    }
+
+    return *this;
 }
 
 //-----------------------------------------------------------------------------
-// Function: ModelParameter::~ModelParameter()
+// Function: MasterInterface::~MasterInterface()
 //-----------------------------------------------------------------------------
-ModelParameter::~ModelParameter()
+MasterInterface::~MasterInterface()
 {
-
 }
 
 //-----------------------------------------------------------------------------
-// Function: ModelParameter::getDataType()
+// Function: MasterInterface::setAddressSpaceRef()
 //-----------------------------------------------------------------------------
-QString ModelParameter::getDataType() const
+void MasterInterface::setAddressSpaceRef(QString const& addressSpaceRef)
 {
-	return getAttribute("spirit:dataType");
+    addressSpaceRef_ = addressSpaceRef;
 }
 
 //-----------------------------------------------------------------------------
-// Function: ModelParameter::setDataType()
+// Function: MasterInterface::getAddressSpaceRef()
 //-----------------------------------------------------------------------------
-void ModelParameter::setDataType( const QString& dataType )
+QString MasterInterface::getAddressSpaceRef() const
 {
-	setAttribute("spirit:dataType", dataType);
+    return addressSpaceRef_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: ModelParameter::getUsageType()
+// Function: MasterInterface::setBaseAddress()
 //-----------------------------------------------------------------------------
-QString ModelParameter::getUsageType() const
+void MasterInterface::setBaseAddress(QString const& baseAddress)
 {
-	return getAttribute("spirit:usageType");
+    baseAddress_ = baseAddress;
 }
 
 //-----------------------------------------------------------------------------
-// Function: ModelParameter::setUsageType()
+// Function: MasterInterface::getBaseAddress()
 //-----------------------------------------------------------------------------
-void ModelParameter::setUsageType( const QString& usageType )
+QString MasterInterface::getBaseAddress() const
 {
-	setAttribute("spirit:usageType", usageType);
+    return baseAddress_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: ModelParameter::elementName()
+// Function: MasterInterface::setBaseAttributes()
 //-----------------------------------------------------------------------------
-QString ModelParameter::elementName() const
+void MasterInterface::setBaseAttributes(QMap<QString, QString> const& baseAttributes)
 {
-    return "model parameter";
+    baseAttributes_ = baseAttributes;
 }
 
 //-----------------------------------------------------------------------------
-// Function: ModelParameter::elementIdentifier()
+// Function: MasterInterface::getBaseAttributes()
 //-----------------------------------------------------------------------------
-QString ModelParameter::elementIdentifier() const
+QMap<QString,QString> MasterInterface::getBaseAttributes() const
 {
-    return "spirit:modelParameter";
+    return baseAttributes_;
 }
+
+//-----------------------------------------------------------------------------
+// Function: MasterInterface::getPrompt()
+//-----------------------------------------------------------------------------
+QString MasterInterface::getPrompt() const
+{
+    return baseAttributes_.value("ipxact:prompt");
+}
+
+

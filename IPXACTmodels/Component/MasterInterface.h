@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: masterinterface.h
+// File: MasterInterface.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Antti Kamppi
@@ -12,7 +12,7 @@
 #ifndef MASTERINTERFACE_H
 #define MASTERINTERFACE_H
 
-#include "ipxactmodels_global.h"
+#include <IPXACTmodels/ipxactmodels_global.h>
 
 #include <QString>
 #include <QMap>

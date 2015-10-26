@@ -9,10 +9,12 @@
 // Unit test for class businterfaceReader.
 //-----------------------------------------------------------------------------
 
-#include <IPXACTmodels/Component/businterfaceReader.h>
-#include <IPXACTmodels/masterinterface.h>
-#include <IPXACTmodels/mirroredslaveinterface.h>
-#include <IPXACTmodels/slaveinterface.h>
+#include <IPXACTmodels/Component/BusInterfaceReader.h>
+
+#include <IPXACTmodels/Component/MasterInterface.h>
+#include <IPXACTmodels/Component/MirroredSlaveInterface.h>
+#include <IPXACTmodels/Component/SlaveInterface.h>
+
 #include <IPXACTmodels/VendorExtension.h>
 
 #include <QtTest>

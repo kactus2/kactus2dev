@@ -232,6 +232,7 @@
     <ClCompile Include="Component\Function.cpp" />
     <ClCompile Include="Component\InstantiationsReader.cpp" />
     <ClCompile Include="Component\InstantiationsWriter.cpp" />
+    <ClCompile Include="Component\MasterInterface.cpp" />
     <ClCompile Include="Component\MemoryBlockBase.cpp" />
     <ClCompile Include="Component\MemoryMap.cpp" />
     <ClCompile Include="Component\MemoryMapBase.cpp" />
@@ -240,12 +241,14 @@
     <ClCompile Include="Component\MemoryMapReader.cpp" />
     <ClCompile Include="Component\MemoryMapWriter.cpp" />
     <ClCompile Include="Component\MemoryRemap.cpp" />
+    <ClCompile Include="Component\MirroredSlaveInterface.cpp" />
     <ClCompile Include="Component\Model.cpp" />
     <ClCompile Include="Component\AbstractionType.cpp" />
     <ClCompile Include="Component\OtherClockDriver.cpp" />
     <ClCompile Include="Component\OtherClockDriverReader.cpp" />
     <ClCompile Include="Component\OtherClockDriverWriter.cpp" />
     <ClCompile Include="Component\Port.cpp" />
+    <ClCompile Include="Component\PortMap.cpp" />
     <ClCompile Include="Component\PortReader.cpp" />
     <ClCompile Include="Component\PortWriter.cpp" />
     <ClCompile Include="Component\Register.cpp" />
@@ -259,6 +262,7 @@
     <ClCompile Include="Component\RemapStateReader.cpp" />
     <ClCompile Include="Component\RemapStateWriter.cpp" />
     <ClCompile Include="Component\Segment.cpp" />
+    <ClCompile Include="Component\SlaveInterface.cpp" />
     <ClCompile Include="Component\Transactional.cpp" />
     <ClCompile Include="Component\View.cpp" />
     <ClCompile Include="Component\ViewReader.cpp" />
@@ -266,7 +270,6 @@
     <ClCompile Include="Component\Wire.cpp" />
     <ClCompile Include="Component\WireTypeDef.cpp" />
     <ClCompile Include="Component\WriteValueConstraint.cpp" />
-    <ClCompile Include="designconfabstractor.cpp" />
     <ClCompile Include="designConfiguration\AbstractorInstance.cpp" />
     <ClCompile Include="designConfiguration\DesignConfiguration.cpp" />
     <ClCompile Include="designConfiguration\DesignConfigurationReader.cpp" />
@@ -849,9 +852,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="generator.cpp" />
-    <ClCompile Include="generatorchain.cpp" />
-    <ClCompile Include="generatorchainselector.cpp" />
     <ClCompile Include="GenericVendorExtension.cpp" />
     <ClCompile Include="kactusExtensions\ApiInterconnection.cpp" />
     <ClCompile Include="kactusExtensions\ApiInterface.cpp" />
@@ -873,20 +873,8 @@
     <ClCompile Include="kactusExtensions\SWView.cpp" />
     <ClCompile Include="kactusExtensions\SystemView.cpp" />
     <ClCompile Include="librarycomponent.cpp" />
-    <ClCompile Include="masterinterface.cpp" />
-    <ClCompile Include="memoryblockdata.cpp" />
-    <ClCompile Include="memorymapitem.cpp" />
-    <ClCompile Include="mirroredslaveinterface.cpp" />
-    <ClCompile Include="modelparameter.cpp" />
-    <ClCompile Include="PortMap.cpp" />
-    <ClCompile Include="PortRef.cpp" />
-    <ClCompile Include="registermodel.cpp" />
-    <ClCompile Include="reset.cpp" />
-    <ClCompile Include="servicetypedef.cpp" />
-    <ClCompile Include="slaveinterface.cpp" />
     <ClCompile Include="swbuildcommand.cpp" />
     <ClCompile Include="validators\BinaryValidator.cpp" />
-    <ClCompile Include="validators\ModelParameterValidator.cpp" />
     <ClCompile Include="validators\namevalidator.cpp" />
     <ClCompile Include="validators\NMTokenValidator.cpp" />
     <ClCompile Include="validators\ParameterValidator2014.cpp" />
@@ -1760,6 +1748,7 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_XML_LIB -DIPXACTMODELS_LIB -D_WINDLL "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(SolutionDir)\."</Command>
     </CustomBuild>
+    <ClInclude Include="Component\MasterInterface.h" />
     <ClInclude Include="Component\MemoryBlockBase.h" />
     <ClInclude Include="Component\MemoryMap.h" />
     <ClInclude Include="Component\MemoryMapBase.h" />
@@ -1836,6 +1825,7 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_XML_LIB -DIPXACTMODELS_LIB -D_WINDLL "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(SolutionDir)\."</Command>
     </CustomBuild>
     <ClInclude Include="Component\MemoryRemap.h" />
+    <ClInclude Include="Component\MirroredSlaveInterface.h" />
     <ClInclude Include="Component\Model.h" />
     <ClInclude Include="Component\AbstractionType.h" />
     <ClInclude Include="Component\OtherClockDriver.h" />
@@ -1912,6 +1902,7 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_XML_LIB -DIPXACTMODELS_LIB -D_WINDLL "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(SolutionDir)\."</Command>
     </CustomBuild>
+    <ClInclude Include="Component\PortMap.h" />
     <ClInclude Include="Component\Register.h" />
     <ClInclude Include="Component\RegisterBase.h" />
     <ClInclude Include="Component\RegisterDefinition.h" />
@@ -1991,6 +1982,7 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_XML_LIB -DIPXACTMODELS_LIB -D_WINDLL "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(SolutionDir)\."</Command>
     </CustomBuild>
     <ClInclude Include="Component\Segment.h" />
+    <ClInclude Include="Component\SlaveInterface.h" />
     <ClInclude Include="Component\Transactional.h" />
     <ClInclude Include="Component\View.h" />
     <CustomBuild Include="Component\ViewReader.h">
@@ -2070,7 +2062,6 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_XML_LIB -DIPXACTMODELS_LIB -D_WINDLL "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(SolutionDir)\."</Command>
     </CustomBuild>
     <ClInclude Include="librarycomponent.h" />
-    <ClInclude Include="validators\ModelParameterValidator.h" />
     <CustomBuild Include="validators\namevalidator.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing namevalidator.h...</Message>
@@ -2149,7 +2140,6 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_XML_LIB -DIPXACTMODELS_LIB -D_WINDLL "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(SolutionDir)\."</Command>
     </CustomBuild>
-    <ClInclude Include="designconfabstractor.h" />
     <ClInclude Include="designConfiguration\AbstractorInstance.h" />
     <ClInclude Include="designConfiguration\DesignConfiguration.h" />
     <CustomBuild Include="designConfiguration\DesignConfigurationReader.h">
@@ -2274,22 +2264,8 @@
     <ClInclude Include="Design\MonitorInterface.h" />
     <ClInclude Include="Design\PortReference.h" />
     <ClInclude Include="generaldeclarations.h" />
-    <ClInclude Include="generator.h" />
-    <ClInclude Include="generatorchain.h" />
-    <ClInclude Include="generatorchainselector.h" />
     <ClInclude Include="GenericVendorExtension.h" />
     <ClInclude Include="ipxactmodels_global.h" />
-    <ClInclude Include="masterinterface.h" />
-    <ClInclude Include="memoryblockdata.h" />
-    <ClInclude Include="memorymapitem.h" />
-    <ClInclude Include="mirroredslaveinterface.h" />
-    <ClInclude Include="modelparameter.h" />
-    <ClInclude Include="PortMap.h" />
-    <ClInclude Include="PortRef.h" />
-    <ClInclude Include="registermodel.h" />
-    <ClInclude Include="reset.h" />
-    <ClInclude Include="servicetypedef.h" />
-    <ClInclude Include="slaveinterface.h" />
     <ClInclude Include="swbuildcommand.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

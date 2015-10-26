@@ -15,7 +15,7 @@
 #include <common/graphicsItems/GraphicsConnection.h>
 #include <designEditors/common/diagramgrid.h>
 
-#include <IPXACTmodels/businterface.h>
+#include <IPXACTmodels/Component/BusInterface.h>
 
 #include <QBrush>
 #include <QPen>

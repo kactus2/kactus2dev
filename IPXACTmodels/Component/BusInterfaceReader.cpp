@@ -11,14 +11,14 @@
 
 #include "BusinterfaceReader.h"
 
-#include "../masterinterface.h"
-#include "../masterinterface.h"
-#include "../mirroredslaveinterface.h"
-#include "../slaveinterface.h"
-#include "../XmlUtils.h"
+#include "MasterInterface.h"
+#include "MirroredSlaveInterface.h"
+#include "SlaveInterface.h"
 
 #include <IPXACTmodels/common/NameGroupReader.h>
 #include <IPXACTmodels/common/ParameterReader.h>
+
+#include <IPXACTmodels/XmlUtils.h>
 
 #include <QXmlStreamWriter>
 #include <QDomNamedNodeMap>

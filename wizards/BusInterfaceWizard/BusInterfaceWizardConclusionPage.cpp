@@ -12,8 +12,8 @@
 #include "BusInterfaceWizardConclusionPage.h"
 #include "BusInterfaceWizard.h"
 
-#include <IPXACTmodels/businterface.h>
-#include <IPXACTmodels/PortMap.h>
+#include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/Component/PortMap.h>
 
 #include <QFormLayout>
 #include <QLabel>

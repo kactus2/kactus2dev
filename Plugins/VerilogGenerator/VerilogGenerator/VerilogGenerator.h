@@ -18,10 +18,10 @@
 
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/generaldeclarations.h>
-#include <IPXACTmodels/PortMap.h>
+
+#include <IPXACTmodels/Component/PortMap.h>
 
 #include <QTextStream>
-
 
 class ComponentVerilogWriter;
 class ComponentInstanceVerilogWriter;

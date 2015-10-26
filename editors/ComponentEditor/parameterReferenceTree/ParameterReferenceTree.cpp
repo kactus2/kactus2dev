@@ -12,7 +12,7 @@
 #include "ParameterReferenceTree.h"
 
 #include <IPXACTmodels/memorymapitem.h>
-#include <IPXACTmodels/businterface.h>
+#include <IPXACTmodels/Component/BusInterface.h>
 
 namespace
 {

@@ -20,10 +20,10 @@
 
 #include <common/utils.h>
 
-#include <IPXACTmodels/businterface.h>
-#include <IPXACTmodels/masterinterface.h>
-#include <IPXACTmodels/mirroredslaveinterface.h>
-#include <IPXACTmodels/slaveinterface.h>
+#include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/Component/MasterInterface.h>
+#include <IPXACTmodels/Component/MirroredSlaveInterface.h>
+#include <IPXACTmodels/Component/SlaveInterface.h>
 
 #include <QDate>
 #include <QDir>

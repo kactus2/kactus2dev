@@ -18,7 +18,7 @@
 
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/PortMap.h>
+#include <IPXACTmodels/Component/PortMap.h>
 
 //-----------------------------------------------------------------------------
 // Function: PortMapsLogicalItem::PortMapsLogicalItem()

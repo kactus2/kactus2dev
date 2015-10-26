@@ -7,15 +7,19 @@
 
 #include "interfaceeditor.h"
 
-#include <IPXACTmodels/businterface.h>
+
 #include <IPXACTmodels/generaldeclarations.h>
+
+#include <IPXACTmodels/common/Vector.h>
+
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/ApiInterface.h>
 #include <IPXACTmodels/ComInterface.h>
 #include <IPXACTmodels/ComDefinition.h>
 #include <IPXACTmodels/ComProperty.h>
-#include <IPXACTmodels/PortMap.h>
-#include <IPXACTmodels/common/Vector.h>
+
+#include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/Component/PortMap.h>
 
 #include <common/GenericEditProvider.h>
 #include <common/graphicsItems/ComponentItem.h>

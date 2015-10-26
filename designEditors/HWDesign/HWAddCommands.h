@@ -13,7 +13,7 @@
 #define HWADDCOMMANDS_H
 
 #include <IPXACTmodels/generaldeclarations.h>
-#include <IPXACTmodels/PortMap.h>
+#include <IPXACTmodels/Component/PortMap.h>
 
 #include <QUndoCommand>
 #include <QGraphicsItem>

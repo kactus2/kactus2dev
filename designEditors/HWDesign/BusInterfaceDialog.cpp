@@ -20,9 +20,11 @@
 
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/delegates/LineEditDelegate/lineeditdelegate.h>
-#include <IPXACTmodels/port.h>
-#include <IPXACTmodels/businterface.h>
-#include <IPXACTmodels/PortMap.h>
+
+#include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/Component/PortMap.h>
+#include <IPXACTmodels/Component/Port.h>
+
 #include <common/graphicsItems/ConnectionEndpoint.h>
 #include <designEditors/HWDesign/views/CellEditTableView.h>
 #include <designEditors/HWDesign/models/PortGenerationTableModel.h>

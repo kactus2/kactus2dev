@@ -11,14 +11,14 @@
 
 #include "DesignConfiguration.h"
 
-#include <IPXACTmodels/generatorchain.h>
-#include <IPXACTmodels/vlnv.h>
-#include <IPXACTmodels/XmlUtils.h>
 #include <IPXACTmodels/GenericVendorExtension.h>
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Group.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Placeholder.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Value.h>
+
+#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/XmlUtils.h>
 
 #include <QList>
 #include <QDomNode>

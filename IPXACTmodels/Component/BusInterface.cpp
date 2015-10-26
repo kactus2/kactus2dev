@@ -9,18 +9,16 @@
 // Describes the ipxact:busInterface element.
 //-----------------------------------------------------------------------------
 
-#include "businterface.h"
+#include "BusInterface.h"
+
+#include "MasterInterface.h"
+#include "MirroredSlaveInterface.h"
+#include "SlaveInterface.h"
+#include "PortMap.h"
 
 #include <IPXACTmodels/generaldeclarations.h>
-
-#include <IPXACTmodels/masterinterface.h>
-#include <IPXACTmodels/mirroredslaveinterface.h>
-#include <IPXACTmodels/slaveinterface.h>
-
-#include <IPXACTmodels/PortMap.h>
-#include <IPXACTmodels/vlnv.h>
-
 #include <IPXACTmodels/VendorExtension.h>
+#include <IPXACTmodels/vlnv.h>
 
 #include <IPXACTmodels/kactusExtensions/Kactus2Position.h>
 

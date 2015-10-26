@@ -13,7 +13,7 @@
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/modelparameter.h>
 #include <IPXACTmodels/port.h>
-#include <IPXACTmodels/businterface.h>
+#include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/fileset.h>
 #include <IPXACTmodels/filebuilder.h>
 #include <IPXACTmodels/file.h>

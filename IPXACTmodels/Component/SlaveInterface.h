@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: slaveinterface.h
+// File: SlaveInterface.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Esko Pekkarinen
@@ -12,7 +12,7 @@
 #ifndef SLAVEINTERFACE_H
 #define SLAVEINTERFACE_H
 
-#include "ipxactmodels_global.h"
+#include <IPXACTmodels/ipxactmodels_global.h>
 
 #include <QString>
 #include <QList>

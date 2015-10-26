@@ -23,7 +23,7 @@
 #include <designEditors/common/diagramgrid.h>
 #include <designEditors/common/NamelabelWidth.h>
 
-#include <IPXACTmodels/businterface.h>
+#include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 
