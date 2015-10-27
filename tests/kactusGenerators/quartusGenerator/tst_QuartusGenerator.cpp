@@ -596,7 +596,7 @@ void tst_QuartusGenerator::readOutputFile(QString const& fileType)
     output_ = outputFile.readAll();
     outputFile.close();
 }
-#include <QDebug>
+
 //-----------------------------------------------------------------------------
 // Function: tst_QuartusGenerator::compareOutputToExpected()
 //-----------------------------------------------------------------------------
@@ -605,7 +605,7 @@ void tst_QuartusGenerator::compareOutputToExpected(QString const& fileType, QStr
     readOutputFile(fileType);
 
     if (!output_.contains(expectedOutput))
-    {qDebug()<< endl << "OUTPUT" << endl << output_ << endl << "EXPECTED" << endl << expectedOutput << endl;
+    {
         QStringList outputLines = output_.split("\n");
         QStringList expectedLines = expectedOutput.split("\n");
 
@@ -719,7 +719,7 @@ QSharedPointer<DesignConfiguration> tst_QuartusGenerator::createTestDesignConfig
             library_.getModel(componentReference).dynamicCast<Component>();
 
         if (referencedComponent && referencedComponent->getModel()->getViews()->size() > 0)
-        {qDebug() << "tuolla " << currentInstance->getInstanceName() << endl;
+        {
             newDesignConfiguration->addViewConfiguration(currentInstance->getInstanceName(),
                 referencedComponent->getViews()->at(0)->name());
         }

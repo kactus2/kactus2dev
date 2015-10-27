@@ -8,13 +8,13 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 
 HEADERS += ../common/CSourceWriter.h \
+    ../common/NameGenerationPolicy.h \
     ./TLMWHeaderGenerator.h \
     ./TLMWParser.h \
-    ./TLMWGeneratorPlugin.h \
-    ../common/NameGenerationPolicy.h
-SOURCES += ./TLMWGeneratorPlugin.cpp \
+    ./TLMWGeneratorPlugin.h
+SOURCES += ../common/CSourceWriter.cpp \
+    ../common/NameGenerationPolicy.cpp \
+    ./TLMWGeneratorPlugin.cpp \
     ./TLMWHeaderGenerator.cpp \
-    ./TLMWParser.cpp \
-    ../common/CSourceWriter.cpp \
-    ../common/NameGenerationPolicy.cpp
+    ./TLMWParser.cpp
 RESOURCES += TLMWGenerator.qrc

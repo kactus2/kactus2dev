@@ -512,7 +512,7 @@ void QuartusGenerator::parseFilesFromHierarchicalView(QSharedPointer<View> view,
 
 	parseFileSets(component, fileSets);
 }
-#include <QDebug>
+
 //-----------------------------------------------------------------------------
 // Function: QuartusGenerator::readDesign()
 //-----------------------------------------------------------------------------
@@ -545,7 +545,7 @@ void QuartusGenerator::readDesign(const QSharedPointer<Design> design,
 			continue;
 		}
 
-		QString viewName;qDebug() << "taalla" << instance->getInstanceName() << endl;
+		QString viewName;
 
 		if (desConf && desConf->hasActiveView(instance->getInstanceName()))
         {
