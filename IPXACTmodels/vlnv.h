@@ -18,7 +18,6 @@
 #include <QStringList>
 
 #include <QDomNode>
-#include <QXmlStreamWriter>
 
 //-----------------------------------------------------------------------------
 //! A class to hold VLNV information of a single IP-XACT document.
@@ -190,18 +189,6 @@ public:
 	 *      @return QString contains the vlnv in one string.
 	*/
 	QString toString(QString const& separator = QString(":")) const;
-
-    /*! Write the VLNV as XML elements using the given XML writer.
-     *
-     *       @param [in] writer The writer instance that is used to write the elements.
-     */
-    void writeAsElements(QXmlStreamWriter& writer) const;
-
-    /*! Write the VLNV as attributes using the given XML writer.
-     *
-     *       @param [in] writer The writer instance that is used to write the attributes.
-     */
-    void writeAsAttributes(QXmlStreamWriter& writer) const;
 
 	//! The assignment operator for the class
 	VLNV &operator=(const VLNV &other);

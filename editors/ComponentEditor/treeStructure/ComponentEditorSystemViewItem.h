@@ -13,59 +13,56 @@
 #define COMPONENTEDITORSYSTEMVIEWITEM_H
 
 #include "componenteditoritem.h"
-#include <IPXACTmodels/SystemView.h>
 
-/*! \brief The item for a single system view in the component editor's navigation tree.
- *
- */
-class ComponentEditorSystemViewItem : public ComponentEditorItem {
+class SystemView;
+//-----------------------------------------------------------------------------
+//! The item for a single system view in the component editor's navigation tree.
+//-----------------------------------------------------------------------------
+class ComponentEditorSystemViewItem : public ComponentEditorItem
+{
 	Q_OBJECT
 
 public:
 
-	/*! \brief The constructor
+	/*! The constructor
 	 * 
-	 * \param systemView Pointer to the system view to edit.
-	 * \param model Pointer to the model that owns the items.
-	 * \param libHandler Pointer to the instance that manages the library.
-	 * \param component Pointer to the component being edited.
-	 * \param parent Pointer to the parent item.
-	 *
+	 *      @param [in] systemView  The system view to edit.
+	 *      @param [in] model       The model that owns the items.
+	 *      @param [in] libHandler  The instance that manages the library.
+	 *      @param [in] component   The component being edited.
+	 *      @param [in] parent      The parent item.
 	*/
-	ComponentEditorSystemViewItem(QSharedPointer<SystemView> systemView,
-		ComponentEditorTreeModel* model,
-		LibraryInterface* libHandler,
-		QSharedPointer<Component> component,
-		ComponentEditorItem* parent);
+	ComponentEditorSystemViewItem(QSharedPointer<SystemView> systemView, ComponentEditorTreeModel* model,
+		LibraryInterface* libHandler, QSharedPointer<Component> component, ComponentEditorItem* parent);
 
-	//! \brief The destructor
+	//! The destructor
 	virtual ~ComponentEditorSystemViewItem();
 
-	/*! \brief Get the tool tip for the item.
+	/*! Get the tool tip for the item.
 	 * 
-	 * \return The text for the tool tip to print to user.
+	 *      @return The text for the tool tip to print to user.
 	*/
 	virtual QString getTooltip() const;
 
-	/*! \brief Get the text to be displayed to user in the tree for this item.
+	/*! Get the text to be displayed to user in the tree for this item.
 	 *
-	 * \return QString Contains the text to display.
+	 *      @return QString Contains the text to display.
 	*/
 	virtual QString text() const;
 
-	/*! \brief Check the validity of this item and sub items.
+	/*! Check the validity of this item and sub items.
 	 *
-	 * \return bool True if item is in valid state.
+	 *      @return bool True if item is in valid state.
 	*/
 	virtual bool isValid() const;
 
-	/*! \brief Get pointer to the editor of this item.
+	/*! Get pointer to the editor of this item.
 	 *
-	 * \return Pointer to the editor to use for this item.
+	 *      @return The editor to use for this item.
 	*/
 	virtual ItemEditor* editor();
 
-	/*! \brief Tells if the item can be opened or not.
+	/*! Tells if the item can be opened or not.
 	 * 
 	 * If the view hasn't changed then it can be opened.
 	*/
@@ -80,19 +77,19 @@ public:
 
 public slots:
 	
-	/*! \brief Open the view in a design editor.
+	/*! Open the view in a design editor.
 	 * 
 	*/
 	virtual void openItem();
 
 private:
-	//! \brief No copying
+	//! No copying
 	ComponentEditorSystemViewItem(const ComponentEditorSystemViewItem& other);
 
-	//! \brief No assignment
+	//! No assignment
 	ComponentEditorSystemViewItem& operator=(const ComponentEditorSystemViewItem& other);
    
-	//! \brief Pointer to the view being edited.
+	//! The view being edited.
 	QSharedPointer<SystemView> systemView_;
 
     //! Action to open the system view for editing.

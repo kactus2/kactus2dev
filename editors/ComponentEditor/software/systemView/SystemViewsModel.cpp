@@ -11,184 +11,237 @@
 
 #include "SystemViewsModel.h"
 #include "SystemViewsDelegate.h"
+
+#include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/vlnv.h>
+
+#include <IPXACTmodels/kactusExtensions/SystemView.h>
 
 #include <QColor>
 #include <QMimeData>
 
-SystemViewsModel::SystemViewsModel(QSharedPointer<Component> component,
-						   QObject *parent):
+//-----------------------------------------------------------------------------
+// Function: SystemViewsModel::SystemViewsModel()
+//-----------------------------------------------------------------------------
+SystemViewsModel::SystemViewsModel(QSharedPointer<Component> component, QObject* parent):
 QAbstractTableModel(parent),
-views_(component->getSystemViews()),
-component_(component) {
-
-	Q_ASSERT(component_);
-}
-
-SystemViewsModel::~SystemViewsModel() {
+    views_(component->getSystemViews()),
+    component_(component)
+{
 
 }
 
-int SystemViewsModel::rowCount( const QModelIndex& parent /*= QModelIndex()*/ ) const {
-	if (parent.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: SystemViewsModel::~SystemViewsModel()
+//-----------------------------------------------------------------------------
+SystemViewsModel::~SystemViewsModel()
+{
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemViewsModel::SystemViewsModel()
+//-----------------------------------------------------------------------------
+int SystemViewsModel::rowCount(QModelIndex const& parent) const
+{
+	if (parent.isValid()) 
+    {
 		return 0;
 	}
+
 	return views_.size();
 }
 
-int SystemViewsModel::columnCount( const QModelIndex& parent /*= QModelIndex()*/ ) const {
-	if (parent.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: SystemViewsModel::columnCount()
+//-----------------------------------------------------------------------------
+int SystemViewsModel::columnCount(QModelIndex const& parent) const
+{
+	if (parent.isValid())
+    {
 		return 0;
 	}
+
 	return SystemViewsDelegate::COLUMN_COUNT;
 }
 
-Qt::ItemFlags SystemViewsModel::flags( const QModelIndex& index ) const {
-	if (!index.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: SystemViewsModel::columnCount()
+//-----------------------------------------------------------------------------
+Qt::ItemFlags SystemViewsModel::flags(QModelIndex const& index) const
+{
+	if (!index.isValid())
+    {
 		return Qt::NoItemFlags;
 	}
-
 	// hierarchy reference can only be dropped.
-	else if (SystemViewsDelegate::HIER_REF_COLUMN == index.column()) {
-			return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
+	else if (SystemViewsDelegate::HIER_REF_COLUMN == index.column())
+    {
+		return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
 	}
+
 	return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
 }
 
-QVariant SystemViewsModel::headerData( int section, Qt::Orientation orientation, int role /*= Qt::DisplayRole*/ ) const {
-	if (orientation != Qt::Horizontal) {
+//-----------------------------------------------------------------------------
+// Function: SystemViewsModel::headerData()
+//-----------------------------------------------------------------------------
+QVariant SystemViewsModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+	if (orientation != Qt::Horizontal && role != Qt::DisplayRole)
+    {
 		return QVariant();
 	}
-	if (Qt::DisplayRole == role) {
 
-		switch (section) {
-			case SystemViewsDelegate::NAME_COLUMN: {
-				return tr("Name");
-													 }
-			case SystemViewsDelegate::HIER_REF_COLUMN: {
-				return tr("Hierarchy reference");
-													   }
-			case SystemViewsDelegate::DISPLAY_NAME_COLUMN: {
-				return tr("Display name");
-													   }
-			case SystemViewsDelegate::DESCRIPTION_COLUMN: {
-				return tr("Description");
-														}
-			default: {
-				return QVariant();
-					 }
-		}
-	}
-	else {
-		return QVariant();
-	}
+    if (section == SystemViewsDelegate::NAME_COLUMN)
+    {
+        return tr("Name");
+    }
+    else if (section == SystemViewsDelegate::HIER_REF_COLUMN)
+    {
+        return tr("Hierarchy reference");
+    }
+    else if (section == SystemViewsDelegate::DISPLAY_NAME_COLUMN)
+    {
+        return tr("Display name");
+    }
+    else if (section == SystemViewsDelegate::DESCRIPTION_COLUMN)
+    {
+        return tr("Description");
+    }
+    else
+    {
+        return QVariant();
+    }
 }
 
-QVariant SystemViewsModel::data( const QModelIndex& index, int role /*= Qt::DisplayRole*/ ) const {
-	if (!index.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: SystemViewsModel::data()
+//-----------------------------------------------------------------------------
+QVariant SystemViewsModel::data(QModelIndex const& index, int role) const
+{
+	if (!index.isValid() || index.row() < 0 || index.row() >= views_.size())
+    {
 		return QVariant();
 	}
-	else if (index.row() < 0 || index.row() >= views_.size()) {
-		return QVariant();
-	}
+	
+	if (role == Qt::DisplayRole)
+    {
 
-	if (Qt::DisplayRole == role) {
+        if (index.column() == SystemViewsDelegate::NAME_COLUMN)
+        {
+            return views_.at(index.row())->name();
+        }
+        else if (index.column() == SystemViewsDelegate::HIER_REF_COLUMN)
+        {
+            return views_.at(index.row())->getHierarchyRef().toString(":");
+        }
+        else if (index.column() == SystemViewsDelegate::DISPLAY_NAME_COLUMN)
+        {
+            return views_.at(index.row())->displayName();
+        }
+        else if (index.column() == SystemViewsDelegate::DESCRIPTION_COLUMN)
+        {
+            return views_.at(index.row())->description();
+        }
+        else
+        {
+            return QVariant();
+        }
+    }
 
-		switch (index.column()) {
-			case SystemViewsDelegate::NAME_COLUMN: {
-				return views_.at(index.row())->name();
-													 }
-			case SystemViewsDelegate::HIER_REF_COLUMN: {
-				return views_.at(index.row())->getHierarchyRef().toString(":");
-													   }
-			case SystemViewsDelegate::DISPLAY_NAME_COLUMN: {
-				return views_.at(index.row())->getDisplayName();
-													   }
-			case SystemViewsDelegate::DESCRIPTION_COLUMN: {
-				return views_.at(index.row())->getDescription();
-														}
-			default: {
-				return QVariant();
-					 }
-		}
-	}
-	else if (Qt::ForegroundRole == role) {
-
-		QStringList fileSetNames = component_->getFileSetNames();
+    else if (role == Qt::ForegroundRole)
+    {
+        QStringList fileSetNames = component_->getFileSetNames();
 		QStringList viewNames = component_->getViewNames();
 
-		if (views_.at(index.row())->isValid(fileSetNames, viewNames)) {
+		if (views_.at(index.row())->isValid(fileSetNames, viewNames))
+        {
 			return QColor("black");
 		}
-		else {
+		else
+        {
 			return QColor("red");
 		}
 	}
-	else if (Qt::BackgroundRole == role) {
-		switch (index.column()) {
-			case SystemViewsDelegate::NAME_COLUMN:
-			case SystemViewsDelegate::HIER_REF_COLUMN: {
-				return QColor("LemonChiffon");
-														}
-			default:
-				return QColor("white");
-		}
-	}
-	else {
-		return QVariant();
-	}
+
+    else if (role == Qt::BackgroundRole)
+    {
+        if (index.column() == SystemViewsDelegate::NAME_COLUMN || 
+            index.column() == SystemViewsDelegate::HIER_REF_COLUMN)
+        {
+            return QColor("LemonChiffon");
+        }
+        else
+        {
+            return QColor("white");
+        }
+    }
+    else
+    {
+        return QVariant();
+    }
 }
 
-bool SystemViewsModel::setData( const QModelIndex& index, const QVariant& value, int role /*= Qt::EditRole*/ ) {
-	if (!index.isValid()) {
-		return false;
-	}
-	else if (index.row() < 0 || index.row() >= views_.size()) {
+//-----------------------------------------------------------------------------
+// Function: SystemViewsModel::setData()
+//-----------------------------------------------------------------------------
+bool SystemViewsModel::setData(QModelIndex const& index, const QVariant& value, int role)
+{
+	if (!index.isValid() || index.row() < 0 || index.row() >= views_.size())
+    {
 		return false;
 	}
 
-	if (Qt::EditRole == role) {
+    if (role == Qt::EditRole)
+    {
+        QSharedPointer<SystemView> targetSystemView = views_.at(index.row());
 
-		switch (index.column()) {
-			case SystemViewsDelegate::NAME_COLUMN: {
-				views_[index.row()]->setName(value.toString());
-				break;
-													 }
-			case SystemViewsDelegate::HIER_REF_COLUMN: {
-				VLNV hierRef = VLNV(VLNV::DESIGNCONFIGURATION, value.toString(), ":");
-				views_[index.row()]->setHierarchyRef(hierRef);
-				break;
-													   }
-			case SystemViewsDelegate::DISPLAY_NAME_COLUMN: {
-				views_[index.row()]->setDisplayName(value.toString());
-				break;
-													   }
-			case SystemViewsDelegate::DESCRIPTION_COLUMN: {
-				views_[index.row()]->setDescription(value.toString());
-				break;
-														}
-			default: {
-				return false;
-					 }
-		}
+        if (index.column() == SystemViewsDelegate::NAME_COLUMN)
+        {
+            targetSystemView->setName(value.toString());
+        }
+        else if (index.column() == SystemViewsDelegate::HIER_REF_COLUMN)
+        {
+            VLNV hierRef = VLNV(VLNV::DESIGNCONFIGURATION, value.toString(), ":");
+            targetSystemView->setHierarchyRef(hierRef);
+        }
+        else if (index.column() == SystemViewsDelegate::DISPLAY_NAME_COLUMN)
+        {
+            targetSystemView->setDisplayName(value.toString());
+        }
+        else if (index.column() == SystemViewsDelegate::DESCRIPTION_COLUMN)
+        {
+            targetSystemView->setDescription(value.toString());
+        }
+        else
+        {
+            return false;
+        }
 
-		emit dataChanged(index, index);
-		emit contentChanged();
-		return true;
-	}
-	else {
-		return false;
-	}
+        emit dataChanged(index, index);
+        emit contentChanged();
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
-bool SystemViewsModel::isValid() const {
-
+//-----------------------------------------------------------------------------
+// Function: SystemViewsModel::isValid()
+//-----------------------------------------------------------------------------
+bool SystemViewsModel::isValid() const
+{
 	QStringList fileSetNames = component_->getFileSetNames();
 	QStringList viewNames = component_->getViewNames();
 
 	// check that each software view is valid
-	foreach (QSharedPointer<SystemView> swView, views_) {
-		if (!swView->isValid(fileSetNames, viewNames)) {
+	foreach (QSharedPointer<SystemView> swView, views_)
+    {
+		if (!swView->isValid(fileSetNames, viewNames))
+        {
 			return false;
 		}
 	}
@@ -196,7 +249,7 @@ bool SystemViewsModel::isValid() const {
 }
 
 //-----------------------------------------------------------------------------
-// Function: supportedDropActions()
+// Function: SystemViewsModel::supportedDropActions()
 //-----------------------------------------------------------------------------
 Qt::DropActions SystemViewsModel::supportedDropActions() const
 {
@@ -204,7 +257,7 @@ Qt::DropActions SystemViewsModel::supportedDropActions() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: mimeTypes()
+// Function: SystemViewsModel::mimeTypes()
 //-----------------------------------------------------------------------------
 QStringList SystemViewsModel::mimeTypes() const
 {
@@ -214,39 +267,33 @@ QStringList SystemViewsModel::mimeTypes() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: dropMimeData()
+// Function: SystemViewsModel::dropMimeData()
 //-----------------------------------------------------------------------------
-bool SystemViewsModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, 
-    const QModelIndex &parent)
+bool SystemViewsModel::dropMimeData(QMimeData const* data, Qt::DropAction action, int row, int column, 
+    QModelIndex const& parent)
 {
-    if ( action == Qt::IgnoreAction)
+    if (action == Qt::IgnoreAction)
     {
         return true;
     }
 
     // Dropped data must be directly on parent.
-    if ( row != -1 || column != -1 || !parent.isValid() )
-    {
-        return false;
-    }
-
-    if ( row > rowCount() )
+    if (row != -1 || column != -1 || !parent.isValid() || row > rowCount())
     {
         return false;
     }
 
     QVariant variant = data->imageData();
-
-    if ( !variant.canConvert<VLNV>())
+    if (!variant.canConvert<VLNV>())
     {
         return false;
     }
 
     VLNV vlnv = variant.value<VLNV>();
 
-    if ( parent.column() == SystemViewsDelegate::HIER_REF_COLUMN )
+    if (parent.column() == SystemViewsDelegate::HIER_REF_COLUMN)
     {
-        if ( vlnv.getType() != VLNV::DESIGNCONFIGURATION )
+        if (vlnv.getType() != VLNV::DESIGNCONFIGURATION)
         {
             return false;
         }
@@ -258,43 +305,45 @@ bool SystemViewsModel::dropMimeData(const QMimeData *data, Qt::DropAction action
     return true;
 }
 
-void SystemViewsModel::onAddItem( const QModelIndex& index ) {
+//-----------------------------------------------------------------------------
+// Function: SystemViewsModel::onAddItem()
+//-----------------------------------------------------------------------------
+void SystemViewsModel::onAddItem(QModelIndex const& index)
+{
 	int row = views_.size();
 
 	// if the index is valid then add the item to the correct position
-	if (index.isValid()) {
+	if (index.isValid())
+    {
 		row = index.row();
 	}
 
 	beginInsertRows(QModelIndex(), row, row);
 	views_.insert(row, QSharedPointer<SystemView>(new SystemView()));
+    component_->setSystemViews(views_);
 	endInsertRows();
 
-	// inform navigation tree that file set is added
 	emit viewAdded(row);
-
-	// tell also parent widget that contents have been changed
 	emit contentChanged();
 }
 
-void SystemViewsModel::onRemoveItem( const QModelIndex& index ) {
+//-----------------------------------------------------------------------------
+// Function: SystemViewsModel::onRemoveItem()
+//-----------------------------------------------------------------------------
+void SystemViewsModel::onRemoveItem(QModelIndex const& index)
+{
 	// don't remove anything if index is invalid
-	if (!index.isValid()) {
-		return;
-	}
-	// make sure the row number if valid
-	else if (index.row() < 0 || index.row() >= views_.size()) {
+	if (!index.isValid() || index.row() < 0 || index.row() >= views_.size())
+    {
 		return;
 	}
 
 	// remove the specified item
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
 	views_.removeAt(index.row());
+    component_->setSystemViews(views_);
 	endRemoveRows();
 
-	// inform navigation tree that file set has been removed
 	emit viewRemoved(index.row());
-
-	// tell also parent widget that contents have been changed
 	emit contentChanged();
 }

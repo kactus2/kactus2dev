@@ -152,7 +152,10 @@ void ApiDefinition::write(QXmlStreamWriter& writer)
 
     // Write COM definition reference.
     writer.writeEmptyElement("kactus2:comDefinitionRef");
-    comDefRef_.writeAsAttributes(writer);
+    writer.writeAttribute("vendor", comDefRef_.getVendor());
+    writer.writeAttribute("library", comDefRef_.getLibrary());
+    writer.writeAttribute("name", comDefRef_.getName());
+    writer.writeAttribute("version", comDefRef_.getVersion());
 
     // Write data types.
     writer.writeStartElement("kactus2:dataTypes");

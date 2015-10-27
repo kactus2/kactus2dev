@@ -17,10 +17,12 @@
 
 #include <designEditors/common/DrawMode.h>
 #include <common/widgets/tabDocument/TabDocument.h>
-#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/vlnv.h>
+
 #include <library/LibraryManager/VLNVDialer/vlnvdialer.h>
+
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
 #include <QMainWindow>
 #include <QActionGroup>

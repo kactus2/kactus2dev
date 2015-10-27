@@ -9,7 +9,7 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 HEADERS += ./bspbuildcommand.h \
     ./buildcommand.h \
-    ./kactusExtensions/ComDefinition.h \
+    ./librarycomponent.h \
     ./VendorExtension.h \
     ./vlnv.h \
     ./writevalueconstraint.h \
@@ -17,23 +17,6 @@ HEADERS += ./bspbuildcommand.h \
     ./generaldeclarations.h \
     ./GenericVendorExtension.h \
     ./ipxactmodels_global.h \
-    ./librarycomponent.h \
-    ./Component/MasterInterface.h \
-    ./Component/MirroredSlaveInterface.h \
-    ./Component/PortMap.h \
-    ./Component/SlaveInterface.h \
-    ./masterinterface.h \
-    ./memoryblockdata.h \
-    ./memorymapitem.h \
-    ./mirroredslaveinterface.h \
-    ./modelparameter.h \
-    ./PortMap.h \
-    ./PortRef.h \
-    ./registermodel.h \
-    ./reset.h \
-    ./servicetypedef.h \
-    ./slaveinterface.h \
-    ./subspacemap.h \
     ./swbuildcommand.h \
     ./kactusExtensions/ApiDefinition.h \
     ./kactusExtensions/ApiFunction.h \
@@ -41,6 +24,7 @@ HEADERS += ./bspbuildcommand.h \
     ./kactusExtensions/ApiInterconnection.h \
     ./kactusExtensions/ApiInterface.h \
     ./kactusExtensions/ColumnDesc.h \
+    ./kactusExtensions/ComDefinition.h \
     ./kactusExtensions/ComInterconnection.h \
     ./kactusExtensions/ComInterface.h \
     ./kactusExtensions/ComProperty.h \
@@ -154,14 +138,17 @@ HEADERS += ./bspbuildcommand.h \
     ./Component/File.h \
     ./Component/FileSet.h \
     ./Component/Function.h \
+    ./Component/MasterInterface.h \
     ./Component/MemoryBlockBase.h \
     ./Component/MemoryMap.h \
     ./Component/MemoryMapBase.h \
     ./Component/MemoryRemap.h \
+    ./Component/MirroredSlaveInterface.h \
     ./Component/Model.h \
     ./Component/AbstractionType.h \
     ./Component/OtherClockDriver.h \
     ./Component/Port.h \
+    ./Component/PortMap.h \
     ./Component/Register.h \
     ./Component/RegisterBase.h \
     ./Component/RegisterDefinition.h \
@@ -169,6 +156,7 @@ HEADERS += ./bspbuildcommand.h \
     ./Component/RemapPort.h \
     ./Component/RemapState.h \
     ./Component/Segment.h \
+    ./Component/SlaveInterface.h \
     ./Component/Transactional.h \
     ./Component/View.h \
     ./Component/Wire.h \
@@ -218,9 +206,6 @@ SOURCES += ./bspbuildcommand.cpp \
     ./generaldeclarations.cpp \
     ./GenericVendorExtension.cpp \
     ./librarycomponent.cpp \
-    ./Component/MirroredSlaveInterface.cpp \
-    ./Component/PortMap.cpp \
-    ./Component/SlaveInterface.cpp \
     ./swbuildcommand.cpp \
     ./vlnv.cpp \
     ./XmlUtils.cpp \
@@ -230,6 +215,7 @@ SOURCES += ./bspbuildcommand.cpp \
     ./kactusExtensions/ApiInterconnection.cpp \
     ./kactusExtensions/ApiInterface.cpp \
     ./kactusExtensions/ColumnDesc.cpp \
+    ./kactusExtensions/ComDefinition.cpp \
     ./kactusExtensions/ComInterconnection.cpp \
     ./kactusExtensions/ComInterface.cpp \
     ./kactusExtensions/ComProperty.cpp \
@@ -369,6 +355,7 @@ SOURCES += ./bspbuildcommand.cpp \
     ./Component/Function.cpp \
     ./Component/InstantiationsReader.cpp \
     ./Component/InstantiationsWriter.cpp \
+    ./Component/MasterInterface.cpp \
     ./Component/MemoryBlockBase.cpp \
     ./Component/MemoryMap.cpp \
     ./Component/MemoryMapBase.cpp \
@@ -377,12 +364,14 @@ SOURCES += ./bspbuildcommand.cpp \
     ./Component/MemoryMapReader.cpp \
     ./Component/MemoryMapWriter.cpp \
     ./Component/MemoryRemap.cpp \
+    ./Component/MirroredSlaveInterface.cpp \
     ./Component/Model.cpp \
     ./Component/AbstractionType.cpp \
     ./Component/OtherClockDriver.cpp \
     ./Component/OtherClockDriverReader.cpp \
     ./Component/OtherClockDriverWriter.cpp \
     ./Component/Port.cpp \
+    ./Component/PortMap.cpp \
     ./Component/PortReader.cpp \
     ./Component/PortWriter.cpp \
     ./Component/Register.cpp \
@@ -396,12 +385,11 @@ SOURCES += ./bspbuildcommand.cpp \
     ./Component/RemapStateReader.cpp \
     ./Component/RemapStateWriter.cpp \
     ./Component/Segment.cpp \
+    ./Component/SlaveInterface.cpp \
     ./Component/Transactional.cpp \
     ./Component/View.cpp \
     ./Component/ViewReader.cpp \
     ./Component/ViewWriter.cpp \
     ./Component/Wire.cpp \
     ./Component/WireTypeDef.cpp \
-    ./Component/WriteValueConstraint.cpp \
-    ./Component/MasterInterface.cpp
-    ./kactusExtensions/ComDefinition.cpp
+    ./Component/WriteValueConstraint.cpp

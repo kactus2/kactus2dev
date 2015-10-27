@@ -274,28 +274,6 @@ QString VLNV::toString(QString const& separator) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: VLNV::writeAsElements()
-//-----------------------------------------------------------------------------
-void VLNV::writeAsElements(QXmlStreamWriter& writer) const
-{
-    writer.writeTextElement("ipxact:vendor", getVendor());
-    writer.writeTextElement("ipxact:library", getLibrary());
-    writer.writeTextElement("ipxact:name", getName());
-    writer.writeTextElement("ipxact:version", getVersion());
-}
-
-//-----------------------------------------------------------------------------
-// Function: VLNV::writeAsAttributes()
-//-----------------------------------------------------------------------------
-void VLNV::writeAsAttributes(QXmlStreamWriter& writer) const
-{
-    writer.writeAttribute("vendor", getVendor());
-    writer.writeAttribute("library", getLibrary());
-    writer.writeAttribute("name", getName());
-    writer.writeAttribute("version", getVersion());
-}
-
-//-----------------------------------------------------------------------------
 // Function: VLNV::operator=()
 //-----------------------------------------------------------------------------
 VLNV& VLNV::operator=(VLNV const& other)

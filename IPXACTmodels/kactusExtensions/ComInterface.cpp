@@ -147,7 +147,10 @@ void ComInterface::write(QXmlStreamWriter& writer) const
 
     // Write communication type, data type and communication direction.
     writer.writeEmptyElement("kactus2:comType");
-    comType_.writeAsAttributes(writer);
+    writer.writeAttribute("vendor", comType_.getVendor());
+    writer.writeAttribute("library", comType_.getLibrary());
+    writer.writeAttribute("name", comType_.getName());
+    writer.writeAttribute("version", comType_.getVersion());
 
     writer.writeTextElement("kactus2:transferType", transferType_);
     writer.writeTextElement("kactus2:comDirection", DirectionTypes::direction2Str(dir_));
@@ -169,7 +172,10 @@ void ComInterface::write(QXmlStreamWriter& writer) const
     writer.writeEndElement(); // kactus2:propertyValues
 
 	writer.writeEmptyElement("kactus2:comImplementationRef");
-    comImplementation_.writeAsAttributes(writer);
+    writer.writeAttribute("vendor", comImplementation_.getVendor());
+    writer.writeAttribute("library", comImplementation_.getLibrary());
+    writer.writeAttribute("name", comImplementation_.getName());
+    writer.writeAttribute("version", comImplementation_.getVersion());
 
     if (!defaultPos_.isNull())
     {

@@ -10,10 +10,12 @@
 //-----------------------------------------------------------------------------
 
 #include "SystemViewEditor.h"
-#include <mainwindow/mainwindow.h>
-#include <IPXACTmodels/SystemView.h>
 
 #include <common/widgets/viewSelector/viewselector.h>
+
+#include <mainwindow/mainwindow.h>
+
+#include <IPXACTmodels/kactusExtensions/SystemView.h>
 
 #include <QApplication>
 #include <QGroupBox>
@@ -26,19 +28,18 @@
 // Function: SystemViewEditor::SystemViewEditor()
 //-----------------------------------------------------------------------------
 SystemViewEditor::SystemViewEditor(QSharedPointer<Component> component, 
-                           QSharedPointer<SystemView> systemView,
-                           LibraryInterface* libHandler, 
-                           QWidget *parent):
+    QSharedPointer<SystemView> systemView, LibraryInterface* libHandler, QWidget* parent):
 ItemEditor(component, libHandler, parent), 
-view_(systemView.data()),
-nameEditor_(systemView->getNameGroup(), this, tr("Name and description")),
-hierRefEditor_(NULL),
-HWViewRefEditor_(NULL),
-fileSetRefEditor_(NULL)
+    view_(systemView.data()),
+    nameEditor_(systemView, this, tr("Name and description")),
+    hierRefEditor_(NULL),
+    HWViewRefEditor_(NULL),
+    fileSetRefEditor_(NULL)
 {
-	// find the main window for VLNV editor
-	QWidget* parentW = NULL;
-	foreach (QWidget* widget, QApplication::topLevelWidgets()) {
+    // find the main window for VLNV editor
+    QWidget* parentW = NULL;
+    foreach (QWidget* widget, QApplication::topLevelWidgets())
+    {
 		MainWindow* mainWnd = dynamic_cast<MainWindow*>(widget);
 		if (mainWnd) {
 			parentW = mainWnd;
@@ -58,8 +59,8 @@ fileSetRefEditor_(NULL)
     connect(&nameEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(hierRefEditor_, SIGNAL(vlnvEdited()), this, SLOT(onHierRefChange()), Qt::UniqueConnection);
     connect(fileSetRefEditor_, SIGNAL(contentChanged()), this, SLOT(onFileSetRefChange()), Qt::UniqueConnection);
-    connect(HWViewRefEditor_, SIGNAL(viewSelected(const QString&)),
-        this, SLOT(onHWViewChange(const QString&)), Qt::UniqueConnection);
+    connect(HWViewRefEditor_, SIGNAL(viewSelected(QString const&)),
+        this, SLOT(onHWViewChange(QString const&)), Qt::UniqueConnection);
      
      refresh();
 
@@ -69,7 +70,8 @@ fileSetRefEditor_(NULL)
 //-----------------------------------------------------------------------------
 // Function: SystemViewEditor::~SystemViewEditor()
 //-----------------------------------------------------------------------------
-SystemViewEditor::~SystemViewEditor() {
+SystemViewEditor::~SystemViewEditor()
+{
 }
 
 //-----------------------------------------------------------------------------
@@ -107,30 +109,50 @@ bool SystemViewEditor::isValid() const
     return true;
 }
 
-void SystemViewEditor::refresh() {
+//-----------------------------------------------------------------------------
+// Function: SystemViewEditor::refresh()
+//-----------------------------------------------------------------------------
+void SystemViewEditor::refresh()
+{
     nameEditor_.refresh();
     hierRefEditor_->setVLNV(view_->getHierarchyRef());
-	 HWViewRefEditor_->refresh();
-	 HWViewRefEditor_->selectView(view_->getHWViewRef());
-	 fileSetRefEditor_->setItems(view_->getFileSetRefs());
+    HWViewRefEditor_->refresh();
+    HWViewRefEditor_->selectView(view_->getHWViewRef());
+    fileSetRefEditor_->setItems(view_->getFileSetRefs());
 }
 
-void SystemViewEditor::onHierRefChange() {
+//-----------------------------------------------------------------------------
+// Function: SystemViewEditor::onHierRefChange()
+//-----------------------------------------------------------------------------
+void SystemViewEditor::onHierRefChange()
+{
     view_->setHierarchyRef(hierRefEditor_->getVLNV());
     emit contentChanged();
 }
 
-void SystemViewEditor::showEvent( QShowEvent* event ) {
+//-----------------------------------------------------------------------------
+// Function: SystemViewEditor::showEvent()
+//-----------------------------------------------------------------------------
+void SystemViewEditor::showEvent(QShowEvent* event)
+{
 	QWidget::showEvent(event);
 	emit helpUrlRequested("componenteditor/systemview.html");
 }
 
-void SystemViewEditor::onFileSetRefChange() {
+//-----------------------------------------------------------------------------
+// Function: SystemViewEditor::onFileSetRefChange()
+//-----------------------------------------------------------------------------
+void SystemViewEditor::onFileSetRefChange()
+{
 	view_->setFileSetRefs(fileSetRefEditor_->items());
 	emit contentChanged();
 }
 
-void SystemViewEditor::onHWViewChange( const QString& /*viewName*/ ) {
+//-----------------------------------------------------------------------------
+// Function: SystemViewEditor::onHWViewChange()
+//-----------------------------------------------------------------------------
+void SystemViewEditor::onHWViewChange(QString const& /*viewName*/)
+{
 	view_->setHWViewRef(HWViewRefEditor_->currentText());
 	emit contentChanged();
 }

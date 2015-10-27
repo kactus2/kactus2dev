@@ -66,103 +66,6 @@ View::~View()
 
 }
 
-/*
-bool View::isValid( const QStringList& fileSetNames, 
-                    QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
-				   QStringList& errorList, 
-				   const QString& parentIdentifier ) const {
-
-	bool valid = true;
-	const QString thisIdentifier(QObject::tr("view %1").arg(name()));
-
-	if (name().isEmpty()) {
-		errorList.append(QObject::tr("No name specified for view within %1").arg(parentIdentifier));
-		valid = false;
-	}
-
-	if (envIdentifiers_.isEmpty()) {
-		errorList.append(QObject::tr("No environment identifier specified for "
-			"view %1 within %2").arg(name()).arg(parentIdentifier));
-		valid = false;
-	}
-
-	// if this is flat view then check the flat elements.
-	if (!hierarchyRef_.isValid()) {
-		
-		foreach (QSharedPointer<FileBuilder> fileBuilder, defaultFileBuilders_) {
-			if (!fileBuilder->isValid(errorList, thisIdentifier)) {
-				valid = false;
-			}
-		}
-
-		// make sure the referenced file sets are found
-		foreach (QString fileSetRef, fileSetRefs_) {
-			if (!fileSetNames.contains(fileSetRef)) {
-				errorList.append(QObject::tr("View %1 contained reference to file"
-					" set %2 which is not found within %3").arg(
-					name()).arg(fileSetRef).arg(parentIdentifier));
-				valid = false;
-			}
-		}
-
-//         ParameterValidator validator;
-//         foreach (QSharedPointer<Parameter> param, *parameters_)
-//         {
-//             errorList.append(validator.findErrorsIn(param.data(), thisIdentifier, componentChoices));
-//             if (!validator.validate(param.data(), componentChoices)) 
-//             {
-//                 valid = false;
-//             }
-// 		}
-	}
-	
-	return valid;
-}
-*/
-/*
-bool View::isValid( const QStringList& fileSetNames, 
-    QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices ) const 
-{
-	if (name().isEmpty()) 
-    {
-		return false;
-	}
-
-	if (envIdentifiers_.isEmpty())
-    {
-		return false;
-	}
-
-	// if this is flat view then check the flat elements.
-	if (!hierarchyRef_.isValid()) {
-
-		foreach (QSharedPointer<FileBuilder> fileBuilder, defaultFileBuilders_) {
-			if (!fileBuilder->isValid()) {
-				return false;
-			}
-		}
-
-		// make sure the referenced file sets are found
-		foreach (QString fileSetRef, fileSetRefs_) {
-			if (!fileSetNames.contains(fileSetRef)) {
-				return false;
-			}
-		}
-
-//         ParameterValidator validator;
-//         foreach (QSharedPointer<Parameter> param, *parameters_)
-//         {
-//             if (!validator.validate(param.data(), componentChoices)) 
-//             {
-//                 return false;
-//             }
-//         }
-	}
-
-	return true;
-}
-*/
-
 //-----------------------------------------------------------------------------
 // Function: View::setEnvIdentifiers()
 //-----------------------------------------------------------------------------
@@ -174,15 +77,7 @@ void View::setEnvIdentifiers( const QStringList& envIdentifiers )
 //-----------------------------------------------------------------------------
 // Function: View::getEnvIdentifiers()
 //-----------------------------------------------------------------------------
-const QStringList& View::getEnvIdentifiers() const
-{
-	return envIdentifiers_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: View::getEnvIdentifiers()
-//-----------------------------------------------------------------------------
-QStringList& View::getEnvIdentifiers()
+QStringList View::getEnvIdentifiers() const
 {
 	return envIdentifiers_;
 }

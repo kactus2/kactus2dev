@@ -160,7 +160,10 @@ void ApiInterface::write(QXmlStreamWriter& writer) const
     }
 
     writer.writeEmptyElement("kactus2:apiType");
-    apiType_.writeAsAttributes(writer);
+    writer.writeAttribute("vendor", apiType_.getVendor());
+    writer.writeAttribute("library", apiType_.getLibrary());
+    writer.writeAttribute("name", apiType_.getName());
+    writer.writeAttribute("version", apiType_.getVersion());
 
     writer.writeTextElement("kactus2:dependencyDirection", dependencyDirection2Str(dependencyDir_));
 

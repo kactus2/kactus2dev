@@ -15,13 +15,13 @@
 #include <IPXACTmodels/common/NameGroup.h>
 
 #include <IPXACTmodels/ipxactmodels_global.h>
-#include <IPXACTmodels/vlnv.h>
 #include <IPXACTmodels/VendorExtension.h>
+#include <IPXACTmodels/vlnv.h>
 
-#include <QString>
 #include <QDomNode>
-#include <QXmlStreamWriter>
+#include <QString>
 #include <QStringList>
+#include <QXmlStreamWriter>
 
 //-----------------------------------------------------------------------------
 //! System view class for making VLNV references to system designs.
@@ -41,7 +41,7 @@ public:
      *
 	 *      @param [in] name The name of the view.
 	 */
-	SystemView(const QString name);
+	SystemView(QString const& name);
 
 	/*!
      *  Default constructor.
@@ -76,11 +76,9 @@ public:
 	/*! 
      *  Writes the contents of the class using the writer.
 	 *
-	 *  Uses the specified writer to write the class contents into file as valid
-	 *  IP-Xact.
+	 *  Uses the specified writer to write the class contents into file as valid IP-Xact.
 	 *
-	 *      @param [in] writer A reference to a QXmlStreamWriter instance that is used to
-	 *                         write the document into file.
+	 *      @param [in] writer A QXmlStreamWriter instance that is used to write the document into file.
 	 */
 	virtual void write(QXmlStreamWriter& writer) const;
 
@@ -94,25 +92,25 @@ public:
 	 *
 	 *      @return True if contents are valid.
 	 */
-	bool isValid(const QStringList& fileSetNames, const QStringList& HWViewNames, QStringList& errorList,
+	bool isValid(QStringList const& fileSetNames, QStringList const& HWViewNames, QStringList& errorList,
         QString const& parentIdentifier) const;
 
 	/*!
      *  Checks if the view is in a valid state.
 	 * 
-	 *		  @param [in] fileSetNames File set names of the containing component.
-	 *		  @param [in] HWViewNames Names of the HW views in the containing component.
+	 *		  @param [in] fileSetNames  File set names of the containing component.
+	 *		  @param [in] HWViewNames   Names of the HW views in the containing component.
 	 * 
 	 *      @return True if contents are valid.
 	*/
-	bool isValid(const QStringList& fileSetNames, const QStringList& HWViewNames) const;
+	bool isValid(QStringList const& fileSetNames, QStringList const& HWViewNames) const;
 
     /*!
      *  Set the hierarchyRef for this view.
 	 *
-	 *      @param [in] hierarchyRef    A pointer to the new hierarchyRef.
+	 *      @param [in] hierarchyRef    The new hierarchyRef.
 	 */
-	void setHierarchyRef(const VLNV& hierarchyRef);
+	void setHierarchyRef(VLNV const& hierarchyRef);
 
     /*!
      *  Sets the reference to HW view to which the system is mapped.
@@ -124,14 +122,14 @@ public:
 	/*!
      *  Get pointer to the hierarchical design for this view.
 	 *
-	 *      @return A pointer to the vlnv of a hierarchical design if the view is used to reference a hierarchical design.
+	 *      @return The vlnv of a hierarchical design if the view is used to reference a hierarchical design.
 	 */
 	VLNV getHierarchyRef() const;
 
     /*!
      *  Returns the reference to HW view to which the system is mapped.
      */
-    QString const& getHWViewRef() const;
+    QString getHWViewRef() const;
 
 	/*!
      *  Get the file set references of the system view.
@@ -145,7 +143,7 @@ public:
 	 *
 	 *      @param [in] fileSetRefs     Contains the file set names.
 	 */
-	void setFileSetRefs(const QStringList& fileSetRefs);
+	void setFileSetRefs(QStringList const& fileSetRefs);
 
 private:
 
@@ -156,7 +154,7 @@ private:
     QString hwViewRef_;
 
 	//! Contains the references to file sets of the containing component.
-	 QStringList fileSetRefs_;
+	QStringList fileSetRefs_;
 };
 
 //-----------------------------------------------------------------------------

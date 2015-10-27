@@ -10,21 +10,28 @@
 //-----------------------------------------------------------------------------
 
 #include "SystemViewsEditor.h"
+
 #include "SystemViewsDelegate.h"
+
 #include <library/LibraryManager/libraryinterface.h>
+
 #include <common/widgets/summaryLabel/summarylabel.h>
+
+#include <IPXACTmodels/Component/Component.h>
 
 #include <QVBoxLayout>
 
-SystemViewsEditor::SystemViewsEditor(QSharedPointer<Component> component, 
-	LibraryInterface* handler, 
-							 QWidget* parent /*= 0*/ ):
+//-----------------------------------------------------------------------------
+// Function: SystemViewsEditor::SystemViewsEditor()
+//-----------------------------------------------------------------------------
+SystemViewsEditor::SystemViewsEditor(QSharedPointer<Component> component, LibraryInterface* handler, 
+    QWidget* parent):
 ItemEditor(component, handler, parent),
-view_(this),
-proxy_(this),
-model_(component, this) {
-
-	// display a label on top the table
+    view_(this),
+    proxy_(this),
+    model_(component, this)
+{
+    // display a label on top the table
 	SummaryLabel* summaryLabel = new SummaryLabel(tr("System views"), this);
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
@@ -35,9 +42,9 @@ model_(component, this) {
 	proxy_.setSourceModel(&model_);
 	view_.setModel(&proxy_);
 
-	const QString compPath = ItemEditor::handler()->getDirectoryPath(*ItemEditor::component()->getVlnv());
-	QString defPath = QString("%1/sysViewListing.csv").arg(compPath);
-	view_.setDefaultImportExportPath(defPath);
+	const QString componentPath = handler->getDirectoryPath(component->getVlnv());
+	QString defaultPath = QString("%1/sysViewListing.csv").arg(componentPath);
+	view_.setDefaultImportExportPath(defaultPath);
 	view_.setAllowImportExport(true);
 
 	// items can not be dragged
@@ -47,12 +54,9 @@ model_(component, this) {
     view_.setDragDropMode(QAbstractItemView::DropOnly);
 	view_.setItemDelegate(new SystemViewsDelegate(this));
 
-	connect(&model_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&model_, SIGNAL(viewAdded(int)),
-		this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
-	connect(&model_, SIGNAL(viewRemoved(int)),
-		this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
+	connect(&model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&model_, SIGNAL(viewAdded(int)), this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
+	connect(&model_, SIGNAL(viewRemoved(int)), this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
 
 	connect(&view_, SIGNAL(addItem(const QModelIndex&)),
 		&model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
@@ -60,18 +64,34 @@ model_(component, this) {
 		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 }
 
-SystemViewsEditor::~SystemViewsEditor() {
+//-----------------------------------------------------------------------------
+// Function: SystemViewsEditor::~SystemViewsEditor()
+//-----------------------------------------------------------------------------
+SystemViewsEditor::~SystemViewsEditor()
+{
 }
 
-bool SystemViewsEditor::isValid() const {
+//-----------------------------------------------------------------------------
+// Function: SystemViewsEditor::isValid()
+//-----------------------------------------------------------------------------
+bool SystemViewsEditor::isValid() const
+{
 	return model_.isValid();
 }
 
-void SystemViewsEditor::refresh() {
+//-----------------------------------------------------------------------------
+// Function: SystemViewsEditor::refresh()
+//-----------------------------------------------------------------------------
+void SystemViewsEditor::refresh()
+{
 	view_.update();
 }
 
-void SystemViewsEditor::showEvent( QShowEvent* event ) {
+//-----------------------------------------------------------------------------
+// Function: SystemViewsEditor::showEvent()
+//-----------------------------------------------------------------------------
+void SystemViewsEditor::showEvent(QShowEvent* event)
+{
 	QWidget::showEvent(event);
 	emit helpUrlRequested("componenteditor/systemviews.html");
 }

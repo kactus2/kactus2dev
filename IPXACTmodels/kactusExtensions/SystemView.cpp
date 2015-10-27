@@ -14,50 +14,37 @@
 //-----------------------------------------------------------------------------
 // Function: SystemView::SystemView()
 //-----------------------------------------------------------------------------
-SystemView::SystemView(QDomNode& viewNode) :
-NameGroup(),
-hierarchyRef_(),
-fileSetRefs_()
+SystemView::SystemView(QDomNode& viewNode) : NameGroup(), hierarchyRef_(), fileSetRefs_()
 {
-    for (int i = 0; i < viewNode.childNodes().count(); ++i)
-    {
-        QDomNode tempNode = viewNode.childNodes().at(i);
+    QDomElement systemViewElement = viewNode.toElement();
 
-        if (tempNode.nodeName() == QString("ipxact:name"))
-        {
-            setName(tempNode.firstChild().nodeValue());
-        }
-        else if (tempNode.nodeName() == QString("ipxact:displayName"))
-        {
-            setDisplayName(tempNode.firstChild().nodeValue());
-        }
-        else if (tempNode.nodeName() == QString("ipxact:description"))
-        {
-            setDescription(tempNode.firstChild().nodeValue());
-        }
-        else if (tempNode.nodeName() == QString("ipxact:hierarchyRef"))
-        {
-            hierarchyRef_ = VLNV::createVLNV(tempNode, VLNV::DESIGN);
-        }
-        else if (tempNode.nodeName() == "kactus2:hwViewRef")
-        {
-            hwViewRef_ = tempNode.childNodes().at(0).nodeValue();
-        }
-        else if (tempNode.nodeName() == "kactus2:fileSetRef")
-        {
-            fileSetRefs_.append(tempNode.childNodes().at(0).nodeValue());
-        }
+    setName(systemViewElement.firstChildElement("ipxact:name").firstChild().nodeValue());
+
+    setDisplayName(systemViewElement.firstChildElement("ipxact:displayName").firstChild().nodeValue());
+
+    setDescription(systemViewElement.firstChildElement("ipxact:description").firstChild().nodeValue());
+    
+    QDomElement hierarchyRefElement = systemViewElement.firstChildElement("ipxact:hierarchyRef");
+    if (!hierarchyRefElement.isNull())
+    {
+        hierarchyRef_ = VLNV::createVLNV(hierarchyRefElement, VLNV::DESIGN);
+    }
+
+    hwViewRef_ = systemViewElement.firstChildElement("kactus2:hwViewRef").childNodes().at(0).nodeValue();
+
+    QDomNodeList fileSetRefNodes = systemViewElement.elementsByTagName("kactus2:fileSetRef");
+    int fileSetRefCount = fileSetRefNodes.count();
+    for (int i = 0; i < fileSetRefCount; i++)
+    {
+        QDomNode filesetNode = fileSetRefNodes.at(i);
+        fileSetRefs_.append(filesetNode.childNodes().at(0).nodeValue());
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: SystemView::SystemView()
 //-----------------------------------------------------------------------------
-SystemView::SystemView(const QString name) :
-NameGroup(name),
-hierarchyRef_(),
-hwViewRef_(),
-fileSetRefs_()
+SystemView::SystemView(QString const& name): NameGroup(name), hierarchyRef_(), hwViewRef_(), fileSetRefs_()
 {
 
 }
@@ -65,11 +52,7 @@ fileSetRefs_()
 //-----------------------------------------------------------------------------
 // Function: SystemView::SystemView()
 //-----------------------------------------------------------------------------
-SystemView::SystemView() :
-NameGroup(),
-hierarchyRef_(),
-hwViewRef_(),
-fileSetRefs_()
+SystemView::SystemView(): NameGroup(),  hierarchyRef_(), hwViewRef_(), fileSetRefs_()
 {
 
 }
@@ -79,9 +62,9 @@ fileSetRefs_()
 //-----------------------------------------------------------------------------
 SystemView::SystemView(const SystemView &other) :
 NameGroup(other),
-hierarchyRef_(other.hierarchyRef_),
-hwViewRef_(other.hwViewRef_),
-fileSetRefs_(other.fileSetRefs_)
+    hierarchyRef_(other.hierarchyRef_),
+    hwViewRef_(other.hwViewRef_),
+    fileSetRefs_(other.fileSetRefs_)
 {
 
 }
@@ -144,14 +127,21 @@ void SystemView::write(QXmlStreamWriter& writer) const
         writer.writeTextElement("ipxact:description", description());
     }
 
-    // write spirit:hierarchyRef if one exists
-    writer.writeEmptyElement("kactus2:hierarchyRef");
-    hierarchyRef_.writeAsAttributes(writer);
+    // write hierarchyRef if one exists
+    if (!hierarchyRef_.isEmpty())
+    {
+        writer.writeEmptyElement("kactus2:hierarchyRef");
+        writer.writeAttribute("vendor", hierarchyRef_.getVendor());
+        writer.writeAttribute("library", hierarchyRef_.getLibrary());
+        writer.writeAttribute("name", hierarchyRef_.getName());
+        writer.writeAttribute("version", hierarchyRef_.getVersion());
+    }
 
     // Write HW view reference.
     writer.writeTextElement("kactus2:hwViewRef", hwViewRef_);
 
-	 foreach (QString fileSetName, fileSetRefs_) {
+	 foreach (QString const& fileSetName, fileSetRefs_)
+     {
 		 writer.writeTextElement("kactus2:fileSetRef", fileSetName);
 	 }
 
@@ -161,8 +151,8 @@ void SystemView::write(QXmlStreamWriter& writer) const
 //-----------------------------------------------------------------------------
 // Function: SystemView::isValid()
 //-----------------------------------------------------------------------------
-bool SystemView::isValid(const QStringList& fileSetNames, const QStringList& HWViewNames,
-    QStringList& errorList, const QString& parentIdentifier) const
+bool SystemView::isValid(QStringList const& fileSetNames, QStringList const& HWViewNames,
+    QStringList& errorList, QString const& parentIdentifier) const
 {
     bool valid = true;
     const QString thisIdentifier(QObject::tr("system view %1").arg(name()));
@@ -179,7 +169,7 @@ bool SystemView::isValid(const QStringList& fileSetNames, const QStringList& HWV
     }
 
 	 // make sure the referenced file sets are found
-	 foreach (QString fileSetRef, fileSetRefs_)
+	 foreach (QString const& fileSetRef, fileSetRefs_)
      {
 		 if (!fileSetNames.contains(fileSetRef))
          {
@@ -190,7 +180,7 @@ bool SystemView::isValid(const QStringList& fileSetNames, const QStringList& HWV
 	 }
 
 	 // if HW view is specified but not found
-	 if (!hwViewRef_.isEmpty() &&  !HWViewNames.contains(hwViewRef_))
+	 if (!hwViewRef_.isEmpty() && !HWViewNames.contains(hwViewRef_))
      {
 		 errorList.append(QObject::tr("System view %1 contained reference to HW view %2 which is not found "
              "withing %3.").arg(name()).arg(hwViewRef_).arg(parentIdentifier));
@@ -203,7 +193,7 @@ bool SystemView::isValid(const QStringList& fileSetNames, const QStringList& HWV
 //-----------------------------------------------------------------------------
 // Function: SystemView::isValid()
 //-----------------------------------------------------------------------------
-bool SystemView::isValid(const QStringList& fileSetNames, const QStringList& HWViewNames) const
+bool SystemView::isValid(QStringList const& fileSetNames, QStringList const& HWViewNames) const
 {
     if (name().isEmpty())
     {
@@ -236,7 +226,7 @@ bool SystemView::isValid(const QStringList& fileSetNames, const QStringList& HWV
 //-----------------------------------------------------------------------------
 // Function: SystemView::setHierarchyRef()
 //-----------------------------------------------------------------------------
-void SystemView::setHierarchyRef(const VLNV& hierarchyRef)
+void SystemView::setHierarchyRef(VLNV const& hierarchyRef)
 {
     hierarchyRef_ = hierarchyRef;
 }
@@ -260,7 +250,7 @@ VLNV SystemView::getHierarchyRef() const
 //-----------------------------------------------------------------------------
 // Function: SystemView::getHWViewRef()
 //-----------------------------------------------------------------------------
-QString const& SystemView::getHWViewRef() const
+QString SystemView::getHWViewRef() const
 {
     return hwViewRef_;
 }
@@ -276,7 +266,7 @@ QStringList SystemView::getFileSetRefs() const
 //-----------------------------------------------------------------------------
 // Function: SystemView::setFileSetRefs()
 //-----------------------------------------------------------------------------
-void SystemView::setFileSetRefs( const QStringList& fileSetRefs )
+void SystemView::setFileSetRefs(QStringList const& fileSetRefs)
 {
 	fileSetRefs_ = fileSetRefs;
 }

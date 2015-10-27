@@ -210,7 +210,7 @@ void LibraryComponent::write(QXmlStreamWriter& writer)
 
 void LibraryComponent::writeVLNV(QXmlStreamWriter& writer) {
 	// write the VLNV info
-    vlnv_->writeAsElements(writer);
+    //vlnv_->writeAsElements(writer);
 }
 
 void LibraryComponent::writeKactus2Attributes( QXmlStreamWriter& writer )
