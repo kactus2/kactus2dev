@@ -20,8 +20,8 @@
 
 #include <QWizardPage>
 
-class BusInterfaceWizard;
 class BusInterface;
+class BusInterfaceWizard;
 class Component;
 class LibraryInterface;
 class ExpressionParser;

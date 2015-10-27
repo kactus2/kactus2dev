@@ -14,10 +14,11 @@
 
 #include <QWizard>
 
-#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
-#include <IPXACTmodels/BusDefinition/BusDefinition.h>
-#include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/vlnv.h>
 
+class AbstractionDefinition;
+class BusDefinition;
+class BusInterface;
 class Component;
 class PluginManager;
 class LibraryInterface;

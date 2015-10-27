@@ -10,11 +10,13 @@
 //-----------------------------------------------------------------------------
 
 #include "portsmodel.h"
+
 #include "PortColumns.h"
 
-#include <IPXACTmodels/generaldeclarations.h>
-#include <IPXACTmodels/model.h>
-#include <IPXACTmodels/port.h>
+#include <IPXACTmodels/common/DirectionTypes.h>
+
+#include <IPXACTmodels/Component/Model.h>
+#include <IPXACTmodels/Component/Port.h>
 
 #include <kactusGenerators/vhdlGenerator/vhdlgeneral.h>
 
@@ -31,13 +33,13 @@ PortsModel::PortsModel(QSharedPointer<Model> model, QSharedPointer<ExpressionPar
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
     QObject *parent):
 ReferencingTableModel(parameterFinder, parent),
-ParameterizableTable(parameterFinder),
-model_(model),
-lockedIndexes_(),
-parameterFinder_(parameterFinder),
-expressionFormatter_(expressionFormatter)
+    ParameterizableTable(parameterFinder),
+    model_(model),
+    lockedIndexes_(),
+    parameterFinder_(parameterFinder),
+    expressionFormatter_(expressionFormatter)
 {
-	Q_ASSERT(model_);
+    Q_ASSERT(model_);
     setExpressionParser(expressionParser);
 }
 
@@ -59,7 +61,7 @@ int PortsModel::rowCount(QModelIndex const& parent) const
 		return 0;
     }
 
-	return model_->portCount();
+	return model_->getPorts()->count();
 }   
 
 //-----------------------------------------------------------------------------
@@ -80,7 +82,7 @@ int PortsModel::columnCount(QModelIndex const& parent) const
 //-----------------------------------------------------------------------------
 QVariant PortsModel::data(QModelIndex const& index, int role) const
 {
-	if (!index.isValid() || index.row() < 0 || index.row() >= model_->portCount())
+	if (!index.isValid() || index.row() < 0 || index.row() >= model_->getPorts()->count())
     {
 		return QVariant();
 	}
@@ -126,13 +128,14 @@ QVariant PortsModel::data(QModelIndex const& index, int role) const
         {
             return QColor("gray");
         }
-        else if (portOnRow(index.row())->isValid(model_->hasViews()))
+        /*else if (portOnRow(index.row())->isValid(model_->hasViews()))
         {
             return blackForValidOrRedForInvalidIndex(index);
-        }
+        }*/
         else
         {
-            return QColor("red");
+            return blackForValidOrRedForInvalidIndex(index);
+            //return QColor("red");
         }
     }
 	else if (Qt::BackgroundRole == role)
@@ -266,7 +269,7 @@ QVariant PortsModel::headerData(int section, Qt::Orientation orientation, int ro
 //-----------------------------------------------------------------------------
 bool PortsModel::setData(QModelIndex const& index, QVariant const& value, int role)
 {	
-	if (!index.isValid() || index.row() < 0 || index.row() >= model_->portCount())
+	if (!index.isValid() || index.row() < 0 || index.row() >= model_->getPorts()->count())
     {
 		return false;
     }
@@ -290,7 +293,8 @@ bool PortsModel::setData(QModelIndex const& index, QVariant const& value, int ro
         }
         else if (index.column() == PortColumns::DIRECTION)
         {
-            General::Direction direction = General::str2Direction(value.toString(), General::DIRECTION_INVALID);
+            DirectionTypes::Direction direction = DirectionTypes::str2Direction(value.toString(),
+                DirectionTypes::DIRECTION_INVALID);
 
             port->setDirection(direction);
         }
@@ -316,18 +320,13 @@ bool PortsModel::setData(QModelIndex const& index, QVariant const& value, int ro
         {
             if (!value.isValid())
             {
-                removeReferencesFromSingleExpression(port->getLeftBoundExpression());
+                removeReferencesFromSingleExpression(port->getLeftBound());
             }
 
             // make sure left bound doesn't drop below right bound.
             QString calculatedExpression = parseExpressionToDecimal(value.toString());
-            
-            if (calculatedExpression != value.toString())
-            {
-                port->setLeftBoundExpression(value.toString());
-            }
 
-            port->setLeftBound(calculatedExpression.toInt());
+            port->setLeftBound(calculatedExpression);
 
             setTypeNameAndDefinitionOnRow(port, index.row());
 
@@ -338,18 +337,12 @@ bool PortsModel::setData(QModelIndex const& index, QVariant const& value, int ro
         {
             if (!value.isValid())
             {
-                removeReferencesFromSingleExpression(port->getRightBoundExpression());
+                removeReferencesFromSingleExpression(port->getRightBound());
             }
 
             // make sure right bound is not greater than left bound.
             QString calculatedExpression = parseExpressionToDecimal(value.toString());
-            
-            if (calculatedExpression != value.toString())
-            {
-                port->setRightBoundExpression(value.toString());
-            }
-
-            port->setRightBound(calculatedExpression.toInt());
+            port->setRightBound(calculatedExpression);
 
             setTypeNameAndDefinitionOnRow(port, index.row());
 
@@ -477,13 +470,13 @@ Qt::ItemFlags PortsModel::flags(QModelIndex const& index) const {
 bool PortsModel::isValid() const
 {	
 	// check all ports in the table
-	foreach (QSharedPointer<Port> port, model_->getPorts())
+	/*foreach (QSharedPointer<Port> port, model_->getPorts())
     {	
 		if (!port->isValid(model_->hasViews()))
         {
 			return false;
         }
-	}
+	}*/
 
 	return true;
 }
@@ -491,17 +484,16 @@ bool PortsModel::isValid() const
 //-----------------------------------------------------------------------------
 // Function: PortsModel::onRemoveRow()
 //-----------------------------------------------------------------------------
-void PortsModel::onRemoveRow(int row) {
+void PortsModel::onRemoveRow(int row)
+{
 	// if row is invalid
-	if (row < 0 || row >=model_->portCount() || rowIsLocked(row))
+	if (row < 0 || row >=model_->getPorts()->count() || rowIsLocked(row))
+    {
 		return;
+    }
 
 	beginRemoveRows(QModelIndex(), row, row);
-
-	// remove the object from the map
-    QList<QSharedPointer<Port> >& ports = model_->getPorts();
-	ports.removeAt(row);
-
+    model_->getPorts()->removeAt(row);
 	endRemoveRows();
 
 	// tell also parent widget that contents have been changed
@@ -511,25 +503,22 @@ void PortsModel::onRemoveRow(int row) {
 //-----------------------------------------------------------------------------
 // Function: PortsModel::onRemoveItem()
 //-----------------------------------------------------------------------------
-void PortsModel::onRemoveItem( QModelIndex const&  index )
+void PortsModel::onRemoveItem(QModelIndex const& index)
 {
 	// don't remove anything if index is invalid
-	if (!index.isValid()) {
-		return;
-	}
-	// make sure the row number if valid
-	if (index.row() < 0 || index.row() >= model_->portCount() || rowIsLocked(index.row()))
+	if (!index.isValid() || index.row() < 0 || index.row() >= model_->getPorts()->count() ||
+        rowIsLocked(index.row()))
     {
 		return;
 	}
 
 	// remove the specified item
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
-    QList<QSharedPointer<Port> >& ports = model_->getPorts();
+    QSharedPointer<QList<QSharedPointer<Port> > > ports = model_->getPorts();
 
     removeReferencesInItemOnRow(index.row());
 
-	ports.removeAt(index.row());
+	ports->removeAt(index.row());
 	endRemoveRows();
 
 	// tell also parent widget that contents have been changed
@@ -541,10 +530,11 @@ void PortsModel::onRemoveItem( QModelIndex const&  index )
 //-----------------------------------------------------------------------------
 void PortsModel::onAddRow()
 {
-	beginInsertRows(QModelIndex(), model_->portCount(), model_->portCount());
+    int lastRow = model_->getPorts()->count();
+	beginInsertRows(QModelIndex(), lastRow, lastRow);
 
 	QSharedPointer<Port> port(new Port());
-	model_->addPort(port);
+	model_->getPorts()->append(port);
 
 	endInsertRows();
 
@@ -557,16 +547,16 @@ void PortsModel::onAddRow()
 //-----------------------------------------------------------------------------
 void PortsModel::onAddItem(QModelIndex const& index)
 {
-	int row = model_->portCount();
+	int row = model_->getPorts()->count();
 
 	// if the index is valid then add the item to the correct position
-	if (index.isValid()) {
+	if (index.isValid())
+    {
 		row = index.row();
 	}
 
 	beginInsertRows(QModelIndex(), row, row);
-    QList<QSharedPointer<Port> >& ports = model_->getPorts();
-	ports.insert(row, QSharedPointer<Port>(new Port()));
+	model_->getPorts()->insert(row, QSharedPointer<Port>(new Port()));
 	endInsertRows();
 
 	// tell also parent widget that contents have been changed
@@ -578,9 +568,10 @@ void PortsModel::onAddItem(QModelIndex const& index)
 //-----------------------------------------------------------------------------
 void PortsModel::addPort(QSharedPointer<Port> port)
 {
-	beginInsertRows(QModelIndex(), model_->portCount(), model_->portCount());
+    int lastRow = model_->getPorts()->count(); 
+	beginInsertRows(QModelIndex(), lastRow, lastRow);
 
-	model_->addPort(port);
+	model_->getPorts()->append(port);
     lockPort(port);
 
 	endInsertRows();
@@ -595,7 +586,7 @@ void PortsModel::addPort(QSharedPointer<Port> port)
 QModelIndex PortsModel::index(QSharedPointer<Port> port) const
 {
 	// find the correct row
-	int row = model_->getPorts().indexOf(port);
+	int row = model_->getPorts()->indexOf(port);
 
 	// if the named port is not found
 	if (row < 0)
@@ -620,9 +611,9 @@ void PortsModel::setModelAndLockCurrentPorts(QSharedPointer<Model> model)
     
     endResetModel();
 
-    foreach(QSharedPointer<Port> port, model_->getPorts())
+    foreach(QSharedPointer<Port> port, *model_->getPorts())
     {
-        if (port->getDirection() != General::DIRECTION_PHANTOM)
+        if (port->getDirection() != DirectionTypes::DIRECTION_PHANTOM)
         {
             lockPort(port);
         }
@@ -636,7 +627,7 @@ void PortsModel::setModelAndLockCurrentPorts(QSharedPointer<Model> model)
 //-----------------------------------------------------------------------------
 QSharedPointer<Port> PortsModel::portOnRow(int row) const
 {
-    return model_->getPorts().at(row);
+    return model_->getPorts()->at(row);
 }
 
 //-----------------------------------------------------------------------------
@@ -727,19 +718,19 @@ QVariant PortsModel::valueForIndex(QModelIndex const& index) const
     }
     else if (index.column() == PortColumns::DIRECTION)
     {
-        return General::direction2Str(port->getDirection());
+        return DirectionTypes::direction2Str(port->getDirection());
     }
     else if (index.column() == PortColumns::WIDTH)
     {
-        int calculatedLeftBound = parseExpressionToDecimal(port->getLeftBoundExpression()).toInt();
-        int calculatedRightBound = parseExpressionToDecimal(port->getRightBoundExpression()).toInt();
+        int calculatedLeftBound = parseExpressionToDecimal(port->getLeftBound()).toInt();
+        int calculatedRightBound = parseExpressionToDecimal(port->getRightBound()).toInt();
 
         int portWidth = abs(calculatedLeftBound - calculatedRightBound) + 1;
         return portWidth;
     }
     else if (index.column() == PortColumns::LEFT_BOUND)
     {
-        QString leftBound = port->getLeftBoundExpression();
+        QString leftBound = port->getLeftBound();
 
         if (leftBound == "n/a")
         {
@@ -750,7 +741,7 @@ QVariant PortsModel::valueForIndex(QModelIndex const& index) const
     }
     else if (index.column() == PortColumns::RIGHT_BOUND)
     {
-        QString rightBound = port->getRightBoundExpression();
+        QString rightBound = port->getRightBound();
 
         if (rightBound == "n/a")
         {
@@ -817,11 +808,11 @@ QVariant PortsModel::expressionOrValueForIndex(QModelIndex const& index) const
 
     if (index.column() == PortColumns::LEFT_BOUND)
     {
-        return port->getLeftBoundExpression();
+        return port->getLeftBound();
     }
     else if (index.column() == PortColumns::RIGHT_BOUND)
     {
-        return port->getRightBoundExpression();
+        return port->getRightBound();
     }
     else if (index.column() == PortColumns::DEFAULT_VALUE)
     {
@@ -854,13 +845,11 @@ bool PortsModel::validateIndex(QModelIndex const& index) const
 
     if (index.column() == PortColumns::LEFT_BOUND)
     {
-        QString leftBound = QString::number(port->getLeftBound());
-        return isValuePlainOrExpression(leftBound);
+        return isValuePlainOrExpression(port->getLeftBound());
     }
     else if (index.column() == PortColumns::RIGHT_BOUND)
     {
-        QString rightBound = QString::number(port->getRightBound());
-        return isValuePlainOrExpression(rightBound);
+        return isValuePlainOrExpression(port->getRightBound());
     }
     else if (index.column() == PortColumns::DEFAULT_VALUE)
     {
@@ -906,10 +895,10 @@ bool PortsModel::isArrayValid(QSharedPointer<Port> port) const
 //-----------------------------------------------------------------------------
 int PortsModel::getAllReferencesToIdInItemOnRow(const int& row, QString const& valueID) const
 {
-    QSharedPointer<Port> port = model_->getPorts().at(row);
+    QSharedPointer<Port> port = model_->getPorts()->at(row);
 
-    int referencesInLeftBound = port->getLeftBoundExpression().count(valueID);
-    int referencesInRightbount = port->getRightBoundExpression().count(valueID);
+    int referencesInLeftBound = port->getLeftBound().count(valueID);
+    int referencesInRightbount = port->getRightBound().count(valueID);
     int referencesInDefaultValue = port->getDefaultValue().count(valueID);
     int referencesInArrayLeft = port->getArrayLeft().count(valueID);
     int referencesInArrayRight = port->getArrayRight().count(valueID);
@@ -924,9 +913,12 @@ int PortsModel::getAllReferencesToIdInItemOnRow(const int& row, QString const& v
 //-----------------------------------------------------------------------------
 void PortsModel::setTypeNameAndDefinitionOnRow(QSharedPointer<Port> port, int row)
 {
-    int size = port->getPortSize();
+    int calculatedLeftBound = parseExpressionToDecimal(port->getLeftBound()).toInt();
+    int calculatedRightBound = parseExpressionToDecimal(port->getRightBound()).toInt();
+
+    int portWidth = abs(calculatedLeftBound - calculatedRightBound) + 1;
     // if port is vectored and previous type was std_logic
-    if (size > 1 && port->getTypeName() == QString("std_logic")) 
+    if (portWidth > 1 && port->getTypeName() == QString("std_logic")) 
     {
         // change the type to vectored
         port->setTypeName("std_logic_vector");
@@ -936,7 +928,7 @@ void PortsModel::setTypeNameAndDefinitionOnRow(QSharedPointer<Port> port, int ro
             QAbstractTableModel::index(row, PortColumns::TYPE_DEF));
     }
     // if port is not vectored but previous type was std_logic_vector
-    else if (size < 2 && port->getTypeName() == QString("std_logic_vector")) 
+    else if (portWidth < 2 && port->getTypeName() == QString("std_logic_vector")) 
     {
         port->setTypeName("std_logic");
         port->setTypeDefinition("std_logic", VhdlGeneral::getDefaultVhdlTypeDef("std_logic"));
@@ -954,8 +946,8 @@ bool PortsModel::hasExpressionInLeftOrRightBound(QSharedPointer<Port> port) cons
     bool leftNumber = false;
     bool rightNumber = false;
 
-    port->getLeftBoundExpression().toInt(&leftNumber);
-    port->getRightBoundExpression().toInt(&rightNumber);
+    port->getLeftBound().toInt(&leftNumber);
+    port->getRightBound().toInt(&rightNumber);
 
     return !leftNumber || !rightNumber;
 }

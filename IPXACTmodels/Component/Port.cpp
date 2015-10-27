@@ -20,15 +20,14 @@
 //-----------------------------------------------------------------------------
 // Function: Port::Port()
 //-----------------------------------------------------------------------------
-Port::Port(QString const& portName /* = QString() */,
-    DirectionTypes::Direction direction /* = DirectionTypes::IN */) :
+Port::Port(QString const& portName, DirectionTypes::Direction direction) :
 NameGroup(portName),
-Extendable(),
-isPresent_(),
-portType_(DirectionTypes::WIRE),
-wire_(QSharedPointer<Wire>(new Wire())),
-transactional_(),
-configurableArrays_(new QList<QSharedPointer<Array> > ())
+    Extendable(),
+    isPresent_(),
+    portType_(DirectionTypes::WIRE),
+    wire_(QSharedPointer<Wire>(new Wire())),
+    transactional_(),
+    configurableArrays_(new QList<QSharedPointer<Array> > ())
 {
     setDirection(direction);
 }
@@ -38,12 +37,12 @@ configurableArrays_(new QList<QSharedPointer<Array> > ())
 //-----------------------------------------------------------------------------
 Port::Port(const Port &other): 
 NameGroup(other),
-Extendable(other),
-isPresent_(other.isPresent_),
-portType_(other.portType_),
-wire_(),
-transactional_(),
-configurableArrays_(new QList<QSharedPointer<Array> > ())
+    Extendable(other),
+    isPresent_(other.isPresent_),
+    portType_(other.portType_),
+    wire_(),
+    transactional_(),
+    configurableArrays_(new QList<QSharedPointer<Array> > ())
 {
     if (other.wire_)
     {
@@ -103,58 +102,6 @@ Port::~Port()
     transactional_.clear();
     configurableArrays_.clear();
 }
-/*
-bool Port::isValid(bool hasViews) const {
-
-	if (name().isEmpty())
-		return false;
-
-	// if port is type wire but the element is not defined.
-	if (portType_ == General::WIRE && !wire_)
-		return false;
-
-	// if port is type transactional but element is not defined.
-	if (portType_ == General::TRANSACTIONAL && !transactional_)
-		return false;
-
-	if (wire_)
-		return wire_->isValid(hasViews);
-
-	return true;
-
-}
-*//*
-bool Port::isValid( bool hasViews, 
-				   QStringList& errorList, 
-				   const QString& parentIdentifier ) const {
-
-	bool valid = true;
-
-	if (name().isEmpty()) {
-		errorList.append(QObject::tr("Port has no name within %1").arg(parentIdentifier));
-		valid = false;
-	}
-
-	if (portType_ == General::WIRE && !wire_) {
-		errorList.append(QObject::tr("Port is type wire but has no wire-element within %1").arg(
-			parentIdentifier));
-		valid = false;
-	}
-
-	if (portType_ == General::TRANSACTIONAL && !transactional_) {
-		errorList.append(QObject::tr("Port is type transactional but has no "
-			"transactional-element within %1").arg(parentIdentifier));
-		valid = false;
-	}
-
-	if (wire_) {
-		if (!wire_->isValid(hasViews, errorList, QObject::tr("Port %1").arg(name()))) {
-			valid = false;
-		}
-	}
-
-	return valid;
-}*/
 
 //-----------------------------------------------------------------------------
 // Function: Port::getPortType()

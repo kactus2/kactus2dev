@@ -66,22 +66,23 @@ void BusInterfaceWizardConclusionPage::initializePage()
     nameLabel_.setText(busIf_->name());
     modeLabel_.setText(General::interfaceMode2Str(busIf_->getInterfaceMode()));
     busDefLabel_.setText(busIf_->getBusType().toString());
-    absDefLabel_.setText(busIf_->getAbstractionType().toString());
+    absDefLabel_.setText(busIf_->getAbstractionTypes()->first()->getAbstractionRef()->toString());
 
     // Search through all ports to see which ones are mapped in port maps.
     QStringList mappedPorts;
 
     foreach(QString portName, ports_)
     {
-        foreach(QSharedPointer<PortMap> portMap, busIf_->getPortMaps())
+        foreach(QSharedPointer<PortMap> portMap, *busIf_->getPortMaps())
         {
-            if (QString::compare(portName, portMap->physicalPort()) == 0 &&
-                !mappedPorts.contains(portName))
+            if (QString::compare(portName, portMap->getPhysicalPort()->name_) == 0)
             {
                 mappedPorts.append(portName);                
             }
         }
     }
+
+    mappedPorts.removeDuplicates();
     portMapLabel_.setText(QString::number(mappedPorts.size()) + "/" + QString::number(ports_.size()));
 }
 

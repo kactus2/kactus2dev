@@ -403,39 +403,39 @@ bool VLNV::operator!=(VLNV const& other) const
 //-----------------------------------------------------------------------------
 VLNV::IPXactType VLNV::string2Type(QString const& type)
 {
-	if (QString::compare(type, "ipxact:abstractionDefinition", Qt::CaseInsensitive) == 0)
+	if (type.compare(QLatin1String("ipxact:abstractionDefinition"), Qt::CaseInsensitive) == 0)
     {
 		return ABSTRACTIONDEFINITION;
 	}
-	else if (QString::compare(type, "ipxact:busDefinition", Qt::CaseInsensitive) == 0)
+	else if (type.compare(QLatin1String("ipxact:busDefinition"), Qt::CaseInsensitive) == 0)
     {
 		return BUSDEFINITION;
 	}
-	else if (QString::compare(type, "ipxact:abstractor", Qt::CaseInsensitive) == 0)
+	else if (type.compare(QLatin1String("ipxact:abstractor"), Qt::CaseInsensitive) == 0)
     {
 		return ABSTRACTOR;
 	}
-	else if (QString::compare(type, "ipxact:component", Qt::CaseInsensitive) == 0) 
+	else if (type.compare(QLatin1String("ipxact:component"), Qt::CaseInsensitive) == 0) 
     {
 		return COMPONENT;
 	}
-	else if (QString::compare(type, "ipxact:design", Qt::CaseInsensitive) == 0)
+	else if (type.compare(QLatin1String("ipxact:design"), Qt::CaseInsensitive) == 0)
     {
 		return DESIGN;
 	}
-	else if (QString::compare(type, "ipxact:designConfiguration", Qt::CaseInsensitive) == 0)
+	else if (type.compare(QLatin1String("ipxact:designConfiguration"), Qt::CaseInsensitive) == 0)
     {
 		return DESIGNCONFIGURATION;
 	}
-	else if (QString::compare(type, "ipxact:generatorChain", Qt::CaseInsensitive) == 0)
+	else if (type.compare(QLatin1String("ipxact:generatorChain"), Qt::CaseInsensitive) == 0)
     {
 		return GENERATORCHAIN;
 	}
-    else if (QString::compare(type, "kactus2:comDefinition", Qt::CaseInsensitive) == 0)
+    else if (type.compare(QLatin1String("kactus2:comDefinition"), Qt::CaseInsensitive) == 0)
     {
         return COMDEFINITION;
     }
-    else if (QString::compare(type, "kactus2:apiDefinition", Qt::CaseInsensitive) == 0)
+    else if (type.compare(QLatin1String("kactus2:apiDefinition"), Qt::CaseInsensitive) == 0)
     {
         return APIDEFINITION;
     }
@@ -451,28 +451,45 @@ VLNV::IPXactType VLNV::string2Type(QString const& type)
 //-----------------------------------------------------------------------------
 QString VLNV::IPXactType2String(IPXactType const& type)
 {
-	switch (type)
+	if (type == BUSDEFINITION)
     {
-    case BUSDEFINITION:
-        return QObject::tr("ipxact:busDefinition");
-    case COMPONENT:
-        return QObject::tr("ipxact:component");
-    case DESIGN:
-        return QObject::tr("ipxact:design");
-    case GENERATORCHAIN:
-        return QObject::tr("ipxact:generatorChain");
-    case ABSTRACTOR:
-        return QObject::tr("ipxact:abstractor");
-    case DESIGNCONFIGURATION:
-        return QObject::tr("ipxact:designConfiguration");
-    case ABSTRACTIONDEFINITION:
-        return QObject::tr("ipxact:abstractionDefinition");
-    case COMDEFINITION:
-        return QObject::tr("kactus2:comDefinition");
-    case APIDEFINITION:
-        return QObject::tr("kactus2:apiDefinition");
-    default:
-        return QObject::tr("invalid");
+        return QStringLiteral("ipxact:busDefinition");
+    }
+    else if (type == COMPONENT)
+    {
+        return QStringLiteral("ipxact:component");
+    }
+    else if (type == DESIGN)
+    {
+        return QStringLiteral("ipxact:design");
+    }
+    else if (type == GENERATORCHAIN)
+    {
+        return QStringLiteral("ipxact:generatorChain");
+    }
+    else if (type == ABSTRACTOR)
+    {
+        return QStringLiteral("ipxact:abstractor");
+    }
+    else if (type == DESIGNCONFIGURATION)
+    {
+        return QStringLiteral("ipxact:designConfiguration");
+    }
+    else if (type == ABSTRACTIONDEFINITION)
+    {
+        return QStringLiteral("ipxact:abstractionDefinition");
+    }
+    else if (type == COMDEFINITION)
+    {
+        return QStringLiteral("kactus2:comDefinition");
+    }
+    else if (type == APIDEFINITION)
+    {
+        return QStringLiteral("kactus2:apiDefinition");
+    }
+    else
+    {
+        return QStringLiteral("invalid");
 	}
 }
 

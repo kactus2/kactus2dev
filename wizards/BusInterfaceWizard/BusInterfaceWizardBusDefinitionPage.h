@@ -18,8 +18,10 @@
 #include <QPushButton>
 
 #include <editors/BusEditor/buseditor.h>
-#include <IPXACTmodels/Component/BusInterface.h>
 
+#include <IPXACTmodels/generaldeclarations.h>
+
+class BusInterface;
 class BusInterfaceWizard;
 class LibraryInterface;
 class BusDefinition;
@@ -122,7 +124,7 @@ private:
      *      @param [in] logicalPort     The direction of the logical port.
      */
     void createLogicalMappings(QStringList const& physPorts, QString const& logicalPort, 
-        General::Direction logicalDirection);
+        DirectionTypes::Direction logicalDirection);
 
     /*!
      *  Creates port maps to the bus interface based on the initial mapping.     
@@ -150,7 +152,7 @@ private:
      *
      *      @return The created port.
      */
-    QSharedPointer<PortAbstraction> createAbsPort(QString const& portName, General::Direction portDirection, int portWidth );
+    QSharedPointer<PortAbstraction> createAbsPort(QString const& portName, DirectionTypes::Direction portDirection, int portWidth );
 
     //-----------------------------------------------------------------------------
     // Data.

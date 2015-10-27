@@ -12,12 +12,9 @@
 #ifndef PORTSMODEL_H
 #define PORTSMODEL_H
 
-#include <QAbstractTableModel>
-#include <QMap>
 #include <QSharedPointer>
 #include <QString>
 #include <QList>
-#include <QFile>
 
 #include <editors/ComponentEditor/common/ParameterizableTable.h>
 #include <editors/ComponentEditor/common/ReferencingTableModel.h>
@@ -43,7 +40,6 @@ public:
      *      @param [in] parameterFinder         Pointer to the parameter finder.
      *      @param [in] expressionFormatter     Pointer to the expression formatter.
 	 *      @param [in] parent                  Pointer to the owner of this model.
-	 *
 	*/
 	PortsModel(QSharedPointer<Model> model,
         QSharedPointer <ExpressionParser> expressionParser,

@@ -65,7 +65,7 @@ public:
 private slots:
     
     //! Handler for error messages.
-    virtual void showErrorMessage(const QString& msg);
+    virtual void showErrorMessage(QString const& msg);
 
 private:
     // Disable copying.

@@ -33,8 +33,8 @@ BusInterfaceWizard::BusInterfaceWizard(QSharedPointer<Component> component,
     QStringList portNames,         
     QWidget* parent, 
     VLNV absDefVLNV, 
-    bool descriptionAsLogicalName)
-    : QWizard(parent)
+    bool descriptionAsLogicalName):
+ QWizard(parent)
 {
     setWindowTitle(tr("Bus Interface Wizard"));
     setWizardStyle(ModernStyle);

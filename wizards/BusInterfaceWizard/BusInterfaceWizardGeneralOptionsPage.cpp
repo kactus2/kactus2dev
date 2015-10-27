@@ -12,7 +12,7 @@
 #include "BusInterfaceWizardGeneralOptionsPage.h"
 #include "BusInterfaceWizard.h"
 
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <QVBoxLayout>
@@ -27,12 +27,12 @@ BusInterfaceWizardGeneralOptionsPage::BusInterfaceWizardGeneralOptionsPage(QShar
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
     QSharedPointer<ExpressionParser> ExpressionParser, BusInterfaceWizard* parent) : 
 QWizardPage(parent),
-component_(component),
-busIf_(busIf),
-handler_(lh),
-newBus_(true),
-generalTab_(new BusIfGeneralTab(lh, busIf, component, parameterFinder, expressionFormatter, ExpressionParser,
-                                this, parent))
+    component_(component),
+    busIf_(busIf),
+    handler_(lh),
+    newBus_(true),
+    generalTab_(new BusIfGeneralTab(lh, busIf, component, parameterFinder, expressionFormatter, ExpressionParser,
+    this, parent))
 {
     setTitle(tr("Bus interface general options"));
     setSubTitle(tr("Setup the general options for bus interface."));
@@ -83,7 +83,7 @@ bool BusInterfaceWizardGeneralOptionsPage::validatePage()
    if (component_->hasInterface(busIf_->name()) && 
         component_->getBusInterface(busIf_->name()) != busIf_)
     {
-        errors.append(tr("Component %1 already has interface named %2.").arg(component_->getVlnv()->toString(), 
+        errors.append(tr("Component %1 already has interface named %2.").arg(component_->getVlnv().toString(), 
             busIf_->name()));
         valid = false;
     }    
