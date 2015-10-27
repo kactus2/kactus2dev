@@ -10,13 +10,13 @@
 //-----------------------------------------------------------------------------
 
 #include "ApiDefinition.h"
-
 #include "ApiFunction.h"
+#include "GenericVendorExtension.h"
 
 //-----------------------------------------------------------------------------
 // Function: ApiDefinition::ApiDefinition()
 //-----------------------------------------------------------------------------
-ApiDefinition::ApiDefinition(VLNV const& vlnv) : LibraryComponent(vlnv),
+ApiDefinition::ApiDefinition(VLNV const& vlnv) : Document(vlnv),
                                                  language_(),
                                                  comDefRef_(),
                                                  dataTypes_(),
@@ -28,7 +28,7 @@ ApiDefinition::ApiDefinition(VLNV const& vlnv) : LibraryComponent(vlnv),
 //-----------------------------------------------------------------------------
 // Function: ApiDefinition::ApiDefinition()
 //-----------------------------------------------------------------------------
-ApiDefinition::ApiDefinition(ApiDefinition const& rhs) : LibraryComponent(rhs),
+ApiDefinition::ApiDefinition(ApiDefinition const& rhs) : Document(rhs),
                                                          language_(rhs.language_),
                                                          comDefRef_(rhs.comDefRef_),
                                                          dataTypes_(rhs.dataTypes_),
@@ -44,32 +44,39 @@ ApiDefinition::ApiDefinition(ApiDefinition const& rhs) : LibraryComponent(rhs),
 // Function: ApiDefinition::ApiDefinition()
 //-----------------------------------------------------------------------------
 ApiDefinition::ApiDefinition(QDomDocument& doc)
-    : LibraryComponent(doc),
+    : Document(),
       language_(),
       comDefRef_(),
       dataTypes_(),
       functions_()
 {
-    LibraryComponent::vlnv_->setType(VLNV::APIDEFINITION);
+	QString vendor = doc.firstChildElement("ipxact:vendor").firstChild().nodeValue();
+	QString library = doc.firstChildElement("ipxact:library").firstChild().nodeValue();
+	QString name = doc.firstChildElement("ipxact:name").firstChild().nodeValue();
+	QString version = doc.firstChildElement("ipxact:version").firstChild().nodeValue();
 
-    // Find the IP-Xact root element.
-    QDomNodeList nodeList = doc.childNodes();
+	VLNV itemVLNV;
+	itemVLNV.setType(VLNV::APIDEFINITION);
+	itemVLNV.setVendor(vendor);
+	itemVLNV.setLibrary(library);
+	itemVLNV.setName(name);
+	itemVLNV.setVersion(version);
 
-    int i = 0;
+	QDomNodeList extensionNodes = doc.firstChildElement("ipxact:vendorExtensions").childNodes();
 
-    while (!nodeList.at(i).hasChildNodes())
-    {
-		// if the node is for a header comment
-		if (nodeList.at(i).isComment())
-        {
-            QStringList comments = getTopComments();
-            comments.append(nodeList.at(i).nodeValue());
-            setTopComments(comments);
+	int extensionCount = extensionNodes.count();
+	for (int i = 0; i < extensionCount; i++)
+	{
+		QDomNode extensionNode = extensionNodes.at(i);
+
+		if (!extensionNode.nodeName().startsWith("kactus2:"))
+		{
+			QSharedPointer<VendorExtension> extension(new GenericVendorExtension(extensionNode));
+			getVendorExtensions()->append(extension);
 		}
-        ++i;
-    }
+	}
 
-    QDomNode apiNode = doc.childNodes().item(i);
+    QDomNode apiNode = doc.childNodes().item(0);
 
     // Parse child nodes.
     for (int i = 0; i < apiNode.childNodes().count(); ++i)
@@ -81,7 +88,11 @@ ApiDefinition::ApiDefinition(QDomDocument& doc)
             continue;
         }
 
-        if (childNode.nodeName() == "kactus2:language")
+		if (childNode.nodeName() ==QString("ipxact:description"))
+		{
+			setDescription( childNode.childNodes().at(0).nodeValue() );
+		}
+        else if (childNode.nodeName() == "kactus2:language")
         {
             language_ = childNode.childNodes().at(0).nodeValue();
         }
@@ -119,21 +130,24 @@ QSharedPointer<Document> ApiDefinition::clone() const
 //-----------------------------------------------------------------------------
 // Function: ApiDefinition::write()
 //-----------------------------------------------------------------------------
-void ApiDefinition::write(QFile& file)
+void ApiDefinition::write(QXmlStreamWriter& writer)
 {
-    QXmlStreamWriter writer(&file);
-
     // Set the writer to use auto formatting for a clearer output.
     writer.setAutoFormatting(true);
     writer.setAutoFormattingIndent(-1);
 
-    // Write basic information.
-    LibraryComponent::write(writer);
-    LibraryComponent::writeVLNV(writer);
+	// write the element that specifies the type of the document.
+	writer.writeStartElement(getVlnv().getTypestr());
 
-    if (!LibraryComponent::description_.isEmpty())
+	// Write basic information.
+	writer.writeTextElement("ipxact:vendor", getVlnv().getVendor());
+	writer.writeTextElement("ipxact:library", getVlnv().getLibrary());
+	writer.writeTextElement("ipxact:name", getVlnv().getName());
+	writer.writeTextElement("ipxact:version", getVlnv().getVersion());
+
+    if (!Document::getDescription().isEmpty())
     {
-        writer.writeTextElement("spirit:description", description_);
+        writer.writeTextElement("ipxact:description", Document::getDescription());
     }
 
     // Write COM definition reference.
@@ -161,12 +175,15 @@ void ApiDefinition::write(QFile& file)
 
     writer.writeEndElement(); // kactus2:functions
 
-    if (!vendorExtensions_.isEmpty())
-    {
-        writer.writeStartElement("spirit:vendorExtensions");
-        writeVendorExtensions(writer);
-        writer.writeEndElement(); // spirit:vendorExtensions
-    }
+	if (getVendorExtensions()->isEmpty())
+	{
+		writer.writeStartElement("ipxact:vendorExtensions");
+		foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+		{
+			extension->write(writer);
+		}
+		writer.writeEndElement(); // ipxact:vendorExtensions
+	}
 
     writer.writeEndElement(); // kactus2:apiDefinition
     writer.writeEndDocument();
@@ -180,18 +197,13 @@ bool ApiDefinition::isValid(QStringList& errorList) const
     QString thisIdentifier(QObject::tr("the containing API definition"));
     bool valid = true;
 
-    if (!vlnv_)
-    {
-        errorList.append(QObject::tr("No vlnv specified for the API definition."));
-        valid = false;
-    }
-    else if (!vlnv_->isValid(errorList, thisIdentifier))
+    if (!getVlnv().isValid(errorList, thisIdentifier))
     {
         valid = false;
     }
     else
     {
-        thisIdentifier = QObject::tr("API definition '%1'").arg(vlnv_->toString());
+        thisIdentifier = QObject::tr("API definition '%1'").arg(getVlnv().toString());
     }
 
     // Check that the COM definition reference is valid.
@@ -247,7 +259,7 @@ bool ApiDefinition::isValid(QStringList& errorList) const
 //-----------------------------------------------------------------------------
 bool ApiDefinition::isValid() const
 {
-    if (!vlnv_ || !vlnv_->isValid())
+    if ( !getVlnv().isValid() )
     {
         return false;
     }

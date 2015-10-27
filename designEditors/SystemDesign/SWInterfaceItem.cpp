@@ -26,12 +26,12 @@
 #include <designEditors/common/diagramgrid.h>
 #include <designEditors/common/DesignDiagram.h>
 
-#include <IPXACTmodels/ApiInterface.h>
-#include <IPXACTmodels/ComInterface.h>
+#include <IPXACTmodels/kactusExtensions/ApiInterface.h>
+#include <IPXACTmodels/kactusExtensions/ComInterface.h>
 #include <IPXACTmodels/component.h>
-#include <IPXACTmodels/ApiDefinition.h>
-#include <IPXACTmodels/ApiFunction.h>
-#include <IPXACTmodels/ComDefinition.h>
+#include <IPXACTmodels/kactusExtensions/ApiDefinition.h>
+#include <IPXACTmodels/kactusExtensions/ApiFunction.h>
+#include <IPXACTmodels/kactusExtensions/ComDefinition.h>
 
 #include <QBrush>
 #include <QPen>

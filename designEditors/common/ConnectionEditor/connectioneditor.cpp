@@ -25,7 +25,7 @@
 #include <IPXACTmodels/Component/PortMap.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
-#include <IPXACTmodels/ApiInterface.h>
+#include <IPXACTmodels/kactusExtensions/ApiInterface.h>
 #include <IPXACTmodels/ComInterface.h>
 
 #include <IPXACTmodels/common/Vector.h>

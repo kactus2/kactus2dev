@@ -7,7 +7,7 @@
 
 #include "apiinterfacesmodel.h"
 #include "apiinterfacesdelegate.h"
-#include <IPXACTmodels/ApiInterface.h>
+#include <IPXACTmodels/kactusExtensions/ApiInterface.h>
 #include <IPXACTmodels/vlnv.h>
 
 #include <QColor>

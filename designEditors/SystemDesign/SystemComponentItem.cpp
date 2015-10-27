@@ -17,10 +17,10 @@
 #include <common/graphicsItems/GraphicsConnection.h>
 #include <common/layouts/VCollisionLayout.h>
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/ComInterface.h>
-#include <IPXACTmodels/ApiInterface.h>
-#include <IPXACTmodels/ComProperty.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/kactusExtensions/ComInterface.h>
+#include <IPXACTmodels/kactusExtensions/ApiInterface.h>
+#include <IPXACTmodels/kactusExtensions/ComProperty.h>
 
 //-----------------------------------------------------------------------------
 // Function: SystemComponentItem()

@@ -12,8 +12,8 @@
 #ifndef HWCHANGECOMMANDS_H
 #define HWCHANGECOMMANDS_H
 
-#include <IPXACTmodels/ApiInterface.h>
-#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/kactusExtensions/ApiInterface.h>
+#include <IPXACTmodels/common/DirectionTypes.h>
 #include <IPXACTmodels/Component/PortMap.h>
 
 #include <QUndoCommand>
@@ -560,7 +560,7 @@ public:
      *      @param [in] newDir    The endpoint's new COM direction.
      *      @param [in] parent    The parent command.
      */
-    EndpointComDirectionChangeCommand(ConnectionEndpoint* endpoint, General::Direction newDir,
+    EndpointComDirectionChangeCommand(ConnectionEndpoint* endpoint, DirectionTypes::Direction newDir,
                                       QUndoCommand* parent = 0);
 
     /*!
@@ -591,10 +591,10 @@ private:
     ConnectionEndpoint* endpoint_;
 
     //! The endpoint's old COM direction.
-    General::Direction oldDir_;
+    DirectionTypes::Direction oldDir_;
 
     //! The endpoint's new COM direction.
-    General::Direction newDir_;
+    DirectionTypes::Direction newDir_;
 };
 
 //-----------------------------------------------------------------------------

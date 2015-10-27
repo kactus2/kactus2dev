@@ -478,7 +478,7 @@ bool ComponentDesignDiagram::draftSelected() const
 {
     return !selectedItems().empty() && 
         selectedItems().first()->type() == componentType() &&
-        !dynamic_cast<ComponentItem*>(selectedItems().first())->componentModel()->getVlnv()->isValid();
+        !dynamic_cast<ComponentItem*>(selectedItems().first())->componentModel()->getVlnv().isValid();
 }
 
 //-----------------------------------------------------------------------------

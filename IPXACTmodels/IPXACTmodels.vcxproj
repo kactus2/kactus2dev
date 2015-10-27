@@ -142,14 +142,10 @@
     <ClCompile Include="AbstractionDefinition\WireAbstractionReader.cpp" />
     <ClCompile Include="AbstractionDefinition\WireAbstractionWriter.cpp" />
     <ClCompile Include="AbstractionDefinition\WirePort.cpp" />
-    <ClCompile Include="ApiDefinition.cpp" />
-    <ClCompile Include="ApiFunction.cpp" />
-    <ClCompile Include="ApiFunctionParameter.cpp" />
     <ClCompile Include="bspbuildcommand.cpp" />
     <ClCompile Include="BusDefinition\BusDefinition.cpp" />
     <ClCompile Include="BusDefinition\BusDefinitionReader.cpp" />
     <ClCompile Include="BusDefinition\BusDefinitionWriter.cpp" />
-    <ClCompile Include="ComDefinition.cpp" />
     <ClCompile Include="common\Array.cpp" />
     <ClCompile Include="common\Assertion.cpp" />
     <ClCompile Include="common\BooleanValue.cpp" />
@@ -853,9 +849,13 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GenericVendorExtension.cpp" />
+    <ClCompile Include="kactusExtensions\ApiDefinition.cpp" />
+    <ClCompile Include="kactusExtensions\ApiFunction.cpp" />
+    <ClCompile Include="kactusExtensions\ApiFunctionParameter.cpp" />
     <ClCompile Include="kactusExtensions\ApiInterconnection.cpp" />
     <ClCompile Include="kactusExtensions\ApiInterface.cpp" />
     <ClCompile Include="kactusExtensions\ColumnDesc.cpp" />
+    <ClCompile Include="kactusExtensions\ComDefinition.cpp" />
     <ClCompile Include="kactusExtensions\ComInterconnection.cpp" />
     <ClCompile Include="kactusExtensions\ComInterface.cpp" />
     <ClCompile Include="kactusExtensions\ComProperty.cpp" />
@@ -980,12 +980,8 @@
     </CustomBuild>
     <ClInclude Include="AbstractionDefinition\WireAbstractionWriter.h" />
     <ClInclude Include="AbstractionDefinition\WirePort.h" />
-    <ClInclude Include="ApiDefinition.h" />
-    <ClInclude Include="ApiFunction.h" />
-    <ClInclude Include="ApiFunctionParameter.h" />
     <ClInclude Include="bspbuildcommand.h" />
     <ClInclude Include="buildcommand.h" />
-    <ClInclude Include="ComDefinition.h" />
     <ClInclude Include="common\Array.h" />
     <ClInclude Include="common\Assertion.h" />
     <ClInclude Include="common\BooleanValue.h" />
@@ -2024,9 +2020,13 @@
     <ClInclude Include="Component\Wire.h" />
     <ClInclude Include="Component\WireTypeDef.h" />
     <ClInclude Include="Component\WriteValueConstraint.h" />
+    <ClInclude Include="kactusExtensions\ApiDefinition.h" />
+    <ClInclude Include="kactusExtensions\ApiFunction.h" />
+    <ClInclude Include="kactusExtensions\ApiFunctionParameter.h" />
     <ClInclude Include="kactusExtensions\ApiInterconnection.h" />
     <ClInclude Include="kactusExtensions\ApiInterface.h" />
     <ClInclude Include="kactusExtensions\ColumnDesc.h" />
+    <ClInclude Include="kactusExtensions\ComDefinition.h" />
     <ClInclude Include="kactusExtensions\ComInterconnection.h" />
     <ClInclude Include="kactusExtensions\ComInterface.h" />
     <ClInclude Include="kactusExtensions\ComProperty.h" />

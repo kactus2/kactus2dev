@@ -9,7 +9,7 @@
 
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/librarycomponent.h>
-#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/common/DirectionTypes.h>
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/modelparameter.h>
 #include <IPXACTmodels/port.h>
@@ -766,7 +766,7 @@ void DocumentGenerator::writeInterfaces(QTextStream& stream, int& subHeaderNumbe
 
 			// write the interface mode of the interface
 			stream << "\t\t\t" << INDENT << "<strong>Interface mode:</strong> " << 
-				General::interfaceMode2Str(interface->getInterfaceMode()) << "<br>" << endl;
+				General::InterfaceMode2Str(interface->getInterfaceMode()) << "<br>" << endl;
 
 			stream << "\t\t\t" << INDENT << "<strong>Ports used in this interface:</strong>" << endl;
 
@@ -1180,7 +1180,7 @@ void DocumentGenerator::writePortTable(QTextStream& stream, QString const& title
         stream << "\t\t\t\t\t<td><a id=\"" << 
             component_->getVlnv()->toString() << ".port." << port->name() << 
             "\">" <<  port->name() << "</a></td>" << endl;
-        stream << "\t\t\t\t\t<td>" << General::direction2Str(port->getDirection()) << "</td>" << endl;
+        stream << "\t\t\t\t\t<td>" << DirectionTypes::Direction2Str(port->getDirection()) << "</td>" << endl;
         stream << "\t\t\t\t\t<td>" << port->getPortSize() << "</td>" << endl;
         stream << "\t\t\t\t\t<td>" << expressionFormatter_->formatReferringExpression(
             port->getLeftBoundExpression()) << "</td>" << endl;

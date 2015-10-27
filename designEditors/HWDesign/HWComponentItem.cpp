@@ -22,7 +22,7 @@
 #include <designEditors/common/diagramgrid.h>
 #include <designEditors/HWDesign/AdHocEditor/AdHocEditor.h>
 
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/model.h>
 #include <IPXACTmodels/modelparameter.h>
@@ -448,7 +448,7 @@ BusPortItem* HWComponentItem::addPort(QPointF const& pos)
     // Create an empty bus interface and add it to the component model.
     QSharedPointer<BusInterface> busIf(new BusInterface());
     busIf->setName(name);
-    busIf->setInterfaceMode(General::INTERFACE_MODE_COUNT);
+    busIf->setInterfaceMode(DirectionTypes::INTERFACE_MODE_COUNT);
     componentModel()->addBusInterface(busIf);
 
     // Create the visualization for the bus interface.

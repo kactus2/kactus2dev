@@ -15,7 +15,7 @@
 #include "physlistview.h"
 
 #include <IPXACTmodels/vlnv.h>
-#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/common/DirectionTypes.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/Port.h>

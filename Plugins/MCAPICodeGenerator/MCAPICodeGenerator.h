@@ -12,7 +12,7 @@
 #ifndef MCAPICODEGENERATOR_H
 #define MCAPICODEGENERATOR_H
 
-#include <IPXACTmodels/ComDefinition.h>
+#include <IPXACTmodels/kactusExtensions/ComDefinition.h>
 #include <IPXACTmodels/kactusExtensions/ComInterface.h>
 #include <Plugins/PluginSystem/IPluginUtility.h>
 

@@ -15,8 +15,8 @@
 
 #include <mainwindow/mainwindow.h>
 
-#include <IPXACTmodels/ComInterface.h>
-#include <IPXACTmodels/ComDefinition.h>
+#include <IPXACTmodels/kactusExtensions/ComInterface.h>
+#include <IPXACTmodels/kactusExtensions/ComDefinition.h>
 
 #include <IPXACTmodels/common/DirectionTypes.h>
 

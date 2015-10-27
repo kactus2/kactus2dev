@@ -87,9 +87,9 @@
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 #include <IPXACTmodels/fileset.h>
 #include <IPXACTmodels/file.h>
-#include <IPXACTmodels/ComDefinition.h>
-#include <IPXACTmodels/ApiDefinition.h>
-#include <IPXACTmodels/ApiInterface.h>
+#include <IPXACTmodels/kactusExtensions/ComDefinition.h>
+#include <IPXACTmodels/kactusExtensions/ApiDefinition.h>
+#include <IPXACTmodels/kactusExtensions/ApiInterface.h>
 #include <IPXACTmodels/SWView.h>
 #include <IPXACTmodels/SystemView.h>
 

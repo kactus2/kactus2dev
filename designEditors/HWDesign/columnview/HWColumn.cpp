@@ -27,7 +27,7 @@
 #include <designEditors/common/DesignDiagram.h>
 #include <designEditors/common/diagramgrid.h>
 #include <designEditors/common/DiagramUtil.h>
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
 
 //-----------------------------------------------------------------------------
 // Function: HWColumn()
@@ -62,7 +62,7 @@ bool HWColumn::isItemAllowed(QGraphicsItem* item, unsigned int allowedItems) con
             QSharedPointer<Component> comp = qgraphicsitem_cast<HWComponentItem*>(item)->componentModel();
 
             // Check if this is a packaged component (and has a strict type).
-            if (comp->getVlnv()->isValid())
+            if (comp->getVlnv().isValid())
             {
                 return ((comp->isBridge() && (allowedItems & CIT_BRIDGE)) ||
                     (comp->isChannel() && (allowedItems & CIT_CHANNEL)) ||

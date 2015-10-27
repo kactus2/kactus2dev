@@ -18,9 +18,9 @@
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <IPXACTmodels/component.h>
-#include <IPXACTmodels/ApiDefinition.h>
-#include <IPXACTmodels/ApiInterface.h>
-#include <IPXACTmodels/ComDefinition.h>
+#include <IPXACTmodels/kactusExtensions/ApiDefinition.h>
+#include <IPXACTmodels/kactusExtensions/ApiInterface.h>
+#include <IPXACTmodels/kactusExtensions/ComDefinition.h>
 
 #include <common/TextEditProvider.h>
 

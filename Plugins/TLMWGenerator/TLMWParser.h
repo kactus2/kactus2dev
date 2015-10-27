@@ -16,7 +16,7 @@
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 #include <IPXACTmodels/kactusExtensions/SWInstance.h>
-#include <IPXACTmodels/ComDefinition.h>
+#include <IPXACTmodels/kactusExtensions/ComDefinition.h>
 #include <IPXACTmodels/Component/Component.h>
 
 //-----------------------------------------------------------------------------

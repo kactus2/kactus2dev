@@ -7,12 +7,9 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./ApiDefinition.h \
-    ./ApiFunction.h \
-    ./ApiFunctionParameter.h \
-    ./bspbuildcommand.h \
+HEADERS += ./bspbuildcommand.h \
     ./buildcommand.h \
-    ./ComDefinition.h \
+    ./kactusExtensions/ComDefinition.h \
     ./VendorExtension.h \
     ./vlnv.h \
     ./writevalueconstraint.h \
@@ -25,7 +22,22 @@ HEADERS += ./ApiDefinition.h \
     ./Component/MirroredSlaveInterface.h \
     ./Component/PortMap.h \
     ./Component/SlaveInterface.h \
+    ./masterinterface.h \
+    ./memoryblockdata.h \
+    ./memorymapitem.h \
+    ./mirroredslaveinterface.h \
+    ./modelparameter.h \
+    ./PortMap.h \
+    ./PortRef.h \
+    ./registermodel.h \
+    ./reset.h \
+    ./servicetypedef.h \
+    ./slaveinterface.h \
+    ./subspacemap.h \
     ./swbuildcommand.h \
+    ./kactusExtensions/ApiDefinition.h \
+    ./kactusExtensions/ApiFunction.h \
+    ./kactusExtensions/ApiFunctionParameter.h \
     ./kactusExtensions/ApiInterconnection.h \
     ./kactusExtensions/ApiInterface.h \
     ./kactusExtensions/ColumnDesc.h \
@@ -202,11 +214,7 @@ HEADERS += ./ApiDefinition.h \
     ./Component/RemapStateWriter.h \
     ./Component/ViewReader.h \
     ./Component/ViewWriter.h
-SOURCES += ./ApiDefinition.cpp \
-    ./ApiFunction.cpp \
-    ./ApiFunctionParameter.cpp \
-    ./bspbuildcommand.cpp \
-    ./ComDefinition.cpp \
+SOURCES += ./bspbuildcommand.cpp \
     ./generaldeclarations.cpp \
     ./GenericVendorExtension.cpp \
     ./librarycomponent.cpp \
@@ -216,6 +224,9 @@ SOURCES += ./ApiDefinition.cpp \
     ./swbuildcommand.cpp \
     ./vlnv.cpp \
     ./XmlUtils.cpp \
+    ./kactusExtensions/ApiDefinition.cpp \
+    ./kactusExtensions/ApiFunction.cpp \
+    ./kactusExtensions/ApiFunctionParameter.cpp \
     ./kactusExtensions/ApiInterconnection.cpp \
     ./kactusExtensions/ApiInterface.cpp \
     ./kactusExtensions/ColumnDesc.cpp \
@@ -393,3 +404,4 @@ SOURCES += ./ApiDefinition.cpp \
     ./Component/WireTypeDef.cpp \
     ./Component/WriteValueConstraint.cpp \
     ./Component/MasterInterface.cpp
+    ./kactusExtensions/ComDefinition.cpp

@@ -12,7 +12,7 @@
 #ifndef HWADDCOMMANDS_H
 #define HWADDCOMMANDS_H
 
-#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/common/DirectionTypes.h>
 #include <IPXACTmodels/Component/PortMap.h>
 
 #include <QUndoCommand>

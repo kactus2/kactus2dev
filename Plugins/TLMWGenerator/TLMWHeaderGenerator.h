@@ -12,7 +12,7 @@
 #ifndef TLMWHeaderGenerator_H
 #define TLMWHeaderGenerator_H
 
-#include <IPXACTmodels/ComDefinition.h>
+#include <IPXACTmodels/kactusExtensions/ComDefinition.h>
 #include <Plugins/PluginSystem/IPluginUtility.h>
 #include <Plugins/common/CSourceWriter.h>
 

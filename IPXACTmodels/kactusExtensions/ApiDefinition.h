@@ -12,7 +12,7 @@
 #ifndef APIDEFINITION_H
 #define APIDEFINITION_H
 
-#include "librarycomponent.h"
+#include <IPXACTmodels/common/Document.h>
 #include "ApiFunction.h"
 
 #include "ipxactmodels_global.h"
@@ -25,7 +25,7 @@ class VLNV;
 //-----------------------------------------------------------------------------
 //! Communication definition class.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT ApiDefinition : public LibraryComponent
+class IPXACTMODELS_EXPORT ApiDefinition : public Document
 {
 public:
     /*!
@@ -66,7 +66,7 @@ public:
      *
      *      @param [in] file The file handle.
      */
-    virtual void write(QFile& file);
+    virtual void write(QXmlStreamWriter& writer);
 
     /*!
      *  Returns true if the contents are valid.

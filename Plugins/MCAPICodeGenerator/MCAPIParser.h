@@ -12,7 +12,7 @@
 #ifndef MCAPIParser_H
 #define MCAPIParser_H
 
-#include <IPXACTmodels/ComDefinition.h>
+#include <IPXACTmodels/kactusExtensions/ComDefinition.h>
 #include <IPXACTmodels/Component/Component.h>
 
 #include <IPXACTmodels/Design/Design.h>

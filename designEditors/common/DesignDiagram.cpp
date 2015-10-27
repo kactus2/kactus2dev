@@ -27,7 +27,7 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/GenericVendorExtension.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Group.h>
@@ -301,7 +301,7 @@ void DesignDiagram::onItemModified(QUndoCommand* undoCommand)
 //-----------------------------------------------------------------------------
 QString DesignDiagram::createInstanceName(QSharedPointer<Component> component)
 {
-    QString instanceName = component->getVlnv()->getName();
+    QString instanceName = component->getVlnv().getName();
     instanceName.remove(QString(".comp"));
     return createInstanceName(instanceName);
 }

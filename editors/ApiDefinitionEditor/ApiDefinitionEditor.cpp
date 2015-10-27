@@ -11,7 +11,7 @@
 
 #include "ApiDefinitionEditor.h"
 
-#include <IPXACTmodels/ComDefinition.h>
+#include <IPXACTmodels/kactusExtensions/ComDefinition.h>
 
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 

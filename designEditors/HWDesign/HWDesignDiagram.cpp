@@ -42,11 +42,11 @@
 
 #include <IPXACTmodels/common/PartSelect.h>
 
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>
-#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/common/DirectionTypes.h>
 #include <IPXACTmodels/model.h>
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
@@ -2161,7 +2161,7 @@ void HWDesignDiagram::pasteInterfaces(BusInterfaceCollectionCopyData const& coll
         port->setPos(snapPointToGrid(component->mapFromScene(contextMenuPosition())));
         
         // Lock the interface type for non-draft interfaces.
-        if (copyBusIf->getInterfaceMode() != General::INTERFACE_MODE_COUNT)
+        if (copyBusIf->getInterfaceMode() != DirectionTypes::INTERFACE_MODE_COUNT)
         {
             port->setTypeLocked(true);
         }
@@ -2242,7 +2242,7 @@ void HWDesignDiagram::pasteInterfaces(BusInterfaceCollectionCopyData const& coll
             // If interface is copied from an component instance to top-level, ask user for the port names in 
             // top-level.
             BusInterfacePasteCommand* pasteCmd = 0;            
-            if (!instance.topLevelIf && instance.busInterface->getInterfaceMode() != General::INTERFACE_MODE_COUNT)
+            if (!instance.topLevelIf && instance.busInterface->getInterfaceMode() != DirectionTypes::INTERFACE_MODE_COUNT)
             {
                 BusInterfaceDialog dialog(false, getParent());
                 dialog.addMode(instance.busInterface->getInterfaceMode());

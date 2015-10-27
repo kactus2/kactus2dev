@@ -12,7 +12,7 @@
 #include "ApiInterfaceEditor.h"
 
 #include <library/LibraryManager/libraryinterface.h>
-#include <IPXACTmodels/ApiInterface.h>
+#include <IPXACTmodels/kactusExtensions/ApiInterface.h>
 #include <mainwindow/mainwindow.h>
 
 #include <QScrollArea>

@@ -11,7 +11,7 @@
 
 #include "AdHocEnabled.h"
 
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
 
 //-----------------------------------------------------------------------------
 // Function: AdHocEnabled::AdHocEnabled()

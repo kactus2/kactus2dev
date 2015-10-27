@@ -11,8 +11,8 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
-#include <IPXACTmodels/ApiDefinition.h>
-#include <IPXACTmodels/ComDefinition.h>
+#include <IPXACTmodels/kactusExtensions/ApiDefinition.h>
+#include <IPXACTmodels/kactusExtensions/ComDefinition.h>
 #include <IPXACTmodels/Design/Design.h>
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>

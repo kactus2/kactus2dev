@@ -218,19 +218,7 @@
     <ClCompile Include="common\Extendable.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
-    <ClCompile Include="ApiDefinition.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ApiFunction.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ApiFunctionParameter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="bspbuildcommand.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ComDefinition.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="generaldeclarations.cpp">
@@ -1079,6 +1067,18 @@
     <ClCompile Include="Component\SlaveInterface.cpp">
       <Filter>Source Files\Component</Filter>
     </ClCompile>
+    <ClCompile Include="kactusExtensions\ApiDefinition.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusExtensions\ApiFunction.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusExtensions\ApiFunctionParameter.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusExtensions\ComDefinition.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BusDefinition\BusDefinition.h">
@@ -1132,22 +1132,10 @@
     <ClInclude Include="common\Extendable.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
-    <ClInclude Include="ApiDefinition.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ApiFunction.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ApiFunctionParameter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="bspbuildcommand.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="buildcommand.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ComDefinition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="generaldeclarations.h">
@@ -1458,6 +1446,18 @@
     </ClInclude>
     <ClInclude Include="Component\SlaveInterface.h">
       <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusExtensions\ApiDefinition.h">
+      <Filter>Header Files\kactusExtensions</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusExtensions\ApiFunction.h">
+      <Filter>Header Files\kactusExtensions</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusExtensions\ApiFunctionParameter.h">
+      <Filter>Header Files\kactusExtensions</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusExtensions\ComDefinition.h">
+      <Filter>Header Files\kactusExtensions</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

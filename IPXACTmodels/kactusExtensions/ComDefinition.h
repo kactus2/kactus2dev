@@ -13,21 +13,15 @@
 #ifndef COMDEFINITION_H
 #define COMDEFINITION_H
 
-#include "librarycomponent.h"
+#include <IPXACTmodels/common/Document.h>
 #include <IPXACTmodels/kactusExtensions/ComProperty.h>
 
-#include "ipxactmodels_global.h"
-
-#include <QStringList>
-#include <QList>
-#include <QDomDocument>
-
-class VLNV;
+#include <IPXACTmodels/ipxactmodels_global.h>
 
 //-----------------------------------------------------------------------------
 //! Communication definition class.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT ComDefinition : public LibraryComponent
+class IPXACTMODELS_EXPORT ComDefinition : public Document
 {
 public:
     /*!
@@ -68,7 +62,7 @@ public:
      *
      *      @param [in] file The file handle.
      */
-    virtual void write(QFile& file);
+    virtual void write(QXmlStreamWriter& writer);
 
     /*!
      *  Returns true if the communication definition is valid.

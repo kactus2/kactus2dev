@@ -19,7 +19,7 @@
 
 #include <IPXACTmodels/Component/Component.h>
 
-#include <IPXACTmodels/ComDefinition.h>
+#include <IPXACTmodels/kactusExtensions/ComDefinition.h>
 #include <IPXACTmodels/vlnv.h>
 
 #include <QColor>

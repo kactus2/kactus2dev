@@ -11,8 +11,8 @@
 
 #include "ApiFunctionModel.h"
 
-#include <IPXACTmodels/ApiFunction.h>
-#include <IPXACTmodels/ApiDefinition.h>
+#include <IPXACTmodels/kactusExtensions/ApiFunction.h>
+#include <IPXACTmodels/kactusExtensions/ApiDefinition.h>
 
 #include <QVariant>
 #include <QColor>

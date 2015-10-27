@@ -11,8 +11,8 @@
 
 #include "SWOffPageConnectorItem.h"
 
-#include <IPXACTmodels/ComInterface.h>
-#include <IPXACTmodels/ApiInterface.h>
+#include <IPXACTmodels/kactusExtensions/ComInterface.h>
+#include <IPXACTmodels/kactusExtensions/ApiInterface.h>
 
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/GraphicsConnection.h>

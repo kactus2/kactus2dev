@@ -22,7 +22,7 @@
 #include <common/GenericEditProvider.h>
 #include <designEditors/common/DesignDiagram.h>
 
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
 
 #include <QLinearGradient>
 #include <QPen>

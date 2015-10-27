@@ -12,7 +12,7 @@
 #ifndef HWDELETECOMMANDS_H
 #define HWDELETECOMMANDS_H
 
-#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/common/DirectionTypes.h>
 #include <IPXACTmodels/Component/PortMap.h>
 #include <IPXACTmodels/vlnv.h>
 

@@ -13,8 +13,8 @@
 
 #include "ApiFunctionParameterDelegate.h"
 
-#include <IPXACTmodels/ApiFunction.h>
-#include <IPXACTmodels/ApiFunctionParameter.h>
+#include <IPXACTmodels/kactusExtensions/ApiFunction.h>
+#include <IPXACTmodels/kactusExtensions/ApiFunctionParameter.h>
 
 //-----------------------------------------------------------------------------
 // Function: ApiFunctionParameterModel::ApiFunctionParameterModel()

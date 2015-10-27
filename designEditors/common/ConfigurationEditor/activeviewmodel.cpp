@@ -13,7 +13,7 @@
 #include <designEditors/SystemDesign/SWComponentItem.h>
 #include <designEditors/HWDesign/HWChangeCommands.h>
 
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
 
 ActiveViewModel::ActiveViewModel(QObject *parent):
 QAbstractTableModel(parent),

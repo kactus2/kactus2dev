@@ -11,8 +11,8 @@
 
 #include "ApiFunctionParameterDelegate.h"
 
-#include <IPXACTmodels/ComDefinition.h>
-#include <IPXACTmodels/ComProperty.h>
+#include <IPXACTmodels/kactusExtensions/ComDefinition.h>
+#include <IPXACTmodels/kactusExtensions/ComProperty.h>
 
 #include <QComboBox>
 #include <QLineEdit>

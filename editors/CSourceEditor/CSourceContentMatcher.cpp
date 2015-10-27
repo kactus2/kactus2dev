@@ -14,11 +14,11 @@
 #include <algorithm>
 #include <QTextCursor>
 
-#include <IPXACTmodels/ApiDefinition.h>
-#include <IPXACTmodels/ApiFunction.h>
-#include <IPXACTmodels/ApiFunctionParameter.h>
-#include <IPXACTmodels/ComDefinition.h>
-#include <IPXACTmodels/ComInterface.h>
+#include <IPXACTmodels/kactusExtensions/ApiDefinition.h>
+#include <IPXACTmodels/kactusExtensions/ApiFunction.h>
+#include <IPXACTmodels/kactusExtensions/ApiFunctionParameter.h>
+#include <IPXACTmodels/kactusExtensions/ComDefinition.h>
+#include <IPXACTmodels/kactusExtensions/ComInterface.h>
 #include <IPXACTmodels/component.h>
 
 #include <common/widgets/assistedTextEdit/TextContentAssistWidget.h>

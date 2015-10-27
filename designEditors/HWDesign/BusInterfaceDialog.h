@@ -12,7 +12,7 @@
 #ifndef SELECTINTERFACEMODEDIALOG_H
 #define SELECTINTERFACEMODEDIALOG_H
 
-#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/common/DirectionTypes.h>
 #include <IPXACTmodels/Component/PortMap.h>
 
 #include <QDialog>

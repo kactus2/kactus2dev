@@ -24,12 +24,12 @@
 #include <designEditors/common/NamelabelWidth.h>
 #include <common/KactusColors.h>
 
-#include <IPXACTmodels/ApiInterface.h>
-#include <IPXACTmodels/ComInterface.h>
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/ApiDefinition.h>
-#include <IPXACTmodels/ApiFunction.h>
-#include <IPXACTmodels/ComDefinition.h>
+#include <IPXACTmodels/kactusExtensions/ApiInterface.h>
+#include <IPXACTmodels/kactusExtensions/ComInterface.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/kactusExtensions/ApiDefinition.h>
+#include <IPXACTmodels/kactusExtensions/ApiFunction.h>
+#include <IPXACTmodels/kactusExtensions/ComDefinition.h>
 
 #include <QBrush>
 #include <QPainter>
@@ -224,7 +224,7 @@ void SWPortItem::updateInterface()
     {
         switch (comInterface_->getDirection())
         {
-        case General::IN:
+        case DirectionTypes::IN:
             {
                 /*  ||
                  *  \/
@@ -237,7 +237,7 @@ void SWPortItem::updateInterface()
                 break;
             }
 
-        case General::OUT:
+        case DirectionTypes::OUT:
             {
                 /*  /\
                  *  ||
@@ -250,7 +250,7 @@ void SWPortItem::updateInterface()
                 break;
             }
 
-        case General::INOUT:
+        case DirectionTypes::INOUT:
         default:
             {
                 /*  /\
@@ -345,21 +345,21 @@ bool SWPortItem::onConnect(ConnectionEndpoint const* other)
             {
                 switch (other->getComInterface()->getDirection())
                 {
-                case General::IN:
+                case DirectionTypes::IN:
                     {
-                        comInterface_->setDirection(General::OUT);
+                        comInterface_->setDirection(DirectionTypes::OUT);
                         break;
                     }
                     
-                case General::OUT:
+                case DirectionTypes::OUT:
                     {
-                        comInterface_->setDirection(General::IN);
+                        comInterface_->setDirection(DirectionTypes::IN);
                         break;
                     }
 
-                case General::INOUT:
+                case DirectionTypes::INOUT:
                     {
-                        comInterface_->setDirection(General::INOUT);
+                        comInterface_->setDirection(DirectionTypes::INOUT);
                         break;
                     }
 
@@ -460,8 +460,8 @@ bool SWPortItem::isConnectionValid(ConnectionEndpoint const* other) const
             // If the other one is a hierarchical, then the direction must be the same.
             // Otherwise they must be just compatible (in <-> out or any <-> inout).
             return ((other->isHierarchical() && comIf1->getDirection() == comIf2->getDirection()) ||
-                    (!other->isHierarchical() && (comIf1->getDirection() == General::INOUT ||
-                                                  comIf2->getDirection() == General::INOUT ||
+                    (!other->isHierarchical() && (comIf1->getDirection() == DirectionTypes::INOUT ||
+                                                  comIf2->getDirection() == DirectionTypes::INOUT ||
                                                   comIf1->getDirection() != comIf2->getDirection())));
         }
         else
