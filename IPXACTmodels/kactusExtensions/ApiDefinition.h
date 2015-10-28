@@ -15,7 +15,7 @@
 #include <IPXACTmodels/common/Document.h>
 #include "ApiFunction.h"
 
-#include "ipxactmodels_global.h"
+#include <IPXACTmodels/ipxactmodels_global.h>
 
 #include <QStringList>
 #include <QDomDocument>

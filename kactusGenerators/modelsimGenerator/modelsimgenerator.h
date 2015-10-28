@@ -156,7 +156,7 @@ private:
 	 * \param fileSetNames Names of the file sets to use.
 	 *
 	*/
-	void parseFileSets(QSharedPointer<Component> component, const QStringList& fileSetNames);
+	void parseFileSets(QSharedPointer<Component> component, QSharedPointer<QStringList> fileSetNames);
 
 	/*! \brief Read the design and possibly design configuration and parse them.
 	 * 

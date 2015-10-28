@@ -12,7 +12,7 @@
 #ifndef APIFUNCTION_H
 #define APIFUNCTION_H
 
-#include "ipxactmodels_global.h"
+#include <IPXACTmodels/ipxactmodels_global.h>
 
 #include <QString>
 #include <QDomNode>
