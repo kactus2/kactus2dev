@@ -57,21 +57,21 @@ public:
 	 */
 	bool isValid() const;
 
-	/*! \brief Reload the information from the model to the editor.
+	/*! Reload the information from the model to the editor.
 	*/
 	virtual void refresh();
 
 private slots:
 
-	//! \brief Handler for changes in api type.
+	//! Handler for changes in api type.
 	void onAPITypeChange();
 
-	//! \brief Handler for changes in dependency editor.
+	//! Handler for changes in dependency editor.
 	void onDependencyChange(int index);
 
 protected:
 
-	//! \brief Handler for widget's show event
+	//! Handler for widget's show event
 	virtual void showEvent(QShowEvent* event);
 
 private:
@@ -91,8 +91,8 @@ private:
     //! The library handler.
     LibraryInterface* libInterface_;
 
-    //! Pointer to the bus interface being edited.
-    ApiInterface* apiIf_;
+    //! The bus interface being edited.
+    QSharedPointer<ApiInterface> apiIf_;
 
     //! Contains the name, display name and description of the API interface.
     NameGroupEditor nameEditor_;

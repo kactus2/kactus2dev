@@ -6146,6 +6146,9 @@
     <ClInclude Include="editors\ComponentEditor\views\EnvIdentifiersColumns.h">
       <Filter>Header Files\editors\ComponentEditor\views</Filter>
     </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\software\apiInterface\ApiInterfaceColumns.h">
+      <Filter>Header Files\editors\ComponentEditor\software\apiInterface</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="designEditors\common\DiagramUtil.inl">

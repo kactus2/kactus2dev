@@ -1,202 +1,249 @@
-/* 
- *  	Created on: 27.6.2012
- *      Author: Antti Kamppi
- * 		filename: apiinterfacesmodel.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: apiinterfacesmodel.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 27.6.2012
+//
+// Description:
+// The model that manages the API interfaces for API Interface editor.
+//-----------------------------------------------------------------------------
 
 #include "apiinterfacesmodel.h"
-#include "apiinterfacesdelegate.h"
+#include "ApiInterfaceColumns.h"
+
+#include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/kactusExtensions/ApiInterface.h>
 #include <IPXACTmodels/vlnv.h>
 
 #include <QColor>
 #include <QMimeData>
 
-ApiInterfacesModel::ApiInterfacesModel(QSharedPointer<Component> component,
-									   QObject *parent):
+//-----------------------------------------------------------------------------
+// Function: ApiInterfacesModel::ApiInterfacesModel()
+//-----------------------------------------------------------------------------
+ApiInterfacesModel::ApiInterfacesModel(QSharedPointer<Component> component, QObject* parent):
 QAbstractTableModel(parent),
-apis_(component->getApiInterfaces()) {
+apis_(component->getApiInterfaces())
+{
 
-	Q_ASSERT(component);
 }
 
-ApiInterfacesModel::~ApiInterfacesModel() {
+//-----------------------------------------------------------------------------
+// Function: ApiInterfacesModel::~ApiInterfacesModel()
+//-----------------------------------------------------------------------------
+ApiInterfacesModel::~ApiInterfacesModel()
+{
 }
 
-int ApiInterfacesModel::rowCount( const QModelIndex& parent /*= QModelIndex()*/ ) const {
-	if (parent.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: ApiInterfacesModel::rowCount()
+//-----------------------------------------------------------------------------
+int ApiInterfacesModel::rowCount(QModelIndex const& parent) const
+{
+	if (parent.isValid())
+    {
 		return 0;
 	}
+
 	return apis_.size();
 }
 
-int ApiInterfacesModel::columnCount( const QModelIndex& parent /*= QModelIndex()*/ ) const {
-	if (parent.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: ApiInterfacesModel::columnCount()
+//-----------------------------------------------------------------------------
+int ApiInterfacesModel::columnCount(QModelIndex const& parent) const
+{
+	if (parent.isValid())
+    {
 		return 0;
 	}
-	return ApiInterfacesDelegate::COLUMN_COUNT;
+
+	return ApiInterfaceColumns::COLUMN_COUNT;
 }
 
-Qt::ItemFlags ApiInterfacesModel::flags( const QModelIndex& index ) const {
-	if (!index.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: ApiInterfacesModel::flags()
+//-----------------------------------------------------------------------------
+Qt::ItemFlags ApiInterfacesModel::flags(QModelIndex const& index) const
+{
+	if (!index.isValid())
+    {
 		return Qt::NoItemFlags;
 	}
 
 	// API definition can only be dropped.
-	else if (ApiInterfacesDelegate::API_DEF_COLUMN == index.column()) {
-			return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
+	else if (ApiInterfaceColumns::API_DEFINITION == index.column())
+    {
+		return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
 	}
+
 	return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
 }
 
-QVariant ApiInterfacesModel::headerData( int section, Qt::Orientation orientation, int role /*= Qt::DisplayRole*/ ) const {
-	if (orientation != Qt::Horizontal) {
+//-----------------------------------------------------------------------------
+// Function: ApiInterfacesModel::headerData()
+//-----------------------------------------------------------------------------
+QVariant ApiInterfacesModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+	if (orientation != Qt::Horizontal && role != Qt::DisplayRole)
+    {
 		return QVariant();
 	}
-	if (Qt::DisplayRole == role) {
-
-		switch (section) {
-			case ApiInterfacesDelegate::NAME_COLUMN: {
-				return tr("Name");
-													 }
-			case ApiInterfacesDelegate::API_DEF_COLUMN: {
-				return tr("API definition");
-													   }
-			case ApiInterfacesDelegate::DEPENDENCY_COLUMN: {
-				return tr("Dependency");
-													   }
-			case ApiInterfacesDelegate::DISPLAY_NAME_COLUMN: {
-				return tr("Display name");
-														}
-			case ApiInterfacesDelegate::DESCRIPTION_COLUMN: {
-				return tr("Description");
-															}
-			default: {
-				return QVariant();
-					 }
-		}
-	}
-	else {
-		return QVariant();
-	}
+	
+    if (section == ApiInterfaceColumns::NAME)
+    {
+        return tr("Name");
+    }
+    else if (section == ApiInterfaceColumns::API_DEFINITION)
+    {
+        return tr("API definition");
+    }
+    else if (section == ApiInterfaceColumns::DEPENDENCY)
+    {
+        return tr("Dependency");
+    }
+    else if (section == ApiInterfaceColumns::DISPLAY_NAME) 
+    {
+        return tr("Display name");
+    }
+    else if (section == ApiInterfaceColumns::DESCRIPTION)
+    {
+        return tr("Description");
+    }
+    else
+    {
+        return QVariant();
+    }
 }
 
-QVariant ApiInterfacesModel::data( const QModelIndex& index, int role /*= Qt::DisplayRole*/ ) const {
-	if (!index.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: ApiInterfacesModel::data()
+//-----------------------------------------------------------------------------
+QVariant ApiInterfacesModel::data(QModelIndex const& index, int role) const 
+{	
+    if (!index.isValid() || index.row() < 0 || index.row() >= apis_.size())
+    {
 		return QVariant();
-	}
-	else if (index.row() < 0 || index.row() >= apis_.size()) {
-		return QVariant();
-	}
+    }
 
-	if (Qt::DisplayRole == role) {
+    if (role == Qt::DisplayRole)
+    {
+        if (index.column() == ApiInterfaceColumns::NAME)
+        {
+            return apis_.at(index.row())->name();
+        }
+        else if (index.column() == ApiInterfaceColumns::API_DEFINITION)
+        {
+            return apis_.at(index.row())->getApiType().toString(":");
+        }
+        else if (index.column() == ApiInterfaceColumns::DEPENDENCY)
+        {
+            return dependencyDirection2Str(apis_.at(index.row())->getDependencyDirection());
+        }
+        else if (index.column() == ApiInterfaceColumns::DISPLAY_NAME)
+        {
+            return apis_.at(index.row())->displayName();
+        }
+        else if (index.column() == ApiInterfaceColumns::DESCRIPTION)
+        {
+            return apis_.at(index.row())->description();
+        }
+        else
+        {
+            return QVariant();
+        }
+    }
 
-		switch (index.column()) {
-			case ApiInterfacesDelegate::NAME_COLUMN: {
-				return apis_.at(index.row())->name();
-													 }
-			case ApiInterfacesDelegate::API_DEF_COLUMN: {
-				return apis_.at(index.row())->getApiType().toString(":");
-													   }
-			case ApiInterfacesDelegate::DEPENDENCY_COLUMN: {
-				return dependencyDirection2Str(apis_.at(index.row())->getDependencyDirection());
-													   }
-			case ApiInterfacesDelegate::DISPLAY_NAME_COLUMN: {
-				return apis_.at(index.row())->getDisplayName();
-														}
-			case ApiInterfacesDelegate::DESCRIPTION_COLUMN: {
-				return apis_.at(index.row())->getDescription();
-															}
-			default: {
-				return QVariant();
-					 }
-		}
-	}
-	else if (Qt::ForegroundRole == role) {
-
-		if (apis_.at(index.row())->isValid()) {
+	else if (role == Qt::ForegroundRole)
+    {
+		if (apis_.at(index.row())->isValid())
+        {
 			return QColor("black");
 		}
 		else {
 			return QColor("red");
 		}
 	}
-	else if (Qt::BackgroundRole == role) {
-		switch (index.column()) {
-			case ApiInterfacesDelegate::NAME_COLUMN: {
-				return QColor("LemonChiffon");
-														}
-			default:
-				return QColor("white");
-		}
-	}
-	else {
+
+	else if (role == Qt::BackgroundRole)
+    {
+        if (index.column() == ApiInterfaceColumns::NAME)
+        {
+            return QColor("LemonChiffon");
+        }
+        else
+        {
+            return QColor("white");
+        }
+    }
+	
+    else
+    {
 		return QVariant();
 	}
 }
 
-bool ApiInterfacesModel::setData( const QModelIndex& index, const QVariant& value, int role /*= Qt::EditRole*/ ) {
-	if (!index.isValid()) {
-		return false;
-	}
-	else if (index.row() < 0 || index.row() >= apis_.size()) {
+//-----------------------------------------------------------------------------
+// Function: ApiInterfacesModel::setData()
+//-----------------------------------------------------------------------------
+bool ApiInterfacesModel::setData(QModelIndex const& index, const QVariant& value, int role)
+{
+	if (!index.isValid() || index.row() < 0 || index.row() >= apis_.size() || role != Qt::EditRole)
+    {
 		return false;
 	}
 
-	if (Qt::EditRole == role) {
+    if (index.column() == ApiInterfaceColumns::NAME)
+    {
+        apis_.at(index.row())->setName(value.toString());
+    }
+    else if (index.column() == ApiInterfaceColumns::API_DEFINITION)
+    {
+        VLNV apiDef = VLNV(VLNV::APIDEFINITION, value.toString(), ":");
+        apis_.at(index.row())->setApiType(apiDef);
+    }
+    else if (index.column() == ApiInterfaceColumns::DEPENDENCY) 
+    {
+        apis_.at(index.row())->setDependencyDirection(str2DependencyDirection(value.toString(),
+            DEPENDENCY_REQUESTER));
+    }
+    else if (index.column() == ApiInterfaceColumns::DISPLAY_NAME) 
+    {
+        apis_.at(index.row())->setDisplayName(value.toString());
+    }
+    else if (index.column() == ApiInterfaceColumns::DESCRIPTION)
+    {
+        apis_.at(index.row())->setDescription(value.toString());
+    }
+    else
+    {
+        return false;
+    }
 
-		switch (index.column()) {
-			case ApiInterfacesDelegate::NAME_COLUMN: {
-				apis_[index.row()]->setName(value.toString());
-				break;
-													 }
-			case ApiInterfacesDelegate::API_DEF_COLUMN: {
-				VLNV apiDef = VLNV(VLNV::APIDEFINITION, value.toString(), ":");
-				apis_[index.row()]->setApiType(apiDef);
-				break;
-													   }
-			case ApiInterfacesDelegate::DEPENDENCY_COLUMN: {
-				QString text = value.toString();
-				apis_[index.row()]->setDependencyDirection(str2DependencyDirection(text, DEPENDENCY_REQUESTER));
-				break;
-													   }
-			case ApiInterfacesDelegate::DISPLAY_NAME_COLUMN: {
-				apis_[index.row()]->setDisplayName(value.toString());
-				break;
-														}
-			case ApiInterfacesDelegate::DESCRIPTION_COLUMN: {
-				apis_[index.row()]->setDescription(value.toString());
-				break;
-															}
-			default: {
-				return false;
-					 }
-		}
-
-		emit dataChanged(index, index);
-		emit contentChanged();
-		return true;
-	}
-	else {
-		return false;
-	}
+    emit dataChanged(index, index);
+    emit contentChanged();
+    return true;
 }
 
-bool ApiInterfacesModel::isValid() const {
-	
-	foreach (QSharedPointer<ApiInterface> apiIf, apis_) {
-		if (!apiIf->isValid()) {
+//-----------------------------------------------------------------------------
+// Function: ApiInterfacesModel::isValid()
+//-----------------------------------------------------------------------------
+bool ApiInterfacesModel::isValid() const
+{	
+	foreach (QSharedPointer<ApiInterface> apiIf, apis_)
+    {
+		if (!apiIf->isValid())
+        {
 			return false;
 		}
 	}
 
-	// all api interfaces were valid
 	return true;
 }
 
 //-----------------------------------------------------------------------------
-// Function: supportedDropActions()
+// Function: ApiInterfacesModel::supportedDropActions()
 //-----------------------------------------------------------------------------
 Qt::DropActions ApiInterfacesModel::supportedDropActions() const
 {
@@ -204,7 +251,7 @@ Qt::DropActions ApiInterfacesModel::supportedDropActions() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: mimeTypes()
+// Function: ApiInterfacesModel::mimeTypes()
 //-----------------------------------------------------------------------------
 QStringList ApiInterfacesModel::mimeTypes() const
 {
@@ -214,10 +261,10 @@ QStringList ApiInterfacesModel::mimeTypes() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: dropMimeData()
+// Function: ApiInterfacesModel::dropMimeData()
 //-----------------------------------------------------------------------------
 bool ApiInterfacesModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, 
-    const QModelIndex &parent)
+    QModelIndex const& parent)
 {
     if ( action == Qt::IgnoreAction)
     {
@@ -244,7 +291,7 @@ bool ApiInterfacesModel::dropMimeData(const QMimeData *data, Qt::DropAction acti
 
     VLNV vlnv = variant.value<VLNV>();
 
-    if ( parent.column() == ApiInterfacesDelegate::API_DEF_COLUMN )
+    if ( parent.column() == ApiInterfaceColumns::API_DEFINITION )
     {
         if ( vlnv.getType() != VLNV::APIDEFINITION )
         {
@@ -258,7 +305,11 @@ bool ApiInterfacesModel::dropMimeData(const QMimeData *data, Qt::DropAction acti
     return true;
 }
 
-void ApiInterfacesModel::onAddItem( const QModelIndex& index ) {
+//-----------------------------------------------------------------------------
+// Function: ApiInterfacesModel::onAddItem()
+//-----------------------------------------------------------------------------
+void ApiInterfacesModel::onAddItem(QModelIndex const& index)
+{
 	int row = apis_.size();
 
 	// if the index is valid then add the item to the correct position
@@ -277,13 +328,14 @@ void ApiInterfacesModel::onAddItem( const QModelIndex& index ) {
 	emit contentChanged();
 }
 
-void ApiInterfacesModel::onRemoveItem( const QModelIndex& index ) {
+//-----------------------------------------------------------------------------
+// Function: ApiInterfacesModel::onRemoveItem()
+//-----------------------------------------------------------------------------
+void ApiInterfacesModel::onRemoveItem(QModelIndex const& index)
+{
 	// don't remove anything if index is invalid
-	if (!index.isValid()) {
-		return;
-	}
-	// make sure the row number if valid
-	else if (index.row() < 0 || index.row() >= apis_.size()) {
+	if (!index.isValid() || index.row() < 0 || index.row() >= apis_.size())
+    {
 		return;
 	}
 

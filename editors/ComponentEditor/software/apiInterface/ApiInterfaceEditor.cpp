@@ -13,6 +13,7 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 #include <IPXACTmodels/kactusExtensions/ApiInterface.h>
+
 #include <mainwindow/mainwindow.h>
 
 #include <QScrollArea>
@@ -25,25 +26,27 @@
 // Function: ApiInterfaceEditor::ApiInterfaceEditor()
 //-----------------------------------------------------------------------------
 ApiInterfaceEditor::ApiInterfaceEditor(LibraryInterface* libHandler,
-                                       QSharedPointer<Component> component,
-                                       QSharedPointer<ApiInterface> APIInterface,
-									   QWidget *parent):
+    QSharedPointer<Component> component,
+    QSharedPointer<ApiInterface> APIInterface,
+    QWidget *parent):
 ItemEditor(component, libHandler, parent),
-libInterface_(libHandler),
-apiIf_(APIInterface.data()),
-nameEditor_(APIInterface->getNameGroup(), this, tr("Name and description")),
-apiType_(NULL),
-detailsGroup_(tr("Details"), this),
-dependencyCombo_(this)
+    libInterface_(libHandler),
+    apiIf_(APIInterface),
+    nameEditor_(APIInterface, this, tr("Name and description")),
+    apiType_(NULL),
+    detailsGroup_(tr("Details"), this),
+    dependencyCombo_(this)
 {
     Q_ASSERT(APIInterface != 0);
     Q_ASSERT(libHandler != 0);
 
 	// find the main window for VLNV editor
 	QWidget* parentW = NULL;
-	foreach (QWidget* widget, QApplication::topLevelWidgets()) {
+	foreach (QWidget* widget, QApplication::topLevelWidgets())
+    {
 		MainWindow* mainWnd = dynamic_cast<MainWindow*>(widget);
-		if (mainWnd) {
+		if (mainWnd)
+        {
 			parentW = mainWnd;
 			break;
 		}
@@ -117,7 +120,11 @@ bool ApiInterfaceEditor::isValid() const
             (apiType_->isEmpty() || (apiType_->isValid() && libInterface_->contains(apiType_->getVLNV()))));
 }
 
-void ApiInterfaceEditor::refresh() {
+//-----------------------------------------------------------------------------
+// Function: ApiInterfaceEditor::refresh()
+//-----------------------------------------------------------------------------
+void ApiInterfaceEditor::refresh()
+{
 	nameEditor_.refresh();
 
 	apiType_->setVLNV(apiIf_->getApiType());
@@ -130,17 +137,29 @@ void ApiInterfaceEditor::refresh() {
 		this, SLOT(onDependencyChange(int)), Qt::UniqueConnection);
 }
 
-void ApiInterfaceEditor::onAPITypeChange() {
+//-----------------------------------------------------------------------------
+// Function: ApiInterfaceEditor::onAPITypeChange()
+//-----------------------------------------------------------------------------
+void ApiInterfaceEditor::onAPITypeChange()
+{
 	apiIf_->setApiType(apiType_->getVLNV());
 	emit contentChanged();
 }
 
-void ApiInterfaceEditor::onDependencyChange( int /*index*/ ) {
+//-----------------------------------------------------------------------------
+// Function: ApiInterfaceEditor::onDependencyChange()
+//-----------------------------------------------------------------------------
+void ApiInterfaceEditor::onDependencyChange(int /*index*/)
+{
 	apiIf_->setDependencyDirection(static_cast<DependencyDirection>(dependencyCombo_.currentIndex()));
 	emit contentChanged();
 }
 
-void ApiInterfaceEditor::showEvent( QShowEvent* event ) {
+//-----------------------------------------------------------------------------
+// Function: ApiInterfaceEditor::showEvent()
+//-----------------------------------------------------------------------------
+void ApiInterfaceEditor::showEvent(QShowEvent* event)
+{
 	QWidget::showEvent(event);
 	emit helpUrlRequested("componenteditor/apiinterface.html");
 }
