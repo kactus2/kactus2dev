@@ -142,7 +142,6 @@
     <ClCompile Include="AbstractionDefinition\WireAbstractionReader.cpp" />
     <ClCompile Include="AbstractionDefinition\WireAbstractionWriter.cpp" />
     <ClCompile Include="AbstractionDefinition\WirePort.cpp" />
-    <ClCompile Include="bspbuildcommand.cpp" />
     <ClCompile Include="BusDefinition\BusDefinition.cpp" />
     <ClCompile Include="BusDefinition\BusDefinitionReader.cpp" />
     <ClCompile Include="BusDefinition\BusDefinitionWriter.cpp" />
@@ -854,6 +853,7 @@
     <ClCompile Include="kactusExtensions\ApiFunctionParameter.cpp" />
     <ClCompile Include="kactusExtensions\ApiInterconnection.cpp" />
     <ClCompile Include="kactusExtensions\ApiInterface.cpp" />
+    <ClCompile Include="kactusExtensions\BSPBuildCommand.cpp" />
     <ClCompile Include="kactusExtensions\ColumnDesc.cpp" />
     <ClCompile Include="kactusExtensions\ComDefinition.cpp" />
     <ClCompile Include="kactusExtensions\ComInterconnection.cpp" />
@@ -869,11 +869,11 @@
     <ClCompile Include="kactusExtensions\Kactus2Value.cpp" />
     <ClCompile Include="kactusExtensions\Kactus2Vector.cpp" />
     <ClCompile Include="kactusExtensions\KactusAttribute.cpp" />
+    <ClCompile Include="kactusExtensions\SWFileBuilder.cpp" />
     <ClCompile Include="kactusExtensions\SWInstance.cpp" />
     <ClCompile Include="kactusExtensions\SWView.cpp" />
     <ClCompile Include="kactusExtensions\SystemView.cpp" />
     <ClCompile Include="librarycomponent.cpp" />
-    <ClCompile Include="swbuildcommand.cpp" />
     <ClCompile Include="validators\BinaryValidator.cpp" />
     <ClCompile Include="validators\namevalidator.cpp" />
     <ClCompile Include="validators\NMTokenValidator.cpp" />
@@ -981,7 +981,6 @@
     <ClInclude Include="AbstractionDefinition\WireAbstractionWriter.h" />
     <ClInclude Include="AbstractionDefinition\WirePort.h" />
     <ClInclude Include="bspbuildcommand.h" />
-    <ClInclude Include="buildcommand.h" />
     <ClInclude Include="common\Array.h" />
     <ClInclude Include="common\Assertion.h" />
     <ClInclude Include="common\BooleanValue.h" />
@@ -2025,6 +2024,7 @@
     <ClInclude Include="kactusExtensions\ApiFunctionParameter.h" />
     <ClInclude Include="kactusExtensions\ApiInterconnection.h" />
     <ClInclude Include="kactusExtensions\ApiInterface.h" />
+    <ClInclude Include="kactusExtensions\BSPBuildCommand.h" />
     <ClInclude Include="kactusExtensions\ColumnDesc.h" />
     <ClInclude Include="kactusExtensions\ComDefinition.h" />
     <ClInclude Include="kactusExtensions\ComInterconnection.h" />
@@ -2040,6 +2040,7 @@
     <ClInclude Include="kactusExtensions\Kactus2Value.h" />
     <ClInclude Include="kactusExtensions\Kactus2Vector.h" />
     <ClInclude Include="kactusExtensions\KactusAttribute.h" />
+    <ClInclude Include="kactusExtensions\SWFileBuilder.h" />
     <ClInclude Include="kactusExtensions\SWInstance.h" />
     <ClInclude Include="kactusExtensions\SWView.h" />
     <ClInclude Include="kactusExtensions\SystemView.h" />
@@ -2266,7 +2267,6 @@
     <ClInclude Include="generaldeclarations.h" />
     <ClInclude Include="GenericVendorExtension.h" />
     <ClInclude Include="ipxactmodels_global.h" />
-    <ClInclude Include="swbuildcommand.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

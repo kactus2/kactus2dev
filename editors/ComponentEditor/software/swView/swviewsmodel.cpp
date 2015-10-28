@@ -1,204 +1,257 @@
-/* 
- *  	Created on: 27.6.2012
- *      Author: Antti Kamppi
- * 		filename: swviewsmodel.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: swviewsmodel.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 27.06.2012
+//
+// Description:
+// The model to manage the software views for a table view.
+//-----------------------------------------------------------------------------
 
 #include "swviewsmodel.h"
+
 #include "swviewsdelegate.h"
-#include <IPXACTmodels/vlnv.h>
+
 #include <library/LibraryManager/libraryinterface.h>
 
+#include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+#include <IPXACTmodels/kactusExtensions/SWView.h>
+#include <IPXACTmodels/vlnv.h>
 
 #include <QColor>
 #include <QMimeData>
 
-SWViewsModel::SWViewsModel(LibraryInterface* libHandler,
-                           QSharedPointer<Component> component,
-						   QObject *parent):
+//-----------------------------------------------------------------------------
+// Function: SWViewsModel::SWViewsModel()
+//-----------------------------------------------------------------------------
+SWViewsModel::SWViewsModel(LibraryInterface* libHandler, QSharedPointer<Component> component, QObject* parent):
 QAbstractTableModel(parent),
-views_(component->getSWViews()),
-libHandler_(libHandler),
-component_(component) {
-
+    swViews_(component->getSWViews()),
+    libHandler_(libHandler),
+    component_(component)
+{
     Q_ASSERT(libHandler_);
-	Q_ASSERT(component_);
 }
 
-SWViewsModel::~SWViewsModel() {
+//-----------------------------------------------------------------------------
+// Function: SWViewsModel::~SWViewsModel()
+//-----------------------------------------------------------------------------
+SWViewsModel::~SWViewsModel()
+{
 
 }
 
-int SWViewsModel::rowCount( const QModelIndex& parent /*= QModelIndex()*/ ) const {
-	if (parent.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: SWViewsModel::rowCount()
+//-----------------------------------------------------------------------------
+int SWViewsModel::rowCount(QModelIndex const& parent) const
+{
+	if (parent.isValid())
+    {
 		return 0;
 	}
-	return views_.size();
+
+	return swViews_.size();
 }
 
-int SWViewsModel::columnCount( const QModelIndex& parent /*= QModelIndex()*/ ) const {
-	if (parent.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: SWViewsModel::columnCount()
+//-----------------------------------------------------------------------------
+int SWViewsModel::columnCount(QModelIndex const& parent) const
+{
+	if (parent.isValid())
+    {
 		return 0;
 	}
+
 	return SWViewsDelegate::COLUMN_COUNT;
 }
 
-Qt::ItemFlags SWViewsModel::flags( const QModelIndex& index ) const {
-	if (!index.isValid()) {
-		return Qt::NoItemFlags;
-	}
+//-----------------------------------------------------------------------------
+// Function: SWViewsModel::flags()
+//-----------------------------------------------------------------------------
+Qt::ItemFlags SWViewsModel::flags(QModelIndex const& index) const
+{
+	if (!index.isValid())
+    {
+        return Qt::NoItemFlags;
+    }
+    // hierarchy reference can only be dropped
+    else if (SWViewsDelegate::HIER_REF_COLUMN == index.column())
+    {
+        return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
+    }
 
-	// hierarchy reference can only be dropped
-	else if (SWViewsDelegate::HIER_REF_COLUMN == index.column()) {
-			return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
-	}
-	return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
+    return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
 }
 
-QVariant SWViewsModel::headerData( int section, Qt::Orientation orientation, int role /*= Qt::DisplayRole*/ ) const {
-	if (orientation != Qt::Horizontal) {
-		return QVariant();
-	}
-	if (Qt::DisplayRole == role) {
+//-----------------------------------------------------------------------------
+// Function: SWViewsModel::headerData()
+//-----------------------------------------------------------------------------
+QVariant SWViewsModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+    if (orientation != Qt::Horizontal && role != Qt::DisplayRole)
+    {
+        return QVariant();
+    }
 
-		switch (section) {
-			case SWViewsDelegate::NAME_COLUMN: {
-				return tr("Name");
-													 }
-			case SWViewsDelegate::HIER_REF_COLUMN: {
-				return tr("Hierarchy reference");
-													   }
-			case SWViewsDelegate::DISPLAY_NAME_COLUMN: {
-				return tr("Display name");
-													   }
-			case SWViewsDelegate::DESCRIPTION_COLUMN: {
-				return tr("Description");
-														}
-			default: {
-				return QVariant();
-					 }
-		}
-	}
-	else {
-		return QVariant();
-	}
+    if (section == SWViewsDelegate::NAME_COLUMN)
+    {
+        return tr("Name");
+    }
+    else if (section == SWViewsDelegate::HIER_REF_COLUMN)
+    {
+        return tr("Hierarchy reference");
+    }
+    else if (section == SWViewsDelegate::DISPLAY_NAME_COLUMN)
+    {
+        return tr("Display name");
+    }
+    else if (section == SWViewsDelegate::DESCRIPTION_COLUMN)
+    {
+        return tr("Description");
+    }
+    else
+    {
+        return QVariant();
+    }
 }
 
-QVariant SWViewsModel::data( const QModelIndex& index, int role /*= Qt::DisplayRole*/ ) const {
-	if (!index.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: SWViewsModel::data()
+//-----------------------------------------------------------------------------
+QVariant SWViewsModel::data(QModelIndex const& index, int role) const
+{
+	if (!index.isValid() || index.row() < 0 || index.row() >= swViews_.size())
+    {
 		return QVariant();
 	}
-	else if (index.row() < 0 || index.row() >= views_.size()) {
-		return QVariant();
+	
+	if (role == Qt::DisplayRole)
+    {
+        if (index.column() == SWViewsDelegate::NAME_COLUMN)
+        {
+            return swViews_.at(index.row())->name();
+        }
+        else if (index.column() == SWViewsDelegate::HIER_REF_COLUMN)
+        {
+            return swViews_.at(index.row())->getHierarchyRef().toString(":");
+        }
+        else if (index.column() == SWViewsDelegate::DISPLAY_NAME_COLUMN)
+        {
+            return swViews_.at(index.row())->displayName();
+        }
+        else if (index.column() == SWViewsDelegate::DESCRIPTION_COLUMN)
+        {
+            return swViews_.at(index.row())->description();
+        }
+        else
+        {
+            return QVariant();
+        }
 	}
 
-	if (Qt::DisplayRole == role) {
-
-		switch (index.column()) {
-			case SWViewsDelegate::NAME_COLUMN: {
-				return views_.at(index.row())->name();
-													 }
-			case SWViewsDelegate::HIER_REF_COLUMN: {
-				return views_.at(index.row())->getHierarchyRef().toString(":");
-													   }
-			case SWViewsDelegate::DISPLAY_NAME_COLUMN: {
-				return views_.at(index.row())->getDisplayName();
-													   }
-			case SWViewsDelegate::DESCRIPTION_COLUMN: {
-				return views_.at(index.row())->getDescription();
-														}
-			default: {
-				return QVariant();
-					 }
-		}
-	}
-	else if (Qt::ForegroundRole == role) {
-
+	else if (role == Qt::ForegroundRole)
+    {
 		QStringList fileSetNames = component_->getFileSetNames();
 		QStringList cpuNames = component_->getCpuNames();
 
-		if (views_.at(index.row())->isValid(fileSetNames, cpuNames)) {
+		if (swViews_.at(index.row())->isValid(fileSetNames, cpuNames))
+        {
 			return QColor("black");
 		}
-		else {
+		else
+        {
 			return QColor("red");
 		}
 	}
-	else if (Qt::BackgroundRole == role) {
-		switch (index.column()) {
-			case SWViewsDelegate::NAME_COLUMN:
-			case SWViewsDelegate::HIER_REF_COLUMN: {
-				return QColor("LemonChiffon");
-														}
-			default:
-				return QColor("white");
-		}
-	}
-	else {
-		return QVariant();
+
+	else if (role == Qt::BackgroundRole)
+    {
+		if (index.column() == SWViewsDelegate::NAME_COLUMN || index.column() == SWViewsDelegate::HIER_REF_COLUMN)
+        {
+            return QColor("LemonChiffon");
+        }
+        else
+        {
+            return QColor("white");
+        }
+    }
+    else
+    {
+        return QVariant();
 	}
 }
 
-bool SWViewsModel::setData( const QModelIndex& index, const QVariant& value, int role /*= Qt::EditRole*/ ) {
-	if (!index.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: SWViewsModel::setData()
+//-----------------------------------------------------------------------------
+bool SWViewsModel::setData( QModelIndex const& index, const QVariant& value, int role)
+{
+	if (!index.isValid() || index.row() < 0 || index.row() >= swViews_.size())
+    {
 		return false;
 	}
-	else if (index.row() < 0 || index.row() >= views_.size()) {
-		return false;
-	}
-
-	if (Qt::EditRole == role) {
-
-		switch (index.column()) {
-			case SWViewsDelegate::NAME_COLUMN: {
-				views_[index.row()]->setName(value.toString());
-				break;
-													 }
-			case SWViewsDelegate::HIER_REF_COLUMN: {
-				VLNV hierRef = VLNV(VLNV::DESIGNCONFIGURATION, value.toString(), ":");
-				views_[index.row()]->setHierarchyRef(hierRef);
-				break;
-													   }
-			case SWViewsDelegate::DISPLAY_NAME_COLUMN: {
-				views_[index.row()]->setDisplayName(value.toString());
-				break;
-													   }
-			case SWViewsDelegate::DESCRIPTION_COLUMN: {
-				views_[index.row()]->setDescription(value.toString());
-				break;
-														}
-			default: {
-				return false;
-					 }
-		}
+	
+	if (role == Qt::EditRole)
+    {
+        if (index.column() == SWViewsDelegate::NAME_COLUMN)
+        {
+            swViews_.at(index.row())->setName(value.toString());				
+        }
+        else if (index.column() == SWViewsDelegate::HIER_REF_COLUMN)
+        {
+            VLNV hierRef = VLNV(VLNV::DESIGNCONFIGURATION, value.toString(), ":");
+            swViews_.at(index.row())->setHierarchyRef(hierRef);
+        }
+        else if (index.column() == SWViewsDelegate::DISPLAY_NAME_COLUMN)
+        {
+            swViews_.at(index.row())->setDisplayName(value.toString());
+        }
+        else if (index.column() == SWViewsDelegate::DESCRIPTION_COLUMN)
+        {
+            swViews_.at(index.row())->setDescription(value.toString());
+        }
+        else
+        {
+            return false;
+        }
 
 		emit dataChanged(index, index);
 		emit contentChanged();
 		return true;
 	}
-	else {
+	else
+    {
 		return false;
 	}
 }
 
-bool SWViewsModel::isValid() const {
+//-----------------------------------------------------------------------------
+// Function: SWViewsModel::isValid()
+//-----------------------------------------------------------------------------
+bool SWViewsModel::isValid() const
+{
 	QStringList fileSetNames = component_->getFileSetNames();
 	QStringList cpuNames = component_->getCpuNames();
 
 	// check that each software view is valid
-	foreach (QSharedPointer<SWView> swView, views_) {
-		if (!swView->isValid(fileSetNames, cpuNames)) {
+	foreach (QSharedPointer<SWView> swView, swViews_)
+    {
+		if (!swView->isValid(fileSetNames, cpuNames))
+        {
 			return false;
 		}
 	}
+
 	return true;
 }
 
 //-----------------------------------------------------------------------------
-// Function: supportedDropActions()
+// Function: SWViewsModel::supportedDropActions()
 //-----------------------------------------------------------------------------
 Qt::DropActions SWViewsModel::supportedDropActions() const
 {
@@ -206,7 +259,7 @@ Qt::DropActions SWViewsModel::supportedDropActions() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: mimeTypes()
+// Function: SWViewsModel::mimeTypes()
 //-----------------------------------------------------------------------------
 QStringList SWViewsModel::mimeTypes() const
 {
@@ -216,18 +269,18 @@ QStringList SWViewsModel::mimeTypes() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: dropMimeData()
+// Function: SWViewsModel::dropMimeData()
 //-----------------------------------------------------------------------------
 bool SWViewsModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, 
-    const QModelIndex &parent)
+    QModelIndex const& parent)
 {
-    if ( action == Qt::IgnoreAction)
+    if (action == Qt::IgnoreAction)
     {
         return true;
     }
 
     // Dropped data must be directly on parent.
-    if ( row != -1 || column != -1 || !parent.isValid() )
+    if (row != -1 || column != -1 || !parent.isValid())
     {
         return false;
     }
@@ -239,14 +292,14 @@ bool SWViewsModel::dropMimeData(const QMimeData *data, Qt::DropAction action, in
 
     QVariant variant = data->imageData();
 
-    if ( !variant.canConvert<VLNV>())
+    if (!variant.canConvert<VLNV>())
     {
         return false;
     }
 
     VLNV vlnv = variant.value<VLNV>();
 
-    if ( parent.column() == SWViewsDelegate::HIER_REF_COLUMN )
+    if (parent.column() == SWViewsDelegate::HIER_REF_COLUMN)
     {
         if (vlnv.getType() == VLNV::DESIGN )
         {
@@ -254,9 +307,9 @@ bool SWViewsModel::dropMimeData(const QMimeData *data, Qt::DropAction action, in
             QSharedPointer<Document const> libComp = libHandler_->getModelReadOnly(vlnv);
             QSharedPointer<Design const> design = libComp.staticCast<Design const>();
 
-            if (design && design->getDesignImplementation() == KactusAttribute::SW)
+            if (design && design->getImplementation() == KactusAttribute::SW)
             {
-                setData(index(parent.row(),parent.column()),vlnv.toString(":"));
+                setData(index(parent.row(), parent.column()), vlnv.toString(":"));
                 emit contentChanged();
             }
         }
@@ -266,9 +319,9 @@ bool SWViewsModel::dropMimeData(const QMimeData *data, Qt::DropAction action, in
             QSharedPointer<Document const> libComp = libHandler_->getModelReadOnly(vlnv);
             QSharedPointer<DesignConfiguration const> designConf = libComp.staticCast<DesignConfiguration const>();
 
-            if (designConf && designConf->getDesignConfigImplementation() == KactusAttribute::SW)
+            if (designConf && designConf->getImplementation() == KactusAttribute::SW)
             {
-                setData(index(parent.row(),parent.column()),vlnv.toString(":"));
+                setData(index(parent.row(), parent.column()), vlnv.toString(":"));
                 emit contentChanged();
             }
         }       
@@ -277,16 +330,22 @@ bool SWViewsModel::dropMimeData(const QMimeData *data, Qt::DropAction action, in
     return true;
 }
 
-void SWViewsModel::onAddItem( const QModelIndex& index ) {
-	int row = views_.size();
+//-----------------------------------------------------------------------------
+// Function: SWViewsModel::onAddItem()
+//-----------------------------------------------------------------------------
+void SWViewsModel::onAddItem(QModelIndex const& index)
+{
+	int row = swViews_.size();
 
 	// if the index is valid then add the item to the correct position
-	if (index.isValid()) {
+	if (index.isValid())
+    {
 		row = index.row();
 	}
 
 	beginInsertRows(QModelIndex(), row, row);
-	views_.insert(row, QSharedPointer<SWView>(new SWView()));
+	swViews_.insert(row, QSharedPointer<SWView>(new SWView()));
+    component_->setSWViews(swViews_);
 	endInsertRows();
 
 	// inform navigation tree that file set is added
@@ -296,19 +355,21 @@ void SWViewsModel::onAddItem( const QModelIndex& index ) {
 	emit contentChanged();
 }
 
-void SWViewsModel::onRemoveItem( const QModelIndex& index ) {
+//-----------------------------------------------------------------------------
+// Function: SWViewsModel::onRemoveItem()
+//-----------------------------------------------------------------------------
+void SWViewsModel::onRemoveItem(QModelIndex const& index)
+{
 	// don't remove anything if index is invalid
-	if (!index.isValid()) {
-		return;
-	}
-	// make sure the row number if valid
-	else if (index.row() < 0 || index.row() >= views_.size()) {
+	if (!index.isValid() || index.row() < 0 || index.row() >= swViews_.size())
+    {
 		return;
 	}
 
 	// remove the specified item
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
-	views_.removeAt(index.row());
+	swViews_.removeAt(index.row());
+    component_->setSWViews(swViews_);
 	endRemoveRows();
 
 	// inform navigation tree that file set has been removed

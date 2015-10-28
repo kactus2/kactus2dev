@@ -1,25 +1,35 @@
-/* 
- *  	Created on: 27.6.2012
- *      Author: Antti Kamppi
- * 		filename: swviewseditor.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: swviewseditor.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 27.06.2012
+//
+// Description:
+// The editor to add/remove/edit the software views of a component.
+//-----------------------------------------------------------------------------
 
 #include "swviewseditor.h"
+
 #include "swviewsdelegate.h"
+
 #include <common/widgets/summaryLabel/summarylabel.h>
+
 #include <library/LibraryManager/libraryinterface.h>
+
+#include <IPXACTmodels/Component/Component.h>
 
 #include <QVBoxLayout>
 
-SWViewsEditor::SWViewsEditor(QSharedPointer<Component> component, 
-	LibraryInterface* handler,
-							 QWidget* parent /*= 0*/ ):
+//-----------------------------------------------------------------------------
+// Function: SWViewsEditor::SWViewsEditor()
+//-----------------------------------------------------------------------------
+SWViewsEditor::SWViewsEditor(QSharedPointer<Component> component, LibraryInterface* handler, QWidget* parent):
 ItemEditor(component, handler, parent),
-view_(this),
-proxy_(this),
-model_(handler, component, this) {
-
+    view_(this),
+    proxy_(this),
+    model_(handler, component, this)
+{
 	// display a label on top the table
 	SummaryLabel* summaryLabel = new SummaryLabel(tr("Software views"), this);
 
@@ -31,9 +41,9 @@ model_(handler, component, this) {
 	proxy_.setSourceModel(&model_);
 	view_.setModel(&proxy_);
 
-	const QString compPath = ItemEditor::handler()->getDirectoryPath(*ItemEditor::component()->getVlnv());
-	QString defPath = QString("%1/swViewListing.csv").arg(compPath);
-	view_.setDefaultImportExportPath(defPath);
+	const QString componentPath = handler->getDirectoryPath(component->getVlnv());
+	QString defaultPath = QString("%1/swViewListing.csv").arg(componentPath);
+	view_.setDefaultImportExportPath(defaultPath);
 	view_.setAllowImportExport(true);
 
     // items can not be dragged, but drop is enabled for vlnv columns.
@@ -43,31 +53,44 @@ model_(handler, component, this) {
     view_.setDragDropMode(QAbstractItemView::DropOnly);
 	view_.setItemDelegate(new SWViewsDelegate(this));
 
-	connect(&model_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&model_, SIGNAL(viewAdded(int)),
-		this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
-	connect(&model_, SIGNAL(viewRemoved(int)),
-		this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
+	connect(&model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&model_, SIGNAL(viewAdded(int)), this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
+	connect(&model_, SIGNAL(viewRemoved(int)), this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
 
-	connect(&view_, SIGNAL(addItem(const QModelIndex&)),
-		&model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
-	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
-		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
+	connect(&view_, SIGNAL(addItem(QModelIndex const&)),
+        &model_, SLOT(onAddItem(QModelIndex const&)), Qt::UniqueConnection);
+	connect(&view_, SIGNAL(removeItem(QModelIndex const&)),
+		&model_, SLOT(onRemoveItem(QModelIndex const&)), Qt::UniqueConnection);
 }
 
-SWViewsEditor::~SWViewsEditor() {
+//-----------------------------------------------------------------------------
+// Function: SWViewsEditor::~SWViewsEditor()
+//-----------------------------------------------------------------------------
+SWViewsEditor::~SWViewsEditor()
+{
 }
 
-bool SWViewsEditor::isValid() const {
+//-----------------------------------------------------------------------------
+// Function: SWViewsEditor::isValid()
+//-----------------------------------------------------------------------------
+bool SWViewsEditor::isValid() const
+{
 	return model_.isValid();
 }
 
-void SWViewsEditor::refresh() {
+//-----------------------------------------------------------------------------
+// Function: SWViewsEditor::refresh()
+//-----------------------------------------------------------------------------
+void SWViewsEditor::refresh()
+{
 	view_.update();
 }
 
-void SWViewsEditor::showEvent( QShowEvent* event ) {
+//-----------------------------------------------------------------------------
+// Function: SWViewsEditor::showEvent()
+//-----------------------------------------------------------------------------
+void SWViewsEditor::showEvent(QShowEvent* event)
+{
 	QWidget::showEvent(event);
 	emit helpUrlRequested("componenteditor/swviews.html");
 }

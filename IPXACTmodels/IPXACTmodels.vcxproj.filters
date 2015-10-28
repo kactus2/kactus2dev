@@ -218,16 +218,10 @@
     <ClCompile Include="common\Extendable.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
-    <ClCompile Include="bspbuildcommand.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="generaldeclarations.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GenericVendorExtension.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="swbuildcommand.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="vlnv.cpp">
@@ -1079,6 +1073,12 @@
     <ClCompile Include="kactusExtensions\ComDefinition.cpp">
       <Filter>Source Files\kactusExtensions</Filter>
     </ClCompile>
+    <ClCompile Include="kactusExtensions\SWFileBuilder.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusExtensions\BSPBuildCommand.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BusDefinition\BusDefinition.h">
@@ -1135,9 +1135,6 @@
     <ClInclude Include="bspbuildcommand.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="buildcommand.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="generaldeclarations.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1145,9 +1142,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ipxactmodels_global.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="swbuildcommand.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="VendorExtension.h">
@@ -1457,6 +1451,12 @@
       <Filter>Header Files\kactusExtensions</Filter>
     </ClInclude>
     <ClInclude Include="kactusExtensions\ComDefinition.h">
+      <Filter>Header Files\kactusExtensions</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusExtensions\SWFileBuilder.h">
+      <Filter>Header Files\kactusExtensions</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusExtensions\BSPBuildCommand.h">
       <Filter>Header Files\kactusExtensions</Filter>
     </ClInclude>
   </ItemGroup>

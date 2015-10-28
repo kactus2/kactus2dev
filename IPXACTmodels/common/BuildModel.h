@@ -87,7 +87,7 @@ public:
      */
     void setReplaceDefaultFlags(QString const& newReplaceDefaultFlags);
 
-protected:
+private:
 
     //! Defines a compiler or assembler tool for processing files.
 	QString command_;

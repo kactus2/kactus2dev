@@ -1,68 +1,64 @@
-/* 
- *	Created on:	3.4.2013
- *	Author:		Antti Kamppi
- *	File name:	bspbuildeditor.cpp
- *	Project:		Kactus 2
-*/
+//-----------------------------------------------------------------------------
+// File: bspbuildeditor.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 03.04.2013
+//
+// Description:
+// The editor to set the BSP build options for an SW view of a HW component.
+//-----------------------------------------------------------------------------
 
 #include "bspbuildeditor.h"
-#include <common/widgets/fileTypeSelector/filetypeselector.h>
-#include <common/widgets/cpuSelector/cpuselector.h>
 
-#include <QGridLayout>
+#include "cpuselector.h"
+
+#include <common/widgets/fileTypeSelector/filetypeselector.h>
+
+#include <IPXACTmodels/Component/Component.h>
+
+#include <IPXACTmodels/kactusExtensions/BSPBuildCommand.h>
+
+#include <QFormLayout>
 #include <QLabel>
 #include <QHBoxLayout>
 #include <QSizePolicy>
 
-BSPBuildEditor::BSPBuildEditor(QSharedPointer<BSPBuildCommand> BSPCommand,
-	QSharedPointer<Component> component, 
-	QWidget *parent):
+//-----------------------------------------------------------------------------
+// Function: BSPBuildEditor::BSPBuildEditor()
+//-----------------------------------------------------------------------------
+BSPBuildEditor::BSPBuildEditor(QSharedPointer<BSPBuildCommand> BSPCommand, QSharedPointer<Component> component, 
+    QWidget* parent):
 QGroupBox(tr("BSP build options"), parent),
-bspCommand_(BSPCommand),
-fileType_(NULL),
-command_(NULL),
-arguments_(NULL),
-cpuName_(NULL) {
+    bspCommand_(BSPCommand),
+    fileTypeSelector_(new FileTypeSelector(this)),
+    commandEditor_(new QLineEdit(this)),
+    argumentsEditor_(new QLineEdit(this)),
+    cpuSelector_(new CpuSelector(component, this))
+{
+	fileTypeSelector_->setMinimumWidth(BSPBuildEditor::LINE_WIDTH);
+	connect(fileTypeSelector_, SIGNAL(fileTypeSelected(QString const&)),
+		this, SLOT(onFileTypeChange(QString const&)), Qt::UniqueConnection);
 
-	QLabel* fileTypeLabel = new QLabel(tr("File type"), this);
+	commandEditor_->setPlaceholderText(tr("Command to build the BSP"));
+	commandEditor_->setMinimumWidth(BSPBuildEditor::LINE_WIDTH);
+	connect(commandEditor_, SIGNAL(textEdited(QString const&)),
+		this, SLOT(onCommandChange(QString const&)), Qt::UniqueConnection);
 
-	fileType_ = new FileTypeSelector(this);
-	fileType_->setMinimumWidth(BSPBuildEditor::LINE_WIDTH);
-	connect(fileType_, SIGNAL(fileTypeSelected(const QString&)),
-		this, SLOT(onFileTypeChange(const QString&)), Qt::UniqueConnection);
+	argumentsEditor_->setPlaceholderText(tr("Arguments for the build command"));
+	argumentsEditor_->setMinimumWidth(BSPBuildEditor::LINE_WIDTH);
+	connect(argumentsEditor_, SIGNAL(textEdited(QString const&)),
+		this, SLOT(onArgumentChange(QString const&)), Qt::UniqueConnection);
 
-	QLabel* comLabel = new QLabel(tr("Command"), this);
+	cpuSelector_->setMinimumWidth(BSPBuildEditor::LINE_WIDTH);
+	connect(cpuSelector_, SIGNAL(cpuSelected(QString const&)),
+		this, SLOT(onCpuChange(QString const&)), Qt::UniqueConnection);
 
-	command_ = new QLineEdit(this);
-	command_->setPlaceholderText(tr("Command to build the BSP"));
-	command_->setMinimumWidth(BSPBuildEditor::LINE_WIDTH);
-	connect(command_, SIGNAL(textEdited(const QString&)),
-		this, SLOT(onCommandChange(const QString&)), Qt::UniqueConnection);
-
-	QLabel* argLabel = new QLabel(tr("Arguments"), this);
-
-	arguments_ = new QLineEdit(this);
-	arguments_->setPlaceholderText(tr("Arguments for the build command"));
-	arguments_->setMinimumWidth(BSPBuildEditor::LINE_WIDTH);
-	connect(arguments_, SIGNAL(textEdited(const QString&)),
-		this, SLOT(onArgumentChange(const QString&)), Qt::UniqueConnection);
-
-	QLabel* cpuLabel = new QLabel(tr("CPU name"), this);
-
-	cpuName_ = new CpuSelector(component, this); 
-	cpuName_->setMinimumWidth(BSPBuildEditor::LINE_WIDTH);
-	connect(cpuName_, SIGNAL(cpuSelected(const QString&)),
-		this, SLOT(onCpuChange(const QString&)), Qt::UniqueConnection);
-
-	QGridLayout* layout = new QGridLayout();
-	layout->addWidget(fileTypeLabel, 0, 0, Qt::AlignLeft);
-	layout->addWidget(fileType_, 0, 1, Qt::AlignLeft);
-	layout->addWidget(comLabel, 1, 0, Qt::AlignLeft);
-	layout->addWidget(command_, 1, 1, Qt::AlignLeft);
-	layout->addWidget(argLabel, 2, 0, Qt::AlignLeft);
-	layout->addWidget(arguments_, 2, 1, Qt::AlignLeft);
-	layout->addWidget(cpuLabel, 3, 0, Qt::AlignLeft);
-	layout->addWidget(cpuName_, 3, 1, Qt::AlignLeft);
+	QFormLayout* layout = new QFormLayout();
+	layout->addRow(tr("File type"), fileTypeSelector_);
+    layout->addRow(tr("Command"), commandEditor_);
+	layout->addRow(tr("Arguments"), argumentsEditor_);
+	layout->addRow(tr("CPU name"), cpuSelector_);
 
 	QHBoxLayout* spacerLayout = new QHBoxLayout(this);
 	spacerLayout->addLayout(layout);
@@ -71,38 +67,69 @@ cpuName_(NULL) {
 	setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
 }
 
-BSPBuildEditor::~BSPBuildEditor() {
+//-----------------------------------------------------------------------------
+// Function: BSPBuildEditor::~BSPBuildEditor()
+//-----------------------------------------------------------------------------
+BSPBuildEditor::~BSPBuildEditor()
+{
 }
 
-bool BSPBuildEditor::isValid() const {
+//-----------------------------------------------------------------------------
+// Function: BSPBuildEditor::isValid()
+//-----------------------------------------------------------------------------
+bool BSPBuildEditor::isValid() const
+{
 	return true;
 }
 
-void BSPBuildEditor::refresh() {
-	fileType_->refresh();
-	fileType_->selectFileType(bspCommand_->getFileType());
-	command_->setText(bspCommand_->getCommand());
-	arguments_->setText(bspCommand_->getArguments());
-	cpuName_->refresh();
-	cpuName_->selectCpu(bspCommand_->getCPUName());
+//-----------------------------------------------------------------------------
+// Function: BSPBuildEditor::refresh()
+//-----------------------------------------------------------------------------
+void BSPBuildEditor::refresh()
+{
+	fileTypeSelector_->refresh();
+	fileTypeSelector_->selectFileType(bspCommand_->getFileType());
+
+	commandEditor_->setText(bspCommand_->getCommand());
+
+	argumentsEditor_->setText(bspCommand_->getArguments());
+
+	cpuSelector_->refresh();
+	cpuSelector_->selectCpu(bspCommand_->getCPUName());
 }
 
-void BSPBuildEditor::onFileTypeChange( const QString& fileType ) {
+//-----------------------------------------------------------------------------
+// Function: BSPBuildEditor::onFileTypeChange()
+//-----------------------------------------------------------------------------
+void BSPBuildEditor::onFileTypeChange(QString const& fileType)
+{
 	bspCommand_->setFileType(fileType);
 	emit contentChanged();
 }
 
-void BSPBuildEditor::onCommandChange( const QString& newCom ) {
+//-----------------------------------------------------------------------------
+// Function: BSPBuildEditor::onCommandChange()
+//-----------------------------------------------------------------------------
+void BSPBuildEditor::onCommandChange(QString const& newCom)
+{
 	bspCommand_->setCommand(newCom);
 	emit contentChanged();
 }
 
-void BSPBuildEditor::onArgumentChange( const QString& newArg ) {
+//-----------------------------------------------------------------------------
+// Function: BSPBuildEditor::onArgumentChange()
+//-----------------------------------------------------------------------------
+void BSPBuildEditor::onArgumentChange(QString const& newArg)
+{
 	bspCommand_->setArguments(newArg);
 	emit contentChanged();
 }
 
-void BSPBuildEditor::onCpuChange( const QString& cpuName ) {
+//-----------------------------------------------------------------------------
+// Function: BSPBuildEditor::onCpuChange()
+//-----------------------------------------------------------------------------
+void BSPBuildEditor::onCpuChange(QString const& cpuName)
+{
 	bspCommand_->setCPUName(cpuName);
 	emit contentChanged();
 }

@@ -38,7 +38,7 @@ public:
         // The build command of the file set where file belongs to.
         QSharedPointer<FileBuilder> fileSetBuildCmd;
         // The build command of the active software view of the software instance.
-        QSharedPointer<SWBuildCommand> swBuildCmd;
+        QSharedPointer<SWFileBuilder> swBuildCmd;
 		// The resolved compiler for the object file.
 		QString compiler;
 		// The resolved flags for the object file.
@@ -59,7 +59,7 @@ public:
         // Parsed files found in software views of software components.
         QList<QSharedPointer<MakeObjectData> > swObjects;
         // The build command of the active software view of the hardware instance.
-        QSharedPointer<SWBuildCommand> hwBuildCmd;
+        QSharedPointer<SWFileBuilder> hwBuildCmd;
         // Flags passed down from software views.
         QStringList softViewFlags;
         // The name of the instance.

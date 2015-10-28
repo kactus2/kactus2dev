@@ -8,12 +8,11 @@
 #ifndef FILESELECTOR_H
 #define FILESELECTOR_H
 
-#include <IPXACTmodels/component.h>
-
 #include <QComboBox>
 #include <QSharedPointer>
 #include <QStringList>
 
+class Component;
 /*! \brief Used to select one file from the component's file sets.
  *
  */

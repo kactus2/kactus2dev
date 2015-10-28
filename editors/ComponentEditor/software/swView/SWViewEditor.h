@@ -38,10 +38,8 @@ public:
      *      @param [in] libHandler   The library handler.
      *      @param [in] parent       The parent widget.
      */
-	SWViewEditor(QSharedPointer<Component> component,
-		QSharedPointer<SWView> swView,
-		LibraryInterface* libHandler, 
-		QWidget *parent);
+	SWViewEditor(QSharedPointer<Component> component, QSharedPointer<SWView> swView,
+		LibraryInterface* libHandler, QWidget* parent);
 
     /*!
      *  Destructor.
@@ -55,21 +53,21 @@ public:
 	 */
 	bool isValid() const;
 
-	/*! \brief Reload the information from the model to the editor.
+	/*! Reload the information from the model to the editor.
 	*/
 	virtual void refresh();
 
 protected:
 
-	//! \brief Handler for widget's show event
+	//! Handler for widget's show event
 	virtual void showEvent(QShowEvent* event);
 
 private slots:
 
-	//! \brief Handler for changes in hierarchy reference.
+	//! Handler for changes in hierarchy reference.
 	void onHierRefChange();
 
-	//! \brief Handler for changes in file set references.
+	//! Handler for changes in file set references.
 	void onFileSetRefChange();
 
 private:
@@ -86,25 +84,25 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! \brief Pointer to the instance that manages the library.
+    //! Pointer to the instance that manages the library.
     LibraryInterface* libHandler_;
 
-    //! \brief Pointer to the view being edited.
-    SWView* view_;
+    //! Pointer to the view being edited.
+    SWView* swView_;
 
-    //! \brief Editor to set the name, display name and description of the view.
+    //! Editor to set the name, display name and description of the view.
     NameGroupEditor nameEditor_;
 
     //! VLNV editor for the hierarchy reference.
     VLNVEditor* hierRefEditor_;
 
-	//! \brief Editor to set the file set references of the SW view.
+	//! Editor to set the file set references of the SW view.
 	 FileSetRefEditor* fileSetRefEditor_;
 
-	//! \brief Editor to set the SW build commands for the SW view.
+	//! Editor to set the SW build commands for the SW view.
 	 SWBuildCommandEditor* swBuildCommands_;
 
-	//! \brief Editor to set the BSP build commands for the SW view.
+	//! Editor to set the BSP build commands for the SW view.
 	 BSPBuildEditor* bspEditor_;
 };
 

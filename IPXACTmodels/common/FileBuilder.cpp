@@ -72,53 +72,6 @@ FileBuilder::~FileBuilder()
 
 }
 
-/*
-bool FileBuilder::isValid( QStringList& errorList, const QString& parentIdentifier ) const {
-	if (fileTypes_.isEmpty() && userFileTypes_.isEmpty()) {
-		errorList.append(QObject::tr("Mandatory file type missing in file builder within %1").arg(
-			parentIdentifier));
-		return false;
-	}
-	// if at least one file type is specified then make sure it is not empty
-	else {
-		foreach (QString fileType, fileTypes_) {
-			if (fileType.isEmpty()) {
-				errorList.append(QObject::tr("Empty file type specified for file "
-					"builder within %1").arg(parentIdentifier));
-				return false;
-			}
-		}
-		foreach (QString userFileType, userFileTypes_) {
-			if (userFileType.isEmpty()) {
-				errorList.append(QObject::tr("Empty user file type specified for file "
-					"builder within %1").arg(parentIdentifier));
-				return false;
-			}
-		}
-	}
-	return true;
-}*/
-/*
-bool FileBuilder::isValid() const {
-	if (fileTypes_.isEmpty() && userFileTypes_.isEmpty()) {
-		return false;
-	}
-	// if at least one file type is specified then make sure it is not empty
-	else {
-		foreach (QString fileType, fileTypes_) {
-			if (fileType.isEmpty()) {
-				return false;
-			}
-		}
-		foreach (QString userFileType, userFileTypes_) {
-			if (userFileType.isEmpty()) {
-				return false;
-			}
-		}
-	}
-	return true;
-}*/
-
 //-----------------------------------------------------------------------------
 // Function: FileBuilder::getFileType()
 //-----------------------------------------------------------------------------

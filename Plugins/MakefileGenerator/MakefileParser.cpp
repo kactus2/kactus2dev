@@ -568,7 +568,7 @@ void MakefileParser::parseFileSet(QSharedPointer<FileSet> fset, QString instance
 		if( pickSWView )
 		{
 			// Find build command of matching file type from the software view.
-			foreach( QSharedPointer<SWBuildCommand> buildCmd, *view->getSWBuildCommands() )
+			foreach( QSharedPointer<SWFileBuilder> buildCmd, *view->getSWBuildCommands() )
 			{
 				if ( file->getFileTypes()->contains( buildCmd->getFileType() ) )
 				{
@@ -624,7 +624,7 @@ void MakefileParser::findHardwareBuildCommand(MakeFileData &makeData, QSharedPoi
     foreach(QSharedPointer<MakeObjectData> mod, makeData.swObjects)
     {
         // Find build command from the software view of the hardware component matching file type.
-        foreach( QSharedPointer<SWBuildCommand> buildCmd, *hardView->getSWBuildCommands() )
+        foreach( QSharedPointer<SWFileBuilder> buildCmd, *hardView->getSWBuildCommands() )
         {
             if ( mod->file->getFileTypes()->contains( buildCmd->getFileType() ) )
             {
@@ -641,7 +641,7 @@ void MakefileParser::findHardwareBuildCommand(MakeFileData &makeData, QSharedPoi
 QString MakefileParser::getFileCompiler(QSharedPointer<MakeObjectData> mod, QSharedPointer<SWView> hardView) const
 {
 	QString compiler;
-	QSharedPointer<SWBuildCommand> swbc;
+	QSharedPointer<SWFileBuilder> swbc;
 
 	// This mesh does following:
 	// 1. No file builder -> use fileSet builder
@@ -655,7 +655,7 @@ QString MakefileParser::getFileCompiler(QSharedPointer<MakeObjectData> mod, QSha
 			if ( mod->swBuildCmd == 0 || mod->swBuildCmd->getCommand().isEmpty() )
 			{
 				// Find build command from the software view of the hardware component matching file type.
-				foreach( QSharedPointer<SWBuildCommand> buildCmd, *hardView->getSWBuildCommands() )
+				foreach( QSharedPointer<SWFileBuilder> buildCmd, *hardView->getSWBuildCommands() )
 				{
 					if ( mod->file->getFileTypes()->contains( buildCmd->getFileType() ) )
 					{
@@ -732,7 +732,8 @@ QString MakefileParser::getFileFlags(QSharedPointer<Component> component, QShare
 				cFlags += " " + mod->swBuildCmd->getFlags();
 			}   
 
-			if ( ( mod->swBuildCmd == 0 || !mod->swBuildCmd->getReplaceDefaultFlags() ) && mfd.hwBuildCmd != 0 )
+			if ( ( mod->swBuildCmd == 0 || mod->swBuildCmd->getReplaceDefaultFlags() != QLatin1String("true"))
+                && mfd.hwBuildCmd != 0 )
 			{
 				cFlags += " " + mfd.hwBuildCmd->getFlags();
 			}

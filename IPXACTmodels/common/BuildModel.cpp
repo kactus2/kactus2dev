@@ -11,33 +11,6 @@
 
 #include "BuildModel.h"
 
-/*
-// the constructor
-BuildModel::BuildModel(QDomNode &node): command_(),
-commandAttributes_(), flags_(), flagAttributes_(),
-replaceDefaultFlags_(false), defaultFlagAttributes_() {
-
-	for (int i = 0; i < node.childNodes().count(); ++i) {
-		QDomNode tempNode = node.childNodes().at(i);
-
-		if (tempNode.nodeName() == QString("spirit:command")) {
-			command_ = tempNode.childNodes().at(0).nodeValue();
-			commandAttributes_ = XmlUtils::parseAttributes(tempNode);
-		}
-
-		else if (tempNode.nodeName() == QString("spirit:flags")) {
-			flags_ = tempNode.childNodes().at(0).nodeValue();
-			flagAttributes_ = XmlUtils::parseAttributes(tempNode);
-		}
-
-		else if (tempNode.nodeName() == QString("spirit:replaceDefaultFlags")) {
-			QString temp = tempNode.childNodes().at(0).nodeValue();
-			replaceDefaultFlags_ = General::str2Bool(temp, false);
-			defaultFlagAttributes_ = XmlUtils::parseAttributes(tempNode);
-		}
-	}
-}*/
-
 //-----------------------------------------------------------------------------
 // Function: BuildModel::BuildModel()
 //-----------------------------------------------------------------------------

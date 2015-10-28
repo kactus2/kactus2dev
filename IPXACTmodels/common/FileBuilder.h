@@ -58,21 +58,6 @@ public:
 	 */
 	virtual ~FileBuilder();
 
-	/*! \brief Check if the FileBuilder is in a valid state.
-	*
-	* \param errorList The list to add the possible error messages to.
-	* \param parentIdentifier String from parent to help to identify the location of the error.
-	*
-	* \return bool True if the state is valid and writing is possible.
-	*/
-	//bool isValid(QStringList& errorList, const QString& parentIdentifier) const;
-
-	/*! \brief Check if the file builder is in a valid state.
-	 *
-	 * \return bool True if the state is valid and writing is possible.
-	*/
-	//bool isValid() const;
-
 	/*!
 	 *  Get the type of the file.
 	 *

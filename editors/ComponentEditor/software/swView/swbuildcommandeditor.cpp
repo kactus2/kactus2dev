@@ -1,69 +1,88 @@
-/* 
- *	Created on:	2.4.2013
- *	Author:		Antti Kamppi
- *	File name:	swbuildcommandeditor.cpp
- *	Project:		Kactus 2
-*/
+//-----------------------------------------------------------------------------
+// File: swbuildcommandeditor.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 02.04.2013
+//
+// Description:
+// Editor to set the SW build commands for SW view of a component.
+//-----------------------------------------------------------------------------
 
 #include "swbuildcommandeditor.h"
-#include <common/views/EditableTableView/editabletableview.h>
+
 #include "swbuildcommandmodel.h"
 #include "swbuilddelegate.h"
+
+#include <common/views/EditableTableView/editabletableview.h>
+
+#include <editors/ComponentEditor/fileBuilders/FileBuilderColumns.h>
+
+#include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
 #include <QVBoxLayout>
 
+//-----------------------------------------------------------------------------
+// Function: SWBuildCommandEditor::SWBuildCommandEditor()
+//-----------------------------------------------------------------------------
 SWBuildCommandEditor::SWBuildCommandEditor(QSharedPointer<Component> component,
-	QList<QSharedPointer<SWBuildCommand> >& swBuildCommands,
+	QSharedPointer<QList<QSharedPointer<SWFileBuilder> > > swBuildCommands,
 	QWidget *parent):
 QGroupBox(tr("SW build commands"), parent),
-view_(NULL),
-proxy_(NULL),
-model_(NULL),
-component_(component) {
-
-	view_ = new EditableTableView(this);
-	// set view to be sortable
+view_(new EditableTableView(this)),
+proxy_(new QSortFilterProxyModel(this)),
+model_(new SWBuildCommandModel(component, swBuildCommands, this)),
+component_(component)
+{
 	view_->setSortingEnabled(true);
-	// items can not be dragged
 	view_->setItemsDraggable(false);
-
-	proxy_ = new QSortFilterProxyModel(this);
-
-	model_ = new SWBuildCommandModel(component, swBuildCommands, this);
 
 	proxy_->setSourceModel(model_);
 
 	view_->setItemDelegate(new SWBuildDelegate(this));
 	view_->setModel(proxy_);
+
 	// sort the view
 	view_->sortByColumn(0, Qt::AscendingOrder);
 
 	// Software components do not contain the command
-	view_->setColumnHidden(SWBuildDelegate::COMMAND_COLUMN, component->getComponentImplementation() == KactusAttribute::SW);
+	view_->setColumnHidden(FileBuilderColumns::COMMAND_COLUMN, 
+        component->getImplementation() == KactusAttribute::SW);
 
 	// create the layout, add widgets to it
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(view_);
 
-	connect(model_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
 	connect(view_, SIGNAL(addItem(const QModelIndex&)),
-		model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
+        model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
 	connect(view_, SIGNAL(removeItem(const QModelIndex&)),
 		model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 }
 
-SWBuildCommandEditor::~SWBuildCommandEditor() {
+//-----------------------------------------------------------------------------
+// Function: SWBuildCommandEditor::~SWBuildCommandEditor()
+//-----------------------------------------------------------------------------
+SWBuildCommandEditor::~SWBuildCommandEditor()
+{
 }
 
-bool SWBuildCommandEditor::isValid() const {
+//-----------------------------------------------------------------------------
+// Function: SWBuildCommandEditor::isValid()
+//-----------------------------------------------------------------------------
+bool SWBuildCommandEditor::isValid() const
+{
 	return model_->isValid();
 }
 
-void SWBuildCommandEditor::refresh() {
-	// Software components do not contain the command
-	view_->setColumnHidden(SWBuildDelegate::COMMAND_COLUMN, component_->getComponentImplementation() == KactusAttribute::SW);
+//-----------------------------------------------------------------------------
+// Function: SWBuildCommandEditor::refresh()
+//-----------------------------------------------------------------------------
+void SWBuildCommandEditor::refresh()
+{
+	view_->setColumnHidden(FileBuilderColumns::COMMAND_COLUMN, 
+        component_->getImplementation() == KactusAttribute::SW);
 	view_->update();
 }

@@ -12,15 +12,16 @@
 #ifndef SWVIEW_H
 #define SWVIEW_H
 
+#include <IPXACTmodels/ipxactmodels_global.h>
 
 #include <IPXACTmodels/common/NameGroup.h>
-
 #include <IPXACTmodels/common/FileBuilder.h>
-#include <IPXACTmodels/swbuildcommand.h>
-#include <IPXACTmodels/bspbuildcommand.h>
-#include <IPXACTmodels/vlnv.h>
-#include <IPXACTmodels/ipxactmodels_global.h>
+
 #include <IPXACTmodels/VendorExtension.h>
+#include <IPXACTmodels/vlnv.h>
+
+#include <IPXACTmodels/kactusExtensions/BSPBuildCommand.h>
+#include <IPXACTmodels/kactusExtensions/SWFileBuilder.h>
 
 #include <QString>
 #include <QSharedPointer>
@@ -101,7 +102,7 @@ public:
 	 *
 	 *      @return True if contents are valid.
 	 */
-	bool isValid(const QStringList& fileSetNames, const QStringList& cpuNames, QStringList& errorList,
+	bool isValid(QStringList const& fileSetNames, QStringList const& cpuNames, QStringList& errorList,
         QString const& parentIdentifier) const;
 
 	/*!
@@ -112,7 +113,7 @@ public:
 	 * 
 	 *      @return True if contents are valid.
 	 */
-	bool isValid(const QStringList& fileSetNames, const QStringList& cpuNames) const;
+	bool isValid(QStringList const& fileSetNames, QStringList const& cpuNames) const;
 
 	/*!
      *  Get pointer to the hierarchical design for this view.
@@ -133,7 +134,7 @@ public:
 	 *
 	 *      @return QStringList containing the file set names.
 	 */
-	const QStringList& getFileSetRefs() const;
+	QStringList getFileSetRefs() const;
 
 	/*!
      *  Get the file set references of the SW view.
@@ -147,7 +148,7 @@ public:
 	 *
 	 *      @param [in] fileSetRefs     Contains the file set names to set.
 	 */
-	void setFileSetRefs(const QStringList& fileSetRefs);
+	void setFileSetRefs(QStringList const& fileSetRefs);
 
 	/*!
      *  Add a file set reference to the SW view.
@@ -157,14 +158,14 @@ public:
 	void addFileSetRef(const QString& fileSetName);
 
 	//! Get the SW build commands of the SW view.
-    QSharedPointer<QList<QSharedPointer<SWBuildCommand> > > getSWBuildCommands() const;
+    QSharedPointer<QList<QSharedPointer<SWFileBuilder> > > getSWBuildCommands() const;
 
     /*!
      *  Set the sw build commands.
      *
      *      @param [in] newSWBuildCommands  Pointer to a list of new sw build commands.
      */
-    void setSWBuildCommands(QSharedPointer<QList<QSharedPointer<SWBuildCommand> > > newSWBuildCommands);
+    void setSWBuildCommands(QSharedPointer<QList<QSharedPointer<SWFileBuilder> > > newSWBuildCommands);
 
 	//! Get the build command for the board support package.
 	QSharedPointer<BSPBuildCommand> getBSPBuildCommand();
@@ -194,15 +195,6 @@ private:
      */
     void copyBSPBuildCommand(const SWView& other);
 
-    /*!
-     *  Remove white space from a string.
-     *
-     *      @param [in] str     The string to be worked on.
-     *
-     *      @return The new string.
-     */
-    QString removeWhiteSpace(QString str);
-
 	//! References a hierarchical design, mandatory only if the view is used to reference a hierarchical design.
 	VLNV hierarchyRef_;
 
@@ -210,7 +202,7 @@ private:
 	QStringList filesetRefs_;
 
 	//! Contains the SW build commands for SW view.
-    QSharedPointer<QList<QSharedPointer<SWBuildCommand> > > swBuildCommands_;
+    QSharedPointer<QList<QSharedPointer<SWFileBuilder> > > swBuildCommands_;
 
 	//! Contains the command options to build the BSP package for HW component.
 	QSharedPointer<BSPBuildCommand> bspCommand_;

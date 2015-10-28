@@ -996,7 +996,7 @@ void tst_MakefileGenerator::noHardWare()
 	generator.generate(outputDir_,outputDir_,"tsydemi");
 	const QList<MakefileParser::MakeFileData> datas = parser.getParsedData();
 	QCOMPARE( datas.size(), 1 );
-	QCOMPARE( datas.first().hwBuildCmd, QSharedPointer<SWBuildCommand>() );
+	QCOMPARE( datas.first().hwBuildCmd, QSharedPointer<SWFileBuilder>() );
 }
 
 // Yield no makefile, if no files are present.
@@ -1528,7 +1528,7 @@ void tst_MakefileGenerator::basicGeneration()
 	data.append(MakefileParser::MakeFileData());
 	MakefileParser::MakeFileData& makeData = data.last();
 
-	makeData.hwBuildCmd = QSharedPointer<SWBuildCommand>( new SWBuildCommand() );
+	makeData.hwBuildCmd = QSharedPointer<SWFileBuilder>( new SWFileBuilder() );
 	makeData.hwBuildCmd->setCommand("gcc");
 	makeData.name = "software_0";
 	makeData.hwBuildCmd->setFlags("-joku");
@@ -1561,7 +1561,7 @@ void tst_MakefileGenerator::multiObjectGeneration()
 	data.append(MakefileParser::MakeFileData());
 	MakefileParser::MakeFileData& makeData = data.last();
 
-	makeData.hwBuildCmd = QSharedPointer<SWBuildCommand>( new SWBuildCommand() );
+	makeData.hwBuildCmd = QSharedPointer<SWFileBuilder>( new SWFileBuilder() );
 	makeData.hwBuildCmd->setCommand("gcc");
 	makeData.name = "software_0";
 
@@ -1593,7 +1593,7 @@ void tst_MakefileGenerator::multiFileGeneration()
 	data.append(MakefileParser::MakeFileData());
 	MakefileParser::MakeFileData& makeData1 = data.last();
 
-	makeData1.hwBuildCmd = QSharedPointer<SWBuildCommand>( new SWBuildCommand() );
+	makeData1.hwBuildCmd = QSharedPointer<SWFileBuilder>( new SWFileBuilder() );
 	makeData1.hwBuildCmd->setCommand("gcc");
 	makeData1.name = "software_0";
 	makeData1.hwBuildCmd->setFlags("-joku");
@@ -1608,7 +1608,7 @@ void tst_MakefileGenerator::multiFileGeneration()
 	data.append(MakefileParser::MakeFileData());
 	MakefileParser::MakeFileData& makeData2 = data.last();
 
-	makeData2.hwBuildCmd = QSharedPointer<SWBuildCommand>( new SWBuildCommand() );
+	makeData2.hwBuildCmd = QSharedPointer<SWFileBuilder>( new SWFileBuilder() );
 	makeData2.hwBuildCmd->setCommand("j33");
 	makeData2.name = "crapware_0";
 	makeData2.hwBuildCmd->setFlags("-yks");
@@ -1644,7 +1644,7 @@ void tst_MakefileGenerator::includeFile()
 	data.append(MakefileParser::MakeFileData());
 	MakefileParser::MakeFileData& makeData = data.last();
 
-	makeData.hwBuildCmd = QSharedPointer<SWBuildCommand>( new SWBuildCommand() );
+	makeData.hwBuildCmd = QSharedPointer<SWFileBuilder>( new SWFileBuilder() );
 	makeData.hwBuildCmd->setCommand("gcc");
 	makeData.name = "software_0";
 
@@ -1678,7 +1678,7 @@ void tst_MakefileGenerator::noCompiler()
 	data.append(MakefileParser::MakeFileData());
 	MakefileParser::MakeFileData& makeData = data.last();
 
-	makeData.hwBuildCmd = QSharedPointer<SWBuildCommand>( new SWBuildCommand() );
+	makeData.hwBuildCmd = QSharedPointer<SWFileBuilder>( new SWFileBuilder() );
 	makeData.hwBuildCmd->setCommand("gcc");
 	makeData.name = "software_0";
 
@@ -1891,12 +1891,19 @@ void tst_MakefileGenerator::getFile(QSharedPointer<File>& file, QSharedPointer<C
 void tst_MakefileGenerator::addCmd2View(QSharedPointer<SWView> view, QString command, QString fileType,
     QString flags, bool replace)
 {
-    QSharedPointer<QList<QSharedPointer<SWBuildCommand> > > coms = view->getSWBuildCommands();
-    QSharedPointer<SWBuildCommand> cmd = QSharedPointer<SWBuildCommand>(new SWBuildCommand());
+    QSharedPointer<QList<QSharedPointer<SWFileBuilder> > > coms = view->getSWBuildCommands();
+    QSharedPointer<SWFileBuilder> cmd = QSharedPointer<SWFileBuilder>(new SWFileBuilder());
     cmd->setCommand(command);
     cmd->setFileType(fileType);
     cmd->setFlags(flags);
-    cmd->setReplaceDefaultFlags(replace);
+    if (replace)
+    {
+        cmd->setReplaceDefaultFlags("true");
+    }
+    else
+    {
+        cmd->setReplaceDefaultFlags("false");
+    }
 	coms->append(cmd);
 }
 

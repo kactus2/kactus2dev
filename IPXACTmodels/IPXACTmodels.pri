@@ -8,7 +8,7 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 
 HEADERS += ./bspbuildcommand.h \
-    ./buildcommand.h \
+    ./kactusExtensions/BSPBuildCommand.h \
     ./librarycomponent.h \
     ./VendorExtension.h \
     ./vlnv.h \
@@ -17,7 +17,7 @@ HEADERS += ./bspbuildcommand.h \
     ./generaldeclarations.h \
     ./GenericVendorExtension.h \
     ./ipxactmodels_global.h \
-    ./swbuildcommand.h \
+    ./kactusExtensions/SWFileBuilder.h \
     ./kactusExtensions/ApiDefinition.h \
     ./kactusExtensions/ApiFunction.h \
     ./kactusExtensions/ApiFunctionParameter.h \
@@ -202,11 +202,11 @@ HEADERS += ./bspbuildcommand.h \
     ./Component/RemapStateWriter.h \
     ./Component/ViewReader.h \
     ./Component/ViewWriter.h
-SOURCES += ./bspbuildcommand.cpp \
+SOURCES += ./kactusExtensions/BSPBuildCommand.cpp \
     ./generaldeclarations.cpp \
     ./GenericVendorExtension.cpp \
     ./librarycomponent.cpp \
-    ./swbuildcommand.cpp \
+    ./kactusExtensions/SWFileBuilder.cpp \
     ./vlnv.cpp \
     ./XmlUtils.cpp \
     ./kactusExtensions/ApiDefinition.cpp \

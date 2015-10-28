@@ -548,7 +548,7 @@ void ComponentReader::parseSwViews(QDomNode const& swViewsNode, QSharedPointer<C
         QDomNodeList swBuildCommandNodes = singleSWViewElement.elementsByTagName("kactus2:SWBuildCommand");
         for (int commandIndex = 0; commandIndex < swBuildCommandNodes.count(); ++commandIndex)
         {
-            QSharedPointer<SWBuildCommand> command(new SWBuildCommand(swBuildCommandNodes.at(commandIndex)));
+            QSharedPointer<SWFileBuilder> command(new SWFileBuilder(swBuildCommandNodes.at(commandIndex)));
             newSWView->getSWBuildCommands()->append(command);
         }
 

@@ -7,6 +7,8 @@
 
 #include "fileselector.h"
 
+#include <IPXACTmodels/Component/Component.h>
+
 #include <QFileInfo>
 
 FileSelector::FileSelector( QSharedPointer<Component> component, QWidget *parent ):

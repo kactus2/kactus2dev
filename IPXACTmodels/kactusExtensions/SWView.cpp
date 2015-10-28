@@ -11,8 +11,6 @@
 
 #include "SWView.h"
 
-#include <QTextStream>
-
 //-----------------------------------------------------------------------------
 // Function: SWView::SWView()
 //-----------------------------------------------------------------------------
@@ -20,62 +18,55 @@ SWView::SWView(QDomNode& viewNode):
 NameGroup(),
 hierarchyRef_(),
 filesetRefs_(),
-swBuildCommands_(new QList<QSharedPointer<SWBuildCommand> > ()),
-bspCommand_(),
-isWithinHWComponent_(false)
+swBuildCommands_(new QList<QSharedPointer<SWFileBuilder> >()),
+bspCommand_()
 {
-    for (int i = 0; i < viewNode.childNodes().count(); ++i)
+    QDomElement swViewElement = viewNode.toElement();
+
+    setName(swViewElement.firstChildElement("ipxact:name").firstChild().nodeValue());
+
+    setDisplayName(swViewElement.firstChildElement("ipxact:displayName").firstChild().nodeValue());
+
+    setDescription(swViewElement.firstChildElement("ipxact:description").firstChild().nodeValue());
+
+    QDomElement hierarchyElement = swViewElement.firstChildElement("kactus2:hierarchyRef");
+    if (!hierarchyElement.isNull())
     {
-        QDomNode tempNode = viewNode.childNodes().at(i);
-        
-        if (tempNode.isComment())
-        {
-            continue;
-        }
-        else if (tempNode.nodeName() == "ipxact:name")
-        {
-            setName(tempNode.firstChild().nodeValue());
-        }
-        else if (tempNode.nodeName() == "ipxact:displayName")
-        {
-            setDisplayName(tempNode.firstChild().nodeValue());
-        }
-        else if (tempNode.nodeName() == "ipxact:description")
-        {
-            setDescription(tempNode.firstChild().nodeValue());
-        }
-        else if (tempNode.nodeName() == QString("kactus2:hierarchyRef"))
-        {
-            hierarchyRef_ = VLNV::createVLNV(tempNode, VLNV::DESIGN);
-        }
-        else if (tempNode.nodeName() == QString("kactus2:fileSetRef"))
-        {
-            QString ref = tempNode.childNodes().at(0).nodeValue();
-            ref = removeWhiteSpace(ref);
-            filesetRefs_.append(ref);
-        }
-        else if (tempNode.nodeName() == QString("kactus2:SWBuildCommand"))
-        {
-            QSharedPointer<SWBuildCommand> com(new SWBuildCommand(tempNode));
-            swBuildCommands_->append(com);
-        }
-        else if (tempNode.nodeName() == QString("kactus2:BSPBuildCommand"))
-        {
-            bspCommand_ = QSharedPointer<BSPBuildCommand>(new BSPBuildCommand(tempNode));
-        }
+        hierarchyRef_ = VLNV::createVLNV(hierarchyElement, VLNV::DESIGN);
+    }
+
+    QDomNodeList fileSetRefNodes = swViewElement.elementsByTagName("kactus2:fileSetRef");
+    int fileSetRefCount = fileSetRefNodes.count();
+    for (int i = 0; i < fileSetRefCount; i++)
+    {
+        QDomNode filesetNode = fileSetRefNodes.at(i);
+        filesetRefs_.append(filesetNode.firstChild().nodeValue());
+    }
+
+    QDomNodeList buildCommandNodes = swViewElement.elementsByTagName("kactus2:SWBuildCommand");
+    int buildCommandCount = buildCommandNodes.count();
+    for (int i = 0; i < buildCommandCount; i++)
+    {
+        QDomNode buildCommandNode = buildCommandNodes.at(i);
+        swBuildCommands_->append(QSharedPointer<SWFileBuilder>(new SWFileBuilder(buildCommandNode)));
+    }
+
+    QDomElement bspCommandElement = swViewElement.firstChildElement("kactus2:BSPBuildCommand");
+    if (!bspCommandElement.isNull())
+    {
+        bspCommand_ = QSharedPointer<BSPBuildCommand>(new BSPBuildCommand(bspCommandElement));
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: SWView::SWView()
 //-----------------------------------------------------------------------------
-SWView::SWView(const QString& name):
+SWView::SWView(QString const& name):
 NameGroup(name),
 hierarchyRef_(),
 filesetRefs_(),
-swBuildCommands_(new QList<QSharedPointer<SWBuildCommand> > ()),
-bspCommand_(),
-isWithinHWComponent_(false)
+swBuildCommands_(new QList<QSharedPointer<SWFileBuilder> > ()),
+bspCommand_()
 {
 
 }
@@ -87,9 +78,8 @@ SWView::SWView():
 NameGroup(),
 hierarchyRef_(),
 filesetRefs_(),
-swBuildCommands_(new QList<QSharedPointer<SWBuildCommand> > ()),
-bspCommand_(),
-isWithinHWComponent_(false)
+swBuildCommands_(new QList<QSharedPointer<SWFileBuilder> > ()),
+bspCommand_()
 {
 
 }
@@ -101,9 +91,8 @@ SWView::SWView(const SWView &other):
 NameGroup(other),
 hierarchyRef_(other.hierarchyRef_),
 filesetRefs_(other.filesetRefs_),
-swBuildCommands_(new QList<QSharedPointer<SWBuildCommand> > ()),
-bspCommand_(),
-isWithinHWComponent_(other.isWithinHWComponent_)
+swBuildCommands_(new QList<QSharedPointer<SWFileBuilder> > ()),
+bspCommand_()
 {
     copySwBuildCommands(other);
     copyBSPBuildCommand(other);
@@ -119,7 +108,6 @@ SWView & SWView::operator=(const SWView &other)
         NameGroup::operator=(other);
         hierarchyRef_ = other.hierarchyRef_;
         filesetRefs_ = other.filesetRefs_;
-        isWithinHWComponent_ = other.isWithinHWComponent_;
         
         swBuildCommands_->clear();
         copySwBuildCommands(other);
@@ -178,7 +166,10 @@ void SWView::write(QXmlStreamWriter& writer) const
 	if (hierarchyRef_.isValid())
     {
         writer.writeEmptyElement("kactus2:hierarchyRef");
-		hierarchyRef_.writeAsAttributes(writer);
+        writer.writeAttribute("vendor", hierarchyRef_.getVendor());
+        writer.writeAttribute("library", hierarchyRef_.getLibrary());
+        writer.writeAttribute("name", hierarchyRef_.getName());
+        writer.writeAttribute("version", hierarchyRef_.getVersion());
 	}
 
 	// write the file set references
@@ -188,13 +179,13 @@ void SWView::write(QXmlStreamWriter& writer) const
 	}
 
 	// write all SW build commands
-	foreach (QSharedPointer<SWBuildCommand> com, *swBuildCommands_)
+	foreach (QSharedPointer<SWFileBuilder> buildCommand, *swBuildCommands_)
     {
-        com->write(writer, isWithinHWComponent_);
+        buildCommand->write(writer);
 	}
 
 	// BSP only exists on HW components
-    if (isWithinHWComponent_ && bspCommand_)
+    if (bspCommand_)
     {
         bspCommand_->write(writer);
 	}
@@ -205,8 +196,8 @@ void SWView::write(QXmlStreamWriter& writer) const
 //-----------------------------------------------------------------------------
 // Function: SWView::isValid()
 //-----------------------------------------------------------------------------
-bool SWView::isValid(const QStringList& fileSetNames, const QStringList& cpuNames, QStringList& errorList,
-    const QString& parentIdentifier) const
+bool SWView::isValid(QStringList const& fileSetNames, QStringList const& cpuNames, QStringList& errorList,
+    QString const& parentIdentifier) const
 {
     bool valid = true;
     const QString thisIdentifier(QObject::tr("SW view %1").arg(name()));
@@ -233,7 +224,7 @@ bool SWView::isValid(const QStringList& fileSetNames, const QStringList& cpuName
 		}
 	}
 
-	foreach (QSharedPointer<SWBuildCommand> swCom, *swBuildCommands_)
+	foreach (QSharedPointer<SWFileBuilder> swCom, *swBuildCommands_)
     {
 		if (swCom && !swCom->isValid(errorList, thisIdentifier))
         {
@@ -252,7 +243,7 @@ bool SWView::isValid(const QStringList& fileSetNames, const QStringList& cpuName
 //-----------------------------------------------------------------------------
 // Function: SWView::isValid()
 //-----------------------------------------------------------------------------
-bool SWView::isValid(const QStringList& fileSetNames, const QStringList& cpuNames) const
+bool SWView::isValid(QStringList const& fileSetNames, QStringList const& cpuNames) const
 {
     if (name().isEmpty())
     {
@@ -273,7 +264,7 @@ bool SWView::isValid(const QStringList& fileSetNames, const QStringList& cpuName
 		}
 	}
 
-	foreach (QSharedPointer<SWBuildCommand> swCom, *swBuildCommands_)
+	foreach (QSharedPointer<SWFileBuilder> swCom, *swBuildCommands_)
     {
 		if (swCom && !swCom->isValid())
         {
@@ -300,7 +291,7 @@ VLNV SWView::getHierarchyRef() const
 //-----------------------------------------------------------------------------
 // Function: SWView::setHierarchyRef()
 //-----------------------------------------------------------------------------
-void SWView::setHierarchyRef(const VLNV& hierarchyRef)
+void SWView::setHierarchyRef(VLNV const& hierarchyRef)
 {
     hierarchyRef_ = hierarchyRef;
 }
@@ -308,7 +299,7 @@ void SWView::setHierarchyRef(const VLNV& hierarchyRef)
 //-----------------------------------------------------------------------------
 // Function: SWView::getFileSetRefs()
 //-----------------------------------------------------------------------------
-const QStringList& SWView::getFileSetRefs() const
+QStringList SWView::getFileSetRefs() const
 {
 	return filesetRefs_;
 }
@@ -324,7 +315,7 @@ QStringList SWView::getFileSetRefs()
 //-----------------------------------------------------------------------------
 // Function: SWView::setFileSetRefs()
 //-----------------------------------------------------------------------------
-void SWView::setFileSetRefs( const QStringList& fileSetRefs )
+void SWView::setFileSetRefs(QStringList const& fileSetRefs)
 {
     filesetRefs_.clear();
 	filesetRefs_ = fileSetRefs;
@@ -333,7 +324,7 @@ void SWView::setFileSetRefs( const QStringList& fileSetRefs )
 //-----------------------------------------------------------------------------
 // Function: SWView::getSWBuildCommands()
 //-----------------------------------------------------------------------------
-QSharedPointer<QList<QSharedPointer<SWBuildCommand> > > SWView::getSWBuildCommands() const
+QSharedPointer<QList<QSharedPointer<SWFileBuilder> > > SWView::getSWBuildCommands() const
 {
 	return swBuildCommands_;
 }
@@ -341,7 +332,7 @@ QSharedPointer<QList<QSharedPointer<SWBuildCommand> > > SWView::getSWBuildComman
 //-----------------------------------------------------------------------------
 // Function: SWView::setSWBuildCommands()
 //-----------------------------------------------------------------------------
-void SWView::setSWBuildCommands(QSharedPointer<QList<QSharedPointer<SWBuildCommand> > > newSWBuildCommands)
+void SWView::setSWBuildCommands(QSharedPointer<QList<QSharedPointer<SWFileBuilder> > > newSWBuildCommands)
 {
     swBuildCommands_ = newSWBuildCommands;
 }
@@ -370,7 +361,7 @@ void SWView::setBSPBuildCommand(QSharedPointer<BSPBuildCommand> newCommand)
 //-----------------------------------------------------------------------------
 // Function: SWView::addFileSetRef()
 //-----------------------------------------------------------------------------
-void SWView::addFileSetRef( const QString& fileSetName )
+void SWView::addFileSetRef(QString const& fileSetName)
 {
 	if (filesetRefs_.contains(fileSetName))
     {
@@ -380,23 +371,15 @@ void SWView::addFileSetRef( const QString& fileSetName )
 }
 
 //-----------------------------------------------------------------------------
-// Function: SWView::setViewInHWComponentStatus()
-//-----------------------------------------------------------------------------
-void SWView::setViewInHWComponentStatus(bool newWithinHWStatus)
-{
-    isWithinHWComponent_ = newWithinHWStatus;
-}
-
-//-----------------------------------------------------------------------------
 // Function: SWView::copySwBuildCommands()
 //-----------------------------------------------------------------------------
 void SWView::copySwBuildCommands(const SWView& other)
 {
-    foreach (QSharedPointer<SWBuildCommand> com, *other.swBuildCommands_)
+    foreach (QSharedPointer<SWFileBuilder> com, *other.swBuildCommands_)
     {
         if (com)
         {
-            QSharedPointer<SWBuildCommand> copy(new SWBuildCommand(*com.data()));
+            QSharedPointer<SWFileBuilder> copy(new SWFileBuilder(*com.data()));
             swBuildCommands_->append(copy);
         }
     }
@@ -411,31 +394,4 @@ void SWView::copyBSPBuildCommand(const SWView& other)
     {
         bspCommand_ = QSharedPointer<BSPBuildCommand>(new BSPBuildCommand(*other.bspCommand_.data()));
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: SWView::removeWhiteSpace()
-//-----------------------------------------------------------------------------
-QString SWView::removeWhiteSpace(QString str)
-{
-    QTextStream stream(&str);
-    QString resultStr;
-
-    str = str.trimmed();
-
-    while (!stream.atEnd())
-    {
-        QString temp;
-
-        stream.skipWhiteSpace();
-        stream >> temp;
-
-        if (!stream.atEnd())
-        {
-            temp.append("_");
-        }
-        resultStr += temp;
-    }
-
-    return resultStr;
 }
