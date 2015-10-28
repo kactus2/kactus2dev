@@ -19,13 +19,12 @@
 
 #include <editors/ComponentEditor/software/PropertyValueEditor.h>
 
-#include <IPXACTmodels/ComInterface.h>
-#include <IPXACTmodels/component.h>
-
 #include <QComboBox>
 #include <QGroupBox>
 #include <QSharedPointer>
 
+class ComInterface;
+class Component;
 class LibraryInterface;
 
 //-----------------------------------------------------------------------------

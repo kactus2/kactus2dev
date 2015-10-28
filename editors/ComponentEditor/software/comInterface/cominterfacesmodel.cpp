@@ -20,6 +20,7 @@
 #include <IPXACTmodels/Component/Component.h>
 
 #include <IPXACTmodels/kactusExtensions/ComDefinition.h>
+#include <IPXACTmodels/kactusExtensions/ComInterface.h>
 #include <IPXACTmodels/vlnv.h>
 
 #include <QColor>
@@ -156,7 +157,7 @@ QVariant ComInterfacesModel::data(QModelIndex const& index, int role) const
         }
         else if (index.column() == ComInterfaceColumns::DESCRIPTION)
         {
-            return comIfs_.at(index.row())->getDescription();
+            return comIfs_.at(index.row())->description();
         }
         else
         {
@@ -221,7 +222,6 @@ bool ComInterfacesModel::setData(QModelIndex const& index, const QVariant& value
     {
 		return false;
 	}
-
 
     if (index.column() == ComInterfaceColumns::NAME)
     {

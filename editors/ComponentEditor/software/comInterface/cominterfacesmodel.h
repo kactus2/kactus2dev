@@ -12,12 +12,11 @@
 #ifndef COMINTERFACESMODEL_H
 #define COMINTERFACESMODEL_H
 
-#include <IPXACTmodels/ComInterface.h>
-
 #include <QAbstractTableModel>
 #include <QSharedPointer>
 #include <QList>
 
+class ComInterface;
 class Component;
 class LibraryInterface;
 

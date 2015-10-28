@@ -50,26 +50,26 @@ public:
 	/*! Get the tool tip for the item.
 	 * 
 	 *      @return The text for the tool tip to print to user.
-	*/
+	 */
 	virtual QString getTooltip() const;
 
 	/*! Get the text to be displayed to user in the tree for this item.
 	 *
 	 *      @return QString Contains the text to display.
-	*/
+	 */
 	virtual QString text() const;
 
 	/*! Get pointer to the editor of this item.
 	 *
 	 *      @return Pointer to the editor to use for this item.
-	*/
+	 */
 	virtual ItemEditor* editor();
 
 	/*! Add a new child to the item.
 	 *
 	 *      @param [in] index The index to add the child into.
 	 *
-	*/
+	 */
 	virtual void createChild(int index);
 
 private:
