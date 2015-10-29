@@ -11,7 +11,7 @@
 
 #include "VerilogHeaderWriter.h"
 
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 //-----------------------------------------------------------------------------
 // Function: VerilogHeaderWriter::()

@@ -11,7 +11,7 @@
 
 #include "FileSet.h"
 
-#include <IPXACTmodels/VendorExtension.h>
+#include <IPXACTmodels/common/VendorExtension.h>
 #include <IPXACTmodels/common/FileTypes.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Value.h>
 

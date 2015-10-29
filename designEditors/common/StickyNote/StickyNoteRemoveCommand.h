@@ -14,7 +14,7 @@
 
 #include "StickyNote.h"
 
-#include <IPXACTmodels/VendorExtension.h>
+#include <IPXACTmodels/common/VendorExtension.h>
 
 #include <QUndoCommand>
 #include <QGraphicsItem>

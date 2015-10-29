@@ -40,7 +40,7 @@
 
 #include <IPXACTmodels/common/Parameter.h>
 
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 //-----------------------------------------------------------------------------
 // Function: Component::Component()

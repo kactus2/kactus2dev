@@ -7,7 +7,7 @@
 
 #include "hierarchyitem.h"
 
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 #include <library/LibraryManager/libraryinterface.h>
 #include <IPXACTmodels/librarycomponent.h>
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>

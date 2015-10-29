@@ -16,7 +16,7 @@
 #include <IPXACTmodels/common/NameGroupWriter.h>
 #include <IPXACTmodels/common/ParameterWriter.h>
 
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 #include <IPXACTmodels/designConfiguration/InterconnectionConfiguration.h>
 
 #include <QMap>

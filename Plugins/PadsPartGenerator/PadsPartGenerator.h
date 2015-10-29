@@ -25,9 +25,10 @@
 #include <QSettings>
 
 class Component;
+class Document;
+class FileSet;
 class IPluginUtility;
 class PluginSettingsWidget;
-class Document;
 
 //-----------------------------------------------------------------------------
 // class PadsPartGenerator.

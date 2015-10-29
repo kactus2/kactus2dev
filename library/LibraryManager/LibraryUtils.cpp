@@ -16,7 +16,7 @@
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/model.h>
 
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 #include <library/LibraryManager/libraryinterface.h>
 
 //-----------------------------------------------------------------------------

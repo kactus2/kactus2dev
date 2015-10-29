@@ -15,7 +15,7 @@
 #include <wizards/common/IPXactDiff.h>
 #include <wizards/common/IPXactElementComparator.h>
 
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 #include <QList>
 

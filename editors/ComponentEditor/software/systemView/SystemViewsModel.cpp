@@ -13,7 +13,7 @@
 #include "SystemViewsDelegate.h"
 
 #include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 #include <IPXACTmodels/kactusExtensions/SystemView.h>
 

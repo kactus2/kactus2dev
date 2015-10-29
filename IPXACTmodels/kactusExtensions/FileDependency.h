@@ -13,7 +13,7 @@
 #define FILEDEPENDENCY_H
 
 #include <IPXACTmodels/ipxactmodels_global.h>
-#include <IPXACTmodels/VendorExtension.h>
+#include <IPXACTmodels/common/VendorExtension.h>
 
 #include <editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyItem.h>
 

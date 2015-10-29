@@ -216,48 +216,6 @@ QString General::bool2Str(bool value) {
 	}
 }
 
-General::Initiative General::str2Initiative(QString str,
-		General::Initiative defaultValue) {
-
-	// select the correct enum value that matches the string
-	if (str == QString("requires")) {
-		return General::REQUIRES;
-	}
-	else if (str == QString("provides")) {
-		return General::PROVIDES;
-	}
-	else if (str == QString("both")) {
-		return General::BOTH;
-	}
-	else if (str == QString("phantom")) {
-		return General::INITIATIVE_PHANTOM;
-	}
-	else {
-		return defaultValue;
-	}
-}
-
-QString General::Initiative2Str(const General::Initiative initiative) {
-	switch (initiative) {
-	case General::REQUIRES: {
-		return QString("requires");
-	}
-	case General::PROVIDES: {
-		return QString("provides");
-	}
-	case General::BOTH: {
-		return QString("both");
-	}
-	case General::INITIATIVE_PHANTOM: {
-		return QString("phantom");
-	}
-	// if initiative = NONE
-	default: {
-		return QString();
-	}
-	}
-}
-
 General::Presence General::str2Presence(QString str,
 		General::Presence defaultValue) {
 
@@ -375,19 +333,6 @@ QString General::usage2Str(const General::Usage usage) {
 	}
 }
 
-General::GroupSelectorOperator General::str2GroupSelector(QString str,
-		General::GroupSelectorOperator defaultValue) {
-	if (str == QString("and")) {
-		return General::AND;
-	}
-	else if (str == QString("or")) {
-		return General::OR;
-	}
-	else {
-		return defaultValue;
-	}
-}
-
 General::DriverType General::str2DriverType(QString str, General::DriverType defaultValue)
 {
 	if (str == "any")
@@ -444,53 +389,6 @@ bool General::str2Bool(const QString str, bool defaultValue) {
 	}
 }
 
-bool General::BooleanValue2Bool(const General::BooleanValue value,
-		const bool defaultValue) {
-	switch (value) {
-	case General::BOOL_TRUE: {
-		return true;
-	}
-	case General::BOOL_FALSE: {
-		return false;
-	}
-	default: {
-		return defaultValue;
-	}
-	}
-}
-
-General::BooleanValue General::bool2BooleanValue(const bool value) {
-	if (value)
-		return General::BOOL_TRUE;
-	else
-		return General::BOOL_FALSE;
-}
-
-General::BooleanValue General::str2BooleanValue(const QString& str) {
-	if (str == QString("true")) {
-		return General::BOOL_TRUE;
-	}
-	else if (str == QString("false")) {
-		return General::BOOL_FALSE;
-	}
-	else {
-		return General::BOOL_UNSPECIFIED;
-	}
-}
-
-QString General::booleanValue2Str(const General::BooleanValue value) {
-	switch (value) {
-	case General::BOOL_TRUE: {
-		return QString("true");
-	}
-	case General::BOOL_FALSE: {
-		return QString("false");
-	}
-	default: {
-		return QString();
-	}
-	}
-}
 
 General::InterfaceMode General::str2Interfacemode(const QString& str, InterfaceMode defaultValue) {
 	

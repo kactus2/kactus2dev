@@ -12,7 +12,7 @@
 #include "ProtocolReader.h"
 #include "Protocol.h"
 
-#include <IPXACTmodels/GenericVendorExtension.h>
+#include <IPXACTmodels/common/GenericVendorExtension.h>
 
 //-----------------------------------------------------------------------------
 // Function: ProtocolReader::ProtocolReader()

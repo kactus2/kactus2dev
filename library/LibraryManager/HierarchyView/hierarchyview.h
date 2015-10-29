@@ -8,7 +8,7 @@
 #ifndef HIERARCHYVIEW_H
 #define HIERARCHYVIEW_H
 
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 #include <QTreeView>
 #include <QPoint>

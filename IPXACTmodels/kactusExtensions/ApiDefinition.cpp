@@ -11,7 +11,8 @@
 
 #include "ApiDefinition.h"
 #include "ApiFunction.h"
-#include "GenericVendorExtension.h"
+
+#include <IPXACTmodels/common/GenericVendorExtension.h>
 
 //-----------------------------------------------------------------------------
 // Function: ApiDefinition::ApiDefinition()

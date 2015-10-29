@@ -20,10 +20,8 @@
 #include "Array.h"
 #include "Vector.h"
 
-#include <QDomNode>
 #include <QString>
 #include <QMap>
-#include <QXmlStreamWriter>
 #include <QStringList>
 #include <QSharedPointer>
 

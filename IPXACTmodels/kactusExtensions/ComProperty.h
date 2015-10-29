@@ -13,7 +13,7 @@
 #define COMPROPERTY_H
 
 #include <IPXACTmodels/ipxactmodels_global.h>
-#include <IPXACTmodels/VendorExtension.h>
+#include <IPXACTmodels/common/VendorExtension.h>
 
 #include <QString>
 #include <QDomNode>

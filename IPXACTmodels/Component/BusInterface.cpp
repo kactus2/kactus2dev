@@ -17,8 +17,8 @@
 #include "PortMap.h"
 
 #include <IPXACTmodels/generaldeclarations.h>
-#include <IPXACTmodels/VendorExtension.h>
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VendorExtension.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 #include <IPXACTmodels/kactusExtensions/Kactus2Position.h>
 

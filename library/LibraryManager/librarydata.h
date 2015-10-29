@@ -7,7 +7,7 @@
 #ifndef LIBRARYDATA_H
 #define LIBRARYDATA_H
 
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 #include <QObject>
 #include <QList>

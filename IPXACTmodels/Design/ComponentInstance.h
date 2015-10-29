@@ -12,7 +12,7 @@
 #ifndef COMPONENTINSTANCE_H
 #define COMPONENTINSTANCE_H
 
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 #include <IPXACTmodels/common/ConfigurableVLNVReference.h>
 #include <IPXACTmodels/common/Extendable.h>

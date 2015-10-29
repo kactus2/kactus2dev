@@ -12,7 +12,7 @@
 #ifndef KACTUS2ARRAY_H
 #define KACTUS2ARRAY_H
 
-#include <IPXACTmodels/VendorExtension.h>
+#include <IPXACTmodels/common/VendorExtension.h>
 
 //-----------------------------------------------------------------------------
 // Kactus2 vendor extension for arrays.

@@ -12,15 +12,16 @@
 
 #include "ComDefinition.h"
 
+#include <IPXACTmodels/common/GenericVendorExtension.h>
+
 #include <IPXACTmodels/kactusExtensions/ComProperty.h>
-#include "GenericVendorExtension.h"
 
 //-----------------------------------------------------------------------------
 // Function: ComDefinition::ComDefinition()
 //-----------------------------------------------------------------------------
 ComDefinition::ComDefinition(VLNV const& vlnv) : Document(vlnv),
-                                                 transferTypes_(),
-                                                 properties_()
+    transferTypes_(),
+    properties_()
 {
 }
 
@@ -28,8 +29,8 @@ ComDefinition::ComDefinition(VLNV const& vlnv) : Document(vlnv),
 // Function: ComDefinition::ComDefinition()
 //-----------------------------------------------------------------------------
 ComDefinition::ComDefinition(ComDefinition const& rhs) : Document(rhs),
-                                                         transferTypes_(rhs.transferTypes_),
-                                                         properties_()
+    transferTypes_(rhs.transferTypes_),
+    properties_()
 {
     // Make deep copies of the properties.
     foreach (QSharedPointer<ComProperty> property, rhs.properties_)

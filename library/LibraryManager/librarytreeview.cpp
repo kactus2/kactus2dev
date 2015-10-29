@@ -7,7 +7,7 @@
 #include "librarytreeview.h"
 #include "libraryitem.h"
 #include "libraryinterface.h"
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 #include <IPXACTmodels/librarycomponent.h>
 #include <IPXACTmodels/component.h>

@@ -15,7 +15,7 @@
 #include "VLNVDataTree.h"
 #include "VLNVContentMatcher.h"
 
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
 #include <QGroupBox>

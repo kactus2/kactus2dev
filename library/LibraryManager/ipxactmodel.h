@@ -6,7 +6,7 @@
 #ifndef IPXACTMODEL_H_
 #define IPXACTMODEL_H_
 
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 #include <QAbstractItemModel>
 #include <QDomDocument>

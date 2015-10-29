@@ -15,7 +15,7 @@
 
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 #include <QIcon>
 

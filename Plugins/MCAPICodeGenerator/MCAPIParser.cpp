@@ -11,8 +11,9 @@
 
 #include "MCAPIParser.h"
 
-#include <QMessageBox>
 #include <QCoreApplication>
+#include <QFileInfo>
+#include <QMessageBox>
 
 #include <editors/CSourceEditor/CSourceTextEdit.h>
 

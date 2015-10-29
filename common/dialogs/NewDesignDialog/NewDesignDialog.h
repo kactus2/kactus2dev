@@ -12,7 +12,7 @@
 #ifndef NEWDESIGNDIALOG_H
 #define NEWDESIGNDIALOG_H
 
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 #include <common/widgets/assistedLineEdit/BasicLineContentMatcher.h>

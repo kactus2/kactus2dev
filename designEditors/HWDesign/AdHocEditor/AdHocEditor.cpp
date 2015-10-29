@@ -16,7 +16,7 @@
 #include <designEditors/HWDesign/HWComponentItem.h>
 #include <IPXACTmodels/component.h>
 
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 #include <designEditors/HWDesign/HWComponentItem.h>
 

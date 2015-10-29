@@ -20,7 +20,7 @@
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/port.h>
 #include <IPXACTmodels/modelparameter.h>
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 #include <QSharedPointer>
 

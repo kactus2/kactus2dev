@@ -11,7 +11,7 @@
 
 #include "TransactionalAbstractionReader.h"
 
-#include <IPXACTmodels/GenericVendorExtension.h>
+#include <IPXACTmodels/common/GenericVendorExtension.h>
 
 #include <IPXACTmodels/common/Protocol.h>
 #include <IPXACTmodels/common/ProtocolReader.h>

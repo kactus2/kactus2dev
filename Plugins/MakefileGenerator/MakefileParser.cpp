@@ -11,9 +11,11 @@
 
 #include "MakefileParser.h"
 
+#include <QFileInfo>
 #include <QSet>
 
 #include <IPXACTmodels/kactusExtensions/ApiInterface.h>
+
 #include "editors/ComponentEditor/common/ListParameterFinder.h"
 #include "editors/ComponentEditor/common/IPXactSystemVerilogParser.h"
 

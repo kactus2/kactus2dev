@@ -17,7 +17,7 @@
 #include <IPXACTmodels/common/Protocol.h>
 #include <IPXACTmodels/common/ProtocolWriter.h>
 
-#include <IPXACTmodels/VendorExtension.h>
+#include <IPXACTmodels/common/VendorExtension.h>
 
 //-----------------------------------------------------------------------------
 // Function: TransactionalAbstractionWriter::TransactionalAbstractionWriter()

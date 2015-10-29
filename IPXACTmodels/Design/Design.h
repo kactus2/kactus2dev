@@ -17,8 +17,8 @@
 #include "MonitorInterconnection.h"
 #include "AdHocConnection.h"
 
-#include <IPXACTmodels/VendorExtension.h>
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VendorExtension.h>
+#include <IPXACTmodels/common/VLNV.h>
 #include <IPXACTmodels/ipxactmodels_global.h>
 
 #include <IPXACTmodels/common/Document.h>
@@ -83,26 +83,7 @@ public:
      *      @return A pointer to the cloned copy.
 	 */
 	virtual QSharedPointer<Document> clone()  const;
-
-    /*! \brief Check the validity of the design.
-	 * 
-	 * This function should be used to check if the design is in valid state
-	 * before writing the xml to the disk.
-	 * 
-	 * \param errorList The error messages of the detected errors are appended to
-	 * this list.
-	 *
-	 * \return bool True if the design was valid.
-	*/
-	/*!
-	//virtual bool isValid(QStringList& errorList) const;
-
-	/*! \brief Check the validity of the design.
-	 *
-	 * \return bool True if the state is valid and writing is possible.
-	*/
-	//virtual bool isValid() const;
-
+  
 	/*!
 	 *  Set the VLNV.
 	 *

@@ -12,8 +12,8 @@
 #include "CommonItemsWriter.h"
 #include "Extendable.h"
 
-#include <IPXACTmodels/VendorExtension.h>
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VendorExtension.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 #include <IPXACTmodels/common/Assertion.h>
 #include <IPXACTmodels/common/ConfigurableElementValue.h>

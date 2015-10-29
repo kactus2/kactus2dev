@@ -12,7 +12,7 @@
 #ifndef COLUMNDESC_H
 #define COLUMNDESC_H
 
-#include <IPXACTmodels/VendorExtension.h>
+#include <IPXACTmodels/common/VendorExtension.h>
 #include <IPXACTmodels/ipxactmodels_global.h>
 
 #include <designEditors/common/ColumnTypes.h>

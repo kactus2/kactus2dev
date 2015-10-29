@@ -27,7 +27,7 @@
 #include <IPXACTmodels/model.h>
 #include <IPXACTmodels/modelparameter.h>
 #include <IPXACTmodels/view.h>
-#include <IPXACTmodels/VendorExtension.h>
+#include <IPXACTmodels/common/VendorExtension.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Placeholder.h>
 
 #include <QGraphicsDropShadowEffect>

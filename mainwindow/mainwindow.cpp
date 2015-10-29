@@ -75,7 +75,7 @@
 #include <kactusGenerators/DocumentGenerator/documentgenerator.h>
 
 #include <library/LibraryManager/libraryhandler.h>
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 #include <library/LibraryManager/LibraryUtils.h>
 
 #include <IPXACTmodels/view.h>

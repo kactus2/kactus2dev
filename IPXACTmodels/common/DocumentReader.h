@@ -14,7 +14,7 @@
 
 #include "Document.h"
 
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 #include <IPXACTmodels/common/CommonItemsReader.h>
 #include <IPXACTmodels/common/ConfigurableVLNVReference.h>

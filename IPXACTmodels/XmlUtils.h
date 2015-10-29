@@ -66,35 +66,7 @@ namespace XmlUtils
      */
     void writeAttributes(QXmlStreamWriter& writer, const QMap<QString, QString>& attributes);
 
-    /*!
-     *  Parses named positions from the given XML node.
-     *
-     *      @param [in]  node           The XML node containing the positions.
-     *      @param [in]  identifier     The name of the node children.
-     *      @param [in]  refIdentifier  The name of the attribute containing the name reference.
-     *      @param [out] positions      The read positions.
-     */
-    void parsePositionsMap(QDomNode& node, QString const& identifier,
-                           QString const& refIdentifier, QMap<QString, QPointF>& positions);
-
-
     IPXACTMODELS_EXPORT QPointF parsePoint(QDomNode const& node);
-
-    /*!
-     *  Writes a kactus2:position to the XML stream.
-     *
-     *      @param [in] xmlWriter  The XML writer.
-     *      @param [in] pos        The position to write.
-     */
-    void writePosition(QXmlStreamWriter& xmlWriter, QPointF const& pos);
-
-    /*!
-     *  Writes a kactus2:direction to the XML stream.
-     *
-     *      @param [in] xmlWriter  The XML writer.
-     *      @param [in] dir        The direction to write.
-     */
-    void writeDirection(QXmlStreamWriter& xmlWriter, QVector2D const& dir);
 
     /*!
      *  Writes the given positions map to the XML stream, using the given identifier

@@ -17,8 +17,8 @@
 #include <IPXACTmodels/common/NameGroup.h>
 
 #include <IPXACTmodels/ipxactmodels_global.h>
-#include <IPXACTmodels/vlnv.h>
-#include <IPXACTmodels/VendorExtension.h>
+#include <IPXACTmodels/common/VLNV.h>
+#include <IPXACTmodels/common/VendorExtension.h>
 
 #include <QString>
 #include <QDomNode>

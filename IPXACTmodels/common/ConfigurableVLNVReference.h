@@ -12,7 +12,7 @@
 #ifndef CONFIGURABLEVLNVREFERENCE_H
 #define CONFIGURABLEVLNVREFERENCE_H
 
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 #include <IPXACTmodels/ipxactmodels_global.h>
 #include <IPXACTmodels/common/ConfigurableElementValue.h>
 

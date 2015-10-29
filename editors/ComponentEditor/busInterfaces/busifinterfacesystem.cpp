@@ -15,7 +15,7 @@
 
 #include <IPXACTmodels/Component/BusInterface.h>
 
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 #include <QFormLayout>
 #include <QStringList>

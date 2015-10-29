@@ -57,12 +57,12 @@ ApiDefinitionEditor::ApiDefinitionEditor(QWidget *parent, LibraryInterface* libH
     setModified(false);
 
     // Set the document name and type.
-    VLNV const* vlnv = apiDef_->getVlnv();
-    setDocumentName(vlnv->getName() + " (" + vlnv->getVersion() + ")");
+    VLNV vlnv = apiDef_->getVlnv();
+    setDocumentName(vlnv.getName() + " (" + vlnv.getVersion() + ")");
     setDocumentType(tr("API Definition"));
 
     // Open in unlocked mode by default only if the version is draft.
-    setProtection(vlnv->getVersion() != "draft");
+    setProtection(vlnv.getVersion() != "draft");
 }
 
 //-----------------------------------------------------------------------------

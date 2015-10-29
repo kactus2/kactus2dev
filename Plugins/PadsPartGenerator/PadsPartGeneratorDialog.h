@@ -12,8 +12,6 @@
 #ifndef PADSPARTGENERATORDIALOG_H
 #define PADSPARTGENERATORDIALOG_H
 
-#include <IPXACTmodels/component.h>
-
 #include <QComboBox>
 #include <QDialog>
 #include <QLabel>
@@ -23,6 +21,8 @@
 #include <QPushButton>
 #include <QRadioButton>
 
+class Component;
+class BusInterface;
 class LibraryInterface;
 class PadsPartGenerator;
 //-----------------------------------------------------------------------------

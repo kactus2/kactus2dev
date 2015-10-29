@@ -28,7 +28,7 @@
 #include <IPXACTmodels/Component/Port.h>
 #include <IPXACTmodels/Component/PortMap.h>
 #include <IPXACTmodels/common/Vector.h>
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 #include <QVBoxLayout>
 #include <QLabel>

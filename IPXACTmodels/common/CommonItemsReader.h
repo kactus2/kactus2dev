@@ -12,7 +12,7 @@
 #ifndef COMMONITEMSREADER_H
 #define COMMONITEMSREADER_H
 
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/common/Assertion.h>

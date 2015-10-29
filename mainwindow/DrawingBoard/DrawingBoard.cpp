@@ -13,7 +13,7 @@
 
 #include <common/widgets/tabDocument/TabDocument.h>
 
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 #include <QCoreApplication>
 #include <QKeyEvent>

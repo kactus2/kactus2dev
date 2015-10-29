@@ -15,7 +15,7 @@
 #include "QuartusProjectGenerator_global.h"
 
 #include <Plugins/PluginSystem/IGeneratorPlugin.h>
-#include <IPXACTmodels/librarycomponent.h>
+
 #include <IPXACTmodels/Component/Component.h>
 
 #include <QObject>

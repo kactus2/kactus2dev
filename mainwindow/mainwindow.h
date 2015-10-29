@@ -21,7 +21,7 @@
 #include <library/LibraryManager/VLNVDialer/vlnvdialer.h>
 
 #include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
 #include <QMainWindow>

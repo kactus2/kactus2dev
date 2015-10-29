@@ -13,7 +13,7 @@
 
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/common/NameGroupWriter.h>
-#include <IPXACTmodels/VendorExtension.h>
+#include <IPXACTmodels/common/VendorExtension.h>
 
 #include <QSharedPointer>
 #include <QXmlStreamWriter>

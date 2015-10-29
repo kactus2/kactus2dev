@@ -19,7 +19,7 @@
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 #include <IPXACTmodels/ipxactmodels_global.h>
  

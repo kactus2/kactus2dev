@@ -19,7 +19,6 @@
 #include <IPXACTmodels/designConfiguration/InterconnectionConfiguration.h>
 #include <IPXACTmodels/designConfiguration/ViewConfiguration.h>
 
-#include <IPXACTmodels/librarycomponent.h>
 #include <IPXACTmodels/ipxactmodels_global.h>
 
 #include <QSharedPointer>

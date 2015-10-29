@@ -12,7 +12,7 @@
 #ifndef VLNV_H
 #define VLNV_H
 
-#include "ipxactmodels_global.h"
+#include <IPXACTmodels/ipxactmodels_global.h>
 
 #include <QString>
 #include <QStringList>
@@ -30,10 +30,10 @@ public:
 	enum IPXactType
     {
         BUSDEFINITION = 0,      // ipxact:busDefinition
-        COMPONENT,				// spirit:component
+        COMPONENT,				// ipxact:component
         DESIGN, 				// ipxact:design
-        GENERATORCHAIN,         // spirit:generatorChain
-        ABSTRACTOR,             // spirit:abstractor
+        GENERATORCHAIN,         // ipxact:generatorChain
+        ABSTRACTOR,             // ipxact:abstractor
         DESIGNCONFIGURATION,    // ipxact:designConfiguration
         ABSTRACTIONDEFINITION,  // ipxact:abstractionDefinition
         COMDEFINITION,          // kactus2:comDefinition
@@ -246,7 +246,7 @@ public:
     *
     *      @param [in] node A reference to a QDomNode to parse the vlnv from.
     *
-    *      @return A pointer to the new vlnv instance.
+    *      @return The new vlnv instance.
     */
     static VLNV createVLNV(const QDomNode& node, IPXactType type);
    

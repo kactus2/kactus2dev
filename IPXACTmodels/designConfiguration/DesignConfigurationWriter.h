@@ -14,7 +14,7 @@
 
 #include "DesignConfiguration.h"
 
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 #include <IPXACTmodels/ipxactmodels_global.h>
 
 #include <IPXACTmodels/common/DocumentWriter.h>

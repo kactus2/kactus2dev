@@ -14,12 +14,16 @@
 #include "PadsAsciiSyntax.h"
 #include "PadsPartGeneratorDialog.h"
 
-#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 #include <library/LibraryManager/libraryinterface.h>
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/fileset.h>
-#include <IPXACTmodels/file.h>
+
 #include <IPXACTmodels/generaldeclarations.h>
+
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/File.h>
+#include <IPXACTmodels/Component/Fileset.h>
+
+#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
+
 #include <Plugins/PluginSystem/IPlugin.h>
 #include <Plugins/PluginSystem/IPluginUtility.h>
 #include <Plugins/PluginSystem/PluginSettingsWidget.h>
@@ -29,6 +33,7 @@
 #include <QDir>
 #include <QFile>
 #include <QRect>
+#include <QStringList>
 #include <QTextStream>
 #include <QTime>
 #include <QtPlugin>
@@ -165,8 +170,7 @@ bool PadsPartGenerator::checkGeneratorSupport(QSharedPointer<Document const> lib
     // Part generation can only run on HW chip components.
     QSharedPointer<const Component> comp = libComp.dynamicCast<const Component>();
     if (comp == 0 || 
-        comp->getComponentImplementation() != KactusAttribute::HW || 
-        comp->getComponentHierarchy() != KactusAttribute::CHIP)
+        comp->getImplementation() != KactusAttribute::HW || comp->getHierarchy() != KactusAttribute::CHIP)
     {
         return false;
     }
@@ -184,7 +188,7 @@ void PadsPartGenerator::runGenerator(IPluginUtility* utility,
 {
     // Part generation can only run on HW components
     QSharedPointer<Component> comp = libComp.dynamicCast<Component>();
-    if (comp == 0 || comp->getComponentImplementation() != KactusAttribute::HW)
+    if (comp == 0 || comp->getImplementation() != KactusAttribute::HW)
     {
         return;
     }
@@ -203,7 +207,7 @@ void PadsPartGenerator::runGenerator(IPluginUtility* utility,
 
     QString partDescription(dialog.getPreviewText());
     QString filesetName =  dialog.getFileSetName();    
-    QString basePath = utility->getLibraryInterface()->getPath(*comp->getVlnv());
+    QString basePath = utility->getLibraryInterface()->getPath(comp->getVlnv());
     QFileInfo fileInfo(basePath); 
     QString targetDirectoryPath = fileInfo.absolutePath() + "/" + filesetName;
     QDir targetDirectory(targetDirectoryPath);
@@ -244,7 +248,7 @@ void PadsPartGenerator::runGenerator(IPluginUtility* utility,
     QString caeFilePath = targetDirectoryPath + "/" + caeFileName;    
     QFile* caeFile = new QFile(caeFilePath);
 
-    if (!generateCAEFile(caeFile, comp->getVlnv()->toString().toUpper(), partDescription))
+    if (!generateCAEFile(caeFile, comp->getVlnv().toString().toUpper(), partDescription))
     {
         utility->printError(tr("Could not write file %1").arg(caeFilePath));    
     }
@@ -522,7 +526,7 @@ bool PadsPartGenerator::addFileToFileset(QSharedPointer<FileSet> fileSet,
     // Add a new file to fileset.
     QSharedPointer<File> partFile(new File(relativePath, 0));    
     partFile->setIncludeFile(false);        
-    partFile->setAllFileTypes(fileTypes);
+    partFile->getFileTypes()->append(fileTypes);
   
     fileSet->addFile(partFile);
     return true;

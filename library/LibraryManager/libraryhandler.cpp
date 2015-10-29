@@ -32,7 +32,7 @@
 
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/librarycomponent.h>
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 #include <QString>
 #include <QStringList>

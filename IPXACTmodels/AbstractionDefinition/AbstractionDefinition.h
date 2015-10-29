@@ -16,7 +16,7 @@
 #include <IPXACTmodels/common/Parameter.h>
 
 #include <IPXACTmodels/common/DirectionTypes.h>
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 #include <IPXACTmodels/ipxactmodels_global.h>
  

@@ -13,7 +13,7 @@
 
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 #include <QApplication>
 #include <QFile>

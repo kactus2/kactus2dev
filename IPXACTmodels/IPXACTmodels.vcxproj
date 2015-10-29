@@ -165,6 +165,7 @@
     <ClCompile Include="common\FileBuilderReader.cpp" />
     <ClCompile Include="common\FileBuilderWriter.cpp" />
     <ClCompile Include="common\FileTypes.cpp" />
+    <ClCompile Include="common\GenericVendorExtension.cpp" />
     <ClCompile Include="common\ModuleParameter.cpp" />
     <ClCompile Include="common\ModuleParameterReader.cpp" />
     <ClCompile Include="common\ModuleParameterWriter.cpp" />
@@ -183,6 +184,7 @@
     <ClCompile Include="common\Range.cpp" />
     <ClCompile Include="common\TransactionalTypes.cpp" />
     <ClCompile Include="common\Vector.cpp" />
+    <ClCompile Include="common\VLNV.cpp" />
     <ClCompile Include="Component\AddressBlock.cpp" />
     <ClCompile Include="Component\AddressBlockReader.cpp" />
     <ClCompile Include="Component\AddressBlockWriter.cpp" />
@@ -847,7 +849,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="GenericVendorExtension.cpp" />
     <ClCompile Include="kactusExtensions\ApiDefinition.cpp" />
     <ClCompile Include="kactusExtensions\ApiFunction.cpp" />
     <ClCompile Include="kactusExtensions\ApiFunctionParameter.cpp" />
@@ -873,12 +874,10 @@
     <ClCompile Include="kactusExtensions\SWInstance.cpp" />
     <ClCompile Include="kactusExtensions\SWView.cpp" />
     <ClCompile Include="kactusExtensions\SystemView.cpp" />
-    <ClCompile Include="librarycomponent.cpp" />
     <ClCompile Include="validators\BinaryValidator.cpp" />
     <ClCompile Include="validators\namevalidator.cpp" />
     <ClCompile Include="validators\NMTokenValidator.cpp" />
     <ClCompile Include="validators\ParameterValidator2014.cpp" />
-    <ClCompile Include="vlnv.cpp" />
     <ClCompile Include="XmlUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -980,7 +979,6 @@
     </CustomBuild>
     <ClInclude Include="AbstractionDefinition\WireAbstractionWriter.h" />
     <ClInclude Include="AbstractionDefinition\WirePort.h" />
-    <ClInclude Include="bspbuildcommand.h" />
     <ClInclude Include="common\Array.h" />
     <ClInclude Include="common\Assertion.h" />
     <ClInclude Include="common\BooleanValue.h" />
@@ -1103,6 +1101,7 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_XML_LIB -DIPXACTMODELS_LIB -D_WINDLL "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(SolutionDir)\."</Command>
     </CustomBuild>
     <ClInclude Include="common\FileTypes.h" />
+    <ClInclude Include="common\GenericVendorExtension.h" />
     <ClInclude Include="common\ModuleParameter.h" />
     <CustomBuild Include="common\ModuleParameterReader.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
@@ -1257,6 +1256,8 @@
     <ClInclude Include="common\Range.h" />
     <ClInclude Include="common\TransactionalTypes.h" />
     <ClInclude Include="common\Vector.h" />
+    <ClInclude Include="common\VendorExtension.h" />
+    <ClInclude Include="common\VLNV.h" />
     <ClInclude Include="Component\AddressBlock.h" />
     <CustomBuild Include="Component\AddressBlockReader.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
@@ -2062,7 +2063,6 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_XML_LIB -DIPXACTMODELS_LIB -D_WINDLL "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(SolutionDir)\."</Command>
     </CustomBuild>
-    <ClInclude Include="librarycomponent.h" />
     <CustomBuild Include="validators\namevalidator.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing namevalidator.h...</Message>
@@ -2100,9 +2100,6 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_XML_LIB -DIPXACTMODELS_LIB -D_WINDLL "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(SolutionDir)\."</Command>
     </CustomBuild>
     <ClInclude Include="validators\ParameterValidator2014.h" />
-    <ClInclude Include="VendorExtension.h" />
-    <ClInclude Include="vlnv.h" />
-    <ClInclude Include="writevalueconstraint.h" />
     <ClInclude Include="XmlUtils.h" />
     <ClInclude Include="BusDefinition\BusDefinition.h" />
     <CustomBuild Include="BusDefinition\BusDefinitionReader.h">
@@ -2265,7 +2262,6 @@
     <ClInclude Include="Design\MonitorInterface.h" />
     <ClInclude Include="Design\PortReference.h" />
     <ClInclude Include="generaldeclarations.h" />
-    <ClInclude Include="GenericVendorExtension.h" />
     <ClInclude Include="ipxactmodels_global.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

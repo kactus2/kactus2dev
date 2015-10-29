@@ -6,7 +6,7 @@
 
 #include "modelsimgenerator.h"
 
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 #include <library/LibraryManager/libraryhandler.h>
 
 #include <IPXACTmodels/Component/Component.h>

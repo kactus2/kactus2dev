@@ -12,9 +12,9 @@
 #ifndef SWINSTANCE_H
 #define SWINSTANCE_H
 
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 #include <IPXACTmodels/ipxactmodels_global.h>
-#include <IPXACTmodels/VendorExtension.h>
+#include <IPXACTmodels/common/VendorExtension.h>
 
 #include <IPXACTmodels/kactusExtensions/ComInterface.h>
 

@@ -16,7 +16,7 @@
 #include <QVector2D>
 
 #include <IPXACTmodels/Design/Interconnection.h>
-#include <IPXACTmodels/VendorExtension.h>
+#include <IPXACTmodels/common/VendorExtension.h>
 
 #include <QDomNode>
 

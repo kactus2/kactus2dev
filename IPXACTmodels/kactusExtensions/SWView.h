@@ -17,8 +17,8 @@
 #include <IPXACTmodels/common/NameGroup.h>
 #include <IPXACTmodels/common/FileBuilder.h>
 
-#include <IPXACTmodels/VendorExtension.h>
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VendorExtension.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 #include <IPXACTmodels/kactusExtensions/BSPBuildCommand.h>
 #include <IPXACTmodels/kactusExtensions/SWFileBuilder.h>

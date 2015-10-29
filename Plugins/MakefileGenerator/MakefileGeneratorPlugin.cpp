@@ -13,8 +13,10 @@
 #include "MakefileGeneratorPlugin.h"
 #include "CompileConflictDialog.h"
 
-#include <QMessageBox>
 #include <QCoreApplication>
+#include <QFileInfo>
+#include <QMessageBox>
+
 #include <IPXACTmodels/kactusExtensions/SystemView.h>
 
 //-----------------------------------------------------------------------------

@@ -14,7 +14,7 @@
 
 #include <QWizard>
 
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 class AbstractionDefinition;
 class BusDefinition;

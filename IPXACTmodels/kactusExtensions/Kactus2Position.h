@@ -12,7 +12,7 @@
 #ifndef KACTUS2POSITION_H
 #define KACTUS2POSITION_H
 
-#include <IPXACTmodels/VendorExtension.h>
+#include <IPXACTmodels/common/VendorExtension.h>
 #include <IPXACTmodels/ipxactmodels_global.h>
 
 #include <QDomNode>

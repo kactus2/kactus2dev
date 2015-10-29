@@ -11,12 +11,8 @@
 
 #include "Parameter.h"
 
-#include <IPXACTmodels/GenericVendorExtension.h>
-#include <IPXACTmodels/XmlUtils.h>
-
 #include <QString>
 #include <QList>
-#include <QObject>
 #include <QMap>
 
 #include <QUuid>
@@ -78,7 +74,9 @@ Parameter & Parameter::operator=(Parameter const& other)
 	return *this;
 }
 
-
+//-----------------------------------------------------------------------------
+// Function: Parameter::elementName()
+//-----------------------------------------------------------------------------
 QString Parameter::elementName() const
 {
     return "parameter";

@@ -11,7 +11,7 @@
 
 #include "Kactus2Group.h"
 
-#include <IPXACTmodels/VendorExtension.h>
+#include <IPXACTmodels/common/VendorExtension.h>
 
 #include <QSharedPointer>
 

@@ -13,7 +13,7 @@
 
 #include <designEditors/common/Association/AssociationRemoveCommand.h>
 
-#include <IPXACTmodels/VendorExtension.h>
+#include <IPXACTmodels/common/VendorExtension.h>
 
 //-----------------------------------------------------------------------------
 // Function: FloatingItemRemoveCommand()

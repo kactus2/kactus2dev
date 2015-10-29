@@ -5,7 +5,7 @@
 
 #include "ipxactmodel.h"
 #include "ipxactitem.h"
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 #include <QtXml>
 #include <QString>

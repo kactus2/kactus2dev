@@ -9,7 +9,7 @@
 
 #include "librarytreeview.h"
 
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 #include <QWidget>
 

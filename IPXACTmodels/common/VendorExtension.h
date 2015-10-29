@@ -12,7 +12,7 @@
 #ifndef VENDOREXTENSION_H
 #define VENDOREXTENSION_H
 
-#include "ipxactmodels_global.h"
+#include <IPXACTmodels/ipxactmodels_global.h>
 
 #include <QXmlStreamWriter>
 

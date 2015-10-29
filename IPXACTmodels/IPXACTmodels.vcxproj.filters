@@ -221,12 +221,6 @@
     <ClCompile Include="generaldeclarations.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GenericVendorExtension.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="vlnv.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="XmlUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1046,9 +1040,6 @@
     <ClCompile Include="Component\AbstractionType.cpp">
       <Filter>Source Files\Component</Filter>
     </ClCompile>
-    <ClCompile Include="librarycomponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Component\MasterInterface.cpp">
       <Filter>Source Files\Component</Filter>
     </ClCompile>
@@ -1078,6 +1069,12 @@
     </ClCompile>
     <ClCompile Include="kactusExtensions\BSPBuildCommand.cpp">
       <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="common\GenericVendorExtension.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\VLNV.cpp">
+      <Filter>Source Files\common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1132,25 +1129,10 @@
     <ClInclude Include="common\Extendable.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
-    <ClInclude Include="bspbuildcommand.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="generaldeclarations.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GenericVendorExtension.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ipxactmodels_global.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="VendorExtension.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vlnv.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="writevalueconstraint.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="XmlUtils.h">
@@ -1426,9 +1408,6 @@
     <ClInclude Include="Component\AbstractionType.h">
       <Filter>Header Files\Component</Filter>
     </ClInclude>
-    <ClInclude Include="librarycomponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Component\MasterInterface.h">
       <Filter>Header Files\Component</Filter>
     </ClInclude>
@@ -1458,6 +1437,15 @@
     </ClInclude>
     <ClInclude Include="kactusExtensions\BSPBuildCommand.h">
       <Filter>Header Files\kactusExtensions</Filter>
+    </ClInclude>
+    <ClInclude Include="common\VendorExtension.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\GenericVendorExtension.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\VLNV.h">
+      <Filter>Header Files\common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

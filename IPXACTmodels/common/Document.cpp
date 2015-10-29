@@ -11,10 +11,10 @@
 
 #include "Document.h"
 
-#include <IPXACTmodels/GenericVendorExtension.h>
+#include <IPXACTmodels/common/GenericVendorExtension.h>
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/XmlUtils.h>
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 #include <QString>
 #include <QSharedPointer>

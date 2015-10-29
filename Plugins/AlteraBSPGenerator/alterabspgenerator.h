@@ -11,8 +11,11 @@
 #include "alterabspgenerator_global.h"
 
 #include <Plugins/PluginSystem/IGeneratorPlugin.h>
+
 #include <IPXACTmodels/common/Document.h>
 #include <IPXACTmodels/Component/FileSet.h>
+
+#include <QFileInfo>
 
 class IPluginUtility;
 

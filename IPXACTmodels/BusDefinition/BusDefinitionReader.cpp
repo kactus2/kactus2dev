@@ -14,7 +14,7 @@
 #include "BusDefinition.h"
 
 #include <IPXACTmodels/common/ParameterReader.h>
-#include <IPXACTmodels/GenericVendorExtension.h>
+#include <IPXACTmodels/common/GenericVendorExtension.h>
 
 //-----------------------------------------------------------------------------
 // Function: BusDefinitionReader::BusDefinitionReader()

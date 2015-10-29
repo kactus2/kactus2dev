@@ -7,15 +7,12 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./bspbuildcommand.h \
+HEADERS += ./common/GenericVendorExtension.h \
     ./kactusExtensions/BSPBuildCommand.h \
-    ./librarycomponent.h \
-    ./VendorExtension.h \
-    ./vlnv.h \
-    ./writevalueconstraint.h \
+    ./common/VendorExtension.h \
+    ./common/VLNV.h \
     ./XmlUtils.h \
     ./generaldeclarations.h \
-    ./GenericVendorExtension.h \
     ./ipxactmodels_global.h \
     ./kactusExtensions/SWFileBuilder.h \
     ./kactusExtensions/ApiDefinition.h \
@@ -204,10 +201,7 @@ HEADERS += ./bspbuildcommand.h \
     ./Component/ViewWriter.h
 SOURCES += ./kactusExtensions/BSPBuildCommand.cpp \
     ./generaldeclarations.cpp \
-    ./GenericVendorExtension.cpp \
-    ./librarycomponent.cpp \
     ./kactusExtensions/SWFileBuilder.cpp \
-    ./vlnv.cpp \
     ./XmlUtils.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
     ./kactusExtensions/ApiFunction.cpp \
@@ -392,4 +386,6 @@ SOURCES += ./kactusExtensions/BSPBuildCommand.cpp \
     ./Component/ViewWriter.cpp \
     ./Component/Wire.cpp \
     ./Component/WireTypeDef.cpp \
-    ./Component/WriteValueConstraint.cpp
+    ./Component/WriteValueConstraint.cpp \
+    ./common/VLNV.cpp \
+    ./common/GenericVendorExtension.cpp

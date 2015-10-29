@@ -14,7 +14,7 @@
 
 #include <common/dialogs/propertyPageDialog/PropertyPageView.h>
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 #include <QLabel>
 #include <QPushButton>

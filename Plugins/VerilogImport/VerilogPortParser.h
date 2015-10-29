@@ -12,7 +12,7 @@
 #ifndef VERILOGPORTPARSER_H
 #define VERILOGPORTPARSER_H
 
-#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/common/DirectionTypes.h>
 
 #include <Plugins/PluginSystem/ImportPlugin/HighlightSource.h>
 
@@ -159,7 +159,7 @@ private:
      *
      *      @return The port direction in the declaration.
      */
-    General::Direction parseDirection(QString const& portDeclaration) const;
+    DirectionTypes::Direction parseDirection(QString const& portDeclaration) const;
     
     /*!
      *  Parses the port array bounds from a Verilog port declaration.

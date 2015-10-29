@@ -12,7 +12,7 @@
 #include "ProtocolWriter.h"
 #include "Protocol.h"
 
-#include <IPXACTmodels/VendorExtension.h>
+#include <IPXACTmodels/common/VendorExtension.h>
 
 //-----------------------------------------------------------------------------
 // Function: ProtocolWriter::ProtocolWriter()

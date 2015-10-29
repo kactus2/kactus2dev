@@ -14,7 +14,7 @@
 #include "BitMappingModel.h"
 #include "physlistview.h"
 
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 #include <IPXACTmodels/common/DirectionTypes.h>
 
 #include <IPXACTmodels/Component/Component.h>

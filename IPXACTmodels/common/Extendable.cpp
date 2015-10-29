@@ -11,7 +11,7 @@
 
 #include "Extendable.h"
 
-#include <IPXACTmodels/VendorExtension.h>
+#include <IPXACTmodels/common/VendorExtension.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Group.h>
 
 //-----------------------------------------------------------------------------

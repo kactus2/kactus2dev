@@ -12,7 +12,7 @@
 #include "DocumentReader.h"
 #include "ParameterReader.h"
 
-#include <IPXACTmodels/GenericVendorExtension.h>
+#include <IPXACTmodels/common/GenericVendorExtension.h>
 
 //-----------------------------------------------------------------------------
 // Function: DocumentReader::DocumentReader()

@@ -17,7 +17,7 @@
 #include <library/LibraryManager/libraryhandler.h>
 
 #include <IPXACTmodels/component.h>
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 #include <QPainter>
 #include <QPen>

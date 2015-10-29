@@ -13,8 +13,9 @@
 #include "MCAPICodeGenerator.h"
 #include "MCAPIHeaderGenerator.h"
 
-#include <QMessageBox>
 #include <QCoreApplication>
+#include <QFileInfo>
+#include <QMessageBox>
 
 #include <library/LibraryManager/libraryinterface.h>
 

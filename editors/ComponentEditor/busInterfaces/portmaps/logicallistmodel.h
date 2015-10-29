@@ -15,7 +15,7 @@
 #include "portlistmodel.h"
 
 #include <IPXACTmodels/generaldeclarations.h>
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 class LibraryInterface;
 

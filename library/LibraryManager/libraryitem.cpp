@@ -4,7 +4,7 @@
  */
 
 #include "libraryitem.h"
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 #include <QString>
 #include <QList>
