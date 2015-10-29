@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 12.6.2012
- *      Author: Antti Kamppi
- * 		filename: viewseditor.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: viewseditor.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 12.06.2012
+//
+// Description:
+// The editor to add/remove/edit views of a component.
+//-----------------------------------------------------------------------------
 
 #ifndef VIEWSEDITOR_H
 #define VIEWSEDITOR_H
@@ -18,62 +22,64 @@
 
 class LibraryInterface;
 
-/*! \brief The editor to add/remove/edit views of a component.
- *
- */
-class ViewsEditor : public ItemEditor {
+//-----------------------------------------------------------------------------
+//! The editor to add/remove/edit views of a component.
+//-----------------------------------------------------------------------------
+class ViewsEditor : public ItemEditor
+{
 	Q_OBJECT
 
 public:
 
-	/*! \brief The constructor
+	/*!
+     *  The constructor.
 	 *
-	 * \param component Pointer to the component being edited.
-	 * \param handler Pointer to the instance managing the library.
-	 * \param parent Pointer to the parent of this editor.
-	 *
-	*/
-	ViewsEditor(QSharedPointer<Component> component,
-		LibraryInterface* handler,
-		QWidget* parent = 0);
+	 *      @param [in] component   Pointer to the component being edited.
+	 *      @param [in] handler     Pointer to the instance managing the library.
+	 *      @param [in] parent      Pointer to the parent of this editor.
+	 */
+	ViewsEditor(QSharedPointer<Component> component, LibraryInterface* handler, QWidget* parent = 0);
 	
-	//! \brief The destructor
+	//! The destructor.
 	virtual ~ViewsEditor();
 
-	/*! \brief Check for the validity of the editor
-	* 
-	* \return True if the editor is in valid state.
-	*/
+	/*!
+     *  Check for the validity of the editor.
+	 * 
+	 *      @return True if the editor is in valid state.
+	 */
 	virtual bool isValid() const;
 
-	/*! \brief Reload the information from the model to the editor.
-	*/
+	/*!
+     *  Reload the information from the model to the editor.
+	 */
 	virtual void refresh();
 
 public slots:
 
-	//! \brief Called to update the view sorting when the model changes.
+	//! Called to update the view sorting when the model changes.
     virtual void onItemChanged();
 
 protected:
 
-	//! \brief Handler for widget's show event
+	//! Handler for widget's show event.
 	virtual void showEvent(QShowEvent* event);
 
 private:
-	//! \brief No copying
+
+	//! No copying.
 	ViewsEditor(const ViewsEditor& other);
 
-	//! \brief No assignment
+	//! No assignment.
 	ViewsEditor& operator=(const ViewsEditor& other);
 
-	//! \brief The view to display the view info.
+	//! The view to display the view info.
 	EditableTableView view_;
 
-	//! \brief The proxy that does the sorting.
+	//! The proxy that does the sorting.
 	QSortFilterProxyModel proxy_;
 
-	//! \brief The model to manage the views summary.
+	//! The model to manage the views summary.
 	ViewsModel model_;
 };
 

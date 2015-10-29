@@ -10,6 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include "ViewsDelegate.h"
+#include "ViewColumns.h"
 
 //-----------------------------------------------------------------------------
 // Function: ViewsDelegate::ViewsDelegate()
@@ -32,5 +33,5 @@ ViewsDelegate::~ViewsDelegate()
 //-----------------------------------------------------------------------------
 int ViewsDelegate::descriptionColumn() const
 {
-    return 2;
+    return ViewColumns::DESCRIPTION_COLUMN;
 }

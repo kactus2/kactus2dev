@@ -1,19 +1,29 @@
-/* 
- *  	Created on: 9.5.2012
- *      Author: Antti Kamppi
- * 		filename: componenteditorviewsitem.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: componenteditorviewsitem.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 09.05.2012
+//
+// Description:
+// The Views-item in the component editor's navigation tree.
+//-----------------------------------------------------------------------------
 
 #ifndef COMPONENTEDITORVIEWSITEM_H
 #define COMPONENTEDITORVIEWSITEM_H
 
 #include "componenteditoritem.h"
 
-/*! \brief The Views-item in the component editor's navigation tree.
- *
- */
-class ComponentEditorViewsItem : public ComponentEditorItem {
+#include <QSharedPointer>
+
+class Component;
+class View;
+
+//-----------------------------------------------------------------------------
+//! The Views-item in the component editor's navigation tree.
+//-----------------------------------------------------------------------------
+class ComponentEditorViewsItem : public ComponentEditorItem
+{
 	Q_OBJECT
 
 public:
@@ -37,49 +47,54 @@ public:
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         ComponentEditorItem* parent);
 
-	//! \brief The destructor
+	//! The destructor.
 	virtual ~ComponentEditorViewsItem();
 
-	/*! \brief Get the tool tip for the item.
+	/*!
+     *  Get the tool tip for the item.
 	 * 
-	 * \return The text for the tool tip to print to user.
-	*/
+	 *      @return The text for the tool tip to print to user.
+	 */
 	virtual QString getTooltip() const;
 
-	/*! \brief Get the font to be used for text of this item.
-	*
-	* \return QFont instance that defines the font to be used.
-	*/
+	/*!
+     *  Get the font to be used for text of this item.
+	 *
+	 *      @return QFont instance that defines the font to be used.
+	 */
     virtual QFont getFont() const;
 
-	/*! \brief Get the text to be displayed to user in the tree for this item.
+	/*!
+     *  Get the text to be displayed to user in the tree for this item.
 	 *
-	 * \return QString Contains the text to display.
-	*/
+	 *      @return QString Contains the text to display.
+	 */
 	virtual QString text() const;
 
-	/*! \brief Get pointer to the editor of this item.
+	/*!
+     *  Get pointer to the editor of this item.
 	 *
-	 * \return Pointer to the editor to use for this item.
-	*/
+	 *      @return Pointer to the editor to use for this item.
+	 */
 	virtual ItemEditor* editor();
 
-	/*! \brief Add a new child to the item.
+	/*!
+     *  Add a new child to the item.
 	 * 
-	 * \param index The index to add the child into.
-	 *
-	*/
+	 *      @param [in] index   The index to add the child into.
+	 */
 	virtual void createChild(int index);
 
 private:
-	//! \brief No copying
+
+	//! No copying.
 	ComponentEditorViewsItem(const ComponentEditorViewsItem& other);
 
-	//! \brief No assignment
+	//! No assignment.
 	ComponentEditorViewsItem& operator=(const ComponentEditorViewsItem& other);
 
-	//! \brief The views being edited.
-	QList<QSharedPointer<View> >& views_;
+	//! The views being edited.
+    QSharedPointer<QList<QSharedPointer<View> > > views_;
 };
 
 #endif // COMPONENTEDITORVIEWSITEM_H

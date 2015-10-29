@@ -338,6 +338,12 @@
     <Filter Include="Source Files\common\widgets\viewSelector">
       <UniqueIdentifier>{c5987bbc-cec0-4224-b130-741ebd52633c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\common\widgets\cpuSelector">
+      <UniqueIdentifier>{07c5b06b-c130-4e58-b238-544e342592d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common\widgets\cpuSelector">
+      <UniqueIdentifier>{36db071e-b47e-4623-a140-e146bbf5febe}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Header Files\common\widgets\fileTypeSelector">
       <UniqueIdentifier>{aa88d710-14c3-4611-ac07-75de94c2ea04}</UniqueIdentifier>
     </Filter>
@@ -1404,6 +1410,9 @@
     </ClCompile>
     <ClCompile Include="common\widgets\viewSelector\viewselector.cpp">
       <Filter>Source Files\common\widgets\viewSelector</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_cpuselector.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_filetypeselector.cpp">
       <Filter>Generated Files</Filter>
@@ -4130,10 +4139,7 @@
       <Filter>Source Files\editors\ComponentEditor\views</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\software\swView\cpuselector.cpp">
-      <Filter>Source Files\editors\ComponentEditor\software\swView</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_cpuselector.cpp">
-      <Filter>Generated Files</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5692,7 +5698,7 @@
       <Filter>Header Files\editors\ComponentEditor\views</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\software\swView\cpuselector.h">
-      <Filter>Header Files\editors\ComponentEditor\software\swView</Filter>
+      <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
@@ -6147,7 +6153,10 @@
       <Filter>Header Files\editors\ComponentEditor\views</Filter>
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\software\apiInterface\ApiInterfaceColumns.h">
-      <Filter>Header Files\editors\ComponentEditor\software\apiInterface</Filter>
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\views\ViewColumns.h">
+      <Filter>Header Files\editors\ComponentEditor\views</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

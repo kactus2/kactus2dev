@@ -7,7 +7,9 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./common/Global.h \
+HEADERS += ./editors/ComponentEditor/software/apiInterface/ApiInterfaceColumns.h \
+    ./editors/ComponentEditor/software/swView/cpuselector.h \
+    ./common/Global.h \
     ./common/KactusColors.h \
     ./common/TextEditProvider.h \
     ./common/utils.h \
@@ -56,7 +58,6 @@ HEADERS += ./common/Global.h \
     ./common/widgets/testConstraintComboBox/testconstraintcombobox.h \
     ./common/widgets/parameterComboBox/parametercombobox.h \
     ./common/widgets/viewSelector/viewselector.h \
-    ./common/widgets/cpuSelector/cpuselector.h \
     ./common/widgets/fileTypeSelector/filetypeselector.h \
     ./common/widgets/EnumCollectionEditor/EnumCollectionEditor.h \
     ./common/widgets/FileSelector/fileselector.h \
@@ -658,8 +659,10 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/vhdlGenerator/vhdlport.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./kactusGenerators/modelsimGenerator/modelsimgenerator.h
-SOURCES += ./common/GenericEditProvider.cpp \
+    ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
+    ./editors/ComponentEditor/views/ViewColumns.h
+SOURCES += ./editors/ComponentEditor/software/swView/cpuselector.cpp \
+    ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
     ./common/dialogs/comboSelector/comboselector.cpp \
@@ -716,7 +719,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./common/widgets/testConstraintComboBox/testconstraintcombobox.cpp \
     ./common/widgets/parameterComboBox/parametercombobox.cpp \
     ./common/widgets/viewSelector/viewselector.cpp \
-    ./common/widgets/cpuSelector/cpuselector.cpp \
     ./common/widgets/fileTypeSelector/filetypeselector.cpp \
     ./common/widgets/EnumCollectionEditor/EnumCollectionEditor.cpp \
     ./common/widgets/FileSelector/fileselector.cpp \

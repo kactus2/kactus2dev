@@ -1,13 +1,18 @@
-/* 
- *  	Created on: 12.6.2012
- *      Author: Antti Kamppi
- * 		filename: viewseditor.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: viewseditor.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 12.06.2012
+//
+// Description:
+// The editor to add/remove/edit views of a component.
+//-----------------------------------------------------------------------------
 
 #include "viewseditor.h"
 
 #include "ViewsDelegate.h"
+#include "ViewColumns.h"
 
 #include <common/widgets/summaryLabel/summarylabel.h>
 #include <common/delegates/LineEditDelegate/lineeditdelegate.h>
@@ -20,9 +25,9 @@
 //-----------------------------------------------------------------------------
 ViewsEditor::ViewsEditor(QSharedPointer<Component> component, LibraryInterface* handler, QWidget* parent):
 ItemEditor(component, handler, parent),
-    view_(this),
-    proxy_(this),
-    model_(component, this)
+view_(this),
+proxy_(this),
+model_(component, this)
 {
 	// display a label on top the table
 	SummaryLabel* summaryLabel = new SummaryLabel(tr("Views summary"), this);
@@ -36,11 +41,10 @@ ItemEditor(component, handler, parent),
     proxy_.setDynamicSortFilter(false);
 
 	view_.setModel(&proxy_);    
-    view_.sortByColumn(ViewsModel::NAME_COLUMN, Qt::AscendingOrder);
-    view_.sortByColumn(ViewsModel::TYPE_COLUMN, Qt::AscendingOrder);
-    //view_.sortByColumn(ViewsModel::TYPE_COLUMN, Qt::AscendingOrder);
+    view_.sortByColumn(ViewColumns::NAME_COLUMN, Qt::AscendingOrder);
+    view_.sortByColumn(ViewColumns::TYPE_COLUMN, Qt::AscendingOrder);
 
-	const QString compPath = ItemEditor::handler()->getDirectoryPath(*ItemEditor::component()->getVlnv());
+	const QString compPath = ItemEditor::handler()->getDirectoryPath(ItemEditor::component()->getVlnv());
 	QString defPath = QString("%1/viewListing.csv").arg(compPath);
 	view_.setDefaultImportExportPath(defPath);
 	view_.setAllowImportExport(true);
@@ -66,6 +70,7 @@ ItemEditor(component, handler, parent),
 //-----------------------------------------------------------------------------
 ViewsEditor::~ViewsEditor()
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -90,8 +95,8 @@ void ViewsEditor::refresh()
 //-----------------------------------------------------------------------------
 void ViewsEditor::onItemChanged()
 {
-    view_.sortByColumn(ViewsModel::NAME_COLUMN, Qt::AscendingOrder);
-    view_.sortByColumn(ViewsModel::TYPE_COLUMN, Qt::AscendingOrder);
+    view_.sortByColumn(ViewColumns::NAME_COLUMN, Qt::AscendingOrder);
+    view_.sortByColumn(ViewColumns::TYPE_COLUMN, Qt::AscendingOrder);
     view_.update();
 }
 

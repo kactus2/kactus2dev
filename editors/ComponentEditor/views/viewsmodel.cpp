@@ -10,6 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include "viewsmodel.h"
+#include "ViewColumns.h"
 
 #include <QStringList>
 #include <QColor>
@@ -21,8 +22,9 @@
 ViewsModel::ViewsModel(QSharedPointer<Component> component, QObject *parent):
 QAbstractTableModel(parent),
 component_(component),
-views_(component->getViews()) 
+views_(component->getViews())
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -30,6 +32,7 @@ views_(component->getViews())
 //-----------------------------------------------------------------------------
 ViewsModel::~ViewsModel()
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -41,7 +44,7 @@ int ViewsModel::rowCount(QModelIndex const& parent) const
     {
 		return 0;
 	}
-	return views_.size();
+    return views_->size();
 }
 
 //-----------------------------------------------------------------------------
@@ -53,7 +56,7 @@ int ViewsModel::columnCount(QModelIndex const& parent) const
     {
 		return 0;
 	}
-	return ViewsModel::COLUMN_COUNT;
+    return ViewColumns::COLUMN_COUNT;
 }
 
 //-----------------------------------------------------------------------------
@@ -66,7 +69,7 @@ Qt::ItemFlags ViewsModel::flags(QModelIndex const& index) const
 		return Qt::NoItemFlags;
 	}
 	// the type only displays the type of the view, it can not be edited.
-	else if (index.column() == ViewsModel::TYPE_COLUMN)
+	else if (index.column() == ViewColumns::TYPE_COLUMN)
     {
 		return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 	}
@@ -87,15 +90,15 @@ QVariant ViewsModel::headerData(int section, Qt::Orientation orientation, int ro
 
     if (Qt::DisplayRole == role)
     {
-        if (section == ViewsModel::NAME_COLUMN)
+        if (section == ViewColumns::NAME_COLUMN)
         {
             return tr("Name");
         }
-        else if (section == ViewsModel::TYPE_COLUMN)
+        else if (section == ViewColumns::TYPE_COLUMN)
         {
             return tr("View type");
         }
-        else if (section == ViewsModel::DESCRIPTION_COLUMN)
+        else if (section == ViewColumns::DESCRIPTION_COLUMN)
         {
             return tr("Description");
         }
@@ -115,27 +118,27 @@ QVariant ViewsModel::headerData(int section, Qt::Orientation orientation, int ro
 //-----------------------------------------------------------------------------
 QVariant ViewsModel::data(QModelIndex const& index, int role) const
 {
-	if (!index.isValid() || index.row() < 0 || index.row() >= views_.size())
+	if (!index.isValid() || index.row() < 0 || index.row() >= views_->size())
     {
         return QVariant();
     }
 
-    QSharedPointer<View> view = views_.at(index.row());
+    QSharedPointer<View> view = views_->at(index.row());
 
     if (role == Qt::DisplayRole)
     {
-        if (index.column() == ViewsModel::NAME_COLUMN)
+        if (index.column() == ViewColumns::NAME_COLUMN)
         {
             if (!view->name().isEmpty())
             {
-                return views_.at(index.row())->name();
+                return views_->at(index.row())->name();
             }
             else
             {
                 return "unnamed";
             }
         }
-        else if (index.column() == ViewsModel::TYPE_COLUMN)
+        else if (index.column() == ViewColumns::TYPE_COLUMN)
         {
             if (view->isHierarchical())
             {
@@ -146,7 +149,7 @@ QVariant ViewsModel::data(QModelIndex const& index, int role) const
                 return tr("non-hierarchical");
             }
         }
-        else if (index.column() == ViewsModel::DESCRIPTION_COLUMN)
+        else if (index.column() == ViewColumns::DESCRIPTION_COLUMN)
         {
             return view->description().replace(QRegularExpression("\n.*$", 
                 QRegularExpression::DotMatchesEverythingOption), "...");
@@ -156,28 +159,29 @@ QVariant ViewsModel::data(QModelIndex const& index, int role) const
             return QVariant();
         }
 	}
-    else if (role == Qt::EditRole && index.column() == ViewsModel::DESCRIPTION_COLUMN)
+    else if (role == Qt::EditRole && index.column() == ViewColumns::DESCRIPTION_COLUMN)
     {
         return view->description();
     }
 	else if (role == Qt::ForegroundRole)
     {
-        if (index.column() == ViewsModel::TYPE_COLUMN)
+        if (index.column() == ViewColumns::TYPE_COLUMN)
         {
             return QColor("gray");
         }
-		else if (view->isValid(component_->getFileSetNames(), component_->getChoices()))
+		/*else if (view->isValid(component_->getFileSetNames(), component_->getChoices()))
         {
 			return QColor("black");
-		}
+		}*/
 		else
         {
-			return QColor("red");
+			//return QColor("red");
+            return QColor("black");
 		}
 	}
 	else if (role == Qt::BackgroundRole)
     {
-        if (index.column() == ViewsModel::NAME_COLUMN)
+        if (index.column() == ViewColumns::NAME_COLUMN)
         {
             return QColor("LemonChiffon");
         }
@@ -197,20 +201,20 @@ QVariant ViewsModel::data(QModelIndex const& index, int role) const
 //-----------------------------------------------------------------------------
 bool ViewsModel::setData(QModelIndex const& index, const QVariant& value, int role)
 {
-	if (!index.isValid() || index.row() < 0 || index.row() >= views_.size())
+	if (!index.isValid() || index.row() < 0 || index.row() >= views_->size())
     {
 		return false;
 	}
 
-    QSharedPointer<View> view = views_.at(index.row());
+    QSharedPointer<View> view = views_->at(index.row());
 
 	if (role == Qt::EditRole)
     {
-        if (index.column() == ViewsModel::NAME_COLUMN)
+        if (index.column() == ViewColumns::NAME_COLUMN)
         {
             view->setName(value.toString());
         }
-        else if (index.column() == ViewsModel::DESCRIPTION_COLUMN)
+        else if (index.column() == ViewColumns::DESCRIPTION_COLUMN)
         {
             view->setDescription(value.toString());
         }
@@ -239,12 +243,12 @@ bool ViewsModel::isValid() const
 	QStringList fileSetNames = component_->getFileSetNames();
 
 	// if at least one view is invalid
-	foreach (QSharedPointer<View> view, views_)
+	foreach (QSharedPointer<View> view, *views_)
     {
-		if (!view->isValid(fileSetNames, component_->getChoices()))
+		/*if (!view->isValid(fileSetNames, component_->getChoices()))
         {
 			return false;
-		}
+		}*/
 	}
 	// all views were valid
 	return true;
@@ -255,7 +259,7 @@ bool ViewsModel::isValid() const
 //-----------------------------------------------------------------------------
 void ViewsModel::onAddItem(QModelIndex const& index)
 {
-	int row = views_.size();
+	int row = views_->size();
 
 	// if the index is valid then add the item to the correct position
 	if (index.isValid())
@@ -264,7 +268,7 @@ void ViewsModel::onAddItem(QModelIndex const& index)
 	}
 
 	beginInsertRows(QModelIndex(), row, row);
-	views_.insert(row, QSharedPointer<View>(new View()));
+	views_->insert(row, QSharedPointer<View>(new View()));
 	endInsertRows();
 
 	// inform navigation tree that file set is added
@@ -280,14 +284,14 @@ void ViewsModel::onAddItem(QModelIndex const& index)
 void ViewsModel::onRemoveItem(QModelIndex const& index)
 {
 	// don't remove anything if index is invalid
-	if (!index.isValid() || index.row() < 0 || index.row() >= views_.size())
+	if (!index.isValid() || index.row() < 0 || index.row() >= views_->size())
     {
 		return;
 	}
 
 	// remove the specified item
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
-	views_.removeAt(index.row());
+	views_->removeAt(index.row());
 	endRemoveRows();
 
 	// inform navigation tree that file set has been removed
