@@ -20,18 +20,16 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
-#include <IPXACTmodels/view.h>
-#include <IPXACTmodels/librarycomponent.h>
-#include <IPXACTmodels/modelparameter.h>
-#include <IPXACTmodels/port.h>
+#include <IPXACTmodels/common/Document.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
-#include <IPXACTmodels/fileset.h>
-#include <IPXACTmodels/file.h>
-#include <IPXACTmodels/PortRef.h>
 
+#include <IPXACTmodels/Component/FileSet.h>
+#include <IPXACTmodels/Component/File.h>
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/PortMap.h>
+#include <IPXACTmodels/Component/Port.h>
+#include <IPXACTmodels/Component/View.h>
 
 #include <IPXACTmodels/Design/Interconnection.h>
 
@@ -43,6 +41,9 @@
 #include <QTime>
 #include <QDate>
 #include <QSettings>
+#include "IPXACTmodels/Component/ComponentInstantiation.h"
+#include "IPXACTmodels/Component/DesignInstantiation.h"
+#include "IPXACTmodels/Component/DesignConfigurationInstantiation.h"
 
 static const QString BLACK_BOX_DECL_START = "-- ##KACTUS2_BLACK_BOX_DECLARATIONS_BEGIN##";
 static const QString BLACK_BOX_DECL_END = "-- ##KACTUS2_BLACK_BOX_DECLARATIONS_END##";
@@ -87,7 +88,7 @@ bool VhdlGenerator2::parse( QSharedPointer<Component> topLevelComponent,
 	emit noticeMessage(tr("Parsing the IP-Xact models..."));
 
 	// the name of the top-level entity is the name of the top-level component
-	topLevelEntity_ = component_->getEntityName(viewName);
+	topLevelEntity_ = component_->getVlnv().getName();
 	viewName_ = viewName;
 	
 	// if the parsing fails
@@ -96,10 +97,13 @@ bool VhdlGenerator2::parse( QSharedPointer<Component> topLevelComponent,
 	}
 
 	// get the types that are used for the ports.
-	typeDefinitions_ = component_->getPortTypeDefinitions();
+	foreach ( QSharedPointer<Port> port, *component_->getPorts() )
+	{
+		typeDefinitions_.append( port->getTypeDefinitions() );
+	}
 
 	// parse the info for the top entity
-	parseTopGenerics();
+	parseTopGenerics(viewName);
 	parseTopPorts();
 
 	// if design is used then these can be parsed also
@@ -222,7 +226,17 @@ void VhdlGenerator2::generate( const QString& outputFileName) {
 
 
 	// if view has description
-	QString viewDescription = component_->findView(viewName_)->description();
+	QString viewDescription;
+	
+	foreach ( QSharedPointer<View> currentView, *component_->getViews() )
+	{
+		if ( currentView->name() == viewName_ )
+		{
+			viewDescription = currentView->description();
+			break;
+		}
+	}
+
 	VhdlGeneral::writeDescription(viewDescription, vhdlStream);
 
 	QString archName;
@@ -266,7 +280,7 @@ void VhdlGenerator2::generate( const QString& outputFileName) {
 
 bool VhdlGenerator2::addRTLView( const QString& vhdlFileName ) {
 	// ipDir represents the directory where the IP-Xact file is located in.
-	QString ipDir(handler_->getPath(*component_->getVlnv()));
+	QString ipDir(handler_->getPath(component_->getVlnv()));
 	if (ipDir.isEmpty()) {
 		emit errorMessage(tr("Path to top-component was not found."));
 		return false;
@@ -291,8 +305,25 @@ bool VhdlGenerator2::addRTLView( const QString& vhdlFileName ) {
 	// if the top vhdl file set was not found. Create one
 	if (!topFileSet) {
 		topFileSet = QSharedPointer<FileSet>(new FileSet(fileSetName, QString("sourceFiles")));
-		topFileSet->useDefaultVhdlBuilders();
-		component_->addFileSet(topFileSet);
+		component_->getFileSets()->append(topFileSet);
+
+		QSharedPointer<FileBuilder> vhdlBuilder(new FileBuilder("vhdlSource"));
+		vhdlBuilder->setCommand("vcom");
+		vhdlBuilder->setFlags("-quiet -check_synthesis -work work");
+		vhdlBuilder->setReplaceDefaultFlags("true");
+		topFileSet->getDefaultFileBuilders()->append(vhdlBuilder);
+
+		QSharedPointer<FileBuilder> vhdl87Builder(new FileBuilder("vhdlSource-87"));
+		vhdl87Builder->setCommand("vcom");
+		vhdl87Builder->setFlags("-quiet -check_synthesis -work work");
+		vhdl87Builder->setReplaceDefaultFlags("true");
+		topFileSet->getDefaultFileBuilders()->append(vhdl87Builder);
+
+		QSharedPointer<FileBuilder> vhdl93Builder(new FileBuilder("vhdlSource-93"));
+		vhdl93Builder->setCommand("vcom");
+		vhdl93Builder->setFlags("-quiet -check_synthesis -work work");
+		vhdl93Builder->setReplaceDefaultFlags("true");
+		topFileSet->getDefaultFileBuilders()->append(vhdl93Builder);
 	}
 
 	topFileSet->clearFiles();
@@ -304,23 +335,25 @@ bool VhdlGenerator2::addRTLView( const QString& vhdlFileName ) {
 	topVhdlFile->setIncludeFile(true);
 	topVhdlFile->setLogicalName("work");
 	topVhdlFile->setCommand(QString("vcom"));
-	topVhdlFile->setBuildFlags(QString("-quiet -check_synthesis -work work"), true);
+	topVhdlFile->setBuildFlags(QString("-quiet -check_synthesis -work work"), "true");
 
-	QString viewName;
+	QString newViewName;
 	if (!viewName_.isEmpty()) {
-		viewName = QString("%1_vhd").arg(viewName_);
+		newViewName = QString("%1_vhd").arg(viewName_);
 	}
 	else {
-		viewName = "rtl";
+		newViewName = "rtl";
 	}
-	View* rtlView = new View(viewName);
+	QSharedPointer<View> rtlView( new View(newViewName) );
 
 	// add the spirit:envIdentifier. Only language is defined, not tool
 	// specific settings
 	rtlView->addEnvIdentifier(QString("VHDL:Kactus2:"));
 
-	// set the language of the view.
-	rtlView->setLanguage(QString("vhdl"));
+	QSharedPointer<ComponentInstantiation> cimp( new ComponentInstantiation );
+
+	// Set the language of the instantiation.
+	cimp->setLanguage(QString("vhdl"));
 
 	// set the model name to be the top_level architecture of the top-level
 	// entity
@@ -332,23 +365,31 @@ bool VhdlGenerator2::addRTLView( const QString& vhdlFileName ) {
 		archName = viewName_;
 	}
 	QString topEntity(QString("%1(%2)").arg(topLevelEntity_).arg(archName));
-	rtlView->setModelName(topEntity);
+	cimp->setModuleName(topEntity);
 
 	// set a reference to a file set
-	rtlView->addFileSetRef(fileSetName);
+	cimp->getFileSetReferences()->append(fileSetName);
 
-	// add the view to the component's model
-	component_->addView(rtlView);
+	// Add the view and component instantiation to component.
+	component_->getViews()->append(rtlView);
+	component_->getComponentInstantiations()->append(cimp);
 
 	// find the active view used to generate the vhdl
-	View* activeView = component_->findView(viewName_);
+	QSharedPointer<View> activeView;
+
+	foreach ( QSharedPointer<View> currentView, *component_->getViews() )
+	{
+		if ( currentView->name() == viewName_ )
+		{
+			activeView = currentView;
+			break;
+		}
+	}
 	
 	// if the view does not exist or it is not hierarchical
 	if (!activeView || !activeView->isHierarchical()) {
 		return true;
 	}
-
-	activeView->setTopLevelView(rtlView->name());
 
 	return true;
 }
@@ -363,7 +404,16 @@ bool VhdlGenerator2::parseDesignAndConfiguration() {
 	}
 
 	// if view is specified but it does not exist
-	View* view = component_->findView(viewName_);
+	QSharedPointer<View> view;
+	
+	foreach ( QSharedPointer<View> currentView, *component_->getViews() )
+	{
+		if ( currentView->name() == viewName_ )
+		{
+			view = currentView;
+			break;
+		}
+	}
 	
 	// if view is not found
 	if (!view) {
@@ -373,23 +423,49 @@ bool VhdlGenerator2::parseDesignAndConfiguration() {
 		return false;
 	}
 
-	VLNV hierarchyRef = view->getHierarchyRef();
-	
-	// get the type of document for the hierarchical reference
-	VLNV::IPXactType documentType = handler_->getDocumentType(hierarchyRef);
+	QSharedPointer<DesignInstantiation> DI;
+	QSharedPointer<DesignConfigurationInstantiation> DCI;
+
+	// Try to find design instantiation.
+	foreach ( QSharedPointer<DesignInstantiation> currentInsta, *component_->getDesignInstantiations() )
+	{
+		if ( currentInsta->name() == view->getDesignInstantiationRef() )
+		{
+			DI = currentInsta;
+			break;
+		}
+	}
+
+	// Try to find design configuration instantiation.
+	foreach ( QSharedPointer<DesignConfigurationInstantiation> currentInsta,
+		*component_->getDesignConfigurationInstantiations() )
+	{
+		if ( currentInsta->name() == view->getDesignConfigurationInstantiationRef() )
+		{
+			DCI = currentInsta;
+			break;
+		}
+	}
+
+	VLNV hierarchyRef;
 
 	// if configuration is used
-	if (documentType == VLNV::DESIGNCONFIGURATION) {
+	if (DCI)
+	{
+		hierarchyRef = *DCI->getDesignConfigurationReference();
 		QSharedPointer<Document> libComp = handler_->getModel(hierarchyRef);
 		desConf_ = libComp.staticCast<DesignConfiguration>();
 	}
+	else if ( DI )
+	{
+		hierarchyRef = *DI->getDesignReference();
+	}
 	// if the referenced document was not found
-	else if (documentType == VLNV::INVALID) {
-		emit errorMessage(tr("The Hierarchical reference %1 within component %2's"
-			" view %3 was not found in library.").arg(
-			hierarchyRef.toString()).arg(
-			component_->getVlnv()->toString()).arg(
-			viewName_));
+	else
+	{
+		emit errorMessage(tr("The design or design configuration reference within component %1's"
+			" view %2 was not found in library.").arg(
+			component_->getVlnv().toString()).arg( viewName_ ) );
 		return false;
 	}
 	
@@ -399,7 +475,7 @@ bool VhdlGenerator2::parseDesignAndConfiguration() {
 		VLNV designVLNV = handler_->getDesignVLNV(hierarchyRef);
 		emit errorMessage(tr("The design %1 referenced in component %2 was not "
 			"found in library.").arg(
-			designVLNV.toString()).arg(component_->getVlnv()->toString()));
+			designVLNV.toString()).arg(component_->getVlnv().toString()));
 		return false;
 	}
 
@@ -443,24 +519,46 @@ bool VhdlGenerator2::containsArchitecture() const {
 	return design_;
 }
 
-void VhdlGenerator2::parseTopGenerics()
+void VhdlGenerator2::parseTopGenerics(QString const& viewName)
 {
-	foreach (QSharedPointer<ModelParameter> modelParam, *component_->getModelParameters()) {
-		QString name = modelParam->name();
-		QSharedPointer<VhdlGeneric> generic(new VhdlGeneric(modelParam.data()));
+	QSharedPointer<View> view;
+
+	foreach ( QSharedPointer<View> currentView, *component_->getViews() )
+	{
+		if ( currentView->name() == viewName )
+		{
+			view = currentView;
+			break;
+		}
+	}
+
+	QSharedPointer<ComponentInstantiation> cimp;
+
+	foreach ( QSharedPointer<ComponentInstantiation> currentInsta, *component_->getComponentInstantiations() )
+	{
+		if ( currentInsta->name() == viewName_ )
+		{
+			cimp = currentInsta;
+			break;
+		}
+	}
+
+	foreach (QSharedPointer<ModuleParameter> moduleParam, *cimp->getModuleParameters())
+	{
+		QString name = moduleParam->name();
+		QSharedPointer<VhdlGeneric> generic(new VhdlGeneric(moduleParam.data()));
 
 		topGenerics_.insert(name, generic);
 	}
 }
 
-void VhdlGenerator2::parseTopPorts() {
-	
-	QList<QSharedPointer<Port> > ports = component_->getPorts();
-	foreach (QSharedPointer<Port> port, ports) {
-
+void VhdlGenerator2::parseTopPorts()
+{
+	foreach (QSharedPointer<Port> port, *component_->getPorts())
+	{
 		// do not add ports with invalid direction or phantom direction
-		if (port->getDirection() == General::DIRECTION_INVALID ||
-			port->getDirection() == General::DIRECTION_PHANTOM) {
+		if (port->getDirection() == DirectionTypes::DIRECTION_INVALID ||
+			port->getDirection() == DirectionTypes::DIRECTION_PHANTOM) {
 				continue;
 		}
 
@@ -468,7 +566,7 @@ void VhdlGenerator2::parseTopPorts() {
 		QSharedPointer<VhdlPort> vhdlPort(new VhdlPort(port.data()));
 
 		// create the sorter instance
-		VhdlPortSorter sorter(component_->getInterfaceNameForPort(vhdlPort->name()),
+		VhdlPortSorter sorter(component_->getInterfaceForPort(vhdlPort->name())->name(),
 			vhdlPort->name(), port->getDirection());
 
 		// this port can not be created yet
@@ -489,7 +587,7 @@ void VhdlGenerator2::parseInstances()
 		// if vlnv is not found in library
 		if (instanceType == VLNV::INVALID) {
 			emit errorMessage(tr("Component %1 referenced in design %2 was not found in library.").arg(
-                instance->getComponentRef()->toString(), component_->getVlnv()->toString()));
+                instance->getComponentRef()->toString(), component_->getVlnv().toString()));
 			continue;
 		}
 		// if vlnv does not reference a component
@@ -513,7 +611,7 @@ void VhdlGenerator2::parseInstances()
 			QSharedPointer<Component> component = libComp.staticCast<Component>();
 			Q_ASSERT(component);
 			compDeclaration = QSharedPointer<VhdlComponentDeclaration>(
-				new VhdlComponentDeclaration(component));
+				new VhdlComponentDeclaration(component,""));
 
 			components_.insert(*instance->getComponentRef(), compDeclaration);
 		}
@@ -535,8 +633,28 @@ void VhdlGenerator2::parseInstances()
         connect(compInstance.data(), SIGNAL(errorMessage(const QString&)),
             this, SIGNAL(errorMessage(const QString)), Qt::UniqueConnection);
 
+		QSharedPointer<ComponentInstantiation> cimp;
+
+		foreach ( QSharedPointer<ComponentInstantiation> currentInsta,
+			*compInstance->componentModel()->getComponentInstantiations() )
+		{
+			if ( currentInsta->name() == instanceActiveView )
+			{
+				cimp = currentInsta;
+				break;
+			}
+		}
+
 		// add the libraries of the instantiated component to the library list.
-		libraries_.append(compInstance->componentModel()->getVhdlLibraries(instanceActiveView));
+		foreach ( QString fileSetRef, *cimp->getFileSetReferences() )
+		{
+			QSharedPointer<FileSet> fileSet = compInstance->componentModel()->getFileSet(fileSetRef);
+
+			if ( fileSet )
+			{
+				libraries_.append( fileSet->getVhdlLibraryNames() );
+			}
+		}
 
         foreach(QSharedPointer<ConfigurableElementValue> configurableElement, *instance->getConfigurableElementValues())
         {
@@ -568,7 +686,7 @@ void VhdlGenerator2::parseInterconnections()
 		if (connectionNames.contains(interconnection->name()))
         {
 			emit errorMessage(tr("Design %1 contained more than one interconnection named %2").arg(
-				component_->getVlnv()->toString()).arg(interconnection->name()));
+				component_->getVlnv().toString()).arg(interconnection->name()));
 		}
 		else
         {
@@ -583,7 +701,7 @@ void VhdlGenerator2::parseInterconnections()
         {
 			invalidInterconnection = true;
 			emit errorMessage(tr("Instance %1 was not found in component %2.").arg(
-				firstInterface->getComponentReference()).arg(component_->getVlnv()->toString()));
+				firstInterface->getComponentReference()).arg(component_->getVlnv().toString()));
 		}
 		else
         { 
@@ -606,7 +724,7 @@ void VhdlGenerator2::parseInterconnections()
         {
 			invalidInterconnection = true;
 			emit errorMessage(tr("Instance %1 was not found in component %2.").arg(
-				endInterface->getComponentReference()).arg(component_->getVlnv()->toString()));
+				endInterface->getComponentReference()).arg(component_->getVlnv().toString()));
 		}
 		else
         {
@@ -645,55 +763,47 @@ void VhdlGenerator2::connectInterfaces( const QString& connectionName,
 	Q_ASSERT(instance2);
 	Q_ASSERT(interface2);
 
-	// get the port maps of both interfaces
-	QList<QSharedPointer<PortMap> > portMaps1 = interface1->getPortMaps();
-	QList<QSharedPointer<PortMap> > portMaps2 = interface2->getPortMaps();
-
-	// get the IP-Xact models of both instances
+	// get the IP-XACT models of both instances
 	QSharedPointer<Component> component1 = instance1->componentModel();
 	QSharedPointer<Component> component2 = instance2->componentModel();
 
-	foreach (QSharedPointer<PortMap> portMap1, portMaps1) {
-		foreach(QSharedPointer<PortMap> portMap2, portMaps2) {
+	// Go through the port maps of both interfaces.
+	foreach (QSharedPointer<PortMap> portMap1, *interface1->getPortMaps()) {
+		foreach(QSharedPointer<PortMap> portMap2, *interface2->getPortMaps()) {
 
-			const QString port1Name = portMap1->physicalPort();
-			const QString port2Name = portMap2->physicalPort();
+			QSharedPointer<PortMap::PhysicalPort> physPort1 = portMap1->getPhysicalPort();
+			QSharedPointer<PortMap::PhysicalPort> physPort2 = portMap2->getPhysicalPort();
+
+			QSharedPointer<Port> port1 = component1->getPort(physPort1->name_);
+			QSharedPointer<Port> port2 = component2->getPort(physPort2->name_);
 
 			// if the port maps are not for same logical signal
-			if (portMap1->logicalPort() != portMap2->logicalPort()) {
+			if (portMap1->getLogicalPort()->name_ != portMap2->getLogicalPort()->name_) {
 				continue;
 			}
 			// if port does not exist in instance 1
-			else if (!component1->hasPort(port1Name)) {
+			else if (!port1) {
 				emit errorMessage(tr("Port %1 was not defined in component %2.").arg(
-					port1Name).arg(
-					component1->getVlnv()->toString()));
+					physPort1->name_).arg(
+					component1->getVlnv().toString()));
 				continue;
 			}
 			// if port does not exist in instance 2
-			else if (!component2->hasPort(port2Name)) {
+			else if (!port2) {
 				emit errorMessage(tr("Port %1 was not defined in component %2.").arg(
-					port2Name).arg(
-					component2->getVlnv()->toString()));
-				continue;
-			}
-			// if the port on instance 1 is not valid physical port
-			else if (!component1->isPhysicalPort(port1Name)) {
-				continue;
-			}
-			// if the port on instance 2 is not valid physical port
-			else if (!component2->isPhysicalPort(port2Name)) {
+					physPort2->name_).arg(
+					component2->getVlnv().toString()));
 				continue;
 			}
 
 			// get the alignments of the ports
 			General::PortAlignment alignment = 
 				calculatePortAlignment(portMap1.data(), 
-				component1->getPortLeftBound(port1Name),
-				component1->getPortRightBound(port1Name),
+				port1->getLeftBound(),
+				port1->getRightBound(),
 				portMap2.data(),
-				component2->getPortLeftBound(port2Name),
-				component2->getPortRightBound(port2Name));
+				port2->getLeftBound(),
+				port2->getRightBound());
 
 			// if the alignment is not valid (port sizes do not match or 
 			// they do not have any common bits)
@@ -702,15 +812,15 @@ void VhdlGenerator2::connectInterfaces( const QString& connectionName,
 			}
 
 			// create the name for the new signal
-			const QString signalName = connectionName + "_" + portMap1->logicalPort();
+			const QString signalName = connectionName + "_" + portMap1->getLogicalPort()->name_;
 			
-			VhdlGenerator2::PortConnection port1(instance1, port1Name, 
+			VhdlGenerator2::PortConnection physPort1Con(instance1, port1->name(), 
 				alignment.port1Left_, alignment.port1Right_);
-			VhdlGenerator2::PortConnection port2(instance2, port2Name,
+			VhdlGenerator2::PortConnection physPort2Con(instance2, port2->name(),
 				alignment.port2Left_, alignment.port2Right_);
 			QList<VhdlGenerator2::PortConnection> ports;
-			ports.append(port1);
-			ports.append(port2);
+			ports.append(physPort1Con);
+			ports.append(physPort2Con);
 
 			// connect the port from both port maps
 			connectPorts(signalName, description, ports);
@@ -728,8 +838,9 @@ void VhdlGenerator2::connectPorts(const QString& connectionName,
 	// the type of the signal
 	QString type = ports.first().instance_->portType(ports.first().portName_);
 
+	// TODO: PORTTAA LAUSEKKEIDEN SOLVAAMISEEN
 	// the minSize for the signal
-	int minSize = ports.first().leftBound_ - ports.first().rightBound_ + 1;
+	/*int minSize = ports.first().leftBound_ - ports.first().rightBound_ + 1;
 	int maxSize = minSize;
 
 	// first find out the smallest possible minSize for the signal
@@ -739,7 +850,8 @@ void VhdlGenerator2::connectPorts(const QString& connectionName,
 	}
 
 	// calculate the bounds for the signal
-	int left = minSize - 1;
+	//int left = minSize - 1;
+	int left = 0;
 	int right = 0;
 
 	// create the endpoints
@@ -799,7 +911,7 @@ void VhdlGenerator2::connectPorts(const QString& connectionName,
 	// connect each end point to given signal
 	foreach (VhdlConnectionEndPoint endpoint, endpoints) {
 		connectEndPoint(endpoint, signal);
-	}
+	}*/
 }
 
 void VhdlGenerator2::connectEndPoint( const VhdlConnectionEndPoint& endpoint,
@@ -854,8 +966,8 @@ void VhdlGenerator2::parseAdHocConnections()
 				continue;
 			}
 
-            int left = 0;
-            int right = 0;
+            QString left = 0;
+            QString right = 0;
 
             QSharedPointer<PartSelect> part = portRef->getPartSelect();
             if (part)
@@ -882,23 +994,30 @@ void VhdlGenerator2::parseAdHocConnections()
 			// connect each external port to instance port
 			foreach (QSharedPointer<PortReference> portRef, *adHoc->getExternalPortReferences())
             {
+				QSharedPointer<Port> port = component_->getPort(portRef->getPortRef());
+
+				if ( !port )
+				{
+					continue;
+				}
+
 				// check that the port is found 
-				VhdlPortSorter sorter(component_->getInterfaceNameForPort(portRef->getPortRef()),
-					portRef->getPortRef(), component_->getPortDirection(portRef->getPortRef()));
+				VhdlPortSorter sorter(component_->getInterfaceForPort(portRef->getPortRef())->name(),
+					portRef->getPortRef(), port->getDirection());
 
 				if (!topPorts_.contains(sorter))
                 {
 					emit errorMessage(tr("The port %1 is not found in top component %2").arg(
-						portRef->getPortRef()).arg(component_->getVlnv()->toString()));
+						portRef->getPortRef()).arg(component_->getVlnv().toString()));
 					continue;
 				}
 
-				QSharedPointer<VhdlPort> port = topPorts_.value(sorter);
-				Q_ASSERT(port);
+				QSharedPointer<VhdlPort> vport = topPorts_.value(sorter);
+				Q_ASSERT(vport);
 
 
-                int left = 0;
-                int right = 0;
+                QString left = 0;
+                QString right = 0;
 
                 QSharedPointer<PartSelect> part = portRef->getPartSelect();
                 if (part)
@@ -908,8 +1027,8 @@ void VhdlGenerator2::parseAdHocConnections()
                 }
                 else
                 {					
-                    left = port->left();
-                    right = port->right();
+                    left = vport->left();
+                    right = vport->right();
                 }
 
 				// connect each instance port to the top port
@@ -925,23 +1044,25 @@ void VhdlGenerator2::parseAdHocConnections()
 	}
 }
 
-void VhdlGenerator2::connectHierPort( const QString& topPort,
-									 int leftBound, 
-									 int rightBound, 
+void VhdlGenerator2::connectHierPort( const QString& topPortName,
+									 QString leftBound, 
+									 QString rightBound, 
 									 const QList<VhdlGenerator2::PortConnection>& ports ) {
 
-	foreach (VhdlGenerator2::PortConnection port, ports) {
-		
+	foreach (VhdlGenerator2::PortConnection port, ports)
+	{	
 		// if port is scalar then don't add the bit boundaries
-		int portLeft = port.leftBound_;
-		int portRight = port.rightBound_;
+		QString portLeft = port.leftBound_;
+		QString portRight = port.rightBound_;
 		if (port.instance_->isScalarPort(port.portName_)) {
 			portLeft = -1;
 			portRight = -1;
 		}
 
-		VhdlPortSorter sorter(component_->getInterfaceNameForPort(topPort), 
-			topPort, component_->getPortDirection(topPort));
+		QSharedPointer<Port> topPort = component_->getPort(topPortName);
+
+		VhdlPortSorter sorter(component_->getInterfaceForPort(topPortName)->name(), 
+			topPortName, topPort->getDirection());
 		// if the port was found in top component then set it as uncommented 
 		// because it is needed
 		if (topPorts_.contains(sorter)) {
@@ -956,14 +1077,14 @@ void VhdlGenerator2::connectHierPort( const QString& topPort,
 		}
 		else {
 			emit errorMessage(tr("Port %1 was not found in top component %2.").arg(
-				topPort).arg(component_->getVlnv()->toString()));
+				topPortName).arg(component_->getVlnv().toString()));
 			continue;
 		}
 
 		// tell each instance to create a port map between the ports
 		port.instance_->addPortMap(port.portName_, portLeft, portRight,
 			port.instance_->portType(port.portName_),
-			topPort, leftBound, rightBound, topPorts_.value(sorter)->type());
+			topPortName, leftBound, rightBound, topPorts_.value(sorter)->type());
 	}
 }
 
@@ -1017,54 +1138,44 @@ void VhdlGenerator2::connectHierInterface( QSharedPointer<VhdlComponentInstance>
 	Q_ASSERT(instanceInterface);
 	Q_ASSERT(topInterface);
 
-	// get the port maps of both interfaces
-	QList<QSharedPointer<PortMap> > portMaps = instanceInterface->getPortMaps();
-	QList<QSharedPointer<PortMap> > hierPortMaps = topInterface->getPortMaps();
-
-	// get the IP-Xact model of the instance
+	// get the IP-XACT model of the instance
 	QSharedPointer<Component> component1 = instance->componentModel();
 
-	foreach (QSharedPointer<PortMap> portMap, portMaps) {
-		foreach(QSharedPointer<PortMap> hierPortMap, hierPortMaps) {
+	foreach (QSharedPointer<PortMap> portMap, *instanceInterface->getPortMaps()) {
+		foreach(QSharedPointer<PortMap> hierPortMap, *topInterface->getPortMaps()) {
 
-			const QString portName = portMap->physicalPort();
-			const QString hierPortName = hierPortMap->physicalPort();
+			const QString portName = portMap->getPhysicalPort()->name_;
+			const QString hierPortName = hierPortMap->getPhysicalPort()->name_;
+			QSharedPointer<Port> port = component_->getPort(portName);
+			QSharedPointer<Port> hierPort = component_->getPort(hierPortName);
 
 			// if the port maps are not for same logical signal
-			if (portMap->logicalPort() != hierPortMap->logicalPort()) {
+			if (portMap->getLogicalPort()->name_ != hierPortMap->getPhysicalPort()->name_) {
 				continue;
 			}
 			// if port does not exist in instance 1
 			else if (!component1->hasPort(portName)) {
 				emit errorMessage(tr("Port %1 was not defined in component %2.").arg(
 					portName).arg(
-					component1->getVlnv()->toString()));
+					component1->getVlnv().toString()));
 				continue;
 			}
 			// if port does not exist in instance 2
 			else if (!component_->hasPort(hierPortName)) {
 				emit errorMessage(tr("Port %1 was not defined in component %2.").arg(
 					hierPortName).arg(
-					component_->getVlnv()->toString()));
-				continue;
-			}
-			// if the port on instance 1 is not valid physical port
-			else if (!component1->isPhysicalPort(portName)) {
-				continue;
-			}
-			// if the port on instance 2 is not valid physical port
-			else if (!component_->isPhysicalPort(hierPortName)) {
+					component_->getVlnv().toString()));
 				continue;
 			}
 
 			// get the alignments of the ports
 			General::PortAlignment alignment = 
-				calculatePortAlignment(portMap.data(), 
-				component1->getPortLeftBound(portName),
-				component1->getPortRightBound(portName),
+				calculatePortAlignment(portMap.data(),
+				port->getLeftBound(),
+				port->getRightBound(),
 				hierPortMap.data(),
-				component_->getPortLeftBound(hierPortName),
-				component_->getPortRightBound(hierPortName));
+				hierPort->getLeftBound(),
+				hierPort->getRightBound());
 
 			// if the alignment is not valid (port sizes do not match or 
 			// they do not have any common bits)
@@ -1099,19 +1210,19 @@ void VhdlGenerator2::mapPorts2Signals() {
 		QSharedPointer<VhdlComponentInstance> instance = instances_.value(i.key().instanceName());
 
 		// if port is scalar then don't add the bit boundaries
-		int portLeft = i.key().portLeft();
-		int portRight = i.key().portRight();
+		QString portLeft = i.key().portLeft();
+		QString portRight = i.key().portRight();
 		if (instance->isScalarPort(i.key().portName())) {
-			portLeft = -1;
-			portRight = -1;
+			portLeft = "-1";
+			portRight = "-1";
 		}
 
 		// if signal is scalar then don't add the bit boundaries
-		int signalLeft = i.key().signalLeft();
-		int signalRight = i.key().signalRight();
+		QString signalLeft = i.key().signalLeft();
+		QString signalRight = i.key().signalRight();
 		if (VhdlGeneral::isScalarType(i.value()->type())) {
-			signalLeft = -1;
-			signalRight = -1;
+			signalLeft = "-1";
+			signalRight = "-1";
 		}
 
 		// add a port map for the instance to connect port to signal
@@ -1135,9 +1246,9 @@ void VhdlGenerator2::writeVhdlHeader( QTextStream& vhdlStream, const QString& fi
 	QString userName = settings.value("General/Username", Utils::getCurrentUser()).toString();
 	vhdlStream << "-- Created by   : " << userName << endl; 
 	vhdlStream << "-- This file was generated with Kactus2 vhdl generator" << endl;
-	VLNV* vlnv = component_->getVlnv();
-	vhdlStream << "-- based on IP-XACT component " << vlnv->toString() << endl;
-	vhdlStream << "-- whose XML file is " << handler_->getPath(*vlnv) << endl;
+	VLNV vlnv = component_->getVlnv();
+	vhdlStream << "-- based on IP-XACT component " << vlnv.toString() << endl;
+	vhdlStream << "-- whose XML file is " << handler_->getPath(vlnv) << endl;
 	vhdlStream << "-- ***************************************************" << endl;
 }
 
@@ -1341,59 +1452,63 @@ void VhdlGenerator2::writeUserModifiedAssignments( QTextStream& stream ) {
 
 General::PortAlignment VhdlGenerator2::calculatePortAlignment( 
     const PortMap* portMap1, 
-    int phys1LeftBound, 
-    int phys1RightBound, 
+    QString phys1LeftBound, 
+    QString phys1RightBound, 
     const PortMap* portMap2,
-    int phys2LeftBound, 
-    int phys2RightBound )
+    QString phys2LeftBound, 
+    QString phys2RightBound )
 {
     General::PortAlignment alignment;
 
-    // if the port maps are for different logical ports
-    if (portMap1->logicalPort() != portMap2->logicalPort()) {
+	// TODO: PORTTAA LAUSEKKEIDEN SOLVAAMISEEN
+    /*// if the port maps are for different logical ports
+    if (portMap1->getLogicalPort()->name_ != portMap2->getLogicalPort()->name_) {
         return alignment;
     }
 
-    // if port 1 is vectored on the port map
-    if (portMap1->physicalVector()) {
-        phys1LeftBound = portMap1->getPhysicalLeft();
-        phys1RightBound = portMap1->physicalVector()->getRight().toInt();
+	// if port 1 is vectored on the port map
+	if (portMap1->physicalVector()) {
+        phys1LeftBound = portMap1->getPhysicalPort()->partSelect_->getLeftRange();
+        phys1RightBound =  portMap1->getPhysicalPort()->partSelect_->getRightRange();
     }
 
     // if port 2 is vectored on the port map
-    if (portMap2->physicalVector()) {
-        phys2LeftBound = portMap2->getPhysicalLeft();
-        phys2RightBound = portMap2->physicalVector()->getRight().toInt();
+	if (portMap2->physicalVector()) {
+		phys2LeftBound = portMap2->getPhysicalPort()->partSelect_->getLeftRange();
+		phys2RightBound =  portMap2->getPhysicalPort()->partSelect_->getRightRange();
     }
+
+	QString logicalRight1 = portMap1->getLogicalPort()->range_->getRight();
+	QString logicalLeft1 = portMap1->getLogicalPort()->range_->getLeft();
+	QString logicalRight2 = portMap2->getLogicalPort()->range_->getRight();
+	QString logicalLeft2 = portMap2->getLogicalPort()->range_->getLeft();
 
     // if both have vectored logical signals
     if (portMap1->logicalVector() && portMap2->logicalVector()) {
 
         // if the vectored ports don't have any common bounds
-        if (portMap1->getLogicalRight() > portMap2->getLogicalLeft() ||
-            portMap1->getLogicalLeft() < portMap2->getLogicalRight()) {
+        if (logicalRight1 > logicalLeft2 || logicalLeft1 < logicalRight2)
+		{
                 return alignment;
         }
 
-        int logicalLeft = qMin(portMap1->getLogicalLeft(), 
-            portMap2->getLogicalLeft());
-        int logicalRight = qMax(portMap1->getLogicalRight(),
-            portMap2->getLogicalRight());
+        int logicalLeft = qMin(logicalLeft1, logicalLeft2);
+        int logicalRight = qMax(logicalRight1, logicalRight2);
 
         {
-            // count how much the left bound of port 1 has to be adjusted down
-            int downSize = abs(portMap1->getLogicalLeft() - logicalLeft);
-            // count how must the right bound of  port 1 has to be adjusted up
-            int upSize = abs(logicalRight - portMap1->getLogicalRight());
+            // Count how much the left bound of port 1 has to be adjusted down.
+            int downSize = abs(logicalLeft1 - logicalLeft);
+            // Count how much the right bound of  port 1 has to be adjusted up.
+            int upSize = abs(logicalRight - logicalRight1);
 
             alignment.port1Left_ = phys1LeftBound - downSize;
             alignment.port1Right_ = phys1RightBound + upSize;
         }
         {
-            // count how much the left bound of port 2 has to be adjusted down
-            int downSize = abs(portMap2->getLogicalLeft() - logicalLeft);
-            // count how must the right bound of  port 2 has to be adjusted up
-            int upSize = abs(logicalRight - portMap2->getLogicalRight());
+            // Count how much the left bound of port 2 has to be adjusted down.
+            int downSize = abs(logicalLeft2 - logicalLeft);
+            // Count how much the right bound of port 2 has to be adjusted up.
+            int upSize = abs(logicalRight - logicalRight2);
 
             alignment.port2Left_ = phys2LeftBound - downSize;
             alignment.port2Right_ = phys2RightBound + upSize;
@@ -1407,15 +1522,15 @@ General::PortAlignment VhdlGenerator2::calculatePortAlignment(
         alignment.port1Right_ = phys1RightBound;
 
         // port 2 uses the bounds of the logical port of port 1
-        alignment.port2Left_ = portMap1->getLogicalLeft();
-        alignment.port2Right_ = portMap1->getLogicalRight();
+        alignment.port2Left_ = logicalLeft1;
+        alignment.port2Right_ = logicalRight1;
     }
     // if port map2 has vectored logical signal
     else if (!portMap1->logicalVector() && portMap2->logicalVector()) {
 
         // port 1 uses the bounds of the logical port of port 2
-        alignment.port1Left_ = portMap2->getLogicalLeft();
-        alignment.port1Right_ = portMap2->getLogicalRight();
+        alignment.port1Left_ = logicalLeft2;
+        alignment.port1Right_ = logicalRight2;
 
         // port 2 uses the original physical bounds
         alignment.port2Left_ = phys2LeftBound;
@@ -1439,15 +1554,15 @@ General::PortAlignment VhdlGenerator2::calculatePortAlignment(
     }
     else {
         alignment.invalidAlignment_ = false;
-    }
+    }*/
     return alignment;
 }
 
 VhdlGenerator2::PortConnection::PortConnection( 
 	QSharedPointer<VhdlComponentInstance> instance,
 	const QString& portName,
-	int left /*= -1*/, 
-	int right /*= -1*/ ):
+	QString left /*= -1*/, 
+	QString right /*= -1*/ ):
 instance_(instance),
 portName_(portName),
 leftBound_(left),

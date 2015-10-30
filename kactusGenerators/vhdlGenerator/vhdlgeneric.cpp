@@ -7,11 +7,11 @@
 
 #include "vhdlgeneric.h"
 
-#include <IPXACTmodels/modelparameter.h>
+#include <IPXACTmodels/common/ModuleParameter.h>
 
 #include <QChar>
 
-VhdlGeneric::VhdlGeneric(ModelParameter* generic):
+VhdlGeneric::VhdlGeneric(ModuleParameter* generic):
 VhdlTypedObject(generic->name(),
 		        generic->getDataType(),
     	        generic->getValue(),

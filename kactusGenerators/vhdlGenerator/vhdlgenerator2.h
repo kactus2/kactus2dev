@@ -8,7 +8,7 @@
 #ifndef VHDLGENERATOR2_H
 #define VHDLGENERATOR2_H
 
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
@@ -127,10 +127,10 @@ private:
 		QString portName_;
 
 		//! \brief The left bound of the port to connect.
-		int leftBound_;
+		QString leftBound_;
 
 		//! \brief The right bound of the port to connect.
-		int rightBound_;
+		QString rightBound_;
 
 		/*! \brief The constructor
 		 *
@@ -141,7 +141,7 @@ private:
 		 *
 		*/
 		PortConnection(QSharedPointer<VhdlComponentInstance> instance, 
-			const QString& portName, int left = -1, int right = -1);
+			const QString& portName, QString left = "-1", QString right = "-1");
 
 		//! \brief Copy constructor
 		PortConnection(const PortConnection& other);
@@ -159,7 +159,7 @@ private:
 	/*! \brief Parse the generics for the top entity to create.
 	 *
 	*/
-	void parseTopGenerics();
+	void parseTopGenerics( QString const& viewName );
 
 	/*! \brief Parse the ports for the top entity to create.
 	 *
@@ -217,9 +217,9 @@ private:
 	 * \param ports List of ports to connect to the top port
 	 *
 	*/
-	void connectHierPort(const QString& topPort,
-		int leftBound, 
-		int rightBound,
+	void connectHierPort(const QString& topPortName,
+		QString leftBound, 
+		QString rightBound,
 		const QList<VhdlGenerator2::PortConnection>& ports);
 
 	/*! \brief Connect the given endpoint with the signal.
@@ -313,11 +313,11 @@ private:
 	void writeUserModifiedAssignments(QTextStream& stream);
 	
      General::PortAlignment calculatePortAlignment(const PortMap* portMap1, 
-									 int phys1LeftBound,
-									 int phys1RightBound,
+									 QString phys1LeftBound,
+									 QString phys1RightBound,
 									 const PortMap* portMap2,
-									 int phys2LeftBound,
-									 int phys2RightBound);
+									 QString phys2LeftBound,
+									 QString phys2RightBound);
 
 
 	//! \brief Pointer to the instance that manages the library.

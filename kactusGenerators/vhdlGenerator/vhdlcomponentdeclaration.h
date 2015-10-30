@@ -8,8 +8,8 @@
 #ifndef VHDLCOMPONENTDECLARATION_H
 #define VHDLCOMPONENTDECLARATION_H
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/common/DirectionTypes.h>
 
 #include "vhdlobject.h"
 #include "vhdlgeneric.h"
@@ -35,7 +35,7 @@ public:
 	 * \param parent Pointer to the owner of this declaration.
 	 *
 	*/
-	VhdlComponentDeclaration(QSharedPointer<Component> component);
+	VhdlComponentDeclaration(QSharedPointer<Component> component, QString const& viewName);
 	
 	//! \brief The destructor
 	virtual ~VhdlComponentDeclaration();
@@ -119,7 +119,7 @@ public:
 	 *
 	 * \return General::Direction Specifies the direction of the port.
 	*/
-	General::Direction portDirection(const QString& portName) const;
+	DirectionTypes::Direction portDirection(const QString& portName) const;
 
 	/*! \brief Get the physical left bound of the port.
 	 *
@@ -127,7 +127,7 @@ public:
 	 *
 	 * \return int The left bound.
 	*/
-	int getPortPhysLeftBound(const QString& portName) const;
+	QString getPortPhysLeftBound(const QString& portName) const;
 
 	/*! \brief Get the physical right bound of the port.
 	 *
@@ -135,7 +135,7 @@ public:
 	 *
 	 * \return int The right bound.
 	*/
-	int getPortPhysRightBound(const QString& portName) const;
+	QString getPortPhysRightBound(const QString& portName) const;
 
 private:
 	//! \brief No copying

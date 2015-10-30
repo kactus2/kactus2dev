@@ -168,6 +168,15 @@ public:
 	 */
     void setBusInterfaces(QSharedPointer<QList<QSharedPointer<BusInterface> > > newBusInterfaces);
 
+	/*! \brief Check which interface contains the named port.
+	 *
+	 * \param portName The name of the port that is searched in interfaces.
+	 *
+	 * \return The interface that contains the port.
+	*/
+	QSharedPointer<BusInterface> getInterfaceForPort(const QString& portName) const;
+
+
 	/*!
      * Get this component's channels.
 	 *

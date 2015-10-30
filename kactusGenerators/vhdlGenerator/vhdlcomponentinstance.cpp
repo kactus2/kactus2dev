@@ -10,9 +10,9 @@
 
 #include "vhdlcomponentdeclaration.h"
 #include "vhdlgeneral.h"
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/view.h>
-#include <IPXACTmodels/librarycomponent.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/View.h>
+#include <IPXACTmodels/common/Document.h>
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/Component/BusInterface.h>
 
@@ -21,6 +21,8 @@
 #include <QSharedPointer>
 #include <QMultiMap>
 #include <QChar>
+#include "IPXACTmodels/Component/ComponentInstantiation.h"
+#include "IPXACTmodels/Component/Port.h"
 
 VhdlComponentInstance::VhdlComponentInstance(QObject* parent,
                                              LibraryInterface* handler,
@@ -32,7 +34,7 @@ QObject(parent),
 VhdlObject(instanceName, description),
 compDeclaration_(compDeclaration),
 instanceName_(instanceName),
-componentEntityName_(compDeclaration->typeName()),
+componentModuleName_(compDeclaration->typeName()),
 architecture_(),
 description_(description),
 defaultPortConnections_(),
@@ -43,64 +45,86 @@ portMap_()
 
 	QSharedPointer<Component> component = compDeclaration_->componentModel();
 	Q_ASSERT(component);
- 	
-	// set the entity name that is used
-	componentEntityName_ = component->getEntityName(viewName);
-	compDeclaration_->setEntityName(componentEntityName_);
 
-	// get the architecture name for this instance
-	architecture_ = component->getArchitectureName(viewName);
+	// Look up the view instantiation.
+	QSharedPointer<View> view;
+
+	foreach ( QSharedPointer<View> currentView, *component->getViews() )
+	{
+		if ( currentView->name() == viewName )
+		{
+			view = currentView;
+			break;
+		}
+	}
+
+	// Look up the component instantiation.
+	QSharedPointer<ComponentInstantiation> cimp;
+
+	if ( view )
+	{
+		foreach ( QSharedPointer<ComponentInstantiation> currentInsta, *component->getComponentInstantiations() )
+		{
+			if ( currentInsta->name() == view->getComponentInstantiationRef() )
+			{
+				cimp = currentInsta;
+				break;
+			}
+		}
+	}
+ 	
+	if ( cimp )
+	{
+		// set the module name that is used
+		componentModuleName_ = cimp->getModuleName();
+		compDeclaration_->setEntityName(componentModuleName_);
+
+		// get the architecture name for this instance
+		architecture_ = cimp->getArchitectureName();
+	}
 
 	// get the default values of the in and inout ports
-	QMap<QString, QString> defaultValues = component->getPortDefaultValues();
-	for (QMap<QString, QString>::iterator i = defaultValues.begin(); 
-		i != defaultValues.end(); ++i) {
-
-			if (!i.value().isEmpty()) {
-				defaultPortConnections_.insert(i.key(), i.value());
-			}
+	foreach ( QSharedPointer<Port> port, *component->getPorts() )
+	{
+		defaultPortConnections_.insert( port->name(), port->getWire()->getDefaultDriverValue() );
 	}
 
 	QMap<QString, QString> tempDefaults;
-	for (QMap<QString, QString>::iterator i = defaultPortConnections_.begin();
-		i != defaultPortConnections_.end(); ++i) {
 
+	for (QMap<QString, QString>::iterator i = defaultPortConnections_.begin();
+		i != defaultPortConnections_.end(); ++i)
+	{
 		// get the VLNVs of the abstraction definitions for the port
-		QMultiMap<QString, VLNV> absDefs = component->getInterfaceAbsDefForPort(i.key());
+		QSharedPointer<QList<QSharedPointer<AbstractionType> > > absTypes = 
+			component->getInterfaceForPort(i.key())->getAbstractionTypes();
 
 		// if the port is not in any interface then use the ports own default value.
-		if (absDefs.isEmpty()) {
+		if (absTypes->empty())
+		{
 			tempDefaults.insert(i.key(), i.value());
 		}
 
 		// try to find the abstraction definition and use it's default value if possible
-		for (QMultiMap<QString, VLNV>::Iterator j = absDefs.begin();
-			j != absDefs.end(); ++j) {
-
+		foreach (QSharedPointer<AbstractionType> j, *absTypes)
+		{
 			// if the abs def does not exist in the library
-			if (handler->getDocumentType(j.value()) != VLNV::ABSTRACTIONDEFINITION) {
+			if (handler->getDocumentType(*j->getAbstractionRef()) != VLNV::ABSTRACTIONDEFINITION)
+			{
 				if (!tempDefaults.contains(i.key()))
+				{
 					tempDefaults.insert(i.key(), i.value());
+				}
+
 				continue;
 			}
 
-			QSharedPointer<Document> libComp = handler->getModel(j.value());
+			QSharedPointer<Document> libComp = handler->getModel(*j->getAbstractionRef());
 			QSharedPointer<AbstractionDefinition> absDef = libComp.staticCast<AbstractionDefinition>();
 
-			// if the abstraction definition has defined a default value for the port
-			// then use it before the port's own default value
-			
-            //if (absDef->hasDefaultValue(j.key())) {
-// 				tempDefaults.insert(i.key(), QString::number(absDef->getDefaultValue(j.key())));
-// 				break;
-// 			}
-
-			// if abstraction definition did not contain 
-			//else {
-				if (!tempDefaults.contains(i.key()))
-					tempDefaults.insert(i.key(), i.value());
-				continue;
-			//}
+			if (!tempDefaults.contains(i.key()))
+			{
+				tempDefaults.insert(i.key(), i.value());
+			}
 		}
 	}
 	defaultPortConnections_ = tempDefaults;
@@ -180,12 +204,12 @@ void VhdlComponentInstance::addPortMap( const VhdlConnectionEndPoint& endpoint,
 }
 
 void VhdlComponentInstance::addPortMap( const QString& portName,
-									   int portLeft, 
-									   int portRight,
+									   const QString& portLeft, 
+									   const QString& portRight,
 									   const QString& portType,
 									   const QString& signalName,
-									   int signalLeft, 
-									   int signalRight,
+									   const QString& signalLeft, 
+									   const QString& signalRight,
 									   const QString& signalType) {
 	
 	// create a map for the port of this instance
@@ -206,7 +230,7 @@ void VhdlComponentInstance::addMapping(const VhdlPortMap &instancePort,
 		// inform user that the mapping for those bits already existed.
 		emit noticeMessage(tr("The instance %1:%2 already contains mapping "
 			"\"%3 => %4\"").arg(
-			componentEntityName_).arg(
+			componentModuleName_).arg(
 			instanceName_).arg(
 			instancePort.toString()).arg(
 			previousValue.toString()));
@@ -214,7 +238,7 @@ void VhdlComponentInstance::addMapping(const VhdlPortMap &instancePort,
 		// inform user that the new mapping is also added
 		emit noticeMessage(tr("Instance %1:%2 now has also port mapping "
 			"\"%3 => %4\"").arg(
-			componentEntityName_).arg(
+			componentModuleName_).arg(
 			instanceName_).arg(
 			instancePort.toString()).arg(
 			signalMapping.toString()));
@@ -234,7 +258,7 @@ void VhdlComponentInstance::addGenericMap( const QString& genericName,
 		// is overwritten with new value
 		emit noticeMessage(tr("The instance %1:%2 already contained generic mapping"
 			" \"%3 => %4\" but \"%3 => %5\" replaced it.").arg(
-			componentEntityName_).arg(
+			componentModuleName_).arg(
 			instanceName_).arg(
 			genericName).arg(
 			oldValue).arg(
@@ -296,7 +320,7 @@ QSharedPointer<BusInterface> VhdlComponentInstance::interface( const QString& in
 VLNV VhdlComponentInstance::vlnv() const {
 	Q_ASSERT(compDeclaration_);
 	Q_ASSERT(compDeclaration_->componentModel());
-	return *compDeclaration_->componentModel()->getVlnv();
+	return compDeclaration_->componentModel()->getVlnv();
 }
 
 QSharedPointer<Component> VhdlComponentInstance::componentModel() const {
@@ -316,7 +340,7 @@ bool VhdlComponentInstance::hasPort( const QString& portName ) const {
 }
 
 QString VhdlComponentInstance::typeName() const {
-	return componentEntityName_;
+	return componentModuleName_;
 }
 
 bool VhdlComponentInstance::isScalarPort( const QString& portName ) const {
@@ -324,14 +348,14 @@ bool VhdlComponentInstance::isScalarPort( const QString& portName ) const {
 	return compDeclaration_->isScalarPort(portName);
 }
 
-General::Direction VhdlComponentInstance::portDirection( const QString& portName ) const {
+DirectionTypes::Direction VhdlComponentInstance::portDirection( const QString& portName ) const {
 	return compDeclaration_->portDirection(portName);
 }
 
-int VhdlComponentInstance::getPortPhysLeftBound( const QString& portName ) const {
+QString VhdlComponentInstance::getPortPhysLeftBound( const QString& portName ) const {
 	return compDeclaration_->getPortPhysLeftBound(portName);
 }
 
-int VhdlComponentInstance::getPortPhysRightBound( const QString& portName ) const {
+QString VhdlComponentInstance::getPortPhysRightBound( const QString& portName ) const {
 	return compDeclaration_->getPortPhysRightBound(portName);
 }

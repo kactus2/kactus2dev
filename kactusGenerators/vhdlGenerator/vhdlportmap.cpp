@@ -24,25 +24,25 @@ name_(name),
 left_(-1),
 right_(-1),
 type_("std_logic") 
-{
-	if (size > 1) 
+{//TODO:
+	/*if (size > 1) 
     {
 		left_ = size -1;
 		right_ = 0;
 		type_ = "std_logic_vector";
         setType(type_);
-	}
+	}*/
 }
 
-VhdlPortMap::VhdlPortMap( const QString& name, int leftBound, int rightBound, const QString& type):
+VhdlPortMap::VhdlPortMap( const QString& name, const QString& leftBound, const QString& rightBound, const QString& type):
 VhdlTypedObject(name, type, "", ""),
 name_(name),
 left_(leftBound),
 right_(rightBound),
 type_(type) {
-
+	//TODO:
 	// if type was not defined then use defaults
-	if (type_.isEmpty()) 
+	/*if (type_.isEmpty()) 
     {
 		// if the port size is 1
 		if (left_ - right_ > 0) 
@@ -55,7 +55,7 @@ type_(type) {
 			type_ = "std_logic_vector";
 		}
         setType(type_);
-	}
+	}*/
 }
 
 VhdlPortMap::VhdlPortMap( const VhdlPortMap& other ):
@@ -157,9 +157,9 @@ void VhdlPortMap::write( QTextStream& stream ) const {
 QString VhdlPortMap::toString() const 
 {
     QString result(getVhdlLegalName());
-
+	//TODO:
 	// make sure the if one bound is defined then both are
-	Q_ASSERT((left_ >= 0 && right_ >= 0) || (left_ < 0 && right_ < 0));
+	/*Q_ASSERT((left_ >= 0 && right_ >= 0) || (left_ < 0 && right_ < 0));
 	Q_ASSERT(left_ >= right_);
 
 	// if there are no indexes specified then don't write indexing
@@ -189,7 +189,7 @@ QString VhdlPortMap::toString() const
 	else if (size > 1) 
     {
 		result += QString("(%1 downto %2)").arg(left_).arg(right_);
-	}
+	}*/
 
 	return result;
 }

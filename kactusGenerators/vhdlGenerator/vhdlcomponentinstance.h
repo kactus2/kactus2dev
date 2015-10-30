@@ -12,10 +12,10 @@
 #include "vhdlportmap.h"
 #include "vhdlconnectionendpoint.h"
 
-#include <IPXACTmodels/generaldeclarations.h>
-#include <IPXACTmodels/component.h>
-
+#include <IPXACTmodels/Component/component.h>
 #include <IPXACTmodels/common/VLNV.h>
+
+#include <IPXACTmodels/common/DirectionTypes.h>
 
 #include <QObject>
 #include <QString>
@@ -94,12 +94,12 @@ public:
 	 *
 	*/
 	void addPortMap(const QString& portName, 
-		int portLeft, 
-		int portRight,
+		const QString& portLeft, 
+		const QString& portRight,
 		const QString& portType,
 		const QString& signalName,
-		int signalLeft,
-		int signalRight,
+		const QString& signalLeft,
+		const QString& signalRight,
 		const QString& signalType);
 
 	/*! \brief Add a new generic map to the instance.
@@ -177,7 +177,7 @@ public:
 	 *
 	 * \return General::Direction Specifies the direction of the port.
 	*/
-	General::Direction portDirection(const QString& portName) const;
+	DirectionTypes::Direction portDirection(const QString& portName) const;
 
 	/*! \brief Get the physical left bound of the port.
 	 *
@@ -185,7 +185,7 @@ public:
 	 *
 	 * \return int The left bound.
 	*/
-	int getPortPhysLeftBound(const QString& portName) const;
+	QString getPortPhysLeftBound(const QString& portName) const;
 
 	/*! \brief Get the physical right bound of the port.
 	 *
@@ -193,7 +193,7 @@ public:
 	 *
 	 * \return int The right bound.
 	*/
-	int getPortPhysRightBound(const QString& portName) const;
+	QString getPortPhysRightBound(const QString& portName) const;
 
 signals:
 
@@ -218,7 +218,7 @@ private:
 	QString instanceName_;
 
 	//! The name of the type that is is an instantiation of.
-	QString componentEntityName_;
+	QString componentModuleName_;
 
 	//! The name of the architecture used in this instance.
 	QString architecture_;

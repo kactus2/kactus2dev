@@ -53,13 +53,13 @@ public:
 	 *
 	 * \return int The left bound.
 	*/
-	virtual int left() const;
+	virtual QString left() const;
 
 	/*! \brief Get the right bound of the port.
 	 *
 	 * \return int The right bound.
 	*/
-	virtual int right() const;
+	virtual QString right() const;
 
 	/*! \brief Set the port to be commented out or not.
 	 *
@@ -90,13 +90,13 @@ private:
 	VhdlPort& operator=(const VhdlPort& other);
 
 	//! The direction of the port.
-	General::Direction direction_;
+	DirectionTypes::Direction direction_;
 
 	//! The left bound of the port.
-	int left_;
+	QString left_;
 
 	//! The right bound of the port.
-	int right_;
+	QString right_;
 
 	//! If true then the port is commented out when printed to text stream
 	bool commentOut_;

@@ -402,16 +402,16 @@ namespace General
     struct IPXACTMODELS_EXPORT PortAlignment {
 
         //! The calculated left bound for port 1.
-        int port1Left_;
+        QString port1Left_;
 
         //! The calculated right bound for port 1.
-        int port1Right_;
+        QString  port1Right_;
 
         //! The calculated left bound for port 2.
-        int port2Left_;
+        QString  port2Left_;
 
         //! The calculated right bound for port 2.
-        int port2Right_;
+        QString  port2Right_;
 
         //! Tells if the calculated alignment is valid or not.
         bool invalidAlignment_;

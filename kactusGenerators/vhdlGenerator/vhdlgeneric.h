@@ -13,7 +13,7 @@
 
 #include <QString>
 
-class ModelParameter;
+class ModuleParameter;
 
 /*! \brief VhdlGeneric represents a vhdl generic in a component or entity declaration.
  *
@@ -29,7 +29,7 @@ public:
 	 * \param generic Pointer to the model parameter to create the generic from.
 	 *
 	*/
-	VhdlGeneric(ModelParameter* generic);
+	VhdlGeneric(ModuleParameter* generic);
 	
 	//! \brief The destructor
 	virtual ~VhdlGeneric();

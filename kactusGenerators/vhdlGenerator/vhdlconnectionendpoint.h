@@ -36,10 +36,10 @@ public:
 	*/
 	VhdlConnectionEndPoint(const QString& instanceName,	
 		const QString& portName, 
-		int portLeft = -1,
-		int portRight = -1,
-		int signalLeft = -1,
-		int signalRight = -1);
+		const QString& portLeft = "-1",
+		const QString& portRight = "-1",
+		const QString& signalLeft = "-1",
+		const QString& signalRight = "-1");
 
 	//! \brief Copy constructor
 	VhdlConnectionEndPoint(const VhdlConnectionEndPoint& other);
@@ -78,25 +78,25 @@ public:
 	 *
 	 * \return int The left bound.
 	*/
-	int signalLeft() const;
+	QString signalLeft() const;
 
 	/*! \brief Get the right bound of the signal.
 	 *
 	 * \return int The right bound.
 	*/
-	int signalRight() const;
+	QString signalRight() const;
 
 	/*! \brief Get the left bound of the port.
 	 *
 	 * \return int The left bound.
 	*/
-	int portLeft() const;
+	QString portLeft() const;
 
 	/*! \brief Get the right bound of the port.
 	 *
 	 * \return int The right bound.
 	*/
-	int portRight() const;
+	QString portRight() const;
 
 private:
 
@@ -107,16 +107,16 @@ private:
 	QString portName_;
 
 	//! \brief The left bound used from the signal.
-	int signalLeft_;
+	QString signalLeft_;
 
 	//! \brief The right bound used from the signal.
-	int signalRight_;
+	QString signalRight_;
 
 	//! \brief The left bound used from the port.
-	int portLeft_;
+	QString portLeft_;
 
 	//! \brief THe right bound used from the port.
-	int portRight_;
+	QString portRight_;
 
 };
 

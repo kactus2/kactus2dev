@@ -274,6 +274,26 @@ void Component::setBusInterfaces(QSharedPointer<QList<QSharedPointer<BusInterfac
 }
 
 //-----------------------------------------------------------------------------
+// Function: Component::getInterfaceForPort()
+//-----------------------------------------------------------------------------
+QSharedPointer<BusInterface> Component::getInterfaceForPort( const QString& portName ) const
+{
+	// Search all ports.
+	foreach (QSharedPointer<BusInterface> busif, busInterfaces_)
+	{
+		// If the interface contains the port.
+		if (busif->hasPhysicalPort(portName))
+		{
+			return busif;
+		}
+	}
+
+	return QSharedPointer<BusInterface>();
+}
+
+
+
+//-----------------------------------------------------------------------------
 // Function: Component::getChannels()
 //-----------------------------------------------------------------------------
 QSharedPointer<QList<QSharedPointer<Channel> > > Component::getChannels() const

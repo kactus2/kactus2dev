@@ -11,7 +11,7 @@
 
 VhdlPortSorter::VhdlPortSorter(const QString& interface,
 							   const QString& name, 
-							   General::Direction direction ):
+							   DirectionTypes::Direction direction ):
 interface_(interface),
 name_(name),
 direction_(direction) {

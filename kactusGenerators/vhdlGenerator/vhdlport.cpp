@@ -9,7 +9,7 @@
 
 #include "vhdlgeneral.h"
 
-#include <IPXACTmodels/port.h>
+#include <IPXACTmodels/Component/Port.h>
 
 VhdlPort::VhdlPort(Port* port):
 VhdlTypedObject(port->name(),
@@ -20,8 +20,8 @@ direction_(port->getDirection()),
 left_(port->getLeftBound()),
 right_(port->getRightBound()),
 commentOut_(true) 
-{
-	Q_ASSERT(port);
+{//TODO:
+	/*Q_ASSERT(port);
 
 	// if type is not set then use the defaults
 	if (type().isEmpty()) {
@@ -35,7 +35,7 @@ commentOut_(true)
 		else {
 			setType(QString("std_logic_vector"));
 		}
-	}
+	}*/
 }
 
 VhdlPort::~VhdlPort() {
@@ -47,20 +47,21 @@ void VhdlPort::write( QTextStream& stream ) const {
 	}
 
     stream << getVhdlLegalName().leftJustified(16, ' ');     //align colons (:) at least roughly
-	stream << " : " << General::direction2Str(direction_) << " ";
+	stream << " : " << DirectionTypes::direction2Str(direction_) << " ";
 
-	stream << VhdlGeneral::vhdlType2String(type(), left_, right_);
+	//TODO stream << VhdlGeneral::vhdlType2String(type(), left_, right_);
 }
 
 int VhdlPort::size() const {
-	return left_ - right_ + 1;
+	//TODO:return left_ - right_ + 1;
+	return 0;
 }
 
-int VhdlPort::left() const {
+QString VhdlPort::left() const {
 	return left_;
 }
 
-int VhdlPort::right() const {
+QString VhdlPort::right() const {
 	return right_;
 }
 

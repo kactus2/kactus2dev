@@ -10,35 +10,63 @@
 #include "vhdlgeneral.h"
 
 #include <IPXACTmodels/Component/BusInterface.h>
-#include <IPXACTmodels/modelparameter.h>
-#include <IPXACTmodels/port.h>
-#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/Component/Port.h>
+#include "IPXACTmodels/Component/View.h"
+#include "IPXACTmodels/Component/ComponentInstantiation.h"
+#include "IPXACTmodels/Component/PortMap.h"
 
 
-VhdlComponentDeclaration::VhdlComponentDeclaration(QSharedPointer<Component> component):
-VhdlObject(component->getVlnv()->getName(), ""),
+VhdlComponentDeclaration::VhdlComponentDeclaration(QSharedPointer<Component> component,
+	QString const& viewName) :
+VhdlObject(component->getVlnv().getName(), ""),
 component_(component),
-typeName_(component->getVlnv()->getName()),
+typeName_(component->getVlnv().getName()),
 generics_(),
 ports_(),
 instantations_() 
 {
 	Q_ASSERT(component);
 
-	// parse the generics for the component declaration
-	foreach (QSharedPointer<ModelParameter> modelParam, *component_->getModelParameters())
-    {
-		QSharedPointer<VhdlGeneric> generic(new VhdlGeneric(modelParam.data() ));
-		generics_.insert(generic->name(), generic);
+	// Look up the view instantiation.
+	QSharedPointer<View> view;
+
+	foreach ( QSharedPointer<View> currentView, *component->getViews() )
+	{
+		if ( currentView->name() == viewName )
+		{
+			view = currentView;
+			break;
+		}
+	}
+
+	if ( view )
+	{
+		// Look up the component instantiation.
+		QSharedPointer<ComponentInstantiation> cimp;
+
+		foreach ( QSharedPointer<ComponentInstantiation> currentInsta, *component->getComponentInstantiations() )
+		{
+			if ( currentInsta->name() == view->getComponentInstantiationRef() )
+			{
+				cimp = currentInsta;
+				break;
+			}
+		}
+
+		// parse the generics for the component declaration
+		foreach (QSharedPointer<ModuleParameter> moduleParam, *cimp->getModuleParameters())
+		{
+			QSharedPointer<VhdlGeneric> generic(new VhdlGeneric(moduleParam.data() ));
+			generics_.insert(generic->name(), generic);
+		}
 	}
 
 	// parse the ports for the component declaration
-	QList<QSharedPointer<Port> > ports = component_->getPorts();
-	foreach (QSharedPointer<Port> port, ports) {
+	foreach (QSharedPointer<Port> port, *component_->getPorts()) {
 		
 		// do not add ports with invalid direction or phantom direction
-		if (port->getDirection() == General::DIRECTION_INVALID ||
-			port->getDirection() == General::DIRECTION_PHANTOM) {
+		if (port->getDirection() == DirectionTypes::DIRECTION_INVALID ||
+			port->getDirection() == DirectionTypes::DIRECTION_PHANTOM) {
 			continue;
 		}
 
@@ -46,7 +74,7 @@ instantations_()
 		QSharedPointer<VhdlPort> vhdlPort(new VhdlPort(port.data() ));
 
 		// create the sorter instance
-		VhdlPortSorter sorter(component_->getInterfaceNameForPort(vhdlPort->name()),
+		VhdlPortSorter sorter(component_->getInterfaceForPort(port->name())->name(),
 			vhdlPort->name(), port->getDirection());
 
 		// this port can not be created yet
@@ -64,7 +92,7 @@ void VhdlComponentDeclaration::write( QTextStream& stream ) const {
 	if (!description().isEmpty()) {
 		VhdlGeneral::writeDescription(description(), stream, QString("  "));
 	}
-	stream << "  " << "-- IP-XACT VLNV: " << component_->getVlnv()->toString() << endl;
+	stream << "  " << "-- IP-XACT VLNV: " << component_->getVlnv().toString() << endl;
     stream << "  " << "component " << getVhdlLegalName() << endl;
 
 	// write the generic declarations
@@ -188,8 +216,8 @@ void VhdlComponentDeclaration::checkPortConnections() {
 QString VhdlComponentDeclaration::portType( const QString& portName ) const {
 
 	// used to search for the correct port
-	VhdlPortSorter sorter(component_->getInterfaceNameForPort(portName),
-		portName, component_->getPortDirection(portName));
+	VhdlPortSorter sorter(component_->getInterfaceForPort(portName)->name(),
+		portName, component_->getPort(portName)->getDirection());
 	
 	// if the named port is found
 	if (ports_.contains(sorter)) {
@@ -202,8 +230,8 @@ QString VhdlComponentDeclaration::portType( const QString& portName ) const {
 
 bool VhdlComponentDeclaration::isScalarPort( const QString& portName ) const {
 
-	VhdlPortSorter sorter(component_->getInterfaceNameForPort(portName),
-		portName, component_->getPortDirection(portName));
+	VhdlPortSorter sorter(component_->getInterfaceForPort(portName)->name(),
+		portName, component_->getPort(portName)->getDirection());
 
 	QString type;
 
@@ -221,14 +249,14 @@ void VhdlComponentDeclaration::setEntityName( const QString& entityName ) {
 	typeName_ = entityName;
 }
 
-General::Direction VhdlComponentDeclaration::portDirection( const QString& portName ) const {
-	return component_->getPortDirection(portName);
+DirectionTypes::Direction VhdlComponentDeclaration::portDirection( const QString& portName ) const {
+	return component_->getPort(portName)->getDirection();
 }
 
-int VhdlComponentDeclaration::getPortPhysLeftBound( const QString& portName ) const {
-	return component_->getPortLeftBound(portName);
+QString VhdlComponentDeclaration::getPortPhysLeftBound( const QString& portName ) const {
+	return component_->getPort(portName)->getLeftBound();
 }
 
-int VhdlComponentDeclaration::getPortPhysRightBound( const QString& portName ) const {
-	return component_->getPortRightBound(portName);
+QString VhdlComponentDeclaration::getPortPhysRightBound( const QString& portName ) const {
+	return component_->getPort(portName)->getRightBound();
 }
