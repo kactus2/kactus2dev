@@ -10,6 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include "AdHocDelegate.h"
+#include "AdHocColumns.h"
 
 #include <QLabel>
 #include <QApplication>
@@ -19,8 +20,10 @@
 //-----------------------------------------------------------------------------
 // Function: AdHocDelegate::AdHocDelegate()
 //-----------------------------------------------------------------------------
-AdHocDelegate::AdHocDelegate(QObject *parent /*= 0*/) : QStyledItemDelegate(parent), adhocGroupModify_(false),
-                                                        adhocGroupState_(Qt::Unchecked)
+AdHocDelegate::AdHocDelegate(QObject *parent /*= 0*/):
+QStyledItemDelegate(parent),
+adhocGroupModify_(false),
+adhocGroupState_(Qt::Unchecked)
 {
 
 }
@@ -39,20 +42,15 @@ AdHocDelegate::~AdHocDelegate()
 QWidget* AdHocDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const& option,
                                      QModelIndex const& index) const
 {
-    // if the column is the one specified for direction items 
-    switch (index.column())
+    if (index.column() == AdHocColumns::ADHOC_COL_NAME || index.column() == AdHocColumns::ADHOC_COL_DIRECTION)
     {
-    case ADHOC_COL_NAME:
-    case ADHOC_COL_DIRECTION:
-        {
-            QLabel* label = new QLabel(parent);
-            return label;
-        }
+        QLabel* label = new QLabel(parent);
+        return label;
+    }
 
-    default:
-        {
-            return QStyledItemDelegate::createEditor(parent, option, index);
-        }
+    else
+    {
+        return QStyledItemDelegate::createEditor(parent, option, index);
     }
 }
 
@@ -61,30 +59,22 @@ QWidget* AdHocDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const
 //-----------------------------------------------------------------------------
 void AdHocDelegate::setEditorData(QWidget* editor, const QModelIndex& index) const
 {
-    switch (index.column())
+    if (index.column() == AdHocColumns::ADHOC_COL_NAME || index.column() == AdHocColumns::ADHOC_COL_DIRECTION)
     {
-    case ADHOC_COL_NAME:
-    case ADHOC_COL_DIRECTION:
-        {
-            QString text = index.model()->data(index, Qt::DisplayRole).toString();
-            QLabel* label = qobject_cast<QLabel*>(editor);
-            label->setText(text);
-            break;
-        }
-
-    default:
-        {
-            QStyledItemDelegate::setEditorData(editor, index);
-            break;
-        }
+        QString text = index.model()->data(index, Qt::DisplayRole).toString();
+        QLabel* label = qobject_cast<QLabel*>(editor);
+        label->setText(text);
+    }
+    else
+    {
+        QStyledItemDelegate::setEditorData(editor, index);
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: AdHocDelegate::setModelData()
 //-----------------------------------------------------------------------------
-void AdHocDelegate::setModelData(QWidget* editor, QAbstractItemModel* model,
-                                 QModelIndex const& index) const
+void AdHocDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index) const
 {
     QStyledItemDelegate::setModelData(editor, model, index);
 }
@@ -92,12 +82,11 @@ void AdHocDelegate::setModelData(QWidget* editor, QAbstractItemModel* model,
 //-----------------------------------------------------------------------------
 // Function: AdHocDelegate::paint()
 //-----------------------------------------------------------------------------
-void AdHocDelegate::paint(QPainter *painter, QStyleOptionViewItem const& option,
-                          QModelIndex const& index) const
+void AdHocDelegate::paint(QPainter *painter, QStyleOptionViewItem const& option, QModelIndex const& index) const
 {
     QStyleOptionViewItemV4 viewItemOption(option);
 
-    if (index.column() == ADHOC_COL_VISIBILITY)
+    if (index.column() == AdHocColumns::ADHOC_COL_VISIBILITY)
     {
         painter->fillRect(option.rect, Qt::white);
 
@@ -116,8 +105,8 @@ void AdHocDelegate::paint(QPainter *painter, QStyleOptionViewItem const& option,
 //-----------------------------------------------------------------------------
 // Function: AdHocDelegate::editorEvent()
 //-----------------------------------------------------------------------------
-bool AdHocDelegate::editorEvent(QEvent* event, QAbstractItemModel* model,
-                                QStyleOptionViewItem const& option, QModelIndex const& index)
+bool AdHocDelegate::editorEvent(QEvent* event, QAbstractItemModel* model, QStyleOptionViewItem const& option,
+                                QModelIndex const& index)
 {
     Q_ASSERT(event);
     Q_ASSERT(model);

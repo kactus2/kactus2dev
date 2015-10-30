@@ -10,31 +10,24 @@
 //-----------------------------------------------------------------------------
 
 #include "AdHocEditor.h"
-
 #include "AdHocDelegate.h"
+#include "AdHocColumns.h"
 
 #include <designEditors/HWDesign/HWComponentItem.h>
-#include <IPXACTmodels/component.h>
-
-#include <IPXACTmodels/common/VLNV.h>
-
-#include <designEditors/HWDesign/HWComponentItem.h>
-
 #include <designEditors/HWDesign/HWChangeCommands.h>
 
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/common/VLNV.h>
+
 #include <QVBoxLayout>
-#include <QDockWidget>
 #include <QHeaderView>
 #include <QSortFilterProxyModel>
 
 //-----------------------------------------------------------------------------
 // Function: AdHocEditor()
 //-----------------------------------------------------------------------------
-AdHocEditor::AdHocEditor(QWidget *parent): QWidget(parent),
-                                           dataSource_(0),
-                                           nameLabel_(tr("Component: "), this),
-                                           portAdHocTable_(this),
-                                           adHocModel_(this)
+AdHocEditor::AdHocEditor(QWidget *parent): QWidget(parent), dataSource_(0), nameLabel_(tr("Component: "), this),
+                                           portAdHocTable_(this), adHocModel_(this)
 {
 	setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
 
@@ -51,11 +44,13 @@ AdHocEditor::AdHocEditor(QWidget *parent): QWidget(parent),
     // Sort the table.
     portAdHocTable_.sortByColumn(0, Qt::AscendingOrder);
 
-    portAdHocTable_.setColumnWidth(ADHOC_COL_DIRECTION, 70);
-    portAdHocTable_.setColumnWidth(ADHOC_COL_VISIBILITY, 70);
+    portAdHocTable_.setColumnWidth(AdHocColumns::ADHOC_COL_DIRECTION, 70);
+    portAdHocTable_.setColumnWidth(AdHocColumns::ADHOC_COL_VISIBILITY, 70);
     portAdHocTable_.horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-    portAdHocTable_.horizontalHeader()->setSectionResizeMode(ADHOC_COL_DIRECTION, QHeaderView::Fixed);
-    portAdHocTable_.horizontalHeader()->setSectionResizeMode(ADHOC_COL_VISIBILITY, QHeaderView::Fixed);
+    portAdHocTable_.horizontalHeader()->setSectionResizeMode(
+        AdHocColumns::ADHOC_COL_DIRECTION, QHeaderView::Fixed);
+    portAdHocTable_.horizontalHeader()->setSectionResizeMode(
+        AdHocColumns::ADHOC_COL_VISIBILITY, QHeaderView::Fixed);
 
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(&nameLabel_);
@@ -116,8 +111,8 @@ void AdHocEditor::setDataSource(AdHocEnabled* dataSource)
 //-----------------------------------------------------------------------------
 // Function: AdHocEditor::clear()
 //-----------------------------------------------------------------------------
-void AdHocEditor::clear() {
-
+void AdHocEditor::clear()
+{
 	// If a previous data source has been specified, detach it from the editor.
 	if (dataSource_ != 0)
     {

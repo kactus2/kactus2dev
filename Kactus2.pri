@@ -235,6 +235,7 @@ HEADERS += ./editors/ComponentEditor/software/apiInterface/ApiInterfaceColumns.h
     ./editors/BusEditor/busportsdelegate.h \
     ./editors/BusEditor/busportsmodel.h \
     ./editors/BusEditor/busportsview.h \
+    ./editors/ApiDefinitionEditor/ApiFunctionColumns.h \
     ./editors/ApiDefinitionEditor/ApiDefinitionEditor.h \
     ./editors/ApiDefinitionEditor/ApiFunctionEditor.h \
     ./editors/ApiDefinitionEditor/ApiFunctionModel.h \
@@ -376,6 +377,7 @@ HEADERS += ./editors/ComponentEditor/software/apiInterface/ApiInterfaceColumns.h
     ./editors/ComponentEditor/cpus/cpusmodel.h \
     ./editors/ComponentEditor/views/EnvIdentifiersColumns.h \
     ./editors/ComponentEditor/views/ModuleParameterFactoryImplementation.h \
+    ./editors/ComponentEditor/views/ViewColumns.h \
     ./editors/ComponentEditor/views/ModuleParameterEditor.h \
     ./editors/ComponentEditor/views/ComponentInstantiationEditor.h \
     ./editors/ComponentEditor/views/ViewsDelegate.h \
@@ -660,7 +662,7 @@ HEADERS += ./editors/ComponentEditor/software/apiInterface/ApiInterfaceColumns.h
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
-    ./editors/ComponentEditor/views/ViewColumns.h
+    ./designEditors/HWDesign/AdHocEditor/AdHocColumns.h
 SOURCES += ./editors/ComponentEditor/software/swView/cpuselector.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \

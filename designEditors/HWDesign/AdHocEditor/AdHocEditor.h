@@ -26,9 +26,9 @@
 class ComponentItem;
 class AdHocEnabled;
 
-/*! \brief Editor to edit the details of a component instance within a design.
- *
- */
+//-----------------------------------------------------------------------------
+//! Editor to edit the details of a component instance within a design.
+//-----------------------------------------------------------------------------
 class AdHocEditor : public QWidget
 {
 	Q_OBJECT

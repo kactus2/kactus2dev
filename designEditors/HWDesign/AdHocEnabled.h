@@ -66,7 +66,7 @@ public:
     /*!
      *  Returns the list of ports.
      */
-    QList< QSharedPointer<Port> > getPorts() const;
+    QSharedPointer<QList<QSharedPointer<Port> > > getPorts() const;
 
     /*!
      *  Called when a port's ad-hoc visibility has been changed.

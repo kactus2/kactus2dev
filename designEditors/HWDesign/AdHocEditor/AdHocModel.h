@@ -33,7 +33,6 @@ public:
 	 *
      *      @param [in] editProvider  The edit provider managing the undo/redo stack.
 	 *      @param [in] parent        Pointer to the owner of this model.
-	 *
 	 */
 	AdHocModel(QObject *parent);
 	
@@ -52,8 +51,8 @@ public:
 	/*!
      *  Returns the number of rows in the model.
 	 *
-	 *      @param [in] parent Model index of the parent of the item. Must be invalid
-	 *                         because this is not hierarchical model.
+	 *      @param [in] parent Model index of the parent of the item. Must be invalid because this is not a
+     *                  hierarchical model.
 	 *
 	 *      @return Number of rows currently in the model.
 	 */
@@ -62,8 +61,8 @@ public:
 	/*!
      *  Returns the number of columns in the model.
 	 *
-	 *      @param [in] parent Model index of the parent of the item. Must be invalid
-     *                         because this is not hierarchical model.
+	 *      @param [in] parent Model index of the parent of the item. Must be invalid because this is not a
+     *                  hierarchical model.
 	 *
 	 *      @return Always returns 3.
 	 */
@@ -130,7 +129,7 @@ private:
     AdHocEnabled* dataSource_;
 
 	//! The table that is displayed to the user.
-	QList< QSharedPointer<Port> > table_;
+    QSharedPointer<QList<QSharedPointer<Port> > > table_;
 };
 
 //-----------------------------------------------------------------------------

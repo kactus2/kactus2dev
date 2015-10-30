@@ -15,19 +15,7 @@
 #include <QStyledItemDelegate>
 
 //-----------------------------------------------------------------------------
-// Constants defining which column represents what kind of information.
-//-----------------------------------------------------------------------------
-enum PortEditorColumn
-{
-    ADHOC_COL_NAME = 0,          //!< Column for the port name.
-    ADHOC_COL_DIRECTION,         //!< Column for the port direction.
-    ADHOC_COL_VISIBILITY,        //!< Column for toggling ad-hoc visibility on/off.
-    ADHOC_COL_COUNT
-};
-
-//-----------------------------------------------------------------------------
-//! The delegate that provides editors to edit ad-hoc visibility of
-//! of component ports.
+//! Delegate for the table visualizing ad-hoc visibility for component ports.
 //-----------------------------------------------------------------------------
 class AdHocDelegate : public QStyledItemDelegate
 {
@@ -56,8 +44,8 @@ public:
 	 *
 	 *      @return The editor to be used to edit the item.
 	 */
-	virtual QWidget* createEditor(QWidget* parent, QStyleOptionViewItem const& option, 
-		                          QModelIndex const& index) const;
+	virtual QWidget* createEditor(QWidget* parent, QStyleOptionViewItem const& option, QModelIndex const& index)
+        const;
 
 	/*!
      *  Sets the data for the editor.
@@ -73,15 +61,30 @@ public:
 	 *      @param [in] editor  Pointer to the editor that contains the data to store.
 	 *      @param [in] model   Model that contains the data structure where data is to be saved to.
 	 *      @param [in] index   Model index identifying the item that's data is to be saved.
-	 *
 	 */
-	virtual void setModelData(QWidget* editor, QAbstractItemModel* model, 
-		                      QModelIndex const& index) const;
+	virtual void setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index) const;
 
 protected:
+
+    /*!
+     *  Paint the editor.
+     *
+     *      @param [in] painter     The used painter.
+     *      @param [in] option      The style options.
+     *      @param [in] index       The current index.
+     */
     void paint(QPainter *painter, QStyleOptionViewItem const& option, QModelIndex const& index) const;
+
+    /*!
+     *  The editor events.
+     *
+     *      @param [in] event   The event itself.
+     *      @param [in] model   The used item model.
+     *      @param [in] option  The style options.
+     *      @param [in] index   The current model index.
+     */
     bool editorEvent(QEvent* event, QAbstractItemModel* model, QStyleOptionViewItem const& option,
-                     QModelIndex const& index);
+        QModelIndex const& index);
 
 private:
     // Disable copying.

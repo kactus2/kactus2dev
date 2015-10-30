@@ -12,6 +12,7 @@
 #include "AdHocEnabled.h"
 
 #include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/Port.h>
 
 //-----------------------------------------------------------------------------
 // Function: AdHocEnabled::AdHocEnabled()
@@ -29,7 +30,7 @@ void AdHocEnabled::setAdHocData(QSharedPointer<Component> component, QMap<QStrin
     portAdHocVisibilities_.clear();
 
     // Parse port ad-hoc visibilities.
-    foreach (QSharedPointer<Port> adhocPort, component->getPorts())
+    foreach (QSharedPointer<Port> adhocPort, *component->getPorts())
     {
         bool visible = adhocPort->isAdHocVisible();
 
@@ -83,7 +84,7 @@ QMap<QString, bool> const& AdHocEnabled::getPortAdHocVisibilities() const
 //-----------------------------------------------------------------------------
 // Function: AdHocEnabled::getPorts()
 //-----------------------------------------------------------------------------
-QList< QSharedPointer<Port> > AdHocEnabled::getPorts() const
+QSharedPointer<QList<QSharedPointer<Port> > > AdHocEnabled::getPorts() const
 {
     Q_ASSERT(component_ != 0);
     return component_->getPorts();
