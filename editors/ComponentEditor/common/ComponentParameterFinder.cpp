@@ -11,12 +11,15 @@
 
 #include "ComponentParameterFinder.h"
 
+#include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/addressblock.h>
 #include <IPXACTmodels/Component/BusInterface.h>
-#include <IPXACTmodels/Component/component.h>
-#include <IPXACTmodels/Component/memorymap.h>
+#include <IPXACTmodels/Component/MemoryMap.h>
+#include <IPXACTmodels/Component/MemoryBlockBase.h>
+#include <IPXACTmodels/Component/RegisterBase.h>
+#include <IPXACTmodels/Component/View.h>
+#include <IPXACTmodels/Component/ComponentInstantiation.h>
 #include <IPXACTmodels/common/Parameter.h>
-#include <IPXACTmodels/registermodel.h>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentParameterFinder::ComponentParameterFinder()
@@ -47,14 +50,6 @@ QSharedPointer<Parameter> ComponentParameterFinder::getParameterWithID(QString c
             if (parameter->getValueId() == parameterId)
             {
                 return parameter;
-            }
-        }
-
-        foreach (QSharedPointer<ModelParameter> modelParameter, *component_->getModelParameters())
-        {
-            if (modelParameter->getValueId() == parameterId)
-            {
-                return modelParameter;
             }
         }
 
@@ -96,14 +91,6 @@ bool ComponentParameterFinder::hasId(QString const& id) const
         foreach (QSharedPointer<Parameter> parameter, *component_->getParameters())
         {
             if (parameter->getValueId() == id)
-            {
-                return true;
-            }
-        }
-
-        foreach (QSharedPointer<ModelParameter> componentModelParameter, *component_->getModelParameters())
-        {
-            if (componentModelParameter->getValueId() == id)
             {
                 return true;
             }
@@ -171,11 +158,6 @@ QStringList ComponentParameterFinder::getAllParameterIds() const
             allParameterIds.append(parameter->getValueId());
         }
 
-        foreach (QSharedPointer<ModelParameter> modelParameter, *component_->getModelParameters())
-        {
-            allParameterIds.append(modelParameter->getValueId());
-        }
-
         foreach (QSharedPointer<Parameter> viewParameter, allViewParameters())
         {
             allParameterIds.append(viewParameter->getValueId());
@@ -220,12 +202,27 @@ void ComponentParameterFinder::setComponent(QSharedPointer<Component> component)
 QList<QSharedPointer<Parameter> > ComponentParameterFinder::allViewParameters() const
 {
     QList<QSharedPointer<Parameter> > viewParameters;
-    foreach (QSharedPointer<View> view, component_->getViews())
+    foreach (QSharedPointer<View> view, *component_->getViews())
     {
-        viewParameters.append(*view->getParameters());
-        foreach(QSharedPointer<ModelParameter> moduleParameter, *view->getModuleParameters())
+        if (!view->getComponentInstantiationRef().isEmpty())
         {
-            viewParameters.append(moduleParameter);
+            foreach (QSharedPointer<ComponentInstantiation> instantiation,
+                *component_->getComponentInstantiations())
+            {
+                if (instantiation->name() == view->getComponentInstantiationRef())
+                {
+                    foreach (QSharedPointer<ModuleParameter> parameter, *instantiation->getModuleParameters())
+                    {
+                        viewParameters.append(parameter);
+                    }
+                    foreach (QSharedPointer<Parameter> parameter, *instantiation->getParameters())
+                    {
+                        viewParameters.append(parameter);
+                    }
+
+                    break;
+                }
+            }
         }
     }
 
@@ -238,7 +235,7 @@ QList<QSharedPointer<Parameter> > ComponentParameterFinder::allViewParameters() 
 QList<QSharedPointer<Parameter> > ComponentParameterFinder::allBusInterfaceParameters() const
 {
     QList<QSharedPointer<Parameter> > busInterfaceParameters;
-    foreach (QSharedPointer<BusInterface> busInterface, component_->getBusInterfaces())
+    foreach (QSharedPointer<BusInterface> busInterface, *component_->getBusInterfaces())
     {
         busInterfaceParameters.append(*busInterface->getParameters());
     }
@@ -252,16 +249,19 @@ QList<QSharedPointer<Parameter> > ComponentParameterFinder::allBusInterfaceParam
 QList<QSharedPointer<Parameter> > ComponentParameterFinder::allRegisterParameters() const
 {
     QList<QSharedPointer<Parameter> > registerParameters;
-    foreach (QSharedPointer<MemoryMap> memoryMap, component_->getMemoryMaps())
+    foreach (QSharedPointer<MemoryMap> memoryMap, *component_->getMemoryMaps())
     {
-        foreach (QSharedPointer<MemoryMapItem> blockItem, memoryMap->getItems())
+        foreach (QSharedPointer<MemoryBlockBase> memoryBlock, *memoryMap->getMemoryBlocks())
         {
-            QSharedPointer<AddressBlock> addressBlock = blockItem.dynamicCast<AddressBlock>();
+            QSharedPointer<AddressBlock> addressBlock = memoryBlock.dynamicCast<AddressBlock>();
             if (addressBlock)
             {
-                foreach (QSharedPointer<RegisterModel> registerModel, addressBlock->getRegisterData())
+                foreach (QSharedPointer<RegisterBase> registerBase, *addressBlock->getRegisterData())
                 {
-                    registerParameters.append(registerModel->getParameters());
+                    foreach (QSharedPointer<Parameter> parameter, *registerBase->getParameters())
+                    {
+                        registerParameters.append(parameter);
+                    }
                 }
             }
         }

@@ -11,7 +11,7 @@
 
 #include "PropertyValueDelegate.h"
 
-#include <IPXACTmodels/ComProperty.h>
+#include <IPXACTmodels/kactusExtensions/ComProperty.h>
 
 #include <QComboBox>
 #include <QLineEdit>
@@ -19,10 +19,11 @@
 //-----------------------------------------------------------------------------
 // Function: PropertyValueDelegate::PropertyValueDelegate()
 //-----------------------------------------------------------------------------
-PropertyValueDelegate::PropertyValueDelegate(QObject* parent)
-    : QStyledItemDelegate(parent),
-      allowedProperties_()
+PropertyValueDelegate::PropertyValueDelegate(QObject* parent):
+QStyledItemDelegate(parent),
+allowedProperties_()
 {
+
 }
 
 //-----------------------------------------------------------------------------

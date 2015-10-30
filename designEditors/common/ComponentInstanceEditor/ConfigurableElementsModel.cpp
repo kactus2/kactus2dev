@@ -1,19 +1,29 @@
-/* 
- *  	Created on: 12.8.2011
- *      Author: Antti Kamppi
- * 		filename: componentinstancemodel.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: ConfigurableElementsModel.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 12.08.2011
+//
+// Description:
+// Model class to manage the configurable element values being edited.
+//-----------------------------------------------------------------------------
 
 #include "ConfigurableElementsModel.h"
 #include "ConfigurableElementsColumns.h"
 
+#include <common/graphicsItems/ComponentItem.h>
 #include <designEditors/common/DesignDiagram.h>
 #include <designEditors/HWDesign/HWChangeCommands.h>
 #include <editors/ComponentEditor/common/ValueFormatter.h>
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 
-#include <IPXACTmodels/Enumeration.h>
+#include <IPXACTmodels/common/Parameter.h>
+#include <IPXACTmodels/common/ModuleParameter.h>
+#include <IPXACTmodels/common/Enumeration.h>
+#include <IPXACTmodels/Component/Choice.h>
+#include <IPXACTmodels/Component/View.h>
+#include <IPXACTmodels/Component/ComponentInstantiation.h>
 
 //-----------------------------------------------------------------------------
 // Function: ConfigurableElementsModel::ConfigurableElementsModel()
@@ -758,36 +768,46 @@ void ConfigurableElementsModel::readComponentConfigurableElements()
         }
     }
 
-    if (!componentModel->getModelParameters()->isEmpty())
-    {
-        foreach (QSharedPointer<Parameter> parameterPointer, *componentModel->getModelParameters())
-        {
-            addParameterToConfigurableElements(parameterPointer, "Model parameters");
-        }
-    }
-
     if (designConfiguration_)
     {
-        QString componentInstanceName = component_->name();
+        readActiveViewParameters();
+    }
+}
 
-        if (designConfiguration_->hasActiveView(componentInstanceName))
+//-----------------------------------------------------------------------------
+// Function: ConfigurableElementsModel::readActiveViewParameters()
+//-----------------------------------------------------------------------------
+void ConfigurableElementsModel::readActiveViewParameters()
+{
+    QString componentInstanceName = component_->name();
+
+    if (designConfiguration_->hasActiveView(componentInstanceName))
+    {
+        QString activeViewName = designConfiguration_->getActiveView(componentInstanceName);
+
+        foreach (QSharedPointer<View> view, *component_->componentModel()->getViews())
         {
-            QString activeViewName = designConfiguration_->getActiveView(componentInstanceName);
-            View* activeView = component_->componentModel()->findView(activeViewName);
-
-            if (activeView && !activeView->getParameters()->isEmpty())
+            if (view->name() == activeViewName)
             {
-                foreach (QSharedPointer<Parameter> parameterPointer, *activeView->getParameters())
+                if (!view->getComponentInstantiationRef().isEmpty())
                 {
-                    addParameterToConfigurableElements(parameterPointer, "View parameters");
-                }
-            }
-
-            if (activeView && !activeView->getModuleParameters()->isEmpty())
-            {
-                foreach (QSharedPointer<Parameter> parameterPointer, *activeView->getModuleParameters())
-                {
-                    addParameterToConfigurableElements(parameterPointer, "Module parameters");
+                    foreach (QSharedPointer<ComponentInstantiation> instantiation,
+                        *component_->componentModel()->getComponentInstantiations())
+                    {
+                        if (instantiation->name() == view->getComponentInstantiationRef())
+                        {
+                            foreach (QSharedPointer<Parameter> parameter, *instantiation->getParameters())
+                            {
+                                addParameterToConfigurableElements(parameter, "View parameters");
+                            }
+                            foreach (QSharedPointer<ModuleParameter> parameter,
+                                *instantiation->getModuleParameters())
+                            {
+                                addParameterToConfigurableElements(parameter, "View module parameters");
+                            }
+                            break;
+                        }
+                    }
                 }
             }
         }

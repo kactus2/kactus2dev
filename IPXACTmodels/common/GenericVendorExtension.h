@@ -14,7 +14,7 @@
 
 #include "VendorExtension.h"
 
-#include "ipxactmodels_global.h"
+#include <IPXACTmodels/ipxactmodels_global.h>
 
 #include <QDomNode>
 #include <QObject>
@@ -43,7 +43,7 @@ public:
 
 	/*!
 	 *  The destructor.
-	*/
+	 */
 	virtual ~GenericVendorExtension();
 
     /*!

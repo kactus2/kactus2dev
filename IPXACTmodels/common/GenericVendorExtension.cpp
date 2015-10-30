@@ -17,8 +17,8 @@
 //-----------------------------------------------------------------------------
 // Function: GenericVendorExtension::GenericVendorExtension()
 //-----------------------------------------------------------------------------
-GenericVendorExtension::GenericVendorExtension(QDomNode const& extensionNode) :
-    vendorExtension_(extensionNode)
+GenericVendorExtension::GenericVendorExtension(QDomNode const& extensionNode):
+vendorExtension_(extensionNode)
 {
 
 }

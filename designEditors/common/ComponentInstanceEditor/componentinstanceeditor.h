@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 11.8.2011
- *      Author: Antti Kamppi
- * 		filename: componentinstanceeditor.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: componentinstanceeditor.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 11.08.2011
+//
+// Description:
+// Editor to edit the details of a component instance within a design.
+//-----------------------------------------------------------------------------
 
 #ifndef COMPONENTINSTANCEEDITOR_H
 #define COMPONENTINSTANCEEDITOR_H
@@ -26,28 +30,30 @@
 class ComponentItem;
 class ParameterFinder;
 class TopComponentParameterFinder;
-/*! Editor to edit the details of a component instance within a design.
- *
- */
-class ComponentInstanceEditor : public QWidget {
+//-----------------------------------------------------------------------------
+//! Editor to edit the details of a component instance within a design.
+//-----------------------------------------------------------------------------
+class ComponentInstanceEditor : public QWidget
+{
 	Q_OBJECT
 
 public:
 
-	/*! The constructor
+	/*!
+     *  The constructor
 	 *
 	 *      @param [in] parent Pointer to the owner of this widget.
-	 *
-	*/
+	 */
 	ComponentInstanceEditor(QWidget *parent);
 	
-	//! The destructor
+	//! The destructor.
 	virtual ~ComponentInstanceEditor();
 
-	/*! Set the component to be edited.
+	/*!
+     *  Set the component to be edited.
 	 *
 	 *      @param [in] component Pointer to the component instance being edited.
-	*/
+	 */
     void setComponentInstance(ComponentItem* component);
 
     /*!
@@ -76,9 +82,9 @@ public slots:
      */
     void setTopComponentActiveView(QString const& activeView);
 
-	/*! Clear the editor so no instance details are shown
-	 *
-	*/
+	/*!
+     *  Clear the editor so no instance details are shown
+	 */
 	void clear();
 
 signals:
@@ -107,10 +113,10 @@ private slots:
     void updateFileSetRef(QString const& fileSetRef);
 
 private:
-	//! No copying
+	//! No copying.
 	ComponentInstanceEditor(const ComponentInstanceEditor& other);
 
-	//! No assignment
+	//! No assignment.
 	ComponentInstanceEditor& operator=(const ComponentInstanceEditor& other);
     
 	//! Pointer to the component instance being edited.

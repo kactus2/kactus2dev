@@ -40,6 +40,7 @@ class DesignWidget;
 class Associable;
 class StickyNote;
 class Kactus2Group;
+class Kactus2Position;
 class StickyNoteAddCommand;
 //-----------------------------------------------------------------------------
 //! Base class for all design diagrams.

@@ -1,23 +1,23 @@
-/* 
- *  	Created on: 12.8.2011
- *      Author: Antti Kamppi
- * 		filename: componentinstancemodel.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: ConfigurableElementsModel.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 12.08.2011
+//
+// Description:
+// Model class to manage the configurable element values being edited.
+//-----------------------------------------------------------------------------
 
 #ifndef CONFIGURABLEELEMENTSMODEL_H
 #define CONFIGURABLEELEMENTSMODEL_H
 
 #include <common/GenericEditProvider.h>
-#include <designEditors/HWDesign/HWComponentItem.h>
 
 #include <editors/ComponentEditor/common/ParameterizableTable.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/ListParameterFinder.h>
 
-#include <IPXACTmodels/common/Parameter.h>
-#include <IPXACTmodels/modelparameter.h>
-#include <IPXACTmodels/choice.h>
 #include <IPXACTmodels/validators/ParameterValidator2014.h>
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
@@ -27,6 +27,9 @@
 #include <QString>
 #include <QSharedPointer>
 
+class Parameter;
+class ModuleParameter;
+class Choice;
 class ComponentItem;
 //-----------------------------------------------------------------------------
 //! Model class to manage the configurable element values being edited.
@@ -314,6 +317,11 @@ private:
      *  Read the configurable elements from the component.
      */
     void readComponentConfigurableElements();
+
+    /*!
+     *  Read the configurable elements from the active view.
+     */
+    void readActiveViewParameters();
 
     /*!
      *  Set the parameter into the configurable elements.

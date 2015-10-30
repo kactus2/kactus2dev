@@ -19,12 +19,9 @@
 #include <QSharedPointer>
 #include <QList>
 
-class Component;
-
 //-----------------------------------------------------------------------------
 //! The implementation for finding parameters from a list with the correct ID.
 //-----------------------------------------------------------------------------
-//class ComponentParameterFinder : public ParameterFinder
 class ListParameterFinder : public ParameterFinder
 {
 
@@ -84,7 +81,7 @@ public:
     /*!
      *  Gets the number of parameters in the list.
      *
-     *      @return The number of parameters in the component.
+     *      @return The number of parameters in the list.
      */
     virtual int getNumberOfParameters() const;
 

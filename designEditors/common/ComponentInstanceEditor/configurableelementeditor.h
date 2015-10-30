@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 12.8.2011
- *      Author: Antti Kamppi
- * 		filename: configurableelementeditor.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: configurableelementeditor.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 12.08.2011
+//
+// Description:
+// Editor for configurable elements of a component instance.
+//-----------------------------------------------------------------------------
 
 #ifndef CONFIGURABLEELEMENTEDITOR_H
 #define CONFIGURABLEELEMENTEDITOR_H
@@ -20,10 +24,7 @@
 
 #include <QAbstractItemModel>
 #include <QGroupBox>
-#include <QSortFilterProxyModel>
-#include <QPushButton>
-
-#include <QTreeView>
+#include <QSharedPointer>
 
 class ComponentItem;
 class ExpressionParser;
@@ -31,7 +32,8 @@ class ParameterFinder;
 //-----------------------------------------------------------------------------
 //! Editor for configurable elements of a component instance.
 //-----------------------------------------------------------------------------
-class ConfigurableElementEditor : public QGroupBox {
+class ConfigurableElementEditor : public QGroupBox
+{
 	Q_OBJECT
 
 public:
@@ -57,19 +59,19 @@ public:
         QAbstractItemModel* completionModel,
         QWidget *parent);
 	
-	//! The destructor
+	//! The destructor.
 	virtual ~ConfigurableElementEditor();
 
-	/*! Set the component instance to be edited.
+	/*!
+     *  Set the component instance to be edited.
 	 *
-	 * \param component Pointer to the component instance to edit.
-	 *
-	*/
+	 *      @param [in] component   Pointer to the component instance to edit.
+	 */
 	void setComponent(ComponentItem* component);
 
-	/*! Clear the editor from all data.
-	 *
-	*/
+	/*!
+     *  Clear the editor from all data.
+	 */
 	void clear();
 
     /*!
@@ -85,10 +87,10 @@ signals:
 	void contentChanged();
 
 private:
-	//! No copying
+	//! No copying.
 	ConfigurableElementEditor(const ConfigurableElementEditor& other);
 
-	//! No assignment
+	//! No assignment.
 	ConfigurableElementEditor& operator=(const ConfigurableElementEditor& other);
 
 	//! The widget to display the contents of the model.
