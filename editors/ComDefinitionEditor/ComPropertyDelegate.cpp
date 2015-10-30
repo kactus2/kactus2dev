@@ -19,8 +19,7 @@
 //-----------------------------------------------------------------------------
 // Function: ComPropertyDelegate::ComPropertyDelegate()
 //-----------------------------------------------------------------------------
-ComPropertyDelegate::ComPropertyDelegate(QObject* parent)
-    : QStyledItemDelegate(parent)
+ComPropertyDelegate::ComPropertyDelegate(QObject* parent): QStyledItemDelegate(parent)
 {
 }
 

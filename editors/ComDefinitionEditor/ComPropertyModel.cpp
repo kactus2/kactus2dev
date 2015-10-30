@@ -13,7 +13,7 @@
 
 #include "ComPropertyColumns.h"
 
-#include <IPXACTmodels/ComProperty.h>
+#include <IPXACTmodels/kactusExtensions/ComProperty.h>
 
 #include <QColor>
 #include <QRegularExpression>

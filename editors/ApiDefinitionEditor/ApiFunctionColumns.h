@@ -9,8 +9,8 @@
 // Common declarations for editing API functions.
 //-----------------------------------------------------------------------------
 
-#ifndef PORT_COLUMNS_H
-#define PORT_COLUMNS_H
+#ifndef API_FUNCTION_COLUMNS_H
+#define API_FUNCTION_COLUMNS_H
 
 namespace ApiFunctionColumns
 {
@@ -30,4 +30,4 @@ namespace ApiFunctionColumns
     };
 }
 
-#endif // PORT_COLUMNS_H
+#endif // API_FUNCTION_COLUMNS_H

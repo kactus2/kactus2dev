@@ -13,7 +13,7 @@
 
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 
-#include <IPXACTmodels/ComProperty.h>
+#include <IPXACTmodels/kactusExtensions/ComProperty.h>
 
 #include <QVBoxLayout>
 #include <QGridLayout>
@@ -47,12 +47,12 @@ ComDefinitionEditor::ComDefinitionEditor(QWidget *parent,
     setModified(false);
 
     // Set the document name and type.
-    VLNV const* vlnv = comDef_->getVlnv();
-    setDocumentName(vlnv->getName() + " (" + vlnv->getVersion() + ")");
+    VLNV const vlnv = comDef_->getVlnv();
+    setDocumentName(vlnv.getName() + " (" + vlnv.getVersion() + ")");
     setDocumentType(tr("COM Definition"));
 
     // Open in unlocked mode by default only if the version is draft.
-    setProtection(vlnv->getVersion() != "draft");
+    setProtection(vlnv.getVersion() != "draft");
 }
 
 //-----------------------------------------------------------------------------
@@ -84,7 +84,7 @@ void ComDefinitionEditor::setProtection(bool locked)
 //-----------------------------------------------------------------------------
 void ComDefinitionEditor::refresh()
 {
-    QSharedPointer<Document> libComp = libHandler_->getModel(*comDef_->getVlnv());
+    QSharedPointer<Document> libComp = libHandler_->getModel(comDef_->getVlnv());
     comDef_ = libComp.staticCast<ComDefinition>();
 
     // Initialize the editors.
@@ -100,7 +100,7 @@ void ComDefinitionEditor::refresh()
 //-----------------------------------------------------------------------------
 VLNV ComDefinitionEditor::getDocumentVLNV() const
 {
-    return *comDef_->getVlnv();
+    return comDef_->getVlnv();
 }
 
 //-----------------------------------------------------------------------------
@@ -132,7 +132,7 @@ bool ComDefinitionEditor::saveAs()
     VLNV vlnv;
     QString directory;
 
-    if (!NewObjectDialog::saveAsDialog(parentWidget(), libHandler_, *comDef_->getVlnv(), vlnv, directory))
+    if (!NewObjectDialog::saveAsDialog(parentWidget(), libHandler_, comDef_->getVlnv(), vlnv, directory))
     {
         return false;
     }
