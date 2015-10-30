@@ -11,15 +11,16 @@
 
 #include "CSourceContentMatcher.h"
 
-#include <algorithm>
 #include <QTextCursor>
+
+#include <IPXACTmodels/common/DirectionTypes.h>
+#include <IPXACTmodels/Component/Component.h>
 
 #include <IPXACTmodels/kactusExtensions/ApiDefinition.h>
 #include <IPXACTmodels/kactusExtensions/ApiFunction.h>
 #include <IPXACTmodels/kactusExtensions/ApiFunctionParameter.h>
 #include <IPXACTmodels/kactusExtensions/ComDefinition.h>
 #include <IPXACTmodels/kactusExtensions/ComInterface.h>
-#include <IPXACTmodels/component.h>
 
 #include <common/widgets/assistedTextEdit/TextContentAssistWidget.h>
 
@@ -292,7 +293,7 @@ void CSourceContentMatcher::tryMatchParam(ApiFunction const* apiFuncDesc, QStrin
 
                 if (value == params.at(index) &&
                     (comIf->getDirection() == dependentParam->getComDirection() ||
-                     dependentParam->getComDirection() == General::DIRECTION_INVALID) &&
+                     dependentParam->getComDirection() == DirectionTypes::DIRECTION_INVALID) &&
                     (comIf->getTransferType() == dependentParam->getComTransferType() ||
                      dependentParam->getComTransferType() == "" ||
                      dependentParam->getComTransferType() == "any"))
@@ -325,7 +326,7 @@ void CSourceContentMatcher::tryMatchParam(ApiFunction const* apiFuncDesc, QStrin
         foreach (QSharedPointer<ComInterface> comIf, ownerComponent_->getComInterfaces())
         {
             if ((comIf->getDirection() == apiParam->getComDirection() ||
-                apiParam->getComDirection() == General::DIRECTION_INVALID) &&
+                apiParam->getComDirection() == DirectionTypes::DIRECTION_INVALID) &&
                 (comIf->getTransferType() == apiParam->getComTransferType() ||
                  apiParam->getComTransferType() == "" ||
                  apiParam->getComTransferType() == "any"))
