@@ -6154,6 +6154,8 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\software\apiInterface\ApiInterfaceColumns.h">
       <Filter>Header Files</Filter>
+    </ClInclude>    <ClInclude Include="editors\ApiDefinitionEditor\ApiFunctionColumns.h">
+      <Filter>Header Files\editors\ApiDefinitionEditor</Filter>
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\views\ViewColumns.h">
       <Filter>Header Files\editors\ComponentEditor\views</Filter>

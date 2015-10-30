@@ -16,7 +16,6 @@
 
 #include <QVariant>
 #include <QColor>
-#include <QDebug>
 
 //-----------------------------------------------------------------------------
 // Function: ApiFunctionModel::ApiFunctionModel()

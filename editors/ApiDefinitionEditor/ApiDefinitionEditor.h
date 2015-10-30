@@ -15,10 +15,8 @@
 #include "ApiFunctionEditor.h"
 
 #include <common/widgets/tabDocument/TabDocument.h>
-#include <common/widgets/vlnvEditor/vlnveditor.h>
 #include <common/widgets/listManager/listmanager.h>
 #include <common/widgets/vlnvEditor/vlnveditor.h>
-#include <IPXACTmodels/kactusExtensions/ApiDefinition.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 
@@ -32,6 +30,7 @@
 #include <QSharedPointer>
 #include <QSortFilterProxyModel>
 
+class ApiDefinition;
 //-----------------------------------------------------------------------------
 //! Editor for editing API definitions.
 //-----------------------------------------------------------------------------
@@ -47,8 +46,7 @@ public:
 	 *      @param [in] libHandler  The library interface.
      *      @param [in] apiDef      The API definition.
 	 */
-	ApiDefinitionEditor(QWidget* parent, LibraryInterface* libHandler,
-                        QSharedPointer<ApiDefinition> apiDef);
+	ApiDefinitionEditor(QWidget* parent, LibraryInterface* libHandler, QSharedPointer<ApiDefinition> apiDef);
 	
 	/*!
      *  Destructor.

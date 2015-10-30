@@ -11,17 +11,15 @@
 
 #include "ApiDefinitionEditor.h"
 
-#include <IPXACTmodels/kactusExtensions/ComDefinition.h>
-
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 
+#include <IPXACTmodels/kactusExtensions/ComDefinition.h>
+#include <IPXACTmodels/kactusExtensions/ApiDefinition.h>
+
 #include <QVBoxLayout>
-#include <QGridLayout>
-#include <QMessageBox>
-#include <QCoreApplication>
 
 //-----------------------------------------------------------------------------
-// Function: ApiDefinitionEditor()
+// Function: ApiDefinitionEditor::ApiDefinitionEditor()
 //-----------------------------------------------------------------------------
 ApiDefinitionEditor::ApiDefinitionEditor(QWidget *parent, LibraryInterface* libHandler,
                                          QSharedPointer<ApiDefinition> apiDef)
@@ -66,14 +64,14 @@ ApiDefinitionEditor::ApiDefinitionEditor(QWidget *parent, LibraryInterface* libH
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~ApiDefinitionEditor()
+// Function: ApiDefinitionEditor::~ApiDefinitionEditor()
 //-----------------------------------------------------------------------------
 ApiDefinitionEditor::~ApiDefinitionEditor()
 {
 }
 
 //-----------------------------------------------------------------------------
-// Function: setProtection()
+// Function: ApiDefinitionEditor::setProtection()
 //-----------------------------------------------------------------------------
 void ApiDefinitionEditor::setProtection(bool locked)
 {
@@ -86,7 +84,7 @@ void ApiDefinitionEditor::setProtection(bool locked)
 //-----------------------------------------------------------------------------
 void ApiDefinitionEditor::refresh()
 {
-    QSharedPointer<Document> libComp = libHandler_->getModel(*apiDef_->getVlnv());
+    QSharedPointer<Document> libComp = libHandler_->getModel(apiDef_->getVlnv());
     apiDef_ = libComp.staticCast<ApiDefinition>();
 
     // Update the editors.
@@ -99,11 +97,11 @@ void ApiDefinitionEditor::refresh()
 }
 
 //-----------------------------------------------------------------------------
-// Function: getDocumentVLNV()
+// Function: ApiDefinitionEditor::getDocumentVLNV()
 //-----------------------------------------------------------------------------
 VLNV ApiDefinitionEditor::getDocumentVLNV() const
 {
-    return *apiDef_->getVlnv();
+    return apiDef_->getVlnv();
 }
 
 //-----------------------------------------------------------------------------
@@ -116,7 +114,7 @@ bool ApiDefinitionEditor::validate(QStringList& errorList)
 }
 
 //-----------------------------------------------------------------------------
-// Function: save()
+// Function: ApiDefinitionEditor::save()
 //-----------------------------------------------------------------------------
 bool ApiDefinitionEditor::save()
 {
@@ -127,7 +125,7 @@ bool ApiDefinitionEditor::save()
 }
 
 //-----------------------------------------------------------------------------
-// Function: saveAs()
+// Function: ApiDefinitionEditor::saveAs()
 //-----------------------------------------------------------------------------
 bool ApiDefinitionEditor::saveAs()
 {
@@ -135,7 +133,7 @@ bool ApiDefinitionEditor::saveAs()
     VLNV vlnv;
     QString directory;
 
-    if (!NewObjectDialog::saveAsDialog(parentWidget(), libHandler_, *apiDef_->getVlnv(), vlnv, directory))
+    if (!NewObjectDialog::saveAsDialog(parentWidget(), libHandler_, apiDef_->getVlnv(), vlnv, directory))
     {
         return false;
     }
@@ -207,7 +205,11 @@ void ApiDefinitionEditor::showEvent(QShowEvent* event)
     emit helpUrlRequested("definitions/apidefinition.html");
 }
 
-VLNV ApiDefinitionEditor::getIdentifyingVLNV() const {
+//-----------------------------------------------------------------------------
+// Function: ApiDefinitionEditor::getIdentifyingVLNV()
+//-----------------------------------------------------------------------------
+VLNV ApiDefinitionEditor::getIdentifyingVLNV() const
+{
 	return getDocumentVLNV();
 }
 

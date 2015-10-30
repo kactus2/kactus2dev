@@ -14,7 +14,7 @@
 
 #include <IPXACTmodels/common/DirectionTypes.h>
 
-#include "ipxactmodels_global.h"
+#include <IPXACTmodels/ipxactmodels_global.h>
 
 #include <QString>
 #include <QDomNode>
@@ -121,17 +121,17 @@ public:
     /*!
      *  Returns the name of the parameter.
      */
-    QString const& name() const;
+    QString name() const;
 
     /*!
      *  Returns the type of the parameter.
      */
-    QString const& getType() const;
+    QString getType() const;
 
     /*!
      *  Returns the allowed COM transfer type.
      */
-    QString const& getComTransferType() const;
+    QString getComTransferType() const;
 
     /*!
      *  Returns the allowed COM direction.
@@ -141,7 +141,7 @@ public:
     /*!
      *  Returns the name of the COM content source.
      */
-    QString const& getContentSource() const;
+    QString getContentSource() const;
 
     /*!
      *  Returns the index of the dependent parameter, or -1 if not used.

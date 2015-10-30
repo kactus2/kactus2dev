@@ -181,7 +181,7 @@ void ApiFunctionParameter::setDescription(QString const& desc)
 //-----------------------------------------------------------------------------
 // Function: ApiFunctionParameter::name()
 //-----------------------------------------------------------------------------
-QString const& ApiFunctionParameter::name() const
+QString ApiFunctionParameter::name() const
 {
     return name_;
 }
@@ -189,7 +189,7 @@ QString const& ApiFunctionParameter::name() const
 //-----------------------------------------------------------------------------
 // Function: ApiFunctionParameter::getType()
 //-----------------------------------------------------------------------------
-QString const& ApiFunctionParameter::getType() const
+QString ApiFunctionParameter::getType() const
 {
     return type_;
 }
@@ -197,7 +197,7 @@ QString const& ApiFunctionParameter::getType() const
 //-----------------------------------------------------------------------------
 // Function: ApiFunctionParameter::getComTransferType()
 //-----------------------------------------------------------------------------
-QString const& ApiFunctionParameter::getComTransferType() const
+QString ApiFunctionParameter::getComTransferType() const
 {
     return comTransferType_;
 }
@@ -213,7 +213,7 @@ DirectionTypes::Direction ApiFunctionParameter::getComDirection() const
 //-----------------------------------------------------------------------------
 // Function: ApiFunctionParameter::getContentSource()
 //-----------------------------------------------------------------------------
-QString const& ApiFunctionParameter::getContentSource() const
+QString ApiFunctionParameter::getContentSource() const
 {
     return contentSource_;
 }
