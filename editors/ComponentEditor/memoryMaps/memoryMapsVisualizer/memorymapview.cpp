@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 17.4.2012
- *      Author: Antti Kamppi
- * 		filename: memorymapview.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: memorymapview.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 17.04.2012
+//
+// Description:
+// The graphics view that displays the memory map graphics items.
+//-----------------------------------------------------------------------------
 
 #include "memorymapview.h"
 #include "memorymapscene.h"
@@ -26,9 +30,10 @@ QGraphicsView(parent)
 //-----------------------------------------------------------------------------
 // Function: ~MemoryMapView()
 //-----------------------------------------------------------------------------
-MemoryMapView::~MemoryMapView() {
-}
+MemoryMapView::~MemoryMapView()
+{
 
+}
 
 //-----------------------------------------------------------------------------
 // Function: resizeEvent()
