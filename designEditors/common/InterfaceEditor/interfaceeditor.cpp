@@ -1,15 +1,19 @@
-/* 
- *  	Created on: 10.10.2011
- *      Author: Antti Kamppi
- * 		filename: interfaceeditor.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: interfaceeditor.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 10.10.2011
+//
+// Description:
+// Editor to display/edit the details of a bus interface.
+//-----------------------------------------------------------------------------
 
 #include "interfaceeditor.h"
 
-
 #include <IPXACTmodels/generaldeclarations.h>
 
+#include <IPXACTmodels/common/DirectionTypes.h>
 #include <IPXACTmodels/common/Vector.h>
 
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
@@ -20,6 +24,7 @@
 
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/PortMap.h>
+#include <IPXACTmodels/Component/Port.h>
 
 #include <common/GenericEditProvider.h>
 #include <common/graphicsItems/ComponentItem.h>
@@ -36,33 +41,36 @@
 #include <QHeaderView>
 #include <QDockWidget>
 
-//! \brief The maximum height for the description editor.
+//! The maximum height for the description editor.
 static const int MAX_DESC_HEIGHT = 50;
 
-InterfaceEditor::InterfaceEditor(QWidget *parent, LibraryInterface* handler)
-    : QWidget(parent),
-      type_(this),
-      absType_(this),
-      nameEdit_(this),
-      nameLabel_(tr("Interface name"), this),
-      modeEdit_(this),
-      modeLabel_(tr("Interface mode"), this),
-      dependencyDirLabel_(tr("Dependency direction"), this),
-      dependencyDirCombo_(this),
-      comDirectionLabel_(tr("Direction"), this),
-      comDirectionCombo_(this),
-      transferTypeLabel_(tr("Transfer type"), this),
-      transferTypeCombo_(this),
-      interface_(NULL),
-      comDef_(),
-      mappingsLabel_(tr("Port map"), this),
-      mappings_(this),
-      descriptionLabel_(tr("Description"), this),
-      descriptionEdit_(this),
-      propertyValueLabel_(tr("Property values"), this),
-      propertyValueEditor_(this),
-      dummyWidget_(this),
-      handler_(handler)
+//-----------------------------------------------------------------------------
+// Function: interfaceeditor::InterfaceEditor()
+//-----------------------------------------------------------------------------
+InterfaceEditor::InterfaceEditor(QWidget *parent, LibraryInterface* handler):
+QWidget(parent),
+type_(this),
+absType_(this),
+nameEdit_(this),
+nameLabel_(tr("Interface name"), this),
+modeEdit_(this),
+modeLabel_(tr("Interface mode"), this),
+dependencyDirLabel_(tr("Dependency direction"), this),
+dependencyDirCombo_(this),
+comDirectionLabel_(tr("Direction"), this),
+comDirectionCombo_(this),
+transferTypeLabel_(tr("Transfer type"), this),
+transferTypeCombo_(this),
+interface_(NULL),
+comDef_(),
+mappingsLabel_(tr("Port map"), this),
+mappings_(this),
+descriptionLabel_(tr("Description"), this),
+descriptionEdit_(this),
+propertyValueLabel_(tr("Property values"), this),
+propertyValueEditor_(this),
+dummyWidget_(this),
+handler_(handler)
 {
 	Q_ASSERT(parent);
 	Q_ASSERT(handler);
@@ -134,40 +142,44 @@ InterfaceEditor::InterfaceEditor(QWidget *parent, LibraryInterface* handler)
 	clear();
 }
 
-InterfaceEditor::~InterfaceEditor() {
+//-----------------------------------------------------------------------------
+// Function: interfaceeditor::~InterfaceEditor()
+//-----------------------------------------------------------------------------
+InterfaceEditor::~InterfaceEditor()
+{
+
 }
 
-void InterfaceEditor::setInterface( ConnectionEndpoint* interface ) {
+//-----------------------------------------------------------------------------
+// Function: interfaceeditor::setInterface()
+//-----------------------------------------------------------------------------
+void InterfaceEditor::setInterface( ConnectionEndpoint* interface )
+{
 	Q_ASSERT(interface);
 
 	parentWidget()->raise();
 
 	// disconnect the previous interface
-	if (interface_) {
-		disconnect(interface_, SIGNAL(destroyed(ConnectionEndpoint*)),
-			       this, SLOT(clear()));
-		disconnect(interface_, SIGNAL(contentChanged()),
-			       this, SLOT(refresh()));
+	if (interface_)
+    {
+		disconnect(interface_, SIGNAL(destroyed(ConnectionEndpoint*)), this, SLOT(clear()));
+		disconnect(interface_, SIGNAL(contentChanged()), this, SLOT(refresh()));
 
         comDef_.clear();
 	}
 
 	interface_ = interface;
 
-    // set text for the name editor, signal must be disconnected when name is set 
-    // to avoid loops 
-    disconnect(&nameEdit_, SIGNAL(textEdited(const QString&)),
-        this, SLOT(onInterfaceNameChanged(const QString&)));
+    // set text for the name editor, signal must be disconnected when name is set to avoid loops 
+    disconnect(&nameEdit_, SIGNAL(textEdited(const QString&)), this, SLOT(onInterfaceNameChanged(const QString&)));
     nameEdit_.setText(interface->name());
     connect(&nameEdit_, SIGNAL(textEdited(const QString&)),
         this, SLOT(onInterfaceNameChanged(const QString&)), Qt::UniqueConnection);
 
     // display the current description of the interface.
-    disconnect(&descriptionEdit_, SIGNAL(textChanged()),
-        this, SLOT(onDescriptionChanged()));
+    disconnect(&descriptionEdit_, SIGNAL(textChanged()), this, SLOT(onDescriptionChanged()));
     descriptionEdit_.setPlainText(interface->description());
-    connect(&descriptionEdit_, SIGNAL(textChanged()),
-        this, SLOT(onDescriptionChanged()), Qt::UniqueConnection);
+    connect(&descriptionEdit_, SIGNAL(textChanged()), this, SLOT(onDescriptionChanged()), Qt::UniqueConnection);
 
     // Fill the rest of the editors based on the interface type.
     if (interface->isBus())
@@ -175,10 +187,10 @@ void InterfaceEditor::setInterface( ConnectionEndpoint* interface ) {
         Q_ASSERT(interface->getBusInterface());
         type_.setTitle(tr("Bus type VLNV"));
 	    type_.setVLNV(interface->getBusInterface()->getBusType(), true);
-        absType_.setVLNV(interface->getBusInterface()->getAbstractionType(), true);
+        absType_.setVLNV(
+            *interface->getBusInterface()->getAbstractionTypes()->first()->getAbstractionRef().data(), true);
 
-	    // set selection for mode editor, signal must be disconnected when mode is set 
-	    // to avoid loops 
+	    // set selection for mode editor, signal must be disconnected when mode is set to avoid loops 
 	    disconnect(&modeEdit_, SIGNAL(currentIndexChanged(const QString&)),
 		    this, SLOT(onInterfaceModeChanged(const QString&)));
 	    // select the correct mode for mode editor
@@ -249,7 +261,7 @@ void InterfaceEditor::setInterface( ConnectionEndpoint* interface ) {
         disconnect(&comDirectionCombo_, SIGNAL(currentIndexChanged(const QString&)),
                    this, SLOT(onComDirectionChanged(QString const&)));
 
-        int index = comDirectionCombo_.findText(General::direction2Str(
+        int index = comDirectionCombo_.findText(DirectionTypes::direction2Str(
             interface->getComInterface()->getDirection()));
         comDirectionCombo_.setCurrentIndex(index);
 
@@ -257,8 +269,7 @@ void InterfaceEditor::setInterface( ConnectionEndpoint* interface ) {
                 this, SLOT(onComDirectionChanged(QString const&)), Qt::UniqueConnection);
 
         // Set property values and try to read the allowed properties from the COM definition if valid.
-        disconnect(&propertyValueEditor_, SIGNAL(contentChanged()),
-                   this, SLOT(onComPropertyValuesChanged()));
+        disconnect(&propertyValueEditor_, SIGNAL(contentChanged()), this, SLOT(onComPropertyValuesChanged()));
 
         propertyValueEditor_.setData(interface->getComInterface()->getPropertyValues());
 
@@ -286,7 +297,7 @@ void InterfaceEditor::setInterface( ConnectionEndpoint* interface ) {
     // or unpackaged.
 	if (!locked && (interface->isHierarchical() ||
                     (interface->encompassingComp() != 0 &&
-                     !interface->encompassingComp()->componentModel()->getVlnv()->isValid())))
+                     !interface->encompassingComp()->componentModel()->getVlnv().isValid())))
     {
 		nameEdit_.setEnabled(true);
 		modeEdit_.setEnabled(true);
@@ -298,7 +309,8 @@ void InterfaceEditor::setInterface( ConnectionEndpoint* interface ) {
         propertyValueEditor_.setEnabled(true);
         transferTypeCombo_.setEnabled(true);
 	}
-	else {
+	else
+    {
 		nameEdit_.setDisabled(true);
 		modeEdit_.setDisabled(true);
         dependencyDirCombo_.setDisabled(true);
@@ -337,19 +349,20 @@ void InterfaceEditor::setInterface( ConnectionEndpoint* interface ) {
 	parentWidget()->setMaximumHeight(QWIDGETSIZE_MAX);
 }
 
-void InterfaceEditor::clear() {
-	
-	if (interface_) {
-		disconnect(interface_, SIGNAL(destroyed(ConnectionEndpoint*)),
-			this, SLOT(clear()));
-		disconnect(interface_, SIGNAL(contentChanged()),
-			this, SLOT(refresh()));
+//-----------------------------------------------------------------------------
+// Function: interfaceeditor::clear()
+//-----------------------------------------------------------------------------
+void InterfaceEditor::clear()
+{
+	if (interface_)
+    {
+		disconnect(interface_, SIGNAL(destroyed(ConnectionEndpoint*)), this, SLOT(clear()));
+		disconnect(interface_, SIGNAL(contentChanged()), this, SLOT(refresh()));
 		interface_ = 0;
         comDef_.clear();
 	}
 
-	disconnect(&nameEdit_, SIGNAL(textEdited(const QString&)),
-		this, SLOT(onInterfaceNameChanged(const QString&)));
+	disconnect(&nameEdit_, SIGNAL(textEdited(const QString&)), this, SLOT(onInterfaceNameChanged(const QString&)));
 	disconnect(&modeEdit_, SIGNAL(currentIndexChanged(const QString&)),
 		this, SLOT(onInterfaceModeChanged(const QString&)));
     disconnect(&dependencyDirCombo_, SIGNAL(currentIndexChanged(const QString&)),
@@ -358,12 +371,9 @@ void InterfaceEditor::clear() {
         this, SLOT(onComDirectionChanged(QString const&)));
     disconnect(&transferTypeCombo_, SIGNAL(currentIndexChanged(const QString&)),
         this, SLOT(onComTransferTypeChanged(QString const&)));
-    disconnect(&propertyValueEditor_, SIGNAL(contentChanged()),
-        this, SLOT(onComPropertyValuesChanged()));
-	disconnect(&descriptionEdit_, SIGNAL(textChanged()),
-		this, SLOT(onDescriptionChanged()));
-	disconnect(&mappings_, SIGNAL(itemChanged(QTableWidgetItem*)),
-		this, SLOT(onPortMapChanged()));
+    disconnect(&propertyValueEditor_, SIGNAL(contentChanged()), this, SLOT(onComPropertyValuesChanged()));
+	disconnect(&descriptionEdit_, SIGNAL(textChanged()), this, SLOT(onDescriptionChanged()));
+	disconnect(&mappings_, SIGNAL(itemChanged(QTableWidgetItem*)), this, SLOT(onPortMapChanged()));
 
 	type_.setVLNV(VLNV(), true);
 	type_.hide();
@@ -403,11 +413,14 @@ void InterfaceEditor::clear() {
 	parentWidget()->setMaximumHeight(20);
 }
 
-void InterfaceEditor::onInterfaceModeChanged( const QString& newMode ) {
+//-----------------------------------------------------------------------------
+// Function: interfaceeditor::onInterfaceModeChanged()
+//-----------------------------------------------------------------------------
+void InterfaceEditor::onInterfaceModeChanged( const QString& newMode )
+{
 	Q_ASSERT(interface_);
 
-	disconnect(interface_, SIGNAL(contentChanged()),
-		this, SLOT(refresh()));
+	disconnect(interface_, SIGNAL(contentChanged()), this, SLOT(refresh()));
 
 	QSharedPointer<QUndoCommand> cmd(new EndpointChangeCommand(
 		static_cast<HWConnectionEndpoint*>(interface_), nameEdit_.text(),
@@ -416,70 +429,85 @@ void InterfaceEditor::onInterfaceModeChanged( const QString& newMode ) {
 	static_cast<DesignDiagram*>(interface_->scene())->getEditProvider().addCommand(cmd);
     cmd->redo();
 
-	connect(interface_, SIGNAL(contentChanged()), 
-		this, SLOT(refresh()), Qt::UniqueConnection);
+	connect(interface_, SIGNAL(contentChanged()), this, SLOT(refresh()), Qt::UniqueConnection);
 }
 
-void InterfaceEditor::onInterfaceNameChanged( const QString& newName ) {
+//-----------------------------------------------------------------------------
+// Function: interfaceeditor::onInterfaceNameChanged()
+//-----------------------------------------------------------------------------
+void InterfaceEditor::onInterfaceNameChanged( const QString& newName )
+{
 	Q_ASSERT(interface_);
 	
-	disconnect(interface_, SIGNAL(contentChanged()),
-		this, SLOT(refresh()));	
+	disconnect(interface_, SIGNAL(contentChanged()), this, SLOT(refresh()));	
 
 	QSharedPointer<QUndoCommand> cmd(new EndpointNameChangeCommand(interface_, newName));
 	static_cast<DesignDiagram*>(interface_->scene())->getEditProvider().addCommand(cmd);
     cmd->redo();
 	
-	connect(interface_, SIGNAL(contentChanged()), 
-		this, SLOT(refresh()), Qt::UniqueConnection);
+	connect(interface_, SIGNAL(contentChanged()), this, SLOT(refresh()), Qt::UniqueConnection);
 }
 
-void InterfaceEditor::onDescriptionChanged() {
+//-----------------------------------------------------------------------------
+// Function: interfaceeditor::onDescriptionChanged()
+//-----------------------------------------------------------------------------
+void InterfaceEditor::onDescriptionChanged()
+{
 	Q_ASSERT(interface_);
 
-	disconnect(interface_, SIGNAL(contentChanged()),
-		this, SLOT(refresh()));
+	disconnect(interface_, SIGNAL(contentChanged()), this, SLOT(refresh()));
 
 	QSharedPointer<QUndoCommand> cmd(new EndpointDescChangeCommand(interface_, descriptionEdit_.toPlainText()));
-	static_cast<DesignDiagram*>(interface_->scene())->getEditProvider().addCommand(cmd);
-    cmd->redo();
-
-	connect(interface_, SIGNAL(contentChanged()), 
-		this, SLOT(refresh()), Qt::UniqueConnection);
-}
-
-void InterfaceEditor::onPortMapChanged() {
-	disconnect(interface_, SIGNAL(contentChanged()),
-		this, SLOT(refresh()));
-
-	// save the bus interface
-	QSharedPointer<BusInterface> busIf = interface_->getBusInterface();
-
-	Q_ASSERT_X(busIf, "PortmapInterfaceTab::onSave()",
-		"Null BusInterface pointer");
-
-	QList<QSharedPointer<PortMap> > portMaps;
-
-	for (int i = 0; i < mappings_.rowCount(); i++) {
-		QString logical = mappings_.item(i, 0)->text();
-		QString physical = mappings_.item(i, 1)->text();
-
-		QSharedPointer<PortMap> portMap(new PortMap);
-		portMap->setLogicalPort(logical);
-		portMap->setPhysicalPort(physical);
-
-		portMaps.append(portMap);
-	}
-
-	QSharedPointer<QUndoCommand> cmd(new EndPointPortMapCommand(static_cast<HWConnectionEndpoint*>(interface_), portMaps));
 	static_cast<DesignDiagram*>(interface_->scene())->getEditProvider().addCommand(cmd);
     cmd->redo();
 
 	connect(interface_, SIGNAL(contentChanged()), this, SLOT(refresh()), Qt::UniqueConnection);
 }
 
-void InterfaceEditor::setPortMaps() {
+//-----------------------------------------------------------------------------
+// Function: interfaceeditor::onPortMapChanged()
+//-----------------------------------------------------------------------------
+void InterfaceEditor::onPortMapChanged()
+{
+	disconnect(interface_, SIGNAL(contentChanged()), this, SLOT(refresh()));
 
+	// save the bus interface
+	QSharedPointer<BusInterface> busIf = interface_->getBusInterface();
+
+	Q_ASSERT_X(busIf, "PortmapInterfaceTab::onSave()", "Null BusInterface pointer");
+
+	QList<QSharedPointer<PortMap> > portMaps;
+
+	for (int i = 0; i < mappings_.rowCount(); i++)
+    {
+		QString logicalPortName = mappings_.item(i, 0)->text();
+		QString physicalPortName = mappings_.item(i, 1)->text();
+
+        QSharedPointer<PortMap::LogicalPort> logicalPort (new PortMap::LogicalPort());
+        logicalPort->name_ = logicalPortName;
+        QSharedPointer<PortMap::PhysicalPort> physicalPort (new PortMap::PhysicalPort());
+        physicalPort->name_ = physicalPortName;
+
+		QSharedPointer<PortMap> portMap(new PortMap);
+        portMap->setLogicalPort(logicalPort);
+        portMap->setPhysicalPort(physicalPort);
+
+		portMaps.append(portMap);
+	}
+
+	QSharedPointer<QUndoCommand> cmd(
+        new EndPointPortMapCommand(static_cast<HWConnectionEndpoint*>(interface_), portMaps));
+	static_cast<DesignDiagram*>(interface_->scene())->getEditProvider().addCommand(cmd);
+    cmd->redo();
+
+	connect(interface_, SIGNAL(contentChanged()), this, SLOT(refresh()), Qt::UniqueConnection);
+}
+
+//-----------------------------------------------------------------------------
+// Function: interfaceeditor::setPortMaps()
+//-----------------------------------------------------------------------------
+void InterfaceEditor::setPortMaps()
+{
 	Q_ASSERT(interface_);
 
 	// signal must be disconnected when changing items to avoid loops
@@ -488,12 +516,13 @@ void InterfaceEditor::setPortMaps() {
 
 	QSharedPointer<BusInterface> busIf = interface_->getBusInterface();
 	Q_ASSERT(busIf);
-	QList<QSharedPointer<PortMap> > portMaps = busIf->getPortMaps();
+    QList<QSharedPointer<PortMap> > portMaps = *busIf->getPortMaps().data();
 
 	// get the abstraction def for the interface
-	VLNV absDefVLNV = busIf->getAbstractionType();
+    VLNV absDefVLNV = *busIf->getAbstractionTypes()->first()->getAbstractionRef().data();
 	QSharedPointer<AbstractionDefinition> absDef;
-	if (handler_->getDocumentType(absDefVLNV) == VLNV::ABSTRACTIONDEFINITION) {
+	if (handler_->getDocumentType(absDefVLNV) == VLNV::ABSTRACTIONDEFINITION)
+    {
 		QSharedPointer<Document> libComp = handler_->getModel(absDefVLNV);
 		absDef = libComp.staticCast<AbstractionDefinition>();
 	}
@@ -511,71 +540,86 @@ void InterfaceEditor::setPortMaps() {
 	// stop sorting when adding the ports to avoid sorting after each add
 	mappings_.setSortingEnabled(false);
 	int row = 0;
-	foreach (QSharedPointer<PortMap> portMap, portMaps) {
-
-		QString logicalPort = portMap->logicalPort();
+	foreach (QSharedPointer<PortMap> portMap, portMaps)
+    {
+        QString logicalPortName = portMap->getLogicalPort()->name_;
 
         // if the logical port is vectored
-        if (portMap->logicalVector())
+        if (portMap->getLogicalPort())
         {
-            logicalPort += "[" + portMap->logicalVector()->getLeft() + ".." + portMap->logicalVector()->getRight() + "]";
+            if (portMap->getLogicalPort()->range_)
+            {
+                logicalPortName += "[" + portMap->getLogicalPort()->range_->getLeft() + ".." +
+                    portMap->getLogicalPort()->range_->getRight() + "]";
+            }
         }
 
-		QTableWidgetItem* logicalItem = new QTableWidgetItem(logicalPort);
+		QTableWidgetItem* logicalItem = new QTableWidgetItem(logicalPortName);
 		logicalItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		// if no abs type is specified
-		if (!absDef) {
+		if (!absDef)
+        {
 			logicalItem->setForeground(QBrush(Qt::red));
 		}
 		// if the logical port does not belong to the abs def
-		else if (!absDef->hasPort(portMap->logicalPort(), interfaceMode)) {
+        else if (!absDef->hasPort(portMap->getLogicalPort()->name_, interfaceMode))
+        {
 			logicalItem->setForeground(QBrush(Qt::red));
 		}
-		else {
+		else
+        {
 			logicalItem->setForeground(QBrush(Qt::black));
 		}
 
 		// get size of the logical port
 		int logicalSize = 1;
-		if (portMap->logicalVector()) {
+        if (portMap->getLogicalPort()->range_)
+        {
 			//logicalSize = portMap->logicalVector()->getSize();
 		}
 		
 		// display at least the name of physical port
-		QString physicalPort = portMap->physicalPort();
+        QString physicalPortName = portMap->getPhysicalPort()->name_;
+
 		// if port map contains vectored physical port.
-		if (portMap->physicalVector()) {
-			physicalPort = portMap->physicalPort();
-            // if the physical port is vectored.
-            if (portMap->physicalVector()) {
-                physicalPort += 
-                    "[" + portMap->physicalVector()->getLeft() + ".." + portMap->physicalVector()->getRight() + "]";
+        if (portMap->getPhysicalPort())
+        {
+            if (portMap->getPhysicalPort()->partSelect_)
+            {
+                physicalPortName += "[" + portMap->getPhysicalPort()->partSelect_->getLeftRange() + ".." +
+                    portMap->getPhysicalPort()->partSelect_->getRightRange() + "]";
             }
 		}
 		// if port map does not contain physical vector but port is found on the component
-		else if (component->hasPort(physicalPort)) {
-			physicalPort = General::port2String(physicalPort, 
-				component->getPortLeftBound(physicalPort),
-				component->getPortRightBound(physicalPort));
+		else if (component->hasPort(physicalPortName))
+        {
+            QSharedPointer<Port> componentPort = component->getPort(physicalPortName);
+
+            physicalPortName = physicalPortName + " " + componentPort->getLeftBound() + ".." +
+                componentPort->getRightBound();
 		}
-		QTableWidgetItem* physItem = new QTableWidgetItem(physicalPort);
+		QTableWidgetItem* physItem = new QTableWidgetItem(physicalPortName);
 		physItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		// if the port is not contained in the component
-		if (!component->hasPort(portMap->physicalPort())) {
+        if (!component->hasPort(portMap->getPhysicalPort()->name_))
+        {
 			physItem->setForeground(QBrush(Qt::red));
 		}
-		else {
+		else
+        {
 			physItem->setForeground(QBrush(Qt::black));
 		}
 
 		// get size of the physical port
 		int physicalSize = 1;
-		if (portMap->physicalVector()) {
+        if (portMap->getPhysicalPort()->partSelect_)
+        {
 			//physicalSize = portMap->physicalVector()->getSize();
 		}
 
 		// if the sizes of the ports don't match
-		if (logicalSize != physicalSize) {
+		if (logicalSize != physicalSize)
+        {
 			logicalItem->setForeground(QBrush(Qt::red));
 			physItem->setForeground(QBrush(Qt::red));
 		}
@@ -593,7 +637,11 @@ void InterfaceEditor::setPortMaps() {
 		this, SLOT(onPortMapChanged()), Qt::UniqueConnection);
 }
 
-void InterfaceEditor::refresh() {
+//-----------------------------------------------------------------------------
+// Function: interfaceeditor::refresh()
+//-----------------------------------------------------------------------------
+void InterfaceEditor::refresh()
+{
 	Q_ASSERT(interface_);
 	setInterface(interface_);
 }
@@ -603,16 +651,14 @@ void InterfaceEditor::refresh() {
 //-----------------------------------------------------------------------------
 void InterfaceEditor::onDependencyDirectionChanged(QString const& newDir)
 {
-    disconnect(interface_, SIGNAL(contentChanged()),
-               this, SLOT(refresh()));
+    disconnect(interface_, SIGNAL(contentChanged()), this, SLOT(refresh()));
 
     QSharedPointer<QUndoCommand> cmd(new EndpointDependencyDirectionChangeCommand(
         interface_, str2DependencyDirection(newDir, DEPENDENCY_PROVIDER)));
     static_cast<DesignDiagram*>(interface_->scene())->getEditProvider().addCommand(cmd);
     cmd->redo();
 
-    connect(interface_, SIGNAL(contentChanged()), 
-        this, SLOT(refresh()), Qt::UniqueConnection);
+    connect(interface_, SIGNAL(contentChanged()), this, SLOT(refresh()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -620,16 +666,14 @@ void InterfaceEditor::onDependencyDirectionChanged(QString const& newDir)
 //-----------------------------------------------------------------------------
 void InterfaceEditor::onComDirectionChanged(QString const& newDir)
 {
-    disconnect(interface_, SIGNAL(contentChanged()),
-               this, SLOT(refresh()));
+    disconnect(interface_, SIGNAL(contentChanged()), this, SLOT(refresh()));
 
     QSharedPointer<QUndoCommand> cmd(new EndpointComDirectionChangeCommand(
-        interface_, General::str2Direction(newDir, General::IN)));
+        interface_, DirectionTypes::str2Direction(newDir, DirectionTypes::IN)));
     static_cast<DesignDiagram*>(interface_->scene())->getEditProvider().addCommand(cmd);
     cmd->redo();
 
-    connect(interface_, SIGNAL(contentChanged()), 
-            this, SLOT(refresh()), Qt::UniqueConnection);
+    connect(interface_, SIGNAL(contentChanged()), this, SLOT(refresh()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -637,15 +681,13 @@ void InterfaceEditor::onComDirectionChanged(QString const& newDir)
 //-----------------------------------------------------------------------------
 void InterfaceEditor::onComTransferTypeChanged(QString const& newTransferType)
 {
-    disconnect(interface_, SIGNAL(contentChanged()),
-               this, SLOT(refresh()));
+    disconnect(interface_, SIGNAL(contentChanged()), this, SLOT(refresh()));
 
     QSharedPointer<QUndoCommand> cmd(new EndpointTransferTypeChangeCommand(interface_, newTransferType));
     static_cast<DesignDiagram*>(interface_->scene())->getEditProvider().addCommand(cmd);
     cmd->redo();
 
-    connect(interface_, SIGNAL(contentChanged()), 
-            this, SLOT(refresh()), Qt::UniqueConnection);
+    connect(interface_, SIGNAL(contentChanged()), this, SLOT(refresh()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -653,14 +695,12 @@ void InterfaceEditor::onComTransferTypeChanged(QString const& newTransferType)
 //-----------------------------------------------------------------------------
 void InterfaceEditor::onComPropertyValuesChanged()
 {
-    disconnect(interface_, SIGNAL(contentChanged()),
-               this, SLOT(refresh()));
+    disconnect(interface_, SIGNAL(contentChanged()), this, SLOT(refresh()));
 
     QSharedPointer<QUndoCommand> cmd(new EndpointPropertyValuesChangeCommand(interface_,
                                                                              propertyValueEditor_.getData()));
     static_cast<DesignDiagram*>(interface_->scene())->getEditProvider().addCommand(cmd);
     cmd->redo();
 
-    connect(interface_, SIGNAL(contentChanged()), 
-            this, SLOT(refresh()), Qt::UniqueConnection);
+    connect(interface_, SIGNAL(contentChanged()), this, SLOT(refresh()), Qt::UniqueConnection);
 }

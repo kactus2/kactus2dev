@@ -86,7 +86,7 @@ ComponentItem::~ComponentItem()
 //-----------------------------------------------------------------------------
 void ComponentItem::updateComponent()
 {
-    VLNV* vlnv = component_->getVlnv();
+    VLNV* vlnv = &component_->getVlnv();
 
     QString toolTipText = "";
 
