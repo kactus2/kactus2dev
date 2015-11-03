@@ -14,22 +14,23 @@
 
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
-#include <IPXACTmodels/register.h>
-#include <IPXACTmodels/addressblock.h>
-#include <IPXACTmodels/AbstractMemoryMap.h>
-#include <IPXACTmodels/memorymap.h>
-#include <IPXACTmodels/MemoryRemap.h>
-
 #include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/MemoryMapBase.h>
+#include <IPXACTmodels/Component/MemoryMap.h>
+#include <IPXACTmodels/Component/MemoryRemap.h>
+#include <IPXACTmodels/Component/AddressBlock.h>
+#include <IPXACTmodels/Component/Register.h>
+#include <IPXACTmodels/Component/AddressSpace.h>
+#include <IPXACTmodels/Component/RemapState.h>
+#include <IPXACTmodels/Component/RemapPort.h>
 #include <IPXACTmodels/Component/MirroredSlaveInterface.h>
 #include <IPXACTmodels/Component/MasterInterface.h>
 
-#include <IPXACTmodels/addressspace.h>
-#include <IPXACTmodels/remapstate.h>
-#include <IPXACTmodels/remapport.h>
-
 #include <QTreeWidget>
 #include <QSharedPointer>
+
+class Parameter;
+class ModuleParameter;
 
 //-----------------------------------------------------------------------------
 //! Tree widget for displaying references to a parameter within a component.
@@ -104,16 +105,16 @@ private:
      *
      *      @return True, if there is a reference in model parameters to this parameter, false otherwise.
      */
-    bool referenceExistsInModelParameters(
-        QSharedPointer<QList<QSharedPointer<ModelParameter> > > modelParameters) const;
+    bool referenceExistsInModuleParameters(QSharedPointer<QList<QSharedPointer<ModuleParameter> > > parameters)
+        const;
 
     /*!
      *  Create the references for model parameters.
      *
-     *      @param [in] modelParametes  The model parameters to create references for.
-     *      @param [in] parentItem      The parent item for references.
+     *      @param [in] parameters  The model parameters to create references for.
+     *      @param [in] parentItem  The parent item for references.
      */
-    void createReferencesForModelParameters(QSharedPointer<QList<QSharedPointer<ModelParameter> > > modelParametes,
+    void createReferencesForModuleParameters(QSharedPointer<QList<QSharedPointer<ModuleParameter> > > parameters,
         QTreeWidgetItem* parentItem);
 
     /*!
@@ -213,7 +214,7 @@ private:
      *
      *      @return True, if a reference exists in this memory map, false otherwise.
      */
-    bool referenceExistsInDefaultMemoryRemap(QSharedPointer<MemoryMap> memoryMap) const;
+    bool referenceExistsInDefaultMemoryRemap(QSharedPointer<MemoryMapBase> memoryMap) const;
 
     /*!
      *  Check if a reference exists in a single memory remap of a memory map.
@@ -305,7 +306,7 @@ private:
      *      @param [in] memoryMap           The memory map / memory remap.
      *      @param [in] topMemoryMapItem    The parent tree item of the new memory map tree item.
      */
-    void createReferencesForSingleMemoryMap(QSharedPointer<AbstractMemoryMap> memoryMap,
+    void createReferencesForSingleMemoryMap(QSharedPointer<MemoryMapBase> memoryMap,
         QTreeWidgetItem* memoryRemapItem);
 
     /*!
