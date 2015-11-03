@@ -14,6 +14,8 @@
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 
 #include <IPXACTmodels/common/VLNV.h>
+#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
+
 #include <library/LibraryManager/libraryinterface.h>
 
 //-----------------------------------------------------------------------------
@@ -22,10 +24,7 @@
 NewSWComponentPage::NewSWComponentPage(LibraryInterface* libInterface, QWidget* parentDlg):
 NewPage(libInterface, VLNV::COMPONENT, tr("New SW Component"), tr("Creates a SW component"), parentDlg)
 {
-    
-    // Create the VLNV editor.
     vlnvEditor_->setImplementationFilter(true, KactusAttribute::SW);
-
 }
 
 //-----------------------------------------------------------------------------

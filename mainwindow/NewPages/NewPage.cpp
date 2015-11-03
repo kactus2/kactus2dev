@@ -12,33 +12,27 @@
 #include "NewPage.h"
 
 #include <common/widgets/vlnvEditor/vlnveditor.h>
-#include <common/widgets/kactusAttributeEditor/KactusAttributeEditor.h>
 #include <common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.h>
-#include <common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.h>
 
 #include <IPXACTmodels/common/VLNV.h>
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <QVBoxLayout>
 #include <QFont>
-#include <QDir>
-#include <QPushButton>
-#include <QFileDialog>
-#include <QLabel>
 #include <QCoreApplication>
 #include <QMessageBox>
 
 //-----------------------------------------------------------------------------
 // Function: NewPage()
 //-----------------------------------------------------------------------------
-NewPage::NewPage(LibraryInterface* libInterface, VLNV::IPXactType vlnvType, 
-    QString title, QString description, QWidget* parentDlg)
-    : PropertyPageView(),      
-      vlnvEditor_(new VLNVEditor(vlnvType, libInterface, parentDlg, this, true)),      
-      libInterface_(libInterface),
-      librarySelector_(new LibrarySelectorWidget(this)),
-      titleLabel_(new QLabel(title,this)),
-      descLabel_(new QLabel(description,this))
+NewPage::NewPage(LibraryInterface* libInterface, VLNV::IPXactType vlnvType, QString title, QString description,
+    QWidget* parentDlg):
+PropertyPageView(),
+vlnvEditor_(new VLNVEditor(vlnvType, libInterface, parentDlg, this, true)),
+libInterface_(libInterface),
+librarySelector_(new LibrarySelectorWidget(this)),
+titleLabel_(new QLabel(title,this)),
+descLabel_(new QLabel(description,this))
 {   
     QFont font = titleLabel_->font();
     font.setPointSize(12);
@@ -58,6 +52,7 @@ NewPage::NewPage(LibraryInterface* libInterface, VLNV::IPXactType vlnvType,
 //-----------------------------------------------------------------------------
 NewPage::~NewPage()
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -154,26 +149,44 @@ void NewPage::showErrorForReservedVLVN(VLNV const& vlnv)
 //-----------------------------------------------------------------------------
 QString NewPage::type2Show(VLNV::IPXactType const& type)
 {
-    switch (type) {
-    case VLNV::BUSDEFINITION:
+    if (type == VLNV::BUSDEFINITION)
+    {
         return QObject::tr("Bus Definition");
-    case VLNV::COMPONENT:
+    }
+    else if (type == VLNV::COMPONENT)
+    {
         return QObject::tr("Component");
-    case VLNV::DESIGN:
+    }
+    else if (type == VLNV::DESIGN)
+    {
         return QObject::tr("Design");
-    case VLNV::GENERATORCHAIN:
+    }
+    else if (type == VLNV::GENERATORCHAIN)
+    {
         return QObject::tr("Generator Chain");
-    case VLNV::ABSTRACTOR:
+    }
+    else if (type == VLNV::ABSTRACTOR)
+    {
         return QObject::tr("Abstractor");
-    case VLNV::DESIGNCONFIGURATION:
+    }
+    else if (type == VLNV::DESIGNCONFIGURATION)
+    {
         return QObject::tr("Design Configuration");
-    case VLNV::ABSTRACTIONDEFINITION:
+    }
+    else if (type == VLNV::ABSTRACTIONDEFINITION)
+    {
         return QObject::tr("Abstraction Definition");
-    case VLNV::COMDEFINITION:
+    }
+    else if (type == VLNV::COMDEFINITION)
+    {
         return QObject::tr("COM Definition");
-    case VLNV::APIDEFINITION:
+    }
+    else if (type == VLNV::APIDEFINITION)
+    {
         return QObject::tr("API Definition");
-    default:
+    }
+    else
+    {
         return QObject::tr("Invalid");
     }
 }

@@ -14,9 +14,9 @@
 #include <library/LibraryManager/libraryitem.h>
 #include <library/LibraryManager/libraryinterface.h>
 
-#include <IPXACTmodels/component.h>
-
 #include <common/widgets/vlnvEditor/vlnveditor.h>
+
+#include <IPXACTmodels/Component/Component.h>
 
 #include <QVBoxLayout>
 #include <QHeaderView>
@@ -290,7 +290,7 @@ void NewSystemPage::addChildItems(LibraryItem const* libItem, QTreeWidgetItem* t
             views.removeAll("kts_sw_ref");
             views.removeAll("kts_sys_ref");
 
-            if (comp->getComponentImplementation() != KactusAttribute::HW || views.empty())
+            if (comp->getImplementation() != KactusAttribute::HW || views.isEmpty())
             {
                 delete item;
                 continue;

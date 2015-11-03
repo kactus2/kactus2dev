@@ -18,10 +18,10 @@
 //-----------------------------------------------------------------------------
 // Function: NewApiDefinitionPage()
 //-----------------------------------------------------------------------------
-NewApiDefinitionPage::NewApiDefinitionPage(LibraryInterface* libInterface, QWidget* parentDlg): 
-    NewPage(libInterface, VLNV::APIDEFINITION, tr("New API definition"), tr("Creates an API definition"), 
-        parentDlg)
+NewApiDefinitionPage::NewApiDefinitionPage(LibraryInterface* libInterface, QWidget* parentDlg):
+NewPage(libInterface, VLNV::APIDEFINITION, tr("New API definition"), tr("Creates an API definition"), parentDlg)
 {
+
 }
 
 //-----------------------------------------------------------------------------

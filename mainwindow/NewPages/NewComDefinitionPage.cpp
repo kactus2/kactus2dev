@@ -18,9 +18,9 @@
 //-----------------------------------------------------------------------------
 // Function: NewComDefinitionPage()
 //-----------------------------------------------------------------------------
-NewComDefinitionPage::NewComDefinitionPage(LibraryInterface* libInterface, QWidget* parentDlg)
-    : NewPage(libInterface, VLNV::COMDEFINITION, tr("New COM definition"), 
-        tr("Creates a communication definition"), parentDlg)
+NewComDefinitionPage::NewComDefinitionPage(LibraryInterface* libInterface, QWidget* parentDlg):
+NewPage(libInterface, VLNV::COMDEFINITION, tr("New COM definition"), tr("Creates a communication definition"),
+    parentDlg)
 {
  
 }

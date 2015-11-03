@@ -23,7 +23,8 @@
 // Function: NewComponentPage()
 //-----------------------------------------------------------------------------
 NewComponentPage::NewComponentPage(LibraryInterface* libInterface, QWidget* parentDlg):
-    NewPage(libInterface, VLNV::COMPONENT, tr("New HW Component"), tr("Creates a flat (non-hierarchical) HW component"), parentDlg) 
+NewPage(libInterface, VLNV::COMPONENT, tr("New HW Component"),
+    tr("Creates a flat (non-hierarchical) HW component"), parentDlg) 
 {
 
     // Create the attribute editor.
@@ -70,8 +71,7 @@ bool NewComponentPage::validate()
 //-----------------------------------------------------------------------------
 void NewComponentPage::apply()
 {
-    emit createComponent(attributeEditor_->getProductHierarchy(),
-                         attributeEditor_->getFirmness(),
+    emit createComponent(attributeEditor_->getProductHierarchy(), attributeEditor_->getFirmness(),
                          vlnvEditor_->getVLNV(), selectedPath());
 }
 
