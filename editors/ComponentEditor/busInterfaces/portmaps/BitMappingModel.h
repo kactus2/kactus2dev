@@ -25,6 +25,7 @@ class BusInterface;
 class Component;
 class LibraryInterface;
 class PortMap;
+class ExpressionParser;
 //-----------------------------------------------------------------------------
 //! BitMappingModel class.
 //-----------------------------------------------------------------------------
@@ -42,103 +43,114 @@ public:
         COLUMN_COUNT
     };
 
-    //! The constructor.
+    /*!
+     *  The constructor.
+     *
+     *      @param [in] busif               The selected bus interface.
+     *      @param [in] component           The containing component.
+     *      @param [in] libHandler          The library handler.
+     *      @param [in] expressionParser    The used expression parser.
+     *      @param [in] parent              The owner of this model.
+     */
     BitMappingModel(QSharedPointer<BusInterface> busif,
         QSharedPointer<Component> component,
         LibraryInterface* libHandler, 
+        QSharedPointer<ExpressionParser> expressionParser,
         QObject* parent = 0);
 
     //! The destructor.
     virtual ~BitMappingModel();
 	
-	/*! Get the number of rows in the model.
+	/*!
+     *  Get the number of rows in the model.
 	 *
-	 * @param [in] parent Model index of the parent of the item. Must be invalid
-	 * because this is not hierarchical model.
+	 *      @param [in] parent  Model index of the parent of the item. Must be invalid because this is not
+     *                          hierarchical model.
 	 *
-	 * @return Number of rows currently in the model.
+	 *      @return Number of rows currently in the model.
 	 */
 	virtual int rowCount(const QModelIndex& parent = QModelIndex() ) const;
 
-	/*! Get the number of columns in the model
+	/*!
+     *  Get the number of columns in the model
 	 *
-	 * @param [in] parent Model index of the parent of the item. Must be invalid
-	 * because this is not hierarchical model.
+	 *      @param [in] parent  Model index of the parent of the item. Must be invalid because this is not
+     *                          hierarchical model.
 	 *
-	 * \return Number of columns currently in the model.
+	 *      @return Number of columns currently in the model.
 	 */
 	virtual int columnCount(const QModelIndex& parent = QModelIndex() ) const;
 
-	/*! Get the data for the specified item for specified role.
+	/*!
+     *  Get the data for the specified item for specified role.
 	 *
-	 * @param [in] index Identifies the item that's data is wanted.
-	 * @param [in] role Specifies what kind of data is wanted.
+	 *      @param [in] index   Identifies the item that's data is wanted.
+	 *      @param [in] role    Specifies what kind of data is wanted.
 	 *
-	 * @return QVariant containing the data.
+	 *      @return QVariant containing the data.
 	 */
-	virtual QVariant data(const QModelIndex& index, 
-		int role = Qt::DisplayRole ) const;
+	virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole ) const;
 
-	/*! Get the data for the headers
+	/*!
+     *  Get the data for the headers
 	 *
-	 * @param [in] section The column that's header is wanted.
-	 * @param [in] orientation Only Qt::Horizontal is supported.
-	 * @param [in] role Specified the type of data that is wanted.
+	 *      @param [in] section         The column that's header is wanted.
+	 *      @param [in] orientation     Only Qt::Horizontal is supported.
+	 *      @param [in] role            Specified the type of data that is wanted.
 	 *
-	 * @return QVariant containing the data to be displayed.
+	 *      @return QVariant containing the data to be displayed.
 	 */
-	virtual QVariant headerData(int section, Qt::Orientation orientation, 
-		int role = Qt::DisplayRole ) const;
+	virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
 
-	/*! Set the data for specified item.
+	/*!
+     *  Set the data for specified item.
 	 *
-	 * @param [in] index Specifies the item that's data is modified
-	 * @param [in] value The value to be set.
-	 * @param [in] role The role that is trying to modify the data. Only Qt::EditRole
-	 * is supported.
+	 *      @param [in] index   Specifies the item that's data is modified
+	 *      @param [in] value   The value to be set.
+	 *      @param [in] role    The role that is trying to modify the data. Only Qt::EditRole is supported.
 	 *
-	 * @return True if data was successfully set in non-locked column.
+	 *      @return True if data was successfully set in non-locked column.
 	 */
-	virtual bool setData(const QModelIndex& index, const QVariant& value, 
-		int role = Qt::EditRole );
+	virtual bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole );
 
-	/*! Set the header data for specified section.
+	/*!
+     *  Set the header data for specified section.
 	 *
-	 * @param [in] section Specifies the item that's data is modified
-	 * @param [in] orientation The header's orientation. Only Qt::Horizontal is supported.
-	 * @param [in] value The value to be set.
-	 * @param [in] role The role that is trying to modify the data. Only Qt::EditRole
-	 * is supported.
+	 *      @param [in] section         Specifies the item that's data is modified
+	 *      @param [in] orientation     The header's orientation. Only Qt::Horizontal is supported.
+	 *      @param [in] value           The value to be set.
+	 *      @param [in] role            The role that is trying to modify the data. Only Qt::EditRole is supported.
 	 *
-	 * @return True if the header was successfully set.
+	 *      @return True if the header was successfully set.
 	 */
-    bool setHeaderData( int section, Qt::Orientation orientation, 
-        const QVariant & value, int role = Qt::EditRole );
+    bool setHeaderData( int section, Qt::Orientation orientation, const QVariant & value, int role = Qt::EditRole );
 
-	/*! Get information on how specified item can be handled.
+	/*!
+     *  Get information on how specified item can be handled.
 	 *
-	 * @param [in] index Specifies the item that's flags are wanted.
+	 *      @param [in] index   Specifies the item that's flags are wanted.
 	 *
-	 * @return Qt::ItemFlags that define how object can be handled.
+	 *      @return Qt::ItemFlags that define how object can be handled.
 	 */
 	virtual Qt::ItemFlags flags(const QModelIndex& index) const;
 
-	/*! Check if the model is in valid state or not.
+	/*!
+     *  Check if the model is in valid state or not.
 	 *
-	 * @return True if all items in model are valid.
-	*/
+	 *      @return True if all items in model are valid.
+	 */
 	bool isValid() const;
 
-	/*! Set the abstraction definition that is used in this port map.
+	/*!
+     *  Set the abstraction definition that is used in this port map.
 	 *
-	 * \param vlnv Identifies the abstraction definition.
-	 *
-	*/
+	 *      @param [in] vlnv    Identifies the abstraction definition.
+     *      @param [in] mode    The acive interface mode.
+	 */
 	void setAbsType(const VLNV& vlnv, General::InterfaceMode mode);
 
     /*!
      *  Gets the name of the logical signal being mapped.
-     *
      *
      *      @return Name of the logical signal.
      */
@@ -176,8 +188,8 @@ public:
      *
      *      @return True, if the data could be handled with the model, otherwise false.
      */
-    virtual bool dropMimeData(const QMimeData *data,
-        Qt::DropAction action, int row, int column, const QModelIndex &parent);
+    virtual bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column,
+        const QModelIndex &parent);
 
     /*!
      *  Maps the given ports to first unmapped index(es).
@@ -207,16 +219,17 @@ signals:
 
 public slots:
 
-	/*! Sets the logical signal for mapping.
-     *     
-     * @param [in] logicalName      The name of the logical signal to set.
+	/*!
+     *  Sets the logical signal for mapping.
+     *
+     *      @param [in] logicalName     The name of the logical signal to set.
      */
     void onSetLogicalSignal(QString const& logicalName);
 
     /*!
      *  Removes all port maps of a logical port.
      *
-     *      @param [in] logicalName   The port whose mappings to remove.
+     *      @param [in] logicalName     The port whose mappings to remove.
      */
     void onRemoveMapping(QString const& logicalName);
 
@@ -305,9 +318,8 @@ private:
      *
      *      @return True, if a mapping exists, otherwise false.
      */
-    bool isMapped( QList<QSharedPointer<PortMap> > mappings, General::PortBounds const& pin, 
-        int logicalIndex) const;
-
+    bool isMapped( QList<QSharedPointer<PortMap> > mappings, General::PortBounds const& pin, int logicalIndex)
+        const;
 
     /*!
      *  Creates a port map expanding the maximum amount of contiguous physical and logical bits.
@@ -317,8 +329,7 @@ private:
      *
      *      @return The created port map.
      */
-    QSharedPointer<PortMap> createPortMapForPin( General::PortBounds const& pin, 
-        int firstLogicalIndex ) const;
+    QSharedPointer<PortMap> createPortMapForPin( General::PortBounds const& pin, int firstLogicalIndex ) const;
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -353,6 +364,8 @@ private:
     //! Boolean for adding and removing rows.
     bool canEdit_;    
 
+    //! The used expression parser.
+    QSharedPointer<ExpressionParser> expressionParser_;
 };
 
 #endif // BITMAPPINGMODEL_H

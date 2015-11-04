@@ -14,6 +14,7 @@
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <editors/ComponentEditor/busInterfaces/portmaps/BitSelectionDialog.h>
+#include <editors/ComponentEditor/common/ExpressionParser.h>
 
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>
@@ -47,18 +48,19 @@ Q_DECLARE_METATYPE(General::PortBounds)
 //-----------------------------------------------------------------------------
 // Function: BitMappingModel::BitMappingModel()
 //-----------------------------------------------------------------------------
-BitMappingModel::BitMappingModel(QSharedPointer<BusInterface> busif, QSharedPointer<Component> component, 
-    LibraryInterface* libHandler, QObject* parent) : 
-      QAbstractTableModel(parent), 
-      rows_(),
-      mappings_(),
-      busif_(busif),
-      mode_(General::INTERFACE_MODE_COUNT),
-      logicalPort_(),
-      portMaps_(busif->getPortMaps()),
-      component_(component),
-      handler_(libHandler),                    
-      canEdit_(false)
+BitMappingModel::BitMappingModel(QSharedPointer<BusInterface> busif, QSharedPointer<Component> component,
+LibraryInterface* libHandler, QSharedPointer<ExpressionParser> expressionParser, QObject* parent /* = 0 */):
+QAbstractTableModel(parent),
+rows_(),
+mappings_(),
+busif_(busif),
+mode_(General::INTERFACE_MODE_COUNT),
+logicalPort_(),
+portMaps_(busif->getPortMaps()),
+component_(component),
+handler_(libHandler),
+canEdit_(false),
+expressionParser_(expressionParser)
 {
     Q_ASSERT(component);
     Q_ASSERT(libHandler);
@@ -69,6 +71,7 @@ BitMappingModel::BitMappingModel(QSharedPointer<BusInterface> busif, QSharedPoin
 //-----------------------------------------------------------------------------
 BitMappingModel::~BitMappingModel()
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -126,8 +129,8 @@ QVariant BitMappingModel::data(QModelIndex const& index, int role) const
                 {
                     QSharedPointer<Port> port = component_->getPort(row.portName_);
 
-                    int left = port->getLeftBound().toInt();
-                    int right = port->getRightBound().toInt();
+                    int left = expressionParser_->parseExpression(port->getLeftBound()).toInt();
+                    int right = expressionParser_->parseExpression(port->getRightBound()).toInt();
                     int portSize = abs(left - right) + 1;
 
                     if (portSize > 1)
@@ -150,8 +153,7 @@ QVariant BitMappingModel::data(QModelIndex const& index, int role) const
 
     else if (role == Qt::ForegroundRole)
     {      
-        if ((index.column() == INDEX && !canEdit_) ||
-            (canEdit_ && index.row()  == rows_.size() - 1) ||          
+        if ((index.column() == INDEX && !canEdit_) || (canEdit_ && index.row()  == rows_.size() - 1) ||
             (index.column() == BIT && rows_.at(index.row()).isEmpty()))
         {
             return QColor("gray");
@@ -330,8 +332,8 @@ bool BitMappingModel::dropMimeData(QMimeData const* data, Qt::DropAction action,
         QSharedPointer<Port> port = component_->getPort(portName);
         if (port)
         {
-            int left = port->getLeftBound().toInt();
-            int right = port->getRightBound().toInt();
+            int left = expressionParser_->parseExpression(port->getLeftBound()).toInt();
+            int right = expressionParser_->parseExpression(port->getRightBound()).toInt();
             int portSize = abs(left - right) + 1;
             int rowsLeft = rowCount() - targetRow;
 
@@ -658,15 +660,19 @@ void BitMappingModel::createInitialMappings()
     }
 
     QString logicalPortSize = absDef_->getPort(logicalPort_)->getWire()->getWidth(mode_);
+    int logicalSize = expressionParser_->parseExpression(logicalPortSize).toInt();
 
-    int logicalSize = logicalPortSize.toInt();
     // If logical width is not defined in the abs def, find the highest bound in port maps for width.
     if (logicalPortSize.isEmpty())
     {
         foreach (QSharedPointer<PortMap> portMap, logicPortMaps)
         {   
             QSharedPointer<Range> logicalRange = portMap->getLogicalPort()->range_;
-            int higherBound = qMax(logicalRange->getLeft().toInt(), logicalRange->getRight().toInt());
+
+            int logicalLeft = expressionParser_->parseExpression(logicalRange->getLeft()).toInt();
+            int logicalRight = expressionParser_->parseExpression(logicalRange->getRight()).toInt();
+            int higherBound = qMax(logicalLeft, logicalRight);
+
             logicalSize = qMax(logicalSize, higherBound);
         }
         logicalSize++;
@@ -679,12 +685,20 @@ void BitMappingModel::createInitialMappings()
         foreach(QSharedPointer<PortMap> portMap, logicPortMaps)
         {
             QSharedPointer<Range> logicalRange = portMap->getLogicalPort()->range_;
-            int logLower = qMin(logicalRange->getLeft().toInt(), logicalRange->getRight().toInt());
-            int logHigher = qMax(logicalRange->getLeft().toInt(), logicalRange->getRight().toInt());
+
+            int logicalLeft = expressionParser_->parseExpression(logicalRange->getLeft()).toInt();
+            int logicalRight = expressionParser_->parseExpression(logicalRange->getRight()).toInt();
+
+            int logLower = qMin(logicalLeft, logicalRight);
+            int logHigher = qMax(logicalLeft, logicalRight);
+
             if (logLower <= index && index <= logHigher)
             {
-                int physicalRangeLeft = portMap->getPhysicalPort()->partSelect_->getLeftRange().toInt();
-                int physicalRangeRight = portMap->getPhysicalPort()->partSelect_->getRightRange().toInt();
+                int physicalRangeLeft = expressionParser_->parseExpression(
+                    portMap->getPhysicalPort()->partSelect_->getLeftRange()).toInt();
+                int physicalRangeRight = expressionParser_->parseExpression(
+                    portMap->getPhysicalPort()->partSelect_->getRightRange()).toInt();
+
                 int physLower = qMin(physicalRangeLeft, physicalRangeRight);
 
                 General::PortBounds toAdd(portMap->getPhysicalPort()->name_);
@@ -731,11 +745,17 @@ bool BitMappingModel::isMapped(QList<QSharedPointer<PortMap> > mappings, General
         if (portMap->getPhysicalPort()->name_ == pin.portName_)
         {
             QSharedPointer<Range> logicalRange = portMap->getLogicalPort()->range_;
-            int logLowerBound = qMin(logicalRange->getLeft().toInt(), logicalRange->getRight().toInt());
-            int logHigherBound = qMax(logicalRange->getLeft().toInt(), logicalRange->getRight().toInt());
-          
-            int physicalLeft = portMap->getPhysicalPort()->partSelect_->getLeftRange().toInt();
-            int physicalRight = portMap->getPhysicalPort()->partSelect_->getRightRange().toInt();
+            
+            int logicalRangeLeft = expressionParser_->parseExpression(logicalRange->getLeft()).toInt();
+            int logicalRangeRight = expressionParser_->parseExpression(logicalRange->getRight()).toInt();
+
+            int logLowerBound = qMin(logicalRangeLeft, logicalRangeRight);
+            int logHigherBound = qMax(logicalRangeLeft, logicalRangeRight);
+
+            int physicalLeft = expressionParser_->parseExpression(
+                portMap->getPhysicalPort()->partSelect_->getLeftRange()).toInt();
+            int physicalRight = expressionParser_->parseExpression(
+                portMap->getPhysicalPort()->partSelect_->getRightRange()).toInt();
 
             int phyLowerBound = qMin(physicalLeft, physicalRight);
             int phyHigherBound = qMax(physicalLeft, physicalRight);
@@ -758,7 +778,9 @@ QSharedPointer<PortMap> BitMappingModel::createPortMapForPin(General::PortBounds
 {
     QSharedPointer<Port> port = component_->getPort(pin.portName_);
 
-    bool ascending = port->getLeftBound().toInt() >= port->getRightBound().toInt();
+    int portLeftBound = expressionParser_->parseExpression(port->getLeftBound()).toInt();
+    int portRightBound = expressionParser_->parseExpression(port->getRightBound()).toInt();
+    bool ascending = portLeftBound >= portRightBound;
 
     // Create a new port map.      
     int logLeft = firstLogicalIndex;
