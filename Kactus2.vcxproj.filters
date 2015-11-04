@@ -839,12 +839,6 @@
     <Filter Include="Header Files\wizards\common\VLNVComparator">
       <UniqueIdentifier>{a731797b-1fa9-4096-9996-badb0678bc16}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\wizards\common\ModelParameterComparator">
-      <UniqueIdentifier>{21c42cbe-4288-4fdb-99fc-e4fc280a0c48}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\wizards\common\ModelParameterComparator">
-      <UniqueIdentifier>{85b2c4f0-5af7-4565-8c9a-489765ce003e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\wizards\common\ViewComparator">
       <UniqueIdentifier>{6cbed638-9038-44ab-bfe3-bbb67577f03a}</UniqueIdentifier>
     </Filter>
@@ -931,6 +925,12 @@
     </Filter>
     <Filter Include="Source Files\mainwindow\SaveHierarchy">
       <UniqueIdentifier>{9682689d-893a-453f-b6f7-58188d71bb3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\wizards\common\ModuleParameterComparator">
+      <UniqueIdentifier>{21c42cbe-4288-4fdb-99fc-e4fc280a0c48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\wizards\common\ModuleParameterComparator">
+      <UniqueIdentifier>{85b2c4f0-5af7-4565-8c9a-489765ce003e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -3649,9 +3649,6 @@
     <ClCompile Include="GeneratedFiles\moc_ComponentDiffWidget.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="wizards\common\ModelParameterComparator\ModelParameterComparator.cpp">
-      <Filter>Source Files\wizards\common\ModelParameterComparator</Filter>
-    </ClCompile>
     <ClCompile Include="wizards\common\ViewComparator\ViewComparator.cpp">
       <Filter>Source Files\wizards\common\ViewComparator</Filter>
     </ClCompile>
@@ -4140,6 +4137,9 @@
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\software\swView\cpuselector.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wizards\common\ModuleParameterComparator\ModuleParameterComparator.cpp">
+      <Filter>Source Files\wizards\common\ModuleParameterComparator</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5945,9 +5945,6 @@
     <ClInclude Include="wizards\common\ComponentComparator\ComponentComparator.h">
       <Filter>Header Files\wizards\common\ComponentComparator</Filter>
     </ClInclude>
-    <ClInclude Include="wizards\common\ModelParameterComparator\ModelParameterComparator.h">
-      <Filter>Header Files\wizards\common\ModelParameterComparator</Filter>
-    </ClInclude>
     <ClInclude Include="wizards\common\ViewComparator\ViewComparator.h">
       <Filter>Header Files\wizards\common\ViewComparator</Filter>
     </ClInclude>
@@ -6163,6 +6160,9 @@
     </ClInclude>
     <ClInclude Include="designEditors\HWDesign\AdHocEditor\AdHocColumns.h">
       <Filter>Header Files\designEditors\HWDesign\AdHocEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="wizards\common\ModuleParameterComparator\ModuleParameterComparator.h">
+      <Filter>Header Files\wizards\common\ModuleParameterComparator</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

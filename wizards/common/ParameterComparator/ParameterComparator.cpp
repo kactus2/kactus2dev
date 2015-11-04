@@ -32,8 +32,7 @@ ParameterComparator::~ParameterComparator()
 //-----------------------------------------------------------------------------
 // Function: ParameterComparator::compare()
 //-----------------------------------------------------------------------------
-bool ParameterComparator::compare(QSharedPointer<Parameter> first, 
-    QSharedPointer<Parameter> second) const
+bool ParameterComparator::compare(QSharedPointer<Parameter> first, QSharedPointer<Parameter> second) const
 {
     return IPXactElementComparator::compare(first, second);
 }

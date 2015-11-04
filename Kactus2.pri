@@ -177,7 +177,7 @@ HEADERS += ./editors/ComponentEditor/software/apiInterface/ApiInterfaceColumns.h
     ./wizards/common/ComponentComparator/ComponentComparator.h \
     ./wizards/common/ComponentDiffWidget/ComponentDiffWidget.h \
     ./wizards/common/VLNVComparator/VLNVComparator.h \
-    ./wizards/common/ModelParameterComparator/ModelParameterComparator.h \
+    ./wizards/common/ModuleParameterComparator/ModuleParameterComparator.h \
     ./wizards/common/ViewComparator/ViewComparator.h \
     ./wizards/common/PortComparator/PortComparator.h \
     ./wizards/common/ParameterComparator/ParameterComparator.h \
@@ -812,7 +812,7 @@ SOURCES += ./editors/ComponentEditor/software/swView/cpuselector.cpp \
     ./wizards/common/ComponentComparator/ComponentComparator.cpp \
     ./wizards/common/ComponentDiffWidget/ComponentDiffWidget.cpp \
     ./wizards/common/VLNVComparator/VLNVComparator.cpp \
-    ./wizards/common/ModelParameterComparator/ModelParameterComparator.cpp \
+    ./wizards/common/ModuleParameterComparator/ModuleParameterComparator.cpp \
     ./wizards/common/ViewComparator/ViewComparator.cpp \
     ./wizards/common/PortComparator/PortComparator.cpp \
     ./wizards/common/ParameterComparator/ParameterComparator.cpp \

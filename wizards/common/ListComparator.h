@@ -17,6 +17,7 @@
 
 #include <QSharedPointer>
 #include <QList>
+#include <QMap>
 
 //-----------------------------------------------------------------------------
 //! Base class for all IP-XACT comparators comparing lists of elements.

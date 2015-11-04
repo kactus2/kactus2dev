@@ -61,6 +61,14 @@ public:
      */
     virtual bool compare(QList<QSharedPointer<Port> > const first, QList<QSharedPointer<Port> > const second) const;
 
+    /*!
+     *  Finds the differences between the two ports.
+     *
+     *      @param [in] reference   The port to compare to.
+     *      @param [in] subject     The port to compare against the reference.
+     *
+     *      @return Set of differences between the reference and subject.
+     */
     virtual QList<QSharedPointer<IPXactDiff> > diff(QSharedPointer<const Port> reference, 
         QSharedPointer<const Port> subject) const;
 

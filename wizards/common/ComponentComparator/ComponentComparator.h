@@ -90,17 +90,6 @@ private:
      */
     bool compareVLNVs(QSharedPointer<const Component> referenceComponent, 
         QSharedPointer<const Component> subjectComponent) const;
-    
-    /*!
-     *  Compares the model parameters in the given components.
-     *
-     *      @param [in] referenceComponent  The reference component to compare to.
-     *      @param [in] subjectComponent    The subject component to compare against the reference.
-     *
-     *      @return True, if the model parameters are similar, otherwise false.
-     */
-    bool compareModelParameters(QSharedPointer<const Component> referenceComponent, 
-        QSharedPointer<const Component> subjectComponent) const;
 
     /*!
      *  Compares the parameters in the given components.
