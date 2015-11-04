@@ -14,6 +14,7 @@
 #include <editors/ComponentEditor/busInterfaces/portmaps/PortListSortProxyModel.h>
 #include <editors/ComponentEditor/busInterfaces/portmaps/portmapsdelegate.h>
 #include <editors/ComponentEditor/busInterfaces/portmaps/BitSelectionDialog.h>
+#include <editors/ComponentEditor/common/ExpressionParser.h>
 
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>
@@ -30,47 +31,41 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
-#include <QCheckBox>
-#include <QComboBox>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QIcon>
-#include <QLabel>
 #include <QLineEdit>
-#include <QGroupBox>
-#include <QFormLayout>
 
 //-----------------------------------------------------------------------------
 // Function: BusIfPortmapTab::BusIfPortmapTab()
 //-----------------------------------------------------------------------------
-BusIfPortmapTab::BusIfPortmapTab(LibraryInterface* libHandler,
-    QSharedPointer<Component> component,
-    QSharedPointer<BusInterface> busif, 
-    QWidget* parent ):
-QWidget(parent), 
-    busif_(busif),
-    component_(component), 
-    libHandler_(libHandler), 
-    model_(busif, component, libHandler, this),
-    view_(this),
-    logicalView_(this),
-    logicalModel_(libHandler, &model_, this),
-    mappingLabel_(tr("Bit-field mapping"),this),
-    mappingView_(component, this),
-    mappingProxy_(this),
-    mappingModel_(busif, component, libHandler, this),
-    physicalView_(this),
-    physProxy_(component, this),
-    physModel_(component, &model_, this),
-    cleanButton_(QIcon(":/icons/common/graphics/cleanup.png"), tr("Clean up"), this),
-    connectButton_(QIcon(":/icons/common/graphics/connect.png"), tr("Connect"), this),
-    showAllButton_(tr("Show all ports in component"), this),
-    showHideMappingButton_(tr("Show bit-field mapping"),this),
-    nameFilterEditor_(new QLineEdit(this)),
-    inButton_(QIcon(":/icons/common/graphics/control-180.png"), "", this),
-    outButton_(QIcon(":/icons/common/graphics/control.png"), "", this),
-    hideConnectedBox_(tr("Hide connected ports"), this),
-    portSet_()
+BusIfPortmapTab::BusIfPortmapTab(LibraryInterface* libHandler, QSharedPointer<Component> component,
+    QSharedPointer<BusInterface> busif, QSharedPointer<ExpressionParser> expressionParser, QWidget* parent):
+QWidget(parent),
+busif_(busif),
+component_(component),
+libHandler_(libHandler),
+model_(busif, component, libHandler, this),
+view_(this),
+logicalView_(this),
+logicalModel_(libHandler, this),
+mappingLabel_(tr("Bit-field mapping"),this),
+mappingView_(component, this),
+mappingProxy_(this),
+mappingModel_(busif, component, libHandler, this),
+physicalView_(this),
+physProxy_(component, this),
+physModel_(component_, this),
+cleanButton_(QIcon(":/icons/common/graphics/cleanup.png"), tr("Clean up"), this),
+connectButton_(QIcon(":/icons/common/graphics/connect.png"), tr("Connect"), this),
+showAllButton_(tr("Show all ports in component"), this),
+showHideMappingButton_(tr("Show bit-field mapping"),this),
+nameFilterEditor_(new QLineEdit(this)),
+inButton_(QIcon(":/icons/common/graphics/control-180.png"), "", this),
+outButton_(QIcon(":/icons/common/graphics/control.png"), "", this),
+hideConnectedBox_(tr("Hide connected ports"), this),
+portSet_(),
+expressionParser_(expressionParser)
 {
     view_.setModel(&model_);
     view_.setItemDelegate(new PortMapsDelegate(this));
@@ -448,7 +443,8 @@ void BusIfPortmapTab::onShowAll()
 //-----------------------------------------------------------------------------
 // Function: BusIfPortmapTab::focusInEvent()
 //-----------------------------------------------------------------------------
-void BusIfPortmapTab::showEvent(QShowEvent* event) {
+void BusIfPortmapTab::showEvent(QShowEvent* event)
+{
     QWidget::showEvent(event);
     emit helpUrlRequested("componenteditor/portmaps.html");
 }
@@ -456,8 +452,8 @@ void BusIfPortmapTab::showEvent(QShowEvent* event) {
 //-----------------------------------------------------------------------------
 // Function: BusIfPortmapTab::setupLayout()
 //-----------------------------------------------------------------------------
-void BusIfPortmapTab::setupLayout() {
-
+void BusIfPortmapTab::setupLayout()
+{
     QVBoxLayout* logicalLayout = new QVBoxLayout();
     QLabel* logicalLabel = new QLabel(tr("Logical ports"), this);
     logicalLayout->addWidget(logicalLabel);
@@ -628,10 +624,12 @@ int BusIfPortmapTab::getLogicalSize(QString const& logicalPort, QString const& p
         QSharedPointer<AbstractionDefinition> absDef = 
             libHandler_->getModel(absDefVLNV).staticCast<AbstractionDefinition>();     
 
-        logicalSize = absDef->getPort(logicalPort)->getWire()->getWidth(busif_->getInterfaceMode()).toInt();  
+        QString logicalWidth = absDef->getPort(logicalPort)->getWire()->getWidth(busif_->getInterfaceMode());
+        logicalSize = expressionParser_->parseExpression(logicalWidth).toInt();
+
         if (logicalSize < 0)
         {
-            //logicalSize = component_->getPortWidth(physicalPort);
+            logicalSize = getPhysicalSize(physicalPort);
         }
     }	
     return logicalSize;
@@ -642,12 +640,10 @@ int BusIfPortmapTab::getLogicalSize(QString const& logicalPort, QString const& p
 //-----------------------------------------------------------------------------
 int BusIfPortmapTab::getPhysicalSize(QString const& physicalPort)
 {
-    int size = -1; // component_->getPortWidth(physicalPort);
-    if (size < 0)
-    {
-        size = abs(component_->getPort(physicalPort)->getLeftBound().toInt() - 
-            component_->getPort(physicalPort)->getRightBound().toInt()) + 1;
-    }	
-    
+    int portLeft = expressionParser_->parseExpression(component_->getPort(physicalPort)->getLeftBound()).toInt();
+    int portRight = expressionParser_->parseExpression(component_->getPort(physicalPort)->getRightBound()).toInt();
+
+    int size = abs(portLeft - portRight) + 1;
+
     return size;
 }

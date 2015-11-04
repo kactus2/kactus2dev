@@ -10,8 +10,9 @@
 //-----------------------------------------------------------------------------
 
 #include "busportsmodel.h"
-
 #include "LogicalPortColumns.h"
+
+#include <IPXACTmodels/common/DirectionTypes.h>
 
 #include <QColor>
 #include <QStringList>
@@ -175,7 +176,7 @@ QVariant BusPortsModel::data(QModelIndex const& index, int role) const
         }
         else if (index.column() == LogicalPortColumns::DIRECTION)
         {
-            return General::direction2Str(port.wire_->getDirection());
+            return DirectionTypes::direction2Str(port.wire_->getDirection());
         }
         else if (index.column() == LogicalPortColumns::MODE)
         {
@@ -317,7 +318,8 @@ bool BusPortsModel::setData(QModelIndex const& index, QVariant const& value, int
     }
     else if (index.column() == LogicalPortColumns::DIRECTION)
     {
-        port.wire_->setDirection(General::str2Direction(value.toString(), General::DIRECTION_INVALID));
+        port.wire_->
+            setDirection(DirectionTypes::str2Direction(value.toString(), DirectionTypes::DIRECTION_INVALID));
     }
     else if (index.column() == LogicalPortColumns::PRESENCE)
     {

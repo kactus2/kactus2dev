@@ -1,9 +1,13 @@
-/* 
- *
- *  Created on: 5.4.2011
- *      Author: Antti Kamppi
- * 		filename: busifgeneraltab.cpp
- */
+//-----------------------------------------------------------------------------
+// File: busifgeneraltab.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 05.04.2011
+//
+// Description:
+// Container for editor on the general tab of a bus interface editor.
+//-----------------------------------------------------------------------------
 
 #include "busifgeneraltab.h"
 
@@ -14,30 +18,25 @@
 
 #include <IPXACTmodels/common/VLNV.h>
 
-#include <QVBoxLayout>
 #include <QHBoxLayout>
-#include <QFormLayout>
 #include <QScrollArea>
-#include <QApplication>
 
 //-----------------------------------------------------------------------------
 // Function: BusIfGeneralTab::BusIfGeneralTab()
 //-----------------------------------------------------------------------------
 BusIfGeneralTab::BusIfGeneralTab(LibraryInterface* libHandler, QSharedPointer<BusInterface> busif,
-    QSharedPointer<Component> component,
-    QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QSharedPointer<ExpressionParser> expressionParser,
+    QSharedPointer<Component> component, QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<ExpressionParser> expressionParser,
     QWidget* parent, QWidget* parentWnd):
 QWidget(parent),
-    busif_(busif),
-    nameEditor_(busif, this, tr("Name and description")),
-    busType_(VLNV::BUSDEFINITION, libHandler, parentWnd, this),
-    absType_(VLNV::ABSTRACTIONDEFINITION, libHandler, parentWnd, this),
-    modeStack_(busif, component, parameterFinder, libHandler, expressionParser, this),
-    details_(busif, this),
-    parameters_(busif->getParameters(), component, parameterFinder, expressionFormatter, this),
-    libHandler_(libHandler)
+busif_(busif),
+nameEditor_(busif, this, tr("Name and description")),
+busType_(VLNV::BUSDEFINITION, libHandler, parentWnd, this),
+absType_(VLNV::ABSTRACTIONDEFINITION, libHandler, parentWnd, this),
+modeStack_(busif, component, parameterFinder, libHandler, expressionParser, this),
+details_(busif, this),
+parameters_(busif->getParameters(), component, parameterFinder, expressionFormatter, this),
+libHandler_(libHandler)
 {
 	Q_ASSERT_X(libHandler, "BusIfGeneralTab constructor", "Null LibraryInterface-pointer given as parameter");
 	Q_ASSERT(busif_);
@@ -54,25 +53,17 @@ QWidget(parent),
     connect(&modeStack_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
-	connect(&nameEditor_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&busType_, SIGNAL(vlnvEdited()),
-		this, SLOT(onBusTypeChanged()), Qt::UniqueConnection);
-	connect(&absType_, SIGNAL(vlnvEdited()),
-		this, SLOT(onAbsTypeChanged()), Qt::UniqueConnection);
+	connect(&nameEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&busType_, SIGNAL(vlnvEdited()), this, SLOT(onBusTypeChanged()), Qt::UniqueConnection);
+	connect(&absType_, SIGNAL(vlnvEdited()), this, SLOT(onAbsTypeChanged()), Qt::UniqueConnection);
 	connect(&details_, SIGNAL(modeSelected(General::InterfaceMode)),
 		this, SLOT(onModeChanged(General::InterfaceMode)), Qt::UniqueConnection);
-	connect(&modeStack_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&details_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&parameters_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&modeStack_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&details_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&parameters_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
-	connect(&busType_, SIGNAL(setAbsDef(const VLNV&)),
-		this, SLOT(onSetAbsType(const VLNV&)), Qt::UniqueConnection);
-	connect(&absType_, SIGNAL(setBusDef(const VLNV&)),
-		this, SLOT(onSetBusType(const VLNV&)), Qt::UniqueConnection);
+	connect(&busType_, SIGNAL(setAbsDef(const VLNV&)), this, SLOT(onSetAbsType(const VLNV&)), Qt::UniqueConnection);
+	connect(&absType_, SIGNAL(setBusDef(const VLNV&)), this, SLOT(onSetBusType(const VLNV&)), Qt::UniqueConnection);
 
 	busType_.setTitle(tr("Bus definition"));
 	absType_.setTitle(tr("Abstraction definition"));
@@ -87,6 +78,7 @@ QWidget(parent),
 //-----------------------------------------------------------------------------
 BusIfGeneralTab::~BusIfGeneralTab()
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -181,7 +173,8 @@ bool BusIfGeneralTab::isValid(QStringList& errorList) const
 
     QString thisIdentifier(tr("bus interface %1").arg(busif_->name()));
 
-    if (!parameters_.isValid(errorList, thisIdentifier)) {        
+    if (!parameters_.isValid(errorList, thisIdentifier))
+    {
         valid = false;
     }
 

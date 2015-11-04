@@ -29,21 +29,21 @@ class BusDefGroup : public QGroupBox
 
 public:
 
-	/*! The constructor
+	/*!
+     *  The constructor
 	 *
 	 *      @param [in] parent The owner of this widget
-	 *
-	*/
+	 */
 	BusDefGroup(QWidget *parent);
 
-	/*! Set the bus definition that is being edited
+	/*!
+     *  Set the bus definition that is being edited
 	 *
 	 *      @param [in] busDef The bus definition
-	 *
-	*/
+	 */
 	void setBusDef(QSharedPointer<BusDefinition> busDef);
 	
-	//! The destructor
+	//! The destructor.
 	virtual ~BusDefGroup();
 
 signals:

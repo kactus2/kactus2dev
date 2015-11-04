@@ -16,11 +16,8 @@
 
 #include <IPXACTmodels/common/VLNV.h>
 
-class AbstractionDefinition;
-class BusDefinition;
 class BusInterface;
 class Component;
-class PluginManager;
 class LibraryInterface;
 
 //-----------------------------------------------------------------------------

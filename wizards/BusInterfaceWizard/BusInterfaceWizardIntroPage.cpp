@@ -18,8 +18,8 @@
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceWizardIntroPage::BusInterfaceWizardIntroPage()
 //-----------------------------------------------------------------------------
-BusInterfaceWizardIntroPage::BusInterfaceWizardIntroPage(QWidget *parent)
-    : QWizardPage(parent)
+BusInterfaceWizardIntroPage::BusInterfaceWizardIntroPage(QWidget *parent):
+QWizardPage(parent)
 {
     setTitle(tr("Introduction"));
     setSubTitle(tr("This wizard will guide you through creating a new interface to the component."));

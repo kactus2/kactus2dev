@@ -24,13 +24,13 @@
 //-----------------------------------------------------------------------------
 BusDefGroup::BusDefGroup(QWidget *parent): 
 QGroupBox(tr("General (Bus Definition)"), parent),
-    busDef_(),
-    directConnection_(tr("Allow direct master-slave connection"), this),
-    isBroadcast_(tr("Support broadcast"), this),
-    isAddressable_(tr("Addressable bus"), this),
-    maxMastersEditor_(this),
-    maxSlavesEditor_(this),
-    descriptionEditor_(this)
+busDef_(),
+directConnection_(tr("Allow direct master-slave connection"), this),
+isBroadcast_(tr("Support broadcast"), this),
+isAddressable_(tr("Addressable bus"), this),
+maxMastersEditor_(this),
+maxSlavesEditor_(this),
+descriptionEditor_(this)
 {    
     QRegExp numberExpression(QString("[0-9]*"), Qt::CaseInsensitive, QRegExp::W3CXmlSchema11);
     QRegExpValidator* numberValidator = new QRegExpValidator(numberExpression, this);
@@ -47,10 +47,8 @@ QGroupBox(tr("General (Bus Definition)"), parent),
 	 
 	connect(&directConnection_, SIGNAL(toggled(bool)),
         this, SLOT(onDirectConnectionChanged(bool)), Qt::UniqueConnection);
-    connect(&isBroadcast_, SIGNAL(toggled(bool)),
-        this, SLOT(onIsBroadcastChanged(bool)), Qt::UniqueConnection);
-	connect(&isAddressable_, SIGNAL(toggled(bool)),
-		this, SLOT(onIsAddressableChanged(bool)), Qt::UniqueConnection);
+    connect(&isBroadcast_, SIGNAL(toggled(bool)), this, SLOT(onIsBroadcastChanged(bool)), Qt::UniqueConnection);
+	connect(&isAddressable_, SIGNAL(toggled(bool)), this, SLOT(onIsAddressableChanged(bool)), Qt::UniqueConnection);
 
     connect(&descriptionEditor_, SIGNAL(textChanged()), this, SLOT(onDescriptionChanged()), Qt::UniqueConnection);
 }
@@ -60,6 +58,7 @@ QGroupBox(tr("General (Bus Definition)"), parent),
 //-----------------------------------------------------------------------------
 BusDefGroup::~BusDefGroup()
 {
+
 }
 
 //-----------------------------------------------------------------------------

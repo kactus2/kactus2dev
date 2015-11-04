@@ -12,7 +12,6 @@
 #ifndef BUSIFPORTMAPTAB_H
 #define BUSIFPORTMAPTAB_H
 
-
 #include "portmaps/physlistview.h"
 #include "portmaps/logicallistview.h"
 #include "portmaps/physlistmodel.h"
@@ -27,12 +26,9 @@
 #include <IPXACTmodels/generaldeclarations.h>
 
 #include <QCheckBox>
-#include <QComboBox>
 #include <QLabel>
 #include <QWidget>
 #include <QPushButton>
-#include <QTableView>
-#include <QListView>
 #include <QSortFilterProxyModel>
 #include <QKeyEvent>
 #include <QSharedPointer>
@@ -41,6 +37,7 @@ class BusInterface;
 class Component;
 class LibraryInterface;
 class PortMap;
+class ExpressionParser;
 
 //-----------------------------------------------------------------------------
 //! Tab for editing and viewing component port maps.
@@ -60,7 +57,7 @@ public:
 	 *
 	*/
 	BusIfPortmapTab(LibraryInterface* libHandler, QSharedPointer<Component> component, 
-        QSharedPointer<BusInterface> busif,	QWidget* parent);
+        QSharedPointer<BusInterface> busif,	QSharedPointer<ExpressionParser> expressionParser, QWidget* parent);
 	
 	//! The destructor
 	virtual ~BusIfPortmapTab();
@@ -292,6 +289,9 @@ private:
 
     //! List of selected ports for physical port filter.
     QStringList portSet_;
+
+    //! The used expression parser.
+    QSharedPointer<ExpressionParser> expressionParser_;
 };
 
 #endif // BUSIFPORTMAPTAB_H

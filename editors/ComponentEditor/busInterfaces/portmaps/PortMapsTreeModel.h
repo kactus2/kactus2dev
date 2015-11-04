@@ -17,6 +17,7 @@
 #include <QMap>
 #include <QSharedPointer>
 
+#include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/common/DirectionTypes.h>
 
 class AbstractionDefinition;

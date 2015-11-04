@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: BusInterfaceWizardVLNVSelectionPage.h
+// File: BusInterfaceWizardGeneralOptionsPage.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Esko Pekkarinen

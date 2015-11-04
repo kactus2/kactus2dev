@@ -19,19 +19,15 @@
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceEditor::BusInterfaceEditor()
 //-----------------------------------------------------------------------------
-BusInterfaceEditor::BusInterfaceEditor(LibraryInterface* libHandler,
-    QSharedPointer<Component> component, 
-    QSharedPointer<BusInterface> busif,
-    QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QSharedPointer<ExpressionParser> expressionParser,
-    QWidget* parent,
-    QWidget* parentWnd): 
+BusInterfaceEditor::BusInterfaceEditor(LibraryInterface* libHandler, QSharedPointer<Component> component,
+    QSharedPointer<BusInterface> busif, QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<ExpressionParser> expressionParser,
+    QWidget* parent, QWidget* parentWnd): 
 ItemEditor(component, libHandler, parent),
-    busif_(busif),
-    tabs_(this), 
-    generalEditor_(libHandler, busif, component, parameterFinder, expressionFormatter, expressionParser, &tabs_, parentWnd), 
-    portmapsEditor_(libHandler, component, busif, &tabs_)
+busif_(busif),
+tabs_(this), 
+generalEditor_(libHandler, busif, component, parameterFinder, expressionFormatter, expressionParser, &tabs_, parentWnd),
+portmapsEditor_(libHandler, component, busif, expressionParser, &tabs_)
 {
 	Q_ASSERT(component);
 	Q_ASSERT(libHandler);

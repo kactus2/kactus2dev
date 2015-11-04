@@ -83,6 +83,24 @@ bool PortMapsTreeItem::isValid() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: PortMapsTreeItem::isValid()
+//-----------------------------------------------------------------------------
+bool PortMapsTreeItem::isValid(QStringList& errorList) const
+{
+    bool valid = true;
+    // Item is valid, if all childs are valid.
+    for(int i = 0; i < getChildCount(); i++)
+    {
+        if (!getChild(i)->isValid(errorList))
+        {
+            errorList.append(name_ + " is not valid.");
+            valid = false;
+        }
+    }
+    return valid;
+}
+
+//-----------------------------------------------------------------------------
 // Function: PortMapsTreeItem::getChild()
 //-----------------------------------------------------------------------------
 PortMapsTreeItem* PortMapsTreeItem::getChild(int index)

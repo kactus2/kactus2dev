@@ -32,12 +32,12 @@ class AbsDefGroup : public QGroupBox
 
 public:
 
-	/*! The constructor.
+	/*!
+     *  The constructor.
 	 *
 	 *      @param [in] handler     The instance that manages the library.
 	 *      @param [in] parent      The owner of the editor.
-	 *
-	*/
+	 */
 	AbsDefGroup(LibraryInterface* handler, QWidget *parent);
 	
 	//! The destructor.

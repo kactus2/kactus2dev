@@ -78,6 +78,15 @@ public:
     virtual bool isValid() const;
 
     /*!
+     *  Checks the validity of the item. Default implementation checks all child items.
+     *
+     *      @param [in] errorList   List of found errors.
+     *
+     *      @return True, if all children are valid, otherwise false.
+     */
+    virtual bool isValid(QStringList& errorList) const;
+
+    /*!
      *  Inserts an item.
      *
      *      @param [in] item The item to insert.

@@ -16,23 +16,21 @@
 #include <IPXACTmodels/Component/PortMap.h>
 
 #include <QFormLayout>
-#include <QLabel>
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceWizardConclusionPage::BusInterfaceWizardConclusionPage()
 //-----------------------------------------------------------------------------
 BusInterfaceWizardConclusionPage::BusInterfaceWizardConclusionPage(QSharedPointer<BusInterface> busIf,
-    QStringList portNames, 
-    BusInterfaceWizard *parent)
-    : QWizardPage(parent),
-    busIf_(busIf),
-    ports_(portNames),
-    nameLabel_(this),
-    modeLabel_(this),
-    busDefLabel_(this),
-    absDefLabel_(this),
-    portMapLabel_(this)
+    QStringList portNames, BusInterfaceWizard *parent):
+QWizardPage(parent),
+busIf_(busIf),
+ports_(portNames),
+nameLabel_(this),
+modeLabel_(this),
+busDefLabel_(this),
+absDefLabel_(this),
+portMapLabel_(this)
 {
     setTitle(tr("Summary"));
     setSubTitle(tr("You have successfully completed the interface wizard. Verify the choices by clicking Finish."));
@@ -46,6 +44,7 @@ BusInterfaceWizardConclusionPage::BusInterfaceWizardConclusionPage(QSharedPointe
 //-----------------------------------------------------------------------------
 BusInterfaceWizardConclusionPage::~BusInterfaceWizardConclusionPage()
 {
+
 }
 
 //-----------------------------------------------------------------------------

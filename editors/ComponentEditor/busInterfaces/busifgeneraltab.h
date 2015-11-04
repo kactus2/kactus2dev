@@ -1,9 +1,13 @@
-/* 
- *
- *  Created on: 5.4.2011
- *      Author: Antti Kamppi
- * 		filename: busifgeneraltab.h
- */
+//-----------------------------------------------------------------------------
+// File: busifgeneraltab.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 05.04.2011
+//
+// Description:
+// Container for editor on the general tab of a bus interface editor.
+//-----------------------------------------------------------------------------
 
 #ifndef BUSIFGENERALTAB_H
 #define BUSIFGENERALTAB_H
@@ -21,15 +25,14 @@
 
 #include <QWidget>
 #include <QSharedPointer>
-#include <QStackedWidget>
 
 class BusInterface;
 class Component;
 class LibraryInterface;
 
-/*! Container for editor on the general tab of a bus interface editor.
- *
- */
+//-----------------------------------------------------------------------------
+//! Container for editor on the general tab of a bus interface editor.
+//-----------------------------------------------------------------------------
 class BusIfGeneralTab : public QWidget
 {
 	Q_OBJECT
@@ -57,13 +60,14 @@ public:
 		QWidget* parent,
         QWidget* parentWnd);
 	
-	//! The destructor
+	//! The destructor.
 	virtual ~BusIfGeneralTab();
 
-	/*! Check for the validity of the edited item.
-	*
-	*      @return True if item is valid.
-	*/
+	/*!
+     *  Check for the validity of the edited item.
+	 *
+	 *      @return True if item is valid.
+	 */
 	virtual bool isValid() const;
 
     /*!
@@ -75,27 +79,30 @@ public:
      */
     virtual bool isValid(QStringList& errorList) const; 
 
-	/*! Restore the changes made in the editor back to ones in the model.
-	*
-	*/
+	/*!
+     *  Restore the changes made in the editor back to ones in the model.
+	 */
 	virtual void refresh();
 
-	/*! Get the currently set bus type.
+	/*!
+     *  Get the currently set bus type.
 	 *
 	 *      @return VLNV that is set for the current bus type.
-	*/
+	 */
 	VLNV getBusType() const;
 
-	/*! Get the currently set abstraction type.
+	/*!
+     *  Get the currently set abstraction type.
 	 *
 	 *      @return VLNV that is set for the current abstraction type.
-	*/
+	 */
 	VLNV getAbsType() const;
 
-	/*! Set the abstraction type mandatory or not.
+	/*!
+     *  Set the abstraction type mandatory or not.
 	 *
 	 *      @param [in] isMandatory Whether abstraction type is mandatory or not.
-	*/
+	 */
     void setAbsTypeMandatory(bool isMandatory);
 
 
@@ -160,13 +167,13 @@ private slots:
 	/*! Set the bus type for the bus interface.
 	 *
 	 *      @param [in] busDefVLNV The vlnv identifying the bus type.
-	*/
+	 */
 	void onSetBusType(const VLNV& busDefVLNV);
 
 	/*! Set the abstraction type for the bus interface.
 	 *
 	 *      @param [in] absDefVLNV The vlnv identifying the abstraction definition.
-	*/
+	 */
 	void onSetAbsType(const VLNV& absDefVLNV);
 
 private:

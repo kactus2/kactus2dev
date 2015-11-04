@@ -16,6 +16,8 @@
 
 #include <QSortFilterProxyModel>
 
+#include <QSharedPointer>
+
 class Component;
 //-----------------------------------------------------------------------------
 //! Sorting proxy for port list view.

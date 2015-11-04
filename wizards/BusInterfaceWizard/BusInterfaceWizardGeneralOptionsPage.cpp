@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: BusInterfaceWizardVLNVSelectionPage.cpp
+// File: BusInterfaceWizardGeneralOptionsPage.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Esko Pekkarinen
@@ -25,13 +25,13 @@
 BusInterfaceWizardGeneralOptionsPage::BusInterfaceWizardGeneralOptionsPage(QSharedPointer<Component> component,
     QSharedPointer<BusInterface> busIf, LibraryInterface* lh,  bool absDefEditable,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QSharedPointer<ExpressionParser> ExpressionParser, BusInterfaceWizard* parent) : 
+    QSharedPointer<ExpressionParser> ExpressionParser, BusInterfaceWizard* parent): 
 QWizardPage(parent),
-    component_(component),
-    busIf_(busIf),
-    handler_(lh),
-    newBus_(true),
-    generalTab_(new BusIfGeneralTab(lh, busIf, component, parameterFinder, expressionFormatter, ExpressionParser,
+component_(component),
+busIf_(busIf),
+handler_(lh),
+newBus_(true),
+generalTab_(new BusIfGeneralTab(lh, busIf, component, parameterFinder, expressionFormatter, ExpressionParser,
     this, parent))
 {
     setTitle(tr("Bus interface general options"));
@@ -54,6 +54,7 @@ QWizardPage(parent),
 //-----------------------------------------------------------------------------
 BusInterfaceWizardGeneralOptionsPage::~BusInterfaceWizardGeneralOptionsPage()
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -80,10 +81,9 @@ bool BusInterfaceWizardGeneralOptionsPage::validatePage()
     QStringList errors;
     bool valid = true;
  
-   if (component_->hasInterface(busIf_->name()) && 
-        component_->getBusInterface(busIf_->name()) != busIf_)
+   if (component_->hasInterface(busIf_->name()) && component_->getBusInterface(busIf_->name()) != busIf_)
     {
-        errors.append(tr("Component %1 already has interface named %2.").arg(component_->getVlnv().toString(), 
+        errors.append(tr("Component %1 already has interface named %2.").arg(component_->getVlnv().toString(),
             busIf_->name()));
         valid = false;
     }    
@@ -91,11 +91,8 @@ bool BusInterfaceWizardGeneralOptionsPage::validatePage()
     valid = generalTab_->isValid(errors) && valid;
     if (!valid)
     {
-        QMessageBox warningDialog(QMessageBox::Warning,
-            tr("Warning"),
-            tr("Interface definition has the following error(s):\n") + errors.join("\n"),
-            QMessageBox::Ok,
-            this);        
+        QMessageBox warningDialog(QMessageBox::Warning, tr("Warning"),
+            tr("Interface definition has the following error(s):\n") + errors.join("\n"), QMessageBox::Ok, this);
         warningDialog.exec();
     }
 

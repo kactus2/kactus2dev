@@ -20,6 +20,7 @@
 
 class BusInterfaceWizard;
 class LibraryInterface;
+class ExpressionParser;
 
 //-----------------------------------------------------------------------------
 //! Port map page for the bus interface wizard.
@@ -40,7 +41,8 @@ public:
      *      @param [in] parent          The parent wizard.
      */
     BusInterfaceWizardPortMapPage(QSharedPointer<Component> component, QSharedPointer<BusInterface> busIf, 
-        LibraryInterface* lh, QStringList physicalPorts, BusInterfaceWizard* parent);
+        LibraryInterface* lh, QStringList physicalPorts, QSharedPointer<ExpressionParser> expressionParser,
+        BusInterfaceWizard* parent);
 
     /*!
     *  Destructor.

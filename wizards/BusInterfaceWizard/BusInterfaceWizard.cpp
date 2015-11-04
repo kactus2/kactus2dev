@@ -27,12 +27,8 @@
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceWizard::BusInterfaceWizard()
 //-----------------------------------------------------------------------------
-BusInterfaceWizard::BusInterfaceWizard(QSharedPointer<Component> component,  
-    QSharedPointer<BusInterface> busIf,
-    LibraryInterface* handler, 
-    QStringList portNames,         
-    QWidget* parent, 
-    VLNV absDefVLNV, 
+BusInterfaceWizard::BusInterfaceWizard(QSharedPointer<Component> component, QSharedPointer<BusInterface> busIf,
+    LibraryInterface* handler, QStringList portNames, QWidget* parent, VLNV absDefVLNV,
     bool descriptionAsLogicalName):
  QWizard(parent)
 {
@@ -64,8 +60,9 @@ BusInterfaceWizard::BusInterfaceWizard(QSharedPointer<Component> component,
     setPage(PAGE_INTRO, new BusInterfaceWizardIntroPage(this));
     setPage(PAGE_GENERALOPTIONS, optionsPage);
     setPage(PAGE_BUSDEFINITION, new BusInterfaceWizardBusEditorPage(component, busIf, handler, portNames, 
-        this, absDefVLNV, namingPolicy));
-    setPage(PAGE_PORTMAPS, new BusInterfaceWizardPortMapPage(component, busIf, handler, portNames, this));
+        this, absDefVLNV, expressionParser, namingPolicy));
+    setPage(PAGE_PORTMAPS, new BusInterfaceWizardPortMapPage(component, busIf, handler, portNames,
+        expressionParser, this));
     setPage(PAGE_SUMMARY, new BusInterfaceWizardConclusionPage(busIf, portNames, this));
 }
 
@@ -74,4 +71,5 @@ BusInterfaceWizard::BusInterfaceWizard(QSharedPointer<Component> component,
 //-----------------------------------------------------------------------------
 BusInterfaceWizard::~BusInterfaceWizard()
 {
+
 }

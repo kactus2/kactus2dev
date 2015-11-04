@@ -16,6 +16,7 @@
 #include <editors/BusEditor/absdefgroup.h>
 #include <editors/BusEditor/busdefgroup.h>
 #include <editors/ComponentEditor/ports/portsdelegate.h>
+#include <editors/ComponentEditor/common/ExpressionParser.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 
@@ -39,22 +40,21 @@
 // Function: BusInterfaceWizardBusDefinitionPage::BusInterfaceWizardBusDefinitionPage()
 //-----------------------------------------------------------------------------
 BusInterfaceWizardBusEditorPage::BusInterfaceWizardBusEditorPage(QSharedPointer<Component> component,
-    QSharedPointer<BusInterface> busIf,
-    LibraryInterface* lh, QStringList physicalPorts, 
-    BusInterfaceWizard* parent, 
-    VLNV& absDefVLNV, 
-    SignalNamingPolicy namingPolicy):
+    QSharedPointer<BusInterface> busIf, LibraryInterface* lh, QStringList physicalPorts,
+    BusInterfaceWizard* parent, VLNV& absDefVLNV, QSharedPointer<ExpressionParser> expressionParser,
+    SignalNamingPolicy namingPolicy /* = NAME */):
 QWizardPage(parent),
-    handler_(lh),
-    component_(component),
-    busIf_(busIf),
-    absDefVLNV_(absDefVLNV),
-    physicalPorts_(physicalPorts),
-    editor_(this, handler_, QSharedPointer<BusDefinition>(0), QSharedPointer<AbstractionDefinition>(0), true),
-    portNamesPolicy_(namingPolicy),
-    portMappings_(),
-    hasChanged_(false),
-    mappingMode_(NO_GENERATION)
+handler_(lh),
+component_(component),
+busIf_(busIf),
+absDefVLNV_(absDefVLNV),
+physicalPorts_(physicalPorts),
+editor_(this, handler_, QSharedPointer<BusDefinition>(0), QSharedPointer<AbstractionDefinition>(0), true),
+portNamesPolicy_(namingPolicy),
+portMappings_(),
+hasChanged_(false),
+mappingMode_(NO_GENERATION),
+expressionParser_(expressionParser)
 {       
     setTitle(tr("Bus Definition"));
     setSubTitle(tr("Verify the logical signals in the bus definition."));
@@ -73,6 +73,7 @@ QWizardPage(parent),
 //-----------------------------------------------------------------------------
 BusInterfaceWizardBusEditorPage::~BusInterfaceWizardBusEditorPage()
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -88,7 +89,8 @@ int BusInterfaceWizardBusEditorPage::nextId() const
 //-----------------------------------------------------------------------------
 void BusInterfaceWizardBusEditorPage::initializePage()
 {   
-    QSharedPointer<Document> libComp = handler_->getModel(*busIf_->getAbstractionTypes()->first()->getAbstractionRef());
+    QSharedPointer<Document> libComp =
+        handler_->getModel(*busIf_->getAbstractionTypes()->first()->getAbstractionRef());
     QSharedPointer<AbstractionDefinition> absDef = libComp.dynamicCast<AbstractionDefinition>();
     portMappings_.clear();
 
@@ -127,9 +129,8 @@ bool BusInterfaceWizardBusEditorPage::validatePage()
 
     if (!valid)
     {
-        QMessageBox warningDialog(QMessageBox::Warning,
-            tr("Warning"), tr("Bus definition has the following error(s):\n") + errors.join("\n"),
-            QMessageBox::Ok, this);        
+        QMessageBox warningDialog(QMessageBox::Warning, tr("Warning"),
+            tr("Bus definition has the following error(s):\n") + errors.join("\n"), QMessageBox::Ok, this);        
         warningDialog.exec();
         return false;
     }
@@ -223,7 +224,11 @@ void BusInterfaceWizardBusEditorPage::createLogicalPortsAndMappings(QStringList 
         if (!absPort.isNull())
         {
             int index = indexExp.cap(1).toInt(); //!< On failed capture, index = 0.
-            int newSize = 1; // qMax(absPort->getWire()->getMasterPort()->getWidth().toInt(), index + physPort->getPortSize());            
+            int masterPortWidth =
+                expressionParser_->parseExpression(absPort->getWire()->getMasterPort()->getWidth()).toInt();
+            int physicalPortSize = index + getPortSize(physPort);
+            int newSize = qMax(masterPortWidth, physicalPortSize);
+
             absPort->getWire()->getMasterPort()->setWidth(QString::number(newSize));
             absPort->getWire()->getSlavePort()->setWidth(QString::number(newSize));
         }
@@ -403,4 +408,22 @@ QSharedPointer<PortAbstraction> BusInterfaceWizardBusEditorPage::findPortByName(
         }
     }
     return QSharedPointer<PortAbstraction>(0);
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceWizardBusDefinitionPage::getPortSize()
+//-----------------------------------------------------------------------------
+int BusInterfaceWizardBusEditorPage::getPortSize(QSharedPointer<Port> targetPort) const
+{
+    int portLeftBound = expressionParser_->parseExpression(targetPort->getLeftBound()).toInt();
+    int portRightBound = expressionParser_->parseExpression(targetPort->getRightBound()).toInt();
+
+    if (portLeftBound > portRightBound)
+    {
+        return portLeftBound - portRightBound + 1;
+    }
+    else
+    {
+        return portRightBound - portLeftBound + 1;
+    }
 }

@@ -14,6 +14,7 @@
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/PortMap.h>
+#include <IPXACTmodels/Component/Port.h>
 
 #include <QModelIndex>
 
@@ -144,13 +145,13 @@ void PortListSortProxyModel::setFilterHideConnected(bool hide /*= true*/)
 void PortListSortProxyModel::onConnectionsReset()
 {
     connectedPorts_.clear();
-    foreach (QSharedPointer<BusInterface> busIf, component_->getBusInterfaces())
+    foreach (QSharedPointer<BusInterface> busIf, *component_->getBusInterfaces())
     {
-        foreach (QSharedPointer<PortMap> portMap, busIf->getPortMaps())
+        foreach (QSharedPointer<PortMap> portMap, *busIf->getPortMaps())
         {
-            if (!connectedPorts_.contains(portMap->physicalPort()))
+            if (!connectedPorts_.contains(portMap->getPhysicalPort()->name_))
             {
-                connectedPorts_.append(portMap->physicalPort());
+                connectedPorts_.append(portMap->getPhysicalPort()->name_);
             }
         }
     }
@@ -166,7 +167,8 @@ bool PortListSortProxyModel::filterAcceptsRow(int source_row, const QModelIndex&
     QString portName = sourceModel()->data(index).toString();
 
     // Check filter for direction.
-    if (filterDirection_ != ANY && component_->getPortDirection(portName) != filterDirection_)
+    QSharedPointer<Port> currentPort = component_->getPort(portName);
+    if (filterDirection_ != ANY && currentPort->getDirection() != filterDirection_)
     {
         return false;
     }

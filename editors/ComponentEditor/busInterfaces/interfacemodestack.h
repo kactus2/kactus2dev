@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 20.6.2012
- *      Author: Antti Kamppi
- * 		filename: interfacemodestack.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: interfacemodestack.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 20.06.2012
+//
+// Description:
+// Container for editor on the general tab of a bus interface editor.
+//-----------------------------------------------------------------------------
 
 #ifndef INTERFACEMODESTACK_H
 #define INTERFACEMODESTACK_H
