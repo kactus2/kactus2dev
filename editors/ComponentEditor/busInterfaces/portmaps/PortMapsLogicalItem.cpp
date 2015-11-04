@@ -13,8 +13,11 @@
 #include "PortMapsBitMapItem.h"
 #include "PortMapsTreeModel.h"
 
+#include <editors/ComponentEditor/common/ExpressionParser.h>
+
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>
+#include <IPXACTmodels/AbstractionDefinition/WireAbstraction.h>
 
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Component.h>
@@ -23,19 +26,19 @@
 //-----------------------------------------------------------------------------
 // Function: PortMapsLogicalItem::PortMapsLogicalItem()
 //-----------------------------------------------------------------------------
-PortMapsLogicalItem::PortMapsLogicalItem(PortMapsTreeItem* parent, 
-    QString const& logicalName, 
-    QSharedPointer<Component> component, 
-    QSharedPointer<BusInterface> busif,
-    QSharedPointer<AbstractionDefinition> absDef)
-    : PortMapsTreeItem(parent, component, logicalName, PortMapsTreeItem::ITEM_LOGICAL_PORT),    
-    busIf_(busif),
-    absDef_(absDef),
-    portMaps_(busif->getPortMaps()), 
-    right_(0), 
-    left_(0),
-    beginMapping_(true)
+PortMapsLogicalItem::PortMapsLogicalItem(PortMapsTreeItem* parent, QString const& logicalName,
+    QSharedPointer<Component> component, QSharedPointer<BusInterface> busif,
+    QSharedPointer<AbstractionDefinition> absDef, QSharedPointer<ExpressionParser> expressionParser ):
+PortMapsTreeItem(parent, component, logicalName, PortMapsTreeItem::ITEM_LOGICAL_PORT),
+busIf_(busif),
+absDef_(absDef),
+portMaps_(busif->getPortMaps()),
+right_(0),
+left_(0),
+beginMapping_(true),
+expressionParser_(expressionParser)
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -54,23 +57,25 @@ void PortMapsLogicalItem::refresh()
     int width = -1;
     if (absDef_)
     {
-        //width = absDef_->getPortSize(name(), busIf_->getInterfaceMode());
+        width = getPortSize(name(), busIf_->getInterfaceMode());
     }
-    
 
     // If logical width is not defined in the abs def, find the highest bound in port maps for width.
     if (width == -1)
     {
-       /* foreach (QSharedPointer<PortMap> portMap, *portMaps_)
-        {   
+        foreach (QSharedPointer<PortMap> portMap, *portMaps_)
+        {
             if (portMap->getLogicalPort()->name_ == name())
             {
-                General::PortBounds logicalRange = 
-                    portMap->getLogicalRange(component_->getPort(portMap->physicalPort()));
-                int higherBound = qMax(logicalRange.left_, logicalRange.right_);
+                int rangeLeft =
+                    expressionParser_->parseExpression(portMap->getLogicalPort()->range_->getLeft()).toInt();
+                int rangeRight =
+                    expressionParser_->parseExpression(portMap->getLogicalPort()->range_->getRight()).toInt();
+                int higherBound = qMax(rangeLeft, rangeRight);
                 width = qMax(width, higherBound);
             }
-        }*/
+        }
+
         width++;
     }
 
@@ -84,26 +89,30 @@ void PortMapsLogicalItem::refresh()
     updateWidthTo(width);       
 
     // Create new mappings for childs.
-    /*foreach (QSharedPointer<PortMap> portMap, portMaps_)
+    foreach (QSharedPointer<PortMap> portMap, *portMaps_)
     {
         if (portMap->getLogicalPort()->name_ == name())
         {
             // Get the port bounds.
-            General::PortBounds physicalRange =
-                portMap->getPhysicalRange(component_->getPort(portMap->physicalPort()));
-            int lowerPhysical = qMin(physicalRange.left_, physicalRange.right_);
-            int higherPhysical = qMax(physicalRange.left_, physicalRange.right_);
+            int physicalRangeLeft = expressionParser_->parseExpression(
+                portMap->getPhysicalPort()->partSelect_->getLeftRange()).toInt();
+            int physicalRangeRight = expressionParser_->parseExpression(
+                portMap->getPhysicalPort()->partSelect_->getRightRange()).toInt();
+            int lowerPhysical = qMin(physicalRangeLeft, physicalRangeRight);
+            int higherPhysical = qMax(physicalRangeLeft, physicalRangeRight);
 
-            General::PortBounds logicalRange = 
-                portMap->getLogicalRange(component_->getPort(portMap->physicalPort()));
-            int lowerLogical = qMin(logicalRange.left_,logicalRange.right_);
-            int higherLogical = qMax(logicalRange.left_,logicalRange.right_);
+            int logicalRangeLeft =
+                expressionParser_->parseExpression(portMap->getLogicalPort()->range_->getLeft()).toInt();
+            int logicalRangeRight =
+                expressionParser_->parseExpression(portMap->getLogicalPort()->range_->getRight()).toInt();
+            int lowerLogical = qMin(logicalRangeLeft, logicalRangeRight);
+            int higherLogical = qMax(logicalRangeLeft, logicalRangeRight);
 
             // The first mapping defines the logical bounds.
             if (beginMapping_)
             {
-                left_ =  logicalRange.left_;
-                right_ = logicalRange.right_;   
+                left_ = logicalRangeLeft;
+                right_ = logicalRangeRight;
                 beginMapping_ = false;                 
             }
             else if ( left_ <= right_)
@@ -125,11 +134,11 @@ void PortMapsLogicalItem::refresh()
                 {
                     PortMapsBitMapItem* child = dynamic_cast<PortMapsBitMapItem*>(getChild(logicalIndex));
                     Q_ASSERT(child);                    
-                    child->addMapping(portMap->physicalPort(), physicalIndex);
+                    child->addMapping(portMap->getPhysicalPort()->name_, physicalIndex);
                 }
             }
         }
-    }*/
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -208,7 +217,7 @@ int PortMapsLogicalItem::getWidth() const
     int width = -1;
     if (absDef_)
     {
-        //width = absDef_->getPortSize(name(), busIf_->getInterfaceMode());    
+        width = getPortSize(name(), busIf_->getInterfaceMode());
     }
   
 
@@ -286,13 +295,8 @@ QString PortMapsLogicalItem::getPhysPorts() const
         if (portMap->getLogicalPort()->name_ == name() && portMap->getPhysicalPort()->name_ == physPort)
         {
             QSharedPointer<PartSelect> logicalRange = portMap->getPhysicalPort()->partSelect_;
-            left = logicalRange->getLeftRange().toInt();
-            right = logicalRange->getRightRange().toInt();
-
-            /*General::PortBounds logicalRange = 
-                portMap->getPhysicalRange(component_->getPort(portMap->physicalPort()));
-            left = logicalRange.left_;
-            right = logicalRange.right_;*/
+            left = expressionParser_->parseExpression(logicalRange->getLeftRange()).toInt();
+            right = expressionParser_->parseExpression(logicalRange->getRightRange()).toInt();
             break;
         }
     }
@@ -313,7 +317,7 @@ void PortMapsLogicalItem::updateWidthTo(int width)
     {
         while(getChildCount() < width)
         {
-            PortMapsBitMapItem* child = new PortMapsBitMapItem(this, component_, busIf_);
+            PortMapsBitMapItem* child = new PortMapsBitMapItem(this, component_, busIf_, expressionParser_);
             addChild(child);
         }
     }
@@ -341,4 +345,18 @@ void PortMapsLogicalItem::clearMappings()
     beginMapping_ = true;
     left_ = 0;
     right_ = 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortMapsLogicalItem::getPortSize()
+//-----------------------------------------------------------------------------
+int PortMapsLogicalItem::getPortSize(QString const& portName, General::InterfaceMode interfaceMode) const
+{
+    QSharedPointer<PortAbstraction> port = absDef_->getPort(portName);
+    if (port->getWire())
+    {
+        return expressionParser_->parseExpression(port->getWire()->getWidth(interfaceMode)).toInt();
+    }
+
+    return -1;
 }

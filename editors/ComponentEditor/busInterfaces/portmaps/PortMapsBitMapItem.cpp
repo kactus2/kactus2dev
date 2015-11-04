@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: PortMapsPhysicalItem.cpp
+// File: PortMapsBitMapItem.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Esko Pekkarinen
@@ -13,6 +13,8 @@
 
 #include "PortMapsTreeModel.h"
 
+#include <editors/ComponentEditor/common/ExpressionParser.h>
+
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 
 #include <IPXACTmodels/Component/BusInterface.h>
@@ -24,18 +26,20 @@
 #include "PortMapsLogicalItem.h"
 
 //-----------------------------------------------------------------------------
-// Function: PortMapsPhysicalItem::PortMapsPhysicalItem()
+// Function: PortMapsBitMapItem::PortMapsBitMapItem()
 //-----------------------------------------------------------------------------
 PortMapsBitMapItem::PortMapsBitMapItem(PortMapsTreeItem* parent, QSharedPointer<Component> component,
-    QSharedPointer<BusInterface> busIf, QString const& physicalName)
-    : PortMapsTreeItem(parent, component, physicalName, PortMapsTreeItem::ITEM_BIT_MAP),
-    busIf_(busIf),
-    mappings_()
+    QSharedPointer<BusInterface> busIf, QSharedPointer<ExpressionParser> expressionParser,
+    QString const& physicalName /* = QString() */):
+PortMapsTreeItem(parent, component, physicalName, PortMapsTreeItem::ITEM_BIT_MAP),
+busIf_(busIf),
+mappings_(),
+expressionParser_(expressionParser)
 {    
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortMapsPhysicalItem::~PortMapsPhysicalItem()
+// Function: PortMapsBitMapItem::~PortMapsBitMapItem()
 //-----------------------------------------------------------------------------
 PortMapsBitMapItem::~PortMapsBitMapItem()
 {
@@ -56,16 +60,13 @@ QVariant PortMapsBitMapItem::data(int section) const
 {
     if (section < PortMapsTreeModel::COLUMN_COUNT)
     {
-        switch (section)
+        if (section == PortMapsTreeModel::COLUMN_TREE)
         {
-        case PortMapsTreeModel::COLUMN_TREE :
-            {
-                return getIndex();
-            }
-        case PortMapsTreeModel::COLUMN_PHYSICAL :
-            {
-               return getPortConnections();
-            }
+            return getIndex();
+        }
+        else if (section == PortMapsTreeModel::COLUMN_PHYSICAL)
+        {
+            return getPortConnections();
         }
     }
     return QVariant();
@@ -92,9 +93,7 @@ bool PortMapsBitMapItem::isValid() const
             foreach (BitMapping bitMap, mappings_)
             {
                 DirectionTypes::Direction physDir =  component_->getPort(bitMap.physName)->getDirection();
-                if (logDir != DirectionTypes::INOUT &&
-                    physDir != DirectionTypes::INOUT &&
-                    physDir != logDir) 
+                if (logDir != DirectionTypes::INOUT && physDir != DirectionTypes::INOUT && physDir != logDir) 
                 {
                     return false;
                 }         
@@ -165,16 +164,29 @@ QString PortMapsBitMapItem::getPortConnections() const
     {
         foreach (BitMapping bitMap, mappings_)
         {
-            /*if (component_->getPortWidth(bitMap.physName) == 1)
+            if (getPortWidth(bitMap.physName) == 1)
             {
                 portList.append(bitMap.physName);
             }
             else
-            {*/
+            {
                 portList.append(bitMap.physName + "(" + QString::number(bitMap.physIndex) + ")");
-            //}
+            }
         }
     }
 
     return portList.join(", ");
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortMapsBitMapItem::getPortWidth()
+//-----------------------------------------------------------------------------
+int PortMapsBitMapItem::getPortWidth(QString const& portName) const
+{
+    QSharedPointer<Port> targetPort = component_->getPort(portName);
+
+    int portLeft = expressionParser_->parseExpression(targetPort->getLeftBound()).toInt();
+    int portRight = expressionParser_->parseExpression(targetPort->getRightBound()).toInt();
+
+    return abs(portLeft - portRight) + 1;
 }

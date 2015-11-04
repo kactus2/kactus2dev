@@ -15,6 +15,7 @@
 #include "PortMapsTreeItem.h"
 
 #include <IPXACTmodels/common/DirectionTypes.h>
+#include <IPXACTmodels/generaldeclarations.h>
 
 #include <QObject>
 #include <QString>
@@ -25,6 +26,7 @@ class AbstractionDefinition;
 class BusInterface;
 class Component;
 class PortMap;
+class ExpressionParser;
 
 //-----------------------------------------------------------------------------
 //! Port maps tree item representing a logical port.
@@ -36,14 +38,22 @@ class PortMapsLogicalItem : public PortMapsTreeItem
 public:
 
     /*!
-     *  Constructor for a logical port item.
+     *  The constructor.
+     *
+     *      @param [in] parent              Parent item.
+     *      @param [in] logicalName         The logical name.
+     *      @param [in] component           Containing component.
+     *      @param [in] busif               Used bus interface.
+     *      @param [in] absDef              Used abstraction definition.
+     *      @param [in] expressionParser    The used expression parser.
      */
     PortMapsLogicalItem(PortMapsTreeItem* parent,
         QString const& logicalName,
         QSharedPointer<Component> component,
         QSharedPointer<BusInterface> busif,
-        QSharedPointer<AbstractionDefinition> absDef
-    );
+        QSharedPointer<AbstractionDefinition> absDef,
+        QSharedPointer<ExpressionParser> expressionParser
+        );
 
     /*!
      *  Destructor.
@@ -89,7 +99,6 @@ public:
     /*!
      *  Gets the width of the logical signal.
      *
-     *
      *      @return width of the logical signal.
      */
     int getWidth() const;
@@ -113,7 +122,6 @@ private:
      */
     QString getPhysPorts() const;
 
-
     /*!
      *  Gets the width of the logical signal.
      *
@@ -122,13 +130,20 @@ private:
      */
     int getConnectionCount() const;
 
-
     /*!
      *  Updates the port width to given value by adding/removing children.
      *
      *      @param [in] width   The new width.
      */
     void updateWidthTo(int width);    
+
+    /*!
+     *  Get the size of the port.
+     *
+     *      @param [in] portName        The name of the port whose size is being searched for.
+     *      @param [in] interfaceMode   The used interface mode.
+     */
+    int getPortSize(QString const& portName, General::InterfaceMode interfaceMode) const;
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -152,6 +167,8 @@ private:
     //! Flag for indicating beginning of mapping when bounds are not yet set.
     bool beginMapping_;
     
+    //! The used expression parser.
+    QSharedPointer<ExpressionParser> expressionParser_;
 };
 
 #endif // PORTMAPSLOGICALITEM_H

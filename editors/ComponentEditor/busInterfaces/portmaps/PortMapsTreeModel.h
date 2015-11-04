@@ -27,7 +27,7 @@ class LibraryInterface;
 class PortMapsTreeItem;
 class PortMap;
 class VLNV;
-
+class ExpressionParser;
 //-----------------------------------------------------------------------------
 //! The data model for the port maps in component.
 //-----------------------------------------------------------------------------
@@ -55,7 +55,7 @@ public:
      *      @param [in] component  The component to which this model is made.
      */
     PortMapsTreeModel(QSharedPointer<BusInterface> busif, QSharedPointer<Component> component,
-        LibraryInterface* handler, QObject *parent);
+        LibraryInterface* handler, QSharedPointer<ExpressionParser> expressionParser, QObject *parent);
 
     /*!
      *  Destructor.
@@ -73,11 +73,11 @@ public:
      */
     void reset();
 
-	/*! Create a port map for given port map
+	/*!
+     *  Create a port map for given port map
 	 *
 	 *      @param [in] portMap Port map to add to model.
-	 *
-	*/
+	 */
 	void createMap(QSharedPointer<PortMap> portMap);
 
 
@@ -89,9 +89,8 @@ public:
      *      @param [in] role         The role of the data.
      *
      *      @return QVariant containing the data.
-    */
-    virtual QVariant headerData(int section, Qt::Orientation orientation,
-    		                    int role = Qt::DisplayRole) const;
+     */
+    virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
     /*!
      *  Returns the number of columns in this model.
@@ -108,53 +107,66 @@ public:
      *      @param [in] parent Model index identifying the item whose row count is wanted.
      *
      *      @return The number of rows the item has.
-    */
+     */
     virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
 
-    /*! Get the model index of the specified object.
+    /*!
+     *  Get the model index of the specified object.
      *
      *      @param [in] row Row number of the object.
      *      @param [in] column Column number of the object.
      *      @param [in] parent Model index of the parent of the object.
      *
      *      @return QModelIndex that identifies the object.
-    */
-    virtual QModelIndex index(int row, int column,
-    		const QModelIndex &parent = QModelIndex()) const;
+     */
+    virtual QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
 
-    /*! Get the model index of the parent of the object
+    /*!
+     *  Get the model index of the parent of the object
      *
      *      @param [in] child Model index that identifies the child of the object.
      *
      *      @return QModelIndex that identifies the parent of the given object.
-    */
+     */
     virtual QModelIndex parent(QModelIndex const& child) const;
 
-    /*! Get the data associated with given object.
+    /*!
+     *  Get the data associated with given object.
      *
      *      @param [in] index Model index that identifies the object that's data is wanted.
      *      @param [in] role Specifies the type of data wanted.
      *
      *      @return QVariant Containing the requested data.
-    */
+     */
     virtual QVariant data(QModelIndex const& index, int role = Qt::DisplayRole) const;
 
+	/*!
+     *  Set the data for specified item.
+	 *
+	 *      @param [in]  index  Specifies the item that's data is modified
+	 *      @param [in]  value  The value to be set.
+	 *      @param [in]  role   The role that is trying to modify the data. Only Qt::EditRole is supported.
+	 *
+	 *      @return  True, if data was successfully set, otherwise false.
+	 */
     virtual bool setData(const QModelIndex &index, const QVariant &value, int role /* = Qt::EditRole */);
 
-    /*! Does the specified item have child items or not.
+    /*!
+     *  Does the specified item have child items or not.
      *
      *      @param [in] parent Model index identifying the object that's children are asked.
      *
      *      @return True if object has child objects.
-    */
+     */
     virtual bool hasChildren(QModelIndex const& parent = QModelIndex()) const;
 
-    /*! Get the flags that identify possible methods for given object.
+    /*!
+     *  Get the flags that identify possible methods for given object.
      *
      *      @param [in] index Model index identifying the object that's flags are requested.
      *
      *      @return Qt::ItemFlags that specify how the object can be handled.
-    */
+     */
     Qt::ItemFlags flags(QModelIndex const& index) const;
 
     /*!
@@ -178,26 +190,28 @@ public:
      */
     bool isValid(QStringList& errorList) const;
 
-	/*! Get list of logical ports in this model.
+	/*!
+     *  Get list of logical ports in this model.
 	 *
 	 *      @return QStringList containing the port names
-	*/
+	 */
 	QStringList logicalPorts() const;
 
-	/*! Set the abstraction definition that is used in this port map.
+	/*!
+     *  Set the abstraction definition that is used in this port map.
 	 *
 	 *      @param [in] vlnv Identifies the abstraction definition.
-	 *
-	*/
+	 */
 	void setAbsType(const VLNV& vlnv, General::InterfaceMode mode);
 
-	/*! Check if the two ports can be mapped together.
+	/*!
+     *  Check if the two ports can be mapped together.
 	 *
 	 *      @param [in] physicalPort Identifies the physical port.
 	 *      @param [in] logicalPort  Identifies the logical port.
 	 *
-	 * @return True, if port mapping can be done, otherwise false.
-	*/
+	 *      @return True, if port mapping can be done, otherwise false.
+	 */
     bool canCreateMap( const QString& physicalPort, const QString& logicalPort ) const;
 
 public slots:
@@ -294,6 +308,9 @@ private:
 
     //! Pointer to the data structure within the model containing the port maps.
     QSharedPointer<QList<QSharedPointer<PortMap> > > portMaps_;
+
+    //! The used expression parser.
+    QSharedPointer<ExpressionParser> expressionParser_;
 };
 
 //-----------------------------------------------------------------------------

@@ -57,7 +57,6 @@ public:
 
     /*!
      *  Updates the item. The default implementation does nothing.
-     *
      */
     virtual void refresh();
 

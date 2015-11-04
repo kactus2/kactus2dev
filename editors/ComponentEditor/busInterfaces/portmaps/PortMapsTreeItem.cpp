@@ -17,26 +17,28 @@
 //-----------------------------------------------------------------------------
 // Function: PortMapsTreeItem::PortMapsTreeItem()
 //-----------------------------------------------------------------------------
-PortMapsTreeItem::PortMapsTreeItem() : 
-    component_(0),
-    parent_(0),    
-    type_(ITEM_TYPE_ROOT),
-    name_("root"),
-    children_()
+PortMapsTreeItem::PortMapsTreeItem() :
+component_(0),
+parent_(0),
+type_(ITEM_TYPE_ROOT),
+name_("root"),
+children_()
 {
+
 }
 
 //-----------------------------------------------------------------------------
 // Function: PortMapsTreeItem::PortMapsTreeItem()
 //-----------------------------------------------------------------------------
-PortMapsTreeItem::PortMapsTreeItem(PortMapsTreeItem* parent, 
-    QSharedPointer<Component> component, QString const& name, ItemType type): 
+PortMapsTreeItem::PortMapsTreeItem(PortMapsTreeItem* parent, QSharedPointer<Component> component,
+    QString const& name, ItemType type): 
 component_(component),
-    parent_(parent),
-    type_(type),
-    name_(name),
-    children_()
+parent_(parent),
+type_(type),
+name_(name),
+children_()
 {
+
 }
 
 
@@ -56,6 +58,7 @@ PortMapsTreeItem::~PortMapsTreeItem()
 //-----------------------------------------------------------------------------
 void PortMapsTreeItem::refresh()
 {
+
 }
 
 //-----------------------------------------------------------------------------

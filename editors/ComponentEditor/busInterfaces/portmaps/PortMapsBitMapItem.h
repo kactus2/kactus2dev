@@ -22,7 +22,7 @@
 class AbstractionDefinition;
 class BusInterface;
 class Component;
-
+class ExpressionParser;
 //-----------------------------------------------------------------------------
 //! Port maps tree item representing a mapping for one bit in logical port.
 //-----------------------------------------------------------------------------
@@ -33,10 +33,17 @@ class PortMapsBitMapItem : public PortMapsTreeItem
 public:
 
     /*!
-     *  Constructor for a physical port item.
+     *  The constructor.
+     *
+     *      @param [in] parent              Parent item.
+     *      @param [in] component           Containing component.
+     *      @param [in] busIf               The used bus interface.
+     *      @param [in] expressionParser    The used expression parser.
+     *      @param [in] physicalName        Physical name of the item.
      */
     PortMapsBitMapItem(PortMapsTreeItem* parent, QSharedPointer<Component> component, 
-        QSharedPointer<BusInterface> busIf, QString const& physicalName = QString());
+        QSharedPointer<BusInterface> busIf, QSharedPointer<ExpressionParser> expressionParser,
+        QString const& physicalName = QString());
 
     /*!
      *  Destructor.
@@ -107,6 +114,15 @@ private:
      */
     virtual QString getPortConnections() const;
 
+    /*!
+     *  Get the width of the port.
+     *
+     *      @param [in] portName    The name of the port whose width is being searched for.
+     *
+     *      @return The calculated port width.
+     */
+    int getPortWidth(QString const& portName) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -116,15 +132,15 @@ private:
     {
         int physIndex;            //!< Index of the physical port.
         QString physName;         //!< Name of the physical port.
-
-    /*!
-     *  Constructor.
-     */
+        
+        /*!
+         *  Constructor.
+         */
         BitMapping(int index, QString const& name) : physIndex(index), physName(name){};
     
-    /*!
-     *  Equivalence operator required by QList.
-     */
+        /*!
+         *  Equivalence operator required by QList.
+         */
         bool operator==(const BitMapping& other){return physIndex == other.physIndex && 
             QString::compare(physName,other.physName) == 0;};
     };
@@ -134,6 +150,9 @@ private:
 
     //! The bit mappings of the logical port bit.
     QList<BitMapping> mappings_;
+
+    //! The used expression parser.
+    QSharedPointer<ExpressionParser> expressionParser_;
 };
 
 #endif // PORTMAPSBITITEM_H

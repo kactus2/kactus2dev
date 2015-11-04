@@ -17,6 +17,8 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
+#include <editors/ComponentEditor/common/ExpressionParser.h>
+
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 
 #include <IPXACTmodels/Component/BusInterface.h>
@@ -35,15 +37,16 @@
 // Function: PortMapsTreeModel::PortMapsTreeModel()
 //-----------------------------------------------------------------------------
 PortMapsTreeModel::PortMapsTreeModel(QSharedPointer<BusInterface> busif, QSharedPointer<Component> component,
-    LibraryInterface* handler, QObject *parent): 
-QAbstractItemModel(parent),    
-    component_(component),
-    handler_(handler),
-    root_(new PortMapsTreeItem()),
-    busif_(busif),    
-    absDef_(),    
-    interfaceMode_(General::MASTER),
-    portMaps_(busif->getPortMaps())
+    LibraryInterface* handler, QSharedPointer<ExpressionParser> expressionParser, QObject *parent):
+QAbstractItemModel(parent),
+component_(component),
+handler_(handler),
+root_(new PortMapsTreeItem()),
+busif_(busif),
+absDef_(),
+interfaceMode_(General::MASTER),
+portMaps_(busif->getPortMaps()),
+expressionParser_(expressionParser)
 {
 
 }
@@ -321,7 +324,8 @@ void PortMapsTreeModel::reset()
 
         if (!logicalItem)
         {            
-            logicalItem = new PortMapsLogicalItem(root_, portMap->getLogicalPort()->name_, component_, busif_, absDef_);
+            logicalItem = new PortMapsLogicalItem(
+                root_, portMap->getLogicalPort()->name_, component_, busif_, absDef_, expressionParser_);
             root_->addChild(logicalItem);
         }
 
@@ -342,12 +346,14 @@ void PortMapsTreeModel::createMap(QSharedPointer<PortMap> portMap)
         emit contentChanged();
     }
     
-    PortMapsLogicalItem* logicalItem = dynamic_cast<PortMapsLogicalItem*>(findItem(portMap->getLogicalPort()->name_));
+    PortMapsLogicalItem* logicalItem =
+        dynamic_cast<PortMapsLogicalItem*>(findItem(portMap->getLogicalPort()->name_));
 
     if (!logicalItem)
     {
         beginInsertRows(QModelIndex(), root_->getChildCount(), root_->getChildCount());
-        logicalItem = new PortMapsLogicalItem(root_, portMap->getLogicalPort()->name_, component_, busif_, absDef_);
+        logicalItem = new PortMapsLogicalItem(
+            root_, portMap->getLogicalPort()->name_, component_, busif_, absDef_, expressionParser_);
         root_->addChild(logicalItem);
         endInsertRows();
     }
