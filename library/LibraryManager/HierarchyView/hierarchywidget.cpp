@@ -1,17 +1,19 @@
-/* 
- *  	Created on: 1.7.2011
- *      Author: Antti Kamppi
- * 		filename: hierarchywidget.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: hierarchywidget.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 01.07.2011
+//
+// Description:
+// The container for hierarchy view and hierarchy filter.
+//-----------------------------------------------------------------------------
 
 #include "hierarchywidget.h"
 #include "hierarchymodel.h"
 #include "hierarchyitem.h"
 
 #include <QHBoxLayout>
-
-#include <QDebug>
 
 //-----------------------------------------------------------------------------
 // Function: HierarchyWidget::HierarchyWidget()
@@ -22,10 +24,8 @@ QWidget(parent),
     view_(this, handler, filter_),
     model_(dataModel)
 {
-	Q_ASSERT_X(handler, "HierarchyWidget constructor",
-		"Null LibraryInterface pointer given as parameter");
-	Q_ASSERT_X(dataModel, "HierarchyWidget constructor",
-		"Null HierarchyModel pointer given as parameter");
+	Q_ASSERT_X(handler, "HierarchyWidget constructor", "Null LibraryInterface pointer given as parameter");
+	Q_ASSERT_X(dataModel, "HierarchyWidget constructor", "Null HierarchyModel pointer given as parameter");
 
 	QHBoxLayout* layout = new QHBoxLayout(this);
 	layout->addWidget(&view_);
@@ -50,22 +50,23 @@ HierarchyWidget::~HierarchyWidget()
 //-----------------------------------------------------------------------------
 // Function: HierarchyWidget::setupConnections()
 //-----------------------------------------------------------------------------
-void HierarchyWidget::setupConnections( HierarchyModel* dataModel ) {
-	connect(&view_, SIGNAL(errorMessage(const QString&)),
-		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
+void HierarchyWidget::setupConnections(HierarchyModel* dataModel)
+{
+    connect(&view_, SIGNAL(errorMessage(const QString&)),
+        this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
 
-	connect(&view_, SIGNAL(noticeMessage(const QString&)),
-		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
+    connect(&view_, SIGNAL(noticeMessage(const QString&)),
+        this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 
-	// connect the view to the tree model
-	connect(&view_, SIGNAL(openComponent(const QModelIndex&)),
-		dataModel, SLOT(onOpenComponent(const QModelIndex&)), Qt::UniqueConnection);
+    // connect the view to the tree model
+    connect(&view_, SIGNAL(openComponent(const QModelIndex&)),
+        dataModel, SLOT(onOpenComponent(const QModelIndex&)), Qt::UniqueConnection);
 
-	connect(&view_, SIGNAL(openDesign(const QModelIndex&)), 
-		dataModel, SLOT(onOpenDesign(const QModelIndex&)), Qt::UniqueConnection);
+    connect(&view_, SIGNAL(openDesign(const QModelIndex&)), 
+        dataModel, SLOT(onOpenDesign(const QModelIndex&)), Qt::UniqueConnection);
 
     connect(&view_, SIGNAL(openMemoryDesign(const QModelIndex&)), 
-            dataModel, SLOT(onOpenMemoryDesign(const QModelIndex&)), Qt::UniqueConnection);
+        dataModel, SLOT(onOpenMemoryDesign(const QModelIndex&)), Qt::UniqueConnection);
 
     connect(&view_, SIGNAL(openSWDesign(const QModelIndex&)), 
         dataModel, SLOT(onOpenSWDesign(const QModelIndex&)), Qt::UniqueConnection);
@@ -73,23 +74,23 @@ void HierarchyWidget::setupConnections( HierarchyModel* dataModel ) {
     connect(&view_, SIGNAL(openSystemDesign(const QModelIndex&)), 
         dataModel, SLOT(onOpenSystemDesign(const QModelIndex&)), Qt::UniqueConnection);
 
-	connect(&view_, SIGNAL(createNewComponent(const QModelIndex&)),
-		dataModel, SLOT(onCreateNewComponent(const QModelIndex&)), Qt::UniqueConnection);
+    connect(&view_, SIGNAL(createNewComponent(const QModelIndex&)),
+        dataModel, SLOT(onCreateNewComponent(const QModelIndex&)), Qt::UniqueConnection);
 
-	connect(&view_, SIGNAL(createNewDesign(const QModelIndex&)),
-		dataModel, SLOT(onCreateNewDesign(const QModelIndex&)), Qt::UniqueConnection);
+    connect(&view_, SIGNAL(createNewDesign(const QModelIndex&)),
+        dataModel, SLOT(onCreateNewDesign(const QModelIndex&)), Qt::UniqueConnection);
 
     connect(&view_, SIGNAL(createNewSWDesign(const QModelIndex&)),
         dataModel, SLOT(onCreateNewSWDesign(const QModelIndex&)), Qt::UniqueConnection);
 
     connect(&view_, SIGNAL(createNewSystemDesign(const QModelIndex&)),
-            dataModel, SLOT(onCreateNewSystemDesign(const QModelIndex&)), Qt::UniqueConnection);
+        dataModel, SLOT(onCreateNewSystemDesign(const QModelIndex&)), Qt::UniqueConnection);
 
-	connect(&view_, SIGNAL(createNewBus(const QModelIndex&)),
-		dataModel, SLOT(onCreateNewBus(const QModelIndex&)), Qt::UniqueConnection);
+    connect(&view_, SIGNAL(createNewBus(const QModelIndex&)),
+        dataModel, SLOT(onCreateNewBus(const QModelIndex&)), Qt::UniqueConnection);
 
-	connect(&view_, SIGNAL(createNewAbsDef(const QModelIndex&)),
-		dataModel, SLOT(onCreateNewAbsDef(const QModelIndex&)), Qt::UniqueConnection);
+    connect(&view_, SIGNAL(createNewAbsDef(const QModelIndex&)),
+        dataModel, SLOT(onCreateNewAbsDef(const QModelIndex&)), Qt::UniqueConnection);
 
     connect(&view_, SIGNAL(createNewComDef(const QModelIndex&)),
         dataModel, SLOT(onCreateNewComDef(const QModelIndex&)), Qt::UniqueConnection);
@@ -103,17 +104,16 @@ void HierarchyWidget::setupConnections( HierarchyModel* dataModel ) {
     connect(&view_, SIGNAL(createNewApiDef(const QModelIndex&)),
         dataModel, SLOT(onCreateNewApiDef(const QModelIndex&)), Qt::UniqueConnection);
 
-	connect(&view_, SIGNAL(exportItem(const QModelIndex&)),
-		dataModel, SLOT(onExportItem(const QModelIndex&)), Qt::UniqueConnection);
+    connect(&view_, SIGNAL(exportItem(const QModelIndex&)),
+        dataModel, SLOT(onExportItem(const QModelIndex&)), Qt::UniqueConnection);
 
     connect(&view_, SIGNAL(showErrors(const QModelIndex&)),
-            dataModel, SLOT(onShowErrors(const QModelIndex&)), Qt::UniqueConnection);
+        dataModel, SLOT(onShowErrors(const QModelIndex&)), Qt::UniqueConnection);
 
-	connect(&view_, SIGNAL(componentSelected(const VLNV&)),
-		this, SIGNAL(componentSelected(const VLNV&)), Qt::UniqueConnection);
+    connect(&view_, SIGNAL(componentSelected(const VLNV&)),
+        this, SIGNAL(componentSelected(const VLNV&)), Qt::UniqueConnection);
 
-	connect(dataModel, SIGNAL(invalidateFilter()),
-		filter_, SLOT(invalidate()), Qt::UniqueConnection);
+    connect(dataModel, SIGNAL(invalidateFilter()), filter_, SLOT(invalidate()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -128,14 +128,14 @@ void HierarchyWidget::selectItems(VLNV const& vlnv)
 		view_.clearSelection();
 	}
 
-	QModelIndexList modelIndexes = model_->findIndexes(vlnv);
-
 	// convert the model indexes to view indexes
 	QModelIndexList viewIndexes;
-	foreach (QModelIndex index, modelIndexes)
+	foreach (QModelIndex const& index, model_->findIndexes(vlnv))
     {
 		if (index.isValid())
+        {
 			viewIndexes.append(filter_->mapFromSource(index));
+        }
 	}
 
 	view_.setSelectedIndexes(viewIndexes);

@@ -1,16 +1,22 @@
-/* 
- *
- *  Created on: 20.12.2010
- *      Author: Antti Kamppi
- */
+//-----------------------------------------------------------------------------
+// File: librarytreemodel.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 20.12.2010
+//
+// Description:
+// The model that contains the LibraryItems to display library hierarchically.
+//-----------------------------------------------------------------------------
 
 #include "librarytreemodel.h"
 #include "librarydata.h"
 #include "libraryitem.h"
 #include "libraryinterface.h"
 
-#include <IPXACTmodels/librarycomponent.h>
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/common/Document.h>
+
+#include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Design/Design.h>
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
@@ -20,60 +26,68 @@
 #include <QColor>
 #include <QIcon>
 
-LibraryTreeModel::LibraryTreeModel(LibraryInterface* handler,
-								   LibraryData* sourceModel, 
-								   QObject *parent) :
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeModel::LibraryTreeModel()
+//-----------------------------------------------------------------------------
+LibraryTreeModel::LibraryTreeModel(LibraryInterface* handler, LibraryData* sourceModel, QObject* parent) :
 QAbstractItemModel(parent),
-dataSource_(sourceModel),
-rootItem_(),
-handler_(handler) {
-
-	onResetModel();
+    dataSource_(sourceModel),
+    rootItem_(),
+    handler_(handler)
+{
+    onResetModel();
 }
 
-LibraryTreeModel::~LibraryTreeModel() {
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeModel::~LibraryTreeModel()
+//-----------------------------------------------------------------------------
+LibraryTreeModel::~LibraryTreeModel()
+{
 }
 
-
-QVariant LibraryTreeModel::headerData(int section, Qt::Orientation orientation,
-		int role) const {
-
-	// only one column in tree view
-	if (section != 0) {
-		return QVariant();
-	}
-	// only horizontal headers
-	else if (orientation != Qt::Horizontal) {
-		return QVariant();
-	}
-	// for displayRole
-	else if (role == Qt::DisplayRole) {
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeModel::headerData()
+//-----------------------------------------------------------------------------
+QVariant LibraryTreeModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+	if (section == 0 && orientation == Qt::Horizontal && role == Qt::DisplayRole)
+    {
 		return tr("Library items");
 	}
-	// not supported role
-	else {
+	else 
+    {
 		return QVariant();
-	}
+    }
 }
 
-int LibraryTreeModel::columnCount(const QModelIndex&) const {
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeModel::columnCount()
+//-----------------------------------------------------------------------------
+int LibraryTreeModel::columnCount(QModelIndex const&) const 
+{
 	return 1;
 }
 
-int LibraryTreeModel::rowCount(const QModelIndex &parent) const {
-
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeModel::rowCount()
+//-----------------------------------------------------------------------------
+int LibraryTreeModel::rowCount(QModelIndex const& parent) const
+{
 	// only one column exists
-	if (parent.column() > 0) {
+	if (parent.column() > 0)
+    {
 		return 0;
 	}
 
 	LibraryItem *parentItem = 0;
 
 	// if the given item is invalid, it is interpreted as root item
-	if (!parent.isValid()) {
+	if (!parent.isValid()) 
+    {
 		parentItem = rootItem_.data();
 	}
-	else {
+	else
+    {
 		parentItem = static_cast<LibraryItem*>(parent.internalPointer());
 	}
 
@@ -81,24 +95,30 @@ int LibraryTreeModel::rowCount(const QModelIndex &parent) const {
 	return parentItem->getNumberOfChildren();
 }
 
-QModelIndex LibraryTreeModel::index(int row, int column,
-		const QModelIndex &parent) const {
-
-	if (!hasIndex(row, column, parent)) {
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeModel::index()
+//-----------------------------------------------------------------------------
+QModelIndex LibraryTreeModel::index(int row, int column, QModelIndex const& parent) const
+{
+	if (!hasIndex(row, column, parent))
+    {
 		return QModelIndex();
 	}
 
 	LibraryItem* parentItem = 0;
 
 	// if the index of the parent is invalid then it is the root item
-	if (!parent.isValid()) {
+	if (!parent.isValid()) 
+    {
 		parentItem = rootItem_.data();
 	}
-	else {
+	else
+    {
 		parentItem = static_cast<LibraryItem*>(parent.internalPointer());
 	}
 
-	if (!parentItem) {
+	if (!parentItem)
+    {
 		return QModelIndex();
 	}
 
@@ -106,49 +126,64 @@ QModelIndex LibraryTreeModel::index(int row, int column,
 	LibraryItem *child = parentItem->child(row);
 
 	// if the child is found
-	if (child) {
+	if (child)
+    {
 		return createIndex(row, column, child);
 	}
-	else {
+	else
+    {
 		return QModelIndex();
 	}
 }
 
-QModelIndex LibraryTreeModel::index(LibraryItem* item ) {
-
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeModel::index()
+//-----------------------------------------------------------------------------
+QModelIndex LibraryTreeModel::index(LibraryItem* item) 
+{
 	// if pointer is null
 	if (!item)
+    {
 		return QModelIndex();
+    }
 
 	// if this item has no parent then it is the root item
 	LibraryItem* parent = item->parent();
 	if (!parent)
+    {
 		return QModelIndex();
+    }
 
 	// create the index for the child
 	return createIndex(item->row(), 0, item);
 }
 
-QModelIndex LibraryTreeModel::parent(const QModelIndex &child) const {
-
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeModel::parent()
+//-----------------------------------------------------------------------------
+QModelIndex LibraryTreeModel::parent(QModelIndex const& child) const
+{
 	// if invalid index
-	if(!child.isValid()) {
+	if(!child.isValid())
+    {
 		return QModelIndex();
 	}
 
 	// pointer to the child item
 	LibraryItem *childItem = static_cast<LibraryItem*>(child.internalPointer());
-        LibraryItem *parent = childItem->parent();
+    LibraryItem *parent = childItem->parent();
 
 	// if the parent does not exist then this item is root item
-	if (!parent) {
+	if (!parent)
+    {
 		return QModelIndex();
 	}
 
 	// if row is invalid then the grandparent does not exist and parent is
 	// a root item so we return an invalid QModelIndex
 	int row = parent->row();
-	if (row == -1) {
+	if (row == -1)
+    {
 		return QModelIndex();
 	}
 
@@ -156,82 +191,90 @@ QModelIndex LibraryTreeModel::parent(const QModelIndex &child) const {
 	return createIndex(row, 0, parent);
 }
 
-QVariant LibraryTreeModel::data(const QModelIndex& index, int role) const {
-
-	if (!index.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeModel::data()
+//-----------------------------------------------------------------------------
+QVariant LibraryTreeModel::data(QModelIndex const& index, int role) const
+{
+	if (!index.isValid())
+    {
 		return QVariant();
 	}
 
 	LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
 
-	if (role == Qt::DisplayRole) {
-
+	if (role == Qt::DisplayRole)
+    {
 		return item->name();
 	}
 
-	else if (role == Qt::ForegroundRole) {
-		QColor textColor;
-
+	else if (role == Qt::ForegroundRole)
+    {
 		// check all vlnvs that the item represents
 		QList<VLNV> vlnvs;
 		item->getVLNVs(vlnvs);
-		foreach (VLNV vlnv, vlnvs) {
-			
+
+		foreach (VLNV const& vlnv, vlnvs)
+        {
 			// if at least one vlnv is valid then the item is valid
-			if (handler_->isValid(vlnv)) {
-				textColor = QColor("black");
-				return QBrush(textColor);
+			if (handler_->isValid(vlnv))
+            {
+				return QBrush(QColor("black"));
 			}
 		}
 
 		// if the document is not valid then it is marked with red color
-		textColor = QColor("red");
-		return QBrush(textColor);		
+		return QBrush(QColor("red"));		
 	}
 
-	else if (role == Qt::ToolTipRole) {
-
+	else if (role == Qt::ToolTipRole)
+    {
 		VLNV vlnv = item->getVLNV();
 
 		// if item can identify a single library object
-		if (vlnv.isValid()) {
-			QString text = QString("<b>Vendor:</b> ") + vlnv.getVendor() + "<br>" +
-				QString("<b>Library:</b> ") + vlnv.getLibrary() + "<br>" +
-				QString("<b>Name:</b> ") + vlnv.getName() + "<br>" +
-				QString("<b>Version:</b> ") + vlnv.getVersion() + "<br>";
+		if (vlnv.isValid())
+        {
+			QString text = "<b>Vendor:</b> " + vlnv.getVendor() + "<br>" +
+				"<b>Library:</b> " + vlnv.getLibrary() + "<br>" + 
+                "<b>Name:</b> " + vlnv.getName() + "<br>" +
+				"<b>Version:</b> " + vlnv.getVersion() + "<br>";
 
-			QSharedPointer<Document const> libComp = handler_->getModelReadOnly(vlnv);
+			QSharedPointer<Document const> document = handler_->getModelReadOnly(vlnv);
 
-			if (libComp != 0 && !libComp->getDescription().isEmpty()) {
-				text += QString("<br><b>Description:</b><br>") + libComp->getDescription();
+			if (document != 0 && !document->getDescription().isEmpty())
+            {
+				text += "<br><b>Description:</b><br>" + document->getDescription();
 			}
 
-			text += QString("<br><b>File Path:</b><br>%1").arg(dataSource_->getPath(vlnv));
+			text += "<br><b>File Path:</b><br>" + dataSource_->getPath(vlnv);
 			return text;
 		}
 
 		// if item did not represent a single vlnv item
 		return QVariant();
 	}
-	else if (role == Qt::DecorationRole) {
-		
+	
+    else if (role == Qt::DecorationRole)
+    {		
 		VLNV vlnv = item->getVLNV();
 		
 		// if item represents a single vlnv object
-		if (vlnv.isValid()) {
-
-			if (vlnv.getType() == VLNV::COMPONENT) {
-
-				QSharedPointer<Document const> libComp = handler_->getModelReadOnly(vlnv);
-				QSharedPointer<Component const> component = libComp.staticCast<Component const>();
+		if (vlnv.isValid())
+        {
+            VLNV::IPXactType documentType = vlnv.getType();
+			if (documentType == VLNV::COMPONENT)
+            {
+				QSharedPointer<Component const> component = 
+                    handler_->getModelReadOnly(vlnv).staticCast<Component const>();
 
                 if (component != 0)
                 {
-                    switch (component->getComponentImplementation()) {
-                    case KactusAttribute::SYSTEM: {
+                    if (component->getImplementation() == KactusAttribute::SYSTEM)
+                    {
                         return QIcon(":/icons/common/graphics/system-component.png");
-                                                   }
-                    case KactusAttribute::SW: {
+                    }
+                    else if (component->getImplementation() == KactusAttribute::SW)
+                    {
                         if (component->hasSWViews())
                         {
                             return QIcon(":/icons/common/graphics/hier-sw-component.png");
@@ -240,43 +283,43 @@ QVariant LibraryTreeModel::data(const QModelIndex& index, int role) const {
                         {
                             return QIcon(":/icons/common/graphics/sw-component24x24.png");
                         }
-                                                  }
-                    default: {
-                        if (component->isHierarchical()) {
+                    }
+                    else
+                    {
+                        if (component->isHierarchical())
+                        {
                             return QIcon(":/icons/common/graphics/hier-hw-component.png");
                         }
                         else
+                        {
                             return QIcon(":/icons/common/graphics/hw-component.png");
-                             }
+                        }
                     }
                 }
 
                 return QIcon(":/icons/common/graphics/hw-component.png");
 			}
 
-			// if item is for a bus
-			else if (vlnv.getType() == VLNV::BUSDEFINITION ||
-				vlnv.getType() == VLNV::ABSTRACTIONDEFINITION) {
-				return QIcon(":/icons/common/graphics/new-bus.png");
-			}
-
-            // if item is for a COM definition
-            else if (vlnv.getType() == VLNV::COMDEFINITION) {
-                    return QIcon(":/icons/common/graphics/new-com_definition.png");
+			else if (documentType == VLNV::BUSDEFINITION || documentType == VLNV::ABSTRACTIONDEFINITION)
+            {
+                return QIcon(":/icons/common/graphics/new-bus.png");
             }
 
-            // if item is for an API definition
-            else if (vlnv.getType() == VLNV::APIDEFINITION) {
+            else if (documentType == VLNV::COMDEFINITION)
+            {
+                return QIcon(":/icons/common/graphics/new-com_definition.png");
+            }
+
+            else if (documentType == VLNV::APIDEFINITION)
+            {
                 return QIcon(":/icons/common/graphics/new-api_definition.png");
             }
 
-			// if item is for a design
-			else if (vlnv.getType() == VLNV::DESIGN) {
-
+            else if (documentType == VLNV::DESIGN)
+            {
                 // Determine the design type.
-                QSharedPointer<Document> libComp = handler_->getModel(vlnv);
-                QSharedPointer<Design> design = libComp.staticCast<Design>();
-                if (design && design->getDesignImplementation() == KactusAttribute::SW)
+                QSharedPointer<const Design> design = handler_->getModelReadOnly(vlnv).staticCast<const Design>();
+                if (design && design->getImplementation() == KactusAttribute::SW)
                 {
                     return QIcon(":/icons/common/graphics/sw-design24x24.png");
                 }
@@ -285,49 +328,65 @@ QVariant LibraryTreeModel::data(const QModelIndex& index, int role) const {
                     return QIcon(":/icons/common/graphics/hw-design.png");
                 }
             }
-			// if item is for a design configuration
-			else if (vlnv.getType() == VLNV::DESIGNCONFIGURATION) {
+
+			else if (documentType == VLNV::DESIGNCONFIGURATION)
+            {
 				return QIcon(":/icons/common/graphics/configuration.png");
 			}
-			// item has no icon
+			
 			else
+            {
 				return QVariant();
+            }
 		}
-		// if item does not represent a single vlnv then no icon
+
 		else 
+        {
 			return QVariant();	
+        }
 	}
 	
 	// unsupported data role
-	else {
+	else
+    {
 		return QVariant();
 	}
 }
 
-Qt::ItemFlags LibraryTreeModel::flags(const QModelIndex& index) const {
-
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeModel::flags()
+//-----------------------------------------------------------------------------
+Qt::ItemFlags LibraryTreeModel::flags(QModelIndex const& index) const
+{
 	// if given index is invalid
-	if (!index.isValid()) {
+	if (!index.isValid())
+    {
 		return Qt::ItemIsEnabled;
 	}
 
 	return (Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 }
 
-bool LibraryTreeModel::hasChildren(const QModelIndex& parent) const {
-
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeModel::hasChildren()
+//-----------------------------------------------------------------------------
+bool LibraryTreeModel::hasChildren(QModelIndex const& parent) const
+{
 	// only one column exists
-	if (parent.column() > 0) {
+	if (parent.column() > 0)
+    {
 		return false;
 	}
 
 	LibraryItem *parentItem = 0;
 
 	// if the given item is invalid, it is interpreted as root item
-	if (!parent.isValid()) {
+	if (!parent.isValid())
+    {
 		parentItem = rootItem_.data();
 	}
-	else {
+	else
+    {
 		parentItem = static_cast<LibraryItem*>(parent.internalPointer());
 	}
 
@@ -335,11 +394,16 @@ bool LibraryTreeModel::hasChildren(const QModelIndex& parent) const {
 	return parentItem->hasChildren();
 }
 
-void LibraryTreeModel::onExportItem( const QModelIndex& index ) {
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeModel::onExportItem()
+//-----------------------------------------------------------------------------
+void LibraryTreeModel::onExportItem(QModelIndex const& index)
+{
 	if (!index.isValid())
+    {
 		return;
+    }
 
-	// get pointer to the item that was selected
 	LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
 
 	// ask the item for all the VLNVs it represents
@@ -349,12 +413,17 @@ void LibraryTreeModel::onExportItem( const QModelIndex& index ) {
 	emit exportItems(vlnvList);
 }
 
-void LibraryTreeModel::onDeleteItem( const QModelIndex& index ) {
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeModel::onDeleteItem()
+//-----------------------------------------------------------------------------
+void LibraryTreeModel::onDeleteItem(QModelIndex const& index)
+{
 	if (!index.isValid())
+    {
 		return;
+    }
 
 	LibraryItem* child = static_cast<LibraryItem*>(index.internalPointer());
-
 	LibraryItem* toRemove = child->findHighestUnique();
 
 	// ask the item for all the VLNVs it represents
@@ -365,25 +434,32 @@ void LibraryTreeModel::onDeleteItem( const QModelIndex& index ) {
 	emit removeVLNV(vlnvList);
 }
 
-void LibraryTreeModel::onRemoveVLNV( const VLNV& vlnv ) {
-
-	if (!vlnv.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeModel::onRemoveVLNV()
+//-----------------------------------------------------------------------------
+void LibraryTreeModel::onRemoveVLNV(VLNV const& vlnv)
+{
+	if (!vlnv.isValid())
+    {
 		return;
 	}
 
 	LibraryItem* toRemove = rootItem_->findHighestUnique(vlnv);
 	
-	// remove the item and it's sub-items but no need to inform dataModel 
-	// because the removal action was started by the dataModel
-	if (toRemove) {
-		removeLibraryItem(toRemove, false);
+	// Remove the item and it's sub-items.
+	if (toRemove)
+    {
+		removeLibraryItem(toRemove);
 	}
-
 }
 
-void LibraryTreeModel::onAddVLNV( const VLNV& vlnv ) {
-
-	if (!vlnv.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeModel::onAddVLNV()
+//-----------------------------------------------------------------------------
+void LibraryTreeModel::onAddVLNV(VLNV const& vlnv)
+{
+	if (!vlnv.isValid())
+    {
 		return;
 	}
 
@@ -392,8 +468,8 @@ void LibraryTreeModel::onAddVLNV( const VLNV& vlnv ) {
 	QModelIndex parentIndex;
 
 	// if the highest unique is not the root
-	if (parentItem != rootItem_.data()) {
-
+	if (parentItem != rootItem_.data())
+    {
 		int row = parentItem->row();
 		Q_ASSERT(row >= 0);
 
@@ -409,8 +485,11 @@ void LibraryTreeModel::onAddVLNV( const VLNV& vlnv ) {
 	emit refreshDialer();
 }
 
-void LibraryTreeModel::removeLibraryItem( LibraryItem* toRemove, bool emitSignals) {
-	
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeModel::removeLibraryItem()
+//-----------------------------------------------------------------------------
+void LibraryTreeModel::removeLibraryItem(LibraryItem* toRemove)
+{
 	int row = toRemove->parent()->getIndexOf(toRemove);
 
 	// ask the item for all the VLNVs it represents
@@ -426,37 +505,32 @@ void LibraryTreeModel::removeLibraryItem( LibraryItem* toRemove, bool emitSignal
  	toRemove->parent()->removeChild(toRemove);
  	endRemoveRows();
 
-	// if signals were to be emitted
-	if (emitSignals) {
-		// inform the dataModel that these VLNVs should be removed
-		emit removeVLNV(vlnvList);
-	}
-
 	emit refreshDialer();
 }
 
-void LibraryTreeModel::onResetModel() {
-	
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeModel::onResetModel()
+//-----------------------------------------------------------------------------
+void LibraryTreeModel::onResetModel()
+{	
 	beginResetModel();
 
-	// if root item does not yet exist
-	if (!rootItem_) {
-		// create the root item
+	if (!rootItem_)
+    {
 		rootItem_ = QSharedPointer<LibraryItem>(new LibraryItem(tr("root"), this));
 	}
-	// if root item exists then tell it to clear it's children
-	else {
+	else
+    {
 		rootItem_->clear();
 	}
 
 	// get the items to be displayed from the data source
-	QList<VLNV> items =
-		dataSource_->getItems();
+	QList<VLNV> items = dataSource_->getItems();
 
-	// add all items to this model
-	for (int i = 0; i < items.size(); ++i) {
-		rootItem_->createChild(items.value(i),
-			static_cast<LibraryItem::Level>(0));
+    int itemCount = items.count();
+	for (int i = 0; i < itemCount; i++)
+    {
+		rootItem_->createChild(items.at(i), LibraryItem::ROOT);
 	}
 
 	endResetModel();
@@ -464,56 +538,23 @@ void LibraryTreeModel::onResetModel() {
 	emit refreshDialer();
 }
 
-LibraryItem* LibraryTreeModel::getRoot() const {
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeModel::getRoot()
+//-----------------------------------------------------------------------------
+LibraryItem* LibraryTreeModel::getRoot() const
+{
 	return rootItem_.data();
 }
 
-void LibraryTreeModel::onOpenBus( const QModelIndex& index ) {
-
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeModel::onCreateBus()
+//-----------------------------------------------------------------------------
+void LibraryTreeModel::onCreateBus(QModelIndex const& index)
+{
 	if (!index.isValid())
+    {
 		return;
-
-	LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
-
-	VLNV vlnv = item->getVLNV();
-
-	if (vlnv.isValid()) {
-		emit editItem(vlnv);
-	}
-}
-
-void LibraryTreeModel::onOpenComDef( const QModelIndex& index ) {
-
-    if (!index.isValid())
-        return;
-
-    LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
-
-    VLNV vlnv = item->getVLNV();
-
-	if (vlnv.isValid()) {
-        emit editItem(vlnv);
-	}
-}
-
-void LibraryTreeModel::onOpenApiDef( const QModelIndex& index ) {
-
-    if (!index.isValid())
-        return;
-
-    LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
-
-    VLNV vlnv = item->getVLNV();
-
-	if (vlnv.isValid()) {
-        emit editItem(vlnv);
-	}
-}
-
-void LibraryTreeModel::onCreateBus( const QModelIndex& index ) {
-
-	if (!index.isValid())
-		return;
+    }
 
 	LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
 
@@ -524,9 +565,15 @@ void LibraryTreeModel::onCreateBus( const QModelIndex& index ) {
 	emit createBus(vlnv);
 }
 
-void LibraryTreeModel::onCreateAbsDef( const QModelIndex& index ) {
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeModel::onCreateAbsDef()
+//-----------------------------------------------------------------------------
+void LibraryTreeModel::onCreateAbsDef(QModelIndex const& index)
+{
 	if (!index.isValid())
+    {
 		return;
+    }
 
 	LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
 
@@ -537,10 +584,15 @@ void LibraryTreeModel::onCreateAbsDef( const QModelIndex& index ) {
 	emit createAbsDef(vlnv);
 }
 
-void LibraryTreeModel::onCreateComDef( const QModelIndex& index ) {
-
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeModel::onCreateComDef()
+//-----------------------------------------------------------------------------
+void LibraryTreeModel::onCreateComDef(QModelIndex const& index)
+{
     if (!index.isValid())
+    {
         return;
+    }
 
     LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
 
@@ -551,10 +603,15 @@ void LibraryTreeModel::onCreateComDef( const QModelIndex& index ) {
     emit createComDef(vlnv);
 }
 
-void LibraryTreeModel::onCreateApiDef( const QModelIndex& index ) {
-
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeModel::onCreateApiDef()
+//-----------------------------------------------------------------------------
+void LibraryTreeModel::onCreateApiDef(QModelIndex const& index)
+{
     if (!index.isValid())
+    {
         return;
+    }
 
     LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
 
@@ -565,117 +622,153 @@ void LibraryTreeModel::onCreateApiDef( const QModelIndex& index ) {
     emit createApiDef(vlnv);
 }
 
-void LibraryTreeModel::onOpenComponent( const QModelIndex& index ) {
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeModel::onOpenDocument()
+//-----------------------------------------------------------------------------
+void LibraryTreeModel::onOpenDocument(QModelIndex const& index)
+{
 	if (!index.isValid())
+    {
 		return;
+    }
 
 	LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
-
 	VLNV vlnv = item->getVLNV();
 
-	if (vlnv.isValid()) {
+	if (vlnv.isValid())
+    {
 		emit editItem(vlnv);
 	}
 }
 
-void LibraryTreeModel::onOpenDesign( const QModelIndex& index ) {
-
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeModel::onOpenDesign()
+//-----------------------------------------------------------------------------
+void LibraryTreeModel::onOpenDesign(QModelIndex const& index)
+{
 	if (!index.isValid())
+    {
 		return;
+    }
 
 	LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
 	VLNV vlnv = item->getVLNV();
 
-	if (vlnv.isValid()) {
+	if (vlnv.isValid())
+    {
 		emit openDesign(vlnv);
 	}
 }
 
-void LibraryTreeModel::onOpenSWDesign( const QModelIndex& index ) {
-
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeModel::onOpenSWDesign()
+//-----------------------------------------------------------------------------
+void LibraryTreeModel::onOpenSWDesign(QModelIndex const& index)
+{
     if (!index.isValid())
+    {
         return;
+    }
 
     LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
     VLNV vlnv = item->getVLNV();
 
-	if (vlnv.isValid()) {
+	if (vlnv.isValid())
+    {
         emit openSWDesign(vlnv);
 	}
 }
 
-void LibraryTreeModel::onOpenSystemDesign( const QModelIndex& index ) {
-
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeModel::onOpenSystemDesign()
+//-----------------------------------------------------------------------------
+void LibraryTreeModel::onOpenSystemDesign(QModelIndex const& index)
+{
     if (!index.isValid())
+    {
         return;
+    }
 
     LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
     VLNV vlnv = item->getVLNV();
 
-	if (vlnv.isValid()) {
+	if (vlnv.isValid())
+    {
         emit openSystemDesign(vlnv);
 	}
 }
 
-void LibraryTreeModel::onCreateNewComponent( const QModelIndex& index ) {
-
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeModel::onCreateNewComponent()
+//-----------------------------------------------------------------------------
+void LibraryTreeModel::onCreateNewComponent(QModelIndex const& index)
+{
 	if (!index.isValid())
+    {
 		return;
+    }
 
 	LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
 
 	VLNV vlnv;
 	vlnv.setType(VLNV::COMPONENT);
-
-	// tell items to set the fields for the vlnv
 	item->setVlnv(vlnv);
 
 	emit createComponent(vlnv);
 }
 
-void LibraryTreeModel::onCreateNewDesign( const QModelIndex& index ) {
-
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeModel::onCreateNewDesign()
+//-----------------------------------------------------------------------------
+void LibraryTreeModel::onCreateNewDesign(QModelIndex const& index)
+{
 	if (!index.isValid())
-		return;
+    {
+    	return;
+    }
 
 	LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
 
 	VLNV vlnv;
 	vlnv.setType(VLNV::COMPONENT);
-
-	// tell items to set the fields for the vlnv
 	item->setVlnv(vlnv);
 
 	emit createDesign(vlnv);
 }
 
-void LibraryTreeModel::onCreateNewSWDesign( const QModelIndex& index ) {
-
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeModel::onCreateNewSWDesign()
+//-----------------------------------------------------------------------------
+void LibraryTreeModel::onCreateNewSWDesign(QModelIndex const& index)
+{
     if (!index.isValid())
+    {
         return;
+    }
 
     LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
 
     VLNV vlnv;
     vlnv.setType(VLNV::COMPONENT);
-
-    // tell items to set the fields for the vlnv
     item->setVlnv(vlnv);
 
     emit createSWDesign(vlnv);
 }
 
-void LibraryTreeModel::onCreateNewSystemDesign( const QModelIndex& index ) {
-
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeModel::onCreateNewSystemDesign()
+//-----------------------------------------------------------------------------
+void LibraryTreeModel::onCreateNewSystemDesign(QModelIndex const& index)
+{
     if (!index.isValid())
+    {
         return;
+    }
 
     LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
 
     VLNV vlnv;
     vlnv.setType(VLNV::COMPONENT);
-
-    // tell items to set the fields for the vlnv
     item->setVlnv(vlnv);
 
     emit createSystemDesign(vlnv);
@@ -691,9 +784,6 @@ void LibraryTreeModel::onShowErrors(QModelIndex const& index)
         return;
     }
 
-    // Retrieve a pointer to the item that was selected.
     LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
-    VLNV vlnv = item->getVLNV();
-
-    emit showErrors(vlnv);
+    emit showErrors(item->getVLNV());
 }

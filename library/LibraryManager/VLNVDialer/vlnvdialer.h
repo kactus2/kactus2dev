@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 11.7.2011
- *      Author: Antti Kamppi
- * 		filename: vlnvdialer.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: vlnvdialer.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 11.07.2011
+//
+// Description:
+// VLNVDialer is used to set options that specify what objects to display in library.
+//-----------------------------------------------------------------------------
 
 #ifndef VLNVDIALER_H
 #define VLNVDIALER_H
@@ -19,30 +23,31 @@
 
 class LibraryItem;
 
-/*! \brief VLNVDialer is used to set options that specify what objects to display in library.
- *
- */
-class VLNVDialer : public QWidget {
+//-----------------------------------------------------------------------------
+//! VLNVDialer is used to set options that specify what objects to display in library.
+//-----------------------------------------------------------------------------
+class VLNVDialer : public QWidget
+{
 	Q_OBJECT
 
 public:
 
-	/*! \brief The constructor
+	/*! The constructor
 	 *
-	 * \param parent Pointer to the owner of this widget.
+	 *      @param [in] parent The owner of this widget.
 	 *
 	*/
 	VLNVDialer(QWidget *parent);
 	
-	//! \brief The destructor
+	//! The destructor
 	virtual ~VLNVDialer();
 
-	/*! \brief Set the root item used to create the suggestions for dialer.
+	/*! Set the root item used to create the suggestions for dialer.
 	 *
-	 * \param rootItem Pointer to the root item of the library.
+	 *      @param [in] rootItem    The root item of the library.
 	 *
 	*/
-	void setRootItem(const LibraryItem* rootItem);
+	void setRootItem(LibraryItem const* rootItem);
 
     void setFilters(FilterWidget::FilterOptions options);
 
@@ -50,57 +55,57 @@ public:
 
 signals:
 
-	//! \brief Emitted when the text in vendor combobox is changed.
-	void vendorChanged(const QString& vendorText);
+	//! Emitted when the text in vendor combobox is changed.
+	void vendorChanged(QString const& vendorText);
 
-	//! \brief Emitted when the text in library combobox is changed.
-	void libraryChanged(const QString& libraryText);
+	//! Emitted when the text in library combobox is changed.
+	void libraryChanged(QString const& libraryText);
 
-	//! \brief Emitted when the text in name combobox is changed.
-	void nameChanged(const QString& nameText);
+	//! Emitted when the text in name combobox is changed.
+	void nameChanged(QString const& nameText);
 
-	//! \brief Emitted when the text in version combobox is changed.
-	void versionChanged(const QString& versionText);
+	//! Emitted when the text in version combobox is changed.
+	void versionChanged(QString const& versionText);
 
-	//! \brief Emitted when re-usability options change.
-	void firmnessChanged(const Utils::FirmnessOptions& options);
+	//! Emitted when re-usability options change.
+	void firmnessChanged(Utils::FirmnessOptions const& options);
 
-	//! \brief Emitted when firmness options change.
-	void implementationChanged(const Utils::ImplementationOptions& options);
+	//! Emitted when firmness options change.
+	void implementationChanged(Utils::ImplementationOptions const& options);
 
-	//! \brief Emitted when type options change.
-	void typeChanged(const Utils::TypeOptions& options);
+	//! Emitted when type options change.
+	void typeChanged(Utils::TypeOptions const& options);
 
-	//! \brief Emitted when hierarchy options change.
-	void hierarchyChanged(const Utils::HierarchyOptions& options);
+	//! Emitted when hierarchy options change.
+	void hierarchyChanged(Utils::HierarchyOptions const& options);
 
 public slots:
 
-	//! \brief Refresh the list of vendors on the library
+	//! Refresh the list of vendors on the library
 	void refreshLibrary();
 
 private slots:
 
-	//! \brief Handler for hide/show button clicks.
+	//! Handler for hide/show button clicks.
 	void onHideShowClick();
 
 private:
-	//! \brief No copying
-	VLNVDialer(const VLNVDialer& other);
+	//! No copying
+	VLNVDialer(VLNVDialer const& other);
 
-	//! \brief No assignment
-	VLNVDialer& operator=(const VLNVDialer& other);
+	//! No assignment
+	VLNVDialer& operator=(VLNVDialer const& other);
 
-	//! \brief Contains the items to set filters for search.
+	//! Contains the items to set filters for search.
 	FilterWidget filters_;
 
-	//! \brief Contains the items to set the rules for vlnv search
+	//! Contains the items to set the rules for vlnv search
 	DialerWidget dialer_;
 
-	//! \brief Button to hide/show filters.
+	//! Button to hide/show filters.
 	QPushButton hideButton_;
 
-	//! \brief Contains the value to know if filters are currently hidden or visible
+	//! Contains the value to know if filters are currently hidden or visible
 	bool hidden_;
 };
 

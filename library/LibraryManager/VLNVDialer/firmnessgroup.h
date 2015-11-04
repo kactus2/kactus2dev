@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 11.7.2011
- *      Author: Antti Kamppi
- * 		filename: firmnessgroup.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: firmnessgroup.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 11.07.2011
+//
+// Description:
+// Contains the check boxes to set the re-usability options for VLNVDialer.
+//-----------------------------------------------------------------------------
 
 #ifndef FIRMNESSGROUP_H
 #define FIRMNESSGROUP_H
@@ -13,17 +17,18 @@
 #include <QGroupBox>
 #include <QCheckBox>
 
-/*! Contains the check boxes to set the re-usability options for VLNVDialer.
- *
- */
-class FirmnessGroup : public QGroupBox {
+//-----------------------------------------------------------------------------
+//! Contains the check boxes to set the re-usability options for VLNVDialer.
+//-----------------------------------------------------------------------------
+class FirmnessGroup : public QGroupBox
+{
 	Q_OBJECT
 
 public:
 
 	/*! The constructor
 	 *
-	 * \param parent Pointer to the owner of this widget.
+	 *      @param [in] parent The owner of this widget.
 	 *
 	*/
 	FirmnessGroup(QWidget *parent);

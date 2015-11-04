@@ -1576,15 +1576,6 @@
     <ClCompile Include="library\LibraryManager\VLNVDialer\vlnvdialer.cpp">
       <Filter>Source Files\library\LibraryManager\VLNVDialer</Filter>
     </ClCompile>
-    <ClCompile Include="library\LibraryManager\ipxactitem.cpp">
-      <Filter>Source Files\library\LibraryManager</Filter>
-    </ClCompile>
-    <ClCompile Include="library\LibraryManager\ipxactmodel.cpp">
-      <Filter>Source Files\library\LibraryManager</Filter>
-    </ClCompile>
-    <ClCompile Include="library\LibraryManager\ipxactwidget.cpp">
-      <Filter>Source Files\library\LibraryManager</Filter>
-    </ClCompile>
     <ClCompile Include="library\LibraryManager\librarydata.cpp">
       <Filter>Source Files\library\LibraryManager</Filter>
     </ClCompile>
@@ -1611,12 +1602,6 @@
     </ClCompile>
     <ClCompile Include="library\LibraryManager\LibraryUtils.cpp">
       <Filter>Source Files\library\LibraryManager</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ipxactmodel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ipxactwidget.cpp">
-      <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_librarydata.cpp">
       <Filter>Generated Files</Filter>
@@ -4443,12 +4428,6 @@
     <CustomBuild Include="Plugins\PluginSystem\PluginListDialog.h">
       <Filter>Header Files\Plugins\PluginSystem</Filter>
     </CustomBuild>
-    <CustomBuild Include="library\LibraryManager\ipxactmodel.h">
-      <Filter>Header Files\library\LibraryManager</Filter>
-    </CustomBuild>
-    <CustomBuild Include="library\LibraryManager\ipxactwidget.h">
-      <Filter>Header Files\library\LibraryManager</Filter>
-    </CustomBuild>
     <CustomBuild Include="library\LibraryManager\librarydata.h">
       <Filter>Header Files\library\LibraryManager</Filter>
     </CustomBuild>
@@ -5824,9 +5803,6 @@
     </ClInclude>
     <ClInclude Include="Plugins\PluginSystem\PluginSettingsWidget.h">
       <Filter>Header Files\Plugins\PluginSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="library\LibraryManager\ipxactitem.h">
-      <Filter>Header Files\library\LibraryManager</Filter>
     </ClInclude>
     <ClInclude Include="library\LibraryManager\libraryinterface.h">
       <Filter>Header Files\library\LibraryManager</Filter>

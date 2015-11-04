@@ -14,7 +14,7 @@
 
 #include "libraryinterface.h"
 
-#include <IPXACTmodels/librarycomponent.h>
+#include <IPXACTmodels/common/Document.h>
 #include <IPXACTmodels/Design/Design.h>
 
 //-----------------------------------------------------------------------------
@@ -42,9 +42,11 @@ bool LibraryTreeFilter::filterAcceptsRow(int sourceRow, const QModelIndex& sourc
 {
     QModelIndex itemIndex = sourceModel()->index(sourceRow, 0, sourceParent);
 
-    // root item is always ok
+    // root item is always ok.
     if (!itemIndex.isValid())
+    {
         return true;
+    }
 
     LibraryItem* item = static_cast<LibraryItem*>(itemIndex.internalPointer());
 
@@ -58,109 +60,73 @@ bool LibraryTreeFilter::filterAcceptsRow(int sourceRow, const QModelIndex& sourc
         return false;
     }
 
-    foreach (VLNV vlnv, list)
+    foreach (VLNV const& vlnv, list)
     {
         if (!handler_->contains(vlnv))
         {
             continue;
         }
 
-        QSharedPointer<Document const> libComb = handler_->getModelReadOnly(vlnv);
+        QSharedPointer<Document const> document = handler_->getModelReadOnly(vlnv);
+        VLNV::IPXactType documentType = handler_->getDocumentType(vlnv);
 
-        // check the type
-        switch (handler_->getDocumentType(vlnv))
+        if (documentType == VLNV::COMPONENT)
         {
-        case VLNV::COMPONENT:
+            // if components are not be displayed
+            if (!type().components_)
             {
-                // if components are not be displayed
-                if (!type().components_)
-                {
-                    continue;
-                }
-                break;
-            }
-        case VLNV::ABSTRACTIONDEFINITION:
-            {
-                // if buses are not to be displayed
-                if (!type().buses_) 
-                {
-                    continue;
-                }
-
-                // abstraction definitions are always for hw
-
-                // if hw is not shown then continue to check next 
-                if (!implementation().hw_)
-                    continue;
-
-                else
-                {
-                    return true;
-                }
-            }
-        case VLNV::BUSDEFINITION:
-            {
-
-                // if buses are not to be displayed
-                if (!type().buses_)
-                {
-                    continue;
-                }
-                //QSharedPointer<BusDefinition const> busDef = libComb.staticCast<BusDefinition const>();
-
-                // if this was not supposed to show then check next one
-                if  (!implementation().hw_)
-                    continue;
-                else
-                    return true;
+                continue;
             }
 
-        case VLNV::COMDEFINITION:
-        case VLNV::APIDEFINITION: 
+            QSharedPointer<Component const> component = document.staticCast<Component const>();
+         
+            if (checkImplementation(component) && checkHierarchy(component) && checkFirmness(component))
             {
-
-                // if buses are not to be displayed
-                if (!type().buses_)
-                {
-                    continue;
-                }
-
                 return true;
             }
+        }
 
-        case VLNV::DESIGN:
+        else if (documentType == VLNV::ABSTRACTIONDEFINITION)
+        {
+            if (type().buses_ && implementation().hw_) 
             {
-                QSharedPointer<Design> design = handler_->getDesign(vlnv);
-                if (type().components_ && implementation().sw_ && 
-                    design->getDesignImplementation() == KactusAttribute::SW)
-                {
-                    return true;
-                }
+                return true;
             }
-            // if type is one of the advanced
-        default:
+        }
 
-            // if other types should be displayed
+        else if (documentType == VLNV::BUSDEFINITION)
+        {
+            if (type().buses_ && implementation().hw_)
+            {
+                return true;
+            }
+        }
+
+        else if (documentType == VLNV::COMDEFINITION || documentType == VLNV::APIDEFINITION)
+        {
+            if (type().buses_)
+            {
+                 return true;
+            }
+        }
+
+        else if (documentType == VLNV::DESIGN)
+        {
+            QSharedPointer<Design> design = handler_->getDesign(vlnv);
+
+            if (type().components_ && implementation().sw_ && design->getImplementation() == KactusAttribute::SW)
+            {
+                return true;
+            }
+        }
+       
+        else // if type is one of the advanced
+        {
             if (type().advanced_)
             {
                 return true;
             }
-
-            // if other types are not to be displayed then check other possible VLNVs.
-            continue;
         }
-
-        // the vlnv is for component for sure
-        QSharedPointer<Component const> component = libComb.staticCast<Component const>();
-
-        // if component does not match the filters
-        if (!checkImplementation(component) || !checkHierarchy(component) || !checkFirmness(component))
-        {
-            continue;
-        }
-
-        // if all tests passed
-        return true;
     }
 
     return false;

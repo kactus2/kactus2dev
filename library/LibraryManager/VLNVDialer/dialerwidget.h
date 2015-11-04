@@ -88,6 +88,10 @@ private:
 	//! Connect signals from combo boxes.
 	void connectBoxes();
 
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
 	//! Box to set the vendor rules for search.
 	QComboBox vendorBox_;
 

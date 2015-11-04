@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 11.7.2011
- *      Author: Antti Kamppi
- * 		filename: firmnessgroup.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: firmnessgroup.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 11.07.2011
+//
+// Description:
+// Contains the check boxes to set the re-usability options for VLNVDialer.
+//-----------------------------------------------------------------------------
 
 #include "firmnessgroup.h"
 
@@ -16,10 +20,10 @@
 //-----------------------------------------------------------------------------
 FirmnessGroup::FirmnessGroup(QWidget *parent):
 QGroupBox(tr("Firmness"), parent),
-templateBox_(tr("Template"), this),
-mutableBox_(tr("Mutable"), this),
-fixedBox_(tr("Fixed"), this),
-options_()
+    templateBox_(tr("Template"), this),
+    mutableBox_(tr("Mutable"), this),
+    fixedBox_(tr("Fixed"), this),
+    options_()
 {
 	QGridLayout* layout = new QGridLayout(this);
 	layout->addWidget(&templateBox_, 0, 0, 1, 1);
@@ -32,12 +36,9 @@ options_()
 	mutableBox_.setChecked(true);
 	fixedBox_.setChecked(true);
 
-    connect(&templateBox_, SIGNAL(clicked(bool)),
-        this, SLOT(onTemplateChanged(bool)), Qt::UniqueConnection);
-    connect(&mutableBox_, SIGNAL(clicked(bool)),
-        this, SLOT(onMutableChanged(bool)), Qt::UniqueConnection);
-    connect(&fixedBox_, SIGNAL(clicked(bool)),
-        this, SLOT(onConfigurationChanged(bool)), Qt::UniqueConnection);
+    connect(&templateBox_, SIGNAL(clicked(bool)), this, SLOT(onTemplateChanged(bool)), Qt::UniqueConnection);
+    connect(&mutableBox_, SIGNAL(clicked(bool)), this, SLOT(onMutableChanged(bool)), Qt::UniqueConnection);
+    connect(&fixedBox_, SIGNAL(clicked(bool)), this, SLOT(onConfigurationChanged(bool)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -75,7 +76,7 @@ Utils::FirmnessOptions FirmnessGroup::getFirmness() const
 //-----------------------------------------------------------------------------
 // Function: FirmnessGroup::onTemplateChanged()
 //-----------------------------------------------------------------------------
-void FirmnessGroup::onTemplateChanged( bool checked )
+void FirmnessGroup::onTemplateChanged(bool checked)
 {
 	options_.templates_ = checked;
 	emit optionsChanged(options_);
@@ -84,7 +85,7 @@ void FirmnessGroup::onTemplateChanged( bool checked )
 //-----------------------------------------------------------------------------
 // Function: FirmnessGroup::onMutableChanged()
 //-----------------------------------------------------------------------------
-void FirmnessGroup::onMutableChanged( bool checked )
+void FirmnessGroup::onMutableChanged(bool checked)
 {
 	options_.mutable_ = checked;
 	emit optionsChanged(options_);
@@ -93,7 +94,7 @@ void FirmnessGroup::onMutableChanged( bool checked )
 //-----------------------------------------------------------------------------
 // Function: FirmnessGroup::onConfigurationChanged()
 //-----------------------------------------------------------------------------
-void FirmnessGroup::onConfigurationChanged( bool checked )
+void FirmnessGroup::onConfigurationChanged(bool checked)
 {
 	options_.fixed_ = checked;
 	emit optionsChanged(options_);

@@ -1,96 +1,103 @@
-/* 
- *
- *  Created on: 20.12.2010
- *      Author: Antti Kamppi
- */
+//-----------------------------------------------------------------------------
+// File: librarytreeview.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 20.12.2010
+//
+// Description:
+// The widget to display the library in a tree.
+//-----------------------------------------------------------------------------
 
 #include "librarytreeview.h"
 #include "libraryitem.h"
 #include "libraryinterface.h"
-#include <IPXACTmodels/common/VLNV.h>
 
-#include <IPXACTmodels/librarycomponent.h>
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/common/VLNV.h>
+#include <IPXACTmodels/common/Document.h>
+
+#include <IPXACTmodels/Component/Component.h>
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
-#include <QMenu>
 #include <QApplication>
-#include <QHeaderView>
-#include <QMessageBox>
-#include <QUrl>
 #include <QDesktopServices>
-#include <QMimeData>
 #include <QDrag>
+#include <QFileInfo>
+#include <QHeaderView>
+#include <QMenu>
+#include <QMessageBox>
+#include <QMimeData>
+#include <QUrl>
 
-#include <QDebug>
-
-LibraryTreeView::LibraryTreeView(LibraryInterface* handler, 
-								 LibraryTreeFilter* filter, 
-								 QWidget *parent)
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeView::LibraryTreeView()
+//-----------------------------------------------------------------------------
+LibraryTreeView::LibraryTreeView(LibraryInterface* handler, LibraryTreeFilter* filter, QWidget* parent)
     : QTreeView(parent), 
       handler_(handler),
       filter_(filter),
       startPos_(),
       dragIndex_(),
-      openDesignAction_(NULL),
-      openSWDesignAction_(NULL),
-      openCompAction_(NULL),
-      createNewDesignAction_(NULL),
-      createNewSWDesignAction_(NULL),
-      createNewSystemDesignAction_(NULL),
-      deleteAction_(NULL), 
-      exportAction_(NULL),  
-      showErrorsAction_(NULL),
-      openBusAction_(NULL),
-      addSignalsAction_(NULL),
-      openComDefAction_(NULL),
-      openApiDefAction_(NULL),
-      openSystemAction_(NULL),
-      openXmlAction_(NULL),
-      openContainingFolderAction_(NULL)
+      openDesignAction_(new QAction(tr("Open HW Design"), this)),
+      openSWDesignAction_(new QAction(tr("Open SW Design"), this)),
+      openComponentAction_(new QAction(tr("Open Component"), this)),
+      createNewDesignAction_(new QAction(tr("New HW Design..."), this)),
+      createNewSWDesignAction_(new QAction(tr("New SW Design..."), this)),
+      createNewSystemDesignAction_(new QAction(tr("New System Design..."), this);),
+      deleteAction_(new QAction(tr("Delete Item"), this)), 
+      exportAction_(new QAction(tr("Export"), this)),  
+      showErrorsAction_(new QAction(tr("Show Errors"), this)),
+      openBusAction_(new QAction(tr("Open"), this)),
+      addSignalsAction_(new QAction(tr("New Abstraction Definition..."), this)),
+      openComDefAction_(new QAction(tr("Open"), this)),
+      openApiDefAction_(new QAction(tr("Open"), this)),
+      openSystemAction_(new QAction(tr("Open System Design"), this)),
+      openXmlAction_(new QAction(tr("Open XML File"), this)),
+      openContainingFolderAction_(new QAction(tr("Open Containing Folder"), this))
 {
 
-	Q_ASSERT_X(filter, "LibraryTreeView constructor",
-		"Null filter pointer given");
+	Q_ASSERT_X(filter, "LibraryTreeView constructor", "Null filter pointer given");
 
     setIconSize(QSize(20, 20));
 
-	// the view can be sorted
 	setSortingEnabled(true);
 
 	// user can select items in the view
 	setSelectionBehavior(QAbstractItemView::SelectItems);
-
-	// only one item can be selected at a time
 	setSelectionMode(QAbstractItemView::SingleSelection);
 
-	// Items can not be edited
+	// Items can not be edited.
 	setEditTriggers(QAbstractItemView::NoEditTriggers);
 
 	setupActions();
 
-	// user can't expand/collapse items in a normal way because the 
-	// event handler for mouse press events has been reimplemented
+	// User can't expand/collapse items in a normal way because the event handler for mouse press events 
+    // has been reimplemented.
 	setItemsExpandable(false);
 }
 
-LibraryTreeView::~LibraryTreeView() {
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeView::~LibraryTreeView()
+//-----------------------------------------------------------------------------
+LibraryTreeView::~LibraryTreeView()
+{
 
 }
 
-void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event) {
-
-	Q_ASSERT_X(event, "LibraryTreeView::contextMenuEvent",
-			"Invalid event pointer given as parameter");
-
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeView::contextMenuEvent()
+//-----------------------------------------------------------------------------
+void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event)
+{
 	// accept the event so it is not passed forwards
 	event->accept();
 
 	QModelIndex current = currentIndex();
 
 	// if nothing was chosen
-	if (!current.isValid()) {
+	if (!current.isValid())
+    {
 		return;
 	}
 
@@ -104,90 +111,97 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event) {
 	QMenu menu(this);
 
 	// if item can be identified as single item
-	if (vlnv.isValid()) {
-
+	if (vlnv.isValid())
+    {
 		// parse the model
-		QSharedPointer<Document const> libComp = handler_->getModelReadOnly(vlnv);
-		if (!libComp) {
+		QSharedPointer<Document const> document = handler_->getModelReadOnly(vlnv);
+		if (!document)
+        {
 			emit errorMessage(tr("Item not found in the library"));
 			return;
 		}
 
+        VLNV::IPXactType documentType = document->getVlnv().getType();
+
         QMenu* menuNew = 0;
 
-		// if component
-		if (libComp->getVlnv().getType() == VLNV::COMPONENT) {
-			QSharedPointer<Component const> component = libComp.staticCast<Component const>();
+        if (documentType == VLNV::COMPONENT)
+        {
+            QSharedPointer<Component const> component = document.staticCast<Component const>();
 
-			// depending on the type of the component
-			switch (component->getComponentImplementation()) {
-				case KactusAttribute::SYSTEM: {
-                    if (component->hasSystemViews())
-                    {
-					    menu.addAction(openSystemAction_);
-                    }
+            // depending on the type of the component
+            if (component->getImplementation() == KactusAttribute::SYSTEM)
+            {
+                if (component->hasSystemViews())
+                {
+                    menu.addAction(openSystemAction_);
+                }
 
-                    menu.addAction(openCompAction_);
-					break;
-											   }
-				case KactusAttribute::SW: {
-					if (component->hasSWViews())
-                        menu.addAction(openSWDesignAction_);
+                menu.addAction(openComponentAction_);
+            }
+            else if (component->getImplementation() == KactusAttribute::SW)
+            {
+                if (component->hasSWViews())
+                {
+                    menu.addAction(openSWDesignAction_);
+                }
+                menu.addAction(openComponentAction_);
 
-                    menu.addAction(openCompAction_);
+                menuNew = menu.addMenu(tr("Add"));
+                menuNew->addAction(createNewSWDesignAction_);
+            }
+            else 
+            {
 
-                    menuNew = menu.addMenu(tr("Add"));
-                    menuNew->addAction(createNewSWDesignAction_);
-					break;
-											  }
-				default: {
+                if (!component->getHierViews().isEmpty())
+                {
+                    menu.addAction(openDesignAction_);
+                }
 
-					if (!component->getHierViews().isEmpty()) {
-						menu.addAction(openDesignAction_);
-					}
+                if (component->hasSWViews())
+                {
+                    menu.addAction(openSWDesignAction_);
+                }
 
-                    if (component->hasSWViews())
-                    {
-                        menu.addAction(openSWDesignAction_);
-                    }
+                if (component->hasSystemViews())
+                {
+                    menu.addAction(openSystemAction_);
+                }
 
-                    if (component->hasSystemViews())
-                    {
-                        menu.addAction(openSystemAction_);
-                    }
+                menu.addAction(openComponentAction_);
+                menu.addSeparator();
 
-					menu.addAction(openCompAction_);
-                    menu.addSeparator();
+                menuNew = menu.addMenu(tr("Add"));
+                menuNew->addAction(createNewDesignAction_);
+                menuNew->addAction(createNewSWDesignAction_);
 
-                    menuNew = menu.addMenu(tr("Add"));
-					menuNew->addAction(createNewDesignAction_);
-                    menuNew->addAction(createNewSWDesignAction_);
+                // Add New System Design action only if the component contains hierarchical HW views.
+                if (!component->getHierViews().isEmpty())
+                {
+                    menuNew->addAction(createNewSystemDesignAction_);
+                }
+            }
+        }
 
-                    // Add New System Design action only if the component contains hierarchical HW views.
-                    if (!component->getHierViews().isEmpty())
-                    {
-                        menuNew->addAction(createNewSystemDesignAction_);
-                    }
-
-					break;
-                         }
-			}		
-		}
-		else if (libComp->getVlnv().getType() == VLNV::BUSDEFINITION) {
-
-			//QSharedPointer<BusDefinition const> busDef = libComp.staticCast<BusDefinition const>();
-			
+		else if (documentType == VLNV::BUSDEFINITION)
+        {
             menu.addAction(openBusAction_);
             menuNew = menu.addMenu(tr("Add"));
             menuNew->addAction(addSignalsAction_);
 		}
-		else if (libComp->getVlnv().getType() == VLNV::ABSTRACTIONDEFINITION) {
+
+		else if (documentType == VLNV::ABSTRACTIONDEFINITION)
+        {
 			menu.addAction(openBusAction_);
 		}
-        else if (libComp->getVlnv().getType() == VLNV::COMDEFINITION) {
+
+        else if (documentType == VLNV::COMDEFINITION)
+        {
             menu.addAction(openComDefAction_);
         }
-        else if (libComp->getVlnv().getType() == VLNV::APIDEFINITION) {
+
+        else if (documentType == VLNV::APIDEFINITION)
+        {
             menu.addAction(openApiDefAction_);
         }
 
@@ -215,121 +229,101 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event) {
 	menu.exec(event->globalPos());
 }
 
-void LibraryTreeView::setupActions() {
-
-	openDesignAction_ = new QAction(tr("Open HW Design"), this);
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeView::setupActions()
+//-----------------------------------------------------------------------------
+void LibraryTreeView::setupActions()
+{
 	openDesignAction_->setStatusTip(tr("Open a HW design"));
 	openDesignAction_->setToolTip(tr("Open a HW design"));
-	connect(openDesignAction_, SIGNAL(triggered()),
-		this, SLOT(onOpenDesign()), Qt::UniqueConnection);
+	connect(openDesignAction_, SIGNAL(triggered()),	this, SLOT(onOpenDesign()), Qt::UniqueConnection);
 
-    openSWDesignAction_ = new QAction(tr("Open SW Design"), this);
     openSWDesignAction_->setStatusTip(tr("Open a SW design"));
     openSWDesignAction_->setToolTip(tr("Open a SW design"));
-    connect(openSWDesignAction_, SIGNAL(triggered()),
-        this, SLOT(onOpenSWDesign()), Qt::UniqueConnection);
+    connect(openSWDesignAction_, SIGNAL(triggered()), this, SLOT(onOpenSWDesign()), Qt::UniqueConnection);
 
-	openCompAction_ = new QAction(tr("Open Component"), this);
-	openCompAction_->setStatusTip(tr("Open component editor"));
-	openCompAction_->setToolTip(tr("Open component editor"));
-	connect(openCompAction_, SIGNAL(triggered()),
-		this, SLOT(onOpenComponent()), Qt::UniqueConnection);
+	openComponentAction_->setStatusTip(tr("Open component editor"));
+	openComponentAction_->setToolTip(tr("Open component editor"));
+	connect(openComponentAction_, SIGNAL(triggered()), this, SLOT(onOpenComponent()), Qt::UniqueConnection);
 
-	createNewDesignAction_ = new QAction(tr("New HW Design..."), this);
 	createNewDesignAction_->setStatusTip(tr("Create new HW design"));
 	createNewDesignAction_->setToolTip(tr("Create new HW design"));
-	connect(createNewDesignAction_, SIGNAL(triggered()),
-		this, SLOT(onCreateDesign()), Qt::UniqueConnection);
+	connect(createNewDesignAction_, SIGNAL(triggered()), this, SLOT(onCreateDesign()), Qt::UniqueConnection);
 
-    createNewSWDesignAction_ = new QAction(tr("New SW Design..."), this);
     createNewSWDesignAction_->setStatusTip(tr("Create new SW design"));
     createNewSWDesignAction_->setToolTip(tr("Create new SW design"));
-    connect(createNewSWDesignAction_, SIGNAL(triggered()),
-            this, SLOT(onCreateSWDesign()), Qt::UniqueConnection);
+    connect(createNewSWDesignAction_, SIGNAL(triggered()), this, SLOT(onCreateSWDesign()), Qt::UniqueConnection);
 
-    createNewSystemDesignAction_ = new QAction(tr("New System Design..."), this);
     createNewSystemDesignAction_->setStatusTip(tr("Create new system design"));
     createNewSystemDesignAction_->setToolTip(tr("Create new system design"));
     connect(createNewSystemDesignAction_, SIGNAL(triggered()),
         this, SLOT(onCreateSystemDesign()), Qt::UniqueConnection);
 
-	deleteAction_ = new QAction(tr("Delete Item"), this);
 	deleteAction_->setStatusTip(tr("Delete item from the library"));
 	deleteAction_->setToolTip(tr("Delete the item from the library"));
-	connect(deleteAction_, SIGNAL(triggered()),
-		this, SLOT(onDeleteAction()), Qt::UniqueConnection);
+	connect(deleteAction_, SIGNAL(triggered()),	this, SLOT(onDeleteAction()), Qt::UniqueConnection);
 
-	exportAction_ = new QAction(tr("Export"), this);
 	exportAction_->setStatusTip(tr("Export item and it's sub-items to another location"));
 	exportAction_->setToolTip(tr("Export item and it's sub-items to another location"));
-	connect(exportAction_, SIGNAL(triggered()),
-		this, SLOT(onExportAction()), Qt::UniqueConnection);
+	connect(exportAction_, SIGNAL(triggered()), this, SLOT(onExportAction()), Qt::UniqueConnection);
 
-    showErrorsAction_ = new QAction(tr("Show Errors"), this);
     showErrorsAction_->setStatusTip(tr("Show all errors of the item"));
     showErrorsAction_->setToolTip(tr("Show all errors of the item"));
-    connect(showErrorsAction_, SIGNAL(triggered()),
-            this, SLOT(onShowErrors()), Qt::UniqueConnection);
+    connect(showErrorsAction_, SIGNAL(triggered()), this, SLOT(onShowErrors()), Qt::UniqueConnection);
 
-	openBusAction_ = new QAction(tr("Open"), this);
 	openBusAction_->setStatusTip(tr("Open"));
 	openBusAction_->setToolTip(tr("Open"));
-	connect(openBusAction_, SIGNAL(triggered()),
-		this, SLOT(onOpenBus()), Qt::UniqueConnection);
+	connect(openBusAction_, SIGNAL(triggered()), this, SLOT(onOpenBus()), Qt::UniqueConnection);
 
-	addSignalsAction_ = new QAction(tr("New Abstraction Definition..."), this);
     addSignalsAction_->setStatusTip(tr("Create new abstraction definition for the bus"));
     addSignalsAction_->setToolTip(tr("Create new abstraction definition for the bus"));
-	connect(addSignalsAction_, SIGNAL(triggered()),
-		this, SLOT(onAddSignals()), Qt::UniqueConnection);
+	connect(addSignalsAction_, SIGNAL(triggered()),	this, SLOT(onAddSignals()), Qt::UniqueConnection);
 
-    openComDefAction_ = new QAction(tr("Open"), this);
     openComDefAction_->setStatusTip(tr("Open"));
     openComDefAction_->setToolTip(tr("Open"));
-    connect(openComDefAction_, SIGNAL(triggered()),
-        this, SLOT(onOpenComDef()), Qt::UniqueConnection);
+    connect(openComDefAction_, SIGNAL(triggered()), this, SLOT(onOpenComDef()), Qt::UniqueConnection);
 
-    openApiDefAction_ = new QAction(tr("Open"), this);
     openApiDefAction_->setStatusTip(tr("Open"));
     openApiDefAction_->setToolTip(tr("Open"));
-    connect(openApiDefAction_, SIGNAL(triggered()),
-        this, SLOT(onOpenApiDef()), Qt::UniqueConnection);
+    connect(openApiDefAction_, SIGNAL(triggered()), this, SLOT(onOpenApiDef()), Qt::UniqueConnection);
 
-    openSystemAction_ = new QAction(tr("Open System Design"), this);
 	openSystemAction_->setStatusTip(tr("Open system design for editing"));
 	openSystemAction_->setToolTip(tr("Open system design for editing"));
-	connect(openSystemAction_, SIGNAL(triggered()),
-		this, SLOT(onOpenSystemDesign()), Qt::UniqueConnection);
+	connect(openSystemAction_, SIGNAL(triggered()),	this, SLOT(onOpenSystemDesign()), Qt::UniqueConnection);
 
-	openXmlAction_ = new QAction(tr("Open XML File"), this);
-	connect(openXmlAction_, SIGNAL(triggered()),
-		this, SLOT(onOpenXml()), Qt::UniqueConnection);
+	connect(openXmlAction_, SIGNAL(triggered()), this, SLOT(onOpenXml()), Qt::UniqueConnection);
 
-    openContainingFolderAction_ = new QAction(tr("Open Containing Folder"), this);
     connect(openContainingFolderAction_, SIGNAL(triggered()),
-            this, SLOT(onOpenContainingFolder()), Qt::UniqueConnection);
+        this, SLOT(onOpenContainingFolder()), Qt::UniqueConnection);
 }
 
-void LibraryTreeView::onDeleteAction() {	
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeView::onDeleteAction()
+//-----------------------------------------------------------------------------
+void LibraryTreeView::onDeleteAction()
+{	
 	emit deleteItem(filter_->mapToSource(currentIndex()));
 }
 
-void LibraryTreeView::onExportAction() {
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeView::onExportAction()
+//-----------------------------------------------------------------------------
+void LibraryTreeView::onExportAction()
+{
 	emit exportItem(filter_->mapToSource(currentIndex()));
 }
 
-void LibraryTreeView::mouseDoubleClickEvent( QMouseEvent * event ) {
-	
-	Q_ASSERT_X(event, "LibraryTreeView::contextMenuEvent",
-		"Invalid event pointer given as parameter");
-
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeView::mouseDoubleClickEvent()
+//-----------------------------------------------------------------------------
+void LibraryTreeView::mouseDoubleClickEvent(QMouseEvent* event)
+{
 	// accept the event so it is not passed forwards
 	event->accept();
 
 	QModelIndex current = currentIndex();
-
-	// if nothing was chosen
-	if (!current.isValid()) {
+	if (!current.isValid())
+    {
 		return;
 	}
 
@@ -339,27 +333,28 @@ void LibraryTreeView::mouseDoubleClickEvent( QMouseEvent * event ) {
 	QTreeView::mouseDoubleClickEvent(event);
 }
 
-void LibraryTreeView::mousePressEvent( QMouseEvent *event ) {
-	
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeView::mousePressEvent()
+//-----------------------------------------------------------------------------
+void LibraryTreeView::mousePressEvent(QMouseEvent* event)
+{
 	startPos_ = event->pos();
 	QModelIndex index = indexAt(startPos_);
 
-	bool expanded = false;
-	if (index.isValid()) {
-		expanded = isExpanded(index);
-	}
-
 	setCurrentIndex(index);
 
-	if (event->button() == Qt::LeftButton) {
+	if (event->button() == Qt::LeftButton)
+    {
 		dragIndex_ = filter_->mapToSource(index);
 
 		// if the item is not yet expanded
-		if (!expanded) {
+		if (index.isValid() && !isExpanded(index))
+        {
 			expand(index);
 		}
 		// if item was expanded then close it
-		else {
+		else
+        {
 			collapse(index);
 		}
 	}
@@ -367,19 +362,22 @@ void LibraryTreeView::mousePressEvent( QMouseEvent *event ) {
 	QTreeView::mousePressEvent(event);
 }
 
-void LibraryTreeView::mouseReleaseEvent( QMouseEvent* event ) {
-
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeView::mouseReleaseEvent()
+//-----------------------------------------------------------------------------
+void LibraryTreeView::mouseReleaseEvent(QMouseEvent* event)
+{
 	// find the clicked index
 	QModelIndex index = indexAt(event->pos());
-	if (index.isValid()) {
-
-		// find the source index
+	if (index.isValid())
+    {
 		QModelIndex sourceIndex = filter_->mapToSource(index);
 		LibraryItem* item = static_cast<LibraryItem*>(sourceIndex.internalPointer());
 
 		// if item contains a single vlnv
 		VLNV vlnv = item->getVLNV();
-		if (vlnv.isValid()) {
+		if (vlnv.isValid())
+        {
 			emit itemSelected(vlnv);
 		}
 	}
@@ -387,16 +385,19 @@ void LibraryTreeView::mouseReleaseEvent( QMouseEvent* event ) {
 	QTreeView::mouseReleaseEvent(event);
 }
 
-void LibraryTreeView::mouseMoveEvent( QMouseEvent *event ) {
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeView::mouseMoveEvent()
+//-----------------------------------------------------------------------------
+void LibraryTreeView::mouseMoveEvent(QMouseEvent* event)
+{
 	// if left mouse button is pressed down
-	if (event->buttons() & Qt::LeftButton) {
+	if (event->buttons() & Qt::LeftButton)
+    {
+		int dragDistance = (event->pos() - startPos_).manhattanLength();
 
-		// calculate the distance of the drag
-		int distance = (event->pos() - startPos_).manhattanLength();
-
-		// make sure the drag distance is large enough to start the drag
-		if (distance >= QApplication::startDragDistance()) {
-
+		// make sure the drag distance is large enough to start the drag.
+		if (dragDistance >= QApplication::startDragDistance())
+        {
 			LibraryItem* item = static_cast<LibraryItem*>(dragIndex_.internalPointer());
 
             if (item != 0)
@@ -404,13 +405,12 @@ void LibraryTreeView::mouseMoveEvent( QMouseEvent *event ) {
 			    VLNV vlnv = item->getVLNV();
     			
 			    // if vlnv is valid
-			    if (vlnv.isValid()) {
-				    QDrag *drag = new QDrag(this);
+			    if (vlnv.isValid())
+                {
 				    QMimeData *mimeData = new QMimeData;
+				    mimeData->setImageData(QVariant::fromValue(vlnv));
 
-				    QVariant data = QVariant::fromValue(vlnv);
-
-				    mimeData->setImageData(data);
+                    QDrag *drag = new QDrag(this);
 				    drag->setMimeData(mimeData);
 				    drag->exec(Qt::MoveAction | Qt::CopyAction | Qt::LinkAction);
 			    }
@@ -420,78 +420,140 @@ void LibraryTreeView::mouseMoveEvent( QMouseEvent *event ) {
 	QTreeView::mouseMoveEvent(event);
 }
 
-void LibraryTreeView::setCurrentIndex( const QModelIndex& index ) {
-
-	// expand the tree to full length all the way from the root
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeView::setCurrentIndex()
+//-----------------------------------------------------------------------------
+void LibraryTreeView::setCurrentIndex(QModelIndex const& index)
+{
+	// Expand the tree to full length all the way from the root.
 	QModelIndex temp = index;
 
-	// expand the whole tree up to the index
-	while (temp.parent().isValid()) {
+	while (temp.parent().isValid())
+    {
 		temp = temp.parent();
 		expand(temp);
 	}
 
-	// use the default implementation
 	QTreeView::setCurrentIndex(index);
 }
 
-void LibraryTreeView::onOpenDesign() {
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeView::onOpenDesign()
+//-----------------------------------------------------------------------------
+void LibraryTreeView::onOpenDesign()
+{
 	emit openDesign(filter_->mapToSource(currentIndex()));
 }
 
-void LibraryTreeView::onOpenSWDesign() {
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeView::onOpenSWDesign()
+//-----------------------------------------------------------------------------
+void LibraryTreeView::onOpenSWDesign()
+{
     emit openSWDesign(filter_->mapToSource(currentIndex()));
 }
 
-void LibraryTreeView::onOpenSystemDesign() {
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeView::onOpenSystemDesign()
+//-----------------------------------------------------------------------------
+void LibraryTreeView::onOpenSystemDesign()
+{
     emit openSystemDesign(filter_->mapToSource(currentIndex()));
 }
 
-void LibraryTreeView::onOpenComponent() {
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeView::onOpenComponent()
+//-----------------------------------------------------------------------------
+void LibraryTreeView::onOpenComponent()
+{
 	emit openComponent(filter_->mapToSource(currentIndex()));
 }
 
-void LibraryTreeView::onCreateComponent() {
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeView::onCreateComponent()
+//-----------------------------------------------------------------------------
+void LibraryTreeView::onCreateComponent()
+{
 	emit createNewComponent(filter_->mapToSource(currentIndex()));
 }
 
-void LibraryTreeView::onCreateDesign() {
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeView::onCreateDesign()
+//-----------------------------------------------------------------------------
+void LibraryTreeView::onCreateDesign()
+{
 	emit createNewDesign(filter_->mapToSource(currentIndex()));
 }
 
-void LibraryTreeView::onCreateSWDesign() {
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeView::onCreateSWDesign()
+//-----------------------------------------------------------------------------
+void LibraryTreeView::onCreateSWDesign()
+{
     emit createNewSWDesign(filter_->mapToSource(currentIndex()));
 }
 
-void LibraryTreeView::onCreateSystemDesign() {
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeView::onCreateSystemDesign()
+//-----------------------------------------------------------------------------
+void LibraryTreeView::onCreateSystemDesign()
+{
     emit createNewSystemDesign(filter_->mapToSource(currentIndex()));
 }
 
-void LibraryTreeView::onOpenBus() {
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeView::onCreateDesign()
+//-----------------------------------------------------------------------------
+void LibraryTreeView::onOpenBus()
+{
 	emit openBus(filter_->mapToSource(currentIndex()));
 }
 
-void LibraryTreeView::onCreateBus() {
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeView::onCreateBus()
+//-----------------------------------------------------------------------------
+void LibraryTreeView::onCreateBus()
+{
 	emit createBus(filter_->mapToSource(currentIndex()));
 }
 
-void LibraryTreeView::onAddSignals() {
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeView::onAddSignals()
+//-----------------------------------------------------------------------------
+void LibraryTreeView::onAddSignals()
+{
 	emit createAbsDef(filter_->mapToSource(currentIndex()));
 }
 
-void LibraryTreeView::onOpenComDef() {
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeView::onOpenComDef()
+//-----------------------------------------------------------------------------
+void LibraryTreeView::onOpenComDef()
+{
     emit openComDef(filter_->mapToSource(currentIndex()));
 }
 
-void LibraryTreeView::onCreateComDef() {
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeView::onCreateComDef()
+//-----------------------------------------------------------------------------
+void LibraryTreeView::onCreateComDef()
+{
     emit createComDef(filter_->mapToSource(currentIndex()));
 }
 
-void LibraryTreeView::onOpenApiDef() {
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeView::onOpenApiDef()
+//-----------------------------------------------------------------------------
+void LibraryTreeView::onOpenApiDef()
+{
     emit openApiDef(filter_->mapToSource(currentIndex()));
 }
 
-void LibraryTreeView::onCreateApiDef() {
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeView::onCreateApiDef()
+//-----------------------------------------------------------------------------
+void LibraryTreeView::onCreateApiDef()
+{
     emit createApiDef(filter_->mapToSource(currentIndex()));
 }
 
@@ -503,15 +565,19 @@ void LibraryTreeView::onShowErrors()
     emit showErrors(filter_->mapToSource(currentIndex()));
 }
 
-void LibraryTreeView::onOpenXml() {
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeView::onOpenXml()
+//-----------------------------------------------------------------------------
+void LibraryTreeView::onOpenXml()
+{
 	QModelIndex index = filter_->mapToSource(currentIndex());
 	LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
-	VLNV vlnv = item->getVLNV();
-
-	if (vlnv.isValid()) {
-		QString xmlPath = handler_->getPath(vlnv);
+	
+    VLNV vlnv = item->getVLNV();
+	if (vlnv.isValid())
+    {
 		// open the file in operating system's default editor
-		QDesktopServices::openUrl(QUrl::fromLocalFile(xmlPath));
+		QDesktopServices::openUrl(QUrl::fromLocalFile(handler_->getPath(vlnv)));
 	}
 }
 
@@ -522,9 +588,10 @@ void LibraryTreeView::onOpenContainingFolder()
 {
     QModelIndex index = filter_->mapToSource(currentIndex());
     LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
+    
     VLNV vlnv = item->getVLNV();
-
-    if (vlnv.isValid()) {
+    if (vlnv.isValid())
+    {
         QString path = QFileInfo(handler_->getPath(vlnv)).absolutePath();
 
         // Open the folder in the operating system's default file browser.

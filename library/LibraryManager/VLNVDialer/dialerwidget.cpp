@@ -122,7 +122,9 @@ void DialerWidget::onVendorChanged(QString const& vendorText)
 
 	// if the last character is not '?' then append '*' to the string
 	if (!vendor.endsWith(QString("?"), Qt::CaseInsensitive))
+    {
 		vendor += QString("*");
+    }
 
 	QRegExp regExp(vendor, Qt::CaseInsensitive, QRegExp::Wildcard);
 	QRegExpValidator validator(regExp, this);

@@ -11,12 +11,12 @@
 
 #include "LibraryUtils.h"
 
-#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+#include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Design/Design.h>
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/model.h>
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
 #include <IPXACTmodels/common/VLNV.h>
+
 #include <library/LibraryManager/libraryinterface.h>
 
 //-----------------------------------------------------------------------------
@@ -35,21 +35,17 @@ bool getDesign(LibraryInterface* lh, VLNV& designVLNV,
     // Check if the component contains a direct reference to a design.
     if (designVLNV.getType() == VLNV::DESIGN)
     {
-        QSharedPointer<Document const> libComp = lh->getModelReadOnly(designVLNV);
-        design = libComp.staticCast<Design const>();
+        design = lh->getModelReadOnly(designVLNV).staticCast<Design const>();
     }
     // Otherwise check if the component had reference to a design configuration.
     else if (designVLNV.getType() == VLNV::DESIGNCONFIGURATION)
     {
-        QSharedPointer<Document const> libComp = lh->getModelReadOnly(designVLNV);
-        designConf = libComp.staticCast<DesignConfiguration const>();
+        designConf = lh->getModelReadOnly(designVLNV).staticCast<DesignConfiguration const>();
 
         designVLNV = designConf->getDesignRef();
-
         if (designVLNV.isValid())
         {
-            QSharedPointer<Document const> libComp = lh->getModelReadOnly(designVLNV);
-            design = libComp.staticCast<Design const>();
+            design = lh->getModelReadOnly(designVLNV).staticCast<Design const>();
         }
 
         // If design configuration did not contain a reference to a design.

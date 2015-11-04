@@ -12,10 +12,8 @@
 #include "LibraryFilter.h"
 
 #include "libraryitem.h"
-#include "libraryinterface.h"
 
-#include <IPXACTmodels/librarycomponent.h>
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
 
 #include <QRegExp>
 
@@ -24,17 +22,17 @@
 //-----------------------------------------------------------------------------
 LibraryFilter::LibraryFilter(QObject *parent):
 QSortFilterProxyModel(parent), 
-firmness_(),
-implementation_(),
-hierarchy_(),
-vendorValidator_(this),
-libraryValidator_(this),
-nameValidator_(this),
-versionValidator_(this),
-vendorFilter_(),
-libraryFilter_(),
-nameFilter_(),
-versionFilter_() 
+    firmness_(),
+    implementation_(),
+    hierarchy_(),
+    vendorValidator_(this),
+    libraryValidator_(this),
+    nameValidator_(this),
+    versionValidator_(this),
+    vendorFilter_(),
+    libraryFilter_(),
+    nameFilter_(),
+    versionFilter_() 
 {
 	// set settings for filter
 	setSortLocaleAware(true);
@@ -182,16 +180,16 @@ bool LibraryFilter::hasEmptyVLNVfilter() const
 //-----------------------------------------------------------------------------
 // Function: LibraryFilter::checkFirmness()
 //-----------------------------------------------------------------------------
-bool LibraryFilter::checkFirmness( QSharedPointer<Component const> component ) const
+bool LibraryFilter::checkFirmness(QSharedPointer<Component const> component) const
 {
 	Q_ASSERT(component);
 
-    if (component->getComponentImplementation() == KactusAttribute::SW)
+    if (component->getImplementation() == KactusAttribute::SW)
     {
         return true;
     }
 
-    KactusAttribute::Firmness componentFirmness = component->getComponentFirmness();
+    KactusAttribute::Firmness componentFirmness = component->getFirmness();
     if (componentFirmness == KactusAttribute::TEMPLATE)
     {
         return firmness_.templates_;
@@ -213,11 +211,11 @@ bool LibraryFilter::checkFirmness( QSharedPointer<Component const> component ) c
 //-----------------------------------------------------------------------------
 // Function: LibraryFilter::checkImplementation()
 //-----------------------------------------------------------------------------
-bool LibraryFilter::checkImplementation( QSharedPointer<Component const> component ) const
+bool LibraryFilter::checkImplementation(QSharedPointer<Component const> component) const
 {
     Q_ASSERT(component);
 
-    KactusAttribute::Implementation componentImplementation = component->getComponentImplementation();
+    KactusAttribute::Implementation componentImplementation = component->getImplementation();
     if (componentImplementation == KactusAttribute::HW)
     {
         // if the HW component contains system views then it should be considered also as system
@@ -250,12 +248,12 @@ bool LibraryFilter::checkHierarchy(QSharedPointer<Component const> component) co
 {
 	Q_ASSERT(component);
 
-    if (component->getComponentImplementation() == KactusAttribute::SW)
+    if (component->getImplementation() == KactusAttribute::SW)
     {
         return true;
     }
 
-    KactusAttribute::ProductHierarchy componentHierarchy = component->getComponentHierarchy();
+    KactusAttribute::ProductHierarchy componentHierarchy = component->getHierarchy();
     if (componentHierarchy == KactusAttribute::FLAT)
     {
         return hierarchy_.flat_;

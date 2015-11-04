@@ -14,7 +14,7 @@
 #include "../LibraryFilter.h"
 #include "hierarchyitem.h"
 
-#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
+#include <IPXACTmodels/Component/Component.h>
 
 //-----------------------------------------------------------------------------
 // Function: HierarchyFilter::HierarchyFilter()
@@ -49,49 +49,47 @@ bool HierarchyFilter::filterAcceptsRow(int sourceRow, QModelIndex const& sourceP
 
 	HierarchyItem* item = static_cast<HierarchyItem*>(itemIndex.internalPointer());
 
-	// If no search rules for vlnv are defined then display only non-duplicate children of root.
+    // If no search rules for vlnv are defined then display only non-duplicate children of root.
     if (hasEmptyVLNVfilter() && item->parentIsRoot() && item->isDuplicate())
     {
         return false;
     }
 
-    // check the type
-    switch (item->type()) 
+    HierarchyItem::ObjectType itemType = item->type();
+    if (itemType == HierarchyItem::COMPONENT)
     {
-    case HierarchyItem::COMPONENT:
+        if (!type().components_)
         {
-            if (!type().components_)
-            {
-                return false;
-            }
-            break;
+            return false;
+        }
+    }
+
+    else if (itemType == HierarchyItem::APIDEFINITION || itemType == HierarchyItem::COMDEFINITION)
+    {
+        if (!type().buses_)
+        {
+            return false;
         }
 
-    case HierarchyItem::APIDEFINITION:
-    case HierarchyItem::COMDEFINITION:
+        // if SW should not be displayed then this is not shown
+        if (!implementation().sw_)
         {
-            if (!type().buses_)
-                return false;
-
-            // if SW should not be displayed then this is not shown
-            if (!implementation().sw_)
-                return false;
-
-            break;
-        }
-    case HierarchyItem::BUSDEFINITION:
-    case HierarchyItem::ABSDEFINITION: 
-        {
-            if (!type().buses_)
-                return false;
-
-            // if hw should not be displayed then this is not shown
-            if (!implementation().hw_)
-                return false;
+            return false;
         }
 
-    default:
-        break;
+    }
+
+    else if (itemType == HierarchyItem::BUSDEFINITION || itemType == HierarchyItem::ABSDEFINITION)
+    {
+        if (!type().buses_)
+        {
+            return false;
+        }
+        // if hw should not be displayed then this is not shown
+        if (!implementation().hw_)
+        {
+            return false;
+        }
     }
 
     QSharedPointer<Component const> component = item->component();
@@ -99,7 +97,9 @@ bool HierarchyFilter::filterAcceptsRow(int sourceRow, QModelIndex const& sourceP
     {
         // check the filters
         if (!checkFirmness(component) || !checkImplementation(component) || !checkHierarchy(component))
+        {
             return false;
+        }
     }
 
     QList<VLNV> list = item->getVLNVs();

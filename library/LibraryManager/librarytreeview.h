@@ -1,8 +1,13 @@
-/* 
- *
- *  Created on: 20.12.2010
- *      Author: Antti Kamppi
- */
+//-----------------------------------------------------------------------------
+// File: librarytreeview.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 20.12.2010
+//
+// Description:
+// The widget to display the library in a tree.
+//-----------------------------------------------------------------------------
 
 #ifndef LIBRARYTREEVIEW_H
 #define LIBRARYTREEVIEW_H
@@ -18,222 +23,219 @@
 
 class LibraryInterface;
 
-/*! \brief The widget to display the library hierarchically.
- *
- */
-class LibraryTreeView : public QTreeView {
-
+//-----------------------------------------------------------------------------
+//! The widget to display the library in a tree.
+//-----------------------------------------------------------------------------
+class LibraryTreeView : public QTreeView
+{
 	Q_OBJECT
 
 public:
 
-	/*! \brief The constructor
+	/*! The constructor
 	* 
-	* \param handler Pointer to the instance that manages the library.
-	* \param filter Pointer to the class that does the filtering for the view.
-	* \param parent Pointer to the owner of this widget.
+	*      @param [in] handler  The instance that manages the library.
+	*      @param [in] filter   The class that does the filtering for the view.
+	*      @param [in] parent   The owner of this widget.
 	*
 	*/
-	LibraryTreeView(LibraryInterface* handler, 
-		LibraryTreeFilter* filter, 
-		QWidget *parent = 0);
+	LibraryTreeView(LibraryInterface* handler, LibraryTreeFilter* filter, QWidget* parent = 0);
 
-	//! \brief The destructor.
+	//! The destructor.
 	virtual ~LibraryTreeView();
 
 signals:
 
-	//! \brief Open the selected hierarchical design
-	void openDesign(const QModelIndex& index);
+	//! Open the selected hierarchical design
+	void openDesign(QModelIndex const& index);
 
-	//! \brief Open the SW design of a component
-	void openSWDesign(const QModelIndex& index);
+	//! Open the SW design of a component
+	void openSWDesign(QModelIndex const& index);
 
-	//! \brief Open the system design of a component
-	void openSystemDesign(const QModelIndex& index);
+	//! Open the system design of a component
+	void openSystemDesign(QModelIndex const& index);
 
-	//! \brief Open the given object in the component editor
-	void openComponent(const QModelIndex& index);
+	//! Open the given object in the component editor
+	void openComponent(QModelIndex const& index);
 
-	//! \brief Create new component
-	void createNewComponent(const QModelIndex& index);
+	//! Create new component
+	void createNewComponent(QModelIndex const& index);
 
-	//! \brief Create new design
-	void createNewDesign(const QModelIndex& index);
+	//! Create new design
+	void createNewDesign(QModelIndex const& index);
 
-	//! \brief Create new SW design
-	void createNewSWDesign(const QModelIndex& index);
+	//! Create new SW design
+	void createNewSWDesign(QModelIndex const& index);
 
-	//! \brief Create new system design
-	void createNewSystemDesign(const QModelIndex& index);
+	//! Create new system design
+	void createNewSystemDesign(QModelIndex const& index);
 
-	//! \brief Delete the selected item
-	void deleteItem(const QModelIndex& index);
+	//! Delete the selected item
+	void deleteItem(QModelIndex const& index);
 
-	//! \brief Export the selected item and it's sub-items.
-	void exportItem(const QModelIndex& index);
+	//! Export the selected item and it's sub-items.
+	void exportItem(QModelIndex const& index);
 
 	//! Shows errors about the selected item.
 	void showErrors(QModelIndex const& index);
 
-	//! \brief Open bus definition in an editor
-	void openBus(const QModelIndex& index);
+	//! Open bus definition in an editor
+	void openBus(QModelIndex const& index);
 
-	//! \brief Open COM definition in an editor
-	void openComDef(const QModelIndex& index);
+	//! Open COM definition in an editor
+	void openComDef(QModelIndex const& index);
 
-	//! \brief Open API definition in an editor
-	void openApiDef(const QModelIndex& index);
+	//! Open API definition in an editor
+	void openApiDef(QModelIndex const& index);
 
-	//! \brief Create a new bus definition
-	void createBus(const QModelIndex& index);
+	//! Create a new bus definition
+	void createBus(QModelIndex const& index);
 
-	//! \brief Create a new abstraction definition for given bus def.
-	void createAbsDef(const QModelIndex& index);
+	//! Create a new abstraction definition for given bus def.
+	void createAbsDef(QModelIndex const& index);
 
-	//! \brief Create a new COM definition
-	void createComDef(const QModelIndex& index);
+	//! Create a new COM definition
+	void createComDef(QModelIndex const& index);
 
-	//! \brief Create a new API definition
-	void createApiDef(const QModelIndex& index);
+	//! Create a new API definition
+	void createApiDef(QModelIndex const& index);
 
-	//! \brief A drag operation has been initiated.
-	void dragInitiated(const QModelIndex& index);
+	//! A drag operation has been initiated.
+	void dragInitiated(QModelIndex const& index);
 
-	//! \brief Emitted when a library item identifying single vlnv is selected.
+	//! Emitted when a library item identifying single vlnv is selected.
 	void itemSelected(const VLNV& vlnv);
 
-	//! \brief Send error message to user.
-	void errorMessage(const QString& message);
+	//! Send error message to user.
+	void errorMessage(QString const& message);
 
-	//! \brief Send notification to user.
-	void noticeMessage(const QString& message);
+	//! Send notification to user.
+	void noticeMessage(QString const& message);
 
-	public slots:
+public slots:
 
-		//! \brief Open a hierarchical component
-		void onOpenDesign();
+    //! Open a hierarchical component
+    void onOpenDesign();
 
-		//! \brief Open the SW design of a component
-		void onOpenSWDesign();
+    //! Open the SW design of a component
+    void onOpenSWDesign();
 
-		//! \brief Open the system design of a component
-		void onOpenSystemDesign();
+    //! Open the system design of a component
+    void onOpenSystemDesign();
 
-		//! \brief Open component editor
-		void onOpenComponent();
+    //! Open component editor
+    void onOpenComponent();
 
-		//! \brief Create new component
-		void onCreateComponent();
+    //! Create new component
+    void onCreateComponent();
 
-		//! \brief Create new design
-		void onCreateDesign();
+    //! Create new design
+    void onCreateDesign();
 
-		//! \brief Create new SW design
-		void onCreateSWDesign();
+    //! Create new SW design
+    void onCreateSWDesign();
 
-		//! \brief Create new SW design
-		void onCreateSystemDesign();
+    //! Create new SW design
+    void onCreateSystemDesign();
 
-		//! \brief Called when user selects "Delete item" in contextMenu
-		void onDeleteAction();
+    //! Called when user selects "Delete item" in contextMenu
+    void onDeleteAction();
 
-		//! \brief Called when user selects "Export item and sub-items" in contextMenu
-		void onExportAction();
+    //! Called when user selects "Export item and sub-items" in contextMenu
+    void onExportAction();
 
-		//! \brief Open bus.
-		void onOpenBus();
+    //! Open bus.
+    void onOpenBus();
 
-		//! \brief Open COM definition.
-		void onOpenComDef();
+    //! Open COM definition.
+    void onOpenComDef();
 
-		//! \brief Open API definition.
-		void onOpenApiDef();
+    //! Open API definition.
+    void onOpenApiDef();
 
-		//! \brief Create new bus.
-		void onCreateBus();
+    //! Create new bus.
+    void onCreateBus();
 
-		//! \brief Create new COM definition.
-		void onCreateComDef();
+    //! Create new COM definition.
+    void onCreateComDef();
 
-		//! \brief Create new API definition.
-		void onCreateApiDef();
+    //! Create new API definition.
+    void onCreateApiDef();
 
-		//! \brief Create new abstraction definition for selected bus definition.
-		void onAddSignals();
+    //! Create new abstraction definition for selected bus definition.
+    void onAddSignals();
 
-		/*! \brief Set the index to be the current index and select and expand it.
-		*
-		* \param index Specified the index to be set as the current index.
-		*
-		*/
-		virtual void setCurrentIndex(const QModelIndex& index);
+    /*! Set the index to be the current index and select and expand it.
+    *
+    *      @param [in] index Specified the index to be set as the current index.
+    */
+    virtual void setCurrentIndex(QModelIndex const& index);
 
-		//! \brief Open the xml of the selected IP-Xact element.
-		void onOpenXml();
+    //! Open the xml of the selected IP-Xact element.
+    void onOpenXml();
 
-        //! Opens the folder that contains the IP-XACT object.
-        void onOpenContainingFolder();
+    //! Opens the folder that contains the IP-XACT object.
+    void onOpenContainingFolder();
 
-		//! Called when the user chooses Show Errors from the context menu.
-		void onShowErrors();
+    //! Called when the user chooses Show Errors from the context menu.
+    void onShowErrors();
 
 protected:
 
-	//! \brief The event handler for mouse double clicks
-	virtual void mouseDoubleClickEvent(QMouseEvent * event);
+    //! The event handler for mouse double clicks
+    virtual void mouseDoubleClickEvent(QMouseEvent * event);
 
-	//! \brief The event handler for mousePress events
-	virtual void mousePressEvent(QMouseEvent *event);
+    //! The event handler for mousePress events
+    virtual void mousePressEvent(QMouseEvent *event);
 
-	//! \brief The event handler for mouseMove events
-	virtual void mouseMoveEvent(QMouseEvent *event);
+    //! The event handler for mouseMove events
+    virtual void mouseMoveEvent(QMouseEvent *event);
 
-	//! \brief The event handler for mouse release events
-	virtual void mouseReleaseEvent(QMouseEvent* event);
+    //! The event handler for mouse release events
+    virtual void mouseReleaseEvent(QMouseEvent* event);
 
-	/*! \brief Handler for the context menu events.
-	*
-	* \param event Pointer to the contextMenuEvent to be handled.
-	*/
-	virtual void contextMenuEvent(QContextMenuEvent* event);
+    /*! Handler for the context menu events.
+    *
+    *      @param [in] event The contextMenuEvent to be handled.
+    */
+    virtual void contextMenuEvent(QContextMenuEvent* event);
 
 private:
 
-	//! \brief No assignment
+    //! No assignment
 	LibraryTreeView(const LibraryTreeView& other);
 
-	//! \brief No copying
+	//! No copying
 	LibraryTreeView& operator=(const LibraryTreeView& other);
 
-	//! \brief Set up the actions for the context menu
+	//! Set up the actions for the context menu
 	void setupActions();
 
-	//! \brief Pointer to the instance that gives the xml objects.
+	//! The instance that gives the xml objects.
 	LibraryInterface* handler_;
 
-	//! \brief Pointer to the filter that is used to transform model indexes 
+	//! The filter that is used to transform model indexes 
 	LibraryTreeFilter* filter_;
 
-	//! \brief The starting position for drag
+	//! The starting position for drag
 	QPoint startPos_;
 
-	//! \brief The index that is selected to be dragged
+	//! The index that is selected to be dragged
 	QModelIndex dragIndex_;
 
 	/**********************************************************************/
 	// The actions for the contextMenu
 
-	//! \brief Open the hierarchical design of a component
+	//! Open the hierarchical design of a component
 	QAction* openDesignAction_;
 
-	//! \brief Open the SW design of a component
+	//! Open the SW design of a component
 	QAction* openSWDesignAction_;
 
-	//! \brief Open the component editor
-	QAction* openCompAction_;
+	//! Open the component editor
+	QAction* openComponentAction_;
 
-	//! \brief Create new design for a component
+	//! Create new design for a component
 	QAction* createNewDesignAction_;
 
 	//! Create new SW design for a component.
@@ -242,31 +244,31 @@ private:
 	//! Create new system design for a component.
 	QAction* createNewSystemDesignAction_;
 
-	//! \brief Delete the item from the library
+	//! Delete the item from the library
 	QAction* deleteAction_;
 
-	//! \brief Export the item(s) to a new location in file system
+	//! Export the item(s) to a new location in file system
 	QAction* exportAction_;
 
 	//! Show errors about the item.
 	QAction* showErrorsAction_;
 
-	//! \brief Open a bus definition
+	//! Open a bus definition
 	QAction* openBusAction_;
 
-	//! \brief Create new abstraction definition for bus definition.
+	//! Create new abstraction definition for bus definition.
 	QAction* addSignalsAction_;
 
-	//! \brief Open a COM definition
+	//! Open a COM definition
 	QAction* openComDefAction_;
 
-	//! \brief Open an API definition
+	//! Open an API definition
 	QAction* openApiDefAction_;
 
-	//! \brief Open an existing system for editing.
+	//! Open an existing system for editing.
 	QAction* openSystemAction_;
 
-	//! \brief Open the xml file to be viewed by the user.
+	//! Open the xml file to be viewed by the user.
 	QAction* openXmlAction_;
 
     //! Action to open the containing folder.

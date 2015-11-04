@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 11.7.2011
- *      Author: Antti Kamppi
- * 		filename: hierarchygroup.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: hierarchygroup.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 11.07.2011
+//
+// Description:
+// Contains the check boxes to set the hierarchy options for VLNVDialer.
+//-----------------------------------------------------------------------------
 
 #include "hierarchygroup.h"
 
@@ -22,8 +26,8 @@ boardBox_(tr("Board"), this),
 chipBox_(tr("Chip"), this),
 socBox_(tr("SoC"), this),
 ipBox_(tr("IP"), this),
-options_() {
-
+options_()
+{
 	QGridLayout* layout = new QGridLayout(this);
 	layout->addWidget(&flatBox_, 0, 0, 1, 1);
 	layout->addWidget(&productBox_, 0, 1, 1, 1);
@@ -89,7 +93,8 @@ Utils::HierarchyOptions HierarchyGroup::getHierarchy() const
 //-----------------------------------------------------------------------------
 // Function: HierarchyGroup::onFlatChange()
 //-----------------------------------------------------------------------------
-void HierarchyGroup::onFlatChange( bool checked ) {
+void HierarchyGroup::onFlatChange(bool checked)
+{
 	options_.flat_ = checked;
 	emit optionsChanged(options_);
 }
@@ -97,7 +102,8 @@ void HierarchyGroup::onFlatChange( bool checked ) {
 //-----------------------------------------------------------------------------
 // Function: HierarchyGroup::onProductChange()
 //-----------------------------------------------------------------------------
-void HierarchyGroup::onProductChange( bool checked ) {
+void HierarchyGroup::onProductChange(bool checked)
+{
 	options_.product_ = checked;
 	emit optionsChanged(options_);
 }
@@ -105,7 +111,8 @@ void HierarchyGroup::onProductChange( bool checked ) {
 //-----------------------------------------------------------------------------
 // Function: HierarchyGroup::onBoardChange()
 //-----------------------------------------------------------------------------
-void HierarchyGroup::onBoardChange( bool checked ) {
+void HierarchyGroup::onBoardChange(bool checked)
+{
 	options_.board_ = checked;
 	emit optionsChanged(options_);
 }
@@ -113,7 +120,8 @@ void HierarchyGroup::onBoardChange( bool checked ) {
 //-----------------------------------------------------------------------------
 // Function: HierarchyGroup::onChipChange()
 //-----------------------------------------------------------------------------
-void HierarchyGroup::onChipChange( bool checked ) {
+void HierarchyGroup::onChipChange(bool checked)
+{
 	options_.chip_ = checked;
 	emit optionsChanged(options_);
 }
@@ -121,7 +129,8 @@ void HierarchyGroup::onChipChange( bool checked ) {
 //-----------------------------------------------------------------------------
 // Function: HierarchyGroup::onSocChange()
 //-----------------------------------------------------------------------------
-void HierarchyGroup::onSocChange( bool checked ) {
+void HierarchyGroup::onSocChange(bool checked)
+{
 	options_.soc_ = checked;
 	emit optionsChanged(options_);
 }
@@ -129,7 +138,8 @@ void HierarchyGroup::onSocChange( bool checked ) {
 //-----------------------------------------------------------------------------
 // Function: HierarchyGroup::onIpChange()
 //-----------------------------------------------------------------------------
-void HierarchyGroup::onIpChange( bool checked ) {
+void HierarchyGroup::onIpChange(bool checked)
+{
 	options_.ip_ = checked;
 	emit optionsChanged(options_);
 }

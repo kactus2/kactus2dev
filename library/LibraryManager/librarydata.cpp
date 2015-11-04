@@ -1,19 +1,21 @@
-/* 
- *
- *  Created on: 20.12.2010
- *      Author: Antti Kamppi
- */
+//-----------------------------------------------------------------------------
+// File: librarydata.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 20.12.2010
+//
+// Description:
+// LibraryData is the data model that manages the actual VLNV library.
+//-----------------------------------------------------------------------------
 
 #include "librarydata.h"
 
 #include "libraryhandler.h"
-#include "ipxactwidget.h"
-#include "ipxactmodel.h"
 #include "librarytreemodel.h"
 
 #include <common/utils.h>
 #include <common/widgets/ScanProgressWidget/scanprogresswidget.h>
-
 
 #include <IPXACTmodels/common/VLNV.h>
 
@@ -29,35 +31,35 @@
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 #include <IPXACTmodels/designConfiguration/DesignConfigurationReader.h>
 
-#include <IPXACTmodels/librarycomponent.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/ComponentReader.h>
 
-#include <IPXACTmodels/component.h>
 #include <IPXACTmodels/Design/Design.h>
-#include <IPXACTmodels/generatorchain.h>
 #include <IPXACTmodels/generaldeclarations.h>
+
 #include <IPXACTmodels/kactusExtensions/ComDefinition.h>
 #include <IPXACTmodels/kactusExtensions/ApiDefinition.h>
 
-#include <QFile>
-#include <QDir>
-#include <QStringList>
-#include <QTextStream>
-#include <QFileInfo>
-#include <QDomDocument>
-#include <QString>
-#include <QObject>
-#include <QWidget>
-#include <QFileDialog>
-#include <QSettings>
-#include <QList>
-#include <QProgressBar>
-#include <QMap>
-#include <QSharedPointer>
-#include <QTimer>
-#include <QUrl>
 
-LibraryData::LibraryData(LibraryHandler* parent, QWidget* parentWidget)
-    : QObject(parent),
+#include <QDir>
+#include <QDomDocument>
+#include <QFile>
+#include <QFileDialog>
+#include <QFileInfo>
+#include <QList>
+#include <QObject>
+#include <QSettings>
+#include <QSharedPointer>
+#include <QString>
+#include <QStringList>
+#include <QTimer>
+#include <QWidget>
+
+//-----------------------------------------------------------------------------
+// Function: librarydata::()
+//-----------------------------------------------------------------------------
+LibraryData::LibraryData(LibraryHandler* parent, QWidget* parentWidget):
+QObject(parent),
       parentWidget_(parentWidget),
       libraryItems_(),
       handler_(parent),
@@ -75,53 +77,54 @@ LibraryData::LibraryData(LibraryHandler* parent, QWidget* parentWidget)
       fileCount_(0),
       urlTester_(new QRegExpValidator(Utils::URL_VALIDITY_REG_EXP, this))
 {
-	connect(this, SIGNAL(errorMessage(const QString&)),
-		parent, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
-	connect(this, SIGNAL(noticeMessage(const QString&)),
-		parent, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
+	connect(this, SIGNAL(errorMessage(QString const&)),
+        parent, SIGNAL(errorMessage(QString const&)), Qt::UniqueConnection);
+	connect(this, SIGNAL(noticeMessage(QString const&)),
+		parent, SIGNAL(noticeMessage(QString const&)), Qt::UniqueConnection);
 }
 
+//-----------------------------------------------------------------------------
+// Function: LibraryData::~LibraryData()
+//-----------------------------------------------------------------------------
 LibraryData::~LibraryData()
 {
-	// clear all pointers
 	libraryItems_.clear();
 }
 
+//-----------------------------------------------------------------------------
+// Function: LibraryData::getItems()
+//-----------------------------------------------------------------------------
 QList<VLNV> LibraryData::getItems() const
 {
     return libraryItems_.keys();
 }
 
+//-----------------------------------------------------------------------------
+// Function: LibraryData::getDirectory()
+//-----------------------------------------------------------------------------
 void LibraryData::getDirectory(QStringList& list)
 {
 	// empty the list
 	list.clear();
 
-	// create the dialog
 	QFileDialog fileChooser(handler_, Qt::Dialog);
-
-	// select directories
 	fileChooser.setFileMode(QFileDialog::Directory);
-
-	// only display directories
 	fileChooser.setOptions(QFileDialog::ShowDirsOnly);
-
-	// view as list
 	fileChooser.setViewMode(QFileDialog::List);
 
 	// the default directory is the users home directory
 	fileChooser.setDirectory(QDir::toNativeSeparators(QDir::homePath()));
 
-	// execute the dialog and if user clicks "ok" then add the selected files
-	// to the list
 	if (fileChooser.exec())
     {
 		list = fileChooser.selectedFiles();
 	}
-	return;
 }
 
-const QString LibraryData::getPath( const VLNV& vlnv )
+//-----------------------------------------------------------------------------
+// Function: LibraryData::getPath()
+//-----------------------------------------------------------------------------
+QString LibraryData::getPath(VLNV const& vlnv)
 {
 	if (libraryItems_.contains(vlnv))
     {
@@ -135,14 +138,16 @@ const QString LibraryData::getPath( const VLNV& vlnv )
 			"Name: %3\n"
 			"Version: %4\n"
 			"was not found in the library.").arg(
-			vlnv.getVendor()).arg(vlnv.getLibrary()).arg(vlnv.getName()).arg(
-			vlnv.getVersion()));
+			vlnv.getVendor()).arg(vlnv.getLibrary()).arg(vlnv.getName()).arg(vlnv.getVersion()));
 
 		return QString();
 	}
 }
 
-bool LibraryData::addVLNV( const VLNV& vlnv, const QString& path)
+//-----------------------------------------------------------------------------
+// Function: LibraryData::addVLNV()
+//-----------------------------------------------------------------------------
+bool LibraryData::addVLNV(VLNV const& vlnv, QString const& path)
 {
 	if (libraryItems_.contains(vlnv))
     {
@@ -173,26 +178,32 @@ bool LibraryData::addVLNV( const VLNV& vlnv, const QString& path)
 	return true;
 }
 
-bool LibraryData::contains( const VLNV& vlnv )
+//-----------------------------------------------------------------------------
+// Function: LibraryData::contains()
+//-----------------------------------------------------------------------------
+bool LibraryData::contains(VLNV const& vlnv)
 {
-	// if vlnv is found and it is of correct type
 	return libraryItems_.contains(vlnv);
 }
 
-void LibraryData::onRemoveVLNV( const VLNV& vlnv )
+//-----------------------------------------------------------------------------
+// Function: LibraryData::onRemoveVLNV()
+//-----------------------------------------------------------------------------
+void LibraryData::onRemoveVLNV(VLNV const& vlnv)
 {
-	// if vlnv does not belong to library
 	if (!libraryItems_.contains(vlnv))
     {
 		return;
 	}
 
-	// remove the vlnv, no delete operation is needed because VLNVs are statically created
     libraryItems_.remove(vlnv);
 }
 
-VLNV::IPXactType LibraryData::getType( const VLNV& vlnv ) const {
-
+//-----------------------------------------------------------------------------
+// Function: LibraryData::getType()
+//-----------------------------------------------------------------------------
+VLNV::IPXactType LibraryData::getType(VLNV const& vlnv) const
+{
 	if (!libraryItems_.contains(vlnv))
     {
 		return VLNV::INVALID;
@@ -203,11 +214,17 @@ VLNV::IPXactType LibraryData::getType( const VLNV& vlnv ) const {
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Function: LibraryData::resetLibrary()
+//-----------------------------------------------------------------------------
 void LibraryData::resetLibrary()
 {
 	emit resetModel();
 }
 
+//-----------------------------------------------------------------------------
+// Function: LibraryData::checkLibraryIntegrity()
+//-----------------------------------------------------------------------------
 void LibraryData::checkLibraryIntegrity()
 {
 	int max = libraryItems_.size();
@@ -250,6 +267,9 @@ void LibraryData::checkLibraryIntegrity()
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Function: LibraryData::parseLibrary()
+//-----------------------------------------------------------------------------
 void LibraryData::parseLibrary()
 {
 	// clear the previous items in the library
@@ -257,23 +277,15 @@ void LibraryData::parseLibrary()
 
 	QSettings settings(this);
 
-	// Load the library locations.
-	QStringList locations = settings.value("Library/ActiveLocations", QStringList()).toStringList();
-
-	// if there are no library locations
-	if (locations.isEmpty()) 
-    {
-		locations_.clear();
-    }
-    else
+	locations_ = settings.value("Library/ActiveLocations", QStringList()).toStringList();
+	if (!locations_.isEmpty()) 
     {
         // create the progress bar that displays the progress of the scan
         progWidget_ = new ScanProgressWidget(parentWidget_);
-        progWidget_->setRange(0, locations.size());
-        progWidget_->setMessage("Scanning location: \n" + locations.first());
+        progWidget_->setRange(0, locations_.size());
+        progWidget_->setMessage("Scanning location: \n" + locations_.first());
         timerStep_ = 0;
-        timerSteps_ = locations.size();
-        locations_ = locations;
+        timerSteps_ = locations_.size();
 
         timer_ = new QTimer(this);
         connect(timer_, SIGNAL(timeout()), this, SLOT(performParseLibraryStep()));
@@ -286,9 +298,11 @@ void LibraryData::parseLibrary()
 	checkLibraryIntegrity();
 }
 
-void LibraryData::parseDirectory( const QString& directoryPath )
+//-----------------------------------------------------------------------------
+// Function: LibraryData::parseDirectory()
+//-----------------------------------------------------------------------------
+void LibraryData::parseDirectory(QString const& directoryPath)
 {
-	// if the path is empty
 	if (directoryPath.isEmpty())
     {
 		return;
@@ -306,18 +320,14 @@ void LibraryData::parseDirectory( const QString& directoryPath )
 	QDir dirHandler(directoryPath);
 
 	// get list of files and folders
-	QFileInfoList entryInfos(dirHandler.entryInfoList(QDir::NoDotAndDotDot | QDir::AllDirs | QDir::Files));
-
-	foreach (QFileInfo entryInfo, entryInfos)
+	foreach (QFileInfo const& entryInfo, dirHandler.entryInfoList(QDir::NoDotAndDotDot | QDir::AllDirs | QDir::Files))
     {
 		if (entryInfo.exists())
         {
-            // if the entry is an xml file
-            if (entryInfo.isFile() && entryInfo.suffix() == "xml")
+            if (entryInfo.isFile() && entryInfo.suffix() == QLatin1String("xml"))
             {
                 parseFile(entryInfo.absoluteFilePath());
             }
-            // if the entry is a sub-directory
             else if (entryInfo.isDir())
             {
                 parseDirectory(entryInfo.absoluteFilePath());
@@ -329,7 +339,7 @@ void LibraryData::parseDirectory( const QString& directoryPath )
 //-----------------------------------------------------------------------------
 // Function: LibraryData::parseFile()
 //-----------------------------------------------------------------------------
-void LibraryData::parseFile( const QString& filePath )
+void LibraryData::parseFile(QString const& filePath)
 {
 	if (filePath.isEmpty())
     {
@@ -337,8 +347,6 @@ void LibraryData::parseFile( const QString& filePath )
 	}
 
 	QFile docFile(filePath);
-
-	// if the file can not be opened
 	if (!docFile.open(QFile::ReadOnly))
     {
 		emit errorMessage(tr("Could not open file %1 for reading.").arg(filePath));
@@ -349,10 +357,9 @@ void LibraryData::parseFile( const QString& filePath )
 
 	QDomDocument doc;
 	if (doc.setContent(&docFile))
-    {
-		IPXactModel newModel(doc, this);
+    {		
 		docFile.close();
-		vlnv = newModel.getVLNV();
+		vlnv = getVLNV(doc);
 	}
 	else // content could not be read.
     {
@@ -361,13 +368,11 @@ void LibraryData::parseFile( const QString& filePath )
 		return;
 	}
 
-	// if the vlnv is not valid (the document was not IP-Xact)
 	if (!vlnv.isValid())
     {
 		return;
 	}
 	
-	// if the VLNV already exists in the library
 	if (libraryItems_.contains(vlnv))
     {
 		emit noticeMessage(tr("VLNV %1 was already found in the library").arg(vlnv.toString()));
@@ -381,7 +386,7 @@ void LibraryData::parseFile( const QString& filePath )
 //-----------------------------------------------------------------------------
 // Function: LibraryData::getModel()
 //-----------------------------------------------------------------------------
-QSharedPointer<Document> LibraryData::getModel( const VLNV& vlnv )
+QSharedPointer<Document> LibraryData::getModel(VLNV const& vlnv)
 {
 	if (!libraryItems_.contains(vlnv))
     {
@@ -393,8 +398,6 @@ QSharedPointer<Document> LibraryData::getModel( const VLNV& vlnv )
 	toCreate.setType(libraryItems_.find(vlnv).key().getType());
 	
 	QString path = libraryItems_.value(toCreate);
-
-	// if the file was not found
 	if (path.isEmpty())
     {
 		return QSharedPointer<Document>();
@@ -418,15 +421,12 @@ QSharedPointer<Document> LibraryData::getModel( const VLNV& vlnv )
     }
     else if (toCreate.getType() == VLNV::COMPONENT)
     {
-        return QSharedPointer<Document>(new Component(doc));
+        ComponentReader reader;
+        return reader.createComponentFrom(doc);
     }
     else if (toCreate.getType() ==VLNV::DESIGN) {
         DesignReader reader;
         return reader.createDesignFrom(doc);
-    }
-    else if (toCreate.getType() == VLNV::GENERATORCHAIN)
-    {
-        return QSharedPointer<Document>(new GeneratorChain(doc));
     }
     else if (toCreate.getType() == VLNV::DESIGNCONFIGURATION)
     {
@@ -466,18 +466,16 @@ void LibraryData::performParseLibraryStep()
 	QString location = locations_.at(timerStep_);
 	QFileInfo locationInfo(location);
 
-	// if the location is a directory
 	if (locationInfo.isDir())
 	{
 		parseDirectory(location);
 	}
-	// if the location is a direct file
 	else if (locationInfo.isFile())
 	{
 		parseFile(location);
 	}
 
-	++timerStep_;
+	timerStep_++;
 
 	// Check if all steps have been completed.
 	if (timerStep_ == timerSteps_)
@@ -512,13 +510,13 @@ void LibraryData::performIntegrityCheckStep()
         {
 			// remove the pair from the map and move on
 			QMap<VLNV, QString>::iterator i = libraryItems_.find(iterObjects_.key());
-			++iterObjects_;
+			iterObjects_++;
             libraryItems_.erase(i);
 		}
         else
         {
             checkObject(libComp, iterObjects_.value());
-            ++iterObjects_;
+            iterObjects_++;
         }
 	}
 	else
@@ -527,7 +525,7 @@ void LibraryData::performIntegrityCheckStep()
 		emit resetModel();
 	}
 
-	++timerStep_;
+	timerStep_++;
 
 	// Update the message and value for the next round.
 	if (timerStep_ < timerSteps_)
@@ -554,10 +552,12 @@ void LibraryData::performIntegrityCheckStep()
 	}
 }
 
-bool LibraryData::checkObject( QSharedPointer<Document> libComp, const QString& path, bool print /*= true*/ ) {
-
-	// in the start assume that document is valid and if errors are 
-	// found the set document as invalid
+//-----------------------------------------------------------------------------
+// Function: LibraryData::checkObject()
+//-----------------------------------------------------------------------------
+bool LibraryData::checkObject(QSharedPointer<Document> libComp, QString const& path, bool print)
+{
+	// in the start assume that document is valid and if errors are found the set document as invalid
 	bool wasValid = true;
 
 	Q_ASSERT(libComp);
@@ -565,10 +565,7 @@ bool LibraryData::checkObject( QSharedPointer<Document> libComp, const QString& 
 	// used to print information to user
 	VLNV vlnv(libComp->getVlnv());
 
-	// inform the user of the object being processed
-
-	// make sure the file exists
-	QFileInfo topFile(path);
+    QFileInfo topFile(path);
 	if (!topFile.exists())
     {
 		// if theres no printing then there is no reason to check further errors
@@ -579,8 +576,8 @@ bool LibraryData::checkObject( QSharedPointer<Document> libComp, const QString& 
 
 		emit noticeMessage(tr("The following errors were found while processing item %1:").arg(vlnv.toString(":")));
 		emit errorMessage(tr("The file %1 for the document was not found.").arg(path));
-		++errors_;
-		++failedObjects_;
+		errors_++;
+		failedObjects_++;
 
 		wasValid = false;
 	}
@@ -609,7 +606,7 @@ bool LibraryData::checkObject( QSharedPointer<Document> libComp, const QString& 
 
 	// check that all VLNVs needed by this model are found in the library
 	QList<VLNV> vlnvList = libComp->getDependentVLNVs();
-	for (int j = 0; j < vlnvList.size(); ++j)
+	for (int j = 0; j < vlnvList.size(); j++)
     {
 		// if the document referenced by this model is not found
 		if (!libraryItems_.contains(vlnvList.at(j)))
@@ -624,26 +621,24 @@ bool LibraryData::checkObject( QSharedPointer<Document> libComp, const QString& 
 			if (wasValid)
             {
 				emit noticeMessage(tr("The following errors were found while processing item %1:").arg(vlnv.toString(":")));
-				++failedObjects_;
+				failedObjects_++;
 				wasValid = false;
 			}
 
 			// tell user that referenced object was not found
 			emit errorMessage(
 				tr("The referenced VLNV was not found in the library: %1").arg(vlnvList.at(j).toString()));
-			++errors_;
-			++vlnvErrors_;
+			errors_++;
+			vlnvErrors_++;
 		}
 	}
 
 	// check all dependent directories
-	QStringList dirs = libComp->getDependentDirs();
-	foreach (QString dir, dirs)
+	foreach (QString const& dir, libComp->getDependentDirs())
     {
 		QString dirPath = General::getAbsolutePath(path, dir);
 		QFileInfo dirInfo(dirPath);
 
-		// if the directory does not exist
 		if (!dirInfo.exists())
         {
 			// if theres no printing then there is no reason to check further errors
@@ -657,32 +652,25 @@ bool LibraryData::checkObject( QSharedPointer<Document> libComp, const QString& 
             {
 				emit noticeMessage(
                     tr("The following errors were found while processing item %1:").arg(vlnv.toString(":")));
-				++failedObjects_;
+				failedObjects_++;
 				wasValid = false;
 			}
 
 			emit errorMessage(tr("\tDirectory %1 was not found in the file system.").arg(dirPath));
 
-			++errors_;
-			++fileErrors_;
+			errors_++;
+			fileErrors_++;
 		}
 	}
 
 	// check all files referenced by this model
-	QStringList filelist = libComp->getDependentFiles();
-	for (int j = 0; j < filelist.size(); ++j)
+	foreach (QString originalPath, libComp->getDependentFiles())
     {
-		// the file reference in the component
-		QString originalPath = filelist.at(j);
-
-		// used by the url validators
+        // Check if the path is actually a URL to (external) location.
 		int pos = 0;
-
-		// check if the path is actually a URL to (external) location
 		if (urlTester_->validate(originalPath, pos) == QValidator::Acceptable)
         {
-			pos = 0;
-            ++fileCount_;
+            fileCount_++;
 		}
 		// The path was not URL so it must be file reference on the disk.
 		else
@@ -701,39 +689,52 @@ bool LibraryData::checkObject( QSharedPointer<Document> libComp, const QString& 
 				filePath = originalPath;
 			}
 
-			// make sure that each file referenced by the model exists
-			// in the file system
 			QFileInfo pathInfo(filePath);
-
-			// if the path did not exist
-			if (!pathInfo.exists())
+			if (pathInfo.exists())
             {
-				// if theres no printing then there is no reason to check further errors
-				if (!print)
-                {
-					return false;
-				}
-
-				// if this is the first found error
-				if (wasValid)
-                {
-					emit noticeMessage(
-                        tr("The following errors were found while processing item %1:").arg(vlnv.toString(":")));
-					++failedObjects_;
-					wasValid = false;
-				}
-
-				emit errorMessage(tr("\tFile %1 was not found in the file system.").arg(filePath));
-				++errors_;
-				++fileErrors_;
+                fileCount_++;
 			}
-			// if the file exists then increase the total file count.
 			else
             {
-				++fileCount_;
+                if (!print)
+                {
+                    return false;
+                }
+
+                // if this is the first found error
+                if (wasValid)
+                {
+                    emit noticeMessage(
+                        tr("The following errors were found while processing item %1:").arg(vlnv.toString(":")));
+                    failedObjects_++;
+                    wasValid = false;
+                }
+
+                emit errorMessage(tr("\tFile %1 was not found in the file system.").arg(filePath));
+                errors_++;
+                fileErrors_++;
 			}
 		}
 	}
 
 	return wasValid;
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryData::getVLNV()
+//-----------------------------------------------------------------------------
+VLNV LibraryData::getVLNV(QDomDocument& doc)
+{
+    // get the type of the document
+    QDomNodeList nodeList = doc.childNodes();
+
+    QDomElement documentElement = doc.documentElement();
+    QString type = documentElement.nodeName();
+
+    QString vendor = documentElement.firstChildElement("ipxact:vendor").firstChild().nodeValue();
+    QString library = documentElement.firstChildElement("ipxact:library").firstChild().nodeValue();
+    QString name = documentElement.firstChildElement("ipxact:name").firstChild().nodeValue();
+    QString version = documentElement.firstChildElement("ipxact:version").firstChild().nodeValue();
+
+    return VLNV(type, vendor, library, name, version);
 }

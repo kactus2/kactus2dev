@@ -13,16 +13,15 @@
 #define LIBRARYFILTER_H
 
 #include <common/utils.h>
+
 #include <IPXACTmodels/Component/Component.h>
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
-#include <QSortFilterProxyModel>
-#include <QString>
 #include <QRegExpValidator>
 #include <QSharedPointer>
-
-class LibraryInterface;
+#include <QSortFilterProxyModel>
+#include <QString>
 
 //-----------------------------------------------------------------------------
 //! Base class for library filters.
@@ -48,16 +47,16 @@ public:
 public slots:
 
 	//! Handler for when the text in vendor combobox is changed.
-	void onVendorChanged(QString const&vendorText);
+	void onVendorChanged(QString const& vendorText);
 
 	//! Handler for when the text in library combobox is changed.
-	void onLibraryChanged(QString const&libraryText);
+	void onLibraryChanged(QString const& libraryText);
 
 	//! Handler for when the text in name combobox is changed.
-	void onNameChanged(QString const&nameText);
+	void onNameChanged(QString const& nameText);
 
 	//! Handler for when the text in version combobox is changed.
-	void onVersionChanged(QString const&versionText);
+	void onVersionChanged(QString const& versionText);
 
 	//! Handler for when firmness options change.
 	void onFirmnessChanged(Utils::FirmnessOptions const& options);

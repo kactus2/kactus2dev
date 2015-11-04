@@ -1,28 +1,29 @@
-/* 
- *
- *  Created on: 20.12.2010
- *      Author: Antti Kamppi
- */
+//-----------------------------------------------------------------------------
+// File: librarytreewidget.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 20.12.2010
+//
+// Description:
+// LibraryTreeWidget is the widget that displays the library content in a tree.
+//-----------------------------------------------------------------------------
 
 #include "librarytreewidget.h"
 #include "librarytreeview.h"
 #include "librarytreemodel.h"
-#include "libraryhandler.h"
 
 #include <QObject>
 #include <QVBoxLayout>
-#include <QSizePolicy>
 
 //-----------------------------------------------------------------------------
 // Function: LibraryTreeWidget::LibraryTreeWidget()
 //-----------------------------------------------------------------------------
-LibraryTreeWidget::LibraryTreeWidget(LibraryInterface* handler,
-									 LibraryTreeModel* dataModel,
-									 QWidget* parent):
+LibraryTreeWidget::LibraryTreeWidget(LibraryInterface* handler, LibraryTreeModel* dataModel, QWidget* parent):
 QWidget(parent),
-filter_(new LibraryTreeFilter(handler, this)),
-view_(handler, filter_, this),
-dataModel_(dataModel)
+    filter_(new LibraryTreeFilter(handler, this)),
+    view_(handler, filter_, this),
+    dataModel_(dataModel)
 {
     filter_->setSourceModel(dataModel);
 
@@ -42,7 +43,8 @@ dataModel_(dataModel)
 //-----------------------------------------------------------------------------
 // Function: LibraryTreeWidget::~LibraryTreeWidget()
 //-----------------------------------------------------------------------------
-LibraryTreeWidget::~LibraryTreeWidget() {
+LibraryTreeWidget::~LibraryTreeWidget()
+{
 
 }
 
@@ -51,72 +53,71 @@ LibraryTreeWidget::~LibraryTreeWidget() {
 //-----------------------------------------------------------------------------
 void LibraryTreeWidget::setupConnections(LibraryTreeModel* dataModel)
 {
-	connect(&view_, SIGNAL(errorMessage(const QString&)),
-		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
+	connect(&view_, SIGNAL(errorMessage(QString const&)),
+        this, SIGNAL(errorMessage(QString const&)), Qt::UniqueConnection);
 
-	connect(&view_, SIGNAL(noticeMessage(const QString&)),
-		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
+	connect(&view_, SIGNAL(noticeMessage(QString const&)),
+		this, SIGNAL(noticeMessage(QString const&)), Qt::UniqueConnection);
 
 	// connect the view to the tree model
-	connect(&view_, SIGNAL(openComponent(const QModelIndex&)),
-		    dataModel, SLOT(onOpenComponent(const QModelIndex&)), Qt::UniqueConnection);
+	connect(&view_, SIGNAL(openComponent(QModelIndex const&)),
+		    dataModel, SLOT(onOpenDocument(QModelIndex const&)), Qt::UniqueConnection);
 
-	connect(&view_, SIGNAL(openDesign(const QModelIndex&)), 
-		    dataModel, SLOT(onOpenDesign(const QModelIndex&)), Qt::UniqueConnection);
+	connect(&view_, SIGNAL(openDesign(QModelIndex const&)), 
+		    dataModel, SLOT(onOpenDesign(QModelIndex const&)), Qt::UniqueConnection);
 
-    connect(&view_, SIGNAL(openSWDesign(const QModelIndex&)), 
-            dataModel, SLOT(onOpenSWDesign(const QModelIndex&)), Qt::UniqueConnection);
+    connect(&view_, SIGNAL(openSWDesign(QModelIndex const&)), 
+            dataModel, SLOT(onOpenSWDesign(QModelIndex const&)), Qt::UniqueConnection);
 
-    connect(&view_, SIGNAL(openSystemDesign(const QModelIndex&)), 
-        dataModel, SLOT(onOpenSystemDesign(const QModelIndex&)), Qt::UniqueConnection);
+    connect(&view_, SIGNAL(openSystemDesign(QModelIndex const&)), 
+        dataModel, SLOT(onOpenSystemDesign(QModelIndex const&)), Qt::UniqueConnection);
 
-	connect(&view_, SIGNAL(createNewComponent(const QModelIndex&)),
-		    dataModel, SLOT(onCreateNewComponent(const QModelIndex&)), Qt::UniqueConnection);
+	connect(&view_, SIGNAL(createNewComponent(QModelIndex const&)),
+		    dataModel, SLOT(onCreateNewComponent(QModelIndex const&)), Qt::UniqueConnection);
 
-	connect(&view_, SIGNAL(createNewDesign(const QModelIndex&)),
-		    dataModel, SLOT(onCreateNewDesign(const QModelIndex&)), Qt::UniqueConnection);
+	connect(&view_, SIGNAL(createNewDesign(QModelIndex const&)),
+		    dataModel, SLOT(onCreateNewDesign(QModelIndex const&)), Qt::UniqueConnection);
 
-    connect(&view_, SIGNAL(createNewSWDesign(const QModelIndex&)),
-            dataModel, SLOT(onCreateNewSWDesign(const QModelIndex&)), Qt::UniqueConnection);
+    connect(&view_, SIGNAL(createNewSWDesign(QModelIndex const&)),
+            dataModel, SLOT(onCreateNewSWDesign(QModelIndex const&)), Qt::UniqueConnection);
 
-    connect(&view_, SIGNAL(createNewSystemDesign(const QModelIndex&)),
-            dataModel, SLOT(onCreateNewSystemDesign(const QModelIndex&)), Qt::UniqueConnection);
+    connect(&view_, SIGNAL(createNewSystemDesign(QModelIndex const&)),
+            dataModel, SLOT(onCreateNewSystemDesign(QModelIndex const&)), Qt::UniqueConnection);
 
-	connect(&view_, SIGNAL(openBus(const QModelIndex&)),
-		    dataModel, SLOT(onOpenBus(const QModelIndex&)), Qt::UniqueConnection);
+	connect(&view_, SIGNAL(openBus(QModelIndex const&)),
+		    dataModel, SLOT(onOpenDocument(QModelIndex const&)), Qt::UniqueConnection);
 
-	connect(&view_, SIGNAL(createBus(const QModelIndex&)),
-		    dataModel, SLOT(onCreateBus(const QModelIndex&)), Qt::UniqueConnection);
+	connect(&view_, SIGNAL(createBus(QModelIndex const&)),
+		    dataModel, SLOT(onCreateBus(QModelIndex const&)), Qt::UniqueConnection);
 
-	connect(&view_, SIGNAL(createAbsDef(const QModelIndex&)),
-		    dataModel, SLOT(onCreateAbsDef(const QModelIndex&)), Qt::UniqueConnection);
+	connect(&view_, SIGNAL(createAbsDef(QModelIndex const&)),
+		    dataModel, SLOT(onCreateAbsDef(QModelIndex const&)), Qt::UniqueConnection);
 
-    connect(&view_, SIGNAL(openComDef(const QModelIndex&)),
-            dataModel, SLOT(onOpenComDef(const QModelIndex&)), Qt::UniqueConnection);
+    connect(&view_, SIGNAL(openComDef(QModelIndex const&)),
+            dataModel, SLOT(onOpenDocument(QModelIndex const&)), Qt::UniqueConnection);
 
-    connect(&view_, SIGNAL(createComDef(const QModelIndex&)),
-            dataModel, SLOT(onCreateComDef(const QModelIndex&)), Qt::UniqueConnection);
+    connect(&view_, SIGNAL(createComDef(QModelIndex const&)),
+            dataModel, SLOT(onCreateComDef(QModelIndex const&)), Qt::UniqueConnection);
 
-    connect(&view_, SIGNAL(openApiDef(const QModelIndex&)),
-            dataModel, SLOT(onOpenApiDef(const QModelIndex&)), Qt::UniqueConnection);
+    connect(&view_, SIGNAL(openApiDef(QModelIndex const&)),
+            dataModel, SLOT(onOpenDocument(QModelIndex const&)), Qt::UniqueConnection);
 
-    connect(&view_, SIGNAL(createApiDef(const QModelIndex&)),
-            dataModel, SLOT(onCreateApiDef(const QModelIndex&)), Qt::UniqueConnection);
+    connect(&view_, SIGNAL(createApiDef(QModelIndex const&)),
+            dataModel, SLOT(onCreateApiDef(QModelIndex const&)), Qt::UniqueConnection);
 
-	connect(&view_, SIGNAL(deleteItem(const QModelIndex&)),
-		    dataModel, SLOT(onDeleteItem(const QModelIndex&)), Qt::UniqueConnection);
+	connect(&view_, SIGNAL(deleteItem(QModelIndex const&)),
+		    dataModel, SLOT(onDeleteItem(QModelIndex const&)), Qt::UniqueConnection);
 
-	connect(&view_, SIGNAL(exportItem(const QModelIndex&)),
-		dataModel, SLOT(onExportItem(const QModelIndex&)), Qt::UniqueConnection);
+	connect(&view_, SIGNAL(exportItem(QModelIndex const&)),
+		dataModel, SLOT(onExportItem(QModelIndex const&)), Qt::UniqueConnection);
 
-    connect(&view_, SIGNAL(showErrors(const QModelIndex&)),
-        dataModel, SLOT(onShowErrors(const QModelIndex&)), Qt::UniqueConnection);
+    connect(&view_, SIGNAL(showErrors(QModelIndex const&)),
+        dataModel, SLOT(onShowErrors(QModelIndex const&)), Qt::UniqueConnection);
 
 	connect(&view_, SIGNAL(itemSelected(const VLNV&)),
 		this, SIGNAL(itemSelected(const VLNV&)), Qt::UniqueConnection);
 
-	connect(dataModel, SIGNAL(invalidateFilter()),
-		filter_, SLOT(invalidate()), Qt::UniqueConnection);
+	connect(dataModel, SIGNAL(invalidateFilter()), filter_, SLOT(invalidate()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -127,15 +128,13 @@ void LibraryTreeWidget::selectItem(VLNV const& vlnv)
 	// if vlnv is not valid
 	if (!vlnv.isValid())
     {
-		// do not select anything
 		view_.clearSelection();
 	}
 	
 	// find the item to be selected
 	LibraryItem* item = dataModel_->getRoot()->findItem(vlnv);
 
-	// if item is not found then print an error message telling user that 
-	// library is corrupted
+	// If item is not found then print an error message telling user that library is corrupted.
 	if (!item)
     {
 		emit errorMessage(tr("Selected item was not found, library is corrupted."));
@@ -143,8 +142,7 @@ void LibraryTreeWidget::selectItem(VLNV const& vlnv)
 	}
 
 	// create an index to the item
-	QModelIndex itemIndex = dataModel_->index(item);
-	QModelIndex filteredIndex = filter_->mapFromSource(itemIndex);
+	QModelIndex filteredIndex = filter_->mapFromSource(dataModel_->index(item));
 	
 	// tell view to select the item
 	view_.setCurrentIndex(filteredIndex);
