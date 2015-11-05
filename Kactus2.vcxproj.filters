@@ -3574,9 +3574,6 @@
     <ClCompile Include="GeneratedFiles\moc_ImportEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="wizards\ComponentWizard\ImportEditor\ModelParameterEditorAdapter.cpp">
-      <Filter>Source Files\wizards\ComponentWizard\ImportEditor</Filter>
-    </ClCompile>
     <ClCompile Include="wizards\ComponentWizard\ImportEditor\ImportEditor.cpp">
       <Filter>Source Files\wizards\ComponentWizard\ImportEditor</Filter>
     </ClCompile>
@@ -5899,9 +5896,6 @@
     </ClInclude>
     <ClInclude Include="Plugins\PluginSystem\ImportPlugin\ModelParameterVisualizer.h">
       <Filter>Header Files\Plugins\PluginSystem\ImportPlugin</Filter>
-    </ClInclude>
-    <ClInclude Include="wizards\ComponentWizard\ImportEditor\ModelParameterEditorAdapter.h">
-      <Filter>Header Files\wizards\ComponentWizard\ImportEditor</Filter>
     </ClInclude>
     <ClInclude Include="Plugins\PluginSystem\ImportPlugin\ImportColors.h">
       <Filter>Header Files\Plugins\PluginSystem\ImportPlugin</Filter>

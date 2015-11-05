@@ -16,22 +16,22 @@
 #include <editors/ComponentEditor/fileSet/filesetsdelegate.h>
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
 
 #include <QLabel>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentWizardDependencyPage::ComponentWizardDependencyPage()
 //-----------------------------------------------------------------------------
-ComponentWizardDependencyPage::ComponentWizardDependencyPage(QSharedPointer<Component> component, 
-    QString const& componentPath, PluginManager const& pluginMgr, QWidget* parent)
-    : QWizardPage(parent),
-      component_(component),
-      splitter_(Qt::Vertical, this),
-      view_(&splitter_),
-      model_(component_, this),
-      proxy_(this),
-      editor_(component_, componentPath, pluginMgr, &splitter_)
+ComponentWizardDependencyPage::ComponentWizardDependencyPage(QSharedPointer<Component> component,
+    QString const& componentPath, PluginManager const& pluginMgr, QWidget* parent):
+QWizardPage(parent),
+component_(component),
+splitter_(Qt::Vertical, this),
+view_(&splitter_),
+model_(component_, this),
+proxy_(this),
+editor_(component_, componentPath, pluginMgr, &splitter_)
 {
     setTitle(tr("Dependency Analysis & File Sets"));
     setSubTitle(tr("Check for missing files with dependency analysis and create file sets."));
@@ -78,13 +78,10 @@ ComponentWizardDependencyPage::ComponentWizardDependencyPage(QSharedPointer<Comp
     connect(&editor_, SIGNAL(fileSetAdded(FileSet*)),
             &model_, SLOT(onFileSetAdded(FileSet*)), Qt::UniqueConnection);
 
-    connect(&model_, SIGNAL(contentChanged()),
-            &editor_, SLOT(refresh()), Qt::UniqueConnection);
+    connect(&model_, SIGNAL(contentChanged()), &editor_, SLOT(refresh()), Qt::UniqueConnection);
 
-    connect(&editor_, SIGNAL(scanStarted()),
-            this, SIGNAL(completeChanged()), Qt::UniqueConnection);
-    connect(&editor_, SIGNAL(scanCompleted()),
-            this, SIGNAL(completeChanged()), Qt::UniqueConnection);
+    connect(&editor_, SIGNAL(scanStarted()), this, SIGNAL(completeChanged()), Qt::UniqueConnection);
+    connect(&editor_, SIGNAL(scanCompleted()), this, SIGNAL(completeChanged()), Qt::UniqueConnection);
 
     connect(&view_, SIGNAL(addItem(const QModelIndex&)),
             &model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
@@ -97,6 +94,7 @@ ComponentWizardDependencyPage::ComponentWizardDependencyPage(QSharedPointer<Comp
 //-----------------------------------------------------------------------------
 ComponentWizardDependencyPage::~ComponentWizardDependencyPage()
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -104,7 +102,7 @@ ComponentWizardDependencyPage::~ComponentWizardDependencyPage()
 //-----------------------------------------------------------------------------
 int ComponentWizardDependencyPage::nextId() const
 {
-     if (component_->getComponentImplementation() == KactusAttribute::HW)
+    if (component_->getImplementation() == KactusAttribute::HW)
     {
         return ComponentWizardPages::IMPORT;
     }
@@ -120,8 +118,8 @@ int ComponentWizardDependencyPage::nextId() const
 void ComponentWizardDependencyPage::initializePage()
 {
     // Clear file sets.
-    QList< QSharedPointer<FileSet> > emptyFileSets;
-    component_->setFileSets(emptyFileSets);
+    component_->getFileSets()->clear();
+
     model_.refresh();
 
     // Start the scan.

@@ -16,14 +16,14 @@
 #include <QVBoxLayout>
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentWizardIntroPage::ComponentWizardIntroPage()
 //-----------------------------------------------------------------------------
-ComponentWizardIntroPage::ComponentWizardIntroPage(QSharedPointer<Component> component, QWidget* parent)
-    : QWizardPage(parent),
-      infoLabel_(this)
+ComponentWizardIntroPage::ComponentWizardIntroPage(QSharedPointer<Component> component, QWidget* parent):
+QWizardPage(parent),
+infoLabel_(this)
 {
     setTitle(tr("Introduction"));
     setSubTitle(tr("This wizard will guide you through the basic steps of creating a component."));
@@ -34,7 +34,7 @@ ComponentWizardIntroPage::ComponentWizardIntroPage(QSharedPointer<Component> com
     infoText += "<li>" + tr("Add Files");
     infoText += "<li>" + tr("Dependency Analysis & File Sets");
 
-    if (component->getComponentImplementation() == KactusAttribute::HW)
+    if (component->getImplementation() == KactusAttribute::HW)
     {
         infoText += "<li>" + tr("Import elements from file.");
         infoText += "<li>" + tr("Setup views.");
@@ -55,6 +55,7 @@ ComponentWizardIntroPage::ComponentWizardIntroPage(QSharedPointer<Component> com
 //-----------------------------------------------------------------------------
 ComponentWizardIntroPage::~ComponentWizardIntroPage()
 {
+
 }
 
 //-----------------------------------------------------------------------------

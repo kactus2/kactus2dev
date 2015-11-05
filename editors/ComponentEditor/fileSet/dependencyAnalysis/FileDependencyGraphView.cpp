@@ -15,7 +15,9 @@
 #include "FileDependencyItem.h"
 #include "FileDependencySortFilter.h"
 
-#include <IPXACTmodels/FileDependency.h>
+#include <editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyColumns.h>
+
+#include <IPXACTmodels/kactusExtensions/FileDependency.h>
 
 #include <QHeaderView>
 #include <QPainter>
@@ -28,20 +30,20 @@
 //-----------------------------------------------------------------------------
 // Function: FileDependencyGraphWidget::FileDependencyGraphWidget()
 //-----------------------------------------------------------------------------
-FileDependencyGraphView::FileDependencyGraphView(QWidget* parent)
-    : QTreeView(parent),
-      sortFilter_(new FileDependencySortFilter(this)),
-      model_(0),
-      columns_(),
-      maxVisibleGraphColumns_(0),
-      scrollIndex_(0),
-      hoveredDependency_(0),
-      selectedDependency_(0),
-      drawingDependency_(false),
-      filters_(FILTER_DEFAULT),
-      manualDependencyStartItem_(0),
-      manualDependencyEndItem_(0),
-      multiManualCreation_(false)
+FileDependencyGraphView::FileDependencyGraphView(QWidget* parent):
+QTreeView(parent),
+sortFilter_(new FileDependencySortFilter(this)),
+model_(0),
+columns_(),
+maxVisibleGraphColumns_(0),
+scrollIndex_(0),
+hoveredDependency_(0),
+selectedDependency_(0),
+drawingDependency_(false),
+filters_(FILTER_DEFAULT),
+manualDependencyStartItem_(0),
+manualDependencyEndItem_(0),
+multiManualCreation_(false)
 {
     setUniformRowHeights(true);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -105,8 +107,8 @@ void FileDependencyGraphView::setModel(QAbstractItemModel* model)
 //-----------------------------------------------------------------------------
 void FileDependencyGraphView::onDependencyAdded(FileDependency* dependency, bool immediateRepaint)
 {
-    FileDependencyItem* fromItem = dependency->getFileItem1();
-    FileDependencyItem* toItem = dependency->getFileItem2();
+    QSharedPointer<FileDependencyItem> fromItem = dependency->getFileItem1();
+    QSharedPointer<FileDependencyItem> toItem = dependency->getFileItem2();
 
     if (fromItem == 0 || toItem == 0)
     {
@@ -169,7 +171,7 @@ void FileDependencyGraphView::onDependencyAdded(FileDependency* dependency, bool
         selColumn->dependencies.append(graphDep);
 
         // Repaint only the region of the new dependency.
-        int columnOffset = columnViewportPosition(FILE_DEPENDENCY_COLUMN_DEPENDENCIES);
+        int columnOffset = columnViewportPosition(FileDependencyColumns::FILE_DEPENDENCY_COLUMN_DEPENDENCIES);
         
         if (immediateRepaint)
         {
@@ -207,7 +209,8 @@ void FileDependencyGraphView::onDependencyRemoved(FileDependency* dependency)
             if (dep.dependency == dependency)
             {
                 // Repaint only the area of the dependency.
-                int columnOffset = columnViewportPosition(FILE_DEPENDENCY_COLUMN_DEPENDENCIES);
+                int columnOffset =
+                    columnViewportPosition(FileDependencyColumns::FILE_DEPENDENCY_COLUMN_DEPENDENCIES);
                 int fromY = 0;
                 int toY = 0;
                 bool visible = getCoordinates(dep, fromY, toY);
@@ -221,7 +224,6 @@ void FileDependencyGraphView::onDependencyRemoved(FileDependency* dependency)
                                         2 * (ARROW_WIDTH + SAFE_MARGIN),
                                         qAbs(toY - fromY) + 2 * (POINTER_OFFSET + SAFE_MARGIN)));
                 }
-
 
                 return;
             }
@@ -272,12 +274,12 @@ void FileDependencyGraphView::mousePressEvent(QMouseEvent* event)
     int column = columnAt(event->x());
 
     // Check if the user pressed over the dependencies column.
-    if (column == FILE_DEPENDENCY_COLUMN_DEPENDENCIES)
+    if (column == FileDependencyColumns::FILE_DEPENDENCY_COLUMN_DEPENDENCIES)
     {
         if ((event->button() == Qt::LeftButton || event->button() == Qt::RightButton) && !manualDependencyStartItem_)
         {
             // Search for a dependency under the cursor.
-            FileDependency* dependency = findDependencyAt(event->pos());
+            QSharedPointer<FileDependency> dependency = findDependencyAt(event->pos());
 
             if (dependency != selectedDependency_)
             {
@@ -293,7 +295,7 @@ void FileDependencyGraphView::mousePressEvent(QMouseEvent* event)
 
     }
     // Check if click is on the path.
-    else if (column == FILE_DEPENDENCY_COLUMN_PATH)
+    else if (column == FileDependencyColumns::FILE_DEPENDENCY_COLUMN_PATH)
     {
         // Handle context menu opening.
         if (event->button() == Qt::RightButton)
@@ -318,7 +320,7 @@ void FileDependencyGraphView::mousePressEvent(QMouseEvent* event)
         }
     }
     // Otherwise check if the user pressed over the manual creation column.
-    else if (column == FILE_DEPENDENCY_COLUMN_CREATE)
+    else if (column == FileDependencyColumns::FILE_DEPENDENCY_COLUMN_CREATE)
     {
         if (event->button() == Qt::LeftButton)
         {
@@ -335,19 +337,21 @@ void FileDependencyGraphView::mousePressEvent(QMouseEvent* event)
 
                 if (startPoint.isValid())
                 {
-                    manualDependencyStartItem_ = static_cast<FileDependencyItem*>(startPoint.internalPointer());
+                    FileDependencyItem* temporaryStartItem =
+                        static_cast<FileDependencyItem*>(startPoint.internalPointer());
+                    manualDependencyStartItem_.reset(temporaryStartItem);
 
                     if (manualDependencyStartItem_->getType() != FileDependencyItem::ITEM_TYPE_FILE)
                     {
-                        manualDependencyStartItem_ = 0;
+                        manualDependencyStartItem_.clear();
                     }
                     else if (manualDependencyStartItem_->getParent()->getType() == FileDependencyItem::ITEM_TYPE_EXTERNAL_LOCATION ||
 							 manualDependencyStartItem_->getParent()->getType() == FileDependencyItem::ITEM_TYPE_UNKNOWN_LOCATION)
                     {
-
-                        manualDependencyStartItem_ = 0;
+                        manualDependencyStartItem_.clear();
                         // Print information about creating manual dependencies to external files.
-                        emit warningMessage(tr("Cannot create manual dependency from external or unknown file location."));
+                        emit warningMessage(tr
+                            ("Cannot create manual dependency from external or unknown file location."));
                     }
                     else
                     {
@@ -369,19 +373,19 @@ void FileDependencyGraphView::mousePressEvent(QMouseEvent* event)
                     manualDependencyEndItem_->getType() == FileDependencyItem::ITEM_TYPE_FILE)
                 {
                     // Check if the dependency in the correct direction is not found.
-                    FileDependency* found = model_->findDependency(manualDependencyStartItem_->getPath(),
-                        manualDependencyEndItem_->getPath());
+                    QSharedPointer<FileDependency> found = model_->findDependency(
+                        manualDependencyStartItem_->getPath(), manualDependencyEndItem_->getPath());
 
                     if (found == 0)
                     {
                         // Check for a reversed dependency and whether the new dependency cannot
                         // be combined with it.
-                        FileDependency* revFound = model_->findDependency(manualDependencyEndItem_->getPath(),
-                            manualDependencyStartItem_->getPath());
+                        QSharedPointer<FileDependency> revFound = model_->findDependency(
+                            manualDependencyEndItem_->getPath(),manualDependencyStartItem_->getPath());
 
                         if (revFound == 0 || !revFound->isManual())
                         {
-                            FileDependency* createdDependency = createDependency();                           
+                            QSharedPointer<FileDependency> createdDependency = createDependency();
                             model_->addDependency(QSharedPointer<FileDependency>(createdDependency));
 
                             // Selecting created manual dependency.
@@ -435,7 +439,8 @@ void FileDependencyGraphView::mouseMoveEvent(QMouseEvent* event)
         if (currentPoint.isValid())
         {
             FileDependencyItem* currentDependencyItem = static_cast<FileDependencyItem*>(currentPoint.internalPointer());
-            manualDependencyEndItem_ = currentDependencyItem;
+            manualDependencyEndItem_.reset(currentDependencyItem);
+
             viewport()->repaint();
         }
     }
@@ -444,7 +449,7 @@ void FileDependencyGraphView::mouseMoveEvent(QMouseEvent* event)
         QTreeView::mouseMoveEvent(event);
 
         // Show dependency description as the tool tip when hovering over a dependency.
-        FileDependency* hovered = findDependencyAt(event->pos());
+        QSharedPointer<FileDependency> hovered = findDependencyAt(event->pos());
 
         if (hovered != 0)
         {
@@ -472,7 +477,7 @@ void FileDependencyGraphView::keyPressEvent(QKeyEvent* event)
         if (selectedDependency_->isManual() && !selectedDependency_->isLocked())
         {
             model_->removeDependency(selectedDependency_);
-            selectedDependency_ = 0;
+            selectedDependency_.clear();
             emit selectionChanged(0);
         }
     }
@@ -494,15 +499,15 @@ void FileDependencyGraphView::keyReleaseEvent(QKeyEvent* event)
     if (event->key() == Qt::Key_Shift)
     {
         multiManualCreation_ = false;
-        manualDependencyStartItem_ = 0;
-        manualDependencyEndItem_ = 0;
+        manualDependencyStartItem_.clear();
+        manualDependencyEndItem_.clear();
         drawingDependency_ = false;
         viewport()->repaint();
     }
     else if (event->key() == Qt::Key_Escape)
     {
-        manualDependencyStartItem_ = 0;
-        manualDependencyEndItem_ = 0;
+        manualDependencyStartItem_.clear();
+        manualDependencyEndItem_.clear();
         drawingDependency_ = false;
         viewport()->repaint();
     }
@@ -649,8 +654,8 @@ void FileDependencyGraphView::drawDependencyGraph(QPainter& painter, QRect const
 {
     //onSectionResized();
 
-    int columnOffset = columnViewportPosition(FILE_DEPENDENCY_COLUMN_DEPENDENCIES);
-    int width = columnWidth(FILE_DEPENDENCY_COLUMN_DEPENDENCIES);
+    int columnOffset = columnViewportPosition(FileDependencyColumns::FILE_DEPENDENCY_COLUMN_DEPENDENCIES);
+    int width = columnWidth(FileDependencyColumns::FILE_DEPENDENCY_COLUMN_DEPENDENCIES);
     int x = GRAPH_MARGIN;
     
     for (int i = scrollIndex_; i < qMin(columns_.size(), scrollIndex_ + maxVisibleGraphColumns_); ++i)
@@ -779,7 +784,7 @@ void FileDependencyGraphView::drawRow(QPainter* painter, QStyleOptionViewItem co
 //-----------------------------------------------------------------------------
 void FileDependencyGraphView::onDependenciesReset()
 {
-    selectedDependency_ = 0;
+    selectedDependency_.clear();
     emit selectionChanged(0);
 
     columns_.clear();
@@ -798,9 +803,11 @@ void FileDependencyGraphView::onDependenciesReset()
 //-----------------------------------------------------------------------------
 void FileDependencyGraphView::drawManualCreationArrow(QPainter& painter)
 {
-    int x = columnViewportPosition(FILE_DEPENDENCY_COLUMN_CREATE) + columnWidth(FILE_DEPENDENCY_COLUMN_CREATE) / 2;
+    int x = columnViewportPosition(FileDependencyColumns::FILE_DEPENDENCY_COLUMN_CREATE) +
+        columnWidth(FileDependencyColumns::FILE_DEPENDENCY_COLUMN_CREATE) / 2;
     int startY = 0;
     int currentY = 0;
+
     getVisualRowY(sortFilter_->mapFromSource(model_->getItemIndex(manualDependencyStartItem_, 0)), startY);
     getVisualRowY(sortFilter_->mapFromSource(model_->getItemIndex(manualDependencyEndItem_, 0)), currentY);
     drawArrow(painter, x, startY, currentY, Qt::blue, false);
@@ -820,7 +827,7 @@ void FileDependencyGraphView::setGraphColumnScrollIndex(int index)
 //-----------------------------------------------------------------------------
 void FileDependencyGraphView::onSectionResized()
 {
-    int width = columnWidth(FILE_DEPENDENCY_COLUMN_DEPENDENCIES);
+    int width = columnWidth(FileDependencyColumns::FILE_DEPENDENCY_COLUMN_DEPENDENCIES);
     width -= 2 * GRAPH_MARGIN;
 
     if (width <= 0)
@@ -833,7 +840,8 @@ void FileDependencyGraphView::onSectionResized()
     }
 
     emit graphColumnScollMaximumChanged(qMax<int>(0, columns_.size() - maxVisibleGraphColumns_));
-    emit dependencyColumnPositionChanged(columnViewportPosition(FILE_DEPENDENCY_COLUMN_DEPENDENCIES));
+    emit dependencyColumnPositionChanged(columnViewportPosition(
+        FileDependencyColumns::FILE_DEPENDENCY_COLUMN_DEPENDENCIES));
 }
 
 
@@ -866,7 +874,7 @@ void FileDependencyGraphView::onLocationReset()
 void FileDependencyGraphView::onMenuReverse()
 {
     selectedDependency_->reverse();
-    emit dependencyChanged(selectedDependency_);
+    emit dependencyChanged(selectedDependency_.data());
 }
 
 //-----------------------------------------------------------------------------
@@ -875,7 +883,7 @@ void FileDependencyGraphView::onMenuReverse()
 void FileDependencyGraphView::onMenuBidirectional()
 {
     selectedDependency_->setBidirectional(!selectedDependency_->isBidirectional());
-    emit dependencyChanged(selectedDependency_);
+    emit dependencyChanged(selectedDependency_.data());
 }
 
 //-----------------------------------------------------------------------------
@@ -884,8 +892,8 @@ void FileDependencyGraphView::onMenuBidirectional()
 void FileDependencyGraphView::onMenuLock()
 {
     selectedDependency_->setLocked(!selectedDependency_->isLocked());
-    onDependencyChanged(selectedDependency_);
-    emit dependencyChanged(selectedDependency_);
+    onDependencyChanged(selectedDependency_.data());
+    emit dependencyChanged(selectedDependency_.data());
 }
 
 //-----------------------------------------------------------------------------
@@ -894,16 +902,16 @@ void FileDependencyGraphView::onMenuLock()
 void FileDependencyGraphView::onMenuDelete()
 {
     model_->removeDependency(selectedDependency_);
-    selectedDependency_ = 0;
+    selectedDependency_.clear();
     emit selectionChanged(0);
 }
 
 //-----------------------------------------------------------------------------
 // Function: FileDependencyGraphView::findDependencyAt()
 //-----------------------------------------------------------------------------
-FileDependency* FileDependencyGraphView::findDependencyAt(QPoint const& pt) const
+QSharedPointer<FileDependency> FileDependencyGraphView::findDependencyAt(QPoint const& pt) const
 {
-    int x = columnViewportPosition(FILE_DEPENDENCY_COLUMN_DEPENDENCIES) + GRAPH_MARGIN;
+    int x = columnViewportPosition(FileDependencyColumns::FILE_DEPENDENCY_COLUMN_DEPENDENCIES) + GRAPH_MARGIN;
 
     for (int i = scrollIndex_; i < columns_.size(); ++i)
     {
@@ -925,7 +933,9 @@ FileDependency* FileDependencyGraphView::findDependencyAt(QPoint const& pt) cons
                     if (pt.y() >= qMin(fromY, toY) - SELECTION_MARGIN &&
                         pt.y() <= qMax(fromY, toY) + SELECTION_MARGIN)
                     {
-                        return dep.dependency;
+                        QSharedPointer<FileDependency> dependency (new FileDependency());
+                        dependency.reset(dep.dependency);
+                        return dependency;
                     }
                 }
             }
@@ -936,7 +946,7 @@ FileDependency* FileDependencyGraphView::findDependencyAt(QPoint const& pt) cons
         x += GRAPH_SPACING;
     }
 
-    return 0;
+    return QSharedPointer<FileDependency>();
 }
 
 //-----------------------------------------------------------------------------
@@ -944,8 +954,8 @@ FileDependency* FileDependencyGraphView::findDependencyAt(QPoint const& pt) cons
 //-----------------------------------------------------------------------------
 bool FileDependencyGraphView::getCoordinates(GraphDependency const &dep, int& fromY, int& toY) const
 {
-    FileDependencyItem* fromItem = dep.dependency->getFileItem1();
-    FileDependencyItem* toItem = dep.dependency->getFileItem2();
+    QSharedPointer<FileDependencyItem> fromItem = dep.dependency->getFileItem1();
+    QSharedPointer<FileDependencyItem> toItem = dep.dependency->getFileItem2();
     Q_ASSERT(fromItem != 0);
     Q_ASSERT(toItem != 0);
 
@@ -953,7 +963,7 @@ bool FileDependencyGraphView::getCoordinates(GraphDependency const &dep, int& fr
     // If the item is not visible, reroute the dependency to the missing item's parent.
     if (!getVisualRowY(sortFilter_->mapFromSource(model_->getItemIndex(fromItem, 0)), fromY))
     {
-        fromItem = fromItem->getParent();
+        fromItem.reset(fromItem->getParent());
 
         if (!getVisualRowY(sortFilter_->mapFromSource(model_->getItemIndex(fromItem, 0)), fromY))
         {
@@ -963,7 +973,7 @@ bool FileDependencyGraphView::getCoordinates(GraphDependency const &dep, int& fr
 
     if (!getVisualRowY(sortFilter_->mapFromSource(model_->getItemIndex(toItem, 0)), toY))
     {
-        toItem = toItem->getParent();
+        toItem.reset(toItem->getParent());
 
         if (!getVisualRowY(sortFilter_->mapFromSource(model_->getItemIndex(toItem, 0)), toY))
         {
@@ -1044,7 +1054,8 @@ void FileDependencyGraphView::repaintDependency(FileDependency const* dependency
         {
             if (dep.dependency == dependency)
             {
-                int columnOffset = columnViewportPosition(FILE_DEPENDENCY_COLUMN_DEPENDENCIES);
+                int columnOffset =
+                    columnViewportPosition(FileDependencyColumns::FILE_DEPENDENCY_COLUMN_DEPENDENCIES);
                 int fromY = 0;
                 int toY = 0;
 
@@ -1152,15 +1163,17 @@ void FileDependencyGraphView::createContextMenuForExternalItem(QPoint const& pos
 //-----------------------------------------------------------------------------
 // Function: FileDependencyGraphView::changeDependencySelection()
 //-----------------------------------------------------------------------------
-void FileDependencyGraphView::changeDependencySelection(FileDependency* newSelection)
+void FileDependencyGraphView::changeDependencySelection(QSharedPointer<FileDependency> newSelection)
 {
-    FileDependency* oldDependency = selectedDependency_;
+    QSharedPointer<FileDependency> oldDependency =
+        QSharedPointer<FileDependency>(new FileDependency(*selectedDependency_.data()));
+
     selectedDependency_ = newSelection;
 
-    repaintDependency(oldDependency);
-    repaintDependency(selectedDependency_);                
+    repaintDependency(oldDependency.data());
+    repaintDependency(selectedDependency_.data());                
 
-    emit selectionChanged(selectedDependency_);
+    emit selectionChanged(selectedDependency_.data());
 }
 
 //-----------------------------------------------------------------------------
@@ -1168,11 +1181,11 @@ void FileDependencyGraphView::changeDependencySelection(FileDependency* newSelec
 //-----------------------------------------------------------------------------
 void FileDependencyGraphView::clearDependencySelection()
 {
-    FileDependency* oldDependency = selectedDependency_;
-    selectedDependency_ = 0;
+    QSharedPointer<FileDependency> oldDependency = selectedDependency_;
+    selectedDependency_.clear();
 
-    repaintDependency(oldDependency);            
-    emit selectionChanged(selectedDependency_);
+    repaintDependency(oldDependency.data());
+    emit selectionChanged(selectedDependency_.data());
 }
 
 //-----------------------------------------------------------------------------
@@ -1189,17 +1202,17 @@ void FileDependencyGraphView::startDependencyDraw()
 //-----------------------------------------------------------------------------
 void FileDependencyGraphView::endDependencyDraw()
 {
-    manualDependencyStartItem_ = 0;
-    manualDependencyEndItem_ = 0;
+    manualDependencyStartItem_.clear();
+    manualDependencyEndItem_.clear();
     drawingDependency_ = false;
 }
 
 //-----------------------------------------------------------------------------
 // Function: FileDependencyGraphView::createDependency()
 //-----------------------------------------------------------------------------
-FileDependency* FileDependencyGraphView::createDependency()
+QSharedPointer<FileDependency> FileDependencyGraphView::createDependency()
 {
-    FileDependency* createdDependency = new FileDependency();
+    QSharedPointer<FileDependency> createdDependency (new FileDependency());
     createdDependency->setFile1(manualDependencyStartItem_->getPath());
     createdDependency->setFile2(manualDependencyEndItem_->getPath());
     createdDependency->setManual(true);
@@ -1221,5 +1234,5 @@ void FileDependencyGraphView::resizeEvent(QResizeEvent *event)
 //-----------------------------------------------------------------------------
 void FileDependencyGraphView::setDependenciesEditable(bool editable)
 {
-    setColumnHidden(FILE_DEPENDENCY_COLUMN_CREATE, !editable);
+    setColumnHidden(FileDependencyColumns::FILE_DEPENDENCY_COLUMN_CREATE, !editable);
 }

@@ -326,7 +326,7 @@ private:
      *
      *      @return If found, the dependency at the given coordinate. Otherwise null.
      */
-    FileDependency* findDependencyAt(QPoint const& pt) const;
+    QSharedPointer<FileDependency> findDependencyAt(QPoint const& pt) const;
 
     /*!
      *  Checks the dependency against the filters.
@@ -365,7 +365,7 @@ private:
      *
      *      @param [in] newSelection   The dependency to select.
      */
-    void changeDependencySelection(FileDependency* newSelection);
+    void changeDependencySelection(QSharedPointer<FileDependency> newSelection);
 
     /*!
      *  Clears the selected dependency and repaints the previous selection.
@@ -387,7 +387,7 @@ private:
      *
      *      @return The created dependency.
      */
-    FileDependency* createDependency();
+    QSharedPointer<FileDependency> createDependency();
 
     enum
     {
@@ -421,10 +421,10 @@ private:
     int scrollIndex_;
 
     //! The currently hovered dependency.
-    FileDependency* hoveredDependency_;
+    QSharedPointer<FileDependency> hoveredDependency_;
 
     //! The currently selected dependency.
-    FileDependency* selectedDependency_;
+    QSharedPointer<FileDependency> selectedDependency_;
 
     //! If true, the user is currently drawing a dependency.
     bool drawingDependency_;
@@ -433,13 +433,13 @@ private:
     DependencyFilters filters_;
 
     //! The start item of manual dependency creation
-    FileDependencyItem* manualDependencyStartItem_;
-    
+    QSharedPointer<FileDependencyItem> manualDependencyStartItem_;
+
     //! The end item of manual dependency creation
-    FileDependencyItem* manualDependencyEndItem_;
+    QSharedPointer<FileDependencyItem> manualDependencyEndItem_;
 
     //! The file dependency item context menu was opened on
-    FileDependencyItem* contextMenuItem_;
+    QSharedPointer<FileDependencyItem> contextMenuItem_;
 
     //! If true, the shift key is pressed.
     bool multiManualCreation_;

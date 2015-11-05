@@ -12,9 +12,6 @@
 #include "ComponentWizard.h"
 #include "ComponentWizardPages.h"
 
-#include <QLabel>
-#include <QVBoxLayout>
-
 #include "ComponentWizardIntroPage.h"
 #include "ComponentWizardFilesPage.h"
 #include "ComponentWizardDependencyPage.h"
@@ -23,22 +20,26 @@
 #include "ComponentWizardViewsPage.h"
 #include "ComponentWizardConclusionPage.h"
 
+#include <editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.h>
+
+#include <IPXACTmodels/Component/Component.h>
+
+#include <QLabel>
+#include <QVBoxLayout>
+
 //-----------------------------------------------------------------------------
 // Function: ComponentWizard::ComponentWizard()
 //-----------------------------------------------------------------------------
-ComponentWizard::ComponentWizard(QSharedPointer<Component> component,
-	                             QString const& basePath,
-	                             PluginManager const& pluginMgr,
-	                             LibraryInterface* handler,
-	                             QWidget* parent)
-    : QWizard(parent),
-	  originalComponent_(component),
-      workingComponent_(component),
-      parameterFinder_(new ComponentParameterFinder(workingComponent_)),
-      expressionFormatter_(new ExpressionFormatter(parameterFinder_)),
-      referenceCounter_(new ParameterReferenceCounter(parameterFinder_))
+ComponentWizard::ComponentWizard(QSharedPointer<Component> component, QString const& basePath,
+    PluginManager const& pluginMgr, LibraryInterface* handler, QWidget* parent):
+QWizard(parent),
+originalComponent_(component),
+workingComponent_(component),
+parameterFinder_(new ComponentParameterFinder(workingComponent_)),
+expressionFormatter_(new ExpressionFormatter(parameterFinder_)),
+referenceCounter_(new ParameterReferenceCounter(parameterFinder_))
 {
-	setWindowTitle(tr("Component Wizard for %1").arg(component->getVlnv()->toString()));
+	setWindowTitle(tr("Component Wizard for %1").arg(component->getVlnv().toString()));
     setWizardStyle(ModernStyle);
     resize(800, 1000);
 

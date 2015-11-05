@@ -13,16 +13,16 @@
 
 #include "ComponentWizardPages.h"
 
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentWizardFilesPage::ComponentWizardFilesPage()
 //-----------------------------------------------------------------------------
-ComponentWizardFilesPage::ComponentWizardFilesPage(QSharedPointer<Component> component, 
-    QString const& componentPath, QWidget* parent)
-    : QWizardPage(parent),
-      component_(component),
-      editor_(componentPath, QStringList(), this)
+ComponentWizardFilesPage::ComponentWizardFilesPage(QSharedPointer<Component> component,
+    QString const& componentPath, QWidget* parent):
+QWizardPage(parent),
+component_(component),
+editor_(componentPath, QStringList(), this)
 {
     setTitle(tr("Add Files"));
     setSubTitle(tr("Add files to the component by specifying the source directories to scan."));

@@ -22,6 +22,7 @@
 
 #include <QIcon>
 #include <QCryptographicHash>
+#include <QFileInfo>
 
 //-----------------------------------------------------------------------------
 // Function: FileDependencyModel::FileDependencyModel()

@@ -18,7 +18,6 @@
 
 #include <QWizardPage>
 #include <QLabel>
-#include <QTextEdit>
 
 class LibraryInterface;
 class ComponentDiffWidget;
@@ -45,18 +44,18 @@ public:
         QWidget* parent);
 
     /*!
-    *  Destructor.
-    */
+     *  Destructor.
+     */
     ~ComponentWizardConclusionPage();
 
     /*!
-    *  Returns the ID of the next page.
-    */
+     *  Returns the ID of the next page.
+     */
     virtual int nextId() const;
 
     /*!
-    *  Initializes the page.
-    */
+     *  Initializes the page.
+     */
     virtual void initializePage();
     
 
@@ -130,9 +129,6 @@ private:
 
     //! Label for the component filesets.
     QLabel* filesetsLabel_;
-
-    //! Label for the created model parameters.
-    QLabel* modelParametersLabel_;
 
     //! Label for the created parameters.
     QLabel* parametersLabel_;

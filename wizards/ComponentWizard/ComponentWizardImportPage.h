@@ -30,6 +30,7 @@ class ComponentWizardImportPage : public QWizardPage
 {
     Q_OBJECT
 public:
+
     /*!
      *  The constructor.
      *
@@ -57,29 +58,18 @@ public:
      */
     virtual int nextId() const;
 
-	 /*! \brief Initialize the page to contain correct files to select the top-vhdl.
-	  * 
-	  * The files saved in the component's file sets are used to select the top-vhdl.
-	  * 
-	  * Method: 		initializePage
-	  * Full name:	ComponentWizardVhdlImportPage::initializePage
-	  * Access:		virtual public 
-	  *
-	  *
-	 */
-	 virtual void initializePage();
+    /*!
+     *  Initialize the page to contain correct files to select the top-vhdl.
+     */
+    virtual void initializePage();
 
 
-	 /*! \brief Check if the settings on the page are valid and user can move to next page.
-	  *
-	  * Method: 		isComplete
-	  * Full name:	ComponentWizardVhdlImportPage::isComplete
-	  * Access:		virtual public 
-	  *
-	  *
-	  * \return True if all settings are valid, otherwise false.
-	 */
-	 virtual bool isComplete() const;
+    /*!
+     *  Check if the settings on the page are valid and user can move to next page.
+     *
+     *      @return True if all settings are valid, otherwise false.
+     */
+    virtual bool isComplete() const;
 
 signals:
 
@@ -109,7 +99,7 @@ private:
 	// Data.
 	//-----------------------------------------------------------------------------
 
-	//! \brief Editor to set the generics and ports.
+	//! Editor to set the generics and ports.
 	ImportEditor* editor_;
 };
 

@@ -27,7 +27,6 @@ class FileSet;
 class Highlighter;
 class ImportPlugin;
 class ISourceAnalyzerPlugin;
-class ModelParameterVisualizer;
 
 //-----------------------------------------------------------------------------
 //! Runs import plugins for a given file and component.
@@ -56,13 +55,6 @@ public:
      *      @param [in] highlighter   The highlighter to use.          
      */
     void setVerilogExpressionParser(QSharedPointer<ExpressionParser> parser);
-
-    /*!
-     *  Sets the given visualizer to be used by all model parameter sources.
-     *
-     *      @param [in] visualizer   The visualizer to use.          
-     */
-    void setModelParameterVisualizer(ModelParameterVisualizer* visualizer);
 
     /*!
      *  Loads all available import plugins.
@@ -102,13 +94,6 @@ private:
     ImportRunner& operator=(ImportRunner const& rhs);
    
     /*!
-     *  Adds model parameter visualization to a given import plugin if possible.
-     *
-     *      @param [in] parser   The plugin to add visualization to.     
-     */
-    void addModelParameterVisualizationIfPossible(ImportPlugin* importPlugin) const;
-       
-    /*!
      *  Adds expression parser to a given import plugin if possible.
      *
      *      @param [in] parser   The plugin to add expression parser to.     
@@ -132,14 +117,14 @@ private:
     void importIncludes(QString const& filePath, QString const& componentXmlPath, 
         QSharedPointer<Component> importComponent);
     
-     /*!
-      *  Finds the include import plugins for the given file types.
-      *
-      *      @param [in] filetypes   The file types to find plugins for.
-      *
-      *      @return The found include import plugins.
-      */
-     QList<ImportPlugin*> includeImportPluginsForFileTypes(QStringList const& filetypes) const;
+    /*!
+     *  Finds the include import plugins for the given file types.
+     *
+     *      @param [in] filetypes   The file types to find plugins for.
+     *
+     *      @return The found include import plugins.
+     */
+    QList<ImportPlugin*> includeImportPluginsForFileTypes(QStringList const& filetypes) const;
 
     /*!
      *  Finds the file types of a given file.
@@ -213,9 +198,6 @@ private:
 
     //! The expression parser to use for verilog expressions.
     QSharedPointer<ExpressionParser> expressionParser_;
-
-    //! The model parameter visualizer used by all import plugins.
-    ModelParameterVisualizer* modelParameterVisualizer_;
 
     //! All loaded import plugins.
     QList<ImportPlugin*> ImportPlugins_;

@@ -1384,7 +1384,6 @@ CreateHelp
     <ClCompile Include="wizards\ComponentWizard\ComponentWizardViewsPage.cpp" />
     <ClCompile Include="wizards\ComponentWizard\ImportEditor\ImportEditor.cpp" />
     <ClCompile Include="wizards\ComponentWizard\ImportEditor\ImportHighlighter.cpp" />
-    <ClCompile Include="wizards\ComponentWizard\ImportEditor\ModelParameterEditorAdapter.cpp" />
     <ClCompile Include="wizards\ComponentWizard\ImportRunner.cpp" />
     <ClCompile Include="wizards\ComponentWizard\ViewListModel.cpp" />
     <ClCompile Include="wizards\ImportWizard\ImportWizard.cpp" />
@@ -3637,7 +3636,6 @@ CreateHelp
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_DLL -DQT_HELP_LIB  "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog" "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp" "-I.\editors\ComponentEditor\common" "-I.\editors\ComponentEditor\addressSpaces" "-I.\mainwindow"</Command>
     </CustomBuild>
-    <ClInclude Include="wizards\ComponentWizard\ImportEditor\ModelParameterEditorAdapter.h" />
     <CustomBuild Include="wizards\ComponentWizard\ImportRunner.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing ImportRunner.h...</Message>

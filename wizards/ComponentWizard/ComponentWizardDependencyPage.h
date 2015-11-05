@@ -27,11 +27,14 @@
 class ComponentWizardDependencyPage : public QWizardPage
 {
 public:
+
     /*!
-     *  Constructor.
+     *  The constructor.
      *
-     *      @param [in] pluginMgr  The plugin manager.
-     *      @param [in] parent     The parent wizard.
+     *      @param [in] component       The component.
+     *      @param [in] componentPath   Path to the component.
+     *      @param [in] pluginMgr       Plugin manager.
+     *      @param [in] parent          The parent wizard.
      */
     ComponentWizardDependencyPage(QSharedPointer<Component> component, QString const& componentPath, 
         PluginManager const& pluginMgr, QWidget* parent);

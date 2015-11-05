@@ -12,8 +12,6 @@
 #ifndef VHDLIMPORTEDITOR_H
 #define VHDLIMPORTEDITOR_H
 
-#include "ModelParameterEditorAdapter.h"
-
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
@@ -22,19 +20,14 @@
 #include <QSplitter>
 #include <QString>
 #include <QTabWidget>
-#include <QTextEdit>
 #include <QWidget>
 
 class Component;
 class FileSelector;
 class ImportRunner;
 class LibraryInterface;
-class ModelParameterEditor;
-class ModelParameterEditorAdapter;
-class ParametersEditor;
 class PluginManager;
 class PortsEditor;
-class VhdlParser;
 
 //-----------------------------------------------------------------------------
 //! Used to parse source files and generating IP-XACT packages of them.
@@ -45,15 +38,15 @@ class ImportEditor : public QWidget
 
 public:
 
-	/*! 
+	/*!
 	 *  The constructor.
 	 *
-	 *  @param [in]   component             The component being edited.
-	 *  @param [in]   handler               The instance which manages the library.
-     *  @param [in]   parameterFinder       The parameter finder.
-     *  @param [in]   expressionFormatter   The expression formatter.
-	 *  @param [in]   parent                The owner of this widget.
-	 *
+	 *      @param [in] component               The component being edited.
+	 *      @param [in] handler                 The instance which manages the library.
+	 *      @param [in] pluginMgr               The plugin manager.
+	 *      @param [in] parameterFinder         The parameter finder.
+	 *      @param [in] expressionFormatter     The expression formatter.
+	 *      @param [in] parent                  The owner of this widget.
 	 */
 	ImportEditor(QSharedPointer<Component> component,
         LibraryInterface* handler,
@@ -65,19 +58,18 @@ public:
 	//! The destructor.
 	~ImportEditor();
 
-	/*! 
-     * Initialize the combo box to select the top-level vhdl vfile.
+	/*!
+     *  Initialize the combo box to select the top-level vhdl vfile.
 	 * 
-	 * Display all available VHDL files and if one was previously selected and still
-	 * available, keep it as selected.
-	 *
+	 *  Display all available VHDL files and if one was previously selected and still available, keep it as
+     *  selected.
 	 */
 	void initializeFileSelection();
 
 	/*!
 	 *  Checks the validity of model parameter and port editors.
 	 *
-	 * @return False if contents of either editor is not valid.
+	 *      @return False if contents of either editor is not valid.
 	 */
 	bool checkEditorValidity() const;
 
@@ -116,10 +108,10 @@ private slots:
 
 private:
 	
-	//! No copying
+	//! No copying.
 	ImportEditor(const ImportEditor& other);    
 
-	//! No assignment
+	//! No assignment.
 	ImportEditor& operator=(const ImportEditor& other);
 
     /*!
@@ -156,15 +148,14 @@ private:
 	//! Path to the XML file containing the target component.
 	QString componentXmlPath_;
 
+    //! The original component.
     QSharedPointer<Component> component_;
 
+    //! The imported component.
     QSharedPointer<Component> importComponent_ ;
 
     //! Top-level source file relative path from component XML file.
     QString selectedSourceFile_;
-
-	//! Editor for the imported model parameters.
-	ModelParameterEditor* modelParameterEditor_;
 
 	//! Editor for the imported ports.
 	PortsEditor* portEditor_;
@@ -177,9 +168,6 @@ private:
 
     //! Button for refreshing ports and model parameters from the selected file.
     QPushButton* refreshButton_;
-
-    //! Adapter for model parameter editor to be used in plugins.
-    ModelParameterEditorAdapter modelParameterAdapter_;
 
     //! Tabs for displaying imported source files.
     QTabWidget* sourceDisplayTabs_;

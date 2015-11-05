@@ -158,7 +158,6 @@ HEADERS += ./editors/ComponentEditor/software/apiInterface/ApiInterfaceColumns.h
     ./wizards/ComponentWizard/ComponentWizardConclusionPage.h \
     ./wizards/ComponentWizard/ComponentWizardImportPage.h \
     ./wizards/ComponentWizard/ComponentWizardGeneralInfoPage.h \
-    ./wizards/ComponentWizard/ImportEditor/ModelParameterEditorAdapter.h \
     ./wizards/ComponentWizard/ImportEditor/ImportEditor.h \
     ./wizards/ComponentWizard/ImportEditor/ImportHighlighter.h \
     ./wizards/BusInterfaceWizard/BusInterfaceWizard.h \
@@ -798,7 +797,6 @@ SOURCES += ./editors/ComponentEditor/software/swView/cpuselector.cpp \
     ./wizards/ComponentWizard/ViewListModel.cpp \
     ./wizards/ComponentWizard/ImportEditor/ImportEditor.cpp \
     ./wizards/ComponentWizard/ImportEditor/ImportHighlighter.cpp \
-    ./wizards/ComponentWizard/ImportEditor/ModelParameterEditorAdapter.cpp \
     ./wizards/BusInterfaceWizard/BusInterfaceWizard.cpp \
     ./wizards/BusInterfaceWizard/BusInterfaceWizardBusDefinitionPage.cpp \
     ./wizards/BusInterfaceWizard/BusInterfaceWizardConclusionPage.cpp \

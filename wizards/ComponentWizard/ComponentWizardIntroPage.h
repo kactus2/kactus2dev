@@ -23,6 +23,7 @@ class Component;
 class ComponentWizardIntroPage : public QWizardPage
 {
 public:
+
     /*!
      *  Constructor.
      *
