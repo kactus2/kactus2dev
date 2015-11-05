@@ -81,7 +81,7 @@ fileItem2_(0)
         {
             file2_ = childNode.childNodes().at(0).nodeValue();
         }
-        else if (childNode.nodeName() == "spirit:description")
+        else if (childNode.nodeName() == "ipxact:description")
         {
             desc_ = childNode.childNodes().at(0).nodeValue();
         }

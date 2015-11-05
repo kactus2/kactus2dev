@@ -6,7 +6,7 @@
 // Date: 15.10.2010
 //
 // Description:
-// Equals the spirit:choice element in IP-Xact specification.
+// Equals the ipxact:choice element in IP-Xact specification.
 //-----------------------------------------------------------------------------
 
 #include "choice.h"

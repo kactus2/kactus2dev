@@ -97,13 +97,13 @@ public:
 
 private:
 
-    //! The name matches the spirit:name field within nameGroup.
+    //! The name matches the ipxact:name field within nameGroup.
     QString name_;
 
-    //! The displayName matches the spirit:displayName field within nameGroup.
+    //! The displayName matches the ipxact:displayName field within nameGroup.
     QString displayName_;
 
-    //! description matches the spirit:description field within nameGroup.
+    //! description matches the ipxact:description field within nameGroup.
     QString description_;
 };
 

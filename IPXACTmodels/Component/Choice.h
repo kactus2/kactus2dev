@@ -6,7 +6,7 @@
 // Date: 15.10.2010
 //
 // Description:
-// Equals the spirit:choice element in IP-Xact specification.
+// Equals the ipxact:choice element in IP-Xact specification.
 // Choice contains the name of the choice and the enumerations defined in it.
 //-----------------------------------------------------------------------------
 
@@ -96,12 +96,12 @@ public:
 private:
 
 	/*! Name of the Choice element
-	 * MANDATORY spirit:name
+	 * MANDATORY ipxact:name
 	 */
 	QString choiceName_;
 
 	/*! List of enumerations attached to the choice.
-	 * MANDATORY spirit:enumeration
+	 * MANDATORY ipxact:enumeration
 	 */
 	QSharedPointer<QList<QSharedPointer<Enumeration> > > enumerations_;
 

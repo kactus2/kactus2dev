@@ -140,7 +140,7 @@ namespace General
     */
     IPXACTMODELS_EXPORT QString driverType2Str(General::DriverType type);
 
-    /*! Equals to spirit:usage element within spirit:memoryBlockData
+    /*! Equals to ipxact:usage element within ipxact:memoryBlockData
     *
     * Usage specifies the type of usage for the address block to which it
     * belongs
@@ -171,7 +171,7 @@ namespace General
     */
     IPXACTMODELS_EXPORT QString usage2Str(const General::Usage usage);
 
-    /*! Equals to spirit:access element within spirit:memoryBlockData
+    /*! Equals to ipxact:access element within ipxact:memoryBlockData
     *
     * Access specifies the accessibility of the data in the address block.
     */
@@ -203,7 +203,7 @@ namespace General
     */
     IPXACTMODELS_EXPORT QString access2Str(const General::Access access);
 
-    /*! Equals to spirit:modifiedWriteValue within spirit:fieldData.
+    /*! Equals to ipxact:modifiedWriteValue within ipxact:fieldData.
     * 
     * ModifiedWrite describes the manipulation of data written to a field.
     */
@@ -253,7 +253,7 @@ namespace General
     */
     IPXACTMODELS_EXPORT QString modifiedWrite2Str(const General::ModifiedWrite modWrite);
 
-    /*! Equals the spirit:readAction within spirit:fieldData.
+    /*! Equals the ipxact:readAction within ipxact:fieldData.
     * 
     * ReadAction describes an action that happens to a field after a read operation.
     */
@@ -291,7 +291,7 @@ namespace General
     */
     IPXACTMODELS_EXPORT General::ReadAction str2ReadAction(const QString& str);
 
-    /*! Equals the spirit:testConstraint attribute within spirit:fieldData.
+    /*! Equals the ipxact:testConstraint attribute within ipxact:fieldData.
     * 
     * TestConstraint defines the constraint for the field during automated testing.
     */
@@ -331,12 +331,12 @@ namespace General
     */
     IPXACTMODELS_EXPORT General::TestConstraint str2TestConstraint(const QString& str);
 
-    /*! Used in spirit:clockDriver element in IP-Xact specification.
+    /*! Used in ipxact:clockDriver element in IP-Xact specification.
     *
     * Used to describe elements:
-    * spirit:clockPeriod
-    * spirit:clockPulseOffset
-    * spirit:clockPulseDuration
+    * ipxact:clockPeriod
+    * ipxact:clockPulseOffset
+    * ipxact:clockPulseDuration
     */
 
     //! Specifies a port name and it's bounds.

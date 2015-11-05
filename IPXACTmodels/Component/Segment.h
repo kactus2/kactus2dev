@@ -156,7 +156,7 @@ private:
 	QMap<QString, QString> rangeAttributes_;
 
     /*!
-	 * OPTIONAL (spirit: vendorExtensions)
+	 * OPTIONAL (ipxact: vendorExtensions)
 	 * Segment vendor extensions.
 	 */
 //     QList<QSharedPointer<VendorExtension> > vendorExtensions_;

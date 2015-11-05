@@ -28,12 +28,12 @@ SWFileBuilder::SWFileBuilder(QDomNode const& swBuildNode): FileBuilder()
 
     setFileType(swBuildElement.firstChildElement("kactus2:fileType").firstChild().nodeValue());
 
-    setCommand(swBuildElement.firstChildElement("spirit:command").firstChild().nodeValue());
+    setCommand(swBuildElement.firstChildElement("ipxact:command").firstChild().nodeValue());
 
-    setFlags(swBuildElement.firstChildElement("spirit:flags").firstChild().nodeValue());
+    setFlags(swBuildElement.firstChildElement("ipxact:flags").firstChild().nodeValue());
 
     setReplaceDefaultFlags(
-        swBuildElement.firstChildElement("spirit:setReplaceDefaultFlags").firstChild().nodeValue());
+        swBuildElement.firstChildElement("ipxact:setReplaceDefaultFlags").firstChild().nodeValue());
 }
 
 //-----------------------------------------------------------------------------
@@ -82,11 +82,11 @@ void SWFileBuilder::write(QXmlStreamWriter& writer) const
 
     writer.writeTextElement("kactus2:fileType", getFileType());
 
-    writer.writeTextElement("spirit:command", getCommand());
+    writer.writeTextElement("ipxact:command", getCommand());
 
-    writer.writeTextElement("spirit:flags", getFlags());
+    writer.writeTextElement("ipxact:flags", getFlags());
 
-    writer.writeTextElement("spirit:replaceDefaultFlags", getReplaceDefaultFlags());
+    writer.writeTextElement("ipxact:replaceDefaultFlags", getReplaceDefaultFlags());
 
     writer.writeEndElement(); // kactus2:SWBuildCommand
 }

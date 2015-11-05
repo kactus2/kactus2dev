@@ -19,11 +19,11 @@ portNameRef_(QString()), portIndex_(-1) {
 	QDomNamedNodeMap attributeMap = remapPortNode.attributes();
 
 	// get the portNameRef attribute and strip the whitespace characters
-	portNameRef_ = attributeMap.namedItem(QString("spirit:portNameRef")).
+	portNameRef_ = attributeMap.namedItem(QString("ipxact:portNameRef")).
 			childNodes().at(0).nodeValue();
 	portNameRef_ = XmlUtils::removeWhiteSpace(portNameRef_);
 
-	QString portIndex = attributeMap.namedItem(QString("spirit:portIndex")).
+	QString portIndex = attributeMap.namedItem(QString("ipxact:portIndex")).
 			childNodes().at(0).nodeValue();
 	if (!portIndex.isNull()) {
 		portIndex_ = portIndex.toInt();

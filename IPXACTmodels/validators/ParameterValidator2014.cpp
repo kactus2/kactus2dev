@@ -480,11 +480,11 @@ QStringList ParameterValidator2014::findErrorsInMinimumValue(Parameter const* pa
 {
     QStringList minimumErrors;
 
-    if (shouldCompareValueAndBoundary(parameter->getValueAttribute("spirit:minimum"), parameter->getValueAttribute("spirit:format"))
-        && !hasValidValueForFormat(parameter->getValueAttribute("spirit:minimum"), parameter->getValueAttribute("spirit:format")))
+    if (shouldCompareValueAndBoundary(parameter->getValueAttribute("ipxact:minimum"), parameter->getValueAttribute("ipxact:format"))
+        && !hasValidValueForFormat(parameter->getValueAttribute("ipxact:minimum"), parameter->getValueAttribute("ipxact:format")))
     {
         minimumErrors.append(QObject::tr("Minimum value %1 is not valid for format %2 in %3 %4 within %5").arg(
-            parameter->getValueAttribute("spirit:minimum"), parameter->getValueAttribute("spirit:format"),parameter->elementName(),
+            parameter->getValueAttribute("ipxact:minimum"), parameter->getValueAttribute("ipxact:format"),parameter->elementName(),
             parameter->name(), context));
     }
 
@@ -495,11 +495,11 @@ QStringList ParameterValidator2014::findErrorsInMaximumValue(Parameter const* pa
 {
     QStringList maximumErrors;
 
-    if (shouldCompareValueAndBoundary(parameter->getValueAttribute("spirit:maximum"), parameter->getValueAttribute("spirit:format"))
-        && !hasValidValueForFormat(parameter->getValueAttribute("spirit:maximum"), parameter->getValueAttribute("spirit:format")))
+    if (shouldCompareValueAndBoundary(parameter->getValueAttribute("ipxact:maximum"), parameter->getValueAttribute("ipxact:format"))
+        && !hasValidValueForFormat(parameter->getValueAttribute("ipxact:maximum"), parameter->getValueAttribute("ipxact:format")))
     {
         maximumErrors.append(QObject::tr("Maximum value %1 is not valid for format %2 in %3 %4 within %5").arg(
-            parameter->getValueAttribute("spirit:maximum"), parameter->getValueAttribute("spirit:format"),parameter->elementName(),
+            parameter->getValueAttribute("ipxact:maximum"), parameter->getValueAttribute("ipxact:format"),parameter->elementName(),
             parameter->name(), context));
     }
 

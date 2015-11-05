@@ -185,7 +185,7 @@ private:
 	//! specifies if this definition is an extension from another bus.
 	VLNV extends_;
 
-	//! Contains the attributes for the spirit:busDefinition element.
+	//! Contains the attributes for the ipxact:busDefinition element.
 	QMap<QString, QString> attributes_;
 
 };

@@ -190,7 +190,7 @@ void Design::parseVendorExtensions(QDomNode &node)
         QDomNode childNode = childNodes.at(i);
 
         // Compatibility note: 
-        // Kactus extensions are found under kactus:extensions or spirit:vendorExtensions.
+        // Kactus extensions are found under kactus:extensions or ipxact:vendorExtensions.
         if (childNode.nodeName() == "kactus2:extensions")
         {            
             parseVendorExtensions(childNode);

@@ -31,7 +31,7 @@ class IPXACTMODELS_EXPORT Function
 public:
 
 	/*! 
-     *  Equals the spirit:sourceFile element in IP-Xact specification.
+     *  Equals the ipxact:sourceFile element in IP-Xact specification.
 	 */
 	struct SourceFile
     {

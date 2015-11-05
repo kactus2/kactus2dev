@@ -23,21 +23,21 @@ max_(0) {
 	for (int i = 0; i < constrNode.childNodes().count(); ++i) {
 		QDomNode tempNode = constrNode.childNodes().at(i);
 
-		if (tempNode.nodeName() == QString("spirit:writeAsRead")) {
+		if (tempNode.nodeName() == QString("ipxact:writeAsRead")) {
 			type_ = WriteValueConstraint::WRITE_AS_READ;
 			QString str = tempNode.childNodes().at(0).nodeValue();
 			writeAsRead_ = General::str2Bool(str, false);
 		}
-		else if (tempNode.nodeName() == QString("spirit:useEnumeratedValues")) {
+		else if (tempNode.nodeName() == QString("ipxact:useEnumeratedValues")) {
 			type_ = WriteValueConstraint::USE_ENUM;
 			QString str = tempNode.childNodes().at(0).nodeValue();
 			useEnumValues_ = General::str2Bool(str, false);
 		}
-		else if (tempNode.nodeName() == QString("spirit:minimum")) {
+		else if (tempNode.nodeName() == QString("ipxact:minimum")) {
 			type_ = WriteValueConstraint::MIN_MAX;
 			min_ = tempNode.childNodes().at(0).nodeValue().toUInt();
 		}
-		else if (tempNode.nodeName() == QString("spirit:maximum")) {
+		else if (tempNode.nodeName() == QString("ipxact:maximum")) {
 			type_ = WriteValueConstraint::MIN_MAX;
 			max_ = tempNode.childNodes().at(0).nodeValue().toUInt();
 		}

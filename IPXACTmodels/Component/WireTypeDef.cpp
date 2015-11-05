@@ -18,24 +18,24 @@ constrained_(false), typeDefinitions_(), viewNameRefs_() {
 	for (int i = 0; i < wireTypeNode.childNodes().count(); ++i) {
 		QDomNode tempNode = wireTypeNode.childNodes().at(i);
 
-		if (tempNode.nodeName() == QString("spirit:typeName")) {
+		if (tempNode.nodeName() == QString("ipxact:typeName")) {
 			Wire::WireTypeDef::typeName_ = tempNode.childNodes().at(0).
 					nodeValue();
 
 			// get the constrained attribute
 			QDomNamedNodeMap attributeMap = tempNode.attributes();
 			QString constrained = attributeMap.namedItem(
-					QString("spirit:constrained")).nodeValue();
+					QString("ipxact:constrained")).nodeValue();
 			Wire::WireTypeDef::constrained_ =
 					General::str2Bool(constrained, false);
 		}
 
-		else if (tempNode.nodeName() == QString("spirit:typeDefinition")) {
+		else if (tempNode.nodeName() == QString("ipxact:typeDefinition")) {
 			Wire::WireTypeDef::typeDefinitions_.append(
 					tempNode.childNodes().at(0).nodeValue());
 		}
 
-		else if (tempNode.nodeName() == QString("spirit:viewNameRef")) {
+		else if (tempNode.nodeName() == QString("ipxact:viewNameRef")) {
 			Wire::WireTypeDef::viewNameRefs_.append(
 					tempNode.childNodes().at(0).nodeValue());
 		}

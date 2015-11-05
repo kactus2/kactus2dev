@@ -69,7 +69,7 @@ void DesignConfigurationWriter::writeDesignConfiguration(QXmlStreamWriter& write
 
     writeVendorExtensions(writer, designConfiguration);
 
-    writer.writeEndElement(); // spirit:designConfiguration
+    writer.writeEndElement(); // ipxact:designConfiguration
     writer.writeEndDocument();
 }
 

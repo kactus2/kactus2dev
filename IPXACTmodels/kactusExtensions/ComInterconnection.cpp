@@ -124,17 +124,17 @@ offPage_(false)
             continue;
         }
 
-        if (childNode.nodeName() == "spirit:name")
+        if (childNode.nodeName() == "ipxact:name")
         {
             //name_ = childNode.childNodes().at(0).nodeValue();
             setName(childNode.childNodes().at(0).nodeValue());
         }
-        else if (childNode.nodeName() == "spirit:displayName")
+        else if (childNode.nodeName() == "ipxact:displayName")
         {
             //displayName_ = childNode.childNodes().at(0).nodeValue();
             setDisplayName(childNode.childNodes().at(0).nodeValue());
         }
-        else if (childNode.nodeName() == "spirit:description")
+        else if (childNode.nodeName() == "ipxact:description")
         {
             //desc_ = childNode.childNodes().at(0).nodeValue();
             setDescription(childNode.childNodes().at(0).nodeValue());

@@ -6,7 +6,7 @@
 // Date: 04.09.2014
 //
 // Description:
-// Enumeration matches the spirit:enumeration element in IP-XACT.
+// Enumeration matches the ipxact:enumeration element in IP-XACT.
 //-----------------------------------------------------------------------------
 
 #include "Enumeration.h"

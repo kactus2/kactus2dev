@@ -6,7 +6,7 @@
 // Date: 04.09.2014
 //
 // Description:
-// Enumeration matches the spirit:enumeration element in IP-XACT.
+// Enumeration matches the ipxact:enumeration element in IP-XACT.
 //-----------------------------------------------------------------------------
 
 #ifndef ENUMERATION_H
@@ -17,7 +17,7 @@
 #include <QString>
 
 //-----------------------------------------------------------------------------
-//! Enumeration matches the spirit:enumeration element in IP-XACT.
+//! Enumeration matches the ipxact:enumeration element in IP-XACT.
 //-----------------------------------------------------------------------------
 class IPXACTMODELS_EXPORT Enumeration 
 {

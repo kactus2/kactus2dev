@@ -136,15 +136,15 @@ offPage_(false)
             continue;
         }
 
-        if (childNode.nodeName() == "spirit:name")
+        if (childNode.nodeName() == "ipxact:name")
         {
             setName(childNode.childNodes().at(0).nodeValue());
         }
-        else if (childNode.nodeName() == "spirit:displayName")
+        else if (childNode.nodeName() == "ipxact:displayName")
         {
             setDisplayName(childNode.childNodes().at(0).nodeValue());
         }
-        else if (childNode.nodeName() == "spirit:description")
+        else if (childNode.nodeName() == "ipxact:description")
         {
             setDescription(childNode.childNodes().at(0).nodeValue());
         }

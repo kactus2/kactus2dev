@@ -162,7 +162,7 @@ void SWView::write(QXmlStreamWriter& writer) const
         writer.writeTextElement("ipxact:description", description());
     }
 
-    // write spirit:hierarchyRef if one exists
+    // write ipxact:hierarchyRef if one exists
 	if (hierarchyRef_.isValid())
     {
         writer.writeEmptyElement("kactus2:hierarchyRef");
@@ -190,7 +190,7 @@ void SWView::write(QXmlStreamWriter& writer) const
         bspCommand_->write(writer);
 	}
 
-	writer.writeEndElement(); // spirit:swView
+	writer.writeEndElement(); // ipxact:swView
 }
 
 //-----------------------------------------------------------------------------

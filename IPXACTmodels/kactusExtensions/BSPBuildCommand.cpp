@@ -23,7 +23,7 @@ cpuName_()
     QDomElement bspElement = bspNode.toElement();
 
     fileType_ = bspElement.firstChildElement("kactus2:fileType").firstChild().nodeValue();
-    command_ = bspElement.firstChildElement("spirit:command").firstChild().nodeValue();
+    command_ = bspElement.firstChildElement("ipxact:command").firstChild().nodeValue();
     arguments_ = bspElement.firstChildElement("kactus2:arguments").firstChild().nodeValue();
     cpuName_ = bspElement.firstChildElement("kactus2:cpuName").firstChild().nodeValue();
 }
@@ -87,7 +87,7 @@ void BSPBuildCommand::write(QXmlStreamWriter& writer)
 	writer.writeStartElement("kactus2:BSPBuildCommand");
 
 	writer.writeTextElement("kactus2:fileType", fileType_);
-	writer.writeTextElement("spirit:command", command_);
+	writer.writeTextElement("ipxact:command", command_);
 	writer.writeTextElement("kactus2:arguments", arguments_);
 	writer.writeTextElement("kactus2:cpuName", cpuName_);
 
