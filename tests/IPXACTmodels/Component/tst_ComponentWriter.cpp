@@ -38,7 +38,7 @@
 #include <IPXACTmodels/kactusExtensions/ApiInterface.h>
 #include <IPXACTmodels/kactusExtensions/FileDependency.h>
 
-#include <IPXACTmodels/GenericVendorExtension.h>
+#include <IPXACTmodels/common/GenericVendorExtension.h>
 
 #include <QtTest>
 

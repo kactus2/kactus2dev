@@ -15,7 +15,7 @@ HEADERS += ../../../IPXACTmodels/Component/BusInterface.h \
     ../../../IPXACTmodels/common/ConfigurableVLNVReference.h \
     ../../../IPXACTmodels/common/DirectionTypes.h \
     ../../../IPXACTmodels/common/Extendable.h \
-    ../../../IPXACTmodels/GenericVendorExtension.h \
+    ../../../IPXACTmodels/common/GenericVendorExtension.h \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Array.h \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Group.h \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Placeholder.h \
@@ -32,7 +32,7 @@ HEADERS += ../../../IPXACTmodels/Component/BusInterface.h \
     ../../../IPXACTmodels/Component/MasterInterface.h \
     ../../../IPXACTmodels/Component/MirroredSlaveInterface.h \
     ../../../IPXACTmodels/Component/SlaveInterface.h \
-    ../../../IPXACTmodels/vlnv.h \
+    ../../../IPXACTmodels/common/VLNV.h \
     ../../../IPXACTmodels/common/CommonItemsReader.h \
     ../../../IPXACTmodels/common/NameGroupReader.h \
     ../../../IPXACTmodels/common/NameGroupWriter.h \
@@ -47,7 +47,7 @@ SOURCES += ../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../IPXACTmodels/common/ConfigurableVLNVReference.cpp \
     ../../../IPXACTmodels/common/DirectionTypes.cpp \
     ../../../IPXACTmodels/common/Extendable.cpp \
-    ../../../IPXACTmodels/GenericVendorExtension.cpp \
+    ../../../IPXACTmodels/common/GenericVendorExtension.cpp \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Array.cpp \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Placeholder.cpp \
@@ -71,4 +71,4 @@ SOURCES += ../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../IPXACTmodels/Component/MirroredSlaveInterface.cpp \
     ../../../IPXACTmodels/Component/SlaveInterface.cpp \
     ./tst_businterfaceReader.cpp \
-    ../../../IPXACTmodels/vlnv.cpp
+    ../../../IPXACTmodels/common/VLNV.cpp

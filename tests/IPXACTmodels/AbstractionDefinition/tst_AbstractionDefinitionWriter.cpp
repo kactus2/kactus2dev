@@ -11,7 +11,7 @@
 
 #include <QtTest>
 
-#include <IPXACTmodels/GenericVendorExtension.h>
+#include <IPXACTmodels/common/GenericVendorExtension.h>
 
 #include <IPXACTmodels/common/Assertion.h>
 #include <IPXACTmodels/common/CellSpecification.h>

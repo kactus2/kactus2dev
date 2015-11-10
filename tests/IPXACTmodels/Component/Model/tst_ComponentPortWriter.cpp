@@ -10,7 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include <IPXACTmodels/Component/PortWriter.h>
-#include <IPXACTmodels/GenericVendorExtension.h>
+#include <IPXACTmodels/common/GenericVendorExtension.h>
 
 #include <QtTest>
 #include <QDomDocument>

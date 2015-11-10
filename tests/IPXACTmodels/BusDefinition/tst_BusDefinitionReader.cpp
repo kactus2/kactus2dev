@@ -16,7 +16,7 @@
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 #include <IPXACTmodels/BusDefinition/BusDefinitionReader.h>
-#include <IPXACTmodels/GenericVendorExtension.h>
+#include <IPXACTmodels/common/GenericVendorExtension.h>
 
 //-----------------------------------------------------------------------------
 //! Unit test for class BusDefinition.

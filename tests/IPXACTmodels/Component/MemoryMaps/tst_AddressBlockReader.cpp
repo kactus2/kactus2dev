@@ -15,7 +15,7 @@
 #include <IPXACTmodels/Component/RegisterFile.h>
 #include <IPXACTmodels/Component/Field.h>
 
-#include <IPXACTmodels/VendorExtension.h>
+#include <IPXACTmodels/common/VendorExtension.h>
 
 #include <QtTest>
 

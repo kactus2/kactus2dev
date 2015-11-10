@@ -17,14 +17,14 @@ HEADERS += ../../../../IPXACTmodels/common/Array.h \
     ../../../../IPXACTmodels/common/Extendable.h \
     ../../../../IPXACTmodels/common/FileBuilder.h \
     ../../../../IPXACTmodels/common/FileTypes.h \
-    ../../../../IPXACTmodels/GenericVendorExtension.h \
+    ../../../../IPXACTmodels/common/GenericVendorExtension.h \
     ../../../../IPXACTmodels/kactusExtensions/Kactus2Group.h \
     ../../../../IPXACTmodels/common/ModuleParameter.h \
     ../../../../IPXACTmodels/common/NameGroup.h \
     ../../../../IPXACTmodels/common/Parameter.h \
     ../../../../IPXACTmodels/common/Range.h \
     ../../../../IPXACTmodels/common/Vector.h \
-    ../../../../IPXACTmodels/vlnv.h \
+    ../../../../IPXACTmodels/common/VLNV.h \
     ../../../../IPXACTmodels/common/CommonItemsWriter.h \
     ../../../../IPXACTmodels/Component/InstantiationsWriter.h \
     ../../../../IPXACTmodels/common/ModuleParameterWriter.h \
@@ -42,7 +42,7 @@ SOURCES += ../../../../IPXACTmodels/common/Array.cpp \
     ../../../../IPXACTmodels/common/Extendable.cpp \
     ../../../../IPXACTmodels/common/FileBuilder.cpp \
     ../../../../IPXACTmodels/common/FileTypes.cpp \
-    ../../../../IPXACTmodels/GenericVendorExtension.cpp \
+    ../../../../IPXACTmodels/common/GenericVendorExtension.cpp \
     ../../../../IPXACTmodels/Component/InstantiationsWriter.cpp \
     ../../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
     ../../../../IPXACTmodels/common/ModuleParameter.cpp \
@@ -54,5 +54,5 @@ SOURCES += ../../../../IPXACTmodels/common/Array.cpp \
     ../../../../IPXACTmodels/common/Range.cpp \
     ../../../../IPXACTmodels/common/Vector.cpp \
     ./tst_InstantiationsWriter.cpp \
-    ../../../../IPXACTmodels/vlnv.cpp \
+    ../../../../IPXACTmodels/common/VLNV.cpp \
     ../../../../IPXACTmodels/common/FileBuilderWriter.cpp

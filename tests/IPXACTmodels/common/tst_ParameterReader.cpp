@@ -15,7 +15,7 @@
 
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/common/ParameterReader.h>
-#include <IPXACTmodels/GenericVendorExtension.h>
+#include <IPXACTmodels/common/GenericVendorExtension.h>
 
 //-----------------------------------------------------------------------------
 //! Unit test for class ParameterReader.

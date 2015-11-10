@@ -19,11 +19,11 @@ HEADERS += ../../../../IPXACTmodels/Component/WriteValueConstraint.h \
     ../../../../IPXACTmodels/common/Array.h \
     ../../../../IPXACTmodels/Component/FieldWriter.h \
     ../../../../IPXACTmodels/common/CommonItemsWriter.h \
-    ../../../../IPXACTmodels/vlnv.h \
+    ../../../../IPXACTmodels/common/VLNV.h \
     ../../../../IPXACTmodels/common/ParameterWriter.h \
     ../../../../IPXACTmodels/common/ConfigurableElementValue.h \
     ../../../../IPXACTmodels/common/NameGroupWriter.h \
-    ../../../../IPXACTmodels/GenericVendorExtension.h \
+    ../../../../IPXACTmodels/common/GenericVendorExtension.h \
     ../../../../IPXACTmodels/generaldeclarations.h \
     ../../../../IPXACTmodels/XmlUtils.h \
     ../../../../IPXACTmodels/Component/EnumeratedValueWriter.h \
@@ -41,11 +41,11 @@ SOURCES += ./tst_FieldWriter.cpp \
     ../../../../IPXACTmodels/common/Array.cpp \
     ../../../../IPXACTmodels/Component/FieldWriter.cpp \
     ../../../../IPXACTmodels/common/CommonItemsWriter.cpp \
-    ../../../../IPXACTmodels/vlnv.cpp \
+    ../../../../IPXACTmodels/common/VLNV.cpp \
     ../../../../IPXACTmodels/common/ParameterWriter.cpp \
     ../../../../IPXACTmodels/common/ConfigurableElementValue.cpp \
     ../../../../IPXACTmodels/common/NameGroupWriter.cpp \
-    ../../../../IPXACTmodels/GenericVendorExtension.cpp \
+    ../../../../IPXACTmodels/common/GenericVendorExtension.cpp \
     ../../../../IPXACTmodels/generaldeclarations.cpp \
     ../../../../IPXACTmodels/XmlUtils.cpp \
     ../../../../IPXACTmodels/Component/EnumeratedValueWriter.cpp \

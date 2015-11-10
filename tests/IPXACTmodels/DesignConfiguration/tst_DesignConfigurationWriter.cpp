@@ -15,7 +15,7 @@
 #include <IPXACTmodels/designConfiguration/DesignConfigurationWriter.h>
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
-#include <IPXACTmodels/GenericVendorExtension.h>
+#include <IPXACTmodels/common/GenericVendorExtension.h>
 
 #include <QDomElement>
 

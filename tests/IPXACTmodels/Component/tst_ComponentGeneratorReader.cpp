@@ -10,7 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include <IPXACTmodels/Component/ComponentGeneratorReader.h>
-#include <IPXACTmodels/VendorExtension.h>
+#include <IPXACTmodels/common/VendorExtension.h>
 
 #include <QtTest>
 

@@ -9,7 +9,7 @@
 // Unit test for class InstantiationsWriter.
 //-----------------------------------------------------------------------------
 
-#include <IPXACTmodels/GenericVendorExtension.h>
+#include <IPXACTmodels/common/GenericVendorExtension.h>
 
 #include <IPXACTmodels/Component/ComponentInstantiation.h>
 #include <IPXACTmodels/Component/DesignInstantiation.h>

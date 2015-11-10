@@ -14,7 +14,7 @@
 
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/common/ParameterWriter.h>
-#include <IPXACTmodels/GenericVendorExtension.h>
+#include <IPXACTmodels/common/GenericVendorExtension.h>
 
 //-----------------------------------------------------------------------------
 //! Unit test for class ParameterWriter.

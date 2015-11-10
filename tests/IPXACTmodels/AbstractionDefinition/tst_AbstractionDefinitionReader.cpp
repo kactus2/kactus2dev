@@ -27,7 +27,7 @@
 
 #include <IPXACTmodels/AbstractionDefinition/TimingConstraint.h>
 
-#include <IPXACTmodels/GenericVendorExtension.h>
+#include <IPXACTmodels/common/GenericVendorExtension.h>
 
 //-----------------------------------------------------------------------------
 //! Unit test for class AbstractionDefinition.

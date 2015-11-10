@@ -13,7 +13,7 @@ HEADERS += ../../../../IPXACTmodels/Component/EnumeratedValue.h \
     ../../../../IPXACTmodels/kactusExtensions/Kactus2Group.h \
     ../../../../IPXACTmodels/Component/EnumeratedValueWriter.h \
     ../../../../IPXACTmodels/common/CommonItemsWriter.h \
-    ../../../../IPXACTmodels/vlnv.h \
+    ../../../../IPXACTmodels/common/VLNV.h \
     ../../../../IPXACTmodels/common/ParameterWriter.h \
     ../../../../IPXACTmodels/common/ConfigurableElementValue.h \
     ../../../../IPXACTmodels/common/Parameter.h \
@@ -21,7 +21,7 @@ HEADERS += ../../../../IPXACTmodels/Component/EnumeratedValue.h \
     ../../../../IPXACTmodels/common/Vector.h \
     ../../../../IPXACTmodels/common/Array.h \
     ../../../../IPXACTmodels/common/NameGroupWriter.h \
-    ../../../../IPXACTmodels/GenericVendorExtension.h
+    ../../../../IPXACTmodels/common/GenericVendorExtension.h
 SOURCES += ./tst_EnumeratedValueWriter.cpp \
     ../../../../IPXACTmodels/Component/EnumeratedValue.cpp \
     ../../../../IPXACTmodels/common/NameGroup.cpp \
@@ -29,7 +29,7 @@ SOURCES += ./tst_EnumeratedValueWriter.cpp \
     ../../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
     ../../../../IPXACTmodels/Component/EnumeratedValueWriter.cpp \
     ../../../../IPXACTmodels/common/CommonItemsWriter.cpp \
-    ../../../../IPXACTmodels/vlnv.cpp \
+    ../../../../IPXACTmodels/common/VLNV.cpp \
     ../../../../IPXACTmodels/common/ParameterWriter.cpp \
     ../../../../IPXACTmodels/common/ConfigurableElementValue.cpp \
     ../../../../IPXACTmodels/common/Parameter.cpp \
@@ -37,4 +37,4 @@ SOURCES += ./tst_EnumeratedValueWriter.cpp \
     ../../../../IPXACTmodels/common/Vector.cpp \
     ../../../../IPXACTmodels/common/Array.cpp \
     ../../../../IPXACTmodels/common/NameGroupWriter.cpp \
-    ../../../../IPXACTmodels/GenericVendorExtension.cpp
+    ../../../../IPXACTmodels/common/GenericVendorExtension.cpp

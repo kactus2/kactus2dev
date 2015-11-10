@@ -40,7 +40,7 @@ HEADERS += ../../../IPXACTmodels/Component/BusInterfaceReader.h \
     ../../../IPXACTmodels/Component/FileSet.h \
     ../../../IPXACTmodels/common/FileTypes.h \
     ../../../IPXACTmodels/Component/Function.h \
-    ../../../IPXACTmodels/GenericVendorExtension.h \
+    ../../../IPXACTmodels/common/GenericVendorExtension.h \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Group.h \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Placeholder.h \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Position.h \
@@ -86,7 +86,7 @@ HEADERS += ../../../IPXACTmodels/Component/BusInterfaceReader.h \
     ../../../IPXACTmodels/Component/MirroredSlaveInterface.h \
     ../../../IPXACTmodels/Component/SlaveInterface.h \
     ../../../IPXACTmodels/swbuildcommand.h \
-    ../../../IPXACTmodels/vlnv.h \
+    ../../../IPXACTmodels/common/VLNV.h \
     ../../../IPXACTmodels/Component/AddressBlockReader.h \
     ../../../IPXACTmodels/Component/AddressSpaceReader.h \
     ../../../IPXACTmodels/Component/CPUReader.h \
@@ -160,7 +160,7 @@ SOURCES += ../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../IPXACTmodels/Component/FileSetReader.cpp \
     ../../../IPXACTmodels/common/FileTypes.cpp \
     ../../../IPXACTmodels/Component/Function.cpp \
-    ../../../IPXACTmodels/GenericVendorExtension.cpp \
+    ../../../IPXACTmodels/common/GenericVendorExtension.cpp \
     ../../../IPXACTmodels/Component/InstantiationsReader.cpp \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Placeholder.cpp \
@@ -222,4 +222,4 @@ SOURCES += ../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../IPXACTmodels/Component/SlaveInterface.cpp \
     ../../../IPXACTmodels/swbuildcommand.cpp \
     ./tst_ComponentReader.cpp \
-    ../../../IPXACTmodels/vlnv.cpp
+    ../../../IPXACTmodels/common/VLNV.cpp

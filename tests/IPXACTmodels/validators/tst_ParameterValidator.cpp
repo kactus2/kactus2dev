@@ -11,8 +11,8 @@
 
 #include <QtTest>
 
-#include <IPXACTmodels/choice.h>
-#include <IPXACTmodels/Enumeration.h>
+#include <IPXACTmodels/Component/Choice.h>
+#include <IPXACTmodels/common/Enumeration.h>
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/validators/ParameterValidator.h>
 

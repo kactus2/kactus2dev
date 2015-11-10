@@ -12,7 +12,7 @@
 //#include <IPXACTmodels/Component/Port.h>
 #include <IPXACTmodels/Component/PortReader.h>
 
-#include <IPXACTmodels/VendorExtension.h>
+#include <IPXACTmodels/common/VendorExtension.h>
 
 #include <QtTest>
 #include <QDomDocument>

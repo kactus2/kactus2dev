@@ -14,8 +14,8 @@
 #include "GraphicsConnection.h"
 
 #include <IPXACTmodels/Component/BusInterface.h>
-#include <IPXACTmodels/ApiInterface.h>
-#include <IPXACTmodels/ComInterface.h>
+#include <IPXACTmodels/kactusExtensions//ApiInterface.h>
+#include <IPXACTmodels/kactusExtensions//ComInterface.h>
 
 #include <common/KactusColors.h>
 
@@ -304,7 +304,7 @@ bool ConnectionEndpoint::isTemporary() const
 //-----------------------------------------------------------------------------
 bool ConnectionEndpoint::isInvalid() const
 {
-    return (temporary_ && getOwnerComponent()->getVlnv()->isValid());
+    return (temporary_ && getOwnerComponent()->getVlnv().isValid());
 }
 
 //-----------------------------------------------------------------------------

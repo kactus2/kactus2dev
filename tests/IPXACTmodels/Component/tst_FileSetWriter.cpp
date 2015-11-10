@@ -11,7 +11,7 @@
 
 #include <IPXACTmodels/Component/FileSetWriter.h>
 
-#include <IPXACTmodels/GenericVendorExtension.h>
+#include <IPXACTmodels/common/GenericVendorExtension.h>
 
 #include <QtTest>
 

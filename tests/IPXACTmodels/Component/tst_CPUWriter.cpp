@@ -13,8 +13,8 @@
 
 #include <IPXACTmodels/Component/CPUWriter.h>
 
-#include <IPXACTmodels/GenericVendorExtension.h>
-#include <IPXACTmodels/VendorExtension.h>
+#include <IPXACTmodels/common/GenericVendorExtension.h>
+#include <IPXACTmodels/common/VendorExtension.h>
 
 #include <QtTest>
 

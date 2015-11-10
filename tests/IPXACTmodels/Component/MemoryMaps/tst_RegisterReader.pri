@@ -9,11 +9,11 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 HEADERS += ../../../../IPXACTmodels/Component/RegisterReader.h \
     ../../../../IPXACTmodels/common/NameGroup.h \
-    ../../../../IPXACTmodels/vlnv.h \
+    ../../../../IPXACTmodels/common/VLNV.h \
     ../../../../IPXACTmodels/common/CommonItemsReader.h \
     ../../../../IPXACTmodels/common/ParameterReader.h \
     ../../../../IPXACTmodels/common/Extendable.h \
-    ../../../../IPXACTmodels/GenericVendorExtension.h \
+    ../../../../IPXACTmodels/common/GenericVendorExtension.h \
     ../../../../IPXACTmodels/common/ConfigurableVLNVReference.h \
     ../../../../IPXACTmodels/common/ConfigurableElementValue.h \
     ../../../../IPXACTmodels/kactusExtensions/Kactus2Group.h \
@@ -38,11 +38,11 @@ HEADERS += ../../../../IPXACTmodels/Component/RegisterReader.h \
 SOURCES += ./tst_RegisterReader.cpp \
     ../../../../IPXACTmodels/Component/RegisterReader.cpp \
     ../../../../IPXACTmodels/common/NameGroup.cpp \
-    ../../../../IPXACTmodels/vlnv.cpp \
+    ../../../../IPXACTmodels/common/VLNV.cpp \
     ../../../../IPXACTmodels/common/CommonItemsReader.cpp \
     ../../../../IPXACTmodels/common/ParameterReader.cpp \
     ../../../../IPXACTmodels/common/Extendable.cpp \
-    ../../../../IPXACTmodels/GenericVendorExtension.cpp \
+    ../../../../IPXACTmodels/common/GenericVendorExtension.cpp \
     ../../../../IPXACTmodels/common/ConfigurableVLNVReference.cpp \
     ../../../../IPXACTmodels/common/ConfigurableElementValue.cpp \
     ../../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp \

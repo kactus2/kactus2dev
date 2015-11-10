@@ -26,7 +26,7 @@ HEADERS += ../../../../IPXACTmodels/Component/MemoryMapBase.h \
     ../../../../IPXACTmodels/Component/Register.h \
     ../../../../IPXACTmodels/Component/RegisterWriter.h \
     ../../../../IPXACTmodels/common/CommonItemsWriter.h \
-    ../../../../IPXACTmodels/vlnv.h \
+    ../../../../IPXACTmodels/common/VLNV.h \
     ../../../../IPXACTmodels/common/ParameterWriter.h \
     ../../../../IPXACTmodels/common/ConfigurableElementValue.h \
     ../../../../IPXACTmodels/common/NameGroupWriter.h \
@@ -39,7 +39,7 @@ HEADERS += ../../../../IPXACTmodels/Component/MemoryMapBase.h \
     ../../../../IPXACTmodels/Component/FieldWriter.h \
     ../../../../IPXACTmodels/Component/EnumeratedValueWriter.h \
     ../../../../IPXACTmodels/XmlUtils.h \
-    ../../../../IPXACTmodels/GenericVendorExtension.h
+    ../../../../IPXACTmodels/common/GenericVendorExtension.h
 SOURCES += ./tst_MemoryMapBaseWriter.cpp \
     ../../../../IPXACTmodels/Component/MemoryMapBase.cpp \
     ../../../../IPXACTmodels/Component/MemoryBlockBase.cpp \
@@ -60,7 +60,7 @@ SOURCES += ./tst_MemoryMapBaseWriter.cpp \
     ../../../../IPXACTmodels/Component/Register.cpp \
     ../../../../IPXACTmodels/Component/RegisterWriter.cpp \
     ../../../../IPXACTmodels/common/CommonItemsWriter.cpp \
-    ../../../../IPXACTmodels/vlnv.cpp \
+    ../../../../IPXACTmodels/common/VLNV.cpp \
     ../../../../IPXACTmodels/common/ParameterWriter.cpp \
     ../../../../IPXACTmodels/common/ConfigurableElementValue.cpp \
     ../../../../IPXACTmodels/common/NameGroupWriter.cpp \
@@ -73,4 +73,4 @@ SOURCES += ./tst_MemoryMapBaseWriter.cpp \
     ../../../../IPXACTmodels/Component/FieldWriter.cpp \
     ../../../../IPXACTmodels/Component/EnumeratedValueWriter.cpp \
     ../../../../IPXACTmodels/XmlUtils.cpp \
-    ../../../../IPXACTmodels/GenericVendorExtension.cpp
+    ../../../../IPXACTmodels/common/GenericVendorExtension.cpp

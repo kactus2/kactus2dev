@@ -9,7 +9,7 @@
 // Unit test for class InstantiationsReader.
 //-----------------------------------------------------------------------------
 
-#include <IPXACTmodels/VendorExtension.h>
+#include <IPXACTmodels/common/VendorExtension.h>
 #include <IPXACTmodels/Component/InstantiationsReader.h>
 
 #include <QtTest>

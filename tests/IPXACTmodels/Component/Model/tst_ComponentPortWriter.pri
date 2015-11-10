@@ -12,7 +12,7 @@ HEADERS += ../../../../IPXACTmodels/common/DirectionTypes.h \
     ../../../../IPXACTmodels/common/Parameter.h \
     ../../../../IPXACTmodels/common/ConfigurableElementValue.h \
     ../../../../IPXACTmodels/common/ParameterWriter.h \
-    ../../../../IPXACTmodels/vlnv.h \
+    ../../../../IPXACTmodels/common/VLNV.h \
     ../../../../IPXACTmodels/common/CommonItemsWriter.h \
     ../../../../IPXACTmodels/Component/PortWriter.h \
     ../../../../IPXACTmodels/common/Vector.h \
@@ -31,12 +31,12 @@ HEADERS += ../../../../IPXACTmodels/common/DirectionTypes.h \
     ../../../../IPXACTmodels/Component/Port.h \
     ../../../../IPXACTmodels/Component/WireTypeDef.h \
     ../../../../IPXACTmodels/common/ProtocolWriter.h \
-    ../../../../IPXACTmodels/GenericVendorExtension.h
+    ../../../../IPXACTmodels/common/GenericVendorExtension.h
 SOURCES += ../../../../IPXACTmodels/common/NameGroupWriter.cpp \
     ../../../../IPXACTmodels/common/Parameter.cpp \
     ../../../../IPXACTmodels/common/ConfigurableElementValue.cpp \
     ../../../../IPXACTmodels/common/ParameterWriter.cpp \
-    ../../../../IPXACTmodels/vlnv.cpp \
+    ../../../../IPXACTmodels/common/VLNV.cpp \
     ../../../../IPXACTmodels/common/CommonItemsWriter.cpp \
     ../../../../IPXACTmodels/Component/PortWriter.cpp \
     ../../../../IPXACTmodels/common/Vector.cpp \
@@ -57,4 +57,4 @@ SOURCES += ../../../../IPXACTmodels/common/NameGroupWriter.cpp \
     ../../../../IPXACTmodels/Component/Port.cpp \
     ./tst_ComponentPortWriter.cpp \
     ../../../../IPXACTmodels/common/ProtocolWriter.cpp \
-    ../../../../IPXACTmodels/GenericVendorExtension.cpp
+    ../../../../IPXACTmodels/common/GenericVendorExtension.cpp

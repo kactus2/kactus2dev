@@ -17,10 +17,10 @@ HEADERS += ../../../IPXACTmodels/common/NameValuePair.h \
     ../../../IPXACTmodels/common/BuildModel.h \
     ../../../IPXACTmodels/Component/BuildCommand.h \
     ../../../IPXACTmodels/common/BooleanValue.h \
-    ../../../IPXACTmodels/vlnv.h \
+    ../../../IPXACTmodels/common/VLNV.h \
     ../../../IPXACTmodels/common/CommonItemsReader.h \
     ../../../IPXACTmodels/common/ParameterReader.h \
-    ../../../IPXACTmodels/GenericVendorExtension.h \
+    ../../../IPXACTmodels/common/GenericVendorExtension.h \
     ../../../IPXACTmodels/common/ConfigurableElementValue.h \
     ../../../IPXACTmodels/common/ConfigurableVLNVReference.h \
     ../../../IPXACTmodels/common/Parameter.h \
@@ -40,10 +40,10 @@ SOURCES += ./tst_FileReader.cpp \
     ../../../IPXACTmodels/common/BuildModel.cpp \
     ../../../IPXACTmodels/Component/BuildCommand.cpp \
     ../../../IPXACTmodels/common/BooleanValue.cpp \
-    ../../../IPXACTmodels/vlnv.cpp \
+    ../../../IPXACTmodels/common/VLNV.cpp \
     ../../../IPXACTmodels/common/CommonItemsReader.cpp \
     ../../../IPXACTmodels/common/ParameterReader.cpp \
-    ../../../IPXACTmodels/GenericVendorExtension.cpp \
+    ../../../IPXACTmodels/common/GenericVendorExtension.cpp \
     ../../../IPXACTmodels/common/ConfigurableElementValue.cpp \
     ../../../IPXACTmodels/common/ConfigurableVLNVReference.cpp \
     ../../../IPXACTmodels/common/Parameter.cpp \

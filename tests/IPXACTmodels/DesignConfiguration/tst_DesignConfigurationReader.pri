@@ -15,7 +15,6 @@ HEADERS += ../../../IPXACTmodels/designConfiguration/AbstractorInstance.h \
     ../../../IPXACTmodels/designConfiguration/DesignConfiguration.h \
     ../../../IPXACTmodels/common/Document.h \
     ../../../IPXACTmodels/common/Extendable.h \
-    ../../../IPXACTmodels/GenericVendorExtension.h \
     ../../../IPXACTmodels/designConfiguration/InterconnectionConfiguration.h \
     ../../../IPXACTmodels/designConfiguration/InterfaceRef.h \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Group.h \
@@ -29,15 +28,18 @@ HEADERS += ../../../IPXACTmodels/designConfiguration/AbstractorInstance.h \
     ../../../IPXACTmodels/common/Vector.h \
     ../../../IPXACTmodels/VendorExtension.h \
     ../../../IPXACTmodels/designConfiguration/ViewConfiguration.h \
-    ../../../IPXACTmodels/vlnv.h \
+    ../../../IPXACTmodels/common/GenericVendorExtension.h \
+    ../../../IPXACTmodels/common/CommonItemsReader.h \
     ../../../IPXACTmodels/designConfiguration/DesignConfigurationReader.h \
     ../../../IPXACTmodels/common/DocumentReader.h \
     ../../../IPXACTmodels/common/NameGroupReader.h \
     ../../../IPXACTmodels/common/ParameterReader.h \
-    ../../../IPXACTmodels/common/CommonItemsReader.h
-SOURCES += ../../../IPXACTmodels/designConfiguration/AbstractorInstance.cpp \
+    ../../../IPXACTmodels/common/VLNV.h
+SOURCES += ../../../IPXACTmodels/common/GenericVendorExtension.cpp \
+    ../../../IPXACTmodels/designConfiguration/AbstractorInstance.cpp \
     ../../../IPXACTmodels/common/Array.cpp \
     ../../../IPXACTmodels/common/Assertion.cpp \
+    ../../../IPXACTmodels/common/CommonItemsReader.cpp \
     ../../../IPXACTmodels/common/ConfigurableElementValue.cpp \
     ../../../IPXACTmodels/common/ConfigurableVLNVReference.cpp \
     ../../../IPXACTmodels/designConfiguration/DesignConfiguration.cpp \
@@ -45,7 +47,7 @@ SOURCES += ../../../IPXACTmodels/designConfiguration/AbstractorInstance.cpp \
     ../../../IPXACTmodels/common/Document.cpp \
     ../../../IPXACTmodels/common/DocumentReader.cpp \
     ../../../IPXACTmodels/common/Extendable.cpp \
-    ../../../IPXACTmodels/GenericVendorExtension.cpp \
+    ../../../IPXACTmodels/common/VLNV.cpp \
     ../../../IPXACTmodels/designConfiguration/InterconnectionConfiguration.cpp \
     ../../../IPXACTmodels/designConfiguration/InterfaceRef.cpp \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
@@ -60,6 +62,4 @@ SOURCES += ../../../IPXACTmodels/designConfiguration/AbstractorInstance.cpp \
     ../../../IPXACTmodels/common/Range.cpp \
     ../../../IPXACTmodels/common/Vector.cpp \
     ../../../IPXACTmodels/designConfiguration/ViewConfiguration.cpp \
-    ./tst_DesignConfigurationReader.cpp \
-    ../../../IPXACTmodels/vlnv.cpp \
-    ../../../IPXACTmodels/common/CommonItemsReader.cpp
+    ./tst_DesignConfigurationReader.cpp

@@ -9,7 +9,7 @@
 // Unit test for class FileReader.
 //-----------------------------------------------------------------------------
 
-#include <IPXACTmodels/VendorExtension.h>
+#include <IPXACTmodels/common/VendorExtension.h>
 
 #include <IPXACTmodels/Component/FileReader.h>
 

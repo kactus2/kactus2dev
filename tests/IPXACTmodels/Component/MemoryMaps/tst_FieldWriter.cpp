@@ -9,7 +9,7 @@
 // Unit test for class FieldWriter.
 //-----------------------------------------------------------------------------
 
-#include <IPXACTmodels/GenericVendorExtension.h>
+#include <IPXACTmodels/common/GenericVendorExtension.h>
 
 #include <IPXACTmodels/Component/FieldWriter.h>
 #include <IPXACTmodels/Component/Field.h>

@@ -17,9 +17,9 @@ HEADERS += ../../../IPXACTmodels/common/NameValuePair.h \
     ../../../IPXACTmodels/common/FileTypes.h \
     ../../../IPXACTmodels/Component/FileWriter.h \
     ../../../IPXACTmodels/common/BooleanValue.h \
-    ../../../IPXACTmodels/GenericVendorExtension.h \
+    ../../../IPXACTmodels/common/GenericVendorExtension.h \
     ../../../IPXACTmodels/common/CommonItemsWriter.h \
-    ../../../IPXACTmodels/vlnv.h \
+    ../../../IPXACTmodels/common/VLNV.h \
     ../../../IPXACTmodels/common/ParameterWriter.h \
     ../../../IPXACTmodels/common/ConfigurableElementValue.h \
     ../../../IPXACTmodels/common/Parameter.h \
@@ -39,9 +39,9 @@ SOURCES += ./tst_FileWriter.cpp \
     ../../../IPXACTmodels/common/FileTypes.cpp \
     ../../../IPXACTmodels/Component/FileWriter.cpp \
     ../../../IPXACTmodels/common/BooleanValue.cpp \
-    ../../../IPXACTmodels/GenericVendorExtension.cpp \
+    ../../../IPXACTmodels/common/GenericVendorExtension.cpp \
     ../../../IPXACTmodels/common/CommonItemsWriter.cpp \
-    ../../../IPXACTmodels/vlnv.cpp \
+    ../../../IPXACTmodels/common/VLNV.cpp \
     ../../../IPXACTmodels/common/ParameterWriter.cpp \
     ../../../IPXACTmodels/common/ConfigurableElementValue.cpp \
     ../../../IPXACTmodels/common/Parameter.cpp \

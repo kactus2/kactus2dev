@@ -16,7 +16,7 @@ HEADERS += ../../../../IPXACTmodels/Component/AddressBlock.h \
     ../../../../IPXACTmodels/Component/EnumeratedValue.h \
     ../../../../IPXACTmodels/common/Extendable.h \
     ../../../../IPXACTmodels/Component/Field.h \
-    ../../../../IPXACTmodels/GenericVendorExtension.h \
+    ../../../../IPXACTmodels/common/GenericVendorExtension.h \
     ../../../../IPXACTmodels/kactusExtensions/Kactus2Group.h \
     ../../../../IPXACTmodels/Component/MemoryBlockBase.h \
     ../../../../IPXACTmodels/Component/MemoryMap.h \
@@ -33,7 +33,7 @@ HEADERS += ../../../../IPXACTmodels/Component/AddressBlock.h \
     ../../../../IPXACTmodels/Component/WriteValueConstraint.h \
     ../../../../IPXACTmodels/XmlUtils.h \
     ../../../../IPXACTmodels/generaldeclarations.h \
-    ../../../../IPXACTmodels/vlnv.h \
+    ../../../../IPXACTmodels/common/VLNV.h \
     ../../../../IPXACTmodels/Component/AddressBlockReader.h \
     ../../../../IPXACTmodels/common/CommonItemsReader.h \
     ../../../../IPXACTmodels/Component/EnumeratedValueReader.h \
@@ -56,7 +56,7 @@ SOURCES += ../../../../IPXACTmodels/Component/AddressBlock.cpp \
     ../../../../IPXACTmodels/common/Extendable.cpp \
     ../../../../IPXACTmodels/Component/Field.cpp \
     ../../../../IPXACTmodels/Component/FieldReader.cpp \
-    ../../../../IPXACTmodels/GenericVendorExtension.cpp \
+    ../../../../IPXACTmodels/common/GenericVendorExtension.cpp \
     ../../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
     ../../../../IPXACTmodels/Component/MemoryBlockBase.cpp \
     ../../../../IPXACTmodels/Component/MemoryMap.cpp \
@@ -78,5 +78,5 @@ SOURCES += ../../../../IPXACTmodels/Component/AddressBlock.cpp \
     ../../../../IPXACTmodels/XmlUtils.cpp \
     ../../../../IPXACTmodels/generaldeclarations.cpp \
     ./tst_MemoryMapReader.cpp \
-    ../../../../IPXACTmodels/vlnv.cpp \
+    ../../../../IPXACTmodels/common/VLNV.cpp \
     ../../../../IPXACTmodels/Component/MemoryMapBaseReader.cpp

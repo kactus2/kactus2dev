@@ -12,7 +12,7 @@
 #include <IPXACTmodels/Component/EnumeratedValueWriter.h>
 #include <IPXACTmodels/Component/EnumeratedValue.h>
 
-#include <IPXACTmodels/GenericVendorExtension.h>
+#include <IPXACTmodels/common/GenericVendorExtension.h>
 
 #include <QtTest>
 #include <QSharedPointer>

@@ -15,7 +15,7 @@
 #include <IPXACTmodels/Component/MirroredSlaveInterface.h>
 #include <IPXACTmodels/Component/SlaveInterface.h>
 
-#include <IPXACTmodels/VendorExtension.h>
+#include <IPXACTmodels/common/VendorExtension.h>
 
 #include <QtTest>
 

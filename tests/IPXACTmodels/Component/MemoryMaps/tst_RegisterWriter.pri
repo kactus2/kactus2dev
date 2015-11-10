@@ -26,14 +26,14 @@ HEADERS += ../../../../IPXACTmodels/Component/RegisterBase.h \
     ../../../../IPXACTmodels/Component/RegisterWriter.h \
     ../../../../IPXACTmodels/Component/EnumeratedValueWriter.h \
     ../../../../IPXACTmodels/common/CommonItemsWriter.h \
-    ../../../../IPXACTmodels/vlnv.h \
+    ../../../../IPXACTmodels/common/VLNV.h \
     ../../../../IPXACTmodels/common/ParameterWriter.h \
     ../../../../IPXACTmodels/common/ConfigurableElementValue.h \
     ../../../../IPXACTmodels/common/NameGroupWriter.h \
     ../../../../IPXACTmodels/Component/FieldWriter.h \
     ../../../../IPXACTmodels/generaldeclarations.h \
     ../../../../IPXACTmodels/XmlUtils.h \
-    ../../../../IPXACTmodels/GenericVendorExtension.h
+    ../../../../IPXACTmodels/common/GenericVendorExtension.h
 SOURCES += ./tst_RegisterWriter.cpp \
     ../../../../IPXACTmodels/Component/RegisterBase.cpp \
     ../../../../IPXACTmodels/common/Extendable.cpp \
@@ -54,11 +54,11 @@ SOURCES += ./tst_RegisterWriter.cpp \
     ../../../../IPXACTmodels/Component/RegisterWriter.cpp \
     ../../../../IPXACTmodels/Component/EnumeratedValueWriter.cpp \
     ../../../../IPXACTmodels/common/CommonItemsWriter.cpp \
-    ../../../../IPXACTmodels/vlnv.cpp \
+    ../../../../IPXACTmodels/common/VLNV.cpp \
     ../../../../IPXACTmodels/common/ParameterWriter.cpp \
     ../../../../IPXACTmodels/common/ConfigurableElementValue.cpp \
     ../../../../IPXACTmodels/common/NameGroupWriter.cpp \
     ../../../../IPXACTmodels/Component/FieldWriter.cpp \
     ../../../../IPXACTmodels/generaldeclarations.cpp \
     ../../../../IPXACTmodels/XmlUtils.cpp \
-    ../../../../IPXACTmodels/GenericVendorExtension.cpp
+    ../../../../IPXACTmodels/common/GenericVendorExtension.cpp

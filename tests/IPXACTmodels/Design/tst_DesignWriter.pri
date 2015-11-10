@@ -14,16 +14,16 @@ HEADERS += ../../../IPXACTmodels/Design/ActiveInterface.h \
     ../../../IPXACTmodels/common/Assertion.h \
     ../../../IPXACTmodels/kactusExtensions/ColumnDesc.h \
     ../../../IPXACTmodels/kactusExtensions/ComInterconnection.h \
-    ../../../IPXACTmodels/kactusExtensions/ComInterface.h \
+    ../../../IPXACTmodels/ComInterface.h \
     ../../../IPXACTmodels/kactusExtensions/ComProperty.h \
-    ../../../IPXACTmodels/Design/ComponentInstance.h \
+    ../../../IPXACTmodels/kactusExtensions/ComInterface.h \
     ../../../IPXACTmodels/common/ConfigurableElementValue.h \
     ../../../IPXACTmodels/common/ConfigurableVLNVReference.h \
     ../../../IPXACTmodels/Design/Design.h \
     ../../../IPXACTmodels/common/DirectionTypes.h \
     ../../../IPXACTmodels/common/Document.h \
     ../../../IPXACTmodels/common/Extendable.h \
-    ../../../IPXACTmodels/GenericVendorExtension.h \
+    ../../../IPXACTmodels/common/GenericVendorExtension.h \
     ../../../IPXACTmodels/kactusExtensions/HierApiInterconnection.h \
     ../../../IPXACTmodels/kactusExtensions/HierComInterconnection.h \
     ../../../IPXACTmodels/Design/HierInterface.h \
@@ -44,7 +44,7 @@ HEADERS += ../../../IPXACTmodels/Design/ActiveInterface.h \
     ../../../IPXACTmodels/common/Vector.h \
     ../../../IPXACTmodels/XmlUtils.h \
     ../../../IPXACTmodels/generaldeclarations.h \
-    ../../../IPXACTmodels/vlnv.h \
+    ../../../IPXACTmodels/common/VLNV.h \
     ../../../IPXACTmodels/common/CommonItemsWriter.h \
     ../../../IPXACTmodels/Design/ComponentInstanceWriter.h \
     ../../../IPXACTmodels/Design/DesignWriter.h \
@@ -59,8 +59,8 @@ SOURCES += ../../../IPXACTmodels/Design/ActiveInterface.cpp \
     ../../../IPXACTmodels/common/Assertion.cpp \
     ../../../IPXACTmodels/kactusExtensions/ColumnDesc.cpp \
     ../../../IPXACTmodels/kactusExtensions/ComInterconnection.cpp \
-    ../../../IPXACTmodels/kactusExtensions/ComInterface.cpp \
     ../../../IPXACTmodels/kactusExtensions/ComProperty.cpp \
+    ../../../IPXACTmodels/kactusExtensions/ComInterface.cpp \
     ../../../IPXACTmodels/common/CommonItemsWriter.cpp \
     ../../../IPXACTmodels/Design/ComponentInstance.cpp \
     ../../../IPXACTmodels/Design/ComponentInstanceWriter.cpp \
@@ -72,7 +72,7 @@ SOURCES += ../../../IPXACTmodels/Design/ActiveInterface.cpp \
     ../../../IPXACTmodels/common/Document.cpp \
     ../../../IPXACTmodels/common/DocumentWriter.cpp \
     ../../../IPXACTmodels/common/Extendable.cpp \
-    ../../../IPXACTmodels/GenericVendorExtension.cpp \
+    ../../../IPXACTmodels/common/GenericVendorExtension.cpp \
     ../../../IPXACTmodels/kactusExtensions/HierApiInterconnection.cpp \
     ../../../IPXACTmodels/kactusExtensions/HierComInterconnection.cpp \
     ../../../IPXACTmodels/Design/HierInterface.cpp \
@@ -97,4 +97,4 @@ SOURCES += ../../../IPXACTmodels/Design/ActiveInterface.cpp \
     ../../../IPXACTmodels/generaldeclarations.cpp \
     ../../../IPXACTmodels/validators/namevalidator.cpp \
     ./tst_DesignWriter.cpp \
-    ../../../IPXACTmodels/vlnv.cpp
+    ../../../IPXACTmodels/common/VLNV.cpp

@@ -13,7 +13,7 @@
 
 #include <IPXACTmodels/common/Assertion.h>
 #include <IPXACTmodels/common/Parameter.h>
-#include <IPXACTmodels/GenericVendorExtension.h>
+#include <IPXACTmodels/common/GenericVendorExtension.h>
 
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 #include <IPXACTmodels/BusDefinition/BusDefinitionWriter.h>

@@ -14,8 +14,8 @@
 
 #include <IPXACTmodels/Component/OtherClockDriverWriter.h>
 
-#include <IPXACTmodels/VendorExtension.h>
-#include <IPXACTmodels/GenericVendorExtension.h>
+#include <IPXACTmodels/common/VendorExtension.h>
+#include <IPXACTmodels/common/GenericVendorExtension.h>
 
 #include <QtTest>
 

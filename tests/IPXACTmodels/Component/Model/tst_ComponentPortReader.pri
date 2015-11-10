@@ -11,10 +11,10 @@ HEADERS += ../../../../IPXACTmodels/common/NameGroupReader.h \
     ../../../../IPXACTmodels/common/Parameter.h \
     ../../../../IPXACTmodels/common/ConfigurableElementValue.h \
     ../../../../IPXACTmodels/common/ConfigurableVLNVReference.h \
-    ../../../../IPXACTmodels/GenericVendorExtension.h \
+    ../../../../IPXACTmodels/common/GenericVendorExtension.h \
     ../../../../IPXACTmodels/common/ParameterReader.h \
     ../../../../IPXACTmodels/common/CommonItemsReader.h \
-    ../../../../IPXACTmodels/vlnv.h \
+    ../../../../IPXACTmodels/common/VLNV.h \
     ../../../../IPXACTmodels/common/Vector.h \
     ../../../../IPXACTmodels/Component/PortReader.h \
     ../../../../IPXACTmodels/common/TransactionalTypes.h \
@@ -38,10 +38,10 @@ SOURCES += ../../../../IPXACTmodels/Component/PortReader.cpp \
     ../../../../IPXACTmodels/common/Parameter.cpp \
     ../../../../IPXACTmodels/common/ConfigurableElementValue.cpp \
     ../../../../IPXACTmodels/common/ConfigurableVLNVReference.cpp \
-    ../../../../IPXACTmodels/GenericVendorExtension.cpp \
+    ../../../../IPXACTmodels/common/GenericVendorExtension.cpp \
     ../../../../IPXACTmodels/common/ParameterReader.cpp \
     ../../../../IPXACTmodels/common/CommonItemsReader.cpp \
-    ../../../../IPXACTmodels/vlnv.cpp \
+    ../../../../IPXACTmodels/common/VLNV.cpp \
     ../../../../IPXACTmodels/common/Vector.cpp \
     ../../../../IPXACTmodels/common/TransactionalTypes.cpp \
     ../../../../IPXACTmodels/kactusExtensions/Kactus2Value.cpp \

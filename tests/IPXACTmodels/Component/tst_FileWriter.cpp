@@ -12,7 +12,7 @@
 #include <IPXACTmodels/Component/File.h>
 #include <IPXACTmodels/Component/FileWriter.h>
 
-#include <IPXACTmodels/GenericVendorExtension.h>
+#include <IPXACTmodels/common/GenericVendorExtension.h>
 
 #include <QDomDocument>
 #include <QtTest>

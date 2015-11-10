@@ -10,9 +10,9 @@
 //-----------------------------------------------------------------------------
 
 #include <IPXACTmodels/Component/AddressSpaceWriter.h>
-#include <IPXACTmodels/VendorExtension.h>
+#include <IPXACTmodels/common/VendorExtension.h>
 #include <IPXACTmodels/common/Parameter.h>
-#include <IPXACTmodels/GenericVendorExtension.h>
+#include <IPXACTmodels/common/GenericVendorExtension.h>
 
 #include <IPXACTmodels/Component/AddressBlock.h>
 #include <IPXACTmodels/Component/Register.h>
