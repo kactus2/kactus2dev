@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: ViewConfigurer.h
+// File: ViewConfigurer.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Mikko Teuho
@@ -16,7 +16,7 @@
 #include <library/LibraryManager/libraryhandler.h>
 
 #include <IPXACTmodels/common/VLNV.h>
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Placeholder.h>
@@ -69,14 +69,14 @@ clearButton_(new QPushButton(QIcon(":/icons/common/graphics/cleanup.png"), tr("C
     }
     else
     {
-        usedHierarchicalComponentVLNVS_.append(selectedComponent->getVlnv()->toString(":"));
+        usedHierarchicalComponentVLNVS_.append(selectedComponent->getVlnv().toString(":"));
 
         topComponentItem->setIcon(ViewConfigurerColumns::ITEM_VLNV,
             QIcon(":/icons/common/graphics/hier-hw-component.png"));
     }
 
-    topComponentItem->setText(ViewConfigurerColumns::ITEM_VLNV, selectedComponent->getVlnv()->toString(":"));
-    topComponentItem->setText(ViewConfigurerColumns::INSTANCE_NAME, selectedComponent->getVlnv()->getName());
+    topComponentItem->setText(ViewConfigurerColumns::ITEM_VLNV, selectedComponent->getVlnv().toString(":"));
+    topComponentItem->setText(ViewConfigurerColumns::INSTANCE_NAME, selectedComponent->getVlnv().getName());
 
     if (openViewName.isEmpty())
     {
@@ -368,7 +368,7 @@ void ViewConfigurer::changedTopItemChangesDesignConfiguration(QSharedPointer<Com
         {
             selectedDesignConfiguration_ = viewDesignConfiguration;
 
-            usedHierarchicalComponentVLNVS_.append(component->getVlnv()->toString(":"));
+            usedHierarchicalComponentVLNVS_.append(component->getVlnv().toString(":"));
         }
     }
 }

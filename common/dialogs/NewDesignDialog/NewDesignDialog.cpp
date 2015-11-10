@@ -21,7 +21,7 @@
 #include <QMessageBox>
 #include <QCoreApplication>
 
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
 
 #include <common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.h>
 #include <common/widgets/LineEditEx/LineEditEx.h>
@@ -256,7 +256,7 @@ void NewDesignDialog::updateDirectory()
 //-----------------------------------------------------------------------------
 void NewDesignDialog::updateVlnvName()
 {
-    vlnvEditor_->setName(component_->getVlnv()->getName().remove(".comp") + "." + getViewName());
+    vlnvEditor_->setName(component_->getVlnv().getName().remove(".comp") + "." + getViewName());
 }
 
 //-----------------------------------------------------------------------------

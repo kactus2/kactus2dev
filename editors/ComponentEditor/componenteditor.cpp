@@ -11,10 +11,11 @@
 
 #include "componenteditor.h"
 
+#include <library/LibraryManager/libraryinterface.h>
+
 #include <editors/ComponentEditor/treeStructure/componenteditorrootitem.h>
 #include <editors/ComponentEditor/treeStructure/componenteditorgeneralitem.h>
 #include <editors/ComponentEditor/treeStructure/componenteditorfilesetsitem.h>
-#include <editors/ComponentEditor/treeStructure/componenteditormodelparamsitem.h>
 #include <editors/ComponentEditor/treeStructure/componenteditorparametersitem.h>
 #include <editors/ComponentEditor/treeStructure/componenteditormemmapsitem.h>
 #include <editors/ComponentEditor/treeStructure/componenteditoraddrspacesitem.h>
@@ -50,6 +51,9 @@
 
 #include <editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTree.h>
 
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/FileSet.h>
+
 #include <QDialog>
 
 #include <QMessageBox>
@@ -72,7 +76,7 @@ component_(component),
 navigationSplitter_(Qt::Horizontal, this),
 editorVisualizerSplitter_(Qt::Horizontal, &navigationSplitter_), 
 navigationModel_(this),
-navigationView_(libHandler, *component->getVlnv(), &navigationSplitter_),
+navigationView_(libHandler, component->getVlnv(), &navigationSplitter_),
 proxy_(this),
 editorSlot_(&editorVisualizerSplitter_),
 visualizerSlot_(&editorVisualizerSplitter_),
@@ -91,23 +95,23 @@ expressionFormatter_(new ExpressionFormatter(parameterFinder_))
 	Q_ASSERT(libHandler_);
 
 	// set the name and type for the tab
-	setDocumentName(QString("%1 (%2)").arg(component_->getVlnv()->getName()).arg(
-		component_->getVlnv()->getVersion()));
+    setDocumentName(QString("%1 (%2)").arg(component_->getVlnv().getName()).arg(
+        component_->getVlnv().getVersion()));
 
-    if (component_->getComponentImplementation() == KactusAttribute::HW)
+    if (component_->getImplementation() == KactusAttribute::HW)
     {
 	    setDocumentType(tr("HW Component"));
     }
-    else if (component_->getComponentImplementation() == KactusAttribute::SW)
+    else if (component_->getImplementation() == KactusAttribute::SW)
     {
         setDocumentType(tr("SW Component"));
     }
-    else if (component_->getComponentImplementation() == KactusAttribute::SYSTEM)
+    else if (component_->getImplementation() == KactusAttribute::SYSTEM)
     {
         setDocumentType(tr("Unmapped System"));
     }
 
-    addRelatedVLNV(*component_->getVlnv());
+    addRelatedVLNV(component_->getVlnv());
 
     setupLayout();
 
@@ -128,7 +132,7 @@ expressionFormatter_(new ExpressionFormatter(parameterFinder_))
 	onItemActivated(proxy_.index(0, 0, QModelIndex()));
 
     // Open in unlocked mode by default only if the version is draft.
-    setProtection(component_->getVlnv()->getVersion() != "draft");
+    setProtection(component_->getVlnv().getVersion() != "draft");
 
 	// navigation model may request an item to be expanded
 	connect(&navigationModel_, SIGNAL(expandItem(const QModelIndex&)),
@@ -139,8 +143,7 @@ expressionFormatter_(new ExpressionFormatter(parameterFinder_))
 
 	connect(&navigationModel_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
 		    this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(&navigationModel_, SIGNAL(contentChanged()),
-            this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(&navigationModel_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(&navigationModel_, SIGNAL(helpUrlRequested(QString const&)),
             this, SIGNAL(helpUrlRequested(QString const&)), Qt::UniqueConnection);
 	connect(&navigationModel_, SIGNAL(errorMessage(const QString&)),
@@ -184,7 +187,7 @@ VLNV ComponentEditor::getIdentifyingVLNV() const
 //-----------------------------------------------------------------------------
 VLNV ComponentEditor::getDocumentVLNV() const
 {
-	return *component_->getVlnv();
+	return component_->getVlnv();
 }
 
 //-----------------------------------------------------------------------------
@@ -192,7 +195,7 @@ VLNV ComponentEditor::getDocumentVLNV() const
 //-----------------------------------------------------------------------------
 bool ComponentEditor::isHWImplementation() const
 {
-	return component_->getComponentImplementation() == KactusAttribute::HW;
+    return component_->getImplementation() == KactusAttribute::HW;
 }
 
 //-----------------------------------------------------------------------------
@@ -210,7 +213,7 @@ void ComponentEditor::refresh()
 	visualizerSlot_.setWidget(NULL);
 
 	// get the VLNV of the component
-	VLNV compVLNV = *component_->getVlnv();
+	VLNV compVLNV = component_->getVlnv();
 
 	// get the original model of the component
 	QSharedPointer<Document> libComp = libHandler_->getModel(compVLNV);
@@ -278,7 +281,8 @@ QStringList ComponentEditor::getSwItemNames()
 //-----------------------------------------------------------------------------
 bool ComponentEditor::validate( QStringList& errorList )
 {
-	return component_->isValid(errorList);
+	/*return component_->isValid(errorList);*/
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -303,23 +307,23 @@ bool ComponentEditor::save()
 bool ComponentEditor::saveAs()
 {
 	// Ask the user for a new VLNV along with attributes and directory.
-	KactusAttribute::ProductHierarchy prodHier = component_->getComponentHierarchy();
-	KactusAttribute::Firmness firmness = component_->getComponentFirmness();
+    KactusAttribute::ProductHierarchy prodHier = component_->getHierarchy();
+    KactusAttribute::Firmness firmness = component_->getFirmness();
 
 	VLNV vlnv;
 	QString directory;
 
-    if (component_->getComponentImplementation() == KactusAttribute::HW)
+    if (component_->getImplementation() == KactusAttribute::HW)
     {
-	    if (!NewObjectDialog::saveAsDialog(parentWidget(), libHandler_, *component_->getVlnv(),
-		                                   prodHier, firmness, vlnv, directory))
+	    if (!NewObjectDialog::saveAsDialog(parentWidget(), libHandler_, component_->getVlnv(), prodHier, firmness,
+                                           vlnv, directory))
         {
 		    return false;
 	    }
     }
     else
     {
-        if (!NewObjectDialog::saveAsDialog(parentWidget(), libHandler_, *component_->getVlnv(), vlnv, directory))
+        if (!NewObjectDialog::saveAsDialog(parentWidget(), libHandler_, component_->getVlnv(), vlnv, directory))
         {
             return false;
         }
@@ -337,15 +341,15 @@ bool ComponentEditor::saveAs()
 
 	// update the vlnv
 	component_->setVlnv(vlnv);
-    component_->setComponentHierarchy(prodHier);
-    component_->setComponentFirmness(firmness);
+    component_->setHierarchy(prodHier);
+    component_->setFirmness(firmness);
 
 	// get the paths to the original xml file
-	QFileInfo sourceInfo(libHandler_->getPath(*oldComponent->getVlnv()));
+	QFileInfo sourceInfo(libHandler_->getPath(oldComponent->getVlnv()));
 	QString sourcePath = sourceInfo.absolutePath();
 
 	// update the file paths and copy necessary files
-	component_->updateFiles(*oldComponent, sourcePath, directory);
+    updateComponentFiles(component_, oldComponent, sourcePath, directory);
 
 	// Write the component to a file.
 	if (libHandler_->writeModelToFile(directory, component_))
@@ -486,11 +490,11 @@ bool ComponentEditor::onVhdlGenerate()
 		save();
 	}
 
-	QString fileName = libHandler_->getPath(*component_->getVlnv());
+	QString fileName = libHandler_->getPath(component_->getVlnv());
 	QFileInfo targetInfo(fileName);
 	fileName = targetInfo.absolutePath();
 	fileName += QString("/");
-	fileName += component_->getVlnv()->getName();
+	fileName += component_->getVlnv().getName();
 	fileName += QString(".vhd");
 
 	QString path = QFileDialog::getSaveFileName(this,
@@ -518,7 +522,7 @@ bool ComponentEditor::onVhdlGenerate()
 	vhdlGen.generate(path);
 
 	// check if the file already exists in the metadata
-	QString basePath = libHandler_->getPath(*component_->getVlnv());
+	QString basePath = libHandler_->getPath(component_->getVlnv());
 	QString relativePath = General::getRelativePath(basePath, path);
 	if (!component_->hasFile(relativePath))
     {
@@ -560,11 +564,10 @@ bool ComponentEditor::onModelsimGenerate()
 		return false;
 	}
 
-	QString fileName = libHandler_->getPath(*component_->getVlnv());
+	QString fileName = libHandler_->getPath(component_->getVlnv());
 	QFileInfo targetInfo(fileName);
 	fileName = targetInfo.absolutePath();
-	fileName += QString("/%1.%2.create_makefile").arg(
-		component_->getVlnv()->getName()).arg(viewName);
+	fileName += QString("/%1.%2.create_makefile").arg(component_->getVlnv().getName()).arg(viewName);
 
 	// ask user to select a location to save the makefile
 	fileName = QFileDialog::getSaveFileName(this, 
@@ -573,7 +576,9 @@ bool ComponentEditor::onModelsimGenerate()
 
 	// if user clicked cancel
 	if (fileName.isEmpty())
+    {
 		return false;
+    }
 
 	// construct the generator
 	ModelsimGenerator generator(libHandler_, this);
@@ -589,7 +594,7 @@ bool ComponentEditor::onModelsimGenerate()
 	generator.generateMakefile(fileName);
 
 	// check if the file already exists in the metadata
-	QString basePath = libHandler_->getPath(*component_->getVlnv());
+	QString basePath = libHandler_->getPath(component_->getVlnv());
 	QString relativePath = General::getRelativePath(basePath, fileName);
 	if (!component_->hasFile(relativePath))
     {
@@ -603,7 +608,7 @@ bool ComponentEditor::onModelsimGenerate()
 		// if the generated file is saved
 		if (button == QMessageBox::Yes)
         {
-			QString xmlPath = libHandler_->getPath(*component_->getVlnv());
+			QString xmlPath = libHandler_->getPath(component_->getVlnv());
 
 			// if the file was successfully added to the library
 			if (generator.addMakefile2IPXact(component_, fileName, xmlPath))
@@ -639,7 +644,7 @@ void ComponentEditor::setRowVisibility(QSettings& settings)
     if (isHWImplementation())
     {
         settings.beginGroup("HW");
-        settings.beginGroup(KactusAttribute::valueToString(component_->getComponentHierarchy()));
+        settings.beginGroup(KactusAttribute::valueToString(component_->getHierarchy()));
     }
     else
     {
@@ -700,7 +705,7 @@ void ComponentEditor::openReferenceTree(QString const& parameterId)
 QSharedPointer<ComponentEditorRootItem> ComponentEditor::createNavigationRootForComponent(
     QSharedPointer<Component> component)
 {
-     if (component->getComponentImplementation() == KactusAttribute::HW)
+    if (component->getImplementation() == KactusAttribute::HW)
      {
         return createHWRootItem(component);
      }
@@ -730,14 +735,14 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createHWRootItem(QShare
     hwRoot->addChildItem(QSharedPointer<ComponentEditorChoicesItem>(
         new ComponentEditorChoicesItem(&navigationModel_, libHandler_, component, hwRoot)));
 
-    QSharedPointer<ComponentEditorModelParamsItem> modelParamsItem(new ComponentEditorModelParamsItem(
+    /*QSharedPointer<ComponentEditorModelParamsItem> modelParamsItem(new ComponentEditorModelParamsItem(
         &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionFormatter_,
         hwRoot));
 
     hwRoot->addChildItem(modelParamsItem);
 
     connect(modelParamsItem.data(), SIGNAL(openReferenceTree(QString)),
-        this, SLOT(openReferenceTree(QString)), Qt::UniqueConnection);
+        this, SLOT(openReferenceTree(QString)), Qt::UniqueConnection);*/
 
     QSharedPointer<ComponentEditorParametersItem> parametersItem(new ComponentEditorParametersItem(
         &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionFormatter_,
@@ -875,4 +880,80 @@ void ComponentEditor::setupLayout()
     navigationSize.append(ComponentTreeView::DEFAULT_WIDTH);
     navigationSize.append(4 * ComponentTreeView::DEFAULT_WIDTH);
     navigationSplitter_.setSizes(navigationSize);
+}
+
+//-----------------------------------------------------------------------------
+// Function: componenteditor::updateComponentFiles()
+//-----------------------------------------------------------------------------
+void ComponentEditor::updateComponentFiles(QSharedPointer<Component> targetComponent,
+    QSharedPointer<Component> otherComponent, QString const& sourcePath, QString const& targetPath)
+{
+    // can't operate on the same component
+//     if (&other == this)
+    if (targetComponent == otherComponent)
+    {
+        return;
+    }
+
+    // get the files from the other component
+//     QStringList files = other.getFiles();
+    QStringList files = getComponentFileNames(otherComponent);
+
+    // take each file
+    foreach (QString file, files)
+    {
+        // get the absolute path to the file
+        QDir source(sourcePath);
+        QString absoluteSource = source.absoluteFilePath(file);
+
+        // if file is located under the source directory
+        if (!file.contains(QString("../")))
+        {
+
+            QDir target(targetPath);
+            QString absoluteTarget = target.absoluteFilePath(file);
+
+            QFileInfo targetInfo(absoluteTarget);
+
+            target.mkpath(targetInfo.absolutePath());
+            QFile::copy(absoluteSource, absoluteTarget);
+
+        }
+        // if file is higher in directory hierarchy than the source directory
+        else
+        {
+            // update the file name
+            changeFileName(file, absoluteSource, targetComponent);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: componenteditor::getComponentFileNames()
+//-----------------------------------------------------------------------------
+QStringList ComponentEditor::getComponentFileNames(QSharedPointer<Component> component) const
+{
+    QStringList fileNames;
+    foreach (QSharedPointer<FileSet> fileSet, *component->getFileSets())
+    {
+        fileNames.append(fileSet->getFileNames());
+    }
+
+    return fileNames;
+}
+
+//-----------------------------------------------------------------------------
+// Function: componenteditor::changeFileName()
+//-----------------------------------------------------------------------------
+void ComponentEditor::changeFileName(QString const& from, QString const& to, QSharedPointer<Component> component)
+    const
+{
+    foreach (QSharedPointer<FileSet> fileSet, *component->getFileSets())
+    {
+        if (fileSet->contains(from))
+        {
+            fileSet->changeFileName(from, to);
+            return;
+        }
+    }
 }

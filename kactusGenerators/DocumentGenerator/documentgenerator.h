@@ -17,10 +17,6 @@
 
 #include <IPXACTmodels/common/VLNV.h>
 #include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/view.h>
-#include <IPXACTmodels/addressblock.h>
-#include <IPXACTmodels/register.h>
-#include <IPXACTmodels/field.h>
 
 #include <QObject>
 #include <QTextStream>
@@ -28,6 +24,11 @@
 #include <QSharedPointer>
 #include <QStringList>
 #include <QWidget>
+
+class View;
+class AddressBlock;
+class Register;
+class Field;
 
 class DocumentGenerator : public QObject {
 	Q_OBJECT
@@ -107,7 +108,7 @@ public:
 	 *      @param [in] stream              The text stream to write the documentation into.
 	 *      @param [in] subHeaderNumber     The number that defines the number for the sub-header.
 	 */
-	void writeModelParameters(QTextStream& stream, int& subHeaderNumber);
+// 	void writeModelParameters(QTextStream& stream, int& subHeaderNumber);
 
     /*!
 	 *  Write the parameters and kactus2 parameters of the component.

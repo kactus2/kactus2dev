@@ -12,9 +12,9 @@
 
 #include <common/widgets/vlnvDisplayer/vlnvdisplayer.h>
 
-#include <IPXACTmodels/generaldeclarations.h>
-#include <IPXACTmodels/component.h>
 #include <IPXACTmodels/Component/PortMap.h>
+
+#include <IPXACTmodels/generaldeclarations.h>
 
 #include <QWidget>
 #include <QLineEdit>
@@ -27,6 +27,7 @@
 
 class GraphicsConnection;
 class LibraryInterface;
+class Component;
 
 /*! \brief Editor to display/edit details of a connection.
  *

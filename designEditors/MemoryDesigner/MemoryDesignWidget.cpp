@@ -22,7 +22,8 @@
 #include <library/LibraryManager/libraryinterface.h>
 #include <library/LibraryManager/LibraryUtils.h>
 
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/View.h>
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
@@ -96,7 +97,15 @@ bool MemoryDesignWidget::setDesign(QSharedPointer<Component> comp, const QString
 {
     VLNV designVLNV;
     
-    View* view = comp->findView(viewName);
+    QSharedPointer<View> view;
+    foreach (QSharedPointer<View> singleView, *comp->getViews())
+    {
+        if (singleView->name() == viewName)
+        {
+            view = singleView;
+            break;
+        }
+    }
 
     if (!view)
     {
@@ -110,7 +119,7 @@ bool MemoryDesignWidget::setDesign(QSharedPointer<Component> comp, const QString
 
     if (!designVLNV.isValid())
     {
-        emit errorMessage(tr("Component %1 did not contain a view").arg(comp->getVlnv()->getName()));
+        emit errorMessage(tr("Component %1 did not contain a view").arg(comp->getVlnv().getName()));
         return false;
     }
 
@@ -140,8 +149,7 @@ bool MemoryDesignWidget::setDesign(QSharedPointer<Component> comp, const QString
         // if design configuration did not contain a reference to a design.
         if (!design)
         {
-            emit errorMessage(tr("Component %1 did not contain a view").arg(
-                comp->getVlnv()->getName()));
+            emit errorMessage(tr("Component %1 did not contain a view").arg(comp->getVlnv().getName()));
             return false;
         }
     }

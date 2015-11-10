@@ -13,11 +13,9 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
-
-#include <IPXACTmodels/librarycomponent.h>
 
 //-----------------------------------------------------------------------------
 // Function: DocumentTreeBuilder::DocumentTreeBuilder()
@@ -84,7 +82,7 @@ QObject* DocumentTreeBuilder::createFromComponent(VLNV const& root) const
     QSharedPointer<Document const> component = library_->getModelReadOnly(root);
     QSharedPointer<Component const> rootComponent = component.dynamicCast<Component const>();
 
-    if (rootComponent->getComponentImplementation() == KactusAttribute::SW)
+    if (rootComponent->getImplementation() == KactusAttribute::SW)
     {
         componentNode->setProperty("implementation", "SW");
     }
