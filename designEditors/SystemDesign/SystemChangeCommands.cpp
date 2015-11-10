@@ -24,7 +24,7 @@
 
 #include <designEditors/common/Association/AssociationChangeEndpointCommand.h>
 
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
 
 //-----------------------------------------------------------------------------
 // Function: TypeDefinitionChangeCommand()

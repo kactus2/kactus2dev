@@ -14,7 +14,7 @@
 
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
 
 #include <QWidget>
 #include <QPushButton>
@@ -136,7 +136,7 @@ private:
 	DesignWidget* designWidget_;
 
     //! The system view containing the edited system.
-    SystemView* systemView_;
+    QSharedPointer<SystemView> systemView_;
 };
 
 //-----------------------------------------------------------------------------

@@ -28,7 +28,7 @@
 
 #include <IPXACTmodels/kactusExtensions/ApiInterface.h>
 #include <IPXACTmodels/kactusExtensions/ComInterface.h>
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/kactusExtensions/ApiDefinition.h>
 #include <IPXACTmodels/kactusExtensions/ApiFunction.h>
 #include <IPXACTmodels/kactusExtensions/ComDefinition.h>
@@ -212,7 +212,7 @@ void SWInterfaceItem::updateInterface()
     {
         switch (comInterface_->getDirection())
         {
-        case General::IN:
+		case DirectionTypes::IN:
             {
                 /*  /\
                  *  ||
@@ -225,7 +225,7 @@ void SWInterfaceItem::updateInterface()
                 break;
             }
 
-        case General::OUT:
+        case DirectionTypes::OUT:
             {
                 /*  ||
                  *  \/
@@ -238,7 +238,7 @@ void SWInterfaceItem::updateInterface()
                 break;
             }
 
-        case General::INOUT:
+        case DirectionTypes::INOUT:
         default:
             {
                 /*  /\
@@ -313,7 +313,7 @@ bool SWInterfaceItem::onConnect(ConnectionEndpoint const* other)
             apiInterface_->setApiType(other->getApiInterface()->getApiType());
             apiInterface_->setDependencyDirection(other->getApiInterface()->getDependencyDirection());
             
-            getOwnerComponent()->addApiInterface(apiInterface_);
+            getOwnerComponent()->getVendorExtensions()->append(apiInterface_);
         }
         else if (other->getType() == ENDPOINT_TYPE_COM)
         {
@@ -333,7 +333,7 @@ bool SWInterfaceItem::onConnect(ConnectionEndpoint const* other)
             comInterface_->setTransferType(other->getComInterface()->getTransferType());
             comInterface_->setDirection(other->getComInterface()->getDirection());
 
-            getOwnerComponent()->addComInterface(comInterface_);
+            getOwnerComponent()->getVendorExtensions()->append(comInterface_);
         }
 
         setType(other->getType());
@@ -608,11 +608,11 @@ QString SWInterfaceItem::description() const
 {
 	if (isCom())
     {
-	    return comInterface_->getDescription();
+	    return comInterface_->description();
     }
     else if (isApi())
     {
-        return apiInterface_->getDescription();
+        return apiInterface_->description();
     }
     else
     {
@@ -712,7 +712,7 @@ void SWInterfaceItem::setTypeDefinition(VLNV const& type)
             apiInterface_ = QSharedPointer<ApiInterface>(new ApiInterface());
             apiInterface_->setName(nameLabel_.toPlainText());
             apiInterface_->setApiType(type);
-            getOwnerComponent()->addApiInterface(apiInterface_);
+            getOwnerComponent()->getVendorExtensions()->append(apiInterface_);
 
             setType(ENDPOINT_TYPE_API);
             setTypeLocked(true);
@@ -722,7 +722,7 @@ void SWInterfaceItem::setTypeDefinition(VLNV const& type)
             comInterface_ = QSharedPointer<ComInterface>(new ComInterface());
             comInterface_->setName(nameLabel_.toPlainText());
             comInterface_->setComType(type);
-            getOwnerComponent()->addComInterface(comInterface_);
+            getOwnerComponent()->getVendorExtensions()->append(comInterface_);
 
             setType(ENDPOINT_TYPE_COM);
             setTypeLocked(true);
@@ -732,13 +732,13 @@ void SWInterfaceItem::setTypeDefinition(VLNV const& type)
     {
         if (apiInterface_ != 0)
         {
-            getOwnerComponent()->removeApiInterface(apiInterface_.data());
+            getOwnerComponent()->getVendorExtensions()->removeOne(apiInterface_);
             apiInterface_.clear();
         }
 
         if (comInterface_ != 0)
         {
-            getOwnerComponent()->removeComInterface(comInterface_.data());
+            getOwnerComponent()->getVendorExtensions()->removeOne(comInterface_);
             comInterface_.clear();
         }
 
@@ -830,7 +830,7 @@ ConnectionEndpoint* SWInterfaceItem::getOffPageConnector()
 void SWInterfaceItem::define(QSharedPointer<ApiInterface> apiIf)
 {
     apiInterface_ = apiIf;
-    getOwnerComponent()->addApiInterface(apiInterface_);
+    getOwnerComponent()->getVendorExtensions()->append(apiInterface_);
 
     setType(ENDPOINT_TYPE_API);
 }
@@ -841,7 +841,7 @@ void SWInterfaceItem::define(QSharedPointer<ApiInterface> apiIf)
 void SWInterfaceItem::define(QSharedPointer<ComInterface> comIf)
 {
     comInterface_ = comIf;
-    getOwnerComponent()->addComInterface(comInterface_);
+    getOwnerComponent()->getVendorExtensions()->append(comInterface_);
 
     setType(ENDPOINT_TYPE_COM);
 }
@@ -853,13 +853,13 @@ void SWInterfaceItem::undefine()
 {
     if (apiInterface_ != 0)
     {
-        getOwnerComponent()->removeApiInterface(apiInterface_.data());
+        getOwnerComponent()->getVendorExtensions()->removeOne(apiInterface_);
         apiInterface_.clear();
     }
 
     if (comInterface_ != 0)
     {
-        getOwnerComponent()->removeComInterface(comInterface_.data());
+        getOwnerComponent()->getVendorExtensions()->removeOne(comInterface_);
         comInterface_.clear();
     }
 

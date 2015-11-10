@@ -31,10 +31,10 @@
 #include <library/LibraryManager/libraryinterface.h>
 #include <library/LibraryManager/LibraryUtils.h>
 
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
-#include <IPXACTmodels/SystemView.h>
+#include <IPXACTmodels/kactusExtensions//SystemView.h>
 
 
 #include <QScrollBar>
@@ -43,6 +43,9 @@
 #include <QMessageBox>
 #include <QFileInfo>
 #include <QCoreApplication>
+#include "IPXACTmodels/kactusExtensions/SWView.h"
+#include "QDir"
+#include "IPXACTmodels/Component/FileSet.h"
 
 //-----------------------------------------------------------------------------
 // Function: SystemDesignWidget()
@@ -127,7 +130,16 @@ bool SystemDesignWidget::setDesign(QSharedPointer<Component> comp, const QString
 
     if (onlySW_)
     {
-        QSharedPointer<SWView> view = comp->findSWView(viewName);
+        QSharedPointer<SWView> view;
+		
+		foreach ( QSharedPointer<SWView> currentView, comp->getSWViews() )
+		{
+			if ( currentView->name() == viewName )
+			{
+				view = currentView;
+				break;
+			}
+		}
 
         if (!view)
         {
@@ -138,7 +150,16 @@ bool SystemDesignWidget::setDesign(QSharedPointer<Component> comp, const QString
     }
     else
     {
-        SystemView* view = comp->findSystemView(viewName);
+		QSharedPointer<SystemView> view = comp->findSystemView(viewName);
+
+		foreach ( QSharedPointer<SystemView> currentView, comp->getSystemViews() )
+		{
+			if ( currentView->name() == viewName )
+			{
+				view = currentView;
+				break;
+			}
+		}
 
         if (!view)
         {
@@ -154,7 +175,7 @@ bool SystemDesignWidget::setDesign(QSharedPointer<Component> comp, const QString
 
     if (!designVLNV.isValid())
     {
-        emit errorMessage(tr("Component %1 did not contain a view").arg(comp->getVlnv()->getName()));
+        emit errorMessage(tr("Component %1 did not contain a view").arg(comp->getVlnv().getName()));
         return false;
     }
 
@@ -185,7 +206,7 @@ bool SystemDesignWidget::setDesign(QSharedPointer<Component> comp, const QString
         if (!design)
         {
             emit errorMessage(tr("Component %1 did not contain a view").arg(
-                comp->getVlnv()->getName()));
+                comp->getVlnv().getName()));
             return false;
         }
     }
@@ -474,7 +495,7 @@ KactusAttribute::Implementation SystemDesignWidget::getImplementation() const
 //-----------------------------------------------------------------------------
 bool SystemDesignWidget::saveAs()
 {
-    VLNV oldVLNV = *getEditedComponent()->getVlnv();
+    VLNV oldVLNV = getEditedComponent()->getVlnv();
 
     // Ask the user for a new VLNV and directory.
 
@@ -501,6 +522,18 @@ bool SystemDesignWidget::saveAs()
     QSharedPointer<Design> design;
     QSharedPointer<DesignConfiguration> designConf = getDiagram()->getDesignConfiguration();
 
+	// Find the open view.
+	QSharedPointer<SystemView> openView;
+
+	foreach ( QSharedPointer<SystemView> currentView, getEditedComponent()->getSystemViews() )
+	{
+		if ( getOpenViewName() == currentView->name() )
+		{
+			openView = currentView;
+			break;
+		}
+	}
+
     // If design configuration is used.
     if (designConf)
     {
@@ -509,7 +542,7 @@ bool SystemDesignWidget::saveAs()
         designConf->setVlnv(desConfVLNV);
         designConf->setDesignRef(designVLNV);
 
-        getEditedComponent()->setHierRef(desConfVLNV, getOpenViewName());
+		openView->setHierarchyRef( desConfVLNV );
 
         // Create design with new design vlnv.
         design = getDiagram()->createDesign(designVLNV);
@@ -517,8 +550,8 @@ bool SystemDesignWidget::saveAs()
     // If component does not use design configuration then it references directly to design.
     else
     {
-        // Set component to reference new design.
-        getEditedComponent()->setHierRef(designVLNV, getOpenViewName());
+		// Set component to reference new design.
+		openView->setHierarchyRef( designVLNV );
         design = getDiagram()->createDesign(designVLNV);
     }
 
@@ -530,11 +563,39 @@ bool SystemDesignWidget::saveAs()
     getDiagram()->updateHierComponent();
 
     // get the paths to the original xml file
-    QFileInfo sourceInfo(getLibraryInterface()->getPath(*oldComponent->getVlnv()));
+    QFileInfo sourceInfo(getLibraryInterface()->getPath(oldComponent->getVlnv()));
     QString sourcePath = sourceInfo.absolutePath();
 
-    // update the file paths and copy necessary files
-    getEditedComponent()->updateFiles(*oldComponent, sourcePath, directory);
+	// Update the file paths and copy necessary files.
+	foreach (QSharedPointer<FileSet> fileSet, *oldComponent->getFileSets())
+	{
+		foreach (QSharedPointer<File> file, *fileSet->getFiles())
+		{
+			// Get the absolute path to the file.
+			QDir source(sourcePath);
+			QString absoluteSource = source.absoluteFilePath(file->name());
+
+			// If file is located under the source directory.
+			if (!file->name().contains(QString("../")))
+			{
+				QDir target(directory);
+				QString absoluteTarget = target.absoluteFilePath(file->name());
+
+				QFileInfo targetInfo(absoluteTarget);
+
+				target.mkpath(targetInfo.absolutePath());
+				QFile::copy(absoluteSource, absoluteTarget);
+
+			}
+			// If file is higher in directory hierarchy than the source directory.
+			else
+			{
+				// Update the file name.
+				fileSet->changeFileName(file->name(), absoluteSource);
+			}
+		}
+	}
+
 
     // create the files for the documents
 
@@ -560,8 +621,8 @@ bool SystemDesignWidget::saveAs()
 
     if (writeSucceeded)
     {
-        setDocumentName(getEditedComponent()->getVlnv()->getName() + " (" + 
-            getEditedComponent()->getVlnv()->getVersion() + ")");
+        setDocumentName(getEditedComponent()->getVlnv().getName() + " (" + 
+            getEditedComponent()->getVlnv().getVersion() + ")");
         return TabDocument::saveAs();
     }
     else

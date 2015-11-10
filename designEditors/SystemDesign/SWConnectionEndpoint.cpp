@@ -11,7 +11,7 @@
 
 #include "SWConnectionEndpoint.h"
 
-#include <IPXACTmodels/ComInterface.h>
+#include <IPXACTmodels/kactusExtensions/ComInterface.h>
 
 #include <QPen>
 

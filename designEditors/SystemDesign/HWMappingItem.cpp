@@ -375,12 +375,12 @@ void HWMappingItem::updateComponent()
 {
     ComponentItem::updateComponent();
 
-    VLNV* vlnv = componentModel()->getVlnv();
+    VLNV vlnv = componentModel()->getVlnv();
 
     // Check whether the component is packaged (valid vlnv) or not.
-    if (vlnv->isValid())
+    if (vlnv.isValid())
     {
-        if (!getLibraryInterface()->contains(*vlnv))
+        if (!getLibraryInterface()->contains(vlnv))
         {
             setBrush(QBrush(QColor(0xe8, 0xc5, 0xc5)));
         }

@@ -20,7 +20,7 @@
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
-#include <IPXACTmodels/SystemView.h>
+#include <IPXACTmodels/kactusExtensions/SystemView.h>
 #include <IPXACTmodels/Design/Design.h>
 
 #include <IPXACTmodels/kactusExtensions/SWInstance.h>
@@ -92,7 +92,7 @@ void SystemDetailsEditor::setSystem(DesignWidget* designWidget)
     viewSelector_->clear();
 
     // Fill them only if the component is not a system component (system component is always unmapped).
-    if (component_->getComponentImplementation() != KactusAttribute::SYSTEM)
+    if (component_->getImplementation() != KactusAttribute::SYSTEM)
     {
         hwRefEditor_->setVLNV(component_->getVlnv());
         viewSelector_->addItems(component_->getHierViews());
@@ -106,8 +106,8 @@ void SystemDetailsEditor::setSystem(DesignWidget* designWidget)
     hwRefEditor_->setEnabled(!designWidget_->isProtected());
     viewSelector_->setEnabled(!designWidget_->isProtected());
     removeMappingButton_->setEnabled(!designWidget_->isProtected() && 
-        component_->getComponentImplementation() != KactusAttribute::SYSTEM);
-    exportButton_->setEnabled(component_->getComponentImplementation() != KactusAttribute::SYSTEM);
+        component_->getImplementation() != KactusAttribute::SYSTEM);
+    exportButton_->setEnabled(component_->getImplementation() != KactusAttribute::SYSTEM);
     revertButton_->setDisabled(true);
 
     connect(viewSelector_, SIGNAL(currentIndexChanged(const QString&)),
@@ -126,7 +126,6 @@ void SystemDetailsEditor::clear()
     {
         designWidget_->disconnect(this);
         designWidget_ = 0;
-        systemView_ = 0;
 
         disconnect(viewSelector_, SIGNAL(currentIndexChanged(const QString&)),
                    this, SLOT(onViewRefChanged(const QString&)));
@@ -159,7 +158,7 @@ void SystemDetailsEditor::setLocked(bool locked)
 {
     hwRefEditor_->setEnabled(!locked);
     viewSelector_->setEnabled(!locked);
-    removeMappingButton_->setEnabled(!locked && component_->getComponentImplementation() != KactusAttribute::SYSTEM);
+    removeMappingButton_->setEnabled(!locked && component_->getImplementation() != KactusAttribute::SYSTEM);
 }
 
 //-----------------------------------------------------------------------------
@@ -220,7 +219,7 @@ void SystemDetailsEditor::onHWRefChanged()
     connect(viewSelector_, SIGNAL(currentIndexChanged(const QString&)),
             this, SLOT(onViewRefChanged(const QString&)), Qt::UniqueConnection);
 
-    bool modified = hwRefEditor_->getVLNV() != *component_->getVlnv() ||
+    bool modified = hwRefEditor_->getVLNV() != component_->getVlnv() ||
                     viewSelector_->currentText() != systemView_->getHWViewRef();
     applyButton_->setEnabled(modified && viewSelector_->count() > 0);
     revertButton_->setEnabled(modified);
@@ -231,7 +230,7 @@ void SystemDetailsEditor::onHWRefChanged()
 //-----------------------------------------------------------------------------
 void SystemDetailsEditor::onViewRefChanged(QString const& /*viewRef*/)
 {
-    bool modified = hwRefEditor_->getVLNV() != *component_->getVlnv() ||
+    bool modified = hwRefEditor_->getVLNV() != component_->getVlnv() ||
                     viewSelector_->currentText() != systemView_->getHWViewRef();
 
     applyButton_->setEnabled(modified && viewSelector_->count() > 0);
@@ -246,7 +245,7 @@ void SystemDetailsEditor::applyHW()
     VLNV componentVLNV = hwRefEditor_->getVLNV();
 
     // Check if the component is being switched.
-    if (componentVLNV != *component_->getVlnv())
+    if (componentVLNV != component_->getVlnv())
     {
         // Verify that the component is found.
         QSharedPointer<Document> libComp = handler_->getModel(componentVLNV);
@@ -292,7 +291,7 @@ void SystemDetailsEditor::applyHW()
         }
 
         // Based on the action, either perform copy or move.
-        SystemView* newView = new SystemView(dialog.getSystemViewName());
+        QSharedPointer<SystemView> newView( new SystemView(dialog.getSystemViewName() ) );
         newView->setHWViewRef(viewSelector_->currentText());
 
         if (dialog.isCopyActionSelected())
@@ -324,13 +323,22 @@ void SystemDetailsEditor::applyHW()
             // the existing VLNV for the hierarchy reference.
             newView->setHierarchyRef(systemView_->getHierarchyRef());
             
-            systemView_ = 0;
-            component_->removeSystemView(designWidget_->getOpenViewName());
+			foreach ( QSharedPointer<VendorExtension> extension, *component_->getVendorExtensions() )
+			{
+				QSharedPointer<SystemView> currentView = extension.dynamicCast<SystemView>();
+
+				if ( currentView && currentView->name() == designWidget_->getOpenViewName() )
+				{
+					component_->getVendorExtensions()->removeOne( extension );
+					break;
+				}
+			}
+
             handler_->writeModelToFile(component_);
         }
 
         // Add the system view to the new HW component and save.
-        newComponent->addSystemView(newView);
+        newComponent->getVendorExtensions()->append(newView);
         handler_->writeModelToFile(newComponent);
 
         // Refresh the design widget.
@@ -358,7 +366,7 @@ void SystemDetailsEditor::applyHW()
 //-----------------------------------------------------------------------------
 void SystemDetailsEditor::revert()
 {
-    if (component_->getComponentImplementation() != KactusAttribute::SYSTEM)
+    if (component_->getImplementation() != KactusAttribute::SYSTEM)
     {
         hwRefEditor_->setVLNV(component_->getVlnv());
         onHWRefChanged();
@@ -397,15 +405,24 @@ void SystemDetailsEditor::removeMapping()
     newView->setHierarchyRef(systemView_->getHierarchyRef());
 
     // Remove the system view from the previous HW component.
-    systemView_ = 0;
-    component_->removeSystemView(designWidget_->getOpenViewName());
+	foreach( QSharedPointer<SystemView> currentView, component_->getSystemViews() )
+	{
+		if ( currentView->name() == designWidget_->getOpenViewName() )
+		{
+			component_->getVendorExtensions()->removeOne( currentView );
+			break;
+		}
+	}
+
     handler_->writeModelToFile(component_);
 
     // Create a new system component and add the system view to it.
     QSharedPointer<Component> newComponent(new Component(dialog.getVLNV()));
-    newComponent->setComponentImplementation(KactusAttribute::SYSTEM);
+    newComponent->setImplementation(KactusAttribute::SYSTEM);
 
-    newComponent->addSystemView(newView);
+	QList<QSharedPointer<SystemView> > newSystemViews = newComponent->getSystemViews();
+	newSystemViews.append(systemView_);
+	newComponent->setSystemViews(newSystemViews);
     handler_->writeModelToFile(dialog.getPath(), newComponent);
 
     // Refresh the design widget.
@@ -465,14 +482,16 @@ void SystemDetailsEditor::exportSW()
     handler_->writeModelToFile(dialog.getPath(), desConf);
 
     // Create a new system view for the system design.
-    SystemView* newView = new SystemView("system");
+    QSharedPointer<SystemView> newView = QSharedPointer<SystemView>( new SystemView("system") );
     newView->setHierarchyRef(desConfVLNV);
 
     // Create a new system component and add the system view to it.
     QSharedPointer<Component> newComponent(new Component(vlnv));
-    newComponent->setComponentImplementation(KactusAttribute::SYSTEM);
+    newComponent->setImplementation(KactusAttribute::SYSTEM);
 
-    newComponent->addSystemView(newView);
+	QList<QSharedPointer<SystemView> > newSystemViews;
+	newSystemViews.append(newView);
+    newComponent->setSystemViews(newSystemViews);
     handler_->writeModelToFile(dialog.getPath(), newComponent);
 
     handler_->endSave();

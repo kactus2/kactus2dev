@@ -327,7 +327,7 @@ bool SWPortItem::onConnect(ConnectionEndpoint const* other)
 
             if (!isInvalid())
             {
-                getOwnerComponent()->addApiInterface(apiInterface_);
+                getOwnerComponent()->getVendorExtensions()->append(apiInterface_);
             }
         }
         else if (other->getType() == ENDPOINT_TYPE_COM)
@@ -373,7 +373,7 @@ bool SWPortItem::onConnect(ConnectionEndpoint const* other)
 
             if (!isInvalid())
             {
-                getOwnerComponent()->addComInterface(comInterface_);
+                getOwnerComponent()->getVendorExtensions()->append(comInterface_);
             }
         }
 
@@ -766,11 +766,11 @@ QString SWPortItem::description() const
 {
 	if (isCom())
     {
-	    return comInterface_->getDescription();
+	    return comInterface_->description();
     }
     else if (isApi())
     {
-        return apiInterface_->getDescription();
+        return apiInterface_->description();
     }
     else
     {
@@ -903,7 +903,7 @@ void SWPortItem::setTypeDefinition(VLNV const& type)
             apiInterface_->setName(nameLabel_.toPlainText());
             apiInterface_->setApiType(type);
 
-            getOwnerComponent()->addApiInterface(apiInterface_);
+            getOwnerComponent()->getVendorExtensions()->append(apiInterface_);
 
             setType(ENDPOINT_TYPE_API);
             setTypeLocked(true);
@@ -913,7 +913,7 @@ void SWPortItem::setTypeDefinition(VLNV const& type)
             comInterface_ = QSharedPointer<ComInterface>(new ComInterface());
             comInterface_->setName(nameLabel_.toPlainText());
             comInterface_->setComType(type);
-            getOwnerComponent()->addComInterface(comInterface_);
+            getOwnerComponent()->getVendorExtensions()->append(comInterface_);
 
             setType(ENDPOINT_TYPE_COM);
             setTypeLocked(true);
@@ -925,7 +925,7 @@ void SWPortItem::setTypeDefinition(VLNV const& type)
         {
             if (!isInvalid())
             {
-                getOwnerComponent()->removeApiInterface(apiInterface_.data());
+                getOwnerComponent()->getVendorExtensions()->removeOne(apiInterface_);
             }
 
             apiInterface_.clear();
@@ -935,7 +935,7 @@ void SWPortItem::setTypeDefinition(VLNV const& type)
         {
             if (!isInvalid())
             {
-                getOwnerComponent()->removeComInterface(comInterface_.data());
+                getOwnerComponent()->getVendorExtensions()->removeOne(comInterface_);
             }
 
             comInterface_.clear();

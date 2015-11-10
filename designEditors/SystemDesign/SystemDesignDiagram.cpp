@@ -53,14 +53,14 @@
 
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 #include <IPXACTmodels/kactusExtensions/SWInstance.h>
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Design/Design.h>
-#include <IPXACTmodels/model.h>
+#include <IPXACTmodels/Component/Model.h>
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/kactusExtensions/ApiInterface.h>
 #include <IPXACTmodels/kactusExtensions/ComInterface.h>
-#include <IPXACTmodels/SystemView.h>
-#include <IPXACTmodels/SWView.h>
+#include <IPXACTmodels/kactusExtensions/SystemView.h>
+#include <IPXACTmodels/kactusExtensions/SWView.h>
 
 Q_DECLARE_METATYPE(SystemDesignDiagram::PortCollectionCopyData)
 Q_DECLARE_METATYPE(SystemDesignDiagram::ComponentCollectionCopyData)
@@ -402,7 +402,7 @@ void SystemDesignDiagram::onPasteAction()
             SWComponentItem* targetComp = static_cast<SWComponentItem*>(items[0]);
 
             // Paste only to draft components.
-            if (!targetComp->componentModel()->getVlnv()->isValid())
+            if (!targetComp->componentModel()->getVlnv().isValid())
             {
                 QMimeData const* mimedata = QApplication::clipboard()->mimeData();
 
@@ -514,7 +514,7 @@ void SystemDesignDiagram::onAddToLibraryAction()
             SystemComponentItem* comp = static_cast<SystemComponentItem*>(item);
             // Request the user to set the vlnv.
             NewObjectDialog dialog(getLibraryInterface(), VLNV::COMPONENT, false, getParent());
-            dialog.setVLNV(*comp->componentModel()->getVlnv());
+            dialog.setVLNV(comp->componentModel()->getVlnv());
             dialog.setWindowTitle(tr("Add Component to Library"));
 
             if (dialog.exec() == QDialog::Rejected)
@@ -524,12 +524,36 @@ void SystemDesignDiagram::onAddToLibraryAction()
 
             VLNV vlnv = dialog.getVLNV();
             comp->componentModel()->setVlnv(vlnv);
-            comp->componentModel()->setComponentHierarchy(dialog.getProductHierarchy());
-            comp->componentModel()->setComponentFirmness(dialog.getFirmness());
+            comp->componentModel()->setHierarchy(dialog.getProductHierarchy());
+            comp->componentModel()->setFirmness(dialog.getFirmness());
 
             if (comp->type() == HWMappingItem::Type)
             {
-                comp->componentModel()->createEmptyFlatView();
+				// create new view
+				QSharedPointer<View> newView( new View() );
+
+				// depending on the hierarchy level select the name for the view
+				KactusAttribute::ProductHierarchy hier = comp->componentModel()->getHierarchy();
+
+				switch (hier) 
+				{
+					case KactusAttribute::IP:
+					case KactusAttribute::SOC:
+					{
+						// set the name
+						newView->setName("rtl");
+						break;
+					}
+					default:
+					{
+						newView->setName("flat");
+						break;
+					}
+				}
+
+				newView->addEnvIdentifier(QString("::"));
+
+				comp->componentModel()->getModel()->getViews()->append(newView);
             }
 
             // Write the model to file.
@@ -553,7 +577,7 @@ void SystemDesignDiagram::onAddToLibraryAction()
             if (msgBox.clickedButton() == btnContinue)
             {
                 // Open up the component editor.
-                emit openComponent(*comp->componentModel()->getVlnv());
+                emit openComponent(comp->componentModel()->getVlnv());
             }
         }
     }
@@ -566,7 +590,7 @@ void SystemDesignDiagram::onAddToLibraryAction()
 void SystemDesignDiagram::openDesignForComponent(ComponentItem* component, QString const& viewName)
 {
     if (component->componentModel()->hasSWView(viewName)) {
-        emit openSWDesign(*component->componentModel()->getVlnv(), viewName);
+        emit openSWDesign(component->componentModel()->getVlnv(), viewName);
     }
 }
 
@@ -596,7 +620,7 @@ void SystemDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
         item->setSelected(true);
         SystemComponentItem* comp = static_cast<SystemComponentItem*>(item);
 
-        if (getLibraryInterface()->contains(*comp->componentModel()->getVlnv()))
+        if (getLibraryInterface()->contains(comp->componentModel()->getVlnv()))
         {
             openComponentItem(comp);
         }
@@ -687,11 +711,11 @@ void SystemDesignDiagram::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
             }
 
             // Only SW and HW is allowed.
-            if (comp->getComponentImplementation() == KactusAttribute::SW)
+            if (comp->getImplementation() == KactusAttribute::SW)
             {
                 dragType_ = DRAG_TYPE_SW;
             }
-            else if (comp->getComponentImplementation() == KactusAttribute::HW)
+            else if (comp->getImplementation() == KactusAttribute::HW)
             {
                 dragType_ = DRAG_TYPE_HW;
             }
@@ -744,7 +768,7 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
     if (dragType_ == DRAG_TYPE_SW)
     {
         // Disallow self-instantiation.
-        if (droppedVLNV == *getEditedComponent()->getVlnv())
+        if (droppedVLNV == getEditedComponent()->getVlnv())
         {
             QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
                 tr("Component cannot be instantiated to its own design."),
@@ -894,7 +918,7 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
         }
 
         // Based on the action, either perform copy or move.
-        SystemView* newView = new SystemView(dialog.getSystemViewName());
+        QSharedPointer<SystemView> newView( new SystemView(dialog.getSystemViewName()) );
         newView->setHWViewRef(dialog.getHWViewRef());
 
         if (dialog.isCopyActionSelected())
@@ -925,12 +949,22 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
             // the existing VLNV for the hierarchy reference.
             newView->setHierarchyRef(getEditedComponent()->findSystemView(getParent()->getOpenViewName())->getHierarchyRef());
 
-            getEditedComponent()->removeSystemView(getParent()->getOpenViewName());
+			foreach ( QSharedPointer<VendorExtension> extension, *getEditedComponent()->getVendorExtensions() )
+			{
+				QSharedPointer<SystemView> currentView = extension.dynamicCast<SystemView>();
+
+				if ( currentView && currentView->name() == getParent()->getOpenViewName() )
+				{
+					getEditedComponent()->getVendorExtensions()->removeOne(currentView);
+					break;
+				}
+			}
+
             getLibraryInterface()->writeModelToFile(getEditedComponent());
         }
 
         // Add the system view to the new HW component and save.
-        newComponent->addSystemView(newView);
+        newComponent->getVendorExtensions()->append(newView);
         getLibraryInterface()->writeModelToFile(newComponent);
 
         // Refresh the design widget.
@@ -1037,7 +1071,7 @@ void SystemDesignDiagram::updateDropAction(QGraphicsSceneDragDropEvent* event)
 
         VLNV vlnv = data.value<VLNV>();
 
-        if (vlnv != *getEditedComponent()->getVlnv())
+        if (vlnv != getEditedComponent()->getVlnv())
         {
             event->setDropAction(Qt::LinkAction);
         }
@@ -1069,8 +1103,7 @@ void SystemDesignDiagram::updateDropAction(QGraphicsSceneDragDropEvent* event)
         // and the encompassing component is unpackaged.
         if (dragEndPoint_ != 0 &&
             (dragEndPoint_->getType() == SWConnectionEndpoint::ENDPOINT_TYPE_UNDEFINED ||
-            (!dragEndPoint_->isConnected() && dragEndPoint_->getOwnerComponent() != 0 &&
-            !dragEndPoint_->getOwnerComponent()->isValid())))
+            (!dragEndPoint_->isConnected() && dragEndPoint_->getOwnerComponent() != 0)))
         {
             event->setDropAction(Qt::CopyAction);
             dragEndPoint_->setHighlight(SWConnectionEndpoint::HIGHLIGHT_HOVER);
@@ -1105,7 +1138,7 @@ bool SystemDesignDiagram::openComponentActionEnabled() const
     QGraphicsItem* selectedItem = selectedItems().first();
     if (selectedItem->type() == SWComponentItem::Type || selectedItem->type() == HWMappingItem::Type)
     {
-        openEnabled = dynamic_cast<ComponentItem*>(selectedItem)->componentModel()->getVlnv()->isValid();
+        openEnabled = dynamic_cast<ComponentItem*>(selectedItem)->componentModel()->getVlnv().isValid();
     }
 
     return openEnabled;
@@ -1209,13 +1242,11 @@ QStringList SystemDesignDiagram::hierarchicalViewsOf(ComponentItem* component) c
 {
     QStringList hierarchicalViews;
 
-    foreach( QString viewName, component->componentModel()->getSWViewNames() )
+    foreach( QSharedPointer<SWView> view, component->componentModel()->getSWViews() )
     {
-        QSharedPointer<SWView> view = component->componentModel()->getSWView( viewName );
-
         if ( view->getHierarchyRef().isValid() )
         {
-            hierarchicalViews.append( viewName );
+            hierarchicalViews.append( view->name() );
         }
     }
 
@@ -1260,7 +1291,7 @@ void SystemDesignDiagram::onSelected(QGraphicsItem* newSelection)
             ComponentItem* item = static_cast<ComponentItem*>(newSelection);
             emit componentSelected(item);
 
-            if (item->componentModel()->getComponentImplementation() == KactusAttribute::HW)
+            if (item->componentModel()->getImplementation() == KactusAttribute::HW)
             {
                 emit helpUrlRequested("swsysdesign/hwmappinginstance.html");
             }
@@ -1368,7 +1399,7 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
 
             // Create an unpackaged component so that we can still visualize the component instance->
             component = QSharedPointer<Component>(new Component(*instance->getComponentRef()));
-            component->setComponentImplementation(KactusAttribute::HW);
+            component->setImplementation(KactusAttribute::HW);
         }
 
         HWMappingItem* item = new HWMappingItem(getLibraryInterface(), component, instance->getInstanceName(),
@@ -1477,7 +1508,7 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
         {
             // Create an unpackaged component so that we can still visualize the component instance->
             component = QSharedPointer<Component>(new Component(*instance->getComponentRef()));
-            component->setComponentImplementation(KactusAttribute::SW);
+            component->setImplementation(KactusAttribute::SW);
         }
 
         SWComponentItem* item = new SWComponentItem(getLibraryInterface(), component, instance->getInstanceName(),
@@ -2057,7 +2088,7 @@ void SystemDesignDiagram::importDesign(QSharedPointer<Design> design, IGraphicsI
 
             // Create an unpackaged component so that we can still visualize the component instance->
             component = QSharedPointer<Component>(new Component(*instance->getComponentRef()));
-            component->setComponentImplementation(KactusAttribute::SW);
+            component->setImplementation(KactusAttribute::SW);
         }
 
         // Determine a unique name for the instance->
@@ -2314,7 +2345,7 @@ void SystemDesignDiagram::draftAt(QPointF const& clickedPosition)
         SWComponentItem* comp = static_cast<SWComponentItem*>(item);
 
         // The component is unpackaged if it has an invalid vlnv.
-        if (!comp->componentModel()->getVlnv()->isValid())
+        if (!comp->componentModel()->getVlnv().isValid())
         {
             QMap<SWPortItem*, QPointF> oldPositions;
 
@@ -2371,7 +2402,7 @@ void SystemDesignDiagram::draftAt(QPointF const& clickedPosition)
                 // Create a component model without a valid vlnv.
                 QSharedPointer<Component> comp = QSharedPointer<Component>(new Component());
                 comp->setVlnv(VLNV());
-                comp->setComponentImplementation(KactusAttribute::SW);
+                comp->setImplementation(KactusAttribute::SW);
 
                 // Create the corresponding SW component item.
                 SWComponentItem* swCompItem = new SWComponentItem(getLibraryInterface(), comp, name);
@@ -2474,7 +2505,7 @@ void SystemDesignDiagram::pasteSWInstances(ComponentCollectionCopyData const& co
         // Take a copy of the component in case of a draft.
         QSharedPointer<Component> component = instance.component;
 
-        if (!component->getVlnv()->isValid())
+        if (!component->getVlnv().isValid())
         {
             component = QSharedPointer<Component>(new Component(*instance.component));
         }

@@ -11,7 +11,7 @@
 
 #include "ExportSWDialog.h"
 
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 

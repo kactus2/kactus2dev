@@ -19,7 +19,7 @@
 #include <designEditors/HWDesign/HWMoveCommands.h>
 
 #include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/model.h>
+#include <IPXACTmodels/Component/Model.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 
@@ -215,14 +215,14 @@ void SWComponentItem::updateComponent()
 {
     ComponentItem::updateComponent();
 
-    VLNV* vlnv = componentModel()->getVlnv();
+    VLNV vlnv = componentModel()->getVlnv();
 
     // Check whether the component is packaged or not.
     if (isDraft())
     {
         setBrush(QBrush(KactusColors::DRAFT_COMPONENT));
     }
-    else if (getLibraryInterface()->contains(*vlnv))
+    else if (getLibraryInterface()->contains(vlnv))
     {
         setBrush(QBrush(KactusColors::SW_COMPONENT));
     }

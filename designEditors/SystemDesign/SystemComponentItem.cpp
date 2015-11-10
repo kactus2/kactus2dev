@@ -172,11 +172,11 @@ void SystemComponentItem::addPort(SWPortItem* port)
 
     if (port->getType() == SWPortItem::ENDPOINT_TYPE_API)
     {
-        componentModel()->addApiInterface(port->getApiInterface());
+        componentModel()->getVendorExtensions()->append(port->getApiInterface());
     }
     else if (port->getType() == SWPortItem::ENDPOINT_TYPE_COM)
     {
-        componentModel()->addComInterface(port->getComInterface());
+        componentModel()->getVendorExtensions()->append(port->getComInterface());
     }
 
     // Make preparations.
@@ -205,11 +205,11 @@ void SystemComponentItem::removePort(SWPortItem* port)
 
     if (port->getType() == SWPortItem::ENDPOINT_TYPE_API)
     {
-        componentModel()->removeApiInterface(port->getApiInterface().data());
+        componentModel()->getVendorExtensions()->removeOne(port->getApiInterface());
     }
     else if (port->getType() == SWPortItem::ENDPOINT_TYPE_COM)
     {
-        componentModel()->removeComInterface(port->getComInterface().data());
+        componentModel()->getVendorExtensions()->removeOne(port->getComInterface());
     }
 }
 
@@ -501,7 +501,7 @@ void SystemComponentItem::setApiInterfacePositions(QMap<QString, QPointF> const&
         // If the port was not found, create it.
         if (port == 0)
         {
-            if (!createMissing || componentModel()->getVlnv()->isValid())
+            if (!createMissing || componentModel()->getVlnv().isValid())
             {
                 continue;
             }
@@ -530,7 +530,7 @@ void SystemComponentItem::setComInterfacePositions(QMap<QString, QPointF> const&
         // If the port was not found, create it.
         if (port == 0)
         {
-            if (!createMissing || componentModel()->getVlnv()->isValid())
+            if (!createMissing || componentModel()->getVlnv().isValid())
             {
                 continue;
             }
