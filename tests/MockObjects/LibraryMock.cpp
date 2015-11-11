@@ -11,8 +11,8 @@
 
 #include "LibraryMock.h"
 
-#include <IPXACTmodels/librarycomponent.h>
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/Document.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 //-----------------------------------------------------------------------------
 // Function: LibraryMock::LibraryMock()
@@ -54,7 +54,7 @@ void LibraryMock::clear()
 //-----------------------------------------------------------------------------
 QSharedPointer<Document> LibraryMock::getModel(const VLNV& vlnv)
 {
-    return components_.value(vlnv, QSharedPointer<LibraryComponent>(0));
+    return components_.value(vlnv, QSharedPointer<Document>(0));
 }
 
 //-----------------------------------------------------------------------------
@@ -62,7 +62,7 @@ QSharedPointer<Document> LibraryMock::getModel(const VLNV& vlnv)
 //-----------------------------------------------------------------------------
 QSharedPointer<Document const> LibraryMock::getModelReadOnly(const VLNV& vlnv)
 {
-    return components_.value(vlnv, QSharedPointer<LibraryComponent>(0));
+    return components_.value(vlnv, QSharedPointer<Document>(0));
 }
 
 //-----------------------------------------------------------------------------
@@ -92,7 +92,7 @@ QString LibraryMock::getDirectoryPath(const VLNV& /*vlnv*/) const
 //-----------------------------------------------------------------------------
 // Function: LibraryMock::writeModelToFile()
 //-----------------------------------------------------------------------------
-bool LibraryMock::writeModelToFile(const QString path, QSharedPointer<Document> model, bool /*printErrors*/)
+bool LibraryMock::writeModelToFile(const QString& path, QSharedPointer<Document> model, bool /*printErrors*/)
 {
     paths_.insert(model->getVlnv(), path);
     return true;
@@ -198,7 +198,7 @@ VLNV LibraryMock::getDesignVLNV(const VLNV& /*hierarchyRef*/)
 //-----------------------------------------------------------------------------
 QSharedPointer<Design> LibraryMock::getDesign(const VLNV& hierarchyRef)
 {
-    return components_.value(hierarchyRef, QSharedPointer<LibraryComponent>(0)).dynamicCast<Design>();
+    return components_.value(hierarchyRef, QSharedPointer<Document>(0)).dynamicCast<Design>();
 }
 
 //-----------------------------------------------------------------------------

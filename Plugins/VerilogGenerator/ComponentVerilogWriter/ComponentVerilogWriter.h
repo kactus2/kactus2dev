@@ -14,8 +14,8 @@
 
 #include "../veriloggeneratorplugin_global.h"
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/port.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/Port.h>
 
 #include <Plugins/VerilogGenerator/PortSorter/PortSorter.h>
 #include <Plugins/VerilogGenerator/ModelParameterVerilogWriter/ModelParameterVerilogWriter.h>
@@ -43,7 +43,7 @@ public:
 	 *      @param [in] sorter                  Sorter for the ports in the component.
      *      @param [in] expressionFormatter     Formatter for writing expressions.
 	 */
-	ComponentVerilogWriter(QSharedPointer<const Component> component, QString const& activeView,
+	ComponentVerilogWriter(QSharedPointer<Component> component, QString const& activeView,
         QSharedPointer<const PortSorter> sorter,
         QSharedPointer<ExpressionFormatter> expressionFormatter);
 
@@ -96,7 +96,7 @@ private:
      *      @param [in] parameter       The parameter to write.
      *      @param [in] isLast          Indicates if the parameter is the last to write.
      */
-    void writeParameter(QTextStream& outputStream, QSharedPointer<ModelParameter> parameter, bool isLast) const;
+    void writeParameter(QTextStream& outputStream, QSharedPointer<ModuleParameter> parameter, bool isLast) const;
 
     /*!
      *  Writes the module port declaration.
@@ -150,7 +150,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The component to write to Verilog module.
-    QSharedPointer<const Component> component_;
+    QSharedPointer<Component> component_;
 
     //! The component active view.
     QString activeView_;

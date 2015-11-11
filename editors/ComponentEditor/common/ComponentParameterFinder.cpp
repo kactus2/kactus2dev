@@ -249,7 +249,7 @@ QList<QSharedPointer<Parameter> > ComponentParameterFinder::allBusInterfaceParam
 QList<QSharedPointer<Parameter> > ComponentParameterFinder::allRegisterParameters() const
 {
     QList<QSharedPointer<Parameter> > registerParameters;
-    foreach (QSharedPointer<MemoryMap> memoryMap, *component_->getMemoryMaps())
+    foreach (QSharedPointer<MemoryMapBase> memoryMap, *component_->getMemoryMaps())
     {
         foreach (QSharedPointer<MemoryBlockBase> memoryBlock, *memoryMap->getMemoryBlocks())
         {

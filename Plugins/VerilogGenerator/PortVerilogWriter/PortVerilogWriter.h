@@ -15,7 +15,7 @@
 #include "../veriloggeneratorplugin_global.h"
 #include "../common/Writer.h"
 
-#include <IPXACTmodels/port.h>
+#include <IPXACTmodels/Component/Port.h>
 
 #include <QTextStream>
 

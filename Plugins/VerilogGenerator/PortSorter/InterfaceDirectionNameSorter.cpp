@@ -10,6 +10,8 @@
 //-----------------------------------------------------------------------------
 
 #include "InterfaceDirectionNameSorter.h"
+#include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/Component/Model.h>
 
 //-----------------------------------------------------------------------------
 // Function: InterfaceDirectionNameSorter::InterfaceDirectionNameSorter()
@@ -30,7 +32,7 @@ InterfaceDirectionNameSorter::~InterfaceDirectionNameSorter()
 //-----------------------------------------------------------------------------
 // Function: InterfaceDirectionNameSorter::sortedPorts()
 //-----------------------------------------------------------------------------
-QStringList InterfaceDirectionNameSorter::sortedPortNames(QSharedPointer<const Component> component) const
+QStringList InterfaceDirectionNameSorter::sortedPortNames(QSharedPointer<Component> component) const
 {
     if (component.isNull())
     {
@@ -40,7 +42,8 @@ QStringList InterfaceDirectionNameSorter::sortedPortNames(QSharedPointer<const C
     QMap<SortKey, QString> sortedPorts;
     foreach(QString portName, component->getPortNames())
     {
-        SortKey key(component->getInterfaceNameForPort(portName), component->getPortDirection(portName), portName);
+        SortKey key(component->getInterfaceForPort(portName)->name(),
+			component->getModel()->getPort(portName)->getDirection(), portName);
         sortedPorts.insert(key, portName);
     }
 

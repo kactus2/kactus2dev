@@ -19,8 +19,8 @@
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 
 #include <IPXACTmodels/Component/BusInterface.h>
-#include <IPXACTmodels/PortRef.h>
 #include <IPXACTmodels/Component/PortMap.h>
+#include <IPXACTmodels/Component/Model.h>
 
 #include <Plugins/VerilogGenerator/common/WriterGroup.h>
 #include <Plugins/VerilogGenerator/CommentWriter/CommentWriter.h>
@@ -31,6 +31,7 @@
 #include <Plugins/VerilogGenerator/VerilogWireWriter/VerilogWireWriter.h>
 
 #include <QDateTime>
+#include "QFileInfo"
 
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::VerilogGenerator()
@@ -106,9 +107,9 @@ void VerilogGenerator::initializeWriters(QString const& topComponentView)
 {
     QSettings settings;
     QString currentUser = settings.value("General/Username").toString();
-    QString componentXmlPath = library_->getPath(*topComponent_->getVlnv());
+    QString componentXmlPath = library_->getPath(topComponent_->getVlnv());
 
-    headerWriter_ = QSharedPointer<VerilogHeaderWriter>(new VerilogHeaderWriter(*topComponent_->getVlnv(), 
+    headerWriter_ = QSharedPointer<VerilogHeaderWriter>(new VerilogHeaderWriter(topComponent_->getVlnv(), 
         componentXmlPath, currentUser));
 
     topWriter_ = QSharedPointer<ComponentVerilogWriter>(new ComponentVerilogWriter(topComponent_, topComponentView,
@@ -285,12 +286,12 @@ General::PortBounds VerilogGenerator::logicalBoundsInInstance(QString const& ins
     
     QSharedPointer<Component> instanceComponent = getComponentForInstance(instanceName);
     if (instanceComponent)
-    {
-        QSharedPointer<Port> port = instanceComponent->getPort(portMap->physicalPort());   
+    {// TODO: form bounds from expressions
+        /*QSharedPointer<Port> port = instanceComponent->getPort(portMap->physicalPort());   
         if (port)
         {
             bounds = portMap->getLogicalRange(port);
-        }
+        }*/
     }
 
     return bounds;
@@ -312,9 +313,9 @@ QList<QSharedPointer<PortMap> > VerilogGenerator::findPortMapsForLogicalPortInIn
     QSharedPointer<ActiveInterface> interface) const
 {
     QList<QSharedPointer<PortMap> > portMaps;
-    foreach(QSharedPointer<PortMap> slavePortMap, getBusinterfaceForInterface(interface)->getPortMaps())
+    foreach(QSharedPointer<PortMap> slavePortMap, *getBusinterfaceForInterface(interface)->getPortMaps())
     {
-        if (slavePortMap->logicalPort() == logicalPort)
+        if (slavePortMap->getLogicalPort()->name_ == logicalPort)
         {
             portMaps.append(slavePortMap);
         }
@@ -362,14 +363,16 @@ void VerilogGenerator::connectInstancePortToWire(QString const& instanceName,
     QSharedPointer<ComponentInstanceVerilogWriter> instanceWriter = instanceWriters_.value(instanceName);
 
     QSharedPointer<Component> instanceComponent = getComponentForInstance(instanceName);
-    if (wireSize == instanceComponent->getPortWidth(portMap->physicalPort()))
+	// TODO: get port width
+    /*if (wireSize == instanceComponent->getModel()->getPort(portMap->getPhysicalPort()->name_)->)
     {
-        instanceWriter->assignPortForFullWidth(portMap->physicalPort(), wireName);
+        instanceWriter->assignPortForFullWidth(portMap->getPhysicalPort()->name_, wireName);
     }
-    else
+    else*/
     {
-        General::PortBounds bounds = portMap->getLogicalRange(instanceComponent->getPort(portMap->physicalPort()));
-        instanceWriter->assignPortForRange(portMap->physicalPort(), wireName, bounds.left_, bounds.right_);
+		// TODO: fix after expressions available
+        //General::PortBounds bounds = portMap->getLogicalRange(instanceComponent->getPort(portMap->physicalPort()));
+        //instanceWriter->assignPortForRange(portMap->physicalPort(), wireName, bounds.left_, bounds.right_);
     }
 }
 
@@ -485,18 +488,18 @@ void VerilogGenerator::connectTopBusInterfaceToInterfaceInInstance(QSharedPointe
 
     QSharedPointer<Component> instanceComponent = getComponentForInstance(instanceInterface->getComponentReference());
 
-    foreach(QSharedPointer<PortMap> topMap, topIf->getPortMaps())
+    foreach(QSharedPointer<PortMap> topMap, *topIf->getPortMaps())
     {
         foreach(QSharedPointer<PortMap> instancePortMap, 
-            findPortMapsForLogicalPortInInterface(topMap->logicalPort(), instanceInterface))
+            findPortMapsForLogicalPortInInterface(topMap->getLogicalPort()->name_, instanceInterface))
         {
-            QString instancePort = instancePortMap->physicalPort();
-            QString topPort = topMap->physicalPort();
+            QSharedPointer<PortMap::PhysicalPort> instancePort = instancePortMap->getPhysicalPort();
+            QSharedPointer<PortMap::PhysicalPort> topPort = topMap->getPhysicalPort();
 
+			/* TODO: Calculate alignment with expressions.
             int instancePortWidth = instanceComponent->getPortWidth(instancePort);
             int topPortWidth = topComponent_->getPortWidth(topPort);
 
-            /* TODO: Calculate alignment with expressions.
             General::PortAlignment alignment = General::calculatePortAlignment(instancePortMap.data(), 
                 instanceComponent->getPortLeftBound(instancePort), 
                 instanceComponent->getPortRightBound(instancePort),
@@ -505,9 +508,9 @@ void VerilogGenerator::connectTopBusInterfaceToInterfaceInInstance(QSharedPointe
                 topComponent_->getPortRightBound(instancePort));
 
             if (canConnectForFullWidth(instancePortWidth, topPortWidth, alignment))
-            {*/
+            {
                 instanceWriter->assignPortForFullWidth(instancePort, topPort);
-            /*}
+            }
             else
             {
                 instanceWriter->assignPortForRange(instancePort, topPort, alignment.port2Left_, alignment.port2Right_);    
@@ -617,7 +620,8 @@ int VerilogGenerator::findWireSizeForAdHocConnection(QSharedPointer<AdHocConnect
             QSharedPointer<Component> component = getComponentForInstance(internalRef->getComponentRef());
             if (component)
             {
-                portSize = component->getPortWidth(internalRef->getPortRef());
+				//TODO: fix after expressions exist
+                //portSize = component->getPortWidth(internalRef->getPortRef());
             }
         }
         else

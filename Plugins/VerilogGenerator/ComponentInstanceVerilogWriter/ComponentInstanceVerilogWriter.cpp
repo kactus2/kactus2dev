@@ -12,6 +12,8 @@
 #include "ComponentInstanceVerilogWriter.h"
 
 #include <Plugins/VerilogGenerator/CommentWriter/CommentWriter.h>
+#include <IPXACTmodels/Component/Port.h>
+#include <IPXACTmodels/Component/BusInterface.h>
 
 namespace
 {
@@ -22,7 +24,7 @@ namespace
 // Function: ComponentInstanceVerilogWriter::ComponentInstanceVerilogWriter()
 //-----------------------------------------------------------------------------
 ComponentInstanceVerilogWriter::ComponentInstanceVerilogWriter(QSharedPointer<const ComponentInstance> instance,
-    QSharedPointer<const Component> referencedComponent, QSharedPointer<const PortSorter> sorter,
+    QSharedPointer<Component> referencedComponent, QSharedPointer<const PortSorter> sorter,
     QSharedPointer<ExpressionFormatter> expressionFormatter) :
 componentInstance_(instance), 
 referencedComponent_(referencedComponent), 
@@ -147,7 +149,7 @@ QString ComponentInstanceVerilogWriter::portConnections() const
 
         foreach(QString portName, sorter_->sortedPortNames(referencedComponent_))
         {
-            QString interfaceName = referencedComponent_->getInterfaceNameForPort(portName);
+            QString interfaceName = referencedComponent_->getInterfaceForPort(portName)->name();
             QString interfaceSeparatorLine = createInterfaceSeparator(interfaceName, previousInterfaceName);
             previousInterfaceName = interfaceName;
 
@@ -246,7 +248,7 @@ QString ComponentInstanceVerilogWriter::portDefaultValue(QString const& portName
     QString defaultValue = " ";
 
     QSharedPointer<Port> port =  referencedComponent_->getPort(portName);
-    if (port->getDirection() == General::IN && !port->getDefaultValue().isEmpty())
+    if (port->getDirection() == DirectionTypes::IN && !port->getDefaultValue().isEmpty())
     {
         defaultValue = expressionFormatter_->formatReferringExpression(port->getDefaultValue());
     }

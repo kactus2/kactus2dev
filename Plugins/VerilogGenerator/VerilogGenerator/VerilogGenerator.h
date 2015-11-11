@@ -16,7 +16,7 @@
 
 #include <IPXACTmodels/Design/Design.h>
 
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/generaldeclarations.h>
 
 #include <IPXACTmodels/Component/PortMap.h>

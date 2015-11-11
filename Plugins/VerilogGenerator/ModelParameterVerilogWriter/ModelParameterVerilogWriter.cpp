@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: ModelParameterVerilogWriter.cpp
+// File: ModuleParameterVerilogWriter.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Esko Pekkarinen
@@ -11,33 +11,33 @@
 
 #include "ModelParameterVerilogWriter.h"
 
-#include <IPXACTmodels/modelparameter.h>
+#include <IPXACTmodels/common/ModuleParameter.h>
 
 #include <QRegularExpression>
 
 //-----------------------------------------------------------------------------
-// Function: ModelParameterVerilogWriter::ModelParameterVerilogWriter()
+// Function: ModuleParameterVerilogWriter::ModuleParameterVerilogWriter()
 //-----------------------------------------------------------------------------
-ModelParameterVerilogWriter::ModelParameterVerilogWriter(QSharedPointer<ModelParameter> modelParameter,
+ModuleParameterVerilogWriter::ModuleParameterVerilogWriter(QSharedPointer<ModuleParameter> ModuleParameter,
     QSharedPointer<ExpressionFormatter> formatter) :
-modelParameter_(modelParameter),
+moduleParameter_(ModuleParameter),
 formatter_(formatter)
 {
 
 }
 
 //-----------------------------------------------------------------------------
-// Function: ModelParameterVerilogWriter::~ModelParameterVerilogWriter()
+// Function: ModuleParameterVerilogWriter::~ModuleParameterVerilogWriter()
 //-----------------------------------------------------------------------------
-ModelParameterVerilogWriter::~ModelParameterVerilogWriter()
+ModuleParameterVerilogWriter::~ModuleParameterVerilogWriter()
 {
 
 }
 
 //-----------------------------------------------------------------------------
-// Function: ModelParameterVerilogWriter::write()
+// Function: ModuleParameterVerilogWriter::write()
 //-----------------------------------------------------------------------------
-void ModelParameterVerilogWriter::write(QTextStream& output) const
+void ModuleParameterVerilogWriter::write(QTextStream& output) const
 {
     if (nothingToWrite())
     {
@@ -48,27 +48,27 @@ void ModelParameterVerilogWriter::write(QTextStream& output) const
 }    
 
 //-----------------------------------------------------------------------------
-// Function: ModelParameterVerilogWriter::shouldNotWrite()
+// Function: ModuleParameterVerilogWriter::shouldNotWrite()
 //-----------------------------------------------------------------------------
-bool ModelParameterVerilogWriter::nothingToWrite() const
+bool ModuleParameterVerilogWriter::nothingToWrite() const
 {
-    return modelParameter_.isNull() || modelParameter_->name().isEmpty();
+    return moduleParameter_.isNull() || moduleParameter_->name().isEmpty();
 }
 
 //-----------------------------------------------------------------------------
-// Function: ModelParameterVerilogWriter::createDeclaration()
+// Function: ModuleParameterVerilogWriter::createDeclaration()
 //-----------------------------------------------------------------------------
-QString ModelParameterVerilogWriter::createDeclaration() const
+QString ModuleParameterVerilogWriter::createDeclaration() const
 {
     QString parameterDeclaration("parameter <type> <arrayBounds> <name> = <default>");
 
-    parameterDeclaration.replace("<type>", modelParameter_->getDataType().leftJustified(7));
+    parameterDeclaration.replace("<type>", moduleParameter_->getDataType().leftJustified(7));
     parameterDeclaration.replace("<arrayBounds>", arrayBounds().leftJustified(20));
     //parameterDeclaration.replace("<vectorBounds>", vectorBounds());
-    parameterDeclaration.replace("<name>", modelParameter_->name().leftJustified(16));
+    parameterDeclaration.replace("<name>", moduleParameter_->name().leftJustified(16));
     parameterDeclaration.replace("<default>", formattedValue());
 
-    if (modelParameter_->getValue().isEmpty())
+    if (moduleParameter_->getValue().isEmpty())
     {
         parameterDeclaration.remove(" = ");
     }
@@ -77,12 +77,12 @@ QString ModelParameterVerilogWriter::createDeclaration() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: ModelParameterVerilogWriter::arrayBounds()
+// Function: ModuleParameterVerilogWriter::arrayBounds()
 //-----------------------------------------------------------------------------
-QString ModelParameterVerilogWriter::arrayBounds() const
+QString ModuleParameterVerilogWriter::arrayBounds() const
 {
-    QString arrayLeft = modelParameter_->getAttribute("kactus2:arrayLeft");
-    QString arrayRight = modelParameter_->getAttribute("kactus2:arrayRight");
+    QString arrayLeft = moduleParameter_->getAttribute("kactus2:arrayLeft");
+    QString arrayRight = moduleParameter_->getAttribute("kactus2:arrayRight");
 
     QString arrayDefinition = "[" + arrayLeft + ":" + arrayRight + "]";
     arrayDefinition.remove(" ");
@@ -92,8 +92,8 @@ QString ModelParameterVerilogWriter::arrayBounds() const
         arrayDefinition.clear();
     }
 
-    QString vectorLeft = modelParameter_->getVectorLeft();
-    QString vectorRight = modelParameter_->getVectorRight();
+    QString vectorLeft = moduleParameter_->getVectorLeft();
+    QString vectorRight = moduleParameter_->getVectorRight();
 
     QString vectorDefinition = "[" + vectorLeft + ":" + vectorRight + "]";
     vectorDefinition.remove(" ");
@@ -107,13 +107,13 @@ QString ModelParameterVerilogWriter::arrayBounds() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: ModelParameterVerilogWriter::formattedValue()
+// Function: ModuleParameterVerilogWriter::formattedValue()
 //-----------------------------------------------------------------------------
-QString ModelParameterVerilogWriter::formattedValue() const
+QString ModuleParameterVerilogWriter::formattedValue() const
 {
-    QString value = modelParameter_->getValue();
+    QString value = moduleParameter_->getValue();
 
-    if (QString::compare(modelParameter_->getDataType(), "string") == 0)
+    if (QString::compare(moduleParameter_->getDataType(), "string") == 0)
     {
         QRegularExpression expression("\".*\"");
         QRegularExpressionMatch expressionMatch = expression.match(value);

@@ -97,7 +97,7 @@ public:
     *
     *      @return Description.
     */
-    virtual bool writeModelToFile(const QString path, QSharedPointer<Document> model, bool printErrors = true);
+    virtual bool writeModelToFile(const QString& path, QSharedPointer<Document> model, bool printErrors = true);
 
     /*!
     *  Method description.

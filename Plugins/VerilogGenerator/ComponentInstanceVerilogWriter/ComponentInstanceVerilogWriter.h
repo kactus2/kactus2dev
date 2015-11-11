@@ -14,7 +14,7 @@
 
 #include "../veriloggeneratorplugin_global.h"
 
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Design/ComponentInstance.h>
 
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
@@ -41,7 +41,7 @@ public:
      *      @param [in] expressionFormatter     The expression formatter.
 	 */
 	ComponentInstanceVerilogWriter(QSharedPointer<const ComponentInstance> instance,
-        QSharedPointer<const Component> referencedComponent,
+        QSharedPointer<Component> referencedComponent,
         QSharedPointer<const PortSorter> sorter,
         QSharedPointer<ExpressionFormatter> expressionFormatter);
 
@@ -178,7 +178,7 @@ private:
     QSharedPointer<const ComponentInstance> componentInstance_;
 
     //! The component referenced by the instance.
-    QSharedPointer<const Component> referencedComponent_;
+    QSharedPointer<Component> referencedComponent_;
 
     //! Sorter for the ports of the component.
     QSharedPointer<const PortSorter> sorter_;
