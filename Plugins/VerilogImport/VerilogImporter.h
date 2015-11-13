@@ -157,7 +157,7 @@ private:
      *
      *      @return Flat view to set up with model name and environmental identifiers.
      */
-    View* findOrCreateFlatView(QSharedPointer<Component> targetComponent) const;
+    QSharedPointer<View> findOrCreateFlatView(QSharedPointer<Component> targetComponent) const;
     
     /*!
      *  Sets the language and environmental identifiers in the rtl view.

@@ -12,9 +12,9 @@
 #include "VerilogParameterParser.h"
 #include "VerilogSyntax.h"
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/port.h>
-#include <IPXACTmodels/model.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/Port.h>
+#include <IPXACTmodels/Component/Model.h>
 
 #include <Plugins/PluginSystem/ImportPlugin/ImportColors.h>
 
@@ -62,20 +62,32 @@ void VerilogParameterParser::import(QString const& input, QSharedPointer<Compone
     declarations.append(findANSIDeclarations(input));
     declarations.append(findOldDeclarations(input));
 
-    QList<QSharedPointer<ModelParameter> > parsedParameters;
+	// Must have a component instantiation for module parameters.
+	QString instaName = "module_parameter_instantiation";
+	QSharedPointer<ComponentInstantiation> cimp =
+		targetComponent->getModel()->findComponentInstantiation(instaName);
+
+	if ( !cimp )
+	{
+		cimp = QSharedPointer<ComponentInstantiation>( new ComponentInstantiation );
+		cimp->setName(instaName);
+		targetComponent->getComponentInstantiations()->append(cimp);
+	}
+
+    QList<QSharedPointer<ModuleParameter> > parsedParameters;
 
     foreach (QString declaration, declarations)
     {
         parsedParameters.append(parseParameters(declaration));
     }
 
-    copyIdsFromOldModelParameters(parsedParameters, targetComponent);
+    copyIdsFromOldModelParameters(parsedParameters, cimp);
 
-    foreach (QSharedPointer<ModelParameter> existingParameter, *targetComponent->getModelParameters())
+    foreach (QSharedPointer<ModuleParameter> existingParameter, *cimp->getModuleParameters())
     {
         if (existingParameter->getAttribute("imported").isEmpty())
         {
-            targetComponent->getModelParameters()->removeAll(existingParameter);
+            cimp->getModuleParameters()->removeAll(existingParameter);
         }
         else
         {
@@ -83,9 +95,9 @@ void VerilogParameterParser::import(QString const& input, QSharedPointer<Compone
         }        
     }
 
-    targetComponent->getModelParameters()->append(parsedParameters);
+    cimp->getModuleParameters()->append(parsedParameters);
 
-    replaceNamesReferencesWithIds(targetComponent);
+    replaceNamesReferencesWithIds(targetComponent, cimp);
 }
 
 //-----------------------------------------------------------------------------
@@ -166,9 +178,9 @@ QStringList VerilogParameterParser::findOldDeclarations(QString const& input)
 //-----------------------------------------------------------------------------
 // Function: VerilogParameterParser::parseParameters()
 //-----------------------------------------------------------------------------
-QList<QSharedPointer<ModelParameter> > VerilogParameterParser::parseParameters(QString const &input)
+QList<QSharedPointer<ModuleParameter> > VerilogParameterParser::parseParameters(QString const &input)
 {
-    QList<QSharedPointer<ModelParameter> > parameters;
+    QList<QSharedPointer<ModuleParameter> > parameters;
 
     // Find the type and the declaration. Only one per declaration is supported.
     QString type = parseType(input);
@@ -199,7 +211,7 @@ QList<QSharedPointer<ModelParameter> > VerilogParameterParser::parseParameters(Q
         value = value.left(cullIndex).trimmed();
 
         // Each name value pair produces a new model parameter, but the type and the description is recycled.
-        QSharedPointer<ModelParameter> modelParameter =  QSharedPointer<ModelParameter>(new ModelParameter());
+        QSharedPointer<ModuleParameter> modelParameter =  QSharedPointer<ModuleParameter>(new ModuleParameter());
            
         modelParameter->setName(name);
         modelParameter->setDataType(type);
@@ -363,37 +375,41 @@ QString VerilogParameterParser::parseDescription(QString const& input)
 //-----------------------------------------------------------------------------
 // Function: VerilogParameterParser::copyIdsFromOldModelParameters()
 //-----------------------------------------------------------------------------
-void VerilogParameterParser::copyIdsFromOldModelParameters(QList<QSharedPointer<ModelParameter> > parsedParameters,
-    QSharedPointer<Component> targetComponent)
+void VerilogParameterParser::copyIdsFromOldModelParameters(QList<QSharedPointer<ModuleParameter> > parsedParameters,
+    QSharedPointer<ComponentInstantiation> targetComponentInstantiation)
 {
-    foreach (QSharedPointer<ModelParameter> parameter, parsedParameters)
+    foreach (QSharedPointer<ModuleParameter> parameter, parsedParameters)
     {
-        QSharedPointer<ModelParameter> existingParameter = 
-            targetComponent->getModel()->getModelParameter(parameter->name());
-        if (!existingParameter.isNull())
-        {
-            parameter->setValueId(existingParameter->getValueId());
-        }
+		foreach ( QSharedPointer<ModuleParameter> existingParameter,
+			*targetComponentInstantiation->getModuleParameters() )
+		{
+			if ( existingParameter->name() == parameter->name() )
+			{
+				parameter->setValueId(existingParameter->getValueId());
+				break;
+			}
+		}
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: VerilogParameterParser::replaceReferenceNamesWithIds()
 //-----------------------------------------------------------------------------
-void VerilogParameterParser::replaceNamesReferencesWithIds(QSharedPointer<Component> targetComponent)
+void VerilogParameterParser::replaceNamesReferencesWithIds(QSharedPointer<Component> targetComponent,
+	QSharedPointer<ComponentInstantiation> targetComponentInstantiation)
 {
-    foreach (QSharedPointer<ModelParameter> parameter, *targetComponent->getModelParameters())
+    foreach (QSharedPointer<ModuleParameter> parameter, *targetComponentInstantiation->getModuleParameters())
     {
         replaceMacroUsesWithParameterIds(parameter, targetComponent);
 
-        replaceNameReferencesWithModelParameterIds(parameter, targetComponent);
+        replaceNameReferencesWithModelParameterIds(parameter, targetComponentInstantiation);
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: VerilogParameterParser::replaceParameterNamesWithIds()
 //-----------------------------------------------------------------------------
-void VerilogParameterParser::replaceMacroUsesWithParameterIds(QSharedPointer<ModelParameter> parameter,
+void VerilogParameterParser::replaceMacroUsesWithParameterIds(QSharedPointer<ModuleParameter> parameter,
     QSharedPointer<Component> targetComponent) const
 {
     foreach (QSharedPointer<Parameter> define, *targetComponent->getParameters())
@@ -441,10 +457,10 @@ QString VerilogParameterParser::replaceNameWithId(QString const& expression, QRe
 //-----------------------------------------------------------------------------
 // Function: VerilogParameterParser::replaceModelParameterNamesWithIds()
 //-----------------------------------------------------------------------------
-void VerilogParameterParser::replaceNameReferencesWithModelParameterIds(QSharedPointer<ModelParameter> parameter, 
-    QSharedPointer<Component> targetComponent) const
+void VerilogParameterParser::replaceNameReferencesWithModelParameterIds(QSharedPointer<ModuleParameter> parameter, 
+    QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const
 {
-    foreach (QSharedPointer<ModelParameter> referencedParameter, *targetComponent->getModelParameters())
+    foreach (QSharedPointer<ModuleParameter> referencedParameter, *targetComponentInstantiation->getModuleParameters())
     {
         QRegularExpression nameReference("\\b" + referencedParameter->name() + "\\b");
 

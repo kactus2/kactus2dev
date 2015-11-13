@@ -17,7 +17,7 @@
 #include <QString>
 #include <QStringList>
 
-class ModelParameter;
+class ModuleParameter;
 
 //-----------------------------------------------------------------------------
 //! Parser for simple math equations in VHDL.
@@ -27,7 +27,7 @@ class HDLEquationParser
 public:
 
 	//! The constructor.
-	HDLEquationParser(QList<QSharedPointer<ModelParameter> > modelParameters);
+	HDLEquationParser(QList<QSharedPointer<ModuleParameter> > modelParameters);
 
 	//! The destructor.
 	~HDLEquationParser();
@@ -124,7 +124,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The known model parameter values to use in equations.
-    QList<QSharedPointer<ModelParameter> > knownValues_;
+    QList<QSharedPointer<ModuleParameter> > knownValues_;
 };
 
 #endif // HDLEQUATIONPARSER_H

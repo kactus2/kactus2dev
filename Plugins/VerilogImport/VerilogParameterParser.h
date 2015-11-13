@@ -16,9 +16,10 @@
 
 #include <QSharedPointer>
 #include <QString>
-#include <IPXACTmodels/modelparameter.h>
+#include <IPXACTmodels/common/ModuleParameter.h>
 
 #include <Plugins/PluginSystem/ImportPlugin/HighlightSource.h>
+#include "IPXACTmodels/Component/ComponentInstantiation.h"
 
 class Component;
 
@@ -75,7 +76,7 @@ public:
      *
      *      @return The parsed model parameters.
      */
-    QList<QSharedPointer<ModelParameter> > parseParameters(QString const &input);
+    QList<QSharedPointer<ModuleParameter> > parseParameters(QString const &input);
 
 private:
 
@@ -162,15 +163,15 @@ private:
       *      @param [in] parsedParameters   The parsed model parameters.
       *      @param [in] targetComponent    The component to import to.
       */
-     void copyIdsFromOldModelParameters(QList<QSharedPointer<ModelParameter> > parsedParameters,
-         QSharedPointer<Component> targetComponent);
+     void copyIdsFromOldModelParameters(QList<QSharedPointer<ModuleParameter> > parsedParameters,
+         QSharedPointer<ComponentInstantiation> targetComponentInstantiation);
 
      /*!
       *  Replaces the referenced model parameter names with their ids in model parameter values.
       *
       *      @param [in] targetComponent   The component whose model parameter values to replace.
       */
-     void replaceNamesReferencesWithIds(QSharedPointer<Component> targetComponent);
+     void replaceNamesReferencesWithIds(QSharedPointer<Component> targetComponent, QSharedPointer<ComponentInstantiation> targetComponentInstantiation);
 
      /*!
       *  Replaces macro uses in parameter with corresponding id references.
@@ -178,7 +179,7 @@ private:
       *      @param [in] parameter          The parameter whose macro uses to replace.
       *      @param [in] targetComponent    The containing component.
       */
-     void replaceMacroUsesWithParameterIds(QSharedPointer<ModelParameter> parameter, 
+     void replaceMacroUsesWithParameterIds(QSharedPointer<ModuleParameter> parameter, 
          QSharedPointer<Component> targetComponent) const;
 
      /*!
@@ -200,8 +201,8 @@ private:
       *      @param [in] parameter          The parameter whose name references to replace.
       *      @param [in] targetComponent    The containing component.
       */
-     void replaceNameReferencesWithModelParameterIds(QSharedPointer<ModelParameter> parameter, 
-         QSharedPointer<Component> targetComponent) const;
+     void replaceNameReferencesWithModelParameterIds(QSharedPointer<ModuleParameter> parameter, 
+         QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const;
 
      //-----------------------------------------------------------------------------
      // Data.

@@ -12,14 +12,14 @@
 #include "HDLEquationParser.h"
 #include "HDLmath.h"
 
-#include <IPXACTmodels/modelparameter.h>
+#include <IPXACTmodels/common/ModuleParameter.h>
 
 #include <qmath.h>
 
 //-----------------------------------------------------------------------------
 // Function: EquationParser::EquationParser()
 //-----------------------------------------------------------------------------
-HDLEquationParser::HDLEquationParser(QList<QSharedPointer<ModelParameter> > modelParameters) :
+HDLEquationParser::HDLEquationParser(QList<QSharedPointer<ModuleParameter> > modelParameters) :
     knownValues_(modelParameters)
 {
 
@@ -154,7 +154,7 @@ int HDLEquationParser::valueOf(QString const& term) const
 //-----------------------------------------------------------------------------
 int HDLEquationParser::valueFromModelParameter(QString const& term) const
 {
-    foreach (QSharedPointer<ModelParameter> parameter, knownValues_) 
+    foreach (QSharedPointer<ModuleParameter> parameter, knownValues_) 
     {
         if (parameter->name() == term)
         {

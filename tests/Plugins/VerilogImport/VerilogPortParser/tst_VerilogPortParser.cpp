@@ -161,7 +161,7 @@ void tst_VerilogPortParser::runParser(QString const& input)
 
     VerilogPortParser parser;
     parser.setExpressionParser(expressionParser);
-    parser.import(input, importComponent_);
+    parser.import(input, importComponent_, TODO);
 }
 
 //-----------------------------------------------------------------------------

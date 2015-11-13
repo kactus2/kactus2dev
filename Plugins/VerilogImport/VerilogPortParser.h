@@ -18,6 +18,7 @@
 
 #include <QSharedPointer>
 #include <QString>
+#include "IPXACTmodels/Component/ComponentInstantiation.h"
 
 class Component;
 class ExpressionParser;
@@ -41,7 +42,7 @@ public:
      *      @param [in] input               The input text to parse.
      *      @param [in] targetComponent     The component to add all the imported ports to.
      */
-    virtual void import(QString const& input, QSharedPointer<Component> targetComponent);
+    virtual void import(QString const& input, QSharedPointer<Component> targetComponent, QSharedPointer<ComponentInstantiation> targetComponentInstantiation);
 
     /*!
      *  Sets the given highlighter to be used by the port parser.
@@ -143,7 +144,8 @@ private:
      *      @param [in] targetComponent     The component to which add the port.
      */
     void createPortFromDeclaration(QString const& portDeclaration, 
-        QSharedPointer<Component> targetComponent) const;    
+        QSharedPointer<Component> targetComponent, 
+        QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const;    
 
     /*!
      *  Highlights the given port declaration.
@@ -169,8 +171,7 @@ private:
      *
      *      @return The port left and right array bound value in the declaration.
      */
-    QPair<QString, QString> parseArrayBounds(QString const& portDeclaration,
-        QSharedPointer<Component> targetComponent) const;
+    QPair<QString, QString> parseArrayBounds(QString const& portDeclaration, QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const;
 
     /*!
      *  Parses the left and right bounds of a bounds that is of format [left:right].
@@ -181,8 +182,7 @@ private:
      *
      *      @return The left and right bound value in the bounds.
      */
-    QPair<QString, QString> parseLeftAndRight(QString const& bounds, 
-        QSharedPointer<Component> targetComponent) const;
+    QPair<QString, QString> parseLeftAndRight(QString const& bounds, QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const;
 
     /*!
      *  Parses the port vector bounds from a Verilog port declaration.
@@ -192,8 +192,7 @@ private:
      *
      *      @return The port left and right vector bound value in the declaration.
      */
-    QPair<QString, QString> parseVectorBounds(QString const& portDeclaration,
-        QSharedPointer<Component> targetComponent) const;
+    QPair<QString, QString> parseVectorBounds(QString const& portDeclaration, QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const;
 
     /*!
      *  Replaces any parameter names with their ids in an expression.
@@ -204,7 +203,7 @@ private:
      *      @return The expression where the names have been replaced with corresponding ids.
      */
     QString replaceModelParameterNamesWithIds(QString const& expression, 
-        QSharedPointer<Component> targetComponent) const;
+        QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const;
 
     /*!
      *  Parses the port names from a Verilog port declaration.

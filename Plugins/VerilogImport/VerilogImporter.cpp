@@ -13,7 +13,7 @@
 
 #include "VerilogSyntax.h"
 
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
 #include <Plugins/PluginSystem/ImportPlugin/ImportColors.h>
 
 #include <QString>
@@ -131,7 +131,19 @@ void VerilogImporter::import(QString const& input, QSharedPointer<Component> tar
 
         parameterParser_.import(input, targetComponent);
 
-        portParser_.import(input, targetComponent);
+		// Must have a component instantiation for module parameters.
+		QString instaName = "module_parameter_instantiation";
+		QSharedPointer<ComponentInstantiation> cimp =
+			targetComponent->getModel()->findComponentInstantiation(instaName);
+
+		if ( !cimp )
+		{
+			cimp = QSharedPointer<ComponentInstantiation>( new ComponentInstantiation );
+			cimp->setName(instaName);
+			targetComponent->getComponentInstantiations()->append(cimp);
+		}
+
+        portParser_.import(input, targetComponent, cimp);
     }
 }
 
@@ -189,8 +201,8 @@ void VerilogImporter::importModelName(QString const& input, QSharedPointer<Compo
     {
         QString modelName = VerilogSyntax::MODULE_BEGIN.match(input).captured(1);
 
-        View* flatView = findOrCreateFlatView(targetComponent);
-        flatView->setModelName(modelName);
+        QSharedPointer<View> flatView = findOrCreateFlatView(targetComponent);
+        //flatView->setModelName(modelName);
 
         if (highlighter_)
         {
@@ -204,16 +216,21 @@ void VerilogImporter::importModelName(QString const& input, QSharedPointer<Compo
 //-----------------------------------------------------------------------------
 // Function: VerilogImporter::findOrCreateFlatView()
 //-----------------------------------------------------------------------------
-View* VerilogImporter::findOrCreateFlatView(QSharedPointer<Component> targetComponent) const
+QSharedPointer<View> VerilogImporter::findOrCreateFlatView(QSharedPointer<Component> targetComponent) const
 {
     QStringList flatViews = targetComponent->getFlatViews();
     if (flatViews.isEmpty())
     {
-        targetComponent->createEmptyFlatView();
+		// create new view
+		QSharedPointer<View> newView( new View() );
+		newView->setName("flat");
+		newView->addEnvIdentifier(QString("::"));
+		targetComponent->getViews()->append(newView);
+
         flatViews = targetComponent->getFlatViews();
     }
 
-    return targetComponent->findView(flatViews.first());
+    return targetComponent->getModel()->findView(flatViews.first());
 }
 
 //-----------------------------------------------------------------------------
@@ -221,8 +238,7 @@ View* VerilogImporter::findOrCreateFlatView(QSharedPointer<Component> targetComp
 //-----------------------------------------------------------------------------
 void VerilogImporter::setLanguageAndEnvironmentalIdentifiers(QSharedPointer<Component> targetComponent) const
 {
-    View* flatView = findOrCreateFlatView(targetComponent);
-    flatView->setLanguage("verilog");
+    QSharedPointer<View> flatView = findOrCreateFlatView(targetComponent);
 
     QString envIdentifierForImport = "verilog:Kactus2:";
 
