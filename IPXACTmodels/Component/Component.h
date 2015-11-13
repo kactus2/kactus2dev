@@ -17,6 +17,7 @@
 
 #include <IPXACTmodels/common/Document.h>
 
+#include <IPXACTmodels/Component/Model.h>
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
 #include <QList>
@@ -32,7 +33,6 @@ class RemapState;
 class AddressSpace;
 class MemoryMap;
 
-class Model;
 class View;
 class ComponentInstantiation;
 class DesignInstantiation;

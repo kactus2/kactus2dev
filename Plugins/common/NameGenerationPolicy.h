@@ -23,6 +23,15 @@ namespace NameGenerationPolicy
 	 *      @return The resolved name for the file set.
 	 */
 	QString instanceFilesetName( QString systemViewName, QString instanceName );
+	
+    /*!
+     *  Returns name of a verilog structural view, based on name of another view.
+     *
+     *      @param [in] viewName  Name of the other view.
+	 *
+	 *      @return The resolved name for the verilog structural view.
+	 */
+	QString verilogStructuralViewName( QString viewName );
 };
 
 #endif

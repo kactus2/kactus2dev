@@ -97,6 +97,22 @@ void Model::setViews(QSharedPointer<QList<QSharedPointer<View> > > newViews)
 }
 
 //-----------------------------------------------------------------------------
+// Function: Model::findComponentInstantiation()
+//-----------------------------------------------------------------------------
+QSharedPointer<ComponentInstantiation> Model::findComponentInstantiation(const QString name) const
+{
+	foreach ( QSharedPointer<ComponentInstantiation> currentInsta, *componentInstantiations_ )
+	{
+		if ( currentInsta->name() == name )
+		{
+			return currentInsta;
+		}
+	}
+
+	return QSharedPointer<ComponentInstantiation>();
+}
+
+//-----------------------------------------------------------------------------
 // Function: Model::getComponentInstantiations()
 //-----------------------------------------------------------------------------
 QSharedPointer<QList<QSharedPointer<ComponentInstantiation> > > Model::getComponentInstantiations() const
@@ -114,6 +130,22 @@ void Model::setComponentInstantiations
 }
 
 //-----------------------------------------------------------------------------
+// Function: Model::findDesignInstantiation()
+//-----------------------------------------------------------------------------
+QSharedPointer<DesignInstantiation> Model::findDesignInstantiation(const QString name) const
+{
+	foreach ( QSharedPointer<DesignInstantiation> currentInsta, *designInstantiations_ )
+	{
+		if ( currentInsta->name() == name )
+		{
+			return currentInsta;
+		}
+	}
+
+	return QSharedPointer<DesignInstantiation>();
+}
+
+//-----------------------------------------------------------------------------
 // Function: Model::getDesignInstantiations()
 //-----------------------------------------------------------------------------
 QSharedPointer<QList<QSharedPointer<DesignInstantiation> > > Model::getDesignInstantiations() const
@@ -127,6 +159,23 @@ QSharedPointer<QList<QSharedPointer<DesignInstantiation> > > Model::getDesignIns
 void Model::setDesignInstantiations(QSharedPointer<QList<QSharedPointer<DesignInstantiation> > > newInstantiations)
 {
     designInstantiations_ = newInstantiations;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Model::findDesignInstantiation()
+//-----------------------------------------------------------------------------
+QSharedPointer<DesignConfigurationInstantiation> Model::findDesignConfigurationInstantiation(const QString name) const
+{
+	foreach ( QSharedPointer<DesignConfigurationInstantiation> currentInsta,
+		*designConfigurationInstantiations_ )
+	{
+		if ( currentInsta->name() == name )
+		{
+			return currentInsta;
+		}
+	}
+
+	return QSharedPointer<DesignConfigurationInstantiation>();
 }
 
 //-----------------------------------------------------------------------------
@@ -214,6 +263,22 @@ QStringList Model::getFlatViews() const
         }
     }
     return viewList;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Model::findView()
+//-----------------------------------------------------------------------------
+QSharedPointer<View> Model::findView(const QString name) const
+{
+	foreach ( QSharedPointer<View> currentView, *views_ )
+	{
+		if ( currentView->name() == name )
+		{
+			return currentView;
+		}
+	}
+
+	return QSharedPointer<View>();
 }
 
 //-----------------------------------------------------------------------------

@@ -22,4 +22,12 @@ namespace NameGenerationPolicy
 	{
 		return systemViewName + "_" + instanceName + INSTANCE_FILESET_SUFFIX;
 	}
+		
+	//-----------------------------------------------------------------------------
+	// Function: NameGenerationPolicy::verilogStructuralViewName()
+	//-----------------------------------------------------------------------------
+	QString NameGenerationPolicy::verilogStructuralViewName( QString viewName )
+	{
+		return viewName + "_verilog";
+	}
 }

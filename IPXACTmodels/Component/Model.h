@@ -62,7 +62,14 @@ public:
 	 *
 	 *      @param [in] newViews    Pointer to a list containing pointers to the views.
 	 */
-    void setViews(QSharedPointer<QList<QSharedPointer<View> > > newViews);
+	void setViews(QSharedPointer<QList<QSharedPointer<View> > > newViews);
+	
+	/*
+     *  Get a component instantiation by name.
+	 *
+	 *      @return The component instantiation if found, else null.
+	 */
+	QSharedPointer<ComponentInstantiation> findComponentInstantiation(const QString name) const;
 
     /*!
      *  Get the component instantiations.
@@ -77,6 +84,13 @@ public:
      *      @param [in] instantiations  Pointer to a list containing the new component instantiations.
      */
     void setComponentInstantiations(QSharedPointer<QList<QSharedPointer<ComponentInstantiation> > > instantiations);
+	
+	/*
+     *  Get a design instantiation by name.
+	 *
+	 *      @return The design instantiation if found, else null.
+	 */
+	QSharedPointer<DesignInstantiation> findDesignInstantiation(const QString name) const;
 
     /*!
      *  Get the design instantiations.
@@ -91,6 +105,13 @@ public:
      *      @param [in] instantiations  Pointer to a list containing the new design instantiations.
      */
     void setDesignInstantiations(QSharedPointer<QList<QSharedPointer<DesignInstantiation> >  > newInstantiations);
+	
+	/*
+     *  Get a design configuration instantiation by name.
+	 *
+	 *      @return The design configuration instantiation if found, else null.
+	 */
+	QSharedPointer<DesignConfigurationInstantiation> findDesignConfigurationInstantiation(const QString name) const;
 
     /*!
      *  Get the design configuration instantiations.
@@ -149,6 +170,13 @@ public:
 	 *      @return QStringList containing the names of the non-hierarchical views.
 	 */
 	QStringList getFlatViews() const;
+
+	/*
+     *  Get a view by name.
+	 *
+	 *      @return The view if found, else null.
+	 */
+	QSharedPointer<View> findView(const QString name) const;
     
 	/*!
      *  Get the VLNV of a design in model's view.
