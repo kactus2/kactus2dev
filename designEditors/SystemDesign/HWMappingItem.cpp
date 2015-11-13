@@ -11,13 +11,9 @@
 
 #include "HWMappingItem.h"
 
-#include "SystemMoveCommands.h"
-
 #include "SystemDesignDiagram.h"
 #include "SWComponentItem.h"
 #include "SWPortItem.h"
-
-#include <designEditors/HWDesign/HWMoveCommands.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 
@@ -34,19 +30,15 @@
 //-----------------------------------------------------------------------------
 // Function: HWMappingItem::HWMappingItem()
 //-----------------------------------------------------------------------------
-HWMappingItem::HWMappingItem(LibraryInterface* libInterface,
-                             QSharedPointer<Component> component,
-                             QString const& instanceName,
-                             QString const& displayName,
-                             QString const& description,
-									  QString const& uuid,
-                             QMap<QString, QString> const& configurableElementValues)
-    : SystemComponentItem(QRectF(-WIDTH/ 2, 0, WIDTH, 0), libInterface, component, instanceName,
-                      displayName, description, uuid, configurableElementValues, 0),
-      oldStack_(0),
-      layout_(new VStackedLayout<ComponentItem>(SPACING)),
-      swComponents_(),
-      oldPos_()
+HWMappingItem::HWMappingItem(LibraryInterface* libInterface, QSharedPointer<Component> component,
+                             QString const& instanceName, QString const& displayName, QString const& description,
+                             QString const& uuid, QMap<QString, QString> const& configurableElementValues):
+SystemComponentItem(QRectF(-WIDTH/ 2, 0, WIDTH, 0), libInterface, component, instanceName, displayName,
+    description, uuid, configurableElementValues, 0),
+oldStack_(0),
+layout_(new VStackedLayout<ComponentItem>(SPACING)),
+swComponents_(),
+oldPos_()
 {
     setFlag(ItemIsMovable);
     

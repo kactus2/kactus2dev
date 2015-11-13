@@ -13,10 +13,7 @@
 
 #include "HWMappingItem.h"
 #include "SWPortItem.h"
-#include "SystemMoveCommands.h"
 #include "SystemDesignDiagram.h"
-
-#include <designEditors/HWDesign/HWMoveCommands.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/Model.h>
@@ -37,20 +34,17 @@
 //-----------------------------------------------------------------------------
 // Function: SWComponentItem::SWComponentItem()
 //-----------------------------------------------------------------------------
-SWComponentItem::SWComponentItem(LibraryInterface* libInterface,
-                       QSharedPointer<Component> component,
-                       QString const& instanceName,
-                       QString const& displayName,
-                       QString const& description,
-							  QString const& uuid,
-                       QMap<QString, QString> const& configurableElementValues)
-    : SystemComponentItem(QRectF(-COMPONENTWIDTH / 2, 0, COMPONENTWIDTH, MIN_HEIGHT), libInterface, component, instanceName,
-                      displayName, description, uuid, configurableElementValues, 0),
-      oldStack_(0),
-      oldPos_(),
-      hierIcon_(0),
-      importedIcon_(0),
-      isDraft_(false)
+SWComponentItem::SWComponentItem(LibraryInterface* libInterface, QSharedPointer<Component> component,
+                                 QString const& instanceName, QString const& displayName,
+                                 QString const& description, QString const& uuid,
+                                 QMap<QString, QString> const& configurableElementValues):
+SystemComponentItem(QRectF(-COMPONENTWIDTH / 2, 0, COMPONENTWIDTH, MIN_HEIGHT), libInterface, component,
+    instanceName, displayName, description, uuid, configurableElementValues, 0),
+oldStack_(0),
+oldPos_(),
+hierIcon_(0),
+importedIcon_(0),
+isDraft_(false)
 {
     setFlag(ItemIsMovable);
 

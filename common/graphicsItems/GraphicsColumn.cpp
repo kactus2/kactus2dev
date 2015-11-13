@@ -17,34 +17,27 @@
 
 #include <common/layouts/VStackedLayout.h>
 #include <common/layouts/VCollisionLayout.h>
-#include <designEditors/common/diagramgrid.h>
-#include <designEditors/common/DiagramUtil.h>
 #include <common/GenericEditProvider.h>
 #include <designEditors/common/DesignDiagram.h>
 
-#include <IPXACTmodels/Component/Component.h>
-
-#include <QLinearGradient>
 #include <QPen>
 #include <QFont>
 #include <QGraphicsSceneMouseEvent>
-#include <QDebug>
-#include <QCursor>
 #include <QApplication>
 
 //-----------------------------------------------------------------------------
 // Function: GraphicsColumn()
 //-----------------------------------------------------------------------------
-GraphicsColumn::GraphicsColumn(QSharedPointer<ColumnDesc> desc, GraphicsColumnLayout* layout)
-    : QGraphicsRectItem(0),
-      layout_(layout),
-      desc_(),
-      nameLabel_(0),
-      itemLayout_(0),
-      items_(),
-      oldPos_(),
-      mouseNearResizeArea_(false),
-      oldWidth_(0)
+GraphicsColumn::GraphicsColumn(QSharedPointer<ColumnDesc> desc, GraphicsColumnLayout* layout):
+QGraphicsRectItem(0),
+layout_(layout),
+desc_(),
+nameLabel_(0),
+itemLayout_(0),
+items_(),
+oldPos_(),
+mouseNearResizeArea_(false),
+oldWidth_(0)
 {
     setFlag(ItemIsMovable);
     setFlag(ItemIsSelectable);

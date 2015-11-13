@@ -24,18 +24,15 @@
 
 #include <designEditors/common/Association/AssociationChangeEndpointCommand.h>
 
-#include <IPXACTmodels/Component/Component.h>
-
 //-----------------------------------------------------------------------------
 // Function: TypeDefinitionChangeCommand()
 //-----------------------------------------------------------------------------
-TypeDefinitionChangeCommand::TypeDefinitionChangeCommand(SWConnectionEndpoint* endpoint,
-                                                         VLNV const& oldType,
-                                                         QUndoCommand* parent)
-    : QUndoCommand(parent),
-      endpoint_(endpoint),
-      oldType_(oldType),
-      newType_(endpoint->getTypeDefinition())
+TypeDefinitionChangeCommand::TypeDefinitionChangeCommand(SWConnectionEndpoint* endpoint, VLNV const& oldType,
+                                                         QUndoCommand* parent):
+QUndoCommand(parent),
+endpoint_(endpoint),
+oldType_(oldType),
+newType_(endpoint->getTypeDefinition())
 {
 }
 
@@ -67,11 +64,11 @@ void TypeDefinitionChangeCommand::redo()
 //-----------------------------------------------------------------------------
 PropertyValuesChangeCommand::PropertyValuesChangeCommand(SystemComponentItem* component, 
                                                          QMap<QString, QString> const& newPropertyValues, 
-                                                         QUndoCommand* parent)
-    : QUndoCommand(parent),
-      component_(component),
-      oldPropertyValues_(component->getPropertyValues()),
-      newPropertyValues_(newPropertyValues)
+                                                         QUndoCommand* parent):
+QUndoCommand(parent),
+component_(component),
+oldPropertyValues_(component->getPropertyValues()),
+newPropertyValues_(newPropertyValues)
 {
 }
 
@@ -102,11 +99,11 @@ void PropertyValuesChangeCommand::redo()
 // Function: FileSetRefChangeCommand()
 //-----------------------------------------------------------------------------
 FileSetRefChangeCommand::FileSetRefChangeCommand(SWComponentItem* component, QString const& newFileSetRef,
-                                                 QUndoCommand* parent)
-    : QUndoCommand(parent),
-      component_(component),
-      oldFileSetRef_(component->getFileSetRef()),
-      newFileSetRef_(newFileSetRef)
+                                                 QUndoCommand* parent):
+QUndoCommand(parent),
+component_(component),
+oldFileSetRef_(component->getFileSetRef()),
+newFileSetRef_(newFileSetRef)
 {
 }
 
@@ -138,12 +135,11 @@ void FileSetRefChangeCommand::redo()
 //-----------------------------------------------------------------------------
 ReplaceSystemComponentCommand::ReplaceSystemComponentCommand(SystemComponentItem* oldComp,
                                                              SystemComponentItem* newComp,
-                                                             bool existing, bool keepOld,
-                                                             QUndoCommand* parent)
-    : QUndoCommand(parent),
-      oldComp_(oldComp),
-      newComp_(newComp),
-      existing_(existing)
+                                                             bool existing, bool keepOld, QUndoCommand* parent):
+QUndoCommand(parent),
+oldComp_(oldComp),
+newComp_(newComp),
+existing_(existing)
 {
     foreach (ConnectionEndpoint* oldEndpoint, oldComp_->getEndpoints())
     {

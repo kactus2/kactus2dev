@@ -16,9 +16,6 @@
 #include <QGraphicsScene>
 #include <QString>
 
-class SystemColumn;
-class ComponentItem;
-class IGraphicsItemStack;
 class SWPortItem;
 class GraphicsConnection;
 
@@ -35,8 +32,7 @@ public:
      *      @param [in] oldRoute  The old route of the connection.
      *      @param [in] parent    The parent command.
      */
-    SWConnectionMoveCommand(GraphicsConnection* conn, QList<QPointF> const& oldRoute,
-                            QUndoCommand* parent = 0);
+    SWConnectionMoveCommand(GraphicsConnection* conn, QList<QPointF> const& oldRoute, QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.

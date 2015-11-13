@@ -34,25 +34,23 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
-#include <IPXACTmodels/kactusExtensions//SystemView.h>
+#include <IPXACTmodels/Component/FileSet.h>
 
+#include <IPXACTmodels/kactusExtensions/SystemView.h>
+#include <IPXACTmodels/kactusExtensions/SWView.h>
 
-#include <QScrollBar>
 #include <QKeyEvent>
-#include <QVBoxLayout>
 #include <QMessageBox>
 #include <QFileInfo>
 #include <QCoreApplication>
-#include "IPXACTmodels/kactusExtensions/SWView.h"
-#include "QDir"
-#include "IPXACTmodels/Component/FileSet.h"
+#include <QDir>
 
 //-----------------------------------------------------------------------------
 // Function: SystemDesignWidget()
 //-----------------------------------------------------------------------------
-SystemDesignWidget::SystemDesignWidget(bool onlySW, LibraryInterface* lh, QWidget* parent)
-    : DesignWidget(lh, parent),
-      onlySW_(onlySW)
+SystemDesignWidget::SystemDesignWidget(bool onlySW, LibraryInterface* lh, QWidget* parent):
+DesignWidget(lh, parent),
+onlySW_(onlySW)
 {
     supportedWindows_ |= INSTANCEWINDOW | INTERFACEWINDOW | CONNECTIONWINDOW | CONFIGURATIONWINDOW | NOTES_WINDOW;
 

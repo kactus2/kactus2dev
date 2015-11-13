@@ -12,13 +12,12 @@
 #ifndef SWINTERFACEITEM_H
 #define SWINTERFACEITEM_H
 
+#include "SWConnectionEndpoint.h"
+
 #include <common/graphicsItems/GraphicsItemTypes.h>
 
 #include <QSharedPointer>
 #include <QVector2D>
-#include <QPolygonF>
-
-#include "SWConnectionEndpoint.h"
 
 class IGraphicsItemStack;
 class SWOffPageConnectorItem;
@@ -36,20 +35,32 @@ public:
 
     /*!
      *  Constructor which creates a graphics item for an undefined interface.
+     *
+     *      @param [in] component   The selected component.
+     *      @param [in] name        The name of the item.
+     *      @param [in] parent      Owner of this item.
      */
     SWInterfaceItem(QSharedPointer<Component> component, QString const& name, QGraphicsItem *parent);
 
     /*!
      *  Constructor which creates a graphics item for an API interface.
+     *
+     *      @param [in] component   The selected component.
+     *      @param [in] apiIf       The API interface.
+     *      @param [in] parent      Owner of this item.
      */
-    SWInterfaceItem(QSharedPointer<Component> component,
-                    QSharedPointer<ApiInterface> apiIf, QGraphicsItem *parent = 0);
+    SWInterfaceItem(QSharedPointer<Component> component, QSharedPointer<ApiInterface> apiIf,
+        QGraphicsItem *parent = 0);
 
     /*!
      *  Constructor which creates a graphics item for a COM interface.
+     *
+     *      @param [in] component   The selected component.
+     *      @param [in] comIf       The COM interface.
+     *      @param [in] parent      Owner of this item.
      */
-    SWInterfaceItem(QSharedPointer<Component> component,
-                    QSharedPointer<ComInterface> comIf, QGraphicsItem *parent = 0);
+    SWInterfaceItem(QSharedPointer<Component> component, QSharedPointer<ComInterface> comIf,
+        QGraphicsItem *parent = 0);
     
     /*!
      *  Destructor.

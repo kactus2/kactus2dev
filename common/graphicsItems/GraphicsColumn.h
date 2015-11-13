@@ -14,15 +14,12 @@
 #define GRAPHICSCOLUMN_H
 
 #include "IGraphicsItemStack.h"
-#include "../layouts/IVGraphicsLayout.h"
+
+#include <common\layouts\IVGraphicsLayout.h>
 
 #include <IPXACTmodels/kactusExtensions/ColumnDesc.h>
 
-#include <designEditors/common/ColumnTypes.h>
-
 #include <QGraphicsRectItem>
-#include <QSet>
-#include <QCursor>
 #include <QUndoCommand>
 
 class GraphicsColumnLayout;

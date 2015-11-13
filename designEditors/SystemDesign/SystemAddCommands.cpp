@@ -22,11 +22,11 @@
 // Function: SWConnectionAddCommand()
 //-----------------------------------------------------------------------------
 SWConnectionAddCommand::SWConnectionAddCommand(QGraphicsScene* scene, GraphicsConnection* conn,
-                                               QUndoCommand* parent)
-    : QUndoCommand(parent),
-      conn_(conn),
-      scene_(scene),
-      del_(false)
+                                               QUndoCommand* parent):
+QUndoCommand(parent),
+conn_(conn),
+scene_(scene),
+del_(false)
 {
 }
 
@@ -74,12 +74,11 @@ void SWConnectionAddCommand::redo()
 //-----------------------------------------------------------------------------
 // Function: SystemItemAddCommand()
 //-----------------------------------------------------------------------------
-SystemItemAddCommand::SystemItemAddCommand(IGraphicsItemStack* stack, QGraphicsItem* item,
-                                           QUndoCommand* parent)
-    : QUndoCommand(parent),
-      item_(item),
-      stack_(stack),
-      del_(false)
+SystemItemAddCommand::SystemItemAddCommand(IGraphicsItemStack* stack, QGraphicsItem* item, QUndoCommand* parent):
+QUndoCommand(parent),
+item_(item),
+stack_(stack),
+del_(false)
 {
 }
 
@@ -135,27 +134,26 @@ void SystemItemAddCommand::redo()
 //-----------------------------------------------------------------------------
 // Function: SWPortAddCommand()
 //-----------------------------------------------------------------------------
-SWPortAddCommand::SWPortAddCommand(SystemComponentItem* component, QPointF const& pos,
-                                   QUndoCommand* parent)
-    : QUndoCommand(parent),
-      component_(component),
-      pos_(pos),
-      port_(0),
-      scene_(component->scene()),
-      del_(false)
+SWPortAddCommand::SWPortAddCommand(SystemComponentItem* component, QPointF const& pos, QUndoCommand* parent):
+QUndoCommand(parent),
+component_(component),
+pos_(pos),
+port_(0),
+scene_(component->scene()),
+del_(false)
 {
 }
 
 //-----------------------------------------------------------------------------
 // Function: SWPortAddCommand()
 //-----------------------------------------------------------------------------
-SWPortAddCommand::SWPortAddCommand(SystemComponentItem* component, SWPortItem* port, QUndoCommand* parent)
-    : QUndoCommand(parent),
-      component_(component),
-      pos_(),
-      port_(port),
-      scene_(component->scene()),
-      del_(false)
+SWPortAddCommand::SWPortAddCommand(SystemComponentItem* component, SWPortItem* port, QUndoCommand* parent):
+QUndoCommand(parent),
+component_(component),
+pos_(),
+port_(port),
+scene_(component->scene()),
+del_(false)
 {
 }
 
@@ -212,13 +210,13 @@ void SWPortAddCommand::redo()
 // Function: SWInterfacePasteCommand()
 //-----------------------------------------------------------------------------
 SWInterfacePasteCommand::SWInterfacePasteCommand(IGraphicsItemStack* stack, SWInterfaceItem* item,
-                                                 QUndoCommand* parent)
-    : QUndoCommand(parent),
-      interface_(item),
-      apiInterface_(item->getApiInterface()),
-      comInterface_(item->getComInterface()),
-      stack_(stack),
-      del_(false)
+                                                 QUndoCommand* parent):
+QUndoCommand(parent),
+interface_(item),
+apiInterface_(item->getApiInterface()),
+comInterface_(item->getComInterface()),
+stack_(stack),
+del_(false)
 {
 }
 

@@ -12,20 +12,11 @@
 #ifndef SWCONNECTIONENDPOINT_H
 #define SWCONNECTIONENDPOINT_H
 
-#include <IPXACTmodels/common/DirectionTypes.h>
-#include <IPXACTmodels/Component/Component.h>
-
 #include <common/graphicsItems/ConnectionEndpoint.h>
 
-#include <QList>
-#include <QPointF>
 #include <QVector2D>
 #include <QSharedPointer>
-#include <QGraphicsPolygonItem>
 
-class ComponentItem;
-class ApiInterface;
-class ComInterface;
 class VLNV;
 
 //-----------------------------------------------------------------------------
@@ -43,8 +34,8 @@ public:
      *      @param [in] temporary  If true, the endpoint is marked as a temporary one.
      *      @param [in] dir        The initial direction for the endpoint.
      */
-    SWConnectionEndpoint(QGraphicsItem* parent = 0,
-                         bool temporary = false, QVector2D const& rhs = QVector2D(0.0f, -1.0f));
+    SWConnectionEndpoint(QGraphicsItem* parent = 0, bool temporary = false,
+        QVector2D const& rhs = QVector2D(0.0f, -1.0f));
 
     /*!
      *  Destructor.

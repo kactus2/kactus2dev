@@ -20,7 +20,6 @@
 #include <QPushButton>
 #include <QComboBox>
 #include <QSharedPointer>
-#include <QList>
 
 class DesignWidget;
 class SystemView;

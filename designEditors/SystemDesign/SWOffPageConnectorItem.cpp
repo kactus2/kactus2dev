@@ -16,17 +16,15 @@
 
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/GraphicsConnection.h>
-#include <designEditors/common/diagramgrid.h>
 
-#include <QBrush>
 #include <QPen>
 
 //-----------------------------------------------------------------------------
 // Function: SWOffPageConnectorItem()
 //-----------------------------------------------------------------------------
-SWOffPageConnectorItem::SWOffPageConnectorItem(SWConnectionEndpoint* parent)
-    : SWConnectionEndpoint(parent),
-      parent_(parent)        
+SWOffPageConnectorItem::SWOffPageConnectorItem(SWConnectionEndpoint* parent):
+SWConnectionEndpoint(parent),
+parent_(parent)        
 {
     Q_ASSERT(parent != 0);
 
@@ -83,6 +81,9 @@ void SWOffPageConnectorItem::setName(QString const& name)
 	parent_->setName(name);
 }
 
+//-----------------------------------------------------------------------------
+// Function: SWOffPageConnectorItem::isHierarchical()
+//-----------------------------------------------------------------------------
 bool SWOffPageConnectorItem::isHierarchical() const
 {
     return parent_->isHierarchical();
@@ -131,29 +132,18 @@ QSharedPointer<Component> SWOffPageConnectorItem::getOwnerComponent() const
 //-----------------------------------------------------------------------------
 // Function: itemChange()
 //-----------------------------------------------------------------------------
-QVariant SWOffPageConnectorItem::itemChange(GraphicsItemChange change,
-                                             const QVariant &value)
+QVariant SWOffPageConnectorItem::itemChange(GraphicsItemChange change, const QVariant &value)
 {
-    switch (change)
+    if (change == ItemScenePositionHasChanged)
     {
-    case ItemScenePositionHasChanged:
+        // Check if the updates are not disabled.
+        if (encompassingComp() == 0 || !encompassingComp()->isConnectionUpdateDisabled())
         {
-            // Check if the updates are not disabled.
-            if (encompassingComp() == 0 || !encompassingComp()->isConnectionUpdateDisabled())
+            // Update the connections.
+            foreach (GraphicsConnection* interconnection, getConnections())
             {
-                // Update the connections.
-                foreach (GraphicsConnection* interconnection, getConnections())
-                {
-                    interconnection->updatePosition();
-                }
+                interconnection->updatePosition();
             }
-
-            break;
-        }
-
-    default:
-        {
-            break;
         }
     }
 
@@ -199,6 +189,9 @@ QString SWOffPageConnectorItem::description() const
 	return parent_->description();
 }
 
+//-----------------------------------------------------------------------------
+// Function: SWOffPageConnectorItem::setDescription()
+//-----------------------------------------------------------------------------
 void SWOffPageConnectorItem::setDescription(QString const& description)
 {
 	parent_->setDescription(description);

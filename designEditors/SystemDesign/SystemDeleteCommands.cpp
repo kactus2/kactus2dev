@@ -29,9 +29,10 @@
 // Function: SystemColumnDeleteCommand()
 //-----------------------------------------------------------------------------
 SystemColumnDeleteCommand::SystemColumnDeleteCommand(GraphicsColumnLayout* layout, SystemColumn* column,
-                                                     QUndoCommand* parent) : QUndoCommand(parent),
-                                                                             layout_(layout),
-                                                                             column_(column), del_(true)
+                                                     QUndoCommand* parent):
+QUndoCommand(parent),
+layout_(layout),
+column_(column), del_(true)
 {
     // Create child commands for removing connections.
     QList<GraphicsConnection*> connections;
@@ -145,11 +146,11 @@ void SystemColumnDeleteCommand::redo()
 //-----------------------------------------------------------------------------
 // Function: SWConnectionDeleteCommand()
 //-----------------------------------------------------------------------------
-SWConnectionDeleteCommand::SWConnectionDeleteCommand(GraphicsConnection* conn, QUndoCommand* parent)
-    : QUndoCommand(parent),
-      conn_(conn),
-      scene_(conn->scene()),
-      del_(true)
+SWConnectionDeleteCommand::SWConnectionDeleteCommand(GraphicsConnection* conn, QUndoCommand* parent):
+QUndoCommand(parent),
+conn_(conn),
+scene_(conn->scene()),
+del_(true)
 {
     foreach(Association* association, conn->getAssociations())
     {
@@ -207,13 +208,13 @@ void SWConnectionDeleteCommand::redo()
 //-----------------------------------------------------------------------------
 // Function: SystemComponentDeleteCommand()
 //-----------------------------------------------------------------------------
-SystemComponentDeleteCommand::SystemComponentDeleteCommand(ComponentItem* item, QUndoCommand* parent)
-    : QUndoCommand(parent),
-      item_(item),
-      stack_(dynamic_cast<IGraphicsItemStack*>(item->parentItem())),
-      scene_(item->scene()),
-      del_(true),
-      firstRun_(true)
+SystemComponentDeleteCommand::SystemComponentDeleteCommand(ComponentItem* item, QUndoCommand* parent):
+QUndoCommand(parent),
+item_(item),
+stack_(dynamic_cast<IGraphicsItemStack*>(item->parentItem())),
+scene_(item->scene()),
+del_(true),
+firstRun_(true)
 {
 }
 
@@ -302,11 +303,11 @@ void SystemComponentDeleteCommand::redo()
 // Function: SWPortDeleteCommand()
 //-----------------------------------------------------------------------------
 SWPortDeleteCommand::SWPortDeleteCommand(SWPortItem* port, QUndoCommand* parent) :
-    QUndoCommand(parent),
-    port_(port),
-    parent_(static_cast<SystemComponentItem*>(port->parentItem())),
-    scene_(port->scene()),
-    del_(true)
+QUndoCommand(parent),
+port_(port),
+parent_(static_cast<SystemComponentItem*>(port->parentItem())),
+scene_(port->scene()),
+del_(true)
 {
     // Create child commands for removing connection.
     foreach (GraphicsConnection* conn, port_->getConnections())
@@ -366,15 +367,14 @@ void SWPortDeleteCommand::redo()
 //-----------------------------------------------------------------------------
 // Function: SWInterfaceDeleteCommand()
 //-----------------------------------------------------------------------------
-SWInterfaceDeleteCommand::SWInterfaceDeleteCommand(SWInterfaceItem* interface,
-                                                   QUndoCommand* parent)
-    : QUndoCommand(parent),
-      interface_(interface),
-      apiInterface_(interface->getApiInterface()),
-      comInterface_(interface->getComInterface()),
-      parent_(dynamic_cast<IGraphicsItemStack*>(interface->parentItem())),
-      scene_(interface->scene()),
-      del_(true)
+SWInterfaceDeleteCommand::SWInterfaceDeleteCommand(SWInterfaceItem* interface, QUndoCommand* parent):
+QUndoCommand(parent),
+interface_(interface),
+apiInterface_(interface->getApiInterface()),
+comInterface_(interface->getComInterface()),
+parent_(dynamic_cast<IGraphicsItemStack*>(interface->parentItem())),
+scene_(interface->scene()),
+del_(true)
 {
     // Create child commands for removing interconnections.
     foreach (GraphicsConnection* conn, interface_->getConnections())

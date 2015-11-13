@@ -13,7 +13,6 @@
 #define SYSTEMDELETECOMMANDS_H
 
 #include <QUndoCommand>
-#include <QGraphicsItem>
 #include <QGraphicsScene>
 #include <QObject>
 
@@ -21,8 +20,6 @@ class GraphicsConnection;
 class GraphicsColumnLayout;
 class SystemColumn;
 class ComponentItem;
-class ApplicationItem;
-class ProgramEntityItem;
 class IGraphicsItemStack;
 class SWPortItem;
 class SWInterfaceItem;
@@ -41,9 +38,9 @@ public:
      *
      *      @param [in] layout  The column layout.
      *      @param [in] column  The column to delete.
+     *      @param [in] parent  The owner of this command.
      */
-    SystemColumnDeleteCommand(GraphicsColumnLayout* layout, SystemColumn* column,
-                              QUndoCommand* parent = 0);
+    SystemColumnDeleteCommand(GraphicsColumnLayout* layout, SystemColumn* column, QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
@@ -138,7 +135,8 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] item The component item to delete.
+     *      @param [in] item    The component item to delete.
+     *      @param [in] parent  The owner of this command.
      */
     SystemComponentDeleteCommand(ComponentItem* item, QUndoCommand* parent = 0);
 
@@ -158,10 +156,10 @@ public:
     virtual void redo();
 
 signals:
-	//! \brief Emitted when a new component is instantiated to the design.
+	//! Emitted when a new component is instantiated to the design.
 	void componentInstantiated(ComponentItem* comp);
 
-	//! \brief Emitted when a component instance is removed from the design.
+	//! Emitted when a component instance is removed from the design.
 	void componentInstanceRemoved(ComponentItem* comp);
 
 private:
@@ -198,7 +196,8 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] port The port to delete.
+     *      @param [in] port    The port to delete.
+     *      @param [in] parent  The owner of this command.
      */
     SWPortDeleteCommand(SWPortItem* port, QUndoCommand* parent = 0);
 
@@ -248,7 +247,8 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] interface    The interface to delete.
+     *      @param [in] interface   The interface to delete.
+     *      @param [in] parent      The owner of this command.
      */
     SWInterfaceDeleteCommand(SWInterfaceItem* interface, QUndoCommand* parent = 0);
 

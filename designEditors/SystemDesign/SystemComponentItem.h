@@ -37,15 +37,15 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] size                      The initial rectangle size.
-     *      @param [in] libInterface              The library interface.
-     *      @param [in] component                 The component model.
-     *      @param [in] instanceName              The name of the component instance.
-     *      @param [in] displayName               The component instance's display name.
-     *      @param [in] description               The component instance's description.
-     *      @param [in] uuid							  The uuid identifying the instance.
-     *      @param [in] configurableElementValue  The component instance's configurable element values.
-     *      @param [in] parent                    The parent graphics item.
+     *      @param [in] size                        The initial rectangle size.
+     *      @param [in] libInterface                The library interface.
+     *      @param [in] component                   The component model.
+     *      @param [in] instanceName                The name of the component instance.
+     *      @param [in] displayName                 The component instance's display name.
+     *      @param [in] description                 The component instance's description.
+     *      @param [in] uuid				        The uuid identifying the instance.
+     *      @param [in] configurableElementValue    The component instance's configurable element values.
+     *      @param [in] parent                      The parent graphics item.
      */
     SystemComponentItem(QRectF const& size,
                     LibraryInterface* libInterface,
@@ -53,7 +53,7 @@ public:
                     QString const& instanceName = QString("instance"),
                     QString const& displayName = QString(),
                     QString const& description = QString(),
-						  QString const& uuid = QString(),
+                    QString const& uuid = QString(),
                     QMap<QString, QString> const& configurableElementValues = QMap<QString, QString>(),
                     QGraphicsItem *parent = 0);
 
@@ -134,8 +134,8 @@ public:
     void onMovePort(SWPortItem* port);
 
     /*!
-     *  Returns true if the connections should not be updated automatically in
-     *  the port's itemChange() function. Otherwise false.
+     *  Returns true if the connections should not be updated automatically in the port's itemChange() function.
+     *  Otherwise false.
      */
     bool isConnectionUpdateDisabled() const;
 

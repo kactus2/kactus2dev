@@ -25,29 +25,29 @@
 // Function: SwitchHWDialog::SwitchHWDialog()
 //-----------------------------------------------------------------------------
 SwitchHWDialog::SwitchHWDialog(QSharedPointer<Component> component, QString const& viewName,
-                               LibraryInterface* lh, QWidget* parent)
-    : QDialog(parent),
-      lh_(lh),
-      component_(component),
-      infoLabel_(new QLabel(tr("Choose how the SW architecture specified in this "
-                               "system design is mapped to new HW."), this)),
-      hwViewRefLabel_(new QLabel(tr("HW design configuration to map:"), this)),
-      hwViewRefCombo_(new QComboBox(this)),
-      viewNameLabel_(new QLabel(tr("Name of the system view to be created for the mapped HW component:"), this)),
-      viewNameEdit_(new LineEditEx(this)),
-      viewNameMatcher_(),
-      actionGroupBox_(new QGroupBox(tr("Action"), this)),
-      actionGroup_(new QButtonGroup(this)),
-      moveRadioButton_(new QRadioButton(tr("Move system design"), this)),
-      moveDescLabel_(new QLabel(tr("Removes the system view from the "
-                                   "previously mapped HW and moves it to the new one."), this)),
-      copyRadioButton_(new QRadioButton(tr("Copy as a new system design"), this)),
-      copyDescLabel_(new QLabel(tr("Creates an identical copy of the system design with a new VLNV "
-                                   "and adds a new system view to the HW component."), this)),
-      vlnvEdit_(new VLNVEditor(VLNV::DESIGN, lh, this, this)),
-      directoryEditor_(new LibrarySelectorWidget(this)),
-      buttonBox_(new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this)),
-      layout_(new QVBoxLayout(this))
+                               LibraryInterface* lh, QWidget* parent):
+QDialog(parent),
+lh_(lh),
+component_(component),
+infoLabel_(new QLabel(tr("Choose how the SW architecture specified in this system design is mapped to new HW."),
+                      this)),
+hwViewRefLabel_(new QLabel(tr("HW design configuration to map:"), this)),
+hwViewRefCombo_(new QComboBox(this)),
+viewNameLabel_(new QLabel(tr("Name of the system view to be created for the mapped HW component:"), this)),
+viewNameEdit_(new LineEditEx(this)),
+viewNameMatcher_(),
+actionGroupBox_(new QGroupBox(tr("Action"), this)),
+actionGroup_(new QButtonGroup(this)),
+moveRadioButton_(new QRadioButton(tr("Move system design"), this)),
+moveDescLabel_(new QLabel(tr("Removes the system view from the previously mapped HW and moves it to the new one."),
+                          this)),
+copyRadioButton_(new QRadioButton(tr("Copy as a new system design"), this)),
+copyDescLabel_(new QLabel(tr("Creates an identical copy of the system design with a new VLNV and adds a new "
+                          "system view to the HW component."), this)),
+vlnvEdit_(new VLNVEditor(VLNV::DESIGN, lh, this, this)),
+directoryEditor_(new LibrarySelectorWidget(this)),
+buttonBox_(new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this)),
+layout_(new QVBoxLayout(this))
 {
     setWindowTitle(tr("Switch HW"));
 

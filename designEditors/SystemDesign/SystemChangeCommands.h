@@ -21,7 +21,6 @@ class ComponentItem;
 class SystemComponentItem;
 class SWComponentItem;
 class SWConnectionEndpoint;
-class VLNV;
 
 //-----------------------------------------------------------------------------
 //! TypeDefinitionChangeCommand class.
@@ -36,8 +35,7 @@ public:
      *      @param [in] oldBusType        The endpoint's old API/COM type.
      *      @param [in] parent            The parent command.
      */
-    TypeDefinitionChangeCommand(SWConnectionEndpoint* endpoint, VLNV const& oldType,
-                                QUndoCommand* parent = 0);
+    TypeDefinitionChangeCommand(SWConnectionEndpoint* endpoint, VLNV const& oldType, QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
@@ -76,8 +74,8 @@ private:
 //-----------------------------------------------------------------------------
 //! PropertyValuesChangeCommand class.
 //-----------------------------------------------------------------------------
-class PropertyValuesChangeCommand : public QUndoCommand {
-
+class PropertyValuesChangeCommand : public QUndoCommand
+{
 public:
 
 	/*!
@@ -86,10 +84,8 @@ public:
 	 *      @param [in] component        Pointer to the component instance that is being edited.
 	 *      @param [in] newConfElements  The new property values for the instance.
 	 *      @param [in] parent           Pointer to the owner of this command.
-	 *
-	*/
-	PropertyValuesChangeCommand(SystemComponentItem* component,
-		                        QMap<QString, QString> const& newPropertyValues, 
+	 */
+	PropertyValuesChangeCommand(SystemComponentItem* component, QMap<QString, QString> const& newPropertyValues, 
 		                        QUndoCommand* parent = 0);
 
 	/*!
@@ -139,10 +135,8 @@ public:
 	 *      @param [in] component        Pointer to the component instance that is being edited.
 	 *      @param [in] newConfElements  The new file set reference for the instance.
 	 *      @param [in] parent           Pointer to the owner of this command.
-	 *
-	*/
-	FileSetRefChangeCommand(SWComponentItem* component, QString const& newFileSetRef, 
-		                    QUndoCommand* parent = 0);
+	 */
+	FileSetRefChangeCommand(SWComponentItem* component, QString const& newFileSetRef, QUndoCommand* parent = 0);
 
 	/*!
      *  Destructor.
@@ -188,7 +182,13 @@ class ReplaceSystemComponentCommand : public QObject, public QUndoCommand
 public:
 
 	/*!
-     *  Constructor.
+	 *  The constructor.
+	 *
+	 *      @param [in] oldComp     The old system component item.
+	 *      @param [in] newComp     The new system component item.
+	 *      @param [in] existing    Flag for existence checking.
+	 *      @param [in] keepOld     Flag for keeping the old item.
+	 *      @param [in] parent      Owner of the object.
 	 */
 	ReplaceSystemComponentCommand(SystemComponentItem* oldComp, SystemComponentItem* newComp,
                                   bool existing, bool keepOld, QUndoCommand* parent = 0);
@@ -209,10 +209,10 @@ public:
 	virtual void redo();
 
 signals:
-    //! \brief Emitted when a new component is instantiated to the design.
+    //! Emitted when a new component is instantiated to the design.
     void componentInstantiated(ComponentItem*);
 
-    //! \brief Emitted when a component instance is removed from the design.
+    //! Emitted when a component instance is removed from the design.
     void componentInstanceRemoved(ComponentItem*);
 
 private:

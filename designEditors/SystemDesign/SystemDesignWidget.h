@@ -14,8 +14,6 @@
 
 #include <designEditors/common/DesignWidget.h>
 
-class SystemDesignDiagram;
-
 //-----------------------------------------------------------------------------
 //! SystemDesignWidget class.
 //-----------------------------------------------------------------------------
@@ -62,7 +60,7 @@ public slots:
     //! Adds a new column to the diagram.
     virtual void addColumn();
 
-    //! \brief Saves the design as new object
+    //! Saves the design as new object.
     virtual bool saveAs();
 
 protected:

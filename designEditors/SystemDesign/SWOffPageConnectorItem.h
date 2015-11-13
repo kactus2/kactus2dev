@@ -18,7 +18,6 @@
 
 #include <QSharedPointer>
 #include <QVector2D>
-#include <QPolygonF>
 
 //-----------------------------------------------------------------------------
 //! SWOffPageConnectorItem class.
@@ -140,9 +139,8 @@ public:
      *
      *      @param [in] other The other endpoint.
      *
-     *      @remarks Does not take existing connections into account but simply
-     *               validates whether a connection between the endpoints would be valid
-     *               in a general case.
+     *      @remarks Does not take existing connections into account but simply validates whether a connection
+     *               between the endpoints would be valid in a general case.
      */
     virtual bool isConnectionValid(ConnectionEndpoint const* other) const;
 

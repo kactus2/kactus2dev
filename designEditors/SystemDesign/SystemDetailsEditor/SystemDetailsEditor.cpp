@@ -27,7 +27,6 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
-#include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QGridLayout>
 #include <QFormLayout>
@@ -37,18 +36,18 @@
 //-----------------------------------------------------------------------------
 // Function: SystemDetailsEditor::SystemDetailsEditor()
 //-----------------------------------------------------------------------------
-SystemDetailsEditor::SystemDetailsEditor(LibraryInterface* handler, QWidget *parent)
-    : QWidget(parent),
-      handler_(handler),
-      hwRefEditor_(new VLNVEditor(VLNV::COMPONENT, handler, parent, parent->parentWidget())),
-      viewSelector_(new QComboBox(this)),
-      applyButton_(new QPushButton(tr("Apply"), this)),
-      revertButton_(new QPushButton(tr("Revert"), this)),
-      removeMappingButton_(new QPushButton(tr("Remove HW"), this)),
-      exportButton_(new QPushButton(tr("Export SW"), this)),
-      component_(),
-      designWidget_(NULL),
-      systemView_(0)
+SystemDetailsEditor::SystemDetailsEditor(LibraryInterface* handler, QWidget *parent):
+QWidget(parent),
+handler_(handler),
+hwRefEditor_(new VLNVEditor(VLNV::COMPONENT, handler, parent, parent->parentWidget())),
+viewSelector_(new QComboBox(this)),
+applyButton_(new QPushButton(tr("Apply"), this)),
+revertButton_(new QPushButton(tr("Revert"), this)),
+removeMappingButton_(new QPushButton(tr("Remove HW"), this)),
+exportButton_(new QPushButton(tr("Export SW"), this)),
+component_(),
+designWidget_(NULL),
+systemView_(0)
 {
     hwRefEditor_->setTitle(tr("HW component reference"));
 

@@ -15,17 +15,12 @@
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 #include <common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.h>
 
-#include <QPushButton>
-#include <QLineEdit>
-#include <QRadioButton>
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QDialog>
-#include <QButtonGroup>
 #include <QDialogButtonBox>
 
 class Component;
-class LineEditEx;
 
 //-----------------------------------------------------------------------------
 // Dialog for configuring settings how to switch HW for a system design.

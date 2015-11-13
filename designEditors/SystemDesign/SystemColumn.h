@@ -15,12 +15,7 @@
 #include <common/graphicsItems/GraphicsItemTypes.h>
 #include <common/graphicsItems/GraphicsColumn.h>
 
-#include <QGraphicsRectItem>
-#include <QSet>
-#include <QCursor>
-
 class GraphicsColumnLayout;
-class GraphicsConnection;
 
 //-----------------------------------------------------------------------------
 //! SystemColumn class.
@@ -35,8 +30,8 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] name          The column description.
-     *      @param [in] layout        The parent column layout.
+     *      @param [in] name    The column description.
+     *      @param [in] layout  The parent column layout.
      */
     SystemColumn(QSharedPointer<ColumnDesc> desc, GraphicsColumnLayout* layout);
 
@@ -45,6 +40,11 @@ public:
      */
     virtual ~SystemColumn();
 
+    /*!
+     *  Get the type of this column.
+     *
+     *      @return Number representing the column type.
+     */
     int type() const { return Type; }
 
 protected:

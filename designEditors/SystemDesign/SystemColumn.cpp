@@ -18,13 +18,11 @@
 #include <common/graphicsItems/GraphicsConnection.h>
 #include <common/graphicsItems/GraphicsColumnLayout.h>
 
-#include <IPXACTmodels/Component/Component.h>
-
 //-----------------------------------------------------------------------------
 // Function: SystemColumn()
 //-----------------------------------------------------------------------------
-SystemColumn::SystemColumn(QSharedPointer<ColumnDesc> desc, GraphicsColumnLayout* layout)
-    : GraphicsColumn(desc, layout)
+SystemColumn::SystemColumn(QSharedPointer<ColumnDesc> desc, GraphicsColumnLayout* layout):
+GraphicsColumn(desc, layout)
 {
 
 }
@@ -41,20 +39,16 @@ SystemColumn::~SystemColumn()
 //-----------------------------------------------------------------------------
 bool SystemColumn::isItemAllowed(QGraphicsItem* item, unsigned int allowedItems) const
 {
-    switch (item->type())
+    if (item->type() == HWMappingItem::Type || item->type() == SWComponentItem::Type)
     {
-    case HWMappingItem::Type:
-    case SWComponentItem::Type:
-        {
-            return (allowedItems & CIT_COMPONENT);
-        }
-
-    case SWInterfaceItem::Type:
-        {
-            return (allowedItems & CIT_INTERFACE);
-        }
-
-    default:
+        return (allowedItems & CIT_COMPONENT);
+    }
+    else if (item->type() == SWInterfaceItem::Type)
+    {
+        return (allowedItems & CIT_INTERFACE);
+    }
+    else
+    {
         return false;
     }
 }

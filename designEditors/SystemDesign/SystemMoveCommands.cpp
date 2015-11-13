@@ -11,7 +11,6 @@
 
 #include "SystemMoveCommands.h"
 
-#include "SystemColumn.h"
 #include "SystemComponentItem.h"
 
 #include <common/graphicsItems/GraphicsConnection.h>
@@ -19,13 +18,14 @@
 //-----------------------------------------------------------------------------
 // Function: SWConnectionMoveCommand()
 //-----------------------------------------------------------------------------
-SWConnectionMoveCommand::SWConnectionMoveCommand(GraphicsConnection* conn,
-                                                 QList<QPointF> const& oldRoute,
-                                                 QUndoCommand* parent) : QUndoCommand(parent),
-                                                 conn_(conn),
-                                                 oldRoute_(oldRoute),
-                                                 newRoute_(conn->route())
+SWConnectionMoveCommand::SWConnectionMoveCommand(GraphicsConnection* conn, QList<QPointF> const& oldRoute,
+                                                 QUndoCommand* parent):
+QUndoCommand(parent),
+conn_(conn),
+oldRoute_(oldRoute),
+newRoute_(conn->route())
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -54,24 +54,23 @@ void SWConnectionMoveCommand::redo()
 //-----------------------------------------------------------------------------
 // Function: ItemMoveCommand()
 //-----------------------------------------------------------------------------
-SWPortMoveCommand::SWPortMoveCommand(SWPortItem* port, QPointF const& oldPos,
-                                     QUndoCommand* parent)
-    : QUndoCommand(parent),
-      port_(port),
-      oldPos_(oldPos),
-      newPos_(port->pos())
+SWPortMoveCommand::SWPortMoveCommand(SWPortItem* port, QPointF const& oldPos, QUndoCommand* parent):
+QUndoCommand(parent),
+port_(port),
+oldPos_(oldPos),
+newPos_(port->pos())
 {
 }
 
 //-----------------------------------------------------------------------------
 // Function: SWPortMoveCommand::SWPortMoveCommand()
 //-----------------------------------------------------------------------------
-SWPortMoveCommand::SWPortMoveCommand(SWPortItem* port, QPointF const& oldPos,
-                                     QPointF const& newPos, QUndoCommand* parent /*= 0*/)
-    : QUndoCommand(parent),
-      port_(port),
-      oldPos_(oldPos),
-      newPos_(newPos)
+SWPortMoveCommand::SWPortMoveCommand(SWPortItem* port, QPointF const& oldPos, QPointF const& newPos,
+    QUndoCommand* parent /*= 0*/):
+QUndoCommand(parent),
+port_(port),
+oldPos_(oldPos),
+newPos_(newPos)
 {
 
 }

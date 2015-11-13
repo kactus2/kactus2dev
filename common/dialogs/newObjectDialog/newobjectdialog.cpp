@@ -1,29 +1,31 @@
-/* 
- * 		filename: newobjectdialog.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: newobjetdialog.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: 
+// Date: 
+//
+// Description:
+// NewObjectDialog is used to query the VLNV and path of a newly created design
+//-----------------------------------------------------------------------------
 
-#include <QLabel>
-#include <QLineEdit>
-#include <QPushButton>
+#include "newobjectdialog.h"
+
+#include <common/widgets/kactusAttributeEditor/KactusAttributeEditor.h>
+#include <common/widgets/vlnvEditor/vlnveditor.h>
+
+#include <library/LibraryManager/libraryinterface.h>
+
 #include <QDialogButtonBox>
-#include <QDialog>
-#include <QFileDialog>
 #include <QHBoxLayout>
 #include <QMessageBox>
 #include <QCoreApplication>
 
-#include <common/widgets/kactusAttributeEditor/KactusAttributeEditor.h>
-#include <common/widgets/vlnvEditor/vlnveditor.h>
-#include <library/LibraryManager/libraryinterface.h>
-
-#include "newobjectdialog.h"
-
 //-----------------------------------------------------------------------------
 // Function: NewObjectDialog()
 //-----------------------------------------------------------------------------
-NewObjectDialog::NewObjectDialog(LibraryInterface* libInterface, VLNV::IPXactType type,
-                                 bool showAttributes, QWidget *parent):
+NewObjectDialog::NewObjectDialog(LibraryInterface* libInterface, VLNV::IPXactType type, bool showAttributes,
+                                 QWidget *parent):
 QDialog(parent), 
 lh_(libInterface),
 attributeEditor_(0), 

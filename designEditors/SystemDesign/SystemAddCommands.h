@@ -12,15 +12,12 @@
 #ifndef SYSTEMADDCOMMANDS_H
 #define SYSTEMADDCOMMANDS_H
 
-#include <IPXACTmodels/kactusExtensions/ColumnDesc.h>
-
 #include <QUndoCommand>
 #include <QGraphicsItem>
 #include <QGraphicsScene>
 #include <QObject>
 
 class GraphicsConnection;
-class SystemColumn;
 class ComponentItem;
 class IGraphicsItemStack;
 class SystemComponentItem;
@@ -35,15 +32,15 @@ class ComInterface;
 class SWConnectionAddCommand : public QUndoCommand
 {
 public:
+
     /*!
      *  Constructor.
      *
-     *      @param [in] scene  The scene.
-     *      @param [in] conn   The connection to add.
-     *      @param [in] parent The parent command.
+     *      @param [in] scene   The scene.
+     *      @param [in] conn    The connection to add.
+     *      @param [in] parent  The parent command.
      */
-    SWConnectionAddCommand(QGraphicsScene* scene, GraphicsConnection* conn,
-                           QUndoCommand* parent = 0);
+    SWConnectionAddCommand(QGraphicsScene* scene, GraphicsConnection* conn, QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.

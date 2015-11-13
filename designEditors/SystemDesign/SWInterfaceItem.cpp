@@ -11,13 +11,7 @@
 
 #include "SWInterfaceItem.h"
 
-#include "SystemColumn.h"
-#include "SystemComponentItem.h"
-#include "HWMappingItem.h"
-#include "SystemMoveCommands.h"
 #include "SWOffPageConnectorItem.h"
-
-#include <designEditors/HWDesign/HWMoveCommands.h>
 
 #include <common/graphicsItems/GraphicsConnection.h>
 #include <common/graphicsItems/GraphicsColumnLayout.h>
@@ -29,35 +23,24 @@
 #include <IPXACTmodels/kactusExtensions/ApiInterface.h>
 #include <IPXACTmodels/kactusExtensions/ComInterface.h>
 #include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/kactusExtensions/ApiDefinition.h>
-#include <IPXACTmodels/kactusExtensions/ApiFunction.h>
-#include <IPXACTmodels/kactusExtensions/ComDefinition.h>
 
-#include <QBrush>
-#include <QPen>
-#include <QPainter>
-#include <QStyleOptionGraphicsItem>
-#include <QColor>
 #include <QFont>
 #include <QGraphicsDropShadowEffect>
-#include <QDebug>
-#include <QVector2D>
 #include <QGraphicsScene>
 
 //-----------------------------------------------------------------------------
 // Function: SWInterfaceItem::SWInterfaceItem()
 //-----------------------------------------------------------------------------
-SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component,
-                                 QString const& name, QGraphicsItem *parent)
-    : SWConnectionEndpoint(parent, false, QVector2D(-1.0f, 0.0f)),
-      nameLabel_(name, this),
-      component_(component),
-      comInterface_(),
-      apiInterface_(),
-      oldPos_(),
-      oldStack_(0),
-      oldInterfacePositions_(),
-      offPageConnector_(0)
+SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component, QString const& name, QGraphicsItem *parent):
+SWConnectionEndpoint(parent, false, QVector2D(-1.0f, 0.0f)),
+nameLabel_(name, this),
+component_(component),
+comInterface_(),
+apiInterface_(),
+oldPos_(),
+oldStack_(0),
+oldInterfacePositions_(),
+offPageConnector_(0)
 {
     setType(ENDPOINT_TYPE_UNDEFINED);
     setTypeLocked(false);
@@ -67,17 +50,17 @@ SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component,
 //-----------------------------------------------------------------------------
 // Function: SWInterfaceItem::SWInterfaceItem()
 //-----------------------------------------------------------------------------
-SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component,
-                                 QSharedPointer<ApiInterface> apiIf, QGraphicsItem *parent)
-    : SWConnectionEndpoint(parent, false, QVector2D(-1.0f, 0.0f)),
-      nameLabel_(this),
-      component_(component),
-      comInterface_(),
-      apiInterface_(apiIf),
-      oldPos_(),
-      oldStack_(0),
-      oldInterfacePositions_(),
-      offPageConnector_(0)
+SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component, QSharedPointer<ApiInterface> apiIf,
+                                 QGraphicsItem *parent):
+SWConnectionEndpoint(parent, false, QVector2D(-1.0f, 0.0f)),
+nameLabel_(this),
+component_(component),
+comInterface_(),
+apiInterface_(apiIf),
+oldPos_(),
+oldStack_(0),
+oldInterfacePositions_(),
+offPageConnector_(0)
 {
     Q_ASSERT(apiIf != 0);
     setType(ENDPOINT_TYPE_API);
@@ -88,17 +71,17 @@ SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component,
 //-----------------------------------------------------------------------------
 // Function: SWInterfaceItem::SWInterfaceItem()
 //-----------------------------------------------------------------------------
-SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component, 
-                                 QSharedPointer<ComInterface> comIf, QGraphicsItem *parent)
-    : SWConnectionEndpoint(parent, false, QVector2D(-1.0f, 0.0f)),
-      nameLabel_(this),
-      component_(component),
-      comInterface_(comIf),
-      apiInterface_(),
-      oldPos_(),
-      oldStack_(0),
-      oldInterfacePositions_(),
-      offPageConnector_(0)
+SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component, QSharedPointer<ComInterface> comIf,
+                                 QGraphicsItem *parent):
+SWConnectionEndpoint(parent, false, QVector2D(-1.0f, 0.0f)),
+nameLabel_(this),
+component_(component),
+comInterface_(comIf),
+apiInterface_(),
+oldPos_(),
+oldStack_(0),
+oldInterfacePositions_(),
+offPageConnector_(0)
 {
     Q_ASSERT(comIf != 0);
     setType(ENDPOINT_TYPE_COM);
@@ -210,49 +193,40 @@ void SWInterfaceItem::updateInterface()
     }
     else if (isCom())
     {
-        switch (comInterface_->getDirection())
+        if (comInterface_->getDirection() == DirectionTypes::IN)
         {
-		case DirectionTypes::IN:
-            {
-                /*  /\
-                 *  ||
-                 */
-                shape << QPointF(-squareSize/2, squareSize)
-                      << QPointF(-squareSize/2, -squareSize / 2)
-                      << QPointF(0, -squareSize)
-                      << QPointF(squareSize/2, -squareSize / 2)
-                      << QPointF(squareSize/2, squareSize);
-                break;
-            }
-
-        case DirectionTypes::OUT:
-            {
-                /*  ||
-                 *  \/
-                 */
-                shape << QPointF(-squareSize/2, squareSize / 2)
-                      << QPointF(-squareSize/2, -squareSize)
-                      << QPointF(squareSize/2, -squareSize)
-                      << QPointF(squareSize/2, squareSize / 2)
-                      << QPointF(0, squareSize);
-                break;
-            }
-
-        case DirectionTypes::INOUT:
-        default:
-            {
-                /*  /\
-                 *  ||
-                 *  \/
-                 */
-                shape << QPointF(-squareSize/2, squareSize / 2)
-                      << QPointF(-squareSize/2, -squareSize / 2)
-                      << QPointF(0, -squareSize)
-                      << QPointF(squareSize/2, -squareSize / 2)
-                      << QPointF(squareSize/2, squareSize / 2)
-                      << QPointF(0, squareSize);
-                break;
-            }
+            /*  /\
+             *  ||
+             */
+            shape << QPointF(-squareSize/2, squareSize)
+                << QPointF(-squareSize/2, -squareSize / 2)
+                << QPointF(0, -squareSize)
+                << QPointF(squareSize/2, -squareSize / 2)
+                << QPointF(squareSize/2, squareSize);
+        }
+        else if (comInterface_->getDirection() == DirectionTypes::OUT)
+        {
+            /*  ||
+             *  \/
+             */
+            shape << QPointF(-squareSize/2, squareSize / 2)
+                << QPointF(-squareSize/2, -squareSize)
+                << QPointF(squareSize/2, -squareSize)
+                << QPointF(squareSize/2, squareSize / 2)
+                << QPointF(0, squareSize);
+        }
+        else
+        {
+            /*  /\
+             *  ||
+             *  \/
+             */
+            shape << QPointF(-squareSize/2, squareSize / 2)
+                << QPointF(-squareSize/2, -squareSize / 2)
+                << QPointF(0, -squareSize)
+                << QPointF(squareSize/2, -squareSize / 2)
+                << QPointF(squareSize/2, squareSize / 2)
+                << QPointF(0, squareSize);
         }
     }
     else
@@ -437,37 +411,27 @@ QSharedPointer<Component> SWInterfaceItem::getOwnerComponent() const
 //-----------------------------------------------------------------------------
 QVariant SWInterfaceItem::itemChange(GraphicsItemChange change, QVariant const& value)
 {
-    switch (change)
+    if (change == ItemPositionChange)
     {
-    case ItemPositionChange:
-        {
-            return snapPointToGrid(value.toPointF());
-        }
-
-    case ItemPositionHasChanged:
+        return snapPointToGrid(value.toPointF());
+    }
+    else if (change == ItemPositionHasChanged)
         {
             if (!parentItem())
-                break;
-
-            break;
-        }
-    case ItemRotationHasChanged:
-        {
-            nameLabel_.setRotation(-rotation());
-            break;
-        }
-    case ItemScenePositionHasChanged:
-        {
-            foreach (GraphicsConnection* conn, getConnections())
             {
-                conn->updatePosition();
+                // ?
             }
-
-            break;
         }
-
-    default:
-        break;
+    else if (change == ItemRotationHasChanged)
+    {
+        nameLabel_.setRotation(-rotation());
+    }
+    else if (change == ItemScenePositionHasChanged)
+    {
+        foreach (GraphicsConnection* conn, getConnections())
+        {
+            conn->updatePosition();
+        }
     }
 
     return QGraphicsItem::itemChange(change, value);
@@ -883,5 +847,4 @@ void SWInterfaceItem::setLabelPosition()
 	{
 		nameLabel_.setPos(0, GridSize * 3.0 / 4.0 + nameWidth / 2.0);
 	}
-
 }
