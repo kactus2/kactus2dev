@@ -17,6 +17,7 @@
 #include <Plugins/PluginSystem/ImportPlugin/ImportColors.h>
 
 #include <QString>
+#include "../common/NameGenerationPolicy.h"
 
 //-----------------------------------------------------------------------------
 // Function: VerilogImporter::VerilogImporter()
@@ -126,24 +127,13 @@ void VerilogImporter::import(QString const& input, QSharedPointer<Component> tar
     {
         highlightModule(input);
 
-        importModelName(input, targetComponent);
-        setLanguageAndEnvironmentalIdentifiers(targetComponent);
+		QSharedPointer<ComponentInstantiation> targetComponentInstantiation;
+		setLanguageAndEnvironmentalIdentifiers(targetComponent, targetComponentInstantiation);
+		importModelName(input, targetComponent, targetComponentInstantiation);
 
-        parameterParser_.import(input, targetComponent);
+        parameterParser_.import(input, targetComponent, targetComponentInstantiation);
 
-		// Must have a component instantiation for module parameters.
-		QString instaName = "module_parameter_instantiation";
-		QSharedPointer<ComponentInstantiation> cimp =
-			targetComponent->getModel()->findComponentInstantiation(instaName);
-
-		if ( !cimp )
-		{
-			cimp = QSharedPointer<ComponentInstantiation>( new ComponentInstantiation );
-			cimp->setName(instaName);
-			targetComponent->getComponentInstantiations()->append(cimp);
-		}
-
-        portParser_.import(input, targetComponent, cimp);
+        portParser_.import(input, targetComponent, targetComponentInstantiation);
     }
 }
 
@@ -171,8 +161,13 @@ void VerilogImporter::setExpressionParser(QSharedPointer<ExpressionParser> parse
 //-----------------------------------------------------------------------------
 bool VerilogImporter::hasModuleDeclaration(QString const& input)
 {
-    int moduleBegin = input.indexOf(VerilogSyntax::MODULE_BEGIN);
-    int moduleEnd = input.indexOf(VerilogSyntax::MODULE_END, moduleBegin);
+	QRegularExpression multilineComment(VerilogSyntax::MULTILINE_COMMENT);
+
+	QString inspect = input;
+	inspect = inspect.remove(VerilogSyntax::COMMENTLINE).remove(multilineComment);
+
+    int moduleBegin = inspect.indexOf(VerilogSyntax::MODULE_BEGIN);
+    int moduleEnd = inspect.indexOf(VerilogSyntax::MODULE_END, moduleBegin);
 
     return moduleBegin != -1 && moduleEnd != -1;
 }
@@ -194,15 +189,15 @@ void VerilogImporter::highlightModule(QString const& input)
 //-----------------------------------------------------------------------------
 // Function: VerilogImporter::importModelName()
 //-----------------------------------------------------------------------------
-void VerilogImporter::importModelName(QString const& input, QSharedPointer<Component> targetComponent)
+void VerilogImporter::importModelName(QString const& input, QSharedPointer<Component> targetComponent,
+	QSharedPointer<ComponentInstantiation> targetComponentInstantiation)
 {
     int moduleBegin = input.indexOf(VerilogSyntax::MODULE_BEGIN);
     if (moduleBegin != -1)
     {
         QString modelName = VerilogSyntax::MODULE_BEGIN.match(input).captured(1);
 
-        QSharedPointer<View> flatView = findOrCreateFlatView(targetComponent);
-        //flatView->setModelName(modelName);
+        targetComponentInstantiation->setModuleName(modelName);
 
         if (highlighter_)
         {
@@ -236,7 +231,8 @@ QSharedPointer<View> VerilogImporter::findOrCreateFlatView(QSharedPointer<Compon
 //-----------------------------------------------------------------------------
 // Function: VerilogImporter::setLanguageAndEnvironmentalIdentifiers()
 //-----------------------------------------------------------------------------
-void VerilogImporter::setLanguageAndEnvironmentalIdentifiers(QSharedPointer<Component> targetComponent) const
+void VerilogImporter::setLanguageAndEnvironmentalIdentifiers(QSharedPointer<Component> targetComponent,
+	QSharedPointer<ComponentInstantiation>& targetComponentInstantiation) const
 {
     QSharedPointer<View> flatView = findOrCreateFlatView(targetComponent);
 
@@ -253,5 +249,20 @@ void VerilogImporter::setLanguageAndEnvironmentalIdentifiers(QSharedPointer<Comp
         envIdentifiers.append(envIdentifierForImport);
     }
 
-    flatView->setEnvIdentifiers(envIdentifiers);
+	flatView->setEnvIdentifiers(envIdentifiers);
+
+	// Must have a component instantiation for module parameters.
+	QString instaName = NameGenerationPolicy::verilogComponentInstantiationName( flatView->name() );
+	targetComponentInstantiation = targetComponent->getModel()->findComponentInstantiation(instaName);
+
+	// Create and add to the component if does not exist.
+	if ( !targetComponentInstantiation )
+	{
+		targetComponentInstantiation = QSharedPointer<ComponentInstantiation>( new ComponentInstantiation );
+		targetComponentInstantiation->setName(instaName);
+		targetComponentInstantiation->setLanguage("verilog");
+		targetComponent->getComponentInstantiations()->append(targetComponentInstantiation);
+	}
+
+	flatView->setComponentInstantiationRef( instaName );
 }

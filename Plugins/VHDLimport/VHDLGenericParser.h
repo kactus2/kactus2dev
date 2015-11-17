@@ -16,9 +16,10 @@
 
 #include <QSharedPointer>
 #include <QString>
+#include "IPXACTmodels/Component/ComponentInstantiation.h"
 
 class Component;
-class ModelParameter;
+class ModuleParameter;
 
 //-----------------------------------------------------------------------------
 //! Parser for VHDL generics.
@@ -40,7 +41,8 @@ public:
      *      @param [in] input               The input text to parse.
      *      @param [in] targetComponent     The component to add the model parameters to.
      */
-    virtual void import(QString const& input, QSharedPointer<Component> targetComponent);
+    virtual void import(QString const& input, QSharedPointer<Component> targetComponent,
+		QSharedPointer<ComponentInstantiation> targetComponentInstantiation);
 
     /*!
      *  Sets the given highlighter to be used by the generic parser.
@@ -100,7 +102,8 @@ private:
      *      @param [in] targetComponent     The component to which add the model parameter.
      */
     void createModelParameterFromDeclaration(QString const& declaration, 
-        QSharedPointer<Component> targetComponent);
+        QSharedPointer<Component> targetComponent, 
+        QSharedPointer<ComponentInstantiation> targetComponentInstantiation);
 
     //-----------------------------------------------------------------------------
     // Data.

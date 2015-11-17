@@ -14,16 +14,16 @@
 
 #include <Plugins/PluginSystem/ImportPlugin/HighlightSource.h>
 
-#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/common/DirectionTypes.h>
 
 #include <QList>
 #include <QMap>
 #include <QSharedPointer>
 #include <QString>
+#include "IPXACTmodels/Component/ComponentInstantiation.h"
 
 class Component;
 class Port;
-class HDLEquationParser;
 //-----------------------------------------------------------------------------
 //! Parser for VHDL ports.
 //-----------------------------------------------------------------------------
@@ -49,7 +49,7 @@ public:
      *      @param [in] input               The input text to parse.
      *      @param [in] targetComponent     The component to add all the imported ports to.
      */
-    virtual void import(QString const& input, QSharedPointer<Component> targetComponent);
+    virtual void import(QString const& input, QSharedPointer<Component> targetComponent, QSharedPointer<ComponentInstantiation> targetComponentInstantiation);
  
     /*!
      *  Sets the given highlighter to be used by the port parser.
@@ -66,7 +66,7 @@ public:
      *
      *      @return The port left bound value in the declaration.
      */
-    int parseLeftBound(QString const& input, QSharedPointer<Component> ownerComponent) const;
+    QString parseLeftBound(QString const& input, QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const;
 
     /*!
      *  Parses the port right bound value from a VHDL port declaration.
@@ -76,7 +76,7 @@ public:
      *
      *      @return The port right bound value in the declaration.
      */
-    int parseRightBound(QString const& input, QSharedPointer<Component> ownerComponent) const;
+    QString parseRightBound(QString const& input, QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const;
 
     /*!
      *  Parses the port default value from a VHDL port declaration.
@@ -146,7 +146,7 @@ private:
      *      @param [in] declaration         The declaration from which to create a port.
      *      @param [in] targetComponent     The component to which add the port.
      */
-    void createPortFromDeclaration(QString const& declaration, QSharedPointer<Component> targetComponent);
+    void createPortFromDeclaration(QString const& declaration, QSharedPointer<Component> targetComponent, QSharedPointer<ComponentInstantiation> targetComponentInstantiation);
 
     /*!
      *  Parses the port names from a VHDL port declaration.
@@ -164,7 +164,7 @@ private:
      *
      *      @return The port direction in the declaration.
      */
-    General::Direction parsePortDirection(QString const& declaration) const;
+    DirectionTypes::Direction parsePortDirection(QString const& declaration) const;
 
     /*!
      *  Parses the port type from a VHDL port declaration.
@@ -192,7 +192,7 @@ private:
      *
      *      @return The port left bound value in the vector bounds.
      */
-    int parseLeftValue(QString const& vectorBounds, QSharedPointer<Component> ownerComponent) const;
+    QString parseLeftValue(QString const& vectorBounds, QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const;
   
     /*!
      *  Parses the port right bound value from VHDL vector bounds.
@@ -202,7 +202,7 @@ private:
      *
      *      @return The port right bound value in the vector bounds.
      */
-    int parseRightValue(QString const& vectorBounds, QSharedPointer<Component> ownerComponent) const;
+    QString parseRightValue(QString const& vectorBounds, QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const;
 
     /*!
      *  Parses the vector bounds from a VHDL port declaration.

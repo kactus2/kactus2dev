@@ -30,4 +30,44 @@ namespace NameGenerationPolicy
 	{
 		return viewName + "_verilog";
 	}
+
+	//-----------------------------------------------------------------------------
+	// Function: NameGenerationPolicy::flatViewName()
+	//-----------------------------------------------------------------------------
+	QString NameGenerationPolicy::flatViewName()
+	{
+		return "flat";
+	}
+
+	//-----------------------------------------------------------------------------
+	// Function: NameGenerationPolicy::verilogComponentInstanceName()
+	//-----------------------------------------------------------------------------
+	QString NameGenerationPolicy::verilogComponentInstantiationName( QString viewName )
+	{
+		return viewName + "_verilog_component";
+	}
+
+	//-----------------------------------------------------------------------------
+	// Function: NameGenerationPolicy::vhdlComponentInstanceName()
+	//-----------------------------------------------------------------------------
+	QString NameGenerationPolicy::vhdlComponentInstantiationName( QString viewName )
+	{
+		return viewName + "_vhdl_component";
+	}
+
+	//-----------------------------------------------------------------------------
+	// Function: NameGenerationPolicy::designInstanceName()
+	//-----------------------------------------------------------------------------
+	QString NameGenerationPolicy::designInstantiationName( QString viewName )
+	{
+		return viewName + "_design";
+	}
+
+	//-----------------------------------------------------------------------------
+	// Function: NameGenerationPolicy::designConfigurationInstanceName()
+	//-----------------------------------------------------------------------------
+	QString NameGenerationPolicy::designConfigurationInstantiationName( QString viewName )
+	{
+		return viewName + "_design_configuration";
+	}
 }

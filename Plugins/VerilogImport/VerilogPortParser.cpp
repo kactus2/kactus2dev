@@ -250,8 +250,8 @@ void VerilogPortParser::createPortFromDeclaration(QString const& portDeclaration
     QString type = PORT_EXP.match(portDeclaration).captured(2);
     QString typeDefinition;
 
-    QPair<QString, QString> vectorBounds = parseVectorBounds(portDeclaration, targetComponentInstantiation);
-    QPair<QString, QString> arrayBounds = parseArrayBounds(portDeclaration, targetComponentInstantiation);
+    QPair<QString, QString> vectorBounds = parseVectorBounds(portDeclaration, targetComponent, targetComponentInstantiation);
+    QPair<QString, QString> arrayBounds = parseArrayBounds(portDeclaration, targetComponent, targetComponentInstantiation);
 
     QStringList portNames = parsePortNames(portDeclaration);
 
@@ -273,8 +273,8 @@ void VerilogPortParser::createPortFromDeclaration(QString const& portDeclaration
 
         port->setName(name);
         port->setDirection(direction);
-        port->setLeftBound(parser_->parseExpression(vectorBounds.first));
-        port->setRightBound(parser_->parseExpression(vectorBounds.second));
+        port->setLeftBound(vectorBounds.first);
+        port->setRightBound(vectorBounds.second);
         port->setTypeName(type);
         port->setTypeDefinition(type, typeDefinition);
         port->setArrayLeft(arrayBounds.first);
@@ -322,18 +322,18 @@ DirectionTypes::Direction VerilogPortParser::parseDirection(QString const& portD
 // Function: VerilogPortParser::parseArrayBounds()
 //-----------------------------------------------------------------------------
 QPair<QString, QString> VerilogPortParser::parseArrayBounds(QString const& portDeclaration,
-	QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const
+	QSharedPointer<Component> targetComponent, QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const
 {
     QString vectorBounds = PORT_EXP.match(portDeclaration).captured(3);
 
-    return parseLeftAndRight(vectorBounds, targetComponentInstantiation);
+    return parseLeftAndRight(vectorBounds, targetComponent, targetComponentInstantiation);
 }
 
 //-----------------------------------------------------------------------------
 // Function: VerilogPortParser::parseLeftAndRight()
 //-----------------------------------------------------------------------------
 QPair<QString, QString> VerilogPortParser::parseLeftAndRight(QString const& bounds,
-	QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const
+	QSharedPointer<Component> targetComponent, QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const
 {
     QString leftBound = "";
     QString rightBound = "";
@@ -345,12 +345,12 @@ QPair<QString, QString> VerilogPortParser::parseLeftAndRight(QString const& boun
 
         if (!parser_->isValidExpression(leftBound))
         {
-            leftBound = replaceModelParameterNamesWithIds(leftBound, targetComponentInstantiation);
+            leftBound = replaceModelParameterNamesWithIds(leftBound, targetComponent, targetComponentInstantiation);
         }
 
         if (!parser_->isValidExpression(rightBound))
         {
-            rightBound = replaceModelParameterNamesWithIds(rightBound, targetComponentInstantiation);
+            rightBound = replaceModelParameterNamesWithIds(rightBound, targetComponent, targetComponentInstantiation);
         }
     }
 
@@ -361,23 +361,24 @@ QPair<QString, QString> VerilogPortParser::parseLeftAndRight(QString const& boun
 // Function: VerilogPortParser::parseVectorBounds()
 //-----------------------------------------------------------------------------
 QPair<QString, QString> VerilogPortParser::parseVectorBounds(QString const& portDeclaration,
-	QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const
+	QSharedPointer<Component> targetComponent, QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const
 {
     QString vectorBounds = PORT_EXP.match(portDeclaration).captured(4);
 
-    return parseLeftAndRight(vectorBounds, targetComponentInstantiation);
+    return parseLeftAndRight(vectorBounds, targetComponent, targetComponentInstantiation);
 }
 
 //-----------------------------------------------------------------------------
 // Function: VerilogPortParser::replaceModelParameterNamesWithIds()
 //-----------------------------------------------------------------------------
 QString VerilogPortParser::replaceModelParameterNamesWithIds(QString const& expression, 
+    QSharedPointer<Component> targetComponent, 
     QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const
 {
     QString result = expression;
     if (expression.contains('`'))
     {
-        foreach (QSharedPointer<Parameter> define, *targetComponentInstantiation->getParameters())
+        foreach (QSharedPointer<Parameter> define, *targetComponent->getParameters())
         {
             QRegularExpression macroUsage("`" + define->name());
             if (macroUsage.match(result).hasMatch())

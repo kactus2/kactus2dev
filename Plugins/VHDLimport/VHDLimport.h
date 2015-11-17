@@ -22,9 +22,10 @@
 #include <QList>
 #include <QMap>
 #include <QtPlugin>
+#include "IPXACTmodels/Component/ComponentInstantiation.h"
 
 class Highlighter;
-class ModelParameter;
+class ModuleParameter;
 class ModelParameterVisualizer;
 class Port;
 class PortVisualizer;
@@ -138,12 +139,6 @@ public:
 
 public slots:
 
-    //! Called when a model parameter has changed.
-    virtual void onModelParameterChanged(QSharedPointer<ModelParameter> changedParameter) const;
-
-    //! Called when a port has been parsed.
-    void onPortParsed(QSharedPointer<Port> parsedPort, QString const& declaration);   
-
     //! Called when a text should be highlighted.
     void highlight(QString const& text, QColor const& highlightColor) const;
 
@@ -186,7 +181,7 @@ private:
      *
      *      @param [in] input   The input text to parse the model name from.
      */
-    void parseModelName(QString const& input) const;
+    void parseModelName(QString const& input, QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const;
 
     /*!
      *  Checks if the given input contains architecture definition for entity.
@@ -243,14 +238,14 @@ private:
     /*!
      *  Sets the language and environmental identifiers in the rtl view.
      */
-    void setLanguageAndEnvironmentalIdentifiers() const;
+    QSharedPointer<ComponentInstantiation> setLanguageAndEnvironmentalIdentifiers() const;
 
     /*!
      *  Finds a flat (rtl) view from the target component or creates one, if none are found.
      *
      *      @return Flat view to set up with model name and environmental identifiers.
      */
-    View* findOrCreateFlatView() const;
+    QSharedPointer<View> findOrCreateFlatView() const;
 
     /*!
      *  Adds a port dependency to a model parameter.
@@ -258,7 +253,7 @@ private:
      *      @param [in] modelParameter   The model parameter depended on.
      *      @param [in] parsedPort       The port depending on the model parameter.
      */
-    void addDependencyOfGenericToPort(QSharedPointer<ModelParameter> modelParameter, 
+    void addDependencyOfGenericToPort(QSharedPointer<ModuleParameter> modelParameter, 
         QSharedPointer<Port> parsedPort);;
 
     //-----------------------------------------------------------------------------
@@ -278,7 +273,7 @@ private:
     Highlighter* highlighter_;
 
     //! Maps a generic to ports depending on it.
-    QMap< QSharedPointer<ModelParameter>, QList< QSharedPointer<Port> > > dependedGenerics_;
+    QMap< QSharedPointer<ModuleParameter>, QList< QSharedPointer<Port> > > dependedGenerics_;
 
     //! All parsed ports and their declarations in the source file.
     QMap<QSharedPointer<Port>, QString> parsedPortDeclarations_;

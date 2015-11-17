@@ -41,9 +41,6 @@
     <ClInclude Include="VHDLSyntax.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\HDLEquationParser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VHDLGenericParser.cpp">
@@ -53,9 +50,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="VHDLimport.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\HDLEquationParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_VHDLPortParser.cpp">

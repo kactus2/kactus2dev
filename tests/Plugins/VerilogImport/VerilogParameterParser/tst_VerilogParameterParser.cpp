@@ -402,7 +402,7 @@ void tst_VerilogParameterParser::otherParameterAsParameterValue()
 	targetComponent->getComponentInstantiations()->append(insta);
 
     VerilogParameterParser parser;
-	parser.import(input, targetComponent);
+	parser.import(input, targetComponent, insta);
 
     QSharedPointer<ModuleParameter> first = insta->getModuleParameters()->first();
     QSharedPointer<ModuleParameter> second = insta->getModuleParameters()->last();
@@ -547,7 +547,7 @@ void tst_VerilogParameterParser::parametersToComponent()
 	sw->getComponentInstantiations()->append(insta);
 
     VerilogParameterParser parser;
-    parser.import(input, sw);
+    parser.import(input, sw, insta);
 
     verifyParameter( insta->getModuleParameters()->at(0), "joku", "8", "ok", "seli" );
     verifyParameter( insta->getModuleParameters()->at(1), "juu", "98", "int", "evo" );
@@ -571,7 +571,7 @@ void tst_VerilogParameterParser::oldParametersToComponent()
 	sw->getComponentInstantiations()->append(insta);
 
     VerilogParameterParser parser;
-    parser.import(input, sw);
+    parser.import(input, sw, insta);
 
     verifyParameter( insta->getModuleParameters()->at(0), "joku", "8", "ok", "seli" );
     verifyParameter( insta->getModuleParameters()->at(1), "juu", "98", "int", "evo" );

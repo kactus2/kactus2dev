@@ -22,7 +22,6 @@
 
 #include <QString>
 #include <QRegularExpression>
-#include <QDebug>
 
 namespace
 {
@@ -55,24 +54,13 @@ void VerilogParameterParser::setHighlighter(Highlighter* highlighter)
 //-----------------------------------------------------------------------------
 // Function: VerilogParameterParser::import()
 //-----------------------------------------------------------------------------
-void VerilogParameterParser::import(QString const& input, QSharedPointer<Component> targetComponent)
+void VerilogParameterParser::import(QString const& input, QSharedPointer<Component> targetComponent,
+	QSharedPointer<ComponentInstantiation> targetComponentInstantiation)
 {
     // Find parameter declarations. Try both formats, as we cannot know which one is used.
     QStringList declarations;
     declarations.append(findANSIDeclarations(input));
     declarations.append(findOldDeclarations(input));
-
-	// Must have a component instantiation for module parameters.
-	QString instaName = "module_parameter_instantiation";
-	QSharedPointer<ComponentInstantiation> cimp =
-		targetComponent->getModel()->findComponentInstantiation(instaName);
-
-	if ( !cimp )
-	{
-		cimp = QSharedPointer<ComponentInstantiation>( new ComponentInstantiation );
-		cimp->setName(instaName);
-		targetComponent->getComponentInstantiations()->append(cimp);
-	}
 
     QList<QSharedPointer<ModuleParameter> > parsedParameters;
 
@@ -81,13 +69,13 @@ void VerilogParameterParser::import(QString const& input, QSharedPointer<Compone
         parsedParameters.append(parseParameters(declaration));
     }
 
-    copyIdsFromOldModelParameters(parsedParameters, cimp);
+    copyIdsFromOldModelParameters(parsedParameters, targetComponentInstantiation);
 
-    foreach (QSharedPointer<ModuleParameter> existingParameter, *cimp->getModuleParameters())
+    foreach (QSharedPointer<ModuleParameter> existingParameter, *targetComponentInstantiation->getModuleParameters())
     {
         if (existingParameter->getAttribute("imported").isEmpty())
         {
-            cimp->getModuleParameters()->removeAll(existingParameter);
+            targetComponentInstantiation->getModuleParameters()->removeAll(existingParameter);
         }
         else
         {
@@ -95,9 +83,9 @@ void VerilogParameterParser::import(QString const& input, QSharedPointer<Compone
         }        
     }
 
-    cimp->getModuleParameters()->append(parsedParameters);
+    targetComponentInstantiation->getModuleParameters()->append(parsedParameters);
 
-    replaceNamesReferencesWithIds(targetComponent, cimp);
+    replaceNamesReferencesWithIds(targetComponent, targetComponentInstantiation);
 }
 
 //-----------------------------------------------------------------------------
