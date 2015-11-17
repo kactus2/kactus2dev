@@ -18,18 +18,7 @@ SUBDIRS += Model\tst_ViewWriter.pro \
 		   Model\tst_InstantiationsReader.pro \
 		   Model\tst_ComponentPortWriter.pro \
 		   Model\tst_ComponentPortReader.pro \
-		   MemoryMaps\tst_EnumeratedValueWriter.pro \
-		   MemoryMaps\tst_EnumeratedValueReader.pro \
-		   MemoryMaps\tst_FieldWriter.pro \
-		   MemoryMaps\tst_FieldReader.pro \
-		   MemoryMaps\tst_RegisterWriter.pro \
-		   MemoryMaps\tst_RegisterReader.pro \
-		   MemoryMaps\tst_AddressBlockWriter.pro \
-		   MemoryMaps\tst_AddressBlockReader.pro \
-		   MemoryMaps\tst_MemoryMapWriter.pro \
-		   MemoryMaps\tst_MemoryMapReader.pro \
-		   MemoryMaps\tst_MemoryMapBaseReader.pro \
-		   MemoryMaps\tst_MemoryMapBaseWriter.pro \
+		   MemoryMaps\MemoryMaps.pro \
 		   tst_ComponentWriter.pro \
 		   tst_ComponentReader.pro \
 		   tst_CPUReader.pro \

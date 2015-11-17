@@ -59,40 +59,6 @@ EnumeratedValue::~EnumeratedValue()
 
 }
 
-/*
-bool EnumeratedValue::isValid( QStringList& errorList, 
-							  const QString& parentIdentifier ) const {
-
-	bool valid = true;
-
-	if (name().isEmpty()) {
-		errorList.append(QObject::tr("No name specified for enumerated value"
-			" within %1").arg(parentIdentifier));
-		valid = false;
-	}
-
-	if (value_.isEmpty()) {
-		errorList.append(QObject::tr("No value set for enumerated value %1 "
-			"within %2").arg(name()).arg(parentIdentifier));
-		valid = false;
-	}
-
-	return valid;
-}*/
-/*
-bool EnumeratedValue::isValid() const {
-	if (name().isEmpty()) {
-		return false;
-	}
-
-	if (value_.isEmpty()) {
-		return false;
-	}
-
-	return true;
-}	
-*/
-
 //-----------------------------------------------------------------------------
 // Function: EnumeratedValue::getUsage()
 //-----------------------------------------------------------------------------

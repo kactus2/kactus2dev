@@ -62,7 +62,16 @@ bool ParameterValidator2014::validate(Parameter const* parameter) const
 //-----------------------------------------------------------------------------
 bool ParameterValidator2014::hasValidName(Parameter const* parameter) const
 {
-    return !parameter->name().isEmpty();
+    QRegularExpression whiteSpaceExpression;
+    whiteSpaceExpression.setPattern("^ *$");
+    QRegularExpressionMatch whiteSpaceMatch = whiteSpaceExpression.match(parameter->name());
+
+    if (parameter->name().isEmpty() || whiteSpaceMatch.hasMatch())
+    {
+        return false;
+    }
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -416,13 +425,10 @@ qreal ParameterValidator2014::valueOf(QString const& value, QString const& type)
 void ParameterValidator2014::findErrorsInName(QVector<QString>& errors, QSharedPointer<Parameter> parameter,
     QString const& context) const
 {
-    QRegularExpression whiteSpaceExpression;
-    whiteSpaceExpression.setPattern("^ *$");
-    QRegularExpressionMatch whiteSpaceMatch = whiteSpaceExpression.match(parameter->name());
-
-    if (parameter->name().isEmpty() || whiteSpaceMatch.hasMatch())
+    if (hasValidName(parameter.data()))
     {
-        errors.append(QObject::tr("No name specified for %1 within %2").arg(parameter->elementName(), context));
+        errors.append(QObject::tr("No name specified for %1 %2 within %3").arg(parameter->elementName(),
+            parameter->name(), context));
     }
 }
 
