@@ -16,7 +16,9 @@
 
 #include <IPXACTmodels/validators/ParameterValidator2014.h>
 #include <IPXACTmodels/common/Parameter.h>
-#include <IPXACTmodels/Component/Component.h>
+
+#include <IPXACTmodels/Component/Choice.h>
+#include <IPXACTmodels/common/Enumeration.h>
 
 class tst_ParameterValidator2014 : public QObject
 {
@@ -36,9 +38,15 @@ private slots:
     void testValidityWithMinimumValueAndType();
     void testValidityWithMinimumValueAndType_data();
 
+    void testValidityWithVectorAndType();
+    void testValidityWithVectorAndType_data();
+
+    void testValidityWithChoice();
+    void testValidityWithChoice_data();
+
 private:
 
-    bool errorIsNotFoundInErrorlist(QString const& expectedError, QStringList const& errorlist);
+    bool errorIsNotFoundInErrorlist(QString const& expectedError, QVector<QString>& errorlist);
 
 };
 
@@ -63,26 +71,26 @@ void tst_ParameterValidator2014::testValueIsValidForGivenType()
 
     QSharedPointer<ParameterFinder> finder(new ComponentParameterFinder(QSharedPointer<Component>()));
 
-    ParameterValidator2014 validator(parser, finder);
+    ParameterValidator2014 validator(parser, finder, QSharedPointer<QList<QSharedPointer<Choice> > > ());
     QCOMPARE(validator.hasValidValueForType(value, type), isValid);
 
     if (!isValid && !value.isEmpty())
     {
-        Parameter* parameter = new Parameter();
+        QSharedPointer<Parameter> parameter (new Parameter());
         parameter->setName("param");
         parameter->setType(type);
         parameter->setValue(value);
         parameter->setValueId("parameterid");
 
-        QStringList errorlist = validator.findErrorsIn(parameter, "test", 
-            QSharedPointer<QList<QSharedPointer<Choice> > >());
+        QVector<QString> errorList;
+        validator.findErrorsIn(errorList, parameter, "test");
 
         QString expectedError = "Value " + value + " is not valid for type " + type + " in parameter param within test";
-        if (errorIsNotFoundInErrorlist(expectedError, errorlist))
+        if (errorIsNotFoundInErrorlist(expectedError, errorList))
         {
             QFAIL("No error message found.");
         }
-        delete parameter;
+        parameter.clear();
     }
 }
 
@@ -259,8 +267,8 @@ void tst_ParameterValidator2014::testValidityWithMaximumValueAndType()
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<ParameterFinder> finder(new ComponentParameterFinder(QSharedPointer<Component>()));
 
-    ParameterValidator2014 validator(parser, finder);
-    QCOMPARE(validator.hasValidValue(parameter, QSharedPointer<QList<QSharedPointer<Choice> > >()), isValid);
+    ParameterValidator2014 validator(parser, finder, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    QCOMPARE(validator.hasValidValue(parameter), isValid);
 
     delete parameter;
 }
@@ -315,8 +323,8 @@ void tst_ParameterValidator2014::testValidityWithMinimumValueAndType()
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<ParameterFinder> finder(new ComponentParameterFinder(QSharedPointer<Component>()));
 
-    ParameterValidator2014 validator(parser, finder);
-    QCOMPARE(validator.hasValidValue(parameter, QSharedPointer<QList<QSharedPointer<Choice> > >()), isValid);
+    ParameterValidator2014 validator(parser, finder, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    QCOMPARE(validator.hasValidValue(parameter), isValid);
 
     delete parameter;
 }
@@ -352,9 +360,109 @@ void tst_ParameterValidator2014::testValidityWithMinimumValueAndType_data()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_ParameterValidator2014::testValidityWithVectorAndType()
+//-----------------------------------------------------------------------------
+void tst_ParameterValidator2014::testValidityWithVectorAndType()
+{
+    QFETCH(QString, vectorLeft);
+    QFETCH(QString, vectorRight);
+    QFETCH(QString, type);
+    QFETCH(bool, isValid);
+
+    Parameter* parameter = new Parameter();
+    parameter->setName("param");
+    parameter->setType(type);
+    parameter->setVectorLeft(vectorLeft);
+    parameter->setVectorRight(vectorRight);
+
+    QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
+    QSharedPointer<ParameterFinder> finder(new ComponentParameterFinder(QSharedPointer<Component>()));
+
+    ParameterValidator2014 validator(parser, finder, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    QCOMPARE(validator.hasValidVector(parameter), isValid);
+
+    delete parameter;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ParameterValidator2014::testValidityWithVectorAndType_data()
+//-----------------------------------------------------------------------------
+void tst_ParameterValidator2014::testValidityWithVectorAndType_data()
+{
+    QTest::addColumn<QString>("type");
+    QTest::addColumn<QString>("vectorLeft");
+    QTest::addColumn<QString>("vectorRight");
+    QTest::addColumn<bool>("isValid");
+
+    QTest::newRow("Vector is valid for a bit-type parameter") << "bit" << "4" << "5" << true;
+    QTest::newRow("Vector is invalid for int-type parameter") << "int" << "4" << "5" << false;
+    QTest::newRow("Vector is invalid for real-type parameter") << "real" << "4" << "5" << false;
+    QTest::newRow("Vector is invalid for string-type parameter") << "string" << "4" << "5" << false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ParameterValidator2014::testValidityWithChoice()
+//-----------------------------------------------------------------------------
+void tst_ParameterValidator2014::testValidityWithChoice()
+{
+    QFETCH(QString, value);
+    QFETCH(QString, enumerationValue1);
+    QFETCH(QString, enumerationvalue2);
+    QFETCH(QString, type);
+    QFETCH(bool, isValid);
+
+    QSharedPointer<Enumeration> enumeration1 (new Enumeration());
+    enumeration1->setValue(enumerationValue1);
+    QSharedPointer<Enumeration> enumeration2 (new Enumeration());
+    enumeration2->setValue(enumerationvalue2);
+
+    QSharedPointer<Choice> testChoice(new Choice());
+    testChoice->setName("TestChoice");
+    testChoice->enumerations()->append(enumeration1);
+    testChoice->enumerations()->append(enumeration2);
+
+    Parameter* parameter = new Parameter();
+    parameter->setName("param");
+    parameter->setType(type);
+    parameter->setValue(value);
+    parameter->setChoiceRef(testChoice->name());
+
+    QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
+    QSharedPointer<ParameterFinder> finder(new ComponentParameterFinder(QSharedPointer<Component>()));
+
+    QSharedPointer<QList<QSharedPointer<Choice> > > choiceList (new QList<QSharedPointer<Choice> > ());
+    choiceList->append(testChoice);
+
+    ParameterValidator2014 validator(parser, finder, choiceList);
+    QCOMPARE(validator.validate(parameter), isValid);
+
+    delete parameter;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ParameterValidator2014::testValidityWithChoice_data()
+//-----------------------------------------------------------------------------
+void tst_ParameterValidator2014::testValidityWithChoice_data()
+{
+    QTest::addColumn<QString>("value");
+    QTest::addColumn<QString>("enumerationValue1");
+    QTest::addColumn<QString>("enumerationvalue2");
+    QTest::addColumn<QString>("type");
+    QTest::addColumn<bool>("isValid");
+
+    QTest::newRow("Value 4 is valid for enumerations 4 and 5, with type int") << "4" << "4" << "5" << "int" << true;
+    QTest::newRow("Value 3 is invalid for enumerations 4 and 5, with type int") << "3" << "4" << "5" << "int" << false;
+    QTest::newRow("Value 5 is invalid for enumerations 4 and 5, with type string") << "5" << "4" << "5" << "string" << false;
+
+    QTest::newRow("Value test is valid for enumerations test and test1, with type string") << "\"test\"" <<
+        "\"test\"" << "\"test1\"" << "string" << true;
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_ParameterValidator2014::errorIsNotFoundInErrorlist()
 //-----------------------------------------------------------------------------
-bool tst_ParameterValidator2014::errorIsNotFoundInErrorlist(QString const& expectedError, QStringList const& errorlist)
+bool tst_ParameterValidator2014::errorIsNotFoundInErrorlist(QString const& expectedError,
+    QVector<QString>& errorlist)
 {
     if (!errorlist.contains(expectedError))
     {
