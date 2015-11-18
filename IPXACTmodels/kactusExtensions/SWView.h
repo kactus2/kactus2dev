@@ -102,7 +102,7 @@ public:
 	 *
 	 *      @return True if contents are valid.
 	 */
-	bool isValid(QStringList const& fileSetNames, QStringList const& cpuNames, QStringList& errorList,
+	bool isValid(QStringList const& fileSetNames, QStringList const& cpuNames, QVector<QString>& errorList,
         QString const& parentIdentifier) const;
 
 	/*!

@@ -60,7 +60,7 @@ public:
 	*
 	*      @return bool True if the state is valid and writing is possible.
 	*/
-	bool isValid(const QStringList& cpuNames, QStringList& errorList, const QString& parentIdentifier) const;
+	bool isValid(const QStringList& cpuNames, QVector<QString>& errorList, const QString& parentIdentifier) const;
 
 	/*! Check if the build command is in a valid state.
 	 *

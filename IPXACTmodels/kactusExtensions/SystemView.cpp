@@ -152,7 +152,7 @@ void SystemView::write(QXmlStreamWriter& writer) const
 // Function: SystemView::isValid()
 //-----------------------------------------------------------------------------
 bool SystemView::isValid(QStringList const& fileSetNames, QStringList const& HWViewNames,
-    QStringList& errorList, QString const& parentIdentifier) const
+    QVector<QString>& errorList, QString const& parentIdentifier) const
 {
     bool valid = true;
     const QString thisIdentifier(QObject::tr("system view %1").arg(name()));

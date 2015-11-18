@@ -199,37 +199,37 @@ bool VLNV::isValid() const
 //-----------------------------------------------------------------------------
 // Function: VLNV::isValid()
 //-----------------------------------------------------------------------------
-bool VLNV::isValid(QStringList& errorList, QString const& parentIdentifier) const
+bool VLNV::isValid(QVector<QString>& errors, QString const& parentIdentifier) const
 {
     bool valid = true;
 
     if (type_ == VLNV::INVALID)
     {
-        errorList.append(QObject::tr("The type of the vlnv is invalid within %1").arg(parentIdentifier));
+        errors.append(QObject::tr("The type of the vlnv is invalid within %1").arg(parentIdentifier));
         valid = false;
     }
 
     if (vendor_.isEmpty())
     {
-        errorList.append(QObject::tr("No vendor specified for vlnv within %1").arg(parentIdentifier));
+        errors.append(QObject::tr("No vendor specified for vlnv within %1").arg(parentIdentifier));
         valid = false;
     }
 
     if (library_.isEmpty())
     {
-        errorList.append(QObject::tr("No library specified for vlnv within %1").arg(parentIdentifier));
+        errors.append(QObject::tr("No library specified for vlnv within %1").arg(parentIdentifier));
         valid = false;
     }
 
     if (name_.isEmpty())
     {
-        errorList.append(QObject::tr("No name specified for vlnv within %1").arg(parentIdentifier));
+        errors.append(QObject::tr("No name specified for vlnv within %1").arg(parentIdentifier));
         valid = false;
     }
 
     if (version_.isEmpty())
     {
-        errorList.append(QObject::tr("No version specified for vlnv within %1").arg(parentIdentifier));
+        errors.append(QObject::tr("No version specified for vlnv within %1").arg(parentIdentifier));
         valid = false;
     }
 

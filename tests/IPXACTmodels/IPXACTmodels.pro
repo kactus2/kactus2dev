@@ -15,6 +15,7 @@ CONFIG += testcase
 SUBDIRS += common\Common.pro \
 		   BusDefinition\tst_BusDefinitionWriter.pro \
 		   BusDefinition\tst_BusDefinitionReader.pro \
+		   BusDefinition\validators\tst_BusDefinitionValidator.pro \
 		   AbstractionDefinition\tst_AbstractionDefinitionWriter.pro \
 		   AbstractionDefinition\tst_AbstractionDefinitionReader.pro \
 		   DesignConfiguration\tst_DesignConfigurationWriter.pro \

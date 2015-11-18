@@ -196,7 +196,7 @@ void SWView::write(QXmlStreamWriter& writer) const
 //-----------------------------------------------------------------------------
 // Function: SWView::isValid()
 //-----------------------------------------------------------------------------
-bool SWView::isValid(QStringList const& fileSetNames, QStringList const& cpuNames, QStringList& errorList,
+bool SWView::isValid(QStringList const& fileSetNames, QStringList const& cpuNames, QVector<QString>& errorList,
     QString const& parentIdentifier) const
 {
     bool valid = true;

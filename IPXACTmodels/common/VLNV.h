@@ -16,6 +16,7 @@
 
 #include <QString>
 #include <QStringList>
+#include <QVector>
 
 #include <QDomNode>
 
@@ -180,7 +181,7 @@ public:
 	 *
 	 *      @return bool True if the state is valid and writing is possible.
 	*/
-	bool isValid(QStringList& errorList, QString const& parentIdentifier) const;
+	bool isValid(QVector<QString>& errors, QString const& parentIdentifier) const;
     
 	/*! Create a QString that contains the vlnv.
 	 *

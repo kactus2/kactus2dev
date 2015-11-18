@@ -77,7 +77,7 @@ public:
 	*
 	*       @return bool True if the state is valid and writing is possible.
 	*/
-	bool isValid(QStringList& errorList, QString const& parentIdentifier) const;
+	bool isValid(QVector<QString>& errorList, QString const& parentIdentifier) const;
 
 	/*! Check if the build command is in a valid state.
 	 *

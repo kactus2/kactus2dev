@@ -94,7 +94,7 @@ void SWFileBuilder::write(QXmlStreamWriter& writer) const
 //-----------------------------------------------------------------------------
 // Function: SWFileBuilder::isValid()
 //-----------------------------------------------------------------------------
-bool SWFileBuilder::isValid( QStringList& errorList, const QString& parentIdentifier ) const
+bool SWFileBuilder::isValid( QVector<QString>& errorList, const QString& parentIdentifier ) const
 {
 	if (getFileType().isEmpty())
     {

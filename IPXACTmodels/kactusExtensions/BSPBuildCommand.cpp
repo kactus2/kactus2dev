@@ -97,7 +97,7 @@ void BSPBuildCommand::write(QXmlStreamWriter& writer)
 //-----------------------------------------------------------------------------
 // Function: BSPBuildCommand::isValid()
 //-----------------------------------------------------------------------------
-bool BSPBuildCommand::isValid(QStringList const& cpuNames, QStringList& errorList,
+bool BSPBuildCommand::isValid(QStringList const& cpuNames, QVector<QString>& errorList,
     QString const& parentIdentifier) const
 {
 	
