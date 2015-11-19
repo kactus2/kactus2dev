@@ -7,168 +7,170 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../../../IPXACTmodels/common/Array.h \
+HEADERS += ../../../../../IPXACTmodels/Component/AbstractionType.h \
+    ../../../../../IPXACTmodels/Component/AddressBlock.h \
+    ../../../../../IPXACTmodels/Component/AddressSpace.h \
+    ../../../../../IPXACTmodels/Component/AlternateRegister.h \
+    ../../../../../IPXACTmodels/kactusExtensions/ApiInterface.h \
+    ../../../../../IPXACTmodels/common/Array.h \
+    ../../../../../IPXACTmodels/common/Assertion.h \
+    ../../../../../IPXACTmodels/kactusExtensions/BSPBuildCommand.h \
     ../../../../../IPXACTmodels/common/BooleanValue.h \
-    ../../../../../IPXACTmodels/common/Extendable.h \
-    ../../../../../IPXACTmodels/common/NameGroup.h \
-    ../../../../../IPXACTmodels/common/Parameter.h \
-    ../../../../../IPXACTmodels/common/Range.h \
-    ../../../../../IPXACTmodels/common/Vector.h \
+    ../../../../../IPXACTmodels/Component/BuildCommand.h \
+    ../../../../../IPXACTmodels/common/BuildModel.h \
+    ../../../../../IPXACTmodels/Component/BusInterface.h \
+    ../../../../../IPXACTmodels/Component/Channel.h \
+    ../../../../../IPXACTmodels/Component/Choice.h \
+    ../../../../../IPXACTmodels/common/ClockUnit.h \
+    ../../../../../IPXACTmodels/kactusExtensions/ComInterface.h \
+    ../../../../../IPXACTmodels/kactusExtensions/ComProperty.h \
+    ../../../../../IPXACTmodels/Component/Component.h \
+    ../../../../../IPXACTmodels/Component/ComponentGenerator.h \
+    ../../../../../IPXACTmodels/Component/ComponentInstantiation.h \
+    ../../../../../editors/ComponentEditor/common/ComponentParameterFinder.h \
+    ../../../../../IPXACTmodels/common/ConfigurableElementValue.h \
+    ../../../../../IPXACTmodels/common/ConfigurableVLNVReference.h \
+    ../../../../../IPXACTmodels/Component/Cpu.h \
+    ../../../../../IPXACTmodels/Component/DesignConfigurationInstantiation.h \
+    ../../../../../IPXACTmodels/Component/DesignInstantiation.h \
+    ../../../../../IPXACTmodels/common/DirectionTypes.h \
+    ../../../../../IPXACTmodels/common/Document.h \
     ../../../../../IPXACTmodels/Component/EnumeratedValue.h \
+    ../../../../../IPXACTmodels/Component/validators/EnumeratedValueValidator.h \
+    ../../../../../IPXACTmodels/common/Enumeration.h \
+    ../../../../../IPXACTmodels/common/Extendable.h \
     ../../../../../IPXACTmodels/Component/Field.h \
     ../../../../../IPXACTmodels/Component/validators/FieldValidator.h \
-    ../../../../../IPXACTmodels/Component/WriteValueConstraint.h \
+    ../../../../../IPXACTmodels/Component/File.h \
+    ../../../../../IPXACTmodels/common/FileBuilder.h \
+    ../../../../../IPXACTmodels/Component/FileSet.h \
+    ../../../../../IPXACTmodels/common/FileTypes.h \
+    ../../../../../IPXACTmodels/Component/Function.h \
     ../../../../../IPXACTmodels/kactusExtensions/Kactus2Group.h \
-    ../../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
-    ../../../../../IPXACTmodels/Component/validators/EnumeratedValueValidator.h \
-    ../../../../../IPXACTmodels/validators/ParameterValidator2014.h \
-    ../../../../../IPXACTmodels/Component/Choice.h \
-    ../../../../../IPXACTmodels/common/Enumeration.h \
-    ../../../../../editors/ComponentEditor/common/ComponentParameterFinder.h \
-    ../../../../../IPXACTmodels/Component/WireTypeDef.h \
-    ../../../../../IPXACTmodels/Component/Port.h \
-    ../../../../../IPXACTmodels/Component/View.h \
-    ../../../../../IPXACTmodels/Component/ComponentInstantiation.h \
-    ../../../../../IPXACTmodels/common/VLNV.h \
-    ../../../../../IPXACTmodels/Component/DesignInstantiation.h \
-    ../../../../../IPXACTmodels/Component/DesignConfigurationInstantiation.h \
-    ../../../../../IPXACTmodels/Component/MemoryBlockBase.h \
-    ../../../../../IPXACTmodels/Component/AddressBlock.h \
-    ../../../../../IPXACTmodels/Component/MemoryMapBase.h \
-    ../../../../../IPXACTmodels/Component/MemoryMap.h \
-    ../../../../../IPXACTmodels/Component/RegisterBase.h \
-    ../../../../../IPXACTmodels/common/Document.h \
-    ../../../../../IPXACTmodels/Component/Component.h \
-    ../../../../../IPXACTmodels/Component/BusInterface.h \
+    ../../../../../IPXACTmodels/kactusExtensions/Kactus2Placeholder.h \
+    ../../../../../IPXACTmodels/kactusExtensions/Kactus2Position.h \
     ../../../../../IPXACTmodels/kactusExtensions/Kactus2Value.h \
     ../../../../../IPXACTmodels/kactusExtensions/KactusAttribute.h \
-    ../../../../../IPXACTmodels/common/Assertion.h \
-    ../../../../../IPXACTmodels/Component/RegisterDefinition.h \
-    ../../../../../IPXACTmodels/Component/Register.h \
-    ../../../../../IPXACTmodels/common/PartSelect.h \
     ../../../../../IPXACTmodels/Component/MasterInterface.h \
-    ../../../../../IPXACTmodels/Component/AbstractionType.h \
-    ../../../../../IPXACTmodels/Component/PortMap.h \
-    ../../../../../IPXACTmodels/common/ConfigurableVLNVReference.h \
-    ../../../../../IPXACTmodels/common/ConfigurableElementValue.h \
-    ../../../../../IPXACTmodels/Component/MirroredSlaveInterface.h \
-    ../../../../../IPXACTmodels/Component/SlaveInterface.h \
-    ../../../../../IPXACTmodels/kactusExtensions/Kactus2Position.h \
-    ../../../../../IPXACTmodels/Component/RemapState.h \
-    ../../../../../IPXACTmodels/Component/Segment.h \
-    ../../../../../IPXACTmodels/Component/AddressSpace.h \
-    ../../../../../IPXACTmodels/common/NameValuePair.h \
-    ../../../../../IPXACTmodels/Component/Function.h \
-    ../../../../../IPXACTmodels/Component/File.h \
-    ../../../../../IPXACTmodels/Component/FileSet.h \
-    ../../../../../IPXACTmodels/Component/Cpu.h \
-    ../../../../../IPXACTmodels/common/ClockUnit.h \
-    ../../../../../IPXACTmodels/Component/OtherClockDriver.h \
-    ../../../../../IPXACTmodels/Component/Model.h \
-    ../../../../../IPXACTmodels/kactusExtensions/SWView.h \
-    ../../../../../IPXACTmodels/Component/ComponentGenerator.h \
-    ../../../../../IPXACTmodels/kactusExtensions/ApiInterface.h \
-    ../../../../../IPXACTmodels/kactusExtensions/ComInterface.h \
-    ../../../../../IPXACTmodels/kactusExtensions/SystemView.h \
-    ../../../../../IPXACTmodels/Component/Channel.h \
-    ../../../../../IPXACTmodels/common/ModuleParameter.h \
-    ../../../../../IPXACTmodels/common/FileBuilder.h \
-    ../../../../../IPXACTmodels/common/BuildModel.h \
-    ../../../../../IPXACTmodels/common/FileTypes.h \
-    ../../../../../IPXACTmodels/Component/BuildCommand.h \
+    ../../../../../IPXACTmodels/Component/MemoryBlockBase.h \
+    ../../../../../IPXACTmodels/Component/MemoryMap.h \
+    ../../../../../IPXACTmodels/Component/MemoryMapBase.h \
     ../../../../../IPXACTmodels/Component/MemoryRemap.h \
-    ../../../../../IPXACTmodels/Component/Wire.h \
-    ../../../../../IPXACTmodels/Component/Transactional.h \
-    ../../../../../IPXACTmodels/kactusExtensions/Kactus2Placeholder.h \
-    ../../../../../IPXACTmodels/Component/AlternateRegister.h \
-    ../../../../../IPXACTmodels/Component/RemapPort.h \
+    ../../../../../IPXACTmodels/Component/MirroredSlaveInterface.h \
+    ../../../../../IPXACTmodels/Component/Model.h \
+    ../../../../../IPXACTmodels/common/ModuleParameter.h \
+    ../../../../../IPXACTmodels/common/NameGroup.h \
+    ../../../../../IPXACTmodels/common/NameValuePair.h \
+    ../../../../../IPXACTmodels/Component/OtherClockDriver.h \
+    ../../../../../IPXACTmodels/common/Parameter.h \
+    ../../../../../IPXACTmodels/validators/ParameterValidator2014.h \
+    ../../../../../IPXACTmodels/common/PartSelect.h \
+    ../../../../../IPXACTmodels/Component/Port.h \
+    ../../../../../IPXACTmodels/Component/PortMap.h \
     ../../../../../IPXACTmodels/common/Protocol.h \
+    ../../../../../IPXACTmodels/common/Range.h \
+    ../../../../../IPXACTmodels/Component/Register.h \
+    ../../../../../IPXACTmodels/Component/RegisterBase.h \
+    ../../../../../IPXACTmodels/Component/RegisterDefinition.h \
+    ../../../../../IPXACTmodels/Component/RemapPort.h \
+    ../../../../../IPXACTmodels/Component/RemapState.h \
+    ../../../../../IPXACTmodels/kactusExtensions/SWFileBuilder.h \
+    ../../../../../IPXACTmodels/kactusExtensions/SWView.h \
+    ../../../../../IPXACTmodels/Component/Segment.h \
+    ../../../../../IPXACTmodels/Component/SlaveInterface.h \
+    ../../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
+    ../../../../../IPXACTmodels/kactusExtensions/SystemView.h \
+    ../../../../../IPXACTmodels/Component/Transactional.h \
     ../../../../../IPXACTmodels/common/TransactionalTypes.h \
-    ../../../../../IPXACTmodels/common/DirectionTypes.h \
-    ../../../../../IPXACTmodels/kactusExtensions/ComProperty.h \
+    ../../../../../IPXACTmodels/common/VLNV.h \
+    ../../../../../IPXACTmodels/common/Vector.h \
+    ../../../../../IPXACTmodels/Component/View.h \
+    ../../../../../IPXACTmodels/Component/Wire.h \
+    ../../../../../IPXACTmodels/Component/WireTypeDef.h \
+    ../../../../../IPXACTmodels/Component/WriteValueConstraint.h \
     ../../../../../IPXACTmodels/generaldeclarations.h \
-    ../../../../../IPXACTmodels/kactusExtensions/BSPBuildCommand.h \
-    ../../../../../IPXACTmodels/kactusExtensions/SWFileBuilder.h
-SOURCES += ../../../../../IPXACTmodels/common/Array.cpp \
+    ../../../../../editors/ComponentEditor/common/ValueFormatter.h
+SOURCES += ../../../../../IPXACTmodels/Component/AbstractionType.cpp \
+    ../../../../../IPXACTmodels/Component/AddressBlock.cpp \
+    ../../../../../IPXACTmodels/Component/AddressSpace.cpp \
+    ../../../../../IPXACTmodels/Component/AlternateRegister.cpp \
+    ../../../../../IPXACTmodels/kactusExtensions/ApiInterface.cpp \
+    ../../../../../IPXACTmodels/common/Array.cpp \
+    ../../../../../IPXACTmodels/common/Assertion.cpp \
+    ../../../../../IPXACTmodels/kactusExtensions/BSPBuildCommand.cpp \
     ../../../../../IPXACTmodels/common/BooleanValue.cpp \
-    ../../../../../IPXACTmodels/common/Extendable.cpp \
-    ../../../../../IPXACTmodels/common/NameGroup.cpp \
-    ../../../../../IPXACTmodels/common/Parameter.cpp \
-    ../../../../../IPXACTmodels/common/Range.cpp \
-    ../../../../../IPXACTmodels/common/Vector.cpp \
+    ../../../../../IPXACTmodels/Component/BuildCommand.cpp \
+    ../../../../../IPXACTmodels/common/BuildModel.cpp \
+    ../../../../../IPXACTmodels/Component/BusInterface.cpp \
+    ../../../../../IPXACTmodels/Component/Channel.cpp \
+    ../../../../../IPXACTmodels/Component/Choice.cpp \
+    ../../../../../IPXACTmodels/common/ClockUnit.cpp \
+    ../../../../../IPXACTmodels/kactusExtensions/ComInterface.cpp \
+    ../../../../../IPXACTmodels/kactusExtensions/ComProperty.cpp \
+    ../../../../../IPXACTmodels/Component/Component.cpp \
+    ../../../../../IPXACTmodels/Component/ComponentGenerator.cpp \
+    ../../../../../IPXACTmodels/Component/ComponentInstantiation.cpp \
+    ../../../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
+    ../../../../../IPXACTmodels/common/ConfigurableElementValue.cpp \
+    ../../../../../IPXACTmodels/common/ConfigurableVLNVReference.cpp \
+    ../../../../../IPXACTmodels/Component/Cpu.cpp \
+    ../../../../../IPXACTmodels/Component/DesignConfigurationInstantiation.cpp \
+    ../../../../../IPXACTmodels/Component/DesignInstantiation.cpp \
+    ../../../../../IPXACTmodels/common/DirectionTypes.cpp \
+    ../../../../../IPXACTmodels/common/Document.cpp \
     ../../../../../IPXACTmodels/Component/EnumeratedValue.cpp \
+    ../../../../../IPXACTmodels/Component/validators/EnumeratedValueValidator.cpp \
+    ../../../../../IPXACTmodels/common/Enumeration.cpp \
+    ../../../../../IPXACTmodels/common/Extendable.cpp \
     ../../../../../IPXACTmodels/Component/Field.cpp \
     ../../../../../IPXACTmodels/Component/validators/FieldValidator.cpp \
-    ../../../../../IPXACTmodels/Component/WriteValueConstraint.cpp \
+    ../../../../../IPXACTmodels/Component/File.cpp \
+    ../../../../../IPXACTmodels/common/FileBuilder.cpp \
+    ../../../../../IPXACTmodels/Component/FileSet.cpp \
+    ../../../../../IPXACTmodels/common/FileTypes.cpp \
+    ../../../../../IPXACTmodels/Component/Function.cpp \
     ../../../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
-    ./tst_FieldValidator.cpp \
-    ../../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
-    ../../../../../IPXACTmodels/Component/validators/EnumeratedValueValidator.cpp \
-    ../../../../../IPXACTmodels/validators/ParameterValidator2014.cpp \
-    ../../../../../IPXACTmodels/Component/Choice.cpp \
-    ../../../../../IPXACTmodels/common/Enumeration.cpp \
-    ../../../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
-    ../../../../../IPXACTmodels/Component/WireTypeDef.cpp \
-    ../../../../../IPXACTmodels/Component/Port.cpp \
-    ../../../../../IPXACTmodels/Component/View.cpp \
-    ../../../../../IPXACTmodels/Component/ComponentInstantiation.cpp \
-    ../../../../../IPXACTmodels/common/VLNV.cpp \
-    ../../../../../IPXACTmodels/Component/DesignInstantiation.cpp \
-    ../../../../../IPXACTmodels/Component/DesignConfigurationInstantiation.cpp \
-    ../../../../../IPXACTmodels/Component/MemoryBlockBase.cpp \
-    ../../../../../IPXACTmodels/Component/AddressBlock.cpp \
-    ../../../../../IPXACTmodels/Component/MemoryMapBase.cpp \
-    ../../../../../IPXACTmodels/Component/MemoryMap.cpp \
-    ../../../../../IPXACTmodels/Component/RegisterBase.cpp \
-    ../../../../../IPXACTmodels/common/Document.cpp \
-    ../../../../../IPXACTmodels/Component/Component.cpp \
-    ../../../../../IPXACTmodels/Component/BusInterface.cpp \
+    ../../../../../IPXACTmodels/kactusExtensions/Kactus2Placeholder.cpp \
+    ../../../../../IPXACTmodels/kactusExtensions/Kactus2Position.cpp \
     ../../../../../IPXACTmodels/kactusExtensions/Kactus2Value.cpp \
     ../../../../../IPXACTmodels/kactusExtensions/KactusAttribute.cpp \
-    ../../../../../IPXACTmodels/common/Assertion.cpp \
-    ../../../../../IPXACTmodels/Component/RegisterDefinition.cpp \
-    ../../../../../IPXACTmodels/Component/Register.cpp \
-    ../../../../../IPXACTmodels/common/PartSelect.cpp \
     ../../../../../IPXACTmodels/Component/MasterInterface.cpp \
-    ../../../../../IPXACTmodels/Component/AbstractionType.cpp \
-    ../../../../../IPXACTmodels/Component/PortMap.cpp \
-    ../../../../../IPXACTmodels/common/ConfigurableVLNVReference.cpp \
-    ../../../../../IPXACTmodels/common/ConfigurableElementValue.cpp \
-    ../../../../../IPXACTmodels/Component/MirroredSlaveInterface.cpp \
-    ../../../../../IPXACTmodels/Component/SlaveInterface.cpp \
-    ../../../../../IPXACTmodels/kactusExtensions/Kactus2Position.cpp \
-    ../../../../../IPXACTmodels/Component/RemapState.cpp \
-    ../../../../../IPXACTmodels/Component/Segment.cpp \
-    ../../../../../IPXACTmodels/Component/AddressSpace.cpp \
-    ../../../../../IPXACTmodels/common/NameValuePair.cpp \
-    ../../../../../IPXACTmodels/Component/Function.cpp \
-    ../../../../../IPXACTmodels/Component/File.cpp \
-    ../../../../../IPXACTmodels/Component/FileSet.cpp \
-    ../../../../../IPXACTmodels/Component/Cpu.cpp \
-    ../../../../../IPXACTmodels/common/ClockUnit.cpp \
-    ../../../../../IPXACTmodels/Component/OtherClockDriver.cpp \
-    ../../../../../IPXACTmodels/Component/Model.cpp \
-    ../../../../../IPXACTmodels/kactusExtensions/SWView.cpp \
-    ../../../../../IPXACTmodels/Component/ComponentGenerator.cpp \
-    ../../../../../IPXACTmodels/kactusExtensions/ApiInterface.cpp \
-    ../../../../../IPXACTmodels/kactusExtensions/ComInterface.cpp \
-    ../../../../../IPXACTmodels/kactusExtensions/SystemView.cpp \
-    ../../../../../IPXACTmodels/Component/Channel.cpp \
-    ../../../../../IPXACTmodels/common/ModuleParameter.cpp \
-    ../../../../../IPXACTmodels/common/FileBuilder.cpp \
-    ../../../../../IPXACTmodels/common/BuildModel.cpp \
-    ../../../../../IPXACTmodels/common/FileTypes.cpp \
-    ../../../../../IPXACTmodels/Component/BuildCommand.cpp \
+    ../../../../../IPXACTmodels/Component/MemoryBlockBase.cpp \
+    ../../../../../IPXACTmodels/Component/MemoryMap.cpp \
+    ../../../../../IPXACTmodels/Component/MemoryMapBase.cpp \
     ../../../../../IPXACTmodels/Component/MemoryRemap.cpp \
-    ../../../../../IPXACTmodels/Component/Wire.cpp \
-    ../../../../../IPXACTmodels/Component/Transactional.cpp \
-    ../../../../../IPXACTmodels/kactusExtensions/Kactus2Placeholder.cpp \
-    ../../../../../IPXACTmodels/Component/AlternateRegister.cpp \
-    ../../../../../IPXACTmodels/Component/RemapPort.cpp \
+    ../../../../../IPXACTmodels/Component/MirroredSlaveInterface.cpp \
+    ../../../../../IPXACTmodels/Component/Model.cpp \
+    ../../../../../IPXACTmodels/common/ModuleParameter.cpp \
+    ../../../../../IPXACTmodels/common/NameGroup.cpp \
+    ../../../../../IPXACTmodels/common/NameValuePair.cpp \
+    ../../../../../IPXACTmodels/Component/OtherClockDriver.cpp \
+    ../../../../../IPXACTmodels/common/Parameter.cpp \
+    ../../../../../IPXACTmodels/validators/ParameterValidator2014.cpp \
+    ../../../../../IPXACTmodels/common/PartSelect.cpp \
+    ../../../../../IPXACTmodels/Component/Port.cpp \
+    ../../../../../IPXACTmodels/Component/PortMap.cpp \
     ../../../../../IPXACTmodels/common/Protocol.cpp \
+    ../../../../../IPXACTmodels/common/Range.cpp \
+    ../../../../../IPXACTmodels/Component/Register.cpp \
+    ../../../../../IPXACTmodels/Component/RegisterBase.cpp \
+    ../../../../../IPXACTmodels/Component/RegisterDefinition.cpp \
+    ../../../../../IPXACTmodels/Component/RemapPort.cpp \
+    ../../../../../IPXACTmodels/Component/RemapState.cpp \
+    ../../../../../IPXACTmodels/kactusExtensions/SWFileBuilder.cpp \
+    ../../../../../IPXACTmodels/kactusExtensions/SWView.cpp \
+    ../../../../../IPXACTmodels/Component/Segment.cpp \
+    ../../../../../IPXACTmodels/Component/SlaveInterface.cpp \
+    ../../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
+    ../../../../../IPXACTmodels/kactusExtensions/SystemView.cpp \
+    ../../../../../IPXACTmodels/Component/Transactional.cpp \
     ../../../../../IPXACTmodels/common/TransactionalTypes.cpp \
-    ../../../../../IPXACTmodels/common/DirectionTypes.cpp \
-    ../../../../../IPXACTmodels/kactusExtensions/ComProperty.cpp \
+    ../../../../../IPXACTmodels/common/VLNV.cpp \
+    ../../../../../IPXACTmodels/common/Vector.cpp \
+    ../../../../../IPXACTmodels/Component/View.cpp \
+    ../../../../../IPXACTmodels/Component/Wire.cpp \
+    ../../../../../IPXACTmodels/Component/WireTypeDef.cpp \
+    ../../../../../IPXACTmodels/Component/WriteValueConstraint.cpp \
     ../../../../../IPXACTmodels/generaldeclarations.cpp \
-    ../../../../../IPXACTmodels/kactusExtensions/BSPBuildCommand.cpp \
-    ../../../../../IPXACTmodels/kactusExtensions/SWFileBuilder.cpp
+    ./tst_FieldValidator.cpp \
+    ../../../../../editors/ComponentEditor/common/ValueFormatter.cpp

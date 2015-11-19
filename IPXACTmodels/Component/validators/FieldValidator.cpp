@@ -26,9 +26,8 @@
 // Function: FieldValidator::FieldValidator()
 //-----------------------------------------------------------------------------
 FieldValidator::FieldValidator(QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<ParameterFinder> finder, QSharedPointer<QList<QSharedPointer<Choice> > > choices):
+    QSharedPointer<QList<QSharedPointer<Choice> > > choices):
 expressionParser_(expressionParser),
-parameterFinder_(finder),
 availableChoices_(choices)
 {
 
@@ -261,7 +260,7 @@ bool FieldValidator::hasValidParameters(QSharedPointer<Field> field) const
 {
     if (!field->getParameters()->isEmpty())
     {
-        ParameterValidator2014 validator(expressionParser_, parameterFinder_, availableChoices_);
+        ParameterValidator2014 validator(expressionParser_, availableChoices_);
         QStringList parameterNames;
 
         foreach (QSharedPointer<Parameter> parameter, *field->getParameters())
@@ -508,7 +507,7 @@ void FieldValidator::findErrorsInParameters(QVector<QString>& errors, QSharedPoi
 {
     if (!hasValidParameters(field))
     {
-        ParameterValidator2014 validator(expressionParser_, parameterFinder_, availableChoices_);
+        ParameterValidator2014 validator(expressionParser_, availableChoices_);
         QString context = "field " + field->name();
 
         QStringList parameterNames;

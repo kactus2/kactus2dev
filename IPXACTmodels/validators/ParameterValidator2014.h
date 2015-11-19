@@ -14,10 +14,10 @@
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
-#include <editors/ComponentEditor/common/ParameterFinder.h>
-
 #include <QString>
+#include <QSharedPointer>
 
+class Parameter;
 class Choice;
 class ExpressionParser;
 
@@ -32,11 +32,9 @@ public:
 	 *  The constructor.
 	 *
 	 *      @param [in] expressionParser    The parser to use for solving expressions.
-     *      @param [in] parameterFinder     The parameter finder.
      *      @param [in] availavleChocies    The currently available choices.
 	 */
     ParameterValidator2014(QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices);
 
 	//! The destructor.
@@ -354,9 +352,6 @@ private:
 
     //! The expression parser to use for solving minimum, maximum and value.
     QSharedPointer<ExpressionParser> expressionParser_;
-
-    //! The parameter finder.
-    QSharedPointer<ParameterFinder> parameterFinder_;
 
     //! The available choices for a parameter.
     QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices_;

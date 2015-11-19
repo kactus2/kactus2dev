@@ -18,7 +18,6 @@
 #include <IPXACTmodels/Component/Choice.h>
 
 #include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
-#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 
 #include <QtTest>
 
@@ -81,8 +80,7 @@ void tst_FieldValidator::testNameIsValid()
     QSharedPointer<Field> testField (new Field(name));
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    QSharedPointer<ParameterFinder> finder(new ComponentParameterFinder(QSharedPointer<Component>()));
-    FieldValidator validator(parser, finder, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    FieldValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
     QCOMPARE(validator.hasValidName(testField), isValid);
 
     if (!isValid)
@@ -125,8 +123,7 @@ void tst_FieldValidator::testIsPresentIsValid()
     testField->setIsPresent(isPresent);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    QSharedPointer<ParameterFinder> finder(new ComponentParameterFinder(QSharedPointer<Component>()));
-    FieldValidator validator(parser, finder, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    FieldValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
     QCOMPARE(validator.hasValidIsPresent(testField), isValid);
 
     if (!isValid)
@@ -172,8 +169,7 @@ void tst_FieldValidator::testBitOffsetIsValid()
     testField->setBitOffset(bitOffset);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    QSharedPointer<ParameterFinder> finder(new ComponentParameterFinder(QSharedPointer<Component>()));
-    FieldValidator validator(parser, finder, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    FieldValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
     QCOMPARE(validator.hasValidBitOffset(testField), isValid);
 
     if (!isValid)
@@ -223,8 +219,7 @@ void tst_FieldValidator::testResetsAreValid()
     testField->setResetMask(resetMask);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    QSharedPointer<ParameterFinder> finder(new ComponentParameterFinder(QSharedPointer<Component>()));
-    FieldValidator validator(parser, finder, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    FieldValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
     QCOMPARE(validator.hasValidResetValue(testField), resetValueIsValid);
 
     if (!resetValueIsValid)
@@ -304,8 +299,7 @@ void tst_FieldValidator::testWriteValueConstraintIsValid()
     testField->setWriteConstraint(testConstraint);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    QSharedPointer<ParameterFinder> finder(new ComponentParameterFinder(QSharedPointer<Component>()));
-    FieldValidator validator(parser, finder, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    FieldValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
     QCOMPARE(validator.hasValidWriteValueConstraint(testField), isValid);
 
     if (!isValid)
@@ -398,8 +392,7 @@ void tst_FieldValidator::testReservedIsValid()
     testField->setReserved(reserved);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    QSharedPointer<ParameterFinder> finder(new ComponentParameterFinder(QSharedPointer<Component>()));
-    FieldValidator validator(parser, finder, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    FieldValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
     QCOMPARE(validator.hasValidReserved(testField), isValid);
 
     if (!isValid)
@@ -442,8 +435,7 @@ void tst_FieldValidator::testBitWidthIsValid()
     testField->setBitWidth(bitWidth);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    QSharedPointer<ParameterFinder> finder(new ComponentParameterFinder(QSharedPointer<Component>()));
-    FieldValidator validator(parser, finder, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    FieldValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
     QCOMPARE(validator.hasValidBitWidth(testField), isValid);
 
     if (!isValid)
@@ -484,8 +476,7 @@ void tst_FieldValidator::testBitWidthIsValid_data()
 void tst_FieldValidator::testEnumeratedValuesAreValid()
 {
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    QSharedPointer<ParameterFinder> finder(new ComponentParameterFinder(QSharedPointer<Component>()));
-    FieldValidator validator(parser, finder, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    FieldValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
 
     QSharedPointer<EnumeratedValue> enumeratedValue(new EnumeratedValue("test", "4"));
 
@@ -564,8 +555,7 @@ void tst_FieldValidator::testParametersAreValid()
     testField->getParameters()->append(testParameter);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    QSharedPointer<ParameterFinder> finder(new ComponentParameterFinder(QSharedPointer<Component>()));
-    FieldValidator validator(parser, finder, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    FieldValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
     
     QCOMPARE(validator.hasValidParameters(testField), true);
 
@@ -617,8 +607,7 @@ void tst_FieldValidator::testAccessIsValid()
     testField->setReadAction(General::str2ReadAction(readAction));
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    QSharedPointer<ParameterFinder> finder(new ComponentParameterFinder(QSharedPointer<Component>()));
-    FieldValidator validator(parser, finder, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    FieldValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
     QCOMPARE(validator.hasValidAccess(testField), isValid);
 
     if (!isValid)

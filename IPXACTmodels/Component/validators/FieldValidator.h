@@ -21,7 +21,6 @@ class ExpressionParser;
 class Field;
 
 class Choice;
-class ParameterFinder;
 
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:Field.
@@ -37,7 +36,7 @@ public:
      *      @param [in] finder              The parameter finder used.
      *      @param [in] choices             The used choices.
      */
-    FieldValidator(QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ParameterFinder> finder,
+    FieldValidator(QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<QList<QSharedPointer<Choice> > > choices);
 
 	//! The destructor.
@@ -279,9 +278,6 @@ private:
 
     //! The expression parser to use.
     QSharedPointer<ExpressionParser> expressionParser_;
-
-    //! The parameter finder to use.
-    QSharedPointer<ParameterFinder> parameterFinder_;
 
     //! The available choices.
     QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices_;

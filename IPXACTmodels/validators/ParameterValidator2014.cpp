@@ -15,8 +15,10 @@
 
 #include <IPXACTmodels/Component/choice.h>
 #include <IPXACTmodels/common/Enumeration.h>
+#include <IPXACTmodels/common/Parameter.h>
 
 #include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <editors/ComponentEditor/common/ValueFormatter.h>
 
 #include <QRegularExpression>
 #include <QStringList>
@@ -25,10 +27,8 @@
 // Function: SystemVerilogValidator::SystemVerilogValidator()
 //-----------------------------------------------------------------------------
 ParameterValidator2014::ParameterValidator2014(QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices):
 expressionParser_(expressionParser),
-parameterFinder_(parameterFinder),
 availableChoices_(availableChoices)
 {
 
@@ -113,31 +113,24 @@ bool ParameterValidator2014::hasValidValueForType(QString const& value, QString 
         return false;
     }
 
+    if (expressionParser_->isArrayExpression(value))
+    {
+        return isArrayValidForType(value, type);
+    }
+
     bool canConvert = false;
     QString solvedValue = expressionParser_->parseExpression(value);
 
-    if (expressionParser_->isArrayExpression(solvedValue))
+    if (type == "bit")
     {
-        if (type == "bit")
+        QRegularExpression testi("^[1-9]?[0-9]*'([bB]|[hH])");
+        if (testi.match(value).hasMatch())
         {
-            if (parameterFinder_->hasId(value))
-            {
-                return hasValidValueForType(parameterFinder_->valueForId(value), type);
-            }
-            else
-            {
-                return isArrayValidForType(value, type);
-            }
+            ValueFormatter formatter;
+            solvedValue = formatter.format(solvedValue, 2);
         }
-        else
-        {
-            return isArrayValidForType(solvedValue, type);
-        }
-    }
 
-    else if (type == "bit")
-    {
-        QRegularExpression bitExpression("^([01]|[1-9]+[0-9]*'([bB][01_]+|[hH][0-9a-fA-F_]+))$");
+        QRegularExpression bitExpression("^([01]|[1-9]?[0-9]*'([bB][01_]+|[hH][0-9a-fA-F_]+))$");
         return bitExpression.match(value).hasMatch() || bitExpression.match(solvedValue).hasMatch();
     }
     else if (type == "byte")
@@ -584,48 +577,20 @@ QStringList ParameterValidator2014::splitArrayToList(QString const& arrayValue) 
 //-----------------------------------------------------------------------------
 bool ParameterValidator2014::arrayValuesAreSameSize(QStringList const& bitArray, QString type) const
 {
-    if (type == "bit")
+    if (type == "bit" && bitArray.size() > 1)
     {
-        QString firstValue = bitArray.first();
-        firstValue = firstValue.remove(" ");
-        QRegularExpression sizeValueSeparator ("'[bB]");
-        int bitSize = 1;
+        ValueFormatter formatter;
+        QString formattedFirst = formatter.format(expressionParser_->parseExpression(bitArray.first()), 2);
+        int bitSize = formattedFirst.size();
 
-        if (firstValue.contains(sizeValueSeparator))
+        for (int i = 1; i < bitArray.size(); ++i)
         {
-            QStringList comparisonValues = firstValue.split(sizeValueSeparator);
+            QString solvedValue = expressionParser_->parseExpression(bitArray.at(i));
+            QString formattedValue = formatter.format(solvedValue, 2);
 
-            if (!comparisonValues.at(0).isEmpty())
+            if (bitSize != formattedValue.size())
             {
-                bitSize = comparisonValues.at(0).toInt();
-            }
-
-            foreach (QString arrayValue, bitArray)
-            {
-                arrayValue = arrayValue.remove(" ");
-                comparisonValues = arrayValue.split(sizeValueSeparator);
-
-                if (comparisonValues.at(0).isEmpty())
-                {
-                    comparisonValues[0] = "1";
-                }
-
-                comparisonValues[1] = comparisonValues[1].remove("_");
-                if (comparisonValues.at(0).toInt() != bitSize || comparisonValues.at(1).size() != bitSize)
-                {
-                    return false;
-                }
-            }
-        }
-
-        else
-        {
-            foreach (QString arrayValue, bitArray)
-            {
-                if (arrayValue.size() != bitSize)
-                {
-                    return false;
-                }
+                return false;
             }
         }
     }
