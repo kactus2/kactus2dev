@@ -65,7 +65,7 @@ void tst_EnumeratedValueValidator::testNameIsValid()
         validator.findErrorsIn(foundErrors, enumeratedValue, "test");
 
         QString expectedError =
-            QObject::tr("No name specified for %1 within %2").arg(enumeratedValue->name(), "test");
+            QObject::tr("Invalid name specified for %1 within %2").arg(enumeratedValue->name(), "test");
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
         {
             QFAIL("No error message found");

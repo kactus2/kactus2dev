@@ -64,7 +64,11 @@ bool EnumeratedValueValidator::hasValidName(QSharedPointer<EnumeratedValue> enum
 //-----------------------------------------------------------------------------
 bool EnumeratedValueValidator::hasValidValue(QSharedPointer<EnumeratedValue> enumeratedValue) const
 {
-    return !enumeratedValue->getValue().isEmpty();
+    QString value = enumeratedValue->getValue();
+    QString solvedValue = expressionParser_->parseExpression(value);
+
+    QRegularExpression bitExpression("^([0-9]+|[1-9]+[0-9]*'([bB][01_]+|[hH][0-9a-fA-F_]+))$");
+    return !value.isEmpty() || bitExpression.match(value).hasMatch() || bitExpression.match(solvedValue).hasMatch();
 }
 
 //-----------------------------------------------------------------------------
@@ -85,7 +89,7 @@ void EnumeratedValueValidator::findErrorsInName(QVector<QString>& errors,
 {
     if (!hasValidName(enumeratedValue))
     {
-        errors.append(QObject::tr("No name specified for %1 within %2").arg(enumeratedValue->name(), context));
+        errors.append(QObject::tr("Invalid name specified for %1 within %2").arg(enumeratedValue->name(), context));
     }
 }
 

@@ -12,7 +12,8 @@
 TEMPLATE = subdirs
 
 CONFIG += testcase
-SUBDIRS += Validators\tst_EnumeratedValueValidator.pro \
+SUBDIRS += validators\tst_EnumeratedValueValidator.pro \
+		   validators\tst_FieldValidator.pro \
 		   tst_EnumeratedValueWriter.pro \
 		   tst_EnumeratedValueReader.pro \
 		   tst_FieldWriter.pro \

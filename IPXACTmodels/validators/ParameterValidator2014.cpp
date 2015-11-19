@@ -425,7 +425,7 @@ qreal ParameterValidator2014::valueOf(QString const& value, QString const& type)
 void ParameterValidator2014::findErrorsInName(QVector<QString>& errors, QSharedPointer<Parameter> parameter,
     QString const& context) const
 {
-    if (hasValidName(parameter.data()))
+    if (!hasValidName(parameter.data()))
     {
         errors.append(QObject::tr("No name specified for %1 %2 within %3").arg(parameter->elementName(),
             parameter->name(), context));

@@ -113,10 +113,9 @@ void FieldWriter::writeReset(QXmlStreamWriter& writer, QSharedPointer<Field> fie
         {
             writer.writeAttribute("resetTypeRef", field->getResetTypeReference());
         }
-        if (!field->getResetValue().isEmpty())
-        {
-            writer.writeTextElement("ipxact:value", field->getResetValue());
-        }
+
+        writer.writeTextElement("ipxact:value", field->getResetValue());
+
         if (!field->getResetMask().isEmpty())
         {
             writer.writeTextElement("ipxact:mask", field->getResetMask());

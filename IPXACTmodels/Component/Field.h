@@ -51,28 +51,6 @@ public:
 
 	//! The destructor.
 	virtual ~Field();
-
-	/*! \brief Check if the field is in a valid state.
-	 * 
-	 * \param registerSize The size of the containing register, field must not extend beyond this.
-     * \param componentChoices  Choices in the containing component.
-	 * \param errorList The list to add the possible error messages to.
-	 * \param parentIdentifier String from parent to help to identify the location of the error.
-	 *
-	 * \return bool True if the state is valid and writing is possible.
-	*/
-	//bool isValid(unsigned int registerSize, QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
-    //    QStringList& errorList, const QString& parentIdentifier) const;
-
-	/*! \brief Check if the field is in a valid state.
-	 * 
-	 * \param registerSize The size of the containing register, field must not extend beyond this.
-     * \param componentChoices  Choices in the containing component.
-	 * 
-	 * \return bool True if the state is valid and writing is possible.
-	*/
-	//bool isValid(unsigned int registerSize, QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices)
-    //    const;
     
     /*!
      *  Get the id of the field.

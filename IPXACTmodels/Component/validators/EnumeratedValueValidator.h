@@ -17,7 +17,6 @@
 #include <QSharedPointer>
 #include <QString>
 
-// class Choice;
 class ExpressionParser;
 class EnumeratedValue;
 
@@ -105,7 +104,7 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The expression parser to use for solving minimum, maximum and value.
+    //! The expression parser to use.
     QSharedPointer<ExpressionParser> expressionParser_;
 };
 
