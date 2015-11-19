@@ -16,11 +16,13 @@
 
 #include <tests/MockObjects/LibraryMock.h>
 
+#include <IPXACTmodels/Component/Component.h>
+
+#include <IPXACTmodels/Design/Design.h>
+
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/design.h>
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 class tst_DocumentTreeBuilder : public QObject
 {
@@ -60,6 +62,7 @@ private:
     VLNV topDesignVLNV();
 
     QSharedPointer<DesignConfiguration> createDesignConfiguration();
+
     VLNV topDesignConfigurationVLNV();
 
     //-----------------------------------------------------------------------------
@@ -134,9 +137,14 @@ void tst_DocumentTreeBuilder::testHierarchicalReferenceToDesign()
     QSharedPointer<Component> component = createTopComponent();
     createDesign();
 
-    View* hierarchicalView = component->createView();
-    hierarchicalView->setHierarchyRef(topDesignVLNV());
+    QSharedPointer<View> hierarchicalView(new View());
+    hierarchicalView->setDesignInstantiationRef("rtl_design");
+    component->getViews()->append(hierarchicalView);
 
+    QSharedPointer<DesignInstantiation> testInstantiation(new DesignInstantiation("rtl_design"));
+    QSharedPointer<ConfigurableVLNVReference> designReference(new ConfigurableVLNVReference(topDesignVLNV()));
+    testInstantiation->setDesignReference(designReference);
+    component->getDesignInstantiations()->append(testInstantiation);
 
     QObject* rootObject = builder_->createFrom(topComponentVLNV());
 
@@ -157,12 +165,19 @@ void tst_DocumentTreeBuilder::testHierarchicalReferenceToDesign()
 void tst_DocumentTreeBuilder::testHierarchicalReferenceToDesignConfiguration()
 {
     QSharedPointer<Component> component = createTopComponent();
-
     createDesign();
     createDesignConfiguration();
 
-    View* hierarchicalView = component->createView();
-    hierarchicalView->setHierarchyRef(topDesignConfigurationVLNV());
+    QSharedPointer<View> hierarchicalView(new View());
+    hierarchicalView->setDesignConfigurationInstantiationRef("rtl_design_config");
+    component->getViews()->append(hierarchicalView);
+
+    QSharedPointer<DesignConfigurationInstantiation> testConfiguration(
+        new DesignConfigurationInstantiation("rtl_design_config"));
+    QSharedPointer<ConfigurableVLNVReference> configurationRef(new ConfigurableVLNVReference(
+        topDesignConfigurationVLNV()));
+    testConfiguration->setDesignConfigurationReference(configurationRef);
+    component->getDesignConfigurationInstantiations()->append(testConfiguration);
 
     QObject* rootObject = builder_->createFrom(topComponentVLNV());
 
@@ -188,24 +203,29 @@ void tst_DocumentTreeBuilder::testHierarchicalReferenceToDesignConfiguration()
 //-----------------------------------------------------------------------------
 void tst_DocumentTreeBuilder::testHierarchicalReferenceToInstanceInDesign()
 {
+    QSharedPointer<Component> component = createTopComponent();
     QSharedPointer<Design> design = createDesign();
-    
+    createDesignConfiguration();
+
     VLNV instanceVLNV(VLNV::COMPONENT, "TestVendor", "TestLibrary", "TestInstance", "TestVersion");
     QSharedPointer<Component> instanceComponent(new Component(instanceVLNV));
     library_->addComponent(instanceComponent);
 
-    ComponentInstance instance("instance1", "", "", instanceVLNV, QPointF(), "");
-
-    QList<ComponentInstance> instances;
-    instances.append(instance);
-    design->setComponentInstances(instances);
+    QSharedPointer<ComponentInstance> instance(new ComponentInstance());
+    instance->setInstanceName("instance1");
+    instance->setComponentRef(QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(instanceVLNV)));
+    design->getComponentInstances()->append(instance);
     
-    QSharedPointer<Component> component = createTopComponent();
+    QSharedPointer<View> hierarchicalView(new View());
+    hierarchicalView->setDesignConfigurationInstantiationRef("configuration");
+    component->getViews()->append(hierarchicalView);
 
-    createDesignConfiguration();
-
-    View* hierarchicalView = component->createView();
-    hierarchicalView->setHierarchyRef(topDesignConfigurationVLNV());
+    QSharedPointer<DesignConfigurationInstantiation> testConfiguration(
+        new DesignConfigurationInstantiation("configuration"));
+    QSharedPointer<ConfigurableVLNVReference> configurationRef(new ConfigurableVLNVReference(
+        topDesignConfigurationVLNV()));
+    testConfiguration->setDesignConfigurationReference(configurationRef);
+    component->getDesignConfigurationInstantiations()->append(testConfiguration);
 
     QObject* rootObject = builder_->createFrom(topComponentVLNV());
     QCOMPARE(rootObject->children().count(), 1);
@@ -230,20 +250,25 @@ void tst_DocumentTreeBuilder::testHierarchicalReferenceToInstanceInDesign()
 void tst_DocumentTreeBuilder::testReferenceToInstanceInDesignWithoutDesignConfiguration()
 {
     QSharedPointer<Component> component = createTopComponent();
-    View* hierarchicalView = component->createView();
-    hierarchicalView->setHierarchyRef(topDesignVLNV());
-
     QSharedPointer<Design> design = createDesign();
+
+    QSharedPointer<View> hierarchicalView(new View());
+    hierarchicalView->setDesignInstantiationRef("rtl_design");
+    component->getViews()->append(hierarchicalView);
+   
+    QSharedPointer<DesignInstantiation> testInstantiation(new DesignInstantiation("rtl_design"));
+    QSharedPointer<ConfigurableVLNVReference> designReference(new ConfigurableVLNVReference(topDesignVLNV()));
+    testInstantiation->setDesignReference(designReference);
+    component->getDesignInstantiations()->append(testInstantiation);
 
     VLNV instanceVLNV(VLNV::COMPONENT, "TestVendor", "TestLibrary", "TestInstance", "TestVersion");
     QSharedPointer<Component> instanceComponent(new Component(instanceVLNV));
     library_->addComponent(instanceComponent);
 
-    ComponentInstance instance("instance1", "", "", instanceVLNV, QPointF(), "");
-
-    QList<ComponentInstance> instances;
-    instances.append(instance);
-    design->setComponentInstances(instances);
+    QSharedPointer<ComponentInstance> instance(new ComponentInstance());
+    instance->setInstanceName("instance1");
+    instance->setComponentRef(QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(instanceVLNV)));
+    design->getComponentInstances()->append(instance);
 
     QObject* rootObject = builder_->createFrom(topComponentVLNV());
     QCOMPARE(rootObject->children().count(), 1);
@@ -265,22 +290,27 @@ void tst_DocumentTreeBuilder::testReferenceToInstanceInDesignWithoutDesignConfig
 //-----------------------------------------------------------------------------
 void tst_DocumentTreeBuilder::testDesignInInstantiatedComponent()
 {
-    QSharedPointer<Component> component = createTopComponent();
-
-    View* hierarchicalView = component->createView();
-    hierarchicalView->setHierarchyRef(topDesignVLNV());
-
+    QSharedPointer<Component> topComponent = createTopComponent();
     QSharedPointer<Design> design = createDesign();
+
+    QSharedPointer<View> topView(new View());
+    topView->setDesignInstantiationRef("top_design");
+    topComponent->getViews()->append(topView);
+
+    QSharedPointer<DesignInstantiation> topDesignInstantiation(new DesignInstantiation("top_design"));
+    QSharedPointer<ConfigurableVLNVReference> designReference(new ConfigurableVLNVReference(topDesignVLNV()));
+    topDesignInstantiation->setDesignReference(designReference);
+    topComponent->getDesignInstantiations()->append(topDesignInstantiation);
 
     VLNV instanceVLNV(VLNV::COMPONENT, "TestVendor", "TestLibrary", "TestInstance", "TestVersion");
     QSharedPointer<Component> instanceComponent(new Component(instanceVLNV));
     library_->addComponent(instanceComponent);
 
-    ComponentInstance instance("instance1", "", "", instanceVLNV, QPointF(), "");
-
-    QList<ComponentInstance> instances;
-    instances.append(instance);
-    design->setComponentInstances(instances);
+    QSharedPointer<ComponentInstance> componentInstance(new ComponentInstance());
+    componentInstance->setInstanceName("instance1");
+    componentInstance->setComponentRef(QSharedPointer<ConfigurableVLNVReference>(
+        new ConfigurableVLNVReference(instanceVLNV)));
+    design->getComponentInstances()->append(componentInstance);
 
     VLNV instanceDesignVLNV(VLNV::DESIGN, "TestVendor", "TestLibrary", "BottomDesign", "TestVersion");
     QSharedPointer<Design> instanceDesign(new Design(instanceDesignVLNV));
@@ -290,15 +320,21 @@ void tst_DocumentTreeBuilder::testDesignInInstantiatedComponent()
     QSharedPointer<Component> bottomComponent(new Component(bottomInstanceVLNV));
     library_->addComponent(bottomComponent);
 
-    ComponentInstance bottomInstance("bottomInstance", "", "", bottomInstanceVLNV, QPointF(), "");
+    QSharedPointer<ComponentInstance> bottomInstance(new ComponentInstance());
+    bottomInstance->setInstanceName("bottomInstance");
+    bottomInstance->setComponentRef(QSharedPointer<ConfigurableVLNVReference>(
+        new ConfigurableVLNVReference(bottomInstanceVLNV)));
+    instanceDesign->getComponentInstances()->append(bottomInstance);
 
-    QList<ComponentInstance> bottomInstances;
-    bottomInstances.append(bottomInstance);
-    instanceDesign->setComponentInstances(bottomInstances);
+    QSharedPointer<View> bottomView(new View());
+    bottomView->setDesignInstantiationRef("bottom_design");
+    instanceComponent->getViews()->append(bottomView);
 
-    View* bottomView = instanceComponent->createView();
-    bottomView->setHierarchyRef(instanceDesignVLNV);
-
+    QSharedPointer<DesignInstantiation> bottomInstantiation(new DesignInstantiation("bottom_design"));
+    QSharedPointer<ConfigurableVLNVReference> bottomReference(new ConfigurableVLNVReference(instanceDesignVLNV));
+    bottomInstantiation->setDesignReference(bottomReference);
+    instanceComponent->getDesignInstantiations()->append(bottomInstantiation);
+    
     QObject* rootObject = builder_->createFrom(topComponentVLNV());
 
     QCOMPARE(rootObject->children().count(), 1);
@@ -326,24 +362,30 @@ void tst_DocumentTreeBuilder::testDesignInInstantiatedComponent()
 void tst_DocumentTreeBuilder::testMultipleInstances()
 {
     QSharedPointer<Component> component = createTopComponent();
-
-    View* hierarchicalView = component->createView();
-    hierarchicalView->setHierarchyRef(topDesignVLNV());
-
     QSharedPointer<Design> design = createDesign();
+
+    QSharedPointer<View> hierarchicalView(new View());
+    hierarchicalView->setDesignInstantiationRef("rtl_design");
+    component->getViews()->append(hierarchicalView);
+
+    QSharedPointer<DesignInstantiation> testInstantiation(new DesignInstantiation("rtl_design"));
+    QSharedPointer<ConfigurableVLNVReference> designReference(new ConfigurableVLNVReference(topDesignVLNV()));
+    testInstantiation->setDesignReference(designReference);
+    component->getDesignInstantiations()->append(testInstantiation);
 
     VLNV instanceVLNV(VLNV::COMPONENT, "TestVendor", "TestLibrary", "TestInstance", "TestVersion");
     QSharedPointer<Component> instanceComponent(new Component(instanceVLNV));
     library_->addComponent(instanceComponent);
 
-    QList<ComponentInstance> instances;
     const int INSTANCE_COUNT = 3;
     for (int i = 0; i < INSTANCE_COUNT; i++)
     {
-        ComponentInstance instance("instance" + QString::number(i), "", "", instanceVLNV, QPointF(), "");
-        instances.append(instance);
+        QSharedPointer<ComponentInstance> instance(new ComponentInstance());
+        instance->setInstanceName("instance" + QString::number(i));
+        instance->setComponentRef(QSharedPointer<ConfigurableVLNVReference>(
+            new ConfigurableVLNVReference(instanceVLNV)));
+         design->getComponentInstances()->append(instance);
     }
-    design->setComponentInstances(instances);
 
     QObject* rootObject = builder_->createFrom(topComponentVLNV());
 
@@ -366,11 +408,10 @@ void tst_DocumentTreeBuilder::testStartFromDesign()
     QSharedPointer<Component> instanceComponent(new Component(instanceVLNV));
     library_->addComponent(instanceComponent);
 
-    ComponentInstance instance("instance1", "", "", instanceVLNV, QPointF(), "");
-
-    QList<ComponentInstance> instances;
-    instances.append(instance);
-    design->setComponentInstances(instances);
+    QSharedPointer<ComponentInstance> instance(new ComponentInstance());
+    instance->setInstanceName("instance1");
+    instance->setComponentRef(QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(instanceVLNV)));
+    design->getComponentInstances()->append(instance);
 
     QObject* rootObject = builder_->createFrom(topDesignVLNV());
     QCOMPARE(rootObject->children().count(), 1);
@@ -394,11 +435,10 @@ void tst_DocumentTreeBuilder::testStartFromDesignConfiguration()
     QSharedPointer<Component> instanceComponent(new Component(instanceVLNV));
     library_->addComponent(instanceComponent);
 
-    ComponentInstance instance("instance1", "", "", instanceVLNV, QPointF(), "");
-
-    QList<ComponentInstance> instances;
-    instances.append(instance);
-    design->setComponentInstances(instances);
+    QSharedPointer<ComponentInstance> instance(new ComponentInstance());
+    instance->setInstanceName("instance1");
+    instance->setComponentRef(QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(instanceVLNV)));
+    design->getComponentInstances()->append(instance);
 
     createDesignConfiguration();
 

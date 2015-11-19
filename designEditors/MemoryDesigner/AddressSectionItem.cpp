@@ -19,8 +19,6 @@
 #include <designEditors/common/diagramgrid.h>
 #include <designEditors/common/DesignDiagram.h>
 
-#include <IPXACTmodels/addressblock.h>
-
 #include <QFont>
 #include <QPainter>
 #include <QApplication>
@@ -29,8 +27,8 @@
 //-----------------------------------------------------------------------------
 // Function: AddressSectionItem::AddressSectionItem()
 //-----------------------------------------------------------------------------
-AddressSectionItem::AddressSectionItem(QString const& name, quint64 startAddress,
-                                       quint64 range, QGraphicsItem* parent)
+AddressSectionItem::AddressSectionItem(QString const& name, quint64 startAddress, quint64 range,
+    QGraphicsItem* parent)
     : MemoryBaseItem(parent),
       name_(name),
       startAddress_(startAddress),

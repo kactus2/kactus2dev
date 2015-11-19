@@ -3857,9 +3857,9 @@ void MainWindow::changeProtection(bool locked)
                 {
                     detailMsg += tr("The component has been instantiated in the following %1 component(s):\n").arg(refCount);
 
-                    foreach (VLNV owner, list) {
-                        detailMsg += "* " + owner.getVendor() + ":" + owner.getLibrary() + ":" +
-                            owner.getName() + ":" + owner.getVersion() + "\n"; 
+                    foreach (VLNV const& owner, list)
+                    {
+                        detailMsg += "* " + owner.toString() + "\n"; 
                     }
 
                     message += tr("Changes to the document can affect %1 other documents.").arg(refCount);

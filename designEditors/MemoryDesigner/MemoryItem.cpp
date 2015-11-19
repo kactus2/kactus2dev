@@ -24,9 +24,9 @@
 #include <common/KactusColors.h>
 #include <common/layouts/VStackedLayout.h>
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/memorymap.h>
-#include <IPXACTmodels/addressblock.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/MemoryMap.h>
+#include <IPXACTmodels/Component/AddressBlock.h>
 
 #include <QFont>
 #include <QTextDocument>
@@ -85,8 +85,7 @@ MemoryItem::MemoryItem(LibraryInterface* libInterface, QString const& instanceNa
     aubLabel_->setFont(font);
     aubLabel_->setTextWidth(NAME_COLUMN_WIDTH + 2);
     aubLabel_->setPos(-WIDTH / 2, 0.0);
-    aubLabel_->setHtml(QString("<center>AUB<br>") + QString::number(memoryMap->getAddressUnitBits()) +
-                       QString("</center>"));
+    aubLabel_->setHtml("<center>AUB<br>" + memoryMap->getAddressUnitBits() + "</center>");
     
     // Parse address blocks and add a section for each of them.
     // "Holes" are visualized as 'no memory'.
@@ -94,7 +93,7 @@ MemoryItem::MemoryItem(LibraryInterface* libInterface, QString const& instanceNa
     // First sort address blocks based on their base address.
     QList< QSharedPointer<AddressBlock> > blocks;
     
-    foreach (QSharedPointer<MemoryMapItem> item, memoryMap->getItems())
+    foreach (QSharedPointer<MemoryBlockBase> item, *memoryMap->getMemoryBlocks())
     {
         QSharedPointer<AddressBlock> block = item.dynamicCast<AddressBlock>();
 
@@ -170,7 +169,7 @@ MemoryItem::MemoryItem(LibraryInterface* libInterface, QString const& instanceNa
         }
     }
 
-    updateNameLabel(component->getVlnv()->getName() + "<br>" + memoryMap->name());
+    updateNameLabel(component->getVlnv().getName() + "<br>" + memoryMap->name());
     updateVisuals();
     updateSize();
 }

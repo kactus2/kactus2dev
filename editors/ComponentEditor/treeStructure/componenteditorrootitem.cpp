@@ -14,7 +14,7 @@
 #include "componenteditorbusinterfacesitem.h"
 #include "componenteditortreemodel.h"
 
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorRootItem::ComponentEditorRootItem()

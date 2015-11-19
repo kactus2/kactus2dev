@@ -20,6 +20,8 @@
 
 #include <common/GenericEditProvider.h>
 
+#include <IPXACTmodels/Component/Port.h>
+
 //-----------------------------------------------------------------------------
 // Function: AdHocBoundsModel::AdHocBoundsModel()
 //-----------------------------------------------------------------------------
@@ -106,11 +108,11 @@ QVariant AdHocBoundsModel::data(QModelIndex const& index, int role /*= Qt::Displ
                 {
                     if (index.row() == 0)
                     {
-                        value = connection_->endpoint1()->getPort()->getLeftBound();
+                        return connection_->endpoint1()->getPort()->getLeftBound();
                     }
                     else
                     {
-                        value = connection_->endpoint2()->getPort()->getLeftBound();
+                        return connection_->endpoint2()->getPort()->getLeftBound();
                     }
                 }
 
@@ -125,11 +127,11 @@ QVariant AdHocBoundsModel::data(QModelIndex const& index, int role /*= Qt::Displ
                 {
                     if (index.row() == 0)
                     {
-                        value = connection_->endpoint1()->getPort()->getRightBound();
+                        return connection_->endpoint1()->getPort()->getRightBound();
                     }
                     else
                     {
-                        value = connection_->endpoint2()->getPort()->getRightBound();
+                        return connection_->endpoint2()->getPort()->getRightBound();
                     }
                 }
 

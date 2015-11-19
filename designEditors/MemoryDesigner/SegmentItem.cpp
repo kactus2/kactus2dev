@@ -15,9 +15,9 @@
 
 #include <common/utils.h>
 
-#include <IPXACTmodels/addressblock.h>
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/addressspace.h>
+#include <IPXACTmodels/Component/AddressBlock.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/AddressSpace.h>
 
 #include <QPainter>
 

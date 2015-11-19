@@ -8,9 +8,10 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 
 HEADERS += ../../../mainwindow/SaveHierarchy/SaveAsItem.h \
+    ../../../mainwindow/SaveHierarchy/HierarchicalSaveBuildStrategy.h \
     ../../MockObjects/LibraryMock.h \
-    ../../../mainwindow/SaveHierarchy/HierarchicalSaveBuildStrategy.h
-SOURCES += ../../MockObjects/LibraryMock.cpp \
+    ../../../mainwindow/SaveHierarchy/HierarchicalSaveColumns.h
+SOURCES += ../../../mainwindow/SaveHierarchy/HierarchicalSaveBuildStrategy.cpp \
+    ../../MockObjects/LibraryMock.cpp \
     ../../../mainwindow/SaveHierarchy/SaveAsItem.cpp \
-    ../../../mainwindow/SaveHierarchy/HierarchicalSaveBuildStrategy.cpp \
     ./tst_HierarchicalSaveBuildStrategy.cpp

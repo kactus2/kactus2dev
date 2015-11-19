@@ -20,11 +20,16 @@
 
 #include <common/graphicsItems/GraphicsConnection.h>
 #include <common/GenericEditProvider.h>
+
 #include <designEditors/common/diagramgrid.h>
 #include <designEditors/common/NamelabelWidth.h>
 
+#include <IPXACTmodels/common/DirectionTypes.h>
+
 #include <IPXACTmodels/Component/BusInterface.h>
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/Port.h>
+
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 
 #include <library/LibraryManager/libraryinterface.h>
@@ -67,7 +72,7 @@ AdHocPortItem::AdHocPortItem(Port* port, LibraryInterface* lh,
 
     switch (port->getDirection())
     {
-    case General::IN:
+    case DirectionTypes::IN:
         {
             shape << QPointF(-halfSquareSize, halfSquareSize)
                   << QPointF(-halfSquareSize, -halfSquareSize)
@@ -77,7 +82,7 @@ AdHocPortItem::AdHocPortItem(Port* port, LibraryInterface* lh,
             break;
         }
 
-    case General::OUT:
+    case DirectionTypes::OUT:
         {
             shape << QPointF(-halfSquareSize, halfSquareSize)
                   << QPointF(-halfSquareSize, -halfSquareSize)
@@ -87,7 +92,7 @@ AdHocPortItem::AdHocPortItem(Port* port, LibraryInterface* lh,
             break;
         }
 
-    case General::INOUT:
+    case DirectionTypes::INOUT:
     default:
         {
             shape << QPointF(-halfSquareSize, halfSquareSize)
@@ -222,17 +227,17 @@ bool AdHocPortItem::isConnectionValid(ConnectionEndpoint const* other) const
 
     if (other->isHierarchical())
     {
-        return (port_->getDirection() == General::INOUT ||
-                other->getPort()->getDirection() == General::INOUT ||
+        return (port_->getDirection() == DirectionTypes::INOUT ||
+                other->getPort()->getDirection() == DirectionTypes::INOUT ||
                 port_->getDirection() == other->getPort()->getDirection());
 
     }
     else
     {
-        return (port_->getDirection() == General::INOUT ||
-                other->getPort()->getDirection() == General::INOUT ||
-                (port_->getDirection() == General::IN && other->getPort()->getDirection() == General::OUT) ||
-                (port_->getDirection() == General::OUT && other->getPort()->getDirection() == General::IN));
+        return (port_->getDirection() == DirectionTypes::INOUT ||
+            other->getPort()->getDirection() == DirectionTypes::INOUT ||
+            (port_->getDirection() == DirectionTypes::IN && other->getPort()->getDirection() == DirectionTypes::OUT) ||
+            (port_->getDirection() == DirectionTypes::OUT && other->getPort()->getDirection() == DirectionTypes::IN));
     }
 }
 

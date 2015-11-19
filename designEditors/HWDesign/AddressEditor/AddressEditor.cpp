@@ -16,6 +16,7 @@
 
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/GenericEditProvider.h>
+
 #include <designEditors/common/DesignDiagram.h>
 
 #include <QVBoxLayout>

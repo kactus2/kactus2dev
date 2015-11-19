@@ -18,14 +18,16 @@
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/businterface.h>
-#include <IPXACTmodels/model.h>
-#include <IPXACTmodels/modelparameter.h>
-#include <IPXACTmodels/port.h>
-#include <IPXACTmodels/PortMap.h>
-#include <IPXACTmodels/vlnv.h>
-#include <IPXACTmodels/kactusExtensions/ModuleParameter.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/Component/Model.h>
+
+#include <IPXACTmodels/Component/Port.h>
+#include <IPXACTmodels/Component/PortMap.h>
+
+#include <IPXACTmodels/common/VLNV.h>
+
+#include <IPXACTmodels/common/ModuleParameter.h>
 
 class tst_ComponentVerilogWriter : public QObject
 {
@@ -69,7 +71,7 @@ private slots:
 private:
     void writeComponent(QString const& activeView = QString()); 
 
-    void addPort(QString const& portName, int portSize, General::Direction direction);
+    void addPort(QString const& portName, int portSize, DirectionTypes::Direction direction);
 
     void addModelParameter(QString const& name, QString const& value, QString description = "");
 

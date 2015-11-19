@@ -14,6 +14,7 @@
 
 #include "componenteditoritem.h"
 
+class Component;
 class ComInterface;
 //-----------------------------------------------------------------------------
 //! The COM interfaces-item in the component editor's navigation tree.
@@ -79,9 +80,6 @@ private:
 
 	//! No assignment
 	ComponentEditorComInterfacesItem& operator=(const ComponentEditorComInterfacesItem& other);
-
-	//! The interfaces being edited.
-	QList<QSharedPointer<ComInterface> >& interfaces_;
 };
 
 #endif // COMPONENTEDITORCOMINTERFACESITEM_H

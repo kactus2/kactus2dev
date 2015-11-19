@@ -42,37 +42,6 @@ configurableElementValues_(new QList<QSharedPointer<ConfigurableElementValue> >)
 //-----------------------------------------------------------------------------
 // Function: ConfigurableVLNVReference::ConfigurableVLNVReference()
 //-----------------------------------------------------------------------------
-ConfigurableVLNVReference::ConfigurableVLNVReference(const QDomNode& vlnvReferenceNode, IPXactType type):
-VLNV(),
-configurableElementValues_(new QList<QSharedPointer<ConfigurableElementValue> >)
-{
-    createVLNV(vlnvReferenceNode, type);
-
-    for (int i = 0; i < vlnvReferenceNode.childNodes().count(); ++i) 
-    {
-        QDomNode tempNode = vlnvReferenceNode.childNodes().at(i);
-
-        if (tempNode.nodeName() == "ipxact:configurableElementValues") 
-        {
-            for (int j = 0; j < tempNode.childNodes().count(); ++j)
-            {
-                QDomNode confElementNode = tempNode.childNodes().at(j);
-
-                QString value = confElementNode.childNodes().at(0).nodeValue();
-
-                QDomNamedNodeMap attributeMap = confElementNode.attributes();
-                QString referenceID = attributeMap.namedItem(QString("referenceId")).nodeValue();
-
-                configurableElementValues_->append(QSharedPointer<ConfigurableElementValue>(
-                    new ConfigurableElementValue(value, referenceID)));
-            }
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: ConfigurableVLNVReference::ConfigurableVLNVReference()
-//-----------------------------------------------------------------------------
 ConfigurableVLNVReference::ConfigurableVLNVReference(const IPXactType& type, const QString& vendor,
     const QString& library, const QString& name, const QString& version):
 VLNV(type, vendor, library, name, version),

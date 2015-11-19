@@ -10,6 +10,8 @@
 #include <QComboBox>
 #include <QStringList>
 
+#include <IPXACTmodels/Component/Component.h>
+
 ChannelInterfaceManagerDelegate::ChannelInterfaceManagerDelegate( QObject *parent,
 																 QSharedPointer<Component> component ):
 ComboDelegate(parent),

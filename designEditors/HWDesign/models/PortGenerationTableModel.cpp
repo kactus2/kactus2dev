@@ -111,7 +111,7 @@ QVariant PortGenerationTableModel::data(const QModelIndex& index,
             }   
         case SRC_DIRECTION : 
             {
-                return General::direction2Str(row->getSourceDirection());
+                return DirectionTypes::direction2Str(row->getSourceDirection());
             }
         case SRC_NAME : 
             {
@@ -127,12 +127,12 @@ QVariant PortGenerationTableModel::data(const QModelIndex& index,
             }
         case TARGET_DIRECTION :
             {
-                General::Direction dir = row->getDraftDirection();
-                if ( dir == General::DIRECTION_INVALID )
+                DirectionTypes::Direction dir = row->getDraftDirection();
+                if (dir == DirectionTypes::DIRECTION_INVALID)
                 {
                     return QString(tr("undefined"));
                 }
-                return General::direction2Str(dir);
+                return DirectionTypes::direction2Str(dir);
             }
         case TARGET_DESCRIPTION : 
             {
@@ -153,7 +153,7 @@ QVariant PortGenerationTableModel::data(const QModelIndex& index,
             return QColor("red");
         } 
         else if ( index.column() == TARGET_DIRECTION && 
-            rows_.at(index.row())->getDraftDirection() == General::DIRECTION_INVALID )
+            rows_.at(index.row())->getDraftDirection() == DirectionTypes::DIRECTION_INVALID )
         {
             return QColor("red");
         }
@@ -207,7 +207,7 @@ QVariant PortGenerationTableModel::data(const QModelIndex& index,
         }
         else if ( index.column() == TARGET_DIRECTION )
         {
-            if ( rows_.at(index.row())->getDraftDirection() == General::DIRECTION_INVALID )
+            if ( rows_.at(index.row())->getDraftDirection() == DirectionTypes::DIRECTION_INVALID )
             {
                 return QString(tr("Direction not defined in bus abstraction definition."));
             }
@@ -281,7 +281,8 @@ bool PortGenerationTableModel::setData(const QModelIndex& index, const QVariant&
             }
         case TARGET_DIRECTION :
             {
-                row->setDraftDirection(General::str2Direction(value.toString(),General::DIRECTION_INVALID));
+                row->setDraftDirection(DirectionTypes::str2Direction(value.toString(), 
+                    DirectionTypes::DIRECTION_INVALID));
                 emit dataChanged(index,index);
                 return true;
             }
@@ -373,7 +374,7 @@ void PortGenerationTableModel::initialize(QSharedPointer<Component> srcComponent
     draftComponent_ = targetComponent;
 
     // Get the abstract definition of the bus interface.
-    QSharedPointer<Document> libComp = lh->getModel(busIf->getAbstractionType());
+    QSharedPointer<Document> libComp = lh->getModel(*busIf->getAbstractionTypes()->first()->getAbstractionRef());
     QSharedPointer<AbstractionDefinition> absDef = libComp.staticCast<AbstractionDefinition>();
 
     beginResetModel();    
@@ -384,9 +385,9 @@ void PortGenerationTableModel::initialize(QSharedPointer<Component> srcComponent
     int count = 0;
 
     // Create table rows based on ports in opposing interface. 
-    foreach ( QSharedPointer<PortMap> portMap, busIf->getPortMaps() )
+    foreach (QSharedPointer<PortMap> portMap, *busIf->getPortMaps())
     {
-        QString portName = portMap->physicalPort();          
+        QString portName = portMap->getPhysicalPort()->name_;
         QSharedPointer<Port> port = srcComponent->getPort(portName);
 
         if (!port)
@@ -397,17 +398,17 @@ void PortGenerationTableModel::initialize(QSharedPointer<Component> srcComponent
         if (createNew)
         {
             row = QSharedPointer<PortGenerationRow>(new PortGenerationRow(portName, port->getDirection(),
-                port->description(), port->getPortSize()));
+                port->description(), 1));//port->getPortSize()));
         }
         else
         {
             row = rows_.at(count);
         }
 
-        General::Direction draftDir = absDef->getPortDirection(portMap->logicalPort(), selectedMode);
+        DirectionTypes::Direction draftDir = absDef->getPortDirection(portMap->getLogicalPort()->name_, selectedMode);
         row->setDraftDirection(draftDir);
         row->setDraftName(generateName(portName, port->getDirection(), draftDir));
-        if ( createNew )
+        if (createNew)
         {
             rows_.append(QSharedPointer<PortGenerationRow>(row));
         }
@@ -486,23 +487,23 @@ bool PortGenerationTableModel::nameDuplicates(int const row) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: generateName()
+// Function: PortGenerationTableModel::generateName()
 //-----------------------------------------------------------------------------
-QString PortGenerationTableModel::generateName(QString name, 
-    General::Direction opposingDirection, General::Direction draftDirection, QString delimiter)
+QString PortGenerationTableModel::generateName(QString name, DirectionTypes::Direction opposingDirection,
+    DirectionTypes::Direction draftDirection, QString delimiter)
 {
-    if ( name.isEmpty() )
+    if (name.isEmpty())
     {
         return QString("unnamed");
     }
 
-    if ( draftDirection == General::DIRECTION_INVALID )
+    if (draftDirection == DirectionTypes::DIRECTION_INVALID)
     {
         return name;
     }
 
-    QString ending = delimiter+General::direction2Str(opposingDirection); 
-    QString replacement = delimiter+General::direction2Str(draftDirection); 
+    QString ending = delimiter + DirectionTypes::direction2Str(opposingDirection); 
+    QString replacement = delimiter + DirectionTypes::direction2Str(draftDirection); 
     QString nameCandidate = name + replacement;
     if ( name.endsWith(ending) )
     {

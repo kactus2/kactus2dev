@@ -52,6 +52,25 @@ type_(type)
 {
 }
 
+//-----------------------------------------------------------------------------
+// Function: VLNV::VLNV()
+//-----------------------------------------------------------------------------
+VLNV::VLNV(IPXactType const& type, QString const& parseStr, QString const& separator): 
+vendor_(), 
+    library_(),
+    name_(), 
+    version_(),
+    type_(type)
+{
+    QStringList vlnvFields = parseStr.split(separator);
+    if (vlnvFields.count() == 4)
+    {
+        vendor_ = vlnvFields.at(0);
+        library_ = vlnvFields.at(1);
+        name_ = vlnvFields.at(2);
+        version_ = vlnvFields.at(3);
+    }
+}
 
 //-----------------------------------------------------------------------------
 // Function: VLNV::VLNV()

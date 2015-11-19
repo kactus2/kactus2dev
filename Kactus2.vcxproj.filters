@@ -626,9 +626,6 @@
     <Filter Include="Header Files\editors\ComponentEditor\general">
       <UniqueIdentifier>{ff4ccbc0-6562-4420-953b-ae15689a5ff3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\editors\ComponentEditor\modelParameters">
-      <UniqueIdentifier>{3eccf4de-20e3-4cd4-b207-d1abf0d6cd5c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\editors\ComponentEditor\ports">
       <UniqueIdentifier>{36f2127c-d40c-49c0-9e8b-27180b97b3ed}</UniqueIdentifier>
     </Filter>
@@ -727,9 +724,6 @@
     </Filter>
     <Filter Include="Source Files\editors\ComponentEditor\general">
       <UniqueIdentifier>{900b90ab-3bb9-46cf-a0bd-681c45eb04dc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\editors\ComponentEditor\modelParameters">
-      <UniqueIdentifier>{53729068-7a4d-43de-9ccc-df77f019c8d6}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\editors\ComponentEditor\otherClockDrivers">
       <UniqueIdentifier>{3cc0e478-f0f1-4286-b4a8-74b708d06637}</UniqueIdentifier>
@@ -2494,9 +2488,6 @@
     <ClCompile Include="GeneratedFiles\moc_filegeneraleditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_filenamelineedit.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_filesdelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -2594,12 +2585,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_registergraphitem.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_modelparametermodel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_modelparametereditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_otherclockdriversmodel.cpp">
@@ -2786,9 +2771,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_componenteditormemmapsitem.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_componenteditormodelparamsitem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_componenteditorotherclocksitem.cpp">
@@ -3097,9 +3079,6 @@
     <ClCompile Include="editors\ComponentEditor\fileSet\file\filenameeditor.cpp">
       <Filter>Source Files\editors\ComponentEditor\fileSet\file</Filter>
     </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\fileSet\file\filenamelineedit.cpp">
-      <Filter>Source Files\editors\ComponentEditor\fileSet\file</Filter>
-    </ClCompile>
     <ClCompile Include="editors\ComponentEditor\fileSet\file\filesdelegate.cpp">
       <Filter>Source Files\editors\ComponentEditor\fileSet\file</Filter>
     </ClCompile>
@@ -3192,12 +3171,6 @@
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\memoryMaps\memoryMapsVisualizer\registergraphitem.cpp">
       <Filter>Source Files\editors\ComponentEditor\memoryMaps\memoryMapsVisualizer</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\modelParameters\modelparametereditor.cpp">
-      <Filter>Source Files\editors\ComponentEditor\modelParameters</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\modelParameters\modelparametermodel.cpp">
-      <Filter>Source Files\editors\ComponentEditor\modelParameters</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\otherClockDrivers\clockdriversdelegate.cpp">
       <Filter>Source Files\editors\ComponentEditor\otherClockDrivers</Filter>
@@ -3383,9 +3356,6 @@
       <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\treeStructure\componenteditormemmapsitem.cpp">
-      <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\treeStructure\componenteditormodelparamsitem.cpp">
       <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\treeStructure\componenteditorotherclocksitem.cpp">
@@ -3670,12 +3640,6 @@
     <ClCompile Include="GeneratedFiles\moc_ChoicesDelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\modelParameters\ModelParameterDelegate.cpp">
-      <Filter>Source Files\editors\ComponentEditor\modelParameters</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ModelParameterDelegate.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="designEditors\common\NamelabelWidth.cpp">
       <Filter>Source Files\designEditors\common</Filter>
     </ClCompile>
@@ -3723,9 +3687,6 @@
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\common\ValueFormatter.cpp">
       <Filter>Source Files\editors\ComponentEditor\common</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\modelParameters\ModelParameterEditorHeaderView.cpp">
-      <Filter>Source Files\editors\ComponentEditor\modelParameters</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\referenceCounter\ParameterReferenceCounter.cpp">
       <Filter>Source Files\editors\ComponentEditor\referenceCounter</Filter>
@@ -3804,9 +3765,6 @@
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_ModuleParameterEditor.cpp">
       <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\modelParameters\ModelParameterFactoryImplementation.cpp">
-      <Filter>Source Files\editors\ComponentEditor\modelParameters</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\views\ModuleParameterFactoryImplementation.cpp">
       <Filter>Source Files\editors\ComponentEditor\views</Filter>
@@ -4117,11 +4075,11 @@
     <ClCompile Include="editors\ComponentEditor\views\ComponentInstantiationEditor.cpp">
       <Filter>Source Files\editors\ComponentEditor\views</Filter>
     </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\software\swView\cpuselector.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="wizards\common\ModuleParameterComparator\ModuleParameterComparator.cpp">
       <Filter>Source Files\wizards\common\ModuleParameterComparator</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\software\swView\cpuselector.cpp">
+      <Filter>Source Files\editors\ComponentEditor\software\swView</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5016,9 +4974,6 @@
     <CustomBuild Include="editors\ComponentEditor\fileSet\file\filenameeditor.h">
       <Filter>Header Files\editors\ComponentEditor\fileSet\file</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\fileSet\file\filenamelineedit.h">
-      <Filter>Header Files\editors\ComponentEditor\fileSet\file</Filter>
-    </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\fileSet\file\filesdelegate.h">
       <Filter>Header Files\editors\ComponentEditor\fileSet\file</Filter>
     </CustomBuild>
@@ -5123,12 +5078,6 @@
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\memoryMaps\memoryMapsVisualizer\registergraphitem.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps\memoryMapsVisualizer</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\modelParameters\modelparametermodel.h">
-      <Filter>Header Files\editors\ComponentEditor\modelParameters</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\modelParameters\modelparametereditor.h">
-      <Filter>Header Files\editors\ComponentEditor\modelParameters</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\otherClockDrivers\otherclockdriversmodel.h">
       <Filter>Header Files\editors\ComponentEditor\otherClockDrivers</Filter>
@@ -5319,9 +5268,6 @@
     <CustomBuild Include="editors\ComponentEditor\treeStructure\componenteditormemmapsitem.h">
       <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\treeStructure\componenteditormodelparamsitem.h">
-      <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
-    </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\treeStructure\componenteditorotherclocksitem.h">
       <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
     </CustomBuild>
@@ -5474,9 +5420,6 @@
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\choices\ChoicesDelegate.h">
       <Filter>Header Files\editors\ComponentEditor\choices</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\modelParameters\ModelParameterDelegate.h">
-      <Filter>Header Files\editors\ComponentEditor\modelParameters</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\parameters\parametersmodel.h">
       <Filter>Header Files\editors\ComponentEditor\parameters</Filter>
@@ -5674,7 +5617,7 @@
       <Filter>Header Files\editors\ComponentEditor\views</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\software\swView\cpuselector.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\editors\ComponentEditor\software\swView</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
@@ -5927,9 +5870,6 @@
     <ClInclude Include="wizards\ImportWizard\ImportWizardIntroPage.h">
       <Filter>Header Files\wizards\ImportWizard</Filter>
     </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\modelParameters\ModelParameterColumns.h">
-      <Filter>Header Files\editors\ComponentEditor\modelParameters</Filter>
-    </ClInclude>
     <ClInclude Include="designEditors\common\NamelabelWidth.h">
       <Filter>Header Files\designEditors\common</Filter>
     </ClInclude>
@@ -5947,9 +5887,6 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\common\ExpressionParser.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\modelParameters\ModelParameterEditorHeaderView.h">
-      <Filter>Header Files\editors\ComponentEditor\modelParameters</Filter>
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\common\ValueFormatter.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
@@ -5998,12 +5935,6 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\common\ExpressionFormatterFactoryImplementation.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\modelParameters\ModelParameterFactoryImplementation.h">
-      <Filter>Header Files\editors\ComponentEditor\modelParameters</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\modelParameters\ModelParameterFactory.h">
-      <Filter>Header Files\editors\ComponentEditor\modelParameters</Filter>
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\views\ModuleParameterFactoryImplementation.h">
       <Filter>Header Files\editors\ComponentEditor\views</Filter>
@@ -6119,9 +6050,6 @@
     <ClInclude Include="editors\ComponentEditor\views\EnvIdentifiersColumns.h">
       <Filter>Header Files\editors\ComponentEditor\views</Filter>
     </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\software\apiInterface\ApiInterfaceColumns.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="editors\ApiDefinitionEditor\ApiFunctionColumns.h">
       <Filter>Header Files\editors\ApiDefinitionEditor</Filter>
     </ClInclude>
@@ -6133,6 +6061,9 @@
     </ClInclude>
     <ClInclude Include="wizards\common\ModuleParameterComparator\ModuleParameterComparator.h">
       <Filter>Header Files\wizards\common\ModuleParameterComparator</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\software\apiInterface\ApiInterfaceColumns.h">
+      <Filter>Header Files\editors\ComponentEditor\software\apiInterface</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

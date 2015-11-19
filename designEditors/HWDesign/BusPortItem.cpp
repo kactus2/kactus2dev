@@ -17,7 +17,8 @@
 #include <designEditors/common/NamelabelWidth.h>
 
 #include <IPXACTmodels/Component/BusInterface.h>
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
+
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 
 #include <library/LibraryManager/libraryinterface.h>

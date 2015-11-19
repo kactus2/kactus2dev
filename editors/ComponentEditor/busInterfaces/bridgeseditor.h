@@ -62,9 +62,6 @@ private:
 	//! No assignment
 	BridgesEditor& operator=(const BridgesEditor& other);
 
-	//! The component being edited.
-	QSharedPointer<Component> component_;
-
 	//! The view to display the bridges.
 	EditableTableView view_;
 

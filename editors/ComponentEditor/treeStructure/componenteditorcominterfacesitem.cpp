@@ -15,6 +15,8 @@
 
 #include <editors/ComponentEditor/software/comInterface/cominterfaceseditor.h>
 
+#include <IPXACTmodels/Component/Component.h>
+
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorComInterfacesItem::ComponentEditorComInterfacesItem()
 //-----------------------------------------------------------------------------
@@ -22,10 +24,9 @@ ComponentEditorComInterfacesItem::ComponentEditorComInterfacesItem(ComponentEdit
     LibraryInterface* libHandler,
     QSharedPointer<Component> component,
     ComponentEditorItem* parent):
-ComponentEditorItem(model, libHandler, component, parent),
-    interfaces_(component->getComInterfaces())
+ComponentEditorItem(model, libHandler, component, parent)
 {
-    foreach (QSharedPointer<ComInterface> comInterface, interfaces_)
+    foreach (QSharedPointer<ComInterface> comInterface, component->getComInterfaces())
     {
         QSharedPointer<ComponentEditorComInterfaceItem> interfaceItem(new ComponentEditorComInterfaceItem(
             comInterface, model, libHandler, component, this));
@@ -46,7 +47,7 @@ ComponentEditorComInterfacesItem::~ComponentEditorComInterfacesItem()
 QFont ComponentEditorComInterfacesItem::getFont() const
 {
     QFont font(ComponentEditorItem::getFont());
-    font.setBold(!interfaces_.isEmpty());
+    font.setBold(!component_->getComInterfaces().isEmpty());
     return font;
 }
 
@@ -89,7 +90,7 @@ QString ComponentEditorComInterfacesItem::getTooltip() const
 void ComponentEditorComInterfacesItem::createChild(int index)
 {
 	QSharedPointer<ComponentEditorComInterfaceItem> interfaceItem(new ComponentEditorComInterfaceItem(
-		interfaces_.at(index), model_, libHandler_, component_, this));
+		component_->getComInterfaces().at(index), model_, libHandler_, component_, this));
 	interfaceItem->setLocked(locked_);
 	childItems_.insert(index, interfaceItem);
 }

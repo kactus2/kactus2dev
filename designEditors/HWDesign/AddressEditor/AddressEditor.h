@@ -14,8 +14,6 @@
 
 #include "AddressModel.h"
 
-#include <IPXACTmodels/component.h>
-
 #include <QWidget>
 #include <QPushButton>
 #include <QComboBox>

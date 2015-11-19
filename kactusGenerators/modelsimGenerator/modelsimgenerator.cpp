@@ -18,7 +18,7 @@
 
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
-#include <IPXACTmodels/librarycomponent.h>
+
 #include <IPXACTmodels/generaldeclarations.h>
 
 #include <common/dialogs/comboSelector/comboselector.h>

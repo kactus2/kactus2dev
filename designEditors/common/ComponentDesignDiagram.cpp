@@ -520,7 +520,7 @@ void ComponentDesignDiagram::openComponentItem(ComponentItem* comp)
 //-----------------------------------------------------------------------------
 void ComponentDesignDiagram::openInComponentEditor(ComponentItem* comp)
 {
-    emit openComponent(*comp->componentModel()->getVlnv());
+    emit openComponent(comp->componentModel()->getVlnv());
 }
 
 //-----------------------------------------------------------------------------

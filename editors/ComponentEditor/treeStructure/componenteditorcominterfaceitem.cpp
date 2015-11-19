@@ -15,6 +15,8 @@
 
 #include <editors/ComponentEditor/software/comInterface/ComInterfaceEditor.h>
 
+#include <IPXACTmodels/kactusExtensions/ComInterface.h>
+
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorComInterfaceItem::ComponentEditorComInterfaceItem()
 //-----------------------------------------------------------------------------

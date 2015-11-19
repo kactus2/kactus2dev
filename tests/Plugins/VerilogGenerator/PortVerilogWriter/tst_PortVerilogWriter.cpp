@@ -12,17 +12,17 @@
 #include <QString>
 #include <QtTest>
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/model.h>
-#include <IPXACTmodels/modelparameter.h>
-#include <IPXACTmodels/port.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/Model.h>
+//#include <IPXACTmodels/Component/modelparameter.h>
+#include <IPXACTmodels/Component/Port.h>
 
 #include <Plugins/VerilogGenerator/PortVerilogWriter/PortVerilogWriter.h>
 
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 
-Q_DECLARE_METATYPE(General::Direction)
+Q_DECLARE_METATYPE(DirectionTypes::Direction)
 
 const QString INDENT = "    ";
 
@@ -33,7 +33,7 @@ class tst_PortVerilogWriter : public QObject
 public:
     tst_PortVerilogWriter();
 
-private Q_SLOTS:
+private slots:
     void initTestCase();
     void cleanupTestCase();
 
@@ -153,7 +153,7 @@ void tst_PortVerilogWriter::testWriteEmptyPort()
 //-----------------------------------------------------------------------------
 void tst_PortVerilogWriter::testWriteNormalPort()
 {
-    QFETCH(General::Direction, direction);
+    QFETCH(DirectionTypes::Direction, direction);
     QFETCH(QString, type);
     QFETCH(QString, expectedOutput);
 
@@ -173,15 +173,15 @@ void tst_PortVerilogWriter::testWriteNormalPort()
 //-----------------------------------------------------------------------------
 void tst_PortVerilogWriter::testWriteNormalPort_data()
 {
-    QTest::addColumn<General::Direction>("direction");
+    QTest::addColumn<DirectionTypes::Direction>("direction");
     QTest::addColumn<QString>("type");
     QTest::addColumn<QString>("expectedOutput");
 
-    QTest::newRow("input port")     << General::IN  << "integer" << "input  integer                      Data";
-    QTest::newRow("output port")    << General::OUT << "reg"     << "output reg                          Data";
-    QTest::newRow("inout port")     << General::INOUT << "tri"   << "inout  tri                          Data";
-    QTest::newRow("phantom port")   << General::DIRECTION_PHANTOM << "phantom" << "";
-    QTest::newRow("invalid direction port") << General::DIRECTION_INVALID << "invalid" << "";
+    QTest::newRow("input port")     << DirectionTypes::IN  << "integer" << "input  integer                      Data";
+    QTest::newRow("output port")    << DirectionTypes::OUT << "reg"     << "output reg                          Data";
+    QTest::newRow("inout port")     << DirectionTypes::INOUT << "tri"   << "inout  tri                          Data";
+    QTest::newRow("phantom port")   << DirectionTypes::DIRECTION_PHANTOM << "phantom" << "";
+    QTest::newRow("invalid direction port") << DirectionTypes::DIRECTION_INVALID << "invalid" << "";
 }
 
 //-----------------------------------------------------------------------------
@@ -190,7 +190,7 @@ void tst_PortVerilogWriter::testWriteNormalPort_data()
 void tst_PortVerilogWriter::testWriteNonTypedPort()
 {
     port_->setName("Data");
-    port_->setDirection(General::IN);
+    port_->setDirection(DirectionTypes::IN);
 
     makeWriter(port_);
 
@@ -212,7 +212,7 @@ void tst_PortVerilogWriter::testWriteVectorPort()
     QFETCH(QString, expectedOutput);
 
     port_->setName(portName);
-    port_->setDirection(General::OUT);
+    port_->setDirection(DirectionTypes::OUT);
     port_->setTypeName(type);
     port_->setLeftBound(leftBound);
     port_->setRightBound(rightBound);
@@ -258,7 +258,7 @@ void tst_PortVerilogWriter::testWriteVectorArrayPort()
     QFETCH(QString, expectedOutput);
 
     port_->setName(portName);
-    port_->setDirection(General::OUT);
+    port_->setDirection(DirectionTypes::OUT);
     port_->setTypeName(type);
     port_->setLeftBound(7);
     port_->setRightBound(0);
@@ -316,7 +316,7 @@ void tst_PortVerilogWriter::testWriteParametrizedPort()
     enclosingComponent_->getModel()->addModelParameter(parameter2);
 
     port_->setName("data");
-    port_->setDirection(General::IN);
+    port_->setDirection(DirectionTypes::IN);
     port_->setTypeName("bit");
     port_->setArrayLeft(leftArrayExpressions);
     port_->setArrayRight(rightArrayExpression);

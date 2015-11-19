@@ -33,10 +33,8 @@ public:
      *      @param [in] range           The address range.
      *      @param [in] parent          The parent.
      */
-    AddressBlockItem(QSharedPointer<Component> component,
-                     QSharedPointer<MemoryMap> memoryMap,
-                     QString const& name, quint64 startAddress,
-                     quint64 range, QGraphicsItem* parent);
+    AddressBlockItem(QSharedPointer<Component> component, QSharedPointer<MemoryMap> memoryMap,
+                     QString const& name, quint64 startAddress, quint64 range, QGraphicsItem* parent);
 
     /*!
      *  Destructor.

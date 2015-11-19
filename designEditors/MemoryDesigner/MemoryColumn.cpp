@@ -19,7 +19,7 @@
 #include <common/layouts/VStaticLayout.h>
 #include <common/layouts/VStackedLayout.h>
 
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
 
 //-----------------------------------------------------------------------------
 // Function: MemoryColumn()

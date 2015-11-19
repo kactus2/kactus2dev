@@ -11,7 +11,7 @@
 
 #include <QtTest>
 
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 #include <wizards/common/VLNVComparator/VLNVComparator.h>
 #include <wizards/common/IPXactDiff.h>

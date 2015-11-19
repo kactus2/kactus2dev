@@ -355,6 +355,25 @@ private:
 	*/
 	void parseComponent(const VLNV& vlnv);
 
+    /*!
+     *  Finds the referenced design in a component view.
+     *
+     *      @param [in] view   The view whose reference to find.
+     *
+     *      @return The design referenced ín the view.
+     */
+    VLNV findDesignReference(QSharedPointer<View> view);
+
+    /*!
+     *  Creates a child item for the given design.
+     *
+     *      @param [in] designVLNV          The design to represent with the child.
+     *      @param [in] implementation      The implementation type of the design.
+     *      @param [in] viewName            The name of the view referencing the design.
+     */
+    void createChildItemForDesign(VLNV const& designVLNV, KactusAttribute::Implementation implementation,
+        QString const& viewName);
+
 	/*! Parse this hierarchy item to match a bus definition.
 	 *
 	 *      @param [in] vlnv The vlnv of the bus definition.
@@ -413,7 +432,7 @@ private:
 	QSharedPointer<Design const> design_;
 
 	//! The object that manages the library.
-	LibraryInterface* handler_;
+	LibraryInterface* library_;
 
 	//! List of children of this item.
 	QList<HierarchyItem*> childItems_;

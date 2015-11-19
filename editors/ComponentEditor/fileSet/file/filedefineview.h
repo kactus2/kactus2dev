@@ -5,6 +5,17 @@
  * 		filename: filedefineview.h
  */
 
+//-----------------------------------------------------------------------------
+// File: filedefineview.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Esko Pekkarinen
+// Date: 17.11.2015
+//
+// Description:
+// <Short description of the class/file contents>
+//-----------------------------------------------------------------------------
+
 #ifndef FILEDEFINEVIEW_H
 #define FILEDEFINEVIEW_H
 
@@ -20,7 +31,7 @@ public:
 
 	/*! \brief The constructor
 	 *
-	 * \param parent Pointer to the owner of this widget.
+	 * \param parent The owner of this widget.
 	 *
 	*/
 	FileDefineView(QWidget* parent);

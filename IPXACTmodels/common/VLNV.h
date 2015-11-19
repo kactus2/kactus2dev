@@ -69,7 +69,7 @@ public:
 	 *      @param [in] name    The name of the item.
 	 *      @param [in] version The version number of the item.
 	 */
-	VLNV(const IPXactType &type, QString const& vendor, QString const& library,
+	VLNV(IPXactType const& type, QString const& vendor, QString const& library,
 			QString const& name, QString const& version);
 
 	/*! The constructor.
@@ -79,7 +79,7 @@ public:
 	 *      @param [in] separator The character used to separate the different vlnv fields in the string.
 	 *
 	*/
-	VLNV(const IPXactType type, QString const& parseStr, QString const& separator = QString(":"));
+	VLNV(IPXactType const& type, QString const& parseStr, QString const& separator = QString(":"));
 
 	/*! Copy constructor
 	 *

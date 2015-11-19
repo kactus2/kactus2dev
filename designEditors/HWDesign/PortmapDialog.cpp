@@ -41,7 +41,8 @@ PortmapDialog::PortmapDialog(LibraryInterface* libInterface, QSharedPointer<Comp
 
     // Create the port map widget.
     portmapWidget_ = new BusIfPortmapTab(libInterface, component, busIf, this);
-    portmapWidget_->setAbsType(busIf->getAbstractionType(), busIf->getInterfaceMode());
+    portmapWidget_->setAbsType(*busIf->getAbstractionTypes()->first()->getAbstractionRef(),
+        busIf->getInterfaceMode());
 
     // Create a separator.
     QGroupBox* separator = new QGroupBox(this);
@@ -92,15 +93,15 @@ void PortmapDialog::accept()
     // Check if all required logical ports are not mapped.
     QList<QString> missingMappings;
 
-    foreach (QSharedPointer<PortMap> portMap, otherBusIf_->getPortMaps())
+    foreach (QSharedPointer<PortMap> portMap, *otherBusIf_->getPortMaps())
     {
         bool found = false;
         
-        foreach (QSharedPointer<PortMap> localPortMap, busIf_->getPortMaps())
+        foreach (QSharedPointer<PortMap> localPortMap, *busIf_->getPortMaps())
         {
             // The logical port was mapped correctly if the bus interface has a
             // port map that utilizes the same logical port.
-            if (localPortMap->logicalPort() == portMap->logicalPort())
+            if (localPortMap->getLogicalPort()->name_ == portMap->getLogicalPort()->name_)
             {
                 found = true;
                 break;
@@ -111,7 +112,7 @@ void PortmapDialog::accept()
         // of missing mappings.
         if (!found)
         {
-            missingMappings.append(portMap->logicalPort());
+            missingMappings.append(portMap->getLogicalPort()->name_);
         }
     }
 

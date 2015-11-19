@@ -25,9 +25,9 @@
 #include <common/GenericEditProvider.h>
 #include <common/layouts/VStackedLayout.h>
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/addressspace.h>
-#include <IPXACTmodels/segment.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/Addressspace.h>
+#include <IPXACTmodels/Component/Segment.h>
 
 #include <QFont>
 #include <QTextDocument>
@@ -84,15 +84,14 @@ AddressSpaceItem::AddressSpaceItem(LibraryInterface* libInterface, QString const
     aubLabel_->setFont(font);
     aubLabel_->setTextWidth(NAME_COLUMN_WIDTH + 2);
     aubLabel_->setPos(-WIDTH / 2, 0.0);
-    aubLabel_->setHtml(QString("<center>AUB<br>") + QString::number(addressSpace->getAddressUnitBits()) +
-                       QString("</center>"));
+    aubLabel_->setHtml("<center>AUB<br>" + addressSpace->getAddressUnitBits() + "</center>");
 
     // Parse segments and add a section for each of them.
     // Unsegmented parts are also visualized.
     quint64 curAddress = 0;
 
     // Sort address spaces based on their start address.
-    QList< QSharedPointer<Segment> > segments = addressSpace_->getSegments();
+    QList< QSharedPointer<Segment> >  segments = *addressSpace_->getSegments();
     qSort(segments.begin(), segments.end(), &segmentSortOp);
 
     foreach (QSharedPointer<Segment> segment, segments)
@@ -151,10 +150,6 @@ AddressSpaceItem::~AddressSpaceItem()
 //-----------------------------------------------------------------------------
 void AddressSpaceItem::updateVisuals()
 {
-    //     VLNV* vlnv = component_->getVlnv();
-    //     QString toolTipText = "";
-    //     setToolTip(toolTipText);
-
     if (component_->isBus())
     {
         setBrush(QBrush(KactusColors::HW_BUS_COMPONENT)); 

@@ -21,7 +21,7 @@
 
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/SlaveInterface.h>
-#include <IPXACTmodels/memorymap.h>
+#include <IPXACTmodels/Component/Memorymap.h>
 
 #include <QFileInfo>
 #include <QFile>

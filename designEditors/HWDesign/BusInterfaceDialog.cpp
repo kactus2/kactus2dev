@@ -19,15 +19,19 @@
 #include <QTableView>
 
 #include <common/graphicsItems/ComponentItem.h>
+#include <common/graphicsItems/ConnectionEndpoint.h>
+
 #include <common/delegates/LineEditDelegate/lineeditdelegate.h>
+
+#include <IPXACTmodels/common/DirectionTypes.h>
 
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/PortMap.h>
 #include <IPXACTmodels/Component/Port.h>
 
-#include <common/graphicsItems/ConnectionEndpoint.h>
 #include <designEditors/HWDesign/views/CellEditTableView.h>
 #include <designEditors/HWDesign/models/PortGenerationTableModel.h>
+
 #include <library/LibraryManager/libraryinterface.h>
 
 namespace
@@ -185,12 +189,12 @@ void BusInterfaceDialog::setBusInterfaces(QSharedPointer<Component> srcComponent
         }
     }
    
-    QString sourceName = srcComponent->getVlnv()->getName();
+    QString sourceName = srcComponent->getVlnv().getName();
     if (sourceName.isEmpty())
     {
         sourceName = "Draft Component";
     }
-    QString destName = targetComponent->getVlnv()->getName();
+    QString destName = targetComponent->getVlnv().getName();
     if (destName.isEmpty())
     {
         destName = "Draft Component";
@@ -210,26 +214,29 @@ void BusInterfaceDialog::setBusInterfaces(QSharedPointer<Component> srcComponent
 QList< QSharedPointer<PortMap> > BusInterfaceDialog::getPortMaps() 
 {   
     // Create port maps
-    if ( tableEnable_ && portMaps_.empty())
+    if (tableEnable_ && portMaps_.empty())
     {
-        foreach ( QSharedPointer<PortMap> portMap, busIf_->getPortMaps() )
+        foreach (QSharedPointer<PortMap> portMap, *busIf_->getPortMaps())
         {
             int row = 0;
             QModelIndex index;
             for(row = 0; row < portsModel_->rowCount(); row++)
             {
-                index = portsModel_->index(row,PortGenerationTableModel::SRC_NAME);
-                QString name = portsModel_->data(index,Qt::DisplayRole).toString();
-                if ( name == portMap->physicalPort())
+                index = portsModel_->index(row, PortGenerationTableModel::SRC_NAME);
+                QString name = portsModel_->data(index, Qt::DisplayRole).toString();
+                if (name == portMap->getPhysicalPort()->name_)
                 {
                     break;
                 }
             }
             index = portsModel_->index(row,PortGenerationTableModel::TARGET_NAME);
-            QString physDraft = portsModel_->data(index,Qt::DisplayRole).toString();
+            QString physicalName = portsModel_->data(index,Qt::DisplayRole).toString();
 
             QSharedPointer<PortMap> generated(new PortMap(*portMap));
-            generated->setPhysicalPort(physDraft);
+            QSharedPointer<PortMap::PhysicalPort> physicalPort(new PortMap::PhysicalPort());
+            physicalPort->name_ = physicalName;
+
+            generated->setPhysicalPort(physicalPort);
             portMaps_.append(generated);
         }
     }
@@ -248,16 +255,20 @@ QList< QSharedPointer<Port> > BusInterfaceDialog::getPorts()
         for(int row = 0; row < portsModel_->rowCount(); row++)
         {
             QModelIndex index = portsModel_->index(row, PortGenerationTableModel::SRC_NAME);
-            QString name = portsModel_->data(index, Qt::DisplayRole).toString();
-            index = portsModel_->index(row, PortGenerationTableModel::TARGET_NAME);
-            QString generatedName = portsModel_->data(index, Qt::DisplayRole).toString();
-            QSharedPointer<Port> port = sourceComp_->getPort(name);
-            QSharedPointer<Port> draftPort(new Port(generatedName, *port));
-            index = portsModel_->index(row, PortGenerationTableModel::TARGET_DIRECTION);
-            QString draftDir = portsModel_->data(index, Qt::DisplayRole).toString();
-            draftPort->setDirection(General::str2Direction(draftDir, General::DIRECTION_INVALID));
+            QString name = index.data(Qt::DisplayRole).toString();
 
-            if (draftPort->getDirection() == General::OUT)
+            index = portsModel_->index(row, PortGenerationTableModel::TARGET_NAME);
+            QString generatedName = index.data(Qt::DisplayRole).toString();
+
+            QSharedPointer<Port> port = sourceComp_->getPort(name);
+            QSharedPointer<Port> draftPort(new Port(*port));
+            draftPort->setName(generatedName);
+
+            index = portsModel_->index(row, PortGenerationTableModel::TARGET_DIRECTION);
+            QString draftDir = index.data(Qt::DisplayRole).toString();
+            draftPort->setDirection(DirectionTypes::str2Direction(draftDir, DirectionTypes::DIRECTION_INVALID));
+
+            if (draftPort->getDirection() == DirectionTypes::OUT)
             {
                 draftPort->setDefaultValue("");
             }

@@ -34,7 +34,7 @@ AbstractParameterModel::AbstractParameterModel(QSharedPointer<QList<QSharedPoint
 ReferencingTableModel(parameterFinder, parent),
 ParameterizableTable(parameterFinder),
 choices_(choices), 
-validator_(new ParameterValidator2014(expressionParser, parameterFinder)),
+validator_(new ParameterValidator2014(expressionParser, parameterFinder, choices)),
 expressionFormatter_(expressionFormatter)
 {
     setExpressionParser(expressionParser);
@@ -375,7 +375,7 @@ bool AbstractParameterModel::isValid() const
 	{
         QSharedPointer<Parameter> parameter = getParameterOnRow(i);
 
-        if (!validator_->validate(parameter.data(), choices_)) 
+        if (!validator_->validate(parameter.data())) 
         {
             return false;
         }
@@ -388,17 +388,17 @@ bool AbstractParameterModel::isValid() const
 //-----------------------------------------------------------------------------
 // Function: AbstractParameterModel::isValid()
 //-----------------------------------------------------------------------------
-bool AbstractParameterModel::isValid(QStringList& errorList, QString const& parentIdentifier) const
+bool AbstractParameterModel::isValid(QVector<QString>& errorList, QString const& parentIdentifier) const
 {
     bool valid = true;
     for (int i = 0; i < rowCount(); i++)
     {
         QSharedPointer<Parameter> parameter = getParameterOnRow(i);
 
-        errorList.append(validator_->findErrorsIn(parameter.data(), parentIdentifier, choices_));
+        validator_->findErrorsIn(errorList, parameter, parentIdentifier);
 
         // if one parameter is invalid, model is invalid.
-        if (!validator_->validate(parameter.data(), choices_))
+        if (!validator_->validate(parameter.data()))
         {
             valid = false;
         }
@@ -531,12 +531,12 @@ bool AbstractParameterModel::validateIndex(QModelIndex const& index) const
     }
     else if (index.column() == choiceColumn())
     {
-        return validator_->hasValidChoice(parameter.data(), choices_) &&
-            validator_->hasValidValueForChoice(parameter.data(), choices_);
+        return validator_->hasValidChoice(parameter.data()) &&
+            validator_->hasValidValueForChoice(parameter.data());
     }
     else if (index.column() == valueColumn())
     {
-        return validator_->hasValidValue(parameter.data(), choices_);
+        return validator_->hasValidValue(parameter.data());
     }
     else if (index.column() == resolveColumn())
     {

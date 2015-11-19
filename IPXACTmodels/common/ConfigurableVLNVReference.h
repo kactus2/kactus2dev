@@ -16,7 +16,6 @@
 #include <IPXACTmodels/ipxactmodels_global.h>
 #include <IPXACTmodels/common/ConfigurableElementValue.h>
 
-#include <QDomNode>
 #include <QSharedPointer>
 
 //-----------------------------------------------------------------------------
@@ -36,14 +35,6 @@ public:
      *  The copy constructor.
      */
     ConfigurableVLNVReference(const ConfigurableVLNVReference& other);
-
-    /*!
-     *  The constructor.
-     *
-     *      @param [in] vlnvReferenceNode   A reference to the node to parse from.
-     *      @param [in] type                The ipxact type.
-     */
-    ConfigurableVLNVReference(const QDomNode& vlnvReferenceNode, IPXactType type);
 
     /*!
      *  The constructor.

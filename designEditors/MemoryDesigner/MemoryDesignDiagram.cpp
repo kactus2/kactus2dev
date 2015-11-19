@@ -42,11 +42,11 @@
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/Design/Interconnection.h>
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/model.h>
-#include <IPXACTmodels/memorymap.h>
-#include <IPXACTmodels/addressspace.h>
-#include <IPXACTmodels/channel.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/Model.h>
+#include <IPXACTmodels/Component/Memorymap.h>
+#include <IPXACTmodels/Component/AddressSpace.h>
+#include <IPXACTmodels/Component/Channel.h>
 
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/MasterInterface.h>
@@ -57,8 +57,7 @@
 //-----------------------------------------------------------------------------
 // Function: MemoryDesignDiagram()
 //-----------------------------------------------------------------------------
-MemoryDesignDiagram::MemoryDesignDiagram(LibraryInterface* lh, 
-                                         GenericEditProvider& editProvider,
+MemoryDesignDiagram::MemoryDesignDiagram(LibraryInterface* lh, GenericEditProvider& editProvider,
                                          MemoryDesignWidget* parent)
     : DesignDiagram(lh, editProvider, parent),
       parent_(parent),

@@ -10,9 +10,9 @@
 
 #include <common/delegates/ComboDelegate/combodelegate.h>
 
-#include <IPXACTmodels/component.h>
-
 #include <QSharedPointer>
+
+class Component;
 
 /*! \brief Delegate that manages the editors to select an address space in component.
  *
@@ -28,8 +28,7 @@ public:
 	 * \param component Pointer to the component being edited.
 	 *
 	*/
-	AddressSpaceRefDelegate(QObject *parent,
-		QSharedPointer<Component> component);
+	AddressSpaceRefDelegate(QObject *parent, QSharedPointer<Component> component);
 	
 	//! \brief The destructor
 	virtual ~AddressSpaceRefDelegate();

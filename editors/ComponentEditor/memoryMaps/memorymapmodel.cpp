@@ -307,7 +307,7 @@ bool MemoryMapModel::setData(QModelIndex const& index, QVariant const& value, in
             QSharedPointer<AddressBlock> addrBlock = memoryBlocks->at(index.row()).dynamicCast<AddressBlock>();
             if (addrBlock)
             {
-                addrBlock->setVolatile(General::bool2BooleanValue(value.toBool()));
+                addrBlock->setVolatile(value.toBool());
             }
             else 
             {

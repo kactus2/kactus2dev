@@ -16,8 +16,8 @@
 #include <mainwindow/SaveHierarchy/HierarchicalSaveBuildStrategy.h>
 #include <mainwindow/SaveHierarchy/HierarchicalSaveColumns.h>
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 class tst_HierarchicalSaveBuildStrategy : public QObject
 {

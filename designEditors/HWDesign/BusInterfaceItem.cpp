@@ -22,6 +22,8 @@
 
 #include "columnview/HWColumn.h"
 
+#include <IPXACTmodels/common/DirectionTypes.h>
+
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/Port.h>
@@ -176,7 +178,7 @@ void BusInterfaceItem::updateInterface()
     }
 
     // Determine the bus direction.
-    General::Direction dir = General::DIRECTION_INVALID;
+    DirectionTypes::Direction dir = DirectionTypes::DIRECTION_INVALID;
 
     if (busInterface_->getPhysicalPortNames().size() > 0)
     {
@@ -359,7 +361,7 @@ bool BusInterfaceItem::onConnect(ConnectionEndpoint const* other)
     }
 
     busInterface_ = newBusIf;
-    component_->addBusInterface(newBusIf);
+    component_->getBusInterfaces()->append(newBusIf);
 
     // Update the interface visuals.
     updateInterface();
@@ -679,12 +681,12 @@ void BusInterfaceItem::define(QSharedPointer<BusInterface> busIf, bool addPorts,
         // Add the ports to the top-level component.
         foreach (QSharedPointer<Port> port, ports)
         {
-            component_->addPort(port);
+            component_->getPorts()->append(port);
         }
     }
 
     // Add the bus interface to the component.
-    component_->addBusInterface(busIf);
+    component_->getBusInterfaces()->append(busIf);
     busInterface_ = busIf;
 
     // Update the interface visuals.

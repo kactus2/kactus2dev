@@ -255,7 +255,7 @@ QStringList ComponentEditor::getHwItemNames()
 {
 	QStringList itemNames;
 
-	itemNames << "File_sets" << "Choices" << "Model_parameters" << "Parameters" << "Memory_maps" << 
+	itemNames << "File_sets" << "Choices" << "Parameters" << "Memory_maps" << 
 		"Address_spaces" << "Views" << "Software_views" << "System_views" << "Ports" << "Bus_interfaces" << 
 		"Channels" << "Remap_states" << "Cpus" << "Other_clock_drivers" << "COM_interfaces" <<
         "Software_properties";
@@ -734,15 +734,6 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createHWRootItem(QShare
 
     hwRoot->addChildItem(QSharedPointer<ComponentEditorChoicesItem>(
         new ComponentEditorChoicesItem(&navigationModel_, libHandler_, component, hwRoot)));
-
-    /*QSharedPointer<ComponentEditorModelParamsItem> modelParamsItem(new ComponentEditorModelParamsItem(
-        &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionFormatter_,
-        hwRoot));
-
-    hwRoot->addChildItem(modelParamsItem);
-
-    connect(modelParamsItem.data(), SIGNAL(openReferenceTree(QString)),
-        this, SLOT(openReferenceTree(QString)), Qt::UniqueConnection);*/
 
     QSharedPointer<ComponentEditorParametersItem> parametersItem(new ComponentEditorParametersItem(
         &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionFormatter_,

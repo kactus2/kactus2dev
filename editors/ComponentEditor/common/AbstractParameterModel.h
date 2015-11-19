@@ -105,7 +105,7 @@ public:
      *
      *           @return  True if all items in model are valid.
      */
-    virtual bool isValid(QStringList& errorList, const QString& parentIdentifier) const;
+    virtual bool isValid(QVector<QString>& errorList, const QString& parentIdentifier) const;
 
 public slots:
 

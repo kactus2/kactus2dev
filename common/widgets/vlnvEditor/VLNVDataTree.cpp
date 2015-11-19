@@ -244,9 +244,9 @@ void VLNVDataTree::parseSubtree(LibraryInterface* lh, LibraryItem const* libItem
             QSharedPointer<Component const> component = libComp.dynamicCast<Component const>();
 
             if (component == 0 ||
-                ((!firmnessFilterEnabled_ || firmnessFilter_ == component->getComponentFirmness()) &&
-                (!hierarchyFilterEnabled_ || hierarchyFilter_ == component->getComponentHierarchy()) &&
-                (!implementationFilterEnabled_ || implementationFilter_ == component->getComponentImplementation())))
+                ((!firmnessFilterEnabled_ || firmnessFilter_ == component->getFirmness()) &&
+                (!hierarchyFilterEnabled_ || hierarchyFilter_ == component->getHierarchy()) &&
+                (!implementationFilterEnabled_ || implementationFilter_ == component->getImplementation())))
             {
                 VLNVDataNode* childNode = node.addChild(item->name());
                 childNode->setVLNV(vlnv);

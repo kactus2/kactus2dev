@@ -56,32 +56,6 @@ NameValuePair::~NameValuePair()
 
 }
 
-/*
-bool File::Define::isValid( QStringList& errorList, const QString& parentIdentifier ) const {
-	bool valid = true;
-	if (nameGroup_.name().isEmpty()) {
-		errorList.append(QObject::tr(
-			"Mandatory name missing for define within %1").arg(parentIdentifier));
-		valid = false;
-	}
-	if (value_.isEmpty()) {
-		errorList.append(QObject::tr("Mandatory value for define missing in %1").arg(
-			parentIdentifier));
-		valid = false;
-	}
-	return valid;
-}
-
-bool File::Define::isValid() const {
-	if (nameGroup_.name().isEmpty()) {
-		return false;
-	}
-	if (value_.isEmpty()) {
-		return false;
-	}
-	return true;
-}*/
-
 //-----------------------------------------------------------------------------
 // Function: NameValuePair::getValue()
 //-----------------------------------------------------------------------------

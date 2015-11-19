@@ -10,9 +10,9 @@
 
 #include <common/delegates/ComboDelegate/combodelegate.h>
 
-#include <IPXACTmodels/component.h>
-
 #include <QSharedPointer>
+
+class Component;
 
 /*! \brief The delegate to provide editor to edit a list of channel interfaces.
  *

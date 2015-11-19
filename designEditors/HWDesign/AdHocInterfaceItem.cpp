@@ -24,10 +24,15 @@
 #include <common/graphicsItems/GraphicsColumnLayout.h>
 #include <common/graphicsItems/CommonGraphicsUndoCommands.h>
 #include <common/GenericEditProvider.h>
+
 #include <designEditors/common/diagramgrid.h>
 
+#include <IPXACTmodels/common/DirectionTypes.h>
+
 #include <IPXACTmodels/Component/BusInterface.h>
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/Port.h>
+
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 
 #include <library/LibraryManager/libraryinterface.h>
@@ -74,7 +79,7 @@ AdHocInterfaceItem::AdHocInterfaceItem(QSharedPointer<Component> component,
 
     switch (port->getDirection())
     {
-    case General::IN:
+    case DirectionTypes::IN:
         {
             shape << QPointF(-halfSquareSize, halfSquareSize)
                 << QPointF(-halfSquareSize, -halfSquareSize)
@@ -84,7 +89,7 @@ AdHocInterfaceItem::AdHocInterfaceItem(QSharedPointer<Component> component,
             break;
         }
 
-    case General::OUT:
+    case DirectionTypes::OUT:
         {
             shape << QPointF(-halfSquareSize, halfSquareSize)
                 << QPointF(-halfSquareSize, -halfSquareSize)
@@ -94,7 +99,7 @@ AdHocInterfaceItem::AdHocInterfaceItem(QSharedPointer<Component> component,
             break;
         }
 
-    case General::INOUT:
+    case DirectionTypes::INOUT:
     default:
         {
             shape << QPointF(-halfSquareSize, halfSquareSize)

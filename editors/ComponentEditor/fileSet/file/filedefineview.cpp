@@ -9,17 +9,18 @@
 
 #include <QHeaderView>
 
-FileDefineView::FileDefineView(QWidget *parent): QTableView(parent) {
-
+FileDefineView::FileDefineView(QWidget *parent): QTableView(parent)
+{
 	setCornerButtonEnabled(false);
 	setShowGrid(true);
 	setSortingEnabled(true);
 	setWordWrap(true);
 	setAlternatingRowColors(true);
-	setEditTriggers(QAbstractItemView::DoubleClicked |
-		QAbstractItemView::SelectedClicked | QAbstractItemView::EditKeyPressed);
+	setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::SelectedClicked |
+        QAbstractItemView::EditKeyPressed);
 	horizontalHeader()->setStretchLastSection(true);
 }
 
-FileDefineView::~FileDefineView() {
+FileDefineView::~FileDefineView()
+{
 }

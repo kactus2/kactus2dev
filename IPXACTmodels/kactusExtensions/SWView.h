@@ -207,8 +207,6 @@ private:
 	//! Contains the command options to build the BSP package for HW component.
 	QSharedPointer<BSPBuildCommand> bspCommand_;
 
-    //! Contains whether the view is in an HW component or not.
-    bool isWithinHWComponent_;
 };
 
 //-----------------------------------------------------------------------------

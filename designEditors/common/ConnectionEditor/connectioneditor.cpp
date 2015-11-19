@@ -9,6 +9,9 @@
 
 #include "AdHocBoundsDelegate.h"
 
+#include <common/graphicsItems/ConnectionUndoCommands.h>
+#include <common/GenericEditProvider.h>
+
 #include <designEditors/common/DesignDiagram.h>
 #include <designEditors/HWDesign/HWConnection.h>
 #include <designEditors/HWDesign/HWConnectionEndpoint.h>
@@ -16,7 +19,10 @@
 #include <designEditors/HWDesign/HWComponentItem.h>
 
 #include <library/LibraryManager/libraryinterface.h>
+
+#include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/common/VLNV.h>
+#include <IPXACTmodels/common/Vector.h>
 
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 
@@ -24,14 +30,8 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/PortMap.h>
 
-#include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/kactusExtensions/ApiInterface.h>
-#include <IPXACTmodels/ComInterface.h>
-
-#include <IPXACTmodels/common/Vector.h>
-
-#include <common/graphicsItems/ConnectionUndoCommands.h>
-#include <common/GenericEditProvider.h>
+#include <IPXACTmodels/kactusExtensions/ComInterface.h>
 
 #include <IPXACTmodels/validators/namevalidator.h>
 
@@ -43,8 +43,6 @@
 #include <QBrush>
 #include <QDockWidget>
 #include <QSortFilterProxyModel>
-
-#include <QDebug>
 
 //! \brief The maximum height for the description editor.
 static const int MAX_DESC_HEIGHT = 50;
@@ -227,7 +225,7 @@ void ConnectionEditor::setConnection( GraphicsConnection* connection ) {
     {
         type_.setTitle(tr("Bus type VLNV"));
 	    type_.setVLNV(endpoint1->getBusInterface()->getBusType(), true);
-	    absType_.setVLNV(endpoint1->getBusInterface()->getAbstractionType(), true);
+	    absType_.setVLNV(*endpoint1->getBusInterface()->getAbstractionTypes()->first()->getAbstractionRef(), true);
     }
     else if (endpoint1->isAdHoc())
     {
@@ -241,25 +239,20 @@ void ConnectionEditor::setConnection( GraphicsConnection* connection ) {
 	// set the names of the connected instances
 	connectedInstances_.setText(QString("%1 - %2").arg(endpoint1Name).arg(endpoint2Name));
 
-	// set text for the name editor, signal must be disconnected when name is set 
-	// to avoid loops 
-	disconnect(&nameEdit_, SIGNAL(textEdited(const QString&)),
-		this, SLOT(onNameChanged(const QString&)));
+	// set text for the name editor, signal must be disconnected when name is set to avoid loops 
+	disconnect(&nameEdit_, SIGNAL(textEdited(const QString&)), this, SLOT(onNameChanged(const QString&)));
 	nameEdit_.setText(connection->name());
 	connect(&nameEdit_, SIGNAL(textEdited(const QString&)),
-		this, SLOT(onNameChanged(const QString&)), Qt::UniqueConnection);
+        this, SLOT(onNameChanged(const QString&)), Qt::UniqueConnection);
 
 	// display the current description of the interface.
-	disconnect(&descriptionEdit_, SIGNAL(textChanged()),
-		this, SLOT(onDescriptionChanged()));
+	disconnect(&descriptionEdit_, SIGNAL(textChanged()), this, SLOT(onDescriptionChanged()));
 	descriptionEdit_.setPlainText(connection->description());
 	connect(&descriptionEdit_, SIGNAL(textChanged()),
 		this, SLOT(onDescriptionChanged()), Qt::UniqueConnection);
 
-	connect(connection, SIGNAL(destroyed(GraphicsConnection*)),
-		this, SLOT(clear()), Qt::UniqueConnection);
-	connect(connection, SIGNAL(contentChanged()), 
-		this, SLOT(refresh()), Qt::UniqueConnection);
+	connect(connection, SIGNAL(destroyed(GraphicsConnection*)),	this, SLOT(clear()), Qt::UniqueConnection);
+	connect(connection, SIGNAL(contentChanged()), this, SLOT(refresh()), Qt::UniqueConnection);
 
     if (endpoint1->isBus())
     {
@@ -372,7 +365,7 @@ void ConnectionEditor::setPortMaps() {
 	}
 	// if was the interface of a top component
 	else {
-		portWidget_.horizontalHeaderItem(0)->setText(comp1->getVlnv()->getName());
+		portWidget_.horizontalHeaderItem(0)->setText(comp1->getVlnv().getName());
 	}
 
 	// set the header for end point 2
@@ -383,13 +376,14 @@ void ConnectionEditor::setPortMaps() {
 	}
 	// if was the interface of a top component
 	else {
-		portWidget_.horizontalHeaderItem(1)->setText(comp2->getVlnv()->getName());
+		portWidget_.horizontalHeaderItem(1)->setText(comp2->getVlnv().getName());
 	}
 
 	// get the abstraction def for the interfaces
-	VLNV absDefVLNV = busIf1->getAbstractionType();
+	VLNV absDefVLNV = *busIf1->getAbstractionTypes()->first()->getAbstractionRef();
 	QSharedPointer<AbstractionDefinition> absDef;
-	if (handler_->getDocumentType(absDefVLNV) == VLNV::ABSTRACTIONDEFINITION) {
+	if (handler_->getDocumentType(absDefVLNV) == VLNV::ABSTRACTIONDEFINITION)
+    {
 		QSharedPointer<Document> libComp = handler_->getModel(absDefVLNV);
 		absDef = libComp.staticCast<AbstractionDefinition>();
 	}
@@ -405,13 +399,17 @@ void ConnectionEditor::setPortMaps() {
 
 	// get list of all used logical ports
 	QStringList logicalNames;
-	foreach (QSharedPointer<PortMap> map, portMaps1) {
-		if (!logicalNames.contains(map->logicalPort())) {
+	foreach (QSharedPointer<PortMap> map, portMaps1)
+    {
+		if (!logicalNames.contains(map->logicalPort()))
+        {
 			logicalNames.append(map->logicalPort());
 		}
 	}
-	foreach (QSharedPointer<PortMap> map, portMaps2) {
-		if (!logicalNames.contains(map->logicalPort())) {
+	foreach (QSharedPointer<PortMap> map, portMaps2)
+    {
+		if (!logicalNames.contains(map->logicalPort()))
+        {
 			logicalNames.append(map->logicalPort());
 		}
 	}

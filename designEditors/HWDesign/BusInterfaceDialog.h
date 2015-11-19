@@ -15,6 +15,8 @@
 #include <IPXACTmodels/common/DirectionTypes.h>
 #include <IPXACTmodels/Component/PortMap.h>
 
+#include <IPXACTmodels/generaldeclarations.h>
+
 #include <QDialog>
 #include <QGridLayout>
 #include <QGroupBox>

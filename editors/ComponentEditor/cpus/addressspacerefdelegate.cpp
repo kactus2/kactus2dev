@@ -10,6 +10,8 @@
 #include <QStringList>
 #include <QComboBox>
 
+#include <IPXACTmodels/Component/Component.h>
+
 AddressSpaceRefDelegate::AddressSpaceRefDelegate(QObject *parent,
 												 QSharedPointer<Component> component):
 ComboDelegate(parent),

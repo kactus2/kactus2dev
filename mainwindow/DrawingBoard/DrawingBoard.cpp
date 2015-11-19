@@ -291,8 +291,7 @@ bool DrawingBoard::shouldSave(TabDocument* doc)
             "may not be opened with other IP-XACT tools. Continue save?").arg(doc->getDocumentName(), 
             QString::number(errorList.size())), QMessageBox::Yes | QMessageBox::No, this);
 
-        msgBox.setDetailedText("The document contained the following error(s):\n* " + 
-            errorList.join("\n* "));
+        msgBox.setDetailedText("The document contained the following error(s):\n* " + errorList.join("\n* "));
 
         save = (msgBox.exec() == QMessageBox::Yes);
     }

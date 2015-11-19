@@ -14,8 +14,7 @@
 
 #include "componenteditoritem.h"
 
-#include <IPXACTmodels/ComInterface.h>
-
+class ComInterface;
 //-----------------------------------------------------------------------------
 //! The item for a single COM interface in component editor's navigation tree.
 //-----------------------------------------------------------------------------
