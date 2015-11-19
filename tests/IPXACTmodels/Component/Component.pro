@@ -13,6 +13,7 @@ TEMPLATE = subdirs
 
 CONFIG += testcase
 SUBDIRS += Model\tst_ViewWriter.pro \
+		   validators\tst_CPUValidator.pro \
 		   Model\tst_ViewReader.pro \
 		   Model\tst_InstantiationsWriter.pro \
 		   Model\tst_InstantiationsReader.pro \

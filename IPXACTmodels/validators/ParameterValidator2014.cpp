@@ -427,7 +427,7 @@ void ParameterValidator2014::findErrorsInName(QVector<QString>& errors, QSharedP
 {
     if (!hasValidName(parameter.data()))
     {
-        errors.append(QObject::tr("No name specified for %1 %2 within %3").arg(parameter->elementName(),
+        errors.append(QObject::tr("No valid name specified for %1 %2 within %3").arg(parameter->elementName(),
             parameter->name(), context));
     }
 }

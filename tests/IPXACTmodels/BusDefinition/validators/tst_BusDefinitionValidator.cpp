@@ -33,7 +33,7 @@ private:
 };
 
 //-----------------------------------------------------------------------------
-// Function: tst_BusDefinition::tst_BusDefinition()
+// Function: tst_BusDefinitionValidator::tst_BusDefinitionValidator()
 //-----------------------------------------------------------------------------
 tst_BusDefinitionValidator::tst_BusDefinitionValidator()
 {
@@ -52,16 +52,16 @@ void tst_BusDefinitionValidator::baseCase()
 	QSharedPointer<Parameter> parameter (new Parameter());
 	parameter->setName("param");
 	parameter->setType("bit");
-	parameter->setValue("{3'b101,3'b111}");
+	parameter->setValue("'b01");
 	parameter->setValueId("parameterid");
 
 	busDefinition->getParameters()->append(parameter);
 
 	QVector<QString> errorList;
 	validator.findErrorsIn(errorList, busDefinition, "test");
-
-	QVERIFY( validator.validate(busDefinition.data()) );
+	qDebug() << " hopo " << errorList.first() << endl;
 	QCOMPARE( errorList.size(), 0 );
+	QVERIFY( validator.validate(busDefinition.data()) );
 }
 
 //-----------------------------------------------------------------------------
