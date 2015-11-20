@@ -183,6 +183,8 @@
     <ClCompile Include="common\Qualifier.cpp" />
     <ClCompile Include="common\Range.cpp" />
     <ClCompile Include="common\TransactionalTypes.cpp" />
+    <ClCompile Include="common\validators\ParameterValidator2014.cpp" />
+    <ClCompile Include="common\validators\ValueFormatter.cpp" />
     <ClCompile Include="common\Vector.cpp" />
     <ClCompile Include="common\VLNV.cpp" />
     <ClCompile Include="Component\AddressBlock.cpp" />
@@ -877,7 +879,6 @@
     <ClCompile Include="validators\BinaryValidator.cpp" />
     <ClCompile Include="validators\namevalidator.cpp" />
     <ClCompile Include="validators\NMTokenValidator.cpp" />
-    <ClCompile Include="validators\ParameterValidator2014.cpp" />
     <ClCompile Include="XmlUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -1255,6 +1256,8 @@
     <ClInclude Include="common\Qualifier.h" />
     <ClInclude Include="common\Range.h" />
     <ClInclude Include="common\TransactionalTypes.h" />
+    <ClInclude Include="common\validators\ParameterValidator2014.h" />
+    <ClInclude Include="common\validators\ValueFormatter.h" />
     <ClInclude Include="common\Vector.h" />
     <ClInclude Include="common\VendorExtension.h" />
     <ClInclude Include="common\VLNV.h" />
@@ -2099,7 +2102,6 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_XML_LIB -DIPXACTMODELS_LIB -D_WINDLL "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(SolutionDir)\."</Command>
     </CustomBuild>
-    <ClInclude Include="validators\ParameterValidator2014.h" />
     <ClInclude Include="XmlUtils.h" />
     <ClInclude Include="BusDefinition\BusDefinition.h" />
     <CustomBuild Include="BusDefinition\BusDefinitionReader.h">

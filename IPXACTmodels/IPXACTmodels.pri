@@ -7,19 +7,15 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./common/GenericVendorExtension.h \
-    ./kactusExtensions/BSPBuildCommand.h \
-    ./common/VendorExtension.h \
-    ./common/VLNV.h \
-    ./XmlUtils.h \
+HEADERS += ./XmlUtils.h \
     ./generaldeclarations.h \
     ./ipxactmodels_global.h \
-    ./kactusExtensions/SWFileBuilder.h \
     ./kactusExtensions/ApiDefinition.h \
     ./kactusExtensions/ApiFunction.h \
     ./kactusExtensions/ApiFunctionParameter.h \
     ./kactusExtensions/ApiInterconnection.h \
     ./kactusExtensions/ApiInterface.h \
+    ./kactusExtensions/BSPBuildCommand.h \
     ./kactusExtensions/ColumnDesc.h \
     ./kactusExtensions/ComDefinition.h \
     ./kactusExtensions/ComInterconnection.h \
@@ -35,10 +31,11 @@ HEADERS += ./common/GenericVendorExtension.h \
     ./kactusExtensions/Kactus2Value.h \
     ./kactusExtensions/Kactus2Vector.h \
     ./kactusExtensions/KactusAttribute.h \
+    ./kactusExtensions/SWFileBuilder.h \
     ./kactusExtensions/SWInstance.h \
     ./kactusExtensions/SWView.h \
     ./kactusExtensions/SystemView.h \
-    ./validators/ParameterValidator2014.h \
+    ./common/validators/ParameterValidator2014.h \
     ./validators/BinaryValidator.h \
     ./validators/namevalidator.h \
     ./validators/NMTokenValidator.h \
@@ -56,6 +53,7 @@ HEADERS += ./common/GenericVendorExtension.h \
     ./common/Extendable.h \
     ./common/FileBuilder.h \
     ./common/FileTypes.h \
+    ./common/GenericVendorExtension.h \
     ./common/ModuleParameter.h \
     ./common/NameGroup.h \
     ./common/NameValuePair.h \
@@ -66,6 +64,8 @@ HEADERS += ./common/GenericVendorExtension.h \
     ./common/Range.h \
     ./common/TransactionalTypes.h \
     ./common/Vector.h \
+    ./common/VendorExtension.h \
+    ./common/VLNV.h \
     ./common/CommonItemsReader.h \
     ./common/CommonItemsWriter.h \
     ./common/DocumentReader.h \
@@ -198,16 +198,16 @@ HEADERS += ./common/GenericVendorExtension.h \
     ./Component/RemapStateReader.h \
     ./Component/RemapStateWriter.h \
     ./Component/ViewReader.h \
-    ./Component/ViewWriter.h
-SOURCES += ./kactusExtensions/BSPBuildCommand.cpp \
-    ./generaldeclarations.cpp \
-    ./kactusExtensions/SWFileBuilder.cpp \
+    ./Component/ViewWriter.h \
+    ./common/validators/ValueFormatter.h
+SOURCES += ./generaldeclarations.cpp \
     ./XmlUtils.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
     ./kactusExtensions/ApiFunction.cpp \
     ./kactusExtensions/ApiFunctionParameter.cpp \
     ./kactusExtensions/ApiInterconnection.cpp \
     ./kactusExtensions/ApiInterface.cpp \
+    ./kactusExtensions/BSPBuildCommand.cpp \
     ./kactusExtensions/ColumnDesc.cpp \
     ./kactusExtensions/ComDefinition.cpp \
     ./kactusExtensions/ComInterconnection.cpp \
@@ -223,13 +223,14 @@ SOURCES += ./kactusExtensions/BSPBuildCommand.cpp \
     ./kactusExtensions/Kactus2Value.cpp \
     ./kactusExtensions/Kactus2Vector.cpp \
     ./kactusExtensions/KactusAttribute.cpp \
+    ./kactusExtensions/SWFileBuilder.cpp \
     ./kactusExtensions/SWInstance.cpp \
     ./kactusExtensions/SWView.cpp \
     ./kactusExtensions/SystemView.cpp \
     ./validators/BinaryValidator.cpp \
     ./validators/namevalidator.cpp \
     ./validators/NMTokenValidator.cpp \
-    ./validators/ParameterValidator2014.cpp \
+    ./common/validators/ValueFormatter.cpp \
     ./common/Array.cpp \
     ./common/Assertion.cpp \
     ./common/BooleanValue.cpp \
@@ -250,6 +251,7 @@ SOURCES += ./kactusExtensions/BSPBuildCommand.cpp \
     ./common/FileBuilderReader.cpp \
     ./common/FileBuilderWriter.cpp \
     ./common/FileTypes.cpp \
+    ./common/GenericVendorExtension.cpp \
     ./common/ModuleParameter.cpp \
     ./common/ModuleParameterReader.cpp \
     ./common/ModuleParameterWriter.cpp \
@@ -268,6 +270,7 @@ SOURCES += ./kactusExtensions/BSPBuildCommand.cpp \
     ./common/Range.cpp \
     ./common/TransactionalTypes.cpp \
     ./common/Vector.cpp \
+    ./common/VLNV.cpp \
     ./BusDefinition/BusDefinition.cpp \
     ./BusDefinition/BusDefinitionReader.cpp \
     ./BusDefinition/BusDefinitionWriter.cpp \
@@ -387,5 +390,4 @@ SOURCES += ./kactusExtensions/BSPBuildCommand.cpp \
     ./Component/Wire.cpp \
     ./Component/WireTypeDef.cpp \
     ./Component/WriteValueConstraint.cpp \
-    ./common/VLNV.cpp \
-    ./common/GenericVendorExtension.cpp
+    ./common/validators/ParameterValidator2014.cpp

@@ -7,9 +7,7 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./editors/ComponentEditor/software/apiInterface/ApiInterfaceColumns.h \
-    ./editors/ComponentEditor/software/swView/cpuselector.h \
-    ./common/Global.h \
+HEADERS += ./common/Global.h \
     ./common/KactusColors.h \
     ./common/TextEditProvider.h \
     ./common/utils.h \
@@ -176,10 +174,10 @@ HEADERS += ./editors/ComponentEditor/software/apiInterface/ApiInterfaceColumns.h
     ./wizards/common/ComponentComparator/ComponentComparator.h \
     ./wizards/common/ComponentDiffWidget/ComponentDiffWidget.h \
     ./wizards/common/VLNVComparator/VLNVComparator.h \
-    ./wizards/common/ModuleParameterComparator/ModuleParameterComparator.h \
     ./wizards/common/ViewComparator/ViewComparator.h \
     ./wizards/common/PortComparator/PortComparator.h \
     ./wizards/common/ParameterComparator/ParameterComparator.h \
+    ./wizards/common/ModuleParameterComparator/ModuleParameterComparator.h \
     ./Help/HelpSystem/HelpWindow.h \
     ./Help/HelpSystem/ContextHelpBrowser.h \
     ./Help/HelpSystem/HelpSearchWidget.h \
@@ -201,12 +199,9 @@ HEADERS += ./editors/ComponentEditor/software/apiInterface/ApiInterfaceColumns.h
     ./Plugins/PluginSystem/ImportPlugin/ImportPlugin.h \
     ./Plugins/PluginSystem/ImportPlugin/ModelParameterSource.h \
     ./Plugins/PluginSystem/ImportPlugin/ModelParameterVisualizer.h \
-    ./library/LibraryManager/ipxactitem.h \
     ./library/LibraryManager/libraryinterface.h \
     ./library/LibraryManager/LibraryUtils.h \
     ./library/LibraryManager/LibraryFilter.h \
-    ./library/LibraryManager/ipxactmodel.h \
-    ./library/LibraryManager/ipxactwidget.h \
     ./library/LibraryManager/librarydata.h \
     ./library/LibraryManager/LibraryErrorModel.h \
     ./library/LibraryManager/libraryhandler.h \
@@ -250,13 +245,6 @@ HEADERS += ./editors/ComponentEditor/software/apiInterface/ApiInterfaceColumns.h
     ./editors/ComponentEditor/itemvisualizer.h \
     ./editors/ComponentEditor/general/desceditor.h \
     ./editors/ComponentEditor/general/generaleditor.h \
-    ./editors/ComponentEditor/modelParameters/ModelParameterColumns.h \
-    ./editors/ComponentEditor/modelParameters/ModelParameterEditorHeaderView.h \
-    ./editors/ComponentEditor/modelParameters/ModelParameterFactory.h \
-    ./editors/ComponentEditor/modelParameters/ModelParameterFactoryImplementation.h \
-    ./editors/ComponentEditor/modelParameters/ModelParameterDelegate.h \
-    ./editors/ComponentEditor/modelParameters/modelparametermodel.h \
-    ./editors/ComponentEditor/modelParameters/modelparametereditor.h \
     ./editors/ComponentEditor/ports/PortColumns.h \
     ./editors/ComponentEditor/ports/PortTagEditorDelegate.h \
     ./editors/ComponentEditor/ports/portsdelegate.h \
@@ -328,6 +316,7 @@ HEADERS += ./editors/ComponentEditor/software/apiInterface/ApiInterfaceColumns.h
     ./editors/ComponentEditor/software/SWPropertiesEditor.h \
     ./editors/ComponentEditor/software/PropertyValueDelegate.h \
     ./editors/ComponentEditor/software/PropertyValueEditor.h \
+    ./editors/ComponentEditor/software/apiInterface/ApiInterfaceColumns.h \
     ./editors/ComponentEditor/software/apiInterface/apiinterfaceseditor.h \
     ./editors/ComponentEditor/software/apiInterface/apiinterfacesmodel.h \
     ./editors/ComponentEditor/software/apiInterface/ApiInterfaceEditor.h \
@@ -337,6 +326,7 @@ HEADERS += ./editors/ComponentEditor/software/apiInterface/ApiInterfaceColumns.h
     ./editors/ComponentEditor/software/comInterface/cominterfacesmodel.h \
     ./editors/ComponentEditor/software/comInterface/ComInterfaceEditor.h \
     ./editors/ComponentEditor/software/comInterface/cominterfacesdelegate.h \
+    ./editors/ComponentEditor/software/swView/cpuselector.h \
     ./editors/ComponentEditor/software/swView/bspbuildeditor.h \
     ./editors/ComponentEditor/software/swView/swbuildcommandeditor.h \
     ./editors/ComponentEditor/software/swView/swbuildcommandmodel.h \
@@ -400,7 +390,6 @@ HEADERS += ./editors/ComponentEditor/software/apiInterface/ApiInterfaceColumns.h
     ./editors/ComponentEditor/fileSet/file/FileColumns.h \
     ./editors/ComponentEditor/fileSet/file/filegeneraleditor.h \
     ./editors/ComponentEditor/fileSet/file/filenameeditor.h \
-    ./editors/ComponentEditor/fileSet/file/filenamelineedit.h \
     ./editors/ComponentEditor/fileSet/file/filesdelegate.h \
     ./editors/ComponentEditor/fileSet/file/fileseditor.h \
     ./editors/ComponentEditor/fileSet/file/filesmodel.h \
@@ -498,7 +487,6 @@ HEADERS += ./editors/ComponentEditor/software/apiInterface/ApiInterfaceColumns.h
     ./editors/ComponentEditor/treeStructure/componenteditoritem.h \
     ./editors/ComponentEditor/treeStructure/componenteditormemmapitem.h \
     ./editors/ComponentEditor/treeStructure/componenteditormemmapsitem.h \
-    ./editors/ComponentEditor/treeStructure/componenteditormodelparamsitem.h \
     ./editors/ComponentEditor/treeStructure/componenteditorotherclocksitem.h \
     ./editors/ComponentEditor/treeStructure/componenteditorparametersitem.h \
     ./editors/ComponentEditor/treeStructure/componenteditorportsitem.h \
@@ -522,7 +510,6 @@ HEADERS += ./editors/ComponentEditor/software/apiInterface/ApiInterfaceColumns.h
     ./editors/ComponentEditor/common/ParameterFinder.h \
     ./editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
     ./editors/ComponentEditor/common/SystemVerilogSyntax.h \
-    ./editors/ComponentEditor/common/ValueFormatter.h \
     ./editors/ComponentEditor/common/AbstractParameterModel.h \
     ./editors/ComponentEditor/common/ComponentParameterFinder.h \
     ./editors/ComponentEditor/common/CompleterPopupTable.h \
@@ -606,6 +593,7 @@ HEADERS += ./editors/ComponentEditor/software/apiInterface/ApiInterfaceColumns.h
     ./designEditors/HWDesign/AddressEditor/AddressEditor.h \
     ./designEditors/HWDesign/AddressEditor/AddressModel.h \
     ./designEditors/HWDesign/AddressEditor/AddressTableView.h \
+    ./designEditors/HWDesign/AdHocEditor/AdHocColumns.h \
     ./designEditors/HWDesign/AdHocEditor/AdHocDelegate.h \
     ./designEditors/HWDesign/AdHocEditor/AdHocEditor.h \
     ./designEditors/HWDesign/AdHocEditor/AdHocModel.h \
@@ -660,10 +648,8 @@ HEADERS += ./editors/ComponentEditor/software/apiInterface/ApiInterfaceColumns.h
     ./kactusGenerators/vhdlGenerator/vhdlport.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
-    ./designEditors/HWDesign/AdHocEditor/AdHocColumns.h
-SOURCES += ./editors/ComponentEditor/software/swView/cpuselector.cpp \
-    ./common/GenericEditProvider.cpp \
+    ./kactusGenerators/modelsimGenerator/modelsimgenerator.h
+SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
     ./common/dialogs/comboSelector/comboselector.cpp \
@@ -810,10 +796,10 @@ SOURCES += ./editors/ComponentEditor/software/swView/cpuselector.cpp \
     ./wizards/common/ComponentComparator/ComponentComparator.cpp \
     ./wizards/common/ComponentDiffWidget/ComponentDiffWidget.cpp \
     ./wizards/common/VLNVComparator/VLNVComparator.cpp \
-    ./wizards/common/ModuleParameterComparator/ModuleParameterComparator.cpp \
     ./wizards/common/ViewComparator/ViewComparator.cpp \
     ./wizards/common/PortComparator/PortComparator.cpp \
     ./wizards/common/ParameterComparator/ParameterComparator.cpp \
+    ./wizards/common/ModuleParameterComparator/ModuleParameterComparator.cpp \
     ./Help/HelpSystem/ContextHelpBrowser.cpp \
     ./Help/HelpSystem/HelpSearchWidget.cpp \
     ./Help/HelpSystem/HelpWindow.cpp \
@@ -822,9 +808,6 @@ SOURCES += ./editors/ComponentEditor/software/swView/cpuselector.cpp \
     ./Plugins/PluginSystem/PluginListDialog.cpp \
     ./Plugins/PluginSystem/PluginManager.cpp \
     ./Plugins/PluginSystem/PluginUtilityAdapter.cpp \
-    ./library/LibraryManager/ipxactitem.cpp \
-    ./library/LibraryManager/ipxactmodel.cpp \
-    ./library/LibraryManager/ipxactwidget.cpp \
     ./library/LibraryManager/librarydata.cpp \
     ./library/LibraryManager/LibraryErrorModel.cpp \
     ./library/LibraryManager/LibraryFilter.cpp \
@@ -918,7 +901,6 @@ SOURCES += ./editors/ComponentEditor/software/swView/cpuselector.cpp \
     ./editors/ComponentEditor/fileSet/file/fileeditor.cpp \
     ./editors/ComponentEditor/fileSet/file/filegeneraleditor.cpp \
     ./editors/ComponentEditor/fileSet/file/filenameeditor.cpp \
-    ./editors/ComponentEditor/fileSet/file/filenamelineedit.cpp \
     ./editors/ComponentEditor/fileSet/file/filesdelegate.cpp \
     ./editors/ComponentEditor/fileSet/file/fileseditor.cpp \
     ./editors/ComponentEditor/fileSet/file/filesmodel.cpp \
@@ -938,11 +920,6 @@ SOURCES += ./editors/ComponentEditor/software/swView/cpuselector.cpp \
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencySourceEditor.cpp \
     ./editors/ComponentEditor/general/desceditor.cpp \
     ./editors/ComponentEditor/general/generaleditor.cpp \
-    ./editors/ComponentEditor/modelParameters/ModelParameterDelegate.cpp \
-    ./editors/ComponentEditor/modelParameters/modelparametereditor.cpp \
-    ./editors/ComponentEditor/modelParameters/ModelParameterEditorHeaderView.cpp \
-    ./editors/ComponentEditor/modelParameters/ModelParameterFactoryImplementation.cpp \
-    ./editors/ComponentEditor/modelParameters/modelparametermodel.cpp \
     ./editors/ComponentEditor/otherClockDrivers/clockdriversdelegate.cpp \
     ./editors/ComponentEditor/otherClockDrivers/otherclockdriverseditor.cpp \
     ./editors/ComponentEditor/otherClockDrivers/otherclockdriversmodel.cpp \
@@ -988,6 +965,7 @@ SOURCES += ./editors/ComponentEditor/software/swView/cpuselector.cpp \
     ./editors/ComponentEditor/software/comInterface/cominterfaceseditor.cpp \
     ./editors/ComponentEditor/software/comInterface/cominterfacesmodel.cpp \
     ./editors/ComponentEditor/software/swView/bspbuildeditor.cpp \
+    ./editors/ComponentEditor/software/swView/cpuselector.cpp \
     ./editors/ComponentEditor/software/swView/swbuildcommandeditor.cpp \
     ./editors/ComponentEditor/software/swView/swbuildcommandmodel.cpp \
     ./editors/ComponentEditor/software/swView/swbuilddelegate.cpp \
@@ -1077,7 +1055,6 @@ SOURCES += ./editors/ComponentEditor/software/swView/cpuselector.cpp \
     ./editors/ComponentEditor/treeStructure/componenteditoritem.cpp \
     ./editors/ComponentEditor/treeStructure/componenteditormemmapitem.cpp \
     ./editors/ComponentEditor/treeStructure/componenteditormemmapsitem.cpp \
-    ./editors/ComponentEditor/treeStructure/componenteditormodelparamsitem.cpp \
     ./editors/ComponentEditor/treeStructure/componenteditorotherclocksitem.cpp \
     ./editors/ComponentEditor/treeStructure/componenteditorparametersitem.cpp \
     ./editors/ComponentEditor/treeStructure/componenteditorportsitem.cpp \
@@ -1119,7 +1096,6 @@ SOURCES += ./editors/ComponentEditor/software/swView/cpuselector.cpp \
     ./editors/ComponentEditor/common/ParameterizableTable.cpp \
     ./editors/ComponentEditor/common/ReferencingTableModel.cpp \
     ./editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
-    ./editors/ComponentEditor/common/ValueFormatter.cpp \
     ./editors/ComponentEditor/common/ReferenceSelector/ReferenceSelector.cpp \
     ./editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.cpp \
     ./editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTree.cpp \

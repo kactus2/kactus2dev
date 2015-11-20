@@ -81,6 +81,12 @@
     <Filter Include="Header Files\Component">
       <UniqueIdentifier>{d70ea028-d12a-4260-8f6a-8f4e96a9e470}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\common\validators">
+      <UniqueIdentifier>{bc49e2f5-b962-4eb8-bcee-ff4575f6267f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common\validators">
+      <UniqueIdentifier>{1d95ce5a-b997-4755-bd65-527b1d5afd4b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="validators\namevalidator.cpp">
@@ -148,9 +154,6 @@
     </ClCompile>
     <ClCompile Include="designConfiguration\ViewConfiguration.cpp">
       <Filter>Source Files\designConfiguration</Filter>
-    </ClCompile>
-    <ClCompile Include="validators\ParameterValidator2014.cpp">
-      <Filter>Source Files\validators</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_DesignReader.cpp">
       <Filter>Generated Files\Debug</Filter>
@@ -1076,6 +1079,12 @@
     <ClCompile Include="common\VLNV.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
+    <ClCompile Include="common\validators\ValueFormatter.cpp">
+      <Filter>Source Files\common\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="common\validators\ParameterValidator2014.cpp">
+      <Filter>Source Files\common\validators</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BusDefinition\BusDefinition.h">
@@ -1218,9 +1227,6 @@
     </ClInclude>
     <ClInclude Include="kactusExtensions\SystemView.h">
       <Filter>Header Files\kactusExtensions</Filter>
-    </ClInclude>
-    <ClInclude Include="validators\ParameterValidator2014.h">
-      <Filter>Header Files\validators</Filter>
     </ClInclude>
     <ClInclude Include="Component\AddressBlock.h">
       <Filter>Header Files\Component</Filter>
@@ -1446,6 +1452,12 @@
     </ClInclude>
     <ClInclude Include="common\VLNV.h">
       <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\validators\ParameterValidator2014.h">
+      <Filter>Header Files\common\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="common\validators\ValueFormatter.h">
+      <Filter>Header Files\common\validators</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

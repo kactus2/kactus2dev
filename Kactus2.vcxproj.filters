@@ -3685,9 +3685,6 @@
     <ClCompile Include="editors\ComponentEditor\parameters\ParameterEditorHeaderView.cpp">
       <Filter>Source Files\editors\ComponentEditor\parameters</Filter>
     </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\common\ValueFormatter.cpp">
-      <Filter>Source Files\editors\ComponentEditor\common</Filter>
-    </ClCompile>
     <ClCompile Include="editors\ComponentEditor\referenceCounter\ParameterReferenceCounter.cpp">
       <Filter>Source Files\editors\ComponentEditor\referenceCounter</Filter>
     </ClCompile>
@@ -5886,9 +5883,6 @@
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\common\ExpressionParser.h">
-      <Filter>Header Files\editors\ComponentEditor\common</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\common\ValueFormatter.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\common\ParameterFinder.h">

@@ -584,7 +584,6 @@ CreateHelp
     <ClCompile Include="editors\ComponentEditor\common\ReferenceSelector\ReferenceSelector.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\ReferencingTableModel.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp" />
-    <ClCompile Include="editors\ComponentEditor\common\ValueFormatter.cpp" />
     <ClCompile Include="editors\ComponentEditor\componenteditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\cpus\addressspacerefdelegate.cpp" />
     <ClCompile Include="editors\ComponentEditor\cpus\cpusdelegate.cpp" />
@@ -2288,7 +2287,6 @@ CreateHelp
     </CustomBuild>
     <ClInclude Include="editors\ComponentEditor\common\SystemVerilogExpressionParser.h" />
     <ClInclude Include="editors\ComponentEditor\common\SystemVerilogSyntax.h" />
-    <ClInclude Include="editors\ComponentEditor\common\ValueFormatter.h" />
     <ClInclude Include="editors\ComponentEditor\cpus\CpuColumns.h" />
     <ClInclude Include="editors\ComponentEditor\fileBuilders\FileBuilderColumns.h" />
     <ClInclude Include="editors\ComponentEditor\fileSet\dependencyAnalysis\FileDependencyColumns.h" />

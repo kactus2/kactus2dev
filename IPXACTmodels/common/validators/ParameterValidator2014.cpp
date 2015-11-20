@@ -17,8 +17,9 @@
 #include <IPXACTmodels/common/Enumeration.h>
 #include <IPXACTmodels/common/Parameter.h>
 
+#include <IPXACTmodels/common/validators/ValueFormatter.h>
+
 #include <editors/ComponentEditor/common/ExpressionParser.h>
-#include <editors/ComponentEditor/common/ValueFormatter.h>
 
 #include <QRegularExpression>
 #include <QStringList>
@@ -63,7 +64,7 @@ bool ParameterValidator2014::validate(Parameter const* parameter) const
 bool ParameterValidator2014::hasValidName(Parameter const* parameter) const
 {
     QRegularExpression whiteSpaceExpression;
-    whiteSpaceExpression.setPattern("^ *$");
+    whiteSpaceExpression.setPattern("^\\s*$");
     QRegularExpressionMatch whiteSpaceMatch = whiteSpaceExpression.match(parameter->name());
 
     if (parameter->name().isEmpty() || whiteSpaceMatch.hasMatch())
