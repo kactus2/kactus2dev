@@ -17,7 +17,6 @@
 
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 #include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
-#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 
 #include <QRegularExpression>
 #include <QStringList>
@@ -47,9 +46,7 @@ bool BusDefinitionValidator::validate(BusDefinition const* busDefinition) const
 
 	QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
 
-	QSharedPointer<ParameterFinder> finder(new ComponentParameterFinder(QSharedPointer<Component>()));
-
-	ParameterValidator2014 paraVali(parser, finder, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+	ParameterValidator2014 paraVali(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
 
 	if (!busDefinition->getVlnv().isValid())
 	{
@@ -86,9 +83,7 @@ void BusDefinitionValidator::findErrorsIn(QVector<QString>& errors, QSharedPoint
 {
 	QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
 
-	QSharedPointer<ParameterFinder> finder(new ComponentParameterFinder(QSharedPointer<Component>()));
-
-	ParameterValidator2014 paraVali(parser, finder, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+	ParameterValidator2014 paraVali(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
 
 	busDefinition->getVlnv().isValid(errors, QObject::tr("containing bus definition") );
 

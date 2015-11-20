@@ -17,7 +17,6 @@
 
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 #include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
-#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 
 #include <QRegularExpression>
 #include <QStringList>
@@ -45,9 +44,7 @@ bool CPUValidator::validate(QSharedPointer<Cpu> CPU) const
 {
 	QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
 
-	QSharedPointer<ParameterFinder> finder(new ComponentParameterFinder(QSharedPointer<Component>()));
-
-	ParameterValidator2014 paraVali(parser, finder, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+	ParameterValidator2014 paraVali(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
 
 	if ( !hasValidName( CPU->name() ) )
 	{
@@ -96,9 +93,7 @@ void CPUValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Cpu> CP
 {
 	QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
 
-	QSharedPointer<ParameterFinder> finder(new ComponentParameterFinder(QSharedPointer<Component>()));
-
-	ParameterValidator2014 paraVali(parser, finder, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+	ParameterValidator2014 paraVali(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
 
 	if ( !hasValidName( CPU->name() ) )
 	{
@@ -144,7 +139,7 @@ void CPUValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Cpu> CP
 bool CPUValidator::hasValidName(QString const& name) const
 {
 	QRegularExpression whiteSpaceExpression;
-	whiteSpaceExpression.setPattern("^ *$");
+	whiteSpaceExpression.setPattern("^\\s*$");
 	QRegularExpressionMatch whiteSpaceMatch = whiteSpaceExpression.match(name);
 
 	if (name.isEmpty() || whiteSpaceMatch.hasMatch())

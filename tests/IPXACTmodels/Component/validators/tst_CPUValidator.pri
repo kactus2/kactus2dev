@@ -7,8 +7,7 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../../IPXACTmodels/validators/ParameterValidator2014.h \
-    ../../../../IPXACTmodels/Component/AbstractionType.h \
+HEADERS += ../../../../IPXACTmodels/Component/AbstractionType.h \
     ../../../../IPXACTmodels/Component/AddressBlock.h \
     ../../../../IPXACTmodels/Component/AddressSpace.h \
     ../../../../IPXACTmodels/Component/AlternateRegister.h \
@@ -62,6 +61,7 @@ HEADERS += ../../../../IPXACTmodels/validators/ParameterValidator2014.h \
     ../../../../IPXACTmodels/common/NameValuePair.h \
     ../../../../IPXACTmodels/Component/OtherClockDriver.h \
     ../../../../IPXACTmodels/common/Parameter.h \
+    ../../../../IPXACTmodels/validators/ParameterValidator2014.h \
     ../../../../IPXACTmodels/common/PartSelect.h \
     ../../../../IPXACTmodels/Component/Port.h \
     ../../../../IPXACTmodels/Component/PortMap.h \
@@ -87,10 +87,8 @@ HEADERS += ../../../../IPXACTmodels/validators/ParameterValidator2014.h \
     ../../../../IPXACTmodels/Component/WireTypeDef.h \
     ../../../../IPXACTmodels/Component/WriteValueConstraint.h \
     ../../../../IPXACTmodels/generaldeclarations.h \
-    ../../../../editors/ComponentEditor/common/ComponentParameterFinder.h
-SOURCES += ../../../../IPXACTmodels/validators/ParameterValidator2014.cpp \
-    ../../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
-    ../../../../IPXACTmodels/Component/AbstractionType.cpp \
+    ../../../../editors/ComponentEditor/common/ValueFormatter.h
+SOURCES += ../../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../../IPXACTmodels/Component/AddressBlock.cpp \
     ../../../../IPXACTmodels/Component/AddressSpace.cpp \
     ../../../../IPXACTmodels/Component/AlternateRegister.cpp \
@@ -113,6 +111,7 @@ SOURCES += ../../../../IPXACTmodels/validators/ParameterValidator2014.cpp \
     ../../../../IPXACTmodels/Component/ComponentInstantiation.cpp \
     ../../../../IPXACTmodels/common/ConfigurableElementValue.cpp \
     ../../../../IPXACTmodels/common/ConfigurableVLNVReference.cpp \
+    ../../../../IPXACTmodels/Component/Cpu.cpp \
     ../../../../IPXACTmodels/Component/DesignConfigurationInstantiation.cpp \
     ../../../../IPXACTmodels/Component/DesignInstantiation.cpp \
     ../../../../IPXACTmodels/common/DirectionTypes.cpp \
@@ -143,6 +142,7 @@ SOURCES += ../../../../IPXACTmodels/validators/ParameterValidator2014.cpp \
     ../../../../IPXACTmodels/common/NameValuePair.cpp \
     ../../../../IPXACTmodels/Component/OtherClockDriver.cpp \
     ../../../../IPXACTmodels/common/Parameter.cpp \
+    ../../../../IPXACTmodels/validators/ParameterValidator2014.cpp \
     ../../../../IPXACTmodels/common/PartSelect.cpp \
     ../../../../IPXACTmodels/Component/Port.cpp \
     ../../../../IPXACTmodels/Component/PortMap.cpp \
@@ -157,6 +157,7 @@ SOURCES += ../../../../IPXACTmodels/validators/ParameterValidator2014.cpp \
     ../../../../IPXACTmodels/kactusExtensions/SWView.cpp \
     ../../../../IPXACTmodels/Component/Segment.cpp \
     ../../../../IPXACTmodels/Component/SlaveInterface.cpp \
+    ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ../../../../IPXACTmodels/kactusExtensions/SystemView.cpp \
     ../../../../IPXACTmodels/Component/Transactional.cpp \
     ../../../../IPXACTmodels/common/TransactionalTypes.cpp \
@@ -168,5 +169,4 @@ SOURCES += ../../../../IPXACTmodels/validators/ParameterValidator2014.cpp \
     ../../../../IPXACTmodels/Component/WriteValueConstraint.cpp \
     ../../../../IPXACTmodels/generaldeclarations.cpp \
     ./tst_CPUValidator.cpp \
-    ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
-    ../../../../IPXACTmodels/Component/Cpu.cpp
+    ../../../../editors/ComponentEditor/common/ValueFormatter.cpp

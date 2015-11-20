@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: channel.cpp
+// File: Channel.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Janne Virtanen
@@ -9,7 +9,7 @@
 // Implementation for ipxact:channel element.
 //-----------------------------------------------------------------------------
 
-#include "channel.h"
+#include "Channel.h"
 
 #include <QString>
 
