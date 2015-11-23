@@ -12,9 +12,11 @@
 TEMPLATE = subdirs
 
 CONFIG += testcase
-SUBDIRS += Model\tst_ViewWriter.pro \
-		   validators\tst_ChannelValidator.pro \
+SUBDIRS += validators\tst_ChannelValidator.pro \
 		   validators\tst_CPUValidator.pro \
+		   validators\tst_FileValidator.pro \
+		   validators\tst_FileSetValidator.pro \
+		   Model\tst_ViewWriter.pro \
 		   Model\tst_ViewReader.pro \
 		   Model\tst_InstantiationsWriter.pro \
 		   Model\tst_InstantiationsReader.pro \
