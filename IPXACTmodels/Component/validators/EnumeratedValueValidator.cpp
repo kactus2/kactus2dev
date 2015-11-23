@@ -48,7 +48,7 @@ bool EnumeratedValueValidator::validate(QSharedPointer<EnumeratedValue> enumerat
 bool EnumeratedValueValidator::hasValidName(QSharedPointer<EnumeratedValue> enumeratedValue) const
 {
     QRegularExpression whiteSpaceExpression;
-    whiteSpaceExpression.setPattern("^ *$");
+    whiteSpaceExpression.setPattern("^\\s*$");
     QRegularExpressionMatch whiteSpaceMatch = whiteSpaceExpression.match(enumeratedValue->name());
 
     if (enumeratedValue->name().isEmpty() || whiteSpaceMatch.hasMatch())

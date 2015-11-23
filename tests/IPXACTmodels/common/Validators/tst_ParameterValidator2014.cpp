@@ -13,7 +13,7 @@
 
 #include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
 
-#include <IPXACTmodels/validators/ParameterValidator2014.h>
+#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
 #include <IPXACTmodels/common/Parameter.h>
 
 #include <IPXACTmodels/Component/Choice.h>

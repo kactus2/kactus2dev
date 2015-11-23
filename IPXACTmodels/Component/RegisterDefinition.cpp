@@ -63,55 +63,6 @@ RegisterDefinition::~RegisterDefinition()
 
 }
 
-/*
-bool RegisterDefinition::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
-    QStringList& errorList, 
-								 const QString& parentIdentifier ) const {
-
-	bool valid = true;
-
-	if (size_ == 0) {
-		errorList.append(QObject::tr("No size specified for %1").arg(parentIdentifier));
-		valid = false;
-	}
-
-	if (reset_ && !reset_->isValid(errorList, parentIdentifier)) {
-		valid = false;
-	}
-
-	foreach (QSharedPointer<Field> field, fields_) {
-		if (!field->isValid(size_, componentChoices, errorList, parentIdentifier))
-        {
-			valid = false;
-		}
-	}
-
-	return valid;
-}*/
-/*
-bool RegisterDefinition::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const
-{
-	if (size_ == 0)
-    {
-		return false;
-	}
-
-	if (reset_ && !reset_->isValid())
-    {
-		return false;
-	}
-
-	foreach (QSharedPointer<Field> field, fields_)
-    {
-		if (!field->isValid(size_, componentChoices))
-        {
-			return false;
-		}
-	}
-
-	return true;
-}*/
-
 //-----------------------------------------------------------------------------
 // Function: RegisterDefinition::getVolatile()
 //-----------------------------------------------------------------------------

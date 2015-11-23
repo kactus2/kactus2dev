@@ -63,7 +63,7 @@ HEADERS += ../../../../../IPXACTmodels/Component/AbstractionType.h \
     ../../../../../IPXACTmodels/common/NameValuePair.h \
     ../../../../../IPXACTmodels/Component/OtherClockDriver.h \
     ../../../../../IPXACTmodels/common/Parameter.h \
-    ../../../../../IPXACTmodels/validators/ParameterValidator2014.h \
+    ../../../../../IPXACTmodels/common/validators/ValueFormatter.h \
     ../../../../../IPXACTmodels/common/PartSelect.h \
     ../../../../../IPXACTmodels/Component/Port.h \
     ../../../../../IPXACTmodels/Component/PortMap.h \
@@ -89,7 +89,7 @@ HEADERS += ../../../../../IPXACTmodels/Component/AbstractionType.h \
     ../../../../../IPXACTmodels/Component/WireTypeDef.h \
     ../../../../../IPXACTmodels/Component/WriteValueConstraint.h \
     ../../../../../IPXACTmodels/generaldeclarations.h \
-    ../../../../../editors/ComponentEditor/common/ValueFormatter.h
+    ../../../../../IPXACTmodels/common/validators/ParameterValidator2014.h
 SOURCES += ../../../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../../../IPXACTmodels/Component/AddressBlock.cpp \
     ../../../../../IPXACTmodels/Component/AddressSpace.cpp \
@@ -146,7 +146,7 @@ SOURCES += ../../../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../../../IPXACTmodels/common/NameValuePair.cpp \
     ../../../../../IPXACTmodels/Component/OtherClockDriver.cpp \
     ../../../../../IPXACTmodels/common/Parameter.cpp \
-    ../../../../../IPXACTmodels/validators/ParameterValidator2014.cpp \
+    ../../../../../IPXACTmodels/common/validators/ValueFormatter.cpp \
     ../../../../../IPXACTmodels/common/PartSelect.cpp \
     ../../../../../IPXACTmodels/Component/Port.cpp \
     ../../../../../IPXACTmodels/Component/PortMap.cpp \
@@ -173,4 +173,4 @@ SOURCES += ../../../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../../../IPXACTmodels/Component/WriteValueConstraint.cpp \
     ../../../../../IPXACTmodels/generaldeclarations.cpp \
     ./tst_FieldValidator.cpp \
-    ../../../../../editors/ComponentEditor/common/ValueFormatter.cpp
+    ../../../../../IPXACTmodels/common/validators/ParameterValidator2014.cpp

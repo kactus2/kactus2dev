@@ -18,7 +18,8 @@
 #include <IPXACTmodels/Component/EnumeratedValue.h>
 #include <IPXACTmodels/Component/WriteValueConstraint.h>
 #include <IPXACTmodels/Component/validators/EnumeratedValueValidator.h>
-#include <IPXACTmodels/validators/ParameterValidator2014.h>
+
+#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
 
 #include <QRegularExpression>
 
@@ -58,7 +59,7 @@ bool FieldValidator::validate(QSharedPointer<Field> field) const
 bool FieldValidator::hasValidName(QSharedPointer<Field> field) const
 {
     QRegularExpression whiteSpaceExpression;
-    whiteSpaceExpression.setPattern("^ *$");
+    whiteSpaceExpression.setPattern("^\\s*$");
     QRegularExpressionMatch whiteSpaceMatch = whiteSpaceExpression.match(field->name());
 
     if (field->name().isEmpty() || whiteSpaceMatch.hasMatch())

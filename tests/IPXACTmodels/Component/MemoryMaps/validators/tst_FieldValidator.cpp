@@ -588,7 +588,6 @@ void tst_FieldValidator::testParametersAreValid()
     {
         QFAIL("Error was not found");
     }
-
 }
 
 //-----------------------------------------------------------------------------

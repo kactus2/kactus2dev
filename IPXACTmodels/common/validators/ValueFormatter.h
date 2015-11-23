@@ -14,7 +14,9 @@
 
 #include <QString>
 
-class ValueFormatter 
+#include <IPXACTmodels/ipxactmodels_global.h>
+
+class IPXACTMODELS_EXPORT ValueFormatter 
 {
 public:
 
