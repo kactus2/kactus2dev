@@ -20,6 +20,7 @@ SUBDIRS += validators\tst_ChannelValidator.pro \
 		   Model\tst_ViewReader.pro \
 		   Model\tst_InstantiationsWriter.pro \
 		   Model\tst_InstantiationsReader.pro \
+		   Model\validators\tst_InstantiationsValidator.pro \
 		   Model\tst_ComponentPortWriter.pro \
 		   Model\tst_ComponentPortReader.pro \
 		   MemoryMaps\MemoryMaps.pro \
