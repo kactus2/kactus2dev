@@ -265,12 +265,29 @@ void InstantiationsValidator::findErrorsInComponentInstantiation(QVector<QString
 }
 
 //-----------------------------------------------------------------------------
+// Function: EnumeratedValueValidator::hasValidName()
+//-----------------------------------------------------------------------------
+bool InstantiationsValidator::hasValidName(QString const& name) const
+{
+	QRegularExpression whiteSpaceExpression;
+	whiteSpaceExpression.setPattern("^\\s*$");
+	QRegularExpressionMatch whiteSpaceMatch = whiteSpaceExpression.match(name);
+
+	if (name.isEmpty() || whiteSpaceMatch.hasMatch())
+	{
+		return false;
+	}
+
+	return true;
+}
+
+//-----------------------------------------------------------------------------
 // Function: InstantiationsValidator::inexistingReferenceList()
 //-----------------------------------------------------------------------------
-bool InstantiationsValidator::inexistingReferenceList(QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets,
+bool InstantiationsValidator::inexistingReferenceList(QSharedPointer<QList<QSharedPointer<FileSet> > > fileSet,
 	QSharedPointer<ComponentInstantiation> componentInstantiation) const
 {
-	return ( ( !fileSets || fileSets->count() < 1 ) && componentInstantiation->getFileSetReferences()->count() > 0 );
+	return ( ( !fileSet || fileSet->count() < 1 ) && componentInstantiation->getFileSetReferences()->count() > 0 );
 }
 
 //-----------------------------------------------------------------------------
@@ -311,21 +328,4 @@ bool InstantiationsValidator::isValidPresence(QSharedPointer<ModuleParameter> pa
 	{
 		return false;
 	}
-}
-
-//-----------------------------------------------------------------------------
-// Function: EnumeratedValueValidator::hasValidName()
-//-----------------------------------------------------------------------------
-bool InstantiationsValidator::hasValidName(QString const& name) const
-{
-	QRegularExpression whiteSpaceExpression;
-	whiteSpaceExpression.setPattern("^\\s*$");
-	QRegularExpressionMatch whiteSpaceMatch = whiteSpaceExpression.match(name);
-
-	if (name.isEmpty() || whiteSpaceMatch.hasMatch())
-	{
-		return false;
-	}
-
-	return true;
 }

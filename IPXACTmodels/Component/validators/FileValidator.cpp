@@ -21,7 +21,7 @@
 #include <QStringList>
 
 //-----------------------------------------------------------------------------
-// Function: SystemVerilogValidator::SystemVerilogValidator()
+// Function: FileValidator::FileValidator()
 //-----------------------------------------------------------------------------
 FileValidator::FileValidator()
 {
@@ -29,7 +29,7 @@ FileValidator::FileValidator()
 }
 
 //-----------------------------------------------------------------------------
-// Function: SystemVerilogValidator::~SystemVerilogValidator()
+// Function: FileValidator::~FileValidator()
 //-----------------------------------------------------------------------------
 FileValidator::~FileValidator()
 {
