@@ -54,18 +54,6 @@ public:
      *  The destructor.
      */
     virtual ~MemoryMapBase();
-
-    /*!
-     *  Check if the memory map is in a valid state.
-     *
-     *      @param [in] componentChoices    Choices in the containing component.
-     *      @param [in] errorList           The list to add the possble error messages to.
-     *      @param [in] parentIdentifier    String from parent to help to identify the location of the error.
-     *
-     *      @return True, if the state is valid and writing is possible, false otherwise.
-     */
-    //bool isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices, QStringList& errorList,
-    //    const QString& parentIdentifier) const;
     
     /*!
      *  Get the isPresent value.

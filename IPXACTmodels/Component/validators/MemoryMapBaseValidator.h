@@ -1,0 +1,169 @@
+//-----------------------------------------------------------------------------
+// File: MemoryMapBaseValidator.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Mikko Teuho
+// Date: 25.11.2015
+//
+// Description:
+// Validator for the base ipxact:memoryMap.
+//-----------------------------------------------------------------------------
+
+#ifndef MEMORYMAPBASEVALIDATOR_H
+#define MEMORYMAPBASEVALIDATOR_H
+
+#include <IPXACTmodels/ipxactmodels_global.h>
+
+#include <QSharedPointer>
+#include <QString>
+
+class ExpressionParser;
+class Choice;
+class MemoryMapBase;
+class AddressBlock;
+//-----------------------------------------------------------------------------
+//! Validator for the base ipxact:memoryMap.
+//-----------------------------------------------------------------------------
+class IPXACTMODELS_EXPORT MemoryMapBaseValidator
+{
+public:
+
+	/*!
+	 *  The constructor.
+	 *
+	 *      @param [in] expressionParser    The parser to use for solving expressions.
+     *      @param [in] choices             List of available choices.
+	 */
+    MemoryMapBaseValidator(QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<QList<QSharedPointer<Choice> > > choices);
+
+	//! The destructor.
+	~MemoryMapBaseValidator();
+    
+    /*!
+     *  Validates the given memory map base.
+     *
+     *      @param [in] memoryMapBase   The memory map base to validate.
+     *
+     *      @return True, if the memory map base is valid IP-XACT, otherwise false.
+     */
+    bool validate(QSharedPointer<MemoryMapBase> memoryMapBase) const;
+
+    /*!
+     *  Check if the memory map base contains a valid name.
+     *
+     *      @param [in] memoryMapBase   The selected memory map base.
+     *
+     *      @return True, if the name is valid, otherwise false.
+     */
+    bool hasValidName(QSharedPointer<MemoryMapBase> memoryMapBase) const;
+
+    /*!
+     *  Check if the memory map base contains a valid isPresent value.
+     *
+     *      @param [in] memoryMapBase   The selected memory map base.
+     *
+     *      @return True, if the isPresent is valid, otherwise false.
+     */
+    bool hasValidIsPresent(QSharedPointer<MemoryMapBase> memoryMapBase) const;
+
+    /*!
+     *  Check if the memory map base contains valid memory blocks.
+     *
+     *      @param [in] memoryMapBase   The selected memory map base.
+     *
+     *      @return True, if the memory blocks are valid, otherwise false.
+     */
+    bool hasValidMemoryBlocks(QSharedPointer<MemoryMapBase> memoryMapBase) const;
+
+    /*!
+     *  Locate errors within a memory map base.
+     *
+     *      @param [in] errors          List of found errors.
+     *      @param [in] memoryMapBase   The selected memory map base.
+     *      @param [in] context         Context to help locate the error.
+     */
+    void findErrorsIn(QVector<QString>& errors, QSharedPointer<MemoryMapBase> memoryMapBase,
+        QString const& context) const;
+
+private:
+
+	// Disable copying.
+	MemoryMapBaseValidator(MemoryMapBaseValidator const& rhs);
+	MemoryMapBaseValidator& operator=(MemoryMapBaseValidator const& rhs);
+
+    /*!
+     *  Check if the address block overlaps with another address block.
+     *
+     *      @param [in] addressBlock        The selected address block.
+     *      @param [in] memoryMapBase       The selected memory map base.
+     *      @param [in] addressBlockIndex   The index of the address block.
+     *
+     *      @return True, if the address blocks overlap, otherwise false.
+     */
+    bool addressBlockOverlaps(QSharedPointer<AddressBlock> addressBlock,
+        QSharedPointer<MemoryMapBase> memoryMapBase, int addressBlockIndex) const;
+
+    /*!
+     *  Check if two address blocks overlap.
+     *
+     *      @param [in] addressBlock    The selected address block.
+     *      @param [in] comparedBlock   The compared address block.
+     */
+    bool twoAddressBlocksOverlap(QSharedPointer<AddressBlock> addressBlock,
+        QSharedPointer<AddressBlock> comparedBlock) const;
+
+    /*!
+     *  Find errors within a name.
+     *
+     *      @param [in] errors          List of found errors.
+     *      @param [in] memoryMapBase   The selected memory map base.
+     *      @param [in] context         Context to help locate the error.
+     */
+    void findErrorsInName(QVector<QString>& errors, QSharedPointer<MemoryMapBase> memoryMapBase,
+        QString const& context) const;
+
+    /*!
+     *  Find errors within a isPresent.
+     *
+     *      @param [in] errors          List of found errors.
+     *      @param [in] memoryMapBase   The selected memory map base.
+     *      @param [in] context         Context to help locate the error.
+     */
+    void findErrorsInIsPresent(QVector<QString>& errors, QSharedPointer<MemoryMapBase> memoryMapBase,
+        QString const& context) const;
+
+    /*!
+     *  Find errors within address blocks.
+     *
+     *      @param [in] errors          List of found errors.
+     *      @param [in] memoryMapBase   The selected memory map base.
+     *      @param [in] context         Context to help locate the error.
+     */
+    void findErrorsInAddressBlocks(QVector<QString>& errors, QSharedPointer<MemoryMapBase> memoryMapBase,
+        QString const& context) const;
+
+    /*!
+     *  Find errors within overlapping address blocks.
+     *
+     *      @param [in] errors          List of found errors.
+     *      @param [in] memoryMapBase   The selected memory map base.
+     *      @param [in] addressBlock    The selected address block.
+     *      @param [in] blockIndex      The index of the address block.
+     *      @param [in] context         Context to help locate the error.
+     */
+    void findErrorsInOverlappingBlocks(QVector<QString>& errors, QSharedPointer<MemoryMapBase> memoryMapBase,
+        QSharedPointer<AddressBlock> addressBlock, int blockIndex, QString const& context) const;
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! The expression parser to use.
+    QSharedPointer<ExpressionParser> expressionParser_;
+
+    //! The currently available choices.
+    QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices_;
+};
+
+#endif // MEMORYMAPBASEVALIDATOR_H

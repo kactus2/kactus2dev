@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: AddressBlockValidator.h
+// File: AddressBlockValidator.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Mikko Teuho

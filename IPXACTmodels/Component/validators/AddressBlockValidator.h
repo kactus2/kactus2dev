@@ -56,7 +56,7 @@ public:
      *
      *      @return True, if the name is valid, otherwise false.
      */
-    bool hasValidName(QSharedPointer<AddressBlock> selectedRegister) const;
+    bool hasValidName(QSharedPointer<AddressBlock> addressBlock) const;
 
     /*!
      *  Check if the address block contains a valid isPresent value.

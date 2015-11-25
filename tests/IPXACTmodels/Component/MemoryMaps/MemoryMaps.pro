@@ -16,6 +16,8 @@ SUBDIRS += validators\tst_EnumeratedValueValidator.pro \
 		   validators\tst_FieldValidator.pro \
 		   validators\tst_RegisterValidator.pro \
 		   validators\tst_AddressBlockValidator.pro \
+		   validators\tst_MemoryMapBaseValidator.pro \
+		   validators\tst_MemoryMapValidator.pro \
 		   tst_EnumeratedValueWriter.pro \
 		   tst_EnumeratedValueReader.pro \
 		   tst_FieldWriter.pro \
