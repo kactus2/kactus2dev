@@ -31,10 +31,8 @@
 // Function: RegisterValidator::RegisterValidator()
 //-----------------------------------------------------------------------------
 RegisterValidator::RegisterValidator(QSharedPointer<ExpressionParser> expressionParser,
-//     QSharedPointer<ParameterFinder> finder,
     QSharedPointer<QList<QSharedPointer<Choice> > > choices):
 expressionParser_(expressionParser),
-// parameterFinder_(finder),
 availableChoices_(choices)
 {
 
@@ -66,7 +64,7 @@ bool RegisterValidator::validate(QSharedPointer<Register> selectedRegister) cons
 bool RegisterValidator::hasValidName(QSharedPointer<RegisterBase> selectedRegister) const
 {
     QRegularExpression whiteSpaceExpression;
-    whiteSpaceExpression.setPattern("^ *$");
+    whiteSpaceExpression.setPattern("^\\s*$");
     QRegularExpressionMatch whiteSpaceMatch = whiteSpaceExpression.match(selectedRegister->name());
 
     if (selectedRegister->name().isEmpty() || whiteSpaceMatch.hasMatch())
