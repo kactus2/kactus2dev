@@ -30,9 +30,6 @@ class IPXACTMODELS_EXPORT MemoryRemap : public MemoryMapBase
 public:
 
     /*!
-     *  The default constructor.
-     */
-    /*!
      *  The constructor.
      *
      *      @param [in] name        Name of the memory remap.
@@ -60,28 +57,11 @@ public:
     ~MemoryRemap();
 
     /*!
-	 *  Check if the memory remap is in a valid state.
-	 *
-	 *      @param [in] componentChoices    Choices in the containing component.
-	 *      @param [in] remapStateNames     A list of remap state names of the containing component.
-	 *      @param [in] errorList           The list to add the possible error messages to.
-	 *      @param [in] parentIdentifier    Parent information to help identifying the location of the errors.
+     *  Get the element name of the memory remap.
      *
-     *      @return True, if the memory remap is in a valid state, false otherwise
-	 */
-	//bool isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices, QStringList remapStateNames,
-    //    QStringList& errorList, const QString& parentIdentifier) const;
-
-	/*!
-	 *  Check if the memory remap is in a valid state.
-	 *
-	 *      @param [in] componentChoices            Choices in the containing component.
-	 *      @param [in] componentRemapStateNames    A list of remap state names in the containing component.
-     *
-     *      @return True, if the state is valid and writing is possible, false otherwise.
-	 */
-	//bool isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
-    //    QStringList componentRemapStateNames) const;
+     *      @return QString containing "Memory remap".
+     */
+    virtual QString elementName() const;
 
     /*!
      *  Get the remap state of the memory remap.

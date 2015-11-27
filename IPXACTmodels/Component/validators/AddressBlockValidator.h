@@ -43,11 +43,12 @@ public:
     /*!
      *  Validates the given address block.
      *
-     *      @param [in] addressBlock    The address block to validate.
+     *      @param [in] addressBlock        The address block to validate.
+     *      @param [in] addressUnitBits     The address unit bits of a memory map.
      *
      *      @return True, if the address block is valid IP-XACT, otherwise false.
      */
-    bool validate(QSharedPointer<AddressBlock> addressBlock) const;
+    bool validate(QSharedPointer<AddressBlock> addressBlock, QString const& addressUnitBits) const;
 
     /*!
      *  Check if the address block contains a valid name.
@@ -106,11 +107,12 @@ public:
     /*!
      *  Check if the address block contains valid register data.
      *
-     *      @param [in] addressBlock    The selected address block.
+     *      @param [in] addressBlock        The selected address block.
+     *      @param [in] addressUnitBits     The address unit bits of a memory map.
      *
      *      @return True, if the register data is valid, otherwise false.
      */
-    bool hasValidRegisterData(QSharedPointer<AddressBlock> addressBlock) const;
+    bool hasValidRegisterData(QSharedPointer<AddressBlock> addressBlock, QString const& addressUnitBits) const;
 
     /*!
      *  Check if the register size is not within address block width.
@@ -146,12 +148,13 @@ public:
     /*!
      *  Locate errors within an address block.
      *
-     *      @param [in] errors          List of found errors.
-     *      @param [in] addressBlock    The selected address block.
-     *      @param [in] context         Context to help locate the error.
+     *      @param [in] errors              List of found errors.
+     *      @param [in] addressBlock        The selected address block.
+     *      @param [in] addressUnitBits     The address unit bits of a memory map.
+     *      @param [in] context             Context to help locate the error.
      */
-    void findErrorsIn(QVector<QString>& errors, QSharedPointer<AddressBlock> addressBlock, QString const& context)
-        const;
+    void findErrorsIn(QVector<QString>& errors, QSharedPointer<AddressBlock> addressBlock,
+        QString const& addressUnitBits, QString const& context) const;
 
 private:
 
@@ -181,6 +184,16 @@ private:
      */
     bool hasValidAccessWithRegister(QSharedPointer<AddressBlock> addressBlock,
         QSharedPointer<Register> targetRegister) const;
+
+    /*!
+     *  Gets the register size in LAU.
+     *
+     *      @param [in] targetRegister      The selected register.
+     *      @param [in] addressUnitBits     The address unit bits of a memory map.
+     *
+     *      @return The register size in LAU.
+     */
+    int getRegisterSizeInLAU(QSharedPointer<Register> targetRegister, int addressUnitBits) const;
 
     /*!
      *  Find errors within a name.
@@ -255,12 +268,13 @@ private:
     /*!
      *  Find errors within register data.
      *
-     *      @param [in] errors          List of found errors.
-     *      @param [in] addressBlock    The selected addressBlock.
-     *      @param [in] context         Context to help locate the error.
+     *      @param [in] errors              List of found errors.
+     *      @param [in] addressBlock        The selected addressBlock.
+     *      @param [in] addressUnitBits     The address unit bits of a memory map.
+     *      @param [in] context             Context to help locate the error.
      */
     void findErrorsInRegisterData(QVector<QString>& errors, QSharedPointer<AddressBlock> addressBlock,
-        QString const& context) const;
+        QString const& addressUnitBits, QString const& context) const;
 
     //-----------------------------------------------------------------------------
     // Data.

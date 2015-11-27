@@ -35,7 +35,8 @@ HEADERS += ../../../../../IPXACTmodels/Component/MemoryBlockBase.h \
     ../../../../../IPXACTmodels/Component/validators/RegisterValidator.h \
     ../../../../../IPXACTmodels/generaldeclarations.h \
     ../../../../../IPXACTmodels/Component/validators/FieldValidator.h \
-    ../../../../../IPXACTmodels/Component/validators/EnumeratedValueValidator.h
+    ../../../../../IPXACTmodels/Component/validators/EnumeratedValueValidator.h \
+    ../../../../../IPXACTmodels/Component/validators/MemoryReserve.h
 SOURCES += ./tst_MemoryMapBaseValidator.cpp \
     ../../../../../IPXACTmodels/Component/MemoryBlockBase.cpp \
     ../../../../../IPXACTmodels/common/Extendable.cpp \
@@ -65,4 +66,5 @@ SOURCES += ./tst_MemoryMapBaseValidator.cpp \
     ../../../../../IPXACTmodels/Component/validators/RegisterValidator.cpp \
     ../../../../../IPXACTmodels/generaldeclarations.cpp \
     ../../../../../IPXACTmodels/Component/validators/FieldValidator.cpp \
-    ../../../../../IPXACTmodels/Component/validators/EnumeratedValueValidator.cpp
+    ../../../../../IPXACTmodels/Component/validators/EnumeratedValueValidator.cpp \
+    ../../../../../IPXACTmodels/Component/validators/MemoryReserve.cpp

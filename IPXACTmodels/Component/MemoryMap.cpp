@@ -66,68 +66,6 @@ MemoryMap::~MemoryMap()
 {
 
 }
-/*
-//-----------------------------------------------------------------------------
-// Function: memorymap::isValid()
-//-----------------------------------------------------------------------------
-bool MemoryMap::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
-    QStringList remapStateNames, QStringList& errorList,
-    const QString& parentIdentifier) const
-{
-    bool valid = AbstractMemoryMap::isValid(componentChoices, errorList, parentIdentifier);
-
-    const QString thisIdentifier(QObject::tr("memory map %1").arg(name()));
-
-    QStringList memoryRemapNames;
-    foreach (QSharedPointer<MemoryRemap> singleMemoryRemap, *memoryRemaps_)
-    {
-        if (memoryRemapNames.contains(singleMemoryRemap->name()))
-        {
-            errorList.append(QObject::tr("%1 contains several memory remaps with the name %2").arg(
-                thisIdentifier).arg(singleMemoryRemap->name()));
-            valid = false;
-        }
-        else
-        {
-            memoryRemapNames.append(singleMemoryRemap->name());
-        }
-        if (!singleMemoryRemap->isValid(componentChoices, remapStateNames, errorList, thisIdentifier))
-        {
-            valid = false;
-        }
-    }
-
-    return valid;
-}*/
-/*
-//-----------------------------------------------------------------------------
-// Function: memorymap::isValid()
-//-----------------------------------------------------------------------------
-bool MemoryMap::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
-    QStringList remapStateNames) const
-{
-    bool valid = AbstractMemoryMap::isValid(componentChoices);
-
-    QStringList memoryRemapNames;
-    foreach (QSharedPointer<MemoryRemap> singleMemoryRemap, *memoryRemaps_)
-    {
-        if (memoryRemapNames.contains(singleMemoryRemap->name()))
-        {
-            return false;
-        }
-        else
-        {
-            memoryRemapNames.append(singleMemoryRemap->name());
-        }
-
-        if (!singleMemoryRemap->isValid(componentChoices, remapStateNames))
-        {
-            return false;
-        }
-    }
-
-    return valid;
-}*/
 
 //-----------------------------------------------------------------------------
 // Function: memorymap::getMemoryRemaps()

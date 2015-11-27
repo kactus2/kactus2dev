@@ -6,7 +6,7 @@
 // Date: 25.11.2015
 //
 // Description:
-// Validator for the base ipxact:memoryMap.
+// Validator for the memoryMap base class.
 //-----------------------------------------------------------------------------
 
 #ifndef MEMORYMAPBASEVALIDATOR_H
@@ -43,11 +43,12 @@ public:
     /*!
      *  Validates the given memory map base.
      *
-     *      @param [in] memoryMapBase   The memory map base to validate.
+     *      @param [in] memoryMapBase       The memory map base to validate.
+     *      @param [in] addressUnitBits     The address unit bits used by the memory map.
      *
      *      @return True, if the memory map base is valid IP-XACT, otherwise false.
      */
-    bool validate(QSharedPointer<MemoryMapBase> memoryMapBase) const;
+    virtual bool validate(QSharedPointer<MemoryMapBase> memoryMapBase, QString const& addressUnitBits) const;
 
     /*!
      *  Check if the memory map base contains a valid name.
@@ -70,21 +71,39 @@ public:
     /*!
      *  Check if the memory map base contains valid memory blocks.
      *
-     *      @param [in] memoryMapBase   The selected memory map base.
+     *      @param [in] memoryMapBase       The selected memory map base.
+     *      @param [in] addressUnitBits     The address unit bits used by the memory map.
      *
      *      @return True, if the memory blocks are valid, otherwise false.
      */
-    bool hasValidMemoryBlocks(QSharedPointer<MemoryMapBase> memoryMapBase) const;
+    bool hasValidMemoryBlocks(QSharedPointer<MemoryMapBase> memoryMapBase, QString const& addressUnitBits) const;
 
     /*!
      *  Locate errors within a memory map base.
      *
-     *      @param [in] errors          List of found errors.
-     *      @param [in] memoryMapBase   The selected memory map base.
-     *      @param [in] context         Context to help locate the error.
+     *      @param [in] errors              List of found errors.
+     *      @param [in] memoryMapBase       The selected memory map base.
+     *      @param [in] addressUnitBits     The address unit bits used by the memory map.
+     *      @param [in] context             Context to help locate the error.
      */
-    void findErrorsIn(QVector<QString>& errors, QSharedPointer<MemoryMapBase> memoryMapBase,
-        QString const& context) const;
+    virtual void findErrorsIn(QVector<QString>& errors, QSharedPointer<MemoryMapBase> memoryMapBase,
+        QString const& addressUnitBits, QString const& context) const;
+
+protected:
+
+    /*!
+     *  Get the expression parser.
+     *
+     *      @return The used expression parser.
+     */
+    QSharedPointer<ExpressionParser> getExpressionParser() const;
+
+    /*!
+     *  Get the available choices.
+     *
+     *      @return The currently available choices.
+     */
+    QSharedPointer<QList<QSharedPointer<Choice> > > getAvailableChoices() const;
 
 private:
 
@@ -114,6 +133,17 @@ private:
         QSharedPointer<AddressBlock> comparedBlock) const;
 
     /*!
+     *  Check if the address block width is a multiplication of address unit bits.
+     *
+     *      @param [in] addressUnitBits     The address unit bits.
+     *      @param [in] addressBlock        The selected address block.
+     *
+     *      @return True, if the address block width is a multiplication of address unit bits, otherwise false.
+     */
+    bool addressBlockWidthIsMultiplicationOfAUB(QString const& addressUnitBits,
+        QSharedPointer<AddressBlock> addressBlock) const;
+    
+    /*!
      *  Find errors within a name.
      *
      *      @param [in] errors          List of found errors.
@@ -136,12 +166,13 @@ private:
     /*!
      *  Find errors within address blocks.
      *
-     *      @param [in] errors          List of found errors.
-     *      @param [in] memoryMapBase   The selected memory map base.
-     *      @param [in] context         Context to help locate the error.
+     *      @param [in] errors              List of found errors.
+     *      @param [in] memoryMapBase       The selected memory map base.
+     *      @param [in] addressUnitBits     The address unit bits used by the memory map.
+     *      @param [in] context             Context to help locate the error.
      */
     void findErrorsInAddressBlocks(QVector<QString>& errors, QSharedPointer<MemoryMapBase> memoryMapBase,
-        QString const& context) const;
+        QString const& addressUnitBits, QString const& context) const;
 
     /*!
      *  Find errors within overlapping address blocks.

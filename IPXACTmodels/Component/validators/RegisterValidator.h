@@ -101,10 +101,11 @@ public:
      *  Check if the register contains valid fields.
      *
      *      @param [in] selectedRegister    The selected register definition.
+     *      @param [in] registerSize        Size of the containing register.
      *
      *      @return True, if the fields are valid, otherwise false.
      */
-    bool hasValidFields(QSharedPointer<RegisterDefinition> selectedRegister) const;
+    bool hasValidFields(QSharedPointer<RegisterDefinition> selectedRegister, QString const& registerSize) const;
 
     /*!
      *  Check if the register contains valid alternate registers.
@@ -132,17 +133,6 @@ public:
      *      @return True, if the parameters are valid, otherwise false.
      */
     bool hasValidParameters(QSharedPointer<RegisterBase> selectedRegister) const;
-
-    /*!
-     *  Check if the bit fields are contained within a register.
-     *
-     *      @param [in] fields          The contained fields.
-     *      @param [in] registerSize    The size of the containing register
-     *
-     *      @return True, if the fields are contained within the register, otherwise false.
-     */
-    bool bitFieldsAreWithinRegister(QSharedPointer<QList<QSharedPointer<Field> > > fields,
-        QString const& registerSize) const;
 
     /*!
      *  Locate errors within a register.

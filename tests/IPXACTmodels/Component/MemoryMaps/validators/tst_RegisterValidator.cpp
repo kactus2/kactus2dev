@@ -327,7 +327,7 @@ void tst_RegisterValidator::testRegisterAndFieldVolatileIsValid()
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     RegisterValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
-    QCOMPARE(validator.hasValidFields(testRegister), isValid);
+    QCOMPARE(validator.hasValidFields(testRegister, testRegister->getSize()), isValid);
 
     if (!isValid)
     {
@@ -379,7 +379,7 @@ void tst_RegisterValidator::testRegisterAndFieldAccessAreValid()
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     RegisterValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
-    QCOMPARE(validator.hasValidFields(testRegister), isValid);
+    QCOMPARE(validator.hasValidFields(testRegister, testRegister->getSize()), isValid);
 
     if (!isValid)
     {
@@ -463,9 +463,10 @@ void tst_RegisterValidator::testFieldsAreValid()
     testField->setBitWidth("1");
 
     QSharedPointer<Register> testRegister (new Register("Gurren"));
+    testRegister->setSize("100");
     testRegister->getFields()->append(testField);
 
-    QCOMPARE(validator.hasValidFields(testRegister), false);
+    QCOMPARE(validator.hasValidFields(testRegister, testRegister->getSize()), false);
 
     QVector<QString> foundErrors;
     validator.findErrorsIn(foundErrors, testRegister, "test");
@@ -479,11 +480,11 @@ void tst_RegisterValidator::testFieldsAreValid()
     }
 
     testField->setBitOffset("4+1");
-    QCOMPARE(validator.hasValidFields(testRegister), true);
+    QCOMPARE(validator.hasValidFields(testRegister, testRegister->getSize()), true);
 
     QSharedPointer<Field> otherField (new Field(*testField.data()));
     testRegister->getFields()->append(otherField);
-    QCOMPARE(validator.hasValidFields(testRegister), false);
+    QCOMPARE(validator.hasValidFields(testRegister, testRegister->getSize()), false);
 
     foundErrors.clear();
     validator.findErrorsIn(foundErrors, testRegister, "test");
@@ -521,21 +522,22 @@ void tst_RegisterValidator::testFieldRangesAreValid()
     fieldTwo->setAccess(General::str2Access(secondAccess, General::ACCESS_COUNT));
 
     QSharedPointer<Register> testRegister(new Register("TestRegister"));
+    testRegister->setSize("100");
     testRegister->getFields()->append(fieldOne);
     testRegister->getFields()->append(fieldTwo);
     
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
     RegisterValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
 
-    QCOMPARE(validator.hasValidFields(testRegister), isValid);
+    QCOMPARE(validator.hasValidFields(testRegister, testRegister->getSize()), isValid);
 
     if (!isValid)
     {
         QVector<QString> foundErrors;
         validator.findErrorsIn(foundErrors, testRegister, "test");
 
-        QString expectedError = QObject::tr("Fields %1 and %2 are overlapping in %3")
-            .arg(fieldOne->name()).arg(fieldTwo->name()).arg("register " + testRegister->name());
+        QString expectedError = QObject::tr("Fields %1 and %2 overlap within register %3")
+            .arg(fieldOne->name()).arg(fieldTwo->name()).arg(testRegister->name());
 
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
         {
@@ -590,7 +592,7 @@ void tst_RegisterValidator::testFieldsAreWithinRegister()
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
     RegisterValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
 
-    QCOMPARE(validator.bitFieldsAreWithinRegister(testRegister->getFields(), testRegister->getSize()), isValid);
+    QCOMPARE(validator.hasValidFields(testRegister, testRegister->getSize()), isValid);
 
     if (!isValid)
     {
@@ -704,7 +706,7 @@ void tst_RegisterValidator::testFieldsHaveSimilarDefinitionGroups()
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
     RegisterValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
 
-    QCOMPARE(validator.hasValidFields(testRegister), isValid);
+    QCOMPARE(validator.hasValidFields(testRegister, testRegister->getSize()), isValid);
 
     if (!isValid)
     {

@@ -57,30 +57,6 @@ public:
 	 */
 	~MemoryMap();
 
-	/*!
-	 *  Check if the memory map is in a valid state.
-	 *
-	 *      @param [in] componentChoices    Choices in the containing component.
-	 *      @param [in] remapStateNames     A list containing remap state names of the component.
-	 *      @param [in] errorList           The list to add the possible error messages to.
-	 *      @param [in] parentIdentifier    Parent information to help identify the location of the errors.
-     *
-     *      @return True, if the state is valid and writing is possible.
-	 */
-	//bool isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices, QStringList remapStateNames,
-    //    QStringList& errorList, const QString& parentIdentifier) const;
-
-	/*!
-	 *  Check if the memory map is in a valid state.
-	 *
-	 *      @param [in] componentChoices    Choices in the containing component.
-	 *      @param [in] remapStateNames     A list containing remap state names of the component.
-     *
-     *      @return True, if the state is valid and writing is possible.
-	 */
-	//bool isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices, QStringList remapStateNames)
-    //    const;
-
     /*!
      *  Get a pointer to the list containing the memory remaps of this memory map.
      *

@@ -53,6 +53,11 @@ private slots:
     void testRegisterDataIsValid_data();
     void testAccessIsValidWithRegister();
     void testAccessIsValidWithRegister_data();
+    void testRegisterPositioning();
+    void testRegisterPositioning_data();
+    void testRegisterOverlapping();
+    void testRegisterOverlapping_data();
+    void testRegisterIsOverlappingTwoOtherRegisters();
 
 private:
     
@@ -83,7 +88,7 @@ void tst_AddressBlockValidator::testNameIsValid()
     if (!isValid)
     {
         QVector<QString> foundErrors;
-        validator.findErrorsIn(foundErrors, testBlock, "test");
+        validator.findErrorsIn(foundErrors, testBlock, "", "test");
 
         QString expectedError = QObject::tr("Invalid name specified for address block %1 within %2").
             arg(testBlock->name(), "test");
@@ -126,7 +131,7 @@ void tst_AddressBlockValidator::testIsPresentIsValid()
     if (!isValid)
     {
         QVector<QString> foundErrors;
-        validator.findErrorsIn(foundErrors, testBlock, "test");
+        validator.findErrorsIn(foundErrors, testBlock, "", "test");
 
         QString expectedError = QObject::tr("Invalid isPresent set for address block %1 within %2").
             arg(testBlock->name(), "test");
@@ -172,7 +177,7 @@ void tst_AddressBlockValidator::testBaseAddressIsValid()
     if (!isValid)
     {
         QVector<QString> foundErrors;
-        validator.findErrorsIn(foundErrors, testBlock, "test");
+        validator.findErrorsIn(foundErrors, testBlock, "", "test");
 
         QString expectedError = QObject::tr("Invalid baseAddress set for address block %1 within %2").
             arg(testBlock->name(), "test");
@@ -217,7 +222,7 @@ void tst_AddressBlockValidator::testRangeIsValid()
     if (!isValid)
     {
         QVector<QString> foundErrors;
-        validator.findErrorsIn(foundErrors, testBlock, "test");
+        validator.findErrorsIn(foundErrors, testBlock, "", "test");
 
         QString expectedError = QObject::tr("Invalid range set for address block %1 within %2").
             arg(testBlock->name(), "test");
@@ -263,7 +268,7 @@ void tst_AddressBlockValidator::testWidthIsValid()
     if (!isValid)
     {
         QVector<QString> foundErrors;
-        validator.findErrorsIn(foundErrors, testBlock, "test");
+        validator.findErrorsIn(foundErrors, testBlock, "", "test");
 
         QString expectedError = QObject::tr("Invalid width set for address block %1 within %2").
             arg(testBlock->name()).arg("test");
@@ -340,7 +345,7 @@ void tst_AddressBlockValidator::testHasValidUsage()
     if (!isValid)
     {
         QVector<QString> foundErrors;
-        validator.findErrorsIn(foundErrors, testBlock, "test");
+        validator.findErrorsIn(foundErrors, testBlock, "", "test");
 
         if (General::str2Usage(usage, General::USAGE_COUNT) == General::RESERVED)
         {
@@ -412,7 +417,7 @@ void tst_AddressBlockValidator::testParametersAreValid()
     QCOMPARE(validator.hasValidParameters(testBlock), false);
 
     QVector<QString> errorsFound;
-    validator.findErrorsIn(errorsFound, testBlock, "test");
+    validator.findErrorsIn(errorsFound, testBlock, "", "test");
 
     QString expectedError = QObject::tr("No value specified for %1 %2 within addressBlock %3").
         arg(testParameter->elementName()).arg(testParameter->name()).arg(testBlock->name());
@@ -430,7 +435,7 @@ void tst_AddressBlockValidator::testParametersAreValid()
     QCOMPARE(validator.hasValidParameters(testBlock), false);
 
     errorsFound.clear();
-    validator.findErrorsIn(errorsFound, testBlock, "test");
+    validator.findErrorsIn(errorsFound, testBlock, "", "test");
     expectedError = QObject::tr("Name %1 of parameters in addressBlock %2 is not unique.").arg(otherParameter->name()).
         arg(testBlock->name());
     if (errorIsNotFoundInErrorList(expectedError, errorsFound))
@@ -486,12 +491,12 @@ void tst_AddressBlockValidator::testRegisterDataIsValid()
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     AddressBlockValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
-    QCOMPARE(validator.hasValidRegisterData(testBlock), isValid);
+    QCOMPARE(validator.hasValidRegisterData(testBlock, ""), isValid);
 
     if (!isValid)
     {
         QVector<QString> foundErrors;
-        validator.findErrorsIn(foundErrors, testBlock, "test");
+        validator.findErrorsIn(foundErrors, testBlock, "", "test");
 
         if (registerOffset1.isEmpty())
         {
@@ -615,12 +620,12 @@ void tst_AddressBlockValidator::testAccessIsValidWithRegister()
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     AddressBlockValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
-    QCOMPARE(validator.hasValidRegisterData(testBlock), isValid);
+    QCOMPARE(validator.hasValidRegisterData(testBlock, ""), isValid);
 
     if (!isValid)
     {
         QVector<QString> foundErrors;
-        validator.findErrorsIn(foundErrors, testBlock, "test");
+        validator.findErrorsIn(foundErrors, testBlock, "", "test");
 
         QString expectedError = QObject::tr("Access cannot be set to %1 in register %2, where containing address "
             "block %3 has access %4").arg(registerAccess).arg(testRegister->name())
@@ -685,6 +690,228 @@ void tst_AddressBlockValidator::testAccessIsValidWithRegister_data()
         "writeOnce" << "read-writeOnce" << false;
     QTest::newRow("AddressBlock: access = writeOnce , register: access = writeOnce is valid") <<
         "writeOnce" << "writeOnce" << true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_AddressBlockValidator::testRegistersAreWithinAddressBlock()
+//-----------------------------------------------------------------------------
+void tst_AddressBlockValidator::testRegisterPositioning()
+{
+    QFETCH(QString, registerOffset1);
+    QFETCH(QString, registerSize1);
+    QFETCH(QString, registerDimension1);
+    QFETCH(QString, addressBlockRange);
+    QFETCH(QString, addressUnitBits);
+    QFETCH(bool, isValid);
+
+    QSharedPointer<Field> testField (new Field("testField"));
+    testField->setBitOffset("0");
+    testField->setBitWidth("1");
+
+    QSharedPointer<Register> registerOne (new Register("Mugen", registerOffset1, registerSize1));
+    registerOne->setDimension(registerDimension1);
+    registerOne->getFields()->append(testField);
+
+    QSharedPointer<AddressBlock> testBlock (new AddressBlock("testBlock", "0"));
+    testBlock->setWidth("100");
+    testBlock->setRange(addressBlockRange);
+    testBlock->getRegisterData()->append(registerOne);
+
+    QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
+    AddressBlockValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    QCOMPARE(validator.hasValidRegisterData(testBlock, addressUnitBits), isValid);
+
+    if (!isValid)
+    {
+        QVector<QString> foundErrors;
+        validator.findErrorsIn(foundErrors, testBlock, addressUnitBits, "test");
+
+        QString expectedError = QObject::tr("Register %1 is not contained within addressBlock %2")
+            .arg(registerOne->name()).arg(testBlock->name());
+
+        if (errorIsNotFoundInErrorList(expectedError, foundErrors))
+        {
+            QFAIL("No error message found");
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_AddressBlockValidator::testRegistersAreWithinAddressBlock_data()
+//-----------------------------------------------------------------------------
+void tst_AddressBlockValidator::testRegisterPositioning_data()
+{
+    QTest::addColumn<QString>("registerOffset1");
+    QTest::addColumn<QString>("registerSize1");
+    QTest::addColumn<QString>("registerDimension1");
+    QTest::addColumn<QString>("addressBlockRange");
+    QTest::addColumn<QString>("addressUnitBits");
+    QTest::addColumn<bool>("isValid");
+
+    QTest::newRow("Register1: offset=4, size=5, dimension=1; addressBlock range = 10; addressUnitBits = 4 is valid")
+        << "4" << "5" << "1" << "10" << "4" << true;
+    QTest::newRow("Register1: offset=-1, size=5, dimension=1; addressBlock range = 10; addressUnitBits = 4 is not valid")
+        << "-1" << "5" << "1" << "10" << "4" << false;
+    QTest::newRow("Register1: offset=4, size=25, dimension=1; addressBlock range = 10; addressUnitBits = 4 is not valid")
+        << "4" << "25" << "1" << "10" << "4" << false;
+    QTest::newRow("Register1: offset=4, size=5, dimension=4; addressBlock range = 10; addressUnitBits = 4 is not valid")
+        << "4" << "5" << "4" << "10" << "4" << false;
+    QTest::newRow("Register1: offset=4, size=5, dimension=1; addressBlock range = 5; addressUnitBits = 4 is not valid")
+        << "4" << "5" << "1" << "5" << "4" << false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_AddressBlockValidator::testRegisterOverlapping()
+//-----------------------------------------------------------------------------
+void tst_AddressBlockValidator::testRegisterOverlapping()
+{
+    QFETCH(QString, registerOffset1);
+    QFETCH(QString, registerSize1);
+    QFETCH(QString, registerDimension1);
+    QFETCH(QString, registerOffset2);
+    QFETCH(QString, registerSize2);
+    QFETCH(QString, registerDimension2);
+    QFETCH(QString, addressUnitBits);
+    QFETCH(bool, isValid);
+
+    QSharedPointer<Field> testField (new Field("testField"));
+    testField->setBitOffset("0");
+    testField->setBitWidth("1");
+
+    QSharedPointer<Register> registerOne (new Register("Mugen", registerOffset1, registerSize1));
+    registerOne->setDimension(registerDimension1);
+    registerOne->getFields()->append(testField);
+
+    QSharedPointer<Register> registerTwo (new Register("Jin", registerOffset2, registerSize2));
+    registerTwo->setDimension(registerDimension2);
+    registerTwo->getFields()->append(testField);
+
+    QSharedPointer<AddressBlock> testBlock (new AddressBlock("testBlock", "0"));
+    testBlock->setWidth("100");
+    testBlock->setRange("100");
+    testBlock->getRegisterData()->append(registerOne);
+    testBlock->getRegisterData()->append(registerTwo);
+
+    QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
+    AddressBlockValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    QCOMPARE(validator.hasValidRegisterData(testBlock, addressUnitBits), isValid);
+
+    if (!isValid)
+    {
+        QVector<QString> foundErrors;
+        validator.findErrorsIn(foundErrors, testBlock, addressUnitBits, "test");
+
+        int firstOffset = parser->parseExpression(registerOffset1).toInt();
+        int secondOffset = parser->parseExpression(registerOffset2).toInt();
+
+        if (firstOffset < secondOffset)
+        {
+            QString expectedError = QObject::tr("Registers %1 and %2 overlap within addressBlock %3")
+                .arg(registerOne->name()).arg(registerTwo->name()).arg(testBlock->name());
+
+            if (errorIsNotFoundInErrorList(expectedError, foundErrors))
+            {
+                QFAIL("No error message found");
+            }
+        }
+        else
+        {
+            QString expectedError = QObject::tr("Registers %1 and %2 overlap within addressBlock %3")
+                .arg(registerTwo->name()).arg(registerOne->name()).arg(testBlock->name());
+
+            if (errorIsNotFoundInErrorList(expectedError, foundErrors))
+            {
+                QFAIL("No error message found");
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_AddressBlockValidator::testRegisterOverlapping_data()
+//-----------------------------------------------------------------------------
+void tst_AddressBlockValidator::testRegisterOverlapping_data()
+{
+    QTest::addColumn<QString>("registerOffset1");
+    QTest::addColumn<QString>("registerSize1");
+    QTest::addColumn<QString>("registerDimension1");
+    QTest::addColumn<QString>("registerOffset2");
+    QTest::addColumn<QString>("registerSize2");
+    QTest::addColumn<QString>("registerDimension2");
+    QTest::addColumn<QString>("addressUnitBits");
+    QTest::addColumn<bool>("isValid");
+
+    QTest::newRow("Register1: offset=0, size=5, dimension=1; Register2: offset=50, size=5, dimension=2; "
+        "Address unit bits: 8 is valid") <<
+        "0" << "5" << "1" << "50" << "5" << "2" << "8" << true;
+    QTest::newRow("Register1: offset=49, size=5, dimension=1; Register2: offset=50, size=5, dimension=2; "
+        "Address unit bits: 8 is not valid") <<
+        "49" << "5" << "1" << "50" << "5" << "2" << "8" << false;
+    QTest::newRow("Register1: offset=50, size=5, dimension=2; Register2: offset=49, size=5, dimension=1; "
+        "Address unit bits: 8 is not valid") <<
+        "50" << "5" << "2" << "49" << "5" << "1" << "8" << false;
+    QTest::newRow("Register1: offset=49, size=5, dimension=2; Register2: offset=50, size=5, dimension=2; "
+        "Address unit bits: 8 is not valid") <<
+        "49" << "5" << "2" << "50" << "5" << "2" << "8" << false;
+    QTest::newRow("Register1: offset=70, size=5, dimension=1; Register2: offset=50, size=5, dimension=2; "
+        "Address unit bits: 8 is valid") <<
+        "70" << "5" << "1" << "50" << "5" << "2" << "8" << true;
+    QTest::newRow("Register1: offset=60, size=5, dimension=1; Register2: offset=50, size=5, dimension=20; "
+        "Address unit bits: 8 is not valid") <<
+        "60" << "5" << "1" << "50" << "5" << "20" << "8" << false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_AddressBlockValidator::testRegisterIsOverlappingTwoOtherRegisters()
+//-----------------------------------------------------------------------------
+void tst_AddressBlockValidator::testRegisterIsOverlappingTwoOtherRegisters()
+{
+    QSharedPointer<Field> testField (new Field("testField"));
+    testField->setBitOffset("0");
+    testField->setBitWidth("1");
+
+    QSharedPointer<Register> registerOne (new Register("Mugen", "0", "5"));
+    registerOne->setDimension("4");
+    registerOne->getFields()->append(testField);
+
+    QSharedPointer<Register> registerTwo (new Register("Jin", "10", "5"));
+    registerTwo->setDimension("4");
+    registerTwo->getFields()->append(testField);
+
+    QSharedPointer<Register> registerThree (new Register("Fuu", "6", "1"));
+    registerThree->setDimension("6");
+    registerThree->getFields()->append(testField);
+
+    QSharedPointer<AddressBlock> testBlock (new AddressBlock("champloo", "0"));
+    testBlock->setRange("50");
+    testBlock->setWidth("10");
+    testBlock->getRegisterData()->append(registerOne);
+    testBlock->getRegisterData()->append(registerTwo);
+    testBlock->getRegisterData()->append(registerThree);
+
+    QString addressUnitBits = QLatin1String("8");
+
+    QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
+    AddressBlockValidator validator (parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    QCOMPARE(validator.hasValidRegisterData(testBlock, addressUnitBits), false);
+
+    QVector<QString> foundErrors;
+    validator.findErrorsIn(foundErrors, testBlock, addressUnitBits, "test");
+
+    QString expectedError = QObject::tr("Registers %1 and %2 overlap within addressBlock %3")
+        .arg(registerOne->name()).arg(registerThree->name()).arg(testBlock->name());
+
+    if (errorIsNotFoundInErrorList(expectedError, foundErrors))
+    {
+        QFAIL("No error message found");
+    }
+
+    expectedError = QObject::tr("Registers %1 and %2 overlap within addressBlock %3")
+        .arg(registerThree->name()).arg(registerTwo->name()).arg(testBlock->name());
+    if (errorIsNotFoundInErrorList(expectedError, foundErrors))
+    {
+        QFAIL("No error message found");
+    }
 }
 
 //-----------------------------------------------------------------------------

@@ -13,6 +13,7 @@
 
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 
+#include <IPXACTmodels/Component/validators/MemoryReserve.h>
 #include <IPXACTmodels/Component/validators/RegisterValidator.h>
 #include <IPXACTmodels/common/validators/ParameterValidator2014.h>
 
@@ -46,11 +47,12 @@ AddressBlockValidator::~AddressBlockValidator()
 //-----------------------------------------------------------------------------
 // Function: AddressBlockValidator::validate()
 //-----------------------------------------------------------------------------
-bool AddressBlockValidator::validate(QSharedPointer<AddressBlock> addressBlock) const
+bool AddressBlockValidator::validate(QSharedPointer<AddressBlock> addressBlock, QString const& addressUnitBits)
+    const
 {
     return hasValidName(addressBlock) && hasValidIsPresent(addressBlock) && hasValidBaseAddress(addressBlock) &&
         hasValidRange(addressBlock) && hasValidWidth(addressBlock) && hasValidParameters(addressBlock) &&
-        hasValidRegisterData(addressBlock) && hasValidUsage(addressBlock);
+        hasValidRegisterData(addressBlock, addressUnitBits) && hasValidUsage(addressBlock);
 }
 
 //-----------------------------------------------------------------------------
@@ -152,7 +154,8 @@ bool AddressBlockValidator::hasValidParameters(QSharedPointer<AddressBlock> addr
 //-----------------------------------------------------------------------------
 // Function: AddressBlockValidator::hasValidRegisterData()
 //-----------------------------------------------------------------------------
-bool AddressBlockValidator::hasValidRegisterData(QSharedPointer<AddressBlock> addressBlock) const
+bool AddressBlockValidator::hasValidRegisterData(QSharedPointer<AddressBlock> addressBlock,
+    QString const& addressUnitBits) const
 {
     if (!addressBlock->getRegisterData()->isEmpty())
     {
@@ -160,9 +163,15 @@ bool AddressBlockValidator::hasValidRegisterData(QSharedPointer<AddressBlock> ad
         QStringList registerNames;
 
         QStringList typeIdentifiers;
+        MemoryReserve reservedArea;
 
-        foreach (QSharedPointer<RegisterBase> registerData, *addressBlock->getRegisterData())
+        bool aubChangeOk = true;
+        int aubInt = expressionParser_->parseExpression(addressUnitBits).toInt(&aubChangeOk);
+        int addressBlockRange = expressionParser_->parseExpression(addressBlock->getRange()).toInt();
+
+        for (int registerIndex = 0; registerIndex < addressBlock->getRegisterData()->size(); registerIndex++)
         {
+            QSharedPointer<RegisterBase> registerData = addressBlock->getRegisterData()->at(registerIndex);
             QSharedPointer<Register> targetRegister = registerData.dynamicCast<Register>();
             if (targetRegister)
             {
@@ -176,7 +185,8 @@ bool AddressBlockValidator::hasValidRegisterData(QSharedPointer<AddressBlock> ad
                 }
                 else
                 {
-                    if (typeIdentifiers.contains(targetRegister->getTypeIdentifier()))
+                    if (!targetRegister->getTypeIdentifier().isEmpty() &&
+                        typeIdentifiers.contains(targetRegister->getTypeIdentifier()))
                     {
                         int typeIdentifierIndex = typeIdentifiers.indexOf(targetRegister->getTypeIdentifier());
                         if (!registersHaveSimilarDefinitionGroups(targetRegister, addressBlock,
@@ -186,11 +196,29 @@ bool AddressBlockValidator::hasValidRegisterData(QSharedPointer<AddressBlock> ad
                         }
                     }
 
+                    if (aubChangeOk)
+                    {
+                        int registerSize = getRegisterSizeInLAU(targetRegister, aubInt);
+
+                        int registerBegin = expressionParser_->parseExpression(targetRegister->getAddressOffset()).
+                            toInt();
+                        int registerEnd = registerBegin + registerSize;
+
+                        if ( registerBegin < 0 || registerBegin >= addressBlockRange - registerSize)
+                        {
+                            return false;
+                        }
+
+                        reservedArea.addArea(targetRegister->name(), registerBegin, registerEnd);
+                    }
+
                     registerNames.append(targetRegister->name());
                     typeIdentifiers.append(targetRegister->getTypeIdentifier());
                 }
             }
         }
+
+        return !reservedArea.hasOverlap();
     }
 
     return true;
@@ -311,7 +339,7 @@ bool AddressBlockValidator::hasValidUsage(QSharedPointer<AddressBlock> addressBl
 // Function: AddressBlockValidator::findErrorsIn()
 //-----------------------------------------------------------------------------
 void AddressBlockValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<AddressBlock> addressBlock,
-    QString const& context) const
+    QString const& addressUnitBits, QString const& context) const
 {
     QString addressBlockContext = "addressBlock " + addressBlock->name();
 
@@ -322,7 +350,7 @@ void AddressBlockValidator::findErrorsIn(QVector<QString>& errors, QSharedPointe
     findErrorsInWidth(errors, addressBlock, context);
     findErrorsInUsage(errors, addressBlock, context);
     findErrorsInParameters(errors, addressBlock, addressBlockContext);
-    findErrorsInRegisterData(errors, addressBlock, addressBlockContext);
+    findErrorsInRegisterData(errors, addressBlock, addressUnitBits, addressBlockContext);
 }
 
 //-----------------------------------------------------------------------------
@@ -451,15 +479,22 @@ void AddressBlockValidator::findErrorsInParameters(QVector<QString>&errors,
 // Function: AddressBlockValidator::findErrorsInRegisterData()
 //-----------------------------------------------------------------------------
 void AddressBlockValidator::findErrorsInRegisterData(QVector<QString>& errors,
-    QSharedPointer<AddressBlock> addressBlock, QString const& context) const
+    QSharedPointer<AddressBlock> addressBlock, QString const& addressUnitBits, QString const& context) const
 {
     if (!addressBlock->getRegisterData()->isEmpty())
     {
         RegisterValidator validator(expressionParser_, availableChoices_);
         QStringList registerNames;
         QStringList typeIdentifiers;
-        foreach (QSharedPointer<RegisterBase> registerData, *addressBlock->getRegisterData())
+
+        MemoryReserve reservedArea;
+        bool aubChangeOk = true;
+        int aubInt = expressionParser_->parseExpression(addressUnitBits).toInt(&aubChangeOk);
+        int addressBlockRange = expressionParser_->parseExpression(addressUnitBits).toInt();
+
+        for (int registerindex = 0; registerindex < addressBlock->getRegisterData()->size(); ++registerindex)
         {
+            QSharedPointer<RegisterBase> registerData = addressBlock->getRegisterData()->at(registerindex);
             QSharedPointer<Register> targetRegister = registerData.dynamicCast<Register>();
             if (targetRegister)
             {
@@ -487,7 +522,8 @@ void AddressBlockValidator::findErrorsInRegisterData(QVector<QString>& errors,
                         "containing a register or register field with volatile true").arg(addressBlock->name()));
                 }
 
-                if (typeIdentifiers.contains(targetRegister->getTypeIdentifier()))
+                if (!targetRegister->getTypeIdentifier().isEmpty() &&
+                    typeIdentifiers.contains(targetRegister->getTypeIdentifier()))
                 {
                     int typeIdentifierIndex = typeIdentifiers.indexOf(targetRegister->getTypeIdentifier());
 
@@ -508,7 +544,47 @@ void AddressBlockValidator::findErrorsInRegisterData(QVector<QString>& errors,
                         .arg(addressBlock->name())
                         .arg(General::access2Str(addressBlock->getAccess())));
                 }
+
+                if (aubChangeOk)
+                {
+                    int registerSize = getRegisterSizeInLAU(targetRegister, aubInt);
+
+                    int registerBegin = expressionParser_->parseExpression(targetRegister->getAddressOffset()).
+                        toInt();
+                    int registerEnd = registerBegin + registerSize;
+
+                    reservedArea.addArea(targetRegister->name(), registerBegin, registerEnd);
+
+                    if ( registerBegin < 0 || registerBegin >= addressBlockRange - registerSize)
+                    {
+                        errors.append(QObject::tr("Register %1 is not contained within %2")
+                            .arg(targetRegister->name()).arg(context));
+                    }
+                }
             }
         }
+
+        reservedArea.findErrorsInOverlap(errors, QLatin1String("Registers"), context);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockValidator::getRegisterSizeInLAU()
+//-----------------------------------------------------------------------------
+int AddressBlockValidator::getRegisterSizeInLAU(QSharedPointer<Register> targetRegister, int addressUnitBits) const
+{
+    int size = expressionParser_->parseExpression(targetRegister->getSize()).toInt();
+    int registerDimension = expressionParser_->parseExpression(targetRegister->getDimension()).
+        toInt();
+
+    qreal topPart = size + addressUnitBits - 1;
+    qreal trueSize = (topPart / addressUnitBits)*registerDimension;
+    int registerSize = trueSize;
+
+    if (trueSize != registerSize)
+    {
+        registerSize++;
+    }
+
+    return registerSize;
 }

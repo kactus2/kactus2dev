@@ -54,6 +54,14 @@ MemoryRemap::~MemoryRemap()
 }
 
 //-----------------------------------------------------------------------------
+// Function: MemoryRemap::elementName()
+//-----------------------------------------------------------------------------
+QString MemoryRemap::elementName() const
+{
+    return QLatin1String("memory remap");
+}
+
+//-----------------------------------------------------------------------------
 // Function: MemoryRemap::getRemapState()
 //-----------------------------------------------------------------------------
 QString MemoryRemap::getRemapState() const

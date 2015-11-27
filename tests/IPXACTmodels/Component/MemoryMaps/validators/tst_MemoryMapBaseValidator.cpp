@@ -66,7 +66,7 @@ void tst_MemoryMapBaseValidator::testNameIsValid()
     if (!isValid)
     {
         QVector<QString> foundErrors;
-        validator.findErrorsIn(foundErrors, testMap, "test");
+        validator.findErrorsIn(foundErrors, testMap, "", "test");
 
         QString expectedError = QObject::tr("Invalid name specified for memory map %1 within %2").
             arg(testMap->name(), "test");
@@ -109,7 +109,7 @@ void tst_MemoryMapBaseValidator::testIsPresentIsValid()
     if (!isValid)
     {
         QVector<QString> foundErrors;
-        validator.findErrorsIn(foundErrors, testMap, "test");
+        validator.findErrorsIn(foundErrors, testMap, "", "test");
 
         QString expectedError = QObject::tr("Invalid isPresent set for memory map %1 within %2").
             arg(testMap->name(), "test");
@@ -149,10 +149,10 @@ void tst_MemoryMapBaseValidator::testAddressBlocksAreValid()
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     MemoryMapBaseValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
-    QCOMPARE(validator.hasValidMemoryBlocks(testMap), false);
+    QCOMPARE(validator.hasValidMemoryBlocks(testMap, ""), false);
 
     QVector<QString> foundErrors;
-    validator.findErrorsIn(foundErrors, testMap, "test");
+    validator.findErrorsIn(foundErrors, testMap, "", "test");
 
     QString expectedError = QObject::tr("Invalid baseAddress set for address block %1 within memory map %2").
         arg(testBlock->name()).arg(testMap->name());
@@ -164,15 +164,15 @@ void tst_MemoryMapBaseValidator::testAddressBlocksAreValid()
     testBlock->setBaseAddress("0");
     testBlock->setRange("2");
     testBlock->setWidth("10");
-    QCOMPARE(validator.hasValidMemoryBlocks(testMap), true);
+    QCOMPARE(validator.hasValidMemoryBlocks(testMap, ""), true);
 
     QSharedPointer<AddressBlock> otherBlock (new AddressBlock(*testBlock.data()));
     otherBlock->setBaseAddress("3");
     testMap->getMemoryBlocks()->append(otherBlock);
-    QCOMPARE(validator.hasValidMemoryBlocks(testMap), false);
+    QCOMPARE(validator.hasValidMemoryBlocks(testMap, ""), false);
 
     foundErrors.clear();
-    validator.findErrorsIn(foundErrors, testMap, "test");
+    validator.findErrorsIn(foundErrors, testMap, "", "test");
     expectedError = QObject::tr("Name %1 of address blocks in memory map %2 is not unique")
         .arg(testBlock->name()).arg(testMap->name());
 
@@ -182,7 +182,7 @@ void tst_MemoryMapBaseValidator::testAddressBlocksAreValid()
     }
 
     otherBlock->setName("otherBlock");
-    QCOMPARE(validator.hasValidMemoryBlocks(testMap), true);
+    QCOMPARE(validator.hasValidMemoryBlocks(testMap, ""), true);
 }
 
 //-----------------------------------------------------------------------------
@@ -210,12 +210,12 @@ void tst_MemoryMapBaseValidator::testAddressBlocksOverlap()
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     MemoryMapBaseValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
-    QCOMPARE(validator.hasValidMemoryBlocks(testMap), isValid);
+    QCOMPARE(validator.hasValidMemoryBlocks(testMap, ""), isValid);
 
     if (!isValid)
     {
         QVector<QString> foundErrors;
-        validator.findErrorsIn(foundErrors, testMap, "test");
+        validator.findErrorsIn(foundErrors, testMap, "", "test");
         QString expectedError = QObject::tr("Address blocks %1 and %2 overlap in memory map %3")
             .arg(blockOne->name()).arg(blockTwo->name()).arg(testMap->name());
 

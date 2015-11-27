@@ -6,7 +6,7 @@
 // Date: 25.11.2015
 //
 // Description:
-// Validator for the base ipxact:memoryMap.
+// Validator for the memoryMap base class.
 //-----------------------------------------------------------------------------
 
 #include "MemoryMapBaseValidator.h"
@@ -43,9 +43,11 @@ MemoryMapBaseValidator::~MemoryMapBaseValidator()
 //-----------------------------------------------------------------------------
 // Function: MemoryMapBaseValidator::validate()
 //-----------------------------------------------------------------------------
-bool MemoryMapBaseValidator::validate(QSharedPointer<MemoryMapBase> memoryMapBase) const
+bool MemoryMapBaseValidator::validate(QSharedPointer<MemoryMapBase> memoryMapBase, QString const& addressUnitBits)
+    const
 {
-    return hasValidName(memoryMapBase) && hasValidIsPresent(memoryMapBase) && hasValidMemoryBlocks(memoryMapBase);
+    return hasValidName(memoryMapBase) && hasValidIsPresent(memoryMapBase) &&
+        hasValidMemoryBlocks(memoryMapBase, addressUnitBits);
 }
 
 //-----------------------------------------------------------------------------
@@ -89,7 +91,8 @@ bool MemoryMapBaseValidator::hasValidIsPresent(QSharedPointer<MemoryMapBase> mem
 //-----------------------------------------------------------------------------
 // Function: MemoryMapBaseValidator::hasValidMemoryBlocks()
 //-----------------------------------------------------------------------------
-bool MemoryMapBaseValidator::hasValidMemoryBlocks(QSharedPointer<MemoryMapBase> memoryMapBase) const
+bool MemoryMapBaseValidator::hasValidMemoryBlocks(QSharedPointer<MemoryMapBase> memoryMapBase,
+    QString const& addressUnitBits) const
 {
     if (!memoryMapBase->getMemoryBlocks()->isEmpty())
     {
@@ -101,7 +104,8 @@ bool MemoryMapBaseValidator::hasValidMemoryBlocks(QSharedPointer<MemoryMapBase> 
             QSharedPointer<AddressBlock> addressBlock = blockData.dynamicCast<AddressBlock>();
             if (addressBlock)
             {
-                if (addressBlockNames.contains(addressBlock->name()) || !validator.validate(addressBlock))
+                if (addressBlockNames.contains(addressBlock->name()) || !validator.validate(addressBlock,
+                    addressUnitBits))
                 {
                     return false;
                 }
@@ -113,12 +117,31 @@ bool MemoryMapBaseValidator::hasValidMemoryBlocks(QSharedPointer<MemoryMapBase> 
                     {
                         return false;
                     }
+                    if (!addressUnitBits.isEmpty() &&
+                        !addressBlockWidthIsMultiplicationOfAUB(addressUnitBits, addressBlock))
+                    {
+                        return false;
+                    }
                 }
             }
         }
     }
 
     return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapBaseValidator::addressUnitBitsIsValidForMemoryBlocks()
+//-----------------------------------------------------------------------------
+bool MemoryMapBaseValidator::addressBlockWidthIsMultiplicationOfAUB(QString const& addressUnitBits,
+    QSharedPointer<AddressBlock> addressBlock) const
+{
+    bool aubToIntOk = true;
+    bool widthToIntOk = true;
+    int addressUnitBitsInt = expressionParser_->parseExpression(addressUnitBits).toInt(&aubToIntOk);
+    int addressBlockWidth = expressionParser_->parseExpression(addressBlock->getWidth()).toInt(&widthToIntOk);
+
+    return aubToIntOk && widthToIntOk && addressBlockWidth % addressUnitBitsInt == 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -171,13 +194,13 @@ bool MemoryMapBaseValidator::twoAddressBlocksOverlap(QSharedPointer<AddressBlock
 // Function: MemoryMapBaseValidator::findErrorsIn()
 //-----------------------------------------------------------------------------
 void MemoryMapBaseValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<MemoryMapBase> memoryMapBase,
-    QString const& context) const
+    QString const& addressUnitBits, QString const& context) const
 {
-    QString memoryMapContext = "memory map " + memoryMapBase->name();
+    QString memoryMapContext = memoryMapBase->elementName() + " " + memoryMapBase->name();
 
     findErrorsInName(errors, memoryMapBase, context);
     findErrorsInIsPresent(errors, memoryMapBase, context);
-    findErrorsInAddressBlocks(errors, memoryMapBase, memoryMapContext);
+    findErrorsInAddressBlocks(errors, memoryMapBase, addressUnitBits, memoryMapContext);
 }
 
 //-----------------------------------------------------------------------------
@@ -188,8 +211,8 @@ void MemoryMapBaseValidator::findErrorsInName(QVector<QString>& errors,
 {
     if (!hasValidName(memoryMapBase))
     {
-        errors.append(QObject::tr("Invalid name specified for memory map %1 within %2").arg(memoryMapBase->name()).
-            arg(context));
+        errors.append(QObject::tr("Invalid name specified for %1 %2 within %3").arg(memoryMapBase->elementName())
+            .arg(memoryMapBase->name()).arg(context));
     }
 }
 
@@ -201,8 +224,8 @@ void MemoryMapBaseValidator::findErrorsInIsPresent(QVector<QString>& errors,
 {
     if (!hasValidIsPresent(memoryMapBase))
     {
-        errors.append(QObject::tr("Invalid isPresent set for memory map %1 within %2").arg(memoryMapBase->name())
-            .arg(context));
+        errors.append(QObject::tr("Invalid isPresent set for %1 %2 within %3").arg(memoryMapBase->elementName())
+            .arg(memoryMapBase->name()).arg(context));
     }
 }
 
@@ -210,7 +233,7 @@ void MemoryMapBaseValidator::findErrorsInIsPresent(QVector<QString>& errors,
 // Function: MemoryMapBaseValidator::findErrorsInAddressBlocks()
 //-----------------------------------------------------------------------------
 void MemoryMapBaseValidator::findErrorsInAddressBlocks(QVector<QString>& errors,
-    QSharedPointer<MemoryMapBase> memoryMapBase, QString const& context) const
+    QSharedPointer<MemoryMapBase> memoryMapBase, QString const& addressUnitBits, QString const& context) const
 {
     if (!memoryMapBase->getMemoryBlocks()->isEmpty())
     {
@@ -222,7 +245,7 @@ void MemoryMapBaseValidator::findErrorsInAddressBlocks(QVector<QString>& errors,
             QSharedPointer<AddressBlock> addressBlock = memoryBlock.dynamicCast<AddressBlock>();
             if (addressBlock)
             {
-                validator.findErrorsIn(errors, addressBlock, context);
+                validator.findErrorsIn(errors, addressBlock, addressUnitBits, context);
             }
 
             if (addressBlockNames.contains(addressBlock->name()))
@@ -232,6 +255,14 @@ void MemoryMapBaseValidator::findErrorsInAddressBlocks(QVector<QString>& errors,
             }
 
             findErrorsInOverlappingBlocks(errors, memoryMapBase, addressBlock, blockIndex, context);
+
+            if (!addressUnitBits.isEmpty() &&
+                !addressBlockWidthIsMultiplicationOfAUB(addressUnitBits, addressBlock))
+            {
+                errors.append(QObject::tr("Width of address block %1 is not a multiple of the address unit bits "
+                    "of %2 %3")
+                    .arg(addressBlock->name()).arg(memoryMapBase->elementName()).arg(memoryMapBase->name()));
+            }
 
             addressBlockNames.append(addressBlock->name());
         }
@@ -258,4 +289,20 @@ void MemoryMapBaseValidator::findErrorsInOverlappingBlocks(QVector<QString>& err
             }
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapBaseValidator::getExpressionParser()
+//-----------------------------------------------------------------------------
+QSharedPointer<ExpressionParser> MemoryMapBaseValidator::getExpressionParser() const
+{
+    return expressionParser_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapBaseValidator::getAvailableChoices()
+//-----------------------------------------------------------------------------
+QSharedPointer<QList<QSharedPointer<Choice> > > MemoryMapBaseValidator::getAvailableChoices() const
+{
+    return availableChoices_;
 }

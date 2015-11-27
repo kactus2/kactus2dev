@@ -59,6 +59,14 @@ MemoryMapBase::~MemoryMapBase()
 }
 
 //-----------------------------------------------------------------------------
+// Function: MemoryMapBase::elementName()
+//-----------------------------------------------------------------------------
+QString MemoryMapBase::elementName() const
+{
+    return QLatin1String("memory map");
+}
+
+//-----------------------------------------------------------------------------
 // Function: MemoryMapBase::getIsPresent()
 //-----------------------------------------------------------------------------
 QString MemoryMapBase::getIsPresent() const

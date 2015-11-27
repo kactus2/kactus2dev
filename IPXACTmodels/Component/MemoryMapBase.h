@@ -56,6 +56,13 @@ public:
     virtual ~MemoryMapBase();
     
     /*!
+     *  Get the element name of the memory map.
+     *
+     *      @return Memory map for default memory maps.
+     */
+    virtual QString elementName() const;
+
+    /*!
      *  Get the isPresent value.
      *
      *      @return The isPresent value.
