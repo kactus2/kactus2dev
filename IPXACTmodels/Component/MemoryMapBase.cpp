@@ -91,7 +91,7 @@ QSharedPointer<QList<QSharedPointer<MemoryBlockBase> > > MemoryMapBase::getMemor
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryMapBase::()
+// Function: MemoryMapBase::setMemoryBlocks()
 //-----------------------------------------------------------------------------
 void MemoryMapBase::setMemoryBlocks(QSharedPointer<QList<QSharedPointer<MemoryBlockBase> > > newMemoryBlocks)
 {

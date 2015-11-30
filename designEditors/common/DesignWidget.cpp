@@ -182,7 +182,7 @@ void DesignWidget::refresh()
 {
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
-    QSharedPointer<Document> libComp = lh_->getModel(*editedComponent_->getVlnv());
+    QSharedPointer<Document> libComp = lh_->getModel(editedComponent_->getVlnv());
     QSharedPointer<Component> comp = libComp.staticCast<Component>();
 
     setDesign(comp, viewName_);
@@ -196,14 +196,14 @@ void DesignWidget::refresh()
 //-----------------------------------------------------------------------------
 // Function: DesignWidget::getOpenDocument()
 //-----------------------------------------------------------------------------
-VLNV const* DesignWidget::getOpenDocument() const
+VLNV DesignWidget::getOpenDocument() const
 {
     if (editedComponent_ != 0)
     {
         return editedComponent_->getVlnv();
     }
 
-    return 0;
+    return VLNV();
 }
 
 //-----------------------------------------------------------------------------
@@ -211,21 +211,13 @@ VLNV const* DesignWidget::getOpenDocument() const
 //-----------------------------------------------------------------------------
 VLNV DesignWidget::getDocumentVLNV() const
 {
-    return *editedComponent_->getVlnv();
+    return editedComponent_->getVlnv();
 }
 
 //-----------------------------------------------------------------------------
 // Function: DesignWidget::getEditProvider()
 //-----------------------------------------------------------------------------
-IEditProvider* DesignWidget::getEditProvider()
-{
-    return editProvider_.data();
-}
-
-//-----------------------------------------------------------------------------
-// Function: DesignWidget::getGenericEditProvider()
-//-----------------------------------------------------------------------------
-QSharedPointer<GenericEditProvider> DesignWidget::getGenericEditProvider() const
+QSharedPointer<IEditProvider> DesignWidget::getEditProvider() const
 {
     return editProvider_;
 }
@@ -238,17 +230,17 @@ bool DesignWidget::save()
     getDiagram()->updateHierComponent();
 
     // Create the design.
-    QSharedPointer<Design> design;
-    QSharedPointer<DesignConfiguration> designConf = diagram_->getDesignConfiguration();
+    QSharedPointer<Design> design = getDiagram()->getDesign();
+    QSharedPointer<DesignConfiguration> designConf = getDiagram()->getDesignConfiguration();
 
-    if (designConf)
+    /*if (designConf)
     {
         design = diagram_->createDesign(designConf->getDesignRef());
     }
     else
     {
         design = diagram_->createDesign(editedComponent_->getHierRef(viewName_));
-    }
+    }*/
 
     if (design == 0)
     {
@@ -273,10 +265,10 @@ bool DesignWidget::save()
         writeSucceeded = false;
     }
 
-    if (!lh_->writeModelToFile(editedComponent_))
+    /*if (!lh_->writeModelToFile(editedComponent_))
     {
         writeSucceeded = false;
-    }
+    }*/
 
     lh_->endSave();
 
@@ -335,7 +327,7 @@ void DesignWidget::removeSelectedNotes()
         noteRemoveCommand->redo();
     }
 
-    getGenericEditProvider()->addCommand(parentCommand);
+    getEditProvider()->addCommand(parentCommand);
 }
 
 //-----------------------------------------------------------------------------
@@ -355,7 +347,7 @@ void DesignWidget::removeSelectedAssociations()
         associationRemoveCmd->redo();
     }
 
-    getGenericEditProvider()->addCommand(parentCommand);
+    getEditProvider()->addCommand(parentCommand);
 }
 
 //-----------------------------------------------------------------------------

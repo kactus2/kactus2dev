@@ -11,13 +11,12 @@
 
 #include "AbstractParameterModel.h"
 
-#include "ValueFormatter.h"
-
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/choice.h>
 #include <IPXACTmodels/common/Enumeration.h>
 
-#include <IPXACTmodels/validators/ParameterValidator2014.h>
+#include <IPXACTmodels/common/validators/ValueFormatter.h>
+#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
 
 #include <QApplication>
 #include <QColor>
@@ -34,7 +33,7 @@ AbstractParameterModel::AbstractParameterModel(QSharedPointer<QList<QSharedPoint
 ReferencingTableModel(parameterFinder, parent),
 ParameterizableTable(parameterFinder),
 choices_(choices), 
-validator_(new ParameterValidator2014(expressionParser, parameterFinder, choices)),
+validator_(new ParameterValidator2014(expressionParser, choices)),
 expressionFormatter_(expressionFormatter)
 {
     setExpressionParser(expressionParser);

@@ -69,12 +69,12 @@ public:
      *
      *      @param [out] errorList  The list of errors found in the contents.
      */
-    virtual bool isValid(QStringList& errorList) const;
+    virtual void findErrors(QVector<QString>& errorList) const;
 
     /*!
      *  Returns true if the communication definition is valid.
      */
-    virtual bool isValid() const;
+    virtual bool validate() const;
 
     /*!
      *  Returns the dependent files (none).

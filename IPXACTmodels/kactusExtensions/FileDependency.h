@@ -15,14 +15,10 @@
 #include <IPXACTmodels/ipxactmodels_global.h>
 #include <IPXACTmodels/common/VendorExtension.h>
 
-#include <editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyItem.h>
-
 #include <QString>
 #include <QDomNode>
 #include <QXmlStreamWriter>
 #include <QObject>
-
-class FileDependencyItem;
 
 //-----------------------------------------------------------------------------
 //! File dependency class.
@@ -55,7 +51,7 @@ public:
      *
      *      @param [in] node The source XML node.
      */
-    FileDependency(QDomNode& node);
+    FileDependency(QDomNode const& node);
     
     /*!
      *  Destructor.
@@ -179,28 +175,6 @@ public:
      */
     FileDependency& operator=(FileDependency const& rhs);
 
-    //-----------------------------------------------------------------------------
-    // Internal methods.
-    //-----------------------------------------------------------------------------
-
-    /*!
-     *  Sets the file item pointers.
-     *
-     *      @param [in] fileItem1 The file item corresponding to file1.
-     *      @param [in] fileItem2 The file item corresponding to file2.
-     */
-    void setItemPointers(QSharedPointer<FileDependencyItem> fileItem1,
-        QSharedPointer<FileDependencyItem> fileItem2);
-
-    /*!
-     *  Returns the file item pointer for file1.
-     */
-    QSharedPointer<FileDependencyItem> getFileItem1() const;
-
-    /*!
-     *  Returns the file item pointer for file2.
-     */
-    QSharedPointer<FileDependencyItem> getFileItem2() const;
 
 private:
     //-----------------------------------------------------------------------------
@@ -227,10 +201,6 @@ private:
 
     //! The status of the dependency.
     Status status_;
-
-    //! The file item pointers.
-    QSharedPointer<FileDependencyItem> fileItem1_;
-    QSharedPointer<FileDependencyItem> fileItem2_;
 };
 
 #endif // FILEDEPENDENCY_H

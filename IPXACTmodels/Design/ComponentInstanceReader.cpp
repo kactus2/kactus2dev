@@ -11,11 +11,13 @@
 
 #include "ComponentInstanceReader.h"
 
+#include <IPXACTmodels/Design/ComponentInstance.h>
+
 //-----------------------------------------------------------------------------
 // Function: ComponentInstanceReader::ComponentInstanceReader()
 //-----------------------------------------------------------------------------
 ComponentInstanceReader::ComponentInstanceReader(QObject* parent /* = 0 */) :
-DocumentReader(parent)
+CommonItemsReader(parent)
 {
 
 }
@@ -43,17 +45,12 @@ QSharedPointer<ComponentInstance> ComponentInstanceReader::createComponentInstan
     QSharedPointer<ConfigurableVLNVReference> componentRef =
         parseConfigurableVLNVReference(componentRefNode, VLNV::COMPONENT);
 
-    QDomElement extensionNode = instanceNode.firstChildElement("ipxact:vendorExtensions");
-    QDomElement uuidElement = extensionNode.firstChildElement("kactus2:uuid");
-    QString uuid("");
-    if (!uuidElement.isNull())
-    {
-        uuid = uuidElement.firstChild().nodeValue();
-    }
 
-    QSharedPointer<ComponentInstance> newComponentInstance (new ComponentInstance(instanceName, displayName,
-        description, componentRef, QPointF(), uuid));
+
+    QSharedPointer<ComponentInstance> newComponentInstance (new ComponentInstance(instanceName, componentRef));
     newComponentInstance->setIsPresent(isPresent);
+    newComponentInstance->setDisplayName(displayName);
+    newComponentInstance->setDescription(description);
 
     parseExtensions(instanceNode, newComponentInstance);
 
@@ -66,43 +63,35 @@ QSharedPointer<ComponentInstance> ComponentInstanceReader::createComponentInstan
 void ComponentInstanceReader::parseExtensions(const QDomNode& componentInstanceNode,
     QSharedPointer<ComponentInstance> instance) const
 {
-    QDomNode extensionsNode = componentInstanceNode.firstChildElement("ipxact:vendorExtensions");
+    QDomElement extensionsNode = componentInstanceNode.firstChildElement("ipxact:vendorExtensions");
     QDomNodeList extensionNodeList = extensionsNode.childNodes();
 
-    for (int extensionIndex = 0; extensionIndex < extensionNodeList.count(); ++extensionIndex)
+    QDomElement uuidElement = extensionsNode.firstChildElement("kactus2:uuid");
+    if (!uuidElement.isNull())
     {
-        QDomNode singleExtension = extensionNodeList.at(extensionIndex);
-        QDomElement extensionElement = singleExtension.toElement();
-
-        if (extensionElement.nodeName() == "kactus2:position")
-        {
-            parsePosition(extensionElement, instance);
-        }
-        else if (extensionElement.nodeName() == "kactus2:imported")
-        {
-            parseImport(extensionElement, instance);
-        }
-        else if (extensionElement.nodeName() == "kactus2:portPositions")
-        {
-            parsePortPositions(extensionElement, instance);
-        }
-        else if (extensionElement.nodeName() == "kactus2:adHocVisibilities")
-        {
-            parseAdHocVisibilities(extensionElement, instance);
-        }
-        else if (extensionElement.nodeName() == "kactus2:apiInterfacePositions")
-        {
-            parseApiInterfacePositions(extensionElement, instance);
-        }
-        else if (extensionElement.nodeName() == "kactus2:comInterfacePositions")
-        {
-            parseComInterfacePositions(extensionElement, instance);
-        }
-        else if (extensionElement.nodeName() == "kactus2:propertyValues")
-        {
-            parsePropertyValues(extensionElement, instance);
-        }
+        instance->setUuid(uuidElement.firstChild().nodeValue());
     }
+
+    QDomElement positionNode = extensionsNode.firstChildElement("kactus2:position");
+    parsePosition(positionNode, instance);
+    
+    QDomElement importNode = extensionsNode.firstChildElement("kactus2:imported");
+    parseImport(importNode, instance);
+    
+    QDomElement portPositionNode = extensionsNode.firstChildElement("kactus2:portPositions");
+    parsePortPositions(portPositionNode, instance);
+
+    QDomElement adHocVisibilityNode = extensionsNode.firstChildElement("kactus2:adHocVisibilities");
+    parseAdHocVisibilities(adHocVisibilityNode, instance);
+
+    QDomElement apiPositionsNode = extensionsNode.firstChildElement("kactus2:apiInterfacePositions");
+    parseApiInterfacePositions(apiPositionsNode, instance);
+ 
+    QDomElement comPositionsNode = extensionsNode.firstChildElement("kactus2:comInterfacePositions");
+    parseComInterfacePositions(comPositionsNode, instance);
+
+    QDomElement propertyNode = extensionsNode.firstChildElement("kactus2:propertyValues");
+    parsePropertyValues(propertyNode, instance);
 
     parseVendorExtensions(componentInstanceNode, instance);
 }
@@ -135,7 +124,7 @@ void ComponentInstanceReader::parsePortPositions(const QDomElement& portPosition
     QSharedPointer<ComponentInstance> instance) const
 {
     QMap<QString, QPointF> portPositions = createMappedPositions(portPositionsElement, "kactus2:portPosition",
-        "busRef");
+        "kactus2:busRef");
     QMapIterator<QString, QPointF> portIterator(portPositions);
     while (portIterator.hasNext())
     {
@@ -229,6 +218,12 @@ QMap<QString, QPointF> ComponentInstanceReader::createMappedPositions(const QDom
         QDomElement positionElement = singlePositionNode.toElement();
 
         QString interfaceReference = positionElement.attribute(referenceIdentifier);
+
+        if (!positionElement.hasAttribute("x"))
+        {
+            positionElement = positionElement.firstChildElement("kactus2:position");
+        }
+
         int positionX = positionElement.attribute("x").toInt();
         int positionY = positionElement.attribute("y").toInt();
 

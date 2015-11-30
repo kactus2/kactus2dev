@@ -34,17 +34,10 @@ public:
     ColumnDesc();
 
     /*!
-     *  Constructor which parses the column description from an XML node.
-     *
-     *      @param [in] node A QDomNode from where the information is parsed.
-     */
-    ColumnDesc(const QDomNode& node);
-
-    /*!
      *  Constructor which initializes the column description fully.
      */
-    ColumnDesc(QString const& name, ColumnContentType contentType,
-               unsigned int allowedItems = CIT_NONE, unsigned int minWidth = 259);
+    ColumnDesc(QString const& name, ColumnTypes::ColumnContentType contentType,
+               unsigned int allowedItems = ColumnTypes::NONE, unsigned int minWidth = 259);
 
     /*!
      *  Clone constructor.
@@ -75,7 +68,7 @@ public:
      *
      *      @param [in] contentType The content type.
      */
-    void setContentType(ColumnContentType contentType);
+    void setContentType(ColumnTypes::ColumnContentType contentType);
 
     /*!
      *  Sets the allowed items.
@@ -91,15 +84,18 @@ public:
      */
     void setWidth(unsigned int width);
 
+        
+    void setMinimumWidth(int minimum);
+
     /*!
      *  Returns the name of the column.
      */
-    QString const& name() const;
+    QString name() const;
 
     /*!
      *  Returns the content type.
      */
-    ColumnContentType getContentType() const;
+    ColumnTypes::ColumnContentType getContentType() const;
 
     /*!
      *  Returns the allowed items.
@@ -111,10 +107,10 @@ public:
      */
     unsigned int getWidth() const;
 
-    //! \brief Copy constructor
+    //! Copy constructor
     ColumnDesc(const ColumnDesc& other);
 
-    //! \brief Assignment operator
+    //! Assignment operator
     ColumnDesc& operator=(const ColumnDesc& other);
 
 private:
@@ -126,7 +122,7 @@ private:
     QString name_;
 
     //! The content type for the column.
-    ColumnContentType contentType_;
+    ColumnTypes::ColumnContentType contentType_;
 
     //! The allowed items for the column.
     unsigned int allowedItems_;

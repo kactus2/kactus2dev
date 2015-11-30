@@ -34,7 +34,7 @@ public:
      *      @param [in] otherBusIf    The bus interface in the other end of the connection.
      */
     PortmapDialog(LibraryInterface* libInterface, QSharedPointer<Component> component,
-                  BusInterface* busIf, BusInterface* otherBusIf, QWidget* parent = 0);
+                  QSharedPointer<BusInterface> busIf, QSharedPointer<BusInterface> otherBusIf, QWidget* parent = 0);
 
     //! The destructor.
     ~PortmapDialog();
@@ -55,10 +55,10 @@ private:
     BusIfPortmapTab* portmapWidget_;
 
     //! The bus interface whose port map to edit.
-    BusInterface* busIf_;
+    QSharedPointer<BusInterface> busIf_;
 
     //! The bus interface in the other end of the connection (for validity checks).
-    BusInterface* otherBusIf_;
+    QSharedPointer<BusInterface> otherBusIf_;
 };
 
 //-----------------------------------------------------------------------------

@@ -15,26 +15,7 @@
 #include <QStyledItemDelegate>
 
 //-----------------------------------------------------------------------------
-// Constants defining which column represents what kind of information.
-//-----------------------------------------------------------------------------
-enum AdHocBoundsEditorColumn
-{
-    ADHOC_BOUNDS_COL_NAME = 0,  //!< Column for the port name.
-    ADHOC_BOUNDS_COL_LEFT,      //!< Column for the port's left bound.
-    ADHOC_BOUNDS_COL_RIGHT,     //!< Column for the port's right bound.
-    ADHOC_BOUNDS_COL_COUNT
-};
-
-//! Custom roles for managing port bound limits.
-enum
-{
-    UpperPortBoundRole = Qt::UserRole + 1,
-    LowerPortBoundRole = Qt::UserRole + 2
-};
-
-//-----------------------------------------------------------------------------
-//! The delegate that provides editors to edit ad-hoc visibility of
-//! of component ports.
+//! The delegate that provides editors to edit ad-hoc visibility of component ports.
 //-----------------------------------------------------------------------------
 class AdHocBoundsDelegate : public QStyledItemDelegate
 {
@@ -64,7 +45,7 @@ public:
 	 *      @return The editor to be used to edit the item.
 	 */
 	virtual QWidget* createEditor(QWidget* parent, QStyleOptionViewItem const& option, 
-		                          QModelIndex const& index) const;
+        QModelIndex const& index) const;
 
 	/*!
      *  Sets the data for the editor.
@@ -72,7 +53,7 @@ public:
 	 *      @param [in] editor  Pointer to the editor where the data is to be set.
 	 *      @param [in] index   Model index identifying the item that's data is to be set.
 	 */
-	virtual void setEditorData(QWidget* editor, const QModelIndex& index) const;
+	virtual void setEditorData(QWidget* editor, QModelIndex const& index) const;
 
 	/*!
      *  Saves the data from the editor to the model.
@@ -82,8 +63,7 @@ public:
 	 *      @param [in] index   Model index identifying the item that's data is to be saved.
 	 *
 	 */
-	virtual void setModelData(QWidget* editor, QAbstractItemModel* model, 
-		                      QModelIndex const& index) const;
+	virtual void setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index) const;
 
 private:
     // Disable copying.

@@ -130,7 +130,7 @@ bool ParameterGroupBox::isValid() const
 //-----------------------------------------------------------------------------
 // Function: ParameterGroupBox::isValid()
 //-----------------------------------------------------------------------------
-bool ParameterGroupBox::isValid(QStringList& errorList, const QString& parentIdentifier) const
+bool ParameterGroupBox::isValid(QVector<QString>& errorList, const QString& parentIdentifier) const
 {
     return model_->isValid(errorList, parentIdentifier);
 }

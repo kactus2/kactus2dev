@@ -18,7 +18,8 @@
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/ListParameterFinder.h>
 
-#include <IPXACTmodels/validators/ParameterValidator2014.h>
+#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
+
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
 #include <QAbstractTableModel>
@@ -69,7 +70,7 @@ public:
 	 *
 	 *      @param [in] component   Pointer to the component being edited.
 	 */
-	void setComponent(ComponentItem* component);
+	void setComponent(ComponentItem* component, QSharedPointer<IEditProvider> editProvider);
 
 	/*!
 	 *  Get the number of rows to be displayed.
@@ -375,8 +376,8 @@ private:
     //! The list that is used to display the elements in a table form.
     QSharedPointer<QList<QSharedPointer<Parameter> > > configurableElements_;
 
-	//! Pointer to the generic edit provider that manages the undo/redo stack.
-	GenericEditProvider* editProvider_;
+	//! The edit provider that manages the undo/redo stack.
+	QSharedPointer<IEditProvider> editProvider_;
 
     //! The formatter for referencing expressions in values.
     QSharedPointer<ExpressionFormatter> configurableElementExpressionFormatter_;
@@ -388,7 +389,7 @@ private:
     QSharedPointer<ExpressionParser> componentInstanceExpressionParser_;
 
     //! Validator for parameters.
-    ParameterValidator2014* validator_;
+    QSharedPointer<ParameterValidator2014> validator_;
 
     //! The design configuration model used to find the currently active view of the component instance.
     QSharedPointer<DesignConfiguration> designConfiguration_;

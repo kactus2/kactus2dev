@@ -11,16 +11,15 @@
 
 #include "AdHocBoundsDelegate.h"
 
+#include "AdHocBoundColumns.h"
+
 #include <QLabel>
 #include <QSpinBox>
-#include <QApplication>
-#include <QMouseEvent>
-#include <QPainter>
 
 //-----------------------------------------------------------------------------
 // Function: AdHocBoundsDelegate::AdHocBoundsDelegate()
 //-----------------------------------------------------------------------------
-AdHocBoundsDelegate::AdHocBoundsDelegate(QObject *parent /*= 0*/) : QStyledItemDelegate(parent)
+AdHocBoundsDelegate::AdHocBoundsDelegate(QObject *parent) : QStyledItemDelegate(parent)
 {
 
 }
@@ -37,92 +36,65 @@ AdHocBoundsDelegate::~AdHocBoundsDelegate()
 // Function: AdHocBoundsDelegate::createEditor()
 //-----------------------------------------------------------------------------
 QWidget* AdHocBoundsDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const& option,
-                                           QModelIndex const& index) const
+    QModelIndex const& index) const
 {
-    // if the column is the one specified for direction items 
-    switch (index.column())
+    if (index.column() == AdHocBoundColumns::ADHOC_BOUNDS_COL_NAME)
     {
-    case ADHOC_BOUNDS_COL_NAME:
-        {
-            QLabel* label = new QLabel(parent);
-            return label;
-        }
-
-    case ADHOC_BOUNDS_COL_LEFT:
-    case ADHOC_BOUNDS_COL_RIGHT:
-        {
-            QSpinBox* spinBox = new QSpinBox(parent);
-            spinBox->setSingleStep(1);
-//             connect(spinBox, SIGNAL(editingFinished()),
-//                 this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
-            return spinBox;
-        }
-
-    default:
-        {
-            return QStyledItemDelegate::createEditor(parent, option, index);
-        }
+        return new QLabel(parent);
+    }
+    else if (index.column() == AdHocBoundColumns::ADHOC_BOUNDS_COL_LEFT || 
+        index.column() == AdHocBoundColumns::ADHOC_BOUNDS_COL_RIGHT)
+    {
+        return new QSpinBox(parent);
+    }
+    else
+    {
+        return QStyledItemDelegate::createEditor(parent, option, index);
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: AdHocBoundsDelegate::setEditorData()
 //-----------------------------------------------------------------------------
-void AdHocBoundsDelegate::setEditorData(QWidget* editor, const QModelIndex& index) const
+void AdHocBoundsDelegate::setEditorData(QWidget* editor, QModelIndex const& index) const
 {
-    switch (index.column())
+    if (index.column() == AdHocBoundColumns::ADHOC_BOUNDS_COL_NAME)
     {
-    case ADHOC_BOUNDS_COL_NAME:
-        {
-            QString text = index.model()->data(index, Qt::DisplayRole).toString();
-            QLabel* label = qobject_cast<QLabel*>(editor);
-            label->setText(text);
-            break;
-        }
+        QString text = index.data(Qt::DisplayRole).toString();
+        QLabel* label = qobject_cast<QLabel*>(editor);
+        label->setText(text);
+    }
+    else if (index.column() == AdHocBoundColumns::ADHOC_BOUNDS_COL_LEFT || 
+        index.column() == AdHocBoundColumns::ADHOC_BOUNDS_COL_RIGHT)
+    {
+        QSpinBox* spinBox = qobject_cast<QSpinBox*>(editor);
 
-    case ADHOC_BOUNDS_COL_LEFT:
-    case ADHOC_BOUNDS_COL_RIGHT:
-        {
-            QSpinBox* spinBox = qobject_cast<QSpinBox*>(editor);
+        int value = index.data(Qt::DisplayRole).toInt();
+        int upperBound = index.model()->data(index, AdHocBoundColumns::UpperPortBoundRole).toInt();
+        int lowerBound = index.model()->data(index, AdHocBoundColumns::LowerPortBoundRole).toInt();
 
-            int value = index.model()->data(index, Qt::DisplayRole).toInt();
-            int upperBound = index.model()->data(index, UpperPortBoundRole).toInt();
-            int lowerBound = index.model()->data(index, LowerPortBoundRole).toInt();
-
-            spinBox->setRange(lowerBound, upperBound);
-            spinBox->setValue(value);
-            break;
-        }
-
-    default:
-        {
-            QStyledItemDelegate::setEditorData(editor, index);
-            break;
-        }
+        spinBox->setRange(lowerBound, upperBound);
+        spinBox->setValue(value);
+    }
+    else
+    {
+        QStyledItemDelegate::setEditorData(editor, index);
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: AdHocBoundsDelegate::setModelData()
 //-----------------------------------------------------------------------------
-void AdHocBoundsDelegate::setModelData(QWidget* editor, QAbstractItemModel* model,
-                                       QModelIndex const& index) const
+void AdHocBoundsDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index) const
 {
-    switch (index.column())
+    if (index.column() == AdHocBoundColumns::ADHOC_BOUNDS_COL_LEFT || 
+        index.column() == AdHocBoundColumns::ADHOC_BOUNDS_COL_RIGHT)
     {
-    case ADHOC_BOUNDS_COL_LEFT:
-    case ADHOC_BOUNDS_COL_RIGHT:
-        {
-            QSpinBox* spinBox = qobject_cast<QSpinBox*>(editor);
-            int value = spinBox->value();
-            model->setData(index, value, Qt::EditRole);
-            break;
-        }
-
-    default:
-        {
-            QStyledItemDelegate::setModelData(editor, model, index);
-            break;
-        }
+        QSpinBox* spinBox = qobject_cast<QSpinBox*>(editor);
+        model->setData(index, spinBox->value(), Qt::EditRole);
+    }
+    else
+    {
+        QStyledItemDelegate::setModelData(editor, model, index);
     }
 }

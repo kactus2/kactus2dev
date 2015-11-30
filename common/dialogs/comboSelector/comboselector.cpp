@@ -6,7 +6,8 @@
  */
 
 #include "comboselector.h"
-#include <IPXACTmodels/component.h>
+
+#include <IPXACTmodels/Component/Component.h>
 
 #include <IPXACTmodels/common/FileTypes.h>
 

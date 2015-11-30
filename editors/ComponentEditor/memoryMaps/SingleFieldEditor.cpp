@@ -17,7 +17,7 @@
 #include <editors/ComponentEditor/memoryMaps/fieldeditor.h>
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
-#include <editors/ComponentEditor/common/ValueFormatter.h>
+
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
 #include <editors/ComponentEditor/common/ExpressionParser.h>
@@ -32,8 +32,11 @@
 #include <IPXACTmodels/Component/Field.h>
 #include <IPXACTmodels/Component/WriteValueConstraint.h>
 
-#include <QScrollArea>
+#include <IPXACTmodels/common/validators/ValueFormatter.h>
+
+#include <QComboBox>
 #include <QFormLayout>
+#include <QScrollArea>
 #include <QSplitter>
 
 //-----------------------------------------------------------------------------
@@ -56,7 +59,7 @@ testableEditor_(),
 testConstrainedEditor_(),
 isPresentEditor_(new ExpressionEditor(parameterFinder, this)),
 expressionParser_(expressionParser),
-writeConstraintEditor_(new WriteValueConstraintComboBox(field->getWriteConstraint(), this)),
+writeConstraintEditor_(new QComboBox(this)),
 writeConstraintMinLimit_(new ExpressionEditor(parameterFinder, this)),
 writeConstraintMaxLimit_(new ExpressionEditor(parameterFinder, this)),
 resetValueEditor_(new ExpressionEditor(parameterFinder, this)),
@@ -66,6 +69,10 @@ field_(field)
     offsetEditor_->setFixedHeight(20);
     widthEditor_->setFixedHeight(20);
     isPresentEditor_->setFixedHeight(20);
+    resetValueEditor_->setFixedHeight(20);
+    resetMaskEditor_->setFixedHeight(20);
+    writeConstraintMinLimit_->setFixedHeight(20);
+    writeConstraintMaxLimit_->setFixedHeight(20);
 
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser_);
@@ -98,6 +105,23 @@ field_(field)
     writeConstraintMaxLimit_->setAppendingCompleter(writeValueMaxCompleter);
     resetValueEditor_->setAppendingCompleter(resetValueCompleter);
     resetMaskEditor_->setAppendingCompleter(resetMaskCompleter);
+
+    writeConstraintEditor_->setEditable(false);
+
+    writeConstraintEditor_->addItem(tr("Write as read"));
+    writeConstraintEditor_->addItem(tr("Use enumerated values"));
+    writeConstraintEditor_->addItem(tr("Set minimum and maximum limits"));
+    writeConstraintEditor_->addItem(tr("No constraints"));
+
+    if (!field->getWriteConstraint().isNull())
+    {
+        writeConstraintEditor_->setCurrentIndex(field->getWriteConstraint()->getType());
+    }
+    else
+    {
+        writeConstraintEditor_->setCurrentText(tr("No constraints"));
+    }
+    setWriteMinMaxConstraintEnableStatus(writeConstraintEditor_->currentIndex());
 
     setupLayout();
     connectSignals();
@@ -143,6 +167,8 @@ void SingleFieldEditor::setupLayout()
     offsetEditor_->setFrameShadow(QFrame::Sunken);
     widthEditor_->setFrameShadow(QFrame::Sunken);
     isPresentEditor_->setFrameShadow(QFrame::Sunken);
+    resetValueEditor_->setFrameShadow(QFrame::Sunken);
+    resetMaskEditor_->setFrameShadow(QFrame::Sunken);
 
     QFormLayout* fieldDefinitionLayout = new QFormLayout(fieldDefinitionGroup);
     fieldDefinitionLayout->addRow(tr("Offset [bits], f(x):"), offsetEditor_);
@@ -152,6 +178,9 @@ void SingleFieldEditor::setupLayout()
     fieldDefinitionLayout->addRow(tr("Reset mask, f(x):"), resetMaskEditor_);
 
     QGroupBox* fieldConstraintGroup = new QGroupBox(tr("Field constraints"));
+
+    writeConstraintMinLimit_->setFrameShadow(QFrame::Sunken);
+    writeConstraintMaxLimit_->setFrameShadow(QFrame::Sunken);
 
     QFormLayout* fieldConstraintLayout = new QFormLayout(fieldConstraintGroup);
     volatileEditor_ = new BooleanComboBox(fieldDefinitionGroup);
@@ -259,7 +288,7 @@ void SingleFieldEditor::connectSignals()
         this, SIGNAL(decreaseReferences(QString const&)), Qt::UniqueConnection);
 
     connect(offsetEditor_, SIGNAL(editingFinished()), this, SLOT(onOffsetEdited()), Qt::UniqueConnection);
-    connect(widthEditor_, SIGNAL(editingFinished()), this, SLOT(onWdithEdited()), Qt::UniqueConnection);
+    connect(widthEditor_, SIGNAL(editingFinished()), this, SLOT(onWidthEdited()), Qt::UniqueConnection);
     connect(isPresentEditor_, SIGNAL(editingFinished()), this, SLOT(onIsPresentEdited()), Qt::UniqueConnection);
     connect(writeConstraintMinLimit_, SIGNAL(editingFinished()),
         this, SLOT(onWriteConstraintMinimumEdited()), Qt::UniqueConnection);
@@ -308,11 +337,14 @@ void SingleFieldEditor::refresh()
     isPresentEditor_->setExpression(field_->getIsPresent());
     isPresentEditor_->setToolTip(formattedValueFor(field_->getIsPresent()));
 
-    writeConstraintMinLimit_->setExpression(field_->getWriteConstraint()->getMinimum());
-    writeConstraintMinLimit_->setToolTip(formattedValueFor(field_->getWriteConstraint()->getMinimum()));
+    if (field_->getWriteConstraint())
+    {
+        writeConstraintMinLimit_->setExpression(field_->getWriteConstraint()->getMinimum());
+        writeConstraintMinLimit_->setToolTip(formattedValueFor(field_->getWriteConstraint()->getMinimum()));
 
-    writeConstraintMaxLimit_->setExpression(field_->getWriteConstraint()->getMaximum());
-    writeConstraintMaxLimit_->setToolTip(formattedValueFor(field_->getWriteConstraint()->getMaximum()));
+        writeConstraintMaxLimit_->setExpression(field_->getWriteConstraint()->getMaximum());
+        writeConstraintMaxLimit_->setToolTip(formattedValueFor(field_->getWriteConstraint()->getMaximum()));
+    }
 
     resetValueEditor_->setExpression(field_->getResetValue());
     resetValueEditor_->setToolTip(formattedValueFor(field_->getResetValue()));
@@ -328,8 +360,11 @@ void SingleFieldEditor::refresh()
     readActionEditor_->setCurrentValue(field_->getReadAction());
     testableEditor_->setCurrentValue(field_->getTestable().toString());
     testConstrainedEditor_->setCurrentValue(field_->getTestConstraint());
-
-    setWriteMinMaxConstraintEnableStatus(field_->getWriteConstraint()->getType());
+    
+    if (field_->getWriteConstraint())
+    {
+        setWriteMinMaxConstraintEnableStatus(field_->getWriteConstraint()->getType());
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -389,9 +424,9 @@ void SingleFieldEditor::onOffsetEdited()
 }
 
 //-----------------------------------------------------------------------------
-// Function: SingleFieldEditor::onWdithEdited()
+// Function: SingleFieldEditor::onWidthEdited()
 //-----------------------------------------------------------------------------
-void SingleFieldEditor::onWdithEdited()
+void SingleFieldEditor::onWidthEdited()
 {
     widthEditor_->finishEditingCurrentWord();
     QString newBitWidth = widthEditor_->getExpression();
@@ -516,6 +551,21 @@ void SingleFieldEditor::setWriteMinMaxConstraintEnableStatus(int writeConstraint
 //-----------------------------------------------------------------------------
 void SingleFieldEditor::onWriteConstraintSelected(int newIndex)
 {
+    if (newIndex == WriteValueConstraint::TYPE_COUNT)
+    {
+        field_->setWriteConstraint(QSharedPointer<WriteValueConstraint>(0));
+    }
+
+    else
+    {
+        if (!field_->getWriteConstraint())
+        {
+            field_->setWriteConstraint(QSharedPointer<WriteValueConstraint>(new WriteValueConstraint()));
+        }        
+
+        field_->getWriteConstraint()->setType(static_cast<WriteValueConstraint::Type>(newIndex));
+    }
+    
     setWriteMinMaxConstraintEnableStatus(newIndex);
     emit contentChanged();
 }
@@ -525,6 +575,8 @@ void SingleFieldEditor::onWriteConstraintSelected(int newIndex)
 //-----------------------------------------------------------------------------
 void SingleFieldEditor::onWriteConstraintMinimumEdited()
 {
+    Q_ASSERT(field_->getWriteConstraint());
+
     writeConstraintMinLimit_->finishEditingCurrentWord();
     QString newMinimumLimit = writeConstraintMinLimit_->getExpression();
 
@@ -544,6 +596,8 @@ void SingleFieldEditor::onWriteConstraintMinimumEdited()
 //-----------------------------------------------------------------------------
 void SingleFieldEditor::onWriteConstraintMaximumEdited()
 {
+    Q_ASSERT(field_->getWriteConstraint());
+
     writeConstraintMaxLimit_->finishEditingCurrentWord();
     QString newMaximumLimit = writeConstraintMaxLimit_->getExpression();
 

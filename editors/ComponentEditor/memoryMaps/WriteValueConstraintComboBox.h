@@ -39,7 +39,9 @@ public:
      */
     virtual ~WriteValueConstraintComboBox();
 
-private slots:
+    void setWriteValueConstraint(QSharedPointer<WriteValueConstraint> constraint);
+   
+    private slots:
 
     /*!
      *  Sets the type for the write constraint.

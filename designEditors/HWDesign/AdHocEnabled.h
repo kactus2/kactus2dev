@@ -61,7 +61,7 @@ public:
     /*!
      *  Returns the ad-hoc visibility map.
      */
-    QMap<QString, bool> const& getPortAdHocVisibilities() const;
+    QMap<QString, bool> getPortAdHocVisibilities() const;
 
     /*!
      *  Returns the list of ports.
@@ -86,15 +86,13 @@ public:
      */
     virtual void detach(AdHocEditor* editor) = 0;
 
+
+    virtual QString adHocIdentifier() const = 0;
+
     /*!
      *  Returns true if the ad-hoc visibilities are protected.
      */
-    virtual bool isProtected() const = 0;
-
-    /*!
-     *  Returns the edit provider for the data.
-     */
-    virtual GenericEditProvider& getEditProvider() = 0;
+    //virtual bool isProtected() const = 0;
 
     /*!
      *  Returns the ad-hoc port with the given name or null if not found.

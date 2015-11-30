@@ -68,7 +68,7 @@ bool ComponentEditorSWPropertiesItem::isValid() const
 {
 	foreach (QSharedPointer<ComProperty> property, component_->getSWProperties())
     {
-		if (!property->isValid())
+		if (!property->validate())
         {
 			return false;
 		}

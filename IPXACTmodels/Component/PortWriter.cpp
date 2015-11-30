@@ -110,7 +110,7 @@ void PortWriter::writeVector(QXmlStreamWriter& writer, QSharedPointer<Vector> ve
 void PortWriter::writeWireTypeDefinitions(QXmlStreamWriter& writer,
     QSharedPointer<QList<QSharedPointer<WireTypeDef> > > typeDefinitions) const
 {
-    if (!typeDefinitions->isEmpty())
+    if (typeDefinitions && !typeDefinitions->isEmpty())
     {
         writer.writeStartElement("ipxact:wireTypeDefs");
 

@@ -393,7 +393,7 @@ void BusInterface::setBitSteering(BusInterface::BitSteering bitSteering)
 //-----------------------------------------------------------------------------
 // Function: businterface::getMaster()
 //-----------------------------------------------------------------------------
-QSharedPointer<MasterInterface> BusInterface::getMaster()
+QSharedPointer<MasterInterface> BusInterface::getMaster() const
 {
 	return master_;
 }
@@ -415,7 +415,7 @@ void BusInterface::setMaster( QSharedPointer<MasterInterface> master )
 //-----------------------------------------------------------------------------
 // Function: businterface::getSlave()
 //-----------------------------------------------------------------------------
-QSharedPointer<SlaveInterface> BusInterface::getSlave()
+QSharedPointer<SlaveInterface> BusInterface::getSlave() const
 {
 	return slave_;
 }
@@ -460,7 +460,7 @@ void BusInterface::setSystem(QString const& systemGroupName)
 //-----------------------------------------------------------------------------
 // Function: businterface::getMonitor()
 //-----------------------------------------------------------------------------
-QSharedPointer<BusInterface::MonitorInterface> BusInterface::getMonitor()
+QSharedPointer<BusInterface::MonitorInterface> BusInterface::getMonitor() const
 {
 	return monitor_;
 }
@@ -468,7 +468,7 @@ QSharedPointer<BusInterface::MonitorInterface> BusInterface::getMonitor()
 //-----------------------------------------------------------------------------
 // Function: businterface::setMonitor()
 //-----------------------------------------------------------------------------
-void BusInterface::setMonitor( QSharedPointer<BusInterface::MonitorInterface> monitor )
+void BusInterface::setMonitor(QSharedPointer<BusInterface::MonitorInterface> monitor)
 {
 	monitor_.clear();
 	slave_.clear();
@@ -483,7 +483,7 @@ void BusInterface::setMonitor( QSharedPointer<BusInterface::MonitorInterface> mo
 //-----------------------------------------------------------------------------
 // Function: businterface::getMirroredSlave()
 //-----------------------------------------------------------------------------
-QSharedPointer<MirroredSlaveInterface> BusInterface::getMirroredSlave()
+QSharedPointer<MirroredSlaveInterface> BusInterface::getMirroredSlave() const
 {
 	return mirroredSlave_;
 }

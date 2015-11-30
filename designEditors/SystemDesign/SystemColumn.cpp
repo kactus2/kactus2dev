@@ -11,9 +11,7 @@
 
 #include "SystemColumn.h"
 
-#include "SWComponentItem.h"
-#include "HWMappingItem.h"
-#include "SWInterfaceItem.h"
+#include <common/graphicsItems/GraphicsItemTypes.h>
 
 #include <common/graphicsItems/GraphicsConnection.h>
 #include <common/graphicsItems/GraphicsColumnLayout.h>
@@ -39,13 +37,13 @@ SystemColumn::~SystemColumn()
 //-----------------------------------------------------------------------------
 bool SystemColumn::isItemAllowed(QGraphicsItem* item, unsigned int allowedItems) const
 {
-    if (item->type() == HWMappingItem::Type || item->type() == SWComponentItem::Type)
+    if (item->type() == GFX_TYPE_HW_MAPPING_ITEM || item->type() == GFX_TYPE_SW_COMPONENT_ITEM)
     {
-        return (allowedItems & CIT_COMPONENT);
+        return (allowedItems & ColumnTypes::COMPONENT);
     }
-    else if (item->type() == SWInterfaceItem::Type)
+    else if (item->type() == GFX_TYPE_SW_INTERFACE_ITEM)
     {
-        return (allowedItems & CIT_INTERFACE);
+        return (allowedItems & ColumnTypes::INTERFACE);
     }
     else
     {
@@ -62,7 +60,6 @@ void SystemColumn::prepareColumnMove()
     foreach (QGraphicsItem *item, scene()->items())
     {
         GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
-
         if (conn != 0)
         {
             conn->beginUpdatePosition();
@@ -81,7 +78,6 @@ QSharedPointer<QUndoCommand> SystemColumn::createMoveUndoCommand()
     foreach (QGraphicsItem *item, scene()->items())
     {
         GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
-
         if (conn != 0)
         {
             conn->endUpdatePosition(cmd.data());

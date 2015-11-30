@@ -45,10 +45,10 @@ model_(0)
 {
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
     
-    model_ = new ModelParameterModel(parameters, componentChoices, expressionParser, parameterFinder,
+    /*model_ = new ModelParameterModel(parameters, componentChoices, expressionParser, parameterFinder,
         expressionFormatter, this);
-    
-    model_->setParameterFactory(QSharedPointer<ModelParameterFactory>(new ModuleParameterFactoryImplementation()));
+    */
+   // model_->setParameterFactory(QSharedPointer<ModelParameterFactory>(new ModuleParameterFactoryImplementation()));
 
     QSharedPointer<EditableTableView> moduleParameterView(new EditableTableView(this));
     moduleParameterView->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
@@ -69,11 +69,11 @@ model_(0)
     connect(view, SIGNAL(removeItem(const QModelIndex&)),
         model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
     
-    ModelParameterEditorHeaderView* parameterHorizontalHeader =
+   /* ModelParameterEditorHeaderView* parameterHorizontalHeader =
         new ModelParameterEditorHeaderView(Qt::Horizontal, this);
     view->setHorizontalHeader(parameterHorizontalHeader);
     view->horizontalHeader()->setSectionsClickable(true);
-    view->horizontalHeader()->setStretchLastSection(true);
+    view->horizontalHeader()->setStretchLastSection(true);*/
 
     // set view to be sortable
     view->setSortingEnabled(true);
@@ -87,8 +87,8 @@ model_(0)
     ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
     parameterCompleter->setModel(parameterModel);
 
-    view->setDelegate(new ModelParameterDelegate(componentChoices, parameterCompleter, parameterFinder,
-        expressionFormatter, this));
+    //view->setDelegate(new ModelParameterDelegate(componentChoices, parameterCompleter, parameterFinder,
+    //    expressionFormatter, this));
 
     connect(view->itemDelegate(), SIGNAL(increaseReferences(QString)), 
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
@@ -110,7 +110,7 @@ model_(0)
     // sort the view
     view->sortByColumn(0, Qt::AscendingOrder);
 
-    view->setColumnHidden(ModelParameterColumns::ID, true);
+    //view->setColumnHidden(ModelParameterColumns::ID, true);
 
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(view);

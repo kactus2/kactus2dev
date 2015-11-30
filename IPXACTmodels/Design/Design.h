@@ -43,6 +43,8 @@
 #include <QPointF>
 #include <QVector2D>
 
+class ConnectionRoute;
+
 //-----------------------------------------------------------------------------
 //! Implementation for the ipxact:design element.
 //-----------------------------------------------------------------------------
@@ -65,12 +67,12 @@ public:
 	/*!
 	 *  Copy constructor.
 	 */
-	Design(const Design& other);
+	Design(Design const& other);
 
 	/*!
 	 *  Assignment operator.
 	 */
-	Design& operator=(const Design& other);
+	Design& operator=(Design const& other);
 
 	/*!
 	 *  The destructor.
@@ -83,13 +85,13 @@ public:
      *      @return A pointer to the cloned copy.
 	 */
 	virtual QSharedPointer<Document> clone()  const;
-  
+
 	/*!
 	 *  Set the VLNV.
 	 *
 	 *      @param [in] vlnv    The new VLNV.
 	 */
-	virtual void setVlnv(const VLNV& vlnv);
+	virtual void setVlnv(VLNV const& vlnv);
 
     /*!
      *  Get the component instances.
@@ -105,7 +107,7 @@ public:
      *
      *      @return The description of the found HW instance.
 	 */
-	QString getHWInstanceDescription(const QString& instanceName) const;
+	QString getHWInstanceDescription(QString const& instanceName) const;
 
     /*!
      *  Get a list of SW instances.
@@ -129,34 +131,7 @@ public:
      *
      *      @return True if at least one interconnection is found, false otherwise.
 	 */
-	bool hasInterconnection(const QString& instanceName, const QString& interfaceName) const;
-
-	/*! \brief Get list of the interfaces that are connected to the specified interface via interconnection.
-	 *
-	 * Method: 		getConnectedInterfaces
-	 * Full name:	Design::getConnectedInterfaces
-	 * Access:		public 
-	 *
-	 * \param instanceName The name identifying the instance.
-	 * \param interfaceName The name of the interface within the instance.
-	 *
-	 * \return QList containing the interfaces connected to the specified interface.
-	*/
-	//QList<Interface> getConnectedInterfaces(const QString& instanceName,
-	//	const QString& interfaceName) const;
-
-	/*! \brief Get list of the interfaces that are connected to the specified interface via interconnection.
-	 *
-	 * Method: 		getConnectedInterfaces
-	 * Full name:	Design::getConnectedInterfaces
-	 * Access:		public 
-	 *
-	 * \param sourceInterface Identifies the source instance and bus interface.
-	 *
-	 * \return QList containing the interfaces connected to the specified interface.
-	*/
-	//QList<Interface> getConnectedInterfaces(const Interface& sourceInterface) const;
-
+	bool hasInterconnection(QString const& instanceName, QString const& interfaceName) const;
 
     /*!
      *  Get a list of ad-hoc connections.
@@ -193,12 +168,17 @@ public:
     /*!
      *  Returns the ad-hoc port positions.
      */
-    QMap<QString, QPointF> getAdHocPortPositions() const;
+    QSharedPointer<VendorExtension> getAdHocPortPositions() const;
 
     /*! 
      *  Returns the list of columns.
      */
     QList<QSharedPointer<ColumnDesc> > getColumns() const;
+
+    /*! 
+     *  Returns the list of routes.
+     */
+    QList<QSharedPointer<ConnectionRoute> > getRoutes() const;
 
     /*!
      *  Set the component instances.
@@ -270,7 +250,7 @@ public:
     /*!
      *  Sets the columns of this design.
      */
-    void setColumns(QList<QSharedPointer<ColumnDesc> > newColumns);
+    //void setColumns(QList<QSharedPointer<ColumnDesc> > newColumns);
 
 	/*!
 	 *  Get the dependent files.
@@ -300,7 +280,7 @@ public:
      *
      *      @return VLNV of the instantiated component.
 	 */
-	VLNV getHWComponentVLNV(const QString& instanceName) const;
+	VLNV getHWComponentVLNV(QString const& instanceName) const;
 
 	/*!
 	 *  Check if the design contains a given HW instance.
@@ -309,7 +289,7 @@ public:
      *
      *      @return True if the instance is found, false otherwise.
 	 */
-	bool containsHWInstance(const QString& instanceName) const;
+	bool containsHWInstance(QString const& instanceName) const;
 
 	/*!
 	 *  Check if there is a configurable element value set for the given HW instance.
@@ -319,7 +299,7 @@ public:
      *
      *      @return Ture if the value has been set, otherwise false.
 	 */
-	bool hasConfElementValue(const QString& instanceName, const QString& confElementName) const;
+	bool hasConfElementValue(QString const& instanceName, QString const& confElementName) const;
 
 	/*!
 	 *  Get the configurable element value set for the given HW instance.
@@ -329,7 +309,7 @@ public:
      *
      *      @return QString containing the configurable element value.
 	 */
-	QString getConfElementValue(const QString& instanceName, const QString& confElementName) const;
+	QString getConfElementValue(QString const& instanceName, QString const& confElementName) const;
 
 	/*!
 	 *  Set the implementation type of the design.
@@ -360,6 +340,24 @@ public:
     void setMonitorInterconnections(
         QSharedPointer<QList<QSharedPointer<MonitorInterconnection> > > newMonitorInterconnections);
 
+    /*!
+     *  Adds a column to the design vendor extensions.
+     *
+     *      @param [in] column   The column to add.
+     */
+    void addColumn(QSharedPointer<ColumnDesc> column);
+
+    /*!
+     *  Removes a column from design vendor extensions.
+     *
+     *      @param [in] column   The column to remove
+     */
+    void removeColumn(QSharedPointer<ColumnDesc> column);    
+
+    void addRoute(QSharedPointer<ConnectionRoute> route);
+    
+    void removeRoute(QSharedPointer<ConnectionRoute> route);
+
 private:
 
     /*!
@@ -368,13 +366,6 @@ private:
      *      @param [in] node The QDomNode from where to parse the information.
      */
     void parseVendorExtensions(QDomNode& node);
-
-    /*!
-     *  Parses the routes from kactus2:routes.
-     *
-     *      @param [in] routesNode   The DOM node containing the routes.
-     */
-    void parseRoutes(QDomNode& routesNode);
 
     /*!
      *  Parses a route from kactus2:route.
@@ -389,6 +380,20 @@ private:
      *      @param [in] other   The design being copied.
      */
     void copySharedLists(Design const& other);
+
+    /*!
+     *  Gets the vendor extension containing the column layout.
+     *
+     *      @return The extensions for the column layout.
+     */
+    QSharedPointer<Kactus2Group> getLayoutExtension() const;
+  
+    /*!
+     *  Gets the vendor extension containing the interconnection routes.
+     *
+     *      @return The extensions for the interconnection routes.
+     */
+    QSharedPointer<Kactus2Group> getRoutesExtension() const;
 
     //-----------------------------------------------------------------------------
     // Data.

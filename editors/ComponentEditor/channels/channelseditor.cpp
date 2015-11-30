@@ -19,7 +19,7 @@
 #include <IPXACTmodels/Component/Component.h>
 
 #include <QVBoxLayout>
-
+#include <QHeaderView>
 //-----------------------------------------------------------------------------
 // Function: ChannelsEditor::ChannelsEditor()
 //-----------------------------------------------------------------------------
@@ -44,25 +44,20 @@ ItemEditor(component, handler, parent),
 	QString defaultPath = QString("%1/channelListing.csv").arg(componentPath);
 	view_.setDefaultImportExportPath(defaultPath);
 	view_.setAllowImportExport(true);
-
-	// items can not be dragged
+	
 	view_.setItemsDraggable(false);
 
 	view_.setItemDelegate(new ChannelsDelegate(component, this));	
 
-	connect(&model_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&model_, SIGNAL(channelAdded(int)),
-		this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
-	connect(&model_, SIGNAL(channelRemoved(int)),
-		this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
+	connect(&model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&model_, SIGNAL(channelAdded(int)), this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
+	connect(&model_, SIGNAL(channelRemoved(int)), this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
 
-	connect(&view_, SIGNAL(addItem(const QModelIndex&)),
-		&model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
-	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
-		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
+	connect(&view_, SIGNAL(addItem(QModelIndex const&)),
+		&model_, SLOT(onAddItem(QModelIndex const&)), Qt::UniqueConnection);
+	connect(&view_, SIGNAL(removeItem(QModelIndex const&)),
+		&model_, SLOT(onRemoveItem(QModelIndex const&)), Qt::UniqueConnection);
 }
-
 
 //-----------------------------------------------------------------------------
 // Function: ChannelsEditor::~ChannelsEditor()

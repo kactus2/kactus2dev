@@ -15,7 +15,7 @@
 // Function: ComponentInstanceWriter::ComponentInstanceWriter()
 //-----------------------------------------------------------------------------
 ComponentInstanceWriter::ComponentInstanceWriter(QObject* parent /* = 0 */) :
-DocumentWriter(parent)
+CommonItemsWriter(parent)
 {
 
 }
@@ -50,10 +50,7 @@ void ComponentInstanceWriter::writeComponentInstance(QXmlStreamWriter& writer,
 
     writeConfigurableVLNVReference(writer, instance->getComponentRef(), "ipxact:componentRef");
 
-    if (!instance->getVendorExtensions()->isEmpty())
-    {
-        writeVendorExtensions(writer, instance);
-    }
+    writeVendorExtensions(writer, instance);
 
     writer.writeEndElement(); // ipxact:componentInstance
 }

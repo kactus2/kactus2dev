@@ -81,23 +81,25 @@ void AddressSpaceScene::refresh()
     }
 
     QSharedPointer<MemoryMapBase> localMap = addrSpace_->getLocalMemoryMap();
-    QSharedPointer<QList<QSharedPointer<MemoryBlockBase> > > blocks = localMap->getMemoryBlocks();
-    foreach (QSharedPointer<MemoryBlockBase> block, *blocks)
+    if (!localMap.isNull() && !localMap->getMemoryBlocks().isNull())
     {
-        QSharedPointer<AddressBlock> addrBlock = block.dynamicCast<AddressBlock>();
-        if (addrBlock)
+        foreach (QSharedPointer<MemoryBlockBase> block, *localMap->getMemoryBlocks())
         {
-            LocalAddrBlockGraphItem* blockItem = new LocalAddrBlockGraphItem(addrBlock, 
-                addrSpace_->getWidth(), expressionParser_);
-            addItem(blockItem);
+            QSharedPointer<AddressBlock> addrBlock = block.dynamicCast<AddressBlock>();
+            if (addrBlock)
+            {
+                LocalAddrBlockGraphItem* blockItem = new LocalAddrBlockGraphItem(addrBlock, 
+                    addrSpace_->getWidth(), expressionParser_);
+                addItem(blockItem);
 
-            if (blockItem->getOffset() > addressSpaceEnd)
-            {
-                exceedingAddrBlocks_.insert(blockItem->getOffset(), blockItem);
-            }
-            else
-            {
-                addrBlockItems_.insert(blockItem->getOffset(), blockItem);
+                if (blockItem->getOffset() > addressSpaceEnd)
+                {
+                    exceedingAddrBlocks_.insert(blockItem->getOffset(), blockItem);
+                }
+                else
+                {
+                    addrBlockItems_.insert(blockItem->getOffset(), blockItem);
+                }
             }
         }
     }

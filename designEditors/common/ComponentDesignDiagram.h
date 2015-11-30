@@ -19,12 +19,12 @@
 #include <QUndoCommand>
 
 class ComponentItem;
-class GenericEditProvider;
-class GraphicsColumn;
-class DesignWidget;
-class LibraryInterface;
 class ConnectionEndpoint;
+class DesignWidget;
+class GraphicsColumn;
 class GraphicsConnection;
+class LibraryInterface;
+class IEditProvider;
 
 //-----------------------------------------------------------------------------
 // ComponentDesignDiagram is a base class for component designs.
@@ -38,7 +38,7 @@ public:
     /*!
      *  Constructor.
      */
-    ComponentDesignDiagram(LibraryInterface* lh, GenericEditProvider& editProvider, DesignWidget* parent = 0);
+    ComponentDesignDiagram(LibraryInterface* lh, QSharedPointer<IEditProvider> editProvider, DesignWidget* parent = 0);
 
 	//! \brief The destructor
 	virtual ~ComponentDesignDiagram();

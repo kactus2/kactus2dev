@@ -28,7 +28,10 @@ writeConstraint_(writeConstraint)
     addItem(tr("Set minimum and maximum limits"));
     addItem(tr("No constraints"));
 
-    setCurrentIndex(writeConstraint->getType());
+    if (writeConstraint)
+    {
+        setCurrentIndex(writeConstraint->getType());
+    }
 
     connect(this, SIGNAL(activated(int)), this, SLOT(onIndexChanged(int)), Qt::UniqueConnection);
 }
@@ -42,9 +45,20 @@ WriteValueConstraintComboBox::~WriteValueConstraintComboBox()
 }
 
 //-----------------------------------------------------------------------------
+// Function: WriteValueConstraintComboBox::setWriteValueConstraint()
+//-----------------------------------------------------------------------------
+void WriteValueConstraintComboBox::setWriteValueConstraint(QSharedPointer<WriteValueConstraint> constraint)
+{
+    writeConstraint_ = constraint;
+}
+
+//-----------------------------------------------------------------------------
 // Function: WriteValueConstraintComboBox::onIndexChanged()
 //-----------------------------------------------------------------------------
 void WriteValueConstraintComboBox::onIndexChanged(int newIndex)
 {
-    writeConstraint_->setType(static_cast<WriteValueConstraint::Type>(newIndex));
+    if (writeConstraint_)
+    {
+        writeConstraint_->setType(static_cast<WriteValueConstraint::Type>(newIndex));
+    }
 }

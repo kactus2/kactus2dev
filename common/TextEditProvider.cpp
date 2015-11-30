@@ -21,6 +21,22 @@ TextEditProvider::TextEditProvider(QPlainTextEdit& textEdit) :textEdit_(textEdit
 }
 
 //-----------------------------------------------------------------------------
+// Function: TextEditProvider::addCommand()
+//-----------------------------------------------------------------------------
+void TextEditProvider::addCommand(QSharedPointer<QUndoCommand> /*command*/)
+{
+    
+}
+
+//-----------------------------------------------------------------------------
+// Function: TextEditProvider::clear()
+//-----------------------------------------------------------------------------
+void TextEditProvider::clear()
+{
+
+}
+
+//-----------------------------------------------------------------------------
 // Function: ~TextEditProvider()
 //-----------------------------------------------------------------------------
 TextEditProvider::~TextEditProvider()

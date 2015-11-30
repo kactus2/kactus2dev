@@ -15,12 +15,13 @@
 #include <common/graphicsItems/ComponentItem.h>
 #include <designEditors/common/DesignDiagram.h>
 #include <designEditors/HWDesign/HWChangeCommands.h>
-#include <editors/ComponentEditor/common/ValueFormatter.h>
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/common/ModuleParameter.h>
 #include <IPXACTmodels/common/Enumeration.h>
+#include <IPXACTmodels/common/validators/ValueFormatter.h>
+
 #include <IPXACTmodels/Component/Choice.h>
 #include <IPXACTmodels/Component/View.h>
 #include <IPXACTmodels/Component/ComponentInstantiation.h>
@@ -44,7 +45,7 @@ editProvider_(0),
 configurableElementExpressionFormatter_(configurableElementExpressionFormatter),
 componentInstanceExpressionFormatter_(componentInstanceExpressionFormatter),
 componentInstanceExpressionParser_(componentInstanceExpressionParser),
-validator_(new ParameterValidator2014(configurableElementExpressionParser, parameterFinder)),
+validator_(0),
 designConfiguration_(new DesignConfiguration()),
 rootItems_()
 {
@@ -62,6 +63,10 @@ rootItems_()
 
     listParameterFinder->setParameterList(configurableElements_);
     setExpressionParser(configurableElementExpressionParser);
+
+    QSharedPointer<QList<QSharedPointer<Choice> > > noChoices(new QList<QSharedPointer<Choice> >());
+    validator_ = QSharedPointer<ParameterValidator2014>(
+        new ParameterValidator2014(configurableElementExpressionParser, noChoices));
 }
 
 //-----------------------------------------------------------------------------
@@ -75,7 +80,7 @@ ConfigurableElementsModel::~ConfigurableElementsModel()
 //-----------------------------------------------------------------------------
 // Function: ConfigurableElementsModel::setComponent()
 //-----------------------------------------------------------------------------
-void ConfigurableElementsModel::setComponent( ComponentItem* component ) 
+void ConfigurableElementsModel::setComponent( ComponentItem* component, QSharedPointer<IEditProvider> editProvider ) 
 {
 	Q_ASSERT(component);
 
@@ -88,10 +93,9 @@ void ConfigurableElementsModel::setComponent( ComponentItem* component )
 	component_ = component;
 
     // get the edit provider that manages the undo/redo stack
-    DesignDiagram* diagram = static_cast<DesignDiagram*>(component->scene());
-    editProvider_ = &diagram->getEditProvider();
+    editProvider_ = editProvider;
     	
-	currentElementValues_ = component->getConfigurableElements();
+	//currentElementValues_ = component->getComponentInstance()->getConfigurableElementValues();
 	setupConfigurableElements();
 
 	connect(component_, SIGNAL(confElementsChanged(const QMap<QString, QString>&)),
@@ -630,13 +634,12 @@ QString ConfigurableElementsModel::tooltipForIndex(QModelIndex const& index) con
         {
             QString context = component_->name();
 
-            QStringList errorList = validator_->findErrorsIn(
-                element.data(), context, component_->componentModel()->getChoices());
+            QVector<QString> errorList;
+            validator_->findErrorsIn(errorList, element, context);
 
             if (!errorList.isEmpty())
             {
-                QString errors = errorList.join("\n");
-                return errors;
+                return QStringList(errorList.toList()).join("\n");
             }
         }
         else if (index.column() == ConfigurableElementsColumns::DEFAULT_VALUE)
@@ -665,7 +668,7 @@ bool ConfigurableElementsModel::validateIndex(QModelIndex const& index) const
         }
         else if (index.column() == ConfigurableElementsColumns::VALUE)
         {
-            return validator_->hasValidValue(element.data(), component_->componentModel()->getChoices());
+            return validator_->hasValidValue(element.data());
         }
     }
 

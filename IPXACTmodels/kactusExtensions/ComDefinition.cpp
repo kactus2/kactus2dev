@@ -173,32 +173,25 @@ void ComDefinition::write(QXmlStreamWriter& writer)
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComDefinition::isValid()
+// Function: ComDefinition::findErrors()
 //-----------------------------------------------------------------------------
-bool ComDefinition::isValid(QStringList& errorList) const
+void ComDefinition::findErrors(QVector<QString>& errorList) const
 {
     QString thisIdentifier(QObject::tr("the containing COM definition"));
-    bool valid = true;
 
     if (getVlnv().isValid(errorList, thisIdentifier))
-    {
-        valid = false;
-    }
-    else
     {
         thisIdentifier = QObject::tr("COM definition '%1'").arg(getVlnv().toString());
     }
 
     // Check for multiple definitions of same data type.
     QStringList dataTypeNames;
-
     foreach (QString const& dataType, transferTypes_)
     {
         if (dataTypeNames.contains(dataType))
         {
-            errorList.append(QObject::tr("Data type '%1' defined multiple times"
-                                         "in '%2'").arg(dataType, thisIdentifier));
-            valid = false;
+            errorList.append(QObject::tr("Data type '%1' defined multiple times in '%2'").arg(dataType, 
+                thisIdentifier));
         }
         else
         {
@@ -208,33 +201,26 @@ bool ComDefinition::isValid(QStringList& errorList) const
 
     // Validate the properties.
     QStringList propertyNames;
-
-    foreach (QSharedPointer<ComProperty> prop, properties_)
+    foreach (QSharedPointer<ComProperty> comProperty, properties_)
     {
-        if (propertyNames.contains(prop->name()))
+        if (propertyNames.contains(comProperty->name()))
         {
-            errorList.append(QObject::tr("Property '%1' defined multiple times"
-                                         "in %2").arg(prop->name(), thisIdentifier));
-            valid = false;
+            errorList.append(QObject::tr("Property '%1' defined multiple times in %2").arg(comProperty->name(),
+                thisIdentifier));
         }
         else
         {
-            propertyNames.append(prop->name());
+            propertyNames.append(comProperty->name());
         }
 
-        if (!prop->isValid(errorList, thisIdentifier))
-        {
-            valid = false;
-        }
+        comProperty->findErrors(errorList, thisIdentifier);
     }
-
-    return valid;
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComDefinition::isValid()
+// Function: ComDefinition::validate()
 //-----------------------------------------------------------------------------
-bool ComDefinition::isValid() const
+bool ComDefinition::validate() const
 {
     if (!getVlnv().isValid())
     {
@@ -270,7 +256,7 @@ bool ComDefinition::isValid() const
             propertyNames.append(prop->name());
         }
 
-        if (!prop->isValid())
+        if (!prop->validate())
         {
             return false;
         }

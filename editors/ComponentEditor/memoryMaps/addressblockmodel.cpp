@@ -203,7 +203,7 @@ QVariant AddressBlockModel::data(QModelIndex const& index, int role) const
             QSharedPointer<Register> reg = items_->at(index.row()).dynamicCast<Register>();
 
             if (index.column() != AddressBlockColumns::IS_PRESENT && reg &&
-                parseExpressionToDecimal(reg->getIsPresent()).toInt() != 1)
+                (!reg->getIsPresent().isEmpty() && parseExpressionToDecimal(reg->getIsPresent()).toInt() != 1))
             {
                 return QColor("gray");
             }

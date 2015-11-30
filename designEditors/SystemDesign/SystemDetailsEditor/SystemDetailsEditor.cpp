@@ -308,7 +308,7 @@ void SystemDetailsEditor::applyHW()
             desConf->setVlnv(desConfVLNV);
             desConf->setDesignRef(designVLNV);
 
-            QSharedPointer<Design> design = designWidget_->getDiagram()->createDesign(designVLNV);
+            QSharedPointer<Design> design = designWidget_->getDiagram()->getDesign();
 
             handler_->writeModelToFile(dialog.getPath(), design);
             handler_->writeModelToFile(dialog.getPath(), desConf);
@@ -463,7 +463,8 @@ void SystemDetailsEditor::exportSW()
     desConf->setVlnv(desConfVLNV);
     desConf->setDesignRef(designVLNV);
 
-    QSharedPointer<Design> design = designWidget_->getDiagram()->createDesign(designVLNV);
+    QSharedPointer<Design> design = designWidget_->getDiagram()->getDesign();
+    design->setVlnv(designVLNV);
 
     // Export only SW instances.
     design->setComponentInstances(QSharedPointer<QList<QSharedPointer<ComponentInstance> > >());

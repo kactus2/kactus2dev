@@ -23,7 +23,7 @@ SelectItemTypeDialog::SelectItemTypeDialog(unsigned int allowedItems, QWidget* p
     componentButton_(new QRadioButton(allowedItemsGroup_)),
     dialogButtons_(new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this))
 {
-    Q_ASSERT(allowedItems != CIT_NONE);
+    Q_ASSERT(allowedItems != ColumnTypes::NONE);
 
     setWindowTitle(tr("Add Item"));
 
@@ -46,17 +46,17 @@ SelectItemTypeDialog::~SelectItemTypeDialog()
 //-----------------------------------------------------------------------------
 // Function: getSelectedItemType()
 //-----------------------------------------------------------------------------
-ColumnItemType SelectItemTypeDialog::getSelectedItemType() const
+ColumnTypes::ColumnItemType SelectItemTypeDialog::getSelectedItemType() const
 {
-    ColumnItemType type = CIT_NONE;
+    ColumnTypes::ColumnItemType type = ColumnTypes::NONE;
 
     if (interfaceButton_->isChecked())
     {
-        type = CIT_INTERFACE;
+        type = ColumnTypes::INTERFACE;
     }
     else if (componentButton_->isChecked())
     {
-        type = CIT_COMPONENT;
+        type = ColumnTypes::COMPONENT;
     }
     else
     {
@@ -87,17 +87,17 @@ void SelectItemTypeDialog::setComponentButtonLabel()
 {
     QString componentButtonLabel = "";
 
-    if (allowedItems_ & CIT_COMPONENT)
+    if (allowedItems_ & ColumnTypes::COMPONENT)
     {
         componentButtonLabel += tr("Component/");
     }
 
-    if (allowedItems_ & CIT_CHANNEL)
+    if (allowedItems_ & ColumnTypes::CHANNEL)
     {
         componentButtonLabel += tr("Channel/");
     }
 
-    if (allowedItems_ & CIT_BRIDGE)
+    if (allowedItems_ & ColumnTypes::BRIDGE)
     {
         componentButtonLabel += tr("Bridge/");
     }

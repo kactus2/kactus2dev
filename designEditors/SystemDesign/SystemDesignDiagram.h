@@ -181,21 +181,12 @@ public:
      *      @param [in] parent        The parent widget.
      */
     SystemDesignDiagram(bool onlySW, LibraryInterface* lh,
-                        GenericEditProvider& editProvider, SystemDesignWidget* parent = 0);
+                        QSharedPointer<IEditProvider> editProvider, SystemDesignWidget* parent = 0);
 
     /*!
      *  Destructor.
      */
     ~SystemDesignDiagram();
-
-    /*! 
-     *  Creates a design based on the contents in the diagram.
-     *
-     *      @param [in] vlnv The vlnv for the design.
-     *
-     *      @return The created design.
-     */
-    virtual QSharedPointer<Design> createDesign(VLNV const& vlnv) const;
 
     /*!
      *  Reflects the changes in the design to the top-level component.

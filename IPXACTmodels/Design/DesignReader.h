@@ -66,7 +66,7 @@ private:
      *      @param [in] designNode  The XML description of the design.
      *      @param [in] newDesign   The new design item.
      */
-    void parseComponentInstances(const QDomNode& designNode, QSharedPointer<Design> newDesign) const;
+    void parseComponentInstances(QDomNode const& designNode, QSharedPointer<Design> newDesign) const;
 
     /*!
      *  Reads the interconnections from XML to design.
@@ -74,7 +74,7 @@ private:
      *      @param [in] designNode  The XML description of the design.
      *      @param [in] newDesign   The new design item.
      */
-    void parseInterconnections(const QDomNode& designNode, QSharedPointer<Design> newDesign) const;
+    void parseInterconnections(QDomNode const& designNode, QSharedPointer<Design> newDesign) const;
 
     /*!
      *  Reads a single interconnection from XML.
@@ -82,21 +82,15 @@ private:
      *      @param [in] interconnectionNode     The XML description of the interconnection.
      *      @param [in] newDesign               The new design item.
      */
-    void parseSingleInterconnection(const QDomNode& interconnectionNode, QSharedPointer<Design> newDesign) const;
+    void parseSingleInterconnection(QDomNode const& interconnectionNode, QSharedPointer<Design> newDesign) const;
 
     /*!
      *  Reads an interconnection between components.
      *
      *      @param [in] interconnectionNode     The XML description of the interconnection.
      *      @param [in] newDesign               The new design item.
-     *      @param [in] name                    The name of the interconnection.
-     *      @param [in] displayName             The display name of the interconnection.
-     *      @param [in] description             The description of the interconnection.
-     *      @param [in] isPresent               The presence of the interconnection.
      */
-    void parseComponentInterconnection(const QDomNode& interconnectionNode, QSharedPointer<Design> newDesign,
-        QString const& name, QString const& displayName, QString const& description, QString const& isPresent)
-        const;
+    void parseComponentInterconnection(QDomNode const& interconnectionNode, QSharedPointer<Design> newDesign) const;
 
     /*!
      *  Reads interconnection extensions.
@@ -113,7 +107,7 @@ private:
      *      @param [in] interfaceNode   The XML description of the active interface.
      *      @param [in] newInterface    The new interface item.
      */
-    void parseActiveInterface(const QDomNode& interfaceNode, QSharedPointer<ActiveInterface> newInterface) const;
+    void parseActiveInterface(QDomNode const& interfaceNode, QSharedPointer<ActiveInterface> newInterface) const;
     
     /*!
      *  Reads a hierarchical interface.
@@ -121,7 +115,7 @@ private:
      *      @param [in] interfaceNode   The XML description of the hierarchical interface.
      *      @param [in] newInterface    The new interface item.
      */
-    void parseHierInterface(const QDomNode& interfaceNode, QSharedPointer<HierInterface> newInterface) const;
+    void parseHierInterface(QDomNode const& interfaceNode, QSharedPointer<HierInterface> newInterface) const;
 
     /*!
      *  Reads interface extensions.
@@ -137,14 +131,8 @@ private:
      *
      *      @param [in] monitorNode     The XML description of the monitor interconnection.
      *      @param [in] newDesign       The new design item.
-     *      @param [in] name            The name of the interconnection.
-     *      @param [in] displayName     The display name of the interconnection.
-     *      @param [in] description     The description of the interconnection.
-     *      @param [in] isPresent       The presence of the interconnection.
      */
-    void parseMonitorInterconnection(const QDomNode& monitorNode, QSharedPointer<Design> newDesign,
-        QString const& name, QString const& displayName, QString const& description, QString const& isPresent)
-        const;
+    void parseMonitorInterconnection(QDomNode const& monitorNode, QSharedPointer<Design> newDesign) const;
 
     /*!
      *  Reads a monitor interface.
@@ -152,7 +140,7 @@ private:
      *      @param [in] interfaceNode   The XML description of the monitor interface.
      *      @param [in] newInterface    The new interface item.
      */
-    void parseMonitorInterface(const QDomNode& interfaceNode, QSharedPointer<MonitorInterface> newInterface) const;
+    void parseMonitorInterface(QDomNode const& interfaceNode, QSharedPointer<MonitorInterface> newInterface) const;
 
     /*!
      *  Reads the ad-hoc connections.
@@ -160,7 +148,7 @@ private:
      *      @param [in] designNode  The XML description of the design.
      *      @param [in] newDesign   The new design item.
      */
-    void parseAdHocConnections(const QDomNode& designNode, QSharedPointer<Design> newDesign) const;
+    void parseAdHocConnections(QDomNode const& designNode, QSharedPointer<Design> newDesign) const;
 
     /*!
      *  Reads a single ad-hoc connection.
@@ -193,7 +181,7 @@ private:
      *
      *      @param [in] portReferenceNode   The XML description of the port.
      */
-    QSharedPointer<PortReference> createPortReference(const QDomNode& portReferenceNode) const;
+    QSharedPointer<PortReference> createPortReference(QDomNode const& portReferenceNode) const;
 
     /*!
      *  Reads ad-hoc connection extensions.
@@ -219,6 +207,8 @@ private:
      *      @param [in] design      The new design item.
      */
     void parseColumnLayout(QDomNode const& columnNode, QSharedPointer<Design> design) const;
+
+    void parseRoutes(QDomElement const& routesElement, QSharedPointer<Design> design) const;
 
     /*!
      *  Reads the software instances (Kactus2 extension).
@@ -267,6 +257,15 @@ private:
      *      @param [in] design                  The new design item.
      */
     void parseHierComConnections(QDomNode const& hierComConnectionsNode, QSharedPointer<Design> design) const;
+
+    /*!
+     *  Reads the interface graphics extensions for the design.
+     *
+     *      @param [in] extensionsNode      The XML description of the design vendor extensions.
+     *      @param [in] design              The new design item.
+     */
+    void parseInterfaceGraphics(QDomElement const& extensionsNode, QSharedPointer<Design> design) const;
+
 };
 
 #endif // DESIGNREADER_H

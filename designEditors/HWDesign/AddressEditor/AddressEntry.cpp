@@ -11,12 +11,13 @@
 
 #include "AddressEntry.h"
 
-#include <designEditors/common/DesignDiagram.h>
-#include <common/GenericEditProvider.h>
+#include <common/IEditProvider.h>
+
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/GraphicsConnection.h>
 
 #include <designEditors/HWDesign/BusPortItem.h>
+#include <designEditors/common/DesignDiagram.h>
 #include <designEditors/HWDesign/HWChangeCommands.h>
 
 #include <IPXACTmodels/Component/BusInterface.h>

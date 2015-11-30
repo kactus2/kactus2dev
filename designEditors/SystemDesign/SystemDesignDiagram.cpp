@@ -41,6 +41,7 @@
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+
 #include <IPXACTmodels/kactusExtensions/SWInstance.h>
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Design/Design.h>
@@ -69,12 +70,13 @@ Q_DECLARE_METATYPE(SystemDesignDiagram::ColumnCollectionCopyData)
 //-----------------------------------------------------------------------------
 // Function: SystemDesignDiagram::SystemDesignDiagram()
 //-----------------------------------------------------------------------------
-SystemDesignDiagram::SystemDesignDiagram(bool onlySW, LibraryInterface* lh, GenericEditProvider& editProvider,
-                                         SystemDesignWidget* parent):
-ComponentDesignDiagram(lh, editProvider, parent),
-onlySW_(onlySW),
-dragType_(DRAG_TYPE_NONE),
-dragEndPoint_(0)
+SystemDesignDiagram::SystemDesignDiagram(bool onlySW, LibraryInterface* lh,
+                                         QSharedPointer<IEditProvider> editProvider,
+                                         SystemDesignWidget* parent)
+    : ComponentDesignDiagram(lh, editProvider, parent),
+      onlySW_(onlySW),
+      dragType_(DRAG_TYPE_NONE),
+      dragEndPoint_(0)
 {
 
 }
@@ -90,10 +92,10 @@ SystemDesignDiagram::~SystemDesignDiagram()
 //-----------------------------------------------------------------------------
 // Function: SystemDesignDiagram::createDesign()
 //-----------------------------------------------------------------------------
-QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
+/*QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
 {
     QSharedPointer<Design> design = DesignDiagram::createDesign(vlnv);
-
+    
     QSharedPointer<QList<QSharedPointer<ComponentInstance> > > instances(new QList<QSharedPointer<ComponentInstance> >());
     QList<QSharedPointer<SWInstance> > swInstances;
     QList<QSharedPointer<ApiInterconnection> > apiDependencies;
@@ -326,7 +328,7 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
     design->setColumns(columns);
 
     return design;
-}
+}*/
 
 //-----------------------------------------------------------------------------
 // Function: SystemDesignDiagram::updateHierComponent()
@@ -343,8 +345,8 @@ void SystemDesignDiagram::addColumn(QSharedPointer<ColumnDesc> desc)
 {
     SystemColumn* column = new SystemColumn(desc, getLayout().data());
 
-    QSharedPointer<QUndoCommand> cmd(new GraphicsColumnAddCommand(getLayout().data(), column));
-    getEditProvider().addCommand(cmd);
+    QSharedPointer<QUndoCommand> cmd(new GraphicsColumnAddCommand(getLayout().data(), column, getDesign()));
+    getEditProvider()->addCommand(cmd);
     cmd->redo();
 }
 
@@ -430,7 +432,7 @@ void SystemDesignDiagram::onPasteAction()
 
                     QSharedPointer<QUndoCommand> parentCmd(new QUndoCommand());
                     pasteInterfaces(collection, targetComp, parentCmd.data());
-                    getEditProvider().addCommand(parentCmd);
+                    getEditProvider()->addCommand(parentCmd);
 
                     // Update sidebar view.
                     emit componentSelected(targetComp);
@@ -451,11 +453,11 @@ void SystemDesignDiagram::onPasteAction()
                     // Find a valid column for the interfaces.
                     IGraphicsItemStack* stack = getLayout()->findColumnAt(contextMenuPosition());
 
-                    if (stack && stack->getContentType() != COLUMN_CONTENT_IO)
+                    if (stack && stack->getContentType() != ColumnTypes::IO)
                     {
                         foreach (GraphicsColumn* col, getLayout()->getColumns())
                         {
-                            if (col->getContentType() == COLUMN_CONTENT_IO)
+                            if (col->getContentType() == ColumnTypes::IO)
                             {
                                 stack = col;
                                 break;
@@ -469,7 +471,7 @@ void SystemDesignDiagram::onPasteAction()
 
                         QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
                         pasteInterfaces(collection, stack, cmd.data(), true);
-                        getEditProvider().addCommand(cmd);
+                        getEditProvider()->addCommand(cmd);
                     }
                 }
                 // Allow pasting components to either empty design space (column) or to parent HW.
@@ -493,7 +495,7 @@ void SystemDesignDiagram::onPasteAction()
 
                         QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
                         pasteSWInstances(collection, stack, cmd.data(), true);
-                        getEditProvider().addCommand(cmd);
+                        getEditProvider()->addCommand(cmd);
                         cmd->redo();
                     }
                 }
@@ -507,12 +509,12 @@ void SystemDesignDiagram::onPasteAction()
                     {
                         SystemColumn* column = new SystemColumn(columnData.desc, getLayout().data());
 
-                        new GraphicsColumnAddCommand(getLayout().data(), column, parentCmd.data());
+                        new GraphicsColumnAddCommand(getLayout().data(), column, getDesign(), parentCmd.data());
                         pasteSWInstances(columnData.components, column, parentCmd.data(), false);
                         pasteInterfaces(columnData.interfaces, column, parentCmd.data(), false);
                     }
 
-                    getEditProvider().addCommand(parentCmd);
+                    getEditProvider()->addCommand(parentCmd);
                     parentCmd->redo();
                 }
             }
@@ -579,7 +581,7 @@ void SystemDesignDiagram::onAddToLibraryAction()
 
             // Create an undo command.
             QSharedPointer<ComponentPacketizeCommand> cmd(new ComponentPacketizeCommand(comp, vlnv));
-            getEditProvider().addCommand(cmd);
+            getEditProvider()->addCommand(cmd);
             cmd->redo();
 
             // Ask the user if he wants to complete the component.
@@ -672,7 +674,7 @@ void SystemDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
                 {
                     columnWidth = SW_COLUMN_WIDTH;
 
-                    if (dialog.getContentType() == COLUMN_CONTENT_IO)
+                    if (dialog.getContentType() == ColumnTypes::IO)
                     {
                         columnWidth = IO_COLUMN_WIDTH;
                     }
@@ -688,7 +690,7 @@ void SystemDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
                 }
 
                 QSharedPointer<QUndoCommand> cmd(new GraphicsColumnChangeCommand(column, desc));
-                getEditProvider().addCommand(cmd);
+                getEditProvider()->addCommand(cmd);
                 cmd->redo();
             }
         }
@@ -802,7 +804,7 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
         QSharedPointer<Component> comp = libComp.staticCast<Component>();
 
         // Set the instance name for the new component instance.
-        QString instanceName = createInstanceName(comp);
+        QString instanceName = createInstanceName(comp->getVlnv().getName());
 
         // Act based on the selected drop action.
         if (event->dropAction() == Qt::CopyAction)
@@ -846,7 +848,7 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
                 connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
                     this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 
-                getEditProvider().addCommand(cmd);
+                getEditProvider()->addCommand(cmd);
                 cmd->redo();
             }
         }
@@ -884,7 +886,7 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
             connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
                 this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 
-            getEditProvider().addCommand(cmd);
+            getEditProvider()->addCommand(cmd);
             cmd->redo();
         }
     }
@@ -953,7 +955,8 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
             desConf->setVlnv(desConfVLNV);
             desConf->setDesignRef(designVLNV);
 
-            QSharedPointer<Design> design = createDesign(designVLNV);
+            QSharedPointer<Design> design = getDesign();
+            design->setVlnv(designVLNV);
 
             getLibraryInterface()->writeModelToFile(dialog.getPath(), design);
             getLibraryInterface()->writeModelToFile(dialog.getPath(), desConf);
@@ -1005,7 +1008,7 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
 
             // Create an undo command.
             QSharedPointer<QUndoCommand> cmd(new TypeDefinitionChangeCommand(dragEndPoint_, oldType));
-            getEditProvider().addCommand(cmd);
+            getEditProvider()->addCommand(cmd);
 
             dragEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_OFF);
             dragEndPoint_ = 0;
@@ -1378,22 +1381,18 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
 {
     if (design->getColumns().isEmpty())
     {
-        QList<QSharedPointer<ColumnDesc> > columns;
-
         if (onlySW_)
         {
-            columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("Low-level", COLUMN_CONTENT_COMPONENTS, 0, SW_COLUMN_WIDTH)));
-            columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("Middle-level", COLUMN_CONTENT_COMPONENTS, 0, SW_COLUMN_WIDTH)));
-            columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("High-level", COLUMN_CONTENT_COMPONENTS, 0, SW_COLUMN_WIDTH)));
-            columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("Out", COLUMN_CONTENT_IO, 0, IO_COLUMN_WIDTH)));
+            design->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("Low-level", ColumnTypes::COMPONENTS, 0, SW_COLUMN_WIDTH)));
+            design->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("Middle-level", ColumnTypes::COMPONENTS, 0, SW_COLUMN_WIDTH)));
+            design->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("High-level", ColumnTypes::COMPONENTS, 0, SW_COLUMN_WIDTH)));
+            design->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("Out", ColumnTypes::IO, 0, IO_COLUMN_WIDTH)));
         }
         else
         {
-            columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("SW Components", COLUMN_CONTENT_COMPONENTS, 0, SYSTEM_COLUMN_WIDTH)));
-            columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("SW Components", COLUMN_CONTENT_COMPONENTS, 0, SYSTEM_COLUMN_WIDTH)));
+            design->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("SW Components", ColumnTypes::COMPONENTS, 0, SYSTEM_COLUMN_WIDTH)));
+            design->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("SW Components", ColumnTypes::COMPONENTS, 0, SYSTEM_COLUMN_WIDTH)));
         }
-
-        design->setColumns(columns);
     }
 
     foreach(QSharedPointer<ColumnDesc> desc, design->getColumns())
@@ -2134,7 +2133,6 @@ void SystemDesignDiagram::importDesign(QSharedPointer<Design> design, IGraphicsI
         
         // Add the instance to the specified stack.
         stack->addItem(item);
-        addInstanceName(instance->getInstanceName());
     }
 
     // Import API dependencies.
@@ -2335,7 +2333,7 @@ void SystemDesignDiagram::addTopLevelInterface(GraphicsColumn* column, QPointF c
         ++cur;
     }
 
-    getEditProvider().addCommand(cmd);
+    getEditProvider()->addCommand(cmd);
 }
 
 //-----------------------------------------------------------------------------
@@ -2394,7 +2392,7 @@ void SystemDesignDiagram::draftAt(QPointF const& clickedPosition)
             }
 
             // Add the command to the edit stack.
-            getEditProvider().addCommand(cmd);
+            getEditProvider()->addCommand(cmd);
         }
     }
     else if (item == 0 || item->type() == HWMappingItem::Type)
@@ -2412,7 +2410,7 @@ void SystemDesignDiagram::draftAt(QPointF const& clickedPosition)
 
         if (stack != 0)
         {
-            if (stack->getContentType() == COLUMN_CONTENT_COMPONENTS)
+            if (stack->getContentType() == ColumnTypes::COMPONENTS)
             {
                 // Determine an unused name for the component instance.
                 QString name = createInstanceName("instance");
@@ -2437,10 +2435,10 @@ void SystemDesignDiagram::draftAt(QPointF const& clickedPosition)
                 connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
                     this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 
-                getEditProvider().addCommand(cmd);
+                getEditProvider()->addCommand(cmd);
                 cmd->redo();
             }
-            else if (stack->getContentType() == COLUMN_CONTENT_IO)
+            else if (stack->getContentType() == ColumnTypes::IO)
             {
                 GraphicsColumn* column = dynamic_cast<GraphicsColumn*>(stack);
                 if (column)
@@ -2471,7 +2469,7 @@ void SystemDesignDiagram::replace(ComponentItem* destComp, ComponentItem* source
         connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
             this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 
-        getEditProvider().addCommand(cmd);
+        getEditProvider()->addCommand(cmd);
         cmd->redo();
     }
 }

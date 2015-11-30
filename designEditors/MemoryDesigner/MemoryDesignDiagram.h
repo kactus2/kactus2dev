@@ -50,7 +50,7 @@ public:
      *      @param [in] editProvider  The edit provider.
      *      @param [in] parent        The parent widget.
      */    
-    MemoryDesignDiagram(LibraryInterface* lh, GenericEditProvider& editProvider, MemoryDesignWidget* parent = 0);
+    MemoryDesignDiagram(LibraryInterface* lh, QSharedPointer<IEditProvider> editProvider, MemoryDesignWidget* parent = 0);
 
     /*!
      *  Destructor.

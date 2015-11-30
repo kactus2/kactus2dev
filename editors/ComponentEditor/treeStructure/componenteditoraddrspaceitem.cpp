@@ -37,9 +37,7 @@ ComponentEditorAddrSpaceItem::ComponentEditorAddrSpaceItem(QSharedPointer<Addres
 														   ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 addrSpace_(addrSpace),
-localMemMap_(addrSpace->getLocalMemoryMap()),
-memoryBlocks_(addrSpace->getLocalMemoryMap()->getMemoryBlocks()),
-graphItem_(NULL),
+graphItem_(0),
 localMemMapVisualizer_(new MemoryMapsVisualizer()),
 addrSpaceVisualizer_(new AddressSpaceVisualizer(addrSpace, expressionParser)),
 expressionParser_(expressionParser)
@@ -50,27 +48,33 @@ expressionParser_(expressionParser)
 
 	setObjectName(tr("ComponentEditorAddrSpaceItem"));
 
-    graphItem_ = new LocalMemoryMapGraphItem(addrSpace_, localMemMap_, expressionParser_);
-	localMemMapVisualizer_->addMemoryMapItem(graphItem_);
-	graphItem_->refresh();
-
-	foreach (QSharedPointer<MemoryBlockBase> block, *memoryBlocks_)
+    if (addrSpace->getLocalMemoryMap())
     {
-		// if the item is for address block then create child for it
-		QSharedPointer<AddressBlock> addrBlock = block.dynamicCast<AddressBlock>();
-		if (addrBlock)
-        {
-            QSharedPointer<ComponentEditorAddrBlockItem> addrBlockItem
-                (new ComponentEditorAddrBlockItem(addrBlock, model, libHandler, component, referenceCounter_,
-                parameterFinder_, expressionFormatter_,expressionParser_, this));
-            
-            int addressUnitBits = expressionParser_->parseExpression(addrSpace_->getAddressUnitBits()).toInt();
-            addrBlockItem->addressUnitBitsChanged(addressUnitBits);
+        graphItem_ = new LocalMemoryMapGraphItem(addrSpace_, addrSpace->getLocalMemoryMap(), expressionParser_);
+        localMemMapVisualizer_->addMemoryMapItem(graphItem_);
+        graphItem_->refresh();
 
-			addrBlockItem->setVisualizer(localMemMapVisualizer_);
-			childItems_.append(addrBlockItem);
-		}
-	}
+        if (addrSpace->getLocalMemoryMap())
+        {
+            foreach (QSharedPointer<MemoryBlockBase> block, *addrSpace->getLocalMemoryMap()->getMemoryBlocks())
+            {
+                // if the item is for address block then create child for it
+                QSharedPointer<AddressBlock> addrBlock = block.dynamicCast<AddressBlock>();
+                if (addrBlock)
+                {
+                    QSharedPointer<ComponentEditorAddrBlockItem> addrBlockItem
+                        (new ComponentEditorAddrBlockItem(addrBlock, model, libHandler, component, 
+                        referenceCounter_, parameterFinder_, expressionFormatter_,expressionParser_, this));
+
+                    int addressUnitBits = expressionParser_->parseExpression(addrSpace_->getAddressUnitBits()).toInt();
+                    addrBlockItem->addressUnitBitsChanged(addressUnitBits);
+
+                    addrBlockItem->setVisualizer(localMemMapVisualizer_);
+                    childItems_.append(addrBlockItem);
+                }
+            }
+        }        
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -81,12 +85,12 @@ ComponentEditorAddrSpaceItem::~ComponentEditorAddrSpaceItem()
 	if (localMemMapVisualizer_)
     {
 		delete localMemMapVisualizer_;
-		localMemMapVisualizer_ = NULL;
+		localMemMapVisualizer_ = 0;
 	}
 	if (addrSpaceVisualizer_)
     {
 		delete addrSpaceVisualizer_;
-		addrSpaceVisualizer_ = NULL;
+		addrSpaceVisualizer_ = 0;
 	}
 }
 
@@ -143,7 +147,14 @@ QString ComponentEditorAddrSpaceItem::getTooltip() const
 //-----------------------------------------------------------------------------
 void ComponentEditorAddrSpaceItem::createChild(int index)
 {
-    QSharedPointer<MemoryBlockBase> block = memoryBlocks_->at(index);
+    if (!graphItem_)
+    {
+        graphItem_ = new LocalMemoryMapGraphItem(addrSpace_, addrSpace_->getLocalMemoryMap(), expressionParser_);
+        localMemMapVisualizer_->addMemoryMapItem(graphItem_);
+        graphItem_->refresh();
+    }
+
+    QSharedPointer<MemoryBlockBase> block = addrSpace_->getLocalMemoryMap()->getMemoryBlocks()->at(index);
 	QSharedPointer<AddressBlock> addrBlock = block.dynamicCast<AddressBlock>();
 	if (addrBlock)
     {
@@ -152,8 +163,8 @@ void ComponentEditorAddrSpaceItem::createChild(int index)
             parameterFinder_, expressionFormatter_, expressionParser_, this));
 		addressBlockItem->setLocked(locked_);
 
-        int adddressUnitBits = expressionParser_->parseExpression(addrSpace_->getAddressUnitBits()).toInt();
-        addressBlockItem->addressUnitBitsChanged(adddressUnitBits);
+        int addressUnitBits = expressionParser_->parseExpression(addrSpace_->getAddressUnitBits()).toInt();
+        addressBlockItem->addressUnitBitsChanged(addressUnitBits);
 
 		if (localMemMapVisualizer_)
         {

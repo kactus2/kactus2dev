@@ -37,7 +37,7 @@ QString Range::getLeft() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: v::getRight()
+// Function: Range::getRight()
 //-----------------------------------------------------------------------------
 QString Range::getRight() const
 {

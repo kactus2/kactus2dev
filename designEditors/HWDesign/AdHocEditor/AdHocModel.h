@@ -15,9 +15,10 @@
 #include <QAbstractTableModel>
 #include <QSharedPointer>
 
-class Port;
-class GenericEditProvider;
 class AdHocEnabled;
+class GenericEditProvider;
+class IEditProvider;
+class Port;
 
 //-----------------------------------------------------------------------------
 //! Table model for visualizing ad-hoc visibility for component ports.
@@ -46,7 +47,7 @@ public:
      *
      *      @param [in] dataSource The data source.
      */
-    void setDataSource(AdHocEnabled* dataSource);
+    void setDataSource(AdHocEnabled* dataSource, QSharedPointer<IEditProvider> editProvider);
 
 	/*!
      *  Returns the number of rows in the model.
@@ -127,6 +128,8 @@ private:
 
     //! The component whose ad-hoc port visibility is being edited.
     AdHocEnabled* dataSource_;
+
+     QSharedPointer<IEditProvider> editProvider_;
 
 	//! The table that is displayed to the user.
     QSharedPointer<QList<QSharedPointer<Port> > > table_;

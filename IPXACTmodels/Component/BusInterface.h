@@ -245,7 +245,7 @@ public:
 	 *
 	 *      @return A pointer to the master-instance of the interface.
 	 */
-	QSharedPointer<MasterInterface> getMaster();
+	QSharedPointer<MasterInterface> getMaster() const;
 
 	/*!
      *  Set the master element for this interface.
@@ -259,7 +259,7 @@ public:
 	 *
 	 *      @return A pointer to the monitor interface.
 	 */
-	QSharedPointer<MonitorInterface> getMonitor();
+	QSharedPointer<MonitorInterface> getMonitor() const;
 
 	/*!
      *  Set the monitor element for this interface.
@@ -273,7 +273,7 @@ public:
 	 *
 	 *      @return A pointer to the slave instance of the interface.
 	 */
-	QSharedPointer<SlaveInterface> getSlave();
+	QSharedPointer<SlaveInterface> getSlave() const;
 
 	/*!
      *  Set the slave element for this interface.
@@ -301,7 +301,7 @@ public:
 	 *
 	 *      @return A pointer to the mirroredSlave element of this interface.
 	 */
-	QSharedPointer<MirroredSlaveInterface> getMirroredSlave();
+	QSharedPointer<MirroredSlaveInterface> getMirroredSlave() const;
 
 	/*!
      *  Set the mirroredSlave element for this interface.

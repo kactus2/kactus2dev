@@ -136,14 +136,10 @@ QVariant SWOffPageConnectorItem::itemChange(GraphicsItemChange change, const QVa
 {
     if (change == ItemScenePositionHasChanged)
     {
-        // Check if the updates are not disabled.
-        if (encompassingComp() == 0 || !encompassingComp()->isConnectionUpdateDisabled())
+        // Update the connections.
+        foreach (GraphicsConnection* interconnection, getConnections())
         {
-            // Update the connections.
-            foreach (GraphicsConnection* interconnection, getConnections())
-            {
-                interconnection->updatePosition();
-            }
+            interconnection->updatePosition();
         }
     }
 
@@ -241,7 +237,7 @@ void SWOffPageConnectorItem::setDirection(QVector2D const& dir)
 //-----------------------------------------------------------------------------
 // Function: getDirection()
 //-----------------------------------------------------------------------------
-QVector2D const& SWOffPageConnectorItem::getDirection() const
+QVector2D SWOffPageConnectorItem::getDirection() const
 {
     return parent_->getDirection();
 }

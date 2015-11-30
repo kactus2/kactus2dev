@@ -16,8 +16,7 @@
 //-----------------------------------------------------------------------------
 // Function: FileDependencySourceEditor::FileDependencySourceEditor()
 //-----------------------------------------------------------------------------
-FileDependencySourceEditor::FileDependencySourceEditor(QString const& basePath,
-                                                       QStringList const& sourceDirs,
+FileDependencySourceEditor::FileDependencySourceEditor(QString const& basePath, QStringList const& sourceDirs,
                                                        QWidget* parent)
     : QGroupBox(tr("Directories"), parent)
 {
@@ -71,7 +70,7 @@ void FileDependencySourceEditor::addSource()
 {
     QString newDirectory = QFileDialog::getExistingDirectory(this, tr("Choose Source Directory"), basePath_);
 
-    if (newDirectory.size() < 1)
+    if (newDirectory.isEmpty())
     {
         return;
     }
@@ -79,7 +78,7 @@ void FileDependencySourceEditor::addSource()
     newDirectory = QFileInfo(newDirectory).filePath();
     newDirectory = General::getRelativePath(basePath_, newDirectory);
 
-    if (newDirectory.size() < 1)
+    if (newDirectory.isEmpty())
     {
         newDirectory = ".";
     }
@@ -102,8 +101,7 @@ void FileDependencySourceEditor::addSource()
 //-----------------------------------------------------------------------------------------
 bool FileDependencySourceEditor::checkIfSelectedDirectoryHasBeenPreviouslyAdded(QString const& newDirectory)
 {
-    QStringList oldDirectoriesAbs;
-    getAbsoluteDirectories(oldDirectoriesAbs);
+    QStringList oldDirectoriesAbs = getAbsoluteDirectories();
     
     QString newDirAbs = QFileInfo(General::getAbsolutePath(basePath_ + "/", newDirectory)).canonicalFilePath();
 
@@ -125,8 +123,7 @@ bool FileDependencySourceEditor::checkIfSelectedDirectoryHasBeenPreviouslyAdded(
 void FileDependencySourceEditor::removeUnnecessaryDirectories(QString const& newDirectory)
 {
     // First change everything to absolute paths.
-    QStringList oldDirectoriesAbs;
-    getAbsoluteDirectories(oldDirectoriesAbs);
+    QStringList oldDirectoriesAbs =  getAbsoluteDirectories();
     
     QString newDirAbs = QFileInfo(General::getAbsolutePath(basePath_ + "/", newDirectory)).canonicalFilePath();
 
@@ -162,14 +159,16 @@ void FileDependencySourceEditor::removeSource()
 //-----------------------------------------------------------------------------
 // Function: FileDependencySourceEditor::getAbsoluteDirectories()
 //-----------------------------------------------------------------------------
-void FileDependencySourceEditor::getAbsoluteDirectories(QStringList &oldDirectoriesAbs)
+QStringList FileDependencySourceEditor::getAbsoluteDirectories()
 {
-    oldDirectoriesAbs.clear();
+    QStringList directories;
 
     for (int i = 0; i < directoryListModel_->stringList().count(); ++i)
     {
         QString path = QFileInfo(General::getAbsolutePath(basePath_ + "/", directoryListModel_->stringList().at(i))).canonicalFilePath();
 
-        oldDirectoriesAbs.push_back(path);
+        directories.push_back(path);
     }
+
+    return directories;
 }

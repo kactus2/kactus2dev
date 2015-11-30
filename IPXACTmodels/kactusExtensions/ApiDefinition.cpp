@@ -194,26 +194,21 @@ void ApiDefinition::write(QXmlStreamWriter& writer)
 }
 
 //-----------------------------------------------------------------------------
-// Function: ApiDefinition::isValid()
+// Function: ApiDefinition::findErrors()
 //-----------------------------------------------------------------------------
-bool ApiDefinition::isValid(QStringList& errorList) const
+void ApiDefinition::findErrors(QVector<QString>& errorList) const
 {
     QString thisIdentifier(QObject::tr("the containing API definition"));
-    bool valid = true;
 
-    if (!getVlnv().isValid(errorList, thisIdentifier))
-    {
-        valid = false;
-    }
-    else
+    if (getVlnv().isValid(errorList, thisIdentifier))
     {
         thisIdentifier = QObject::tr("API definition '%1'").arg(getVlnv().toString());
     }
 
     // Check that the COM definition reference is valid.
-    if (!comDefRef_.isEmpty() && !comDefRef_.isValid(errorList, thisIdentifier))
+    if (!comDefRef_.isEmpty())
     {
-        valid = false;
+        comDefRef_.isValid(errorList, thisIdentifier);
     }
 
     // Check for multiple definitions of same data type.
@@ -223,9 +218,8 @@ bool ApiDefinition::isValid(QStringList& errorList) const
     {
         if (dataTypeNames.contains(dataType))
         {
-            errorList.append(QObject::tr("Data type '%1' defined multiple times"
-                                         "in '%2'").arg(dataType, thisIdentifier));
-            valid = false;
+            errorList.append(QObject::tr("Data type '%1' defined multiple times in '%2'").arg(dataType, 
+                thisIdentifier));
         }
         else
         {
@@ -240,30 +234,24 @@ bool ApiDefinition::isValid(QStringList& errorList) const
     {
         if (funcNames.contains(func->name()))
         {
-            errorList.append(QObject::tr("Function with name '%1' defined multiple times"
-                                         "in %2").arg(func->name(), thisIdentifier));
-            valid = false;
+            errorList.append(QObject::tr("Function with name '%1' defined multiple times in %2").arg(func->name(),
+                thisIdentifier));
         }
         else
         {
             funcNames.append(func->name());
         }
 
-        if (!func->isValid(errorList, thisIdentifier))
-        {
-            valid = false;
-        }
+        func->findErrors(errorList, thisIdentifier);
     }
-
-    return valid;
 }
 
 //-----------------------------------------------------------------------------
-// Function: ApiDefinition::isValid()
+// Function: ApiDefinition::validate()
 //-----------------------------------------------------------------------------
-bool ApiDefinition::isValid() const
+bool ApiDefinition::validate() const
 {
-    if ( !getVlnv().isValid() )
+    if (!getVlnv().isValid() )
     {
         return false;
     }
@@ -303,7 +291,7 @@ bool ApiDefinition::isValid() const
             funcNames.append(func->name());
         }
 
-        if (!func->isValid())
+        if (!func->validate())
         {
             return false;
         }

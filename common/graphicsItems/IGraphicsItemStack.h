@@ -82,7 +82,7 @@ public:
     /*!
      *  Returns the content type.
      */
-    virtual ColumnContentType getContentType() const = 0;
+    virtual ColumnTypes::ColumnContentType getContentType() const = 0;
 };
 
 //-----------------------------------------------------------------------------

@@ -23,8 +23,9 @@
 #include <QSharedPointer>
 #include <QTableWidget>
 
-class ComponentItem;
 class AdHocEnabled;
+class ComponentItem;
+class IEditProvider;
 
 //-----------------------------------------------------------------------------
 //! Editor to edit the details of a component instance within a design.
@@ -47,11 +48,13 @@ public:
 	virtual ~AdHocEditor();
 
 	/*!
-     *  Sets the ad-hoc ports visibility data source.
-     *
-     *      @param [in] component The data source.
-     */
-	void setDataSource(AdHocEnabled* dataSource);
+	 *  Sets the ad-hoc ports visibility data source.
+	 *
+	 *      @param [in] dataSource      The data source.
+	 *      @param [in] editProvider    The edit provider to use for undo/redo.
+	 *      @param [in] lockEditor      If true, the contents cannot be edited.
+	 */
+	void setDataSource(AdHocEnabled* dataSource, QSharedPointer<IEditProvider> editProvider, bool lockEditor);
 
 public slots:
     /*!

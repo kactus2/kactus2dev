@@ -104,7 +104,7 @@ QVariant LogicalListModel::data(QModelIndex const& index, int role) const
         }
         else
         {
-            return QVariant();
+            return QIcon(":icons/common/graphics/cross.png");
         }   
 
         DirectionTypes::Direction direction = absdef->getPortDirection(data(index).toString(), mode_);      

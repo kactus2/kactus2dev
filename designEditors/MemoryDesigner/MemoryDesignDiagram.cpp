@@ -57,7 +57,8 @@
 //-----------------------------------------------------------------------------
 // Function: MemoryDesignDiagram()
 //-----------------------------------------------------------------------------
-MemoryDesignDiagram::MemoryDesignDiagram(LibraryInterface* lh, GenericEditProvider& editProvider,
+MemoryDesignDiagram::MemoryDesignDiagram(LibraryInterface* lh, 
+                                         QSharedPointer<IEditProvider> editProvider,
                                          MemoryDesignWidget* parent)
     : DesignDiagram(lh, editProvider, parent),
       parent_(parent),
@@ -67,7 +68,7 @@ MemoryDesignDiagram::MemoryDesignDiagram(LibraryInterface* lh, GenericEditProvid
       subsectionResizeBottom_(0.0)
 {
     connect(this, SIGNAL(selectionChanged()), this, SLOT(onSelectionChanged()));
-    connect(&editProvider, SIGNAL(modified()), this, SIGNAL(contentChanged()));
+    connect(editProvider.data(), SIGNAL(modified()), this, SIGNAL(contentChanged()));
 }
 
 //-----------------------------------------------------------------------------
@@ -87,10 +88,8 @@ void MemoryDesignDiagram::loadDesign(QSharedPointer<Design> design)
 
     if (!design->getColumns().isEmpty())
     {
-        QList<QSharedPointer<ColumnDesc> > columns;
-        columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("Available Memory", COLUMN_CONTENT_BUSES, 0, COLUMN_WIDTH)));
-        columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("Required Address Spaces", COLUMN_CONTENT_COMPONENTS, 0, COLUMN_WIDTH)));
-        design->setColumns(columns);
+        design->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("Available Memory", ColumnTypes::BUSES, 0, COLUMN_WIDTH)));
+        design->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("Required Address Spaces", ColumnTypes::COMPONENTS, 0, COLUMN_WIDTH)));
     }
 
     foreach(QSharedPointer<ColumnDesc> desc, design->getColumns())
@@ -113,17 +112,17 @@ void MemoryDesignDiagram::loadDesign(QSharedPointer<Design> design)
 
             // Create an unpackaged component so that we can still visualize the component instance->
             component = QSharedPointer<Component>(new Component(*instance->getComponentRef()));
-            component->setComponentImplementation(KactusAttribute::HW);
+            component->setImplementation(KactusAttribute::HW);
         }
 
-        foreach (QSharedPointer<MemoryMap> map, component->getMemoryMaps())
+        foreach (QSharedPointer<MemoryMap> map, *component->getMemoryMaps())
         {
             MemoryItem* item = new MemoryItem(getLibraryInterface(), instance->getInstanceName(),
                                               component, map, 0);
             getLayout()->addItem(item);
         }
 
-        foreach (QSharedPointer<AddressSpace> addressSpace, component->getAddressSpaces())
+        foreach (QSharedPointer<AddressSpace> addressSpace, *component->getAddressSpaces())
         {
             AddressSpaceItem* item = new AddressSpaceItem(getLibraryInterface(), instance->getInstanceName(),
                                                           component, addressSpace, 0);
@@ -220,8 +219,8 @@ void MemoryDesignDiagram::addColumn(QSharedPointer<ColumnDesc> desc)
 {
     GraphicsColumn* column = new MemoryColumn(desc, getLayout().data());
 
-    QSharedPointer<QUndoCommand> cmd(new GraphicsColumnAddCommand(getLayout().data(), column));
-    getEditProvider().addCommand(cmd);
+    QSharedPointer<QUndoCommand> cmd(new GraphicsColumnAddCommand(getLayout().data(), column, getDesign()));
+    getEditProvider()->addCommand(cmd);
     cmd->redo();
 }
 
@@ -265,7 +264,7 @@ void MemoryDesignDiagram::addColumn(QSharedPointer<ColumnDesc> desc)
 //                                 column->getColumnDesc().getWidth());
 // 
 //                 QSharedPointer<QUndoCommand> cmd(new GraphicsColumnChangeCommand(column, desc));
-//                 getEditProvider().addCommand(cmd);
+//                 getEditProvider()->addCommand(cmd);
 //             }
 //         }
 //     }
@@ -364,7 +363,8 @@ void MemoryDesignDiagram::drawForeground(QPainter* painter, const QRectF& rect)
 //-----------------------------------------------------------------------------
 GraphicsColumn* MemoryDesignDiagram::createDefaultColumn(GraphicsColumnLayout* layout)
 {
-    QSharedPointer<ColumnDesc> desc(new ColumnDesc("Required Address Spaces", COLUMN_CONTENT_COMPONENTS, 0, COLUMN_WIDTH));
+    QSharedPointer<ColumnDesc> desc(new ColumnDesc("Required Address Spaces",
+        ColumnTypes::COMPONENTS, 0, COLUMN_WIDTH));
     return new MemoryColumn(desc, layout);
 }
 
@@ -380,7 +380,7 @@ void MemoryDesignDiagram::drawMemoryDividers(QPainter* painter, QRectF const& re
     {
         MemoryColumn* memColumn = static_cast<MemoryColumn*>(column);
 
-        if (memColumn->getContentType() == COLUMN_CONTENT_BUSES)
+        if (memColumn->getContentType() == ColumnTypes::BUSES)
         {
             memoryColumn = memColumn;
             break;
@@ -429,7 +429,7 @@ void MemoryDesignDiagram::drawMemoryDividers(QPainter* painter, QRectF const& re
     foreach (GraphicsColumn* column, getLayout()->getColumns())
     {
         // Check if this is an address space column.
-        if (column->getContentType() == COLUMN_CONTENT_COMPONENTS)
+        if (column->getContentType() == ColumnTypes::COMPONENTS)
         {
             MemoryColumn* memColumn = static_cast<MemoryColumn*>(column);
 
@@ -477,7 +477,7 @@ bool MemoryDesignDiagram::isConnected(AddressSpaceItem const* addrSpaceItem, Mem
 {
     // Find the route from the component containing the given address space to a component
     // containing the given memory map.
-    foreach (QSharedPointer<BusInterface> busIf, addrSpaceItem->getComponent()->getBusInterfaces())
+    foreach (QSharedPointer<BusInterface> busIf, *addrSpaceItem->getComponent()->getBusInterfaces())
     {
         // Check if the bus interface has the correct address space as a reference.
         if (busIf->getInterfaceMode() == General::MASTER &&
@@ -549,7 +549,7 @@ bool MemoryDesignDiagram::findRoute(QString const& instanceName, QSharedPointer<
                         // With mirrored master, the route continues through a channel.
                         else if (otherBusIf->getInterfaceMode() == General::MIRROREDMASTER)
                         {
-                            foreach (QSharedPointer<Channel> channel, component->getChannels())
+                            foreach (QSharedPointer<Channel> channel, *component->getChannels())
                             {
                                 // Check if the channel contains the bus interface in question.
                                 if (channel->getInterfaces().contains(connectionInterface))
@@ -587,12 +587,13 @@ bool MemoryDesignDiagram::findRoute(QString const& instanceName, QSharedPointer<
                         // Check if we ended up in the correct component.
                         if (connectionComponentInstance == memoryItem->getInstanceName())
                         {
-                            addressOffset = Utils::str2Uint(busIf->getMirroredSlave()->getRemapAddress());
+                            addressOffset = Utils::str2Uint(busIf->getMirroredSlave()->getRemapAddresses()->first()->remapAddress_);
                             return true;
                         }
 
                         // Otherwise check if the route continues through bridges.
-                        foreach (QSharedPointer<SlaveInterface::Bridge const> bridge, otherBusIf->getSlave()->getBridges())
+                        foreach (QSharedPointer<SlaveInterface::Bridge const> bridge, 
+                            *otherBusIf->getSlave()->getBridges())
                         {
                             QSharedPointer<BusInterface const> nextBusIf = component->getBusInterface(bridge->masterRef_);
 

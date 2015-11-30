@@ -161,7 +161,7 @@ public:
     /*!
 	 *	Returns the draw direction of the endpoint.
 	 */
-	virtual QVector2D const& getDirection() const;
+	virtual QVector2D getDirection() const;
 
     /*! 
      *  Returns the encompassing component, if it represents a bus interface on a component.

@@ -426,7 +426,7 @@ void InterfaceEditor::onInterfaceModeChanged( const QString& newMode )
 		static_cast<HWConnectionEndpoint*>(interface_), nameEdit_.text(),
         General::str2Interfacemode(newMode, General::MONITOR),
 		descriptionEdit_.toPlainText()));
-	static_cast<DesignDiagram*>(interface_->scene())->getEditProvider().addCommand(cmd);
+	static_cast<DesignDiagram*>(interface_->scene())->getEditProvider()->addCommand(cmd);
     cmd->redo();
 
 	connect(interface_, SIGNAL(contentChanged()), this, SLOT(refresh()), Qt::UniqueConnection);
@@ -442,7 +442,7 @@ void InterfaceEditor::onInterfaceNameChanged( const QString& newName )
 	disconnect(interface_, SIGNAL(contentChanged()), this, SLOT(refresh()));	
 
 	QSharedPointer<QUndoCommand> cmd(new EndpointNameChangeCommand(interface_, newName));
-	static_cast<DesignDiagram*>(interface_->scene())->getEditProvider().addCommand(cmd);
+	static_cast<DesignDiagram*>(interface_->scene())->getEditProvider()->addCommand(cmd);
     cmd->redo();
 	
 	connect(interface_, SIGNAL(contentChanged()), this, SLOT(refresh()), Qt::UniqueConnection);
@@ -458,7 +458,7 @@ void InterfaceEditor::onDescriptionChanged()
 	disconnect(interface_, SIGNAL(contentChanged()), this, SLOT(refresh()));
 
 	QSharedPointer<QUndoCommand> cmd(new EndpointDescChangeCommand(interface_, descriptionEdit_.toPlainText()));
-	static_cast<DesignDiagram*>(interface_->scene())->getEditProvider().addCommand(cmd);
+	static_cast<DesignDiagram*>(interface_->scene())->getEditProvider()->addCommand(cmd);
     cmd->redo();
 
 	connect(interface_, SIGNAL(contentChanged()), this, SLOT(refresh()), Qt::UniqueConnection);
@@ -497,7 +497,7 @@ void InterfaceEditor::onPortMapChanged()
 
 	QSharedPointer<QUndoCommand> cmd(
         new EndPointPortMapCommand(static_cast<HWConnectionEndpoint*>(interface_), portMaps));
-	static_cast<DesignDiagram*>(interface_->scene())->getEditProvider().addCommand(cmd);
+	static_cast<DesignDiagram*>(interface_->scene())->getEditProvider()->addCommand(cmd);
     cmd->redo();
 
 	connect(interface_, SIGNAL(contentChanged()), this, SLOT(refresh()), Qt::UniqueConnection);
@@ -655,7 +655,7 @@ void InterfaceEditor::onDependencyDirectionChanged(QString const& newDir)
 
     QSharedPointer<QUndoCommand> cmd(new EndpointDependencyDirectionChangeCommand(
         interface_, str2DependencyDirection(newDir, DEPENDENCY_PROVIDER)));
-    static_cast<DesignDiagram*>(interface_->scene())->getEditProvider().addCommand(cmd);
+    static_cast<DesignDiagram*>(interface_->scene())->getEditProvider()->addCommand(cmd);
     cmd->redo();
 
     connect(interface_, SIGNAL(contentChanged()), this, SLOT(refresh()), Qt::UniqueConnection);
@@ -670,7 +670,7 @@ void InterfaceEditor::onComDirectionChanged(QString const& newDir)
 
     QSharedPointer<QUndoCommand> cmd(new EndpointComDirectionChangeCommand(
         interface_, DirectionTypes::str2Direction(newDir, DirectionTypes::IN)));
-    static_cast<DesignDiagram*>(interface_->scene())->getEditProvider().addCommand(cmd);
+    static_cast<DesignDiagram*>(interface_->scene())->getEditProvider()->addCommand(cmd);
     cmd->redo();
 
     connect(interface_, SIGNAL(contentChanged()), this, SLOT(refresh()), Qt::UniqueConnection);
@@ -684,7 +684,7 @@ void InterfaceEditor::onComTransferTypeChanged(QString const& newTransferType)
     disconnect(interface_, SIGNAL(contentChanged()), this, SLOT(refresh()));
 
     QSharedPointer<QUndoCommand> cmd(new EndpointTransferTypeChangeCommand(interface_, newTransferType));
-    static_cast<DesignDiagram*>(interface_->scene())->getEditProvider().addCommand(cmd);
+    static_cast<DesignDiagram*>(interface_->scene())->getEditProvider()->addCommand(cmd);
     cmd->redo();
 
     connect(interface_, SIGNAL(contentChanged()), this, SLOT(refresh()), Qt::UniqueConnection);
@@ -699,7 +699,7 @@ void InterfaceEditor::onComPropertyValuesChanged()
 
     QSharedPointer<QUndoCommand> cmd(new EndpointPropertyValuesChangeCommand(interface_,
                                                                              propertyValueEditor_.getData()));
-    static_cast<DesignDiagram*>(interface_->scene())->getEditProvider().addCommand(cmd);
+    static_cast<DesignDiagram*>(interface_->scene())->getEditProvider()->addCommand(cmd);
     cmd->redo();
 
     connect(interface_, SIGNAL(contentChanged()), this, SLOT(refresh()), Qt::UniqueConnection);

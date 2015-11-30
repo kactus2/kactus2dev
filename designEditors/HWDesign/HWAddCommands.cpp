@@ -20,6 +20,7 @@
 #include <common/graphicsItems/GraphicsColumn.h>
 
 #include <designEditors/common/DesignDiagram.h>
+#include <IPXACTmodels/Design/Design.h>
 
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/PortMap.h>
@@ -85,19 +86,25 @@ void PortAddCommand::redo()
 }
 
 //-----------------------------------------------------------------------------
-// Function: ConnectionAddCommand()
+// Function: ConnectionAddCommand::ConnectionAddCommand()
 //-----------------------------------------------------------------------------
-ConnectionAddCommand::ConnectionAddCommand(QGraphicsScene* scene, HWConnection* conn,
-                                           QUndoCommand* parent) : QUndoCommand(parent),
-                                                                   conn_(conn), mode1_(General::MASTER),
-                                                                   mode2_(General::MASTER),
-                                                                   portMaps_(), scene_(scene),
-                                                                   del_(false),
-                                                                   portsCopied_(false)
-                                                                   
+ConnectionAddCommand::ConnectionAddCommand(QGraphicsScene* scene,
+    HWConnection* conn,
+    QSharedPointer<Design> design,
+    QUndoCommand* parent) : QUndoCommand(parent),
+    conn_(conn),
+    design_(design),
+    mode1_(General::MASTER),
+    mode2_(General::MASTER),
+    portMaps_(),
+    scene_(scene),
+    del_(false),
+    portsCopied_(false)
+
 {
-    GenericEditProvider& editProvider = static_cast<DesignDiagram*>(scene)->getEditProvider();
-    portsCopied_ = editProvider.getState("portsCopied").toBool();
+    QSharedPointer<GenericEditProvider> editProvider = 
+        static_cast<DesignDiagram*>(scene)->getEditProvider().dynamicCast<GenericEditProvider>();
+    portsCopied_ = editProvider->getState("portsCopied").toBool();
 
     QSharedPointer<BusInterface> busIf1 = conn_->endpoint1()->getBusInterface();
     QSharedPointer<BusInterface> busIf2 = conn_->endpoint2()->getBusInterface();
@@ -107,14 +114,14 @@ ConnectionAddCommand::ConnectionAddCommand(QGraphicsScene* scene, HWConnection* 
     if (busIf1 != 0 && busIf1->getBusType().isValid() && !conn_->endpoint1()->isTypeLocked())
     {
         mode1_ = busIf1->getInterfaceMode();
-        portMaps_ = busIf1->getPortMaps();
+        portMaps_ = *busIf1->getPortMaps();
         srcComponent = conn_->endpoint1()->getOwnerComponent();
     }
 
     if (busIf2 != 0 && busIf2->getBusType().isValid() && !conn_->endpoint2()->isTypeLocked())
     {
         mode2_ = busIf2->getInterfaceMode();
-        portMaps_ = busIf2->getPortMaps();
+        portMaps_ = *busIf2->getPortMaps();
         srcComponent = conn_->endpoint2()->getOwnerComponent();
     }
 
@@ -122,7 +129,7 @@ ConnectionAddCommand::ConnectionAddCommand(QGraphicsScene* scene, HWConnection* 
     {
         foreach (QSharedPointer<PortMap> portMap, portMaps_)
         {
-            QSharedPointer<Port> port = srcComponent->getPort(portMap->physicalPort());
+            QSharedPointer<Port> port = srcComponent->getPort(portMap->getPhysicalPort()->name_);
             // Check that port exists.
             if (!port.isNull())            
             {
@@ -133,7 +140,7 @@ ConnectionAddCommand::ConnectionAddCommand(QGraphicsScene* scene, HWConnection* 
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~ConnectionAddCommand()
+// Function: ConnectionAddCommand::~ConnectionAddCommand()
 //-----------------------------------------------------------------------------
 ConnectionAddCommand::~ConnectionAddCommand()
 {
@@ -144,12 +151,13 @@ ConnectionAddCommand::~ConnectionAddCommand()
 }
 
 //-----------------------------------------------------------------------------
-// Function: undo()
+// Function: ConnectionAddCommand::undo()
 //-----------------------------------------------------------------------------
 void ConnectionAddCommand::undo()
 {
-    GenericEditProvider& editProvider = static_cast<DesignDiagram*>(scene_)->getEditProvider();
-    editProvider.setState("portsCopied", portsCopied_);
+    QSharedPointer<GenericEditProvider> editProvider =
+        static_cast<DesignDiagram*>(scene_)->getEditProvider().dynamicCast<GenericEditProvider>();
+    editProvider->setState("portsCopied", portsCopied_);
 
     // Disconnect the ends.
     conn_->disconnectEnds();
@@ -159,17 +167,21 @@ void ConnectionAddCommand::undo()
     scene_->removeItem(conn_);
     del_ = true;
 
-   // Execute child commands.
+    design_->getInterconnections()->removeAll(conn_->getInterconnection());
+    design_->removeRoute(conn_->getRouteExtension());
+    
+    // Execute child commands.
     QUndoCommand::undo();
 }
 
 //-----------------------------------------------------------------------------
-// Function: redo()
+// Function: ConnectionAddCommand::redo()
 //-----------------------------------------------------------------------------
 void ConnectionAddCommand::redo()
 {
-    GenericEditProvider& editProvider = static_cast<DesignDiagram*>(scene_)->getEditProvider();
-    editProvider.setState("portsCopied", portsCopied_);
+    QSharedPointer<GenericEditProvider> editProvider = 
+        static_cast<DesignDiagram*>(scene_)->getEditProvider().dynamicCast<GenericEditProvider>();
+    editProvider->setState("portsCopied", portsCopied_);
 
     // Execute child commands.
     QUndoCommand::redo();
@@ -189,17 +201,22 @@ void ConnectionAddCommand::redo()
         if (busIf1 != 0 && busIf1->getBusType().isValid() && !conn_->endpoint1()->isTypeLocked())
         {
             busIf1->setInterfaceMode(mode1_);
-            busIf1->setPortMaps(portMaps_);
+            busIf1->getPortMaps()->clear();
+            busIf1->getPortMaps()->append(portMaps_);
             conn_->endpoint1()->updateInterface();
         }
 
         if (busIf2 != 0 && busIf2->getBusType().isValid() && !conn_->endpoint2()->isTypeLocked())
         {
             busIf2->setInterfaceMode(mode2_);
-            busIf2->setPortMaps(portMaps_);
+            busIf2->getPortMaps()->clear();
+            busIf2->getPortMaps()->append(portMaps_);
             conn_->endpoint2()->updateInterface();
         }
     }
+
+    design_->getInterconnections()->append(conn_->getInterconnection());
+    design_->addRoute(conn_->getRouteExtension());
 
     scene_->clearSelection();
     conn_->setVisible(true);
@@ -211,18 +228,19 @@ void ConnectionAddCommand::redo()
 // Function: PortPasteCommand()
 //-----------------------------------------------------------------------------
 PortPasteCommand::PortPasteCommand(HWComponentItem* destComponent, QSharedPointer<Component> srcComponent, 
-	                               QPointF const& pos, BusPortItem* port, 
-								   QUndoCommand* parent) : QUndoCommand(parent),
-                                                           component_(destComponent), pos_(pos),
-                                                           port_(port), scene_(destComponent->scene())
+    BusPortItem* port, QUndoCommand* parent) : 
+QUndoCommand(parent),
+    component_(destComponent), 
+    port_(port), 
+    scene_(destComponent->scene())
 {
-	// Create child commands for adding physical ports to target component. 
-	// Physical ports must have a unique name within the component.
-	foreach (QString const& portName, port_->getBusInterface()->getPhysicalPortNames())
+    // Create child commands for adding physical ports to target component. 
+    // Physical ports must have a unique name within the component.
+    foreach (QString const& portName, port_->getBusInterface()->getPhysicalPortNames())
 	{	
 		QString uniquePortName = portName;
 		unsigned int count = 0;
-		while ( component_->componentModel()->getPort(uniquePortName) != 0 )
+		while (component_->componentModel()->getPort(uniquePortName) != 0)
 		{
 			count++;
 			uniquePortName = portName + "_" + QString::number(count);
@@ -230,16 +248,16 @@ PortPasteCommand::PortPasteCommand(HWComponentItem* destComponent, QSharedPointe
 
 		// Create copies of the physical ports in the source component and rename them.
 		QSharedPointer<Port> physPortCopy = QSharedPointer<Port>(new Port(*srcComponent->getPort(portName)));
-		physPortCopy->setName(uniquePortName);	
+		physPortCopy->setName(uniquePortName);
 
 		// If port name changed, it is also changed in bus interface.
-		if( uniquePortName != portName )
+		if(uniquePortName != portName)
 		{
-			foreach (QSharedPointer<PortMap> portMap, port_->getBusInterface()->getPortMaps())
+			foreach (QSharedPointer<PortMap> portMap, *port_->getBusInterface()->getPortMaps())
 			{
-				if( portMap->physicalPort() == portName )
+				if(portMap->getPhysicalPort()->name_ == portName)
 				{
-					portMap->setPhysicalPort(uniquePortName);
+					portMap->getPhysicalPort()->name_ = uniquePortName;
 				}
 			}
 		}
@@ -326,11 +344,11 @@ BusInterfacePasteCommand::BusInterfacePasteCommand(QSharedPointer<Component> src
         // If port name changed, it is also changed in bus interface.
         if( uniquePortName != portName )
         {
-            foreach (QSharedPointer<PortMap> portMap, interfaceItem->getBusInterface()->getPortMaps())
+            foreach (QSharedPointer<PortMap> portMap, *interfaceItem->getBusInterface()->getPortMaps())
             {
-                if( portMap->physicalPort() == portName )
+                if(portMap->getPhysicalPort()->name_ == portName)
                 {
-                    portMap->setPhysicalPort(uniquePortName);
+                    portMap->getPhysicalPort()->name_ = uniquePortName;
                 }
             }
         }
@@ -382,7 +400,8 @@ void BusInterfacePasteCommand::undo()
     Q_ASSERT(interfaceItem_ != 0);
 
     // Remove the port from the component and from the scene
-    destComponent_->removeBusInterface(busInterface_.data());
+    destComponent_->getBusInterfaces()->removeOne(busInterface_);
+
     column_->removeItem(interfaceItem_);
     interfaceItem_->scene()->removeItem(interfaceItem_);       
     del_ = true;
@@ -399,7 +418,7 @@ void BusInterfacePasteCommand::redo()
     Q_ASSERT(interfaceItem_ != 0);
 
     // Copy a port to the component.
-    destComponent_->addBusInterface(busInterface_);
+    destComponent_->getBusInterfaces()->append(busInterface_);
     column_->addItem(interfaceItem_);
     del_ = false;
 
@@ -431,7 +450,7 @@ AddPhysicalPortCommand::~AddPhysicalPortCommand()
 void AddPhysicalPortCommand::undo()
 {
     Q_ASSERT(component_ != 0 && port_ != 0);
-    component_->removePort(port_->name());
+    component_->getPorts()->removeOne(port_);
 	
     // Execute child commands.
     QUndoCommand::undo();
@@ -443,7 +462,7 @@ void AddPhysicalPortCommand::undo()
 void AddPhysicalPortCommand::redo()
 {
 	Q_ASSERT(component_ != 0 && port_ != 0);
-    component_->addPort(port_);
+    component_->getPorts()->append(port_);
 
 	// Execute child commands.
     QUndoCommand::redo();

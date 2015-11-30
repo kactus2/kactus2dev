@@ -194,7 +194,7 @@ bool TabDocument::isModified() const
 //-----------------------------------------------------------------------------
 // Function: TabDocument::validate()
 //-----------------------------------------------------------------------------
-bool TabDocument::validate(QStringList&)
+bool TabDocument::validate(QVector<QString>&)
 {
     return true;
 }
@@ -291,9 +291,9 @@ VLNV TabDocument::getDocumentVLNV() const
 //-----------------------------------------------------------------------------
 // Function: TabDocument::getEditProvider()
 //-----------------------------------------------------------------------------
-IEditProvider* TabDocument::getEditProvider()
+QSharedPointer<IEditProvider> TabDocument::getEditProvider() const
 {
-    return 0;
+    return QSharedPointer<IEditProvider>();
 }
 
 //-----------------------------------------------------------------------------

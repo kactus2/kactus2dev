@@ -30,9 +30,12 @@ PortReference::PortReference(const PortReference& other):
 portRef_(other.portRef_),
 componentRef_(other.componentRef_),
 isPresent_(other.isPresent_),
-partSelect_(new PartSelect(*other.partSelect_.data()))
+partSelect_()
 {
-
+    if (other.partSelect_)
+    {
+        partSelect_ = QSharedPointer<PartSelect>(new PartSelect(*other.partSelect_.data()));
+    }
 }
 
 //-----------------------------------------------------------------------------

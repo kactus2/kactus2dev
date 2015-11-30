@@ -170,7 +170,7 @@ void HWMappingItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
         // Add the undo command to the edit stack only if it has at least some real changes.
         if (cmd->childCount() > 0 || scenePos() != oldPos_)
         {
-            static_cast<SystemDesignDiagram*>(scene())->getEditProvider().addCommand(cmd);
+            static_cast<SystemDesignDiagram*>(scene())->getEditProvider()->addCommand(cmd);
         }
 
         oldStack_ = 0;
@@ -390,9 +390,9 @@ void HWMappingItem::updateComponent()
 //-----------------------------------------------------------------------------
 // Function: HWMappingItem::getContentType()
 //-----------------------------------------------------------------------------
-ColumnContentType HWMappingItem::getContentType() const
+ColumnTypes::ColumnContentType HWMappingItem::getContentType() const
 {
-    return COLUMN_CONTENT_COMPONENTS;
+    return ColumnTypes::COMPONENTS;
 }
 
 //-----------------------------------------------------------------------------

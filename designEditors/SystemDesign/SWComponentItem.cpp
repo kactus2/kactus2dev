@@ -195,7 +195,7 @@ void SWComponentItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
         // Add the undo command to the edit stack only if it has at least some real changes.
         if (cmd->childCount() > 0 || scenePos() != oldPos_)
         {
-            static_cast<DesignDiagram*>(scene())->getEditProvider().addCommand(cmd);
+            static_cast<DesignDiagram*>(scene())->getEditProvider()->addCommand(cmd);
         }
 
         oldStack_ = 0;
@@ -310,9 +310,9 @@ HWMappingItem const* SWComponentItem::getLinkedHW() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: SWComponentItem::setPacketized()
+// Function: SWComponentItem::setPackaged()
 //-----------------------------------------------------------------------------
-void SWComponentItem::setPacketized()
+void SWComponentItem::setPackaged()
 {
     isDraft_ = false;
     updateComponent();

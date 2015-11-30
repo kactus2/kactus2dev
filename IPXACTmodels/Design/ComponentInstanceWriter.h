@@ -14,7 +14,7 @@
 
 #include "ComponentInstance.h"
 
-#include <IPXACTmodels/common/DocumentWriter.h>
+#include <IPXACTmodels/common/CommonItemsWriter.h>
 
 #include <QXmlStreamWriter>
 #include <QObject>
@@ -23,7 +23,7 @@
 //-----------------------------------------------------------------------------
 //! Writer class for IP-XACT component instance element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT ComponentInstanceWriter : public DocumentWriter
+class IPXACTMODELS_EXPORT ComponentInstanceWriter : public CommonItemsWriter
 {
     Q_OBJECT
 

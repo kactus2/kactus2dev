@@ -36,7 +36,8 @@
 //-----------------------------------------------------------------------------
 // Function: ComponentDesignDiagram::ComponentDesignDiagram()
 //-----------------------------------------------------------------------------
-ComponentDesignDiagram::ComponentDesignDiagram(LibraryInterface* lh, GenericEditProvider& editProvider, DesignWidget* parent)
+ComponentDesignDiagram::ComponentDesignDiagram(LibraryInterface* lh, QSharedPointer<IEditProvider> editProvider, 
+    DesignWidget* parent)
     : DesignDiagram(lh, editProvider, parent),
       tempConnection_(0),
       connectionStartPoint_(0), 
@@ -53,7 +54,7 @@ ComponentDesignDiagram::ComponentDesignDiagram(LibraryInterface* lh, GenericEdit
       clickedPosition_()
 {
     connect(this, SIGNAL(selectionChanged()), this, SLOT(onSelectionChanged()));
-    connect(&editProvider, SIGNAL(modified()), this, SIGNAL(contentChanged()));
+    connect(editProvider.data(), SIGNAL(modified()), this, SIGNAL(contentChanged()));
 
 	setupActions();
 }
@@ -757,7 +758,7 @@ void ComponentDesignDiagram::endConnectionTo(QPointF const& point)
             tempConnection_->fixOverlap();
 
             QSharedPointer<QUndoCommand> cmd = createAddCommandForConnection(tempConnection_);
-            getEditProvider().addCommand(cmd);
+            getEditProvider()->addCommand(cmd);
 
             tempConnection_ = 0;
         }
@@ -850,7 +851,7 @@ void ComponentDesignDiagram::addInterfaceAt(QPointF const& position)
     GraphicsColumn* column = getLayout()->findColumnAt(position);
 
     // Add a new diagram interface to the column it it is allowed.
-    if (column != 0 && column->getColumnDesc()->getAllowedItems() & CIT_INTERFACE)
+    if (column != 0 && column->getColumnDesc()->getAllowedItems() & ColumnTypes::INTERFACE)
     {
         addTopLevelInterface(column, position);
     }
@@ -892,7 +893,7 @@ void ComponentDesignDiagram::toggleOffPageAt(QPointF const& position)
 
     if (cmd->childCount() > 0)
     {
-        getEditProvider().addCommand(cmd);
+        getEditProvider()->addCommand(cmd);
     }
 }
 

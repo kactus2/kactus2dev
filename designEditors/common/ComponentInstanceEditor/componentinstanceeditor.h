@@ -17,9 +17,11 @@
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 #include <editors/ComponentEditor/common/ListParameterFinder.h>
 
+#include <common/IEditProvider.h>
+
 #include <common/widgets/vlnvDisplayer/vlnvdisplayer.h>
 #include <common/widgets/nameGroupBox/namegroupbox.h>
-#include <common/GenericEditProvider.h>
+
 #include "configurableelementeditor.h"
 
 #include <QWidget>
@@ -54,7 +56,7 @@ public:
 	 *
 	 *      @param [in] component Pointer to the component instance being edited.
 	 */
-    void setComponentInstance(ComponentItem* component);
+    void setComponentInstance(ComponentItem* component, QSharedPointer<IEditProvider> editProvider);
 
     /*!
      *  Sets the top component for the instances.
@@ -64,7 +66,7 @@ public:
      *      @param [in] editProvider            The generic edit provider.
      */
     void setContext(QSharedPointer<Component> topComponent,
-        QSharedPointer<DesignConfiguration> designConfiguration, GenericEditProvider* editProvider);
+        QSharedPointer<DesignConfiguration> designConfiguration, QSharedPointer<IEditProvider> editProvider);
 
     /*!
      *  Sets the protection state for the instance editor.
@@ -141,7 +143,7 @@ private:
     PropertyValueEditor* propertyValueEditor_;
 
 	//! Pointer to the generic edit provider that manages the undo/redo stack.
-	GenericEditProvider* editProvider_;
+	QSharedPointer<IEditProvider> editProvider_;
 
     //! The parameter finder for component instances.
     QSharedPointer<ComponentParameterFinder> instanceFinder_;

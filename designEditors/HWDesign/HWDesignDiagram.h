@@ -34,6 +34,7 @@ class Component;
 class ComponentInstance;
 class ComponentItem;
 class ConnectionEndpoint;
+class ConnectionRoute;
 class Design;
 class DesignConfiguration;
 class GenericEditProvider;
@@ -41,6 +42,7 @@ class GraphicsColumn;
 class GraphicsColumnLayout;
 class GraphicsConnection;
 class HierConnection;
+class HierInterface;
 class HWComponentItem;
 class HWConnection;
 class HWConnectionEndpoint;
@@ -62,8 +64,7 @@ public:
     {
 		COMPONENT_COLUMN_WIDTH = 319,
         IO_COLUMN_WIDTH = 119
-    };
-		
+    };		
 
     //-----------------------------------------------------------------------------
     //! Clipboard copy data for a single bus interface instance.
@@ -72,10 +73,7 @@ public:
     {
         QSharedPointer<Component> srcComponent;         //!< The origin component.
         QSharedPointer<BusInterface> busInterface;      //!< The bus interface.
-        General::InterfaceMode mode;                    //!< The bus interface mode.
-        QString instanceName;                           //!< The bus instance name.
-        QString description;                            //!< The description of the instance.
-        QPointF pos;                                    //!< Original position of the instance.
+        QPointF position;
         bool topLevelIf;                                //!< Top-level or bus port interface.
 
         /*!
@@ -84,9 +82,7 @@ public:
         BusInterfaceCopyData()
             : srcComponent(),
             busInterface(),
-            mode(),
-            instanceName(),
-            description(),
+            position(),
             topLevelIf()
         {
         }
@@ -115,25 +111,11 @@ public:
     struct ComponentInstanceCopyData
     {
         QSharedPointer<Component> component;            //!< The referenced component.
-        QString instanceName;                           //!< The instance name.
-        QString displayName;                            //!< The display name.
-        QString description;                            //!< The description of the instance.
-        QPointF pos;                                    //!< Original position of the instance.
-        QMap<QString, QString> configurableElements;    //!< Configurable element values.
-        QMap<QString, QPointF> busInterfacePositions;   //!< Bus interface positions.
-        QMap<QString, QPointF> adHocPortPositions;      //!< Ad-hoc port positions.
-        QMap<QString, bool> adHocVisibilities;          //!< Ad-hoc visibilities.
-        bool isDraft;                                   //!< Identifier for draft component instances.
-
+        QSharedPointer<ComponentInstance> instance;
+       
         ComponentInstanceCopyData()
             : component(),
-              instanceName(),
-              displayName(),
-              description(),
-              configurableElements(),
-              busInterfacePositions(),
-              adHocPortPositions(),
-              adHocVisibilities()
+            instance()
         {
         }
     };
@@ -193,21 +175,10 @@ public:
     /*!
      *  Constructor.
      */
-    HWDesignDiagram(LibraryInterface *lh, GenericEditProvider& editProvider, DesignWidget* parent = 0);
+    HWDesignDiagram(LibraryInterface *lh, QSharedPointer<IEditProvider> editProvider, DesignWidget* parent = 0);
 
 	//! \brief The destructor
 	virtual ~HWDesignDiagram();
-
-
-    /*! 
-     *  Creates a design based on the contents in the diagram.
-     *
-     *      @param [in] vlnv The vlnv for the design.
-     *
-     *      @return The created design.
-     */
-    virtual QSharedPointer<Design> createDesign(VLNV const& vlnv) const;
-
 
     /*! \brief Set the IP-XACT document that is viewed in HWDesignDiagram
      *
@@ -217,7 +188,7 @@ public:
     /*! \brief Get HWComponentItem that has the given instance name
      *
      */
-    HWComponentItem* getComponent(const QString &instanceName);
+    HWComponentItem* getComponentItem(QString const& instanceName);
 
     /*!
      *  Changes the state of a visibility control.
@@ -263,6 +234,13 @@ public slots:
      *  Called when paste is selected from the context menu.
      */
 	virtual void onPasteAction();
+    void pasteHierarchicalInterfaces(QMimeData const* mimeData);
+
+    void pasteColumns();
+
+    void pasteComponentsToColumn();
+
+    void pasteInterfacesToDraftComponent(HWComponentItem* targetItem);
 
     /*!
      *  Called when add to library is selected from the context menu.
@@ -297,6 +275,11 @@ protected:
 
     //! Handler for drop event.
     void dropEvent(QGraphicsSceneDragDropEvent *event);
+    void setInterfaceVLNVatEndpoint(VLNV &droppedVLNV);
+
+    void replaceComponentItemAtPositionWith(QPointF position, QSharedPointer<Component> comp);
+
+    void createComponentItem(QSharedPointer<Component> comp, QPointF position);
 
     //! Updates the dropAction and highlight according to underlying element.
     virtual void updateDropAction(QGraphicsSceneDragDropEvent* event);
@@ -372,6 +355,18 @@ private:
     // Disable copying.
     HWDesignDiagram(HWDesignDiagram const& rhs);
     HWDesignDiagram& operator=(HWDesignDiagram const& rhs);
+
+    /*!
+     *  Finds the design extension for a hierarchical bus interface item. If the extension does not exist,
+     *  it is created.
+     *
+     *      @param [in] design              The design to search extensions in.
+     *      @param [in] busInterfaceName    The name of the bus interface to search for.
+     *
+     *      @return The extension for hierarchical bus interface data.
+     */
+    QSharedPointer<Kactus2Group> findOrCreateInterfaceExtensionGroup(QSharedPointer<Design> design, 
+        QString const& busInterfaceName);
 
     /*!
      *  Called when an item has been selected in the diagram.
@@ -476,7 +471,7 @@ private:
      *
      *      @return The port item on the component.
      */
-    ConnectionEndpoint* findOrCreateMissingPort(HWComponentItem* componentItem, QString const& componentRef, 
+    ConnectionEndpoint* findOrCreateMissingInterface(HWComponentItem* componentItem, QString const& componentRef, 
         QString const& busRef, QSharedPointer<Design> design);
     
     /*!
@@ -488,7 +483,7 @@ private:
      *
      *      @return A port item for a missing port.
      */
-    BusPortItem* createMissingPort(QString const& portName, HWComponentItem* component, 
+    BusPortItem* createMissingBusInterface(QString const& interfaceName, HWComponentItem* containingComponent, 
         QSharedPointer<Design> design);
 
     /*!
@@ -499,13 +494,19 @@ private:
      */
     void createInterconnection(QSharedPointer<Interconnection> interconnection, QSharedPointer<Design> design);
 
+    void createInterconnectionBetweenComponents(QSharedPointer<Interconnection> interconnection, QSharedPointer<Design> design);
+
+    QSharedPointer<ConnectionRoute> findOrCreateRouteForInterconnection(QString const& interconnectionName);
+
     /*!
      *  Creates a graphics item for hierarchical interconnection and adds it to the diagram.
      *
      *      @param [in] hierConn    The hierarchical interconnection to create item for.
      *      @param [in] design      The design containing the interconnection.
      */
-    //void createHierarchicalConnection(HierConnection const& hierConn, QSharedPointer<Design> design);
+    void createHierarchicalConnection(QSharedPointer<Interconnection> connection,
+          QSharedPointer<Design> design);
+    ConnectionEndpoint* findOrCreateHierarchicalInterface(QString const& busRef);
 
     /*!
      *  Creates the hierarchical ad-hoc port items in the diagram.
@@ -519,7 +520,7 @@ private:
      *
      *      @param [in] adHocConn   The ad-hoc connection to create the item for.
      */
-    void createAdHocConnection(AdHocConnection const& adHocConn);
+    void createAdHocConnection(QSharedPointer<AdHocConnection> adHocConnection);
 
     /*!
      *  Creates a graphics item for an ad-hoc interconnection between two ports and adds it to the diagram.
@@ -529,7 +530,7 @@ private:
      *      @param [in] primaryPort         The connected hierarchical port or component instance port.
      *      @param [in] primaryPortItem     The port item for the primary port.
      */
-    void createConnectionForAdHocPorts(AdHocConnection const& adHocConnection, QSharedPointer<PortReference> internalPort, 
+    void createConnectionForAdHocPorts(QSharedPointer<AdHocConnection> adHocConnection, QSharedPointer<PortReference> internalPort, 
         QSharedPointer<PortReference> primaryPort, ConnectionEndpoint* primaryPortItem);
     /*!
      *  Copies component instances in a format which can be saved to clipboard.
@@ -566,7 +567,7 @@ private:
      *      @param [in] userCursorPos  If true, the instances are placed close to the cursor position.
      *                                 Otherwise the original positions are used.
      */
-    void pasteInterfaces(BusInterfaceCollectionCopyData const& collection,
+    void pasteTopLevelInterfaces(BusInterfaceCollectionCopyData const& collection,
                          GraphicsColumn* column, QUndoCommand* cmd, bool useCursorPos);
 
     /*!
@@ -587,7 +588,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The type of the item being dragged.
-    ColumnItemType dragCompType_;
+    ColumnTypes::ColumnItemType dragCompType_;
 
     //! Flag for indicating that the item being dragged is a bus.
     bool dragBus_;

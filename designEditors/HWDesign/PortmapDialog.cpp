@@ -12,6 +12,8 @@
 #include "PortmapDialog.h"
 
 #include <editors/ComponentEditor/busInterfaces/busifportmaptab.h>
+#include <editors/ComponentEditor/common/NullParser.h>
+
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <IPXACTmodels/Component/BusInterface.h>
@@ -29,7 +31,7 @@
 // Function: PortmapDialog()
 //-----------------------------------------------------------------------------
 PortmapDialog::PortmapDialog(LibraryInterface* libInterface, QSharedPointer<Component> component,
-                             BusInterface* busIf, BusInterface* otherBusIf,
+                             QSharedPointer<BusInterface> busIf, QSharedPointer<BusInterface> otherBusIf,
                              QWidget* parent) : QDialog(parent), busIf_(busIf), otherBusIf_(otherBusIf)
 {
     Q_ASSERT(libInterface != 0);
@@ -40,7 +42,8 @@ PortmapDialog::PortmapDialog(LibraryInterface* libInterface, QSharedPointer<Comp
     setWindowTitle(tr("Define Port Maps"));
 
     // Create the port map widget.
-    portmapWidget_ = new BusIfPortmapTab(libInterface, component, busIf, this);
+    portmapWidget_ = new BusIfPortmapTab(libInterface, component, busIf, 
+        QSharedPointer<ExpressionParser>(new NullParser()), this);
     portmapWidget_->setAbsType(*busIf->getAbstractionTypes()->first()->getAbstractionRef(),
         busIf->getInterfaceMode());
 

@@ -34,12 +34,6 @@
 
 namespace
 {
-    QString const HEADER_NAMES[] =
-    {
-        "Logical\nIndex",
-        "Bit Field(s)"
-    }; 
-
     QString const EDIT_ROW_NAME("Drop port to add rows.");
 }
 
@@ -128,19 +122,21 @@ QVariant BitMappingModel::data(QModelIndex const& index, int role) const
                 foreach (General::PortBounds row, rows_.at(index.row()))
                 {
                     QSharedPointer<Port> port = component_->getPort(row.portName_);
-
-                    int left = expressionParser_->parseExpression(port->getLeftBound()).toInt();
-                    int right = expressionParser_->parseExpression(port->getRightBound()).toInt();
-                    int portSize = abs(left - right) + 1;
-
-                    if (portSize > 1)
+                    if (port)
                     {
-                        ports.append(row.portName_ + "(" + QString::number(row.left_) + ")");
+                        int left = expressionParser_->parseExpression(port->getLeftBound()).toInt();
+                        int right = expressionParser_->parseExpression(port->getRightBound()).toInt();
+                        int portSize = abs(left - right) + 1;
+
+                        if (portSize > 1)
+                        {
+                            ports.append(row.portName_ + "(" + QString::number(row.left_) + ")");
+                        }
+                        else
+                        {
+                            ports.append(row.portName_);
+                        }                  
                     }
-                    else
-                    {
-                        ports.append(row.portName_);
-                    }                        
                 }
                 return ports.join(", ");
             }
@@ -190,9 +186,16 @@ QVariant BitMappingModel::headerData(int section, Qt::Orientation orientation, i
         return QVariant();  
     }
 
-    if (role == Qt::DisplayRole && section < COLUMN_COUNT) 
+    if (role == Qt::DisplayRole) 
     {
-        return HEADER_NAMES[section];              
+        if (section == INDEX)
+        {
+            return QStringLiteral("Logical\nIndex");
+        }   
+        else if (section == BIT)
+        {
+            return QStringLiteral("Bit Field(s)");
+        }
     }
 
     return QVariant();
@@ -400,10 +403,16 @@ void BitMappingModel::onSetLogicalSignal(QString const& logicalName)
     beginResetModel();
     rows_.clear();
 
-    if (!logicalName.isEmpty())
+    QSharedPointer<WireAbstraction> logicalWire;
+    if (absDef_)
+    {
+        logicalWire = absDef_->getPort(logicalName)->getWire();
+    }
+
+    if (!logicalName.isEmpty() && logicalWire)
     {
         // Indexes can be added/removed, if absDef does not define size.
-        canEdit_ = (absDef_->getPort(logicalName)->getWire()->getWidth(mode_).isEmpty()); //Size(logicalName, mode_) == -1);
+        canEdit_ = logicalWire->getWidth(mode_).isEmpty();
 
         if (mappings_.contains(logicalName))
         {
@@ -412,11 +421,7 @@ void BitMappingModel::onSetLogicalSignal(QString const& logicalName)
         else
         {
             createInitialMappings();
-
-            if (canEdit_)
-            {
-                addEditRow();
-            }
+            addEditRow();
         }
     }
     endResetModel();
@@ -686,18 +691,30 @@ void BitMappingModel::createInitialMappings()
         {
             QSharedPointer<Range> logicalRange = portMap->getLogicalPort()->range_;
 
-            int logicalLeft = expressionParser_->parseExpression(logicalRange->getLeft()).toInt();
-            int logicalRight = expressionParser_->parseExpression(logicalRange->getRight()).toInt();
+            int logicalLeft = 0;
+            int logicalRight = 0;
+
+            if (logicalRange)
+            {
+                logicalLeft = expressionParser_->parseExpression(logicalRange->getLeft()).toInt();
+                logicalRight = expressionParser_->parseExpression(logicalRange->getRight()).toInt();
+            }
 
             int logLower = qMin(logicalLeft, logicalRight);
             int logHigher = qMax(logicalLeft, logicalRight);
 
             if (logLower <= index && index <= logHigher)
             {
-                int physicalRangeLeft = expressionParser_->parseExpression(
-                    portMap->getPhysicalPort()->partSelect_->getLeftRange()).toInt();
-                int physicalRangeRight = expressionParser_->parseExpression(
-                    portMap->getPhysicalPort()->partSelect_->getRightRange()).toInt();
+                int physicalRangeLeft = 0;
+                int physicalRangeRight = 0;
+
+                if (portMap->getPhysicalPort()->partSelect_)
+                {
+                    physicalRangeLeft = expressionParser_->parseExpression(
+                        portMap->getPhysicalPort()->partSelect_->getLeftRange()).toInt();
+                    physicalRangeRight = expressionParser_->parseExpression(
+                        portMap->getPhysicalPort()->partSelect_->getRightRange()).toInt();
+                }
 
                 int physLower = qMin(physicalRangeLeft, physicalRangeRight);
 
@@ -819,13 +836,17 @@ QSharedPointer<PortMap> BitMappingModel::createPortMapForPin(General::PortBounds
     }
 
     QSharedPointer<PortMap> map(new PortMap());
-    map->getLogicalPort()->name_ = logicalPort_;
-    map->getLogicalPort()->range_->setLeft(QString::number(logLeft));
-    map->getLogicalPort()->range_->setRight(QString::number(logRight));
+    QSharedPointer<PortMap::LogicalPort> logical(new PortMap::LogicalPort());
+    logical->name_ = logicalPort_;
+    QSharedPointer<Range> logicalRange(new Range(QString::number(logLeft), QString::number(logRight)));    
+    logical->range_ = logicalRange;
+    map->setLogicalPort(logical);
 
-    map->getPhysicalPort()->name_ = pin.portName_;
-    map->getPhysicalPort()->partSelect_->setLeftRange(QString::number(physLeft));
-    map->getPhysicalPort()->partSelect_->setRightRange(QString::number(physRight));
+    QSharedPointer<PortMap::PhysicalPort> physical(new PortMap::PhysicalPort());
+    physical->name_ = pin.portName_;
+    QSharedPointer<PartSelect> physicalRange(new PartSelect(QString::number(physLeft), QString::number(physRight)));
+    physical->partSelect_ = physicalRange;
+    map->setPhysicalPort(physical);
 
     return map;
 }

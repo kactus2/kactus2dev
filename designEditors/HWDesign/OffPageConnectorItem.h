@@ -70,11 +70,6 @@ public:
     // HWConnectionEndpoint implementation.
     //-----------------------------------------------------------------------------
 
-    /*!
-     *  Returns true if the draw direction is fixed and thus, cannot be changed.
-     */
-    virtual bool isDirectionFixed() const;
-
     /*! 
      *  Returns the name of the parent bus interface.
      */
@@ -160,7 +155,12 @@ public:
     /*!
 	 *	Returns the draw direction of the endpoint.
 	 */
-	virtual QVector2D const& getDirection() const;
+	virtual QVector2D getDirection() const;
+      
+    /*!
+     *  Returns true if the draw direction is fixed and thus, cannot be changed.
+     */
+    virtual bool isDirectionFixed() const;
 
     /*! 
      *  Returns the encompassing component, if it represents a bus interface on a component.
@@ -185,7 +185,7 @@ public:
      *      @remarks The function returns a null pointer if the endpoint is a bus interface.
      *               Use isBus() function to check for ad-hoc support (isBus() == false).
      */
-    virtual Port* getPort() const;
+    virtual QSharedPointer<Port> getPort() const;
 
     /*!
      *  Returns true if the port represents a hierarchical connection.
@@ -201,10 +201,7 @@ public:
 	virtual void setInterfaceMode(General::InterfaceMode mode);
 
 protected:
-    virtual QVariant itemChange(GraphicsItemChange change,
-                                const QVariant &value);
-
-    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
+    virtual QVariant itemChange(GraphicsItemChange change, QVariant const& value);
 
 private:
     // Disable copying.

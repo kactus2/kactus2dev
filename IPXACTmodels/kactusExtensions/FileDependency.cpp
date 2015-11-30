@@ -24,9 +24,7 @@ desc_(),
 locked_(false),
 bidirectional_(false),
 manual_(false),
-status_(STATUS_UNCHANGED),
-fileItem1_(0),
-fileItem2_(0)
+status_(STATUS_UNCHANGED)
 {
 
 }
@@ -42,9 +40,7 @@ desc_(rhs.desc_),
 locked_(rhs.locked_),
 bidirectional_(rhs.bidirectional_),
 manual_(rhs.manual_),
-status_(rhs.status_),
-fileItem1_(0),
-fileItem2_(0)
+status_(rhs.status_)
 {
 
 }
@@ -52,7 +48,7 @@ fileItem2_(0)
 //-----------------------------------------------------------------------------
 // Function: FileDependency::FileDependency()
 //-----------------------------------------------------------------------------
-FileDependency::FileDependency(QDomNode& node) :
+FileDependency::FileDependency(QDomNode const& node) :
 QObject(),
 file1_(),
 file2_(),
@@ -60,9 +56,7 @@ desc_(),
 locked_(false),
 bidirectional_(false),
 manual_(false),
-status_(STATUS_UNCHANGED),
-fileItem1_(0),
-fileItem2_(0)
+status_(STATUS_UNCHANGED)
 {
     for (int i = 0; i < node.childNodes().count(); ++i)
     {
@@ -248,31 +242,6 @@ FileDependency& FileDependency::operator=(FileDependency const& rhs)
     return *this;
 }
 
-//-----------------------------------------------------------------------------
-// Function: FileDependency::setItemPointers()
-//-----------------------------------------------------------------------------
-void FileDependency::setItemPointers(QSharedPointer<FileDependencyItem> fileItem1,
-    QSharedPointer<FileDependencyItem> fileItem2)
-{
-    fileItem1_ = fileItem1;
-    fileItem2_ = fileItem2;
-}
-
-//-----------------------------------------------------------------------------
-// Function: FileDependency::getFileItem1()
-//-----------------------------------------------------------------------------
-QSharedPointer<FileDependencyItem> FileDependency::getFileItem1() const
-{
-    return fileItem1_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: FileDependency::getFileItem2()
-//-----------------------------------------------------------------------------
-QSharedPointer<FileDependencyItem> FileDependency::getFileItem2() const
-{
-    return fileItem2_;
-}
 
 //-----------------------------------------------------------------------------
 // Function: FileDependency::reverse()
@@ -280,7 +249,6 @@ QSharedPointer<FileDependencyItem> FileDependency::getFileItem2() const
 void FileDependency::reverse()
 {
     qSwap(file1_, file2_);
-    qSwap(fileItem1_, fileItem2_);
 }
 
 //-----------------------------------------------------------------------------

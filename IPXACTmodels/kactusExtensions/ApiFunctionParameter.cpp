@@ -92,32 +92,27 @@ void ApiFunctionParameter::write(QXmlStreamWriter& writer)
 }
 
 //-----------------------------------------------------------------------------
-// Function: ApiFunctionParameter::isValid()
+// Function: ApiFunctionParameter::findErrors()
 //-----------------------------------------------------------------------------
-bool ApiFunctionParameter::isValid(QStringList& errorList, QString const& parentId) const
+void ApiFunctionParameter::findErrors(QVector<QString>& errorList, QString const& parentId) const
 {
-    bool valid = true;
     QString const thisId = QObject::tr("function parameter '%1'").arg(name_);
 
     if (name_.isEmpty())
     {
         errorList.append(QObject::tr("No name specified for a function parameter in %1").arg(parentId));
-        valid = false;
     }
 
     if (type_.isEmpty())
     {
         errorList.append(QObject::tr("No type specified for %1").arg(thisId));
-        valid = false;
     }
-
-    return valid;
 }
 
 //-----------------------------------------------------------------------------
 // Function: ApiFunctionParameter::isValid()
 //-----------------------------------------------------------------------------
-bool ApiFunctionParameter::isValid() const
+bool ApiFunctionParameter::validate() const
 {
     return (!name_.isEmpty() && !type_.isEmpty());
 }

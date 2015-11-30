@@ -26,13 +26,10 @@ ComponentEditorSystemViewsItem::ComponentEditorSystemViewsItem(
 	LibraryInterface* libHandler,
 	QSharedPointer<Component> component,
 	ComponentEditorItem* parent):
-ComponentEditorItem(model, libHandler, component, parent),
-systemViews_(component->getSystemViews())
+ComponentEditorItem(model, libHandler, component, parent)
 {
-
-	foreach (QSharedPointer<SystemView> systemView, systemViews_)
+	foreach (QSharedPointer<SystemView> systemView, component->getSystemViews())
     {
-
 		QSharedPointer<ComponentEditorSystemViewItem> systemViewItem(
 			new ComponentEditorSystemViewItem(systemView, model, libHandler, component, this)); 
 		childItems_.append(systemViewItem);
@@ -52,7 +49,7 @@ ComponentEditorSystemViewsItem::~ComponentEditorSystemViewsItem()
 QFont ComponentEditorSystemViewsItem::getFont() const
 {
     QFont font(ComponentEditorItem::getFont());        
-    font.setBold(!systemViews_.isEmpty());    
+    font.setBold(component_->hasSystemViews());    
     return font;
 }
 
@@ -97,7 +94,7 @@ ItemEditor* ComponentEditorSystemViewsItem::editor()
 void ComponentEditorSystemViewsItem::createChild(int index)
 {
 	QSharedPointer<ComponentEditorSystemViewItem> systemViewItem(
-		new ComponentEditorSystemViewItem(systemViews_.at(index), model_, libHandler_, component_, this));
+		new ComponentEditorSystemViewItem(component_->getSystemViews().at(index), model_, libHandler_, component_, this));
 	systemViewItem->setLocked(locked_);
 	childItems_.insert(index, systemViewItem);
 }

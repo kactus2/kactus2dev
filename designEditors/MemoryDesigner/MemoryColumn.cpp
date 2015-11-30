@@ -27,7 +27,7 @@
 MemoryColumn::MemoryColumn(QSharedPointer<ColumnDesc> desc, GraphicsColumnLayout* layout)
     : GraphicsColumn(desc, layout)
 {
-    if (desc->getContentType() == COLUMN_CONTENT_BUSES)
+    if (desc->getContentType() == ColumnTypes::BUSES)
     {
         setItemLayout(QSharedPointer< IVGraphicsLayout<QGraphicsItem> >(new VStackedLayout<QGraphicsItem>(10.0)));
     }
@@ -53,13 +53,13 @@ bool MemoryColumn::isItemAllowed(QGraphicsItem* item, unsigned int allowedItems)
     {
     case MemoryItem::Type:
         {
-            return (allowedItems & CIT_BRIDGE);
+            return (allowedItems & ColumnTypes::BRIDGE);
         }
 
     case AddressSpaceItem::Type:
         {
             // If the item is in the allowed items, make sure that it does not intersect any other items.
-            if (allowedItems & CIT_COMPONENT)
+            if (allowedItems & ColumnTypes::COMPONENT)
             {
                 foreach (QGraphicsItem* otherItem, getItems())
                 {

@@ -107,10 +107,13 @@ VLNV ApiDefinitionEditor::getDocumentVLNV() const
 //-----------------------------------------------------------------------------
 // Function: ApiDefinitionEditor::validate()
 //-----------------------------------------------------------------------------
-bool ApiDefinitionEditor::validate(QStringList& errorList)
+bool ApiDefinitionEditor::validate(QVector<QString>& errorList)
 {
     applyChanges();
-    return apiDef_->isValid(errorList);
+
+    apiDef_->findErrors(errorList);
+
+    return errorList.isEmpty();
 }
 
 //-----------------------------------------------------------------------------

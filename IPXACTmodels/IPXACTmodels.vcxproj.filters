@@ -1082,6 +1082,9 @@
     <ClCompile Include="common\validators\ValueFormatter.cpp">
       <Filter>Source Files\common\validators</Filter>
     </ClCompile>
+    <ClCompile Include="kactusExtensions\ConnectionRoute.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
     <ClCompile Include="common\validators\ParameterValidator2014.cpp">
       <Filter>Source Files\common\validators</Filter>
     </ClCompile>
@@ -1455,6 +1458,9 @@
     </ClInclude>
     <ClInclude Include="common\validators\ParameterValidator2014.h">
       <Filter>Header Files\common\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusExtensions\ConnectionRoute.h">
+      <Filter>Header Files\kactusExtensions</Filter>
     </ClInclude>
     <ClInclude Include="common\validators\ValueFormatter.h">
       <Filter>Header Files\common\validators</Filter>

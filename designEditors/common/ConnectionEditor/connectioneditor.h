@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 14.10.2011
- *      Author: Antti Kamppi
- * 		filename: connectioneditor.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: connectioneditor.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 14.10.2011
+//
+// Description:
+// Editor to display/edit details of a connection.
+//-----------------------------------------------------------------------------
 
 #ifndef CONNECTIONEDITOR_H
 #define CONNECTIONEDITOR_H
@@ -25,82 +29,75 @@
 #include <QString>
 #include <QSharedPointer>
 
+class DesignDiagram;
 class GraphicsConnection;
 class LibraryInterface;
 class Component;
 
-/*! \brief Editor to display/edit details of a connection.
- *
- */
-class ConnectionEditor : public QWidget {
+//-----------------------------------------------------------------------------
+//! Editor to display/edit details of a connection.
+//-----------------------------------------------------------------------------
+class ConnectionEditor : public QWidget
+{
 	Q_OBJECT
 
 public:
 
-	/*! \brief The constructor
+	/*! The constructor
 	 *
-	 * \param parent Pointer to the owner of this editor.
-	 * \param handler Pointer to the instance that manages the library
+	 *      @param [in] parent  The owner of this editor.
+	 *      @param [in] handler The instance that manages the library
 	 *
 	*/
 	ConnectionEditor(QWidget *parent, LibraryInterface* handler);
 	
-	//! \brief The destructor
+	//! The destructor
 	virtual ~ConnectionEditor();
 
 public slots:
 
-	/*! \brief Set the connection to be edited.
+	/*! Set the connection to be edited.
 	 *
-	 * \param connection Pointer to the connection to edit.
+	 *      @param [in] connection The connection to edit.
 	 *
 	*/
-	void setConnection(GraphicsConnection* connection);
+	void setConnection(GraphicsConnection* connection, DesignDiagram* diagram);
 
-	/*! \brief Clear the editor so no connection details are shown
+	/*! Clear the editor so no connection details are shown
 	 *
 	*/
 	void clear();
 
-	/*! \brief Refresh the editor contents without changing the connection.
+	/*! Refresh the editor contents without changing the connection.
 	 *
 	*/
 	void refresh();
 
 private slots:
 
-	/*! \brief Handler for name changes for connection.
-	 *
-	 * \param name The name that was set.
-	 *
-	*/
-	void onNameChanged(const QString& name);
 
-	/*! \brief Handler for description changes for connection.
-	 *
-	*/
-	void onDescriptionChanged();
+	void onNameOrDescriptionChanged();
 
 private:
-	//! \brief No copying
+	//! No copying
 	ConnectionEditor(const ConnectionEditor& other);
 
-	//! \brief No assignment
+	//! No assignment
 	ConnectionEditor& operator=(const ConnectionEditor& other);
 
-	/*! \brief Set port maps so that editor displays the connected physical ports.
+	/*! Set port maps so that editor displays the connected physical ports.
 	 *
 	*/
 	void setPortMaps();
 
-	/*! \brief Add a mapping for physical ports to port widget for two given port maps.
+	/*! Add a mapping for physical ports to port widget for two given port maps.
 	 *
-	 * \param row The row to insert the physical map to.
-	 * \param invalid Defines if this map is already been declared as invalid.
-	 * \param portMap1 Pointer to the first port map.
-	 * \param component1 Pointer to the component that contains the port map1.
-	 * \param portMap2 Pointer to the second port map.
-	 * \param component2 Pointer to the component that contains the port map2.
+	 *      @param [in/out] row             The row to insert the physical map to.
+	 *      @param [in]     invalid         Defines if this map is already been declared as invalid.
+	 *      @param [in]     portMap1        The first port map.
+	 *      @param [in]     component1      The component that contains the port map1.
+	 *      @param [in]     portMap2        The second port map.
+	 *      @param [in]     component2      The component that contains the port map2.
 	 *
 	*/
 	void addMap(int& row, bool invalid, 
@@ -109,46 +106,45 @@ private:
 		QSharedPointer<PortMap> portMap2,
 		QSharedPointer<Component> component2);
 
-	//! \brief Widget to display the connection type (COM/API/bus type).
+	//! Widget to display the connection type (COM/API/bus type).
 	VLNVDisplayer type_;
 
-	//! \brief Widget to display the abstraction type.
+	//! Widget to display the abstraction type.
 	VLNVDisplayer absType_;
 
-	//! \brief Label for connected instances.
+	//! Label for connected instances.
 	QLabel instanceLabel_;
 
-	//! \brief Label to display the connected interfaces.
+	//! Label to display the connected interfaces.
 	QLabel connectedInstances_;
 
-	//! \brief Used to separate the connected interfaces from name edit
+	//! Used to separate the connected interfaces from name edit
 	QGroupBox separator_;
 
-	//! \brief Label for connection name.
+	//! Label for connection name.
 	QLabel nameLabel_;
 
-	//! \brief Editor to set the name of the interconnection.
+	//! Editor to set the name of the interconnection.
 	QLineEdit nameEdit_;
 
-	//! \brief Label for description.
+	//! Label for description.
 	QLabel descriptionLabel_;
 
-	//! \brief Editor for description.
+	//! Editor for description.
 	QPlainTextEdit descriptionEdit_;
 
-	//! \brief Label for port widget.
+	//! Label for port widget.
 	QLabel portsLabel_;
 
-	//! \brief Widget to display the port connections.
+	//! Widget to display the port connections.
 	QTableWidget portWidget_;
 
-    //! Dummy widget to be used when there is no ports or ad-hoc bounds to show.
-    QWidget dummyWidget_;
-
-	//! \brief Pointer to the connection being edited.
+	//! The connection being edited.
 	GraphicsConnection* connection_;
 
-	//! \brief Pointer to the instance that manages the library
+    DesignDiagram* diagram_;
+
+	//! The instance that manages the library
 	LibraryInterface* handler_;
 
     //! The port ad-hoc bounds table.

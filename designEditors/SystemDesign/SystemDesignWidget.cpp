@@ -59,7 +59,7 @@ onlySW_(onlySW)
         supportedWindows_ |= SYSTEM_DETAILS_WINDOW;
     }
 
-    setDiagram(new SystemDesignDiagram(onlySW, lh, *getGenericEditProvider(), this));
+    setDiagram(new SystemDesignDiagram(onlySW, lh, getEditProvider(), this));
 }
 
 //-----------------------------------------------------------------------------
@@ -101,7 +101,7 @@ bool SystemDesignWidget::setDesign(VLNV const& vlnv, QString const& viewName)
     connect(getDiagram(), SIGNAL(modeChanged(DrawMode)),
         this, SIGNAL(modeChanged(DrawMode)), Qt::UniqueConnection);
 
-/*    setDocumentName(system->getVlnv()->getName() + " (" + system->getVlnv()->getVersion() + ")");*/
+/*    setDocumentName(system->getVlnv().getName() + " (" + system->getVlnv().getVersion() + ")");*/
 	setDocumentName(QString("%1 (%2)").arg(getIdentifyingVLNV().getName()).arg(getIdentifyingVLNV().getVersion()));
     if (onlySW_)
     {
@@ -307,7 +307,7 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
                 childCmd->redo();
             }
 
-            getGenericEditProvider()->addCommand(cmd);
+            getEditProvider()->addCommand(cmd);
         }
         else if (type == SWComponentItem::Type)
         {
@@ -338,7 +338,7 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
                 }
             }
 
-            getGenericEditProvider()->addCommand(cmd);
+            getEditProvider()->addCommand(cmd);
         }
         else if (type == SWPortItem::Type)
         {
@@ -358,7 +358,7 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
                 }
             }
 
-            getGenericEditProvider()->addCommand(cmd);
+            getEditProvider()->addCommand(cmd);
         }
         else if (type == SWInterfaceItem::Type)
         {
@@ -373,7 +373,7 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
                 childCmd->redo();
             }
 
-            getGenericEditProvider()->addCommand(cmd);
+            getEditProvider()->addCommand(cmd);
         }
         else if (type == GraphicsConnection::Type)
         {
@@ -424,7 +424,7 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
                 }
             }
 
-            getGenericEditProvider()->addCommand(cmd);
+            getEditProvider()->addCommand(cmd);
         }
         else if (type == StickyNote::Type)
         {
@@ -448,7 +448,7 @@ void SystemDesignWidget::addColumn()
 
         if (dialog.exec() == QDialog::Accepted)
         {
-            if (dialog.getContentType() == COLUMN_CONTENT_IO)
+            if (dialog.getContentType() == ColumnTypes::IO)
             {
                 QSharedPointer<ColumnDesc> desc(new ColumnDesc(dialog.name(), dialog.getContentType(), 0, SystemDesignDiagram::IO_COLUMN_WIDTH));
                 getDiagram()->addColumn(desc);
@@ -468,7 +468,7 @@ void SystemDesignWidget::addColumn()
         if (dialog.exec() == QDialog::Accepted)
         {
             getDiagram()->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc(dialog.name(),
-                COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SYSTEM_COLUMN_WIDTH)));
+                ColumnTypes::COMPONENTS, 0, SystemDesignDiagram::SYSTEM_COLUMN_WIDTH)));
         }
     }
 }
@@ -543,14 +543,16 @@ bool SystemDesignWidget::saveAs()
 		openView->setHierarchyRef( desConfVLNV );
 
         // Create design with new design vlnv.
-        design = getDiagram()->createDesign(designVLNV);
+        design = getDiagram()->getDesign();
+        design->setVlnv(designVLNV);
     }
     // If component does not use design configuration then it references directly to design.
     else
     {
 		// Set component to reference new design.
 		openView->setHierarchyRef( designVLNV );
-        design = getDiagram()->createDesign(designVLNV);
+        design = getDiagram()->getDesign();
+        design->setVlnv(designVLNV);
     }
 
     if (design == 0)

@@ -210,18 +210,7 @@ Qt::ItemFlags FileBuildersModel::flags( const QModelIndex& index ) const
 		return Qt::NoItemFlags;
 	}
 	
-	Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-
-	// the replace default column is boolean and uses check box
-	if (index.column() == FileBuilderColumns::REPLACE_DEFAULT_COLUMN)
-    {
-		flags |= Qt::ItemIsUserCheckable;
-	}
-	// others can be freely edited by user
-	else
-    {
-		flags |= Qt::ItemIsEditable;
-	}
+	Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
 
 	return flags;
 }

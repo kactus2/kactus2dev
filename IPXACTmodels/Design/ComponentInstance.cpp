@@ -22,40 +22,13 @@
 //-----------------------------------------------------------------------------
 // Function: ComponentInstance::ComponentInstance()
 //-----------------------------------------------------------------------------
-ComponentInstance::ComponentInstance(QString instanceName, QString displayName,
-                                     QString description,
-                                     QSharedPointer<ConfigurableVLNVReference> componentRef,
-                                     QPointF const& position,
-									 const QString& uuid) :
+ComponentInstance::ComponentInstance() :
 Extendable(),
-instanceName_(instanceName),
-displayName_(displayName),
-desc_(description),
+instanceName_(),
+displayName_(),
+description_(),
 isPresent_(),
-componentRef_(new ConfigurableVLNVReference(*componentRef.data()))
-{
-    setPosition(position);
-
-    if (uuid.isEmpty())
-    {
-        setUuid(QUuid::createUuid().toString());
-    }
-    else
-    {
-        setUuid(uuid);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentInstance::ComponentInstance()
-//-----------------------------------------------------------------------------
-ComponentInstance::ComponentInstance(ComponentInstance const& other) :
-Extendable(other),
-instanceName_(other.instanceName_),
-displayName_(other.displayName_),
-desc_(other.desc_),
-isPresent_(other.isPresent_),
-componentRef_(new ConfigurableVLNVReference(*other.componentRef_.data()))
+componentRef_(new ConfigurableVLNVReference())
 {
     if (getUuid().isEmpty())
     {
@@ -66,13 +39,27 @@ componentRef_(new ConfigurableVLNVReference(*other.componentRef_.data()))
 //-----------------------------------------------------------------------------
 // Function: ComponentInstance::ComponentInstance()
 //-----------------------------------------------------------------------------
-ComponentInstance::ComponentInstance() :
+ComponentInstance::ComponentInstance(QString const& instanceName, QSharedPointer<ConfigurableVLNVReference> componentRef):
 Extendable(),
-instanceName_(),
-displayName_(),
-desc_(),
-isPresent_(),
-componentRef_(new ConfigurableVLNVReference())
+    instanceName_(instanceName),
+    displayName_(),
+    description_(),
+    isPresent_(),
+    componentRef_(componentRef)
+{
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentInstance::ComponentInstance()
+//-----------------------------------------------------------------------------
+ComponentInstance::ComponentInstance(ComponentInstance const& other) :
+Extendable(other),
+    instanceName_(other.instanceName_),
+    displayName_(other.displayName_),
+    description_(other.description_),
+    isPresent_(other.isPresent_),
+    componentRef_(new ConfigurableVLNVReference(*other.componentRef_.data()))
 {
     if (getUuid().isEmpty())
     {
@@ -87,101 +74,6 @@ ComponentInstance::~ComponentInstance()
 {
     componentRef_.clear();
 }
-/*
-//-----------------------------------------------------------------------------
-// Function: ComponentInstance::isValid()
-//-----------------------------------------------------------------------------
-bool ComponentInstance::isValid(QStringList& errorList, QString const& parentIdentifier) const
-{
-    bool valid = true;
-    const QString thisIdentifier(QObject::tr("component instance %1").arg(instanceName_));
-
-    if (instanceName_.isEmpty())
-    {
-        errorList.append(QObject::tr("No name specified for component instance "
-                                     "within %1").arg(parentIdentifier));
-        valid = false;
-    }
-
-    // if the instance name contains characters that are not allowed in vhdl
-    //QRegExpValidator nameValidator(QRegExp("^[a-zA-Z]+[a-zA-Z0-9_]*$"));
-    NameValidator nameValidator(0);
-    int pos = 0;
-    QString instName(instanceName_);
-
-    if (nameValidator.validate(instName, pos) != QValidator::Acceptable)
-    {
-        errorList.append(QObject::tr("The instance name %1 contains illegal characters.").arg(instName));
-        valid = false;
-    }
-    /*
-    if (!isDraft() && !componentRef_.isValid(errorList, thisIdentifier))
-    {
-        valid = false;
-    }
-
-    for (QMap<QString, QString>::const_iterator i = configurableElementValues_.begin();
-        i != configurableElementValues_.end(); ++i)
-    {
-            if (i.key().isEmpty())
-            {
-                errorList.append(QObject::tr("No reference id set for configurable"
-                                             " element value in %1 within %2").arg(thisIdentifier).arg(parentIdentifier));
-                valid = false;
-            }
-
-            if (i.value().isEmpty())
-            {
-                errorList.append(QObject::tr("No configurable element value set"
-                                             " for %1 within %2").arg(thisIdentifier).arg(parentIdentifier));
-                valid = false;
-            }
-    }*/
-/*
-    return valid;
-}*/
-/*
-//-----------------------------------------------------------------------------
-// Function: ComponentInstance::isValid()
-//-----------------------------------------------------------------------------
-bool ComponentInstance::isValid() const
-{
-    if (instanceName_.isEmpty()) {
-        return false;
-    }
-
-    // if the instance name contains characters that are not allowed in vhdl
-    //QRegExpValidator nameValidator;
-    NameValidator nameValidator(0);
-    int pos = 0;
-    QString instName(instanceName_);
-
-    if (nameValidator.validate(instName, pos) != QValidator::Acceptable)
-    {
-        return false;
-    }
-    /*
-    if (!isDraft() && !componentRef_.isValid())
-    {
-        return false;
-    }
-
-    for (QMap<QString, QString>::const_iterator i = configurableElementValues_.begin();
-        i != configurableElementValues_.end(); ++i)
-    {
-            if (i.key().isEmpty())
-            {
-                return false;
-            }
-
-            if (i.value().isEmpty())
-            {
-                return false;
-            }
-    }*/
-/*
-    return true;
-}*/
 
 //-----------------------------------------------------------------------------
 // Function: ComponentInstance::setInstanceName()
@@ -204,7 +96,7 @@ void ComponentInstance::setDisplayName(QString const& displayName)
 //-----------------------------------------------------------------------------
 void ComponentInstance::setDescription(QString const& description)
 {
-    desc_ = description;
+    description_ = description;
 }
 
 //-----------------------------------------------------------------------------
@@ -340,7 +232,7 @@ void ComponentInstance::updateComInterfacePosition(QString const& name, QPointF 
 //-----------------------------------------------------------------------------
 // Function: ComponentInstance::getInstanceName()
 //-----------------------------------------------------------------------------
-QString const& ComponentInstance::getInstanceName() const
+QString ComponentInstance::getInstanceName() const
 {
     return instanceName_;
 }
@@ -348,7 +240,7 @@ QString const& ComponentInstance::getInstanceName() const
 //-----------------------------------------------------------------------------
 // Function: ComponentInstance::getDisplayName()
 //-----------------------------------------------------------------------------
-QString const& ComponentInstance::getDisplayName() const
+QString ComponentInstance::getDisplayName() const
 {
     return displayName_;
 }
@@ -356,9 +248,9 @@ QString const& ComponentInstance::getDisplayName() const
 //-----------------------------------------------------------------------------
 // Function: ComponentInstance::getDescription()
 //-----------------------------------------------------------------------------
-QString const& ComponentInstance::getDescription() const
+QString ComponentInstance::getDescription() const
 {
-    return desc_;
+    return description_;
 }
 
 //-----------------------------------------------------------------------------
@@ -545,7 +437,7 @@ ComponentInstance& ComponentInstance::operator=(ComponentInstance const& other)
 
         instanceName_ = other.instanceName_;
         displayName_ = other.displayName_;
-        desc_ = other.desc_;
+        description_ = other.description_;
         isPresent_ = other.isPresent_;
         componentRef_ = other.componentRef_;
 
@@ -669,6 +561,30 @@ void ComponentInstance::setUuid(QString const& newUuid)
 
     QSharedPointer<Kactus2Value> uuidExtension (new Kactus2Value("kactus2:uuid", newUuid));
     getVendorExtensions()->append(uuidExtension);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentInstance::hideAdHocPort()
+//-----------------------------------------------------------------------------
+void ComponentInstance::hideAdHocPort(QString const& portName)
+{
+    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    {
+        if (extension->type() == "kactus2:adHocVisibilities")
+        {
+            QSharedPointer<Kactus2Group> visibilityGroup = extension.dynamicCast<Kactus2Group>();
+
+            foreach (QSharedPointer<VendorExtension> visibility, visibilityGroup->getByType("kactus2:adHocVisible"))
+            {
+                QSharedPointer<Kactus2Placeholder> adhocExtension = visibility.dynamicCast<Kactus2Placeholder>();
+                if (adhocExtension->getAttributeValue("portName") == portName)
+                {
+                    visibilityGroup->removeFromGroup(visibility);
+                    return;
+                }
+            }
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------

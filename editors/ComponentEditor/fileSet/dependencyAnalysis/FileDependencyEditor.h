@@ -163,7 +163,7 @@ private:
      *      @param [in] iconText    The text displayed for the icon.
      *      @param [in] filter      The filter value for the button.
      */
-    void addFilterButton(QIcon icon, QString iconText, FileDependencyGraphView::DependencyFilter filter);
+    void addFilterButton(QIcon icon, QString const& iconText, FileDependencyGraphView::DependencyFilter filter);
 
     /*!
      *  Finishes the scan.
@@ -220,10 +220,10 @@ private:
     QAction* runAnalysisAction_;
 
     //! Timer for file scanning.
-    QSharedPointer<QTimer> timer_;
+    QTimer* timer_;
 
     //! Progress widget for file scanning.
-    QSharedPointer<ScanProgressWidget> progWidget_;
+    ScanProgressWidget* progWidget_;
 };
 
 //-----------------------------------------------------------------------------

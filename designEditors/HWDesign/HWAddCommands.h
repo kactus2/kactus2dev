@@ -12,7 +12,10 @@
 #ifndef HWADDCOMMANDS_H
 #define HWADDCOMMANDS_H
 
+#include <IPXACTmodels/generaldeclarations.h>
+
 #include <IPXACTmodels/common/DirectionTypes.h>
+
 #include <IPXACTmodels/Component/PortMap.h>
 
 #include <QUndoCommand>
@@ -21,16 +24,17 @@
 #include <QString>
 #include <QObject>
 
-class HWConnection;
 class BusPortItem;
-class HWComponentItem;
 class BusInterfaceItem;
 class BusInterface;
+class Component;
+class ComponentItem;
+class Design;
 class GraphicsColumn;
 class GraphicsColumnLayout;
-class ComponentItem;
+class HWConnection;
+class HWComponentItem;
 class IGraphicsItemStack;
-class Component;
 class Port;
 //-----------------------------------------------------------------------------
 //! PortAddCommand class.
@@ -100,7 +104,7 @@ public:
      *      @param [in] conn   The interconnection to add.
      *      @param [in] parent The parent command.
      */
-    ConnectionAddCommand(QGraphicsScene* scene, HWConnection* conn,
+    ConnectionAddCommand(QGraphicsScene* scene, HWConnection* conn, QSharedPointer<Design> design,
                          QUndoCommand* parent = 0);
 
     /*!
@@ -140,6 +144,8 @@ private:
     //! The graphics scene.
     QGraphicsScene* scene_;
 
+    QSharedPointer<Design> design_;
+
     //! Boolean flag for indicating if the connection should be deleted in the destructor.
     bool del_;
 
@@ -160,12 +166,11 @@ public:
 	 *
      *      @param [in] destComponent  The component to which to copy a port.
      *      @param [in] srcComponent   The component from which the port is copied.
-     *      @param [in] pos            The position where to copy the port.
 	 *      @param [in] port           The port to paste.
      *      @param [in] parent         The parent command.
      */
     PortPasteCommand(HWComponentItem* destComponent,  QSharedPointer<Component> srcComponent, 
-		QPointF const& pos, BusPortItem* port, QUndoCommand* parent = 0);
+		BusPortItem* port, QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
@@ -193,9 +198,6 @@ private:
 
     //! The target item.
     HWComponentItem* component_;
-
-    //! The port position.
-    QPointF pos_;
 
     //! The diagram port.
     BusPortItem* port_;

@@ -9,26 +9,40 @@
 #include "HWDesignDiagram.h"
 #include "HWComponentItem.h"
 #include "HWConnection.h"
-#include "HWDeleteCommands.h"
 
 #include <designEditors/common/Association/Association.h>
 #include <designEditors/common/StickyNote/StickyNote.h>
 #include <designEditors/common/Association/AssociationRemoveCommand.h>
 
+#include <designEditors/HWDesign/undoCommands/ColumnDeleteCommand.h>
+#include <designEditors/HWDesign/undoCommands/ComponentDeleteCommand.h>
+#include <designEditors/HWDesign/undoCommands/ConnectionDeleteCommand.h>
+#include <designEditors/HWDesign/undoCommands/InterfaceDeleteCommand.h>
+#include <designEditors/HWDesign/undoCommands/PortDeleteCommand.h>
+
+#include <common/graphicsItems/GraphicsColumn.h>
+#include <common/graphicsItems/GraphicsColumnLayout.h>
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/GenericEditProvider.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 
+#include <Plugins/common/NameGenerationPolicy.h>
+
 #include "columnview/ColumnEditDialog.h"
 #include "columnview/HWColumn.h"
 
-#include <IPXACTmodels/librarycomponent.h>
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/ComponentInstantiation.h>
+#include <IPXACTmodels/Component/File.h>
+#include <IPXACTmodels/Component/FileSet.h>
+#include <IPXACTmodels/Component/Model.h>
+#include <IPXACTmodels/Component/View.h>
+
 #include <IPXACTmodels/Design/Design.h>
+
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
-#include <IPXACTmodels/model.h>
-#include <IPXACTmodels/view.h>
+
 #include <IPXACTmodels/generaldeclarations.h>
 
 #include <kactusGenerators/vhdlGenerator/vhdlgenerator2.h>
@@ -47,9 +61,9 @@ HWDesignWidget::HWDesignWidget(LibraryInterface *lh, QWidget* parent)
 {
 	// update the supported windows 
 	supportedWindows_ = (supportedWindows_ | CONFIGURATIONWINDOW |
-		CONNECTIONWINDOW | INTERFACEWINDOW |INSTANCEWINDOW | ADHOC_WINDOW | ADDRESS_WINDOW | NOTES_WINDOW);
+		CONNECTIONWINDOW | INTERFACEWINDOW | INSTANCEWINDOW | ADHOC_WINDOW | ADDRESS_WINDOW | NOTES_WINDOW);
 
-    setDiagram(new HWDesignDiagram(lh, *getGenericEditProvider(), this));
+    setDiagram(new HWDesignDiagram(lh, getEditProvider(), this));
     getDiagram()->setProtection(false);
     getDiagram()->setMode(MODE_SELECT);
     
@@ -68,12 +82,11 @@ HWDesignWidget::~HWDesignWidget()
 //-----------------------------------------------------------------------------
 bool HWDesignWidget::setDesign(VLNV const& vlnv, QString const& viewName)
 {	
-	disconnect(getDiagram(), SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()));
+	disconnect(getDiagram(), SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
 
 	// if vlnv and view name was defined which means that an existing component is opened
-	if (vlnv.isValid() && !viewName.isEmpty()) {
-
+	if (vlnv.isValid() && !viewName.isEmpty())
+    {
 		// if vlnv is writeSucceeded and the type is component
 		if (vlnv.isValid() && vlnv.getType() == VLNV::COMPONENT) {
 
@@ -81,20 +94,15 @@ bool HWDesignWidget::setDesign(VLNV const& vlnv, QString const& viewName)
 			QSharedPointer<Document> libComponent = getLibraryInterface()->getModel(vlnv);
             QSharedPointer<Component> comp = libComponent.staticCast<Component>();
 
-			if (comp == 0)
+			if (comp == 0 || !setDesign(comp, viewName))
             {
 				return false;
             }
-
-			if (!setDesign(comp, viewName))
-            {
-                return false;
-            }
 		}
 	}
-
 	// if vlnv was writeSucceeded but view is empty then should create a new design for the component
-	else if (vlnv.isValid() && viewName.isEmpty()) {
+	else if (vlnv.isValid() && viewName.isEmpty())
+    {
 		Q_ASSERT(getLibraryInterface()->contains(vlnv));
 		Q_ASSERT(getLibraryInterface()->getDocumentType(vlnv) == VLNV::COMPONENT);
 
@@ -108,9 +116,9 @@ bool HWDesignWidget::setDesign(VLNV const& vlnv, QString const& viewName)
 
 		createDesignForComponent(comp, dirPath);
 	}
-
 	// if vlnv was not defined (a new hierarchical component is created)
-	else {
+	else
+    {
 		if (!createEmptyDesign(vlnv))
         {
             return false;
@@ -118,10 +126,9 @@ bool HWDesignWidget::setDesign(VLNV const& vlnv, QString const& viewName)
 	}
 
 	// disable the save at startup
-	connect(getDiagram(), SIGNAL(contentChanged()),
-		    this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(getDiagram(), SIGNAL(modeChanged(DrawMode)),
-		    this, SIGNAL(modeChanged(DrawMode)), Qt::UniqueConnection);
+	connect(getDiagram(), SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(getDiagram(), SIGNAL(modeChanged(DrawMode)), this, SIGNAL(modeChanged(DrawMode)), Qt::UniqueConnection);
+
 	setModified(false);
 	
 	setDocumentType("HW Design");
@@ -135,78 +142,91 @@ bool HWDesignWidget::setDesign(VLNV const& vlnv, QString const& viewName)
 //-----------------------------------------------------------------------------
 // Function: HWDesignWidget::setDesign()
 //-----------------------------------------------------------------------------
-bool HWDesignWidget::setDesign(QSharedPointer<Component> comp, const QString& viewName)
+bool HWDesignWidget::setDesign(QSharedPointer<Component> component, QString const& viewName)
 {
-    View* view = comp->findView(viewName);
-
-    if (!view || !view->isHierarchical()) {
-        return false;
+    QSharedPointer<View> openView(0);
+    foreach (QSharedPointer<View> view, *component->getViews())
+    {
+        if (view->name() == viewName)
+        {
+            openView = view;
+            break;
+        }
     }
 
-    VLNV designVLNV = comp->getHierRef(viewName);
-
-    // Check for a valid VLNV type.
-    designVLNV.setType(getLibraryInterface()->getDocumentType(designVLNV));
-
-    if (!designVLNV.isValid())
+    if (!openView || !openView->isHierarchical())
     {
-        emit errorMessage(tr("Component %1 did not contain a hierarchical view").arg(comp->getVlnv()->getName()));
         return false;
     }
 
     QSharedPointer<Design> design;
-    QSharedPointer<DesignConfiguration> designConf;
-
-    // if the component contains a direct reference to a design
-    if (designVLNV.getType() == VLNV::DESIGN)
+    QSharedPointer<DesignConfiguration> designConfiguration;
+    
+    if (!openView->getDesignConfigurationInstantiationRef().isEmpty())
     {
-        QSharedPointer<Document> libComp = getLibraryInterface()->getModel(designVLNV);	
-        design = libComp.staticCast<Design>();
-    }
-    // if component had reference to a design configuration
-    else if (designVLNV.getType() == VLNV::DESIGNCONFIGURATION)
-    {
-        QSharedPointer<Document> libComp = getLibraryInterface()->getModel(designVLNV);
-        designConf = libComp.staticCast<DesignConfiguration>();
+        VLNV configurationVLNV;
 
-        designVLNV = designConf->getDesignRef();
-
-        if (designVLNV.isValid())
+        foreach (QSharedPointer<DesignConfigurationInstantiation> configuration, 
+            *component->getDesignConfigurationInstantiations())
         {
-            QSharedPointer<Document> libComp = getLibraryInterface()->getModel(designVLNV);	
-            design = libComp.staticCast<Design>();
+            if (configuration->name() == openView->getDesignConfigurationInstantiationRef())
+            {
+                configurationVLNV = *configuration->getDesignConfigurationReference();
+            }
         }
 
-        // if design configuration did not contain a reference to a design.
+        designConfiguration = getLibraryInterface()->getModel(configurationVLNV).dynamicCast<DesignConfiguration>();       
+        if (designConfiguration)
+        {
+            design = getLibraryInterface()->getModel(designConfiguration->getDesignRef()).dynamicCast<Design>();
+        }
+
         if (!design)
         {
-            emit errorMessage(tr("Component %1 did not contain a hierarchical view").arg(
-                comp->getVlnv()->getName()));
-            return false;;
+            emit errorMessage(tr("Component %1 did not contain a hierarchical view").arg(component->getVlnv().getName()));
+            return false;
         }
     }
+    else if (!openView->getDesignInstantiationRef().isEmpty())
+    {
+        VLNV designVLNV;
 
-    if (!getDiagram()->setDesign(comp, design, designConf))
+        foreach (QSharedPointer<DesignInstantiation> designInstantiation, *component->getDesignInstantiations())
+        {
+            if (designInstantiation->name() == openView->getDesignInstantiationRef())
+            {
+                designVLNV = *designInstantiation->getDesignReference();
+            }
+        }
+
+        design = getLibraryInterface()->getModel(designVLNV).dynamicCast<Design>();
+    }
+
+    if (!getDiagram()->setDesign(component, design, designConfiguration))
     {
         return false;
     }
-    DesignWidget::setDesign(comp, viewName);
+
+    DesignWidget::setDesign(component, viewName);
 	setDocumentName(QString("%1 (%2)").arg(getIdentifyingVLNV().getName()).arg(getIdentifyingVLNV().getVersion()));
 
     return true;
 }
 
-bool HWDesignWidget::saveAs() {
-
-	VLNV oldVLNV = *getEditedComponent()->getVlnv();
+//-----------------------------------------------------------------------------
+// Function: HWDesignWidget::saveAs()
+//-----------------------------------------------------------------------------
+bool HWDesignWidget::saveAs()
+{
+	VLNV oldVLNV = getEditedComponent()->getVlnv();
 
     // Ask the user for a new VLNV along with attributes and directory.
-    KactusAttribute::ProductHierarchy prodHier = getEditedComponent()->getComponentHierarchy();
-    KactusAttribute::Firmness firmness = getEditedComponent()->getComponentFirmness();
+    KactusAttribute::ProductHierarchy prodHier = getEditedComponent()->getHierarchy();
+    KactusAttribute::Firmness firmness = getEditedComponent()->getFirmness();
 
     VLNV vlnv;
-    QString directory;
 
+    QString directory;
     if (!NewObjectDialog::saveAsDialog(this, getLibraryInterface(), oldVLNV, prodHier, firmness, vlnv, directory))
     {
         return false;
@@ -218,44 +238,62 @@ bool HWDesignWidget::saveAs() {
 	VLNV desConfVLNV(VLNV::DESIGNCONFIGURATION, vlnv.getVendor(), vlnv.getLibrary(),
 		vlnv.getName().remove(".comp") + ".designcfg", vlnv.getVersion());
 
-	QSharedPointer<Design> design;
-
-	// create the design
-
+    // create the design
+    QSharedPointer<Design> design;
 	QSharedPointer<Component> oldComponent = getEditedComponent();
 
 	// make a copy of the hierarchical component
-	setEditedComponent(QSharedPointer<Component>(new Component(*getEditedComponent())));
+    QSharedPointer<Component> topComponent(new Component(*oldComponent));
+	setEditedComponent(topComponent);
 
 	// set the new vlnv for the component
-	getEditedComponent()->setVlnv(vlnv);
+	topComponent->setVlnv(vlnv);
+
+    QSharedPointer<View> openView(0);
+    foreach (QSharedPointer<View> view, *topComponent->getViews())
+    {
+        if (view->name() == getOpenViewName())
+        {
+            openView = view;
+            break;
+        }
+    }
 
 	QSharedPointer<DesignConfiguration> designConf = getDiagram()->getDesignConfiguration();
 
 	// if design configuration is used
-	if (designConf) {
-
+	if (designConf)
+    {
 		// make a copy of the design configuration
 		designConf = QSharedPointer<DesignConfiguration>(new DesignConfiguration(*designConf));
-
-		// set design configuration's vlnv to match new vlnv
 		designConf->setVlnv(desConfVLNV);
-
-		// set design configuration to reference to new design vlnv
 		designConf->setDesignRef(designVLNV);
 
-		// set component to reference new design configuration
-		getEditedComponent()->setHierRef(desConfVLNV, getOpenViewName());
+        foreach (QSharedPointer<DesignConfigurationInstantiation> configuration, 
+            *topComponent->getDesignConfigurationInstantiations())
+        {
+            if (configuration->name() == openView->getDesignConfigurationInstantiationRef())
+            {
+                configuration->setDesignConfigurationReference(QSharedPointer<ConfigurableVLNVReference>(
+                    new ConfigurableVLNVReference(desConfVLNV)));
+            }
+        }
 
-		// create design with new design vlnv
-		design = getDiagram()->createDesign(designVLNV);
+		design = getDiagram()->getDesign();
 	}
 	// if component does not use design configuration then it references directly to design
-	else {
-		// set component to reference new design
-		getEditedComponent()->setHierRef(designVLNV, getOpenViewName());
+	else
+    {
+        foreach (QSharedPointer<DesignInstantiation> designInstantiation, *topComponent->getDesignInstantiations())
+        {
+            if (designInstantiation->name() == openView->getDesignInstantiationRef())
+            {
+                designInstantiation->setDesignReference(QSharedPointer<ConfigurableVLNVReference>(
+                    new ConfigurableVLNVReference(designVLNV)));
+            }
+        }
 
-		design = getDiagram()->createDesign(designVLNV);
+		design = getDiagram()->getDesign();
 	}
 
 	if (design == 0)
@@ -267,11 +305,11 @@ bool HWDesignWidget::saveAs() {
 	getDiagram()->updateHierComponent();
 
 	// get the paths to the original xml file
-	QFileInfo sourceInfo(getLibraryInterface()->getPath(*oldComponent->getVlnv()));
+	QFileInfo sourceInfo(getLibraryInterface()->getPath(oldComponent->getVlnv()));
 	QString sourcePath = sourceInfo.absolutePath();
 
 	// update the file paths and copy necessary files
-	getEditedComponent()->updateFiles(*oldComponent, sourcePath, directory);
+	updateFiles(topComponent, sourcePath, directory);
 
 	// create the files for the documents
 
@@ -280,16 +318,18 @@ bool HWDesignWidget::saveAs() {
 	getLibraryInterface()->beginSave();
 
 	// if design configuration is used then write it.
-	if (designConf) {
-		if (!getLibraryInterface()->writeModelToFile(directory, designConf, false)) {
-			writeSucceeded = false;
-		}
+	if (designConf && !getLibraryInterface()->writeModelToFile(directory, designConf, false))
+    {
+	    writeSucceeded = false;
 	}
 
-	if (!getLibraryInterface()->writeModelToFile(directory, design, false)) {
+	if (!getLibraryInterface()->writeModelToFile(directory, design, false))
+    {
 		writeSucceeded = false;
 	}
-	if (!getLibraryInterface()->writeModelToFile(directory, getEditedComponent(), false)) {
+
+	if (!getLibraryInterface()->writeModelToFile(directory, topComponent, false))
+    {
 		writeSucceeded = false;
 	}
 
@@ -297,8 +337,8 @@ bool HWDesignWidget::saveAs() {
 
 	if (writeSucceeded)
     {
-		setDocumentName(getEditedComponent()->getVlnv()->getName() + " (" + 
-			getEditedComponent()->getVlnv()->getVersion() + ")");
+		setDocumentName(getEditedComponent()->getVlnv().getName() + " (" + 
+            getEditedComponent()->getVlnv().getVersion() + ")");
 		return TabDocument::saveAs();
 	}
 	else
@@ -308,6 +348,9 @@ bool HWDesignWidget::saveAs() {
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Function: HWDesignWidget::keyPressEvent()
+//-----------------------------------------------------------------------------
 void HWDesignWidget::keyPressEvent(QKeyEvent *event)
 {
     // Handle delete events if the document is not protected.
@@ -325,31 +368,33 @@ void HWDesignWidget::keyPressEvent(QKeyEvent *event)
         {
             getDiagram()->clearSelection();
 
-            QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
+            QSharedPointer<QUndoCommand> deleteCommand(new QUndoCommand());
 
             foreach (QGraphicsItem* selected, selectedItems)
             {
 			    HWComponentItem* component = static_cast<HWComponentItem*>(selected);
-			    getDiagram()->removeInstanceName(component->name());
                 getDiagram()->clearSelection();
             
-                ComponentDeleteCommand* childCmd = new ComponentDeleteCommand(component, cmd.data());
+                ComponentDeleteCommand* componentDeleteCommand = new ComponentDeleteCommand(
+                    getDiagram(), getDiagram()->getLayout()->findColumnAt(component->pos()),
+                    component, deleteCommand.data());
 
-			    connect(childCmd, SIGNAL(componentInstanceRemoved(ComponentItem*)),
+			    connect(componentDeleteCommand, SIGNAL(componentInstanceRemoved(ComponentItem*)),
 				    this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
-			    connect(childCmd, SIGNAL(componentInstantiated(ComponentItem*)),
+			    connect(componentDeleteCommand, SIGNAL(componentInstantiated(ComponentItem*)),
 				    this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
 
-                childCmd->redo();
+                componentDeleteCommand->redo();
 
                 foreach(Association* association, component->getAssociations())
                 {
-                    QUndoCommand* associationRemoveCmd = new AssociationRemoveCommand(association, getDiagram(), childCmd);
-                    associationRemoveCmd->redo();
+                    QUndoCommand* associationDeleteCommand = new AssociationRemoveCommand(association,
+                        getDiagram(), componentDeleteCommand);
+                    associationDeleteCommand->redo();
                 }
             }
 
-            getGenericEditProvider()->addCommand(cmd);
+            getEditProvider()->addCommand(deleteCommand);
         }
         else if (type == BusInterfaceItem::Type)
         {
@@ -398,13 +443,13 @@ void HWDesignWidget::keyPressEvent(QKeyEvent *event)
             {
                 BusInterfaceItem* diagIf = static_cast<BusInterfaceItem*>(selected);
 
-                InterfaceDeleteCommand* childCmd = new InterfaceDeleteCommand(diagIf, removePorts, cmd.data());
+                InterfaceDeleteCommand* childCmd = new InterfaceDeleteCommand(getDiagram(), diagIf, removePorts, cmd.data());
                 connect(childCmd, SIGNAL(interfaceDeleted()), this, SIGNAL(clearItemSelection()), Qt::UniqueConnection);            
 
                 childCmd->redo();
             }
 
-            getGenericEditProvider()->addCommand(cmd);
+            getEditProvider()->addCommand(cmd);
         }
         else if (type == BusPortItem::Type)
         {
@@ -419,12 +464,12 @@ void HWDesignWidget::keyPressEvent(QKeyEvent *event)
                 if (port->isTemporary())
                 {
                     // Delete the port.
-                    QUndoCommand* childCmd = new PortDeleteCommand(port, cmd.data());
+                    QUndoCommand* childCmd = new PortDeleteCommand(getDiagram(), port, cmd.data());
                     childCmd->redo();
                 }
             }
 
-            getGenericEditProvider()->addCommand(cmd);
+            getEditProvider()->addCommand(cmd);
         }
         else if (type == HWConnection::Type)
         {
@@ -438,7 +483,7 @@ void HWDesignWidget::keyPressEvent(QKeyEvent *event)
                 HWConnectionEndpoint* endpoint1 = static_cast<HWConnectionEndpoint*>(conn->endpoint1());
                 HWConnectionEndpoint* endpoint2 = static_cast<HWConnectionEndpoint*>(conn->endpoint2());
 
-                QUndoCommand* childCmd = new ConnectionDeleteCommand(conn, cmd.data());
+                QUndoCommand* childCmd = new ConnectionDeleteCommand(getDiagram(), conn, cmd.data());
                 childCmd->redo();
 
                 // If the bus ports are invalid, delete them too.
@@ -448,11 +493,11 @@ void HWDesignWidget::keyPressEvent(QKeyEvent *event)
 
                     if (endpoint1->type() == BusPortItem::Type)
                     {
-                        childCmd = new PortDeleteCommand(endpoint1, cmd.data());
+                        childCmd = new PortDeleteCommand(getDiagram(), endpoint1, cmd.data());
                     }
                     else
                     {
-                        childCmd = new InterfaceDeleteCommand(static_cast<BusInterfaceItem*>(endpoint1), false, cmd.data());
+                        childCmd = new InterfaceDeleteCommand(getDiagram(), static_cast<BusInterfaceItem*>(endpoint1), false, cmd.data());
                     }
 
                     childCmd->redo();
@@ -464,18 +509,18 @@ void HWDesignWidget::keyPressEvent(QKeyEvent *event)
 
                     if (endpoint2->type() == BusPortItem::Type)
                     {
-                        childCmd = new PortDeleteCommand(endpoint2, cmd.data());
+                        childCmd = new PortDeleteCommand(getDiagram(), endpoint2, cmd.data());
                     }
                     else
                     {
-                        childCmd = new InterfaceDeleteCommand(static_cast<BusInterfaceItem*>(endpoint2), false, cmd.data());
+                        childCmd = new InterfaceDeleteCommand(getDiagram(), static_cast<BusInterfaceItem*>(endpoint2), false, cmd.data());
                     }
 
                     childCmd->redo();
                 }
             }
 
-            getGenericEditProvider()->addCommand(cmd);
+            getEditProvider()->addCommand(cmd);
         }
         else if (type == HWColumn::Type)
         {
@@ -483,13 +528,11 @@ void HWDesignWidget::keyPressEvent(QKeyEvent *event)
             foreach (QGraphicsItem* selected, selectedItems)
             {
                 HWColumn* column = static_cast<HWColumn*>(selected);
-
                 if (!column->isEmpty())
                 {
                     QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-                                       tr("The columns are not empty. Do you want to "
-                                          "delete the columns and all of their contents?"),
-                                       QMessageBox::Yes | QMessageBox::No, this);
+                        tr("The columns are not empty. Do you want to delete the columns and all of their contents?"),
+                        QMessageBox::Yes | QMessageBox::No, this);
 
                     if (msgBox.exec() == QMessageBox::No)
                     {
@@ -502,16 +545,17 @@ void HWDesignWidget::keyPressEvent(QKeyEvent *event)
 
             // Delete the columns.
             getDiagram()->clearSelection();
-            QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
+            QSharedPointer<QUndoCommand> parentCommand(new QUndoCommand());
 
             foreach (QGraphicsItem* selected, selectedItems)
             {
                 HWColumn* column = static_cast<HWColumn*>(selected);
-                QUndoCommand* childCmd = new ColumnDeleteCommand(getDiagram()->getLayout().data(), column, cmd.data());
-                childCmd->redo();
+                QUndoCommand* columnRemoveCommand = 
+                    new ColumnDeleteCommand(getDiagram(), getDiagram()->getLayout().data(), column, parentCommand.data());
+                columnRemoveCommand->redo();
             }
 
-            getGenericEditProvider()->addCommand(cmd);
+            getEditProvider()->addCommand(parentCommand);
         }
         else if (type == StickyNote::Type)
         {
@@ -528,24 +572,32 @@ void HWDesignWidget::keyPressEvent(QKeyEvent *event)
     }
 }
 
-QSharedPointer<Component> HWDesignWidget::createEmptyDesign(VLNV const& prevlnv) {
-    
+//-----------------------------------------------------------------------------
+// Function: HWDesignWidget::createEmptyDesign()
+//-----------------------------------------------------------------------------
+QSharedPointer<Component> HWDesignWidget::createEmptyDesign(VLNV const& prevlnv)
+{    
 	VLNV vlnv;
 	QString path;
 
-	if (prevlnv.isValid() && getLibraryInterface()->contains(prevlnv)) {
+	if (prevlnv.isValid() && getLibraryInterface()->contains(prevlnv)) 
+    {
 		vlnv = prevlnv;
 		path = getLibraryInterface()->getPath(prevlnv);
+
 		QFileInfo info(path);
 		path = info.absolutePath();
 	}
-	else {
+	else
+    {
         NewObjectDialog newDesignDialog(getLibraryInterface(), VLNV::COMPONENT, true, parentWidget());
 		newDesignDialog.setVLNV(prevlnv);
 		newDesignDialog.exec();
 
 		if (newDesignDialog.result() == QDialog::Rejected)
+        {
 			return QSharedPointer<Component>();
+        }
 
 		vlnv = newDesignDialog.getVLNV();
 		path = newDesignDialog.getPath();
@@ -553,7 +605,8 @@ QSharedPointer<Component> HWDesignWidget::createEmptyDesign(VLNV const& prevlnv)
 
 	QSharedPointer<Component> newComponent;
 	
-	if (getLibraryInterface()->contains(prevlnv)) {
+	if (getLibraryInterface()->contains(prevlnv))
+    {
 		// find the component
 		QSharedPointer<Document> libComp = getLibraryInterface()->getModel(prevlnv);
 		newComponent = libComp.staticCast<Component>();
@@ -561,7 +614,8 @@ QSharedPointer<Component> HWDesignWidget::createEmptyDesign(VLNV const& prevlnv)
 		Q_ASSERT_X(newComponent, "HWDesignWidget::createEmptyDesign",
 			"The selected library item has to be component");
 	}
-	else {
+	else 
+    {
 		// create the component 
 		newComponent = QSharedPointer<Component>(new Component(vlnv));
 	}
@@ -573,17 +627,23 @@ QSharedPointer<Component> HWDesignWidget::createEmptyDesign(VLNV const& prevlnv)
     return newComponent;
 }
 
-void HWDesignWidget::createDesignForComponent(QSharedPointer<Component> component,
-											const QString& dirPath) {
-	VLNV vlnv = *component->getVlnv();
+//-----------------------------------------------------------------------------
+// Function: HWDesignWidget::createDesignForComponent()
+//-----------------------------------------------------------------------------
+void HWDesignWidget::createDesignForComponent(QSharedPointer<Component> component, const QString& dirPath)
+{
+	VLNV vlnv = component->getVlnv();
 
 	// create a unique vlnv for the design
 	VLNV designVLNV(VLNV::DESIGN, vlnv.getVendor(), vlnv.getLibrary(),
 		vlnv.getName().remove(".comp") + ".design", vlnv.getVersion());
+
 	int runningNumber = 1;
 	QString version = designVLNV.getVersion();
+
 	// if vlnv is reserved then add "(<number>)" to end of version field
-	while (getLibraryInterface()->contains(designVLNV)) {
+	while (getLibraryInterface()->contains(designVLNV))
+    {
 		++runningNumber;
 		designVLNV.setVersion(version + "(" + QString::number(runningNumber) + ")");
 	}
@@ -591,24 +651,35 @@ void HWDesignWidget::createDesignForComponent(QSharedPointer<Component> componen
 	// create a unique vlnv for the design configuration
 	VLNV desConfVLNV(VLNV::DESIGNCONFIGURATION, vlnv.getVendor(), vlnv.getLibrary(),
 		vlnv.getName().remove(".comp") + ".designcfg", vlnv.getVersion());
+
 	runningNumber = 1;
 	version = desConfVLNV.getVersion();
+
 	// if vlnv is reserved then add "(<number>)" to end of version field
-	while (getLibraryInterface()->contains(desConfVLNV)) {
+	while (getLibraryInterface()->contains(desConfVLNV))
+    {
 		++runningNumber;
 		desConfVLNV.setVersion(version + "(" + QString::number(runningNumber) + ")");
 	}
 
 	// the name of the view to create
 	QString viewName = tr("structural");
+    QString configurationName = NameGenerationPolicy::designConfigurationInstantiationName(viewName);
 
 	// and a hierarchical view for it
 	QSharedPointer<Model> model = component->getModel();
 	Q_ASSERT(model);
-	View *hierView = new View(viewName);
-	hierView->setHierarchyRef(desConfVLNV);
-	hierView->addEnvIdentifier("");
-	model->addView(hierView);
+
+	QSharedPointer<View> hierView(new View(viewName));
+    hierView->addEnvIdentifier("");
+    hierView->setDesignConfigurationInstantiationRef(configurationName);
+    
+    QSharedPointer<DesignConfigurationInstantiation> configuration(new DesignConfigurationInstantiation());
+    configuration->setName(configurationName);
+    configuration->setDesignConfigurationReference(
+        QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(desConfVLNV)));
+
+	model->getViews()->append(hierView);
 
 	// create the design configuration
 	QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV));
@@ -623,25 +694,62 @@ void HWDesignWidget::createDesignForComponent(QSharedPointer<Component> componen
 	setDesign(component, viewName);
 }
 
-void HWDesignWidget::onVhdlGenerate() {
-	
-	if (isModified() && askSaveFile()) {
+//-----------------------------------------------------------------------------
+// Function: HWDesignWidget::updateFiles()
+//-----------------------------------------------------------------------------
+void HWDesignWidget::updateFiles(QSharedPointer<Component> topComponent, QString const& sourcePath, QString const& targetDirectory) const
+{
+    QDir sourceDirectory(sourcePath);
+
+    foreach (QSharedPointer<FileSet> fileSet, *topComponent->getFileSets())
+    {
+        foreach (QSharedPointer<File> componentFile, *fileSet->getFiles())
+        {
+            QString filePath = componentFile->name();            
+            QString absoluteSource = sourceDirectory.absoluteFilePath(filePath);
+
+            // If file is located under the source directory.
+            if (!filePath.contains(QLatin1String("../")))
+            {
+                QDir targetDirectory(targetDirectory);
+                QString absoluteTarget = targetDirectory.absoluteFilePath(filePath);
+
+                QFileInfo targetInfo(absoluteTarget);
+
+                targetDirectory.mkpath(targetInfo.absolutePath());
+                QFile::copy(absoluteSource, absoluteTarget);
+
+            }
+            // if file is higher in directory hierarchy than the source directory.
+            else
+            {
+                componentFile->setName(absoluteSource);
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignWidget::onVhdlGenerate()
+//-----------------------------------------------------------------------------
+void HWDesignWidget::onVhdlGenerate()
+{
+	if (isModified() && askSaveFile())
+    {
 		save();
 	}
 
-	QString fileName = getLibraryInterface()->getPath(*getEditedComponent()->getVlnv());
-	QFileInfo targetInfo(fileName);
-	fileName = targetInfo.absolutePath();
-	fileName += QString("/");
-	fileName += getEditedComponent()->getEntityName(getOpenViewName());
-	fileName += QString(".vhd");
+	QString filePath = getLibraryInterface()->getPath(getEditedComponent()->getVlnv());
+	QFileInfo targetInfo(filePath);
+
+    QString fileName = targetInfo.absolutePath()+ "/" + findEntityName() +".vhd";
 
 	QString path = QFileDialog::getSaveFileName(this,
-		tr("Set the directory where the vhdl file is created to"),
-		fileName, tr("Vhdl files (*.vhd)"));
+		tr("Set the directory where the vhdl file is created to"), fileName, tr("Vhdl files (*.vhd)"));
 
 	// if user clicks cancel then nothing is created
-	if (path.isEmpty()) {
+	if (path.isEmpty())
+    {
 		return;
 	}
 
@@ -653,7 +761,8 @@ void HWDesignWidget::onVhdlGenerate() {
         this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 
 	// if errors are detected during parsing
-	if (!vhdlGen.parse(getEditedComponent(), getOpenViewName())) {
+	if (!vhdlGen.parse(getEditedComponent(), getOpenViewName()))
+    {
 		return;
 	}
 
@@ -661,10 +770,10 @@ void HWDesignWidget::onVhdlGenerate() {
 	vhdlGen.generate(path);
 
 	// check if the file already exists in the metadata
-	QString basePath = getLibraryInterface()->getPath(*getEditedComponent()->getVlnv());
+	QString basePath = getLibraryInterface()->getPath(getEditedComponent()->getVlnv());
 	QString relativePath = General::getRelativePath(basePath, path);
-	if (!getEditedComponent()->hasFile(relativePath)) {
-
+	if (!getEditedComponent()->hasFile(relativePath))
+    {
 		// ask user if he wants to save the generated vhdl into object metadata
 		QMessageBox::StandardButton button = QMessageBox::question(this, 
 			tr("Save generated file to metadata?"),
@@ -672,8 +781,8 @@ void HWDesignWidget::onVhdlGenerate() {
 			" metadata?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
 
 		// if the generated file is saved
-		if (button == QMessageBox::Yes) {
-
+		if (button == QMessageBox::Yes)
+        {
 			// add a rtl view to the getEditedComponent()
 			vhdlGen.addRTLView(path);
 
@@ -685,17 +794,47 @@ void HWDesignWidget::onVhdlGenerate() {
 	}
 }
 
-void HWDesignWidget::onModelsimGenerate() {
+//-----------------------------------------------------------------------------
+// Function: HWDesignWidget::findEntityName()
+//-----------------------------------------------------------------------------
+QString HWDesignWidget::findEntityName() const
+{
+    foreach (QSharedPointer<View> componentView, *getEditedComponent()->getViews())
+    {
+        if (componentView->name() == getOpenViewName())
+        {
+            QString componentInstantiation = componentView->getComponentInstantiationRef();
 
-	if (isModified() && askSaveFile()) {
+            foreach (QSharedPointer<ComponentInstantiation> instantiation, 
+                *getEditedComponent()->getComponentInstantiations())
+            {
+                if (instantiation->name() == componentInstantiation)
+                {
+                    return instantiation->getModuleName();
+                }
+            }
+
+        }
+    }
+
+    return QString();
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignWidget::onModelsimGenerate()
+//-----------------------------------------------------------------------------
+void HWDesignWidget::onModelsimGenerate()
+{
+	if (isModified() && askSaveFile())
+    {
 		save();
 	}
 
-	QString fileName = getLibraryInterface()->getPath(*getEditedComponent()->getVlnv());
+	QString fileName = getLibraryInterface()->getPath(getEditedComponent()->getVlnv());
 	QFileInfo targetInfo(fileName);
 	fileName = targetInfo.absolutePath();
 	fileName += QString("/%1.%2.compile.do").arg(
-		getEditedComponent()->getVlnv()->getName()).arg(getOpenViewName());
+		getEditedComponent()->getVlnv().getName()).arg(getOpenViewName());
 
 	// ask user to select a location to save the makefile
 	fileName = QFileDialog::getSaveFileName(this, 
@@ -704,8 +843,9 @@ void HWDesignWidget::onModelsimGenerate() {
 
 	// if user clicked cancel
 	if (fileName.isEmpty())
+    {
 		return;
-
+    }
 
 	// construct the generator
 	ModelsimGenerator generator(getLibraryInterface(), this);
@@ -721,24 +861,23 @@ void HWDesignWidget::onModelsimGenerate() {
 	generator.generateMakefile(fileName);
 
 	// check if the file already exists in the metadata
-	QString basePath = getLibraryInterface()->getPath(*getEditedComponent()->getVlnv());
+	QString basePath = getLibraryInterface()->getPath(getEditedComponent()->getVlnv());
 	QString relativePath = General::getRelativePath(basePath, fileName);
-	if (!getEditedComponent()->hasFile(relativePath)) {
-
-		// ask user if he wants to save the generated modelsim script into 
-		// object metadata
+	if (!getEditedComponent()->hasFile(relativePath))
+    {
+		// Ask user if he wants to save the generated modelsim script into object metadata.
 		QMessageBox::StandardButton button = QMessageBox::question(this, 
 			tr("Save generated modelsim script to metadata?"),
 			tr("Would you like to save the generated modelsim script to IP-Xact"
 			" metadata?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
 
-		// if the generated file is saved
-		if (button == QMessageBox::Yes) {
-
-			QString xmlPath = getLibraryInterface()->getPath(*getEditedComponent()->getVlnv());
+		if (button == QMessageBox::Yes)
+        {
+			QString xmlPath = getLibraryInterface()->getPath(getEditedComponent()->getVlnv());
 
 			// if the file was successfully added to the library
-			if (generator.addMakefile2IPXact(getEditedComponent(), fileName, xmlPath)) {
+			if (generator.addMakefile2IPXact(getEditedComponent(), fileName, xmlPath))
+            {
 				getLibraryInterface()->writeModelToFile(getEditedComponent());
 			}
 		}
@@ -746,7 +885,7 @@ void HWDesignWidget::onModelsimGenerate() {
 }
 
 //-----------------------------------------------------------------------------
-// Function: addColumn()
+// Function: HWDesignWidget::addColumn()
 //-----------------------------------------------------------------------------
 void HWDesignWidget::addColumn()
 {
@@ -756,19 +895,20 @@ void HWDesignWidget::addColumn()
     {
         int columnWidth = HWDesignDiagram::COMPONENT_COLUMN_WIDTH;
 
-        if (dialog.getContentType() == COLUMN_CONTENT_IO)
+        if (dialog.getContentType() == ColumnTypes::IO)
         {
             columnWidth = HWDesignDiagram::IO_COLUMN_WIDTH;
         }
 
-        QSharedPointer<ColumnDesc> desc(new ColumnDesc(dialog.name(), dialog.getContentType(), dialog.getAllowedItems(), 
-            columnWidth));
+        QSharedPointer<ColumnDesc> desc(new ColumnDesc(dialog.name(), dialog.getContentType(), 
+            dialog.getAllowedItems(), columnWidth));
+
         getDiagram()->addColumn(desc);
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: getSupportedDrawModes()
+// Function: HWDesignWidget::getSupportedDrawModes()
 //-----------------------------------------------------------------------------
 unsigned int HWDesignWidget::getSupportedDrawModes() const
 {
@@ -781,13 +921,6 @@ unsigned int HWDesignWidget::getSupportedDrawModes() const
     {
         return (MODE_SELECT | MODE_CONNECT | MODE_INTERFACE | MODE_DRAFT | MODE_TOGGLE_OFFPAGE | MODE_LABEL);
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWDesignWidget::createDesign()
-//-----------------------------------------------------------------------------
-QSharedPointer<Design> HWDesignWidget::createDesign( const VLNV& vlnv ) {
-	return getDiagram()->createDesign(vlnv);
 }
 
 //-----------------------------------------------------------------------------

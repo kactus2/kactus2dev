@@ -37,7 +37,7 @@ generalEditor_(addrSpace, component->getMasterInterfaces(addrSpace_->name()), pa
     this),
 segmentsEditor_(addrSpace, component, handler->getDirectoryPath(component->getVlnv()), parameterFinder,
     expressionParser, expressionFormatter, this),
-localMemMapEditor_(addrSpace->getLocalMemoryMap(), component, handler, parameterFinder, expressionFormatter, this)
+localMemMapEditor_(addrSpace, component, handler, parameterFinder, expressionFormatter, this)
 {
 	Q_ASSERT(addrSpace_);
 

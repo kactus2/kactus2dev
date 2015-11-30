@@ -31,6 +31,7 @@ LineContentAssistWidget::LineContentAssistWidget(QLineEdit* target, QWidget* par
       lastAssistStartPos_(-1),
       contentFound_(false)
 {
+    Q_ASSERT(parentWnd);
     Q_ASSERT(target != 0);
 
     // Set widget settings.

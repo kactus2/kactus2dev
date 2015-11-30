@@ -47,7 +47,7 @@ public:
         FILTER_DEFAULT = FILTER_GREEN | FILTER_YELLOW | FILTER_RED |
                          FILTER_TWO_WAY | FILTER_ONE_WAY |
                          FILTER_MANUAL | FILTER_AUTOMATIC |
-                         FILTER_INTERNAL/* | FILTER_EXTERNAL*/
+                         FILTER_INTERNAL 
     };
 
     //! Bit field type for the filters.
@@ -76,6 +76,11 @@ public:
      *  Sets the filters for the graph.
      */
     void setFilters(DependencyFilters filters);
+    
+    /*!
+     *  Returns the currently set filters for the graph.
+     */
+    DependencyFilters getFilters() const;
 
     /*!
      *  Sets the dependencies editable/read-only.
@@ -83,11 +88,6 @@ public:
      *      @param [in] editable If true, the dependencies are editable. If false, they are read-only.
      */
     void setDependenciesEditable(bool editable);
-
-    /*!
-     *  Returns the currently set filters for the graph.
-     */
-    DependencyFilters getFilters() const;
 
 signals:
     /*!
@@ -138,7 +138,7 @@ protected:
      *  Handles mouse press events and manual connection creation.
      */
     virtual void mousePressEvent(QMouseEvent* event);
-
+  
     /*!
      *  Handles mouse move events and manual connection creation.
      */
@@ -247,6 +247,11 @@ private:
               toY(toY)
         {
         }
+
+        bool operator==(GraphDependency const& other)
+        {
+            return dependency == other.dependency && fromY == other.fromY && toY == other.toY;                 
+        }
     };
     
     //-----------------------------------------------------------------------------
@@ -256,9 +261,7 @@ private:
     {
         QList<GraphDependency> dependencies;
         
-        /*!
-         *  Constructor.
-         */
+        //! The constructor.
         GraphColumn() : dependencies()
         {
         }
@@ -267,6 +270,15 @@ private:
     // Disable copying.
     FileDependencyGraphView(FileDependencyGraphView const& rhs);
     FileDependencyGraphView& operator=(FileDependencyGraphView const& rhs);
+
+    // Selects the dependency under cursor on mouse click.
+    void selectDependencyUnderCursor(QMouseEvent* event);
+
+    // Creates a context menu for the dependency under cursor on mouse right click.
+    void createContextMenuForDependency(QMouseEvent* event);
+
+    // Creates a new dependency on mouse click.
+    void createDependency(QMouseEvent* event);
 
     /*!
      *  Draws the dependency graph into the dependencies column.
@@ -303,6 +315,23 @@ private:
      *      @param [in] bidirectional  If true, arrow heads will be drawn to both ends.
      */
     void drawArrow(QPainter& painter, int x, int fromY, int toY, QColor const& color, bool bidirectional = false);
+    
+    /*!
+     *  Draws an arrow head pointing down.
+     *
+     *      @param [in] painter     The painter to use for drawing.
+     *      @param [in] x           The x coordinate of the arrow head.
+     *      @param [in] y           The y coordinate of the arrow head.
+     */
+    void drawArrowHeadDown(QPainter& painter, int x, int y);
+        /*!
+     *  Draws an arrow head pointing up.
+     *
+     *      @param [in] painter     The painter to use for drawing.
+     *      @param [in] x           The x coordinate of the arrow head.
+     *      @param [in] y           The y coordinate of the arrow head.
+     */
+    void drawArrowHeadUp(QPainter& painter, int x, int y);
 
     /*!
      *  Retrieves the center y coordinate for the row specified by the given model index.
@@ -317,7 +346,7 @@ private:
     /*!
      *  Checks whether the given column has space for the given dependency.
      */
-    bool hasSpace(GraphColumn const& column, GraphDependency const& dependency) const;
+    bool hasSpace(GraphColumn const* column, GraphDependency const& dependency) const;
 
     /*!
      *  Searches for a dependency at the given mouse coordinate.
@@ -326,7 +355,7 @@ private:
      *
      *      @return If found, the dependency at the given coordinate. Otherwise null.
      */
-    QSharedPointer<FileDependency> findDependencyAt(QPoint const& pt) const;
+    FileDependency* findDependencyAt(QPoint const& point) const;
 
     /*!
      *  Checks the dependency against the filters.
@@ -345,6 +374,15 @@ private:
     void repaintDependency(FileDependency const* dependency);
 
     /*!
+     *  Repaints a region containing a dependency arrow.
+     *
+     *      @param [in] x       The x coordinate of the arrow.
+     *      @param [in] fromY   The starting y coordinate of the arrow.
+     *      @param [in] toY     The ending y coordinate of the arrow.
+     */
+    void repaintArrowRegion(int x, int fromY, int toY);
+
+    /*!
      *  Creates a context menu for the currently selected dependency.
      *
      *      @param [in] position    The global position for the context menu.
@@ -353,19 +391,11 @@ private:
 
 
     /*!
-     *  Creates a context menu for an external file.
-     *
-     *      @param [in] position            The global position for the context menu.
-     *      @param [in] inKnownLocation     If true, the external file location is known.
-     */
-    void createContextMenuForExternalItem(QPoint const& position, bool inKnownLocation);
-
-    /*!
      *  Changes the selected dependency and repaints the previous and current selection.
      *
      *      @param [in] newSelection   The dependency to select.
      */
-    void changeDependencySelection(QSharedPointer<FileDependency> newSelection);
+    void changeDependencySelection(FileDependency* newSelection);
 
     /*!
      *  Clears the selected dependency and repaints the previous selection.
@@ -387,18 +417,19 @@ private:
      *
      *      @return The created dependency.
      */
-    QSharedPointer<FileDependency> createDependency();
+    FileDependency* createManualDependency();
 
     enum
     {
-        DOT_RADIUS = 2,       //!< The radius of the "from" dot for the arrows.
-        ARROW_WIDTH = 3,      //!< The half width of the arrow head.
-        ARROW_HEIGHT = 6,     //!< The height of the arrow head.
-        POINTER_OFFSET = 2,   //!< Pointer offset for drawing the arrow heads.
-        SAFE_MARGIN = 5,      //!< Safe margin for placing the dependencies into the columns.
-        GRAPH_MARGIN = 10,    //!< Left & right for the dependency graph in the Dependencies column.
-        GRAPH_SPACING = 20,   //!< Spacing between consecutive graph columns.
-        SELECTION_MARGIN = 4, //!< Mouse selection margin for dependencies.
+        DOT_RADIUS = 2,                 //!< The radius of the "from" dot for the arrows.
+        DOT_DIAMETER = 2* DOT_RADIUS,   //!< The diameter of the "from" dot for the arrows.
+        ARROW_WIDTH = 3,                //!< The half width of the arrow head.
+        ARROW_HEIGHT = 6,               //!< The height of the arrow head.
+        POINTER_OFFSET = 2,             //!< Pointer offset for drawing the arrow heads.
+        SAFE_MARGIN = 5,                //!< Safe margin for placing the dependencies into the columns.
+        GRAPH_MARGIN = 10,              //!< Left & right for the dependency graph in the Dependencies column.
+        GRAPH_SPACING = 20,             //!< Spacing between consecutive graph columns.
+        SELECTION_MARGIN = 4,           //!< Mouse selection margin for dependencies.
     };
 
     //-----------------------------------------------------------------------------
@@ -412,7 +443,7 @@ private:
     FileDependencyModel* model_;
 
     //! The graph columns.
-    QList<GraphColumn> columns_;
+    QList<GraphColumn*> columns_;
 
     //! The number of graph columns that can be visible.
     int maxVisibleGraphColumns_;
@@ -420,11 +451,8 @@ private:
     //! The current scroll value of the dependency graph column.
     int scrollIndex_;
 
-    //! The currently hovered dependency.
-    QSharedPointer<FileDependency> hoveredDependency_;
-
     //! The currently selected dependency.
-    QSharedPointer<FileDependency> selectedDependency_;
+    FileDependency* selectedDependency_;
 
     //! If true, the user is currently drawing a dependency.
     bool drawingDependency_;
@@ -433,13 +461,13 @@ private:
     DependencyFilters filters_;
 
     //! The start item of manual dependency creation
-    QSharedPointer<FileDependencyItem> manualDependencyStartItem_;
-
+    FileDependencyItem* manualDependencyStartItem_;
+    
     //! The end item of manual dependency creation
-    QSharedPointer<FileDependencyItem> manualDependencyEndItem_;
+    FileDependencyItem* manualDependencyEndItem_;
 
     //! The file dependency item context menu was opened on
-    QSharedPointer<FileDependencyItem> contextMenuItem_;
+    FileDependencyItem* contextMenuItem_;
 
     //! If true, the shift key is pressed.
     bool multiManualCreation_;

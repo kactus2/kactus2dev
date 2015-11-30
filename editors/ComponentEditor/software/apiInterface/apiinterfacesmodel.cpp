@@ -24,7 +24,8 @@
 //-----------------------------------------------------------------------------
 ApiInterfacesModel::ApiInterfacesModel(QSharedPointer<Component> component, QObject* parent):
 QAbstractTableModel(parent),
-apis_(component->getApiInterfaces())
+    component_(component),
+    apis_(component->getApiInterfaces())
 {
 
 }
@@ -86,7 +87,7 @@ Qt::ItemFlags ApiInterfacesModel::flags(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 QVariant ApiInterfacesModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-	if (orientation != Qt::Horizontal && role != Qt::DisplayRole)
+	if (orientation != Qt::Horizontal || role != Qt::DisplayRole)
     {
 		return QVariant();
 	}
@@ -319,6 +320,7 @@ void ApiInterfacesModel::onAddItem(QModelIndex const& index)
 
 	beginInsertRows(QModelIndex(), row, row);
 	apis_.insert(row, QSharedPointer<ApiInterface>(new ApiInterface()));
+    component_->setApiInterfaces(apis_);
 	endInsertRows();
 
 	// inform navigation tree that file set is added
@@ -342,6 +344,7 @@ void ApiInterfacesModel::onRemoveItem(QModelIndex const& index)
 	// remove the specified item
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
 	apis_.removeAt(index.row());
+    component_->setApiInterfaces(apis_);
 	endRemoveRows();
 
 	// inform navigation tree that file set has been removed

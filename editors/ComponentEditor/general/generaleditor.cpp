@@ -17,7 +17,6 @@
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/librarycomponent.h>
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>

@@ -80,7 +80,7 @@ public:
     /*!
      *  Marks the component as a packetized component.
      */
-    virtual void setPacketized();
+    virtual void setPackaged();
 
     /*!
      *  Marks the component as a draft component.

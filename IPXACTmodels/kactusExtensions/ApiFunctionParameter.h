@@ -61,12 +61,12 @@ public:
      *      @param [out] errorList  The list of errors found in the contents.
      *      @param [in]  parentId   The identifier of the containing API function.
      */
-    bool isValid(QStringList& errorList, QString const& parentId) const;
+    void findErrors(QVector<QString>& errorList, QString const& parentId) const;
 
     /*!
      *  Returns true if the function parameter is valid.
      */
-    bool isValid() const;
+    bool validate() const;
 
     /*!
      *  Sets the name of the parameter.

@@ -44,14 +44,14 @@ public:
     /*!
      *  Returns the currently edited dependency.
      */
-    QSharedPointer<FileDependency> getEditedDependency() const;
+    FileDependency* getEditedDependency() const;
 
 signals:
 
     /*!
      *  Emitted when the dependency has been changed.
      */
-    void dependencyChanged(QSharedPointer<FileDependency> dependency);
+    void dependencyChanged(FileDependency* dependency);
 
 public slots:
     /*!
@@ -62,7 +62,7 @@ public slots:
      *      @remarks If the dependency is null, all contents of the widgets are cleared and
      *               the widgets are set to disabled mode.
      */
-    void setEditedDependency(QSharedPointer<FileDependency> dependency);
+    void setEditedDependency(FileDependency* dependency);
 
 private slots:
 
@@ -124,7 +124,7 @@ private:
     QPushButton directionButton_;
 
     //! The currently edited dependency.
-    QSharedPointer<FileDependency> dependency_;
+    FileDependency* dependency_;
 };
 
 //-----------------------------------------------------------------------------

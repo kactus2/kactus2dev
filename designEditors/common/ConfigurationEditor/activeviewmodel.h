@@ -12,7 +12,7 @@
 
 #include <designEditors/HWDesign/HWComponentItem.h>
 
-#include <common/GenericEditProvider.h>
+#include <common/IEditProvider.h>
 
 #include <QAbstractTableModel>
 #include <QString>
@@ -212,7 +212,7 @@ private:
 	QList<ComponentItem*> instances_;
 
 	//! \brief Pointer to the edit provider that manages the undo stack.
-	QSharedPointer<GenericEditProvider> editProvider_;
+	QSharedPointer<IEditProvider> editProvider_;
 };
 
 #endif // ACTIVEVIEWMODEL_H

@@ -108,7 +108,7 @@ ComponentInstanceEditor::~ComponentInstanceEditor()
 //-----------------------------------------------------------------------------
 // Function: ComponentInstanceEditor::setComponentInstance()
 //-----------------------------------------------------------------------------
-void ComponentInstanceEditor::setComponentInstance(ComponentItem* component)
+void ComponentInstanceEditor::setComponentInstance(ComponentItem* component, QSharedPointer<IEditProvider> editProvider)
 {
 	Q_ASSERT(component);
 
@@ -184,7 +184,7 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* component)
         propertyValueEditor_->hide();
 
         // Show the component's configurable elements in case of HW.
-	    configurableElements_->setComponent(component);
+	    configurableElements_->setComponent(component, editProvider);
 	    configurableElements_->show();
     }
 
@@ -208,7 +208,7 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* component)
 // Function: ComponentInstanceEditor::setContext()
 //-----------------------------------------------------------------------------
 void ComponentInstanceEditor::setContext(QSharedPointer<Component> topComponent,
-    QSharedPointer<DesignConfiguration> designConfiguration, GenericEditProvider* editProvider)
+    QSharedPointer<DesignConfiguration> designConfiguration, QSharedPointer<IEditProvider> editProvider)
 {
     configurableElements_->setDesignConfigurationToModel(designConfiguration);
     topFinder_->setComponent(topComponent);

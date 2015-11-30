@@ -54,8 +54,8 @@ void ConnectionMoveCommand::redo()
 // Function: ConnectionChangeCommand()
 //-----------------------------------------------------------------------------
 ConnectionChangeCommand::ConnectionChangeCommand(GraphicsConnection* connection, 
-                                                 const QString& newName, 
-                                                 const QString& newDescription,
+                                                 QString const& newName, 
+                                                 QString const& newDescription,
                                                  QUndoCommand* parent /*= 0*/ )
     : QUndoCommand(parent),
       connection_(connection),

@@ -17,60 +17,70 @@
 
 #include <IPXACTmodels/common/VLNV.h>
 
-#include <designEditors/common/DesignDiagram.h>
-
 #include <IPXACTmodels/Component/Component.h>
 
+#include <IPXACTmodels/Design/ComponentInstance.h>
+
 #include <QFont>
+#include <QPen>
 #include <QTextDocument>
 
 //-----------------------------------------------------------------------------
-// Function: ComponentItem()
+// Function: ComponentItem::ComponentItem()
 //-----------------------------------------------------------------------------
-ComponentItem::ComponentItem(QRectF const& size,
-                             LibraryInterface* libInterface,
-                             QSharedPointer<Component> component,
-                             QString const& instanceName,
-                             QString const& displayName,
-                             QString const& description,
-                             QString const& uuid,
-                             QMap<QString, QString> const& configurableElementValues,
-                             QGraphicsItem *parent)
-    : QGraphicsRectItem(parent),
-      libInterface_(libInterface),
-      component_(component),
-      name_(instanceName),
-      nameLabel_(0),
-      displayName_(displayName),
-      description_(description),
-      configurableValues_(configurableElementValues),
-      uuid_(uuid)
+ComponentItem::ComponentItem(QRectF const& size, LibraryInterface* libInterface,
+    QSharedPointer<Component> component,
+    QString const& instanceName, QString const& displayName, QString const& description,
+    QString const& uuid, QMap<QString, QString> const& configurableElementValues, QGraphicsItem *parent):
+QGraphicsRectItem(parent),
+    libInterface_(libInterface),
+    component_(component),
+    nameLabel_(new QGraphicsTextItem(instanceName, this))
 {
     setFlag(ItemSendsGeometryChanges);
     setFlag(ItemIsSelectable);
+
     setRect(size);
-    setObjectName(instanceName);
     setPen(QPen(Qt::black, 0));
 
-    Q_ASSERT_X(component, "ComponentItem constructor",
-        "Null component-pointer given as parameter");
+    Q_ASSERT_X(component, "ComponentItem constructor", "Null component-pointer given as parameter");
 
     // Create the name label.
-    nameLabel_ = new QGraphicsTextItem(instanceName, this);
     QFont font = nameLabel_->font();
     font.setWeight(QFont::Bold);
+
     nameLabel_->setFont(font);
     nameLabel_->setTextWidth(rect().width());
     nameLabel_->setPos(-nameLabel_->boundingRect().width()/2, GridSize);
+}
 
-    if (!displayName_.isEmpty())
-    {
-        updateNameLabel(displayName_);
-    }
-    else
-    {
-        updateNameLabel(name_);
-    }
+//-----------------------------------------------------------------------------
+// Function: ComponentItem::ComponentItem()
+//-----------------------------------------------------------------------------
+ComponentItem::ComponentItem(QRectF const& size, LibraryInterface* libInterface,
+    QSharedPointer<ComponentInstance> instance, QSharedPointer<Component> component,
+    QGraphicsItem* parent) : 
+QGraphicsRectItem(parent),
+    libInterface_(libInterface),
+    component_(component), 
+    componentInstance_(instance),
+    nameLabel_(new QGraphicsTextItem(instance->getInstanceName(), this))
+{
+    setFlag(ItemSendsGeometryChanges);
+    setFlag(ItemIsSelectable);
+
+    setRect(size);
+    setPen(QPen(Qt::black, 0));
+
+    // Create the name label.
+    QFont font = nameLabel_->font();
+    font.setWeight(QFont::Bold);
+
+    nameLabel_->setFont(font);
+    nameLabel_->setTextWidth(COMPONENTWIDTH - 20);
+    nameLabel_->setPos(-nameLabel_->boundingRect().width()/2, GridSize);
+
+    setPos(instance->getPosition());
 }
 
 //-----------------------------------------------------------------------------
@@ -86,17 +96,24 @@ ComponentItem::~ComponentItem()
 //-----------------------------------------------------------------------------
 void ComponentItem::updateComponent()
 {
-    VLNV* vlnv = &component_->getVlnv();
+    if (!displayName().isEmpty())
+    {
+        updateNameLabel(displayName());
+    }
+    else
+    {
+        updateNameLabel(name());
+    }
+
+    VLNV vlnv = component_->getVlnv();
 
     QString toolTipText = "";
-
-    // Set the tooltip.
-    if (vlnv->isValid())
+    if (!vlnv.isEmpty())
     {
-        toolTipText += "<b>Vendor:</b> " + vlnv->getVendor() + "<br>" +
-                       "<b>Library:</b> " + vlnv->getLibrary() + "<br>" +
-                       "<b>Name:</b> " + vlnv->getName() + "<br>" +
-                       "<b>Version:</b> " + vlnv->getVersion();
+        toolTipText += "<b>Vendor:</b> " + vlnv.getVendor() + "<br>" +
+                       "<b>Library:</b> " + vlnv.getLibrary() + "<br>" +
+                       "<b>Name:</b> " + vlnv.getName() + "<br>" +
+                       "<b>Version:</b> " + vlnv.getVersion();
     }
     else
     {
@@ -113,7 +130,6 @@ void ComponentItem::updateComponent()
     setToolTip(toolTipText);
 }
 
-
 //-----------------------------------------------------------------------------
 // Function: ComponentItem::updateSize()
 //-----------------------------------------------------------------------------
@@ -127,7 +143,6 @@ void ComponentItem::updateSize()
 	setRect(-width/2, oldRect.y(), width, oldRect.height());
 
 	IGraphicsItemStack* stack = dynamic_cast<IGraphicsItemStack*>(parentItem());
-
 	if (stack != 0)
 	{
 		stack->updateItemPositions();
@@ -143,142 +158,113 @@ qreal ComponentItem::getWidth()
 }
 
 //-----------------------------------------------------------------------------
-// Function: setName()
+// Function: ComponentItem::setName()
 //-----------------------------------------------------------------------------
-void ComponentItem::setName(QString const& name)
+void ComponentItem::setName(QString const& newName)
 {
-    QString oldName = name_;
+    QString oldName = name();
 
-    DesignDiagram* diagram = static_cast<DesignDiagram*>(scene());
-    diagram->updateInstanceName(oldName, name);
+    componentInstance_->setInstanceName(newName);
 
     // Find all connections that are using the default naming and should be simultaneously renamed.
-    QList<GraphicsConnection*> connections;
-
+    QList<GraphicsConnection*> renamedConnections;
     foreach (ConnectionEndpoint* endpoint, getEndpoints())
     {
         foreach (GraphicsConnection* conn, endpoint->getConnections())
         {
             if (conn->hasDefaultName())
             {
-                connections.append(conn);
+                renamedConnections.append(conn);
             }
         }
     }
 
-    name_ = name;
-
-    if (displayName_.isEmpty())
+    if (displayName().isEmpty())
     {
-        updateNameLabel(name);
+        updateNameLabel(newName);
     }
 
     updateComponent();
 
-    foreach (GraphicsConnection* conn, connections)
+    foreach (GraphicsConnection* conn, renamedConnections)
     {
         conn->setName(conn->createDefaultName());
     }
 
-    emit nameChanged(name, oldName);
+    emit nameChanged(newName, oldName);
 }
 
 //-----------------------------------------------------------------------------
-// Function: setDisplayName()
+// Function: ComponentItem::setDisplayName()
 //-----------------------------------------------------------------------------
 void ComponentItem::setDisplayName(QString const& displayName)
 {
-    displayName_ = displayName;
+    componentInstance_->setDisplayName(displayName);
 
-    if (!displayName_.isEmpty())
+    if (!displayName.isEmpty())
     {
-        updateNameLabel(displayName_);
+        updateNameLabel(displayName);
     }
     else
     {
-        updateNameLabel(name_);
+        updateNameLabel(name());
     }
 
-    emit displayNameChanged(displayName_);
+    emit displayNameChanged(displayName);
 }
 
 //-----------------------------------------------------------------------------
-// Function: setDescription()
+// Function: ComponentItem::setDescription()
 //-----------------------------------------------------------------------------
-void ComponentItem::setDescription(const QString& description)
+void ComponentItem::setDescription(QString const& description)
 {
-    description_ = description;
+    componentInstance_->setDescription(description);
     updateComponent();
-    emit descriptionChanged(description_);
+    emit descriptionChanged(description);
 }
 
 //-----------------------------------------------------------------------------
-// Function: setConfigurableElements()
-//-----------------------------------------------------------------------------
-void ComponentItem::setConfigurableElements(const QMap<QString, QString>& confElements)
-{
-    configurableValues_ = confElements;
-    emit confElementsChanged(configurableValues_);
-}
-
-//-----------------------------------------------------------------------------
-// Function: name()
+// Function: ComponentItem::name()
 //-----------------------------------------------------------------------------
 QString ComponentItem::name() const
 {
-    return name_;
+    return componentInstance_->getInstanceName();
 }
 
 //-----------------------------------------------------------------------------
-// Function: displayName()
+// Function: ComponentItem::displayName()
 //-----------------------------------------------------------------------------
-QString const& ComponentItem::displayName() const
+QString ComponentItem::displayName() const
 {
-    return displayName_;
+    return componentInstance_->getDisplayName();
 }
 
 //-----------------------------------------------------------------------------
-// Function: description()
+// Function: ComponentItem::description()
 //-----------------------------------------------------------------------------
-QString const& ComponentItem::description() const
+QString ComponentItem::description() const
 {
-    return description_;
+    return componentInstance_->getDescription();
 }
 
 //-----------------------------------------------------------------------------
-// Function: getConfigurableElements()
+// Function: ComponentItem::componentModel()
 //-----------------------------------------------------------------------------
-QMap<QString, QString>& ComponentItem::getConfigurableElements()
-{
-    return configurableValues_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: getConfigurableElements()
-//-----------------------------------------------------------------------------
-QMap<QString, QString> const& ComponentItem::getConfigurableElements() const
-{
-    return configurableValues_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: componentModel()
-//-----------------------------------------------------------------------------
-QSharedPointer<Component> ComponentItem::componentModel()
+QSharedPointer<Component> ComponentItem::componentModel() const
 {
     return component_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: componentModel()
+// Function: ComponentItem::getComponentInstance()
 //-----------------------------------------------------------------------------
-QSharedPointer<Component const> ComponentItem::componentModel() const
+QSharedPointer<ComponentInstance> ComponentItem::getComponentInstance() const
 {
-    return component_;
+    return componentInstance_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: getViews()
+// Function: ComponentItem::getViews()
 //-----------------------------------------------------------------------------
 QStringList ComponentItem::getViews() const
 {
@@ -286,7 +272,7 @@ QStringList ComponentItem::getViews() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: itemChange()
+// Function: ComponentItem::itemChange()
 //-----------------------------------------------------------------------------
 QVariant ComponentItem::itemChange(GraphicsItemChange change, const QVariant &value)
 {
@@ -305,14 +291,6 @@ QVariant ComponentItem::itemChange(GraphicsItemChange change, const QVariant &va
 void ComponentItem::updateNameLabel(QString const& text)
 {
     nameLabel_->setHtml("<center>" + text + "</center>");
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentItem::getLibraryInterface()
-//-----------------------------------------------------------------------------
-LibraryInterface* ComponentItem::getLibraryInterface()
-{
-    return libInterface_;
 }
 
 //-----------------------------------------------------------------------------
@@ -343,8 +321,12 @@ IGraphicsItemStack* ComponentItem::getParentStack()
     return dynamic_cast<IGraphicsItemStack*>(parentItem());
 }
 
-QString ComponentItem::getUuid() const {
-	return uuid_;
+//-----------------------------------------------------------------------------
+// Function: ComponentItem::getUuid()
+//-----------------------------------------------------------------------------
+QString ComponentItem::getUuid() const
+{
+	return componentInstance_->getUuid();
 }
 
 //-----------------------------------------------------------------------------
@@ -355,7 +337,18 @@ QPointF ComponentItem::connectionPoint(QPointF const&) const
     return mapToScene(rect().center());
 }
 
+//-----------------------------------------------------------------------------
+// Function: ComponentItem::getHeight()
+//-----------------------------------------------------------------------------
 qreal ComponentItem::getHeight()
 {
 	return 8*GridSize;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentItem::getLibraryInterface()
+//-----------------------------------------------------------------------------
+LibraryInterface* ComponentItem::getLibraryInterface()
+{
+    return libInterface_;
 }

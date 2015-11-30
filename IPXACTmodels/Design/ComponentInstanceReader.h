@@ -12,23 +12,17 @@
 #ifndef COMPONENTINSTANCEREADER_H
 #define COMPONENTINSTANCEREADER_H
 
-// #include "Design.h"
-// #include "ActiveInterface.h"
-// #include "HierInterface.h"
-// #include "MonitorInterface.h"
-// #include "PortReference.h"
-
 #include <IPXACTmodels/common/DocumentReader.h>
-#include <IPXACTmodels/Design/ComponentInstance.h>
+#include <IPXACTmodels/common/CommonItemsReader.h>
 
 #include <QObject>
 #include <QDomNode>
-//#include <QDomNodeList>
 
+class ComponentInstance;
 //-----------------------------------------------------------------------------
 //! XML reader class for IP-XACT component instance.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT ComponentInstanceReader : public DocumentReader
+class IPXACTMODELS_EXPORT ComponentInstanceReader : public CommonItemsReader
 {
     Q_OBJECT
 

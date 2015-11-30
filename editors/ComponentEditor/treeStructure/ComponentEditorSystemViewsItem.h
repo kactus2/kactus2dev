@@ -76,9 +76,6 @@ private:
 
 	//! No assignment
 	ComponentEditorSystemViewsItem& operator=(const ComponentEditorSystemViewsItem& other);
-
-	//! Contains the system views being edited.
-	QList<QSharedPointer<SystemView> > systemViews_;
 };
 
 #endif // COMPONENTEDITORSYSTEMVIEWSITEM_H

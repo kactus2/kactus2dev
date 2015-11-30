@@ -83,15 +83,6 @@ public:
     virtual bool isValid() const;
 
     /*!
-     *  Checks the validity of the item.
-     *
-     *      @param [inout] errorList   The list to add the possible error messages to.
-     *
-     *      @return True, if item is valid, otherwise false.
-     */
-    virtual bool isValid(QStringList& errorList) const;
-
-    /*!
      *  Clears the mappings for all children.
      */
     void clearMappings();

@@ -30,7 +30,9 @@ class tst_DocumentTreeBuilder : public QObject
 
 public:
     tst_DocumentTreeBuilder();
+
     ~tst_DocumentTreeBuilder();
+
 private slots:
     void cleanup();
     

@@ -120,7 +120,7 @@ public:
     /*!
      *  Returns the content type.
      */
-    ColumnContentType getContentType() const;
+    ColumnTypes::ColumnContentType getContentType() const;
 
     virtual void updateComponent();
 

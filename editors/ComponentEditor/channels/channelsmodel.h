@@ -69,8 +69,7 @@ public:
 	 *
 	 *      @return QVariant Contains the requested data.
 	*/
-	virtual QVariant headerData(int section, Qt::Orientation orientation, 
-		int role = Qt::DisplayRole) const;
+	virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
 	/*! Get the data for specified item.
 	 *

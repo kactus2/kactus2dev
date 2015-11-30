@@ -163,6 +163,8 @@ private:
 	//! No assignment
 	ApiInterfacesModel& operator=(const ApiInterfacesModel& other);
 
+    QSharedPointer<Component> component_;
+
 	//! Contains the api interfaces being edited.
 	QList<QSharedPointer<ApiInterface> > apis_;
 };

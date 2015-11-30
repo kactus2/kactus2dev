@@ -180,7 +180,7 @@ public:
 	 *
 	 *      @param [in] logicalName     QString containing the new logical name.
 	 */
-	void setLogicalName(const QString &logicalName);
+	void setLogicalName(QString const& logicalName);
 
 	/*! 
      *  Get the default-attribute value of the logicalName element.
@@ -278,7 +278,7 @@ public:
 	 *
 	 *      @param [in] description     QString containing the description.
 	 */
-	void setDescription(const QString &description);
+	void setDescription(QString const& description);
 
     /*!
      *  Returns the last calculated hash.

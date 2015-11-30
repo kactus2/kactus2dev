@@ -32,18 +32,17 @@ class IPXACTMODELS_EXPORT ComponentInstance : public Extendable
 public:
 
     /*!
+     *  The default constructor.
+     */
+    ComponentInstance();
+
+    /*!
      *  The constructor.
      *
      *      @param [in] instanceName    The name of the component instance.
-     *      @param [in] displayName     The display name.
-     *      @param [in] description     Description of the instance.
      *      @param [in] componentRef    The referenced component.
-     *      @param [in] position        The position of the component instance.
-     *      @param [in] uuid            The identifier of the instance.
      */
-    ComponentInstance(QString instanceName, QString displayName, QString description,
-                      QSharedPointer<ConfigurableVLNVReference> componentRef,
-                      QPointF const& position, const QString& uuid);
+    ComponentInstance(QString const& instanceName, QSharedPointer<ConfigurableVLNVReference> componentRef);
 
     /*!
      *  Copy constructor.
@@ -51,31 +50,9 @@ public:
     ComponentInstance(ComponentInstance const& other);
 
     /*!
-     *  The constructor.
-     */
-    ComponentInstance();
-
-    /*!
      *  The destructor.
      */
     ~ComponentInstance();
-
-    /*!
-     *  Checks whether the component instance is in a valid state or not.
-     *
-     *      @param [out] errorList         The list to add the possible error messages to.
-     *      @param [in]  parentIdentifier  String from parent to help to identify the location of the error.
-     *
-     *      @return True, if the state is valid.
-     */
-    //bool isValid(QStringList& errorList, QString const& parentIdentifier) const;
-
-    /*!
-     *  Checks whether the component instance is in a valid state or not.
-     *
-     *      @return True, if the state is valid.
-     */
-    //bool isValid() const;
 
     /*!
      *  Sets the name of the instance.
@@ -168,17 +145,17 @@ public:
     /*!
      *  Returns the name of the instance.
      */
-    QString const& getInstanceName() const;
+    QString getInstanceName() const;
     
     /*!
      *  Returns the display name of the instance.
      */
-    QString const& getDisplayName() const;
+    QString getDisplayName() const;
 
     /*!
      *  Returns the description of the instance.
      */
-    QString const& getDescription() const;
+    QString getDescription() const;
 
     /*!
      *  Returns the component reference.
@@ -255,6 +232,13 @@ public:
      *     @return QString containing the uuid.
 	 */
     QString getUuid() const;
+        
+    /*!
+     *  Set the universally unique identifier (Kactus2 extension).
+     *
+     *      @param [in] newUuid     The new unique identifier.
+     */
+    void setUuid(QString const& newUuid);
 
     /*!
      *  Checks if the component instance is a draft.
@@ -284,19 +268,19 @@ public:
      */
     void setIsPresent(QString const& newIsPresent);
 
+    /*!
+     *  Hides an ad hoc port in the instance.
+     *
+     *      @param [in] portName   The name of the port to hide.
+     */
+    void hideAdHocPort(QString const& portName);
+
 private:
     
     /*!
      *  Parses the property values from the given XML node.
      */
     void parsePropertyValues(QDomNode& node);
-    
-    /*!
-     *  Set the universally unique identifier (Kactus2 extension).
-     *
-     *      @param [in] newUuid     The new unique identifier.
-     */
-    void setUuid(QString const& newUuid);
 
     /*!
      *  Update a positions map extension (Kactus2 extension).
@@ -331,7 +315,7 @@ private:
     QString displayName_;
 
     //! The description of the instance .
-    QString desc_;
+    QString description_;
 
     //! The presence.
     QString isPresent_;

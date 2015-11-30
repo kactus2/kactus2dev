@@ -578,7 +578,7 @@ QMap<QString, QPointF> SystemComponentItem::getComInterfacePositions() const
 //-----------------------------------------------------------------------------
 // Function: SystemComponentItem::setPacketized()
 //-----------------------------------------------------------------------------
-void SystemComponentItem::setPacketized()
+void SystemComponentItem::setPackaged()
 {
     // Nothing to do here.
 }

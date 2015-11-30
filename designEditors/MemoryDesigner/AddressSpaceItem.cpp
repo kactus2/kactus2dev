@@ -376,9 +376,9 @@ qreal AddressSpaceItem::getHeight() const
 //-----------------------------------------------------------------------------
 // Function: AddressSpaceItem::getContentType()
 //-----------------------------------------------------------------------------
-ColumnContentType AddressSpaceItem::getContentType() const
+ColumnTypes::ColumnContentType AddressSpaceItem::getContentType() const
 {
-    return COLUMN_CONTENT_COMPONENTS;
+    return ColumnTypes::COMPONENTS;
 }
 
 //-----------------------------------------------------------------------------

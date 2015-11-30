@@ -16,15 +16,15 @@
 
 namespace
 {
-    const unsigned int ALLOWED_ITEMS[COLUMN_CONTENT_CUSTOM] = 
+    const unsigned int ALLOWED_ITEMS[ColumnTypes::CUSTOM] = 
     {
-        CIT_INTERFACE,              //<! For COLUMN_CONTENT_IO.
-        CIT_CHANNEL | CIT_BRIDGE,   //<! For COLUMN_CONTENT_BUSES.
-        CIT_COMPONENT,              //<! For COLUMN_CONTENT_COMPONENTS.
-        CIT_COMPONENT               //<! For COLUMN_CONTENT_MEMORY.
+        ColumnTypes::INTERFACE,                             //<! For COLUMN_CONTENT_IO.
+        ColumnTypes::CHANNEL | ColumnTypes::BRIDGE,     //<! For COLUMN_CONTENT_BUSES.
+        ColumnTypes::COMPONENT,                             //<! For COLUMN_CONTENT_COMPONENTS.
+        ColumnTypes::COMPONENT                              //<! For COLUMN_CONTENT_MEMORY.
     };
 
-    const QString ITEM_NAMES[CIT_COUNT] = 
+    const QString ITEM_NAMES[ColumnTypes::TYPE_COUNT] = 
     {
         QObject::tr("Interfaces"),
         QObject::tr("Components"),
@@ -64,7 +64,7 @@ ColumnEditDialog::ColumnEditDialog(QWidget* parent, bool sw, GraphicsColumn cons
     else
     {
         setWindowTitle(tr("Add Column"));
-        setAllowedItems(CIT_NONE);
+        setAllowedItems(ColumnTypes::NONE);
         typeCombo_->setCurrentIndex((typeCombo_->findText(tr("IO"))));
     }
 
@@ -102,15 +102,15 @@ void ColumnEditDialog::hideContentSettings()
 void ColumnEditDialog::onTypeChange(QString const& type)
 {
     // Convert the index to a column content type.
-    ColumnContentType contentType = types_.value(type, COLUMN_CONTENT_CUSTOM);
+    ColumnTypes::ColumnContentType contentType = types_.value(type, ColumnTypes::CUSTOM);
     
     // Set enabled/disabled based on the content type.
-    for (int i = 0; i < CIT_COUNT; ++i)
+    for (int i = 0; i < ColumnTypes::TYPE_COUNT; ++i)
     {
-        itemCheckBoxes_[i]->setEnabled(contentType == COLUMN_CONTENT_CUSTOM);
+        itemCheckBoxes_[i]->setEnabled(contentType == ColumnTypes::CUSTOM);
     }
 
-    if (contentType != COLUMN_CONTENT_CUSTOM)
+    if (contentType != ColumnTypes::CUSTOM)
     {
         setAllowedItems(ALLOWED_ITEMS[contentType]);
     }
@@ -121,7 +121,7 @@ void ColumnEditDialog::onTypeChange(QString const& type)
 //-----------------------------------------------------------------------------
 void ColumnEditDialog::setAllowedItems(unsigned int allowedItems)
 {
-    for (int i = 0; i < CIT_COUNT; ++i)
+    for (int i = 0; i < ColumnTypes::TYPE_COUNT; ++i)
     {
         // Set the checked states based on the corresponding flag.
         itemCheckBoxes_[i]->setChecked((1 << i) & allowedItems);
@@ -139,11 +139,11 @@ QString ColumnEditDialog::name() const
 //-----------------------------------------------------------------------------
 // Function: ColumnEditDialog::getContentType()
 //-----------------------------------------------------------------------------
-ColumnContentType ColumnEditDialog::getContentType() const
+ColumnTypes::ColumnContentType ColumnEditDialog::getContentType() const
 {
     // Convert the index to a column content type.   
     QString type = typeCombo_->currentText();
-    return types_.value(type, COLUMN_CONTENT_CUSTOM);
+    return types_.value(type, ColumnTypes::CUSTOM);
 }
 
 //-----------------------------------------------------------------------------
@@ -151,9 +151,9 @@ ColumnContentType ColumnEditDialog::getContentType() const
 //-----------------------------------------------------------------------------
 unsigned int ColumnEditDialog::getAllowedItems() const
 {
-    unsigned int allowedItems = CIT_NONE;
+    unsigned int allowedItems = ColumnTypes::NONE;
 
-    for (int i = 0; i < CIT_COUNT; ++i)
+    for (int i = 0; i < ColumnTypes::TYPE_COUNT; ++i)
     {
         allowedItems |= (itemCheckBoxes_[i]->isChecked() << i);
     }
@@ -184,14 +184,14 @@ void ColumnEditDialog::accept()
 //-----------------------------------------------------------------------------
 void ColumnEditDialog::initializeTypes(bool sw)
 {
-    types_.insert(tr("IO"), COLUMN_CONTENT_IO);
-    types_.insert(tr("Components"), COLUMN_CONTENT_COMPONENTS);    
+    types_.insert(tr("IO"), ColumnTypes::IO);
+    types_.insert(tr("Components"), ColumnTypes::COMPONENTS);    
 
     if (!sw)
     {
-        types_.insert(tr("Buses"), COLUMN_CONTENT_BUSES);
-        types_.insert(tr("Memory"), COLUMN_CONTENT_MEMORY);
-        types_.insert(tr("Custom"), COLUMN_CONTENT_CUSTOM);
+        types_.insert(tr("Buses"), ColumnTypes::BUSES);
+        types_.insert(tr("Memory"), ColumnTypes::MEMORY);
+        types_.insert(tr("Custom"), ColumnTypes::CUSTOM);
     }
 
     foreach(QString typeName, types_.keys())
@@ -213,7 +213,7 @@ void ColumnEditDialog::setupLayout(bool sw)
     // Create the allowed items group box and check boxes.
     QVBoxLayout* itemLayout = new QVBoxLayout(allowedItemsGroup_);
 
-    for (int i = 0; i < CIT_COUNT; ++i)
+    for (int i = 0; i < ColumnTypes::TYPE_COUNT; ++i)
     {
         itemCheckBoxes_[i] = new QCheckBox(ITEM_NAMES[i], allowedItemsGroup_);
         itemLayout->addWidget(itemCheckBoxes_[i]);

@@ -926,6 +926,18 @@
     <Filter Include="Source Files\wizards\common\ModuleParameterComparator">
       <UniqueIdentifier>{85b2c4f0-5af7-4565-8c9a-489765ce003e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\designEditors\HWDesign\undoCommands">
+      <UniqueIdentifier>{c37a3bc5-9ecf-44d9-8c3c-c8d6ccb0680f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\designEditors\HWDesign\undoCommands">
+      <UniqueIdentifier>{51c058ad-6a03-49ef-931e-d15ff7d3ffcd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Plugins\common">
+      <UniqueIdentifier>{b2f9f4ec-55f9-4e40-9993-0e5d00bce443}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Plugins\common">
+      <UniqueIdentifier>{7d63f833-ab5e-4052-a982-955281e77f33}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -1745,9 +1757,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_HWConnectionEndpoint.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_HWDeleteCommands.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_HWDesignDiagram.cpp">
@@ -3382,9 +3391,6 @@
     <ClCompile Include="editors\ComponentEditor\views\filesetrefmodel.cpp">
       <Filter>Source Files\editors\ComponentEditor\views</Filter>
     </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\views\flatviewgeneraltab.cpp">
-      <Filter>Source Files\editors\ComponentEditor\views</Filter>
-    </ClCompile>
     <ClCompile Include="editors\ComponentEditor\views\hierarchyrefwidget.cpp">
       <Filter>Source Files\editors\ComponentEditor\views</Filter>
     </ClCompile>
@@ -4077,6 +4083,45 @@
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\software\swView\cpuselector.cpp">
       <Filter>Source Files\editors\ComponentEditor\software\swView</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AdHocConnectionItem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\HWDesign\AdHocConnectionItem.cpp">
+      <Filter>Source Files\designEditors\HWDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\HWDesign\undoCommands\ConnectionDeleteCommand.cpp">
+      <Filter>Source Files\designEditors\HWDesign\undoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\HWDesign\undoCommands\AdHocVisibilityChangeCommand.cpp">
+      <Filter>Source Files\designEditors\HWDesign\undoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\HWDesign\undoCommands\ComponentItemMoveCommand.cpp">
+      <Filter>Source Files\designEditors\HWDesign\undoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\HWDesign\undoCommands\ComponentDeleteCommand.cpp">
+      <Filter>Source Files\designEditors\HWDesign\undoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ComponentDeleteCommand.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\HWDesign\undoCommands\AdHocConnectionAddCommand.cpp">
+      <Filter>Source Files\designEditors\HWDesign\undoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\HWDesign\undoCommands\ColumnDeleteCommand.cpp">
+      <Filter>Source Files\designEditors\HWDesign\undoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\HWDesign\undoCommands\PortDeleteCommand.cpp">
+      <Filter>Source Files\designEditors\HWDesign\undoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_InterfaceDeleteCommand.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\HWDesign\undoCommands\InterfaceDeleteCommand.cpp">
+      <Filter>Source Files\designEditors\HWDesign\undoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="Plugins\common\NameGenerationPolicy.cpp">
+      <Filter>Source Files\Plugins\common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5616,6 +5661,15 @@
     <CustomBuild Include="editors\ComponentEditor\software\swView\cpuselector.h">
       <Filter>Header Files\editors\ComponentEditor\software\swView</Filter>
     </CustomBuild>
+    <CustomBuild Include="designEditors\HWDesign\AdHocConnectionItem.h">
+      <Filter>Header Files\designEditors\HWDesign</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\HWDesign\undoCommands\ComponentDeleteCommand.h">
+      <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\HWDesign\undoCommands\InterfaceDeleteCommand.h">
+      <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -6058,6 +6112,27 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\software\apiInterface\ApiInterfaceColumns.h">
       <Filter>Header Files\editors\ComponentEditor\software\apiInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\HWDesign\undoCommands\AdHocVisibilityChangeCommand.h">
+      <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\HWDesign\undoCommands\ComponentItemMoveCommand.h">
+      <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\HWDesign\undoCommands\ConnectionDeleteCommand.h">
+      <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\HWDesign\undoCommands\AdHocConnectionAddCommand.h">
+      <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\HWDesign\undoCommands\ColumnDeleteCommand.h">
+      <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\HWDesign\undoCommands\PortDeleteCommand.h">
+      <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="Plugins\common\NameGenerationPolicy.h">
+      <Filter>Header Files\Plugins\common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

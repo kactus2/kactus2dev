@@ -862,6 +862,7 @@
     <ClCompile Include="kactusExtensions\ComInterconnection.cpp" />
     <ClCompile Include="kactusExtensions\ComInterface.cpp" />
     <ClCompile Include="kactusExtensions\ComProperty.cpp" />
+    <ClCompile Include="kactusExtensions\ConnectionRoute.cpp" />
     <ClCompile Include="kactusExtensions\FileDependency.cpp" />
     <ClCompile Include="kactusExtensions\HierApiInterconnection.cpp" />
     <ClCompile Include="kactusExtensions\HierComInterconnection.cpp" />
@@ -2034,6 +2035,7 @@
     <ClInclude Include="kactusExtensions\ComInterconnection.h" />
     <ClInclude Include="kactusExtensions\ComInterface.h" />
     <ClInclude Include="kactusExtensions\ComProperty.h" />
+    <ClInclude Include="kactusExtensions\ConnectionRoute.h" />
     <ClInclude Include="kactusExtensions\FileDependency.h" />
     <ClInclude Include="kactusExtensions\HierApiInterconnection.h" />
     <ClInclude Include="kactusExtensions\HierComInterconnection.h" />

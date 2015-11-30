@@ -94,32 +94,27 @@ void ComProperty::write(QXmlStreamWriter& writer) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: ApiFunctionParameter::isValid()
+// Function: ApiFunctionParameter::findErrors()
 //-----------------------------------------------------------------------------
-bool ComProperty::isValid(QStringList& errorList, QString const& parentId) const
+void ComProperty::findErrors(QVector<QString>& errorList, QString const& parentId) const
 {
-    bool valid = true;
     QString const thisId = QObject::tr("COM property '%1'").arg(name_);
 
     if (name_.isEmpty())
     {
         errorList.append(QObject::tr("No name specified for a COM property in %1").arg(parentId));
-        valid = false;
     }
 
     if (type_.isEmpty())
     {
         errorList.append(QObject::tr("No type specified for %1").arg(thisId));
-        valid = false;
     }
-
-    return valid;
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComProperty::isValid()
+// Function: ComProperty::validate()
 //-----------------------------------------------------------------------------
-bool ComProperty::isValid() const
+bool ComProperty::validate() const
 {
     return (!name_.isEmpty() && !type_.isEmpty());
 }

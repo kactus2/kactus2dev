@@ -73,12 +73,12 @@ public:
      *
      *      @param [in/out] errorList Error list which is appended with errors if found while validating.
      */
-    virtual bool isValid(QStringList& errorList) const;
+    virtual void findErrors(QVector<QString>& errorList) const;
 
     /*!
      *  Returns true if the contents are valid.
      */
-    virtual bool isValid() const;
+    virtual bool validate() const;
 
     /*!
      *  Returns the dependent files (none).

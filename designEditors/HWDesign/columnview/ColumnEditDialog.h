@@ -59,7 +59,7 @@ public:
     /*!
      *  Returns the column content type from the dialog.
      */
-    ColumnContentType getContentType() const;
+    ColumnTypes::ColumnContentType getContentType() const;
 
     /*!
      *  Returns the allowed items from the dialog.
@@ -124,7 +124,7 @@ private:
     QGroupBox* allowedItemsGroup_;
 
     //! The check boxes for the allowed column items.
-    QCheckBox* itemCheckBoxes_[CIT_COUNT];
+    QCheckBox* itemCheckBoxes_[ColumnTypes::TYPE_COUNT];
 
     //! Dialog buttons.
     QDialogButtonBox* buttons_;
@@ -133,7 +133,7 @@ private:
     GraphicsColumn const* column_;
 
     //! The names and types of possible columns.
-    QMap<QString, ColumnContentType> types_;
+    QMap<QString, ColumnTypes::ColumnContentType> types_;
 };
 
 //-----------------------------------------------------------------------------

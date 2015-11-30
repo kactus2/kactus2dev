@@ -209,8 +209,9 @@ QVariant RegisterTableModel::data( const QModelIndex& index, int role /*= Qt::Di
     {
         if (validateIndex(index))
         {
+            QString isPresentValue = fields_->at(index.row())->getIsPresent();
             if (index.column() != RegisterColumns::IS_PRESENT_COLUMN && 
-                parseExpressionToDecimal(fields_->at(index.row())->getIsPresent()).toInt() != 1)
+                (!isPresentValue.isEmpty() && parseExpressionToDecimal(isPresentValue).toInt() != 1))
             {
                 return QColor("gray");
             }

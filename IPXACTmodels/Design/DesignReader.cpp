@@ -14,12 +14,15 @@
 
 #include <IPXACTmodels/common/NameGroupReader.h>
 
+#include <IPXACTmodels/kactusExtensions/ConnectionRoute.h>
+
 #include <IPXACTmodels/kactusExtensions/Kactus2Position.h>
+#include <IPXACTmodels/kactusExtensions/Kactus2Placeholder.h>
 
 //-----------------------------------------------------------------------------
 // Function: DesignReader::DesignReader()
 //-----------------------------------------------------------------------------
-DesignReader::DesignReader(QObject* parent /* = 0 */):
+DesignReader::DesignReader(QObject* parent):
 DocumentReader(parent)
 {
 
@@ -66,7 +69,7 @@ QSharedPointer<Design> DesignReader::createDesignFrom(QDomDocument const& docume
 //-----------------------------------------------------------------------------
 // Function: DesignReader::parseComponentInstances()
 //-----------------------------------------------------------------------------
-void DesignReader::parseComponentInstances(const QDomNode& designNode, QSharedPointer<Design> newDesign) const
+void DesignReader::parseComponentInstances(QDomNode const& designNode, QSharedPointer<Design> newDesign) const
 {
     QDomNode componentInstancesNode = designNode.firstChildElement("ipxact:componentInstances");
 
@@ -87,7 +90,7 @@ void DesignReader::parseComponentInstances(const QDomNode& designNode, QSharedPo
 //-----------------------------------------------------------------------------
 // Function: DesignReader::parseInterconnections()
 //-----------------------------------------------------------------------------
-void DesignReader::parseInterconnections(const QDomNode& designNode, QSharedPointer<Design> newDesign) const
+void DesignReader::parseInterconnections(QDomNode const& designNode, QSharedPointer<Design> newDesign) const
 {
     QDomNode multipleInterconnectionsNode = designNode.firstChildElement("ipxact:interconnections");
 
@@ -103,37 +106,33 @@ void DesignReader::parseInterconnections(const QDomNode& designNode, QSharedPoin
 //-----------------------------------------------------------------------------
 // Function: DesignReader::parseSingleInterconnection()
 //-----------------------------------------------------------------------------
-void DesignReader::parseSingleInterconnection(const QDomNode& interconnectionNode,
+void DesignReader::parseSingleInterconnection(QDomNode const& interconnectionNode,
     QSharedPointer<Design> newDesign) const
 {
-    NameGroupReader nameReader;
-    QString name = nameReader.parseName(interconnectionNode);
-    QString displayName = nameReader.parseDisplayName(interconnectionNode);
-    QString description = nameReader.parseDescription(interconnectionNode);
-
-    QString isPresent = interconnectionNode.firstChildElement("ipxact:isPresent").firstChild().nodeValue();
-
     if (interconnectionNode.nodeName() == "ipxact:interconnection")
     {
-        parseComponentInterconnection(interconnectionNode, newDesign, name, displayName, description, isPresent);
+        parseComponentInterconnection(interconnectionNode, newDesign);
     }
-
     else if (interconnectionNode.nodeName() == "ipxact:monitorInterconnection")
     {
-        parseMonitorInterconnection(interconnectionNode, newDesign, name, displayName, description, isPresent);
+        parseMonitorInterconnection(interconnectionNode, newDesign);
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: DesignReader::parseComponentInerconnection()
 //-----------------------------------------------------------------------------
-void DesignReader::parseComponentInterconnection(const QDomNode& interconnectionNode,
-    QSharedPointer<Design> newDesign, QString const& name, QString const& displayName, QString const& description,
-    QString const& isPresent) const
+void DesignReader::parseComponentInterconnection(QDomNode const& interconnectionNode,
+    QSharedPointer<Design> newDesign) const
 {
-    QDomNode startInterfaceNode = interconnectionNode.firstChildElement("ipxact:activeInterface");
+    NameGroupReader nameReader;
+    QString name = nameReader.parseName(interconnectionNode);
+    QString displayName = nameReader.parseDisplayName(interconnectionNode);
+    QString description = nameReader.parseDescription(interconnectionNode);
+    QString isPresent = interconnectionNode.firstChildElement("ipxact:isPresent").firstChild().nodeValue();
 
     QSharedPointer<ActiveInterface> startInterface (new ActiveInterface);
+    QDomNode startInterfaceNode = interconnectionNode.firstChildElement("ipxact:activeInterface");
     parseActiveInterface(startInterfaceNode, startInterface);
 
     QSharedPointer<Interconnection> newInterconnection (
@@ -145,8 +144,7 @@ void DesignReader::parseComponentInterconnection(const QDomNode& interconnection
     for (int interfaceIndex = 0; interfaceIndex < interfaceNodes.size(); ++interfaceIndex)
     {
         QDomNode singleInterfaceNode = interfaceNodes.at(interfaceIndex);
-        if (singleInterfaceNode.nodeName() == "ipxact:activeInterface" 
-            && singleInterfaceNode != startInterfaceNode)
+        if (singleInterfaceNode.nodeName() == "ipxact:activeInterface" && singleInterfaceNode != startInterfaceNode)
         {
             QSharedPointer<ActiveInterface> activeInterface (new ActiveInterface());
             parseActiveInterface(singleInterfaceNode, activeInterface);
@@ -187,7 +185,7 @@ void DesignReader::parseInterconnectionExtensions(const QDomNode& interconnectio
 //-----------------------------------------------------------------------------
 // Function: DesignReader::parseActiveInterface()
 //-----------------------------------------------------------------------------
-void DesignReader::parseActiveInterface(const QDomNode& interfaceNode,
+void DesignReader::parseActiveInterface(QDomNode const& interfaceNode,
     QSharedPointer<ActiveInterface> newInterface) const
 {
     parseHierInterface(interfaceNode, newInterface);
@@ -209,7 +207,7 @@ void DesignReader::parseActiveInterface(const QDomNode& interfaceNode,
 //-----------------------------------------------------------------------------
 // Function: DesignReader::parseHierInterface()
 //-----------------------------------------------------------------------------
-void DesignReader::parseHierInterface(const QDomNode& interfaceNode, QSharedPointer<HierInterface> newInterface)
+void DesignReader::parseHierInterface(QDomNode const& interfaceNode, QSharedPointer<HierInterface> newInterface)
     const
 {
     QDomNamedNodeMap attributeMap = interfaceNode.attributes();
@@ -255,9 +253,14 @@ void DesignReader::parseHierInterfaceExtensions(const QDomNode& interfaceNode,
 //-----------------------------------------------------------------------------
 // Function: DesignReader::parseMonitorInterconnection()
 //-----------------------------------------------------------------------------
-void DesignReader::parseMonitorInterconnection(const QDomNode& monitorNode, QSharedPointer<Design> newDesign,
-    QString const& name, QString const& displayName, QString const& description, QString const& isPresent) const
+void DesignReader::parseMonitorInterconnection(QDomNode const& monitorNode, QSharedPointer<Design> newDesign) const
 {
+    NameGroupReader nameReader;
+    QString name = nameReader.parseName(monitorNode);
+    QString displayName = nameReader.parseDisplayName(monitorNode);
+    QString description = nameReader.parseDescription(monitorNode);
+    QString isPresent = monitorNode.firstChildElement("ipxact:isPresent").firstChild().nodeValue();
+
     QDomNode activeInterfaceNode = monitorNode.firstChildElement("ipxact:monitoredActiveInterface");
 
     QSharedPointer<MonitorInterface> monitoredActiveInterface (new MonitorInterface());
@@ -288,7 +291,7 @@ void DesignReader::parseMonitorInterconnection(const QDomNode& monitorNode, QSha
 //-----------------------------------------------------------------------------
 // Function: DesignReader::parseMonitorInterface()
 //-----------------------------------------------------------------------------
-void DesignReader::parseMonitorInterface(const QDomNode& interfaceNode,
+void DesignReader::parseMonitorInterface(QDomNode const& interfaceNode,
     QSharedPointer<MonitorInterface> newInterface) const
 {
     parseHierInterface(interfaceNode, newInterface);
@@ -302,7 +305,7 @@ void DesignReader::parseMonitorInterface(const QDomNode& interfaceNode,
 //-----------------------------------------------------------------------------
 // Function: DesignReader::parseAdHocConnections()
 //-----------------------------------------------------------------------------
-void DesignReader::parseAdHocConnections(const QDomNode& designNode, QSharedPointer<Design> newDesign) const
+void DesignReader::parseAdHocConnections(QDomNode const& designNode, QSharedPointer<Design> newDesign) const
 {
     QDomNode adHocConnectionsNode = designNode.firstChildElement("ipxact:adHocConnections");
 
@@ -378,7 +381,7 @@ void DesignReader::parseExternalPortReferences(const QDomNodeList& externalNodes
 //-----------------------------------------------------------------------------
 // Function: DesignReader::createPortReference()
 //-----------------------------------------------------------------------------
-QSharedPointer<PortReference> DesignReader::createPortReference(const QDomNode& portReferenceNode) const
+QSharedPointer<PortReference> DesignReader::createPortReference(QDomNode const& portReferenceNode) const
 {
     QDomNamedNodeMap attributeMap = portReferenceNode.attributes();
 
@@ -386,8 +389,8 @@ QSharedPointer<PortReference> DesignReader::createPortReference(const QDomNode& 
 
     QSharedPointer<PortReference> newPortReference (new PortReference(portReference));
 
-    newPortReference->setIsPresent(
-        portReferenceNode.firstChildElement("ipxact:isPresent").firstChild().nodeValue());
+    QString isPresent = portReferenceNode.firstChildElement("ipxact:isPresent").firstChild().nodeValue();
+    newPortReference->setIsPresent(isPresent);
 
     QDomNode partSelectNode = portReferenceNode.firstChildElement("ipxact:partSelect");
 
@@ -456,47 +459,31 @@ void DesignReader::parseAdHocConnectionExtensions(const QDomNode& adHocNode,
 }
 
 //-----------------------------------------------------------------------------
-// Function: DesignReader::parseKactusAndVendorExtensions()
+// Function: DesignReader::parseDesignExtensions()
 //-----------------------------------------------------------------------------
 void DesignReader::parseDesignExtensions(QDomNode const& documentNode, QSharedPointer<Design> design) const
 {
-    QDomNodeList extensionNodes = documentNode.firstChildElement("ipxact:vendorExtensions").childNodes();
-    int extensionCount = extensionNodes.count();
-
-    for (int extensionIndex = 0; extensionIndex < extensionCount; ++extensionIndex)
-    {
-        QDomNode singleExtensionNode = extensionNodes.at(extensionIndex);
-        if (singleExtensionNode.nodeName() == "kactus2:columnLayout")
-        {
-            parseColumnLayout(singleExtensionNode, design);
-        }
-        if (singleExtensionNode.nodeName() == "kactus2:swInstances")
-        {
-            parseSwInstances(singleExtensionNode, design);
-        }
-        if (singleExtensionNode.nodeName() == "kactus2:adHocVisibilities")
-        {
-            parseAdHocPortPositions(singleExtensionNode, design);
-        }
-        if (singleExtensionNode.nodeName() == "kactus2:apiConnections")
-        {
-            parseApiConnections(singleExtensionNode, design);
-        }
-        if (singleExtensionNode.nodeName() == "kactus2:hierApiDependencies")
-        {
-            parseHierApiConnections(singleExtensionNode, design);
-        }
-        if (singleExtensionNode.nodeName() == "kactus2:comConnections")
-        {
-            parseComConnections(singleExtensionNode, design);
-        }
-        if (singleExtensionNode.nodeName() == "kactus2:hierComConnections")
-        {
-            parseHierComConnections(singleExtensionNode, design);
-        }
-    }
-
     parseKactusAndVendorExtensions(documentNode, design);
+
+    QDomElement extensionNode = documentNode.firstChildElement("ipxact:vendorExtensions");
+   
+    parseColumnLayout(extensionNode.firstChildElement("kactus2:columnLayout"), design);
+
+    parseRoutes(extensionNode.firstChildElement("kactus2:routes"), design);
+
+    parseSwInstances(extensionNode.firstChildElement("kactus2:swInstances"), design);
+
+    parseAdHocPortPositions(extensionNode.firstChildElement("kactus2:adHocVisibilities"), design);
+
+    parseApiConnections(extensionNode.firstChildElement("kactus2:apiConnections"), design);
+
+    parseHierApiConnections(extensionNode.firstChildElement("kactus2:hierApiDependencies"), design);
+
+    parseComConnections(extensionNode.firstChildElement("kactus2:comConnections"), design);
+
+    parseHierComConnections(extensionNode.firstChildElement("kactus2:hierComConnections"), design);
+
+    parseInterfaceGraphics(extensionNode, design);
 }
 
 //-----------------------------------------------------------------------------
@@ -504,20 +491,79 @@ void DesignReader::parseDesignExtensions(QDomNode const& documentNode, QSharedPo
 //-----------------------------------------------------------------------------
 void DesignReader::parseColumnLayout(QDomNode const& columnNode, QSharedPointer<Design> design) const
 {
-    QList<QSharedPointer<ColumnDesc> > columnLayout;
-
     QDomNodeList columnNodeList = columnNode.childNodes();
     int columnCount = columnNodeList.count();
-    for (int columnIndex = 0 ;columnIndex < columnCount; ++columnIndex)
+    for (int columnIndex = 0; columnIndex < columnCount; ++columnIndex)
     {
         QDomNode columnNode = columnNodeList.at(columnIndex);
         if (columnNode.nodeName() == "kactus2:column")
         {
-            QSharedPointer<ColumnDesc> newColumn (new ColumnDesc(columnNode));
-            columnLayout.append(newColumn);
+            QDomNamedNodeMap attributes =  columnNode.attributes();
+
+            ColumnTypes::ColumnContentType contentType = static_cast<ColumnTypes::ColumnContentType>(
+                attributes.namedItem("contentType").nodeValue().toInt());
+
+            QSharedPointer<ColumnDesc> newColumn (new ColumnDesc());
+            newColumn->setName(attributes.namedItem("name").nodeValue());
+            newColumn->setContentType(contentType);
+            newColumn->setAllowedItems(attributes.namedItem("allowedItems").nodeValue().toUInt());
+           
+            if (attributes.contains("minWidth"))
+            {
+                newColumn->setMinimumWidth(attributes.namedItem("minWidth").nodeValue().toUInt());
+            }
+            else if (contentType == ColumnTypes::IO)
+            {
+                newColumn->setMinimumWidth(119);
+            }
+
+            if (attributes.contains("width"))
+            {
+                newColumn->setWidth(attributes.namedItem("width").nodeValue().toUInt());
+            }
+            else if (contentType == ColumnTypes::IO)
+            {
+                newColumn->setWidth(119);
+            }
+
+            design->addColumn(newColumn);
+
         }
     }
-    design->setColumns(columnLayout);
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignReader::parseRoutes()
+//-----------------------------------------------------------------------------
+void DesignReader::parseRoutes(QDomElement const& routesElement, QSharedPointer<Design> design) const
+{
+    QDomNodeList routeList = routesElement.childNodes();
+
+    int routeCount = routeList.count();
+    for (int i = 0; i < routeCount; ++i)
+    {
+        QDomElement routeNode = routeList.at(i).toElement();
+
+        QString connectionName = routeNode.attribute("kactus2:connRef");
+        QSharedPointer<ConnectionRoute> route(new ConnectionRoute(connectionName));
+
+        bool offpage = routeNode.attribute("kactus2:offPage") == "true";
+        route->setOffpage(offpage);
+
+        QDomNodeList routePoints = routeNode.elementsByTagName("kactus2:position");
+        int pointCount = routePoints.count();
+        for (int j = 0; j < pointCount; j++)
+        {
+            QDomElement pointNode = routePoints.at(j).toElement();
+            QString x = pointNode.attribute("x");
+            QString y = pointNode.attribute("y");
+
+            QPointF point(x.toInt(), y.toInt());
+            route->addPoint(point);
+        }
+
+        design->getVendorExtensions()->append(route);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -528,9 +574,9 @@ void DesignReader::parseSwInstances(QDomNode const& swInstancesNode, QSharedPoin
     QList<QSharedPointer<SWInstance> > swInstanceList;
 
     QDomNodeList swNodeList = swInstancesNode.childNodes();
-    int swCount = swNodeList.count();
-
-    for (int swIndex = 0;swIndex < swCount; ++swIndex)
+    
+    int swInstanceCount = swNodeList.count();
+    for (int swIndex = 0; swIndex < swInstanceCount; ++swIndex)
     {
         QDomNode swNode = swNodeList.at(swIndex);
         if (swNode.nodeName() == "kactus2:swInstance")
@@ -656,4 +702,43 @@ void DesignReader::parseHierComConnections(QDomNode const& hierComConnectionsNod
     }
 
     design->setHierComConnections(hierComConnections);
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignReader::parseInterfaceGraphics()
+//-----------------------------------------------------------------------------
+void DesignReader::parseInterfaceGraphics(QDomElement const& extensionsNode, QSharedPointer<Design> design) const
+{
+    QDomNodeList graphicsExtensions = extensionsNode.elementsByTagName("kactus2:interfaceGraphics");
+
+    int extensionCount = graphicsExtensions.count();
+    for (int i = 0; i < extensionCount; i++)
+    {
+        QDomElement extension = graphicsExtensions.at(i).toElement();
+        
+        QSharedPointer<Kactus2Group> graphicsGroup(new Kactus2Group("kactus2:interfaceGraphics"));
+
+        QString name = extension.firstChildElement("kactus2:name").firstChild().nodeValue();
+        QSharedPointer<Kactus2Value> graphicsName(new Kactus2Value("kactus2:name", name));
+        graphicsGroup->addToGroup(graphicsName);
+
+        QDomElement positionElement = extension.firstChildElement("kactus2:position");
+        QString xCoordinate = positionElement.attribute("x");
+        QString yCoordinate = positionElement.attribute("y");
+
+        QPointF position = QPointF(xCoordinate.toInt(), yCoordinate.toInt());
+        QSharedPointer<Kactus2Position> graphicsPosition(new Kactus2Position(position));
+        graphicsGroup->addToGroup(graphicsPosition);
+
+        QDomElement directionElement = extension.firstChildElement("kactus2:direction");
+        QString xDirection = directionElement.attribute("x");
+        QString yDirection = directionElement.attribute("y");
+
+        QSharedPointer<Kactus2Placeholder> graphicsDirection(new Kactus2Placeholder("kactus2:direction"));
+        graphicsDirection->setAttribute("x", xDirection);
+        graphicsDirection->setAttribute("y", yDirection);
+        graphicsGroup->addToGroup(graphicsDirection);
+
+        design->getVendorExtensions()->append(graphicsGroup);
+    }
 }

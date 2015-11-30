@@ -218,7 +218,7 @@ public:
      *
      *      @remarks Edit support should be queried with getFlags().
      */
-    virtual IEditProvider* getEditProvider();
+    virtual QSharedPointer<IEditProvider> getEditProvider() const;
 
 	/*! \brief Get the bit fields that define which windows are supported by this tab.
 	 *
@@ -244,7 +244,7 @@ public slots:
      *
      *      @return True if the document is valid. False if there were any violations.
      */
-    virtual bool validate(QStringList& errorList);
+    virtual bool validate(QVector<QString>& errorList);
 
     //! Saves the document and resets the modified state.
     virtual bool save();

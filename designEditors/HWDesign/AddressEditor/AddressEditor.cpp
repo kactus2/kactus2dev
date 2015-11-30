@@ -94,7 +94,7 @@ void AddressEditor::setComponent(ComponentItem* component)
 
     // Retrieve the edit provider that manages the undo/redo stack.
     DesignDiagram* diagram = static_cast<DesignDiagram*>(component->scene());
-    editProvider_ = &diagram->getEditProvider();
+
     locked = diagram->isProtected();
 
     autoAssignButton_->setEnabled(!locked);

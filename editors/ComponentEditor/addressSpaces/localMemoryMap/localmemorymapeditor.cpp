@@ -25,6 +25,7 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
+#include <IPXACTmodels/Component/AddressSpace.h>
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/MemoryMapBase.h>
 
@@ -33,28 +34,39 @@
 //-----------------------------------------------------------------------------
 // Function: LocalMemoryMapEditor::LocalMemoryMapEditor()
 //-----------------------------------------------------------------------------
-LocalMemoryMapEditor::LocalMemoryMapEditor(QSharedPointer<MemoryMapBase> memoryMap,
+LocalMemoryMapEditor::LocalMemoryMapEditor(QSharedPointer<AddressSpace> memoryMap,
                                            QSharedPointer<Component> component,
                                            LibraryInterface* handler,
                                            QSharedPointer<ParameterFinder> parameterFinder,
                                            QSharedPointer<ExpressionFormatter> expressionFormatter,
                                            QWidget *parent):
 QGroupBox(tr("Local memory map"), parent),
-localMemoryMap_(memoryMap),
-nameEditor_(new NameGroupEditor(memoryMap, this)),
-view_(new EditableTableView(this)),
-model_(0),
-component_(component),
-handler_(handler)
+    addressSpace_(memoryMap),
+    localMemoryMap_(0),
+    nameEditor_(0),
+    view_(new EditableTableView(this)),
+    model_(0),
+    component_(component),
+    handler_(handler)
 {
+    bool hasLocalMemoryMap = !memoryMap->getLocalMemoryMap().isNull();
+
+    localMemoryMap_ = memoryMap->getLocalMemoryMap();
+    if (!hasLocalMemoryMap)
+    {
+        localMemoryMap_ = QSharedPointer<MemoryMapBase>(new MemoryMapBase());
+    }
+
+    nameEditor_ = (new NameGroupEditor(localMemoryMap_, this));
+
     setCheckable(true);
-    setChecked(!localMemoryMap_->getMemoryBlocks()->isEmpty());
+    setChecked(hasLocalMemoryMap && !localMemoryMap_->getMemoryBlocks()->isEmpty());
 
     nameEditor_->setTitle(tr("Memory map name and description"));
 
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
 
-    model_ = new MemoryMapModel(memoryMap, component->getChoices(), expressionParser, parameterFinder,
+    model_ = new MemoryMapModel(localMemoryMap_, component->getChoices(), expressionParser, parameterFinder,
         expressionFormatter, this);
 
     ComponentParameterModel* componentParameterModel = new ComponentParameterModel(parameterFinder, this);
@@ -148,14 +160,23 @@ void LocalMemoryMapEditor::refresh()
 }
 
 //-----------------------------------------------------------------------------
-// Function: LocalMemoryMapEditor::onEnableChanged()
+// Function: LocalMemoryMapEditor::onCheckStateChanged()
 //-----------------------------------------------------------------------------
 void LocalMemoryMapEditor::onCheckStateChanged()
 {
-//     if (!isChecked() && !localMemoryMap_->isEmpty())
-    if (!isChecked() && !localMemoryMap_->getMemoryBlocks()->isEmpty())
+    /*if (!isChecked() && !localMemoryMap_->getMemoryBlocks()->isEmpty())
     {
         setChecked(true);
         emit errorMessage("Cannot unselect local memory map since all fields are not empty.");        
+    }
+    */
+
+    if (isChecked())
+    {
+        addressSpace_->setLocalMemoryMap(localMemoryMap_);
+    }
+    else
+    {
+        addressSpace_->setLocalMemoryMap(QSharedPointer<MemoryMapBase>(0));
     }
 }

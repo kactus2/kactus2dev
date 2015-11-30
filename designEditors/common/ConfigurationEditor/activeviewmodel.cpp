@@ -35,7 +35,7 @@ void ActiveViewModel::setDesign( DesignWidget* designWidget,
 
 	designWidget_ = designWidget;
 
-	editProvider_ = designWidget->getGenericEditProvider();
+	editProvider_ = designWidget->getEditProvider();
 
 	desConf_ = desConf;
 	// if design configuration is not used.

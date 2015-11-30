@@ -16,8 +16,8 @@
 //-----------------------------------------------------------------------------
 ColumnDesc::ColumnDesc()
     : name_(),
-      contentType_(COLUMN_CONTENT_IO),
-      allowedItems_(CIT_NONE),
+      contentType_(ColumnTypes::IO),
+      allowedItems_(ColumnTypes::NONE),
       width_(119),
       minWidth_(119)
 {
@@ -26,44 +26,7 @@ ColumnDesc::ColumnDesc()
 //-----------------------------------------------------------------------------
 // Function: ColumnDesc()
 //-----------------------------------------------------------------------------
-ColumnDesc::ColumnDesc(const QDomNode& node)
-    : name_(),
-      contentType_(COLUMN_CONTENT_IO),
-      allowedItems_(CIT_NONE),
-      width_(259),
-      minWidth_(259)
-{
-
-    // Read the column description data from the attributes.
-    QDomNamedNodeMap attributeMap =  node.attributes();
-
-    name_ = attributeMap.namedItem("name").nodeValue();
-    contentType_ = static_cast<ColumnContentType>(attributeMap.namedItem("contentType").nodeValue().toInt());
-    allowedItems_ = attributeMap.namedItem("allowedItems").nodeValue().toUInt();
-
-    if (attributeMap.contains("width"))
-    {
-        width_ = attributeMap.namedItem("width").nodeValue().toUInt();
-    }
-    else if (contentType_ == COLUMN_CONTENT_IO)
-    {
-        width_ = 119;
-    }
-
-    if (attributeMap.contains("minWidth"))
-    {
-        minWidth_ = attributeMap.namedItem("minWidth").nodeValue().toUInt();
-    }
-    else if (contentType_ == COLUMN_CONTENT_IO)
-    {
-        minWidth_ = 119;
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: ColumnDesc()
-//-----------------------------------------------------------------------------
-ColumnDesc::ColumnDesc(QString const& name, ColumnContentType contentType,
+ColumnDesc::ColumnDesc(QString const& name, ColumnTypes::ColumnContentType contentType,
                        unsigned int allowedItems, unsigned int minWidth)
     : name_(name),
       contentType_(contentType),
@@ -78,7 +41,7 @@ ColumnDesc::ColumnDesc(QString const& name, ColumnContentType contentType,
 //-----------------------------------------------------------------------------
 ColumnDesc* ColumnDesc::clone() const
 {
-    return new ColumnDesc(name_, contentType_, allowedItems_, minWidth_);
+    return new ColumnDesc(*this);
 }
 
 //-----------------------------------------------------------------------------
@@ -142,7 +105,7 @@ void ColumnDesc::setName(QString const& name)
 //-----------------------------------------------------------------------------
 // Function: ColumnDesc::setContentType()
 //-----------------------------------------------------------------------------
-void ColumnDesc::setContentType(ColumnContentType contentType)
+void ColumnDesc::setContentType(ColumnTypes::ColumnContentType contentType)
 {
     contentType_ = contentType;
 }
@@ -164,9 +127,17 @@ void ColumnDesc::setWidth(unsigned int width)
 }
 
 //-----------------------------------------------------------------------------
+// Function: ColumnDesc::setMinimumWidth()
+//-----------------------------------------------------------------------------
+void ColumnDesc::setMinimumWidth(int minimum)
+{
+    minWidth_ = minimum;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ColumnDesc::name()
 //-----------------------------------------------------------------------------
-QString const& ColumnDesc::name() const
+QString ColumnDesc::name() const
 {
     return name_;
 }
@@ -174,7 +145,7 @@ QString const& ColumnDesc::name() const
 //-----------------------------------------------------------------------------
 // Function: ColumnDesc::getContentType()
 //-----------------------------------------------------------------------------
-ColumnContentType ColumnDesc::getContentType() const
+ColumnTypes::ColumnContentType ColumnDesc::getContentType() const
 {
     return contentType_;
 }

@@ -18,8 +18,8 @@
 //-----------------------------------------------------------------------------
 // Function: SWConnectionEndpoint()
 //-----------------------------------------------------------------------------
-SWConnectionEndpoint::SWConnectionEndpoint(QGraphicsItem* parent, bool temporary, QVector2D const& dir):
-ConnectionEndpoint(parent, temporary)
+SWConnectionEndpoint::SWConnectionEndpoint(QGraphicsItem* parent, QVector2D const& dir)
+    : ConnectionEndpoint(parent)
 {
     setDirection(dir);
 }

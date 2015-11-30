@@ -1373,7 +1373,8 @@ void MainWindow::onClearItemSelection()
 
     if (designWidget != 0)
     {
-        adHocEditor_->setDataSource(designWidget->getDiagram());
+        adHocEditor_->setDataSource(designWidget->getDiagram(), designWidget->getEditProvider(), 
+            designWidget->isProtected());
     }
     else
     {
@@ -1396,12 +1397,16 @@ void MainWindow::onComponentSelected( ComponentItem* component )
 	connectionEditor_->clear();
 	interfaceEditor_->clear();
 
-	// Update the instance and ad-hoc visibility editors.
-	instanceEditor_->setComponentInstance(component);
+    
+    HWDesignWidget* designWidget = dynamic_cast<HWDesignWidget*>(designTabs_->currentWidget());
 
-    if (dynamic_cast<HWComponentItem*>(component) != 0)
+	// Update the instance and ad-hoc visibility editors.
+	instanceEditor_->setComponentInstance(component, designWidget->getEditProvider());
+
+    HWComponentItem* hwComponent = dynamic_cast<HWComponentItem*>(component);
+    if (hwComponent != 0)
     {
-        adHocEditor_->setDataSource(dynamic_cast<HWComponentItem*>(component));
+        adHocEditor_->setDataSource(hwComponent, designWidget->getEditProvider(), designWidget->isProtected());
         //addressEditor_->setComponent(component);
     }
     else
@@ -1462,12 +1467,14 @@ void MainWindow::onInterfaceSelected( ConnectionEndpoint* interface )
 //-----------------------------------------------------------------------------
 void MainWindow::onConnectionSelected( GraphicsConnection* connection )
 {
+    DesignWidget* designWidget = dynamic_cast<DesignWidget*>(designTabs_->currentWidget());
+
 	Q_ASSERT(connection);
     adHocEditor_->clear();
     //addressEditor_->clear();
 	instanceEditor_->clear();
 	interfaceEditor_->clear();
-	connectionEditor_->setConnection(connection);
+	connectionEditor_->setConnection(connection, designWidget->getDiagram());
 }
 
 //-----------------------------------------------------------------------------
@@ -1965,7 +1972,7 @@ void MainWindow::onDocumentChanged(int index)
         if (topComponent)
         {
             instanceEditor_->setContext(topComponent, designwidget->getDiagram()->getDesignConfiguration(),
-                &designwidget->getDiagram()->getEditProvider());
+                designwidget->getDiagram()->getEditProvider());
             instanceEditor_->setTopComponentActiveView(designwidget->getOpenViewName());
             instanceEditor_->setProtection(designwidget->isProtected());
         }
@@ -2328,14 +2335,10 @@ void MainWindow::createDesignForExistingComponent(VLNV const& vlnv)
     newDesign->setDesignImplementation(KactusAttribute::HW);
     newDesign->setVersion(VERSION_FILESTR);
     
-    QList<QSharedPointer<ColumnDesc> > columns;
-
-    columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("IO", COLUMN_CONTENT_IO, 0, HWDesignDiagram::IO_COLUMN_WIDTH)));
-    columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("Buses", COLUMN_CONTENT_BUSES, 0, HWDesignDiagram::COMPONENT_COLUMN_WIDTH)));
-    columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("Components", COLUMN_CONTENT_COMPONENTS, 0, HWDesignDiagram::COMPONENT_COLUMN_WIDTH)));
-    columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("IO", COLUMN_CONTENT_IO, 0, HWDesignDiagram::IO_COLUMN_WIDTH)));
-
-    newDesign->setColumns(columns);
+    newDesign->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("IO", ColumnTypes::IO, 0, HWDesignDiagram::IO_COLUMN_WIDTH)));
+    newDesign->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("Buses", ColumnTypes::BUSES, 0, HWDesignDiagram::COMPONENT_COLUMN_WIDTH)));
+    newDesign->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("Components", ColumnTypes::COMPONENTS, 0, HWDesignDiagram::COMPONENT_COLUMN_WIDTH)));
+    newDesign->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("IO", ColumnTypes::IO, 0, HWDesignDiagram::IO_COLUMN_WIDTH)));
 
     libraryHandler_->beginSave();
 
@@ -2406,13 +2409,14 @@ void MainWindow::createSWDesign(VLNV const& vlnv, QString const& directory)
     designConf->setDesignConfigImplementation(KactusAttribute::SW);
     designConf->setVersion(VERSION_FILESTR);
 
-    QList<QSharedPointer<ColumnDesc> > columns;
-
-    columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("Low-level", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SW_COLUMN_WIDTH)));
-    columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("Middle-level", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SW_COLUMN_WIDTH)));
-    columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("High-level", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SW_COLUMN_WIDTH)));
-    columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("Out", COLUMN_CONTENT_IO, 0, SystemDesignDiagram::IO_COLUMN_WIDTH)));
-    design->setColumns(columns);
+    design->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("Low-level", ColumnTypes::COMPONENTS, 0,
+        SystemDesignDiagram::SW_COLUMN_WIDTH)));
+    design->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("Middle-level", ColumnTypes::COMPONENTS, 0, 
+        SystemDesignDiagram::SW_COLUMN_WIDTH)));
+    design->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("High-level", ColumnTypes::COMPONENTS, 0, 
+        SystemDesignDiagram::SW_COLUMN_WIDTH)));
+    design->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("Out", ColumnTypes::IO, 0,
+        SystemDesignDiagram::IO_COLUMN_WIDTH)));
 
     // Create the files.
     libraryHandler_->beginSave();
@@ -2516,22 +2520,24 @@ void MainWindow::createSWDesign(VLNV const& vlnv)
     newDesign->setDesignImplementation(KactusAttribute::SW);
     newDesign->setVersion(VERSION_FILESTR);
 
-    QList<QSharedPointer<ColumnDesc> > columns;
-
     if (component->getImplementation() == KactusAttribute::SW)
     {
-        columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("Low-level", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SW_COLUMN_WIDTH)));
-        columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("Middle-level", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SW_COLUMN_WIDTH)));
-        columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("High-level", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SW_COLUMN_WIDTH)));
-        columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("Out", COLUMN_CONTENT_IO, 0, SystemDesignDiagram::IO_COLUMN_WIDTH)));
+        newDesign->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("Low-level", ColumnTypes::COMPONENTS, 0, 
+            SystemDesignDiagram::SW_COLUMN_WIDTH)));
+        newDesign->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("Middle-level", ColumnTypes::COMPONENTS, 0,
+            SystemDesignDiagram::SW_COLUMN_WIDTH)));
+        newDesign->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("High-level", ColumnTypes::COMPONENTS, 0, 
+            SystemDesignDiagram::SW_COLUMN_WIDTH)));
+        newDesign->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("Out", ColumnTypes::IO, 0,
+            SystemDesignDiagram::IO_COLUMN_WIDTH)));
     }
     else
     {
-        columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("Pre-mapped SW", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SW_COLUMN_WIDTH)));
-        columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("Pre-mapped SW", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SW_COLUMN_WIDTH)));
+        newDesign->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("Pre-mapped SW", ColumnTypes::COMPONENTS, 0,
+            SystemDesignDiagram::SW_COLUMN_WIDTH)));
+        newDesign->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("Pre-mapped SW", ColumnTypes::COMPONENTS, 0,
+            SystemDesignDiagram::SW_COLUMN_WIDTH)));
     }
-
-    newDesign->setColumns(columns);
 
     libraryHandler_->beginSave();
 
@@ -2642,10 +2648,10 @@ void MainWindow::createSystem(VLNV const& compVLNV, QString const& viewName, VLN
     sysDesign->setDesignImplementation(KactusAttribute::SYSTEM);
     sysDesign->setVersion(VERSION_FILESTR);
 
-    QList<QSharedPointer<ColumnDesc> > columns;
-    columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("SW Components", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SYSTEM_COLUMN_WIDTH)));
-    columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("SW Components", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SYSTEM_COLUMN_WIDTH)));
-    sysDesign->setColumns(columns);
+    sysDesign->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("SW Components", ColumnTypes::COMPONENTS, 0, 
+        SystemDesignDiagram::SYSTEM_COLUMN_WIDTH)));
+    sysDesign->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("SW Components", ColumnTypes::COMPONENTS, 0, 
+        SystemDesignDiagram::SYSTEM_COLUMN_WIDTH)));
     
 	generateSystemDesignV2(libraryHandler_, parentComp->getHierRef(viewName), *sysDesign);
 
@@ -2762,10 +2768,10 @@ void MainWindow::createSystemDesign(VLNV const& vlnv)
     newDesign->setDesignImplementation(KactusAttribute::SYSTEM);
     newDesign->setVersion(VERSION_FILESTR);
 
-    QList<QSharedPointer<ColumnDesc> > columns;
-    columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("SW Components", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SYSTEM_COLUMN_WIDTH)));
-    columns.append(QSharedPointer<ColumnDesc>(new ColumnDesc("SW Components", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SYSTEM_COLUMN_WIDTH)));
-    newDesign->setColumns(columns);
+    newDesign->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("SW Components", ColumnTypes::COMPONENTS, 0,
+        SystemDesignDiagram::SYSTEM_COLUMN_WIDTH)));
+    newDesign->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("SW Components", ColumnTypes::COMPONENTS, 0,
+        SystemDesignDiagram::SYSTEM_COLUMN_WIDTH)));
 
     generateSystemDesignV2(libraryHandler_, component->getHierRef(), *newDesign);
 
@@ -3094,7 +3100,7 @@ void MainWindow::openDesign(VLNV const& vlnv, QString const& viewName , bool for
 	designWidget->setDesign(vlnv, viewName);
 
 	// if the design could not be opened
-	if (!designWidget->getOpenDocument())
+	if (designWidget->getOpenDocument().isEmpty())
     {
 		delete designWidget;
 		return;
@@ -3163,7 +3169,7 @@ void MainWindow::openMemoryDesign(const VLNV& vlnv, const QString& viewName, boo
     designWidget->setDesign(vlnv, viewName);
 
     // if the design could not be opened
-    if (!designWidget->getOpenDocument())
+    if (designWidget->getOpenDocument().isEmpty())
     {
         delete designWidget;
         return;
@@ -4246,7 +4252,7 @@ bool MainWindow::isDesignOpen(VLNV const& vlnv, KactusAttribute::Implementation 
         {
             DesignWidget* designWidget = dynamic_cast<DesignWidget*>(designTabs_->widget(i));
 
-            if (designWidget != 0 && *designWidget->getOpenDocument() == vlnv &&
+            if (designWidget != 0 && designWidget->getOpenDocument() == vlnv &&
                 designWidget->getImplementation() == implementation)
             {
                 designTabs_->setCurrentIndex(i);
@@ -4475,60 +4481,56 @@ void MainWindow::setPluginVisibilities()
 	VLNV desVLNV;
 	QSharedPointer<Document const> libComp;
 	QSharedPointer<Document const> libDes;
-	QSharedPointer<Document const> libDesConf;
-	if (doc != 0)
+    QSharedPointer<Document const> libDesConf;
+    if (doc != 0)
     {
-		compVLNV = doc->getDocumentVLNV();
-		desVLNV = doc->getIdentifyingVLNV();
-		libComp = libraryHandler_->getModelReadOnly(compVLNV);
+        compVLNV = doc->getDocumentVLNV();
+        desVLNV = doc->getIdentifyingVLNV();
+        libComp = libraryHandler_->getModelReadOnly(compVLNV);
 
-		// if the design is supported by the document type
-		DesignWidget* desWidget = qobject_cast<DesignWidget*>(doc);
-		if (desWidget)
+        // if the design is supported by the document type
+        DesignWidget* desWidget = qobject_cast<DesignWidget*>(doc);
+        if (desWidget)
         {
-			// the vlnvs must be for different objects
-			Q_ASSERT(compVLNV != desVLNV);
+            // design is the object that identifies the editor
+            libDes = libraryHandler_->getModelReadOnly(desVLNV);
 
-			// design is the object that identifies the editor
-			libDes = libraryHandler_->getModelReadOnly(desVLNV);
+            // find the design config is one exists
+            QString viewName = desWidget->getOpenViewName();
 
-			// find the design config is one exists
-			QString viewName = desWidget->getOpenViewName();
+            QSharedPointer<Component const> comp = libComp.dynamicCast<Component const>();
+            VLNV desConfVLNV;
 
-			QSharedPointer<Component const> comp = libComp.dynamicCast<Component const>();
-			VLNV desConfVLNV;
+            // the implementation defines where to search for the hierarchy ref
+            switch (desWidget->getImplementation()) {
+            case KactusAttribute::HW: {
+                desConfVLNV = comp->getHierRef(viewName);
+                break;
+                                      }
+            case KactusAttribute::SW: {
+                desConfVLNV = comp->getHierSWRef(viewName);
+                break;
+                                      }
+            case KactusAttribute::SYSTEM: {
+                desConfVLNV = comp->getHierSystemRef(viewName);
+                break;
+                                          }
+            default: {
+                Q_ASSERT(false);
+                return;
+                     }
+            }
 
-			// the implementation defines where to search for the hierarchy ref
-			switch (desWidget->getImplementation())
+            // the hierarchy reference must be valid
+            Q_ASSERT(desConfVLNV.isValid());
+
+            // if the hierarchy ref is not directly to the design but design config is in between
+            if (desConfVLNV != desVLNV)
             {
-			case KactusAttribute::HW: {
-				desConfVLNV = comp->getHierRef(viewName);
-				break;
-										  }
-			case KactusAttribute::SW: {
-				desConfVLNV = comp->getHierSWRef(viewName);
-				break;
-										  }
-			case KactusAttribute::SYSTEM: {
-				desConfVLNV = comp->getHierSystemRef(viewName);
-				break;
-										   }
-			default: {
-				Q_ASSERT(false);
-				return;
-					 }
-			}
-
-			// the hierarchy reference must be valid
-			Q_ASSERT(desConfVLNV.isValid());
-
-			// if the hierarchy ref is not directly to the design but design config is in between
-			if (desConfVLNV != desVLNV)
-            {
-				libDesConf = libraryHandler_->getModelReadOnly(desConfVLNV);
-			}
-		}
-	}
+                libDesConf = libraryHandler_->getModelReadOnly(desConfVLNV);
+            }
+        }
+    }
 
     bool isGenerationGroupVisible = false;
 	foreach (QAction* action, pluginActionGroup_->actions())
@@ -4569,7 +4571,7 @@ void MainWindow::onDesignDocumentRefreshed()
         QSharedPointer<Component> topComponent = topItem.dynamicCast<Component>();
 
         instanceEditor_->setContext(topComponent, designWidget->getDiagram()->getDesignConfiguration(),
-            &designWidget->getDiagram()->getEditProvider());
+            designWidget->getDiagram()->getEditProvider());
     }
 }
 

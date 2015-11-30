@@ -572,8 +572,15 @@ void BusIfPortmapTab::mapPorts(QString const& physicalPort, QString const& logic
     QSharedPointer<PortMap> portMap(new PortMap());
     QSharedPointer<PortMap::PhysicalPort> physical(new PortMap::PhysicalPort());
     physical->name_ = physicalPort;
+    QSharedPointer<PartSelect> physicalSelect(new PartSelect());
+    physical->partSelect_ = physicalSelect;
     portMap->setPhysicalPort(physical);
-    portMap->getLogicalPort()->name_ = logicalPort;
+
+    QSharedPointer<PortMap::LogicalPort> logical(new PortMap::LogicalPort());
+    logical->name_ = logicalPort;
+    QSharedPointer<Range> logicalRange(new Range("0", "0"));
+    logical->range_ = logicalRange;
+    portMap->setLogicalPort(logical);
 
     if (physicalSize > logicalSize)
     {
@@ -584,26 +591,26 @@ void BusIfPortmapTab::mapPorts(QString const& physicalPort, QString const& logic
             return;
         }
         
-        portMap->getPhysicalPort()->partSelect_->setLeftRange(QString::number(dialog.getHigherBound()));
-        portMap->getPhysicalPort()->partSelect_->setRightRange(QString::number(dialog.getLowerBound()));
+        physicalSelect->setLeftRange(QString::number(dialog.getHigherBound()));
+        physicalSelect->setRightRange(QString::number(dialog.getLowerBound()));
         physicalSize = abs(dialog.getHigherBound() - dialog.getLowerBound()) + 1;
-    }
-    /*else
-    {
-        portMap->setPhysicalLeft(component_->getPortLeftBound(physicalPort));
-        portMap->setPhysicalRight(component_->getPortRightBound(physicalPort));
-    }
-
-    if (portMap->getPhysicalLeft() > portMap->getPhysicalRight())
-    {
-        portMap->setLogicalLeft(physicalSize - 1);
-        portMap->setLogicalRight(0);         
     }
     else
     {
-        portMap->setLogicalLeft(0);
-        portMap->setLogicalRight(physicalSize - 1);  
-    }*/
+        physicalSelect->setLeftRange(component_->getPort(physicalPort)->getLeftBound());
+        physicalSelect->setRightRange(component_->getPort(physicalPort)->getRightBound());
+    }
+
+    if (physicalSelect->getLeftRange().toInt() > logicalRange->getRight().toInt())
+    {
+        logicalRange->setLeft(QString::number(physicalSize - 1));
+        logicalRange->setRight("0");
+    }
+    else
+    {
+        logicalRange->setLeft("0");
+        logicalRange->setRight(QString::number(physicalSize - 1));
+    }
 
     model_.createMap(portMap);
 

@@ -67,7 +67,7 @@ public:
 	 *
 	 *      @param [in] component   Pointer to the component instance to edit.
 	 */
-	void setComponent(ComponentItem* component);
+	void setComponent(ComponentItem* component, QSharedPointer<IEditProvider> editProvider);
 
 	/*!
      *  Clear the editor from all data.

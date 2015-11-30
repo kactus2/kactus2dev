@@ -20,10 +20,12 @@
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
-#include <editors/ComponentEditor/common/ValueFormatter.h>
+
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
+
+#include <IPXACTmodels/common/validators/ValueFormatter.h>
 
 #include <QLabel>
 #include <QGridLayout>

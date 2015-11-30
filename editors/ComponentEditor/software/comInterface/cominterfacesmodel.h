@@ -92,8 +92,7 @@ public:
 	 *
 	 *      @return True if saving happened successfully.
 	*/
-	bool setData(QModelIndex const& index, const QVariant& value, 
-		int role = Qt::EditRole);
+	bool setData(QModelIndex const& index, const QVariant& value, int role = Qt::EditRole);
 
 	/*! Check if the COM interfaces model is in a valid state.
 	 *
@@ -174,6 +173,8 @@ private:
 
 	//! The instance that manages the library.
 	LibraryInterface* libHandler_;
+
+    QSharedPointer<Component> component_;
 
 	//! Contains the COM interfaces to edit.
 	QList<QSharedPointer<ComInterface> > comIfs_;

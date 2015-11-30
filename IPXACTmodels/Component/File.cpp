@@ -112,87 +112,8 @@ File& File::operator=(const File &other)
 //-----------------------------------------------------------------------------
 File::~File()
 {
-    buildCommand_.clear();
-    defines_.clear();
+
 }
-/*
-bool File::isValid( QStringList& errorList, 
-				   const QString& parentIdentifier,
-				   bool checkChildren /*= true*/ /*) const {
-	bool valid = true;
-	
-	if (name_.isEmpty()) {
-		errorList.append(QObject::tr("Mandatory name missing for file within %1").arg(
-			parentIdentifier));
-		valid = false;
-	}
-
-	if (fileTypes_.isEmpty() && userFileTypes_.isEmpty()) {
-		errorList.append(QObject::tr("Mandatory file type missing for file %1 within %2").arg(
-			name_).arg(parentIdentifier));
-		valid = false;
-	}
-	// if at least one file type was specified
-	else {
-
-		foreach (QString fileType, fileTypes_) {
-			if (fileType.isEmpty()) {
-				valid = false;
-				break;
-			}
-		}
-		foreach (QString userFileType, userFileTypes_) {
-			if (userFileType.isEmpty()) {
-				valid = false;
-				break;
-			}
-		}
-	}
-
-	if (checkChildren) {
-		foreach (Define define, defines_) {
-			if (!define.isValid(errorList, QObject::tr("file %1").arg(name_))) {
-				valid = false;
-			}
-		}
-	}
-
-	return valid;
-}*/
-/*
-bool File::isValid( bool checkChildren /*= true*/ /*) const {
-	if (name_.isEmpty()) {
-		return false;
-	}
-
-	if (fileTypes_.isEmpty() && userFileTypes_.isEmpty()) {
-		return false;
-	}
-	// if at least one file type was specified
-	else {
-
-		foreach (QString fileType, fileTypes_) {
-			if (fileType.isEmpty()) {
-				return false;
-			}
-		}
-		foreach (QString userFileType, userFileTypes_) {
-			if (userFileType.isEmpty()) {
-				return false;
-			}
-		}
-	}
-
-	if (checkChildren) {
-		foreach (Define define, defines_) {
-			if (!define.isValid()) {
-				return false;
-			}
-		}
-	}
-
-	return true;
-}*/
 
 //-----------------------------------------------------------------------------
 // Function: File::operator==()
@@ -221,7 +142,7 @@ QString File::getFileId() const
 //-----------------------------------------------------------------------------
 // Function: File::setFileId()
 //-----------------------------------------------------------------------------
-void File::setFileId(const QString &fileId)
+void File::setFileId(QString const& fileId)
 {
     fileId_ = fileId;
 }
@@ -351,7 +272,7 @@ QString File::getLogicalName() const
 //-----------------------------------------------------------------------------
 // Function: File::setLogicalName()
 //-----------------------------------------------------------------------------
-void File::setLogicalName(const QString &logicalName)
+void File::setLogicalName(QString const& logicalName)
 {
     logicalName_ = logicalName;
 }
@@ -400,7 +321,7 @@ QSharedPointer<BuildCommand> File::getBuildCommand() const
     }
     else
     {
-        return QSharedPointer<BuildCommand> ();
+        return QSharedPointer<BuildCommand>();
     }
 }
 
@@ -473,7 +394,7 @@ QString File::getDescription() const
 //-----------------------------------------------------------------------------
 // Function: File::setDescription()
 //-----------------------------------------------------------------------------
-void File::setDescription(const QString &description)
+void File::setDescription(QString const& description)
 {
     description_ = description;
 }

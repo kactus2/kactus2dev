@@ -21,11 +21,13 @@
 #include <QSharedPointer>
 #include <QGraphicsPolygonItem>
 
-class ComponentItem;
 class ApiInterface;
+class Component;
+class ComponentItem;
 class ComInterface;
 class BusInterface;
 class GraphicsConnection;
+class Port;
 
 //-----------------------------------------------------------------------------
 //! Base class for connection endpoints (both SW and HW).
@@ -61,9 +63,8 @@ public:
      *  Constructor.
      *
      *      @param [in] parent     The parent graphics item.
-     *      @param [in] temporary  If true, the endpoint is set temporary.
      */
-    ConnectionEndpoint(QGraphicsItem* parent = 0, bool temporary = false);
+    ConnectionEndpoint(QGraphicsItem* parent = 0);
 
     /*!
      *  Destructor.
@@ -142,9 +143,8 @@ public:
      *
      *      @param [in] other The other endpoint.
      *
-     *      @remarks Does not take existing connections into account but simply
-     *               validates whether a connection between the endpoints would be valid
-     *               in a general case.
+     *      @remarks Does not take existing connections into account but simply validates whether a 
+     *               connection between the endpoints would be valid in a general case.
      */
     virtual bool isConnectionValid(ConnectionEndpoint const* other) const;
 
@@ -165,7 +165,7 @@ public:
     /*!
 	 *	Returns the draw direction of the endpoint.
 	 */
-	virtual QVector2D const& getDirection() const;
+	virtual QVector2D getDirection() const;
 
     /*!
      *  Returns true if the draw direction is fixed and thus, cannot be changed.
@@ -177,21 +177,21 @@ public:
      */
     virtual QString name() const = 0;
 
-	/*! \brief Set the name of the endpoint.
+	/*! Set the name of the endpoint.
 	 *
 	 * \param name The name to set for the endpoint.
 	 *
 	*/
 	virtual void setName(const QString& name) = 0;
 
-	/*! \brief Get the description of the endpoint.
+	/*! Get the description of the endpoint.
 	 *
 	 *
 	 * \return QString contains the description.
 	*/
 	virtual QString description() const = 0;
 
-	/*! \brief Set the description for the endpoint.
+	/*! Set the description for the endpoint.
 	 *
 	 * \param description Contains the description to set.
 	 *
@@ -243,7 +243,7 @@ public:
      *      @remarks The function returns a null pointer if the endpoint is a bus interface.
      *               Use isAdHoc() function to check for ad-hoc support.
      */
-    virtual Port* getPort() const;
+    virtual QSharedPointer<Port> getPort() const;
 
     /*!
      *  Returns the corresponding off-page connector or a null pointer if the endpoint does not have one.
@@ -292,7 +292,7 @@ public:
      *
      *      @param [in] temp True if temporary; false if not temporary.
      */
-    void setTemporary(bool temp);
+    virtual void setTemporary(bool temp);
 
     /*!
      *  Returns true if the endpoint is temporary.
@@ -321,7 +321,7 @@ signals:
     //! Signals that the contents of the interface have been changed.
     void contentChanged();
 
-    //! \brief Emitted when the endpoint is destroyed.
+    //! Emitted when the endpoint is destroyed.
     void destroyed(ConnectionEndpoint* endpoint);
 
     //! Emitted when the end point has been moved.

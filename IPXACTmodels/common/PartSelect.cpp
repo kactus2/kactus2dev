@@ -14,7 +14,7 @@
 //-----------------------------------------------------------------------------
 // Function: PartSelect::PartSelect()
 //-----------------------------------------------------------------------------
-PartSelect::PartSelect(QString const& leftRange /* = QString() */, QString const& rightRange /* = QString() */):
+PartSelect::PartSelect(QString const& leftRange, QString const& rightRange):
 range_(leftRange, rightRange),
 indices_(new QStringList())
 {

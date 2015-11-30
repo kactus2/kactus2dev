@@ -39,7 +39,7 @@
 MemoryDesignWidget::MemoryDesignWidget(LibraryInterface* lh, QWidget* parent)
     : DesignWidget(lh, parent)
 {
-    setDiagram(new MemoryDesignDiagram(lh, *getGenericEditProvider(), this));
+    setDiagram(new MemoryDesignDiagram(lh, getEditProvider(), this));
 }
 
 //-----------------------------------------------------------------------------
@@ -149,7 +149,8 @@ bool MemoryDesignWidget::setDesign(QSharedPointer<Component> comp, const QString
         // if design configuration did not contain a reference to a design.
         if (!design)
         {
-            emit errorMessage(tr("Component %1 did not contain a view").arg(comp->getVlnv().getName()));
+            emit errorMessage(tr("Component %1 did not contain a view").arg(
+                comp->getVlnv().getName()));
             return false;
         }
     }
@@ -221,8 +222,8 @@ void MemoryDesignWidget::addColumn()
 
     if (dialog.exec() == QDialog::Accepted)
     {
-        getDiagram()->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc(dialog.name(), COLUMN_CONTENT_COMPONENTS, 
-            0, MemoryDesignDiagram::COLUMN_WIDTH)));
+        getDiagram()->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc(dialog.name(), 
+            ColumnTypes::COMPONENTS, 0, MemoryDesignDiagram::COLUMN_WIDTH)));
     }
 }
 

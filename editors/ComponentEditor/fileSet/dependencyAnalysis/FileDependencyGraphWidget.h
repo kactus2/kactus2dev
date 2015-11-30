@@ -41,7 +41,7 @@ public:
     /*!
      * Returns the view.
      */
-    FileDependencyGraphView& getView();
+    FileDependencyGraphView* getView();
 
 private slots:
     /*!
@@ -71,7 +71,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The graph view.
-    FileDependencyGraphView view_;
+    FileDependencyGraphView* view_;
 
     //! The scroll bar for dependencies.
     QScrollBar scrollBar_;

@@ -114,7 +114,7 @@ public:
     /*!
      *  Toggles the connection between normal and off-page.
      */
-    void toggleOffPage();
+    virtual void toggleOffPage();
 
     /*!
      *  Sets the routing of the connection.
@@ -162,14 +162,14 @@ public:
 	 *
 	 *      @param [in] name The name to set for the connection.
 	 */
-	void setName(QString const& name);
+	virtual void setName(QString const& name);
 
     /*!
      *  Sets the description for the connection.
 	 *
      *      @param [in] description The description to set.
 	 */
-	void setDescription(const QString& description);
+	virtual void setDescription(QString const& description);
 
     /*!
      *  Sets the imported state.
@@ -181,12 +181,12 @@ public:
     /*!
      *  Returns the name of this connection
      */
-    QString const& name() const;
+    virtual QString name() const;
 
 	/*!
      *  Returns the description of the connection.
 	 */
-	QString const& description() const;
+	virtual QString description() const;
 
     /*!
      *  Returns true if the connection is an imported one.

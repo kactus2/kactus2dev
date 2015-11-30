@@ -417,9 +417,9 @@ qreal MemoryItem::getHeight() const
 //-----------------------------------------------------------------------------
 // Function: MemoryItem::getContentType()
 //-----------------------------------------------------------------------------
-ColumnContentType MemoryItem::getContentType() const
+ColumnTypes::ColumnContentType MemoryItem::getContentType() const
 {
-    return COLUMN_CONTENT_COMPONENTS;
+    return ColumnTypes::COMPONENTS;
 }
 
 //-----------------------------------------------------------------------------

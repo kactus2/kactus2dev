@@ -72,7 +72,7 @@ FileDependencyInfoWidget::~FileDependencyInfoWidget()
 //-----------------------------------------------------------------------------
 // Function: FileDependencyInfoWidget::setEditedDependency()
 //-----------------------------------------------------------------------------
-void FileDependencyInfoWidget::setEditedDependency(QSharedPointer<FileDependency> dependency)
+void FileDependencyInfoWidget::setEditedDependency(FileDependency* dependency)
 {
     dependency_ = dependency;
 
@@ -138,7 +138,7 @@ void FileDependencyInfoWidget::setEditedDependency(QSharedPointer<FileDependency
 //-----------------------------------------------------------------------------
 // Function: FileDependencyInfoWidget::getEditedDependency()
 //-----------------------------------------------------------------------------
-QSharedPointer<FileDependency> FileDependencyInfoWidget::getEditedDependency() const
+FileDependency* FileDependencyInfoWidget::getEditedDependency() const
 {
     return dependency_;
 }

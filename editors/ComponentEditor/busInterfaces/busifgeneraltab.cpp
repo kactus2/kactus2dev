@@ -173,8 +173,10 @@ bool BusIfGeneralTab::isValid(QStringList& errorList) const
 
     QString thisIdentifier(tr("bus interface %1").arg(busif_->name()));
 
-    if (!parameters_.isValid(errorList, thisIdentifier))
+    QVector<QString> errors;
+    if (!parameters_.isValid(errors, thisIdentifier))
     {
+        errorList.append(errors.toList());
         valid = false;
     }
 

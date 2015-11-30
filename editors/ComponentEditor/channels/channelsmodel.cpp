@@ -81,7 +81,7 @@ Qt::ItemFlags ChannelsModel::flags(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 QVariant ChannelsModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    if (orientation != Qt::Horizontal && role != Qt::DisplayRole)
+    if (orientation != Qt::Horizontal || role != Qt::DisplayRole)
     {
         return QVariant();
     }

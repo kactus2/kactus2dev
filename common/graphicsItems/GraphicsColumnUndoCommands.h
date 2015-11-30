@@ -20,7 +20,7 @@
 
 class GraphicsColumnLayout;
 class GraphicsColumn;
-
+class Design;
 //-----------------------------------------------------------------------------
 //! GraphicsColumnMoveCommand class.
 //-----------------------------------------------------------------------------
@@ -88,8 +88,8 @@ public:
      *      @param [in] desc    The column to add.
      *      @param [in] parent  The parent command.
      */
-    GraphicsColumnAddCommand(GraphicsColumnLayout* layout, GraphicsColumn* column,
-                             QUndoCommand* parent = 0);
+    GraphicsColumnAddCommand(GraphicsColumnLayout* layout, GraphicsColumn* column, QSharedPointer<Design> design,
+        QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
@@ -120,6 +120,9 @@ private:
 
     //! The column.
     GraphicsColumn* column_;
+
+    //! The column layout.
+    QSharedPointer<Design> design_;
 
     //! Boolean flag for indicating if the component should be deleted in the destructor.
     bool del_;

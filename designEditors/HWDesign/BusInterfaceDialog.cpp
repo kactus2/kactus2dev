@@ -18,7 +18,6 @@
 #include <QHeaderView>
 #include <QTableView>
 
-#include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/ConnectionEndpoint.h>
 
 #include <common/delegates/LineEditDelegate/lineeditdelegate.h>
@@ -52,8 +51,7 @@ namespace
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceDialog::BusInterfaceDialog()
 //-----------------------------------------------------------------------------
-BusInterfaceDialog::BusInterfaceDialog(bool enableNameEdit,
-                                       QWidget* parent) 
+BusInterfaceDialog::BusInterfaceDialog(bool enableNameEdit, QWidget* parent) 
     : QDialog(parent),
       layout_(0),
       nameLabel_(0),
@@ -84,7 +82,7 @@ BusInterfaceDialog::BusInterfaceDialog(bool enableNameEdit,
         // Create the name edit and its label.
         nameLabel_ = new QLabel(tr("Name:"), this);
         nameEdit_ = new QLineEdit(this);
-      }
+    }
 
     // Create the radio button group.
     modeGroup_ = new QGroupBox(tr("Select Interface Mode"), this);
@@ -108,8 +106,7 @@ BusInterfaceDialog::BusInterfaceDialog(bool enableNameEdit,
         btnOK_->setEnabled(!nameEdit_->text().isEmpty());
     }
 
-    tableGroup_ = new QGroupBox(tr("Define Port Names and Descriptions in Target Component"), 
-                                    this);
+    tableGroup_ = new QGroupBox(tr("Define Port Names and Descriptions in Target Component"), this);
 
     setupLayout();
 }
@@ -163,11 +160,11 @@ void BusInterfaceDialog::setBusInterfaces(QSharedPointer<Component> srcComponent
     busIf_ = busInterface;
     lh_ = handler;
 
-    if ( !tableEnable_ )
+    if (!tableEnable_)
     {
         setupPortTable();      
 
-        if ( modes_ == 1 )
+        if (modes_ == 1)
         {
             btnOK_->setEnabled(portsModel_->isValid());
             portsView_->setEnabled(true);
@@ -206,7 +203,6 @@ void BusInterfaceDialog::setBusInterfaces(QSharedPointer<Component> srcComponent
     QString draftHeader = "Name in " + destName;
     portsModel_->setHeaderData(PortGenerationTableModel::TARGET_NAME, Qt::Horizontal, draftHeader);
 }
-
 
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceDialog::getPortMaps()
@@ -250,7 +246,7 @@ QList< QSharedPointer<PortMap> > BusInterfaceDialog::getPortMaps()
 QList< QSharedPointer<Port> > BusInterfaceDialog::getPorts() 
 {
     // Create ports
-    if ( tableEnable_ && ports_.empty())
+    if (tableEnable_ && ports_.empty())
     {
         for(int row = 0; row < portsModel_->rowCount(); row++)
         {
@@ -319,7 +315,7 @@ void BusInterfaceDialog::onTableDataChanged()
 //-----------------------------------------------------------------------------
 void BusInterfaceDialog::onModeSelected(bool const radioButtonChecked)
 {
-    if ( radioButtonChecked && tableEnable_ )
+    if (radioButtonChecked && tableEnable_)
     {
         btnOK_->setDefault(false);
         portsView_->setEnabled(true);
@@ -405,7 +401,7 @@ void BusInterfaceDialog::setupPortTable()
 //-----------------------------------------------------------------------------
 void BusInterfaceDialog::updatePortsView()
 {
-    if ( tableEnable_ && modes_ != 0 )
+    if (tableEnable_ && modes_ != 0)
     {
         portsModel_->initialize(sourceComp_, busIf_, destComp_, lh_, getSelectedMode());        
         onTableDataChanged();

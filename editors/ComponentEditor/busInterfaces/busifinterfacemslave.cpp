@@ -16,11 +16,12 @@
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
-#include <editors/ComponentEditor/common/ValueFormatter.h>
 
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
+
+#include <IPXACTmodels/common/validators/ValueFormatter.h>
 
 #include <QLabel>
 #include <QGridLayout>
@@ -124,8 +125,16 @@ void BusIfInterfaceMSlave::refresh()
 
     remapEditor_->blockSignals(true);
 
-    remapEditor_->setExpression(mirroredSlave_->getRemapAddresses()->first()->remapAddress_);
-    remapEditor_->setToolTip(formattedValueFor(mirroredSlave_->getRemapAddresses()->first()->remapAddress_));
+    if (mirroredSlave_->getRemapAddresses() && !mirroredSlave_->getRemapAddresses()->isEmpty())
+    {
+        remapEditor_->setExpression(mirroredSlave_->getRemapAddresses()->first()->remapAddress_);
+        remapEditor_->setToolTip(formattedValueFor(mirroredSlave_->getRemapAddresses()->first()->remapAddress_));
+    }
+    else
+    {
+        remapEditor_->setExpression("");
+        remapEditor_->setToolTip("");
+    }
 
     remapEditor_->blockSignals(false);
 }

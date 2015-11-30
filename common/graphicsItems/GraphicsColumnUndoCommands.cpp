@@ -14,6 +14,8 @@
 #include "GraphicsColumn.h"
 #include "GraphicsColumnLayout.h"
 
+#include <IPXACTmodels/Design/Design.h>
+
 //-----------------------------------------------------------------------------
 // Function: GraphicsColumnMoveCommand()
 //-----------------------------------------------------------------------------
@@ -66,11 +68,12 @@ void GraphicsColumnMoveCommand::redo()
 // Function: GraphicsColumnAddCommand()
 //-----------------------------------------------------------------------------
 GraphicsColumnAddCommand::GraphicsColumnAddCommand(GraphicsColumnLayout* layout, GraphicsColumn* column,
-                                                   QUndoCommand* parent)
+    QSharedPointer<Design> design, QUndoCommand* parent)
     : QUndoCommand(parent),
       layout_(layout),
       column_(column),
-      del_(false)
+      del_(false),
+      design_(design)
 {
 }
 
@@ -95,6 +98,8 @@ void GraphicsColumnAddCommand::undo()
     // Remove the column from the layout.
     layout_->removeColumn(column_);
     del_ = true;
+
+    design_->removeColumn(column_->getColumnDesc());
 }
 
 //-----------------------------------------------------------------------------
@@ -105,6 +110,7 @@ void GraphicsColumnAddCommand::redo()
     // Add the column to the layout.
     layout_->addColumn(column_, true);
     del_ = false;
+    design_->addColumn(column_->getColumnDesc());
 }
 
 //-----------------------------------------------------------------------------

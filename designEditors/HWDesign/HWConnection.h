@@ -1,7 +1,13 @@
-/* 
- *
- * 		filename: HWConnection.h
- */
+//-----------------------------------------------------------------------------
+// File: HWConnection.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: 
+// Date: 
+//
+// Description:
+// HWConnection represents graphically an IP-XACT interconnection.
+//-----------------------------------------------------------------------------
 
 #ifndef HWCONNECTION_H
 #define HWCONNECTION_H
@@ -12,6 +18,9 @@
 
 #include <common/graphicsItems/GraphicsConnection.h>
 #include <common/graphicsItems/GraphicsItemTypes.h>
+
+class Interconnection;
+class ConnectionRoute;
 
 /*! \brief HWConnection represents graphically an IP-XACT interconnection
  *
@@ -39,7 +48,24 @@ public:
                            QString const& description,
                            DesignDiagram* parent);
 
+    HWConnection(ConnectionEndpoint* endpoint1, ConnectionEndpoint* endpoint2,
+        QSharedPointer<Interconnection> interconnection, QSharedPointer<ConnectionRoute> route,
+        DesignDiagram* parent);
+
     virtual ~HWConnection();
+
+    virtual void setName(QString const& name);
+
+    virtual QString name() const;
+
+    virtual void setDescription(QString const& description);
+
+    virtual QString description() const;
+
+        
+    QSharedPointer<Interconnection> getInterconnection();
+
+    QSharedPointer<ConnectionRoute> getRouteExtension() const;
 
     /*!
      *  Sets the bus width label visible/invisible.
@@ -56,6 +82,11 @@ public:
      */
     virtual bool connectEnds();
 
+    /*!
+     *  Toggles the connection between normal and off-page.
+     */
+    virtual void toggleOffPage();
+
     /*! \brief Set the routing of the interconnection
      *
      */
@@ -67,40 +98,6 @@ public:
     virtual void updatePosition();
 
     /*!
-     *  Sets the left bound of the ad-hoc endpoint involved in the connection.
-     *
-     *      @param [in] endpointIndex Which endpoint is concerned. Either 1 or 2.
-     *      @param [in] leftBound     The left bound.
-     */
-    void setAdHocLeftBound(int endpointIndex, int leftBound);
-
-    /*!
-     *  Sets the right bound of the ad-hoc endpoint involved in the connection.
-     *
-     *      @param [in] endpointIndex Which endpoint is concerned. Either 1 or 2.
-     *      @param [in] rightBound    The right bound.
-     */
-    void setAdHocRightBound(int endpointIndex, int rightBound);
-
-    /*!
-     *  Returns the left bound of the ad-hoc endpoint involved in the connection.
-     *
-     *      @param [in] endpointIndex Which endpoint is concerned. Either 1 or 2.
-     *
-     *      @return The left bound of the endpoint.
-     */
-    int getAdHocLeftBound(int endpointIndex) const;
-
-    /*!
-     *  Returns the left bound of the ad-hoc endpoint involved in the connection.
-     *
-     *      @param [in] endpointIndex Which endpoint data is concerned. Either 1 or 2.
-     *
-     *      @return The right bound of the endpoint.
-     */
-    int getAdHocRightBound(int endpointIndex) const;
-
-    /*!
      *  Returns true if the connection is a bus connection. Returns false if it isn't (i.e. it is an ad-hoc
      *  connection).
      */
@@ -108,41 +105,7 @@ public:
 
     int type() const { return Type; }
 
-    /*!
-     *  Sets the vendor extensions for the connection.
-     *
-     *      @param [in] vendorExtensions   The vendor extensions to set.
-     *
-     *      @remark     Should be used only for hierConnections.
-     */
-    void setVendorExtensions(QList<QSharedPointer<VendorExtension> > const& vendorExtensions);
-
-    /*!
-     *  Returns the vendor extensions of the connection.
-     *
-     *      @return     The vendor extensions of the connection.
-     *
-     *      @remark     Should be used only for hierConnections.
-     */
-    QList<QSharedPointer<VendorExtension> > getVendorExtensions() const;
-
 private:
-
-    //-----------------------------------------------------------------------------
-    //! Structure for storing ad-hoc port bounds.
-    //-----------------------------------------------------------------------------
-    struct AdHocPortBound
-    {
-        int left_;
-        int right_;
-
-        /*!
-         *  Default constructor.
-         */
-        AdHocPortBound() : left_(-1), right_(-1)
-        {
-        }
-    };
 
     /*!
      *  Updates the width label based on the endpoints.
@@ -189,13 +152,9 @@ private:
     //! The connection width label.
     QGraphicsTextItem* widthLabel_;
 
-    //! The ad-hoc port bounds.
-    AdHocPortBound portBounds_[2];
+    QSharedPointer<Interconnection> interconnection_;
 
-    /*!
-     * HierConnection vendor extensions.
-     */
-    QList<QSharedPointer<VendorExtension> > vendorExtensions_;
+    QSharedPointer<ConnectionRoute> route_;
 };
 
 #endif // HWCONNECTION_H

@@ -106,10 +106,13 @@ VLNV ComDefinitionEditor::getDocumentVLNV() const
 //-----------------------------------------------------------------------------
 // Function: ComDefinitionEditor::validate()
 //-----------------------------------------------------------------------------
-bool ComDefinitionEditor::validate(QStringList& errorList)
+bool ComDefinitionEditor::validate(QVector<QString>& errorList)
 {
     applyChanges();
-    return comDef_->isValid(errorList);
+
+    comDef_->findErrors(errorList);
+
+    return errorList.isEmpty();
 }
 
 //-----------------------------------------------------------------------------

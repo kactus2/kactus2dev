@@ -19,12 +19,13 @@
 #include <QSharedPointer>
 #include <QCheckBox>
 
-class NameGroupEditor;
-class EditableTableView;
-class MemoryMapModel;
-class LibraryInterface;
+class AddressSpace;
 class Component;
+class EditableTableView;
+class LibraryInterface;
 class MemoryMapBase;
+class MemoryMapModel;
+class NameGroupEditor;
 
 //-----------------------------------------------------------------------------
 //! LocalMemoryMapEditor is used to edit a local memory map of an address space.
@@ -45,7 +46,7 @@ public:
 	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
 	 *      @param [in] parent                  Pointer to the owner of the editor.
 	 */
-	LocalMemoryMapEditor(QSharedPointer<MemoryMapBase> memoryMap,
+	LocalMemoryMapEditor(QSharedPointer<AddressSpace> memoryMap,
 		QSharedPointer<Component> component,
 		LibraryInterface* handler,
         QSharedPointer <ParameterFinder> parameterFinder,
@@ -108,6 +109,9 @@ private:
 	//! No copying. No assignment.
 	LocalMemoryMapEditor(const LocalMemoryMapEditor& other);
 	LocalMemoryMapEditor& operator=(const LocalMemoryMapEditor& other);
+
+    //! The address space being edited.
+    QSharedPointer<AddressSpace> addressSpace_;
 
 	//! Pointer to the local memory map being edited.
 	QSharedPointer<MemoryMapBase> localMemoryMap_;

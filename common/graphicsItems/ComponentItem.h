@@ -19,6 +19,7 @@
 #include <QSharedPointer>
 
 class Component;
+class ComponentInstance;
 class ConnectionEndpoint;
 class LibraryInterface;
 class IGraphicsItemStack;
@@ -54,6 +55,13 @@ public:
                   QMap<QString, QString> const& configurableElementValues = QMap<QString, QString>(),
                   QGraphicsItem *parent = 0);
 
+
+    ComponentItem(QRectF const& size,
+        LibraryInterface* libInterface,
+        QSharedPointer<ComponentInstance> instance,
+        QSharedPointer<Component> component,
+        QGraphicsItem* parent);
+
 	/*!
      *  Destructor.
      */
@@ -82,9 +90,9 @@ public:
 	/*!
      *  Sets the instance name.
      *
-     *      @param [in] name The instance name to set.
+     *      @param [in] newName The instance name to set.
      */
-    void setName(QString const& name);
+    void setName(QString const& newName);
 
     /*!
      *  Sets the display name for the component instance.
@@ -101,13 +109,6 @@ public:
 	void setDescription(const QString& description);
 
     /*!
-     *  Sets the configurable elements of the component instance.
-     *
-     *      @param [in] confElements The map of elements to set.
-     */
-	void setConfigurableElements(const QMap<QString, QString>& confElements);
-
-    /*!
      *  Returns the instance name.
      */
     QString name() const;
@@ -115,37 +116,22 @@ public:
 	/*!
      *  Returns the display name of the component instance.
      */
-	QString const& displayName() const;
+	QString displayName() const;
 
 	/*!
      *  Returns the description of the component instance.
      */
-	QString const& description() const;
-
-    /*!
-     *  Returns the configurable elements of the component instance.
-     */
-	QMap<QString, QString>& getConfigurableElements();
-
-    /*!
-     *  Returns the configurable elements of the component instance.
-     */
-	QMap<QString, QString> const& getConfigurableElements() const;
-
-	/*!
-     *  Returns the IP-XACT component model.
-     */
-    QSharedPointer<Component> componentModel();
+	QString description() const;
 
     /*!
      *  Returns the IP-XACT component model.
      */
-    QSharedPointer<Component const> componentModel() const;
+    QSharedPointer<Component> componentModel() const;
 
     /*!
-     *  Returns the library interface.
+     *  Returns the IP-XACT component instance.
      */
-    LibraryInterface* getLibraryInterface();
+    QSharedPointer<ComponentInstance> getComponentInstance() const;
 
 	/*! \brief Get list of views the component has.
 	 *
@@ -163,19 +149,8 @@ public:
      */
     IGraphicsItemStack* getParentStack();
 
-    /*!
-     *  Returns true if the connections should not be updated automatically in
-     *  the port's itemChange() function. Otherwise false.
-     */
-    virtual bool isConnectionUpdateDisabled() const = 0;
-
 	/*! \brief Get the uuid of the instance.
-	 *
-	 * Method: 		getUuid
-	 * Full name:	ComponentItem::getUuid
-	 * Access:		public 
-	 *
-	 *
+     *
 	 * \return QString containing uuid.
 	 */
 	QString getUuid() const;
@@ -192,7 +167,7 @@ public:
     /*!
      *  Marks the component as a packetized component.
      */
-    virtual void setPacketized() = 0;
+    virtual void setPackaged() = 0;
 
     /*!
      *  Marks the component as a draft component.
@@ -228,6 +203,11 @@ protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
     /*!
+     *  Returns the library interface.
+     */
+    LibraryInterface* getLibraryInterface();
+
+    /*!
      *  Updates the name label with the given text.
      *
      *      @param [in] text The text to display in the label.
@@ -249,23 +229,12 @@ private:
     //! The component model.
     QSharedPointer<Component> component_;
 
-    //! The instance name.
-    QString name_;
+    //! The component instance.
+    QSharedPointer<ComponentInstance> componentInstance_;
 
     //! The name label.
     QGraphicsTextItem* nameLabel_;
 
-    //! \brief The display name for the component instance.
-	QString displayName_;
-
-	//! \brief The description for the component instance.
-	QString description_;
-
-	//! \brief Map containing the configurableElementValues for the instance.
-	QMap<QString, QString> configurableValues_;
-
-	//! \brief The uuid identifying the instance.
-	QString uuid_;
 };
 
 //-----------------------------------------------------------------------------

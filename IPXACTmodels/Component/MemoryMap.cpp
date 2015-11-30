@@ -16,12 +16,12 @@
 //-----------------------------------------------------------------------------
 // Function: MemoryMap::MemoryMap()
 //-----------------------------------------------------------------------------
-MemoryMap::MemoryMap(QString const& name /* = QString() */):
+MemoryMap::MemoryMap(QString const& name):
 MemoryMapBase(name),
-Extendable(),
-memoryRemaps_(new QList<QSharedPointer<MemoryRemap> > ()),
-addressUnitBits_(),
-shared_()
+    Extendable(),
+    memoryRemaps_(new QList<QSharedPointer<MemoryRemap> > ()),
+    addressUnitBits_(),
+    shared_()
 {
 
 }

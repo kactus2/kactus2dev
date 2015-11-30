@@ -26,10 +26,12 @@ class ModWriteComboBox;
 class ReadActionComboBox;
 class TestConstraintComboBox;
 class ParameterFinder;
-class WriteValueConstraintComboBox;
 class ExpressionParser;
 class Field;
 class Component;
+
+#include <QComboBox>
+
 //-----------------------------------------------------------------------------
 //! Editor for editing the details of a single register.
 //-----------------------------------------------------------------------------
@@ -90,9 +92,9 @@ private slots:
     void onOffsetEdited();
 
     /*!
-     *  Sets the edited width value for the field].
+     *  Sets the edited width value for the field.
      */
-    void onWdithEdited();
+    void onWidthEdited();
 
     /*!
      *  Sets the selected volatile value for the field.
@@ -258,7 +260,7 @@ private:
     QSharedPointer<ExpressionParser> expressionParser_;
 
     //! The write constraint selector.
-    WriteValueConstraintComboBox* writeConstraintEditor_;
+    QComboBox* writeConstraintEditor_;
 
     //! The write constraint minimum value editor.
     ExpressionEditor* writeConstraintMinLimit_;

@@ -13,8 +13,8 @@
 
 #include "DesignWidget.h"
 
-#include <common/utils.h>
-#include <common/GenericEditProvider.h>
+#include <common/IEditProvider.h>
+
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/GraphicsColumnLayout.h>
 
@@ -44,7 +44,7 @@
 // Function: DesignDiagram::DesignDiagram()
 //-----------------------------------------------------------------------------
 DesignDiagram::DesignDiagram(LibraryInterface* lh,
-                             GenericEditProvider& editProvider, DesignWidget* parent)
+                             QSharedPointer<IEditProvider> editProvider, DesignWidget* parent)
     : QGraphicsScene(parent),
       parent_(parent),
       lh_(lh),
@@ -53,7 +53,6 @@ DesignDiagram::DesignDiagram(LibraryInterface* lh,
       designConf_(),
       layout_(new GraphicsColumnLayout(this)),
       mode_(MODE_SELECT),
-      instanceNames_(),
       loading_(false),
       locked_(false),
       design_(),
@@ -91,7 +90,7 @@ bool DesignDiagram::setDesign(QSharedPointer<Component> component, QSharedPointe
                               QSharedPointer<DesignConfiguration> designConf)
 {
     // Clear the edit provider.
-    editProvider_.clear();
+    editProvider_->clear();
 
     // Deselect items.
     emit clearItemSelection();
@@ -100,7 +99,7 @@ bool DesignDiagram::setDesign(QSharedPointer<Component> component, QSharedPointe
     // Clear the scene.    
     clearScene();
     getParent()->clearRelatedVLNVs();
-    getParent()->addRelatedVLNV(*component->getVlnv());
+    getParent()->addRelatedVLNV(component->getVlnv());
 
     // Set the new component and open the design.
     component_ = component;
@@ -130,31 +129,6 @@ void DesignDiagram::attach(AdHocEditor* editor)
 void DesignDiagram::detach(AdHocEditor* editor)
 {
     disconnect(editor);
-}
-
-//-----------------------------------------------------------------------------
-// Function: DesignDiagram::addInstanceName()
-//-----------------------------------------------------------------------------
-void DesignDiagram::addInstanceName(QString const& name)
-{
-    instanceNames_.append(name);
-}
-
-//-----------------------------------------------------------------------------
-// Function: DesignDiagram::removeInstanceName()
-//-----------------------------------------------------------------------------
-void DesignDiagram::removeInstanceName(const QString& name)
-{
-    instanceNames_.removeAll(name);
-}
-
-//-----------------------------------------------------------------------------
-// Function: DesignDiagram::updateInstanceName()
-//-----------------------------------------------------------------------------
-void DesignDiagram::updateInstanceName(const QString& oldName, const QString& newName)
-{
-    instanceNames_.removeAll(oldName);
-    instanceNames_.append(newName);
 }
 
 //-----------------------------------------------------------------------------
@@ -214,7 +188,7 @@ LibraryInterface* DesignDiagram::getLibraryInterface() const
 //-----------------------------------------------------------------------------
 // Function: DesignDiagram::getEditProvider()
 //-----------------------------------------------------------------------------
-GenericEditProvider& DesignDiagram::getEditProvider()
+QSharedPointer<IEditProvider> DesignDiagram::getEditProvider() const
 {
     return editProvider_;
 }
@@ -225,6 +199,14 @@ GenericEditProvider& DesignDiagram::getEditProvider()
 QSharedPointer<Component> DesignDiagram::getEditedComponent() const
 {
     return component_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignDiagram::getDesign()
+//-----------------------------------------------------------------------------
+QSharedPointer<Design> DesignDiagram::getDesign() const
+{
+    return design_;
 }
 
 //-----------------------------------------------------------------------------
@@ -240,8 +222,7 @@ QSharedPointer<DesignConfiguration> DesignDiagram::getDesignConfiguration() cons
 //-----------------------------------------------------------------------------
 void DesignDiagram::onComponentInstanceAdded(ComponentItem* item)
 {
-    instanceNames_.append(item->name());
-    getParent()->addRelatedVLNV(*item->componentModel()->getVlnv());
+    getParent()->addRelatedVLNV(item->componentModel()->getVlnv());
 }
 
 //-----------------------------------------------------------------------------
@@ -249,8 +230,7 @@ void DesignDiagram::onComponentInstanceAdded(ComponentItem* item)
 //-----------------------------------------------------------------------------
 void DesignDiagram::onComponentInstanceRemoved(ComponentItem* item)
 {
-    instanceNames_.removeAll(item->name());
-    getParent()->removeRelatedVLNV(*item->componentModel()->getVlnv());
+    getParent()->removeRelatedVLNV(item->componentModel()->getVlnv());
 }
 
 //-----------------------------------------------------------------------------
@@ -293,17 +273,7 @@ void DesignDiagram::onBeginAssociation(Associable* startingPoint)
 //-----------------------------------------------------------------------------
 void DesignDiagram::onItemModified(QUndoCommand* undoCommand)
 {
-    getEditProvider().addCommand(QSharedPointer<QUndoCommand>(undoCommand));
-}
-
-//-----------------------------------------------------------------------------
-// Function: DesignDiagram::createInstanceName()
-//-----------------------------------------------------------------------------
-QString DesignDiagram::createInstanceName(QSharedPointer<Component> component)
-{
-    QString instanceName = component->getVlnv().getName();
-    instanceName.remove(QString(".comp"));
-    return createInstanceName(instanceName);
+    getEditProvider()->addCommand(QSharedPointer<QUndoCommand>(undoCommand));
 }
 
 //-----------------------------------------------------------------------------
@@ -322,20 +292,25 @@ QString DesignDiagram::createInstanceName(QString const& baseName)
     // Determine a unique name by using a running number.
     int runningNumber = 0;
     
-    QString name = format;
-    Utils::replaceMagicWord(name, "ComponentName", baseName);
-    Utils::replaceMagicWord(name, "InstanceNumber", QString::number(runningNumber));
-
-    while (instanceNames_.contains(name))
+    QStringList instanceNames;
+    foreach (QSharedPointer<ComponentInstance> instance, *getDesign()->getComponentInstances())
     {
-        ++runningNumber;
-        
-        name = format;
-        Utils::replaceMagicWord(name, "ComponentName", baseName);
-        Utils::replaceMagicWord(name, "InstanceNumber", QString::number(runningNumber));
+        instanceNames.append(instance->getInstanceName());
     }
 
-    instanceNames_.append(name);
+    QString name = format;
+    name.replace("$ComponentName$", baseName);
+    name.replace("$InstanceNumber$", QString::number(runningNumber));
+
+    while (instanceNames.contains(name))
+    {
+        runningNumber++;
+
+        name = format;
+        name.replace("$ComponentName$", baseName);
+        name.replace("$InstanceNumber$", QString::number(runningNumber));
+    }
+
     return name;
 }
 
@@ -350,9 +325,12 @@ void DesignDiagram::drawBackground(QPainter* painter, QRectF const& rect)
     qreal left = int(rect.left()) - (int(rect.left()) % GridSize );
     qreal top = int(rect.top()) - (int(rect.top()) % GridSize );
 
-    for (qreal x = left; x < rect.right(); x += GridSize ) {
+    for (qreal x = left; x < rect.right(); x += GridSize )
+    {
         for (qreal y = top; y < rect.bottom(); y += GridSize )
+        {
             painter->drawPoint(x, y);
+        }
     }
 }
 
@@ -402,7 +380,7 @@ void DesignDiagram::createNoteAt(QPointF const& position)
 
     QSharedPointer<StickyNoteAddCommand> cmd = createNoteAddCommand(note);
     cmd->redo(); 
-    getEditProvider().addCommand(cmd);
+    getEditProvider()->addCommand(cmd);
 
     clearSelection();
     emit clearItemSelection();
@@ -415,17 +393,18 @@ void DesignDiagram::createNoteAt(QPointF const& position)
 //-----------------------------------------------------------------------------
 // Function: DesignDiagram::createContextMenu()
 //-----------------------------------------------------------------------------
-QMenu* DesignDiagram::createContextMenu(QPointF const& /*pos*/){
+QMenu* DesignDiagram::createContextMenu(QPointF const&)
+{
 	return 0;
 }
 
 //-----------------------------------------------------------------------------
 // Function: DesignDiagram::contextMenuEvent()
 //-----------------------------------------------------------------------------
-void DesignDiagram::contextMenuEvent(QGraphicsSceneContextMenuEvent* event){
-	
+void DesignDiagram::contextMenuEvent(QGraphicsSceneContextMenuEvent* event)
+{
 	QMenu* menu = createContextMenu(event->scenePos());
-	if ( menu != 0 )
+	if (menu != 0)
 	{
 	    menu->exec(event->screenPos());
 	    delete menu;
@@ -497,13 +476,15 @@ QList<ComponentItem*> DesignDiagram::getInstances() const
 
     // ask for all graphics items.
     QList<QGraphicsItem*> graphItems = items();
-    foreach (QGraphicsItem* graphItem, graphItems) {
-
+    foreach (QGraphicsItem* graphItem, graphItems)
+    {
         // make dynamic type conversion
         ComponentItem* diagComp = dynamic_cast<ComponentItem*>(graphItem);
         // if the item was a diagram component then add it to the list.
         if (diagComp) 
+        {
             instances.append(diagComp);
+        }
     }
     return instances;
 }
@@ -522,15 +503,6 @@ bool DesignDiagram::isLoading() const
 DesignWidget* DesignDiagram::getParent() const
 {
     return parent_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: DesignDiagram::createDesign()
-//-----------------------------------------------------------------------------
-QSharedPointer<Design> DesignDiagram::createDesign(VLNV const& vlnv) const
-{
-	QSharedPointer<Design> design(new Design(vlnv));
-	return design;
 }
 
 //-----------------------------------------------------------------------------
@@ -567,11 +539,11 @@ int DesignDiagram::getCommonItemType(QList<QGraphicsItem*> const& items)
         return -1;
     }
 
-    int type = items[0]->type();
+    int type = items.first()->type();
 
-    for (int i = 1; i < items.size(); ++i)
+    for (int i = 1; i < items.size(); i++)
     {
-        if (type != items[i]->type())
+        if (type != items.at(i)->type())
         {
             return -1;
         }
@@ -673,6 +645,14 @@ void DesignDiagram::setProtectionForStickyNotes()
 }
 
 //-----------------------------------------------------------------------------
+// Function: DesignDiagram::adHocIdentifier()
+//-----------------------------------------------------------------------------
+QString DesignDiagram::adHocIdentifier() const
+{
+    return tr("top-level");
+}
+
+//-----------------------------------------------------------------------------
 // Function: DesignDiagram::updateAssociationCursor()
 //-----------------------------------------------------------------------------
 void DesignDiagram::updateAssociationCursor(QPointF const& cursorPosition)
@@ -714,7 +694,7 @@ void DesignDiagram::endAssociation(QPointF const& endpoint)
 
     QSharedPointer<QUndoCommand> addCommand = createAssociationAddCommand(startItem, endPointExtension);
     addCommand->redo();
-    getEditProvider().addCommand(addCommand);
+    getEditProvider()->addCommand(addCommand);
 
     QApplication::restoreOverrideCursor();
     setInteractionMode(NORMAL);

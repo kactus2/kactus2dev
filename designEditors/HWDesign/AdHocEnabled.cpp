@@ -76,7 +76,7 @@ void AdHocEnabled::onAdHocVisibilityChanged(QString const&, bool)
 //-----------------------------------------------------------------------------
 // Function: AdHocEnabled::getPortAdHocVisibilities()
 //-----------------------------------------------------------------------------
-QMap<QString, bool> const& AdHocEnabled::getPortAdHocVisibilities() const
+QMap<QString, bool> AdHocEnabled::getPortAdHocVisibilities() const
 {
     return portAdHocVisibilities_;
 }

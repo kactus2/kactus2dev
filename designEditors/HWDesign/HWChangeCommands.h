@@ -12,9 +12,13 @@
 #ifndef HWCHANGECOMMANDS_H
 #define HWCHANGECOMMANDS_H
 
-#include <IPXACTmodels/kactusExtensions/ApiInterface.h>
+#include <IPXACTmodels/generaldeclarations.h>
+
 #include <IPXACTmodels/common/DirectionTypes.h>
+
 #include <IPXACTmodels/Component/PortMap.h>
+
+#include <IPXACTmodels/kactusExtensions/ApiInterface.h>
 
 #include <QUndoCommand>
 #include <QGraphicsItem>
@@ -22,19 +26,21 @@
 #include <QString>
 #include <QMap>
 
-class HWConnection;
-class BusPortItem;
-class HWComponentItem;
-class ComponentItem;
+class ActiveViewModel;
+class AdHocEnabled;
+class AdHocConnectionItem;
+class AdHocPortItem;
 class BusInterfaceItem;
+class BusPortItem;
+class ComponentItem;
+class ConnectionEndpoint;
+class DesignDiagram;
 class GraphicsColumn;
 class GraphicsColumnLayout;
-class HWConnectionEndpoint;
-class ActiveViewModel;
-class AdHocPortItem;
-class AdHocEnabled;
-class ConnectionEndpoint;
 class GraphicsConnection;
+class HWComponentItem;
+class HWConnection;
+class HWConnectionEndpoint;
 
 //-----------------------------------------------------------------------------
 //! ComponentChangeNameCommand class.
@@ -825,60 +831,6 @@ private:
 };
 
 //-----------------------------------------------------------------------------
-//! Undo command for changing the ad-hoc port visibility.
-//-----------------------------------------------------------------------------
-class AdHocVisibilityChangeCommand : public QUndoCommand
-{
-public:
-    /*!
-     *  Constructor.
-     *
-     *      @param [in] component     The ad-hoc enabled data source.
-     *      @param [in] portName      The name of the port.
-     *      @param [in] newVisiblity  The new ad-hoc visibility of the port.
-     *      @param [in] parent        The parent undo command.
-     */
-    AdHocVisibilityChangeCommand(AdHocEnabled* dataSource, QString const& portName,
-                                 bool newVisibility, QUndoCommand* parent = 0);
-
-    /*!
-     *  Destructor.
-     */
-    ~AdHocVisibilityChangeCommand();
-
-    /*!
-     *  Undoes the command.
-     */
-    virtual void undo();
-
-    /*!
-     *  Redoes the command.
-     */
-    virtual void redo();
-
-private:
-    // Disable copying.
-    AdHocVisibilityChangeCommand(AdHocVisibilityChangeCommand const& rhs);
-    AdHocVisibilityChangeCommand& operator=(AdHocVisibilityChangeCommand const& rhs);
-
-    //-----------------------------------------------------------------------------
-    // Data.
-    //-----------------------------------------------------------------------------
-
-    //! The component containing the port.
-    AdHocEnabled* dataSource_;
-
-    //! The name of the port.
-    QString portName_;
-
-    //! The saved port position.
-    QPointF pos_;
-
-    //! The new ad-hoc visibility for the port.
-    bool newVisibility_;
-};
-
-//-----------------------------------------------------------------------------
 //! Undo command for changing the ad-hoc bounds of an ad-hoc connection.
 //-----------------------------------------------------------------------------
 class AdHocBoundsChangeCommand : public QUndoCommand
@@ -888,8 +840,8 @@ public:
 	/*!
      *  Constructor.
 	 */
-	AdHocBoundsChangeCommand(HWConnection* connection, bool right, int endpointIndex,
-                             int oldValue, int newValue, QUndoCommand* parent = 0);
+	AdHocBoundsChangeCommand(AdHocConnectionItem* connection, bool right, int endpointIndex,
+                             QString const& oldValue, QString const& newValue, QUndoCommand* parent = 0);
 
 	/*!
      *  Destructor.
@@ -916,7 +868,7 @@ private:
     //-----------------------------------------------------------------------------
 
 	//! Pointer to the connection to change.
-	HWConnection* connection_;
+	AdHocConnectionItem* connection_;
 
     //! If true, the change concerns the right bound. Otherwise it concerns the left bound.
     bool right_;
@@ -925,10 +877,10 @@ private:
     int endpointIndex_;
 
     //! The old bound value.
-    int oldValue_;
+    QString oldValue_;
 
     //! The new bound value.
-    int newValue_;
+    QString newValue_;
 };
 
 //-----------------------------------------------------------------------------
@@ -943,7 +895,7 @@ public:
 	/*!
      *  Constructor.
 	 */
-	ReplaceComponentCommand(HWComponentItem* oldComp, HWComponentItem* newComp,
+	ReplaceComponentCommand(DesignDiagram* diagram, HWComponentItem* oldComp, HWComponentItem* newComp,
                             bool existing, bool keepOld, QUndoCommand* parent = 0);
 
 	/*!

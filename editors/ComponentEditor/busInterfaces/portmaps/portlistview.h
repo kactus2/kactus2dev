@@ -70,8 +70,6 @@ protected:
 	*/
 	virtual void dragMoveEvent(QDragMoveEvent* e);
 
-    virtual void dropEvent(QDropEvent* event);
-
 	/*! Handler for mouse move events.
 	 *
 	 *      @param [in] event The event object.

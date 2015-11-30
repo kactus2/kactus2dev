@@ -98,9 +98,6 @@ private:
     //! The component being edited.
     ComponentItem* component_;
 
-    //! The edit provider.
-    GenericEditProvider* editProvider_;
-
     //! Button for address auto-assignment.
     QPushButton* autoAssignButton_;
 

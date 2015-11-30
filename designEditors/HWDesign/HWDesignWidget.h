@@ -54,14 +54,6 @@ public:
      */
     virtual unsigned int getSupportedDrawModes() const;
 
-    /*! \brief Create a design that represents the current drawn design.
-	 *
-	 * \param vlnv The vlnv to set for the design.
-	 *
-	 * \return QSharedPointer<Design> Pointer to the created design.
-	*/
-	QSharedPointer<Design> createDesign(const VLNV& vlnv);
-
     /*!
      *  Returns the implementation attribute.
      */
@@ -81,6 +73,7 @@ public slots:
 
 	//! \brief Called when user clicks the generate top-vhdl icon
 	void onVhdlGenerate();
+    QString findEntityName() const;
 
 	//! \brief Called when user clicks the generate modelsim icon
 	void onModelsimGenerate();
@@ -108,7 +101,7 @@ private:
 	 *
 	*/
 	void createDesignForComponent(QSharedPointer<Component> component, const QString& dirPath);
-
+    void updateFiles(QSharedPointer<Component> topComponent, QString const& sourcePath, QString const& targetDirectory) const;
 };
 
 #endif // HWDESIGNWIDGET_H

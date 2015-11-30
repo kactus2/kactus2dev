@@ -136,12 +136,6 @@ private:
 	//! The address space being edited.
 	QSharedPointer<AddressSpace> addrSpace_;
 
-	//! The local memory map of the address space.
-	QSharedPointer<MemoryMapBase> localMemMap_;
-
-	//! Contains the address blocks that are children of this tree item.
-    QSharedPointer<QList<QSharedPointer<MemoryBlockBase> > > memoryBlocks_;
-
 	//! The graph item of the local memory map.
 	LocalMemoryMapGraphItem* graphItem_;
 

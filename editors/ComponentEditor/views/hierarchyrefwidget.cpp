@@ -40,7 +40,7 @@ library_(libHandler),
 view_(view),
 designInstantiation_(designInstantiation),
 designConfigurationInstantiation_(designConfigurationInstantiation),
-designConfigurationEditor_(new VLNVEditor(VLNV::DESIGNCONFIGURATION, libHandler, parent->parentWidget(), this)),
+designConfigurationEditor_(new VLNVEditor(VLNV::DESIGNCONFIGURATION, libHandler, parent, this)),
 designEditor_(new VLNVEditor(VLNV::DESIGN, libHandler, parent->parentWidget(), this))
 {
 	designConfigurationEditor_->setTitle(tr("Design configuration"));

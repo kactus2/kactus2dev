@@ -66,7 +66,7 @@ public:
 	*
 	*       @return bool True if the state is valid and writing is possible.
 	*/
-	bool isValid(QStringList& errorList, const QString& parentIdentifier) const;
+	bool isValid(QVector<QString>& errorList, const QString& parentIdentifier) const;
 
 	//! Restore the changes made in the editor back to ones in parameter models.
 	virtual void refresh();

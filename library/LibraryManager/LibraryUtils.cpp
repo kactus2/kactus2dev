@@ -208,8 +208,11 @@ void addNewInstancesV2(LibraryInterface* lh, QList<QSharedPointer<ComponentInsta
     {
         // Duplicate the component instance and set its import reference.
         QSharedPointer<ComponentInstance> instance(new ComponentInstance(element->getInstanceName(), 
-            element->getDisplayName(), element->getDescription(), element->getComponentRef(),
-            QPointF(0, 0), element->getUuid()));
+            element->getComponentRef()));
+
+        instance->setDisplayName(element->getDisplayName());
+        instance->setDescription(element->getDescription()),
+        instance->setUuid(element->getUuid());
         instance->setImported(true);
 
         // Add the newly created HW component to the list of HW instances.
@@ -358,9 +361,12 @@ void updateSystemDesignV2(LibraryInterface* lh,
     foreach (QSharedPointer<ComponentInstance> element, elements)
     {
         // Duplicate the component instance and set its kts_hw_ref.
-       QSharedPointer<ComponentInstance> instance(new ComponentInstance(element->getInstanceName(),
-           element->getDisplayName(), element->getDescription(), element->getComponentRef(), 
-           QPointF(0, 0), element->getUuid()));
+        QSharedPointer<ComponentInstance> instance(new ComponentInstance(element->getInstanceName(),
+            element->getComponentRef()));
+        instance->setDisplayName(element->getDisplayName());
+        instance->setDescription(element->getDescription()); 
+        instance->setUuid(element->getUuid());
+
         instance->setImported(true);
 
         hwInstances->append(instance);

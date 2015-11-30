@@ -147,8 +147,9 @@ void ConfigurationEditor::onAdd()
         VLNV designVLNV = dialog.getDesignVLNV();
         desConf->setDesignRef(designVLNV);
 
-        QSharedPointer<Design> design = designWidget_->getDiagram()->createDesign(designVLNV);
-        handler_->writeModelToFile(dirPath, design);
+			QSharedPointer<Design> design = designWidget_->getDiagram()->getDesign();
+            design->setVlnv(designVLNV);
+			handler_->writeModelToFile(dirPath, design);
 	}
 
     handler_->writeModelToFile(dirPath, desConf);

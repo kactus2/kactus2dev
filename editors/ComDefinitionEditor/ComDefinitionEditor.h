@@ -84,7 +84,7 @@ public slots:
      *
      *      @return True if the document is valid. False if there were any violations.
      */
-    virtual bool validate(QStringList& errorList);
+    virtual bool validate(QVector<QString>& errorList);
 
 	//! Saves the document and resets the modified state.
 	virtual bool save();

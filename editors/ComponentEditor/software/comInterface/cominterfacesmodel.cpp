@@ -33,6 +33,7 @@ ComInterfacesModel::ComInterfacesModel(LibraryInterface* libHandler, QSharedPoin
     QObject *parent):
 QAbstractTableModel(parent),
     libHandler_(libHandler),
+    component_(component),
     comIfs_(component->getComInterfaces())
 {
     Q_ASSERT(component);
@@ -96,7 +97,7 @@ Qt::ItemFlags ComInterfacesModel::flags(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 QVariant ComInterfacesModel::headerData( int section, Qt::Orientation orientation, int role) const
 {
-    if (orientation != Qt::Horizontal && role != Qt::DisplayRole) 
+    if (orientation != Qt::Horizontal || role != Qt::DisplayRole) 
     {
         return QVariant();
     }
@@ -342,6 +343,7 @@ void ComInterfacesModel::onAddItem(QModelIndex const& index)
 
 	beginInsertRows(QModelIndex(), row, row);
 	comIfs_.insert(row, QSharedPointer<ComInterface>(new ComInterface()));
+    component_->setComInterfaces(comIfs_);
 	endInsertRows();
 
 	// inform navigation tree that COM interface is added
@@ -365,6 +367,7 @@ void ComInterfacesModel::onRemoveItem(QModelIndex const& index)
 	// remove the specified item
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
 	comIfs_.removeAt(index.row());
+    component_->setComInterfaces(comIfs_);
 	endRemoveRows();
 
 	// inform navigation tree that COM interface has been removed

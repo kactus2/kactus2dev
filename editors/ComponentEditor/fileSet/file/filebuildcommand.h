@@ -63,6 +63,7 @@ private slots:
 
 	//! Handler for command changes.
 	void onCommandChanged();
+    void updateFileBuildCommand();
 
 	//! Handler for flag changes.
 	void onFlagsChanged();
@@ -76,7 +77,9 @@ private:
 
 	//! No copying. No assignment.
 	FileBuildCommand(const FileBuildCommand& other);
-	FileBuildCommand& operator=(const FileBuildCommand& other);
+    void setupLayout();
+
+    FileBuildCommand& operator=(const FileBuildCommand& other);
 
 	/*!
 	 *  Set up the target editor.
@@ -95,23 +98,23 @@ private:
 
     void setupReplaceDefaultFlags();
 
-	//! Pointer to the file's buildCommand.
+    //! The file whose build command to edit.
+    QSharedPointer<File> file_;
+
+	//! The file's buildCommand.
     QSharedPointer<BuildCommand> buildCommand_; 
 
 	//! Editor to set file's build command.
-	QLineEdit command_;
+	QLineEdit commandEditor_;
 
 	//! Editor to set build command's flags.
-	QLineEdit flags_;
+	QLineEdit flagsEditor_;
 
 	//! Editor to set build command's replaceDefaultFlags setting.
-    QLineEdit replaceDefault_;
+    QLineEdit replaceDefaultEditor_;
 
 	//! Editor to set build command's target file.
-	TargetNameEdit target_;
-
-	//! The layout for the widget.
-	QGridLayout layout_;
+	TargetNameEdit targetEditor_;
 };
 
 #endif // FILEBUILDCOMMAND_H

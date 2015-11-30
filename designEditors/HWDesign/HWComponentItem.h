@@ -1,26 +1,36 @@
-/* 
- *
- * 		filename: HWComponentItem.h
- */
+//-----------------------------------------------------------------------------
+// File: HWComponentItem.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: 
+// Date:
+//
+// Description:
+// HWComponentItem represents graphically an IP-XACT component instance.
+//-----------------------------------------------------------------------------
+
 
 #ifndef HWCOMPONENTITEM_H
 #define HWCOMPONENTITEM_H
 
 #include "AdHocEnabled.h"
+
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/GraphicsItemTypes.h>
 #include <common/layouts/IVGraphicsLayout.h>
 
 #include <QSharedPointer>
 
-class BusPortItem;
+class AdHocEditor;
 class AdHocPortItem;
+class BusPortItem;
+class ComponentInstance;
 class HWConnectionEndpoint;
 class HWColumn;
 class LibraryInterface;
 class VendorExtension;
 
-/*! \brief HWComponentItem represents graphically an IP-XACT component instance
+/*! HWComponentItem represents graphically an IP-XACT component instance
  *
  */
 class HWComponentItem : public ComponentItem, public AdHocEnabled
@@ -30,70 +40,21 @@ class HWComponentItem : public ComponentItem, public AdHocEnabled
 public:
     enum { Type = GFX_TYPE_DIAGRAM_COMPONENT };
 
-    HWComponentItem(LibraryInterface* lh,
-                     QSharedPointer<Component> component,
-                     const QString &instanceName = QString("instance"),
-                     const QString &displayName = QString(),
-                     const QString &description = QString(),
-							const QString& uuid = QString(),
-                     const QMap<QString, QString> &configurableElementValues = QMap<QString, QString>(),
-                     QMap<QString, bool> const& portAdHocVisibilities = QMap<QString, bool>(),
-                     QGraphicsItem *parent = 0);
+    /*!
+     *  The constructor.
+     *
+     *      @param [in] libInterface    The library in use.
+     *      @param [in] instance        The component instance represented by the item.
+     *      @param [in] component       The component represented by the instance.
+     *      @param [in] parent          The parent object.
+     */
+    HWComponentItem(LibraryInterface* libInterface, QSharedPointer<ComponentInstance> instance,
+        QSharedPointer<Component> component, QGraphicsItem* parent = 0);
 
-	//! \brief The destructor
+	//! The destructor
 	virtual ~HWComponentItem();
 
-    /*!
-     *  Adds a new, empty port to the component. This function creates automatically an empty
-     *  bus interface to the component model.
-     *
-     *      @param [in] pos The position hint for the port.
-     *
-     *      @return The newly created port.
-     */
-    BusPortItem* addPort(QPointF const& pos);
-
-    /*!
-     *  Adds an already created port to the component.
-     *
-     *      @param [in] port The port to add. Must not be used in any other component.
-     */
-    void addPort(HWConnectionEndpoint* port);
-
-    /*!
-     *  Removes the given port from the component.
-     *
-     *      @param [in] port The port to remove.
-     */
-    void removePort(HWConnectionEndpoint* port);
-
-    /*! \brief Get the BusPortItem that corresponds to the given bus interface name
-     *
-     */
-    BusPortItem* getBusPort(const QString &name);
-
-    /*! \brief Get the BusPortItem that corresponds to the given bus interface name
-     *
-     */
-    BusPortItem const* getBusPort(const QString &name) const;
-
-    /*
-     *  Returns the ad-hoc port with the given name, or null if not found.
-     */
-    AdHocPortItem* getAdHocPort(QString const& portName);
-
-    /*
-     *  Returns the ad-hoc port with the given name, or null if not found.
-     */
-    AdHocPortItem const* getAdHocPort(QString const& portName) const;
-
     int type() const { return Type; }
-
-    /*! Called when a port is being moved.
-     *
-     *      @param [in] port The port that is being moved.
-     */
-    void onMovePort(HWConnectionEndpoint* port);
 
     /*!
      *  Updates the diagram component to reflect the current state of the component model.
@@ -101,10 +62,9 @@ public:
     virtual void updateComponent();
 
     /*!
-     *  Returns true if the connections should not be updated automatically in
-     *  the diagram port's itemChange() function. Otherwise false.
-     */
-    bool isConnectionUpdateDisabled() const;
+	 *  Returns the height of the component.
+	 */
+	virtual qreal getHeight();
 
     /*!
      *  Called when a port's ad-hoc visibility has been changed.
@@ -124,15 +84,7 @@ public:
      */
     virtual void detach(AdHocEditor* editor);
 
-    /*!
-     *  Returns true if the ad-hoc visibilities are protected.
-     */
-    virtual bool isProtected() const;
-
-    /*!
-     *  Returns the edit provider for the data.
-     */
-    virtual GenericEditProvider& getEditProvider();
+    virtual QString adHocIdentifier() const;
 
     /*!
      *  Returns the ad-hoc port with the given name or null if not found.
@@ -140,26 +92,45 @@ public:
     virtual HWConnectionEndpoint* getDiagramAdHocPort(QString const& portName);
 
     /*!
-     *  Sets the bus interface positions.
+     *  Adds a new, empty bus interface to the component. This function creates automatically an empty
+     *  bus interface to the component.
      *
-     *      @param [in] positions      The positions to set.
-     *      @param [in] createMissing  If true, the missing bus interfaces are created.
+     *      @param [in] pos The position hint for the port.
+     *
+     *      @return The newly created port.
      */
-    void setBusInterfacePositions(QMap<QString, QPointF> const& positions, bool createMissing = false);
+    BusPortItem* addPort(QPointF const& pos);
 
     /*!
-     *  Sets the ad-hoc port positions.
+     *  Adds an already created bus interface to the component.
      *
-     *      @param [in] positions      The positions to set.
+     *      @param [in] port The interface to add. Must not be used in any other component.
      */
-    void setAdHocPortPositions(QMap<QString, QPointF> const& positions);
+    void addPort(HWConnectionEndpoint* port);
 
     /*!
-     *  Sets the vendor extensions for the instance.
+     *  Removes the given port from the component.
      *
-     *      @param [in] vendorExtensions   The vendor extensions to set.
+     *      @param [in] port The port to remove.
      */
-    void setVendorExtensions(QList<QSharedPointer<VendorExtension> > const& vendorExtensions);
+    void removePort(HWConnectionEndpoint* port);
+
+    /*! Get the BusPortItem that corresponds to the given bus interface name
+     *
+     */
+    BusPortItem* getBusPort(QString const& name) const;
+
+    /*
+     *  Returns the ad-hoc port with the given name, or null if not found.
+     */
+    AdHocPortItem* getAdHocPort(QString const& portName) const;
+
+
+    /*! Called when a port is being moved.
+     *
+     *      @param [in] port The port that is being moved.
+     */
+    void onMovePort(HWConnectionEndpoint* port);
 
     /*!
      *  Returns the bus interface positions.
@@ -172,9 +143,9 @@ public:
     QMap<QString, QPointF> getAdHocPortPositions() const;
 
     /*!
-     *  Marks the component as a packetized component.
+     *  Marks the component as a packaged component.
      */
-    virtual void setPacketized();
+    virtual void setPackaged();
 
     /*!
      *  Marks the component as a draft component.
@@ -188,18 +159,11 @@ public:
      */
     bool isDraft();
 
-    /*!
-     *  Returns the instance vendor extensions.
-     *
-     *      @return The vendor extensions.
-     */
-    QList<QSharedPointer<VendorExtension> > getVendorExtensions() const;
-
 signals:
     //! Emitted when the ad-hoc visibilities have been changed.
     void adHocVisibilitiesChanged();
 
-    //! \brief Emitted right before this diagram component is destroyed.
+    //! Emitted right before this diagram component is destroyed.
 	void destroyed(HWComponentItem* diaComp);
 
 protected:
@@ -214,30 +178,39 @@ protected:
 
 private:
 	
-	//! \brief No copying
-	HWComponentItem(const HWComponentItem& other);
+	//! No copying
+	HWComponentItem(const HWComponentItem& other);    
 
-	//! No assignment
+    //! No assignment
 	HWComponentItem& operator=(const HWComponentItem& other);
 
     /*!
-     *  Adds a port to the correct port stack.
+     *  Adds an interface item to component side determined by the item position.
+     *
+     *      @param [in] port   The interface item to add.
+     */
+    void addPortToSideByPosition(HWConnectionEndpoint* port);
+       
+    /*!
+     *  Adds an interface item to the component side with less ports.
+     *
+     *      @param [in] port   The interface item to add.
+     */
+    void addPortToSideWithLessPorts(HWConnectionEndpoint* port);
+
+    /*!
+     *  Adds a bus interface on the left side of the component item.
      *
      *      @param [in] port   The port to add.
-     *      @param [in] right  If true, the port is added to the right port stack. If false, it is
-     *                         added to the left port stack.
      */
-    void onAddPort(HWConnectionEndpoint* port, bool right);
-
-	/*!
-	 *  Returns the height of the component.
-	 */
-	qreal getHeight();
-
-	/*!
-	 *  Returns the width of the component.
-	 */
-	qreal getWidth();
+    void addPortToLeft(HWConnectionEndpoint* port);
+    
+    /*!
+     *  Adds a bus interface on the right side of the component item.
+     *
+     *      @param [in] port   The port to add.
+     */
+    void addPortToRight(HWConnectionEndpoint* port);
 
 	/*!
 	 *  Check and resize the port labels to better match with the component width.
@@ -246,6 +219,12 @@ private:
 	 *      @param [in] otherSide  The stack containing the ports of the other side.
 	 */
 	void checkPortLabelSize( HWConnectionEndpoint* port, QList<HWConnectionEndpoint*> otherSide );
+   
+    //! Positions the bus interface items for the component.        
+    void positionBusInterfaceTerminals();
+
+    //! Positions the adhoc port items for the component.
+    void positionAdHocPortTerminals();
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -269,12 +248,10 @@ private:
 
     //! The left and right port stacks.
     QList<HWConnectionEndpoint*> leftPorts_;
-    QList<HWConnectionEndpoint*> rightPorts_;
-    bool connUpdateDisabled_;
-    QPointF oldPos_;
 
-    //! Component instance vendor extensions.
-    QList<QSharedPointer<VendorExtension> > vendorExtensions_;
+    QList<HWConnectionEndpoint*> rightPorts_;
+
+    QPointF oldPos_;
 };
 
 #endif // HWCOMPONENTITEM_H

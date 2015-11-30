@@ -18,6 +18,9 @@
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/common/ConfigurableVLNVReference.h>
+
+#include <IPXACTmodels/Design/ComponentInstance.h>
 
 #include <QPainter>
 #include <QRectF>
@@ -61,9 +64,12 @@ namespace
         qreal left = int(rect.left()) - (int(rect.left()) % GridSize );
         qreal top = int(rect.top()) - (int(rect.top()) % GridSize );
 
-        for (qreal x = left; x < rect.right(); x += GridSize ) {
+        for (qreal x = left; x < rect.right(); x += GridSize )
+        {
             for (qreal y = top; y < rect.bottom(); y += GridSize )
+            {
                 painter->drawPoint(x, y);
+            }
         }
     }
 }
@@ -107,7 +113,13 @@ void ComponentPreviewBox::updatePreview()
 
         if (component_->getImplementation() == KactusAttribute::HW)
         {
-            item = new HWComponentItem(lh_, component_, component_->getVlnv().getName());
+
+            QSharedPointer<ComponentInstance> componentInstance(new ComponentInstance());
+            componentInstance->setInstanceName(component_->getVlnv().getName());
+            componentInstance->setComponentRef(QSharedPointer<ConfigurableVLNVReference>(
+                new ConfigurableVLNVReference(component_->getVlnv())));
+
+            item = new HWComponentItem(lh_, componentInstance, component_);
         }
         else if (component_->getImplementation() == KactusAttribute::SW)
         {

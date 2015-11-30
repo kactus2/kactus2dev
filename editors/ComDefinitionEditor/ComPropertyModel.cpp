@@ -183,7 +183,7 @@ QVariant ComPropertyModel::data(QModelIndex const& index, int role) const
 //-----------------------------------------------------------------------------
 QVariant ComPropertyModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    if (orientation != Qt::Horizontal && role != Qt::DisplayRole)
+    if (orientation != Qt::Horizontal || role != Qt::DisplayRole)
     {
         return QVariant();
     }

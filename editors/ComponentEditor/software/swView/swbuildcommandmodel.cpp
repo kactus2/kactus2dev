@@ -95,7 +95,7 @@ Qt::ItemFlags SWBuildCommandModel::flags(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 QVariant SWBuildCommandModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    if (orientation != Qt::Horizontal && role != Qt::DisplayRole)
+    if (orientation != Qt::Horizontal || role != Qt::DisplayRole)
     {
         return QVariant();
     }

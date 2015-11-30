@@ -107,23 +107,21 @@ void ApiFunction::write(QXmlStreamWriter& writer)
 
 
 //-----------------------------------------------------------------------------
-// Function: ApiFunction::isValid()
+// Function: ApiFunction::findErrors()
 //-----------------------------------------------------------------------------
-bool ApiFunction::isValid(QStringList& errorList, QString const& parentId) const
+void ApiFunction::findErrors(QVector<QString>& errorList, QString const& parentId) const
 {
-    bool valid = true;
+
     QString const thisId = QObject::tr("API function '%1'").arg(name_);
 
     if (name_.isEmpty())
     {
         errorList.append(QObject::tr("No name specified for an API function in %1").arg(parentId));
-        valid = false;
-    }
+    } 
 
     if (returnType_.isEmpty())
     {
         errorList.append(QObject::tr("No return value type specified for %1").arg(thisId));
-        valid = false;
     }
 
     // Validate the function parameters.
@@ -133,29 +131,23 @@ bool ApiFunction::isValid(QStringList& errorList, QString const& parentId) const
     {
         if (paramNames.contains(param->name()))
         {
-            errorList.append(QObject::tr("Multiple definitions of function parameter '%1'"
-                                         "in %2").arg(param->name(), thisId));
-            valid = false;
+            errorList.append(QObject::tr("Multiple definitions of function parameter '%1' in %2").arg(
+                param->name(), thisId));
         }
         else
         {
             paramNames.append(param->name());
         }
 
-        if (!param->isValid(errorList, thisId))
-        {
-            valid = false;
-        }
+        param->findErrors(errorList, thisId);     
     }
-
-    return valid;
 }
 
 
 //-----------------------------------------------------------------------------
-// Function: ApiFunction::isValid()
+// Function: ApiFunction::validate()
 //-----------------------------------------------------------------------------
-bool ApiFunction::isValid() const
+bool ApiFunction::validate() const
 {
     if (name_.isEmpty() || returnType_.isEmpty())
     {
@@ -176,7 +168,7 @@ bool ApiFunction::isValid() const
             paramNames.append(param->name());
         }
 
-        if (!param->isValid())
+        if (!param->validate())
         {
             return false;
         }

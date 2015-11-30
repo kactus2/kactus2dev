@@ -13,9 +13,10 @@
 #include "AdHocDelegate.h"
 #include "AdHocColumns.h"
 
-#include <designEditors/HWDesign/HWComponentItem.h>
-#include <designEditors/HWDesign/HWChangeCommands.h>
+#include <common/IEditProvider.h>
+#include <designEditors/HWDesign/AdHocEnabled.h>
 
+#include <designEditors/HWDesign/HWChangeCommands.h>
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/common/VLNV.h>
 
@@ -62,13 +63,14 @@ AdHocEditor::AdHocEditor(QWidget *parent): QWidget(parent), dataSource_(0), name
 //-----------------------------------------------------------------------------
 AdHocEditor::~AdHocEditor()
 {
-    adHocModel_.setDataSource(0);
+    adHocModel_.setDataSource(0, QSharedPointer<IEditProvider>());
 }
 
 //-----------------------------------------------------------------------------
 // Function: AdHocEditor::setDataSource()
 //-----------------------------------------------------------------------------
-void AdHocEditor::setDataSource(AdHocEnabled* dataSource)
+void AdHocEditor::setDataSource(AdHocEnabled* dataSource, QSharedPointer<IEditProvider> editProvider,
+    bool lockEditor)
 {
 	Q_ASSERT(dataSource);
 	parentWidget()->raise();
@@ -81,27 +83,13 @@ void AdHocEditor::setDataSource(AdHocEnabled* dataSource)
 
 	dataSource_ = dataSource;
 
-    HWComponentItem* compItem = dynamic_cast<HWComponentItem*>(dataSource_);
+    nameLabel_.setText(tr("Component: %1").arg(dataSource_->adHocIdentifier()));
 
-    if (compItem)
-    {
-        nameLabel_.setText(tr("Component: %1").arg(compItem->name()));
-    }
-    else
-    {
-        nameLabel_.setText(tr("Component: top-level"));
-    }
+    portAdHocTable_.setEnabled(!lockEditor);
 
-    bool locked = dataSource_->isProtected();
-    portAdHocTable_.setEnabled(!locked);
-
-    adHocModel_.setDataSource(dataSource_);
+    adHocModel_.setDataSource(dataSource_, editProvider);
     portAdHocTable_.resizeRowsToContents();
     portAdHocTable_.show();
-
-    // if the connected dataSource is destroyed then clear this editor
-    // 	connect(dataSource_, SIGNAL(destroyed(ComponentItem*)),
-    // 		    this, SLOT(clear()), Qt::UniqueConnection);
 
     // Attach the data source to the editor.
     dataSource_->attach(this);
@@ -120,7 +108,7 @@ void AdHocEditor::clear()
 	}
 
 	dataSource_ = 0;
-    adHocModel_.setDataSource(0);
+    adHocModel_.setDataSource(0, QSharedPointer<IEditProvider>());
     portAdHocTable_.hide();
 
 	parentWidget()->setMaximumHeight(20);

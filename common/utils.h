@@ -179,23 +179,6 @@ namespace Utils {
 	*/
 	KACTUS2_API qint64 str2Int(const QString& str);
 
-	/*! Check if the string contains a number that can be parsed.
-	 *
-	 * Method: 		isNumber
-	 * Full name:	Utils::isNumber
-	 * Access:		public 
-	 *
-	 * \param str The string to be checked.
-	 *
-	 * \return True if the string can be parsed into number.
-	*/
-	KACTUS2_API bool isNumber(const QString& str);
-
-    /*!
-     *  Replaces a magic word in a string with the given value.
-     */
-    KACTUS2_API void replaceMagicWord(QString& text, QString const& magicWord, QString const& value);
-
     //! Regular expression to validate URLs.
     const QRegExp URL_VALIDITY_REG_EXP = QRegExp("^([A-Za-z]{3,9}\\:\\/\\/)?[A-Za-z0-9]+([\\-\\.][A-Za-z0-9]+)*(\\/[A-Za-z0-9_\\.\\;\\,\\-\\?\\=\\&\\%\\#\\~\\+]*)*$", Qt::CaseInsensitive, QRegExp::W3CXmlSchema11);
 

@@ -17,10 +17,11 @@
 #include <IPXACTmodels/Component/Port.h>
 
 #include <designEditors/HWDesign/HWComponentItem.h>
-#include <designEditors/HWDesign/HWChangeCommands.h>
 #include <designEditors/HWDesign/AdHocEnabled.h>
 
-#include <common/GenericEditProvider.h>
+#include <designEditors/HWDesign/undoCommands/AdHocVisibilityChangeCommand.h>
+
+#include <common/IEditProvider.h>
 
 //-----------------------------------------------------------------------------
 // Function: AdHocModel::AdHocModel()
@@ -44,9 +45,10 @@ AdHocModel::~AdHocModel()
 //-----------------------------------------------------------------------------
 // Function: AdHocModel::setDataSource()
 //-----------------------------------------------------------------------------
-void AdHocModel::setDataSource(AdHocEnabled* dataSource)
+void AdHocModel::setDataSource(AdHocEnabled* dataSource, QSharedPointer<IEditProvider> editProvider)
 {
     dataSource_ = dataSource;
+    editProvider_ = editProvider;
 
     beginResetModel();
 
@@ -67,7 +69,7 @@ void AdHocModel::setDataSource(AdHocEnabled* dataSource)
 //-----------------------------------------------------------------------------
 int AdHocModel::rowCount(QModelIndex const& parent /*= QModelIndex()*/) const
 {
-    if (parent.isValid())
+    if (parent.isValid() || !table_)
     {
         return 0;
     }
@@ -187,7 +189,7 @@ bool AdHocModel::setData(const QModelIndex& index, const QVariant& value, int ro
     {
         QSharedPointer<QUndoCommand> cmd(
             new AdHocVisibilityChangeCommand(dataSource_, table_->at(index.row())->name(), value == Qt::Checked));
-        dataSource_->getEditProvider().addCommand(cmd);
+        editProvider_->addCommand(cmd);
         cmd->redo();
 
         emit dataChanged(index, index);

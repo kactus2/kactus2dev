@@ -18,14 +18,9 @@
 
 #include <IPXACTmodels/kactusExtensions/ColumnDesc.h>
 
-#include <QGraphicsRectItem>
-#include <QSet>
-#include <QCursor>
 
 class GraphicsConnection;
-class HWConnectionEndpoint;
 class Component;
-class GenericEditProvider;
 
 //-----------------------------------------------------------------------------
 //! HWColumn class.

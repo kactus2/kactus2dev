@@ -17,9 +17,11 @@
 
 #include "SystemMoveCommands.h"
 
+#include <common/KactusColors.h>
 #include <common/graphicsItems/GraphicsConnection.h>
 #include <common/GenericEditProvider.h>
-#include <common/KactusColors.h>
+
+#include <designEditors/common/diagramgrid.h>
 #include <designEditors/common/DesignDiagram.h>
 #include <designEditors/common/NamelabelWidth.h>
 
@@ -35,35 +37,36 @@
 //-----------------------------------------------------------------------------
 // Function: SWPortItem::SWPortItem()
 //-----------------------------------------------------------------------------
-SWPortItem::SWPortItem(QString const& name, QGraphicsItem *parent):
-SWConnectionEndpoint(parent, true),
-nameLabel_(name, this),
-comInterface_(),
-apiInterface_(),
-oldPos_(),
-oldPortPositions_(),
-stubLine_(0, 0, 0, -GridSize, this),
-stubLineDefaultPen_(),
-offPageConnector_(0)
+SWPortItem::SWPortItem(QString const& name, QGraphicsItem *parent)
+    : SWConnectionEndpoint(parent),
+      nameLabel_(name, this),
+      comInterface_(),
+      apiInterface_(),
+      oldPos_(),
+      oldPortPositions_(),
+      stubLine_(0, 0, 0, -GridSize, this),
+      stubLineDefaultPen_(),
+      offPageConnector_(0)
 {
     setType(ENDPOINT_TYPE_UNDEFINED);
     setTypeLocked(false);
+    setTemporary(true);
     initialize();
 }
 
 //-----------------------------------------------------------------------------
 // Function: SWPortItem::SWPortItem()
 //-----------------------------------------------------------------------------
-SWPortItem::SWPortItem(QSharedPointer<ApiInterface> apiIf, QGraphicsItem *parent):
-SWConnectionEndpoint(parent, false),
-nameLabel_(this),
-comInterface_(),
-apiInterface_(apiIf),
-oldPos_(),
-oldPortPositions_(),
-stubLine_(0, 0, 0, -GridSize, this),
-stubLineDefaultPen_(),
-offPageConnector_(0)
+SWPortItem::SWPortItem(QSharedPointer<ApiInterface> apiIf, QGraphicsItem *parent)
+    : SWConnectionEndpoint(parent),
+      nameLabel_(this),
+      comInterface_(),
+      apiInterface_(apiIf),
+      oldPos_(),
+      oldPortPositions_(),
+      stubLine_(0, 0, 0, -GridSize, this),
+      stubLineDefaultPen_(),
+      offPageConnector_(0)
 {
     Q_ASSERT(apiIf != 0);
     setType(ENDPOINT_TYPE_API);
@@ -74,16 +77,16 @@ offPageConnector_(0)
 //-----------------------------------------------------------------------------
 // Function: SWPortItem::SWPortItem()
 //-----------------------------------------------------------------------------
-SWPortItem::SWPortItem(QSharedPointer<ComInterface> comIf, QGraphicsItem *parent):
-SWConnectionEndpoint(parent, false),
-nameLabel_(this),
-comInterface_(comIf),
-apiInterface_(),
-oldPos_(),
-oldPortPositions_(),
-stubLine_(0, 0, 0, -GridSize, this),
-stubLineDefaultPen_(),
-offPageConnector_(0)
+SWPortItem::SWPortItem(QSharedPointer<ComInterface> comIf, QGraphicsItem *parent)
+    : SWConnectionEndpoint(parent),
+      nameLabel_(this),
+      comInterface_(comIf),
+      apiInterface_(),
+      oldPos_(),
+      oldPortPositions_(),
+      stubLine_(0, 0, 0, -GridSize, this),
+      stubLineDefaultPen_(),
+      offPageConnector_(0)
 {
     Q_ASSERT(comIf != 0);
     setType(ENDPOINT_TYPE_COM);
@@ -716,7 +719,7 @@ void SWPortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
     // Add the undo command to the edit stack only if it has changes.
     if (cmd->childCount() > 0 || oldPos_ != pos())
     {
-        static_cast<DesignDiagram*>(scene())->getEditProvider().addCommand(cmd);
+        static_cast<DesignDiagram*>(scene())->getEditProvider()->addCommand(cmd);
     }
 }
 

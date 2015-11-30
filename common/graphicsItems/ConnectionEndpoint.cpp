@@ -14,8 +14,10 @@
 #include "GraphicsConnection.h"
 
 #include <IPXACTmodels/Component/BusInterface.h>
-#include <IPXACTmodels/kactusExtensions//ApiInterface.h>
-#include <IPXACTmodels/kactusExtensions//ComInterface.h>
+#include <IPXACTmodels/kactusExtensions/ApiInterface.h>
+#include <IPXACTmodels/kactusExtensions/ComInterface.h>
+
+#include <IPXACTmodels/Component/Component.h>
 
 #include <common/KactusColors.h>
 
@@ -24,12 +26,11 @@
 //-----------------------------------------------------------------------------
 // Function: ConnectionEndpoint::ConnectionEndpoint()
 //-----------------------------------------------------------------------------
-ConnectionEndpoint::ConnectionEndpoint(QGraphicsItem* parent, bool temporary)
-    : QGraphicsPolygonItem(parent),
+ConnectionEndpoint::ConnectionEndpoint(QGraphicsItem* parent /*= 0*/) : QGraphicsPolygonItem(parent),
        dir_(),
        type_(ENDPOINT_TYPE_UNDEFINED),
        connections_(),
-       temporary_(temporary),
+       temporary_(false),
        typeLocked_(true),
        connUpdateList_()
 {
@@ -48,37 +49,29 @@ ConnectionEndpoint::~ConnectionEndpoint()
 //-----------------------------------------------------------------------------
 void ConnectionEndpoint::setHighlight(HighlightMode mode)
 {
-    switch (mode)
+    if (mode == HIGHLIGHT_OFF)
     {
-    case HIGHLIGHT_OFF:
+        if (isInvalid())
         {
-            if (isInvalid())
-            {
-                setPen(QPen(Qt::red, 0));
-            }
-            else
-            {
-                setPen(QPen(Qt::black, 0));
-            }
-            break;
+            setPen(QPen(Qt::red, 0));
         }
-
-    case HIGHLIGHT_ALLOWED:
+        else
         {
-            setPen(QPen(KactusColors::DIAGRAM_ALLOWED_INTERFACE, 2));
-            break;
+            setPen(QPen(Qt::black, 0));
         }
-
-    case HIGHLIGHT_HOVER:
-        {
-            setPen(QPen(KactusColors::DIAGRAM_SELECTION, 2));
-            break;
-        }
+    }
+    else if (mode == HIGHLIGHT_ALLOWED)
+    {
+        setPen(QPen(KactusColors::DIAGRAM_ALLOWED_INTERFACE, 2));
+    }
+    else if (mode == HIGHLIGHT_HOVER)
+    {
+        setPen(QPen(KactusColors::DIAGRAM_SELECTION, 2));
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: ConnectionEndpoint::setHighlight()
+// Function: ConnectionEndpoint::setSelectionHighlight()
 //-----------------------------------------------------------------------------
 void ConnectionEndpoint::setSelectionHighlight(bool on)
 {
@@ -166,7 +159,7 @@ void ConnectionEndpoint::setDirection(QVector2D const& dir)
 //-----------------------------------------------------------------------------
 // Function: ConnectionEndpoint::getDirection()
 //-----------------------------------------------------------------------------
-QVector2D const& ConnectionEndpoint::getDirection() const
+QVector2D ConnectionEndpoint::getDirection() const
 {
     return dir_;
 }
@@ -222,9 +215,9 @@ QSharedPointer<ApiInterface> ConnectionEndpoint::getApiInterface() const
 //-----------------------------------------------------------------------------
 // Function: ConnectionEndpoint::getPort()
 //-----------------------------------------------------------------------------
-Port* ConnectionEndpoint::getPort() const
+QSharedPointer<Port> ConnectionEndpoint::getPort() const
 {
-    return 0;
+    return QSharedPointer<Port>();
 }
 
 //-----------------------------------------------------------------------------
@@ -329,13 +322,8 @@ bool ConnectionEndpoint::isTypeLocked() const
 bool ConnectionEndpoint::isConnectionValid(ConnectionEndpoint const* other) const
 {
     // Invalid endpoints cannot be connected to.
-    if (isInvalid())
-    {
-        return false;
-    }
-
     // Two hierarchical endpoints cannot be connected.
-    if (isHierarchical() && other->isHierarchical())
+    if (isInvalid() || (isHierarchical() && other->isHierarchical()))
     {
         return false;
     }

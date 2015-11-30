@@ -20,7 +20,6 @@ FileDependencySourceDialog::FileDependencySourceDialog(QString const& basePath,
                                                        QWidget* parent)
     : QDialog(parent),
       editor_(basePath, sourceDirs, this)
-      //mainGroupBox_(tr("Directories"), this)
 {
     setWindowTitle(tr("Import Sources"));
 
