@@ -66,30 +66,6 @@ public:
      */
     void setIsPresent(QString const& newIsPresent);
 
-    /*!
-	 *  Check if the address space is in a valid state.
-	 *
-	 *      @param [in] componentChoices    Choices in the containing component.
-	 *      @param [in] remapStateNames     List containing the remap state names of the component.
-	 *      @param [in] errorList           The list to add the possible error messages to.
-	 *      @param [in] parentIdentifier    String from parent to help identify the location of the error.
-     *
-     *      @return True if the state isvalid and writing is possible.
-	 */
-// 	bool isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices, QStringList remapStateNames,
-//         QStringList& errorList, const QString& parentIdentifier) const;
-
-	/*!
-	 *  Check if the address space is in a valid state.
-	 *
-	 *      @param [in] componentChoices    Choices in the containing component.
-	 *      @param [in] remapStateNames     A list of remap state names of the component.
-     *
-     *      @return True, if the state is valid and writing is possible, false otherwise.
-	 */
-// 	bool isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices, QStringList remapStateNames)
-//         const;
-
 	/*!
      *  Get the address unit bits
 	 *

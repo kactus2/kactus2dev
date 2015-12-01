@@ -15,14 +15,10 @@
 #include <IPXACTmodels/common/NameGroup.h>
 #include <IPXACTmodels/common/Extendable.h>
 
-// #include "ipxactmodels_global.h"
-
 #include <IPXACTmodels/ipxactmodels_global.h>
 
 #include <QString>
 #include <QMap>
-
-// class VendorExtension;
 
 //-----------------------------------------------------------------------------
 //! Segment describes the location and size of an area in containing address space.
@@ -64,23 +60,6 @@ public:
      *      @param [in] newIsPresent    The new presence value.
      */
     void setIsPresent(QString const& newIsPresent);
-
-	/*!
-     *  Check if the address space is in a valid state.
-	 *
-	 *      @param [in] errorList           The list to add the possible error messages to.
-	 *      @param [in] parentIdentifier    String from parent to help to identify the location of the error.
-	 *
-	 *      @return bool True if the state is valid and writing is possible.
-	 */
-// 	bool isValid(QStringList& errorList, const QString& parentIdentifier) const;
-
-	/*!
-     *  Check if the address space is in a valid state.
-	 *
-	 *      @return bool True if the state is valid and writing is possible.
-	 */
-// 	bool isValid() const;
 
 	/*!
      *  Get the address offset of the segment within the containing address space.
@@ -154,12 +133,6 @@ private:
 
 	//! The attributes for the range.
 	QMap<QString, QString> rangeAttributes_;
-
-    /*!
-	 * OPTIONAL (ipxact: vendorExtensions)
-	 * Segment vendor extensions.
-	 */
-//     QList<QSharedPointer<VendorExtension> > vendorExtensions_;
 };
 
 #endif // SEGMENT_H

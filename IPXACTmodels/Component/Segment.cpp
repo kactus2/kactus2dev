@@ -9,16 +9,7 @@
 // Segment describes the location and size of an area in containing address space.
 //-----------------------------------------------------------------------------
 
-// #include "segment.h"
 #include "Segment.h"
-
-// #include "generaldeclarations.h"
-
-// #include "GenericVendorExtension.h"
-// #include "XmlUtils.h"
-// #include "VendorExtension.h"
-
-// #include <QStringList>
 
 //-----------------------------------------------------------------------------
 // Function: Segment::Segment()
@@ -29,7 +20,6 @@ addressOffset_(addressOffset),
 offsetAttributes_(),
 range_(range),
 rangeAttributes_()
-// vendorExtensions_()
 {
 
 }
@@ -43,7 +33,6 @@ addressOffset_(other.addressOffset_),
 offsetAttributes_(other.offsetAttributes_),
 range_(other.range_),
 rangeAttributes_(other.rangeAttributes_)
-// vendorExtensions_(other.vendorExtensions_)
 {
 
 }
@@ -70,7 +59,6 @@ Segment& Segment::operator=( const Segment& other )
 		offsetAttributes_ = other.offsetAttributes_;
 		range_ = other.range_;
 		rangeAttributes_ = other.rangeAttributes_;
-//         vendorExtensions_ = other.vendorExtensions_;
 	}
 	return *this;
 }
@@ -90,45 +78,6 @@ void Segment::setIsPresent(QString const& newIsPresent)
 {
 	isPresent_ = newIsPresent;
 }
-/*
-bool Segment::isValid( QStringList& errorList, const QString& parentIdentifier ) const {
-	bool valid = true;
-	const QString thisIdentifier(QObject::tr("segment %1").arg(name()));
-
-	if (name().isEmpty()) {
-		valid = false;
-		errorList.append(QObject::tr("No name set for segment within %1").arg(parentIdentifier));
-	}
-
-	if (addressOffset_.isEmpty()) {
-		valid = false;
-		errorList.append(QObject::tr("No address offset set for segment %1 within %2").arg(
-			thisIdentifier).arg(parentIdentifier));
-	}
-
-	if (range_.isEmpty()) {
-		valid = false;
-		errorList.append(QObject::tr("No range set for segment %1 within %2").arg(
-			thisIdentifier).arg(parentIdentifier));
-	}
-
-	return valid;
-}
-
-bool Segment::isValid() const {
-	
-	if (name().isEmpty()) {
-		return false;
-	}
-	else if (addressOffset_.isEmpty()) {
-		return false;
-	}
-	else if (range_.isEmpty()) {
-		return false;
-	}
-
-	return true;
-}*/
 
 //-----------------------------------------------------------------------------
 // Function: Segment::getAddressOffset()
