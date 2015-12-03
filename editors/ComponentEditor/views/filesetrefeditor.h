@@ -30,9 +30,9 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] component   Pointer to the component being edited.
+	 *      @param [in] component   The component being edited.
 	 *      @param [in] title       Title for the QGroupBox
-	 *      @param [in] parent      Pointer to the owner of this editor.
+	 *      @param [in] parent      The owner of this editor.
 	 */
 	FileSetRefEditor(QSharedPointer<Component> component, const QString title = tr("List"), QWidget *parent = 0);
 	
@@ -44,7 +44,7 @@ public:
 	 *
 	 *      @param [in] items   QStringList that contains the items to add to the widget.
 	 */
-	virtual void initialize(const QStringList& items = QStringList());
+	virtual void initialize(QStringList const& items = QStringList());
 
 private:
 
@@ -54,7 +54,7 @@ private:
 	//! No assignment.
 	FileSetRefEditor& operator=(const FileSetRefEditor& other);
 
-	//! Pointer to the component being edited.
+	//! The component being edited.
 	QSharedPointer<Component> component_;
 };
 

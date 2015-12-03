@@ -35,13 +35,13 @@ bridges_(slave_, component, this)
 	Q_ASSERT(slave_);
 
 	QHBoxLayout* memRefLayout = new QHBoxLayout();
-    memRefLayout->addWidget(new QLabel(tr("Memory map")));
-    memRefLayout->addWidget(&memoryMapReferenceSelector_);
-    memRefLayout->addStretch();
-	
+    memRefLayout->addWidget(new QLabel(tr("Memory map:")));
+    memRefLayout->addWidget(&memoryMapReferenceSelector_, 1);
+
 	QVBoxLayout* topLayout = new QVBoxLayout(this);
 	topLayout->addLayout(memRefLayout);
 	topLayout->addWidget(&bridges_);
+    topLayout->addStretch();
 
 	connect(&memoryMapReferenceSelector_, SIGNAL(itemSelected(QString const&)),
 		this, SLOT(onMemoryMapChange(QString const&)), Qt::UniqueConnection);

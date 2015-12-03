@@ -102,13 +102,13 @@ private:
 	QCheckBox connRequired_;
 
 	//! Sets the value for bits in lau.
-	QLineEdit bitsInLau_;
+	QLineEdit bitsInLauEditor_;
 
 	//! Set the endianness of interface
-	QComboBox endianness_;
+	QComboBox endiannessSelector_;
 
 	//! Set bit steering on/off
-	QComboBox bitSteering_;
+	QComboBox bitSteeringSelector_;
 };
 
 #endif // BUSIFGENERALDETAILS_H

@@ -22,8 +22,7 @@
 //-----------------------------------------------------------------------------
 // Function: filesetrefeditor::FileSetRefEditor()
 //-----------------------------------------------------------------------------
-FileSetRefEditor::FileSetRefEditor(QSharedPointer<Component> component, const QString title /*= "List" */,
-                                   QWidget *parent /*= 0*/):
+FileSetRefEditor::FileSetRefEditor(QSharedPointer<Component> component, const QString title, QWidget* parent):
 ListManager(title, parent),
 component_(component)
 {
@@ -41,7 +40,7 @@ FileSetRefEditor::~FileSetRefEditor()
 //-----------------------------------------------------------------------------
 // Function: filesetrefeditor::initialize()
 //-----------------------------------------------------------------------------
-void FileSetRefEditor::initialize( const QStringList& items /*= QStringList()*/ )
+void FileSetRefEditor::initialize( QStringList const& items)
 {
 	// remove the previous model and view if there are one
 	if (model_)
@@ -62,7 +61,7 @@ void FileSetRefEditor::initialize( const QStringList& items /*= QStringList()*/ 
 
 	// the signals from the view
 	connect(view_, SIGNAL(removeItem(const QModelIndex&)),
-		model_, SLOT(remove(const QModelIndex&)), Qt::UniqueConnection);
+        model_, SLOT(remove(const QModelIndex&)), Qt::UniqueConnection);
 
 	connect(view_, SIGNAL(addItem(const QModelIndex&)),
 		model_, SLOT(addItem(const QModelIndex&)), Qt::UniqueConnection);
@@ -77,19 +76,14 @@ void FileSetRefEditor::initialize( const QStringList& items /*= QStringList()*/ 
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
 	QLayout* topLayout = layout();
-
 	if (!topLayout)
     {
-		// the top layout of the widget
 		topLayout = new QHBoxLayout(this);
 	}
 
 	// add the view on the left side
 	topLayout->addWidget(view_);
 
-	// connect the model to the view
 	view_->setModel(model_);
-
 	view_->setItemDelegate(new FileSetRefEditorDelegate(this, component_));
 }
-

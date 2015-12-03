@@ -52,9 +52,6 @@ public:
 	 */
 	ViewEditor(QSharedPointer<Component> component,
         QSharedPointer<View> view,
-        QSharedPointer<ComponentInstantiation> componentInstantiation,
-        QSharedPointer<DesignInstantiation> designInstantiation,
-        QSharedPointer<DesignConfigurationInstantiation> designConfigurationInstantiation,
         LibraryInterface* libHandler,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
@@ -75,6 +72,13 @@ public:
 	 */
 	virtual void refresh();
 
+private slots:
+
+    void onComponentInstanceChanged();
+
+    void onHierarchyChanged();
+
+   
 private:
 
 	//! No copying.
@@ -83,8 +87,30 @@ private:
 	//! No assignment.
 	ViewEditor& operator=(const ViewEditor& other);
 
+    /*!
+     *  Get the component instantiation referenced by the view.
+     *
+     *      @return The referenced component instantiation.
+     */
+    QSharedPointer<ComponentInstantiation> getComponentInstantiation() const;
+
+    /*!
+     *  Get the design instantiation referenced by the view.
+     *
+     *      @return The referenced design instantiation.
+     */
+    QSharedPointer<DesignInstantiation> getDesignInstantiation() const;
+
+    /*!
+     *  Get the design configuration instantiation referenced by the view.
+     *
+     *      @return The referenced design configuration instantiation.
+     */
+    QSharedPointer<DesignConfigurationInstantiation> getDesignConfigurationInstantiation() const;
+
 	//! Set up the layout for the editor.
 	void setupLayout();
+
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -103,10 +129,10 @@ private:
 	EnvIdentifierEditor envIdentifier_;
 
 	//! Editor to set general settings of flat view.
-    ComponentInstantiationEditor componentInstantiationEditor_;
+    ComponentInstantiationEditor* componentInstantiationEditor_;
 
 	//! The widget to edit the hierarchical reference
-	HierarchyRefWidget hierarchyReferenceEditor_;
+	HierarchyRefWidget* hierarchyReferenceEditor_;
 };
 
 #endif // VIEWEDITOR_H

@@ -19,8 +19,8 @@
 //-----------------------------------------------------------------------------
 LocalMemoryMapGraphItem::LocalMemoryMapGraphItem(QSharedPointer<AddressSpace> addrSpace,
     QSharedPointer<MemoryMapBase> localMemoryMap, QSharedPointer<ExpressionParser> expressionParser,
-    QGraphicsItem* parent /* = 0 */):
-MemoryMapGraphItem(QSharedPointer<MemoryMap> (), localMemoryMap, expressionParser, parent),
+    QGraphicsItem* parent):
+MemoryMapGraphItem(QSharedPointer<MemoryMap> (new MemoryMap()), localMemoryMap, expressionParser, parent),
 addrSpace_(addrSpace)
 {
 

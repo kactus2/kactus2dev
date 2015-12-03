@@ -40,9 +40,7 @@ public:
 	 *        @param [in]   parent      The owner of this editor.
 	 *
 	*/
-	BusIfInterfaceSlave(QSharedPointer<BusInterface> busif,
-		QSharedPointer<Component> component,
-		QWidget *parent);
+	BusIfInterfaceSlave(QSharedPointer<BusInterface> busif,	QSharedPointer<Component> component, QWidget* parent);
 	
 	//! The destructor
 	virtual ~BusIfInterfaceSlave();
@@ -70,7 +68,7 @@ public:
 private slots:
 
 	//! Handler for changes in the memory map reference.
-	void onMemoryMapChange(const QString& newMemoryMapName);
+	void onMemoryMapChange(QString const& newMemoryMapName);
 
 private:
 

@@ -17,7 +17,7 @@
 
 class Choice;
 class ModuleParameter;
-class ModelParameterModel;
+class ModuleParameterModel;
 class ParameterFinder;
 class ExpressionFormatter;
 
@@ -101,7 +101,7 @@ private:
     QSortFilterProxyModel* proxy_;
 
     //! Used for editing model parameters.
-    ModelParameterModel* model_;
+    ModuleParameterModel* model_;
 };
 
 #endif // MODULEPARAMETEREDITOR_H

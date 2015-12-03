@@ -15,10 +15,11 @@
 #include <IPXACTmodels/Component/View.h>
 #include <IPXACTmodels/Component/ComponentInstantiation.h>
 
-#include <QLabel>
-#include <QVBoxLayout>
 #include <QGridLayout>
+#include <QFormLayout>
+#include <QLabel>
 #include <QStringList>
+#include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentInstantiationEditor::ComponentInstantiationEditor()
@@ -31,9 +32,13 @@ QWidget(parent),
 component_(component),
 view_(view),
 componentInstantiation_(componentInstantiation),
-language_(this), 
+languageEditor_(this), 
 languageStrict_(tr("Strict"), this),
-modelName_(this),
+libraryEditor_(this),
+packageEditor_(this),
+modulelNameEditor_(this),
+architectureEditor_(this),
+configurationEditor_(this),
 fileSetRefs_(component, tr("File set references"), this),
 fileBuilders_(componentInstantiation->getDefaultFileBuilders(), this),
 moduleParameters_(componentInstantiation->getModuleParameters(), component->getChoices(), parameterFinder,
@@ -41,10 +46,25 @@ moduleParameters_(componentInstantiation->getModuleParameters(), component->getC
 {
 	fileSetRefs_.initialize();
 
-	connect(&language_, SIGNAL(textEdited(const QString&)),	this, SLOT(onLanguageChange()), Qt::UniqueConnection);
-	connect(&languageStrict_, SIGNAL(toggled(bool)), this, SLOT(onLanguageChange()), Qt::UniqueConnection);
-	connect(&modelName_, SIGNAL(textEdited(const QString&)), 
-        this, SLOT(onModelNameChange(const QString&)), Qt::UniqueConnection);
+	connect(&languageEditor_, SIGNAL(textEdited(const QString&)), 
+        this, SLOT(onLanguageChange()), Qt::UniqueConnection);
+	connect(&languageStrict_, SIGNAL(toggled(bool)),
+        this, SLOT(onLanguageChange()), Qt::UniqueConnection);
+
+    connect(&libraryEditor_, SIGNAL(textEdited(const QString&)), 
+        this, SLOT(onLibraryChange()), Qt::UniqueConnection);
+
+    connect(&packageEditor_, SIGNAL(textEdited(const QString&)), 
+        this, SLOT(onPackageChange()), Qt::UniqueConnection);
+
+	connect(&modulelNameEditor_, SIGNAL(textEdited(const QString&)), 
+        this, SLOT(onModelNameChange()), Qt::UniqueConnection);
+
+    connect(&architectureEditor_, SIGNAL(textEdited(const QString&)), 
+        this, SLOT(onArchitectureChange()), Qt::UniqueConnection);
+
+    connect(&configurationEditor_, SIGNAL(textEdited(const QString&)), 
+        this, SLOT(onConfigurationChange()), Qt::UniqueConnection);
 
 	connect(&fileSetRefs_, SIGNAL(contentChanged()), this, SLOT(onFileSetRefChange()), Qt::UniqueConnection);
 
@@ -85,7 +105,7 @@ bool ComponentInstantiationEditor::isValid() const
 		}
 	}
 
-	if (language_.text().isEmpty() && languageStrict_.isChecked())
+	if (languageEditor_.text().isEmpty() && languageStrict_.isChecked())
     {
 		return false;
     }
@@ -98,10 +118,19 @@ bool ComponentInstantiationEditor::isValid() const
 //-----------------------------------------------------------------------------
 void ComponentInstantiationEditor::refresh()
 {
-    language_.setText(componentInstantiation_->getLanguage());
+    languageEditor_.setText(componentInstantiation_->getLanguage());
     languageStrict_.setChecked(componentInstantiation_->isLanguageStrict());
 
-    modelName_.setText(componentInstantiation_->getModuleName());
+    libraryEditor_.setText(componentInstantiation_->getLibraryName());
+
+    packageEditor_.setText(componentInstantiation_->getPackageName());
+
+    modulelNameEditor_.setText(componentInstantiation_->getModuleName());
+
+    architectureEditor_.setText(componentInstantiation_->getArchitectureName());
+
+    configurationEditor_.setText(componentInstantiation_->getConfigurationName());
+
     fileSetRefs_.setItems(*componentInstantiation_->getFileSetReferences().data());
 
     fileBuilders_.refresh();
@@ -110,22 +139,66 @@ void ComponentInstantiationEditor::refresh()
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComponentInstantiationEditor::getComponentInstance()
+//-----------------------------------------------------------------------------
+QSharedPointer<ComponentInstantiation> ComponentInstantiationEditor::getComponentInstance() const
+{
+    return componentInstantiation_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComponentInstantiationEditor::onLanguageChange()
 //-----------------------------------------------------------------------------
 void ComponentInstantiationEditor::onLanguageChange()
 {
-    componentInstantiation_->setLanguage(language_.text());
+    componentInstantiation_->setLanguage(languageEditor_.text());
     componentInstantiation_->setLanguageStrictness(languageStrict_.isChecked());
 	emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComponentInstantiationEditor::onLibraryChange()
+//-----------------------------------------------------------------------------
+void ComponentInstantiationEditor::onLibraryChange()
+{
+    componentInstantiation_->setLibraryName(libraryEditor_.text());
+    emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentInstantiationEditor::onPackageChange()
+//-----------------------------------------------------------------------------
+void ComponentInstantiationEditor::onPackageChange()
+{
+    componentInstantiation_->setPackageName(packageEditor_.text());
+    emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComponentInstantiationEditor::onModelNameChange()
 //-----------------------------------------------------------------------------
-void ComponentInstantiationEditor::onModelNameChange(QString const& newName)
+void ComponentInstantiationEditor::onModelNameChange()
 {
-    componentInstantiation_->setModuleName(newName);
+    componentInstantiation_->setModuleName(modulelNameEditor_.text());
 	emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentInstantiationEditor::onArchitectureChange()
+//-----------------------------------------------------------------------------
+void ComponentInstantiationEditor::onArchitectureChange()
+{
+    componentInstantiation_->setArchitectureName(architectureEditor_.text());
+    emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentInstantiationEditor::onConfigurationChange()
+//-----------------------------------------------------------------------------
+void ComponentInstantiationEditor::onConfigurationChange()
+{
+    componentInstantiation_->setConfigurationName(configurationEditor_.text());
+    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -156,28 +229,36 @@ void ComponentInstantiationEditor::showEvent(QShowEvent* event)
 //-----------------------------------------------------------------------------
 void ComponentInstantiationEditor::setupLayout()
 {
-    // create the labels for user to identify the editors
-    QLabel* languageLabel = new QLabel(tr("Language"), this);
-    QLabel* modelLabel = new QLabel(tr("Model name"), this);
+    QGroupBox* instanceGroup = new QGroupBox(tr("Implementation details"), this);
 
-    QGridLayout* languageAndModelLayout = new QGridLayout();
-    languageAndModelLayout->addWidget(languageLabel, 0, 0, 1, 1);
-    languageAndModelLayout->addWidget(&language_, 0, 1, 1, 1);
-    languageAndModelLayout->addWidget(&languageStrict_, 0, 2, 1, 1);
-    languageAndModelLayout->addWidget(modelLabel, 1, 0, 1, 1);
-    languageAndModelLayout->addWidget(&modelName_, 1, 1, 1, 1);
+    QGridLayout* languageLayout = new QGridLayout();
+    languageLayout->addWidget(new QLabel(tr("Language:"), this), 0, 0, 1, 1);
+    languageLayout->addWidget(&languageEditor_, 0, 1, 1, 1);
+    languageLayout->addWidget(&languageStrict_, 0, 2, 1, 1);
 
-    QGridLayout* halfPageLayout = new QGridLayout();
-    halfPageLayout->addLayout(languageAndModelLayout, 0, 0, 1, 1);
-    halfPageLayout->setColumnStretch(0, 50);
-    halfPageLayout->setColumnStretch(1, 50);
+    languageLayout->addWidget(new QLabel(tr("Library:"), this), 1, 0, 1, 1);
+    languageLayout->addWidget(&libraryEditor_, 1, 1, 1, 2);
+    
+    languageLayout->addWidget(new QLabel(tr("Package:"), this), 2, 0, 1, 1);
+    languageLayout->addWidget(&packageEditor_, 2, 1, 1, 2);
+
+    QFormLayout* moduleLaout = new QFormLayout();
+    moduleLaout->addRow(tr("Module name:"), &modulelNameEditor_);
+    moduleLaout->addRow(tr("Architecture:"), &architectureEditor_);
+    moduleLaout->addRow(tr("Configuration:"), &configurationEditor_);
+
+    QGridLayout* instanceLayout = new QGridLayout(instanceGroup);
+    instanceLayout->addLayout(languageLayout, 0, 0, 1, 1);
+    instanceLayout->addLayout(moduleLaout, 0, 1, 1, 1);
+    instanceLayout->setColumnStretch(0, 50);
+    instanceLayout->setColumnStretch(1, 50);
 
     QHBoxLayout* fileSetAndBuildLayout = new QHBoxLayout();
     fileSetAndBuildLayout->addWidget(&fileSetRefs_);
     fileSetAndBuildLayout->addWidget(&fileBuilders_);
 
     QVBoxLayout* topLayout = new QVBoxLayout(this);
-    topLayout->addLayout(halfPageLayout);
+    topLayout->addWidget(instanceGroup);
     topLayout->addLayout(fileSetAndBuildLayout);
     topLayout->addWidget(&moduleParameters_, 1);
     topLayout->setContentsMargins(0, 0, 0, 0);

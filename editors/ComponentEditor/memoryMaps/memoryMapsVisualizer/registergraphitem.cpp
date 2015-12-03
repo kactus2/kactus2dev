@@ -171,7 +171,7 @@ void RegisterGraphItem::setDimensionIndex(unsigned int index)
 //-----------------------------------------------------------------------------
 bool RegisterGraphItem::isPresent() const
 {
-    return parseExpression(register_->getIsPresent()) == 1;
+    return register_->getIsPresent().isEmpty() || parseExpression(register_->getIsPresent()) == 1;
 }
 
 //-----------------------------------------------------------------------------

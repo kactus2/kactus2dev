@@ -35,7 +35,7 @@ SegmentDelegate::~SegmentDelegate()
 //-----------------------------------------------------------------------------
 bool SegmentDelegate::columnAcceptsExpression(int column) const
 {
-    return column == SegmentColumns::OFFSET || SegmentColumns::RANGE;
+    return column == SegmentColumns::OFFSET || column == SegmentColumns::RANGE;
 }
 
 //-----------------------------------------------------------------------------

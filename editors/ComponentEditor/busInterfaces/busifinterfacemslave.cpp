@@ -221,7 +221,10 @@ void BusIfInterfaceMSlave::removeReferencesFromExpressions()
     }
 
     remapEditor_->clear();
-    mirroredSlave_->getRemapAddresses()->first()->remapAddress_.clear();
+    if (!mirroredSlave_->getRemapAddresses()->isEmpty())
+    {
+        mirroredSlave_->getRemapAddresses()->first()->remapAddress_.clear();
+    }
 
     rangeEditor_->clear();
     mirroredSlave_->setRange("");

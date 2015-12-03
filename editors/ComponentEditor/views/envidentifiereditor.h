@@ -35,8 +35,8 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] view    Pointer to the view being edited.
-	 *      @param [in] parent  Pointer to the owner of this widget.
+	 *      @param [in] view    The view being edited.
+	 *      @param [in] parent  The owner of this widget.
 	 */
 	EnvIdentifierEditor(QSharedPointer<View> view, QWidget *parent);
 	
@@ -80,7 +80,7 @@ private:
 	//! The model that holds the data to be displayed to the user.
 	EnvIdentifiersModel model_;
 
-	//! Pointer to the proxy that is used to sort the view.
+	//! The proxy that is used to sort the view.
 	QSortFilterProxyModel proxy_;
 };
 

@@ -64,6 +64,9 @@ public:
 	//! Restore the settings from the model to this editor.
 	void refresh();
 
+    //! Gets the component instance being edited.
+    QSharedPointer<ComponentInstantiation> getComponentInstance() const;
+
 signals:
 
 	//! Emit an error message to user.
@@ -109,8 +112,20 @@ private slots:
 	//! Handler for changes in language setting.
 	void onLanguageChange();
 
+    //! Handler for changes in library setting.
+    void onLibraryChange();
+
+    //! Handler for changes in package setting.
+    void onPackageChange();
+
 	//! Handler for changes in model name.
-	void onModelNameChange(const QString& newName);
+	void onModelNameChange();
+
+    //! Handler for changes in package setting.
+    void onArchitectureChange();
+
+    //! Handler for changes in package setting.
+    void onConfigurationChange();
 
 	//! Handler for changes in file set references.
 	void onFileSetRefChange();
@@ -140,13 +155,25 @@ private:
     QSharedPointer<ComponentInstantiation> componentInstantiation_;
 
 	//! Editor to set the hardware description language.
-	QLineEdit language_;
+	QLineEdit languageEditor_;
+
+    //! Editor to set the compilation library.
+    QLineEdit libraryEditor_;
+
+    //! Editor to set the VHDL package for the model.
+    QLineEdit packageEditor_;
 
 	//! Set the strict definition to the language.
 	QCheckBox languageStrict_;
 
 	//! Editor to set the model name element value.
-	QLineEdit modelName_;
+	QLineEdit modulelNameEditor_;
+
+    //! Editor to set the VHDL architecture name for the model.
+    QLineEdit architectureEditor_;
+
+    //! Editor to set the configuration name for the model.
+    QLineEdit configurationEditor_;
 
 	//! Editor to set the file set references for the flat view.
 	FileSetRefEditor fileSetRefs_;

@@ -125,27 +125,7 @@ public slots:
 	virtual void openItem();
 
 private:
-	
-    /*!
-     *  Get the component instantiation referenced by the view.
-     *
-     *      @return The referenced component instantiation.
-     */
-    QSharedPointer<ComponentInstantiation> getComponentInstantiation() const;
 
-    /*!
-     *  Get the design instantiation referenced by the view.
-     *
-     *      @return The referenced design instantiation.
-     */
-    QSharedPointer<DesignInstantiation> getDesignInstantiation() const;
-
-    /*!
-     *  Get the design configuration instantiation referenced by the view.
-     *
-     *      @return The referenced design configuration instantiation.
-     */
-    QSharedPointer<DesignConfigurationInstantiation> getDesignConfigurationInstantiation() const;
 
     //! No copying.
 	ComponentEditorViewItem(const ComponentEditorViewItem& other);

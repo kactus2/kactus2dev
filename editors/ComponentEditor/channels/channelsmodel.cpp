@@ -96,7 +96,7 @@ QVariant ChannelsModel::headerData(int section, Qt::Orientation orientation, int
     }
     else if (section == ChannelColumns::INTERFACE_COLUMN) 
     {
-        return tr("Interface\nreferences");
+        return tr("Interface references");
     }
     else if (section == ChannelColumns::DESCRIPTION_COLUMN)
     {

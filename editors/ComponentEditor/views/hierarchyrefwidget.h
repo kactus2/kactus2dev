@@ -66,6 +66,10 @@ public:
 	 */
 	bool isValid() const;
 
+    QSharedPointer<DesignInstantiation> getDesignInstantiation();
+
+    QSharedPointer<DesignConfigurationInstantiation> getDesignConfigurationInstantiation();
+
 public slots:
 
     /*!
@@ -117,8 +121,6 @@ private slots:
 	//! Handler for changes in hierarchy reference.
 	void onVLNVChanged();
 
-    //! Called when design configuration group has been checked/unchecked.
-    void designConfigEditorClicked();
 
 private:
 

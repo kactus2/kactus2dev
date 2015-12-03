@@ -22,8 +22,7 @@ QAbstractTableModel(parent),
 view_(view),
 table_(view->getEnvIdentifiers())
 {
-	Q_ASSERT_X(view_, "EnvIdentifiersModel constructor",
-		"Null view pointer given as parameter");
+	
 }
 
 //-----------------------------------------------------------------------------
@@ -37,7 +36,7 @@ EnvIdentifiersModel::~EnvIdentifiersModel()
 //-----------------------------------------------------------------------------
 // Function: envidentifiersmodel::rowCount()
 //-----------------------------------------------------------------------------
-int EnvIdentifiersModel::rowCount(const QModelIndex& parent /*= QModelIndex() */ ) const
+int EnvIdentifiersModel::rowCount(QModelIndex const& parent) const
 {
 	if (parent.isValid())
     {
@@ -50,7 +49,7 @@ int EnvIdentifiersModel::rowCount(const QModelIndex& parent /*= QModelIndex() */
 //-----------------------------------------------------------------------------
 // Function: envidentifiersmodel::columnCount()
 //-----------------------------------------------------------------------------
-int EnvIdentifiersModel::columnCount( const QModelIndex& parent /*= QModelIndex() */ ) const
+int EnvIdentifiersModel::columnCount(QModelIndex const& parent) const
 {
 	if (parent.isValid())
     {
@@ -63,22 +62,17 @@ int EnvIdentifiersModel::columnCount( const QModelIndex& parent /*= QModelIndex(
 //-----------------------------------------------------------------------------
 // Function: envidentifiersmodel::data()
 //-----------------------------------------------------------------------------
-QVariant EnvIdentifiersModel::data( const QModelIndex& index, int role /*= Qt::DisplayRole */ ) const
+QVariant EnvIdentifiersModel::data(QModelIndex const& index, int role) const
 {
 	if (!index.isValid() || index.row() < 0 || index.row() >= table_.size())
     {
 		return QVariant();
     }
-
-	else if (Qt::DisplayRole == role)
+	else if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
-		// split the identifier
 		QStringList fields = table_.at(index.row()).split(":");
-
-		// and return the correct field
 		return fields.value(index.column());
 	}
-
 	// if unsupported role
 	else
     {
@@ -89,8 +83,7 @@ QVariant EnvIdentifiersModel::data( const QModelIndex& index, int role /*= Qt::D
 //-----------------------------------------------------------------------------
 // Function: envidentifiersmodel::headerData()
 //-----------------------------------------------------------------------------
-QVariant EnvIdentifiersModel::headerData( int section, Qt::Orientation orientation,
-    int role /*= Qt::DisplayRole */ ) const
+QVariant EnvIdentifiersModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     if (orientation != Qt::Horizontal)
     {
@@ -118,23 +111,20 @@ QVariant EnvIdentifiersModel::headerData( int section, Qt::Orientation orientati
 //-----------------------------------------------------------------------------
 // Function: envidentifiersmodel::setData()
 //-----------------------------------------------------------------------------
-bool EnvIdentifiersModel::setData( const QModelIndex& index, const QVariant& value, int role /*= Qt::EditRole */ )
+bool EnvIdentifiersModel::setData(QModelIndex const& index, const QVariant& value, int role)
 {
 	if (!index.isValid() ||index.row() < 0 || index.row() >= table_.size())
     {
         return false;
     }
-	else if (Qt::EditRole == role)
+	else if (role == Qt::EditRole)
     {
 		QStringList identifier = table_.at(index.row()).split(":");
 		identifier.replace(index.column(), value.toString());
-		QString result = identifier.value(0);
-		result += QString(":");
-		result += identifier.value(1);
-		result += QString(":");
-		result += identifier.value(2);
-		table_.replace(index.row(), result);
+		table_.replace(index.row(), identifier.join(':'));
 		
+        view_->setEnvIdentifiers(table_);
+
 		emit dataChanged(index, index);
 		emit contentChanged();
 		return true;
@@ -149,7 +139,7 @@ bool EnvIdentifiersModel::setData( const QModelIndex& index, const QVariant& val
 //-----------------------------------------------------------------------------
 // Function: envidentifiersmodel::flags()
 //-----------------------------------------------------------------------------
-Qt::ItemFlags EnvIdentifiersModel::flags( const QModelIndex& index ) const
+Qt::ItemFlags EnvIdentifiersModel::flags(QModelIndex const& index) const
 {
 	if (!index.isValid())
     {
@@ -171,15 +161,10 @@ bool EnvIdentifiersModel::isValid() const
 //-----------------------------------------------------------------------------
 // Function: envidentifiersmodel::onRemoveItem()
 //-----------------------------------------------------------------------------
-void EnvIdentifiersModel::onRemoveItem( const QModelIndex& index )
+void EnvIdentifiersModel::onRemoveItem( QModelIndex const& index )
 {
 	// don't remove anything if index is invalid
-	if (!index.isValid())
-    {
-		return;
-	}
-	// make sure the row number if valid
-	else if (index.row() < 0 || index.row() >= table_.size())
+	if (!index.isValid() || index.row() < 0 || index.row() >= table_.size())
     {
 		return;
 	}
@@ -187,6 +172,7 @@ void EnvIdentifiersModel::onRemoveItem( const QModelIndex& index )
 	// remove the specified item
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
 	table_.removeAt(index.row());
+    view_->setEnvIdentifiers(table_);
 	endRemoveRows();
 
 	// tell also parent widget that contents have been changed
@@ -196,7 +182,7 @@ void EnvIdentifiersModel::onRemoveItem( const QModelIndex& index )
 //-----------------------------------------------------------------------------
 // Function: envidentifiersmodel::onAddItem()
 //-----------------------------------------------------------------------------
-void EnvIdentifiersModel::onAddItem( const QModelIndex& index )
+void EnvIdentifiersModel::onAddItem( QModelIndex const& index )
 {
 	int row = table_.size();
 
@@ -208,6 +194,7 @@ void EnvIdentifiersModel::onAddItem( const QModelIndex& index )
 
 	beginInsertRows(QModelIndex(), row, row);
 	table_.insert(row, QString("::"));
+    view_->setEnvIdentifiers(table_);
 	endInsertRows();
 
 	// tell also parent widget that contents have been changed

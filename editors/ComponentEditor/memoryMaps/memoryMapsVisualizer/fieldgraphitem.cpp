@@ -162,6 +162,5 @@ void FieldGraphItem::setConflicted(bool conflicted)
 //-----------------------------------------------------------------------------
 bool FieldGraphItem::isPresent() const
 {
-//     return expressionParser_->parseExpression(field_->getIsPresentExpression()) == "1";
-    return parseExpression(field_->getIsPresent()) == 1;
+    return field_->getIsPresent().isEmpty() || parseExpression(field_->getIsPresent()) == 1;
 }

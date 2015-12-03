@@ -30,8 +30,8 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] view    Pointer to the view being edited.
-	 *      @param [in] parent  Pointer to the owner of this model
+	 *      @param [in] view    The view being edited.
+	 *      @param [in] parent  The owner of this model
 	 */
 	EnvIdentifiersModel(QSharedPointer<View> view, QObject *parent);
 	
@@ -139,7 +139,7 @@ private:
 	//! No assignment.
 	EnvIdentifiersModel& operator=(const EnvIdentifiersModel& other);
 
-	//! Pointer to the view being edited.
+	//! The view being edited.
 	QSharedPointer<View> view_;
 
 	//! Contains the environment identifiers being edited.

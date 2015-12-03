@@ -118,17 +118,6 @@ private:
     void setupLayout();
 
     /*!
-     *  Finds a component instantiation referenced by a view.
-     *
-     *      @param [in] component   The component containing the view.
-     *      @param [in] targetView  The selected view.
-     *
-     *      @return A component instantiation referenced by a view.
-     */
-    QSharedPointer<ComponentInstantiation> getReferencedComponentInstantiation(QSharedPointer<Component> component,
-        QSharedPointer<View> targetView) const;
-
-    /*!
      *  Finds a design instantiation referenced by a view.
      *
      *      @param [in] component   The component containing the view.

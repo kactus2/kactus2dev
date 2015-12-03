@@ -18,7 +18,7 @@
 //-----------------------------------------------------------------------------
 BridgesEditor::BridgesEditor(QSharedPointer<SlaveInterface> slave, QSharedPointer<Component> component,
     QWidget* parent):
-QGroupBox(tr("Bridges"), parent),
+QGroupBox(tr("Transparent bridges"), parent),
     view_(this),
     proxy_(this),
     model_(slave, this)
@@ -31,8 +31,7 @@ QGroupBox(tr("Bridges"), parent),
 	proxy_.setSourceModel(&model_);
 	view_.setModel(&proxy_);
 
-	// set default width for master column
-	view_.setColumnWidth(BridgeColumns::MASTER_COLUMN, 200);
+	view_.setColumnWidth(BridgeColumns::MASTER_COLUMN, 200);    
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(&view_);

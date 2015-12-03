@@ -2812,9 +2812,6 @@
     <ClCompile Include="GeneratedFiles\moc_envidentifiereditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_envidentifiersdelegate.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_envidentifiersmodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -3406,9 +3403,6 @@
     <ClCompile Include="editors\ComponentEditor\views\envidentifiereditor.cpp">
       <Filter>Source Files\editors\ComponentEditor\views</Filter>
     </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\views\envidentifiersdelegate.cpp">
-      <Filter>Source Files\editors\ComponentEditor\views</Filter>
-    </ClCompile>
     <ClCompile Include="editors\ComponentEditor\views\envidentifiersmodel.cpp">
       <Filter>Source Files\editors\ComponentEditor\views</Filter>
     </ClCompile>
@@ -3769,9 +3763,6 @@
     <ClCompile Include="GeneratedFiles\moc_ModuleParameterEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\views\ModuleParameterFactoryImplementation.cpp">
-      <Filter>Source Files\editors\ComponentEditor\views</Filter>
-    </ClCompile>
     <ClCompile Include="common\views\EditableTableView\ColumnFreezableTable.cpp">
       <Filter>Source Files\common\views\EditableTableView</Filter>
     </ClCompile>
@@ -4122,6 +4113,18 @@
     </ClCompile>
     <ClCompile Include="Plugins\common\NameGenerationPolicy.cpp">
       <Filter>Source Files\Plugins\common</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ModuleParameterModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ModuleParameterDelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\views\ModuleParameterModel.cpp">
+      <Filter>Source Files\editors\ComponentEditor\views</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\views\ModuleParameterDelegate.cpp">
+      <Filter>Source Files\editors\ComponentEditor\views</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5340,9 +5343,6 @@
     <CustomBuild Include="editors\ComponentEditor\views\envidentifiereditor.h">
       <Filter>Header Files\editors\ComponentEditor\views</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\views\envidentifiersdelegate.h">
-      <Filter>Header Files\editors\ComponentEditor\views</Filter>
-    </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\views\envidentifiersmodel.h">
       <Filter>Header Files\editors\ComponentEditor\views</Filter>
     </CustomBuild>
@@ -5670,6 +5670,12 @@
     <CustomBuild Include="designEditors\HWDesign\undoCommands\InterfaceDeleteCommand.h">
       <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
     </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\views\ModuleParameterModel.h">
+      <Filter>Header Files\designEditors\HWDesign</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\views\ModuleParameterDelegate.h">
+      <Filter>Header Files\editors\ComponentEditor\views</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -5983,9 +5989,6 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\common\ExpressionFormatterFactoryImplementation.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\views\ModuleParameterFactoryImplementation.h">
-      <Filter>Header Files\editors\ComponentEditor\views</Filter>
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\memoryMaps\MemoryMapColumns.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>

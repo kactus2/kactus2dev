@@ -20,6 +20,8 @@
 #include <IPXACTmodels/Component/DesignConfigurationInstantiation.h>
 #include <IPXACTmodels/Component/Choice.h>
 
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+
 #include <QVBoxLayout>
 #include <QSharedPointer>
 #include <QStringList>
@@ -41,17 +43,11 @@ view_(view),
 designInstantiation_(designInstantiation),
 designConfigurationInstantiation_(designConfigurationInstantiation),
 designConfigurationEditor_(new VLNVEditor(VLNV::DESIGNCONFIGURATION, libHandler, parent, this)),
-designEditor_(new VLNVEditor(VLNV::DESIGN, libHandler, parent->parentWidget(), this))
+designEditor_(new VLNVEditor(VLNV::DESIGN, libHandler, parent, this))
 {
 	designConfigurationEditor_->setTitle(tr("Design configuration"));
 	designConfigurationEditor_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-    QString designConfigurationErrorStyle = "QGroupBox::indicator:checked {"
-        "image: url(:/icons/common/graphics/exclamation.png);"
-        "}";
-    designConfigurationEditor_->setStyleSheet(designConfigurationErrorStyle);
-    connect(designConfigurationEditor_, SIGNAL(toggled(bool)), 
-        this, SLOT(designConfigEditorClicked()), Qt::UniqueConnection);
+    designConfigurationEditor_->setMandatory(false);
 
     designEditor_->setTitle(tr("Design"));
     designEditor_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
@@ -80,25 +76,29 @@ bool HierarchyRefWidget::isValid() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: HierarchyRefWidget::getDesignInstantiation()
+//-----------------------------------------------------------------------------
+QSharedPointer<DesignInstantiation> HierarchyRefWidget::getDesignInstantiation()
+{
+    return designInstantiation_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HierarchyRefWidget::getDesignConfigurationInstantiation()
+//-----------------------------------------------------------------------------
+QSharedPointer<DesignConfigurationInstantiation> HierarchyRefWidget::getDesignConfigurationInstantiation()
+{
+    return designConfigurationInstantiation_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: HierarchyRefWidget::refresh()
 //-----------------------------------------------------------------------------
 void HierarchyRefWidget::refresh()
-{	
-    if (designInstantiation_)
-    {
-        QSharedPointer<VLNV> designReference = designReference = designInstantiation_->getDesignReference();
-
-        designConfigurationEditor_->setVLNV(VLNV());
-        designEditor_->setVLNV(*designReference.data());
-    }
-    if (designConfigurationInstantiation_)
-    {
-        QSharedPointer<VLNV> designConfigurationReference =
-            designConfigurationReference = designConfigurationInstantiation_->getDesignConfigurationReference();
-
-        designConfigurationEditor_->setVLNV(*designConfigurationReference.data());
-        updateDesignReference();
-    }
+{
+    designConfigurationEditor_->setVLNV(*designConfigurationInstantiation_->getDesignConfigurationReference());
+    designEditor_->setVLNV(*designInstantiation_->getDesignReference());
+    //updateDesignReference();
 
     updateErrorSignAndTooltip();
 }
@@ -114,18 +114,9 @@ void HierarchyRefWidget::onVLNVChanged()
     designConfigurationInstantiation_->setDesignConfigurationReference(designConfigurationReference);
 
     updateDesignReference();
-    updateErrorSignAndTooltip();
+    //updateErrorSignAndTooltip();
 
 	emit contentChanged();
-}
-
-//-----------------------------------------------------------------------------
-// Function: HierarchyRefWidget::designConfigEditorClicked()
-//-----------------------------------------------------------------------------
-void HierarchyRefWidget::designConfigEditorClicked()
-{
-    //! Do not allow uncheck since this would disable the editor.
-    designConfigurationEditor_->setChecked(true);
 }
 
 //-----------------------------------------------------------------------------
@@ -155,14 +146,34 @@ void HierarchyRefWidget::showEvent( QShowEvent* event )
 //-----------------------------------------------------------------------------
 void HierarchyRefWidget::updateDesignReference()
 {
-    if (library_->contains(*designInstantiation_->getDesignReference().data()))
+    VLNV configurationVLNV = *designConfigurationInstantiation_->getDesignConfigurationReference();
+    if (library_->contains(configurationVLNV) && 
+        library_->getDocumentType(configurationVLNV) == VLNV::DESIGNCONFIGURATION)
     {
-        designEditor_->setVLNV(*designInstantiation_->getDesignReference().data());
+        QSharedPointer<DesignConfiguration const> designConfiguration = 
+            library_->getModelReadOnly(configurationVLNV).dynamicCast<DesignConfiguration const>();
+        
+
+        QSharedPointer<ConfigurableVLNVReference> designReference
+            (new ConfigurableVLNVReference(designConfiguration->getDesignRef()));
+        designInstantiation_->setDesignReference(designReference);
+
+        designEditor_->setVLNV(designConfiguration->getDesignRef());
     }
     else
     {
         designEditor_->setVLNV(VLNV());
     }
+
+    /*
+    if (library_->contains(*designInstantiation_->getDesignReference()))
+    {
+        designEditor_->setVLNV(*designInstantiation_->getDesignReference());
+    }
+    else
+    {
+        designEditor_->setVLNV(VLNV());
+    }*/
 }
 
 //-----------------------------------------------------------------------------
@@ -170,14 +181,14 @@ void HierarchyRefWidget::updateDesignReference()
 //-----------------------------------------------------------------------------
 void HierarchyRefWidget::updateErrorSignAndTooltip()
 {
-    if (!designInstantiation_ || !designConfigurationInstantiation_)
+    /*if (!designInstantiation_ || !designConfigurationInstantiation_)
     {
         hideErrorSignAndTooltip();
     }
     else
     {
         showErrorSignAndTooltip();
-    }
+    }*/
 }
 
 //-----------------------------------------------------------------------------
@@ -185,7 +196,7 @@ void HierarchyRefWidget::updateErrorSignAndTooltip()
 //-----------------------------------------------------------------------------
 void HierarchyRefWidget::showErrorSignAndTooltip()
 {
-    QPalette errorPalette = designConfigurationEditor_->palette();
+    /*QPalette errorPalette = designConfigurationEditor_->palette();
     errorPalette.setColor(QPalette::Foreground, Qt::red);
     designConfigurationEditor_->setPalette(errorPalette);
 
@@ -213,7 +224,7 @@ void HierarchyRefWidget::showErrorSignAndTooltip()
                 tr("<p>VLNV %1 not found in the library.</p>").arg(designReference->toString());
             designEditor_->setToolTip(tooltipMessage);
         }
-    }
+    }*/
 }
 
 //-----------------------------------------------------------------------------
@@ -221,7 +232,7 @@ void HierarchyRefWidget::showErrorSignAndTooltip()
 //-----------------------------------------------------------------------------
 void HierarchyRefWidget::hideErrorSignAndTooltip()
 {
-    QPalette normalPalette = designConfigurationEditor_->palette();
+   /* QPalette normalPalette = designConfigurationEditor_->palette();
     normalPalette.setColor(QPalette::Foreground, Qt::black);
     designConfigurationEditor_->setPalette(normalPalette);
 
@@ -229,7 +240,7 @@ void HierarchyRefWidget::hideErrorSignAndTooltip()
     designConfigurationEditor_->setCheckable(false);
 
     designConfigurationEditor_->setToolTip("");
-    designEditor_->setToolTip("");
+    designEditor_->setToolTip("");*/
 }
 
 //-----------------------------------------------------------------------------

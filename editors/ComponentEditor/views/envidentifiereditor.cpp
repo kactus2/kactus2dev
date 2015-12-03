@@ -10,7 +10,6 @@
 //-----------------------------------------------------------------------------
 
 #include "envidentifiereditor.h"
-#include "envidentifiersdelegate.h"
 
 #include <IPXACTmodels/Component/View.h>
 
@@ -27,8 +26,6 @@ proxy_(this)
 {
 	// set view to be sortable
 	view_.setSortingEnabled(true);
-
-	view_.setItemDelegate(new EnvIdentifiersDelegate(this));
 
 	// items can not be dragged
 	view_.setItemsDraggable(false);

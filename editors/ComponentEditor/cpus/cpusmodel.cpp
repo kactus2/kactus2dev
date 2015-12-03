@@ -95,7 +95,7 @@ QVariant CpusModel::headerData(int section, Qt::Orientation orientation, int rol
     }
     else if (section == CpuColumns::ADDRSPACE_COLUMN)
     {
-        return tr("Address space\nreferences");
+        return tr("Address space references");
     }
     else if (section == CpuColumns::DESCRIPTION_COLUMN)
     {

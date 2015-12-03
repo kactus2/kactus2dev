@@ -178,14 +178,7 @@ void ComponentWizardViewsPage::onViewSelected(QModelIndex const& index)
 //-----------------------------------------------------------------------------
 void ComponentWizardViewsPage::createEditorForView(QSharedPointer<Component> component, QSharedPointer<View> view)
 {
-    QSharedPointer<ComponentInstantiation> componentInstantiation =
-        getReferencedComponentInstantiation(component, view);
-    QSharedPointer<DesignInstantiation> designInstantiation = getReferencedDesignInstantiation(component, view);
-    QSharedPointer<DesignConfigurationInstantiation> designConfigurationInstantiation =
-        getReferencedDesignConfigurationInstantiation(component, view);
-
-    ViewEditor* editor = new ViewEditor(component, view, componentInstantiation, designInstantiation,
-        designConfigurationInstantiation, library_, parameterFinder_, expressionFormatter_, this);
+    ViewEditor* editor = new ViewEditor(component, view, library_, parameterFinder_, expressionFormatter_, this);
 
     int editorIndex = editorTabs_->addTab(editor, view->name());
 
@@ -248,66 +241,4 @@ void ComponentWizardViewsPage::setupLayout()
 
     topLayout->addLayout(viewsLayout);
     topLayout->addWidget(editorTabs_, 1);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentWizardViewsPage::getReferencedComponentInstantiation()
-//-----------------------------------------------------------------------------
-QSharedPointer<ComponentInstantiation> ComponentWizardViewsPage::getReferencedComponentInstantiation(
-    QSharedPointer<Component> component, QSharedPointer<View> targetView) const
-{
-    if (!targetView->getComponentInstantiationRef().isEmpty())
-    {
-        foreach (QSharedPointer<ComponentInstantiation> instantiation, *component->getComponentInstantiations())
-        {
-            if (instantiation->name() == targetView->getComponentInstantiationRef())
-            {
-                return instantiation;
-            }
-        }
-    }
-
-    return QSharedPointer<ComponentInstantiation>();
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentWizardViewsPage::getReferencedDesignInstantiation()
-//-----------------------------------------------------------------------------
-QSharedPointer<DesignInstantiation> ComponentWizardViewsPage::getReferencedDesignInstantiation(
-    QSharedPointer<Component> component, QSharedPointer<View> targetView) const
-{
-    if (!targetView->getDesignInstantiationRef().isEmpty())
-    {
-        foreach (QSharedPointer<DesignInstantiation> instantiation, *component->getDesignInstantiations())
-        {
-            if (instantiation->name() == targetView->getDesignInstantiationRef())
-            {
-                return instantiation;
-            }
-        }
-    }
-
-    return QSharedPointer<DesignInstantiation>();
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentWizardViewsPage::getReferencedDesignConfigurationInstantiation()
-//-----------------------------------------------------------------------------
-QSharedPointer<DesignConfigurationInstantiation> ComponentWizardViewsPage::
-    getReferencedDesignConfigurationInstantiation(QSharedPointer<Component> component,
-    QSharedPointer<View> targetView) const
-{
-    if (!targetView->getDesignConfigurationInstantiationRef().isEmpty())
-    {
-        foreach (QSharedPointer<DesignConfigurationInstantiation> instantiation,
-            *component->getDesignConfigurationInstantiations())
-        {
-            if (instantiation->name() == targetView->getDesignConfigurationInstantiationRef())
-            {
-                return instantiation;
-            }
-        }
-    }
-
-    return QSharedPointer<DesignConfigurationInstantiation>();
 }
