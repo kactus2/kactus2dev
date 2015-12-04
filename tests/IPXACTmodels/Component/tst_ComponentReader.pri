@@ -7,8 +7,7 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../IPXACTmodels/Component/BusInterfaceReader.h \
-    ../../../IPXACTmodels/Component/AbstractionType.h \
+HEADERS += ../../../IPXACTmodels/Component/AbstractionType.h \
     ../../../IPXACTmodels/Component/AddressBlock.h \
     ../../../IPXACTmodels/Component/AddressSpace.h \
     ../../../IPXACTmodels/Component/AlternateRegister.h \
@@ -18,6 +17,7 @@ HEADERS += ../../../IPXACTmodels/Component/BusInterfaceReader.h \
     ../../../IPXACTmodels/common/BooleanValue.h \
     ../../../IPXACTmodels/Component/BuildCommand.h \
     ../../../IPXACTmodels/common/BuildModel.h \
+    ../../../IPXACTmodels/Component/BusInterface.h \
     ../../../IPXACTmodels/common/ClockUnit.h \
     ../../../IPXACTmodels/kactusExtensions/ComInterface.h \
     ../../../IPXACTmodels/kactusExtensions/ComProperty.h \
@@ -46,10 +46,12 @@ HEADERS += ../../../IPXACTmodels/Component/BusInterfaceReader.h \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Position.h \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Value.h \
     ../../../IPXACTmodels/kactusExtensions/KactusAttribute.h \
+    ../../../IPXACTmodels/Component/MasterInterface.h \
     ../../../IPXACTmodels/Component/MemoryBlockBase.h \
     ../../../IPXACTmodels/Component/MemoryMap.h \
     ../../../IPXACTmodels/Component/MemoryMapBase.h \
     ../../../IPXACTmodels/Component/MemoryRemap.h \
+    ../../../IPXACTmodels/Component/MirroredSlaveInterface.h \
     ../../../IPXACTmodels/Component/Model.h \
     ../../../IPXACTmodels/common/ModuleParameter.h \
     ../../../IPXACTmodels/common/NameGroup.h \
@@ -69,26 +71,25 @@ HEADERS += ../../../IPXACTmodels/Component/BusInterfaceReader.h \
     ../../../IPXACTmodels/Component/RemapState.h \
     ../../../IPXACTmodels/kactusExtensions/SWView.h \
     ../../../IPXACTmodels/Component/Segment.h \
+    ../../../IPXACTmodels/Component/SlaveInterface.h \
     ../../../IPXACTmodels/kactusExtensions/SystemView.h \
     ../../../IPXACTmodels/Component/Transactional.h \
     ../../../IPXACTmodels/common/TransactionalTypes.h \
+    ../../../IPXACTmodels/common/VLNV.h \
     ../../../IPXACTmodels/common/Vector.h \
     ../../../IPXACTmodels/Component/View.h \
     ../../../IPXACTmodels/Component/Wire.h \
     ../../../IPXACTmodels/Component/WireTypeDef.h \
     ../../../IPXACTmodels/XmlUtils.h \
     ../../../IPXACTmodels/bspbuildcommand.h \
-    ../../../IPXACTmodels/Component/BusInterface.h \
     ../../../IPXACTmodels/Component/channel.h \
     ../../../IPXACTmodels/Component/choice.h \
     ../../../IPXACTmodels/Component/cpu.h \
     ../../../IPXACTmodels/generaldeclarations.h \
-    ../../../IPXACTmodels/Component/MirroredSlaveInterface.h \
-    ../../../IPXACTmodels/Component/SlaveInterface.h \
     ../../../IPXACTmodels/swbuildcommand.h \
-    ../../../IPXACTmodels/common/VLNV.h \
     ../../../IPXACTmodels/Component/AddressBlockReader.h \
     ../../../IPXACTmodels/Component/AddressSpaceReader.h \
+    ../../../IPXACTmodels/Component/BusInterfaceReader.h \
     ../../../IPXACTmodels/Component/CPUReader.h \
     ../../../IPXACTmodels/Component/ChannelReader.h \
     ../../../IPXACTmodels/Component/ChoiceReader.h \
@@ -113,7 +114,8 @@ HEADERS += ../../../IPXACTmodels/Component/BusInterfaceReader.h \
     ../../../IPXACTmodels/Component/RegisterReader.h \
     ../../../IPXACTmodels/Component/RemapStateReader.h \
     ../../../IPXACTmodels/Component/ViewReader.h \
-    ../../../IPXACTmodels/Component/MasterInterface.h
+    ../../../IPXACTmodels/kactusExtensions/SWFileBuilder.h \
+    ../../../IPXACTmodels/kactusExtensions/BSPBuildCommand.h
 SOURCES += ../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../IPXACTmodels/Component/AddressBlock.cpp \
     ../../../IPXACTmodels/Component/AddressBlockReader.cpp \
@@ -126,6 +128,8 @@ SOURCES += ../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../IPXACTmodels/common/BooleanValue.cpp \
     ../../../IPXACTmodels/Component/BuildCommand.cpp \
     ../../../IPXACTmodels/common/BuildModel.cpp \
+    ../../../IPXACTmodels/Component/BusInterface.cpp \
+    ../../../IPXACTmodels/Component/BusInterfaceReader.cpp \
     ../../../IPXACTmodels/Component/CPUReader.cpp \
     ../../../IPXACTmodels/Component/ChannelReader.cpp \
     ../../../IPXACTmodels/Component/ChoiceReader.cpp \
@@ -167,12 +171,14 @@ SOURCES += ../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Position.cpp \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Value.cpp \
     ../../../IPXACTmodels/kactusExtensions/KactusAttribute.cpp \
+    ../../../IPXACTmodels/Component/MasterInterface.cpp \
     ../../../IPXACTmodels/Component/MemoryBlockBase.cpp \
     ../../../IPXACTmodels/Component/MemoryMap.cpp \
     ../../../IPXACTmodels/Component/MemoryMapBase.cpp \
     ../../../IPXACTmodels/Component/MemoryMapBaseReader.cpp \
     ../../../IPXACTmodels/Component/MemoryMapReader.cpp \
     ../../../IPXACTmodels/Component/MemoryRemap.cpp \
+    ../../../IPXACTmodels/Component/MirroredSlaveInterface.cpp \
     ../../../IPXACTmodels/Component/Model.cpp \
     ../../../IPXACTmodels/common/ModuleParameter.cpp \
     ../../../IPXACTmodels/common/ModuleParameterReader.cpp \
@@ -200,9 +206,11 @@ SOURCES += ../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../IPXACTmodels/Component/RemapStateReader.cpp \
     ../../../IPXACTmodels/kactusExtensions/SWView.cpp \
     ../../../IPXACTmodels/Component/Segment.cpp \
+    ../../../IPXACTmodels/Component/SlaveInterface.cpp \
     ../../../IPXACTmodels/kactusExtensions/SystemView.cpp \
     ../../../IPXACTmodels/Component/Transactional.cpp \
     ../../../IPXACTmodels/common/TransactionalTypes.cpp \
+    ../../../IPXACTmodels/common/VLNV.cpp \
     ../../../IPXACTmodels/common/Vector.cpp \
     ../../../IPXACTmodels/Component/View.cpp \
     ../../../IPXACTmodels/Component/ViewReader.cpp \
@@ -210,16 +218,10 @@ SOURCES += ../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../IPXACTmodels/Component/WireTypeDef.cpp \
     ../../../IPXACTmodels/Component/WriteValueConstraint.cpp \
     ../../../IPXACTmodels/XmlUtils.cpp \
-    ../../../IPXACTmodels/bspbuildcommand.cpp \
-    ../../../IPXACTmodels/Component/BusInterface.cpp \
-    ../../../IPXACTmodels/Component/BusInterfaceReader.cpp \
+    ../../../IPXACTmodels/kactusExtensions/SWFileBuilder.cpp \
     ../../../IPXACTmodels/Component/channel.cpp \
     ../../../IPXACTmodels/Component/choice.cpp \
     ../../../IPXACTmodels/Component/cpu.cpp \
     ../../../IPXACTmodels/generaldeclarations.cpp \
-    ../../../IPXACTmodels/Component/MasterInterface.cpp \
-    ../../../IPXACTmodels/Component/MirroredSlaveInterface.cpp \
-    ../../../IPXACTmodels/Component/SlaveInterface.cpp \
-    ../../../IPXACTmodels/swbuildcommand.cpp \
-    ./tst_ComponentReader.cpp \
-    ../../../IPXACTmodels/common/VLNV.cpp
+    ../../../IPXACTmodels/kactusExtensions/BSPBuildCommand.cpp \
+    ./tst_ComponentReader.cpp

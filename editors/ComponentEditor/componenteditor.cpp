@@ -644,7 +644,7 @@ void ComponentEditor::setRowVisibility(QSettings& settings)
     if (isHWImplementation())
     {
         settings.beginGroup("HW");
-        settings.beginGroup(KactusAttribute::valueToString(component_->getHierarchy()));
+        settings.beginGroup(KactusAttribute::hierarchyToString(component_->getHierarchy()));
     }
     else
     {

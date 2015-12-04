@@ -101,7 +101,14 @@ HEADERS += ../../../designEditors/HWDesign/AdHocEnabled.h \
     ../../../editors/ComponentEditor/busInterfaces/portmaps/portlistmodel.h \
     ../../../editors/ComponentEditor/busInterfaces/portmaps/portlistview.h \
     ../../../editors/ComponentEditor/busInterfaces/portmaps/portmapsdelegate.h \
-    ../../../common/widgets/vlnvEditor/vlnveditor.h
+    ../../../common/widgets/vlnvEditor/vlnveditor.h \
+    ../../../designEditors/HWDesign/AdHocConnectionItem.h \
+    ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddCommand.h \
+    ../../../designEditors/HWDesign/undoCommands/ComponentDeleteCommand.h \
+    ../../../designEditors/HWDesign/undoCommands/ComponentItemMoveCommand.h \
+    ../../../designEditors/HWDesign/undoCommands/ConnectionDeleteCommand.h \
+    ../../../designEditors/HWDesign/undoCommands/AdHocVisibilityChangeCommand.h \
+    ../../../editors/ComponentEditor/common/NullParser.h
 SOURCES += ../../../designEditors/HWDesign/AdHocEnabled.cpp \
     ../../../designEditors/HWDesign/AdHocInterfaceItem.cpp \
     ../../../designEditors/HWDesign/AdHocPortItem.cpp \
@@ -196,4 +203,11 @@ SOURCES += ../../../designEditors/HWDesign/AdHocEnabled.cpp \
     ../../../editors/ComponentEditor/busInterfaces/portmaps/portlistview.cpp \
     ../../../editors/ComponentEditor/busInterfaces/portmaps/portmapsdelegate.cpp \
     ./tst_documentGenerator.cpp \
-    ../../../common/widgets/vlnvEditor/vlnveditor.cpp
+    ../../../common/widgets/vlnvEditor/vlnveditor.cpp \
+    ../../../designEditors/HWDesign/AdHocConnectionItem.cpp \
+    ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddCommand.cpp \
+    ../../../designEditors/HWDesign/undoCommands/ComponentDeleteCommand.cpp \
+    ../../../designEditors/HWDesign/undoCommands/ComponentItemMoveCommand.cpp \
+    ../../../designEditors/HWDesign/undoCommands/ConnectionDeleteCommand.cpp \
+    ../../../designEditors/HWDesign/undoCommands/AdHocVisibilityChangeCommand.cpp \
+    ../../../editors/ComponentEditor/common/NullParser.cpp

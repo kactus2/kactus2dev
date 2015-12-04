@@ -538,10 +538,14 @@ void BusInterface::setAttributes(QMap<QString, QString> const& attributes)
 QStringList BusInterface::getPhysicalPortNames() const
 {
 	QStringList list;
-	foreach (QSharedPointer<PortMap> portMap, *abstractionTypes_->first()->getPortMaps())
-	{
-		list.append(portMap->getPhysicalPort()->name_);
-	}
+    if (!abstractionTypes_->isEmpty())
+    {
+        foreach (QSharedPointer<PortMap> portMap, *abstractionTypes_->first()->getPortMaps())
+        {
+            list.append(portMap->getPhysicalPort()->name_);
+        }
+    }
+
 	return list;
 }
 

@@ -93,24 +93,6 @@ public:
 	 */
 	virtual QSharedPointer<Document> clone()  const;
 
-	/*! \brief Check the validity of the component.
-	 * 
-	 * This function should be used to check if the component is in valid state
-	 * before writing the xml to the disk.
-	 * 
-	 * \param errorList The error messages of the detected errors are appended to
-	 * this list.
-	 *
-	 * \return bool True if the component was valid.
-	*/
-	//virtual bool isValid(QStringList& errorList) const;
-
-	/*! \brief Check the validity of the component.
-	 *
-	 * \return bool True if the state is valid and writing is possible.
-	*/
-	//virtual bool isValid() const;
-
 	/*!
      *  Is this a bus component.
 	 *

@@ -461,13 +461,13 @@ void DocumentGenerator::writeParameters(QTextStream& stream, int& subHeaderNumbe
 	
 	stream << "\t\t<p>" << endl;
 	stream << "\t\t\t<strong>" << INDENT << "Product hierarchy: </strong>" <<
-        KactusAttribute::valueToString(component_->getHierarchy()) << "<br>" << endl;
+        KactusAttribute::hierarchyToString(component_->getHierarchy()) << "<br>" << endl;
 	
 	stream << "\t\t\t<strong>" << INDENT << "Component implementation: </strong>" <<
-        KactusAttribute::valueToString(component_->getImplementation()) << "<br>" << endl;
+        KactusAttribute::implementationToString(component_->getImplementation()) << "<br>" << endl;
 
 	stream << "\t\t\t<strong>" << INDENT << "Component firmness: </strong>" <<
-        KactusAttribute::valueToString(component_->getFirmness()) << "<br>" << endl;
+        KactusAttribute::firmnessToString(component_->getFirmness()) << "<br>" << endl;
 
 	stream << "\t\t</p>" << endl;
 	++subHeaderNumber;
@@ -757,9 +757,9 @@ void DocumentGenerator::writeInterfaces(QTextStream& stream, int& subHeaderNumbe
 		
 		writeSubHeader(subHeaderNumber, stream, "Bus interfaces", "interfaces");
 
-		const QList<QSharedPointer<BusInterface> > interfaces = *component_->getBusInterfaces().data();
 		int interfaceNumber = 1;
-		foreach (QSharedPointer<BusInterface> interface, interfaces) {
+		foreach (QSharedPointer<BusInterface> interface,  *component_->getBusInterfaces())
+        {
 			stream << "\t\t\t" << "<h3>" << myNumber_ << "." << subHeaderNumber << "." << interfaceNumber++ <<
 				" " << interface->name() << "</h3>" << endl;
 			
@@ -885,21 +885,22 @@ void DocumentGenerator::writeFileSets(QTextStream& stream, int& subHeaderNumber)
 //-----------------------------------------------------------------------------
 void DocumentGenerator::writeViews( QTextStream& stream, int& subHeaderNumber, QStringList& pictureList )
 {
-	if (component_->hasViews()) {
+	if (component_->hasViews())
+    {
 		stream << "\t\t\t<h2><a id=\"" << component_->getVlnv().toString() << ".views\">"
 			<< myNumber_ << "." << subHeaderNumber << " Views</a></h2>" << endl;
 		
-		const QList<QSharedPointer<View> > views = *component_->getViews().data();
 		int viewNumber = 1;
-		foreach (QSharedPointer<View> view, views) {
-			
+		foreach (QSharedPointer<View> view, *component_->getViews())
+        {
 			stream << "\t\t\t<h3>" << myNumber_ << "." << subHeaderNumber <<
 				"." << viewNumber << " View: " << view->name() << "</h3>" << endl;
 
 			stream << "\t\t\t<p>" << endl;
 
 			bool isHierarchicalView = view->isHierarchical();
-			if (isHierarchicalView) {
+			if (isHierarchicalView)
+            {
 				createDesignPicture(pictureList, view->name());
 
 				stream << "\t\t\t<img src=\"" << component_->getVlnv().toString(".")
@@ -909,10 +910,12 @@ void DocumentGenerator::writeViews( QTextStream& stream, int& subHeaderNumber, Q
 
 			stream << "\t\t\t<strong>" << INDENT << "Type: </strong>";
 			
-			if (isHierarchicalView) {
+			if (isHierarchicalView)
+            {
 				stream << "hierarchical" << "<br>" << endl;
 			}
-			else {
+			else 
+            {
 				stream << "non-hierarchical" << "<br>" << endl;
 			}
 
@@ -1220,11 +1223,12 @@ void DocumentGenerator::writePortTable(QTextStream& stream, QString const& title
     QList <QSharedPointer <Port> > ports)
 {
     QStringList portHeaders;
-    portHeaders << "Name" << "Direction" << "Width" << "Left bound" << "Right bound" << "Port type" <<
+    portHeaders << "Name" << "Direction" << "Left bound" << "Right bound" << "Port type" <<
         "Type definition" << "Default value" << "Array left" << "Array right" << "Description";
     writeTableElement(portHeaders, title, stream);
 
-    foreach (QSharedPointer<Port> port, ports) {
+    foreach (QSharedPointer<Port> port, ports)
+    {
         stream << "\t\t\t\t<tr>" << endl;
         stream << "\t\t\t\t\t<td><a id=\"" << 
             component_->getVlnv().toString() << ".port." << port->name() << 
@@ -1235,9 +1239,9 @@ void DocumentGenerator::writePortTable(QTextStream& stream, QString const& title
             port->getLeftBound()) << "</td>" << endl;
         stream << "\t\t\t\t\t<td>" << expressionFormatter_->formatReferringExpression(
             port->getRightBound()) << "</td>" << endl;
-        const QString typeName = port->getTypeName();
-        stream << "\t\t\t\t\t<td>" << typeName << "</td>" << endl;
-        stream << "\t\t\t\t\t<td>" << port->getTypeDefinition(typeName) << "</td>" << endl;
+
+        stream << "\t\t\t\t\t<td>" << port->getTypeName() << "</td>" << endl;
+        stream << "\t\t\t\t\t<td>" << port->getTypeDefinition(port->getTypeName()) << "</td>" << endl;
         stream << "\t\t\t\t\t<td>" << expressionFormatter_->formatReferringExpression(port->getDefaultValue())
             << "</td>" << endl;
         stream << "\t\t\t\t\t<td>" << expressionFormatter_->formatReferringExpression(port->getArrayLeft()) 

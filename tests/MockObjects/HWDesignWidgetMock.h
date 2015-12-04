@@ -12,7 +12,7 @@
 #ifndef HWDESIGNWIDGETMOCK_H
 #define HWDESIGNWIDGETMOCK_H
 
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 #include <designEditors/HWDesign/HWDesignDiagram.h>
 #include <designEditors/common/DesignWidget.h>
@@ -59,14 +59,6 @@ public:
      *  Returns the supported draw modes.
      */
     virtual unsigned int getSupportedDrawModes() const;
-
-    /*! \brief Create a design that represents the current drawn design.
-	 *
-	 * \param vlnv The vlnv to set for the design.
-	 *
-	 * \return QSharedPointer<Design> Pointer to the created design.
-	*/
-	QSharedPointer<Design> createDesign(const VLNV& vlnv);
 
     /*!
      *  Returns the implementation attribute.

@@ -78,6 +78,7 @@ private slots:
     void writeAssertions();
     void writeVendorExtensions();
 
+    void writeKactusAttributes();
     void writeSwViews();
     void writeSwProperties();
     void writeSystemViews();
@@ -914,6 +915,48 @@ void tst_ComponentWriter::writeVendorExtensions()
                 "\t\t<testExtension testExtensionAttribute=\"extension\">testValue</testExtension>\n"
                 "\t\t<kactus2:version>3.0.0</kactus2:version>\n"
             "\t</ipxact:vendorExtensions>\n"
+        "</ipxact:component>\n"
+        );
+
+    ComponentWriter componentWriter;
+    componentWriter.writeComponent(xmlStreamWriter, testComponent_);
+
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentWriter::writeKactusAttributes()
+//-----------------------------------------------------------------------------
+void tst_ComponentWriter::writeKactusAttributes()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    testComponent_->setHierarchy(KactusAttribute::IP);
+    testComponent_->setImplementation(KactusAttribute::SYSTEM);
+    testComponent_->setFirmness(KactusAttribute::FIXED);
+
+    QString expectedOutput(
+        "<?xml version=\"1.0\"?>"
+            "<ipxact:component "
+            "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+            "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+            "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+            "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+            "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
+                "<ipxact:vendor>TUT</ipxact:vendor>"
+                "<ipxact:library>TestLibrary</ipxact:library>"
+                "<ipxact:name>TestComponent</ipxact:name>"
+                "<ipxact:version>0.11</ipxact:version>"
+                "<ipxact:vendorExtensions>"     
+                    "<kactus2:extensions>"
+                        "<kactus2:kts_attributes>"
+                            "<kactus2:kts_productHier>IP</kactus2:kts_productHier>"
+                            "<kactus2:kts_implementation>SYS</kactus2:kts_implementation>"
+                            "<kactus2:kts_firmness>Fixed</kactus2:kts_firmness>"
+                        "</kactus2:kts_attributes>"
+                    "</kactus2:extensions>"
+                "</ipxact:vendorExtensions>"
         "</ipxact:component>\n"
         );
 

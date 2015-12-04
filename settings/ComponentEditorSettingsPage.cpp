@@ -73,7 +73,7 @@ void ComponentEditorSettingsPage::applyHwSettings(int workspaceIndex)
 	for (unsigned int hierarchyIndex = 0; hierarchyIndex < KactusAttribute::KTS_PRODHIER_COUNT; ++hierarchyIndex)
 	{
     	KactusAttribute::ProductHierarchy val = static_cast<KactusAttribute::ProductHierarchy>(hierarchyIndex);
-	    SettingsPage::settings().beginGroup(KactusAttribute::valueToString(val));
+	    SettingsPage::settings().beginGroup(KactusAttribute::hierarchyToString(val));
 
     	QStringList hwCheckboxNames = SettingsPage::settings().childKeys();
 	    for (int checkBoxIndex = 0; checkBoxIndex < 
@@ -288,7 +288,7 @@ QStringList ComponentEditorSettingsPage::getHierarchyNames()
 	for (unsigned int hierarchyIndex = 0; hierarchyIndex < KactusAttribute::KTS_PRODHIER_COUNT; ++hierarchyIndex)
 	{
 		KactusAttribute::ProductHierarchy val = static_cast<KactusAttribute::ProductHierarchy>(hierarchyIndex);
-		hierarchyNames.append(KactusAttribute::valueToString(val));
+		hierarchyNames.append(KactusAttribute::hierarchyToString(val));
 	}
 
 	return hierarchyNames;
@@ -411,7 +411,7 @@ void ComponentEditorSettingsPage::loadSettings()
 			 ++hierarchyIndex)
 		{
 			KactusAttribute::ProductHierarchy val = static_cast<KactusAttribute::ProductHierarchy>(hierarchyIndex);
-			SettingsPage::settings().beginGroup(KactusAttribute::valueToString(val));
+			SettingsPage::settings().beginGroup(KactusAttribute::hierarchyToString(val));
 
 			hardwareCheckBoxes.append(setCheckBoxes());
 

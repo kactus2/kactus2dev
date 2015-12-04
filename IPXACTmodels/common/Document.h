@@ -267,9 +267,6 @@ private:
     //! The description for the document.
     QString description_;
 
-	//! Contains the kactus2 attributes for the document.
-	QMap<QString, QString> kactus2Attributes_;
-
 	//! Contains the comment lines from the beginning of the document.
 	QStringList topComments_;
 

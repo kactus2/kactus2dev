@@ -107,8 +107,8 @@ void ComponentWizardConclusionPage::updateComponentDetails()
 
     if (workingComponent_->getImplementation() == KactusAttribute::HW)
     {
-        hierarchyLabel_->setText(KactusAttribute::valueToString(workingComponent_->getHierarchy()));
-        firmnessLabel_->setText(KactusAttribute::valueToString(workingComponent_->getFirmness()));
+        hierarchyLabel_->setText(KactusAttribute::hierarchyToString(workingComponent_->getHierarchy()));
+        firmnessLabel_->setText(KactusAttribute::firmnessToString(workingComponent_->getFirmness()));
     }
 
     QString xmlPath = handler_->getPath(workingComponent_->getVlnv());

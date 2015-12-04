@@ -96,6 +96,14 @@ protected:
     virtual void parseKactusAndVendorExtensions(QDomNode const& documentNode,
         QSharedPointer<Document> document) const;
 
+    /*!
+     *  Parses Kactus2 attributes for classifying IP from XML.
+     *
+     *      @param [in] attributesNode      The XML description of the attributes.
+     *      @param [in] document            The document in which the parsed attributes are stored.
+     */
+    void parseKactusAttributes(QDomNode const& attributesNode, QSharedPointer<Document> document) const;
+
 private:
 
 	// Disable copying.

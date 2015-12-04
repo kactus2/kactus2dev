@@ -69,6 +69,7 @@ private slots:
     void readAssertions();
     void readVendorExtensions();
 
+    void readKactusAttributes();
     void readSwViews();
     void readSwComProperties();
     void readSystemViews();
@@ -842,6 +843,47 @@ void tst_ComponentReader::readVendorExtensions()
     QCOMPARE(testComponent->getVendorExtensions()->size(), 2);
     QCOMPARE(testComponent->getVendorExtensions()->first()->type(), QString("kactus2:version"));
     QCOMPARE(testComponent->getVendorExtensions()->last()->type(), QString("testExtension"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentReader::readKactusAttributes()
+//-----------------------------------------------------------------------------
+void tst_ComponentReader::readKactusAttributes()
+{
+    QString documentContent(
+        "<?xml version=\"1.0\"?>"
+            "<ipxact:component "
+            "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+            "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+            "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+            "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+            "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
+                "<ipxact:vendor>TUT</ipxact:vendor>"
+                "<ipxact:library>TestLibrary</ipxact:library>"
+                "<ipxact:name>TestComponent</ipxact:name>"
+                "<ipxact:version>0.11</ipxact:version>"
+                "<ipxact:vendorExtensions>"
+                    "<kactus2:extensions>"
+                        "<kactus2:kts_attributes>"
+                            "<kactus2:kts_productHier>IP</kactus2:kts_productHier>"
+                            "<kactus2:kts_implementation>SW</kactus2:kts_implementation>"
+                            "<kactus2:kts_firmness>Fixed</kactus2:kts_firmness>"
+                        "</kactus2:kts_attributes>"
+                    "</kactus2:extensions>"
+                "</ipxact:vendorExtensions>"
+            "</ipxact:component>"
+        );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    ComponentReader componentReader;
+
+    QSharedPointer<Component> testComponent = componentReader.createComponentFrom(document);
+
+    QCOMPARE(testComponent->getHierarchy(), KactusAttribute::IP);
+    QCOMPARE(testComponent->getImplementation(), KactusAttribute::SW);
+    QCOMPARE(testComponent->getFirmness(), KactusAttribute::FIXED);    
 }
 
 //-----------------------------------------------------------------------------

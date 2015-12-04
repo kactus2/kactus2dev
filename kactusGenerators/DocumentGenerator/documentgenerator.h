@@ -190,12 +190,12 @@ public:
 	 */
 	void writeViews(QTextStream& stream, int& subHeaderNumber, QStringList& pictureList);
 
-	/*! \brief Write the documentation for the given view.
+	/*! Write the documentation for the given view.
 	 *
-	 * \param view Pointer to the view the document.
-	 * \param stream Text stream to write into.
-	 * \param subheaderNumber The number of the subheader.
-	 * \param viewNumber The number of the view.
+	 *      @param [in] view                Pointer to the view the document.
+	 *      @param [in] stream              Text stream to write into.
+	 *      @param [in] subheaderNumber     The number of the subheader.
+	 *      @param [in] viewNumber          The number of the view.
 	 *
 	*/
 	void writeView(QSharedPointer<View> view, QTextStream& stream, const int subheaderNumber, const int viewNumber);

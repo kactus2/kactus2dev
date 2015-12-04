@@ -123,5 +123,41 @@ void DocumentReader::parseKactusAndVendorExtensions(QDomNode const& documentNode
         document->setVersion(versionNode.firstChild().nodeValue());
     }
 
+    QDomNode attributesNode = 
+        extensionNodes.firstChildElement("kactus2:extensions").firstChildElement("kactus2:kts_attributes");
+    if (!attributesNode.isNull())
+    {
+        parseKactusAttributes(attributesNode, document);
+    }
+
     parseVendorExtensions(documentNode, document);
+}
+
+//-----------------------------------------------------------------------------
+// Function: DocumentReader::parseKactusAttributes()
+//-----------------------------------------------------------------------------
+void DocumentReader::parseKactusAttributes(QDomNode const& attributesNode, QSharedPointer<Document> document) const
+{
+    QDomNode hierarchyNode = attributesNode.firstChildElement("kactus2:kts_productHier");
+    if (!hierarchyNode.isNull())
+    {
+        KactusAttribute::ProductHierarchy hierarchy = 
+            KactusAttribute::hierarchyFrom(hierarchyNode.firstChild().nodeValue());
+        document->setHierarchy(hierarchy);
+    }
+
+    QDomNode implementationNode = attributesNode.firstChildElement("kactus2:kts_implementation");
+    if (!implementationNode.isNull())
+    {
+        KactusAttribute::Implementation implementation = 
+            KactusAttribute::implementationFrom(implementationNode.firstChild().nodeValue());
+        document->setImplementation(implementation);
+    }
+
+    QDomNode firmnessNode = attributesNode.firstChildElement("kactus2:kts_firmness");
+    if (!firmnessNode.isNull())
+    {
+        KactusAttribute::Firmness firmness = KactusAttribute::firmnessFrom(firmnessNode.firstChild().nodeValue());
+        document->setFirmness(firmness);
+    }
 }

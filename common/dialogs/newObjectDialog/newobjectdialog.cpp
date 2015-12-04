@@ -247,16 +247,16 @@ void NewObjectDialog::onProductHierarchyChanged()
 
     if (vlnv.getLibrary().isEmpty())
     {
-        vlnv.setLibrary(KactusAttribute::valueToString(attributeEditor_->getProductHierarchy()).toLower());
+        vlnv.setLibrary(KactusAttribute::hierarchyToString(attributeEditor_->getProductHierarchy()).toLower());
     }
     else
     {
         for (unsigned int i = 0; i < KactusAttribute::KTS_PRODHIER_COUNT; ++i)
         {
             if (vlnv.getLibrary().toLower() ==
-                KactusAttribute::valueToString(static_cast<KactusAttribute::ProductHierarchy>(i)).toLower())
+                KactusAttribute::hierarchyToString(static_cast<KactusAttribute::ProductHierarchy>(i)).toLower())
             {
-                vlnv.setLibrary(KactusAttribute::valueToString(attributeEditor_->getProductHierarchy()).toLower());
+                vlnv.setLibrary(KactusAttribute::hierarchyToString(attributeEditor_->getProductHierarchy()).toLower());
                 break;
             }
         }

@@ -344,7 +344,7 @@ void MainWindow::copyComponentEditorSettings(QString workspaceName)
 	for (unsigned int i = 0; i < KactusAttribute::KTS_PRODHIER_COUNT; ++i)
 	{
 		KactusAttribute::ProductHierarchy val = static_cast<KactusAttribute::ProductHierarchy>(i);
-		QString hwHierarchyName(KactusAttribute::valueToString(val));
+		QString hwHierarchyName(KactusAttribute::hierarchyToString(val));
 
 		hwHierarchyName = "HW/" + hwHierarchyName;
 
@@ -428,7 +428,7 @@ void MainWindow::createNewWorkspace(QString workspaceName)
 	for (unsigned int i = 0; i < KactusAttribute::KTS_PRODHIER_COUNT; ++i)
 	{
 		KactusAttribute::ProductHierarchy val = static_cast<KactusAttribute::ProductHierarchy>(i);
-		QString hwHierarchyName(KactusAttribute::valueToString(val));
+		QString hwHierarchyName(KactusAttribute::hierarchyToString(val));
 		settings.beginGroup(hwHierarchyName);
 
 		foreach (QString itemName, ComponentEditor::getHwItemNames())
