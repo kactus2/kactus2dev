@@ -18,7 +18,8 @@
 
 class Component;
 class Choice;
-
+class ExpressionParser;
+class ParameterValidator2014;
 //-----------------------------------------------------------------------------
 //! The parameters-item in the component editor navigation tree.
 //-----------------------------------------------------------------------------
@@ -31,13 +32,13 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] model                   Pointer to the model that owns the items.
-	 *      @param [in] libHandler              Pointer to the instance that manages the library.
-	 *      @param [in] component               Pointer to the component being edited.
-	 *      @param [in] refCounter              Pointer to the reference counter.
-	 *      @param [in] parameterFinder         Pointer to the parameter finder.
-	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
-	 *      @param [in] parent                  Pointer to the parent item.
+	 *      @param [in] model                   The model that owns the items.
+	 *      @param [in] libHandler              The instance that manages the library.
+	 *      @param [in] component               The component being edited.
+	 *      @param [in] refCounter              The reference counter.
+	 *      @param [in] parameterFinder         The parameter finder.
+	 *      @param [in] expressionFormatter     The expression formatter.
+	 *      @param [in] parent                  The parent item.
 	 */
 	ComponentEditorParametersItem(ComponentEditorTreeModel* model,
         LibraryInterface* libHandler,
@@ -79,9 +80,9 @@ public:
 	virtual bool isValid() const;
 
 	/*!
-     *  Get pointer to the editor of this item.
+     *  Get The editor of this item.
 	 *
-	 *      @return Pointer to the editor to use for this item.
+	 *      @return The editor to use for this item.
 	 */
 	virtual ItemEditor* editor();
 
@@ -91,8 +92,12 @@ private:
 	ComponentEditorParametersItem(const ComponentEditorParametersItem& other);
 	ComponentEditorParametersItem& operator=(const ComponentEditorParametersItem& other);
 
-	//! The list containing the parameters to edit.
-	QSharedPointer<QList<QSharedPointer<Parameter> > > parameters_;
+    //! Expression parser for parameter values.
+    QSharedPointer<ExpressionParser> expressionParser_;
+
+    //! Validator for parameters.
+    QSharedPointer<ParameterValidator2014> validator_;
+
 };
 
 #endif // COMPONENTEDITORPARAMETERITEM_H

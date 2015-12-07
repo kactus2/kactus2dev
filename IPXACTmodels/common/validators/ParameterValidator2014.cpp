@@ -46,7 +46,7 @@ ParameterValidator2014::~ParameterValidator2014()
 //-----------------------------------------------------------------------------
 // Function: ParameterValidator2014::validate()
 //-----------------------------------------------------------------------------
-bool ParameterValidator2014::validate(Parameter const* parameter) const
+bool ParameterValidator2014::validate(QSharedPointer<const Parameter> parameter) const
 {
     return hasValidName(parameter) &&
         hasValidValue(parameter) &&
@@ -61,7 +61,7 @@ bool ParameterValidator2014::validate(Parameter const* parameter) const
 //-----------------------------------------------------------------------------
 // Function: ParameterValidator2014::hasValidName()
 //-----------------------------------------------------------------------------
-bool ParameterValidator2014::hasValidName(Parameter const* parameter) const
+bool ParameterValidator2014::hasValidName(QSharedPointer<const Parameter> parameter) const
 {
     QRegularExpression whiteSpaceExpression;
     whiteSpaceExpression.setPattern("^\\s*$");
@@ -78,7 +78,7 @@ bool ParameterValidator2014::hasValidName(Parameter const* parameter) const
 //-----------------------------------------------------------------------------
 // Function: ParameterValidator2014::hasValidValue()
 //-----------------------------------------------------------------------------
-bool ParameterValidator2014::hasValidValue(Parameter const* parameter) const
+bool ParameterValidator2014::hasValidValue(QSharedPointer<const Parameter> parameter) const
 {
     return !parameter->getValue().isEmpty() &&
         hasValidValueForType(parameter) &&
@@ -90,7 +90,7 @@ bool ParameterValidator2014::hasValidValue(Parameter const* parameter) const
 //-----------------------------------------------------------------------------
 // Function: ParameterValidator2014::hasValidType()
 //-----------------------------------------------------------------------------
-bool ParameterValidator2014::hasValidType(Parameter const* parameter) const
+bool ParameterValidator2014::hasValidType(QSharedPointer<const Parameter> parameter) const
 {
     QString type = parameter->getType();
 
@@ -203,7 +203,7 @@ bool ParameterValidator2014::isArrayValidForType(QString const& arrayExpression,
 //-----------------------------------------------------------------------------
 // Function: ParameterValidator2014::hasValidVector()
 //-----------------------------------------------------------------------------
-bool ParameterValidator2014::hasValidVector(Parameter const* parameter) const
+bool ParameterValidator2014::hasValidVector(QSharedPointer<const Parameter> parameter) const
 {
     if (!parameter->getVectors()->isEmpty() && parameter->getType() != QLatin1String("bit"))
     {
@@ -216,7 +216,7 @@ bool ParameterValidator2014::hasValidVector(Parameter const* parameter) const
 //-----------------------------------------------------------------------------
 // Function: ParameterValidator2014::hasValidValueForFormat()
 //-----------------------------------------------------------------------------
-bool ParameterValidator2014::hasValidValueForType(Parameter const* parameter) const
+bool ParameterValidator2014::hasValidValueForType(QSharedPointer<const Parameter> parameter) const
 {
     return hasValidValueForType(parameter->getValue(), parameter->getType());
 }
@@ -224,7 +224,7 @@ bool ParameterValidator2014::hasValidValueForType(Parameter const* parameter) co
 //-----------------------------------------------------------------------------
 // Function: ParameterValidator2014::hasValidMinimumValue()
 //-----------------------------------------------------------------------------
-bool ParameterValidator2014::hasValidMinimumValue(Parameter const* parameter) const
+bool ParameterValidator2014::hasValidMinimumValue(QSharedPointer<const Parameter> parameter) const
 {
     QString minimumValue = parameter->getMinimumValue();
 
@@ -239,7 +239,7 @@ bool ParameterValidator2014::hasValidMinimumValue(Parameter const* parameter) co
 //-----------------------------------------------------------------------------
 // Function: ParameterValidator2014::hasValidMaximumValue()
 //-----------------------------------------------------------------------------
-bool ParameterValidator2014::hasValidMaximumValue(Parameter const* parameter) const
+bool ParameterValidator2014::hasValidMaximumValue(QSharedPointer<const Parameter> parameter) const
 {
     QString maximumValue = parameter->getMaximumValue();
 
@@ -254,7 +254,7 @@ bool ParameterValidator2014::hasValidMaximumValue(Parameter const* parameter) co
 //-----------------------------------------------------------------------------
 // Function: ParameterValidator2014::hasValidChoice()
 //-----------------------------------------------------------------------------
-bool ParameterValidator2014::hasValidChoice(Parameter const* parameter) const
+bool ParameterValidator2014::hasValidChoice(QSharedPointer<const Parameter> parameter) const
 {
     return parameter->getChoiceRef().isEmpty() || findChoiceByName(parameter->getChoiceRef());
 }
@@ -262,7 +262,7 @@ bool ParameterValidator2014::hasValidChoice(Parameter const* parameter) const
 //-----------------------------------------------------------------------------
 // Function: ParameterValidator2014::hasValidValueForChoice()
 //-----------------------------------------------------------------------------
-bool ParameterValidator2014::hasValidValueForChoice(Parameter const* parameter) const
+bool ParameterValidator2014::hasValidValueForChoice(QSharedPointer<const Parameter> parameter) const
 {
     if (parameter->getChoiceRef().isEmpty())
     {
@@ -296,7 +296,7 @@ bool ParameterValidator2014::hasValidValueForChoice(Parameter const* parameter) 
 //-----------------------------------------------------------------------------
 // Function: ParameterValidator2014::hasValidResolve()
 //-----------------------------------------------------------------------------
-bool ParameterValidator2014::hasValidResolve(Parameter const* parameter) const
+bool ParameterValidator2014::hasValidResolve(QSharedPointer<const Parameter> parameter) const
 {
     QString resolve = parameter->getValueResolve();
 
@@ -306,7 +306,7 @@ bool ParameterValidator2014::hasValidResolve(Parameter const* parameter) const
 //-----------------------------------------------------------------------------
 // Function: ParameterValidator2014::hasValidValueId()
 //-----------------------------------------------------------------------------
-bool ParameterValidator2014::hasValidValueId(Parameter const* parameter) const
+bool ParameterValidator2014::hasValidValueId(QSharedPointer<const Parameter> parameter) const
 {
     QString resolve = parameter->getValueResolve();
 
@@ -322,7 +322,7 @@ bool ParameterValidator2014::hasValidValueId(Parameter const* parameter) const
 //-----------------------------------------------------------------------------
 // Function: ParameterValidator2014::valueIsLessThanMinimum()
 //-----------------------------------------------------------------------------
-bool ParameterValidator2014::valueIsLessThanMinimum(Parameter const* parameter) const
+bool ParameterValidator2014::valueIsLessThanMinimum(QSharedPointer<const Parameter> parameter) const
 {
     QString minimum = parameter->getMinimumValue();
     QString type = parameter->getType();
@@ -349,7 +349,7 @@ bool ParameterValidator2014::valueIsLessThanMinimum(Parameter const* parameter) 
 //-----------------------------------------------------------------------------
 // Function: ParameterValidator2014::valueIsGreaterThanMaximum()
 //-----------------------------------------------------------------------------
-bool ParameterValidator2014::valueIsGreaterThanMaximum(Parameter const* parameter) const
+bool ParameterValidator2014::valueIsGreaterThanMaximum(QSharedPointer<const Parameter> parameter) const
 {
     QString maximum = parameter->getMaximumValue();
     QString type = parameter->getType();
@@ -419,7 +419,7 @@ qreal ParameterValidator2014::valueOf(QString const& value, QString const& type)
 void ParameterValidator2014::findErrorsInName(QVector<QString>& errors, QSharedPointer<Parameter> parameter,
     QString const& context) const
 {
-    if (!hasValidName(parameter.data()))
+    if (!hasValidName(parameter))
     {
         errors.append(QObject::tr("No valid name specified for %1 %2 within %3").arg(parameter->elementName(),
             parameter->name(), context));
@@ -432,7 +432,7 @@ void ParameterValidator2014::findErrorsInName(QVector<QString>& errors, QSharedP
 void ParameterValidator2014::findErrorsInType(QVector<QString>& errors, QSharedPointer<Parameter> parameter,
     QString const& context) const
 {
-    if (!hasValidType(parameter.data()))
+    if (!hasValidType(parameter))
     {
         errors.append(QObject::tr("Invalid type %1 specified for %2 %3 within %4").arg(
             parameter->getType(), parameter->elementName(), parameter->name(), context));
@@ -452,28 +452,28 @@ void ParameterValidator2014::findErrorsInValue(QVector<QString>& errors, QShared
     }
     else
     {
-        if (!hasValidValueForType(parameter.data()))
+        if (!hasValidValueForType(parameter))
         {
             errors.append(QObject::tr("Value %1 is not valid for type %2 in %3 %4 within %5").arg(
                 parameter->getValue(), parameter->getType(), parameter->elementName(), 
                 parameter->name(), context));
         }
 
-        if (valueIsLessThanMinimum(parameter.data()))
+        if (valueIsLessThanMinimum(parameter))
         {
             errors.append(QObject::tr("Value %1 violates minimum value %2 in %3 %4 within %5"
                 ).arg(parameter->getValue(), parameter->getMinimumValue(), 
                 parameter->elementName(), parameter->name(), context));
         }
 
-        if (valueIsGreaterThanMaximum(parameter.data()))
+        if (valueIsGreaterThanMaximum(parameter))
         {
             errors.append(QObject::tr("Value %1 violates maximum value %2 in %3 %4 within %5"
                 ).arg(parameter->getValue(), parameter->getMaximumValue(), 
                 parameter->elementName(), parameter->name(), context));
         }
 
-        if (!hasValidValueForChoice(parameter.data()))
+        if (!hasValidValueForChoice(parameter))
         {           
             errors.append(QObject::tr("Value %1 references unknown enumeration for choice "
                 "%2 in %3 %4 within %5").arg(parameter->getValue(), parameter->getChoiceRef(), 
@@ -526,7 +526,7 @@ bool ParameterValidator2014::hasValidValueForFormat(QString const& value) const
 void ParameterValidator2014::findErrorsInChoice(QVector<QString>& errors, QSharedPointer<Parameter> parameter,
     QString const& context) const
 {
-    if (!hasValidChoice(parameter.data()))
+    if (!hasValidChoice(parameter))
     { 
         errors.append(QObject::tr("Choice %1 referenced in %2 %3 is not specified within %4").arg(
             parameter->getChoiceRef(), parameter->elementName(), parameter->name(), context));
@@ -539,7 +539,7 @@ void ParameterValidator2014::findErrorsInChoice(QVector<QString>& errors, QShare
 void ParameterValidator2014::findErrorsInResolve(QVector<QString>& errors, QSharedPointer<Parameter> parameter,
     QString const& context) const
 {
-    if (!hasValidResolve(parameter.data()))
+    if (!hasValidResolve(parameter))
     { 
         errors.append(QObject::tr("Invalid resolve %1 specified for %2 %3 within %4").arg(
             parameter->getValueResolve(), parameter->elementName(), parameter->name(), context));
@@ -552,7 +552,7 @@ void ParameterValidator2014::findErrorsInResolve(QVector<QString>& errors, QShar
 void ParameterValidator2014::findErrorsInVector(QVector<QString> errors, QSharedPointer<Parameter> parameter,
     QString const& context) const
 {
-    if (!hasValidVector(parameter.data()))
+    if (!hasValidVector(parameter))
     {
         errors.append(QObject::tr("Invalid vector specified for %1 %2 within %3").arg(parameter->elementName(),
             parameter->name(), context));

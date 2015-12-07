@@ -13,17 +13,22 @@
 
 #include <editors/ComponentEditor/parameters/parameterseditor.h>
 
+#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+
+#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
+
 #include <IPXACTmodels/Component/Component.h>
 
 //-----------------------------------------------------------------------------
-// Function: componenteditorparametersitem::ComponentEditorParametersItem()
+// Function: ComponentEditorParametersItem::ComponentEditorParametersItem()
 //-----------------------------------------------------------------------------
 ComponentEditorParametersItem::ComponentEditorParametersItem(ComponentEditorTreeModel* model,
     LibraryInterface* libHandler, QSharedPointer<Component> component, QSharedPointer<ReferenceCounter> refCounter,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
-    ComponentEditorItem* parent ):
+    ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-parameters_(component->getParameters())
+    expressionParser_(new IPXactSystemVerilogParser(parameterFinder)),
+    validator_(new ParameterValidator2014(expressionParser_, component->getChoices()))
 {
     setReferenceCounter(refCounter);
     setParameterFinder(parameterFinder);
@@ -31,7 +36,7 @@ parameters_(component->getParameters())
 }
 
 //-----------------------------------------------------------------------------
-// Function: componenteditorparametersitem::~ComponentEditorParametersItem()
+// Function: ComponentEditorParametersItem::~ComponentEditorParametersItem()
 //-----------------------------------------------------------------------------
 ComponentEditorParametersItem::~ComponentEditorParametersItem() 
 {
@@ -39,17 +44,17 @@ ComponentEditorParametersItem::~ComponentEditorParametersItem()
 }
 
 //-----------------------------------------------------------------------------
-// Function: componenteditorparametersitem::getFont()
+// Function: ComponentEditorParametersItem::getFont()
 //-----------------------------------------------------------------------------
 QFont ComponentEditorParametersItem::getFont() const
 {
     QFont font(ComponentEditorItem::getFont());    
-    font.setBold(!parameters_->isEmpty());    
+    font.setBold(component_->hasParameters());    
     return font;
 }
 
 //-----------------------------------------------------------------------------
-// Function: componenteditorparametersitem::text()
+// Function: ComponentEditorParametersItem::text()
 //-----------------------------------------------------------------------------
 QString ComponentEditorParametersItem::text() const
 {
@@ -57,7 +62,7 @@ QString ComponentEditorParametersItem::text() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: componenteditorparametersitem::isValid()
+// Function: ComponentEditorParametersItem::isValid()
 //-----------------------------------------------------------------------------
 bool ComponentEditorParametersItem::isValid() const
 {
@@ -68,18 +73,29 @@ bool ComponentEditorParametersItem::isValid() const
         {
             return false;
         }
+        else
+        {
+            parameterNames.append(parameter->name());
+        }
+
+        if (!validator_->validate(parameter))
+        {
+            return false;
+        }
     }
+
     return true;
 }
 
 //-----------------------------------------------------------------------------
-// Function: componenteditorparametersitem::editor()
+// Function: ComponentEditorParametersItem::editor()
 //-----------------------------------------------------------------------------
 ItemEditor* ComponentEditorParametersItem::editor()
 {
 	if (!editor_)
     {
-		editor_ = new ParametersEditor(component_, libHandler_, parameterFinder_, expressionFormatter_);
+		editor_ = new ParametersEditor(component_, libHandler_, validator_, expressionParser_, 
+            parameterFinder_, expressionFormatter_);
 		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
@@ -87,11 +103,12 @@ ItemEditor* ComponentEditorParametersItem::editor()
         connectItemEditorToReferenceCounter();
         connectReferenceTree();
 	}
+
 	return editor_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: componenteditorparametersitem::getTooltip()
+// Function: ComponentEditorParametersItem::getTooltip()
 //-----------------------------------------------------------------------------
 QString ComponentEditorParametersItem::getTooltip() const
 {

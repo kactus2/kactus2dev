@@ -40,12 +40,14 @@ public:
 	 *  The constructor.
 	 *
 	 *      @param [in] choices                 The choices available for the parameter values.
+	 *      @param [in] validator               The validator to use for checking parameter validity.
 	 *      @param [in] expressionParser        Expression parser for configurable elements.
 	 *      @param [in] parameterFinder         Pointer to the instance for finding parameters.
 	 *      @param [in] expressionFormatter     The expression formatter.
 	 *      @param [in] parent                  The parent object.
 	 */
 	AbstractParameterModel(QSharedPointer<QList<QSharedPointer<Choice> > > choices,
+        QSharedPointer<ParameterValidator2014> validator,
 	    QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
@@ -376,7 +378,7 @@ private:
     QSharedPointer<QList<QSharedPointer<Choice> > > choices_;
 
     //! Validator for parameters.
-    ParameterValidator2014* validator_;
+    QSharedPointer<ParameterValidator2014> validator_;
 
     //! Formatter for parameter expressions.
     QSharedPointer<ExpressionFormatter> expressionFormatter_;

@@ -38,14 +38,14 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in]  parameters              The list containing the parameters.
-	 *      @param [in]  component               The containing component whose parameters are being edited.
-	 *      @param [in]  parameterFinder         The parameter finder used to search the components parameters.
-	 *      @param [in]  expressionFormatter     The expression formatter.
-	 *      @param [in]  parent                  Pointer to the owner of this editor.
+	 *      @param [in]  parameters             The list containing the parameters.
+	 *      @param [in]  choices                The available choices for the parameters.
+	 *      @param [in]  parameterFinder        The parameter finder used to search the components parameters.
+	 *      @param [in]  expressionFormatter    The expression formatter.
+	 *      @param [in]  parent                 The owner of this editor.
 	 */
 	ParameterGroupBox(QSharedPointer<QList<QSharedPointer<Parameter> > > parameters, 
-        QSharedPointer<Component> component,
+        QSharedPointer<QList<QSharedPointer<Choice> > > choices,
         QSharedPointer<ParameterFinder> parameterFinder, 
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QWidget *parent);

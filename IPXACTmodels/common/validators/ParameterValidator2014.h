@@ -47,14 +47,14 @@ public:
      *
      *      @return True, if the parameter is valid IP-XACT, otherwise false.
      */
-    virtual bool validate(Parameter const* parameter) const;
+    virtual bool validate(QSharedPointer<const Parameter> parameter) const;
 
     /*!
      *  Check if the parameter has a valid name.
      *
      *      @param [in] parameter   The parameter being checked.
      */
-    bool hasValidName(Parameter const* parameter) const;
+    bool hasValidName(QSharedPointer<const Parameter> parameter) const;
 
     /*!
      *  Validates the value of the given parameter.
@@ -63,7 +63,7 @@ public:
      *
      *      @return True, if the parameter value is valid, otherwise false.
      */
-     virtual bool hasValidValue(Parameter const* parameter) const;
+     virtual bool hasValidValue(QSharedPointer<const Parameter> parameter) const;
          
     /*!
      *  Validates the value type of the given parameter.
@@ -72,7 +72,7 @@ public:
      *
      *      @return True, if the parameter type is valid, otherwise false.
      */
-    virtual bool hasValidType(Parameter const* parameter) const;
+    virtual bool hasValidType(QSharedPointer<const Parameter> parameter) const;
 
     /*!
      *   Checks if the given value is valid for the given type.
@@ -91,7 +91,7 @@ public:
      *
      *      @return True, if the value is valid for the given type, otherwise false.
      */
-    virtual bool hasValidValueForType(Parameter const* parameter) const;
+    virtual bool hasValidValueForType(QSharedPointer<const Parameter> parameter) const;
 
     /*!
      *  Validates the minimum value of the given parameter.
@@ -100,7 +100,7 @@ public:
      *
      *      @return True, if the minimum value is valid, otherwise false.
      */
-    virtual bool hasValidMinimumValue(Parameter const* parameter) const;
+    virtual bool hasValidMinimumValue(QSharedPointer<const Parameter> parameter) const;
             
     /*!
      *  Validates the maximum value of the given parameter.
@@ -109,7 +109,7 @@ public:
      *
      *      @return True, if the maximum value is valid, otherwise false.
      */
-    virtual bool hasValidMaximumValue(Parameter const* parameter) const;
+    virtual bool hasValidMaximumValue(QSharedPointer<const Parameter> parameter) const;
          
     /*!
      *  Check if the parameter has a valid choice.
@@ -118,7 +118,7 @@ public:
      *
      *      @return True, if the choice is valid, otherwise false.
      */
-    bool hasValidChoice(Parameter const* parameter) const;
+    bool hasValidChoice(QSharedPointer<const Parameter> parameter) const;
 
     /*!
      *  Check if the parameter has a valid value for a choice.
@@ -127,7 +127,7 @@ public:
      *
      *      @return True if the value is valid for a choice, otherwise false.
      */
-    bool hasValidValueForChoice(Parameter const* parameter) const;
+    bool hasValidValueForChoice(QSharedPointer<const Parameter> parameter) const;
 
     /*!
      *  Check if the parameter has a valid resolve value.
@@ -136,7 +136,7 @@ public:
      *
      *      @return True, if the parameter has a valid resolve, otherwise false.
      */
-    bool hasValidResolve(Parameter const* parameter) const;
+    bool hasValidResolve(QSharedPointer<const Parameter> parameter) const;
 
     /*!
      *  Check if the parameter has a valid ID.
@@ -145,7 +145,7 @@ public:
      *
      *      @return True, if the ID is valid, otherwise false.
      */
-    bool hasValidValueId(Parameter const* parameter) const;
+    bool hasValidValueId(QSharedPointer<const Parameter> parameter) const;
     /*!
      *  Checks if the value of the given parameter is less than the specified minimum value.
      *
@@ -153,7 +153,7 @@ public:
      *
      *      @return True, if the value is less than minimum, otherwise false.
      */
-    virtual bool valueIsLessThanMinimum(Parameter const* parameter) const;
+    virtual bool valueIsLessThanMinimum(QSharedPointer<const Parameter> parameter) const;
 
     /*!
      *  Checks if the value of the given parameter is greater than the specified maximum value.
@@ -162,7 +162,7 @@ public:
      *
      *      @return True, if the value is greater than maximum, otherwise false.
      */   
-    virtual bool valueIsGreaterThanMaximum(Parameter const* parameter) const;
+    virtual bool valueIsGreaterThanMaximum(QSharedPointer<const Parameter> parameter) const;
 
     /*!
      *  Finds possible errors in a parameter and creates a list of them.
@@ -191,7 +191,7 @@ public:
      *
      *      @return True, if the vector is valid, false otherwise.
      */
-    virtual bool hasValidVector(Parameter const* parameter) const;
+    virtual bool hasValidVector(QSharedPointer<const Parameter> parameter) const;
 
 protected:
              

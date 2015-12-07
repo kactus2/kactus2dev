@@ -664,11 +664,11 @@ bool ConfigurableElementsModel::validateIndex(QModelIndex const& index) const
 
         if (index.column() == ConfigurableElementsColumns::NAME)
         {
-            return validator_->hasValidName(element.data());
+            return validator_->hasValidName(element);
         }
         else if (index.column() == ConfigurableElementsColumns::VALUE)
         {
-            return validator_->hasValidValue(element.data());
+            return validator_->hasValidValue(element);
         }
     }
 

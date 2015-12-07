@@ -32,6 +32,8 @@
 // Function: ParametersEditor::ParametersEditor()
 //-----------------------------------------------------------------------------
 ParametersEditor::ParametersEditor(QSharedPointer<Component> component, LibraryInterface* handler,
+    QSharedPointer<ParameterValidator2014> validator,
+    QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
     QWidget* parent): 
 ItemEditor(component, handler, parent),
@@ -44,9 +46,7 @@ model_(0)
 
     view_ = new ColumnFreezableTable(1, parametersView, this);
 
-    QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
-
-    model_ = new ParametersModel(component->getParameters(), component->getChoices(), expressionParser,
+    model_ = new ParametersModel(component->getParameters(), component->getChoices(), validator, expressionParser,
         parameterFinder, expressionFormatter, this);
 
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
@@ -144,14 +144,6 @@ bool ParametersEditor::isValid() const
 void ParametersEditor::refresh()
 {
     view_->update();
-}
-
-//-----------------------------------------------------------------------------
-// Function: ParametersEditor::setComponent()
-//-----------------------------------------------------------------------------
-void ParametersEditor::setComponent(QSharedPointer<Component> component)
-{
-    model_->setParameters(component->getParameters());
 }
 
 //-----------------------------------------------------------------------------

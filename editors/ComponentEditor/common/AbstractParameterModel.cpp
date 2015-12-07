@@ -28,12 +28,13 @@
 // Function: AbstractParameterModel::AbstractParameterModel()
 //-----------------------------------------------------------------------------
 AbstractParameterModel::AbstractParameterModel(QSharedPointer<QList<QSharedPointer<Choice> > > choices,
+    QSharedPointer<ParameterValidator2014> validator,
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<ExpressionFormatter> expressionFormatter, QObject *parent): 
 ReferencingTableModel(parameterFinder, parent),
 ParameterizableTable(parameterFinder),
 choices_(choices), 
-validator_(new ParameterValidator2014(expressionParser, choices)),
+validator_(validator),
 expressionFormatter_(expressionFormatter)
 {
     setExpressionParser(expressionParser);
@@ -44,7 +45,7 @@ expressionFormatter_(expressionFormatter)
 //-----------------------------------------------------------------------------
 AbstractParameterModel::~AbstractParameterModel()
 {
-    delete validator_;
+
 }
 
 //-----------------------------------------------------------------------------
@@ -374,7 +375,7 @@ bool AbstractParameterModel::isValid() const
 	{
         QSharedPointer<Parameter> parameter = getParameterOnRow(i);
 
-        if (!validator_->validate(parameter.data())) 
+        if (!validator_->validate(parameter)) 
         {
             return false;
         }
@@ -397,7 +398,7 @@ bool AbstractParameterModel::isValid(QVector<QString>& errorList, QString const&
         validator_->findErrorsIn(errorList, parameter, parentIdentifier);
 
         // if one parameter is invalid, model is invalid.
-        if (!validator_->validate(parameter.data()))
+        if (!validator_->validate(parameter))
         {
             valid = false;
         }
@@ -504,7 +505,7 @@ bool AbstractParameterModel::validateIndex(QModelIndex const& index) const
 
     if (index.column() == nameColumn())
     {
-        return validator_->hasValidName(parameter.data());
+        return validator_->hasValidName(parameter);
     }
     else if (index.column() == typeColumn())
     {
@@ -520,26 +521,26 @@ bool AbstractParameterModel::validateIndex(QModelIndex const& index) const
     }
     else if (index.column() == minimumColumn())
     {
-        return validator_->hasValidMinimumValue(parameter.data()) && 
-            !validator_->valueIsLessThanMinimum(parameter.data());
+        return validator_->hasValidMinimumValue(parameter) && 
+            !validator_->valueIsLessThanMinimum(parameter);
     }
     else if (index.column() == maximumColumn())
     {
-        return validator_->hasValidMaximumValue(parameter.data()) && 
-            !validator_->valueIsGreaterThanMaximum(parameter.data());
+        return validator_->hasValidMaximumValue(parameter) && 
+            !validator_->valueIsGreaterThanMaximum(parameter);
     }
     else if (index.column() == choiceColumn())
     {
-        return validator_->hasValidChoice(parameter.data()) &&
-            validator_->hasValidValueForChoice(parameter.data());
+        return validator_->hasValidChoice(parameter) &&
+            validator_->hasValidValueForChoice(parameter);
     }
     else if (index.column() == valueColumn())
     {
-        return validator_->hasValidValue(parameter.data());
+        return validator_->hasValidValue(parameter);
     }
     else if (index.column() == resolveColumn())
     {
-        return validator_->hasValidResolve(parameter.data());
+        return validator_->hasValidResolve(parameter);
     }
     else if (index.column() == arrayLeftColumn())
     {

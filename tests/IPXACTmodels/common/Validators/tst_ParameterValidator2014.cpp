@@ -260,7 +260,7 @@ void tst_ParameterValidator2014::testValidityWithMaximumValueAndType()
     QFETCH(QString, maximum);
     QFETCH(bool, isValid);
 
-    Parameter* parameter = new Parameter();
+    QSharedPointer<Parameter> parameter(new Parameter());
     parameter->setName("param");
     parameter->setType(type);
     parameter->setValue(value);
@@ -270,7 +270,6 @@ void tst_ParameterValidator2014::testValidityWithMaximumValueAndType()
     ParameterValidator2014 validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
     QCOMPARE(validator.hasValidValue(parameter), isValid);
 
-    delete parameter;
 }
 
 //-----------------------------------------------------------------------------
@@ -314,7 +313,7 @@ void tst_ParameterValidator2014::testValidityWithMinimumValueAndType()
     QFETCH(QString, minimum);
     QFETCH(bool, isValid);
 
-    Parameter* parameter = new Parameter();
+    QSharedPointer<Parameter> parameter(new Parameter());
     parameter->setName("param");
     parameter->setType(type);
     parameter->setValue(value);
@@ -323,8 +322,6 @@ void tst_ParameterValidator2014::testValidityWithMinimumValueAndType()
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     ParameterValidator2014 validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
     QCOMPARE(validator.hasValidValue(parameter), isValid);
-
-    delete parameter;
 }
 
 //-----------------------------------------------------------------------------
@@ -367,7 +364,7 @@ void tst_ParameterValidator2014::testValidityWithVectorAndType()
     QFETCH(QString, type);
     QFETCH(bool, isValid);
 
-    Parameter* parameter = new Parameter();
+    QSharedPointer<Parameter> parameter(new Parameter());
     parameter->setName("param");
     parameter->setType(type);
     parameter->setVectorLeft(vectorLeft);
@@ -377,7 +374,6 @@ void tst_ParameterValidator2014::testValidityWithVectorAndType()
     ParameterValidator2014 validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
     QCOMPARE(validator.hasValidVector(parameter), isValid);
 
-    delete parameter;
 }
 
 //-----------------------------------------------------------------------------
@@ -417,7 +413,7 @@ void tst_ParameterValidator2014::testValidityWithChoice()
     testChoice->enumerations()->append(enumeration1);
     testChoice->enumerations()->append(enumeration2);
 
-    Parameter* parameter = new Parameter();
+    QSharedPointer<Parameter> parameter(new Parameter());
     parameter->setName("param");
     parameter->setType(type);
     parameter->setValue(value);
@@ -431,7 +427,6 @@ void tst_ParameterValidator2014::testValidityWithChoice()
     ParameterValidator2014 validator(parser, choiceList);
     QCOMPARE(validator.validate(parameter), isValid);
 
-    delete parameter;
 }
 
 //-----------------------------------------------------------------------------

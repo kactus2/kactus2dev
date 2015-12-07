@@ -14,6 +14,7 @@
 #include <editors/ComponentEditor/modelParameters/ModelParameterColumns.h>
 
 #include <IPXACTmodels/common/ModuleParameter.h>
+#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
 
 #include <QColor>
 #include <QPersistentModelIndex>
@@ -27,7 +28,9 @@ ModuleParameterModel::ModuleParameterModel(QSharedPointer<QList<QSharedPointer<M
     QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<ExpressionFormatter> expressionFormatter,
     QObject *parent):
-AbstractParameterModel(choices, expressionParser, parameterFinder, expressionFormatter, parent),
+AbstractParameterModel(choices, 
+    QSharedPointer<ParameterValidator2014>(new ParameterValidator2014(expressionParser, choices)),
+    expressionParser, parameterFinder, expressionFormatter, parent),
 moduleParameters_(moduleParameters), 
 lockedIndexes_()
 {
@@ -92,15 +95,8 @@ QVariant ModuleParameterModel::data(QModelIndex const& index, int role) const
         {
             return moduleParameter->getUsageType();
         }
-        else
-        {
-            return AbstractParameterModel::data(index, role);
-        }
     }
-    else if (Qt::BackgroundRole == role)
-    {
-        return AbstractParameterModel::data(index, role);     
-    }
+
     else if (Qt::ForegroundRole == role)
     {
         if (!validateIndex(index))
@@ -111,10 +107,6 @@ QVariant ModuleParameterModel::data(QModelIndex const& index, int role) const
         {
             return QColor("gray");
         }
-        else
-        {
-            return AbstractParameterModel::data(index, role);
-        } 
     }
 
     return AbstractParameterModel::data(index, role);
@@ -135,15 +127,9 @@ QVariant ModuleParameterModel::headerData(int section, Qt::Orientation orientati
         {
             return tr("OO usage");
         }
-        else
-        {
-            return AbstractParameterModel::headerData(section, orientation, role);
-        }
 	}
-	else 
-    {
-        return AbstractParameterModel::headerData(section, orientation, role);
-	}
+	
+    return AbstractParameterModel::headerData(section, orientation, role);
 }
 
 //-----------------------------------------------------------------------------

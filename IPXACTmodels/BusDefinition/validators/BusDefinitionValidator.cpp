@@ -61,7 +61,7 @@ bool BusDefinitionValidator::validate(QSharedPointer<const BusDefinition> busDef
     ParameterValidator2014 parameterValidator(expressionParser_, QSharedPointer<QList<QSharedPointer<Choice> > >());
 	foreach (QSharedPointer<Parameter> currentParameter, *busDefinition->getParameters())
 	{
-		if (!parameterValidator.validate(currentParameter.data()))
+		if (!parameterValidator.validate(currentParameter))
 		{
 			return false;
 		}

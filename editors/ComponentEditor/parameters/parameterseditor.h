@@ -37,12 +37,16 @@ public:
 	 *
 	 *      @param [in] component               Pointer to the component being edited.
 	 *      @param [in] handler                 Pointer to the instance managing the library.
+     *      @param [in] validator               The validator to use for checking parameter validity.
+     *      @param [in] expressionParser        Expression parser for configurable elements.
 	 *      @param [in] parameterFinder         Pointer to the instance searching for parameters.
 	 *      @param [in] expressionFormatter     Pointer to the instance formatting the expressions.
 	 *      @param [in] parent                  Pointer to the owner of this widget.
 	 */
 	ParametersEditor(QSharedPointer<Component> component,
         LibraryInterface* handler,
+        QSharedPointer<ParameterValidator2014> validator,
+        QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
 		QWidget *parent = 0);
@@ -61,13 +65,6 @@ public:
      *  Reload the information from the model to the editor.
 	 */
 	virtual void refresh();
-
-    /*!
-     *  Sets the component whose parameters to edit.
-     *
-     *      @param [in] component   The component to set.
-     */
-    void setComponent(QSharedPointer<Component> component);
 
 protected:
 

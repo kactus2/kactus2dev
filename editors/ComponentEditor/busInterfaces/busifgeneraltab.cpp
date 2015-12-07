@@ -35,7 +35,7 @@ busType_(VLNV::BUSDEFINITION, libHandler, parentWnd, this),
 absType_(VLNV::ABSTRACTIONDEFINITION, libHandler, parentWnd, this),
 modeStack_(busif, component, parameterFinder, libHandler, expressionParser, this),
 details_(busif, this),
-parameters_(busif->getParameters(), component, parameterFinder, expressionFormatter, this),
+parameters_(busif->getParameters(), component->getChoices(), parameterFinder, expressionFormatter, this),
 libHandler_(libHandler)
 {
 	Q_ASSERT_X(libHandler, "BusIfGeneralTab constructor", "Null LibraryInterface-pointer given as parameter");
