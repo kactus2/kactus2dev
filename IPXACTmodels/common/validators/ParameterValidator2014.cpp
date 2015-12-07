@@ -628,13 +628,16 @@ bool ParameterValidator2014::validateArrayValues(QString const& arrayLeft, QStri
 //-----------------------------------------------------------------------------
 QSharedPointer<Choice> ParameterValidator2014::findChoiceByName(QString const& choiceName) const
 {
-    foreach (QSharedPointer<Choice> choice, *availableChoices_)
+    if (availableChoices_)
     {
-        if (choice->name() == choiceName)
+        foreach (QSharedPointer<Choice> choice, *availableChoices_)
         {
-            return choice;
-        }
-    }	
+            if (choice->name() == choiceName)
+            {
+                return choice;
+            }
+        }	
+    }
 
     return QSharedPointer<Choice>();
 }

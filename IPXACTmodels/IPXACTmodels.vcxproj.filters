@@ -87,6 +87,12 @@
     <Filter Include="Source Files\common\validators">
       <UniqueIdentifier>{1d95ce5a-b997-4755-bd65-527b1d5afd4b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\BusDefinition\validators">
+      <UniqueIdentifier>{be9134bf-e797-422d-befb-f9d1e2c8cf51}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\BusDefinition\validators">
+      <UniqueIdentifier>{06ae740e-ae54-4934-9ff6-2fa1ac8d2396}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="validators\namevalidator.cpp">
@@ -1088,6 +1094,9 @@
     <ClCompile Include="common\validators\ParameterValidator2014.cpp">
       <Filter>Source Files\common\validators</Filter>
     </ClCompile>
+    <ClCompile Include="BusDefinition\validators\BusDefinitionValidator.cpp">
+      <Filter>Source Files\BusDefinition\validators</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BusDefinition\BusDefinition.h">
@@ -1464,6 +1473,9 @@
     </ClInclude>
     <ClInclude Include="common\validators\ValueFormatter.h">
       <Filter>Header Files\common\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="BusDefinition\validators\BusDefinitionValidator.h">
+      <Filter>Header Files\BusDefinition\validators</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

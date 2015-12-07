@@ -145,6 +145,7 @@
     <ClCompile Include="BusDefinition\BusDefinition.cpp" />
     <ClCompile Include="BusDefinition\BusDefinitionReader.cpp" />
     <ClCompile Include="BusDefinition\BusDefinitionWriter.cpp" />
+    <ClCompile Include="BusDefinition\validators\BusDefinitionValidator.cpp" />
     <ClCompile Include="common\Array.cpp" />
     <ClCompile Include="common\Assertion.cpp" />
     <ClCompile Include="common\BooleanValue.cpp" />
@@ -981,6 +982,7 @@
     </CustomBuild>
     <ClInclude Include="AbstractionDefinition\WireAbstractionWriter.h" />
     <ClInclude Include="AbstractionDefinition\WirePort.h" />
+    <ClInclude Include="BusDefinition\validators\BusDefinitionValidator.h" />
     <ClInclude Include="common\Array.h" />
     <ClInclude Include="common\Assertion.h" />
     <ClInclude Include="common\BooleanValue.h" />

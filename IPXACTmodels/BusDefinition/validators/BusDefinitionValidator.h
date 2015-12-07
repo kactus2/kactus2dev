@@ -14,10 +14,12 @@
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
-#include <IPXACTmodels/BusDefinition/BusDefinition.h>
-
 #include <QString>
+#include <QSharedPointer>
 #include <QVector>
+
+class BusDefinition;
+class ExpressionParser;
 
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:BusDefinition.
@@ -29,8 +31,9 @@ public:
 	/*!
 	 *  The constructor.
 	 *
+     *      @param [in] expressionParser    The expression parser to use.
 	 */
-    BusDefinitionValidator();
+    BusDefinitionValidator(QSharedPointer<ExpressionParser> expressionParser);
 
 	//! The destructor.
 	~BusDefinitionValidator();
@@ -42,23 +45,24 @@ public:
      *
      *      @return True, if the BusDefinition is valid IP-XACT, otherwise false.
      */
-    virtual bool validate(BusDefinition const* busDefinition) const;
+    virtual bool validate(QSharedPointer<const BusDefinition> busDefinition) const;
 
     /*!
      *  Finds possible errors in a BusDefinition and creates a list of them.
      *
-     *      @param [in] errors      List of found errors.
+     *      @param [out] errors         List of found errors.
      *      @param [in] BusDefinition   The BusDefinition whose errors to find.
-     *      @param [in] context     Context to help locate the errors.
      */
-    virtual void findErrorsIn(QVector<QString>& errors, QSharedPointer<BusDefinition> busDefinition,
-		QString const& context) const;
+    virtual void findErrorsIn(QVector<QString>& errors, QSharedPointer<const BusDefinition> busDefinition) const;
 
 private:
 
 	// Disable copying.
 	BusDefinitionValidator(BusDefinitionValidator const& rhs);
 	BusDefinitionValidator& operator=(BusDefinitionValidator const& rhs);
+
+    //! The expression parser to use.
+    QSharedPointer<ExpressionParser> expressionParser_;
 };
 
 #endif // SYSTEMVERILOGVALIDATOR_H

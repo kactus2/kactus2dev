@@ -29,7 +29,7 @@ LibraryErrorModel::~LibraryErrorModel()
 //-----------------------------------------------------------------------------
 // Function: LibraryErrorModel::addErrors()
 //-----------------------------------------------------------------------------
-void LibraryErrorModel::addErrors(QStringList const& errorList)
+void LibraryErrorModel::addErrors(QVector<QString> const& errorList)
 {
     beginResetModel();
     errors_ = errorList;

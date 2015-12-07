@@ -214,10 +214,10 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event)
 
         menu.addSeparator();
         
-//         if (!libComp->isValid())
-//         {
-//             menu.addAction(showErrorsAction_);
-//         }
+         if (!handler_->isValid(vlnv))
+         {
+             menu.addAction(showErrorsAction_);
+         }
 
         menu.addAction(openContainingFolderAction_);
 		menu.addAction(openXmlAction_);

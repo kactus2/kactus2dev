@@ -10,21 +10,20 @@
 //-----------------------------------------------------------------------------
 
 #include "BusDefinitionValidator.h"
-#include "../../validators/ParameterValidator2014.h"
-
-#include <IPXACTmodels/Component/choice.h>
-#include <IPXACTmodels/common/Enumeration.h>
 
 #include <editors/ComponentEditor/common/ExpressionParser.h>
-#include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
 
-#include <QRegularExpression>
-#include <QStringList>
+#include <IPXACTmodels/BusDefinition/BusDefinition.h>
+
+#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
+
+#include <IPXACTmodels/Component/Choice.h>
 
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogValidator::SystemVerilogValidator()
 //-----------------------------------------------------------------------------
-BusDefinitionValidator::BusDefinitionValidator()
+BusDefinitionValidator::BusDefinitionValidator(QSharedPointer<ExpressionParser> expressionParser):
+expressionParser_(expressionParser)
 {
 
 }
@@ -40,69 +39,66 @@ BusDefinitionValidator::~BusDefinitionValidator()
 //-----------------------------------------------------------------------------
 // Function: BusDefinitionValidator::validate()
 //-----------------------------------------------------------------------------
-bool BusDefinitionValidator::validate(BusDefinition const* busDefinition) const
+bool BusDefinitionValidator::validate(QSharedPointer<const BusDefinition> busDefinition) const
 {
-	bool valid = true;
-
-	QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-
-	ParameterValidator2014 paraVali(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
-
 	if (!busDefinition->getVlnv().isValid())
 	{
-		valid = false;
-	}
-	else if ( !busDefinition->getMaxMasters().isEmpty() &&
-		!parser->isValidExpression( busDefinition->getMaxMasters() ) )
-	{
-		valid = false;
-	}
-	else if ( !busDefinition->getMaxSlaves().isEmpty() &&
-		!parser->isValidExpression( busDefinition->getMaxSlaves() ) )
-	{
-		valid = false;
+		return false;
 	}
 
-	foreach ( QSharedPointer<Parameter> currentPara, *busDefinition->getParameters() )
+	if (!busDefinition->getMaxMasters().isEmpty() &&
+        !expressionParser_->isValidExpression(busDefinition->getMaxMasters()))
 	{
-		if ( !paraVali.hasValidValue(currentPara.data() ) )
+		return false;
+	}
+
+	if (!busDefinition->getMaxSlaves().isEmpty() &&
+        !expressionParser_->isValidExpression(busDefinition->getMaxSlaves()))
+	{
+		return false;
+	}
+
+    ParameterValidator2014 parameterValidator(expressionParser_, QSharedPointer<QList<QSharedPointer<Choice> > >());
+	foreach (QSharedPointer<Parameter> currentParameter, *busDefinition->getParameters())
+	{
+		if (!parameterValidator.validate(currentParameter.data()))
 		{
-			valid = false;
-			break;
+			return false;
 		}
 	}
 
-	return valid;
+	return true;
 }
 
 //-----------------------------------------------------------------------------
 // Function: BusDefinitionValidator::findErrorsIn()
 //-----------------------------------------------------------------------------
-void BusDefinitionValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<BusDefinition> busDefinition,
-    QString const& context) const
+void BusDefinitionValidator::findErrorsIn(QVector<QString>& errors,
+    QSharedPointer<const BusDefinition> busDefinition) const
 {
-	QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
+    QString context = QObject::tr("containing bus definition");
+	if (busDefinition->getVlnv().isValid(errors, context))
+    {
+        context = QObject::tr("bus definition %1").arg(busDefinition->getVlnv().toString());
+    }
 
-	ParameterValidator2014 paraVali(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
-
-	busDefinition->getVlnv().isValid(errors, QObject::tr("containing bus definition") );
-
-	foreach ( QSharedPointer<Parameter> currentPara, *busDefinition->getParameters() )
+	if (!busDefinition->getMaxMasters().isEmpty() && 
+        !expressionParser_->isValidExpression(busDefinition->getMaxMasters()))
 	{
-		paraVali.findErrorsIn( errors, currentPara, context );
+		errors.append(QObject::tr("MaxMasters '%1' is not a valid expression within %2.").arg(
+            busDefinition->getMaxMasters(), context));
 	}
 
-	if ( !busDefinition->getMaxMasters().isEmpty() &&
-		!parser->isValidExpression( busDefinition->getMaxMasters() ) )
+	if (!busDefinition->getMaxSlaves().isEmpty() &&
+		!expressionParser_->isValidExpression(busDefinition->getMaxSlaves()))
 	{
-		errors.append(QObject::tr("MaxMasters is an invalid expression: %1"
-			).arg(busDefinition->getMaxMasters()));
+		errors.append(QObject::tr("MaxSlaves '%1' is not a valid expression within %2.").arg(
+            busDefinition->getMaxSlaves(), context));
 	}
 
-	if ( !busDefinition->getMaxSlaves().isEmpty() &&
-		!parser->isValidExpression( busDefinition->getMaxSlaves() ) )
-	{
-		errors.append(QObject::tr("MaxSlaves is an invalid expression: %1"
-			).arg(busDefinition->getMaxSlaves()));
-	}
+    ParameterValidator2014 parameterValidator(expressionParser_, QSharedPointer<QList<QSharedPointer<Choice> > >());
+    foreach (QSharedPointer<Parameter> currentParameter, *busDefinition->getParameters())
+    {
+        parameterValidator.findErrorsIn(errors, currentParameter, context);
+    }
 }

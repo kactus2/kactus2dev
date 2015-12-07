@@ -543,10 +543,7 @@ bool LibraryHandler::isValid(VLNV const& vlnv)
         }
     }
 
-    QString path = data_->getPath(vlnv);
-    Q_ASSERT(!path.isEmpty());
-
-    return data_->checkObject(document, path, false);
+    return data_->validateDocument(document);
 }
 
 //-----------------------------------------------------------------------------
@@ -737,16 +734,12 @@ void LibraryHandler::onShowErrors(VLNV const& vlnv)
     }
 
     // Retrieve the model.
-    QSharedPointer<Document const> libComp = getModelReadOnly(vlnv);
+    QSharedPointer<const Document> document = getModelReadOnly(vlnv);
 
-    if (libComp != 0)
+    if (document != 0)
     {
-        // Retrieve the list of errors.
-        QStringList errorList;
-        //libComp->isValid(errorList);
-
         LibraryErrorModel* model = new LibraryErrorModel(this);
-        model->addErrors(errorList);
+        model->addErrors(data_->findErrorsInDocument(document, data_->getPath(vlnv)));
 
         // Show error list in a dialog.
         TableViewDialog dialog(this);

@@ -22,8 +22,9 @@
 #include <QRegExpValidator>
 #include <QWidget>
 
-class LibraryHandler;
+class BusDefinition;
 class Document;
+class LibraryHandler;
 class ScanProgressWidget;
 
 //-----------------------------------------------------------------------------
@@ -108,17 +109,23 @@ public:
 	//! Check the integrity of the library.
 	void checkLibraryIntegrity();
 
-	/*! Check the specified library object's validity.
+    /*! Check the document validity.
 	 *
-	 *      @param [in] libComp The object which's validity is checked.
-	 *      @param [in] path The path to the object's IP-XACT file.
-	 *      @param [in] print If true then errors are printed to user.
+	 *      @param [in] document    The document to check.
+     *
+	 *      @return True if the document was valid, otherwise false.
+	 */
+    bool validateDocument(QSharedPointer<Document> document);
+
+	/*! Finds errors in document validity.
 	 *
-	 *      @return True if the object was valid.
+	 *      @param [in] document    The document to check.
+	 *      @param [in] path        The path to the document IP-XACT file.
+	 *
+	 *      @return Any errors within the document.
 	*/
-	bool checkObject(QSharedPointer<Document> libComp, QString const& path, bool print = true);
-
-
+	QVector<QString> findErrorsInDocument(QSharedPointer<const Document> document, QString const& path);
+   
 signals:
 
 	//! Emit an error message to be printed to user.
@@ -143,8 +150,8 @@ public slots:
 
     //! Runs one step of the integrity check.
     void performIntegrityCheckStep();
-
-	//! Remove the specified VLNV from the library
+   
+    //! Remove the specified VLNV from the library
 	void onRemoveVLNV(VLNV const& vlnv);
 
 	//! Reset the library
@@ -180,8 +187,75 @@ private:
 	*/
 	void parseFile(QString const& filePath);
 
+    /*!
+     *  Finds any errors within a given bus definition document.
+     *
+     *      @param [in] busDefinition   The bus definition to search in.
+     *      @param [out] errorList      The list of errors to add any found errors.
+     */
+    void findErrorsInBusDefinition(QSharedPointer<const BusDefinition> busDefinition, QVector<QString>& errorList);
+   
+    /*! Check the validity of VLNV references within a document.
+	 *
+	 *      @param [in] document    The document to check.
+     *
+	 *      @return True if the VLVN references are valid, otherwise false.
+	 */
+    bool validateDependentVLNVReferencences(QSharedPointer<Document> document);
+    
+    /*!
+     *  Finds any errors within a given document VLNV references.
+     *
+     *      @param [in] document    The document whose VLNV references to check.
+     *      @param [out] errorList  The list of errors to add any found errors.
+     */
+    void findErrorsInDependentVLNVReferencences(QSharedPointer<const Document> document, QVector<QString>& errorList);
        
-    VLNV getVLNV(QDomDocument& doc);
+    /*! Check the validity of directory references within a document.
+	 *
+	 *      @param [in] document    The document to check.
+     *      @param [in] documentPath    The path to the document XML file.
+     *
+	 *      @return True if the directory references are valid, otherwise false.
+	 */
+    bool validateDependentDirectories(QSharedPointer<Document> document, QString const& documentPath);
+        
+    /*!
+     *  Finds any errors within a given document directory references.
+     *
+     *      @param [in] document        The document whose directory references to check.
+     *      @param [in] documentPath    The path to the document XML file.
+     *      @param [out] errorList      The list of errors to add any found errors.
+     */
+    void findErrorsInDependentDirectories(QSharedPointer<const Document> document, QString const& documentPath,
+        QVector<QString>& errorList);
+
+    /*! Check the validity of file references within a document.
+	 *
+	 *      @param [in] document    The document to check.
+     *
+	 *      @return True if the file references are valid, otherwise false.
+	 */
+    bool validateDependentFiles(QSharedPointer<Document> document, QString const& documentPath);
+            
+    /*!
+     *  Finds any errors within a given document file references.
+     *
+     *      @param [in] document        The document whose file references to check.
+     *      @param [in] documentPath    The path to the document XML file.
+     *      @param [out] errorList      The list of errors to add any found errors.
+     */
+    void findErrorsInDependentFiles(QSharedPointer<const Document> document, QString const& documentPath,
+        QVector<QString>& errorList);
+
+    /*!
+     *  Finds the VLNV identifier for the given document.
+     *
+     *      @param [in] doc   The document whose VLNV to find.
+     *
+     *      @return The VLNV identifier for the document.
+     */
+    VLNV getDocumentVLNV(QDomDocument& doc);
 
     //-----------------------------------------------------------------------------
     // Data.

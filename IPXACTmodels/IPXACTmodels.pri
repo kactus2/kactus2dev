@@ -21,6 +21,7 @@ HEADERS += ./XmlUtils.h \
     ./kactusExtensions/ComInterconnection.h \
     ./kactusExtensions/ComInterface.h \
     ./kactusExtensions/ComProperty.h \
+    ./kactusExtensions/ConnectionRoute.h \
     ./kactusExtensions/FileDependency.h \
     ./kactusExtensions/HierApiInterconnection.h \
     ./kactusExtensions/HierComInterconnection.h \
@@ -35,7 +36,6 @@ HEADERS += ./XmlUtils.h \
     ./kactusExtensions/SWInstance.h \
     ./kactusExtensions/SWView.h \
     ./kactusExtensions/SystemView.h \
-    ./common/validators/ParameterValidator2014.h \
     ./validators/BinaryValidator.h \
     ./validators/namevalidator.h \
     ./validators/NMTokenValidator.h \
@@ -80,6 +80,8 @@ HEADERS += ./XmlUtils.h \
     ./common/ParameterWriter.h \
     ./common/ProtocolReader.h \
     ./common/ProtocolWriter.h \
+    ./common/validators/ParameterValidator2014.h \
+    ./common/validators/ValueFormatter.h \
     ./BusDefinition/BusDefinition.h \
     ./BusDefinition/BusDefinitionReader.h \
     ./BusDefinition/BusDefinitionWriter.h \
@@ -199,7 +201,7 @@ HEADERS += ./XmlUtils.h \
     ./Component/RemapStateWriter.h \
     ./Component/ViewReader.h \
     ./Component/ViewWriter.h \
-    ./common/validators/ValueFormatter.h
+    ./BusDefinition/validators/BusDefinitionValidator.h
 SOURCES += ./generaldeclarations.cpp \
     ./XmlUtils.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
@@ -213,6 +215,7 @@ SOURCES += ./generaldeclarations.cpp \
     ./kactusExtensions/ComInterconnection.cpp \
     ./kactusExtensions/ComInterface.cpp \
     ./kactusExtensions/ComProperty.cpp \
+    ./kactusExtensions/ConnectionRoute.cpp \
     ./kactusExtensions/FileDependency.cpp \
     ./kactusExtensions/HierApiInterconnection.cpp \
     ./kactusExtensions/HierComInterconnection.cpp \
@@ -230,7 +233,6 @@ SOURCES += ./generaldeclarations.cpp \
     ./validators/BinaryValidator.cpp \
     ./validators/namevalidator.cpp \
     ./validators/NMTokenValidator.cpp \
-    ./common/validators/ValueFormatter.cpp \
     ./common/Array.cpp \
     ./common/Assertion.cpp \
     ./common/BooleanValue.cpp \
@@ -271,6 +273,8 @@ SOURCES += ./generaldeclarations.cpp \
     ./common/TransactionalTypes.cpp \
     ./common/Vector.cpp \
     ./common/VLNV.cpp \
+    ./common/validators/ParameterValidator2014.cpp \
+    ./common/validators/ValueFormatter.cpp \
     ./BusDefinition/BusDefinition.cpp \
     ./BusDefinition/BusDefinitionReader.cpp \
     ./BusDefinition/BusDefinitionWriter.cpp \
@@ -390,4 +394,4 @@ SOURCES += ./generaldeclarations.cpp \
     ./Component/Wire.cpp \
     ./Component/WireTypeDef.cpp \
     ./Component/WriteValueConstraint.cpp \
-    ./common/validators/ParameterValidator2014.cpp
+    ./BusDefinition/validators/BusDefinitionValidator.cpp

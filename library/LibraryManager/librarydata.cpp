@@ -17,6 +17,8 @@
 #include <common/utils.h>
 #include <common/widgets/ScanProgressWidget/scanprogresswidget.h>
 
+#include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
+
 #include <IPXACTmodels/common/VLNV.h>
 
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
@@ -24,6 +26,7 @@
 
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 #include <IPXACTmodels/BusDefinition/BusDefinitionReader.h>
+#include <IPXACTmodels/BusDefinition/validators/BusDefinitionValidator.h>
 
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/Design/DesignReader.h>
@@ -39,7 +42,6 @@
 
 #include <IPXACTmodels/kactusExtensions/ComDefinition.h>
 #include <IPXACTmodels/kactusExtensions/ApiDefinition.h>
-
 
 #include <QDir>
 #include <QDomDocument>
@@ -359,7 +361,7 @@ void LibraryData::parseFile(QString const& filePath)
 	if (doc.setContent(&docFile))
     {		
 		docFile.close();
-		vlnv = getVLNV(doc);
+		vlnv = getDocumentVLNV(doc);
 	}
 	else // content could not be read.
     {
@@ -504,9 +506,9 @@ void LibraryData::performIntegrityCheckStep()
 
 	if (timerStep_ < timerSteps_)
 	{
-		QSharedPointer<Document> libComp = getModel(iterObjects_.key());
+		QSharedPointer<Document> document = getModel(iterObjects_.key());
 		// if the object could not be parsed
-		if (!libComp)
+		if (!document)
         {
 			// remove the pair from the map and move on
 			QMap<VLNV, QString>::iterator i = libraryItems_.find(iterObjects_.key());
@@ -515,7 +517,19 @@ void LibraryData::performIntegrityCheckStep()
 		}
         else
         {
-            checkObject(libComp, iterObjects_.value());
+            QVector<QString> errors = findErrorsInDocument(document, iterObjects_.value());
+            if (!errors.isEmpty())
+            {
+                emit noticeMessage(tr("The following errors were found while processing item %1:").arg(
+                    document->getVlnv().toString()));
+
+                foreach (QString const& error, errors)
+                {
+                    emit errorMessage(error);
+                }
+
+                failedObjects_++;
+            }
             iterObjects_++;
         }
 	}
@@ -553,177 +567,226 @@ void LibraryData::performIntegrityCheckStep()
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryData::checkObject()
+// Function: LibraryData::validateDocument()
 //-----------------------------------------------------------------------------
-bool LibraryData::checkObject(QSharedPointer<Document> libComp, QString const& path, bool print)
+bool LibraryData::validateDocument(QSharedPointer<Document> document)
 {
-	// in the start assume that document is valid and if errors are found the set document as invalid
-	bool wasValid = true;
+    Q_ASSERT(document);
 
-	Q_ASSERT(libComp);
+    QString documentPath = getPath(document->getVlnv());
 
-	// used to print information to user
-	VLNV vlnv(libComp->getVlnv());
+    Q_ASSERT(!documentPath.isEmpty());
 
-    QFileInfo topFile(path);
-	if (!topFile.exists())
+    if (!QFileInfo(documentPath).exists())
     {
-		// if theres no printing then there is no reason to check further errors
-		if (!print)
-        {
-			return false;
-		}
+        return false;
+    }
 
-		emit noticeMessage(tr("The following errors were found while processing item %1:").arg(vlnv.toString(":")));
-		emit errorMessage(tr("The file %1 for the document was not found.").arg(path));
+    if (getType(document->getVlnv()) == VLNV::BUSDEFINITION)
+    {
+        BusDefinitionValidator validator(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()));
+        if (!validator.validate(document.dynamicCast<BusDefinition>()))
+        {
+            return false;
+        }
+    }
+
+    return validateDependentVLNVReferencences(document) &&
+        validateDependentDirectories(document, documentPath) &&
+        validateDependentFiles(document, documentPath);
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryData::findErrorsInDocument()
+//-----------------------------------------------------------------------------
+QVector<QString> LibraryData::findErrorsInDocument(QSharedPointer<const Document> document, QString const& path)
+{
+    Q_ASSERT(document);
+
+    QVector<QString> errorList;
+
+	if (!QFileInfo(path).exists())
+    {
+        errorList.append(tr("The file %1 for the document was not found.").arg(path));
 		errors_++;
-		failedObjects_++;
-
-		wasValid = false;
 	}
 
-	// check if the component xml is valid and if not then print errors of the component
-	QStringList errorList;
-	/*if (!libComp->isValid(errorList)) {
-
-		// if theres no printing then there is no reason to check further errors
-		if (!print) {
-			return false;
-		}
-
-		if (wasValid) {
-			emit noticeMessage(tr("The following errors were found while processing item %1:").arg(vlnv.toString(":")));
-			++failedObjects_;
-			wasValid = false;
-		}
-
-		foreach (QString error, errorList) {
-			emit errorMessage(error);
-		}
-		errors_ += errorList.size();
-		syntaxErrors_ += errorList.size();
-	}*/
-
-	// check that all VLNVs needed by this model are found in the library
-	QList<VLNV> vlnvList = libComp->getDependentVLNVs();
-	for (int j = 0; j < vlnvList.size(); j++)
+	// Check if the document xml is valid and if not then print errors of the document.
+	if (getType(document->getVlnv()) == VLNV::BUSDEFINITION)
     {
-		// if the document referenced by this model is not found
-		if (!libraryItems_.contains(vlnvList.at(j)))
-        {
-			// if theres no printing then there is no reason to check further errors
-			if (!print)
-            {
-				return false;
-			}
+        findErrorsInBusDefinition(document.dynamicCast<const BusDefinition>(), errorList);
+    }
 
-			// if this was first failed test then increase number of failed items
-			if (wasValid)
-            {
-				emit noticeMessage(tr("The following errors were found while processing item %1:").arg(vlnv.toString(":")));
-				failedObjects_++;
-				wasValid = false;
-			}
+    findErrorsInDependentVLNVReferencences(document, errorList);
 
-			// tell user that referenced object was not found
-			emit errorMessage(
-				tr("The referenced VLNV was not found in the library: %1").arg(vlnvList.at(j).toString()));
-			errors_++;
-			vlnvErrors_++;
-		}
-	}
+    findErrorsInDependentDirectories(document, path, errorList);
 
-	// check all dependent directories
-	foreach (QString const& dir, libComp->getDependentDirs())
+    findErrorsInDependentFiles(document, path, errorList);
+
+	return errorList;
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryData::findErrorsInBusDefinition()
+//-----------------------------------------------------------------------------
+void LibraryData::findErrorsInBusDefinition(QSharedPointer<const BusDefinition> busDefinition,
+    QVector<QString>& errorList)
+{
+    int errorsBeforeValidation = errorList.size();
+    
+    BusDefinitionValidator validator(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()));
+    validator.findErrorsIn(errorList, busDefinition);
+
+    int errorsInBusDefinition = errorList.size() - errorsBeforeValidation;
+
+    if (errorsInBusDefinition != 0)
     {
-		QString dirPath = General::getAbsolutePath(path, dir);
-		QFileInfo dirInfo(dirPath);
+        errors_ += errorsInBusDefinition;
+        syntaxErrors_ += errorsInBusDefinition;
+    }
+}
 
-		if (!dirInfo.exists())
+//-----------------------------------------------------------------------------
+// Function: LibraryData::validateDependentVLNVReferencences()
+//-----------------------------------------------------------------------------
+bool LibraryData::validateDependentVLNVReferencences(QSharedPointer<Document> document)
+{
+    foreach (VLNV const& vlnv, document->getDependentVLNVs())
+    {
+        if (!libraryItems_.contains(vlnv))
         {
-			// if theres no printing then there is no reason to check further errors
-			if (!print)
+           return false;
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryData::findErrorsInDependentVLNVReferencences()
+//-----------------------------------------------------------------------------
+void LibraryData::findErrorsInDependentVLNVReferencences(QSharedPointer<const Document> document,
+    QVector<QString>& errorList)
+{
+    foreach (VLNV const& vlnv, document->getDependentVLNVs())
+    {
+        if (!libraryItems_.contains(vlnv))
+        {
+            errorList.append(tr("The referenced VLNV was not found in the library: %1").arg(vlnv.toString()));
+            errors_++;
+            vlnvErrors_++;
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryData::validateDependentDirectories()
+//-----------------------------------------------------------------------------
+bool LibraryData::validateDependentDirectories(QSharedPointer<Document> document, QString const& documentPath)
+{
+    foreach (QString const& directory, document->getDependentDirs())
+    {
+        QString dirPath = General::getAbsolutePath(documentPath, directory);
+        QFileInfo dirInfo(dirPath);
+
+        if (!dirInfo.exists())
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryData::findErrorsInDependentDirectories()
+//-----------------------------------------------------------------------------
+void LibraryData::findErrorsInDependentDirectories(QSharedPointer<const Document> document, 
+    QString const& documentPath, QVector<QString>& errorList)
+{
+    foreach (QString const& directory, document->getDependentDirs())
+    {
+        QString dirPath = General::getAbsolutePath(documentPath, directory);
+
+        if (!QFileInfo(dirPath).exists())
+        {
+            errorList.append(tr("\tDirectory %1 was not found in the file system.").arg(dirPath));
+            errors_++;
+            fileErrors_++;
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryData::validateDependentFiles()
+//-----------------------------------------------------------------------------
+bool LibraryData::validateDependentFiles(QSharedPointer<Document> document, QString const& documentPath)
+{
+    foreach (QString filePath, document->getDependentFiles())
+    {
+        int pos = 0;
+        if (urlTester_->validate(filePath, pos) != QValidator::Acceptable)
+        {
+            QString absolutePath = filePath;
+
+            if (QFileInfo(filePath).isRelative())
             {
-				return false;
-			}
+                absolutePath = General::getAbsolutePath(documentPath, filePath);
+            }
 
-			// if this is the first found error
-			if (wasValid)
+            if (!QFileInfo(absolutePath).exists())
             {
-				emit noticeMessage(
-                    tr("The following errors were found while processing item %1:").arg(vlnv.toString(":")));
-				failedObjects_++;
-				wasValid = false;
-			}
+                return false;
+            }
+        }
+    }
 
-			emit errorMessage(tr("\tDirectory %1 was not found in the file system.").arg(dirPath));
+    return true;
+}
 
-			errors_++;
-			fileErrors_++;
-		}
-	}
-
-	// check all files referenced by this model
-	foreach (QString originalPath, libComp->getDependentFiles())
+//-----------------------------------------------------------------------------
+// Function: LibraryData::findErrorsInDependentFiles()
+//-----------------------------------------------------------------------------
+void LibraryData::findErrorsInDependentFiles(QSharedPointer<const Document> document, 
+    QString const& documentPath, QVector<QString>& errorList)
+{
+    foreach (QString filePath, document->getDependentFiles())
     {
         // Check if the path is actually a URL to (external) location.
-		int pos = 0;
-		if (urlTester_->validate(originalPath, pos) == QValidator::Acceptable)
+        int pos = 0;
+        if (urlTester_->validate(filePath, pos) == QValidator::Acceptable)
         {
             fileCount_++;
-		}
-		// The path was not URL so it must be file reference on the disk.
-		else
+        }
+
+        // The path was not URL so it must be file reference on the disk.
+        else 
         {
-			QString filePath;
+            QString absolutePath = filePath;
 
-			// if the path is relative then create absolute path
-			QFileInfo originalInfo(originalPath);
-			if (originalInfo.isRelative())
+            if (QFileInfo(filePath).isRelative())
             {
-				filePath = General::getAbsolutePath(path, originalPath);
-			}
-			// if the reference is directly absolute
-			else
-            {
-				filePath = originalPath;
-			}
+                absolutePath = General::getAbsolutePath(documentPath, filePath);
+            }
 
-			QFileInfo pathInfo(filePath);
-			if (pathInfo.exists())
+            if (QFileInfo(absolutePath).exists())
             {
                 fileCount_++;
-			}
-			else
+            }
+            else
             {
-                if (!print)
-                {
-                    return false;
-                }
-
-                // if this is the first found error
-                if (wasValid)
-                {
-                    emit noticeMessage(
-                        tr("The following errors were found while processing item %1:").arg(vlnv.toString(":")));
-                    failedObjects_++;
-                    wasValid = false;
-                }
-
-                emit errorMessage(tr("\tFile %1 was not found in the file system.").arg(filePath));
+                errorList.append(tr("\tFile %1 was not found in the file system.").arg(filePath));               
                 errors_++;
                 fileErrors_++;
-			}
-		}
-	}
-
-	return wasValid;
+            }
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
 // Function: LibraryData::getVLNV()
 //-----------------------------------------------------------------------------
-VLNV LibraryData::getVLNV(QDomDocument& doc)
+VLNV LibraryData::getDocumentVLNV(QDomDocument& doc)
 {
     // get the type of the document
     QDomNodeList nodeList = doc.childNodes();
