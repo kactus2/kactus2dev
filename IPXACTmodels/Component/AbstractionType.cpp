@@ -20,8 +20,8 @@
 //-----------------------------------------------------------------------------
 AbstractionType::AbstractionType():
 viewRef_(),
-    abstractionRef_(),
-    portMaps_(new QList<QSharedPointer<PortMap> >())
+abstractionRef_(),
+portMaps_(new QList<QSharedPointer<PortMap> >())
 {
 
 }
@@ -31,8 +31,8 @@ viewRef_(),
 //-----------------------------------------------------------------------------
 AbstractionType::AbstractionType(AbstractionType const& other):
 viewRef_(other.viewRef_),
-    abstractionRef_(),
-    portMaps_(new QList<QSharedPointer<PortMap> >())
+abstractionRef_(),
+portMaps_(new QList<QSharedPointer<PortMap> >())
 {
     if (other.abstractionRef_)
     {

@@ -36,14 +36,39 @@ public:
     //! Assignment operator.
     AbstractionType &operator=(const AbstractionType &other);
 
+    /*!
+     *  Set the referenced view.
+     *
+     *      @param [in] viewName    The name of the referenced view.
+     */
     void setViewRef(QString const& viewName);
 
+    /*!
+     *  Get the referenced view.
+     *
+     *      @return The name of the referenced view.
+     */
     QString getViewRef() const;
 
+    /*!
+     *  Set the abstraction reference.
+     *
+     *      @param [in] abstractionRef  The referenced abstraction definition.
+     */
     void setAbstractionRef(QSharedPointer<ConfigurableVLNVReference> abstractionRef);
 
+    /*!
+     *  Get the referenced abstraction definition.
+     *
+     *      @return The referenced abstraction definition.
+     */
     QSharedPointer<ConfigurableVLNVReference> getAbstractionRef() const;
 
+    /*!
+     *  Get the port maps.
+     *
+     *      @return A list of port maps.
+     */
     QSharedPointer<QList<QSharedPointer<PortMap> > > getPortMaps() const;
 
 private:

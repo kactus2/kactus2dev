@@ -50,6 +50,13 @@ public:
     bool hasOverlap();
 
     /*!
+     *  Check if the reserved ares with the same identifier overlap.
+     *
+     *      @return True, if overlap exists, otherwise false.
+     */
+    bool hasIdDependantOverlap();
+
+    /*!
      *  Find errors related to overlapping.
      *
      *      @param [in] errors          The error list.
@@ -57,6 +64,16 @@ public:
      *      @param [in] context         Context used to help find the error.
      */
     void findErrorsInOverlap(QVector<QString>& errors, QString const& itemIdentifier, QString const& context);
+
+    /*!
+     *  Find errors related to overlapping with same identifiers.
+     *
+     *      @param [in] errors          The error list.
+     *      @param [in] itemIdentifier  Identifier for the overlapping items.
+     *      @param [in] context         Context used to help find the errors.
+     */
+    void findErrorsInIdDependantOverlap(QVector<QString>& errors, QString const& itemIdentifier,
+        QString const& context);
 
 private:
 

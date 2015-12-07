@@ -19,9 +19,10 @@
 // Function: MasterInterface::MasterInterface()
 //-----------------------------------------------------------------------------
 MasterInterface::MasterInterface():
-addressSpaceRef_(), 
-    baseAddress_(),
-    baseAttributes_()
+addressSpaceRef_(),
+isPresent_(),
+baseAddress_(),
+baseAttributes_()
 {
 }
 
@@ -30,8 +31,9 @@ addressSpaceRef_(),
 //-----------------------------------------------------------------------------
 MasterInterface::MasterInterface(MasterInterface const& other):
 addressSpaceRef_(other.addressSpaceRef_),
-    baseAddress_(other.baseAddress_),
-    baseAttributes_(other.baseAttributes_)
+isPresent_(other.isPresent_),
+baseAddress_(other.baseAddress_),
+baseAttributes_(other.baseAttributes_)
 {
 }
 
@@ -43,6 +45,7 @@ MasterInterface& MasterInterface::operator=(MasterInterface const& other)
     if (this != &other)
     {
         addressSpaceRef_ = other.addressSpaceRef_;
+        isPresent_ = other.isPresent_;
         baseAddress_ = other.baseAddress_;
         baseAttributes_ = other.baseAttributes_;
     }
@@ -71,6 +74,22 @@ void MasterInterface::setAddressSpaceRef(QString const& addressSpaceRef)
 QString MasterInterface::getAddressSpaceRef() const
 {
     return addressSpaceRef_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MasterInterface::setIsPresent()
+//-----------------------------------------------------------------------------
+void MasterInterface::setIsPresent(QString const& newIsPresent)
+{
+    isPresent_ = newIsPresent;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MasterInterface::getIsPresent()
+//-----------------------------------------------------------------------------
+QString MasterInterface::getIsPresent() const
+{
+    return isPresent_;
 }
 
 //-----------------------------------------------------------------------------

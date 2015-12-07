@@ -18,7 +18,6 @@
 
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/common/VendorExtension.h>
-#include <IPXACTmodels/common/VLNV.h>
 
 #include <IPXACTmodels/kactusExtensions/Kactus2Position.h>
 
@@ -265,7 +264,7 @@ void BusInterface::setBitSteeringAttributes(QMap<QString, QString> const& bitSte
 //-----------------------------------------------------------------------------
 // Function: businterface::getBusType()
 //-----------------------------------------------------------------------------
-VLNV BusInterface::getBusType() const
+ConfigurableVLNVReference BusInterface::getBusType() const
 {
 	return busType_;
 }
@@ -377,9 +376,9 @@ void BusInterface::setInterfaceMode(General::InterfaceMode interfaceMode)
 //-----------------------------------------------------------------------------
 // Function: businterface::setBusType()
 //-----------------------------------------------------------------------------
-void BusInterface::setBusType(const VLNV& busType)
+void BusInterface::setBusType(ConfigurableVLNVReference const& newBusType)
 {
-	busType_ = busType;
+    busType_ = newBusType;
 }
 
 //-----------------------------------------------------------------------------

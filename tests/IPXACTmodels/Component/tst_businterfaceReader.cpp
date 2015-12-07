@@ -129,7 +129,9 @@ void tst_businterfaceReader::testReadBusType()
 	QSharedPointer<BusInterface> testbusinterface = businterfaceReader.createbusinterfaceFrom(businterfaceNode);
 	VLNV refVLNV = VLNV(VLNV::BUSDEFINITION, "testVendor", "testLibrary", "clock", "1.0");
 
-	QCOMPARE(testbusinterface->getBusType(), refVLNV);
+    ConfigurableVLNVReference configurableVLNV (refVLNV);
+
+	QCOMPARE(testbusinterface->getBusType(), configurableVLNV);
 	QCOMPARE(testbusinterface->getBusType().getType(), VLNV::BUSDEFINITION);
 }
 

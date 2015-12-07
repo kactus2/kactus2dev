@@ -215,6 +215,16 @@ void BusInterfaceWriter::writePortMaps(QXmlStreamWriter& writer,
         {
             writer.writeStartElement("ipxact:portMap");
 
+            if (!portMap->getInvert().toString().isEmpty())
+            {
+                writer.writeAttribute("invert", portMap->getInvert().toString());
+            }
+
+            if (!portMap->getIsPresent().isEmpty())
+            {
+                writer.writeTextElement("ipxact:isPresent", portMap->getIsPresent());
+            }
+
             if (!portMap->getLogicalTieOff().isEmpty() )
             {
                 writer.writeTextElement("ipxact:logicalTieOff", portMap->getLogicalTieOff());
@@ -223,6 +233,11 @@ void BusInterfaceWriter::writePortMaps(QXmlStreamWriter& writer,
             // Write ports for the port map.
             writeLogicalPort(writer, portMap->getLogicalPort());
             writePhysicalPort(writer, portMap->getPhysicalPort());
+
+            if (!portMap->getIsInformative().toString().isEmpty())
+            {
+                writer.writeTextElement("ipxact:isInformative", portMap->getIsInformative().toString());
+            }
 
             writer.writeEndElement();
         }
@@ -368,6 +383,11 @@ void BusInterfaceWriter::writeMasterInterface(QXmlStreamWriter& writer,
             if (!masterInterface->getAddressSpaceRef().isEmpty())
             {			
                 writer.writeAttribute("ipxact:addressSpaceRef", masterInterface->getAddressSpaceRef());
+            }
+
+            if (!masterInterface->getIsPresent().isEmpty())
+            {
+                writer.writeTextElement("ipxact:isPresent", masterInterface->getIsPresent());
             }
 
             // Write base address if it exists.

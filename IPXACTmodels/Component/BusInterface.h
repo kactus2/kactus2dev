@@ -128,7 +128,7 @@ public:
 	 *
 	 *      @return The vlnv tag of the bus definition that this bus interface references.
 	 */
-	VLNV getBusType() const;
+    ConfigurableVLNVReference getBusType() const;
 
 	/*!
      *  Can this interface be left unconnected.
@@ -198,7 +198,7 @@ public:
 	 *
 	 *      @param busType The vlnv of the bus definition.
 	 */
-	void setBusType(VLNV const& busType);
+    void setBusType(ConfigurableVLNVReference const& newBusType);
 
 	/*!
      *  Set the connectionRequired value.
@@ -444,7 +444,7 @@ private:
 	QMap<QString, QString> attributes_;
 	
 	//! The vlnv of the bus definition this bus interface is referenced.
-	VLNV busType_;
+    ConfigurableVLNVReference busType_;
 
 	//! Describes further information on the mode for this interface.
 	General::InterfaceMode interfaceMode_;

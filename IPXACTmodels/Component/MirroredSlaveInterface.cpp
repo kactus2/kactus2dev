@@ -20,8 +20,8 @@
 //-----------------------------------------------------------------------------
 MirroredSlaveInterface::RemapAddress::RemapAddress(QString const& remapAddress):
 remapAddress_(remapAddress),
-    state_(),
-    remapAttributes_()
+state_(),
+remapAttributes_()
 {
 }
 
@@ -29,7 +29,8 @@ remapAddress_(remapAddress),
 // Function: MirroredSlaveInterface::MirroredSlaveInterface()
 //-----------------------------------------------------------------------------
 MirroredSlaveInterface::MirroredSlaveInterface():
-range_(), remapAddresses_(new QList<QSharedPointer<RemapAddress> >())
+range_(),
+remapAddresses_(new QList<QSharedPointer<RemapAddress> >())
 {
 }
 
@@ -38,7 +39,7 @@ range_(), remapAddresses_(new QList<QSharedPointer<RemapAddress> >())
 //-----------------------------------------------------------------------------
 MirroredSlaveInterface::MirroredSlaveInterface(MirroredSlaveInterface const& other):
 range_(other.range_),
-    remapAddresses_(new QList<QSharedPointer<RemapAddress> >())
+remapAddresses_(new QList<QSharedPointer<RemapAddress> >())
 {
     foreach (QSharedPointer<RemapAddress> remapAddr, *other.remapAddresses_)
     {

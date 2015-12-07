@@ -203,6 +203,25 @@ void BusinterfaceReader::readPortMaps(QDomElement const& portMapsElement,
         QDomElement portMapElement = portMapNodes.at(i).toElement();
 
         QSharedPointer<PortMap> portMap (new PortMap());
+
+        if (!portMapElement.hasAttribute("invert"))
+        {
+            if (portMapElement.attribute("invert") == QLatin1String("true"))
+            {
+                portMap->setInvert(true);
+            }
+            else
+            {
+                portMap->setInvert(false);
+            }
+        }
+
+        QDomElement isPresentElement = portMapElement.firstChildElement("ipxact:isPresent");
+        if (!isPresentElement.isNull())
+        {
+            portMap->setIsPresent(isPresentElement.firstChild().nodeValue());
+        }
+
         readLogicalPort(portMapElement.firstChildElement("ipxact:logicalPort"), portMap);
         readPhysicalPort(portMapElement.firstChildElement("ipxact:physicalPort"), portMap);
 
@@ -210,6 +229,19 @@ void BusinterfaceReader::readPortMaps(QDomElement const& portMapsElement,
         if (!logicalTieOffElement.isNull())
         {
             portMap->setLogicalTieOff(logicalTieOffElement.firstChild().nodeValue());
+        }
+
+        QDomElement isInformativeElement = portMapElement.firstChildElement("ipxact:isInformative");
+        if (!isInformativeElement.isNull())
+        {
+            if (isInformativeElement.firstChild().nodeValue() == QLatin1String("true"))
+            {
+                portMap->setIsInformative(true);
+            }
+            else
+            {
+                portMap->setIsInformative(false);
+            }
         }
 
         abstractionType->getPortMaps()->append(portMap);
@@ -376,6 +408,12 @@ void BusinterfaceReader::readMasterInterface(QDomElement const& masterInterfaceE
  
     QString addressSpaceRef = addressSpaceRefElement.attribute("ipxact:addressSpaceRef");
     masterInterface->setAddressSpaceRef(XmlUtils::removeWhiteSpace(addressSpaceRef));
+
+    QDomElement isPresentElement = addressSpaceRefElement.firstChildElement("ipxact:isPresent");
+    if (!isPresentElement.isNull())
+    {
+        masterInterface->setIsPresent(isPresentElement.firstChild().nodeValue());
+    }
 
     QDomElement baseAddressElement = addressSpaceRefElement.firstChildElement("ipxact:baseAddress");
     if (!baseAddressElement.isNull())

@@ -28,8 +28,8 @@ SlaveInterface::Bridge::Bridge(): masterRef_(), isPresent_()
 //-----------------------------------------------------------------------------
 SlaveInterface::SlaveInterface():
 memoryMapRef_(), 
-    bridges_(new QList<QSharedPointer<Bridge> >()), 
-    fileSetRefGroup_(new QList<QSharedPointer<SlaveInterface::FileSetRefGroup> >())
+bridges_(new QList<QSharedPointer<Bridge> >()), 
+fileSetRefGroup_(new QList<QSharedPointer<SlaveInterface::FileSetRefGroup> >())
 {
 }
 
@@ -38,8 +38,8 @@ memoryMapRef_(),
 //-----------------------------------------------------------------------------
 SlaveInterface::SlaveInterface(SlaveInterface const& other):
 memoryMapRef_(other.memoryMapRef_),
-    bridges_(new QList<QSharedPointer<Bridge> >()),
-    fileSetRefGroup_(new QList<QSharedPointer<SlaveInterface::FileSetRefGroup> >()) 
+bridges_(new QList<QSharedPointer<Bridge> >()),
+fileSetRefGroup_(new QList<QSharedPointer<SlaveInterface::FileSetRefGroup> >()) 
 {
     foreach (QSharedPointer<Bridge> bridge, *other.bridges_)
     {

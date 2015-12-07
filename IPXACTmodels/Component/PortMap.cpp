@@ -17,9 +17,12 @@
 // Function: PortMap::PortMap()
 //-----------------------------------------------------------------------------
 PortMap::PortMap(): 
+invert_(),
+isPresent_(),
 logicalPort_(),
-	physicalPort_(),
-	logicalTieOff_()
+physicalPort_(),
+logicalTieOff_(),
+isInformative_()
 {
 
 }
@@ -28,9 +31,12 @@ logicalPort_(),
 // Function: PortMap::PortMap()
 //-----------------------------------------------------------------------------
 PortMap::PortMap(PortMap const& other): 
+invert_(other.invert_),
+isPresent_(other.isPresent_),
 logicalPort_(other.logicalPort_),
 physicalPort_(other.physicalPort_),
-logicalTieOff_(other.logicalTieOff_)
+logicalTieOff_(other.logicalTieOff_),
+isInformative_(other.isInformative_)
 {
 }
 
@@ -48,6 +54,9 @@ PortMap& PortMap::operator=(PortMap const& other)
 {
     if (this != &other)
     {
+        invert_ = other.invert_;
+        isPresent_ = other.isPresent_;
+
         logicalPort_.clear();
         logicalPort_ = QSharedPointer<PortMap::LogicalPort>(new PortMap::LogicalPort(*other.logicalPort_.data()));
         
@@ -59,9 +68,75 @@ PortMap& PortMap::operator=(PortMap const& other)
         }
       
         logicalTieOff_ = other.logicalTieOff_;
+
+        isInformative_ = other.isInformative_;
     }
 
 	return *this;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortMap::getInvert()
+//-----------------------------------------------------------------------------
+BooleanValue PortMap::getInvert() const
+{
+    return invert_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortMap::setInvert()
+//-----------------------------------------------------------------------------
+void PortMap::setInvert(bool newInvert)
+{
+    invert_.setValue(newInvert);
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortMap::clearInvert()
+//-----------------------------------------------------------------------------
+void PortMap::clearInvert()
+{
+    invert_.setUnspecified();
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortMap::getIsPresent()
+//-----------------------------------------------------------------------------
+QString PortMap::getIsPresent() const
+{
+    return isPresent_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortMap::setIsPresent()
+//-----------------------------------------------------------------------------
+void PortMap::setIsPresent(QString const& newIsPresent)
+{
+    isPresent_ = newIsPresent;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortMap::getIsInformative()
+//-----------------------------------------------------------------------------
+BooleanValue PortMap::getIsInformative() const
+{
+    return isInformative_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortMap::setIsInformative()
+//-----------------------------------------------------------------------------
+void PortMap::setIsInformative(bool newInformative)
+{
+    isInformative_.setValue(newInformative);
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortMap::clearIsInformative()
+//-----------------------------------------------------------------------------
+void PortMap::clearIsInformative()
+{
+    isInformative_.setUnspecified();
 }
 
 //-----------------------------------------------------------------------------

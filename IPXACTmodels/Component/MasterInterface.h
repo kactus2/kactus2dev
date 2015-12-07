@@ -50,6 +50,20 @@ public:
 	 */
 	QString getAddressSpaceRef() const;
     
+    /*!
+     *  Set the presence value.
+     *
+     *      @param [in] newIsPresent    The new isPresent value.
+     */
+    void setIsPresent(QString const& newIsPresent);
+
+    /*!
+     *  Get the presence.
+     *
+     *      @return The isPresent value.
+     */
+    QString getIsPresent() const;
+
 	/*! Set the base address.
 	 *
 	 *      @param [in]  baseAddress    The base address to set.
@@ -84,6 +98,9 @@ private:
 
 	//! The name of an address space that defines the range and width for transaction for the master interface.
 	QString addressSpaceRef_;
+
+    //! The presence of the master interface.
+    QString isPresent_;
 
 	// The starting address of the address space.
 	QString baseAddress_;
