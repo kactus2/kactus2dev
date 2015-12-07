@@ -41,29 +41,15 @@ public:
 	//! The destructor
 	virtual ~Choice();
 
-	/*! Check if the choice is in a valid state.
-	 *
-	 *      @param [inout] errorList The list to add the possible error messages to.
-	 *      @param [in] parentIdentifier String from parent to help to identify the location of the error.
-	 *
-	 *      @return bool True if the state is valid and writing is possible.
-	*/
-	bool isValid(QStringList& errorList, 
-		const QString& parentIdentifier) const;
-
-	/*! Check if the choice is in a valid state.
-	 *
-	 *      @return bool True if the state is valid and writing is possible.
-	*/
-	bool isValid() const;
-
-	/*! Get the name of the choice.
+	/*!
+     *  Get the name of the choice.
 	 *
 	 *      @return QString containing the name.
 	 */
 	QString name() const;
 
-	/*! Set the name of the choice.
+	/*!
+     *  Set the name of the choice.
 	 *
 	 *      @param [in] name QString containing the name.
 	 */
@@ -95,14 +81,10 @@ public:
 
 private:
 
-	/*! Name of the Choice element
-	 * MANDATORY ipxact:name
-	 */
+	//! Name of the Choice element
 	QString choiceName_;
 
-	/*! List of enumerations attached to the choice.
-	 * MANDATORY ipxact:enumeration
-	 */
+	//! List of enumerations attached to the choice.
 	QSharedPointer<QList<QSharedPointer<Enumeration> > > enumerations_;
 
 };

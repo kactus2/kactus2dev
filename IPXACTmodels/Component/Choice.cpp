@@ -19,7 +19,9 @@
 //-----------------------------------------------------------------------------
 // Function: Choice::Choice()
 //-----------------------------------------------------------------------------
-Choice::Choice() : choiceName_(), enumerations_(new QList<QSharedPointer<Enumeration> >())
+Choice::Choice():
+choiceName_(),
+enumerations_(new QList<QSharedPointer<Enumeration> >())
 {
     
 }
@@ -63,65 +65,6 @@ Choice& Choice::operator=( const Choice& other )
 Choice::~Choice()
 {
 
-}
-
-//-----------------------------------------------------------------------------
-// Function: Choice::isValid()
-//-----------------------------------------------------------------------------
-bool Choice::isValid( QStringList& errorList, const QString& parentIdentifier ) const
-{
-	bool valid = true;
-	
-	if (choiceName_.isEmpty())
-    {
-		errorList.append(QObject::tr("No name specified for choice within %1").arg(parentIdentifier));
-		valid = false;
-	}
-
-	if (enumerations_->isEmpty())
-    {
-		errorList.append(QObject::tr("At least one enumeration is required in choice %1"
-            " within %2").arg(choiceName_).arg(parentIdentifier));
-		valid = false;
-	}
-
-    foreach (QSharedPointer<Enumeration> enumeration, *enumerations_)
-    {
-        if (enumeration->getValue().isEmpty())
-        {
-            errorList.append(QObject::tr("No value specified for enumeration in choice %1"
-                " within %2").arg(choiceName_).arg(parentIdentifier));
-            valid = false;
-        }
-    }
-
-	return valid;
-}
-
-//-----------------------------------------------------------------------------
-// Function: Choice::isValid()
-//-----------------------------------------------------------------------------
-bool Choice::isValid() const
-{
-    if (choiceName_.isEmpty())
-    {
-        return false;
-    }
-
-    if (enumerations_->isEmpty())
-    {
-        return false;
-    }
-
-    foreach (QSharedPointer<Enumeration> enumeration, *enumerations_)
-    {
-        if (enumeration->getValue().isEmpty())
-        {
-            return false;
-        }
-    }
-
-    return true;
 }
 
 //-----------------------------------------------------------------------------
