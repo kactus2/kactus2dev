@@ -20,6 +20,7 @@
 class EditableTableView;
 class ChoicesModel;
 class Component;
+class ChoiceValidator;
 
 //-----------------------------------------------------------------------------
 //! Editor for component choices.
@@ -34,11 +35,13 @@ public:
 	 *  The constructor.
 	 *
 	 *      @param [in] component   The component whose choices to edit.
+     *      @param [in] validator   The validator used for choices.
 	 *      @param [in] parent      The parent widget.
 	 *
 	 *      @return <Description>.
 	 */
-	ChoicesEditor(QSharedPointer<Component> component, QWidget* parent = 0);
+	ChoicesEditor(QSharedPointer<Component> component, QSharedPointer<ChoiceValidator> validator,
+        QWidget* parent = 0);
 
 	//! The destructor
 	virtual ~ChoicesEditor();

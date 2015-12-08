@@ -16,6 +16,9 @@
 
 #include <QList>
 
+class ChoiceValidator;
+class ExpressionParser;
+
 //-----------------------------------------------------------------------------
 //! The choices item in the component editor navigation tree.
 //-----------------------------------------------------------------------------
@@ -28,13 +31,15 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] model       Pointer to the model that owns the items.
-	 *      @param [in] libHandler   [Description].
-	 *      @param [in] component   [Description].
-	 *      @param [in] parent   [Description].
+	 *      @param [in] model               Pointer to the model that owns the items.
+	 *      @param [in] libHandler          The library interface.
+	 *      @param [in] component           The currently active component.
+     *      @param [in] expressionParser    The selected expression parser.
+	 *      @param [in] parent              The owner of this item.
 	 */
 	ComponentEditorChoicesItem(ComponentEditorTreeModel* model, LibraryInterface* libHandler,
-        QSharedPointer<Component> component, ComponentEditorItem* parent);
+        QSharedPointer<Component> component, QSharedPointer<ExpressionParser> expressionParser,
+        ComponentEditorItem* parent);
 
 	//! The destructor.
 	virtual ~ComponentEditorChoicesItem();
@@ -79,6 +84,9 @@ private:
     //! No copying. No assignment.
 	ComponentEditorChoicesItem(const ComponentEditorChoicesItem& other);
 	ComponentEditorChoicesItem& operator=(const ComponentEditorChoicesItem& other);
+
+    //! The choice validator.
+    QSharedPointer<ChoiceValidator> choiceValidator_;
 };
 
 #endif // ComponentEditorChoicesItem_H

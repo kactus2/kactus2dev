@@ -13,15 +13,18 @@
 #include "ChoiceColumns.h"
 
 #include <IPXACTmodels/Component/choice.h>
+#include <IPXACTmodels/Component/validators/ChoiceValidator.h>
 
 #include <QColor>
 
 //-----------------------------------------------------------------------------
 // Function: ChoicesModel::ChoicesModel()
 //-----------------------------------------------------------------------------
-ChoicesModel::ChoicesModel(QSharedPointer<QList<QSharedPointer<Choice> > > choices, QObject* parent ):
+ChoicesModel::ChoicesModel(QSharedPointer<QList<QSharedPointer<Choice> > > choices,
+    QSharedPointer<ChoiceValidator> validator,QObject* parent):
 QAbstractTableModel(parent),
-choices_(choices)
+choices_(choices),
+validator_(validator)
 {
 
 }
@@ -139,7 +142,7 @@ QVariant ChoicesModel::data( const QModelIndex& index, int role) const
     }
 	else if (role == Qt::ForegroundRole)
     {
-        if (choice->isValid())
+        if (validator_->validate(choice))
         {
             return QColor(Qt::black);
         }
@@ -188,7 +191,7 @@ bool ChoicesModel::isValid() const
 {
 	foreach (QSharedPointer<Choice> choice, *choices_)
     {
-        if (!choice->isValid())
+        if (!validator_->validate(choice))
         {
             return false;
         }

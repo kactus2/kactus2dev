@@ -85,6 +85,7 @@ HEADERS += ./XmlUtils.h \
     ./BusDefinition/BusDefinition.h \
     ./BusDefinition/BusDefinitionReader.h \
     ./BusDefinition/BusDefinitionWriter.h \
+    ./BusDefinition/validators/BusDefinitionValidator.h \
     ./AbstractionDefinition/AbstractionDefinition.h \
     ./AbstractionDefinition/PortAbstraction.h \
     ./AbstractionDefinition/TimingConstraint.h \
@@ -201,7 +202,7 @@ HEADERS += ./XmlUtils.h \
     ./Component/RemapStateWriter.h \
     ./Component/ViewReader.h \
     ./Component/ViewWriter.h \
-    ./BusDefinition/validators/BusDefinitionValidator.h
+    ./Component/validators/ChoiceValidator.h
 SOURCES += ./generaldeclarations.cpp \
     ./XmlUtils.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
@@ -278,6 +279,7 @@ SOURCES += ./generaldeclarations.cpp \
     ./BusDefinition/BusDefinition.cpp \
     ./BusDefinition/BusDefinitionReader.cpp \
     ./BusDefinition/BusDefinitionWriter.cpp \
+    ./BusDefinition/validators/BusDefinitionValidator.cpp \
     ./AbstractionDefinition/AbstractionDefinition.cpp \
     ./AbstractionDefinition/AbstractionDefinitionReader.cpp \
     ./AbstractionDefinition/AbstractionDefinitionWriter.cpp \
@@ -394,4 +396,4 @@ SOURCES += ./generaldeclarations.cpp \
     ./Component/Wire.cpp \
     ./Component/WireTypeDef.cpp \
     ./Component/WriteValueConstraint.cpp \
-    ./BusDefinition/validators/BusDefinitionValidator.cpp
+    ./Component/validators/ChoiceValidator.cpp

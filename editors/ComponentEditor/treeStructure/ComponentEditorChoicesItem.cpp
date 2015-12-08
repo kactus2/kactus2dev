@@ -11,20 +11,22 @@
 
 #include "ComponentEditorChoicesItem.h"
 
+#include <editors/ComponentEditor/common/ExpressionParser.h>
 #include <editors/ComponentEditor/choices/ChoicesEditor.h>
 
 #include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/validators/ChoiceValidator.h>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorChoicesItem::ComponentEditorChoicesItem()
 //-----------------------------------------------------------------------------
-ComponentEditorChoicesItem::ComponentEditorChoicesItem(ComponentEditorTreeModel* model, 
-												 LibraryInterface* libHandler,
-												 QSharedPointer<Component> component,
-												 ComponentEditorItem* parent ):
-ComponentEditorItem(model, libHandler, component, parent)//, component_(component)
+ComponentEditorChoicesItem::ComponentEditorChoicesItem(ComponentEditorTreeModel* model,
+    LibraryInterface* libHandler, QSharedPointer<Component> component,
+    QSharedPointer<ExpressionParser> expressionParser, ComponentEditorItem* parent):
+ComponentEditorItem(model, libHandler, component, parent),
+choiceValidator_(new ChoiceValidator(expressionParser))
 {
-	
+
 }
 
 //-----------------------------------------------------------------------------
@@ -66,9 +68,12 @@ QString ComponentEditorChoicesItem::text() const
 //-----------------------------------------------------------------------------
 bool ComponentEditorChoicesItem::isValid() const
 {
-    if (editor_)
+    foreach (QSharedPointer<Choice> choice, *component_->getChoices())
     {
-        return editor_->isValid();
+        if (!choiceValidator_->validate(choice))
+        {
+            return false;
+        }
     }
 
     return true;
@@ -81,7 +86,7 @@ ItemEditor* ComponentEditorChoicesItem::editor()
 {
     if (!editor_)
     {
-        editor_ = new ChoicesEditor(component_);
+        editor_ = new ChoicesEditor(component_, choiceValidator_);
         editor_->setProtection(locked_);
         connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(helpUrlRequested(QString const&)),

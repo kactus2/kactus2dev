@@ -93,6 +93,12 @@
     <Filter Include="Header Files\BusDefinition\validators">
       <UniqueIdentifier>{06ae740e-ae54-4934-9ff6-2fa1ac8d2396}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Component\validators">
+      <UniqueIdentifier>{8daac011-d12d-41f3-a0d6-788003de5c37}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Component\validators">
+      <UniqueIdentifier>{c2588e78-c087-4ca0-820f-78ef99341553}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="validators\namevalidator.cpp">
@@ -1097,6 +1103,9 @@
     <ClCompile Include="BusDefinition\validators\BusDefinitionValidator.cpp">
       <Filter>Source Files\BusDefinition\validators</Filter>
     </ClCompile>
+    <ClCompile Include="Component\validators\ChoiceValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BusDefinition\BusDefinition.h">
@@ -1476,6 +1485,9 @@
     </ClInclude>
     <ClInclude Include="BusDefinition\validators\BusDefinitionValidator.h">
       <Filter>Header Files\BusDefinition\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\ChoiceValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -722,6 +722,8 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createHWRootItem(QShare
 {
     ComponentEditorRootItem* hwRoot = new ComponentEditorRootItem(libHandler_, component, &navigationModel_);
 
+    QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder_));
+
     hwRoot->addChildItem(QSharedPointer<ComponentEditorGeneralItem>(
         new ComponentEditorGeneralItem(&navigationModel_, libHandler_, component, hwRoot)));
 
@@ -733,7 +735,7 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createHWRootItem(QShare
         new ComponentEditorFileSetsItem(&navigationModel_, libHandler_, pluginManager_, component, hwRoot)));
 
     hwRoot->addChildItem(QSharedPointer<ComponentEditorChoicesItem>(
-        new ComponentEditorChoicesItem(&navigationModel_, libHandler_, component, hwRoot)));
+        new ComponentEditorChoicesItem(&navigationModel_, libHandler_, component, expressionParser, hwRoot)));
 
     QSharedPointer<ComponentEditorParametersItem> parametersItem(new ComponentEditorParametersItem(
         &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionFormatter_,
@@ -743,9 +745,6 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createHWRootItem(QShare
 
     connect(parametersItem.data(), SIGNAL(openReferenceTree(QString)),
         this, SLOT(openReferenceTree(QString)), Qt::UniqueConnection);
-
-
-    QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder_));
 
     hwRoot->addChildItem(QSharedPointer<ComponentEditorMemMapsItem>(new ComponentEditorMemMapsItem(
         &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionFormatter_,
@@ -813,6 +812,8 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createSWRootItem(QShare
 {
     ComponentEditorRootItem* swRoot = new ComponentEditorRootItem(libHandler_, component, &navigationModel_);
 
+    QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder_));
+
     swRoot->addChildItem(QSharedPointer<ComponentEditorGeneralItem>(
         new ComponentEditorGeneralItem(&navigationModel_, libHandler_, component, swRoot)));
 
@@ -820,7 +821,7 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createSWRootItem(QShare
         new ComponentEditorFileSetsItem(&navigationModel_, libHandler_, pluginManager_, component, swRoot)));
 
     swRoot->addChildItem(QSharedPointer<ComponentEditorChoicesItem>(
-        new ComponentEditorChoicesItem(&navigationModel_, libHandler_, component, swRoot)));
+        new ComponentEditorChoicesItem(&navigationModel_, libHandler_, component, expressionParser, swRoot)));
 
     QSharedPointer<ComponentEditorParametersItem> parametersItem(new ComponentEditorParametersItem(
         &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionFormatter_,
