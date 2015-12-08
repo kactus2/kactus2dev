@@ -9,6 +9,7 @@
 // Unit test for class FileSetValidator.
 //-----------------------------------------------------------------------------
 
+#include <IPXACTmodels/Component/validators/FileValidator.h>
 #include <IPXACTmodels/Component/validators/FileSetValidator.h>
 #include <IPXACTmodels/Component/FileSet.h>
 
@@ -32,14 +33,15 @@ private slots:
 	void hasInValidFile();
 
 private:
+    QSharedPointer<ExpressionParser> expressionParser_;
 };
 
 //-----------------------------------------------------------------------------
 // Function: tst_FileSetValidator::tst_FileSetValidator()
 //-----------------------------------------------------------------------------
-tst_FileSetValidator::tst_FileSetValidator()
+tst_FileSetValidator::tst_FileSetValidator(): expressionParser_(new SystemVerilogExpressionParser())
 {
-
+    
 }
 
 //-----------------------------------------------------------------------------
@@ -48,7 +50,8 @@ tst_FileSetValidator::tst_FileSetValidator()
 void tst_FileSetValidator::baseCase()
 {
 	QSharedPointer<FileSet> fileSet( new FileSet );
-	FileSetValidator validator;
+	FileSetValidator validator(QSharedPointer<FileValidator>(new FileValidator(expressionParser_)),
+        expressionParser_);
 	fileSet->setName("tekstit");
 	
 	QSharedPointer<FileBuilder> builder( new FileBuilder );
@@ -69,7 +72,8 @@ void tst_FileSetValidator::baseCase()
 void tst_FileSetValidator::nameFail()
 {
 	QSharedPointer<FileSet> fileSet( new FileSet );
-	FileSetValidator validator;
+    FileSetValidator validator(QSharedPointer<FileValidator>(new FileValidator(expressionParser_)),
+        expressionParser_);
 	fileSet->setName(" \t \r \n");
 
 	QSharedPointer<FileBuilder> builder( new FileBuilder );
@@ -90,7 +94,8 @@ void tst_FileSetValidator::nameFail()
 void tst_FileSetValidator::fileSetNoType()
 {
 	QSharedPointer<FileSet> fileSet( new FileSet );
-	FileSetValidator validator;
+    FileSetValidator validator(QSharedPointer<FileValidator>(new FileValidator(expressionParser_)),
+        expressionParser_);
 	fileSet->setName("tekstit");
 
 	QSharedPointer<FileBuilder> builder( new FileBuilder );
@@ -115,7 +120,8 @@ void tst_FileSetValidator::fileSetNoType()
 void tst_FileSetValidator::fileSetBogusReplace()
 {
 	QSharedPointer<FileSet> fileSet( new FileSet );
-	FileSetValidator validator;
+    FileSetValidator validator(QSharedPointer<FileValidator>(new FileValidator(expressionParser_)),
+        expressionParser_);
 	fileSet->setName("tekstit");
 
 	QSharedPointer<FileBuilder> builder( new FileBuilder );
@@ -136,7 +142,8 @@ void tst_FileSetValidator::fileSetBogusReplace()
 void tst_FileSetValidator::hasValidFile()
 {
 	QSharedPointer<FileSet> fileSet( new FileSet );
-	FileSetValidator validator;
+    FileSetValidator validator(QSharedPointer<FileValidator>(new FileValidator(expressionParser_)),
+        expressionParser_);
 	fileSet->setName("jutskat");
 
 	QSharedPointer<File> file( new File );
@@ -165,7 +172,8 @@ void tst_FileSetValidator::hasValidFile()
 void tst_FileSetValidator::hasInValidFile()
 {
 	QSharedPointer<FileSet> fileSet( new FileSet );
-	FileSetValidator validator;
+    FileSetValidator validator(QSharedPointer<FileValidator>(new FileValidator(expressionParser_)),
+        expressionParser_);
 	fileSet->setName("jutskat");
 
 	QSharedPointer<File> file( new File );

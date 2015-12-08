@@ -16,10 +16,14 @@
 
 #include <QSharedPointer>
 
-class PluginManager;
 class Component;
+class ExpressionParser;
 class FileSet;
 class File;
+class FileValidator;
+class FileSetValidator;
+class ParameterFinder;
+class PluginManager;
 
 //-----------------------------------------------------------------------------
 //! The file sets-item in the component editor navigation tree.
@@ -33,13 +37,17 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] model       Pointer to the model that owns the items.
-	 *      @param [in] libHandler  Pointer to the instance that manages the library.
-	 *      @param [in] component   Pointer to the component being edited.
-	 *      @param [in] parent      Pointer to the parent item.
+	 *      @param [in] model               The model that owns the items.
+	 *      @param [in] libHandler          The instance that manages the library.
+  	 *      @param [in] pluginMgr           The plugin manager.
+	 *      @param [in] component           The component being edited.
+     *      @param [in] parameterFinder     The finder for component parameters.
+	 *      @param [in] parent              The parent item.
 	 */
-	ComponentEditorFileSetsItem(ComponentEditorTreeModel* model, LibraryInterface* libHandler,
-        PluginManager& pluginMgr, QSharedPointer<Component> component, ComponentEditorItem* parent);
+    ComponentEditorFileSetsItem(ComponentEditorTreeModel* model, LibraryInterface* libHandler,
+        PluginManager& pluginMgr, QSharedPointer<Component> component,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        ComponentEditorItem* parent);
 
 	//! The destructor.
 	virtual ~ComponentEditorFileSetsItem();
@@ -66,9 +74,9 @@ public:
 	virtual QString text() const;
 
 	/*!
-     *  Get pointer to the editor of this item.
+     *  Get The editor of this item.
 	 *
-	 *      @return Pointer to the editor to use for this item.
+	 *      @return The editor to use for this item.
 	 */
 	virtual ItemEditor* editor();
 
@@ -100,6 +108,15 @@ private:
 
 	//! The file sets to edit.
     QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets_;
+
+    //! Expression parser for filesets and files.
+    QSharedPointer<ExpressionParser> expressionParser_;
+
+    //! Validator for file items.
+    QSharedPointer<FileValidator> fileValidator_;
+
+    //! Validator for file set items.
+    QSharedPointer<FileSetValidator> fileSetValidator_;
 
 	//! The plugin manager.
 	PluginManager& pluginMgr_;

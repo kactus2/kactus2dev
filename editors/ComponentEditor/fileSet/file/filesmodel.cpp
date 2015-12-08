@@ -55,6 +55,7 @@ int FilesModel::rowCount(QModelIndex const& parent /*= QModelIndex()*/ ) const
     {
 		return 0;
 	}
+
     return files_->size();
 }
 
@@ -116,15 +117,9 @@ QVariant FilesModel::headerData(int section, Qt::Orientation orientation, int ro
         {
             return tr("Description");
         }
-        else
-        {
-            return QVariant();
-        }
 	}
-	else
-    {
-		return QVariant();
-	}
+
+    return QVariant();
 }
 
 //-----------------------------------------------------------------------------
@@ -186,7 +181,7 @@ QVariant FilesModel::data(QModelIndex const& index, int role) const
     {
         if (!filePathExists(file))
         {
-            return tr("File not found");
+            return tr("File not found.");
         }
         else if (index.column() == FileColumns::DESCRIPTION)
         {
@@ -219,14 +214,14 @@ QVariant FilesModel::data(QModelIndex const& index, int role) const
 //-----------------------------------------------------------------------------
 // Function: FilesModel::setData()
 //-----------------------------------------------------------------------------
-bool FilesModel::setData(QModelIndex const& index, const QVariant& value, int role /*= Qt::EditRole*/ )
+bool FilesModel::setData(QModelIndex const& index, const QVariant& value, int role)
 {
 	if (!index.isValid() || index.row() < 0 || index.row() >= files_->size())
     {
 		return false;
 	}
 
-    if (Qt::EditRole == role)
+    if (role == Qt::EditRole)
     {
         if (index.column() == FileColumns::NAME_COLUMN)
         {
@@ -248,7 +243,8 @@ bool FilesModel::setData(QModelIndex const& index, const QVariant& value, int ro
             const QString filePath = value.toString();
 
             // if the path is empty then the file should be removed
-            if (filePath.isEmpty()) {
+            if (filePath.isEmpty())
+            {
                 onRemoveItem(index);
                 return true;
             }
@@ -285,7 +281,7 @@ bool FilesModel::setData(QModelIndex const& index, const QVariant& value, int ro
 //-----------------------------------------------------------------------------
 // Function: FilesModel::onAddItem()
 //-----------------------------------------------------------------------------
-void FilesModel::onAddItem(QModelIndex const& index, const QString& filePath )
+void FilesModel::onAddItem(QModelIndex const& index, const QString& filePath)
 {
 	int row = files_->size();
 

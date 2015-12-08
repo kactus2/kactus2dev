@@ -16,9 +16,13 @@
 
 #include <QSharedPointer>
 
-class LibraryInterface;
-class FileSet;
 class File;
+class FileValidator;
+class FileSet;
+class FileSetValidator;
+class LibraryInterface;
+class ParameterFinder;
+
 //-----------------------------------------------------------------------------
 //! The item for a single file set in the component editor's navigation tree.
 //-----------------------------------------------------------------------------
@@ -31,16 +35,20 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] fileSet     Pointer to the file set being edited.
-	 *      @param [in] model       Pointer to the model that owns the items.
-	 *      @param [in] libHandler  Pointer to the instance that manages the library.
-	 *      @param [in] component   Pointer to the component being edited.
-	 *      @param [in] parent      Pointer to the parent item.
-	 */
-	ComponentEditorFileSetItem(QSharedPointer<FileSet> fileSet, ComponentEditorTreeModel* model,
-        LibraryInterface* libHandler, QSharedPointer<Component> component, ComponentEditorItem* parent);
+	 *      @param [in] fileSet         The file set being edited.
+	 *      @param [in] model           The model that owns the items.
+	 *      @param [in] libHandler      The instance that manages the library.
+	 *      @param [in] component       The component being edited.
+     *      @param [in] validator       The validator for checking file set validity.
+     *      @param [in] fileValidator   The validator for checking child item (file) validity.
+	 *      @param [in] parent          The parent item.
+     */
+    ComponentEditorFileSetItem(QSharedPointer<FileSet> fileSet, ComponentEditorTreeModel* model,
+        LibraryInterface* libHandler, QSharedPointer<Component> component,
+        QSharedPointer<FileSetValidator> validator, QSharedPointer<FileValidator> fileValidator,
+        ComponentEditorItem* parent);
 
-	//! The destructor.
+    //! The destructor.
 	virtual ~ComponentEditorFileSetItem();
 
 	/*!
@@ -65,9 +73,9 @@ public:
 	virtual bool isValid() const;
 
 	/*!
-     *  Get pointer to the editor of this item.
+     *  Get The editor of this item.
 	 *
-	 *      @return Pointer to the editor to use for this item.
+	 *      @return The editor to use for this item.
 	 */
 	virtual ItemEditor* editor();
 
@@ -103,11 +111,17 @@ private:
 	ComponentEditorFileSetItem(const ComponentEditorFileSetItem& other);
 	ComponentEditorFileSetItem& operator=(const ComponentEditorFileSetItem& other);
     
-	//! Pointer to the file set being edited.
+	//! The file set being edited.
 	QSharedPointer<FileSet> fileSet_;
 
 	//! Contains the files of the file set.
     QSharedPointer<QList<QSharedPointer<File> > > files_;
+
+    //! The validator for checking file set validity.
+    QSharedPointer<FileSetValidator> filesetValidator_;
+
+    //! The validator for checking child validity.
+    QSharedPointer<FileValidator> fileValidator_;
 };
 
 #endif // COMPONENTEDITORFILESETITEM_H

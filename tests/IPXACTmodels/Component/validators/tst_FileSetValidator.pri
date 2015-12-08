@@ -8,56 +8,43 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 
 HEADERS += ../../../../IPXACTmodels/common/Array.h \
-    ../../../../IPXACTmodels/common/Assertion.h \
     ../../../../IPXACTmodels/common/BooleanValue.h \
-    ../../../../IPXACTmodels/common/FileBuilder.h \
-    ../../../../IPXACTmodels/common/FileTypes.h \
     ../../../../IPXACTmodels/Component/BuildCommand.h \
     ../../../../IPXACTmodels/common/BuildModel.h \
-    ../../../../IPXACTmodels/Component/ComponentInstantiation.h \
-    ../../../../IPXACTmodels/common/ConfigurableElementValue.h \
-    ../../../../IPXACTmodels/common/ConfigurableVLNVReference.h \
-    ../../../../IPXACTmodels/Component/DesignConfigurationInstantiation.h \
-    ../../../../IPXACTmodels/Component/DesignInstantiation.h \
     ../../../../editors/ComponentEditor/common/ExpressionParser.h \
     ../../../../IPXACTmodels/common/Extendable.h \
     ../../../../IPXACTmodels/Component/File.h \
+    ../../../../IPXACTmodels/common/FileBuilder.h \
     ../../../../IPXACTmodels/Component/FileSet.h \
-    ../../../../IPXACTmodels/Component/Function.h \
     ../../../../IPXACTmodels/Component/validators/FileSetValidator.h \
+    ../../../../IPXACTmodels/common/FileTypes.h \
+    ../../../../IPXACTmodels/Component/validators/FileValidator.h \
+    ../../../../IPXACTmodels/Component/Function.h \
     ../../../../IPXACTmodels/common/GenericVendorExtension.h \
     ../../../../IPXACTmodels/kactusExtensions/Kactus2Group.h \
     ../../../../IPXACTmodels/kactusExtensions/Kactus2Value.h \
-    ../../../../IPXACTmodels/common/ModuleParameter.h \
     ../../../../IPXACTmodels/common/NameGroup.h \
     ../../../../IPXACTmodels/common/NameValuePair.h \
     ../../../../IPXACTmodels/common/Parameter.h \
     ../../../../IPXACTmodels/common/Range.h \
     ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
     ../../../../IPXACTmodels/common/VLNV.h \
-    ../../../../IPXACTmodels/common/Vector.h \
-    ../../../../IPXACTmodels/Component/validators/FileValidator.h
+    ../../../../IPXACTmodels/common/Vector.h
 SOURCES += ../../../../IPXACTmodels/common/Array.cpp \
-    ../../../../IPXACTmodels/common/Assertion.cpp \
     ../../../../IPXACTmodels/common/BooleanValue.cpp \
-    ../../../../IPXACTmodels/common/FileBuilder.cpp \
-    ../../../../IPXACTmodels/common/FileTypes.cpp \
     ../../../../IPXACTmodels/Component/BuildCommand.cpp \
     ../../../../IPXACTmodels/common/BuildModel.cpp \
-    ../../../../IPXACTmodels/Component/ComponentInstantiation.cpp \
-    ../../../../IPXACTmodels/common/ConfigurableElementValue.cpp \
-    ../../../../IPXACTmodels/common/ConfigurableVLNVReference.cpp \
-    ../../../../IPXACTmodels/Component/DesignConfigurationInstantiation.cpp \
-    ../../../../IPXACTmodels/Component/DesignInstantiation.cpp \
     ../../../../IPXACTmodels/common/Extendable.cpp \
     ../../../../IPXACTmodels/Component/File.cpp \
+    ../../../../IPXACTmodels/common/FileBuilder.cpp \
     ../../../../IPXACTmodels/Component/FileSet.cpp \
-    ../../../../IPXACTmodels/Component/Function.cpp \
     ../../../../IPXACTmodels/Component/validators/FileSetValidator.cpp \
+    ../../../../IPXACTmodels/common/FileTypes.cpp \
+    ../../../../IPXACTmodels/Component/validators/FileValidator.cpp \
+    ../../../../IPXACTmodels/Component/Function.cpp \
     ../../../../IPXACTmodels/common/GenericVendorExtension.cpp \
     ../../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
     ../../../../IPXACTmodels/kactusExtensions/Kactus2Value.cpp \
-    ../../../../IPXACTmodels/common/ModuleParameter.cpp \
     ../../../../IPXACTmodels/common/NameGroup.cpp \
     ../../../../IPXACTmodels/common/NameValuePair.cpp \
     ../../../../IPXACTmodels/common/Parameter.cpp \
@@ -65,5 +52,4 @@ SOURCES += ../../../../IPXACTmodels/common/Array.cpp \
     ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ../../../../IPXACTmodels/common/VLNV.cpp \
     ../../../../IPXACTmodels/common/Vector.cpp \
-    ./tst_FileSetValidator.cpp \
-    ../../../../IPXACTmodels/Component/validators/FileValidator.cpp
+    ./tst_FileSetValidator.cpp

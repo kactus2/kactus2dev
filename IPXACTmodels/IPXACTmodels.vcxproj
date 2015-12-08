@@ -267,6 +267,8 @@
     <ClCompile Include="Component\validators\ChoiceValidator.cpp" />
     <ClCompile Include="Component\validators\EnumeratedValueValidator.cpp" />
     <ClCompile Include="Component\validators\FieldValidator.cpp" />
+    <ClCompile Include="Component\validators\FileSetValidator.cpp" />
+    <ClCompile Include="Component\validators\FileValidator.cpp" />
     <ClCompile Include="Component\View.cpp" />
     <ClCompile Include="Component\ViewReader.cpp" />
     <ClCompile Include="Component\ViewWriter.cpp" />
@@ -1992,6 +1994,8 @@
     <ClInclude Include="Component\validators\ChoiceValidator.h" />
     <ClInclude Include="Component\validators\EnumeratedValueValidator.h" />
     <ClInclude Include="Component\validators\FieldValidator.h" />
+    <ClInclude Include="Component\validators\FileSetValidator.h" />
+    <ClInclude Include="Component\validators\FileValidator.h" />
     <ClInclude Include="Component\View.h" />
     <CustomBuild Include="Component\ViewReader.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>

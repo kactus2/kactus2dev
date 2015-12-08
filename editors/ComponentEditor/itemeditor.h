@@ -41,13 +41,6 @@ public:
 	//! The destructor.
 	virtual ~ItemEditor();
 
-	/*! 
-     *  Check for the validity of the edited item.
-	 * 
-	 *      @return True if item is valid.
-	 */
-	virtual bool isValid() const = 0;
-
     /*!
      *  Allows/disallows the editor change.
      *

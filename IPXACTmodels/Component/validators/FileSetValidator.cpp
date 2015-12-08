@@ -24,7 +24,10 @@
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogValidator::SystemVerilogValidator()
 //-----------------------------------------------------------------------------
-FileSetValidator::FileSetValidator()
+FileSetValidator::FileSetValidator(QSharedPointer<FileValidator> fileValidator,
+    QSharedPointer<ExpressionParser> expressionParser):
+fileValidator_(fileValidator),
+expressionParser_(expressionParser)
 {
 
 }
@@ -42,32 +45,28 @@ FileSetValidator::~FileSetValidator()
 //-----------------------------------------------------------------------------
 bool FileSetValidator::validate(QSharedPointer<FileSet> fileSet) const
 {
-	QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-
-	if ( !hasValidName( fileSet->name() ) )
+	if (!hasValidName( fileSet->name()))
 	{
 		return false;
 	}
 
-	foreach ( QSharedPointer<FileBuilder> currentFileBuilder, *fileSet->getDefaultFileBuilders() )
+	foreach (QSharedPointer<FileBuilder> currentFileBuilder, *fileSet->getDefaultFileBuilders())
 	{
-		if ( !hasValidName( currentFileBuilder->getFileType() ) )
+		if (!hasValidName(currentFileBuilder->getFileType()))
 		{
 			return false;
 		}
 
-		if ( !currentFileBuilder->getReplaceDefaultFlags().isEmpty() &&
-			!parser->isValidExpression( currentFileBuilder->getReplaceDefaultFlags() ) )
+		if (!currentFileBuilder->getReplaceDefaultFlags().isEmpty() &&
+			!expressionParser_->isValidExpression( currentFileBuilder->getReplaceDefaultFlags()))
 		{
 			return false;
 		}
 	}
 
-	FileValidator fileValidator;
-
-	foreach( QSharedPointer<File> file, *fileSet->getFiles() )
+	foreach(QSharedPointer<File> file, *fileSet->getFiles())
 	{
-		if ( !fileValidator.validate( file ) )
+		if (!fileValidator_->validate(file))
 		{
 			return false;
 		}
@@ -82,33 +81,31 @@ bool FileSetValidator::validate(QSharedPointer<FileSet> fileSet) const
 void FileSetValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<FileSet> fileSet,
     QString const& context) const
 {
-	QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-
-	if ( !hasValidName( fileSet->name() ) )
+	if (!hasValidName(fileSet->name()))
 	{
-		errors.append(QObject::tr("The name is invalid or in-existing: %1").arg(fileSet->name()));
+        errors.append(QObject::tr("The file set name '%1' is invalid within %2.").arg(fileSet->name(), context));
 	}
 
-	foreach ( QSharedPointer<FileBuilder> currentFileBuilder, *fileSet->getDefaultFileBuilders() )
+	foreach (QSharedPointer<FileBuilder> currentFileBuilder, *fileSet->getDefaultFileBuilders())
 	{
-		if ( !hasValidName( currentFileBuilder->getFileType() ) )
+		if (!hasValidName(currentFileBuilder->getFileType()))
 		{
-			errors.append(QObject::tr("The type of default file builder is empty."));
+			errors.append(QObject::tr("The type of default file builder is empty within file set %1..").arg(
+                fileSet->name()));
 		}
 
-		if ( !currentFileBuilder->getReplaceDefaultFlags().isEmpty() &&
-			!parser->isValidExpression( currentFileBuilder->getReplaceDefaultFlags() ) )
+		if (!currentFileBuilder->getReplaceDefaultFlags().isEmpty() &&
+			!expressionParser_->isValidExpression( currentFileBuilder->getReplaceDefaultFlags() ) )
 		{
-			errors.append(QObject::tr("\"Replace default flags\" of default file builder is an invalid expression: %1"
-				).arg(currentFileBuilder->getReplaceDefaultFlags()));
+            errors.append(QObject::tr("\"Replace default flags\" expression '%1' in build command for file set %2" 
+                "is invalid.").arg(currentFileBuilder->getReplaceDefaultFlags(), fileSet->name()));
 		}
 	}
 
-	FileValidator fileValidator;
-
-	foreach( QSharedPointer<File> file, *fileSet->getFiles() )
+    QString filesetContext = QObject::tr("file set %1").arg(fileSet->name());
+	foreach(QSharedPointer<File> file, *fileSet->getFiles())
 	{
-		fileValidator.findErrorsIn( errors, file, context );
+		fileValidator_->findErrorsIn(errors, file, filesetContext);
 	}
 }
 
@@ -117,11 +114,9 @@ void FileSetValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Fil
 //-----------------------------------------------------------------------------
 bool FileSetValidator::hasValidName(QString const& name) const
 {
-	QRegularExpression whiteSpaceExpression;
-	whiteSpaceExpression.setPattern("^\\s*$");
-	QRegularExpressionMatch whiteSpaceMatch = whiteSpaceExpression.match(name);
+	QRegularExpression whiteSpaceExpression("^\\s*$");
 
-	if (name.isEmpty() || whiteSpaceMatch.hasMatch())
+	if (name.isEmpty() || whiteSpaceExpression.match(name).hasMatch())
 	{
 		return false;
 	}

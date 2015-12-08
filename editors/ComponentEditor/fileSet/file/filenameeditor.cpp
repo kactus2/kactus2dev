@@ -57,7 +57,7 @@ FileNameEditor::~FileNameEditor()
 //-----------------------------------------------------------------------------
 bool FileNameEditor::isValid() const
 {
-    return true;
+    return !file_->name().isEmpty();
 }
 
 //-----------------------------------------------------------------------------

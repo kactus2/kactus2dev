@@ -68,14 +68,6 @@ FileEditor::~FileEditor()
 }
 
 //-----------------------------------------------------------------------------
-// Function: fileeditor::isValid()
-//-----------------------------------------------------------------------------
-bool FileEditor::isValid() const
-{
-    return fileTypeEditor_.isValid() && nameEditor_.isValid();
-}
-
-//-----------------------------------------------------------------------------
 // Function: fileeditor::refresh()
 //-----------------------------------------------------------------------------
 void FileEditor::refresh()
@@ -85,9 +77,9 @@ void FileEditor::refresh()
     fileTypeEditor_.restore();
     buildCommand_.refresh();
 
-    dependenciesEditor_.setItems(*file_->getDependencies().data());
-    exportedNamesEditor_.setItems(*file_->getExportedNames().data());
-    imageTypesEditor_.setItems(*file_->getImageTypes().data());
+    dependenciesEditor_.setItems(*file_->getDependencies());
+    exportedNamesEditor_.setItems(*file_->getExportedNames());
+    imageTypesEditor_.setItems(*file_->getImageTypes());
 }
 
 //-----------------------------------------------------------------------------
@@ -104,13 +96,8 @@ void FileEditor::showEvent(QShowEvent* event)
 //-----------------------------------------------------------------------------
 void FileEditor::onFileTypesChanged()
 {
-    QStringList fileTypes = fileTypeEditor_.items();
-
     file_->clearFileTypes();
-    foreach (QString item, fileTypes)
-    {
-        file_->getFileTypes()->append(item);
-    }
+    file_->getFileTypes()->append(fileTypeEditor_.items());
 
     emit contentChanged();
 }
@@ -120,12 +107,8 @@ void FileEditor::onFileTypesChanged()
 //-----------------------------------------------------------------------------
 void FileEditor::onDependenciesChanged()
 {
-    QStringList dependencies = dependenciesEditor_.items();
     file_->getDependencies()->clear();
-    foreach (QString item, dependencies)
-    {
-        file_->getDependencies()->append(item);
-    }
+    file_->getDependencies()->append(dependenciesEditor_.items());
 
     emit contentChanged();
 }
@@ -135,12 +118,8 @@ void FileEditor::onDependenciesChanged()
 //-----------------------------------------------------------------------------
 void FileEditor::onExportedNamesChanged()
 {
-    QStringList exportedNames = exportedNamesEditor_.items();
     file_->getExportedNames()->clear();
-    foreach (QString item, exportedNames)
-    {
-        file_->getExportedNames()->append(item);
-    }
+    file_->getExportedNames()->append(exportedNamesEditor_.items());
 
     emit contentChanged();
 }
@@ -150,12 +129,8 @@ void FileEditor::onExportedNamesChanged()
 //-----------------------------------------------------------------------------
 void FileEditor::onImageTypesChanged()
 {
-    QStringList imageTypes = imageTypesEditor_.items();
     file_->getImageTypes()->clear();
-    foreach (QString item, imageTypes)
-    {
-        file_->getImageTypes()->append(item);
-    }
+    file_->getImageTypes()->append(imageTypesEditor_.items());
 
     emit contentChanged();
 }
@@ -188,6 +163,7 @@ void FileEditor::setupLayout()
     bottomLayout->addWidget(&imageTypesEditor_);
 
     QVBoxLayout* topLayout = new QVBoxLayout(this);
+    topLayout->setContentsMargins(0, 0, 0, 0);
     topLayout->addLayout(topOfPageLayout);
     topLayout->addLayout(bottomLayout);
     topLayout->addStretch(1);

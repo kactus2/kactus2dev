@@ -16,9 +16,13 @@
 
 #include <QRegExpValidator>
 
-class File;
+
 class Component;
+class ExpressionParser;
+class File;
+class FileValidator;
 class LibraryInterface;
+class ParameterFinder;
 
 //-----------------------------------------------------------------------------
 //! The item for a single file in component editor's navigation tree.
@@ -32,14 +36,17 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] file        Pointer to the file being edited.
-	 *      @param [in] model       Pointer to the model that owns the items.
-	 *      @param [in] libHandler  Pointer to the instance that manages the library.
-	 *      @param [in] component   Pointer to the component being edited.
-	 *      @param [in] parent      Pointer to the parent item.
+	 *      @param [in] file        The file being edited.
+	 *      @param [in] model       The model that owns the items.
+	 *      @param [in] libHandler  The instance that manages the library.
+	 *      @param [in] component   The component being edited.
+     *      @param [in] validator   The validator for checking file validity.
+	 *      @param [in] parent      The parent item.
 	 */
-	ComponentEditorFileItem(QSharedPointer<File> file, ComponentEditorTreeModel* model,
-        LibraryInterface* libHandler, QSharedPointer<Component> component, ComponentEditorItem* parent);
+    ComponentEditorFileItem(QSharedPointer<File> file, ComponentEditorTreeModel* model,
+        LibraryInterface* libHandler, QSharedPointer<Component> component, 
+        QSharedPointer<FileValidator> validator, 
+        ComponentEditorItem* parent);
 
 	//! The destructor.
 	virtual ~ComponentEditorFileItem();
@@ -66,9 +73,9 @@ public:
 	virtual bool isValid() const;
 
 	/*!
-     *  Get pointer to the editor of this item.
+     *  Get The editor of this item.
 	 *
-	 *      @return Pointer to the editor to use for this item.
+	 *      @return The editor to use for this item.
 	 */
 	virtual ItemEditor* editor();
 
@@ -157,8 +164,11 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! Pointer to the file being edited.
+    //! The file being edited.
 	QSharedPointer<File> file_;
+
+    //! The validator for checking file validity.
+    QSharedPointer<FileValidator> validator_;
 
     //! Action to open the file for editing with default editor.
     QAction* editAction_;

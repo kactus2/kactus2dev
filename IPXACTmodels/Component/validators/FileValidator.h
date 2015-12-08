@@ -14,11 +14,12 @@
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
-#include <IPXACTmodels/Component/File.h>
-
+#include <QSharedPointer>
 #include <QString>
 #include <QVector>
 
+class ExpressionParser;
+class File;
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:File.
 //-----------------------------------------------------------------------------
@@ -30,7 +31,7 @@ public:
 	 *  The constructor.
 	 *
 	 */
-    FileValidator();
+    FileValidator(QSharedPointer<ExpressionParser> expressionParser);
 
 	//! The destructor.
 	~FileValidator();
@@ -55,6 +56,10 @@ public:
 		QString const& context) const;
 
 private:
+    
+	// Disable copying.
+	FileValidator(FileValidator const& rhs);
+	FileValidator& operator=(FileValidator const& rhs);
 
     /*!
      *  Check if the name is valid.
@@ -65,9 +70,8 @@ private:
      */
     bool hasValidName(QString const& name) const;
 
-	// Disable copying.
-	FileValidator(FileValidator const& rhs);
-	FileValidator& operator=(FileValidator const& rhs);
+    //! The expression parser to use.
+    QSharedPointer<ExpressionParser> expressionParser_;
 };
 
 #endif // SYSTEMVERILOGVALIDATOR_H

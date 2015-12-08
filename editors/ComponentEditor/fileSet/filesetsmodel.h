@@ -94,12 +94,6 @@ public:
 	*/
 	Qt::ItemFlags flags(const QModelIndex& index) const;
 
-	/*! Check the validity of the items in the model.
-	 *
-	 *      @return True if all items are in valid state.
-	*/
-	virtual bool isValid() const;
-
 public slots:
 
 	/*! Add a new item to the given index.

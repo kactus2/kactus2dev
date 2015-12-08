@@ -12,11 +12,15 @@
 #include "componenteditorfileitem.h"
 
 #include <editors/ComponentEditor/fileSet/file/fileeditor.h>
+
+#include <library/LibraryManager/libraryinterface.h>
+
 #include <IPXACTmodels/generaldeclarations.h>
+
 #include <IPXACTmodels/Component/File.h>
 #include <IPXACTmodels/Component/Component.h>
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <IPXACTmodels/Component/validators/FileValidator.h>
 
 #include <QDesktopServices>
 #include <QFileInfo>
@@ -31,20 +35,24 @@
 // Function: ComponentEditorFileItem::ComponentEditorFileItem()
 //-----------------------------------------------------------------------------
 ComponentEditorFileItem::ComponentEditorFileItem(QSharedPointer<File> file, ComponentEditorTreeModel* model,
-    LibraryInterface* libHandler, QSharedPointer<Component> component, ComponentEditorItem* parent):
+    LibraryInterface* libHandler, QSharedPointer<Component> component,
+    QSharedPointer<FileValidator> validator, 
+    ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-file_(file),
-editAction_(new QAction(tr("Edit"), this)),
-editWithAction_(new QAction(tr("Edit/Run with..."), this)),
-runAction_(new QAction(tr("Run"), this)),
-openContainingFolderAction_(new QAction(tr("Open Containing Folder"), this) )
+    file_(file),
+    validator_(validator),
+    editAction_(new QAction(tr("Edit"), this)),
+    editWithAction_(new QAction(tr("Edit/Run with..."), this)),
+    runAction_(new QAction(tr("Run"), this)),
+    openContainingFolderAction_(new QAction(tr("Open Containing Folder"), this) )
 {
     connect(editAction_, SIGNAL(triggered(bool)), this, SLOT(openItem()), Qt::UniqueConnection);
     connect(editWithAction_, SIGNAL(triggered(bool)), this, SLOT(openWith()), Qt::UniqueConnection);
-	connect(runAction_, SIGNAL(triggered(bool)), this, SLOT(run()), Qt::UniqueConnection);
-	connect(openContainingFolderAction_, SIGNAL(triggered(bool)),
-		this, SLOT(onOpenContainingFolder()), Qt::UniqueConnection);
+    connect(runAction_, SIGNAL(triggered(bool)), this, SLOT(run()), Qt::UniqueConnection);
+    connect(openContainingFolderAction_, SIGNAL(triggered(bool)),
+        this, SLOT(onOpenContainingFolder()), Qt::UniqueConnection);
 }
+
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorFileItem::~ComponentEditorFileItem()
 //-----------------------------------------------------------------------------
@@ -52,13 +60,13 @@ ComponentEditorFileItem::~ComponentEditorFileItem()
 {
 
 }
+
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorFileItem::text()
 //-----------------------------------------------------------------------------
 QString ComponentEditorFileItem::text() const
 {
-    QFileInfo fileQfi = QFileInfo(file_->name());
-    return fileQfi.fileName();
+    return QFileInfo(file_->name()).fileName();
 }
 
 //-----------------------------------------------------------------------------
@@ -66,36 +74,29 @@ QString ComponentEditorFileItem::text() const
 //-----------------------------------------------------------------------------
 bool ComponentEditorFileItem::isValid() const
 {
-    /*
-	// if the file is not valid
-	if (!file_->isValid(true)) {
-		return false;
-	}
+    if (!validator_->validate(file_))
+    {
+        return false;
+    }
 
 	QString filePath = file_->name();
 
-    // get the path to the xml file
-    QString basePath = libHandler_->getPath(*component_->getVlnv());
-
-    QString absPath;
-
-    // if the path is relative then create absolute path
+    QString absolutePath;
     QFileInfo originalInfo(filePath);
     if (originalInfo.isRelative())
     {
-        absPath = General::getAbsolutePath(basePath, filePath);
+        QString basePath = libHandler_->getPath(component_->getVlnv());
+        absolutePath = General::getAbsolutePath(basePath, filePath);
     }
     // if the reference is directly absolute
     else
     {
-        absPath = filePath;
+        absolutePath = filePath;
     }
 
     // check if the file exists in the file system
-    QFileInfo fileInfo(absPath);
-    return fileInfo.exists();*/
-
-    return true;
+    QFileInfo fileInfo(absolutePath);
+    return fileInfo.exists();
 }
 
 //-----------------------------------------------------------------------------
@@ -236,7 +237,7 @@ bool ComponentEditorFileItem::useKactusCSourceEditor() const
 	{
 		QString key = "FileTypes/" + fileType + "/EditInKactus";
 
-		if ( settings.value(key).toBool() )
+		if (settings.value(key).toBool())
 		{
 			return true;
 		}

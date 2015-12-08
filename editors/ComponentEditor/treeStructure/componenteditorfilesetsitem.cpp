@@ -12,6 +12,8 @@
 #include "componenteditorfilesetsitem.h"
 #include "componenteditorfilesetitem.h"
 
+#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+
 #include <editors/ComponentEditor/fileSet/filesetseditor.h>
 
 #include <Plugins/PluginSystem/PluginManager.h>
@@ -20,21 +22,28 @@
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/File.h>
 
+#include <IPXACTmodels/Component/validators/FileValidator.h>
+#include <IPXACTmodels/Component/validators/FileSetValidator.h>
+
 //-----------------------------------------------------------------------------
 // Function: componenteditorfilesetsitem::ComponentEditorFileSetsItem()
 //-----------------------------------------------------------------------------
-ComponentEditorFileSetsItem::ComponentEditorFileSetsItem( ComponentEditorTreeModel* model,
-                                                          LibraryInterface* libHandler, PluginManager& pluginMgr,
-                                                          QSharedPointer<Component> component,
-                                                          ComponentEditorItem* parent):
+ComponentEditorFileSetsItem::ComponentEditorFileSetsItem(ComponentEditorTreeModel* model,
+                                                         LibraryInterface* libHandler, PluginManager& pluginMgr,
+                                                         QSharedPointer<Component> component,
+                                                         QSharedPointer<ParameterFinder> parameterFinder,
+                                                         ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 fileSets_(component->getFileSets()),
+expressionParser_(new IPXactSystemVerilogParser(parameterFinder)),
+fileValidator_(new FileValidator(expressionParser_)),
+fileSetValidator_(new FileSetValidator(fileValidator_, expressionParser_)),
 pluginMgr_(pluginMgr)
 {
 	foreach (QSharedPointer<FileSet> fileSet, *fileSets_)
     {
-		QSharedPointer<ComponentEditorFileSetItem> fileSetItem(
-			new ComponentEditorFileSetItem(fileSet, model, libHandler, component, this));
+		QSharedPointer<ComponentEditorFileSetItem> fileSetItem(new ComponentEditorFileSetItem(
+            fileSet, model, libHandler, component, fileSetValidator_, fileValidator_, this));
 
         connect(fileSetItem.data(), SIGNAL(childRemoved(int)),
                 this, SIGNAL(refreshDependencyModel()), Qt::UniqueConnection);
@@ -102,10 +111,10 @@ QString ComponentEditorFileSetsItem::getTooltip() const
 //-----------------------------------------------------------------------------
 // Function: componenteditorfilesetsitem::createChild()
 //-----------------------------------------------------------------------------
-void ComponentEditorFileSetsItem::createChild( int index )
+void ComponentEditorFileSetsItem::createChild(int index)
 {
-	QSharedPointer<ComponentEditorFileSetItem> fileSetItem(
-        new ComponentEditorFileSetItem(fileSets_->at(index), model_, libHandler_, component_, this));
+	QSharedPointer<ComponentEditorFileSetItem> fileSetItem(new ComponentEditorFileSetItem(
+        fileSets_->at(index), model_, libHandler_, component_, fileSetValidator_, fileValidator_, this));
 
     connect(fileSetItem.data(), SIGNAL(childRemoved(int)),
         this, SIGNAL(refreshDependencyModel()), Qt::UniqueConnection);

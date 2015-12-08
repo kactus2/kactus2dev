@@ -21,6 +21,8 @@
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/File.h>
 
+#include <IPXACTmodels/Component/validators/FileSetValidator.h>
+
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorFileSetItem::ComponentEditorFileSetItem()
 //-----------------------------------------------------------------------------
@@ -28,13 +30,15 @@ ComponentEditorFileSetItem::ComponentEditorFileSetItem(QSharedPointer<FileSet> f
                                                        ComponentEditorTreeModel* model,
                                                        LibraryInterface* libHandler,
 													   QSharedPointer<Component> component,
+                                                       QSharedPointer<FileSetValidator> validator,
+                                                       QSharedPointer<FileValidator> fileValidator,
 													   ComponentEditorItem* parent ):
 ComponentEditorItem(model, libHandler, component, parent),
 fileSet_(fileSet),
-files_(fileSet->getFiles())
+files_(fileSet->getFiles()),
+filesetValidator_(validator),
+fileValidator_(fileValidator)
 {
-	Q_ASSERT(fileSet);
-
     int childCount = files_->size();
     for (int i = 0; i < childCount; i++)
     {
@@ -63,39 +67,25 @@ QString ComponentEditorFileSetItem::text() const
 //-----------------------------------------------------------------------------
 bool ComponentEditorFileSetItem::isValid() const
 {
-	// check that the file set is valid
-// 	if (!fileSet_->isValid(true))
-//     {
-// 		return false;
-// 	}
+ 	if (!filesetValidator_->validate(fileSet_))
+    {
+ 		return false;
+ 	}
 
 	// check that the dependent directories exist
 	QString xmlPath = libHandler_->getPath(component_->getVlnv());
-	QStringList dependentDirs = *fileSet_->getDependencies().data();
 
-	// check each directory
-	foreach (QString relDirPath, dependentDirs)
+	foreach (QString const& relDirPath, *fileSet_->getDependencies())
     {
 		QString absPath = General::getAbsolutePath(xmlPath, relDirPath);
-		QFileInfo dirInfo(absPath);
 
-		// if the directory does not exist
-		if (!dirInfo.exists())
+		if (!QFileInfo(absPath).exists())
         {
 			return false;
 		}
 	}
 
-	// check that all files are valid
-	foreach (QSharedPointer<ComponentEditorItem> childItem, childItems_)
-    {
-		if (!childItem->isValid())
-        {
-			return false;
-		}
-	}
-
-	return true;
+	return ComponentEditorItem::isValid();
 }
 
 //-----------------------------------------------------------------------------
@@ -115,6 +105,7 @@ ItemEditor* ComponentEditorFileSetItem::editor()
 
          connect(editor_, SIGNAL(childRemoved(int)), this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
 	}
+
 	return editor_;
 }
 
@@ -132,7 +123,7 @@ QString ComponentEditorFileSetItem::getTooltip() const
 void ComponentEditorFileSetItem::createChild(int index)
 {
 	QSharedPointer<ComponentEditorFileItem> fileItem
-        (new ComponentEditorFileItem(files_->at(index), model_, libHandler_, component_, this));
+        (new ComponentEditorFileItem(files_->at(index), model_, libHandler_, component_, fileValidator_, this));
 
     connect(fileItem.data(), SIGNAL(openCSource(QString const&, QSharedPointer<Component>)),
             model_, SIGNAL(openCSource(QString const&, QSharedPointer<Component>)), Qt::UniqueConnection);

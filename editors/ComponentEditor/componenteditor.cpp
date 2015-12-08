@@ -732,7 +732,7 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createHWRootItem(QShare
 	connect(genEditor, SIGNAL(hierarchyChanged(QSettings&)), this, SLOT(setRowVisibility(QSettings&)));
 
     hwRoot->addChildItem(QSharedPointer<ComponentEditorFileSetsItem>(
-        new ComponentEditorFileSetsItem(&navigationModel_, libHandler_, pluginManager_, component, hwRoot)));
+        new ComponentEditorFileSetsItem(&navigationModel_, libHandler_, pluginManager_, component, parameterFinder_, hwRoot)));
 
     hwRoot->addChildItem(QSharedPointer<ComponentEditorChoicesItem>(
         new ComponentEditorChoicesItem(&navigationModel_, libHandler_, component, expressionParser, hwRoot)));
@@ -818,7 +818,8 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createSWRootItem(QShare
         new ComponentEditorGeneralItem(&navigationModel_, libHandler_, component, swRoot)));
 
     swRoot->addChildItem(QSharedPointer<ComponentEditorFileSetsItem>(
-        new ComponentEditorFileSetsItem(&navigationModel_, libHandler_, pluginManager_, component, swRoot)));
+        new ComponentEditorFileSetsItem(&navigationModel_, libHandler_, pluginManager_, component,
+        parameterFinder_, swRoot)));
 
     swRoot->addChildItem(QSharedPointer<ComponentEditorChoicesItem>(
         new ComponentEditorChoicesItem(&navigationModel_, libHandler_, component, expressionParser, swRoot)));

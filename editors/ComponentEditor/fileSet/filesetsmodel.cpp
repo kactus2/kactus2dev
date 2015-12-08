@@ -139,17 +139,7 @@ QVariant FileSetsModel::data(QModelIndex const& index, int role) const
     {
         return fileSet->description();
     }
-	else if (role == Qt::ForegroundRole)
-    {
-// 		if (fileSet->isValid(false))
-//         {
-        return QColor("black");
-// 		}
-// 		else
-//         {
-// 			return QColor("red");
-// 		}
-	}
+
 	else if (Qt::BackgroundRole == role)
     {
         if (index.column() == FileSetColumns::NAME_COLUMN)
@@ -260,23 +250,6 @@ void FileSetsModel::onRemoveItem(QModelIndex const& index)
 
 	// tell also parent widget that contents have been changed
 	emit contentChanged();
-}
-
-//-----------------------------------------------------------------------------
-// Function: FileSetsModel::isValid()
-//-----------------------------------------------------------------------------
-bool FileSetsModel::isValid() const
-{
-	// if at least one file set is invalid
-// 	foreach (QSharedPointer<FileSet> fileSet, *fileSets_)
-//     {
-// 		if (!fileSet->isValid(true))
-//         {
-// 			return false;
-// 		}
-// 	}
-	// all file sets valid
-	return true;
 }
 
 //-----------------------------------------------------------------------------

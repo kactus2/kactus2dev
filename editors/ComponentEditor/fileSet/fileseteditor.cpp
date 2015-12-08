@@ -24,15 +24,15 @@
 // Function: FileSetEditor::FileSetEditor()
 //-----------------------------------------------------------------------------
 FileSetEditor::FileSetEditor(LibraryInterface* handler, QSharedPointer<Component> component,
-                             QSharedPointer<FileSet> fileSet, QWidget *parent ):
+    QSharedPointer<FileSet> fileSet, QWidget *parent):
 ItemEditor(component, handler, parent),
-baseLocation_(handler->getPath(component->getVlnv())),
-fileSet_(fileSet), 
-nameEditor_(fileSet, this),
-groupsEditor_(tr("Group identifiers"), this),
-fileBuilderEditor_(fileSet->getDefaultFileBuilders(), this),
-files_(component, fileSet, handler, this),
-dependencies_(tr("Dependent directories"), handler, component, this)
+    baseLocation_(handler->getPath(component->getVlnv())),
+    fileSet_(fileSet), 
+    nameEditor_(fileSet, this),
+    groupsEditor_(tr("Group identifiers"), this),
+    fileBuilderEditor_(fileSet->getDefaultFileBuilders(), this),
+    files_(component, fileSet, handler, this),
+    dependencies_(tr("Dependent directories"), handler, component, this)
 {
     nameEditor_.setTitle("File set name and description");
 
@@ -61,14 +61,6 @@ FileSetEditor::~FileSetEditor()
 }
 
 //-----------------------------------------------------------------------------
-// Function: FileSetEditor::isValid()
-//-----------------------------------------------------------------------------
-bool FileSetEditor::isValid() const
-{
-	return nameEditor_.isValid() && fileBuilderEditor_.isValid() && files_.isValid();
-}
-
-//-----------------------------------------------------------------------------
 // Function: FileSetEditor::refresh()
 //-----------------------------------------------------------------------------
 void FileSetEditor::refresh()
@@ -77,14 +69,14 @@ void FileSetEditor::refresh()
 	nameEditor_.refresh();
 
 	// initialize groups 
-	groupsEditor_.initialize(*fileSet_->getGroups().data());
+	groupsEditor_.initialize(*fileSet_->getGroups());
 
 	files_.refresh();
 
 	fileBuilderEditor_.refresh();
 
 	// initialize dependencies
-	dependencies_.initialize(*fileSet_->getDependencies().data());
+	dependencies_.initialize(*fileSet_->getDependencies());
 }
 
 //-----------------------------------------------------------------------------
@@ -92,12 +84,8 @@ void FileSetEditor::refresh()
 //-----------------------------------------------------------------------------
 void FileSetEditor::onGroupsChange()
 {
-    QStringList groupList = groupsEditor_.items();
     fileSet_->getGroups()->clear();
-    foreach (QString group, groupList)
-    {
-        fileSet_->getGroups()->append(group);
-    }
+    fileSet_->getGroups()->append(groupsEditor_.items());
 
 	emit contentChanged();
 }
@@ -107,30 +95,19 @@ void FileSetEditor::onGroupsChange()
 //-----------------------------------------------------------------------------
 void FileSetEditor::onDependenciesChange()
 {
-    QStringList dependencies = dependencies_.items();
     fileSet_->getDependencies()->clear();
-    foreach (QString dependency, dependencies)
-    {
-        fileSet_->getDependencies()->append(dependency);
-    }
+    fileSet_->getDependencies()->append(dependencies_.items());
+    
 	emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
 // Function: FileSetEditor::showEvent()
 //-----------------------------------------------------------------------------
-void FileSetEditor::showEvent( QShowEvent* event )
+void FileSetEditor::showEvent(QShowEvent* event)
 {
 	QWidget::showEvent(event);
 	emit helpUrlRequested("componenteditor/fileset.html");
-}
-
-//-----------------------------------------------------------------------------
-// Function: FileSetEditor::getFileSet()
-//-----------------------------------------------------------------------------
-QSharedPointer<FileSet> FileSetEditor::getFileSet()
-{
-    return fileSet_;
 }
 
 //-----------------------------------------------------------------------------

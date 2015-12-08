@@ -19,6 +19,9 @@
 #include <QString>
 #include <QVector>
 
+class ExpressionParser;
+class FileValidator;
+
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:FileSet.
 //-----------------------------------------------------------------------------
@@ -30,7 +33,8 @@ public:
 	 *  The constructor.
 	 *
 	 */
-    FileSetValidator();
+    FileSetValidator(QSharedPointer<FileValidator> fileValidator,
+        QSharedPointer<ExpressionParser> expressionParser);
 
 	//! The destructor.
 	~FileSetValidator();
@@ -56,6 +60,10 @@ public:
 
 private:
 
+    // Disable copying.
+    FileSetValidator(FileSetValidator const& rhs);
+    FileSetValidator& operator=(FileSetValidator const& rhs);
+
     /*!
      *  Check if the name is valid.
      *
@@ -65,9 +73,10 @@ private:
      */
     bool hasValidName(QString const& name) const;
 
-	// Disable copying.
-	FileSetValidator(FileSetValidator const& rhs);
-	FileSetValidator& operator=(FileSetValidator const& rhs);
+
+    QSharedPointer<FileValidator> fileValidator_;
+
+    QSharedPointer<ExpressionParser> expressionParser_;
 };
 
 #endif // SYSTEMVERILOGVALIDATOR_H

@@ -75,16 +75,7 @@ bool FileTypeEditor::isValid() const
 		return false;
 	}
 
-	QStringList items = model_->items();
-	foreach (QString item, items)
-    {
-		if (item.isEmpty())
-        {
-			return false;
-		}
-	}
-
-	return true;
+	return !model_->items().contains("");
 }
 
 //-----------------------------------------------------------------------------

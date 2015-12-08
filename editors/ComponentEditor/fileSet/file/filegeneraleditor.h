@@ -55,7 +55,10 @@ private slots:
 	//! Handler for changes in logical name.
 	void onLogicalNameChanged();
 
-	//! Handler for changes in include file setting.
+    //! Handler for changes in structural file setting.
+    void onStructuralFileChanged();
+
+    //! Handler for changes in include file setting.
 	void onIncludeFileChanged();
 
 	//! Handler for external declarations changes.
@@ -75,6 +78,9 @@ private:
 
 	//! The check box to set the logical name as default or not.
 	QCheckBox logicalDefault_;
+
+    //! The check box to set the file as structural file or not.
+    QCheckBox structuralFile_;
 
 	//! The check box to set the file as include file or not.
 	QCheckBox includeFile_;

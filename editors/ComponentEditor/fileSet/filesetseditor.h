@@ -51,12 +51,6 @@ public:
 	//! The destructor
 	~FileSetsEditor();
 
-	/*! Check for the validity of the editor
-	* 
-	*       @return True if the editor is in valid state.
-	*/
-	virtual bool isValid() const;
-
 	//! Reload the information from the model to the editor.
 	virtual void refresh();
 

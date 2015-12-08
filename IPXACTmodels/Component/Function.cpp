@@ -11,37 +11,6 @@
 
 #include "Function.h"
 
-/*
-bool Function::SourceFile::isValid( QStringList& errorList, const QString& parentIdentifier ) const {
-	bool valid = true;
-
-	if (sourceName_.isEmpty()) {
-		errorList.append(QObject::tr("Mandatory source name missing for source file within %1").arg(
-			parentIdentifier));
-		valid = false;
-	}
-
-	if (fileType_.isEmpty() && userFileType_.isEmpty()) {
-		errorList.append(QObject::tr("Mandatory file type missing for source file %1 within %2").arg(
-			sourceName_).arg(parentIdentifier));
-		valid = false;
-	}
-
-	return valid;
-}*/
-/*
-bool Function::SourceFile::isValid() const {
-	if (sourceName_.isEmpty()) {
-		return false;
-	}
-
-	if (fileType_.isEmpty() && userFileType_.isEmpty()) {
-		return false;
-	}
-
-	return true;
-}*/
-
 //-----------------------------------------------------------------------------
 // Function: Function::SourceFile()
 //-----------------------------------------------------------------------------
@@ -159,67 +128,6 @@ Function::~Function()
     arguments_.clear();
     sourceFiles_.clear();
 }
-
-/*
-bool Function::isValid( const QStringList& fileIDs, QStringList& errorList, const QString& parentIdentifier,
-    bool checkChildren ) const
-{
-	bool valid = true;
-
-	if (fileRef_.isEmpty()) {
-		errorList.append(QObject::tr("Mandatory file reference missing in function within %1").arg(
-			parentIdentifier));
-		valid = false;
-	}
-	else if (!fileIDs.contains(fileRef_)) {
-		errorList.append(QObject::tr("File reference %1 not found in files of %2").arg(
-			fileRef_).arg(parentIdentifier));
-		valid = false;
-	}
-
-	if (checkChildren) {
-		foreach (QSharedPointer<Argument> argument, arguments_) {
-			if (!argument->isValid(errorList, QObject::tr("function %1").arg(entryPoint_))) {
-				valid = false;
-			}
-		}
-
-		foreach (QSharedPointer<SourceFile> sourceFile, sourceFiles_) {
-			if (!sourceFile->isValid(errorList, QObject::tr("function %1").arg(entryPoint_))) {
-				valid = false;
-			}
-		}
-	}
-
-	return valid;
-}
-*//*
-bool Function::isValid(const QStringList& fileIDs, bool checkChildren) const
-{
-	if (fileRef_.isEmpty()) {
-		return false;
-	}
-	else if (!fileIDs.contains(fileRef_)) {
-		return false;
-	}
-
-	if (checkChildren) {
-		foreach (QSharedPointer<Argument> argument, arguments_) {
-			if (!argument->isValid()) {
-				return false;
-			}
-		}
-
-		foreach (QSharedPointer<SourceFile> sourceFile, sourceFiles_) {
-			if (!sourceFile->isValid()) {
-				return false;
-			}
-		}
-	}
-
-	return true;
-}
-*/
 
 //-----------------------------------------------------------------------------
 // Function: Function::getReplicate()
