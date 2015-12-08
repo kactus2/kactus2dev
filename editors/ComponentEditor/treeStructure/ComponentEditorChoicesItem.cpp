@@ -15,6 +15,7 @@
 #include <editors/ComponentEditor/choices/ChoicesEditor.h>
 
 #include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/Choice.h>
 #include <IPXACTmodels/Component/validators/ChoiceValidator.h>
 
 //-----------------------------------------------------------------------------
@@ -68,11 +69,16 @@ QString ComponentEditorChoicesItem::text() const
 //-----------------------------------------------------------------------------
 bool ComponentEditorChoicesItem::isValid() const
 {
+    QStringList choiceNames;
     foreach (QSharedPointer<Choice> choice, *component_->getChoices())
     {
-        if (!choiceValidator_->validate(choice))
+        if (choiceNames.contains(choice->name()) || !choiceValidator_->validate(choice))
         {
             return false;
+        }
+        else
+        {
+            choiceNames.append(choice->name());
         }
     }
 

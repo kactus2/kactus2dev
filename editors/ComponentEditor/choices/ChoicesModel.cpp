@@ -189,11 +189,17 @@ bool ChoicesModel::setData( const QModelIndex& index, const QVariant& value, int
 //-----------------------------------------------------------------------------
 bool ChoicesModel::isValid() const
 {
+    QStringList choiceNames;
+
 	foreach (QSharedPointer<Choice> choice, *choices_)
     {
-        if (!validator_->validate(choice))
+        if (choiceNames.contains(choice->name()) || !validator_->validate(choice))
         {
             return false;
+        }
+        else
+        {
+            choiceNames.append(choice->name());
         }
     }
  
