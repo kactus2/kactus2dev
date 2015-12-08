@@ -23,6 +23,7 @@ class ExpressionParser;
 class Field;
 class Register;
 class Component;
+class FieldValidator;
 //-----------------------------------------------------------------------------
 //! The item for single field in component editor's navigation tree.
 //-----------------------------------------------------------------------------
@@ -153,6 +154,9 @@ private:
 
     //! The expression parser to use.
     QSharedPointer<ExpressionParser> expressionParser_;
+
+    //! The used field validator.
+    QSharedPointer<FieldValidator> fieldValidator_;
 };
 
 #endif // COMPONENTEDITORFIELDITEM_H

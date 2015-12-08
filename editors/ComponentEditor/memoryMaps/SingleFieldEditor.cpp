@@ -32,6 +32,8 @@
 #include <IPXACTmodels/Component/Field.h>
 #include <IPXACTmodels/Component/WriteValueConstraint.h>
 
+#include <IPXACTmodels/Component/validators/EnumeratedValueValidator.h>
+#include <IPXACTmodels/Component/validators/FieldValidator.h>
 #include <IPXACTmodels/common/validators/ValueFormatter.h>
 
 #include <QComboBox>
@@ -43,12 +45,14 @@
 // Function: SingleFieldEditor::SingleFieldEditor()
 //-----------------------------------------------------------------------------
 SingleFieldEditor::SingleFieldEditor(QSharedPointer<Field> field, QSharedPointer<Component> component,
-                                     LibraryInterface* handler, QSharedPointer<ParameterFinder> parameterFinder,
-                                     QSharedPointer<ExpressionParser> expressionParser,
-                                     QWidget* parent /* = 0 */):
+    LibraryInterface* handler, QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<FieldValidator> fieldValidator,
+    QWidget* parent /* = 0 */):
 ItemEditor(component, handler, parent),
 nameEditor_(field, this, tr("Field name and description")),
-enumerationsEditor_(new FieldEditor(field, component, handler, this)),
+enumerationsEditor_(new FieldEditor(field->getEnumeratedValues(),
+    QSharedPointer<EnumeratedValueValidator> (new EnumeratedValueValidator(expressionParser)), component, handler,
+    this)),
 offsetEditor_(new ExpressionEditor(parameterFinder, this)),
 widthEditor_(new ExpressionEditor(parameterFinder, this)),
 volatileEditor_(),
@@ -64,7 +68,8 @@ writeConstraintMinLimit_(new ExpressionEditor(parameterFinder, this)),
 writeConstraintMaxLimit_(new ExpressionEditor(parameterFinder, this)),
 resetValueEditor_(new ExpressionEditor(parameterFinder, this)),
 resetMaskEditor_(new ExpressionEditor(parameterFinder, this)),
-field_(field)
+field_(field),
+fieldValidator_(fieldValidator)
 {
     offsetEditor_->setFixedHeight(20);
     widthEditor_->setFixedHeight(20);
@@ -143,10 +148,7 @@ SingleFieldEditor::~SingleFieldEditor()
 //-----------------------------------------------------------------------------
 bool SingleFieldEditor::isValid() const
 {
-    bool nameIsValid = nameEditor_.isValid();
-    bool fieldIsValid = enumerationsEditor_->isValid();
-
-    return nameIsValid && fieldIsValid;
+    return fieldValidator_->validate(field_);
 }
 
 //-----------------------------------------------------------------------------

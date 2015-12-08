@@ -21,7 +21,8 @@ class ExpressionParser;
 class Field;
 
 class Choice;
-
+class ParameterValidator2014;
+class EnumeratedValueValidator;
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:Field.
 //-----------------------------------------------------------------------------
@@ -279,8 +280,11 @@ private:
     //! The expression parser to use.
     QSharedPointer<ExpressionParser> expressionParser_;
 
-    //! The available choices.
-    QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices_;
+    //! The used enumerated value validator.
+    QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator_;
+
+    //! The used parameter validator.
+    QSharedPointer<ParameterValidator2014> parameterValidator_;
 };
 
 #endif // FIELDVALIDATOR_H

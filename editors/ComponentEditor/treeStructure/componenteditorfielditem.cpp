@@ -19,6 +19,7 @@
     
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 
+#include <IPXACTmodels/Component/validators/FieldValidator.h>
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/Register.h>
 #include <IPXACTmodels/Component/Field.h>
@@ -38,7 +39,8 @@ reg_(reg),
 field_(field),
 visualizer_(NULL),
 graphItem_(NULL),
-expressionParser_(expressionParser)
+expressionParser_(expressionParser),
+fieldValidator_(new FieldValidator(expressionParser, component->getChoices()))
 {
 	Q_ASSERT(field_);
 
@@ -77,8 +79,7 @@ QString ComponentEditorFieldItem::text() const
 //-----------------------------------------------------------------------------
 bool ComponentEditorFieldItem::isValid() const 
 {
-// 	return field_->isValid(reg_->getSize(), component_->getChoices());
-    return true;
+    return fieldValidator_->validate(field_);
 }
 
 //-----------------------------------------------------------------------------
@@ -88,7 +89,8 @@ ItemEditor* ComponentEditorFieldItem::editor()
 {
 	if (!editor_)
     {
-        editor_ = new SingleFieldEditor(field_, component_, libHandler_, parameterFinder_, expressionParser_);
+        editor_ = new SingleFieldEditor(field_, component_, libHandler_, parameterFinder_, expressionParser_,
+            fieldValidator_);
 		editor_->setProtection(locked_);
 
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);

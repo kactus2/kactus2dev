@@ -29,7 +29,8 @@
 FieldValidator::FieldValidator(QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<QList<QSharedPointer<Choice> > > choices):
 expressionParser_(expressionParser),
-availableChoices_(choices)
+enumeratedValueValidator_(new EnumeratedValueValidator(expressionParser)),
+parameterValidator_(new ParameterValidator2014(expressionParser, choices))
 {
 
 }
@@ -213,7 +214,6 @@ bool FieldValidator::hasValidEnumeratedValues(QSharedPointer<Field> field) const
 {
     if (!field->getEnumeratedValues()->isEmpty())
     {
-        EnumeratedValueValidator validator(expressionParser_);
         QStringList enumeratedValueNames;
 
         bool constraintUsesEnums = false;
@@ -235,7 +235,8 @@ bool FieldValidator::hasValidEnumeratedValues(QSharedPointer<Field> field) const
                 enumerationWriteUsage = true;
             }
 
-            if (!validator.validate(enumeratedValue) || enumeratedValueNames.contains(enumeratedValue->name()))
+            if (!enumeratedValueValidator_->validate(enumeratedValue) ||
+                enumeratedValueNames.contains(enumeratedValue->name()))
             {
                 return false;
             }
@@ -261,12 +262,11 @@ bool FieldValidator::hasValidParameters(QSharedPointer<Field> field) const
 {
     if (!field->getParameters()->isEmpty())
     {
-        ParameterValidator2014 validator(expressionParser_, availableChoices_);
         QStringList parameterNames;
 
         foreach (QSharedPointer<Parameter> parameter, *field->getParameters())
         {
-            if (parameterNames.contains(parameter->name()) || !validator.validate(parameter.data()))
+            if (parameterNames.contains(parameter->name()) || !parameterValidator_->validate(parameter))
             {
                 return false;
             }
@@ -455,8 +455,6 @@ void FieldValidator::findErrorsInEnumeratedValues(QVector<QString>& errors, QSha
 {
     if (!field->getEnumeratedValues()->isEmpty())
     {
-        EnumeratedValueValidator validator(expressionParser_);
-
         QString context = "field " + field->name();
 
         bool useEnumerations = false;
@@ -472,7 +470,7 @@ void FieldValidator::findErrorsInEnumeratedValues(QVector<QString>& errors, QSha
         QStringList enumeratedValueNames;
         foreach (QSharedPointer<EnumeratedValue> enumeratedValue, *field->getEnumeratedValues())
         {
-            validator.findErrorsIn(errors, enumeratedValue, context);
+            enumeratedValueValidator_->findErrorsIn(errors, enumeratedValue, context);
 
             if (enumeratedValueNames.contains(enumeratedValue->name()))
             {
@@ -508,14 +506,13 @@ void FieldValidator::findErrorsInParameters(QVector<QString>& errors, QSharedPoi
 {
     if (!hasValidParameters(field))
     {
-        ParameterValidator2014 validator(expressionParser_, availableChoices_);
         QString context = "field " + field->name();
 
         QStringList parameterNames;
 
         foreach (QSharedPointer<Parameter> parameter, *field->getParameters())
         {
-            validator.findErrorsIn(errors, parameter, context);
+            parameterValidator_->findErrorsIn(errors, parameter, context);
 
             if (parameterNames.contains(parameter->name()))
             {

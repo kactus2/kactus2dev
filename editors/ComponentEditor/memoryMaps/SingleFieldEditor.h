@@ -29,6 +29,7 @@ class ParameterFinder;
 class ExpressionParser;
 class Field;
 class Component;
+class FieldValidator;
 
 #include <QComboBox>
 
@@ -49,6 +50,7 @@ public:
 	 *      @param [in] handler             The instance managing the library.
      *      @param [in] parameterFinder     The instance for finding parameter references.
      *      @param [in] expressionParser    The expression parser to use.
+     *      @param [in] fieldValidator      The used field validator.
 	 *      @param [in] parent              The parent of this editor.
 	 */
 	SingleFieldEditor(QSharedPointer<Field> field,
@@ -56,6 +58,7 @@ public:
         LibraryInterface* handler,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<FieldValidator> fieldValidator,
         QWidget* parent = 0);
 
     /*!
@@ -276,6 +279,9 @@ private:
 
     //! The field being edited.
     QSharedPointer<Field> field_;
+
+    //! The used field validator.
+    QSharedPointer<FieldValidator> fieldValidator_;
 };
 
 #endif // SINGLEFIELDEDITOR_H

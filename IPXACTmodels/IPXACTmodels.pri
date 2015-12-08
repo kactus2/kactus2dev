@@ -202,7 +202,9 @@ HEADERS += ./XmlUtils.h \
     ./Component/RemapStateWriter.h \
     ./Component/ViewReader.h \
     ./Component/ViewWriter.h \
-    ./Component/validators/ChoiceValidator.h
+    ./Component/validators/ChoiceValidator.h \
+    ./Component/validators/FieldValidator.h \
+    ./Component/validators/EnumeratedValueValidator.h
 SOURCES += ./generaldeclarations.cpp \
     ./XmlUtils.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
@@ -396,4 +398,6 @@ SOURCES += ./generaldeclarations.cpp \
     ./Component/Wire.cpp \
     ./Component/WireTypeDef.cpp \
     ./Component/WriteValueConstraint.cpp \
-    ./Component/validators/ChoiceValidator.cpp
+    ./Component/validators/ChoiceValidator.cpp \
+    ./Component/validators/EnumeratedValueValidator.cpp \
+    ./Component/validators/FieldValidator.cpp

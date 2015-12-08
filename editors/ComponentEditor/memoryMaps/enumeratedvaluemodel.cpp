@@ -12,20 +12,22 @@
 #include "enumeratedvaluemodel.h"
 #include "EnumeratedValueColumns.h"
 
-#include <IPXACTmodels/Component/Field.h>
 #include <IPXACTmodels/Component/EnumeratedValue.h>
+
+#include <IPXACTmodels/Component/validators/EnumeratedValueValidator.h>
 
 #include <QColor>
 
 //-----------------------------------------------------------------------------
 // Function: enumeratedvaluemodel::EnumeratedValueModel()
 //-----------------------------------------------------------------------------
-EnumeratedValueModel::EnumeratedValueModel(QSharedPointer<Field> field, QObject *parent):
-QAbstractTableModel(parent),
-field_(field),
-enumValues_(field->getEnumeratedValues())
+EnumeratedValueModel::EnumeratedValueModel(
+    QSharedPointer<QList<QSharedPointer<EnumeratedValue> > > enumeratedValues,
+    QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator, QObject *parent):
+enumValues_(enumeratedValues),
+enumeratedValueValidator_(enumeratedValueValidator)
 {
-	Q_ASSERT(field_);
+
 }
 
 //-----------------------------------------------------------------------------
@@ -130,14 +132,14 @@ QVariant EnumeratedValueModel::data( const QModelIndex& index, int role /*= Qt::
 
 	else if (Qt::ForegroundRole == role)
     {
-        /*if (enumValues_->at(index.row())->isValid())
-        {*/
-        return QColor("black");
-		/*}
-		else
+        if (enumeratedValueValidator_->validate(enumValues_->at(index.row())))
         {
-			return QColor("red");
-		}*/
+            return QColor("black");
+        }
+        else
+        {
+            return QColor("red");
+        }
 	}
 
 	else if (Qt::BackgroundRole == role)
@@ -215,15 +217,20 @@ bool EnumeratedValueModel::setData( const QModelIndex& index, const QVariant& va
 //-----------------------------------------------------------------------------
 bool EnumeratedValueModel::isValid() const
 {
-    /*
-	foreach (QSharedPointer<EnumeratedValue> enumValue, enumValues_)
+    QStringList enumeratedValueNames;
+    foreach (QSharedPointer<EnumeratedValue> enumValue, *enumValues_)
     {
-		if (!enumValue->isValid())
+        if (enumeratedValueNames.contains(enumValue->name()) || !enumeratedValueValidator_->validate(enumValue))
         {
-			return false;
-		}
-	}*/
-	return true;
+            return false;
+        }
+        else
+        {
+            enumeratedValueNames.append(enumValue->name());
+        }
+    }
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------

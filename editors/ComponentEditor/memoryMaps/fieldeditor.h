@@ -21,7 +21,8 @@
 class EditableTableView;
 class EnumeratedValueModel;
 class LibraryInterface;
-class Field;
+class EnumeratedValue;
+class EnumeratedValueValidator;
 class Component;
 //-----------------------------------------------------------------------------
 //! Editor for editing the enumerated values of a field.
@@ -35,13 +36,15 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] field       Pointer to the field being edited.
-	 *      @param [in] component   Pointer to the component being edited.
-	 *      @param [in] handler     Pointer to the instance managing the library.
-	 *      @param [in] parent      Pointer to the parent of this editor.
+	 *      @param [in] enumeratedValues            List of enumerated values being edited.
+     *      @param [in] enumeratedValueValidator    The validator for enumerated values.
+	 *      @param [in] component                   Pointer to the component being edited.
+	 *      @param [in] handler                     Pointer to the instance managing the library.
+	 *      @param [in] parent                      Pointer to the parent of this editor.
 	 */
-	FieldEditor(QSharedPointer<Field> field, QSharedPointer<Component> component, LibraryInterface* handler,
-        QWidget* parent = 0);
+	FieldEditor(QSharedPointer<QList<QSharedPointer<EnumeratedValue> > > enumeratedValues,
+        QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator, QSharedPointer<Component> component,
+        LibraryInterface* handler, QWidget* parent = 0);
 
 	/*!
 	 *  The destructor.

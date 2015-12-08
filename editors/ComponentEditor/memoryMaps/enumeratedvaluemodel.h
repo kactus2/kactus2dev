@@ -15,8 +15,8 @@
 #include <QAbstractTableModel>
 #include <QSharedPointer>
 
-class Field;
 class EnumeratedValue;
+class EnumeratedValueValidator;
 
 //-----------------------------------------------------------------------------
 //! The model to manage the enumerated values of a field.
@@ -30,10 +30,12 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] field   Pointer to the field being edited.
-	 *      @param [in] parent  Pointer to the owner of the model.
+	 *      @param [in] enumeratedValues            The enumerated values being edited.
+     *      @param [in] enumeratedValueValidator    The validator used for enumerated values.
+	 *      @param [in] parent                      Pointer to the owner of the model.
 	 */
-	EnumeratedValueModel(QSharedPointer<Field> field, QObject *parent);
+    EnumeratedValueModel(QSharedPointer<QList<QSharedPointer<EnumeratedValue> > > enumeratedValues,
+        QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator, QObject *parent);
 	
 	//! The destructor.
 	virtual ~EnumeratedValueModel();
@@ -148,11 +150,11 @@ private:
      */
     QVariant valueForIndex(QModelIndex const& index) const;
 
-	//! Pointer to the field being edited.
-	QSharedPointer<Field> field_;
-
 	//! Contains the enumerated values being edited.
     QSharedPointer<QList<QSharedPointer<EnumeratedValue> > > enumValues_;
+
+    //! The validator for enumerated values.
+    QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator_;
 };
 
 #endif // ENUMERATEDVALUEMODEL_H

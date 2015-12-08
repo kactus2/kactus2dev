@@ -24,12 +24,13 @@
 //-----------------------------------------------------------------------------
 // Function: fieldeditor::FieldEditor()
 //-----------------------------------------------------------------------------
-FieldEditor::FieldEditor(QSharedPointer<Field> field, QSharedPointer<Component> component,
-                         LibraryInterface* handler, QWidget* parent /*= 0*/ ):
+FieldEditor::FieldEditor(QSharedPointer<QList<QSharedPointer<EnumeratedValue> > > enumeratedValues,
+    QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator, QSharedPointer<Component> component,
+    LibraryInterface* handler, QWidget* parent /* = 0 */):
 QGroupBox(tr("Enumerated values"), parent),
 enumView_(new EditableTableView(this)),
 enumProxy_(new QSortFilterProxyModel(this)),
-enumModel_(new EnumeratedValueModel(field, this))
+enumModel_(new EnumeratedValueModel(enumeratedValues, enumeratedValueValidator, this))
 {
 	QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(enumView_, 0);

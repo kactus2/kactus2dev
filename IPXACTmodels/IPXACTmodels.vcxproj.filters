@@ -1106,6 +1106,12 @@
     <ClCompile Include="Component\validators\ChoiceValidator.cpp">
       <Filter>Source Files\Component\validators</Filter>
     </ClCompile>
+    <ClCompile Include="Component\validators\EnumeratedValueValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\validators\FieldValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BusDefinition\BusDefinition.h">
@@ -1487,6 +1493,12 @@
       <Filter>Header Files\BusDefinition\validators</Filter>
     </ClInclude>
     <ClInclude Include="Component\validators\ChoiceValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\FieldValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\EnumeratedValueValidator.h">
       <Filter>Header Files\Component\validators</Filter>
     </ClInclude>
   </ItemGroup>

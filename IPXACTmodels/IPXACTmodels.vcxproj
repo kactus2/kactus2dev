@@ -265,6 +265,8 @@
     <ClCompile Include="Component\SlaveInterface.cpp" />
     <ClCompile Include="Component\Transactional.cpp" />
     <ClCompile Include="Component\validators\ChoiceValidator.cpp" />
+    <ClCompile Include="Component\validators\EnumeratedValueValidator.cpp" />
+    <ClCompile Include="Component\validators\FieldValidator.cpp" />
     <ClCompile Include="Component\View.cpp" />
     <ClCompile Include="Component\ViewReader.cpp" />
     <ClCompile Include="Component\ViewWriter.cpp" />
@@ -1988,6 +1990,8 @@
     <ClInclude Include="Component\SlaveInterface.h" />
     <ClInclude Include="Component\Transactional.h" />
     <ClInclude Include="Component\validators\ChoiceValidator.h" />
+    <ClInclude Include="Component\validators\EnumeratedValueValidator.h" />
+    <ClInclude Include="Component\validators\FieldValidator.h" />
     <ClInclude Include="Component\View.h" />
     <CustomBuild Include="Component\ViewReader.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
