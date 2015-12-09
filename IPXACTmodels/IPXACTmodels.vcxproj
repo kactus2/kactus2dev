@@ -270,6 +270,7 @@
     <ClCompile Include="Component\validators\FieldValidator.cpp" />
     <ClCompile Include="Component\validators\FileSetValidator.cpp" />
     <ClCompile Include="Component\validators\FileValidator.cpp" />
+    <ClCompile Include="Component\validators\RemapStateValidator.cpp" />
     <ClCompile Include="Component\View.cpp" />
     <ClCompile Include="Component\ViewReader.cpp" />
     <ClCompile Include="Component\ViewWriter.cpp" />
@@ -1998,6 +1999,7 @@
     <ClInclude Include="Component\validators\FieldValidator.h" />
     <ClInclude Include="Component\validators\FileSetValidator.h" />
     <ClInclude Include="Component\validators\FileValidator.h" />
+    <ClInclude Include="Component\validators\RemapStateValidator.h" />
     <ClInclude Include="Component\View.h" />
     <CustomBuild Include="Component\ViewReader.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>

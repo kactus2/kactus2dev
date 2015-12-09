@@ -97,14 +97,6 @@ RemapConditionEditor::~RemapConditionEditor()
 }
 
 //-----------------------------------------------------------------------------
-// Function: RemapConditionEditor::isValid()
-//-----------------------------------------------------------------------------
-bool RemapConditionEditor::isValid() const
-{
-    return model_->isValid();
-}
-
-//-----------------------------------------------------------------------------
 // Function: RemapConditionEditor::refresh()
 //-----------------------------------------------------------------------------
 void RemapConditionEditor::refresh()

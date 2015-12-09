@@ -43,13 +43,6 @@ public:
 	 */
 	virtual ~RemapStatesEditor();
 
-	/*!
-	 *  Check for the validity of the editor.
-	 *
-     *      @return True, if the editor is in valid state, false otherwise.
-	 */
-	virtual bool isValid() const;
-
     /*!
 	 *  Reload the information from the model to the editor.
 	 */

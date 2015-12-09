@@ -1121,6 +1121,9 @@
     <ClCompile Include="Component\validators\CPUValidator.cpp">
       <Filter>Source Files\Component\validators</Filter>
     </ClCompile>
+    <ClCompile Include="Component\validators\RemapStateValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BusDefinition\BusDefinition.h">
@@ -1517,6 +1520,9 @@
       <Filter>Header Files\Component\validators</Filter>
     </ClInclude>
     <ClInclude Include="Component\validators\CPUValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\RemapStateValidator.h">
       <Filter>Header Files\Component\validators</Filter>
     </ClInclude>
   </ItemGroup>

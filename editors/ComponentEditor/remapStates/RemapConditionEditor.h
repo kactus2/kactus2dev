@@ -41,7 +41,7 @@ public:
      *
      *      @param [in] remapPorts              The list containing the remap ports of this remap state.
      *      @param [in] component               The component whose remap state is being edited.
-     *      @param [in] parameterFinder         The parmaeter finder used to search the components parameters.
+     *      @param [in] parameterFinder         The parameter finder used to search the components parameters.
      *      @param [in] expressionFormatter     Changes the parameter ids to names in references.
      *      @param [in] parent                  Pointer to the owner of this editor.
      */
@@ -55,13 +55,6 @@ public:
      *  The destructor.
      */
     virtual ~RemapConditionEditor();
-
-	/*!
-	 *  Check for the validity of the edited remap state.
-	 *
-     *      @return True, if the remap state is valid, false otherwise.
-	 */
-	virtual bool isValid() const;
 
 	/*!
 	 *  Restore the changes made in the editor.

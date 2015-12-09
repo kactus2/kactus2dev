@@ -44,121 +44,6 @@ RemapConditionModel::~RemapConditionModel()
 }
 
 //-----------------------------------------------------------------------------
-// Function: RemapConditionModel::setupVisibleRemapPorts()
-//-----------------------------------------------------------------------------
-void RemapConditionModel::setupVisibleRemapPorts()
-{
-    foreach (QSharedPointer<RemapPort> remapStatePortPointer, *remapPortsOfRemapState_)
-    {
-        int arrayIndex = getArrayStartIndex(remapStatePortPointer->getPortNameRef());
-        arrayIndex = remapStatePortPointer->getPortIndex().toInt() - arrayIndex; 
-
-        if (!remapPortIsAlreadyVisible(remapStatePortPointer, arrayIndex))
-        {
-            QSharedPointer<RemapPort> newRemapPort (new RemapPort(*(remapStatePortPointer)));
-
-            if (arrayIndex > -1)
-            {
-                QString newValue = newRemapPort->getValue();
-
-                for (int i = 0; i < arrayIndex; ++i)
-                {
-                    newValue.prepend(',');
-                }
-
-                newValue.prepend('{');
-                newValue.append(getEndOfArray(newRemapPort->getPortNameRef(), arrayIndex));
-
-                newRemapPort->setValue(newValue);
-            }
-
-            remapPortsVisibleInModel_->append(newRemapPort);
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: RemapConditionModel::getArrayStartIndex()
-//-----------------------------------------------------------------------------
-int RemapConditionModel::getArrayStartIndex(QString const& remapPortName)
-{
-    foreach (QSharedPointer<Port> targetPort, *componentPorts_)
-    {
-        if (targetPort->name() == remapPortName)
-        {
-            int arrayLeft = formattedValueFor(targetPort->getLeftBound()).toInt();
-            int arrayRight = formattedValueFor(targetPort->getRightBound()).toInt();
-
-            if (arrayLeft < arrayRight)
-            {
-                return arrayLeft;
-            }
-            else
-            {
-                return arrayRight;
-            }
-        }
-    }
-
-    return -1;
-}
-
-//-----------------------------------------------------------------------------
-// Function: RemapConditionModel::remapPortIsAlreadyVisible()
-//-----------------------------------------------------------------------------
-bool RemapConditionModel::remapPortIsAlreadyVisible(QSharedPointer<RemapPort> remapStateRemapPort, int arrayIndex)
-{
-    foreach (QSharedPointer<RemapPort> modelPortPointer, *remapPortsVisibleInModel_)
-    {
-        if (modelPortPointer->getPortNameRef() == remapStateRemapPort->getPortNameRef())
-        {
-            QStringList remapPortValueList = modelPortPointer->getValue().split(',');
-            remapPortValueList.first() = remapPortValueList.first().remove('{');
-            remapPortValueList.last() = remapPortValueList.last().remove('}');
-            remapPortValueList[arrayIndex] = remapStateRemapPort->getValue();
-
-            QString newValue = remapPortValueList.join(',');
-            newValue.prepend('{');
-            newValue.append('}');
-
-            modelPortPointer->setValue(newValue);
-
-            return true;
-        }
-    }
-
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: RemapConditionModel::getEndOfArray()
-//-----------------------------------------------------------------------------
-QString RemapConditionModel::getEndOfArray(QString const& remapPortName, int newPortIndex)
-{
-    foreach (QSharedPointer<Port> targetPort, *componentPorts_)
-    {
-        if (targetPort->name() == remapPortName)
-        {
-            QString leftBound = parseExpressionToDecimal(targetPort->getLeftBound());
-            QString rightBound = parseExpressionToDecimal(targetPort->getRightBound());
-
-            int portWidth = abs(leftBound.toInt() - rightBound.toInt()) + 1;
-            int commasLeft = portWidth - newPortIndex - 1;
-
-            QString endOfArray('}');
-            for (int i = 0; i < commasLeft; ++i)
-            {
-                endOfArray.prepend(',');
-            }
-
-            return endOfArray;
-        }
-    }
-
-    return QString('}');
-}
-
-//-----------------------------------------------------------------------------
 // Function: RemapConditionModel::rowCount()
 //-----------------------------------------------------------------------------
 int RemapConditionModel::rowCount(QModelIndex const& parent) const
@@ -620,4 +505,119 @@ QStringList RemapConditionModel::getAvailablePorts()
     }
 
     return availablePorts;
+}
+
+//-----------------------------------------------------------------------------
+// Function: RemapConditionModel::setupVisibleRemapPorts()
+//-----------------------------------------------------------------------------
+void RemapConditionModel::setupVisibleRemapPorts()
+{
+    foreach (QSharedPointer<RemapPort> remapStatePortPointer, *remapPortsOfRemapState_)
+    {
+        int arrayIndex = getArrayStartIndex(remapStatePortPointer->getPortNameRef());
+        arrayIndex = remapStatePortPointer->getPortIndex().toInt() - arrayIndex; 
+
+        if (!remapPortIsAlreadyVisible(remapStatePortPointer, arrayIndex))
+        {
+            QSharedPointer<RemapPort> newRemapPort (new RemapPort(*(remapStatePortPointer)));
+
+            if (arrayIndex > -1)
+            {
+                QString newValue = newRemapPort->getValue();
+
+                for (int i = 0; i < arrayIndex; ++i)
+                {
+                    newValue.prepend(',');
+                }
+
+                newValue.prepend('{');
+                newValue.append(getEndOfArray(newRemapPort->getPortNameRef(), arrayIndex));
+
+                newRemapPort->setValue(newValue);
+            }
+
+            remapPortsVisibleInModel_->append(newRemapPort);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: RemapConditionModel::remapPortIsAlreadyVisible()
+//-----------------------------------------------------------------------------
+bool RemapConditionModel::remapPortIsAlreadyVisible(QSharedPointer<RemapPort> remapStateRemapPort, int arrayIndex)
+{
+    foreach (QSharedPointer<RemapPort> modelPortPointer, *remapPortsVisibleInModel_)
+    {
+        if (modelPortPointer->getPortNameRef() == remapStateRemapPort->getPortNameRef())
+        {
+            QStringList remapPortValueList = modelPortPointer->getValue().split(',');
+            remapPortValueList.first() = remapPortValueList.first().remove('{');
+            remapPortValueList.last() = remapPortValueList.last().remove('}');
+            remapPortValueList[arrayIndex] = remapStateRemapPort->getValue();
+
+            QString newValue = remapPortValueList.join(',');
+            newValue.prepend('{');
+            newValue.append('}');
+
+            modelPortPointer->setValue(newValue);
+
+            return true;
+        }
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: RemapConditionModel::getEndOfArray()
+//-----------------------------------------------------------------------------
+QString RemapConditionModel::getEndOfArray(QString const& remapPortName, int newPortIndex)
+{
+    foreach (QSharedPointer<Port> targetPort, *componentPorts_)
+    {
+        if (targetPort->name() == remapPortName)
+        {
+            QString leftBound = parseExpressionToDecimal(targetPort->getLeftBound());
+            QString rightBound = parseExpressionToDecimal(targetPort->getRightBound());
+
+            int portWidth = abs(leftBound.toInt() - rightBound.toInt()) + 1;
+            int commasLeft = portWidth - newPortIndex - 1;
+
+            QString endOfArray('}');
+            for (int i = 0; i < commasLeft; ++i)
+            {
+                endOfArray.prepend(',');
+            }
+
+            return endOfArray;
+        }
+    }
+
+    return QString('}');
+}
+
+//-----------------------------------------------------------------------------
+// Function: RemapConditionModel::getArrayStartIndex()
+//-----------------------------------------------------------------------------
+int RemapConditionModel::getArrayStartIndex(QString const& remapPortName)
+{
+    foreach (QSharedPointer<Port> targetPort, *componentPorts_)
+    {
+        if (targetPort->name() == remapPortName)
+        {
+            int arrayLeft = formattedValueFor(targetPort->getLeftBound()).toInt();
+            int arrayRight = formattedValueFor(targetPort->getRightBound()).toInt();
+
+            if (arrayLeft < arrayRight)
+            {
+                return arrayLeft;
+            }
+            else
+            {
+                return arrayRight;
+            }
+        }
+    }
+
+    return -1;
 }

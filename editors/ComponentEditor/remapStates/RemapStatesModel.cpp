@@ -179,14 +179,6 @@ bool RemapStatesModel::setData(const QModelIndex& index, const QVariant& value, 
 }
 
 //-----------------------------------------------------------------------------
-// Function: RemapStatesModel::isValid()
-//-----------------------------------------------------------------------------
-bool RemapStatesModel::isValid() const
-{
-    return true;
-}
-
-//-----------------------------------------------------------------------------
 // Function: RemapStatesModel::onAddItem()
 //-----------------------------------------------------------------------------
 void RemapStatesModel::onAddItem(const QModelIndex& index)

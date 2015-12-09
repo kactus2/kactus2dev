@@ -104,13 +104,6 @@ public:
 	 */
 	bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
 
-	/*!
-	 *  Check if the views model is in a valid state.
-	 *
-     *      @return True, if the state is valid and writing is possible, false otherwise.
-	 */
-	bool isValid() const;
-
 public slots:
 
     /*!

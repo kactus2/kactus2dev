@@ -50,14 +50,6 @@ SingleRemapStateEditor::~SingleRemapStateEditor()
 }
 
 //-----------------------------------------------------------------------------
-// Function: SingleRemapStateEditor::isValid()
-//-----------------------------------------------------------------------------
-bool SingleRemapStateEditor::isValid() const
-{
-    return nameEditor_.isValid();
-}
-
-//-----------------------------------------------------------------------------
 // Function: SingleRemapStateEditor::refresh()
 //-----------------------------------------------------------------------------
 void SingleRemapStateEditor::refresh()

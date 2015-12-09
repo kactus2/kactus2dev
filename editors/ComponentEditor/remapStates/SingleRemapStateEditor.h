@@ -47,13 +47,6 @@ public:
 	//! The destructor
     virtual ~SingleRemapStateEditor();
 
-    /*!
-	 *  Check for the validity of the edited remap state.
-	 *
-     *      @return True, if the remap state is valid, false otherwise.
-	 */
-	virtual bool isValid() const;
-
 	/*!
 	 *  Reload the information from the model to the editor.
 	 */

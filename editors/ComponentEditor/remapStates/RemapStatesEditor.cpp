@@ -66,14 +66,6 @@ RemapStatesEditor::~RemapStatesEditor()
 }
 
 //-----------------------------------------------------------------------------
-// Function: RemapStatesEditor::isValid()
-//-----------------------------------------------------------------------------
-bool RemapStatesEditor::isValid() const
-{
-    return model_.isValid();
-}
-
-//-----------------------------------------------------------------------------
 // Function: RemapStatesEditor::refresh()
 //-----------------------------------------------------------------------------
 void RemapStatesEditor::refresh()

@@ -14,7 +14,10 @@
 
 #include "componenteditoritem.h"
 
+class ExpressionParser;
 class RemapState;
+class RemapStateValidator;
+
 //-----------------------------------------------------------------------------
 //! The remap states-item used in the component editor navigation tree.
 //-----------------------------------------------------------------------------
@@ -27,13 +30,14 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] model                   Pointer to the model that owns the items.
-	 *      @param [in] libHandler              Pointer to the instance that manages the library.
-	 *      @param [in] component               Pointer to the component being edited.
+	 *      @param [in] model                   The model that owns the items.
+	 *      @param [in] libHandler              The instance that manages the library.
+	 *      @param [in] component               The component being edited.
      *      @param [in] referenceCounter        The counter for the references.
      *      @param [in] parameterFinder         Finds the referenced parameters.
      *      @param [in] expressionFormatter     Changes the referenced ids to parameter names.
-	 *      @param [in] parent                  Pointer to the parent item.
+     *      @param [in] expressionParser        Expression parser for remap states.
+	 *      @param [in] parent                  The parent item.
 	 */
     RemapStatesItem(ComponentEditorTreeModel* model,
         LibraryInterface* libHandler,
@@ -41,6 +45,7 @@ public:
         QSharedPointer<ReferenceCounter> referenceCounter,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QSharedPointer<ExpressionParser> expressionParser,
         ComponentEditorItem* parent);
 
     /*!
@@ -70,9 +75,9 @@ public:
 	virtual QString text() const;
 
     /*!
-	 *  Get the pointer to the editor of this item.
+	 *  Get the The editor of this item.
 	 *
-     *      @return Pointer to the editor to use with this item.
+     *      @return The editor to use with this item.
 	 */
 	virtual ItemEditor* editor();
 
@@ -92,6 +97,9 @@ private:
 
     //! The list containing the remap states to edit.
     QSharedPointer<QList<QSharedPointer<RemapState> > > remapStates_;
+
+    //! The validator for remap states.
+    QSharedPointer<RemapStateValidator> validator_;
 };
 
 #endif // REMAPSTATESITEM_H
