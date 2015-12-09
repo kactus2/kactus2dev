@@ -102,28 +102,6 @@ QList<VLNV> LibraryData::getItems() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryData::getDirectory()
-//-----------------------------------------------------------------------------
-void LibraryData::getDirectory(QStringList& list)
-{
-	// empty the list
-	list.clear();
-
-	QFileDialog fileChooser(handler_, Qt::Dialog);
-	fileChooser.setFileMode(QFileDialog::Directory);
-	fileChooser.setOptions(QFileDialog::ShowDirsOnly);
-	fileChooser.setViewMode(QFileDialog::List);
-
-	// the default directory is the users home directory
-	fileChooser.setDirectory(QDir::toNativeSeparators(QDir::homePath()));
-
-	if (fileChooser.exec())
-    {
-		list = fileChooser.selectedFiles();
-	}
-}
-
-//-----------------------------------------------------------------------------
 // Function: LibraryData::getPath()
 //-----------------------------------------------------------------------------
 QString LibraryData::getPath(VLNV const& vlnv)

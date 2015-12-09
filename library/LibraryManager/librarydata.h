@@ -165,16 +165,6 @@ private:
 	//! No assignment
 	LibraryData& operator=(const LibraryData& other);
 
-	/*! Ask user to select a directory.
-	 *
-	 * The function prompts user to select a directory and sets the path to the
-	 * directory into list at index 0. The list is cleared before adding the
-	 * directory path.
-	 *
-	 *      @param [out] The list where the directory is saved to.
-	 */
-	void getDirectory(QStringList& list);
-
 	/*! Search the directory and it's sub-directories for IP-Xact objects.
 	 *
 	 *      @param [in] directoryPath The absolute path of the directory to start the search.

@@ -11,8 +11,6 @@
 
 #include "SystemViewsEditor.h"
 
-#include "SystemViewsDelegate.h"
-
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <common/widgets/summaryLabel/summarylabel.h>
@@ -52,7 +50,6 @@ ItemEditor(component, handler, parent),
     view_.viewport()->setAcceptDrops(true); 
     view_.setDropIndicatorShown(true);   
     view_.setDragDropMode(QAbstractItemView::DropOnly);
-	view_.setItemDelegate(new SystemViewsDelegate(this));
 
 	connect(&model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(viewAdded(int)), this, SIGNAL(childAdded(int)), Qt::UniqueConnection);

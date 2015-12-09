@@ -130,7 +130,8 @@ bool BusInterfaceWizardBusEditorPage::validatePage()
     if (!valid)
     {
         QMessageBox warningDialog(QMessageBox::Warning, tr("Warning"),
-            tr("Bus definition has the following error(s):\n") + QStringList(errors.toList()).join("\n"), QMessageBox::Ok, this);        
+            tr("Bus definition has the following error(s):\n") + QStringList(errors.toList()).join("\n"),
+            QMessageBox::Ok, this);        
         warningDialog.exec();
         return false;
     }

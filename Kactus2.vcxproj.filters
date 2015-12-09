@@ -2416,9 +2416,6 @@
     <ClCompile Include="GeneratedFiles\moc_bridgeseditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_channelinterfacemanagerdelegate.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_channelsdelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -2426,9 +2423,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_channelsmodel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_addressspacerefdelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_cpusdelegate.cpp">
@@ -2668,9 +2662,6 @@
     <ClCompile Include="GeneratedFiles\moc_SWViewEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_swviewsdelegate.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_swviewseditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -2678,9 +2669,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_SystemViewEditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_SystemViewsDelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_SystemViewsEditor.cpp">
@@ -2986,9 +2974,6 @@
     <ClCompile Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapsTreeView.cpp">
       <Filter>Source Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
     </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\channels\channelinterfacemanagerdelegate.cpp">
-      <Filter>Source Files\editors\ComponentEditor\channels</Filter>
-    </ClCompile>
     <ClCompile Include="editors\ComponentEditor\channels\channelsdelegate.cpp">
       <Filter>Source Files\editors\ComponentEditor\channels</Filter>
     </ClCompile>
@@ -2997,9 +2982,6 @@
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\channels\channelsmodel.cpp">
       <Filter>Source Files\editors\ComponentEditor\channels</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\cpus\addressspacerefdelegate.cpp">
-      <Filter>Source Files\editors\ComponentEditor\cpus</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\cpus\cpusdelegate.cpp">
       <Filter>Source Files\editors\ComponentEditor\cpus</Filter>
@@ -3244,9 +3226,6 @@
     <ClCompile Include="editors\ComponentEditor\software\swView\swviewseditor.cpp">
       <Filter>Source Files\editors\ComponentEditor\software\swView</Filter>
     </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\software\swView\swviewsdelegate.cpp">
-      <Filter>Source Files\editors\ComponentEditor\software\swView</Filter>
-    </ClCompile>
     <ClCompile Include="editors\ComponentEditor\software\swView\SWViewEditor.cpp">
       <Filter>Source Files\editors\ComponentEditor\software\swView</Filter>
     </ClCompile>
@@ -3266,9 +3245,6 @@
       <Filter>Source Files\editors\ComponentEditor\software\systemView</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\software\systemView\SystemViewsEditor.cpp">
-      <Filter>Source Files\editors\ComponentEditor\software\systemView</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\software\systemView\SystemViewsDelegate.cpp">
       <Filter>Source Files\editors\ComponentEditor\software\systemView</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\software\systemView\SystemViewEditor.cpp">
@@ -4935,9 +4911,6 @@
     <CustomBuild Include="editors\ComponentEditor\busInterfaces\bridgeseditor.h">
       <Filter>Header Files\editors\ComponentEditor\busInterfaces</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\channels\channelinterfacemanagerdelegate.h">
-      <Filter>Header Files\editors\ComponentEditor\channels</Filter>
-    </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\channels\channelsdelegate.h">
       <Filter>Header Files\editors\ComponentEditor\channels</Filter>
     </CustomBuild>
@@ -4946,9 +4919,6 @@
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\channels\channelsmodel.h">
       <Filter>Header Files\editors\ComponentEditor\channels</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\cpus\addressspacerefdelegate.h">
-      <Filter>Header Files\editors\ComponentEditor\cpus</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\cpus\cpusdelegate.h">
       <Filter>Header Files\editors\ComponentEditor\cpus</Filter>
@@ -5199,9 +5169,6 @@
     <CustomBuild Include="editors\ComponentEditor\software\swView\SWViewEditor.h">
       <Filter>Header Files\editors\ComponentEditor\software\swView</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\software\swView\swviewsdelegate.h">
-      <Filter>Header Files\editors\ComponentEditor\software\swView</Filter>
-    </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\software\swView\swviewseditor.h">
       <Filter>Header Files\editors\ComponentEditor\software\swView</Filter>
     </CustomBuild>
@@ -5209,9 +5176,6 @@
       <Filter>Header Files\editors\ComponentEditor\software\swView</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\software\systemView\SystemViewEditor.h">
-      <Filter>Header Files\editors\ComponentEditor\software\systemView</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\software\systemView\SystemViewsDelegate.h">
       <Filter>Header Files\editors\ComponentEditor\software\systemView</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\software\systemView\SystemViewsEditor.h">
