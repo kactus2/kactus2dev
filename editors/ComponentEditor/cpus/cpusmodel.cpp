@@ -16,15 +16,19 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/cpu.h>
 
+#include <IPXACTmodels/Component/validators/CPUValidator.h>
+
 #include <QStringList>
 #include <QColor>
 
 //-----------------------------------------------------------------------------
 // Function: CpusModel::CpusModel()
 //-----------------------------------------------------------------------------
-CpusModel::CpusModel(QSharedPointer<Component> component, QObject* parent): QAbstractTableModel(parent),
+CpusModel::CpusModel(QSharedPointer<Component> component, QSharedPointer<CPUValidator> validator,
+    QObject* parent): QAbstractTableModel(parent),
     component_(component),
-    cpus_(component->getCpus())
+    cpus_(component->getCpus()),
+    validator_(validator)
 {
 
 }
@@ -144,22 +148,21 @@ QVariant CpusModel::data(QModelIndex const& index, int role) const
         }
 	}
     // user display role for interface column returns a QStringList
-    else if (CpuColumns::USER_DISPLAY_ROLE == role && index.column() == CpuColumns::ADDRSPACE_COLUMN)
+    else if (role == CpuColumns::USER_DISPLAY_ROLE && index.column() == CpuColumns::ADDRSPACE_COLUMN)
     {
         return cpu->getAddressSpaceRefs();
     }
     else if (role == Qt::ForegroundRole)
     {
-        // address space names are needed to check that references to address spaces are valid
-        QStringList addrSpaceNames = component_->getAddressSpaceNames();
-
-        /*if (cpus_->at(index.row())->isValid(addrSpaceNames, component_->getChoices()))
-        {*/
-            return QColor("black");
-        /*}
-		else {
-			return QColor("red");
-            }*/
+        if (index.column() == CpuColumns::ADDRSPACE_COLUMN && 
+            !validator_->hasValidAddressSpaceReferences(cpus_->at(index.row())))
+        {
+            return QColor("red");
+        }
+        else
+        {
+           return QColor("black");
+        }
     }
     else if (role == Qt::BackgroundRole)
     {
@@ -230,26 +233,6 @@ bool CpusModel::setData(QModelIndex const& index, QVariant const& value, int rol
     {
 		return false;
 	}
-}
-
-//-----------------------------------------------------------------------------
-// Function: CpusModel::isValid()
-//-----------------------------------------------------------------------------
-bool CpusModel::isValid() const
-{
-	// interface names are needed to check that references to bus interfaces are valid
-	//QStringList addrSpaceNames = component_->getAddressSpaceNames();
-
-	// if at least one address space is invalid
-	/*foreach (QSharedPointer<Cpu> cpu, cpus_)
-    {
-		if (!cpu->isValid(addrSpaceNames, component_->getChoices()))
-        {
-			return false;
-		}
-	}*/
-	// all address spaces were valid
-	return true;
 }
 
 //-----------------------------------------------------------------------------

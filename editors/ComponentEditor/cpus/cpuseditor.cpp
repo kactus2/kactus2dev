@@ -22,11 +22,12 @@
 //-----------------------------------------------------------------------------
 // Function: CpusEditor::CpusEditor()
 //-----------------------------------------------------------------------------
-CpusEditor::CpusEditor(QSharedPointer<Component> component, LibraryInterface* handler, QWidget* parent):
+CpusEditor::CpusEditor(QSharedPointer<Component> component, LibraryInterface* handler, 
+     QSharedPointer<CPUValidator> validator, QWidget* parent):
 ItemEditor(component, handler, parent),
     view_(this),
     proxy_(this),
-    model_(component, this)
+    model_(component, validator, this)
 {
     // display a label on top the table
     SummaryLabel* summaryLabel = new SummaryLabel(tr("CPUs"), this);
@@ -61,14 +62,6 @@ ItemEditor(component, handler, parent),
 //-----------------------------------------------------------------------------
 CpusEditor::~CpusEditor()
 {
-}
-
-//-----------------------------------------------------------------------------
-// Function: CpusEditor::isValid()
-//-----------------------------------------------------------------------------
-bool CpusEditor::isValid() const
-{
-	return model_.isValid();
 }
 
 //-----------------------------------------------------------------------------

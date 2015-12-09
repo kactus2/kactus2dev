@@ -14,7 +14,10 @@
 #include <editors/ComponentEditor/cpus/cpuseditor.h>
 
 #include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/Component/cpu.h>
+#include <IPXACTmodels/Component/Cpu.h>
+#include <IPXACTmodels/Component/validators/CPUValidator.h>
+
+#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorCpusItem::ComponentEditorCpusItem()
@@ -22,9 +25,13 @@
 ComponentEditorCpusItem::ComponentEditorCpusItem(ComponentEditorTreeModel* model, 
     LibraryInterface* libHandler,
     QSharedPointer<Component> component,
+    QSharedPointer<ExpressionParser> expressionParser,
     ComponentEditorItem* parent ):
 ComponentEditorItem(model, libHandler, component, parent),
-    cpus_(component->getCpus())
+    cpus_(component->getCpus()),
+    validator_(new CPUValidator(
+        QSharedPointer<ParameterValidator2014>(new ParameterValidator2014(expressionParser, component->getChoices())),
+        expressionParser, component->getAddressSpaces()))
 {
 
 }
@@ -61,11 +68,12 @@ ItemEditor* ComponentEditorCpusItem::editor()
 {
 	if (!editor_)
     {
-		editor_ = new CpusEditor(component_, libHandler_);
+		editor_ = new CpusEditor(component_, libHandler_, validator_);
 		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
 	}
+
 	return editor_;
 }
 
@@ -82,16 +90,17 @@ QString ComponentEditorCpusItem::getTooltip() const
 //-----------------------------------------------------------------------------
 bool ComponentEditorCpusItem::isValid() const
 {
-	/*QStringList addrSpaceNames = component_->getAddressSpaceNames();
+    QVector<QString> cpuNames;
 
-	foreach (QSharedPointer<Cpu> cpu, *cpus_) 
+    foreach (QSharedPointer<Cpu> cpu, *cpus_) 
     {
-		if (!cpu->isValid(addrSpaceNames, component_->getChoices()))
+        if (cpuNames.contains(cpu->name()) || !validator_->validate(cpu))
         {
-			return false;
-		}
-	}*/
+            return false;
+        }
 
-	// all cpus were valid
+        cpuNames.append(cpu->name());
+    }
+
 	return true;
 }

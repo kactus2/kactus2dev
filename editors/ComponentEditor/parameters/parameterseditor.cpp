@@ -34,7 +34,8 @@
 ParametersEditor::ParametersEditor(QSharedPointer<Component> component, LibraryInterface* handler,
     QSharedPointer<ParameterValidator2014> validator,
     QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter,
     QWidget* parent): 
 ItemEditor(component, handler, parent),
 view_(0),

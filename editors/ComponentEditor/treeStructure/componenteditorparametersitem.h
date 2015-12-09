@@ -37,6 +37,7 @@ public:
 	 *      @param [in] component               The component being edited.
 	 *      @param [in] refCounter              The reference counter.
 	 *      @param [in] parameterFinder         The parameter finder.
+     *      @param [in] expressionParser        The expression parser.
 	 *      @param [in] expressionFormatter     The expression formatter.
 	 *      @param [in] parent                  The parent item.
 	 */
@@ -45,6 +46,7 @@ public:
         QSharedPointer<Component> component,
         QSharedPointer<ReferenceCounter> refCounter,
         QSharedPointer<ParameterFinder> parameterFinder,
+         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
 		ComponentEditorItem* parent);
 

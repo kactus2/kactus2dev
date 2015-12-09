@@ -738,8 +738,8 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createHWRootItem(QShare
         new ComponentEditorChoicesItem(&navigationModel_, libHandler_, component, expressionParser, hwRoot)));
 
     QSharedPointer<ComponentEditorParametersItem> parametersItem(new ComponentEditorParametersItem(
-        &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionFormatter_,
-        hwRoot));
+        &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionParser, 
+        expressionFormatter_, hwRoot));
 
     hwRoot->addChildItem(parametersItem);
 
@@ -791,7 +791,7 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createHWRootItem(QShare
         expressionFormatter_, hwRoot)));
 
     hwRoot->addChildItem(QSharedPointer<ComponentEditorCpusItem>(
-        new ComponentEditorCpusItem(&navigationModel_, libHandler_, component, hwRoot)));
+        new ComponentEditorCpusItem(&navigationModel_, libHandler_, component, expressionParser, hwRoot)));
 
     hwRoot->addChildItem(QSharedPointer<ComponentEditorOtherClocksItem>(
         new ComponentEditorOtherClocksItem(&navigationModel_, libHandler_, component, hwRoot)));
@@ -825,8 +825,8 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createSWRootItem(QShare
         new ComponentEditorChoicesItem(&navigationModel_, libHandler_, component, expressionParser, swRoot)));
 
     QSharedPointer<ComponentEditorParametersItem> parametersItem(new ComponentEditorParametersItem(
-        &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionFormatter_,
-        swRoot));
+        &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionParser,
+        expressionFormatter_, swRoot));
 
     swRoot->addChildItem(parametersItem);
 

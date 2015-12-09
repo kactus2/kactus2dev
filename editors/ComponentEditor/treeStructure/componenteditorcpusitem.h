@@ -17,6 +17,9 @@
 #include <QList>
 
 class Cpu;
+class CPUValidator;
+class ExpressionParser;
+
 //-----------------------------------------------------------------------------
 //! The Cpus-item in the component editor's navigation tree.
 //-----------------------------------------------------------------------------
@@ -28,13 +31,16 @@ public:
 
 	/*! The constructor
 	 *
-	 *      @param [in] model       The model that owns the items.
-	 *      @param [in] libHandler  The instance that manages the library.
-	 *      @param [in] component   The component being edited.
-	 *      @param [in] parent      The parent item.
-	*/
-	ComponentEditorCpusItem(ComponentEditorTreeModel* model, LibraryInterface* libHandler,
-		QSharedPointer<Component> component, ComponentEditorItem* parent);
+	 *      @param [in] model               The model that owns the items.
+	 *      @param [in] libHandler          The instance that manages the library.
+	 *      @param [in] component           The component being edited.
+     *      @param [in] expressionParser    Parser for expressions in cpus.
+     *      @param [in] parent              The parent item.
+     */
+    ComponentEditorCpusItem(ComponentEditorTreeModel* model, LibraryInterface* libHandler,
+        QSharedPointer<Component> component, 
+        QSharedPointer<ExpressionParser> expressionParser,
+        ComponentEditorItem* parent);
 
 	//! The destructor
 	virtual ~ComponentEditorCpusItem();
@@ -78,6 +84,9 @@ private:
 
 	//! The cpus being edited
 	QSharedPointer<QList<QSharedPointer<Cpu> > > cpus_;
+
+    //! Validator for cpu elements.
+    QSharedPointer<CPUValidator> validator_;
 };
 
 #endif // COMPONENTEDITORCPUSITEM_H

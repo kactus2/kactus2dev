@@ -1108,13 +1108,20 @@
     </ClCompile>
     <ClCompile Include="Component\validators\EnumeratedValueValidator.cpp">
       <Filter>Source Files\Component\validators</Filter>
-    </ClCompile> <ClCompile Include="Component\validators\FileValidator.cpp">
+    </ClCompile>
+    <ClCompile Include="Component\validators\FileValidator.cpp">
       <Filter>Source Files\Component\validators</Filter>
-    </ClCompile>    <ClCompile Include="Component\validators\FieldValidator.cpp">
+    </ClCompile>
+    <ClCompile Include="Component\validators\FieldValidator.cpp">
       <Filter>Source Files\Component\validators</Filter>
-    </ClCompile> <ClCompile Include="Component\validators\FileSetValidator.cpp">
+    </ClCompile>
+    <ClCompile Include="Component\validators\FileSetValidator.cpp">
       <Filter>Source Files\Component\validators</Filter>
-    </ClCompile>  </ItemGroup>
+    </ClCompile>
+    <ClCompile Include="Component\validators\CPUValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
+  </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BusDefinition\BusDefinition.h">
       <Filter>Header Files\BusDefinition</Filter>
@@ -1499,13 +1506,20 @@
     </ClInclude>
     <ClInclude Include="Component\validators\FieldValidator.h">
       <Filter>Header Files\Component\validators</Filter>
-    </ClInclude>    <ClInclude Include="Component\validators\EnumeratedValueValidator.h">
+    </ClInclude>
+    <ClInclude Include="Component\validators\EnumeratedValueValidator.h">
       <Filter>Header Files\Component\validators</Filter>
-    </ClInclude>    <ClInclude Include="Component\validators\FileValidator.h">
+    </ClInclude>
+    <ClInclude Include="Component\validators\FileValidator.h">
       <Filter>Header Files\Component\validators</Filter>
-    </ClInclude>    <ClInclude Include="Component\validators\FileSetValidator.h">
+    </ClInclude>
+    <ClInclude Include="Component\validators\FileSetValidator.h">
       <Filter>Header Files\Component\validators</Filter>
-    </ClInclude>  </ItemGroup>
+    </ClInclude>
+    <ClInclude Include="Component\validators\CPUValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+  </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="BusDefinition\BusDefinitionReader.h">
       <Filter>Header Files\BusDefinition</Filter>

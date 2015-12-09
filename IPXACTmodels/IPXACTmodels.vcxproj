@@ -265,6 +265,7 @@
     <ClCompile Include="Component\SlaveInterface.cpp" />
     <ClCompile Include="Component\Transactional.cpp" />
     <ClCompile Include="Component\validators\ChoiceValidator.cpp" />
+    <ClCompile Include="Component\validators\CPUValidator.cpp" />
     <ClCompile Include="Component\validators\EnumeratedValueValidator.cpp" />
     <ClCompile Include="Component\validators\FieldValidator.cpp" />
     <ClCompile Include="Component\validators\FileSetValidator.cpp" />
@@ -1992,6 +1993,7 @@
     <ClInclude Include="Component\SlaveInterface.h" />
     <ClInclude Include="Component\Transactional.h" />
     <ClInclude Include="Component\validators\ChoiceValidator.h" />
+    <ClInclude Include="Component\validators\CPUValidator.h" />
     <ClInclude Include="Component\validators\EnumeratedValueValidator.h" />
     <ClInclude Include="Component\validators\FieldValidator.h" />
     <ClInclude Include="Component\validators\FileSetValidator.h" />

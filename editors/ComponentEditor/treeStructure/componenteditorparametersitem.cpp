@@ -24,11 +24,12 @@
 //-----------------------------------------------------------------------------
 ComponentEditorParametersItem::ComponentEditorParametersItem(ComponentEditorTreeModel* model,
     LibraryInterface* libHandler, QSharedPointer<Component> component, QSharedPointer<ReferenceCounter> refCounter,
-    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionParser> expressionParser,
+    QSharedPointer<ExpressionFormatter> expressionFormatter,
     ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-    expressionParser_(new IPXactSystemVerilogParser(parameterFinder)),
-    validator_(new ParameterValidator2014(expressionParser_, component->getChoices()))
+    expressionParser_(expressionParser),
+    validator_(new ParameterValidator2014(expressionParser, component->getChoices()))
 {
     setReferenceCounter(refCounter);
     setParameterFinder(parameterFinder);

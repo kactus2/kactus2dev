@@ -22,6 +22,7 @@
 #include <QSharedPointer>
 
 class Component;
+class CPUValidator;
 class LibraryInterface;
 
 //-----------------------------------------------------------------------------
@@ -37,18 +38,14 @@ public:
 	 *
 	 *      @param [in] component   The component being edited.
 	 *      @param [in] handler     The instance managing the library.
+     *      @param [in] validator   The validator for cpus.
 	 *      @param [in] parent      The parent of this editor.
 	*/
-	CpusEditor(QSharedPointer<Component> component, LibraryInterface* handler, QWidget* parent = 0);
+	CpusEditor(QSharedPointer<Component> component, LibraryInterface* handler, 
+        QSharedPointer<CPUValidator> validator, QWidget* parent = 0);
 	
 	//! The destructor
 	virtual ~CpusEditor();
-
-	/*! Check for the validity of the editor
-	* 
-	*      @return True if the editor is in valid state.
-	*/
-	virtual bool isValid() const;
 
 	//! Reload the information from the model to the editor.	
 	virtual void refresh();

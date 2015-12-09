@@ -24,8 +24,9 @@
 EnumeratedValueModel::EnumeratedValueModel(
     QSharedPointer<QList<QSharedPointer<EnumeratedValue> > > enumeratedValues,
     QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator, QObject *parent):
-enumValues_(enumeratedValues),
-enumeratedValueValidator_(enumeratedValueValidator)
+QAbstractTableModel(parent),
+    enumValues_(enumeratedValues),
+    enumeratedValueValidator_(enumeratedValueValidator)
 {
 
 }

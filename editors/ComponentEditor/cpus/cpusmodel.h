@@ -18,6 +18,8 @@
 
 class Component;
 class Cpu;
+class CPUValidator;
+
 //-----------------------------------------------------------------------------
 //! Model for cpu elements within a component.
 //-----------------------------------------------------------------------------
@@ -29,10 +31,12 @@ public:
 
 	/*! The constructor
 	 *
-	 *      @param [in] component The component being edited.
-	 *      @param [in] parent The owner of this model.
+	 *      @param [in] component   The component being edited.
+     *      @param [in] validator   The validator for cpus.
+	 *      @param [in] parent      The owner of this model.
 	*/
-	CpusModel(QSharedPointer<Component> component, QObject* parent);
+	CpusModel(QSharedPointer<Component> component, QSharedPointer<CPUValidator> validator,
+        QObject* parent);
 	
 	//! The destructor
 	virtual ~CpusModel();
@@ -90,12 +94,6 @@ public:
 	*/
 	bool setData(QModelIndex const& index, QVariant const& value, int role = Qt::EditRole);
 
-	/*! Check if the cpus model is in a valid state.
-	 *
-	 *      @return bool True if the state is valid and writing is possible.
-	*/
-	bool isValid() const;
-
 public slots:
 
 	/*! Add a new item to the given index.
@@ -137,6 +135,8 @@ private:
 
 	//! Contains the cpus being edited.
 	QSharedPointer<QList<QSharedPointer<Cpu> > > cpus_;
+
+    QSharedPointer<CPUValidator> validator_;
 };
 
 #endif // CPUSMODEL_H
