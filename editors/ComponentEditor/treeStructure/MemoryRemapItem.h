@@ -24,6 +24,7 @@ class ExpressionParser;
 class MemoryMap;
 class MemoryMapBase;
 class MemoryBlockBase;
+class MemoryMapBaseValidator;
 //-----------------------------------------------------------------------------
 //! The item for a single memory remap in component editor's navigation tree.
 //-----------------------------------------------------------------------------
@@ -45,6 +46,7 @@ public:
      *      @param [in] parameterFinder         The parameter finder.
      *      @param [in] expressionFormatter     The expression formatter.
      *      @param [in] expressionParser        The expression parser to use.
+     *      @param [in] memoryMapBaseValidator  Validator for memory map base.
      *      @param [in] parent                  The parent item.
      */
     MemoryRemapItem(QSharedPointer<MemoryMapBase> memoryRemap,
@@ -56,6 +58,7 @@ public:
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<MemoryMapBaseValidator> memoryMapBaseValidator,
         ComponentEditorItem* parent);
 
     /*!
@@ -167,6 +170,9 @@ private:
 
     //! The expression parser to use.
     QSharedPointer<ExpressionParser> expressionParser_;
+
+    //! The used memory map base validator.
+    QSharedPointer<MemoryMapBaseValidator> memoryMapBaseValidator_;
 };
 
 #endif // MEMORYREMAPITEM_H

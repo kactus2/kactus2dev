@@ -20,23 +20,22 @@
 #include <IPXACTmodels/Component/MemoryBlockBase.h>
 #include <IPXACTmodels/Component/AddressBlock.h>
 
+#include <IPXACTmodels/Component/validators/MemoryMapValidator.h>
+
 //-----------------------------------------------------------------------------
 // Function: componenteditormemmapitem::ComponentEditorMemMapItem()
 //-----------------------------------------------------------------------------
-ComponentEditorMemMapItem::ComponentEditorMemMapItem(QSharedPointer<MemoryMap> memoryMap, 
-													 ComponentEditorTreeModel* model,
-													 LibraryInterface* libHandler,
-													 QSharedPointer<Component> component,
-                                                     QSharedPointer<ReferenceCounter> referenceCounter,
-                                                     QSharedPointer<ParameterFinder> parameterFinder,
-                                                     QSharedPointer<ExpressionFormatter> expressionFormatter,
-                                                     QSharedPointer<ExpressionParser> expressionParser,
-													 ComponentEditorItem* parent):
+ComponentEditorMemMapItem::ComponentEditorMemMapItem(QSharedPointer<MemoryMap> memoryMap,
+    ComponentEditorTreeModel* model, LibraryInterface* libHandler, QSharedPointer<Component> component,
+    QSharedPointer<ReferenceCounter> referenceCounter, QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<ExpressionParser> expressionParser,
+    QSharedPointer<MemoryMapValidator> memoryMapValidator, ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 memoryMap_(memoryMap),
 visualizer_(NULL),
 graphItem_(NULL),
-expressionParser_(expressionParser)
+expressionParser_(expressionParser),
+memoryMapValidator_(memoryMapValidator)
 {
     setReferenceCounter(referenceCounter);
     setParameterFinder(parameterFinder);
@@ -45,7 +44,8 @@ expressionParser_(expressionParser)
 	setObjectName(tr("ComponentEditorMemMapItem"));
 
     QSharedPointer<MemoryRemapItem> defaultRemapItem(new MemoryRemapItem(memoryMap_, memoryMap_, model, libHandler,
-        component, referenceCounter, parameterFinder, expressionFormatter, expressionParser_, this));
+        component, referenceCounter, parameterFinder, expressionFormatter, expressionParser_, memoryMapValidator_,
+        this));
     defaultRemapItem->setLocked(locked_);
 
     connect(defaultRemapItem.data(), SIGNAL(addressUnitBitsChanged()),
@@ -56,7 +56,8 @@ expressionParser_(expressionParser)
     foreach (QSharedPointer<MemoryRemap> memoryRemap, *memoryMap_->getMemoryRemaps())
     {
         QSharedPointer<MemoryRemapItem> memoryRemapItem(new MemoryRemapItem(memoryRemap, memoryMap_, model,
-            libHandler, component, referenceCounter, parameterFinder, expressionFormatter, expressionParser_, this));
+            libHandler, component, referenceCounter, parameterFinder, expressionFormatter, expressionParser_,
+            memoryMapValidator_, this));
         memoryRemapItem->setLocked(locked_);
 
         MemoryMapsVisualizer* memoryRemapVisualizer = new MemoryMapsVisualizer();
@@ -121,7 +122,8 @@ void ComponentEditorMemMapItem::createChild( int index )
     QSharedPointer<MemoryRemap> memoryRemap = memoryMap_->getMemoryRemaps()->at(index - 1);
 
     QSharedPointer<MemoryRemapItem> memoryRemapItem (new MemoryRemapItem(memoryRemap, memoryMap_, model_,
-        libHandler_, component_, referenceCounter_, parameterFinder_, expressionFormatter_, expressionParser_, this));
+        libHandler_, component_, referenceCounter_, parameterFinder_, expressionFormatter_, expressionParser_,
+        memoryMapValidator_, this));
     memoryRemapItem->setLocked(locked_);
 
     MemoryMapsVisualizer* memoryRemapVisualizer = new MemoryMapsVisualizer();

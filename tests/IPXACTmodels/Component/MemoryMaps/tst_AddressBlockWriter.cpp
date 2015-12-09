@@ -231,7 +231,7 @@ void tst_AddressBlockWriter::writeAccess()
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
-    testAddressBlock_->setAccess(General::WRITEONCE);
+    testAddressBlock_->setAccess(AccessTypes::WRITEONCE);
 
     QString expectedOutput(
         "<ipxact:addressBlock>"

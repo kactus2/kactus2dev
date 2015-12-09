@@ -13,6 +13,7 @@
 #define FIELD_H
 
 #include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/common/AccessTypes.h>
 #include <IPXACTmodels/ipxactmodels_global.h>
 
 #include <IPXACTmodels/common/NameGroup.h>
@@ -189,14 +190,14 @@ public:
 	 *
 	 *      @return The access type of the field.
 	 */
-	General::Access getAccess() const;
+	AccessTypes::Access getAccess() const;
 
 	/*!
      *  Set the access type for the field.
 	 *
 	 *      @param [in] access  The access type to set.
 	 */
-	void setAccess(General::Access access);
+	void setAccess(AccessTypes::Access access);
     
     /*!
      *  Get the list of the enumeratedValues.
@@ -399,7 +400,7 @@ private:
     BooleanValue volatile_;
 
     //! Contains the access type of the field.
-    General::Access access_;
+    AccessTypes::Access access_;
 
 	//! Pointer to a list containing the enumerated values.
 	QSharedPointer<QList<QSharedPointer<EnumeratedValue> > > enumeratedValues_;

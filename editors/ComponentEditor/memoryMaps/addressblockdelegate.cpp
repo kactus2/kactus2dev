@@ -70,8 +70,8 @@ void AddressBlockDelegate::setEditorData(QWidget* editor, QModelIndex const& ind
         AccessComboBox* accessBox = qobject_cast<AccessComboBox*>(editor);
         Q_ASSERT(accessBox);
 
-        General::Access access =
-            General::str2Access(index.model()->data(index, Qt::DisplayRole).toString(), General::ACCESS_COUNT);
+        AccessTypes::Access access = AccessTypes::str2Access(
+            index.model()->data(index, Qt::DisplayRole).toString(), AccessTypes::ACCESS_COUNT);
         accessBox->setCurrentValue(access);
     }
     else
@@ -98,8 +98,8 @@ void AddressBlockDelegate::setModelData(QWidget* editor, QAbstractItemModel* mod
         AccessComboBox* accessBox = qobject_cast<AccessComboBox*>(editor);
         Q_ASSERT(accessBox);
 
-        General::Access access = accessBox->getCurrentValue();
-        model->setData(index, General::access2Str(access), Qt::EditRole);
+        AccessTypes::Access access = accessBox->getCurrentValue();
+        model->setData(index, AccessTypes::access2Str(access), Qt::EditRole);
     }
     else 
     {

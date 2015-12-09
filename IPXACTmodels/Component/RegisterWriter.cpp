@@ -144,9 +144,9 @@ void RegisterWriter::writeVolatile(QXmlStreamWriter& writer, QSharedPointer<Regi
 void RegisterWriter::writeAccess(QXmlStreamWriter& writer, QSharedPointer<RegisterDefinition> registerDefinition)
     const
 {
-    if (registerDefinition->getAccess() != General::ACCESS_COUNT)
+    if (registerDefinition->getAccess() != AccessTypes::ACCESS_COUNT)
     {
-        QString accessString = General::access2Str(registerDefinition->getAccess());
+        QString accessString = AccessTypes::access2Str(registerDefinition->getAccess());
         writer.writeTextElement("ipxact:access", accessString);
     }
 }

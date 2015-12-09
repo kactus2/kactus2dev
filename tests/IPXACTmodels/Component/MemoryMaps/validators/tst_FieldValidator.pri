@@ -63,7 +63,7 @@ HEADERS += ../../../../../IPXACTmodels/Component/AbstractionType.h \
     ../../../../../IPXACTmodels/common/NameValuePair.h \
     ../../../../../IPXACTmodels/Component/OtherClockDriver.h \
     ../../../../../IPXACTmodels/common/Parameter.h \
-    ../../../../../IPXACTmodels/common/validators/ValueFormatter.h \
+    ../../../../../IPXACTmodels/common/validators/ParameterValidator2014.h \
     ../../../../../IPXACTmodels/common/PartSelect.h \
     ../../../../../IPXACTmodels/Component/Port.h \
     ../../../../../IPXACTmodels/Component/PortMap.h \
@@ -83,13 +83,14 @@ HEADERS += ../../../../../IPXACTmodels/Component/AbstractionType.h \
     ../../../../../IPXACTmodels/Component/Transactional.h \
     ../../../../../IPXACTmodels/common/TransactionalTypes.h \
     ../../../../../IPXACTmodels/common/VLNV.h \
+    ../../../../../IPXACTmodels/common/validators/ValueFormatter.h \
     ../../../../../IPXACTmodels/common/Vector.h \
     ../../../../../IPXACTmodels/Component/View.h \
     ../../../../../IPXACTmodels/Component/Wire.h \
     ../../../../../IPXACTmodels/Component/WireTypeDef.h \
     ../../../../../IPXACTmodels/Component/WriteValueConstraint.h \
     ../../../../../IPXACTmodels/generaldeclarations.h \
-    ../../../../../IPXACTmodels/common/validators/ParameterValidator2014.h
+    ../../../../../IPXACTmodels/common/AccessTypes.h
 SOURCES += ../../../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../../../IPXACTmodels/Component/AddressBlock.cpp \
     ../../../../../IPXACTmodels/Component/AddressSpace.cpp \
@@ -146,7 +147,7 @@ SOURCES += ../../../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../../../IPXACTmodels/common/NameValuePair.cpp \
     ../../../../../IPXACTmodels/Component/OtherClockDriver.cpp \
     ../../../../../IPXACTmodels/common/Parameter.cpp \
-    ../../../../../IPXACTmodels/common/validators/ValueFormatter.cpp \
+    ../../../../../IPXACTmodels/common/validators/ParameterValidator2014.cpp \
     ../../../../../IPXACTmodels/common/PartSelect.cpp \
     ../../../../../IPXACTmodels/Component/Port.cpp \
     ../../../../../IPXACTmodels/Component/PortMap.cpp \
@@ -166,6 +167,7 @@ SOURCES += ../../../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../../../IPXACTmodels/Component/Transactional.cpp \
     ../../../../../IPXACTmodels/common/TransactionalTypes.cpp \
     ../../../../../IPXACTmodels/common/VLNV.cpp \
+    ../../../../../IPXACTmodels/common/validators/ValueFormatter.cpp \
     ../../../../../IPXACTmodels/common/Vector.cpp \
     ../../../../../IPXACTmodels/Component/View.cpp \
     ../../../../../IPXACTmodels/Component/Wire.cpp \
@@ -173,4 +175,4 @@ SOURCES += ../../../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../../../IPXACTmodels/Component/WriteValueConstraint.cpp \
     ../../../../../IPXACTmodels/generaldeclarations.cpp \
     ./tst_FieldValidator.cpp \
-    ../../../../../IPXACTmodels/common/validators/ParameterValidator2014.cpp
+    ../../../../../IPXACTmodels/common/AccessTypes.cpp

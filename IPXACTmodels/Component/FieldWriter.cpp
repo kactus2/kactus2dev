@@ -154,9 +154,9 @@ void FieldWriter::writeVolatile(QXmlStreamWriter& writer, QSharedPointer<Field> 
 //-----------------------------------------------------------------------------
 void FieldWriter::writeAccess(QXmlStreamWriter& writer, QSharedPointer<Field> field) const
 {
-    if (field->getAccess() != General::ACCESS_COUNT)
+    if (field->getAccess() != AccessTypes::ACCESS_COUNT)
     {
-        QString access = General::access2Str(field->getAccess());
+        QString access = AccessTypes::access2Str(field->getAccess());
         writer.writeTextElement("ipxact:access", access);
     }
 }

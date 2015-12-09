@@ -20,7 +20,6 @@
 class ExpressionParser;
 class Field;
 
-class Choice;
 class ParameterValidator2014;
 class EnumeratedValueValidator;
 //-----------------------------------------------------------------------------
@@ -33,16 +32,24 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] expressionParser    The parser used to solve expressions.
-     *      @param [in] finder              The parameter finder used.
-     *      @param [in] choices             The used choices.
+     *      @param [in] expressionParser            The parser used to solve expressions.
+     *      @param [in] enumeratedValueValidator    Validator used for enumerated values.
+     *      @param [in] parameterValidator          Validator used for parameters.
      */
     FieldValidator(QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<QList<QSharedPointer<Choice> > > choices);
+        QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator,
+        QSharedPointer<ParameterValidator2014> parameterValidator);
 
 	//! The destructor.
 	~FieldValidator();
-    
+
+    /*!
+     *  Get the validator used for enumerated values.
+     *
+     *      @return The validator used for enumerated values.
+     */
+    QSharedPointer<EnumeratedValueValidator> getEnumeratedValueValidator() const;
+
     /*!
      *  Validates the given field.
      *

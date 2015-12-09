@@ -99,13 +99,6 @@ public:
 	 */
 	bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
 
-	/*!
-     *  Check if the enumerated value model is in a valid state.
-	 *
-	 *      @return bool True if the state is valid and writing is possible.
-	 */
-	bool isValid() const;
-
 public slots:
 
 	/*!

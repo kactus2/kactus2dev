@@ -30,19 +30,17 @@
 // Function: AddressBlockEditor::AddressBlockEditor()
 //-----------------------------------------------------------------------------
 AddressBlockEditor::AddressBlockEditor(QSharedPointer<AddressBlock> addressBlock,
-									   QSharedPointer<Component> component,
-									   LibraryInterface* handler,
-                                       QSharedPointer<ParameterFinder> parameterFinder,
-                                       QSharedPointer<ExpressionFormatter> expressionFormatter,
-									   QWidget* parent /*= 0*/):
+    QSharedPointer<Component> component, LibraryInterface* handler,
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<RegisterValidator> registerValidator, QWidget* parent /* = 0 */):
 QGroupBox(tr("Registers summary"), parent),
 view_(new EditableTableView(this)),
 model_(0)
 {
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
 
-    model_ = new AddressBlockModel(addressBlock, component->getChoices(), expressionParser, parameterFinder,
-        expressionFormatter, this);
+    model_ = new AddressBlockModel(addressBlock, expressionParser, parameterFinder, expressionFormatter,
+        registerValidator, this);
 
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser);
@@ -109,14 +107,6 @@ model_(0)
 AddressBlockEditor::~AddressBlockEditor()
 {
 
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockEditor::isValid()
-//-----------------------------------------------------------------------------
-bool AddressBlockEditor::isValid() const
-{
-	return model_->isValid();
 }
 
 //-----------------------------------------------------------------------------

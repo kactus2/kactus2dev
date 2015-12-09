@@ -229,7 +229,7 @@ void FieldReader::parseAccess(QDomElement const& fieldElement, QSharedPointer<Fi
     if (!accessElement.isNull())
     {
         QString accessString = accessElement.firstChild().nodeValue();
-        General::Access access = General::str2Access(accessString, General::ACCESS_COUNT);
+        AccessTypes::Access access = AccessTypes::str2Access(accessString, AccessTypes::ACCESS_COUNT);
         newField->setAccess(access);
     }
 }

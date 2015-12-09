@@ -7,58 +7,60 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../../IPXACTmodels/Component/RegisterBase.h \
+HEADERS += ../../../../IPXACTmodels/Component/AlternateRegister.h \
+    ../../../../IPXACTmodels/common/Array.h \
+    ../../../../IPXACTmodels/common/BooleanValue.h \
+    ../../../../IPXACTmodels/common/ConfigurableElementValue.h \
+    ../../../../IPXACTmodels/Component/EnumeratedValue.h \
     ../../../../IPXACTmodels/common/Extendable.h \
+    ../../../../IPXACTmodels/Component/Field.h \
+    ../../../../IPXACTmodels/common/GenericVendorExtension.h \
     ../../../../IPXACTmodels/kactusExtensions/Kactus2Group.h \
     ../../../../IPXACTmodels/common/NameGroup.h \
     ../../../../IPXACTmodels/common/Parameter.h \
     ../../../../IPXACTmodels/common/Range.h \
-    ../../../../IPXACTmodels/common/Vector.h \
-    ../../../../IPXACTmodels/common/Array.h \
-    ../../../../IPXACTmodels/Component/RegisterDefinition.h \
-    ../../../../IPXACTmodels/Component/Field.h \
-    ../../../../IPXACTmodels/Component/EnumeratedValue.h \
-    ../../../../IPXACTmodels/common/BooleanValue.h \
-    ../../../../IPXACTmodels/Component/WriteValueConstraint.h \
-    ../../../../IPXACTmodels/Component/AlternateRegister.h \
     ../../../../IPXACTmodels/Component/Register.h \
+    ../../../../IPXACTmodels/Component/RegisterBase.h \
+    ../../../../IPXACTmodels/Component/RegisterDefinition.h \
     ../../../../IPXACTmodels/Component/RegisterFile.h \
-    ../../../../IPXACTmodels/Component/RegisterWriter.h \
-    ../../../../IPXACTmodels/Component/EnumeratedValueWriter.h \
-    ../../../../IPXACTmodels/common/CommonItemsWriter.h \
     ../../../../IPXACTmodels/common/VLNV.h \
-    ../../../../IPXACTmodels/common/ParameterWriter.h \
-    ../../../../IPXACTmodels/common/ConfigurableElementValue.h \
-    ../../../../IPXACTmodels/common/NameGroupWriter.h \
-    ../../../../IPXACTmodels/Component/FieldWriter.h \
-    ../../../../IPXACTmodels/generaldeclarations.h \
+    ../../../../IPXACTmodels/common/Vector.h \
+    ../../../../IPXACTmodels/Component/WriteValueConstraint.h \
     ../../../../IPXACTmodels/XmlUtils.h \
-    ../../../../IPXACTmodels/common/GenericVendorExtension.h
-SOURCES += ./tst_RegisterWriter.cpp \
-    ../../../../IPXACTmodels/Component/RegisterBase.cpp \
+    ../../../../IPXACTmodels/generaldeclarations.h \
+    ../../../../IPXACTmodels/common/CommonItemsWriter.h \
+    ../../../../IPXACTmodels/Component/EnumeratedValueWriter.h \
+    ../../../../IPXACTmodels/Component/FieldWriter.h \
+    ../../../../IPXACTmodels/common/NameGroupWriter.h \
+    ../../../../IPXACTmodels/common/ParameterWriter.h \
+    ../../../../IPXACTmodels/Component/RegisterWriter.h \
+    ../../../../IPXACTmodels/common/AccessTypes.h
+SOURCES += ../../../../IPXACTmodels/Component/AlternateRegister.cpp \
+    ../../../../IPXACTmodels/common/Array.cpp \
+    ../../../../IPXACTmodels/common/BooleanValue.cpp \
+    ../../../../IPXACTmodels/common/CommonItemsWriter.cpp \
+    ../../../../IPXACTmodels/common/ConfigurableElementValue.cpp \
+    ../../../../IPXACTmodels/Component/EnumeratedValue.cpp \
+    ../../../../IPXACTmodels/Component/EnumeratedValueWriter.cpp \
     ../../../../IPXACTmodels/common/Extendable.cpp \
+    ../../../../IPXACTmodels/Component/Field.cpp \
+    ../../../../IPXACTmodels/Component/FieldWriter.cpp \
+    ../../../../IPXACTmodels/common/GenericVendorExtension.cpp \
     ../../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
     ../../../../IPXACTmodels/common/NameGroup.cpp \
+    ../../../../IPXACTmodels/common/NameGroupWriter.cpp \
     ../../../../IPXACTmodels/common/Parameter.cpp \
+    ../../../../IPXACTmodels/common/ParameterWriter.cpp \
     ../../../../IPXACTmodels/common/Range.cpp \
-    ../../../../IPXACTmodels/common/Vector.cpp \
-    ../../../../IPXACTmodels/common/Array.cpp \
-    ../../../../IPXACTmodels/Component/RegisterDefinition.cpp \
-    ../../../../IPXACTmodels/Component/Field.cpp \
-    ../../../../IPXACTmodels/Component/EnumeratedValue.cpp \
-    ../../../../IPXACTmodels/common/BooleanValue.cpp \
-    ../../../../IPXACTmodels/Component/WriteValueConstraint.cpp \
-    ../../../../IPXACTmodels/Component/AlternateRegister.cpp \
     ../../../../IPXACTmodels/Component/Register.cpp \
+    ../../../../IPXACTmodels/Component/RegisterBase.cpp \
+    ../../../../IPXACTmodels/Component/RegisterDefinition.cpp \
     ../../../../IPXACTmodels/Component/RegisterFile.cpp \
     ../../../../IPXACTmodels/Component/RegisterWriter.cpp \
-    ../../../../IPXACTmodels/Component/EnumeratedValueWriter.cpp \
-    ../../../../IPXACTmodels/common/CommonItemsWriter.cpp \
     ../../../../IPXACTmodels/common/VLNV.cpp \
-    ../../../../IPXACTmodels/common/ParameterWriter.cpp \
-    ../../../../IPXACTmodels/common/ConfigurableElementValue.cpp \
-    ../../../../IPXACTmodels/common/NameGroupWriter.cpp \
-    ../../../../IPXACTmodels/Component/FieldWriter.cpp \
-    ../../../../IPXACTmodels/generaldeclarations.cpp \
+    ../../../../IPXACTmodels/common/Vector.cpp \
+    ../../../../IPXACTmodels/Component/WriteValueConstraint.cpp \
     ../../../../IPXACTmodels/XmlUtils.cpp \
-    ../../../../IPXACTmodels/common/GenericVendorExtension.cpp
+    ../../../../IPXACTmodels/generaldeclarations.cpp \
+    ./tst_RegisterWriter.cpp \
+    ../../../../IPXACTmodels/common/AccessTypes.cpp

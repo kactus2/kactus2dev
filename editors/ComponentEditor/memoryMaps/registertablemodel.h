@@ -24,7 +24,7 @@
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
-class Choice;
+class FieldValidator;
 //-----------------------------------------------------------------------------
 //! The model to manage the details of a single register.
 //-----------------------------------------------------------------------------
@@ -38,17 +38,17 @@ public:
 	 *  The constructor.
 	 *
 	 *      @param [in] reg                     Pointer to the register being edited.
-	 *      @param [in] componentChoices        Choices in the containing component.
 	 *      @param [in] expressionParser        Pointer to the expression parser.
 	 *      @param [in] parameterFinder         Pointer to the parameter finder.
 	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
+     *      @param [in] fieldValidator          Validator used for fields.
 	 *      @param [in] parent                  Pointer to the owner of the model.
 	 */
 	RegisterTableModel(QSharedPointer<Register> reg,
-        QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices, 
         QSharedPointer <ExpressionParser> expressionParser,
         QSharedPointer <ParameterFinder> parameterFinder,
         QSharedPointer <ExpressionFormatter> expressionFormatter,
+        QSharedPointer<FieldValidator> fieldValidator,
 		QObject *parent);
 	
 	//! The destructor.
@@ -112,13 +112,6 @@ public:
 	 *      @return True if saving happened successfully.
 	 */
 	bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
-
-	/*!
-     *  Check if the register table model is in a valid state.
-	 *
-	 *      @return bool True if the state is valid and writing is possible.
-	 */
-	bool isValid() const;
 
 protected:
 
@@ -211,14 +204,14 @@ private:
 	//! Pointer to the register being edited.
 	QSharedPointer<Register> reg_;
 
-    //! The choices available in the containing component;
-    QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices_;
-
 	//! Contains the fields being edited.
     QSharedPointer<QList<QSharedPointer<Field> > > fields_;
 
     //! Expression formatter, formats the referencing expression to show parameter names.
     QSharedPointer <ExpressionFormatter> expressionFormatter_;
+
+    //! The validator used for fields.
+    QSharedPointer<FieldValidator> fieldValidator_;
 };
 
 #endif // REGISTERTABLEMODEL_H

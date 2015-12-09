@@ -44,6 +44,7 @@ public:
 	 *      @param [in] parameterFinder     The parameter finder.
 	 *      @param [in] referenceCounter    The instance for counting references made to the parameters.
      *      @param [in] expressionParser    Expression parser to use.
+     *      @param [in] fieldValidator      Validator used for fields.
      *      @param [in] parent              The parent item.
 	 */
 	ComponentEditorFieldItem(QSharedPointer<Register> reg,
@@ -54,6 +55,7 @@ public:
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ReferenceCounter> referenceCounter,
         QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<FieldValidator> fieldValidator,
 		ComponentEditorItem* parent);
 
 	//! The destructor

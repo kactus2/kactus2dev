@@ -7,52 +7,56 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../../../IPXACTmodels/Component/RegisterBase.h \
+HEADERS += ../../../../../IPXACTmodels/Component/AlternateRegister.h \
+    ../../../../../IPXACTmodels/common/Array.h \
+    ../../../../../IPXACTmodels/common/BooleanValue.h \
+    ../../../../../IPXACTmodels/Component/Choice.h \
+    ../../../../../IPXACTmodels/Component/EnumeratedValue.h \
+    ../../../../../IPXACTmodels/Component/validators/EnumeratedValueValidator.h \
+    ../../../../../IPXACTmodels/common/Enumeration.h \
     ../../../../../IPXACTmodels/common/Extendable.h \
+    ../../../../../IPXACTmodels/Component/Field.h \
+    ../../../../../IPXACTmodels/Component/validators/FieldValidator.h \
     ../../../../../IPXACTmodels/kactusExtensions/Kactus2Group.h \
     ../../../../../IPXACTmodels/common/NameGroup.h \
     ../../../../../IPXACTmodels/common/Parameter.h \
+    ../../../../../IPXACTmodels/common/validators/ParameterValidator2014.h \
     ../../../../../IPXACTmodels/common/Range.h \
-    ../../../../../IPXACTmodels/common/Vector.h \
-    ../../../../../IPXACTmodels/common/Array.h \
-    ../../../../../IPXACTmodels/Component/RegisterDefinition.h \
-    ../../../../../IPXACTmodels/Component/Field.h \
-    ../../../../../IPXACTmodels/Component/EnumeratedValue.h \
-    ../../../../../IPXACTmodels/common/BooleanValue.h \
-    ../../../../../IPXACTmodels/Component/WriteValueConstraint.h \
     ../../../../../IPXACTmodels/Component/Register.h \
-    ../../../../../IPXACTmodels/Component/AlternateRegister.h \
+    ../../../../../IPXACTmodels/Component/RegisterBase.h \
+    ../../../../../IPXACTmodels/Component/RegisterDefinition.h \
     ../../../../../IPXACTmodels/Component/validators/RegisterValidator.h \
     ../../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
-    ../../../../../IPXACTmodels/Component/validators/FieldValidator.h \
-    ../../../../../IPXACTmodels/Component/validators/EnumeratedValueValidator.h \
-    ../../../../../IPXACTmodels/common/validators/ParameterValidator2014.h \
-    ../../../../../IPXACTmodels/Component/Choice.h \
-    ../../../../../IPXACTmodels/common/Enumeration.h \
     ../../../../../IPXACTmodels/common/validators/ValueFormatter.h \
-    ../../../../../IPXACTmodels/generaldeclarations.h
-SOURCES += ./tst_RegisterValidator.cpp \
-    ../../../../../IPXACTmodels/Component/RegisterBase.cpp \
+    ../../../../../IPXACTmodels/common/Vector.h \
+    ../../../../../IPXACTmodels/Component/WriteValueConstraint.h \
+    ../../../../../IPXACTmodels/generaldeclarations.h \
+    ../../../../../IPXACTmodels/Component/validators/MemoryReserve.h \
+    ../../../../../IPXACTmodels/common/AccessTypes.h
+SOURCES += ../../../../../IPXACTmodels/Component/AlternateRegister.cpp \
+    ../../../../../IPXACTmodels/common/Array.cpp \
+    ../../../../../IPXACTmodels/common/BooleanValue.cpp \
+    ../../../../../IPXACTmodels/Component/Choice.cpp \
+    ../../../../../IPXACTmodels/Component/EnumeratedValue.cpp \
+    ../../../../../IPXACTmodels/Component/validators/EnumeratedValueValidator.cpp \
+    ../../../../../IPXACTmodels/common/Enumeration.cpp \
     ../../../../../IPXACTmodels/common/Extendable.cpp \
+    ../../../../../IPXACTmodels/Component/Field.cpp \
+    ../../../../../IPXACTmodels/Component/validators/FieldValidator.cpp \
     ../../../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
     ../../../../../IPXACTmodels/common/NameGroup.cpp \
     ../../../../../IPXACTmodels/common/Parameter.cpp \
+    ../../../../../IPXACTmodels/common/validators/ParameterValidator2014.cpp \
     ../../../../../IPXACTmodels/common/Range.cpp \
-    ../../../../../IPXACTmodels/common/Vector.cpp \
-    ../../../../../IPXACTmodels/common/Array.cpp \
-    ../../../../../IPXACTmodels/Component/RegisterDefinition.cpp \
-    ../../../../../IPXACTmodels/Component/Field.cpp \
-    ../../../../../IPXACTmodels/Component/EnumeratedValue.cpp \
-    ../../../../../IPXACTmodels/common/BooleanValue.cpp \
-    ../../../../../IPXACTmodels/Component/WriteValueConstraint.cpp \
     ../../../../../IPXACTmodels/Component/Register.cpp \
-    ../../../../../IPXACTmodels/Component/AlternateRegister.cpp \
+    ../../../../../IPXACTmodels/Component/RegisterBase.cpp \
+    ../../../../../IPXACTmodels/Component/RegisterDefinition.cpp \
     ../../../../../IPXACTmodels/Component/validators/RegisterValidator.cpp \
     ../../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
-    ../../../../../IPXACTmodels/Component/validators/FieldValidator.cpp \
-    ../../../../../IPXACTmodels/Component/validators/EnumeratedValueValidator.cpp \
-    ../../../../../IPXACTmodels/common/validators/ParameterValidator2014.cpp \
-    ../../../../../IPXACTmodels/Component/Choice.cpp \
-    ../../../../../IPXACTmodels/common/Enumeration.cpp \
     ../../../../../IPXACTmodels/common/validators/ValueFormatter.cpp \
-    ../../../../../IPXACTmodels/generaldeclarations.cpp
+    ../../../../../IPXACTmodels/common/Vector.cpp \
+    ../../../../../IPXACTmodels/Component/WriteValueConstraint.cpp \
+    ../../../../../IPXACTmodels/generaldeclarations.cpp \
+    ./tst_RegisterValidator.cpp \
+    ../../../../../IPXACTmodels/Component/validators/MemoryReserve.cpp \
+    ../../../../../IPXACTmodels/common/AccessTypes.cpp

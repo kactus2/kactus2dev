@@ -214,27 +214,6 @@ bool EnumeratedValueModel::setData( const QModelIndex& index, const QVariant& va
 }
 
 //-----------------------------------------------------------------------------
-// Function: enumeratedvaluemodel::isValid()
-//-----------------------------------------------------------------------------
-bool EnumeratedValueModel::isValid() const
-{
-    QStringList enumeratedValueNames;
-    foreach (QSharedPointer<EnumeratedValue> enumValue, *enumValues_)
-    {
-        if (enumeratedValueNames.contains(enumValue->name()) || !enumeratedValueValidator_->validate(enumValue))
-        {
-            return false;
-        }
-        else
-        {
-            enumeratedValueNames.append(enumValue->name());
-        }
-    }
-
-    return true;
-}
-
-//-----------------------------------------------------------------------------
 // Function: enumeratedvaluemodel::onAddItem()
 //-----------------------------------------------------------------------------
 void EnumeratedValueModel::onAddItem( const QModelIndex& index )

@@ -32,9 +32,10 @@
 // Function: RegisterValidator::RegisterValidator()
 //-----------------------------------------------------------------------------
 RegisterValidator::RegisterValidator(QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<QList<QSharedPointer<Choice> > > choices):
+    QSharedPointer<FieldValidator> fieldValidator, QSharedPointer<ParameterValidator2014> parameterValidator):
 expressionParser_(expressionParser),
-availableChoices_(choices)
+fieldValidator_(fieldValidator),
+parameterValidator_(parameterValidator)
 {
 
 }
@@ -45,6 +46,14 @@ availableChoices_(choices)
 RegisterValidator::~RegisterValidator()
 {
 
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterValidator::getFieldValidator()
+//-----------------------------------------------------------------------------
+QSharedPointer<FieldValidator> RegisterValidator::getFieldValidator() const
+{
+    return fieldValidator_;
 }
 
 //-----------------------------------------------------------------------------
@@ -152,18 +161,16 @@ bool RegisterValidator::hasValidFields(QSharedPointer<RegisterDefinition> select
         return false;
     }
 
-    FieldValidator validator(expressionParser_, availableChoices_);
-
     int registerSizeInt = expressionParser_->parseExpression(registerSize).toInt();
 
     MemoryReserve reservedArea;
 
-    QStringList fieldNames;
-    QStringList fieldTypeIdentifiers;
+    QVector<QString> fieldNames;
+    QVector<QString> fieldTypeIdentifiers;
     for (int fieldIndex = 0; fieldIndex < selectedRegister->getFields()->size(); ++fieldIndex)
     {
         QSharedPointer<Field> field = selectedRegister->getFields()->at(fieldIndex);
-        if (!validator.validate(field) || fieldNames.contains(field->name()))
+        if (!fieldValidator_->validate(field) || fieldNames.contains(field->name()))
         {
             return false;
         }
@@ -269,11 +276,10 @@ bool RegisterValidator::hasValidParameters(QSharedPointer<RegisterBase> selected
 {
     if (!selectedRegister->getParameters()->isEmpty())
     {
-        ParameterValidator2014 validator(expressionParser_, availableChoices_);
         QStringList parameterNames;
         foreach (QSharedPointer<Parameter> parameter, *selectedRegister->getParameters())
         {
-            if (parameterNames.contains(parameter->name()) || !validator.validate(parameter.data()))
+            if (parameterNames.contains(parameter->name()) || !parameterValidator_->validate(parameter))
             {
                 return false;
             }
@@ -293,13 +299,16 @@ bool RegisterValidator::hasValidParameters(QSharedPointer<RegisterBase> selected
 bool RegisterValidator::fieldHasValidAccess(QSharedPointer<RegisterDefinition> selectedRegsiter,
     QSharedPointer<Field> field) const
 {
-     if ((selectedRegsiter->getAccess() == General::READ_ONLY && field->getAccess() == General::READ_ONLY) ||
-        (selectedRegsiter->getAccess() == General::WRITE_ONLY && (field->getAccess() == General::WRITE_ONLY ||
-            field->getAccess() == General::WRITEONCE)) ||
-        (selectedRegsiter->getAccess() == General::READ_WRITEONCE && (field->getAccess() == General::READ_ONLY ||
-            field->getAccess() == General::READ_WRITEONCE || field->getAccess() == General::WRITEONCE)) ||
-        (selectedRegsiter->getAccess() == General::WRITEONCE && field->getAccess() == General::WRITEONCE) ||
-        selectedRegsiter->getAccess() == General::ACCESS_COUNT)
+    AccessTypes::Access registerAccess = selectedRegsiter->getAccess();
+    AccessTypes::Access fieldAccess = field->getAccess();
+
+     if ((registerAccess == AccessTypes::READ_ONLY && fieldAccess == AccessTypes::READ_ONLY) ||
+        (registerAccess == AccessTypes::WRITE_ONLY && (fieldAccess == AccessTypes::WRITE_ONLY ||
+            fieldAccess == AccessTypes::WRITEONCE)) ||
+        (registerAccess == AccessTypes::READ_WRITEONCE && (fieldAccess == AccessTypes::READ_ONLY ||
+            fieldAccess == AccessTypes::READ_WRITEONCE || fieldAccess == AccessTypes::WRITEONCE)) ||
+        (registerAccess == AccessTypes::WRITEONCE && fieldAccess == AccessTypes::WRITEONCE) ||
+        registerAccess == AccessTypes::ACCESS_COUNT)
      {
          return true;
      }
@@ -452,7 +461,6 @@ void RegisterValidator::findErrorsInFields(QVector<QString>& errors,
 {
     if (!selectedRegister->getFields()->isEmpty())
     {
-        FieldValidator validator(expressionParser_, availableChoices_);
         QStringList fieldNames;
         QStringList fieldTypeIdentifiers;
 
@@ -461,7 +469,7 @@ void RegisterValidator::findErrorsInFields(QVector<QString>& errors,
 
         foreach (QSharedPointer<Field> field, *selectedRegister->getFields())
         {
-            validator.findErrorsIn(errors, field, context);
+            fieldValidator_->findErrorsIn(errors, field, context);
 
             if (fieldNames.contains(field->name()))
             {
@@ -506,8 +514,8 @@ void RegisterValidator::findErrorsInFields(QVector<QString>& errors,
             if (!fieldHasValidAccess(selectedRegister, field))
             {
                 errors.append(QObject::tr("Access cannot be set to %1 in %2, where containing register %3 "
-                    "has access %4").arg(General::access2Str(field->getAccess())).arg(field->name())
-                    .arg(selectedRegister->name()).arg(General::access2Str(selectedRegister->getAccess())));
+                    "has access %4").arg(AccessTypes::access2Str(field->getAccess())).arg(field->name())
+                    .arg(selectedRegister->name()).arg(AccessTypes::access2Str(selectedRegister->getAccess())));
             }
         }
 
@@ -570,7 +578,6 @@ void RegisterValidator::findErrorsInParameters(QVector<QString>&errors,
 {
     if (!selectedRegister->getParameters()->isEmpty())
     {
-        ParameterValidator2014 validator(expressionParser_, availableChoices_);
         QStringList parameterNames;
         foreach (QSharedPointer<Parameter> parameter, *selectedRegister->getParameters())
         {
@@ -584,7 +591,7 @@ void RegisterValidator::findErrorsInParameters(QVector<QString>&errors,
                 parameterNames.append(parameter->name());
             }
 
-            validator.findErrorsIn(errors, parameter, context);
+            parameterValidator_->findErrorsIn(errors, parameter, context);
         }
     }
 }

@@ -12,6 +12,8 @@
 #include "registertablemodel.h"
 #include "RegisterColumns.h"
 
+#include <IPXACTmodels/Component/validators/FieldValidator.h>
+
 #include <QColor>
 #include <QRegularExpression>
 
@@ -19,16 +21,15 @@
 // Function: registertablemodel::RegisterTableModel()
 //-----------------------------------------------------------------------------
 RegisterTableModel::RegisterTableModel(QSharedPointer<Register> reg,
-                                       QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
-                                       QSharedPointer<ExpressionParser> expressionParser,
-                                       QSharedPointer <ParameterFinder> parameterFinder,
-                                       QSharedPointer <ExpressionFormatter> expressionFormatter, QObject *parent):
+    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<FieldValidator> fieldValidator,
+    QObject *parent):
 ReferencingTableModel(parameterFinder, parent),
 ParameterizableTable(parameterFinder),
 reg_(reg),
-componentChoices_(componentChoices),
 fields_(reg->getFields()),
-expressionFormatter_(expressionFormatter)
+expressionFormatter_(expressionFormatter),
+fieldValidator_(fieldValidator)
 {
     setExpressionParser(expressionParser);
 }
@@ -272,7 +273,7 @@ QVariant RegisterTableModel::valueForIndex(QModelIndex const& index) const
     }
     else if (index.column() == RegisterColumns::ACCESS_COLUMN)
     {
-        return General::access2Str(fields_->at(index.row())->getAccess());
+        return AccessTypes::access2Str(fields_->at(index.row())->getAccess());
     }
     else if (index.column() == RegisterColumns::MOD_WRITE_COLUMN)
     {
@@ -367,7 +368,8 @@ bool RegisterTableModel::setData( const QModelIndex& index, const QVariant& valu
         }
         else if (index.column() == RegisterColumns::ACCESS_COLUMN)
         {
-            fields_->at(index.row())->setAccess(General::str2Access(value.toString(), General::ACCESS_COUNT));
+            fields_->at(index.row())->setAccess(
+                AccessTypes::str2Access(value.toString(), AccessTypes::ACCESS_COUNT));
         }
         else if (index.column() == RegisterColumns::MOD_WRITE_COLUMN)
         {
@@ -426,23 +428,6 @@ bool RegisterTableModel::setData( const QModelIndex& index, const QVariant& valu
 }
 
 //-----------------------------------------------------------------------------
-// Function: registertablemodel::isValid()
-//-----------------------------------------------------------------------------
-bool RegisterTableModel::isValid() const 
-{
-// 	unsigned int regSize = reg_->getSize();
-//     unsigned int regSize = parseExpressionToDecimal(reg_->getSize()).toUInt();
-	foreach (QSharedPointer<Field> field, *fields_) 
-    {
-// 		if (!field->isValid(regSize, componentChoices_))
-//         {
-// 			return false;
-// 		}
-	}
-	return true;
-}
-
-//-----------------------------------------------------------------------------
 // Function: registertablemodel::isValidExpressionColumn()
 //-----------------------------------------------------------------------------
 bool RegisterTableModel::isValidExpressionColumn(QModelIndex const& index) const
@@ -484,22 +469,27 @@ QVariant RegisterTableModel::expressionOrValueForIndex(QModelIndex const& index)
 //-----------------------------------------------------------------------------
 bool RegisterTableModel:: validateIndex(QModelIndex const& index) const
 {
-    if (index.column() == RegisterColumns::OFFSET_COLUMN)
+    QSharedPointer<Field> field = fields_->at(index.row());
+
+    if (index.column() == RegisterColumns::NAME_COLUMN)
     {
-        QString offset = fields_->at(index.row())->getBitOffset();
-        return isValuePlainOrExpression(offset);
+        return fieldValidator_->hasValidName(field);
+    }
+    else if (index.column() == RegisterColumns::OFFSET_COLUMN)
+    {
+        return fieldValidator_->hasValidBitOffset(field);
     }
     else if (index.column() == RegisterColumns::WIDTH_COLUMN)
     {
-        QString width = fields_->at(index.row())->getBitWidth();
-        return isValuePlainOrExpression(width);
+        return fieldValidator_->hasValidBitWidth(field);
     }
     else if (index.column() == RegisterColumns::IS_PRESENT_COLUMN)
     {
-        QString isPresent = formattedValueFor(fields_->at(index.row())->getIsPresent());
-        int parsedPresence = parseExpressionToDecimal(isPresent).toInt();
-
-        return isValuePlainOrExpression(isPresent) && (parsedPresence == 1 || parsedPresence == 0);
+        return fieldValidator_->hasValidIsPresent(field);
+    }
+    else if (index.column() == RegisterColumns::ACCESS_COLUMN)
+    {
+        return fieldValidator_->hasValidAccess(field);
     }
 
     return true;

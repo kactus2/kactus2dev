@@ -30,7 +30,7 @@ resetMask_(),
 typeIdentifier_(),
 bitWidth_(),
 volatile_(),
-access_(General::ACCESS_COUNT),
+access_(AccessTypes::ACCESS_COUNT),
 enumeratedValues_(new QList<QSharedPointer<EnumeratedValue> > ()),
 modifiedWrite_(General::MODIFIED_WRITE_COUNT),
 modifiedWriteModify_(),
@@ -280,7 +280,7 @@ void Field::clearVolatile()
 //-----------------------------------------------------------------------------
 // Function: Field::getAccess()
 //-----------------------------------------------------------------------------
-General::Access Field::getAccess() const
+AccessTypes::Access Field::getAccess() const
 {
     return access_;
 }
@@ -288,7 +288,7 @@ General::Access Field::getAccess() const
 //-----------------------------------------------------------------------------
 // Function: Field::setAccess()
 //-----------------------------------------------------------------------------
-void Field::setAccess( General::Access access )
+void Field::setAccess( AccessTypes::Access access )
 {
     access_ = access;
 }

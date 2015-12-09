@@ -19,6 +19,7 @@
 class ExpressionParser;
 class Component;
 class AddressSpace;
+class AddressSpaceValidator;
 //-----------------------------------------------------------------------------
 //! The Address spaces-item in the component editor navigation tree.
 //-----------------------------------------------------------------------------
@@ -93,11 +94,19 @@ private:
 	ComponentEditorAddrSpacesItem(const ComponentEditorAddrSpacesItem& other);
 	ComponentEditorAddrSpacesItem& operator=(const ComponentEditorAddrSpacesItem& other);
 
+    /*!
+     *  Create the necessary validators for address spaces.
+     */
+    void createAddressSpaceValidator();
+
 	//! The address spaces being edited.
     QSharedPointer<QList<QSharedPointer<AddressSpace> > > addressSpaces_;
 
     //! The expression parser to use.
     QSharedPointer<ExpressionParser> expressionParser_;
+
+    //! The current address space validator.
+    QSharedPointer<AddressSpaceValidator> spaceValidator_;
 };
 
 #endif // COMPONENTEDITORADDRSPACESITEM_H

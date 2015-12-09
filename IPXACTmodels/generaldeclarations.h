@@ -171,38 +171,6 @@ namespace General
     */
     IPXACTMODELS_EXPORT QString usage2Str(const General::Usage usage);
 
-    /*! Equals to ipxact:access element within ipxact:memoryBlockData
-    *
-    * Access specifies the accessibility of the data in the address block.
-    */
-    enum Access {
-        READ_WRITE = 0,
-        READ_ONLY,
-        WRITE_ONLY,
-        READ_WRITEONCE,
-        WRITEONCE,
-        ACCESS_COUNT
-    };
-
-    /*! Convert the value of the QString into enum Access
-    *
-    * if The str does not match any of the enum values the default value
-    * specifies as parameter will be returned
-    *
-    *      @param [in] str QString containing the string to be converted
-    *      @param [in] defaultValue The value that will be returned if no match is found
-    *      @return General::Access that matches the str or default value.
-    */
-    IPXACTMODELS_EXPORT General::Access str2Access(QString str, General::Access defaultValue);
-
-    /*! Convert the Access value to QString.
-    *
-    *      @param [in] access The Access value to be converted into QString.
-    *
-    *      @return QString that matches the enum value.
-    */
-    IPXACTMODELS_EXPORT QString access2Str(const General::Access access);
-
     /*! Equals to ipxact:modifiedWriteValue within ipxact:fieldData.
     * 
     * ModifiedWrite describes the manipulation of data written to a field.

@@ -116,9 +116,9 @@ void AddressBlockWriter::writeVolatile(QXmlStreamWriter& writer, QSharedPointer<
 //-----------------------------------------------------------------------------
 void AddressBlockWriter::writeAccess(QXmlStreamWriter& writer, QSharedPointer<AddressBlock> addressBlock) const
 {
-    if (addressBlock->getAccess() != General::ACCESS_COUNT)
+    if (addressBlock->getAccess() != AccessTypes::ACCESS_COUNT)
     {
-        QString accessString = General::access2Str(addressBlock->getAccess());
+        QString accessString = AccessTypes::access2Str(addressBlock->getAccess());
         writer.writeTextElement("ipxact:access", accessString);
     }
 }

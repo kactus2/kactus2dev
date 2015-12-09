@@ -251,7 +251,7 @@ void tst_RegisterWriter::writeRegisterAccess()
 
     QSharedPointer<Register> testRegister (new Register("testRegister", "offset", "10"));
     testRegister->getFields()->append(simpleField);
-    testRegister->setAccess(General::WRITEONCE);
+    testRegister->setAccess(AccessTypes::WRITEONCE);
 
     QString expectedOutput(
         "<ipxact:register>"
@@ -344,7 +344,7 @@ void tst_RegisterWriter::writeRegisterAlternateRegisters()
     alternateRegister->setIsPresent("presence");
     alternateRegister->setTypeIdentifier("Volgarr");
     alternateRegister->setVolatile(false);
-    alternateRegister->setAccess(General::READ_WRITE);
+    alternateRegister->setAccess(AccessTypes::READ_WRITE);
     alternateRegister->getFields()->append(alternateField);
 
     alternateRegister->getParameters()->append(testParameter);

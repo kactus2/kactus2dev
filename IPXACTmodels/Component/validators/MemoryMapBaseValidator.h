@@ -18,9 +18,9 @@
 #include <QString>
 
 class ExpressionParser;
-class Choice;
 class MemoryMapBase;
 class AddressBlock;
+class AddressBlockValidator;
 //-----------------------------------------------------------------------------
 //! Validator for the base ipxact:memoryMap.
 //-----------------------------------------------------------------------------
@@ -31,15 +31,22 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] expressionParser    The parser to use for solving expressions.
-     *      @param [in] choices             List of available choices.
+	 *      @param [in] expressionParser        The parser to use for solving expressions.
+     *      @param [in] addressBlockValidator   Validator used for address blocks.
 	 */
     MemoryMapBaseValidator(QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<QList<QSharedPointer<Choice> > > choices);
+        QSharedPointer<AddressBlockValidator> addressBlockValidator);
 
 	//! The destructor.
 	~MemoryMapBaseValidator();
     
+    /*!
+     *  Get the validator used for address blocks.
+     *
+     *      @return The validator used for address blocks.
+     */
+    QSharedPointer<AddressBlockValidator> getAddressBlockValidator() const;
+
     /*!
      *  Validates the given memory map base.
      *
@@ -97,13 +104,6 @@ protected:
      *      @return The used expression parser.
      */
     QSharedPointer<ExpressionParser> getExpressionParser() const;
-
-    /*!
-     *  Get the available choices.
-     *
-     *      @return The currently available choices.
-     */
-    QSharedPointer<QList<QSharedPointer<Choice> > > getAvailableChoices() const;
 
 private:
 
@@ -193,8 +193,8 @@ private:
     //! The expression parser to use.
     QSharedPointer<ExpressionParser> expressionParser_;
 
-    //! The currently available choices.
-    QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices_;
+    //! The used address block validator.
+    QSharedPointer<AddressBlockValidator> addressBlockValidator_;
 };
 
 #endif // MEMORYMAPBASEVALIDATOR_H

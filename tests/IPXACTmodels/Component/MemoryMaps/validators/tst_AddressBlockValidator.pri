@@ -21,6 +21,7 @@ HEADERS += ../../../../../IPXACTmodels/Component/AddressBlock.h \
     ../../../../../IPXACTmodels/Component/validators/FieldValidator.h \
     ../../../../../IPXACTmodels/kactusExtensions/Kactus2Group.h \
     ../../../../../IPXACTmodels/Component/MemoryBlockBase.h \
+    ../../../../../IPXACTmodels/Component/validators/MemoryReserve.h \
     ../../../../../IPXACTmodels/common/NameGroup.h \
     ../../../../../IPXACTmodels/common/Parameter.h \
     ../../../../../IPXACTmodels/common/validators/ParameterValidator2014.h \
@@ -34,7 +35,7 @@ HEADERS += ../../../../../IPXACTmodels/Component/AddressBlock.h \
     ../../../../../IPXACTmodels/common/Vector.h \
     ../../../../../IPXACTmodels/Component/WriteValueConstraint.h \
     ../../../../../IPXACTmodels/generaldeclarations.h \
-    ../../../../../IPXACTmodels/Component/validators/MemoryReserve.h
+    ../../../../../IPXACTmodels/common/AccessTypes.h
 SOURCES += ../../../../../IPXACTmodels/Component/AddressBlock.cpp \
     ../../../../../IPXACTmodels/Component/validators/AddressBlockValidator.cpp \
     ../../../../../IPXACTmodels/Component/AlternateRegister.cpp \
@@ -49,6 +50,7 @@ SOURCES += ../../../../../IPXACTmodels/Component/AddressBlock.cpp \
     ../../../../../IPXACTmodels/Component/validators/FieldValidator.cpp \
     ../../../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
     ../../../../../IPXACTmodels/Component/MemoryBlockBase.cpp \
+    ../../../../../IPXACTmodels/Component/validators/MemoryReserve.cpp \
     ../../../../../IPXACTmodels/common/NameGroup.cpp \
     ../../../../../IPXACTmodels/common/Parameter.cpp \
     ../../../../../IPXACTmodels/common/validators/ParameterValidator2014.cpp \
@@ -63,4 +65,4 @@ SOURCES += ../../../../../IPXACTmodels/Component/AddressBlock.cpp \
     ../../../../../IPXACTmodels/Component/WriteValueConstraint.cpp \
     ../../../../../IPXACTmodels/generaldeclarations.cpp \
     ./tst_AddressBlockValidator.cpp \
-    ../../../../../IPXACTmodels/Component/validators/MemoryReserve.cpp
+    ../../../../../IPXACTmodels/common/AccessTypes.cpp

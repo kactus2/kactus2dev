@@ -25,6 +25,7 @@
 class Choice;
 class Register;
 
+class RegisterValidator;
 //-----------------------------------------------------------------------------
 //! The model to manage the registers of a single address block.
 //-----------------------------------------------------------------------------
@@ -38,17 +39,17 @@ public:
 	 *  The constructor.
 	 *
 	 *      @param [in] addressBlock            Pointer to the address block being edited.
-	 *      @param [in] componentChoices        The choices available in the containing component.
 	 *      @param [in] expressionParser        Pointer to the expression parser.
      *      @param [in] parameterFinder         Pointer to the parameter finder.
 	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
+     *      @param [in] registerValidator       Validator for registers.
 	 *      @param [in] parent                  Pointer to the owner of the model.
 	 */
 	AddressBlockModel(QSharedPointer<AddressBlock> addressBlock,
-        QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QSharedPointer<RegisterValidator> registerValidator,
 		QObject *parent);
 	
 	//! The destructor.
@@ -112,13 +113,6 @@ public:
 	 *      @return True if saving happened successfully.
 	 */
 	bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
-
-	/*!
-     *  Check if the address block model is in a valid state.
-	 *
-	 *      @return bool True if the state is valid and writing is possible.
-	 */
-	bool isValid() const;
 
 protected:
 
@@ -233,9 +227,6 @@ private:
 	//! Contains the register items to display.
     QSharedPointer<QList<QSharedPointer<RegisterBase> > > items_;
 
-    //! The choices available in the containing component.
-    QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices_;
-
     //! The address unit bits of the memory map.
     unsigned int addressUnitBits_;
 
@@ -244,6 +235,9 @@ private:
 
     //! Expression formatter, formats the referencing expressions to show parameter names.
     QSharedPointer<ExpressionFormatter> expressionFormatter_;
+
+    //! The validator used for registers.
+    QSharedPointer<RegisterValidator> registerValidator_;
 };
 
 #endif // ADDRESSBLOCKMODEL_H

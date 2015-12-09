@@ -29,20 +29,18 @@
 //-----------------------------------------------------------------------------
 // Function: registereditor::RegisterEditor()
 //-----------------------------------------------------------------------------
-RegisterEditor::RegisterEditor(QSharedPointer<Register> reg, 
-							   QSharedPointer<Component> component,
-							   LibraryInterface* handler,
-                               QSharedPointer<ParameterFinder> parameterFinder,
-                               QSharedPointer<ExpressionFormatter> expressionFormatter,
-							   QWidget* parent /*= 0*/ ):
+RegisterEditor::RegisterEditor(QSharedPointer<Register> reg, QSharedPointer<Component> component,
+    LibraryInterface* handler, QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<FieldValidator> fieldValidator,
+    QWidget* parent /* = 0 */):
 QGroupBox(tr("Fields summary"), parent),
 view_(new EditableTableView(this)),
 model_(0)
 {
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
 
-    model_ = new RegisterTableModel(reg, component->getChoices(), expressionParser, parameterFinder,
-        expressionFormatter, this);
+    model_ = new RegisterTableModel(reg, expressionParser, parameterFinder, expressionFormatter, fieldValidator,
+        this);
 
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser);
@@ -99,14 +97,6 @@ model_(0)
 RegisterEditor::~RegisterEditor()
 {
 
-}
-
-//-----------------------------------------------------------------------------
-// Function: registereditor::isValid()
-//-----------------------------------------------------------------------------
-bool RegisterEditor::isValid() const
-{
-	return model_->isValid();
 }
 
 //-----------------------------------------------------------------------------

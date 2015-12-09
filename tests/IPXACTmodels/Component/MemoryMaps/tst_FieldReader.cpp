@@ -262,7 +262,7 @@ void tst_FieldReader::readAccess()
     FieldReader fieldReader;
     QSharedPointer<Field> testField = fieldReader.createFieldFrom(fieldNode);
 
-    QCOMPARE(testField->getAccess(), General::READ_WRITE);
+    QCOMPARE(testField->getAccess(), AccessTypes::READ_WRITE);
 }
 
 //-----------------------------------------------------------------------------

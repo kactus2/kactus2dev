@@ -272,7 +272,7 @@ void tst_FieldWriter::writeAccess()
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
-    testField_->setAccess(General::READ_WRITE);
+    testField_->setAccess(AccessTypes::READ_WRITE);
 
     QString expectedOutput(
         "<ipxact:field>"

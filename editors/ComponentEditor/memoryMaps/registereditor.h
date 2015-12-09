@@ -23,7 +23,7 @@ class RegisterTableModel;
 class LibraryInterface;
 class ParameterFinder;
 class ExpressionFormatter;
-
+class FieldValidator;
 //-----------------------------------------------------------------------------
 //! Editor for editing the details of fields in a register.
 //-----------------------------------------------------------------------------
@@ -41,6 +41,7 @@ public:
 	 *      @param [in] handler                 Pointer to the instance that manages the library.
 	 *      @param [in] parameterFinder         Pointer to the parameter finder.
 	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
+     *      @param [in] fieldValidator          Validator used for fields.
 	 *      @param [in] parent                  Pointer to the parent of this editor.
 	 */
 	RegisterEditor(QSharedPointer<Register> reg,
@@ -48,17 +49,11 @@ public:
 		LibraryInterface* handler,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QSharedPointer<FieldValidator> fieldValidator,
 		QWidget* parent = 0);
 
 	//! The destructor.
 	virtual ~RegisterEditor();
-
-	/*!
-     *  Check for the validity of the editor.
-	 * 
-	 *      @return True if the editor is in valid state.
-	 */
-	virtual bool isValid() const;
 
 	/*!
      *  Reload the information from the model to the editor.

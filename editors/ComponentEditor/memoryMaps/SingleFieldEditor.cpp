@@ -50,9 +50,8 @@ SingleFieldEditor::SingleFieldEditor(QSharedPointer<Field> field, QSharedPointer
     QWidget* parent /* = 0 */):
 ItemEditor(component, handler, parent),
 nameEditor_(field, this, tr("Field name and description")),
-enumerationsEditor_(new FieldEditor(field->getEnumeratedValues(),
-    QSharedPointer<EnumeratedValueValidator> (new EnumeratedValueValidator(expressionParser)), component, handler,
-    this)),
+enumerationsEditor_(new FieldEditor(field->getEnumeratedValues(), fieldValidator->getEnumeratedValueValidator(),
+                    component, handler, this)),
 offsetEditor_(new ExpressionEditor(parameterFinder, this)),
 widthEditor_(new ExpressionEditor(parameterFinder, this)),
 volatileEditor_(),
@@ -141,14 +140,6 @@ fieldValidator_(fieldValidator)
 SingleFieldEditor::~SingleFieldEditor()
 {
 
-}
-
-//-----------------------------------------------------------------------------
-// Function: SingleFieldEditor::isValid()
-//-----------------------------------------------------------------------------
-bool SingleFieldEditor::isValid() const
-{
-    return fieldValidator_->validate(field_);
 }
 
 //-----------------------------------------------------------------------------
@@ -463,7 +454,7 @@ void SingleFieldEditor::onVolatileSelected(QString const& newVolatileValue)
 //-----------------------------------------------------------------------------
 void SingleFieldEditor::onAccessSelected(QString const& newAccessValue)
 {
-    field_->setAccess(General::str2Access(newAccessValue, General::ACCESS_COUNT));
+    field_->setAccess(AccessTypes::str2Access(newAccessValue, AccessTypes::ACCESS_COUNT));
 
     emit contentChanged();
 }

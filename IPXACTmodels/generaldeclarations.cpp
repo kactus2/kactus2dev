@@ -253,52 +253,6 @@ QString General::presence2Str(General::Presence presence) {
 	}
 }
 
-General::Access General::str2Access(QString str,
-		General::Access defaultValue) {
-	if (str == QString("read-write")) {
-		return General::READ_WRITE;
-	}
-	else if (str == QString("read-only")) {
-		return General::READ_ONLY;
-	}
-	else if (str ==	QString("write-only")) {
-		return General::WRITE_ONLY;
-	}
-	else if (str ==	QString("read-writeOnce")) {
-		return General::READ_WRITEONCE;
-	}
-	else if (str == QString("writeOnce")) {
-		return General::WRITEONCE;
-	}
-	else {
-		return defaultValue;
-	}
-}
-
-QString General::access2Str(const General::Access access) {
-	switch (access) {
-	case General::READ_WRITE: {
-		return QString("read-write");
-	}
-	case General::READ_ONLY: {
-		return QString("read-only");
-	}
-	case General::WRITE_ONLY: {
-		return QString("write-only");
-	}
-	case General::READ_WRITEONCE: {
-		return QString("read-writeOnce");
-	}
-	case General::WRITEONCE: {
-		return QString("writeOnce");
-	}
-	// if UNSPECIFIED_ACCESS
-	default: {
-		return QString();
-	}
-	}
-}
-
 General::Usage General::str2Usage(QString str,
 		General::Usage defaultValue) {
 	if (str == QString("memory")) {

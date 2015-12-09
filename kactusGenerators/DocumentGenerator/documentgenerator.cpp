@@ -591,7 +591,7 @@ void DocumentGenerator::writeAddressBlocks(QList<QSharedPointer<AddressBlock> > 
                 currentAddressBlock->getRange()) << "</td>" << endl;
             stream << "\t\t\t\t\t<td>" << expressionFormatter_->formatReferringExpression(
                 currentAddressBlock->getWidth()) << "</td>" << endl;
-            stream << "\t\t\t\t\t<td>" << General::access2Str(currentAddressBlock->getAccess()) << "</td>" << endl;
+            stream << "\t\t\t\t\t<td>" << AccessTypes::access2Str(currentAddressBlock->getAccess()) << "</td>" << endl;
             stream << "\t\t\t\t\t<td>" << currentAddressBlock->getVolatile() << "</td>" << endl;
             stream << "\t\t\t\t</tr>" << endl;
             stream << "\t\t\t</table>" << endl;
@@ -669,7 +669,7 @@ void DocumentGenerator::writeRegisters(QList<QSharedPointer<Register> > register
             }
             stream << "</td>" << endl;
             stream << "\t\t\t\t\t<td>" << currentRegister->getVolatile() << "</td>" << endl;
-            stream << "\t\t\t\t\t<td>" << General::access2Str(currentRegister->getAccess()) << "</td>" << endl;
+            stream << "\t\t\t\t\t<td>" << AccessTypes::access2Str(currentRegister->getAccess()) << "</td>" << endl;
             stream << "\t\t\t\t</tr>" << endl;
             stream << "\t\t\t</table>" << endl;
 
@@ -722,7 +722,7 @@ void DocumentGenerator::writeFields(QSharedPointer<Register> currentRegister, QT
             }
             stream << "</td>" << endl;
             stream << "\t\t\t\t\t<td>" << currentField->getVolatile().toString()  << "</td>" << endl;
-            stream << "\t\t\t\t\t<td>" << General::access2Str(currentField->getAccess()) << "</td>" << endl;
+            stream << "\t\t\t\t\t<td>" << AccessTypes::access2Str(currentField->getAccess()) << "</td>" << endl;
             stream << "\t\t\t\t\t<td>" << currentField->description() << "</td>" << endl;
             stream << "\t\t\t\t</tr>" << endl;
         }

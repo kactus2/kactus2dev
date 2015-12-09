@@ -22,6 +22,7 @@
 
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 
+#include <IPXACTmodels/Component/validators/AddressBlockValidator.h>
 #include <IPXACTmodels/common/validators/ValueFormatter.h>
 
 #include <QFormLayout>
@@ -34,11 +35,12 @@
 SingleAddressBlockEditor::SingleAddressBlockEditor(QSharedPointer<AddressBlock> addressBlock,
     QSharedPointer<Component> component, LibraryInterface* handler,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QSharedPointer<ExpressionParser> expressionParser, QWidget* parent):
+    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<AddressBlockValidator> addressBlockValidator,
+    QWidget* parent /* = 0 */):
 ItemEditor(component, handler, parent),
 nameEditor_(addressBlock, this, tr("Address block name and description")),
 registersEditor_(new AddressBlockEditor(addressBlock, component, handler, parameterFinder, expressionFormatter,
-    this)),
+                 addressBlockValidator->getRegisterValidator(), this)),
 usageEditor_(),
 baseAddressEditor_(new ExpressionEditor(parameterFinder, this)),
 rangeEditor_(new ExpressionEditor(parameterFinder, this)),
@@ -83,17 +85,6 @@ expressionParser_(expressionParser)
 SingleAddressBlockEditor::~SingleAddressBlockEditor()
 {
 
-}
-
-//-----------------------------------------------------------------------------
-// Function: SingleAddressBlockEditor::isValid()
-//-----------------------------------------------------------------------------
-bool SingleAddressBlockEditor::isValid() const
-{
-    bool nameGroupIsValid = nameEditor_.isValid();
-//     bool addressBlockIsValid = addressBlock_->isValid(component()->getChoices());
-
-    return nameGroupIsValid; // && addressBlockIsValid;
 }
 
 //-----------------------------------------------------------------------------
@@ -208,7 +199,7 @@ void SingleAddressBlockEditor::onUsageSelected(QString const& newUsage)
 //-----------------------------------------------------------------------------
 void SingleAddressBlockEditor::onAccessSelected(QString const& newAccess)
 {
-    addressBlock_->setAccess(General::str2Access(newAccess, General::ACCESS_COUNT));
+    addressBlock_->setAccess(AccessTypes::str2Access(newAccess, AccessTypes::ACCESS_COUNT));
 
     emit contentChanged();
 }

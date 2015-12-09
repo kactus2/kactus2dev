@@ -27,10 +27,11 @@
 // Function: FieldValidator::FieldValidator()
 //-----------------------------------------------------------------------------
 FieldValidator::FieldValidator(QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<QList<QSharedPointer<Choice> > > choices):
+    QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator,
+    QSharedPointer<ParameterValidator2014> parameterValidator):
 expressionParser_(expressionParser),
-enumeratedValueValidator_(new EnumeratedValueValidator(expressionParser)),
-parameterValidator_(new ParameterValidator2014(expressionParser, choices))
+enumeratedValueValidator_(enumeratedValueValidator),
+parameterValidator_(parameterValidator)
 {
 
 }
@@ -41,6 +42,14 @@ parameterValidator_(new ParameterValidator2014(expressionParser, choices))
 FieldValidator::~FieldValidator()
 {
 
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldValidator::getEnumeratedValueValidator()
+//-----------------------------------------------------------------------------
+QSharedPointer<EnumeratedValueValidator> FieldValidator::getEnumeratedValueValidator() const
+{
+    return enumeratedValueValidator_;
 }
 
 //-----------------------------------------------------------------------------
@@ -285,11 +294,11 @@ bool FieldValidator::hasValidParameters(QSharedPointer<Field> field) const
 //-----------------------------------------------------------------------------
 bool FieldValidator::hasValidAccess(QSharedPointer<Field> field) const
 {
-    if (field->getAccess() == General::READ_ONLY)
+    if (field->getAccess() == AccessTypes::READ_ONLY)
     {
         return field->getModifiedWrite() == General::MODIFIED_WRITE_COUNT;
     }
-    else if (field->getAccess() == General::WRITE_ONLY || field->getAccess() == General::WRITEONCE)
+    else if (field->getAccess() == AccessTypes::WRITE_ONLY || field->getAccess() == AccessTypes::WRITEONCE)
     {
         return field->getReadAction() == General::READ_ACTION_COUNT;
     }
@@ -533,7 +542,7 @@ void FieldValidator::findErrorsInParameters(QVector<QString>& errors, QSharedPoi
 void FieldValidator::findErrorsInAccess(QVector<QString>& errors, QSharedPointer<Field> field,
     QString const& context) const
 {
-    if (field->getAccess() == General::READ_ONLY)
+    if (field->getAccess() == AccessTypes::READ_ONLY)
     {
         if (field->getModifiedWrite() != General::MODIFIED_WRITE_COUNT)
         {
@@ -541,7 +550,7 @@ void FieldValidator::findErrorsInAccess(QVector<QString>& errors, QSharedPointer
                 "to include a modified write value.").arg(field->name()).arg(context));
         }
     }
-    else if (field->getAccess() == General::WRITE_ONLY || field->getAccess() == General::WRITEONCE)
+    else if (field->getAccess() == AccessTypes::WRITE_ONLY || field->getAccess() == AccessTypes::WRITEONCE)
     {
         if (field->getReadAction() != General::READ_ACTION_COUNT)
         {

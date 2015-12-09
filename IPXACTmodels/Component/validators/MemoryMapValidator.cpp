@@ -21,9 +21,9 @@
 // Function: MemoryMapValidator::MemoryMapValidator()
 //-----------------------------------------------------------------------------
 MemoryMapValidator::MemoryMapValidator(QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<QList<QSharedPointer<Choice> > > choices,
+    QSharedPointer<AddressBlockValidator> addressBlockValidator,
     QSharedPointer<QList<QSharedPointer<RemapState> > > remapStates):
-MemoryMapBaseValidator(expressionParser, choices),
+MemoryMapBaseValidator(expressionParser, addressBlockValidator),
 availableRemapStates_(remapStates)
 {
 

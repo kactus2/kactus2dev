@@ -20,10 +20,10 @@
 #include <QString>
 
 class ExpressionParser;
-class Choice;
 class MemoryMap;
 class MemoryRemap;
 class RemapState;
+class AddressBlockValidator;
 //-----------------------------------------------------------------------------
 //! Validator for the ipxact:memoryMap.
 //-----------------------------------------------------------------------------
@@ -34,12 +34,12 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] expressionParser    The parser to use for solving expressions.
-     *      @param [in] choices             List of available choices.
-     *      @param [in] remapStates         The currently available remap states.
+	 *      @param [in] expressionParser        The parser to use for solving expressions.
+     *      @param [in] addressBlockValidator   Validator used for address blocks.
+     *      @param [in] remapStates             The currently available remap states.
 	 */
     MemoryMapValidator(QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<QList<QSharedPointer<Choice> > > choices,
+        QSharedPointer<AddressBlockValidator> addressBlockValidator,
         QSharedPointer<QList<QSharedPointer<RemapState> > > remapStates);
 
 	//! The destructor.

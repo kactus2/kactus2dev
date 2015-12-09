@@ -25,9 +25,9 @@
 // Function: MemoryMapBaseValidator::MemoryMapBaseValidator()
 //-----------------------------------------------------------------------------
 MemoryMapBaseValidator::MemoryMapBaseValidator(QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<QList<QSharedPointer<Choice> > > choices):
+    QSharedPointer<AddressBlockValidator> addressBlockValidator):
 expressionParser_(expressionParser),
-availableChoices_(choices)
+addressBlockValidator_(addressBlockValidator)
 {
 
 }
@@ -38,6 +38,14 @@ availableChoices_(choices)
 MemoryMapBaseValidator::~MemoryMapBaseValidator()
 {
 
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapBaseValidator::getAddressBlockValidator()
+//-----------------------------------------------------------------------------
+QSharedPointer<AddressBlockValidator> MemoryMapBaseValidator::getAddressBlockValidator() const
+{
+    return addressBlockValidator_;
 }
 
 //-----------------------------------------------------------------------------
@@ -96,7 +104,6 @@ bool MemoryMapBaseValidator::hasValidMemoryBlocks(QSharedPointer<MemoryMapBase> 
 {
     if (!memoryMapBase->getMemoryBlocks()->isEmpty())
     {
-        AddressBlockValidator validator(expressionParser_, availableChoices_);
         QStringList addressBlockNames;
         for (int blockIndex = 0; blockIndex < memoryMapBase->getMemoryBlocks()->size(); ++blockIndex)
         {
@@ -104,8 +111,8 @@ bool MemoryMapBaseValidator::hasValidMemoryBlocks(QSharedPointer<MemoryMapBase> 
             QSharedPointer<AddressBlock> addressBlock = blockData.dynamicCast<AddressBlock>();
             if (addressBlock)
             {
-                if (addressBlockNames.contains(addressBlock->name()) || !validator.validate(addressBlock,
-                    addressUnitBits))
+                if (addressBlockNames.contains(addressBlock->name()) ||
+                    !addressBlockValidator_->validate(addressBlock, addressUnitBits))
                 {
                     return false;
                 }
@@ -237,7 +244,6 @@ void MemoryMapBaseValidator::findErrorsInAddressBlocks(QVector<QString>& errors,
 {
     if (!memoryMapBase->getMemoryBlocks()->isEmpty())
     {
-        AddressBlockValidator validator(expressionParser_, availableChoices_);
         QStringList addressBlockNames;
         for (int blockIndex = 0; blockIndex < memoryMapBase->getMemoryBlocks()->size(); ++blockIndex)
         {
@@ -245,7 +251,7 @@ void MemoryMapBaseValidator::findErrorsInAddressBlocks(QVector<QString>& errors,
             QSharedPointer<AddressBlock> addressBlock = memoryBlock.dynamicCast<AddressBlock>();
             if (addressBlock)
             {
-                validator.findErrorsIn(errors, addressBlock, addressUnitBits, context);
+                addressBlockValidator_->findErrorsIn(errors, addressBlock, addressUnitBits, context);
             }
 
             if (addressBlockNames.contains(addressBlock->name()))
@@ -297,12 +303,4 @@ void MemoryMapBaseValidator::findErrorsInOverlappingBlocks(QVector<QString>& err
 QSharedPointer<ExpressionParser> MemoryMapBaseValidator::getExpressionParser() const
 {
     return expressionParser_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryMapBaseValidator::getAvailableChoices()
-//-----------------------------------------------------------------------------
-QSharedPointer<QList<QSharedPointer<Choice> > > MemoryMapBaseValidator::getAvailableChoices() const
-{
-    return availableChoices_;
 }

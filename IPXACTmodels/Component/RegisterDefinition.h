@@ -16,7 +16,7 @@
 
 #include <IPXACTmodels/common/BooleanValue.h>
 
-#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/common/AccessTypes.h>
 #include <IPXACTmodels/ipxactmodels_global.h>
 
 #include <QString>
@@ -73,14 +73,14 @@ public:
 	 *
 	 *      @return Access value.
 	 */
-    General::Access getAccess() const;
+    AccessTypes::Access getAccess() const;
 
     /*!
      *  Set the access.
      *
      *      @param [in] access  The new access value.
      */
-    void setAccess(General::Access newAccessValue);
+    void setAccess(AccessTypes::Access newAccessValue);
 
 	/*!
      *  Get the list of contained fields.
@@ -113,7 +113,7 @@ private:
     BooleanValue volatile_;
 
 	//! Indicates the accessibility of the data.
-	General::Access access_;
+    AccessTypes::Access access_;
 
 	//! Contains the field-elements.
     QSharedPointer<QList<QSharedPointer<Field> > > fields_;

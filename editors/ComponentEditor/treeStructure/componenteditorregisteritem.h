@@ -28,6 +28,7 @@ class ExpressionParser;
 class Component;
 class Register;
 class Field;
+class RegisterValidator;
 //-----------------------------------------------------------------------------
 //! The item for single register in component editor's navigation tree.
 //-----------------------------------------------------------------------------
@@ -48,6 +49,7 @@ public:
 	 *      @param [in] expressionFormatter     The expression formatter.
 	 *      @param [in] referenceCounter        The instance counting references made to parameters.
 	 *      @param [in] expressionParser        The expression parser to use.
+     *      @param [in] registerValidator       Validator for registers.
 	 *      @param [in] parent                  The parent item.
 	 */
 	ComponentEditorRegisterItem(QSharedPointer<Register> reg, 
@@ -58,6 +60,7 @@ public:
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QSharedPointer<ReferenceCounter> referenceCounter,
         QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<RegisterValidator> registerValidator,
 		ComponentEditorItem* parent);
 
 	//! The destructor.
@@ -168,6 +171,9 @@ private:
 
     //! The expression parser to use.
     QSharedPointer<ExpressionParser> expressionParser_;
+
+    //! The used register validator.
+    QSharedPointer<RegisterValidator> registerValidator_;
 };
 
 #endif // COMPONENTEDITORREGISTERITEM_H

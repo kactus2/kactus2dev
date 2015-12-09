@@ -295,7 +295,7 @@ bool MemoryMapModel::setData(QModelIndex const& index, QVariant const& value, in
             QSharedPointer<AddressBlock> addrBlock = memoryBlocks->at(index.row()).dynamicCast<AddressBlock>();
             if (addrBlock)
             {
-                addrBlock->setAccess(General::str2Access(value.toString(), General::ACCESS_COUNT));
+                addrBlock->setAccess(AccessTypes::str2Access(value.toString(), AccessTypes::ACCESS_COUNT));
             }
             else 
             {
@@ -589,7 +589,7 @@ QVariant MemoryMapModel::valueForIndex(QModelIndex const& index) const
 
         else if (index.column() == MemoryMapColumns::ACCESS_COLUMN)
         {
-            return General::access2Str(addressBlock->getAccess());
+            return AccessTypes::access2Str(addressBlock->getAccess());
         }
         else if (index.column() == MemoryMapColumns::VOLATILE_COLUMN)
         {

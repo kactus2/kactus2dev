@@ -133,19 +133,19 @@ MemoryItem::MemoryItem(LibraryInterface* libInterface, QString const& instanceNa
             {
                 switch (block->getAccess())
                 {
-                case General::READ_ONLY:
+                case AccessTypes::READ_ONLY:
                     {
                         section->setUsageType(AddressSectionItem::USAGE_READ_ONLY);
                         break;
                     }
 
-                case General::READ_WRITE:
+                case AccessTypes::READ_WRITE:
                     {
                         section->setUsageType(AddressSectionItem::USAGE_READ_WRITE);
                         break;
                     }
 
-                case General::READ_WRITEONCE:
+                case AccessTypes::READ_WRITEONCE:
                     {
                         section->setUsageType(AddressSectionItem::USAGE_READ_WRITE_ONCE);
                         break;

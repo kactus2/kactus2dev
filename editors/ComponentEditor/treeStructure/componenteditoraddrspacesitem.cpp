@@ -18,6 +18,14 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/AddressSpace.h>
 
+#include <IPXACTmodels/Component/validators/AddressSpaceValidator.h>
+#include <IPXACTmodels/Component/validators/MemoryMapBaseValidator.h>
+#include <IPXACTmodels/Component/validators/AddressBlockValidator.h>
+#include <IPXACTmodels/Component/validators/RegisterValidator.h>
+#include <IPXACTmodels/Component/validators/FieldValidator.h>
+#include <IPXACTmodels/Component/validators/EnumeratedValueValidator.h>
+#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
+
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorAddrSpacesItem::ComponentEditorAddrSpacesItem()
 //-----------------------------------------------------------------------------
@@ -28,8 +36,11 @@ ComponentEditorAddrSpacesItem::ComponentEditorAddrSpacesItem(ComponentEditorTree
     QSharedPointer<ExpressionParser> expressionParser, ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 addressSpaces_(component->getAddressSpaces()),
-expressionParser_(expressionParser)
+expressionParser_(expressionParser),
+spaceValidator_()
 {
+    createAddressSpaceValidator();
+
     setReferenceCounter(referenceCounter);
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);
@@ -38,7 +49,7 @@ expressionParser_(expressionParser)
     {
 		QSharedPointer<ComponentEditorAddrSpaceItem> addrItem(
 			new ComponentEditorAddrSpaceItem(addrSpace, model, libHandler, component, referenceCounter_,
-            parameterFinder_, expressionFormatter_, expressionParser_, this));	
+            parameterFinder_, expressionFormatter_, expressionParser_, spaceValidator_, this));	
 		childItems_.append(addrItem);
 	};
 }
@@ -107,7 +118,29 @@ void ComponentEditorAddrSpacesItem::createChild( int index )
 {
 	QSharedPointer<ComponentEditorAddrSpaceItem> addrItem(
 		new ComponentEditorAddrSpaceItem(addressSpaces_->at(index), model_, libHandler_, component_,
-        referenceCounter_, parameterFinder_, expressionFormatter_, expressionParser_, this));
+        referenceCounter_, parameterFinder_, expressionFormatter_, expressionParser_, spaceValidator_, this));
 	addrItem->setLocked(locked_);
 	childItems_.insert(index, addrItem);
+}
+
+//-----------------------------------------------------------------------------
+// Function: componenteditoraddrspacesitem::createAddressSpaceValidator()
+//-----------------------------------------------------------------------------
+void ComponentEditorAddrSpacesItem::createAddressSpaceValidator()
+{
+    QSharedPointer<ParameterValidator2014> parameterValidator (new ParameterValidator2014(expressionParser_,
+        component_->getChoices()));
+    QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(expressionParser_));
+    QSharedPointer<FieldValidator> fieldValidator (
+        new FieldValidator(expressionParser_, enumValidator, parameterValidator));
+    QSharedPointer<RegisterValidator> registerValidator(
+        new RegisterValidator(expressionParser_, fieldValidator, parameterValidator));
+    QSharedPointer<AddressBlockValidator> blockValidator(
+        new AddressBlockValidator(expressionParser_, registerValidator, parameterValidator));
+    QSharedPointer<MemoryMapBaseValidator> localMapValidator(
+        new MemoryMapBaseValidator(expressionParser_, blockValidator));
+    QSharedPointer<AddressSpaceValidator> addressSpaceValidator(
+        new AddressSpaceValidator(expressionParser_, localMapValidator, parameterValidator));
+
+    spaceValidator_ = addressSpaceValidator;
 }

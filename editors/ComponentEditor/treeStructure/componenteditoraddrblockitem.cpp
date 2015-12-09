@@ -20,25 +20,24 @@
 #include <IPXACTmodels/Component/RegisterBase.h>
 #include <IPXACTmodels/Component/Register.h>
 
+#include <IPXACTmodels/Component/validators/AddressBlockValidator.h>
+
 #include <QApplication>
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorAddrBlockItem::ComponentEditorAddrBlockItem()
 //-----------------------------------------------------------------------------
 ComponentEditorAddrBlockItem::ComponentEditorAddrBlockItem(QSharedPointer<AddressBlock> addrBlock,
-														   ComponentEditorTreeModel* model,
-														   LibraryInterface* libHandler,
-														   QSharedPointer<Component> component,
-                                                           QSharedPointer<ReferenceCounter> referenceCounter,
-                                                           QSharedPointer<ParameterFinder> parameterFinder,
-                                                           QSharedPointer<ExpressionFormatter> expressionFormatter,
-                                                           QSharedPointer<ExpressionParser> expressionParser,
-														   ComponentEditorItem* parent):
+    ComponentEditorTreeModel* model, LibraryInterface* libHandler, QSharedPointer<Component> component,
+    QSharedPointer<ReferenceCounter> referenceCounter, QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<ExpressionParser> expressionParser,
+    QSharedPointer<AddressBlockValidator> addressBlockValidator, ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 addrBlock_(addrBlock),
 visualizer_(NULL),
 graphItem_(NULL),
 expressionParser_(expressionParser),
-addressUnitBits_(0)
+addressUnitBits_(0),
+addressBlockValidator_(addressBlockValidator)
 {
     setReferenceCounter(referenceCounter);
     setParameterFinder(parameterFinder);
@@ -55,7 +54,7 @@ addressUnitBits_(0)
         {
 			QSharedPointer<ComponentEditorRegisterItem> regItem(new ComponentEditorRegisterItem(reg, model,
                 libHandler, component, parameterFinder_, expressionFormatter_, referenceCounter_,
-                expressionParser_, this));
+                expressionParser_, addressBlockValidator_->getRegisterValidator(), this));
 			childItems_.append(regItem);
 		}
 	}
@@ -91,7 +90,7 @@ QString ComponentEditorAddrBlockItem::text() const
 //-----------------------------------------------------------------------------
 bool ComponentEditorAddrBlockItem::isValid() const 
 {
-    return true;
+    return addressBlockValidator_->validate(addrBlock_, QString::number(addressUnitBits_));
 }
 
 //-----------------------------------------------------------------------------
@@ -102,7 +101,7 @@ ItemEditor* ComponentEditorAddrBlockItem::editor()
 	if (!editor_)
     {
         editor_ = new SingleAddressBlockEditor(addrBlock_, component_, libHandler_, parameterFinder_,
-            expressionFormatter_, expressionParser_);
+            expressionFormatter_, expressionParser_, addressBlockValidator_);
 		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(graphicsChanged()), this, SLOT(onGraphicsChanged()), Qt::UniqueConnection);
@@ -133,7 +132,7 @@ void ComponentEditorAddrBlockItem::createChild( int index )
     {
 		QSharedPointer<ComponentEditorRegisterItem> regItem(new ComponentEditorRegisterItem(reg, model_,
             libHandler_, component_, parameterFinder_, expressionFormatter_, referenceCounter_, 
-            expressionParser_, this));
+            expressionParser_, addressBlockValidator_->getRegisterValidator(), this));
 		regItem->setLocked(locked_);
 		
 		if (visualizer_)

@@ -18,9 +18,11 @@
 #include <QString>
 
 class ExpressionParser;
-class Choice;
 class AddressBlock;
 class Register;
+
+class RegisterValidator;
+class ParameterValidator2014;
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:addressBlock.
 //-----------------------------------------------------------------------------
@@ -32,14 +34,23 @@ public:
 	 *  The constructor.
 	 *
 	 *      @param [in] expressionParser    The parser to use for solving expressions.
-     *      @param [in] choices             List of available choices.
+     *      @param [in] registerValidator   Validator used for registers.
+     *      @param [in] parameterValidator  Validator used for parameters.
 	 */
     AddressBlockValidator(QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<QList<QSharedPointer<Choice> > > choices);
+        QSharedPointer<RegisterValidator> registerValidator,
+        QSharedPointer<ParameterValidator2014> parameterValidator);
 
 	//! The destructor.
 	~AddressBlockValidator();
     
+    /*!
+     *  Get the used register validator.
+     *
+     *      @return The used register validator.
+     */
+    QSharedPointer<RegisterValidator> getRegisterValidator() const;
+
     /*!
      *  Validates the given address block.
      *
@@ -283,8 +294,11 @@ private:
     //! The expression parser to use.
     QSharedPointer<ExpressionParser> expressionParser_;
 
-    //! The currently available choices.
-    QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices_;
+    //! The validator used for registers.
+    QSharedPointer<RegisterValidator> registerValidator_;
+
+    //! The validator used for parameters.
+    QSharedPointer<ParameterValidator2014> parameterValidator_;
 };
 
 #endif // ADDRESSBLOCKVALIDATOR_H

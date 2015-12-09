@@ -22,7 +22,7 @@
 class MemoryMapsVisualizer;
 class AddressBlockGraphItem;
 class ExpressionParser;
-
+class AddressBlockValidator;
 //-----------------------------------------------------------------------------
 //! The item for a single address block in component editor's navigation tree.
 //-----------------------------------------------------------------------------
@@ -43,6 +43,7 @@ public:
 	 *      @param [in] parameterFinder         The parameter finder.
 	 *      @param [in] expressionFormatter     The expression formatter.
 	 *      @param [in] expressionParser        The expression formatter.
+     *      @param [in] addressBlockValidator   Validator used for address blocks.
 	 *      @param [in] parent                  The parent item.
 	 */
 	ComponentEditorAddrBlockItem(QSharedPointer<AddressBlock> addrBlock,
@@ -53,6 +54,7 @@ public:
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<AddressBlockValidator> addressBlockValidator,
 		ComponentEditorItem* parent);
 
 	//! The destructor.
@@ -172,6 +174,9 @@ private:
 
     //! The number of addressable unit bits in the address block.
     unsigned int addressUnitBits_;
+
+    //! The used address block validator.
+    QSharedPointer<AddressBlockValidator> addressBlockValidator_;
 };
 
 #endif // COMPONENTEDITORADDRBLOCKITEM_H

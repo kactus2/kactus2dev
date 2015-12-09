@@ -18,10 +18,12 @@
 #include <QString>
 
 class ExpressionParser;
-class Choice;
 class AddressSpace;
 class Segment;
 class MemoryReserve;
+
+class MemoryMapBaseValidator;
+class ParameterValidator2014;
 //-----------------------------------------------------------------------------
 //! Validator for the ipxact:addressSpace.
 //-----------------------------------------------------------------------------
@@ -32,15 +34,24 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] expressionParser    The parser to use for solving expressions.
-     *      @param [in] choices             List of available choices.
+	 *      @param [in] expressionParser        The parser to use for solving expressions.
+     *      @param [in] memoryMapBaseValidator  Validator used for local memory map.
+     *      @param [in] parameterValidator      Validator used for parameters.
 	 */
     AddressSpaceValidator(QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<QList<QSharedPointer<Choice> > > choices);
+        QSharedPointer<MemoryMapBaseValidator> memoryMapBaseValidator,
+        QSharedPointer<ParameterValidator2014> parameterValidator);
 
 	//! The destructor.
 	~AddressSpaceValidator();
     
+    /*!
+     *  Get the validator used for local memory map.
+     *
+     *      @return The validator used for local memory map.
+     */
+    QSharedPointer<MemoryMapBaseValidator> getLocalMemoryMapValidator();
+
     /*!
      *  Validates the given address space.
      *
@@ -243,8 +254,11 @@ private:
     //! The expression parser to use.
     QSharedPointer<ExpressionParser> expressionParser_;
 
-    //! The currently available choices.
-    QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices_;
+    //! The validator used for local memory map.
+    QSharedPointer<MemoryMapBaseValidator> localMemoryMapValidator_;
+
+    //! The validator used for parameters.
+    QSharedPointer<ParameterValidator2014> parameterValidator_;
 };
 
 #endif // ADDRESSSPACEVALIDATOR_H

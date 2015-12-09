@@ -37,12 +37,12 @@ HEADERS += ../../../IPXACTmodels/AbstractMemoryMap.h \
     ../../../IPXACTmodels/Component/RegisterBase.h \
     ../../../IPXACTmodels/Component/RegisterDefinition.h \
     ../../../IPXACTmodels/Component/RegisterFile.h \
+    ../../../IPXACTmodels/Component/Segment.h \
+    ../../../IPXACTmodels/common/VLNV.h \
     ../../../IPXACTmodels/common/Vector.h \
     ../../../IPXACTmodels/Component/WriteValueConstraint.h \
     ../../../IPXACTmodels/XmlUtils.h \
     ../../../IPXACTmodels/generaldeclarations.h \
-    ../../../IPXACTmodels/Component/Segment.h \
-    ../../../IPXACTmodels/common/VLNV.h \
     ../../../IPXACTmodels/Component/AddressBlockWriter.h \
     ../../../IPXACTmodels/Component/AddressSpaceWriter.h \
     ../../../IPXACTmodels/common/CommonItemsWriter.h \
@@ -52,7 +52,8 @@ HEADERS += ../../../IPXACTmodels/AbstractMemoryMap.h \
     ../../../IPXACTmodels/common/ModuleParameterWriter.h \
     ../../../IPXACTmodels/common/NameGroupWriter.h \
     ../../../IPXACTmodels/common/ParameterWriter.h \
-    ../../../IPXACTmodels/Component/RegisterWriter.h
+    ../../../IPXACTmodels/Component/RegisterWriter.h \
+    ../../../IPXACTmodels/common/AccessTypes.h
 SOURCES += ../../../IPXACTmodels/Component/AddressBlock.cpp \
     ../../../IPXACTmodels/Component/AddressBlockWriter.cpp \
     ../../../IPXACTmodels/Component/AddressSpace.cpp \
@@ -92,10 +93,11 @@ SOURCES += ../../../IPXACTmodels/Component/AddressBlock.cpp \
     ../../../IPXACTmodels/Component/RegisterDefinition.cpp \
     ../../../IPXACTmodels/Component/RegisterFile.cpp \
     ../../../IPXACTmodels/Component/RegisterWriter.cpp \
+    ../../../IPXACTmodels/Component/Segment.cpp \
+    ../../../IPXACTmodels/common/VLNV.cpp \
     ../../../IPXACTmodels/common/Vector.cpp \
     ../../../IPXACTmodels/Component/WriteValueConstraint.cpp \
     ../../../IPXACTmodels/XmlUtils.cpp \
     ../../../IPXACTmodels/generaldeclarations.cpp \
-    ../../../IPXACTmodels/Component/Segment.cpp \
     ./tst_AddressSpaceWriter.cpp \
-    ../../../IPXACTmodels/common/VLNV.cpp
+    ../../../IPXACTmodels/common/AccessTypes.cpp

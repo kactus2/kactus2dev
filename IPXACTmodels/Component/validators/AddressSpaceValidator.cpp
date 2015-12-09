@@ -27,9 +27,11 @@
 // Function: AddressSpaceValidator::AddressSpaceValidator()
 //-----------------------------------------------------------------------------
 AddressSpaceValidator::AddressSpaceValidator(QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<QList<QSharedPointer<Choice> > > choices):
+    QSharedPointer<MemoryMapBaseValidator> memoryMapBaseValidator,
+    QSharedPointer<ParameterValidator2014> parameterValidator):
 expressionParser_(expressionParser),
-availableChoices_(choices)
+localMemoryMapValidator_(memoryMapBaseValidator),
+parameterValidator_(parameterValidator)
 {
 
 }
@@ -40,6 +42,14 @@ availableChoices_(choices)
 AddressSpaceValidator::~AddressSpaceValidator()
 {
 
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceValidator::getLocalMemoryMapValidator()
+//-----------------------------------------------------------------------------
+QSharedPointer<MemoryMapBaseValidator> AddressSpaceValidator::getLocalMemoryMapValidator()
+{
+    return localMemoryMapValidator_;
 }
 
 //-----------------------------------------------------------------------------
@@ -229,9 +239,7 @@ bool AddressSpaceValidator::hasValidLocalMemoryMap(QSharedPointer<AddressSpace> 
 
         QSharedPointer<MemoryMapBase> localMemoryMap = addressSpace->getLocalMemoryMap();
 
-        MemoryMapBaseValidator validator (expressionParser_, availableChoices_);
-
-        return validator.validate(localMemoryMap, addressUnitBits);
+        return localMemoryMapValidator_->validate(localMemoryMap, addressUnitBits);
     }
 
     return true;
@@ -244,11 +252,10 @@ bool AddressSpaceValidator::hasValidParameters(QSharedPointer<AddressSpace> addr
 {
     if (!addressSpace->getParameters()->isEmpty())
     {
-        ParameterValidator2014 validator(expressionParser_, availableChoices_);
         QStringList parameterNames;
         foreach (QSharedPointer<Parameter> parameter, *addressSpace->getParameters())
         {
-            if (parameterNames.contains(parameter->name()) || !validator.validate(parameter.data()))
+            if (parameterNames.contains(parameter->name()) || !parameterValidator_->validate(parameter))
             {
                 return false;
             }
@@ -422,8 +429,8 @@ void AddressSpaceValidator::findErrorsInLocalMemoryMap(QVector<QString>& errors,
             addressUnitBits = QLatin1String("8");
         }
 
-        MemoryMapBaseValidator validator (expressionParser_, availableChoices_);
-        validator.findErrorsIn(errors, addressSpace->getLocalMemoryMap(), addressUnitBits, context);
+        localMemoryMapValidator_->findErrorsIn(
+            errors, addressSpace->getLocalMemoryMap(), addressUnitBits, context);
     }
 }
 
@@ -435,7 +442,6 @@ void AddressSpaceValidator::findErrorsInParameters(QVector<QString>& errors,
 {
     if (!addressSpace->getParameters()->isEmpty())
     {
-        ParameterValidator2014 validator (expressionParser_, availableChoices_);
         QStringList parameterNames;
         foreach (QSharedPointer<Parameter> parameter, *addressSpace->getParameters())
         {
@@ -449,7 +455,7 @@ void AddressSpaceValidator::findErrorsInParameters(QVector<QString>& errors,
                 parameterNames.append(parameter->name());
             }
 
-            validator.findErrorsIn(errors, parameter, context);
+            parameterValidator_->findErrorsIn(errors, parameter, context);
         }
     }
 }

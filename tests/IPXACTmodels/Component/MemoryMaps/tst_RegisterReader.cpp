@@ -260,7 +260,7 @@ void tst_RegisterReader::readRegisterAccess()
     QSharedPointer<Register> testRegister = registerReader.createRegisterfrom(registerNode);
 
     QCOMPARE(testRegister->name(), QString("testRegister"));
-    QCOMPARE(testRegister->getAccess(), General::WRITEONCE);
+    QCOMPARE(testRegister->getAccess(), AccessTypes::WRITEONCE);
 
     QCOMPARE(testRegister->getFields()->size(), 1);
 }
@@ -373,7 +373,7 @@ void tst_RegisterReader::readRegisterAlternateRegisters()
     QCOMPARE(alternateRegister->getIsPresent(), QString("presence"));
     QCOMPARE(alternateRegister->getTypeIdentifier(), QString("Volgarr"));
     QCOMPARE(alternateRegister->getVolatile(), QString("false"));
-    QCOMPARE(alternateRegister->getAccess(), General::READ_WRITE);
+    QCOMPARE(alternateRegister->getAccess(), AccessTypes::READ_WRITE);
 
     QCOMPARE(alternateRegister->getAlternateGroups()->size(), 1);
     QCOMPARE(alternateRegister->getAlternateGroups()->first(), QString("wolf"));

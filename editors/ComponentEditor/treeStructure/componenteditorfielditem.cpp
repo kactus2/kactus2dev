@@ -28,19 +28,17 @@
 // Function: componenteditorfielditem::ComponentEditorFieldItem()
 //-----------------------------------------------------------------------------
 ComponentEditorFieldItem::ComponentEditorFieldItem(QSharedPointer<Register> reg, QSharedPointer<Field> field,
-                                                   ComponentEditorTreeModel* model, LibraryInterface* libHandler,
-												   QSharedPointer<Component> component,
-                                                   QSharedPointer<ParameterFinder> parameterFinder,
-                                                   QSharedPointer<ReferenceCounter> referenceCounter,
-                                                   QSharedPointer<ExpressionParser> expressionParser,
-                                                   ComponentEditorItem* parent):
+    ComponentEditorTreeModel* model, LibraryInterface* libHandler, QSharedPointer<Component> component,
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ReferenceCounter> referenceCounter,
+    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<FieldValidator> fieldValidator,
+    ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 reg_(reg),
 field_(field),
 visualizer_(NULL),
 graphItem_(NULL),
 expressionParser_(expressionParser),
-fieldValidator_(new FieldValidator(expressionParser, component->getChoices()))
+fieldValidator_(fieldValidator)
 {
 	Q_ASSERT(field_);
 

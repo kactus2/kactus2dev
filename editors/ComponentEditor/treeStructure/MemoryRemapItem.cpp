@@ -24,6 +24,8 @@
 #include <IPXACTmodels/Component/MemoryBlockBase.h>
 #include <IPXACTmodels/Component/AddressBlock.h>
 
+#include <IPXACTmodels/Component/validators/MemoryMapBaseValidator.h>
+
 //-----------------------------------------------------------------------------
 // Function: MemoryRemapItem::MemoryRemapItem()
 //-----------------------------------------------------------------------------
@@ -31,15 +33,16 @@ MemoryRemapItem::MemoryRemapItem(QSharedPointer<MemoryMapBase> memoryRemap,
     QSharedPointer<MemoryMap> parentMemoryMap, ComponentEditorTreeModel* model, LibraryInterface* libHandler,
     QSharedPointer<Component> component, QSharedPointer<ReferenceCounter> referenceCounter,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
-     QSharedPointer<ExpressionParser> expressionParser,
-    ComponentEditorItem* parent):
+    QSharedPointer<ExpressionParser> expressionParser,
+    QSharedPointer<MemoryMapBaseValidator> memoryMapBaseValidator, ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 memoryRemap_(memoryRemap),
 parentMemoryMap_(parentMemoryMap),
 memoryBlocks_(memoryRemap->getMemoryBlocks()),
 visualizer_(NULL),
 graphItem_(NULL),
-expressionParser_(expressionParser)
+expressionParser_(expressionParser),
+memoryMapBaseValidator_(memoryMapBaseValidator)
 {
     setReferenceCounter(referenceCounter);
     setParameterFinder(parameterFinder);
@@ -54,9 +57,9 @@ expressionParser_(expressionParser)
 		QSharedPointer<AddressBlock> addrBlock = memItem.dynamicCast<AddressBlock>();
 		if (addrBlock) 
         {
-			QSharedPointer<ComponentEditorAddrBlockItem> addrBlockItem(
-				new ComponentEditorAddrBlockItem(addrBlock, model, libHandler, component, referenceCounter_,
-                parameterFinder_, expressionFormatter_, expressionParser_, this));
+			QSharedPointer<ComponentEditorAddrBlockItem> addrBlockItem(new ComponentEditorAddrBlockItem(
+                addrBlock, model, libHandler, component, referenceCounter_, parameterFinder_, expressionFormatter_,
+                expressionParser_, memoryMapBaseValidator->getAddressBlockValidator(), this));
 			childItems_.append(addrBlockItem);
 		}
 	}
@@ -164,9 +167,9 @@ void MemoryRemapItem::createChild( int index )
 	QSharedPointer<AddressBlock> addrBlock = block.dynamicCast<AddressBlock>();
 	if (addrBlock)
     {
-		QSharedPointer<ComponentEditorAddrBlockItem> addrBlockItem
-            (new ComponentEditorAddrBlockItem(addrBlock, model_, libHandler_, component_, referenceCounter_,
-            parameterFinder_, expressionFormatter_, expressionParser_, this));
+		QSharedPointer<ComponentEditorAddrBlockItem> addrBlockItem (new ComponentEditorAddrBlockItem(
+            addrBlock, model_, libHandler_, component_, referenceCounter_, parameterFinder_, expressionFormatter_,
+            expressionParser_, memoryMapBaseValidator_->getAddressBlockValidator(), this));
 		addrBlockItem->setLocked(locked_);
 
         int newAddressUnitBits = expressionParser_->parseExpression(parentMemoryMap_->getAddressUnitBits()).toInt();

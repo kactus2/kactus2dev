@@ -22,7 +22,7 @@ class MemoryMapsVisualizer;
 class MemoryMapGraphItem;
 class ExpressionParser;
 class MemoryMap;
-
+class MemoryMapValidator;
 //-----------------------------------------------------------------------------
 //! The item for a single memory map in component editor's navigation tree.
 //-----------------------------------------------------------------------------
@@ -43,6 +43,7 @@ public:
 	 *      @param [in] parameterFinder         The parameter finder.
 	 *      @param [in] expressionFormatter     The expression formatter.
      *      @param [in] expressionParser        The expression parser to use.
+     *      @param [in] memoryMapValidator      Validator used for memory maps.
 	 *      @param [in] parent                  The parent item.
 	 */
 	ComponentEditorMemMapItem(QSharedPointer<MemoryMap> memoryMap,
@@ -53,6 +54,7 @@ public:
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<MemoryMapValidator> memoryMapValidator,
 		ComponentEditorItem* parent);
 
 	//! The destructor.
@@ -163,6 +165,9 @@ private:
 
     //! The expression parser to use.
     QSharedPointer<ExpressionParser> expressionParser_;
+
+    //! The validator used for memory maps.
+    QSharedPointer<MemoryMapValidator> memoryMapValidator_;
 };
 
 #endif // COMPONENTEDITORMEMMAPITEM_H

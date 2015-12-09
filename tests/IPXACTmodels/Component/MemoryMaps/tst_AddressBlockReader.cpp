@@ -232,7 +232,7 @@ void tst_AddressBlockReader::readAccess()
     QSharedPointer<AddressBlock> testAddressBlock = addressBlockReader.createAddressBlockFrom(addressBlockNode);
 
     QCOMPARE(testAddressBlock->name(), QString("testBlock"));
-    QCOMPARE(testAddressBlock->getAccess(), General::WRITEONCE);
+    QCOMPARE(testAddressBlock->getAccess(), AccessTypes::WRITEONCE);
 }
 
 //-----------------------------------------------------------------------------

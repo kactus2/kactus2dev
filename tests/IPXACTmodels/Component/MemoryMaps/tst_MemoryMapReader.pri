@@ -29,20 +29,21 @@ HEADERS += ../../../../IPXACTmodels/Component/AddressBlock.h \
     ../../../../IPXACTmodels/Component/RegisterBase.h \
     ../../../../IPXACTmodels/Component/RegisterDefinition.h \
     ../../../../IPXACTmodels/Component/RegisterFile.h \
+    ../../../../IPXACTmodels/common/VLNV.h \
     ../../../../IPXACTmodels/common/Vector.h \
     ../../../../IPXACTmodels/Component/WriteValueConstraint.h \
     ../../../../IPXACTmodels/XmlUtils.h \
     ../../../../IPXACTmodels/generaldeclarations.h \
-    ../../../../IPXACTmodels/common/VLNV.h \
     ../../../../IPXACTmodels/Component/AddressBlockReader.h \
     ../../../../IPXACTmodels/common/CommonItemsReader.h \
     ../../../../IPXACTmodels/Component/EnumeratedValueReader.h \
     ../../../../IPXACTmodels/Component/FieldReader.h \
+    ../../../../IPXACTmodels/Component/MemoryMapBaseReader.h \
     ../../../../IPXACTmodels/Component/MemoryMapReader.h \
     ../../../../IPXACTmodels/common/NameGroupReader.h \
     ../../../../IPXACTmodels/common/ParameterReader.h \
     ../../../../IPXACTmodels/Component/RegisterReader.h \
-    ../../../../IPXACTmodels/Component/MemoryMapBaseReader.h
+    ../../../../IPXACTmodels/common/AccessTypes.h
 SOURCES += ../../../../IPXACTmodels/Component/AddressBlock.cpp \
     ../../../../IPXACTmodels/Component/AddressBlockReader.cpp \
     ../../../../IPXACTmodels/Component/AlternateRegister.cpp \
@@ -61,6 +62,7 @@ SOURCES += ../../../../IPXACTmodels/Component/AddressBlock.cpp \
     ../../../../IPXACTmodels/Component/MemoryBlockBase.cpp \
     ../../../../IPXACTmodels/Component/MemoryMap.cpp \
     ../../../../IPXACTmodels/Component/MemoryMapBase.cpp \
+    ../../../../IPXACTmodels/Component/MemoryMapBaseReader.cpp \
     ../../../../IPXACTmodels/Component/MemoryMapReader.cpp \
     ../../../../IPXACTmodels/Component/MemoryRemap.cpp \
     ../../../../IPXACTmodels/common/NameGroup.cpp \
@@ -73,10 +75,10 @@ SOURCES += ../../../../IPXACTmodels/Component/AddressBlock.cpp \
     ../../../../IPXACTmodels/Component/RegisterDefinition.cpp \
     ../../../../IPXACTmodels/Component/RegisterFile.cpp \
     ../../../../IPXACTmodels/Component/RegisterReader.cpp \
+    ../../../../IPXACTmodels/common/VLNV.cpp \
     ../../../../IPXACTmodels/common/Vector.cpp \
     ../../../../IPXACTmodels/Component/WriteValueConstraint.cpp \
     ../../../../IPXACTmodels/XmlUtils.cpp \
     ../../../../IPXACTmodels/generaldeclarations.cpp \
     ./tst_MemoryMapReader.cpp \
-    ../../../../IPXACTmodels/common/VLNV.cpp \
-    ../../../../IPXACTmodels/Component/MemoryMapBaseReader.cpp
+    ../../../../IPXACTmodels/common/AccessTypes.cpp

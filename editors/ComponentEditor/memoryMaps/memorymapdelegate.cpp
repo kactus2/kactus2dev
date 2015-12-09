@@ -88,7 +88,8 @@ void MemoryMapDelegate::setEditorData(QWidget* editor, QModelIndex const& index)
         AccessComboBox* accessBox = qobject_cast<AccessComboBox*>(editor);
         Q_ASSERT(accessBox);
 
-        General::Access access = General::str2Access(index.model()->data(index).toString(), General::ACCESS_COUNT);
+        AccessTypes::Access access =
+            AccessTypes::str2Access(index.model()->data(index).toString(), AccessTypes::ACCESS_COUNT);
         accessBox->setCurrentValue(access);
     }
     else if (index.column() == MemoryMapColumns::VOLATILE_COLUMN)
@@ -123,8 +124,8 @@ void MemoryMapDelegate::setModelData(QWidget* editor, QAbstractItemModel* model,
         AccessComboBox* accessBox = qobject_cast<AccessComboBox*>(editor);
         Q_ASSERT(accessBox);
 
-        General::Access access = accessBox->getCurrentValue();
-        model->setData(index, General::access2Str(access), Qt::EditRole);
+        AccessTypes::Access access = accessBox->getCurrentValue();
+        model->setData(index, AccessTypes::access2Str(access), Qt::EditRole);
     }
     else if (index.column() ==  MemoryMapColumns::VOLATILE_COLUMN)
     {

@@ -12,6 +12,11 @@
 #include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
 
 #include <IPXACTmodels/Component/validators/MemoryMapValidator.h>
+#include <IPXACTmodels/Component/validators/AddressBlockValidator.h>
+#include <IPXACTmodels/Component/validators/RegisterValidator.h>
+#include <IPXACTmodels/Component/validators/FieldValidator.h>
+#include <IPXACTmodels/Component/validators/EnumeratedValueValidator.h>
+#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
 
 #include <IPXACTmodels/Component/MemoryMap.h>
 #include <IPXACTmodels/Component/MemoryRemap.h>
@@ -70,8 +75,18 @@ void tst_MemoryMapValidator::testNameIsValid()
     QSharedPointer<MemoryMap> testMap (new MemoryMap(name));
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    MemoryMapValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > (),
+    QSharedPointer<ParameterValidator2014> parameterValidator (new ParameterValidator2014(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
+    QSharedPointer<RegisterValidator> registerValidator (
+        new RegisterValidator(parser, fieldValidator, parameterValidator));
+    QSharedPointer<AddressBlockValidator> addressBlockValidator (
+        new AddressBlockValidator(parser, registerValidator, parameterValidator));
+    MemoryMapValidator validator(parser, addressBlockValidator,
         QSharedPointer<QList<QSharedPointer<RemapState> > > ());
+//     MemoryMapValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > (),
+//         QSharedPointer<QList<QSharedPointer<RemapState> > > ());
     QCOMPARE(validator.hasValidName(testMap), isValid);
 
     if (!isValid)
@@ -121,7 +136,15 @@ void tst_MemoryMapValidator::testAddressUnitBitsIsValid()
     }
 
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    MemoryMapValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > (),
+    QSharedPointer<ParameterValidator2014> parameterValidator (new ParameterValidator2014(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
+    QSharedPointer<RegisterValidator> registerValidator (
+        new RegisterValidator(parser, fieldValidator, parameterValidator));
+    QSharedPointer<AddressBlockValidator> addressBlockValidator (
+        new AddressBlockValidator(parser, registerValidator, parameterValidator));
+    MemoryMapValidator validator(parser, addressBlockValidator,
         QSharedPointer<QList<QSharedPointer<RemapState> > > ());
     QCOMPARE(validator.hasValidAddressUnitBits(testMap), isValid);
 
@@ -177,7 +200,15 @@ void tst_MemoryMapValidator::testAddressBlockWidthIsMultipleOfAddressUnitBits()
     testMap->getMemoryBlocks()->append(testBlock);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    MemoryMapValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > (),
+    QSharedPointer<ParameterValidator2014> parameterValidator (new ParameterValidator2014(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
+    QSharedPointer<RegisterValidator> registerValidator (
+        new RegisterValidator(parser, fieldValidator, parameterValidator));
+    QSharedPointer<AddressBlockValidator> addressBlockValidator (
+        new AddressBlockValidator(parser, registerValidator, parameterValidator));
+    MemoryMapValidator validator(parser, addressBlockValidator,
         QSharedPointer<QList<QSharedPointer<RemapState> > > ());
     QCOMPARE(validator.hasValidMemoryBlocks(testMap, addressUnitBits), isValid);
 
@@ -237,7 +268,15 @@ void tst_MemoryMapValidator::testHasValidMemoryRemaps()
     testMap->getMemoryRemaps()->append(testRemap);
 
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    MemoryMapValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > (), remapStates);
+    QSharedPointer<ParameterValidator2014> parameterValidator (new ParameterValidator2014(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
+    QSharedPointer<RegisterValidator> registerValidator (
+        new RegisterValidator(parser, fieldValidator, parameterValidator));
+    QSharedPointer<AddressBlockValidator> addressBlockValidator (
+        new AddressBlockValidator(parser, registerValidator, parameterValidator));
+    MemoryMapValidator validator(parser, addressBlockValidator, remapStates);
     QCOMPARE(validator.hasValidMemoryRemaps(testMap), isValid);
 
     if (!isValid)
@@ -291,7 +330,15 @@ void tst_MemoryMapValidator::testMemoryRemapHasValidName()
     testMap->getMemoryRemaps()->append(otherRemap);
 
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    MemoryMapValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > (), remapStates);
+    QSharedPointer<ParameterValidator2014> parameterValidator (new ParameterValidator2014(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
+    QSharedPointer<RegisterValidator> registerValidator (
+        new RegisterValidator(parser, fieldValidator, parameterValidator));
+    QSharedPointer<AddressBlockValidator> addressBlockValidator (
+        new AddressBlockValidator(parser, registerValidator, parameterValidator));
+    MemoryMapValidator validator(parser, addressBlockValidator, remapStates);
     QCOMPARE(validator.hasValidMemoryRemaps(testMap), isValid);
 
     if (!isValid)
@@ -356,7 +403,15 @@ void tst_MemoryMapValidator::testMemoryRemapHasValidIsPresent()
     testMap->getMemoryRemaps()->append(testRemap);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    MemoryMapValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > (), remapStates);
+    QSharedPointer<ParameterValidator2014> parameterValidator (new ParameterValidator2014(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
+    QSharedPointer<RegisterValidator> registerValidator (
+        new RegisterValidator(parser, fieldValidator, parameterValidator));
+    QSharedPointer<AddressBlockValidator> addressBlockValidator (
+        new AddressBlockValidator(parser, registerValidator, parameterValidator));
+    MemoryMapValidator validator(parser, addressBlockValidator, remapStates);
     QCOMPARE(validator.hasValidMemoryRemaps(testMap), isValid);
 
     if (!isValid)
@@ -419,7 +474,15 @@ void tst_MemoryMapValidator::testMemoryRemapsHaveUniqueRemapStates()
     testMap->getMemoryRemaps()->append(remapThree);
 
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    MemoryMapValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > (), remapStates);
+    QSharedPointer<ParameterValidator2014> parameterValidator (new ParameterValidator2014(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
+    QSharedPointer<RegisterValidator> registerValidator (
+        new RegisterValidator(parser, fieldValidator, parameterValidator));
+    QSharedPointer<AddressBlockValidator> addressBlockValidator (
+        new AddressBlockValidator(parser, registerValidator, parameterValidator));
+    MemoryMapValidator validator(parser, addressBlockValidator, remapStates);
     QCOMPARE(validator.hasValidMemoryRemaps(testMap), isValid);
 
     if (!isValid)

@@ -25,7 +25,7 @@ width_(),
 widthAttributes_(),
 usage_(General::USAGE_COUNT),
 volatile_(),
-access_(General::ACCESS_COUNT),
+access_(AccessTypes::ACCESS_COUNT),
 registerData_(new QList<QSharedPointer<RegisterBase> > ())
 {
 
@@ -214,7 +214,7 @@ void AddressBlock::clearVolatile()
 //-----------------------------------------------------------------------------
 // Function: AddressBlock::getAccess()
 //-----------------------------------------------------------------------------
-General::Access AddressBlock::getAccess() const
+AccessTypes::Access AddressBlock::getAccess() const
 {
     return access_;
 }
@@ -222,7 +222,7 @@ General::Access AddressBlock::getAccess() const
 //-----------------------------------------------------------------------------
 // Function: AddressBlock::setAccess()
 //-----------------------------------------------------------------------------
-void AddressBlock::setAccess(General::Access newAccess)
+void AddressBlock::setAccess(AccessTypes::Access newAccess)
 {
     access_ = newAccess;
 }

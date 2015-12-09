@@ -29,9 +29,11 @@
 // Function: AddressBlockValidator::AddressBlockValidator()
 //-----------------------------------------------------------------------------
 AddressBlockValidator::AddressBlockValidator(QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<QList<QSharedPointer<Choice> > > choices):
+    QSharedPointer<RegisterValidator> registerValidator,
+    QSharedPointer<ParameterValidator2014> parameterValidator):
 expressionParser_(expressionParser),
-availableChoices_(choices)
+registerValidator_(registerValidator),
+parameterValidator_(parameterValidator)
 {
 
 }
@@ -42,6 +44,14 @@ availableChoices_(choices)
 AddressBlockValidator::~AddressBlockValidator()
 {
 
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockValidator::getRegisterValidator()
+//-----------------------------------------------------------------------------
+QSharedPointer<RegisterValidator> AddressBlockValidator::getRegisterValidator() const
+{
+    return registerValidator_;
 }
 
 //-----------------------------------------------------------------------------
@@ -133,11 +143,10 @@ bool AddressBlockValidator::hasValidParameters(QSharedPointer<AddressBlock> addr
 {
     if (!addressBlock->getParameters()->isEmpty())
     {
-        ParameterValidator2014 validator(expressionParser_, availableChoices_);
         QStringList parameterNames;
         foreach (QSharedPointer<Parameter> parameter, *addressBlock->getParameters())
         {
-            if (parameterNames.contains(parameter->name()) || !validator.validate(parameter.data()))
+            if (parameterNames.contains(parameter->name()) || !parameterValidator_->validate(parameter))
             {
                 return false;
             }
@@ -159,7 +168,6 @@ bool AddressBlockValidator::hasValidRegisterData(QSharedPointer<AddressBlock> ad
 {
     if (!addressBlock->getRegisterData()->isEmpty())
     {
-        RegisterValidator validator(expressionParser_, availableChoices_);
         QStringList registerNames;
 
         QStringList typeIdentifiers;
@@ -176,10 +184,10 @@ bool AddressBlockValidator::hasValidRegisterData(QSharedPointer<AddressBlock> ad
             if (targetRegister)
             {
                 if (registerNames.contains(targetRegister->name()) ||
+                    !registerValidator_->validate(targetRegister) ||
                     registerSizeIsNotWithinBlockWidth(targetRegister, addressBlock) ||
                     !hasValidVolatileForRegister(addressBlock, targetRegister) ||
-                    !hasValidAccessWithRegister(addressBlock, targetRegister) ||
-                    !validator.validate(targetRegister))
+                    !hasValidAccessWithRegister(addressBlock, targetRegister))
                 {
                     return false;
                 }
@@ -265,14 +273,14 @@ bool AddressBlockValidator::hasValidVolatileForRegister(QSharedPointer<AddressBl
 bool AddressBlockValidator::hasValidAccessWithRegister(QSharedPointer<AddressBlock> addressBlock,
     QSharedPointer<Register> targetRegister) const
 {
-    General::Access blockAccess = addressBlock->getAccess();
-    General::Access registerAccess = targetRegister->getAccess();
-    if ((blockAccess == General::READ_ONLY && registerAccess != General::READ_ONLY) ||
-        (blockAccess == General::WRITE_ONLY && (registerAccess != General::WRITE_ONLY &&
-            registerAccess != General::WRITEONCE)) ||
-        (blockAccess == General::READ_WRITEONCE && (registerAccess != General::READ_ONLY &&
-            registerAccess != General::READ_WRITEONCE && registerAccess != General::WRITEONCE)) ||
-        (blockAccess == General::WRITEONCE && registerAccess != General::WRITEONCE))
+    AccessTypes::Access blockAccess = addressBlock->getAccess();
+    AccessTypes::Access registerAccess = targetRegister->getAccess();
+    if ((blockAccess == AccessTypes::READ_ONLY && registerAccess != AccessTypes::READ_ONLY) ||
+        (blockAccess == AccessTypes::WRITE_ONLY && (registerAccess != AccessTypes::WRITE_ONLY &&
+            registerAccess != AccessTypes::WRITEONCE)) ||
+        (blockAccess == AccessTypes::READ_WRITEONCE && (registerAccess != AccessTypes::READ_ONLY &&
+            registerAccess != AccessTypes::READ_WRITEONCE && registerAccess != AccessTypes::WRITEONCE)) ||
+        (blockAccess == AccessTypes::WRITEONCE && registerAccess != AccessTypes::WRITEONCE))
     {
         return false;
     }
@@ -323,7 +331,7 @@ bool AddressBlockValidator::hasValidUsage(QSharedPointer<AddressBlock> addressBl
                 if (targetRegister)
                 {
                     if (!targetRegister->getVolatile().isEmpty() ||
-                        targetRegister->getAccess() != General::ACCESS_COUNT)
+                        targetRegister->getAccess() != AccessTypes::ACCESS_COUNT)
                     {
                         return false;
                     }
@@ -437,7 +445,7 @@ void AddressBlockValidator::findErrorsInUsage(QVector<QString>& errors, QSharedP
             if (targetRegister)
             {
                 if (!targetRegister->getVolatile().isEmpty() ||
-                    targetRegister->getAccess() != General::ACCESS_COUNT)
+                    targetRegister->getAccess() != AccessTypes::ACCESS_COUNT)
                 {
                     errors.append(QObject::tr("Access and volatile values must be empty for register %1 in "
                         "address block %2 with usage %3 within %4").arg(targetRegister->name())
@@ -456,7 +464,6 @@ void AddressBlockValidator::findErrorsInParameters(QVector<QString>&errors,
 {
     if (!addressBlock->getParameters()->isEmpty())
     {
-        ParameterValidator2014 validator(expressionParser_, availableChoices_);
         QStringList parameterNames;
         foreach (QSharedPointer<Parameter> parameter, *addressBlock->getParameters())
         {
@@ -470,7 +477,7 @@ void AddressBlockValidator::findErrorsInParameters(QVector<QString>&errors,
                 parameterNames.append(parameter->name());
             }
 
-            validator.findErrorsIn(errors, parameter, context);
+            parameterValidator_->findErrorsIn(errors, parameter, context);
         }
     }
 }
@@ -483,7 +490,6 @@ void AddressBlockValidator::findErrorsInRegisterData(QVector<QString>& errors,
 {
     if (!addressBlock->getRegisterData()->isEmpty())
     {
-        RegisterValidator validator(expressionParser_, availableChoices_);
         QStringList registerNames;
         QStringList typeIdentifiers;
 
@@ -508,7 +514,7 @@ void AddressBlockValidator::findErrorsInRegisterData(QVector<QString>& errors,
                     registerNames.append(targetRegister->name());
                 }
 
-                validator.findErrorsIn(errors, targetRegister, context);
+                registerValidator_->findErrorsIn(errors, targetRegister, context);
 
                 if (registerSizeIsNotWithinBlockWidth(targetRegister, addressBlock))
                 {
@@ -539,10 +545,10 @@ void AddressBlockValidator::findErrorsInRegisterData(QVector<QString>& errors,
                 {
                     errors.append(QObject::tr("Access cannot be set to %1 in register %2, where containing address "
                         "block %3 has access %4")
-                        .arg(General::access2Str(targetRegister->getAccess()))
+                        .arg(AccessTypes::access2Str(targetRegister->getAccess()))
                         .arg(targetRegister->name())
                         .arg(addressBlock->name())
-                        .arg(General::access2Str(addressBlock->getAccess())));
+                        .arg(AccessTypes::access2Str(addressBlock->getAccess())));
                 }
 
                 if (aubChangeOk)

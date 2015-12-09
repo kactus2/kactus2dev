@@ -606,7 +606,7 @@ bool BusInterfaceValidator::hasValidParameters(QSharedPointer<BusInterface> busI
         QStringList parameterNames;
         foreach (QSharedPointer<Parameter> parameter, *busInterface->getParameters())
         {
-            if (parameterNames.contains(parameter->name()) || !validator.validate(parameter.data()))
+            if (parameterNames.contains(parameter->name()) || !validator.validate(parameter))
             {
                 return false;
             }

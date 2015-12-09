@@ -24,6 +24,7 @@ class ExpressionFormatter;
 class LibraryInterface;
 class ParameterFinder;
 
+class RegisterValidator;
 //-----------------------------------------------------------------------------
 //! Editor for editing the details of registers in an address block.
 //-----------------------------------------------------------------------------
@@ -41,6 +42,7 @@ public:
 	 *      @param [in] handler                 Pointer to the instance managing the library.
 	 *      @param [in] parameterFinder         Pointer to the parameter finder.
 	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
+     *      @param [in] registerValidator       Validator used for registers.
 	 *      @param [in] parent                  Pointer to the parent of this editor.
 	 */
 	AddressBlockEditor(QSharedPointer<AddressBlock> addressBlock,
@@ -48,17 +50,11 @@ public:
 		LibraryInterface* handler,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QSharedPointer<RegisterValidator> registerValidator,
 		QWidget* parent = 0);
 
 	//! The destructor.
 	virtual ~AddressBlockEditor();
-
-	/*!
-     *  Check for the validity of the editor.
-	 * 
-	 *       @return True if the editor is in valid state.
-	 */
-	virtual bool isValid() const;
 
 	/*!
      *  Reload the information from the model to the editor.

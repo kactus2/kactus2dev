@@ -24,6 +24,8 @@ class Register;
 class AlternateRegister;
 class Choice;
 class Field;
+class FieldValidator;
+class ParameterValidator2014;
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:Register.
 //-----------------------------------------------------------------------------
@@ -35,14 +37,18 @@ public:
 	 *  The constructor.
 	 *
 	 *      @param [in] expressionParser    The parser to use for solving expressions.
-     *      @param [in] choices             List of available choices.
+     *      @param [in] fieldValidator      Validator used for fields.
+     *      @param [in] parameterValidator  Validator used for parameters.
 	 */
     RegisterValidator(QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<QList<QSharedPointer<Choice> > > choices);
+        QSharedPointer<FieldValidator> fieldValidator,
+        QSharedPointer<ParameterValidator2014> parameterValidator);
 
 	//! The destructor.
 	~RegisterValidator();
     
+    QSharedPointer<FieldValidator> getFieldValidator() const;
+
     /*!
      *  Validates the given register.
      *
@@ -266,8 +272,11 @@ private:
     //! The expression parser to use.
     QSharedPointer<ExpressionParser> expressionParser_;
 
-    //! The currently available choices.
-    QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices_;
+    //! The validator used for fields.
+    QSharedPointer<FieldValidator> fieldValidator_;
+
+    //! The validator used for parameters.
+    QSharedPointer<ParameterValidator2014> parameterValidator_;
 };
 
 #endif // REGISTERVALIDATOR_H

@@ -97,7 +97,7 @@ bool InstantiationsValidator::validateDesignConfigurationInstantiation(
 
 	foreach ( QSharedPointer<Parameter> parameter, *designConfigurationInstantiation->getParameters() )
 	{
-		if ( !paraValidator.validate(parameter.data()) )
+		if ( !paraValidator.validate(parameter) )
 		{
 			return false;
 		}
@@ -174,7 +174,7 @@ bool InstantiationsValidator::validateComponentInstantiation(QSharedPointer<Comp
 
 	foreach ( QSharedPointer<ModuleParameter> parameter, *componentInstantiation->getModuleParameters() )
 	{
-		if ( !paraValidator.validate(parameter.data()) )
+		if ( !paraValidator.validate(parameter) )
 		{
 			return false;
 		}
@@ -192,7 +192,7 @@ bool InstantiationsValidator::validateComponentInstantiation(QSharedPointer<Comp
 
 	foreach ( QSharedPointer<Parameter> parameter, *componentInstantiation->getParameters() )
 	{
-		if ( !paraValidator.validate(parameter.data()) )
+		if ( !paraValidator.validate(parameter) )
 		{
 			return false;
 		}

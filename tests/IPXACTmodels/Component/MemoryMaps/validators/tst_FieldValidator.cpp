@@ -10,6 +10,8 @@
 //-----------------------------------------------------------------------------
 
 #include <IPXACTmodels/Component/validators/FieldValidator.h>
+#include <IPXACTmodels/Component/validators/EnumeratedValueValidator.h>
+#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
 #include <IPXACTmodels/Component/Field.h>
 #include <IPXACTmodels/Component/EnumeratedValue.h>
 #include <IPXACTmodels/Component/WriteValueConstraint.h>
@@ -80,7 +82,10 @@ void tst_FieldValidator::testNameIsValid()
     QSharedPointer<Field> testField (new Field(name));
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    FieldValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator (new EnumeratedValueValidator(parser));
+    QSharedPointer<ParameterValidator2014> parameterValidator (
+        new ParameterValidator2014(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    FieldValidator validator(parser, enumeratedValueValidator, parameterValidator);
     QCOMPARE(validator.hasValidName(testField), isValid);
 
     if (!isValid)
@@ -123,7 +128,10 @@ void tst_FieldValidator::testIsPresentIsValid()
     testField->setIsPresent(isPresent);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    FieldValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator (new EnumeratedValueValidator(parser));
+    QSharedPointer<ParameterValidator2014> parameterValidator (
+        new ParameterValidator2014(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    FieldValidator validator(parser, enumeratedValueValidator, parameterValidator);
     QCOMPARE(validator.hasValidIsPresent(testField), isValid);
 
     if (!isValid)
@@ -169,7 +177,10 @@ void tst_FieldValidator::testBitOffsetIsValid()
     testField->setBitOffset(bitOffset);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    FieldValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator (new EnumeratedValueValidator(parser));
+    QSharedPointer<ParameterValidator2014> parameterValidator (
+        new ParameterValidator2014(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    FieldValidator validator(parser, enumeratedValueValidator, parameterValidator);
     QCOMPARE(validator.hasValidBitOffset(testField), isValid);
 
     if (!isValid)
@@ -219,7 +230,10 @@ void tst_FieldValidator::testResetsAreValid()
     testField->setResetMask(resetMask);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    FieldValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator (new EnumeratedValueValidator(parser));
+    QSharedPointer<ParameterValidator2014> parameterValidator (
+        new ParameterValidator2014(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    FieldValidator validator(parser, enumeratedValueValidator, parameterValidator);
     QCOMPARE(validator.hasValidResetValue(testField), resetValueIsValid);
 
     if (!resetValueIsValid)
@@ -299,7 +313,10 @@ void tst_FieldValidator::testWriteValueConstraintIsValid()
     testField->setWriteConstraint(testConstraint);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    FieldValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator (new EnumeratedValueValidator(parser));
+    QSharedPointer<ParameterValidator2014> parameterValidator (
+        new ParameterValidator2014(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    FieldValidator validator(parser, enumeratedValueValidator, parameterValidator);
     QCOMPARE(validator.hasValidWriteValueConstraint(testField), isValid);
 
     if (!isValid)
@@ -392,7 +409,10 @@ void tst_FieldValidator::testReservedIsValid()
     testField->setReserved(reserved);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    FieldValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator (new EnumeratedValueValidator(parser));
+    QSharedPointer<ParameterValidator2014> parameterValidator (
+        new ParameterValidator2014(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    FieldValidator validator(parser, enumeratedValueValidator, parameterValidator);
     QCOMPARE(validator.hasValidReserved(testField), isValid);
 
     if (!isValid)
@@ -435,7 +455,10 @@ void tst_FieldValidator::testBitWidthIsValid()
     testField->setBitWidth(bitWidth);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    FieldValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator (new EnumeratedValueValidator(parser));
+    QSharedPointer<ParameterValidator2014> parameterValidator (
+        new ParameterValidator2014(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    FieldValidator validator(parser, enumeratedValueValidator, parameterValidator);
     QCOMPARE(validator.hasValidBitWidth(testField), isValid);
 
     if (!isValid)
@@ -476,7 +499,10 @@ void tst_FieldValidator::testBitWidthIsValid_data()
 void tst_FieldValidator::testEnumeratedValuesAreValid()
 {
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    FieldValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator (new EnumeratedValueValidator(parser));
+    QSharedPointer<ParameterValidator2014> parameterValidator (
+        new ParameterValidator2014(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    FieldValidator validator(parser, enumeratedValueValidator, parameterValidator);
 
     QSharedPointer<EnumeratedValue> enumeratedValue(new EnumeratedValue("test", "4"));
 
@@ -555,7 +581,10 @@ void tst_FieldValidator::testParametersAreValid()
     testField->getParameters()->append(testParameter);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    FieldValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator (new EnumeratedValueValidator(parser));
+    QSharedPointer<ParameterValidator2014> parameterValidator (
+        new ParameterValidator2014(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    FieldValidator validator(parser, enumeratedValueValidator, parameterValidator);
     
     QCOMPARE(validator.hasValidParameters(testField), true);
 
@@ -601,12 +630,15 @@ void tst_FieldValidator::testAccessIsValid()
     QFETCH(bool, isValid);
 
     QSharedPointer<Field> testField (new Field());
-    testField->setAccess(General::str2Access(accessValue, General::ACCESS_COUNT));
+    testField->setAccess(AccessTypes::str2Access(accessValue, AccessTypes::ACCESS_COUNT));
     testField->setModifiedWrite(General::str2ModifiedWrite(modifiedWriteValue));
     testField->setReadAction(General::str2ReadAction(readAction));
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    FieldValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator (new EnumeratedValueValidator(parser));
+    QSharedPointer<ParameterValidator2014> parameterValidator (
+        new ParameterValidator2014(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    FieldValidator validator(parser, enumeratedValueValidator, parameterValidator);
     QCOMPARE(validator.hasValidAccess(testField), isValid);
 
     if (!isValid)
@@ -614,7 +646,7 @@ void tst_FieldValidator::testAccessIsValid()
         QVector<QString> foundErrors;
         validator.findErrorsIn(foundErrors, testField, "test");
 
-        if (testField->getAccess() == General::READ_ONLY &&
+        if (testField->getAccess() == AccessTypes::READ_ONLY &&
             testField->getModifiedWrite() != General::MODIFIED_WRITE_COUNT)
         {
             QString expectedError = QObject::tr("In field %1 within %2, access type readOnly does not allow a field "
@@ -624,7 +656,8 @@ void tst_FieldValidator::testAccessIsValid()
                 QFAIL("No error message found");
             }
         }
-        else if ((testField->getAccess() == General::WRITE_ONLY || testField->getAccess() == General::WRITEONCE) &&
+        else if ((testField->getAccess() == AccessTypes::WRITE_ONLY ||
+            testField->getAccess() == AccessTypes::WRITEONCE) &&
             testField->getReadAction() != General::READ_ACTION_COUNT)
         {
             QString expectedError = QObject::tr("In field %1 within %2, access type write only and write once "

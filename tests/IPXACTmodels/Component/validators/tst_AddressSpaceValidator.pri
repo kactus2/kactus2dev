@@ -7,70 +7,72 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../../IPXACTmodels/Component/validators/AddressSpaceValidator.h \
-    ../../../../IPXACTmodels/Component/MemoryBlockBase.h \
+HEADERS += ../../../../IPXACTmodels/Component/AddressBlock.h \
+    ../../../../IPXACTmodels/Component/validators/AddressBlockValidator.h \
+    ../../../../IPXACTmodels/Component/AddressSpace.h \
+    ../../../../IPXACTmodels/Component/validators/AddressSpaceValidator.h \
+    ../../../../IPXACTmodels/Component/AlternateRegister.h \
+    ../../../../IPXACTmodels/common/Array.h \
+    ../../../../IPXACTmodels/common/BooleanValue.h \
+    ../../../../IPXACTmodels/Component/Choice.h \
+    ../../../../IPXACTmodels/Component/EnumeratedValue.h \
+    ../../../../IPXACTmodels/Component/validators/EnumeratedValueValidator.h \
+    ../../../../IPXACTmodels/common/Enumeration.h \
     ../../../../IPXACTmodels/common/Extendable.h \
+    ../../../../IPXACTmodels/Component/Field.h \
+    ../../../../IPXACTmodels/Component/validators/FieldValidator.h \
     ../../../../IPXACTmodels/kactusExtensions/Kactus2Group.h \
+    ../../../../IPXACTmodels/Component/MemoryBlockBase.h \
+    ../../../../IPXACTmodels/Component/MemoryMapBase.h \
+    ../../../../IPXACTmodels/Component/validators/MemoryMapBaseValidator.h \
+    ../../../../IPXACTmodels/Component/validators/MemoryReserve.h \
     ../../../../IPXACTmodels/common/NameGroup.h \
     ../../../../IPXACTmodels/common/Parameter.h \
+    ../../../../IPXACTmodels/common/validators/ParameterValidator2014.h \
     ../../../../IPXACTmodels/common/Range.h \
-    ../../../../IPXACTmodels/common/Vector.h \
-    ../../../../IPXACTmodels/common/Array.h \
-    ../../../../IPXACTmodels/Component/MemoryMapBase.h \
-    ../../../../IPXACTmodels/Component/Segment.h \
-    ../../../../IPXACTmodels/Component/AddressSpace.h \
-    ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
-    ../../../../IPXACTmodels/Component/validators/MemoryMapBaseValidator.h \
-    ../../../../IPXACTmodels/Component/AddressBlock.h \
+    ../../../../IPXACTmodels/Component/Register.h \
     ../../../../IPXACTmodels/Component/RegisterBase.h \
     ../../../../IPXACTmodels/Component/RegisterDefinition.h \
-    ../../../../IPXACTmodels/Component/Register.h \
-    ../../../../IPXACTmodels/common/BooleanValue.h \
-    ../../../../IPXACTmodels/Component/AlternateRegister.h \
-    ../../../../IPXACTmodels/Component/Field.h \
-    ../../../../IPXACTmodels/Component/EnumeratedValue.h \
-    ../../../../IPXACTmodels/Component/WriteValueConstraint.h \
-    ../../../../IPXACTmodels/Component/validators/AddressBlockValidator.h \
-    ../../../../IPXACTmodels/common/validators/ParameterValidator2014.h \
-    ../../../../IPXACTmodels/common/validators/ValueFormatter.h \
-    ../../../../IPXACTmodels/Component/Choice.h \
-    ../../../../IPXACTmodels/common/Enumeration.h \
-    ../../../../IPXACTmodels/Component/validators/MemoryReserve.h \
     ../../../../IPXACTmodels/Component/validators/RegisterValidator.h \
+    ../../../../IPXACTmodels/Component/Segment.h \
+    ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
+    ../../../../IPXACTmodels/common/validators/ValueFormatter.h \
+    ../../../../IPXACTmodels/common/Vector.h \
+    ../../../../IPXACTmodels/Component/WriteValueConstraint.h \
     ../../../../IPXACTmodels/generaldeclarations.h \
-    ../../../../IPXACTmodels/Component/validators/FieldValidator.h \
-    ../../../../IPXACTmodels/Component/validators/EnumeratedValueValidator.h
-SOURCES += ./tst_AddressSpaceValidator.cpp \
+    ../../../../IPXACTmodels/common/AccessTypes.h
+SOURCES += ../../../../IPXACTmodels/Component/AddressBlock.cpp \
+    ../../../../IPXACTmodels/Component/validators/AddressBlockValidator.cpp \
+    ../../../../IPXACTmodels/Component/AddressSpace.cpp \
     ../../../../IPXACTmodels/Component/validators/AddressSpaceValidator.cpp \
-    ../../../../IPXACTmodels/Component/MemoryBlockBase.cpp \
+    ../../../../IPXACTmodels/Component/AlternateRegister.cpp \
+    ../../../../IPXACTmodels/common/Array.cpp \
+    ../../../../IPXACTmodels/common/BooleanValue.cpp \
+    ../../../../IPXACTmodels/Component/Choice.cpp \
+    ../../../../IPXACTmodels/Component/EnumeratedValue.cpp \
+    ../../../../IPXACTmodels/Component/validators/EnumeratedValueValidator.cpp \
+    ../../../../IPXACTmodels/common/Enumeration.cpp \
     ../../../../IPXACTmodels/common/Extendable.cpp \
+    ../../../../IPXACTmodels/Component/Field.cpp \
+    ../../../../IPXACTmodels/Component/validators/FieldValidator.cpp \
     ../../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
+    ../../../../IPXACTmodels/Component/MemoryBlockBase.cpp \
+    ../../../../IPXACTmodels/Component/MemoryMapBase.cpp \
+    ../../../../IPXACTmodels/Component/validators/MemoryMapBaseValidator.cpp \
+    ../../../../IPXACTmodels/Component/validators/MemoryReserve.cpp \
     ../../../../IPXACTmodels/common/NameGroup.cpp \
     ../../../../IPXACTmodels/common/Parameter.cpp \
+    ../../../../IPXACTmodels/common/validators/ParameterValidator2014.cpp \
     ../../../../IPXACTmodels/common/Range.cpp \
-    ../../../../IPXACTmodels/common/Vector.cpp \
-    ../../../../IPXACTmodels/common/Array.cpp \
-    ../../../../IPXACTmodels/Component/MemoryMapBase.cpp \
-    ../../../../IPXACTmodels/Component/Segment.cpp \
-    ../../../../IPXACTmodels/Component/AddressSpace.cpp \
-    ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
-    ../../../../IPXACTmodels/Component/validators/MemoryMapBaseValidator.cpp \
-    ../../../../IPXACTmodels/Component/AddressBlock.cpp \
+    ../../../../IPXACTmodels/Component/Register.cpp \
     ../../../../IPXACTmodels/Component/RegisterBase.cpp \
     ../../../../IPXACTmodels/Component/RegisterDefinition.cpp \
-    ../../../../IPXACTmodels/Component/Register.cpp \
-    ../../../../IPXACTmodels/common/BooleanValue.cpp \
-    ../../../../IPXACTmodels/Component/AlternateRegister.cpp \
-    ../../../../IPXACTmodels/Component/Field.cpp \
-    ../../../../IPXACTmodels/Component/EnumeratedValue.cpp \
-    ../../../../IPXACTmodels/Component/WriteValueConstraint.cpp \
-    ../../../../IPXACTmodels/Component/validators/AddressBlockValidator.cpp \
-    ../../../../IPXACTmodels/common/validators/ParameterValidator2014.cpp \
-    ../../../../IPXACTmodels/common/validators/ValueFormatter.cpp \
-    ../../../../IPXACTmodels/Component/Choice.cpp \
-    ../../../../IPXACTmodels/common/Enumeration.cpp \
-    ../../../../IPXACTmodels/Component/validators/MemoryReserve.cpp \
     ../../../../IPXACTmodels/Component/validators/RegisterValidator.cpp \
+    ../../../../IPXACTmodels/Component/Segment.cpp \
+    ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
+    ../../../../IPXACTmodels/common/validators/ValueFormatter.cpp \
+    ../../../../IPXACTmodels/common/Vector.cpp \
+    ../../../../IPXACTmodels/Component/WriteValueConstraint.cpp \
     ../../../../IPXACTmodels/generaldeclarations.cpp \
-    ../../../../IPXACTmodels/Component/validators/FieldValidator.cpp \
-    ../../../../IPXACTmodels/Component/validators/EnumeratedValueValidator.cpp
+    ./tst_AddressSpaceValidator.cpp \
+    ../../../../IPXACTmodels/common/AccessTypes.cpp

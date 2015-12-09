@@ -17,6 +17,7 @@
 #include <IPXACTmodels/common/BooleanValue.h>
 #include <IPXACTmodels/ipxactmodels_global.h>
 #include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/common/AccessTypes.h>
 
 #include <QString>
 #include <QMap>
@@ -164,14 +165,14 @@ public:
 	 *
 	 *      @return Accessibility of the address block data.
 	 */
-    General::Access getAccess() const;
+    AccessTypes::Access getAccess() const;
 
 	/*!
      *  Set the accessibility of the address block.
 	 *
 	 *      @param [in] newAccess   The new access type of the address block.
 	 */
-	void setAccess(General::Access newAccess);
+    void setAccess(AccessTypes::Access newAccess);
 
 	/*!
      *  Get the list containing the register elements of address block.
@@ -229,7 +230,7 @@ private:
     BooleanValue volatile_;
 
     //! Specifies the accessibility of the address block data.
-    General::Access access_;
+    AccessTypes::Access access_;
 
 	//! Contains information about the grouping of bits into registers and fields.
     QSharedPointer<QList<QSharedPointer<RegisterBase> > > registerData_;

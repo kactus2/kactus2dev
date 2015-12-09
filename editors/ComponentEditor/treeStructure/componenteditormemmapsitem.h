@@ -20,6 +20,7 @@ class ComponentEditorTreeModel;
 class MemoryMapsVisualizer;
 class ExpressionParser;
 class MemoryMap;
+class MemoryMapValidator;
 //-----------------------------------------------------------------------------
 //! The Memory maps-item in the component navigation tree.
 //-----------------------------------------------------------------------------
@@ -129,6 +130,11 @@ private:
 	//! No assignment.
 	ComponentEditorMemMapsItem& operator=(const ComponentEditorMemMapsItem& other);
 
+    /*!
+     *  Create the necessary validators for memory maps.
+     */
+    void createMemoryMapValidator();
+
 	//! Contains the memory maps being edited.
     QSharedPointer<QList<QSharedPointer<MemoryMap> > > memoryMaps_;
 
@@ -137,6 +143,9 @@ private:
 
     //! The expression parser to use.
     QSharedPointer<ExpressionParser> expressionParser_;
+
+    //! The current memory map validator.
+    QSharedPointer<MemoryMapValidator> memoryMapValidator_;
 };
 
 #endif // COMPONENTEDITORMEMMAPSITEM_H

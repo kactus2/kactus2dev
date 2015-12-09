@@ -10,6 +10,9 @@
 //-----------------------------------------------------------------------------
 
 #include <IPXACTmodels/Component/validators/RegisterValidator.h>
+#include <IPXACTmodels/Component/validators/FieldValidator.h>
+#include <IPXACTmodels/Component/validators/EnumeratedValueValidator.h>
+#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
 
 #include <IPXACTmodels/Component/Register.h>
 #include <IPXACTmodels/Component/AlternateRegister.h>
@@ -93,7 +96,12 @@ void tst_RegisterValidator::testNameIsValid()
     QSharedPointer<Register> testRegister (new Register(name));
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    RegisterValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    QSharedPointer<ParameterValidator2014> parameterValidator(new ParameterValidator2014(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
+    RegisterValidator validator(parser, fieldValidator, parameterValidator);
+//     RegisterValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
     QCOMPARE(validator.hasValidName(testRegister), isValid);
 
     if (!isValid)
@@ -136,7 +144,11 @@ void tst_RegisterValidator::testIsPresentIsValid()
     testRegister->setIsPresent(isPresent);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    RegisterValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    QSharedPointer<ParameterValidator2014> parameterValidator(new ParameterValidator2014(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
+    RegisterValidator validator(parser, fieldValidator, parameterValidator);
     QCOMPARE(validator.hasValidIsPresent(testRegister), isValid);
 
     if (!isValid)
@@ -182,7 +194,11 @@ void tst_RegisterValidator::testDimensionIsValid()
     testRegister->setDimension(dimension);
 
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    RegisterValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    QSharedPointer<ParameterValidator2014> parameterValidator(new ParameterValidator2014(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
+    RegisterValidator validator(parser, fieldValidator, parameterValidator);
 
     QCOMPARE(validator.hasValidDimension(testRegister), isValid);
 
@@ -226,7 +242,11 @@ void tst_RegisterValidator::testAddressOffsetIsValid()
     QSharedPointer<Register> testRegister (new Register("testRegister", addressOffset));
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    RegisterValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    QSharedPointer<ParameterValidator2014> parameterValidator(new ParameterValidator2014(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
+    RegisterValidator validator(parser, fieldValidator, parameterValidator);
     QCOMPARE(validator.hasValidAddressOffset(testRegister), isValid);
 
     if (!isValid)
@@ -271,7 +291,11 @@ void tst_RegisterValidator::testSizeIsValid()
     QSharedPointer<Register> testRegister (new Register("testRegister", "8", size));
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    RegisterValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    QSharedPointer<ParameterValidator2014> parameterValidator(new ParameterValidator2014(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
+    RegisterValidator validator(parser, fieldValidator, parameterValidator);
     QCOMPARE(validator.hasValidSize(testRegister), isValid);
 
     if (!isValid)
@@ -326,7 +350,11 @@ void tst_RegisterValidator::testRegisterAndFieldVolatileIsValid()
     testRegister->getFields()->append(testField);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    RegisterValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    QSharedPointer<ParameterValidator2014> parameterValidator(new ParameterValidator2014(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
+    RegisterValidator validator(parser, fieldValidator, parameterValidator);
     QCOMPARE(validator.hasValidFields(testRegister, testRegister->getSize()), isValid);
 
     if (!isValid)
@@ -368,17 +396,21 @@ void tst_RegisterValidator::testRegisterAndFieldAccessAreValid()
     QFETCH(bool, isValid);
 
     QSharedPointer<Field> testField(new Field("testField"));
-    testField->setAccess(General::str2Access(fieldAccess, General::ACCESS_COUNT));
+    testField->setAccess(AccessTypes::str2Access(fieldAccess, AccessTypes::ACCESS_COUNT));
     testField->setBitOffset("2");
     testField->setBitWidth("5");
 
     QSharedPointer<Register> testRegister(new Register("testRegister"));
     testRegister->setSize("100");
-    testRegister->setAccess(General::str2Access(registerAccess, General::ACCESS_COUNT));
+    testRegister->setAccess(AccessTypes::str2Access(registerAccess, AccessTypes::ACCESS_COUNT));
     testRegister->getFields()->append(testField);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    RegisterValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    QSharedPointer<ParameterValidator2014> parameterValidator(new ParameterValidator2014(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
+    RegisterValidator validator(parser, fieldValidator, parameterValidator);
     QCOMPARE(validator.hasValidFields(testRegister, testRegister->getSize()), isValid);
 
     if (!isValid)
@@ -387,8 +419,8 @@ void tst_RegisterValidator::testRegisterAndFieldAccessAreValid()
         validator.findErrorsIn(foundErrors, testRegister, "test");
 
         QString expectedError = QObject::tr("Access cannot be set to %1 in %2, where containing register %3 "
-            "has access %4").arg(General::access2Str(testField->getAccess())).arg(testField->name())
-            .arg(testRegister->name()).arg(General::access2Str(testRegister->getAccess()));
+            "has access %4").arg(AccessTypes::access2Str(testField->getAccess())).arg(testField->name())
+            .arg(testRegister->name()).arg(AccessTypes::access2Str(testRegister->getAccess()));
 
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
         {
@@ -457,7 +489,11 @@ void tst_RegisterValidator::testRegisterAndFieldAccessAreValid_data()
 void tst_RegisterValidator::testFieldsAreValid()
 {
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    RegisterValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    QSharedPointer<ParameterValidator2014> parameterValidator(new ParameterValidator2014(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
+    RegisterValidator validator(parser, fieldValidator, parameterValidator);
 
     QSharedPointer<Field> testField (new Field("Lagann"));
     testField->setBitWidth("1");
@@ -514,12 +550,12 @@ void tst_RegisterValidator::testFieldRangesAreValid()
     QSharedPointer<Field> fieldOne (new Field("FieldOne"));
     fieldOne->setBitOffset(firstOffset);
     fieldOne->setBitWidth(firstWidth);
-    fieldOne->setAccess(General::str2Access(firstAccess, General::ACCESS_COUNT));
+    fieldOne->setAccess(AccessTypes::str2Access(firstAccess, AccessTypes::ACCESS_COUNT));
 
     QSharedPointer<Field> fieldTwo (new Field("FieldTwo"));
     fieldTwo->setBitOffset(secondOffset);
     fieldTwo->setBitWidth(secondWidth);
-    fieldTwo->setAccess(General::str2Access(secondAccess, General::ACCESS_COUNT));
+    fieldTwo->setAccess(AccessTypes::str2Access(secondAccess, AccessTypes::ACCESS_COUNT));
 
     QSharedPointer<Register> testRegister(new Register("TestRegister"));
     testRegister->setSize("100");
@@ -527,7 +563,11 @@ void tst_RegisterValidator::testFieldRangesAreValid()
     testRegister->getFields()->append(fieldTwo);
     
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    RegisterValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    QSharedPointer<ParameterValidator2014> parameterValidator(new ParameterValidator2014(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
+    RegisterValidator validator(parser, fieldValidator, parameterValidator);
 
     QCOMPARE(validator.hasValidFields(testRegister, testRegister->getSize()), isValid);
 
@@ -590,7 +630,11 @@ void tst_RegisterValidator::testFieldsAreWithinRegister()
     testRegister->getFields()->append(fieldOne);
 
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    RegisterValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    QSharedPointer<ParameterValidator2014> parameterValidator(new ParameterValidator2014(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
+    RegisterValidator validator(parser, fieldValidator, parameterValidator);
 
     QCOMPARE(validator.hasValidFields(testRegister, testRegister->getSize()), isValid);
 
@@ -670,7 +714,7 @@ void tst_RegisterValidator::testFieldsHaveSimilarDefinitionGroups()
     fieldOne->setTypeIdentifier(typeIdentifierOne);
     fieldOne->setBitWidth(bitWidthOne);
     fieldOne->setVolatile(volatileOne);
-    fieldOne->setAccess(General::str2Access(accessOne, General::ACCESS_COUNT));
+    fieldOne->setAccess(AccessTypes::str2Access(accessOne, AccessTypes::ACCESS_COUNT));
     fieldOne->setModifiedWrite(General::str2ModifiedWrite(modifiedWriteValueOne));
     fieldOne->setReadAction(General::str2ReadAction(readActionOne));
     fieldOne->setTestable(testableOne);
@@ -690,7 +734,7 @@ void tst_RegisterValidator::testFieldsHaveSimilarDefinitionGroups()
     fieldTwo->setTypeIdentifier(typeIdentifierTwo);
     fieldTwo->setBitWidth(bitWidthTwo);
     fieldTwo->setVolatile(volatileTwo);
-    fieldTwo->setAccess(General::str2Access(accessTwo, General::ACCESS_COUNT));
+    fieldTwo->setAccess(AccessTypes::str2Access(accessTwo, AccessTypes::ACCESS_COUNT));
     fieldTwo->setModifiedWrite(General::str2ModifiedWrite(modifiedWriteValueTwo));
     fieldTwo->setReadAction(General::str2ReadAction(readActionTwo));
     fieldTwo->setTestable(testableTwo);
@@ -704,7 +748,11 @@ void tst_RegisterValidator::testFieldsHaveSimilarDefinitionGroups()
     testRegister->getFields()->append(fieldTwo);
 
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    RegisterValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    QSharedPointer<ParameterValidator2014> parameterValidator(new ParameterValidator2014(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
+    RegisterValidator validator(parser, fieldValidator, parameterValidator);
 
     QCOMPARE(validator.hasValidFields(testRegister, testRegister->getSize()), isValid);
 
@@ -840,7 +888,11 @@ void tst_RegisterValidator::testAlternateRegisterIsValid()
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     //     QSharedPointer<ParameterFinder> finder (new ComponentParameterFinder(QSharedPointer<Component> ()));
-    RegisterValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    QSharedPointer<ParameterValidator2014> parameterValidator(new ParameterValidator2014(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
+    RegisterValidator validator(parser, fieldValidator, parameterValidator);
     QCOMPARE(validator.hasValidAlternateRegisters(testRegister), isValid);
 
     if (!isValid)
@@ -932,7 +984,11 @@ void tst_RegisterValidator::testMultipleAlternateRegistersAreValid()
     testRegister->getAlternateRegisters()->append(otherAlternateRegister);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    RegisterValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    QSharedPointer<ParameterValidator2014> parameterValidator(new ParameterValidator2014(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
+    RegisterValidator validator(parser, fieldValidator, parameterValidator);
     QCOMPARE(validator.hasValidAlternateRegisters(testRegister), true);
 
     QSharedPointer<AlternateRegister> thirdAlternateRegister(new AlternateRegister(*testAlternateRegister.data()));
@@ -974,7 +1030,11 @@ void tst_RegisterValidator::testAlternateRegisterParametersAreValid()
     testRegister->getAlternateRegisters()->append(testAlternateRegister);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    RegisterValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    QSharedPointer<ParameterValidator2014> parameterValidator(new ParameterValidator2014(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
+    RegisterValidator validator(parser, fieldValidator, parameterValidator);
 
     QCOMPARE(validator.hasValidParameters(testAlternateRegister), true);
 
@@ -1024,7 +1084,11 @@ void tst_RegisterValidator::testParametersAreValid()
     testRegister->getParameters()->append(testParameter);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    RegisterValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    QSharedPointer<ParameterValidator2014> parameterValidator(new ParameterValidator2014(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
+    RegisterValidator validator(parser, fieldValidator, parameterValidator);
 
     QCOMPARE(validator.hasValidParameters(testRegister), true);
 

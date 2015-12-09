@@ -19,6 +19,9 @@
 #include <IPXACTmodels/Component/Register.h>
 #include <IPXACTmodels/Component/Choice.h>
 #include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/common/AccessTypes.h>
+
+#include <IPXACTmodels/Component/validators/RegisterValidator.h>
 
 #include <QColor>
 #include <QRegularExpression>
@@ -27,18 +30,17 @@
 // Function: AddressBlockModel::AddressBlockModel()
 //-----------------------------------------------------------------------------
 AddressBlockModel::AddressBlockModel(QSharedPointer<AddressBlock> addressBlock,
-    QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<RegisterValidator> registerValidator,
     QObject *parent):
 ReferencingTableModel(parameterFinder, parent),
 ParameterizableTable(parameterFinder),
 addressBlock_(addressBlock),
 items_(addressBlock->getRegisterData()),
-componentChoices_(componentChoices),
 addressUnitBits_(0),
 parameterFinder_(parameterFinder),
-expressionFormatter_(expressionFormatter)
+expressionFormatter_(expressionFormatter),
+registerValidator_(registerValidator)
 {
 	Q_ASSERT(addressBlock_);
 
@@ -274,7 +276,7 @@ QVariant AddressBlockModel::valueForIndex(QModelIndex const& index) const
     }
     else if (index.column() == AddressBlockColumns::REGISTER_ACCESS)
     {
-        return General::access2Str(reg->getAccess());
+        return AccessTypes::access2Str(reg->getAccess());
     }
     else if (index.column() == AddressBlockColumns::IS_PRESENT)
     {
@@ -356,7 +358,7 @@ bool AddressBlockModel::setData(QModelIndex const& index, QVariant const& value,
         }
         else if (index.column() == AddressBlockColumns::REGISTER_ACCESS)
         {
-            reg->setAccess(General::str2Access(value.toString(), General::ACCESS_COUNT));
+            reg->setAccess(AccessTypes::str2Access(value.toString(), AccessTypes::ACCESS_COUNT));
         }
         else if (index.column() == AddressBlockColumns::IS_PRESENT)
         {
@@ -389,28 +391,6 @@ bool AddressBlockModel::setData(QModelIndex const& index, QVariant const& value,
     {
 		return false;
 	}
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockModel::isValid()
-//-----------------------------------------------------------------------------
-bool AddressBlockModel::isValid() const 
-{ 
-    // Usage must be register or unspecified, if address block has children (registers).
-    if (!items_->empty() && 
-        (addressBlock_->getUsage() == General::MEMORY || addressBlock_->getUsage() == General::RESERVED))
-    {
-        return false;
-    }
-
-	foreach (QSharedPointer<RegisterBase> regModel, *items_)
-    {
-// 		if (!regModel->isValid(componentChoices_))
-//         {
-// 			return false;
-// 		}
-	}
-	return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -476,29 +456,25 @@ bool AddressBlockModel::validateIndex(QModelIndex const& index) const
             registerNames.append(registerItem->name());
         }
 
-        return registerNames.count(reg->name()) == 1;
+        return registerNames.count(reg->name()) == 1 && registerValidator_->hasValidName(reg);
     }
     else if (index.column() == AddressBlockColumns::REGISTER_DIMENSION)
     {
-        QString dimension = reg->getDimension();
-        return isValuePlainOrExpression(dimension);
+        return registerValidator_->hasValidDimension(reg);
     }
     else if (index.column() == AddressBlockColumns::REGISTER_SIZE)
     {
-        QString size = reg->getSize();
-        return isValuePlainOrExpression(size);
+        return registerValidator_->hasValidSize(reg);
     }
 
     else if (index.column() == AddressBlockColumns::REGISTER_OFFSET)
     {
-        QString bitOffset = reg->getAddressOffset();
-        return isValuePlainOrExpression(bitOffset);
+        return registerValidator_->hasValidAddressOffset(reg);
     }
 
     else if (index.column() == AddressBlockColumns::IS_PRESENT)
     {
-        QString isPresentExpression = reg->getIsPresent();
-        return isValuePlainOrExpression(isPresentExpression);
+        return registerValidator_->hasValidIsPresent(reg);
     }
 
     return true;

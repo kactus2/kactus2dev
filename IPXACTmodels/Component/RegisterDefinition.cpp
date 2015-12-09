@@ -18,7 +18,7 @@
 RegisterDefinition::RegisterDefinition(QString const& name /* = QString() */) :
 RegisterBase(name),
 volatile_(),
-access_(General::ACCESS_COUNT),
+access_(AccessTypes::ACCESS_COUNT),
 fields_(new QList<QSharedPointer<Field> > ())
 {
 
@@ -90,7 +90,7 @@ void RegisterDefinition::clearVolatile()
 //-----------------------------------------------------------------------------
 // Function: RegisterDefinition::getAccess()
 //-----------------------------------------------------------------------------
-General::Access RegisterDefinition::getAccess() const
+AccessTypes::Access RegisterDefinition::getAccess() const
 {
     return access_;
 }
@@ -98,7 +98,7 @@ General::Access RegisterDefinition::getAccess() const
 //-----------------------------------------------------------------------------
 // Function: RegisterDefinition::setAccess()
 //-----------------------------------------------------------------------------
-void RegisterDefinition::setAccess(General::Access newAccessValue)
+void RegisterDefinition::setAccess(AccessTypes::Access newAccessValue)
 {
     access_ = newAccessValue;
 }

@@ -22,6 +22,7 @@
 
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 
+#include <IPXACTmodels/Component/validators/RegisterValidator.h>
 #include <IPXACTmodels/common/validators/ValueFormatter.h>
 
 #include <IPXACTmodels/Component/Register.h>
@@ -35,21 +36,22 @@
 //-----------------------------------------------------------------------------
 SingleRegisterEditor::SingleRegisterEditor(QSharedPointer<Register> selectedRegister,
     QSharedPointer<Component> component, LibraryInterface* handler,
-    QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter, 
-    QSharedPointer<ExpressionParser> expressionParser,
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<RegisterValidator> registerValidator,
     QWidget* parent /* = 0 */):
 ItemEditor(component, handler, parent),
 selectedRegister_(selectedRegister),
 nameEditor_(selectedRegister, this, tr("Register name and description")),
-fieldsEditor_(new RegisterEditor(selectedRegister, component, handler, parameterFinder, expressionFormatter, this)),
+fieldsEditor_(new RegisterEditor(selectedRegister, component, handler, parameterFinder, expressionFormatter,
+              registerValidator->getFieldValidator(), this)),
 offsetEditor_(new ExpressionEditor(parameterFinder, this)),
 sizeEditor_(new ExpressionEditor(parameterFinder, this)),
 dimensionEditor_(new ExpressionEditor(parameterFinder, this)),
 isPresentEditor_(new ExpressionEditor(parameterFinder, this)),
 volatileEditor_(),
 accessEditor_(),
-expressionParser_(expressionParser)
+expressionParser_(expressionParser),
+registerValidator_(registerValidator)
 {
     offsetEditor_->setFixedHeight(20);
     sizeEditor_->setFixedHeight(20);
@@ -90,17 +92,6 @@ expressionParser_(expressionParser)
 SingleRegisterEditor::~SingleRegisterEditor()
 {
 
-}
-
-//-----------------------------------------------------------------------------
-// Function: SingleRegisterEditor::isValid()
-//-----------------------------------------------------------------------------
-bool SingleRegisterEditor::isValid() const
-{
-    bool isNameEditorValid = nameEditor_.isValid();
-//     bool isRegisterValid = selectedRegister_->isValid(component()->getChoices());
-
-    return isNameEditorValid; // && isRegisterValid;
 }
 
 //-----------------------------------------------------------------------------
@@ -358,7 +349,7 @@ void SingleRegisterEditor::onVolatileSelected(QString const& newVolatileValue)
 //-----------------------------------------------------------------------------
 void SingleRegisterEditor::onAccessSelected(QString const& newAccessValue)
 {
-    selectedRegister_->setAccess(General::str2Access(newAccessValue, General::ACCESS_COUNT));
+    selectedRegister_->setAccess(AccessTypes::str2Access(newAccessValue, AccessTypes::ACCESS_COUNT));
 
     emit contentChanged();
 }

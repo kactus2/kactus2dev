@@ -12,6 +12,10 @@
 #include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
 
 #include <IPXACTmodels/Component/validators/AddressBlockValidator.h>
+#include <IPXACTmodels/Component/validators/RegisterValidator.h>
+#include <IPXACTmodels/Component/validators/FieldValidator.h>
+#include <IPXACTmodels/Component/validators/EnumeratedValueValidator.h>
+#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
 
 #include <IPXACTmodels/Component/AddressBlock.h>
 #include <IPXACTmodels/Component/Register.h>
@@ -82,7 +86,14 @@ void tst_AddressBlockValidator::testNameIsValid()
     QSharedPointer<AddressBlock> testBlock (new AddressBlock(name));
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    AddressBlockValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    QSharedPointer<ParameterValidator2014> parameterValidator (
+        new ParameterValidator2014(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
+    QSharedPointer<RegisterValidator> registerValidator (new RegisterValidator(parser, fieldValidator,
+        parameterValidator));
+    AddressBlockValidator validator(parser, registerValidator, parameterValidator);
+//     AddressBlockValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
     QCOMPARE(validator.hasValidName(testBlock), isValid);
 
     if (!isValid)
@@ -125,7 +136,13 @@ void tst_AddressBlockValidator::testIsPresentIsValid()
     testBlock->setIsPresent(isPresent);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    AddressBlockValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    QSharedPointer<ParameterValidator2014> parameterValidator (
+        new ParameterValidator2014(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
+    QSharedPointer<RegisterValidator> registerValidator (new RegisterValidator(parser, fieldValidator,
+        parameterValidator));
+    AddressBlockValidator validator(parser, registerValidator, parameterValidator);
     QCOMPARE(validator.hasValidIsPresent(testBlock), isValid);
 
     if (!isValid)
@@ -171,7 +188,13 @@ void tst_AddressBlockValidator::testBaseAddressIsValid()
     testBlock->setBaseAddress(baseAddress);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    AddressBlockValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    QSharedPointer<ParameterValidator2014> parameterValidator (
+        new ParameterValidator2014(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
+    QSharedPointer<RegisterValidator> registerValidator (new RegisterValidator(parser, fieldValidator,
+        parameterValidator));
+    AddressBlockValidator validator(parser, registerValidator, parameterValidator);
     QCOMPARE(validator.hasValidBaseAddress(testBlock), isValid);
 
     if (!isValid)
@@ -216,7 +239,13 @@ void tst_AddressBlockValidator::testRangeIsValid()
     testBlock->setRange(range);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    AddressBlockValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    QSharedPointer<ParameterValidator2014> parameterValidator (
+        new ParameterValidator2014(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
+    QSharedPointer<RegisterValidator> registerValidator (new RegisterValidator(parser, fieldValidator,
+        parameterValidator));
+    AddressBlockValidator validator(parser, registerValidator, parameterValidator);
     QCOMPARE(validator.hasValidRange(testBlock), isValid);
 
     if (!isValid)
@@ -262,7 +291,13 @@ void tst_AddressBlockValidator::testWidthIsValid()
     testBlock->setWidth(width);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    AddressBlockValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    QSharedPointer<ParameterValidator2014> parameterValidator (
+        new ParameterValidator2014(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
+    QSharedPointer<RegisterValidator> registerValidator (new RegisterValidator(parser, fieldValidator,
+        parameterValidator));
+    AddressBlockValidator validator(parser, registerValidator, parameterValidator);
     QCOMPARE(validator.hasValidWidth(testBlock), isValid);
 
     if (!isValid)
@@ -332,14 +367,20 @@ void tst_AddressBlockValidator::testHasValidUsage()
                 newRegister->setVolatile(false);
             }
 
-            newRegister->setAccess(General::str2Access(registerAccess, General::ACCESS_COUNT));
+            newRegister->setAccess(AccessTypes::str2Access(registerAccess, AccessTypes::ACCESS_COUNT));
         }
 
         testBlock->getRegisterData()->append(newRegister);
     }
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    AddressBlockValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    QSharedPointer<ParameterValidator2014> parameterValidator (
+        new ParameterValidator2014(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
+    QSharedPointer<RegisterValidator> registerValidator (new RegisterValidator(parser, fieldValidator,
+        parameterValidator));
+    AddressBlockValidator validator(parser, registerValidator, parameterValidator);
     QCOMPARE(validator.hasValidUsage(testBlock), isValid);
 
     if (!isValid)
@@ -409,7 +450,13 @@ void tst_AddressBlockValidator::testParametersAreValid()
     testBlock->getParameters()->append(testParameter);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    AddressBlockValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    QSharedPointer<ParameterValidator2014> parameterValidator (
+        new ParameterValidator2014(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
+    QSharedPointer<RegisterValidator> registerValidator (new RegisterValidator(parser, fieldValidator,
+        parameterValidator));
+    AddressBlockValidator validator(parser, registerValidator, parameterValidator);
 
     QCOMPARE(validator.hasValidParameters(testBlock), true);
 
@@ -490,7 +537,13 @@ void tst_AddressBlockValidator::testRegisterDataIsValid()
     testBlock->getRegisterData()->append(registerTwo);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    AddressBlockValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    QSharedPointer<ParameterValidator2014> parameterValidator (
+        new ParameterValidator2014(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
+    QSharedPointer<RegisterValidator> registerValidator (new RegisterValidator(parser, fieldValidator,
+        parameterValidator));
+    AddressBlockValidator validator(parser, registerValidator, parameterValidator);
     QCOMPARE(validator.hasValidRegisterData(testBlock, ""), isValid);
 
     if (!isValid)
@@ -607,19 +660,25 @@ void tst_AddressBlockValidator::testAccessIsValidWithRegister()
     QSharedPointer<Field> testField (new Field("testField"));
     testField->setBitOffset("0");
     testField->setBitWidth("4");
-    testField->setAccess(General::str2Access(registerAccess, General::ACCESS_COUNT));
+    testField->setAccess(AccessTypes::str2Access(registerAccess, AccessTypes::ACCESS_COUNT));
 
     QSharedPointer<Register> testRegister (new Register("Mugen", "0", "20"));
-    testRegister->setAccess(General::str2Access(registerAccess, General::ACCESS_COUNT));
+    testRegister->setAccess(AccessTypes::str2Access(registerAccess, AccessTypes::ACCESS_COUNT));
     testRegister->getFields()->append(testField);
 
     QSharedPointer<AddressBlock> testBlock (new AddressBlock("block"));
     testBlock->setWidth("100");
-    testBlock->setAccess(General::str2Access(blockAccess, General::ACCESS_COUNT));
+    testBlock->setAccess(AccessTypes::str2Access(blockAccess, AccessTypes::ACCESS_COUNT));
     testBlock->getRegisterData()->append(testRegister);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    AddressBlockValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    QSharedPointer<ParameterValidator2014> parameterValidator (
+        new ParameterValidator2014(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
+    QSharedPointer<RegisterValidator> registerValidator (new RegisterValidator(parser, fieldValidator,
+        parameterValidator));
+    AddressBlockValidator validator(parser, registerValidator, parameterValidator);
     QCOMPARE(validator.hasValidRegisterData(testBlock, ""), isValid);
 
     if (!isValid)
@@ -718,7 +777,13 @@ void tst_AddressBlockValidator::testRegisterPositioning()
     testBlock->getRegisterData()->append(registerOne);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    AddressBlockValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    QSharedPointer<ParameterValidator2014> parameterValidator (
+        new ParameterValidator2014(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
+    QSharedPointer<RegisterValidator> registerValidator (new RegisterValidator(parser, fieldValidator,
+        parameterValidator));
+    AddressBlockValidator validator(parser, registerValidator, parameterValidator);
     QCOMPARE(validator.hasValidRegisterData(testBlock, addressUnitBits), isValid);
 
     if (!isValid)
@@ -793,7 +858,13 @@ void tst_AddressBlockValidator::testRegisterOverlapping()
     testBlock->getRegisterData()->append(registerTwo);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    AddressBlockValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    QSharedPointer<ParameterValidator2014> parameterValidator (
+        new ParameterValidator2014(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
+    QSharedPointer<RegisterValidator> registerValidator (new RegisterValidator(parser, fieldValidator,
+        parameterValidator));
+    AddressBlockValidator validator(parser, registerValidator, parameterValidator);
     QCOMPARE(validator.hasValidRegisterData(testBlock, addressUnitBits), isValid);
 
     if (!isValid)
@@ -892,7 +963,13 @@ void tst_AddressBlockValidator::testRegisterIsOverlappingTwoOtherRegisters()
     QString addressUnitBits = QLatin1String("8");
 
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    AddressBlockValidator validator (parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+    QSharedPointer<ParameterValidator2014> parameterValidator (
+        new ParameterValidator2014(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
+    QSharedPointer<RegisterValidator> registerValidator (new RegisterValidator(parser, fieldValidator,
+        parameterValidator));
+    AddressBlockValidator validator(parser, registerValidator, parameterValidator);
     QCOMPARE(validator.hasValidRegisterData(testBlock, addressUnitBits), false);
 
     QVector<QString> foundErrors;
