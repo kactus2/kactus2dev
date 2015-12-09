@@ -15,15 +15,19 @@
 
 #include <IPXACTmodels/Component/Component.h>
 
+#include <IPXACTmodels/Component/validators/ChannelValidator.h>
+
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorChannelsItem::ComponentEditorChannelsItem()
 //-----------------------------------------------------------------------------
 ComponentEditorChannelsItem::ComponentEditorChannelsItem(ComponentEditorTreeModel* model,
     LibraryInterface* libHandler,
     QSharedPointer<Component> component,
+    QSharedPointer<ExpressionParser> expressionParser,
     ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-    channels_(component->getChannels())
+    channels_(component->getChannels()),
+    validator_(new ChannelValidator(expressionParser, component->getBusInterfaces()))
 {
 
 }
@@ -60,7 +64,7 @@ ItemEditor* ComponentEditorChannelsItem::editor()
 {
 	if (!editor_)
     {
-		editor_ = new ChannelsEditor(component_, libHandler_);
+		editor_ = new ChannelsEditor(component_, libHandler_, validator_);
 		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
@@ -82,14 +86,13 @@ QString ComponentEditorChannelsItem::getTooltip() const
 //-----------------------------------------------------------------------------
 bool ComponentEditorChannelsItem::isValid() const 
 {
-	/*QStringList interfaceNames = component_->getBusInterfaceNames();
-
-	// check each channel
-	foreach (QSharedPointer<Channel> channel, channels_) {
-		if (!channel->isValid(interfaceNames)) {
+	foreach (QSharedPointer<Channel> channel, *channels_)
+    {
+		if (!validator_->validate(channel))
+        {
 			return false;
 		}
-	}*/
+	}
 
 	// all channels were valid
 	return true;

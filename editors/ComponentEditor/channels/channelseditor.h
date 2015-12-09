@@ -21,6 +21,7 @@
 #include <QSharedPointer>
 #include <QSortFilterProxyModel>
 
+class ChannelValidator;
 class Component;
 class LibraryInterface;
 
@@ -37,18 +38,14 @@ public:
 	 *
 	 *      @param [in] component   The component being edited.
 	 *      @param [in] handler     The instance managing the library.
+     *      @param [in] validator   The validator for channel elements.
 	 *      @param [in] parent      The parent of this editor.
 	*/
-	ChannelsEditor(QSharedPointer<Component> component,	LibraryInterface* handler, QWidget* parent = 0);
+	ChannelsEditor(QSharedPointer<Component> component,	LibraryInterface* handler, 
+        QSharedPointer<ChannelValidator> validator, QWidget* parent = 0);
 	
 	//! The destructor
 	virtual ~ChannelsEditor();
-
-	/*! Check for the validity of the editor
-	* 
-	*      @return True if the editor is in valid state.
-	*/
-	virtual bool isValid() const;
 
 	/*! Reload the information from the model to the editor.
 	*/

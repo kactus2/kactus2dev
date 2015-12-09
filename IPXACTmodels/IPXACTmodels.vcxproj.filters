@@ -1145,6 +1145,9 @@
     <ClCompile Include="common\AccessTypes.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
+    <ClCompile Include="Component\validators\ChannelValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BusDefinition\BusDefinition.h">
@@ -1566,6 +1569,9 @@
     </ClInclude>
     <ClInclude Include="common\AccessTypes.h">
       <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\ChannelValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

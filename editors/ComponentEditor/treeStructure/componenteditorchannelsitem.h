@@ -15,6 +15,8 @@
 #include "componenteditoritem.h"
 
 class Channel;
+class ChannelValidator;
+class ExpressionParser;
 //-----------------------------------------------------------------------------
 //! The channels-item in the component editor's navigation tree.
 //-----------------------------------------------------------------------------
@@ -26,13 +28,17 @@ public:
 
 	/*! The constructor
 	 *
-	 *      @param [in] model       The model that owns the items.
-	 *      @param [in] libHandler  The instance that manages the library.
-	 *      @param [in] component   The component being edited.
-	 *      @param [in] parent      The parent item.
+	 *      @param [in] model               The model that owns the items.
+	 *      @param [in] libHandler          The instance that manages the library.
+	 *      @param [in] component           The component being edited.
+     *      @param [in] expressionParser    The expression parser to use.
+	 *      @param [in] parent              The parent item.
 	*/
-	ComponentEditorChannelsItem(ComponentEditorTreeModel* model, LibraryInterface* libHandler,
-		QSharedPointer<Component> component, ComponentEditorItem* parent);
+	ComponentEditorChannelsItem(ComponentEditorTreeModel* model, 
+        LibraryInterface* libHandler,
+		QSharedPointer<Component> component,
+        QSharedPointer<ExpressionParser> expressionParser,
+        ComponentEditorItem* parent);
 
 	//! The destructor
 	virtual ~ComponentEditorChannelsItem();
@@ -76,6 +82,9 @@ private:
 
 	//! The channels being edited.
 	QSharedPointer<QList<QSharedPointer<Channel> > > channels_;
+
+    //! Validator for channels.
+    QSharedPointer<ChannelValidator> validator_;
 };
 
 #endif // COMPONENTEDITORCHANNELSITEM_H

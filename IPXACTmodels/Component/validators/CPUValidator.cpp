@@ -22,7 +22,7 @@
 #include <QStringList>
 
 //-----------------------------------------------------------------------------
-// Function: SystemVerilogValidator::SystemVerilogValidator()
+// Function: CPUValidator::CPUValidator()
 //-----------------------------------------------------------------------------
 CPUValidator::CPUValidator(QSharedPointer<ParameterValidator2014> parameterValidator,
     QSharedPointer<ExpressionParser> expressionParser,
@@ -35,7 +35,7 @@ parameterValidator_(parameterValidator),
 }
 
 //-----------------------------------------------------------------------------
-// Function: SystemVerilogValidator::~SystemVerilogValidator()
+// Function: CPUValidator::~CPUValidator()
 //-----------------------------------------------------------------------------
 CPUValidator::~CPUValidator()
 {

@@ -23,11 +23,12 @@
 //-----------------------------------------------------------------------------
 // Function: ChannelsEditor::ChannelsEditor()
 //-----------------------------------------------------------------------------
-ChannelsEditor::ChannelsEditor(QSharedPointer<Component> component, LibraryInterface* handler, QWidget* parent):
+ChannelsEditor::ChannelsEditor(QSharedPointer<Component> component, LibraryInterface* handler, 
+    QSharedPointer<ChannelValidator> validator, QWidget* parent):
 ItemEditor(component, handler, parent),
     view_(this),
     proxy_(this),
-    model_(component, this)
+    model_(component->getChannels(), validator, this)
 {
     // display a label on top the table
     SummaryLabel* summaryLabel = new SummaryLabel(tr("Channels"), this);
@@ -64,14 +65,6 @@ ItemEditor(component, handler, parent),
 //-----------------------------------------------------------------------------
 ChannelsEditor::~ChannelsEditor()
 {
-}
-
-//-----------------------------------------------------------------------------
-// Function: ChannelsEditor::isValid()
-//-----------------------------------------------------------------------------
-bool ChannelsEditor::isValid() const
-{
-	return model_.isValid();
 }
 
 //-----------------------------------------------------------------------------

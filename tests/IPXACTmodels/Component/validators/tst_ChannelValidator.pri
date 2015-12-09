@@ -7,49 +7,50 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../../IPXACTmodels/common/Array.h \
-    ../../../../IPXACTmodels/common/Assertion.h \
-    ../../../../IPXACTmodels/common/BuildModel.h \
+HEADERS += ../../../../IPXACTmodels/Component/AbstractionType.h \
+    ../../../../IPXACTmodels/Component/Channel.h \
     ../../../../IPXACTmodels/Component/validators/ChannelValidator.h \
-    ../../../../IPXACTmodels/Component/ComponentInstantiation.h \
-    ../../../../IPXACTmodels/common/ConfigurableElementValue.h \
-    ../../../../IPXACTmodels/common/ConfigurableVLNVReference.h \
-    ../../../../IPXACTmodels/Component/DesignConfigurationInstantiation.h \
-    ../../../../IPXACTmodels/Component/DesignInstantiation.h \
+    ../../../../IPXACTmodels/Component/PortMap.h \
+    ../../../../IPXACTmodels/common/PartSelect.h \
     ../../../../editors/ComponentEditor/common/ExpressionParser.h \
-    ../../../../IPXACTmodels/common/Extendable.h \
-    ../../../../IPXACTmodels/common/FileBuilder.h \
-    ../../../../IPXACTmodels/common/FileTypes.h \
-    ../../../../IPXACTmodels/common/GenericVendorExtension.h \
-    ../../../../IPXACTmodels/kactusExtensions/Kactus2Group.h \
-    ../../../../IPXACTmodels/common/ModuleParameter.h \
+    ../../../../IPXACTmodels/common/ConfigurableVLNVReference.h \
+    ../../../../IPXACTmodels/common/Array.h \
+    ../../../../IPXACTmodels/common/BooleanValue.h \
+    ../../../../IPXACTmodels/common/VendorExtension.h \
     ../../../../IPXACTmodels/common/NameGroup.h \
-    ../../../../IPXACTmodels/common/Parameter.h \
+    ../../../../IPXACTmodels/common/Vector.h \
     ../../../../IPXACTmodels/common/Range.h \
     ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
-    ../../../../IPXACTmodels/common/VLNV.h \
-    ../../../../IPXACTmodels/common/Vector.h \
-    ../../../../IPXACTmodels/Component/Channel.h
-SOURCES += ../../../../IPXACTmodels/common/Array.cpp \
-    ../../../../IPXACTmodels/common/Assertion.cpp \
-    ../../../../IPXACTmodels/common/BuildModel.cpp \
-    ../../../../IPXACTmodels/Component/validators/ChannelValidator.cpp \
-    ../../../../IPXACTmodels/Component/ComponentInstantiation.cpp \
-    ../../../../IPXACTmodels/common/ConfigurableElementValue.cpp \
-    ../../../../IPXACTmodels/common/ConfigurableVLNVReference.cpp \
-    ../../../../IPXACTmodels/Component/DesignConfigurationInstantiation.cpp \
-    ../../../../IPXACTmodels/Component/DesignInstantiation.cpp \
-    ../../../../IPXACTmodels/common/Extendable.cpp \
-    ../../../../IPXACTmodels/common/FileBuilder.cpp \
-    ../../../../IPXACTmodels/common/FileTypes.cpp \
-    ../../../../IPXACTmodels/common/GenericVendorExtension.cpp \
+    ../../../../IPXACTmodels/kactusExtensions/Kactus2Group.h \
+    ../../../../IPXACTmodels/kactusExtensions/Kactus2Position.h \
+    ../../../../IPXACTmodels/Component/MirroredSlaveInterface.h \
+    ../../../../IPXACTmodels/common/Extendable.h \
+    ../../../../IPXACTmodels/Component/MasterInterface.h \
+    ../../../../IPXACTmodels/Component/SlaveInterface.h \
+    ../../../../IPXACTmodels/common/Parameter.h \
+    ../../../../IPXACTmodels/Component/BusInterface.h \
+    ../../../../IPXACTmodels/common/ConfigurableElementValue.h \
+    ../../../../IPXACTmodels/common/VLNV.h
+SOURCES += ../../../../IPXACTmodels/kactusExtensions/Kactus2Position.cpp \
+    ../../../../IPXACTmodels/Component/AbstractionType.cpp \
+    ../../../../IPXACTmodels/Component/PortMap.cpp \
+    ../../../../IPXACTmodels/common/PartSelect.cpp \
+    ../../../../IPXACTmodels/common/Array.cpp \
+    ../../../../IPXACTmodels/common/BooleanValue.cpp \
+    ../../../../IPXACTmodels/common/Vector.cpp \
     ../../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
-    ../../../../IPXACTmodels/common/ModuleParameter.cpp \
-    ../../../../IPXACTmodels/common/NameGroup.cpp \
+    ../../../../IPXACTmodels/Component/MirroredSlaveInterface.cpp \
+    ../../../../IPXACTmodels/Component/Channel.cpp \
+    ../../../../IPXACTmodels/Component/validators/ChannelValidator.cpp \
+    ../../../../IPXACTmodels/common/Extendable.cpp \
+    ../../../../IPXACTmodels/Component/MasterInterface.cpp \
+    ../../../../IPXACTmodels/common/ConfigurableVLNVReference.cpp \
+    ../../../../IPXACTmodels/Component/SlaveInterface.cpp \
     ../../../../IPXACTmodels/common/Parameter.cpp \
-    ../../../../IPXACTmodels/common/Range.cpp \
+    ../../../../IPXACTmodels/Component/BusInterface.cpp \
+    ../../../../IPXACTmodels/common/NameGroup.cpp \
+    ../../../../IPXACTmodels/common/ConfigurableElementValue.cpp \
     ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ../../../../IPXACTmodels/common/VLNV.cpp \
-    ../../../../IPXACTmodels/common/Vector.cpp \
     ./tst_ChannelValidator.cpp \
-    ../../../../IPXACTmodels/Component/Channel.cpp
+    ../../../../IPXACTmodels/common/Range.cpp

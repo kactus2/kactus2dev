@@ -17,7 +17,7 @@
 #include <QSharedPointer>
 
 class Channel;
-class Component;
+class ChannelValidator;
 //-----------------------------------------------------------------------------
 //! The model class to manage the objects for channels editor.
 //-----------------------------------------------------------------------------
@@ -29,10 +29,12 @@ public:
 
 	/*! The constructor
 	 *
-	 *      @param [in] component   The component being edited.
+	 *      @param [in] channels    The channels being edited.
+     *      @param [in] validator   The validator for channel elements.
 	 *      @param [in] parent      The owner of this model.
 	*/
-	ChannelsModel(QSharedPointer<Component> component, QObject *parent);
+	ChannelsModel(QSharedPointer<QList<QSharedPointer<Channel> > > channels, 
+        QSharedPointer<ChannelValidator> validator, QObject *parent);
 	
 	//! The destructor.
 	virtual ~ChannelsModel();
@@ -90,11 +92,6 @@ public:
 	*/
 	bool setData(QModelIndex const& index, const QVariant& value, int role = Qt::EditRole);
 
-	/*! Check if the channels model is in a valid state.
-	 *
-	 *      @return bool True if the state is valid and writing is possible.
-	*/
-	bool isValid() const;
 
 public slots:
 
@@ -137,11 +134,11 @@ private:
 	ChannelsModel(const ChannelsModel& other);
 	ChannelsModel& operator=(const ChannelsModel& other);
 
-	//! The component being edited.
-	QSharedPointer<Component> component_;
-
 	//! The channels being edited.
 	QSharedPointer<QList<QSharedPointer<Channel> > > channels_;
+
+    //! The validator for the channels.
+    QSharedPointer<ChannelValidator> validator_;
 };
 
 #endif // CHANNELSMODEL_H

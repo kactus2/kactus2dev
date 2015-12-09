@@ -13,8 +13,8 @@
 
 #include "ChannelColumns.h"
 
-#include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/Component/channel.h>
+#include <IPXACTmodels/Component/Channel.h>
+#include <IPXACTmodels/Component/validators/ChannelValidator.h>
 
 #include <QStringList>
 #include <QColor>
@@ -22,10 +22,11 @@
 //-----------------------------------------------------------------------------
 // Function: ChannelsModel::ChannelsModel()
 //-----------------------------------------------------------------------------
-ChannelsModel::ChannelsModel(QSharedPointer<Component> component, QObject* parent ):
+ChannelsModel::ChannelsModel(QSharedPointer<QList<QSharedPointer<Channel> > > channels, 
+    QSharedPointer<ChannelValidator> validator, QObject *parent ) :
 QAbstractTableModel(parent),
-    component_(component),
-    channels_(component->getChannels())
+    channels_(channels),
+    validator_(validator)
 {
 
 }
@@ -153,12 +154,21 @@ QVariant ChannelsModel::data(QModelIndex const& index, int role) const
 	else if (role == Qt::ForegroundRole)
     {
 
+        if (index.column() == ChannelColumns::INTERFACE_COLUMN && 
+            !validator_->hasValidBusInterfaceReferences(channels_->at(index.row())))
+        {
+            return QColor("red");
+        }
+        else
+        {
+            return QColor("black");
+        }
 		// interface names are needed to check that references to bus interfaces are valid
 		//QStringList interfaceNames = component_->getBusInterfaceNames();
 
 		/*if (channels_->at(index.row())->isValid(interfaceNames))
         {*/
-			return QColor("black");
+		//	return QColor("black");
 		/*}
 		else
         {
@@ -282,23 +292,4 @@ void ChannelsModel::onRemoveItem(QModelIndex const& index)
 
 	// tell also parent widget that contents have been changed
 	emit contentChanged();
-}
-
-//-----------------------------------------------------------------------------
-// Function: ChannelsModel::isValid()
-//-----------------------------------------------------------------------------
-bool ChannelsModel::isValid() const
-{
-	// interface names are needed to check that references to bus interfaces are valid
-	/*QStringList interfaceNames = component_->getBusInterfaceNames();
-
-	// if at least one address space is invalid
-	foreach (QSharedPointer<Channel> channel, channels_)
-    {
-		if (!channel->isValid(interfaceNames)) {
-			return false;
-		}
-	}*/
-	// all address spaces were valid
-	return true;
 }

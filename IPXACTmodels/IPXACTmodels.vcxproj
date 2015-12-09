@@ -267,6 +267,7 @@
     <ClCompile Include="Component\Transactional.cpp" />
     <ClCompile Include="Component\validators\AddressBlockValidator.cpp" />
     <ClCompile Include="Component\validators\AddressSpaceValidator.cpp" />
+    <ClCompile Include="Component\validators\ChannelValidator.cpp" />
     <ClCompile Include="Component\validators\ChoiceValidator.cpp" />
     <ClCompile Include="Component\validators\CPUValidator.cpp" />
     <ClCompile Include="Component\validators\EnumeratedValueValidator.cpp" />
@@ -2003,6 +2004,7 @@
     <ClInclude Include="Component\Transactional.h" />
     <ClInclude Include="Component\validators\AddressBlockValidator.h" />
     <ClInclude Include="Component\validators\AddressSpaceValidator.h" />
+    <ClInclude Include="Component\validators\ChannelValidator.h" />
     <ClInclude Include="Component\validators\ChoiceValidator.h" />
     <ClInclude Include="Component\validators\CPUValidator.h" />
     <ClInclude Include="Component\validators\EnumeratedValueValidator.h" />

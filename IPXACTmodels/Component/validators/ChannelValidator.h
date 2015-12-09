@@ -16,9 +16,13 @@
 
 #include <IPXACTmodels/Component/Channel.h>
 
+#include <QList>
+#include <QSharedPointer>
 #include <QString>
 #include <QVector>
 
+class BusInterface;
+class ExpressionParser;
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:Channel.
 //-----------------------------------------------------------------------------
@@ -30,7 +34,8 @@ public:
 	 *  The constructor.
 	 *
 	 */
-    ChannelValidator();
+    ChannelValidator(QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<QList<QSharedPointer<BusInterface> > > componentBusInterfaces);
 
 	//! The destructor.
 	~ChannelValidator();
@@ -43,6 +48,8 @@ public:
      *      @return True, if the Channel is valid IP-XACT, otherwise false.
      */
     virtual bool validate(QSharedPointer<Channel> channel) const;
+
+    bool hasValidBusInterfaceReferences(QSharedPointer<Channel> channel) const;
 
     /*!
      *  Finds possible errors in a Channel and creates a list of them.
@@ -68,6 +75,30 @@ private:
 	// Disable copying.
 	ChannelValidator(ChannelValidator const& rhs);
 	ChannelValidator& operator=(ChannelValidator const& rhs);
+    
+    /*!
+     *  Checks if the given name for referencing a bus interface is valid.
+     *
+     *      @param [in] interfaceName   The name of the bus interface to check.
+     *
+     *      @return True, if the reference is valid, otherwise false.
+     */
+    bool isValidBusIntefaceReference(QString const& interfaceName) const;
+        
+    /*!
+     *  Checks if the given name for referencing a bus interface is for a mirrored interface.
+     *
+     *      @param [in] interfaceName   The name of the bus interface to check.
+     *
+     *      @return True, if the reference is for a mirrored interface, otherwise false.
+     */ 
+    bool isReferenceToMirroredInterface(QString const& interfaceName) const;
+
+    //! The bus interfaces of the containing component.
+    QSharedPointer<QList<QSharedPointer<BusInterface> > > busInterfaces_;
+
+    //! The expression parser to use.
+    QSharedPointer<ExpressionParser> expressionParser_;
 };
 
 #endif // SYSTEMVERILOGVALIDATOR_H
