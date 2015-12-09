@@ -24,6 +24,8 @@
 
 #include <QSharedPointer>
 
+class BusDefinitionValidator;
+
 //-----------------------------------------------------------------------------
 //! Bus Editor is editor for Bus- and Abstraction definition.
 //-----------------------------------------------------------------------------
@@ -92,7 +94,7 @@ public slots:
      *
      *      @return True if the document is valid. False if there were any violations.
      */
-    virtual bool validate(QStringList& errorList);
+    virtual bool validate(QVector<QString>& errorList);
 
 	//! Saves the document and resets the modified state.
 	virtual bool save();
@@ -136,6 +138,9 @@ private:
 
 	//! Group containing elements to edit abstraction definition.
 	AbsDefGroup absDefGroup_;
+
+    //! Validator for bus definition.
+    QSharedPointer<BusDefinitionValidator> busDefinitionValidator_;
 };
 
 #endif // BUSEDITOR_H

@@ -20,16 +20,18 @@
 #include <IPXACTmodels/Component/Choice.h>
 
 //-----------------------------------------------------------------------------
-// Function: SystemVerilogValidator::SystemVerilogValidator()
+// Function: BusDefinitionValidator::BusDefinitionValidator()
 //-----------------------------------------------------------------------------
 BusDefinitionValidator::BusDefinitionValidator(QSharedPointer<ExpressionParser> expressionParser):
-expressionParser_(expressionParser)
+expressionParser_(expressionParser), 
+    parameterValidator_(new ParameterValidator2014(expressionParser, 
+    QSharedPointer<QList<QSharedPointer<Choice> > >()))
 {
 
 }
 
 //-----------------------------------------------------------------------------
-// Function: SystemVerilogValidator::~SystemVerilogValidator()
+// Function: BusDefinitionValidator::~BusDefinitionValidator()
 //-----------------------------------------------------------------------------
 BusDefinitionValidator::~BusDefinitionValidator()
 {
@@ -58,10 +60,9 @@ bool BusDefinitionValidator::validate(QSharedPointer<const BusDefinition> busDef
 		return false;
 	}
 
-    ParameterValidator2014 parameterValidator(expressionParser_, QSharedPointer<QList<QSharedPointer<Choice> > >());
-	foreach (QSharedPointer<Parameter> currentParameter, *busDefinition->getParameters())
+ 	foreach (QSharedPointer<Parameter> currentParameter, *busDefinition->getParameters())
 	{
-		if (!parameterValidator.validate(currentParameter))
+		if (!parameterValidator_->validate(currentParameter))
 		{
 			return false;
 		}
@@ -96,9 +97,8 @@ void BusDefinitionValidator::findErrorsIn(QVector<QString>& errors,
             busDefinition->getMaxSlaves(), context));
 	}
 
-    ParameterValidator2014 parameterValidator(expressionParser_, QSharedPointer<QList<QSharedPointer<Choice> > >());
     foreach (QSharedPointer<Parameter> currentParameter, *busDefinition->getParameters())
     {
-        parameterValidator.findErrorsIn(errors, currentParameter, context);
+        parameterValidator_->findErrorsIn(errors, currentParameter, context);
     }
 }

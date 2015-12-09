@@ -13,7 +13,11 @@
 
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 
+#include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
+
 #include <IPXACTmodels/common/VLNV.h>
+
+#include <IPXACTmodels/BusDefinition/validators/BusDefinitionValidator.h>
 
 #include <QApplication>
 #include <QFile>
@@ -36,7 +40,8 @@ libHandler_(libHandler),
 busDef_(busDef),
 absDef_(absDef),
 busDefGroup_(this),
-absDefGroup_(libHandler ,this)
+absDefGroup_(libHandler ,this),
+busDefinitionValidator_(new BusDefinitionValidator(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser())))
 {
 	if (absDef_)
     {
@@ -190,11 +195,9 @@ void BusEditor::setAbsDef(QSharedPointer<AbstractionDefinition> absDef)
 //-----------------------------------------------------------------------------
 // Function: BusEditor::validate()
 //-----------------------------------------------------------------------------
-bool BusEditor::validate(QStringList& errorList)
-{
-    bool valid = true;
-
-    // TODO: Validate the definitions.
+bool BusEditor::validate(QVector<QString>& errorList)
+{    
+    // TODO: Validate the abstraction definition.
 
     // if abstraction definition is being edited
     if (absDefGroup_.isEnabled())
@@ -208,10 +211,10 @@ bool BusEditor::validate(QStringList& errorList)
     // if bus definition is being edited
      if (busDefGroup_.isEnabled())
       {
-//          valid = busDef_->isValid(errorList) && valid;
+          busDefinitionValidator_->findErrorsIn(errorList, busDef_);
     }
 
-    return valid;
+    return errorList.isEmpty();
 }
 
 //-----------------------------------------------------------------------------
