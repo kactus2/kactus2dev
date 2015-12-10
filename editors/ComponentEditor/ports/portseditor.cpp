@@ -45,18 +45,20 @@
 // Function: PortsEditor::PortsEditor()
 //-----------------------------------------------------------------------------
 PortsEditor::PortsEditor(QSharedPointer<Component> component, LibraryInterface* handler,
-    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QWidget *parent):
+                         QSharedPointer<ParameterFinder> parameterFinder,
+                         QSharedPointer<ExpressionFormatter> expressionFormatter,
+                         QSharedPointer<PortValidator> portValidator, QWidget *parent /* = 0 */):
 ItemEditor(component, handler, parent),
-    view_(new PortsView(this)), 
-    model_(0),
-    proxy_(this),
-    component_(component),
-    handler_(handler)
+view_(new PortsView(this)), 
+model_(0),
+proxy_(this),
+component_(component),
+handler_(handler)
 {
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
 
-    model_ = new PortsModel(component->getModel(), expressionParser, parameterFinder, expressionFormatter, this);
+    model_ = new PortsModel(component->getModel(), expressionParser, parameterFinder, expressionFormatter,
+        portValidator, this);
 
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser);

@@ -16,7 +16,7 @@
 #include <IPXACTmodels/common/Protocol.h>
 #include <IPXACTmodels/common/ProtocolReader.h>
 
-#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/common/PresenceTypes.h>
 
 #include "TransactionalAbstraction.h"
 #include "TransactionalPort.h"
@@ -111,8 +111,8 @@ QSharedPointer<TransactionalPort> TransactionalAbstractionReader::parseTransacti
     QSharedPointer<TransactionalPort> transactionalPort(new TransactionalPort());
 
     QDomNode presenceNode = portNode.firstChildElement("ipxact:presence");
-    transactionalPort->setPresence(General::str2Presence(presenceNode.firstChild().nodeValue(),
-        General::PRESENCE_UNKNOWN));
+    transactionalPort->setPresence(PresenceTypes::str2Presence(presenceNode.firstChild().nodeValue(),
+        PresenceTypes::UNKNOWN));
 
     transactionalPort->setInitiative(portNode.firstChildElement("ipxact:initiative").firstChild().nodeValue());
 

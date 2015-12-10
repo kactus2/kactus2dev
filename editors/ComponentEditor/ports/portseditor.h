@@ -27,6 +27,7 @@ class LibraryInterface;
 class Port;
 class PortsModel;
 class PortsView;
+class PortValidator;
 //-----------------------------------------------------------------------------
 //! Editor to edit the ports of a component.
 //-----------------------------------------------------------------------------
@@ -43,12 +44,14 @@ public:
 	 *      @param [in] handler                 The instance that manages the library.
 	 *      @param [in] parameterFinder         The parameter finder.
 	 *      @param [in] expressionFormatter     The expression formatter.
+     *      @param [in] portValidator           Validator used for ports.
 	 *      @param [in] parent                  The owner of this widget.
 	 */
 	PortsEditor(QSharedPointer<Component> component,
                 LibraryInterface* handler,
                 QSharedPointer<ParameterFinder> parameterFinder,
                 QSharedPointer<ExpressionFormatter> expressionFormatter,
+                QSharedPointer<PortValidator> portValidator,
                 QWidget *parent = 0);
 
 	//! The destructor
@@ -60,14 +63,16 @@ public:
 	*/
 	virtual bool isValid() const;
 
-	/*! Reload the information from the model to the editor.
-	*/
+	/*!
+     *  Reload the information from the model to the editor.
+	 */
 	virtual void refresh();
 
-	/*! Enable/disable the import/export csv functionality for the view.
+	/*!
+     *  Enable/disable the import/export csv functionality for the view.
 	 *
 	 *      @param [in] allow If true then import/export is enabled.
-	*/
+	 */
 	void setAllowImportExport(bool allow);
 
     /*!

@@ -251,9 +251,6 @@
     <ClCompile Include="AbstractionDefinition\PortAbstraction.cpp">
       <Filter>Source Files\AbstractionDefinition</Filter>
     </ClCompile>
-    <ClCompile Include="AbstractionDefinition\TimingConstraint.cpp">
-      <Filter>Source Files\AbstractionDefinition</Filter>
-    </ClCompile>
     <ClCompile Include="AbstractionDefinition\TransactionalAbstraction.cpp">
       <Filter>Source Files\AbstractionDefinition</Filter>
     </ClCompile>
@@ -1148,6 +1145,18 @@
     <ClCompile Include="Component\validators\ChannelValidator.cpp">
       <Filter>Source Files\Component\validators</Filter>
     </ClCompile>
+    <ClCompile Include="Component\validators\PortValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="common\TimingConstraint.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\PresenceTypes.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\ProtocolValidator.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BusDefinition\BusDefinition.h">
@@ -1214,9 +1223,6 @@
       <Filter>Header Files\AbstractionDefinition</Filter>
     </ClInclude>
     <ClInclude Include="AbstractionDefinition\PortAbstraction.h">
-      <Filter>Header Files\AbstractionDefinition</Filter>
-    </ClInclude>
-    <ClInclude Include="AbstractionDefinition\TimingConstraint.h">
       <Filter>Header Files\AbstractionDefinition</Filter>
     </ClInclude>
     <ClInclude Include="AbstractionDefinition\TransactionalAbstraction.h">
@@ -1572,6 +1578,18 @@
     </ClInclude>
     <ClInclude Include="Component\validators\ChannelValidator.h">
       <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\PortValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="common\TimingConstraint.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\PresenceTypes.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\ProtocolValidator.h">
+      <Filter>Header Files\common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -14,7 +14,7 @@
 #include <IPXACTmodels/common/CellSpecification.h>
 #include <IPXACTmodels/generaldeclarations.h>
 
-#include "TimingConstraint.h"
+#include <IPXACTmodels/common/TimingConstraint.h>
 #include "WireAbstraction.h"
 #include "WirePort.h"
 
@@ -128,8 +128,8 @@ QSharedPointer<WirePort> WireAbstractionReader::parseWirePort(QDomNode const& wi
     QSharedPointer<WirePort> wirePort(new WirePort());
 
     QDomNode presenceNode = wirePortNode.firstChildElement("ipxact:presence");
-    wirePort->setPresence(General::str2Presence(presenceNode.firstChild().nodeValue(),
-        General::PRESENCE_UNKNOWN));
+    wirePort->setPresence(PresenceTypes::str2Presence(presenceNode.firstChild().nodeValue(),
+        PresenceTypes::UNKNOWN));
 
     wirePort->setWidth(wirePortNode.firstChildElement("ipxact:width").firstChild().nodeValue());
 

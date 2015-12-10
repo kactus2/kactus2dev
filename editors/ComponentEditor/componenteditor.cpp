@@ -769,7 +769,7 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createHWRootItem(QShare
         new ComponentEditorSystemViewsItem(&navigationModel_, libHandler_, component, hwRoot)));
 
     QSharedPointer<ComponentEditorPortsItem> portsItem(new ComponentEditorPortsItem(&navigationModel_, libHandler_,
-        component, referenceCounter_, parameterFinder_, expressionFormatter_, hwRoot));
+        component, referenceCounter_, parameterFinder_, expressionFormatter_, expressionParser, hwRoot));
 
     hwRoot->addChildItem(portsItem);
     connect(portsItem.data(), SIGNAL(createInterface()), hwRoot, SLOT(onInterfaceAdded()), Qt::UniqueConnection);

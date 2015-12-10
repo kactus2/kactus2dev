@@ -18,6 +18,8 @@
 #include <IPXACTmodels/Component/Model.h>
 #include <IPXACTmodels/Component/Port.h>
 
+#include <IPXACTmodels/Component/validators/PortValidator.h>
+
 #include <kactusGenerators/vhdlGenerator/vhdlgeneral.h>
 
 #include <QTextStream>
@@ -30,14 +32,16 @@
 // Function: PortsModel::PortsModel()
 //-----------------------------------------------------------------------------
 PortsModel::PortsModel(QSharedPointer<Model> model, QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QObject *parent):
+                       QSharedPointer<ParameterFinder> parameterFinder,
+                       QSharedPointer<ExpressionFormatter> expressionFormatter,
+                       QSharedPointer<PortValidator> portValidator, QObject *parent):
 ReferencingTableModel(parameterFinder, parent),
-    ParameterizableTable(parameterFinder),
-    model_(model),
-    lockedIndexes_(),
-    parameterFinder_(parameterFinder),
-    expressionFormatter_(expressionFormatter)
+ParameterizableTable(parameterFinder),
+model_(model),
+lockedIndexes_(),
+parameterFinder_(parameterFinder),
+expressionFormatter_(expressionFormatter),
+portValidator_(portValidator)
 {
     Q_ASSERT(model_);
     setExpressionParser(expressionParser);
@@ -438,8 +442,8 @@ bool PortsModel::setData(QModelIndex const& index, QVariant const& value, int ro
 //-----------------------------------------------------------------------------
 // Function: PortsModel::flags()
 //-----------------------------------------------------------------------------
-Qt::ItemFlags PortsModel::flags(QModelIndex const& index) const {
-	
+Qt::ItemFlags PortsModel::flags(QModelIndex const& index) const
+{
 	if (!index.isValid() || index.column() == PortColumns::ROW_NUMBER)
     {
 		return Qt::NoItemFlags;
@@ -470,13 +474,13 @@ Qt::ItemFlags PortsModel::flags(QModelIndex const& index) const {
 bool PortsModel::isValid() const
 {	
 	// check all ports in the table
-	/*foreach (QSharedPointer<Port> port, model_->getPorts())
-    {	
-		if (!port->isValid(model_->hasViews()))
+	foreach (QSharedPointer<Port> port, *model_->getPorts())
+    {
+        if (!portValidator_->validate(port))
         {
 			return false;
         }
-	}*/
+	}
 
 	return true;
 }
@@ -843,50 +847,34 @@ bool PortsModel::validateIndex(QModelIndex const& index) const
 {
     QSharedPointer<Port> port = portOnRow(index.row());
 
+    if (index.column() == PortColumns::NAME)
+    {
+        return portValidator_->hasValidName(port->name());
+    }
     if (index.column() == PortColumns::LEFT_BOUND)
     {
-        return isValuePlainOrExpression(port->getLeftBound());
+        return portValidator_->portBoundIsValid(port->getLeftBound());
     }
     else if (index.column() == PortColumns::RIGHT_BOUND)
     {
-        return isValuePlainOrExpression(port->getRightBound());
+        return portValidator_->portBoundIsValid(port->getRightBound());
     }
     else if (index.column() == PortColumns::DEFAULT_VALUE)
     {
         return isValuePlainOrExpression(port->getDefaultValue());
     }
-    else if (index.column() == PortColumns::ARRAY_LEFT || index.column() == PortColumns::ARRAY_RIGHT)
+    else if (index.column() == PortColumns::ARRAY_LEFT)
     {
-        return isArrayValid(port);
+        return portValidator_->arrayValueIsValid(port->getArrayLeft());
+    }
+    else if (index.column() == PortColumns::ARRAY_RIGHT)
+    {
+        return portValidator_->arrayValueIsValid(port->getArrayRight());
     }
 
     else
     {
         return true;
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: portsmodel::isArrayValid()
-//-----------------------------------------------------------------------------
-bool PortsModel::isArrayValid(QSharedPointer<Port> port) const
-{
-    if (port->getArrayLeft().isEmpty() && port->getArrayRight().isEmpty())
-    {
-        return true;
-    }
-    else
-    {
-        bool isLeftOk = true;
-        bool isRightOk = true;
-
-        QString leftExpression = parseExpressionToDecimal(port->getArrayLeft());
-        QString rightExpression = parseExpressionToDecimal(port->getArrayRight());
-
-        leftExpression.toInt(&isLeftOk);
-        rightExpression.toInt(&isRightOk);
-
-        return isLeftOk && isRightOk;
     }
 }
 

@@ -22,6 +22,8 @@
 
 #include <IPXACTmodels/Component/Component.h>
 
+#include <IPXACTmodels/Component/validators/PortValidator.h>
+
 #include <QApplication>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -40,18 +42,26 @@ componentXmlPath_(handler->getPath(component->getVlnv())),
 component_(component),
 importComponent_(new Component(*component_)),
 selectedSourceFile_(),
-portEditor_(new PortsEditor(importComponent_, handler, parameterFinder, expressionFormatter, &splitter_)),
+portEditor_(0),
 fileSelector_(new FileSelector(component, this)),
 editButton_(new QPushButton(tr("Open editor"), this)),
 refreshButton_(new QPushButton(QIcon(":/icons/common/graphics/refresh.png"), "", this)),
 sourceDisplayTabs_(new QTabWidget(this)),
 runner_(new ImportRunner(parameterFinder, sourceDisplayTabs_, this)),
-messageBox_(new QLabel(this))
+messageBox_(new QLabel(this)),
+componentViews_(component->getViews())
 {
-	// CSV import/export is disabled in the wizard.
+    QSharedPointer<ExpressionParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
+
+    QSharedPointer<PortValidator> portValidator (new PortValidator(expressionParser, componentViews_));
+
+    portEditor_ = new PortsEditor(
+        importComponent_, handler, parameterFinder, expressionFormatter, portValidator, &splitter_);
+
+    // CSV import/export is disabled in the wizard.
 	portEditor_->setAllowImportExport(false);
 
-    runner_->setVerilogExpressionParser(QSharedPointer<ExpressionParser>(new IPXactSystemVerilogParser(parameterFinder)));
+    runner_->setVerilogExpressionParser(expressionParser);
     runner_->loadPlugins(pluginMgr);
 
     connect(portEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -136,6 +146,8 @@ void ImportEditor::onRefresh()
     importComponent_ = runner_->run(selectedSourceFile_, componentXmlPath_, component_);
 
     portEditor_->setComponent(importComponent_);
+
+    componentViews_ = importComponent_->getViews();
 
     emit componentChanged(importComponent_);
     emit contentChanged();

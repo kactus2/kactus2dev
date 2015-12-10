@@ -116,15 +116,15 @@ void TransactionalAbstractionWriter::writeTransactionalPort(QXmlStreamWriter& wr
 void TransactionalAbstractionWriter::writePresence(QXmlStreamWriter& writer,
     QSharedPointer<TransactionalPort> port) const
 {
-    if (port->getPresence() == General::REQUIRED)
+    if (port->getPresence() == PresenceTypes::REQUIRED)
     {
         writer.writeTextElement("ipxact:presence", "required");
     }
-    else if (port->getPresence() == General::OPTIONAL)
+    else if (port->getPresence() == PresenceTypes::OPTIONAL)
     {
         writer.writeTextElement("ipxact:presence", "optional");
     }
-    else if (port->getPresence() == General::ILLEGAL)
+    else if (port->getPresence() == PresenceTypes::ILLEGAL)
     {
         writer.writeTextElement("ipxact:presence", "illegal");
     }

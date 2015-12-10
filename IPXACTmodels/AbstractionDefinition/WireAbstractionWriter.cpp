@@ -11,7 +11,7 @@
 
 #include "WireAbstractionWriter.h"
 
-#include "TimingConstraint.h"
+#include <IPXACTmodels/common/TimingConstraint.h>
 #include "WireAbstraction.h"
 #include "WirePort.h"
 
@@ -127,15 +127,15 @@ void WireAbstractionWriter::writeWirePort(QXmlStreamWriter& writer, QSharedPoint
 //-----------------------------------------------------------------------------
 void WireAbstractionWriter::writePresence(QXmlStreamWriter& writer, QSharedPointer<WirePort> wirePort) const
 {
-    if (wirePort->getPresence() == General::REQUIRED)
+    if (wirePort->getPresence() == PresenceTypes::REQUIRED)
     {
         writer.writeTextElement("ipxact:presence", "required");
     }
-    else if (wirePort->getPresence() == General::OPTIONAL)
+    else if (wirePort->getPresence() == PresenceTypes::OPTIONAL)
     {
         writer.writeTextElement("ipxact:presence", "optional");
     }
-    else if (wirePort->getPresence() == General::ILLEGAL)
+    else if (wirePort->getPresence() == PresenceTypes::ILLEGAL)
     {
         writer.writeTextElement("ipxact:presence", "illegal");
     }

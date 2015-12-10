@@ -11,12 +11,15 @@
 
 #include "PortValidator.h"
 
+#include <editors/ComponentEditor/common/ExpressionParser.h>
+
 #include <IPXACTmodels/Component/choice.h>
 #include <IPXACTmodels/common/TransactionalTypes.h>
 #include <IPXACTmodels/common/Enumeration.h>
 #include <IPXACTmodels/common/ProtocolValidator.h>
 
-#include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
+#include <IPXACTmodels/Component/Port.h>
+#include <IPXACTmodels/Component/View.h>
 
 #include <QRegularExpression>
 #include <QStringList>
@@ -24,7 +27,10 @@
 //-----------------------------------------------------------------------------
 // Function: PortValidator::PortValidator()
 //-----------------------------------------------------------------------------
-PortValidator::PortValidator()
+PortValidator::PortValidator(QSharedPointer<ExpressionParser> expressionParser,
+    QSharedPointer<QList<QSharedPointer<View> > > views):
+expressionParser_(expressionParser),
+availableViews_(views)
 {
 
 }
@@ -40,151 +46,251 @@ PortValidator::~PortValidator()
 //-----------------------------------------------------------------------------
 // Function: PortValidator::validateInstantiation()
 //-----------------------------------------------------------------------------
-bool PortValidator::validate(QSharedPointer<Port> port,
-	QSharedPointer<QList<QSharedPointer<View> > > views) const
+bool PortValidator::validate(QSharedPointer<Port> port) const
 {
-	QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
+    return hasValidName(port->name()) && hasValidIsPresent(port) && hasValidArrays(port) && hasValidWire(port) &&
+        hasValidTransactionalPort(port) && (port->getTransactional() || port->getWire());
+}
 
-	// Name must be valid.
-	if ( !hasValidName( port->name() ) )
-	{
-		return false;
-	}
+//-----------------------------------------------------------------------------
+// Function: PortValidator::hasValidName()
+//-----------------------------------------------------------------------------
+bool PortValidator::hasValidName(QString const& name) const
+{
+    QRegularExpression whiteSpaceExpression;
+    whiteSpaceExpression.setPattern("^\\s*$");
+    QRegularExpressionMatch whiteSpaceMatch = whiteSpaceExpression.match(name);
 
-	// Presence must be valid if defined.
-	if ( !port->getIsPresent().isEmpty() && !parser->isValidExpression( port->getIsPresent() ) )
-	{
-		return false;
-	}
+    if (name.isEmpty() || whiteSpaceMatch.hasMatch())
+    {
+        return false;
+    }
 
-	// Any arrays must have valid left and right.
-	foreach ( QSharedPointer<Array> array, *port->getArrays() )
-	{
-		if ( !parser->isValidExpression( array->getLeft() ) || !parser->isValidExpression( array->getRight() ) )
-		{
-			return false;
-		}
-	}
+    return true;
+}
 
-	if ( port->getWire() )
-	{
-		QSharedPointer<Wire> wire = port->getWire();
+//-----------------------------------------------------------------------------
+// Function: PortValidator::hasValidIsPresent()
+//-----------------------------------------------------------------------------
+bool PortValidator::hasValidIsPresent(QSharedPointer<Port> port) const
+{
+    if (!port->getIsPresent().isEmpty())
+    {
+        QString solvedValue = expressionParser_->parseExpression(port->getIsPresent());
 
-		// Bounds must be valid if defined.
-		if ( ( !wire->getVectorLeftBound().isEmpty() && !parser->isValidExpression( wire->getVectorLeftBound() ) ) ||
-			( !wire->getVectorRightBound().isEmpty() && !parser->isValidExpression( wire->getVectorRightBound() ) ) )
-		{
-			return false;
-		}
+        bool toIntOk = true;
+        int intValue = solvedValue.toInt(&toIntOk);
 
-		// Any view reference must point to an existing view.
-		foreach ( QSharedPointer<WireTypeDef> typeDef, *wire->getWireTypeDefs() )
-		{
-			foreach ( QString viewRef, typeDef->getViewRefs() )
-			{
-				if ( !referencedViewExists(views, viewRef) )
-				{
-					return false;
-				}
-			}
-		}
-	}
+        if (!toIntOk || intValue < 0 || intValue > 1)
+        {
+            return false;
+        }
+    }
 
-	if ( port->getTransactional() )
-	{
-		QSharedPointer<Transactional> trans = port->getTransactional();
+    return true;
+}
 
-		// There must a known initiative type.
-		if ( !TransactionalTypes::isIpXactInitiativeType( trans->getInitiative() ) )
-		{
-			return false;
-		}
+//-----------------------------------------------------------------------------
+// Function: PortValidator::hasValidArrays()
+//-----------------------------------------------------------------------------
+bool PortValidator::hasValidArrays(QSharedPointer<Port> port) const
+{
+    // Any arrays must have valid left and right.
+    foreach ( QSharedPointer<Array> array, *port->getArrays() )
+    {
+        if (!arrayValueIsValid(array->getLeft()) || arrayValueIsValid(array->getRight()))
+        {
+            return false;
+        }
+    }
 
-		// If defined, kind must a known one.
-		if ( !trans->getKind().isEmpty() && !TransactionalTypes::isIpXactKindType( trans->getKind() ) )
-		{
-			return false;
-		}
+    return true;
+}
 
-		// If defined, bus width must be a valid expression.
-		if ( !trans->getBusWidth().isEmpty() && !parser->isValidExpression( trans->getBusWidth() ) )
-		{
-			return false;
-		}
+//-----------------------------------------------------------------------------
+// Function: PortValidator::arrayValueIsValid()
+//-----------------------------------------------------------------------------
+bool PortValidator::arrayValueIsValid(QString const& arrayValue) const
+{
+    if (!arrayValue.isEmpty())
+    {
+        bool valueIsOk = expressionParser_->isValidExpression(arrayValue);
+        if (valueIsOk)
+        {
+            int valueInt = expressionParser_->parseExpression(arrayValue).toInt();
+            return valueInt >= 0;
+        }
+    }
 
-		// If defined, max connections width must be a valid expression.
-		if ( !trans->getMaxConnections().isEmpty() && !parser->isValidExpression( trans->getMaxConnections() ) )
-		{
-			return false;
-		}
+    return false;
+}
 
-		// If defined, min connections width must be a valid expression.
-		if ( !trans->getMinConnections().isEmpty() && !parser->isValidExpression( trans->getMinConnections() ) )
-		{
-			return false;
-		}
+//-----------------------------------------------------------------------------
+// Function: PortValidator::hasValidWire()
+//-----------------------------------------------------------------------------
+bool PortValidator::hasValidWire(QSharedPointer<Port> port) const
+{
+    if ( port->getWire() )
+    {
+        QSharedPointer<Wire> wire = port->getWire();
 
-		// Any view reference must point to an existing view.
-		foreach ( QSharedPointer<WireTypeDef> typeDef, *trans->getTransTypeDef() )
-		{
-			foreach ( QString viewRef, typeDef->getViewRefs() )
-			{
-				if ( !referencedViewExists(views, viewRef) )
-				{
-					return false;
-				}
-			}
-		}
+        // Bounds must be valid if defined.
+        if (!portBoundIsValid(port->getLeftBound()) || !portBoundIsValid(port->getRightBound()))
+        {
+            return false;
+        }
 
-		QSharedPointer<Protocol> protocol = trans->getProtocol();
+        // Any view reference must point to an existing view.
+        foreach ( QSharedPointer<WireTypeDef> typeDef, *wire->getWireTypeDefs() )
+        {
+            foreach ( QString viewRef, typeDef->getViewRefs() )
+            {
+                if ( !referencedViewExists(viewRef) )
+                {
+                    return false;
+                }
+            }
+        }
+    }
 
-	// Protocol must be valid if it exists.
-		if ( protocol )
-		{
-			ProtocolValidator protoVal;
+    return true;
+}
 
-			if ( !protoVal.validate(protocol) )
-			{
-				return false;
-			}
-		}
-	}
+//-----------------------------------------------------------------------------
+// Function: PortValidator::portBoundIsValid()
+//-----------------------------------------------------------------------------
+bool PortValidator::portBoundIsValid(QString const& portBound) const
+{
+    if (!portBound.isEmpty())
+    {
+        bool valueIsOk = expressionParser_->isValidExpression(portBound);
+        if (valueIsOk)
+        {
+            int valueInt = expressionParser_->parseExpression(portBound).toInt();
+            return valueInt >= 0;
+        }
+    }
 
-	return true;
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortValidator::referencedViewExists()
+//-----------------------------------------------------------------------------
+bool PortValidator::referencedViewExists(QString const& viewRef) const
+{
+    foreach ( QSharedPointer<View> view, *availableViews_ )
+    {
+        if ( view->name() == viewRef )
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortValidator::hasValidTransactionalPort()
+//-----------------------------------------------------------------------------
+bool PortValidator::hasValidTransactionalPort(QSharedPointer<Port> port) const
+{
+    if ( port->getTransactional() )
+    {
+        QSharedPointer<Transactional> trans = port->getTransactional();
+
+        // There must a known initiative type.
+        if ( !TransactionalTypes::isIpXactInitiativeType( trans->getInitiative() ) )
+        {
+            return false;
+        }
+
+        // If defined, kind must a known one.
+        if ( !trans->getKind().isEmpty() && !TransactionalTypes::isIpXactKindType( trans->getKind() ) )
+        {
+            return false;
+        }
+
+        // If defined, bus width must be a valid expression.
+        if ( !trans->getBusWidth().isEmpty() && !expressionParser_->isValidExpression( trans->getBusWidth() ) )
+        {
+            return false;
+        }
+
+        // If defined, max connections width must be a valid expression.
+        if ( !trans->getMaxConnections().isEmpty() && !expressionParser_->isValidExpression( trans->getMaxConnections() ) )
+        {
+            return false;
+        }
+
+        // If defined, min connections width must be a valid expression.
+        if ( !trans->getMinConnections().isEmpty() && !expressionParser_->isValidExpression( trans->getMinConnections() ) )
+        {
+            return false;
+        }
+
+        // Any view reference must point to an existing view.
+        foreach ( QSharedPointer<WireTypeDef> typeDef, *trans->getTransTypeDef() )
+        {
+            foreach ( QString viewRef, typeDef->getViewRefs() )
+            {
+                if ( !referencedViewExists(viewRef) )
+                {
+                    return false;
+                }
+            }
+        }
+
+        QSharedPointer<Protocol> protocol = trans->getProtocol();
+
+        // Protocol must be valid if it exists.
+        if ( protocol )
+        {
+            ProtocolValidator protoVal;
+
+            if ( !protoVal.validate(protocol) )
+            {
+                return false;
+            }
+        }
+    }
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------
 // Function: PortValidator::findErrorsIn()
 //-----------------------------------------------------------------------------
-void PortValidator::findErrorsIn(QVector<QString>& errors,
-	QSharedPointer<Port> port, QString const& contex,
-	QSharedPointer<QList<QSharedPointer<View> > > views) const
+void PortValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Port> port, QString const& context) const
 {
-	QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
+// 	QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
 
 	// Name must be valid.
 	if ( !hasValidName( port->name() ) )
 	{
-		errors.append(QObject::tr("The name is invalid or in-existing: %1").arg(port->name()));
+		errors.append(QObject::tr("The name is invalid or in-existing: %1 within %2")
+            .arg(port->name()).arg(context));
 	}
 
 	// Presence must be valid if defined.
-	if ( !port->getIsPresent().isEmpty() && !parser->isValidExpression( port->getIsPresent() ) )
+    if (!hasValidIsPresent(port))
 	{
-		errors.append(QObject::tr("The presence is invalid: %1").arg(port->getIsPresent()));
+		errors.append(QObject::tr("The presence is invalid: %1 in port %2")
+            .arg(port->getIsPresent()).arg(port->name()));
 	}
 
 	// Any arrays must have valid left and right.
 	foreach ( QSharedPointer<Array> array, *port->getArrays() )
 	{
-		if ( !parser->isValidExpression( array->getLeft() ) )
+        if (!arrayValueIsValid(array->getLeft()))
 		{
-			errors.append(QObject::tr("The left of array is invalid: %1").arg(array->getLeft()));
+			errors.append(QObject::tr("The left of array is invalid: %1 in port %2")
+                .arg(array->getLeft()).arg(port->name()));
 		}
-
-		if ( !parser->isValidExpression( array->getRight() ) )
+        if (!arrayValueIsValid(array->getRight()))
 		{
-			errors.append(QObject::tr("The right of array is invalid: %1").arg(array->getRight()));
+			errors.append(QObject::tr("The right of array is invalid: %1 in port %2")
+                .arg(array->getRight()).arg(port->name()));
 		}
 	}
 
@@ -193,14 +299,16 @@ void PortValidator::findErrorsIn(QVector<QString>& errors,
 		QSharedPointer<Wire> wire = port->getWire();
 
 		// Bounds must be valid if defined.
-		if ( !wire->getVectorLeftBound().isEmpty() && !parser->isValidExpression( wire->getVectorLeftBound() ) )
+        if (!portBoundIsValid(port->getLeftBound()))
 		{
-			errors.append(QObject::tr("The left of vector is invalid: %1").arg(wire->getVectorLeftBound()));
+			errors.append(QObject::tr("The left of vector is invalid: %1 in port %2")
+                .arg(wire->getVectorLeftBound()).arg(port->name()));
 		}
 
-		if ( !wire->getVectorRightBound().isEmpty() && !parser->isValidExpression( wire->getVectorRightBound() ) )
+        if (!portBoundIsValid(port->getRightBound()))
 		{
-			errors.append(QObject::tr("The right of vector is invalid: %1").arg(wire->getVectorRightBound()));
+			errors.append(QObject::tr("The right of vector is invalid: %1 in port %2")
+                .arg(wire->getVectorRightBound()).arg(port->name()));
 		}
 
 		// Any view reference must point to an existing view.
@@ -208,9 +316,10 @@ void PortValidator::findErrorsIn(QVector<QString>& errors,
 		{
 			foreach ( QString viewRef, typeDef->getViewRefs() )
 			{
-				if ( !referencedViewExists(views, viewRef) )
+				if ( !referencedViewExists(viewRef) )
 				{
-					errors.append(QObject::tr("A view reference does not exist: %1").arg(viewRef));
+					errors.append(QObject::tr("A view reference does not exist: %1 in port %2")
+                        .arg(viewRef).arg(port->name()));
 				}
 			}
 		}
@@ -223,31 +332,36 @@ void PortValidator::findErrorsIn(QVector<QString>& errors,
 		// There must a known initiative type.
 		if ( !TransactionalTypes::isIpXactInitiativeType( trans->getInitiative() ) )
 		{
-			errors.append(QObject::tr("The transactional initiative is invalid: %1").arg(trans->getInitiative()));
+			errors.append(QObject::tr("The transactional initiative is invalid: %1 in port %2")
+                .arg(trans->getInitiative()).arg(port->name()));
 		}
 
 		// If defined, kind must a known one.
 		if ( !trans->getKind().isEmpty() && !TransactionalTypes::isIpXactKindType( trans->getKind() ) )
 		{
-			errors.append(QObject::tr("The transactional kind is invalid: %1").arg(trans->getInitiative()));
+			errors.append(QObject::tr("The transactional kind is invalid: %1 in port %2")
+                .arg(trans->getInitiative()).arg(port->name()));
 		}
 
 		// If defined, bus width must be a valid expression.
-		if ( !trans->getBusWidth().isEmpty() && !parser->isValidExpression( trans->getBusWidth() ) )
+		if ( !trans->getBusWidth().isEmpty() && !expressionParser_->isValidExpression( trans->getBusWidth() ) )
 		{
-			errors.append(QObject::tr("The transactional bus width is invalid: %1").arg(trans->getBusWidth()));
+			errors.append(QObject::tr("The transactional bus width is invalid: %1 in port %2")
+                .arg(trans->getBusWidth()).arg(port->name()));
 		}
 
 		// If defined, max connections width must be a valid expression.
-		if ( !trans->getMaxConnections().isEmpty() && !parser->isValidExpression( trans->getMaxConnections() ) )
+		if ( !trans->getMaxConnections().isEmpty() && !expressionParser_->isValidExpression( trans->getMaxConnections() ) )
 		{
-			errors.append(QObject::tr("The transactional max connections is invalid: %1").arg(trans->getMaxConnections()));
+			errors.append(QObject::tr("The transactional max connections is invalid: %1 in port %2")
+                .arg(trans->getMaxConnections()).arg(port->name()));
 		}
 
 		// If defined, min connections width must be a valid expression.
-		if ( !trans->getMinConnections().isEmpty() && !parser->isValidExpression( trans->getMinConnections() ) )
+		if ( !trans->getMinConnections().isEmpty() && !expressionParser_->isValidExpression( trans->getMinConnections() ) )
 		{
-			errors.append(QObject::tr("The transactional min connections is invalid: %1").arg(trans->getMinConnections()));
+			errors.append(QObject::tr("The transactional min connections is invalid: %1 in port %2")
+                .arg(trans->getMinConnections()).arg(port->name()));
 		}
 
 		// Any view reference must point to an existing view.
@@ -255,9 +369,10 @@ void PortValidator::findErrorsIn(QVector<QString>& errors,
 		{
 			foreach ( QString viewRef, typeDef->getViewRefs() )
 			{
-				if ( !referencedViewExists(views, viewRef) )
+				if ( !referencedViewExists(viewRef) )
 				{
-					errors.append(QObject::tr("A referenced view does not exist: %1").arg(viewRef));
+					errors.append(QObject::tr("A referenced view does not exist: %1 in port %2")
+                        .arg(viewRef).arg(port->name()));
 				}
 			}
 		}
@@ -268,40 +383,7 @@ void PortValidator::findErrorsIn(QVector<QString>& errors,
 		if ( protocol )
 		{
 			ProtocolValidator protoVal;
-			protoVal.findErrorsIn(errors,protocol,contex);
+			protoVal.findErrorsIn(errors, protocol, context);
 		}
 	}
-}
-
-//-----------------------------------------------------------------------------
-// Function: PortValidator::referencedViewExists()
-//-----------------------------------------------------------------------------
-bool PortValidator::referencedViewExists(QSharedPointer<QList<QSharedPointer<View> > > views, QString viewRef) const
-{
-	foreach ( QSharedPointer<View> view, *views )
-	{
-		if ( view->name() == viewRef )
-		{
-			return true;
-		}
-	}
-
-	return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: PortValidator::hasValidName()
-//-----------------------------------------------------------------------------
-bool PortValidator::hasValidName(QString const& name) const
-{
-	QRegularExpression whiteSpaceExpression;
-	whiteSpaceExpression.setPattern("^\\s*$");
-	QRegularExpressionMatch whiteSpaceMatch = whiteSpaceExpression.match(name);
-
-	if (name.isEmpty() || whiteSpaceMatch.hasMatch())
-	{
-		return false;
-	}
-
-	return true;
 }

@@ -22,6 +22,7 @@
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/PortMap.h>
+#include <IPXACTmodels/common/PresenceTypes.h>
 
 //-----------------------------------------------------------------------------
 // Function: PortMapsLogicalItem::PortMapsLogicalItem()
@@ -214,10 +215,11 @@ bool PortMapsLogicalItem::isValid() const
                     return false;
                 } 
 
-                General::Presence portPresence = absDef_->getPort(portMap->getLogicalPort()->name_)->getPresence(busIf_->getInterfaceMode());
+                PresenceTypes::Presence portPresence =
+                    absDef_->getPort(portMap->getLogicalPort()->name_)->getPresence(busIf_->getInterfaceMode());
 
                 // if abstraction def is set and logical port is illegal 
-                if (portPresence == General::ILLEGAL)
+                if (portPresence == PresenceTypes::ILLEGAL)
                 {
                     return false;
                 }

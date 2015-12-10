@@ -39,6 +39,7 @@ HEADERS += ./XmlUtils.h \
     ./validators/BinaryValidator.h \
     ./validators/namevalidator.h \
     ./validators/NMTokenValidator.h \
+    ./common/AccessTypes.h \
     ./common/Array.h \
     ./common/Assertion.h \
     ./common/BooleanValue.h \
@@ -88,7 +89,7 @@ HEADERS += ./XmlUtils.h \
     ./BusDefinition/validators/BusDefinitionValidator.h \
     ./AbstractionDefinition/AbstractionDefinition.h \
     ./AbstractionDefinition/PortAbstraction.h \
-    ./AbstractionDefinition/TimingConstraint.h \
+    ./common/TimingConstraint.h \
     ./AbstractionDefinition/TransactionalAbstraction.h \
     ./AbstractionDefinition/TransactionalPort.h \
     ./AbstractionDefinition/WireAbstraction.h \
@@ -204,16 +205,21 @@ HEADERS += ./XmlUtils.h \
     ./Component/ViewWriter.h \
     ./Component/validators/AddressBlockValidator.h \
     ./Component/validators/AddressSpaceValidator.h \
+    ./Component/validators/ChannelValidator.h \
     ./Component/validators/ChoiceValidator.h \
+    ./Component/validators/CPUValidator.h \
     ./Component/validators/EnumeratedValueValidator.h \
     ./Component/validators/FieldValidator.h \
     ./Component/validators/FileSetValidator.h \
     ./Component/validators/FileValidator.h \
+    ./Component/validators/RemapStateValidator.h \
     ./Component/validators/MemoryMapBaseValidator.h \
     ./Component/validators/MemoryMapValidator.h \
     ./Component/validators/MemoryReserve.h \
     ./Component/validators/RegisterValidator.h \
-    ./common/AccessTypes.h
+    ./Component/validators/PortValidator.h \
+    ./common/PresenceTypes.h \
+    ./common/ProtocolValidator.h
 SOURCES += ./generaldeclarations.cpp \
     ./XmlUtils.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
@@ -245,6 +251,7 @@ SOURCES += ./generaldeclarations.cpp \
     ./validators/BinaryValidator.cpp \
     ./validators/namevalidator.cpp \
     ./validators/NMTokenValidator.cpp \
+    ./common/AccessTypes.cpp \
     ./common/Array.cpp \
     ./common/Assertion.cpp \
     ./common/BooleanValue.cpp \
@@ -295,7 +302,7 @@ SOURCES += ./generaldeclarations.cpp \
     ./AbstractionDefinition/AbstractionDefinitionReader.cpp \
     ./AbstractionDefinition/AbstractionDefinitionWriter.cpp \
     ./AbstractionDefinition/PortAbstraction.cpp \
-    ./AbstractionDefinition/TimingConstraint.cpp \
+    ./common/TimingConstraint.cpp \
     ./AbstractionDefinition/TransactionalAbstraction.cpp \
     ./AbstractionDefinition/TransactionalAbstractionReader.cpp \
     ./AbstractionDefinition/TransactionalAbstractionWriter.cpp \
@@ -409,13 +416,18 @@ SOURCES += ./generaldeclarations.cpp \
     ./Component/WriteValueConstraint.cpp \
     ./Component/validators/AddressBlockValidator.cpp \
     ./Component/validators/AddressSpaceValidator.cpp \
+    ./Component/validators/ChannelValidator.cpp \
     ./Component/validators/ChoiceValidator.cpp \
+    ./Component/validators/CPUValidator.cpp \
     ./Component/validators/EnumeratedValueValidator.cpp \
     ./Component/validators/FieldValidator.cpp \
     ./Component/validators/FileSetValidator.cpp \
     ./Component/validators/FileValidator.cpp \
+    ./Component/validators/RemapStateValidator.cpp \
     ./Component/validators/MemoryMapBaseValidator.cpp \
     ./Component/validators/MemoryMapValidator.cpp \
     ./Component/validators/MemoryReserve.cpp \
     ./Component/validators/RegisterValidator.cpp \
-    ./common/AccessTypes.cpp
+    ./Component/validators/PortValidator.cpp \
+    ./common/PresenceTypes.cpp \
+    ./common/ProtocolValidator.cpp

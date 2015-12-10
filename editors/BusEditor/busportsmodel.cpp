@@ -13,6 +13,7 @@
 #include "LogicalPortColumns.h"
 
 #include <IPXACTmodels/common/DirectionTypes.h>
+#include <IPXACTmodels/common/PresenceTypes.h>
 
 #include <QColor>
 #include <QStringList>
@@ -321,7 +322,7 @@ bool BusPortsModel::setData(QModelIndex const& index, QVariant const& value, int
         port.wire_->setDirection(DirectionTypes::str2Direction(value.toString(), DirectionTypes::DIRECTION_INVALID));    }
     else if (index.column() == LogicalPortColumns::PRESENCE)
     {
-        port.wire_->setPresence(General::str2Presence(value.toString(), General::PRESENCE_UNKNOWN));
+        port.wire_->setPresence(PresenceTypes::str2Presence(value.toString(), PresenceTypes::UNKNOWN));
     }
     else if (index.column() == LogicalPortColumns::DRIVER)
     {

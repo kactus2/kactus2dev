@@ -28,6 +28,7 @@ class ImportRunner;
 class LibraryInterface;
 class PluginManager;
 class PortsEditor;
+class View;
 
 //-----------------------------------------------------------------------------
 //! Used to parse source files and generating IP-XACT packages of them.
@@ -177,6 +178,9 @@ private:
 
     //! Widget for showing notifications from import plugins.
     QWidget* messageBox_;
+
+    //! The available component views.
+    QSharedPointer<QList<QSharedPointer<View> > > componentViews_;
 };
 
 #endif // VHDLIMPORTEDITOR_H

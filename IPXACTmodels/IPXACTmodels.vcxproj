@@ -133,7 +133,6 @@
     <ClCompile Include="AbstractionDefinition\AbstractionDefinitionReader.cpp" />
     <ClCompile Include="AbstractionDefinition\AbstractionDefinitionWriter.cpp" />
     <ClCompile Include="AbstractionDefinition\PortAbstraction.cpp" />
-    <ClCompile Include="AbstractionDefinition\TimingConstraint.cpp" />
     <ClCompile Include="AbstractionDefinition\TransactionalAbstraction.cpp" />
     <ClCompile Include="AbstractionDefinition\TransactionalAbstractionReader.cpp" />
     <ClCompile Include="AbstractionDefinition\TransactionalAbstractionWriter.cpp" />
@@ -179,11 +178,14 @@
     <ClCompile Include="common\ParameterReader.cpp" />
     <ClCompile Include="common\ParameterWriter.cpp" />
     <ClCompile Include="common\PartSelect.cpp" />
+    <ClCompile Include="common\PresenceTypes.cpp" />
     <ClCompile Include="common\Protocol.cpp" />
     <ClCompile Include="common\ProtocolReader.cpp" />
+    <ClCompile Include="common\ProtocolValidator.cpp" />
     <ClCompile Include="common\ProtocolWriter.cpp" />
     <ClCompile Include="common\Qualifier.cpp" />
     <ClCompile Include="common\Range.cpp" />
+    <ClCompile Include="common\TimingConstraint.cpp" />
     <ClCompile Include="common\TransactionalTypes.cpp" />
     <ClCompile Include="common\validators\ParameterValidator2014.cpp" />
     <ClCompile Include="common\validators\ValueFormatter.cpp" />
@@ -274,6 +276,7 @@
     <ClCompile Include="Component\validators\FieldValidator.cpp" />
     <ClCompile Include="Component\validators\FileSetValidator.cpp" />
     <ClCompile Include="Component\validators\FileValidator.cpp" />
+    <ClCompile Include="Component\validators\PortValidator.cpp" />
     <ClCompile Include="Component\validators\RemapStateValidator.cpp" />
     <ClCompile Include="Component\validators\MemoryMapBaseValidator.cpp" />
     <ClCompile Include="Component\validators\MemoryMapValidator.cpp" />
@@ -937,7 +940,6 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_XML_LIB -DIPXACTMODELS_LIB -D_WINDLL "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(SolutionDir)\."</Command>
     </CustomBuild>
     <ClInclude Include="AbstractionDefinition\PortAbstraction.h" />
-    <ClInclude Include="AbstractionDefinition\TimingConstraint.h" />
     <ClInclude Include="AbstractionDefinition\TransactionalAbstraction.h" />
     <CustomBuild Include="AbstractionDefinition\TransactionalAbstractionReader.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
@@ -1235,6 +1237,7 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_XML_LIB -DIPXACTMODELS_LIB -D_WINDLL "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(SolutionDir)\."</Command>
     </CustomBuild>
     <ClInclude Include="common\PartSelect.h" />
+    <ClInclude Include="common\PresenceTypes.h" />
     <ClInclude Include="common\Protocol.h" />
     <CustomBuild Include="common\ProtocolReader.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
@@ -1272,8 +1275,10 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_XML_LIB -DIPXACTMODELS_LIB -D_WINDLL "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(SolutionDir)\."</Command>
     </CustomBuild>
+    <ClInclude Include="common\ProtocolValidator.h" />
     <ClInclude Include="common\Qualifier.h" />
     <ClInclude Include="common\Range.h" />
+    <ClInclude Include="common\TimingConstraint.h" />
     <ClInclude Include="common\TransactionalTypes.h" />
     <ClInclude Include="common\validators\ParameterValidator2014.h" />
     <ClInclude Include="common\validators\ValueFormatter.h" />
@@ -2011,6 +2016,7 @@
     <ClInclude Include="Component\validators\FieldValidator.h" />
     <ClInclude Include="Component\validators\FileSetValidator.h" />
     <ClInclude Include="Component\validators\FileValidator.h" />
+    <ClInclude Include="Component\validators\PortValidator.h" />
     <ClInclude Include="Component\validators\RemapStateValidator.h" />
     <ClInclude Include="Component\validators\MemoryMapBaseValidator.h" />
     <ClInclude Include="Component\validators\MemoryMapValidator.h" />

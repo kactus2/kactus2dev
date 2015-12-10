@@ -18,6 +18,8 @@
 
 class Port;
 
+class ExpressionParser;
+class PortValidator;
 //-----------------------------------------------------------------------------
 //! The Ports-item in the component editor's navigation tree.
 //-----------------------------------------------------------------------------
@@ -36,6 +38,7 @@ public:
 	 *      @param [in] refCounter              The instance for counting references.
 	 *      @param [in] parameterFinder         The parameter finder.
 	 *      @param [in] expressionFormatter     The expression formatter.
+     *      @param [in] expressionParser        The expression parser.
 	 *      @param [in] parent                  The parent item.
 	 */
 	ComponentEditorPortsItem(ComponentEditorTreeModel* model,
@@ -44,41 +47,47 @@ public:
         QSharedPointer<ReferenceCounter> refCounter,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QSharedPointer<ExpressionParser> expressionParser,
 		ComponentEditorItem* parent);
 
 	//! The destructor
 	virtual ~ComponentEditorPortsItem();
 
-	/*! Get the font to be used for text of this item.
-	*
-	* The font is bold, if ports exist, otherwise not bold.
-	*
-	*      @return QFont instance that defines the font to be used.
-	*/
+	/*!
+     *  Get the font to be used for text of this item.
+	 *
+	 *  The font is bold, if ports exist, otherwise not bold.
+	 *
+	 *      @return QFont instance that defines the font to be used.
+	 */
 	virtual QFont getFont() const;
 
-	/*! Get the tool tip for the item.
+	/*!
+     *  Get the tool tip for the item.
 	 * 
 	 *      @return The text for the tool tip to print to user.
-	*/
+	 */
 	virtual QString getTooltip() const;
 
-	/*! Get the text to be displayed to user in the tree for this item.
+	/*!
+     *  Get the text to be displayed to user in the tree for this item.
 	 *
 	 *      @return QString Contains the text to display.
-	*/
+	 */
 	virtual QString text() const;
 
-	/*! Check the validity of this item and sub items.
+	/*!
+     *  Check the validity of this item and sub items.
 	 *
 	 *      @return bool True if item is in valid state.
-	*/
+	 */
 	virtual bool isValid() const;
 
-	/*! Get pointer to the editor of this item.
+	/*!
+     *  Get pointer to the editor of this item.
 	 *
 	 *      @return The editor to use for this item.
-	*/
+	 */
 	virtual ItemEditor* editor();
 
 signals:
@@ -92,6 +101,9 @@ private:
 
 	//! No assignment
 	ComponentEditorPortsItem& operator=(const ComponentEditorPortsItem& other);
+
+    //! The used port validator.
+    QSharedPointer<PortValidator> portValidator_;
 };
 
 #endif // COMPONENTEDITORPORTSITEM_H

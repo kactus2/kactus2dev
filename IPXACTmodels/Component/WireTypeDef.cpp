@@ -51,7 +51,10 @@ constrained_(false),
 typeDefinitions_(),
 viewNameRefs_()
 {
-    viewNameRefs_.append(viewNameRef);
+    if (!viewNameRef.isEmpty())
+    {
+        viewNameRefs_.append(viewNameRef);
+    }
 }
 
 //-----------------------------------------------------------------------------

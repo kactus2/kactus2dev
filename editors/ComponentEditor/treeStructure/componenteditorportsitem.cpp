@@ -12,20 +12,21 @@
 #include "componenteditorportsitem.h"
 
 #include <editors/ComponentEditor/ports/portseditor.h>
+#include <editors/ComponentEditor/common/ExpressionParser.h>
 
 #include <IPXACTmodels/Component/Component.h>
+
+#include <IPXACTmodels/Component/validators/PortValidator.h>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorPortsItem::ComponentEditorPortsItem()
 //-----------------------------------------------------------------------------
-ComponentEditorPortsItem::ComponentEditorPortsItem(ComponentEditorTreeModel* model,
-												   LibraryInterface* libHandler,
-												   QSharedPointer<Component> component,
-                                                   QSharedPointer<ReferenceCounter> refCounter,
-                                                   QSharedPointer<ParameterFinder> parameterFinder,
-                                                   QSharedPointer<ExpressionFormatter> expressionFormatter,
-												   ComponentEditorItem* parent):
-ComponentEditorItem(model, libHandler, component, parent)
+ComponentEditorPortsItem::ComponentEditorPortsItem(ComponentEditorTreeModel* model, LibraryInterface* libHandler,
+    QSharedPointer<Component> component, QSharedPointer<ReferenceCounter> refCounter,
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<ExpressionParser> expressionParser, ComponentEditorItem* parent):
+ComponentEditorItem(model, libHandler, component, parent),
+portValidator_(new PortValidator(expressionParser, component->getViews()))
 {
     setReferenceCounter(refCounter);
     setParameterFinder(parameterFinder);
@@ -62,14 +63,17 @@ QString ComponentEditorPortsItem::text() const
 //-----------------------------------------------------------------------------
 bool ComponentEditorPortsItem::isValid() const
 {
-	/*bool hasViews = component_->hasViews();
-	foreach (QSharedPointer<Port> port, component_->getPorts()) 
+    QStringList portNames;
+	foreach (QSharedPointer<Port> port, *component_->getPorts()) 
     {
-		if (!port->isValid(hasViews))
+        if (portNames.contains(port->name()) || !portValidator_->validate(port))
         {
 			return false;
 		}
-	}*/
+
+        portNames.append(port->name());
+	}
+
 	return true;
 }
 
@@ -80,7 +84,7 @@ ItemEditor* ComponentEditorPortsItem::editor()
 {
 	if (!editor_)
     {
-		editor_ = new PortsEditor(component_, libHandler_, parameterFinder_, expressionFormatter_);
+		editor_ = new PortsEditor(component_, libHandler_, parameterFinder_, expressionFormatter_, portValidator_);
 		editor_->setProtection(locked_);
 
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);

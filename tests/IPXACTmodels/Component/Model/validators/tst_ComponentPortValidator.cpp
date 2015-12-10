@@ -9,7 +9,12 @@
 // Unit test for class ComponentPortValidator.
 //-----------------------------------------------------------------------------
 
+#include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
+
 #include <IPXACTmodels/Component/validators/PortValidator.h>
+
+#include <IPXACTmodels/Component/View.h>
+#include <IPXACTmodels/Component/Port.h>
 
 #include <QtTest>
 
@@ -34,7 +39,10 @@ private slots:
 	void protocolSuccess();
 
 private:
+
 	QSharedPointer<QList<QSharedPointer<View> > > views_;
+
+    QSharedPointer<ExpressionParser> parser_;
 };
 
 //-----------------------------------------------------------------------------
@@ -45,6 +53,8 @@ tst_ComponentPortValidator::tst_ComponentPortValidator()
 	views_ = QSharedPointer<QList<QSharedPointer<View> > >( new QList<QSharedPointer<View> > );
 	QSharedPointer<View> testView( new View("test_view") );
 	views_->append(testView);
+
+    parser_ = QSharedPointer<SystemVerilogExpressionParser> (new SystemVerilogExpressionParser());
 }
 
 //-----------------------------------------------------------------------------
@@ -53,15 +63,17 @@ tst_ComponentPortValidator::tst_ComponentPortValidator()
 void tst_ComponentPortValidator::baseCase()
 {
 	QSharedPointer<Port> port( new Port );
-	PortValidator validator;
+    port->setLeftBound("4");
+    port->setRightBound("4");
+	PortValidator validator(parser_, views_);
 
 	port->setName("joq");
 
 	QVector<QString> errorList;
-	validator.findErrorsIn(errorList, port, "test", views_);
+    validator.findErrorsIn(errorList, port, "test");
 
 	QCOMPARE( errorList.size(), 0 );
-	QVERIFY( validator.validate(port, views_) );
+    QVERIFY( validator.validate(port) );
 }
 
 //-----------------------------------------------------------------------------
@@ -70,16 +82,16 @@ void tst_ComponentPortValidator::baseCase()
 void tst_ComponentPortValidator::presenceFail()
 {
 	QSharedPointer<Port> port( new Port );
-	PortValidator validator;
+	PortValidator validator(parser_, views_);
 
 	port->setName("joq");
 	port->setIsPresent("evoo");
 
 	QVector<QString> errorList;
-	validator.findErrorsIn(errorList, port, "test", views_);
+    validator.findErrorsIn(errorList, port, "test");
 
 	QCOMPARE( errorList.size(), 1 );
-	QVERIFY( !validator.validate(port, views_) );
+    QVERIFY( !validator.validate(port) );
 }
 
 //-----------------------------------------------------------------------------
@@ -88,7 +100,7 @@ void tst_ComponentPortValidator::presenceFail()
 void tst_ComponentPortValidator::arrayFail()
 {
 	QSharedPointer<Port> port( new Port );
-	PortValidator validator;
+	PortValidator validator(parser_, views_);
 
 	port->setName("joq");
 
@@ -96,10 +108,10 @@ void tst_ComponentPortValidator::arrayFail()
 	port->getArrays()->append(arr);
 
 	QVector<QString> errorList;
-	validator.findErrorsIn(errorList, port, "test", views_);
+    validator.findErrorsIn(errorList, port, "test");
 
 	QCOMPARE( errorList.size(), 2 );
-	QVERIFY( !validator.validate(port, views_) );
+    QVERIFY( !validator.validate(port) );
 }
 
 //-----------------------------------------------------------------------------
@@ -108,7 +120,7 @@ void tst_ComponentPortValidator::arrayFail()
 void tst_ComponentPortValidator::wireFail()
 {
 	QSharedPointer<Port> port( new Port );
-	PortValidator validator;
+	PortValidator validator(parser_, views_);
 
 	port->setName("joq");
 
@@ -124,10 +136,10 @@ void tst_ComponentPortValidator::wireFail()
 	wire->getWireTypeDefs()->append(wiredef);
 
 	QVector<QString> errorList;
-	validator.findErrorsIn(errorList, port, "test", views_);
+    validator.findErrorsIn(errorList, port, "test");
 
 	QCOMPARE( errorList.size(), 3 );
-	QVERIFY( !validator.validate(port, views_) );
+    QVERIFY( !validator.validate(port) );
 }
 
 //-----------------------------------------------------------------------------
@@ -136,7 +148,7 @@ void tst_ComponentPortValidator::wireFail()
 void tst_ComponentPortValidator::wireSuccess()
 {
 	QSharedPointer<Port> port( new Port );
-	PortValidator validator;
+	PortValidator validator(parser_, views_);
 
 	port->setName("joq");
 
@@ -152,10 +164,10 @@ void tst_ComponentPortValidator::wireSuccess()
 	wire->getWireTypeDefs()->append(wiredef);
 
 	QVector<QString> errorList;
-	validator.findErrorsIn(errorList, port, "test", views_);
+    validator.findErrorsIn(errorList, port, "test");
 
 	QCOMPARE( errorList.size(), 0 );
-	QVERIFY( validator.validate(port, views_) );
+    QVERIFY( validator.validate(port) );
 }
 
 //-----------------------------------------------------------------------------
@@ -164,7 +176,7 @@ void tst_ComponentPortValidator::wireSuccess()
 void tst_ComponentPortValidator::initiativeKindFail()
 {
 	QSharedPointer<Port> port( new Port );
-	PortValidator validator;
+	PortValidator validator(parser_, views_);
 
 	port->setName("joq");
 
@@ -174,10 +186,10 @@ void tst_ComponentPortValidator::initiativeKindFail()
 	port->setTransactional(trans);
 
 	QVector<QString> errorList;
-	validator.findErrorsIn(errorList, port, "test", views_);
+    validator.findErrorsIn(errorList, port, "test");
 
 	QCOMPARE( errorList.size(), 2 );
-	QVERIFY( !validator.validate(port, views_) );
+    QVERIFY( !validator.validate(port) );
 }
 
 //-----------------------------------------------------------------------------
@@ -186,7 +198,7 @@ void tst_ComponentPortValidator::initiativeKindFail()
 void tst_ComponentPortValidator::initiativeKindSuccess()
 {
 	QSharedPointer<Port> port( new Port );
-	PortValidator validator;
+	PortValidator validator(parser_, views_);
 
 	port->setName("joq");
 
@@ -196,10 +208,10 @@ void tst_ComponentPortValidator::initiativeKindSuccess()
 	port->setTransactional(trans);
 
 	QVector<QString> errorList;
-	validator.findErrorsIn(errorList, port, "test", views_);
+    validator.findErrorsIn(errorList, port, "test");
 
 	QCOMPARE( errorList.size(), 0 );
-	QVERIFY( validator.validate(port, views_) );
+    QVERIFY( validator.validate(port) );
 }
 
 //-----------------------------------------------------------------------------
@@ -208,7 +220,7 @@ void tst_ComponentPortValidator::initiativeKindSuccess()
 void tst_ComponentPortValidator::transactionalFail()
 {
 	QSharedPointer<Port> port( new Port );
-	PortValidator validator;
+	PortValidator validator(parser_, views_);
 
 	port->setName("joq");
 
@@ -226,10 +238,10 @@ void tst_ComponentPortValidator::transactionalFail()
 	trans->getTransTypeDef()->append(wiredef);
 
 	QVector<QString> errorList;
-	validator.findErrorsIn(errorList, port, "test", views_);
+    validator.findErrorsIn(errorList, port, "test");
 
 	QCOMPARE( errorList.size(), 4 );
-	QVERIFY( !validator.validate(port, views_) );
+    QVERIFY( !validator.validate(port) );
 }
 
 //-----------------------------------------------------------------------------
@@ -238,7 +250,7 @@ void tst_ComponentPortValidator::transactionalFail()
 void tst_ComponentPortValidator::transactionalSuccess()
 {
 	QSharedPointer<Port> port( new Port );
-	PortValidator validator;
+	PortValidator validator(parser_, views_);
 
 	port->setName("joq");
 
@@ -256,10 +268,10 @@ void tst_ComponentPortValidator::transactionalSuccess()
 	trans->getTransTypeDef()->append(wiredef);
 
 	QVector<QString> errorList;
-	validator.findErrorsIn(errorList, port, "test", views_);
+    validator.findErrorsIn(errorList, port, "test");
 
 	QCOMPARE( errorList.size(), 0 );
-	QVERIFY( validator.validate(port, views_) );
+    QVERIFY( validator.validate(port) );
 }
 
 //-----------------------------------------------------------------------------
@@ -268,7 +280,7 @@ void tst_ComponentPortValidator::transactionalSuccess()
 void tst_ComponentPortValidator::protocolFail()
 {
 	QSharedPointer<Port> port( new Port );
-	PortValidator validator;
+	PortValidator validator(parser_, views_);
 
 	port->setName("joq");
 
@@ -283,10 +295,10 @@ void tst_ComponentPortValidator::protocolFail()
 	trans->setProtocol(prot);
 
 	QVector<QString> errorList;
-	validator.findErrorsIn(errorList, port, "test", views_);
+    validator.findErrorsIn(errorList, port, "test");
 
 	QCOMPARE( errorList.size(), 4 );
-	QVERIFY( !validator.validate(port, views_) );
+    QVERIFY( !validator.validate(port) );
 }
 
 //-----------------------------------------------------------------------------
@@ -295,7 +307,7 @@ void tst_ComponentPortValidator::protocolFail()
 void tst_ComponentPortValidator::protocolSuccess()
 {
 	QSharedPointer<Port> port( new Port );
-	PortValidator validator;
+	PortValidator validator(parser_, views_);
 
 	port->setName("joq");
 
@@ -311,10 +323,10 @@ void tst_ComponentPortValidator::protocolSuccess()
 	trans->setProtocol(prot);
 
 	QVector<QString> errorList;
-	validator.findErrorsIn(errorList, port, "test", views_);
+    validator.findErrorsIn(errorList, port, "test");
 
 	QCOMPARE( errorList.size(), 0 );
-	QVERIFY( validator.validate(port, views_) );
+    QVERIFY( validator.validate(port) );
 }
 
 QTEST_APPLESS_MAIN(tst_ComponentPortValidator)
