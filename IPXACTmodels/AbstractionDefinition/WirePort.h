@@ -13,10 +13,11 @@
 #define WIREPORT_H
 
 #include <QString>
+#include <QSharedPointer>
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
-#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/common/PresenceTypes.h>
 #include <IPXACTmodels/common/DirectionTypes.h>
 
 class TimingConstraint;
@@ -28,15 +29,6 @@ class CellSpecification;
 class IPXACTMODELS_EXPORT WirePort 
 {
 public:
-
-    //! Possible values for wire presence.
-    enum PresenceType
-    {
-        ILLEGAL = 0,
-        OPTIONAL,
-        REQUIRED,
-        UNKNOWN
-    };
 
 	//! The constructor.
 	WirePort();
@@ -66,14 +58,14 @@ public:
      *
      *      @param [in] presence   The restriction to set.
      */
-    void setPresence(General::Presence presence);
+    void setPresence(PresenceTypes::Presence presence);
 
     /*!
      *  Gets the presence restriction for the port.
      *
      *      @return The presence restriction for the port.
      */
-    General::Presence getPresence() const;
+    PresenceTypes::Presence getPresence() const;
    
     /*!
      *  Sets the number of bits required for the port.
@@ -200,7 +192,7 @@ private:
     QString systemGroupName_;
 
     //! Defines if the port is required or forbidden in a bus interface.
-    General::Presence presence_;
+    PresenceTypes::Presence presence_;
 
     //! Number of bits required for the port.
     QString width_;

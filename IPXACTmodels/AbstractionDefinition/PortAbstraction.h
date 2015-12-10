@@ -17,6 +17,7 @@
 #include <IPXACTmodels/common/Qualifier.h>
 
 #include <IPXACTmodels/ipxactmodels_global.h>
+#include <IPXACTmodels/common/PresenceTypes.h>
 #include <IPXACTmodels/generaldeclarations.h>
 
 #include <QSharedPointer>
@@ -156,7 +157,7 @@ public:
      *
      *      @return The required presence for the mode.
      */
-    General::Presence getPresence(General::InterfaceMode mode) const;
+    PresenceTypes::Presence getPresence(General::InterfaceMode mode) const;
  
 private:
 

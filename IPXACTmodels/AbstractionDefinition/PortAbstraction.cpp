@@ -253,7 +253,7 @@ bool PortAbstraction::requiresDriver() const
 //-----------------------------------------------------------------------------
 // Function: PortAbstraction::getPresence()
 //-----------------------------------------------------------------------------
-General::Presence PortAbstraction::getPresence(General::InterfaceMode mode) const
+PresenceTypes::Presence PortAbstraction::getPresence(General::InterfaceMode mode) const
 {
     if (hasWire())
     {
@@ -263,5 +263,5 @@ General::Presence PortAbstraction::getPresence(General::InterfaceMode mode) cons
         }
     }
 
-    return General::PRESENCE_UNKNOWN;
+    return PresenceTypes::UNKNOWN;
 }

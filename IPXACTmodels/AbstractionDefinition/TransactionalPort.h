@@ -13,7 +13,7 @@
 #define TRANSACTIONALPORT_H
 
 #include <IPXACTmodels/ipxactmodels_global.h>
-#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/common/PresenceTypes.h>
 
 #include <IPXACTmodels/common/Qualifier.h>
 
@@ -56,14 +56,14 @@ public:
      *
      *      @param [in] presence   The restriction to set.
      */
-    void setPresence(General::Presence presence);
+    void setPresence(PresenceTypes::Presence presence);
 
     /*!
      *  Gets the presence restriction for the port.
      *
      *      @return The presence restriction for the port.
      */
-    General::Presence getPresence() const;
+    PresenceTypes::Presence getPresence() const;
 
     /*!
      *  Sets the access type for the transactional port.
@@ -138,7 +138,7 @@ private:
     QString systemGroup_;
     
     //! Defines if the port is required or forbidden in a bus interface.
-    General::Presence presence_;
+    PresenceTypes::Presence presence_;
 
     //! Defines the access type for the port.
     QString initiative_;

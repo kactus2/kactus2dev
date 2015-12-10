@@ -10,8 +10,8 @@
 //-----------------------------------------------------------------------------
 
 #include "ConnectionDeleteCommand.h"
-
 #include "PhysicalPortDeleteCommand.h"
+
 #include "AdHocVisibilityChangeCommand.h"
 
 #include <common/GenericEditProvider.h>

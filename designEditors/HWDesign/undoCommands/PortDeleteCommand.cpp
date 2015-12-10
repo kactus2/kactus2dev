@@ -10,9 +10,9 @@
 //-----------------------------------------------------------------------------
 
 #include "PortDeleteCommand.h"
+#include "PhysicalPortDeleteCommand.h"
 
 #include "ConnectionDeleteCommand.h"
-#include "PhysicalPortDeleteCommand.h"
 
 #include <designEditors/HWDesign/HWComponentItem.h>
 #include <designEditors/HWDesign/HWConnection.h>

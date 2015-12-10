@@ -18,6 +18,7 @@ SUBDIRS += common\Common.pro \
 		   BusDefinition\validators\tst_BusDefinitionValidator.pro \
 		   AbstractionDefinition\tst_AbstractionDefinitionWriter.pro \
 		   AbstractionDefinition\tst_AbstractionDefinitionReader.pro \
+		   AbstractionDefinition\validators\tst_AbstractionDefinitionValidator.pro \
 		   DesignConfiguration\tst_DesignConfigurationWriter.pro \
 		   DesignConfiguration\tst_DesignConfigurationReader.pro \
 		   Design\tst_DesignWriter.pro \

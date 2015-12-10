@@ -216,43 +216,6 @@ QString General::bool2Str(bool value) {
 	}
 }
 
-General::Presence General::str2Presence(QString str,
-		General::Presence defaultValue) {
-
-	// identify the correct enum value
-	if (str == QString("illegal")) {
-		return General::ILLEGAL;
-	}
-
-	else if (str == QString("required")) {
-		return General::REQUIRED;
-	}
-
-	else if (str == QString("optional")) {
-		return General::OPTIONAL;
-	}
-	else {
-		return defaultValue;
-	}
-}
-
-QString General::presence2Str(General::Presence presence) {
-	switch (presence) {
-	case General::ILLEGAL: {
-		return QString("illegal");
-	}
-	case General::REQUIRED: {
-		return QString("required");
-	}
-	case General::OPTIONAL: {
-		return QString("optional");
-	}
-	default: {
-		return QString();
-	}
-	}
-}
-
 General::Usage General::str2Usage(QString str,
 		General::Usage defaultValue) {
 	if (str == QString("memory")) {

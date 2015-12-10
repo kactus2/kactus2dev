@@ -7,7 +7,7 @@
 #ifndef GENERALDECLARATIONS_H_
 #define GENERALDECLARATIONS_H_
 
-#include "ipxactmodels_global.h"
+#include <IPXACTmodels/ipxactmodels_global.h>
 
 #include <QList>
 #include <QString>
@@ -23,48 +23,6 @@
 */
 namespace General
 {
-    /*!
-    * Provides the capability to require or forbid a port to appear in a
-    * bus interface.
-    */
-    enum Presence {
-        ILLEGAL,
-        REQUIRED,
-        OPTIONAL,
-        PRESENCE_UNKNOWN
-    };
-
-    /*! Convert the value of the QString into enum Presence
-    *
-    * if The str does not match any of the enum values the default value
-    * specifies as parameter will be returned
-    *
-    *      @param [in] str QString containing the string to be converted
-    *      @param [in] defaultValue The value that will be returned if no match is found
-    *
-    *      @return General::Presence that matches the str or default value.
-    */
-    IPXACTMODELS_EXPORT General::Presence str2Presence(QString str, General::Presence defaultValue);
-
-    /*! Convert the enum presence to QString.
-    *
-    *      @param [in] presence The enum value to be converted
-    *
-    *      @return QString matching the enum value.
-    */
-    IPXACTMODELS_EXPORT QString presence2Str(General::Presence presence);
-
-    /*! Convert the value of the QString into enum Presence
-    *
-    * if The str does not match any of the enum values the default value
-    * specifies as parameter will be returned
-    *
-    *      @param [in] str QString containing the string to be converted
-    *      @param [in] defaultValue The value that will be returned if no match is found
-    *      @return General::Presence that matches the str or default value.
-    */
-    IPXACTMODELS_EXPORT General::Presence str2Presence(QString str, General::Presence defaultValue);
-
     //! Describes the mode for an interface.
     enum InterfaceMode {
         MASTER = 0,

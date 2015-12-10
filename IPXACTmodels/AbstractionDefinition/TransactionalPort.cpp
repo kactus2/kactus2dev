@@ -18,7 +18,7 @@
 //-----------------------------------------------------------------------------
 TransactionalPort::TransactionalPort() : 
 systemGroup_(),
-    presence_(General::PRESENCE_UNKNOWN), 
+    presence_(PresenceTypes::UNKNOWN), 
     initiative_(), 
     kind_(), 
     busWidth_(),
@@ -71,7 +71,7 @@ QString TransactionalPort::getSystemGroup() const
 //-----------------------------------------------------------------------------
 // Function: TransactionalPort::Presence()
 //-----------------------------------------------------------------------------
-void TransactionalPort::setPresence(General::Presence presence)
+void TransactionalPort::setPresence(PresenceTypes::Presence presence)
 {
     presence_ = presence;
 }
@@ -79,7 +79,7 @@ void TransactionalPort::setPresence(General::Presence presence)
 //-----------------------------------------------------------------------------
 // Function: TransactionalPort::Presence()
 //-----------------------------------------------------------------------------
-General::Presence TransactionalPort::getPresence() const
+PresenceTypes::Presence TransactionalPort::getPresence() const
 {
     return presence_;
 }

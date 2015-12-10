@@ -11,7 +11,7 @@
 
 #include "WirePort.h"
 
-#include "TimingConstraint.h"
+#include <IPXACTmodels/common/TimingConstraint.h>
 
 #include <IPXACTmodels/common/CellSpecification.h>
 
@@ -20,7 +20,7 @@
 //-----------------------------------------------------------------------------
 WirePort::WirePort(): 
 systemGroupName_(),
-    presence_(General::PRESENCE_UNKNOWN), 
+    presence_(PresenceTypes::UNKNOWN), 
     width_(),
     direction_(DirectionTypes::DIRECTION_INVALID),
     timingConstraint_(),
@@ -108,7 +108,7 @@ QString WirePort::getSystemGroup() const
 //-----------------------------------------------------------------------------
 // Function: WirePort::setPresence()
 //-----------------------------------------------------------------------------
-void WirePort::setPresence(General::Presence presence)
+void WirePort::setPresence(PresenceTypes::Presence presence)
 {
     presence_ = presence;
 }
@@ -116,7 +116,7 @@ void WirePort::setPresence(General::Presence presence)
 //-----------------------------------------------------------------------------
 // Function: WirePort::getPresence()
 //-----------------------------------------------------------------------------
-General::Presence WirePort::getPresence() const
+PresenceTypes::Presence WirePort::getPresence() const
 {
     return presence_;
 }
