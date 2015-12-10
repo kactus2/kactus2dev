@@ -123,8 +123,7 @@ void DocumentReader::parseKactusAndVendorExtensions(QDomNode const& documentNode
         document->setVersion(versionNode.firstChild().nodeValue());
     }
 
-    QDomNode attributesNode = 
-        extensionNodes.firstChildElement("kactus2:extensions").firstChildElement("kactus2:kts_attributes");
+    QDomNode attributesNode = extensionNodes.firstChildElement("kactus2:kts_attributes");
     if (!attributesNode.isNull())
     {
         parseKactusAttributes(attributesNode, document);

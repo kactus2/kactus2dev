@@ -14,7 +14,6 @@ HEADERS += ../../../IPXACTmodels/Component/AbstractionType.h \
     ../../../IPXACTmodels/kactusExtensions/ApiInterface.h \
     ../../../IPXACTmodels/common/Array.h \
     ../../../IPXACTmodels/common/Assertion.h \
-    ../../../IPXACTmodels/kactusExtensions/BSPBuildCommand.h \
     ../../../IPXACTmodels/common/BooleanValue.h \
     ../../../IPXACTmodels/Component/BuildCommand.h \
     ../../../IPXACTmodels/common/BuildModel.h \
@@ -70,7 +69,6 @@ HEADERS += ../../../IPXACTmodels/Component/AbstractionType.h \
     ../../../IPXACTmodels/Component/RegisterFile.h \
     ../../../IPXACTmodels/Component/RemapPort.h \
     ../../../IPXACTmodels/Component/RemapState.h \
-    ../../../IPXACTmodels/kactusExtensions/SWFileBuilder.h \
     ../../../IPXACTmodels/kactusExtensions/SWView.h \
     ../../../IPXACTmodels/Component/Segment.h \
     ../../../IPXACTmodels/Component/SlaveInterface.h \
@@ -83,12 +81,10 @@ HEADERS += ../../../IPXACTmodels/Component/AbstractionType.h \
     ../../../IPXACTmodels/Component/Wire.h \
     ../../../IPXACTmodels/Component/WireTypeDef.h \
     ../../../IPXACTmodels/XmlUtils.h \
-    ../../../IPXACTmodels/bspbuildcommand.h \
     ../../../IPXACTmodels/Component/channel.h \
     ../../../IPXACTmodels/Component/choice.h \
     ../../../IPXACTmodels/Component/cpu.h \
     ../../../IPXACTmodels/generaldeclarations.h \
-    ../../../IPXACTmodels/swbuildcommand.h \
     ../../../IPXACTmodels/Component/AddressBlockReader.h \
     ../../../IPXACTmodels/Component/AddressSpaceReader.h \
     ../../../IPXACTmodels/Component/BusInterfaceReader.h \
@@ -116,8 +112,12 @@ HEADERS += ../../../IPXACTmodels/Component/AbstractionType.h \
     ../../../IPXACTmodels/Component/RegisterReader.h \
     ../../../IPXACTmodels/Component/RemapStateReader.h \
     ../../../IPXACTmodels/Component/ViewReader.h \
+    ../../../IPXACTmodels/kactusExtensions/BSPBuildCommand.h \
+    ../../../IPXACTmodels/kactusExtensions/SWFileBuilder.h \
     ../../../IPXACTmodels/common/AccessTypes.h
-SOURCES += ../../../IPXACTmodels/Component/AbstractionType.cpp \
+SOURCES += ../../../IPXACTmodels/kactusExtensions/BSPBuildCommand.cpp \
+    ../../../IPXACTmodels/kactusExtensions/SWFileBuilder.cpp \
+    ../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../IPXACTmodels/Component/AddressBlock.cpp \
     ../../../IPXACTmodels/Component/AddressBlockReader.cpp \
     ../../../IPXACTmodels/Component/AddressSpace.cpp \
@@ -126,7 +126,6 @@ SOURCES += ../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../IPXACTmodels/kactusExtensions/ApiInterface.cpp \
     ../../../IPXACTmodels/common/Array.cpp \
     ../../../IPXACTmodels/common/Assertion.cpp \
-    ../../../IPXACTmodels/kactusExtensions/BSPBuildCommand.cpp \
     ../../../IPXACTmodels/common/BooleanValue.cpp \
     ../../../IPXACTmodels/Component/BuildCommand.cpp \
     ../../../IPXACTmodels/common/BuildModel.cpp \
@@ -206,7 +205,6 @@ SOURCES += ../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../IPXACTmodels/Component/RemapPort.cpp \
     ../../../IPXACTmodels/Component/RemapState.cpp \
     ../../../IPXACTmodels/Component/RemapStateReader.cpp \
-    ../../../IPXACTmodels/kactusExtensions/SWFileBuilder.cpp \
     ../../../IPXACTmodels/kactusExtensions/SWView.cpp \
     ../../../IPXACTmodels/Component/Segment.cpp \
     ../../../IPXACTmodels/Component/SlaveInterface.cpp \

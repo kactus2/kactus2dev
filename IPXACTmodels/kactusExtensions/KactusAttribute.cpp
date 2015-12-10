@@ -78,7 +78,6 @@ QString KactusAttribute::type() const
 //-----------------------------------------------------------------------------
 void KactusAttribute::write(QXmlStreamWriter& writer) const
 {
-    writer.writeStartElement("kactus2:extensions");
     writer.writeStartElement("kactus2:kts_attributes");
 
     if (productHierarchy_ != KTS_PRODHIER_COUNT)
@@ -97,7 +96,6 @@ void KactusAttribute::write(QXmlStreamWriter& writer) const
     }
 
     writer.writeEndElement(); // kactus2:kts_attributes
-    writer.writeEndElement(); // kactus2:extensions
 }
 
 //-----------------------------------------------------------------------------
