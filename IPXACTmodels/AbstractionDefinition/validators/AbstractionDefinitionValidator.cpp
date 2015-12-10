@@ -74,7 +74,7 @@ bool AbstractionDefinitionValidator::validate(QSharedPointer<AbstractionDefiniti
 	// Any parameters must be valid.
 	foreach ( QSharedPointer<Parameter> currentPara, *abstractionDefinition->getParameters() )
 	{
-		if ( !paraVali.hasValidValue( currentPara.data() ) )
+		if ( !paraVali.hasValidValue( currentPara ) )
 		{
 			return false;
 		}
@@ -92,7 +92,7 @@ bool AbstractionDefinitionValidator::validate(QSharedPointer<AbstractionDefiniti
 	// Validate each logical port.
 	foreach ( QSharedPointer<PortAbstraction> port, *abstractionDefinition->getLogicalPorts() )
 	{
-		if ( !isValidPortAbstraction(port, parser, logicalNames) )
+		if ( !isValidPortAbstraction(port, parser, logicalNames, abstractionDefinition->getLogicalPorts()) )
 		{
 			return false;
 		}
@@ -152,7 +152,7 @@ void AbstractionDefinitionValidator::findErrorsIn(QVector<QString>& errors,
 	// Validate each logical port.
 	foreach ( QSharedPointer<PortAbstraction> port, *abstractionDefinition->getLogicalPorts() )
 	{
-		findErrorsInPortAbstraction(errors, context, port,parser,logicalNames);
+		findErrorsInPortAbstraction(errors, context, port,parser,logicalNames, abstractionDefinition->getLogicalPorts());
 	}
 }
 
@@ -160,7 +160,8 @@ void AbstractionDefinitionValidator::findErrorsIn(QVector<QString>& errors,
 // Function: AbstractionDefinitionValidator::isValidPortAbstraction()
 //-----------------------------------------------------------------------------
 bool AbstractionDefinitionValidator::isValidPortAbstraction(QSharedPointer<PortAbstraction> port,
-	QSharedPointer<ExpressionParser> parser, QSet<QString>& logicalNames) const
+	QSharedPointer<ExpressionParser> parser, QSet<QString>& logicalNames,
+	QSharedPointer<QList<QSharedPointer<PortAbstraction> > > ports) const
 {
 	// The name must be non-empty.
 	if ( !hasValidName( port->getLogicalName() ) )
@@ -201,8 +202,8 @@ bool AbstractionDefinitionValidator::isValidPortAbstraction(QSharedPointer<PortA
 		}
 
 		// Master and slave ports must be valid if exist.
-		if ( !isValidWirePort(wire->getMasterPort(), parser, logicalNames) || 
-			!isValidWirePort(wire->getSlavePort(), parser, logicalNames) )
+		if ( !isValidWirePort(wire->getMasterPort(), parser, ports) || 
+			!isValidWirePort(wire->getSlavePort(), parser, ports) )
 		{
 			return false;
 		}
@@ -210,7 +211,7 @@ bool AbstractionDefinitionValidator::isValidPortAbstraction(QSharedPointer<PortA
 		// System ports must be valid if exist.
 		foreach( QSharedPointer<WirePort> wirePort, *wire->getSystemPorts() )
 		{
-			if ( !isValidWirePort(wirePort, parser, logicalNames) )
+			if ( !isValidWirePort(wirePort, parser, ports) )
 			{
 				return false;
 			}
@@ -242,7 +243,7 @@ bool AbstractionDefinitionValidator::isValidPortAbstraction(QSharedPointer<PortA
 //-----------------------------------------------------------------------------
 void AbstractionDefinitionValidator::findErrorsInPortAbstraction(QVector<QString>& errors,
 	QString const& context, QSharedPointer<PortAbstraction> port, QSharedPointer<ExpressionParser> parser,
-	QSet<QString>& logicalNames) const
+	QSet<QString>& logicalNames, QSharedPointer<QList<QSharedPointer<PortAbstraction> > > ports) const
 {
 	// The name must be non-empty.
 	if ( !hasValidName( port->getLogicalName() ) )
@@ -289,13 +290,13 @@ void AbstractionDefinitionValidator::findErrorsInPortAbstraction(QVector<QString
 		}
 
 		// Master and slave ports must be valid if exist.
-		findErrorsInWirePort(errors, wire->getMasterPort(), context, parser, logicalNames);
-		findErrorsInWirePort(errors, wire->getSlavePort(), context, parser, logicalNames);
+		findErrorsInWirePort(errors, wire->getMasterPort(), context, parser, ports);
+		findErrorsInWirePort(errors, wire->getSlavePort(), context, parser, ports);
 
 		// System ports must be valid if exist.
 		foreach( QSharedPointer<WirePort> wirePort, *wire->getSystemPorts() )
 		{
-			findErrorsInWirePort(errors, wirePort, context, parser, logicalNames);
+			findErrorsInWirePort(errors, wirePort, context, parser, ports);
 		}
 	}
 
@@ -425,7 +426,7 @@ void AbstractionDefinitionValidator::findErrorsInTransactionalPort(QVector<QStri
 // Function: AbstractionDefinitionValidator::isValidWirePort()
 //-----------------------------------------------------------------------------
 bool AbstractionDefinitionValidator::isValidWirePort(QSharedPointer<WirePort> wirePort,
-	QSharedPointer<ExpressionParser> parser, QSet<QString>& logicalNames) const
+	QSharedPointer<ExpressionParser> parser, QSharedPointer<QList<QSharedPointer<PortAbstraction> > > ports) const
 {
 	// Since this is an optional element, it may be excluded.
 	if ( !wirePort )
@@ -457,7 +458,7 @@ bool AbstractionDefinitionValidator::isValidWirePort(QSharedPointer<WirePort> wi
 	}
 
 	// Any existing constraints must be valid.
-	if ( !validateConstraints(wirePort, logicalNames) )
+	if ( !validateConstraints(wirePort, ports) )
 	{
 		return false;
 	}
@@ -470,7 +471,7 @@ bool AbstractionDefinitionValidator::isValidWirePort(QSharedPointer<WirePort> wi
 //-----------------------------------------------------------------------------
 void AbstractionDefinitionValidator::findErrorsInWirePort(QVector<QString>& errors,
 	QSharedPointer<WirePort> wirePort, QString const& context, QSharedPointer<ExpressionParser> parser,
-	QSet<QString>& logicalNames) const
+	QSharedPointer<QList<QSharedPointer<PortAbstraction> > > ports) const
 {
 	// Since this is an optional element, it may be excluded.
 	if ( !wirePort )
@@ -501,13 +502,14 @@ void AbstractionDefinitionValidator::findErrorsInWirePort(QVector<QString>& erro
 	}
 
 	// Any existing constraints must be valid.
-	findErrorsInConstraints(errors,wirePort,context,logicalNames);
+	findErrorsInConstraints(errors,wirePort,context, ports);
 }
 
 //-----------------------------------------------------------------------------
 // Function: AbstractionDefinitionValidator::validateConstraints()
 //-----------------------------------------------------------------------------
-bool AbstractionDefinitionValidator::validateConstraints(QSharedPointer<WirePort> wirePort, QSet<QString>& logicalNames) const
+bool AbstractionDefinitionValidator::validateConstraints(QSharedPointer<WirePort> wirePort,
+	QSharedPointer<QList<QSharedPointer<PortAbstraction> > > ports) const
 {
 	// Validate timing constraints.
 	TimingConstraintValidator timeConstVal;
@@ -516,7 +518,7 @@ bool AbstractionDefinitionValidator::validateConstraints(QSharedPointer<WirePort
 
 	if ( timing )
 	{
-		if ( !timeConstVal.validate(timing,logicalNames) )
+		if ( !timeConstVal.validate(timing,ports) )
 		{
 			return false;
 		}
@@ -526,7 +528,7 @@ bool AbstractionDefinitionValidator::validateConstraints(QSharedPointer<WirePort
 
 	if ( timingMirrored )
 	{
-		if ( !timeConstVal.validate(timingMirrored,logicalNames) )
+		if ( !timeConstVal.validate(timingMirrored,ports) )
 		{
 			return false;
 		}
@@ -583,7 +585,8 @@ bool AbstractionDefinitionValidator::validateConstraints(QSharedPointer<WirePort
 // Function: AbstractionDefinitionValidator::findErrorsInConstraints()
 //-----------------------------------------------------------------------------
 void AbstractionDefinitionValidator::findErrorsInConstraints(QVector<QString>& errors,
-	QSharedPointer<WirePort> wirePort, QString const& context, QSet<QString>& logicalNames) const
+	QSharedPointer<WirePort> wirePort, QString const& context,
+	QSharedPointer<QList<QSharedPointer<PortAbstraction> > > ports) const
 {
 	// Validate timing constraints.
 	TimingConstraintValidator timeConstVal;
@@ -592,14 +595,14 @@ void AbstractionDefinitionValidator::findErrorsInConstraints(QVector<QString>& e
 
 	if ( timing )
 	{
-		timeConstVal.findErrorsIn(errors,timing,context,logicalNames);
+		timeConstVal.findErrorsIn(errors,timing,context,ports);
 	}
 
 	QSharedPointer<TimingConstraint> timingMirrored = wirePort->getMirroredTimingConstraint();
 
 	if ( timingMirrored )
 	{
-		timeConstVal.findErrorsIn(errors,timingMirrored,context,logicalNames);
+		timeConstVal.findErrorsIn(errors,timingMirrored,context,ports);
 	}
 
 	// Validate driver constraints.

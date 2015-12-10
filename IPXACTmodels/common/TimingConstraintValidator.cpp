@@ -34,7 +34,7 @@ TimingConstraintValidator::~TimingConstraintValidator()
 // Function: TimingConstraintValidator::validateInstantiation()
 //-----------------------------------------------------------------------------
 bool TimingConstraintValidator::validate(QSharedPointer<TimingConstraint> timingConstraint,
-	QSet<QString>& portNames) const
+	QSharedPointer<QList<QSharedPointer<PortAbstraction> > > ports) const
 {
 	if ( !hasValidValue(timingConstraint) || !hasValidEdge(timingConstraint) )
 	{
@@ -42,9 +42,9 @@ bool TimingConstraintValidator::validate(QSharedPointer<TimingConstraint> timing
 	}
 
 	// Must refer to a logical port.
-	foreach ( QString port, portNames )
+	foreach ( QSharedPointer<PortAbstraction> port, *ports )
 	{
-		if ( port == timingConstraint->getClockName() )
+		if ( port->getLogicalName() == timingConstraint->getClockName() )
 		{
 			return true;
 		}
@@ -57,7 +57,7 @@ bool TimingConstraintValidator::validate(QSharedPointer<TimingConstraint> timing
 // Function: TimingConstraintValidator::findErrorsIn()
 //-----------------------------------------------------------------------------
 void TimingConstraintValidator::findErrorsIn(QVector<QString>& errors,
-	QSharedPointer<TimingConstraint> timingConstraint, QString const&, QSet<QString>& ports) const
+	QSharedPointer<TimingConstraint> timingConstraint, QString const& contex, QSharedPointer<QList<QSharedPointer<PortAbstraction> > > ports) const
 {
 	if ( !hasValidValue(timingConstraint) )
 	{
@@ -70,9 +70,9 @@ void TimingConstraintValidator::findErrorsIn(QVector<QString>& errors,
 	}
 
 	// Must refer to a logical port.
-	foreach ( QString port, ports )
+	foreach ( QSharedPointer<PortAbstraction> port, *ports )
 	{
-		if ( port == timingConstraint->getClockName() )
+		if ( port->getLogicalName() == timingConstraint->getClockName() )
 		{
 			return;
 		}

@@ -20,6 +20,7 @@
 #include <QVector>
 #include <QSet>
 #include <QSharedPointer>
+#include "../AbstractionDefinition/PortAbstraction.h"
 
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:TimingConstraint.
@@ -40,21 +41,24 @@ public:
     /*!
      *  Validates the given TimingConstraint.
      *
-     *      @param [in] TimingConstraint           The TimingConstraint to validate.
+	 *      @param [in] TimingConstraint           The TimingConstraint to validate.
+	 *      @param [in] ports     Collection ports where the constraint belongs to.
      *
      *      @return True, if the TimingConstraint is valid IP-XACT, otherwise false.
      */
-    virtual bool validate(QSharedPointer<TimingConstraint> timingConstraint, QSet<QString>& portNames) const;
+    virtual bool validate(QSharedPointer<TimingConstraint> timingConstraint,
+		QSharedPointer<QList<QSharedPointer<PortAbstraction> > > ports) const;
 
     /*!
      *  Finds possible errors in a TimingConstraint and creates a list of them.
      *
      *      @param [in] errors      List of found errors.
      *      @param [in] TimingConstraint   The TimingConstraint whose errors to find.
-     *      @param [in] context     Context to help locate the errors.
+	 *      @param [in] context     Context to help locate the errors.
+	 *      @param [in] ports     Collection ports where the constraint belongs to.
      */
     virtual void findErrorsIn(QVector<QString>& errors, QSharedPointer<TimingConstraint> timingConstraint,
-		QString const& contex, QSet<QString>& ports ) const;
+		QString const& contex, QSharedPointer<QList<QSharedPointer<PortAbstraction> > > ports ) const;
 
 private:
 

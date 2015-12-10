@@ -70,9 +70,10 @@ private:
 	 *      @param [in] port			The PortAbstraction to validate.		
 	 *      @param [in] parser			Expression parser.
 	 *      @param [in] logicalNames	Logical names of ports of the abstraction definition, where port is.
+	 *      @param [in] ports			Collection of ports within the abstraction definition.
 	 */
 	bool isValidPortAbstraction(QSharedPointer<PortAbstraction> port, QSharedPointer<ExpressionParser> parser,
-		QSet<QString>& logicalNames) const;
+		QSet<QString>& logicalNames, QSharedPointer<QList<QSharedPointer<PortAbstraction> > > ports) const;
 
 	/*!
 	*   Finds possible errors in a PortAbstraction and creates a list of them.
@@ -82,10 +83,11 @@ private:
 	 *      @param [in] context			Context to help locate the errors.
 	 *      @param [in] parser			Expression parser.
 	 *      @param [in] logicalNames	Logical names of ports of the abstraction definition, where port is.
+	 *      @param [in] ports			Collection of ports within the abstraction definition.
 	 */
 	void findErrorsInPortAbstraction(QVector<QString>& errors, QString const& context,
 		QSharedPointer<PortAbstraction> port, QSharedPointer<ExpressionParser> parser,
-		QSet<QString>& logicalNames) const;
+		QSet<QString>& logicalNames, QSharedPointer<QList<QSharedPointer<PortAbstraction> > > ports) const;
 
 	/*!
 	 *  Validates the given TransactionalPort.
@@ -112,12 +114,11 @@ private:
 	 *
 	 *      @param [in] wirePort			The WirePort to validate.
 	 *      @param [in] parser				Expression parser.
-	 *      @param [in] logicalNames		Logical names of ports of the abstraction definition, where wirePort is.
+	 *      @param [in] ports				Collection of ports within the abstraction definition.
 	 *
 	 *      @return True, if the WirePort is valid IP-XACT, otherwise false.
 	 */
-	bool isValidWirePort(QSharedPointer<WirePort> wirePort, QSharedPointer<ExpressionParser> parser,
-		QSet<QString>& logicalNames) const;
+	bool isValidWirePort(QSharedPointer<WirePort> wirePort, QSharedPointer<ExpressionParser> parser, QSharedPointer<QList<QSharedPointer<PortAbstraction> > > ports) const;
 	
 	/*!
 	 *   Finds possible errors in a WirePort and creates a list of them.
@@ -126,18 +127,18 @@ private:
 	 *      @param [in] wirePort	The WirePort whose errors to find.
 	 *      @param [in] context     Context to help locate the errors.
 	 *      @param [in] parser		Expression parser.
-	 *      @param [in] logicalNames	Logical names of ports of the abstraction definition, where wirePort is.
+	 *      @param [in] ports		Collection of ports within the abstraction definition.
 	 */
 	void findErrorsInWirePort(QVector<QString>& errors, QSharedPointer<WirePort> wirePort, QString const& context,
-		QSharedPointer<ExpressionParser> parser, QSet<QString>& logicalNames) const;
+		QSharedPointer<ExpressionParser> parser, QSharedPointer<QList<QSharedPointer<PortAbstraction> > > ports) const;
 
 	/*!
 	 *  Validates the constraints of parameter wirePort.
 	 *
-	 *      @param [in] wirePort		
-	 *      @param [in] logicalNames		
+	 *      @param [in] wirePort		The WirePort to validate.
+	 *      @param [in] ports			Collection of ports within the abstraction definition.
 	 */
-	bool validateConstraints(QSharedPointer<WirePort> wirePort, QSet<QString>& logicalNames) const;
+	bool validateConstraints(QSharedPointer<WirePort> wirePort, QSharedPointer<QList<QSharedPointer<PortAbstraction> > > ports) const;
 
 	/*!
 	 *   Finds possible errors in constraints of parameter wirePort and creates a list of them.
@@ -145,10 +146,10 @@ private:
 	 *      @param [in] errors      List of found errors.
 	 *      @param [in] wirePort	The WirePort whose errors to find.
 	 *      @param [in] context     Context to help locate the errors.
-	 *      @param [in] logicalNames	Logical names of ports of the abstraction definition, where wirePort is.
+	 *      @param [in] ports		Collection of ports within the abstraction definition.
 	 */
 	void findErrorsInConstraints(QVector<QString>& errors, QSharedPointer<WirePort> wirePort, QString const& context,
-		QSet<QString>& logicalNames) const;
+		QSharedPointer<QList<QSharedPointer<PortAbstraction> > > ports) const;
 
     /*!
      *  Check if the name is valid.
