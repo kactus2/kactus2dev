@@ -88,7 +88,7 @@ ItemEditor* ComponentEditorAddrSpacesItem::editor()
 	if (!editor_)
     {
 		editor_ = new AddressSpacesEditor(component_, libHandler_, parameterFinder_, expressionFormatter_,
-            expressionParser_);
+            expressionParser_, spaceValidator_);
 		editor_->setProtection(locked_);
 
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
@@ -97,6 +97,9 @@ ItemEditor* ComponentEditorAddrSpacesItem::editor()
 		connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
 		connect(editor_, SIGNAL(selectBusInterface(const QString&)),
 			model_, SLOT(onSelectBusInterface(const QString&)), Qt::UniqueConnection);
+
+        connect(editor_, SIGNAL(aubChangedOnRow(int)),
+            this, SLOT(addressUnitBitsChangedInRow(int)), Qt::UniqueConnection);
 
         connectItemEditorToReferenceCounter();
 	}
@@ -143,4 +146,18 @@ void ComponentEditorAddrSpacesItem::createAddressSpaceValidator()
         new AddressSpaceValidator(expressionParser_, localMapValidator, parameterValidator));
 
     spaceValidator_ = addressSpaceValidator;
+}
+
+//-----------------------------------------------------------------------------
+// Function: componenteditoraddrspacesitem::addressUnitBitsChangedInRow()
+//-----------------------------------------------------------------------------
+void ComponentEditorAddrSpacesItem::addressUnitBitsChangedInRow(int spaceIndex)
+{
+    QSharedPointer<ComponentEditorAddrSpaceItem> childSpace = 
+        qobject_cast<QSharedPointer<ComponentEditorAddrSpaceItem> > ( child(spaceIndex) );
+
+    if (!childSpace.isNull())
+    {
+        childSpace->changeAdressUnitBitsOnAddressBlocks();
+    }
 }

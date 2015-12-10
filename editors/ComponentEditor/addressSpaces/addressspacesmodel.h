@@ -20,6 +20,8 @@
 class ExpressionFormatter;
 class Component;
 class AddressSpace;
+
+class AddressSpaceValidator;
 //-----------------------------------------------------------------------------
 //! The model class to manage the objects for address spaces editor.
 //-----------------------------------------------------------------------------
@@ -32,14 +34,16 @@ public:
    /*!
     *   The constructor.
     *
-    *      @param [in] component            The component being edited.
-    *      @param [in] parameterFinder      The finder for available parameter names.
-    *      @param [in] expressionFormatter  Formatter for expressions.
-    *      @param [in] parent               The owner of the model.
+    *       @param [in] component               The component being edited.
+    *       @param [in] parameterFinder         The finder for available parameter names.
+    *       @param [in] expressionFormatter     Formatter for expressions.
+    *       @param [in] addressSpaceValidator   Validator used for address spaces.
+    *       @param [in] parent                  The owner of the model.
 	*/
 	AddressSpacesModel(QSharedPointer<Component> component,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QSharedPointer<AddressSpaceValidator> addressSpaceValidator,
 		QObject *parent);
 	
 	//! The destructor.
@@ -104,13 +108,6 @@ public:
 	 */
 	bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
 
-	/*!
-     *  Check if the AddressSpaceModel is in a valid state.
-	 *
-	 *      @return bool True if the state is valid and writing is possible.
-	 */
-	bool isValid() const;
-
 public slots:
 
 	/*!
@@ -145,6 +142,13 @@ signals:
 	 *      @param [in] index The index of the remove file set.
 	 */
 	void addrSpaceRemoved(int index);
+
+    /*!
+     *  Emitted when address unit bits are changed in an address space.
+     *
+     *      @param [in] addressSpaceindex   Index of the target address space.
+     */
+    void aubChangedOnRow(int addressSpaceindex);
 
 protected:
     
@@ -206,6 +210,9 @@ private:
 
     //! Expression formatter.
     QSharedPointer<ExpressionFormatter> expressionFormatter_;
+
+    //! The used address space validator.
+    QSharedPointer<AddressSpaceValidator> addressSpaceValidator_;
 };
 
 #endif // ADDRESSSPACESMODEL_H

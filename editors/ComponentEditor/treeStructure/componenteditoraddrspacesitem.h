@@ -88,6 +88,15 @@ public:
 	 */
 	virtual void createChild(int index);
 
+private slots:
+
+    /*!
+     *  Emitted when address unit bits change on an address space.
+     *
+     *      @param [in] spaceIndex  Index of the address space being changed.
+     */
+    void addressUnitBitsChangedInRow(int spaceIndex);
+
 private:
 
 	//! No copying.

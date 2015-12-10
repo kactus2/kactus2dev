@@ -29,6 +29,7 @@ class LibraryInterface;
 class Component;
 class AddressSpace;
 
+class AddressSpaceValidator;
 //-----------------------------------------------------------------------------
 //! Editor to edit and save settings of an address space within component editor.
 //-----------------------------------------------------------------------------
@@ -47,6 +48,7 @@ public:
 	 *      @param [in] parameterFinder         The parameter finder.
 	 *      @param [in] expressionFormatter     The expression formatter.
      *      @param [in] expressionParser        The expression parser to use.
+     *      @param [in] addressSpaceValidator   Validator used for address spaces.
 	 *      @param [in] parent                  The owner of this editor.
 	 */
 	AddressSpaceEditor(QSharedPointer<Component> component,
@@ -55,22 +57,25 @@ public:
         QSharedPointer <ParameterFinder> parameterFinder,
         QSharedPointer <ExpressionFormatter> expressionFormatter,
         QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<AddressSpaceValidator> addressSpaceValidator,
 		QWidget* parent = 0);
 	
 	//! The destructor.
 	virtual ~AddressSpaceEditor();
 
 	/*!
-     *  Check for the validity of the address space.
-	 * 
-	 *       @return True if address space is valid and can be saved.
-	 */
-	virtual bool isValid() const;
-
-	/*!
      *  Reload the information from the model to the editor.
 	 */
 	virtual void refresh();
+
+signals:
+
+    /*!
+     *  Assign new address unit bits for address blocks.
+     *
+     *      @param [in] newAddressUnitBits  The new address unit bits.
+     */
+    void assignNewAddressUnitBits(QString const& newAddressUnitBits);
 
 protected:
 

@@ -27,6 +27,7 @@ class MemoryMapsModel;
 class Component;
 class MemoryMap;
 
+class MemoryMapValidator;
 //-----------------------------------------------------------------------------
 //! Editor for editing the memory maps of a component.
 //-----------------------------------------------------------------------------
@@ -49,22 +50,17 @@ public:
 	 *      @param [in] component           Pointer to the component being edited.
 	 *      @param [in] parameterFinder     Pointer to the parameter finder.
 	 *      @param [in] handler             Pointer to the instance managing the library.
+     *      @param [in] memoryMapValidator  Validator used for memory maps.
 	 *      @param [in] parent              Pointer to the owner of this editor.
 	 */
 	MemoryMapsEditor(QSharedPointer<Component> component,
         QSharedPointer<ParameterFinder> parameterFinder,
 		LibraryInterface* handler, 
+        QSharedPointer<MemoryMapValidator> memoryMapValidator,
 		QWidget *parent = 0);
 	
 	//! The destructor.
 	virtual ~MemoryMapsEditor();
-
-	/*!
-     *  Check for the validity of the edited memory maps.
-	 *
-	 *      @True if all memory maps are in valid state.
-	 */
-	virtual bool isValid() const;
 
 	/*!
      *  Reload the information from the model to the editor.

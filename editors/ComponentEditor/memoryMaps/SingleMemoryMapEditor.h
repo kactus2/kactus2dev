@@ -26,6 +26,7 @@ class Component;
 class MemoryMap;
 class MemoryMapBase;
 class ExpressionParser;
+class MemoryMapBaseValidator;
 //-----------------------------------------------------------------------------
 //! Editor for editing the details of a single memory map.
 //-----------------------------------------------------------------------------
@@ -45,6 +46,7 @@ public:
      *      @param [in] parameterFinder         The finder for the parameter references.
      *      @param [in] expressionFormatter     Changes the referenced ids to parameter names.
      *      @param [in] expressionParser        The expression parser.
+     *      @param [in] memoryMapBaseValidator  Validator used for memory map base.
      *      @param [in] parent                  Pointer to the owner of this editor.
      */
     SingleMemoryMapEditor(QSharedPointer<Component> component,
@@ -54,19 +56,13 @@ public:
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<MemoryMapBaseValidator> memoryMapBaseValidator,
         QWidget* parent = 0);
 
     /*!
      *  The destructor.
      */
     virtual ~SingleMemoryMapEditor();
-
-    /*!
-	 *  Check for the validity of the edited remap state.
-	 *
-     *      @return True, if the remap state is valid, false otherwise.
-	 */
-	virtual bool isValid() const;
 
 	/*!
 	 *  Reload the information from the model to the editor.
@@ -107,6 +103,13 @@ signals:
      *  Informs contents of the change in address unit bits.
      */
     void addressUnitBitsChanged();
+
+    /*!
+     *  Emitted when address unit bits are changed for memory map.
+     *
+     *      @param [in] newAddressUnitBits  The new address unit bits.
+     */
+    void assignNewAddressUnitBits(QString const& newAddressUnitBits);
 
 private:
 
@@ -157,7 +160,6 @@ private:
 
     //! The parent of the memory remap.
     QSharedPointer<MemoryMap> parentMemoryMap_;
-
 };
 
 #endif // SINGLEMEMORYMAPEDITOR_H

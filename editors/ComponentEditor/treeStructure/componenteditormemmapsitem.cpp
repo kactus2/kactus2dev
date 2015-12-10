@@ -102,7 +102,7 @@ ItemEditor* ComponentEditorMemMapsItem::editor()
 {
 	if (!editor_)
     {
-		editor_ = new MemoryMapsEditor(component_, parameterFinder_, libHandler_);
+		editor_ = new MemoryMapsEditor(component_, parameterFinder_, libHandler_, memoryMapValidator_);
 		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(graphicsChanged()), this, SLOT(onGraphicsChanged()), Qt::UniqueConnection);

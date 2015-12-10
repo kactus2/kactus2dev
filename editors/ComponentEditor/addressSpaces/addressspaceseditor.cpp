@@ -29,14 +29,14 @@
 //-----------------------------------------------------------------------------
 // Function: AddressSpacesEditor::AddressSpacesEditor()
 //-----------------------------------------------------------------------------
-AddressSpacesEditor::AddressSpacesEditor(QSharedPointer<Component> component,
-    LibraryInterface* handler,
-    QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QSharedPointer<ExpressionParser> expressionParser):
+AddressSpacesEditor::AddressSpacesEditor(QSharedPointer<Component> component, LibraryInterface* handler,
+                                         QSharedPointer<ParameterFinder> parameterFinder,
+                                         QSharedPointer<ExpressionFormatter> expressionFormatter,
+                                         QSharedPointer<ExpressionParser> expressionParser,
+                                         QSharedPointer<AddressSpaceValidator> addressSpaceValidator):
 ItemEditor(component, handler),
-    view_(this),
-    model_(component, parameterFinder, expressionFormatter, this)
+view_(this),
+model_(component, parameterFinder, expressionFormatter, addressSpaceValidator, this)
 {
     model_.setExpressionParser(expressionParser);
 
@@ -93,6 +93,8 @@ ItemEditor(component, handler),
 
     connect(&model_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+
+    connect(&model_, SIGNAL(aubChangedOnRow(int)), this, SIGNAL(aubChangedOnRow(int)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -100,14 +102,6 @@ ItemEditor(component, handler),
 //-----------------------------------------------------------------------------
 AddressSpacesEditor::~AddressSpacesEditor()
 {
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressSpacesEditor::isValid()
-//-----------------------------------------------------------------------------
-bool AddressSpacesEditor::isValid() const
-{
-	return model_.isValid();
 }
 
 //-----------------------------------------------------------------------------

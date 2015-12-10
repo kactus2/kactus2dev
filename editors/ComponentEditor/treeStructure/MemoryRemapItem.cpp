@@ -24,8 +24,7 @@
 #include <IPXACTmodels/Component/MemoryBlockBase.h>
 #include <IPXACTmodels/Component/AddressBlock.h>
 
-#include <IPXACTmodels/Component/validators/MemoryMapBaseValidator.h>
-
+#include <IPXACTmodels/Component/validators/MemoryMapValidator.h>
 //-----------------------------------------------------------------------------
 // Function: MemoryRemapItem::MemoryRemapItem()
 //-----------------------------------------------------------------------------
@@ -34,7 +33,7 @@ MemoryRemapItem::MemoryRemapItem(QSharedPointer<MemoryMapBase> memoryRemap,
     QSharedPointer<Component> component, QSharedPointer<ReferenceCounter> referenceCounter,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
     QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<MemoryMapBaseValidator> memoryMapBaseValidator, ComponentEditorItem* parent):
+    QSharedPointer<MemoryMapValidator> memoryMapBaseValidator, ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 memoryRemap_(memoryRemap),
 parentMemoryMap_(parentMemoryMap),
@@ -42,7 +41,7 @@ memoryBlocks_(memoryRemap->getMemoryBlocks()),
 visualizer_(NULL),
 graphItem_(NULL),
 expressionParser_(expressionParser),
-memoryMapBaseValidator_(memoryMapBaseValidator)
+memoryMapValidator_(memoryMapBaseValidator)
 {
     setReferenceCounter(referenceCounter);
     setParameterFinder(parameterFinder);
@@ -106,15 +105,19 @@ QString MemoryRemapItem::text() const
 //-----------------------------------------------------------------------------
 bool MemoryRemapItem::isValid() const
 {
+    bool baseIsValid = memoryMapValidator_->MemoryMapBaseValidator::validate(
+        memoryRemap_, parentMemoryMap_->getAddressUnitBits());
+
     QSharedPointer<MemoryRemap> transformedMemoryRemap = memoryRemap_.dynamicCast<MemoryRemap>();
+
     if (transformedMemoryRemap)
     {
-//         return transformedMemoryRemap->isValid(component_->getChoices(), component_->getRemapStateNames());
+        return baseIsValid && !memoryMapValidator_->remapStateIsNotValid(transformedMemoryRemap);
     }
-
-//     return memoryRemap_->isValid(component_->getChoices());
-
-    return true;
+    else
+    {
+        return baseIsValid && memoryMapValidator_->hasValidAddressUnitBits(parentMemoryMap_);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -125,7 +128,7 @@ ItemEditor* MemoryRemapItem::editor()
     if (!editor_)
     {
         editor_ = new SingleMemoryMapEditor(component_, memoryRemap_, parentMemoryMap_, libHandler_,
-            parameterFinder_, expressionFormatter_, expressionParser_);
+            parameterFinder_, expressionFormatter_, expressionParser_, memoryMapValidator_);
         editor_->setProtection(locked_);
         
         connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
@@ -138,6 +141,9 @@ ItemEditor* MemoryRemapItem::editor()
 
         connect(editor_, SIGNAL(addressUnitBitsChanged()),
             this, SIGNAL(addressUnitBitsChanged()), Qt::UniqueConnection);
+
+        connect(this, SIGNAL(assignNewAddressUnitBits(QString const&)),
+            editor_, SIGNAL(assignNewAddressUnitBits(QString const&)), Qt::UniqueConnection);
 
         connectItemEditorToReferenceCounter();
     }
@@ -169,7 +175,7 @@ void MemoryRemapItem::createChild( int index )
     {
 		QSharedPointer<ComponentEditorAddrBlockItem> addrBlockItem (new ComponentEditorAddrBlockItem(
             addrBlock, model_, libHandler_, component_, referenceCounter_, parameterFinder_, expressionFormatter_,
-            expressionParser_, memoryMapBaseValidator_->getAddressBlockValidator(), this));
+            expressionParser_, memoryMapValidator_->getAddressBlockValidator(), this));
 		addrBlockItem->setLocked(locked_);
 
         int newAddressUnitBits = expressionParser_->parseExpression(parentMemoryMap_->getAddressUnitBits()).toInt();
@@ -258,13 +264,20 @@ void MemoryRemapItem::removeGraphicsItem()
 //-----------------------------------------------------------------------------
 void MemoryRemapItem::changeAdressUnitBitsOnAddressBlocks()
 {
+    QString addressUnitBits = parentMemoryMap_->getAddressUnitBits();
+
     foreach (QSharedPointer<ComponentEditorItem> childItem, childItems_)
     {
         QSharedPointer<ComponentEditorAddrBlockItem> castChildItem = 
             qobject_cast<QSharedPointer<ComponentEditorAddrBlockItem> >(childItem);
 
-        int newAddressUnitBits = expressionParser_->parseExpression(parentMemoryMap_->getAddressUnitBits()).toInt();
+        int newAddressUnitBits = expressionParser_->parseExpression(addressUnitBits).toInt();
         castChildItem->addressUnitBitsChanged(newAddressUnitBits);
+    }
+
+    if (editor_)
+    {
+        emit assignNewAddressUnitBits(addressUnitBits);
     }
 
     if (graphItem_)

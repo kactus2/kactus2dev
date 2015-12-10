@@ -121,12 +121,26 @@ public:
 	 */
 	virtual ItemVisualizer* visualizer();
 
+    /*!
+     *  Change the used address unit bits in the contained address blocks.
+     */
+    void changeAdressUnitBitsOnAddressBlocks();
+
 protected slots:
 
 	/*!
      *  Handler for editor's contentChanged signal.
 	 */
 	virtual void onGraphicsChanged();
+
+signals:
+
+    /*!
+     *  Assign new address unit bits to editor.
+     *
+     *      @param [in] newAddressUnitBits  The new address unit bits.
+     */
+    void assignNewAddressUnitBits(QString const& newAddressUnitBits);
 
 private:
 

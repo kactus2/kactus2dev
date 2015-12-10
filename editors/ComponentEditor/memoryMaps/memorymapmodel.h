@@ -27,6 +27,7 @@
 class Choice;
 class AddressBlock;
 
+class AddressBlockValidator;
 //-----------------------------------------------------------------------------
 //! The model to manage the details of a single memory map.
 //-----------------------------------------------------------------------------
@@ -40,17 +41,19 @@ public:
 	 *  The constructor.
 	 *
 	 *      @param [in] memoryRemap             Pointer to the memory remap being edited.
-	 *      @param [in] componentChoices        Choices in the containing component.
 	 *      @param [in] expressionParser        Pointer to the expression parser.
 	 *      @param [in] parameterFinder         Pointer to the parameter finder.
 	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
+     *      @param [in] addressBlockValidator   Validator used for address blocks.
+     *      @param [in] addressUnitBits         The current address unit bits.
 	 *      @param [in] parent                  Pointer to the owner of this model.
 	 */
 	MemoryMapModel(QSharedPointer<MemoryMapBase> memoryRemap,
-        QSharedPointer <QList<QSharedPointer<Choice> > > componentChoices,
         QSharedPointer <ExpressionParser> expressionParser,
         QSharedPointer <ParameterFinder> parameterFinder,
         QSharedPointer <ExpressionFormatter> expressionFormatter,
+        QSharedPointer<AddressBlockValidator> addressBlockValidator,
+        QString const& addressUnitBits,
 		QObject *parent);
 	
 	//! The destructor.
@@ -115,13 +118,6 @@ public:
 	 */
 	bool setData(QModelIndex const& index, const QVariant& value, int role = Qt::EditRole);
 
-	/*!
-     *  Check if the memory map model is in a valid state.
-	 *
-	 *      @return bool True if the state is valid and writing is possible.
-	 */
-	bool isValid() const;
-
 public slots:
 
 	/*!
@@ -137,6 +133,13 @@ public slots:
 	 *      @param [in] index   The index identifying the item to remove.
 	 */
 	virtual void onRemoveItem(QModelIndex const& index);
+
+    /*!
+     *  Change the current address unit bits.
+     *
+     *      @param [in] newAddressUnitBits  The new address unit bits.
+     */
+    void addressUnitBitsUpdated(QString const& newAddressUnitBits);
 
 protected:
 
@@ -231,14 +234,17 @@ private:
 	//! Pointer to the memory remap being edited.
     QSharedPointer<MemoryMapBase> memoryRemap_;
 
-    //! The choices available in the containing component;
-    QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices_;
-
-	//! \brief Contains the memory map items being edited.
+	//! Contains the memory map items being edited.
     QSharedPointer<QList<QSharedPointer<MemoryBlockBase> > > memoryBlocks;
 
     //! The expression formatter, changes referenced ids to parameter names.
     QSharedPointer <ExpressionFormatter> expressionFormatter_;
+
+    //! The used address block validator.
+    QSharedPointer<AddressBlockValidator> addressBlockValidator_;
+
+    //! The current address unit bits.
+    QString addressUnitBits_;
 };
 
 #endif // MEMORYMAPMODEL_H

@@ -22,6 +22,7 @@
 class LibraryInterface;
 class Component;
 
+class AddressSpaceValidator;
 //-----------------------------------------------------------------------------
 //! The editor to add/remove/edit address spaces of component.
 //-----------------------------------------------------------------------------
@@ -39,22 +40,17 @@ public:
      *      @param [in] parameterFinder         Finder for parameter names.
      *      @param [in] expressionFormatter     Formatter for expressions.
      *      @param [in] expressionParser        The expression parser to use.
+     *      @param [in] addressSpaceValidator   Validator used for address spaces.
 	 */
 	AddressSpacesEditor(QSharedPointer<Component> component,
 		 LibraryInterface* handler,
          QSharedPointer<ParameterFinder> parameterFinder,
          QSharedPointer<ExpressionFormatter> expressionFormatter,
-         QSharedPointer<ExpressionParser> expressionParser);
+         QSharedPointer<ExpressionParser> expressionParser,
+         QSharedPointer<AddressSpaceValidator> addressSpaceValidator);
 	
 	//! The destructor
 	~AddressSpacesEditor();
-
-	/*!
-     *  Check for the validity of the editor
-	 * 
-	 *       @return True if the editor is in valid state.
-	 */
-	virtual bool isValid() const;
 
 	/*!
      *  Reload the information from the model to the editor.
@@ -65,6 +61,13 @@ signals:
 
 	//! Emitted when a bus interface editor should be opened.
 	void selectBusInterface(const QString& interfaceName);
+
+    /*!
+     *  Emitted when address unit bits change on the given row.
+     *
+     *      @param [in] spaceIndex  The index of the address space where address unit bits were changed.
+     */
+    void aubChangedOnRow(int spaceIndex) const;
 
 protected:
 

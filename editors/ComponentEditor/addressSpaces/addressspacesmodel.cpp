@@ -21,20 +21,25 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/AddressSpace.h>
 
+#include <IPXACTmodels/Component/validators/AddressSpaceValidator.h>
+
 #include <QColor>
 #include <QRegularExpression>
 
 //-----------------------------------------------------------------------------
 // Function: AddressSpacesModel::AddressSpacesModel()
 //-----------------------------------------------------------------------------
-AddressSpacesModel::AddressSpacesModel(QSharedPointer<Component> component, 
+AddressSpacesModel::AddressSpacesModel(QSharedPointer<Component> component,
                                        QSharedPointer<ParameterFinder> parameterFinder,
-                                       QSharedPointer<ExpressionFormatter> expressionFormatter, QObject *parent):
+                                       QSharedPointer<ExpressionFormatter> expressionFormatter,
+                                       QSharedPointer<AddressSpaceValidator> addressSpaceValidator,
+                                       QObject *parent):
 ReferencingTableModel(parameterFinder, parent),
 ParameterizableTable(parameterFinder),
 component_(component),
 addressSpaces_(component->getAddressSpaces()),
-expressionFormatter_(expressionFormatter)
+expressionFormatter_(expressionFormatter),
+addressSpaceValidator_(addressSpaceValidator)
 {
 
 }
@@ -227,6 +232,7 @@ bool AddressSpacesModel::setData(QModelIndex const& index, QVariant const& value
         else if (index.column() == AddressSpaceColumns::AUB)
         {
             addressSpaces_->at(index.row())->setAddressUnitBits(value.toString());
+            emit aubChangedOnRow(index.row());
         }
         else if (index.column() == AddressSpaceColumns::WIDTH)
         {
@@ -305,23 +311,6 @@ void AddressSpacesModel::onRemoveItem(QModelIndex const& index )
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressSpacesModel::isValid()
-//-----------------------------------------------------------------------------
-bool AddressSpacesModel::isValid() const
-{
-	// if at least one address space is invalid
-	foreach (QSharedPointer<AddressSpace> addrSpace, *addressSpaces_) 
-    {
-		/*if (!addrSpace->isValid(component_->getChoices(), component_->getRemapStateNames()))
-        {
-			return false;
-		}*/
-	}
-	// all address spaces were valid
-	return true;
-}
-
-//-----------------------------------------------------------------------------
 // Function: AddressSpacesModel::isValidExpressionColumn()
 //-----------------------------------------------------------------------------
 bool AddressSpacesModel::isValidExpressionColumn(QModelIndex const& index) const
@@ -380,9 +369,23 @@ QVariant AddressSpacesModel::expressionOrValueForIndex(QModelIndex const& index)
 //-----------------------------------------------------------------------------
 bool AddressSpacesModel::validateIndex(QModelIndex const& index) const
 {
-    if (isValidExpressionColumn(index))
+    QSharedPointer<AddressSpace> currentSpace = addressSpaces_->at(index.row());
+
+    if (index.column() == AddressSpaceColumns::NAME)
     {
-        return isValuePlainOrExpression(expressionOrValueForIndex(index).toString());
+        return addressSpaceValidator_->hasValidName(currentSpace->name());
+    }
+    else if (index.column() == AddressSpaceColumns::AUB)
+    {
+        return addressSpaceValidator_->hasValidAddressUnitBits(currentSpace);
+    }
+    else if (index.column() == AddressSpaceColumns::RANGE)
+    {
+        return addressSpaceValidator_->hasValidRange(currentSpace);
+    }
+    else if (index.column() == AddressSpaceColumns::WIDTH)
+    {
+        return addressSpaceValidator_->hasValidWidth(currentSpace);
     }
     else
     {

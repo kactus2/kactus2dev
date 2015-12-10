@@ -19,6 +19,8 @@
 #include <IPXACTmodels/Component/AddressBlock.h>
 #include <IPXACTmodels/generaldeclarations.h>
 
+#include <IPXACTmodels/Component/validators/AddressBlockValidator.h>
+
 #include <QColor>
 #include <QRegularExpression>
 
@@ -26,17 +28,18 @@
 // Function: MemoryMapModel::MemoryMapModel()
 //-----------------------------------------------------------------------------
 MemoryMapModel::MemoryMapModel(QSharedPointer<MemoryMapBase> memoryRemap,
-    QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
-    QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QObject *parent):
+                               QSharedPointer<ExpressionParser> expressionParser,
+                               QSharedPointer<ParameterFinder> parameterFinder,
+                               QSharedPointer<ExpressionFormatter> expressionFormatter,
+                               QSharedPointer<AddressBlockValidator> addressBlockValidator,
+                               QString const& addressUnitBits, QObject *parent):
 ReferencingTableModel(parameterFinder, parent),
 ParameterizableTable(parameterFinder),
 memoryRemap_(memoryRemap),
-componentChoices_(componentChoices),
 memoryBlocks(memoryRemap->getMemoryBlocks()),
-expressionFormatter_(expressionFormatter)
+expressionFormatter_(expressionFormatter),
+addressBlockValidator_(addressBlockValidator),
+addressUnitBits_(addressUnitBits)
 {
     setExpressionParser(expressionParser);
 
@@ -188,14 +191,7 @@ QVariant MemoryMapModel::data(QModelIndex const& index, int role) const
 
 	else if (role == Qt::ForegroundRole)
     {
-        /*if (memoryBlocks->at(index.row())->isValid(componentChoices_))
-        {*/
         return blackForValidOrRedForInvalidIndex(index);
-        /*}
-        else
-        {
-            return QColor("red");
-        }*/
     }
     else if (role == Qt::BackgroundRole)
     {
@@ -336,18 +332,11 @@ bool MemoryMapModel::setData(QModelIndex const& index, QVariant const& value, in
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryMapModel::isValid()
+// Function: memorymapmodel::addressUnitBitsUpdated()
 //-----------------------------------------------------------------------------
-bool MemoryMapModel::isValid() const
+void MemoryMapModel::addressUnitBitsUpdated(QString const& newAddressUnitBits)
 {
-	foreach (QSharedPointer<MemoryBlockBase> memItem, *memoryBlocks)
-    {
-/*		if (!memItem->isValid(componentChoices_)) 
-        {
-			return false;
-		}*/
-	}
-	return true;
+    addressUnitBits_ = newAddressUnitBits;
 }
 
 //-----------------------------------------------------------------------------
@@ -506,24 +495,31 @@ QVariant MemoryMapModel::expressionOrValueForIndex(QModelIndex const& index) con
 //-----------------------------------------------------------------------------
 bool MemoryMapModel::validateIndex(QModelIndex const& index) const
 {
-    if (index.column() == MemoryMapColumns::BASE_COLUMN)
+    QSharedPointer<AddressBlock> addressBlock = memoryBlocks->at(index.row()).dynamicCast<AddressBlock>();
+    if (!addressBlock)
     {
-        QString baseAddress = memoryBlocks->at(index.row())->getBaseAddress();
-        return isValuePlainOrExpression(baseAddress);
+        return false;
     }
 
-    QSharedPointer<AddressBlock> addressBlock = memoryBlocks->at(index.row()).dynamicCast<AddressBlock>();
-    if (addressBlock)
+    if (index.column() == MemoryMapColumns::NAME_COLUMN)
     {
-        if (index.column() == MemoryMapColumns::RANGE_COLUMN)
-        {
-            return isValuePlainOrExpression(addressBlock->getRange());
-        }
-
-        else if (index.column() == MemoryMapColumns::WIDTH_COLUMN)
-        {
-            return isValuePlainOrExpression(addressBlock->getWidth());
-        }
+        return addressBlockValidator_->hasValidName(addressBlock);
+    }
+    else if (index.column() == MemoryMapColumns::BASE_COLUMN)
+    {
+        return addressBlockValidator_->hasValidBaseAddress(addressBlock);
+    }
+    else if (index.column() == MemoryMapColumns::RANGE_COLUMN)
+    {
+        return addressBlockValidator_->hasValidRange(addressBlock);
+    }
+    else if (index.column() == MemoryMapColumns::WIDTH_COLUMN)
+    {
+        return addressBlockValidator_->hasValidWidth(addressBlock);
+    }
+    else if (index.column() == MemoryMapColumns::USAGE_COLUMN)
+    {
+        return addressBlockValidator_->hasValidUsage(addressBlock);
     }
 
     return true;

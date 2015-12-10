@@ -29,29 +29,31 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/MemoryMapBase.h>
 
+#include <IPXACTmodels/Component/validators/MemoryMapBaseValidator.h>
+
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
 // Function: LocalMemoryMapEditor::LocalMemoryMapEditor()
 //-----------------------------------------------------------------------------
-LocalMemoryMapEditor::LocalMemoryMapEditor(QSharedPointer<AddressSpace> memoryMap,
-                                           QSharedPointer<Component> component,
-                                           LibraryInterface* handler,
+LocalMemoryMapEditor::LocalMemoryMapEditor(QSharedPointer<AddressSpace> addressSpace,
+                                           QSharedPointer<Component> component, LibraryInterface* handler,
                                            QSharedPointer<ParameterFinder> parameterFinder,
                                            QSharedPointer<ExpressionFormatter> expressionFormatter,
+                                           QSharedPointer<MemoryMapBaseValidator> memoryMapBaseValidator,
                                            QWidget *parent):
 QGroupBox(tr("Local memory map"), parent),
-    addressSpace_(memoryMap),
-    localMemoryMap_(0),
-    nameEditor_(0),
-    view_(new EditableTableView(this)),
-    model_(0),
-    component_(component),
-    handler_(handler)
+addressSpace_(addressSpace),
+localMemoryMap_(0),
+nameEditor_(0),
+view_(new EditableTableView(this)),
+model_(0),
+component_(component),
+handler_(handler)
 {
-    bool hasLocalMemoryMap = !memoryMap->getLocalMemoryMap().isNull();
+    bool hasLocalMemoryMap = !addressSpace->getLocalMemoryMap().isNull();
 
-    localMemoryMap_ = memoryMap->getLocalMemoryMap();
+    localMemoryMap_ = addressSpace->getLocalMemoryMap();
     if (!hasLocalMemoryMap)
     {
         localMemoryMap_ = QSharedPointer<MemoryMapBase>(new MemoryMapBase());
@@ -66,8 +68,8 @@ QGroupBox(tr("Local memory map"), parent),
 
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
 
-    model_ = new MemoryMapModel(localMemoryMap_, component->getChoices(), expressionParser, parameterFinder,
-        expressionFormatter, this);
+    model_ = new MemoryMapModel(localMemoryMap_, expressionParser, parameterFinder, expressionFormatter,
+        memoryMapBaseValidator->getAddressBlockValidator(), addressSpace->getAddressUnitBits(), this);
 
     ComponentParameterModel* componentParameterModel = new ComponentParameterModel(parameterFinder, this);
     componentParameterModel->setExpressionParser(expressionParser);
@@ -126,6 +128,9 @@ QGroupBox(tr("Local memory map"), parent),
     connect(model_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
+    connect(this, SIGNAL(assignNewAddressUnitBits(QString const&)),
+        model_, SIGNAL(addressUnitBitsUpdated(QString const&)), Qt::UniqueConnection);
+
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(nameEditor_);
 	layout->addWidget(summaryLabel, 0, Qt::AlignCenter);
@@ -138,14 +143,6 @@ QGroupBox(tr("Local memory map"), parent),
 LocalMemoryMapEditor::~LocalMemoryMapEditor()
 {
 
-}
-
-//-----------------------------------------------------------------------------
-// Function: LocalMemoryMapEditor::isValid()
-//-----------------------------------------------------------------------------
-bool LocalMemoryMapEditor::isValid() const
-{
-	return nameEditor_->isValid() && model_->isValid();
 }
 
 //-----------------------------------------------------------------------------

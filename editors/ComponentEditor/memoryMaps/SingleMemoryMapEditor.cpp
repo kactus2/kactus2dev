@@ -20,6 +20,8 @@
 #include <IPXACTmodels/Component/MemoryRemap.h>
 #include <IPXACTmodels/Component/RemapState.h>
 
+#include <IPXACTmodels/Component/validators/MemoryMapBaseValidator.h>
+
 #include <QFormLayout>
 #include <QSplitter>
 
@@ -27,15 +29,19 @@
 // Function: SingleMemoryMapEditor::SingleMemoryMapEditor()
 //-----------------------------------------------------------------------------
 SingleMemoryMapEditor::SingleMemoryMapEditor(QSharedPointer<Component> component,
-    QSharedPointer<MemoryMapBase> memoryRemap, QSharedPointer<MemoryMap> parentMemoryMap,
-    LibraryInterface* libHandler, QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter, 
-    QSharedPointer<ExpressionParser> expressionParser,
-    QWidget* parent):
+                                             QSharedPointer<MemoryMapBase> memoryRemap,
+                                             QSharedPointer<MemoryMap> parentMemoryMap,
+                                             LibraryInterface* libHandler,
+                                             QSharedPointer<ParameterFinder> parameterFinder,
+                                             QSharedPointer<ExpressionFormatter> expressionFormatter,
+                                             QSharedPointer<ExpressionParser> expressionParser,
+                                             QSharedPointer<MemoryMapBaseValidator> memoryMapBaseValidator,
+                                             QWidget* parent /* = 0 */):
 ItemEditor(component, libHandler, parent),
 nameEditor_(memoryRemap, this, tr("Memory remap name and description")),
 memoryMapEditor_(new MemoryMapEditor(component, libHandler, memoryRemap, parameterFinder, expressionFormatter,
-    expressionParser, this)),
+    expressionParser, memoryMapBaseValidator->getAddressBlockValidator(), parentMemoryMap->getAddressUnitBits(),
+    this)),
 addressUnitBitsEditor_(new QLineEdit(parent)),
 slaveInterfaceLabel_(new QLabel(this)),
 remapStateSelector_(),
@@ -67,6 +73,9 @@ parentMemoryMap_(parentMemoryMap)
     connect(addressUnitBitsEditor_, SIGNAL(editingFinished()),
         this, SLOT(updateAddressUnitBits()), Qt::UniqueConnection);
 
+    connect(this, SIGNAL(assignNewAddressUnitBits(QString const&)),
+        memoryMapEditor_, SIGNAL(assignNewAddressUnitBits(QString const&)), Qt::UniqueConnection);
+
     setupLayout();
 
     remapStateSelector_->setProperty("mandatoryField", true);
@@ -78,34 +87,6 @@ parentMemoryMap_(parentMemoryMap)
 SingleMemoryMapEditor::~SingleMemoryMapEditor()
 {
 
-}
-
-//-----------------------------------------------------------------------------
-// Function: SingleMemoryMapEditor::isValid()
-//-----------------------------------------------------------------------------
-bool SingleMemoryMapEditor::isValid() const
-{
-    bool nameIsValid = nameEditor_.isValid();
-    bool memoryMapEditorIsValid = memoryMapEditor_->isValid();
-
-//     bool memoryRemapIsValid = false;
-
-    if (isMemoryMap())
-    {
-//         memoryRemapIsValid =
-//             parentMemoryMap_->isValid(component()->getChoices(), component()->getRemapStateNames());
-    }
-    else
-    {
-        QSharedPointer<MemoryRemap> transformedMemoryRemap = memoryRemap_.dynamicCast<MemoryRemap>();
-        if (transformedMemoryRemap)
-        {
-//             memoryRemapIsValid =
-//                 transformedMemoryRemap->isValid(component()->getChoices(), component()->getRemapStateNames());
-        }
-    }
-
-    return nameIsValid && memoryMapEditorIsValid; // && memoryRemapIsValid;
 }
 
 //-----------------------------------------------------------------------------
@@ -224,6 +205,8 @@ void SingleMemoryMapEditor::updateAddressUnitBits()
     parentMemoryMap_->setAddressUnitBits(addressUnitBitsEditor_->text());
     emit addressUnitBitsChanged();
     emit contentChanged();
+
+    emit assignNewAddressUnitBits(addressUnitBitsEditor_->text());
 }
 
 //-----------------------------------------------------------------------------

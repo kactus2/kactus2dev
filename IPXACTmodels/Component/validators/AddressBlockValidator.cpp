@@ -177,9 +177,8 @@ bool AddressBlockValidator::hasValidRegisterData(QSharedPointer<AddressBlock> ad
         int aubInt = expressionParser_->parseExpression(addressUnitBits).toInt(&aubChangeOk);
         int addressBlockRange = expressionParser_->parseExpression(addressBlock->getRange()).toInt();
 
-        for (int registerIndex = 0; registerIndex < addressBlock->getRegisterData()->size(); registerIndex++)
+        foreach (QSharedPointer<RegisterBase> registerData, *addressBlock->getRegisterData())
         {
-            QSharedPointer<RegisterBase> registerData = addressBlock->getRegisterData()->at(registerIndex);
             QSharedPointer<Register> targetRegister = registerData.dynamicCast<Register>();
             if (targetRegister)
             {

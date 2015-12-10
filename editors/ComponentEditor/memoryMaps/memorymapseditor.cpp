@@ -27,12 +27,14 @@
 //-----------------------------------------------------------------------------
 // Function: memorymapseditor::MemoryMapsEditor()
 //-----------------------------------------------------------------------------
-MemoryMapsEditor::MemoryMapsEditor( QSharedPointer<Component> component,
-    QSharedPointer<ParameterFinder> parameterFinder, LibraryInterface* handler, QWidget *parent ):
+MemoryMapsEditor::MemoryMapsEditor(QSharedPointer<Component> component,
+                                   QSharedPointer<ParameterFinder> parameterFinder, LibraryInterface* handler,
+                                   QSharedPointer<MemoryMapValidator> memoryMapValidator,
+                                   QWidget *parent /* = 0 */):
 ItemEditor(component, handler, parent),
 view_(new MemoryMapsView(this)),
 proxy_(new QSortFilterProxyModel(this)),
-model_(new MemoryMapsModel(component, parameterFinder, this)),
+model_(new MemoryMapsModel(component, parameterFinder, memoryMapValidator, this)),
 delegate_()
 {
 	// display a label on top the table
@@ -94,14 +96,6 @@ delegate_()
 MemoryMapsEditor::~MemoryMapsEditor()
 {
 
-}
-
-//-----------------------------------------------------------------------------
-// Function: memorymapseditor::isValid()
-//-----------------------------------------------------------------------------
-bool MemoryMapsEditor::isValid() const
-{
-	return model_->isValid();
 }
 
 //-----------------------------------------------------------------------------

@@ -32,15 +32,16 @@
 // Function: MemoryMapEditor::MemoryMapEditor()
 //-----------------------------------------------------------------------------
 MemoryMapEditor::MemoryMapEditor(QSharedPointer<Component> component, LibraryInterface* handler,
-    QSharedPointer<MemoryMapBase> memoryRemap,
-    QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter, 
-    QSharedPointer<ExpressionParser> expressionParser,
-    QWidget* parent):
+                                 QSharedPointer<MemoryMapBase> memoryRemap,
+                                 QSharedPointer<ParameterFinder> parameterFinder,
+                                 QSharedPointer<ExpressionFormatter> expressionFormatter,
+                                 QSharedPointer<ExpressionParser> expressionParser,
+                                 QSharedPointer<AddressBlockValidator> addressBlockValidator,
+                                 QString const& addressUnitBits, QWidget* parent /* = 0 */):
 QGroupBox(tr("Address blocks summary"), parent),
 view_(new EditableTableView(this)),
-model_(new MemoryMapModel(memoryRemap, component->getChoices(), expressionParser, parameterFinder,
-    expressionFormatter, this))
+model_(new MemoryMapModel(memoryRemap, expressionParser, parameterFinder, expressionFormatter,
+       addressBlockValidator, addressUnitBits, this))
 {
     ComponentParameterModel* componentParameterModel = new ComponentParameterModel(parameterFinder, this);
     componentParameterModel->setExpressionParser(expressionParser);
@@ -88,6 +89,9 @@ model_(new MemoryMapModel(memoryRemap, component->getChoices(), expressionParser
 
     connect(model_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+
+    connect(this, SIGNAL(assignNewAddressUnitBits(QString const&)),
+        model_, SLOT(addressUnitBitsUpdated(QString const&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -95,14 +99,6 @@ model_(new MemoryMapModel(memoryRemap, component->getChoices(), expressionParser
 //-----------------------------------------------------------------------------
 MemoryMapEditor::~MemoryMapEditor()
 {
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryMapEditor::isValid()
-//-----------------------------------------------------------------------------
-bool MemoryMapEditor::isValid() const
-{
-	return model_->isValid();
 }
 
 //-----------------------------------------------------------------------------

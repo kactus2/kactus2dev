@@ -148,6 +148,7 @@ void AddressSpaceGeneralEditor::onAddrUnitChanged()
 
     addrUnitEditor_.setToolTip(format(newAddressUnitBits));
 
+    emit assignNewAddressUnitBits(newAddressUnitBits);
 	emit contentChanged();
 }
 

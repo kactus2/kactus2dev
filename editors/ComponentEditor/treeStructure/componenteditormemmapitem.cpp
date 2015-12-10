@@ -90,11 +90,7 @@ QString ComponentEditorMemMapItem::text() const
 //-----------------------------------------------------------------------------
 bool ComponentEditorMemMapItem::isValid() const
 {
-    bool isParentValid = ComponentEditorItem::isValid();
-
-//     bool isMemoryMapValid = memoryMap_->isValid(component_->getChoices(), component_->getRemapStateNames());
-
-    return isParentValid; // && isMemoryMapValid;
+    return memoryMapValidator_->validate(memoryMap_);
 }
 
 //-----------------------------------------------------------------------------

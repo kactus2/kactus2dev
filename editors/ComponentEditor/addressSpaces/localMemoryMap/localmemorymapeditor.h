@@ -27,6 +27,7 @@ class MemoryMapBase;
 class MemoryMapModel;
 class NameGroupEditor;
 
+class MemoryMapBaseValidator;
 //-----------------------------------------------------------------------------
 //! LocalMemoryMapEditor is used to edit a local memory map of an address space.
 //-----------------------------------------------------------------------------
@@ -39,29 +40,24 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] memoryMap               Pointer to the local memory map being edited.
+	 *      @param [in] addressSpace            Pointer to the local memory map being edited.
 	 *      @param [in] component               Pointer to the component being edited.
 	 *      @param [in] handler                 Pointer to the instance managing the library.
 	 *      @param [in] parameterFinder         Pointer to the parameter finder.
 	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
+     *      @param [in] memoryMapBaseValidator  Validator used for the memory map base.
 	 *      @param [in] parent                  Pointer to the owner of the editor.
 	 */
-	LocalMemoryMapEditor(QSharedPointer<AddressSpace> memoryMap,
+	LocalMemoryMapEditor(QSharedPointer<AddressSpace> addressSpace,
 		QSharedPointer<Component> component,
 		LibraryInterface* handler,
         QSharedPointer <ParameterFinder> parameterFinder,
         QSharedPointer <ExpressionFormatter> expressionFormatter,
+        QSharedPointer<MemoryMapBaseValidator> memoryMapBaseValidator,
 		QWidget *parent);
 	
 	//! The destructor.
 	virtual ~LocalMemoryMapEditor();
-
-	/*!
-     *  Check for the validity of the editor.
-	 * 
-	 *      @return True if local memory map is valid.
-	 */
-	bool isValid() const;
 
 	//! Reload the information from the model to the editor.
 	void refresh();
@@ -96,6 +92,13 @@ signals:
      *      @param [in] id  The id of the parameter.
      */
     void decreaseReferences(QString id);
+
+    /*!
+     *  Assign the new address unit bits for address blocks.
+     *
+     *      @param [in] newAddressUnitBits  The new address unit bits.
+     */
+    void assignNewAddressUnitBits(QString const& newAddressUnitBits);
 
 public slots:
 

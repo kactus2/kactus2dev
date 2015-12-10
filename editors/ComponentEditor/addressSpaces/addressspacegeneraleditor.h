@@ -104,6 +104,13 @@ signals:
      */
     void decreaseReferences(QString id);
 
+    /*!
+     *  Assign new address unit bits for address blocks.
+     *
+     *      @param [in] newAddressUnitBits  The new address unit bits.
+     */
+    void assignNewAddressUnitBits(QString const&);
+
 private slots:
 
 	//! Handler for changes in addressable unit.

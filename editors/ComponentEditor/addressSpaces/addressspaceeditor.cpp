@@ -16,6 +16,8 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/AddressSpace.h>
 
+#include <IPXACTmodels/Component/validators/AddressSpaceValidator.h>
+
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QScrollArea>
@@ -27,9 +29,11 @@
 //-----------------------------------------------------------------------------
 AddressSpaceEditor::AddressSpaceEditor(QSharedPointer<Component> component, LibraryInterface* handler,
                                        QSharedPointer<AddressSpace> addrSpace,
-                                       QSharedPointer <ParameterFinder> parameterFinder,
-                                       QSharedPointer <ExpressionFormatter> expressionFormatter,
-                                       QSharedPointer<ExpressionParser> expressionParser, QWidget* parent):
+                                       QSharedPointer<ParameterFinder> parameterFinder,
+                                       QSharedPointer<ExpressionFormatter> expressionFormatter,
+                                       QSharedPointer<ExpressionParser> expressionParser,
+                                       QSharedPointer<AddressSpaceValidator> addressSpaceValidator,
+                                       QWidget* parent /* = 0 */):
 ItemEditor(component, handler, parent),
 addrSpace_(addrSpace),
 nameEditor_(addrSpace, this),
@@ -37,7 +41,8 @@ generalEditor_(addrSpace, component->getMasterInterfaces(addrSpace_->name()), pa
     this),
 segmentsEditor_(addrSpace, component, handler->getDirectoryPath(component->getVlnv()), parameterFinder,
     expressionParser, expressionFormatter, this),
-localMemMapEditor_(addrSpace, component, handler, parameterFinder, expressionFormatter, this)
+localMemMapEditor_(addrSpace, component, handler, parameterFinder, expressionFormatter,
+                   addressSpaceValidator->getLocalMemoryMapValidator(), this)
 {
 	Q_ASSERT(addrSpace_);
 
@@ -73,6 +78,9 @@ localMemMapEditor_(addrSpace, component, handler, parameterFinder, expressionFor
     connect(&localMemMapEditor_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
+    connect(&generalEditor_, SIGNAL(assignNewAddressUnitBits(QString const&)),
+        &localMemMapEditor_, SIGNAL(assignNewAddressUnitBits(QString const&)), Qt::UniqueConnection);
+
     setupLayout();
 
 	refresh();
@@ -84,15 +92,6 @@ localMemMapEditor_(addrSpace, component, handler, parameterFinder, expressionFor
 AddressSpaceEditor::~AddressSpaceEditor()
 {
 
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressSpaceEditor::isValid()
-//-----------------------------------------------------------------------------
-bool AddressSpaceEditor::isValid() const
-{
-	return nameEditor_.isValid() && generalEditor_.isValid() && segmentsEditor_.isValid() &&
-        localMemMapEditor_.isValid();
 }
 
 //-----------------------------------------------------------------------------

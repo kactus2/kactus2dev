@@ -24,6 +24,7 @@ class MemoryMapBase;
 class MemoryMap;
 class MemoryRemap;
 
+class MemoryMapValidator;
 //-----------------------------------------------------------------------------
 //! The model to manage the memory maps summary.
 //-----------------------------------------------------------------------------
@@ -38,10 +39,11 @@ public:
 	 *
 	 *      @param [in] component           Pointer to the component that contains the memory maps to edit.
      *      @param [in] parameterFinder     Pointer to the instance used to find parameters.
+     *      @param [in] memoryMapValidator  Validator used for memory maps.
 	 *      @param [in] parent              Pointer to the owner of the model.
 	 */
 	MemoryMapsModel(QSharedPointer<Component> component, QSharedPointer<ParameterFinder> parameterFinder,
-        QObject *parent);
+        QSharedPointer<MemoryMapValidator> memoryMapValidator, QObject *parent);
 	
 	/*!
 	 *  The destructor.
@@ -106,11 +108,6 @@ public:
      *      @return True, if saving was successful, false otherwise.
 	 */
 	bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
-
-    /*!
-	 *  Check if the Memory maps model is in a valid state.
-	 */
-	bool isValid() const;
 
     /*!
      *  Get the model index of the specified object.
@@ -297,6 +294,9 @@ private:
 
 	//! Contains the memory maps to show in the summary.
     QSharedPointer<QList<QSharedPointer<MemoryMap> > > rootMemoryMaps_;
+
+    //! The used memory map validator.
+    QSharedPointer<MemoryMapValidator> memoryMapValidator_;
 };
 
 #endif // MEMORYMAPSMODEL_H

@@ -110,8 +110,7 @@ QString ComponentEditorAddrSpaceItem::text() const
 //-----------------------------------------------------------------------------
 bool ComponentEditorAddrSpaceItem::isValid() const
 {
-// 	return addrSpace_->isValid(component_->getChoices(), component_->getRemapStateNames());
-    return true;
+    return spaceValidator_->validate(addrSpace_);
 }
 
 //-----------------------------------------------------------------------------
@@ -122,7 +121,7 @@ ItemEditor* ComponentEditorAddrSpaceItem::editor()
 	if (!editor_)
     {
 		editor_ = new AddressSpaceEditor(component_, libHandler_, addrSpace_, parameterFinder_, 
-            expressionFormatter_, expressionParser_);
+            expressionFormatter_, expressionParser_, spaceValidator_);
 		editor_->setProtection(locked_);
 
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
@@ -131,6 +130,9 @@ ItemEditor* ComponentEditorAddrSpaceItem::editor()
 		connect(editor_, SIGNAL(childRemoved(int)),	this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
         connect(editor_, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
 		connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
+
+        connect(this, SIGNAL(assignNewAddressUnitBits(QString const&)),
+            editor_, SIGNAL(assignNewAddressUnitBits(QString const&)), Qt::UniqueConnection);
 
         connectItemEditorToReferenceCounter();
 	}
@@ -225,4 +227,26 @@ ItemVisualizer* ComponentEditorAddrSpaceItem::visualizer()
 void ComponentEditorAddrSpaceItem::onGraphicsChanged()
 {
 	addrSpaceVisualizer_->refresh();
+}
+
+//-----------------------------------------------------------------------------
+// Function: componenteditoraddrspaceitem::changeAddressUnitBits()
+//-----------------------------------------------------------------------------
+void ComponentEditorAddrSpaceItem::changeAdressUnitBitsOnAddressBlocks()
+{
+    QString addressUnitBits = addrSpace_->getAddressUnitBits();
+
+    foreach (QSharedPointer<ComponentEditorItem> childItem, childItems_)
+    {
+        QSharedPointer<ComponentEditorAddrBlockItem> castChildItem = 
+            qobject_cast<QSharedPointer<ComponentEditorAddrBlockItem> >(childItem);
+
+        int newAddressUnitBits = expressionParser_->parseExpression(addressUnitBits).toInt();
+        castChildItem->addressUnitBitsChanged(newAddressUnitBits);
+    }
+
+    if (editor_)
+    {
+        emit assignNewAddressUnitBits(addressUnitBits);
+    }
 }

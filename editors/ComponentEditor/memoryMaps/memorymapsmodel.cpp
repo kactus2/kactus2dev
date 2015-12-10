@@ -23,17 +23,21 @@
 #include <IPXACTmodels/Component/MemoryRemap.h>
 #include <IPXACTmodels/Component/MemoryBlockBase.h>
 
+#include <IPXACTmodels/Component/validators/MemoryMapValidator.h>
+
 #include <QRegularExpression>
 
 //-----------------------------------------------------------------------------
 // Function: memorymapsmodel::MemoryMapsModel()
 //-----------------------------------------------------------------------------
-MemoryMapsModel::MemoryMapsModel( QSharedPointer<Component> component,
-    QSharedPointer<ParameterFinder> parameterFinder, QObject *parent ):
+MemoryMapsModel::MemoryMapsModel(QSharedPointer<Component> component,
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<MemoryMapValidator> memoryMapValidator,
+    QObject *parent):
 QAbstractItemModel(parent),
 component_(component),
 parameterFinder_(parameterFinder),
-rootMemoryMaps_(component->getMemoryMaps())
+rootMemoryMaps_(component->getMemoryMaps()),
+memoryMapValidator_(memoryMapValidator)
 {
 	Q_ASSERT(component_);
 }
@@ -260,29 +264,6 @@ bool MemoryMapsModel::setData( const QModelIndex& index, const QVariant& value, 
 	}
 
     return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: memorymapsmodel::isValid()
-//-----------------------------------------------------------------------------
-bool MemoryMapsModel::isValid() const 
-{
-	foreach (QSharedPointer<MemoryMap> memMap, *rootMemoryMaps_)
-    {
-		/*if (!memMap->isValid(component_->getChoices(), component_->getRemapStateNames()))
-        {
-			return false;
-		}
-
-        foreach (QSharedPointer<MemoryRemap> memoryRemap, *memMap->getMemoryRemaps())
-        {
-            if (memoryRemap->isValid(component_->getChoices(), component_->getRemapStateNames()))
-            {
-                return false;
-            }
-        }*/
-	}
-	return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -669,21 +650,36 @@ QVariant MemoryMapsModel::valueForIndex(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 QColor MemoryMapsModel::getForegroundColor(QModelIndex const& index) const
 {
-    if (index.column() == MemoryMapsColumns::INTERFACE_COLUMN ||
+    int columnIndex = index.column();
+
+    if (columnIndex == MemoryMapsColumns::INTERFACE_COLUMN ||
         (!index.parent().isValid() && index.column() == MemoryMapsColumns::REMAPSTATE_COLUMN) ||
         (index.parent().isValid() && index.column() == MemoryMapsColumns::AUB_COLUMN))
     {
         return QColor("gray");
     }
 
-    else if (index.parent().isValid() && index.column() == MemoryMapsColumns::REMAPSTATE_COLUMN)
+    else if (index.parent().isValid() && columnIndex == MemoryMapsColumns::REMAPSTATE_COLUMN)
     {
         QSharedPointer<MemoryRemap> memoryRemap = getIndexedMemoryRemap(index.parent(), index.row());
-        
-        /*if (!memoryRemap->isValid(component_->getChoices(), component_->getRemapStateNames()))
+
+        if ((columnIndex == MemoryMapsColumns::NAME_COLUMN && !memoryMapValidator_->hasValidName(memoryRemap)) ||
+            (columnIndex == MemoryMapsColumns::REMAPSTATE_COLUMN &&
+            memoryMapValidator_->remapStateIsNotValid(memoryRemap)))
         {
             return QColor("red");
-        }*/
+        }
+    }
+
+    else if (!index.parent().isValid())
+    {
+        QSharedPointer<MemoryMap> currentMap = rootMemoryMaps_->at(index.row());
+        if ((columnIndex == MemoryMapsColumns::NAME_COLUMN && !memoryMapValidator_->hasValidName(currentMap)) ||
+            (columnIndex == MemoryMapsColumns::AUB_COLUMN &&
+            !memoryMapValidator_->hasValidAddressUnitBits(currentMap)))
+        {
+            return QColor("red");
+        }
     }
 
     return QColor("black");

@@ -73,6 +73,15 @@ public:
     bool hasValidMemoryRemaps(QSharedPointer<MemoryMap> memoryMap) const;
 
     /*!
+     *  Check if the memory remap remap state is valid.
+     *
+     *      @param [in] memoryRemap     The selected memory remap.
+     *
+     *      @return True, if the remap state is valid, otherwise false.
+     */
+    bool remapStateIsNotValid(QSharedPointer<MemoryRemap> memoryRemap) const;
+
+    /*!
      *  Locate errors within a memory map.
      *
      *      @param [in] errors      List of found errors.
@@ -87,15 +96,6 @@ private:
 	// Disable copying.
 	MemoryMapValidator(MemoryMapValidator const& rhs);
 	MemoryMapValidator& operator=(MemoryMapValidator const& rhs);
-
-    /*!
-     *  Check if the memory remap remap state is valid.
-     *
-     *      @param [in] memoryRemap     The selected memory remap.
-     *
-     *      @return True, if the remap state is valid, otherwise false.
-     */
-    bool remapStateIsNotValid(QSharedPointer<MemoryRemap> memoryRemap) const;
 
     /*!
      *  Locate errors within memory map address unit bits.

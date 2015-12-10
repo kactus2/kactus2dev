@@ -28,6 +28,7 @@ class MemoryMapProxy;
 class LibraryInterface;
 class ExpressionParser;
 class Component;
+class AddressBlockValidator;
 //-----------------------------------------------------------------------------
 //! The editor to edit the address blocks of a single memory map.
 //-----------------------------------------------------------------------------
@@ -46,24 +47,21 @@ public:
 	 *      @param [in] parameterFinder         The parameter finder for component.
 	 *      @param [in] expressionFormatter     The expression formatter.
      *      @param [in] expressionParser        The expression parser.
+     *      @param [in] addressBlockValidator   Validator used for address blocks.
+     *      @param [in] addressUnitBits         The current address unit bits.
 	 *      @param [in] parent                  The parent of this editor.
 	 */
 	MemoryMapEditor(QSharedPointer<Component> component, LibraryInterface* handler, 
-        QSharedPointer<MemoryMapBase> memoryRemap, 
+        QSharedPointer<MemoryMapBase> memoryRemap,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<AddressBlockValidator> addressBlockValidator,
+        QString const& addressUnitBits,
         QWidget* parent = 0);
 	
 	//! The destructor.
 	virtual ~MemoryMapEditor();
-
-	/*!
-     *  Check for the validity of the editor.
-	 * 
-	 *      @return True if the editor is in valid state.
-	 */
-	virtual bool isValid() const;
 
 	/*!
      *  Reload the information from the model to the editor.
@@ -123,6 +121,13 @@ signals:
      *      @param [in] index   The index of the removed child.
      */
     void childRemoved(int index);
+
+    /*!
+     *  Assign new address unit bits for address blocks.
+     *
+     *      @param [in] newAddressUnitBits  The new address unit bits.
+     */
+    void assignNewAddressUnitBits(QString const& newAddressUnitBits);
 
 private:
 	
