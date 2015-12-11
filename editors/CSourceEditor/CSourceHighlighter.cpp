@@ -207,9 +207,8 @@ void CSourceHighlighter::registerAPI(QSharedPointer<ApiDefinition const> apiDef)
     // Register function rules.
     rule.format = &m_styleFormats[STYLE_API_FUNCTIONS];
 
-    for (int i = 0; i < apiDef->getFunctionCount(); ++i)
+	foreach ( QSharedPointer<ApiFunction> apiFunc, *apiDef->getFunctions() )
     {
-        QSharedPointer<ApiFunction const> apiFunc = apiDef->getFunction(i);
         rule.pattern = QRegExp("\\b" + apiFunc->name() + "\\b");
         highlightRules_.append(rule);
     }

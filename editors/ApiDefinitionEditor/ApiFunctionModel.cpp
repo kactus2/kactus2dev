@@ -44,9 +44,9 @@ void ApiFunctionModel::restore(ApiDefinition const& apiDef)
 
     apiFunctions_.clear();
 
-    for (int i = 0; i < apiDef.getFunctionCount(); ++i)
+    foreach ( QSharedPointer<ApiFunction> apiFunction, *apiDef.getFunctions() )
     {
-        apiFunctions_.append(QSharedPointer<ApiFunction>(new ApiFunction(*apiDef.getFunction(i).data())));
+        apiFunctions_.append(QSharedPointer<ApiFunction>(new ApiFunction(*apiFunction)));
     }
 
     endResetModel();
@@ -61,7 +61,7 @@ void ApiFunctionModel::save(ApiDefinition& apiDef)
 
     foreach (QSharedPointer<ApiFunction> func, apiFunctions_)
     {
-        apiDef.addFunction(QSharedPointer<ApiFunction>(new ApiFunction(*func.data())));
+        apiDef.getFunctions()->append(QSharedPointer<ApiFunction>(new ApiFunction(*func.data())));
     }
 }
 

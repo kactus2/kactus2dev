@@ -46,10 +46,12 @@ ComDefinition::ComDefinition(QDomDocument& doc) : Document(),
                                                   transferTypes_(),
                                                   properties_()
 {
-	QString vendor = doc.firstChildElement("ipxact:vendor").firstChild().nodeValue();
-	QString library = doc.firstChildElement("ipxact:library").firstChild().nodeValue();
-	QString name = doc.firstChildElement("ipxact:name").firstChild().nodeValue();
-	QString version = doc.firstChildElement("ipxact:version").firstChild().nodeValue();
+	QDomElement documentElement = doc.documentElement();
+
+	QString vendor = documentElement.firstChildElement("ipxact:vendor").firstChild().nodeValue();
+	QString library = documentElement.firstChildElement("ipxact:library").firstChild().nodeValue();
+	QString name = documentElement.firstChildElement("ipxact:name").firstChild().nodeValue();
+	QString version = documentElement.firstChildElement("ipxact:version").firstChild().nodeValue();
 
 	VLNV itemVLNV;
 	itemVLNV.setType(VLNV::COMDEFINITION);
@@ -57,6 +59,8 @@ ComDefinition::ComDefinition(QDomDocument& doc) : Document(),
 	itemVLNV.setLibrary(library);
 	itemVLNV.setName(name);
 	itemVLNV.setVersion(version);
+
+	setVlnv(itemVLNV);
 
 	QDomNodeList extensionNodes = doc.firstChildElement("ipxact:vendorExtensions").childNodes();
 
@@ -72,12 +76,10 @@ ComDefinition::ComDefinition(QDomDocument& doc) : Document(),
 		}
 	}
 
-    QDomNode comNode = doc.childNodes().item(0);
-
     // Parse child nodes.
-    for (int i = 0; i < comNode.childNodes().count(); ++i)
+    for (int i = 0; i < documentElement.childNodes().count(); ++i)
     {
-        QDomNode childNode = comNode.childNodes().at(i);
+        QDomNode childNode = documentElement.childNodes().at(i);
 
         if (childNode.isComment())
         {
@@ -112,64 +114,6 @@ ComDefinition::~ComDefinition()
 QSharedPointer<Document> ComDefinition::clone() const
 {
     return QSharedPointer<Document>(new ComDefinition(*this));
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComDefinition::write()
-//-----------------------------------------------------------------------------
-void ComDefinition::write(QXmlStreamWriter& writer)
-{
-    // Set the writer to use auto formatting for a clearer output.
-    writer.setAutoFormatting(true);
-	writer.setAutoFormattingIndent(-1);
-
-	// write the element that specifies the type of the document.
-	writer.writeStartElement(getVlnv().getTypestr());
-
-	// Write basic information.
-	writer.writeTextElement("ipxact:vendor", getVlnv().getVendor());
-	writer.writeTextElement("ipxact:library", getVlnv().getLibrary());
-	writer.writeTextElement("ipxact:name", getVlnv().getName());
-	writer.writeTextElement("ipxact:version", getVlnv().getVersion());
-
-	if (!Document::getDescription().isEmpty())
-	{
-		writer.writeTextElement("ipxact:description", Document::getDescription());
-	}
-
-    // Write data types.
-    writer.writeStartElement("kactus2:transferTypes");
-
-    foreach (QString const& type, transferTypes_)
-    {
-        writer.writeEmptyElement("kactus2:transferType");
-        writer.writeAttribute("kactus2:name", type);
-    }
-
-    writer.writeEndElement(); // kactus2:transferTypes
-
-    // Write properties.
-    writer.writeStartElement("kactus2:properties");
-
-    foreach (QSharedPointer<ComProperty> prop, properties_)
-    {
-        prop->write(writer);
-    }
-
-	writer.writeEndElement(); // kactus2:properties
-
-	if (getVendorExtensions()->isEmpty())
-	{
-		writer.writeStartElement("ipxact:vendorExtensions");
-		foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
-		{
-			extension->write(writer);
-		}
-		writer.writeEndElement(); // ipxact:vendorExtensions
-	}
-
-    writer.writeEndElement(); // kactus2:comDefinition
-    writer.writeEndDocument();
 }
 
 //-----------------------------------------------------------------------------

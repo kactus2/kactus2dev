@@ -21,7 +21,7 @@ ApiDefinition::ApiDefinition(VLNV const& vlnv) : Document(vlnv),
                                                  language_(),
                                                  comDefRef_(),
                                                  dataTypes_(),
-                                                 functions_()
+												 functions_(new QList<QSharedPointer<ApiFunction> >)
 {
 
 }
@@ -33,14 +33,14 @@ ApiDefinition::ApiDefinition(ApiDefinition const& rhs) : Document(rhs),
                                                          language_(rhs.language_),
                                                          comDefRef_(rhs.comDefRef_),
                                                          dataTypes_(rhs.dataTypes_),
-                                                         functions_()
+                                                         functions_(new QList<QSharedPointer<ApiFunction> >)
 {
-    foreach (QSharedPointer<ApiFunction> func, rhs.functions_)
+    foreach (QSharedPointer<ApiFunction> func, *rhs.functions_)
     {
-        functions_.append(QSharedPointer<ApiFunction>(new ApiFunction(*func.data())));
+        functions_->append(QSharedPointer<ApiFunction>(new ApiFunction(*func.data())));
     }
 }
-
+#include <QDebug>
 //-----------------------------------------------------------------------------
 // Function: ApiDefinition::ApiDefinition()
 //-----------------------------------------------------------------------------
@@ -49,12 +49,14 @@ ApiDefinition::ApiDefinition(QDomDocument& doc)
       language_(),
       comDefRef_(),
       dataTypes_(),
-      functions_()
+      functions_(new QList<QSharedPointer<ApiFunction> >)
 {
-	QString vendor = doc.firstChildElement("ipxact:vendor").firstChild().nodeValue();
-	QString library = doc.firstChildElement("ipxact:library").firstChild().nodeValue();
-	QString name = doc.firstChildElement("ipxact:name").firstChild().nodeValue();
-	QString version = doc.firstChildElement("ipxact:version").firstChild().nodeValue();
+	QDomElement documentElement = doc.documentElement();
+
+	QString vendor = documentElement.firstChildElement("ipxact:vendor").firstChild().nodeValue();
+	QString library = documentElement.firstChildElement("ipxact:library").firstChild().nodeValue();
+	QString name = documentElement.firstChildElement("ipxact:name").firstChild().nodeValue();
+	QString version = documentElement.firstChildElement("ipxact:version").firstChild().nodeValue();
 
 	VLNV itemVLNV;
 	itemVLNV.setType(VLNV::APIDEFINITION);
@@ -63,7 +65,9 @@ ApiDefinition::ApiDefinition(QDomDocument& doc)
 	itemVLNV.setName(name);
 	itemVLNV.setVersion(version);
 
-	QDomNodeList extensionNodes = doc.firstChildElement("ipxact:vendorExtensions").childNodes();
+	setVlnv(itemVLNV);
+
+	QDomNodeList extensionNodes = documentElement.firstChildElement("ipxact:vendorExtensions").childNodes();
 
 	int extensionCount = extensionNodes.count();
 	for (int i = 0; i < extensionCount; i++)
@@ -76,13 +80,11 @@ ApiDefinition::ApiDefinition(QDomDocument& doc)
 			getVendorExtensions()->append(extension);
 		}
 	}
-
-    QDomNode apiNode = doc.childNodes().item(0);
-
+	
     // Parse child nodes.
-    for (int i = 0; i < apiNode.childNodes().count(); ++i)
+    for (int i = 0; i < documentElement.childNodes().count(); ++i)
     {
-        QDomNode childNode = apiNode.childNodes().at(i);
+        QDomNode childNode = documentElement.childNodes().at(i);
 
         if (childNode.isComment())
         {
@@ -129,71 +131,6 @@ QSharedPointer<Document> ApiDefinition::clone() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: ApiDefinition::write()
-//-----------------------------------------------------------------------------
-void ApiDefinition::write(QXmlStreamWriter& writer)
-{
-    // Set the writer to use auto formatting for a clearer output.
-    writer.setAutoFormatting(true);
-    writer.setAutoFormattingIndent(-1);
-
-	// write the element that specifies the type of the document.
-	writer.writeStartElement(getVlnv().getTypestr());
-
-	// Write basic information.
-	writer.writeTextElement("ipxact:vendor", getVlnv().getVendor());
-	writer.writeTextElement("ipxact:library", getVlnv().getLibrary());
-	writer.writeTextElement("ipxact:name", getVlnv().getName());
-	writer.writeTextElement("ipxact:version", getVlnv().getVersion());
-
-    if (!Document::getDescription().isEmpty())
-    {
-        writer.writeTextElement("ipxact:description", Document::getDescription());
-    }
-
-    // Write COM definition reference.
-    writer.writeEmptyElement("kactus2:comDefinitionRef");
-    writer.writeAttribute("vendor", comDefRef_.getVendor());
-    writer.writeAttribute("library", comDefRef_.getLibrary());
-    writer.writeAttribute("name", comDefRef_.getName());
-    writer.writeAttribute("version", comDefRef_.getVersion());
-
-    // Write data types.
-    writer.writeStartElement("kactus2:dataTypes");
-
-    foreach (QString const& type, dataTypes_)
-    {
-        writer.writeEmptyElement("kactus2:dataType");
-        writer.writeAttribute("kactus2:name", type);
-    }
-
-    writer.writeEndElement(); // kactus2:dataTypes
-
-    // Write properties.
-    writer.writeStartElement("kactus2:functions");
-
-    foreach (QSharedPointer<ApiFunction> func, functions_)
-    {
-        func->write(writer);
-    }
-
-    writer.writeEndElement(); // kactus2:functions
-
-	if (getVendorExtensions()->isEmpty())
-	{
-		writer.writeStartElement("ipxact:vendorExtensions");
-		foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
-		{
-			extension->write(writer);
-		}
-		writer.writeEndElement(); // ipxact:vendorExtensions
-	}
-
-    writer.writeEndElement(); // kactus2:apiDefinition
-    writer.writeEndDocument();
-}
-
-//-----------------------------------------------------------------------------
 // Function: ApiDefinition::findErrors()
 //-----------------------------------------------------------------------------
 void ApiDefinition::findErrors(QVector<QString>& errorList) const
@@ -230,7 +167,7 @@ void ApiDefinition::findErrors(QVector<QString>& errorList) const
     // Validate the functions.
     QStringList funcNames;
 
-    foreach (QSharedPointer<ApiFunction> func, functions_)
+    foreach (QSharedPointer<ApiFunction> func, *functions_)
     {
         if (funcNames.contains(func->name()))
         {
@@ -280,7 +217,7 @@ bool ApiDefinition::validate() const
     // Validate the functions.
     QStringList funcNames;
 
-    foreach (QSharedPointer<ApiFunction> func, functions_)
+    foreach (QSharedPointer<ApiFunction> func, *functions_)
     {
         if (funcNames.contains(func->name()))
         {
@@ -359,28 +296,11 @@ void ApiDefinition::setDataTypes(QStringList const& types)
 }
 
 //-----------------------------------------------------------------------------
-// Function: ApiDefinition::addFunction()
-//-----------------------------------------------------------------------------
-void ApiDefinition::addFunction(QSharedPointer<ApiFunction> func)
-{
-    functions_.append(func);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ApiDefinition::removeFunction()
-//-----------------------------------------------------------------------------
-void ApiDefinition::removeFunction(int index)
-{
-    Q_ASSERT(index >= 0 && index < getFunctionCount());
-    functions_.removeAt(index);
-}
-
-//-----------------------------------------------------------------------------
 // Function: ApiDefinition::removeFunctions()
 //-----------------------------------------------------------------------------
 void ApiDefinition::removeFunctions()
 {
-    functions_.clear();
+    functions_->clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -428,35 +348,17 @@ void ApiDefinition::parseFunctions(QDomNode& node)
         if (propNode.nodeName() == "kactus2:function")
         {
             QSharedPointer<ApiFunction> func(new ApiFunction(propNode));
-            functions_.append(func);
+            functions_->append(func);
         }
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: ApiDefinition::getFunction()
+// Function: Document::getFunctions()
 //-----------------------------------------------------------------------------
-QSharedPointer<ApiFunction> ApiDefinition::getFunction(int index)
+QSharedPointer<QList<QSharedPointer<ApiFunction> > > ApiDefinition::getFunctions() const
 {
-    Q_ASSERT(index >= 0 && index < getFunctionCount());
-    return functions_.at(index);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ApiDefinition::getFunction()
-//-----------------------------------------------------------------------------
-QSharedPointer<ApiFunction const> ApiDefinition::getFunction(int index) const
-{
-    Q_ASSERT(index >= 0 && index < getFunctionCount());
-    return functions_.at(index);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ApiDefinition::getFunctionCount()
-//-----------------------------------------------------------------------------
-int ApiDefinition::getFunctionCount() const
-{
-    return functions_.count();
+	return functions_;
 }
 
 //-----------------------------------------------------------------------------

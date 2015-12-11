@@ -35,6 +35,9 @@
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 #include <IPXACTmodels/designConfiguration/DesignConfigurationWriter.h>
 
+#include <IPXACTmodels/kactusExtensions/ApiDefinitionWriter.h>
+#include <IPXACTmodels/kactusExtensions/ComDefinitionWriter.h>
+
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/ComponentWriter.h>
 #include <IPXACTmodels/Component/FileSet.h>
@@ -1299,8 +1302,21 @@ bool LibraryHandler::writeFile(QString const& filePath, QSharedPointer<Document>
         DesignConfigurationWriter designConfigurationWriter;
         QSharedPointer<DesignConfiguration> designConfiguration = model.dynamicCast<DesignConfiguration>();
         designConfigurationWriter.writeDesignConfiguration(xmlWriter, designConfiguration);
-    }
+	}
 
+	else if (model->getVlnv().getType() == VLNV::APIDEFINITION)
+	{
+		ApiDefinitionWriter apiDefinitionWriter;
+		QSharedPointer<ApiDefinition> apiDefinition = model.dynamicCast<ApiDefinition>();
+		apiDefinitionWriter.writeApiDefinition(xmlWriter, apiDefinition);
+	}
+
+	else if (model->getVlnv().getType() == VLNV::COMDEFINITION)
+	{
+		ComDefinitionWriter comDefinitionWriter;
+		QSharedPointer<ComDefinition> comDefinition = model.dynamicCast<ComDefinition>();
+		comDefinitionWriter.writeComDefinition(xmlWriter, comDefinition);
+	}
     else
     {
         Q_ASSERT_X(false, "Libraryhandler::writeFile().", "Trying to write unknown document type to file.");

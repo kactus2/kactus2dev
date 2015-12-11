@@ -62,13 +62,6 @@ public:
     virtual QSharedPointer<Document> clone()  const;
 
     /*!
-     *  Writes the API definition to an XML file.
-     *
-     *      @param [in] file The file handle.
-     */
-    virtual void write(QXmlStreamWriter& writer);
-
-    /*!
      *  Returns true if the contents are valid.
      *
      *      @param [in/out] errorList Error list which is appended with errors if found while validating.
@@ -126,18 +119,6 @@ public:
     void setDataTypes(QStringList const& types);
 
     /*!
-     *  Adds a function to the API.
-     *
-     *      @param [in] func The function to add.
-     */
-    void addFunction(QSharedPointer<ApiFunction> func);
-
-    /*!
-     *  Removes the function at the given index from the API.
-     */
-    void removeFunction(int index);
-
-    /*!
      *  Removes all functions.
      */
     void removeFunctions();
@@ -158,6 +139,11 @@ public:
     QStringList const& getDataTypes() const;
 
     /*!
+     *  Get the functions of the API definition.
+     */
+    QSharedPointer<QList<QSharedPointer<ApiFunction> > > getFunctions() const;
+
+    /*!
      *  Returns the function at the given index.
      */
     QSharedPointer<ApiFunction> getFunction(int index);
@@ -166,11 +152,6 @@ public:
      *  Returns the function at the given index.
      */
     QSharedPointer<ApiFunction const> getFunction(int index) const;
-
-    /*!
-     *  Returns the number of functions in the API.
-     */
-    int getFunctionCount() const;
     
 private:
     /*!
@@ -201,7 +182,7 @@ private:
     QStringList dataTypes_;
 
     //! The API functions.
-    QList< QSharedPointer<ApiFunction> > functions_;
+    QSharedPointer< QList< QSharedPointer<ApiFunction> > > functions_;
 };
 
 //-----------------------------------------------------------------------------

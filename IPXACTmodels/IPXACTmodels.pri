@@ -60,9 +60,12 @@ HEADERS += ./XmlUtils.h \
     ./common/NameValuePair.h \
     ./common/Parameter.h \
     ./common/PartSelect.h \
+    ./common/PresenceTypes.h \
     ./common/Protocol.h \
+    ./common/ProtocolValidator.h \
     ./common/Qualifier.h \
     ./common/Range.h \
+    ./common/TimingConstraint.h \
     ./common/TransactionalTypes.h \
     ./common/Vector.h \
     ./common/VendorExtension.h \
@@ -89,7 +92,6 @@ HEADERS += ./XmlUtils.h \
     ./BusDefinition/validators/BusDefinitionValidator.h \
     ./AbstractionDefinition/AbstractionDefinition.h \
     ./AbstractionDefinition/PortAbstraction.h \
-    ./common/TimingConstraint.h \
     ./AbstractionDefinition/TransactionalAbstraction.h \
     ./AbstractionDefinition/TransactionalPort.h \
     ./AbstractionDefinition/WireAbstraction.h \
@@ -212,14 +214,14 @@ HEADERS += ./XmlUtils.h \
     ./Component/validators/FieldValidator.h \
     ./Component/validators/FileSetValidator.h \
     ./Component/validators/FileValidator.h \
+    ./Component/validators/PortValidator.h \
     ./Component/validators/RemapStateValidator.h \
     ./Component/validators/MemoryMapBaseValidator.h \
     ./Component/validators/MemoryMapValidator.h \
     ./Component/validators/MemoryReserve.h \
     ./Component/validators/RegisterValidator.h \
-    ./Component/validators/PortValidator.h \
-    ./common/PresenceTypes.h \
-    ./common/ProtocolValidator.h
+    ./kactusExtensions/ApiDefinitionWriter.h \
+    ./kactusExtensions/ComDefinitionWriter.h
 SOURCES += ./generaldeclarations.cpp \
     ./XmlUtils.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
@@ -284,11 +286,14 @@ SOURCES += ./generaldeclarations.cpp \
     ./common/ParameterReader.cpp \
     ./common/ParameterWriter.cpp \
     ./common/PartSelect.cpp \
+    ./common/PresenceTypes.cpp \
     ./common/Protocol.cpp \
     ./common/ProtocolReader.cpp \
+    ./common/ProtocolValidator.cpp \
     ./common/ProtocolWriter.cpp \
     ./common/Qualifier.cpp \
     ./common/Range.cpp \
+    ./common/TimingConstraint.cpp \
     ./common/TransactionalTypes.cpp \
     ./common/Vector.cpp \
     ./common/VLNV.cpp \
@@ -302,7 +307,6 @@ SOURCES += ./generaldeclarations.cpp \
     ./AbstractionDefinition/AbstractionDefinitionReader.cpp \
     ./AbstractionDefinition/AbstractionDefinitionWriter.cpp \
     ./AbstractionDefinition/PortAbstraction.cpp \
-    ./common/TimingConstraint.cpp \
     ./AbstractionDefinition/TransactionalAbstraction.cpp \
     ./AbstractionDefinition/TransactionalAbstractionReader.cpp \
     ./AbstractionDefinition/TransactionalAbstractionWriter.cpp \
@@ -423,11 +427,11 @@ SOURCES += ./generaldeclarations.cpp \
     ./Component/validators/FieldValidator.cpp \
     ./Component/validators/FileSetValidator.cpp \
     ./Component/validators/FileValidator.cpp \
+    ./Component/validators/PortValidator.cpp \
     ./Component/validators/RemapStateValidator.cpp \
     ./Component/validators/MemoryMapBaseValidator.cpp \
     ./Component/validators/MemoryMapValidator.cpp \
     ./Component/validators/MemoryReserve.cpp \
     ./Component/validators/RegisterValidator.cpp \
-    ./Component/validators/PortValidator.cpp \
-    ./common/PresenceTypes.cpp \
-    ./common/ProtocolValidator.cpp
+    ./kactusExtensions/ApiDefinitionWriter.cpp \
+    ./kactusExtensions/ComDefinitionWriter.cpp

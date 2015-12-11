@@ -1157,6 +1157,24 @@
     <ClCompile Include="common\ProtocolValidator.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
+    <ClCompile Include="kactusExtensions\ApiDefinitionWriter.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusExtensions\ComDefinitionWriter.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_ApiDefinitionWriter.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_ApiDefinitionWriter.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_ComDefinitionWriter.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_ComDefinitionWriter.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BusDefinition\BusDefinition.h">
@@ -1802,6 +1820,12 @@
     </CustomBuild>
     <CustomBuild Include="common\ProtocolWriter.h">
       <Filter>Header Files\common</Filter>
+    </CustomBuild>
+    <CustomBuild Include="kactusExtensions\ApiDefinitionWriter.h">
+      <Filter>Header Files\kactusExtensions</Filter>
+    </CustomBuild>
+    <CustomBuild Include="kactusExtensions\ComDefinitionWriter.h">
+      <Filter>Header Files\kactusExtensions</Filter>
     </CustomBuild>
   </ItemGroup>
 </Project>

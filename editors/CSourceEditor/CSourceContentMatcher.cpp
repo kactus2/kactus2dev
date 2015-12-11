@@ -134,11 +134,9 @@ int CSourceContentMatcher::enumerateNames(QString const &text, MatchExecFunc fun
 
         foreach (QSharedPointer<ApiDefinition const> apiDef, sourceApiDefinitions_)
         {
-            // Search for functions that start with the retrieved word.
-            for (int i = 0; i < apiDef->getFunctionCount(); ++i)
+			// Search for functions that start with the retrieved word.
+			foreach ( QSharedPointer<ApiFunction> apiFunc, *apiDef->getFunctions() )
             {
-                QSharedPointer<ApiFunction const> apiFunc = apiDef->getFunction(i);
-
                 if (tryMatchIdentifier(apiFunc->name(), MCAPI_CONTENT_FUNC, matchExp, func, count))
                 {
                     // Check if this was an exact match.
@@ -216,11 +214,9 @@ int CSourceContentMatcher::enumerateFunctionParams(QString const &text, MatchExe
         ApiFunction const* matchingApiFunc = 0;
 
         foreach (QSharedPointer<ApiDefinition const> apiDef, sourceApiDefinitions_)
-        {
-            for (int i = 0; i < apiDef->getFunctionCount(); ++i)
+		{
+			foreach ( QSharedPointer<ApiFunction> apiFunc, *apiDef->getFunctions() )
             {
-                QSharedPointer<ApiFunction const> apiFunc = apiDef->getFunction(i);
-
                 if (apiFunc->name() == funcName)
                 {
                     matchingApiFunc = apiFunc.data();

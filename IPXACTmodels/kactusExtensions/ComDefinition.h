@@ -58,13 +58,6 @@ public:
     virtual QSharedPointer<Document> clone()  const;
 
     /*!
-     *  Writes the communication definition to an XML file.
-     *
-     *      @param [in] file The file handle.
-     */
-    virtual void write(QXmlStreamWriter& writer);
-
-    /*!
      *  Returns true if the communication definition is valid.
      *
      *      @param [out] errorList  The list of errors found in the contents.

@@ -24,3 +24,5 @@ SUBDIRS += common\Common.pro \
 		   Design\tst_DesignWriter.pro \
 		   Design\tst_DesignReader.pro \
 		   Component\Component.pro \
+		   kactusExtensions\tst_ComDefinitionWriter.pro \
+		   kactusExtensions\tst_ApiDefinitionWriter.pro \
