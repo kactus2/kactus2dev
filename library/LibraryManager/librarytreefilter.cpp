@@ -114,10 +114,10 @@ bool LibraryTreeFilter::filterAcceptsRow(int sourceRow, const QModelIndex& sourc
         {
             QSharedPointer<Design> design = handler_->getDesign(vlnv);
 
-            if (type().components_ && implementation().sw_ && design->getImplementation() == KactusAttribute::SW)
-            {
-                return true;
-            }
+			if ( type().advanced_ || ( type().components_ && implementation().sw_ && design->getImplementation() == KactusAttribute::SW ) )
+			{
+				return true;
+			}
         }
        
         else // if type is one of the advanced
