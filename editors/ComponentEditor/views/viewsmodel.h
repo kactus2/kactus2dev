@@ -19,6 +19,7 @@
 #include <QList>
 #include <QSharedPointer>
 
+class ViewValidator;
 //-----------------------------------------------------------------------------
 //! The model to manage the views summary.
 //-----------------------------------------------------------------------------
@@ -31,10 +32,11 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] component   Pointer to the component being edited.
-	 *      @param [in] parent      Pointer to the owner of the model.
+	 *      @param [in] component       Pointer to the component being edited.
+     *      @param [in] viewValidator   The validator used for views.
+	 *      @param [in] parent          Pointer to the owner of the model.
 	 */
-	ViewsModel(QSharedPointer<Component> component,	QObject* parent);
+	ViewsModel(QSharedPointer<Component> component, QSharedPointer<ViewValidator> viewValidator, QObject* parent);
 	
 	//! The destructor.
 	virtual ~ViewsModel();
@@ -142,6 +144,9 @@ private:
 
 	//! Contains the views to manage.
     QSharedPointer<QList<QSharedPointer<View> > > views_;
+
+    //! The validator used for views.
+    QSharedPointer<ViewValidator> viewValidator_;
 };
 
 #endif // VIEWSMODEL_H

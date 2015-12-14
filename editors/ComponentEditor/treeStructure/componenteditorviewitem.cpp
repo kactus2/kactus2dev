@@ -14,29 +14,37 @@
 
 #include <library/LibraryManager/libraryhandler.h>
 
-
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/View.h>
 #include <IPXACTmodels/Component/ComponentInstantiation.h>
 #include <IPXACTmodels/Component/DesignInstantiation.h>
 #include <IPXACTmodels/Component/DesignConfigurationInstantiation.h>
 
+#include <IPXACTmodels/Component/validators/ViewValidator.h>
+#include <IPXACTmodels/Component/validators/InstantiationsValidator.h>
+#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
+
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorViewItem::ComponentEditorViewItem()
 //-----------------------------------------------------------------------------
-ComponentEditorViewItem::ComponentEditorViewItem(QSharedPointer<View> view,
-												 ComponentEditorTreeModel* model,
-												 LibraryInterface* libHandler,
-												 QSharedPointer<Component> component,
+ComponentEditorViewItem::ComponentEditorViewItem(QSharedPointer<View> view, ComponentEditorTreeModel* model,
+                                                 LibraryInterface* libHandler, QSharedPointer<Component> component,
                                                  QSharedPointer<ParameterFinder> parameterFinder,
-                                                 QSharedPointer<ExpressionFormatter> expresionFormatter,
-												 ComponentEditorItem* parent):
+                                                 QSharedPointer<ExpressionFormatter> expressionFormatter,
+                                                 QSharedPointer<ExpressionParser> expressionParser,
+                                                 QSharedPointer<ViewValidator> viewValidator,
+                                                 ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 view_(view),
-editAction_(new QAction(tr("Edit"), this))
+editAction_(new QAction(tr("Edit"), this)),
+expressionParser_(expressionParser),
+viewValidator_(viewValidator),
+instantiationsValidator_()
 {
+    createInstantiationsValidator();
+
     setParameterFinder(parameterFinder);
-    setExpressionFormatter(expresionFormatter);
+    setExpressionFormatter(expressionFormatter);
 
 	Q_ASSERT(view_);
 
@@ -66,22 +74,35 @@ QString ComponentEditorViewItem::text() const
 //-----------------------------------------------------------------------------
 bool ComponentEditorViewItem::isValid() const
 {
-	// check that view is valid
-/*	if (!view_->isValid(component_->getFileSetNames(), component_->getChoices())) {
-		return false;
-	}
-	// check that the reference can be found
-	if (view_->isHierarchical() && !libHandler_->contains(view_->getHierarchyRef())) {
-		return false;
-	}
-    
-    if (!component_->validateParameters(view_->getParameters()))
-    {
-        return false;
-    }*/
+    bool viewIsValid = viewValidator_->validate(view_);
+    bool componentInstantiationIsValid = true;
+    bool designInstantiationIsValid = true;
+    bool designConfigurationInstantiationIsValid = true;
 
-	// view was valid and the reference was found
-	return true;
+    if (!view_->getComponentInstantiationRef().isEmpty())
+    {
+        QSharedPointer<ComponentInstantiation> instantiation =
+            component_->getModel()->findComponentInstantiation(view_->getComponentInstantiationRef());
+        componentInstantiationIsValid = instantiationsValidator_->validateComponentInstantiation(instantiation);
+    }
+
+    if (!view_->getDesignInstantiationRef().isEmpty())
+    {
+        QSharedPointer<DesignInstantiation> instantiation =
+            component_->getModel()->findDesignInstantiation(view_->getDesignInstantiationRef());
+        designInstantiationIsValid= instantiationsValidator_->validateDesignInstantiation(instantiation);
+    }
+
+    if (!view_->getDesignConfigurationInstantiationRef().isEmpty())
+    {
+        QSharedPointer<DesignConfigurationInstantiation> instantiation = component_->getModel()->
+            findDesignConfigurationInstantiation(view_->getDesignConfigurationInstantiationRef());
+        designConfigurationInstantiationIsValid =
+            instantiationsValidator_->validateDesignConfigurationInstantiation(instantiation);
+    }
+
+    return viewIsValid && componentInstantiationIsValid && designInstantiationIsValid &&
+        designConfigurationInstantiationIsValid;
 }
 
 //-----------------------------------------------------------------------------
@@ -116,29 +137,8 @@ QString ComponentEditorViewItem::getTooltip() const
 //-----------------------------------------------------------------------------
 bool ComponentEditorViewItem::canBeOpened() const
 {
-    /*if (view_->isHierarchical())
-    {
-        VLNV referencedVLNV;
-
-        if (!view_->getDesignConfigurationInstantiationRef().isEmpty())
-        {
-            QSharedPointer<DesignConfigurationInstantiation> instantiation = getDesignConfigurationInstantiation();
-            referencedVLNV = *instantiation->getDesignConfigurationReference();
-        }
-        else if (!view_->getDesignInstantiationRef().isEmpty())
-        {
-            QSharedPointer<DesignInstantiation> instantiation = getDesignInstantiation();
-            referencedVLNV = *instantiation->getDesignReference();
-        }
-
-        QSharedPointer<Document const> libComp = libHandler_->getModelReadOnly(component_->getVlnv());
-        QSharedPointer<Component const> comp = libComp.staticCast<Component const>();
-        VLNV originalRef = comp->getHierRef(view_->name());
-        return originalRef == referencedVLNV;
-    }
-
-    return false;*/
-    return view_->isHierarchical();
+    return viewValidator_->hasValidDesignInstantiationReference(view_) ||
+        viewValidator_->hasValidDesignConfigurationInstantiationReference(view_);
 }
 
 //-----------------------------------------------------------------------------
@@ -192,4 +192,18 @@ QIcon ComponentEditorViewItem::getIcon() const
     {
         return QIcon();
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: componenteditorviewitem::createInstantiationsValidator()
+//-----------------------------------------------------------------------------
+void ComponentEditorViewItem::createInstantiationsValidator()
+{
+    QSharedPointer<ParameterValidator2014> parameterValidator (
+        new ParameterValidator2014(expressionParser_, component_->getChoices()));
+
+    QSharedPointer<InstantiationsValidator> temporaryValidator (new InstantiationsValidator(
+        expressionParser_, component_->getFileSets(), parameterValidator, libHandler_));
+
+    instantiationsValidator_ = temporaryValidator;
 }

@@ -14,15 +14,16 @@
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
-#include <IPXACTmodels/Component/DesignConfigurationInstantiation.h>
-#include <IPXACTmodels/Component/DesignInstantiation.h>
-#include <IPXACTmodels/Component/ComponentInstantiation.h>
-#include <IPXACTmodels/Component/View.h>
-#include <editors/ComponentEditor/common/ExpressionParser.h>
-#include <IPXACTmodels/Component/Model.h>
-
 #include <QString>
 #include <QVector>
+#include <QSharedPointer>
+
+class ExpressionParser;
+class View;
+class Model;
+class ComponentInstantiation;
+class DesignInstantiation;
+class DesignConfigurationInstantiation;
 
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:View.
@@ -33,9 +34,11 @@ public:
 
 	/*!
 	 *  The constructor.
-	 *
+     *
+     *      @param [in] expressionParser    The used expression parser.
+	 *      @param [in] model               The containing component model.
 	 */
-    ViewValidator();
+    ViewValidator(QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<Model> model);
 
 	//! The destructor.
 	~ViewValidator();
@@ -43,23 +46,11 @@ public:
     /*!
      *  Validates the given View.
      *
-     *      @param [in] View           The View to validate.
+     *      @param [in] View    The View to validate.
      *
      *      @return True, if the View is valid IP-XACT, otherwise false.
      */
-    virtual bool validate(QSharedPointer<View> view, QSharedPointer<Model> model) const;
-
-    /*!
-     *  Finds possible errors in a View and creates a list of them.
-     *
-     *      @param [in] errors      List of found errors.
-     *      @param [in] View   The View whose errors to find.
-     *      @param [in] context     Context to help locate the errors.
-     */
-    virtual void findErrorsIn(QVector<QString>& errors,
-		QSharedPointer<View> view, QString const& contex, QSharedPointer<Model> model) const;
-
-private:
+    virtual bool validate(QSharedPointer<View> view) const;
 
     /*!
      *  Check if the name is valid.
@@ -71,17 +62,79 @@ private:
 	bool hasValidName(QString const& name) const;
 	
     /*!
-     *  Check if an env identifier is valid.
+     *  Check if the is present value is valid.
      *
-     *      @param [in] name    The env identifier to be evaluated.
+     *      @param [in] view    The selected view.
      *
-     *      @return True, if the env identifier is valid, otherwise false.
+     *      @return True, if the is present value is valid, otherwise false.
+     */
+    bool hasValidIsPresent(QSharedPointer<View> view) const;
+
+    /*!
+     *  Check if the environment identifiers are valid.
+     *
+     *      @param [in] view    The selected view.
+     *
+     *      @return True, if the environment identifiers are valid, otherwise false.
+     */
+    bool hasValidEnvironmentIdentifiers(QSharedPointer<View> view) const;
+
+    /*!
+     *  Check if the component instantiation reference is valid.
+     *
+     *      @param [in] view    The selected view.
+     *
+     *      @return True, if the component instantiation reference is valid, otherwise false.
+     */
+    bool hasValidComponentInstantiationReference(QSharedPointer<View> view) const;
+
+    /*!
+     *  Check if the is design instantiation reference is valid.
+     *
+     *      @param [in] view    The selected view.
+     *
+     *      @return True, if the design instantiation reference is valid, otherwise false.
+     */
+    bool hasValidDesignInstantiationReference(QSharedPointer<View> view) const;
+
+    /*!
+     *  Check if the design configuration reference is valid.
+     *
+     *      @param [in] view    The selected view.
+     *
+     *      @return True, if the is design configuration reference is valid, otherwise false.
+     */
+    bool hasValidDesignConfigurationInstantiationReference(QSharedPointer<View> view) const;
+
+    /*!
+     *  Check if an environment identifier is valid.
+     *
+     *      @param [in] name    The environment identifier to be evaluated.
+     *
+     *      @return True, if the environment identifier is valid, otherwise false.
      */
 	bool isValidEnvId( QString const& envId ) const;
+
+    /*!
+     *  Finds possible errors in a View and creates a list of them.
+     *
+     *      @param [in] errors      List of found errors.
+     *      @param [in] View        The View whose errors to find.
+     *      @param [in] context     Context to help locate the errors.
+     */
+    virtual void findErrorsIn(QVector<QString>& errors, QSharedPointer<View> view, QString const& contex) const;
+
+private:
 
 	// Disable copying.
 	ViewValidator(ViewValidator const& rhs);
 	ViewValidator& operator=(ViewValidator const& rhs);
+
+    //! The used expression parser.
+    QSharedPointer<ExpressionParser> expressionParser_;
+
+    //! The containing component model.
+    QSharedPointer<Model> model_;
 };
 
 #endif // SYSTEMVERILOGVALIDATOR_H

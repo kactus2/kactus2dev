@@ -16,13 +16,17 @@
 #include <QColor>
 #include <QRegularExpression>
 
+#include <IPXACTmodels/Component/validators/ViewValidator.h>
+
 //-----------------------------------------------------------------------------
 // Function: ViewsModel::ViewsModel()
 //-----------------------------------------------------------------------------
-ViewsModel::ViewsModel(QSharedPointer<Component> component, QObject *parent):
+ViewsModel::ViewsModel(QSharedPointer<Component> component, QSharedPointer<ViewValidator> viewValidator,
+    QObject* parent):
 QAbstractTableModel(parent),
 component_(component),
-views_(component->getViews())
+views_(component->getViews()),
+viewValidator_(viewValidator)
 {
 
 }
@@ -169,15 +173,14 @@ QVariant ViewsModel::data(QModelIndex const& index, int role) const
         {
             return QColor("gray");
         }
-		/*else if (view->isValid(component_->getFileSetNames(), component_->getChoices()))
+        else if (index.column() == ViewColumns::NAME_COLUMN && !viewValidator_->hasValidName(view->name()))
         {
-			return QColor("black");
-		}*/
-		else
+            return QColor("red");
+        }
+        else
         {
-			//return QColor("red");
             return QColor("black");
-		}
+        }
 	}
 	else if (role == Qt::BackgroundRole)
     {
@@ -232,26 +235,6 @@ bool ViewsModel::setData(QModelIndex const& index, const QVariant& value, int ro
     {
 		return false;
 	}
-}
-
-//-----------------------------------------------------------------------------
-// Function: ViewsModel::isValid()
-//-----------------------------------------------------------------------------
-bool ViewsModel::isValid() const
-{
-	// file set names are needed to check that references within views are valid
-	QStringList fileSetNames = component_->getFileSetNames();
-
-	// if at least one view is invalid
-	foreach (QSharedPointer<View> view, *views_)
-    {
-		/*if (!view->isValid(fileSetNames, component_->getChoices()))
-        {
-			return false;
-		}*/
-	}
-	// all views were valid
-	return true;
 }
 
 //-----------------------------------------------------------------------------

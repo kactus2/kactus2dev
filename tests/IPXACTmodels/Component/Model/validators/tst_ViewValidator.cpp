@@ -11,6 +11,9 @@
 
 #include <IPXACTmodels/Component/validators/ViewValidator.h>
 
+#include <IPXACTmodels/Component/View.h>
+#include <IPXACTmodels/Component/Model.h>
+
 #include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
 
 #include <QtTest>
@@ -31,7 +34,10 @@ private slots:
 	void instantiationsExist();
 
 private:
-	QSharedPointer<Model> model_;
+	
+    QSharedPointer<Model> model_;
+
+    QSharedPointer<ExpressionParser> parser_;
 };
 
 //-----------------------------------------------------------------------------
@@ -40,6 +46,8 @@ private:
 tst_ViewValidator::tst_ViewValidator()
 {
 	model_ = QSharedPointer<Model>( new Model );
+
+    parser_ = QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser());
 }
 
 //-----------------------------------------------------------------------------
@@ -48,15 +56,15 @@ tst_ViewValidator::tst_ViewValidator()
 void tst_ViewValidator::baseCase()
 {
 	QSharedPointer<View> view( new View );
-	ViewValidator validator;
+	ViewValidator validator(parser_, model_);
 
 	view->setName("joq");
 
 	QVector<QString> errorList;
-	validator.findErrorsIn(errorList, view, "test", model_);
+	validator.findErrorsIn(errorList, view, "test");
 
 	QCOMPARE( errorList.size(), 0 );
-	QVERIFY( validator.validate(view, model_) );
+	QVERIFY( validator.validate(view) );
 }
 
 //-----------------------------------------------------------------------------
@@ -65,15 +73,15 @@ void tst_ViewValidator::baseCase()
 void tst_ViewValidator::nameFail()
 {
 	QSharedPointer<View> view( new View );
-	ViewValidator validator;
+	ViewValidator validator(parser_, model_);
 
 	view->setName(" \t");
 
 	QVector<QString> errorList;
-	validator.findErrorsIn(errorList, view, "test", model_);
+	validator.findErrorsIn(errorList, view, "test");
 
 	QCOMPARE( errorList.size(), 1 );
-	QVERIFY( !validator.validate(view, model_) );
+	QVERIFY( !validator.validate(view) );
 }
 
 //-----------------------------------------------------------------------------
@@ -82,16 +90,16 @@ void tst_ViewValidator::nameFail()
 void tst_ViewValidator::presenceFail()
 {
 	QSharedPointer<View> view( new View );
-	ViewValidator validator;
+	ViewValidator validator(parser_, model_);
 
 	view->setName("esa");
 	view->setIsPresent("foo");
 
 	QVector<QString> errorList;
-	validator.findErrorsIn(errorList, view, "test", model_);
+	validator.findErrorsIn(errorList, view, "test");
 
 	QCOMPARE( errorList.size(), 1 );
-	QVERIFY( !validator.validate(view, model_) );
+	QVERIFY( !validator.validate(view) );
 }
 
 //-----------------------------------------------------------------------------
@@ -100,7 +108,7 @@ void tst_ViewValidator::presenceFail()
 void tst_ViewValidator::envId()
 {
 	QSharedPointer<View> view( new View );
-	ViewValidator validator;
+	ViewValidator validator(parser_, model_);
 
 	view->setName("esa");
 
@@ -111,10 +119,10 @@ void tst_ViewValidator::envId()
 	view->setEnvIdentifiers(envIds);
 
 	QVector<QString> errorList;
-	validator.findErrorsIn(errorList, view, "test", model_);
+	validator.findErrorsIn(errorList, view, "test");
 
 	QCOMPARE( errorList.size(), 2 );
-	QVERIFY( !validator.validate(view, model_) );
+	QVERIFY( !validator.validate(view) );
 }
 
 //-----------------------------------------------------------------------------
@@ -123,7 +131,7 @@ void tst_ViewValidator::envId()
 void tst_ViewValidator::instantiationsNotExist()
 {
 	QSharedPointer<View> view( new View );
-	ViewValidator validator;
+	ViewValidator validator(parser_, model_);
 
 	view->setName("esa");
 
@@ -132,10 +140,10 @@ void tst_ViewValidator::instantiationsNotExist()
 	view->setDesignConfigurationInstantiationRef("nil");
 
 	QVector<QString> errorList;
-	validator.findErrorsIn(errorList, view, "test", model_);
+	validator.findErrorsIn(errorList, view, "test");
 
 	QCOMPARE( errorList.size(), 3 );
-	QVERIFY( !validator.validate(view, model_) );
+	QVERIFY( !validator.validate(view) );
 }
 
 //-----------------------------------------------------------------------------
@@ -143,28 +151,28 @@ void tst_ViewValidator::instantiationsNotExist()
 //-----------------------------------------------------------------------------
 void tst_ViewValidator::instantiationsExist()
 {
-	QSharedPointer<View> view( new View );
-	ViewValidator validator;
-
-	view->setName("esa");
-
 	QSharedPointer<ComponentInstantiation> cimp( new ComponentInstantiation("eka") );
 	model_->getComponentInstantiations()->append( cimp );
-	view->setComponentInstantiationRef(cimp->name());
 
 	QSharedPointer<DesignInstantiation> di( new DesignInstantiation("toka") );
 	model_->getDesignInstantiations()->append(di);
-	view->setDesignInstantiationRef(di->name());
 
 	QSharedPointer<DesignConfigurationInstantiation> dci( new DesignConfigurationInstantiation("kolmas") );
 	model_->getDesignConfigurationInstantiations()->append(dci);
-	view->setDesignConfigurationInstantiationRef(dci->name());
+
+    QSharedPointer<View> view( new View );
+    view->setName("esa");
+    view->setComponentInstantiationRef(cimp->name());
+    view->setDesignInstantiationRef(di->name());
+    view->setDesignConfigurationInstantiationRef(dci->name());
+
+    ViewValidator validator(parser_, model_);
 
 	QVector<QString> errorList;
-	validator.findErrorsIn(errorList, view, "test", model_);
+	validator.findErrorsIn(errorList, view, "test");
 
 	QCOMPARE( errorList.size(), 0 );
-	QVERIFY( validator.validate(view, model_) );
+	QVERIFY( validator.validate(view) );
 }
 
 QTEST_APPLESS_MAIN(tst_ViewValidator)

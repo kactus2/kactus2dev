@@ -36,6 +36,8 @@ HEADERS += ./XmlUtils.h \
     ./kactusExtensions/SWInstance.h \
     ./kactusExtensions/SWView.h \
     ./kactusExtensions/SystemView.h \
+    ./kactusExtensions/ApiDefinitionWriter.h \
+    ./kactusExtensions/ComDefinitionWriter.h \
     ./validators/BinaryValidator.h \
     ./validators/namevalidator.h \
     ./validators/NMTokenValidator.h \
@@ -220,11 +222,12 @@ HEADERS += ./XmlUtils.h \
     ./Component/validators/MemoryMapValidator.h \
     ./Component/validators/MemoryReserve.h \
     ./Component/validators/RegisterValidator.h \
-    ./kactusExtensions/ApiDefinitionWriter.h \
-    ./kactusExtensions/ComDefinitionWriter.h
+    ./Component/validators/InstantiationsValidator.h \
+    ./Component/validators/ViewValidator.h
 SOURCES += ./generaldeclarations.cpp \
     ./XmlUtils.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
+    ./kactusExtensions/ApiDefinitionWriter.cpp \
     ./kactusExtensions/ApiFunction.cpp \
     ./kactusExtensions/ApiFunctionParameter.cpp \
     ./kactusExtensions/ApiInterconnection.cpp \
@@ -232,6 +235,7 @@ SOURCES += ./generaldeclarations.cpp \
     ./kactusExtensions/BSPBuildCommand.cpp \
     ./kactusExtensions/ColumnDesc.cpp \
     ./kactusExtensions/ComDefinition.cpp \
+    ./kactusExtensions/ComDefinitionWriter.cpp \
     ./kactusExtensions/ComInterconnection.cpp \
     ./kactusExtensions/ComInterface.cpp \
     ./kactusExtensions/ComProperty.cpp \
@@ -433,5 +437,5 @@ SOURCES += ./generaldeclarations.cpp \
     ./Component/validators/MemoryMapValidator.cpp \
     ./Component/validators/MemoryReserve.cpp \
     ./Component/validators/RegisterValidator.cpp \
-    ./kactusExtensions/ApiDefinitionWriter.cpp \
-    ./kactusExtensions/ComDefinitionWriter.cpp
+    ./Component/validators/InstantiationsValidator.cpp \
+    ./Component/validators/ViewValidator.cpp

@@ -125,15 +125,6 @@ public:
     bool hasValidTransactionalPort(QSharedPointer<Port> port) const;
 
     /*!
-     *  Check if an env identifier is valid.
-     *
-     *      @param [in] name    The env identifier to be evaluated.
-     *
-     *      @return True, if the env identifier is valid, otherwise false.
-     */
-	bool isValidEnvId( QString const& envId ) const;
-
-    /*!
      *  Finds possible errors in a Port and creates a list of them.
      *
      *      @param [in] errors      List of found errors.

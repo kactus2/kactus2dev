@@ -21,7 +21,7 @@
 #include <QSortFilterProxyModel>
 
 class LibraryInterface;
-
+class ViewValidator;
 //-----------------------------------------------------------------------------
 //! The editor to add/remove/edit views of a component.
 //-----------------------------------------------------------------------------
@@ -34,21 +34,16 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] component   Pointer to the component being edited.
-	 *      @param [in] handler     Pointer to the instance managing the library.
-	 *      @param [in] parent      Pointer to the parent of this editor.
+	 *      @param [in] component       Pointer to the component being edited.
+	 *      @param [in] handler         Pointer to the instance managing the library.
+     *      @param [in] viewValidator   The validator used for views.
+	 *      @param [in] parent          Pointer to the parent of this editor.
 	 */
-	ViewsEditor(QSharedPointer<Component> component, LibraryInterface* handler, QWidget* parent = 0);
+	ViewsEditor(QSharedPointer<Component> component, LibraryInterface* handler,
+        QSharedPointer<ViewValidator> viewValidator, QWidget* parent = 0);
 	
 	//! The destructor.
 	virtual ~ViewsEditor();
-
-	/*!
-     *  Check for the validity of the editor.
-	 * 
-	 *      @return True if the editor is in valid state.
-	 */
-	virtual bool isValid() const;
 
 	/*!
      *  Reload the information from the model to the editor.

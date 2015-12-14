@@ -755,7 +755,7 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createHWRootItem(QShare
         expressionParser, hwRoot)));
 
     QSharedPointer<ComponentEditorViewsItem> viewsItem(new ComponentEditorViewsItem(&navigationModel_, libHandler_,
-        component, referenceCounter_, parameterFinder_, expressionFormatter_, hwRoot));
+        component, referenceCounter_, parameterFinder_, expressionFormatter_, expressionParser, hwRoot));
 
     hwRoot->addChildItem(viewsItem);
     

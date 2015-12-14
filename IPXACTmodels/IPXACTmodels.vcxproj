@@ -276,12 +276,14 @@
     <ClCompile Include="Component\validators\FieldValidator.cpp" />
     <ClCompile Include="Component\validators\FileSetValidator.cpp" />
     <ClCompile Include="Component\validators\FileValidator.cpp" />
+    <ClCompile Include="Component\validators\InstantiationsValidator.cpp" />
     <ClCompile Include="Component\validators\PortValidator.cpp" />
     <ClCompile Include="Component\validators\RemapStateValidator.cpp" />
     <ClCompile Include="Component\validators\MemoryMapBaseValidator.cpp" />
     <ClCompile Include="Component\validators\MemoryMapValidator.cpp" />
     <ClCompile Include="Component\validators\MemoryReserve.cpp" />
     <ClCompile Include="Component\validators\RegisterValidator.cpp" />
+    <ClCompile Include="Component\validators\ViewValidator.cpp" />
     <ClCompile Include="Component\View.cpp" />
     <ClCompile Include="Component\ViewReader.cpp" />
     <ClCompile Include="Component\ViewWriter.cpp" />
@@ -2034,12 +2036,14 @@
     <ClInclude Include="Component\validators\FieldValidator.h" />
     <ClInclude Include="Component\validators\FileSetValidator.h" />
     <ClInclude Include="Component\validators\FileValidator.h" />
+    <ClInclude Include="Component\validators\InstantiationsValidator.h" />
     <ClInclude Include="Component\validators\PortValidator.h" />
     <ClInclude Include="Component\validators\RemapStateValidator.h" />
     <ClInclude Include="Component\validators\MemoryMapBaseValidator.h" />
     <ClInclude Include="Component\validators\MemoryMapValidator.h" />
     <ClInclude Include="Component\validators\MemoryReserve.h" />
     <ClInclude Include="Component\validators\RegisterValidator.h" />
+    <ClInclude Include="Component\validators\ViewValidator.h" />
     <ClInclude Include="Component\View.h" />
     <CustomBuild Include="Component\ViewReader.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>

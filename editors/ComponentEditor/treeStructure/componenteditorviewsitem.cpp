@@ -16,15 +16,19 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/View.h>
 
+#include <IPXACTmodels/Component/validators/ViewValidator.h>
+
 //-----------------------------------------------------------------------------
 // Function: componenteditorviewsitem::ComponentEditorViewsItem()
 //-----------------------------------------------------------------------------
 ComponentEditorViewsItem::ComponentEditorViewsItem(ComponentEditorTreeModel* model, LibraryInterface* libHandler,
     QSharedPointer<Component> component, QSharedPointer<ReferenceCounter> referenceCounter,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
-    ComponentEditorItem* parent):
+    QSharedPointer<ExpressionParser> expressionParser, ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-views_(component->getViews())
+views_(component->getViews()),
+expressionParser_(expressionParser),
+viewValidator_(new ViewValidator(expressionParser, component->getModel()))
 {
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);
@@ -36,7 +40,8 @@ views_(component->getViews())
 	foreach (QSharedPointer<View> view, *views_)
     {
 		QSharedPointer<ComponentEditorViewItem> viewItem(new ComponentEditorViewItem
-            (view, model, libHandler, component, parameterFinder_, expressionFormatter_, this));
+            (view, model, libHandler, component, parameterFinder_, expressionFormatter_, expressionParser,
+            viewValidator_, this));
 
         viewItem->setReferenceCounter(referenceCounter);
 
@@ -88,7 +93,7 @@ ItemEditor* ComponentEditorViewsItem::editor()
 {
 	if (!editor_)
     {
-		editor_ = new ViewsEditor(component_, libHandler_);
+		editor_ = new ViewsEditor(component_, libHandler_, viewValidator_);
 		editor_->setProtection(locked_);
 
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
@@ -105,7 +110,7 @@ ItemEditor* ComponentEditorViewsItem::editor()
 void ComponentEditorViewsItem::createChild( int index )
 {
 	QSharedPointer<ComponentEditorViewItem> viewItem(new ComponentEditorViewItem(views_->at(index), model_,
-        libHandler_, component_, parameterFinder_, expressionFormatter_, this));
+        libHandler_, component_, parameterFinder_, expressionFormatter_, expressionParser_, viewValidator_, this));
 	viewItem->setLocked(locked_);
 
     viewItem->setReferenceCounter(referenceCounter_);

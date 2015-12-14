@@ -29,14 +29,14 @@
 // Function: ViewEditor::ViewEditor()
 //-----------------------------------------------------------------------------
 ViewEditor::ViewEditor(QSharedPointer<Component> component, QSharedPointer<View> view,
-    LibraryInterface* libHandler, QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter, QWidget* parent):
-ItemEditor(component, libHandler, parent), 
-    view_(view),
-    nameEditor_(view, this, tr("View name and description")),
-    envIdentifier_(view, this),
-    componentInstantiationEditor_(0),
-    hierarchyReferenceEditor_(0)
+                       LibraryInterface* libHandler, QSharedPointer<ParameterFinder> parameterFinder,
+                       QSharedPointer<ExpressionFormatter> expressionFormatter, QWidget *parent /* = 0 */):
+ItemEditor(component, libHandler, parent),
+view_(view),
+nameEditor_(view, this, tr("View name and description")),
+envIdentifier_(view, this),
+componentInstantiationEditor_(0),
+hierarchyReferenceEditor_(0)
 {
     componentInstantiationEditor_ = new ComponentInstantiationEditor(component, view, getComponentInstantiation(),
         parameterFinder, expressionFormatter, this);

@@ -21,8 +21,11 @@ HEADERS += ../../../../../IPXACTmodels/common/Array.h \
     ../../../../../IPXACTmodels/common/Enumeration.h \
     ../../../../../editors/ComponentEditor/common/ExpressionParser.h \
     ../../../../../IPXACTmodels/common/Extendable.h \
+    ../../../../../IPXACTmodels/Component/File.h \
     ../../../../../IPXACTmodels/common/FileBuilder.h \
+    ../../../../../IPXACTmodels/Component/FileSet.h \
     ../../../../../IPXACTmodels/common/FileTypes.h \
+    ../../../../../IPXACTmodels/Component/Function.h \
     ../../../../../IPXACTmodels/common/GenericVendorExtension.h \
     ../../../../../IPXACTmodels/Component/validators/InstantiationsValidator.h \
     ../../../../../IPXACTmodels/kactusExtensions/Kactus2Group.h \
@@ -37,9 +40,29 @@ HEADERS += ../../../../../IPXACTmodels/common/Array.h \
     ../../../../../IPXACTmodels/common/VLNV.h \
     ../../../../../IPXACTmodels/common/validators/ValueFormatter.h \
     ../../../../../IPXACTmodels/common/Vector.h \
-    ../../../../../IPXACTmodels/Component/File.h \
-    ../../../../../IPXACTmodels/Component/FileSet.h \
-    ../../../../../IPXACTmodels/Component/Function.h
+    ../../../../../IPXACTmodels/Design/HierInterface.h \
+    ../../../../../IPXACTmodels/kactusExtensions/Kactus2Placeholder.h \
+    ../../../../../IPXACTmodels/Design/ActiveInterface.h \
+    ../../../../../IPXACTmodels/Design/MonitorInterface.h \
+    ../../../../../IPXACTmodels/common/PartSelect.h \
+    ../../../../../IPXACTmodels/Design/Interconnection.h \
+    ../../../../MockObjects/LibraryMock.h \
+    ../../../../../IPXACTmodels/common/Document.h \
+    ../../../../../IPXACTmodels/kactusExtensions/KactusAttribute.h \
+    ../../../../../IPXACTmodels/Design/Design.h \
+    ../../../../../IPXACTmodels/Design/ComponentInstance.h \
+    ../../../../../IPXACTmodels/validators/namevalidator.h \
+    ../../../../../IPXACTmodels/Design/AdHocConnection.h \
+    ../../../../../IPXACTmodels/Design/PortReference.h \
+    ../../../../../IPXACTmodels/kactusExtensions/Kactus2Position.h \
+    ../../../../../IPXACTmodels/XmlUtils.h \
+    ../../../../../IPXACTmodels/Design/MonitorInterconnection.h \
+    ../../../../../IPXACTmodels/designConfiguration/DesignConfiguration.h \
+    ../../../../../IPXACTmodels/designConfiguration/ViewConfiguration.h \
+    ../../../../../IPXACTmodels/designConfiguration/InterconnectionConfiguration.h \
+    ../../../../../IPXACTmodels/designConfiguration/MultipleAbstractorInstances.h \
+    ../../../../../IPXACTmodels/designConfiguration/AbstractorInstance.h \
+    ../../../../../IPXACTmodels/designConfiguration/InterfaceRef.h
 SOURCES += ../../../../../IPXACTmodels/common/Array.cpp \
     ../../../../../IPXACTmodels/common/Assertion.cpp \
     ../../../../../IPXACTmodels/common/BooleanValue.cpp \
@@ -53,8 +76,11 @@ SOURCES += ../../../../../IPXACTmodels/common/Array.cpp \
     ../../../../../IPXACTmodels/Component/DesignInstantiation.cpp \
     ../../../../../IPXACTmodels/common/Enumeration.cpp \
     ../../../../../IPXACTmodels/common/Extendable.cpp \
+    ../../../../../IPXACTmodels/Component/File.cpp \
     ../../../../../IPXACTmodels/common/FileBuilder.cpp \
+    ../../../../../IPXACTmodels/Component/FileSet.cpp \
     ../../../../../IPXACTmodels/common/FileTypes.cpp \
+    ../../../../../IPXACTmodels/Component/Function.cpp \
     ../../../../../IPXACTmodels/common/GenericVendorExtension.cpp \
     ../../../../../IPXACTmodels/Component/validators/InstantiationsValidator.cpp \
     ../../../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
@@ -70,6 +96,26 @@ SOURCES += ../../../../../IPXACTmodels/common/Array.cpp \
     ../../../../../IPXACTmodels/common/validators/ValueFormatter.cpp \
     ../../../../../IPXACTmodels/common/Vector.cpp \
     ./tst_InstantiationsValidator.cpp \
-    ../../../../../IPXACTmodels/Component/File.cpp \
-    ../../../../../IPXACTmodels/Component/FileSet.cpp \
-    ../../../../../IPXACTmodels/Component/Function.cpp
+    ../../../../../IPXACTmodels/Design/HierInterface.cpp \
+    ../../../../../IPXACTmodels/kactusExtensions/Kactus2Placeholder.cpp \
+    ../../../../../IPXACTmodels/Design/ActiveInterface.cpp \
+    ../../../../../IPXACTmodels/Design/MonitorInterface.cpp \
+    ../../../../../IPXACTmodels/common/PartSelect.cpp \
+    ../../../../../IPXACTmodels/Design/Interconnection.cpp \
+    ../../../../MockObjects/LibraryMock.cpp \
+    ../../../../../IPXACTmodels/common/Document.cpp \
+    ../../../../../IPXACTmodels/kactusExtensions/KactusAttribute.cpp \
+    ../../../../../IPXACTmodels/Design/Design.cpp \
+    ../../../../../IPXACTmodels/Design/ComponentInstance.cpp \
+    ../../../../../IPXACTmodels/validators/namevalidator.cpp \
+    ../../../../../IPXACTmodels/Design/AdHocConnection.cpp \
+    ../../../../../IPXACTmodels/Design/PortReference.cpp \
+    ../../../../../IPXACTmodels/kactusExtensions/Kactus2Position.cpp \
+    ../../../../../IPXACTmodels/XmlUtils.cpp \
+    ../../../../../IPXACTmodels/Design/MonitorInterconnection.cpp \
+    ../../../../../IPXACTmodels/designConfiguration/DesignConfiguration.cpp \
+    ../../../../../IPXACTmodels/designConfiguration/ViewConfiguration.cpp \
+    ../../../../../IPXACTmodels/designConfiguration/InterconnectionConfiguration.cpp \
+    ../../../../../IPXACTmodels/designConfiguration/MultipleAbstractorInstances.cpp \
+    ../../../../../IPXACTmodels/designConfiguration/AbstractorInstance.cpp \
+    ../../../../../IPXACTmodels/designConfiguration/InterfaceRef.cpp

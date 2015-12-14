@@ -1175,6 +1175,12 @@
     <ClCompile Include="GeneratedFiles\Release\moc_ComDefinitionWriter.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="Component\validators\InstantiationsValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\validators\ViewValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BusDefinition\BusDefinition.h">
@@ -1608,6 +1614,12 @@
     </ClInclude>
     <ClInclude Include="common\ProtocolValidator.h">
       <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\InstantiationsValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\ViewValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

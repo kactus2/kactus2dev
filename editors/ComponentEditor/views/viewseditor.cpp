@@ -23,11 +23,12 @@
 //-----------------------------------------------------------------------------
 // Function: ViewsEditor::ViewsEditor()
 //-----------------------------------------------------------------------------
-ViewsEditor::ViewsEditor(QSharedPointer<Component> component, LibraryInterface* handler, QWidget* parent):
+ViewsEditor::ViewsEditor(QSharedPointer<Component> component, LibraryInterface* handler,
+                         QSharedPointer<ViewValidator> viewValidator, QWidget* parent /* = 0 */):
 ItemEditor(component, handler, parent),
 view_(this),
 proxy_(this),
-model_(component, this)
+model_(component, viewValidator, this)
 {
 	// display a label on top the table
 	SummaryLabel* summaryLabel = new SummaryLabel(tr("Views summary"), this);
@@ -71,14 +72,6 @@ model_(component, this)
 ViewsEditor::~ViewsEditor()
 {
 
-}
-
-//-----------------------------------------------------------------------------
-// Function: ViewsEditor::isValid()
-//-----------------------------------------------------------------------------
-bool ViewsEditor::isValid() const
-{
-	return model_.isValid();
 }
 
 //-----------------------------------------------------------------------------

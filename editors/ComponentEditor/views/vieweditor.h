@@ -30,7 +30,6 @@ class View;
 class ComponentInstantiation;
 class DesignInstantiation;
 class DesignConfigurationInstantiation;
-
 //-----------------------------------------------------------------------------
 //! Editor to edit a view within a component.
 //-----------------------------------------------------------------------------

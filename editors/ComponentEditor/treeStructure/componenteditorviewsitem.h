@@ -19,6 +19,9 @@
 class Component;
 class View;
 
+class ExpressionParser;
+class ViewValidator;
+class InstantiationsValidator;
 //-----------------------------------------------------------------------------
 //! The Views-item in the component editor's navigation tree.
 //-----------------------------------------------------------------------------
@@ -37,6 +40,7 @@ public:
 	 *      @param [in] referenceCounter        Pointer to the reference counter.
 	 *      @param [in] parameterFinder         Pointer to the parameter finder.
 	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
+     *      @param [in] expressionParser        The used expression parser.
 	 *      @param [in] parent                  Pointer to the parent item.
 	 */
 	ComponentEditorViewsItem(ComponentEditorTreeModel* model,
@@ -45,6 +49,7 @@ public:
         QSharedPointer<ReferenceCounter> referenceCounter,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QSharedPointer<ExpressionParser> expressionParser,
         ComponentEditorItem* parent);
 
 	//! The destructor.
@@ -95,6 +100,12 @@ private:
 
 	//! The views being edited.
     QSharedPointer<QList<QSharedPointer<View> > > views_;
+
+    //! The used expression parser.
+    QSharedPointer<ExpressionParser> expressionParser_;
+
+    //! The validator used for views.
+    QSharedPointer<ViewValidator> viewValidator_;
 };
 
 #endif // COMPONENTEDITORVIEWSITEM_H

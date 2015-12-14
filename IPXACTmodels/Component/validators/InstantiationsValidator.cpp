@@ -11,11 +11,18 @@
 
 #include "InstantiationsValidator.h"
 
+#include <editors/ComponentEditor/common/ExpressionParser.h>
+
+#include <library/LibraryManager/libraryinterface.h>
+
+#include <IPXACTmodels/Component/DesignConfigurationInstantiation.h>
+#include <IPXACTmodels/Component/DesignInstantiation.h>
+#include <IPXACTmodels/Component/ComponentInstantiation.h>
+#include <IPXACTmodels/Component/FileSet.h>
+
 #include <IPXACTmodels/Component/choice.h>
 #include <IPXACTmodels/common/Enumeration.h>
 #include <IPXACTmodels/common/validators/ParameterValidator2014.h>
-
-#include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
 
 #include <QRegularExpression>
 #include <QStringList>
@@ -23,7 +30,14 @@
 //-----------------------------------------------------------------------------
 // Function: InstantiationsValidator::InstantiationsValidator()
 //-----------------------------------------------------------------------------
-InstantiationsValidator::InstantiationsValidator()
+InstantiationsValidator::InstantiationsValidator(QSharedPointer<ExpressionParser> expressionParser,
+                                                 QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets,
+                                                 QSharedPointer<ParameterValidator2014> parameterValidator,
+                                                 LibraryInterface* libraryHandler):
+expressionParser_(expressionParser),
+availableFileSets_(fileSets),
+parameterValidator_(parameterValidator),
+libraryHandler_(libraryHandler)
 {
 
 }
@@ -39,229 +53,10 @@ InstantiationsValidator::~InstantiationsValidator()
 //-----------------------------------------------------------------------------
 // Function: InstantiationsValidator::validateDesignInstantiation()
 //-----------------------------------------------------------------------------
-bool InstantiationsValidator::validateDesignInstantiation(QSharedPointer<DesignInstantiation> designInstantiation) const
+bool InstantiationsValidator::validateDesignInstantiation(QSharedPointer<DesignInstantiation> designInstantiation)
+    const
 {
-	if ( !hasValidName( designInstantiation->name() ) )
-	{
-		return false;
-	}
-
-	if ( !designInstantiation->getDesignReference() || !designInstantiation->getDesignReference()->isValid() )
-	{
-		return false;
-	}
-
-	return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: InstantiationsValidator::findErrorsInDesignInstantiation()
-//-----------------------------------------------------------------------------
-void InstantiationsValidator::findErrorsInDesignInstantiation(QVector<QString>& errors,
-	QSharedPointer<DesignInstantiation> designInstantiation, QString const&) const
-{
-	if ( !hasValidName( designInstantiation->name() ) )
-	{
-		errors.append(QObject::tr("The name is invalid or in-existing: %1").arg(designInstantiation->name()));
-	}
-
-	if ( !designInstantiation->getDesignReference() )
-	{
-		errors.append(QObject::tr("The design reference does not exist."));
-	}
-	else if ( !designInstantiation->getDesignReference()->isValid() )
-	{
-		errors.append(QObject::tr("The design reference is invalid:").arg(designInstantiation->getDesignReference()->toString()));
-	}
-}
-
-//-----------------------------------------------------------------------------
-// Function: InstantiationsValidator::validateDesignConfigurationInstantiation()
-//-----------------------------------------------------------------------------
-bool InstantiationsValidator::validateDesignConfigurationInstantiation(
-	QSharedPointer<DesignConfigurationInstantiation> designConfigurationInstantiation) const
-{
-	QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-	ParameterValidator2014 paraValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
-
-	if ( !hasValidName( designConfigurationInstantiation->name() ) )
-	{
-		return false;
-	}
-
-	if ( !designConfigurationInstantiation->getDesignConfigurationReference() ||
-		!designConfigurationInstantiation->getDesignConfigurationReference()->isValid() )
-	{
-		return false;
-	}
-
-	foreach ( QSharedPointer<Parameter> parameter, *designConfigurationInstantiation->getParameters() )
-	{
-		if ( !paraValidator.validate(parameter) )
-		{
-			return false;
-		}
-	}
-
-	return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: InstantiationsValidator::findErrorsInDesignConfigurationInstantiation()
-//-----------------------------------------------------------------------------
-void InstantiationsValidator::findErrorsInDesignConfigurationInstantiation(QVector<QString>& errors,
-	QSharedPointer<DesignConfigurationInstantiation> designConfigurationInstantiation, QString const& context) const
-{
-	QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-	ParameterValidator2014 paraValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
-
-	if ( !hasValidName( designConfigurationInstantiation->name() ) )
-	{
-		errors.append(QObject::tr("The name is invalid or in-existing: %1").arg(designConfigurationInstantiation->name()));
-	}
-
-	if ( !designConfigurationInstantiation->getDesignConfigurationReference() )
-	{
-		errors.append(QObject::tr("The design reference does not exist."));
-	}
-	else if ( !designConfigurationInstantiation->getDesignConfigurationReference()->isValid() )
-	{
-		errors.append(QObject::tr("The design reference is invalid:")
-			.arg(designConfigurationInstantiation->getDesignConfigurationReference()->toString()));
-	}
-
-	foreach ( QSharedPointer<Parameter> parameter, *designConfigurationInstantiation->getParameters() )
-	{
-		paraValidator.findErrorsIn(errors,parameter,context);
-	}
-}
-
-//-----------------------------------------------------------------------------
-// Function: InstantiationsValidator::validateComponentInstantiation()
-//-----------------------------------------------------------------------------
-bool InstantiationsValidator::validateComponentInstantiation(QSharedPointer<ComponentInstantiation> componentInstantiation,
-	QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets) const
-{
-	QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-	ParameterValidator2014 paraValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
-
-	if ( inexistingReferenceList(fileSets, componentInstantiation ) )
-	{
-		return false;
-	}
-
-	foreach ( QString fileSetRef, *componentInstantiation->getFileSetReferences() )
-	{
-		if ( !existingReference(fileSets, fileSetRef) )
-		{
-			return false;
-		}
-	}
-
-	foreach ( QSharedPointer<FileBuilder> currentFileBuilder, *componentInstantiation->getDefaultFileBuilders() )
-	{
-		if ( !hasValidName( currentFileBuilder->getFileType() ) )
-		{
-			return false;
-		}
-
-		if ( !currentFileBuilder->getReplaceDefaultFlags().isEmpty() &&
-			!parser->isValidExpression( currentFileBuilder->getReplaceDefaultFlags() ) )
-		{
-			return false;
-		}
-	}
-
-	foreach ( QSharedPointer<ModuleParameter> parameter, *componentInstantiation->getModuleParameters() )
-	{
-		if ( !paraValidator.validate(parameter) )
-		{
-			return false;
-		}
-
-		if ( !isValidPresence(parameter, parser) )
-		{
-			return false;
-		}
-
-		if ( !isValidUsageType(parameter) )
-		{
-			return false;
-		}
-	}
-
-	foreach ( QSharedPointer<Parameter> parameter, *componentInstantiation->getParameters() )
-	{
-		if ( !paraValidator.validate(parameter) )
-		{
-			return false;
-		}
-	}
-
-	return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: InstantiationsValidator::findErrorsInComponentInstantiation()
-//-----------------------------------------------------------------------------
-void InstantiationsValidator::findErrorsInComponentInstantiation(QVector<QString>& errors,
-	QSharedPointer<ComponentInstantiation> componentInstantiation, QString const& contex,
-	QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets) const
-{
-	QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-	ParameterValidator2014 paraValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
-
-	if ( inexistingReferenceList(fileSets, componentInstantiation ) )
-	{
-		errors.append(QObject::tr("There are file set references, but no file sets."));
-	}
-	else
-	{
-		foreach ( QString fileSetRef, *componentInstantiation->getFileSetReferences() )
-		{
-			if ( !existingReference(fileSets, fileSetRef) )
-			{
-				errors.append(QObject::tr("Referenced file set %1 does not exist.").arg(fileSetRef));
-			}
-		}
-	}
-
-	foreach ( QSharedPointer<FileBuilder> currentFileBuilder, *componentInstantiation->getDefaultFileBuilders() )
-	{
-		if ( !hasValidName( currentFileBuilder->getFileType() ) )
-		{
-			errors.append(QObject::tr("The type of default file builder is empty."));
-		}
-
-		if ( !currentFileBuilder->getReplaceDefaultFlags().isEmpty() &&
-			!parser->isValidExpression( currentFileBuilder->getReplaceDefaultFlags() ) )
-		{
-			errors.append(QObject::tr("\"Replace default flags\" of default file builder is an invalid expression: %1"
-				).arg(currentFileBuilder->getReplaceDefaultFlags()));
-		}
-	}
-
-	foreach ( QSharedPointer<ModuleParameter> parameter, *componentInstantiation->getModuleParameters() )
-	{
-		paraValidator.findErrorsIn(errors,parameter,contex);
-
-		if ( !isValidPresence(parameter, parser) )
-		{
-			errors.append(QObject::tr("The presence of module parameter %1 is invalid: %2")
-				.arg(parameter->name()).arg(parameter->getIsPresent()));
-		}
-
-		if ( !isValidUsageType(parameter) )
-		{
-			errors.append(QObject::tr("The usage of module parameter %1 is invalid: %2")
-				.arg(parameter->name()).arg(parameter->getUsageType()));
-		}
-	}
-
-	foreach ( QSharedPointer<Parameter> parameter, *componentInstantiation->getParameters() )
-	{
-		paraValidator.findErrorsIn(errors,parameter,contex);
-	}
+    return hasValidName(designInstantiation->name()) && hasValidDesignReference(designInstantiation);
 }
 
 //-----------------------------------------------------------------------------
@@ -269,63 +64,336 @@ void InstantiationsValidator::findErrorsInComponentInstantiation(QVector<QString
 //-----------------------------------------------------------------------------
 bool InstantiationsValidator::hasValidName(QString const& name) const
 {
-	QRegularExpression whiteSpaceExpression;
-	whiteSpaceExpression.setPattern("^\\s*$");
-	QRegularExpressionMatch whiteSpaceMatch = whiteSpaceExpression.match(name);
+    QRegularExpression whiteSpaceExpression;
+    whiteSpaceExpression.setPattern("^\\s*$");
+    QRegularExpressionMatch whiteSpaceMatch = whiteSpaceExpression.match(name);
 
-	if (name.isEmpty() || whiteSpaceMatch.hasMatch())
-	{
-		return false;
-	}
+    if (name.isEmpty() || whiteSpaceMatch.hasMatch())
+    {
+        return false;
+    }
 
-	return true;
+    return true;
 }
 
 //-----------------------------------------------------------------------------
-// Function: InstantiationsValidator::inexistingReferenceList()
+// Function: InstantiationsValidator::hasValidDesignReference()
 //-----------------------------------------------------------------------------
-bool InstantiationsValidator::inexistingReferenceList(QSharedPointer<QList<QSharedPointer<FileSet> > > fileSet,
-	QSharedPointer<ComponentInstantiation> componentInstantiation) const
+bool InstantiationsValidator::hasValidDesignReference(QSharedPointer<DesignInstantiation> designInstantiation) const
 {
-	return ( ( !fileSet || fileSet->count() < 1 ) && componentInstantiation->getFileSetReferences()->count() > 0 );
+    if ( libraryHandler_ && designInstantiation->getDesignReference() &&
+        designInstantiation->getDesignReference()->isValid() )
+    {
+        return libraryHandler_->contains(*designInstantiation->getDesignReference().data()) &&
+            libraryHandler_->getDocumentType(*designInstantiation->getDesignReference().data()) == VLNV::DESIGN;
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: InstantiationsValidator::findErrorsInDesignInstantiation()
+//-----------------------------------------------------------------------------
+void InstantiationsValidator::findErrorsInDesignInstantiation(QVector<QString>& errors,
+    QSharedPointer<DesignInstantiation> designInstantiation, QString const& contex) const
+{
+	if ( !hasValidName( designInstantiation->name() ) )
+	{
+		errors.append(QObject::tr("The name of design instantiation is invalid or non-existing within %1")
+            .arg(contex));
+	}
+
+	if ( !designInstantiation->getDesignReference() )
+	{
+		errors.append(QObject::tr("The design reference does not exist for design instantiation %2.")
+            .arg(designInstantiation->name()));
+	}
+    else if (!hasValidDesignReference(designInstantiation))
+	{
+		errors.append(QObject::tr("The design reference %1 is invalid within design instantiation %2")
+            .arg(designInstantiation->getDesignReference()->toString()).arg(designInstantiation->name()));
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: InstantiationsValidator::validateDesignConfigurationInstantiation()
+//-----------------------------------------------------------------------------
+bool InstantiationsValidator::validateDesignConfigurationInstantiation(
+	QSharedPointer<DesignConfigurationInstantiation> instantiation) const
+{
+    return hasValidName(instantiation->name()) && hasValidDesignConfigurationReference(instantiation) &&
+        hasValidParameters(instantiation->getParameters());
+}
+
+//-----------------------------------------------------------------------------
+// Function: InstantiationsValidator::hasValidDesignConfigurationReference()
+//-----------------------------------------------------------------------------
+bool InstantiationsValidator::hasValidDesignConfigurationReference(
+    QSharedPointer<DesignConfigurationInstantiation> instantiation) const
+{
+    if ( libraryHandler_ && instantiation->getDesignConfigurationReference() &&
+        instantiation->getDesignConfigurationReference()->isValid() )
+    {
+        return libraryHandler_->contains(*instantiation->getDesignConfigurationReference().data()) &&
+            libraryHandler_->getDocumentType(
+            *instantiation->getDesignConfigurationReference().data()) == VLNV::DESIGNCONFIGURATION;
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: InstantiationsValidator::hasValidParameters()
+//-----------------------------------------------------------------------------
+bool InstantiationsValidator::hasValidParameters(
+    QSharedPointer<QList<QSharedPointer<Parameter> > > availableParameters) const
+{
+    if (!availableParameters->isEmpty())
+    {
+        QStringList parameterNames;
+        foreach ( QSharedPointer<Parameter> parameter, *availableParameters )
+        {
+            if ( parameterNames.contains(parameter->name()) || !parameterValidator_->validate(parameter) )
+            {
+                return false;
+            }
+            else
+            {
+                parameterNames.append(parameter->name());
+            }
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: InstantiationsValidator::findErrorsInDesignConfigurationInstantiation()
+//-----------------------------------------------------------------------------
+void InstantiationsValidator::findErrorsInDesignConfigurationInstantiation(QVector<QString>& errors,
+	QSharedPointer<DesignConfigurationInstantiation> instantiation, QString const& contex) const
+{
+	if ( !hasValidName( instantiation->name() ) )
+	{
+		errors.append(QObject::tr("The name of design configuration instantiation is invalid within %1")
+            .arg(contex));
+	}
+
+	if ( !instantiation->getDesignConfigurationReference() )
+	{
+		errors.append(QObject::tr("The design configuration reference does not exist for design configuration "
+            "instantiation %1.").arg(instantiation->name()));
+	}
+	else if ( !instantiation->getDesignConfigurationReference()->isValid() )
+	{
+		errors.append(QObject::tr("The design configuration reference %1 is invalid for design configuration "
+            "instantiation %2")
+			.arg(instantiation->getDesignConfigurationReference()->toString()).arg(instantiation->name()));
+	}
+
+    QStringList parameterNames;
+    QStringList foundNames;
+	foreach ( QSharedPointer<Parameter> parameter, *instantiation->getParameters() )
+	{
+        if (parameterNames.contains(parameter->name()) && !foundNames.contains(parameter->name()))
+        {
+            errors.append(QObject::tr("Parameter name %1 is not unique within design configuration "
+                "instantiation %2").arg(parameter->name()).arg(instantiation->name()));
+            foundNames.append(parameter->name());
+        }
+        else
+        {
+            parameterNames.append(parameter->name());
+        }
+		parameterValidator_->findErrorsIn(errors,parameter,contex);
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: InstantiationsValidator::validateComponentInstantiation()
+//-----------------------------------------------------------------------------
+bool InstantiationsValidator::validateComponentInstantiation (QSharedPointer<ComponentInstantiation> instantiation)
+    const
+{
+    return hasValidName(instantiation->name()) &&
+        componentInstantiationFileBuildersAreValid(instantiation) &&
+        componentInstantiationFileSetReferencesAreValid(instantiation) &&
+        hasValidModuleParameters(instantiation) &&
+        hasValidParameters(instantiation->getParameters());
+}
+
+//-----------------------------------------------------------------------------
+// Function: InstantiationsValidator::componentInstantiationFileBuildersAreValid()
+//-----------------------------------------------------------------------------
+bool InstantiationsValidator::componentInstantiationFileBuildersAreValid(
+    QSharedPointer<ComponentInstantiation> instantiation) const
+{
+    foreach ( QSharedPointer<FileBuilder> currentFileBuilder, *instantiation->getDefaultFileBuilders() )
+    {
+        if ( !hasValidName( currentFileBuilder->getFileType() ) ||
+            !fileBuilderReplaceDefaultFlagsIsValid(currentFileBuilder) )
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: InstantiationsValidator::fileBuilderReplaceDefaultFlagsIsValid()
+//-----------------------------------------------------------------------------
+bool InstantiationsValidator::fileBuilderReplaceDefaultFlagsIsValid(QSharedPointer<FileBuilder> fileBuilder) const
+{
+    QString replaceDefaultFlags = fileBuilder->getReplaceDefaultFlags();
+    if (!replaceDefaultFlags.isEmpty())
+    {
+        bool replaceFlagsOk = expressionParser_->isValidExpression(replaceDefaultFlags);
+        int replaceFlagsInt = expressionParser_->parseExpression(replaceDefaultFlags).toInt();
+
+        return replaceFlagsOk && (replaceFlagsInt == 0 || replaceFlagsInt == 1);
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: InstantiationsValidator::componentInstantiationFileSetReferencesAreValid()
+//-----------------------------------------------------------------------------
+bool InstantiationsValidator::componentInstantiationFileSetReferencesAreValid(
+    QSharedPointer<ComponentInstantiation> instantiation) const
+{
+    foreach ( QString fileSetRef, *instantiation->getFileSetReferences() )
+    {
+        if ( !fileSetReferenceIsValid(fileSetRef) )
+        {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------
 // Function: InstantiationsValidator::existingReference()
 //-----------------------------------------------------------------------------
-bool InstantiationsValidator::existingReference(QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets, QString fileSetRef) const
+bool InstantiationsValidator::fileSetReferenceIsValid(QString const& fileSetRef) const
 {
-	foreach ( QSharedPointer<FileSet> fileSet, *fileSets )
+    foreach ( QSharedPointer<FileSet> fileSet, *availableFileSets_ )
+    {
+        if ( fileSetRef == fileSet->name() )
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: InstantiationsValidator::hasValidModuleParameters()
+//-----------------------------------------------------------------------------
+bool InstantiationsValidator::hasValidModuleParameters(QSharedPointer<ComponentInstantiation> instantiation) const
+{
+    if (!instantiation->getModuleParameters()->isEmpty())
+    {
+        QStringList moduleParameterNames;
+        foreach ( QSharedPointer<ModuleParameter> parameter, *instantiation->getModuleParameters() )
+        {
+            if ( moduleParameterNames.contains(parameter->name()) || !parameterValidator_->validate(parameter) ||
+                !moduleParameterHasValidPresence(parameter) || !moduleParameterHasValidUsageType(parameter))
+            {
+                return false;
+            }
+
+            moduleParameterNames.append(parameter->name());
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: InstantiationsValidator::findErrorsInComponentInstantiation()
+//-----------------------------------------------------------------------------
+void InstantiationsValidator::findErrorsInComponentInstantiation(QVector<QString>& errors,
+    QSharedPointer<ComponentInstantiation> instantiation, QString const& context) const
+{
+    if (!hasValidName(instantiation->name()))
+    {
+        errors.append(QObject::tr("Invalid name %1 set for component instantiation within %2")
+            .arg(instantiation->name()).arg(context));
+    }
+
+    foreach ( QString fileSetRef, *instantiation->getFileSetReferences() )
+    {
+        if ( !fileSetReferenceIsValid(fileSetRef) )
+        {
+            errors.append(QObject::tr("Referenced file set %1 does not exist.").arg(fileSetRef));
+        }
+    }
+
+	foreach ( QSharedPointer<FileBuilder> currentFileBuilder, *instantiation->getDefaultFileBuilders() )
 	{
-		if ( fileSetRef == fileSet->name() )
+		if ( !hasValidName( currentFileBuilder->getFileType() ) )
 		{
-			return true;
+			errors.append(QObject::tr("The type of default file builder is empty."));
+		}
+        if (!fileBuilderReplaceDefaultFlagsIsValid(currentFileBuilder))
+		{
+			errors.append(QObject::tr("Invalid replace default flags %1 value set for default file builder in %2")
+                .arg(currentFileBuilder->getReplaceDefaultFlags())
+                .arg(currentFileBuilder->getReplaceDefaultFlags()));
 		}
 	}
 
-	return false;
+	foreach ( QSharedPointer<ModuleParameter> parameter, *instantiation->getModuleParameters() )
+	{
+		parameterValidator_->findErrorsIn(errors,parameter,context);
+
+		if ( !moduleParameterHasValidPresence(parameter) )
+		{
+			errors.append(QObject::tr("The presence of module parameter %1 is invalid: %2")
+				.arg(parameter->name()).arg(parameter->getIsPresent()));
+		}
+
+		if ( !moduleParameterHasValidUsageType(parameter) )
+		{
+			errors.append(QObject::tr("The usage of module parameter %1 is invalid: %2")
+				.arg(parameter->name()).arg(parameter->getUsageType()));
+		}
+	}
+
+	foreach ( QSharedPointer<Parameter> parameter, *instantiation->getParameters() )
+	{
+		parameterValidator_->findErrorsIn(errors,parameter,context);
+	}
 }
 
 //-----------------------------------------------------------------------------
 // Function: InstantiationsValidator::isValidUsageType()
 //-----------------------------------------------------------------------------
-bool InstantiationsValidator::isValidUsageType(QSharedPointer<ModuleParameter> parameter) const
+bool InstantiationsValidator::moduleParameterHasValidUsageType(QSharedPointer<ModuleParameter> parameter) const
 {
 	if ( !parameter->getUsageType().isEmpty() && parameter->getUsageType() != "nontyped"
 		&& parameter->getUsageType() != "typed" )
 	{
 		return false;
 	}
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------
 // Function: InstantiationsValidator::isValidPresence()
 //-----------------------------------------------------------------------------
-bool InstantiationsValidator::isValidPresence(QSharedPointer<ModuleParameter> parameter,
-	QSharedPointer<ExpressionParser> parser) const
+bool InstantiationsValidator::moduleParameterHasValidPresence(QSharedPointer<ModuleParameter> parameter) const
 {
-	if ( !parameter->getIsPresent().isEmpty() && !parser->isValidExpression( parameter->getIsPresent() ) )
+	if ( !parameter->getIsPresent().isEmpty() &&
+        !expressionParser_->isValidExpression( parameter->getIsPresent() ) )
 	{
 		return false;
 	}
+
+    return true;
 }
