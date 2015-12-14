@@ -1181,6 +1181,9 @@
     <ClCompile Include="Component\validators\ViewValidator.cpp">
       <Filter>Source Files\Component\validators</Filter>
     </ClCompile>
+    <ClCompile Include="Component\validators\OtherClockDriverValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BusDefinition\BusDefinition.h">
@@ -1619,6 +1622,9 @@
       <Filter>Header Files\Component\validators</Filter>
     </ClInclude>
     <ClInclude Include="Component\validators\ViewValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\OtherClockDriverValidator.h">
       <Filter>Header Files\Component\validators</Filter>
     </ClInclude>
   </ItemGroup>

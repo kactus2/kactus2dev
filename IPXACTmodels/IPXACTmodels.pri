@@ -223,7 +223,8 @@ HEADERS += ./XmlUtils.h \
     ./Component/validators/MemoryReserve.h \
     ./Component/validators/RegisterValidator.h \
     ./Component/validators/InstantiationsValidator.h \
-    ./Component/validators/ViewValidator.h
+    ./Component/validators/ViewValidator.h \
+    ./Component/validators/OtherClockDriverValidator.h
 SOURCES += ./generaldeclarations.cpp \
     ./XmlUtils.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
@@ -438,4 +439,5 @@ SOURCES += ./generaldeclarations.cpp \
     ./Component/validators/MemoryReserve.cpp \
     ./Component/validators/RegisterValidator.cpp \
     ./Component/validators/InstantiationsValidator.cpp \
-    ./Component/validators/ViewValidator.cpp
+    ./Component/validators/ViewValidator.cpp \
+    ./Component/validators/OtherClockDriverValidator.cpp

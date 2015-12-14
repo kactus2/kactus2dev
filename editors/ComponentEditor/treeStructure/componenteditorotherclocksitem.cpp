@@ -16,15 +16,17 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/OtherClockDriver.h>
 
+#include <IPXACTmodels/Component/validators/OtherClockDriverValidator.h>
+
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorOtherClocksItem::ComponentEditorOtherClocksItem()
 //-----------------------------------------------------------------------------
-ComponentEditorOtherClocksItem::ComponentEditorOtherClocksItem(ComponentEditorTreeModel* model, 
-    LibraryInterface* libHandler,
-    QSharedPointer<Component> component,
-    ComponentEditorItem* parent):
+ComponentEditorOtherClocksItem::ComponentEditorOtherClocksItem(ComponentEditorTreeModel* model,
+    LibraryInterface* libHandler, QSharedPointer<Component> component,
+    QSharedPointer<ExpressionParser> expressionParser, ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-    otherClocks_(component->getOtherClockDrivers())
+otherClocks_(component->getOtherClockDrivers()),
+clockValidator_(new OtherClockDriverValidator(expressionParser))
 {
 
 }
@@ -59,14 +61,20 @@ QString ComponentEditorOtherClocksItem::text() const
 //-----------------------------------------------------------------------------
 bool ComponentEditorOtherClocksItem::isValid() const
 {
-	/*foreach (QSharedPointer<OtherClockDriver> otherClock, otherClocks_)
+    QString clockNames;
+    foreach (QSharedPointer<OtherClockDriver> clockDriver, *otherClocks_)
     {
-		if (!otherClock->isValid())
+        if (clockNames.contains(clockDriver->getClockName()) || !clockValidator_->validate(clockDriver))
         {
-			return false;
-		}
-	}*/
-	return true;
+            return false;
+        }
+        else
+        {
+            clockNames.append(clockDriver->getClockName());
+        }
+    }
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -76,7 +84,7 @@ ItemEditor* ComponentEditorOtherClocksItem::editor()
 {
 	if (!editor_)
     {
-		editor_ = new OtherClockDriversEditor(component_, libHandler_);
+		editor_ = new OtherClockDriversEditor(component_, libHandler_, clockValidator_);
 		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),

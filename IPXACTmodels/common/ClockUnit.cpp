@@ -14,7 +14,7 @@
 //-----------------------------------------------------------------------------
 // Function: ClockUnit::ClockUnit()
 //-----------------------------------------------------------------------------
-ClockUnit::ClockUnit(QString const& value /* = QString() */) :
+ClockUnit::ClockUnit(QString const& value) :
 value_(value),
 timeUnit_(TIMEUNIT_UNSPECIFIED)
 {

@@ -25,10 +25,10 @@
 // Function: OtherClockDriversEditor::OtherClockDriversEditor()
 //-----------------------------------------------------------------------------
 OtherClockDriversEditor::OtherClockDriversEditor(QSharedPointer<Component> component, LibraryInterface* handler,
-    QWidget *parent): 
+    QSharedPointer<OtherClockDriverValidator> clockValidator, QWidget *parent /* = 0 */):
 ItemEditor(component, handler, parent),
-    view_(this), 
-    model_(component, this)
+view_(this),
+model_(component, clockValidator, this)
 {
     connect(&model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(&model_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
@@ -79,14 +79,6 @@ ItemEditor(component, handler, parent),
 //-----------------------------------------------------------------------------
 OtherClockDriversEditor::~OtherClockDriversEditor()
 {
-}
-
-//-----------------------------------------------------------------------------
-// Function: OtherClockDriversEditor::isValid()
-//-----------------------------------------------------------------------------
-bool OtherClockDriversEditor::isValid() const
-{
-	return model_.isValid();
 }
 
 //-----------------------------------------------------------------------------

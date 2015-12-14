@@ -794,7 +794,7 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createHWRootItem(QShare
         new ComponentEditorCpusItem(&navigationModel_, libHandler_, component, expressionParser, hwRoot)));
 
     hwRoot->addChildItem(QSharedPointer<ComponentEditorOtherClocksItem>(
-        new ComponentEditorOtherClocksItem(&navigationModel_, libHandler_, component, hwRoot)));
+        new ComponentEditorOtherClocksItem(&navigationModel_, libHandler_, component, expressionParser, hwRoot)));
 
     hwRoot->addChildItem(QSharedPointer<ComponentEditorComInterfacesItem>(
         new ComponentEditorComInterfacesItem(&navigationModel_, libHandler_, component, hwRoot)));

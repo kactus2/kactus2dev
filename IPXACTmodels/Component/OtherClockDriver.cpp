@@ -14,7 +14,7 @@
 //-----------------------------------------------------------------------------
 // Function: OtherClockDriver::OtherClockDriver()
 //-----------------------------------------------------------------------------
-OtherClockDriver::OtherClockDriver(QString const& clockName /* = QString() */) :
+OtherClockDriver::OtherClockDriver(QString const& clockName) :
 clockName_(clockName),
 clockSource_(),
 clockPeriod_(new ClockUnit()),

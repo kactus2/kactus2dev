@@ -18,15 +18,19 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/OtherClockDriver.h>
 
+#include <IPXACTmodels/Component/validators/OtherClockDriverValidator.h>
+
 #include <QColor>
 
 //-----------------------------------------------------------------------------
 // Function: OtherClockDriversModel::OtherClockDriversModel()
 //-----------------------------------------------------------------------------
-OtherClockDriversModel::OtherClockDriversModel(QSharedPointer<Component> component, QObject *parent): 
+OtherClockDriversModel::OtherClockDriversModel(QSharedPointer<Component> component,
+    QSharedPointer<OtherClockDriverValidator> clockValidator, QObject *parent):
 QAbstractTableModel(parent),
 component_(component), 
-table_(component->getOtherClockDrivers())
+table_(component->getOtherClockDrivers()),
+clockValidator_(clockValidator)
 {
 
 }
@@ -133,14 +137,14 @@ QVariant OtherClockDriversModel::data(QModelIndex const&  index, int role) const
 
     else if (role == Qt::ForegroundRole)
     {
-        /*if (table_->at(index.row())->isValid())
+        if (validateIndex(index))
         {
             return QColor("black");
 		}
 		else
-        {*/
+        {
 			return QColor("red");
-		//}
+		}
 	}
 
 	else
@@ -215,35 +219,35 @@ bool OtherClockDriversModel::setData(QModelIndex const& index, QVariant const& v
     {
         table_->value(index.row())->setClockName(value.toString());
     }
-    else if (index.column() == 1)
+    else if (index.column() == OtherClockDriverColumns::CLOCK_SOURCE)
     {
         table_->value(index.row())->setClockSource(value.toString());
     }
-    else if (index.column() == 2)
+    else if (index.column() == OtherClockDriverColumns::CLOCK_PERIOD)
     {
         table_->value(index.row())->getClockPeriod()->setValue(value.toString());
     }
-    else if (index.column() == 3)
+    else if (index.column() == OtherClockDriverColumns::CLOCK_PERIOD_UNIT)
     {
         table_->value(index.row())->getClockPeriod()->setTimeUnit(value.toString());
     }
-    else if (index.column() == 4)
+    else if (index.column() == OtherClockDriverColumns::PULSE_OFFSET)
     {
         table_->value(index.row())->getClockPulseOffset()->setValue(value.toString());        
     }
-    else if (index.column() == 5)
+    else if (index.column() == OtherClockDriverColumns::PULSE_OFFSET_UNIT)
     {
         table_->value(index.row())->getClockPulseOffset()->setTimeUnit(value.toString());
     }
-    else if (index.column() == 6)
+    else if (index.column() == OtherClockDriverColumns::PULSE_VALUE)
     {
         table_->value(index.row())->setClockPulseValue(value.toString());
     }
-    else if (index.column() == 7)
+    else if (index.column() == OtherClockDriverColumns::PULSE_DURATION)
     {
         table_->value(index.row())->getClockPulseDuration()->setValue(value.toString());
     }
-    else if (index.column() == 8)
+    else if (index.column() == OtherClockDriverColumns::PULSE_DURATION_UNIT)
     {
         table_->value(index.row())->getClockPulseDuration()->setTimeUnit(value.toString());
     }
@@ -268,23 +272,6 @@ Qt::ItemFlags OtherClockDriversModel::flags(QModelIndex const&  index) const
     }
 
 	return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-}
-
-//-----------------------------------------------------------------------------
-// Function: OtherClockDriversModel::isValid()
-//-----------------------------------------------------------------------------
-bool OtherClockDriversModel::isValid() const
-{
-	// check all items in the model
-	/*foreach (QSharedPointer<OtherClockDriver> driver, table_)
-    {
-		// if one item is not valid
-		if (!driver->isValid())
-			return false;
-	}*/
-
-	// all items were valid
-	return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -361,4 +348,35 @@ void OtherClockDriversModel::onAddItem(QModelIndex const& index)
 
 	// tell also parent widget that contents have been changed
 	emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: otherclockdriversmodel::validateIndex()
+//-----------------------------------------------------------------------------
+bool OtherClockDriversModel::validateIndex(QModelIndex const& index) const
+{
+    QSharedPointer<OtherClockDriver> currentClockDriver = table_->at(index.row());
+
+    if (index.column() == OtherClockDriverColumns::NAME)
+    {
+        return clockValidator_->hasValidName(currentClockDriver->getClockName());
+    }
+    else if (index.column() == OtherClockDriverColumns::CLOCK_PERIOD)
+    {
+        return clockValidator_->hasValidClockValue(currentClockDriver->getClockPeriod());
+    }
+    else if (index.column() == OtherClockDriverColumns::PULSE_OFFSET)
+    {
+        return clockValidator_->hasValidClockValue(currentClockDriver->getClockPulseOffset());
+    }
+    else if (index.column() == OtherClockDriverColumns::PULSE_VALUE)
+    {
+        return clockValidator_->hasValidClockPulseValue(currentClockDriver);
+    }
+    else if (index.column() == OtherClockDriverColumns::PULSE_DURATION)
+    {
+        return clockValidator_->hasValidClockValue(currentClockDriver->getClockPulseDuration());
+    }
+
+    return true;
 }

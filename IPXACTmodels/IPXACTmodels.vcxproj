@@ -277,6 +277,7 @@
     <ClCompile Include="Component\validators\FileSetValidator.cpp" />
     <ClCompile Include="Component\validators\FileValidator.cpp" />
     <ClCompile Include="Component\validators\InstantiationsValidator.cpp" />
+    <ClCompile Include="Component\validators\OtherClockDriverValidator.cpp" />
     <ClCompile Include="Component\validators\PortValidator.cpp" />
     <ClCompile Include="Component\validators\RemapStateValidator.cpp" />
     <ClCompile Include="Component\validators\MemoryMapBaseValidator.cpp" />
@@ -2037,6 +2038,7 @@
     <ClInclude Include="Component\validators\FileSetValidator.h" />
     <ClInclude Include="Component\validators\FileValidator.h" />
     <ClInclude Include="Component\validators\InstantiationsValidator.h" />
+    <ClInclude Include="Component\validators\OtherClockDriverValidator.h" />
     <ClInclude Include="Component\validators\PortValidator.h" />
     <ClInclude Include="Component\validators\RemapStateValidator.h" />
     <ClInclude Include="Component\validators\MemoryMapBaseValidator.h" />

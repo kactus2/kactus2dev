@@ -20,6 +20,7 @@ SUBDIRS += validators\tst_ChannelValidator.pro \
 		   validators\tst_AddressSpaceValidator.pro \
 		   validators\tst_BusInterfaceValidator.pro \
 		   validators\tst_ChoiceValidator.pro \
+		   validators\tst_OtherClockDriverValidator.pro \
 		   Model\tst_ViewWriter.pro \
 		   Model\tst_ViewReader.pro \
 		   Model\tst_InstantiationsWriter.pro \
