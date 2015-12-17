@@ -92,15 +92,6 @@ ViewEditor::~ViewEditor()
 }
 
 //-----------------------------------------------------------------------------
-// Function: ViewEditor::isValid()
-//-----------------------------------------------------------------------------
-bool ViewEditor::isValid() const
-{
-    return nameEditor_.isValid() || envIdentifier_.isValid() || componentInstantiationEditor_->isValid() ||
-        hierarchyReferenceEditor_->isValid();
-}
-
-//-----------------------------------------------------------------------------
 // Function: ViewEditor::refresh()
 //-----------------------------------------------------------------------------
 void ViewEditor::refresh()

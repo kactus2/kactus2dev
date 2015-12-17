@@ -42,30 +42,30 @@
 BusIfPortmapTab::BusIfPortmapTab(LibraryInterface* libHandler, QSharedPointer<Component> component,
     QSharedPointer<BusInterface> busif, QSharedPointer<ExpressionParser> expressionParser, QWidget* parent):
 QWidget(parent),
-busif_(busif),
-component_(component),
-libHandler_(libHandler),
-model_(busif, component, libHandler, expressionParser, this),
-view_(this),
-logicalView_(this),
-logicalModel_(libHandler, this),
-mappingLabel_(tr("Bit-field mapping"),this),
-mappingView_(component, this),
-mappingProxy_(this),
-mappingModel_(busif, component, libHandler, expressionParser, this),
-physicalView_(this),
-physProxy_(component, this),
-physModel_(component_, this),
-cleanButton_(QIcon(":/icons/common/graphics/cleanup.png"), tr("Clean up"), this),
-connectButton_(QIcon(":/icons/common/graphics/connect.png"), tr("Connect"), this),
-showAllButton_(tr("Show all ports in component"), this),
-showHideMappingButton_(tr("Show bit-field mapping"),this),
-nameFilterEditor_(new QLineEdit(this)),
-inButton_(QIcon(":/icons/common/graphics/control-180.png"), "", this),
-outButton_(QIcon(":/icons/common/graphics/control.png"), "", this),
-hideConnectedBox_(tr("Hide connected ports"), this),
-portSet_(),
-expressionParser_(expressionParser)
+    busif_(busif),
+    component_(component),
+    libHandler_(libHandler),
+    model_(busif, component, libHandler, expressionParser, this),
+    view_(this),
+    logicalView_(this),
+    logicalModel_(libHandler, this),
+    mappingLabel_(tr("Bit-field mapping"),this),
+    mappingView_(component, this),
+    mappingProxy_(this),
+    mappingModel_(busif, component, libHandler, expressionParser, this),
+    physicalView_(this),
+    physProxy_(component, this),
+    physModel_(component_, this),
+    cleanButton_(QIcon(":/icons/common/graphics/cleanup.png"), tr("Clean up"), this),
+    connectButton_(QIcon(":/icons/common/graphics/connect.png"), tr("Connect"), this),
+    showAllButton_(tr("Show all ports in component"), this),
+    showHideMappingButton_(tr("Show bit-field mapping"),this),
+    nameFilterEditor_(new QLineEdit(this)),
+    inButton_(QIcon(":/icons/common/graphics/control-180.png"), "", this),
+    outButton_(QIcon(":/icons/common/graphics/control.png"), "", this),
+    hideConnectedBox_(tr("Hide connected ports"), this),
+    portSet_(),
+    expressionParser_(expressionParser)
 {
     view_.setModel(&model_);
     view_.setItemDelegate(new PortMapsDelegate(this));
@@ -105,12 +105,11 @@ expressionParser_(expressionParser)
     setTabOrder(nameFilterEditor_, &physicalView_);
 
 	// Connect signals from model.
-	connect(&model_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(errorMessage(const QString&)),
-		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
+        this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(noticeMessage(const QString&)),
 		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(logicalRemoved(const QString&)),
@@ -145,14 +144,12 @@ expressionParser_(expressionParser)
 		&physModel_, SLOT(onMoveItems(const QStringList&, const QModelIndex&)), Qt::UniqueConnection);
 
     // Connect signals from logical model.
-	connect(&logicalModel_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&logicalModel_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&logicalModel_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
     // Connect signal from physical model.
-	connect(&physModel_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&physModel_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&physModel_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
@@ -173,16 +170,13 @@ expressionParser_(expressionParser)
         &mappingView_, SLOT(onLogicalPortChanged(const QString&)), Qt::UniqueConnection);    
 
     // Connect signals from toolbar buttons.
-	connect(&cleanButton_, SIGNAL(clicked(bool)),
-		this, SLOT(onRefresh()), Qt::UniqueConnection);
-	connect(&connectButton_, SIGNAL(clicked(bool)),
-		this, SLOT(onConnect()), Qt::UniqueConnection);
-    connect(&showHideMappingButton_, SIGNAL(clicked(bool)),
+	connect(&cleanButton_, SIGNAL(clicked(bool)), this, SLOT(onRefresh()), Qt::UniqueConnection);
+	connect(&connectButton_, SIGNAL(clicked(bool)),	this, SLOT(onConnect()), Qt::UniqueConnection);
+    connect(&showHideMappingButton_, SIGNAL(clicked(bool)), 
         this, SLOT(toggleMappingVisibility()), Qt::UniqueConnection);
     connect(&hideConnectedBox_, SIGNAL(toggled(bool)), 
         &physProxy_, SLOT(setFilterHideConnected(bool)), Qt::UniqueConnection);
-    connect(&showAllButton_, SIGNAL(clicked(bool)), 
-        this, SLOT(onShowAll()), Qt::UniqueConnection);
+    connect(&showAllButton_, SIGNAL(clicked(bool)), this, SLOT(onShowAll()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -214,7 +208,6 @@ bool BusIfPortmapTab::isValid(QStringList& errorList) const
 void BusIfPortmapTab::refresh()
 {
 	view_.update();
-
     model_.reset();    
 
 	// the lists are refreshed
@@ -286,9 +279,9 @@ void BusIfPortmapTab::onBitConnect()
     QList<QSharedPointer<PortMap> > portMaps = mappingModel_.getPortMaps();
 
     if (portMaps.isEmpty())
-    {        
+    {
         emit errorMessage("No physical ports mapped to " + logicalPorts.last());
-        return; 
+        return;
    }
 
     // Remove previous mappings of the logical port, if any.
@@ -302,13 +295,13 @@ void BusIfPortmapTab::onBitConnect()
     }
     
     foreach (QSharedPointer<PortMap> map, portMaps)
-    {        
+    {
         model_.createMap(map);
                    
-        logicalModel_.removePort(map->getLogicalPort()->name_); 
+        logicalModel_.removePort(map->getLogicalPort()->name_);
         logicalView_.onPortRemoved();
         physProxy_.onPortConnected(map->getPhysicalPort()->name_);
-    }    
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -412,7 +405,7 @@ void BusIfPortmapTab::onMakeConnections(QStringList const& physicalPorts, QStrin
 //-----------------------------------------------------------------------------
 // Function: BusIfPortmapTab::onLogicalChanged()
 //-----------------------------------------------------------------------------
-void BusIfPortmapTab::onLogicalChanged(const QModelIndex& index)
+void BusIfPortmapTab::onLogicalChanged(QModelIndex const& index)
 {
     QString logicalName = logicalModel_.data(index).toString();
 
@@ -535,9 +528,9 @@ void BusIfPortmapTab::mapOneToOne(QStringList const& physicalPorts, QStringList 
 //-----------------------------------------------------------------------------
 void BusIfPortmapTab::mapOneToMany(QStringList const& physicalPorts, QStringList const& logicalPorts)
 {
-    foreach (QString physical, physicalPorts) 
+    foreach (QString const& physical, physicalPorts) 
     {
-        foreach (QString logical, logicalPorts) 
+        foreach (QString const& logical, logicalPorts) 
         {
             mapPorts(physical, logical);
         }
@@ -549,69 +542,62 @@ void BusIfPortmapTab::mapOneToMany(QStringList const& physicalPorts, QStringList
 //-----------------------------------------------------------------------------
 void BusIfPortmapTab::mapPorts(QString const& physicalPort, QString const& logicalPort)
 {
-    // Both port names must be non-empty.
-    if (physicalPort.isEmpty() || logicalPort.isEmpty())
+    if (physicalPort.isEmpty() || logicalPort.isEmpty() || !component_->hasPort(physicalPort) ||
+        !model_.canCreateMap(physicalPort, logicalPort))
     {
         return;	    
     }
 
-    // The port must be found on the component.
-    if (!component_->hasPort(physicalPort)) 
-    {
-        return;
-    }
-
-    if (!model_.canCreateMap(physicalPort, logicalPort)) 
-    {
-        return;
-    }
-
-    int logicalSize = getLogicalSize(logicalPort, physicalPort);
-    int physicalSize = getPhysicalSize(physicalPort);
+    int logicalSize = getLogicalSize(logicalPort);
 
     QSharedPointer<PortMap> portMap(new PortMap());
     QSharedPointer<PortMap::PhysicalPort> physical(new PortMap::PhysicalPort());
     physical->name_ = physicalPort;
-    QSharedPointer<PartSelect> physicalSelect(new PartSelect());
-    physical->partSelect_ = physicalSelect;
     portMap->setPhysicalPort(physical);
 
     QSharedPointer<PortMap::LogicalPort> logical(new PortMap::LogicalPort());
     logical->name_ = logicalPort;
-    QSharedPointer<Range> logicalRange(new Range("0", "0"));
-    logical->range_ = logicalRange;
     portMap->setLogicalPort(logical);
 
-    if (physicalSize > logicalSize)
+    if (logicalSize > 0)
     {
-        BitSelectionDialog dialog(logicalPort, 0, physicalPort, physicalSize, logicalSize, this);
-           
-        if (dialog.exec() == QDialog::Rejected)
+        QSharedPointer<PartSelect> physicalSelect(new PartSelect());
+        physical->partSelect_ = physicalSelect;
+
+        QSharedPointer<Range> logicalRange(new Range("0", "0"));
+        logical->range_ = logicalRange;
+
+        int physicalSize = getPhysicalSize(physicalPort);
+        if (physicalSize > logicalSize)
         {
-            return;
+            BitSelectionDialog dialog(logicalPort, 0, physicalPort, physicalSize, logicalSize, this);
+
+            if (dialog.exec() == QDialog::Rejected)
+            {
+                return;
+            }
+
+            physicalSelect->setLeftRange(QString::number(dialog.getHigherBound()));
+            physicalSelect->setRightRange(QString::number(dialog.getLowerBound()));
+            physicalSize = abs(dialog.getHigherBound() - dialog.getLowerBound()) + 1;
         }
-        
-        physicalSelect->setLeftRange(QString::number(dialog.getHigherBound()));
-        physicalSelect->setRightRange(QString::number(dialog.getLowerBound()));
-        physicalSize = abs(dialog.getHigherBound() - dialog.getLowerBound()) + 1;
-    }
-    else
-    {
-        physicalSelect->setLeftRange(component_->getPort(physicalPort)->getLeftBound());
-        physicalSelect->setRightRange(component_->getPort(physicalPort)->getRightBound());
-    }
+        else
+        {
+            physicalSelect->setLeftRange(component_->getPort(physicalPort)->getLeftBound());
+            physicalSelect->setRightRange(component_->getPort(physicalPort)->getRightBound());
+        }
 
-    if (physicalSelect->getLeftRange().toInt() > logicalRange->getRight().toInt())
-    {
-        logicalRange->setLeft(QString::number(physicalSize - 1));
-        logicalRange->setRight("0");
+        if (physicalSelect->getLeftRange().toInt() > logicalRange->getRight().toInt())
+        {
+            logicalRange->setLeft(QString::number(physicalSize - 1));
+            logicalRange->setRight("0");
+        }
+        else
+        {
+            logicalRange->setLeft("0");
+            logicalRange->setRight(QString::number(physicalSize - 1));
+        }
     }
-    else
-    {
-        logicalRange->setLeft("0");
-        logicalRange->setRight(QString::number(physicalSize - 1));
-    }
-
     model_.createMap(portMap);
 
     physProxy_.onPortConnected(physicalPort);
@@ -621,24 +607,32 @@ void BusIfPortmapTab::mapPorts(QString const& physicalPort, QString const& logic
 //-----------------------------------------------------------------------------
 // Function: BusIfPortmapTab::getLogicalSize()
 //-----------------------------------------------------------------------------
-int BusIfPortmapTab::getLogicalSize(QString const& logicalPort, QString const& physicalPort)
+int BusIfPortmapTab::getLogicalSize(QString const& logicalPort)
 {
     int logicalSize = 0;
 
-    VLNV absDefVLNV = *busif_->getAbstractionTypes()->first()->getAbstractionRef();
-    if (libHandler_->getDocumentType(absDefVLNV) == VLNV::ABSTRACTIONDEFINITION)
+    if (busif_->getAbstractionTypes() && !busif_->getAbstractionTypes()->isEmpty())
     {
-        QSharedPointer<AbstractionDefinition> absDef = 
-            libHandler_->getModel(absDefVLNV).staticCast<AbstractionDefinition>();     
+        VLNV absDefVLNV = *busif_->getAbstractionTypes()->first()->getAbstractionRef();
 
-        QString logicalWidth = absDef->getPort(logicalPort)->getWire()->getWidth(busif_->getInterfaceMode());
-        logicalSize = expressionParser_->parseExpression(logicalWidth).toInt();
-
-        if (logicalSize < 0)
+        if (libHandler_->getDocumentType(absDefVLNV) == VLNV::ABSTRACTIONDEFINITION)
         {
-            logicalSize = getPhysicalSize(physicalPort);
+            QSharedPointer<AbstractionDefinition> absDef = 
+                libHandler_->getModel(absDefVLNV).staticCast<AbstractionDefinition>();
+
+            QSharedPointer<PortAbstraction> abstractPort = absDef->getPort(logicalPort);
+            if (abstractPort)
+            {
+                QSharedPointer<WireAbstraction> abstractWire = abstractPort->getWire();
+                if (abstractWire)
+                {
+                    QString logicalWidth = abstractWire->getWidth(busif_->getInterfaceMode());
+                    logicalSize = expressionParser_->parseExpression(logicalWidth).toInt();
+                }
+            }
         }
-    }	
+    }
+
     return logicalSize;
 }
 
@@ -647,10 +641,16 @@ int BusIfPortmapTab::getLogicalSize(QString const& logicalPort, QString const& p
 //-----------------------------------------------------------------------------
 int BusIfPortmapTab::getPhysicalSize(QString const& physicalPort)
 {
-    int portLeft = expressionParser_->parseExpression(component_->getPort(physicalPort)->getLeftBound()).toInt();
-    int portRight = expressionParser_->parseExpression(component_->getPort(physicalPort)->getRightBound()).toInt();
+    int size = 1;
 
-    int size = abs(portLeft - portRight) + 1;
+    QSharedPointer<Port> port = component_->getPort(physicalPort);
+    if (port)
+    {
+        int portLeft = expressionParser_->parseExpression(port->getLeftBound()).toInt();
+        int portRight = expressionParser_->parseExpression(port->getRightBound()).toInt();
+
+        size = abs(portLeft - portRight) + 1;
+    }
 
     return size;
 }

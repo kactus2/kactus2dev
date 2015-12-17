@@ -49,13 +49,6 @@ public:
 	~ModuleParameterEditor();
 
     /*!
-     *  Checks if the contents of the editor are valid.
-     *
-     *      @return True, if contents is valid, otherwise false.
-     */
-    bool isValid() const;
-
-    /*!
      *  Refresh the contents of the editor.
      */
     void refresh();

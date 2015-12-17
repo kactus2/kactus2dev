@@ -137,6 +137,7 @@
     <ClCompile Include="AbstractionDefinition\TransactionalAbstractionReader.cpp" />
     <ClCompile Include="AbstractionDefinition\TransactionalAbstractionWriter.cpp" />
     <ClCompile Include="AbstractionDefinition\TransactionalPort.cpp" />
+    <ClCompile Include="AbstractionDefinition\validators\AbstractionDefinitionValidator.cpp" />
     <ClCompile Include="AbstractionDefinition\WireAbstraction.cpp" />
     <ClCompile Include="AbstractionDefinition\WireAbstractionReader.cpp" />
     <ClCompile Include="AbstractionDefinition\WireAbstractionWriter.cpp" />
@@ -181,13 +182,15 @@
     <ClCompile Include="common\PresenceTypes.cpp" />
     <ClCompile Include="common\Protocol.cpp" />
     <ClCompile Include="common\ProtocolReader.cpp" />
-    <ClCompile Include="common\ProtocolValidator.cpp" />
     <ClCompile Include="common\ProtocolWriter.cpp" />
     <ClCompile Include="common\Qualifier.cpp" />
     <ClCompile Include="common\Range.cpp" />
     <ClCompile Include="common\TimingConstraint.cpp" />
     <ClCompile Include="common\TransactionalTypes.cpp" />
+    <ClCompile Include="common\validators\CellSpecificationValidator.cpp" />
     <ClCompile Include="common\validators\ParameterValidator2014.cpp" />
+    <ClCompile Include="common\validators\ProtocolValidator.cpp" />
+    <ClCompile Include="common\validators\TimingConstraintValidator.cpp" />
     <ClCompile Include="common\validators\ValueFormatter.cpp" />
     <ClCompile Include="common\Vector.cpp" />
     <ClCompile Include="common\VLNV.cpp" />
@@ -269,6 +272,7 @@
     <ClCompile Include="Component\Transactional.cpp" />
     <ClCompile Include="Component\validators\AddressBlockValidator.cpp" />
     <ClCompile Include="Component\validators\AddressSpaceValidator.cpp" />
+    <ClCompile Include="Component\validators\BusInterfaceValidator.cpp" />
     <ClCompile Include="Component\validators\ChannelValidator.cpp" />
     <ClCompile Include="Component\validators\ChoiceValidator.cpp" />
     <ClCompile Include="Component\validators\CPUValidator.cpp" />
@@ -277,6 +281,7 @@
     <ClCompile Include="Component\validators\FileSetValidator.cpp" />
     <ClCompile Include="Component\validators\FileValidator.cpp" />
     <ClCompile Include="Component\validators\InstantiationsValidator.cpp" />
+    <ClCompile Include="Component\validators\PortMapValidator.cpp" />
     <ClCompile Include="Component\validators\OtherClockDriverValidator.cpp" />
     <ClCompile Include="Component\validators\PortValidator.cpp" />
     <ClCompile Include="Component\validators\RemapStateValidator.cpp" />
@@ -999,6 +1004,7 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_XML_LIB -DIPXACTMODELS_LIB -D_WINDLL "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(SolutionDir)\."</Command>
     </CustomBuild>
     <ClInclude Include="AbstractionDefinition\TransactionalPort.h" />
+    <ClInclude Include="AbstractionDefinition\validators\AbstractionDefinitionValidator.h" />
     <ClInclude Include="AbstractionDefinition\WireAbstraction.h" />
     <CustomBuild Include="AbstractionDefinition\WireAbstractionReader.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
@@ -1296,12 +1302,14 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_XML_LIB -DIPXACTMODELS_LIB -D_WINDLL "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(SolutionDir)\."</Command>
     </CustomBuild>
-    <ClInclude Include="common\ProtocolValidator.h" />
     <ClInclude Include="common\Qualifier.h" />
     <ClInclude Include="common\Range.h" />
     <ClInclude Include="common\TimingConstraint.h" />
     <ClInclude Include="common\TransactionalTypes.h" />
+    <ClInclude Include="common\validators\CellSpecificationValidator.h" />
     <ClInclude Include="common\validators\ParameterValidator2014.h" />
+    <ClInclude Include="common\validators\ProtocolValidator.h" />
+    <ClInclude Include="common\validators\TimingConstraintValidator.h" />
     <ClInclude Include="common\validators\ValueFormatter.h" />
     <ClInclude Include="common\Vector.h" />
     <ClInclude Include="common\VendorExtension.h" />
@@ -2030,6 +2038,7 @@
     <ClInclude Include="Component\Transactional.h" />
     <ClInclude Include="Component\validators\AddressBlockValidator.h" />
     <ClInclude Include="Component\validators\AddressSpaceValidator.h" />
+    <ClInclude Include="Component\validators\BuildCommandValidator.h" />
     <ClInclude Include="Component\validators\ChannelValidator.h" />
     <ClInclude Include="Component\validators\ChoiceValidator.h" />
     <ClInclude Include="Component\validators\CPUValidator.h" />
@@ -2038,6 +2047,7 @@
     <ClInclude Include="Component\validators\FileSetValidator.h" />
     <ClInclude Include="Component\validators\FileValidator.h" />
     <ClInclude Include="Component\validators\InstantiationsValidator.h" />
+    <ClInclude Include="Component\validators\PortMapValidator.h" />
     <ClInclude Include="Component\validators\OtherClockDriverValidator.h" />
     <ClInclude Include="Component\validators\PortValidator.h" />
     <ClInclude Include="Component\validators\RemapStateValidator.h" />

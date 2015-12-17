@@ -54,13 +54,6 @@ public:
 	//! The destructor.
 	virtual ~ComponentInstantiationEditor();
 
-	/*!
-     *  Check for the validity of the edited view.
-	 *
-	 *      @return True if all model parameters are in valid state.
-	 */
-	virtual bool isValid() const;
-
 	//! Restore the settings from the model to this editor.
 	void refresh();
 

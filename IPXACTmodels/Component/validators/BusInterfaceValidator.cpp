@@ -59,7 +59,8 @@ availableAddressSpaces_(addressSpaces),
 availableMemoryMaps_(memoryMaps),
 availableBusInterfaces_(busInterfaces),
 availableFileSets_(fileSets),
-availableRemapStates_(remapStates)
+availableRemapStates_(remapStates),
+parameterValidator_(expressionParser_, availableChoices_)
 {
 
 }
@@ -126,13 +127,8 @@ bool BusInterfaceValidator::hasValidIsPresent(QString const& isPresent) const
 //-----------------------------------------------------------------------------
 bool BusInterfaceValidator::hasValidBusType(QSharedPointer<BusInterface> busInterface) const
 {
-    if (busInterface->getBusType().isValid())
-    {
-        return libraryHandler_->contains(busInterface->getBusType()) &&
-            libraryHandler_->getDocumentType(busInterface->getBusType()) == VLNV::BUSDEFINITION;
-    }
-
-    return false;
+    return busInterface->getBusType().isValid() && libraryHandler_->contains(busInterface->getBusType()) &&
+        libraryHandler_->getDocumentType(busInterface->getBusType()) == VLNV::BUSDEFINITION;
 }
 
 //-----------------------------------------------------------------------------
@@ -285,9 +281,11 @@ bool BusInterfaceValidator::hasValidMasterInterface(QSharedPointer<MasterInterfa
                     interfaceReferenceHasValidPresence(master->getIsPresent(), space->getIsPresent());
             }
         }
+
+        return false;
     }
 
-    return false;
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -358,7 +356,6 @@ bool BusInterfaceValidator::slaveInterfaceHasValidMemoryMapRef(QSharedPointer<Bu
         {
             if (slave->getMemoryMapRef() == memoryMap->name())
             {
-//                 return true;
                 return interfaceReferenceHasValidPresence(busInterface->getIsPresent(), memoryMap->getIsPresent());
             }
         }
@@ -390,8 +387,7 @@ bool BusInterfaceValidator::slaveBridgeReferencesValidMaster(QSharedPointer<Slav
 {
     foreach (QSharedPointer<BusInterface> busInterface, *availableBusInterfaces_)
     {
-        if (busInterface->getInterfaceMode() == General::MASTER &&
-            bridge->masterRef_ == busInterface->name())
+        if (busInterface->getInterfaceMode() == General::MASTER && bridge->masterRef_ == busInterface->name())
         {
             return true;
         }
@@ -602,11 +598,10 @@ bool BusInterfaceValidator::hasValidParameters(QSharedPointer<BusInterface> busI
 {
     if (!busInterface->getParameters()->isEmpty())
     {
-        ParameterValidator2014 validator(expressionParser_, availableChoices_);
         QStringList parameterNames;
         foreach (QSharedPointer<Parameter> parameter, *busInterface->getParameters())
         {
-            if (parameterNames.contains(parameter->name()) || !validator.validate(parameter))
+            if (parameterNames.contains(parameter->name()) || !parameterValidator_.validate(parameter))
             {
                 return false;
             }
@@ -731,7 +726,7 @@ void BusInterfaceValidator::findErrorsInAbstractionReference(QVector<QString>& e
             errors.append(QObject::tr("Abstraction reference %1 set for %2 could not be found in the library")
                 .arg(abstraction->getAbstractionRef()->toString()).arg(context));
         }
-        if (libraryHandler_->getDocumentType(*abstraction->getAbstractionRef().data()) !=
+        if (libraryHandler_->getDocumentType(*abstraction->getAbstractionRef()) !=
             VLNV::ABSTRACTIONDEFINITION)
         {
             errors.append(QObject::tr("Invalid abstraction reference set within %1").arg(context));
@@ -789,21 +784,20 @@ void BusInterfaceValidator::findErrorsInParameters(QVector<QString>& errors,
 {
     if (!busInterface->getParameters()->isEmpty())
     {
-        ParameterValidator2014 validator (expressionParser_, availableChoices_);
-        QStringList parameterNames;
+        QVector<QString> parameterNames(busInterface->getParameters()->count());
         foreach (QSharedPointer<Parameter> parameter, *busInterface->getParameters())
         {
             if (parameterNames.contains(parameter->name()))
             {
-                errors.append(QObject::tr("Name %1 of parameters in %2 is not unique.").arg(parameter->name()).
-                    arg(context));
+                errors.append(QObject::tr("Parameter name %1 is not unique within %2.").arg(parameter->name(), 
+                    context));
             }
             else
             {
                 parameterNames.append(parameter->name());
             }
 
-            validator.findErrorsIn(errors, parameter, context);
+            parameterValidator_.findErrorsIn(errors, parameter, context);
         }
     }
 }
@@ -888,10 +882,7 @@ void BusInterfaceValidator::findErrorsInMasterInterface(QVector<QString>& errors
             errors.append(QObject::tr("Invalid is present set for address space reference in %1").arg(context));
         }
     }
-    else
-    {
-        errors.append(QObject::tr("Invalid address space reference set for %1").arg(context));
-    }
+
 }
 
 //-----------------------------------------------------------------------------
@@ -931,8 +922,8 @@ void BusInterfaceValidator::findErrorsInSlaveInterface(QVector<QString>& errors,
         {
             if (!slaveFileSetReferenceIsValid(fileSetReference))
             {
-                errors.append(QObject::tr("Invalid file set %1 referenced within group %2 of %3")
-                    .arg(fileSetReference).arg(group->group_).arg(context));
+                errors.append(QObject::tr("Invalid file set %1 referenced within group %2 of %3").arg(
+                    fileSetReference,group->group_, context));
             }
         }
     }
@@ -956,13 +947,10 @@ void BusInterfaceValidator::findErrorsInSystemInterface(QVector<QString>& errors
             QSharedPointer<Document> definitionDocument = libraryHandler_->getModel(busInterface->getBusType());
             QSharedPointer<BusDefinition> busDefinition = definitionDocument.dynamicCast<BusDefinition>();
 
-            if (busDefinition)
+            if (busDefinition && !busDefinition->getSystemGroupNames().contains(systemGroup))
             {
-                if (!busDefinition->getSystemGroupNames().contains(systemGroup))
-                {
-                    errors.append(QObject::tr("Could not find system group %1 set for %2 with bus definition %3")
-                        .arg(systemGroup).arg(context).arg(busInterface->getBusType().toString()));
-                }
+                errors.append(QObject::tr("Could not find system group %1 set for %2 with bus definition %3.")
+                    .arg(systemGroup).arg(context).arg(busInterface->getBusType().toString()));
             }
         }
     }

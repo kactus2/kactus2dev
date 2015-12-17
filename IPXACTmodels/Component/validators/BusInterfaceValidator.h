@@ -19,21 +19,23 @@
 #include <IPXACTmodels/Component/SlaveInterface.h>
 #include <IPXACTmodels/Component/MirroredSlaveInterface.h>
 
+#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
+
 #include <QSharedPointer>
 #include <QString>
 
-class LibraryInterface;
-class ExpressionParser;
-class Choice;
-class View;
-class Port;
-class AddressSpace;
-class MemoryMap;
-class FileSet;
-class RemapState;
-
 class AbstractionType;
+class AddressSpace;
+class Choice;
+class ExpressionParser;
+class FileSet;
+class LibraryInterface;
 class MasterInterface;
+class MemoryMap;
+class Port;
+class RemapState;
+class View;
+
 //-----------------------------------------------------------------------------
 //! Validator for the ipxact:busInterface.
 //-----------------------------------------------------------------------------
@@ -515,6 +517,9 @@ private:
 
     //! The library interface.
     LibraryInterface* libraryHandler_;
+
+    //! Validator for parameters.
+    ParameterValidator2014 parameterValidator_;
 };
 
 #endif // ADDRESSSPACEVALIDATOR_H

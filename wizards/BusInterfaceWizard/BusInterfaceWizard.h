@@ -17,6 +17,7 @@
 #include <IPXACTmodels/common/VLNV.h>
 
 class BusInterface;
+class BusInterfaceValidator;
 class Component;
 class LibraryInterface;
 

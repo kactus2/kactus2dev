@@ -17,7 +17,9 @@
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 
 #include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/PortMap.h>
+#include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorBusInterfaceItem::ComponentEditorBusInterfaceItem()
@@ -28,12 +30,14 @@ ComponentEditorBusInterfaceItem::ComponentEditorBusInterfaceItem(QSharedPointer<
     QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<ExpressionFormatter> expressionFormatter,
     QSharedPointer<ExpressionParser> expressionParser,
+    QSharedPointer<BusInterfaceValidator> validator,
     ComponentEditorItem* parent, QWidget* parentWnd):
 ComponentEditorItem(model, libHandler, component, parent),
     busif_(busif),
     parentWnd_(parentWnd),
     editAction_(new QAction(tr("Edit"), this)),
-    expressionParser_(expressionParser)
+    expressionParser_(expressionParser),
+    validator_(validator)
 {
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);
@@ -62,50 +66,10 @@ QString ComponentEditorBusInterfaceItem::text() const
 //-----------------------------------------------------------------------------
 bool ComponentEditorBusInterfaceItem::isValid() const
 {
-	// check that the bus interface is valid
-	/*if (!busif_->isValid(component_->getPortBounds(), component_->getMemoryMapNames(), 
-        component_->getAddressSpaceNames(), component_->getChoices()))
-    {
-		return false;
-	}
-
-	// check that the bus definition is found
-	else*/ if (!libHandler_->contains(busif_->getBusType()))
-    {
-		return false;
-	}
-
-    // if there is an abstraction definition then check that it is found
-    /*else if (busif_->getAbstractionTypes().isValid()) {
-        if (!libHandler_->contains(busif_->getAbstractionType())) {
-            return false;
-        }
-
-        QSharedPointer<Document> libComp = libHandler_->getModel(busif_->getAbstractionType());
-        QSharedPointer<AbstractionDefinition> absDef = libComp.dynamicCast<AbstractionDefinition>();
-
-        if (absDef)
-        {
-            // If the port directions in port map do not match.
-            foreach (QSharedPointer<PortMap> portMap, busif_->getPortMaps())
-            {
-                General::Direction logDir = absDef->getPortDirection(portMap->logicalPort(), busif_->getInterfaceMode());
-
-                General::Direction physDir =  component_->getPortDirection(portMap->physicalPort());
-                if (logDir != General::INOUT &&
-                    physDir != General::INOUT &&
-                    physDir != logDir) 
-                {
-                    return false;
-                }        
-            }
-        }
-    }*/
-
-    /*if (!component_->validateParameters(busif_->getParameters()))
+    if (!validator_->validate(busif_))
     {
         return false;
-    }*/
+    }
 
 	return true;
 }
@@ -146,10 +110,8 @@ QString ComponentEditorBusInterfaceItem::getTooltip() const
 //-----------------------------------------------------------------------------
 bool ComponentEditorBusInterfaceItem::canBeOpened() const
 {
-	// if the bus type is valid vlnv
 	if (busif_->getBusType().isValid())
     {
-		// if bus definition exists then it can be opened
 		return libHandler_->contains(busif_->getBusType());
 	}
 	else
@@ -175,6 +137,10 @@ QList<QAction*> ComponentEditorBusInterfaceItem::actions() const
 void ComponentEditorBusInterfaceItem::openItem() 
 {
 	VLNV busdefVLNV = busif_->getBusType();
-	VLNV absdefVLNV = *busif_->getAbstractionTypes()->first()->getAbstractionRef();
-	emit openBus(busdefVLNV, absdefVLNV);
+
+    if (busif_->getAbstractionTypes() && !busif_->getAbstractionTypes()->isEmpty())
+    {
+        VLNV absdefVLNV = *busif_->getAbstractionTypes()->first()->getAbstractionRef();
+        emit openBus(busdefVLNV, absdefVLNV);
+    }
 }

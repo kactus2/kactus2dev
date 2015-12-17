@@ -92,22 +92,6 @@ public:
 	 *      @return  Qt::ItemFlags that define how object can be handled.
 	*/
 	virtual Qt::ItemFlags flags(QModelIndex const& index) const;
-    
-	/*! Check if the model is in valid state or not.
-	 *
-	 *      @return  True, if all items in model are valid, otherwise false.
-	*/
-	virtual bool isValid() const;
-    
-    /*!
-     *  Check if the model is in valid state or not.
-     *
-     *           @param [in]  [inout] errorList           The list to add the possible error messages to.
-     *           @param [in]  [in]    parentIdentifier    String to identify the location of the error.
-     *
-     *           @return  True if all items in model are valid.
-     */
-    virtual bool isValid(QVector<QString>& errorList, const QString& parentIdentifier) const;
 
 public slots:
 

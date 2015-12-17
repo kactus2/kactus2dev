@@ -60,12 +60,6 @@ namespace DirectionTypes
      */
     IPXACTMODELS_EXPORT QString direction2Str(const DirectionTypes::Direction direction);
 
-    //! Wire and transactional types of ports.
-    enum PortType {
-        WIRE,
-        TRANSACTIONAL
-    };
-
 }
 
 #endif // DIRECTIONTYPES_H

@@ -99,14 +99,14 @@ void ComponentWizardViewsPage::initializePage()
 //-----------------------------------------------------------------------------
 bool ComponentWizardViewsPage::isComplete() const
 {
-    for(int i = 0; i < editorTabs_->count(); i++)
+    /*for(int i = 0; i < editorTabs_->count(); i++)
     {
         ViewEditor* editor = dynamic_cast<ViewEditor*>(editorTabs_->widget(i));
         if (!editor->isValid())
         {         
             return false;
         }
-    }
+    }*/
 
     return true;
 }
@@ -193,15 +193,15 @@ void ComponentWizardViewsPage::createEditorForView(QSharedPointer<Component> com
 //-----------------------------------------------------------------------------
 void ComponentWizardViewsPage::updateIconForTab(int tabIndex) const
 {
-    ViewEditor* editor = dynamic_cast<ViewEditor*>(editorTabs_->widget(tabIndex));
+   /* ViewEditor* editor = dynamic_cast<ViewEditor*>(editorTabs_->widget(tabIndex));
     if (editor->isValid())
-    {
+    {*/
         editorTabs_->setTabIcon(tabIndex, QIcon());        
-    }
+   /* }
     else
     {
         editorTabs_->setTabIcon(tabIndex, QIcon(":icons/common/graphics/exclamation.png"));
-    }
+    }*/
 }
 
 //-----------------------------------------------------------------------------

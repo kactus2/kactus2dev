@@ -15,8 +15,6 @@
 
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 
-#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
-
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/Port.h>
@@ -30,11 +28,11 @@
 //-----------------------------------------------------------------------------
 PortMapsBitMapItem::PortMapsBitMapItem(PortMapsTreeItem* parent, QSharedPointer<Component> component,
     QSharedPointer<BusInterface> busIf, QSharedPointer<ExpressionParser> expressionParser,
-    QString const& physicalName /* = QString() */):
+    QString const& physicalName):
 PortMapsTreeItem(parent, component, physicalName, PortMapsTreeItem::ITEM_BIT_MAP),
-busIf_(busIf),
-mappings_(),
-expressionParser_(expressionParser)
+    busIf_(busIf),
+    mappings_(),
+    expressionParser_(expressionParser)
 {    
 }
 
@@ -78,10 +76,10 @@ QVariant PortMapsBitMapItem::data(int section) const
 bool PortMapsBitMapItem::isValid() const
 {    
     // if abstraction def is not set, bit map items are invalid.
-    /*if (!busIf_->getAbstractionTypes()->first()->isValid())
+    if (!busIf_->getAbstractionTypes() || busIf_->getAbstractionTypes()->isEmpty())
     {
         return false;
-    }*/
+    }
 
     if (isConnected())
     {
@@ -92,7 +90,13 @@ bool PortMapsBitMapItem::isValid() const
             DirectionTypes::Direction logDir = parent->getDirection();
             foreach (BitMapping bitMap, mappings_)
             {
-                DirectionTypes::Direction physDir =  component_->getPort(bitMap.physName)->getDirection();
+                QSharedPointer<Port> physicalPort = component_->getPort(bitMap.physName);
+                if (!physicalPort)
+                {
+                    return false;
+                }
+
+                DirectionTypes::Direction physDir =  physicalPort->getDirection();
                 if (logDir != DirectionTypes::INOUT && physDir != DirectionTypes::INOUT && physDir != logDir) 
                 {
                     return false;
@@ -108,13 +112,8 @@ bool PortMapsBitMapItem::isValid() const
 //-----------------------------------------------------------------------------
 // Function: PortMapsPhysicalItem::addChild()
 //-----------------------------------------------------------------------------
-void PortMapsBitMapItem::addChild(PortMapsBitMapItem* item)
+void PortMapsBitMapItem::addChild(PortMapsBitMapItem* /*item*/)
 {
-    if (!item)
-    {
-        return;
-    }
-
     // Physical ports should not have children.
     Q_ASSERT(false);
 }
@@ -131,7 +130,6 @@ void PortMapsBitMapItem::addMapping(QString const& portName, int index /*= 0*/)
     }
 }
 
-
 //-----------------------------------------------------------------------------
 // Function: PortMapsBitMapItem::clearMappings()
 //-----------------------------------------------------------------------------
@@ -140,13 +138,12 @@ void PortMapsBitMapItem::clearMappings()
     mappings_.clear();
 }
 
-
 //-----------------------------------------------------------------------------
 // Function: PortMapsBitMapItem::isConnected()
 //-----------------------------------------------------------------------------
 bool PortMapsBitMapItem::isConnected() const
 {
-    return mappings_.size() != 0;
+    return !mappings_.isEmpty();
 }
 
 //-----------------------------------------------------------------------------
@@ -184,6 +181,10 @@ QString PortMapsBitMapItem::getPortConnections() const
 int PortMapsBitMapItem::getPortWidth(QString const& portName) const
 {
     QSharedPointer<Port> targetPort = component_->getPort(portName);
+    if (!targetPort)
+    {
+        return 0;
+    }
 
     int portLeft = expressionParser_->parseExpression(targetPort->getLeftBound()).toInt();
     int portRight = expressionParser_->parseExpression(targetPort->getRightBound()).toInt();

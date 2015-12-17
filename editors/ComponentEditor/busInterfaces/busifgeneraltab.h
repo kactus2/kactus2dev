@@ -64,22 +64,6 @@ public:
 	virtual ~BusIfGeneralTab();
 
 	/*!
-     *  Check for the validity of the edited item.
-	 *
-	 *      @return True if item is valid.
-	 */
-	virtual bool isValid() const;
-
-    /*!
-     * Check for the validity of the edited item.
-     *
-     *      @param [in] errorList The list to add possible error messages to.
-     *
-     *      @return True if item is valid
-     */
-    virtual bool isValid(QStringList& errorList) const; 
-
-	/*!
      *  Restore the changes made in the editor back to ones in the model.
 	 */
 	virtual void refresh();

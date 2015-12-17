@@ -24,8 +24,9 @@
 
 #include <QSharedPointer>
 
+class AbstractionDefinitionValidator;
 class BusDefinitionValidator;
-
+class ExpressionParser;
 //-----------------------------------------------------------------------------
 //! Bus Editor is editor for Bus- and Abstraction definition.
 //-----------------------------------------------------------------------------
@@ -139,8 +140,15 @@ private:
 	//! Group containing elements to edit abstraction definition.
 	AbsDefGroup absDefGroup_;
 
+    //! Parser for expressions in definitions.
+    QSharedPointer<ExpressionParser> expressionParser_;
+
     //! Validator for bus definition.
     QSharedPointer<BusDefinitionValidator> busDefinitionValidator_;
+
+    //! Validator for abstraction definition.
+    QSharedPointer<AbstractionDefinitionValidator> absDefinitionValidator_;
+
 };
 
 #endif // BUSEDITOR_H

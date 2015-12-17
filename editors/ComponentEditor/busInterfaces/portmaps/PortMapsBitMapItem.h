@@ -19,7 +19,6 @@
 #include <QList>
 #include <QSharedPointer>
 
-class AbstractionDefinition;
 class BusInterface;
 class Component;
 class ExpressionParser;

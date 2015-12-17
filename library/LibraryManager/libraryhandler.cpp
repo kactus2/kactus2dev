@@ -737,7 +737,7 @@ void LibraryHandler::onShowErrors(VLNV const& vlnv)
     }
 
     // Retrieve the model.
-    QSharedPointer<const Document> document = getModelReadOnly(vlnv);
+    QSharedPointer<Document> document = getModel(vlnv);
 
     if (document != 0)
     {

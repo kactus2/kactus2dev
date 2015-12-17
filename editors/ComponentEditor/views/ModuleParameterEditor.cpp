@@ -124,14 +124,6 @@ ModuleParameterEditor::~ModuleParameterEditor()
 }
 
 //-----------------------------------------------------------------------------
-// Function: ModuleParameterEditor::isValid()
-//-----------------------------------------------------------------------------
-bool ModuleParameterEditor::isValid() const
-{
-    return model_->isValid();
-}
-
-//-----------------------------------------------------------------------------
 // Function: ModuleParameterEditor::refresh()
 //-----------------------------------------------------------------------------
 void ModuleParameterEditor::refresh()

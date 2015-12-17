@@ -130,7 +130,7 @@ bool PortMapValidator::logicalPortRangeIsWithinAbstractionWidth(QSharedPointer<P
 {
     if (referencedPort)
     {
-        if (referencedPort->getWire() && !referencedPort->getWire()->getWidth(interfaceMode_).isEmpty())
+        if (logicalPort->range_ && referencedPort->getWire() && !referencedPort->getWire()->getWidth(interfaceMode_).isEmpty())
         {
             int rangeLeft = expressionParser_->parseExpression(logicalPort->range_->getLeft()).toInt();
             int rangeRight = expressionParser_->parseExpression(logicalPort->range_->getRight()).toInt();
@@ -138,8 +138,8 @@ bool PortMapValidator::logicalPortRangeIsWithinAbstractionWidth(QSharedPointer<P
             int abstractionWidth =
                 expressionParser_->parseExpression(referencedPort->getWire()->getWidth(interfaceMode_)).toInt();
 
-            return rangeLeft <= abstractionWidth - 1 && rangeLeft >= 0 &&
-                rangeRight <= abstractionWidth - 1 && rangeRight >= 0;
+            return 0 <= rangeLeft && rangeLeft <= abstractionWidth - 1 && 
+                0 <= rangeRight && rangeRight <= abstractionWidth - 1;
         }
 
         return true;

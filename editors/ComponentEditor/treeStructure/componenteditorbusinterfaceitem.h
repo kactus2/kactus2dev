@@ -17,6 +17,7 @@
 #include <QSharedPointer>
 
 class BusInterface;
+class BusInterfaceValidator;
 class ExpressionParser;
 
 //-----------------------------------------------------------------------------
@@ -39,6 +40,7 @@ public:
 	 *      @param [in] parameterFinder         The parameter finder.
 	 *      @param [in] expressionFormatter     The expression formatter.
 	 *      @param [in] expressionParser        The expression parser.
+     *      @param [in] validator               The validator for bus interfaces.
 	 *      @param [in] parent                  The owner of this item.
 	 *      @param [in] parentWnd               The parent window.
 	 */
@@ -50,6 +52,7 @@ public:
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<BusInterfaceValidator> validator,
 		ComponentEditorItem* parent,
         QWidget* parentWnd);
 
@@ -118,6 +121,8 @@ private:
 
     //! The expression parse used to form the results of the expressions.
     QSharedPointer<ExpressionParser> expressionParser_;
+
+    QSharedPointer<BusInterfaceValidator> validator_;
 };
 
 #endif // COMPONENTEDITORBUSINTERFACEITEM_H

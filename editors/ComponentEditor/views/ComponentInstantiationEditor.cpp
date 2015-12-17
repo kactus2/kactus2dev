@@ -90,30 +90,6 @@ ComponentInstantiationEditor::~ComponentInstantiationEditor()
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentInstantiationEditor::isValid()
-//-----------------------------------------------------------------------------
-bool ComponentInstantiationEditor::isValid() const
-{
-	// check the file set references that they are to valid file sets.
-	QStringList fileSetRefs = fileSetRefs_.items();
-	foreach (QString filesetName, fileSetRefs)
-    {
-		// if the component does not contain the referenced file set.
-		if (!component_->hasFileSet(filesetName))
-        {
-			return false;
-		}
-	}
-
-	if (languageEditor_.text().isEmpty() && languageStrict_.isChecked())
-    {
-		return false;
-    }
-
-    return fileBuilders_.isValid() && moduleParameters_.isValid();
-}
-
-//-----------------------------------------------------------------------------
 // Function: ComponentInstantiationEditor::refresh()
 //-----------------------------------------------------------------------------
 void ComponentInstantiationEditor::refresh()

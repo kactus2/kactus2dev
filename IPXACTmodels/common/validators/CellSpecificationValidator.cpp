@@ -11,8 +11,7 @@
 
 #include "CellSpecificationValidator.h"
 
-#include <QRegularExpression>
-#include <QStringList>
+#include <IPXACTmodels/common/CellSpecification.h>
 
 //-----------------------------------------------------------------------------
 // Function: CellSpecificationValidator::CellSpecificationValidator()
@@ -43,16 +42,16 @@ CellSpecificationValidator::~CellSpecificationValidator()
 bool CellSpecificationValidator::validate(QSharedPointer<CellSpecification> cellSpecification) const
 {
 	// Must be known cell strength.
-	if ( cellSpecification->getCellStrength() == CellSpecification::UNKNOWN )
+	if (cellSpecification->getCellStrength() == CellSpecification::UNKNOWN)
 	{
 		return false;
 	}
 
 	// Must be supported function.
-	if ( !functions_.contains( cellSpecification->getCellFunction() ) )
+	if (!functions_.contains(cellSpecification->getCellFunction()))
 	{
 		// Alternatively, must be known cell strength.
-		if ( cellSpecification->getCellClass() == CellSpecification::NO_CLASS )
+		if (cellSpecification->getCellClass() == CellSpecification::NO_CLASS)
 		{
 			return false;
 		}
@@ -65,26 +64,26 @@ bool CellSpecificationValidator::validate(QSharedPointer<CellSpecification> cell
 // Function: CellSpecificationValidator::findErrorsIn()
 //-----------------------------------------------------------------------------
 void CellSpecificationValidator::findErrorsIn(QVector<QString>& errors,
-	QSharedPointer<CellSpecification> cellSpecification, QString const& contex) const
+	QSharedPointer<CellSpecification> cellSpecification, QString const& context) const
 {
 	// Must be known cell strength.
-	if ( cellSpecification->getCellStrength() == CellSpecification::UNKNOWN )
+	if (cellSpecification->getCellStrength() == CellSpecification::UNKNOWN)
 	{
-		errors.append(QObject::tr("Unknown cell strength in cell specification."));
+		errors.append(QObject::tr("Unknown cell strength in cell specification in %1.").arg(context));
 	}
 
 	// Must be supported function.
-	if ( !functions_.contains( cellSpecification->getCellFunction() ) )
+	if (!functions_.contains(cellSpecification->getCellFunction()))
 	{
 		// Alternatively, must be known cell strength.
-		if ( cellSpecification->getCellClass() == CellSpecification::NO_CLASS )
+		if (cellSpecification->getCellClass() == CellSpecification::NO_CLASS)
 		{
-			errors.append(QObject::tr("No class specified for cell specification."));
+			errors.append(QObject::tr("No class specified for cell specification in %1.").arg(context));
 		}
 		else
 		{
-			errors.append(QObject::tr("Invalid function in cell specification: %1")
-				.arg(cellSpecification->getCellFunction()));
+			errors.append(QObject::tr("Invalid function '%1' in cell specification in %2.").arg(
+                cellSpecification->getCellFunction(), context));
 		}
 	}
 }

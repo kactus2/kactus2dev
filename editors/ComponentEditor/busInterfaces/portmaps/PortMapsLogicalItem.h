@@ -52,8 +52,7 @@ public:
         QSharedPointer<Component> component,
         QSharedPointer<BusInterface> busif,
         QSharedPointer<AbstractionDefinition> absDef,
-        QSharedPointer<ExpressionParser> expressionParser
-        );
+        QSharedPointer<ExpressionParser> expressionParser);
 
     /*!
      *  Destructor.
@@ -83,14 +82,9 @@ public:
     virtual bool isValid() const;
 
     /*!
-     *  Clears the mappings for all children.
-     */
-    void clearMappings();
-
-    /*!
-     *  Gets the width of the logical signal.
+     *  Gets the width for the logical port represented by the item.
      *
-     *      @return width of the logical signal.
+     *      @return The logical width.
      */
     int getWidth() const;
 
@@ -107,11 +101,41 @@ private:
     PortMapsLogicalItem& operator=(PortMapsLogicalItem const& rhs);
     
     /*!
-     *  Gets a string of the connected ports and their bits.
-     *     
-     *      @return Names and bits of connected physical ports.
+     *  Clears the mappings for all children.
      */
-    QString getPhysPorts() const;
+    void clearMappings();
+
+    /*!
+     *  Gets the width of the logical signal.
+     *
+     *      @return width of the logical signal.
+     */
+    void updateWidth();
+    
+    /*!
+     *  Updates the port width to given value by adding/removing children.
+     *
+     *      @param [in] width   The new width.
+     */
+    void updateLogicalBoundaries();    
+
+    /*!
+     *  Finds the logical bounds for a port map.
+     *
+     *      @param [in] portMap   The port map whose logical bounds to find.
+     *
+     *      @return The bounds for the logical port in the port map.
+     */
+    QPair<int, int> findLogicalBounds(QSharedPointer<PortMap> portMap) const;
+    
+    /*!
+     *  Finds the physical bounds for a port map.
+     *
+     *      @param [in] portMap   The port map whose physical bounds to find.
+     *
+     *      @return The bounds for the physical port in the port map.
+     */
+    QPair<int, int> findPhysicalBounds(QSharedPointer<PortMap> portMap) const;
 
     /*!
      *  Gets the width of the logical signal.
@@ -122,19 +146,11 @@ private:
     int getConnectionCount() const;
 
     /*!
-     *  Updates the port width to given value by adding/removing children.
-     *
-     *      @param [in] width   The new width.
+     *  Gets a string of the connected ports and their bits.
+     *     
+     *      @return Names and bits of connected physical ports.
      */
-    void updateWidthTo(int width);    
-
-    /*!
-     *  Get the size of the port.
-     *
-     *      @param [in] portName        The name of the port whose size is being searched for.
-     *      @param [in] interfaceMode   The used interface mode.
-     */
-    int getPortSize(QString const& portName, General::InterfaceMode interfaceMode) const;
+    QString getPhysPorts() const;
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -154,9 +170,6 @@ private:
 
     //! The right bound of the logical port.
     int left_;
-    
-    //! Flag for indicating beginning of mapping when bounds are not yet set.
-    bool beginMapping_;
     
     //! The used expression parser.
     QSharedPointer<ExpressionParser> expressionParser_;

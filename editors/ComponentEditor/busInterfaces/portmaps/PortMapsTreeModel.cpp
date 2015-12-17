@@ -39,14 +39,14 @@
 PortMapsTreeModel::PortMapsTreeModel(QSharedPointer<BusInterface> busif, QSharedPointer<Component> component,
     LibraryInterface* handler, QSharedPointer<ExpressionParser> expressionParser, QObject *parent):
 QAbstractItemModel(parent),
-component_(component),
-handler_(handler),
-root_(new PortMapsTreeItem()),
-busif_(busif),
-absDef_(),
-interfaceMode_(General::MASTER),
-portMaps_(busif->getPortMaps()),
-expressionParser_(expressionParser)
+    component_(component),
+    handler_(handler),
+    root_(new PortMapsTreeItem()),
+    busif_(busif),
+    absDef_(),
+    interfaceMode_(General::MASTER),
+    portMaps_(busif->getPortMaps()),
+    expressionParser_(expressionParser)
 {
 
 }
@@ -363,7 +363,6 @@ void PortMapsTreeModel::createMap(QSharedPointer<PortMap> portMap)
     endInsertRows();    
 }
 
-
 //-----------------------------------------------------------------------------
 // Function: PortMapsTreeModel::logicalPorts()
 //-----------------------------------------------------------------------------
@@ -484,23 +483,22 @@ bool PortMapsTreeModel::canCreateMap( const QString& physicalPort, const QString
     if (absDef_) 
     {
         DirectionTypes::Direction logicalDirection = absDef_->getPortDirection(logicalPort, interfaceMode_);
+        DirectionTypes::Direction physicalDirection = DirectionTypes::DIRECTION_INVALID;
 
         QSharedPointer<Port> port = component_->getPort(physicalPort);
-
-
-        DirectionTypes::Direction physDirection = DirectionTypes::DIRECTION_INVALID;
         if (port)
         {
-            physDirection = port->getDirection();
+            physicalDirection = port->getDirection();
         }
 
         // if directions don't match
-        if (logicalDirection != physDirection && 
-            physDirection != DirectionTypes::INOUT && logicalDirection != DirectionTypes::INOUT) 
+        if (logicalDirection != physicalDirection && 
+            physicalDirection != DirectionTypes::INOUT && 
+            logicalDirection != DirectionTypes::INOUT) 
         {
-                emit errorMessage(tr("Directions between logical port \"%1\" and "
-                    "physical port \"%2\" did not match.").arg(logicalPort).arg(physicalPort));
-                return false;
+            emit errorMessage(tr("Directions between logical port \"%1\" and physical port \"%2\" did not match."
+                ).arg(logicalPort).arg(physicalPort));
+            return false;
         }
         else
         {
@@ -564,8 +562,7 @@ void PortMapsTreeModel::removeMapping(QModelIndex const& index)
         return;
     }
 
-    PortMapsTreeItem* item = root_->getChild(index.row());
-    QString logicalName = item->name();
+    QString logicalName = root_->getChild(index.row())->name();
 
     QStringList physicalPorts;
     foreach (QSharedPointer<PortMap> portMap, *portMaps_)

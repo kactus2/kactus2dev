@@ -366,48 +366,6 @@ Qt::ItemFlags AbstractParameterModel::flags(QModelIndex const& index ) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractParameterModel::isValid()
-//-----------------------------------------------------------------------------
-bool AbstractParameterModel::isValid() const
-{
-	// check all parameters
-	for (int i = 0; i < rowCount(); i++)
-	{
-        QSharedPointer<Parameter> parameter = getParameterOnRow(i);
-
-        if (!validator_->validate(parameter)) 
-        {
-            return false;
-        }
-	}
-	
-	// all parameters are valid
-	return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractParameterModel::isValid()
-//-----------------------------------------------------------------------------
-bool AbstractParameterModel::isValid(QVector<QString>& errorList, QString const& parentIdentifier) const
-{
-    bool valid = true;
-    for (int i = 0; i < rowCount(); i++)
-    {
-        QSharedPointer<Parameter> parameter = getParameterOnRow(i);
-
-        validator_->findErrorsIn(errorList, parameter, parentIdentifier);
-
-        // if one parameter is invalid, model is invalid.
-        if (!validator_->validate(parameter))
-        {
-            valid = false;
-        }
-    }
-
-    return valid;
-}
-
-//-----------------------------------------------------------------------------
 // Function: AbstractParameterModel::isMandatoryColumn()
 //-----------------------------------------------------------------------------
 bool AbstractParameterModel::isMandatoryColumn(int column) const

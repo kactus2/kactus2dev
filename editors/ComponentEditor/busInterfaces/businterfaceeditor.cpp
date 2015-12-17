@@ -69,7 +69,7 @@ portmapsEditor_(libHandler, component, busif, expressionParser, &tabs_)
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceEditor::BusInterfaceEditor()
+// Function: BusInterfaceEditor::~BusInterfaceEditor()
 //-----------------------------------------------------------------------------
 BusInterfaceEditor::~BusInterfaceEditor()
 {
@@ -77,15 +77,7 @@ BusInterfaceEditor::~BusInterfaceEditor()
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceEditor::BusInterfaceEditor()
-//-----------------------------------------------------------------------------
-bool BusInterfaceEditor::isValid() const
-{	
-	return generalEditor_.isValid() && portmapsEditor_.isValid();
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterfaceEditor::BusInterfaceEditor()
+// Function: BusInterfaceEditor::onTabChange()
 //-----------------------------------------------------------------------------
 void BusInterfaceEditor::onTabChange(int index)
 {

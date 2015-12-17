@@ -45,7 +45,16 @@ public:
      *      @return The protocol type.
      */
     QString getProtocolType() const;
-     
+    
+    QString getCustomProtocolType() const;
+
+    /*!
+     *  Checks if the protocol has payload defined.
+     *
+     *      @return True, if payload is defined, otherwise false.
+     */
+    bool hasPayload() const;
+
     /*!
      *  Sets the name for the payload.
      *
@@ -104,13 +113,16 @@ private:
     //! The type of the protocol.
     QString protocolType_;
 
+    //! The type of a custom protocol.
+    QString customProtocolType_;
+
     //! The name of the payload in the protocol.
     QString payloadName_;
 
     //! The type of the payload in the protocol.
     QString payloadType_;
 
-    //! The extension of the payload in the prtocol.
+    //! The extension of the payload in the protocol.
     QString payloadExtension_;
 
     //! Specifies if the payload extension is mandatory or not.

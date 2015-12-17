@@ -21,6 +21,7 @@
 #include <QWizardPage>
 
 class BusInterface;
+class BusInterfaceValidator;
 class BusInterfaceWizard;
 class Component;
 class LibraryInterface;
@@ -52,6 +53,7 @@ public:
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<BusInterfaceValidator> validator,
         BusInterfaceWizard* parent);
 
     /*!
@@ -70,16 +72,11 @@ public:
     void initializePage();
 
     /*!
-    * Validates the page.
-    */
-    virtual bool validatePage();
-
-    /*!
      * Checks if all the required fields on the page are valid.
      *
      *      @return True, if all fields are valid, otherwise false.
      */
-    virtual bool isComplete();
+    virtual bool isComplete() const;
 
 signals:
 
@@ -119,6 +116,8 @@ private:
 
     //! The library handler.
     LibraryInterface* handler_;
+
+    QSharedPointer<BusInterfaceValidator> validator_;
 
     //! Flag for indicating, if a new bus is created.
     bool newBus_;

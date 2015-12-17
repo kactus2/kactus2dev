@@ -60,12 +60,6 @@ public:
 	//! The destructor
 	virtual ~BusInterfaceEditor();
 
-	/*! Check for the validity of the edited item.
-	*
-	*      @return True if item is valid.
-	*/
-	virtual bool isValid() const;
-
 	/*! Reload the information from the model to the editor.
 	*/
 	virtual void refresh();

@@ -23,6 +23,7 @@
 
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinitionReader.h>
+#include <IPXACTmodels/AbstractionDefinition/validators/AbstractionDefinitionValidator.h>
 
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 #include <IPXACTmodels/BusDefinition/BusDefinitionReader.h>
@@ -568,7 +569,15 @@ bool LibraryData::validateDocument(QSharedPointer<Document> document)
             return false;
         }
     }
+    else if (getType(document->getVlnv()) == VLNV::ABSTRACTIONDEFINITION)
+    {
+        AbstractionDefinitionValidator validator(handler_, QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()));
+        if (!validator.validate(document.dynamicCast<AbstractionDefinition>()))
+        {
+            return false;
+        }
 
+    }
     return validateDependentVLNVReferencences(document) &&
         validateDependentDirectories(document, documentPath) &&
         validateDependentFiles(document, documentPath);
@@ -577,7 +586,7 @@ bool LibraryData::validateDocument(QSharedPointer<Document> document)
 //-----------------------------------------------------------------------------
 // Function: LibraryData::findErrorsInDocument()
 //-----------------------------------------------------------------------------
-QVector<QString> LibraryData::findErrorsInDocument(QSharedPointer<const Document> document, QString const& path)
+QVector<QString> LibraryData::findErrorsInDocument(QSharedPointer<Document> document, QString const& path)
 {
     Q_ASSERT(document);
 
@@ -592,7 +601,11 @@ QVector<QString> LibraryData::findErrorsInDocument(QSharedPointer<const Document
 	// Check if the document xml is valid and if not then print errors of the document.
 	if (getType(document->getVlnv()) == VLNV::BUSDEFINITION)
     {
-        findErrorsInBusDefinition(document.dynamicCast<const BusDefinition>(), errorList);
+        findErrorsInBusDefinition(document.dynamicCast<BusDefinition>(), errorList);
+    }
+    else if (getType(document->getVlnv()) == VLNV::ABSTRACTIONDEFINITION)
+    {
+        findErrorsInAbstractionDefinition(document.dynamicCast<AbstractionDefinition>(), errorList);
     }
 
     findErrorsInDependentVLNVReferencences(document, errorList);
@@ -607,13 +620,33 @@ QVector<QString> LibraryData::findErrorsInDocument(QSharedPointer<const Document
 //-----------------------------------------------------------------------------
 // Function: LibraryData::findErrorsInBusDefinition()
 //-----------------------------------------------------------------------------
-void LibraryData::findErrorsInBusDefinition(QSharedPointer<const BusDefinition> busDefinition,
+void LibraryData::findErrorsInBusDefinition(QSharedPointer<BusDefinition> busDefinition,
     QVector<QString>& errorList)
 {
     int errorsBeforeValidation = errorList.size();
     
     BusDefinitionValidator validator(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()));
     validator.findErrorsIn(errorList, busDefinition);
+
+    int errorsInBusDefinition = errorList.size() - errorsBeforeValidation;
+
+    if (errorsInBusDefinition != 0)
+    {
+        errors_ += errorsInBusDefinition;
+        syntaxErrors_ += errorsInBusDefinition;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryData::findErrorsInAbstractionDefinition()
+//-----------------------------------------------------------------------------
+void LibraryData::findErrorsInAbstractionDefinition(QSharedPointer<AbstractionDefinition> abstraction, QVector<QString>& errorList)
+{
+    int errorsBeforeValidation = errorList.size();
+
+    AbstractionDefinitionValidator validator(handler_, 
+        QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()));
+    validator.findErrorsIn(errorList, abstraction);
 
     int errorsInBusDefinition = errorList.size() - errorsBeforeValidation;
 

@@ -24,6 +24,9 @@
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
+
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceWizard::BusInterfaceWizard()
 //-----------------------------------------------------------------------------
@@ -48,9 +51,14 @@ BusInterfaceWizard::BusInterfaceWizard(QSharedPointer<Component> component, QSha
     {
         namingPolicy = BusInterfaceWizardBusEditorPage::DESCRIPTION;
     }
+    
+    QSharedPointer<BusInterfaceValidator> validator = QSharedPointer<BusInterfaceValidator>(
+        new BusInterfaceValidator(expressionParser, component->getChoices(), component->getViews(),
+        component->getPorts(), component->getAddressSpaces(), component->getMemoryMaps(), 
+        component->getBusInterfaces(), component->getFileSets(), component->getRemapStates(), handler));
 
     BusInterfaceWizardGeneralOptionsPage* optionsPage = new BusInterfaceWizardGeneralOptionsPage(component, busIf,
-        handler, !absDefVLNV.isValid(), parameterFinder, expressionFormatter, expressionParser, this);
+        handler, !absDefVLNV.isValid(), parameterFinder, expressionFormatter, expressionParser, validator, this);
 
     connect(optionsPage, SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
@@ -62,7 +70,7 @@ BusInterfaceWizard::BusInterfaceWizard(QSharedPointer<Component> component, QSha
     setPage(PAGE_BUSDEFINITION, new BusInterfaceWizardBusEditorPage(component, busIf, handler, portNames, 
         this, absDefVLNV, expressionParser, namingPolicy));
     setPage(PAGE_PORTMAPS, new BusInterfaceWizardPortMapPage(component, busIf, handler, portNames,
-        expressionParser, this));
+        expressionParser, validator, this));
     setPage(PAGE_SUMMARY, new BusInterfaceWizardConclusionPage(busIf, portNames, this));
 }
 

@@ -1336,7 +1336,7 @@ void tst_BusInterfaceValidator::testHasValidMasterInterface_data()
     QTest::newRow("Master referencing address space is valid") << "space" << "" << "" << "" << true << true;
     QTest::newRow("Master referencing non-existing space is not valid") << "space" << "" << "" << "" << false <<
         false;
-    QTest::newRow("Master not containing space reference is not valid") << "" << "" << "" << "" << true << false;
+    QTest::newRow("Master not containing space reference is valid") << "" << "" << "" << "" << false << true;
     QTest::newRow("Master containing base address is valid") << "space" << "4+4" << "" << "" << true << true;
     QTest::newRow("Master containing negative base address is not valid") << "space" << "-2" << "" << "" << true <<
         false;

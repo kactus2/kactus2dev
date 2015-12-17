@@ -16,6 +16,7 @@
 //-----------------------------------------------------------------------------
 Protocol::Protocol() : Extendable(),
 protocolType_(),
+    customProtocolType_(),
     payloadName_(),
     payloadType_(),
     payloadExtension_(),
@@ -29,6 +30,7 @@ protocolType_(),
 //-----------------------------------------------------------------------------
 Protocol::Protocol(Protocol const& other) : 
 protocolType_(other.protocolType_),
+    customProtocolType_(other.customProtocolType_),
     payloadName_(other.payloadName_),
     payloadType_(other.payloadType_),
     payloadExtension_(other.payloadExtension_),
@@ -50,7 +52,16 @@ Protocol::~Protocol()
 //-----------------------------------------------------------------------------
 void Protocol::setProtocolType(QString const& type)
 {
-    protocolType_ = type;
+    if (type != QLatin1String("tlm"))
+    {
+        protocolType_ = QStringLiteral("custom");
+        customProtocolType_ = type;
+    }
+    else
+    {
+        protocolType_ = type;
+        customProtocolType_.clear();
+    }    
 }
 
 //-----------------------------------------------------------------------------
@@ -59,6 +70,22 @@ void Protocol::setProtocolType(QString const& type)
 QString Protocol::getProtocolType() const
 {
     return protocolType_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Protocol::getCustomProtocolType()
+//-----------------------------------------------------------------------------
+QString Protocol::getCustomProtocolType() const
+{
+    return customProtocolType_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Protocol::hasPayload()
+//-----------------------------------------------------------------------------
+bool Protocol::hasPayload() const
+{
+    return !payloadType_.isEmpty() || !payloadName_.isEmpty() || !payloadExtension_.isEmpty();
 }
 
 //-----------------------------------------------------------------------------

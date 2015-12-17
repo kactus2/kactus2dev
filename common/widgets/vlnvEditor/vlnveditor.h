@@ -139,19 +139,12 @@ public slots:
 	*/
 	void setMandatory(bool mandatory);
 
-	/*!
-     *  Sets the contents of the editor to match the given VLNV.
-     *
-     *      @param [in] vlnv The VLNV.
-     */
-    void setVLNV(VLNV const* vlnv);
-
 	/*! 
 	 *  Set the contents of the editor to match the given VLNV.
 	 *
 	 *		@param [in] vlnv The VLNV. 
 	 */
-	void setVLNV(const VLNV& vlnv);
+	void setVLNV(VLNV const& vlnv);
 
     //! Updates the data tree.
     void updateFiltering();

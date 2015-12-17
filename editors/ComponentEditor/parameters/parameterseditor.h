@@ -55,13 +55,6 @@ public:
 	virtual ~ParametersEditor();
 
 	/*!
-     *  Check for the validity of the edited parameters.
-	 *
-	 *      @return True if all parameters are in valid state.
-	 */
-	virtual bool isValid() const;
-
-	/*!
      *  Reload the information from the model to the editor.
 	 */
 	virtual void refresh();

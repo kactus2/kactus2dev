@@ -45,11 +45,11 @@ void PortWriter::writePort(QXmlStreamWriter& writer, QSharedPointer<Port> port) 
 
     writeIsPresent(writer, port->getIsPresent());
 
-    if (port->getPortType() == DirectionTypes::WIRE)
+    if (port->getWire())
     {
         writeWire(writer, port->getWire());
     }
-    else if (port->getPortType() == DirectionTypes::TRANSACTIONAL)
+    else if (port->getTransactional())
     {
         writeTransactional(writer, port->getTransactional());
     }

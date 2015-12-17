@@ -17,6 +17,8 @@
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/FileSet.h>
 
+#include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
+
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <QVBoxLayout>
@@ -28,20 +30,24 @@
 //-----------------------------------------------------------------------------
 BusInterfaceWizardPortMapPage::BusInterfaceWizardPortMapPage(QSharedPointer<Component> component,
     QSharedPointer<BusInterface> busIf, LibraryInterface* lh, QStringList physicalPorts,
-    QSharedPointer<ExpressionParser> expressionParser, BusInterfaceWizard* parent):
+    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<BusInterfaceValidator> validator,
+    BusInterfaceWizard* parent):
 QWizardPage(parent),
 component_(component),
 busIf_(busIf),
 handler_(lh),
-portMapTab_(lh, component, busIf, expressionParser, this)
+portMapTab_(lh, component, busIf, expressionParser, this),
+validator_(validator)
 {
     setTitle(tr("Port Maps"));
     setSubTitle(tr("Create port maps for interface %1.").arg(busIf->name()));
     setFinalPage(false);
     
     portMapTab_.setPhysicalPorts(physicalPorts);
+
     connect(&portMapTab_, SIGNAL(errorMessage(QString const&)),
-        this, SLOT(showErrorMessage(QString const&)), Qt::UniqueConnection);
+        this, SLOT(showErrorMessage(QString const&)), Qt::UniqueConnection);    
+    connect(&portMapTab_, SIGNAL(contentChanged()), this, SIGNAL(completeChanged()), Qt::UniqueConnection);
 
     setupLayout();
 }
@@ -73,21 +79,11 @@ void BusInterfaceWizardPortMapPage::initializePage()
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceWizardPortMapPage::validatePage()
+// Function: BusInterfaceWizardPortMapPage::isComplete()
 //-----------------------------------------------------------------------------
-bool BusInterfaceWizardPortMapPage::validatePage()
+bool BusInterfaceWizardPortMapPage::isComplete() const
 {
-    QStringList errors;
-    bool valid = portMapTab_.isValid(errors);
-
-    if (!valid)
-    {
-        QMessageBox warningDialog(QMessageBox::Warning, tr("Warning"),
-            tr("Port maps has the following error(s):\n") + errors.join("\n"), QMessageBox::Ok, this);
-        warningDialog.exec();
-    }
-
-    return valid;
+    return validator_->validate(busIf_);
 }
 
 //-----------------------------------------------------------------------------

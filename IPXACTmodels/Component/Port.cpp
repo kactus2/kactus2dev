@@ -24,7 +24,6 @@ Port::Port(QString const& portName, DirectionTypes::Direction direction) :
 NameGroup(portName),
     Extendable(),
     isPresent_(),
-    portType_(DirectionTypes::WIRE),
     wire_(QSharedPointer<Wire>(new Wire())),
     transactional_(),
     configurableArrays_(new QList<QSharedPointer<Array> > ())
@@ -39,7 +38,6 @@ Port::Port(const Port &other):
 NameGroup(other),
     Extendable(other),
     isPresent_(other.isPresent_),
-    portType_(other.portType_),
     wire_(),
     transactional_(),
     configurableArrays_(new QList<QSharedPointer<Array> > ())
@@ -67,7 +65,6 @@ Port & Port::operator=( const Port &other )
 		NameGroup::operator=(other);
         Extendable::operator=(other);
         isPresent_ = other.isPresent_;
-		portType_ = other.portType_;
 
 		if (other.wire_)
         {
@@ -104,14 +101,6 @@ Port::~Port()
 }
 
 //-----------------------------------------------------------------------------
-// Function: Port::getPortType()
-//-----------------------------------------------------------------------------
-DirectionTypes::PortType Port::getPortType() const
-{
-    return portType_;
-}
-
-//-----------------------------------------------------------------------------
 // Function: Port::getWire()
 //-----------------------------------------------------------------------------
 QSharedPointer<Wire> Port::getWire() const
@@ -135,7 +124,6 @@ void Port::setWire(QSharedPointer<Wire> newWire)
     }
 
     // change the port type
-    portType_ = DirectionTypes::WIRE;
     wire_ = QSharedPointer<Wire>(newWire);
 }
 
@@ -162,7 +150,6 @@ void Port::setTransactional(QSharedPointer<Transactional> newTransactional)
 		transactional_.clear();
 	}
 
-    portType_ = DirectionTypes::TRANSACTIONAL;
 	transactional_ = QSharedPointer<Transactional>(newTransactional);
 }
 
@@ -195,7 +182,6 @@ void Port::setLeftBound(QString const& newLeftBound)
     {
         wire_ = QSharedPointer<Wire>(new Wire());
         wire_->setVectorLeftBound(newLeftBound);
-        portType_ = DirectionTypes::WIRE;
     }
 }
 
@@ -228,7 +214,6 @@ void Port::setRightBound(QString const& newRightBound)
     {
         wire_ = QSharedPointer<Wire>(new Wire());
         wire_->setVectorRightBound(newRightBound);
-        portType_ = DirectionTypes::WIRE;
     }
 }
 
@@ -266,7 +251,6 @@ void Port::setDefaultValue( const QString& defaultValue )
     {
         wire_ = QSharedPointer<Wire>(new Wire());
         wire_->setDefaultDriverValue(defaultValue);
-        portType_ = DirectionTypes::WIRE;
     }
 }
 
@@ -294,7 +278,6 @@ void Port::setDirection(DirectionTypes::Direction direction)
     else if (!transactional_)
     {
         wire_ = QSharedPointer<Wire>(new Wire());
-        portType_ = DirectionTypes::WIRE;
         wire_->setDirection(direction);
     }
 }
@@ -333,7 +316,6 @@ void Port::setAllLogicalDirectionsAllowed( bool allowed )
     {
         wire_ = QSharedPointer<Wire>(new Wire());
         wire_->setAllLogicalDirectionsAllowed(allowed);
-        portType_ = DirectionTypes::WIRE;
     }
 }
 
@@ -372,7 +354,6 @@ void Port::setTypeName( const QString& typeName, const QString& viewName /*= QSt
     else
     {
         wire_ = QSharedPointer<Wire>(new Wire());
-        portType_ = DirectionTypes::WIRE;
         wire_->setTypeName(typeName, viewName);
     }
 }
@@ -448,7 +429,6 @@ void Port::setTypeDefinition( const QString& typeName, const QString& typeDefini
     else
     {
         wire_ = QSharedPointer<Wire>(new Wire());
-        portType_ = DirectionTypes::WIRE;
         wire_->setTypeDefinition(typeName, typeDefinition);
     }
 }

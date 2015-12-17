@@ -132,14 +132,6 @@ ParametersEditor::~ParametersEditor()
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParametersEditor::isValid()
-//-----------------------------------------------------------------------------
-bool ParametersEditor::isValid() const
-{
-	return model_->isValid();
-}
-
-//-----------------------------------------------------------------------------
 // Function: ParametersEditor::refresh()
 //-----------------------------------------------------------------------------
 void ParametersEditor::refresh()

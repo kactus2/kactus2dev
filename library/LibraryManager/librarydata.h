@@ -22,6 +22,7 @@
 #include <QRegExpValidator>
 #include <QWidget>
 
+class AbstractionDefinition;
 class BusDefinition;
 class Document;
 class LibraryHandler;
@@ -124,7 +125,7 @@ public:
 	 *
 	 *      @return Any errors within the document.
 	*/
-	QVector<QString> findErrorsInDocument(QSharedPointer<const Document> document, QString const& path);
+	QVector<QString> findErrorsInDocument(QSharedPointer<Document> document, QString const& path);
    
 signals:
 
@@ -180,11 +181,19 @@ private:
     /*!
      *  Finds any errors within a given bus definition document.
      *
-     *      @param [in] busDefinition   The bus definition to search in.
+     *      @param [in]  busDefinition   The bus definition to search in.
      *      @param [out] errorList      The list of errors to add any found errors.
      */
-    void findErrorsInBusDefinition(QSharedPointer<const BusDefinition> busDefinition, QVector<QString>& errorList);
-   
+    void findErrorsInBusDefinition(QSharedPointer<BusDefinition> busDefinition, QVector<QString>& errorList);
+    
+    /*!
+     *  Finds any errors within a given abstraction definition document.
+     *
+     *      @param [in]  abstraction    The bus definition to search in.
+     *      @param [out] errorList      The list of errors to add any found errors.
+     */
+    void findErrorsInAbstractionDefinition(QSharedPointer<AbstractionDefinition> abstraction, QVector<QString>& errorList);
+
     /*! Check the validity of VLNV references within a document.
 	 *
 	 *      @param [in] document    The document to check.
@@ -246,7 +255,6 @@ private:
      *      @return The VLNV identifier for the document.
      */
     VLNV getDocumentVLNV(QDomDocument& doc);
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

@@ -124,22 +124,6 @@ ParameterGroupBox::~ParameterGroupBox()
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterGroupBox::isValid()
-//-----------------------------------------------------------------------------
-bool ParameterGroupBox::isValid() const
-{
-	return model_->isValid();
-}
-
-//-----------------------------------------------------------------------------
-// Function: ParameterGroupBox::isValid()
-//-----------------------------------------------------------------------------
-bool ParameterGroupBox::isValid(QVector<QString>& errorList, const QString& parentIdentifier) const
-{
-    return model_->isValid(errorList, parentIdentifier);
-}
-
-//-----------------------------------------------------------------------------
 // Function: ParameterGroupBox::refresh()
 //-----------------------------------------------------------------------------
 void ParameterGroupBox::refresh() 

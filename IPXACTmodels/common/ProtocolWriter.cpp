@@ -17,7 +17,7 @@
 //-----------------------------------------------------------------------------
 // Function: ProtocolWriter::ProtocolWriter()
 //-----------------------------------------------------------------------------
-ProtocolWriter::ProtocolWriter(QObject* parent /* = 0 */) :
+ProtocolWriter::ProtocolWriter(QObject* parent) :
 QObject(parent)
 {
 
@@ -59,7 +59,7 @@ void ProtocolWriter::writeProtocolType(QXmlStreamWriter& writer, QSharedPointer<
     else
     {
         writer.writeStartElement("ipxact:protocolType");
-        writer.writeAttribute("custom", portProtocol->getProtocolType());
+        writer.writeAttribute("custom", portProtocol->getCustomProtocolType());
         writer.writeCharacters("custom");
         writer.writeEndElement();
     }

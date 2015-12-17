@@ -58,13 +58,6 @@ public:
 	 *  The destructor.
 	 */
 	~Port();
-
-	/*!
-	 *  Get the type of the port.
-	 *
-     *      @return WIRE or TRANSACTIONAL.
-	 */
-	DirectionTypes::PortType getPortType() const;
     
     /*!
      *  Get a pointer to the wire element.
@@ -329,9 +322,6 @@ private:
 
     //! The presence of the port.
     QString isPresent_;
-
-	//! Defines the port type
-	DirectionTypes::PortType portType_;
 
     //! The wire port type.
 	QSharedPointer<Wire> wire_;

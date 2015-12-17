@@ -60,13 +60,6 @@ public:
 	virtual ~ViewEditor();
 
 	/*!
-     *  Check for the validity of the edited view.
-	 *
-	 *      @return True if all model parameters are in valid state.
-	 */
-	virtual bool isValid() const;
-
-	/*!
      *  Reload the information from the model to the editor.
 	 */
 	virtual void refresh();

@@ -34,7 +34,7 @@
 #include <QCoreApplication>
 
 //-----------------------------------------------------------------------------
-// Function: VLNVEditor()
+// Function: VLNVEditor::VLNVEditor()
 //-----------------------------------------------------------------------------
 VLNVEditor::VLNVEditor(VLNV::IPXactType type, 
 					   LibraryInterface* libHandler, 
@@ -82,7 +82,7 @@ VLNVEditor::VLNVEditor(VLNV::IPXactType type,
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~VLNVEditor()
+// Function: VLNVEditor::~VLNVEditor()
 //-----------------------------------------------------------------------------
 VLNVEditor::~VLNVEditor()
 {
@@ -98,9 +98,9 @@ void VLNVEditor::addContentType(VLNV::IPXactType type)
 }
 
 //-----------------------------------------------------------------------------
-// Function: setVLNV()
+// Function: VLNVEditor::setVLNV()
 //-----------------------------------------------------------------------------
-void VLNVEditor::setVLNV(VLNV const* vlnv)
+void VLNVEditor::setVLNV(const VLNV& vlnv)
 {
     if (dirty_)
     {
@@ -108,31 +108,22 @@ void VLNVEditor::setVLNV(VLNV const* vlnv)
     }
 
     // Set the fields according to the VLNV.
-    vendorEdit_->setText(vlnv->getVendor());
-    libraryEdit_->setText(vlnv->getLibrary());
-    nameEdit_->setText(vlnv->getName());
-    versionEdit_->setText(vlnv->getVersion());
+    vendorEdit_->setText(vlnv.getVendor());
+    libraryEdit_->setText(vlnv.getLibrary());
+    nameEdit_->setText(vlnv.getName());
+    versionEdit_->setText(vlnv.getVersion());
 }
 
 //-----------------------------------------------------------------------------
-// Function: VLNVEditor::setVLNV()
-//-----------------------------------------------------------------------------
-void VLNVEditor::setVLNV( const VLNV& vlnv )
-{
-	setVLNV(&vlnv);
-}
-
-//-----------------------------------------------------------------------------
-// Function: getVLNV()
+// Function: VLNVEditor::getVLNV()
 //-----------------------------------------------------------------------------
 VLNV VLNVEditor::getVLNV() const
 {
-    return VLNV(type_, vendorEdit_->text(), libraryEdit_->text(),
-                nameEdit_->text(), versionEdit_->text());
+    return VLNV(type_, vendorEdit_->text(), libraryEdit_->text(), nameEdit_->text(), versionEdit_->text());
 }
 
 //-----------------------------------------------------------------------------
-// Function: isValid()
+// Function: VLNVEditor::isValid()
 //-----------------------------------------------------------------------------
 bool VLNVEditor::isValid() const
 {
@@ -141,7 +132,7 @@ bool VLNVEditor::isValid() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: updateMatcherItems()
+// Function: VLNVEditor::updateMatcherItems()
 //-----------------------------------------------------------------------------
 void VLNVEditor::updateMatcherItems()
 {
@@ -149,7 +140,7 @@ void VLNVEditor::updateMatcherItems()
 }
 
 //-----------------------------------------------------------------------------
-// Function: updateLibraryMatcherItem()
+// Function: VLNVEditor::updateLibraryMatcherItem()
 //-----------------------------------------------------------------------------
 void VLNVEditor::updateLibraryMatcherItem()
 {
@@ -161,7 +152,7 @@ void VLNVEditor::updateLibraryMatcherItem()
 }
 
 //-----------------------------------------------------------------------------
-// Function: updateNameMatcherItem()
+// Function: VLNVEditor::updateNameMatcherItem()
 //-----------------------------------------------------------------------------
 void VLNVEditor::updateNameMatcherItem()
 {
@@ -180,7 +171,7 @@ void VLNVEditor::updateNameMatcherItem()
 }
 
 //-----------------------------------------------------------------------------
-// Function: updateVersionMatcherItem()
+// Function: VLNVEditor::updateVersionMatcherItem()
 //-----------------------------------------------------------------------------
 void VLNVEditor::updateVersionMatcherItem()
 {
@@ -196,7 +187,7 @@ void VLNVEditor::updateVersionMatcherItem()
 }
 
 //-----------------------------------------------------------------------------
-// Function: initWidgets()
+// Function: VLNVEditor::initWidgets()
 //-----------------------------------------------------------------------------
 void VLNVEditor::initWidgets(QWidget* parentWnd, bool compact)
 {
@@ -259,7 +250,7 @@ void VLNVEditor::initWidgets(QWidget* parentWnd, bool compact)
 }
 
 //-----------------------------------------------------------------------------
-// Function: initConnections()
+// Function: VLNVEditor::initConnections()
 //-----------------------------------------------------------------------------
 void VLNVEditor::initConnections()
 {
@@ -438,7 +429,7 @@ void VLNVEditor::dragEnterEvent( QDragEnterEvent* event )
 }
 
 //-----------------------------------------------------------------------------
-// Function: setFirmnessFilter()
+// Function: VLNVEditor::setFirmnessFilter()
 //-----------------------------------------------------------------------------
 void VLNVEditor::setFirmnessFilter(bool on, KactusAttribute::Firmness firmness /*= KTS_TEMPLATE*/)
 {
@@ -447,7 +438,7 @@ void VLNVEditor::setFirmnessFilter(bool on, KactusAttribute::Firmness firmness /
 }
 
 //-----------------------------------------------------------------------------
-// Function: setHierarchyFilter()
+// Function: VLNVEditor::setHierarchyFilter()
 //-----------------------------------------------------------------------------
 void VLNVEditor::setHierarchyFilter(bool on, KactusAttribute::ProductHierarchy productHier /*= KactusAttribute::KTS_IP*/)
 {
@@ -456,7 +447,7 @@ void VLNVEditor::setHierarchyFilter(bool on, KactusAttribute::ProductHierarchy p
 }
 
 //-----------------------------------------------------------------------------
-// Function: setImplementationFilter()
+// Function: VLNVEditor::setImplementationFilter()
 //-----------------------------------------------------------------------------
 void VLNVEditor::setImplementationFilter(bool on, KactusAttribute::Implementation implementation /*= KTS_HW*/)
 {
@@ -467,7 +458,7 @@ void VLNVEditor::setImplementationFilter(bool on, KactusAttribute::Implementatio
 }
 
 //-----------------------------------------------------------------------------
-// Function: updateFiltering()
+// Function: VLNVEditor::updateFiltering()
 //-----------------------------------------------------------------------------
 void VLNVEditor::updateFiltering()
 {

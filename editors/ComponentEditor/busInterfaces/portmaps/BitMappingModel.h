@@ -114,18 +114,6 @@ public:
 	virtual bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole );
 
 	/*!
-     *  Set the header data for specified section.
-	 *
-	 *      @param [in] section         Specifies the item that's data is modified
-	 *      @param [in] orientation     The header's orientation. Only Qt::Horizontal is supported.
-	 *      @param [in] value           The value to be set.
-	 *      @param [in] role            The role that is trying to modify the data. Only Qt::EditRole is supported.
-	 *
-	 *      @return True if the header was successfully set.
-	 */
-    bool setHeaderData( int section, Qt::Orientation orientation, const QVariant & value, int role = Qt::EditRole );
-
-	/*!
      *  Get information on how specified item can be handled.
 	 *
 	 *      @param [in] index   Specifies the item that's flags are wanted.
@@ -331,6 +319,7 @@ private:
      */
     QSharedPointer<PortMap> createPortMapForPin( General::PortBounds const& pin, int firstLogicalIndex ) const;
 
+    QPair<int, int> findLogicalBounds(QSharedPointer<PortMap> portMap) const;
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

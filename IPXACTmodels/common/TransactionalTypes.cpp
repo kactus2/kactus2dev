@@ -18,7 +18,7 @@ bool TransactionalTypes::isIpXactInitiativeType(QString const& initiativeType)
 {
     for (unsigned int i = 0; i < TransactionalTypes::INITIATIVE_TYPE_COUNT; ++i)
     {
-        if (QString(TransactionalTypes::INITIATIVE_TYPES[i]) == initiativeType)
+        if (TransactionalTypes::INITIATIVE_TYPES[i] == initiativeType)
         {
             return true;
         }

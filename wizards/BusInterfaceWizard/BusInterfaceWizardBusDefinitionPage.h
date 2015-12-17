@@ -20,16 +20,17 @@
 #include <QMap>
 #include <QPushButton>
 
+class AbstractionDefinition;
+class BusDefinition;
 class BusInterface;
 class BusInterfaceWizard;
-class LibraryInterface;
-class BusDefinition;
-class AbstractionDefinition;
-class PortAbstraction;
 class Component;
-class VLNV;
 class ExpressionParser;
+class LibraryInterface;
 class Port;
+class PortAbstraction;
+class VLNV;
+
 //-----------------------------------------------------------------------------
 //! Bus editor page for the interface wizard.
 //-----------------------------------------------------------------------------
@@ -203,6 +204,7 @@ private:
 
     //! The used expression parser.
     QSharedPointer<ExpressionParser> expressionParser_;
+
 };
 
 #endif // BUSINTERFACEWIZARDBUSDEFINITIONPAGE_H

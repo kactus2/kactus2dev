@@ -19,6 +19,8 @@
 
 #include <IPXACTmodels/BusDefinition/validators/BusDefinitionValidator.h>
 
+#include <IPXACTmodels/AbstractionDefinition/validators/AbstractionDefinitionValidator.h>
+
 #include <QApplication>
 #include <QFile>
 #include <QFileDialog>
@@ -30,22 +32,21 @@
 //-----------------------------------------------------------------------------
 // Function: BusEditor::BusEditor()
 //-----------------------------------------------------------------------------
-BusEditor::BusEditor(QWidget *parent, 
-					 LibraryInterface* libHandler,
-					 QSharedPointer<BusDefinition> busDef, 
-					 QSharedPointer<AbstractionDefinition> absDef,
-					 bool disableBusDef):
+BusEditor::BusEditor(QWidget *parent, LibraryInterface* libHandler, QSharedPointer<BusDefinition> busDef, 
+    QSharedPointer<AbstractionDefinition> absDef, bool disableBusDef):
 TabDocument(parent, DOC_PROTECTION_SUPPORT), 
-libHandler_(libHandler),
-busDef_(busDef),
-absDef_(absDef),
-busDefGroup_(this),
-absDefGroup_(libHandler ,this),
-busDefinitionValidator_(new BusDefinitionValidator(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser())))
+    libHandler_(libHandler),
+    busDef_(busDef),
+    absDef_(absDef),
+    busDefGroup_(this),
+    absDefGroup_(libHandler ,this),
+    expressionParser_(new SystemVerilogExpressionParser()),
+    busDefinitionValidator_(new BusDefinitionValidator(expressionParser_)),
+    absDefinitionValidator_(new AbstractionDefinitionValidator(libHandler, expressionParser_))
 {
-	if (absDef_)
+    if (absDef_)
     {
-		absDefGroup_.setAbsDef(absDef_);
+        absDefGroup_.setAbsDef(absDef_);
     }
 	else
     {
@@ -197,21 +198,16 @@ void BusEditor::setAbsDef(QSharedPointer<AbstractionDefinition> absDef)
 //-----------------------------------------------------------------------------
 bool BusEditor::validate(QVector<QString>& errorList)
 {    
-    // TODO: Validate the abstraction definition.
-
     // if abstraction definition is being edited
     if (absDefGroup_.isEnabled())
     {
-        // save the changes from the model to the abstraction definition
-        //absDefGroup_.save();
-
-        //valid = absDef_->isValid(errorList);
+        absDefinitionValidator_->findErrorsIn(errorList, absDef_);
     }
 
     // if bus definition is being edited
-     if (busDefGroup_.isEnabled())
-      {
-          busDefinitionValidator_->findErrorsIn(errorList, busDef_);
+    if (busDefGroup_.isEnabled())
+    {
+        busDefinitionValidator_->findErrorsIn(errorList, busDef_);
     }
 
     return errorList.isEmpty();

@@ -82,114 +82,13 @@ BusIfGeneralTab::~BusIfGeneralTab()
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusIfGeneralTab::isValid()
-//-----------------------------------------------------------------------------
-bool BusIfGeneralTab::isValid() const
-{
-	if (!nameEditor_.isValid())
-    {
-		return false;
-	}
-	else if (!busType_.isValid())
-    {
-		return false;
-	}
-	
-	// if specified bus type does not exist
-	else if (!libHandler_->contains(busType_.getVLNV()))
-    {
-		return false;
-	}
-
-	// if abstraction type is not empty but is not valid
-	else if (!absType_.isEmpty() && !absType_.isValid())
-    {
-		return false;
-	}
-
-	// if specified abstraction type does not exist
-	else if (!absType_.isEmpty() && !libHandler_->contains(absType_.getVLNV()))
-    {
-        return false;
-    }
-
-    else if (!details_.isValid())
-    {
-        return false;
-    }
-
-    else if (!parameters_.isValid())
-    {
-        return false;
-    }
-
-	return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusIfGeneralTab::isValid()
-//-----------------------------------------------------------------------------
-bool BusIfGeneralTab::isValid(QStringList& errorList) const
-{
-    bool valid = true;
-    if (!nameEditor_.isValid())
-    {
-        errorList.append(tr("No name defined for bus interface."));
-        valid = false;
-    }
-    if (!busType_.isValid())
-    {
-        errorList.append(tr("No valid VLNV set for bus definition."));
-        valid = false;
-    }
-
-    // if specified bus type does not exist
-    else if (!libHandler_->contains(busType_.getVLNV()))
-    {
-        errorList.append(tr("No item found in library with VLNV %1.").arg(busType_.getVLNV().toString()));
-        valid = false;
-    }
-
-    // if abstraction type is not empty but is not valid
-    if (!absType_.isEmpty() && !absType_.isValid())
-    {
-        errorList.append(tr("No valid VLNV set for abstraction definition."));
-        valid = false;
-    }
-
-    // if specified abstraction type does not exist
-    else if (!absType_.isEmpty() && !libHandler_->contains(absType_.getVLNV()))
-    {
-        errorList.append(tr("No item found in library with VLNV %1.").arg(absType_.getVLNV().toString()));
-        valid = false;
-    }
-
-    if (!details_.isValid())
-    {
-        //TODO: check validity in details. Always returns true.
-        errorList.append(tr("Not all details are valid."));
-        valid = false;
-    }
-
-    QString thisIdentifier(tr("bus interface %1").arg(busif_->name()));
-
-    QVector<QString> errors;
-    if (!parameters_.isValid(errors, thisIdentifier))
-    {
-        errorList.append(errors.toList());
-        valid = false;
-    }
-
-    return valid;
-}
-
-//-----------------------------------------------------------------------------
 // Function: BusIfGeneralTab::refresh()
 //-----------------------------------------------------------------------------
 void BusIfGeneralTab::refresh()
 {
 	nameEditor_.refresh();
 	busType_.setVLNV(busif_->getBusType());
+
 	absType_.setVLNV(*busif_->getAbstractionTypes()->first()->getAbstractionRef());
 	modeStack_.refresh();
 	details_.refresh();

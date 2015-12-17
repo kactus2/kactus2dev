@@ -202,11 +202,10 @@ private:
      *  Gets the size of a logical port.
      *
      *      @param [in] logicalPort     The name of the logical port.
-     *      @param [in] physicalPort    The name of the physical port to map the logical port to.
      *
      *      @return  The logical port size.
      */
-    int getLogicalSize(QString const& logicalPort, QString const& physicalPort);
+    int getLogicalSize(QString const& logicalPort);
 
     /*!
      *  Gets the size of a physical port.

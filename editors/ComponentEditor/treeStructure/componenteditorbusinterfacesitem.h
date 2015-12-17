@@ -15,6 +15,7 @@
 #include "componenteditoritem.h"
 
 class BusInterface;
+class BusInterfaceValidator;
 class ExpressionParser;
 
 //-----------------------------------------------------------------------------
@@ -107,6 +108,9 @@ private:
 
     //! The expression parser used to define the results of expressions.
     QSharedPointer<ExpressionParser> expressionParser_;
+
+    //! Validator for bus interfaces.
+    QSharedPointer<BusInterfaceValidator> validator_;
 };
 
 #endif // COMPONENTEDITORBUSINTERFACESITEM_H

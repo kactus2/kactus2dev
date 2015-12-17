@@ -15,6 +15,7 @@
 #include <editors/ComponentEditor/busInterfaces/businterfaceseditor.h>
 
 #include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
 
 //-----------------------------------------------------------------------------
 // Function: componenteditorbusinterfacesitem::ComponentEditorBusInterfacesItem()
@@ -29,7 +30,10 @@ ComponentEditorBusInterfacesItem::ComponentEditorBusInterfacesItem(ComponentEdit
 ComponentEditorItem(model, libHandler, component, parent),
     busifs_(component->getBusInterfaces()),
     parentWnd_(parentWnd),
-    expressionParser_(expressionParser)
+    expressionParser_(expressionParser),
+    validator_(new BusInterfaceValidator(expressionParser, component->getChoices(), component->getViews(),
+    component->getPorts(), component->getAddressSpaces(), component->getMemoryMaps(), component->getBusInterfaces(),
+    component->getFileSets(), component->getRemapStates(), libHandler))
 {
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);
@@ -39,7 +43,7 @@ ComponentEditorItem(model, libHandler, component, parent),
     {
 		QSharedPointer<ComponentEditorBusInterfaceItem> busifItem(
             new ComponentEditorBusInterfaceItem(busif, model, libHandler, component, referenceCounter_,
-            parameterFinder_, expressionFormatter_, expressionParser_, this, parentWnd));
+            parameterFinder_, expressionFormatter_, expressionParser_, validator_, this, parentWnd));
 
         connect(busifItem.data(), SIGNAL(openReferenceTree(QString)),
             this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
@@ -108,7 +112,7 @@ void ComponentEditorBusInterfacesItem::createChild(int index)
 {
 	QSharedPointer<ComponentEditorBusInterfaceItem> busifItem(
 		new ComponentEditorBusInterfaceItem(busifs_->at(index), model_, libHandler_, component_, referenceCounter_,
-        parameterFinder_, expressionFormatter_, expressionParser_, this, parentWnd_));
+        parameterFinder_, expressionFormatter_, expressionParser_, validator_, this, parentWnd_));
 	busifItem->setLocked(locked_);
 
     connect(busifItem.data(), SIGNAL(openReferenceTree(QString)),

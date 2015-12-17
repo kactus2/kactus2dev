@@ -16,13 +16,14 @@
 #include <IPXACTmodels/common/Assertion.h>
 #include <IPXACTmodels/common/CellSpecification.h>
 #include <IPXACTmodels/common/Parameter.h>
+#include <IPXACTmodels/common/PresenceTypes.h>
 #include <IPXACTmodels/common/Protocol.h>
 #include <IPXACTmodels/common/Qualifier.h>
+#include <IPXACTmodels/common/TimingConstraint.h>
 
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinitionWriter.h>
 #include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>
-#include <IPXACTmodels/AbstractionDefinition/TimingConstraint.h>
 #include <IPXACTmodels/AbstractionDefinition/TransactionalAbstraction.h>
 #include <IPXACTmodels/AbstractionDefinition/TransactionalPort.h>
 #include <IPXACTmodels/AbstractionDefinition/WirePort.h>
@@ -264,17 +265,17 @@ void tst_AbstractionDefinition::testWriteWirePortForAllModes()
 
     QSharedPointer<WirePort> systemPort(new WirePort);
     systemPort->setSystemGroup("system1");
-    systemPort->setPresence(General::REQUIRED);
+    systemPort->setPresence(PresenceTypes::REQUIRED);
     systemPort->setWidth("1");
     systemPort->setDirection(DirectionTypes::INOUT);
 
     QSharedPointer<WirePort> masterPort(new WirePort);
-    masterPort->setPresence(General::OPTIONAL);
+    masterPort->setPresence(PresenceTypes::OPTIONAL);
     masterPort->setWidth("expression");
     masterPort->setDirection(DirectionTypes::IN);
 
     QSharedPointer<WirePort> slavePort(new WirePort);
-    slavePort->setPresence(General::ILLEGAL);
+    slavePort->setPresence(PresenceTypes::ILLEGAL);
     slavePort->setDirection(DirectionTypes::OUT);
 
     testPort->getWire()->addSystemPort(systemPort);
@@ -349,13 +350,13 @@ void tst_AbstractionDefinition::testWriteMultipleSystemWirePorts()
 
     QSharedPointer<WirePort> systemPort(new WirePort);
     systemPort->setSystemGroup("system1");
-    systemPort->setPresence(General::REQUIRED);
+    systemPort->setPresence(PresenceTypes::REQUIRED);
     systemPort->setWidth("1");
     systemPort->setDirection(DirectionTypes::INOUT);
 
     QSharedPointer<WirePort> secondSystemPort(new WirePort);
     secondSystemPort->setSystemGroup("system2");
-    secondSystemPort->setPresence(General::OPTIONAL);
+    secondSystemPort->setPresence(PresenceTypes::OPTIONAL);
     secondSystemPort->setWidth("16");
     secondSystemPort->setDirection(DirectionTypes::INOUT);
 
@@ -640,23 +641,23 @@ void tst_AbstractionDefinition::testWriteTransactionalPortForAllModes()
 
     QSharedPointer<TransactionalPort> systemPort(new TransactionalPort());
     systemPort->setSystemGroup("illegalGroup");
-    systemPort->setPresence(General::ILLEGAL);
+    systemPort->setPresence(PresenceTypes::ILLEGAL);
     transactional->addSystemPort(systemPort);
 
     QSharedPointer<TransactionalPort> secondSystemPort(new TransactionalPort());
     secondSystemPort->setSystemGroup("requiredGroup");
-    secondSystemPort->setPresence(General::REQUIRED);
+    secondSystemPort->setPresence(PresenceTypes::REQUIRED);
     transactional->addSystemPort(secondSystemPort);
 
     QSharedPointer<TransactionalPort> masterPort(new TransactionalPort());
-    masterPort->setPresence(General::OPTIONAL);
+    masterPort->setPresence(PresenceTypes::OPTIONAL);
     masterPort->setInitiative("requires");
     masterPort->setKind("tlm_port");
     masterPort->setBusWidth("32");
     transactional->setMasterPort(masterPort);
 
     QSharedPointer<TransactionalPort> slavePort(new TransactionalPort());
-    slavePort->setPresence(General::OPTIONAL);
+    slavePort->setPresence(PresenceTypes::OPTIONAL);
     slavePort->setInitiative("provides");
     slavePort->setKind("customKind");
     transactional->setSlavePort(slavePort);

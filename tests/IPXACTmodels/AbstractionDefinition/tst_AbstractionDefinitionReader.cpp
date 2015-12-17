@@ -15,7 +15,9 @@
 
 #include <IPXACTmodels/common/CellSpecification.h>
 #include <IPXACTmodels/common/Parameter.h>
+#include <IPXACTmodels/common/PresenceTypes.h>
 #include <IPXACTmodels/common/Protocol.h>
+#include <IPXACTmodels/common/TimingConstraint.h>
 
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinitionReader.h>
@@ -24,8 +26,6 @@
 #include <IPXACTmodels/AbstractionDefinition/TransactionalPort.h>
 #include <IPXACTmodels/AbstractionDefinition/WireAbstraction.h>
 #include <IPXACTmodels/AbstractionDefinition/WirePort.h>
-
-#include <IPXACTmodels/AbstractionDefinition/TimingConstraint.h>
 
 #include <IPXACTmodels/common/GenericVendorExtension.h>
 
@@ -52,7 +52,8 @@ private slots:
     void testReadTransactionalPort();
     void testReadMultipleTransactionalSystemPorts();
     void testReadTransactionalWithProtocol();
-
+    void testReadTransactionalWithCustomProtocol();
+   
     void testReadParameters();
     void testReadAssertions();
     void testReadVendorExtension();
@@ -256,7 +257,7 @@ void tst_AbstractionDefinitionReader::testReadWirePort()
     QCOMPARE(wireQualifier.isReset(), false);
 
     QSharedPointer<WirePort> master = port->getWire()->getMasterPort();
-    QCOMPARE(master->getPresence(), General::REQUIRED);
+    QCOMPARE(master->getPresence(), PresenceTypes::REQUIRED);
     QCOMPARE(master->getWidth(), QString("widthExpression"));
     QCOMPARE(master->getDirection(), DirectionTypes::INOUT);
 }
@@ -443,7 +444,7 @@ void tst_AbstractionDefinitionReader::testReadTransactionalPort()
     QCOMPARE(transactional->hasMasterPort(), true);
 
     QSharedPointer<TransactionalPort> masterPort = transactional->getMasterPort();
-    QCOMPARE(masterPort->getPresence(), General::OPTIONAL);
+    QCOMPARE(masterPort->getPresence(), PresenceTypes::OPTIONAL);
     QCOMPARE(masterPort->getInitiative(), QString("requires"));
     QCOMPARE(masterPort->getKind(), QString("tlm_port"));
     QCOMPARE(masterPort->getBusWidth(), QString("32"));
@@ -495,7 +496,7 @@ void tst_AbstractionDefinitionReader::testReadMultipleTransactionalSystemPorts()
 
     QCOMPARE(transactional->getSystemPorts()->count(), 2);
     QCOMPARE(transactional->getSystemPorts()->first()->getSystemGroup(), QString("illegalGroup"));
-    QCOMPARE(transactional->getSystemPorts()->last()->getPresence(), General::REQUIRED);
+    QCOMPARE(transactional->getSystemPorts()->last()->getPresence(), PresenceTypes::REQUIRED);
 }
 
 //-----------------------------------------------------------------------------
@@ -559,6 +560,56 @@ void tst_AbstractionDefinitionReader::testReadTransactionalWithProtocol()
     QCOMPARE(protocol->hasMandatoryPayloadExtension(), true);
 
     QCOMPARE(protocol->getVendorExtensions()->count(), 1);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_AbstractionDefinitionReader::testReadTransactionalWithCustomProtocol()
+//-----------------------------------------------------------------------------
+void tst_AbstractionDefinitionReader::testReadTransactionalWithCustomProtocol()
+{
+    QDomDocument document;
+    document.setContent(QString(        
+        "<?xml version=\"1.0\"?>"
+        "<ipxact:abstractionDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+            "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+            "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+            "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+            "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
+            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:library>TestLibrary</ipxact:library>"
+            "<ipxact:name>TestAbsDef</ipxact:name>"
+            "<ipxact:version>1.0</ipxact:version>"
+            "<ipxact:busType vendor=\"TUT\" library=\"TestLibrary\" name=\"TargetBusDef\" version=\"1.0\"/>"
+            "<ipxact:ports>"
+                "<ipxact:port>"                
+                    "<ipxact:logicalName>testPort</ipxact:logicalName>"
+                    "<ipxact:transactional>"                    
+                        "<ipxact:onMaster>"
+                            "<ipxact:protocol>"
+                                "<ipxact:protocolType custom=\"customProtocol\">custom</ipxact:protocolType>"                        
+                            "</ipxact:protocol>"
+                        "</ipxact:onMaster>" 
+                    "</ipxact:transactional>"
+                "</ipxact:port>"
+            "</ipxact:ports>"
+        "</ipxact:abstractionDefinition>"));
+
+    AbstractionDefinitionReader reader;
+    QSharedPointer<AbstractionDefinition> testDefinition = reader.createAbstractionDefinitionFrom(document);
+
+    QSharedPointer<PortAbstraction> port = testDefinition->getLogicalPorts()->first();
+
+    QCOMPARE(port->hasTransactional(), true);
+    QSharedPointer<TransactionalAbstraction> transactional = port->getTransactional();
+
+    QCOMPARE(transactional->hasMasterPort(), true);
+    QSharedPointer<TransactionalPort> master = transactional->getMasterPort();
+
+    QCOMPARE(master->hasProtocol(), true);
+    QSharedPointer<Protocol> protocol = master->getProtocol();
+
+    QCOMPARE(protocol->getProtocolType(), QString("custom"));
+    QCOMPARE(protocol->getCustomProtocolType(), QString("customProtocol"));
 }
 
 //-----------------------------------------------------------------------------
