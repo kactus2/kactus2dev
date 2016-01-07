@@ -166,7 +166,7 @@ void ViewValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<View> 
 {
 	if ( !hasValidName( view->name() ) )
 	{
-		errors.append(QObject::tr("The view name is invalid or in-existing within %1").arg(contex));
+		errors.append(QObject::tr("Invalid name specified for view %1 within %2").arg(view->name()).arg(contex));
 	}
 
     if (!hasValidIsPresent(view))

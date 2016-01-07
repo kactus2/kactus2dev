@@ -30,6 +30,7 @@ HEADERS += ../../../../../IPXACTmodels/common/Array.h \
     ../../../../../IPXACTmodels/Component/Port.h \
     ../../../../../IPXACTmodels/Component/validators/PortValidator.h \
     ../../../../../IPXACTmodels/common/Protocol.h \
+    ../../../../../IPXACTmodels/common/validators/ProtocolValidator.h \
     ../../../../../IPXACTmodels/common/Range.h \
     ../../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
     ../../../../../IPXACTmodels/Component/Transactional.h \
@@ -39,8 +40,7 @@ HEADERS += ../../../../../IPXACTmodels/common/Array.h \
     ../../../../../IPXACTmodels/common/Vector.h \
     ../../../../../IPXACTmodels/Component/View.h \
     ../../../../../IPXACTmodels/Component/Wire.h \
-    ../../../../../IPXACTmodels/Component/WireTypeDef.h \
-    ../../../../../IPXACTmodels/common/ProtocolValidator.h
+    ../../../../../IPXACTmodels/Component/WireTypeDef.h
 SOURCES += ../../../../../IPXACTmodels/common/Array.cpp \
     ../../../../../IPXACTmodels/common/Assertion.cpp \
     ../../../../../IPXACTmodels/common/BooleanValue.cpp \
@@ -63,6 +63,7 @@ SOURCES += ../../../../../IPXACTmodels/common/Array.cpp \
     ../../../../../IPXACTmodels/Component/Port.cpp \
     ../../../../../IPXACTmodels/Component/validators/PortValidator.cpp \
     ../../../../../IPXACTmodels/common/Protocol.cpp \
+    ../../../../../IPXACTmodels/common/validators/ProtocolValidator.cpp \
     ../../../../../IPXACTmodels/common/Range.cpp \
     ../../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ../../../../../IPXACTmodels/Component/Transactional.cpp \
@@ -73,5 +74,4 @@ SOURCES += ../../../../../IPXACTmodels/common/Array.cpp \
     ../../../../../IPXACTmodels/Component/View.cpp \
     ../../../../../IPXACTmodels/Component/Wire.cpp \
     ../../../../../IPXACTmodels/Component/WireTypeDef.cpp \
-    ./tst_ComponentPortValidator.cpp \
-    ../../../../../IPXACTmodels/common/ProtocolValidator.cpp
+    ./tst_ComponentPortValidator.cpp

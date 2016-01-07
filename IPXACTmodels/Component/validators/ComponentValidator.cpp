@@ -1,0 +1,921 @@
+//-----------------------------------------------------------------------------
+// File: ComponentValidator.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Mikko Teuho
+// Date: 14.12.2015
+//
+// Description:
+// Validator for the ipxact:component.
+//-----------------------------------------------------------------------------
+
+#include "ComponentValidator.h"
+
+#include <editors/ComponentEditor/common/ExpressionParser.h>
+
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/Component/RemapState.h>
+#include <IPXACTmodels/Component/AddressSpace.h>
+#include <IPXACTmodels/Component/MemoryMap.h>
+#include <IPXACTmodels/Component/View.h>
+#include <IPXACTmodels/Component/ComponentInstantiation.h>
+#include <IPXACTmodels/Component/DesignInstantiation.h>
+#include <IPXACTmodels/Component/DesignConfigurationInstantiation.h>
+#include <IPXACTmodels/Component/Port.h>
+#include <IPXACTmodels/Component/Choice.h>
+#include <IPXACTmodels/Component/FileSet.h>
+#include <IPXACTmodels/Component/Cpu.h>
+#include <IPXACTmodels/Component/OtherClockDriver.h>
+#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
+#include <IPXACTmodels/common/validators/AssertionValidator.h>
+
+#include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
+#include <IPXACTmodels/Component/validators/ChannelValidator.h>
+#include <IPXACTmodels/Component/validators/RemapStateValidator.h>
+#include <IPXACTmodels/Component/validators/AddressSpaceValidator.h>
+#include <IPXACTmodels/Component/validators/MemoryMapValidator.h>
+#include <IPXACTmodels/Component/validators/ViewValidator.h>
+#include <IPXACTmodels/Component/validators/InstantiationsValidator.h>
+#include <IPXACTmodels/Component/validators/PortValidator.h>
+#include <IPXACTmodels/Component/validators/ChoiceValidator.h>
+#include <IPXACTmodels/Component/validators/FileSetValidator.h>
+#include <IPXACTmodels/Component/validators/CPUValidator.h>
+#include <IPXACTmodels/Component/validators/OtherClockDriverValidator.h>
+#include <IPXACTmodels/common/Parameter.h>
+#include <IPXACTmodels/common/Assertion.h>
+
+#include <QRegularExpression>
+
+//-----------------------------------------------------------------------------
+// Function: OtherClockDriverValidator::OtherClockDriverValidator()
+//-----------------------------------------------------------------------------
+ComponentValidator::ComponentValidator(QSharedPointer<BusInterfaceValidator> busInterfaceValidator,
+                                       QSharedPointer<ChannelValidator> channelValidator,
+                                       QSharedPointer<RemapStateValidator> remapStateValidator,
+                                       QSharedPointer<AddressSpaceValidator> addressSpaceValidator,
+                                       QSharedPointer<MemoryMapValidator> memoryMapValidator,
+                                       QSharedPointer<ViewValidator> viewValidator,
+                                       QSharedPointer<InstantiationsValidator> instantiationsValidator,
+                                       QSharedPointer<PortValidator> portValidator,
+                                       QSharedPointer<ChoiceValidator> choiceValidator,
+                                       QSharedPointer<FileSetValidator> fileSetValidator,
+                                       QSharedPointer<CPUValidator> cpuValidator,
+                                       QSharedPointer<OtherClockDriverValidator> otherClockDriverValidator,
+                                       QSharedPointer<ParameterValidator2014> parameterValidator,
+                                       QSharedPointer<AssertionValidator> assertionValidator):
+busInterfaceValidator_(busInterfaceValidator),
+channelValidator_(channelValidator),
+remapStateValidator_(remapStateValidator),
+addressSpaceValidator_(addressSpaceValidator),
+memoryMapValidator_(memoryMapValidator),
+viewValidator_(viewValidator),
+instantiationsValidator_(instantiationsValidator),
+portValidator_(portValidator),
+choiceValidator_(choiceValidator),
+fileSetValidator_(fileSetValidator),
+cpuValidator_(cpuValidator),
+otherClockDriverValidator_(otherClockDriverValidator),
+parameterValidator_(parameterValidator),
+assertionValidator_(assertionValidator)
+{
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentValidator::~ComponentValidator()
+//-----------------------------------------------------------------------------
+ComponentValidator::~ComponentValidator()
+{
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: OtherClockDriverValidator::validate()
+//-----------------------------------------------------------------------------
+bool ComponentValidator::validate(QSharedPointer<Component> component) const
+{
+    return hasValidVLNV(component) && hasValidBusInterfaces(component) && hasValidChannels(component) &&
+        hasValidRemapStates(component) && hasValidAddressSpaces(component) && hasValidMemoryMaps(component) &&
+        hasValidViews(component) && hasValidComponentInstantiations(component) &&
+        hasValidDesignInstantiations(component) && hasValidDesignConfigurationInstantiations(component) &&
+        hasValidPorts(component) && hasValidChoices(component) && hasValidFileSets(component) &&
+        hasValidCPUs(component) && hasValidOtherClockDrivers(component) && hasValidParameters(component) &&
+        hasValidAssertions(component);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentValidator::hasValidVLNV()
+//-----------------------------------------------------------------------------
+bool ComponentValidator::hasValidVLNV(QSharedPointer<Component> component) const
+{
+    return component->getVlnv().isValid();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentValidator::hasValidBusInterfaces()
+//-----------------------------------------------------------------------------
+bool ComponentValidator::hasValidBusInterfaces(QSharedPointer<Component> component) const
+{
+    if (!component->getBusInterfaces()->isEmpty())
+    {
+        QVector<QString> busInterfaceNames;
+        foreach (QSharedPointer<BusInterface> bus, *component->getBusInterfaces())
+        {
+            if (busInterfaceNames.contains(bus->name()) || !busInterfaceValidator_->validate(bus))
+            {
+                return false;
+            }
+            else
+            {
+                busInterfaceNames.append(bus->name());
+            }
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentValidator::hasValidChannels()
+//-----------------------------------------------------------------------------
+bool ComponentValidator::hasValidChannels(QSharedPointer<Component> component) const
+{
+    if (!component->getChannels()->isEmpty())
+    {
+        QVector<QString> channelNames;
+        foreach (QSharedPointer<Channel> channel, *component->getChannels())
+        {
+            if (channelNames.contains(channel->name()) || !channelValidator_->validate(channel))
+            {
+                return false;
+            }
+            else
+            {
+                channelNames.append(channel->name());
+            }
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentValidator::hasValidRemapStates()
+//-----------------------------------------------------------------------------
+bool ComponentValidator::hasValidRemapStates(QSharedPointer<Component> component) const
+{
+    if (!component->getRemapStates()->isEmpty())
+    {
+        QVector<QString> stateNames;
+        foreach (QSharedPointer<RemapState> remapState, *component->getRemapStates())
+        {
+            if (stateNames.contains(remapState->name()) || !remapStateValidator_->validate(remapState))
+            {
+                return false;
+            }
+            else
+            {
+                stateNames.append(remapState->name());
+            }
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentValidator::hasValidAddressSpaces()
+//-----------------------------------------------------------------------------
+bool ComponentValidator::hasValidAddressSpaces(QSharedPointer<Component> component) const
+{
+    if (!component->getAddressSpaces()->isEmpty())
+    {
+        QVector<QString> spaceNames;
+        foreach (QSharedPointer<AddressSpace> space, *component->getAddressSpaces())
+        {
+            if (spaceNames.contains(space->name()) || !addressSpaceValidator_->validate(space))
+            {
+                return false;
+            }
+            else
+            {
+                spaceNames.append(space->name());
+            }
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentValidator::hasValidMemoryMaps()
+//-----------------------------------------------------------------------------
+bool ComponentValidator::hasValidMemoryMaps(QSharedPointer<Component> component) const
+{
+    if (!component->getMemoryMaps()->isEmpty())
+    {
+        QVector<QString> mapNames;
+        foreach (QSharedPointer<MemoryMap> memoryMap, *component->getMemoryMaps())
+        {
+            if (mapNames.contains(memoryMap->name()) || !memoryMapValidator_->validate(memoryMap))
+            {
+                return false;
+            }
+            else
+            {
+                mapNames.append(memoryMap->name());
+            }
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentValidator::hasValidViews()
+//-----------------------------------------------------------------------------
+bool ComponentValidator::hasValidViews(QSharedPointer<Component> component) const
+{
+    if (!component->getViews()->isEmpty())
+    {
+        QVector<QString> viewNames;
+        foreach (QSharedPointer<View> view, *component->getViews())
+        {
+            if (viewNames.contains(view->name()) || !viewValidator_->validate(view))
+            {
+                return false;
+            }
+            else
+            {
+                viewNames.append(view->name());
+            }
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentValidator::hasValidComponentInstantiations()
+//-----------------------------------------------------------------------------
+bool ComponentValidator::hasValidComponentInstantiations(QSharedPointer<Component> component) const
+{
+    if (!component->getComponentInstantiations()->isEmpty())
+    {
+        QVector<QString> instantiationNames;
+        foreach (QSharedPointer<ComponentInstantiation> instantiation, *component->getComponentInstantiations())
+        {
+            if (instantiationNames.contains(instantiation->name()) ||
+                !instantiationsValidator_->validateComponentInstantiation(instantiation))
+            {
+                return false;
+            }
+            else
+            {
+                instantiationNames.append(instantiation->name());
+            }
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentValidator::hasValidDesignInstantiations()
+//-----------------------------------------------------------------------------
+bool ComponentValidator::hasValidDesignInstantiations(QSharedPointer<Component> component) const
+{
+    if (!component->getDesignInstantiations()->isEmpty())
+    {
+        QVector<QString> instantiationNames;
+        foreach (QSharedPointer<DesignInstantiation> instantiation, *component->getDesignInstantiations())
+        {
+            if (instantiationNames.contains(instantiation->name()) ||
+                !instantiationsValidator_->validateDesignInstantiation(instantiation))
+            {
+                return false;
+            }
+            else
+            {
+                instantiationNames.append(instantiation->name());
+            }
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentValidator::hasValidDesignConfigurationInstantiations()
+//-----------------------------------------------------------------------------
+bool ComponentValidator::hasValidDesignConfigurationInstantiations(QSharedPointer<Component> component) const
+{
+    if (!component->getDesignConfigurationInstantiations()->isEmpty())
+    {
+        QVector<QString> instantiationNames;
+        foreach (QSharedPointer<DesignConfigurationInstantiation> instantiation,
+            *component->getDesignConfigurationInstantiations())
+        {
+            if (instantiationNames.contains(instantiation->name()) ||
+                !instantiationsValidator_->validateDesignConfigurationInstantiation(instantiation))
+            {
+                return false;
+            }
+            else
+            {
+                instantiationNames.append(instantiation->name());
+            }
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentValidator::hasValidPorts()
+//-----------------------------------------------------------------------------
+bool ComponentValidator::hasValidPorts(QSharedPointer<Component> component) const
+{
+    if (!component->getPorts()->isEmpty())
+    {
+        QVector<QString> portNames;
+        foreach (QSharedPointer<Port> port, *component->getPorts())
+        {
+            if (portNames.contains(port->name()) || !portValidator_->validate(port))
+            {
+                return false;
+            }
+            else
+            {
+                portNames.append(port->name());
+            }
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentValidator::hasValidChoices()
+//-----------------------------------------------------------------------------
+bool ComponentValidator::hasValidChoices(QSharedPointer<Component> component) const
+{
+    if (!component->getChoices()->isEmpty())
+    {
+        QVector<QString> choiceNames;
+        foreach (QSharedPointer<Choice> choice, *component->getChoices())
+        {
+            if (choiceNames.contains(choice->name()) || !choiceValidator_->validate(choice))
+            {
+                return false;
+            }
+            else
+            {
+                choiceNames.append(choice->name());
+            }
+        }
+    }
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentValidator::hasValidFileSets()
+//-----------------------------------------------------------------------------
+bool ComponentValidator::hasValidFileSets(QSharedPointer<Component> component) const
+{
+    if (!component->getFileSets()->isEmpty())
+    {
+        QVector<QString> fileSetNames;
+        foreach (QSharedPointer<FileSet> fileSet, *component->getFileSets())
+        {
+            if (fileSetNames.contains(fileSet->name()) || !fileSetValidator_->validate(fileSet))
+            {
+                return false;
+            }
+            else
+            {
+                fileSetNames.append(fileSet->name());
+            }
+        }
+    }
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentValidator::hasValidCPUs()
+//-----------------------------------------------------------------------------
+bool ComponentValidator::hasValidCPUs(QSharedPointer<Component> component) const
+{
+    if (!component->getCpus()->isEmpty())
+    {
+        QVector<QString> cpuNames;
+        foreach (QSharedPointer<Cpu> cpu, *component->getCpus())
+        {
+            if (cpuNames.contains(cpu->name()) || !cpuValidator_->validate(cpu))
+            {
+                return false;
+            }
+            else
+            {
+                cpuNames.append(cpu->name());
+            }
+        }
+    }
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentValidator::hasValidOtherClockDrivers()
+//-----------------------------------------------------------------------------
+bool ComponentValidator::hasValidOtherClockDrivers(QSharedPointer<Component> component) const
+{
+    if (!component->getOtherClockDrivers()->isEmpty())
+    {
+        QVector<QString> driverNames;
+        foreach (QSharedPointer<OtherClockDriver> otherClockDriver, *component->getOtherClockDrivers())
+        {
+            if (driverNames.contains(otherClockDriver->getClockName()) ||
+                !otherClockDriverValidator_->validate(otherClockDriver))
+            {
+                return false;
+            }
+            else
+            {
+                driverNames.append(otherClockDriver->getClockName());
+            }
+        }
+    }
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentValidator::hasValidParameters()
+//-----------------------------------------------------------------------------
+bool ComponentValidator::hasValidParameters(QSharedPointer<Component> component) const
+{
+    if (!component->getParameters()->isEmpty())
+    {
+        QVector<QString> parameterNames;
+        foreach (QSharedPointer<Parameter> parameter, *component->getParameters())
+        {
+            if (parameterNames.contains(parameter->name()) || !parameterValidator_->validate(parameter))
+            {
+                return false;
+            }
+            else
+            {
+                parameterNames.append(parameter->name());
+            }
+        }
+    }
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentValidator::hasValidAssertions()
+//-----------------------------------------------------------------------------
+bool ComponentValidator::hasValidAssertions(QSharedPointer<Component> component) const
+{
+    if (!component->getAssertions()->isEmpty())
+    {
+        QVector<QString> assertionNames;
+        foreach (QSharedPointer<Assertion> assertion, *component->getAssertions())
+        {
+            if (assertionNames.contains(assertion->name()) || !assertionValidator_->validate(assertion))
+            {
+                return false;
+            }
+            else
+            {
+                assertionNames.append(assertion->name());
+            }
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentValidator::findErrorsIn()
+//-----------------------------------------------------------------------------
+void ComponentValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Component> component) const
+{
+    QString context = QObject::tr("component %1").arg(component->getVlnv().toString());
+
+    findErrorsInVLNV(errors, component);
+    findErrorsInBusInterface(errors, component, context);
+    findErrorsInChannels(errors, component, context);
+    findErrorsInRemapStates(errors, component, context);
+    findErrorsInAddressSpaces(errors, component, context);
+    findErrorsInMemoryMaps(errors, component, context);
+    findErrorsInViews(errors, component, context);
+    findErrorsInComponentInstantiations(errors, component, context);
+    findErrorsInDesignInstantiations(errors, component, context);
+    findErrorsInDesignConfigurationInstantiations(errors, component, context);
+    findErrorsInPorts(errors, component, context);
+    findErrorsInChoices(errors, component, context);
+    findErrorsInFileSets(errors, component, context);
+    findErrorsInCPUs(errors, component, context);
+    findErrorsInOtherClockDrivers(errors, component, context);
+    findErrorsInParameters(errors, component, context);
+    findErrorsInAssertions(errors, component, context);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentValidator::findErrorsInVLNV()
+//-----------------------------------------------------------------------------
+void ComponentValidator::findErrorsInVLNV(QVector<QString>& errors, QSharedPointer<Component> component) const
+{
+    component->getVlnv().isValid(errors, QLatin1String("component"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentValidator::findErrorsInBusInterface()
+//-----------------------------------------------------------------------------
+void ComponentValidator::findErrorsInBusInterface(QVector<QString>& errors, QSharedPointer<Component> component,
+    QString const& context) const
+{
+    if (!component->getBusInterfaces()->isEmpty())
+    {
+        QVector<QString> busInterfaceNames;
+        QVector<QString> duplicateNames;
+        foreach (QSharedPointer<BusInterface> bus, *component->getBusInterfaces())
+        {
+            if (busInterfaceNames.contains(bus->name()) && !duplicateNames.contains(bus->name()))
+            {
+                errors.append(QObject::tr("Bus interface name %1 within %2 is not unique.")
+                    .arg(bus->name()).arg(context));
+                duplicateNames.append(bus->name());
+            }
+
+            busInterfaceNames.append(bus->name());
+            busInterfaceValidator_->findErrorsIn(errors, bus, context);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentValidator::findErrorsInChannels()
+//-----------------------------------------------------------------------------
+void ComponentValidator::findErrorsInChannels(QVector<QString>& errors, QSharedPointer<Component> component,
+    QString const& context) const
+{
+    if (!component->getChannels()->isEmpty())
+    {
+        QVector<QString> channelNames;
+        QVector<QString> duplicateNames;
+        foreach(QSharedPointer<Channel> channel, *component->getChannels())
+        {
+            if (channelNames.contains(channel->name()) && !duplicateNames.contains(channel->name()))
+            {
+                errors.append(QObject::tr("Channel name %1 within %2 is not unique.")
+                    .arg(channel->name()).arg(context));
+                duplicateNames.append(channel->name());
+            }
+
+            channelNames.append(channel->name());
+            channelValidator_->findErrorsIn(errors, channel, context);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentValidator::findErrorsInRemapStates()
+//-----------------------------------------------------------------------------
+void ComponentValidator::findErrorsInRemapStates(QVector<QString>& errors, QSharedPointer<Component> component,
+    QString const& context) const
+{
+    if (!component->getRemapStates()->isEmpty())
+    {
+        QVector<QString> stateNames;
+        QVector<QString> duplicateNames;
+        foreach (QSharedPointer<RemapState> remapState, *component->getRemapStates())
+        {
+            if (stateNames.contains(remapState->name()) && !duplicateNames.contains(remapState->name()))
+            {
+                errors.append(QObject::tr("Remap state name %1 within %2 is not unique.")
+                    .arg(remapState->name()).arg(context));
+            }
+
+            stateNames.append(remapState->name());
+            remapStateValidator_->findErrorsIn(errors, remapState, context);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentValidator::findErrorsInAddressSpaces()
+//-----------------------------------------------------------------------------
+void ComponentValidator::findErrorsInAddressSpaces(QVector<QString>& errors, QSharedPointer<Component> component,
+    QString const& context) const
+{
+    if (!component->getAddressSpaces()->isEmpty())
+    {
+        QVector<QString> spaceNames;
+        QVector<QString> duplicateNames;
+        foreach (QSharedPointer<AddressSpace> addressSpace, *component->getAddressSpaces())
+        {
+            if (spaceNames.contains(addressSpace->name()) && !duplicateNames.contains(addressSpace->name()))
+            {
+                errors.append(QObject::tr("Address space name %1 within %2 is not unique.")
+                    .arg(addressSpace->name()).arg(context));
+            }
+
+            spaceNames.append(addressSpace->name());
+            addressSpaceValidator_->findErrorsIn(errors, addressSpace, context);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentValidator::findErrorsInMemoryMaps()
+//-----------------------------------------------------------------------------
+void ComponentValidator::findErrorsInMemoryMaps(QVector<QString>& errors, QSharedPointer<Component> component,
+    QString const& context) const
+{
+    if (!component->getMemoryMaps()->isEmpty())
+    {
+        QVector<QString> mapNames;
+        QVector<QString> duplicateNames;
+        foreach (QSharedPointer<MemoryMap> memoryMap, *component->getMemoryMaps())
+        {
+            if (mapNames.contains(memoryMap->name()) && !duplicateNames.contains(memoryMap->name()))
+            {
+                errors.append(QObject::tr("Memory map name %1 within %2 is not unique.")
+                    .arg(memoryMap->name()).arg(context));
+            }
+
+            mapNames.append(memoryMap->name());
+            memoryMapValidator_->findErrorsIn(errors, memoryMap, context);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentValidator::findErrorsInViews()
+//-----------------------------------------------------------------------------
+void ComponentValidator::findErrorsInViews(QVector<QString>& errors, QSharedPointer<Component> component,
+    QString const& context) const
+{
+    if (!component->getViews()->isEmpty())
+    {
+        QVector<QString> viewNames;
+        QVector<QString> duplicateNames;
+        foreach (QSharedPointer<View> view, *component->getViews())
+        {
+            if (viewNames.contains(view->name()) && !duplicateNames.contains(view->name()))
+            {
+                errors.append(QObject::tr("View name %1 within %2 is not unique.").arg(view->name()).arg(context));
+            }
+            
+            viewNames.append(view->name());
+            viewValidator_->findErrorsIn(errors, view, context);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentValidator::findErrorsInComponentInstantiations()
+//-----------------------------------------------------------------------------
+void ComponentValidator::findErrorsInComponentInstantiations(QVector<QString>& errors,
+    QSharedPointer<Component> component, QString const& context) const
+{
+    if (!component->getComponentInstantiations()->isEmpty())
+    {
+        QVector<QString> instantiationNames;
+        QVector<QString> duplicateNames;
+        foreach (QSharedPointer<ComponentInstantiation> instantiation, *component->getComponentInstantiations())
+        {
+            if (instantiationNames.contains(instantiation->name()) &&
+                !duplicateNames.contains(instantiation->name()))
+            {
+                errors.append(QObject::tr("Component instantiation name %1 within %2 is not unique.")
+                    .arg(instantiation->name()).arg(context));
+            }
+
+            instantiationNames.append(instantiation->name());
+            instantiationsValidator_->findErrorsInComponentInstantiation(errors, instantiation, context);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentValidator::findErrorsInDesignInstantiations()
+//-----------------------------------------------------------------------------
+void ComponentValidator::findErrorsInDesignInstantiations(QVector<QString>& errors,
+    QSharedPointer<Component> component, QString const& context) const
+{
+    if (!component->getDesignInstantiations()->isEmpty())
+    {
+        QVector<QString> instantiationNames;
+        QVector<QString> duplicateNames;
+        foreach (QSharedPointer<DesignInstantiation> instantiation, *component->getDesignInstantiations())
+        {
+            if (instantiationNames.contains(instantiation->name()) &&
+                !duplicateNames.contains(instantiation->name()))
+            {
+                errors.append(QObject::tr("Design instantiation name %1 within %2 is not unique.")
+                    .arg(instantiation->name()).arg(context));
+            }
+
+            instantiationNames.append(instantiation->name());
+            instantiationsValidator_->findErrorsInDesignInstantiation(errors, instantiation, context);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentValidator::findErrorsInDesignConfigurationInstantiations()
+//-----------------------------------------------------------------------------
+void ComponentValidator::findErrorsInDesignConfigurationInstantiations(QVector<QString>& errors,
+    QSharedPointer<Component> component, QString const& context) const
+{
+    if (!component->getDesignConfigurationInstantiations()->isEmpty())
+    {
+        QVector<QString> instantiationNames;
+        QVector<QString> duplicateNames;
+        foreach (QSharedPointer<DesignConfigurationInstantiation> instantiation,
+            *component->getDesignConfigurationInstantiations())
+        {
+            if (instantiationNames.contains(instantiation->name()) &&
+                !duplicateNames.contains(instantiation->name()))
+            {
+                errors.append(QObject::tr("Design configuration instantiation name %1 within %2 is not unique.")
+                    .arg(instantiation->name()).arg(context));
+            }
+
+            instantiationNames.append(instantiation->name());
+            instantiationsValidator_->findErrorsInDesignConfigurationInstantiation(errors, instantiation, context);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentValidator::findErrorsInPorts()
+//-----------------------------------------------------------------------------
+void ComponentValidator::findErrorsInPorts(QVector<QString>& errors, QSharedPointer<Component> component,
+    QString const& context) const
+{
+    if (!component->getPorts()->isEmpty())
+    {
+        QVector<QString> portNames;
+        QVector<QString> duplicateNames;
+        foreach (QSharedPointer<Port> port, *component->getPorts())
+        {
+            if (portNames.contains(port->name()) && !duplicateNames.contains(port->name()))
+            {
+                errors.append(QObject::tr("Port name %1 within %2 is not unique.").arg(port->name()).arg(context));
+            }
+
+            portNames.append(port->name());
+            portValidator_->findErrorsIn(errors, port, context);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentValidator::findErrorsInChoices()
+//-----------------------------------------------------------------------------
+void ComponentValidator::findErrorsInChoices(QVector<QString>& errors, QSharedPointer<Component> component,
+    QString const& context) const
+{
+    if (!component->getChoices()->isEmpty())
+    {
+        QVector<QString> choiceNames;
+        QVector<QString> duplicateNames;
+        foreach (QSharedPointer<Choice> choice, *component->getChoices())
+        {
+            if (choiceNames.contains(choice->name()) && !duplicateNames.contains(choice->name()))
+            {
+                errors.append(QObject::tr("Choice name %1 within %2 is not unique.")
+                    .arg(choice->name()).arg(context));
+            }
+
+            choiceNames.append(choice->name());
+            choiceValidator_->findErrorsIn(errors, choice, context);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentValidator::findErrorsInFileSets()
+//-----------------------------------------------------------------------------
+void ComponentValidator::findErrorsInFileSets(QVector<QString>& errors, QSharedPointer<Component> component,
+    QString const& context) const
+{
+    if (!component->getFileSets()->isEmpty())
+    {
+        QVector<QString> fileSetNames;
+        QVector<QString> duplicateNames;
+        foreach (QSharedPointer<FileSet> fileSet, *component->getFileSets())
+        {
+            if (fileSetNames.contains(fileSet->name()) && !duplicateNames.contains(fileSet->name()))
+            {
+                errors.append(QObject::tr("File set name %1 within %2 is not unique.")
+                    .arg(fileSet->name()).arg(context));
+            }
+
+            fileSetNames.append(fileSet->name());
+            fileSetValidator_->findErrorsIn(errors, fileSet, context);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentValidator::findErrorsInCPUs()
+//-----------------------------------------------------------------------------
+void ComponentValidator::findErrorsInCPUs(QVector<QString>& errors, QSharedPointer<Component> component,
+    QString const& context) const
+{
+    if (!component->getCpus()->isEmpty())
+    {
+        QVector<QString> cpuNames;
+        QVector<QString> duplicateNames;
+        foreach (QSharedPointer<Cpu> cpu, *component->getCpus())
+        {
+            if (cpuNames.contains(cpu->name()) && !duplicateNames.contains(cpu->name()))
+            {
+                errors.append(QObject::tr("CPU name %1 within %2 is not unique.").arg(cpu->name()).arg(context));
+                duplicateNames.append(cpu->name());
+            }
+
+            cpuNames.append(cpu->name());
+            cpuValidator_->findErrorsIn(errors, cpu, context);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentValidator::findErrorsInOtherClockDrivers()
+//-----------------------------------------------------------------------------
+void ComponentValidator::findErrorsInOtherClockDrivers(QVector<QString>& errors,
+    QSharedPointer<Component> component, QString const& context) const
+{
+    if (!component->getOtherClockDrivers()->isEmpty())
+    {
+        QVector<QString> clockDriverNames;
+        QVector<QString> duplicateNames;
+        foreach (QSharedPointer<OtherClockDriver> clockDriver, *component->getOtherClockDrivers())
+        {
+            if (clockDriverNames.contains(clockDriver->getClockName()) &&
+                !duplicateNames.contains(clockDriver->getClockName()))
+            {
+                errors.append(QObject::tr("Other clock driver name %1 within %2 is not unique.")
+                    .arg(clockDriver->getClockName()).arg(context));
+                duplicateNames.append(clockDriver->getClockName());
+            }
+
+            clockDriverNames.append(clockDriver->getClockName());
+            otherClockDriverValidator_->findErrorsIn(errors, clockDriver, context);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentValidator::findErrorsInParameters()
+//-----------------------------------------------------------------------------
+void ComponentValidator::findErrorsInParameters(QVector<QString>& errors, QSharedPointer<Component> component,
+    QString const& context) const
+{
+    if (!component->getParameters()->isEmpty())
+    {
+        QVector<QString> parameterNames;
+        QVector<QString> duplicateNames;
+        foreach (QSharedPointer<Parameter> parameter, *component->getParameters())
+        {
+            if (parameterNames.contains(parameter->name()) && !duplicateNames.contains(parameter->name()))
+            {
+                errors.append(QObject::tr("Parameter name %1 within %2 is not unique.")
+                    .arg(parameter->name()).arg(context));
+            }
+
+            parameterNames.append(parameter->name());
+            parameterValidator_->findErrorsIn(errors, parameter, context);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentValidator::findErrorsInAssertions()
+//-----------------------------------------------------------------------------
+void ComponentValidator::findErrorsInAssertions(QVector<QString>& errors, QSharedPointer<Component> component,
+    QString const& context) const
+{
+    if (!component->getAssertions()->isEmpty())
+    {
+        QVector<QString> assertionNames;
+        QVector<QString> duplicateNames;
+        foreach (QSharedPointer<Assertion> assertion, *component->getAssertions())
+        {
+            if (assertionNames.contains(assertion->name()) && !duplicateNames.contains(assertion->name()))
+            {
+                errors.append(QObject::tr("Assertion name %1 within %2 is not unique.")
+                    .arg(assertion->name()).arg(context));
+            }
+
+            assertionNames.append(assertion->name());
+            assertionValidator_->findErrorsIn(errors, assertion, context);
+        }
+    }
+}

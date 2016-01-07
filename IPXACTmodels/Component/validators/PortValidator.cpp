@@ -135,7 +135,8 @@ bool PortValidator::hasValidWire(QSharedPointer<Port> port) const
         QSharedPointer<Wire> wire = port->getWire();
 
         // Bounds must be valid if defined.
-        if (!portBoundIsValid(port->getLeftBound()) || !portBoundIsValid(port->getRightBound()))
+        if (!portBoundIsValid(port->getLeftBound()) || !portBoundIsValid(port->getRightBound()) ||
+            !wireHasValidDirection(wire))
         {
             return false;
         }
@@ -154,6 +155,14 @@ bool PortValidator::hasValidWire(QSharedPointer<Port> port) const
     }
 
     return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortValidator::wireHasValidDirection()
+//-----------------------------------------------------------------------------
+bool PortValidator::wireHasValidDirection(QSharedPointer<Wire> wire) const
+{
+    return !(wire->getDirection() == DirectionTypes::DIRECTION_INVALID);
 }
 
 //-----------------------------------------------------------------------------
@@ -268,8 +277,7 @@ void PortValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Port> 
 	// Name must be valid.
 	if ( !hasValidName( port->name() ) )
 	{
-		errors.append(QObject::tr("The name is invalid or in-existing: %1 within %2")
-            .arg(port->name()).arg(context));
+        errors.append(QObject::tr("Invalid name set for port %1 within %2").arg(port->name()).arg(context));
 	}
 
 	// Presence must be valid if defined.
@@ -296,33 +304,7 @@ void PortValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Port> 
 
 	if ( port->getWire() )
 	{
-		QSharedPointer<Wire> wire = port->getWire();
-
-		// Bounds must be valid if defined.
-        if (!portBoundIsValid(port->getLeftBound()))
-		{
-			errors.append(QObject::tr("The left of vector is invalid: %1 in port %2")
-                .arg(wire->getVectorLeftBound()).arg(port->name()));
-		}
-
-        if (!portBoundIsValid(port->getRightBound()))
-		{
-			errors.append(QObject::tr("The right of vector is invalid: %1 in port %2")
-                .arg(wire->getVectorRightBound()).arg(port->name()));
-		}
-
-		// Any view reference must point to an existing view.
-		foreach ( QSharedPointer<WireTypeDef> typeDef, *wire->getWireTypeDefs() )
-		{
-			foreach ( QString viewRef, typeDef->getViewRefs() )
-			{
-				if ( !referencedViewExists(viewRef) )
-				{
-					errors.append(QObject::tr("A view reference does not exist: %1 in port %2")
-                        .arg(viewRef).arg(port->name()));
-				}
-			}
-		}
+        findErrorsInWire(errors, port, context);
 	}
 
 	if ( port->getTransactional() )
@@ -386,4 +368,44 @@ void PortValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Port> 
 			protoVal.findErrorsIn(errors, protocol, context);
 		}
 	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortValidator::findErrorsInWire()
+//-----------------------------------------------------------------------------
+void PortValidator::findErrorsInWire(QVector<QString>& errors, QSharedPointer<Port> port, QString const& context)
+    const
+{
+    QSharedPointer<Wire> wire = port->getWire();
+
+    // Bounds must be valid if defined.
+    if (!portBoundIsValid(port->getLeftBound()))
+    {
+        errors.append(QObject::tr("The left of vector is invalid: %1 in port %2")
+            .arg(wire->getVectorLeftBound()).arg(port->name()));
+    }
+
+    if (!portBoundIsValid(port->getRightBound()))
+    {
+        errors.append(QObject::tr("The right of vector is invalid: %1 in port %2")
+            .arg(wire->getVectorRightBound()).arg(port->name()));
+    }
+
+    if (!wireHasValidDirection(wire))
+    {
+        errors.append(QObject::tr("Invalid direction set for port %1 within %2").arg(port->name()).arg(context));
+    }
+
+    // Any view reference must point to an existing view.
+    foreach ( QSharedPointer<WireTypeDef> typeDef, *wire->getWireTypeDefs() )
+    {
+        foreach ( QString viewRef, typeDef->getViewRefs() )
+        {
+            if ( !referencedViewExists(viewRef) )
+            {
+                errors.append(QObject::tr("A view reference does not exist: %1 in port %2")
+                    .arg(viewRef).arg(port->name()));
+            }
+        }
+    }
 }

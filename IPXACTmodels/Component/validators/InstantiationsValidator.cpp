@@ -95,12 +95,12 @@ bool InstantiationsValidator::hasValidDesignReference(QSharedPointer<DesignInsta
 // Function: InstantiationsValidator::findErrorsInDesignInstantiation()
 //-----------------------------------------------------------------------------
 void InstantiationsValidator::findErrorsInDesignInstantiation(QVector<QString>& errors,
-    QSharedPointer<DesignInstantiation> designInstantiation, QString const& contex) const
+    QSharedPointer<DesignInstantiation> designInstantiation, QString const& context) const
 {
 	if ( !hasValidName( designInstantiation->name() ) )
 	{
-		errors.append(QObject::tr("The name of design instantiation is invalid or non-existing within %1")
-            .arg(contex));
+        errors.append(QObject::tr("Invalid name set for design instantiation %1 within %2")
+            .arg(designInstantiation->name()).arg(context));
 	}
 
 	if ( !designInstantiation->getDesignReference() )
@@ -110,7 +110,7 @@ void InstantiationsValidator::findErrorsInDesignInstantiation(QVector<QString>& 
 	}
     else if (!hasValidDesignReference(designInstantiation))
 	{
-		errors.append(QObject::tr("The design reference %1 is invalid within design instantiation %2")
+		errors.append(QObject::tr("Invalid design reference %1 set for design instantiation %2")
             .arg(designInstantiation->getDesignReference()->toString()).arg(designInstantiation->name()));
 	}
 }
@@ -175,8 +175,8 @@ void InstantiationsValidator::findErrorsInDesignConfigurationInstantiation(QVect
 {
 	if ( !hasValidName( instantiation->name() ) )
 	{
-		errors.append(QObject::tr("The name of design configuration instantiation is invalid within %1")
-            .arg(contex));
+        errors.append(QObject::tr("Invalid name set for design configuration instantiation %1 within %2")
+            .arg(instantiation->name()).arg(contex));
 	}
 
 	if ( !instantiation->getDesignConfigurationReference() )
@@ -186,9 +186,9 @@ void InstantiationsValidator::findErrorsInDesignConfigurationInstantiation(QVect
 	}
 	else if ( !instantiation->getDesignConfigurationReference()->isValid() )
 	{
-		errors.append(QObject::tr("The design configuration reference %1 is invalid for design configuration "
+        errors.append(QObject::tr("Invalid design configuration reference %1 set for design configuration "
             "instantiation %2")
-			.arg(instantiation->getDesignConfigurationReference()->toString()).arg(instantiation->name()));
+            .arg(instantiation->getDesignConfigurationReference()->toString()).arg(instantiation->name()));
 	}
 
     QStringList parameterNames;
@@ -321,7 +321,7 @@ void InstantiationsValidator::findErrorsInComponentInstantiation(QVector<QString
 {
     if (!hasValidName(instantiation->name()))
     {
-        errors.append(QObject::tr("Invalid name %1 set for component instantiation within %2")
+        errors.append(QObject::tr("Invalid name set for component instantiation %1 within %2")
             .arg(instantiation->name()).arg(context));
     }
 

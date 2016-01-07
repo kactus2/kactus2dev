@@ -87,7 +87,7 @@ public:
 	 *      @param [in] context                 Context to help locate the errors.
      */
 	void findErrorsInDesignInstantiation(QVector<QString>& errors,
-		QSharedPointer<DesignInstantiation> designInstantiation, QString const& contex) const;
+		QSharedPointer<DesignInstantiation> designInstantiation, QString const& context) const;
 	
     /*!
      *  Validates the given design configuration instantiation.

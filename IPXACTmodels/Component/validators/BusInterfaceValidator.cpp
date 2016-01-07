@@ -267,7 +267,13 @@ bool BusInterfaceValidator::hasValidInterfaceMode(QSharedPointer<BusInterface> b
 //-----------------------------------------------------------------------------
 bool BusInterfaceValidator::hasValidMasterInterface(QSharedPointer<MasterInterface> master) const
 {
-    if (!master->getAddressSpaceRef().isEmpty())
+    if (master->getAddressSpaceRef().isEmpty() && master->getIsPresent().isEmpty() &&
+        master->getBaseAddress().isEmpty())
+    {
+        return true;
+    }
+
+    else if (!master->getAddressSpaceRef().isEmpty())
     {
         foreach (QSharedPointer<AddressSpace> space, *availableAddressSpaces_)
         {
@@ -627,7 +633,7 @@ void BusInterfaceValidator::findErrorsIn(QVector<QString>& errors, QSharedPointe
     findErrorsInIsPresent(errors, busInterface, context);
     findErrorsInBusType(errors, busInterface, context);
     findErrorsInAbstractionTypes(errors, busInterface, busInterfaceContext);
-    findErrorsInInterfaceMode(errors, busInterface, busInterfaceContext);
+    findErrorsInInterfaceMode(errors, busInterface, busInterfaceContext, context);
     findErrorsInBitsInLAU(errors, busInterface, context);
     findErrorsInBitSteering(errors, busInterface, context);
     findErrorsInParameters(errors, busInterface, busInterfaceContext);
@@ -806,11 +812,12 @@ void BusInterfaceValidator::findErrorsInParameters(QVector<QString>& errors,
 // Function: BusInterfaceValidator::findErrorsInInterfaceMode()
 //-----------------------------------------------------------------------------
 void BusInterfaceValidator::findErrorsInInterfaceMode(QVector<QString>& errors,
-    QSharedPointer<BusInterface> busInterface, QString const& context) const
+    QSharedPointer<BusInterface> busInterface, QString const& busInterfaceContext,
+    QString const& containingContext) const
 {
     General::InterfaceMode interfaceMode = busInterface->getInterfaceMode();
 
-    QString newContext = General::interfaceMode2Str(busInterface->getInterfaceMode()) + " " + context;
+    QString newContext = General::interfaceMode2Str(busInterface->getInterfaceMode()) + " " + busInterfaceContext;
 
     if (interfaceMode == General::MASTER || interfaceMode == General::MIRROREDMASTER)
     {
@@ -835,7 +842,7 @@ void BusInterfaceValidator::findErrorsInInterfaceMode(QVector<QString>& errors,
     else
     {
         errors.append(QObject::tr("Unknown interface mode set for bus interface %1 within %2")
-            .arg(busInterface->name()).arg(context));
+            .arg(busInterface->name()).arg(containingContext));
     }
 }
 
@@ -882,7 +889,10 @@ void BusInterfaceValidator::findErrorsInMasterInterface(QVector<QString>& errors
             errors.append(QObject::tr("Invalid is present set for address space reference in %1").arg(context));
         }
     }
-
+    else if (!master->getIsPresent().isEmpty() || !master->getBaseAddress().isEmpty())
+    {
+        errors.append(QObject::tr("Invalid address space reference set for %1").arg(context));
+    }
 }
 
 //-----------------------------------------------------------------------------

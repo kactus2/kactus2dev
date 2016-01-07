@@ -98,8 +98,7 @@ void ChoiceValidator::findErrorsInName(QVector<QString>& errors, QSharedPointer<
 {
     if (!hasValidName(choice))
     {
-        errors.append(QObject::tr("Invalid name specified for choice %1 within %2")
-            .arg(choice->name()).arg(context));
+        errors.append(QObject::tr("Invalid name set for choice %1 within %2").arg(choice->name()).arg(context));
     }
 }
 
@@ -116,10 +115,13 @@ void ChoiceValidator::findErrorsInEnumerations(QVector<QString>& errors, QShared
     }
     else
     {
-        if (!hasValidEnumerations(choice))
+        foreach (QSharedPointer<Enumeration> enumeration, *choice->enumerations())
         {
-            errors.append(QObject::tr("Invalid value set for enumeration in choice %1 within %2")
-                .arg(choice->name()).arg(context));
+            if (!expressionParser_->isValidExpression(enumeration->getValue()))
+            {
+                errors.append(QObject::tr("Invalid value %1 set for enumeration in choice %2 within %3")
+                    .arg(enumeration->getValue()).arg(choice->name()).arg(context));
+            }
         }
     }
 }

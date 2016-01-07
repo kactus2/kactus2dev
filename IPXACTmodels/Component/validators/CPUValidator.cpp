@@ -107,7 +107,7 @@ void CPUValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Cpu> cp
 {
 	if (!hasValidName(cpu->name()))
 	{
-		errors.append(QObject::tr("No name specified for cpu within %1.").arg(context));
+        errors.append(QObject::tr("Invalid name '%1' set for CPU within %2.").arg(cpu->name()).arg(context));
 	}
 
 	if (!cpu->getIsPresent().isEmpty() && !expressionParser_->isValidExpression( cpu->getIsPresent()))
@@ -118,7 +118,8 @@ void CPUValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Cpu> cp
 	
 	if (cpu->getAddressSpaceReferences()->count() < 1)
 	{
-		errors.append(QObject::tr("No address space reference set for cpu %1.").arg(cpu->name()));
+		errors.append(QObject::tr("No address space reference set for CPU %1 within %2.")
+            .arg(cpu->name()).arg(context));
 	}
 
 	foreach (QSharedPointer<Cpu::AddressSpaceRef> currentRef, *cpu->getAddressSpaceReferences())

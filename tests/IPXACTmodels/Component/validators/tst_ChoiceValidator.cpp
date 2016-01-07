@@ -64,7 +64,7 @@ void tst_ChoiceValidator::testHasValidName()
         QVector<QString> foundErrors;
         validator.findErrorsIn(foundErrors, testChoice, "test");
 
-        QString expectedError = QObject::tr("Invalid name specified for choice %1 within %2")
+        QString expectedError = QObject::tr("Invalid name set for choice %1 within %2")
             .arg(testChoice->name()).arg("test");
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
         {
@@ -118,8 +118,8 @@ void tst_ChoiceValidator::testHasValidEnumerations()
     foundErrors.clear();
     validator.findErrorsIn(foundErrors, testChoice, "test");
 
-    expectedError = QObject::tr("Invalid value set for enumeration in choice %1 within %2")
-        .arg(testChoice->name()).arg("test");
+    expectedError = QObject::tr("Invalid value %1 set for enumeration in choice %2 within %3")
+        .arg(testEnumeration->getValue()).arg(testChoice->name()).arg("test");
     if (errorIsNotFoundInErrorList(expectedError, foundErrors))
     {
         QFAIL("No error message found");

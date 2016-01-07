@@ -22,6 +22,7 @@ class ExpressionParser;
 
 class Port;
 class View;
+class Wire;
 
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:Port.
@@ -98,6 +99,15 @@ public:
     bool hasValidWire(QSharedPointer<Port> port) const;
 
     /*!
+     *  Check if the wire is valid.
+     *
+     *      @param [in] wire    The selected wire.
+     *
+     *      @return True, if the wire is valid, otherwise false.
+     */
+    bool wireHasValidDirection(QSharedPointer<Wire> wire) const;
+
+    /*!
      *  Check if the wire port bound is valid.
      *
      *      @param [in] portBound   The selected port bound.
@@ -138,6 +148,19 @@ private:
 	// Disable copying.
 	PortValidator(PortValidator const& rhs);
 	PortValidator& operator=(PortValidator const& rhs);
+
+    /*!
+     *  Finds possible errors in a wire and creates a list of them.
+     *
+     *      @param [in] errors      List of found errors.
+     *      @param [in] Port        The Port whose errors to find.
+     *      @param [in] context     Context to help locate the errors.
+     */
+    void findErrorsInWire(QVector<QString>& errors, QSharedPointer<Port> port, QString const& context) const;
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
     //! The used expression parser.
     QSharedPointer<ExpressionParser> expressionParser_;

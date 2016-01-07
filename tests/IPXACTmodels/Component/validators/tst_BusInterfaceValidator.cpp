@@ -1334,9 +1334,10 @@ void tst_BusInterfaceValidator::testHasValidMasterInterface_data()
     QTest::addColumn<bool>("isValid");
 
     QTest::newRow("Master referencing address space is valid") << "space" << "" << "" << "" << true << true;
+    QTest::newRow("Empty master interface is valid") << "" << "" << ""  << "" << false << true;
     QTest::newRow("Master referencing non-existing space is not valid") << "space" << "" << "" << "" << false <<
         false;
-    QTest::newRow("Master not containing space reference is valid") << "" << "" << "" << "" << false << true;
+    QTest::newRow("Master not containing space reference is valid") << "" << "" << "" << "" << true << true;
     QTest::newRow("Master containing base address is valid") << "space" << "4+4" << "" << "" << true << true;
     QTest::newRow("Master containing negative base address is not valid") << "space" << "-2" << "" << "" << true <<
         false;
@@ -1582,7 +1583,7 @@ void tst_BusInterfaceValidator::testHasValidSystemInterface()
         if (!hasGroupName)
         {
             expectedError = QObject::tr("Could not find system group %1 set for system bus interface %2 with bus "
-                "definition %3").arg(systemGroup).arg(testBus->name()).arg(testType.toString());
+                "definition %3.").arg(systemGroup).arg(testBus->name()).arg(testType.toString());
         }
 
         if (errorIsNotFoundInErrorList(expectedError, errorsFound))
@@ -1782,7 +1783,7 @@ void tst_BusInterfaceValidator::testHasValidMonitorInterface()
         else if (!systemGroup.isEmpty() && !createGroup)
         {
             expectedError = QObject::tr("Could not find system group %1 set for monitor bus interface %2 with bus "
-                "definition %3").arg(systemGroup).arg(testBus->name()).arg(testType.toString());
+                "definition %3.").arg(systemGroup).arg(testBus->name()).arg(testType.toString());
         }
 
         if (errorIsNotFoundInErrorList(expectedError, errorsFound))
@@ -1996,7 +1997,7 @@ void tst_BusInterfaceValidator::testHasValidParameters()
 
     errorsFound.clear();
     validator.findErrorsIn(errorsFound, testBus, "test");
-    expectedError = QObject::tr("Name %1 of parameters in bus interface %2 is not unique.")
+    expectedError = QObject::tr("Parameter name %1 is not unique within bus interface %2.")
         .arg(otherParameter->name()).arg(testBus->name());
     if (errorIsNotFoundInErrorList(expectedError, errorsFound))
     {

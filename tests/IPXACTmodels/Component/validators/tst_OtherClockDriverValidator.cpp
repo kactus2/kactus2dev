@@ -74,7 +74,7 @@ void tst_OtherClockDriverValidator::testHasValidName()
         QVector<QString> foundErrors;
         validator.findErrorsIn(foundErrors, testDriver, "test");
 
-        QString expectedError = QObject::tr("Invalid name specified for other clock driver %1 within %2")
+        QString expectedError = QObject::tr("Invalid name '%1' set for other clock driver within %2")
             .arg(testDriver->getClockName()).arg("test");
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
         {

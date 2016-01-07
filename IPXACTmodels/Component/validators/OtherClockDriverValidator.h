@@ -45,7 +45,7 @@ public:
      *
      *      @return True, if the other clock driver is valid IP-XACT, otherwise false.
      */
-    virtual bool validate(QSharedPointer<OtherClockDriver> otherClockDriver) const;
+    bool validate(QSharedPointer<OtherClockDriver> otherClockDriver) const;
 
     /*!
      *  Check if the name is valid.
@@ -81,7 +81,7 @@ public:
      *      @param [in] otherClockDriver    The selected other clock driver.
      *      @param [in] context             Context to help locate the error.
      */
-    virtual void findErrorsIn(QVector<QString>& errors, QSharedPointer<OtherClockDriver> otherClockDriver,
+    void findErrorsIn(QVector<QString>& errors, QSharedPointer<OtherClockDriver> otherClockDriver,
         QString const& context) const;
 
 private:

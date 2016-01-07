@@ -87,7 +87,8 @@ void ChannelValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Cha
 {
 	if (!hasValidName(channel->name()))
 	{
-		errors.append(QObject::tr("No name specified for cpu within %1.").arg(context));
+		errors.append(QObject::tr("Invalid name %1 specified for channel within %2.")
+            .arg(channel->name()).arg(context));
 	}
 
 	if (!channel->getIsPresent().isEmpty() && !expressionParser_->isValidExpression(channel->getIsPresent()))

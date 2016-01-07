@@ -405,12 +405,13 @@ private:
     /*!
      *  Find errors within interface mode.
      *
-     *      @param [in] errors          List of found errors.
-     *      @param [in] busInterface    The selected bus interface.
-     *      @param [in] context         Context to help locate the error.
+     *      @param [in] errors                  List of found errors.
+     *      @param [in] busInterface            The selected bus interface.
+     *      @param [in] busInterfaceContext     Context information of the bus interface
+     *      @param [in] containingContext       Context to help locate the error.
      */
     void findErrorsInInterfaceMode(QVector<QString>& errors, QSharedPointer<BusInterface> busInterface,
-        QString const& context) const;
+        QString const& busInterfaceContext, QString const& containingContext) const;
 
     /*!
      *  Find errors within master interface.

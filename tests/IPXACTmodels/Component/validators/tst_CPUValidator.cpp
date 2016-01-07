@@ -103,7 +103,7 @@ void tst_CPUValidator::testNameIsNotEmpty()
 
     QVERIFY(!validator.validate(Cpu));
     QVERIFY(errorList.size() > 0);
-    QCOMPARE(errorList.first(), QString("No name specified for cpu within test."));
+    QCOMPARE(errorList.first(), QString("Invalid name '' set for CPU within test."));
 }
 
 //-----------------------------------------------------------------------------
@@ -125,7 +125,7 @@ void tst_CPUValidator::noRef()
 
 	QVERIFY(!validator.validate(Cpu));
 	QVERIFY(errorList.size() > 0);
-    QCOMPARE(errorList.first(), QString("No address space reference set for cpu testCpu."));
+    QCOMPARE(errorList.first(), QString("No address space reference set for CPU testCpu within test."));
 }
 
 //-----------------------------------------------------------------------------

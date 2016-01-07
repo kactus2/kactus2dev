@@ -138,7 +138,7 @@ void tst_ComponentPortValidator::wireFail()
 	QVector<QString> errorList;
     validator.findErrorsIn(errorList, port, "test");
 
-	QCOMPARE( errorList.size(), 3 );
+	QCOMPARE( errorList.size(), 4 );
     QVERIFY( !validator.validate(port) );
 }
 
@@ -155,6 +155,7 @@ void tst_ComponentPortValidator::wireSuccess()
 	QSharedPointer<Wire> wire( new Wire );
 	wire->setVectorLeftBound("1");
 	wire->setVectorRightBound("2");
+    wire->setDirection(DirectionTypes::IN);
 	port->setWire(wire);
 
 	QSharedPointer<WireTypeDef> wiredef( new WireTypeDef );
@@ -297,7 +298,7 @@ void tst_ComponentPortValidator::protocolFail()
 	QVector<QString> errorList;
     validator.findErrorsIn(errorList, port, "test");
 
-	QCOMPARE( errorList.size(), 4 );
+	QCOMPARE( errorList.size(), 3 );
     QVERIFY( !validator.validate(port) );
 }
 

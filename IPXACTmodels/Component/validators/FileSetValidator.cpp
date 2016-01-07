@@ -83,7 +83,8 @@ void FileSetValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Fil
 {
 	if (!hasValidName(fileSet->name()))
 	{
-        errors.append(QObject::tr("The file set name '%1' is invalid within %2.").arg(fileSet->name(), context));
+        errors.append(QObject::tr("Invalid name '%1' set for file set within %2")
+            .arg(fileSet->name()).arg(context));
 	}
 
 	foreach (QSharedPointer<FileBuilder> currentFileBuilder, *fileSet->getDefaultFileBuilders())

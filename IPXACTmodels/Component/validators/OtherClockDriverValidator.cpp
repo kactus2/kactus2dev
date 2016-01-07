@@ -120,7 +120,7 @@ void OtherClockDriverValidator::findErrorsInName(QVector<QString>& errors,
 {
     if (!hasValidName(otherClockDriver->getClockName()))
     {
-        errors.append(QObject::tr("Invalid name specified for other clock driver %1 within %2")
+        errors.append(QObject::tr("Invalid name '%1' set for other clock driver within %2")
             .arg(otherClockDriver->getClockName()).arg(context));
     }
 }
