@@ -22,14 +22,15 @@
 //-----------------------------------------------------------------------------
 ComponentGenerator::ComponentGenerator():
 NameGroup(),
-    Extendable(),
-    hidden_(),
-    scope_(ComponentGenerator::NO_SCOPE),
-    phase_(), 
-    parameters_(new QList<QSharedPointer<Parameter> >()),
-    apiType_(ComponentGenerator::EMPTY_API_TYPE),
-    generatorExe_(),
-    groups_()
+Extendable(),
+hidden_(),
+scope_(ComponentGenerator::NO_SCOPE),
+phase_(), 
+parameters_(new QList<QSharedPointer<Parameter> >()),
+apiType_(ComponentGenerator::EMPTY_API_TYPE),
+transportMethods_(),
+generatorExe_(),
+groups_()
 {
 }
 
@@ -38,14 +39,15 @@ NameGroup(),
 //-----------------------------------------------------------------------------
 ComponentGenerator::ComponentGenerator(ComponentGenerator const& other):
 NameGroup(other),
-    Extendable(other),
-    hidden_(other.hidden_),
-    scope_(other.scope_),
-    phase_(other.phase_),
-    parameters_(new QList<QSharedPointer<Parameter> >()),
-    apiType_(other.apiType_),
-    generatorExe_(other.generatorExe_),
-    groups_(other.groups_)
+Extendable(other),
+hidden_(other.hidden_),
+scope_(other.scope_),
+phase_(other.phase_),
+parameters_(new QList<QSharedPointer<Parameter> >()),
+apiType_(other.apiType_),
+transportMethods_(other.transportMethods_),
+generatorExe_(other.generatorExe_),
+groups_(other.groups_)
 {
     foreach (QSharedPointer<Parameter> parameter, *other.parameters_)
     {

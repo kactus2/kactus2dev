@@ -23,6 +23,7 @@
 #include <IPXACTmodels/Component/DesignInstantiation.h>
 #include <IPXACTmodels/Component/DesignConfigurationInstantiation.h>
 #include <IPXACTmodels/Component/Port.h>
+#include <IPXACTmodels/Component/ComponentGenerator.h>
 #include <IPXACTmodels/Component/Choice.h>
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/Cpu.h>
@@ -38,6 +39,7 @@
 #include <IPXACTmodels/Component/validators/ViewValidator.h>
 #include <IPXACTmodels/Component/validators/InstantiationsValidator.h>
 #include <IPXACTmodels/Component/validators/PortValidator.h>
+#include <IPXACTmodels/Component/validators/ComponentGeneratorValidator.h>
 #include <IPXACTmodels/Component/validators/ChoiceValidator.h>
 #include <IPXACTmodels/Component/validators/FileSetValidator.h>
 #include <IPXACTmodels/Component/validators/CPUValidator.h>
@@ -58,6 +60,7 @@ ComponentValidator::ComponentValidator(QSharedPointer<BusInterfaceValidator> bus
                                        QSharedPointer<ViewValidator> viewValidator,
                                        QSharedPointer<InstantiationsValidator> instantiationsValidator,
                                        QSharedPointer<PortValidator> portValidator,
+                                       QSharedPointer<ComponentGeneratorValidator> generatorValidator,
                                        QSharedPointer<ChoiceValidator> choiceValidator,
                                        QSharedPointer<FileSetValidator> fileSetValidator,
                                        QSharedPointer<CPUValidator> cpuValidator,
@@ -72,6 +75,7 @@ memoryMapValidator_(memoryMapValidator),
 viewValidator_(viewValidator),
 instantiationsValidator_(instantiationsValidator),
 portValidator_(portValidator),
+generatorValidator_(generatorValidator),
 choiceValidator_(choiceValidator),
 fileSetValidator_(fileSetValidator),
 cpuValidator_(cpuValidator),
@@ -99,9 +103,9 @@ bool ComponentValidator::validate(QSharedPointer<Component> component) const
         hasValidRemapStates(component) && hasValidAddressSpaces(component) && hasValidMemoryMaps(component) &&
         hasValidViews(component) && hasValidComponentInstantiations(component) &&
         hasValidDesignInstantiations(component) && hasValidDesignConfigurationInstantiations(component) &&
-        hasValidPorts(component) && hasValidChoices(component) && hasValidFileSets(component) &&
-        hasValidCPUs(component) && hasValidOtherClockDrivers(component) && hasValidParameters(component) &&
-        hasValidAssertions(component);
+        hasValidPorts(component) && hasValidComponentGenerators(component) && hasValidChoices(component) &&
+        hasValidFileSets(component) && hasValidCPUs(component) && hasValidOtherClockDrivers(component) &&
+        hasValidParameters(component) && hasValidAssertions(component);
 }
 
 //-----------------------------------------------------------------------------
@@ -357,6 +361,30 @@ bool ComponentValidator::hasValidPorts(QSharedPointer<Component> component) cons
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComponentValidator::hasValidComponentGenerators()
+//-----------------------------------------------------------------------------
+bool ComponentValidator::hasValidComponentGenerators(QSharedPointer<Component> component) const
+{
+    if (!component->getComponentGenerators()->isEmpty())
+    {
+        QVector<QString> generatorNames;
+        foreach (QSharedPointer<ComponentGenerator> generator, *component->getComponentGenerators())
+        {
+            if (generatorNames.contains(generator->name()) || !generatorValidator_->validate(generator))
+            {
+                return false;
+            }
+            else
+            {
+                generatorNames.append(generator->name());
+            }
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComponentValidator::hasValidChoices()
 //-----------------------------------------------------------------------------
 bool ComponentValidator::hasValidChoices(QSharedPointer<Component> component) const
@@ -514,6 +542,7 @@ void ComponentValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<C
     findErrorsInDesignInstantiations(errors, component, context);
     findErrorsInDesignConfigurationInstantiations(errors, component, context);
     findErrorsInPorts(errors, component, context);
+    findErrorsInComponentGenerators(errors, component, context);
     findErrorsInChoices(errors, component, context);
     findErrorsInFileSets(errors, component, context);
     findErrorsInCPUs(errors, component, context);
@@ -596,6 +625,7 @@ void ComponentValidator::findErrorsInRemapStates(QVector<QString>& errors, QShar
             {
                 errors.append(QObject::tr("Remap state name %1 within %2 is not unique.")
                     .arg(remapState->name()).arg(context));
+                duplicateNames.append(remapState->name());
             }
 
             stateNames.append(remapState->name());
@@ -620,6 +650,7 @@ void ComponentValidator::findErrorsInAddressSpaces(QVector<QString>& errors, QSh
             {
                 errors.append(QObject::tr("Address space name %1 within %2 is not unique.")
                     .arg(addressSpace->name()).arg(context));
+                duplicateNames.append(addressSpace->name());
             }
 
             spaceNames.append(addressSpace->name());
@@ -644,6 +675,7 @@ void ComponentValidator::findErrorsInMemoryMaps(QVector<QString>& errors, QShare
             {
                 errors.append(QObject::tr("Memory map name %1 within %2 is not unique.")
                     .arg(memoryMap->name()).arg(context));
+                duplicateNames.append(memoryMap->name());
             }
 
             mapNames.append(memoryMap->name());
@@ -667,6 +699,7 @@ void ComponentValidator::findErrorsInViews(QVector<QString>& errors, QSharedPoin
             if (viewNames.contains(view->name()) && !duplicateNames.contains(view->name()))
             {
                 errors.append(QObject::tr("View name %1 within %2 is not unique.").arg(view->name()).arg(context));
+                duplicateNames.append(view->name());
             }
             
             viewNames.append(view->name());
@@ -692,6 +725,7 @@ void ComponentValidator::findErrorsInComponentInstantiations(QVector<QString>& e
             {
                 errors.append(QObject::tr("Component instantiation name %1 within %2 is not unique.")
                     .arg(instantiation->name()).arg(context));
+                duplicateNames.append(instantiation->name());
             }
 
             instantiationNames.append(instantiation->name());
@@ -717,6 +751,7 @@ void ComponentValidator::findErrorsInDesignInstantiations(QVector<QString>& erro
             {
                 errors.append(QObject::tr("Design instantiation name %1 within %2 is not unique.")
                     .arg(instantiation->name()).arg(context));
+                duplicateNames.append(instantiation->name());
             }
 
             instantiationNames.append(instantiation->name());
@@ -743,6 +778,7 @@ void ComponentValidator::findErrorsInDesignConfigurationInstantiations(QVector<Q
             {
                 errors.append(QObject::tr("Design configuration instantiation name %1 within %2 is not unique.")
                     .arg(instantiation->name()).arg(context));
+                duplicateNames.append(instantiation->name());
             }
 
             instantiationNames.append(instantiation->name());
@@ -766,10 +802,36 @@ void ComponentValidator::findErrorsInPorts(QVector<QString>& errors, QSharedPoin
             if (portNames.contains(port->name()) && !duplicateNames.contains(port->name()))
             {
                 errors.append(QObject::tr("Port name %1 within %2 is not unique.").arg(port->name()).arg(context));
+                duplicateNames.append(port->name());
             }
 
             portNames.append(port->name());
             portValidator_->findErrorsIn(errors, port, context);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentValidator::findErrorsInComponentGenerators()
+//-----------------------------------------------------------------------------
+void ComponentValidator::findErrorsInComponentGenerators(QVector<QString>& errors,
+    QSharedPointer<Component> component, QString const& context) const
+{
+    if (!component->getComponentGenerators()->isEmpty())
+    {
+        QVector<QString> generatorNames;
+        QVector<QString> duplicateNames;
+        foreach (QSharedPointer<ComponentGenerator> generator, *component->getComponentGenerators())
+        {
+            if (generatorNames.contains(generator->name()) && !duplicateNames.contains(generator->name()))
+            {
+                errors.append(QObject::tr("Component generator name '%1' within %2 is not unique.")
+                    .arg(generator->name()).arg(context));
+                duplicateNames.append(generator->name());
+            }
+
+            generatorNames.append(generator->name());
+            generatorValidator_->findErrorsIn(errors, generator, context);
         }
     }
 }
@@ -790,6 +852,7 @@ void ComponentValidator::findErrorsInChoices(QVector<QString>& errors, QSharedPo
             {
                 errors.append(QObject::tr("Choice name %1 within %2 is not unique.")
                     .arg(choice->name()).arg(context));
+                duplicateNames.append(choice->name());
             }
 
             choiceNames.append(choice->name());
@@ -814,6 +877,7 @@ void ComponentValidator::findErrorsInFileSets(QVector<QString>& errors, QSharedP
             {
                 errors.append(QObject::tr("File set name %1 within %2 is not unique.")
                     .arg(fileSet->name()).arg(context));
+                duplicateNames.append(fileSet->name());
             }
 
             fileSetNames.append(fileSet->name());
@@ -888,6 +952,7 @@ void ComponentValidator::findErrorsInParameters(QVector<QString>& errors, QShare
             {
                 errors.append(QObject::tr("Parameter name %1 within %2 is not unique.")
                     .arg(parameter->name()).arg(context));
+                duplicateNames.append(parameter->name());
             }
 
             parameterNames.append(parameter->name());
@@ -912,6 +977,7 @@ void ComponentValidator::findErrorsInAssertions(QVector<QString>& errors, QShare
             {
                 errors.append(QObject::tr("Assertion name %1 within %2 is not unique.")
                     .arg(assertion->name()).arg(context));
+                duplicateNames.append(assertion->name());
             }
 
             assertionNames.append(assertion->name());

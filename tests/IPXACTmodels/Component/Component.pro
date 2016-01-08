@@ -19,6 +19,7 @@ SUBDIRS += validators\tst_ChannelValidator.pro \
 		   validators\tst_RemapStateValidator.pro \
 		   validators\tst_AddressSpaceValidator.pro \
 		   validators\tst_BusInterfaceValidator.pro \
+		   validators\tst_ComponentGeneratorValidator.pro \
 		   validators\tst_ChoiceValidator.pro \
 		   validators\tst_OtherClockDriverValidator.pro \
 		   validators\tst_ComponentValidator.pro \

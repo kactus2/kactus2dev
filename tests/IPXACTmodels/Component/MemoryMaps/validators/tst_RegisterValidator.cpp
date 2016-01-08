@@ -101,7 +101,6 @@ void tst_RegisterValidator::testNameIsValid()
     QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
     QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
     RegisterValidator validator(parser, fieldValidator, parameterValidator);
-//     RegisterValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
     QCOMPARE(validator.hasValidName(testRegister), isValid);
 
     if (!isValid)

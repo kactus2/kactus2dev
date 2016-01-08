@@ -25,6 +25,7 @@
 #include <IPXACTmodels/Component/validators/ViewValidator.h>
 #include <IPXACTmodels/Component/validators/InstantiationsValidator.h>
 #include <IPXACTmodels/Component/validators/PortValidator.h>
+#include <IPXACTmodels/Component/validators/ComponentGeneratorValidator.h>
 #include <IPXACTmodels/Component/validators/ChoiceValidator.h>
 #include <IPXACTmodels/Component/validators/FileSetValidator.h>
 #include <IPXACTmodels/Component/validators/FileValidator.h>
@@ -46,6 +47,7 @@
 #include <IPXACTmodels/Component/DesignInstantiation.h>
 #include <IPXACTmodels/Component/DesignConfigurationInstantiation.h>
 #include <IPXACTmodels/Component/Port.h>
+#include <IPXACTmodels/Component/ComponentGenerator.h>
 #include <IPXACTmodels/Component/Choice.h>
 #include <IPXACTmodels/common/Enumeration.h>
 #include <IPXACTmodels/Component/FileSet.h>
@@ -104,6 +106,9 @@ private slots:
 
     void testHasValidPorts();
     void testHasValidPorts_data();
+
+    void testHasValidComponentGenerators();
+    void testHasValidComponentGenerators_data();
 
     void testHasValidChoices();
     void testHasValidChoices_data();
@@ -897,7 +902,6 @@ void tst_ComponentValidator::testHasValidPorts()
     QSharedPointer<Port> testPort (
         new Port(portName, DirectionTypes::str2Direction(wireDirection, DirectionTypes::DIRECTION_INVALID)));
 
-
     QSharedPointer<Component> testComponent (new Component(
         VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0")));
     testComponent->getPorts()->append(testPort);
@@ -951,6 +955,76 @@ void tst_ComponentValidator::testHasValidPorts_data()
     QTest::newRow("Port without name is not valid") << "" << "in" << false << false;
     QTest::newRow("Port without direction is not valid") << "Screed" << "" << false << false;
     QTest::newRow("Ports with the same name is not valid") << "Screed" << "in" << true << false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentValidator::testHasValidComponentGenerators()
+//-----------------------------------------------------------------------------
+void tst_ComponentValidator::testHasValidComponentGenerators()
+{
+    QFETCH(QString, generatorName);
+    QFETCH(QString, generatorExe);
+    QFETCH(bool, copyGenerator);
+    QFETCH(bool, isValid);
+
+    QSharedPointer<ComponentGenerator> testGenerator (new ComponentGenerator());
+    testGenerator->setName(generatorName);
+    testGenerator->setGeneratorExe(generatorExe);
+
+    QSharedPointer<Component> testComponent (new Component(
+        VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0")));
+    testComponent->getComponentGenerators()->append(testGenerator);
+
+    if (copyGenerator)
+    {
+        QSharedPointer<ComponentGenerator> otherGenerator (new ComponentGenerator(*testGenerator.data()));
+        testComponent->getComponentGenerators()->append(otherGenerator);
+    }
+
+    QSharedPointer<ComponentValidator> validator = createComponentValidator(testComponent, 0);
+    QCOMPARE(validator->hasValidComponentGenerators(testComponent), isValid);
+
+    if (!isValid)
+    {
+        QVector<QString> foundErrors;
+        validator->findErrorsIn(foundErrors, testComponent);
+
+        QString expectedError = QObject::tr("Invalid name specified for component generator %1 within component %2").
+            arg(generatorName).arg(testComponent->getVlnv().toString());
+
+        if (generatorExe.isEmpty())
+        {
+            expectedError = QObject::tr("Invalid generator exe set for component generator '%1' within component %2")
+                .arg(generatorName).arg(testComponent->getVlnv().toString());
+        }
+        else if (copyGenerator)
+        {
+            expectedError = QObject::tr("Component generator name '%1' within component %2 is not unique.")
+                .arg(generatorName).arg(testComponent->getVlnv().toString());
+        }
+
+        if (errorIsNotFoundInErrorList(expectedError, foundErrors))
+        {
+            QFAIL("No error message found");
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentValidator::testHasValidComponentGenerators_data()
+//-----------------------------------------------------------------------------
+void tst_ComponentValidator::testHasValidComponentGenerators_data()
+{
+    QTest::addColumn<QString>("generatorName");
+    QTest::addColumn<QString>("generatorExe");
+    QTest::addColumn<bool>("copyGenerator");
+    QTest::addColumn<bool>("isValid");
+
+    QTest::newRow("Generator with name and generator exe is valid")
+        << "Nuclear" << "../bin/run.sh" << false << true;
+    QTest::newRow("Generator without a name is not valid") << "" << "../bin/run.sh" << false << false;
+    QTest::newRow("Generator without generator exe is not valid") << "Nuclear" << "" << false << false;
+    QTest::newRow("Generators with the same name is not valid") << "Nuclear" << "../bin/run.sh" << true << false;
 }
 
 //-----------------------------------------------------------------------------
@@ -1362,7 +1436,7 @@ void tst_ComponentValidator::testHasValidAssertions()
         bool assertOk = true;
         int parsedAssert = parser->parseExpression(assertValue).toInt(&assertOk);
 
-        if (!assertOk || parsedAssert < 0 || parsedAssert > 1)
+        if (!assertOk || parsedAssert != 1)
         {
             expectedError = QObject::tr("Invalid assert set for assertion %1 within component %2")
                 .arg(name).arg(testComponent->getVlnv().toString());
@@ -1393,6 +1467,7 @@ void tst_ComponentValidator::testHasValidAssertions_data()
     QTest::newRow("Assertion with name and assert value of 1 is valid") << "Onibocho" << "1" << false << true;
     QTest::newRow("Assertion without name is not valid") << "" << "4-3" << false << false;
     QTest::newRow("Assertion with incorrect assert value is not valid") << "Onibocho" << "4*2" << false << false;
+    QTest::newRow("Assertion with assert value 0 is not valid") << "Onibocho" << "1*2-2" << false << false;
     QTest::newRow("Assertion without assert value is not valid") << "Onibocho" << "" << false << false;
     QTest::newRow("Assertions with the same name is not valid") << "Onibocho" << "1" << true << false;
 }
@@ -1461,6 +1536,9 @@ QSharedPointer<ComponentValidator> tst_ComponentValidator::createComponentValida
 
     QSharedPointer<PortValidator> portValidator (new PortValidator(parser, testComponent->getViews()));
 
+    QSharedPointer<ComponentGeneratorValidator> generatorValidator (new ComponentGeneratorValidator(parser,
+        parameterValidator));
+
     QSharedPointer<ChoiceValidator> choiceValidator (new ChoiceValidator(parser));
 
     QSharedPointer<FileValidator> fileValidator (new FileValidator(parser));
@@ -1475,8 +1553,8 @@ QSharedPointer<ComponentValidator> tst_ComponentValidator::createComponentValida
 
     QSharedPointer<ComponentValidator> componentValidator (new ComponentValidator(busValidator, channelValidator,
         remapStateValidator, addressSpaceValidator, memoryMapValidator, viewValidator, instantiationsValidator,
-        portValidator, choiceValidator, fileSetValidator, cpuValidator, clockDriverValidator, parameterValidator,
-        assertionValidator));
+        portValidator, generatorValidator, choiceValidator, fileSetValidator, cpuValidator, clockDriverValidator,
+        parameterValidator, assertionValidator));
 
     return componentValidator;
 }

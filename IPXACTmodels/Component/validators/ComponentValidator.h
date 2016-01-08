@@ -28,6 +28,7 @@ class MemoryMapValidator;
 class ViewValidator;
 class InstantiationsValidator;
 class PortValidator;
+class ComponentGeneratorValidator;
 class ChoiceValidator;
 class FileSetValidator;
 class CPUValidator;
@@ -52,6 +53,7 @@ public:
      *      @param [in] viewValidator               Validator used for views.
      *      @param [in] instantiationsValidator     Validator used for instantiations.
      *      @param [in] portValidator               Validator used for ports.
+     *      @param [in] generatorValidator          Validator used for component generators.
      *      @param [in] choiceValidator             Validator used for choices.
      *      @param [in] fileSetValidator            Validator used for file sets.
      *      @param [in] cpuValidator                Validator used for CPUs.
@@ -67,6 +69,7 @@ public:
         QSharedPointer<ViewValidator> viewValidator,
         QSharedPointer<InstantiationsValidator> instantiationsValidator,
         QSharedPointer<PortValidator> portValidator,
+        QSharedPointer<ComponentGeneratorValidator> generatorValidator,
         QSharedPointer<ChoiceValidator> choiceValidator,
         QSharedPointer<FileSetValidator> fileSetValidator,
         QSharedPointer<CPUValidator> cpuValidator,
@@ -184,6 +187,15 @@ public:
      *      @return True, if the ports are valid, otherwise false.
      */
     bool hasValidPorts(QSharedPointer<Component> component) const;
+
+    /*!
+     *  Check if the contained component generators are valid.
+     *
+     *      @param [in] component   The selected component.
+     *
+     *      @return True, if the component generators are valid, otherwise false.
+     */
+    bool hasValidComponentGenerators(QSharedPointer<Component> component) const;
 
     /*!
      *  Check if the contained choices are valid.
@@ -362,6 +374,16 @@ private:
         const;
 
     /*!
+     *  Find errors in component generators.
+     *
+     *      @param [in] errors      List of found errors.
+     *      @param [in] component   The selected component.
+     *      @param [in] context     Context to help locate the error.
+     */
+    void findErrorsInComponentGenerators(QVector<QString>& errors, QSharedPointer<Component> component,
+        QString const& context) const;
+
+    /*!
      *  Find errors in choices.
      *
      *      @param [in] errors      List of found errors.
@@ -448,6 +470,9 @@ private:
 
     //! The used port validator.
     QSharedPointer<PortValidator> portValidator_;
+
+    //! The used component generator validator.
+    QSharedPointer<ComponentGeneratorValidator> generatorValidator_;
 
     //! The used choice validator.
     QSharedPointer<ChoiceValidator> choiceValidator_;

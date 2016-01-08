@@ -71,7 +71,7 @@ bool AssertionValidator::hasValidAssert(QSharedPointer<Assertion> assertion) con
         bool toIntOk = true;
         int intValue = solvedValue.toInt(&toIntOk);
 
-        return toIntOk && (intValue == 0 || intValue == 1);
+        return toIntOk && intValue == 1;
     }
 
     return false;
