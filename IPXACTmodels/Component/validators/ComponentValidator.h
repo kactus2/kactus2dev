@@ -35,6 +35,10 @@ class CPUValidator;
 class OtherClockDriverValidator;
 class ParameterValidator2014;
 class AssertionValidator;
+
+class ExpressionParser;
+class LibraryInterface;
+
 //-----------------------------------------------------------------------------
 //! Validator for the ipxact:component.
 //-----------------------------------------------------------------------------
@@ -45,37 +49,10 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] busInterfaceValidator       Validator used for bus interfaces.
-     *      @param [in] channelValidator            Validator used for channels.
-     *      @param [in] remapStateValidator         Validator used for remap states.
-     *      @param [in] addressSpaceValidator       Validator used for address spaces.
-     *      @param [in] memoryMapValidator          Validator used for memory maps.
-     *      @param [in] viewValidator               Validator used for views.
-     *      @param [in] instantiationsValidator     Validator used for instantiations.
-     *      @param [in] portValidator               Validator used for ports.
-     *      @param [in] generatorValidator          Validator used for component generators.
-     *      @param [in] choiceValidator             Validator used for choices.
-     *      @param [in] fileSetValidator            Validator used for file sets.
-     *      @param [in] cpuValidator                Validator used for CPUs.
-     *      @param [in] otherClockDriverValidator   Validator used for other clock drivers.
-     *      @param [in] parameterValidator          Validator used for parameters.
-     *      @param [in] assertionValidator          Validator used for assertions.
+     *      @param [in] parser      The used expression parser.
+     *      @param [in] library     The used library interface.
      */
-    ComponentValidator(QSharedPointer<BusInterfaceValidator> busInterfaceValidator,
-        QSharedPointer<ChannelValidator> channelValidator,
-        QSharedPointer<RemapStateValidator> remapStateValidator,
-        QSharedPointer<AddressSpaceValidator> addressSpaceValidator,
-        QSharedPointer<MemoryMapValidator> memoryMapValidator,
-        QSharedPointer<ViewValidator> viewValidator,
-        QSharedPointer<InstantiationsValidator> instantiationsValidator,
-        QSharedPointer<PortValidator> portValidator,
-        QSharedPointer<ComponentGeneratorValidator> generatorValidator,
-        QSharedPointer<ChoiceValidator> choiceValidator,
-        QSharedPointer<FileSetValidator> fileSetValidator,
-        QSharedPointer<CPUValidator> cpuValidator,
-        QSharedPointer<OtherClockDriverValidator> otherClockDriverValidator,
-        QSharedPointer<ParameterValidator2014> parameterValidator,
-        QSharedPointer<AssertionValidator> assertionValidator);
+    ComponentValidator(QSharedPointer<ExpressionParser> parser, LibraryInterface* library);
 
 	//! The destructor.
 	~ComponentValidator();
@@ -87,7 +64,7 @@ public:
      *
      *      @return True, if the component is valid IP-XACT, otherwise false.
      */
-    bool validate(QSharedPointer<Component> component) const;
+    bool validate(QSharedPointer<Component> component);
 
     /*!
      *  Check if the component vlnv is valid.
@@ -105,7 +82,7 @@ public:
      *
      *      @return True, if the bus interfaces are valid, otherwise false.
      */
-    bool hasValidBusInterfaces(QSharedPointer<Component> component) const;
+    bool hasValidBusInterfaces(QSharedPointer<Component> component);
 
     /*!
      *  Check if the contained channels are valid.
@@ -114,7 +91,7 @@ public:
      *
      *      @return True, if the channels are valid, otherwise false.
      */
-    bool hasValidChannels(QSharedPointer<Component> component) const;
+    bool hasValidChannels(QSharedPointer<Component> component);
 
     /*!
      *  Check if the contained remap states are valid.
@@ -123,7 +100,7 @@ public:
      *
      *      @return True, if the remap states are valid, otherwise false.
      */
-    bool hasValidRemapStates(QSharedPointer<Component> component) const;
+    bool hasValidRemapStates(QSharedPointer<Component> component);
 
     /*!
      *  Check if the contained address spaces are valid.
@@ -132,7 +109,7 @@ public:
      *
      *      @return True, if the address spaces are valid, otherwise false.
      */
-    bool hasValidAddressSpaces(QSharedPointer<Component> component) const;
+    bool hasValidAddressSpaces(QSharedPointer<Component> component);
 
     /*!
      *  Check if the contained memory maps are valid.
@@ -141,7 +118,7 @@ public:
      *
      *      @return True, if the memory maps are valid, otherwise false.
      */
-    bool hasValidMemoryMaps(QSharedPointer<Component> component) const;
+    bool hasValidMemoryMaps(QSharedPointer<Component> component);
 
     /*!
      *  Check if the contained views are valid.
@@ -150,7 +127,7 @@ public:
      *
      *      @return True, if the views are valid, otherwise false.
      */
-    bool hasValidViews(QSharedPointer<Component> component) const;
+    bool hasValidViews(QSharedPointer<Component> component);
 
     /*!
      *  Check if the contained component instantiations are valid.
@@ -159,7 +136,7 @@ public:
      *
      *      @return True, if the component instantiations are valid, otherwise false.
      */
-    bool hasValidComponentInstantiations(QSharedPointer<Component> component) const;
+    bool hasValidComponentInstantiations(QSharedPointer<Component> component);
 
     /*!
      *  Check if the contained design instantiations are valid.
@@ -168,7 +145,7 @@ public:
      *
      *      @return True, if the design instantiations are valid, otherwise false.
      */
-    bool hasValidDesignInstantiations(QSharedPointer<Component> component) const;
+    bool hasValidDesignInstantiations(QSharedPointer<Component> component);
 
     /*!
      *  Check if the contained design configuration instantiations are valid.
@@ -177,7 +154,7 @@ public:
      *
      *      @return True, if the design configuration instantiations are valid, otherwise false.
      */
-    bool hasValidDesignConfigurationInstantiations(QSharedPointer<Component> component) const;
+    bool hasValidDesignConfigurationInstantiations(QSharedPointer<Component> component);
 
     /*!
      *  Check if the contained ports are valid.
@@ -186,7 +163,7 @@ public:
      *
      *      @return True, if the ports are valid, otherwise false.
      */
-    bool hasValidPorts(QSharedPointer<Component> component) const;
+    bool hasValidPorts(QSharedPointer<Component> component);
 
     /*!
      *  Check if the contained component generators are valid.
@@ -195,7 +172,7 @@ public:
      *
      *      @return True, if the component generators are valid, otherwise false.
      */
-    bool hasValidComponentGenerators(QSharedPointer<Component> component) const;
+    bool hasValidComponentGenerators(QSharedPointer<Component> component);
 
     /*!
      *  Check if the contained choices are valid.
@@ -204,7 +181,7 @@ public:
      *
      *      @return True, if the choices are valid, otherwise false.
      */
-    bool hasValidChoices(QSharedPointer<Component> component) const;
+    bool hasValidChoices(QSharedPointer<Component> component);
 
     /*!
      *  Check if the contained file sets are valid.
@@ -213,7 +190,7 @@ public:
      *
      *      @return True, if the file sets are valid, otherwise false.
      */
-    bool hasValidFileSets(QSharedPointer<Component> component) const;
+    bool hasValidFileSets(QSharedPointer<Component> component);
 
     /*!
      *  Check if the contained CPUs are valid.
@@ -222,7 +199,7 @@ public:
      *
      *      @return True, if the CPUs are valid, otherwise false.
      */
-    bool hasValidCPUs(QSharedPointer<Component> component) const;
+    bool hasValidCPUs(QSharedPointer<Component> component);
 
     /*!
      *  Check if the contained other clock drivers are valid.
@@ -231,7 +208,7 @@ public:
      *
      *      @return True, if the other clock drivers are valid, otherwise false.
      */
-    bool hasValidOtherClockDrivers(QSharedPointer<Component> component) const;
+    bool hasValidOtherClockDrivers(QSharedPointer<Component> component);
 
     /*!
      *  Check if the contained parameters are valid.
@@ -240,7 +217,7 @@ public:
      *
      *      @return True, if the parameters are valid, otherwise false.
      */
-    bool hasValidParameters(QSharedPointer<Component> component) const;
+    bool hasValidParameters(QSharedPointer<Component> component);
 
     /*!
      *  Check if the contained assertions are valid.
@@ -249,7 +226,7 @@ public:
      *
      *      @return True, if the assertions are valid, otherwise false.
      */
-    bool hasValidAssertions(QSharedPointer<Component> component) const;
+    bool hasValidAssertions(QSharedPointer<Component> component);
 
     /*!
      *  Locate errors within a component.
@@ -257,7 +234,7 @@ public:
      *      @param [in] errors      List of found errors.
      *      @param [in] component   The selected component.
      */
-    void findErrorsIn(QVector<QString>& errors, QSharedPointer<Component> component) const;
+    void findErrorsIn(QVector<QString>& errors, QSharedPointer<Component> component);
 
 private:
 
@@ -443,9 +420,19 @@ private:
     void findErrorsInAssertions(QVector<QString>& errors, QSharedPointer<Component> component,
         QString const& context) const;
 
+    /*!
+     *  Change the used component.
+     *
+     *      @param [in] newComponent    The new component.
+     */
+    void changeComponent(QSharedPointer<Component> newComponent);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
+
+    //! The last validated component.
+    QSharedPointer<Component> component_;
 
     //! The used bus interface validator.
     QSharedPointer<BusInterfaceValidator> busInterfaceValidator_;
@@ -458,7 +445,7 @@ private:
 
     //! The used address space validator.
     QSharedPointer<AddressSpaceValidator> addressSpaceValidator_;
-
+    
     //! The used memory map validator.
     QSharedPointer<MemoryMapValidator> memoryMapValidator_;
 

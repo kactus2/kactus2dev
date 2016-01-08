@@ -44,6 +44,13 @@ public:
 	~PortValidator();
 
     /*!
+     *  Change the available views.
+     *
+     *      @param [in] newViews    The new views.
+     */
+    void componentChange(QSharedPointer<QList<QSharedPointer<View> > > newViews);
+
+    /*!
      *  Validates the given Port.
      *
      *      @param [in] Port           The Port to validate.

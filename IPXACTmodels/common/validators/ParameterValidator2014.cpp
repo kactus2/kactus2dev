@@ -44,6 +44,14 @@ ParameterValidator2014::~ParameterValidator2014()
 }
 
 //-----------------------------------------------------------------------------
+// Function: ParameterValidator2014::setChoices()
+//-----------------------------------------------------------------------------
+void ParameterValidator2014::componentChange(QSharedPointer<QList<QSharedPointer<Choice> > > newChoices)
+{
+    availableChoices_ = newChoices;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ParameterValidator2014::validate()
 //-----------------------------------------------------------------------------
 bool ParameterValidator2014::validate(QSharedPointer<const Parameter> parameter) const

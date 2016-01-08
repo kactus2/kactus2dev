@@ -51,6 +51,14 @@ InstantiationsValidator::~InstantiationsValidator()
 }
 
 //-----------------------------------------------------------------------------
+// Function: InstantiationsValidator::componentChange()
+//-----------------------------------------------------------------------------
+void InstantiationsValidator::componentChange(QSharedPointer<QList<QSharedPointer<FileSet> > > newFileSets)
+{
+    availableFileSets_ = newFileSets;
+}
+
+//-----------------------------------------------------------------------------
 // Function: InstantiationsValidator::validateDesignInstantiation()
 //-----------------------------------------------------------------------------
 bool InstantiationsValidator::validateDesignInstantiation(QSharedPointer<DesignInstantiation> designInstantiation)

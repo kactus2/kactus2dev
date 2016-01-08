@@ -74,6 +74,27 @@ BusInterfaceValidator::~BusInterfaceValidator()
 }
 
 //-----------------------------------------------------------------------------
+// Function: BusInterfaceValidator::componentChange()
+//-----------------------------------------------------------------------------
+void BusInterfaceValidator::componentChange(QSharedPointer<QList<QSharedPointer<Choice> > > newChoices,
+    QSharedPointer<QList<QSharedPointer<View> > > newViews, QSharedPointer<QList<QSharedPointer<Port> > > newPorts,
+    QSharedPointer<QList<QSharedPointer<AddressSpace> > > newAddressSpaces,
+    QSharedPointer<QList<QSharedPointer<MemoryMap> > > newMemoryMaps,
+    QSharedPointer<QList<QSharedPointer<BusInterface> > > newBusInterfaces,
+    QSharedPointer<QList<QSharedPointer<FileSet> > > newFileSets,
+    QSharedPointer<QList<QSharedPointer<RemapState> > > newRemapStates)
+{
+    availableChoices_ = newChoices;
+    availableViews_ = newViews;
+    availablePorts_ = newPorts;
+    availableAddressSpaces_ = newAddressSpaces;
+    availableMemoryMaps_ = newMemoryMaps;
+    availableBusInterfaces_ = newBusInterfaces;
+    availableFileSets_ = newFileSets;
+    availableRemapStates_ = newRemapStates;
+}
+
+//-----------------------------------------------------------------------------
 // Function: BusInterfaceValidator::validate()
 //-----------------------------------------------------------------------------
 bool BusInterfaceValidator::validate(QSharedPointer<BusInterface> busInterface) const

@@ -1204,7 +1204,17 @@
     </ClCompile>
     <ClCompile Include="common\validators\ProtocolValidator.cpp">
       <Filter>Source Files\common\validators</Filter>
-    </ClCompile>  </ItemGroup>
+    </ClCompile>
+    <ClCompile Include="Component\validators\ComponentGeneratorValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\validators\ComponentValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="common\validators\AssertionValidator.cpp">
+      <Filter>Source Files\common\validators</Filter>
+    </ClCompile>
+  </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BusDefinition\BusDefinition.h">
       <Filter>Header Files\BusDefinition</Filter>
@@ -1643,7 +1653,8 @@
     </ClInclude>
     <ClInclude Include="Component\validators\OtherClockDriverValidator.h">
       <Filter>Header Files\Component\validators</Filter>
-    </ClInclude>    <ClInclude Include="Component\validators\BuildCommandValidator.h">
+    </ClInclude>
+    <ClInclude Include="Component\validators\BuildCommandValidator.h">
       <Filter>Header Files\Component\validators</Filter>
     </ClInclude>
     <ClInclude Include="Component\validators\PortMapValidator.h">
@@ -1660,7 +1671,17 @@
     </ClInclude>
     <ClInclude Include="common\validators\CellSpecificationValidator.h">
       <Filter>Header Files\common\validators</Filter>
-    </ClInclude>  </ItemGroup>
+    </ClInclude>
+    <ClInclude Include="Component\validators\ComponentValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\ComponentGeneratorValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="common\validators\AssertionValidator.h">
+      <Filter>Header Files\common\validators</Filter>
+    </ClInclude>
+  </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="BusDefinition\BusDefinitionReader.h">
       <Filter>Header Files\BusDefinition</Filter>

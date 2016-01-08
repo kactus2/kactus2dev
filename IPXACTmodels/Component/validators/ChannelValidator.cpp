@@ -24,7 +24,7 @@
 ChannelValidator::ChannelValidator(QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<QList<QSharedPointer<BusInterface> > > componentBusInterfaces):
 busInterfaces_(componentBusInterfaces),
-    expressionParser_(expressionParser)
+expressionParser_(expressionParser)
 {
 
 }
@@ -35,6 +35,14 @@ busInterfaces_(componentBusInterfaces),
 ChannelValidator::~ChannelValidator()
 {
 
+}
+
+//-----------------------------------------------------------------------------
+// Function: ChannelValidator::componentChange()
+//-----------------------------------------------------------------------------
+void ChannelValidator::componentChange(QSharedPointer<QList<QSharedPointer<BusInterface> > > newBusInterfaces)
+{
+    busInterfaces_ = newBusInterfaces;
 }
 
 //-----------------------------------------------------------------------------

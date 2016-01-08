@@ -38,6 +38,14 @@ ViewValidator::~ViewValidator()
 }
 
 //-----------------------------------------------------------------------------
+// Function: ViewValidator::componentChange()
+//-----------------------------------------------------------------------------
+void ViewValidator::componentChange(QSharedPointer<Model> newModel)
+{
+    model_ = newModel;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ViewValidator::validateInstantiation()
 //-----------------------------------------------------------------------------
 bool ViewValidator::validate(QSharedPointer<View> view) const

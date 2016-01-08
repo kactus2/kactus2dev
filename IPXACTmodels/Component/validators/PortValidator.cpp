@@ -44,6 +44,14 @@ PortValidator::~PortValidator()
 }
 
 //-----------------------------------------------------------------------------
+// Function: PortValidator::componentChange()
+//-----------------------------------------------------------------------------
+void PortValidator::componentChange(QSharedPointer<QList<QSharedPointer<View> > > newViews)
+{
+    availableViews_ = newViews;
+}
+
+//-----------------------------------------------------------------------------
 // Function: PortValidator::validateInstantiation()
 //-----------------------------------------------------------------------------
 bool PortValidator::validate(QSharedPointer<Port> port) const

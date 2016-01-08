@@ -45,6 +45,13 @@ public:
 	~CPUValidator();
     
     /*!
+     *  Change the available address spaces.
+     *
+     *      @param [in] newAddressSpaces    The new address spaces.
+     */
+    void componentChange(QSharedPointer<QList<QSharedPointer<AddressSpace> > > newAddressSpaces);
+
+    /*!
      *  Validates the given CPU.
      *
      *      @param [in] cpu           The CPU to validate.

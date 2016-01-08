@@ -53,6 +53,13 @@ public:
 	~InstantiationsValidator();
 	
     /*!
+     *  Change the available file sets.
+     *
+     *      @param [in] newFileSets     The new file sets.
+     */
+    void componentChange(QSharedPointer<QList<QSharedPointer<FileSet> > > newFileSets);
+
+    /*!
      *  Validates the given design instantiation.
      *
 	 *      @param [in] designInstantiation     The instantiation to validate.

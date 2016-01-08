@@ -36,12 +36,17 @@
 #include <IPXACTmodels/Component/validators/RemapStateValidator.h>
 #include <IPXACTmodels/Component/validators/AddressSpaceValidator.h>
 #include <IPXACTmodels/Component/validators/MemoryMapValidator.h>
+#include <IPXACTmodels/Component/validators/AddressBlockValidator.h>
+#include <IPXACTmodels/Component/validators/RegisterValidator.h>
+#include <IPXACTmodels/Component/validators/FieldValidator.h>
+#include <IPXACTmodels/Component/validators/EnumeratedValueValidator.h>
 #include <IPXACTmodels/Component/validators/ViewValidator.h>
 #include <IPXACTmodels/Component/validators/InstantiationsValidator.h>
 #include <IPXACTmodels/Component/validators/PortValidator.h>
 #include <IPXACTmodels/Component/validators/ComponentGeneratorValidator.h>
 #include <IPXACTmodels/Component/validators/ChoiceValidator.h>
 #include <IPXACTmodels/Component/validators/FileSetValidator.h>
+#include <IPXACTmodels/Component/validators/FileValidator.h>
 #include <IPXACTmodels/Component/validators/CPUValidator.h>
 #include <IPXACTmodels/Component/validators/OtherClockDriverValidator.h>
 #include <IPXACTmodels/common/Parameter.h>
@@ -50,40 +55,81 @@
 #include <QRegularExpression>
 
 //-----------------------------------------------------------------------------
-// Function: OtherClockDriverValidator::OtherClockDriverValidator()
+// Function: ComponentValidator::ComponentValidator()
 //-----------------------------------------------------------------------------
-ComponentValidator::ComponentValidator(QSharedPointer<BusInterfaceValidator> busInterfaceValidator,
-                                       QSharedPointer<ChannelValidator> channelValidator,
-                                       QSharedPointer<RemapStateValidator> remapStateValidator,
-                                       QSharedPointer<AddressSpaceValidator> addressSpaceValidator,
-                                       QSharedPointer<MemoryMapValidator> memoryMapValidator,
-                                       QSharedPointer<ViewValidator> viewValidator,
-                                       QSharedPointer<InstantiationsValidator> instantiationsValidator,
-                                       QSharedPointer<PortValidator> portValidator,
-                                       QSharedPointer<ComponentGeneratorValidator> generatorValidator,
-                                       QSharedPointer<ChoiceValidator> choiceValidator,
-                                       QSharedPointer<FileSetValidator> fileSetValidator,
-                                       QSharedPointer<CPUValidator> cpuValidator,
-                                       QSharedPointer<OtherClockDriverValidator> otherClockDriverValidator,
-                                       QSharedPointer<ParameterValidator2014> parameterValidator,
-                                       QSharedPointer<AssertionValidator> assertionValidator):
-busInterfaceValidator_(busInterfaceValidator),
-channelValidator_(channelValidator),
-remapStateValidator_(remapStateValidator),
-addressSpaceValidator_(addressSpaceValidator),
-memoryMapValidator_(memoryMapValidator),
-viewValidator_(viewValidator),
-instantiationsValidator_(instantiationsValidator),
-portValidator_(portValidator),
-generatorValidator_(generatorValidator),
-choiceValidator_(choiceValidator),
-fileSetValidator_(fileSetValidator),
-cpuValidator_(cpuValidator),
-otherClockDriverValidator_(otherClockDriverValidator),
-parameterValidator_(parameterValidator),
-assertionValidator_(assertionValidator)
+ComponentValidator::ComponentValidator(QSharedPointer<ExpressionParser> parser, LibraryInterface* library):
+component_(),
+busInterfaceValidator_(),
+channelValidator_(),
+remapStateValidator_(),
+addressSpaceValidator_(),
+memoryMapValidator_(),
+viewValidator_(),
+instantiationsValidator_(),
+portValidator_(),
+generatorValidator_(),
+choiceValidator_(),
+fileSetValidator_(),
+cpuValidator_(),
+otherClockDriverValidator_(),
+parameterValidator_(),
+assertionValidator_()
 {
+    parameterValidator_ = QSharedPointer<ParameterValidator2014>(new ParameterValidator2014(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > > ()));
 
+    busInterfaceValidator_ = QSharedPointer<BusInterfaceValidator>(new BusInterfaceValidator(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > > (), QSharedPointer<QList<QSharedPointer<View> > > (),
+        QSharedPointer<QList<QSharedPointer<Port> > > (), QSharedPointer<QList<QSharedPointer<AddressSpace> > > (),
+        QSharedPointer<QList<QSharedPointer<MemoryMap> > > (),
+        QSharedPointer<QList<QSharedPointer<BusInterface> > > (),
+        QSharedPointer<QList<QSharedPointer<FileSet> > > (),
+        QSharedPointer<QList<QSharedPointer<RemapState> > > (), library));
+
+    channelValidator_ = QSharedPointer<ChannelValidator>(
+        new ChannelValidator(parser, QSharedPointer<QList<QSharedPointer<BusInterface> > > ()));
+
+    remapStateValidator_ = QSharedPointer<RemapStateValidator>(
+        new RemapStateValidator(parser, QSharedPointer<QList<QSharedPointer<Port> > > ()));
+
+    QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator_));
+    QSharedPointer<RegisterValidator> registerValidator (new RegisterValidator(
+        parser, fieldValidator, parameterValidator_));
+    QSharedPointer<AddressBlockValidator> addressBlockValidator(new AddressBlockValidator(
+        parser, registerValidator, parameterValidator_));
+
+    QSharedPointer<MemoryMapBaseValidator> localMapValidator (new MemoryMapBaseValidator(
+        parser, addressBlockValidator));
+
+    addressSpaceValidator_ = QSharedPointer<AddressSpaceValidator>
+        (new AddressSpaceValidator(parser, localMapValidator, parameterValidator_));
+
+    memoryMapValidator_ = QSharedPointer<MemoryMapValidator>(new MemoryMapValidator(
+        parser, addressBlockValidator, QSharedPointer<QList<QSharedPointer<RemapState> > > ()));
+
+    viewValidator_ = QSharedPointer<ViewValidator>(new ViewValidator(parser, QSharedPointer<Model> ()));
+
+    instantiationsValidator_ = QSharedPointer<InstantiationsValidator>(new InstantiationsValidator(
+        parser, QSharedPointer<QList<QSharedPointer<FileSet> > > (), parameterValidator_, library));
+
+    portValidator_ =
+        QSharedPointer<PortValidator>(new PortValidator(parser, QSharedPointer<QList<QSharedPointer<View> > > ()));
+
+    generatorValidator_ =
+        QSharedPointer<ComponentGeneratorValidator>(new ComponentGeneratorValidator(parser, parameterValidator_));
+
+    choiceValidator_ = QSharedPointer<ChoiceValidator>(new ChoiceValidator(parser));
+
+    QSharedPointer<FileValidator> fileValidator (new FileValidator(parser));
+    fileSetValidator_ = QSharedPointer<FileSetValidator>(new FileSetValidator(fileValidator, parser));
+
+    cpuValidator_ = QSharedPointer<CPUValidator>(
+        new CPUValidator(parameterValidator_, parser, QSharedPointer<QList<QSharedPointer<AddressSpace> > > ()));
+
+    otherClockDriverValidator_ = QSharedPointer<OtherClockDriverValidator>(new OtherClockDriverValidator(parser));
+
+    assertionValidator_ = QSharedPointer<AssertionValidator>(new AssertionValidator(parser));
 }
 
 //-----------------------------------------------------------------------------
@@ -97,8 +143,10 @@ ComponentValidator::~ComponentValidator()
 //-----------------------------------------------------------------------------
 // Function: OtherClockDriverValidator::validate()
 //-----------------------------------------------------------------------------
-bool ComponentValidator::validate(QSharedPointer<Component> component) const
+bool ComponentValidator::validate(QSharedPointer<Component> component)
 {
+    changeComponent(component);
+
     return hasValidVLNV(component) && hasValidBusInterfaces(component) && hasValidChannels(component) &&
         hasValidRemapStates(component) && hasValidAddressSpaces(component) && hasValidMemoryMaps(component) &&
         hasValidViews(component) && hasValidComponentInstantiations(component) &&
@@ -119,8 +167,10 @@ bool ComponentValidator::hasValidVLNV(QSharedPointer<Component> component) const
 //-----------------------------------------------------------------------------
 // Function: ComponentValidator::hasValidBusInterfaces()
 //-----------------------------------------------------------------------------
-bool ComponentValidator::hasValidBusInterfaces(QSharedPointer<Component> component) const
+bool ComponentValidator::hasValidBusInterfaces(QSharedPointer<Component> component)
 {
+    changeComponent(component);
+
     if (!component->getBusInterfaces()->isEmpty())
     {
         QVector<QString> busInterfaceNames;
@@ -143,8 +193,10 @@ bool ComponentValidator::hasValidBusInterfaces(QSharedPointer<Component> compone
 //-----------------------------------------------------------------------------
 // Function: ComponentValidator::hasValidChannels()
 //-----------------------------------------------------------------------------
-bool ComponentValidator::hasValidChannels(QSharedPointer<Component> component) const
+bool ComponentValidator::hasValidChannels(QSharedPointer<Component> component)
 {
+    changeComponent(component);
+
     if (!component->getChannels()->isEmpty())
     {
         QVector<QString> channelNames;
@@ -167,8 +219,10 @@ bool ComponentValidator::hasValidChannels(QSharedPointer<Component> component) c
 //-----------------------------------------------------------------------------
 // Function: ComponentValidator::hasValidRemapStates()
 //-----------------------------------------------------------------------------
-bool ComponentValidator::hasValidRemapStates(QSharedPointer<Component> component) const
+bool ComponentValidator::hasValidRemapStates(QSharedPointer<Component> component)
 {
+    changeComponent(component);
+
     if (!component->getRemapStates()->isEmpty())
     {
         QVector<QString> stateNames;
@@ -191,8 +245,10 @@ bool ComponentValidator::hasValidRemapStates(QSharedPointer<Component> component
 //-----------------------------------------------------------------------------
 // Function: ComponentValidator::hasValidAddressSpaces()
 //-----------------------------------------------------------------------------
-bool ComponentValidator::hasValidAddressSpaces(QSharedPointer<Component> component) const
+bool ComponentValidator::hasValidAddressSpaces(QSharedPointer<Component> component)
 {
+    changeComponent(component);
+
     if (!component->getAddressSpaces()->isEmpty())
     {
         QVector<QString> spaceNames;
@@ -215,8 +271,10 @@ bool ComponentValidator::hasValidAddressSpaces(QSharedPointer<Component> compone
 //-----------------------------------------------------------------------------
 // Function: ComponentValidator::hasValidMemoryMaps()
 //-----------------------------------------------------------------------------
-bool ComponentValidator::hasValidMemoryMaps(QSharedPointer<Component> component) const
+bool ComponentValidator::hasValidMemoryMaps(QSharedPointer<Component> component)
 {
+    changeComponent(component);
+
     if (!component->getMemoryMaps()->isEmpty())
     {
         QVector<QString> mapNames;
@@ -239,8 +297,10 @@ bool ComponentValidator::hasValidMemoryMaps(QSharedPointer<Component> component)
 //-----------------------------------------------------------------------------
 // Function: ComponentValidator::hasValidViews()
 //-----------------------------------------------------------------------------
-bool ComponentValidator::hasValidViews(QSharedPointer<Component> component) const
+bool ComponentValidator::hasValidViews(QSharedPointer<Component> component)
 {
+    changeComponent(component);
+
     if (!component->getViews()->isEmpty())
     {
         QVector<QString> viewNames;
@@ -263,8 +323,10 @@ bool ComponentValidator::hasValidViews(QSharedPointer<Component> component) cons
 //-----------------------------------------------------------------------------
 // Function: ComponentValidator::hasValidComponentInstantiations()
 //-----------------------------------------------------------------------------
-bool ComponentValidator::hasValidComponentInstantiations(QSharedPointer<Component> component) const
+bool ComponentValidator::hasValidComponentInstantiations(QSharedPointer<Component> component)
 {
+    changeComponent(component);
+
     if (!component->getComponentInstantiations()->isEmpty())
     {
         QVector<QString> instantiationNames;
@@ -288,8 +350,10 @@ bool ComponentValidator::hasValidComponentInstantiations(QSharedPointer<Componen
 //-----------------------------------------------------------------------------
 // Function: ComponentValidator::hasValidDesignInstantiations()
 //-----------------------------------------------------------------------------
-bool ComponentValidator::hasValidDesignInstantiations(QSharedPointer<Component> component) const
+bool ComponentValidator::hasValidDesignInstantiations(QSharedPointer<Component> component)
 {
+    changeComponent(component);
+
     if (!component->getDesignInstantiations()->isEmpty())
     {
         QVector<QString> instantiationNames;
@@ -313,8 +377,10 @@ bool ComponentValidator::hasValidDesignInstantiations(QSharedPointer<Component> 
 //-----------------------------------------------------------------------------
 // Function: ComponentValidator::hasValidDesignConfigurationInstantiations()
 //-----------------------------------------------------------------------------
-bool ComponentValidator::hasValidDesignConfigurationInstantiations(QSharedPointer<Component> component) const
+bool ComponentValidator::hasValidDesignConfigurationInstantiations(QSharedPointer<Component> component)
 {
+    changeComponent(component);
+
     if (!component->getDesignConfigurationInstantiations()->isEmpty())
     {
         QVector<QString> instantiationNames;
@@ -339,8 +405,10 @@ bool ComponentValidator::hasValidDesignConfigurationInstantiations(QSharedPointe
 //-----------------------------------------------------------------------------
 // Function: ComponentValidator::hasValidPorts()
 //-----------------------------------------------------------------------------
-bool ComponentValidator::hasValidPorts(QSharedPointer<Component> component) const
+bool ComponentValidator::hasValidPorts(QSharedPointer<Component> component)
 {
+    changeComponent(component);
+
     if (!component->getPorts()->isEmpty())
     {
         QVector<QString> portNames;
@@ -363,8 +431,10 @@ bool ComponentValidator::hasValidPorts(QSharedPointer<Component> component) cons
 //-----------------------------------------------------------------------------
 // Function: ComponentValidator::hasValidComponentGenerators()
 //-----------------------------------------------------------------------------
-bool ComponentValidator::hasValidComponentGenerators(QSharedPointer<Component> component) const
+bool ComponentValidator::hasValidComponentGenerators(QSharedPointer<Component> component)
 {
+    changeComponent(component);
+
     if (!component->getComponentGenerators()->isEmpty())
     {
         QVector<QString> generatorNames;
@@ -387,8 +457,10 @@ bool ComponentValidator::hasValidComponentGenerators(QSharedPointer<Component> c
 //-----------------------------------------------------------------------------
 // Function: ComponentValidator::hasValidChoices()
 //-----------------------------------------------------------------------------
-bool ComponentValidator::hasValidChoices(QSharedPointer<Component> component) const
+bool ComponentValidator::hasValidChoices(QSharedPointer<Component> component)
 {
+    changeComponent(component);
+
     if (!component->getChoices()->isEmpty())
     {
         QVector<QString> choiceNames;
@@ -410,8 +482,10 @@ bool ComponentValidator::hasValidChoices(QSharedPointer<Component> component) co
 //-----------------------------------------------------------------------------
 // Function: ComponentValidator::hasValidFileSets()
 //-----------------------------------------------------------------------------
-bool ComponentValidator::hasValidFileSets(QSharedPointer<Component> component) const
+bool ComponentValidator::hasValidFileSets(QSharedPointer<Component> component)
 {
+    changeComponent(component);
+
     if (!component->getFileSets()->isEmpty())
     {
         QVector<QString> fileSetNames;
@@ -433,8 +507,10 @@ bool ComponentValidator::hasValidFileSets(QSharedPointer<Component> component) c
 //-----------------------------------------------------------------------------
 // Function: ComponentValidator::hasValidCPUs()
 //-----------------------------------------------------------------------------
-bool ComponentValidator::hasValidCPUs(QSharedPointer<Component> component) const
+bool ComponentValidator::hasValidCPUs(QSharedPointer<Component> component)
 {
+    changeComponent(component);
+
     if (!component->getCpus()->isEmpty())
     {
         QVector<QString> cpuNames;
@@ -456,8 +532,10 @@ bool ComponentValidator::hasValidCPUs(QSharedPointer<Component> component) const
 //-----------------------------------------------------------------------------
 // Function: ComponentValidator::hasValidOtherClockDrivers()
 //-----------------------------------------------------------------------------
-bool ComponentValidator::hasValidOtherClockDrivers(QSharedPointer<Component> component) const
+bool ComponentValidator::hasValidOtherClockDrivers(QSharedPointer<Component> component)
 {
+    changeComponent(component);
+
     if (!component->getOtherClockDrivers()->isEmpty())
     {
         QVector<QString> driverNames;
@@ -480,8 +558,10 @@ bool ComponentValidator::hasValidOtherClockDrivers(QSharedPointer<Component> com
 //-----------------------------------------------------------------------------
 // Function: ComponentValidator::hasValidParameters()
 //-----------------------------------------------------------------------------
-bool ComponentValidator::hasValidParameters(QSharedPointer<Component> component) const
+bool ComponentValidator::hasValidParameters(QSharedPointer<Component> component)
 {
+    changeComponent(component);
+
     if (!component->getParameters()->isEmpty())
     {
         QVector<QString> parameterNames;
@@ -503,8 +583,10 @@ bool ComponentValidator::hasValidParameters(QSharedPointer<Component> component)
 //-----------------------------------------------------------------------------
 // Function: ComponentValidator::hasValidAssertions()
 //-----------------------------------------------------------------------------
-bool ComponentValidator::hasValidAssertions(QSharedPointer<Component> component) const
+bool ComponentValidator::hasValidAssertions(QSharedPointer<Component> component)
 {
+    changeComponent(component);
+
     if (!component->getAssertions()->isEmpty())
     {
         QVector<QString> assertionNames;
@@ -527,8 +609,10 @@ bool ComponentValidator::hasValidAssertions(QSharedPointer<Component> component)
 //-----------------------------------------------------------------------------
 // Function: ComponentValidator::findErrorsIn()
 //-----------------------------------------------------------------------------
-void ComponentValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Component> component) const
+void ComponentValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Component> component)
 {
+    changeComponent(component);
+
     QString context = QObject::tr("component %1").arg(component->getVlnv().toString());
 
     findErrorsInVLNV(errors, component);
@@ -983,5 +1067,28 @@ void ComponentValidator::findErrorsInAssertions(QVector<QString>& errors, QShare
             assertionNames.append(assertion->name());
             assertionValidator_->findErrorsIn(errors, assertion, context);
         }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentValidator::updateComponent()
+//-----------------------------------------------------------------------------
+void ComponentValidator::changeComponent(QSharedPointer<Component> newComponent)
+{
+    if (newComponent && (!component_ || component_ != newComponent))
+    {
+        busInterfaceValidator_->componentChange(newComponent->getChoices(), newComponent->getViews(),
+            newComponent->getPorts(), newComponent->getAddressSpaces(), newComponent->getMemoryMaps(),
+            newComponent->getBusInterfaces(), newComponent->getFileSets(), newComponent->getRemapStates());
+        parameterValidator_->componentChange(newComponent->getChoices());
+        channelValidator_->componentChange(newComponent->getBusInterfaces());
+        remapStateValidator_->componentChange(newComponent->getPorts());
+        memoryMapValidator_->componentChange(newComponent->getRemapStates());
+        viewValidator_->componentChange(newComponent->getModel());
+        instantiationsValidator_->componentChange(newComponent->getFileSets());
+        portValidator_->componentChange(newComponent->getViews());
+        cpuValidator_->componentChange(newComponent->getAddressSpaces());
+
+        component_ = newComponent;
     }
 }

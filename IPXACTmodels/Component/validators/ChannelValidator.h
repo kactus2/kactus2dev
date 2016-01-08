@@ -41,6 +41,13 @@ public:
 	~ChannelValidator();
     
     /*!
+     *  Change the available bus interfaces.
+     *
+     *      @param [in] newBusInterfaces    The new bus interfaces.
+     */
+    void componentChange(QSharedPointer<QList<QSharedPointer<BusInterface> > > newBusInterfaces);
+
+    /*!
      *  Validates the given Channel.
      *
      *      @param [in] Channel           The Channel to validate.

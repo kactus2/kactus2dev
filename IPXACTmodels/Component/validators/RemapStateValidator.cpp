@@ -39,6 +39,14 @@ RemapStateValidator::~RemapStateValidator()
 }
 
 //-----------------------------------------------------------------------------
+// Function: RemapStateValidator::componentChange()
+//-----------------------------------------------------------------------------
+void RemapStateValidator::componentChange(QSharedPointer<QList<QSharedPointer<Port> > > newPorts)
+{
+    availablePorts_ = newPorts;
+}
+
+//-----------------------------------------------------------------------------
 // Function: RemapStateValidator::validate()
 //-----------------------------------------------------------------------------
 bool RemapStateValidator::validate(QSharedPointer<RemapState> remapState) const

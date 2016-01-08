@@ -41,6 +41,13 @@ public:
 	~RemapStateValidator();
     
     /*!
+     *  Change the available ports.
+     *
+     *      @param [in] newPorts    The new ports.
+     */
+    void componentChange(QSharedPointer<QList<QSharedPointer<Port> > > newPorts);
+
+    /*!
      *  Validates the given remap state.
      *
      *      @param [in] remapState  The remap state to validate.

@@ -43,6 +43,14 @@ CPUValidator::~CPUValidator()
 }
 
 //-----------------------------------------------------------------------------
+// Function: CPUValidator::componentChange()
+//-----------------------------------------------------------------------------
+void CPUValidator::componentChange(QSharedPointer<QList<QSharedPointer<AddressSpace> > > newAddressSpaces)
+{
+    addressSpaces_ = newAddressSpaces;
+}
+
+//-----------------------------------------------------------------------------
 // Function: CPUValidator::validate()
 //-----------------------------------------------------------------------------
 bool CPUValidator::validate(QSharedPointer<Cpu> cpu) const

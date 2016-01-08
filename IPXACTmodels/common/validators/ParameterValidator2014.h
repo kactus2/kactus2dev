@@ -41,6 +41,13 @@ public:
 	~ParameterValidator2014();
     
     /*!
+     *  Change the available choices.
+     *
+     *      @param [in] newChoices  The new choices.
+     */
+    void componentChange(QSharedPointer<QList<QSharedPointer<Choice> > > newChoices);
+
+    /*!
      *  Validates the given parameter.
      *
      *      @param [in] parameter           The parameter to validate.

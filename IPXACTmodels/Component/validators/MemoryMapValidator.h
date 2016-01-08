@@ -46,6 +46,13 @@ public:
 	~MemoryMapValidator();
     
     /*!
+     *  Change the availavle remap states.
+     *
+     *      @param [in] newRemapStates  The new remap states.
+     */
+    void componentChange(QSharedPointer<QList<QSharedPointer<RemapState> > > newRemapStates);
+
+    /*!
      *  Validates the given memory map.
      *
      *      @param [in] memoryMap   The memory map to validate.

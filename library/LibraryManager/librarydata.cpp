@@ -37,6 +37,7 @@
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/ComponentReader.h>
+#include <IPXACTmodels/Component/validators/ComponentValidator.h>
 
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/generaldeclarations.h>
@@ -63,22 +64,23 @@
 //-----------------------------------------------------------------------------
 LibraryData::LibraryData(LibraryHandler* parent, QWidget* parentWidget):
 QObject(parent),
-      parentWidget_(parentWidget),
-      libraryItems_(),
-      handler_(parent),
-      progWidget_(0),
-      timerSteps_(0),
-      timerStep_(0),
-      timer_(0),
-      locations_(),
-      iterObjects_(),
-      errors_(0),
-      failedObjects_(0),
-      syntaxErrors_(0),
-      vlnvErrors_(0),
-      fileErrors_(0),
-      fileCount_(0),
-      urlTester_(new QRegExpValidator(Utils::URL_VALIDITY_REG_EXP, this))
+parentWidget_(parentWidget),
+libraryItems_(),
+handler_(parent),
+progWidget_(0),
+timerSteps_(0),
+timerStep_(0),
+timer_(0),
+locations_(),
+iterObjects_(),
+errors_(0),
+failedObjects_(0),
+syntaxErrors_(0),
+vlnvErrors_(0),
+fileErrors_(0),
+fileCount_(0),
+urlTester_(new QRegExpValidator(Utils::URL_VALIDITY_REG_EXP, this)),
+componentValidator_(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()), handler_)
 {
 	connect(this, SIGNAL(errorMessage(QString const&)),
         parent, SIGNAL(errorMessage(QString const&)), Qt::UniqueConnection);
@@ -576,8 +578,16 @@ bool LibraryData::validateDocument(QSharedPointer<Document> document)
         {
             return false;
         }
-
     }
+    else if (getType(document->getVlnv()) == VLNV::COMPONENT)
+    {
+        QSharedPointer<Component> component = document.dynamicCast<Component>();
+        if (!componentValidator_.validate(component))
+        {
+            return false;
+        }
+    }
+
     return validateDependentVLNVReferencences(document) &&
         validateDependentDirectories(document, documentPath) &&
         validateDependentFiles(document, documentPath);
@@ -606,6 +616,10 @@ QVector<QString> LibraryData::findErrorsInDocument(QSharedPointer<Document> docu
     else if (getType(document->getVlnv()) == VLNV::ABSTRACTIONDEFINITION)
     {
         findErrorsInAbstractionDefinition(document.dynamicCast<AbstractionDefinition>(), errorList);
+    }
+    else if (getType(document->getVlnv()) == VLNV::COMPONENT)
+    {
+        findErrorsInComponent(document.dynamicCast<Component>(), errorList);
     }
 
     findErrorsInDependentVLNVReferencences(document, errorList);
@@ -654,6 +668,23 @@ void LibraryData::findErrorsInAbstractionDefinition(QSharedPointer<AbstractionDe
     {
         errors_ += errorsInBusDefinition;
         syntaxErrors_ += errorsInBusDefinition;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: librarydata::findErrorsInComponent()
+//-----------------------------------------------------------------------------
+void LibraryData::findErrorsInComponent(QSharedPointer<Component> component, QVector<QString>& errorList)
+{
+    int errorsBeforeValidation = errorList.size();
+
+    componentValidator_.findErrorsIn(errorList, component);
+
+    int errorsInComponent = errorList.size() - errorsBeforeValidation;
+    if (errorsInComponent != 0)
+    {
+        errors_ += errorsInComponent;
+        syntaxErrors_ += errorsInComponent;
     }
 }
 

@@ -132,8 +132,7 @@ private:
 
     bool errorIsNotFoundInErrorList(QString const& expectedError, QVector<QString> errorList);
 
-    QSharedPointer<ComponentValidator> createComponentValidator(QSharedPointer<Component> testComponent,
-        LibraryMock* mockLibrary);
+    QSharedPointer<ComponentValidator> createComponentValidator(LibraryMock* mockLibrary);
 };
 
 //-----------------------------------------------------------------------------
@@ -157,7 +156,7 @@ void tst_ComponentValidator::testHasValidVLNV()
     VLNV componentVLNV(VLNV::COMPONENT, vendor, library, name, version);
     QSharedPointer<Component> testComponent (new Component(componentVLNV));
 
-    QSharedPointer<ComponentValidator> validator = createComponentValidator(testComponent, 0);
+    QSharedPointer<ComponentValidator> validator = createComponentValidator(0);
     QCOMPARE(validator->hasValidVLNV(testComponent), isValid);
 
     if (!isValid)
@@ -254,7 +253,7 @@ void tst_ComponentValidator::testHasValidBusInterfaces()
         testComponent->getBusInterfaces()->append(otherBus);
     }
 
-    QSharedPointer<ComponentValidator> validator = createComponentValidator(testComponent, mockLibrary);
+    QSharedPointer<ComponentValidator> validator = createComponentValidator(mockLibrary);
     QCOMPARE(validator->hasValidBusInterfaces(testComponent), isValid);
 
     if (!isValid)
@@ -355,7 +354,7 @@ void tst_ComponentValidator::testHasValidChannels()
         testComponent->getBusInterfaces()->append(testBus);
     }
 
-    QSharedPointer<ComponentValidator> validator = createComponentValidator(testComponent, 0);
+    QSharedPointer<ComponentValidator> validator = createComponentValidator(0);
     QCOMPARE(validator->hasValidChannels(testComponent), isValid);
 
     if (!isValid)
@@ -425,7 +424,7 @@ void tst_ComponentValidator::testHasValidRemapStates()
         testComponent->getRemapStates()->append(otherState);
     }
 
-    QSharedPointer<ComponentValidator> validator = createComponentValidator(testComponent, 0);
+    QSharedPointer<ComponentValidator> validator = createComponentValidator(0);
     QCOMPARE(validator->hasValidRemapStates(testComponent), isValid);
 
 
@@ -487,7 +486,7 @@ void tst_ComponentValidator::testHasValidAddressSpaces()
         testComponent->getAddressSpaces()->append(otherSpace);
     }
 
-    QSharedPointer<ComponentValidator> validator = createComponentValidator(testComponent, 0);
+    QSharedPointer<ComponentValidator> validator = createComponentValidator(0);
     QCOMPARE(validator->hasValidAddressSpaces(testComponent), isValid);
 
     if (!isValid)
@@ -560,7 +559,7 @@ void tst_ComponentValidator::testHasValidMemoryMaps()
         testComponent->getMemoryMaps()->append(otherMap);
     }
 
-    QSharedPointer<ComponentValidator> validator = createComponentValidator(testComponent, 0);
+    QSharedPointer<ComponentValidator> validator = createComponentValidator(0);
     QCOMPARE(validator->hasValidMemoryMaps(testComponent), isValid);
 
     if (!isValid)
@@ -619,7 +618,7 @@ void tst_ComponentValidator::testHasValidViews()
         testComponent->getViews()->append(otherView);
     }
 
-    QSharedPointer<ComponentValidator> validator = createComponentValidator(testComponent, 0);
+    QSharedPointer<ComponentValidator> validator = createComponentValidator(0);
     QCOMPARE(validator->hasValidViews(testComponent), isValid);
 
     if (!isValid)
@@ -679,7 +678,7 @@ void tst_ComponentValidator::testHasValidComponentInstantiations()
         testComponent->getComponentInstantiations()->append(otherInstantiation);
     }
 
-    QSharedPointer<ComponentValidator> validator = createComponentValidator(testComponent, 0);
+    QSharedPointer<ComponentValidator> validator = createComponentValidator(0);
     QCOMPARE(validator->hasValidComponentInstantiations(testComponent), isValid);
 
     if (!isValid)
@@ -754,7 +753,7 @@ void tst_ComponentValidator::testHasValidDesignInstantiations()
         testComponent->getDesignInstantiations()->append(otherInstantiation);
     }
 
-    QSharedPointer<ComponentValidator> validator = createComponentValidator(testComponent, mockLibrary);
+    QSharedPointer<ComponentValidator> validator = createComponentValidator(mockLibrary);
     QCOMPARE(validator->hasValidDesignInstantiations(testComponent), isValid);
 
     if (!isValid)
@@ -840,7 +839,7 @@ void tst_ComponentValidator::testHasValidDesignConfigurationInstantiations()
         testComponent->getDesignConfigurationInstantiations()->append(otherInstantiation);
     }
 
-    QSharedPointer<ComponentValidator> validator = createComponentValidator(testComponent, mockLibrary);
+    QSharedPointer<ComponentValidator> validator = createComponentValidator(mockLibrary);
     QCOMPARE(validator->hasValidDesignConfigurationInstantiations(testComponent), isValid);
 
     if (!isValid)
@@ -912,7 +911,7 @@ void tst_ComponentValidator::testHasValidPorts()
         testComponent->getPorts()->append(otherPort);
     }
 
-    QSharedPointer<ComponentValidator> validator = createComponentValidator(testComponent, 0);
+    QSharedPointer<ComponentValidator> validator = createComponentValidator(0);
     QCOMPARE(validator->hasValidPorts(testComponent), isValid);
 
     if (!isValid)
@@ -981,7 +980,7 @@ void tst_ComponentValidator::testHasValidComponentGenerators()
         testComponent->getComponentGenerators()->append(otherGenerator);
     }
 
-    QSharedPointer<ComponentValidator> validator = createComponentValidator(testComponent, 0);
+    QSharedPointer<ComponentValidator> validator = createComponentValidator(0);
     QCOMPARE(validator->hasValidComponentGenerators(testComponent), isValid);
 
     if (!isValid)
@@ -1058,7 +1057,7 @@ void tst_ComponentValidator::testHasValidChoices()
         testComponent->getChoices()->append(otherChoice);
     }
 
-    QSharedPointer<ComponentValidator> validator = createComponentValidator(testComponent, 0);
+    QSharedPointer<ComponentValidator> validator = createComponentValidator(0);
     QCOMPARE(validator->hasValidChoices(testComponent), isValid);
 
     if (!isValid)
@@ -1133,7 +1132,7 @@ void tst_ComponentValidator::testHasValidFileSets()
         testComponent->getFileSets()->append(otherFileSet);
     }
 
-    QSharedPointer<ComponentValidator> validator = createComponentValidator(testComponent, 0);
+    QSharedPointer<ComponentValidator> validator = createComponentValidator(0);
     QCOMPARE(validator->hasValidFileSets(testComponent), isValid);
 
     if (!isValid)
@@ -1203,7 +1202,7 @@ void tst_ComponentValidator::testHasValidCPUs()
         testComponent->getCpus()->append(otherCPU);
     }
 
-    QSharedPointer<ComponentValidator> validator = createComponentValidator(testComponent, 0);
+    QSharedPointer<ComponentValidator> validator = createComponentValidator(0);
     QCOMPARE(validator->hasValidCPUs(testComponent), isValid);
 
     if (!isValid)
@@ -1281,7 +1280,7 @@ void tst_ComponentValidator::testHasValidOtherClockDrivers()
         testComponent->getOtherClockDrivers()->append(otherDriver);
     }
 
-    QSharedPointer<ComponentValidator> validator = createComponentValidator(testComponent, 0);
+    QSharedPointer<ComponentValidator> validator = createComponentValidator(0);
     QCOMPARE(validator->hasValidOtherClockDrivers(testComponent), isValid);
 
     if (!isValid)
@@ -1352,7 +1351,7 @@ void tst_ComponentValidator::testHasValidParameters()
         testComponent->getParameters()->append(otherParameter);
     }
 
-    QSharedPointer<ComponentValidator> validator = createComponentValidator(testComponent, 0);
+    QSharedPointer<ComponentValidator> validator = createComponentValidator(0);
     QCOMPARE(validator->hasValidParameters(testComponent), isValid);
 
     if (!isValid)
@@ -1421,7 +1420,7 @@ void tst_ComponentValidator::testHasValidAssertions()
         testComponent->getAssertions()->append(otherAssertion);
     }
 
-    QSharedPointer<ComponentValidator> validator = createComponentValidator(testComponent, 0);
+    QSharedPointer<ComponentValidator> validator = createComponentValidator(0);
     QCOMPARE(validator->hasValidAssertions(testComponent), isValid);
 
     if (!isValid)
@@ -1494,67 +1493,10 @@ bool tst_ComponentValidator::errorIsNotFoundInErrorList(QString const& expectedE
 //-----------------------------------------------------------------------------
 // Function: tst_ComponentValidator::createComponentValidator()
 //-----------------------------------------------------------------------------
-QSharedPointer<ComponentValidator> tst_ComponentValidator::createComponentValidator(
-    QSharedPointer<Component> testComponent, LibraryMock* mockLibrary)
+QSharedPointer<ComponentValidator> tst_ComponentValidator::createComponentValidator(LibraryMock* mockLibrary)
 {
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    
-    QSharedPointer<ParameterValidator2014> parameterValidator (new ParameterValidator2014(parser,
-        testComponent->getChoices()));
-
-    QSharedPointer<BusInterfaceValidator> busValidator (new BusInterfaceValidator(parser,
-        testComponent->getChoices(), testComponent->getViews(), testComponent->getPorts(),
-        testComponent->getAddressSpaces(), testComponent->getMemoryMaps(), testComponent->getBusInterfaces(),
-        testComponent->getFileSets(), testComponent->getRemapStates(), mockLibrary));
-
-    QSharedPointer<ChannelValidator> channelValidator (
-        new ChannelValidator(parser, testComponent->getBusInterfaces()));
-
-    QSharedPointer<RemapStateValidator> remapStateValidator (
-        new RemapStateValidator(parser, testComponent->getPorts()));
-
-    QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
-    QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
-    QSharedPointer<RegisterValidator> registerValidator (new RegisterValidator(
-        parser, fieldValidator, parameterValidator));
-    QSharedPointer<AddressBlockValidator> addressBlockValidator(new AddressBlockValidator(
-        parser, registerValidator, parameterValidator));
-
-    QSharedPointer<MemoryMapBaseValidator> localMapValidator (new MemoryMapBaseValidator(
-        parser, addressBlockValidator));
-
-    QSharedPointer<AddressSpaceValidator> addressSpaceValidator (new AddressSpaceValidator(
-        parser, localMapValidator, parameterValidator));
-
-    QSharedPointer<MemoryMapValidator> memoryMapValidator (new MemoryMapValidator(parser, addressBlockValidator,
-        testComponent->getRemapStates()));
-
-    QSharedPointer<ViewValidator> viewValidator (new ViewValidator(parser, testComponent->getModel()));
-
-    QSharedPointer<InstantiationsValidator> instantiationsValidator (new InstantiationsValidator(parser,
-        testComponent->getFileSets(), parameterValidator, mockLibrary));
-
-    QSharedPointer<PortValidator> portValidator (new PortValidator(parser, testComponent->getViews()));
-
-    QSharedPointer<ComponentGeneratorValidator> generatorValidator (new ComponentGeneratorValidator(parser,
-        parameterValidator));
-
-    QSharedPointer<ChoiceValidator> choiceValidator (new ChoiceValidator(parser));
-
-    QSharedPointer<FileValidator> fileValidator (new FileValidator(parser));
-    QSharedPointer<FileSetValidator> fileSetValidator (new FileSetValidator(fileValidator, parser));
-
-    QSharedPointer<CPUValidator> cpuValidator (new CPUValidator(parameterValidator, parser,
-        testComponent->getAddressSpaces()));
-
-    QSharedPointer<OtherClockDriverValidator> clockDriverValidator (new OtherClockDriverValidator(parser));
-
-    QSharedPointer<AssertionValidator> assertionValidator (new AssertionValidator(parser));
-
-    QSharedPointer<ComponentValidator> componentValidator (new ComponentValidator(busValidator, channelValidator,
-        remapStateValidator, addressSpaceValidator, memoryMapValidator, viewValidator, instantiationsValidator,
-        portValidator, generatorValidator, choiceValidator, fileSetValidator, cpuValidator, clockDriverValidator,
-        parameterValidator, assertionValidator));
+    QSharedPointer<ComponentValidator> componentValidator (new ComponentValidator(parser, mockLibrary));
 
     return componentValidator;
 }

@@ -64,7 +64,6 @@ HEADERS += ./XmlUtils.h \
     ./common/PartSelect.h \
     ./common/PresenceTypes.h \
     ./common/Protocol.h \
-    ./common/ProtocolValidator.h \
     ./common/Qualifier.h \
     ./common/Range.h \
     ./common/TimingConstraint.h \
@@ -86,7 +85,10 @@ HEADERS += ./XmlUtils.h \
     ./common/ParameterWriter.h \
     ./common/ProtocolReader.h \
     ./common/ProtocolWriter.h \
+    ./common/validators/CellSpecificationValidator.h \
     ./common/validators/ParameterValidator2014.h \
+    ./common/validators/ProtocolValidator.h \
+    ./common/validators/TimingConstraintValidator.h \
     ./common/validators/ValueFormatter.h \
     ./BusDefinition/BusDefinition.h \
     ./BusDefinition/BusDefinitionReader.h \
@@ -104,6 +106,7 @@ HEADERS += ./XmlUtils.h \
     ./AbstractionDefinition/TransactionalAbstractionReader.h \
     ./AbstractionDefinition/TransactionalAbstractionWriter.h \
     ./AbstractionDefinition/WireAbstractionReader.h \
+    ./AbstractionDefinition/validators/AbstractionDefinitionValidator.h \
     ./designConfiguration/AbstractorInstance.h \
     ./designConfiguration/DesignConfiguration.h \
     ./designConfiguration/InterconnectionConfiguration.h \
@@ -209,6 +212,7 @@ HEADERS += ./XmlUtils.h \
     ./Component/ViewWriter.h \
     ./Component/validators/AddressBlockValidator.h \
     ./Component/validators/AddressSpaceValidator.h \
+    ./Component/validators/BuildCommandValidator.h \
     ./Component/validators/ChannelValidator.h \
     ./Component/validators/ChoiceValidator.h \
     ./Component/validators/CPUValidator.h \
@@ -216,15 +220,19 @@ HEADERS += ./XmlUtils.h \
     ./Component/validators/FieldValidator.h \
     ./Component/validators/FileSetValidator.h \
     ./Component/validators/FileValidator.h \
+    ./Component/validators/InstantiationsValidator.h \
+    ./Component/validators/PortMapValidator.h \
+    ./Component/validators/OtherClockDriverValidator.h \
     ./Component/validators/PortValidator.h \
     ./Component/validators/RemapStateValidator.h \
     ./Component/validators/MemoryMapBaseValidator.h \
     ./Component/validators/MemoryMapValidator.h \
     ./Component/validators/MemoryReserve.h \
     ./Component/validators/RegisterValidator.h \
-    ./Component/validators/InstantiationsValidator.h \
     ./Component/validators/ViewValidator.h \
-    ./Component/validators/OtherClockDriverValidator.h
+    ./Component/validators/ComponentValidator.h \
+    ./Component/validators/ComponentGeneratorValidator.h \
+    ./common/validators/AssertionValidator.h
 SOURCES += ./generaldeclarations.cpp \
     ./XmlUtils.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
@@ -294,7 +302,6 @@ SOURCES += ./generaldeclarations.cpp \
     ./common/PresenceTypes.cpp \
     ./common/Protocol.cpp \
     ./common/ProtocolReader.cpp \
-    ./common/ProtocolValidator.cpp \
     ./common/ProtocolWriter.cpp \
     ./common/Qualifier.cpp \
     ./common/Range.cpp \
@@ -302,7 +309,10 @@ SOURCES += ./generaldeclarations.cpp \
     ./common/TransactionalTypes.cpp \
     ./common/Vector.cpp \
     ./common/VLNV.cpp \
+    ./common/validators/CellSpecificationValidator.cpp \
     ./common/validators/ParameterValidator2014.cpp \
+    ./common/validators/ProtocolValidator.cpp \
+    ./common/validators/TimingConstraintValidator.cpp \
     ./common/validators/ValueFormatter.cpp \
     ./BusDefinition/BusDefinition.cpp \
     ./BusDefinition/BusDefinitionReader.cpp \
@@ -320,6 +330,7 @@ SOURCES += ./generaldeclarations.cpp \
     ./AbstractionDefinition/WireAbstractionReader.cpp \
     ./AbstractionDefinition/WireAbstractionWriter.cpp \
     ./AbstractionDefinition/WirePort.cpp \
+    ./AbstractionDefinition/validators/AbstractionDefinitionValidator.cpp \
     ./designConfiguration/AbstractorInstance.cpp \
     ./designConfiguration/DesignConfiguration.cpp \
     ./designConfiguration/DesignConfigurationReader.cpp \
@@ -425,6 +436,7 @@ SOURCES += ./generaldeclarations.cpp \
     ./Component/WriteValueConstraint.cpp \
     ./Component/validators/AddressBlockValidator.cpp \
     ./Component/validators/AddressSpaceValidator.cpp \
+    ./Component/validators/BusInterfaceValidator.cpp \
     ./Component/validators/ChannelValidator.cpp \
     ./Component/validators/ChoiceValidator.cpp \
     ./Component/validators/CPUValidator.cpp \
@@ -432,12 +444,16 @@ SOURCES += ./generaldeclarations.cpp \
     ./Component/validators/FieldValidator.cpp \
     ./Component/validators/FileSetValidator.cpp \
     ./Component/validators/FileValidator.cpp \
+    ./Component/validators/InstantiationsValidator.cpp \
+    ./Component/validators/PortMapValidator.cpp \
+    ./Component/validators/OtherClockDriverValidator.cpp \
     ./Component/validators/PortValidator.cpp \
     ./Component/validators/RemapStateValidator.cpp \
     ./Component/validators/MemoryMapBaseValidator.cpp \
     ./Component/validators/MemoryMapValidator.cpp \
     ./Component/validators/MemoryReserve.cpp \
     ./Component/validators/RegisterValidator.cpp \
-    ./Component/validators/InstantiationsValidator.cpp \
     ./Component/validators/ViewValidator.cpp \
-    ./Component/validators/OtherClockDriverValidator.cpp
+    ./Component/validators/ComponentGeneratorValidator.cpp \
+    ./Component/validators/ComponentValidator.cpp \
+    ./common/validators/AssertionValidator.cpp

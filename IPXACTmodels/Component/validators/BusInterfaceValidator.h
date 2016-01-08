@@ -72,6 +72,27 @@ public:
 	~BusInterfaceValidator();
     
     /*!
+     *  Change the available component elements.
+     *
+     *      @param [in] newChoices          The new choices.
+     *      @param [in] newViews            The new views.
+     *      @param [in] newPorts            The new ports.
+     *      @param [in] newAddressSpaces    The new address spaces.
+     *      @param [in] newMemoryMaps       The new memory maps.
+     *      @param [in] newBusInterfaces    The new bus interfaces.
+     *      @param [in] newFileSets         The new file sets.
+     *      @param [in] newRemapStates      The new remap states.
+     */
+    void componentChange(QSharedPointer<QList<QSharedPointer<Choice> > > newChoices,
+        QSharedPointer<QList<QSharedPointer<View> > > newViews,
+        QSharedPointer<QList<QSharedPointer<Port> > > newPorts,
+        QSharedPointer<QList<QSharedPointer<AddressSpace> > > newAddressSpaces,
+        QSharedPointer<QList<QSharedPointer<MemoryMap> > > newMemoryMaps,
+        QSharedPointer<QList<QSharedPointer<BusInterface> > > newBusInterfaces,
+        QSharedPointer<QList<QSharedPointer<FileSet> > > newFileSets,
+        QSharedPointer<QList<QSharedPointer<RemapState> > > newRemapStates);
+
+    /*!
      *  Validates the given bus interface.
      *
      *      @param [in] busInterface    The selected bus interface.

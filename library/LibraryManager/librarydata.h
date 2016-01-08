@@ -14,6 +14,8 @@
 
 #include <IPXACTmodels/common/VLNV.h>
 
+#include <IPXACTmodels/Component/validators/ComponentValidator.h>
+
 #include <QObject>
 #include <QList>
 #include <QMap>
@@ -24,6 +26,7 @@
 
 class AbstractionDefinition;
 class BusDefinition;
+class Component;
 class Document;
 class LibraryHandler;
 class ScanProgressWidget;
@@ -194,6 +197,14 @@ private:
      */
     void findErrorsInAbstractionDefinition(QSharedPointer<AbstractionDefinition> abstraction, QVector<QString>& errorList);
 
+    /*!
+     *  Finds any errors within a given component.
+     *
+     *      @param [in] component   The given component.
+     *      @param [in] errorList   The list of errors.
+     */
+    void findErrorsInComponent(QSharedPointer<Component> component, QVector<QString>& errorList);
+
     /*! Check the validity of VLNV references within a document.
 	 *
 	 *      @param [in] document    The document to check.
@@ -255,6 +266,7 @@ private:
      *      @return The VLNV identifier for the document.
      */
     VLNV getDocumentVLNV(QDomDocument& doc);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -310,6 +322,9 @@ private:
 
 	//! Checks if the given string is a URL (invalids are allowed) or not.
 	 QRegExpValidator* urlTester_;
+
+     //! The used component validator.
+     ComponentValidator componentValidator_;
 };
 
 #endif // LIBRARYDATA_H

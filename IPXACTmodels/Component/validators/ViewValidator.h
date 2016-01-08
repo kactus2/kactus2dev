@@ -44,6 +44,13 @@ public:
 	~ViewValidator();
 
     /*!
+     *  Change the available model.
+     *
+     *      @param [in] newModel    The new model.
+     */
+    void componentChange(QSharedPointer<Model> newModel);
+
+    /*!
      *  Validates the given View.
      *
      *      @param [in] View    The View to validate.
