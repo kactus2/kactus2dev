@@ -22,6 +22,8 @@
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
+#include <IPXACTmodels/Component/validators/ComponentValidator.h>
+
 #include <QSharedPointer>
 #include <QSplitter>
 #include <QSettings>
@@ -29,6 +31,8 @@
 class LibraryInterface;
 class PluginManager;
 class Component;
+
+class ExpressionParser;
 //-----------------------------------------------------------------------------
 //! The editor to edit/packet IP-Xact components.
 //-----------------------------------------------------------------------------
@@ -98,13 +102,14 @@ public:
 
 public slots:
 
-    /*! Validates the document against the IP-XACT standard.
+    /*!
+     *  Validates the document against the IP-XACT standard.
      *
-     *      @param [in] errorList Error message list for reporting standard violations.
+     *      @param [in] errorList   Error message list for reporting standard violations.
      *
      *      @return True if the document is valid. False if there were any violations.
-    */
-    virtual bool validate(QStringList& errorList);
+     */
+    virtual bool validate(QVector<QString>& errorList);
 
 	//! Saves the document and resets the modified state.
 	virtual bool save();
@@ -295,6 +300,12 @@ private:
 
     //! The expression formatter used to change ids to names in expressions.
     QSharedPointer<ExpressionFormatter> expressionFormatter_;
+
+    //! The used expression parser.
+    QSharedPointer<ExpressionParser> expressionParser_;
+
+    //! The used component validator.
+    ComponentValidator validator_;
 };
 
 #endif // COMPONENTEDITOR_H

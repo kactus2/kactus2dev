@@ -54,6 +54,8 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/FileSet.h>
 
+#include <IPXACTmodels/Component/validators/ComponentValidator.h>
+
 #include <QDialog>
 
 #include <QMessageBox>
@@ -82,7 +84,9 @@ editorSlot_(&editorVisualizerSplitter_),
 visualizerSlot_(&editorVisualizerSplitter_),
 parameterFinder_(new ComponentParameterFinder(component_)),
 referenceCounter_(new ParameterReferenceCounter(parameterFinder_)),
-expressionFormatter_(new ExpressionFormatter(parameterFinder_))
+expressionFormatter_(new ExpressionFormatter(parameterFinder_)),
+expressionParser_(new IPXactSystemVerilogParser(parameterFinder_)),
+validator_(expressionParser_, libHandler_)
 {
     // these can be used when debugging to identify the objects
 	setObjectName(tr("ComponentEditor"));
@@ -279,9 +283,14 @@ QStringList ComponentEditor::getSwItemNames()
 //-----------------------------------------------------------------------------
 // Function: ComponentEditor::validate()
 //-----------------------------------------------------------------------------
-bool ComponentEditor::validate( QStringList& errorList )
+bool ComponentEditor::validate(QVector<QString>& errorList)
 {
-	/*return component_->isValid(errorList);*/
+    if (!validator_.validate(component_))
+    {
+        validator_.findErrorsIn(errorList, component_);
+        return false;
+    }
+
     return true;
 }
 
@@ -722,8 +731,6 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createHWRootItem(QShare
 {
     ComponentEditorRootItem* hwRoot = new ComponentEditorRootItem(libHandler_, component, &navigationModel_);
 
-    QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder_));
-
     hwRoot->addChildItem(QSharedPointer<ComponentEditorGeneralItem>(
         new ComponentEditorGeneralItem(&navigationModel_, libHandler_, component, hwRoot)));
 
@@ -735,10 +742,10 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createHWRootItem(QShare
         new ComponentEditorFileSetsItem(&navigationModel_, libHandler_, pluginManager_, component, parameterFinder_, hwRoot)));
 
     hwRoot->addChildItem(QSharedPointer<ComponentEditorChoicesItem>(
-        new ComponentEditorChoicesItem(&navigationModel_, libHandler_, component, expressionParser, hwRoot)));
+        new ComponentEditorChoicesItem(&navigationModel_, libHandler_, component, expressionParser_, hwRoot)));
 
     QSharedPointer<ComponentEditorParametersItem> parametersItem(new ComponentEditorParametersItem(
-        &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionParser, 
+        &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionParser_, 
         expressionFormatter_, hwRoot));
 
     hwRoot->addChildItem(parametersItem);
@@ -748,14 +755,14 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createHWRootItem(QShare
 
     hwRoot->addChildItem(QSharedPointer<ComponentEditorMemMapsItem>(new ComponentEditorMemMapsItem(
         &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionFormatter_,
-        expressionParser, hwRoot)));
+        expressionParser_, hwRoot)));
 
     hwRoot->addChildItem(QSharedPointer<ComponentEditorAddrSpacesItem>(new ComponentEditorAddrSpacesItem(
         &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionFormatter_,
-        expressionParser, hwRoot)));
+        expressionParser_, hwRoot)));
 
     QSharedPointer<ComponentEditorViewsItem> viewsItem(new ComponentEditorViewsItem(&navigationModel_, libHandler_,
-        component, referenceCounter_, parameterFinder_, expressionFormatter_, expressionParser, hwRoot));
+        component, referenceCounter_, parameterFinder_, expressionFormatter_, expressionParser_, hwRoot));
 
     hwRoot->addChildItem(viewsItem);
     
@@ -769,14 +776,14 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createHWRootItem(QShare
         new ComponentEditorSystemViewsItem(&navigationModel_, libHandler_, component, hwRoot)));
 
     QSharedPointer<ComponentEditorPortsItem> portsItem(new ComponentEditorPortsItem(&navigationModel_, libHandler_,
-        component, referenceCounter_, parameterFinder_, expressionFormatter_, expressionParser, hwRoot));
+        component, referenceCounter_, parameterFinder_, expressionFormatter_, expressionParser_, hwRoot));
 
     hwRoot->addChildItem(portsItem);
     connect(portsItem.data(), SIGNAL(createInterface()), hwRoot, SLOT(onInterfaceAdded()), Qt::UniqueConnection);
 
     QSharedPointer<ComponentEditorBusInterfacesItem> busInterfaceItem (new ComponentEditorBusInterfacesItem(
         &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionFormatter_,
-        expressionParser, hwRoot, parentWidget()));
+        expressionParser_, hwRoot, parentWidget()));
 
     hwRoot->addChildItem(busInterfaceItem);
 
@@ -784,17 +791,17 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createHWRootItem(QShare
         this, SLOT(openReferenceTree(QString)), Qt::UniqueConnection);
 
     hwRoot->addChildItem(QSharedPointer<ComponentEditorChannelsItem>(
-        new ComponentEditorChannelsItem(&navigationModel_, libHandler_, component, expressionParser, hwRoot)));
+        new ComponentEditorChannelsItem(&navigationModel_, libHandler_, component, expressionParser_, hwRoot)));
 
     hwRoot->addChildItem(QSharedPointer<RemapStatesItem>(
         new RemapStatesItem(&navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_,
-        expressionFormatter_, expressionParser, hwRoot)));
+        expressionFormatter_, expressionParser_, hwRoot)));
 
     hwRoot->addChildItem(QSharedPointer<ComponentEditorCpusItem>(
-        new ComponentEditorCpusItem(&navigationModel_, libHandler_, component, expressionParser, hwRoot)));
+        new ComponentEditorCpusItem(&navigationModel_, libHandler_, component, expressionParser_, hwRoot)));
 
     hwRoot->addChildItem(QSharedPointer<ComponentEditorOtherClocksItem>(
-        new ComponentEditorOtherClocksItem(&navigationModel_, libHandler_, component, expressionParser, hwRoot)));
+        new ComponentEditorOtherClocksItem(&navigationModel_, libHandler_, component, expressionParser_, hwRoot)));
 
     hwRoot->addChildItem(QSharedPointer<ComponentEditorComInterfacesItem>(
         new ComponentEditorComInterfacesItem(&navigationModel_, libHandler_, component, hwRoot)));
@@ -812,8 +819,6 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createSWRootItem(QShare
 {
     ComponentEditorRootItem* swRoot = new ComponentEditorRootItem(libHandler_, component, &navigationModel_);
 
-    QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder_));
-
     swRoot->addChildItem(QSharedPointer<ComponentEditorGeneralItem>(
         new ComponentEditorGeneralItem(&navigationModel_, libHandler_, component, swRoot)));
 
@@ -822,10 +827,10 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createSWRootItem(QShare
         parameterFinder_, swRoot)));
 
     swRoot->addChildItem(QSharedPointer<ComponentEditorChoicesItem>(
-        new ComponentEditorChoicesItem(&navigationModel_, libHandler_, component, expressionParser, swRoot)));
+        new ComponentEditorChoicesItem(&navigationModel_, libHandler_, component, expressionParser_, swRoot)));
 
     QSharedPointer<ComponentEditorParametersItem> parametersItem(new ComponentEditorParametersItem(
-        &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionParser,
+        &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionParser_,
         expressionFormatter_, swRoot));
 
     swRoot->addChildItem(parametersItem);
