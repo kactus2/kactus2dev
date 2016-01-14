@@ -161,7 +161,7 @@ bool ComponentValidator::validate(QSharedPointer<Component> component)
 //-----------------------------------------------------------------------------
 bool ComponentValidator::hasValidVLNV(QSharedPointer<Component> component) const
 {
-    return component->getVlnv().isValid();
+    return component->getVlnv().getType() == VLNV::COMPONENT && component->getVlnv().isValid();
 }
 
 //-----------------------------------------------------------------------------

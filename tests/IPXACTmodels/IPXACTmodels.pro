@@ -21,6 +21,7 @@ SUBDIRS += common\Common.pro \
 		   AbstractionDefinition\validators\tst_AbstractionDefinitionValidator.pro \
 		   DesignConfiguration\tst_DesignConfigurationWriter.pro \
 		   DesignConfiguration\tst_DesignConfigurationReader.pro \
+		   DesignConfiguration\validators\tst_DesignConfigurationValidator.pro \
 		   Design\tst_DesignWriter.pro \
 		   Design\tst_DesignReader.pro \
 		   Component\Component.pro \
