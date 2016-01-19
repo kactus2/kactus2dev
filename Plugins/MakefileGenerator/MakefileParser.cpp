@@ -734,7 +734,7 @@ QString MakefileParser::getFileFlags(QSharedPointer<Component> component, QShare
 				cFlags += " " + mod->swBuildCmd->getFlags();
 			}   
 
-			if ( ( mod->swBuildCmd == 0 || mod->swBuildCmd->getReplaceDefaultFlags() != QLatin1String("true"))
+			if ( ( mod->swBuildCmd == 0 || mod->swBuildCmd->getReplaceDefaultFlags() != "true" )
                 && mfd.hwBuildCmd != 0 )
 			{
 				cFlags += " " + mfd.hwBuildCmd->getFlags();
