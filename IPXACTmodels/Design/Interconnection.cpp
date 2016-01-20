@@ -162,52 +162,6 @@ void Interconnection::setOffPage(bool offpage)
     }
 }
 
-/*
-//-----------------------------------------------------------------------------
-// Function: Interconnection::isValid()
-//-----------------------------------------------------------------------------
-bool Interconnection::isValid( const QStringList& instanceNames, 
-    QStringList& errorList,
-    const QString& parentIdentifier ) const {
-        bool valid = true;
-        const QString thisIdentifier(QObject::tr("interconnection within %1").arg(
-            parentIdentifier));
-
-        if (name().isEmpty()) {
-            errorList.append(QObject::tr("No name specified for interconnection"
-                " within %1").arg(parentIdentifier));
-            valid = false;
-        }
-
-        if (!interface1.isValid(instanceNames, errorList, thisIdentifier)) {
-            valid = false;
-        }
-
-        if (!interface2.isValid(instanceNames, errorList, thisIdentifier)) {
-            valid = false;
-        }
-
-        return valid;
-}*/
-/*
-//-----------------------------------------------------------------------------
-// Function: Interconnection::isValid()
-//-----------------------------------------------------------------------------
-bool Interconnection::isValid( const QStringList& instanceNames ) const {
-    if (name().isEmpty()) {
-        return false;
-    }
-
-    if (!interface1.isValid(instanceNames)) {
-        return false;
-    }
-
-    if (!interface2.isValid(instanceNames)) {
-        return false;
-    }
-    return true;
-}*/
-
 //-----------------------------------------------------------------------------
 // Function: Interconnection::getStartInterface()
 //-----------------------------------------------------------------------------

@@ -88,47 +88,6 @@ bool HierInterface::operator<(const HierInterface& other)
     return busResult < 0;
 }
 
-/*
-//-----------------------------------------------------------------------------
-// Function: Interface::isValid()
-//-----------------------------------------------------------------------------
-bool Interface::isValid( const QStringList& instanceNames,
-								QStringList& errorList,
-								const QString& parentIdentifier ) const {
-	bool valid = true;
-	
-	if (componentRef_.isEmpty()) 
-    {
-		errorList.append(QObject::tr("No component reference set for active"
-			" interface within %1").arg(parentIdentifier));
-		valid = false;
-	}
-	else if (!instanceNames.contains(componentRef_))
-    {
-		errorList.append(QObject::tr("Active interface within %1 contains "
-			"reference to component instance %2 that does not exist.").arg(
-			parentIdentifier).arg(componentRef_));
-		valid = false;
-	}
-
-	if (busRef_.isEmpty())
-    {
-		errorList.append(QObject::tr("No bus reference set for active interface within %1").arg(parentIdentifier));
-		valid = false;
-	}
-
-	return valid;
-}
-
-//-----------------------------------------------------------------------------
-// Function: Interface::isValid()
-//-----------------------------------------------------------------------------
-bool Interface::isValid( const QStringList& instanceNames ) const 
-{
-	return !componentRef_.isEmpty() && instanceNames.contains(componentRef_) && !busRef_.isEmpty();
-}
-*/
-
 //-----------------------------------------------------------------------------
 // Function: HierInterface::getBusReference()
 //-----------------------------------------------------------------------------

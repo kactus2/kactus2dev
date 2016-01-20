@@ -102,26 +102,6 @@ public:
      */
     void setOffPage(bool offPage);
 
-    /*! Check if the ad hoc connection is in a valid state.
-     * 
-     * @param instanceNames List containing the component instance names from
-     * the containing design.
-     * @param errorList The list to add the possible error messages to.
-     * @param parentIdentifier String from parent to help to identify the location of the error.
-     *
-     * \return bool True if the state is valid and writing is possible.
-     */
-    //bool isValid(const QStringList& instanceNames, QStringList& errorList, const QString& parentIdentifier) const;
-
-    /*! Check if the ad hoc connection is in a valid state.
-     * 
-     * @param instanceNames List containing the component instance names from
-     * the containing design.
-     * 
-     * \return bool True if the state is valid and writing is possible.
-     */
-    //bool isValid(const QStringList& instanceNames) const;
-
     /*!
      *  Set a new list of internal port references.
      *

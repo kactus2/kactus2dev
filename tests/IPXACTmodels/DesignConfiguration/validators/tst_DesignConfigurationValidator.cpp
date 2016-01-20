@@ -177,7 +177,7 @@ void tst_DesignConfigurationValidator::testHasValidVLNV_data()
         "Tengen" << "Toppa" << "Gurren" << "Lagann" << true;
     QTest::newRow("Design configuration without vendor is not valid") <<
         "" << "Toppa" << "Gurren" << "Lagann" << false;
-    QTest::newRow("Design conifugration without library is not valid") <<
+    QTest::newRow("Design configuration without library is not valid") <<
         "Tengen" << "" << "Gurren" << "Lagann" << false;
     QTest::newRow("Design configuration without name is not valid") <<
         "Tengen" << "Toppa" << "" << "Lagann" << false;
@@ -202,7 +202,7 @@ void tst_DesignConfigurationValidator::testHasValidDesignReference()
     LibraryMock* mockLibrary (new LibraryMock(this));
 
     QSharedPointer<DesignConfiguration> testConfiguration (new DesignConfiguration(
-        VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0")));
+        VLNV(VLNV::DESIGNCONFIGURATION, "Samurai", "Champloo", "MugenJinFuu", "3.0")));
 
     VLNV designReference (VLNV::DESIGN, vendor, library, name, version);
     
@@ -302,7 +302,7 @@ void tst_DesignConfigurationValidator::testHasValidGeneratorChainConfigurations(
     QFETCH(bool, isValid);
 
     QSharedPointer<DesignConfiguration> testConfiguration (new DesignConfiguration(
-        VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0")));
+        VLNV(VLNV::DESIGNCONFIGURATION, "Samurai", "Champloo", "MugenJinFuu", "3.0")));
 
     QSharedPointer<ConfigurableVLNVReference> chainVLNV (
         new ConfigurableVLNVReference(VLNV::GENERATORCHAIN, vendor, library, name, version));
@@ -918,7 +918,7 @@ void tst_DesignConfigurationValidator::testHasValidInterconnectionConfigurations
     mockLibrary->addComponent(testDesign);
 
     QSharedPointer<DesignConfiguration> testConfiguration (new DesignConfiguration(
-        VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0")));
+        VLNV(VLNV::DESIGNCONFIGURATION, "Samurai", "Champloo", "MugenJinFuu", "3.0")));
     testConfiguration->setDesignRef(designVLNV);
 
     QSharedPointer<InterconnectionConfiguration> interconnectionConfiguration (new InterconnectionConfiguration());
@@ -1227,7 +1227,7 @@ void tst_DesignConfigurationValidator::testHasValidViewConfigurations()
     mockLibrary->addComponent(referencedDesign);
 
     QSharedPointer<DesignConfiguration> testConfiguration (new DesignConfiguration(
-        VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0")));
+        VLNV(VLNV::DESIGNCONFIGURATION, "Samurai", "Champloo", "MugenJinFuu", "3.0")));
     testConfiguration->setDesignRef(referencedDesign->getVlnv());
 
     QSharedPointer<ConfigurableVLNVReference> componentVLNV
@@ -1331,7 +1331,7 @@ void tst_DesignConfigurationValidator::testHasValidParameters()
     testParameter->setValue(value);
 
     QSharedPointer<DesignConfiguration> testConfiguration (new DesignConfiguration(
-        VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0")));
+        VLNV(VLNV::DESIGNCONFIGURATION, "Samurai", "Champloo", "MugenJinFuu", "3.0")));
 
     testConfiguration->getParameters()->append(testParameter);
 

@@ -74,24 +74,6 @@ public:
      */
     void setOffPage(bool offpage);
 
-    /*! Check if the interconnection is in a valid state.
-    * 
-    *       @param [in] instanceNames       List of component instance names contained in the design.
-    *       @param [in] errorList           The list to add the possible error messages to.
-    *       @param [in] parentIdentifier    String from parent to help to identify the location of the error.
-    *
-    *       @return True if the state is valid and writing is possible.
-    */
-    //bool isValid(QStringList const& instanceNames, QStringList& errorList, QString const& parentIdentifier) const;
-
-    /*! Check if the interconnection is in a valid state.
-    * 
-    *       @param [in] instanceNames   List of component instance names contained in the design.
-    * 
-    *       @return True if the state is valid and writing is possible.
-    */
-    //bool isValid(const QStringList& instanceNames) const;
-
     /*!
      *  Get the start interface.
      *

@@ -78,24 +78,6 @@ public:
      */
     bool references(QString const& instanceName, QString const& busInterfaceName);
 
-    /*! Check if the interface is in a valid state.
-     * 
-     *       @param [in] instanceNames       Contains the names of component instances in containing design.
-     *       @param [in] errorList           The list to add the possible error messages to.
-     *       @param [in] parentIdentifier    String from parent to help to identify the location of the error.
-     *
-     *       @return bool True if the state is valid and writing is possible.
-     */
-    //bool isValid(QStringList const& instanceNames, QStringList& errorList, QString const& parentIdentifier) const;
-
-    /*! Check if the interface is in a valid state.
-     * 
-     *       @param [in] instanceNames     Contains the names of component instances in containing design.
-     * 
-     *       @return bool True if the state is valid and writing is possible.
-     */
-    //bool isValid(const QStringList& instanceNames) const;    
-
     /*!
      *  Get the referenced component.
      *

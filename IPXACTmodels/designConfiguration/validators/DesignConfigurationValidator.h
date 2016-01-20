@@ -58,7 +58,7 @@ public:
     /*!
      *  Check if the design configuration vlnv is valid.
      *
-     *      @param [in] designConfiguration     The selected component.
+     *      @param [in] designConfiguration     The selected design configuration.
      *
      *      @return True, if the vlnv is valid, otherwise false.
      */
@@ -67,7 +67,7 @@ public:
     /*!
      *  Check if the design reference is valid.
      *
-     *      @param [in] designConfiguration     The selected component.
+     *      @param [in] designConfiguration     The selected design configuration.
      *
      *      @return True, if the design reference is valid, otherwise false.
      */
@@ -76,7 +76,7 @@ public:
     /*!
      *  Check if the generator chain configurations are valid.
      *
-     *      @param [in] designConfiguration     The selected component.
+     *      @param [in] designConfiguration     The selected design configuration.
      *
      *      @return True, if the generator chain configurations are valid, otherwise false.
      */
@@ -85,7 +85,7 @@ public:
     /*!
      *  Check if the interconnection configurations are valid.
      *
-     *      @param [in] designConfiguration     The selected component.
+     *      @param [in] designConfiguration     The selected design configuration.
      *
      *      @return True, if the interconnection configurations are valid, otherwise false.
      */
@@ -94,7 +94,7 @@ public:
     /*!
      *  Check if the view configurations are valid.
      *
-     *      @param [in] designConfiguration     The selected component.
+     *      @param [in] designConfiguration     The selected design configuration.
      *
      *      @return True, if the view configurations are valid, otherwise false.
      */
@@ -103,7 +103,7 @@ public:
     /*!
      *  Check if the parameters are valid.
      *
-     *      @param [in] designConfiguration     The selected component.
+     *      @param [in] designConfiguration     The selected design configuration.
      *
      *      @return True, if the parameters are valid, otherwise false.
      */
@@ -112,7 +112,7 @@ public:
     /*!
      *  Check if the assertions are valid.
      *
-     *      @param [in] designConfiguration     The selected component.
+     *      @param [in] designConfiguration     The selected design configuration.
      *
      *      @return True, if the assertions are valid, otherwise false.
      */
