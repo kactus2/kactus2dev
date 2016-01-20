@@ -282,9 +282,10 @@ void MemoryMapBaseValidator::findErrorsInOverlappingBlocks(QVector<QString>& err
     QSharedPointer<MemoryMapBase> memoryMapBase, QSharedPointer<AddressBlock> addressBlock, int blockIndex,
     QString const& context) const
 {
-    for (int i = blockIndex; i < memoryMapBase->getMemoryBlocks()->size(); ++i)
+    for (int comparisonIndex = blockIndex + 1; comparisonIndex < memoryMapBase->getMemoryBlocks()->size();
+        ++comparisonIndex)
     {
-        QSharedPointer<MemoryBlockBase> blockData = memoryMapBase->getMemoryBlocks()->at(i);
+        QSharedPointer<MemoryBlockBase> blockData = memoryMapBase->getMemoryBlocks()->at(comparisonIndex);
         QSharedPointer<AddressBlock> comparisonBlock = blockData.dynamicCast<AddressBlock>();
         if (comparisonBlock)
         {
