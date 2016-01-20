@@ -16,6 +16,10 @@
 
 #include <IPXACTmodels/Component/validators/ComponentValidator.h>
 
+#include <IPXACTmodels/Design/validator/DesignValidator.h>
+
+#include <IPXACTmodels/designConfiguration/validators/DesignConfigurationValidator.h>
+
 #include <QObject>
 #include <QList>
 #include <QMap>
@@ -200,10 +204,27 @@ private:
     /*!
      *  Finds any errors within a given component.
      *
-     *      @param [in] component   The given component.
+     *      @param [in] component   The selected component.
      *      @param [in] errorList   The list of errors.
      */
     void findErrorsInComponent(QSharedPointer<Component> component, QVector<QString>& errorList);
+
+    /*!
+     *  Finds any errors within a given design.
+     *
+     *      @param [in] design      The selected design.
+     *      @param [in] errorList   The list of errors.
+     */
+    void findErrorsInDesign(QSharedPointer<Design> design, QVector<QString>& errorList);
+
+    /*!
+     *  Finds any errors within a given design configuration.
+     *
+     *      @param [in] configuration   The selected design configuration.
+     *      @param [in] errorList       The list of errors.
+     */
+    void findErrorsInDesignConfiguration(QSharedPointer<DesignConfiguration> configuration,
+        QVector<QString>& errorList);
 
     /*! Check the validity of VLNV references within a document.
 	 *
@@ -325,6 +346,12 @@ private:
 
      //! The used component validator.
      ComponentValidator componentValidator_;
+
+     //! The used design validator.
+     DesignValidator designValidator_;
+
+     //! The used design configuration validator.
+     DesignConfigurationValidator designConfigurationValidator_;
 };
 
 #endif // LIBRARYDATA_H

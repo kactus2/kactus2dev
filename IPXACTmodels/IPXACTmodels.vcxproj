@@ -306,6 +306,9 @@
     <ClCompile Include="designConfiguration\InterconnectionConfiguration.cpp" />
     <ClCompile Include="designConfiguration\InterfaceRef.cpp" />
     <ClCompile Include="designConfiguration\MultipleAbstractorInstances.cpp" />
+    <ClCompile Include="designConfiguration\validators\DesignConfigurationValidator.cpp" />
+    <ClCompile Include="designConfiguration\validators\InterconnectionConfigurationValidator.cpp" />
+    <ClCompile Include="designConfiguration\validators\ViewConfigurationValidator.cpp" />
     <ClCompile Include="designConfiguration\ViewConfiguration.cpp" />
     <ClCompile Include="Design\ActiveInterface.cpp" />
     <ClCompile Include="Design\AdHocConnection.cpp" />
@@ -320,6 +323,10 @@
     <ClCompile Include="Design\MonitorInterconnection.cpp" />
     <ClCompile Include="Design\MonitorInterface.cpp" />
     <ClCompile Include="Design\PortReference.cpp" />
+    <ClCompile Include="Design\validator\AdHocConnectionValidator.cpp" />
+    <ClCompile Include="Design\validator\ComponentInstanceValidator.cpp" />
+    <ClCompile Include="Design\validator\DesignValidator.cpp" />
+    <ClCompile Include="Design\validator\InterconnectionValidator.cpp" />
     <ClCompile Include="generaldeclarations.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_AbstractionDefinitionReader.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -2102,6 +2109,13 @@
     <ClInclude Include="Component\Wire.h" />
     <ClInclude Include="Component\WireTypeDef.h" />
     <ClInclude Include="Component\WriteValueConstraint.h" />
+    <ClInclude Include="designConfiguration\validators\DesignConfigurationValidator.h" />
+    <ClInclude Include="designConfiguration\validators\InterconnectionConfigurationValidator.h" />
+    <ClInclude Include="designConfiguration\validators\ViewConfigurationValidator.h" />
+    <ClInclude Include="Design\validator\AdHocConnectionValidator.h" />
+    <ClInclude Include="Design\validator\ComponentInstanceValidator.h" />
+    <ClInclude Include="Design\validator\DesignValidator.h" />
+    <ClInclude Include="Design\validator\InterconnectionValidator.h" />
     <ClInclude Include="kactusExtensions\ApiDefinition.h" />
     <CustomBuild Include="kactusExtensions\ApiDefinitionWriter.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>

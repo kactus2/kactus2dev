@@ -85,6 +85,7 @@ HEADERS += ./XmlUtils.h \
     ./common/ParameterWriter.h \
     ./common/ProtocolReader.h \
     ./common/ProtocolWriter.h \
+    ./common/validators/AssertionValidator.h \
     ./common/validators/CellSpecificationValidator.h \
     ./common/validators/ParameterValidator2014.h \
     ./common/validators/ProtocolValidator.h \
@@ -215,6 +216,8 @@ HEADERS += ./XmlUtils.h \
     ./Component/validators/BuildCommandValidator.h \
     ./Component/validators/ChannelValidator.h \
     ./Component/validators/ChoiceValidator.h \
+    ./Component/validators/ComponentGeneratorValidator.h \
+    ./Component/validators/ComponentValidator.h \
     ./Component/validators/CPUValidator.h \
     ./Component/validators/EnumeratedValueValidator.h \
     ./Component/validators/FieldValidator.h \
@@ -230,9 +233,13 @@ HEADERS += ./XmlUtils.h \
     ./Component/validators/MemoryReserve.h \
     ./Component/validators/RegisterValidator.h \
     ./Component/validators/ViewValidator.h \
-    ./Component/validators/ComponentValidator.h \
-    ./Component/validators/ComponentGeneratorValidator.h \
-    ./common/validators/AssertionValidator.h
+    ./designConfiguration/validators/InterconnectionConfigurationValidator.h \
+    ./designConfiguration/validators/ViewConfigurationValidator.h \
+    ./designConfiguration/validators/DesignConfigurationValidator.h \
+    ./Design/validator/AdHocConnectionValidator.h \
+    ./Design/validator/ComponentInstanceValidator.h \
+    ./Design/validator/InterconnectionValidator.h \
+    ./Design/validator/DesignValidator.h
 SOURCES += ./generaldeclarations.cpp \
     ./XmlUtils.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
@@ -309,6 +316,7 @@ SOURCES += ./generaldeclarations.cpp \
     ./common/TransactionalTypes.cpp \
     ./common/Vector.cpp \
     ./common/VLNV.cpp \
+    ./common/validators/AssertionValidator.cpp \
     ./common/validators/CellSpecificationValidator.cpp \
     ./common/validators/ParameterValidator2014.cpp \
     ./common/validators/ProtocolValidator.cpp \
@@ -439,6 +447,8 @@ SOURCES += ./generaldeclarations.cpp \
     ./Component/validators/BusInterfaceValidator.cpp \
     ./Component/validators/ChannelValidator.cpp \
     ./Component/validators/ChoiceValidator.cpp \
+    ./Component/validators/ComponentGeneratorValidator.cpp \
+    ./Component/validators/ComponentValidator.cpp \
     ./Component/validators/CPUValidator.cpp \
     ./Component/validators/EnumeratedValueValidator.cpp \
     ./Component/validators/FieldValidator.cpp \
@@ -454,6 +464,10 @@ SOURCES += ./generaldeclarations.cpp \
     ./Component/validators/MemoryReserve.cpp \
     ./Component/validators/RegisterValidator.cpp \
     ./Component/validators/ViewValidator.cpp \
-    ./Component/validators/ComponentGeneratorValidator.cpp \
-    ./Component/validators/ComponentValidator.cpp \
-    ./common/validators/AssertionValidator.cpp
+    ./designConfiguration/validators/InterconnectionConfigurationValidator.cpp \
+    ./designConfiguration/validators/ViewConfigurationValidator.cpp \
+    ./designConfiguration/validators/DesignConfigurationValidator.cpp \
+    ./Design/validator/AdHocConnectionValidator.cpp \
+    ./Design/validator/ComponentInstanceValidator.cpp \
+    ./Design/validator/DesignValidator.cpp \
+    ./Design/validator/InterconnectionValidator.cpp

@@ -37,7 +37,6 @@
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/ComponentReader.h>
-#include <IPXACTmodels/Component/validators/ComponentValidator.h>
 
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/generaldeclarations.h>
@@ -80,7 +79,9 @@ vlnvErrors_(0),
 fileErrors_(0),
 fileCount_(0),
 urlTester_(new QRegExpValidator(Utils::URL_VALIDITY_REG_EXP, this)),
-componentValidator_(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()), handler_)
+componentValidator_(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()), handler_),
+designValidator_(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()), handler_),
+designConfigurationValidator_(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()), handler_)
 {
 	connect(this, SIGNAL(errorMessage(QString const&)),
         parent, SIGNAL(errorMessage(QString const&)), Qt::UniqueConnection);
@@ -576,6 +577,20 @@ bool LibraryData::validateDocument(QSharedPointer<Document> document)
             return false;
         }
     }
+    else if (getType(documentVLNV) == VLNV::DESIGN)
+    {
+        if (!designValidator_.validate(document.dynamicCast<Design>()))
+        {
+            return false;
+        }
+    }
+    else if (getType(documentVLNV) == VLNV::DESIGNCONFIGURATION)
+    {
+        if (!designConfigurationValidator_.validate(document.dynamicCast<DesignConfiguration>()))
+        {
+            return false;
+        }
+    }
 
     return validateDependentVLNVReferencences(document) &&
         validateDependentDirectories(document, documentPath) &&
@@ -609,6 +624,14 @@ QVector<QString> LibraryData::findErrorsInDocument(QSharedPointer<Document> docu
     else if (getType(document->getVlnv()) == VLNV::COMPONENT)
     {
         findErrorsInComponent(document.dynamicCast<Component>(), errorList);
+    }
+    else if (getType(document->getVlnv()) == VLNV::DESIGN)
+    {
+        findErrorsInDesign(document.dynamicCast<Design>(), errorList);
+    }
+    else if (getType(document->getVlnv()) == VLNV::DESIGNCONFIGURATION)
+    {
+        findErrorsInDesignConfiguration(document.dynamicCast<DesignConfiguration>(), errorList);
     }
 
     findErrorsInDependentVLNVReferencences(document, errorList);
@@ -674,6 +697,41 @@ void LibraryData::findErrorsInComponent(QSharedPointer<Component> component, QVe
     {
         errors_ += errorsInComponent;
         syntaxErrors_ += errorsInComponent;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: librarydata::findErrorsInDesign()
+//-----------------------------------------------------------------------------
+void LibraryData::findErrorsInDesign(QSharedPointer<Design> design, QVector<QString>& errorList)
+{
+    int errorsBeforeValidation = errorList.size();
+
+    designValidator_.findErrorsIn(errorList, design);
+
+    int errorsInDesign = errorList.size() - errorsBeforeValidation;
+    if (errorsInDesign != 0)
+    {
+        errors_ += errorsInDesign;
+        syntaxErrors_ += errorsInDesign;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: librarydata::findErrorsInDesignConfiguration()
+//-----------------------------------------------------------------------------
+void LibraryData::findErrorsInDesignConfiguration(QSharedPointer<DesignConfiguration> configuration,
+    QVector<QString>& errorList)
+{
+    int errorsBeforeValidation = errorList.size();
+
+    designConfigurationValidator_.findErrorsIn(errorList, configuration);
+
+    int errorsInDesignConfiguration = errorList.size() - errorsBeforeValidation;
+    if (errorsInDesignConfiguration != 0)
+    {
+        errors_ += errorsInDesignConfiguration;
+        syntaxErrors_ += errorsInDesignConfiguration;
     }
 }
 

@@ -105,6 +105,18 @@
     <Filter Include="Source Files\AbstractionDefinition\validators">
       <UniqueIdentifier>{95fa34c7-584f-4e11-97ce-905ebabfe1f4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\designConfiguration\validators">
+      <UniqueIdentifier>{069e3eba-3a4e-4c79-afa5-f6963520eef9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\designConfiguration\validators">
+      <UniqueIdentifier>{b997b8ac-3800-4bf7-b01f-9f96768da459}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Design\validators">
+      <UniqueIdentifier>{4adde65a-aa38-44fb-ba47-3725121b1fe2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Design\validators">
+      <UniqueIdentifier>{7167ec92-b7f3-470a-a7cd-7a154a9c3035}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="validators\namevalidator.cpp">
@@ -1214,6 +1226,27 @@
     <ClCompile Include="common\validators\AssertionValidator.cpp">
       <Filter>Source Files\common\validators</Filter>
     </ClCompile>
+    <ClCompile Include="designConfiguration\validators\InterconnectionConfigurationValidator.cpp">
+      <Filter>Source Files\designConfiguration\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="designConfiguration\validators\ViewConfigurationValidator.cpp">
+      <Filter>Source Files\designConfiguration\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="designConfiguration\validators\DesignConfigurationValidator.cpp">
+      <Filter>Source Files\designConfiguration\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="Design\validator\AdHocConnectionValidator.cpp">
+      <Filter>Source Files\Design\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="Design\validator\ComponentInstanceValidator.cpp">
+      <Filter>Source Files\Design\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="Design\validator\DesignValidator.cpp">
+      <Filter>Source Files\Design\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="Design\validator\InterconnectionValidator.cpp">
+      <Filter>Source Files\Design\validators</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BusDefinition\BusDefinition.h">
@@ -1680,6 +1713,27 @@
     </ClInclude>
     <ClInclude Include="common\validators\AssertionValidator.h">
       <Filter>Header Files\common\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="designConfiguration\validators\InterconnectionConfigurationValidator.h">
+      <Filter>Header Files\designConfiguration\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="designConfiguration\validators\ViewConfigurationValidator.h">
+      <Filter>Header Files\designConfiguration\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="designConfiguration\validators\DesignConfigurationValidator.h">
+      <Filter>Header Files\designConfiguration\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Design\validator\AdHocConnectionValidator.h">
+      <Filter>Header Files\Design\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Design\validator\ComponentInstanceValidator.h">
+      <Filter>Header Files\Design\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Design\validator\InterconnectionValidator.h">
+      <Filter>Header Files\Design\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Design\validator\DesignValidator.h">
+      <Filter>Header Files\Design\validators</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
