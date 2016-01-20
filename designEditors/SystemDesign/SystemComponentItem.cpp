@@ -24,13 +24,10 @@
 // Function: SystemComponentItem()
 //-----------------------------------------------------------------------------
 SystemComponentItem::SystemComponentItem(QRectF const& size, LibraryInterface* libInterface,
-                                         QSharedPointer<Component> component, QString const& instanceName,
-                                         QString const& displayName, QString const& description,
-                                         QString const& uuid,
-                                         QMap<QString, QString> const& configurableElementValues,
-                                         QGraphicsItem *parent):
-ComponentItem(size, libInterface, component, instanceName, displayName, description, uuid,
-    configurableElementValues, parent),
+                                         QSharedPointer<ComponentInstance> instance,
+										 QSharedPointer<Component> component,
+										 QGraphicsItem *parent):
+ComponentItem(QRectF(), libInterface, instance, component, parent),
 imported_(false),
 importRef_(),
 portLayout_(new VCollisionLayout<SWPortItem>(SPACING)),

@@ -19,6 +19,7 @@
 #include <QSharedPointer>
 
 class Component;
+class SWInstance;
 class Design;
 class LibraryInterface;
 class IGraphicsItemStack;
@@ -97,26 +98,12 @@ public:
     //-----------------------------------------------------------------------------
     struct ComponentInstanceCopyData
     {
-        QSharedPointer<Component> component;            //!< The referenced component.
-        QString instanceName;                           //!< The instance name.
-        QString displayName;                            //!< The display name.
-        QString description;                            //!< The description of the instance.
-        QPointF pos;                                    //!< Original position of the instance.
-        QMap<QString, QString> propertyValues;          //!< Property values.
-        QString fileSetRef;                             //!< File set reference.
-        QMap<QString, QPointF> apiInterfacePositions;   //!< API interface positions.
-        QMap<QString, QPointF> comInterfacePositions;   //!< COM interface positions.
-        bool isDraft;                                   //!< Identifier for draft component instances.
+		QSharedPointer<Component> component;            //!< The referenced component.
+		QSharedPointer<SWInstance> joq;		//!< The instance.
 
         ComponentInstanceCopyData()
-            : component(),
-              instanceName(),
-              displayName(),
-              description(),
-              propertyValues(),
-              fileSetRef(),
-              apiInterfacePositions(),
-              comInterfacePositions()
+			: component(),
+			joq()
         {
         }
     };
@@ -238,6 +225,8 @@ protected:
 
     //! Called when an object is dropped to the diagram.
     void dropEvent(QGraphicsSceneDragDropEvent* event);
+
+	QSharedPointer<SWInstance> createSWInstance(QSharedPointer<Component> comp);
 
     //! Updates the dropAction and highlight according to underlying element.
     virtual void updateDropAction(QGraphicsSceneDragDropEvent* event);

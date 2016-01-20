@@ -830,12 +830,12 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
             }
             
             if (stack != 0)
-            {
+			{
+				// Create the diagram component.
+				QSharedPointer<SWInstance> swInstance = createSWInstance(comp);
+
                 // Create the SW component item.
-                SWComponentItem* item = new SWComponentItem(getLibraryInterface(), comp,
-                                                            instanceName, QString(), QString(),
-                                                            QUuid::createUuid().toString(),
-                                                            QMap<QString, QString>());
+                SWComponentItem* item = new SWComponentItem(getLibraryInterface(), comp, swInstance);
                 
                 item->setPos(stack->mapStackFromScene(snapPointToGrid(event->scenePos())));
                 connect(item, SIGNAL(openCSource(ComponentItem*)), this, SIGNAL(openCSource(ComponentItem*)));
@@ -872,9 +872,11 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
                 return;
             }
 
-            // Create the SW component item.
-            SWComponentItem* newCompItem = new SWComponentItem(getLibraryInterface(), comp, instanceName,
-                QString(), QString(), QUuid::createUuid().toString(), QMap<QString, QString>());
+			// Create the diagram component.
+			QSharedPointer<SWInstance> swInstance = createSWInstance(comp);
+
+			// Create the SW component item.
+			SWComponentItem* newCompItem = new SWComponentItem(getLibraryInterface(), comp, swInstance);
 
             // Perform the replacement.
             QSharedPointer<ReplaceSystemComponentCommand>
@@ -1024,6 +1026,22 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
         IGraphicsItemStack* column = getLayout()->findColumnAt(snapPointToGrid(event->scenePos()));
         importDesign(design, column, event->scenePos());
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::createSWInstance()
+//-----------------------------------------------------------------------------
+QSharedPointer<SWInstance> SystemDesignDiagram::createSWInstance(QSharedPointer<Component> comp)
+{
+	QSharedPointer<SWInstance> swInstance(new SWInstance());
+	QString instanceName = createInstanceName(comp->getVlnv().getName());
+	swInstance->setInstanceName(instanceName);
+
+	QList<QSharedPointer<SWInstance> > swInstanceList = getDesign()->getSWInstances();
+	swInstanceList.append(swInstance);
+	getDesign()->setSWInstances(swInstanceList);
+
+	return swInstance;
 }
 
 //-----------------------------------------------------------------------------
@@ -1419,9 +1437,7 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
             component->setImplementation(KactusAttribute::HW);
         }
 
-        HWMappingItem* item = new HWMappingItem(getLibraryInterface(), component, instance->getInstanceName(),
-            instance->getDisplayName(), instance->getDescription(),
-            instance->getUuid(), QMap<QString, QString>()); //instance->getConfigurableElementValues());
+        HWMappingItem* item = new HWMappingItem(getLibraryInterface(), component, instance); //instance->getConfigurableElementValues());
         item->setImported(instance->isImported());
         item->setImportRef(instance->getImportRef());
         item->setPropertyValues(instance->getPropertyValues());
@@ -1528,8 +1544,7 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
             component->setImplementation(KactusAttribute::SW);
         }
 
-        SWComponentItem* item = new SWComponentItem(getLibraryInterface(), component, instance->getInstanceName(),
-            instance->getDisplayName(), instance->getDescription());
+        SWComponentItem* item = new SWComponentItem(getLibraryInterface(), component, instance);
         connect(item, SIGNAL(openCSource(ComponentItem*)), this, SIGNAL(openCSource(ComponentItem*)));
         connect(item, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
 
@@ -2118,8 +2133,7 @@ void SystemDesignDiagram::importDesign(QSharedPointer<Design> design, IGraphicsI
 
         nameMappings.insert(instance->getInstanceName(), instanceName);
 
-        SWComponentItem* item = new SWComponentItem(getLibraryInterface(), component, instanceName,
-                                                    instance->getDisplayName(), instance->getDescription());
+        SWComponentItem* item = new SWComponentItem(getLibraryInterface(), component, instance);
         item->setImported(instance->isImported());
         item->setImportRef(instance->getImportRef());
         item->setPos(stack->mapStackFromScene(guidePos));
@@ -2420,8 +2434,17 @@ void SystemDesignDiagram::draftAt(QPointF const& clickedPosition)
                 comp->setVlnv(VLNV());
                 comp->setImplementation(KactusAttribute::SW);
 
+				// Create the corresponding diagram component.
+				QSharedPointer<SWInstance> swInstance(new SWInstance());
+				swInstance->setInstanceName(name);
+
+				// Add to the design.
+				QList<QSharedPointer<SWInstance> > swInstanceList = getDesign()->getSWInstances();
+				swInstanceList.append(swInstance);
+				getDesign()->setSWInstances(swInstanceList);
+
                 // Create the corresponding SW component item.
-                SWComponentItem* swCompItem = new SWComponentItem(getLibraryInterface(), comp, name);
+                SWComponentItem* swCompItem = new SWComponentItem(getLibraryInterface(), comp, swInstance);
                 swCompItem->setDraft();
                 swCompItem->setPos(snapPointToGrid(clickedPosition));
 
@@ -2494,15 +2517,15 @@ void SystemDesignDiagram::copySWInstances(QList<QGraphicsItem*> const& items,
             // original model.
             instance.component = QSharedPointer<Component>(new Component(*comp->componentModel()));
 
-            instance.instanceName = comp->name();
-            instance.displayName = comp->displayName();
-            instance.description = comp->description();
-            instance.pos = comp->pos();
-            instance.propertyValues = comp->getPropertyValues();
-            instance.fileSetRef = comp->getFileSetRef();
-            instance.apiInterfacePositions = comp->getApiInterfacePositions();
-            instance.comInterfacePositions = comp->getComInterfacePositions();
-            instance.isDraft = comp->isDraft();
+            instance.joq->setInstanceName( comp->name() );
+            instance.joq->setDisplayName( comp->displayName() );
+            instance.joq->setDescription( comp->description() );
+            instance.joq->setPosition( comp->pos() );
+            instance.joq->setPropertyValues( comp->getPropertyValues() );
+			instance.joq->setFileSetRef( comp->getFileSetRef() );
+			instance.joq->setDraft( comp->isDraft() );
+            //instance.joq->updatePositionsMap( comp->getApiInterfacePositions() );
+            //instance.joq->comInterfacePositions( comp->getComInterfacePositions() );
         }
     }
 }
@@ -2516,7 +2539,7 @@ void SystemDesignDiagram::pasteSWInstances(ComponentCollectionCopyData const& co
     foreach (ComponentInstanceCopyData const& instance, collection.instances)
     {
         // Create unique name for the component instance.
-        QString instanceName = createInstanceName(instance.instanceName);
+        QString instanceName = createInstanceName(instance.joq->getInstanceName());
 
         // Take a copy of the component in case of a draft.
         QSharedPointer<Component> component = instance.component;
@@ -2528,9 +2551,7 @@ void SystemDesignDiagram::pasteSWInstances(ComponentCollectionCopyData const& co
 
         SWComponentItem* comp = new SWComponentItem(getLibraryInterface(),
                                                     component,
-                                                    instanceName,
-                                                    instance.displayName,
-                                                    instance.description);
+                                                    instance.joq);
 
         if (useCursorPos)
         {
@@ -2538,13 +2559,13 @@ void SystemDesignDiagram::pasteSWInstances(ComponentCollectionCopyData const& co
         }
         else
         {
-            comp->setPos(instance.pos);
+            comp->setPos(instance.joq->getPosition());
         }
 
-        comp->setApiInterfacePositions(instance.apiInterfacePositions, false);
-        comp->setComInterfacePositions(instance.comInterfacePositions, false);
+        //comp->setApiInterfacePositions(instance.apiInterfacePositions, false);
+        //comp->setComInterfacePositions(instance.comInterfacePositions, false);
 
-        if (instance.isDraft)
+        if (instance.joq->isDraft())
         {
             comp->setDraft();
         }

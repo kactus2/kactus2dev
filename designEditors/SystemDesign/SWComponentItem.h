@@ -18,6 +18,8 @@
 
 class IGraphicsItemStack;
 class HWMappingItem;
+class SWInstance;
+class Component;
 
 //-----------------------------------------------------------------------------
 //! Graphics item for visualizing SW components.
@@ -40,13 +42,8 @@ public:
      *      @param [in] uuid                        The instance id.
      *      @param [in] configurableElementValues   The configurable element values.
      */
-    SWComponentItem(LibraryInterface* libInterface,
-               QSharedPointer<Component> component,
-               QString const& instanceName,
-               QString const& displayName = QString(),
-               QString const& description = QString(),
-               QString const& uuid = QString(),
-               QMap<QString, QString> const& configurableElementValues = QMap<QString, QString>());
+	SWComponentItem(LibraryInterface* libInterface, QSharedPointer<Component> component,
+		QSharedPointer<SWInstance> instance);
 
     /*!
      *  Destructor.

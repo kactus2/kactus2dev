@@ -39,13 +39,8 @@ public:
      *      @param [in] uuid                        The instance id.
      *      @param [in] configurableElementValues   The configurable element values.
      */
-    HWMappingItem(LibraryInterface* libInterface,
-                  QSharedPointer<Component> component,
-                  QString const& instanceName,
-                  QString const& displayName = QString(),
-                  QString const& description = QString(),
-                  QString const& uuid = QString(),
-                  QMap<QString, QString> const& configurableElementValues = QMap<QString, QString>());
+	HWMappingItem(LibraryInterface* libInterface, QSharedPointer<Component> component,
+		QSharedPointer<ComponentInstance> instance);
 
     /*!
      *  Destructor.

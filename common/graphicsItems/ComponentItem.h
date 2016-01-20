@@ -45,15 +45,6 @@ public:
      *      @param [in] configurableElementValue  The component instance's configurable element values.
      *      @param [in] parent                    The parent graphics item.
      */
-    ComponentItem(QRectF const& size,
-                  LibraryInterface* libInterface,
-                  QSharedPointer<Component> component,
-                  QString const& instanceName = QString("instance"),
-                  QString const& displayName = QString(),
-                  QString const& description = QString(),
-                  QString const& uuid = QString(),
-                  QMap<QString, QString> const& configurableElementValues = QMap<QString, QString>(),
-                  QGraphicsItem *parent = 0);
 
 
     ComponentItem(QRectF const& size,

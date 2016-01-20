@@ -29,35 +29,6 @@
 // Function: ComponentItem::ComponentItem()
 //-----------------------------------------------------------------------------
 ComponentItem::ComponentItem(QRectF const& size, LibraryInterface* libInterface,
-    QSharedPointer<Component> component,
-    QString const& instanceName, QString const& displayName, QString const& description,
-    QString const& uuid, QMap<QString, QString> const& configurableElementValues, QGraphicsItem *parent):
-QGraphicsRectItem(parent),
-    libInterface_(libInterface),
-    component_(component),
-    nameLabel_(new QGraphicsTextItem(instanceName, this))
-{
-    setFlag(ItemSendsGeometryChanges);
-    setFlag(ItemIsSelectable);
-
-    setRect(size);
-    setPen(QPen(Qt::black, 0));
-
-    Q_ASSERT_X(component, "ComponentItem constructor", "Null component-pointer given as parameter");
-
-    // Create the name label.
-    QFont font = nameLabel_->font();
-    font.setWeight(QFont::Bold);
-
-    nameLabel_->setFont(font);
-    nameLabel_->setTextWidth(rect().width());
-    nameLabel_->setPos(-nameLabel_->boundingRect().width()/2, GridSize);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentItem::ComponentItem()
-//-----------------------------------------------------------------------------
-ComponentItem::ComponentItem(QRectF const& size, LibraryInterface* libInterface,
     QSharedPointer<ComponentInstance> instance, QSharedPointer<Component> component,
     QGraphicsItem* parent) : 
 QGraphicsRectItem(parent),
