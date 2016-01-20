@@ -38,7 +38,7 @@ void ApiDefinitionWriter::writeApiDefinition(QXmlStreamWriter& writer, QSharedPo
     
     writeTopComments(writer, apiDefinition);
 	
-    writer.writeStartElement("ipxact:apiDefinition");
+    writer.writeStartElement("kactus2:apiDefinition");
     writeNamespaceDeclarations(writer);
 
 	// Write basic information.

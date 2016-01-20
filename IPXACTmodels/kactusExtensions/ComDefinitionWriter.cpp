@@ -38,7 +38,7 @@ void ComDefinitionWriter::writeComDefinition(QXmlStreamWriter& writer, QSharedPo
     
     writeTopComments(writer, comDefinition);
 	
-    writer.writeStartElement("ipxact:comDefinition");
+    writer.writeStartElement("kactus2:comDefinition");
     writeNamespaceDeclarations(writer);
 
 	// Write basic information.
