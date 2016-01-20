@@ -291,15 +291,6 @@ void LibraryData::parseDirectory(QString const& directoryPath)
 		return;
 	}
 
-	QFileInfo dirInfo(directoryPath);
-	if (!dirInfo.exists())
-    {
-		return;
-	}
-
-	// it should always be for a directory
-	Q_ASSERT(dirInfo.isDir());
-
 	QDir dirHandler(directoryPath);
 
 	// get list of files and folders
@@ -407,7 +398,8 @@ QSharedPointer<Document> LibraryData::getModel(VLNV const& vlnv)
         ComponentReader reader;
         return reader.createComponentFrom(doc);
     }
-    else if (toCreate.getType() ==VLNV::DESIGN) {
+    else if (toCreate.getType() == VLNV::DESIGN)
+	{
         DesignReader reader;
         return reader.createDesignFrom(doc);
     }
@@ -446,7 +438,7 @@ void LibraryData::performParseLibraryStep()
 		return;
 	}
 
-	QString location = locations_.at(timerStep_);
+	QString const& location = locations_.at(timerStep_);
 	QFileInfo locationInfo(location);
 
 	if (locationInfo.isDir())
@@ -504,10 +496,7 @@ void LibraryData::performIntegrityCheckStep()
                 emit noticeMessage(tr("The following errors were found while processing item %1:").arg(
                     document->getVlnv().toString()));
 
-                foreach (QString const& error, errors)
-                {
-                    emit errorMessage(error);
-                }
+				emit errorMessage(QStringList(errors.toList()).join('\n'));
 
                 failedObjects_++;
             }
@@ -554,7 +543,8 @@ bool LibraryData::validateDocument(QSharedPointer<Document> document)
 {
     Q_ASSERT(document);
 
-    QString documentPath = getPath(document->getVlnv());
+	VLNV documentVLNV = document->getVlnv();
+	QString documentPath = getPath(documentVLNV);
 
     Q_ASSERT(!documentPath.isEmpty());
 
@@ -563,7 +553,7 @@ bool LibraryData::validateDocument(QSharedPointer<Document> document)
         return false;
     }
 
-    if (getType(document->getVlnv()) == VLNV::BUSDEFINITION)
+	if (getType(documentVLNV) == VLNV::BUSDEFINITION)
     {
         BusDefinitionValidator validator(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()));
         if (!validator.validate(document.dynamicCast<BusDefinition>()))
@@ -571,7 +561,7 @@ bool LibraryData::validateDocument(QSharedPointer<Document> document)
             return false;
         }
     }
-    else if (getType(document->getVlnv()) == VLNV::ABSTRACTIONDEFINITION)
+	else if (getType(documentVLNV) == VLNV::ABSTRACTIONDEFINITION)
     {
         AbstractionDefinitionValidator validator(handler_, QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()));
         if (!validator.validate(document.dynamicCast<AbstractionDefinition>()))
@@ -579,10 +569,9 @@ bool LibraryData::validateDocument(QSharedPointer<Document> document)
             return false;
         }
     }
-    else if (getType(document->getVlnv()) == VLNV::COMPONENT)
+	else if (getType(documentVLNV) == VLNV::COMPONENT)
     {
-        QSharedPointer<Component> component = document.dynamicCast<Component>();
-        if (!componentValidator_.validate(component))
+		if (!componentValidator_.validate(document.dynamicCast<Component>()))
         {
             return false;
         }

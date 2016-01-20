@@ -221,7 +221,7 @@ public:
 	 *
 	 *      @return Pointer to this component's model information.
 	 */
-	QSharedPointer<Model> getModel();
+	QSharedPointer<Model> getModel() const;
 
 	/*!
      *  Set this component's model information.

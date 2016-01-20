@@ -57,15 +57,14 @@ void MessageConsole::onErrorMessage( const QString& message )
 
 	moveCursor(QTextCursor::End);
 
-	QString errorText(tr("Error: "));
-
 	// errors are printed in red color
 	setTextColor(QColor("red"));
-	insertPlainText(errorText + message);
+	//insertPlainText(tr("Error: "));
+    insertPlainText(message);
 
 	// add endline and set cursor to the end of the text
 	insertPlainText("\n");
-	moveCursor(QTextCursor::End);
+	//moveCursor(QTextCursor::End);
 }
 
 //-----------------------------------------------------------------------------
@@ -73,7 +72,8 @@ void MessageConsole::onErrorMessage( const QString& message )
 //-----------------------------------------------------------------------------
 void MessageConsole::onNoticeMessage( const QString& message )
 {
-	if (message.isEmpty()) {
+	if (message.isEmpty())
+    {
 		return;
 	}
 
@@ -85,43 +85,7 @@ void MessageConsole::onNoticeMessage( const QString& message )
 
 	// add endline and set cursor to the end of the text
 	insertPlainText("\n");
-	moveCursor(QTextCursor::End);
-}
-
-//-----------------------------------------------------------------------------
-// Function: MessageConsole::printLog()
-//-----------------------------------------------------------------------------
-void MessageConsole::printLog(const QString& path /*= QString()*/ )
-{
-	QString filePath = path;
-
-	// if path was not defined then print log to the same location as the 
-	// executable
-	if (path.isEmpty())
-    {
-		filePath = QCoreApplication::applicationDirPath();
-		filePath += QString("/");
-		filePath += QCoreApplication::applicationName();
-		filePath += QString("_log.txt");
-	}
-
-	QFile logFile(filePath);
-
-	// if the file can not be opened for writing
-	if (!logFile.open(QFile::WriteOnly | QFile::Append))
-    {
-		onErrorMessage(tr("Could not open log file for writing"));
-		return;
-	}
-
-	// create the text stream that writes into file
-	QTextStream logStream(&logFile);
-
-	// write the contents of the message console
-	logStream << toPlainText();
-
-	// close the file
-	logFile.close();
+	//moveCursor(QTextCursor::End);
 }
 
 //-----------------------------------------------------------------------------

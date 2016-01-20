@@ -138,23 +138,23 @@ bool PortValidator::arrayValueIsValid(QString const& arrayValue) const
 //-----------------------------------------------------------------------------
 bool PortValidator::hasValidWire(QSharedPointer<Port> port) const
 {
-    if ( port->getWire() )
-    {
-        QSharedPointer<Wire> wire = port->getWire();
+    QSharedPointer<Wire> wire = port->getWire();
 
+    if (wire)
+    {
         // Bounds must be valid if defined.
-        if (!portBoundIsValid(port->getLeftBound()) || !portBoundIsValid(port->getRightBound()) ||
+        if (!portBoundIsValid(wire->getVectorLeftBound()) || !portBoundIsValid(wire->getVectorRightBound()) ||
             !wireHasValidDirection(wire))
         {
             return false;
         }
 
         // Any view reference must point to an existing view.
-        foreach ( QSharedPointer<WireTypeDef> typeDef, *wire->getWireTypeDefs() )
+        foreach (QSharedPointer<WireTypeDef> typeDef, *wire->getWireTypeDefs())
         {
-            foreach ( QString viewRef, typeDef->getViewRefs() )
+            foreach (QString const& viewRef, typeDef->getViewRefs())
             {
-                if ( !referencedViewExists(viewRef) )
+                if (!referencedViewExists(viewRef))
                 {
                     return false;
                 }
@@ -180,8 +180,7 @@ bool PortValidator::portBoundIsValid(QString const& portBound) const
 {
     if (!portBound.isEmpty())
     {
-        bool valueIsOk = expressionParser_->isValidExpression(portBound);
-        if (valueIsOk)
+        if (expressionParser_->isValidExpression(portBound))
         {
             int valueInt = expressionParser_->parseExpression(portBound).toInt();
             return valueInt >= 0;
@@ -196,9 +195,9 @@ bool PortValidator::portBoundIsValid(QString const& portBound) const
 //-----------------------------------------------------------------------------
 bool PortValidator::referencedViewExists(QString const& viewRef) const
 {
-    foreach ( QSharedPointer<View> view, *availableViews_ )
+    foreach (QSharedPointer<View> view, *availableViews_)
     {
-        if ( view->name() == viewRef )
+        if (view->name() == viewRef)
         {
             return true;
         }
@@ -212,12 +211,12 @@ bool PortValidator::referencedViewExists(QString const& viewRef) const
 //-----------------------------------------------------------------------------
 bool PortValidator::hasValidTransactionalPort(QSharedPointer<Port> port) const
 {
-    if ( port->getTransactional() )
+    if (port->getTransactional())
     {
         QSharedPointer<Transactional> trans = port->getTransactional();
 
         // There must a known initiative type.
-        if ( !TransactionalTypes::isIpXactInitiativeType( trans->getInitiative() ) )
+        if (!TransactionalTypes::isIpXactInitiativeType( trans->getInitiative()))
         {
             return false;
         }

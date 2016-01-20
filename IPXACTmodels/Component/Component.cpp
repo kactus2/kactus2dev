@@ -361,7 +361,7 @@ void Component::setMemoryMaps(QSharedPointer<QList<QSharedPointer<MemoryMap> > >
 //-----------------------------------------------------------------------------
 // Function: Component::getModel()
 //-----------------------------------------------------------------------------
-QSharedPointer<Model> Component::getModel()
+QSharedPointer<Model> Component::getModel() const
 {
     return model_;
 }

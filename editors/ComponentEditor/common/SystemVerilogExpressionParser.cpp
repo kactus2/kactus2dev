@@ -118,10 +118,10 @@ bool SystemVerilogExpressionParser::isValidExpression(QString const& expression)
     QString stringOrExpression ("\\s*(" + SystemVerilogSyntax::STRING_LITERAL + "|"
         "(" + PRIMARY_LITERAL.pattern() + "(\\s*" + NEXT_OPERAND.pattern() + ")*))\\s*");
 
-    QRegularExpression arrayExpression("('?{" + stringOrExpression + "(," + stringOrExpression + ")*})");
+    QString arrayExpression("('?{" + stringOrExpression + "(," + stringOrExpression + ")*})");
 
-    QRegularExpression validatingExp("^\\s*(" + SystemVerilogSyntax::STRING_LITERAL + "|"
-        "(" + PRIMARY_LITERAL.pattern() + "(\\s*" + NEXT_OPERAND.pattern() + ")*)|" + arrayExpression.pattern() +
+    static QRegularExpression validatingExp("^\\s*(" + SystemVerilogSyntax::STRING_LITERAL + "|"
+        "(" + PRIMARY_LITERAL.pattern() + "(\\s*" + NEXT_OPERAND.pattern() + ")*)|" + arrayExpression +
         ")\\s*$");
 
     int openParenthesisCount = expression.count('(');

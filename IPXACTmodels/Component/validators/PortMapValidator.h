@@ -20,6 +20,7 @@
 #include <QSharedPointer>
 #include <QString>
 
+class AbstractionDefinition;
 class LibraryInterface;
 class ExpressionParser;
 class ConfigurableVLNVReference;
@@ -78,29 +79,35 @@ public:
     /*!
      *  Check if the physical port is valid.
      *
-     *      @param [in] portMap     The selected port map.
+	 *      @param [in] portMap         The selected port map.
+	 *      @param [in] physicalPort    The physical port to check.
      *
      *      @return True, if the physical port is valid, otherwise false.
      */
-    bool hasValidPhysicalPort(QSharedPointer<PortMap> portMap) const;
+    bool hasValidPhysicalPort(QSharedPointer<PortMap> portMap,
+		QSharedPointer<Port> physicalPort) const;
 
     /*!
      *  Check if the connected ports have valid directions.
      *
-     *      @param [in] portMap     The selected port map.
+	 *      @param [in] logicalPort     The logical port to check.
+	 *      @param [in] physicalPort    The physical port to check.
      *
      *      @return True, if the directions are valid, otherwise false.
      */
-    bool connectedPortsHaveValidDirections(QSharedPointer<PortMap> portMap) const;
+	bool connectedPortsHaveValidDirections(QSharedPointer<PortAbstraction> logicalPort,
+		QSharedPointer<Port> physicalPort) const;
 
     /*!
      *  Check if the connected ports have valid port types.
      *
-     *      @param [in] portMap     The selected port map.
+	 *      @param [in] logicalPort     The logical port to check.
+	 *      @param [in] physicalPort    The physical port to check.
      *
      *      @return True, if the port types are valid, otherwise false.
      */
-    bool connectedPortsHaveValidPortTypes(QSharedPointer<PortMap> portMap) const;
+	bool connectedPortsHaveValidPortTypes(QSharedPointer<PortAbstraction> logicalPort,
+		QSharedPointer<Port> physicalPort) const;
 
     /*!
      *  Locate errors within a port map.
@@ -200,29 +207,37 @@ private:
      *
      *      @param [in] errors          List of found errors.
      *      @param [in] logicalPort     The selected logical port.
+	 *      @param [in] abstractPort    The abstraction for the logical port.
      *      @param [in] context         Context to help locate the error.
      */
     void findErrorsInLogicalPort(QVector<QString>& errors, QSharedPointer<PortMap::LogicalPort> logicalPort,
+		QSharedPointer<PortAbstraction> abstractPort,
         QString const& context) const;
 
     /*!
      *  Find errors within the physical port.
      *
-     *      @param [in] errors      List of found errors.
-     *      @param [in] portMap     The selected port map.
-     *      @param [in] context     Context to help locate the error.
+     *      @param [in] errors          List of found errors.
+	 *      @param [in] portMap         The selected port map.
+	 *      @param [in] physicalPort    The physical port to check.
+     *      @param [in] context         Context to help locate the error.
      */
     void findErrorsInPhysicalPort(QVector<QString>& errors, QSharedPointer<PortMap> portMap,
-        QString const& context) const;
+		QSharedPointer<Port> physicalPort, QString const& context) const;
 
     /*!
      *  Find errors within the mapping.
      *
-     *      @param [in] errors      List of found errors.
-     *      @param [in] portMap     The selected port map.
-     *      @param [in] context     Context to help locate the error.
+     *      @param [in] errors          List of found errors.
+	 *      @param [in] portMap         The selected port map.
+	 *      @param [in] logicalPort     The logical port abstraction.
+	 *      @param [in] physicalPort    The physical port to check.
+     *      @param [in] context         Context to help locate the error.
      */
-    void findErrorsInPortConnection(QVector<QString>& errors, QSharedPointer<PortMap> portMap,
+	void findErrorsInPortConnection(QVector<QString>& errors, 
+		QSharedPointer<PortMap> portMap, 
+		QSharedPointer<PortAbstraction> logicalPort,
+		QSharedPointer<Port> physicalPort,
         QString const& context) const;
 
     //-----------------------------------------------------------------------------
@@ -237,6 +252,9 @@ private:
 
     //! The used abstraction definition reference.
     QSharedPointer<ConfigurableVLNVReference> abstractionReference_;
+
+	//! The used abstraction definition.
+    QSharedPointer<AbstractionDefinition const> abstractionDefinition_;
 
     //! Interface mode of the containing bus interface.
     General::InterfaceMode interfaceMode_;
