@@ -81,7 +81,8 @@ void tst_ParameterValidator2014::testValueIsValidForGivenType()
         QVector<QString> errorList;
         validator.findErrorsIn(errorList, parameter, "test");
 
-        QString expectedError = "Value " + value + " is not valid for type " + type + " in parameter param within test";
+        QString expectedError = QObject::tr("Value '%1' is not valid for type %2 in parameter param within test")
+            .arg(value).arg(type);
         if (errorIsNotFoundInErrorlist(expectedError, errorList))
         {
             QFAIL("No error message found.");

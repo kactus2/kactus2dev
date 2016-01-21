@@ -462,7 +462,7 @@ void ParameterValidator2014::findErrorsInValue(QVector<QString>& errors, QShared
     {
         if (!hasValidValueForType(parameter))
         {
-            errors.append(QObject::tr("Value %1 is not valid for type %2 in %3 %4 within %5").arg(
+            errors.append(QObject::tr("Value '%1' is not valid for type %2 in %3 %4 within %5").arg(
                 parameter->getValue(), parameter->getType(), parameter->elementName(), 
                 parameter->name(), context));
         }
