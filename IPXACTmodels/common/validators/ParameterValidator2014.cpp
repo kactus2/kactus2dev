@@ -469,21 +469,21 @@ void ParameterValidator2014::findErrorsInValue(QVector<QString>& errors, QShared
 
         if (valueIsLessThanMinimum(parameter))
         {
-            errors.append(QObject::tr("Value %1 violates minimum value %2 in %3 %4 within %5"
+            errors.append(QObject::tr("Value '%1' violates minimum value %2 in %3 %4 within %5"
                 ).arg(parameter->getValue(), parameter->getMinimumValue(), 
                 parameter->elementName(), parameter->name(), context));
         }
 
         if (valueIsGreaterThanMaximum(parameter))
         {
-            errors.append(QObject::tr("Value %1 violates maximum value %2 in %3 %4 within %5"
+            errors.append(QObject::tr("Value '%1' violates maximum value %2 in %3 %4 within %5"
                 ).arg(parameter->getValue(), parameter->getMaximumValue(), 
                 parameter->elementName(), parameter->name(), context));
         }
 
         if (!hasValidValueForChoice(parameter))
         {           
-            errors.append(QObject::tr("Value %1 references unknown enumeration for choice "
+            errors.append(QObject::tr("Value '%1' references unknown enumeration for choice "
                 "%2 in %3 %4 within %5").arg(parameter->getValue(), parameter->getChoiceRef(), 
                 parameter->elementName(), parameter->name(), context));
         }

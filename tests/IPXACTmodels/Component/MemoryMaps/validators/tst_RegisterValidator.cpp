@@ -108,7 +108,7 @@ void tst_RegisterValidator::testNameIsValid()
         QVector<QString> foundErrors;
         validator.findErrorsIn(foundErrors, testRegister, "test");
 
-        QString expectedError = QObject::tr("Invalid name specified for %1 within %2").
+        QString expectedError = QObject::tr("Invalid name specified for register '%1' within %2").
             arg(testRegister->name(), "test");
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
         {
@@ -361,8 +361,9 @@ void tst_RegisterValidator::testRegisterAndFieldVolatileIsValid()
         QVector<QString> foundErrors;
         validator.findErrorsIn(foundErrors, testRegister, "test");
 
-        QString expectedError = QObject::tr("Volatile cannot be set to false in %1, where containing field %2 "
-            "has volatile true").arg("register " + testRegister->name()).arg(testField->name());
+        QString expectedError = QObject::tr("Volatile cannot be set to false in register %1, where contained "
+            "field %2 has volatile true")
+            .arg(testRegister->name()).arg(testField->name());
 
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
         {
@@ -381,8 +382,8 @@ void tst_RegisterValidator::testRegisterAndFieldVolatileIsValid_data()
     QTest::addColumn<bool>("isValid");
 
     QTest::newRow("Field: volatile = true in Register: volatile = true is valid") << true << true << true;
-    QTest::newRow("Field: volatile = true in Register: volatile = false is invalid") << true << false << false;
-    QTest::newRow("Field: volatile = false, register volatile is always valid") << false << true << true;
+    QTest::newRow("Field: volatile = true in Register: volatile = false is invalid") << false << true << false;
+    QTest::newRow("Field: volatile = false, register volatile is always valid") << false << false << true;
 }
 
 //-----------------------------------------------------------------------------
@@ -902,7 +903,7 @@ void tst_RegisterValidator::testAlternateRegisterIsValid()
         QString expectedError;
         if (!validator.hasValidName(testAlternateRegister))
         {
-            expectedError = QObject::tr("Invalid name specified for %1 within %2").
+            expectedError = QObject::tr("Invalid name specified for register '%1' within %2").
                 arg(testAlternateRegister->name()).arg("register " + testRegister->name());
 
             if (errorIsNotFoundInErrorList(expectedError, foundErrors))

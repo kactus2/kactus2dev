@@ -202,7 +202,7 @@ bool RegisterValidator::hasValidFields(QSharedPointer<RegisterDefinition> select
             fieldNames.append(field->name());
             fieldTypeIdentifiers.append(field->getTypeIdentifier());
 
-            if (field->getVolatile().toBool() == false && selectedRegister->getVolatile() == QLatin1String("true"))
+            if (field->getVolatile().toBool() == true && selectedRegister->getVolatile() == QLatin1String("false"))
             {
                 return false;
             }
@@ -398,7 +398,8 @@ void RegisterValidator::findErrorsInName(QVector<QString>& errors, QSharedPointe
     if (!hasValidName(selectedRegister))
     {
         errors.append(
-            QObject::tr("Invalid name specified for %1 within %2").arg(selectedRegister->name(), context));
+            QObject::tr("Invalid name specified for register '%1' within %2")
+            .arg(selectedRegister->name(), context));
     }
 }
 
@@ -506,9 +507,9 @@ void RegisterValidator::findErrorsInFields(QVector<QString>& errors,
             fieldNames.append(field->name());
             fieldTypeIdentifiers.append(field->getTypeIdentifier());
 
-            if (field->getVolatile().toBool() == false && selectedRegister->getVolatile() == "true")
+            if (field->getVolatile().toBool() == true && selectedRegister->getVolatile() == QLatin1String("false"))
             {
-                errors.append(QObject::tr("Volatile cannot be set to false in %1, where containing field %2 "
+                errors.append(QObject::tr("Volatile cannot be set to false in %1, where contained field %2 "
                     "has volatile true").arg(context).arg(field->name()));
             }
 
