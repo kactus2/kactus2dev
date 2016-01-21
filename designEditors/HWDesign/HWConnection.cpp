@@ -224,16 +224,16 @@ int HWConnection::calculateBusWidth() const
 {
     int totalWidth = 0;
 
-    foreach (QSharedPointer<PortMap> portMap1, *endpoint1()->getBusInterface()->getPortMaps())
+    /*foreach (QSharedPointer<PortMap> portMap1, *endpoint1()->getBusInterface()->getPortMaps())
     {
         // Find the port map with the same logical port name from the other end point's port map.
         QSharedPointer<PortMap> portMap2;
         foreach (QSharedPointer<PortMap> portMap, *endpoint2()->getBusInterface()->getPortMaps())
         {
-            /*if (portMap->logicalPort() == portMap1->logicalPort())
+            if (portMap->logicalPort() == portMap1->logicalPort())
             {
                 portMap2 = portMap;
-            }*/
+            }
         }
 
         if (portMap2)
@@ -249,10 +249,10 @@ int HWConnection::calculateBusWidth() const
                 portMap2.data(), port2->getLeftBound(), port2->getRightBound());
 
                 int width = qMin(align.port1Left_, align.port2Left_) - qMax(align.port1Right_, align.port2Right_) + 1;
-                totalWidth += width;*/
+                totalWidth += width;
             }
         }
-    }
+    }*/
 
     return totalWidth;
 }

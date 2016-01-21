@@ -745,13 +745,14 @@ void LibraryHandler::onShowErrors(VLNV const& vlnv)
         model->addErrors(data_->findErrorsInDocument(document, data_->getPath(vlnv)));
 
         // Show error list in a dialog.
-        TableViewDialog dialog(this);
-        dialog.setWindowTitle(tr("Errors in %1").arg(vlnv.toString()));
-        dialog.setDescription(tr("The following errors were found:"));
-        dialog.setModel(model);
-        dialog.resize(700, 240);
+        TableViewDialog* dialog = new TableViewDialog(this);
+        dialog->setWindowTitle(tr("Errors in %1").arg(vlnv.toString()));
+		dialog->setDescription(tr("The following errors were found:"));
+		dialog->setModel(model);
+		dialog->resize(700, 350);
 
-        dialog.exec();
+		dialog->show();
+		connect(dialog, SIGNAL(finished(int)), dialog, SLOT(deleteLater()));
     }
 }
 

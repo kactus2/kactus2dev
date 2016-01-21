@@ -402,7 +402,10 @@ void DesignConfigurationValidator::findErrorsInViewConfigurations(QVector<QStrin
                     instanceNames.append(viewConfiguration->getInstanceName());
                 }
 
-                viewConfigurationValidator_->changeComponentInstances(referencedDesign->getComponentInstances());
+				if (referencedDesign)
+				{
+					viewConfigurationValidator_->changeComponentInstances(referencedDesign->getComponentInstances());
+				}                
 
                 viewConfigurationValidator_->findErrorsIn(errors, viewConfiguration, context);
             }

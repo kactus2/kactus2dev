@@ -159,7 +159,7 @@ bool AdHocConnectionValidator::internalPortReferenceIsValid(QSharedPointer<PortR
 
         if (referencedInstance)
         {
-            QSharedPointer<Component> referencedComponent = getReferencedComponent(referencedInstance);
+            QSharedPointer<const Component> referencedComponent = getReferencedComponent(referencedInstance);
             if (referencedComponent)
             {
                 QSharedPointer<Port> referencedComponentPort =
@@ -200,24 +200,24 @@ QSharedPointer<ComponentInstance> AdHocConnectionValidator::getReferencedCompone
 //-----------------------------------------------------------------------------
 // Function: AdHocConnectionValidator::getReferencedComponent()
 //-----------------------------------------------------------------------------
-QSharedPointer<Component> AdHocConnectionValidator::getReferencedComponent(
+QSharedPointer<const Component> AdHocConnectionValidator::getReferencedComponent(
     QSharedPointer<ComponentInstance> referencingInstance) const
 {
     if (referencingInstance && referencingInstance->getComponentRef())
     {
-        QSharedPointer<Component> referencedComponent =
-            libraryHandler_->getModel(*referencingInstance->getComponentRef().data()).dynamicCast<Component>();
+        QSharedPointer<const Component> referencedComponent =
+            libraryHandler_->getModelReadOnly(*referencingInstance->getComponentRef()).dynamicCast<Component const>();
 
         return referencedComponent;
     }
 
-    return QSharedPointer<Component> ();
+    return QSharedPointer<const Component> ();
 }
 
 //-----------------------------------------------------------------------------
 // Function: AdHocConnectionValidator::getReferencedPort()
 //-----------------------------------------------------------------------------
-QSharedPointer<Port> AdHocConnectionValidator::getReferencedPort(QSharedPointer<Component> component,
+QSharedPointer<Port> AdHocConnectionValidator::getReferencedPort(QSharedPointer<const Component> component,
     QSharedPointer<PortReference> portReference) const
 {
     if (!portReference->getPortRef().isEmpty())
@@ -409,7 +409,7 @@ void AdHocConnectionValidator::findErrorsInInternalPortReference(QVector<QString
             .arg(internalPort->getComponentRef()).arg(innerContext).arg(context));
     }
 
-    QSharedPointer<Component> referencedComponent = getReferencedComponent(referencedInstance);
+    QSharedPointer<const Component> referencedComponent = getReferencedComponent(referencedInstance);
 
     if (internalPort->getPortRef().isEmpty())
     {

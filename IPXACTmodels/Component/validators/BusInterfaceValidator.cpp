@@ -466,8 +466,8 @@ bool BusInterfaceValidator::hasValidSystemInterface(QSharedPointer<BusInterface>
 {
     if (!systemGroup.isEmpty())
     {
-        QSharedPointer<Document> definitionDocument = libraryHandler_->getModel(busInterface->getBusType());
-        QSharedPointer<BusDefinition> busDefinition = definitionDocument.dynamicCast<BusDefinition>();
+        QSharedPointer<Document const> definitionDocument = libraryHandler_->getModelReadOnly(busInterface->getBusType());
+		QSharedPointer<BusDefinition const> busDefinition = definitionDocument.dynamicCast<BusDefinition const>();
 
         if (busDefinition)
         {
@@ -975,8 +975,8 @@ void BusInterfaceValidator::findErrorsInSystemInterface(QVector<QString>& errors
     {
         if (busInterface->getBusType().isValid())
         {
-            QSharedPointer<Document> definitionDocument = libraryHandler_->getModel(busInterface->getBusType());
-            QSharedPointer<BusDefinition> busDefinition = definitionDocument.dynamicCast<BusDefinition>();
+			QSharedPointer<Document const> definitionDocument = libraryHandler_->getModelReadOnly(busInterface->getBusType());
+			QSharedPointer<BusDefinition const> busDefinition = definitionDocument.dynamicCast<BusDefinition const>();
 
             if (busDefinition && !busDefinition->getSystemGroupNames().contains(systemGroup))
             {

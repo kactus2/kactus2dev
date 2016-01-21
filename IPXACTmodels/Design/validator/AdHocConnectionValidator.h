@@ -142,7 +142,7 @@ private:
      *
      *      @return The referenced component instance, or a null pointer if the component is not found.
      */
-    QSharedPointer<Component> getReferencedComponent(QSharedPointer<ComponentInstance> referencingInstance) const;
+    QSharedPointer<const Component> getReferencedComponent(QSharedPointer<ComponentInstance> referencingInstance) const;
 
     /*!
      *  Get the port referenced by the port reference.
@@ -152,7 +152,7 @@ private:
      *
      *      @return The referenced port, or a null pointer if the port is not found.
      */
-    QSharedPointer<Port> getReferencedPort(QSharedPointer<Component> component,
+    QSharedPointer<Port> getReferencedPort(QSharedPointer<const Component> component,
         QSharedPointer<PortReference> portReference) const;
 
     /*!

@@ -191,7 +191,7 @@ private:
      *
      *      @return The referenced component.
      */
-    QSharedPointer<Component> getReferencedComponent(QSharedPointer<ComponentInstance> referencingInstance) const;
+    QSharedPointer<const Component> getReferencedComponent(QSharedPointer<ComponentInstance> referencingInstance) const;
 
     /*!
      *  Check if the bus interface reference is valid.
@@ -201,7 +201,7 @@ private:
      *
      *      @return True, if the bus interface reference is valid, otherwise false.
      */
-    bool busReferenceIsValid(QSharedPointer<Component> component, QString const& busReference) const;
+    bool busReferenceIsValid(QSharedPointer<const Component> component, QString const& busReference) const;
 
     /*!
      *  Check if the exclude ports of an active interface are valid.
@@ -211,7 +211,7 @@ private:
      *
      *      @return True, if the exclude ports are valid, otherwise false.
      */
-    bool excludePortsAreValid(QSharedPointer<Component> component, QSharedPointer<ActiveInterface> activeInterface)
+    bool excludePortsAreValid(QSharedPointer<const Component> component, QSharedPointer<ActiveInterface> activeInterface)
         const;
 
     /*!
@@ -302,7 +302,7 @@ private:
      *      @param [in] context                 Context to help locate the errors.
      */
     void findErrorsInBusReference(QVector<QString>& errors, QString const& busReference,
-        QSharedPointer<Component> referencedComponent, QString const& elementName, QString const& innerContext,
+        QSharedPointer<const Component> referencedComponent, QString const& elementName, QString const& innerContext,
         QString const& context) const;
 
     /*!
@@ -315,7 +315,7 @@ private:
      *      @param [in] context                 Context to help locate the errors.
      */
     void findErrorsInExcludePorts(QVector<QString>& errors, QSharedPointer<ActiveInterface> activeInterface,
-        QSharedPointer<Component> referencedComponent, QString const& innerContext) const;
+        QSharedPointer<const Component> referencedComponent, QString const& innerContext) const;
 
     /*!
      *  Find errors in interfaces.

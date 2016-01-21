@@ -125,7 +125,7 @@ bool InterconnectionValidator::activeInterfaceIsValid(QSharedPointer<ActiveInter
 
     if (referencedInstance)
     {
-        QSharedPointer<Component> referencedComponent = getReferencedComponent(referencedInstance);
+        QSharedPointer<const Component> referencedComponent = getReferencedComponent(referencedInstance);
 
         if (referencedComponent)
         {
@@ -161,24 +161,24 @@ QSharedPointer<ComponentInstance> InterconnectionValidator::getReferencedCompone
 //-----------------------------------------------------------------------------
 // Function: InterconnectionValidator::getReferencedComponent()
 //-----------------------------------------------------------------------------
-QSharedPointer<Component> InterconnectionValidator::getReferencedComponent(
+QSharedPointer<const Component> InterconnectionValidator::getReferencedComponent(
     QSharedPointer<ComponentInstance> referencingInstance) const
 {
     if (referencingInstance && referencingInstance->getComponentRef())
     {
-        QSharedPointer<Component> referencedComponent =
-            libraryHandler_->getModel(*referencingInstance->getComponentRef().data()).dynamicCast<Component>();
+        QSharedPointer<const Component> referencedComponent =
+            libraryHandler_->getModelReadOnly(*referencingInstance->getComponentRef()).dynamicCast<Component const>();
 
         return referencedComponent;
     }
 
-    return QSharedPointer<Component> ();
+    return QSharedPointer<const Component> ();
 }
 
 //-----------------------------------------------------------------------------
 // Function: InterconnectionValidator::busReferenecIsValid()
 //-----------------------------------------------------------------------------
-bool InterconnectionValidator::busReferenceIsValid(QSharedPointer<Component> component,
+bool InterconnectionValidator::busReferenceIsValid(QSharedPointer<const Component> component,
     QString const& busReference) const
 {
     if (!busReference.isEmpty() && component)
@@ -198,7 +198,7 @@ bool InterconnectionValidator::busReferenceIsValid(QSharedPointer<Component> com
 //-----------------------------------------------------------------------------
 // Function: InterconnectionValidator::excludePortsAreValid()
 //-----------------------------------------------------------------------------
-bool InterconnectionValidator::excludePortsAreValid(QSharedPointer<Component> component,
+bool InterconnectionValidator::excludePortsAreValid(QSharedPointer<const Component> component,
     QSharedPointer<ActiveInterface> activeInterface) const
 {
     if (!activeInterface->getExcludePorts()->isEmpty())
@@ -344,7 +344,7 @@ bool InterconnectionValidator::monitorInterfaceIsValid(QSharedPointer<MonitorInt
 
     if (referencedInstance)
     {
-        QSharedPointer<Component> referencedComponent = getReferencedComponent(referencedInstance);
+        QSharedPointer<const Component> referencedComponent = getReferencedComponent(referencedInstance);
 
         if (referencedComponent)
         {
@@ -458,7 +458,7 @@ void InterconnectionValidator::findErrorsInActiveInterface(QVector<QString>& err
     findErrorsInComponentReference(errors, activeInterface->getComponentReference(), referencedInstance,
         elementName, innerContext, context);
 
-    QSharedPointer<Component> referencedComponent = getReferencedComponent(referencedInstance);
+    QSharedPointer<const Component> referencedComponent = getReferencedComponent(referencedInstance);
     findErrorsInBusReference(errors, activeInterface->getBusReference(), referencedComponent, elementName,
         innerContext, context);
 
@@ -493,7 +493,7 @@ void InterconnectionValidator::findErrorsInComponentReference(QVector<QString>& 
 // Function: InterconnectionValidator::findErrorsInBusReference()
 //-----------------------------------------------------------------------------
 void InterconnectionValidator::findErrorsInBusReference(QVector<QString>& errors, QString const& busReference,
-    QSharedPointer<Component> referencedComponent, QString const& elementName, QString const& innerContext,
+    QSharedPointer<const Component> referencedComponent, QString const& elementName, QString const& innerContext,
     QString const& context) const
 {
     if (referencedComponent)
@@ -518,7 +518,7 @@ void InterconnectionValidator::findErrorsInBusReference(QVector<QString>& errors
 // Function: InterconnectionValidator::findErrorsInExcludePorts()
 //-----------------------------------------------------------------------------
 void InterconnectionValidator::findErrorsInExcludePorts(QVector<QString>& errors,
-    QSharedPointer<ActiveInterface> activeInterface, QSharedPointer<Component> referencedComponent,
+    QSharedPointer<ActiveInterface> activeInterface, QSharedPointer<const Component> referencedComponent,
     QString const& innerContext) const
 {
     if (!activeInterface->getExcludePorts()->isEmpty())
@@ -646,7 +646,7 @@ void InterconnectionValidator::findErrorsInSingleMonitorInterface(QVector<QStrin
     findErrorsInComponentReference(errors, monitorInterface->getComponentReference(), referencedInstance,
         elementName, innerContext, context);
 
-    QSharedPointer<Component> referencedComponent = getReferencedComponent(referencedInstance);
+    QSharedPointer<const Component> referencedComponent = getReferencedComponent(referencedInstance);
     findErrorsInBusReference(errors, monitorInterface->getBusReference(), referencedComponent, elementName,
         innerContext, context);
 }
