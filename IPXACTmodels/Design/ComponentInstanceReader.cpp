@@ -124,7 +124,7 @@ void ComponentInstanceReader::parsePortPositions(const QDomElement& portPosition
     QSharedPointer<ComponentInstance> instance) const
 {
     QMap<QString, QPointF> portPositions = createMappedPositions(portPositionsElement, "kactus2:portPosition",
-        "kactus2:busRef");
+        "busRef");
     QMapIterator<QString, QPointF> portIterator(portPositions);
     while (portIterator.hasNext())
     {

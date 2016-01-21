@@ -15,6 +15,8 @@
 #include <IPXACTmodels/common/GenericVendorExtension.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Group.h>
 
+#include <designEditors/common/ColumnTypes.h>
+
 #include <QtTest>
 #include <QSharedPointer>
 
@@ -181,8 +183,12 @@ void tst_DesignWriter::testWriteComponentInstances()
         new ConfigurableElementValue("10", "testReferenceID"));
     testComponentReference->getConfigurableElementValues()->append(componentElement);
 
-    QSharedPointer<ComponentInstance> testComponentInstance(new ComponentInstance("testInstance", "displayName",
-        "described", testComponentReference, QPointF(10,10), "testUUID"));
+    QSharedPointer<ComponentInstance> testComponentInstance(new ComponentInstance("testInstance",
+        testComponentReference));
+    testComponentInstance->setDisplayName("displayName");
+    testComponentInstance->setDescription("described");
+    testComponentInstance->setPosition(QPointF(10, 10));
+    testComponentInstance->setUuid("testUUID");
     testComponentInstance->setIsPresent("2-1");
 
     testDesign_->getComponentInstances()->append(testComponentInstance);
@@ -245,8 +251,10 @@ void tst_DesignWriter::testWriteComponentInstanceExtensions()
         new ConfigurableElementValue("10", "testReferenceID"));
     testComponentReference->getConfigurableElementValues()->append(componentElement);
 
-    QSharedPointer<ComponentInstance> testComponentInstance(new ComponentInstance("testInstance", "", "",
-        testComponentReference, QPointF(10,10), "testUUID"));
+    QSharedPointer<ComponentInstance> testComponentInstance(new ComponentInstance("testInstance",
+        testComponentReference));
+    testComponentInstance->setPosition(QPointF(10, 10));
+    testComponentInstance->setUuid("testUUID");
 
     testComponentInstance->setComponentRef(testComponentReference);
     testComponentInstance->setImportRef("importSource");
@@ -255,8 +263,10 @@ void tst_DesignWriter::testWriteComponentInstanceExtensions()
     testComponentInstance->updateApiInterfacePosition("apiInterface", QPointF(2,2));
     testComponentInstance->updateComInterfacePosition("comInterface", QPointF(1,1));
 
-    QSharedPointer<ComponentInstance> otherComponentInstance(new ComponentInstance("otherInstance", "", "",
-        testComponentReference, QPointF(1,1), "otherUUID"));
+    QSharedPointer<ComponentInstance> otherComponentInstance(new ComponentInstance("otherInstance",
+        testComponentReference));
+    otherComponentInstance->setPosition(QPointF(1,1));
+    otherComponentInstance->setUuid("otherUUID");
     otherComponentInstance->setImported(true);
 
     QMap<QString, QString> swProperties;
@@ -877,8 +887,8 @@ void tst_DesignWriter::testWriteVendorExtensions()
 //-----------------------------------------------------------------------------
 void tst_DesignWriter::testWriteColumns()
 {
-    QSharedPointer<ColumnDesc> testColumn (new ColumnDesc("testColumn", COLUMN_CONTENT_COMPONENTS));
-    QSharedPointer<ColumnDesc> otherColumn (new ColumnDesc("otherColumn", COLUMN_CONTENT_BUSES));
+    QSharedPointer<ColumnDesc> testColumn (new ColumnDesc("testColumn", ColumnTypes::COMPONENTS));
+    QSharedPointer<ColumnDesc> otherColumn (new ColumnDesc("otherColumn", ColumnTypes::BUSES));
 
     QSharedPointer<Kactus2Group> columnLayout(new Kactus2Group("kactus2:columnLayout"));
     columnLayout->addToGroup(testColumn);
@@ -922,10 +932,7 @@ void tst_DesignWriter::testWriteColumns()
 
     output.clear();
 
-    QList<QSharedPointer<ColumnDesc> > columnDescriptions;
-    columnDescriptions.append(testColumn);
-
-    testDesign_->setColumns(columnDescriptions);
+    testDesign_->removeColumn(otherColumn);
 
     designWriter.writeDesign(xmlStreamWriter, testDesign_);
 

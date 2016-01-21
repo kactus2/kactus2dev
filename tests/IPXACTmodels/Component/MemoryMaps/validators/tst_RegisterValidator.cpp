@@ -418,7 +418,7 @@ void tst_RegisterValidator::testRegisterAndFieldAccessAreValid()
         QVector<QString> foundErrors;
         validator.findErrorsIn(foundErrors, testRegister, "test");
 
-        QString expectedError = QObject::tr("Access cannot be set to %1 in %2, where containing register %3 "
+        QString expectedError = QObject::tr("Access cannot be set to %1 in field %2, where containing register %3 "
             "has access %4").arg(AccessTypes::access2Str(testField->getAccess())).arg(testField->name())
             .arg(testRegister->name()).arg(AccessTypes::access2Str(testRegister->getAccess()));
 

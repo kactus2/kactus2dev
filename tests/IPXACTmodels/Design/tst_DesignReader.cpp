@@ -11,6 +11,10 @@
 
 #include <IPXACTmodels/Design/DesignReader.h>
 
+#include <IPXACTmodels/kactusExtensions/Kactus2Placeholder.h>
+
+#include <designEditors/common/ColumnTypes.h>
+
 #include <QtTest>
 #include <QDomNode>
 
@@ -784,13 +788,13 @@ void tst_DesignReader::testReadColumns()
 
     int firstColumnWidth = columnList.first()->getWidth();
     QCOMPARE(columnList.first()->name(), QString("testColumn"));
-    QCOMPARE(columnList.first()->getContentType(), COLUMN_CONTENT_COMPONENTS);
+    QCOMPARE(columnList.first()->getContentType(), ColumnTypes::COMPONENTS);
     QCOMPARE(columnList.first()->getAllowedItems(), unsigned int(0));
     QCOMPARE(firstColumnWidth, 259);
 
     int secondColumnWidth = columnList.last()->getWidth();
     QCOMPARE(columnList.last()->name(), QString("otherColumn"));
-    QCOMPARE(columnList.last()->getContentType(), COLUMN_CONTENT_BUSES);
+    QCOMPARE(columnList.last()->getContentType(), ColumnTypes::BUSES);
     QCOMPARE(columnList.last()->getAllowedItems(), unsigned int (0));
     QCOMPARE(secondColumnWidth, 259);
 }
@@ -916,7 +920,21 @@ void tst_DesignReader::testReadPortAdHocVisibilitiesAndPositions()
     QCOMPARE(testDesign->getVendorExtensions()->size(), 2);
     QCOMPARE(testDesign->getVersion(), QString("3.0.0"));
 
-    QMap<QString, QPointF> adHocPorts = testDesign->getAdHocPortPositions();
+    QSharedPointer<VendorExtension> adhocExtension = testDesign->getAdHocPortPositions();
+    QSharedPointer<Kactus2Group> adhocGroup = adhocExtension.dynamicCast<Kactus2Group>();
+
+    QMap<QString, QPointF> adHocPorts;
+    foreach (QSharedPointer<VendorExtension> extension, adhocGroup->getByType("kactus2:adHocVisible"))
+    {
+        QSharedPointer<Kactus2Placeholder> portAdHocVisibility = extension.dynamicCast<Kactus2Placeholder>();
+
+        QString portName = portAdHocVisibility->getAttributeValue("portName");
+        int positionX = portAdHocVisibility->getAttributeValue("x").toInt();
+        int positionY = portAdHocVisibility->getAttributeValue("y").toInt();
+
+        adHocPorts.insert(portName, QPointF(positionX, positionY));
+    }
+
     QCOMPARE(adHocPorts.firstKey(), QString("testPort"));
     QCOMPARE(adHocPorts.first().x(), qreal(4));
     QCOMPARE(adHocPorts.first().y(), qreal(25));

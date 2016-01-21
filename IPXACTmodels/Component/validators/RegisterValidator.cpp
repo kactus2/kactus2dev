@@ -515,7 +515,7 @@ void RegisterValidator::findErrorsInFields(QVector<QString>& errors,
 
             if (!fieldHasValidAccess(selectedRegister, field))
             {
-                errors.append(QObject::tr("Access cannot be set to %1 in %2, where containing register %3 "
+                errors.append(QObject::tr("Access cannot be set to %1 in field %2, where containing register %3 "
                     "has access %4").arg(AccessTypes::access2Str(field->getAccess())).arg(field->name())
                     .arg(selectedRegister->name()).arg(AccessTypes::access2Str(selectedRegister->getAccess())));
             }
