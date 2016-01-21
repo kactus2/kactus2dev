@@ -45,7 +45,6 @@ QAbstractItemModel(parent),
     busif_(busif),
     absDef_(),
     interfaceMode_(General::MASTER),
-    portMaps_(busif->getPortMaps()),
     expressionParser_(expressionParser)
 {
 
@@ -317,20 +316,25 @@ void PortMapsTreeModel::reset()
     root_ = new PortMapsTreeItem();
 
     // Add existing mappings.
-    foreach (QSharedPointer<PortMap> portMap, *portMaps_)
+    QSharedPointer<QList<QSharedPointer<PortMap> > > portMaps = busif_->getPortMaps();
+    if (portMaps)
     {
-        PortMapsLogicalItem* logicalItem = 
-            dynamic_cast<PortMapsLogicalItem*>(findItem(portMap->getLogicalPort()->name_));
+        foreach (QSharedPointer<PortMap> portMap, *portMaps)
+        {
+            PortMapsLogicalItem* logicalItem = 
+                dynamic_cast<PortMapsLogicalItem*>(findItem(portMap->getLogicalPort()->name_));
 
-        if (!logicalItem)
-        {            
-            logicalItem = new PortMapsLogicalItem(
-                root_, portMap->getLogicalPort()->name_, component_, busif_, absDef_, expressionParser_);
-            root_->addChild(logicalItem);
+            if (!logicalItem)
+            {            
+                logicalItem = new PortMapsLogicalItem(
+                    root_, portMap->getLogicalPort()->name_, component_, busif_, absDef_, expressionParser_);
+                root_->addChild(logicalItem);
+            }
+
+            logicalItem->refresh();       
         }
-
-        logicalItem->refresh();       
     }
+
 
     endResetModel();
 }
@@ -340,9 +344,10 @@ void PortMapsTreeModel::reset()
 //-----------------------------------------------------------------------------
 void PortMapsTreeModel::createMap(QSharedPointer<PortMap> portMap)
 {
-    if (!portMaps_->contains(portMap))
+    QSharedPointer<QList<QSharedPointer<PortMap> > > portMaps = busif_->getPortMaps();
+    if (portMaps && !portMaps->contains(portMap))
     {
-        portMaps_->append(portMap);
+        portMaps->append(portMap);
         emit contentChanged();
     }
     
@@ -369,10 +374,15 @@ void PortMapsTreeModel::createMap(QSharedPointer<PortMap> portMap)
 QStringList PortMapsTreeModel::logicalPorts() const
 {
     QStringList list;
-    foreach (QSharedPointer<PortMap> portMap, *portMaps_)
-    {
-        list.append(portMap->getLogicalPort()->name_);
+    QSharedPointer<QList<QSharedPointer<PortMap> > > portMaps = busif_->getPortMaps();
+    if (portMaps)
+    {   
+        foreach (QSharedPointer<PortMap> portMap, *portMaps)
+        {
+            list.append(portMap->getLogicalPort()->name_);
+        }
     }
+
     return list;
 }
 
@@ -565,36 +575,40 @@ void PortMapsTreeModel::removeMapping(QModelIndex const& index)
     QString logicalName = root_->getChild(index.row())->name();
 
     QStringList physicalPorts;
-    foreach (QSharedPointer<PortMap> portMap, *portMaps_)
+    QSharedPointer<QList<QSharedPointer<PortMap> > > portMaps = busif_->getPortMaps();
+    if (portMaps)
     {
-        if (portMap->getLogicalPort()->name_ == logicalName)
+        foreach (QSharedPointer<PortMap> portMap, *portMaps)
         {
-            if (!physicalPorts.contains(portMap->getPhysicalPort()->name_))
+            if (portMap->getLogicalPort()->name_ == logicalName)
             {
-                physicalPorts.append(portMap->getPhysicalPort()->name_);
+                if (!physicalPorts.contains(portMap->getPhysicalPort()->name_))
+                {
+                    physicalPorts.append(portMap->getPhysicalPort()->name_);
+                }
+                portMaps->removeAll(portMap);
             }
-            portMaps_->removeAll(portMap);
-        }
-    }    
+        }    
 
-    // Search for disconnected physical ports.    
-    foreach (QString const& physicalName, physicalPorts)
-    {
-        bool connected = false;
-        foreach (QSharedPointer<PortMap> portMap, *portMaps_)
+        // Search for disconnected physical ports.    
+        foreach (QString const& physicalName, physicalPorts)
         {
-            if (portMap->getPhysicalPort()->name_ == physicalName)
+            bool connected = false;
+            foreach (QSharedPointer<PortMap> portMap, *portMaps)
             {
-                connected = true;
-                break;
+                if (portMap->getPhysicalPort()->name_ == physicalName)
+                {
+                    connected = true;
+                    break;
+                }
+            }
+
+            if (!connected)
+            {
+                emit physicalRemoved(physicalName);
             }
         }
 
-        if (!connected)
-        {
-            emit physicalRemoved(physicalName);
-        }
+        removeItem(index);
     }
-
-    removeItem(index);
 }

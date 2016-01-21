@@ -21,6 +21,7 @@
 #include <QSortFilterProxyModel>
 #include <QSharedPointer>
 
+class BusInterfaceValidator;
 class Component;
 class LibraryInterface;
 class ParameterFinder;
@@ -55,16 +56,11 @@ public:
 	 *      @param [in] parent              The owner of this editor.
 	 */
 	BusInterfacesEditor(LibraryInterface* handler, QSharedPointer<Component> component,
+        QSharedPointer<BusInterfaceValidator> validator,
         QSharedPointer<ParameterFinder> parameterFinder, QWidget* parent = 0);
 	
 	//! The destructor
 	virtual ~BusInterfacesEditor();
-
-	/*! Check for the validity of the editor
-	* 
-	*      @return True if the editor is in valid state.
-	*/
-	virtual bool isValid() const;
 
 	/*! Reload the information from the model to the editor.
 	*/

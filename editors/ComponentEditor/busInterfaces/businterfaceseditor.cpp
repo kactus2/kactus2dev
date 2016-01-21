@@ -26,14 +26,14 @@
 //-----------------------------------------------------------------------------
 BusInterfacesEditor::BusInterfacesEditor(LibraryInterface* handler,
     QSharedPointer<Component> component,
+    QSharedPointer<BusInterfaceValidator> validator,
     QSharedPointer<ParameterFinder> parameterFinder,
     QWidget* parent):
 ItemEditor(component, handler, parent),
     view_(this),
     proxy_(this),
-    model_(handler, component, parameterFinder, this)
+    model_(handler, component, validator, parameterFinder, this)
 {
-	// display a label on top the table
 	SummaryLabel* summaryLabel = new SummaryLabel(tr("Bus interfaces"), this);
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
@@ -49,7 +49,7 @@ ItemEditor(component, handler, parent),
 	view_.setDefaultImportExportPath(defaultPath);
 	view_.setAllowImportExport(true);
 
-    // Items can be dragged to change postitions. Drop is enabled for vlnv columns.
+    // Items can be dragged to change positions. Drop is enabled for vlnv columns.
     view_.setItemsDraggable(true);
     view_.viewport()->setAcceptDrops(true); 
     view_.setDropIndicatorShown(true);   
@@ -79,14 +79,6 @@ ItemEditor(component, handler, parent),
 //-----------------------------------------------------------------------------
 BusInterfacesEditor::~BusInterfacesEditor()
 {
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterfacesEditor::isValid()
-//-----------------------------------------------------------------------------
-bool BusInterfacesEditor::isValid() const
-{
-	return model_.isValid();
 }
 
 //-----------------------------------------------------------------------------

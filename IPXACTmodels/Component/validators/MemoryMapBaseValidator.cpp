@@ -148,7 +148,7 @@ bool MemoryMapBaseValidator::addressBlockWidthIsMultiplicationOfAUB(QString cons
     int addressUnitBitsInt = expressionParser_->parseExpression(addressUnitBits).toInt(&aubToIntOk);
     int addressBlockWidth = expressionParser_->parseExpression(addressBlock->getWidth()).toInt(&widthToIntOk);
 
-    return aubToIntOk && widthToIntOk && addressBlockWidth % addressUnitBitsInt == 0;
+    return aubToIntOk && widthToIntOk && addressUnitBitsInt != 0 && addressBlockWidth % addressUnitBitsInt == 0;
 }
 
 //-----------------------------------------------------------------------------

@@ -329,7 +329,7 @@ private:
 
     QMap< QString, QList< QList<General::PortBounds> > > mappings_;
 
-    //! Pointer to the bus interface being edited.
+    //! The bus interface being edited.
     QSharedPointer<BusInterface> busif_;
 
     //! Bus interface mode.
@@ -338,16 +338,13 @@ private:
     //! Name of the logical port being mapped.
     QString logicalPort_;
 
-    //! Pointer to the data structure within the model containing the port maps.
-    QSharedPointer<QList<QSharedPointer<PortMap> > > portMaps_;
-
-    //! Pointer to the component being edited.
+    //! The component being edited.
     QSharedPointer<Component> component_;
 
-    //! Pointer to the instance that manages the library.
+    //! The instance that manages the library.
     LibraryInterface* handler_;
 
-    //! Pointer to the abstraction definition that is used.
+    //! The abstraction definition that is used.
     QSharedPointer<AbstractionDefinition> absDef_;
 
     //! Boolean for adding and removing rows.

@@ -178,8 +178,8 @@ bool BusInterfaceValidator::abstractionTypeHasValidAbstractionReference(
 {
     if (abstraction->getAbstractionRef())
     {
-        return libraryHandler_->contains(*abstraction->getAbstractionRef().data()) && libraryHandler_->
-            getDocumentType(*abstraction->getAbstractionRef().data()) == VLNV::ABSTRACTIONDEFINITION;
+        return libraryHandler_->contains(*abstraction->getAbstractionRef()) && 
+            libraryHandler_->getDocumentType(*abstraction->getAbstractionRef()) == VLNV::ABSTRACTIONDEFINITION;
     }
 
     return false;
@@ -669,7 +669,7 @@ void BusInterfaceValidator::findErrorsInName(QVector<QString>& errors, QSharedPo
     if (!hasValidName(busInterface))
     {
         errors.append(QObject::tr("Invalid name specified for bus interface %1 within %2")
-            .arg(busInterface->name()).arg(context));
+            .arg(busInterface->name(), context));
     }
 }
 
@@ -682,7 +682,7 @@ void BusInterfaceValidator::findErrorsInIsPresent(QVector<QString>& errors,
     if (!hasValidIsPresent(busInterface->getIsPresent()))
     {
         errors.append(QObject::tr("Invalid isPresent set for bus interface %1 within %2")
-            .arg(busInterface->name()).arg(context));
+            .arg(busInterface->name(), context));
     }
 }
 
@@ -695,20 +695,19 @@ void BusInterfaceValidator::findErrorsInBusType(QVector<QString>& errors,
     if (!busInterface->getBusType().isValid())
     {
         errors.append(QObject::tr("Bus definition must be given for bus interface %1 within %2")
-            .arg(busInterface->name()).arg(context));
+            .arg(busInterface->name(), context));
     }
     else
     {
         if (!libraryHandler_->contains(busInterface->getBusType()))
         {
             errors.append(QObject::tr("Bus definition %1 set for bus interface %2 within %3 could not be found in "
-                "the library")
-                .arg(busInterface->getBusType().toString()).arg(busInterface->name()).arg(context));
+                "the library").arg(busInterface->getBusType().toString(), busInterface->name(), context));
         }
         if (libraryHandler_->getDocumentType(busInterface->getBusType()) != VLNV::BUSDEFINITION)
         {
             errors.append(QObject::tr("Invalid bus definition set for %1 within %2")
-                .arg(busInterface->name()).arg(context));
+                .arg(busInterface->name(), context));
         }
     }
 }
@@ -863,7 +862,7 @@ void BusInterfaceValidator::findErrorsInInterfaceMode(QVector<QString>& errors,
     else
     {
         errors.append(QObject::tr("Unknown interface mode set for bus interface %1 within %2")
-            .arg(busInterface->name()).arg(containingContext));
+            .arg(busInterface->name(), containingContext));
     }
 }
 
@@ -954,7 +953,7 @@ void BusInterfaceValidator::findErrorsInSlaveInterface(QVector<QString>& errors,
             if (!slaveFileSetReferenceIsValid(fileSetReference))
             {
                 errors.append(QObject::tr("Invalid file set %1 referenced within group %2 of %3").arg(
-                    fileSetReference,group->group_, context));
+                    fileSetReference, group->group_, context));
             }
         }
     }
@@ -981,7 +980,7 @@ void BusInterfaceValidator::findErrorsInSystemInterface(QVector<QString>& errors
             if (busDefinition && !busDefinition->getSystemGroupNames().contains(systemGroup))
             {
                 errors.append(QObject::tr("Could not find system group %1 set for %2 with bus definition %3.")
-                    .arg(systemGroup).arg(context).arg(busInterface->getBusType().toString()));
+                    .arg(systemGroup, context, busInterface->getBusType().toString()));
             }
         }
     }

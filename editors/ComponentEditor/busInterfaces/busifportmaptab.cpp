@@ -49,7 +49,7 @@ QWidget(parent),
     view_(this),
     logicalView_(this),
     logicalModel_(libHandler, this),
-    mappingLabel_(tr("Bit-field mapping"),this),
+    mappingLabel_(tr("Bit-field mapping"), this),
     mappingView_(component, this),
     mappingProxy_(this),
     mappingModel_(busif, component, libHandler, expressionParser, this),
@@ -369,15 +369,8 @@ void BusIfPortmapTab::setPhysicalPorts(QStringList const& ports)
     physProxy_.setFilterPorts(ports);
 
     showAllButton_.setVisible(true);
+    showAllButton_.setChecked(ports.isEmpty());
 
-	if (ports.isEmpty())
-	{
-		showAllButton_.setCheckState(Qt::Checked);
-	}
-	else
-	{
-		showAllButton_.setCheckState(Qt::Unchecked);
-	}
     onRefresh();
 }
 

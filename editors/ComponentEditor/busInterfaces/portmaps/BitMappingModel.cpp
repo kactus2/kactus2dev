@@ -50,7 +50,6 @@ QAbstractTableModel(parent),
     busif_(busif),
     mode_(General::INTERFACE_MODE_COUNT),
     logicalPort_(),
-    portMaps_(busif->getPortMaps()),
     component_(component),
     handler_(libHandler),
     canEdit_(false),
@@ -636,11 +635,14 @@ void BitMappingModel::createInitialMappings()
 {
     QList<QSharedPointer<PortMap> > logicPortMaps;
 
-    foreach (QSharedPointer<PortMap> portMap, *portMaps_)
-    {   
-        if (portMap->getLogicalPort()->name_ == logicalPort_)
-        {
-            logicPortMaps.append(portMap);
+    if (busif_->getPortMaps())
+    {
+        foreach (QSharedPointer<PortMap> portMap, *busif_->getPortMaps())
+        {   
+            if (portMap->getLogicalPort()->name_ == logicalPort_)
+            {
+                logicPortMaps.append(portMap);
+            }
         }
     }
 

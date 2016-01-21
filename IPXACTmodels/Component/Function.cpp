@@ -14,8 +14,7 @@
 //-----------------------------------------------------------------------------
 // Function: Function::SourceFile()
 //-----------------------------------------------------------------------------
-Function::SourceFile::SourceFile(QString const& sourceName /* = QString() */,
-    QString const& fileType /* = QString() */) :
+Function::SourceFile::SourceFile(QString const& sourceName, QString const& fileType) :
 sourceName_(sourceName),
 fileType_(fileType)
 {

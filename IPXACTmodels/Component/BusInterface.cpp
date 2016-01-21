@@ -241,6 +241,11 @@ QSharedPointer<QList<QSharedPointer<Parameter> > > BusInterface::getParameters()
 //-----------------------------------------------------------------------------
 QSharedPointer<QList<QSharedPointer<PortMap> > > BusInterface::getPortMaps() const
 {
+    if (abstractionTypes_->isEmpty())
+    {
+        return QSharedPointer<QList<QSharedPointer<PortMap> > > ();
+    }
+
     return abstractionTypes_->first()->getPortMaps();
 }
 

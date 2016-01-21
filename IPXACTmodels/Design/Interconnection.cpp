@@ -17,7 +17,7 @@
 // Function: Interconnection::Interconnection()
 //-----------------------------------------------------------------------------
 Interconnection::Interconnection(QString const name, QSharedPointer<ActiveInterface> startInterface,
-    QString const& displayName /* = QString() */, QString const& description /* = QString () */) :
+    QString const& displayName, QString const& description) :
 NameGroup(name, displayName, description),
 Extendable(),
 startInterface_(startInterface),
@@ -213,8 +213,8 @@ void Interconnection::setIsPresent(QString const& newIsPresent)
 //-----------------------------------------------------------------------------
 // Function: Interconnection::hasInterfaceReferencing()
 //-----------------------------------------------------------------------------
-bool Interconnection::hasInterfaceReferencingComponent(
-    QString const& instanceName, QString const& busInterfaceName) const
+bool Interconnection::hasInterfaceReferencingComponent(QString const& instanceName, 
+    QString const& busInterfaceName) const
 {
     if (startInterface_->getComponentReference() == instanceName &&
         startInterface_->getBusReference() == busInterfaceName)

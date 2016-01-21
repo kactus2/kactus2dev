@@ -17,6 +17,7 @@
 #include <QList>
 
 class BusInterface;
+class BusInterfaceValidator;
 class Component;
 class LibraryInterface;
 class ParameterFinder;
@@ -38,6 +39,7 @@ public:
 	 *      @param [in] parent              The owner of this model.
 	 */
 	BusInterfacesModel(LibraryInterface* libHandler, QSharedPointer<Component> component,
+        QSharedPointer<BusInterfaceValidator> validator,
         QSharedPointer<ParameterFinder> parameterFinder, QObject *parent);
 	
 	//! The destructor
@@ -95,12 +97,6 @@ public:
 	 *      @return True if saving happened successfully.
 	*/
 	bool setData(QModelIndex const& index, const QVariant& value, int role = Qt::EditRole);
-
-	/*! Check if the bus interfaces model is in a valid state.
-	 *
-	 *      @return bool True if the state is valid and writing is possible.
-	*/
-	bool isValid() const;
 
     /*!
      *  Returns the supported actions of a drop.
@@ -218,6 +214,8 @@ private:
 
 	//! The bus interfaces being edited.
 	QSharedPointer<QList<QSharedPointer<BusInterface> > > busifs_;
+
+        QSharedPointer<BusInterfaceValidator> validator_;
 
     //! The parameter finder.
     QSharedPointer<ParameterFinder> parameterFinder_;

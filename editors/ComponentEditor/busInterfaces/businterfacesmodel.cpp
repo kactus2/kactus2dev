@@ -23,6 +23,8 @@
 #include <IPXACTmodels/Component/MasterInterface.h>
 #include <IPXACTmodels/Component/MirroredSlaveInterface.h>
 
+#include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
+
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
 
 #include <QColor>
@@ -37,15 +39,19 @@
 //-----------------------------------------------------------------------------
 // Function: BusInterfacesModel::BusInterfacesModel()
 //-----------------------------------------------------------------------------
-BusInterfacesModel::BusInterfacesModel(LibraryInterface* libHandler, QSharedPointer<Component> component,
-                                       QSharedPointer<ParameterFinder> parameterFinder, QObject *parent):
+BusInterfacesModel::BusInterfacesModel(LibraryInterface* libHandler, 
+    QSharedPointer<Component> component,
+    QSharedPointer<BusInterfaceValidator> validator,
+    QSharedPointer<ParameterFinder> parameterFinder, 
+    QObject *parent):
 QAbstractTableModel(parent),
-libHandler_(libHandler),
-component_(component),
-busifs_(component->getBusInterfaces()),
-parameterFinder_(parameterFinder)
+    libHandler_(libHandler),
+    component_(component),
+    busifs_(component->getBusInterfaces()),
+    validator_(validator),
+    parameterFinder_(parameterFinder)
 {
-	Q_ASSERT(libHandler_);
+    Q_ASSERT(libHandler_);
 	Q_ASSERT(component_);
 }
 
@@ -116,15 +122,15 @@ QVariant BusInterfacesModel::headerData(int section, Qt::Orientation orientation
     }
     else if (section == BusInterfaceColumns::BUSDEF)
     {
-        return tr("Bus\ndefinition");
+        return tr("Bus definition");
     }
     else if (section == BusInterfaceColumns::ABSDEF)
     {
-        return tr("Abstraction\ndefinition");
+        return tr("Abstraction definition");
     }
     else if (section == BusInterfaceColumns::INTERFACE_MODE)
     {
-        return tr("Interface\nmode");
+        return tr("Interface mode");
     }
     else if (section == BusInterfaceColumns::DESCRIPTION)
     {
@@ -153,18 +159,23 @@ QVariant BusInterfacesModel::data(QModelIndex const& index, int role) const
         {
             return busInterface->name();
         }
-        else if ( index.column() == BusInterfaceColumns::BUSDEF)
+        else if (index.column() == BusInterfaceColumns::BUSDEF)
         {
             return busInterface->getBusType().toString(":");
         }
         else if (index.column() == BusInterfaceColumns::ABSDEF)
         {
-            return busInterface->getAbstractionTypes()->first()->getAbstractionRef()->toString(":");
+            if (!busInterface->getAbstractionTypes()->isEmpty() &&
+                busInterface->getAbstractionTypes()->first()->getAbstractionRef())
+            {
+                return busInterface->getAbstractionTypes()->first()->getAbstractionRef()->toString();
+            }
+
+            return QVariant();
         }
         else if (index.column() == BusInterfaceColumns::INTERFACE_MODE)
         {
-            General::InterfaceMode mode = busInterface->getInterfaceMode();
-            return General::interfaceMode2Str(mode);
+            return General::interfaceMode2Str(busInterface->getInterfaceMode());
         }
         else if (index.column() == BusInterfaceColumns::DESCRIPTION)
         {
@@ -183,15 +194,32 @@ QVariant BusInterfacesModel::data(QModelIndex const& index, int role) const
     }
 	else if (role == Qt::ForegroundRole)
     {
-		/*if (busInterface->isValid(component_->getPortBounds(), component_->getMemoryMapNames(),
-            component_->getAddressSpaceNames(), component_->getChoices()))
-        {*/
-			return QColor("black");
-		/*}
-		else
+        if (index.column() == BusInterfaceColumns::NAME && validator_->hasValidName(busInterface))
         {
-			return QColor("red");
-		}*/
+            return QColor("black");     
+        }
+        else if ( index.column() == BusInterfaceColumns::BUSDEF && validator_->hasValidBusType(busInterface))
+        {
+            return QColor("black");   
+        }
+        else if (index.column() == BusInterfaceColumns::ABSDEF &&
+            validator_->hasValidAbstractionTypes(busInterface))
+        {
+            return QColor("black");  
+        }
+        else if (index.column() == BusInterfaceColumns::INTERFACE_MODE &&
+            busInterface->getInterfaceMode() != General::INTERFACE_MODE_COUNT)
+        {
+            return QColor("black");  
+        }
+        else if (index.column() == BusInterfaceColumns::DESCRIPTION)
+        {
+            return QColor("black");
+        }
+        else
+        {
+            return QColor("red");
+        }
 	}
 	else if (role == Qt::BackgroundRole)
     {
@@ -234,19 +262,25 @@ bool BusInterfacesModel::setData(QModelIndex const& index, const QVariant& value
             VLNV busType = VLNV(VLNV::BUSDEFINITION, value.toString(), ":");
             busInterface->setBusType(busType);
         }
-        else if (index.column() ==  BusInterfaceColumns::ABSDEF)
+        else if (index.column() == BusInterfaceColumns::ABSDEF)
         {
+            if (busInterface->getAbstractionTypes()->isEmpty())
+            {
+                busInterface->getAbstractionTypes()->append(QSharedPointer<AbstractionType>(new AbstractionType()));
+            }
+
             QSharedPointer<ConfigurableVLNVReference> absType(new ConfigurableVLNVReference(VLNV(
                 VLNV::ABSTRACTIONDEFINITION, value.toString(), ":")));
             busInterface->getAbstractionTypes()->first()->setAbstractionRef(absType);
         }
-        else if (index.column() ==  BusInterfaceColumns::INTERFACE_MODE)
+        else if (index.column() == BusInterfaceColumns::INTERFACE_MODE)
         {
             QString modeStr = value.toString();
             General::InterfaceMode mode = General::str2Interfacemode(modeStr, General::MASTER);
             busInterface->setInterfaceMode(mode);
         }
-        else if (index.column() ==  BusInterfaceColumns::DESCRIPTION) {
+        else if (index.column() == BusInterfaceColumns::DESCRIPTION)
+        {
             busInterface->setDescription(value.toString());
         }
         else
@@ -285,8 +319,8 @@ QStringList BusInterfacesModel::mimeTypes() const
 //-----------------------------------------------------------------------------
 // Function: BusInterfacesModel::dropMimeData()
 //-----------------------------------------------------------------------------
-bool BusInterfacesModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, 
-    const QModelIndex &parent)
+bool BusInterfacesModel::dropMimeData(QMimeData const* data, Qt::DropAction action, int row, int column, 
+    QModelIndex const& parent)
 {
     if (action == Qt::IgnoreAction)
     {
@@ -320,14 +354,14 @@ bool BusInterfacesModel::dropMimeData(const QMimeData *data, Qt::DropAction acti
         QList<VLNV> absDefVLNVs;
         if (libHandler_->getChildren(absDefVLNVs, vlnv) == 1) 
         {
-            setData(index(parent.row(),BusInterfaceColumns::ABSDEF), absDefVLNVs.first().toString(":"));
+            setData(index(parent.row(), BusInterfaceColumns::ABSDEF), absDefVLNVs.first().toString(":"));
         }
 
         emit contentChanged();
     }
     else if (parent.column() == BusInterfaceColumns::ABSDEF)
     {
-        if ( vlnv.getType() != VLNV::ABSTRACTIONDEFINITION )
+        if (vlnv.getType() != VLNV::ABSTRACTIONDEFINITION)
         {
             return false;
         }
@@ -353,10 +387,10 @@ void BusInterfacesModel::onAddItem(QModelIndex const& index)
 	}
 
 	beginInsertRows(QModelIndex(), row, row);
-	busifs_->insert(row, QSharedPointer<BusInterface>(new BusInterface()));
+    QSharedPointer<BusInterface> busInterface(new BusInterface());
+    busifs_->insert(row, busInterface);
 	endInsertRows();
 
-	// inform navigation tree that file set is added
 	emit busifAdded(row);
 
 	// tell also parent widget that contents have been changed
@@ -423,26 +457,6 @@ void BusInterfacesModel::onMoveItem(QModelIndex const& originalPos, QModelIndex 
 
     emit busIfMoved(source, target);
     emit contentChanged();
-}
-
-//-----------------------------------------------------------------------------
-// Function:  BusInterfacesModel::isValid()
-//-----------------------------------------------------------------------------
-bool BusInterfacesModel::isValid() const
-{
-	/*QList<General::PortBounds> physPorts = component_->getPortBounds();
-    QStringList memoryMaps = component_->getMemoryMapNames();
-    QStringList addressSpaces = component_->getAddressSpaceNames();
-
-	foreach (QSharedPointer<BusInterface> busif, *busifs_)
-    {
-		if (!busif->isValid(physPorts, memoryMaps, addressSpaces, component_->getChoices()))
-        {
-			return false;
-		}
-	}*/
-	// all bus interfaces were valid
-	return true;
 }
 
 //-----------------------------------------------------------------------------

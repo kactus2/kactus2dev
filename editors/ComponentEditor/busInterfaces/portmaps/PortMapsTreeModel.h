@@ -266,7 +266,7 @@ private:
     PortMapsTreeModel& operator=(PortMapsTreeModel const& rhs);
 
     /*!
-     * Returns a pointer to the item with a given name.
+     * Returns a The item with a given name.
      *
      *      @param [in] name   The name of the item to find.
      *
@@ -291,23 +291,20 @@ private:
     //! The parent component.
     QSharedPointer<Component> component_;
 
-    //! Pointer to the instance that manages the library.
+    //! The instance that manages the library.
     LibraryInterface* handler_;
 
     //! The dependency tree root.
     PortMapsTreeItem* root_;
 
-    //! Pointer to the bus interface being edited.
+    //! The bus interface being edited.
     QSharedPointer<BusInterface> busif_;    
 
-    //! Pointer to the abstraction definition that is used.
+    //! The abstraction definition that is used.
     QSharedPointer<AbstractionDefinition> absDef_;
 
     //! Specifies the interface mode of this bus interface
     General::InterfaceMode interfaceMode_;
-
-    //! Pointer to the data structure within the model containing the port maps.
-    QSharedPointer<QList<QSharedPointer<PortMap> > > portMaps_;
 
     //! The used expression parser.
     QSharedPointer<ExpressionParser> expressionParser_;

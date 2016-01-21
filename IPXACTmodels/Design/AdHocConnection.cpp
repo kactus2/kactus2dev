@@ -18,18 +18,14 @@
 //-----------------------------------------------------------------------------
 // Function: AdHocConnection::AdHocConnection()
 //-----------------------------------------------------------------------------
-AdHocConnection::AdHocConnection(QString name,
-    QString displayName /* = QString() */,
-    QString description /* = QString() */,
-    QString tiedValue /* = QString() */,
-    QList<QPointF> const& route /* = QList<QPointF>() */,
-    bool offPage /* = false */) :
+AdHocConnection::AdHocConnection(QString name, QString displayName, QString description,
+    QString tiedValue, QList<QPointF> const& route,  bool offPage) :
 NameGroup(name, displayName, description),
-Extendable(),
-isPresent_(),
-tiedValue_(tiedValue),
-internalPortReferences_(new QList<QSharedPointer<PortReference> > ()),
-externalPortReferences_(new QList<QSharedPointer<PortReference> > ())
+    Extendable(),
+    isPresent_(),
+    tiedValue_(tiedValue),
+    internalPortReferences_(new QList<QSharedPointer<PortReference> > ()),
+    externalPortReferences_(new QList<QSharedPointer<PortReference> > ())
 {
     setOffPage(offPage);
     setRoute(route);
@@ -40,11 +36,11 @@ externalPortReferences_(new QList<QSharedPointer<PortReference> > ())
 //-----------------------------------------------------------------------------
 AdHocConnection::AdHocConnection( const AdHocConnection& other ):
 NameGroup(other),
-Extendable(other),
-isPresent_(other.isPresent_),
-tiedValue_(other.tiedValue_),
-internalPortReferences_(new QList<QSharedPointer<PortReference> > ()),
-externalPortReferences_(new QList<QSharedPointer<PortReference> > ())
+    Extendable(other),
+    isPresent_(other.isPresent_),
+    tiedValue_(other.tiedValue_),
+    internalPortReferences_(new QList<QSharedPointer<PortReference> > ()),
+    externalPortReferences_(new QList<QSharedPointer<PortReference> > ())
 {
     foreach (QSharedPointer<PortReference> interalReference, *other.internalPortReferences_)
     {

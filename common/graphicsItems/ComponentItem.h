@@ -39,10 +39,6 @@ public:
      *      @param [in] libInterface              The library interface.
      *      @param [in] component                 The actual component.
      *      @param [in] instanceName              The name of the component instance.
-     *      @param [in] displayName               The component instance's display name.
-     *      @param [in] description               The component instance's description.
-     *      @param [in] uuid							  The uuid of the instance.
-     *      @param [in] configurableElementValue  The component instance's configurable element values.
      *      @param [in] parent                    The parent graphics item.
      */
 

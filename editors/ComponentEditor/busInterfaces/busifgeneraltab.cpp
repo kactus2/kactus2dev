@@ -89,7 +89,13 @@ void BusIfGeneralTab::refresh()
 	nameEditor_.refresh();
 	busType_.setVLNV(busif_->getBusType());
 
-	absType_.setVLNV(*busif_->getAbstractionTypes()->first()->getAbstractionRef());
+    VLNV abstractionVLNV;
+    if (!busif_->getAbstractionTypes()->isEmpty() && busif_->getAbstractionTypes()->first()->getAbstractionRef())
+    {
+        abstractionVLNV = *busif_->getAbstractionTypes()->first()->getAbstractionRef();
+    }
+
+	absType_.setVLNV(abstractionVLNV);
 	modeStack_.refresh();
 	details_.refresh();
 	parameters_.refresh();
@@ -155,8 +161,21 @@ void BusIfGeneralTab::setBusTypesLock(bool locked)
 //-----------------------------------------------------------------------------
 void BusIfGeneralTab::onAbsTypeChanged()
 {
+    if (busif_->getAbstractionTypes()->isEmpty())
+    {
+        busif_->getAbstractionTypes()->append(QSharedPointer<AbstractionType>(new AbstractionType()));
+    }
+
     QSharedPointer<ConfigurableVLNVReference> abstractionVLNV = 
         busif_->getAbstractionTypes()->first()->getAbstractionRef();
+
+    if (!abstractionVLNV)
+    {
+        abstractionVLNV = QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference());
+        abstractionVLNV->setType(VLNV::ABSTRACTIONDEFINITION);
+        busif_->getAbstractionTypes()->first()->setAbstractionRef(abstractionVLNV);
+    }
+
     abstractionVLNV->setVendor(absType_.getVLNV().getVendor());
     abstractionVLNV->setLibrary(absType_.getVLNV().getLibrary());
     abstractionVLNV->setName(absType_.getVLNV().getName());
@@ -198,13 +217,26 @@ void BusIfGeneralTab::onSetBusType(VLNV const& busDefVLNV)
 //-----------------------------------------------------------------------------
 void BusIfGeneralTab::onSetAbsType(VLNV const& absDefVLNV)
 {
-	QSharedPointer<ConfigurableVLNVReference> abstractionVLNV = 
+    if (busif_->getAbstractionTypes()->isEmpty())
+    {
+        busif_->getAbstractionTypes()->append(QSharedPointer<AbstractionType>(new AbstractionType()));
+    }
+
+    QSharedPointer<ConfigurableVLNVReference> abstractionVLNV = 
         busif_->getAbstractionTypes()->first()->getAbstractionRef();
+
+    if (!abstractionVLNV)
+    {
+        abstractionVLNV = QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference());
+        abstractionVLNV->setType(absDefVLNV.getType());
+        busif_->getAbstractionTypes()->first()->setAbstractionRef(abstractionVLNV);
+    }
+	
     abstractionVLNV->setVendor(absDefVLNV.getVendor());
     abstractionVLNV->setLibrary(absDefVLNV.getLibrary());
     abstractionVLNV->setName(absDefVLNV.getName());
     abstractionVLNV->setVersion(absDefVLNV.getVersion());
-
+    
 	absType_.setVLNV(absDefVLNV);
 	emit contentChanged();
 }

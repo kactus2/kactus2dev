@@ -11,41 +11,10 @@
 
 #include "WireTypeDef.h"
 
-/*
-WireTypeDef::WireTypeDef(QDomNode &wireTypeNode): typeName_(QString()),
-constrained_(false), typeDefinitions_(), viewNameRefs_() {
-
-	for (int i = 0; i < wireTypeNode.childNodes().count(); ++i) {
-		QDomNode tempNode = wireTypeNode.childNodes().at(i);
-
-		if (tempNode.nodeName() == QString("ipxact:typeName")) {
-			Wire::WireTypeDef::typeName_ = tempNode.childNodes().at(0).
-					nodeValue();
-
-			// get the constrained attribute
-			QDomNamedNodeMap attributeMap = tempNode.attributes();
-			QString constrained = attributeMap.namedItem(
-					QString("ipxact:constrained")).nodeValue();
-			Wire::WireTypeDef::constrained_ =
-					General::str2Bool(constrained, false);
-		}
-
-		else if (tempNode.nodeName() == QString("ipxact:typeDefinition")) {
-			Wire::WireTypeDef::typeDefinitions_.append(
-					tempNode.childNodes().at(0).nodeValue());
-		}
-
-		else if (tempNode.nodeName() == QString("ipxact:viewNameRef")) {
-			Wire::WireTypeDef::viewNameRefs_.append(
-					tempNode.childNodes().at(0).nodeValue());
-		}
-	}
-}*/
-
 //-----------------------------------------------------------------------------
 // Function: WireTypeDef::WireTypeDef()
 //-----------------------------------------------------------------------------
-WireTypeDef::WireTypeDef(const QString& typeName /* = QString() */, const QString& viewNameRef /* = QString() */) :
+WireTypeDef::WireTypeDef(const QString& typeName, const QString& viewNameRef) :
 typeName_(typeName),
 constrained_(false),
 typeDefinitions_(),
@@ -112,17 +81,6 @@ bool WireTypeDef::hasView(QString const& viewName)
     }
     return false;
 }
-
-/*
-bool WireTypeDef::isValid( QStringList& errorList, const QString& parentIdentifier ) const
-{
-	if (typeName_.isEmpty())
-    {
-		errorList.append(QObject::tr("No type name specified for wire type def within %1").arg(parentIdentifier));
-		return false;
-	}
-	return true;
-}*/
 
 //-----------------------------------------------------------------------------
 // Function: WireTypeDef::getTypeName()

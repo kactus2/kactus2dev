@@ -133,7 +133,7 @@ QStringList PortListSortProxyModel::filterPortNames() const
 //-----------------------------------------------------------------------------
 // Function: PortListSortProxyModel::setFilterHideConnected()
 //-----------------------------------------------------------------------------
-void PortListSortProxyModel::setFilterHideConnected(bool hide /*= true*/)
+void PortListSortProxyModel::setFilterHideConnected(bool hide)
 {
     hideConnected_ = hide;
     invalidateFilter();
@@ -147,13 +147,16 @@ void PortListSortProxyModel::onConnectionsReset()
     connectedPorts_.clear();
     foreach (QSharedPointer<BusInterface> busIf, *component_->getBusInterfaces())
     {
-        foreach (QSharedPointer<PortMap> portMap, *busIf->getPortMaps())
+        if (!busIf->getAbstractionTypes()->isEmpty())
         {
-            if (!connectedPorts_.contains(portMap->getPhysicalPort()->name_))
+            foreach (QSharedPointer<PortMap> portMap, *busIf->getPortMaps())
             {
-                connectedPorts_.append(portMap->getPhysicalPort()->name_);
+                if (!connectedPorts_.contains(portMap->getPhysicalPort()->name_))
+                {
+                    connectedPorts_.append(portMap->getPhysicalPort()->name_);
+                }
             }
-        }
+        }        
     }
     invalidateFilter(); 
 }
@@ -212,5 +215,3 @@ void PortListSortProxyModel::onPortDisconnected(QString const& portName)
         invalidateFilter();
     }
 }
-
-

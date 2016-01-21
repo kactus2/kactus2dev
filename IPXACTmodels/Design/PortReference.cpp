@@ -16,9 +16,9 @@
 //-----------------------------------------------------------------------------
 PortReference::PortReference(QString const& portRef, QString const& componentRef /* = QString() */) :
 portRef_(portRef),
-componentRef_(componentRef),
-isPresent_(),
-partSelect_()
+    componentRef_(componentRef),
+    isPresent_(),
+    partSelect_()
 {
 
 }
@@ -28,9 +28,9 @@ partSelect_()
 //-----------------------------------------------------------------------------
 PortReference::PortReference(const PortReference& other):
 portRef_(other.portRef_),
-componentRef_(other.componentRef_),
-isPresent_(other.isPresent_),
-partSelect_()
+    componentRef_(other.componentRef_),
+    isPresent_(other.isPresent_),
+    partSelect_()
 {
     if (other.partSelect_)
     {

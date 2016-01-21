@@ -381,8 +381,8 @@ bool BusPortItem::isConnectionValid(ConnectionEndpoint const* other) const
 
     // Otherwise make sure that the bus and abstraction definitions are of the same type.
     else if (otherBusIf->getBusType() == busInterface_->getBusType() &&
-        otherBusIf->getAbstractionTypes()->first()->getAbstractionRef() ==
-        busInterface_->getAbstractionTypes()->first()->getAbstractionRef())
+        *otherBusIf->getAbstractionTypes()->first()->getAbstractionRef() ==
+        *busInterface_->getAbstractionTypes()->first()->getAbstractionRef())
     {
         QList<General::InterfaceMode> compatibleModes = getOpposingModes(busInterface_);
         compatibleModes.append(General::SYSTEM);

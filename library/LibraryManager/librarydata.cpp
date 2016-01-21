@@ -365,7 +365,7 @@ QSharedPointer<Document> LibraryData::getModel(VLNV const& vlnv)
 {
 	if (!libraryItems_.contains(vlnv))
     {
-		emit noticeMessage(tr("VLNV %1 was not found in the library").arg(vlnv.toString()));
+		//emit noticeMessage(tr("VLNV %1 was not found in the library").arg(vlnv.toString()));
 		return QSharedPointer<Document>();
 	}
 
