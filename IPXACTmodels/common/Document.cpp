@@ -284,7 +284,16 @@ KactusAttribute::Implementation Document::getImplementation() const
     {
         if (extension->type() == "kactus2:extensions")
         {
-            return extension.dynamicCast<KactusAttribute>()->getImplementation();
+            KactusAttribute::Implementation implementationType =
+                extension.dynamicCast<KactusAttribute>()->getImplementation();
+            if (implementationType == KactusAttribute::KTS_IMPLEMENTATION_COUNT)
+            {
+                return KactusAttribute::HW;
+            }
+            else
+            {
+                return implementationType;
+            }
         }
     }
 
