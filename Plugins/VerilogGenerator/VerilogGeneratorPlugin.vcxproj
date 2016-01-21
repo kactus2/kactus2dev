@@ -131,6 +131,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\editors\ComponentEditor\common\ComponentParameterFinder.cpp" />
     <ClCompile Include="..\..\editors\ComponentEditor\common\ExpressionFormatter.cpp" />
+    <ClCompile Include="..\common\NameGenerationPolicy.cpp" />
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\GeneratorConfiguration.cpp" />
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\GeneratorConfigurationDialog.cpp" />
     <ClCompile Include="CommentWriter\CommentWriter.cpp" />
@@ -175,6 +176,7 @@
     <ClInclude Include="..\..\editors\ComponentEditor\common\ComponentParameterFinder.h" />
     <ClInclude Include="..\..\editors\ComponentEditor\common\ExpressionFormatter.h" />
     <ClInclude Include="..\..\editors\ComponentEditor\common\ParameterFinder.h" />
+    <ClInclude Include="..\common\NameGenerationPolicy.h" />
     <ClInclude Include="..\PluginSystem\GeneratorPlugin\GeneratorConfiguration.h" />
     <CustomBuild Include="..\PluginSystem\GeneratorPlugin\GeneratorConfigurationDialog.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
