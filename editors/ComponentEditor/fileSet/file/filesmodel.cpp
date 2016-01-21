@@ -253,11 +253,9 @@ bool FilesModel::setData(QModelIndex const& index, const QVariant& value, int ro
         else if (index.column() == FileColumns::TYPES_COLUMN)
         {
             QString str = value.toString();
-            QStringList fileTypes = str.split(' ', QString::SkipEmptyParts);
-            foreach (QString fileItem, fileTypes)
-            {
-                files_->at(index.row())->getFileTypes()->append(fileItem);
-            }
+            QSharedPointer<QStringList> fileTypes (new QStringList (str.split(' ', QString::SkipEmptyParts)));
+
+            files_->at(index.row())->setFileTypes(fileTypes);
         }
         else if (index.column() == FileColumns::DESCRIPTION)
         {
