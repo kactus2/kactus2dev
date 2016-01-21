@@ -37,7 +37,7 @@ public:
     /*!
      *  Constructor.
      */
-    AdHocPortItem(Port* port, HWComponentItem* parent);
+    AdHocPortItem(QSharedPointer<Port> port, HWComponentItem* parent);
 
 	/*!
      *  Destructor.

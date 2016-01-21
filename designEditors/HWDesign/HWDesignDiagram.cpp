@@ -1588,7 +1588,8 @@ void HWDesignDiagram::createComponentItem(QSharedPointer<ComponentInstance> inst
 void HWDesignDiagram::createComponentItem(QSharedPointer<Component> comp, QPointF position)
 {
     // Create the diagram component.                            
-    QSharedPointer<ComponentInstance> componentInstance(new ComponentInstance());
+    QSharedPointer<ComponentInstance> componentInstance(new ComponentInstance("",
+		QSharedPointer<ConfigurableVLNVReference>( new ConfigurableVLNVReference(comp->getVlnv()) ) ) );
     QString instanceName = createInstanceName(comp->getVlnv().getName());
     componentInstance->setInstanceName(instanceName);
 

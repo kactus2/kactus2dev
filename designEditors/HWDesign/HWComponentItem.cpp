@@ -160,7 +160,7 @@ void HWComponentItem::onAdHocVisibilityChanged(QString const& portName, bool vis
         QSharedPointer<Port> adhocPort = componentModel()->getPort(portName);
         Q_ASSERT(adhocPort != 0);
 
-        AdHocPortItem* port = new AdHocPortItem(adhocPort.data(), this);
+        AdHocPortItem* port = new AdHocPortItem(adhocPort, this);
         addPortToSideWithLessPorts(port);
 
         getComponentInstance()->updateAdHocPortPosition(portName, port->pos());
@@ -662,7 +662,7 @@ void HWComponentItem::positionAdHocPortTerminals()
     {
         if (isPortAdHocVisible(adhocPort->name()))
         {
-            AdHocPortItem* port = new AdHocPortItem(adhocPort.data(), this);
+            AdHocPortItem* port = new AdHocPortItem(adhocPort, this);
 
             // Check if the default position has been specified.
             if (!adhocPort->getDefaultPos().isNull())

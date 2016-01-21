@@ -46,7 +46,7 @@
 //-----------------------------------------------------------------------------
 // Function: AdHocPortItem::AdHocPortItem()
 //-----------------------------------------------------------------------------
-AdHocPortItem::AdHocPortItem(Port* port, HWComponentItem* parent) : 
+AdHocPortItem::AdHocPortItem(QSharedPointer<Port> port, HWComponentItem* parent) : 
 HWConnectionEndpoint(parent),
     nameLabel_("", this),
     parentComponentItem_(parent),
