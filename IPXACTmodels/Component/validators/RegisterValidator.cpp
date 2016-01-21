@@ -308,7 +308,8 @@ bool RegisterValidator::fieldHasValidAccess(QSharedPointer<RegisterDefinition> s
         (registerAccess == AccessTypes::READ_WRITEONCE && (fieldAccess == AccessTypes::READ_ONLY ||
             fieldAccess == AccessTypes::READ_WRITEONCE || fieldAccess == AccessTypes::WRITEONCE)) ||
         (registerAccess == AccessTypes::WRITEONCE && fieldAccess == AccessTypes::WRITEONCE) ||
-        registerAccess == AccessTypes::ACCESS_COUNT)
+        registerAccess == AccessTypes::ACCESS_COUNT ||
+        registerAccess == AccessTypes::READ_WRITE)
      {
          return true;
      }

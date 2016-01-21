@@ -91,7 +91,7 @@ void FileSetValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Fil
 	{
 		if (!hasValidName(currentFileBuilder->getFileType()))
 		{
-			errors.append(QObject::tr("The type of default file builder is empty within file set %1..").arg(
+			errors.append(QObject::tr("The type of default file builder is empty within file set %1.").arg(
                 fileSet->name()));
 		}
 
