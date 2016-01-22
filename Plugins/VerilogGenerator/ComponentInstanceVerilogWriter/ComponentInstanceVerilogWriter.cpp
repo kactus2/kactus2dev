@@ -148,8 +148,19 @@ QString ComponentInstanceVerilogWriter::portConnections() const
         QString previousInterfaceName = "";
 
         foreach(QString portName, sorter_->sortedPortNames(referencedComponent_))
-        {
-            QString interfaceName = referencedComponent_->getInterfaceForPort(portName)->name();
+		{
+			QSharedPointer<BusInterface> busInterface = referencedComponent_->getInterfaceForPort(portName);
+            QString interfaceName;
+			
+			if ( busInterface )
+			{
+				interfaceName = busInterface->name();
+			}
+			else
+			{
+				interfaceName = "none";
+			}
+
             QString interfaceSeparatorLine = createInterfaceSeparator(interfaceName, previousInterfaceName);
             previousInterfaceName = interfaceName;
 

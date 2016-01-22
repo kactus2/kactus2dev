@@ -179,9 +179,17 @@ void ComponentVerilogWriter::writePortDeclarations(QTextStream& outputStream) co
 
     QStringList ports = sorter_->sortedPortNames(component_);
     foreach(QString portName, ports)
-    {    
-        writeInterfaceIntroduction(component_->getInterfaceForPort(portName)->name(), previousInterfaceName, 
-            outputStream);
+	{    
+		QSharedPointer<BusInterface> busInterface = component_->getInterfaceForPort(portName);
+
+		if ( busInterface )
+		{
+			writeInterfaceIntroduction(busInterface->name(), previousInterfaceName, outputStream);
+		}
+		else
+		{
+			writeInterfaceIntroduction("none", previousInterfaceName, outputStream);
+		}
 
         bool lastPortToWrite = portName == ports.last();
         writePort(outputStream, component_->getPort(portName), lastPortToWrite);

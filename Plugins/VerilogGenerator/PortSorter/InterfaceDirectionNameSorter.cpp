@@ -42,9 +42,19 @@ QStringList InterfaceDirectionNameSorter::sortedPortNames(QSharedPointer<Compone
     QMap<SortKey, QString> sortedPorts;
     foreach(QString portName, component->getPortNames())
     {
-        SortKey key(component->getInterfaceForPort(portName)->name(),
-			component->getModel()->getPort(portName)->getDirection(), portName);
-        sortedPorts.insert(key, portName);
+		QSharedPointer<BusInterface> busInterface = component->getInterfaceForPort(portName);
+
+		// If there is no bus interface for port, add it a as entry without it.
+		if ( busInterface )
+		{
+			SortKey key(busInterface->name(), component->getModel()->getPort(portName)->getDirection(), portName);
+			sortedPorts.insert(key, portName);
+		}
+		else
+		{
+			SortKey key("none", component->getModel()->getPort(portName)->getDirection(), portName);
+			sortedPorts.insert(key, portName);
+		}
     }
 
     return sortedPorts.values();
