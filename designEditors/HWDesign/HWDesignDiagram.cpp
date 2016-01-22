@@ -944,7 +944,8 @@ void HWDesignDiagram::replaceComponentItemAtPositionWith(QPointF position, QShar
         componentInstance->setInstanceName(createInstanceName(comp->getVlnv().getName()));
         getDesign()->getComponentInstances()->append(componentInstance);
 
-        HWComponentItem *newCompItem = new HWComponentItem(getLibraryInterface(), componentInstance, comp);
+        HWComponentItem *newCompItem = new HWComponentItem(getLibraryInterface(), componentInstance, comp,
+			dynamic_cast<GraphicsColumn*>(oldCompItem->parent()));
 
         // Perform the replacement.
         QSharedPointer<ReplaceComponentCommand> cmd(new ReplaceComponentCommand(this, oldCompItem, newCompItem,
@@ -1439,7 +1440,7 @@ void HWDesignDiagram::addDraftComponentInstance(GraphicsColumn* column, QPointF 
     componentInstance->setInstanceName(name);
     getDesign()->getComponentInstances()->append(componentInstance);
 
-    HWComponentItem* diagComp = new HWComponentItem(getLibraryInterface(), componentInstance, comp);
+    HWComponentItem* diagComp = new HWComponentItem(getLibraryInterface(), componentInstance, comp, column);
     diagComp->setDraft();
     diagComp->setPos(snapPointToGrid(position));
 
@@ -2254,7 +2255,7 @@ void HWDesignDiagram::pasteInstances(ComponentCollectionCopyData const& collecti
         
         getDesign()->getComponentInstances()->append(instanceCopy);
 
-        HWComponentItem* comp = new HWComponentItem(getLibraryInterface(), instanceCopy, componentCopy);
+        HWComponentItem* comp = new HWComponentItem(getLibraryInterface(), instanceCopy, componentCopy, column);
 
         if (useCursorPos)
         {
