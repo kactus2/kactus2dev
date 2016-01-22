@@ -3193,6 +3193,9 @@ void MainWindow::openMemoryDesign(const VLNV& vlnv, const QString& viewName, boo
 //-----------------------------------------------------------------------------
 void MainWindow::openSWDesign(const VLNV& vlnv, QString const& viewName, bool forceUnlocked)
 {
+    emit errorMessage(tr("Software designs are temporarily disabled."));
+    return;
+
 	// the vlnv must always be for a component
 	Q_ASSERT(libraryHandler_->getDocumentType(vlnv) == VLNV::COMPONENT);
 
@@ -3248,6 +3251,9 @@ void MainWindow::openSWDesign(const VLNV& vlnv, QString const& viewName, bool fo
 //-----------------------------------------------------------------------------
 void MainWindow::openSystemDesign(VLNV const& vlnv, QString const& viewName, bool forceUnlocked)
 {
+    emit errorMessage(tr("System designs are temporarily disabled."));
+    return;
+
 	// the vlnv must always be for a component
 	Q_ASSERT(libraryHandler_->getDocumentType(vlnv) == VLNV::COMPONENT);
 
@@ -3340,6 +3346,13 @@ void MainWindow::openComponent( const VLNV& vlnv, bool forceUnlocked )
 		QApplication::restoreOverrideCursor();
 		return;
 	}
+
+    if (component->getImplementation() == KactusAttribute::SW)
+    {
+        emit errorMessage(tr("Software components are temporarily disabled."));
+        QApplication::restoreOverrideCursor();
+        return;
+    }
 
 	ComponentEditor* editor = new ComponentEditor(libraryHandler_, *pluginMgr_, component, this);
     
@@ -3982,6 +3995,9 @@ void MainWindow::createSWComponent(VLNV const& vlnv, QString const& directory)
 {
 	Q_ASSERT(vlnv.isValid());
 
+    emit errorMessage(tr("Software components are temporarily disabled."));
+    return;
+    
 	// Create a component.
 	QSharedPointer<Component> component = QSharedPointer<Component>(new Component());
 	component->setVlnv(vlnv);

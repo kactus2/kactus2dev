@@ -30,16 +30,19 @@ void AdHocEnabled::setAdHocData(QSharedPointer<Component> component, QMap<QStrin
     portAdHocVisibilities_.clear();
 
     // Parse port ad-hoc visibilities.
-    foreach (QSharedPointer<Port> adhocPort, *component->getPorts())
+    if (component->hasPorts())
     {
-        bool visible = adhocPort->isAdHocVisible();
-
-        if (portAdHocVisibilities.contains(adhocPort->name()))
+        foreach (QSharedPointer<Port> adhocPort, *component->getPorts())
         {
-            visible = portAdHocVisibilities.value(adhocPort->name());
-        }
+            bool visible = adhocPort->isAdHocVisible();
 
-        portAdHocVisibilities_.insert(adhocPort->name(), visible);
+            if (portAdHocVisibilities.contains(adhocPort->name()))
+            {
+                visible = portAdHocVisibilities.value(adhocPort->name());
+            }
+
+            portAdHocVisibilities_.insert(adhocPort->name(), visible);
+        }
     }
 }
 
