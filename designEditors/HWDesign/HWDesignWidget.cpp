@@ -376,7 +376,7 @@ void HWDesignWidget::keyPressEvent(QKeyEvent *event)
                 getDiagram()->clearSelection();
             
                 ComponentDeleteCommand* componentDeleteCommand = new ComponentDeleteCommand(
-                    getDiagram(), getDiagram()->getLayout()->findColumnAt(component->pos()),
+                    getDiagram(), getDiagram()->getLayout()->findColumnAt(component->scenePos()),
                     component, deleteCommand.data());
 
 			    connect(componentDeleteCommand, SIGNAL(componentInstanceRemoved(ComponentItem*)),

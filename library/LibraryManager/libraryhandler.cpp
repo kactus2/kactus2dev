@@ -63,9 +63,9 @@
 //-----------------------------------------------------------------------------
 LibraryHandler::LibraryHandler(VLNVDialer* dialer, QWidget* parent): 
 QTabWidget(parent), 
-    data_(), 
-    treeModel_(),
-    hierarchyModel_(),
+    data_(new LibraryData(this, parent)), 
+    treeModel_(new LibraryTreeModel(this, data_.data(), this)),
+    hierarchyModel_(new HierarchyModel(data_.data(), this, this)),
     treeWidget_(0),
     hierarchyWidget_(0),
     objects_(),
@@ -73,12 +73,6 @@ QTabWidget(parent),
     itemsToAdd_() 
 {
 	setWindowTitle(tr("LibraryHandler"));
-
-	data_ = QSharedPointer<LibraryData>(new LibraryData(this, parent));   
-
-    treeModel_ = QSharedPointer<LibraryTreeModel>(new LibraryTreeModel(this, data_.data(), this));
-
-    hierarchyModel_ = QSharedPointer<HierarchyModel>(new HierarchyModel(data_.data(), this, this));
 
 	// create the connections between models and library handler
 	syncronizeModels();

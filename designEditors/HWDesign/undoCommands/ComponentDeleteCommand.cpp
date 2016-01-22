@@ -25,6 +25,8 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/Businterface.h>
 
+#include <IPXACTmodels/Design/Design.h>
+
 //-----------------------------------------------------------------------------
 // Function: ComponentDeleteCommand::ComponentDeleteCommand()
 //-----------------------------------------------------------------------------
@@ -79,7 +81,8 @@ ComponentDeleteCommand::~ComponentDeleteCommand()
 void ComponentDeleteCommand::undo()
 {
     // Add the item back to the scene.
-    column_->addItem(componentItem_);
+    diagram_->getDesign()->getComponentInstances()->append(componentItem_->getComponentInstance());
+    column_->addItem(componentItem_);    
     del_ = false;
 
 	emit componentInstantiated(componentItem_);
@@ -99,6 +102,7 @@ void ComponentDeleteCommand::redo()
     // Remove the item from the scene.
     column_->removeItem(componentItem_);
     diagram_->removeItem(componentItem_);
+    diagram_->getDesign()->getComponentInstances()->removeOne(componentItem_->getComponentInstance());
     del_ = true;
 
 	emit componentInstanceRemoved(componentItem_);

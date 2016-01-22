@@ -187,15 +187,20 @@ void InterfaceEditor::setInterface( ConnectionEndpoint* interface )
         Q_ASSERT(interface->getBusInterface());
         type_.setTitle(tr("Bus type VLNV"));
 	    type_.setVLNV(interface->getBusInterface()->getBusType(), true);
-        absType_.setVLNV(
-            *interface->getBusInterface()->getAbstractionTypes()->first()->getAbstractionRef().data(), true);
+        if (interface->getBusInterface()->getAbstractionTypes() && 
+            !interface->getBusInterface()->getAbstractionTypes()->isEmpty())
+        {
+            absType_.setVLNV(*interface->getBusInterface()->getAbstractionTypes()->first()->getAbstractionRef(),
+                true);
+        }        
 
 	    // set selection for mode editor, signal must be disconnected when mode is set to avoid loops 
 	    disconnect(&modeEdit_, SIGNAL(currentIndexChanged(const QString&)),
 		    this, SLOT(onInterfaceModeChanged(const QString&)));
 	    // select the correct mode for mode editor
 	    int index = modeEdit_.findText(General::interfaceMode2Str(
-		    interface->getBusInterface()->getInterfaceMode()));
+            interface->getBusInterface()->getInterfaceMode()));
+
 	    modeEdit_.setCurrentIndex(index);
 	    connect(&modeEdit_, SIGNAL(currentIndexChanged(const QString&)),
 		    this, SLOT(onInterfaceModeChanged(const QString&)), Qt::UniqueConnection);
@@ -516,10 +521,20 @@ void InterfaceEditor::setPortMaps()
 
 	QSharedPointer<BusInterface> busIf = interface_->getBusInterface();
 	Q_ASSERT(busIf);
-    QList<QSharedPointer<PortMap> > portMaps = *busIf->getPortMaps().data();
+    QList<QSharedPointer<PortMap> > portMaps;
+    if (busIf->getPortMaps())
+    {
+       portMaps = *busIf->getPortMaps();
+    }
+    
 
 	// get the abstraction def for the interface
-    VLNV absDefVLNV = *busIf->getAbstractionTypes()->first()->getAbstractionRef().data();
+    VLNV absDefVLNV;
+    if (busIf->getAbstractionTypes() && !busIf->getAbstractionTypes()->isEmpty())
+    {
+       absDefVLNV = *busIf->getAbstractionTypes()->first()->getAbstractionRef();
+    }
+    
 	QSharedPointer<AbstractionDefinition> absDef;
 	if (handler_->getDocumentType(absDefVLNV) == VLNV::ABSTRACTIONDEFINITION)
     {

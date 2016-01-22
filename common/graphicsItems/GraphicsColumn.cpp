@@ -197,6 +197,12 @@ bool GraphicsColumn::isEmpty() const
 //-----------------------------------------------------------------------------
 void GraphicsColumn::addItem(QGraphicsItem* item, bool load)
 {
+    // Remove the item from the previous column.
+    if (item->parentItem() != 0)
+    {
+        dynamic_cast<IGraphicsItemStack*>(item->parentItem())->removeItem(item);
+    }
+
     // Constrain the item to the horizontal center of the column.
     QPointF pos = mapFromScene(item->scenePos());
     pos.setX(columnData_->getWidth() / 2.0);

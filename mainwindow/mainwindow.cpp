@@ -4483,7 +4483,7 @@ void MainWindow::runComponentWizard(QSharedPointer<Component> component, QString
         }
     }
 }
-#include <QDebug>
+
 //-----------------------------------------------------------------------------
 // Function: mainwindow::setPluginVisibilities()
 //-----------------------------------------------------------------------------
@@ -4511,7 +4511,7 @@ void MainWindow::setPluginVisibilities()
             libDes = libraryHandler_->getModelReadOnly(desVLNV);
 
             // find the design config is one exists
-			QString viewName = desWidget->getOpenViewName();qDebug() << "viename" << viewName << " jees" << endl;
+			QString viewName = desWidget->getOpenViewName();
 
 			// The name must exist!
 			Q_ASSERT(!viewName.isEmpty());
