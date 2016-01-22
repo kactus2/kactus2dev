@@ -170,6 +170,7 @@ void ConfigurationEditor::onAdd()
 
         view->addEnvIdentifier(QString(""));
 
+		component_->getDesignConfigurationInstantiations()->append(instantiation);
         component_->getViews()->append(view);
     }
     else if (designImplementation == KactusAttribute::SW)

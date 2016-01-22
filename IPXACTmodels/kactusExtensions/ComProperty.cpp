@@ -49,11 +49,11 @@ type_("string"),
 defaultValue_(""),
 desc_("")
 {
-    name_ = node.attributes().namedItem("kactus2:name").nodeValue();
-    required_ = General::str2Bool(node.attributes().namedItem("kactus2:required").nodeValue(), false);
-    type_ = node.attributes().namedItem("kactus2:propertyType").nodeValue();
-    defaultValue_ = node.attributes().namedItem("kactus2:defaultValue").nodeValue();
-    desc_ = node.attributes().namedItem("kactus2:description").nodeValue();
+    name_ = node.attributes().namedItem("name").nodeValue();
+    required_ = General::str2Bool(node.attributes().namedItem("required").nodeValue(), false);
+    type_ = node.attributes().namedItem("propertyType").nodeValue();
+    defaultValue_ = node.attributes().namedItem("defaultValue").nodeValue();
+    desc_ = node.attributes().namedItem("description").nodeValue();
 }
 
 //-----------------------------------------------------------------------------
