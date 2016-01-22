@@ -289,7 +289,18 @@ VLNV Model::getHierRef(const QString viewName) const
     foreach (QSharedPointer<View> view, *views_)
     {
         if (view->name() == viewName)
-        {
+		{
+			if (!view->getDesignConfigurationInstantiationRef().isEmpty())
+			{
+				foreach (QSharedPointer<DesignConfigurationInstantiation> instantiation, *designConfigurationInstantiations_)
+				{
+					if (instantiation->name() == view->getDesignConfigurationInstantiationRef())
+					{
+						return *instantiation->getDesignConfigurationReference().data();
+					}
+				}
+			}
+
             if (!view->getDesignInstantiationRef().isEmpty())
             {
                 foreach (QSharedPointer<DesignInstantiation> instantiation, *designInstantiations_)

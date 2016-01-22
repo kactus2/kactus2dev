@@ -2315,9 +2315,8 @@ void MainWindow::createDesignForExistingComponent(VLNV const& vlnv)
     VLNV designConfigVLNV = dialog.getDesignConfVLNV();
     QSharedPointer<DesignConfigurationInstantiation> hierarchyInstantiation
         (new DesignConfigurationInstantiation(designConfigVLNV.getName() + "_" + designConfigVLNV.getVersion()));
-    
-    QSharedPointer<VLNV> configurationReference (new VLNV());
-    configurationReference.reset(&designConfigVLNV);
+	hierarchyInstantiation->setDesignConfigurationReference(
+		QSharedPointer<ConfigurableVLNVReference>( new ConfigurableVLNVReference( designConfigVLNV ) ) );
 
     view->addEnvIdentifier("::");
     view->setDesignConfigurationInstantiationRef(hierarchyInstantiation->name());
@@ -4468,7 +4467,7 @@ void MainWindow::runComponentWizard(QSharedPointer<Component> component, QString
         }
     }
 }
-
+#include <QDebug>
 //-----------------------------------------------------------------------------
 // Function: mainwindow::setPluginVisibilities()
 //-----------------------------------------------------------------------------
@@ -4496,7 +4495,10 @@ void MainWindow::setPluginVisibilities()
             libDes = libraryHandler_->getModelReadOnly(desVLNV);
 
             // find the design config is one exists
-            QString viewName = desWidget->getOpenViewName();
+			QString viewName = desWidget->getOpenViewName();qDebug() << "viename" << viewName << " jees" << endl;
+
+			// The name must exist!
+			Q_ASSERT(!viewName.isEmpty());
 
             QSharedPointer<Component const> comp = libComp.dynamicCast<Component const>();
             VLNV desConfVLNV;

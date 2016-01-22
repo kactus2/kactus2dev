@@ -1,3 +1,14 @@
+//-----------------------------------------------------------------------------
+// File: NameGenerationPolicy.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Janne Virtanen
+// Date: 22.10.2015
+//
+// Description:
+// Used to generate names with predictable patterns.
+//-----------------------------------------------------------------------------
+
 #include "NameGenerationPolicy.h"
 
 namespace NameGenerationPolicy
