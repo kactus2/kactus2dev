@@ -761,6 +761,7 @@ void tst_AddressBlockValidator::testRegisterPositioning()
     QFETCH(QString, registerDimension1);
     QFETCH(QString, addressBlockRange);
     QFETCH(QString, addressUnitBits);
+    QFETCH(QString, addressBlockWidth);
     QFETCH(bool, isValid);
 
     QSharedPointer<Field> testField (new Field("testField"));
@@ -772,7 +773,7 @@ void tst_AddressBlockValidator::testRegisterPositioning()
     registerOne->getFields()->append(testField);
 
     QSharedPointer<AddressBlock> testBlock (new AddressBlock("testBlock", "0"));
-    testBlock->setWidth("100");
+    testBlock->setWidth(addressBlockWidth);
     testBlock->setRange(addressBlockRange);
     testBlock->getRegisterData()->append(registerOne);
 
@@ -811,18 +812,25 @@ void tst_AddressBlockValidator::testRegisterPositioning_data()
     QTest::addColumn<QString>("registerDimension1");
     QTest::addColumn<QString>("addressBlockRange");
     QTest::addColumn<QString>("addressUnitBits");
+    QTest::addColumn<QString>("addressBlockWidth");
     QTest::addColumn<bool>("isValid");
 
-    QTest::newRow("Register1: offset=4, size=5, dimension=1; addressBlock range = 10; addressUnitBits = 4 is valid")
-        << "4" << "5" << "1" << "10" << "4" << true;
-    QTest::newRow("Register1: offset=-1, size=5, dimension=1; addressBlock range = 10; addressUnitBits = 4 is not valid")
-        << "-1" << "5" << "1" << "10" << "4" << false;
-    QTest::newRow("Register1: offset=4, size=25, dimension=1; addressBlock range = 10; addressUnitBits = 4 is not valid")
-        << "4" << "25" << "1" << "10" << "4" << false;
-    QTest::newRow("Register1: offset=4, size=5, dimension=4; addressBlock range = 10; addressUnitBits = 4 is not valid")
-        << "4" << "5" << "4" << "10" << "4" << false;
-    QTest::newRow("Register1: offset=4, size=5, dimension=1; addressBlock range = 5; addressUnitBits = 4 is not valid")
-        << "4" << "5" << "1" << "5" << "4" << false;
+    QTest::newRow("Register: offset='h0, size=32, dimension=0; addressBlock range=4, AUB=8, width=32 is valid")
+        << "'h0" << "32" << "0" << "4" << "8" << "32" << true;
+
+    QTest::newRow("Register: offset=4, size=5, dimension=1; addressBlock range = 10; addressUnitBits = 4 is valid")
+        << "4" << "5" << "1" << "10" << "4" << "100" << true;
+    QTest::newRow("Register: offset=-1, size=5, dimension=1; addressBlock range = 10; addressUnitBits = 4 is not valid")
+        << "-1" << "5" << "1" << "10" << "4" << "100" << false;
+    QTest::newRow("Register: offset=4, size=25, dimension=1; addressBlock range = 10; addressUnitBits = 4 is not valid")
+        << "4" << "25" << "1" << "10" << "4" << "100" << false;
+    QTest::newRow("Register: offset=4, size=5, dimension=4; addressBlock range = 10; addressUnitBits = 4 is not valid")
+        << "4" << "5" << "4" << "10" << "4" << "100" << false;
+    QTest::newRow("Register: offset=4, size=5, dimension=1; addressBlock range = 5; addressUnitBits = 4 is not valid")
+        << "4" << "5" << "1" << "5" << "4" << "100" << false;
+
+    QTest::newRow("Register: offset='h10, size=32, dimension=; addressBlock range=24, AUB=8, width = 32 is valid")
+        << "'h10" << "32" << "" << "24" << "8" << "32" << true;
 }
 
 //-----------------------------------------------------------------------------
@@ -912,15 +920,18 @@ void tst_AddressBlockValidator::testRegisterOverlapping_data()
     QTest::addColumn<QString>("addressUnitBits");
     QTest::addColumn<bool>("isValid");
 
+    QTest::newRow("First: offset='h0, size=32, dimension=0; Second: offset=4, size=32, dimension=0; AUB=8 is valid")
+        << "0" << "32" << "0" << "4" << "32" << "0" << "8" << true;
+
     QTest::newRow("Register1: offset=0, size=5, dimension=1; Register2: offset=50, size=5, dimension=2; "
         "Address unit bits: 8 is valid") <<
         "0" << "5" << "1" << "50" << "5" << "2" << "8" << true;
-    QTest::newRow("Register1: offset=49, size=5, dimension=1; Register2: offset=50, size=5, dimension=2; "
+    QTest::newRow("Register1: offset=49, size=9, dimension=1; Register2: offset=50, size=5, dimension=2; "
         "Address unit bits: 8 is not valid") <<
-        "49" << "5" << "1" << "50" << "5" << "2" << "8" << false;
-    QTest::newRow("Register1: offset=50, size=5, dimension=2; Register2: offset=49, size=5, dimension=1; "
+        "49" << "9" << "1" << "50" << "5" << "2" << "8" << false;
+    QTest::newRow("Register1: offset=50, size=5, dimension=2; Register2: offset=49, size=9, dimension=1; "
         "Address unit bits: 8 is not valid") <<
-        "50" << "5" << "2" << "49" << "5" << "1" << "8" << false;
+        "50" << "5" << "2" << "49" << "9" << "1" << "8" << false;
     QTest::newRow("Register1: offset=49, size=5, dimension=2; Register2: offset=50, size=5, dimension=2; "
         "Address unit bits: 8 is not valid") <<
         "49" << "5" << "2" << "50" << "5" << "2" << "8" << false;
@@ -949,8 +960,8 @@ void tst_AddressBlockValidator::testRegisterIsOverlappingTwoOtherRegisters()
     registerTwo->setDimension("4");
     registerTwo->getFields()->append(testField);
 
-    QSharedPointer<Register> registerThree (new Register("Fuu", "6", "1"));
-    registerThree->setDimension("6");
+    QSharedPointer<Register> registerThree (new Register("Fuu", "3", "1"));
+    registerThree->setDimension("8");
     registerThree->getFields()->append(testField);
 
     QSharedPointer<AddressBlock> testBlock (new AddressBlock("champloo", "0"));

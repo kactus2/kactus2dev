@@ -203,15 +203,15 @@ bool AddressBlockValidator::hasValidRegisterData(QSharedPointer<AddressBlock> ad
                         }
                     }
 
-                    if (aubChangeOk)
+                    if (aubChangeOk && aubInt != 0)
                     {
                         int registerSize = getRegisterSizeInLAU(targetRegister, aubInt);
 
                         int registerBegin = expressionParser_->parseExpression(targetRegister->getAddressOffset()).
                             toInt();
-                        int registerEnd = registerBegin + registerSize;
+                        int registerEnd = registerBegin + registerSize - 1;
 
-                        if ( registerBegin < 0 || registerBegin >= addressBlockRange - registerSize)
+                        if ( registerBegin < 0 || registerBegin + registerSize > addressBlockRange)
                         {
                             return false;
                         }
@@ -490,23 +490,25 @@ void AddressBlockValidator::findErrorsInRegisterData(QVector<QString>& errors,
     if (!addressBlock->getRegisterData()->isEmpty())
     {
         QStringList registerNames;
+        QStringList duplicateNames;
         QStringList typeIdentifiers;
 
         MemoryReserve reservedArea;
         bool aubChangeOk = true;
         int aubInt = expressionParser_->parseExpression(addressUnitBits).toInt(&aubChangeOk);
-        int addressBlockRange = expressionParser_->parseExpression(addressUnitBits).toInt();
+        int addressBlockRange = expressionParser_->parseExpression(addressBlock->getRange()).toInt();
 
-        for (int registerindex = 0; registerindex < addressBlock->getRegisterData()->size(); ++registerindex)
+        foreach (QSharedPointer<RegisterBase> registerData, *addressBlock->getRegisterData())
         {
-            QSharedPointer<RegisterBase> registerData = addressBlock->getRegisterData()->at(registerindex);
             QSharedPointer<Register> targetRegister = registerData.dynamicCast<Register>();
             if (targetRegister)
             {
-                if (registerNames.contains(targetRegister->name()))
+                if (registerNames.contains(targetRegister->name()) &&
+                    !duplicateNames.contains(targetRegister->name()))
                 {
                     errors.append(QObject::tr("Name %1 of registers in addressBlock %2 is not unique.")
                         .arg(targetRegister->name()).arg(addressBlock->name()));
+                    duplicateNames.append(targetRegister->name());
                 }
                 else
                 {
@@ -550,17 +552,17 @@ void AddressBlockValidator::findErrorsInRegisterData(QVector<QString>& errors,
                         .arg(AccessTypes::access2Str(addressBlock->getAccess())));
                 }
 
-                if (aubChangeOk)
+                if (aubChangeOk && aubInt != 0)
                 {
                     int registerSize = getRegisterSizeInLAU(targetRegister, aubInt);
 
                     int registerBegin = expressionParser_->parseExpression(targetRegister->getAddressOffset()).
                         toInt();
-                    int registerEnd = registerBegin + registerSize;
+                    int registerEnd = registerBegin + registerSize - 1;
 
                     reservedArea.addArea(targetRegister->name(), registerBegin, registerEnd);
 
-                    if ( registerBegin < 0 || registerBegin >= addressBlockRange - registerSize)
+                    if ( registerBegin < 0 || registerBegin + registerSize > addressBlockRange)
                     {
                         errors.append(QObject::tr("Register %1 is not contained within %2")
                             .arg(targetRegister->name()).arg(context));
@@ -582,14 +584,15 @@ int AddressBlockValidator::getRegisterSizeInLAU(QSharedPointer<Register> targetR
     int registerDimension = expressionParser_->parseExpression(targetRegister->getDimension()).
         toInt();
 
-    qreal topPart = size + addressUnitBits - 1;
-    qreal trueSize = (topPart / addressUnitBits)*registerDimension;
-    int registerSize = trueSize;
-
-    if (trueSize != registerSize)
+    if (registerDimension == 0)
     {
-        registerSize++;
+        registerDimension = 1;
     }
 
-    return registerSize;
+    int topPart = size + addressUnitBits -1;
+    int dimensionlessSize = topPart / addressUnitBits;
+
+    int trueSize = dimensionlessSize * registerDimension;
+
+    return trueSize;
 }
