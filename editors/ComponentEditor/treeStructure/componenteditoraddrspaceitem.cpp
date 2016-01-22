@@ -201,16 +201,19 @@ void ComponentEditorAddrSpaceItem::updateGraphics()
 //-----------------------------------------------------------------------------
 void ComponentEditorAddrSpaceItem::removeGraphicsItem()
 {
-	Q_ASSERT(graphItem_);
+    Q_ASSERT(graphItem_);
 
-	// remove the graph item from the scene
-	localMemMapVisualizer_->removeMemoryMapItem(graphItem_);
+    if (graphItem_)
+    {
+        // remove the graph item from the scene
+        localMemMapVisualizer_->removeMemoryMapItem(graphItem_);
 
-	disconnect(graphItem_, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()));
+        disconnect(graphItem_, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()));
 
-	// delete the graph item
-	delete graphItem_;
-	graphItem_ = NULL;
+        // delete the graph item
+        delete graphItem_;
+        graphItem_ = NULL;
+    }
 }
 
 //-----------------------------------------------------------------------------
