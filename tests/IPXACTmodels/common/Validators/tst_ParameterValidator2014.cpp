@@ -43,6 +43,8 @@ private slots:
     void testValidityWithChoice();
     void testValidityWithChoice_data();
 
+    void testBitVectorIsValid();
+
 private:
 
     bool errorIsNotFoundInErrorlist(QString const& expectedError, QVector<QString>& errorlist);
@@ -447,6 +449,54 @@ void tst_ParameterValidator2014::testValidityWithChoice_data()
 
     QTest::newRow("Value test is valid for enumerations test and test1, with type string") << "\"test\"" <<
         "\"test\"" << "\"test1\"" << "string" << true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ParameterValidator2014::testBitVectorIsValid()
+//-----------------------------------------------------------------------------
+void tst_ParameterValidator2014::testBitVectorIsValid()
+{
+    QSharedPointer<Parameter> testParameter(new Parameter());
+    testParameter->setName("testParameter");
+    testParameter->setType("bit");
+    testParameter->setValue("1");
+
+    QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
+
+    QSharedPointer<QList<QSharedPointer<Choice> > > choiceList (new QList<QSharedPointer<Choice> > ());
+
+    ParameterValidator2014 validator(parser, choiceList);
+    QCOMPARE(validator.validate(testParameter), true);
+
+    testParameter->setVectorLeft("0");
+    testParameter->setVectorRight("4");
+
+    QCOMPARE(validator.validate(testParameter), true);
+
+    testParameter->setType("int");
+
+    QCOMPARE(validator.validate(testParameter), false);
+
+    QVector<QString> errorList;
+    validator.findErrorsIn(errorList, testParameter, "test");
+
+    QString expectedError = QObject::tr("Invalid bit vector values specified for %1 %2 within %3")
+        .arg(testParameter->elementName()).arg(testParameter->name()).arg("test");
+    if (errorIsNotFoundInErrorlist(expectedError, errorList))
+    {
+        QFAIL("No error message found.");
+    }
+
+    testParameter->setVectorLeft("");
+    testParameter->setVectorRight("");
+
+    QCOMPARE(validator.validate(testParameter), true);
+
+    testParameter->setType("bit");
+    testParameter->setVectorLeft("1");
+    testParameter->setVectorRight("2");
+
+    QCOMPARE(validator.validate(testParameter), true);
 }
 
 //-----------------------------------------------------------------------------

@@ -335,11 +335,18 @@ void Parameter::setVectorLeft(QString const& leftExpression)
 {
     if (vectors_->isEmpty())
     {
-        vectors_->append(QSharedPointer<Vector>(new Vector(leftExpression, "")));
+        if (!leftExpression.isEmpty())
+        {
+            vectors_->append(QSharedPointer<Vector>(new Vector(leftExpression, "")));
+        }
     }
     else
     {
         vectors_->first()->setLeft(leftExpression);
+        if (vectors_->first()->getRight().isEmpty())
+        {
+            vectors_->removeFirst();
+        }
     }
 }
 
@@ -350,11 +357,18 @@ void Parameter::setVectorRight(QString const& rightExpression)
 {
     if (vectors_->isEmpty())
     {
-        vectors_->append(QSharedPointer<Vector>(new Vector("", rightExpression)));
+        if (!rightExpression.isEmpty())
+        {
+            vectors_->append(QSharedPointer<Vector>(new Vector("", rightExpression)));
+        }
     }
     else
     {
         vectors_->first()->setRight(rightExpression);
+        if (vectors_->first()->getLeft().isEmpty())
+        {
+            vectors_->removeFirst();
+        }
     }
 }
 

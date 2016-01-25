@@ -471,11 +471,11 @@ bool AbstractParameterModel::validateIndex(QModelIndex const& index) const
     }
     else if (index.column() == bitWidthLeftColumn())
     {
-        return validator_->validateArrayValues(parameter->getVectorLeft(), parameter->getVectorRight());
+        return validator_->hasValidVector(parameter);
     }
     else if (index.column() == bitWidthRightColumn())
     {
-        return validator_->validateArrayValues(parameter->getVectorLeft(), parameter->getVectorRight());
+        return validator_->hasValidVector(parameter);
     }
     else if (index.column() == minimumColumn())
     {

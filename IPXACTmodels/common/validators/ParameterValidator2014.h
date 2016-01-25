@@ -318,7 +318,7 @@ protected:
      *      @param [in] parameter   The parameter whose errors to find.
      *      @param [in] context     Context to help locate the errors.
      */
-    void findErrorsInVector(QVector<QString> errors, QSharedPointer<Parameter> parameter, QString const& context)
+    void findErrorsInVector(QVector<QString>& errors, QSharedPointer<Parameter> parameter, QString const& context)
         const;
 
 private:

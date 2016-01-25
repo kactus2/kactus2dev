@@ -213,7 +213,8 @@ bool ParameterValidator2014::isArrayValidForType(QString const& arrayExpression,
 //-----------------------------------------------------------------------------
 bool ParameterValidator2014::hasValidVector(QSharedPointer<const Parameter> parameter) const
 {
-    if (!parameter->getVectors()->isEmpty() && parameter->getType() != QLatin1String("bit"))
+    if ((!parameter->getVectors()->isEmpty() && parameter->getType() != QLatin1String("bit")) ||
+        !validateArrayValues(parameter->getVectorLeft(), parameter->getVectorRight()))
     {
         return false;
     }
@@ -557,13 +558,13 @@ void ParameterValidator2014::findErrorsInResolve(QVector<QString>& errors, QShar
 //-----------------------------------------------------------------------------
 // Function: ParameterValidator2014::findErrorsInVector()
 //-----------------------------------------------------------------------------
-void ParameterValidator2014::findErrorsInVector(QVector<QString> errors, QSharedPointer<Parameter> parameter,
+void ParameterValidator2014::findErrorsInVector(QVector<QString>& errors, QSharedPointer<Parameter> parameter,
     QString const& context) const
 {
     if (!hasValidVector(parameter))
     {
-        errors.append(QObject::tr("Invalid vector specified for %1 %2 within %3").arg(parameter->elementName(),
-            parameter->name(), context));
+        errors.append(QObject::tr("Invalid bit vector values specified for %1 %2 within %3")
+            .arg(parameter->elementName(), parameter->name(), context));
     }
 }
 
