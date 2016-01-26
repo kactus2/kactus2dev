@@ -151,8 +151,7 @@ QVariant PortsModel::data(QModelIndex const& index, int role) const
             return QColor("whiteSmoke");
         }
         else if (index.column() == PortColumns::NAME || index.column() == PortColumns::DIRECTION || 
-            index.column() == PortColumns::WIDTH || index.column() == PortColumns::LEFT_BOUND || 
-            index.column() == PortColumns::RIGHT_BOUND)
+            index.column() == PortColumns::WIDTH)
         {
             return QColor("LemonChiffon");
         }
@@ -853,10 +852,20 @@ bool PortsModel::validateIndex(QModelIndex const& index) const
     }
     if (index.column() == PortColumns::LEFT_BOUND)
     {
+		if ( port->getLeftBound().isEmpty() && port->getRightBound().isEmpty() )
+		{
+			return true;
+		}
+
         return portValidator_->portBoundIsValid(port->getLeftBound());
     }
     else if (index.column() == PortColumns::RIGHT_BOUND)
-    {
+	{
+		if ( port->getLeftBound().isEmpty() && port->getRightBound().isEmpty() )
+		{
+			return true;
+		}
+
         return portValidator_->portBoundIsValid(port->getRightBound());
     }
     else if (index.column() == PortColumns::DEFAULT_VALUE)
@@ -931,6 +940,11 @@ void PortsModel::setTypeNameAndDefinitionOnRow(QSharedPointer<Port> port, int ro
 //-----------------------------------------------------------------------------
 bool PortsModel::hasExpressionInLeftOrRightBound(QSharedPointer<Port> port) const
 {
+	if ( port->getLeftBound().isEmpty() && port->getRightBound().isEmpty() )
+	{
+		return true;
+	}
+
     bool leftNumber = false;
     bool rightNumber = false;
 

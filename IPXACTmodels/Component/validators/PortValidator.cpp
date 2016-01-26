@@ -106,7 +106,7 @@ bool PortValidator::hasValidArrays(QSharedPointer<Port> port) const
     // Any arrays must have valid left and right.
     foreach ( QSharedPointer<Array> array, *port->getArrays() )
     {
-        if (!arrayValueIsValid(array->getLeft()) || arrayValueIsValid(array->getRight()))
+        if (!arrayValueIsValid(array->getLeft()) || !arrayValueIsValid(array->getRight()))
         {
             return false;
         }
@@ -142,12 +142,16 @@ bool PortValidator::hasValidWire(QSharedPointer<Port> port) const
 
     if (wire)
     {
-        // Bounds must be valid if defined.
-        if (!portBoundIsValid(wire->getVectorLeftBound()) || !portBoundIsValid(wire->getVectorRightBound()) ||
-            !wireHasValidDirection(wire))
-        {
-            return false;
-        }
+		// Bounds not defined, means they are ok.
+		if ( !wire->getVectorLeftBound().isEmpty() || !wire->getVectorRightBound().isEmpty() )
+		{
+			// Bounds must be valid if defined.
+			if (!portBoundIsValid(wire->getVectorLeftBound()) || !portBoundIsValid(wire->getVectorRightBound()) ||
+				!wireHasValidDirection(wire))
+			{
+				return false;
+			}
+		}
 
         // Any view reference must point to an existing view.
         foreach (QSharedPointer<WireTypeDef> typeDef, *wire->getWireTypeDefs())
@@ -385,18 +389,21 @@ void PortValidator::findErrorsInWire(QVector<QString>& errors, QSharedPointer<Po
 {
     QSharedPointer<Wire> wire = port->getWire();
 
-    // Bounds must be valid if defined.
-    if (!portBoundIsValid(port->getLeftBound()))
-    {
-        errors.append(QObject::tr("The left of vector is invalid: %1 in port %2")
-            .arg(wire->getVectorLeftBound()).arg(port->name()));
-    }
+	if ( !wire->getVectorLeftBound().isEmpty() || !wire->getVectorRightBound().isEmpty() )
+	{
+		// Bounds must be valid.
+		if ( !portBoundIsValid(wire->getVectorLeftBound()))
+		{
+			errors.append(QObject::tr("The left of vector is invalid: %1 in port %2")
+				.arg(wire->getVectorLeftBound()).arg(port->name()));
+		}
 
-    if (!portBoundIsValid(port->getRightBound()))
-    {
-        errors.append(QObject::tr("The right of vector is invalid: %1 in port %2")
-            .arg(wire->getVectorRightBound()).arg(port->name()));
-    }
+		if (!portBoundIsValid(wire->getVectorRightBound()))
+		{
+			errors.append(QObject::tr("The right of vector is invalid: %1 in port %2")
+				.arg(wire->getVectorRightBound()).arg(port->name()));
+		}
+	}
 
     if (!wireHasValidDirection(wire))
     {

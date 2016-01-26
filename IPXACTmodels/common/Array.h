@@ -45,16 +45,6 @@ private:
 
 	// Disable assignment.
     Array& operator=(Array const& rhs);
-    
-	//-----------------------------------------------------------------------------
-	// Data.
-	//-----------------------------------------------------------------------------
-
-    //! The left side of the array.
-    QString left_;
-
-    //! The right side of the array.
-    QString right_;
 
 };
 #endif // ARRAY_H
