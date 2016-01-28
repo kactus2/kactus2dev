@@ -199,6 +199,7 @@ HEADERS += ./common/Global.h \
     ./Plugins/PluginSystem/ImportPlugin/ImportPlugin.h \
     ./Plugins/PluginSystem/ImportPlugin/ModelParameterSource.h \
     ./Plugins/PluginSystem/ImportPlugin/ModelParameterVisualizer.h \
+    ./Plugins/common/NameGenerationPolicy.h \
     ./library/LibraryManager/libraryinterface.h \
     ./library/LibraryManager/LibraryUtils.h \
     ./library/LibraryManager/LibraryFilter.h \
@@ -268,7 +269,6 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/otherClockDrivers/clockdriversdelegate.h \
     ./editors/ComponentEditor/otherClockDrivers/otherclockdriverseditor.h \
     ./editors/ComponentEditor/channels/ChannelColumns.h \
-    ./editors/ComponentEditor/channels/channelinterfacemanagerdelegate.h \
     ./editors/ComponentEditor/channels/channelsdelegate.h \
     ./editors/ComponentEditor/channels/channelseditor.h \
     ./editors/ComponentEditor/channels/channelsmodel.h \
@@ -332,11 +332,9 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/software/swView/swbuildcommandmodel.h \
     ./editors/ComponentEditor/software/swView/swbuilddelegate.h \
     ./editors/ComponentEditor/software/swView/SWViewEditor.h \
-    ./editors/ComponentEditor/software/swView/swviewsdelegate.h \
     ./editors/ComponentEditor/software/swView/swviewseditor.h \
     ./editors/ComponentEditor/software/swView/swviewsmodel.h \
     ./editors/ComponentEditor/software/systemView/SystemViewEditor.h \
-    ./editors/ComponentEditor/software/systemView/SystemViewsDelegate.h \
     ./editors/ComponentEditor/software/systemView/SystemViewsEditor.h \
     ./editors/ComponentEditor/software/systemView/SystemViewsModel.h \
     ./editors/ComponentEditor/addressSpaces/AddressSpaceColumns.h \
@@ -360,15 +358,14 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/addressSpaces/addressSpaceVisualizer/localaddrblockgraphitem.h \
     ./editors/ComponentEditor/addressSpaces/addressSpaceVisualizer/segmentgraphitem.h \
     ./editors/ComponentEditor/cpus/CpuColumns.h \
-    ./editors/ComponentEditor/cpus/addressspacerefdelegate.h \
     ./editors/ComponentEditor/cpus/cpusdelegate.h \
     ./editors/ComponentEditor/cpus/cpuseditor.h \
     ./editors/ComponentEditor/cpus/cpusmodel.h \
     ./editors/ComponentEditor/views/EnvIdentifiersColumns.h \
-    ./editors/ComponentEditor/views/ModuleParameterFactoryImplementation.h \
     ./editors/ComponentEditor/views/ViewColumns.h \
     ./editors/ComponentEditor/views/ModuleParameterEditor.h \
     ./editors/ComponentEditor/views/ComponentInstantiationEditor.h \
+    ./editors/ComponentEditor/views/ModuleParameterDelegate.h \
     ./editors/ComponentEditor/views/ViewsDelegate.h \
     ./editors/ComponentEditor/views/filesetrefmodel.h \
     ./editors/ComponentEditor/views/hierarchyrefwidget.h \
@@ -376,7 +373,6 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/views/viewseditor.h \
     ./editors/ComponentEditor/views/viewsmodel.h \
     ./editors/ComponentEditor/views/envidentifiereditor.h \
-    ./editors/ComponentEditor/views/envidentifiersdelegate.h \
     ./editors/ComponentEditor/views/envidentifiersmodel.h \
     ./editors/ComponentEditor/views/filesetrefeditor.h \
     ./editors/ComponentEditor/views/filesetrefeditordelegate.h \
@@ -569,6 +565,8 @@ HEADERS += ./common/Global.h \
     ./designEditors/HWDesign/HWAddCommands.h \
     ./designEditors/HWDesign/HWMoveCommands.h \
     ./designEditors/HWDesign/PortmapDialog.h \
+    ./designEditors/HWDesign/AdHocConnectionItem.h \
+    ./editors/ComponentEditor/views/ModuleParameterModel.h \
     ./designEditors/HWDesign/AdHocInterfaceItem.h \
     ./designEditors/HWDesign/AdHocPortItem.h \
     ./designEditors/HWDesign/BusInterfaceDialog.h \
@@ -597,6 +595,14 @@ HEADERS += ./common/Global.h \
     ./designEditors/HWDesign/AdHocEditor/AdHocDelegate.h \
     ./designEditors/HWDesign/AdHocEditor/AdHocEditor.h \
     ./designEditors/HWDesign/AdHocEditor/AdHocModel.h \
+    ./designEditors/HWDesign/undoCommands/AdHocConnectionAddCommand.h \
+    ./designEditors/HWDesign/undoCommands/AdHocVisibilityChangeCommand.h \
+    ./designEditors/HWDesign/undoCommands/ColumnDeleteCommand.h \
+    ./designEditors/HWDesign/undoCommands/ComponentItemMoveCommand.h \
+    ./designEditors/HWDesign/undoCommands/ConnectionDeleteCommand.h \
+    ./designEditors/HWDesign/undoCommands/PortDeleteCommand.h \
+    ./designEditors/HWDesign/undoCommands/ComponentDeleteCommand.h \
+    ./designEditors/HWDesign/undoCommands/InterfaceDeleteCommand.h \
     ./designEditors/common/DesignWidgetFactory.h \
     ./designEditors/common/DesignWidgetFactoryImplementation.h \
     ./designEditors/common/NamelabelWidth.h \
@@ -808,6 +814,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./Plugins/PluginSystem/PluginListDialog.cpp \
     ./Plugins/PluginSystem/PluginManager.cpp \
     ./Plugins/PluginSystem/PluginUtilityAdapter.cpp \
+    ./Plugins/common/NameGenerationPolicy.cpp \
     ./library/LibraryManager/librarydata.cpp \
     ./library/LibraryManager/LibraryErrorModel.cpp \
     ./library/LibraryManager/LibraryFilter.cpp \
@@ -882,7 +889,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapsTreeItem.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapsTreeModel.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapsTreeView.cpp \
-    ./editors/ComponentEditor/channels/channelinterfacemanagerdelegate.cpp \
     ./editors/ComponentEditor/channels/channelsdelegate.cpp \
     ./editors/ComponentEditor/channels/channelseditor.cpp \
     ./editors/ComponentEditor/channels/channelsmodel.cpp \
@@ -939,15 +945,14 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/ports/PortTagEditorDelegate.cpp \
     ./editors/ComponentEditor/views/ComponentInstantiationEditor.cpp \
     ./editors/ComponentEditor/views/envidentifiereditor.cpp \
-    ./editors/ComponentEditor/views/envidentifiersdelegate.cpp \
     ./editors/ComponentEditor/views/envidentifiersmodel.cpp \
     ./editors/ComponentEditor/views/filesetrefeditor.cpp \
     ./editors/ComponentEditor/views/filesetrefeditordelegate.cpp \
     ./editors/ComponentEditor/views/filesetrefmodel.cpp \
-    ./editors/ComponentEditor/views/flatviewgeneraltab.cpp \
     ./editors/ComponentEditor/views/hierarchyrefwidget.cpp \
+    ./editors/ComponentEditor/views/ModuleParameterDelegate.cpp \
     ./editors/ComponentEditor/views/ModuleParameterEditor.cpp \
-    ./editors/ComponentEditor/views/ModuleParameterFactoryImplementation.cpp \
+    ./editors/ComponentEditor/views/ModuleParameterModel.cpp \
     ./editors/ComponentEditor/views/vieweditor.cpp \
     ./editors/ComponentEditor/views/ViewsDelegate.cpp \
     ./editors/ComponentEditor/views/viewseditor.cpp \
@@ -970,11 +975,9 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/software/swView/swbuildcommandmodel.cpp \
     ./editors/ComponentEditor/software/swView/swbuilddelegate.cpp \
     ./editors/ComponentEditor/software/swView/SWViewEditor.cpp \
-    ./editors/ComponentEditor/software/swView/swviewsdelegate.cpp \
     ./editors/ComponentEditor/software/swView/swviewseditor.cpp \
     ./editors/ComponentEditor/software/swView/swviewsmodel.cpp \
     ./editors/ComponentEditor/software/systemView/SystemViewEditor.cpp \
-    ./editors/ComponentEditor/software/systemView/SystemViewsDelegate.cpp \
     ./editors/ComponentEditor/software/systemView/SystemViewsEditor.cpp \
     ./editors/ComponentEditor/software/systemView/SystemViewsModel.cpp \
     ./editors/ComponentEditor/addressSpaces/addressspaceeditor.cpp \
@@ -995,7 +998,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacevisualizer.cpp \
     ./editors/ComponentEditor/addressSpaces/addressSpaceVisualizer/localaddrblockgraphitem.cpp \
     ./editors/ComponentEditor/addressSpaces/addressSpaceVisualizer/segmentgraphitem.cpp \
-    ./editors/ComponentEditor/cpus/addressspacerefdelegate.cpp \
     ./editors/ComponentEditor/cpus/cpusdelegate.cpp \
     ./editors/ComponentEditor/cpus/cpuseditor.cpp \
     ./editors/ComponentEditor/cpus/cpusmodel.cpp \
@@ -1111,6 +1113,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/CSourceEditor/CSourceWidget.cpp \
     ./editors/ConfigurationTools/ViewConfigurer.cpp \
     ./editors/ConfigurationTools/ViewConfigurerDelegate.cpp \
+    ./designEditors/HWDesign/AdHocConnectionItem.cpp \
     ./designEditors/HWDesign/AdHocEnabled.cpp \
     ./designEditors/HWDesign/AdHocInterfaceItem.cpp \
     ./designEditors/HWDesign/AdHocPortItem.cpp \
@@ -1142,6 +1145,14 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./designEditors/HWDesign/AdHocEditor/AdHocDelegate.cpp \
     ./designEditors/HWDesign/AdHocEditor/AdHocEditor.cpp \
     ./designEditors/HWDesign/AdHocEditor/AdHocModel.cpp \
+    ./designEditors/HWDesign/undoCommands/AdHocConnectionAddCommand.cpp \
+    ./designEditors/HWDesign/undoCommands/AdHocVisibilityChangeCommand.cpp \
+    ./designEditors/HWDesign/undoCommands/ColumnDeleteCommand.cpp \
+    ./designEditors/HWDesign/undoCommands/ComponentDeleteCommand.cpp \
+    ./designEditors/HWDesign/undoCommands/ComponentItemMoveCommand.cpp \
+    ./designEditors/HWDesign/undoCommands/ConnectionDeleteCommand.cpp \
+    ./designEditors/HWDesign/undoCommands/InterfaceDeleteCommand.cpp \
+    ./designEditors/HWDesign/undoCommands/PortDeleteCommand.cpp \
     ./designEditors/MemoryDesigner/AddressBlockItem.cpp \
     ./designEditors/MemoryDesigner/AddressSectionItem.cpp \
     ./designEditors/MemoryDesigner/AddressSpaceItem.cpp \

@@ -56,15 +56,15 @@ void ApiDefinitionWriter::writeApiDefinition(QXmlStreamWriter& writer, QSharedPo
 	VLNV comDefRef = apiDefinition->getComDefinitionRef();
 
 	writer.writeEmptyElement("kactus2:comDefinitionRef");
-	writer.writeAttribute("vendor", comDefRef.getVendor());
-	writer.writeAttribute("library", comDefRef.getLibrary());
-	writer.writeAttribute("name", comDefRef.getName());
-	writer.writeAttribute("version", comDefRef.getVersion());
+	writer.writeAttribute("ipxact:vendor", comDefRef.getVendor());
+	writer.writeAttribute("ipxact:library", comDefRef.getLibrary());
+	writer.writeAttribute("ipxact:name", comDefRef.getName());
+	writer.writeAttribute("ipxact:version", comDefRef.getVersion());
 
 	// Write data types.
 	writer.writeStartElement("kactus2:dataTypes");
 
-	foreach (QString const& type, apiDefinition->getDataTypes())
+	foreach (QString const& type, *apiDefinition->getDataTypes())
 	{
 		writer.writeEmptyElement("kactus2:dataType");
 		writer.writeAttribute("kactus2:name", type);

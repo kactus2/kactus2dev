@@ -1247,6 +1247,30 @@
     <ClCompile Include="Design\validator\InterconnectionValidator.cpp">
       <Filter>Source Files\Design\validators</Filter>
     </ClCompile>
+    <ClCompile Include="kactusExtensions\ApiDefinitionReader.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_ApiDefinitionReader.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_ApiDefinitionReader.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusExtensions\validators\ApiDefinitionValidator.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusExtensions\ComDefinitionReader.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_ComDefinitionReader.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_ComDefinitionReader.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusExtensions\validators\ComDefinitionValidator.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BusDefinition\BusDefinition.h">
@@ -1735,6 +1759,12 @@
     <ClInclude Include="Design\validator\DesignValidator.h">
       <Filter>Header Files\Design\validators</Filter>
     </ClInclude>
+    <ClInclude Include="kactusExtensions\validators\ApiDefinitionValidator.h">
+      <Filter>Header Files\kactusExtensions</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusExtensions\validators\ComDefinitionValidator.h">
+      <Filter>Header Files\kactusExtensions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="BusDefinition\BusDefinitionReader.h">
@@ -1951,6 +1981,12 @@
       <Filter>Header Files\kactusExtensions</Filter>
     </CustomBuild>
     <CustomBuild Include="kactusExtensions\ComDefinitionWriter.h">
+      <Filter>Header Files\kactusExtensions</Filter>
+    </CustomBuild>
+    <CustomBuild Include="kactusExtensions\ApiDefinitionReader.h">
+      <Filter>Header Files\kactusExtensions</Filter>
+    </CustomBuild>
+    <CustomBuild Include="kactusExtensions\ComDefinitionReader.h">
       <Filter>Header Files\kactusExtensions</Filter>
     </CustomBuild>
   </ItemGroup>

@@ -14,6 +14,7 @@
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 
 #include <IPXACTmodels/kactusExtensions/ComProperty.h>
+#include <IPXACTmodels/kactusExtensions/validators/ComDefinitionValidator.h>
 
 #include <QVBoxLayout>
 #include <QGridLayout>
@@ -33,7 +34,7 @@ ComDefinitionEditor::ComDefinitionEditor(QWidget *parent,
       propertyEditor_(this)
 {
     // Initialize the editors.
-    dataTypeList_.initialize(comDef_->getTransferTypes());
+    dataTypeList_.initialize(*comDef_->getTransferTypes());
     propertyEditor_.setProperties(comDef_->getProperties());
 
     connect(&dataTypeList_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -88,7 +89,7 @@ void ComDefinitionEditor::refresh()
     comDef_ = libComp.staticCast<ComDefinition>();
 
     // Initialize the editors.
-    dataTypeList_.initialize(comDef_->getTransferTypes());
+    dataTypeList_.initialize(*comDef_->getTransferTypes());
     propertyEditor_.setProperties(comDef_->getProperties());
 
     setModified(false);
@@ -110,7 +111,8 @@ bool ComDefinitionEditor::validate(QVector<QString>& errorList)
 {
     applyChanges();
 
-    comDef_->findErrors(errorList);
+	ComDefinitionValidator validator;
+	validator.findErrorsIn(errorList, comDef_);
 
     return errorList.isEmpty();
 }

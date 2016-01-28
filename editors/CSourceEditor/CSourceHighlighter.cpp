@@ -198,7 +198,7 @@ void CSourceHighlighter::registerAPI(QSharedPointer<ApiDefinition const> apiDef)
     rule.format = &m_styleFormats[STYLE_API_DATA_TYPES];
 
     // Register data type rules.
-    foreach (QString const& dataType, apiDef->getDataTypes())
+    foreach (QString const& dataType, *apiDef->getDataTypes())
     {
         rule.pattern = QRegExp("\\b" + dataType + "\\b");
         highlightRules_.append(rule);

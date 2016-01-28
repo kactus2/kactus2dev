@@ -41,15 +41,6 @@ public:
     ApiDefinition(ApiDefinition const& rhs);
 
     /*!
-     *  Constructor which reads the API definition from an XML document.
-     *
-     *      @param [in] doc The source XML document.
-     *
-     *      @throw Parse_error when a mandatory element is missing.
-     */
-    ApiDefinition(QDomDocument& doc);
-
-    /*!
      *  Destructor.
      */
     virtual ~ApiDefinition();
@@ -60,18 +51,6 @@ public:
      *      @return The created copy of the API definition.
      */
     virtual QSharedPointer<Document> clone()  const;
-
-    /*!
-     *  Returns true if the contents are valid.
-     *
-     *      @param [in/out] errorList Error list which is appended with errors if found while validating.
-     */
-    virtual void findErrors(QVector<QString>& errorList) const;
-
-    /*!
-     *  Returns true if the contents are valid.
-     */
-    virtual bool validate() const;
 
     /*!
      *  Returns the dependent files (none).
@@ -136,7 +115,7 @@ public:
     /*!
      *  Returns the supported data types.
      */
-    QStringList const& getDataTypes() const;
+    QSharedPointer<QStringList> getDataTypes() const;
 
     /*!
      *  Get the functions of the API definition.
@@ -154,19 +133,6 @@ public:
     QSharedPointer<ApiFunction const> getFunction(int index) const;
     
 private:
-    /*!
-     *  Parses all found data types from the given XML node.
-     *
-     *      @param [in] node The source XML node.
-     */
-    void parseDataTypes(QDomNode& node);
-
-    /*!
-     *  Parses all found API functions from the given XML node.
-     *
-     *      @param [in] node The source XML node.
-     */
-    void parseFunctions(QDomNode& node);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -179,7 +145,7 @@ private:
     VLNV comDefRef_;
 
     //! The API data types.
-    QStringList dataTypes_;
+    QSharedPointer< QStringList > dataTypes_;
 
     //! The API functions.
     QSharedPointer< QList< QSharedPointer<ApiFunction> > > functions_;

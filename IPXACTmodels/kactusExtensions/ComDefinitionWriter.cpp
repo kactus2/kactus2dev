@@ -55,7 +55,7 @@ void ComDefinitionWriter::writeComDefinition(QXmlStreamWriter& writer, QSharedPo
     // Write data types.
     writer.writeStartElement("kactus2:transferTypes");
 
-    foreach (QString const& type, comDefinition->getTransferTypes())
+    foreach (QString const& type, *comDefinition->getTransferTypes())
     {
         writer.writeEmptyElement("kactus2:transferType");
         writer.writeAttribute("kactus2:name", type);
@@ -66,9 +66,14 @@ void ComDefinitionWriter::writeComDefinition(QXmlStreamWriter& writer, QSharedPo
     // Write properties.
     writer.writeStartElement("kactus2:properties");
 
-    foreach (QSharedPointer<ComProperty> prop, comDefinition->getProperties())
-    {
-        prop->write(writer);
+    foreach (QSharedPointer<ComProperty> prop, *comDefinition->getProperties())
+	{
+		writer.writeEmptyElement("kactus2:property");
+		writer.writeAttribute("name", prop->name());
+		writer.writeAttribute("required", General::bool2Str(prop->isRequired()));
+		writer.writeAttribute("propertyType", prop->getType());
+		writer.writeAttribute("defaultValue", prop->getDefaultValue());
+		writer.writeAttribute("description", prop->getDescription());
     }
 
 	writer.writeEndElement(); // kactus2:properties

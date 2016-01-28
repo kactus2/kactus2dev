@@ -27,4 +27,8 @@ SUBDIRS += common\Common.pro \
 		   Design\validators\tst_DesignValidator.pro \
 		   Component\Component.pro \
 		   kactusExtensions\tst_ComDefinitionWriter.pro \
+		   kactusExtensions\tst_ComDefinitionReader.pro \
+		   kactusExtensions\tst_ComDefinitionValidator.pro \
 		   kactusExtensions\tst_ApiDefinitionWriter.pro \
+		   kactusExtensions\tst_ApiDefinitionReader.pro \
+		   kactusExtensions\tst_ApiDefinitionValidator.pro \

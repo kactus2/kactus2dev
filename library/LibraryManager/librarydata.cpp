@@ -42,7 +42,9 @@
 #include <IPXACTmodels/generaldeclarations.h>
 
 #include <IPXACTmodels/kactusExtensions/ComDefinition.h>
+#include <IPXACTmodels/kactusExtensions/ComDefinitionReader.h>
 #include <IPXACTmodels/kactusExtensions/ApiDefinition.h>
+#include <IPXACTmodels/kactusExtensions/ApiDefinitionReader.h>
 
 #include <QDir>
 #include <QDomDocument>
@@ -416,11 +418,13 @@ QSharedPointer<Document> LibraryData::getModel(VLNV const& vlnv)
     }
     else if (toCreate.getType() == VLNV::COMDEFINITION)
     {
-        return QSharedPointer<Document>(new ComDefinition(doc));
+		ComDefinitionReader reader;
+		return reader.createComDefinitionFrom(doc);
     }
     else if (toCreate.getType() == VLNV::APIDEFINITION)
     {
-        return QSharedPointer<Document>(new ApiDefinition(doc));
+		ApiDefinitionReader reader;
+		return reader.createApiDefinitionFrom(doc);
     }
     else
     {

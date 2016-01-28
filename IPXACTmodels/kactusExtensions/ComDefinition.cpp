@@ -20,8 +20,8 @@
 // Function: ComDefinition::ComDefinition()
 //-----------------------------------------------------------------------------
 ComDefinition::ComDefinition(VLNV const& vlnv) : Document(vlnv),
-    transferTypes_(),
-    properties_()
+    transferTypes_(new QStringList),
+    properties_(new QList<QSharedPointer<ComProperty> >)
 {
 }
 
@@ -29,75 +29,13 @@ ComDefinition::ComDefinition(VLNV const& vlnv) : Document(vlnv),
 // Function: ComDefinition::ComDefinition()
 //-----------------------------------------------------------------------------
 ComDefinition::ComDefinition(ComDefinition const& rhs) : Document(rhs),
-    transferTypes_(rhs.transferTypes_),
-    properties_()
+    transferTypes_(new QStringList(*rhs.transferTypes_)),
+    properties_(new QList<QSharedPointer<ComProperty> >)
 {
     // Make deep copies of the properties.
-    foreach (QSharedPointer<ComProperty> property, rhs.properties_)
+    foreach (QSharedPointer<ComProperty> property, *rhs.properties_)
     {
-        properties_.append(QSharedPointer<ComProperty>(new ComProperty(*property.data())));
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComDefinition::ComDefinition()
-//-----------------------------------------------------------------------------
-ComDefinition::ComDefinition(QDomDocument& doc) : Document(),
-                                                  transferTypes_(),
-                                                  properties_()
-{
-	QDomElement documentElement = doc.documentElement();
-
-	QString vendor = documentElement.firstChildElement("ipxact:vendor").firstChild().nodeValue();
-	QString library = documentElement.firstChildElement("ipxact:library").firstChild().nodeValue();
-	QString name = documentElement.firstChildElement("ipxact:name").firstChild().nodeValue();
-	QString version = documentElement.firstChildElement("ipxact:version").firstChild().nodeValue();
-
-	VLNV itemVLNV;
-	itemVLNV.setType(VLNV::COMDEFINITION);
-	itemVLNV.setVendor(vendor);
-	itemVLNV.setLibrary(library);
-	itemVLNV.setName(name);
-	itemVLNV.setVersion(version);
-
-	setVlnv(itemVLNV);
-
-	QDomNodeList extensionNodes = doc.firstChildElement("ipxact:vendorExtensions").childNodes();
-
-	int extensionCount = extensionNodes.count();
-	for (int i = 0; i < extensionCount; i++)
-	{
-		QDomNode extensionNode = extensionNodes.at(i);
-
-		if (!extensionNode.nodeName().startsWith("kactus2:"))
-		{
-			QSharedPointer<VendorExtension> extension(new GenericVendorExtension(extensionNode));
-			getVendorExtensions()->append(extension);
-		}
-	}
-
-    // Parse child nodes.
-    for (int i = 0; i < documentElement.childNodes().count(); ++i)
-    {
-        QDomNode childNode = documentElement.childNodes().at(i);
-
-        if (childNode.isComment())
-        {
-            continue;
-        }
-
-		if (childNode.nodeName() ==QString("ipxact:description"))
-		{
-			setDescription( childNode.childNodes().at(0).nodeValue() );
-		}
-		else if (childNode.nodeName() == "kactus2:transferTypes")
-        {
-            parseTransferTypes(childNode);
-        }
-        else if (childNode.nodeName() == "kactus2:properties")
-        {
-            parseProperties(childNode);
-        }
+        properties_->append(QSharedPointer<ComProperty>(new ComProperty(*property.data())));
     }
 }
 
@@ -114,99 +52,6 @@ ComDefinition::~ComDefinition()
 QSharedPointer<Document> ComDefinition::clone() const
 {
     return QSharedPointer<Document>(new ComDefinition(*this));
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComDefinition::findErrors()
-//-----------------------------------------------------------------------------
-void ComDefinition::findErrors(QVector<QString>& errorList) const
-{
-    QString thisIdentifier(QObject::tr("the containing COM definition"));
-
-    if (getVlnv().isValid(errorList, thisIdentifier))
-    {
-        thisIdentifier = QObject::tr("COM definition '%1'").arg(getVlnv().toString());
-    }
-
-    // Check for multiple definitions of same data type.
-    QStringList dataTypeNames;
-    foreach (QString const& dataType, transferTypes_)
-    {
-        if (dataTypeNames.contains(dataType))
-        {
-            errorList.append(QObject::tr("Data type '%1' defined multiple times in '%2'").arg(dataType, 
-                thisIdentifier));
-        }
-        else
-        {
-            dataTypeNames.push_back(dataType);
-        }
-    }
-
-    // Validate the properties.
-    QStringList propertyNames;
-    foreach (QSharedPointer<ComProperty> comProperty, properties_)
-    {
-        if (propertyNames.contains(comProperty->name()))
-        {
-            errorList.append(QObject::tr("Property '%1' defined multiple times in %2").arg(comProperty->name(),
-                thisIdentifier));
-        }
-        else
-        {
-            propertyNames.append(comProperty->name());
-        }
-
-        comProperty->findErrors(errorList, thisIdentifier);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComDefinition::validate()
-//-----------------------------------------------------------------------------
-bool ComDefinition::validate() const
-{
-    if (!getVlnv().isValid())
-    {
-        return false;
-    }
-    
-    // Check for multiple definitions of same transfer type.
-    QStringList transferTypeNames;
-
-    foreach (QString const& transferType, transferTypes_)
-    {
-        if (transferTypeNames.contains(transferType))
-        {
-            return false;
-        }
-        else
-        {
-            transferTypeNames.push_back(transferType);
-        }
-    }
-
-    // Validate the properties.
-    QStringList propertyNames;
-
-    foreach (QSharedPointer<ComProperty> prop, properties_)
-    {
-        if (propertyNames.contains(prop->name()))
-        {
-            return false;
-        }
-        else
-        {
-            propertyNames.append(prop->name());
-        }
-
-        if (!prop->validate())
-        {
-            return false;
-        }
-    }
-
-    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -231,9 +76,9 @@ QList<VLNV> ComDefinition::getDependentVLNVs() const
 void ComDefinition::addTransferType(QString const& type)
 {
     // Check for duplicates.
-    if (!transferTypes_.contains(type))
+    if (!transferTypes_->contains(type))
     {
-        transferTypes_.append(type);
+        transferTypes_->append(type);
     }
 }
 
@@ -242,7 +87,7 @@ void ComDefinition::addTransferType(QString const& type)
 //-----------------------------------------------------------------------------
 void ComDefinition::removeTransferType(QString const& type)
 {
-    transferTypes_.removeAll(type);
+    transferTypes_->removeAll(type);
 }
 
 //-----------------------------------------------------------------------------
@@ -250,7 +95,7 @@ void ComDefinition::removeTransferType(QString const& type)
 //-----------------------------------------------------------------------------
 void ComDefinition::setTransferTypes(QStringList const& types)
 {
-    transferTypes_ = types;
+    transferTypes_ = QSharedPointer<QStringList>( new QStringList( types ) );
 }
 
 //-----------------------------------------------------------------------------
@@ -258,7 +103,7 @@ void ComDefinition::setTransferTypes(QStringList const& types)
 //-----------------------------------------------------------------------------
 void ComDefinition::addProperty(QSharedPointer<ComProperty> prop)
 {
-    properties_.append(prop);
+    properties_->append(prop);
 }
 
 //-----------------------------------------------------------------------------
@@ -266,11 +111,11 @@ void ComDefinition::addProperty(QSharedPointer<ComProperty> prop)
 //-----------------------------------------------------------------------------
 void ComDefinition::removeProperty(QString const& name)
 {
-    foreach (QSharedPointer<ComProperty> property, properties_)
+    foreach (QSharedPointer<ComProperty> property, *properties_)
     {
         if (property->name() == name)
         {
-            properties_.removeOne(property);
+            properties_->removeOne(property);
             break;
         }
     }
@@ -281,13 +126,14 @@ void ComDefinition::removeProperty(QString const& name)
 //-----------------------------------------------------------------------------
 void ComDefinition::setProperties(QList< QSharedPointer<ComProperty> > const& properties)
 {
-    properties_ = properties;
+    properties_ = QSharedPointer< QList< QSharedPointer<ComProperty> > >
+		( new QList<QSharedPointer<ComProperty> >( properties ) );
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComDefinition::getTransferTypes()
 //-----------------------------------------------------------------------------
-QStringList const& ComDefinition::getTransferTypes() const
+QSharedPointer< QStringList > ComDefinition::getTransferTypes() const
 {
     return transferTypes_;
 }
@@ -295,41 +141,7 @@ QStringList const& ComDefinition::getTransferTypes() const
 //-----------------------------------------------------------------------------
 // Function: ComDefinition::getProperties()
 //-----------------------------------------------------------------------------
-QList< QSharedPointer<ComProperty> > const& ComDefinition::getProperties() const
+QSharedPointer< QList< QSharedPointer<ComProperty> > > ComDefinition::getProperties() const
 {
     return properties_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComDefinition::parseTransferTypes()
-//-----------------------------------------------------------------------------
-void ComDefinition::parseTransferTypes(QDomNode& node)
-{
-    for (int i = 0; i < node.childNodes().count(); ++i)
-    {
-        QDomNode typeNode = node.childNodes().at(i);
-
-        if (typeNode.nodeName() == "kactus2:transferType")
-        {
-            QString name = typeNode.attributes().namedItem("kactus2:name").nodeValue();
-            transferTypes_.append(name);
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComDefinition::parseProperties()
-//-----------------------------------------------------------------------------
-void ComDefinition::parseProperties(QDomNode& node)
-{
-    for (int i = 0; i < node.childNodes().count(); ++i)
-    {
-        QDomNode propNode = node.childNodes().at(i);
-
-        if (propNode.nodeName() == "kactus2:property")
-        {
-            QSharedPointer<ComProperty> prop(new ComProperty(propNode));
-            properties_.append(prop);
-        }
-    }
 }

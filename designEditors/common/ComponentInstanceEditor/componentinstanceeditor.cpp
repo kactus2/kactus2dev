@@ -171,7 +171,7 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* component, QSh
         SystemComponentItem* swComponent = static_cast<SystemComponentItem*>(component);
 
         propertyValueEditor_->setData(swComponent->getPropertyValues());
-        propertyValueEditor_->setAllowedProperties(swComponent->componentModel()->getSWProperties());
+        propertyValueEditor_->setAllowedProperties(*swComponent->componentModel()->getSWProperties());
 
         propertyValueEditor_->show();
         configurableElements_->hide();

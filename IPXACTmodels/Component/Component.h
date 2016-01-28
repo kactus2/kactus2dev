@@ -392,7 +392,7 @@ public:
      *
      *      @return A list of sw properties.
      */
-    QList<QSharedPointer<ComProperty> > getSWProperties() const;
+    QSharedPointer<QList<QSharedPointer<ComProperty> > > getSWProperties() const;
 
     /*!
      *  Sets the SW properties.

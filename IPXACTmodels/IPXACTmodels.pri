@@ -116,6 +116,9 @@ HEADERS += ./XmlUtils.h \
     ./designConfiguration/ViewConfiguration.h \
     ./designConfiguration/DesignConfigurationReader.h \
     ./designConfiguration/DesignConfigurationWriter.h \
+    ./designConfiguration/validators/DesignConfigurationValidator.h \
+    ./designConfiguration/validators/InterconnectionConfigurationValidator.h \
+    ./designConfiguration/validators/ViewConfigurationValidator.h \
     ./Design/ActiveInterface.h \
     ./Design/AdHocConnection.h \
     ./Design/ComponentInstance.h \
@@ -129,6 +132,10 @@ HEADERS += ./XmlUtils.h \
     ./Design/ComponentInstanceWriter.h \
     ./Design/DesignReader.h \
     ./Design/DesignWriter.h \
+    ./Design/validator/AdHocConnectionValidator.h \
+    ./Design/validator/ComponentInstanceValidator.h \
+    ./Design/validator/DesignValidator.h \
+    ./Design/validator/InterconnectionValidator.h \
     ./Component/AddressBlock.h \
     ./Component/AddressSpace.h \
     ./Component/AlternateRegister.h \
@@ -233,13 +240,10 @@ HEADERS += ./XmlUtils.h \
     ./Component/validators/MemoryReserve.h \
     ./Component/validators/RegisterValidator.h \
     ./Component/validators/ViewValidator.h \
-    ./designConfiguration/validators/InterconnectionConfigurationValidator.h \
-    ./designConfiguration/validators/ViewConfigurationValidator.h \
-    ./designConfiguration/validators/DesignConfigurationValidator.h \
-    ./Design/validator/AdHocConnectionValidator.h \
-    ./Design/validator/ComponentInstanceValidator.h \
-    ./Design/validator/InterconnectionValidator.h \
-    ./Design/validator/DesignValidator.h
+    ./kactusExtensions/ApiDefinitionReader.h \
+    ./kactusExtensions/validators/ApiDefinitionValidator.h \
+    ./kactusExtensions/ComDefinitionReader.h \
+    ./kactusExtensions/validators/ComDefinitionValidator.h
 SOURCES += ./generaldeclarations.cpp \
     ./XmlUtils.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
@@ -347,6 +351,9 @@ SOURCES += ./generaldeclarations.cpp \
     ./designConfiguration/InterfaceRef.cpp \
     ./designConfiguration/MultipleAbstractorInstances.cpp \
     ./designConfiguration/ViewConfiguration.cpp \
+    ./designConfiguration/validators/DesignConfigurationValidator.cpp \
+    ./designConfiguration/validators/InterconnectionConfigurationValidator.cpp \
+    ./designConfiguration/validators/ViewConfigurationValidator.cpp \
     ./Design/ActiveInterface.cpp \
     ./Design/AdHocConnection.cpp \
     ./Design/ComponentInstance.cpp \
@@ -360,6 +367,10 @@ SOURCES += ./generaldeclarations.cpp \
     ./Design/MonitorInterconnection.cpp \
     ./Design/MonitorInterface.cpp \
     ./Design/PortReference.cpp \
+    ./Design/validator/AdHocConnectionValidator.cpp \
+    ./Design/validator/ComponentInstanceValidator.cpp \
+    ./Design/validator/DesignValidator.cpp \
+    ./Design/validator/InterconnectionValidator.cpp \
     ./Component/AddressBlock.cpp \
     ./Component/AddressBlockReader.cpp \
     ./Component/AddressBlockWriter.cpp \
@@ -464,10 +475,7 @@ SOURCES += ./generaldeclarations.cpp \
     ./Component/validators/MemoryReserve.cpp \
     ./Component/validators/RegisterValidator.cpp \
     ./Component/validators/ViewValidator.cpp \
-    ./designConfiguration/validators/InterconnectionConfigurationValidator.cpp \
-    ./designConfiguration/validators/ViewConfigurationValidator.cpp \
-    ./designConfiguration/validators/DesignConfigurationValidator.cpp \
-    ./Design/validator/AdHocConnectionValidator.cpp \
-    ./Design/validator/ComponentInstanceValidator.cpp \
-    ./Design/validator/DesignValidator.cpp \
-    ./Design/validator/InterconnectionValidator.cpp
+    ./kactusExtensions/ApiDefinitionReader.cpp \
+    ./kactusExtensions/validators/ApiDefinitionValidator.cpp \
+    ./kactusExtensions/ComDefinitionReader.cpp \
+    ./kactusExtensions/validators/ComDefinitionValidator.cpp

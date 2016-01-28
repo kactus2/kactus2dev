@@ -589,15 +589,15 @@ void Component::setSWViews(QList<QSharedPointer<SWView> > newSWViews)
 //-----------------------------------------------------------------------------
 // Function: ComDefinition::getSWProperties()
 //-----------------------------------------------------------------------------
-QList< QSharedPointer<ComProperty> > Component::getSWProperties() const
+QSharedPointer<QList<QSharedPointer<ComProperty> > > Component::getSWProperties() const
 {
     QList<QSharedPointer<VendorExtension> > swPropertiesExtensionList =
         getGroupedExtensionsByType("kactus2:properties", "kactus2:property");
 
-    QList<QSharedPointer<ComProperty> > swProperties;
+    QSharedPointer<QList<QSharedPointer<ComProperty> > > swProperties( new QList<QSharedPointer<ComProperty> > );
     foreach (QSharedPointer<VendorExtension> extension, swPropertiesExtensionList)
     {
-        swProperties.append(extension.dynamicCast<ComProperty>());
+        swProperties->append(extension.dynamicCast<ComProperty>());
     }
 
     return swProperties;

@@ -41,7 +41,7 @@ ComponentEditorSWPropertiesItem::~ComponentEditorSWPropertiesItem()
 QFont ComponentEditorSWPropertiesItem::getFont() const
 {
     QFont font(ComponentEditorItem::getFont());
-    font.setBold(!component_->getSWProperties().isEmpty());
+    font.setBold(!component_->getSWProperties()->isEmpty());
     return font;
 }
 
@@ -66,7 +66,7 @@ QString ComponentEditorSWPropertiesItem::text() const
 //-----------------------------------------------------------------------------
 bool ComponentEditorSWPropertiesItem::isValid() const
 {
-	foreach (QSharedPointer<ComProperty> property, component_->getSWProperties())
+	foreach (QSharedPointer<ComProperty> property, *component_->getSWProperties())
     {
 		if (!property->validate())
         {

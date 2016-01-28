@@ -99,7 +99,7 @@ QWidget* ApiFunctionParameterDelegate::createEditor(QWidget* parent, QStyleOptio
         // Fetch allowed transfer types from the linked COM definition.
         if (comDefinition_ != 0)
         {
-            box->addItems(comDefinition_->getTransferTypes());
+            box->addItems(*comDefinition_->getTransferTypes());
         }
 
         return box;
@@ -115,7 +115,7 @@ QWidget* ApiFunctionParameterDelegate::createEditor(QWidget* parent, QStyleOptio
 
         if (comDefinition_ != 0)
         {
-            foreach (QSharedPointer<ComProperty const> property, comDefinition_->getProperties())
+            foreach (QSharedPointer<ComProperty const> property, *comDefinition_->getProperties())
             {
                 box->addItem(property->name());
             }

@@ -63,19 +63,38 @@ void tst_ApiDefinitionWriter::baseCase()
 	QString output;
 	QXmlStreamWriter xmlStreamWriter(&output);
 
+	testApiDefinition_->setVlnv(VLNV(VLNV::APIDEFINITION,"me","kurjasto","def","0.11"));
+	testApiDefinition_->setComDefinitionRef(VLNV(VLNV::COMDEFINITION,"he","s-lib","cdef","1.337"));
+	testApiDefinition_->getDataTypes()->append("new item");
+
+	QSharedPointer<ApiFunction> func( new ApiFunction );
+	func->setName("hjjhjh");
+	func->setDescription("yryry");
+	func->setReturnValueType("void");
+	func->setReturnValueDescription("lolol");
+
+	testApiDefinition_->getFunctions()->append(func);
+
 	QString expectedOutput(
 		"<?xml version=\"1.0\"?>"
-		"<ipxact:apiDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+		"<kactus2:apiDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
 		" xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\""
 		" xmlns:kactus2=\"http://kactus2.cs.tut.fi\""
 		" xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/"
 		" http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-		"<ipxact:vendor></ipxact:vendor>"
-		"<ipxact:library></ipxact:library>"
-		"<ipxact:name></ipxact:name>"
-		"<ipxact:version></ipxact:version>"
-		"<kactus2:transferTypes/><kactus2:properties/>"
-		"<ipxact:vendorExtensions/></ipxact:ApiDefinition>"
+		"<ipxact:vendor>me</ipxact:vendor>"
+		"<ipxact:library>kurjasto</ipxact:library>"
+		"<ipxact:name>def</ipxact:name>"
+		"<ipxact:version>0.11</ipxact:version>"
+		"<kactus2:comDefinitionRef ipxact:vendor=\"he\" ipxact:library=\"s-lib\" ipxact:name=\"cdef\" ipxact:version=\"1.337\"/>"
+		"<kactus2:dataTypes><kactus2:dataType kactus2:name=\"new item\"/></kactus2:dataTypes>"
+		"<kactus2:functions>"
+		"<kactus2:function kactus2:name=\"hjjhjh\" kactus2:description=\"yryry\">"
+		"<kactus2:returnValue kactus2:type=\"void\" kactus2:description=\"lolol\"/>"
+		"</kactus2:function>"
+		"</kactus2:functions>"
+		"<ipxact:vendorExtensions/>"
+		"</kactus2:apiDefinition>\n"
 		);
 
 	ApiDefinitionWriter apiDefinitionWriter;

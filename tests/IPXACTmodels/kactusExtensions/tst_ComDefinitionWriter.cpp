@@ -63,21 +63,23 @@ void tst_ComDefinitionWriter::baseCase()
 	QString output;
 	QXmlStreamWriter xmlStreamWriter(&output);
 
+	testComDefinition_->setVlnv(VLNV(VLNV::APIDEFINITION,"me","kurjasto","def","0.11"));
+
 	QString expectedOutput(
 		"<?xml version=\"1.0\"?>"
-		"<ipxact:comDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+		"<kactus2:comDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
 		" xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\""
 		" xmlns:kactus2=\"http://kactus2.cs.tut.fi\""
 		" xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/"
 		" http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-		"<ipxact:vendor></ipxact:vendor>"
-		"<ipxact:library></ipxact:library>"
-		"<ipxact:name></ipxact:name>"
-		"<ipxact:version></ipxact:version>"
+		"<ipxact:vendor>me</ipxact:vendor>"
+		"<ipxact:library>kurjasto</ipxact:library>"
+		"<ipxact:name>def</ipxact:name>"
+		"<ipxact:version>0.11</ipxact:version>"
 		"<kactus2:transferTypes/>"
 		"<kactus2:properties/>"
 		"<ipxact:vendorExtensions/>"
-		"</ipxact:comDefinition>"
+		"</kactus2:comDefinition>\n"
 		);
 
 	ComDefinitionWriter comDefinitionWriter;

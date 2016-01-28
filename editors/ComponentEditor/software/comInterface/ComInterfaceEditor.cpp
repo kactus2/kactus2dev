@@ -235,15 +235,15 @@ void ComInterfaceEditor::updateEditorsForComDefinition(VLNV const& comDefinition
         return;
     }
 
-    propertyValueEditor_.setAllowedProperties(comDef->getProperties());
+    propertyValueEditor_.setAllowedProperties(*comDef->getProperties());
 
     QString type = transferTypeCombo_.currentText();
 
     transferTypeCombo_.clear();
     transferTypeCombo_.addItem("");
-    transferTypeCombo_.addItems(comDef->getTransferTypes());
+    transferTypeCombo_.addItems(*comDef->getTransferTypes());
 
-    if (comDef->getTransferTypes().contains(type))
+    if (comDef->getTransferTypes()->contains(type))
     {
         transferTypeCombo_.setCurrentIndex(transferTypeCombo_.findText(type));
     }

@@ -37,15 +37,6 @@ public:
     ComDefinition(ComDefinition const& rhs);
 
     /*!
-     *  Constructor which reads the communication definition from an XML document.
-     *
-     *      @param [in] doc The source XML document.
-     *
-     *      @throw Parse_error when a mandatory element is missing.
-     */
-    ComDefinition(QDomDocument& doc);
-
-    /*!
      *  Destructor.
      */
     virtual ~ComDefinition();
@@ -56,18 +47,6 @@ public:
      *      @return The created copy of the COM definition.
      */
     virtual QSharedPointer<Document> clone()  const;
-
-    /*!
-     *  Returns true if the communication definition is valid.
-     *
-     *      @param [out] errorList  The list of errors found in the contents.
-     */
-    virtual void findErrors(QVector<QString>& errorList) const;
-
-    /*!
-     *  Returns true if the communication definition is valid.
-     */
-    virtual bool validate() const;
 
     /*!
      *  Returns the dependent files (none).
@@ -124,37 +103,24 @@ public:
     /*!
      *  Returns the supported transfer types.
      */
-    QStringList const& getTransferTypes() const;
+    QSharedPointer< QStringList > getTransferTypes() const;
 
     /*!
      *  Returns the list of properties.
      */
-    QList< QSharedPointer<ComProperty> > const& getProperties() const;
+     QSharedPointer< QList< QSharedPointer<ComProperty> > > getProperties() const;
 
 private:
-    /*!
-     *  Parses all found transfer types from the given XML node.
-     *
-     *      @param [in] node The source XML node.
-     */
-    void parseTransferTypes(QDomNode& node);
-
-    /*!
-     *  Parses all found properties from the given XML node.
-     *
-     *      @param [in] node The source XML node.
-     */
-    void parseProperties(QDomNode& node);
     
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
     //! The list of transfer types.
-    QStringList transferTypes_;
+    QSharedPointer< QStringList > transferTypes_;
 
     //! The list of properties.
-    QList< QSharedPointer<ComProperty> > properties_;
+    QSharedPointer< QList< QSharedPointer<ComProperty> > > properties_;
 };
 
 //-----------------------------------------------------------------------------

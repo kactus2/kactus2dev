@@ -15,6 +15,7 @@
 
 #include <IPXACTmodels/kactusExtensions/ComDefinition.h>
 #include <IPXACTmodels/kactusExtensions/ApiDefinition.h>
+#include <IPXACTmodels/kactusExtensions/validators/ApiDefinitionValidator.h>
 
 #include <QVBoxLayout>
 
@@ -31,9 +32,9 @@ ApiDefinitionEditor::ApiDefinitionEditor(QWidget *parent, LibraryInterface* libH
       functionEditor_(this)
 {
     // Initialize the editors.
-    dataTypeList_.initialize(apiDef->getDataTypes());
+    dataTypeList_.initialize(*apiDef->getDataTypes());
 
-    functionEditor_.updateDataTypes(apiDef->getDataTypes());
+    functionEditor_.updateDataTypes(*apiDef->getDataTypes());
     functionEditor_.restore(*apiDef);
 
     comDefVLNVEdit_.setTitle(tr("COM definition reference (optional)"));
@@ -89,7 +90,7 @@ void ApiDefinitionEditor::refresh()
 
     // Update the editors.
     comDefVLNVEdit_.setVLNV(apiDef_->getComDefinitionRef());
-    dataTypeList_.initialize(apiDef_->getDataTypes());
+    dataTypeList_.initialize(*apiDef_->getDataTypes());
     functionEditor_.restore(*apiDef_);
 
     setModified(false);
@@ -111,7 +112,8 @@ bool ApiDefinitionEditor::validate(QVector<QString>& errorList)
 {
     applyChanges();
 
-    apiDef_->findErrors(errorList);
+	ApiDefinitionValidator validator;
+    validator.findErrorsIn( errorList, apiDef_ );
 
     return errorList.isEmpty();
 }

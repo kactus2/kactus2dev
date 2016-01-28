@@ -41,13 +41,13 @@ ComPropertyModel::~ComPropertyModel()
 //-----------------------------------------------------------------------------
 // Function: ComPropertyModel::setProperties()
 //-----------------------------------------------------------------------------
-void ComPropertyModel::setProperties(QList< QSharedPointer<ComProperty> > const& properties)
+void ComPropertyModel::setProperties(QSharedPointer< QList< QSharedPointer<ComProperty> > > properties)
 {
     beginResetModel();
 
     table_.clear();
 
-    foreach (QSharedPointer<ComProperty> comProperty, properties)
+    foreach (QSharedPointer<ComProperty> comProperty, *properties)
     {
 		QSharedPointer<ComProperty> copyProperty =
 			QSharedPointer<ComProperty>( new ComProperty(*comProperty.data()) );

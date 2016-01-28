@@ -148,7 +148,7 @@ int CSourceContentMatcher::enumerateNames(QString const &text, MatchExecFunc fun
             }
 
             // Search for types that start with the retrieved word.
-            foreach (QString const& dataType, apiDef->getDataTypes())
+            foreach (QString const& dataType, *apiDef->getDataTypes())
             {
                 if (tryMatchIdentifier(dataType, MCAPI_CONTENT_TYPENAME, matchExp, func, count))
                 {

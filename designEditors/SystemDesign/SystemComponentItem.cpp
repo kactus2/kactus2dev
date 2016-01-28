@@ -421,7 +421,7 @@ void SystemComponentItem::setPropertyValues(QMap<QString, QString> const& values
     propertyValues_ = values;
 
     // Check that at least all required properties are found in the values.
-    foreach (QSharedPointer<ComProperty const> prop, componentModel()->getSWProperties())
+    foreach (QSharedPointer<ComProperty const> prop, *componentModel()->getSWProperties())
     {
         if (prop->isRequired() && !propertyValues_.contains(prop->name()))
         {
