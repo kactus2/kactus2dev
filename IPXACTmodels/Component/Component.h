@@ -158,6 +158,14 @@ public:
 	*/
 	QSharedPointer<BusInterface> getInterfaceForPort(const QString& portName) const;
 
+    /*!
+     *  Get the bus interfaces containing port maps referencing the selected port.
+     *
+     *      @param [in] portName    The name of the selected port.
+     *
+     *      return A list of interfaces containing references to the selected port.
+     */
+    QSharedPointer<QList<QSharedPointer<BusInterface> > > getInterfacesUsedByPort(QString const& portName) const;
 
 	/*!
      * Get this component's channels.

@@ -7,8 +7,7 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../MockObjects/LibraryMock.h \
-    ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.h \
+HEADERS += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.h \
     ../../../../Plugins/VerilogGenerator/ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.h \
     ../../../../editors/ComponentEditor/common/ComponentParameterFinder.h \
     ../../../../Plugins/VerilogGenerator/ComponentVerilogWriter/ComponentVerilogWriter.h \
@@ -22,7 +21,10 @@ HEADERS += ../../../MockObjects/LibraryMock.h \
     ../../../../Plugins/VerilogGenerator/VerilogHeaderWriter/VerilogHeaderWriter.h \
     ../../../../Plugins/VerilogGenerator/VerilogWireWriter/VerilogWireWriter.h \
     ../../../../Plugins/VerilogGenerator/common/Writer.h \
-    ../../../../Plugins/VerilogGenerator/common/WriterGroup.h
+    ../../../../Plugins/VerilogGenerator/common/WriterGroup.h \
+    ../../../MockObjects/LibraryMock.h \
+    ../../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
+    ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h
 SOURCES += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.cpp \
     ../../../../Plugins/VerilogGenerator/ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.cpp \
     ../../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
@@ -36,4 +38,6 @@ SOURCES += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.cpp 
     ../../../../Plugins/VerilogGenerator/VerilogHeaderWriter/VerilogHeaderWriter.cpp \
     ../../../../Plugins/VerilogGenerator/VerilogWireWriter/VerilogWireWriter.cpp \
     ../../../../Plugins/VerilogGenerator/common/WriterGroup.cpp \
-    ./tst_VerilogGenerator.cpp
+    ./tst_VerilogGenerator.cpp \
+    ../../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
+    ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp

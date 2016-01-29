@@ -1271,6 +1271,9 @@
     <ClCompile Include="kactusExtensions\validators\ComDefinitionValidator.cpp">
       <Filter>Source Files\kactusExtensions</Filter>
     </ClCompile>
+    <ClCompile Include="common\PortAlignment.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BusDefinition\BusDefinition.h">
@@ -1764,6 +1767,9 @@
     </ClInclude>
     <ClInclude Include="kactusExtensions\validators\ComDefinitionValidator.h">
       <Filter>Header Files\kactusExtensions</Filter>
+    </ClInclude>
+    <ClInclude Include="common\PortAlignment.h">
+      <Filter>Header Files\common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

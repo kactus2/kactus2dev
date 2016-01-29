@@ -33,6 +33,9 @@ class VerilogWireWriter;
 class Writer;
 class WriterGroup;
 
+class ExpressionParser;
+class PortAlignment;
+
 //-----------------------------------------------------------------------------
 // Verilog file generator.
 //-----------------------------------------------------------------------------
@@ -122,6 +125,15 @@ private:
     QList<QSharedPointer<ActiveInterface> > getPrimaryInterfacesForInterconnections();
 
     /*!
+     *  Check if the selected primary interface is unique.
+     *
+     *      @param [in] connectedInterfaces     The list of currently connected interfaces.
+     *      @param [in] primaryInterface        The selected primary interface.
+     */
+    bool primaryInterfaceIsUnique(QList<QSharedPointer<ActiveInterface> > connectedInterfaces,
+        QSharedPointer<ActiveInterface> primaryInterface) const;
+
+    /*!
      *  Generates a name for a wire.
      *
      *      @param [in] primaryInterface    The primary side interface.
@@ -151,6 +163,25 @@ private:
     int findWireSize(QSharedPointer<ActiveInterface> primaryInterface, QString const& logicalName);
     
     /*!
+     *  Find the list of interfaces connected to the selected primary interface.
+     *
+     *      @param [in] primaryInterface    The selected primary interface.
+     *
+     *      @return A list of the interfaces connected to the primary interface.
+     */
+    QList<QSharedPointer<ActiveInterface> > getConnectedInterfaces(
+        QSharedPointer<ActiveInterface> primaryInterface) const;
+
+    /*!
+     *  Check if the interfaces share component and bus references.
+     *
+     *      @param [in] comparisonInterface     The first interface being compared.
+     *      @param [in] comparedInterface       The second interface being compared.
+     */
+    bool interfacesShareReferences(QSharedPointer<ActiveInterface> comparisonInterface,
+        QSharedPointer<ActiveInterface> comparedInterface) const;
+
+    /*!
      *  Finds the highest connected logical bit index for a logical signal in a given interface.
      *
      *      @param [in] logicalName     The logical signal whose highest connected bit index to find.
@@ -168,8 +199,7 @@ private:
      *
      *      @return The port bounds for the port map in an instance.
      */
-    General::PortBounds logicalBoundsInInstance(QString const& instanceName, 
-        QSharedPointer<PortMap> portMap) const;
+    QPair<int, int> logicalBoundsInInstance(QString const& instanceName, QSharedPointer<PortMap> portMap) const;
 
     /*!
      *  Finds the component referenced in the design by a given name.
@@ -260,29 +290,47 @@ private:
     /*!
      *  Parses all the hierarchical connections for a component instance in the design and connects
      *  the instance ports to top ports.
+     *
+     *      @param [in] topComponentView    The active view of the top component.
      */
-    void connectHierarchicalConnectionsToInstances();
+    void connectHierarchicalConnectionsToInstances(QString const& topComponentView);
 
     /*!
-     *  *  Creates port maps to instance for bus interface with a hierarchical connection..
+     *  Creates port maps to instance for bus interface with a hierarchical connection..
      *
      *      @param [in] topIf               The connected top-level interface.
+     *      @param [in] portParser          The expression parser for the top component.
      *      @param [in] instanceInterface   The connected interface.
      */
     void connectTopBusInterfaceToInterfaceInInstance(QSharedPointer<BusInterface> topIf,
-        QSharedPointer<ActiveInterface> instanceInterface);  
-    
+        QSharedPointer<ExpressionParser> topParser, QSharedPointer<ActiveInterface> instanceInterface);
+
+    /*!
+     *  Calculate the mapped port bounds.
+     *
+     *      @param [in] containingMap       The port map containing the selected port.
+     *      @param [in] portLeft            The left bound of the selected port.
+     *      @param [in] portRight           The right bound of the selected port.
+     *      @param [in] parser              The used expression parser.
+     *      @param [in] logicalPortWidth    The width of the logical port.
+     *
+     *      @return The aligned port.
+     */
+    QSharedPointer<PortAlignment> calculateMappedPortBounds(QSharedPointer<PortMap> containingMap, int portLeft,
+        int portRight, QSharedPointer<ExpressionParser> parser, QString logicalPortWidth) const;
+
     /*!
      *  Checks if an instance port can be directly connected to a top port.
      *
-     *      @param [in] instancePortWidth   The width of the physical port in the instance.
-     *      @param [in] topPortWidth        The width of the physical port in the top component.
-     *      @param [in] alignment           The calculated port alignment for the port map connecting the ports.
+     *      @param [in] topAlignment        The alignment of the mapped top port.
+     *      @param [in] instanceAlignment   The alignment of the mapped instance port.
+     *      @param [in] topWidth            The width of the top port.
+     *      @param [in] instanceWidth       The width of the instance port.
      *
-     *      @return True, if the instance port can be directly connected to the top port, otherwise false.
+     *      @return True, if the ports can be directly connected,
      */
-    bool canConnectForFullWidth(int instancePortWidth, int topPortWidth, 
-        General::PortAlignment const& alignment) const;
+    bool fullWidthConnectionIsValid(QSharedPointer<PortAlignment> topAlignment,
+        QSharedPointer<PortAlignment> instanceAlignment, int topWidth, int instanceWidth) const;
 
     /*!
      *  Parses all the ad-hoc connections in the design.

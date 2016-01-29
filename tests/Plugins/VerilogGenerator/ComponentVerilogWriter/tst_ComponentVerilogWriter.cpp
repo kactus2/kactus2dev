@@ -218,10 +218,10 @@ void tst_ComponentVerilogWriter::writeComponent(QString const& activeView /*= QS
 //-----------------------------------------------------------------------------
 void tst_ComponentVerilogWriter::testPortDescriptionIsWrittenAfterPort()
 {
-    addPort("a", 1,  General::IN);
+    addPort("a", 1,  DirectionTypes::IN);
     component_->getPort("a")->setDescription("Description for a.");
-    addPort("b", 1, General::IN);
-    addPort("c", 1, General::IN);
+    addPort("b", 1, DirectionTypes::IN);
+    addPort("c", 1, DirectionTypes::IN);
     component_->getPort("c")->setDescription("Description for c.");
         
     writeComponent();
@@ -248,7 +248,7 @@ void tst_ComponentVerilogWriter::testInterfaceDescriptionIsPrinted()
     addInterface("A");
     component_->getBusInterface("A")->setDescription(description);
     
-    addPort("port", 1 , General::IN);
+    addPort("port", 1 , DirectionTypes::IN);
     mapPortToInterface("port", "A");
 
     writeComponent();
@@ -299,9 +299,9 @@ void tst_ComponentVerilogWriter::testInterfaceDescriptionIsPrinted_data()
 //-----------------------------------------------------------------------------
 void tst_ComponentVerilogWriter::testPortsOrderedByName()
 {
-    addPort("c", 1, General::IN);
-    addPort("b", 1, General::IN);
-    addPort("a", 1, General::IN);    
+    addPort("c", 1, DirectionTypes::IN);
+    addPort("b", 1, DirectionTypes::IN);
+    addPort("a", 1, DirectionTypes::IN);    
 
     writeComponent();
 
@@ -319,10 +319,12 @@ void tst_ComponentVerilogWriter::testPortsOrderedByName()
 //-----------------------------------------------------------------------------
 // Function: tst_ComponentVerilogWriter::addPort()
 //-----------------------------------------------------------------------------
-void tst_ComponentVerilogWriter::addPort( QString const& portName, int portSize, General::Direction direction )
+void tst_ComponentVerilogWriter::addPort(QString const& portName, int portSize,
+    DirectionTypes::Direction direction)
 {
-    QSharedPointer<Port> port = QSharedPointer<Port>(new Port(portName, direction, portSize - 1, 0, "", true));
-    component_->addPort(port);
+    QSharedPointer<Port> port (new Port(portName, direction));
+    port->setLeftBound(QString::number(portSize - 1));
+    component_->getPorts()->append(port);
 }
 
 //-----------------------------------------------------------------------------
@@ -330,12 +332,12 @@ void tst_ComponentVerilogWriter::addPort( QString const& portName, int portSize,
 //-----------------------------------------------------------------------------
 void tst_ComponentVerilogWriter::testPortsOrderedByDirectionThenName()
 {
-    addPort("a_in", 1, General::IN);
-    addPort("x_in", 1, General::IN);
-    addPort("a_out", 1, General::OUT);    
-    addPort("y_out", 1, General::OUT);
-    addPort("a_inout", 1, General::INOUT);
-    addPort("z_inout", 1, General::INOUT);    
+    addPort("a_in", 1, DirectionTypes::IN);
+    addPort("x_in", 1, DirectionTypes::IN);
+    addPort("a_out", 1, DirectionTypes::OUT);    
+    addPort("y_out", 1, DirectionTypes::OUT);
+    addPort("a_inout", 1, DirectionTypes::INOUT);
+    addPort("z_inout", 1, DirectionTypes::INOUT);    
 
     writeComponent();
 
@@ -359,22 +361,22 @@ void tst_ComponentVerilogWriter::testPortsOrderedByDirectionThenName()
 void tst_ComponentVerilogWriter::testPortsOrderedByInterfaceThenDirectionThenName()
 {
     addInterface("B");
-    addPort("d_in", 1, General::IN);
+    addPort("d_in", 1, DirectionTypes::IN);
     mapPortToInterface("d_in", "B");
     
     addInterface("A");
-    addPort("a_in", 1, General::IN);
-    addPort("b_out", 1, General::OUT);
-    addPort("c_in", 1, General::IN);
+    addPort("a_in", 1, DirectionTypes::IN);
+    addPort("b_out", 1, DirectionTypes::OUT);
+    addPort("c_in", 1, DirectionTypes::IN);
     mapPortToInterface("a_in", "A");
     mapPortToInterface("b_out", "A");
     mapPortToInterface("c_in", "A");
 
-    addPort("portInSeveralInterfaces", 1, General::IN);
+    addPort("portInSeveralInterfaces", 1, DirectionTypes::IN);
     mapPortToInterface("portInSeveralInterfaces", "A");
     mapPortToInterface("portInSeveralInterfaces", "B");
 
-    addPort("portInNoInterface", 1, General::IN);
+    addPort("portInNoInterface", 1, DirectionTypes::IN);
 
     writeComponent();
 
@@ -406,7 +408,7 @@ void tst_ComponentVerilogWriter::addInterface( QString const& interfaceName )
 {
     QSharedPointer<BusInterface> busIf = QSharedPointer<BusInterface>(new BusInterface());
     busIf->setName(interfaceName);
-    component_->addBusInterface(busIf);
+    component_->getBusInterfaces()->append(busIf);
 }
 
 //-----------------------------------------------------------------------------
@@ -415,11 +417,32 @@ void tst_ComponentVerilogWriter::addInterface( QString const& interfaceName )
 void tst_ComponentVerilogWriter::mapPortToInterface( QString const& portName, QString const& interfaceName )
 {
     QSharedPointer<PortMap> portMap = QSharedPointer<PortMap>(new PortMap());
-    portMap->setLogicalPort(portName.toUpper());
-    portMap->setPhysicalPort(portName);
 
-    QList<QSharedPointer<PortMap> >& portMapList = component_->getBusInterface(interfaceName)->getPortMaps();
-    portMapList.append(portMap);
+    QSharedPointer<PortMap::LogicalPort> theLogical (new PortMap::LogicalPort());
+    theLogical->name_ = portName;
+    QSharedPointer<PortMap::PhysicalPort> thePhysical (new PortMap::PhysicalPort());
+    thePhysical->name_ = portName;
+    portMap->setLogicalPort(theLogical);
+    portMap->setPhysicalPort(thePhysical);
+
+    QSharedPointer<QList<QSharedPointer<PortMap> > > portMapList =
+        component_->getBusInterface(interfaceName)->getPortMaps();
+
+    if (!portMapList)
+    {
+        QSharedPointer<QList<QSharedPointer<PortMap> > > newPortMapList (new QList<QSharedPointer<PortMap> > ());
+
+        if (component_->getBusInterface(interfaceName)->getAbstractionTypes()->isEmpty())
+        {
+            QSharedPointer<AbstractionType> testAbstraction (new AbstractionType());
+            component_->getBusInterface(interfaceName)->getAbstractionTypes()->append(testAbstraction);
+        }
+
+        component_->getBusInterface(interfaceName)->setPortMaps(newPortMapList);
+        portMapList = component_->getBusInterface(interfaceName)->getPortMaps();
+    }
+
+    portMapList->append(portMap);
 }
 
 //-----------------------------------------------------------------------------
@@ -430,7 +453,7 @@ void tst_ComponentVerilogWriter::testComponentWithModelParameters()
     addModelParameter("freq", "5000",  "Description for freq.");
     addModelParameter("dataWidth", "8");    
 
-    writeComponent();
+    writeComponent(component_->getViews()->first()->name());
 
     QCOMPARE(outputString_, QString(
         "module TestComponent #(\n"
@@ -446,11 +469,23 @@ void tst_ComponentVerilogWriter::testComponentWithModelParameters()
 //-----------------------------------------------------------------------------
 void tst_ComponentVerilogWriter::addModelParameter(QString const& name, QString const& value, QString description)
 {
-    QSharedPointer<ModelParameter> parameter = QSharedPointer<ModelParameter>(new ModelParameter());
+    if (component_->getComponentInstantiations()->isEmpty())
+    {
+        QSharedPointer<ComponentInstantiation> instantiation (new ComponentInstantiation("testInstantiation"));
+        component_->getComponentInstantiations()->append(instantiation);
+    }
+    if (component_->getViews()->isEmpty())
+    {
+        QSharedPointer<View> testView (new View("testView"));
+        testView->setComponentInstantiationRef(component_->getComponentInstantiations()->first()->name());
+        component_->getViews()->append(testView);
+    }
+
+    QSharedPointer<ModuleParameter> parameter (new ModuleParameter());
     parameter->setName(name);
     parameter->setValue(value);
     parameter->setDescription(description);
-    component_->getModel()->addModelParameter(parameter);
+    component_->getComponentInstantiations()->first()->getModuleParameters()->append(parameter);
 }
 
 //-----------------------------------------------------------------------------
@@ -458,10 +493,10 @@ void tst_ComponentVerilogWriter::addModelParameter(QString const& name, QString 
 //-----------------------------------------------------------------------------
 void tst_ComponentVerilogWriter::testParametersPrecedePorts()
 {
-    addPort("data", 8, General::OUT);
+    addPort("data", 8, DirectionTypes::OUT);
     addModelParameter("dataWidth", "8");    
 
-    writeComponent();
+    writeComponent(component_->getViews()->first()->name());
 
     QCOMPARE(outputString_, QString(
         "module TestComponent #(\n"
@@ -480,14 +515,15 @@ void tst_ComponentVerilogWriter::testParametersPrecedePorts()
 void tst_ComponentVerilogWriter::testParametrizedPort()
 {
     addModelParameter("dataWidth", "8");    
-    QString parameterId = component_->getModelParameters()->first()->getValueId();
+    QString parameterId =
+        component_->getComponentInstantiations()->first()->getModuleParameters()->first()->getValueId();
 
-    QSharedPointer<Port> port = QSharedPointer<Port>(new Port("data", General::OUT, 0, 0, "", true));
-    port->setLeftBoundExpression(parameterId + "-1");
-    port->setRightBoundExpression("0");
-    component_->addPort(port);
+    QSharedPointer<Port> port = QSharedPointer<Port>(new Port("data", DirectionTypes::OUT));
+    port->setLeftBound(parameterId + "-1");
+    port->setRightBound("0");
+    component_->getPorts()->append(port);
 
-    writeComponent();
+    writeComponent(component_->getViews()->first()->name());
 
     QCOMPARE(outputString_, QString(
         "module TestComponent #(\n"
@@ -505,15 +541,23 @@ void tst_ComponentVerilogWriter::testParametrizedPort()
 //-----------------------------------------------------------------------------
 void tst_ComponentVerilogWriter::testParameterizedModelParameter()
 {
-    QSharedPointer<ModelParameter> parameter(new ModelParameter());
+    QSharedPointer<ModuleParameter> parameter (new ModuleParameter());
     parameter->setName("target");
     parameter->setValue("40");
     parameter->setValueId("TARGET-ID");
-    component_->getModel()->addModelParameter(parameter);
+
+    QSharedPointer<ComponentInstantiation> instantiation (new ComponentInstantiation("parameterizedInstantiation"));
+    instantiation->getModuleParameters()->append(parameter);
+
+    QSharedPointer<View> testView (new View("parameterizedView"));
+    testView->setComponentInstantiationRef(instantiation->name());
+
+    component_->getViews()->append(testView);
+    component_->getComponentInstantiations()->append(instantiation);
 
     addModelParameter("referer", "TARGET-ID");
 
-    writeComponent();
+    writeComponent(component_->getViews()->first()->name());
 
     QCOMPARE(outputString_, QString(
         "module TestComponent #(\n"
@@ -529,16 +573,14 @@ void tst_ComponentVerilogWriter::testParameterizedModelParameter()
 //-----------------------------------------------------------------------------
 void tst_ComponentVerilogWriter::testModuleParameterIsWrittenAfterModelParameter()
 {
+    QSharedPointer<View> activeView (new View("rtl"));
+    component_->getViews()->append(activeView);
+
     addModelParameter("modelParameter", "0");
 
-    QSharedPointer<ModuleParameter> moduleParameter(new ModuleParameter());
-    moduleParameter->setName("moduleParameter1");
-    moduleParameter->setValue("1");
-    
-    View* activeView = new View();
-    activeView->setName("rtl");
-    activeView->getModuleParameters()->append(moduleParameter);
-    component_->addView(activeView);
+    activeView->setComponentInstantiationRef(component_->getComponentInstantiations()->first()->name());
+
+    addModelParameter("moduleParameter1", "1");
 
     writeComponent("rtl");
 

@@ -292,6 +292,25 @@ QSharedPointer<BusInterface> Component::getInterfaceForPort( const QString& port
 }
 
 //-----------------------------------------------------------------------------
+// Function: Component::getInterfacesUsedByPort()
+//-----------------------------------------------------------------------------
+QSharedPointer<QList<QSharedPointer<BusInterface> > > Component::getInterfacesUsedByPort(QString const& portName)
+    const
+{
+    QSharedPointer<QList<QSharedPointer<BusInterface> > > interfaces (new QList<QSharedPointer<BusInterface> > ());
+
+    foreach (QSharedPointer<BusInterface> busInterface, *busInterfaces_)
+    {
+        if (busInterface->hasPhysicalPort(portName))
+        {
+            interfaces->append(busInterface);
+        }
+    }
+
+    return interfaces;
+}
+
+//-----------------------------------------------------------------------------
 // Function: Component::getChannels()
 //-----------------------------------------------------------------------------
 QSharedPointer<QList<QSharedPointer<Channel> > > Component::getChannels() const

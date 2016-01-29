@@ -11,6 +11,9 @@
 
 #include <QtTest>
 
+#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
+#include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>
+
 #include <IPXACTmodels/Component/Component.h>
 
 #include <IPXACTmodels/Component/BusInterface.h>
@@ -192,7 +195,7 @@ void tst_VerilogGenerator::testTopLevelComponent()
     addModuleParameter("dataWidth", "8");
     addModuleParameter("freq", "100000");
 
-    runGenerator();
+    runGenerator(topComponent_->getViews()->first()->name());
 
     verifyOutputContains(QString(
         "module TestComponent #(\n"
@@ -218,6 +221,7 @@ void tst_VerilogGenerator::addPort(QString const& portName, int portSize,
     DirectionTypes::Direction direction, QSharedPointer<Component> component)
 {
     QSharedPointer<Port> port = QSharedPointer<Port>(new Port(portName, direction));
+    port->setPortSize(portSize);
     component->getPorts()->append(port);
 }
 
@@ -229,7 +233,24 @@ void tst_VerilogGenerator::addModuleParameter( QString const& name, QString cons
     QSharedPointer<ModuleParameter> parameter = QSharedPointer<ModuleParameter>(new ModuleParameter());
     parameter->setName(name);
     parameter->setValue(value);
-    topComponent_->getParameters()->append(parameter);
+
+    if (topComponent_->getComponentInstantiations()->isEmpty())
+    {
+        QSharedPointer<ComponentInstantiation> newInstantiation (new ComponentInstantiation("testInstantiation"));
+        newInstantiation->getModuleParameters()->append(parameter);
+        topComponent_->getComponentInstantiations()->append(newInstantiation);
+
+        if (topComponent_->getViews()->isEmpty())
+        {
+            QSharedPointer<View> newView (new View("testView"));
+            newView->setComponentInstantiationRef(newInstantiation->name());
+            topComponent_->getViews()->append(newView);
+        }
+    }
+    else
+    {
+        topComponent_->getComponentInstantiations()->first()->getModuleParameters()->append(parameter);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -443,15 +464,42 @@ void tst_VerilogGenerator::mapPortToInterface(QString const& portName, QString c
 	QSharedPointer<PortMap::PhysicalPort> physPort( new PortMap::PhysicalPort );
 	logPort->name_ = logicalName;
 	physPort->name_ = portName;
-	physPort->partSelect_->setLeftRange(port->getLeftBound());
-	physPort->partSelect_->setRightRange(port->getRightBound());
+
+    QSharedPointer<PartSelect> physicalPart (new PartSelect(port->getLeftBound(), port->getRightBound()));
+    physPort->partSelect_ = physicalPart;
 
     portMap->setLogicalPort(logPort);
     portMap->setPhysicalPort(physPort);
 
-    QSharedPointer<QList<QSharedPointer<PortMap> > > portMaps = component->getBusInterface(interfaceName)->getPortMaps();
+    QSharedPointer<BusInterface> containingBus = component->getBusInterface(interfaceName);
+    QSharedPointer<QList<QSharedPointer<PortMap> > > portMaps = containingBus->getPortMaps();
+
+    if (!portMaps)
+    {
+        QSharedPointer<QList<QSharedPointer<PortMap> > > newPortMapList (new QList<QSharedPointer<PortMap> > ());
+
+        if (containingBus->getAbstractionTypes()->isEmpty())
+        {
+            QSharedPointer<AbstractionType> testAbstraction (new AbstractionType());
+
+            QSharedPointer<ConfigurableVLNVReference> abstractionVLNV(new ConfigurableVLNVReference(
+                VLNV::ABSTRACTIONDEFINITION, "Test", "TestLibrary", "absDef", "1.0"));
+            testAbstraction->setAbstractionRef(abstractionVLNV);
+
+            QSharedPointer<AbstractionDefinition> testAbstractionDefinition (new AbstractionDefinition());
+            testAbstractionDefinition->setVlnv(*abstractionVLNV.data());
+
+            QSharedPointer<PortAbstraction> logicalPort (new PortAbstraction());
+            logicalPort->setName(logicalName);
+
+            containingBus->getAbstractionTypes()->append(testAbstraction);
+        }
+
+        containingBus->setPortMaps(newPortMapList);
+        portMaps = containingBus->getPortMaps();
+    }
+
     portMaps->append(portMap);
-    component->getBusInterface(interfaceName)->setPortMaps(portMaps);
 }
 //-----------------------------------------------------------------------------
 // Function: tst_VerilogGenerator::mapPortToInterface()
@@ -464,16 +512,31 @@ void tst_VerilogGenerator::mapPortToInterface(QString const& portName, int left,
 	QSharedPointer<PortMap::PhysicalPort> physPort( new PortMap::PhysicalPort );
 	logPort->name_ = logicalName;
 	physPort->name_ = portName;
-	physPort->partSelect_->setLeftRange(QString(left));
-	physPort->partSelect_->setRightRange(QString(right));
+
+    QSharedPointer<PartSelect> physicalPart (new PartSelect(QString::number(left), QString::number(right)));
+    physPort->partSelect_ = physicalPart;
 
 	portMap->setLogicalPort(logPort);
 	portMap->setPhysicalPort(physPort);
 
-	QSharedPointer<QList<QSharedPointer<PortMap> > > portMaps = component->getBusInterface(interfaceName)->getPortMaps();
-    portMaps->append(portMap);
+    QSharedPointer<BusInterface> containingBus = component->getBusInterface(interfaceName);
+    QSharedPointer<QList<QSharedPointer<PortMap> > > portMaps = containingBus->getPortMaps();
 
-    component->getBusInterface(interfaceName)->setPortMaps(portMaps);
+    if (!portMaps)
+    {
+        QSharedPointer<QList<QSharedPointer<PortMap> > > newPortMapList (new QList<QSharedPointer<PortMap> > ());
+
+        if (containingBus->getAbstractionTypes()->isEmpty())
+        {
+            QSharedPointer<AbstractionType> testAbstraction (new AbstractionType());
+            containingBus->getAbstractionTypes()->append(testAbstraction);
+        }
+
+        containingBus->setPortMaps(newPortMapList);
+        portMaps = containingBus->getPortMaps();
+    }
+    
+    portMaps->append(portMap);
 }
 
 //-----------------------------------------------------------------------------
@@ -506,9 +569,8 @@ void tst_VerilogGenerator::addTestComponentToLibrary(VLNV vlnv)
 //-----------------------------------------------------------------------------
 void tst_VerilogGenerator::addInstanceToDesign(QString instanceName, VLNV instanceVlnv)
 {
-    QSharedPointer<ComponentInstance> instance(new ComponentInstance(instanceName, "", "", 
-        QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(instanceVlnv)), 
-        QPointF(), ""));
+    QSharedPointer<ConfigurableVLNVReference> componentVLNV (new ConfigurableVLNVReference(instanceVlnv));
+    QSharedPointer<ComponentInstance> instance (new ComponentInstance(instanceName, componentVLNV));
 
     design_->getComponentInstances()->append(instance);
 }
@@ -560,9 +622,8 @@ void tst_VerilogGenerator::addSenderComponentToLibrary(VLNV senderVLNV, General:
     senderComponent->getBusInterface("data_bus")->setInterfaceMode(mode);    
     mapPortToInterface("data_out", "DATA", "data_bus", senderComponent);
     QSharedPointer<PortMap> dataMap = senderComponent->getBusInterface("data_bus")->getPortMaps()->first();
-	QSharedPointer<PortMap::LogicalPort> logPort( new PortMap::LogicalPort());
+    QSharedPointer<PortMap::LogicalPort> logPort = dataMap->getLogicalPort();
 	logPort->range_ = QSharedPointer<Range>( new Range("7","0") );
-	dataMap->setLogicalPort(logPort);
 
     mapPortToInterface("enable_out", "ENABLE", "data_bus", senderComponent);
 
@@ -704,12 +765,22 @@ void tst_VerilogGenerator::testInterconnectionToVaryingSizeLogicalMaps()
 void tst_VerilogGenerator::setReceiverComponentDataWidth(VLNV receiverVLNV, int dataWidth)
 {
     QSharedPointer<Component> component = library_.getModel(receiverVLNV).dynamicCast<Component>();
-    component->getPort("data_in")->setLeftBound(QString(dataWidth - 1));
-    component->getPort("data_in")->setRightBound(0);
+    QSharedPointer<Port> componentPort = component->getPort("data_in");
+    componentPort->setLeftBound(QString::number(dataWidth - 1));
+    componentPort->setRightBound(QString::number(0));
 
 	QSharedPointer<PortMap> dataMap = component->getBusInterface("data_bus")->getPortMaps()->first();
-	QSharedPointer<PortMap::LogicalPort> logPort( new PortMap::LogicalPort());
-	logPort->range_ = QSharedPointer<Range>( new Range(QString((dataWidth - 1)),"0") );
+
+    QSharedPointer<PortMap::LogicalPort> logPort = dataMap->getLogicalPort();
+    if (!logPort)
+    {
+        QSharedPointer<PortMap::LogicalPort> newLogicalPort (new PortMap::LogicalPort());
+        dataMap->setLogicalPort(newLogicalPort);
+        logPort = dataMap->getLogicalPort();
+    }
+
+    logPort->range_ = QSharedPointer<Range>(new Range(QString::number(dataWidth-1), "0"));
+
 	dataMap->setLogicalPort(logPort);
 }
 
@@ -735,27 +806,33 @@ void tst_VerilogGenerator::testSlicedInterconnection()
 	enableLowPortMap->setPhysicalPort(physPortLow);
 	logPortLow->name_ = "ENABLE";
 	physPortLow->name_ = "enable_out_low";
-    physPortLow->partSelect_->setLeftRange("0");
-    physPortLow->partSelect_->setRightRange("0");
-    logPortLow->range_->setLeft("0");
-    logPortLow->range_->setRight("0");
+
+    QSharedPointer<PartSelect> lowPart (new PartSelect("0", "0"));
+    physPortLow->partSelect_ = lowPart;
+
+    QSharedPointer<Range> lowRange (new Range("0", "0"));
+    logPortLow->range_ = lowRange;
 
 	QSharedPointer<PortMap> enableHighPortMap(new PortMap());
 	QSharedPointer<PortMap::LogicalPort> logPortHigh( new PortMap::LogicalPort );
 	QSharedPointer<PortMap::PhysicalPort> physPortHigh( new PortMap::PhysicalPort );
-	enableLowPortMap->setLogicalPort(logPortHigh);
-	enableLowPortMap->setPhysicalPort(physPortHigh);
+    enableHighPortMap->setLogicalPort(logPortHigh);
+    enableHighPortMap->setPhysicalPort(physPortHigh);
     logPortHigh->name_ = "ENABLE";
 	physPortHigh->name_ = "enable_out_high";
-    physPortHigh->partSelect_->setLeftRange("0");
-    physPortHigh->partSelect_->setRightRange("0");
-    logPortHigh->range_->setLeft("1");
-    logPortHigh->range_->setRight("1");
+
+    QSharedPointer<PartSelect> highPart (new PartSelect("0", "0"));
+    physPortHigh->partSelect_ = highPart;
+
+    QSharedPointer<Range> highRange (new Range("1", "1"));
+    logPortHigh->range_ = highRange;
+
+    QSharedPointer<AbstractionType> senderEnableAbstraction (new AbstractionType());
+    enableIf->getAbstractionTypes()->append(senderEnableAbstraction);
 
     QSharedPointer<QList<QSharedPointer<PortMap> > > portMaps = enableIf->getPortMaps();
     portMaps->append(enableLowPortMap);
     portMaps->append(enableHighPortMap);
-    enableIf->setPortMaps(portMaps);
 
     library_.addComponent(senderComponent);
     addInstanceToDesign("sender", senderVLNV);
@@ -764,8 +841,7 @@ void tst_VerilogGenerator::testSlicedInterconnection()
     addReceiverComponentToLibrary(receiver, General::SLAVE);
     QSharedPointer<Component> receiverComponent = library_.getModel(receiver).dynamicCast<Component>();
     QSharedPointer<PortMap> enableMap = receiverComponent->getBusInterface("data_bus")->getPortMaps()->last();
-    enableMap->getLogicalPort()->name_ = "0";
-    enableMap->getLogicalPort()->name_ = "0";
+    enableMap->getLogicalPort()->range_ = QSharedPointer<Range>(new Range("0", "0"));
 
     addInstanceToDesign("receiver", receiver);
 
@@ -952,6 +1028,10 @@ void tst_VerilogGenerator::testHierarchicalAdhocConnection()
 
     runGenerator();
 
+    readOutputFile();
+
+    QStringList outputList = output_.split("\n");
+
     verifyOutputContains(
         "    TestSender sender(\n"
         "        // Interface: data_bus\n"
@@ -965,13 +1045,13 @@ void tst_VerilogGenerator::testHierarchicalAdhocConnection()
 void tst_VerilogGenerator::addHierAdhocConnection(QString const& topPort, 
     QString const& targetInstance, QString const& targetPort)
 {    
-    QSharedPointer<PortReference> topRef(new PortReference(topPort));
+    QSharedPointer<PortReference> topComponentReference(new PortReference(topPort));
 
-    QSharedPointer<PortReference> toRef(new PortReference(targetPort, targetInstance));
+    QSharedPointer<PortReference> instancePortReference(new PortReference(targetPort, targetInstance));
 
-    QSharedPointer<AdHocConnection> connection(new AdHocConnection(""));
-    connection->getExternalPortReferences()->append(toRef);
-    connection->getInternalPortReferences()->append(topRef);
+    QSharedPointer<AdHocConnection> connection(new AdHocConnection(topPort + "_to_" + targetPort));
+    connection->getExternalPortReferences()->append(topComponentReference);
+    connection->getInternalPortReferences()->append(instancePortReference);
 
     design_->getAdHocConnections()->append(connection);
 }
@@ -1001,12 +1081,13 @@ void tst_VerilogGenerator::testDescriptionAndVLNVIsPrintedAboveInstance()
     QFETCH(QString, description);
     QFETCH(QString, expectedOutput);
     
-    VLNV instanceVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestComponent", "1.0");
-    QSharedPointer<Component> refComponent(new Component(instanceVLNV));
+    QSharedPointer<ConfigurableVLNVReference> instanceVLNV(
+        new ConfigurableVLNVReference(VLNV::COMPONENT, "Test", "TestLibrary", "TestComponent", "1.0"));
+    QSharedPointer<Component> refComponent(new Component(*instanceVLNV.data()));
     library_.addComponent(refComponent);
 
-    QSharedPointer<ComponentInstance> instance(new ComponentInstance("instance1", "", description, 
-        QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(instanceVLNV)), QPointF(), ""));
+    QSharedPointer<ComponentInstance> instance (new ComponentInstance("instance1", instanceVLNV));
+    instance->setDescription(description);
 
     design_->getComponentInstances()->append(instance);
 

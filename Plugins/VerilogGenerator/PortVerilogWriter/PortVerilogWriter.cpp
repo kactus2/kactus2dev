@@ -36,12 +36,10 @@ PortVerilogWriter::~PortVerilogWriter()
 //-----------------------------------------------------------------------------
 void PortVerilogWriter::write( QTextStream& outputStream ) const
 {
-    if (nothingToWrite())
+    if (!nothingToWrite())
     {
-        return;
+        outputStream << createDeclaration();
     }
-
-    outputStream << createDeclaration();
 }
 
 //-----------------------------------------------------------------------------

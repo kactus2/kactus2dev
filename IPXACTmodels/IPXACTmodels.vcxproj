@@ -179,6 +179,7 @@
     <ClCompile Include="common\ParameterReader.cpp" />
     <ClCompile Include="common\ParameterWriter.cpp" />
     <ClCompile Include="common\PartSelect.cpp" />
+    <ClCompile Include="common\PortAlignment.cpp" />
     <ClCompile Include="common\PresenceTypes.cpp" />
     <ClCompile Include="common\Protocol.cpp" />
     <ClCompile Include="common\ProtocolReader.cpp" />
@@ -1294,6 +1295,7 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_XML_LIB -DIPXACTMODELS_LIB -D_WINDLL "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(SolutionDir)\."</Command>
     </CustomBuild>
     <ClInclude Include="common\PartSelect.h" />
+    <ClInclude Include="common\PortAlignment.h" />
     <ClInclude Include="common\PresenceTypes.h" />
     <ClInclude Include="common\Protocol.h" />
     <CustomBuild Include="common\ProtocolReader.h">

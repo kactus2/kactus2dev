@@ -180,12 +180,17 @@ void ComponentVerilogWriter::writePortDeclarations(QTextStream& outputStream) co
     QStringList ports = sorter_->sortedPortNames(component_);
     foreach(QString portName, ports)
 	{    
-		QSharedPointer<BusInterface> busInterface = component_->getInterfaceForPort(portName);
+        QSharedPointer<QList<QSharedPointer<BusInterface> > > busInterfaces =
+            component_->getInterfacesUsedByPort(portName);
 
-		if ( busInterface )
+        if (busInterfaces->size() == 1)
 		{
-			writeInterfaceIntroduction(busInterface->name(), previousInterfaceName, outputStream);
+            writeInterfaceIntroduction(busInterfaces->first()->name(), previousInterfaceName, outputStream);
 		}
+        else if (!busInterfaces->isEmpty())
+        {
+            writeInterfaceIntroduction("several", previousInterfaceName, outputStream);
+        }
 		else
 		{
 			writeInterfaceIntroduction("none", previousInterfaceName, outputStream);

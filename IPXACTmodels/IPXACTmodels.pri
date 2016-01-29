@@ -7,7 +7,8 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./XmlUtils.h \
+HEADERS += ./common/PortAlignment.h \
+    ./XmlUtils.h \
     ./generaldeclarations.h \
     ./ipxactmodels_global.h \
     ./kactusExtensions/ApiDefinition.h \
@@ -36,8 +37,12 @@ HEADERS += ./XmlUtils.h \
     ./kactusExtensions/SWInstance.h \
     ./kactusExtensions/SWView.h \
     ./kactusExtensions/SystemView.h \
+    ./kactusExtensions/validators/ApiDefinitionValidator.h \
+    ./kactusExtensions/validators/ComDefinitionValidator.h \
     ./kactusExtensions/ApiDefinitionWriter.h \
+    ./kactusExtensions/ApiDefinitionReader.h \
     ./kactusExtensions/ComDefinitionWriter.h \
+    ./kactusExtensions/ComDefinitionReader.h \
     ./validators/BinaryValidator.h \
     ./validators/namevalidator.h \
     ./validators/NMTokenValidator.h \
@@ -239,14 +244,11 @@ HEADERS += ./XmlUtils.h \
     ./Component/validators/MemoryMapValidator.h \
     ./Component/validators/MemoryReserve.h \
     ./Component/validators/RegisterValidator.h \
-    ./Component/validators/ViewValidator.h \
-    ./kactusExtensions/ApiDefinitionReader.h \
-    ./kactusExtensions/validators/ApiDefinitionValidator.h \
-    ./kactusExtensions/ComDefinitionReader.h \
-    ./kactusExtensions/validators/ComDefinitionValidator.h
+    ./Component/validators/ViewValidator.h
 SOURCES += ./generaldeclarations.cpp \
     ./XmlUtils.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
+    ./kactusExtensions/ApiDefinitionReader.cpp \
     ./kactusExtensions/ApiDefinitionWriter.cpp \
     ./kactusExtensions/ApiFunction.cpp \
     ./kactusExtensions/ApiFunctionParameter.cpp \
@@ -255,6 +257,7 @@ SOURCES += ./generaldeclarations.cpp \
     ./kactusExtensions/BSPBuildCommand.cpp \
     ./kactusExtensions/ColumnDesc.cpp \
     ./kactusExtensions/ComDefinition.cpp \
+    ./kactusExtensions/ComDefinitionReader.cpp \
     ./kactusExtensions/ComDefinitionWriter.cpp \
     ./kactusExtensions/ComInterconnection.cpp \
     ./kactusExtensions/ComInterface.cpp \
@@ -274,6 +277,8 @@ SOURCES += ./generaldeclarations.cpp \
     ./kactusExtensions/SWInstance.cpp \
     ./kactusExtensions/SWView.cpp \
     ./kactusExtensions/SystemView.cpp \
+    ./kactusExtensions/validators/ApiDefinitionValidator.cpp \
+    ./kactusExtensions/validators/ComDefinitionValidator.cpp \
     ./validators/BinaryValidator.cpp \
     ./validators/namevalidator.cpp \
     ./validators/NMTokenValidator.cpp \
@@ -475,7 +480,4 @@ SOURCES += ./generaldeclarations.cpp \
     ./Component/validators/MemoryReserve.cpp \
     ./Component/validators/RegisterValidator.cpp \
     ./Component/validators/ViewValidator.cpp \
-    ./kactusExtensions/ApiDefinitionReader.cpp \
-    ./kactusExtensions/validators/ApiDefinitionValidator.cpp \
-    ./kactusExtensions/ComDefinitionReader.cpp \
-    ./kactusExtensions/validators/ComDefinitionValidator.cpp
+    ./common/PortAlignment.cpp

@@ -15,6 +15,7 @@ HEADERS += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.h \
     ../../../../Plugins/PluginSystem/GeneratorPlugin/GeneratorConfiguration.h \
     ../../../../Plugins/VerilogGenerator/PortSorter/InterfaceDirectionNameSorter.h \
     ../../../../Plugins/VerilogGenerator/ModelParameterVerilogWriter/ModelParameterVerilogWriter.h \
+    ../../../../Plugins/common/NameGenerationPolicy.h \
     ../../../../Plugins/VerilogGenerator/PortSorter/PortSorter.h \
     ../../../../Plugins/VerilogGenerator/PortVerilogWriter/PortVerilogWriter.h \
     ../../../../Plugins/VerilogGenerator/VerilogGenerator/VerilogGenerator.h \
@@ -26,7 +27,9 @@ HEADERS += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.h \
     ../../../MockObjects/LibraryMock.h \
     ../../../../Plugins/PluginSystem/PluginUtilityAdapter.h \
     ../../../../Plugins/VerilogGenerator/VerilogGeneratorPlugin.h \
-    ../../../../Plugins/common/NameGenerationPolicy.h
+    ../../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
+    ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
+    ../../../../designEditors/common/TopComponentParameterFinder.h
 SOURCES += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.cpp \
     ../../../../Plugins/VerilogGenerator/ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.cpp \
     ../../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
@@ -37,6 +40,7 @@ SOURCES += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.cpp 
     ../../../../Plugins/VerilogGenerator/PortSorter/InterfaceDirectionNameSorter.cpp \
     ../../../MockObjects/LibraryMock.cpp \
     ../../../../Plugins/VerilogGenerator/ModelParameterVerilogWriter/ModelParameterVerilogWriter.cpp \
+    ../../../../Plugins/common/NameGenerationPolicy.cpp \
     ../../../../Plugins/PluginSystem/PluginUtilityAdapter.cpp \
     ../../../../Plugins/VerilogGenerator/PortVerilogWriter/PortVerilogWriter.cpp \
     ../../../../Plugins/VerilogGenerator/VerilogGenerator/VerilogGenerator.cpp \
@@ -45,4 +49,6 @@ SOURCES += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.cpp 
     ../../../../Plugins/VerilogGenerator/VerilogWireWriter/VerilogWireWriter.cpp \
     ../../../../Plugins/VerilogGenerator/common/WriterGroup.cpp \
     ./tst_VerilogGeneratorPlugin.cpp \
-    ../../../../Plugins/common/NameGenerationPolicy.cpp
+    ../../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
+    ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
+    ../../../../designEditors/common/TopComponentParameterFinder.cpp
