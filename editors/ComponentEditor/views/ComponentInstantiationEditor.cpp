@@ -25,26 +25,27 @@
 // Function: ComponentInstantiationEditor::ComponentInstantiationEditor()
 //-----------------------------------------------------------------------------
 ComponentInstantiationEditor::ComponentInstantiationEditor(QSharedPointer<Component> component,
-    QSharedPointer<View> view, QSharedPointer<ComponentInstantiation> componentInstantiation,
+    LibraryInterface* library,
+    QSharedPointer<ComponentInstantiation> componentInstantiation,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
     QWidget *parent):
-QWidget(parent),
-component_(component),
-view_(view),
-componentInstantiation_(componentInstantiation),
-languageEditor_(this), 
-languageStrict_(tr("Strict"), this),
-libraryEditor_(this),
-packageEditor_(this),
-modulelNameEditor_(this),
-architectureEditor_(this),
-configurationEditor_(this),
-fileSetRefs_(component, tr("File set references"), this),
-fileBuilders_(componentInstantiation->getDefaultFileBuilders(), this),
-moduleParameters_(componentInstantiation->getModuleParameters(), component->getChoices(), parameterFinder,
-                  expressionFormatter, this)
+ItemEditor(component, library, parent),
+    component_(component),
+    componentInstantiation_(componentInstantiation),
+    nameGroupEditor_(componentInstantiation, this, tr("Component instance name and description")),
+    languageEditor_(this), 
+    languageStrict_(tr("Strict"), this),
+    libraryEditor_(this),
+    packageEditor_(this),
+    modulelNameEditor_(this),
+    architectureEditor_(this),
+    configurationEditor_(this),
+    fileSetRefs_(component, tr("File set references"), this),
+    fileBuilders_(componentInstantiation->getDefaultFileBuilders(), this),
+    moduleParameters_(componentInstantiation->getModuleParameters(), component->getChoices(), parameterFinder,
+    expressionFormatter, this)
 {
-	fileSetRefs_.initialize();
+    fileSetRefs_.initialize();
 
 	connect(&languageEditor_, SIGNAL(textEdited(const QString&)), 
         this, SLOT(onLanguageChange()), Qt::UniqueConnection);
@@ -94,6 +95,10 @@ ComponentInstantiationEditor::~ComponentInstantiationEditor()
 //-----------------------------------------------------------------------------
 void ComponentInstantiationEditor::refresh()
 {
+    blockSignals(true);
+
+    nameGroupEditor_.refresh();
+
     languageEditor_.setText(componentInstantiation_->getLanguage());
     languageStrict_.setChecked(componentInstantiation_->isLanguageStrict());
 
@@ -107,11 +112,13 @@ void ComponentInstantiationEditor::refresh()
 
     configurationEditor_.setText(componentInstantiation_->getConfigurationName());
 
-    fileSetRefs_.setItems(*componentInstantiation_->getFileSetReferences().data());
+    fileSetRefs_.setItems(*componentInstantiation_->getFileSetReferences());
 
     fileBuilders_.refresh();
 
     moduleParameters_.refresh();
+
+    blockSignals(false);
 }
 
 //-----------------------------------------------------------------------------
@@ -197,7 +204,7 @@ void ComponentInstantiationEditor::onFileSetRefChange()
 void ComponentInstantiationEditor::showEvent(QShowEvent* event)
 {
 	QWidget::showEvent(event);
-	emit helpUrlRequested("componenteditor/flatview.html");
+	emit helpUrlRequested("componenteditor/componentInstantiation.html");
 }
 
 //-----------------------------------------------------------------------------
@@ -205,36 +212,38 @@ void ComponentInstantiationEditor::showEvent(QShowEvent* event)
 //-----------------------------------------------------------------------------
 void ComponentInstantiationEditor::setupLayout()
 {
-    QGroupBox* instanceGroup = new QGroupBox(tr("Implementation details"), this);
+    QGroupBox* implementationGroup = new QGroupBox(tr("Implementation details"), this);
 
-    QGridLayout* languageLayout = new QGridLayout();
-    languageLayout->addWidget(new QLabel(tr("Language:"), this), 0, 0, 1, 1);
-    languageLayout->addWidget(&languageEditor_, 0, 1, 1, 1);
-    languageLayout->addWidget(&languageStrict_, 0, 2, 1, 1);
+    QGridLayout* implementationLayout = new QGridLayout(implementationGroup);
+    implementationLayout->addWidget(new QLabel(tr("Language:"), this), 0, 0, 1, 1);
+    implementationLayout->addWidget(&languageEditor_, 0, 1, 1, 1);
+    implementationLayout->addWidget(&languageStrict_, 0, 2, 1, 1);
 
-    languageLayout->addWidget(new QLabel(tr("Library:"), this), 1, 0, 1, 1);
-    languageLayout->addWidget(&libraryEditor_, 1, 1, 1, 2);
+    implementationLayout->addWidget(new QLabel(tr("Library:"), this), 1, 0, 1, 1);
+    implementationLayout->addWidget(&libraryEditor_, 1, 1, 1, 2);
     
-    languageLayout->addWidget(new QLabel(tr("Package:"), this), 2, 0, 1, 1);
-    languageLayout->addWidget(&packageEditor_, 2, 1, 1, 2);
+    implementationLayout->addWidget(new QLabel(tr("Package:"), this), 2, 0, 1, 1);
+    implementationLayout->addWidget(&packageEditor_, 2, 1, 1, 2);
 
-    QFormLayout* moduleLaout = new QFormLayout();
-    moduleLaout->addRow(tr("Module name:"), &modulelNameEditor_);
-    moduleLaout->addRow(tr("Architecture:"), &architectureEditor_);
-    moduleLaout->addRow(tr("Configuration:"), &configurationEditor_);
+    implementationLayout->addWidget(new QLabel(tr("Module name:"), this), 3, 0, 1, 1);
+    implementationLayout->addWidget(&modulelNameEditor_, 3, 1, 1, 2);
 
-    QGridLayout* instanceLayout = new QGridLayout(instanceGroup);
-    instanceLayout->addLayout(languageLayout, 0, 0, 1, 1);
-    instanceLayout->addLayout(moduleLaout, 0, 1, 1, 1);
-    instanceLayout->setColumnStretch(0, 50);
-    instanceLayout->setColumnStretch(1, 50);
+    implementationLayout->addWidget(new QLabel(tr("Architecture:"), this), 4, 0, 1, 1);
+    implementationLayout->addWidget(&architectureEditor_, 4, 1, 1, 2);
+
+    implementationLayout->addWidget(new QLabel(tr("Configuration:"), this), 5, 0, 1, 1);
+    implementationLayout->addWidget(&configurationEditor_, 5, 1, 1, 2);
+
+    QHBoxLayout* nameAndImplementationLayout = new QHBoxLayout();
+    nameAndImplementationLayout->addWidget(&nameGroupEditor_, 0, Qt::AlignTop);
+    nameAndImplementationLayout->addWidget(implementationGroup);
 
     QHBoxLayout* fileSetAndBuildLayout = new QHBoxLayout();
     fileSetAndBuildLayout->addWidget(&fileSetRefs_);
     fileSetAndBuildLayout->addWidget(&fileBuilders_);
 
     QVBoxLayout* topLayout = new QVBoxLayout(this);
-    topLayout->addWidget(instanceGroup);
+    topLayout->addLayout(nameAndImplementationLayout);
     topLayout->addLayout(fileSetAndBuildLayout);
     topLayout->addWidget(&moduleParameters_, 1);
     topLayout->setContentsMargins(0, 0, 0, 0);

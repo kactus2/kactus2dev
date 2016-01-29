@@ -130,3 +130,20 @@ void ModuleParameterEditor::refresh()
 {
     proxy_->invalidate();
 }
+
+//-----------------------------------------------------------------------------
+// Function: ModuleParameterEditor::disableEditing()
+//-----------------------------------------------------------------------------
+void ModuleParameterEditor::disableEditing()
+{
+    model_->disableEditing();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ModuleParameterEditor::setModuleParameters()
+//-----------------------------------------------------------------------------
+void ModuleParameterEditor::setModuleParameters(QSharedPointer<QList<QSharedPointer<ModuleParameter> > > 
+    moduleParameters)
+{
+    model_->setModelParameters(moduleParameters);
+}

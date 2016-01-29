@@ -15,7 +15,15 @@
 
 #include <Plugins/common/NameGenerationPolicy.h>
 
+#include <editors/ComponentEditor/common/ReferenceSelector/ReferenceSelector.h>
+#include <editors/ComponentEditor/instantiations/ComponentInstantiationDisplayer.h>
+#include <editors/ComponentEditor/views/ModuleParameterEditor.h>
+
+#include <common/widgets/nameGroupEditor/namegroupeditor.h>
+#include <common/widgets/vlnvDisplayer/vlnvdisplayer.h>
+
 #include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/ComponentInstantiation.h>
 #include <IPXACTmodels/Component/View.h>
 #include <IPXACTmodels/common/FileBuilder.h>
 
@@ -29,58 +37,39 @@
 // Function: ViewEditor::ViewEditor()
 //-----------------------------------------------------------------------------
 ViewEditor::ViewEditor(QSharedPointer<Component> component, QSharedPointer<View> view,
-                       LibraryInterface* libHandler, QSharedPointer<ParameterFinder> parameterFinder,
-                       QSharedPointer<ExpressionFormatter> expressionFormatter, QWidget *parent /* = 0 */):
+    LibraryInterface* libHandler, QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter, QWidget *parent):
 ItemEditor(component, libHandler, parent),
-view_(view),
-nameEditor_(view, this, tr("View name and description")),
-envIdentifier_(view, this),
-componentInstantiationEditor_(0),
-hierarchyReferenceEditor_(0)
+    view_(view),
+    nameEditor_(view, this, tr("View name and description")),
+    envIdentifier_(view, this),
+    componentInstantiationSelector_(new ReferenceSelector(this)),
+    designConfigurationInstantiationSelector_(new ReferenceSelector(this)),
+    designInstantiationSelector_(new ReferenceSelector(this)),
+    componentInstantiationDisplay_(new ComponentInstantiationDisplayer(this)),
+    hierarchyGroup_(new QGroupBox(tr("Design and configuration"), this)),
+    designConfigurationDisplay_(new VLNVDisplayer(this)),
+    designDisplay_(new VLNVDisplayer(this)),
+    moduleParameterEditor_(new ModuleParameterEditor(QSharedPointer<QList<QSharedPointer<ModuleParameter> > >(
+    new QList<QSharedPointer<ModuleParameter> >()), component->getChoices(), parameterFinder, expressionFormatter,
+    this))
 {
-    componentInstantiationEditor_ = new ComponentInstantiationEditor(component, view, getComponentInstantiation(),
-        parameterFinder, expressionFormatter, this);
+    moduleParameterEditor_->disableEditing();
 
-    hierarchyReferenceEditor_ = new HierarchyRefWidget(view, getDesignInstantiation(),
-        getDesignConfigurationInstantiation(), libHandler,
-        component->getChoices(), parameterFinder, expressionFormatter, this);
+    setupLayout();
 
-	setupLayout();
+    refresh();
 
-	connect(&nameEditor_, SIGNAL(contentChanged()),	this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	
+    connect(&nameEditor_, SIGNAL(contentChanged()),	this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+
     connect(&envIdentifier_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
-
-    connect(hierarchyReferenceEditor_, SIGNAL(contentChanged()), 
-        this, SLOT(onHierarchyChanged()), Qt::UniqueConnection);
-
-    connect(hierarchyReferenceEditor_, SIGNAL(contentChanged()), 
-        this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(hierarchyReferenceEditor_, SIGNAL(helpUrlRequested(const QString&)),
-        this, SIGNAL(helpUrlRequested(const QString&)), Qt::UniqueConnection);
-    connect(hierarchyReferenceEditor_, SIGNAL(increaseReferences(QString)),
-        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
-    connect(hierarchyReferenceEditor_, SIGNAL(decreaseReferences(QString)),
-        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
-    connect(hierarchyReferenceEditor_, SIGNAL(openReferenceTree(QString)),
-        this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
-
-    connect(componentInstantiationEditor_, SIGNAL(contentChanged()), 
-        this, SLOT(onComponentInstanceChanged()), Qt::UniqueConnection);
-
-    connect(componentInstantiationEditor_, SIGNAL(contentChanged()),
-        this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(componentInstantiationEditor_, SIGNAL(helpUrlRequested(const QString&)),
-		this, SIGNAL(helpUrlRequested(const QString&)), Qt::UniqueConnection);
-    connect(componentInstantiationEditor_, SIGNAL(increaseReferences(QString)),
-        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
-    connect(componentInstantiationEditor_, SIGNAL(decreaseReferences(QString)),
-        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
-    connect(componentInstantiationEditor_, SIGNAL(openReferenceTree(QString)),
-        this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
-
-	refresh();
+    connect(componentInstantiationSelector_, SIGNAL(itemSelected(QString const&)),
+        this, SLOT(onComponentInstanceChanged(QString const&)), Qt::UniqueConnection);
+    connect(designConfigurationInstantiationSelector_, SIGNAL(itemSelected(QString const&)),
+        this, SLOT(onDesignConfigurationInstanceChanged(QString const&)), Qt::UniqueConnection);
+    connect(designInstantiationSelector_, SIGNAL(itemSelected(QString const&)),
+        this, SLOT(onDesignInstanceChanged(QString const&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -99,105 +88,137 @@ void ViewEditor::refresh()
 	nameEditor_.refresh();
 	envIdentifier_.refresh();
 
-    componentInstantiationEditor_->refresh();    
+    QStringList componentInstantiationNames;
+    foreach(QSharedPointer<ComponentInstantiation> componentInstantiation, 
+        *component()->getComponentInstantiations())
+    {
+        componentInstantiationNames.append(componentInstantiation->name());
+    }
+    componentInstantiationSelector_->refresh(componentInstantiationNames);
+    componentInstantiationSelector_->selectItem(view_->getComponentInstantiationRef());
+    onComponentInstanceChanged(view_->getComponentInstantiationRef());
 
-    hierarchyReferenceEditor_->refresh();
+    QStringList designConfigurationInstantiationNames;
+    foreach(QSharedPointer<DesignConfigurationInstantiation> designConfigurationInstantiation, 
+        *component()->getDesignConfigurationInstantiations())
+    {
+        designConfigurationInstantiationNames.append(designConfigurationInstantiation->name());
+        if (designConfigurationInstantiation->name() == view_->getDesignConfigurationInstantiationRef())
+        {
+            designConfigurationDisplay_->setVLNV(
+                *designConfigurationInstantiation->getDesignConfigurationReference());
+        }
+    }
+    designConfigurationInstantiationSelector_->refresh(designConfigurationInstantiationNames);
+    designConfigurationInstantiationSelector_->selectItem(view_->getDesignConfigurationInstantiationRef());
+    onDesignConfigurationInstanceChanged(view_->getDesignConfigurationInstantiationRef());
+
+    QStringList designInstantiationNames;
+    foreach(QSharedPointer<DesignInstantiation> designInstantiation, *component()->getDesignInstantiations())
+    {
+        designInstantiationNames.append(designInstantiation->name());
+        if (designInstantiation->name() == view_->getDesignInstantiationRef())
+        {
+            designDisplay_->setVLNV(*designInstantiation->getDesignReference());
+        }
+    }
+    designInstantiationSelector_->refresh(designInstantiationNames);
+    designInstantiationSelector_->selectItem(view_->getDesignInstantiationRef());
+    onDesignInstanceChanged(view_->getDesignInstantiationRef()); 
+}
+
+//-----------------------------------------------------------------------------
+// Function: ViewEditor::showEvent()
+//-----------------------------------------------------------------------------
+void ViewEditor::showEvent(QShowEvent* event)
+{
+    ItemEditor::showEvent(event);
+    refresh();
 }
 
 //-----------------------------------------------------------------------------
 // Function: ViewEditor::onComponentInstanceChanged()
 //-----------------------------------------------------------------------------
-void ViewEditor::onComponentInstanceChanged()
+void ViewEditor::onComponentInstanceChanged(QString const& instanceName)
 {
-    QSharedPointer<ComponentInstantiation> instantiation = componentInstantiationEditor_->getComponentInstance();
-    if (!component()->getComponentInstantiations()->contains(instantiation))
+    QSharedPointer<ComponentInstantiation> instantiation = 
+        component()->getModel()->findComponentInstantiation(instanceName);
+    componentInstantiationDisplay_->setInstantiation(instantiation);
+
+    if (instantiation)
     {
-        view_->setComponentInstantiationRef(instantiation->name());
-        component()->getComponentInstantiations()->append(instantiation);
+        moduleParameterEditor_->setModuleParameters(instantiation->getModuleParameters());
     }
+    moduleParameterEditor_->setVisible(instantiation);
 }
 
 //-----------------------------------------------------------------------------
-// Function: ViewEditor::onHierarchyChanged()
+// Function: ViewEditor::onDesignConfigurationInstanceChanged()
 //-----------------------------------------------------------------------------
-void ViewEditor::onHierarchyChanged()
-{
-    QSharedPointer<DesignInstantiation> designInstantiation = hierarchyReferenceEditor_->getDesignInstantiation();
-    if (!component()->getDesignInstantiations()->contains(designInstantiation))
-    {
-        view_->setDesignInstantiationRef(designInstantiation->name());
-        component()->getDesignInstantiations()->append(designInstantiation);
-    }
+void ViewEditor::onDesignConfigurationInstanceChanged(QString const& instanceName)
+{    
+    view_->setDesignConfigurationInstantiationRef(instanceName);
 
-    QSharedPointer<DesignConfigurationInstantiation> configInstantiation =
-        hierarchyReferenceEditor_->getDesignConfigurationInstantiation();
-    if (!component()->getDesignConfigurationInstantiations()->contains(configInstantiation))
-    {
-        view_->setDesignConfigurationInstantiationRef(configInstantiation->name());
-        component()->getDesignConfigurationInstantiations()->append(configInstantiation);
-    }
-}
+    QSharedPointer<DesignConfigurationInstantiation> selectedInstantiation;
 
-//-----------------------------------------------------------------------------
-// Function: ComponentEditorViewItem::getComponentInstantiation()
-//-----------------------------------------------------------------------------
-QSharedPointer<ComponentInstantiation> ViewEditor::getComponentInstantiation() const
-{
-    foreach (QSharedPointer<ComponentInstantiation> instantiation, *component()->getComponentInstantiations())
-    {
-        if (instantiation->name() == view_->getComponentInstantiationRef())
-        {
-            return instantiation;
-        }
-    }
-
-    return QSharedPointer<ComponentInstantiation> (new ComponentInstantiation(view_->name() + "_component"));
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentEditorViewItem::getDesignInstantiation()
-//-----------------------------------------------------------------------------
-QSharedPointer<DesignInstantiation> ViewEditor::getDesignInstantiation() const
-{
-    foreach (QSharedPointer<DesignInstantiation> instantiation, *component()->getDesignInstantiations())
-    {
-        if (instantiation->name() == view_->getDesignInstantiationRef())
-        {
-            return instantiation;
-        }
-    }
-
-    return QSharedPointer<DesignInstantiation> (new DesignInstantiation(
-        NameGenerationPolicy::designInstantiationName(view_->name())));
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentEditorViewItem::getDesignConfigurationInstantiation()
-//-----------------------------------------------------------------------------
-QSharedPointer<DesignConfigurationInstantiation> ViewEditor::getDesignConfigurationInstantiation()
-    const
-{
-    foreach (QSharedPointer<DesignConfigurationInstantiation> instantiation,
+    foreach(QSharedPointer<DesignConfigurationInstantiation> configurationInstantiation, 
         *component()->getDesignConfigurationInstantiations())
     {
-        if (instantiation->name() == view_->getDesignConfigurationInstantiationRef())
+        if (configurationInstantiation->name() == instanceName)
         {
-            return instantiation;
+            selectedInstantiation = configurationInstantiation;
         }
     }
 
-    return QSharedPointer<DesignConfigurationInstantiation> (new DesignConfigurationInstantiation(
-        NameGenerationPolicy::designConfigurationInstantiationName(view_->name())));
+    VLNV selectedVLNV;
+    if (selectedInstantiation)
+    {
+        selectedVLNV = *selectedInstantiation->getDesignConfigurationReference();
+    }
+
+    hierarchyGroup_->setVisible(!instanceName.isEmpty() || !designInstantiationSelector_->currentText().isEmpty());
+    designConfigurationDisplay_->setVisible(selectedInstantiation);
+    designConfigurationDisplay_->setVLNV(selectedVLNV);
+
+    emit contentChanged();
 }
 
+//-----------------------------------------------------------------------------
+// Function: ViewEditor::onDesignInstanceChanged()
+//-----------------------------------------------------------------------------
+void ViewEditor::onDesignInstanceChanged(QString const& instanceName)
+{    
+    view_->setDesignInstantiationRef(instanceName);
+
+    QSharedPointer<DesignInstantiation> selectedInstantiation;
+
+    foreach(QSharedPointer<DesignInstantiation> designInstantiation, *component()->getDesignInstantiations())
+    {
+        if (designInstantiation->name() == instanceName)
+        {
+            selectedInstantiation = designInstantiation;
+        }
+    }
+
+    VLNV selectedVLNV;
+    if (selectedInstantiation)
+    {
+        selectedVLNV = *selectedInstantiation->getDesignReference();
+    }
+
+    hierarchyGroup_->setVisible(!instanceName.isEmpty() || 
+        !designConfigurationInstantiationSelector_->currentText().isEmpty());
+    designDisplay_->setVisible(selectedInstantiation);
+    designDisplay_->setVLNV(selectedVLNV);
+
+    emit contentChanged();
+}
 
 //-----------------------------------------------------------------------------
 // Function: ViewEditor::setupLayout()
 //-----------------------------------------------------------------------------
 void ViewEditor::setupLayout()
 {
-    envIdentifier_.setMaximumHeight(175);
-
     // create the scroll area
     QScrollArea* scrollArea = new QScrollArea(this);
     scrollArea->setWidgetResizable(true);
@@ -207,13 +228,19 @@ void ViewEditor::setupLayout()
     scrollLayout->addWidget(scrollArea);
     scrollLayout->setContentsMargins(0, 0, 0, 0);
 
-    QHBoxLayout* nameAndEnvIdentifiersLayout = new QHBoxLayout();
-    nameAndEnvIdentifiersLayout->addWidget(&nameEditor_, 0, Qt::AlignTop);
-    nameAndEnvIdentifiersLayout->addWidget(&envIdentifier_, 0, Qt::AlignTop);
+    QGroupBox* instantiationsGroup = new QGroupBox(tr("Instantiations"), this);
+    QFormLayout* instancesLayout = new QFormLayout(instantiationsGroup);
+    instancesLayout->addRow(tr("Component instantiation:"), componentInstantiationSelector_);
+    instancesLayout->addRow(tr("Design configuration instantiation:"), designConfigurationInstantiationSelector_);
+    instancesLayout->addRow(tr("Design instantiation:"), designInstantiationSelector_);
 
-    QVBoxLayout* editorsLayout = new QVBoxLayout();
-    editorsLayout->addWidget(componentInstantiationEditor_, 0);
-    editorsLayout->addWidget(hierarchyReferenceEditor_, 0);
+    QVBoxLayout* componentLayout = new QVBoxLayout();
+    componentLayout->addWidget(componentInstantiationDisplay_, Qt::AlignTop);
+
+    QVBoxLayout* editorsLayout = new QVBoxLayout(hierarchyGroup_);
+    editorsLayout->addWidget(designConfigurationDisplay_, 0, Qt::AlignTop);
+    editorsLayout->addWidget(designDisplay_, 0, Qt::AlignTop);
+    editorsLayout->addStretch();
 
     // create the top widget and set it under the scroll area
     QWidget* topWidget = new QWidget(scrollArea);
@@ -221,9 +248,13 @@ void ViewEditor::setupLayout()
     scrollArea->setWidget(topWidget);
 
     // create the layout for the top widget
-    QVBoxLayout* topLayout = new QVBoxLayout(topWidget);
-    topLayout->addLayout(nameAndEnvIdentifiersLayout);
-    topLayout->addLayout(editorsLayout);
-    topLayout->addStretch(1);
+    QGridLayout* topLayout = new QGridLayout(topWidget);
+    topLayout->addWidget(&nameEditor_, 0, 0, 1, 1, Qt::AlignTop);
+    topLayout->addWidget(&envIdentifier_, 0, 1, 2, 1, Qt::AlignTop);
+    topLayout->addWidget(instantiationsGroup, 1, 0, 1, 1, Qt::AlignTop);
+    topLayout->addLayout(componentLayout, 2, 0, 1, 1);
+    topLayout->addWidget(hierarchyGroup_, 2, 1, 1, 1);
+    topLayout->addWidget(moduleParameterEditor_, 3, 0, 1, 2);
+    topLayout->setRowStretch(3, 1);
     topLayout->setContentsMargins(0, 0, 0, 0);
 }

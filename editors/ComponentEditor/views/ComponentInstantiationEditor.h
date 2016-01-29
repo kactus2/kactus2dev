@@ -15,6 +15,10 @@
 #include "filesetrefeditor.h"
 #include "ModuleParameterEditor.h"
 
+#include <common/widgets/nameGroupEditor/namegroupeditor.h>
+
+#include <editors/ComponentEditor/itemeditor.h>
+
 #include <editors/ComponentEditor/fileBuilders/filebuilderseditor.h>
 
 #include <QWidget>
@@ -31,7 +35,7 @@ class ParameterFinder;
 //-----------------------------------------------------------------------------
 //! Contains the GUI items to edit the general settings of non-hierarchical view.
 //-----------------------------------------------------------------------------
-class ComponentInstantiationEditor : public QWidget
+class ComponentInstantiationEditor : public ItemEditor
 {
 	Q_OBJECT
 
@@ -46,7 +50,8 @@ public:
      *        @param [in] expressionFormatter   Formatter for view parameter expressions.
 	 *        @param [in] parent                The owner of this widget.
 	 */
-	ComponentInstantiationEditor(QSharedPointer<Component> component, QSharedPointer<View> view,
+	ComponentInstantiationEditor(QSharedPointer<Component> component,
+        LibraryInterface* library,
         QSharedPointer<ComponentInstantiation> componentInstantiation,
         QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
 		QWidget *parent);
@@ -59,41 +64,6 @@ public:
 
     //! Gets the component instance being edited.
     QSharedPointer<ComponentInstantiation> getComponentInstance() const;
-
-signals:
-
-	//! Emit an error message to user.
-	void errorMessage(const QString& msg);
-
-	//! Emit a notice to user.
-	void noticeMessage(const QString& msg);
-
-	//! Emitted when contents of the editor change
-	void contentChanged();
-
-	//! Emitted when a help page should be changed in the context help window.
-	void helpUrlRequested(const QString& url);
-    
-    /*!
-     *  Increase the amount of references to a parameter with a matching id.
-     *
-     *      @param [in] id      Id of the parameter, whose references are being increased.
-     */
-    void increaseReferences(QString id);
-
-    /*!
-     *  Decrease the amount of references to a parameter with a matching id.
-     *
-     *      @param [in] id      Id of the parameter, whose references are being increased.
-     */
-    void decreaseReferences(QString id);
-
-    /*!
-     *  Open the reference tree of the selected parameter.
-     *
-     *      @param [in] id      Id of the selected parameter.
-     */
-    void openReferenceTree(QString const& id) const;
 
 protected:
 
@@ -141,11 +111,11 @@ private:
 	//! Pointer to the component being edited.
 	QSharedPointer<Component> component_;
 
-	//! Pointer to the view being edited.
-	QSharedPointer<View> view_;
-
     //! Pointer to the edited component instantiation.
     QSharedPointer<ComponentInstantiation> componentInstantiation_;
+
+    //! Editor for component instantiation name group.
+    NameGroupEditor nameGroupEditor_;
 
 	//! Editor to set the hardware description language.
 	QLineEdit languageEditor_;

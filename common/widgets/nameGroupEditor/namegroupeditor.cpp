@@ -11,6 +11,9 @@
 #include <QLabel>
 #include <QGridLayout>
 
+//-----------------------------------------------------------------------------
+// Function: NameGroupEditor::NameGroupEditor()
+//-----------------------------------------------------------------------------
 NameGroupEditor::NameGroupEditor( NameGroup& nameGroup,
 								 QWidget *parent,
 								 const QString& title /*= QString("Names")*/ ):
@@ -27,7 +30,7 @@ descriptionEdit_(this)
 // Function: NameGroupEditor::NameGroupEditor()
 //-----------------------------------------------------------------------------
 NameGroupEditor::NameGroupEditor(QSharedPointer<NameGroup> nameGroup, 
-    QWidget* parent, const QString& title /*= QString("Names")*/) :
+    QWidget* parent, const QString& title) :
 QGroupBox(title, parent),
     nameGroup_(*nameGroup),
     nameEdit_(this),
@@ -37,23 +40,39 @@ QGroupBox(title, parent),
     setupLayout();
 }
 
-NameGroupEditor::~NameGroupEditor() {
+//-----------------------------------------------------------------------------
+// Function: NameGroupEditor::~NameGroupEditor()
+//-----------------------------------------------------------------------------
+NameGroupEditor::~NameGroupEditor()
+{
 }
 
-QString NameGroupEditor::name() const {
+//-----------------------------------------------------------------------------
+// Function: NameGroupEditor::name()
+//-----------------------------------------------------------------------------
+QString NameGroupEditor::name() const
+{
 	return nameGroup_.name();
 }
 
-QString NameGroupEditor::displayName() const {
+//-----------------------------------------------------------------------------
+// Function: NameGroupEditor::displayName()
+//-----------------------------------------------------------------------------
+QString NameGroupEditor::displayName() const
+{
 	return nameGroup_.displayName();
 }
 
-QString NameGroupEditor::description() const {
+//-----------------------------------------------------------------------------
+// Function: NameGroupEditor::description()
+//-----------------------------------------------------------------------------
+QString NameGroupEditor::description() const
+{
 	return nameGroup_.description();
 }
 
 //-----------------------------------------------------------------------------
-// Function: namegroupeditor::onNameChanged()
+// Function: NameGroupEditor::onNameChanged()
 //-----------------------------------------------------------------------------
 void NameGroupEditor::onNameChanged( const QString& newName )
 {
@@ -61,30 +80,45 @@ void NameGroupEditor::onNameChanged( const QString& newName )
 	emit contentChanged();
 }
 
-void NameGroupEditor::onDisplayNameChanged( const QString& newName ) {
+//-----------------------------------------------------------------------------
+// Function: NameGroupEditor::onDisplayNameChanged()
+//-----------------------------------------------------------------------------
+void NameGroupEditor::onDisplayNameChanged( const QString& newName )
+{
 	nameGroup_.setDisplayName(newName);
 	emit contentChanged();
 }
 
-void NameGroupEditor::onDescriptionChanged() {
+//-----------------------------------------------------------------------------
+// Function: NameGroupEditor::onDescriptionChanged()
+//-----------------------------------------------------------------------------
+void NameGroupEditor::onDescriptionChanged()
+{
 	nameGroup_.setDescription(descriptionEdit_.toPlainText());
 	emit contentChanged();
 }
 
-bool NameGroupEditor::isValid() const {
+//-----------------------------------------------------------------------------
+// Function: NameGroupEditor::isValid()
+//-----------------------------------------------------------------------------
+bool NameGroupEditor::isValid() const
+{
 	return !nameGroup_.name().isEmpty();
 }
 
-void NameGroupEditor::refresh() {
+//-----------------------------------------------------------------------------
+// Function: NameGroupEditor::refresh()
+//-----------------------------------------------------------------------------
+void NameGroupEditor::refresh()
+{
 	nameEdit_.setText(nameGroup_.name());
 	displayNameEdit_.setText(nameGroup_.displayName());
 	
-	disconnect(&descriptionEdit_, SIGNAL(textChanged()),
-		this, SLOT(onDescriptionChanged()));
+	disconnect(&descriptionEdit_, SIGNAL(textChanged()), this, SLOT(onDescriptionChanged()));
 	descriptionEdit_.setPlainText(nameGroup_.description());
-	connect(&descriptionEdit_, SIGNAL(textChanged()),
-		this, SLOT(onDescriptionChanged()), Qt::UniqueConnection);
+	connect(&descriptionEdit_, SIGNAL(textChanged()), this, SLOT(onDescriptionChanged()), Qt::UniqueConnection);
 }
+
 //-----------------------------------------------------------------------------
 // Function: NameGroupEditor::setupLayout()
 //-----------------------------------------------------------------------------
@@ -126,4 +160,3 @@ void NameGroupEditor::setupLayout()
     connect(&descriptionEdit_, SIGNAL(textChanged()),
         this, SLOT(onDescriptionChanged()), Qt::UniqueConnection);
 }
-

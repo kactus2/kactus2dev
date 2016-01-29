@@ -69,6 +69,14 @@ ConfigurableVLNVReference::~ConfigurableVLNVReference()
 }
 
 //-----------------------------------------------------------------------------
+// Function: ConfigurableVLNVReference::setVLNV()
+//-----------------------------------------------------------------------------
+void ConfigurableVLNVReference::setVLNV(VLNV const& vlnv)
+{
+    VLNV::operator=(vlnv);
+}
+
+//-----------------------------------------------------------------------------
 // Function: ConfigurableVLNVReference::getConfigurableElementValues()
 //-----------------------------------------------------------------------------
 QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > ConfigurableVLNVReference::

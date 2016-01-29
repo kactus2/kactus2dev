@@ -135,7 +135,7 @@ void HierarchyItem::parseComponent(VLNV const& vlnv)
         }
     }
     
-    foreach (QSharedPointer<SWView> softwareView, component_->getSWViews())
+    /*foreach (QSharedPointer<SWView> softwareView, component_->getSWViews())
     {
         VLNV designVLNV = softwareView->getHierarchyRef();
 
@@ -162,7 +162,7 @@ void HierarchyItem::parseComponent(VLNV const& vlnv)
         }
 
         createChildItemForDesign(designVLNV, KactusAttribute::SYSTEM, systemView->name());
-    }
+    }*/
 }
 
 //-----------------------------------------------------------------------------

@@ -33,6 +33,7 @@
 #include <editors/ComponentEditor/treeStructure/ComponentEditorSystemViewsItem.h>
 #include <editors/ComponentEditor/treeStructure/RemapStatesItem.h>
 #include <editors/ComponentEditor/treeStructure/componenteditortreemodel.h>
+#include <editors/ComponentEditor/treeStructure/InstantiationsItem.h>
 #include <editors/ComponentEditor/treeStructure/componenteditoritem.h>
 
 #include <editors/ComponentEditor/general/generaleditor.h>
@@ -758,6 +759,10 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createHWRootItem(QShare
         expressionParser_, hwRoot)));
 
     hwRoot->addChildItem(QSharedPointer<ComponentEditorAddrSpacesItem>(new ComponentEditorAddrSpacesItem(
+        &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionFormatter_,
+        expressionParser_, hwRoot)));
+
+    hwRoot->addChildItem(QSharedPointer<InstantiationsItem>(new InstantiationsItem(
         &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionFormatter_,
         expressionParser_, hwRoot)));
 

@@ -16,20 +16,22 @@
 
 #include "envidentifiereditor.h"
 #include "ComponentInstantiationEditor.h"
-#include "hierarchyrefwidget.h"
-
-#include <common/widgets/nameGroupEditor/namegroupeditor.h>
 
 #include <QSharedPointer>
 
-class ExpressionFormatter;
-class LibraryInterface;
-class ParameterFinder;
 class Component;
-class View;
 class ComponentInstantiation;
+class ComponentInstantiationDisplayer;
 class DesignInstantiation;
 class DesignConfigurationInstantiation;
+class ExpressionFormatter;
+class LibraryInterface;
+class NameGroupEditor;
+class ModuleParameterEditor;
+class ParameterFinder;
+class ReferenceSelector;
+class View;
+class VLNVDisplayer;
 //-----------------------------------------------------------------------------
 //! Editor to edit a view within a component.
 //-----------------------------------------------------------------------------
@@ -64,13 +66,18 @@ public:
 	 */
 	virtual void refresh();
 
+protected:
+
+    void showEvent(QShowEvent* event);
+
 private slots:
 
-    void onComponentInstanceChanged();
+    void onComponentInstanceChanged(QString const& instanceName);
 
-    void onHierarchyChanged();
+    void onDesignConfigurationInstanceChanged(QString const& instanceName);
 
-   
+    void onDesignInstanceChanged(QString const& instanceName);
+
 private:
 
 	//! No copying.
@@ -79,30 +86,8 @@ private:
 	//! No assignment.
 	ViewEditor& operator=(const ViewEditor& other);
 
-    /*!
-     *  Get the component instantiation referenced by the view.
-     *
-     *      @return The referenced component instantiation.
-     */
-    QSharedPointer<ComponentInstantiation> getComponentInstantiation() const;
-
-    /*!
-     *  Get the design instantiation referenced by the view.
-     *
-     *      @return The referenced design instantiation.
-     */
-    QSharedPointer<DesignInstantiation> getDesignInstantiation() const;
-
-    /*!
-     *  Get the design configuration instantiation referenced by the view.
-     *
-     *      @return The referenced design configuration instantiation.
-     */
-    QSharedPointer<DesignConfigurationInstantiation> getDesignConfigurationInstantiation() const;
-
 	//! Set up the layout for the editor.
 	void setupLayout();
-
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -120,11 +105,23 @@ private:
 	//! The editor to edit the envIdentifier element.
 	EnvIdentifierEditor envIdentifier_;
 
-	//! Editor to set general settings of flat view.
-    ComponentInstantiationEditor* componentInstantiationEditor_;
 
-	//! The widget to edit the hierarchical reference
-	HierarchyRefWidget* hierarchyReferenceEditor_;
+    ReferenceSelector* componentInstantiationSelector_;
+    
+    ReferenceSelector* designConfigurationInstantiationSelector_;
+    
+    ReferenceSelector* designInstantiationSelector_;
+
+    ComponentInstantiationDisplayer* componentInstantiationDisplay_;
+
+    QGroupBox* hierarchyGroup_;
+
+    VLNVDisplayer* designConfigurationDisplay_;
+
+    VLNVDisplayer* designDisplay_;
+
+    //! The display for module parameters of the component instance.
+    ModuleParameterEditor* moduleParameterEditor_;
 };
 
 #endif // VIEWEDITOR_H

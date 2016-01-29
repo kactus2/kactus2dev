@@ -61,6 +61,13 @@ public:
     ~ConfigurableVLNVReference();
 
     /*!
+     *  Sets the VLNV reference.
+     *
+     *      @param [in] vlnv   The VLNV to set.
+     */
+    void setVLNV(VLNV const& vlnv);
+
+    /*!
      *  Get the list of configurable element values.
      *
      *      @return A pointer to the list of configurable element values.
@@ -92,7 +99,7 @@ public:
      *      @return The value of the configurable element.
      */
     QString getSingleConfigurableElementValue(QString const& referenceId) const;
-
+    
 private:
 
     //! A list of configurable element values

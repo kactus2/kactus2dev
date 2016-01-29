@@ -21,7 +21,6 @@
 #include <IPXACTmodels/Component/DesignConfigurationInstantiation.h>
 
 #include <IPXACTmodels/Component/validators/ViewValidator.h>
-#include <IPXACTmodels/Component/validators/InstantiationsValidator.h>
 #include <IPXACTmodels/common/validators/ParameterValidator2014.h>
 
 //-----------------------------------------------------------------------------
@@ -35,14 +34,11 @@ ComponentEditorViewItem::ComponentEditorViewItem(QSharedPointer<View> view, Comp
                                                  QSharedPointer<ViewValidator> viewValidator,
                                                  ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-view_(view),
-editAction_(new QAction(tr("Edit"), this)),
-expressionParser_(expressionParser),
-viewValidator_(viewValidator),
-instantiationsValidator_()
+    view_(view),
+    editAction_(new QAction(tr("Edit"), this)),
+    expressionParser_(expressionParser),
+    viewValidator_(viewValidator)
 {
-    createInstantiationsValidator();
-
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);
 
@@ -74,35 +70,7 @@ QString ComponentEditorViewItem::text() const
 //-----------------------------------------------------------------------------
 bool ComponentEditorViewItem::isValid() const
 {
-    bool viewIsValid = viewValidator_->validate(view_);
-    bool componentInstantiationIsValid = true;
-    bool designInstantiationIsValid = true;
-    bool designConfigurationInstantiationIsValid = true;
-
-    if (!view_->getComponentInstantiationRef().isEmpty())
-    {
-        QSharedPointer<ComponentInstantiation> instantiation =
-            component_->getModel()->findComponentInstantiation(view_->getComponentInstantiationRef());
-        componentInstantiationIsValid = instantiationsValidator_->validateComponentInstantiation(instantiation);
-    }
-
-    if (!view_->getDesignInstantiationRef().isEmpty())
-    {
-        QSharedPointer<DesignInstantiation> instantiation =
-            component_->getModel()->findDesignInstantiation(view_->getDesignInstantiationRef());
-        designInstantiationIsValid= instantiationsValidator_->validateDesignInstantiation(instantiation);
-    }
-
-    if (!view_->getDesignConfigurationInstantiationRef().isEmpty())
-    {
-        QSharedPointer<DesignConfigurationInstantiation> instantiation = component_->getModel()->
-            findDesignConfigurationInstantiation(view_->getDesignConfigurationInstantiationRef());
-        designConfigurationInstantiationIsValid =
-            instantiationsValidator_->validateDesignConfigurationInstantiation(instantiation);
-    }
-
-    return viewIsValid && componentInstantiationIsValid && designInstantiationIsValid &&
-        designConfigurationInstantiationIsValid;
+    return viewValidator_->validate(view_);
 }
 
 //-----------------------------------------------------------------------------
@@ -192,18 +160,4 @@ QIcon ComponentEditorViewItem::getIcon() const
     {
         return QIcon();
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: componenteditorviewitem::createInstantiationsValidator()
-//-----------------------------------------------------------------------------
-void ComponentEditorViewItem::createInstantiationsValidator()
-{
-    QSharedPointer<ParameterValidator2014> parameterValidator (
-        new ParameterValidator2014(expressionParser_, component_->getChoices()));
-
-    QSharedPointer<InstantiationsValidator> temporaryValidator (new InstantiationsValidator(
-        expressionParser_, component_->getFileSets(), parameterValidator, libHandler_));
-
-    instantiationsValidator_ = temporaryValidator;
 }

@@ -38,15 +38,15 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] view                    Pointer to the view being edited.
-	 *      @param [in] model                   Pointer to the model that owns the items.
-	 *      @param [in] libHandler              Pointer to the instance that manages the library.
-	 *      @param [in] component               Pointer to the component being edited.
-	 *      @param [in] parameterFinder         Pointer to the parameter finder.
-     *      @param [in] expressionFormatter     Pointer to the expression formatter.
+	 *      @param [in] view                    The view being edited.
+	 *      @param [in] model                   The model that owns the items.
+	 *      @param [in] libHandler              The instance that manages the library.
+	 *      @param [in] component               The component being edited.
+	 *      @param [in] parameterFinder         The parameter finder.
+     *      @param [in] expressionFormatter     The expression formatter.
      *      @param [in] expressionParser        The used expression parser.
      *      @param [in] viewValidator           Validator used for views.
-	 *      @param [in] parent                  Pointer to the parent item.
+	 *      @param [in] parent                  The parent item.
 	 */
 	ComponentEditorViewItem(QSharedPointer<View> view,
         ComponentEditorTreeModel* model,
@@ -83,9 +83,9 @@ public:
 	virtual bool isValid() const;
 
 	/*!
-     *  Get pointer to the editor of this item.
+     *  Get The editor of this item.
 	 *
-	 *      @return Pointer to the editor to use for this item.
+	 *      @return The editor to use for this item.
 	 */
 	virtual ItemEditor* editor();
 
@@ -149,7 +149,7 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-	//! Pointer to the view being edited.
+	//! The view being edited.
 	QSharedPointer<View> view_;
 
     //! Action to open the view for editing.
@@ -160,9 +160,6 @@ private:
 
     //! The used validator for views.
     QSharedPointer<ViewValidator> viewValidator_;
-
-    //! The used validator for instantiations.
-    QSharedPointer<InstantiationsValidator> instantiationsValidator_;
 };
 
 #endif // COMPONENTEDITORVIEWITEM_H

@@ -6,7 +6,7 @@
 // Date: 29.3.2011
 //
 // Description:
-// This model can be used to edit and update a list of model parameters.
+// This model can be used to edit and update a list of module parameters.
 //-----------------------------------------------------------------------------
 
 #include "ModuleParameterModel.h"
@@ -31,8 +31,8 @@ ModuleParameterModel::ModuleParameterModel(QSharedPointer<QList<QSharedPointer<M
 AbstractParameterModel(choices, 
     QSharedPointer<ParameterValidator2014>(new ParameterValidator2014(expressionParser, choices)),
     expressionParser, parameterFinder, expressionFormatter, parent),
-moduleParameters_(moduleParameters), 
-lockedIndexes_()
+    moduleParameters_(moduleParameters), 
+    editingDisabled_(false)
 {
 
 }
@@ -103,7 +103,7 @@ QVariant ModuleParameterModel::data(QModelIndex const& index, int role) const
         {
              return QColor("red");
         }
-        else if (isLocked(index) )
+        else if (editingDisabled_)
         {
             return QColor("gray");
         }
@@ -137,14 +137,9 @@ QVariant ModuleParameterModel::headerData(int section, Qt::Orientation orientati
 //-----------------------------------------------------------------------------
 bool ModuleParameterModel::setData(QModelIndex const& index, QVariant const& value, int role)
 {
-	if (!index.isValid() || index.row() < 0 || index.row() >= rowCount())
+	if (!index.isValid() || index.row() < 0 || index.row() >= rowCount() || editingDisabled_)
     {
 		return false;
-    }
-
-    if (isLocked(index))
-    {
-        return false;
     }
 
 	if (role == Qt::EditRole)
@@ -185,7 +180,7 @@ Qt::ItemFlags ModuleParameterModel::flags(QModelIndex const& index) const
         return Qt::NoItemFlags;
     }
 
-    if (isLocked(index))
+    if (editingDisabled_)
     {
         return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
     }
@@ -198,6 +193,11 @@ Qt::ItemFlags ModuleParameterModel::flags(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 void ModuleParameterModel::onAddItem(QModelIndex const& index)
 {
+    if (editingDisabled_)
+    {
+        return;
+    }
+
     int row = rowCount();
 
     // if the index is valid then add the item to the correct position
@@ -220,15 +220,10 @@ void ModuleParameterModel::onAddItem(QModelIndex const& index)
 void ModuleParameterModel::onRemoveItem(QModelIndex const& index)
 {
 	// don't remove anything if index is invalid
-	if (!index.isValid() || index.row() < 0 || index.row() >= rowCount())
+	if (!index.isValid() || index.row() < 0 || index.row() >= rowCount() || editingDisabled_)
     {
 		return;
 	}
-
-    if (isLocked(QAbstractTableModel::index(index.row(), 0, QModelIndex())))
-    {
-        return;
-    }
 
     if (canRemoveRow(index.row()))
     {
@@ -380,22 +375,24 @@ QSharedPointer<ModuleParameter> ModuleParameterModel::getParameter(QModelIndex c
 }   
 
 //-----------------------------------------------------------------------------
-// Function: ModuleParameterModel::setAndLockModelParameters()
+// Function: ModuleParameterModel::setModelParameters()
 //-----------------------------------------------------------------------------
-void ModuleParameterModel::setAndLockModelParameters(
+void ModuleParameterModel::setModelParameters(
     QSharedPointer<QList<QSharedPointer<ModuleParameter> > > moduleParameters)
 {
     beginResetModel();
-    lockedIndexes_.clear();
     moduleParameters_ = moduleParameters;
     endResetModel();
 
-    foreach(QSharedPointer<ModuleParameter> moduleParameter, *moduleParameters_)
-    {
-        lockModuleParameter(moduleParameter);
-    }
-
     emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ModuleParameterModel::disableEditing()
+//-----------------------------------------------------------------------------
+void ModuleParameterModel::disableEditing()
+{
+    editingDisabled_ = true;
 }
 
 //-----------------------------------------------------------------------------
@@ -418,22 +415,6 @@ bool ModuleParameterModel::validateIndex(QModelIndex const& index) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: lockModelParameter()
-//-----------------------------------------------------------------------------
-void ModuleParameterModel::lockModuleParameter(QSharedPointer<ModuleParameter> moduleParameter)
-{
-    QModelIndex nameIndex = indexFor(moduleParameter);
-    QModelIndex typeIndex = nameIndex.sibling(nameIndex.row(), ModelParameterColumns::DATA_TYPE);
-    QModelIndex usageIndex = nameIndex.sibling(nameIndex.row(), ModelParameterColumns::USAGE_TYPE);
-    if (nameIndex.isValid() && typeIndex.isValid() && usageIndex.isValid())
-    {     
-        lockIndex(nameIndex);  
-        lockIndex(typeIndex);
-        lockIndex(usageIndex);
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: ModuleParameterModel::indexFor()
 //-----------------------------------------------------------------------------
 QModelIndex ModuleParameterModel::indexFor(QSharedPointer<ModuleParameter> moduleParameter) const
@@ -448,20 +429,4 @@ QModelIndex ModuleParameterModel::indexFor(QSharedPointer<ModuleParameter> modul
 
     // The base class creates the index for the row.
     return QAbstractTableModel::index(row, 0, QModelIndex());
-}
-
-//-----------------------------------------------------------------------------
-// Function: lockIndex()
-//-----------------------------------------------------------------------------
-void ModuleParameterModel::lockIndex(QModelIndex const& index)
-{
-    lockedIndexes_.append(QPersistentModelIndex(index));
-}
-
-//-----------------------------------------------------------------------------
-// Function: isLocked()
-//-----------------------------------------------------------------------------
-bool ModuleParameterModel::isLocked(QModelIndex const& index) const
-{
-    return lockedIndexes_.contains(index);
 }

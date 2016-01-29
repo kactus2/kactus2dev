@@ -6,7 +6,7 @@
 // Date: 29.3.2011
 //
 // Description:
-// This model can be used to edit and update a list of model parameters.
+// This model can be used to edit and update a list of module parameters.
 //-----------------------------------------------------------------------------
 
 #ifndef MODULEPARAMETERMODEL_H
@@ -24,7 +24,7 @@ class ExpressionParser;
 class ModuleParameter;
 
 //-----------------------------------------------------------------------------
-//! This model can be used to edit and update a list of model parameters.
+//! This model can be used to edit and update a list of module parameters.
 //-----------------------------------------------------------------------------
 class ModuleParameterModel : public AbstractParameterModel
 {
@@ -35,7 +35,7 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in]  modelParameters        The model parameters being edited.
+	 *      @param [in]  modeluleParameters     The module parameters being edited.
      *      @param [in]  choices                The choices available for the model parameter values.
      *      @param [in]  expressionParser       Expression parser for configurable elements.
      *      @param [in]  parameterFinder        The parameter finder.
@@ -125,7 +125,10 @@ public:
      *
      *      @param [in] modelParameters   The model parameters to edit.
      */
-    void setAndLockModelParameters(QSharedPointer<QList<QSharedPointer<ModuleParameter> > > moduleParameters);
+    void setModelParameters(QSharedPointer<QList<QSharedPointer<ModuleParameter> > > moduleParameters);
+
+    //! Disables the editing of module parameters in the model.
+    void disableEditing();
 
 public slots:
 
@@ -276,13 +279,6 @@ private:
 
 	//! No assignment.
 	ModuleParameterModel& operator=(const ModuleParameterModel& other);
-
-    /*!
-     *   Locks the name, type and usage columns of a parameter model.
-     *
-     *      @param [in] modelParam The parameter model to lock.
-     */
-    void lockModuleParameter(QSharedPointer<ModuleParameter> moduleParameter);
     
 	/*! Get the index of the given model parameter.
 	 *
@@ -292,22 +288,6 @@ private:
 	*/
     virtual QModelIndex indexFor(QSharedPointer<ModuleParameter> moduleParameter) const;
 
-    /*!
-     *   Locks the given index disabling editing.
-     *
-     *      @param [in] index The index to lock.
-     */
-    void lockIndex(QModelIndex const& index);
-
-    /*!
-     *   Checks if given index is locked.
-     *
-     *      @param [in] index The index to check.
-	 *
-	 *      @return True if the index is locked, otherwise false.
-     */
-    bool isLocked(QModelIndex const& index) const;
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -315,8 +295,8 @@ private:
     //! The model parameters to edit.
     QSharedPointer<QList<QSharedPointer<ModuleParameter> > > moduleParameters_;
 
-    //! The locked indexes that cannot be edited.
-    QList<QPersistentModelIndex> lockedIndexes_;
+    //! Disable for editing of module parameters.
+    bool editingDisabled_;
 };
 
 #endif // MODULEPARAMETERMODEL_H

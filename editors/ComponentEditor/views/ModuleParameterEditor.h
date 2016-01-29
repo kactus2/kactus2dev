@@ -38,7 +38,6 @@ public:
      *      @param [in] expressionFormatter     The selected expression formatter.
      *      @param [in] parent                  The owner of this editor.
      */
-//     ModuleParameterEditor(QSharedPointer<QList<QSharedPointer<ModelParameter> > > parameters,
     ModuleParameterEditor(QSharedPointer<QList<QSharedPointer<ModuleParameter> > > parameters,
         QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
         QSharedPointer<ParameterFinder> parameterFinder,
@@ -48,20 +47,24 @@ public:
 	//! The destructor.
 	~ModuleParameterEditor();
 
-    /*!
-     *  Refresh the contents of the editor.
-     */
+    //! Refresh the contents of the editor.
     void refresh();
+
+    //! Disables the editing of module parameters.
+    void disableEditing();
+
+    //! Sets the module parameters to edit.
+    void setModuleParameters(QSharedPointer<QList<QSharedPointer<ModuleParameter> > > moduleParameters);
 
 signals:
     //! Emitted when contents of the editor change.
 	void contentChanged();
 
 	//! Prints an error message to the user.
-	void errorMessage(const QString& msg) const;
+	void errorMessage(QString const& msg) const;
 
 	//! Prints a notification to user.
-	void noticeMessage(const QString& msg) const;
+	void noticeMessage(QString const& msg) const;
 
     /*!
      *  Increase the amount of references to the parameter corresponding to the id.
@@ -89,7 +92,7 @@ private:
 	// Disable copying.
 	ModuleParameterEditor(ModuleParameterEditor const& rhs);
 	ModuleParameterEditor& operator=(ModuleParameterEditor const& rhs);
-  
+
     //! The used sort filter proxy.
     QSortFilterProxyModel* proxy_;
 

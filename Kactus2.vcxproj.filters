@@ -938,6 +938,12 @@
     <Filter Include="Header Files\Plugins\common">
       <UniqueIdentifier>{7d63f833-ab5e-4052-a982-955281e77f33}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\editors\ComponentEditor\instantiations">
+      <UniqueIdentifier>{2e98be12-c1a3-4049-aa53-58208ea6d410}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\ComponentEditor\instantiations">
+      <UniqueIdentifier>{27883311-ca70-47a0-a731-9e11b320ed2f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -4102,6 +4108,111 @@
     <ClCompile Include="editors\ComponentEditor\views\ModuleParameterDelegate.cpp">
       <Filter>Source Files\editors\ComponentEditor\views</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\treeStructure\InstantiationsItem.cpp">
+      <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_InstantiationsItem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ComponentInstantiationsItem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\treeStructure\ComponentInstantiationsItem.cpp">
+      <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\treeStructure\DesignConfigurationInstantiationsItem.cpp">
+      <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\treeStructure\DesignInstantiationsItem.cpp">
+      <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_DesignConfigurationInstantiationsItem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_DesignInstantiationsItem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_SingleComponentInstantiationItem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\treeStructure\SingleComponentInstantiationItem.cpp">
+      <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\instantiations\DesignConfigurationInstantiationEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\instantiations</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_DesignConfigurationInstantiationEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\treeStructure\SingleDesignConfigurationInstantiationItem.cpp">
+      <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_SingleDesignConfigurationInstantiationItem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_DesignInstantiationEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\instantiations\DesignInstantiationEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\instantiations</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\treeStructure\SingleDesignInstantiationItem.cpp">
+      <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_SingleDesignInstantiationItem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\instantiations\ComponentInstantiationDisplayer.cpp">
+      <Filter>Source Files\editors\ComponentEditor\instantiations</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ComponentInstantiationsEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\instantiations\ComponentInstantiationsEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\instantiations</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ComponentInstantiationsModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\instantiations\ComponentInstantiationsModel.cpp">
+      <Filter>Source Files\editors\ComponentEditor\instantiations</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_InstantiationsEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\instantiations\InstantiationsEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\instantiations</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_DesignInstantiationsEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_DesignInstantiationsModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\instantiations\DesignInstantiationsEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\instantiations\DesignInstantiationsModel.cpp">
+      <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\instantiations\DesignConfigurationInstantiationsModel.cpp">
+      <Filter>Source Files\editors\ComponentEditor\instantiations</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_DesignConfigurationInstantiationsModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_DesignConfigurationInstantiationsEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\instantiations\DesignConfigurationInstantiationsEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\instantiations</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_DesignInstantiationsDelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\instantiations\DesignInstantiationsDelegate.cpp">
+      <Filter>Source Files\editors\ComponentEditor\instantiations</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5640,6 +5751,57 @@
     <CustomBuild Include="editors\ComponentEditor\views\ModuleParameterDelegate.h">
       <Filter>Header Files\editors\ComponentEditor\views</Filter>
     </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\treeStructure\InstantiationsItem.h">
+      <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\treeStructure\ComponentInstantiationsItem.h">
+      <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\treeStructure\DesignConfigurationInstantiationsItem.h">
+      <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\treeStructure\DesignInstantiationsItem.h">
+      <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\treeStructure\SingleComponentInstantiationItem.h">
+      <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\instantiations\DesignConfigurationInstantiationEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\instantiations</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\treeStructure\SingleDesignConfigurationInstantiationItem.h">
+      <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\instantiations\DesignInstantiationEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\instantiations</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\treeStructure\SingleDesignInstantiationItem.h">
+      <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\instantiations\ComponentInstantiationsEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\instantiations</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\instantiations\ComponentInstantiationsModel.h">
+      <Filter>Header Files\editors\ComponentEditor\instantiations</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\instantiations\InstantiationsEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\instantiations</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\instantiations\DesignInstantiationsEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\instantiations</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\instantiations\DesignInstantiationsModel.h">
+      <Filter>Header Files\editors\ComponentEditor\instantiations</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\instantiations\DesignConfigurationInstantiationsModel.h">
+      <Filter>Header Files\editors\ComponentEditor\instantiations</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\instantiations\DesignConfigurationInstantiationsEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\instantiations</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\instantiations\DesignInstantiationsDelegate.h">
+      <Filter>Header Files\editors\ComponentEditor\instantiations</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -6100,6 +6262,15 @@
     </ClInclude>
     <ClInclude Include="Plugins\common\NameGenerationPolicy.h">
       <Filter>Header Files\Plugins\common</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\instantiations\ComponentInstantiationDisplayer.h">
+      <Filter>Header Files\editors\ComponentEditor\instantiations</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\instantiations\ComponentInstantiationsColumns.h">
+      <Filter>Header Files\editors\ComponentEditor\instantiations</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\instantiations\DesignInstantiationColumns.h">
+      <Filter>Header Files\editors\ComponentEditor\instantiations</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
