@@ -143,6 +143,10 @@ void ViewEditor::showEvent(QShowEvent* event)
 //-----------------------------------------------------------------------------
 void ViewEditor::onComponentInstanceChanged(QString const& instanceName)
 {
+    QString previousInstance = view_->getComponentInstantiationRef();
+
+    view_->setComponentInstantiationRef(instanceName);
+
     QSharedPointer<ComponentInstantiation> instantiation = 
         component()->getModel()->findComponentInstantiation(instanceName);
     componentInstantiationDisplay_->setInstantiation(instantiation);
@@ -152,6 +156,11 @@ void ViewEditor::onComponentInstanceChanged(QString const& instanceName)
         moduleParameterEditor_->setModuleParameters(instantiation->getModuleParameters());
     }
     moduleParameterEditor_->setVisible(instantiation);
+
+    if (previousInstance != instanceName)
+    {
+        emit contentChanged();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -159,6 +168,8 @@ void ViewEditor::onComponentInstanceChanged(QString const& instanceName)
 //-----------------------------------------------------------------------------
 void ViewEditor::onDesignConfigurationInstanceChanged(QString const& instanceName)
 {    
+    QString previousInstance = view_->getDesignConfigurationInstantiationRef();
+
     view_->setDesignConfigurationInstantiationRef(instanceName);
 
     QSharedPointer<DesignConfigurationInstantiation> selectedInstantiation;
@@ -182,7 +193,10 @@ void ViewEditor::onDesignConfigurationInstanceChanged(QString const& instanceNam
     designConfigurationDisplay_->setVisible(selectedInstantiation);
     designConfigurationDisplay_->setVLNV(selectedVLNV);
 
-    emit contentChanged();
+    if (previousInstance != instanceName)
+    {
+        emit contentChanged();
+    }    
 }
 
 //-----------------------------------------------------------------------------
@@ -190,6 +204,8 @@ void ViewEditor::onDesignConfigurationInstanceChanged(QString const& instanceNam
 //-----------------------------------------------------------------------------
 void ViewEditor::onDesignInstanceChanged(QString const& instanceName)
 {    
+    QString previousInstance = view_->getDesignInstantiationRef();
+
     view_->setDesignInstantiationRef(instanceName);
 
     QSharedPointer<DesignInstantiation> selectedInstantiation;
@@ -213,7 +229,10 @@ void ViewEditor::onDesignInstanceChanged(QString const& instanceName)
     designDisplay_->setVisible(selectedInstantiation);
     designDisplay_->setVLNV(selectedVLNV);
 
-    emit contentChanged();
+    if (previousInstance != instanceName)
+    {
+        emit contentChanged();
+    }    
 }
 
 //-----------------------------------------------------------------------------

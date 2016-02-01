@@ -15,6 +15,7 @@
 #include "ViewListModel.h"
 
 #include <editors/ComponentEditor/views/vieweditor.h>
+#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 
@@ -29,11 +30,13 @@
 #include <QHBoxLayout>
 #include <QDialogButtonBox>
 
+
 //-----------------------------------------------------------------------------
 // Function: ComponentWizardViewsPage::ComponentWizardViewsPage()
 //-----------------------------------------------------------------------------
 ComponentWizardViewsPage::ComponentWizardViewsPage(LibraryInterface* lh,
-    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter,
     ComponentWizard* parent)
     : QWizardPage(parent), 
     library_(lh), 
@@ -44,7 +47,9 @@ ComponentWizardViewsPage::ComponentWizardViewsPage(LibraryInterface* lh,
     viewList_(new QListView(this)),
     viewModel_(new ViewListModel(this)),
     parameterFinder_(parameterFinder),
-    expressionFormatter_(expressionFormatter)
+    expressionFormatter_(expressionFormatter),
+    validator_(QSharedPointer<ExpressionParser>(new IPXactSystemVerilogParser(parameterFinder)),
+        parent_->getComponent()->getModel())
 {
     setTitle(tr("Views"));
     setSubTitle(tr("Setup the views for the component."));
@@ -194,15 +199,15 @@ void ComponentWizardViewsPage::createEditorForView(QSharedPointer<Component> com
 //-----------------------------------------------------------------------------
 void ComponentWizardViewsPage::updateIconForTab(int tabIndex) const
 {
-   /* ViewEditor* editor = dynamic_cast<ViewEditor*>(editorTabs_->widget(tabIndex));
-    if (editor->isValid())
-    {*/
-        editorTabs_->setTabIcon(tabIndex, QIcon());        
-   /* }
+    QSharedPointer<View> viewInTab = parent_->getComponent()->getViews()->at(tabIndex);
+    if (validator_.validate(viewInTab))
+    {
+        editorTabs_->setTabIcon(tabIndex, QIcon());
+    }
     else
     {
         editorTabs_->setTabIcon(tabIndex, QIcon(":icons/common/graphics/exclamation.png"));
-    }*/
+    }
 }
 
 //-----------------------------------------------------------------------------

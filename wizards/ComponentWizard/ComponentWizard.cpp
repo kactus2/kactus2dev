@@ -58,7 +58,7 @@ referenceCounter_(new ParameterReferenceCounter(parameterFinder_))
     setPage(ComponentWizardPages::GENERAL, new ComponentWizardGeneralInfoPage(component, this));    
     setPage(ComponentWizardPages::FILES, new ComponentWizardFilesPage(component, basePath, this));
     setPage(ComponentWizardPages::DEPENDENCY, new ComponentWizardDependencyPage(component, basePath, pluginMgr, 
-        this));     
+        this));
     setPage(ComponentWizardPages::IMPORT, importPage);
     setPage(ComponentWizardPages::VIEWS, new ComponentWizardViewsPage(handler, parameterFinder_,
         expressionFormatter_, this));

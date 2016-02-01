@@ -20,6 +20,8 @@
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
+#include <IPXACTmodels/Component/validators/ViewValidator.h>
+
 class Component;
 class ComponentWizard;
 class LibraryInterface;
@@ -169,6 +171,9 @@ private:
 
     //! Expression formatter, formats referencing expressions to show names.
     QSharedPointer<ExpressionFormatter> expressionFormatter_;
+
+    //! Validator for views.
+    ViewValidator validator_;
 };
 
 #endif // COMPONENTWIZARDVIEWSPAGE_H
