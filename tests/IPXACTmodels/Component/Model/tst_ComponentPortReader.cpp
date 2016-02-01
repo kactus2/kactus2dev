@@ -664,7 +664,8 @@ void tst_ComponentPortReader::readTransactionalProtocol()
     QCOMPARE(testPort->getTransactional()->getProtocol().isNull(), false);
 
     transactionalProtocol = testPort->getTransactional()->getProtocol();
-    QCOMPARE(transactionalProtocol->getProtocolType(), QString("customType"));
+    QCOMPARE(transactionalProtocol->getProtocolType(), QString("custom"));
+    QCOMPARE(transactionalProtocol->getCustomProtocolType(), QString("customType"));
     QCOMPARE(transactionalProtocol->getPayloadName(), QString("testPayload"));
     QCOMPARE(transactionalProtocol->getPayloadType(), QString("generic"));
     QCOMPARE(transactionalProtocol->hasMandatoryPayloadExtension(), false);

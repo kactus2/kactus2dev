@@ -143,11 +143,15 @@ bool PortValidator::hasValidWire(QSharedPointer<Port> port) const
     if (wire)
     {
 		// Bounds not defined, means they are ok.
+        if (!wireHasValidDirection(wire))
+        {
+            return false;
+        }
+
 		if ( !wire->getVectorLeftBound().isEmpty() || !wire->getVectorRightBound().isEmpty() )
 		{
 			// Bounds must be valid if defined.
-			if (!portBoundIsValid(wire->getVectorLeftBound()) || !portBoundIsValid(wire->getVectorRightBound()) ||
-				!wireHasValidDirection(wire))
+			if (!portBoundIsValid(wire->getVectorLeftBound()) || !portBoundIsValid(wire->getVectorRightBound()))
 			{
 				return false;
 			}

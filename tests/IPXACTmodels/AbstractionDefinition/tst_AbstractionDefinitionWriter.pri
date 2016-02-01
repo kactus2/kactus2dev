@@ -13,6 +13,7 @@ HEADERS += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h \
     ../../../IPXACTmodels/common/BooleanValue.h \
     ../../../IPXACTmodels/common/CellSpecification.h \
     ../../../IPXACTmodels/common/ConfigurableElementValue.h \
+    ../../../IPXACTmodels/common/DirectionTypes.h \
     ../../../IPXACTmodels/common/Document.h \
     ../../../IPXACTmodels/common/Extendable.h \
     ../../../IPXACTmodels/common/GenericVendorExtension.h \
@@ -25,24 +26,23 @@ HEADERS += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h \
     ../../../IPXACTmodels/common/Protocol.h \
     ../../../IPXACTmodels/common/Qualifier.h \
     ../../../IPXACTmodels/common/Range.h \
-    ../../../IPXACTmodels/AbstractionDefinition/TimingConstraint.h \
+    ../../../IPXACTmodels/common/TimingConstraint.h \
     ../../../IPXACTmodels/AbstractionDefinition/TransactionalAbstraction.h \
     ../../../IPXACTmodels/AbstractionDefinition/TransactionalPort.h \
+    ../../../IPXACTmodels/common/VLNV.h \
     ../../../IPXACTmodels/common/Vector.h \
     ../../../IPXACTmodels/AbstractionDefinition/WireAbstraction.h \
     ../../../IPXACTmodels/AbstractionDefinition/WireAbstractionWriter.h \
     ../../../IPXACTmodels/AbstractionDefinition/WirePort.h \
     ../../../IPXACTmodels/XmlUtils.h \
     ../../../IPXACTmodels/generaldeclarations.h \
-    ../../../IPXACTmodels/common/VLNV.h \
     ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinitionWriter.h \
     ../../../IPXACTmodels/common/CommonItemsWriter.h \
     ../../../IPXACTmodels/common/DocumentWriter.h \
     ../../../IPXACTmodels/common/NameGroupWriter.h \
     ../../../IPXACTmodels/common/ParameterWriter.h \
-    ../../../IPXACTmodels/AbstractionDefinition/TransactionalAbstractionWriter.h \
-    ../../../IPXACTmodels/common/DirectionTypes.h \
-    ../../../IPXACTmodels/common/ProtocolWriter.h
+    ../../../IPXACTmodels/common/ProtocolWriter.h \
+    ../../../IPXACTmodels/AbstractionDefinition/TransactionalAbstractionWriter.h
 SOURCES += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.cpp \
     ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinitionWriter.cpp \
     ../../../IPXACTmodels/common/Array.cpp \
@@ -51,6 +51,7 @@ SOURCES += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.cpp
     ../../../IPXACTmodels/common/CellSpecification.cpp \
     ../../../IPXACTmodels/common/CommonItemsWriter.cpp \
     ../../../IPXACTmodels/common/ConfigurableElementValue.cpp \
+    ../../../IPXACTmodels/common/DirectionTypes.cpp \
     ../../../IPXACTmodels/common/Document.cpp \
     ../../../IPXACTmodels/common/DocumentWriter.cpp \
     ../../../IPXACTmodels/common/Extendable.cpp \
@@ -64,19 +65,18 @@ SOURCES += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.cpp
     ../../../IPXACTmodels/common/ParameterWriter.cpp \
     ../../../IPXACTmodels/AbstractionDefinition/PortAbstraction.cpp \
     ../../../IPXACTmodels/common/Protocol.cpp \
+    ../../../IPXACTmodels/common/ProtocolWriter.cpp \
     ../../../IPXACTmodels/common/Qualifier.cpp \
     ../../../IPXACTmodels/common/Range.cpp \
-    ../../../IPXACTmodels/AbstractionDefinition/TimingConstraint.cpp \
+    ../../../IPXACTmodels/common/TimingConstraint.cpp \
     ../../../IPXACTmodels/AbstractionDefinition/TransactionalAbstraction.cpp \
     ../../../IPXACTmodels/AbstractionDefinition/TransactionalAbstractionWriter.cpp \
     ../../../IPXACTmodels/AbstractionDefinition/TransactionalPort.cpp \
+    ../../../IPXACTmodels/common/VLNV.cpp \
     ../../../IPXACTmodels/common/Vector.cpp \
     ../../../IPXACTmodels/AbstractionDefinition/WireAbstraction.cpp \
     ../../../IPXACTmodels/AbstractionDefinition/WireAbstractionWriter.cpp \
     ../../../IPXACTmodels/AbstractionDefinition/WirePort.cpp \
     ../../../IPXACTmodels/XmlUtils.cpp \
     ../../../IPXACTmodels/generaldeclarations.cpp \
-    ./tst_AbstractionDefinitionWriter.cpp \
-    ../../../IPXACTmodels/common/VLNV.cpp \
-    ../../../IPXACTmodels/common/DirectionTypes.cpp \
-    ../../../IPXACTmodels/common/ProtocolWriter.cpp
+    ./tst_AbstractionDefinitionWriter.cpp
