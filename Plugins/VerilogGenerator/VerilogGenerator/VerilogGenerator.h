@@ -384,8 +384,10 @@ private:
      *
      *      @param [in] adHocConnection     The ad-hoc connection whose referenced ports to connect.
      *      @param [in] wireName            The name of the wire to connect.
+     *      @param [in] wireSize            The size of the wire.
      */
-    void connectPortsInAdHocConnectionToWire(QSharedPointer<AdHocConnection> adHocConnection, QString const& wireName);
+    void connectPortsInAdHocConnectionToWire(QSharedPointer<AdHocConnection> adHocConnection,
+        QString const& wireName, int wireSize);
 
      /*!
       *  Adds the generated writers to the top writer in correct order.            

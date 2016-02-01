@@ -460,19 +460,29 @@ void VerilogGenerator::connectInstancePortToWire(QString const& instanceName,
         int portRight = instanceParser.parseExpression(physicalPort->getRightBound()).toInt();
 
         int portWidth = abs(portLeft - portRight) + 1;
-        if (wireSize == portWidth)
+
+        int logicalLeft = wireSize - 1;
+        int logicalRight = 0;
+        if (portMap->getLogicalPort()->range_)
+        {
+            logicalLeft = instanceParser.parseExpression(portMap->getLogicalPort()->range_->getLeft()).toInt();
+            logicalRight =
+                instanceParser.parseExpression(portMap->getLogicalPort()->range_->getRight()).toInt();
+        }
+
+        int logicalSize = abs(logicalLeft - logicalRight) + 1;
+
+        if ((wireSize == portWidth && !portMap->getLogicalPort()->range_) ||
+            (portMap->getLogicalPort()->range_ && wireSize == logicalSize))
         {
             instanceWriter->assignPortForFullWidth(portMap->getPhysicalPort()->name_, wireName);
         }
+
         else
         {
-            int logicalLeft = wireSize - 1;
-            int logicalRight = 0;
-            if (portMap->getLogicalPort()->range_)
+            if (logicalSize > portWidth)
             {
-                logicalLeft = instanceParser.parseExpression(portMap->getLogicalPort()->range_->getLeft()).toInt();
-                logicalRight =
-                    instanceParser.parseExpression(portMap->getLogicalPort()->range_->getRight()).toInt();
+                logicalLeft = logicalRight + portWidth - 1;
             }
 
             instanceWriter->assignPortForRange(
@@ -821,7 +831,7 @@ void VerilogGenerator::createWireForAdHocConnection(QSharedPointer<AdHocConnecti
     
     addWriterForWire(wireName, wireSize);
 
-    connectPortsInAdHocConnectionToWire(adHocConnection, wireName);    
+    connectPortsInAdHocConnectionToWire(adHocConnection, wireName, wireSize);
 }
 
 //-----------------------------------------------------------------------------
@@ -863,14 +873,46 @@ int VerilogGenerator::findWireSizeForAdHocConnection(QSharedPointer<AdHocConnect
 // Function: VerilogGenerator::connectPortsInAdHocConnectionToWire()
 //-----------------------------------------------------------------------------
 void VerilogGenerator::connectPortsInAdHocConnectionToWire(QSharedPointer<AdHocConnection> adHocConnection, 
-    QString const& wireName)
+    QString const& wireName, int wireSize)
 {
     foreach(QSharedPointer<PortReference> internalRef, *adHocConnection->getInternalPortReferences())
     {
         if (instanceWriters_.contains(internalRef->getComponentRef()))
         {
-            QSharedPointer<ComponentInstanceVerilogWriter> instanceWriter = instanceWriters_.value(internalRef->getComponentRef());
-            instanceWriter->assignPortForFullWidth(internalRef->getPortRef(), wireName);
+            QSharedPointer<ComponentInstanceVerilogWriter> instanceWriter =
+                instanceWriters_.value(internalRef->getComponentRef());
+
+            QSharedPointer<Component> referencedComponent =
+                getComponentForInstance(internalRef->getComponentRef());
+            QSharedPointer<Port> referencedPort = referencedComponent->getPort(internalRef->getPortRef());
+
+            QSharedPointer<ComponentParameterFinder> finder (new ComponentParameterFinder(referencedComponent));
+            IPXactSystemVerilogParser parser(finder);
+
+            int portLeft = parser.parseExpression(referencedPort->getLeftBound()).toInt();
+            int portRight = parser.parseExpression(referencedPort->getRightBound()).toInt();
+
+            if (internalRef->getPartSelect())
+            {
+                portLeft = parser.parseExpression(internalRef->getPartSelect()->getLeftRange()).toInt();
+                portRight = parser.parseExpression(internalRef->getPartSelect()->getRightRange()).toInt();
+            }
+            int portWidth = abs(portLeft - portRight) + 1;
+
+            if (portWidth == wireSize)
+            {
+                instanceWriter->assignPortForFullWidth(internalRef->getPortRef(), wireName);
+            }
+            else
+            {
+                int connectionLeft = portWidth - 1;
+                if (portWidth > wireSize)
+                {
+                    connectionLeft = wireSize - 1;
+                }
+
+                instanceWriter->assignPortForRange(internalRef->getPortRef(), wireName, connectionLeft, 0);
+            }
         }
     }
 }

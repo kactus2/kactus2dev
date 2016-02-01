@@ -47,16 +47,19 @@ private slots:
 
     // Test cases:
     void testTopLevelComponent();
+    void testTopLevelComponentExpressions();
 
     void testConsecutiveParseCalls();
 
     void testFileHeaderIsPrinted();
 
     void testHierarchicalConnections();
+    void testHierarchicalConnectionsWithExpressions();
     void testSlicedHierarchicalConnection();
     void testUnknownInstanceIsNotWritten();
 
     void testMasterToSlaveInterconnection();
+    void testMasterToSlaveInterconnectionWithExpressions();
     void testMasterToMultipleSlavesInterconnections();
     void testInterconnectionToVaryingSizeLogicalMaps();
     void testSlicedInterconnection();
@@ -64,6 +67,7 @@ private slots:
     void testMirroredSlaveInterconnectionToSlaves();  
 
     void testAdhocConnectionBetweenComponentInstances();    
+    void testAdHocConnectionBetweenComponentInstancesWithExpressions();
     void testHierarchicalAdhocConnection();
     void testAdHocConnectionToUnknownInstanceIsNotWritten();
 
@@ -210,6 +214,34 @@ void tst_VerilogGenerator::testTopLevelComponent()
         ");\n"
         "\n"
 		"\n"
+        "endmodule\n"
+        ));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::testTopLevelComponentExpressions()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::testTopLevelComponentExpressions()
+{
+    addModuleParameter("module", "10");
+    topComponent_->getComponentInstantiations()->first()->getModuleParameters()->first()->setValueId("MODEL-ID");
+
+    QSharedPointer<Port> port = QSharedPointer<Port>(new Port("clk", DirectionTypes::IN));
+    port->setLeftBound("MODEL-ID*2");
+    port->setRightBound("2+5");
+    topComponent_->getPorts()->append(port);
+
+    runGenerator(topComponent_->getViews()->first()->name());
+
+    verifyOutputContains(QString(
+        "module TestComponent #(\n"
+        "    parameter                              module           = 10\n"
+        ") (\n"
+        "    // These ports are not in any interface\n"
+        "    input          [module*2:2+5]       clk\n"
+        ");\n"
+        "\n"
+        "\n"
         "endmodule\n"
         ));
 }
@@ -387,6 +419,68 @@ void tst_VerilogGenerator::createHierarchicalConnection(QString const& topInterf
     hierachicalConnection->getHierInterfaces()->append(topInterface);
    
     design_->getInterconnections()->append(hierachicalConnection);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::testHierarchicalConnectionsWithExpressions()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::testHierarchicalConnectionsWithExpressions()
+{
+    QSharedPointer<Port> clkPort (new Port("top_clk", DirectionTypes::IN));
+    clkPort->setLeftBound("2+2");
+    clkPort->setRightBound("0");
+    topComponent_->getPorts()->append(clkPort);
+
+    addInterfaceToComponent("clk_if", topComponent_);
+
+    mapPortToInterface("top_clk", "CLK", "clk_if", topComponent_);
+
+    createHierarchicalConnection("clk_if", "instanceInterface");
+
+    VLNV instanceVlnv(VLNV::COMPONENT, "Test", "TestLibrary", "TestInstance", "1.0");
+
+    QSharedPointer<Component> instanceComponent(new Component(instanceVlnv));
+
+    QSharedPointer<ModuleParameter> instanceParameter (new ModuleParameter());
+    instanceParameter->setName("instanceParameter");
+    instanceParameter->setValue("1");
+    instanceParameter->setValueId("instant_ID");
+
+    QSharedPointer<ComponentInstantiation> instanceInstantiation (new ComponentInstantiation("instanceInstant"));
+    instanceInstantiation->getModuleParameters()->append(instanceParameter);
+    instanceComponent->getComponentInstantiations()->append(instanceInstantiation);
+
+    QSharedPointer<View> instanceView (new View("instanceView"));
+    instanceView->setComponentInstantiationRef(instanceInstantiation->name());
+    instanceComponent->getViews()->append(instanceView);
+
+    QSharedPointer<Port> instanceClkPort (new Port("instance_clk", DirectionTypes::IN));
+    instanceClkPort->setLeftBound(instanceParameter->getValueId() + "*2");
+    instanceClkPort->setRightBound("4-2*2");
+    instanceComponent->getPorts()->append(instanceClkPort);
+
+    addInterfaceToComponent("instanceInterface", instanceComponent);
+    mapPortToInterface("instance_clk", "CLK", "instanceInterface", instanceComponent);
+
+    library_.addComponent(instanceComponent);
+
+    addInstanceToDesign("instance1", instanceVlnv);
+
+    runGenerator();
+
+    verifyOutputContains(QString(
+        "module TestComponent(\n"
+        "    // Interface: clk_if\n"
+        "    input          [2+2:0]              top_clk\n"
+        ");\n"
+        "\n"
+        "    // IP-XACT VLNV: Test:TestLibrary:TestInstance:1.0\n"
+        "    TestInstance instance1(\n"
+        "        // Interface: instanceInterface\n"
+        "        .instance_clk        (top_clk[2:0]));\n"
+        "\n"
+        "\n"
+        "endmodule\n"));
 }
 
 //-----------------------------------------------------------------------------
@@ -607,6 +701,63 @@ void tst_VerilogGenerator::testMasterToSlaveInterconnection()
     "        // Interface: data_bus\n"
     "        .data_out            (sender_to_receiver_DATA),\n"
     "        .enable_out          (sender_to_receiver_ENABLE));");
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::testMasterToSlaveInterconnectionWithExpressions()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::testMasterToSlaveInterconnectionWithExpressions()
+{
+    VLNV senderVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestSender", "1.0");
+    QSharedPointer<Component> senderComponent(new Component(senderVLNV));
+
+    QSharedPointer<Port> senderPort = QSharedPointer<Port>(new Port("data_out", DirectionTypes::OUT));
+    senderPort->setLeftBound("20-2");
+    senderPort->setRightBound("0");
+    senderComponent->getPorts()->append(senderPort);
+
+    addInterfaceToComponent("data_bus", senderComponent);
+    senderComponent->getBusInterface("data_bus")->setInterfaceMode(General::MASTER);
+
+    mapPortToInterface("data_out", "DATA", "data_bus", senderComponent);
+    QSharedPointer<PortMap> dataMap = senderComponent->getBusInterface("data_bus")->getPortMaps()->first();
+    QSharedPointer<PortMap::LogicalPort> logPort = dataMap->getLogicalPort();
+    logPort->range_ = QSharedPointer<Range>( new Range("7*2","0") );
+
+    library_.addComponent(senderComponent);
+    addInstanceToDesign("sender", senderVLNV);
+
+    VLNV receiverVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestReceiver", "1.0");
+    QSharedPointer<Component> receiverComponent(new Component(receiverVLNV));
+
+    QSharedPointer<Port> receiverPort = QSharedPointer<Port>(new Port("data_in", DirectionTypes::IN));
+    receiverPort->setLeftBound("7+1");
+    receiverPort->setRightBound("0");
+    receiverComponent->getPorts()->append(receiverPort);
+
+    addInterfaceToComponent("data_bus", receiverComponent);
+    receiverComponent->getBusInterface("data_bus")->setInterfaceMode(General::SLAVE);
+    mapPortToInterface("data_in", "DATA", "data_bus", receiverComponent);
+
+    library_.addComponent(receiverComponent);
+    addInstanceToDesign("receiver", receiverVLNV);
+
+    addConnectionToDesign("sender", "data_bus", "receiver", "data_bus");
+
+    runGenerator();
+
+    verifyOutputContains(
+        "    wire [14:0] sender_to_receiver_DATA;\n"
+        "\n"
+        "    // IP-XACT VLNV: Test:TestLibrary:TestReceiver:1.0\n"
+        "    TestReceiver receiver(\n"
+        "        // Interface: data_bus\n"
+        "        .data_in             (sender_to_receiver_DATA[8:0]));\n"
+        "\n"
+        "    // IP-XACT VLNV: Test:TestLibrary:TestSender:1.0\n"
+        "    TestSender sender(\n"
+        "        // Interface: data_bus\n"
+        "        .data_out            (sender_to_receiver_DATA));");
 }
 
 //-----------------------------------------------------------------------------
@@ -973,6 +1124,69 @@ void tst_VerilogGenerator::testAdhocConnectionBetweenComponentInstances()
         "        // Interface: data_bus\n"
         "        .data_in             ( ),\n"
         "        .enable_in           (enableAdHoc)");
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::testAdHocConnectionBetweenComponentInstancesWithExpressions()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::testAdHocConnectionBetweenComponentInstancesWithExpressions()
+{
+    VLNV senderVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestSender", "1.0");
+    QSharedPointer<Component> senderComponent(new Component(senderVLNV));
+
+    QSharedPointer<Port> senderPort = QSharedPointer<Port>(new Port("enable_out", DirectionTypes::OUT));
+    senderPort->setLeftBound("10*2-8");
+    senderPort->setRightBound("2");
+    senderComponent->getPorts()->append(senderPort);
+
+    addInterfaceToComponent("data_bus", senderComponent);
+    senderComponent->getBusInterface("data_bus")->setInterfaceMode(General::MASTER);
+
+    mapPortToInterface("enable_out", "ENABLE", "data_bus", senderComponent);
+    QSharedPointer<PortMap> dataMap = senderComponent->getBusInterface("data_bus")->getPortMaps()->first();
+    QSharedPointer<PortMap::LogicalPort> logPort = dataMap->getLogicalPort();
+    logPort->range_ = QSharedPointer<Range>( new Range("10/2","1") );
+
+    library_.addComponent(senderComponent);
+    addInstanceToDesign("sender", senderVLNV);
+
+    VLNV receiverVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestReceiver", "1.0");
+    QSharedPointer<Component> receiverComponent(new Component(receiverVLNV));
+
+    QSharedPointer<Port> receiverPort = QSharedPointer<Port>(new Port("enable_in", DirectionTypes::IN));
+    receiverPort->setLeftBound("2+2");
+    receiverPort->setRightBound("0");
+    receiverComponent->getPorts()->append(receiverPort);
+
+    addInterfaceToComponent("data_bus", receiverComponent);
+    receiverComponent->getBusInterface("data_bus")->setInterfaceMode(General::SLAVE);
+    mapPortToInterface("enable_in", "ENABLE", "data_bus", receiverComponent);
+
+    library_.addComponent(receiverComponent);
+    addInstanceToDesign("receiver1", receiverVLNV);
+    addInstanceToDesign("receiver2", receiverVLNV);
+
+    addAdhocConnection("enableAdHoc", "sender", "enable_out", "receiver1", "enable_in");
+    addAdhocConnection("enableAdHoc", "sender", "enable_out", "receiver2", "enable_in");
+
+    runGenerator();
+
+    verifyOutputContains("wire [10:0] enableAdHoc;");
+
+    verifyOutputContains(
+        "    TestSender sender(\n"
+        "        // Interface: data_bus\n"
+        "        .enable_out          (enableAdHoc)");
+
+    verifyOutputContains(
+        "    TestReceiver receiver1(\n"
+        "        // Interface: data_bus\n"
+        "        .enable_in           (enableAdHoc[4:0]));\n");
+
+    verifyOutputContains(
+        "    TestReceiver receiver2(\n"
+        "        // Interface: data_bus\n"
+        "        .enable_in           (enableAdHoc[4:0]));\n");
 }
 
 //-----------------------------------------------------------------------------
