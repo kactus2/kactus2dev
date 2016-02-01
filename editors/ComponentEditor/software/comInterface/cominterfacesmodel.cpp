@@ -183,7 +183,7 @@ QVariant ComInterfacesModel::data(QModelIndex const& index, int role) const
         const QSharedPointer<ComDefinition const> comDef = libComp.staticCast<ComDefinition const>();
 
         // and return the transfer types specified in the com definition
-        return comDef->getTransferTypes();
+        return *comDef->getTransferTypes();
     }
     else if (role == Qt::ForegroundRole)
     {

@@ -47,7 +47,6 @@ ItemEditor(component, handler, parent),
     view_->setItemDelegate(new DesignInstantiationsDelegate(this));
 
 	connect(&model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(&model_, SIGNAL(contentChanged()), this, SLOT(onItemChanged()), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(designInstantiationAdded(int)), this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(designInstantiationRemoved(int)), this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
 

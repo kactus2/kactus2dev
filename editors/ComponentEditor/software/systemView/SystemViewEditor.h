@@ -13,7 +13,7 @@
 #define SYSTEMVIEWEDITOR_H
 
 #include <editors/ComponentEditor/itemeditor.h>
-#include <editors/ComponentEditor/views/filesetrefeditor.h>
+#include <editors/ComponentEditor/instantiations/filesetrefeditor.h>
 
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
 #include <common/widgets/vlnvEditor/vlnveditor.h>

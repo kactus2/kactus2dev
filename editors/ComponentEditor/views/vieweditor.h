@@ -14,16 +14,15 @@
 
 #include <editors/ComponentEditor/itemeditor.h>
 
-#include "envidentifiereditor.h"
-#include "ComponentInstantiationEditor.h"
-
 #include <QSharedPointer>
+#include <QGroupBox>
 
 class Component;
 class ComponentInstantiation;
 class ComponentInstantiationDisplayer;
 class DesignInstantiation;
 class DesignConfigurationInstantiation;
+class EnvIdentifierEditor;
 class ExpressionFormatter;
 class LibraryInterface;
 class NameGroupEditor;
@@ -44,12 +43,12 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] component               Pointer to the component that contains the view.
-	 *      @param [in] view                    Pointer to the view being edited.
-	 *      @param [in] libHandler              Pointer to the instance that manages the library.
-	 *      @param [in] parameterFinder         Pointer to the parameter finder.
-	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
-	 *      @param [in] parent                  Pointer to the owner of this editor.
+	 *      @param [in] component               The component that contains the view.
+	 *      @param [in] view                    The view being edited.
+	 *      @param [in] libHandler              The instance that manages the library.
+	 *      @param [in] parameterFinder         The parameter finder.
+	 *      @param [in] expressionFormatter     The expression formatter.
+	 *      @param [in] parent                  The owner of this editor.
 	 */
 	ViewEditor(QSharedPointer<Component> component,
         QSharedPointer<View> view,
@@ -68,14 +67,18 @@ public:
 
 protected:
 
+    //! Called when the widget is shown.
     void showEvent(QShowEvent* event);
 
 private slots:
 
+    //! Called when a component instance is selected.
     void onComponentInstanceChanged(QString const& instanceName);
 
+    //! Called when a design configuration instance is selected.
     void onDesignConfigurationInstanceChanged(QString const& instanceName);
 
+    //! Called when a design instance is selected.
     void onDesignInstanceChanged(QString const& instanceName);
 
 private:
@@ -93,31 +96,37 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-	//! Pointer to the instance that manages the library.
+	//! The instance that manages the library.
 	LibraryInterface* libHandler_;
 
-	//! Pointer to the view being edited.
+	//! The view being edited.
 	QSharedPointer<View> view_;
 	
 	//! Editor to set the name, display name and description of the view.
-	NameGroupEditor nameEditor_;
+	NameGroupEditor* nameEditor_;
 
 	//! The editor to edit the envIdentifier element.
-	EnvIdentifierEditor envIdentifier_;
+	EnvIdentifierEditor* envIdentifier_;
 
-
+    //! Selector for component instantiation reference.
     ReferenceSelector* componentInstantiationSelector_;
     
+    //! Selector for design configuration instantiation reference.
     ReferenceSelector* designConfigurationInstantiationSelector_;
     
+    //! Selector for design instantiation reference.
     ReferenceSelector* designInstantiationSelector_;
 
+    //! Display widget for component instantiation details.
     ComponentInstantiationDisplayer* componentInstantiationDisplay_;
 
+    //! Group box for design and design configuration VLNV references.
     QGroupBox* hierarchyGroup_;
 
+    //! Display widget for design configuration instantiation VLNV.
     VLNVDisplayer* designConfigurationDisplay_;
 
+    //! Display widget for design instantiation VLNV.
     VLNVDisplayer* designDisplay_;
 
     //! The display for module parameters of the component instance.

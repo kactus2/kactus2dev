@@ -12,7 +12,6 @@
 #include "ComponentInstantiationsItem.h"
 #include "SingleComponentInstantiationItem.h"
 
-#include <editors/ComponentEditor/views/ComponentInstantiationEditor.h>
 #include <editors/ComponentEditor/instantiations/ComponentInstantiationsEditor.h>
 
 #include <IPXACTmodels/Component/Component.h>

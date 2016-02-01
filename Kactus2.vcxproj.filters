@@ -2788,9 +2788,6 @@
     <ClCompile Include="GeneratedFiles\moc_componenteditorregisteritem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_filesetrefmodel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_hierarchyrefwidget.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -2807,12 +2804,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_envidentifiersmodel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_filesetrefeditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_filesetrefeditordelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_fieldgapitem.cpp">
@@ -3361,15 +3352,6 @@
     <ClCompile Include="editors\ComponentEditor\treeStructure\componenteditorrootitem.cpp">
       <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
     </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\views\filesetrefeditor.cpp">
-      <Filter>Source Files\editors\ComponentEditor\views</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\views\filesetrefeditordelegate.cpp">
-      <Filter>Source Files\editors\ComponentEditor\views</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\views\filesetrefmodel.cpp">
-      <Filter>Source Files\editors\ComponentEditor\views</Filter>
-    </ClCompile>
     <ClCompile Include="editors\ComponentEditor\views\hierarchyrefwidget.cpp">
       <Filter>Source Files\editors\ComponentEditor\views</Filter>
     </ClCompile>
@@ -3739,12 +3721,6 @@
     <ClCompile Include="editors\ComponentEditor\common\ExpressionFormatterFactoryImplementation.cpp">
       <Filter>Source Files\editors\ComponentEditor\common</Filter>
     </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\views\ModuleParameterEditor.cpp">
-      <Filter>Source Files\editors\ComponentEditor\views</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ModuleParameterEditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="common\views\EditableTableView\ColumnFreezableTable.cpp">
       <Filter>Source Files\common\views\EditableTableView</Filter>
     </ClCompile>
@@ -4045,12 +4021,6 @@
     <ClCompile Include="GeneratedFiles\moc_BusInterfaceWizard.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ComponentInstantiationEditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\views\ComponentInstantiationEditor.cpp">
-      <Filter>Source Files\editors\ComponentEditor\views</Filter>
-    </ClCompile>
     <ClCompile Include="wizards\common\ModuleParameterComparator\ModuleParameterComparator.cpp">
       <Filter>Source Files\wizards\common\ModuleParameterComparator</Filter>
     </ClCompile>
@@ -4095,18 +4065,6 @@
     </ClCompile>
     <ClCompile Include="Plugins\common\NameGenerationPolicy.cpp">
       <Filter>Source Files\Plugins\common</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ModuleParameterModel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ModuleParameterDelegate.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\views\ModuleParameterModel.cpp">
-      <Filter>Source Files\editors\ComponentEditor\views</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\views\ModuleParameterDelegate.cpp">
-      <Filter>Source Files\editors\ComponentEditor\views</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\treeStructure\InstantiationsItem.cpp">
       <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
@@ -4212,6 +4170,48 @@
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\instantiations\DesignInstantiationsDelegate.cpp">
       <Filter>Source Files\editors\ComponentEditor\instantiations</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\instantiations\ModuleParameterDelegate.cpp">
+      <Filter>Source Files\editors\ComponentEditor\instantiations</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\instantiations\ModuleParameterEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\instantiations</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\instantiations\ModuleParameterModel.cpp">
+      <Filter>Source Files\editors\ComponentEditor\instantiations</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\instantiations\ComponentInstantiationEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\instantiations</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_filesetrefeditordelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_filesetrefmodel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_filesetrefeditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\instantiations\filesetrefeditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\instantiations</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\instantiations\filesetrefeditordelegate.cpp">
+      <Filter>Source Files\editors\ComponentEditor\instantiations</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\instantiations\filesetrefmodel.cpp">
+      <Filter>Source Files\editors\ComponentEditor\instantiations</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ModuleParameterDelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ComponentInstantiationEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ModuleParameterEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ModuleParameterModel.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5400,9 +5400,6 @@
     <CustomBuild Include="editors\ComponentEditor\treeStructure\componenteditorregisteritem.h">
       <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\views\filesetrefmodel.h">
-      <Filter>Header Files\editors\ComponentEditor\views</Filter>
-    </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\views\hierarchyrefwidget.h">
       <Filter>Header Files\editors\ComponentEditor\views</Filter>
     </CustomBuild>
@@ -5419,12 +5416,6 @@
       <Filter>Header Files\editors\ComponentEditor\views</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\views\envidentifiersmodel.h">
-      <Filter>Header Files\editors\ComponentEditor\views</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\views\filesetrefeditor.h">
-      <Filter>Header Files\editors\ComponentEditor\views</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\views\filesetrefeditordelegate.h">
       <Filter>Header Files\editors\ComponentEditor\views</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\visualization\fieldgapitem.h">
@@ -5613,9 +5604,6 @@
     <CustomBuild Include="mainwindow\DrawingBoard\DrawingBoard.h">
       <Filter>Header Files\mainwindow\DrawingBoard</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\views\ModuleParameterEditor.h">
-      <Filter>Header Files\editors\ComponentEditor\views</Filter>
-    </CustomBuild>
     <CustomBuild Include="common\views\EditableTableView\ColumnFreezableTable.h">
       <Filter>Header Files\common\views\EditableTableView</Filter>
     </CustomBuild>
@@ -5730,9 +5718,6 @@
     <CustomBuild Include="wizards\BusInterfaceWizard\BusInterfaceWizard.h">
       <Filter>Header Files\wizards\BusInterfaceWizard</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\views\ComponentInstantiationEditor.h">
-      <Filter>Header Files\editors\ComponentEditor\views</Filter>
-    </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\software\swView\cpuselector.h">
       <Filter>Header Files\editors\ComponentEditor\software\swView</Filter>
     </CustomBuild>
@@ -5744,12 +5729,6 @@
     </CustomBuild>
     <CustomBuild Include="designEditors\HWDesign\undoCommands\InterfaceDeleteCommand.h">
       <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\views\ModuleParameterModel.h">
-      <Filter>Header Files\designEditors\HWDesign</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\views\ModuleParameterDelegate.h">
-      <Filter>Header Files\editors\ComponentEditor\views</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\treeStructure\InstantiationsItem.h">
       <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
@@ -5800,6 +5779,27 @@
       <Filter>Header Files\editors\ComponentEditor\instantiations</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\instantiations\DesignInstantiationsDelegate.h">
+      <Filter>Header Files\editors\ComponentEditor\instantiations</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\instantiations\filesetrefeditordelegate.h">
+      <Filter>Header Files\editors\ComponentEditor\instantiations</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\instantiations\filesetrefmodel.h">
+      <Filter>Header Files\editors\ComponentEditor\instantiations</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\instantiations\filesetrefeditor.h">
+      <Filter>Header Files\editors\ComponentEditor\instantiations</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\instantiations\ModuleParameterModel.h">
+      <Filter>Header Files\editors\ComponentEditor\instantiations</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\instantiations\ModuleParameterDelegate.h">
+      <Filter>Header Files\editors\ComponentEditor\instantiations</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\instantiations\ComponentInstantiationEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\instantiations</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\instantiations\ModuleParameterEditor.h">
       <Filter>Header Files\editors\ComponentEditor\instantiations</Filter>
     </CustomBuild>
   </ItemGroup>

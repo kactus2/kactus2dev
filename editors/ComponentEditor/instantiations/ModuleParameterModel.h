@@ -35,7 +35,7 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in]  modeluleParameters     The module parameters being edited.
+	 *      @param [in]  moduleParameters       The module parameters being edited.
      *      @param [in]  choices                The choices available for the model parameter values.
      *      @param [in]  expressionParser       Expression parser for configurable elements.
      *      @param [in]  parameterFinder        The parameter finder.

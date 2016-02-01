@@ -11,13 +11,15 @@
 
 #include "vieweditor.h"
 
+#include "envidentifiereditor.h"
+
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <Plugins/common/NameGenerationPolicy.h>
 
 #include <editors/ComponentEditor/common/ReferenceSelector/ReferenceSelector.h>
 #include <editors/ComponentEditor/instantiations/ComponentInstantiationDisplayer.h>
-#include <editors/ComponentEditor/views/ModuleParameterEditor.h>
+#include <editors/ComponentEditor/instantiations/ModuleParameterEditor.h>
 
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
 #include <common/widgets/vlnvDisplayer/vlnvdisplayer.h>
@@ -41,8 +43,8 @@ ViewEditor::ViewEditor(QSharedPointer<Component> component, QSharedPointer<View>
     QSharedPointer<ExpressionFormatter> expressionFormatter, QWidget *parent):
 ItemEditor(component, libHandler, parent),
     view_(view),
-    nameEditor_(view, this, tr("View name and description")),
-    envIdentifier_(view, this),
+    nameEditor_(new NameGroupEditor(view, this, tr("View name and description"))),
+    envIdentifier_(new EnvIdentifierEditor(view, this)),
     componentInstantiationSelector_(new ReferenceSelector(this)),
     designConfigurationInstantiationSelector_(new ReferenceSelector(this)),
     designInstantiationSelector_(new ReferenceSelector(this)),
@@ -60,9 +62,9 @@ ItemEditor(component, libHandler, parent),
 
     refresh();
 
-    connect(&nameEditor_, SIGNAL(contentChanged()),	this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(nameEditor_, SIGNAL(contentChanged()),	this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
-    connect(&envIdentifier_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(envIdentifier_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
     connect(componentInstantiationSelector_, SIGNAL(itemSelected(QString const&)),
         this, SLOT(onComponentInstanceChanged(QString const&)), Qt::UniqueConnection);
@@ -85,8 +87,8 @@ ViewEditor::~ViewEditor()
 //-----------------------------------------------------------------------------
 void ViewEditor::refresh()
 {
-	nameEditor_.refresh();
-	envIdentifier_.refresh();
+	nameEditor_->refresh();
+	envIdentifier_->refresh();
 
     QStringList componentInstantiationNames;
     foreach(QSharedPointer<ComponentInstantiation> componentInstantiation, 
@@ -249,8 +251,8 @@ void ViewEditor::setupLayout()
 
     // create the layout for the top widget
     QGridLayout* topLayout = new QGridLayout(topWidget);
-    topLayout->addWidget(&nameEditor_, 0, 0, 1, 1, Qt::AlignTop);
-    topLayout->addWidget(&envIdentifier_, 0, 1, 2, 1, Qt::AlignTop);
+    topLayout->addWidget(nameEditor_, 0, 0, 1, 1, Qt::AlignTop);
+    topLayout->addWidget(envIdentifier_, 0, 1, 2, 1, Qt::AlignTop);
     topLayout->addWidget(instantiationsGroup, 1, 0, 1, 1, Qt::AlignTop);
     topLayout->addLayout(componentLayout, 2, 0, 1, 1);
     topLayout->addWidget(hierarchyGroup_, 2, 1, 1, 1);
