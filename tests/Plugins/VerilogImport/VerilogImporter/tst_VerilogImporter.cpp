@@ -74,6 +74,8 @@ private slots:
     void testModelNameAndEnvironmentIsImportedToView();
     void testModelNameAndEnvironmentIsImportedToView_data();
 
+    void testComponentInstantiationAndViewExistsAfterImport();
+
 private:
 
     void runParser(QString const& input);
@@ -182,10 +184,10 @@ void tst_VerilogImporter::runParser(QString const& input)
     QSharedPointer<ParameterFinder> finder(new ComponentParameterFinder(importComponent_));
     QSharedPointer<ExpressionParser> expressionParser(new IPXactSystemVerilogParser(finder));
 
-    VerilogImporter parser;
-    parser.setExpressionParser(expressionParser);
-    parser.setHighlighter(highlighter_);
-    parser.import(input, importComponent_);
+    VerilogImporter importer;
+    importer.setExpressionParser(expressionParser);
+    importer.setHighlighter(highlighter_);
+    importer.import(input, importComponent_);
 }
 
 //-----------------------------------------------------------------------------
@@ -1061,6 +1063,35 @@ void tst_VerilogImporter::testModelNameAndEnvironmentIsImportedToView_data()
         "\n"
         <<
         "half_adder";
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogImporter::testComponentInstantiationAndViewExistsAfterImport()
+//-----------------------------------------------------------------------------
+void tst_VerilogImporter::testComponentInstantiationAndViewExistsAfterImport()
+{
+    QCOMPARE(importComponent_->getViews()->size(), 0);
+    QCOMPARE(importComponent_->getComponentInstantiations()->size(), 0);
+
+    QString fileContent = 
+        "module test #(\n"
+        "   parameter dataWidth_g = 8\n"
+        "   )();\n"
+        "endmodule";
+
+    runParser(fileContent);
+
+    QCOMPARE(importComponent_->getViews()->size(), 1);
+    QCOMPARE(importComponent_->getComponentInstantiations()->size(), 1);
+
+    QSharedPointer<View> importedView = importComponent_->getViews()->first();
+    QSharedPointer<ComponentInstantiation> importedInstantiation =
+        importComponent_->getComponentInstantiations()->first();
+
+    QCOMPARE(importedView->getComponentInstantiationRef(), importedInstantiation->name());
+    QCOMPARE(importedInstantiation->getModuleParameters()->size(), 1);
+    QCOMPARE(importedInstantiation->getModuleParameters()->first()->name(), QString("dataWidth_g"));
+    QCOMPARE(importedInstantiation->getModuleParameters()->first()->getValue(), QString("8"));
 }
 
 //-----------------------------------------------------------------------------
