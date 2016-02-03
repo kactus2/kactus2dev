@@ -6,7 +6,7 @@
 // Date: 28.09.2015
 //
 // Description:
-// <Short description of the class/file contents>
+// Vendor extension for storing connection routes in design.
 //-----------------------------------------------------------------------------
 
 #include "ConnectionRoute.h"

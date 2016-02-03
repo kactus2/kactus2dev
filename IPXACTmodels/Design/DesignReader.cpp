@@ -539,6 +539,8 @@ void DesignReader::parseRoutes(QDomElement const& routesElement, QSharedPointer<
 {
     QDomNodeList routeList = routesElement.childNodes();
 
+    QSharedPointer<Kactus2Group> routesGroup(new Kactus2Group("kactus2:routes"));
+
     int routeCount = routeList.count();
     for (int i = 0; i < routeCount; ++i)
     {
@@ -562,7 +564,12 @@ void DesignReader::parseRoutes(QDomElement const& routesElement, QSharedPointer<
             route->addPoint(point);
         }
 
-        design->getVendorExtensions()->append(route);
+        routesGroup->addToGroup(route);        
+    }
+
+    if (routeCount > 0)
+    {
+        design->getVendorExtensions()->append(routesGroup);
     }
 }
 

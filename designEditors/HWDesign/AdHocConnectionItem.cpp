@@ -39,6 +39,7 @@ AdHocConnectionItem::AdHocConnectionItem(ConnectionEndpoint* endpoint1, Connecti
     adhocConnection->displayName(),
     adhocConnection->description(), parent),
     widthLabel_(new QGraphicsTextItem(this)),
+    portBounds_(),
     adHocConnection_(adhocConnection),
     route_(route)
 {
@@ -58,7 +59,10 @@ AdHocConnectionItem::AdHocConnectionItem(QPointF const& p1, QVector2D const& dir
     QString const& description,
     DesignDiagram* parent):
 GraphicsConnection(p1, dir1, p2, dir2, displayName, description, parent),
-    widthLabel_(new QGraphicsTextItem(this))
+    widthLabel_(new QGraphicsTextItem(this)),
+    portBounds_(),
+    adHocConnection_(),
+    route_()
 {
     setWidthLabelDefaultFont();
     setLineWidth(1);

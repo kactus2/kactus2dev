@@ -128,6 +128,7 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
 
         BusInterfaceItem* topInterface = new BusInterfaceItem(getLibraryInterface(), getEditedComponent(), 
             busIf, dataGroup);
+
         getLayout()->addItem(topInterface);
     }
 
@@ -246,6 +247,12 @@ void HWDesignDiagram::onAdHocVisibilityChanged(QString const& portName, bool vis
 {
     QSharedPointer<VendorExtension> adhocExtension = getDesign()->getAdHocPortPositions();
     QSharedPointer<Kactus2Group> adhocGroup = adhocExtension.dynamicCast<Kactus2Group>();
+
+    if (!adhocGroup)
+    {
+        adhocGroup = QSharedPointer<Kactus2Group>(new Kactus2Group("kactus2:adHocVisibilities"));
+        getDesign()->getVendorExtensions()->append(adhocGroup);
+    }
 
     if (visible)
     {
@@ -1223,7 +1230,8 @@ void HWDesignDiagram::onSelected(QGraphicsItem* newSelection)
             emit helpUrlRequested("hwdesign/adhocinterface.html");
         }
 		// check if the selected item was a connection
-		else if (newSelection->type() == HWConnection::Type) {
+		else if (newSelection->type() == HWConnection::Type)
+        {
 			HWConnection* connection = qgraphicsitem_cast<HWConnection*>(newSelection);
 			emit connectionSelected(connection);
             emit helpUrlRequested("hwdesign/connection.html");
@@ -1248,17 +1256,24 @@ void HWDesignDiagram::onSelected(QGraphicsItem* newSelection)
 //-----------------------------------------------------------------------------
 GraphicsConnection* HWDesignDiagram::createConnection(ConnectionEndpoint* startPoint, ConnectionEndpoint* endPoint)
 {
-    QSharedPointer<Interconnection> interconnection(new Interconnection());
-    QSharedPointer<ConnectionRoute> route(new ConnectionRoute(interconnection->name()));
+    
+    QSharedPointer<ConnectionRoute> route(new ConnectionRoute(""));
 
-    HWConnection* connection = new HWConnection(startPoint, endPoint, interconnection, route, this);
+    GraphicsConnection* connection;
 
     if (startPoint->isAdHoc())
     {
+        QSharedPointer<AdHocConnection> adHocConnection(new AdHocConnection(""));
+        connection = new AdHocConnectionItem(startPoint, endPoint, adHocConnection, route, this);   
         connection->setLineWidth(1);
     }
-    connection->setBusWidthVisible(getParent()->getVisibilityControls().value("Bus Widths"));
+    else
+    {
+        QSharedPointer<Interconnection> interconnection(new Interconnection());
+        connection = new HWConnection(startPoint, endPoint, interconnection, route, this);        
+    }    
 
+    connection->setBusWidthVisible(getParent()->getVisibilityControls().value("Bus Widths"));
     return connection;
 }
 
@@ -1287,16 +1302,16 @@ GraphicsConnection* HWDesignDiagram::createConnection(ConnectionEndpoint* startP
 //-----------------------------------------------------------------------------
 QSharedPointer<QUndoCommand> HWDesignDiagram::createAddCommandForConnection(GraphicsConnection* connection)
 {
-    HWConnection* hwConnection = dynamic_cast<HWConnection*>(connection);
-    if (hwConnection)
-    {
-        return QSharedPointer<QUndoCommand>(new ConnectionAddCommand(this, hwConnection, getDesign()));
-    }
-
     AdHocConnectionItem* adhocConnection = dynamic_cast<AdHocConnectionItem*>(connection);
     if (adhocConnection)
     {
         return QSharedPointer<QUndoCommand>(new AdHocConnectionAddCommand(this, adhocConnection, getDesign()));
+    }
+
+    HWConnection* hwConnection = dynamic_cast<HWConnection*>(connection);
+    if (hwConnection)
+    {
+        return QSharedPointer<QUndoCommand>(new ConnectionAddCommand(this, hwConnection, getDesign()));
     }
 
     return QSharedPointer<QUndoCommand>();
@@ -1394,7 +1409,6 @@ void HWDesignDiagram::draftAt(QPointF const& clickedPosition)
         addDraftComponentInterface(component, clickedPosition);
     }
 }
-
 
 //-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::findItemTypeForColumn()
@@ -1590,7 +1604,7 @@ void HWDesignDiagram::createComponentItem(QSharedPointer<Component> comp, QPoint
 {
     // Create the diagram component.                            
     QSharedPointer<ComponentInstance> componentInstance(new ComponentInstance("",
-		QSharedPointer<ConfigurableVLNVReference>( new ConfigurableVLNVReference(comp->getVlnv()) ) ) );
+		QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(comp->getVlnv()))));
     QString instanceName = createInstanceName(comp->getVlnv().getName());
     componentInstance->setInstanceName(instanceName);
 
@@ -1766,7 +1780,7 @@ void HWDesignDiagram::createHierarchicalConnection(QSharedPointer<Interconnectio
     Q_ASSERT(hierarchicalInterface != 0);
 
     // Check if the interface item is already assigned to a column.
-    GraphicsColumn* column = getLayout()->findColumnAt(hierarchicalInterface->pos());
+    GraphicsColumn* column = getLayout()->findColumnAt(hierarchicalInterface->scenePos());
     if (column != 0)
     {
         column->addItem(hierarchicalInterface);
@@ -1905,17 +1919,21 @@ void HWDesignDiagram::createAdHocConnection(QSharedPointer<AdHocConnection> adHo
         }
 
         // Find the corresponding port.
-        ConnectionEndpoint* port1 = comp1->getAdHocPort(primaryPort->getPortRef());
+        HWConnectionEndpoint* port1 = comp1->getAdHocPort(primaryPort->getPortRef());
         if (port1 == 0)
         {
+            port1 = new AdHocPortItem(comp1->componentModel()->getPort(primaryPort->getPortRef()), comp1);
+            comp1->addPort(port1);
+
             emit errorMessage(tr("Port %1 was not found in the component %2").arg(primaryPort->getPortRef(), 
                 primaryPort->getComponentRef()));
-            return;
+            //return;
+            comp1->setPortAdHocVisible(primaryPort->getPortRef(), true);
         }
-
+        
         if (adHocConnection->isOffPage())
         {
-            port1 = port1->getOffPageConnector();
+            port1 = static_cast<HWConnectionEndpoint*>(port1->getOffPageConnector());
         }
 
         for (int i = 1; i < adHocConnection->getInternalPortReferences()->size(); ++i)
@@ -1947,7 +1965,7 @@ void HWDesignDiagram::createAdHocConnection(QSharedPointer<AdHocConnection> adHo
 }
 
 //-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::creatConnectionForAdHocPorts()
+// Function: HWDesignDiagram::createConnectionForAdHocPorts()
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::createConnectionForAdHocPorts(QSharedPointer<AdHocConnection> adHocConnection, 
     QSharedPointer<PortReference> internalPort, QSharedPointer<PortReference> primaryPort, 
@@ -1961,18 +1979,22 @@ void HWDesignDiagram::createConnectionForAdHocPorts(QSharedPointer<AdHocConnecti
         return;
     }
 
-    ConnectionEndpoint* componentAdHocPort = comp->getAdHocPort(internalPort->getPortRef());
+    HWConnectionEndpoint* componentAdHocPort = comp->getAdHocPort(internalPort->getPortRef());
 
     if (componentAdHocPort == 0)
     {
-        emit errorMessage(tr("Port %1 was not found in the component %2").arg(internalPort->getPortRef(), 
-            internalPort->getComponentRef()));
-        return;
+        componentAdHocPort = new AdHocPortItem(comp->componentModel()->getPort(internalPort->getPortRef()), comp);
+        comp->addPort(componentAdHocPort);
+
+        /*emit errorMessage(tr("Port %1 was not found in the component %2").arg(internalPort->getPortRef(), 
+            internalPort->getComponentRef()));*/
+
+        comp->setPortAdHocVisible(internalPort->getPortRef(), true);
     }
 
     if (adHocConnection->isOffPage())
     {
-        componentAdHocPort = componentAdHocPort->getOffPageConnector();
+        componentAdHocPort = static_cast<HWConnectionEndpoint*>(componentAdHocPort->getOffPageConnector());
     }
 
     QSharedPointer<ConnectionRoute> route = findOrCreateRouteForInterconnection(adHocConnection->name());

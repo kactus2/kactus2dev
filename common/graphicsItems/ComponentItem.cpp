@@ -249,8 +249,11 @@ QVariant ComponentItem::itemChange(GraphicsItemChange change, const QVariant &va
 {
     if (change == ItemPositionChange)
     {
-        QPointF newPos = value.toPointF();
-        return snapPointToGrid(newPos);
+        return snapPointToGrid(value.toPointF());
+    }
+    else if (change == ItemPositionHasChanged)
+    {
+        componentInstance_->setPosition(scenePos());
     }
 
     return QGraphicsItem::itemChange(change, value);

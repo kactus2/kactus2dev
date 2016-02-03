@@ -359,21 +359,6 @@ public:
     void removeRoute(QSharedPointer<ConnectionRoute> route);
 
 private:
-
-    /*!
-     *  Parses the vendor extensions of the design from a QDomNode.
-     *
-     *      @param [in] node The QDomNode from where to parse the information.
-     */
-    void parseVendorExtensions(QDomNode& node);
-
-    /*!
-     *  Parses a route from kactus2:route.
-     *
-     *      @param [in] routeNode   The DOM node containing the route.
-     */
-    void parseRoute(QDomNode& routeNode);
-
     /*!
      *  Copy the shared lists of another design.
      *

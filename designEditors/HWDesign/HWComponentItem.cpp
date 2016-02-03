@@ -160,9 +160,13 @@ void HWComponentItem::onAdHocVisibilityChanged(QString const& portName, bool vis
         QSharedPointer<Port> adhocPort = componentModel()->getPort(portName);
         Q_ASSERT(adhocPort != 0);
 
-        AdHocPortItem* port = new AdHocPortItem(adhocPort, this);
-        addPortToSideWithLessPorts(port);
-
+        AdHocPortItem* port = getAdHocPort(portName);
+        if (!port)
+        {
+            port = new AdHocPortItem(adhocPort, this);
+            addPortToSideWithLessPorts(port);
+        }
+        
         getComponentInstance()->updateAdHocPortPosition(portName, port->pos());
 
         // Update the component's size after addition.

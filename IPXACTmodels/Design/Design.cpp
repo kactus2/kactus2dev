@@ -141,12 +141,18 @@ void Design::setAdHocConnections(QSharedPointer<QList<QSharedPointer<AdHocConnec
     adHocConnections_ = newAdHocConnections;
 }
 
+//-----------------------------------------------------------------------------
+// Function: Design::getDependentFiles()
+//-----------------------------------------------------------------------------
 QStringList Design::getDependentFiles() const
 {
 	// TODO implement this
 	return QStringList();
 }
 
+//-----------------------------------------------------------------------------
+// Function: Design::getDependentVLNVs()
+//-----------------------------------------------------------------------------
 QList<VLNV> Design::getDependentVLNVs() const
 {
 	QList<VLNV> instanceList;
@@ -378,7 +384,7 @@ QList<VLNV> Design::getComponents() const
 //-----------------------------------------------------------------------------
 // Function: Design::setVlnv()
 //-----------------------------------------------------------------------------
-void Design::setVlnv( const VLNV& vlnv )
+void Design::setVlnv(VLNV const& vlnv)
 {
     VLNV designVLNV(vlnv);
     designVLNV.setType(VLNV::DESIGN);
@@ -613,7 +619,7 @@ QList<QSharedPointer<HierComInterconnection> > Design::getHierComConnections() c
 //-----------------------------------------------------------------------------
 // Function: design::hasInterconnection()
 //-----------------------------------------------------------------------------
-bool Design::hasInterconnection( QString const& instanceName, QString const& interfaceName ) const 
+bool Design::hasInterconnection(QString const& instanceName, QString const& interfaceName) const 
 {
     foreach (QSharedPointer<Interconnection> interconnection, *interconnections_)
     {
@@ -629,12 +635,12 @@ bool Design::hasInterconnection( QString const& instanceName, QString const& int
 //-----------------------------------------------------------------------------
 // Function: design::getHWComponentVLNV()
 //-----------------------------------------------------------------------------
-VLNV Design::getHWComponentVLNV( QString const& instanceName ) const 
+VLNV Design::getHWComponentVLNV(QString const& instanceName) const 
 {
 	foreach (QSharedPointer<ComponentInstance> instance, *componentInstances_) 
     {
 		// if instance is found
-		if (0 == instanceName.compare(instance->getInstanceName(), Qt::CaseInsensitive)) 
+		if (instanceName.compare(instance->getInstanceName(), Qt::CaseInsensitive) == 0) 
         {
 			//return instance.getComponentRef();
             return *instance->getComponentRef();
@@ -648,12 +654,12 @@ VLNV Design::getHWComponentVLNV( QString const& instanceName ) const
 //-----------------------------------------------------------------------------
 // Function: design::containsHWInstance()
 //-----------------------------------------------------------------------------
-bool Design::containsHWInstance( QString const& instanceName ) const
+bool Design::containsHWInstance(QString const& instanceName) const
 {
     foreach (QSharedPointer<ComponentInstance> instance, *componentInstances_)
     {
 		// if instance is found
-        if (0 == instanceName.compare(instance->getInstanceName(), Qt::CaseInsensitive))
+        if (instanceName.compare(instance->getInstanceName(), Qt::CaseInsensitive) == 0)
         {
 			return true;
 		}
@@ -666,12 +672,12 @@ bool Design::containsHWInstance( QString const& instanceName ) const
 //-----------------------------------------------------------------------------
 // Function: design::hasConfElementValue()
 //-----------------------------------------------------------------------------
-bool Design::hasConfElementValue( QString const& instanceName, QString const& confElementName ) const
+bool Design::hasConfElementValue(QString const& instanceName, QString const& confElementName) const
 {
 	foreach (QSharedPointer<ComponentInstance> instance, *componentInstances_) 
     {
 		// when the instance is found
-        if (0 == instanceName.compare(instance->getInstanceName(), Qt::CaseInsensitive))
+        if (instanceName.compare(instance->getInstanceName(), Qt::CaseInsensitive) == 0)
         {
             return instance->getComponentRef()->hasConfigurableElementValue(confElementName);
 		}
@@ -684,12 +690,12 @@ bool Design::hasConfElementValue( QString const& instanceName, QString const& co
 //-----------------------------------------------------------------------------
 // Function: design::getConfElementValue()
 //-----------------------------------------------------------------------------
-QString Design::getConfElementValue( QString const& instanceName, QString const& confElementName ) const
+QString Design::getConfElementValue(QString const& instanceName, QString const& confElementName) const
 {
 	foreach (QSharedPointer<ComponentInstance> instance, *componentInstances_)
     {
 		// when the instance is found
-        if (0 == instanceName.compare(instance->getInstanceName(), Qt::CaseInsensitive))
+        if (instanceName.compare(instance->getInstanceName(), Qt::CaseInsensitive) == 0)
         {
             return instance->getComponentRef()->getSingleConfigurableElementValue(confElementName);
 		}
@@ -718,11 +724,11 @@ KactusAttribute::Implementation Design::getDesignImplementation() const
 //-----------------------------------------------------------------------------
 // Function: design::getHWInstanceDescription()
 //-----------------------------------------------------------------------------
-QString Design::getHWInstanceDescription( QString const& instanceName ) const
+QString Design::getHWInstanceDescription(QString const& instanceName) const
 {
 	foreach (QSharedPointer<ComponentInstance> instance, *componentInstances_)
     {
-        if (0 == instanceName.compare(instance->getInstanceName(), Qt::CaseInsensitive))
+        if (instanceName.compare(instance->getInstanceName(), Qt::CaseInsensitive) == 0)
         {
             return instance->getDescription();
 		}
@@ -806,88 +812,6 @@ void Design::removeRoute(QSharedPointer<ConnectionRoute> route)
 }
 
 //-----------------------------------------------------------------------------
-// Function: parseVendorExtensions()
-//-----------------------------------------------------------------------------
-void Design::parseVendorExtensions(QDomNode &node)
-{
-    QDomNodeList childNodes = node.childNodes();
-
-    for (int i = 0; i < childNodes.size(); i++)
-    {
-        QDomNode childNode = childNodes.at(i);
-
-        // Compatibility note: 
-        // Kactus extensions are found under kactus:extensions or spirit:vendorExtensions.
-        if (childNode.nodeName() == "kactus2:extensions")
-        {            
-            parseVendorExtensions(childNode);
-        }
-        
-        else if (childNode.nodeName() == "kactus2:note")
-        {
-            //vendorExtensions_.append(QSharedPointer<VendorExtension>(new GenericVendorExtension(childNode)));
-        }
-    }
-}
-
-
-//-----------------------------------------------------------------------------
-// Function: Design::parseRoute()
-//-----------------------------------------------------------------------------
-void Design::parseRoute(QDomNode& routeNode)
-{
-    QString name = routeNode.attributes().namedItem("kactus2:connRef").nodeValue();
-    QString offPageValue = routeNode.attributes().namedItem("kactus2:offPage").nodeValue();
-    QList<QPointF> route;
-
-    // Parse the route.
-    for (int i = 0; i < routeNode.childNodes().size(); ++i)
-    {
-        QDomNode posNode = routeNode.childNodes().at(i);
-
-        if (posNode.nodeName() == "kactus2:position")
-        {
-            route.append(XmlUtils::parsePoint(posNode));
-        }
-    }
-
-    // Apply the route to the correct interconnection or ad-hoc connection.
-    bool offPage = offPageValue == "true";
-    bool found = false;
-
-    /*
-    for (int i = 0; i < interconnections_.size() && !found; ++i)
-    {
-        if (interconnections_[i].name() == name)
-        {
-            interconnections_[i].setRoute(route);
-            interconnections_[i].setOffPage(offPage);
-            found = true;
-        }
-    }*/
-
-    /*
-    for (int i = 0; i < adHocConnections_.size() && !found; ++i)
-    {
-        if (adHocConnections_[i].name() == name)
-        {
-            adHocConnections_[i].setRoute(route);
-            adHocConnections_[i].setOffPage(offPage);
-        }
-    }*/
-
-    for (int i = 0; i < adHocConnections_->size() && !found; ++i)
-    {
-        if (adHocConnections_->at(i)->name() == name)
-        {
-            adHocConnections_->at(i)->setRoute(route);
-            adHocConnections_->at(i)->setOffPage(offPage);
-            found = true;
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: Design::copySharedLists()
 //-----------------------------------------------------------------------------
 void Design::copySharedLists(Design const& other)
@@ -896,38 +820,34 @@ void Design::copySharedLists(Design const& other)
     {
         if (instance)
         {
-            QSharedPointer<ComponentInstance> copy =
-                QSharedPointer<ComponentInstance>(new ComponentInstance(*instance.data()));
+            QSharedPointer<ComponentInstance> copy(new ComponentInstance(*instance));
             componentInstances_->append(copy);
         }
     }
 
-    foreach (QSharedPointer<Interconnection> interconnection, *other.interconnections_)
+    foreach (QSharedPointer<Interconnection> monitorConnection, *other.interconnections_)
     {
-        if (interconnection)
+        if (monitorConnection)
         {
-            QSharedPointer<Interconnection> copy =
-                QSharedPointer<Interconnection> (new Interconnection(*interconnection.data()));
-            interconnections_->append(copy);
+            QSharedPointer<Interconnection> interconnectionCopy(new Interconnection(*monitorConnection));
+            interconnections_->append(interconnectionCopy);
         }
     }
 
-    foreach (QSharedPointer<MonitorInterconnection> interconnection, *other.monitorInterconnections_)
+    foreach (QSharedPointer<MonitorInterconnection> monitorConnection, *other.monitorInterconnections_)
     {
-        if (interconnection)
+        if (monitorConnection)
         {
-            QSharedPointer<MonitorInterconnection> copy =
-                QSharedPointer<MonitorInterconnection> (new MonitorInterconnection(*interconnection.data()));
-            monitorInterconnections_->append(copy);
+            QSharedPointer<MonitorInterconnection> monitorCopy(new MonitorInterconnection(*monitorConnection));
+            monitorInterconnections_->append(monitorCopy);
         }
     }
 
-    foreach (QSharedPointer<AdHocConnection> connection, *other.adHocConnections_)
+    foreach (QSharedPointer<AdHocConnection> adHocConnection, *other.adHocConnections_)
     {
-        if (connection)
+        if (adHocConnection)
         {
-            QSharedPointer<AdHocConnection> copy =
-                QSharedPointer<AdHocConnection>(new AdHocConnection(*connection.data()));
+            QSharedPointer<AdHocConnection> copy(new AdHocConnection(*adHocConnection));
             adHocConnections_->append(copy);
         }
     }
@@ -964,4 +884,3 @@ QSharedPointer<Kactus2Group> Design::getRoutesExtension() const
 
     return QSharedPointer<Kactus2Group>();
 }
-
