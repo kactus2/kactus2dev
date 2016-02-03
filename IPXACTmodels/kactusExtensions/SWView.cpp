@@ -194,9 +194,9 @@ void SWView::write(QXmlStreamWriter& writer) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: SWView::isValid()
+// Function: SWView::findErrorsIn()
 //-----------------------------------------------------------------------------
-bool SWView::isValid(QStringList const& fileSetNames, QStringList const& cpuNames, QVector<QString>& errorList,
+bool SWView::findErrorsIn(QStringList const& fileSetNames, QStringList const& cpuNames, QVector<QString>& errorList,
     QString const& parentIdentifier) const
 {
     bool valid = true;
@@ -250,7 +250,7 @@ bool SWView::isValid(QStringList const& fileSetNames, QStringList const& cpuName
         return false;
     }
 
-    if (!hierarchyRef_.isValid())
+    if (!hierarchyRef_.isEmpty() && !hierarchyRef_.isValid())
     {
         return false;
     }
