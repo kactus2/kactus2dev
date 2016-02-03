@@ -26,6 +26,9 @@
 #include <designEditors/HWDesign/HWConnectionEndpoint.h>
 #include <designEditors/HWDesign/HWChangeCommands.h>
 
+#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
@@ -482,203 +485,215 @@ void ConnectionEditor::setPortMaps()
 //-----------------------------------------------------------------------------
 // Function: ConnectionEditor::addMap()
 //-----------------------------------------------------------------------------
-void ConnectionEditor::addMap(int& row, bool invalid,
-							  QSharedPointer<PortMap> portMap1,
-							  QSharedPointer<Component> component1,
-							  QSharedPointer<PortMap> portMap2,
-							  QSharedPointer<Component> component2)
-{	
-	int phys1Left = 0;
-	int phys1Right = 0;
-	bool phys1Invalid = invalid;
-    /*
-	// if port is vectored on the port map
-	if (portMap1->physicalVector())
-    {
-		phys1Left = portMap1->getPhysicalLeft();
-		phys1Right = portMap1->getPhysicalRight();
+void ConnectionEditor::addMap(int& row, bool invalid, QSharedPointer<PortMap> portMap1,
+    QSharedPointer<Component> component1, QSharedPointer<PortMap> portMap2, QSharedPointer<Component> component2)
+{
+    QSharedPointer<ComponentParameterFinder> firstFinder (new ComponentParameterFinder(component1));
+    QSharedPointer<IPXactSystemVerilogParser> firstParser(new IPXactSystemVerilogParser(firstFinder));
+    QSharedPointer<ComponentParameterFinder> secondFinder (new ComponentParameterFinder(component2));
+    QSharedPointer<IPXactSystemVerilogParser> secondParser(new IPXactSystemVerilogParser(secondFinder));
 
-		// if the port is not found on the component
-		if (!component1->hasPort(portMap1->getPhysicalPort()->name_))
-        {
-			phys1Invalid = true;
-		}
-	}
-	// if port is found on the component then use the port bounds
-	else if (component1->hasPort(portMap1->getPhysicalPort()->name_))
-    {
-		phys1Left = component1->getPort(portMap1->getPhysicalPort()->name_)->getLeftBound();
-		phys1Right = component1->getPort(portMap1->getPhysicalPort()->name_)->getRightBound();
-	}
-	// port was not found on the component
-	else
-    {
-		phys1Invalid = true;
-	}
+    QPair<int, int> firstMappedBounds = calculateMappedPhysicalPortBounds(firstParser, portMap1, component1);
+    int phys1Left = qMax(firstMappedBounds.first, firstMappedBounds.second);
+    int phys1Right = qMin(firstMappedBounds.first, firstMappedBounds.second);
+    bool phys1Invalid = isMappedPhysicalInvalid(portMap1, component1);
 
-	int phys2Left = 0;
-	int phys2Right = 0;
-	bool phys2Invalid = invalid;
-	// if port is vectored on the port map
-	if (portMap2->physicalVector()) {
-		phys2Left = portMap2->getPhysicalLeft();
-		phys2Right = portMap2->getPhysicalRight();
+    QPair<int, int> secondMappedBounds = calculateMappedPhysicalPortBounds(secondParser, portMap2, component2);
+    int phys2Left = qMax(secondMappedBounds.first, secondMappedBounds.second);
+    int phys2Right = qMin(secondMappedBounds.first, secondMappedBounds.second);
+    bool phys2Invalid = isMappedPhysicalInvalid(portMap2, component2);
 
-		// if the port is not found on the component
-		if (!component2->hasPort(portMap2->getPhysicalPort()->name_))
-        {
-			phys2Invalid = true;
-		}
-	}
-	// if port is found on the component then use the port bounds
-	else if (component2->hasPort(portMap2->getPhysicalPort()->name_))
-    {
-		phys2Left = component2->getPortLeftBound(portMap2->getPhysicalPort()->name_);
-		phys2Right = component2->getPortRightBound(portMap2->getPhysicalPort()->name_);
-	}
-	// port was not found on the component
-	else
-    {
-		phys2Invalid = true;
-	}
-
-	// check the sizes of the physical ports
+    // check the sizes of the physical ports
 	int size1 = phys1Left - phys1Right + 1;
 	int size2 = phys2Left - phys2Right + 1;
 
 	QTableWidgetItem* port1Item;
 	QTableWidgetItem* port2Item;
 
-	// if both have vectored logical signals
-	if (portMap1->logicalVector() && portMap2->logicalVector())
+    QSharedPointer<PortMap::LogicalPort> firstLogical = portMap1->getLogicalPort();
+    QPair<int, int> firstLogicalBounds = calculateMappedLogicalPortBounds(firstParser, portMap1);
+    int firstLogicalHigh = firstLogicalBounds.first;
+    int firstLogicalLow = firstLogicalBounds.second;
+
+    QSharedPointer<PortMap::LogicalPort> secondLogical = portMap2->getLogicalPort();
+    QPair<int, int> secondLogicalBounds = calculateMappedLogicalPortBounds(secondParser, portMap2);
+    int secondLogicalHigh = secondLogicalBounds.first;
+    int secondLogicalLow = secondLogicalBounds.second;
+    if (firstLogical && firstLogical->range_ && secondLogical && secondLogical->range_)
     {
-		// if the vectored ports don't have any common bounds
-		if (portMap1->getLogicalRight() > portMap2->getLogicalLeft() ||
-			portMap1->getLogicalLeft() < portMap2->getLogicalRight())
+        if (firstLogicalLow > secondLogicalHigh || firstLogicalHigh < secondLogicalLow)
         {
-				return;
-		}
+            return;
+        }
 
-		int logicalLeft = qMin(portMap1->getLogicalLeft(), portMap2->getLogicalLeft());
-		int logicalRight = qMax(portMap1->getLogicalRight(), portMap2->getLogicalRight());
+        int logicalHigh = qMin(firstLogicalHigh, secondLogicalHigh);
+        int logicalLow = qMax(firstLogicalLow, secondLogicalLow);
 
-		QString port1;
-		QString port2;
-		
-		{
-			// count how much the left bound of port 1 has to be adjusted down
-			int downSize = abs(portMap1->getLogicalLeft() - logicalLeft);
-			// count how must the right bound of  port 1 has to be adjusted up
-			int upSize = abs(logicalRight - portMap1->getLogicalRight());
+        int firstDownSize = abs(firstLogicalHigh - logicalHigh);
+        int firstUpSize = abs(logicalLow - firstLogicalLow);
 
-			// the actual size of the connected parts of the ports
-			size1 = (phys1Left - downSize) - (phys1Right + upSize) + 1; 
+        size1 = (phys1Left - firstDownSize) - (phys1Right + firstUpSize) + 1;
 
-			port1 = General::port2String(portMap1->getPhysicalPort()->name_, phys1Left - downSize, phys1Right + upSize);
-		}
-		{
-			// count how much the left bound of port 2 has to be adjusted down
-			int downSize = abs(portMap2->getLogicalLeft() - logicalLeft);
-			// count how must the right bound of  port 2 has to be adjusted up
-			int upSize = abs(logicalRight - portMap2->getLogicalRight());
+        QString port1 = General::port2String(
+            portMap1->getPhysicalPort()->name_, phys1Left - firstDownSize, phys1Right + firstUpSize);
 
-			// the actual size of the connected parts of the ports
-			size2 = (phys2Left - downSize) - (phys2Right + upSize) + 1;
+        int secondDownSize = abs(secondLogicalHigh - logicalHigh);
+        int secondUpSize = abs(logicalLow - secondLogicalLow);
 
-			port2 = General::port2String(portMap2->getPhysicalPort()->name_, phys2Left - downSize, phys2Right + upSize);
-		}
+        size2 = (phys2Left - secondDownSize) - (phys2Right + secondUpSize) + 1;
 
-		// if the connected sizes of the ports don't match
-		if (size1 != size2)
+        QString port2 = General::port2String(
+            portMap2->getPhysicalPort()->name_, phys2Left - secondDownSize, phys2Right + secondUpSize);
+
+        if (size1 != size2)
         {
-			phys1Invalid = true;
-			phys2Invalid = true;
-		}
+            phys1Invalid = true;
+            phys2Invalid = true;
+        }
 
-		port1Item = new QTableWidgetItem(port1);
-
-		port2Item = new QTableWidgetItem(port2);
-	}
-	// if port map1 has vectored logical signal
-	else if (portMap1->logicalVector() && !portMap2->logicalVector())
+        port1Item = new QTableWidgetItem(port1);
+        port2Item = new QTableWidgetItem(port2);
+    }
+    else if (portMap1->getLogicalPort() && portMap1->getLogicalPort()->range_ && portMap2->getLogicalPort() &&
+        !portMap2->getLogicalPort()->range_)
     {
-		// port 1 uses the original physical bounds
-		QString port1 = General::port2String(portMap1->getPhysicalPort()->name_, phys1Left, phys1Right);
-		port1Item = new QTableWidgetItem(port1);
+        QString port1 = General::port2String(portMap1->getPhysicalPort()->name_, phys1Left, phys1Right);
+        port1Item = new QTableWidgetItem(port1);
 
-		// port 2 uses the bounds of the logical port of port 1
-		QString port2 = General::port2String(portMap2->getPhysicalPort()->name_, 
-			portMap1->getLogicalLeft(),
-			portMap1->getLogicalRight());
-		
-		// if the logical port and port 2 sizes don't match
-		/*if (portMap1->logicalVector()->getSize() != size2) {
-			phys1Invalid = true;
-			phys2Invalid = true;
-		}*/  /*
-		port2Item = new QTableWidgetItem(port2);
-	}
-	// if port map2 has vectored logical signal
-	else if (!portMap1->logicalVector() && portMap2->logicalVector()) 
-    {
-		// port 1 uses the bounds of the logical port of port 2
-		QString port1 = General::port2String(portMap1->getPhysicalPort()->name_, 
-			portMap2->getLogicalLeft(),
-			portMap2->getLogicalRight());
+        QString port2 = General::port2String(portMap2->getPhysicalPort()->name_, firstLogicalHigh, firstLogicalLow);
 
-		// if the logical port and port 2 sizes don't match
-		/*if (portMap2->logicalVector()->getSize() != size1) {
-			phys1Invalid = true;
-			phys2Invalid = true;
-		}*/   /*
-		port1Item = new QTableWidgetItem(port1);
-
-		// port 2 uses the original physical bounds
-		QString port2 = General::port2String(portMap2->getPhysicalPort()->name_, phys2Left, phys2Right);
-		port2Item = new QTableWidgetItem(port2);
-	}
-	// if neither has vectored logical signal
-	else
-    {
-		QString port1 = General::port2String(portMap1->getPhysicalPort()->name_, phys1Left, phys1Right);
-		port1Item = new QTableWidgetItem(port1);
-			
-		QString port2 = General::port2String(portMap2->getPhysicalPort()->name_, phys2Left, phys2Right);
-		port2Item = new QTableWidgetItem(port2);
-
-		// if sizes don't match then both must be marked as invalid
-		if (size1 != size2)
+        int firstLogicalSize = abs(firstLogicalHigh - firstLogicalLow) + 1;
+        if (firstLogicalSize != size2)
         {
-			phys1Invalid = true;
-			phys2Invalid = true;
-		}
-	}
+            phys1Invalid = true;
+            phys2Invalid = true;
+        }
 
-	// set the flags for the items
-	port1Item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-	port2Item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+        port2Item = new QTableWidgetItem(port2);
+    }
+    else if (portMap1->getLogicalPort() && !portMap1->getLogicalPort()->range_ && portMap2->getLogicalPort() &&
+        !portMap2->getLogicalPort()->range_)
+    {
+        QString port1 =
+            General::port2String(portMap1->getPhysicalPort()->name_, secondLogicalHigh, secondLogicalLow);
 
-	// set the colors according to validity of items
-	if (phys1Invalid)
+        int secondLogicalSize = abs(secondLogicalHigh - secondLogicalLow) + 1;
+        if (secondLogicalSize != size1)
+        {
+            phys1Invalid = true;
+            phys2Invalid = true;
+        }
+        
+        port1Item = new QTableWidgetItem(port1);
+
+        QString port2 = General::port2String(portMap2->getPhysicalPort()->name_, phys2Left, phys2Right);
+        port2Item = new QTableWidgetItem(port2);
+    }
+    else
     {
-		port1Item->setForeground(QBrush(Qt::red));
-	}
-	else
+        QString port1 = General::port2String(portMap1->getPhysicalPort()->name_, phys1Left, phys1Right);
+        port1Item = new QTableWidgetItem(port1);
+
+        QString port2 = General::port2String(portMap2->getPhysicalPort()->name_, phys2Left, phys2Right);
+        port2Item = new QTableWidgetItem(port2);
+
+        if (size1 != size2)
+        {
+            phys1Invalid = true;
+            phys2Invalid = true;
+        }
+    }
+    
+    addPortItemsToPortWidget(port1Item, port2Item, phys1Invalid, phys2Invalid, row);
+}
+
+//-----------------------------------------------------------------------------
+// Function: connectioneditor::calculateMappedPortBounds()
+//-----------------------------------------------------------------------------
+QPair<int, int> ConnectionEditor::calculateMappedPhysicalPortBounds(QSharedPointer<ExpressionParser> parser,
+    QSharedPointer<PortMap> containingPortMap, QSharedPointer<Component> containingComponent)
+{
+    int physicalLeft = 0;
+    int physicalRight = 0;
+
+    QSharedPointer<PortMap::PhysicalPort> physicalPort = containingPortMap->getPhysicalPort();
+    if (physicalPort && physicalPort->partSelect_)
     {
-		port1Item->setForeground(QBrush(Qt::black));
-	}
-	if (phys2Invalid)
+        physicalLeft = parser->parseExpression(physicalPort->partSelect_->getLeftRange()).toInt();
+        physicalRight = parser->parseExpression(physicalPort->partSelect_->getRightRange()).toInt();
+    }
+    else if (containingComponent->hasPort(physicalPort->name_))
     {
-		port2Item->setForeground(QBrush(Qt::red));
-	}
-	else
+        physicalLeft =
+            parser->parseExpression(containingComponent->getPort(physicalPort->name_)->getLeftBound()).toInt();
+        physicalRight =
+            parser->parseExpression(containingComponent->getPort(physicalPort->name_)->getRightBound()).toInt();
+    }
+
+    QPair<int, int> portBounds(physicalLeft, physicalRight);
+    return portBounds;
+}
+
+//-----------------------------------------------------------------------------
+// Function: connectioneditor::isPhysicalInvalid()
+//-----------------------------------------------------------------------------
+bool ConnectionEditor::isMappedPhysicalInvalid(QSharedPointer<PortMap> containingPortMap,
+    QSharedPointer<Component> containingComponent)
+{
+    return containingPortMap->getPhysicalPort() &&
+        !containingComponent->hasPort(containingPortMap->getPhysicalPort()->name_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: connectioneditor::calculateMappedLogicalPortBounds()
+//-----------------------------------------------------------------------------
+QPair<int, int> ConnectionEditor::calculateMappedLogicalPortBounds(QSharedPointer<ExpressionParser> parser,
+    QSharedPointer<PortMap> containingPortMap)
+{
+    int logicalHigh = 0;
+    int logicalLow = 0;
+
+    if (containingPortMap->getLogicalPort() && containingPortMap->getLogicalPort()->range_)
     {
-		port2Item->setForeground(QBrush(Qt::black));
-	}
-	
-	// add items to the port widget
-	portWidget_.insertRow(row);
-	portWidget_.setItem(row, 0, port1Item);
-	portWidget_.setItem(row, 1, port2Item);
-	++row;*/
+        int logicalLeft = parser->parseExpression(containingPortMap->getLogicalPort()->range_->getLeft()).toInt();
+        int logicalRight = parser->parseExpression(containingPortMap->getLogicalPort()->range_->getRight()).toInt();
+
+        logicalHigh = qMax(logicalLeft, logicalRight);
+        logicalLow = qMin(logicalLeft, logicalRight);
+    }
+
+    QPair<int, int> logicalBounds(logicalHigh, logicalLow);
+    return logicalBounds;
+}
+
+//-----------------------------------------------------------------------------
+// Function: connectioneditor::addPortItemsToPortWidget()
+//-----------------------------------------------------------------------------
+void ConnectionEditor::addPortItemsToPortWidget(QTableWidgetItem* firstPortItem, QTableWidgetItem* secondPortItem,
+    bool firstIsNotValid, bool secondIsNotValid, int& row)
+{
+    firstPortItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+    secondPortItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+
+    if (firstIsNotValid)
+    {
+        firstPortItem->setForeground(QBrush(Qt::red));
+    }
+    else
+    {
+        firstPortItem->setForeground(QBrush(Qt::black));
+    }
+    if (secondIsNotValid)
+    {
+        secondPortItem->setForeground(QBrush(Qt::red));
+    }
+    else
+    {
+        secondPortItem->setForeground(QBrush(Qt::black));
+    }
+
+    portWidget_.insertRow(row);
+    portWidget_.setItem(row, 0, firstPortItem);
+    portWidget_.setItem(row, 1, secondPortItem);
+    ++row;
 }

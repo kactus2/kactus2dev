@@ -1273,7 +1273,7 @@ GraphicsConnection* HWDesignDiagram::createConnection(ConnectionEndpoint* startP
         connection = new HWConnection(startPoint, endPoint, interconnection, route, this);        
     }    
 
-    connection->setBusWidthVisible(getParent()->getVisibilityControls().value("Bus Widths"));
+//     connection->setBusWidthVisible(getParent()->getVisibilityControls().value("Bus Widths"));
     return connection;
 }
 

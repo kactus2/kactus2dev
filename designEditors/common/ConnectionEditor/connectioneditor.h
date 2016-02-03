@@ -34,6 +34,8 @@ class GraphicsConnection;
 class LibraryInterface;
 class Component;
 
+class ExpressionParser;
+
 //-----------------------------------------------------------------------------
 //! Editor to display/edit details of a connection.
 //-----------------------------------------------------------------------------
@@ -99,12 +101,59 @@ private:
 	 *      @param [in]     portMap2        The second port map.
 	 *      @param [in]     component2      The component that contains the port map2.
 	 *
-	*/
-	void addMap(int& row, bool invalid, 
-		QSharedPointer<PortMap> portMap1,
-		QSharedPointer<Component> component1,
-		QSharedPointer<PortMap> portMap2,
-		QSharedPointer<Component> component2);
+	 */
+	void addMap(int& row, bool invalid, QSharedPointer<PortMap> portMap1, QSharedPointer<Component> component1,
+        QSharedPointer<PortMap> portMap2, QSharedPointer<Component> component2);
+
+    /*!
+     *  Calculate mapped physical port bounds.
+     *
+     *      @param [in] parser                  The used expression parser.
+     *      @param [in] containingPortMap       The port map containing the mapped physical port.
+     *      @param [in] containingComponent     The component containing the physical port.
+     *
+     *      @return Integer pair, where the first is the left bound, and the second is the right bound.
+     */
+    QPair<int, int> calculateMappedPhysicalPortBounds(QSharedPointer<ExpressionParser> parser,
+        QSharedPointer<PortMap> containingPortMap, QSharedPointer<Component> containingComponent);
+
+    /*!
+     *  Check if the mapped physical port is not valid.
+     *
+     *      @param [in] containingPortMap       Port map containing the physical port.
+     *      @param [in] containingComponent     Component containing the referenced physical port.
+     *
+     *      @return True, if the physical port is not valid, otherwise false.
+     */
+    bool isMappedPhysicalInvalid (QSharedPointer<PortMap> containingPortMap,
+        QSharedPointer<Component> containingComponent);
+
+    /*!
+     *  Calculate the mapped logical port bounds.
+     *
+     *      @param [in] parser              The used expression parser.
+     *      @param [in] containingPortMap   The port map containing the logical port.
+     *
+     *      @return Integer pair, where the first value is the higher bound and the second value is the lower bound.
+     */
+    QPair<int, int> calculateMappedLogicalPortBounds(QSharedPointer<ExpressionParser> parser,
+        QSharedPointer<PortMap> containingPortMap);
+
+    /*!
+     *  Adds the selected port items to the port widget.
+     *
+     *      @param [in] firstPortItem       The first port item.
+     *      @param [in] secondPortItem      The second port item.
+     *      @param [in] firstIsNotValid     The validity of the first item.
+     *      @param [in] secondIsNotValid    The validity of the second item.
+     *      @param [in] row                 The row on which to add the items.
+     */
+    void addPortItemsToPortWidget(QTableWidgetItem* firstPortItem, QTableWidgetItem* secondPortItem,
+        bool firstIsNotValid, bool secondIsNotValid, int& row);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
 	//! Widget to display the connection type (COM/API/bus type).
 	VLNVDisplayer type_;

@@ -55,22 +55,26 @@ QVariant PhysListModel::data(QModelIndex const& index, int role) const
 {
     if (role == Qt::DecorationRole)
     {
-        DirectionTypes::Direction direction = component_->getPort(data(index).toString())->getDirection();
-        if(direction == DirectionTypes::IN)
+        QSharedPointer<Port> selectedPort = component_->getPort(data(index).toString());
+        if (selectedPort && selectedPort->getWire())
         {
-            return QIcon(":icons/common/graphics/control-180.png");
-        }
-        else if (direction == DirectionTypes::OUT)
-        {
-            return QIcon(":icons/common/graphics/control.png");
-        }
-        else if (direction == DirectionTypes::INOUT)
-        {
-            return QIcon(":icons/common/graphics/control-dual.png");
-        }
-        else
-        {
-            return QIcon(":icons/common/graphics/cross.png");
+            DirectionTypes::Direction direction = selectedPort->getDirection();
+            if(direction == DirectionTypes::IN)
+            {
+                return QIcon(":icons/common/graphics/control-180.png");
+            }
+            else if (direction == DirectionTypes::OUT)
+            {
+                return QIcon(":icons/common/graphics/control.png");
+            }
+            else if (direction == DirectionTypes::INOUT)
+            {
+                return QIcon(":icons/common/graphics/control-dual.png");
+            }
+            else
+            {
+                return QIcon(":icons/common/graphics/cross.png");
+            }
         }
     }
 

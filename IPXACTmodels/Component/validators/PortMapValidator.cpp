@@ -207,14 +207,17 @@ bool PortMapValidator::physicalPortHasValidPartSelect(QSharedPointer<PortMap::Ph
 bool PortMapValidator::physicalPortRangeIsWithinReferencedPort(QSharedPointer<Port> referencedPort,
     QSharedPointer<PortMap::PhysicalPort> physicalPort) const
 {
-    if (physicalPort->partSelect_ && (!physicalPort->partSelect_->getLeftRange().isEmpty() ||
+    if (referencedPort && physicalPort->partSelect_ && (!physicalPort->partSelect_->getLeftRange().isEmpty() ||
         !physicalPort->partSelect_->getRightRange().isEmpty()))
     {
         int rangeLeft = expressionParser_->parseExpression(physicalPort->partSelect_->getLeftRange()).toInt();
         int rangeRight = expressionParser_->parseExpression(physicalPort->partSelect_->getRightRange()).toInt();
 
-        int portLeft = expressionParser_->parseExpression(referencedPort->getLeftBound()).toInt();
-        int portRight = expressionParser_->parseExpression(referencedPort->getRightBound()).toInt();
+        int portLeft = 0;
+        int portRight = 0;
+
+        portLeft = expressionParser_->parseExpression(referencedPort->getLeftBound()).toInt();
+        portRight = expressionParser_->parseExpression(referencedPort->getRightBound()).toInt();
 
         if (portLeft > portRight)
         {
