@@ -134,7 +134,8 @@ void ViewEditor::refresh()
 //-----------------------------------------------------------------------------
 void ViewEditor::showEvent(QShowEvent* event)
 {
-    ItemEditor::showEvent(event);
+    QWidget::showEvent(event);
+    emit helpUrlRequested("componenteditor/view.html");
     refresh();
 }
 

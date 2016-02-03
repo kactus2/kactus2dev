@@ -12,51 +12,66 @@
       address space within component.  <i>Address space</i> defines a
       logical address space seen by a master bus interface. It can be
       split into smaller <i>sgements</i>.
+      <br />In the elements, f(x) means that the value can be given as an expression.  
     </p>
     <p>
       On the left side are the editor fields that can be used to set
-      the details of an address space.  The right side has a
+      the details of an address space.  The right side contains a
       visualization displaying the address space in its current state.
     </p>
     <p>
-      Address space has a <b>name</b> and textual <b>description</b>.
+      Address space has a unique <b>name</b> and textual <b>description</b>.
       <b>Display name</b> can be more detailed or user-friendly than
       name, but usually only a few words.
     </p>
     <p>
       The general group contains the same settings that can be set through the address spaces summary.
-      <br /><b>Addressable unit size</b> specifies the number of bits each address increment contains, e.g.
-      8 bits or 32 bits.
-      <br /><b>Range</b> is the size of the address space expressed as addressable units, i.e. the number of
+    </p>
+    <p>
+        <b>Addressable unit bits</b> (AUB) specifies the number of bits each address increment contains, 
+        e.g. 8 bits or 32 bits. The AUB is mandatory if the address space contains a local memory map.
+    </p>
+    <p>
+      <b>Range</b> is the size of the address space expressed as addressable units, i.e. the number of
       separate addresses.
-      <br /><b>Width</b> is the data width of a row in bits. It defines the maximum size for a single transfer.
+    </p>
+    <p>
+      <b>Width</b> is the data width of a row in bits. It defines the maximum size for a single transfer.
+    </p>
+    <p>
+        <b>Master interface binding</b> ties the address space to a master interface. The binding can be set
+        in the <i>bus interface</i> editor.
     </p>
     <h3>Segments</h3>
     <p>
       <b>Segments</b> editor can be used to describe portions of the address space, i.e. split it into smaller
       segments.
-      <br />Each segment has the starting <b>offset</b> address, range (size) as number of AUBs, and textual
-      <b>description</b>. The visualization on the right side reacts to the changes and displays how the
-      segments are situated in the address space. Mismatches, e.g. sum of segment ranges being greater than
-      address block range, can be easily spotted from the visualization.
+    </p>
+    <p>
+      Each segment has the starting <b>offset</b> address, given in address unit bits, a <b>range</b> (size) 
+      given in AUBs, and a textual <b>description</b>.
+    </p>
+    <p>
+      The visualization on the right side reacts to the changes and displays how the segments are situated in 
+      the address space. Mismatches, e.g. sum of segment ranges being greater than address block range, can 
+      be easily spotted from the visualization.
     </p>
     <h3>Local memory map</h3>
     <p>
       <b>Local memory map</b> is optional but some processors require specifying a memory map that is local
       to the component.  This consists of <b>Address blocks</b> similarly to the memory map of a slave
       interface. Hence, address blocks can contain either memory or registers, and registers can contain bit
-      fields. Local memory map is useful for storing the programmer's view to interrupts registers, timers,
+      fields.
+    </p>
+    <p>
+      Local memory map is useful for storing the programmer's view to interrupts registers, timers,
       and other local things. The overall address space of a component is a concatenation of local memory map
       (e.g. timers) and the memory maps of other units (e.g. registers of accelerator A, registers of
       accelerator B etc.)
     </p>
     <p>
       The address block editor can be used to define address blocks for the address space. The editor is
-      similar to the address block editor in memory maps.
+      similar to the address blocks table in <i>memory map</i> editor.
     </p>
-    <p>Tag <i>executableImage</i> is not supported yet. IP-XACT
-    standard allows defining an executable software image to be loaded
-    into a processors address space, and also the commands to build
-    it.
   </body>
 </html>

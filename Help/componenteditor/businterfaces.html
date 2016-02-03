@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
   <head>
     <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
@@ -9,7 +9,7 @@
     <h2>Bus interfaces editor</h2>
     <p>
       The bus interfaces editor displays a summary of the bus
-      interfaces of a component. <i>Bus interface</i> groups
+      interfaces of a component. A <i>bus interface</i> groups
       <i>ports</i> together to form an interface that fulfills
       requirements for a bus protocol. Connecting two matching
       interfaces means connecting multiple ports (up to tens or even
@@ -17,11 +17,10 @@
       add and remove bus interfaces in a component
     </p>
     <p>
-      Bus interface has a mandatory <b>name</b> and optional textual
-      <b>description</b>.
-      <br>
-      <b>Bus definition</b> and <b>abstraction definition</b> columns
-      are not editable here. They display the <i>VLNV</i>-identifiers of the
+      Bus interface has a mandatory <b>name</b> and optional textual <b>description</b>.
+    </p>
+    <p>
+      <b>Bus definition</b> and <b>abstraction definition</b> columns display the <i>VLNV</i>-identifiers of the
       IP-XACT documents that define qualities of the interface. These
       fields must be set in the bus interface-specific editor.
     </p>
@@ -29,40 +28,29 @@
       <b>Interface mode</b> has 7 different choices (3 modes and 2
       flavors of each, plus 1 extra):
     </p>
-    <dl>     
-      <dt>1. <strong>Master</strong></dt> <dd>- initiates
-	transactions, like write or read. May have an <i>address
-	  space</i> which captures the programmer's view of the system
-      </dd>
+    <dl>
+      <dt>1. <strong>Master</strong></dt>
+      <dd>- initiates transactions, e.g. write or read. May have an <i>address space</i> which captures the 
+        programmer's view of the system.</dd>
       
-      <dt>2. <strong>Slave</strong></dt> <dd>- responds to
-	transactions, e.g. accepts the written value or provides the
-	read value. May have a <i>memory map</i>, i.e. information about
-	the accessible registers inside this component</dd>
+      <dt>2. <strong>Slave</strong></dt>
+      <dd>- responds to transactions, e.g. accepts the written value or provides the read value. May have a 
+        <i>memory map</i>, i.e. information about the accessible registers inside this component.</dd>
       
       <dt>3. <strong>System</strong></dt>
-      <dd>- can be used for some interfaces that do not fit into the
-	master or slave category.<br><br></dd>
+      <dd>- can be used for some interfaces that do not fit into the master or slave category.</dd>
       
       <dt>4-6. <strong>Mirrored master, mirrored slave, mirrored system</strong></dt>
-      
-      <dd>- are the <i>mirrored</i> versions, i.e.  they have the same
-	(or similar) ports as the normal interfaces but the directions
-	of the ports are reversed. <br>For example, if <i>master</i>
-	interface has data <i>input</i>, then <i>mirrored master</i> has
-	data as <i>output</i>.  It is not allowed to connect to mirrored
-	interfaces together. <br>The main usage of mirrored interfaces
-	is at bus intercconects, such as AMBA AHB/APB or HIBI, since
-	they allow constructing a memory map of the whole system,
-	whereas regular IP components mainly utilize direct interfaces.
-	<br><br></dd>
+      <dd>- are the <i>mirrored</i> versions, i.e.  they have the same (or similar) ports as the normal interfaces 
+      but the directions of the ports are reversed. <br>For example, if <i>master</i> interface has data 
+      <i>input</i>, then <i>mirrored master</i> has data as <i>output</i>.  It is not allowed to connect to 
+      mirrored interfaces together. <br>The main usage of mirrored interfaces is at bus intercconects, such as 
+      AMBA AHB/APB or HIBI, since they allow constructing a memory map of the whole system, whereas regular IP 
+      components mainly utilize direct interfaces.</dd>
       
       <dt>7. <strong>Monitor</strong></dt>
-      
-      <dd>- is an interface that can be used for verification
-	process. It gathers data from other interfaces,
-	i.e. non-intrusive observation and hence all logical port are
-	<i>inputs</i></dd>
+      <dd>- is an interface that can be used for verification process. It gathers data from other interfaces, 
+      i.e. non-intrusive observation and hence all logical port are <i>inputs</i></dd>
     </dl>
 
     <p> 
@@ -70,19 +58,15 @@
       IP-XACT allows 3 kinds of connections
     </p>
     <ol>
+      <li><i>direct</i>: master to slave. Point-to-point connection. Complex cases require using bus interconnect
+      component containing <i>bridge(s)</i>, such as multillayer AHB bus. </li>
       
-      <li><i>direct</i>: master to slave. Point-to-point
-	connection. Complex cases require using bus interconnect
-	component containing <i>bridge(s)</i>, such as multillayer AHB
-	bus. </li>
+      <li><i>direct-mirrored</i>: master to mirrored master, mirrored slave to slave, system to mirrored system. 
+      Point-to-point connection. Complex cases require using bus interconnect component containing 
+      <i>channel(s)</i> </li>
       
-      <li><i>direct-mirrored</i>: master to mirrored master, mirrored
-	slave to slave, system to mirrored system. Point-to-point
-	connection. Complex cases require using bus interconnect
-	component containing <i>channel(s)</i> </li>
-      
-      <li><i>monitor</i>: any type except monitor to monitor. Many
-	monitors can be connected to single interface</li>
+      <li><i>monitor</i>: any type except monitor to monitor. Many monitors can be connected to single 
+      interface</li>
     </ol>
     <hr>
     <p>    

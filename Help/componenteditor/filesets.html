@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
   <head>
     <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
@@ -8,33 +8,27 @@
   <body>
     <h2>File sets editor</h2>
     <p>
-      File sets editor contains a summary table regarding each <i>file
-      set</i> contained of the component. It can be used to add and
-      remove file sets.  If a file set is in <font color="red">invalid
-      state</font> it is shown in <font color="red">red</font>.
+      File sets editor contains a summary table regarding each <i>file set</i> contained within the component. 
+      This table can be used to add and remove file sets.  If a file set is in 
+      <font color="red">invalid state</font> it is shown in <font color="red">red</font>.
     </p>
-    <p>All columns can be modified in the editor to set the general
-    information of the different file sets.
+    <p>
+      Each file set contains the following items:.
     </p>
     <ul>
-      <li> <b>Name</b> column displays the name of the file
-	set. Mandatory information. </li>
-      
-      <li><b>Description</b> column displays the textual description
-	of the file set. </li>
-      
-      <li><b>Group identifier</b> can be used to describe the function
-	or purpose of the file with a single unbounded
-	word. <i>Group</i> identifiers can contain several identifiers
-	and the possible words are not limited.  However the editor
-	suggests the following options:
-	<ul>
-	  <li>Diagnostics</li>
-	  <li>Documentation</li>
-	  <li>ProjectFiles</li>
-	  <li>Simulation</li>
-	  <li>sourceFiles</li>
-	</ul>
+      <li><b>Name</b> column displays the name of the file set. Mandatory information.</li>
+      <li><b>Description</b> column displays the textual description of the file set.</li>
+      <li>
+        <b>Group identifier</b> can be used to describe the function or purpose of the file with a single 
+        unbounded word. <i>Group</i> identifiers can contain several identifiers and the possible words are not 
+        limited.  However the editor suggests the following options:
+	    <ul>
+	      <li>Diagnostics</li>
+	      <li>Documentation</li>
+	      <li>ProjectFiles</li>
+	      <li>Simulation</li>
+	      <li>sourceFiles</li>
+	    </ul>
       </li>      
     </ul>
     
@@ -50,6 +44,10 @@
       <li>Import a csv-file to the editor</li>
       <li>Export the contents of the editor to a csv-file</li>
     </ul>
+    <p>
+      Below the file sets editor is the dependencies table. This table displays the dependencies between the 
+      files within the contained file sets.
+    </p>
     <hr>
     <p>
       EXAMPLE. The names of filesets do not need to be same as directories

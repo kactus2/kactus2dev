@@ -8,10 +8,8 @@
   <body>
     <h2>File set editor</h2>
     <p>
-      File set editor can be used to edit the details of a single file
-      set and to add and remove files contained in the file set. File
-      sets can be used to group files together to be referenced by
-      other sections of a component.
+      File set editor can be used to edit the details of a single file set. These file sets can be used to 
+      group files together to be referenced by other sections of a component.
     </p>
     <p>
       <b>Name</b>, <b>display name</b>, and <b>description</b> of the
@@ -23,9 +21,9 @@
     </p>
     <h3>Group identifiers</h3>
     <p>
-      <b>Group identifier</b> can be used to describe the function or purpose of the file with a single
-      unbounded word. <i>Group</i> identifiers can contain several identifiers and the possible words are not
-      limited.  However the editor suggests the following options:
+      <b>Group identifier</b> can be used to describe the function or purpose of the file set with a single
+      unbounded word. <i>Group identifiers</i> can contain several identifiers and the number of possible 
+      identifiers is not limited. However the editor suggests the following options:
     </p>
     <ul>
       <li>Diagnostics</li>
@@ -36,13 +34,13 @@
     </ul>
     <h3>Files</h3>
     <p>
-      <b>Files</b> group box lists the files contained in the file set.
-      Each file has a <b>name</b> identifying the file. The file name is mandatory, and it is given when adding
-      file.
+      <b>Files</b> editor lists the files contained within the file set.
+      Each file has a <b>name</b> identifying the file. The name is mandatory, and it is determined when adding 
+      a file.
       <br /><b>File path</b> is defined either as relative to the component's xml-file or as an absolute path.
-      The file path is mandatory and it is given when adding files.
-      <br /><b>File type</b> links files to their build command (see below). One file can have many types. File
-      type is mandatory.
+      The file path is mandatory and it is given when adding a file.
+      <br /><b>File type</b> links files to their build command (see below). File type is mandatory, and one 
+      file can have many types.
       <br /><b>Description</b> is a freely formatted text describing a single file.
     </p>
     <p>
@@ -71,10 +69,11 @@
       for C files or vcom for VHDL.
     </p>
     <p>
-      <b>File type</b> defines which files are build by the given <b>command</b>.<br />
-      <b>Flags</b> define the command line options for the command e.g. -Wall. The defined command can
-      either <b>replace default flags</b> defined in the target <i>file</i> or be appended to it.<br />
-      This table has a similar context menu as the files editor.
+      <b>File type</b> defines which files are build by the given <b>command</b>.
+      <br /><b>Flags</b> define the command line options for the <i>command</i> e.g. -Wall.
+      <br />The defined command can either <b>replace default flags</b> defined in the target <i>file</i> or be 
+      appended to it.
+      <br />This table has a similar context menu as the files editor.
     </p>
     <h3>Dependent directories</h3>
     <p>

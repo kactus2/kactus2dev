@@ -47,9 +47,19 @@
 						</section>
 						</section>
 					</section>
+          <section title="Instantiations" ref="componenteditor/instantiations.html">
+            <section title="Component instantiations" ref="componenteditor/componentInstantiations.html">
+              <section title="Component instantiation" ref="componenteditor/componentInstantiation.html" />
+            </section>
+            <section title="Design configuration instantiations" ref="componenteditor/designConfigurationInstantiations.html">
+              <section title="Design configuration instantiation" ref="componenteditor/designConfigurationInstantiation.html" />
+            </section>
+            <section title="Design instantiations" ref="componenteditor/designInstantiations.html">
+              <section title="Design instantiation" ref="componenteditor/designInstantiation.html" />
+            </section>
+          </section>
 					<section title="Views" ref="componenteditor/views.html">
-						<section title="Flat view" ref="componenteditor/flatview.html" />
-						<section title="Hierarchical view" ref="componenteditor/hierview.html" />
+						<section title="View" ref="componenteditor/view.html" />
 					</section>
 					<section title="Software views" ref="componenteditor/swviews.html">
 						<section title="Software view" ref="componenteditor/swview.html" />

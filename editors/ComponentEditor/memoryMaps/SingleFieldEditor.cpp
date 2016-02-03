@@ -202,7 +202,7 @@ void SingleFieldEditor::setupLayout()
         this, SLOT(onTestableSelected(QString const&)), Qt::UniqueConnection);
 
     testConstrainedEditor_ = new TestConstraintComboBox(fieldDefinitionGroup);
-    fieldConstraintLayout->addRow(tr("Test constrained:"), testConstrainedEditor_);
+    fieldConstraintLayout->addRow(tr("Test constraint:"), testConstrainedEditor_);
     connect(testConstrainedEditor_, SIGNAL(activated(QString const&)),
         this, SLOT(onTestConstrainedSelected(QString const&)), Qt::UniqueConnection);
 

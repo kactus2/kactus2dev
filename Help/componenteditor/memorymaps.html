@@ -10,11 +10,11 @@
     <p>
       Memory maps editor contains the summary of the <i>memory maps</i> and <i>memory remaps</i> contained in the
       component and can be used to add, remove and edit them.
-      <br /><i>Memory map</i> specifies the addressable area seen through a slave bus interface, e.g. the data and
+      <br /><b>Memory map</b> specifies the addressable area seen through a slave bus interface, e.g. the data and
       control register.
-      <br /><i>Memory remap</i> describes additional memory map items that are mapped on the referencing slave bus
-      interface in a specific remap state. If multiple memory remap / state attributes are active, then the first
-      memory remap listed shall be selected.
+      <br /><b>Memory remap</b> describes additional memory map items that are mapped on the referencing slave bus
+      interface in a specific remap state. If multiple memory remap or remap state attributes are active, then the
+      first memory remap listed shall be selected.
     </p>
     <h3>Memory map</h3>
     <p>
@@ -22,17 +22,17 @@
       <br><b>Address unit bits</b> (AUB) defines the number of data bits each address increment of the memory map
       contains, e.g. 8b or 32b. The default setting for a memory map is byte addressable (8 bits). E.g. if AUB=8,
       then 32-bit registers are at addresses 0x0, 0x4, 0x8... If AUB=32, they are in addresses 0x0, 0x1, 0x2...
-      AUB is the unit of base address and range in address map. <br><b>Interface binding</b> ties the memory map
-      to slave interface used for access.
-      <br>
+      AUB is the unit of base address and range in address map.
+      <br /><b>Interface binding</b> ties the memory map to a slave interface used for access.
+      <br />
       <img src="../images/mem_map.png" alt="mem map's idea">
     </p>
     <h3>Memory remap</h3>
     <p>
       Each memory remap has a <b>name</b> and a textual <b>description</b>.
-      <br><b>Remap state</b> identifies the name of the <i>remap state</i> for which the optional memory map
+      <br /><b>Remap state</b> identifies the name of the <i>remap state</i> for which the optional memory remap
       elements are active. See remap states for further information on remap states. Memory remaps use their
-      parent memory map's <b>address unit bits</b> and <b>interface binding</b>.
+      parent memory map's <i>address unit bits</i> and <i>interface binding</i>.
     </p>
     <h3>Context menu</h3>
     <p>

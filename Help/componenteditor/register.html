@@ -10,23 +10,32 @@
     <p>
       Register editor is used to edit the details of a single register and the possible bit fields within
       the register. A bit field may contain just one bit, the whole register or something in between.
+      <br />In the elements, f(x) means that the value can be given as an expression.
     </p>
     <p>
       The <b>name</b>, <b>display name</b> and a <b>description</b> contain identification information of a
-      register. Name is mandatory and must be unique within the containing address block. <br />
-      <b>Offset</b> is a mandatory value to specify the location of the register from the start of the
-      containing address block expressed as address units. Offset can be given as a SystemVerilog expression.
-      <b>Size</b> is mandatory and defines the number of data bits the register contains. Size must be less or
-      equal to the <i>width</i> of the containing address block. Size can be given as a SystemVerilog
-      expression.<br >
+      register. Name is mandatory and must be unique within the containing address block.
+    </p>
+    <p>
+        <b>Offset</b> is a mandatory value to specify the location of the register from the start of the
+        containing address block expressed as address units.
+    </p>
+    <p>
+        <b>Width</b> is mandatory and defines the number of data bits the register contains. Width must be less 
+        or equal to the <i>width</i> of the containing address block.
+    </p>
+    <p>
       <b>Dimension</b> assigns an array dimension to the register. The register will be repeated in the
       address block as many times as indicated by the <i>dimension</i> value. Dimension 0 means
-      that the register is not an array and will appear exactly once. Dimension can be given as a 
-      SystemVerilog expression.<br >
-	  <img src="../images/appicon.png" alt="kactus logo"/><b>Is present</b> is a Kactus2 extension for
-            enabling/disabling a register presence in an address block. Value 1 indicates that the register is present
-            in the address block whereas value 0 marks the register to be treated as if it did not exist.
-            Is present can be given as a SystemVerilog expression, but it must evaluate to 1 or 0.<br />
+      that the register is not an array and will appear exactly once.
+    </p>
+    <p>
+	    <b>Is present</b> allows the enabling/disabling of a register presence in an address block. Value 
+        1 indicates that the register is present in the address block whereas value 0 marks the register 
+        to be treated as if it did not exist. Is present can be given as a SystemVerilog expression, but 
+        it must evaluate to 1 or 0.
+    </p>
+    <p>
       <b>Volatile</b> indicates whether the register value may change without a write operation to it.
     </p>
     <p>
@@ -42,20 +51,21 @@
             register.</li>
         <li><i>writeOnce</i>. Only the first write transaction affects the contents of the register.</li>
     </ul>
-    <p>
-      <b>Reset value</b> defines the register's value on reset. The number of bits must equal to register
-      size.
-      <br /><b>Reset mask</b> defines the bits of the register that have a known reset value. The number of bits
-      must equal to register size.
-    </p>
     <h3>Fields table</h3>
     <p>
-      The fields table enables the user to define the register fields.
-      A field has a unique <b>name</b> and a textual <b>description</b>. <br />
-      <b>Offset</b> is a mandatory value to specify the the starting bit of the field within the register. <br >
-      <b>Width</b> is a mandatory value to specify the how many bits are included in the field.<br >
-      <b>Volatile</b> indicates if there is no guarantee that two consecutive read operations will return
-      the same value because the register may change its value without write operations i.e. as a 
+      The fields table enables the user to define the register bit fields. A register must contain at least 
+      one field.
+      <br />A field has a unique <b>name</b> and a textual <b>description</b>.
+    </p>
+    <p>
+      <b>Offset</b> is a mandatory value to specify the starting bit of the field within the register.
+    </p>
+    <p>
+      <b>Width</b> is a mandatory value to specify how many bits are included in the field.
+    </p>
+    <p>
+      <b>Volatile</b> indicates that there is no guarantee that two consecutive read operations will return
+      the same value, as the register may change its value without write operations i.e. as a 
       result of an interrupt.
     </p>
     <p>
@@ -75,11 +85,9 @@
         <li><i>writeOnce</i>. Only the first write transaction affects the contents of this field.</li>
     </ul>
     <p>
-    <b>Modified write value</b> describes how the data in the field is
-    manipulated on a write operation. The basic operation without any
-    setting is to store the written value 'as is'. Moreover, both
-    bitwise and field-wise set/clear/toggle is also possbile. The
-    possible values are:
+        <b>Modified write value</b> describes how the data in the field is manipulated on a write operation. 
+        The basic operation without any setting is to store the written value 'as is'. Moreover, both bitwise 
+        and field-wise set/clear/toggle is also possbile. The possible values are:
     </p>
     <ul>
       <li><i>oneToClear</i>. Each written '1' bit will assign the corresponding bit to '0'.</li>
@@ -106,9 +114,11 @@
         the default.</li>
     </ul>
     <p>
-      <b>Testable</b> specifies if the field is testable by an automated register test. 
+      <b>Testable</b> specifies if the field is testable by an automated register test.
+    </p>
+    <p>
       <b>Test constraint</b> specifies the constraints for the automated tests for the field. 
-      The the possible constraint values are:
+      The possible constraint values are:
     </p>
     <ul>
         <li><i>unConstrained</i>. There are no constrains for the written or read data. This is the default
@@ -120,29 +130,19 @@
         <li><i>readOnly</i>. Indicates that the field can only be read.</li>
     </ul>
     <p>
-      <img src="../images/appicon.png" alt="kactus logo"/> Kactus2 extensions in fields
+        <b>Is present</b> enables/disables a field's presence in a register. Value 1 indicates that the field 
+        is present in the register whereas value 0 marks the field to be treated as if it did not exist. Is 
+        present can be given as a SystemVerilog expression, but it must evaluate to 1 or 0.
     </p>
-    <table border="1">
-      <tr>
-	    <th>Extension</th>
-	    <th>Description</th>
-      </tr>
-	  <tr>
-        <td>Is present</td>
-	    <td>Enables/disables a field's presence in a register. Value 1 indicates that the field is
-            present in the register whereas value 0 marks the field to be treated as if it did not
-            exist. Is present can be given as a SystemVerilog expression, but it must evaluate to
-            1 or 0.</td>
-      </tr>
-	  <tr>
-	    <td>Reset value</td>
-	    <td>Defines the actual reset value on reset.</td>
-	  </tr>
-	  <tr>
-	    <td>Reset mask</td>
-	    <td>Defines the bits that have a known reset value. Bit value of 1 means that the corresponding
-            bit has a known reset value whereas 0 means that the value is unknown.</td>
-	  </tr>
-    </table>
+    <p>
+	    <b>Reset value</b> defines the actual reset value on reset. <i>Reset value</i> uses SystemVerilog 
+        syntax for binary values. The number of bits must be equal to the register <i>size</i>.
+    </p>
+    <p>
+	    <b>Reset mask</b> defines the bits that have a known reset value. Bit value of 1 means that the 
+        corresponding bit has a known reset value whereas 0 means that the value is unknown. <i>Reset mask</i> 
+        uses SystemVerilog syntax for binary values e.g. 'b1011, 4'b1011, and 4'b10_11 are all valid values. 
+        The number of bits must be equal to the register <i>size</i>.
+    </p>
   </body>
 </html>

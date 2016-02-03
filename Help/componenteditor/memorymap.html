@@ -10,31 +10,50 @@
     <p>
       Memory map editor can be used to edit the details of a <i>memory map</i>. The <b>name</b>,
       <b>display name</b> and a <b>description</b> contain identification information of a memory map.
-      <br />The <b>address unit bits</b> [AUB] defines the number of data bits each address increment of the memory
-      map contains.
-      <br /><b>Remap state</b> identifies the name of the remap state for which the optional memory map elements
+    </p>
+    <p>
+      The <b>address unit bits</b> [AUB] defines the number of data bits each address increment of the 
+      memory map contains.
+    </p>
+    <p>
+      <b>Remap state</b> identifies the name of the remap state for which the optional memory map elements
       are active. Memory maps are labeled with a default remap state, while memory remaps must be given a
-      remap state (mandatory).
-      <br />Memory map is defined for a <i>slave interface</i>. It defines what the masters can access in this
-      component. Memory map is hierarchical.
+      remap state. For more information on the <i>remap states</i>, see the remap states editor.
+    </p>
+    <p>
+      Memory map is defined for a <b>slave interface</b>. It defines what the masters can access in this
+      component.
     </p>
     <h3>Address blocks table</h3>
     <p>
-    <i>Address block</i> specifies a single contiguous block of
-    memory, either a set of registers or a block of memory. (Moreover,
-    IP-XACT allows defining <i>bank</i> or <i>subspaceMap</i>, but
-    they are not yet supportted by Kactus (v2.1, March
-    2013). <i>Registers</i> are inside address block and each
-    register can have <i>bit fields</i>. <br> Address block has 5
-    mandatory parameters: usage, name, base address, range, and width.
+    <b>Address block</b> specifies a single contiguous block, either a set of registers or a block of memory.
+    (Moreover, IP-XACT allows <i>bank</i> or <i>subspaceMap</i> elements, but
+    they are not yet supportted by Kactus (v2.1, March 2013)).
+    <br />An <i>address block</i> can contain <b>registers</b> and each register can contain <b>bit fields</b>. 
+    <br />Address block has the following mandatory elements: name, base address, range, and width.
+    <br />In the columns, f(x) means that the value can be given as an expression.
   </p>
-    <p>
-      <b>Usage</b> column is used to specify the usage of
-      the address block. The possible values are:
+  <p>
+    Address block has a <b>name</b> and textual <b>description</b> to identify each address block.
+  </p>
+  <p>
+    <b>Base address</b> specifies the starting address for the address block. It is expressed as
+    <i>address unit bits</i> as defined in the containing memory map, e.g. 8b or 32b.
+  </p>
+  <p>
+    <b>Range</b> is also expressed as <i>address unit bits</i> and specifies the size of the block. 
+  </p>
+  <p>
+    <b>Width</b> is the data width in bits of a row in the address block. It sets the maximum allowed 
+    size of a single transfer and also defines the maximum size of a single register. Register can be 
+    smaller but not wider.
+  </p>
+  <p>
+    <b>Usage</b> column is used to specify the usage of the address block. The possible values are:
   </p>
     <ul>
       <li><i>Memory</i> specifies the address block as memory. Cannot
-      include registers.</li>
+      contain registers.</li>
 
       <li><i>Register</i> specifies the entire block to contain
       registers.</li>
@@ -42,36 +61,29 @@
       <li><i>Reserved</i> specifies the entire block as reserved for
       usage that is unknown to IP-XACT. Cannot include registers.</li>
     </ul>
+
     <p>
-      Address block has a <b>name</b> and textual
-      <b>description</b>. <br><b>Base address</b> specifies the
-      starting address for the address block. It is expressed as
-      <i>addressing units</i> as defined in the containing memory map,
-      e.g. 8b or 32b. <br><b>Range</b> is also expressed as
-      addressing units and specifies size of the block. Be careful
-      that range is set greater or equal to the sum of all register
-      sizes.<br><b>Width</b> is the data width in bits of a row in
-      the address block. It sets the maximum allowed size of a single
-      transfer and also defines the maximum size of a single
-      register. Register can be smaller but not wider.
-      </p>
-    <p>
-      <b>Access</b> column is used to specify the accessibility of the
-      block. The possible values are:
+        <b>Access</b> column is used to specify the accessibility of the block. The possible values are:
     </p>
-    <ul>
-        <li><i>read-write</i>. Both read and write transactions may have an effect on this address block.</li>
-        <li><i>read-only</i>. Only read transactions are allowed in this register.</li>
-        <li><i>write-only</i>. Only write transactions are allowed in this register.</li>
-        <li><i>read-writeOnce</i>. Read actions and the first write action may have an effect on this address
-            block.</li>
-        <li><i>writeOnce</i>. Only the first write action affects the contents of this address block.</li>
-    </ul>
+        <ul>
+            <li><i>read-write</i>. Both read and write transactions may have an effect on this address block.</li>
+            <li><i>read-only</i>. Only read transactions are allowed in this register.</li>
+            <li><i>write-only</i>. Only write transactions are allowed in this register.</li>
+            <li><i>read-writeOnce</i>. Read actions are allowed and the first write action may have an effect on 
+            this address block.</li>
+            <li><i>writeOnce</i>. Only the first write action affects the contents of this address block.</li>
+        </ul>
     <p>
-      <b>Volatile</b>=true indicates that the stored value may
-      change without master's write operation. For example, the timer
-      value gets updated automatically and master must always issue a
-      read to get the latest value.
+        <b>Volatile</b>=true indicates that the stored value may
+        change without master's write operation. For example, the timer
+        value gets updated automatically and master must always issue a
+        read to get the latest value.
+    </p>
+    <p>
+        <b>Memory maps visualization</b> is shown on the right of the editor. The visualization can be expandped
+        and minimized by clicking the expand arrow <img src="../images/triangle_arrow_right.png" alt="expand"> 
+        and the minimize arrow <img src="../images/triangle_arrow_down.png" alt="minimize">. Selecting any part
+        of the visualization will open the editor set for that item.
     </p>
     <hr>
     <p>
@@ -84,17 +96,14 @@
       registers do not have field definitions.
 
 
-      <br><br>Number of Addresss unit bits(AUB) os the memory map is
+      <br><br>Number of Addresss unit bits(AUB) of the memory map is
       set to 8 bits.  There are 3 registers with identical size (32b),
       Hence, ranger = 12 = 3 * 32/AU = 3 * 32/8 = 3 * 4. Let's assume
       base addr=0x100.  Since address block has 12 Bytes in total, it
       reserves the (byte) addresses 0x100-0x10B. It is good to set the
       width of the address block 32 b so that full register can be
       accessed at once. Smaller accesses (e.g. 1 byte at a time) are
-      also allowed. <b>Memory maps visualization</b> is shown on the
-      right. User can expand and minimize parts of it by clicking the
-      expand arrow <img src="../images/triangle_arrow_right.png" alt="expand"> and
-      the minimize arrow <img src="../images/triangle_arrow_down.png" alt="minimize">.<br>
+      also allowed.
       <img src="../images/mem_map_visualization.png" alt="screen_cap_of_mem_map_visualization">
 
     </p>

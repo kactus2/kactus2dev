@@ -84,5 +84,5 @@ void ComponentInstantiationsEditor::showEvent(QShowEvent* event)
     proxy_->invalidate();
 
 	QWidget::showEvent(event);
-	emit helpUrlRequested("componenteditor/designConfigurationInstantiations.html");
+	emit helpUrlRequested("componenteditor/componentInstantiations.html");
 }

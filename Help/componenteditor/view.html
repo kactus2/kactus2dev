@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+    <link href="../style.css" rel="Stylesheet" type="text/css">
+    <title>View editor</title>
+  </head>
+  <body>
+    <h2>View editor</h2>
+    <p>
+        <i>View</i> specifies a representation level of a component, e.g. there might be different views for 
+        simulation and synthesis. This editor is used to edit the details of single view.
+    </p>
+    <p>
+        View has <b>name</b> and textual <b>description</b>. <b>Display name</b> can be more detailed or 
+        user-friendly than name, but usually only few words.
+    </p>
+    <p>
+        <b>Environment identifiers</b> in mandatory textual information about how this view is deployed in 
+        different tool environments.
+        <ul>
+            <li><b>Language</b> indicates this view may be compatible with a particular tool, but only if that 
+            language is supported in that tool, e.g., different versions of some simulators may support two or 
+            more languages.</li>
+
+            <li><b>Tool</b> indicates that this view contains tool-information, e.g., HDL models that use 
+            simulator-specific extensions. The tool can have a generic value such as "*Simulation" and 
+            "*Synthesis".</li>
+
+            <li><b>VendorSpecific</b> can further qualify tool and language compatibility, e.g. if some 
+            appropriate simulator mode must be enabled.</li>
+      </ul>
+    </p>
+    <h3>Instantiations</h3>
+    <p>
+        <b>Component instantiation</b> specifies the referenced <i>component instantiation</i>. Data regarding 
+        the selected component instantiation is displayed in the view editor. For more information on the 
+        component instantiation, see the component instantiation editor.
+    </p>
+    <p>
+        <b>Design configuration instantiation</b> specifies the referenced <i>design configuration 
+        instantiation</i>. Data regarding the selected design configuration instantiation is displayed in the view
+        editor. For more information on the design configuration instantiation, see the design configuration 
+        instantiation editor.
+    </p>
+    <p>
+        <b>Design instantiation</b> details the referenced <i>design instantiation</i>. Data regarding the selected
+        design instantiation is displayed in the view editor. For more information on the design instantiation, see
+        the design instantiation editor.
+    </p>
+    <h3>Module parameters</h3>
+    <p>
+        <b>Module parameters</b> are optional elements that configure the model for this view. In IP-XACT, module
+        parameters are an element of the component instantiation. For convinience, they can be edited in the view 
+        editor. The module parameters can be utilized as view-specific <i>parameters</i>. For further information 
+        on module parameters, see the component instantiation editor.
+    </p>
+  </body>
+</html>
