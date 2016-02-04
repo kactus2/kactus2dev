@@ -26,9 +26,11 @@
 #include <QGroupBox>
 #include <QSharedPointer>
 
-class ComponentItem;
 class ExpressionParser;
 class ParameterFinder;
+
+class Component;
+class ComponentInstance;
 //-----------------------------------------------------------------------------
 //! Editor for configurable elements of a component instance.
 //-----------------------------------------------------------------------------
@@ -65,9 +67,12 @@ public:
 	/*!
      *  Set the component instance to be edited.
 	 *
-	 *      @param [in] component   Pointer to the component instance to edit.
+	 *      @param [in] component       Pointer to the component referenced by the component instance.
+     *      @param [in] instance        Pointer to the component instance to edit.
+     *      @param [in] editProvider    Pointer to the editing capabilities.
 	 */
-	void setComponent(ComponentItem* component, QSharedPointer<IEditProvider> editProvider);
+    void setComponent(QSharedPointer<Component> component, QSharedPointer<ComponentInstance> instance,
+        QSharedPointer<IEditProvider> editProvider);
 
 	/*!
      *  Clear the editor from all data.

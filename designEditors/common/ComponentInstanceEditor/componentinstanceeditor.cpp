@@ -184,7 +184,8 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* component, QSh
         propertyValueEditor_->hide();
 
         // Show the component's configurable elements in case of HW.
-	    configurableElements_->setComponent(component, editProvider);
+        configurableElements_->setComponent(component->componentModel(), component->getComponentInstance(),
+            editProvider);
 	    configurableElements_->show();
     }
 

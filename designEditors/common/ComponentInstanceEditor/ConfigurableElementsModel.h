@@ -31,7 +31,10 @@
 class Parameter;
 class ModuleParameter;
 class Choice;
-class ComponentItem;
+
+class ComponentInstance;
+class Component;
+
 //-----------------------------------------------------------------------------
 //! Model class to manage the configurable element values being edited.
 //-----------------------------------------------------------------------------
@@ -68,9 +71,12 @@ public:
 	/*!
 	 *  Set the component being edited.
 	 *
-	 *      @param [in] component   Pointer to the component being edited.
+	 *      @param [in] component       Pointer to the component referenced by the component instance.
+     *      @param [in] instance        Pointer to the component instance being edited.
+     *      @param [in] editProvider    Pointer to the edit provider.
 	 */
-	void setComponent(ComponentItem* component, QSharedPointer<IEditProvider> editProvider);
+    void setComponent(QSharedPointer<Component> component, QSharedPointer<ComponentInstance> instance,
+        QSharedPointer<IEditProvider> editProvider);
 
 	/*!
 	 *  Get the number of rows to be displayed.
@@ -368,7 +374,10 @@ private:
     //-----------------------------------------------------------------------------
 
 	//! Pointer to the component instance being edited.
-	ComponentItem* component_;
+    QSharedPointer<ComponentInstance> componentInstance_;
+
+    //! Pointer to the component referenced by the component instance.
+    QSharedPointer<Component> component_;
 
 	//! Reference to the map containing the actual configurable elements.
 	QMap<QString, QString> currentElementValues_;

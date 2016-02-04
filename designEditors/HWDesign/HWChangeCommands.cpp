@@ -17,6 +17,10 @@
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Component.h>
 
+#include <IPXACTmodels/Design/ComponentInstance.h>
+#include <IPXACTmodels/common/ConfigurableVLNVReference.h>
+#include <IPXACTmodels/common/ConfigurableElementValue.h>
+
 #include <IPXACTmodels/kactusExtensions/ComInterface.h>
 
 #include <designEditors/common/DesignDiagram.h>
@@ -680,15 +684,18 @@ void EndPointPortMapCommand::redo()
 //-----------------------------------------------------------------------------
 // Function: ComponentConfElementChangeCommand::ComponentConfElementChangeCommand()
 //-----------------------------------------------------------------------------
-ComponentConfElementChangeCommand::ComponentConfElementChangeCommand( 
-    ComponentItem* component, 
-    const QMap<QString, QString>& newConfElements, 
-    QUndoCommand* parent):
+ComponentConfElementChangeCommand::ComponentConfElementChangeCommand(
+    QSharedPointer<ComponentInstance> componentInstance, const QMap<QString, QString>& newConfElements,
+    QUndoCommand* parent /* = 0 */):
 QUndoCommand(parent),
-    component_(component),
-    oldConfElements_(), //component->getConfigurableElements()),
-    newConfElements_(newConfElements)
+componentInstance_(componentInstance),
+oldConfElements_(),
+newConfElements_(newConfElements)
 {
+    foreach (QSharedPointer<ConfigurableElementValue> element, *componentInstance_->getConfigurableElementValues())
+    {
+        oldConfElements_.insert(element->getReferenceId(), element->getConfigurableValue());
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -703,7 +710,37 @@ ComponentConfElementChangeCommand::~ComponentConfElementChangeCommand()
 //-----------------------------------------------------------------------------
 void ComponentConfElementChangeCommand::undo()
 {
-	//component_->setConfigurableElements(oldConfElements_);
+    QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > currentConfigurables =
+        componentInstance_->getConfigurableElementValues();
+    QStringList configurableIDs;
+    foreach (QSharedPointer<ConfigurableElementValue> element, *currentConfigurables)
+    {
+        if (oldConfElements_.contains(element->getReferenceId()))
+        {
+            element->setConfigurableValue(oldConfElements_.value(element->getReferenceId()));
+            configurableIDs.append(element->getReferenceId());
+        }
+        else
+        {
+            currentConfigurables->removeAll(element);
+        }
+    }
+
+    if (oldConfElements_.size() > currentConfigurables->size())
+    {
+        QMapIterator<QString, QString> elementIterator(oldConfElements_);
+        while (elementIterator.hasNext())
+        {
+            elementIterator.next();
+
+            if (!configurableIDs.contains(elementIterator.key()))
+            {
+                QSharedPointer<ConfigurableElementValue> newElement (
+                    new ConfigurableElementValue(elementIterator.value(), elementIterator.key()));
+                componentInstance_->getConfigurableElementValues()->append(newElement);
+            }
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -711,7 +748,41 @@ void ComponentConfElementChangeCommand::undo()
 //-----------------------------------------------------------------------------
 void ComponentConfElementChangeCommand::redo()
 {
-	//component_->setConfigurableElements(newConfElements_);
+    QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > currentConfigurableElements =
+        componentInstance_->getConfigurableElementValues();
+    if (newConfElements_.size() < currentConfigurableElements->size())
+    {
+        foreach (QSharedPointer<ConfigurableElementValue> element, *currentConfigurableElements)
+        {
+            if (!newConfElements_.contains(element->getReferenceId()))
+            {
+                componentInstance_->getConfigurableElementValues()->removeAll(element);
+            }
+        }
+    }
+
+    QMapIterator<QString, QString> elementIterator(newConfElements_);
+    while (elementIterator.hasNext())
+    {
+        elementIterator.next();
+        bool elementExists = false;
+        foreach (QSharedPointer<ConfigurableElementValue> element, *currentConfigurableElements)
+        {
+            if (elementIterator.key() == element->getReferenceId())
+            {
+                element->setConfigurableValue(elementIterator.value());
+                elementExists = true;
+                break;
+            }
+        }
+
+        if (!elementExists)
+        {
+            QSharedPointer<ConfigurableElementValue> newElement (
+                new ConfigurableElementValue(elementIterator.value(), elementIterator.key()));
+            componentInstance_->getConfigurableElementValues()->append(newElement);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------

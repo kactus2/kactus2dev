@@ -42,6 +42,8 @@ class HWComponentItem;
 class HWConnection;
 class HWConnectionEndpoint;
 
+class ComponentInstance;
+
 //-----------------------------------------------------------------------------
 //! ComponentChangeNameCommand class.
 //-----------------------------------------------------------------------------
@@ -190,40 +192,43 @@ class ComponentConfElementChangeCommand: public QUndoCommand {
 
 public:
 
-	/*! \brief The constructor
+	/*!
+     *  The constructor.
 	 *
-	 * \param component Pointer to the component instance that is being edited.
-	 * \param newConfElements The new configurable elements for the instance.
-	 * \param parent Pointer to the owner of this command.
-	 *
-	*/
-	ComponentConfElementChangeCommand(ComponentItem* component,
-		const QMap<QString, QString>& newConfElements, 
-		QUndoCommand* parent = 0);
+	 *      @param [in] componentInstance   Pointer to the component instance that is being edited.
+	 *      @param [in] newConfElements     The new configurable elements for the instance.
+	 *      @param [in] parent              Pointer to the owner of this command.
+	 */
+    ComponentConfElementChangeCommand(QSharedPointer<ComponentInstance> componentInstance,
+        const QMap<QString, QString>& newConfElements, QUndoCommand* parent = 0);
 
-	//! \brief The destructor
+	//! The destructor.
 	virtual ~ComponentConfElementChangeCommand();
 
-	//! \brief Undoes the command.
+	/*!
+     *  Undoes the command.
+     */
 	virtual void undo();
 
-	//! \brief Redoes the command.
+	/*!
+     *  Redoes the command.
+     */
 	virtual void redo();
 
 private:
-	//! \brief No copying
+	//! No copying
 	ComponentConfElementChangeCommand(const ComponentConfElementChangeCommand& other);
 
-	//! \brief No assignment
+	//! No assignment
 	ComponentConfElementChangeCommand& operator=(const ComponentConfElementChangeCommand& other);
 
-	//! \brief Pointer to the component instance that's configurable elements are changed.
-	ComponentItem* component_;
+	//! Pointer to the component instance that's configurable elements are changed.
+    QSharedPointer<ComponentInstance> componentInstance_;
 
-	//! \brief The old configurable element values.
+	//! The old configurable element values.
 	QMap<QString, QString> oldConfElements_;
 
-	//! \brief The new configurable element values.
+	//! The new configurable element values.
 	QMap<QString, QString> newConfElements_;
 };
 

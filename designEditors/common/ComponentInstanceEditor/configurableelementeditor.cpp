@@ -81,10 +81,11 @@ ConfigurableElementEditor::~ConfigurableElementEditor()
 //-----------------------------------------------------------------------------
 // Function: ConfigurableElementEditor::setComponent()
 //-----------------------------------------------------------------------------
-void ConfigurableElementEditor::setComponent(ComponentItem* component, QSharedPointer<IEditProvider> editProvider) 
+void ConfigurableElementEditor::setComponent(QSharedPointer<Component> component,
+    QSharedPointer<ComponentInstance> instance, QSharedPointer<IEditProvider> editProvider)
 {
-	model_.setComponent(component, editProvider);
-    delegate_->setChoices(component->componentModel()->getChoices());
+    model_.setComponent(component, instance, editProvider);
+    delegate_->setChoices(component->getChoices());
 
     view_.expandAll();
 }

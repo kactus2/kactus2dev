@@ -496,12 +496,12 @@ void ConnectionEditor::addMap(int& row, bool invalid, QSharedPointer<PortMap> po
     QPair<int, int> firstMappedBounds = calculateMappedPhysicalPortBounds(firstParser, portMap1, component1);
     int phys1Left = qMax(firstMappedBounds.first, firstMappedBounds.second);
     int phys1Right = qMin(firstMappedBounds.first, firstMappedBounds.second);
-    bool phys1Invalid = isMappedPhysicalInvalid(portMap1, component1);
+    bool phys1Invalid = isMappedPhysicalInvalid(invalid, portMap1, component1);
 
     QPair<int, int> secondMappedBounds = calculateMappedPhysicalPortBounds(secondParser, portMap2, component2);
     int phys2Left = qMax(secondMappedBounds.first, secondMappedBounds.second);
     int phys2Right = qMin(secondMappedBounds.first, secondMappedBounds.second);
-    bool phys2Invalid = isMappedPhysicalInvalid(portMap2, component2);
+    bool phys2Invalid = isMappedPhysicalInvalid(invalid, portMap2, component2);
 
     // check the sizes of the physical ports
 	int size1 = phys1Left - phys1Right + 1;
@@ -637,11 +637,16 @@ QPair<int, int> ConnectionEditor::calculateMappedPhysicalPortBounds(QSharedPoint
 //-----------------------------------------------------------------------------
 // Function: connectioneditor::isPhysicalInvalid()
 //-----------------------------------------------------------------------------
-bool ConnectionEditor::isMappedPhysicalInvalid(QSharedPointer<PortMap> containingPortMap,
+bool ConnectionEditor::isMappedPhysicalInvalid(bool invalid, QSharedPointer<PortMap> containingPortMap,
     QSharedPointer<Component> containingComponent)
 {
-    return containingPortMap->getPhysicalPort() &&
-        !containingComponent->hasPort(containingPortMap->getPhysicalPort()->name_);
+    if (containingPortMap->getPhysicalPort() &&
+        !containingComponent->hasPort(containingPortMap->getPhysicalPort()->name_))
+    {
+        return true;
+    }
+
+    return invalid;
 }
 
 //-----------------------------------------------------------------------------

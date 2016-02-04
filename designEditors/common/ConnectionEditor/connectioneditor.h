@@ -120,12 +120,13 @@ private:
     /*!
      *  Check if the mapped physical port is not valid.
      *
+     *      @param [in] invalid                 The current validity of the connection.
      *      @param [in] containingPortMap       Port map containing the physical port.
      *      @param [in] containingComponent     Component containing the referenced physical port.
      *
      *      @return True, if the physical port is not valid, otherwise false.
      */
-    bool isMappedPhysicalInvalid (QSharedPointer<PortMap> containingPortMap,
+    bool isMappedPhysicalInvalid (bool invalid, QSharedPointer<PortMap> containingPortMap,
         QSharedPointer<Component> containingComponent);
 
     /*!
