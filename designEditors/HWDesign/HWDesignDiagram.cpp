@@ -283,6 +283,11 @@ void HWDesignDiagram::onAdHocVisibilityChanged(QString const& portName, bool vis
                 adhocGroup->removeFromGroup(portExtension);
             }
         }
+
+        if (adhocGroup->getByType("kactus2:adHocVisible").isEmpty())
+        {
+            getDesign()->getVendorExtensions()->removeAll(adhocExtension);
+        }
     }
 }
 
