@@ -27,8 +27,12 @@
 //-----------------------------------------------------------------------------
 // Function: AdHocEditor()
 //-----------------------------------------------------------------------------
-AdHocEditor::AdHocEditor(QWidget *parent): QWidget(parent), dataSource_(0), nameLabel_(tr("Component: "), this),
-                                           portAdHocTable_(this), adHocModel_(this)
+AdHocEditor::AdHocEditor(QWidget *parent):
+QWidget(parent),
+dataSource_(0),
+nameLabel_(tr("Component: "), this),
+portAdHocTable_(this),
+adHocModel_(this)
 {
 	setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
 

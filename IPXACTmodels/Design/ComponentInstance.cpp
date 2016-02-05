@@ -580,9 +580,16 @@ void ComponentInstance::hideAdHocPort(QString const& portName)
                 if (adhocExtension->getAttributeValue("portName") == portName)
                 {
                     visibilityGroup->removeFromGroup(visibility);
-                    return;
+                    break;
                 }
             }
+
+            if (visibilityGroup->getByType("kactus2:adHocVisible").isEmpty())
+            {
+                getVendorExtensions()->removeAll(extension);
+            }
+
+            return;
         }
     }
 }

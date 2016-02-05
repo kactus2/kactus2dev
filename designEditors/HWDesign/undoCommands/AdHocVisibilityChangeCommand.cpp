@@ -27,12 +27,12 @@
 // Function: AdHocVisibilityChangeCommand::AdHocVisibilityChangeCommand()
 //-----------------------------------------------------------------------------
 AdHocVisibilityChangeCommand::AdHocVisibilityChangeCommand(AdHocEnabled* dataSource, QString const& portName,
-                                                           bool newVisibility, QUndoCommand* parent)
-    : QUndoCommand(parent),
-      dataSource_(dataSource),
-      portName_(portName),
-      pos_(),
-      newVisibility_(newVisibility)
+                                                           bool newVisibility, QUndoCommand* parent):
+QUndoCommand(parent),
+dataSource_(dataSource),
+portName_(portName),
+pos_(),
+newVisibility_(newVisibility)
 {
     if (!newVisibility_)
     {
