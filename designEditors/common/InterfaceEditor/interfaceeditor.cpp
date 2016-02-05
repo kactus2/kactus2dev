@@ -35,6 +35,9 @@
 #include <designEditors/HWDesign/HWConnectionEndpoint.h>
 #include <designEditors/HWDesign/HWChangeCommands.h>
 
+#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+
 #include <QVBoxLayout>
 #include <QStringList>
 #include <QBrush>
@@ -552,6 +555,9 @@ void InterfaceEditor::setPortMaps()
 	// as many rows as there are interface maps and always 2 columns
 	mappings_.setRowCount(portMaps.size());
 
+    QSharedPointer<ComponentParameterFinder> finder (new ComponentParameterFinder(component));
+    IPXactSystemVerilogParser parser(finder);
+
 	// stop sorting when adding the ports to avoid sorting after each add
 	mappings_.setSortingEnabled(false);
 	int row = 0;
@@ -559,13 +565,18 @@ void InterfaceEditor::setPortMaps()
     {
         QString logicalPortName = portMap->getLogicalPort()->name_;
 
+        int logicalSize = 1;
         // if the logical port is vectored
         if (portMap->getLogicalPort())
         {
             if (portMap->getLogicalPort()->range_)
             {
-                logicalPortName += "[" + portMap->getLogicalPort()->range_->getLeft() + ".." +
-                    portMap->getLogicalPort()->range_->getRight() + "]";
+                QString logicalLeft = parser.parseExpression(portMap->getLogicalPort()->range_->getLeft());
+                QString logicalRight = parser.parseExpression(portMap->getLogicalPort()->range_->getRight());
+
+                logicalSize = abs(logicalLeft.toInt() - logicalRight.toInt()) + 1;
+
+                logicalPortName += "[" + logicalLeft + ".." + logicalRight + "]";
             }
         }
 
@@ -585,24 +596,24 @@ void InterfaceEditor::setPortMaps()
         {
 			logicalItem->setForeground(QBrush(Qt::black));
 		}
-
-		// get size of the logical port
-		int logicalSize = 1;
-        if (portMap->getLogicalPort()->range_)
-        {
-			//logicalSize = portMap->logicalVector()->getSize();
-		}
 		
 		// display at least the name of physical port
         QString physicalPortName = portMap->getPhysicalPort()->name_;
 
-		// if port map contains vectored physical port.
+
+        int physicalSize = 1;
+
+        int physicalLeft = 0;
+        int physicalRight = 0;
         if (portMap->getPhysicalPort())
         {
+            QSharedPointer<PortMap::PhysicalPort> physicalPort = portMap->getPhysicalPort();
             if (portMap->getPhysicalPort()->partSelect_)
             {
-                physicalPortName += "[" + portMap->getPhysicalPort()->partSelect_->getLeftRange() + ".." +
-                    portMap->getPhysicalPort()->partSelect_->getRightRange() + "]";
+                physicalLeft = parser.parseExpression(physicalPort->partSelect_->getLeftRange()).toInt();
+                physicalRight = parser.parseExpression(physicalPort->partSelect_->getRightRange()).toInt();
+
+                physicalSize = abs(physicalLeft - physicalRight) + 1;
             }
 		}
 		// if port map does not contain physical vector but port is found on the component
@@ -610,9 +621,14 @@ void InterfaceEditor::setPortMaps()
         {
             QSharedPointer<Port> componentPort = component->getPort(physicalPortName);
 
-            physicalPortName = physicalPortName + " " + componentPort->getLeftBound() + ".." +
-                componentPort->getRightBound();
+            physicalLeft = parser.parseExpression(componentPort->getLeftBound()).toInt();
+            physicalRight = parser.parseExpression(componentPort->getRightBound()).toInt();
+
+            physicalSize = abs(physicalLeft - physicalRight) + 1;
 		}
+
+        physicalPortName += "[" + QString::number(physicalLeft) + ".." + QString::number(physicalRight) + "]";
+
 		QTableWidgetItem* physItem = new QTableWidgetItem(physicalPortName);
 		physItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		// if the port is not contained in the component
@@ -623,13 +639,6 @@ void InterfaceEditor::setPortMaps()
 		else
         {
 			physItem->setForeground(QBrush(Qt::black));
-		}
-
-		// get size of the physical port
-		int physicalSize = 1;
-        if (portMap->getPhysicalPort()->partSelect_)
-        {
-			//physicalSize = portMap->physicalVector()->getSize();
 		}
 
 		// if the sizes of the ports don't match
