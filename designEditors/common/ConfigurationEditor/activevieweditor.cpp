@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 19.8.2011
- *      Author: Antti Kamppi
- * 		filename: activevieweditor.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: ActiveViewEditor.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 19.08.2011
+//
+// Description:
+// Editor to set the active views for component instances.
+//-----------------------------------------------------------------------------
 
 #include "activevieweditor.h"
 #include "activeviewdelegate.h"
@@ -17,12 +21,15 @@
 #include <QSharedPointer>
 #include <QHeaderView>
 
+//-----------------------------------------------------------------------------
+// Function: activevieweditor::ActiveViewEditor()
+//-----------------------------------------------------------------------------
 ActiveViewEditor::ActiveViewEditor(QWidget *parent):
 QGroupBox(parent),
 view_(this),
 filter_(this),
-model_(this) {
-
+model_(this)
+{
 	// set settings for the view
 	view_.horizontalHeader()->setStretchLastSection(true);
 	view_.horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
@@ -46,18 +53,31 @@ model_(this) {
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 }
 
-ActiveViewEditor::~ActiveViewEditor() {
+//-----------------------------------------------------------------------------
+// Function: activevieweditor::~ActiveViewEditor()
+//-----------------------------------------------------------------------------
+ActiveViewEditor::~ActiveViewEditor()
+{
+
 }
 
-void ActiveViewEditor::clear() {
+//-----------------------------------------------------------------------------
+// Function: activevieweditor::clear()
+//-----------------------------------------------------------------------------
+void ActiveViewEditor::clear()
+{
 	model_.clear();
 	view_.setDisabled(true);
 }
 
+//-----------------------------------------------------------------------------
+// Function: activevieweditor::setDesign()
+//-----------------------------------------------------------------------------
 void ActiveViewEditor::setDesign(DesignWidget* designWidget)
 {
 
-	if (designWidget) {
+	if (designWidget)
+    {
 		QSharedPointer<DesignConfiguration> desConf = designWidget->getDiagram()->getDesignConfiguration();
 
 		// if configuration is not used then view is always disabled
@@ -71,17 +91,26 @@ void ActiveViewEditor::setDesign(DesignWidget* designWidget)
 		model_.setDesign(designWidget, desConf);
         view_.resizeRowsToContents();
 	}
-	else {
+	else
+    {
 		clear();
 	}
 }
 
-void ActiveViewEditor::setLocked( bool locked ) {
+//-----------------------------------------------------------------------------
+// Function: activevieweditor::setLocked()
+//-----------------------------------------------------------------------------
+void ActiveViewEditor::setLocked( bool locked )
+{
 	// if configuration exists
 	if (model_.hasConfiguration())
+    {
 		view_.setDisabled(locked);
+    }
 
 	// if no configuration exists then always disable the view
 	else
+    {
 		view_.setDisabled(true);
+    }
 }

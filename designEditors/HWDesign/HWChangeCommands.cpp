@@ -157,16 +157,15 @@ void ComponentChangeDescriptionNameCommand::redo()
 // Function: ComponentActiveViewChangeCommand::ComponentActiveViewChangeCommand()
 //-----------------------------------------------------------------------------
 ComponentActiveViewChangeCommand::ComponentActiveViewChangeCommand(QString const& instanceName, 
-    QString const& oldActiveView, 
-    QString const& newActiveView,
-    ActiveViewModel* activeViewModel,
+    QString const& oldActiveView, QString const& newActiveView, ActiveViewModel* activeViewModel,
     QUndoCommand* parent):
 QUndoCommand(parent),
-    instanceName_(instanceName),
-    newViewName_(newActiveView),
-    oldViewName_(oldActiveView),
-    activeViewModel_(activeViewModel)
+instanceName_(instanceName),
+newViewName_(newActiveView),
+oldViewName_(oldActiveView),
+activeViewModel_(activeViewModel)
 {
+
 }
 
 //-----------------------------------------------------------------------------

@@ -236,20 +236,17 @@ class ComponentActiveViewChangeCommand : public QUndoCommand
 {
 public:
 
-    /*! \brief The constructor
+    /*!
+     *  The constructor
      *
-     * \param instanceName The name of the component instance
-     * \param oldActiveView The name of the previous active view.
-     * \param newActiveView The name of the new active view.
-     * \param activeViewModel Pointer to the model that manages the active views.
-     * \param parent Pointer to the parent command.
-     *
-    */
-    ComponentActiveViewChangeCommand(const QString& instanceName,
-		QString const& oldActiveView, 
-		QString const& newActiveView,
-		ActiveViewModel* activeViewModel,
-		QUndoCommand* parent = 0);
+     *      @param [in] instanceName        The name of the component instance
+     *      @param [in] oldActiveView       The name of the previous active view.
+     *      @param [in] newActiveView       The name of the new active view.
+     *      @param [in] activeViewModel     Pointer to the model that manages the active views.
+     *      @param [in] parent              Pointer to the parent command.
+     */
+    ComponentActiveViewChangeCommand(const QString& instanceName, QString const& oldActiveView,
+        QString const& newActiveView, ActiveViewModel* activeViewModel, QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
@@ -275,16 +272,16 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! \brief The component's old active view.
+    //! The component's old active view.
     QString instanceName_;
 
-    //! \brief The component's new name.
+    //! The component's new name.
     QString newViewName_;
 
-    //! \brief The component's new active view.
+    //! The component's new active view.
     QString oldViewName_;
 
-	//! \brief Pointer to the model that manages the active views.
+	//! Pointer to the model that manages the active views.
 	ActiveViewModel* activeViewModel_;
 };
 

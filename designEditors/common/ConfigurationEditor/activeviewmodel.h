@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 24.8.2011
- *      Author: Antti Kamppi
- * 		filename: activeviewmodel.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: activeviewmodel.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 24.08.2011
+//
+// Description:
+// Model that contains the items to set the active views for component instances.
+//-----------------------------------------------------------------------------
 
 #ifndef ACTIVEVIEWMODEL_H
 #define ACTIVEVIEWMODEL_H
@@ -22,196 +26,214 @@
 class DesignWidget;
 class HWComponentItem;
 
-/*! \brief Model that contains the items to set the active views for component instances.
- * 
- */
-class ActiveViewModel : public QAbstractTableModel {
+//-----------------------------------------------------------------------------
+//! Model that contains the items to set the active views for component instances.
+//-----------------------------------------------------------------------------
+class ActiveViewModel : public QAbstractTableModel
+{
 	Q_OBJECT
 
 public:
 
-	/*! \brief The constructor
+	/*!
+     *  The constructor.
 	 *
-	 * \param parent Pointer to the owner of this widget.
-	 *
-	*/
+	 *      @param [in] parent  Pointer to the owner of this widget.
+	 */
 	ActiveViewModel(QObject *parent);
 	
-	//! \brief The destructor
+	//! The destructor.
 	virtual ~ActiveViewModel();
 
-	/*! \brief Set the design that's active views are edited.
+	/*!
+     *  Set the design that's active views are edited.
 	 *
-	 * \param designWidget Pointer to the design widget that manages the design.
-	 * \param desConf Pointer to the configuration to edit.
-	 *
-	*/
-	void setDesign(DesignWidget* designWidget, 
-		QSharedPointer<DesignConfiguration> desConf);
+	 *      @param [in] designWidget    Pointer to the design widget that manages the design.
+	 *      @param [in] desConf         Pointer to the configuration to edit.
+	 */
+	void setDesign(DesignWidget* designWidget, QSharedPointer<DesignConfiguration> desConf);
 
-	/*! \brief Clear the model's contents.
-	 *
-	*/
+	/*!
+     *  Clear the model's contents.
+	 */
 	void clear();
 
-	/*! \brief Get the number of rows an item contains.
+	/*!
+     *  Get the number of rows an item contains.
 	 *
-	 * \param parent Identifies the parent that's row count is requested.
+	 *      @param [in] parent  Identifies the parent that's row count is requested.
 	 *
-	 * \return Number of rows the item has.
-	*/
+	 *      @return Number of rows the item has.
+	 */
 	virtual int rowCount(const QModelIndex& parent = QModelIndex()) const;
 
-	/*! \brief Get the number of columns the item has to be displayed.
+	/*!
+     *  Get the number of columns the item has to be displayed.
 	 *
-	 * \param parent Identifies the parent that's column count is requested.
+	 *      *param [in] parent  Identifies the parent that's column count is requested.
 	 *
-	 * \return The number of columns to be displayed.
-	*/
+	 *      @return The number of columns to be displayed.
+	 */
 	virtual int columnCount(const QModelIndex& parent = QModelIndex()) const;
 
-	/*! \brief Get the data for specified item.
+	/*!
+     *  Get the data for specified item.
 	 *
-	 * \param index Specifies the item that's data is requested.
-	 * \param role The role that defines what kind of data is requested.
+	 *      @param [in] index   Specifies the item that's data is requested.
+	 *      @param [in] role    The role that defines what kind of data is requested.
 	 *
-	 * \return QVariant Contains the data for the item.
-	*/
+	 *      @return QVariant Contains the data for the item.
+	 */
 	virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
 
-	/*! \brief Get the header data for specified header.
+	/*!
+     *  Get the header data for specified header.
 	 *
-	 * \param section The section specifies the row/column number for the header.
-	 * \param orientation Specified if horizontal or vertical header is wanted.
-	 * \param role Specifies the type of the requested data.
+	 *      @param [in] section         The section specifies the row/column number for the header.
+	 *      @param [in] orientation     Specified if horizontal or vertical header is wanted.
+	 *      @param [in] role            Specifies the type of the requested data.
 	 *
-	 * \return QVariant Contains the requested data.
-	*/
-	virtual QVariant headerData(int section, Qt::Orientation orientation, 
-		int role = Qt::DisplayRole) const;
+	 *      @return QVariant Contains the requested data.
+	 */
+	virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
-	/*! \brief Save the data to the model for specified item
+	/*!
+     *  Save the data to the model for specified item
 	 *
-	 * \param index The model index of the item that's data is to be saved.
-	 * \param value The data that is to be saved.
-	 * \param role The role specifies what kind of data should be saved.
+	 *      @param [in] index   The model index of the item that's data is to be saved.
+	 *      @param [in] value   The data that is to be saved.
+	 *      @param [in] role    The role specifies what kind of data should be saved.
 	 *
-	 * \return True if saving happened successfully.
-	*/
-	bool setData(const QModelIndex& index, const QVariant& value, 
-		int role = Qt::EditRole);
+	 *      @return True if saving happened successfully.
+	 */
+	bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
 
-	/*! \brief Get the item flags that defines the possible operations for the item.
+	/*!
+     *  Get the item flags that defines the possible operations for the item.
 	 *
-	 * \param index Model index that identifies the item.
+	 *      @param [in] index   Model index that identifies the item.
 	 *
-	 * \return Qt::ItemFlags specify the possible operations for the item.
-	*/
+	 *      @return Qt::ItemFlags specify the possible operations for the item.
+	 */
 	Qt::ItemFlags flags(const QModelIndex& index) const;
 
-	/*! \brief Checks if there is created configuration for this view.
+	/*!
+     *  Checks if there is created configuration for this view.
 	 *
-	 *
-	 * \return bool True if configuration exists.
-	*/
+	 *      @return bool True if configuration exists.
+	 */
 	bool hasConfiguration() const;
 
 public slots:
 
-	/*! \brief Rename a component instance in the model.
+	/*!
+     *  Rename a component instance in the model.
 	 *
-	 * \param newName The new name of the instance.
-	 * \param oldName The old name of the instance.
-	 *
-	*/
+	 *      @param [in] newName     The new name of the instance.
+	 *      @param [in] oldName     The old name of the instance.
+	 */
 	void renameInstance(const QString& newName, const QString& oldName);
 
-	/*! \brief Remove the instance from the model.
+	/*!
+     *  Remove the instance from the model.
 	 *
-	 * \param obj Pointer to the diagram component being removed.
-	 *
-	*/
+	 *      @param [in] diaComp     Pointer to the diagram component being removed.
+	 */
 	void removeInstance(ComponentItem* diaComp);
 
-	/*! \brief Set the active view for given component instance.
+	/*!
+     *  Set the active view for given component instance.
+	 *  NOTE: Using this function to set the active view for instance does not generate commands to the undo/redo 
+     *  stack.
 	 * 
-	 * NOTE: Using this function to set the active view for instance does not 
-	 * generate commands to the undo/redo stack.
-	 * 
-	 * \param instanceName Identifies the component instance by name.
-	 * \param viewName The new view name to be set for instance.
-	 *
-	*/
+	 *      @param [in] instanceName    Identifies the component instance by name.
+	 *      @param [in] viewName        The new view name to be set for instance.
+	 */
 	void setActiveView(const QString& instanceName, const QString& viewName);
 
-	/*! \brief Add a new component instance to the model.
+	/*!
+     *  Add a new component instance to the model.
 	 *
-	 * \param diaComp Pointer to the new component instance.
-	 *
-	*/
+	 *      @param [in] diaComp     Pointer to the new component instance.
+	 */
 	void addInstance(ComponentItem* diaComp);
 
 private:
-	//! \brief No copying
+
+	//! No copying.
 	ActiveViewModel(const ActiveViewModel& other);
 
-	//! \brief No assignment
+	//! No assignment.
 	ActiveViewModel& operator=(const ActiveViewModel& other);
 
-	//! \brief The struct to contain the name-viewname pair for the configuration.
-	struct InstanceViewPair {
-
-		//! \brief The name of the component instance.
+	//! The struct to contain the name-viewname pair for the configuration.
+	struct InstanceViewPair
+    {
+		//! The name of the component instance.
 		QString instanceName_;
 
-		//! \brief The name of the active view for the component instance.
+		//! The name of the active view for the component instance.
 		QString viewName_;
 
-		/*! \brief The struct constructor
+		/*!
+         *  The struct constructor
 		 *
-		 * \param instanceName The name for the component instance.
-		 * \param viewName The name of the active view.
-		 *
-		*/
+		 *      @param [in] instanceName    The name for the component instance.
+		 *      @param [in] viewName        The name of the active view.
+		 */
 		InstanceViewPair(const QString& instanceName, const QString& viewName);
 
-		/*! \brief The struct constructor
+		/*!
+         *  The struct constructor
 		 *
-		 * \param instanceName The name for the component instance.
-		 *
-		*/
+		 *      @param [in] instanceName    The name for the component instance.
+		 */
 		InstanceViewPair(const QString& instanceName);
 
-		/*! \brief Operator ==
+		/*!
+         *  Operator ==
 		 *
-		 * \param other Reference to the InstanceViewPair to compare to.
+		 *      @param [in] other   Reference to the InstanceViewPair to compare to.
 		 *
-		 * \return bool True if the component instance names are the same.
-		*/
+		 *      @return bool True if the component instance names are the same.
+		 */
 		bool operator==(const InstanceViewPair& other);
 
-		/*! \brief Operator != 
+		/*!
+         *  Operator != 
 		 *
-		 * \param other Reference to the InstanceViewPair to compare to.
+		 *      @param [in] other Reference to the InstanceViewPair to compare to.
 		 *
-		 * \return bool True if the component instance names are different.
-		*/
+		 *      @return bool True if the component instance names are different.
+		 */
 		bool operator!=(const InstanceViewPair& other);
 	};
 
-	//! \brief Pointer to the design widget that manages the design.
+    /*!
+     *  Change the active view from the selected view configuration.
+     *
+     *      @param [in] instanceName    The name of the selected component instance.
+     *      @param [in] newViewName     The new active view.
+     */
+    void changeViewConfiguration(QString const& instanceName, QString const& newViewName);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+	//! Pointer to the design widget that manages the design.
 	DesignWidget* designWidget_;
 
-	//! \brief List that contains the items to display.
+	//! List that contains the items to display.
 	QList<InstanceViewPair> table_;
 
-	//! \brief Pointer to the design configuration being edited.
+	//! Pointer to the design configuration being edited.
 	QSharedPointer<DesignConfiguration> desConf_;
 
-	//! \brief Contains pointers to the component instances being displayed.
+	//! Contains pointers to the component instances being displayed.
 	QList<ComponentItem*> instances_;
 
-	//! \brief Pointer to the edit provider that manages the undo stack.
+	//! Pointer to the edit provider that manages the undo stack.
 	QSharedPointer<IEditProvider> editProvider_;
 };
 
