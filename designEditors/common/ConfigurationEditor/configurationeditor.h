@@ -24,6 +24,7 @@ class LibraryInterface;
 class Component;
 class View;
 class SWView;
+class DesignConfiguration;
 
 //-----------------------------------------------------------------------------
 //! Editor to edit the design configurations for component.
@@ -70,6 +71,9 @@ signals:
 
     //! Emitted when the active configuration changes.
 	void configurationChanged(QString const& newConfigName);
+
+    //! Emitted when the currently active design configuration changes.
+    void designConfigurationChanged(QSharedPointer<DesignConfiguration> newConfiguration);
 
 private slots:
 

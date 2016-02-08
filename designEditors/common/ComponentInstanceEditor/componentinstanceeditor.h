@@ -84,6 +84,13 @@ public slots:
      */
     void setTopComponentActiveView(QString const& activeView);
 
+    /*!
+     *  Change the used design configuration.
+     *
+     *      @param [in] newDesignConfiguration  The new design configuration.
+     */
+    void changeDesignConfiguration(QSharedPointer<DesignConfiguration> newDesignConfiguration);
+
 	/*!
      *  Clear the editor so no instance details are shown
 	 */

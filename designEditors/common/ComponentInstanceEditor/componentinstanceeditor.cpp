@@ -237,6 +237,14 @@ void ComponentInstanceEditor::setTopComponentActiveView(QString const& activeVie
 }
 
 //-----------------------------------------------------------------------------
+// Function: componentinstanceeditor::changeDesignConfiguration()
+//-----------------------------------------------------------------------------
+void ComponentInstanceEditor::changeDesignConfiguration(QSharedPointer<DesignConfiguration> newDesignConfiguration)
+{
+    configurableElements_->setDesignConfigurationToModel(newDesignConfiguration);
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComponentInstanceEditor::clear()
 //-----------------------------------------------------------------------------
 void ComponentInstanceEditor::clear()

@@ -11,6 +11,8 @@
 
 #include "configurationeditor.h"
 
+#include <version.h>
+
 #include <designEditors/common/DesignWidget.h>
 #include <designEditors/common/DesignDiagram.h>
 
@@ -125,7 +127,9 @@ void ConfigurationEditor::onAdd()
 
 	// create the configuration
 	QSharedPointer<DesignConfiguration> desConf(new DesignConfiguration(configVLNV));
-
+    desConf->setDesignConfigImplementation(KactusAttribute::HW);
+    desConf->setVersion(VERSION_FILESTR);
+    
     if (dialog.designSelection() == CreateConfigurationDialog::USE_EXISTING)
     {
         // set the configuration to reference the same design.
@@ -208,6 +212,8 @@ void ConfigurationEditor::onAdd()
 
 	// update this editor
 	setConfiguration(designWidget_);
+
+    emit(designConfigurationChanged(designWidget_->getDiagram()->getDesignConfiguration()));
 
 	// now theres at least two configurations so one of them can be removed.
 	removeButton_.setEnabled(true);
@@ -350,9 +356,19 @@ void ConfigurationEditor::onRemove()
 	// save the component 
 	handler_->writeModelToFile(component_);
 
+    bool designWidgetIsProtected = designWidget_->isProtected();
+
 	designWidget_->setDesign(component_->getVlnv(), newView);
 	designWidget_->setProtection(false);
 	setConfiguration(designWidget_);
+    
+    emit(designConfigurationChanged(designWidget_->getDiagram()->getDesignConfiguration()));
+
+    if (designWidgetIsProtected)
+    {
+        designWidget_->setProtection(designWidgetIsProtected);
+        setLocked(designWidgetIsProtected);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -510,7 +526,9 @@ void ConfigurationEditor::onConfigurationChanged(QString const& newConfigName)
 		// keep the locked/unlocked state from the previous configuration to this configuration.
 		designWidget_->setProtection(wasLocked);
 		setConfiguration(designWidget_);
-	}
+
+        emit(designConfigurationChanged(designWidget_->getDiagram()->getDesignConfiguration()));
+    }
 }
 
 //-----------------------------------------------------------------------------

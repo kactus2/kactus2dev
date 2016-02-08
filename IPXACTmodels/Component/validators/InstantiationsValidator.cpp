@@ -90,7 +90,8 @@ bool InstantiationsValidator::hasValidName(QString const& name) const
 bool InstantiationsValidator::hasValidDesignReference(QSharedPointer<DesignInstantiation> designInstantiation) const
 {
     if ( libraryHandler_ && designInstantiation->getDesignReference() &&
-        designInstantiation->getDesignReference()->isValid() )
+        designInstantiation->getDesignReference()->isValid() &&
+        libraryHandler_->getModel(*designInstantiation->getDesignReference().data()))
     {
         return libraryHandler_->contains(*designInstantiation->getDesignReference().data()) &&
             libraryHandler_->getDocumentType(*designInstantiation->getDesignReference().data()) == VLNV::DESIGN;
@@ -116,11 +117,17 @@ void InstantiationsValidator::findErrorsInDesignInstantiation(QVector<QString>& 
 		errors.append(QObject::tr("The design reference does not exist for design instantiation %2.")
             .arg(designInstantiation->name()));
 	}
-    else if (!hasValidDesignReference(designInstantiation))
+    else if (!designInstantiation->getDesignReference()->isValid())
 	{
 		errors.append(QObject::tr("Invalid design reference %1 set for design instantiation %2")
             .arg(designInstantiation->getDesignReference()->toString()).arg(designInstantiation->name()));
 	}
+    else if (!libraryHandler_->getModel(*designInstantiation->getDesignReference().data()))
+    {
+        errors.append(QObject::tr("Design %1 referenced by design instantiation in %2 was not found in the "
+            "library.")
+            .arg(designInstantiation->getDesignReference()->toString()).arg(context));
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -140,7 +147,8 @@ bool InstantiationsValidator::hasValidDesignConfigurationReference(
     QSharedPointer<DesignConfigurationInstantiation> instantiation) const
 {
     if ( libraryHandler_ && instantiation->getDesignConfigurationReference() &&
-        instantiation->getDesignConfigurationReference()->isValid() )
+        instantiation->getDesignConfigurationReference()->isValid() &&
+        libraryHandler_->getModel(*instantiation->getDesignConfigurationReference().data()))
     {
         return libraryHandler_->contains(*instantiation->getDesignConfigurationReference().data()) &&
             libraryHandler_->getDocumentType(
@@ -198,6 +206,12 @@ void InstantiationsValidator::findErrorsInDesignConfigurationInstantiation(QVect
             "instantiation %2")
             .arg(instantiation->getDesignConfigurationReference()->toString()).arg(instantiation->name()));
 	}
+    else if (!libraryHandler_->getModel(*instantiation->getDesignConfigurationReference().data()))
+    {
+        errors.append(QObject::tr("Design configuration %1 referenced by design configuration instantiation in "
+            "%2 was not found in the library.")
+            .arg(instantiation->getDesignConfigurationReference()->toString()).arg(contex));
+    }
 
     QStringList parameterNames;
     QStringList foundNames;

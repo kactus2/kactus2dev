@@ -155,9 +155,9 @@ void ViewConfigurationValidator::changeAvailableViews(QSharedPointer<ViewConfigu
                         return;
                     }
                 }
-            }
 
-            break;
+                break;
+            }
         }
     }
     

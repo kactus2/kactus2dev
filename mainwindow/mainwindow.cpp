@@ -1225,6 +1225,9 @@ void MainWindow::setupConfigurationEditor() {
 	connect(configurationEditor_, SIGNAL(contentChanged()), this, SLOT(onDesignChanged()), Qt::UniqueConnection);
     connect(configurationEditor_, SIGNAL(configurationChanged(QString const&)),
         instanceEditor_, SLOT(setTopComponentActiveView(QString const&)), Qt::UniqueConnection);
+    connect(configurationEditor_, SIGNAL(designConfigurationChanged(QSharedPointer<DesignConfiguration>)),
+        instanceEditor_, SLOT(changeDesignConfiguration(QSharedPointer<DesignConfiguration>)),
+        Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -4539,11 +4542,8 @@ void MainWindow::setPluginVisibilities()
                      }
             }
 
-            // the hierarchy reference must be valid
-            Q_ASSERT(desConfVLNV.isValid());
-
             // if the hierarchy ref is not directly to the design but design config is in between
-            if (desConfVLNV != desVLNV)
+            if (desConfVLNV.isValid() && desConfVLNV != desVLNV)
             {
                 libDesConf = libraryHandler_->getModelReadOnly(desConfVLNV);
             }
