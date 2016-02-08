@@ -9,6 +9,7 @@
 #include "HWDesignDiagram.h"
 #include "HWComponentItem.h"
 #include "HWConnection.h"
+#include "AdHocConnectionItem.h"
 
 #include <designEditors/common/Association/Association.h>
 #include <designEditors/common/StickyNote/StickyNote.h>
@@ -19,6 +20,7 @@
 #include <designEditors/HWDesign/undoCommands/ConnectionDeleteCommand.h>
 #include <designEditors/HWDesign/undoCommands/InterfaceDeleteCommand.h>
 #include <designEditors/HWDesign/undoCommands/PortDeleteCommand.h>
+#include <designEditors/HWDesign/undoCommands/AdHocConnectionDeleteCommand.h>
 
 #include <common/graphicsItems/GraphicsColumn.h>
 #include <common/graphicsItems/GraphicsColumnLayout.h>
@@ -356,14 +358,14 @@ void HWDesignWidget::keyPressEvent(QKeyEvent *event)
     // Handle delete events if the document is not protected.
     if (!isProtected() && event->key() == Qt::Key_Delete)
     {
-        if (getDiagram()->selectedItems().empty())
+        QList<QGraphicsItem*> selectedItems = getDiagram()->selectedItems();
+
+        if (selectedItems.empty())
         {
             return;
         }
 
-        QList<QGraphicsItem*> selectedItems = getDiagram()->selectedItems();
         int type = getDiagram()->getCommonItemType(selectedItems);
-
         if (type == HWComponentItem::Type)
         {
             getDiagram()->clearSelection();
@@ -414,8 +416,7 @@ void HWDesignWidget::keyPressEvent(QKeyEvent *event)
                 }
             }
 
-            // Ask confirmation for port deletion from the user if there were ports in
-            // any of the bus interfaces.
+            // Ask confirmation for port deletion from the user if there were ports in any of the bus interfaces.
             bool removePorts = false;
 
             if (!ports.isEmpty())
@@ -518,6 +519,21 @@ void HWDesignWidget::keyPressEvent(QKeyEvent *event)
 
                     childCmd->redo();
                 }
+            }
+
+            getEditProvider()->addCommand(cmd);
+        }
+        else if (type == AdHocConnectionItem::Type)
+        {
+            getDiagram()->clearSelection();
+            QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
+
+            foreach (QGraphicsItem* selected, selectedItems)
+            {
+                AdHocConnectionItem* conn = static_cast<AdHocConnectionItem*>(selected);
+
+                QUndoCommand* childCmd = new AdHocConnectionDeleteCommand(getDiagram(), conn, cmd.data());
+                childCmd->redo();
             }
 
             getEditProvider()->addCommand(cmd);

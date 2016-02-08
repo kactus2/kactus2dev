@@ -54,17 +54,14 @@ HWConnection::HWConnection(ConnectionEndpoint* endpoint1, ConnectionEndpoint* en
 //-----------------------------------------------------------------------------
 HWConnection::HWConnection(ConnectionEndpoint* endpoint1, ConnectionEndpoint* endpoint2, 
     QSharedPointer<Interconnection> interconnection, QSharedPointer<ConnectionRoute> route,
-    DesignDiagram* parent)
-    : GraphicsConnection(endpoint1, endpoint2, true,
-    interconnection->name(),
-    interconnection->displayName(),
-    interconnection->description(), parent),
+    DesignDiagram* parent):
+    GraphicsConnection(endpoint1, endpoint2, true, interconnection->name(), interconnection->displayName(),
+        interconnection->description(), parent),
     widthLabel_(new QGraphicsTextItem(this)),
     interconnection_(interconnection),
     route_(route)
 {
     GraphicsConnection::setRoute(route_->getRoute());
-    updateWidthLabel();
 
     setWidthLabelDefaultFont();
     updateWidthLabel();
@@ -75,9 +72,7 @@ HWConnection::HWConnection(ConnectionEndpoint* endpoint1, ConnectionEndpoint* en
 //-----------------------------------------------------------------------------
 HWConnection::HWConnection(QPointF const& p1, QVector2D const& dir1,
     QPointF const& p2, QVector2D const& dir2,
-    QString const& displayName,
-    QString const& description,
-    DesignDiagram* parent):
+    QString const& displayName, QString const& description, DesignDiagram* parent):
 GraphicsConnection(p1, dir1, p2, dir2, displayName, description, parent),
     widthLabel_(new QGraphicsTextItem(this))
 {

@@ -759,6 +759,7 @@ void ComponentDesignDiagram::endConnectionTo(QPointF const& point)
 
             QSharedPointer<QUndoCommand> cmd = createAddCommandForConnection(tempConnection_);
             getEditProvider()->addCommand(cmd);
+            cmd->redo();
 
             tempConnection_ = 0;
         }

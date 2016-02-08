@@ -129,7 +129,15 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
         BusInterfaceItem* topInterface = new BusInterfaceItem(getLibraryInterface(), getEditedComponent(), 
             busIf, dataGroup);
 
-        getLayout()->addItem(topInterface);
+        GraphicsColumn* targetColumn = getLayout()->findColumnAt(topInterface->scenePos());
+        if (targetColumn)
+        {
+            targetColumn->addItem(topInterface, true);
+        }
+        else
+        {
+            getLayout()->addItem(topInterface);
+        }        
     }
 
     foreach (QSharedPointer<ComponentInstance> instance, *design->getComponentInstances())
@@ -1241,6 +1249,12 @@ void HWDesignDiagram::onSelected(QGraphicsItem* newSelection)
 			emit connectionSelected(connection);
             emit helpUrlRequested("hwdesign/connection.html");
 		}
+        else if (newSelection->type() == AdHocConnectionItem::Type)
+        {
+            AdHocConnectionItem* connection = qgraphicsitem_cast<AdHocConnectionItem*>(newSelection);
+            emit connectionSelected(connection);
+            emit helpUrlRequested("hwdesign/connection.html");
+        }
         else
         {
             // inform others that nothing is currently selected
@@ -1260,25 +1274,89 @@ void HWDesignDiagram::onSelected(QGraphicsItem* newSelection)
 // Function: HWDesignDiagram::createConnection()
 //-----------------------------------------------------------------------------
 GraphicsConnection* HWDesignDiagram::createConnection(ConnectionEndpoint* startPoint, ConnectionEndpoint* endPoint)
-{
-    
+{    
     QSharedPointer<ConnectionRoute> route(new ConnectionRoute(""));
-
+    
     GraphicsConnection* connection;
 
     if (startPoint->isAdHoc())
     {
         QSharedPointer<AdHocConnection> adHocConnection(new AdHocConnection(""));
+        
+        if (startPoint->isHierarchical())
+        {
+            QSharedPointer<PortReference> startReference(new PortReference(startPoint->getPort()->name()));
+            adHocConnection->getExternalPortReferences()->append(startReference);
+        }
+        else
+        {
+            QSharedPointer<PortReference> startReference(new PortReference(startPoint->getPort()->name(),
+                startPoint->encompassingComp()->name()));
+            adHocConnection->getInternalPortReferences()->append(startReference);
+        }
+        
+        if (endPoint->isHierarchical())
+        {
+            QSharedPointer<PortReference> endReference(new PortReference(endPoint->name()));
+            adHocConnection->getExternalPortReferences()->append(endReference);
+        }
+        else
+        {
+            QSharedPointer<PortReference> endReference(new PortReference(endPoint->name(),
+                endPoint->encompassingComp()->name()));
+            adHocConnection->getInternalPortReferences()->append(endReference);
+        }
+
         connection = new AdHocConnectionItem(startPoint, endPoint, adHocConnection, route, this);   
+        QString connectionName = connection->createDefaultName();
+        adHocConnection->setName(connectionName);
+        route->setName(connectionName);
         connection->setLineWidth(1);
     }
     else
     {
         QSharedPointer<Interconnection> interconnection(new Interconnection());
-        connection = new HWConnection(startPoint, endPoint, interconnection, route, this);        
-    }    
 
-//     connection->setBusWidthVisible(getParent()->getVisibilityControls().value("Bus Widths"));
+        if (startPoint->isHierarchical())
+        {
+            QSharedPointer<HierInterface> startInterface(new HierInterface(startPoint->name()));
+            interconnection->getHierInterfaces()->append(startInterface);
+        }
+        else
+        {
+            QSharedPointer<ActiveInterface> startInterface(
+                new ActiveInterface(startPoint->name(), startPoint->encompassingComp()->name()));
+            interconnection->setStartInterface(startInterface);
+        }
+
+        if (endPoint->isHierarchical())
+        {
+            QSharedPointer<HierInterface> endInterface(new HierInterface(endPoint->name()));
+            interconnection->getHierInterfaces()->append(endInterface);
+        }
+        else
+        {
+            QSharedPointer<ActiveInterface> endInterface(
+                new ActiveInterface(endPoint->name(), endPoint->encompassingComp()->name()));
+            if (startPoint->isHierarchical())
+            {
+                interconnection->setStartInterface(endInterface);
+            }
+            else
+            {
+                interconnection->getActiveInterfaces()->append(endInterface);
+            }
+            
+        }
+
+        HWConnection* hwConnection = new HWConnection(startPoint, endPoint, interconnection, route, this);    
+        QString connectionName = hwConnection->createDefaultName();
+        interconnection->setName(connectionName);
+        route->setName(connectionName);
+        hwConnection->setBusWidthVisible(getParent()->getVisibilityControls().value("Bus Widths"));
+        connection = hwConnection;
+    }
+    
     return connection;
 }
 
@@ -1294,7 +1372,6 @@ GraphicsConnection* HWDesignDiagram::createConnection(ConnectionEndpoint* startP
     }
     else
     {
-
         HWConnection* connection = new HWConnection(startPoint->scenePos(), startPoint->getDirection(), endPoint,
             QVector2D(0.0f, 0.0f), QString(), QString(), this);
         connection->setBusWidthVisible(getParent()->getVisibilityControls().value("Bus Widths"));

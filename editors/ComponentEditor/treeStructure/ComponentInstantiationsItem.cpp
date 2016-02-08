@@ -96,7 +96,11 @@ void ComponentInstantiationsItem::createChild( int index )
 {
     QSharedPointer<ComponentInstantiation> instantiation = component_->getComponentInstantiations()->at(index);
     
-    childItems_.append(QSharedPointer<ComponentEditorItem>(
+    QSharedPointer<ComponentEditorItem> childItem(
         new SingleComponentInstantiationItem(model_, libHandler_, component_, instantiation, validator_,
-        referenceCounter_, parameterFinder_, expressionFormatter_, expressionParser_, this)));
+        referenceCounter_, parameterFinder_, expressionFormatter_, expressionParser_, this));
+
+    childItem->setLocked(locked_);
+
+    childItems_.append(childItem);
 }

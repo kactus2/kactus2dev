@@ -4213,6 +4213,9 @@
     <ClCompile Include="GeneratedFiles\moc_ModuleParameterModel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="designEditors\HWDesign\undoCommands\AdHocConnectionDeleteCommand.cpp">
+      <Filter>Source Files\designEditors\HWDesign\undoCommands</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -6271,6 +6274,9 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\instantiations\DesignInstantiationColumns.h">
       <Filter>Header Files\editors\ComponentEditor\instantiations</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\HWDesign\undoCommands\AdHocConnectionDeleteCommand.h">
+      <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

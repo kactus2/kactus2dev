@@ -602,18 +602,30 @@ void ComponentInstance::updatePositionsMap(QString const& newReferenceName, QPoi
 {
     if (!newReferenceName.isEmpty() && !newPosition.isNull())
     {
+        QSharedPointer<Kactus2Group> portGroup;
         QList<QSharedPointer<VendorExtension> > interfacePositions;
 
         foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
         {
             if (extension->type().compare(groupIdentifier) == 0)
             {
-                QSharedPointer<Kactus2Group> portGroup = extension.dynamicCast<Kactus2Group>();
+                portGroup = extension.dynamicCast<Kactus2Group>();
                 interfacePositions = portGroup->getByType(itemIdentifier);
-                getVendorExtensions()->removeAll(extension);
                 break;
             }
         }
+
+        foreach(QSharedPointer<VendorExtension> extension, interfacePositions)
+        {
+            QSharedPointer<Kactus2Placeholder> positionExtension = extension.dynamicCast<Kactus2Placeholder>();
+            if (positionExtension->getAttributeValue(referenceIdentifier) == newReferenceName)
+            {
+                positionExtension->setAttribute("x", QString::number(newPosition.x()));
+                positionExtension->setAttribute("y", QString::number(newPosition.y()));
+                return;
+            }            
+        }
+
 
         QSharedPointer<Kactus2Placeholder> interfacePositionExtension (
             new Kactus2Placeholder(itemIdentifier));
@@ -623,13 +635,13 @@ void ComponentInstance::updatePositionsMap(QString const& newReferenceName, QPoi
 
         interfacePositions.append(interfacePositionExtension);
 
-        QSharedPointer<Kactus2Group> portGroup (new Kactus2Group(groupIdentifier));
-        foreach (QSharedPointer<VendorExtension> extension, interfacePositions)
+        if (!portGroup)
         {
-            portGroup->addToGroup(extension);
-        }
+            portGroup = QSharedPointer<Kactus2Group>(new Kactus2Group(groupIdentifier));
+            getVendorExtensions()->append(portGroup);
+        }    
 
-        getVendorExtensions()->append(portGroup);
+        portGroup->addToGroup(interfacePositionExtension);
     }
 }
 

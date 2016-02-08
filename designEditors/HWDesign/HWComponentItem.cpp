@@ -661,6 +661,8 @@ void HWComponentItem::positionBusInterfaceTerminals()
 //-----------------------------------------------------------------------------
 void HWComponentItem::positionAdHocPortTerminals()
 {
+    QMap<QString, QPointF> instancePositions = getComponentInstance()->getAdHocPortPositions();
+
     // Parse port ad-hoc visibilities.
     foreach (QSharedPointer<Port> adhocPort, *componentModel()->getPorts())
     {
@@ -669,11 +671,15 @@ void HWComponentItem::positionAdHocPortTerminals()
             AdHocPortItem* port = new AdHocPortItem(adhocPort, this);
 
             // Check if the default position has been specified.
-            if (!adhocPort->getDefaultPos().isNull())
+            if (instancePositions.contains(adhocPort->name()))
+            {
+                port->setPos(instancePositions.value(adhocPort->name()));
+                addPortToSideByPosition(port);
+            }
+            else if (!adhocPort->getDefaultPos().isNull())
             {
                 port->setPos(adhocPort->getDefaultPos());
                 addPortToSideByPosition(port);
-
             }
             else
             {
