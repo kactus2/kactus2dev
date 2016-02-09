@@ -698,6 +698,7 @@ void BusPortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     if (moveUndoCommand->childCount() > 0 || oldPos_ != pos())
     {
         static_cast<HWDesignDiagram*>(scene())->getEditProvider()->addCommand(moveUndoCommand);
+        moveUndoCommand->redo();
     }
 }
 

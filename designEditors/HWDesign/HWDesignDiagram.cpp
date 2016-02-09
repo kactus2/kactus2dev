@@ -2030,8 +2030,17 @@ void HWDesignDiagram::createAdHocConnection(QSharedPointer<AdHocConnection> adHo
         ConnectionEndpoint* topAdHocPort = getDiagramAdHocPort(externalPort->getPortRef());
         if (topAdHocPort == 0)
         {
-            emit errorMessage(tr("Port %1 was not found in the top-level component").arg(externalPort->getPortRef()));
-            return;
+            if (!getEditedComponent()->hasPort(externalPort->getPortRef()))
+            {
+                emit errorMessage(tr("Port %1 was not found in the top-level component").arg(
+                    externalPort->getPortRef()));
+                return;
+            }
+            else
+            {
+                setPortAdHocVisible(externalPort->getPortRef(), true);
+                topAdHocPort = getDiagramAdHocPort(externalPort->getPortRef());
+            }
         }
 
         if (adHocConnection->isOffPage())
@@ -2054,35 +2063,32 @@ void HWDesignDiagram::createConnectionForAdHocPorts(QSharedPointer<AdHocConnecti
     ConnectionEndpoint* primaryPortItem)
 {
     // Find the referenced component.
-    HWComponentItem* comp = getComponentItem(internalPort->getComponentRef());
-    if (comp == 0)
+    HWComponentItem* componentItem = getComponentItem(internalPort->getComponentRef());
+    if (componentItem == 0)
     {
         emit errorMessage(tr("Component %1 was not found in the design").arg(internalPort->getComponentRef()));
         return;
     }
 
-    HWConnectionEndpoint* componentAdHocPort = comp->getAdHocPort(internalPort->getPortRef());
+    HWConnectionEndpoint* adHocPort = componentItem->getAdHocPort(internalPort->getPortRef());
 
-    if (componentAdHocPort == 0)
+    if (adHocPort == 0)
     {
-        componentAdHocPort = new AdHocPortItem(comp->componentModel()->getPort(internalPort->getPortRef()), comp);
-        comp->addPort(componentAdHocPort);
-
-        /*emit errorMessage(tr("Port %1 was not found in the component %2").arg(internalPort->getPortRef(), 
-            internalPort->getComponentRef()));*/
-
-        comp->setPortAdHocVisible(internalPort->getPortRef(), true);
+        adHocPort = new AdHocPortItem(componentItem->componentModel()->getPort(internalPort->getPortRef()), 
+            componentItem);
+        componentItem->addPort(adHocPort);
+        componentItem->setPortAdHocVisible(internalPort->getPortRef(), true);
     }
 
     if (adHocConnection->isOffPage())
     {
-        componentAdHocPort = static_cast<HWConnectionEndpoint*>(componentAdHocPort->getOffPageConnector());
+        adHocPort = static_cast<HWConnectionEndpoint*>(adHocPort->getOffPageConnector());
     }
 
     QSharedPointer<ConnectionRoute> route = findOrCreateRouteForInterconnection(adHocConnection->name());
 
     // Create the ad-hoc connection graphics item.
-    AdHocConnectionItem* connection = new AdHocConnectionItem(componentAdHocPort, primaryPortItem, adHocConnection,
+    AdHocConnectionItem* connection = new AdHocConnectionItem(adHocPort, primaryPortItem, adHocConnection,
         route, this);
 
     connection->setRoute(adHocConnection->getRoute());
