@@ -23,14 +23,17 @@
 #include <designEditors/HWDesign/HWConnection.h>
 #include <designEditors/HWDesign/HWConnectionEndpoint.h>
 
+#include <IPXACTmodels/Design/Design.h>
+
 //-----------------------------------------------------------------------------
-// Function: ColumnDeleteCommand()
+// Function: ColumnDeleteCommand::ColumnDeleteCommand()
 //-----------------------------------------------------------------------------
 ColumnDeleteCommand::ColumnDeleteCommand(DesignDiagram* diagram, GraphicsColumnLayout* layout,
     GraphicsColumn* column, QUndoCommand* parent): 
 QUndoCommand(parent),
+    design_(diagram->getDesign()),
     layout_(layout), 
-    column_(column), 
+    columnItem_(column), 
     del_(true)
 {
     // Create child commands for removing interconnections.
@@ -106,23 +109,24 @@ QUndoCommand(parent),
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~ColumnDeleteCommand()
+// Function: ColumnDeleteCommand::~ColumnDeleteCommand()
 //-----------------------------------------------------------------------------
 ColumnDeleteCommand::~ColumnDeleteCommand()
 {
     if (del_)
     {
-        delete column_;
+        delete columnItem_;
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: undo()
+// Function: ColumnDeleteCommand::undo()
 //-----------------------------------------------------------------------------
 void ColumnDeleteCommand::undo()
 {
     // Add the item back to the layout.
-    layout_->addColumn(column_);
+    design_->addColumn(columnItem_->getColumnDesc());
+    layout_->addColumn(columnItem_);
     del_ = false;
 
     // Execute child commands.
@@ -130,7 +134,7 @@ void ColumnDeleteCommand::undo()
 }
 
 //-----------------------------------------------------------------------------
-// Function: redo()
+// Function: ColumnDeleteCommand::redo()
 //-----------------------------------------------------------------------------
 void ColumnDeleteCommand::redo()
 {
@@ -138,6 +142,8 @@ void ColumnDeleteCommand::redo()
     QUndoCommand::redo();
 
     // Remove the item from the layout.
-    layout_->removeColumn(column_);
+    layout_->removeColumn(columnItem_);
+    design_->removeColumn(columnItem_->getColumnDesc());
+
     del_ = true;
 }
