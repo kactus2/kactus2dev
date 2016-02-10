@@ -17,29 +17,27 @@
 #include <IPXACTmodels/Design/Design.h>
 
 //-----------------------------------------------------------------------------
-// Function: GraphicsColumnMoveCommand()
+// Function: GraphicsColumnMoveCommand::GraphicsColumnMoveCommand()
 //-----------------------------------------------------------------------------
-GraphicsColumnMoveCommand::GraphicsColumnMoveCommand(GraphicsColumnLayout* layout,
-                                                     GraphicsColumn* column,
-                                                     QPointF const& oldPos,
-                                                     QUndoCommand* parent)
-    : QUndoCommand(parent),
-      layout_(layout),
-      column_(column),
-      oldPos_(oldPos),
-      newPos_(column->pos())
+GraphicsColumnMoveCommand::GraphicsColumnMoveCommand(GraphicsColumnLayout* layout, GraphicsColumn* column,
+    QPointF const& oldPos, QUndoCommand* parent):
+QUndoCommand(parent),
+    layout_(layout),
+    column_(column),
+    oldPos_(oldPos),
+    newPos_(column->pos())
 {
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~GraphicsColumnMoveCommand()
+// Function: GraphicsColumnMoveCommand::~GraphicsColumnMoveCommand()
 //-----------------------------------------------------------------------------
 GraphicsColumnMoveCommand::~GraphicsColumnMoveCommand()
 {
 }
 
 //-----------------------------------------------------------------------------
-// Function: undo()
+// Function: GraphicsColumnMoveCommand::undo()
 //-----------------------------------------------------------------------------
 void GraphicsColumnMoveCommand::undo()
 {
@@ -52,7 +50,7 @@ void GraphicsColumnMoveCommand::undo()
 }
 
 //-----------------------------------------------------------------------------
-// Function: redo()
+// Function: GraphicsColumnMoveCommand::redo()
 //-----------------------------------------------------------------------------
 void GraphicsColumnMoveCommand::redo()
 {

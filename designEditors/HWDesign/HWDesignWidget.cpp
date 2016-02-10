@@ -566,8 +566,8 @@ void HWDesignWidget::keyPressEvent(QKeyEvent *event)
             foreach (QGraphicsItem* selected, selectedItems)
             {
                 HWColumn* column = static_cast<HWColumn*>(selected);
-                QUndoCommand* columnRemoveCommand = 
-                    new ColumnDeleteCommand(getDiagram(), getDiagram()->getLayout().data(), column, parentCommand.data());
+                QUndoCommand* columnRemoveCommand = new ColumnDeleteCommand(getDiagram(), 
+                    getDiagram()->getLayout().data(), column, parentCommand.data());
                 columnRemoveCommand->redo();
             }
 

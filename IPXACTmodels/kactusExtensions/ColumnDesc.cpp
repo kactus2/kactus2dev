@@ -6,7 +6,7 @@
 // Date: 12.4.2012
 //
 // Description:
-// Column description structure for designs.
+// ColumnDesc structure describes the kactus2:column vendor extension element in an IP-XACT design.
 //-----------------------------------------------------------------------------
 
 #include "ColumnDesc.h"
@@ -19,7 +19,8 @@ ColumnDesc::ColumnDesc()
       contentType_(ColumnTypes::IO),
       allowedItems_(ColumnTypes::NONE),
       width_(119),
-      minWidth_(119)
+      minWidth_(119),
+      xPosition_(0)
 {
 }
 
@@ -32,7 +33,8 @@ ColumnDesc::ColumnDesc(QString const& name, ColumnTypes::ColumnContentType conte
       contentType_(contentType),
       allowedItems_(allowedItems),
       width_(minWidth),
-      minWidth_(minWidth)
+      minWidth_(minWidth),
+      xPosition_(0)
 {
 }
 
@@ -63,6 +65,7 @@ void ColumnDesc::write(QXmlStreamWriter& writer) const
     writer.writeAttribute("allowedItems", QString::number(allowedItems_));
     writer.writeAttribute("minWidth", QString::number(minWidth_));
     writer.writeAttribute("width", QString::number(width_));
+    writer.writeAttribute("x", QString::number(xPosition_));
 }
 
 //-----------------------------------------------------------------------------
@@ -73,7 +76,8 @@ ColumnDesc::ColumnDesc(const ColumnDesc& other)
       contentType_(other.contentType_),
       allowedItems_(other.allowedItems_),
       width_(other.width_),
-      minWidth_(other.minWidth_)
+      minWidth_(other.minWidth_),
+      xPosition_(other.xPosition_)
 {
 }
 
@@ -89,6 +93,7 @@ ColumnDesc& ColumnDesc::operator=(const ColumnDesc& other)
         allowedItems_ = other.allowedItems_;
         width_ = other.width_;
         minWidth_ = other.minWidth_;
+        xPosition_ = other.xPosition_;
     }
 
     return *this;
@@ -164,4 +169,20 @@ unsigned int ColumnDesc::getAllowedItems() const
 unsigned int ColumnDesc::getWidth() const
 {
     return width_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ColumnDesc::getPosition()
+//-----------------------------------------------------------------------------
+unsigned int ColumnDesc::getPosition() const
+{
+    return xPosition_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ColumnDesc::setPosition()
+//-----------------------------------------------------------------------------
+void ColumnDesc::setPosition(unsigned int x)
+{
+    xPosition_ = x;
 }

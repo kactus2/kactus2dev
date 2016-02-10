@@ -16,6 +16,7 @@
 #include <QGraphicsItem>
 #include <QObject>
 
+class Design;
 class DesignDiagram;
 class GraphicsColumn;
 class GraphicsColumnLayout;
@@ -61,11 +62,14 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
+    //! The design being edited.
+    QSharedPointer<Design> design_;
+
     //! The column layout.
     GraphicsColumnLayout* layout_;
 
     //! The diagram column.
-    GraphicsColumn* column_;
+    GraphicsColumn* columnItem_;
 
     //! Boolean flag for indicating if the column should be deleted in the destructor.
     bool del_;

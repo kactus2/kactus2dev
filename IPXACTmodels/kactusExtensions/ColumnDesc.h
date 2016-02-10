@@ -6,7 +6,7 @@
 // Date: 12.4.2012
 //
 // Description:
-// Column description structure for designs.
+// ColumnDesc structure describes the kactus2:column vendor extension element in an IP-XACT design.
 //-----------------------------------------------------------------------------
 
 #ifndef COLUMNDESC_H
@@ -22,8 +22,7 @@
 #include <QXmlStreamWriter>
 
 //-----------------------------------------------------------------------------
-//! ColumnDesc structure which describes the kactus2:column element
-//! in an IP-XACT document.
+//! ColumnDesc structure describes the kactus2:column vendor extension element in an IP-XACT design.
 //-----------------------------------------------------------------------------
 class IPXACTMODELS_EXPORT ColumnDesc : public VendorExtension
 {
@@ -107,6 +106,10 @@ public:
      */
     unsigned int getWidth() const;
 
+    unsigned int getPosition() const;
+
+    void setPosition(unsigned int x);
+
     //! Copy constructor
     ColumnDesc(const ColumnDesc& other);
 
@@ -132,6 +135,8 @@ private:
 
     //! The minimum width for the column.
     unsigned int minWidth_;
+
+    unsigned int xPosition_;
 };
 
 //-----------------------------------------------------------------------------

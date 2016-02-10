@@ -106,7 +106,8 @@ HWDesignDiagram::~HWDesignDiagram()
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
 {
-    if (design->getColumns().isEmpty())
+    QList<QSharedPointer<ColumnDesc> > designColumns = design->getColumns();
+    if (designColumns.isEmpty())
     {
         addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("IO", ColumnTypes::IO, 0, IO_COLUMN_WIDTH)));
         addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("Buses", ColumnTypes::BUSES, 0, COMPONENT_COLUMN_WIDTH)));
@@ -115,7 +116,13 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
     }
     else
     {
-        foreach (QSharedPointer<ColumnDesc> desc, design->getColumns())
+        QMap<unsigned int, QSharedPointer<ColumnDesc> > orderedColumns;
+        foreach (QSharedPointer<ColumnDesc> desc, designColumns)
+        {
+            orderedColumns.insertMulti(desc->getPosition(), desc);
+        }
+
+        foreach (QSharedPointer<ColumnDesc> desc, orderedColumns)
         {
             addColumn(desc);
         }
@@ -130,7 +137,7 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
             busIf, dataGroup);
 
         GraphicsColumn* targetColumn = getLayout()->findColumnAt(topInterface->scenePos());
-        if (targetColumn)
+        if (targetColumn && targetColumn->isItemAllowed(topInterface))
         {
             targetColumn->addItem(topInterface, true);
         }
@@ -1666,7 +1673,7 @@ void HWDesignDiagram::createComponentItem(QSharedPointer<ComponentInstance> inst
     else
     {
         GraphicsColumn* column = getLayout()->findColumnAt(instance->getPosition());
-        if (column != 0)
+        if (column != 0 && column->isItemAllowed(item))
         {
             column->addItem(item, true);
         }

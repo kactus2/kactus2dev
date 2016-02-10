@@ -530,7 +530,9 @@ QVariant GraphicsColumn::itemChange(GraphicsItemChange change, const QVariant &v
 {
     if (change == ItemPositionChange)
     {
-        return QPointF(value.toPointF().x(), 0.0);
+        QPointF position(value.toPointF().x(), 0.0);
+        columnData_->setPosition(position.x());
+        return position;
     }
     else if (change == ItemChildRemovedChange)
     {

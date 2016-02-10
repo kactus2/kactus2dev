@@ -19,13 +19,14 @@
 #include <designEditors/common/DesignDiagram.h>
 #include <designEditors/common/diagramgrid.h>
 #include <designEditors/common/DiagramUtil.h>
+
 #include <IPXACTmodels/Component/Component.h>
 
 //-----------------------------------------------------------------------------
 // Function: HWColumn()
 //-----------------------------------------------------------------------------
-HWColumn::HWColumn(QSharedPointer<ColumnDesc> desc, GraphicsColumnLayout* layout)
-    : GraphicsColumn(desc, layout)
+HWColumn::HWColumn(QSharedPointer<ColumnDesc> desc, GraphicsColumnLayout* layout):
+    GraphicsColumn(desc, layout)
 {
 }
 

@@ -526,6 +526,8 @@ void DesignReader::parseColumnLayout(QDomNode const& columnNode, QSharedPointer<
                 newColumn->setWidth(119);
             }
 
+            newColumn->setPosition(attributes.namedItem("x").nodeValue().toUInt());
+
             design->addColumn(newColumn);
 
         }
