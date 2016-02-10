@@ -98,7 +98,7 @@ public:
      *
      *      @return True, if the view configurations are valid, otherwise false.
      */
-    bool hasValidViewConfigurations(QSharedPointer<DesignConfiguration> designConfiguration) const;
+    virtual bool hasValidViewConfigurations(QSharedPointer<DesignConfiguration> designConfiguration) const;
 
     /*!
      *  Check if the parameters are valid.
@@ -125,6 +125,22 @@ public:
      *      @param [in] designConfiguration     The selected design configuration.
      */
     void findErrorsIn(QVector<QString>& errors, QSharedPointer<DesignConfiguration> designConfiguration);
+
+protected:
+
+    /*!
+     *  Get the view configuration validator.
+     *
+     *      @return The used view configuration validator.
+     */
+    QSharedPointer<ViewConfigurationValidator> getViewConfigurationValidator() const;
+
+    /*!
+     *  Get the library interface.
+     *
+     *      @return The used library interface.
+     */
+    LibraryInterface* getLibraryHandler() const;
 
 private:
 
@@ -177,7 +193,7 @@ private:
      *      @param [in] designConfiguration     The selected design configuration.
      *      @param [in] context                 Context to help locate the errors.
      */
-    void findErrorsInViewConfigurations(QVector<QString>& errors,
+    virtual void findErrorsInViewConfigurations(QVector<QString>& errors,
         QSharedPointer<DesignConfiguration> designConfiguration, QString const& context) const;
 
     /*!

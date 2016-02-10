@@ -879,9 +879,8 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
 			SWComponentItem* newCompItem = new SWComponentItem(getLibraryInterface(), comp, swInstance);
 
             // Perform the replacement.
-            QSharedPointer<ReplaceSystemComponentCommand>
-                cmd(new ReplaceSystemComponentCommand(oldCompItem, newCompItem, false,
-                                                      oldCompItem->type() == HWMappingItem::Type));
+            QSharedPointer<ReplaceSystemComponentCommand> cmd(new ReplaceSystemComponentCommand(
+                oldCompItem, newCompItem, false, oldCompItem->type() == HWMappingItem::Type, getDesign()));
 
             connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
                 this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
@@ -1044,6 +1043,25 @@ QSharedPointer<SWInstance> SystemDesignDiagram::createSWInstance(QSharedPointer<
 	getDesign()->setSWInstances(swInstanceList);
 
 	return swInstance;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::getUsedInstanceNames()
+//-----------------------------------------------------------------------------
+QStringList SystemDesignDiagram::getUsedInstanceNames() const
+{
+    QStringList usedNames;
+
+    foreach (QSharedPointer<ComponentInstance> instance, *getDesign()->getComponentInstances())
+    {
+        usedNames.append(instance->getInstanceName());
+    }
+    foreach (QSharedPointer<SWInstance> instance, getDesign()->getSWInstances())
+    {
+        usedNames.append(instance->getInstanceName());
+    }
+
+    return usedNames;
 }
 
 //-----------------------------------------------------------------------------
@@ -2486,8 +2504,8 @@ void SystemDesignDiagram::replace(ComponentItem* destComp, ComponentItem* source
     if (destSystemComponent && sourceSystemComponent)
     {
         // Perform the replacement. 
-        QSharedPointer<ReplaceSystemComponentCommand>
-            cmd(new ReplaceSystemComponentCommand(destSystemComponent, sourceSystemComponent, true, true));
+        QSharedPointer<ReplaceSystemComponentCommand> cmd(new ReplaceSystemComponentCommand(
+            destSystemComponent, sourceSystemComponent, true, true, getDesign()));
 
         connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
             this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);

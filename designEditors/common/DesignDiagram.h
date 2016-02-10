@@ -518,7 +518,12 @@ private:
     //! Enables/disables the sticky notes according to design protection state.
     void setProtectionForStickyNotes();
 
-
+    /*!
+     *  Get the names of the contained component instances.
+     *
+     *      @return A list of instance names of the contained component instances.
+     */
+    virtual QStringList getUsedInstanceNames() const;
 
     //-----------------------------------------------------------------------------
     // Data.

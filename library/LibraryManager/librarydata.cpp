@@ -83,7 +83,8 @@ fileCount_(0),
 urlTester_(new QRegExpValidator(Utils::URL_VALIDITY_REG_EXP, this)),
 componentValidator_(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()), handler_),
 designValidator_(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()), handler_),
-designConfigurationValidator_(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()), handler_)
+designConfigurationValidator_(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()), handler_),
+systemDesignConfigurationValidator_(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()), handler_)
 {
 	connect(this, SIGNAL(errorMessage(QString const&)),
         parent, SIGNAL(errorMessage(QString const&)), Qt::UniqueConnection);
@@ -590,9 +591,21 @@ bool LibraryData::validateDocument(QSharedPointer<Document> document)
     }
     else if (getType(documentVLNV) == VLNV::DESIGNCONFIGURATION)
     {
-        if (!designConfigurationValidator_.validate(document.dynamicCast<DesignConfiguration>()))
+        QSharedPointer<DesignConfiguration> configuration = document.dynamicCast<DesignConfiguration>();
+
+        if (configuration->getImplementation() == KactusAttribute::SYSTEM)
         {
-            return false;
+            if (!systemDesignConfigurationValidator_.validate(configuration))
+            {
+                return false;
+            }
+        }
+        else
+        {
+            if (!designConfigurationValidator_.validate(configuration))
+            {
+                return false;
+            }
         }
     }
 
@@ -729,7 +742,14 @@ void LibraryData::findErrorsInDesignConfiguration(QSharedPointer<DesignConfigura
 {
     int errorsBeforeValidation = errorList.size();
 
-    designConfigurationValidator_.findErrorsIn(errorList, configuration);
+    if (configuration->getImplementation() == KactusAttribute::SYSTEM)
+    {
+        systemDesignConfigurationValidator_.findErrorsIn(errorList, configuration);
+    }
+    else
+    {
+        designConfigurationValidator_.findErrorsIn(errorList, configuration);
+    }
 
     int errorsInDesignConfiguration = errorList.size() - errorsBeforeValidation;
     if (errorsInDesignConfiguration != 0)

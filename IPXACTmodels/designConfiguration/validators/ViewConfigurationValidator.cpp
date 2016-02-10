@@ -216,3 +216,20 @@ void ViewConfigurationValidator::findErrorsInViewReference(QVector<QString>& err
             .arg(configuration->getViewReference()).arg(configuration->getInstanceName()).arg(context));
     }
 }
+
+//-----------------------------------------------------------------------------
+// Function: ViewConfigurationValidator::getAvailableInstances()
+//-----------------------------------------------------------------------------
+QSharedPointer<QList<QSharedPointer<ComponentInstance> > > ViewConfigurationValidator::getAvailableInstances()
+    const
+{
+    return availableInstances_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ViewConfigurationValidator::getLibraryHandler()
+//-----------------------------------------------------------------------------
+LibraryInterface* ViewConfigurationValidator::getLibraryHandler() const
+{
+    return libraryHandler_;
+}

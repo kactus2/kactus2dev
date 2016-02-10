@@ -117,6 +117,12 @@
     <Filter Include="Source Files\Design\validators">
       <UniqueIdentifier>{7167ec92-b7f3-470a-a7cd-7a154a9c3035}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\kactusExtensions\validators">
+      <UniqueIdentifier>{f2b900ef-3d64-4ad0-92d1-592fc252c4e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\kactusExtensions\validators">
+      <UniqueIdentifier>{400a4962-d1b4-46a4-a93f-52c4f3b9514d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="validators\namevalidator.cpp">
@@ -1274,6 +1280,12 @@
     <ClCompile Include="common\PortAlignment.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
+    <ClCompile Include="kactusExtensions\validators\SystemDesignConfigurationValidator.cpp">
+      <Filter>Source Files\kactusExtensions\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusExtensions\validators\SystemViewConfigurationValidator.cpp">
+      <Filter>Source Files\kactusExtensions\validators</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BusDefinition\BusDefinition.h">
@@ -1770,6 +1782,12 @@
     </ClInclude>
     <ClInclude Include="common\PortAlignment.h">
       <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusExtensions\validators\SystemDesignConfigurationValidator.h">
+      <Filter>Header Files\kactusExtensions\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusExtensions\validators\SystemViewConfigurationValidator.h">
+      <Filter>Header Files\kactusExtensions\validators</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

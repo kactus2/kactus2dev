@@ -22,6 +22,8 @@ class SystemComponentItem;
 class SWComponentItem;
 class SWConnectionEndpoint;
 
+class Design;
+
 //-----------------------------------------------------------------------------
 //! TypeDefinitionChangeCommand class.
 //-----------------------------------------------------------------------------
@@ -184,14 +186,16 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] oldComp     The old system component item.
-	 *      @param [in] newComp     The new system component item.
-	 *      @param [in] existing    Flag for existence checking.
-	 *      @param [in] keepOld     Flag for keeping the old item.
-	 *      @param [in] parent      Owner of the object.
+	 *      @param [in] oldComp             The old system component item.
+	 *      @param [in] newComp             The new system component item.
+	 *      @param [in] existing            Flag for existence checking.
+	 *      @param [in] keepOld             Flag for keeping the old item.
+     *      @param [in] containingDesign    The design containing the system component.
+	 *      @param [in] parent              Owner of the object.
 	 */
 	ReplaceSystemComponentCommand(SystemComponentItem* oldComp, SystemComponentItem* newComp,
-                                  bool existing, bool keepOld, QUndoCommand* parent = 0);
+                                  bool existing, bool keepOld, QSharedPointer<Design> containingDesign,
+                                  QUndoCommand* parent = 0);
 
 	/*!
      *  Destructor.

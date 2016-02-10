@@ -12,6 +12,7 @@
 #include "SystemDesignWidget.h"
 
 #include "SystemDeleteCommands.h"
+#include "SystemComponentDeleteCommand.h"
 
 #include "SystemColumn.h"
 #include "SystemDesignDiagram.h"
@@ -321,7 +322,10 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
                 // Only non-imported SW component instances can be deleted.
                 if (!component->isImported())
                 {
-                    SystemComponentDeleteCommand* childCmd = new SystemComponentDeleteCommand(component, cmd.data());
+                    QSharedPointer<Design> containingDesign = getDiagram()->getDesign();
+
+                    SystemComponentDeleteCommand* childCmd = new SystemComponentDeleteCommand(component,
+                        getDiagram()->getDesign(), cmd.data());
 
                     connect(childCmd, SIGNAL(componentInstanceRemoved(ComponentItem*)),
                             this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
@@ -332,7 +336,8 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
 
                     foreach(Association* association, component->getAssociations())
                     {
-                        QUndoCommand* associationRemoveCmd = new AssociationRemoveCommand(association, getDiagram(), childCmd);
+                        QUndoCommand* associationRemoveCmd =
+                            new AssociationRemoveCommand(association, getDiagram(), childCmd);
                         associationRemoveCmd->redo();
                     }
                 }

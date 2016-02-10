@@ -50,7 +50,7 @@ public:
      *
      *      @param [in] newInstances    The new component instances.
      */
-    void changeComponentInstances(QSharedPointer<QList<QSharedPointer<ComponentInstance> > > newInstances);
+    virtual void changeComponentInstances(QSharedPointer<QList<QSharedPointer<ComponentInstance> > > newInstances);
 
     /*!
      *  Validates the given view configuration.
@@ -86,7 +86,7 @@ public:
      *
      *      @return True, if the view reference is valid, otherwise false.
      */
-    bool hasValidViewReference(QSharedPointer<ViewConfiguration> configuration);
+    virtual bool hasValidViewReference(QSharedPointer<ViewConfiguration> configuration);
 
     /*!
      *  Locate errors within a view configuration.
@@ -97,6 +97,22 @@ public:
      */
     void findErrorsIn(QVector<QString>& errors, QSharedPointer<ViewConfiguration> configuration,
         QString const& context);
+
+protected:
+
+    /*!
+     *  Get the available component instances.
+     *
+     *      @return A list of the currently available component instances.
+     */
+    QSharedPointer<QList<QSharedPointer<ComponentInstance> > > getAvailableInstances() const;
+
+    /*!
+     *  Get the library interface.
+     *
+     *      @return The currently used library interface.
+     */
+    LibraryInterface* getLibraryHandler() const;
 
 private:
 
@@ -138,8 +154,8 @@ private:
      *      @param [in] configuration   The selected view configuration.
      *      @param [in] context         Context to help locate the errors.
      */
-    void findErrorsInViewReference(QVector<QString>& errors, QSharedPointer<ViewConfiguration> configuration,
-        QString const& context);
+    virtual void findErrorsInViewReference(QVector<QString>& errors,
+        QSharedPointer<ViewConfiguration> configuration, QString const& context);
 
     //-----------------------------------------------------------------------------
     // Data.

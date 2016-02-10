@@ -446,6 +446,13 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/treeStructure/SingleRemapStateItem.h \
     ./editors/ComponentEditor/treeStructure/RemapStatesItem.h \
     ./editors/ComponentEditor/treeStructure/MemoryRemapItem.h \
+    ./editors/ComponentEditor/treeStructure/InstantiationsItem.h \
+    ./editors/ComponentEditor/treeStructure/ComponentInstantiationsItem.h \
+    ./editors/ComponentEditor/treeStructure/DesignConfigurationInstantiationsItem.h \
+    ./editors/ComponentEditor/treeStructure/DesignInstantiationsItem.h \
+    ./editors/ComponentEditor/treeStructure/SingleComponentInstantiationItem.h \
+    ./editors/ComponentEditor/treeStructure/SingleDesignConfigurationInstantiationItem.h \
+    ./editors/ComponentEditor/treeStructure/SingleDesignInstantiationItem.h \
     ./editors/ComponentEditor/treeStructure/componenteditorrootitem.h \
     ./editors/ComponentEditor/treeStructure/componenteditorswpropertiesitem.h \
     ./editors/ComponentEditor/treeStructure/componenteditorswviewitem.h \
@@ -520,6 +527,26 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/remapStates/RemapConditionModel.h \
     ./editors/ComponentEditor/remapStates/RemapConditionEditor.h \
     ./editors/ComponentEditor/remapStates/RemapConditionDelegate.h \
+    ./editors/ComponentEditor/instantiations/ComponentInstantiationDisplayer.h \
+    ./editors/ComponentEditor/instantiations/ComponentInstantiationsColumns.h \
+    ./editors/ComponentEditor/instantiations/DesignInstantiationColumns.h \
+    ./editors/ComponentEditor/instantiations/DesignConfigurationInstantiationEditor.h \
+    ./editors/ComponentEditor/instantiations/DesignInstantiationEditor.h \
+    ./editors/ComponentEditor/instantiations/ComponentInstantiationsEditor.h \
+    ./editors/ComponentEditor/instantiations/ComponentInstantiationsModel.h \
+    ./editors/ComponentEditor/instantiations/ComponentInstantiationEditor.h \
+    ./editors/ComponentEditor/instantiations/InstantiationsEditor.h \
+    ./editors/ComponentEditor/instantiations/DesignInstantiationsEditor.h \
+    ./editors/ComponentEditor/instantiations/DesignInstantiationsModel.h \
+    ./editors/ComponentEditor/instantiations/DesignConfigurationInstantiationsModel.h \
+    ./editors/ComponentEditor/instantiations/DesignConfigurationInstantiationsEditor.h \
+    ./editors/ComponentEditor/instantiations/DesignInstantiationsDelegate.h \
+    ./editors/ComponentEditor/instantiations/filesetrefeditordelegate.h \
+    ./editors/ComponentEditor/instantiations/filesetrefmodel.h \
+    ./editors/ComponentEditor/instantiations/filesetrefeditor.h \
+    ./editors/ComponentEditor/instantiations/ModuleParameterDelegate.h \
+    ./editors/ComponentEditor/instantiations/ModuleParameterEditor.h \
+    ./editors/ComponentEditor/instantiations/ModuleParameterModel.h \
     ./editors/CSourceEditor/CSourceContentMatcher.h \
     ./editors/CSourceEditor/MCAPIDesignerTypes.h \
     ./editors/CSourceEditor/CSourceHighlighter.h \
@@ -589,6 +616,7 @@ HEADERS += ./common/Global.h \
     ./designEditors/HWDesign/AdHocEditor/AdHocEditor.h \
     ./designEditors/HWDesign/AdHocEditor/AdHocModel.h \
     ./designEditors/HWDesign/undoCommands/AdHocConnectionAddCommand.h \
+    ./designEditors/HWDesign/undoCommands/AdHocConnectionDeleteCommand.h \
     ./designEditors/HWDesign/undoCommands/AdHocVisibilityChangeCommand.h \
     ./designEditors/HWDesign/undoCommands/ColumnDeleteCommand.h \
     ./designEditors/HWDesign/undoCommands/ComponentItemMoveCommand.h \
@@ -648,33 +676,7 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
-    ./editors/ComponentEditor/instantiations/filesetrefeditor.h \
-    ./editors/ComponentEditor/instantiations/filesetrefeditordelegate.h \
-    ./editors/ComponentEditor/instantiations/filesetrefmodel.h \
-    ./editors/ComponentEditor/instantiations/ModuleParameterModel.h \
-    ./editors/ComponentEditor/treeStructure/InstantiationsItem.h \
-    ./editors/ComponentEditor/treeStructure/ComponentInstantiationsItem.h \
-    ./editors/ComponentEditor/treeStructure/DesignConfigurationInstantiationsItem.h \
-    ./editors/ComponentEditor/treeStructure/DesignInstantiationsItem.h \
-    ./editors/ComponentEditor/treeStructure/SingleComponentInstantiationItem.h \
-    ./editors/ComponentEditor/instantiations/DesignConfigurationInstantiationEditor.h \
-    ./editors/ComponentEditor/treeStructure/SingleDesignConfigurationInstantiationItem.h \
-    ./editors/ComponentEditor/instantiations/DesignInstantiationEditor.h \
-    ./editors/ComponentEditor/treeStructure/SingleDesignInstantiationItem.h \
-    ./editors/ComponentEditor/instantiations/ComponentInstantiationDisplayer.h \
-    ./editors/ComponentEditor/instantiations/ComponentInstantiationsEditor.h \
-    ./editors/ComponentEditor/instantiations/ComponentInstantiationsColumns.h \
-    ./editors/ComponentEditor/instantiations/ComponentInstantiationsModel.h \
-    ./editors/ComponentEditor/instantiations/InstantiationsEditor.h \
-    ./editors/ComponentEditor/instantiations/DesignInstantiationsEditor.h \
-    ./editors/ComponentEditor/instantiations/DesignInstantiationsModel.h \
-    ./editors/ComponentEditor/instantiations/DesignInstantiationColumns.h \
-    ./editors/ComponentEditor/instantiations/DesignConfigurationInstantiationsModel.h \
-    ./editors/ComponentEditor/instantiations/DesignConfigurationInstantiationsEditor.h \
-    ./editors/ComponentEditor/instantiations/DesignInstantiationsDelegate.h \
-    ./editors/ComponentEditor/instantiations/ModuleParameterDelegate.h \
-    ./editors/ComponentEditor/instantiations/ModuleParameterEditor.h \
-    ./editors/ComponentEditor/instantiations/ComponentInstantiationEditor.h
+    ./designEditors/SystemDesign/SystemComponentDeleteCommand.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -963,16 +965,9 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/ports/portsmodel.cpp \
     ./editors/ComponentEditor/ports/PortsView.cpp \
     ./editors/ComponentEditor/ports/PortTagEditorDelegate.cpp \
-    ./editors/ComponentEditor/instantiations/ComponentInstantiationEditor.cpp \
     ./editors/ComponentEditor/views/envidentifiereditor.cpp \
     ./editors/ComponentEditor/views/envidentifiersmodel.cpp \
-    ./editors/ComponentEditor/instantiations/filesetrefmodel.cpp \
-    ./editors/ComponentEditor/instantiations/filesetrefeditordelegate.cpp \
-    ./editors/ComponentEditor/instantiations/filesetrefeditor.cpp \
     ./editors/ComponentEditor/views/hierarchyrefwidget.cpp \
-    ./editors/ComponentEditor/instantiations/ModuleParameterModel.cpp \
-    ./editors/ComponentEditor/instantiations/ModuleParameterEditor.cpp \
-    ./editors/ComponentEditor/instantiations/ModuleParameterDelegate.cpp \
     ./editors/ComponentEditor/views/vieweditor.cpp \
     ./editors/ComponentEditor/views/ViewsDelegate.cpp \
     ./editors/ComponentEditor/views/viewseditor.cpp \
@@ -1056,6 +1051,8 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/MemoryRemapExpressionGatherer.cpp \
     ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.cpp \
     ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterExpressionsGatherer.cpp \
+    ./editors/ComponentEditor/instantiations/DesignInstantiationsEditor.cpp \
+    ./editors/ComponentEditor/instantiations/DesignInstantiationsModel.cpp \
     ./editors/ComponentEditor/treeStructure/componenteditoraddrblockitem.cpp \
     ./editors/ComponentEditor/treeStructure/componenteditoraddrspaceitem.cpp \
     ./editors/ComponentEditor/treeStructure/componenteditoraddrspacesitem.cpp \
@@ -1091,9 +1088,16 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/treeStructure/ComponentEditorTreeSortProxyModel.cpp \
     ./editors/ComponentEditor/treeStructure/componenteditorviewitem.cpp \
     ./editors/ComponentEditor/treeStructure/componenteditorviewsitem.cpp \
+    ./editors/ComponentEditor/treeStructure/ComponentInstantiationsItem.cpp \
     ./editors/ComponentEditor/treeStructure/componenttreeview.cpp \
+    ./editors/ComponentEditor/treeStructure/DesignConfigurationInstantiationsItem.cpp \
+    ./editors/ComponentEditor/treeStructure/DesignInstantiationsItem.cpp \
+    ./editors/ComponentEditor/treeStructure/InstantiationsItem.cpp \
     ./editors/ComponentEditor/treeStructure/MemoryRemapItem.cpp \
     ./editors/ComponentEditor/treeStructure/RemapStatesItem.cpp \
+    ./editors/ComponentEditor/treeStructure/SingleComponentInstantiationItem.cpp \
+    ./editors/ComponentEditor/treeStructure/SingleDesignConfigurationInstantiationItem.cpp \
+    ./editors/ComponentEditor/treeStructure/SingleDesignInstantiationItem.cpp \
     ./editors/ComponentEditor/treeStructure/SingleRemapStateItem.cpp \
     ./editors/ComponentEditor/visualization/fieldgapitem.cpp \
     ./editors/ComponentEditor/visualization/memorygapitem.cpp \
@@ -1127,6 +1131,22 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/remapStates/RemapStatesEditor.cpp \
     ./editors/ComponentEditor/remapStates/RemapStatesModel.cpp \
     ./editors/ComponentEditor/remapStates/SingleRemapStateEditor.cpp \
+    ./editors/ComponentEditor/instantiations/ComponentInstantiationDisplayer.cpp \
+    ./editors/ComponentEditor/instantiations/ComponentInstantiationEditor.cpp \
+    ./editors/ComponentEditor/instantiations/ComponentInstantiationsEditor.cpp \
+    ./editors/ComponentEditor/instantiations/ComponentInstantiationsModel.cpp \
+    ./editors/ComponentEditor/instantiations/DesignConfigurationInstantiationEditor.cpp \
+    ./editors/ComponentEditor/instantiations/DesignConfigurationInstantiationsEditor.cpp \
+    ./editors/ComponentEditor/instantiations/DesignConfigurationInstantiationsModel.cpp \
+    ./editors/ComponentEditor/instantiations/DesignInstantiationEditor.cpp \
+    ./editors/ComponentEditor/instantiations/DesignInstantiationsDelegate.cpp \
+    ./editors/ComponentEditor/instantiations/filesetrefeditor.cpp \
+    ./editors/ComponentEditor/instantiations/filesetrefeditordelegate.cpp \
+    ./editors/ComponentEditor/instantiations/filesetrefmodel.cpp \
+    ./editors/ComponentEditor/instantiations/InstantiationsEditor.cpp \
+    ./editors/ComponentEditor/instantiations/ModuleParameterDelegate.cpp \
+    ./editors/ComponentEditor/instantiations/ModuleParameterEditor.cpp \
+    ./editors/ComponentEditor/instantiations/ModuleParameterModel.cpp \
     ./editors/CSourceEditor/CSourceContentMatcher.cpp \
     ./editors/CSourceEditor/CSourceHighlighter.cpp \
     ./editors/CSourceEditor/CSourceTextEdit.cpp \
@@ -1166,6 +1186,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./designEditors/HWDesign/AdHocEditor/AdHocEditor.cpp \
     ./designEditors/HWDesign/AdHocEditor/AdHocModel.cpp \
     ./designEditors/HWDesign/undoCommands/AdHocConnectionAddCommand.cpp \
+    ./designEditors/HWDesign/undoCommands/AdHocConnectionDeleteCommand.cpp \
     ./designEditors/HWDesign/undoCommands/AdHocVisibilityChangeCommand.cpp \
     ./designEditors/HWDesign/undoCommands/ColumnDeleteCommand.cpp \
     ./designEditors/HWDesign/undoCommands/ComponentDeleteCommand.cpp \
@@ -1246,22 +1267,5 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
-    ./editors/ComponentEditor/treeStructure/InstantiationsItem.cpp \
-    ./editors/ComponentEditor/treeStructure/ComponentInstantiationsItem.cpp \
-    ./editors/ComponentEditor/treeStructure/DesignConfigurationInstantiationsItem.cpp \
-    ./editors/ComponentEditor/treeStructure/DesignInstantiationsItem.cpp \
-    ./editors/ComponentEditor/treeStructure/SingleComponentInstantiationItem.cpp \
-    ./editors/ComponentEditor/instantiations/DesignConfigurationInstantiationEditor.cpp \
-    ./editors/ComponentEditor/treeStructure/SingleDesignConfigurationInstantiationItem.cpp \
-    ./editors/ComponentEditor/instantiations/DesignInstantiationEditor.cpp \
-    ./editors/ComponentEditor/treeStructure/SingleDesignInstantiationItem.cpp \
-    ./editors/ComponentEditor/instantiations/ComponentInstantiationDisplayer.cpp \
-    ./editors/ComponentEditor/instantiations/ComponentInstantiationsEditor.cpp \
-    ./editors/ComponentEditor/instantiations/ComponentInstantiationsModel.cpp \
-    ./editors/ComponentEditor/instantiations/InstantiationsEditor.cpp \
-    ./editors/ComponentEditor/instantiations/DesignInstantiationsEditor.cpp \
-    ./editors/ComponentEditor/instantiations/DesignInstantiationsModel.cpp \
-    ./editors/ComponentEditor/instantiations/DesignConfigurationInstantiationsModel.cpp \
-    ./editors/ComponentEditor/instantiations/DesignConfigurationInstantiationsEditor.cpp \
-    ./editors/ComponentEditor/instantiations/DesignInstantiationsDelegate.cpp
+    ./designEditors/SystemDesign/SystemComponentDeleteCommand.cpp
 RESOURCES += kactus.qrc

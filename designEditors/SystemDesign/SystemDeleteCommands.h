@@ -125,69 +125,6 @@ private:
 };
 
 //-----------------------------------------------------------------------------
-//! SystemComponentDeleteCommand class.
-//-----------------------------------------------------------------------------
-class SystemComponentDeleteCommand : public QObject, public QUndoCommand
-{
-	Q_OBJECT
-
-public:
-    /*!
-     *  Constructor.
-     *
-     *      @param [in] item    The component item to delete.
-     *      @param [in] parent  The owner of this command.
-     */
-    SystemComponentDeleteCommand(ComponentItem* item, QUndoCommand* parent = 0);
-
-    /*!
-     *  Destructor.
-     */
-    ~SystemComponentDeleteCommand();
-
-    /*!
-     *  Undoes the command.
-     */
-    virtual void undo();
-
-    /*!
-     *  Redoes the command.
-     */
-    virtual void redo();
-
-signals:
-	//! Emitted when a new component is instantiated to the design.
-	void componentInstantiated(ComponentItem* comp);
-
-	//! Emitted when a component instance is removed from the design.
-	void componentInstanceRemoved(ComponentItem* comp);
-
-private:
-    // Disable copying.
-    SystemComponentDeleteCommand(SystemComponentDeleteCommand const& rhs);
-    SystemComponentDeleteCommand& operator=(SystemComponentDeleteCommand const& rhs);
-
-    //-----------------------------------------------------------------------------
-    // Data.
-    //-----------------------------------------------------------------------------
-
-    //! The component item.
-    ComponentItem* item_;
-
-    //! The component's parent column.
-    IGraphicsItemStack* stack_;
-
-    //! The graphics scene.
-    QGraphicsScene* scene_;
-
-    //! Boolean flag for indicating if the component should be deleted in the destructor.
-    bool del_;
-
-    //! If true, the command has not been run previously.
-    bool firstRun_;
-};
-
-//-----------------------------------------------------------------------------
 //! SWPortDeleteCommand class.
 //-----------------------------------------------------------------------------
 class SWPortDeleteCommand : public QUndoCommand

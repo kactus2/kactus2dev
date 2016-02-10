@@ -244,7 +244,8 @@ HEADERS += ./common/PortAlignment.h \
     ./Component/validators/MemoryMapValidator.h \
     ./Component/validators/MemoryReserve.h \
     ./Component/validators/RegisterValidator.h \
-    ./Component/validators/ViewValidator.h
+    ./Component/validators/ViewValidator.h \
+    ./kactusExtensions/validators/SystemDesignConfigurationValidator.h
 SOURCES += ./generaldeclarations.cpp \
     ./XmlUtils.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
@@ -480,4 +481,5 @@ SOURCES += ./generaldeclarations.cpp \
     ./Component/validators/MemoryReserve.cpp \
     ./Component/validators/RegisterValidator.cpp \
     ./Component/validators/ViewValidator.cpp \
-    ./common/PortAlignment.cpp
+    ./common/PortAlignment.cpp \
+    ./kactusExtensions/validators/SystemDesignConfigurationValidator.cpp

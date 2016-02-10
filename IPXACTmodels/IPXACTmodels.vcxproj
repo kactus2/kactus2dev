@@ -953,6 +953,8 @@
     <ClCompile Include="kactusExtensions\SystemView.cpp" />
     <ClCompile Include="kactusExtensions\validators\ApiDefinitionValidator.cpp" />
     <ClCompile Include="kactusExtensions\validators\ComDefinitionValidator.cpp" />
+    <ClCompile Include="kactusExtensions\validators\SystemDesignConfigurationValidator.cpp" />
+    <ClCompile Include="kactusExtensions\validators\SystemViewConfigurationValidator.cpp" />
     <ClCompile Include="validators\BinaryValidator.cpp" />
     <ClCompile Include="validators\namevalidator.cpp" />
     <ClCompile Include="validators\NMTokenValidator.cpp" />
@@ -2292,6 +2294,8 @@
     </CustomBuild>
     <ClInclude Include="kactusExtensions\validators\ApiDefinitionValidator.h" />
     <ClInclude Include="kactusExtensions\validators\ComDefinitionValidator.h" />
+    <ClInclude Include="kactusExtensions\validators\SystemDesignConfigurationValidator.h" />
+    <ClInclude Include="kactusExtensions\validators\SystemViewConfigurationValidator.h" />
     <ClInclude Include="XmlUtils.h" />
     <ClInclude Include="BusDefinition\BusDefinition.h" />
     <CustomBuild Include="BusDefinition\BusDefinitionReader.h">

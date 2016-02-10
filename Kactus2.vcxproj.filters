@@ -1942,9 +1942,6 @@
     <ClCompile Include="GeneratedFiles\moc_SystemComponentItem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_SystemDeleteCommands.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_SystemDesignDiagram.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -4216,6 +4213,12 @@
     <ClCompile Include="designEditors\HWDesign\undoCommands\AdHocConnectionDeleteCommand.cpp">
       <Filter>Source Files\designEditors\HWDesign\undoCommands</Filter>
     </ClCompile>
+    <ClCompile Include="designEditors\SystemDesign\SystemComponentDeleteCommand.cpp">
+      <Filter>Source Files\designEditors\SystemDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_SystemComponentDeleteCommand.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5804,6 +5807,9 @@
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\instantiations\ModuleParameterEditor.h">
       <Filter>Header Files\editors\ComponentEditor\instantiations</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\SystemDesign\SystemComponentDeleteCommand.h">
+      <Filter>Header Files\designEditors\SystemDesign</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

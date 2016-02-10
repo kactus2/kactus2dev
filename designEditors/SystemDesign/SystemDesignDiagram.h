@@ -478,6 +478,13 @@ private:
         DRAG_TYPE_DESIGN
     };
 
+    /*!
+     *  Get the names of the contained component instances.
+     *
+     *      @return A list of the contained component instance names.
+     */
+    virtual QStringList getUsedInstanceNames() const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

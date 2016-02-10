@@ -385,6 +385,11 @@ void DesignConfigurationValidator::findErrorsInViewConfigurations(QVector<QStrin
             QSharedPointer<Design> referencedDesign =
                 libraryHandler_->getDesign(designConfiguration->getDesignRef());
 
+            if (referencedDesign)
+            {
+                viewConfigurationValidator_->changeComponentInstances(referencedDesign->getComponentInstances());
+            }
+
             QVector<QString> instanceNames;
             QVector<QString> duplicateNames;
             foreach (QSharedPointer<ViewConfiguration> viewConfiguration,
@@ -401,11 +406,6 @@ void DesignConfigurationValidator::findErrorsInViewConfigurations(QVector<QStrin
                 {
                     instanceNames.append(viewConfiguration->getInstanceName());
                 }
-
-				if (referencedDesign)
-				{
-					viewConfigurationValidator_->changeComponentInstances(referencedDesign->getComponentInstances());
-				}                
 
                 viewConfigurationValidator_->findErrorsIn(errors, viewConfiguration, context);
             }
@@ -461,4 +461,20 @@ void DesignConfigurationValidator::findErrorsInAssertions(QVector<QString>& erro
             assertionValidator_->findErrorsIn(errors, assertion, context);
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignConfigurationValidator::getViewConfigurationValidator()
+//-----------------------------------------------------------------------------
+QSharedPointer<ViewConfigurationValidator> DesignConfigurationValidator::getViewConfigurationValidator() const
+{
+    return viewConfigurationValidator_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignConfigurationValidator::getLibraryHandler()
+//-----------------------------------------------------------------------------
+LibraryInterface* DesignConfigurationValidator::getLibraryHandler() const
+{
+    return libraryHandler_;
 }

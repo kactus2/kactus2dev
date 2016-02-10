@@ -313,8 +313,7 @@ int getMatchingApiDependency(QList<QSharedPointer<ApiInterconnection> > apiDepen
 //-----------------------------------------------------------------------------
 // Function: updateSystemDesign()
 //-----------------------------------------------------------------------------
-void updateSystemDesignV2(LibraryInterface* lh,
-                          VLNV const& hwDesignVLNV, Design& sysDesign,
+void updateSystemDesignV2(LibraryInterface* lh, VLNV const& hwDesignVLNV, Design& sysDesign,
                           QSharedPointer<DesignConfiguration> designConf)
 {
     // Parse all programmable elements from the HW design.

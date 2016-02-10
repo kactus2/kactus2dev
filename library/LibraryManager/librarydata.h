@@ -20,6 +20,8 @@
 
 #include <IPXACTmodels/designConfiguration/validators/DesignConfigurationValidator.h>
 
+#include <IPXACTmodels/kactusExtensions/validators/SystemDesignConfigurationValidator.h>
+
 #include <QObject>
 #include <QList>
 #include <QMap>
@@ -352,6 +354,9 @@ private:
 
      //! The used design configuration validator.
      DesignConfigurationValidator designConfigurationValidator_;
+
+     //! The used system design configuration validator.
+     SystemDesignConfigurationValidator systemDesignConfigurationValidator_;
 };
 
 #endif // LIBRARYDATA_H

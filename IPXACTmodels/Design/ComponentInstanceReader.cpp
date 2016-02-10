@@ -114,8 +114,19 @@ void ComponentInstanceReader::parsePosition(QDomElement const& positionElement,
 void ComponentInstanceReader::parseImport(QDomElement const& importElement,
     QSharedPointer<ComponentInstance> instance) const
 {
-    QString importReference = importElement.attribute("importRef");
-    instance->setImportRef(importReference);
+    if (!importElement.isNull())
+    {
+        QString importReference = importElement.attribute("importRef");
+
+        if (!importReference.isEmpty())
+        {
+            instance->setImportRef(importReference);
+        }
+        else
+        {
+            instance->setImported(true);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------

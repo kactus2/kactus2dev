@@ -160,6 +160,10 @@ void ComponentInstance::setImportRef(QString const& nameRef)
 
         getVendorExtensions()->append(importExtension);
     }
+    else
+    {
+        setImported(true);
+    }
 }
 
 //-----------------------------------------------------------------------------

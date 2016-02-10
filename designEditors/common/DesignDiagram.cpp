@@ -292,11 +292,7 @@ QString DesignDiagram::createInstanceName(QString const& baseName)
     // Determine a unique name by using a running number.
     int runningNumber = 0;
     
-    QStringList instanceNames;
-    foreach (QSharedPointer<ComponentInstance> instance, *getDesign()->getComponentInstances())
-    {
-        instanceNames.append(instance->getInstanceName());
-    }
+    QStringList instanceNames = getUsedInstanceNames();
 
     QString name = format;
     name.replace("$ComponentName$", baseName);
@@ -312,6 +308,20 @@ QString DesignDiagram::createInstanceName(QString const& baseName)
     }
 
     return name;
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignDiagram::getUsedInstanceNames()
+//-----------------------------------------------------------------------------
+QStringList DesignDiagram::getUsedInstanceNames() const
+{
+    QStringList usedNames;
+    foreach (QSharedPointer<ComponentInstance> instance, *getDesign()->getComponentInstances())
+    {
+        usedNames.append(instance->getInstanceName());
+    }
+
+    return usedNames;
 }
 
 //-----------------------------------------------------------------------------

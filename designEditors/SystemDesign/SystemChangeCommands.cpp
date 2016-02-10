@@ -13,6 +13,7 @@
 
 #include "SystemMoveCommands.h"
 #include "SystemDeleteCommands.h"
+#include "SystemComponentDeleteCommand.h"
 #include "SWConnectionEndpoint.h"
 #include "SystemComponentItem.h"
 #include "SWComponentItem.h"
@@ -23,6 +24,8 @@
 #include <common/graphicsItems/GraphicsConnection.h>
 
 #include <designEditors/common/Association/AssociationChangeEndpointCommand.h>
+
+#include <IPXACTmodels/Design/Design.h>
 
 //-----------------------------------------------------------------------------
 // Function: TypeDefinitionChangeCommand()
@@ -134,8 +137,8 @@ void FileSetRefChangeCommand::redo()
 // Function: ReplaceSystemComponentCommand::ReplaceSystemComponentCommand()
 //-----------------------------------------------------------------------------
 ReplaceSystemComponentCommand::ReplaceSystemComponentCommand(SystemComponentItem* oldComp,
-                                                             SystemComponentItem* newComp,
-                                                             bool existing, bool keepOld, QUndoCommand* parent):
+    SystemComponentItem* newComp, bool existing, bool keepOld, QSharedPointer<Design> containingDesign,
+    QUndoCommand* parent /* = 0 */):
 QUndoCommand(parent),
 oldComp_(oldComp),
 newComp_(newComp),
@@ -167,7 +170,8 @@ existing_(existing)
     // Create a delete command for the old component if it should not be kept.
     if (!keepOld)
     {
-        SystemComponentDeleteCommand* deleteCmd = new SystemComponentDeleteCommand(oldComp_, this);
+        SystemComponentDeleteCommand* deleteCmd =
+            new SystemComponentDeleteCommand(oldComp_, containingDesign, this);
 
         connect(deleteCmd, SIGNAL(componentInstantiated(ComponentItem*)),
             this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
