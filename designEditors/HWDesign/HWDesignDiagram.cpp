@@ -1666,13 +1666,14 @@ void HWDesignDiagram::createComponentItem(QSharedPointer<ComponentInstance> inst
 
     // Check if the position is not found.
     // Migrate from the old layout to the column based layout.
-    if (instance->getPosition().isNull())
+    QPointF instancePosition = instance->getPosition();
+    if (instancePosition.isNull())
     {
         getLayout()->addItem(item);
     }
     else
     {
-        GraphicsColumn* column = getLayout()->findColumnAt(instance->getPosition());
+        GraphicsColumn* column = getLayout()->findColumnAt(instancePosition);
         if (column != 0 && column->isItemAllowed(item))
         {
             column->addItem(item, true);
@@ -1765,19 +1766,19 @@ void HWDesignDiagram::createInterconnectionBetweenComponents(QSharedPointer<Inte
     ConnectionEndpoint* endPort = findOrCreateMissingInterface(endComponent, 
         endComponentRef, endInterface->getBusReference(), design);
 
-    if (interconnection->isOffPage())
+    QSharedPointer<ConnectionRoute> route = findOrCreateRouteForInterconnection(interconnection->name());
+
+    if (route->isOffpage())
     {
         startPort = startPort->getOffPageConnector();
         endPort = endPort->getOffPageConnector();
     }
 
-    QSharedPointer<ConnectionRoute> route = findOrCreateRouteForInterconnection(interconnection->name());
-
     HWConnection* connectionItem = new HWConnection(startPort, endPort, interconnection, route, this);
     connectionItem->setBusWidthVisible(getParent()->getVisibilityControls().value("Bus Widths"));
 
-    if (interconnection->isOffPage())
-    {
+    if (route->isOffpage())
+    {         
         connectionItem->hide();
     }
 
@@ -1891,17 +1892,17 @@ void HWDesignDiagram::createHierarchicalConnection(QSharedPointer<Interconnectio
     // Find the port of the component.
     ConnectionEndpoint* componentPort = findOrCreateMissingInterface(comp, startInterface->getComponentReference(), 
         startInterface->getBusReference(), design);
+    
+    QSharedPointer<ConnectionRoute> route = findOrCreateRouteForInterconnection(connection->name());
 
-    if (connection->isOffPage())
+    if (route->isOffpage())
     {
         componentPort = componentPort->getOffPageConnector();
         hierarchicalInterface = hierarchicalInterface->getOffPageConnector();
     }
-
-    QSharedPointer<ConnectionRoute> route = findOrCreateRouteForInterconnection(connection->name());
-
+  
     HWConnection* connectionItem = new HWConnection(componentPort, hierarchicalInterface, connection, route, this);
-    if (connection->isOffPage())
+    if (route->isOffpage())
     {
         connectionItem->hide();
     }
@@ -1976,7 +1977,7 @@ void HWDesignDiagram::createHierachicalAdHocPorts(QSharedPointer<Design> design)
 
             // Add the ad-hoc interface to the first column where it is allowed to be placed.
             GraphicsColumn* column = getLayout()->findColumnAt(adHocIf->scenePos());
-            if (column != 0)
+            if (column != 0 && column->isItemAllowed(adHocIf))
             {
                 column->addItem(adHocIf, true);
             }
@@ -2016,7 +2017,7 @@ void HWDesignDiagram::createAdHocConnection(QSharedPointer<AdHocConnection> adHo
 
             emit errorMessage(tr("Port %1 was not found in the component %2").arg(primaryPort->getPortRef(), 
                 primaryPort->getComponentRef()));
-            //return;
+            
             comp1->setPortAdHocVisible(primaryPort->getPortRef(), true);
         }
         
@@ -2087,12 +2088,12 @@ void HWDesignDiagram::createConnectionForAdHocPorts(QSharedPointer<AdHocConnecti
         componentItem->setPortAdHocVisible(internalPort->getPortRef(), true);
     }
 
-    if (adHocConnection->isOffPage())
+    QSharedPointer<ConnectionRoute> route = findOrCreateRouteForInterconnection(adHocConnection->name());
+
+    if (route->isOffpage())
     {
         adHocPort = static_cast<HWConnectionEndpoint*>(adHocPort->getOffPageConnector());
     }
-
-    QSharedPointer<ConnectionRoute> route = findOrCreateRouteForInterconnection(adHocConnection->name());
 
     // Create the ad-hoc connection graphics item.
     AdHocConnectionItem* connection = new AdHocConnectionItem(adHocPort, primaryPortItem, adHocConnection,
@@ -2114,7 +2115,7 @@ void HWDesignDiagram::createConnectionForAdHocPorts(QSharedPointer<AdHocConnecti
         connection->setAdHocRightBound(1, primaryPart->getRightRange());
     }
 
-    if (adHocConnection->isOffPage())
+    if (route->isOffpage())
     {
         connection->hide();
     }

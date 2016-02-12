@@ -27,8 +27,11 @@
 #include <QPainter>
 #include <QGraphicsSceneMouseEvent>
 
-float const GraphicsConnection::MIN_LENGTH = 10.0f;
-float const GraphicsConnection::MIN_START_LENGTH = 20.0f;
+namespace
+{
+    float const MIN_LENGTH = 10.0f;
+    float const MIN_START_LENGTH = 20.0f;
+};
 
 //-----------------------------------------------------------------------------
 // Function: GraphicsConnection::GraphicsConnection()
@@ -371,7 +374,7 @@ void GraphicsConnection::updatePosition()
 //-----------------------------------------------------------------------------
 // Function: GraphicsConnection::route()
 //-----------------------------------------------------------------------------
-QList<QPointF> const& GraphicsConnection::route() const
+QList<QPointF> GraphicsConnection::route() const
 {
     return pathPoints_;
 }

@@ -53,7 +53,7 @@ HWConnectionEndpoint(parent),
     port_(port),
     oldPos_(), 
     oldPortPositions_(),
-    offPageConnector_(new OffPageConnectorItem(this))
+    offPageConnector_()
 {
     Q_ASSERT_X(port, "AdHocPortItem constructor", "Null Port pointer given as parameter");
 
@@ -111,6 +111,7 @@ HWConnectionEndpoint(parent),
     setFlag(ItemSendsScenePositionChanges);
 
     // Create the off-page connector.
+    offPageConnector_ = new OffPageConnectorItem(this);
     offPageConnector_->setPos(0.0, -GridSize * 3);
     offPageConnector_->setFlag(ItemStacksBehindParent);
     offPageConnector_->setVisible(false);

@@ -126,7 +126,7 @@ public:
     /*!
      *  Returns the route of this connection.
      */
-    QList<QPointF> const& route() const;
+    QList<QPointF> route() const;
 
     /*! 
      *  Updates the end positions when connected endpoints are moved.
@@ -260,10 +260,6 @@ private:
         SEGMENT,
         NONE
     };
-
-    //! Minimum length for a line segment.
-    static float const MIN_LENGTH;
-    static float const MIN_START_LENGTH;
 
     /*!
      *  Sets the default graphics item settings.

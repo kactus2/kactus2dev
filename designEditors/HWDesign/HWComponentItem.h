@@ -232,7 +232,7 @@ private:
 
     enum
     {
-        SPACING = 8,
+        SPACING = GridSize,
         MIN_Y_PLACEMENT = 3 * GridSize,
 		BOTTOM_MARGIN = 2 * GridSize,
     };

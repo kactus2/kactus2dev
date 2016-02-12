@@ -56,7 +56,7 @@ HWConnectionEndpoint(parent),
     nameLabel_("",this),
     oldPos_(), 
     oldPortPositions_(),
-    offPageConnector_(new OffPageConnectorItem(this)), 
+    offPageConnector_(), 
     oldName_()
 {
     Q_ASSERT_X(busIf, "BusPortItem constructor", "Null BusInterface pointer given as parameter");
@@ -80,6 +80,7 @@ HWConnectionEndpoint(parent),
     setFlag(ItemSendsScenePositionChanges);
 
     // Create the off-page connector.
+    offPageConnector_ = new OffPageConnectorItem(this);
     offPageConnector_->setPos(0.0, -GridSize * 3);
     offPageConnector_->setFlag(ItemStacksBehindParent);
     offPageConnector_->setVisible(false);

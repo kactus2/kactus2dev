@@ -294,7 +294,7 @@ QPointF HWConnection::findWidthLabelPosition() const
 //-----------------------------------------------------------------------------
 QPointF HWConnection::findWidthLabelHorizontally() const
 {
-    QList<QPointF> const& pathPoints = route();
+    QList<QPointF> pathPoints = route();
 
     // Determine the longest horizontal segment.
     int longestIndex = 0;
@@ -327,7 +327,7 @@ QPointF HWConnection::findWidthLabelHorizontally() const
 //-----------------------------------------------------------------------------
 QPointF HWConnection::findWidthLabelVertically() const
 {
-    QList<QPointF> const& pathPoints = route();
+    QList<QPointF> pathPoints = route();
 
     // Determine the longest vertical segment.
     int longestIndex = 0;
@@ -351,8 +351,12 @@ QPointF HWConnection::findWidthLabelVertically() const
     QPointF const& pt2 = pathPoints[longestIndex + 1];
 
     QPointF position;
+    if (pathPoints.size() == 2)
+    {
+        position.setX(pt1.x() + GridSize);
+    }
     // Place the text on the right side if the connection is fully on the left.
-    if (pathPoints[longestIndex - 1].x() < pt1.x() && pathPoints[longestIndex + 2].x() < pt1.x())
+    else if (pathPoints[longestIndex - 1].x() < pt1.x() && pathPoints[longestIndex + 2].x() < pt1.x())
     {
         position.setX(pt1.x() + GridSize);
     }
