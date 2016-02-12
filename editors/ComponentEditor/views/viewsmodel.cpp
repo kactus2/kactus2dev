@@ -129,7 +129,11 @@ QVariant ViewsModel::data(QModelIndex const& index, int role) const
 
     QSharedPointer<View> view = views_->at(index.row());
 
-    if (role == Qt::DisplayRole)
+    if (role == Qt::EditRole && index.column() == ViewColumns::DESCRIPTION_COLUMN)
+    {
+        return view->description();
+    }
+    else if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
         if (index.column() == ViewColumns::NAME_COLUMN)
         {
@@ -162,11 +166,7 @@ QVariant ViewsModel::data(QModelIndex const& index, int role) const
         {
             return QVariant();
         }
-	}
-    else if (role == Qt::EditRole && index.column() == ViewColumns::DESCRIPTION_COLUMN)
-    {
-        return view->description();
-    }
+	}   
 	else if (role == Qt::ForegroundRole)
     {
         if (index.column() == ViewColumns::TYPE_COLUMN)

@@ -130,7 +130,7 @@ QVariant SWViewsModel::data(QModelIndex const& index, int role) const
 		return QVariant();
 	}
 	
-	if (role == Qt::DisplayRole)
+	if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
         if (index.column() == SWViewsDelegate::NAME_COLUMN)
         {

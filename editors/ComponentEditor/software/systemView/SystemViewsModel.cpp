@@ -125,9 +125,8 @@ QVariant SystemViewsModel::data(QModelIndex const& index, int role) const
 		return QVariant();
 	}
 	
-	if (role == Qt::DisplayRole)
+	if (role == Qt::DisplayRole || Qt::EditRole)
     {
-
         if (index.column() == SystemViewsDelegate::NAME_COLUMN)
         {
             return views_.at(index.row())->name();
