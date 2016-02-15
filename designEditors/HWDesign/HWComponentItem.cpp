@@ -654,6 +654,20 @@ void HWComponentItem::positionBusInterfaceTerminals()
             addPortToSideWithLessPorts(port);
         }
     }
+
+    if (isDraft())
+    {
+        foreach (QString const& interfaceName, instancePositions.keys())
+        {
+            QSharedPointer<BusInterface> busInterface(new BusInterface());
+            busInterface->setName(interfaceName);
+
+            BusPortItem *port = new BusPortItem(busInterface, getLibraryInterface(), this);
+
+            port->setPos(instancePositions.value(busInterface->name()));
+            addPortToSideByPosition(port);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------

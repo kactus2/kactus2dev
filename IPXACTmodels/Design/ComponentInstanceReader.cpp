@@ -70,6 +70,9 @@ void ComponentInstanceReader::parseExtensions(const QDomNode& componentInstanceN
         instance->setUuid(uuidElement.firstChild().nodeValue());
     }
 
+    QDomElement draftNode = extensionsNode.firstChildElement("kactus2:draft");
+    parseDraft(draftNode, instance);
+
     QDomElement positionNode = extensionsNode.firstChildElement("kactus2:position");
     parsePosition(positionNode, instance);
     
@@ -92,6 +95,18 @@ void ComponentInstanceReader::parseExtensions(const QDomNode& componentInstanceN
     parsePropertyValues(propertyNode, instance);
 
     parseVendorExtensions(componentInstanceNode, instance);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentInstanceReader::parseDraft()
+//-----------------------------------------------------------------------------
+void ComponentInstanceReader::parseDraft(QDomElement const& draftNode,
+    QSharedPointer<ComponentInstance> instance) const
+{
+    if (!draftNode.isNull())
+    {
+        instance->setDraft(true);
+    }
 }
 
 //-----------------------------------------------------------------------------

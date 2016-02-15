@@ -14,7 +14,7 @@
 //-----------------------------------------------------------------------------
 // Function: ActiveInterface::ActiveInterface()
 //-----------------------------------------------------------------------------
-ActiveInterface::ActiveInterface(QString componentRef /* = QString("") */, QString busRef /* = QString("") */):
+ActiveInterface::ActiveInterface(QString const& componentRef, QString const& busRef):
 HierInterface(busRef),
 componentRef_(componentRef),
 excludePorts_(new QStringList)

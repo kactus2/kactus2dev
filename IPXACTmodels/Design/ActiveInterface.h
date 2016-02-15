@@ -32,7 +32,7 @@ public:
      *      @param [in] componentRef    The name of the referenced component instance.
      *      @param [in] busRef          The name of the referenced bus interface.
      */
-    ActiveInterface(QString componentRef = QString(""), QString busRef = QString(""));
+    ActiveInterface(QString const& componentRef = QString(""), QString const& busRef = QString(""));
 
     /*!
      *  Copy constructor.

@@ -1332,7 +1332,7 @@ GraphicsConnection* HWDesignDiagram::createConnection(ConnectionEndpoint* startP
         else
         {
             QSharedPointer<ActiveInterface> startInterface(
-                new ActiveInterface(startPoint->name(), startPoint->encompassingComp()->name()));
+                new ActiveInterface(startPoint->encompassingComp()->name(), startPoint->name()));
             interconnection->setStartInterface(startInterface);
         }
 
@@ -1344,7 +1344,7 @@ GraphicsConnection* HWDesignDiagram::createConnection(ConnectionEndpoint* startP
         else
         {
             QSharedPointer<ActiveInterface> endInterface(
-                new ActiveInterface(endPoint->name(), endPoint->encompassingComp()->name()));
+                new ActiveInterface(endPoint->encompassingComp()->name(), endPoint->name()));
             if (startPoint->isHierarchical())
             {
                 interconnection->setStartInterface(endInterface);

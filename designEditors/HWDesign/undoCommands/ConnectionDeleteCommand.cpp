@@ -28,6 +28,8 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/PortMap.h>
 
+#include <IPXACTmodels/Design/Design.h>
+
 //-----------------------------------------------------------------------------
 // Function: ConnectionDeleteCommand::ConnectionDeleteCommand()
 //-----------------------------------------------------------------------------
@@ -146,6 +148,7 @@ void ConnectionDeleteCommand::undo()
         connection_->endpoint2()->updateInterface();
     }
 
+    diagram_->getDesign()->getInterconnections()->append(connection_->getInterconnection());
     diagram_->clearSelection();
     connection_->setVisible(true);
     connection_->setSelected(true);
@@ -165,6 +168,7 @@ void ConnectionDeleteCommand::redo()
     connection_->disconnectEnds();
 
     // Remove the item from the scene.
+    diagram_->getDesign()->getInterconnections()->removeOne(connection_->getInterconnection());
     diagram_->removeItem(connection_);
     del_ = true;
 

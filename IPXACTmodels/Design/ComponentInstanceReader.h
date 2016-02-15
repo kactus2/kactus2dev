@@ -64,12 +64,20 @@ private:
     void parseExtensions(const QDomNode& componentInstanceNode, QSharedPointer<ComponentInstance> instance) const;
 
     /*!
+     *  Parse the draft flag of the instance.
+     *
+     *      @param [in] draftNode           XML description of the draft flag.
+     *      @param [in] instance            The possessing component instance.
+     */
+    void parseDraft(QDomElement const& draftNode, QSharedPointer<ComponentInstance> instance) const;
+
+    /*!
      *  Parse the position of the instance.
      *
      *      @param [in] positionElement     XML description of the instance position.
      *      @param [in] instance            The possessing component instance.
      */
-    void parsePosition(const QDomElement& positionElement, QSharedPointer<ComponentInstance> instance) const;
+    void parsePosition(QDomElement const& positionElement, QSharedPointer<ComponentInstance> instance) const;
 
     /*!
      *  Parse import information.
@@ -77,7 +85,7 @@ private:
      *      @param [in] importElement   XML description of the instance import.
      *      @param [in] instance        The possessing component instance.
      */
-    void parseImport(const QDomElement& importElement, QSharedPointer<ComponentInstance> instance) const;
+    void parseImport(QDomElement const& importElement, QSharedPointer<ComponentInstance> instance) const;
 
     /*!
      *  Parse port positions.
@@ -85,7 +93,7 @@ private:
      *      @param [in] portPositionsElement    XML description of the component instance port positions.
      *      @param [in] instance                The possessing component instance.
      */
-    void parsePortPositions(const QDomElement& portPositionsElement,
+    void parsePortPositions(QDomElement const& portPositionsElement,
         QSharedPointer<ComponentInstance> instance) const;
 
     /*!
@@ -94,7 +102,7 @@ private:
      *      @param [in] adHocElement    XML description of the ad-hoc visibilities.
      *      @param [in] instance        The possessing component instance.
      */
-    void parseAdHocVisibilities(const QDomElement& adHocElement, QSharedPointer<ComponentInstance> instance) const;
+    void parseAdHocVisibilities(QDomElement const& adHocElement, QSharedPointer<ComponentInstance> instance) const;
 
     /*!
      *  Parse api interface positions.
@@ -102,7 +110,7 @@ private:
      *      @param [in] apiElement  XML description of the api interfaces.
      *      @param [in] instance    The possessing component instance.
      */
-    void parseApiInterfacePositions(const QDomElement& apiElement,
+    void parseApiInterfacePositions(QDomElement const& apiElement,
         QSharedPointer<ComponentInstance> instance) const;
 
     /*!
@@ -111,7 +119,7 @@ private:
      *      @param [in] comElement  XML description of the com interfaces.
      *      @param [in] instance    The possessing component instance.
      */
-    void parseComInterfacePositions(const QDomElement& comElement,
+    void parseComInterfacePositions(QDomElement const& comElement,
         QSharedPointer<ComponentInstance> instance) const;
 
     /*!
@@ -120,7 +128,7 @@ private:
      *      @param [in] propertyElement     XML description of the property values.
      *      @param [in] instance            The possessing component instance.
      */
-    void parsePropertyValues(const QDomElement& propertyElement, QSharedPointer<ComponentInstance> instance) const;
+    void parsePropertyValues(QDomElement const& propertyElement, QSharedPointer<ComponentInstance> instance) const;
 
     /*!
      *  Create mapped positions.
@@ -129,7 +137,7 @@ private:
      *      @param [in] itemIdentifier          Identifier for the containing XML element.
      *      @param [in] referenceIdentifier     Identifier for the reference.
      */
-    QMap<QString, QPointF> createMappedPositions(const QDomElement& positionElement, QString const& itemIdentifier,
+    QMap<QString, QPointF> createMappedPositions(QDomElement const& positionElement, QString const& itemIdentifier,
         QString const& referenceIdentifier) const;
 };
 
