@@ -16,6 +16,9 @@
 #include <common/layouts/VCollisionLayout.h>
 
 #include <IPXACTmodels/Component/Component.h>
+
+#include <IPXACTmodels/Design/ComponentInstance.h>
+
 #include <IPXACTmodels/kactusExtensions/ComInterface.h>
 #include <IPXACTmodels/kactusExtensions/ApiInterface.h>
 #include <IPXACTmodels/kactusExtensions/ComProperty.h>
@@ -33,84 +36,11 @@ importRef_(),
 portLayout_(new VCollisionLayout<SWPortItem>(SPACING)),
 connUpdateDisabled_(false)
 {
-    int portSpacing = 3 * GridSize;
-    int leftY = 4 * GridSize;
-    int rightY = 4 * GridSize;
-    bool right = false;
+    setRect(size);
 
-    // Create graphics items for API interfaces.
-    foreach (QSharedPointer<ApiInterface> apiIf, component->getApiInterfaces())
-    {
-        SWPortItem* port = new SWPortItem(apiIf, this);
+    positionAPIInterfaceTerminals();
 
-        // Check if the default position has been specified.
-        if (!apiIf->getDefaultPos().isNull())
-        {
-            port->setPos(apiIf->getDefaultPos());
-            onAddPort(port, (port->pos().x() >= 0) ? PORT_RIGHT : PORT_LEFT);
-        }
-        else
-        {
-            if (right)
-            {
-                port->setPos(QPointF(rect().width(), rightY) + rect().topLeft());
-                rightY += portSpacing;
-            }
-            else
-            {
-                port->setPos(QPointF(0, leftY) + rect().topLeft());
-                leftY += portSpacing;
-            }
-
-            if (right)
-            {
-                onAddPort(port, PORT_RIGHT);
-            }
-            else
-            {
-                onAddPort(port, PORT_LEFT);
-            }
-
-            right = !right;
-        }
-    }
-
-    // Create graphics items for COM interfaces.
-    foreach (QSharedPointer<ComInterface> comIf, component->getComInterfaces())
-    {
-        SWPortItem* port = new SWPortItem(comIf, this);
-
-        // Check if the default position has been specified.
-        if (!comIf->getDefaultPos().isNull())
-        {
-            port->setPos(comIf->getDefaultPos());
-            onAddPort(port, (port->pos().x() >= 0) ? PORT_RIGHT : PORT_LEFT);
-        }
-        else
-        {
-            if (right)
-            {
-                port->setPos(QPointF(rect().width(), rightY) + rect().topLeft());
-                rightY += portSpacing;
-            }
-            else
-            {
-                port->setPos(QPointF(0, leftY) + rect().topLeft());
-                leftY += portSpacing;
-            }
-
-            if (right)
-            {
-                onAddPort(port, PORT_RIGHT);
-            }
-            else
-            {
-                onAddPort(port, PORT_LEFT);
-            }
-
-            right = !right;
-        }
-    }
+    positionCOMInterfaceTerminals();
 }
 
 //-----------------------------------------------------------------------------
@@ -119,6 +49,116 @@ connUpdateDisabled_(false)
 SystemComponentItem::~SystemComponentItem()
 {
 
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemComponentItem::positionAPIInterfaceTerminals()
+//-----------------------------------------------------------------------------
+void SystemComponentItem::positionAPIInterfaceTerminals()
+{
+    QMap<QString, QPointF> apiInterfacePositions = getComponentInstance()->getApiInterfacePositions();
+    // Create graphics items for API interfaces.
+    foreach (QSharedPointer<ApiInterface> apiIf, componentModel()->getApiInterfaces())
+    {
+        SWPortItem* port = new SWPortItem(apiIf, this);
+
+        // Check if the default position has been specified.
+        if (!apiIf->getDefaultPos().isNull())
+        {
+            port->setPos(apiIf->getDefaultPos());
+
+            addPortToSideByPosition(port);
+        }
+        else if (apiInterfacePositions.contains(apiIf->name()))
+        {
+            port->setPos(apiInterfacePositions.value(apiIf->name()));
+            addPortToSideByPosition(port);
+        }
+        else
+        {
+            addPortToSideWithLessPorts(port);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemComponentItem::positionCOMInterfaceTerminals()
+//-----------------------------------------------------------------------------
+void SystemComponentItem::positionCOMInterfaceTerminals()
+{
+    QMap<QString, QPointF> comInterfacePositions = getComponentInstance()->getComInterfacePositions();
+    // Create graphics items for COM interfaces.
+    foreach (QSharedPointer<ComInterface> comIf, componentModel()->getComInterfaces())
+    {
+        SWPortItem* port = new SWPortItem(comIf, this);
+
+        // Check if the default position has been specified.
+        if (!comIf->getDefaultPos().isNull())
+        {
+            port->setPos(comIf->getDefaultPos());
+            addPortToSideByPosition(port);
+        }
+        else if (comInterfacePositions.contains(comIf->name()))
+        {
+            port->setPos(comInterfacePositions.value(comIf->name()));
+            addPortToSideByPosition(port);
+        }
+        else
+        {
+            addPortToSideWithLessPorts(port);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemComponentItem::addPortToSideByPosition()
+//-----------------------------------------------------------------------------
+void SystemComponentItem::addPortToSideByPosition(SWPortItem* port)
+{
+    if (port->pos().x() >= 0)
+    {
+        onAddPort(port, PORT_RIGHT);
+    }
+    else
+    {
+        onAddPort(port, PORT_LEFT);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemComponentItem::addPortToSideWithLessPorts()
+//-----------------------------------------------------------------------------
+void SystemComponentItem::addPortToSideWithLessPorts(SWPortItem* port)
+{
+    int portSpacing = GridSize * 3;
+    int firstPortY = GridSize * 4;
+
+    if (leftPorts_.size() <= rightPorts_.size())
+    {
+        if (!leftPorts_.isEmpty())
+        {
+            port->setPos(QPointF(0, leftPorts_.last()->pos().y() + portSpacing) + rect().topLeft());
+        }
+        else
+        {
+            port->setPos(QPointF(0, firstPortY) + rect().topLeft());
+        }
+
+        onAddPort(port, PORT_LEFT);
+    }
+    else
+    {
+        if (!rightPorts_.isEmpty())
+        {
+            port->setPos(QPointF(rect().width(), rightPorts_.last()->pos().y() + portSpacing) + rect().topLeft());
+        }
+        else
+        {
+            port->setPos(QPointF(rect().width(), firstPortY) + rect().topLeft());
+        }
+
+        onAddPort(port, PORT_RIGHT);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -280,6 +320,15 @@ void SystemComponentItem::onMovePort(SWPortItem* port)
 		checkPortLabelSize( port, leftPorts_ );
     }
 
+    if (port->getComInterface())
+    {
+        getComponentInstance()->updateComInterfacePosition(port->getComInterface()->name(), port->pos());
+    }
+    else if (port->getApiInterface())
+    {
+        getComponentInstance()->updateApiInterfacePosition(port->getApiInterface()->name(), port->pos());
+    }
+
     updateSize();
 }
 
@@ -404,12 +453,18 @@ void SystemComponentItem::offsetPortPositions(qreal minY)
 
     foreach (SWPortItem* port, leftPorts_)
     {
-        port->setPos(port->x(), port->y() + offset);
+        if (port->y() < minY)
+        {
+            port->setPos(port->x(), port->y() + offset);
+        }
     }
 
     foreach (SWPortItem* port, rightPorts_)
     {
-        port->setPos(port->x(), port->y() + offset);
+        if (port->y() < minY)
+        {
+            port->setPos(port->x(), port->y() + offset);
+        }
     }
 }
 

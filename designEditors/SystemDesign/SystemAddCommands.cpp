@@ -18,6 +18,12 @@
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/GraphicsConnection.h>
 
+#include <designEditors/SystemDesign/HWMappingItem.h>
+#include <designEditors/SystemDesign/SWComponentItem.h>
+
+#include <IPXACTmodels/Design/ComponentInstance.h>
+#include <IPXACTmodels/kactusExtensions/SWInstance.h>
+
 //-----------------------------------------------------------------------------
 // Function: SWConnectionAddCommand()
 //-----------------------------------------------------------------------------
@@ -78,8 +84,17 @@ SystemItemAddCommand::SystemItemAddCommand(IGraphicsItemStack* stack, QGraphicsI
 QUndoCommand(parent),
 item_(item),
 stack_(stack),
-del_(false)
+del_(false),
+hwComponentId_("")
 {
+    if (stack_)
+    {
+        HWMappingItem* hwItem = dynamic_cast<HWMappingItem*>(stack_);
+        if (hwItem && hwItem->getComponentInstance())
+        {
+            hwComponentId_ = hwItem->getComponentInstance()->getUuid();
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -108,6 +123,16 @@ void SystemItemAddCommand::undo()
         emit componentInstanceRemoved(static_cast<ComponentItem*>(item_));
     }
 
+    SWComponentItem* swItem = dynamic_cast<SWComponentItem*>(item_);
+    if (swItem && !hwComponentId_.isEmpty())
+    {
+        QSharedPointer<SWInstance> swInstance = swItem->getComponentInstance().dynamicCast<SWInstance>();
+        if (swInstance)
+        {
+            swInstance->setMapping("");
+        }
+    }
+
     // Execute child commands.
     QUndoCommand::undo();
 }
@@ -120,6 +145,16 @@ void SystemItemAddCommand::redo()
     // Add the item to the column.
     stack_->addItem(item_);
     del_ = false;
+
+    SWComponentItem* swItem = dynamic_cast<SWComponentItem*>(item_);
+    if (swItem && !hwComponentId_.isEmpty())
+    {
+        QSharedPointer<SWInstance> swInstance = swItem->getComponentInstance().dynamicCast<SWInstance>();
+        if (swInstance)
+        {
+            swInstance->setMapping(hwComponentId_);
+        }
+    }
 
     if (dynamic_cast<ComponentItem*>(item_) != 0)
     {

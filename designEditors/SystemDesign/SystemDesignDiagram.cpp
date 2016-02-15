@@ -901,8 +901,10 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
         if (newComponent->getHierViews().isEmpty())
         {
             QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-                               tr("HW component '%1' does not contain any hierarchical views.").arg(
-                               droppedVLNV.toString()), QMessageBox::Ok, getParent());
+                               tr("HW component '%1' does not contain any hierarchical views.\n"
+                               "In order to add new HW components to the system design, the HW components must "
+                               "be added to the HW design.").arg(droppedVLNV.toString()),
+ QMessageBox::Ok, getParent());
             msgBox.exec();
             return;
         }
@@ -1464,57 +1466,6 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
 
         connect(item, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
 
-        // Setup custom port positions.
-        {
-            QMapIterator<QString, QPointF> itrPortPos(instance->getApiInterfacePositions());
-
-            while (itrPortPos.hasNext())
-            {
-                itrPortPos.next();
-                SWPortItem* port = item->getSWPort(itrPortPos.key(), SWConnectionEndpoint::ENDPOINT_TYPE_API);
-
-                // If the port was not found, create it if the component is not packetized.
-                if (port == 0)
-                {
-                    if (instance->getComponentRef()->isValid())
-                    {
-                        continue;
-                    }
-
-                    port = new SWPortItem(itrPortPos.key(), item);
-                    item->addPort(port);
-                }
-
-                port->setPos(itrPortPos.value());
-                item->onMovePort(port);
-            }
-        }
-
-        {
-            QMapIterator<QString, QPointF> itrPortPos(instance->getComInterfacePositions());
-
-            while (itrPortPos.hasNext())
-            {
-                itrPortPos.next();
-                SWPortItem* port = item->getSWPort(itrPortPos.key(), SWConnectionEndpoint::ENDPOINT_TYPE_COM);
-
-                // If the port was not found, create it.
-                if (port == 0)
-                {
-                    if (instance->getComponentRef()->isValid())
-                    {
-                        continue;
-                    }
-
-                    port = new SWPortItem(itrPortPos.key(), item);
-                    item->addPort(port);
-                }
-
-                port->setPos(itrPortPos.value());
-                item->onMovePort(port);
-            }
-        }
-
         // Check if the position is not found.
         if (instance->getPosition().isNull())
         {
@@ -1527,7 +1478,7 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
 
             GraphicsColumn* column = getLayout()->findColumnAt(instance->getPosition());
 
-            if (column != 0)
+            if (column != 0 && column->isItemAllowed(item))
             {
                 column->addItem(item, true);
             }
@@ -1573,8 +1524,6 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
         item->setPos(instance->getPosition());
         item->setPropertyValues(instance->getPropertyValues());
         item->setFileSetRef(instance->getFileSetRef());
-        item->setApiInterfacePositions(instance->getApiInterfacePositions(), true);
-        item->setComInterfacePositions(instance->getComInterfacePositions(), true);
 
         if (instance->isDraft())
         {
@@ -1593,7 +1542,7 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
             {
                 GraphicsColumn* column = getLayout()->findColumnAt(instance->getPosition());
 
-                if (column != 0)
+                if (column != 0 && column->isItemAllowed(item))
                 {
                     column->addItem(item, true);
                 }
@@ -2159,8 +2108,6 @@ void SystemDesignDiagram::importDesign(QSharedPointer<Design> design, IGraphicsI
         item->setPos(stack->mapStackFromScene(guidePos));
         item->setPropertyValues(instance->getPropertyValues());
         item->setFileSetRef(instance->getFileSetRef());
-        item->setApiInterfacePositions(instance->getApiInterfacePositions(), true);
-        item->setComInterfacePositions(instance->getComInterfacePositions(), true);
 
         connect(item, SIGNAL(openCSource(ComponentItem*)), this, SIGNAL(openCSource(ComponentItem*)));
         connect(item, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));

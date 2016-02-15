@@ -37,15 +37,11 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] size                        The initial rectangle size.
-     *      @param [in] libInterface                The library interface.
-     *      @param [in] component                   The component model.
-     *      @param [in] instanceName                The name of the component instance.
-     *      @param [in] displayName                 The component instance's display name.
-     *      @param [in] description                 The component instance's description.
-     *      @param [in] uuid				        The uuid identifying the instance.
-     *      @param [in] configurableElementValue    The component instance's configurable element values.
-     *      @param [in] parent                      The parent graphics item.
+     *      @param [in] size            The initial rectangle size.
+     *      @param [in] libInterface    The library interface.
+     *      @param [in] instance        The component instance.
+     *      @param [in] component       The component referenced by the component instance.
+     *      @param [in] parent          The parent graphics item.
      */
 	SystemComponentItem(QRectF const& size, LibraryInterface* libInterface,
 		QSharedPointer<ComponentInstance> instance,
@@ -218,6 +214,30 @@ private:
     // Disable copying.
     SystemComponentItem(SystemComponentItem const& rhs);
     SystemComponentItem& operator=(SystemComponentItem const& rhs);
+
+    /*!
+     *  Position the API interface items for the component item.
+     */
+    void positionAPIInterfaceTerminals();
+
+    /*!
+     *  Position the COM interface items for the component item.
+     */
+    void positionCOMInterfaceTerminals();
+
+    /*!
+     *  Add the port item to the side determined by its current position.
+     *
+     *      @param [in] port    The selected port item.
+     */
+    void addPortToSideByPosition(SWPortItem* port);
+
+    /*!
+     *  Add the port item to the side with less port items.
+     *
+     *      @param [in] port    The selected port item.
+     */
+    void addPortToSideWithLessPorts(SWPortItem* port);
 
     /*!
      *  Adds the given port to the component.

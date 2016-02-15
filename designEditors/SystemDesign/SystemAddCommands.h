@@ -133,6 +133,9 @@ private:
 
     //! Boolean flag for indicating if the component should be deleted in the destructor.
     bool del_;
+
+    //! The uuID of the containing HW component instance.
+    QString hwComponentId_;
 };
 
 //-----------------------------------------------------------------------------

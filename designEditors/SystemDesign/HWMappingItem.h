@@ -163,7 +163,7 @@ private:
     };
 
 	// Width of the HWMappingItem.
-    static const int WIDTH = COMPONENTWIDTH + 30;
+    static const int WIDTH = COMPONENTWIDTH + 40;
 
     //! The old column from where the mouse drag event began.
     IGraphicsItemStack* oldStack_;

@@ -23,6 +23,8 @@
 #include <common/layouts/VStackedLayout.h>
 
 #include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Design/ComponentInstance.h>
+#include <IPXACTmodels/kactusExtensions/SWInstance.h>
 
 #include <QBrush>
 #include <QUndoCommand>
@@ -169,6 +171,7 @@ void HWMappingItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
         if (cmd->childCount() > 0 || scenePos() != oldPos_)
         {
             static_cast<SystemDesignDiagram*>(scene())->getEditProvider()->addCommand(cmd);
+            cmd->redo();
         }
 
         oldStack_ = 0;
@@ -268,9 +271,15 @@ void HWMappingItem::onMoveItem(QGraphicsItem* item)
     // Check if the item is not overlapping the HW mapping item enough.
     QRectF intersection = sceneBoundingRect().intersected(item->sceneBoundingRect());
 
+    QSharedPointer<SWInstance> swInstance = compItem->getComponentInstance().dynamicCast<SWInstance>();
+    if (swInstance)
+    {
+        swInstance->setMapping(getComponentInstance()->getUuid());
+    }
+
+    SWComponentItem* swItem = static_cast<SWComponentItem*>(compItem);
     // Only non-imported SW components can be moved out of the HW mapping item.
-    if (!static_cast<SystemComponentItem*>(compItem)->isImported() &&
-        compItem->rect().height() - intersection.height() >= 3 * GridSize)
+    if (!swItem->isImported() && swItem->rect().height() - intersection.height() >= swItem->rect().height())
     {
         swComponents_.removeAll(compItem);
 
@@ -285,6 +294,8 @@ void HWMappingItem::onMoveItem(QGraphicsItem* item)
 
         updateItemPositions();
         setZValue(0.0);
+
+        swInstance->setMapping("");
 
         parentStack->onMoveItem(compItem);
         return;
