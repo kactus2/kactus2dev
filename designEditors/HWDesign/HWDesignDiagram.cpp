@@ -41,6 +41,8 @@
 #include <designEditors/common/diagramgrid.h>
 
 #include <designEditors/HWDesign/undoCommands/AdHocConnectionAddCommand.h>
+#include <designEditors/HWDesign/undoCommands/ComponentInstancePasteCommand.h>
+#include <designEditors/HWDesign/undoCommands/PortPasteCommand.h>
 
 #include <library/LibraryManager/libraryhandler.h>
 
@@ -127,6 +129,9 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
             addColumn(desc);
         }
     }
+
+    // Clear undo/redo stack to prevent undoing the column adds.
+    getEditProvider()->clear();
 
     // Create diagram interfaces for the top-level bus interfaces.
     foreach (QSharedPointer<BusInterface> busIf, *getEditedComponent()->getBusInterfaces())
@@ -447,8 +452,10 @@ void HWDesignDiagram::pasteComponentsToColumn()
         ComponentCollectionCopyData collection = mimeData->imageData().value<ComponentCollectionCopyData>();
 
         QSharedPointer<QUndoCommand> pasteUndoCommand(new QUndoCommand());
-        pasteInstances(collection, column, pasteUndoCommand.data(), true);
+        createPasteCommand(collection, column, pasteUndoCommand.data(), true);
+        
         getEditProvider()->addCommand(pasteUndoCommand);
+        pasteUndoCommand->redo();
     }
 }
 
@@ -470,11 +477,13 @@ void HWDesignDiagram::pasteColumns()
         QUndoCommand* columnCmd = new GraphicsColumnAddCommand(getLayout().data(), column, getDesign(), pasteUndoCommand.data());
         columnCmd->redo();
 
-        pasteInstances(columnData.components, column, pasteUndoCommand.data(), false);
+        createPasteCommand(columnData.components, column, pasteUndoCommand.data(), false);
+        
         pasteTopLevelInterfaces(columnData.interfaces, column, pasteUndoCommand.data(), false);
     }
 
     getEditProvider()->addCommand(pasteUndoCommand);
+    pasteUndoCommand->redo();
 
     emit clearItemSelection();
 }
@@ -2352,69 +2361,24 @@ void HWDesignDiagram::pasteTopLevelInterfaces(BusInterfaceCollectionCopyData con
 }
 
 //-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::pasteInstances()
+// Function: HWDesignDiagram::createPasteCommand()
 //-----------------------------------------------------------------------------
-void HWDesignDiagram::pasteInstances(ComponentCollectionCopyData const& collection,
-    GraphicsColumn* column, QUndoCommand* cmd, bool useCursorPos)
+void HWDesignDiagram::createPasteCommand(ComponentCollectionCopyData const& collection, GraphicsColumn* column,
+    QUndoCommand* cmd, bool useCursorPos)
 {
     foreach (ComponentInstanceCopyData const& instance, collection.instances)
     {
-        // Take a copy of the component in case of a draft.
-        QSharedPointer<Component> componentCopy = instance.component;
-        if (!componentCopy->getVlnv().isValid())
-        {
-            componentCopy = QSharedPointer<Component>(new Component(*instance.component));
-        }
-
-        QSharedPointer<ComponentInstance> instanceCopy(new ComponentInstance(*instance.instance));
-
-        QString instanceName = createInstanceName(instance.instance->getInstanceName());
-        instanceCopy->setInstanceName(instanceName);
-        
-        getDesign()->getComponentInstances()->append(instanceCopy);
-
-        HWComponentItem* comp = new HWComponentItem(getLibraryInterface(), instanceCopy, componentCopy, column);
-
+        QPointF position;
         if (useCursorPos)
         {
-            comp->setPos(contextMenuPosition());
+            position = contextMenuPosition();
         }
         else
         {
-            comp->setPos(instance.instance->getPosition());
+            position = instance.instance->getPosition();
         }
 
-        //comp->setBusInterfacePositions(instance.instance->getBusInterfacePositions(), false);
-        //comp->setAdHocPortPositions(instance.instance->getAdHocPortPositions());
-
-        GraphicsColumn* compColumn = column;
-
-        // Check if the column does not accept the given component.
-        if (!column->isItemAllowed(comp))
-        {
-            compColumn = 0;
-
-            // Find the first column that accepts it.
-            foreach (GraphicsColumn* otherColumn, getLayout()->getColumns())
-            {
-                if (otherColumn->isItemAllowed(comp))
-                {
-                    compColumn = otherColumn;
-                    break;
-                }
-            }
-        }
-
-        if (compColumn != 0)
-        {
-            ItemAddCommand* childCmd = new ItemAddCommand(compColumn, comp, cmd);
-
-            connect(childCmd, SIGNAL(componentInstantiated(ComponentItem*)),
-                this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
-            connect(childCmd, SIGNAL(componentInstanceRemoved(ComponentItem*)),
-                this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
-
-            childCmd->redo();
-        }
+        ComponentInstancePasteCommand* pasteCommand = new ComponentInstancePasteCommand(
+            instance.component, instance.instance, position, column, this, cmd);
     }
 }

@@ -229,6 +229,13 @@ public:
       *      @return The column layout of the design.
       */
      QSharedPointer<GraphicsColumnLayout> getLayout() const;
+     
+    /*!
+     *  Creates a unique instance name with the given base name.
+     *
+     *      @param [in] baseName The base name for the instance.
+     */
+    QString createInstanceName(QString const& baseName);
 
 public slots:
     //! Called when the diagram is shown.
@@ -320,13 +327,6 @@ signals:
 protected:
 
     virtual void wheelEvent(QGraphicsSceneWheelEvent* event);
-
-    /*!
-     *  Creates a unique instance name with the given base name.
-     *
-     *      @param [in] baseName The base name for the instance.
-     */
-    QString createInstanceName(QString const& baseName);
 
     /*!
      *  Draws the diagram background.

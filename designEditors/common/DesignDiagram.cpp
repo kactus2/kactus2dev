@@ -277,40 +277,6 @@ void DesignDiagram::onItemModified(QUndoCommand* undoCommand)
 }
 
 //-----------------------------------------------------------------------------
-// Function: DesignDiagram::createInstanceName()
-// Forms a unique identifier for a component instance
-//-----------------------------------------------------------------------------
-QString DesignDiagram::createInstanceName(QString const& baseName)
-{
-    QSettings settings; // this reads the application settings automatically
-    QString format = settings.value("Policies/InstanceNames", "").toString();
-    if (format == "")
-    {
-        format = "$ComponentName$_$InstanceNumber$";
-    }
-
-    // Determine a unique name by using a running number.
-    int runningNumber = 0;
-    
-    QStringList instanceNames = getUsedInstanceNames();
-
-    QString name = format;
-    name.replace("$ComponentName$", baseName);
-    name.replace("$InstanceNumber$", QString::number(runningNumber));
-
-    while (instanceNames.contains(name))
-    {
-        runningNumber++;
-
-        name = format;
-        name.replace("$ComponentName$", baseName);
-        name.replace("$InstanceNumber$", QString::number(runningNumber));
-    }
-
-    return name;
-}
-
-//-----------------------------------------------------------------------------
 // Function: DesignDiagram::getUsedInstanceNames()
 //-----------------------------------------------------------------------------
 QStringList DesignDiagram::getUsedInstanceNames() const
@@ -576,6 +542,40 @@ bool DesignDiagram::sortByX(QGraphicsItem* lhs, QGraphicsItem* rhs)
 QSharedPointer<GraphicsColumnLayout> DesignDiagram::getLayout() const
 {
     return layout_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignDiagram::createInstanceName()
+// Forms a unique identifier for a component instance
+//-----------------------------------------------------------------------------
+QString DesignDiagram::createInstanceName(QString const& baseName)
+{
+    QSettings settings; // this reads the application settings automatically
+    QString format = settings.value("Policies/InstanceNames", "").toString();
+    if (format == "")
+    {
+        format = "$ComponentName$_$InstanceNumber$";
+    }
+
+    // Determine a unique name by using a running number.
+    int runningNumber = 0;
+
+    QStringList instanceNames = getUsedInstanceNames();
+
+    QString name = format;
+    name.replace("$ComponentName$", baseName);
+    name.replace("$InstanceNumber$", QString::number(runningNumber));
+
+    while (instanceNames.contains(name))
+    {
+        runningNumber++;
+
+        name = format;
+        name.replace("$ComponentName$", baseName);
+        name.replace("$InstanceNumber$", QString::number(runningNumber));
+    }
+
+    return name;
 }
 
 //-----------------------------------------------------------------------------

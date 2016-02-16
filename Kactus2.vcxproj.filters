@@ -4219,6 +4219,12 @@
     <ClCompile Include="GeneratedFiles\moc_SystemComponentDeleteCommand.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="designEditors\HWDesign\undoCommands\PortPasteCommand.cpp">
+      <Filter>Source Files\designEditors\HWDesign\undoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\HWDesign\undoCommands\ComponentInstancePasteCommand.cpp">
+      <Filter>Source Files\designEditors\HWDesign\undoCommands</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -6282,6 +6288,12 @@
       <Filter>Header Files\editors\ComponentEditor\instantiations</Filter>
     </ClInclude>
     <ClInclude Include="designEditors\HWDesign\undoCommands\AdHocConnectionDeleteCommand.h">
+      <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\HWDesign\undoCommands\PortPasteCommand.h">
+      <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\HWDesign\undoCommands\ComponentInstancePasteCommand.h">
       <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
     </ClInclude>
   </ItemGroup>

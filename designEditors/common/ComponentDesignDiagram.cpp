@@ -541,7 +541,7 @@ QString ComponentDesignDiagram::getActiveViewOf(ComponentItem* compItem) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentDesignDiagram::activeCursorPosition()
+// Function: ComponentDesignDiagram::contextMenuPosition()
 //-----------------------------------------------------------------------------
 QPoint ComponentDesignDiagram::contextMenuPosition() const
 {
