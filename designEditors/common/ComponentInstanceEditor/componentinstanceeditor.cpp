@@ -85,12 +85,9 @@ topFinder_(new TopComponentParameterFinder(QSharedPointer<Component>(0)))
     layout->addWidget(propertyValueEditor_);
 	layout->addStretch();
 
-	connect(nameGroup_, SIGNAL(nameChanged(QString const&)),
-		    this, SLOT(onNameChanged(QString const&)), Qt::UniqueConnection);
-	connect(nameGroup_, SIGNAL(displayNameChanged(const QString)),
-		    this, SLOT(onDisplayNameChanged(const QString)), Qt::UniqueConnection);
-	connect(nameGroup_, SIGNAL(descriptionChanged(const QString)),
-		    this, SLOT(onDescriptionChanged(QString const&)), Qt::UniqueConnection);
+    connect(nameGroup_, SIGNAL(nameChanged()), this, SLOT(onNameChanged()), Qt::UniqueConnection);
+    connect(nameGroup_, SIGNAL(displayNameChanged()), this, SLOT(onDisplayNameChanged()), Qt::UniqueConnection);
+    connect(nameGroup_, SIGNAL(descriptionChanged()), this, SLOT(onDescriptionChanged()), Qt::UniqueConnection);
     connect(propertyValueEditor_, SIGNAL(contentChanged()),
             this, SLOT(onPropertyValuesChanged()), Qt::UniqueConnection);            
 
@@ -276,8 +273,10 @@ void ComponentInstanceEditor::clear()
 //-----------------------------------------------------------------------------
 // Function: ComponentInstanceEditor::onNameChanged()
 //-----------------------------------------------------------------------------
-void ComponentInstanceEditor::onNameChanged( QString const& newName )
+void ComponentInstanceEditor::onNameChanged()
 {
+    QString newName = nameGroup_->name();
+
 	// create command to the undo/redo stack
 	QSharedPointer<ComponentChangeNameCommand> cmd(new ComponentChangeNameCommand(component_, newName));
 
@@ -294,8 +293,10 @@ void ComponentInstanceEditor::onNameChanged( QString const& newName )
 //-----------------------------------------------------------------------------
 // Function: ComponentInstanceEditor::onDisplayNameChanged()
 //-----------------------------------------------------------------------------
-void ComponentInstanceEditor::onDisplayNameChanged( QString const& newDisplayName )
+void ComponentInstanceEditor::onDisplayNameChanged()
 {
+    QString newDisplayName = nameGroup_->displayName();
+
 	// create command to the undo/redo stack
 	QSharedPointer<ComponentChangeDisplayNameCommand> cmd(new ComponentChangeDisplayNameCommand(component_, 
         newDisplayName));
@@ -313,10 +314,12 @@ void ComponentInstanceEditor::onDisplayNameChanged( QString const& newDisplayNam
 //-----------------------------------------------------------------------------
 // Function: ComponentInstanceEditor::onDescriptionChanged()
 //-----------------------------------------------------------------------------
-void ComponentInstanceEditor::onDescriptionChanged( QString const& newDescription )
+void ComponentInstanceEditor::onDescriptionChanged()
 {
+    QString newDescription = nameGroup_->description();
 	// create command to the undo/redo stack
-	QSharedPointer<ComponentChangeDescriptionNameCommand> cmd(new ComponentChangeDescriptionNameCommand(component_, newDescription));
+	QSharedPointer<ComponentChangeDescriptionNameCommand> cmd(new ComponentChangeDescriptionNameCommand(component_,
+        newDescription));
 
 	disconnect(component_, SIGNAL(descriptionChanged(QString const&)),
 		nameGroup_, SLOT(setDescription(QString const&)));

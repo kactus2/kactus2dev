@@ -104,13 +104,13 @@ signals:
 private slots:
 
 	//! Handler when user changes the name of the component instance.
-	void onNameChanged(QString const& newName);
+    void onNameChanged();
 
 	//! Handler when user changes the display name of the component instance.
-	void onDisplayNameChanged(QString const& newDisplayName);
+    void onDisplayNameChanged();
 
 	//! Handler when user changes the description of the component instance.
-	void onDescriptionChanged(QString const& newDescription);
+    void onDescriptionChanged();
 
     //! Handler when the user changes any property values.
     void onPropertyValuesChanged();

@@ -19,14 +19,8 @@
 class GraphicsConnection;
 class GraphicsColumnLayout;
 class SystemColumn;
-class ComponentItem;
-class IGraphicsItemStack;
-class SWPortItem;
-class SWInterfaceItem;
-class SystemComponentItem;
-class ApiInterface;
-class ComInterface;
 class Design;
+class ColumnDesc;
 
 //-----------------------------------------------------------------------------
 //! SystemColumnDeleteCommand class.
@@ -72,6 +66,13 @@ private:
      */
     void addConnectionDeleteCommand(GraphicsConnection* connection);
 
+    /*!
+     *  Get the removed column.
+     *
+     *      @return The removed column.
+     */
+    QSharedPointer<ColumnDesc> getDeletedColumn();
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -80,13 +81,16 @@ private:
     GraphicsColumnLayout* layout_;
 
     //! The diagram column.
-    SystemColumn* column_;
+    SystemColumn* graphicalColumn_;
 
     //! Boolean flag for indicating if the column should be deleted in the destructor.
-    bool del_;
+    bool canDelete_;
 
     //! The design containing the column.
     QSharedPointer<Design> containingDesign_;
+
+    //! The removed column.
+    QSharedPointer<ColumnDesc> removedColumn_;
 };
 
 //-----------------------------------------------------------------------------

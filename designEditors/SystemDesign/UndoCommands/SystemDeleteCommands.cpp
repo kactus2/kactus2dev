@@ -23,9 +23,12 @@
 #include <designEditors/SystemDesign/UndoCommands/ComConnectionDeleteCommand.h>
 #include <designEditors/SystemDesign/ApiGraphicsConnection.h>
 #include <designEditors/SystemDesign/UndoCommands/ApiConnectionDeleteCommand.h>
+#include <designEditors/SystemDesign/UndoCommands/SystemComponentDeleteCommand.h>
 
 #include <designEditors/common/Association/Association.h>
 #include <designEditors/common/Association/AssociationRemoveCommand.h>
+
+#include <IPXACTmodels/Design/Design.h>
 
 //-----------------------------------------------------------------------------
 // Function: SystemColumnDeleteCommand()
@@ -35,7 +38,10 @@ SystemColumnDeleteCommand::SystemColumnDeleteCommand(GraphicsColumnLayout* layou
                                                      QUndoCommand* parent /* = 0 */):
 QUndoCommand(parent),
 layout_(layout),
-column_(column), del_(true)
+graphicalColumn_(column),
+canDelete_(true),
+containingDesign_(containingDesign),
+removedColumn_(getDeletedColumn())
 {
     // Create child commands for removing connections.
     QList<GraphicsConnection*> connections;
@@ -44,9 +50,9 @@ column_(column), del_(true)
     {
         if (item->type() == SWComponentItem::Type)
         {
-            SWComponentItem* compItem = static_cast<SWComponentItem*>(item);
+            SWComponentItem* systemComponentItem = static_cast<SWComponentItem*>(item);
 
-            foreach (QGraphicsItem* childItem, compItem->childItems())
+            foreach (QGraphicsItem* childItem, systemComponentItem->childItems())
             {
                 if (childItem->type() != SWPortItem::Type)
                 {
@@ -55,31 +61,34 @@ column_(column), del_(true)
 
                 SWPortItem* port = static_cast<SWPortItem*>(childItem);
 
-                foreach (GraphicsConnection* conn, port->getConnections())
+                foreach (GraphicsConnection* graphicalConnection, port->getConnections())
                 {
-                    if (!connections.contains(conn))
+                    if (!connections.contains(graphicalConnection))
                     {
-                        addConnectionDeleteCommand(conn);
-                        connections.append(conn);
+                        addConnectionDeleteCommand(graphicalConnection);
+                        connections.append(graphicalConnection);
                     }
                 }
 
                 if (port->getOffPageConnector() != 0)
                 {
-                    foreach (GraphicsConnection* conn, port->getOffPageConnector()->getConnections())
+                    foreach (GraphicsConnection* offPageConnection, port->getOffPageConnector()->getConnections())
                     {
-                        if (!connections.contains(conn))
+                        if (!connections.contains(offPageConnection))
                         {
-                            addConnectionDeleteCommand(conn);
-                            connections.append(conn);
+                            addConnectionDeleteCommand(offPageConnection);
+                            connections.append(offPageConnection);
                         }
                     }
                 }
             }
-            foreach(Association* association, compItem->getAssociations())
+            foreach(Association* association, systemComponentItem->getAssociations())
             {
                 new AssociationRemoveCommand(association, association->scene(), this);
             }
+
+            new SystemComponentDeleteCommand(systemComponentItem, containingDesign_, this);
+
         }
         else if (item->type() == SWInterfaceItem::Type)
         {
@@ -114,9 +123,9 @@ column_(column), del_(true)
 //-----------------------------------------------------------------------------
 SystemColumnDeleteCommand::~SystemColumnDeleteCommand()
 {
-    if (del_)
+    if (canDelete_)
     {
-        delete column_;
+        delete graphicalColumn_;
     }
 }
 
@@ -126,8 +135,10 @@ SystemColumnDeleteCommand::~SystemColumnDeleteCommand()
 void SystemColumnDeleteCommand::undo()
 {
     // Add the item back to the layout.
-    layout_->addColumn(column_);
-    del_ = false;
+    layout_->addColumn(graphicalColumn_);
+    canDelete_ = false;
+
+    containingDesign_->addColumn(removedColumn_);
 
     // Execute child commands.
     QUndoCommand::undo();
@@ -142,8 +153,14 @@ void SystemColumnDeleteCommand::redo()
     QUndoCommand::redo();
 
     // Remove the item from the layout.
-    layout_->removeColumn(column_);
-    del_ = true;
+    layout_->removeColumn(graphicalColumn_);
+
+    if (removedColumn_)
+    {
+        containingDesign_->removeColumn(removedColumn_);
+    }
+
+    canDelete_ = true;
 }
 
 //-----------------------------------------------------------------------------
@@ -151,9 +168,6 @@ void SystemColumnDeleteCommand::redo()
 //-----------------------------------------------------------------------------
 void SystemColumnDeleteCommand::addConnectionDeleteCommand(GraphicsConnection* connection)
 {
-    //                         new SWConnectionDeleteCommand(conn, this);
-    //                         connections.append(conn);
-
     ApiGraphicsConnection* apiConnection = dynamic_cast<ApiGraphicsConnection*>(connection);
     if (apiConnection)
     {
@@ -167,4 +181,20 @@ void SystemColumnDeleteCommand::addConnectionDeleteCommand(GraphicsConnection* c
             new ComConnectionDeleteCommand(comConnection, containingDesign_, this);
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDeleteCommands::getDeletedColumn()
+//-----------------------------------------------------------------------------
+QSharedPointer<ColumnDesc> SystemColumnDeleteCommand::getDeletedColumn()
+{
+    foreach (QSharedPointer<ColumnDesc> column, containingDesign_->getColumns())
+    {
+        if (column->name() == graphicalColumn_->name())
+        {
+            return column;
+        }
+    }
+
+    return QSharedPointer<ColumnDesc>();
 }

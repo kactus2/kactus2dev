@@ -1,8 +1,13 @@
-/* 
- *
- *  Created on: 16.1.2011
- *      Author: Antti Kamppi
- */
+//-----------------------------------------------------------------------------
+// File: NameGroupBox.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 16.01.2011
+//
+// Description:
+// This class provides 3 GUI items to set a name, displayName and description for an element in IP-Xact.
+//-----------------------------------------------------------------------------
 
 #include "namegroupbox.h"
 
@@ -15,13 +20,15 @@
 #include <QRegExpValidator>
 #include <QRegExp>
 
-NameGroupBox::NameGroupBox(QWidget* parent,
-						   const QString& title): 
-QGroupBox(title, parent), 
+//-----------------------------------------------------------------------------
+// Function: namegroupbox::NameGroupBox()
+//-----------------------------------------------------------------------------
+NameGroupBox::NameGroupBox(QWidget* parent, const QString& title): 
+QGroupBox(title, parent),
 nameEdit_(0),
-displayNameEdit_(0), 
-descriptionEdit_(0) {
-
+displayNameEdit_(0),
+descriptionEdit_(0)
+{
 	// set the size policy for the widget
 	setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
 
@@ -57,55 +64,76 @@ descriptionEdit_(0) {
     layout->addWidget(descriptionEdit_, 2, 1, 1, 1);
 
 	// connect the signals that inform of changes made to items
-	connect(nameEdit_, SIGNAL(textEdited(const QString&)),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(nameEdit_, SIGNAL(textEdited(const QString&)),
-		this, SIGNAL(nameChanged(const QString&)), Qt::UniqueConnection);
-	connect(displayNameEdit_, SIGNAL(textEdited(const QString&)),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(displayNameEdit_, SIGNAL(textEdited(const QString&)),
-		this, SIGNAL(displayNameChanged(const QString&)), Qt::UniqueConnection);
-	connect(descriptionEdit_, SIGNAL(textChanged()),
-		this, SLOT(onDescriptionChanged()), Qt::UniqueConnection);
+    connect(nameEdit_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(nameEdit_, SIGNAL(editingFinished()), this, SIGNAL(nameChanged()), Qt::UniqueConnection);
+
+    connect(displayNameEdit_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(displayNameEdit_, SIGNAL(editingFinished()), this, SIGNAL(displayNameChanged()), Qt::UniqueConnection);
+
+    connect(descriptionEdit_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(descriptionEdit_, SIGNAL(editingFinished()), this, SIGNAL(descriptionChanged()), Qt::UniqueConnection);
 }
 
-NameGroupBox::~NameGroupBox() {
+//-----------------------------------------------------------------------------
+// Function: namegroupbox::~NameGroupBox()
+//-----------------------------------------------------------------------------
+NameGroupBox::~NameGroupBox()
+{
+
 }
 
-QString NameGroupBox::name() const {
+//-----------------------------------------------------------------------------
+// Function: namegroupbox::name()
+//-----------------------------------------------------------------------------
+QString NameGroupBox::name() const
+{
 	return nameEdit_->text();
 }
 
-QString NameGroupBox::displayName() const {
+//-----------------------------------------------------------------------------
+// Function: namegroupbox::displayName()
+//-----------------------------------------------------------------------------
+QString NameGroupBox::displayName() const
+{
 	return displayNameEdit_->text();
 }
 
-QString NameGroupBox::description() const {
+//-----------------------------------------------------------------------------
+// Function: namegroupbox::description()
+//-----------------------------------------------------------------------------
+QString NameGroupBox::description() const
+{
 	return descriptionEdit_->toPlainText();
 }
 
-bool NameGroupBox::isValid() const {
+//-----------------------------------------------------------------------------
+// Function: namegroupbox::isValid()
+//-----------------------------------------------------------------------------
+bool NameGroupBox::isValid() const
+{
 	return !nameEdit_->text().isEmpty();
 }
 
-void NameGroupBox::setName( const QString& name ) {
+//-----------------------------------------------------------------------------
+// Function: namegroupbox::setName()
+//-----------------------------------------------------------------------------
+void NameGroupBox::setName( const QString& name )
+{
 	nameEdit_->setText(name);
 }
 
-void NameGroupBox::setDisplayName( const QString& displayName ) {
+//-----------------------------------------------------------------------------
+// Function: namegroupbox::setDisplayName()
+//-----------------------------------------------------------------------------
+void NameGroupBox::setDisplayName( const QString& displayName )
+{
 	displayNameEdit_->setText(displayName);
 }
 
-void NameGroupBox::setDescription( const QString& description ) {
-	// disconnect the signals 
-	disconnect(descriptionEdit_, SIGNAL(textChanged()),
-		this, SLOT(onDescriptionChanged()));
+//-----------------------------------------------------------------------------
+// Function: namegroupbox::setDescription()
+//-----------------------------------------------------------------------------
+void NameGroupBox::setDescription( const QString& description )
+{
 	descriptionEdit_->setPlainText(description);
-	connect(descriptionEdit_, SIGNAL(textChanged()),
-		this, SLOT(onDescriptionChanged()), Qt::UniqueConnection);
-}
-
-void NameGroupBox::onDescriptionChanged() {
-	emit contentChanged();
-	emit descriptionChanged(descriptionEdit_->toPlainText());
 }
