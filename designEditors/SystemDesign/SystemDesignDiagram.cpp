@@ -2328,6 +2328,10 @@ GraphicsConnection* SystemDesignDiagram::createConnection(ConnectionEndpoint* st
 
         connection = comGraphicsConnection;
     }
+    else
+    {
+        connection = new GraphicsConnection(startPoint, endPoint, false, QString(), QString(), QString(), this);	
+    }
 
     return connection;
 }

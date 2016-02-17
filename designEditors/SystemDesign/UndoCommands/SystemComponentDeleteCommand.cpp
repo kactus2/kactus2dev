@@ -11,17 +11,16 @@
 
 #include "SystemComponentDeleteCommand.h"
 
-#include "SystemDeleteCommands.h"
-#include "SWPortItem.h"
-
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/GraphicsColumnLayout.h>
 #include <common/graphicsItems/GraphicsConnection.h>
 
+#include <designEditors/SystemDesign/SWPortItem.h>
+#include <designEditors/SystemDesign/UndoCommands/SystemDeleteCommands.h>
 #include <designEditors/SystemDesign/ApiGraphicsConnection.h>
-#include <designEditors/SystemDesign/ApiConnectionDeleteCommand.h>
+#include <designEditors/SystemDesign/UndoCommands/ApiConnectionDeleteCommand.h>
 #include <designEditors/SystemDesign/ComGraphicsConnection.h>
-#include <designEditors/SystemDesign/ComConnectionDeleteCommand.h>
+#include <designEditors/SystemDesign/UndoCommands/ComConnectionDeleteCommand.h>
 
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/Design/ComponentInstance.h>

@@ -15,8 +15,6 @@
 #include "HWMappingItem.h"
 #include "SWOffPageConnectorItem.h"
 
-#include "SystemMoveCommands.h"
-
 #include <common/KactusColors.h>
 #include <common/graphicsItems/GraphicsConnection.h>
 #include <common/GenericEditProvider.h>
@@ -24,6 +22,7 @@
 #include <designEditors/common/diagramgrid.h>
 #include <designEditors/common/DesignDiagram.h>
 #include <designEditors/common/NamelabelWidth.h>
+#include <designEditors/SystemDesign/UndoCommands/SystemMoveCommands.h>
 
 #include <IPXACTmodels/kactusExtensions/ApiInterface.h>
 #include <IPXACTmodels/kactusExtensions/ComInterface.h>

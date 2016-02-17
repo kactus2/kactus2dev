@@ -11,9 +11,6 @@
 
 #include "SystemDesignWidget.h"
 
-#include "SystemDeleteCommands.h"
-#include "SystemComponentDeleteCommand.h"
-
 #include "SystemColumn.h"
 #include "SystemDesignDiagram.h"
 #include "SWComponentItem.h"
@@ -29,11 +26,14 @@
 #include <designEditors/common/StickyNote/StickyNote.h>
 #include <designEditors/common/Association/AssociationRemoveCommand.h>
 #include <designEditors/SystemDesign/ComGraphicsConnection.h>
-#include <designEditors/SystemDesign/ComConnectionDeleteCommand.h>
-#include <designEditors/SystemDesign/SWPortDeleteCommand.h>
-#include <designEditors/SystemDesign/SWInterfaceDeleteCommand.h>
+#include <designEditors/SystemDesign/UndoCommands/ComConnectionDeleteCommand.h>
+#include <designEditors/SystemDesign/UndoCommands/SWPortDeleteCommand.h>
+#include <designEditors/SystemDesign/UndoCommands/SWInterfaceDeleteCommand.h>
 #include <designEditors/SystemDesign/ApiGraphicsConnection.h>
-#include <designEditors/SystemDesign/ApiConnectionDeleteCommand.h>
+#include <designEditors/SystemDesign/UndoCommands/ApiConnectionDeleteCommand.h>
+#include <designEditors/SystemDesign/UndoCommands/SystemMoveCommands.h>
+#include <designEditors/SystemDesign/UndoCommands/SystemDeleteCommands.h>
+#include <designEditors/SystemDesign/UndoCommands/SystemComponentDeleteCommand.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 #include <library/LibraryManager/LibraryUtils.h>
@@ -409,7 +409,6 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
 
             getEditProvider()->addCommand(undoCommand);
         }
-
         else if (type == ApiGraphicsConnection::Type)
         {
             getDiagram()->clearSelection();
@@ -423,6 +422,26 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
 
                 QUndoCommand* childCommand =
                     new ApiConnectionDeleteCommand(apiConnection, getDiagram()->getDesign(), undoCommand.data());
+                childCommand->redo();
+
+                deleteConnectedEndPoint(endPoint1, undoCommand);
+                deleteConnectedEndPoint(endPoint2, undoCommand);
+            }
+
+            getEditProvider()->addCommand(undoCommand);
+        }
+        else if (type == GraphicsConnection::Type)
+        {
+            getDiagram()->clearSelection();
+            QSharedPointer<QUndoCommand> undoCommand(new QUndoCommand());
+
+            foreach (QGraphicsItem* selected, selectedItems)
+            {
+                GraphicsConnection* connection = static_cast<GraphicsConnection*>(selected);
+                SWConnectionEndpoint* endPoint1 = static_cast<SWConnectionEndpoint*>(connection->endpoint1());
+                SWConnectionEndpoint* endPoint2 = static_cast<SWConnectionEndpoint*>(connection->endpoint2());
+
+                QUndoCommand* childCommand = new QUndoCommand(undoCommand.data());
                 childCommand->redo();
 
                 deleteConnectedEndPoint(endPoint1, undoCommand);

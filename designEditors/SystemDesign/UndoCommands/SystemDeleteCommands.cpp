@@ -11,19 +11,18 @@
 
 #include "SystemDeleteCommands.h"
 
-#include "SystemColumn.h"
-#include "SystemComponentItem.h"
-#include "SWPortItem.h"
-#include "SWInterfaceItem.h"
-#include "SWComponentItem.h"
-
 #include <common/graphicsItems/GraphicsColumnLayout.h>
 #include <common/graphicsItems/ComponentItem.h>
 
+#include <designEditors/SystemDesign/SystemColumn.h>
+#include <designEditors/SystemDesign/SystemComponentItem.h>
+#include <designEditors/SystemDesign/SWPortItem.h>
+#include <designEditors/SystemDesign/SWInterfaceItem.h>
+#include <designEditors/SystemDesign/SWComponentItem.h>
 #include <designEditors/SystemDesign/ComGraphicsConnection.h>
-#include <designEditors/SystemDesign/ComConnectionDeleteCommand.h>
+#include <designEditors/SystemDesign/UndoCommands/ComConnectionDeleteCommand.h>
 #include <designEditors/SystemDesign/ApiGraphicsConnection.h>
-#include <designEditors/SystemDesign/ApiConnectionDeleteCommand.h>
+#include <designEditors/SystemDesign/UndoCommands/ApiConnectionDeleteCommand.h>
 
 #include <designEditors/common/Association/Association.h>
 #include <designEditors/common/Association/AssociationRemoveCommand.h>

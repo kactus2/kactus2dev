@@ -944,6 +944,12 @@
     <Filter Include="Header Files\editors\ComponentEditor\instantiations">
       <UniqueIdentifier>{27883311-ca70-47a0-a731-9e11b320ed2f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\designEditors\SystemDesign\UndoCommands">
+      <UniqueIdentifier>{01c56582-4da0-487d-b52c-b9cae46d4a68}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\designEditors\SystemDesign\UndoCommands">
+      <UniqueIdentifier>{59f2df92-4f9d-4ef6-a702-abe7737495ce}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -1930,9 +1936,6 @@
     <ClCompile Include="GeneratedFiles\moc_SWPortItem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_SystemAddCommands.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_SystemChangeCommands.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -1966,9 +1969,6 @@
     <ClCompile Include="designEditors\SystemDesign\SWPortItem.cpp">
       <Filter>Source Files\designEditors\SystemDesign</Filter>
     </ClCompile>
-    <ClCompile Include="designEditors\SystemDesign\SystemAddCommands.cpp">
-      <Filter>Source Files\designEditors\SystemDesign</Filter>
-    </ClCompile>
     <ClCompile Include="designEditors\SystemDesign\SystemChangeCommands.cpp">
       <Filter>Source Files\designEditors\SystemDesign</Filter>
     </ClCompile>
@@ -1978,16 +1978,10 @@
     <ClCompile Include="designEditors\SystemDesign\SystemComponentItem.cpp">
       <Filter>Source Files\designEditors\SystemDesign</Filter>
     </ClCompile>
-    <ClCompile Include="designEditors\SystemDesign\SystemDeleteCommands.cpp">
-      <Filter>Source Files\designEditors\SystemDesign</Filter>
-    </ClCompile>
     <ClCompile Include="designEditors\SystemDesign\SystemDesignDiagram.cpp">
       <Filter>Source Files\designEditors\SystemDesign</Filter>
     </ClCompile>
     <ClCompile Include="designEditors\SystemDesign\SystemDesignWidget.cpp">
-      <Filter>Source Files\designEditors\SystemDesign</Filter>
-    </ClCompile>
-    <ClCompile Include="designEditors\SystemDesign\SystemMoveCommands.cpp">
       <Filter>Source Files\designEditors\SystemDesign</Filter>
     </ClCompile>
     <ClCompile Include="kactusGenerators\DocumentGenerator\documentgenerator.cpp">
@@ -4213,12 +4207,6 @@
     <ClCompile Include="designEditors\HWDesign\undoCommands\AdHocConnectionDeleteCommand.cpp">
       <Filter>Source Files\designEditors\HWDesign\undoCommands</Filter>
     </ClCompile>
-    <ClCompile Include="designEditors\SystemDesign\SystemComponentDeleteCommand.cpp">
-      <Filter>Source Files\designEditors\SystemDesign</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_SystemComponentDeleteCommand.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="designEditors\HWDesign\undoCommands\PortPasteCommand.cpp">
       <Filter>Source Files\designEditors\HWDesign\undoCommands</Filter>
     </ClCompile>
@@ -4231,29 +4219,47 @@
     <ClCompile Include="designEditors\SystemDesign\ComGraphicsConnection.cpp">
       <Filter>Source Files\designEditors\SystemDesign</Filter>
     </ClCompile>
-    <ClCompile Include="designEditors\SystemDesign\ComConnectionAddCommand.cpp">
-      <Filter>Source Files\designEditors\SystemDesign</Filter>
-    </ClCompile>
-    <ClCompile Include="designEditors\SystemDesign\ComConnectionDeleteCommand.cpp">
-      <Filter>Source Files\designEditors\SystemDesign</Filter>
-    </ClCompile>
-    <ClCompile Include="designEditors\SystemDesign\SWPortDeleteCommand.cpp">
-      <Filter>Source Files\designEditors\SystemDesign</Filter>
-    </ClCompile>
-    <ClCompile Include="designEditors\SystemDesign\SWInterfaceDeleteCommand.cpp">
-      <Filter>Source Files\designEditors\SystemDesign</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_ApiGraphicsConnection.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="designEditors\SystemDesign\ApiGraphicsConnection.cpp">
       <Filter>Source Files\designEditors\SystemDesign</Filter>
     </ClCompile>
-    <ClCompile Include="designEditors\SystemDesign\ApiConnectionAddCommand.cpp">
-      <Filter>Source Files\designEditors\SystemDesign</Filter>
+    <ClCompile Include="GeneratedFiles\moc_SystemAddCommands.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="designEditors\SystemDesign\ApiConnectionDeleteCommand.cpp">
-      <Filter>Source Files\designEditors\SystemDesign</Filter>
+    <ClCompile Include="GeneratedFiles\moc_SystemComponentDeleteCommand.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\SystemDesign\UndoCommands\ApiConnectionAddCommand.cpp">
+      <Filter>Source Files\designEditors\SystemDesign\UndoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\SystemDesign\UndoCommands\ApiConnectionDeleteCommand.cpp">
+      <Filter>Source Files\designEditors\SystemDesign\UndoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\SystemDesign\UndoCommands\ComConnectionAddCommand.cpp">
+      <Filter>Source Files\designEditors\SystemDesign\UndoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\SystemDesign\UndoCommands\ComConnectionDeleteCommand.cpp">
+      <Filter>Source Files\designEditors\SystemDesign\UndoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\SystemDesign\UndoCommands\SWInterfaceDeleteCommand.cpp">
+      <Filter>Source Files\designEditors\SystemDesign\UndoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\SystemDesign\UndoCommands\SWPortDeleteCommand.cpp">
+      <Filter>Source Files\designEditors\SystemDesign\UndoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\SystemDesign\UndoCommands\SystemAddCommands.cpp">
+      <Filter>Source Files\designEditors\SystemDesign\UndoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\SystemDesign\UndoCommands\SystemComponentDeleteCommand.cpp">
+      <Filter>Source Files\designEditors\SystemDesign\UndoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\SystemDesign\UndoCommands\SystemMoveCommands.cpp">
+      <Filter>Source Files\designEditors\SystemDesign\UndoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\SystemDesign\UndoCommands\SystemDeleteCommands.cpp">
+      <Filter>Source Files\designEditors\SystemDesign\UndoCommands</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -4743,9 +4749,6 @@
     <CustomBuild Include="designEditors\SystemDesign\SWPortItem.h">
       <Filter>Header Files\designEditors\SystemDesign</Filter>
     </CustomBuild>
-    <CustomBuild Include="designEditors\SystemDesign\SystemAddCommands.h">
-      <Filter>Header Files\designEditors\SystemDesign</Filter>
-    </CustomBuild>
     <CustomBuild Include="designEditors\SystemDesign\SystemChangeCommands.h">
       <Filter>Header Files\designEditors\SystemDesign</Filter>
     </CustomBuild>
@@ -4753,9 +4756,6 @@
       <Filter>Header Files\designEditors\SystemDesign</Filter>
     </CustomBuild>
     <CustomBuild Include="designEditors\SystemDesign\SystemComponentItem.h">
-      <Filter>Header Files\designEditors\SystemDesign</Filter>
-    </CustomBuild>
-    <CustomBuild Include="designEditors\SystemDesign\SystemDeleteCommands.h">
       <Filter>Header Files\designEditors\SystemDesign</Filter>
     </CustomBuild>
     <CustomBuild Include="designEditors\SystemDesign\SystemDesignDiagram.h">
@@ -5844,14 +5844,17 @@
     <CustomBuild Include="editors\ComponentEditor\instantiations\ModuleParameterEditor.h">
       <Filter>Header Files\editors\ComponentEditor\instantiations</Filter>
     </CustomBuild>
-    <CustomBuild Include="designEditors\SystemDesign\SystemComponentDeleteCommand.h">
-      <Filter>Header Files\designEditors\SystemDesign</Filter>
-    </CustomBuild>
     <CustomBuild Include="designEditors\SystemDesign\ComGraphicsConnection.h">
       <Filter>Header Files\designEditors\SystemDesign</Filter>
     </CustomBuild>
     <CustomBuild Include="designEditors\SystemDesign\ApiGraphicsConnection.h">
       <Filter>Header Files\designEditors\SystemDesign</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\SystemDesign\UndoCommands\SystemAddCommands.h">
+      <Filter>Header Files\designEditors\SystemDesign\UndoCommands</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\SystemDesign\UndoCommands\SystemComponentDeleteCommand.h">
+      <Filter>Header Files\designEditors\SystemDesign\UndoCommands</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
@@ -6003,9 +6006,6 @@
       <Filter>Header Files\designEditors\MemoryDesigner</Filter>
     </ClInclude>
     <ClInclude Include="designEditors\SystemDesign\HWMappingItem.h">
-      <Filter>Header Files\designEditors\SystemDesign</Filter>
-    </ClInclude>
-    <ClInclude Include="designEditors\SystemDesign\SystemMoveCommands.h">
       <Filter>Header Files\designEditors\SystemDesign</Filter>
     </ClInclude>
     <ClInclude Include="kactusGenerators\vhdlGenerator\vhdlgeneral.h">
@@ -6332,23 +6332,29 @@
     <ClInclude Include="designEditors\HWDesign\undoCommands\ComponentInstancePasteCommand.h">
       <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
     </ClInclude>
-    <ClInclude Include="designEditors\SystemDesign\ComConnectionAddCommand.h">
-      <Filter>Header Files\designEditors\SystemDesign</Filter>
+    <ClInclude Include="designEditors\SystemDesign\UndoCommands\ApiConnectionAddCommand.h">
+      <Filter>Header Files\designEditors\SystemDesign\UndoCommands</Filter>
     </ClInclude>
-    <ClInclude Include="designEditors\SystemDesign\ComConnectionDeleteCommand.h">
-      <Filter>Header Files\designEditors\SystemDesign</Filter>
+    <ClInclude Include="designEditors\SystemDesign\UndoCommands\ApiConnectionDeleteCommand.h">
+      <Filter>Header Files\designEditors\SystemDesign\UndoCommands</Filter>
     </ClInclude>
-    <ClInclude Include="designEditors\SystemDesign\SWPortDeleteCommand.h">
-      <Filter>Header Files\designEditors\SystemDesign</Filter>
+    <ClInclude Include="designEditors\SystemDesign\UndoCommands\ComConnectionAddCommand.h">
+      <Filter>Header Files\designEditors\SystemDesign\UndoCommands</Filter>
     </ClInclude>
-    <ClInclude Include="designEditors\SystemDesign\SWInterfaceDeleteCommand.h">
-      <Filter>Header Files\designEditors\SystemDesign</Filter>
+    <ClInclude Include="designEditors\SystemDesign\UndoCommands\ComConnectionDeleteCommand.h">
+      <Filter>Header Files\designEditors\SystemDesign\UndoCommands</Filter>
     </ClInclude>
-    <ClInclude Include="designEditors\SystemDesign\ApiConnectionAddCommand.h">
-      <Filter>Header Files\designEditors\SystemDesign</Filter>
+    <ClInclude Include="designEditors\SystemDesign\UndoCommands\SWInterfaceDeleteCommand.h">
+      <Filter>Header Files\designEditors\SystemDesign\UndoCommands</Filter>
     </ClInclude>
-    <ClInclude Include="designEditors\SystemDesign\ApiConnectionDeleteCommand.h">
-      <Filter>Header Files\designEditors\SystemDesign</Filter>
+    <ClInclude Include="designEditors\SystemDesign\UndoCommands\SWPortDeleteCommand.h">
+      <Filter>Header Files\designEditors\SystemDesign\UndoCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\SystemDesign\UndoCommands\SystemMoveCommands.h">
+      <Filter>Header Files\designEditors\SystemDesign\UndoCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\SystemDesign\UndoCommands\SystemDeleteCommands.h">
+      <Filter>Header Files\designEditors\SystemDesign\UndoCommands</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
