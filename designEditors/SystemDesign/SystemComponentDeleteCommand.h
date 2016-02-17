@@ -20,6 +20,7 @@ class ComponentItem;
 class IGraphicsItemStack;
 
 class Design;
+class GraphicsConnection;
 
 //-----------------------------------------------------------------------------
 //! Delete command for component instances in system designs.
@@ -65,6 +66,13 @@ private:
     // Disable copying.
     SystemComponentDeleteCommand(SystemComponentDeleteCommand const& rhs);
     SystemComponentDeleteCommand& operator=(SystemComponentDeleteCommand const& rhs);
+
+    /*!
+     *  Add delete command for the contained interconnection.
+     *
+     *      @param [in] connection  The selected connection.
+     */
+    void addConnectionDeleteCommand(GraphicsConnection* connection);
 
     //-----------------------------------------------------------------------------
     // Data.

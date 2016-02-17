@@ -579,7 +579,7 @@ private:
      *      @param [in] userCursorPos  If true, the instances are placed close to the cursor position.
      *                                 Otherwise the original positions are used.
      */
-    void pasteInstances(ComponentCollectionCopyData const& collection,
+    void createPasteCommand(ComponentCollectionCopyData const& collection,
                         GraphicsColumn* column, QUndoCommand* cmd, bool useCursorPos);
 
 

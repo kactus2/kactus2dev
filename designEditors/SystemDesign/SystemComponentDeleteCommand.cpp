@@ -15,12 +15,15 @@
 #include "SWPortItem.h"
 
 #include <common/graphicsItems/ComponentItem.h>
-
 #include <common/graphicsItems/GraphicsColumnLayout.h>
 #include <common/graphicsItems/GraphicsConnection.h>
 
-#include <IPXACTmodels/Design/Design.h>
+#include <designEditors/SystemDesign/ApiGraphicsConnection.h>
+#include <designEditors/SystemDesign/ApiConnectionDeleteCommand.h>
+#include <designEditors/SystemDesign/ComGraphicsConnection.h>
+#include <designEditors/SystemDesign/ComConnectionDeleteCommand.h>
 
+#include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/Design/ComponentInstance.h>
 #include <IPXACTmodels/kactusExtensions/SWInstance.h>
 
@@ -102,7 +105,7 @@ void SystemComponentDeleteCommand::redo()
             {
                 if (!connections.contains(conn))
                 {
-                    new SWConnectionDeleteCommand(conn, this);
+                    addConnectionDeleteCommand(conn);
                     connections.append(conn);
                 }
             }
@@ -113,7 +116,7 @@ void SystemComponentDeleteCommand::redo()
                 {
                     if (!connections.contains(conn))
                     {
-                        new SWConnectionDeleteCommand(conn, this);
+                        addConnectionDeleteCommand(conn);
                         connections.append(conn);
                     }
                 }
@@ -145,4 +148,24 @@ void SystemComponentDeleteCommand::redo()
 
 
     emit componentInstanceRemoved(item_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemComponentDeleteCommand::addConnectionDeleteCommand()
+//-----------------------------------------------------------------------------
+void SystemComponentDeleteCommand::addConnectionDeleteCommand(GraphicsConnection* connection)
+{
+    ApiGraphicsConnection* apiConnection = dynamic_cast<ApiGraphicsConnection*>(connection);
+    if (apiConnection)
+    {
+        new ApiConnectionDeleteCommand(apiConnection, containingDesign_, this);
+    }
+    else
+    {
+        ComGraphicsConnection* comConnection = dynamic_cast<ComGraphicsConnection*>(connection);
+        if (comConnection)
+        {
+            new ComConnectionDeleteCommand(comConnection, containingDesign_, this);
+        }
+    }
 }

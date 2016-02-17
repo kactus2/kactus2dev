@@ -4225,6 +4225,36 @@
     <ClCompile Include="designEditors\HWDesign\undoCommands\ComponentInstancePasteCommand.cpp">
       <Filter>Source Files\designEditors\HWDesign\undoCommands</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ComGraphicsConnection.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\SystemDesign\ComGraphicsConnection.cpp">
+      <Filter>Source Files\designEditors\SystemDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\SystemDesign\ComConnectionAddCommand.cpp">
+      <Filter>Source Files\designEditors\SystemDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\SystemDesign\ComConnectionDeleteCommand.cpp">
+      <Filter>Source Files\designEditors\SystemDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\SystemDesign\SWPortDeleteCommand.cpp">
+      <Filter>Source Files\designEditors\SystemDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\SystemDesign\SWInterfaceDeleteCommand.cpp">
+      <Filter>Source Files\designEditors\SystemDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ApiGraphicsConnection.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\SystemDesign\ApiGraphicsConnection.cpp">
+      <Filter>Source Files\designEditors\SystemDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\SystemDesign\ApiConnectionAddCommand.cpp">
+      <Filter>Source Files\designEditors\SystemDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\SystemDesign\ApiConnectionDeleteCommand.cpp">
+      <Filter>Source Files\designEditors\SystemDesign</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5817,6 +5847,12 @@
     <CustomBuild Include="designEditors\SystemDesign\SystemComponentDeleteCommand.h">
       <Filter>Header Files\designEditors\SystemDesign</Filter>
     </CustomBuild>
+    <CustomBuild Include="designEditors\SystemDesign\ComGraphicsConnection.h">
+      <Filter>Header Files\designEditors\SystemDesign</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\SystemDesign\ApiGraphicsConnection.h">
+      <Filter>Header Files\designEditors\SystemDesign</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -6295,6 +6331,24 @@
     </ClInclude>
     <ClInclude Include="designEditors\HWDesign\undoCommands\ComponentInstancePasteCommand.h">
       <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\SystemDesign\ComConnectionAddCommand.h">
+      <Filter>Header Files\designEditors\SystemDesign</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\SystemDesign\ComConnectionDeleteCommand.h">
+      <Filter>Header Files\designEditors\SystemDesign</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\SystemDesign\SWPortDeleteCommand.h">
+      <Filter>Header Files\designEditors\SystemDesign</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\SystemDesign\SWInterfaceDeleteCommand.h">
+      <Filter>Header Files\designEditors\SystemDesign</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\SystemDesign\ApiConnectionAddCommand.h">
+      <Filter>Header Files\designEditors\SystemDesign</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\SystemDesign\ApiConnectionDeleteCommand.h">
+      <Filter>Header Files\designEditors\SystemDesign</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

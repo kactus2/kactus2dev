@@ -28,6 +28,12 @@
 #include <designEditors/common/Association/Association.h>
 #include <designEditors/common/StickyNote/StickyNote.h>
 #include <designEditors/common/Association/AssociationRemoveCommand.h>
+#include <designEditors/SystemDesign/ComGraphicsConnection.h>
+#include <designEditors/SystemDesign/ComConnectionDeleteCommand.h>
+#include <designEditors/SystemDesign/SWPortDeleteCommand.h>
+#include <designEditors/SystemDesign/SWInterfaceDeleteCommand.h>
+#include <designEditors/SystemDesign/ApiGraphicsConnection.h>
+#include <designEditors/SystemDesign/ApiConnectionDeleteCommand.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 #include <library/LibraryManager/LibraryUtils.h>
@@ -304,7 +310,8 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
             foreach (QGraphicsItem* selected, selectedItems)
             {
                 SystemColumn* column = static_cast<SystemColumn*>(selected);
-                QUndoCommand* childCmd = new SystemColumnDeleteCommand(getDiagram()->getLayout().data(), column, cmd.data());
+                QUndoCommand* childCmd = new SystemColumnDeleteCommand(
+                    getDiagram()->getLayout().data(), column, getDiagram()->getDesign(), cmd.data());
                 childCmd->redo();
             }
 
@@ -358,7 +365,7 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
                 if (port->isTemporary())
                 {
                     // Delete the port.
-                    QUndoCommand* childCmd = new SWPortDeleteCommand(port, cmd.data());
+                    QUndoCommand* childCmd = new SWPortDeleteCommand(port, getDiagram()->getDesign(), cmd.data());
                     childCmd->redo();
                 }
             }
@@ -374,62 +381,55 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
             {
                 SWInterfaceItem* interface = static_cast<SWInterfaceItem*>(selected);
 
-                QUndoCommand* childCmd = new SWInterfaceDeleteCommand(interface, cmd.data());
+                QUndoCommand* childCmd =
+                    new SWInterfaceDeleteCommand(interface, getDiagram()->getDesign(), cmd.data());
                 childCmd->redo();
             }
 
             getEditProvider()->addCommand(cmd);
         }
-        else if (type == GraphicsConnection::Type)
+        else if (type == ComGraphicsConnection::Type)
         {
             getDiagram()->clearSelection();
-            QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
+            QSharedPointer<QUndoCommand> undoCommand(new QUndoCommand());
 
             foreach (QGraphicsItem* selected, selectedItems)
             {
-                // Delete the connection.
-                GraphicsConnection* conn = static_cast<GraphicsConnection*>(selected);
-                SWConnectionEndpoint* endpoint1 = static_cast<SWConnectionEndpoint*>(conn->endpoint1());
-                SWConnectionEndpoint* endpoint2 = static_cast<SWConnectionEndpoint*>(conn->endpoint2());
+                ComGraphicsConnection* comConnection = static_cast<ComGraphicsConnection*>(selected);
+                SWConnectionEndpoint* endPoint1 = static_cast<SWConnectionEndpoint*>(comConnection->endpoint1());
+                SWConnectionEndpoint* endPoint2 = static_cast<SWConnectionEndpoint*>(comConnection->endpoint2());
 
-                QUndoCommand* childCmd = new SWConnectionDeleteCommand(conn, cmd.data());
-                childCmd->redo();
-                
-                // If the bus ports are invalid, delete them too.
-                if (endpoint1->isInvalid())
-                {
-                    QUndoCommand* childCmd = 0;
+                QUndoCommand* childCommand =
+                    new ComConnectionDeleteCommand(comConnection, getDiagram()->getDesign(), undoCommand.data());
+                childCommand->redo();
 
-                    if (endpoint1->type() == SWPortItem::Type)
-                    {
-                        childCmd = new SWPortDeleteCommand(static_cast<SWPortItem*>(endpoint1), cmd.data());
-                    }
-                    else
-                    {
-                        childCmd = new SWInterfaceDeleteCommand(static_cast<SWInterfaceItem*>(endpoint1), cmd.data());
-                    }
-
-                    childCmd->redo();
-                }
-
-                if (endpoint2->isInvalid())
-                {
-                    QUndoCommand* childCmd = 0;
-
-                    if (endpoint2->type() == SWPortItem::Type)
-                    {
-                        childCmd = new SWPortDeleteCommand(static_cast<SWPortItem*>(endpoint2), cmd.data());
-                    }
-                    else
-                    {
-                        childCmd = new SWInterfaceDeleteCommand(static_cast<SWInterfaceItem*>(endpoint2), cmd.data());
-                    }
-
-                    childCmd->redo();
-                }
+                deleteConnectedEndPoint(endPoint1, undoCommand);
+                deleteConnectedEndPoint(endPoint2, undoCommand);
             }
 
-            getEditProvider()->addCommand(cmd);
+            getEditProvider()->addCommand(undoCommand);
+        }
+
+        else if (type == ApiGraphicsConnection::Type)
+        {
+            getDiagram()->clearSelection();
+            QSharedPointer<QUndoCommand> undoCommand(new QUndoCommand());
+
+            foreach (QGraphicsItem* selected, selectedItems)
+            {
+                ApiGraphicsConnection* apiConnection = static_cast<ApiGraphicsConnection*>(selected);
+                SWConnectionEndpoint* endPoint1 = static_cast<SWConnectionEndpoint*>(apiConnection->endpoint1());
+                SWConnectionEndpoint* endPoint2 = static_cast<SWConnectionEndpoint*>(apiConnection->endpoint2());
+
+                QUndoCommand* childCommand =
+                    new ApiConnectionDeleteCommand(apiConnection, getDiagram()->getDesign(), undoCommand.data());
+                childCommand->redo();
+
+                deleteConnectedEndPoint(endPoint1, undoCommand);
+                deleteConnectedEndPoint(endPoint2, undoCommand);
+            }
+
+            getEditProvider()->addCommand(undoCommand);
         }
         else if (type == StickyNote::Type)
         {
@@ -439,6 +439,30 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
         {
             removeSelectedAssociations();
         }   
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignWidget::deleteConnectedEndPoint()
+//-----------------------------------------------------------------------------
+void SystemDesignWidget::deleteConnectedEndPoint(SWConnectionEndpoint* endPoint,
+    QSharedPointer<QUndoCommand> parentCommand)
+{
+    if (endPoint->isInvalid())
+    {
+        QUndoCommand* endPointCommand = 0;
+        if (endPoint->type() == SWPortItem::Type)
+        {
+            endPointCommand = new SWPortDeleteCommand(
+                static_cast<SWPortItem*>(endPoint), getDiagram()->getDesign(), parentCommand.data());
+        }
+        else
+        {
+            endPointCommand = new SWInterfaceDeleteCommand(
+                static_cast<SWInterfaceItem*>(endPoint), getDiagram()->getDesign(), parentCommand.data());
+        }
+
+        endPointCommand->redo();
     }
 }
 

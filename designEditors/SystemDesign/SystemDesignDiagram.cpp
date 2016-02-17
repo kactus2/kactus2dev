@@ -34,9 +34,13 @@
 #include <common/graphicsItems/ConnectionUndoCommands.h>
 
 #include <designEditors/common/DiagramUtil.h>
-#include <designEditors/SystemDesign/SystemDetailsEditor/SwitchHWDialog.h>
 #include <designEditors/HWDesign/columnview/ColumnEditDialog.h>
 #include <designEditors/HWDesign/HWChangeCommands.h>
+#include <designEditors/SystemDesign/SystemDetailsEditor/SwitchHWDialog.h>
+#include <designEditors/SystemDesign/ComGraphicsConnection.h>
+#include <designEditors/SystemDesign/ComConnectionAddCommand.h>
+#include <designEditors/SystemDesign/ApiGraphicsConnection.h>
+#include <designEditors/SystemDesign/ApiConnectionAddCommand.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 
@@ -54,6 +58,7 @@
 #include <IPXACTmodels/kactusExtensions/HierApiInterconnection.h>
 #include <IPXACTmodels/kactusExtensions/ComInterconnection.h>
 #include <IPXACTmodels/kactusExtensions/HierComInterconnection.h>
+#include <IPXACTmodels/kactusExtensions/ConnectionRoute.h>
 
 #include <QGraphicsScene>
 #include <QMimeData>
@@ -71,12 +76,11 @@ Q_DECLARE_METATYPE(SystemDesignDiagram::ColumnCollectionCopyData)
 // Function: SystemDesignDiagram::SystemDesignDiagram()
 //-----------------------------------------------------------------------------
 SystemDesignDiagram::SystemDesignDiagram(bool onlySW, LibraryInterface* lh,
-                                         QSharedPointer<IEditProvider> editProvider,
-                                         SystemDesignWidget* parent)
-    : ComponentDesignDiagram(lh, editProvider, parent),
-      onlySW_(onlySW),
-      dragType_(DRAG_TYPE_NONE),
-      dragEndPoint_(0)
+                                         QSharedPointer<IEditProvider> editProvider, SystemDesignWidget* parent):
+ComponentDesignDiagram(lh, editProvider, parent),
+onlySW_(onlySW),
+dragType_(DRAG_TYPE_NONE),
+dragEndPoint_(0)
 {
 
 }
@@ -1423,15 +1427,21 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
     {
         if (onlySW_)
         {
-            design->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("Low-level", ColumnTypes::COMPONENTS, 0, SW_COLUMN_WIDTH)));
-            design->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("Middle-level", ColumnTypes::COMPONENTS, 0, SW_COLUMN_WIDTH)));
-            design->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("High-level", ColumnTypes::COMPONENTS, 0, SW_COLUMN_WIDTH)));
-            design->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("Out", ColumnTypes::IO, 0, IO_COLUMN_WIDTH)));
+            design->addColumn(QSharedPointer<ColumnDesc>(
+                new ColumnDesc("Low-level", ColumnTypes::COMPONENTS, 0, SW_COLUMN_WIDTH)));
+            design->addColumn(QSharedPointer<ColumnDesc>(
+                new ColumnDesc("Middle-level", ColumnTypes::COMPONENTS, 0, SW_COLUMN_WIDTH)));
+            design->addColumn(QSharedPointer<ColumnDesc>(
+                new ColumnDesc("High-level", ColumnTypes::COMPONENTS, 0, SW_COLUMN_WIDTH)));
+            design->addColumn(QSharedPointer<ColumnDesc>(
+                new ColumnDesc("Out", ColumnTypes::IO, 0, IO_COLUMN_WIDTH)));
         }
         else
         {
-            design->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("SW Components", ColumnTypes::COMPONENTS, 0, SYSTEM_COLUMN_WIDTH)));
-            design->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("SW Components", ColumnTypes::COMPONENTS, 0, SYSTEM_COLUMN_WIDTH)));
+            design->addColumn(QSharedPointer<ColumnDesc>(
+                new ColumnDesc("SW Components", ColumnTypes::COMPONENTS, 0, SYSTEM_COLUMN_WIDTH)));
+            design->addColumn(QSharedPointer<ColumnDesc>(
+                new ColumnDesc("SW Components", ColumnTypes::COMPONENTS, 0, SYSTEM_COLUMN_WIDTH)));
         }
     }
 
@@ -1663,11 +1673,9 @@ void SystemDesignDiagram::loadComConnections(QSharedPointer<Design> design)
             port2 = port2->getOffPageConnector();
         }
 
-        GraphicsConnection* connection = new GraphicsConnection(port1, port2, true,
-            conn->name(),
-            conn->displayName(),
-            conn->description(), this);
-        connection->setRoute(conn->getRoute());
+        QSharedPointer<ConnectionRoute> comRoute = getInterconnectionRoute(conn->name());
+
+        ComGraphicsConnection* connection = new ComGraphicsConnection(port1, port2, conn, comRoute, true, this);
 
         if (conn->isOffPage())
         {
@@ -1782,6 +1790,23 @@ void SystemDesignDiagram::loadComConnections(QSharedPointer<Design> design)
 }
 
 //-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::getInterconnectionRoute()
+//-----------------------------------------------------------------------------
+QSharedPointer<ConnectionRoute> SystemDesignDiagram::getInterconnectionRoute(QString const& interconnectionName)
+    const
+{
+    foreach (QSharedPointer<ConnectionRoute> route, getDesign()->getRoutes())
+    {
+        if (route->name() == interconnectionName)
+        {
+            return route;
+        }
+    }
+
+    return QSharedPointer<ConnectionRoute> (new ConnectionRoute(interconnectionName));
+}
+
+//-----------------------------------------------------------------------------
 // Function: SystemDesignDiagram::loadApiDependencies()
 //-----------------------------------------------------------------------------
 void SystemDesignDiagram::loadApiDependencies(QSharedPointer<Design> design)
@@ -1838,11 +1863,10 @@ void SystemDesignDiagram::loadApiDependencies(QSharedPointer<Design> design)
             port2 = port2->getOffPageConnector();
         }
 
-        GraphicsConnection* connection = new GraphicsConnection(port1, port2, true,
-            dependency->name(),
-            dependency->displayName(),
-            dependency->description(), this);
-        connection->setRoute(dependency->getRoute());
+        QSharedPointer<ConnectionRoute> apiRoute = getInterconnectionRoute(dependency->name());
+        ApiGraphicsConnection* connection =
+            new ApiGraphicsConnection(port1, port2, dependency, apiRoute, true, this);
+
         connection->setImported(dependency->isImported());
 
         if (dependency->isOffPage())
@@ -2258,7 +2282,54 @@ void SystemDesignDiagram::importDesign(QSharedPointer<Design> design, IGraphicsI
 GraphicsConnection* SystemDesignDiagram::createConnection(ConnectionEndpoint* startPoint, 
     ConnectionEndpoint* endPoint)
 {
-    return new GraphicsConnection(startPoint, endPoint, false, QString(), QString(), QString(), this);	
+    QSharedPointer<ConnectionRoute> route(new ConnectionRoute(""));
+
+    GraphicsConnection* connection;
+
+    if (startPoint->isApi())
+    {
+        QSharedPointer<ApiInterconnection> interconnection (new ApiInterconnection());
+
+        QSharedPointer<ActiveInterface> startInterface(
+            new ActiveInterface(startPoint->encompassingComp()->name(), startPoint->getApiInterface()->name()));
+        interconnection->setInterface1(startInterface);
+
+        QSharedPointer<ActiveInterface> endInterface(
+            new ActiveInterface(endPoint->encompassingComp()->name(), endPoint->getApiInterface()->name()));
+        interconnection->setInterface2(endInterface);
+
+        ApiGraphicsConnection* apiGraphicsConnection =
+            new ApiGraphicsConnection(startPoint, endPoint, interconnection, route, false, this);
+
+        QString connectionName = apiGraphicsConnection->createDefaultName();
+        interconnection->setName(connectionName);
+        route->setName(connectionName);
+
+        connection = apiGraphicsConnection;
+    }
+    else if (startPoint->isCom())
+    {
+        QSharedPointer<ComInterconnection> interconnection(new ComInterconnection());
+
+        QSharedPointer<ActiveInterface> startInterface(
+            new ActiveInterface(startPoint->encompassingComp()->name(), startPoint->getComInterface()->name()));
+        interconnection->setInterface1(startInterface);
+
+        QSharedPointer<ActiveInterface> endInterface(
+            new ActiveInterface(endPoint->encompassingComp()->name(), endPoint->getComInterface()->name()));
+        interconnection->setInterface2(endInterface);
+
+        ComGraphicsConnection* comGraphicsConnection =
+            new ComGraphicsConnection(startPoint, endPoint, interconnection, route, false, this);
+
+        QString connectionName = comGraphicsConnection->createDefaultName();
+        interconnection->setName(connectionName);
+        route->setName(connectionName);
+
+        connection = comGraphicsConnection;
+    }
+
+    return connection;
 }
 
 //-----------------------------------------------------------------------------
@@ -2266,8 +2337,27 @@ GraphicsConnection* SystemDesignDiagram::createConnection(ConnectionEndpoint* st
 //-----------------------------------------------------------------------------
 GraphicsConnection* SystemDesignDiagram::createConnection(ConnectionEndpoint* startPoint, QPointF const& endPoint)
 {
-    return new GraphicsConnection(startPoint->scenePos(), startPoint->getDirection(), endPoint,
-        QVector2D(0.0f, 0.0f), QString(), QString(), this);
+    GraphicsConnection* connection;
+
+    if (startPoint->isApi())
+    {
+        connection = new ApiGraphicsConnection(startPoint->scenePos(), startPoint->getDirection(), endPoint,
+            QVector2D(0.0f, 0.0f), QString(), QString(), this);
+    }
+    else if (startPoint->isCom())
+    {
+        connection = new ComGraphicsConnection(startPoint->scenePos(), startPoint->getDirection(), endPoint,
+            QVector2D(0.0f, 0.0f), QString(), QString(), this);
+    }
+    else
+    {
+        connection = new GraphicsConnection(startPoint->scenePos(), startPoint->getDirection(), endPoint,
+            QVector2D(0.0f, 0.0f), QString(), QString(), this);
+    }
+
+    connection->setZValue(1000);
+
+    return connection;
 }
 
 //-----------------------------------------------------------------------------
@@ -2275,7 +2365,21 @@ GraphicsConnection* SystemDesignDiagram::createConnection(ConnectionEndpoint* st
 //-----------------------------------------------------------------------------
 QSharedPointer<QUndoCommand> SystemDesignDiagram::createAddCommandForConnection(GraphicsConnection* connection)
 {
-    return QSharedPointer<QUndoCommand>(new SWConnectionAddCommand(this, connection));
+    ApiGraphicsConnection* apiConnection = dynamic_cast<ApiGraphicsConnection*>(connection);
+    if (apiConnection)
+    {
+        return QSharedPointer<QUndoCommand>(new ApiConnectionAddCommand(this, apiConnection, getDesign()));
+    }
+    else
+    {
+        ComGraphicsConnection* comConnection = dynamic_cast<ComGraphicsConnection*>(connection);
+        if (comConnection)
+        {
+            return QSharedPointer<QUndoCommand>(new ComConnectionAddCommand(this, comConnection, getDesign()));
+        }
+    }
+
+    return QSharedPointer<QUndoCommand>(new QUndoCommand());
 }
 
 //-----------------------------------------------------------------------------

@@ -19,8 +19,11 @@
 
 #include <common/graphicsItems/GraphicsColumnLayout.h>
 #include <common/graphicsItems/ComponentItem.h>
-#include <common/graphicsItems/GraphicsConnection.h>
 
+#include <designEditors/SystemDesign/ComGraphicsConnection.h>
+#include <designEditors/SystemDesign/ComConnectionDeleteCommand.h>
+#include <designEditors/SystemDesign/ApiGraphicsConnection.h>
+#include <designEditors/SystemDesign/ApiConnectionDeleteCommand.h>
 
 #include <designEditors/common/Association/Association.h>
 #include <designEditors/common/Association/AssociationRemoveCommand.h>
@@ -29,7 +32,8 @@
 // Function: SystemColumnDeleteCommand()
 //-----------------------------------------------------------------------------
 SystemColumnDeleteCommand::SystemColumnDeleteCommand(GraphicsColumnLayout* layout, SystemColumn* column,
-                                                     QUndoCommand* parent):
+                                                     QSharedPointer<Design> containingDesign,
+                                                     QUndoCommand* parent /* = 0 */):
 QUndoCommand(parent),
 layout_(layout),
 column_(column), del_(true)
@@ -56,7 +60,7 @@ column_(column), del_(true)
                 {
                     if (!connections.contains(conn))
                     {
-                        new SWConnectionDeleteCommand(conn, this);
+                        addConnectionDeleteCommand(conn);
                         connections.append(conn);
                     }
                 }
@@ -67,7 +71,7 @@ column_(column), del_(true)
                     {
                         if (!connections.contains(conn))
                         {
-                            new SWConnectionDeleteCommand(conn, this);
+                            addConnectionDeleteCommand(conn);
                             connections.append(conn);
                         }
                     }
@@ -86,7 +90,7 @@ column_(column), del_(true)
             {
                 if (!connections.contains(conn))
                 {
-                    new SWConnectionDeleteCommand(conn, this);
+                    addConnectionDeleteCommand(conn);
                     connections.append(conn);
                 }
             }
@@ -97,7 +101,7 @@ column_(column), del_(true)
                 {
                     if (!connections.contains(conn))
                     {
-                        new SWConnectionDeleteCommand(conn, this);
+                        addConnectionDeleteCommand(conn);
                         connections.append(conn);
                     }
                 }
@@ -144,201 +148,24 @@ void SystemColumnDeleteCommand::redo()
 }
 
 //-----------------------------------------------------------------------------
-// Function: SWConnectionDeleteCommand()
+// Function: SystemDeleteCommands::addConnectionDeleteCommand()
 //-----------------------------------------------------------------------------
-SWConnectionDeleteCommand::SWConnectionDeleteCommand(GraphicsConnection* conn, QUndoCommand* parent):
-QUndoCommand(parent),
-conn_(conn),
-scene_(conn->scene()),
-del_(true)
+void SystemColumnDeleteCommand::addConnectionDeleteCommand(GraphicsConnection* connection)
 {
-    foreach(Association* association, conn->getAssociations())
+    //                         new SWConnectionDeleteCommand(conn, this);
+    //                         connections.append(conn);
+
+    ApiGraphicsConnection* apiConnection = dynamic_cast<ApiGraphicsConnection*>(connection);
+    if (apiConnection)
     {
-        new AssociationRemoveCommand(association, scene_, this);
+        new ApiConnectionDeleteCommand(apiConnection, containingDesign_, this);
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: ~SWConnectionDeleteCommand()
-//-----------------------------------------------------------------------------
-SWConnectionDeleteCommand::~SWConnectionDeleteCommand()
-{
-    if (del_)
+    else
     {
-        delete conn_;
+        ComGraphicsConnection* comConnection = dynamic_cast<ComGraphicsConnection*>(connection);
+        if (comConnection)
+        {
+            new ComConnectionDeleteCommand(comConnection, containingDesign_, this);
+        }
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: undo()
-//-----------------------------------------------------------------------------
-void SWConnectionDeleteCommand::undo()
-{
-    // Execute child commands.
-    QUndoCommand::undo();
-
-    // Add the item back to the scene.
-    scene_->addItem(conn_);
-
-    // Connect the ends.
-    conn_->connectEnds();
-
-    scene_->clearSelection();
-    conn_->setSelected(true);
-    del_ = false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: redo()
-//-----------------------------------------------------------------------------
-void SWConnectionDeleteCommand::redo()
-{
-    // Remove the item from the scene.
-    conn_->setSelected(false);
-    scene_->removeItem(conn_);
-
-    // Disconnect the ends.
-    conn_->disconnectEnds();
-    del_ = true;
-
-    // Execute child commands.
-    QUndoCommand::redo();
-}
-
-//-----------------------------------------------------------------------------
-// Function: SWPortDeleteCommand()
-//-----------------------------------------------------------------------------
-SWPortDeleteCommand::SWPortDeleteCommand(SWPortItem* port, QUndoCommand* parent) :
-QUndoCommand(parent),
-port_(port),
-parent_(static_cast<SystemComponentItem*>(port->parentItem())),
-scene_(port->scene()),
-del_(true)
-{
-    // Create child commands for removing connection.
-    foreach (GraphicsConnection* conn, port_->getConnections())
-    {
-        new SWConnectionDeleteCommand(conn, this);
-    }
-
-    foreach (GraphicsConnection* conn, port_->getOffPageConnector()->getConnections())
-    {
-        new SWConnectionDeleteCommand(conn, this);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: ~SWPortDeleteCommand()
-//-----------------------------------------------------------------------------
-SWPortDeleteCommand::~SWPortDeleteCommand()
-{
-    if (del_)
-    {
-        delete port_;
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: undo()
-//-----------------------------------------------------------------------------
-void SWPortDeleteCommand::undo()
-{
-    // Add the endpoint back to the scene.
-    scene_->addItem(port_);
-
-    // Add the endpoint to the parent component.
-    parent_->addPort(port_);
-    del_ = false;
-
-    // Execute child commands.
-    QUndoCommand::undo();
-}
-
-//-----------------------------------------------------------------------------
-// Function: redo()
-//-----------------------------------------------------------------------------
-void SWPortDeleteCommand::redo()
-{
-    // Execute child commands.
-    QUndoCommand::redo();
-
-    // Remove the endpoint from the parent component.
-    parent_->removePort(port_);
-
-    // Remove the endpoint from the scene.
-    scene_->removeItem(port_);
-    del_ = true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: SWInterfaceDeleteCommand()
-//-----------------------------------------------------------------------------
-SWInterfaceDeleteCommand::SWInterfaceDeleteCommand(SWInterfaceItem* interface, QUndoCommand* parent):
-QUndoCommand(parent),
-interface_(interface),
-apiInterface_(interface->getApiInterface()),
-comInterface_(interface->getComInterface()),
-parent_(dynamic_cast<IGraphicsItemStack*>(interface->parentItem())),
-scene_(interface->scene()),
-del_(true)
-{
-    // Create child commands for removing interconnections.
-    foreach (GraphicsConnection* conn, interface_->getConnections())
-    {
-        new SWConnectionDeleteCommand(conn, this);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: ~SWInterfaceDeleteCommand()
-//-----------------------------------------------------------------------------
-SWInterfaceDeleteCommand::~SWInterfaceDeleteCommand()
-{
-    if (del_)
-    {
-        delete interface_;
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: undo()
-//-----------------------------------------------------------------------------
-void SWInterfaceDeleteCommand::undo()
-{
-    // Add the interface back to the scene.
-    parent_->addItem(interface_);
-    del_ = false;
-
-    // Define the interface.
-    if (apiInterface_ != 0)
-    {
-        interface_->define(apiInterface_);
-    }
-    else if (comInterface_ != 0)
-    {
-        interface_->define(comInterface_);
-    }
-
-    // Execute child commands.
-    QUndoCommand::undo();
-}
-
-//-----------------------------------------------------------------------------
-// Function: redo()
-//-----------------------------------------------------------------------------
-void SWInterfaceDeleteCommand::redo()
-{
-    // Execute child commands.
-    QUndoCommand::redo();
-
-    // Undefine the interface.
-    if (apiInterface_ != 0 || comInterface_ != 0)
-    {
-        interface_->undefine();
-    }
-
-    // Remove the interface from the scene.
-    parent_->removeItem(interface_);
-    scene_->removeItem(interface_);
-    del_ = true;
 }

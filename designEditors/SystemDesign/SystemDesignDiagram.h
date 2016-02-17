@@ -31,6 +31,7 @@ class GraphicsConnection;
 class SWComponentItem;
 class SWPortItem;
 class SWConnectionEndpoint;
+class ConnectionRoute;
 
 //-----------------------------------------------------------------------------
 //! SystemDesignDiagram class.
@@ -324,6 +325,15 @@ private:
      *  Loads the API dependencies from the given design.
      */
     void loadApiDependencies(QSharedPointer<Design> design);
+
+    /*!
+     *  Get the route used by the interconnection.
+     *
+     *      @param [in] interconnectionName     Name of the selected interconnection.
+     *
+     *      @return The route used by the selected interconnection.
+     */
+    QSharedPointer<ConnectionRoute> getInterconnectionRoute(QString const& interconnectionName) const;
 
     /*!
      *  Returns the HW component instance with the given name.

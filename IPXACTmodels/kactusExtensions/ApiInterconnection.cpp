@@ -111,7 +111,7 @@ imported_()
         setRoute(route);
     }
 
-    QDomNode importedNode = node.firstChildElement();
+    QDomNode importedNode = node.firstChildElement("kactus2:imported");
     imported_ = !importedNode.isNull();
 }
 
@@ -147,8 +147,14 @@ void ApiInterconnection::write(QXmlStreamWriter& writer) const
     writer.writeStartElement("kactus2:apiConnection");
 
     writer.writeTextElement("ipxact:name", name());
-    writer.writeTextElement("ipxact:displayName", displayName());
-    writer.writeTextElement("ipxact:description", description());
+    if (!displayName().isEmpty())
+    {
+        writer.writeTextElement("ipxact:displayName", displayName());
+    }
+    if (!description().isEmpty())
+    {
+        writer.writeTextElement("ipxact:description", description());
+    }
 
     writer.writeEmptyElement("kactus2:activeApiInterface");
     writer.writeAttribute("componentRef", getInterface1()->getComponentReference());

@@ -14,6 +14,8 @@
 
 #include <designEditors/common/DesignWidget.h>
 
+class SWConnectionEndpoint;
+
 //-----------------------------------------------------------------------------
 //! SystemDesignWidget class.
 //-----------------------------------------------------------------------------
@@ -71,6 +73,14 @@ private:
     // Disable copying.
     SystemDesignWidget(SystemDesignWidget const& rhs);
     SystemDesignWidget& operator=(SystemDesignWidget const& rhs);
+
+    /*!
+     *  Delete the connected end point.
+     *
+     *      @param [in] endPoint        The selected end point.
+     *      @param [in] parentCommand   The parent command.
+     */
+    void deleteConnectedEndPoint(SWConnectionEndpoint* endPoint, QSharedPointer<QUndoCommand> parentCommand);
 
     //-----------------------------------------------------------------------------
     // Data.

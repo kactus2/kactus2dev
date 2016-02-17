@@ -17,7 +17,6 @@
 #include <QGraphicsScene>
 #include <QObject>
 
-class GraphicsConnection;
 class ComponentItem;
 class IGraphicsItemStack;
 class SystemComponentItem;
@@ -25,56 +24,6 @@ class SWPortItem;
 class SWInterfaceItem;
 class ApiInterface;
 class ComInterface;
-
-//-----------------------------------------------------------------------------
-//! SWConnectionAddCommand class.
-//-----------------------------------------------------------------------------
-class SWConnectionAddCommand : public QUndoCommand
-{
-public:
-
-    /*!
-     *  Constructor.
-     *
-     *      @param [in] scene   The scene.
-     *      @param [in] conn    The connection to add.
-     *      @param [in] parent  The parent command.
-     */
-    SWConnectionAddCommand(QGraphicsScene* scene, GraphicsConnection* conn, QUndoCommand* parent = 0);
-
-    /*!
-     *  Destructor.
-     */
-    ~SWConnectionAddCommand();
-
-    /*!
-     *  Undoes the command.
-     */
-    virtual void undo();
-
-    /*!
-     *  Redoes the command.
-     */
-    virtual void redo();
-
-private:
-    // Disable copying.
-    SWConnectionAddCommand(SWConnectionAddCommand const& rhs);
-    SWConnectionAddCommand& operator=(SWConnectionAddCommand const& rhs);
-
-    //-----------------------------------------------------------------------------
-    // Data.
-    //-----------------------------------------------------------------------------
-
-    //! The SW connection.
-    GraphicsConnection* conn_;
-
-    //! The graphics scene.
-    QGraphicsScene* scene_;
-
-    //! Boolean flag for indicating if the connection should be deleted in the destructor.
-    bool del_;
-};
 
 //-----------------------------------------------------------------------------
 //! SystemItemAddCommand class.

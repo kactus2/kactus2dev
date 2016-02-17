@@ -557,6 +557,7 @@ HEADERS += ./common/Global.h \
     ./editors/ConfigurationTools/ViewConfigurerDelegate.h \
     ./designEditors/SystemDesign/HWMappingItem.h \
     ./designEditors/SystemDesign/SystemMoveCommands.h \
+    ./designEditors/SystemDesign/SystemComponentDeleteCommand.h \
     ./designEditors/SystemDesign/SWComponentItem.h \
     ./designEditors/SystemDesign/SWConnectionEndpoint.h \
     ./designEditors/SystemDesign/SWInterfaceItem.h \
@@ -676,7 +677,14 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
-    ./designEditors/SystemDesign/SystemComponentDeleteCommand.h
+    ./designEditors/SystemDesign/ComGraphicsConnection.h \
+    ./designEditors/SystemDesign/ComConnectionAddCommand.h \
+    ./designEditors/SystemDesign/ComConnectionDeleteCommand.h \
+    ./designEditors/SystemDesign/SWPortDeleteCommand.h \
+    ./designEditors/SystemDesign/SWInterfaceDeleteCommand.h \
+    ./designEditors/SystemDesign/ApiConnectionAddCommand.h \
+    ./designEditors/SystemDesign/ApiGraphicsConnection.h \
+    ./designEditors/SystemDesign/ApiConnectionDeleteCommand.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -1213,6 +1221,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./designEditors/SystemDesign/SystemAddCommands.cpp \
     ./designEditors/SystemDesign/SystemChangeCommands.cpp \
     ./designEditors/SystemDesign/SystemColumn.cpp \
+    ./designEditors/SystemDesign/SystemComponentDeleteCommand.cpp \
     ./designEditors/SystemDesign/SystemComponentItem.cpp \
     ./designEditors/SystemDesign/SystemDeleteCommands.cpp \
     ./designEditors/SystemDesign/SystemDesignDiagram.cpp \
@@ -1267,5 +1276,12 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
-    ./designEditors/SystemDesign/SystemComponentDeleteCommand.cpp
+    ./designEditors/SystemDesign/ComGraphicsConnection.cpp \
+    ./designEditors/SystemDesign/ComConnectionAddCommand.cpp \
+    ./designEditors/SystemDesign/ComConnectionDeleteCommand.cpp \
+    ./designEditors/SystemDesign/SWPortDeleteCommand.cpp \
+    ./designEditors/SystemDesign/SWInterfaceDeleteCommand.cpp \
+    ./designEditors/SystemDesign/ApiGraphicsConnection.cpp \
+    ./designEditors/SystemDesign/ApiConnectionAddCommand.cpp \
+    ./designEditors/SystemDesign/ApiConnectionDeleteCommand.cpp
 RESOURCES += kactus.qrc

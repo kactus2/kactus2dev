@@ -162,8 +162,14 @@ void SWInstance::write(QXmlStreamWriter& writer) const
 
     // Write general data.
     writer.writeTextElement("kactus2:instanceName", getInstanceName());
-    writer.writeTextElement("kactus2:displayName", getDisplayName());
-    writer.writeTextElement("kactus2:description", getDescription());
+    if (!getDisplayName().isEmpty())
+    {
+        writer.writeTextElement("kactus2:displayName", getDisplayName());
+    }
+    if (!getDescription().isEmpty())
+    {
+        writer.writeTextElement("kactus2:description", getDescription());
+    }
 
     if (!getComponentRef()->isEmpty())
     {
