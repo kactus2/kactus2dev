@@ -75,6 +75,8 @@ void ApiConnectionAddCommand::redo()
         QList<QSharedPointer<ApiInterconnection> > apiInterconnections = containingDesign_->getApiConnections();
         apiInterconnections.append(connection_->getApiInterconnection());
         containingDesign_->setApiConnections(apiInterconnections);
+
+        containingDesign_->addRoute(connection_->getRouteExtension());
     }
 
     del_ = false;

@@ -75,6 +75,8 @@ void ComConnectionAddCommand::redo()
         QList<QSharedPointer<ComInterconnection> > comInterconnections = containingDesign_->getComConnections();
         comInterconnections.append(connection_->getComInterconnection());
         containingDesign_->setComConnections(comInterconnections);
+
+        containingDesign_->addRoute(connection_->getRouteExtension());
     }
 
     del_ = false;

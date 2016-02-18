@@ -808,6 +808,11 @@ void Design::removeRoute(QSharedPointer<ConnectionRoute> route)
     if (!routesGroup.isNull())
     {
         routesGroup->removeFromGroup(route);
+
+        if (routesGroup->getByType("kactus2:route").isEmpty())
+        {
+            getVendorExtensions()->removeAll(routesGroup);
+        }
     }
 }
 

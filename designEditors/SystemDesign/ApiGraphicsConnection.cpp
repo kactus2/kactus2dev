@@ -58,7 +58,14 @@ GraphicsConnection(endpoint1, endpoint2, autoConnect, apiInterconnection->name()
 apiInterconnection_(apiInterconnection),
 route_(route)
 {
-    GraphicsConnection::setRoute(route_->getRoute());
+    if (route_->isOffpage())
+    {
+        GraphicsConnection::toggleOffPage();
+    }
+    else
+    {
+        GraphicsConnection::setRoute(route_->getRoute());
+    }
 }
 
 //-----------------------------------------------------------------------------

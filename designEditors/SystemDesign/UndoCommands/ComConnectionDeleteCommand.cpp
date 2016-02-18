@@ -60,7 +60,9 @@ void ComConnectionDeleteCommand::undo()
         QSharedPointer<ComInterconnection> comInterconnection = connection_->getComInterconnection();
         QList<QSharedPointer<ComInterconnection> > containedComs = containingDesign_->getComConnections();
         containedComs.append(comInterconnection);
+        
         containingDesign_->setComConnections(containedComs);
+        containingDesign_->addRoute(connection_->getRouteExtension());
     }
 
     scene_->clearSelection();
@@ -82,6 +84,8 @@ void ComConnectionDeleteCommand::redo()
     QList<QSharedPointer<ComInterconnection> > containedComs = containingDesign_->getComConnections();
     containedComs.removeAll(comInterconnection);
     containingDesign_->setComConnections(containedComs);
+
+    containingDesign_->removeRoute(connection_->getRouteExtension());
 
     deleteConnection_ = true;
 

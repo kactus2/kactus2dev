@@ -12,8 +12,6 @@
 #include "SystemDesignDiagram.h"
 
 #include "SystemChangeCommands.h"
-#include "SystemMoveCommands.h"
-#include "SystemAddCommands.h"
 #include "SWOffPageConnectorItem.h"
 #include "SystemColumn.h"
 #include "HWMappingItem.h"
@@ -36,11 +34,13 @@
 #include <designEditors/common/DiagramUtil.h>
 #include <designEditors/HWDesign/columnview/ColumnEditDialog.h>
 #include <designEditors/HWDesign/HWChangeCommands.h>
+#include <designEditors/SystemDesign/UndoCommands/SystemMoveCommands.h>
+#include <designEditors/SystemDesign/UndoCommands/SystemAddCommands.h>
 #include <designEditors/SystemDesign/SystemDetailsEditor/SwitchHWDialog.h>
 #include <designEditors/SystemDesign/ComGraphicsConnection.h>
-#include <designEditors/SystemDesign/ComConnectionAddCommand.h>
+#include <designEditors/SystemDesign/UndoCommands/ComConnectionAddCommand.h>
 #include <designEditors/SystemDesign/ApiGraphicsConnection.h>
-#include <designEditors/SystemDesign/ApiConnectionAddCommand.h>
+#include <designEditors/SystemDesign/UndoCommands/ApiConnectionAddCommand.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 
@@ -1677,7 +1677,7 @@ void SystemDesignDiagram::loadComConnections(QSharedPointer<Design> design)
 
         ComGraphicsConnection* connection = new ComGraphicsConnection(port1, port2, conn, comRoute, true, this);
 
-        if (conn->isOffPage())
+        if (comRoute->isOffpage())
         {
             connection->setVisible(false);
         }
@@ -1869,7 +1869,7 @@ void SystemDesignDiagram::loadApiDependencies(QSharedPointer<Design> design)
 
         connection->setImported(dependency->isImported());
 
-        if (dependency->isOffPage())
+        if (apiRoute->isOffpage())
         {
             connection->setVisible(false);
         }
@@ -2512,16 +2512,17 @@ void SystemDesignDiagram::draftAt(QPointF const& clickedPosition)
 				// Create the corresponding diagram component.
 				QSharedPointer<SWInstance> swInstance(new SWInstance());
 				swInstance->setInstanceName(name);
-
-				// Add to the design.
-				QList<QSharedPointer<SWInstance> > swInstanceList = getDesign()->getSWInstances();
-				swInstanceList.append(swInstance);
-				getDesign()->setSWInstances(swInstanceList);
+                swInstance->setDraft(true);
 
                 // Create the corresponding SW component item.
                 SWComponentItem* swCompItem = new SWComponentItem(getLibraryInterface(), comp, swInstance);
                 swCompItem->setDraft();
                 swCompItem->setPos(snapPointToGrid(clickedPosition));
+
+                // Add to the design.
+                QList<QSharedPointer<SWInstance> > swInstanceList = getDesign()->getSWInstances();
+                swInstanceList.append(swInstance);
+                getDesign()->setSWInstances(swInstanceList);
 
                 connect(swCompItem, SIGNAL(openCSource(ComponentItem*)), this, SIGNAL(openCSource(ComponentItem*)));
                 connect(swCompItem, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));

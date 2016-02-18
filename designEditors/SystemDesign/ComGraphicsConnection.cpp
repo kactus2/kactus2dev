@@ -56,7 +56,14 @@ GraphicsConnection(endpoint1, endpoint2, autoConnect, comInterconnection->name()
 comInterconnection_(comInterconnection),
 route_(route)
 {
-    GraphicsConnection::setRoute(route_->getRoute());
+    if (route_->isOffpage())
+    {
+        GraphicsConnection::toggleOffPage();
+    }
+    else
+    {
+        GraphicsConnection::setRoute(route_->getRoute());
+    }
 }
 
 //-----------------------------------------------------------------------------
