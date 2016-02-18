@@ -53,25 +53,22 @@ GraphicsConnection::GraphicsConnection(ConnectionEndpoint* endpoint1, Connection
       invalid_(false)
 {
     setItemSettings();
-    createRoute(endpoint1, endpoint2);
+    createRoute(endpoint1_, endpoint2_);
 
-    if (endpoint1->isAdHoc())
+    if (endpoint1_->isAdHoc())
     {
         setLineWidth(1);
     }
 
     if (autoConnect)
     {
-        endpoint1_ = endpoint1;
-        endpoint2_ = endpoint2;
-
-        endpoint1->onConnect(endpoint2);
-        endpoint2->onConnect(endpoint1);
+        endpoint1_->onConnect(endpoint2_);
+        endpoint2_->onConnect(endpoint1_);
 
         validate();
 
-        endpoint1->addConnection(this);
-        endpoint2->addConnection(this);
+        endpoint1_->addConnection(this);
+        endpoint2_->addConnection(this);
 
         if (name_.isEmpty())
         {

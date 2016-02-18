@@ -191,11 +191,12 @@ void InterfaceEditor::setInterface( ConnectionEndpoint* interface )
         type_.setTitle(tr("Bus type VLNV"));
 	    type_.setVLNV(interface->getBusInterface()->getBusType(), true);
         if (interface->getBusInterface()->getAbstractionTypes() && 
-            !interface->getBusInterface()->getAbstractionTypes()->isEmpty())
+            !interface->getBusInterface()->getAbstractionTypes()->isEmpty() &&
+            interface->getBusInterface()->getAbstractionTypes()->first()->getAbstractionRef())
         {
             absType_.setVLNV(*interface->getBusInterface()->getAbstractionTypes()->first()->getAbstractionRef(),
                 true);
-        }        
+        }
 
 	    // set selection for mode editor, signal must be disconnected when mode is set to avoid loops 
 	    disconnect(&modeEdit_, SIGNAL(currentIndexChanged(const QString&)),
@@ -519,23 +520,22 @@ void InterfaceEditor::setPortMaps()
 	Q_ASSERT(interface_);
 
 	// signal must be disconnected when changing items to avoid loops
-	disconnect(&mappings_, SIGNAL(itemChanged(QTableWidgetItem*)),
-		this, SLOT(onPortMapChanged()));
+	disconnect(&mappings_, SIGNAL(itemChanged(QTableWidgetItem*)), this, SLOT(onPortMapChanged()));
 
 	QSharedPointer<BusInterface> busIf = interface_->getBusInterface();
 	Q_ASSERT(busIf);
     QList<QSharedPointer<PortMap> > portMaps;
     if (busIf->getPortMaps())
     {
-       portMaps = *busIf->getPortMaps();
-    }
-    
+        portMaps = *busIf->getPortMaps();
+    }    
 
 	// get the abstraction def for the interface
     VLNV absDefVLNV;
-    if (busIf->getAbstractionTypes() && !busIf->getAbstractionTypes()->isEmpty())
+    if (busIf->getAbstractionTypes() && !busIf->getAbstractionTypes()->isEmpty() &&
+        busIf->getAbstractionTypes()->first()->getAbstractionRef())
     {
-       absDefVLNV = *busIf->getAbstractionTypes()->first()->getAbstractionRef();
+        absDefVLNV = *busIf->getAbstractionTypes()->first()->getAbstractionRef();
     }
     
 	QSharedPointer<AbstractionDefinition> absDef;
@@ -567,17 +567,14 @@ void InterfaceEditor::setPortMaps()
 
         int logicalSize = 1;
         // if the logical port is vectored
-        if (portMap->getLogicalPort())
+        if (portMap->getLogicalPort() && portMap->getLogicalPort()->range_)
         {
-            if (portMap->getLogicalPort()->range_)
-            {
-                QString logicalLeft = parser.parseExpression(portMap->getLogicalPort()->range_->getLeft());
-                QString logicalRight = parser.parseExpression(portMap->getLogicalPort()->range_->getRight());
+            QString logicalLeft = parser.parseExpression(portMap->getLogicalPort()->range_->getLeft());
+            QString logicalRight = parser.parseExpression(portMap->getLogicalPort()->range_->getRight());
 
-                logicalSize = abs(logicalLeft.toInt() - logicalRight.toInt()) + 1;
+            logicalSize = abs(logicalLeft.toInt() - logicalRight.toInt()) + 1;
 
-                logicalPortName += "[" + logicalLeft + ".." + logicalRight + "]";
-            }
+            logicalPortName += "[" + logicalLeft + ".." + logicalRight + "]";
         }
 
 		QTableWidgetItem* logicalItem = new QTableWidgetItem(logicalPortName);
@@ -599,7 +596,6 @@ void InterfaceEditor::setPortMaps()
 		
 		// display at least the name of physical port
         QString physicalPortName = portMap->getPhysicalPort()->name_;
-
 
         int physicalSize = 1;
 
@@ -658,7 +654,7 @@ void InterfaceEditor::setPortMaps()
 	mappings_.setSortingEnabled(true);
 
 	connect(&mappings_, SIGNAL(itemChanged(QTableWidgetItem*)),
-		this, SLOT(onPortMapChanged()), Qt::UniqueConnection);
+        this, SLOT(onPortMapChanged()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

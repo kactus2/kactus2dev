@@ -39,7 +39,7 @@
 DesignWidget::DesignWidget(LibraryInterface* lh, QWidget* parent)
     : TabDocument(parent, DOC_ZOOM_SUPPORT | DOC_DRAW_MODE_SUPPORT | DOC_PRINT_SUPPORT |
                           DOC_PROTECTION_SUPPORT | DOC_EDIT_SUPPORT | DOC_VISIBILITY_CONTROL_SUPPORT, 30, 300),
-      lh_(lh),
+      library_(lh),
       view_(new QGraphicsView(this)),
       editedComponent_(),
       viewName_(),
@@ -182,7 +182,7 @@ void DesignWidget::refresh()
 {
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
-    QSharedPointer<Document> libComp = lh_->getModel(editedComponent_->getVlnv());
+    QSharedPointer<Document> libComp = library_->getModel(editedComponent_->getVlnv());
     QSharedPointer<Component> comp = libComp.staticCast<Component>();
 
     setDesign(comp, viewName_);
@@ -247,30 +247,27 @@ bool DesignWidget::save()
         return false;
     }
 
-    lh_->beginSave();
+    library_->beginSave();
 
     bool writeSucceeded = true;
 
     // Write the files.
-    if (designConf)
-    {
-        if (!lh_->writeModelToFile(designConf))
-        {
-            writeSucceeded = false;
-        }
-    }
-
-    if (!lh_->writeModelToFile(design))
+    if (designConf && !library_->writeModelToFile(designConf))
     {
         writeSucceeded = false;
     }
 
-    /*if (!lh_->writeModelToFile(editedComponent_))
+    if (!library_->writeModelToFile(design))
     {
         writeSucceeded = false;
-    }*/
+    }
 
-    lh_->endSave();
+    if (!library_->writeModelToFile(editedComponent_))
+    {
+        writeSucceeded = false;
+    }
+
+    library_->endSave();
 
     if (writeSucceeded)
     {
@@ -371,7 +368,7 @@ void DesignWidget::centerViewTo(QPointF const& centerPoint)
 //-----------------------------------------------------------------------------
 LibraryInterface* DesignWidget::getLibraryInterface()
 {
-    return lh_;
+    return library_;
 }
 
 //-----------------------------------------------------------------------------

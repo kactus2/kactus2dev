@@ -11,7 +11,7 @@
 
 #include "SystemMoveCommands.h"
 
-#include "SystemComponentItem.h"
+#include <designEditors/SystemDesign/SystemComponentItem.h>
 
 #include <common/graphicsItems/GraphicsConnection.h>
 

@@ -555,8 +555,8 @@ private:
      *      @param [in] component      The component where to place the ports.
      *      @param [in] cmd            The parent undo command for the paste undo commands.
      */
-   void pasteInterfaces(BusInterfaceCollectionCopyData const& collection,
-                        HWComponentItem* component, QUndoCommand* cmd);
+   void pasteInterfaces(BusInterfaceCollectionCopyData const& collection, HWComponentItem* component, 
+       QUndoCommand* cmd);
 
    /*!
      *  Pastes top-level bus interface instances from a copy data collection.
@@ -567,11 +567,11 @@ private:
      *      @param [in] userCursorPos  If true, the instances are placed close to the cursor position.
      *                                 Otherwise the original positions are used.
      */
-    void pasteTopLevelInterfaces(BusInterfaceCollectionCopyData const& collection,
-                         GraphicsColumn* column, QUndoCommand* cmd, bool useCursorPos);
+    void pasteTopLevelInterfaces(BusInterfaceCollectionCopyData const& collection, GraphicsColumn* column,
+        QUndoCommand* cmd, bool useCursorPos);
 
     /*!
-     *  Pastes component instances from a copy data collection.
+     *  Creates paste command for component instances from a copy data collection.
      *
      *      @param [in] collection     The collection of component instance copy data.
      *      @param [in] column         The column where to place the instances.
@@ -579,9 +579,8 @@ private:
      *      @param [in] userCursorPos  If true, the instances are placed close to the cursor position.
      *                                 Otherwise the original positions are used.
      */
-    void createPasteCommand(ComponentCollectionCopyData const& collection,
-                        GraphicsColumn* column, QUndoCommand* cmd, bool useCursorPos);
-
+    void createPasteCommand(ComponentCollectionCopyData const& collection, GraphicsColumn* column, 
+        QUndoCommand* cmd, bool useCursorPos);
 
     //-----------------------------------------------------------------------------
     // Data.

@@ -224,6 +224,11 @@ void ConnectionEditor::setConnection(GraphicsConnection* connection, DesignDiagr
     ConnectionEndpoint* endpoint2 = connection->endpoint2();
 	Q_ASSERT(endpoint1);
 
+    if (!endpoint1 || !endpoint2)
+    {
+        return;
+    }
+
     if (endpoint1->isCom())
     {
         type_.setTitle(tr("COM type VLNV"));

@@ -11,14 +11,13 @@
 
 #include "SystemAddCommands.h"
 
-#include "SystemColumn.h"
-#include "SystemComponentItem.h"
-#include "SWInterfaceItem.h"
-
 #include <common/graphicsItems/ComponentItem.h>
 
 #include <designEditors/SystemDesign/HWMappingItem.h>
 #include <designEditors/SystemDesign/SWComponentItem.h>
+#include <designEditors/SystemDesign/SystemColumn.h>
+#include <designEditors/SystemDesign/SystemComponentItem.h>
+#include <designEditors/SystemDesign/SWInterfaceItem.h>
 
 #include <IPXACTmodels/Design/ComponentInstance.h>
 #include <IPXACTmodels/kactusExtensions/SWInstance.h>

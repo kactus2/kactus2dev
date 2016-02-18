@@ -132,7 +132,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The interconnection.
-    HWConnection* conn_;
+    HWConnection* connection_;
 
     //! The interface modes for the endpoints.
     General::InterfaceMode mode1_;

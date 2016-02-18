@@ -1361,8 +1361,7 @@ GraphicsConnection* HWDesignDiagram::createConnection(ConnectionEndpoint* startP
             else
             {
                 interconnection->getActiveInterfaces()->append(endInterface);
-            }
-            
+            }            
         }
 
         HWConnection* hwConnection = new HWConnection(startPoint, endPoint, interconnection, route, this);    
@@ -1384,7 +1383,7 @@ GraphicsConnection* HWDesignDiagram::createConnection(ConnectionEndpoint* startP
     if (startPoint->isAdHoc())
     {
         return new AdHocConnectionItem(startPoint->scenePos(), startPoint->getDirection(), endPoint,
-            QVector2D(0.0f, 0.0f), QString(), QString(), this);   
+            QVector2D(0.0f, 0.0f), QString(), QString(), this);
     }
     else
     {
@@ -1651,7 +1650,7 @@ void HWDesignDiagram::createComponentItem(QSharedPointer<ComponentInstance> inst
     {
         // Create an unpackaged component so that we can still visualize the component instance.
         component = QSharedPointer<Component>(new Component(*instance->getComponentRef()));
-        component->setImplementation(KactusAttribute::HW);         
+        component->setImplementation(KactusAttribute::HW);
     }
     
     HWComponentItem* item = new HWComponentItem(getLibraryInterface(), instance, component);
@@ -1784,17 +1783,18 @@ void HWDesignDiagram::createInterconnectionBetweenComponents(QSharedPointer<Inte
     }
 
     HWConnection* connectionItem = new HWConnection(startPort, endPort, interconnection, route, this);
-    connectionItem->setBusWidthVisible(getParent()->getVisibilityControls().value("Bus Widths"));
+    addItem(connectionItem);
 
     if (route->isOffpage())
-    {         
+    {
         connectionItem->hide();
     }
 
     connect(connectionItem, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
 
-    addItem(connectionItem);
-    connectionItem->updatePosition();
+    connectionItem->connectEnds();
+    connectionItem->setBusWidthVisible(getParent()->getVisibilityControls().value("Bus Widths"));
+   // connectionItem->updatePosition();
 }
 
 //-----------------------------------------------------------------------------
@@ -2235,7 +2235,7 @@ void HWDesignDiagram::pasteInterfaces(BusInterfaceCollectionCopyData const& coll
 // Function: HWDesignDiagram::pasteTopLevelInterfaces()
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::pasteTopLevelInterfaces(BusInterfaceCollectionCopyData const& collection,
-                                      GraphicsColumn* column, QUndoCommand* cmd, bool useCursorPos)
+    GraphicsColumn* column, QUndoCommand* cmd, bool useCursorPos)
 {
     QStringList existingNames;
     foreach (QGraphicsItem* item, items())
@@ -2251,7 +2251,7 @@ void HWDesignDiagram::pasteTopLevelInterfaces(BusInterfaceCollectionCopyData con
     {
         // Bus interface must have a unique name within the component.
         QString uniqueBusName = instance.busInterface->name();
-        unsigned int count =  0;
+        unsigned int count = 0;
 
         while (existingNames.contains(uniqueBusName))
         {
@@ -2261,24 +2261,24 @@ void HWDesignDiagram::pasteTopLevelInterfaces(BusInterfaceCollectionCopyData con
 
         existingNames.append(uniqueBusName);
 
-        GraphicsColumn* ioColumn = column;
+        GraphicsColumn* targetColumn = column;
         // Check if the column is not for IO.
-        if (!ioColumn->getContentType() == ColumnTypes::IO)
+        if (!targetColumn->getContentType() == ColumnTypes::IO)
         {
-            ioColumn = 0;
+            targetColumn = 0;
 
             // Find the first column that is.
             foreach (GraphicsColumn* otherColumn, getLayout()->getColumns())
             {
                 if (otherColumn->getContentType() == ColumnTypes::IO)
                 {
-                    ioColumn = otherColumn;
+                    targetColumn = otherColumn;
                     break;
                 }
             }
         }
 
-        if(ioColumn != 0)
+        if (targetColumn != 0)
         {          
             // Create a copy of the busInterface and rename it.
             QSharedPointer<BusInterface> copyBusIf(new BusInterface(*instance.busInterface));
@@ -2304,9 +2304,9 @@ void HWDesignDiagram::pasteTopLevelInterfaces(BusInterfaceCollectionCopyData con
 
                     // Create a busPort with the copied bus interface.
                     port = new BusInterfaceItem(getLibraryInterface(), getEditedComponent(), 
-                        copyBusIf, dataGroup, ioColumn);
+                        copyBusIf, dataGroup, targetColumn);
                     pasteCmd = new BusInterfacePasteCommand(instance.srcComponent, 
-                        getEditedComponent(), port, ioColumn, dialog.getPorts(), cmd);
+                        getEditedComponent(), port, targetColumn, dialog.getPorts(), cmd);
                 }                
             }
             else
@@ -2315,9 +2315,9 @@ void HWDesignDiagram::pasteTopLevelInterfaces(BusInterfaceCollectionCopyData con
                 getDesign()->getVendorExtensions()->append(dataGroup);
 
                 // Create a busPort with the copied bus interface.
-                port = new BusInterfaceItem(getLibraryInterface(), getEditedComponent(), copyBusIf, dataGroup, ioColumn);
+                port = new BusInterfaceItem(getLibraryInterface(), getEditedComponent(), copyBusIf, dataGroup, targetColumn);
                 pasteCmd = new BusInterfacePasteCommand(instance.srcComponent, 
-                    getEditedComponent(), port, ioColumn, cmd); 
+                    getEditedComponent(), port, targetColumn, cmd); 
             }
 
             if (useCursorPos)
@@ -2333,7 +2333,7 @@ void HWDesignDiagram::pasteTopLevelInterfaces(BusInterfaceCollectionCopyData con
 
             // Store the positions of other interfaces.
             QMap<BusInterfaceItem*, QPointF> oldPositions;
-            foreach (QGraphicsItem* item, ioColumn->childItems())
+            foreach (QGraphicsItem* item, targetColumn->childItems())
             {
                 if (item->type() == BusInterfaceItem::Type)
                 {
@@ -2352,7 +2352,7 @@ void HWDesignDiagram::pasteTopLevelInterfaces(BusInterfaceCollectionCopyData con
             {
                 if (cur.key()->scenePos() != cur.value())
                 {
-                    new ItemMoveCommand(cur.key(), cur.value(), ioColumn, pasteCmd);
+                    new ItemMoveCommand(cur.key(), cur.value(), targetColumn, pasteCmd);
                 }
                 ++cur;
             }  
@@ -2378,7 +2378,6 @@ void HWDesignDiagram::createPasteCommand(ComponentCollectionCopyData const& coll
             position = instance.instance->getPosition();
         }
 
-        ComponentInstancePasteCommand* pasteCommand = new ComponentInstancePasteCommand(
-            instance.component, instance.instance, position, column, this, cmd);
+        new ComponentInstancePasteCommand(instance.component, instance.instance, position, column, this, cmd);
     }
 }

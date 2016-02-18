@@ -55,7 +55,7 @@ HWConnection::HWConnection(ConnectionEndpoint* endpoint1, ConnectionEndpoint* en
 HWConnection::HWConnection(ConnectionEndpoint* endpoint1, ConnectionEndpoint* endpoint2, 
     QSharedPointer<Interconnection> interconnection, QSharedPointer<ConnectionRoute> route,
     DesignDiagram* parent):
-    GraphicsConnection(endpoint1, endpoint2, true, interconnection->name(), interconnection->displayName(),
+    GraphicsConnection(endpoint1, endpoint2, false, interconnection->name(), interconnection->displayName(),
         interconnection->description(), parent),
     widthLabel_(new QGraphicsTextItem(this)),
     interconnection_(interconnection),

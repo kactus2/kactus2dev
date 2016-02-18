@@ -753,14 +753,23 @@ void ComponentDesignDiagram::endConnectionTo(QPointF const& point)
             tempConnection_ = newTempConnection;
         }
 
-        if (tempConnection_->connectEnds())
+        if (//tempConnection_->connectEnds())
+            tempConnection_->endpoint1()->canConnect(tempConnection_->endpoint2()) &&
+            tempConnection_->endpoint2()->canConnect(tempConnection_->endpoint1()))
         {
-            tempConnection_->fixOverlap();
-
             QSharedPointer<QUndoCommand> cmd = createAddCommandForConnection(tempConnection_);
-            getEditProvider()->addCommand(cmd);
             cmd->redo();
 
+            tempConnection_->fixOverlap();
+            if (tempConnection_->endpoint1() && tempConnection_->endpoint2())
+            {
+                getEditProvider()->addCommand(cmd); 
+            }
+            else
+            {
+                discardConnection();
+                connectionStartPoint_ = 0;
+            }
             tempConnection_ = 0;
         }
         else
@@ -917,11 +926,11 @@ void ComponentDesignDiagram::hideOffPageConnections()
 {
     foreach (QGraphicsItem* item, items())
     {
-        GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
+        GraphicsConnection* connection = dynamic_cast<GraphicsConnection*>(item);
 
-        if (conn != 0 && conn->endpoint1()->type() == offpageConnectorType())
+        if (connection != 0 && connection->endpoint1()->type() == offpageConnectorType())
         {
-            conn->hide();
+            connection->hide();
         }
     }
 }
@@ -931,7 +940,7 @@ void ComponentDesignDiagram::hideOffPageConnections()
 //-----------------------------------------------------------------------------
 void ComponentDesignDiagram::beginComponentReplaceDrag(QPointF const& startpoint)
 {
-    ComponentItem* sourceComp =  getTopmostComponent(startpoint);
+    ComponentItem* sourceComp = getTopmostComponent(startpoint);
 
     if (sourceComp)
     {
@@ -980,9 +989,8 @@ void ComponentDesignDiagram::endComponentReplaceDrag(QPointF const& endpoint)
     }
 
     QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-        tr("Component instance '%1' is about to be switched in place "
-        "with '%2'. Continue and replace?").arg(destComp->name(), sourceComp_->name()),
-        QMessageBox::Yes | QMessageBox::No, getParent());
+        tr("Component instance '%1' is about to be switched in place with '%2'. Continue and replace?").arg(
+        destComp->name(), sourceComp_->name()), QMessageBox::Yes | QMessageBox::No, getParent());
 
     if (msgBox.exec() == QMessageBox::Yes)
     {

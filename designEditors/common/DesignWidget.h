@@ -251,7 +251,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The library interface.
-    LibraryInterface* lh_;
+    LibraryInterface* library_;
 
     //! The graphics view for showing the diagram.
     QGraphicsView* view_;

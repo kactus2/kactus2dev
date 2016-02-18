@@ -11,14 +11,13 @@
 
 #include "SWPortDeleteCommand.h"
 
-#include "SystemComponentItem.h"
-#include "SWPortItem.h"
+#include <designEditors/SystemDesign/undoCommands/ComConnectionDeleteCommand.h>
+#include <designEditors/SystemDesign/undoCommands/ApiConnectionDeleteCommand.h>
 
-#include <designEditors/SystemDesign/ComConnectionDeleteCommand.h>
-#include <designEditors/SystemDesign/ApiConnectionDeleteCommand.h>
-
-#include <designEditors/SystemDesign/ComGraphicsConnection.h>
 #include <designEditors/SystemDesign/ApiGraphicsConnection.h>
+#include <designEditors/SystemDesign/ComGraphicsConnection.h>
+#include <designEditors/SystemDesign/SystemComponentItem.h>
+#include <designEditors/SystemDesign/SWPortItem.h>
 
 //-----------------------------------------------------------------------------
 // Function: SWPortDeleteCommand::SWPortDeleteCommand()

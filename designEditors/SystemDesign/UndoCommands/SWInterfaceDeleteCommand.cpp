@@ -11,14 +11,14 @@
 
 #include "SWInterfaceDeleteCommand.h"
 
-#include "SWInterfaceItem.h"
-
 #include <common/graphicsItems/GraphicsColumnLayout.h>
 
-#include <designEditors/SystemDesign/ComGraphicsConnection.h>
+#include <designEditors/SystemDesign/undoCommands/ApiConnectionDeleteCommand.h>
+#include <designEditors/SystemDesign/undoCommands/ComConnectionDeleteCommand.h>
+
 #include <designEditors/SystemDesign/ApiGraphicsConnection.h>
-#include <designEditors/SystemDesign/ComConnectionDeleteCommand.h>
-#include <designEditors/SystemDesign/ApiConnectionDeleteCommand.h>
+#include <designEditors/SystemDesign/ComGraphicsConnection.h>
+#include <designEditors/SystemDesign/SWInterfaceItem.h>
 
 //-----------------------------------------------------------------------------
 // Function: SWInterfaceDeleteCommand::SWInterfaceDeleteCommand()

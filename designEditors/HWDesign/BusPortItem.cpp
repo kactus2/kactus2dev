@@ -238,7 +238,7 @@ QString BusPortItem::name() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: setName()
+// Function: BusPortItem::setName()
 //-----------------------------------------------------------------------------
 void BusPortItem::setName(QString const& name)
 {
@@ -272,7 +272,7 @@ void BusPortItem::setDescription( QString const& description )
 }
 
 //-----------------------------------------------------------------------------
-// Function: onConnect()
+// Function: BusPortItem::onConnect()
 //-----------------------------------------------------------------------------
 bool BusPortItem::onConnect(ConnectionEndpoint const* other)
 {
@@ -336,7 +336,7 @@ bool BusPortItem::onConnect(ConnectionEndpoint const* other)
 }
 
 //-----------------------------------------------------------------------------
-// Function: onDisonnect()
+// Function: BusPortItem::onDisonnect()
 //-----------------------------------------------------------------------------
 void BusPortItem::onDisconnect(ConnectionEndpoint const*)
 {
@@ -345,10 +345,12 @@ void BusPortItem::onDisconnect(ConnectionEndpoint const*)
     {
         busInterface_->setBusType(VLNV());
         busInterface_->getAbstractionTypes()->clear();
-        busInterface_->getAbstractionTypes()->append(QSharedPointer<AbstractionType>(
-            new AbstractionType())); 
+        busInterface_->getAbstractionTypes()->append(QSharedPointer<AbstractionType>(new AbstractionType())); 
         busInterface_->getPortMaps()->clear();
-        busInterface_->setName(oldName_);
+        if (!oldName_.isEmpty())
+        {
+            busInterface_->setName(oldName_);
+        }        
         updateInterface();
     }
 }
@@ -481,7 +483,7 @@ ConnectionEndpoint* BusPortItem::getOffPageConnector()
 //-----------------------------------------------------------------------------
 void BusPortItem::setTemporary(bool temp)
 {
-    setTypeLocked(temp);
+    setTypeLocked(!temp);
     HWConnectionEndpoint::setTemporary(temp);
 }
 
