@@ -693,7 +693,7 @@ void SystemDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
                     desc->setWidth(column->getColumnDesc()->getWidth());
                 }
 
-                QSharedPointer<QUndoCommand> cmd(new GraphicsColumnChangeCommand(column, desc));
+                QSharedPointer<QUndoCommand> cmd(new GraphicsColumnChangeCommand(column, desc, getDesign()));
                 getEditProvider()->addCommand(cmd);
                 cmd->redo();
             }
@@ -1445,9 +1445,15 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
         }
     }
 
+    QMap<unsigned int, QSharedPointer<ColumnDesc> > orderedColumns;
     foreach(QSharedPointer<ColumnDesc> desc, design->getColumns())
     {
-        SystemColumn* column = new SystemColumn(desc, getLayout().data());
+        orderedColumns.insertMulti(desc->getPosition(), desc);
+    }
+
+    foreach (QSharedPointer<ColumnDesc> containedColumn, orderedColumns)
+    {
+        SystemColumn* column = new SystemColumn(containedColumn, getLayout().data());
         getLayout()->addColumn(column, true);
     }
 

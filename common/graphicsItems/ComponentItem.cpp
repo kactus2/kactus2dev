@@ -39,6 +39,7 @@ QGraphicsRectItem(parent),
 {
     setFlag(ItemSendsGeometryChanges);
     setFlag(ItemIsSelectable);
+    setFlag(ItemSendsScenePositionChanges);
 
     setRect(size);
     setPen(QPen(Qt::black, 0));
@@ -251,7 +252,7 @@ QVariant ComponentItem::itemChange(GraphicsItemChange change, const QVariant &va
     {
         return snapPointToGrid(value.toPointF());
     }
-    else if (change == ItemPositionHasChanged)
+    else if (change == ItemScenePositionHasChanged)
     {
         componentInstance_->setPosition(scenePos());
     }

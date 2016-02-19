@@ -141,7 +141,7 @@ public:
      *      @param [in] newDesc  The column's new description.
      */
     GraphicsColumnChangeCommand(GraphicsColumn* column, QSharedPointer<ColumnDesc> newDesc,
-                                QUndoCommand* parent = 0);
+        QSharedPointer<Design> containingDesign, QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
@@ -163,18 +163,25 @@ private:
     GraphicsColumnChangeCommand(GraphicsColumnChangeCommand const& rhs);
     GraphicsColumnChangeCommand& operator=(GraphicsColumnChangeCommand const& rhs);
 
+    void changeModifiedColumnInDesign(QSharedPointer<ColumnDesc> newColumn);
+
+    QSharedPointer<ColumnDesc> getModifiedColumn();
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
     //! The diagram column.
-    GraphicsColumn* column_;
+    GraphicsColumn* columnItem_;
 
     //! The column's old description.
     QSharedPointer<ColumnDesc> oldDesc_;
 
     //! The column's new description.
     QSharedPointer<ColumnDesc> newDesc_;
+
+    //! The design containing the modified column.
+    QSharedPointer<Design> containingDesign_;
 };
 
 //-----------------------------------------------------------------------------
