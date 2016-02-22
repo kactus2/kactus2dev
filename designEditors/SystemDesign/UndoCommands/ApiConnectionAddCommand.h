@@ -18,6 +18,7 @@
 #include <QObject>
 
 class ApiGraphicsConnection;
+class ConnectionEndpoint;
 
 class Design;
 
@@ -58,6 +59,13 @@ private:
     // Disable copying.
     ApiConnectionAddCommand(ApiConnectionAddCommand const& rhs);
     ApiConnectionAddCommand& operator=(ApiConnectionAddCommand const& rhs);
+
+    /*!
+     *  Change the port item status from COM interface to API interface.
+     *
+     *      @param [in] endPoint    The selected port item.
+     */
+    void changePortItemFromComToApi(ConnectionEndpoint* endPoint);
 
     //-----------------------------------------------------------------------------
     // Data.

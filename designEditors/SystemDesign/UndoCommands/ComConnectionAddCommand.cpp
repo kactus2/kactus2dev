@@ -14,7 +14,11 @@
 #include <designEditors/SystemDesign/ComGraphicsConnection.h>
 #include <designEditors/SystemDesign/SystemDesignDiagram.h>
 
+#include <common/graphicsItems/ConnectionEndpoint.h>
+#include <common/graphicsItems/ComponentItem.h>
+
 #include <IPXACTmodels/Design/Design.h>
+#include <IPXACTmodels/Design/ComponentInstance.h>
 
 //-----------------------------------------------------------------------------
 // Function: ComConnectionAddCommand::ComConnectionAddCommand()
@@ -70,6 +74,17 @@ void ComConnectionAddCommand::redo()
         scene_->addItem(connection_);
     }
 
+    ConnectionEndpoint* startPoint = connection_->endpoint1();
+    ConnectionEndpoint* endPoint = connection_->endpoint2();
+    if (startPoint->getType() == ConnectionEndpoint::ENDPOINT_TYPE_UNDEFINED)
+    {
+        changePortItemFromApiToCom(startPoint);
+    }
+    else if (endPoint->getType() == ConnectionEndpoint::ENDPOINT_TYPE_UNDEFINED)
+    {
+        changePortItemFromApiToCom(endPoint);
+    }
+
     if (connection_->connectEnds())
     {
         QList<QSharedPointer<ComInterconnection> > comInterconnections = containingDesign_->getComConnections();
@@ -80,4 +95,21 @@ void ComConnectionAddCommand::redo()
     }
 
     del_ = false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComConnectionAddCommand::changePortItemFromApiToCom()
+//-----------------------------------------------------------------------------
+void ComConnectionAddCommand::changePortItemFromApiToCom(ConnectionEndpoint* endPoint)
+{
+    QSharedPointer<ComponentInstance> containingInstance = endPoint->encompassingComp()->getComponentInstance();
+
+    QMap<QString, QPointF> apiPositions = containingInstance->getApiInterfacePositions();
+
+    if (apiPositions.contains(endPoint->name()) && apiPositions.value(endPoint->name()) == endPoint->pos())
+    {
+        containingInstance->removeApiInterfacePosition(endPoint->name());
+    }
+
+    containingInstance->updateComInterfacePosition(endPoint->name(), endPoint->pos());
 }

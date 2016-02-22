@@ -135,12 +135,26 @@ public:
     void updateApiInterfacePosition(QString const& name, QPointF const& pos);
 
     /*!
+     *  Remove API interface position.
+     *
+     *      @param [in] name    Name of the selected API interface.
+     */
+    void removeApiInterfacePosition(QString const& name);
+
+    /*!
      *  Updates the position of the API interface with the given name.
      *
      *      @param [in] name The name of the API interface.
      *      @param [in] pos  The local position of the API interface.
      */
     void updateComInterfacePosition(QString const& name, QPointF const& pos);
+
+    /*!
+     *  Remove COM interface position.
+     *
+     *      @param [in] name    Name of the selected COM interface.
+     */
+    void removeComInterfacePosition(QString const& name);
 
     /*!
      *  Returns the name of the instance.

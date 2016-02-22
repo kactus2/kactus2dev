@@ -13,11 +13,12 @@
 
 #include <designEditors/SystemDesign/undoCommands/ComConnectionDeleteCommand.h>
 #include <designEditors/SystemDesign/undoCommands/ApiConnectionDeleteCommand.h>
-
 #include <designEditors/SystemDesign/ApiGraphicsConnection.h>
 #include <designEditors/SystemDesign/ComGraphicsConnection.h>
 #include <designEditors/SystemDesign/SystemComponentItem.h>
 #include <designEditors/SystemDesign/SWPortItem.h>
+
+#include <IPXACTmodels/Design/ComponentInstance.h>
 
 //-----------------------------------------------------------------------------
 // Function: SWPortDeleteCommand::SWPortDeleteCommand()
@@ -77,6 +78,9 @@ void SWPortDeleteCommand::undo()
     parent_->addPort(port_);
     del_ = false;
 
+    QSharedPointer<ComponentInstance> containingInstance = parent_->getComponentInstance();
+    containingInstance->updateApiInterfacePosition(port_->name(), port_->pos());
+
     // Execute child commands.
     QUndoCommand::undo();
 }
@@ -91,6 +95,19 @@ void SWPortDeleteCommand::redo()
 
     // Remove the endpoint from the parent component.
     parent_->removePort(port_);
+
+    QSharedPointer<ComponentInstance> containingInstance = parent_->getComponentInstance();
+    QMap<QString, QPointF> apiPositions = containingInstance->getApiInterfacePositions();
+    QMap<QString, QPointF> comPositions = containingInstance->getComInterfacePositions();
+
+    if (apiPositions.contains(port_->name()))
+    {
+        containingInstance->removeApiInterfacePosition(port_->name());
+    }
+    if (comPositions.contains(port_->name()))
+    {
+        containingInstance->removeComInterfacePosition(port_->name());
+    }
 
     // Remove the endpoint from the scene.
     scene_->removeItem(port_);

@@ -226,11 +226,77 @@ void ComponentInstance::updateApiInterfacePosition(QString const& name, QPointF 
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComponentInstance::removeApiInterfacePosition()
+//-----------------------------------------------------------------------------
+void ComponentInstance::removeApiInterfacePosition(QString const& name)
+{
+    QSharedPointer<Kactus2Group> apiGroup;
+    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    {
+        if (extension->type() == "kactus2:apiInterfacePositions")
+        {
+            apiGroup = extension.dynamicCast<Kactus2Group>();
+            break;
+        }
+    }
+
+    if (apiGroup)
+    {
+        foreach (QSharedPointer<VendorExtension> extension, apiGroup->getByType("kactus2:apiInterfacePosition"))
+        {
+            QSharedPointer<Kactus2Placeholder> positionExtension = extension.dynamicCast<Kactus2Placeholder>();
+            if (positionExtension->getAttributeValue("apiRef") == name)
+            {
+                apiGroup->removeFromGroup(extension);
+            }
+        }
+
+        if (apiGroup->getByType("kactus2:apiInterfacePosition").isEmpty())
+        {
+            getVendorExtensions()->removeAll(apiGroup);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComponentInstance::updateComInterfacePosition()
 //-----------------------------------------------------------------------------
 void ComponentInstance::updateComInterfacePosition(QString const& name, QPointF const& pos)
 {
     updatePositionsMap(name, pos, "kactus2:comInterfacePositions", "kactus2:comInterfacePosition", "comRef");
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentInstance::removeComInterfacePosition()
+//-----------------------------------------------------------------------------
+void ComponentInstance::removeComInterfacePosition(QString const& name)
+{
+    QSharedPointer<Kactus2Group> comGroup;
+    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    {
+        if (extension->type() == "kactus2:comInterfacePositions")
+        {
+            comGroup = extension.dynamicCast<Kactus2Group>();
+            break;
+        }
+    }
+
+    if (comGroup)
+    {
+        foreach (QSharedPointer<VendorExtension> extension, comGroup->getByType("kactus2:comInterfacePosition"))
+        {
+            QSharedPointer<Kactus2Placeholder> positionExtension = extension.dynamicCast<Kactus2Placeholder>();
+            if (positionExtension->getAttributeValue("comRef") == name)
+            {
+                comGroup->removeFromGroup(extension);
+            }
+        }
+
+        if (comGroup->getByType("kactus2:comInterfacePosition").isEmpty())
+        {
+            getVendorExtensions()->removeAll(comGroup);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------

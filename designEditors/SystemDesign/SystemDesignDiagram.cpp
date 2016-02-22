@@ -2292,16 +2292,16 @@ GraphicsConnection* SystemDesignDiagram::createConnection(ConnectionEndpoint* st
 
     GraphicsConnection* connection;
 
-    if (startPoint->isApi())
+    if (startPoint->isApi() || endPoint->isApi())
     {
         QSharedPointer<ApiInterconnection> interconnection (new ApiInterconnection());
 
         QSharedPointer<ActiveInterface> startInterface(
-            new ActiveInterface(startPoint->encompassingComp()->name(), startPoint->getApiInterface()->name()));
+            new ActiveInterface(startPoint->encompassingComp()->name(), startPoint->name()));
         interconnection->setInterface1(startInterface);
 
         QSharedPointer<ActiveInterface> endInterface(
-            new ActiveInterface(endPoint->encompassingComp()->name(), endPoint->getApiInterface()->name()));
+            new ActiveInterface(endPoint->encompassingComp()->name(), endPoint->name()));
         interconnection->setInterface2(endInterface);
 
         ApiGraphicsConnection* apiGraphicsConnection =
@@ -2313,16 +2313,16 @@ GraphicsConnection* SystemDesignDiagram::createConnection(ConnectionEndpoint* st
 
         connection = apiGraphicsConnection;
     }
-    else if (startPoint->isCom())
+    else if (startPoint->isCom() || endPoint->isCom())
     {
         QSharedPointer<ComInterconnection> interconnection(new ComInterconnection());
 
         QSharedPointer<ActiveInterface> startInterface(
-            new ActiveInterface(startPoint->encompassingComp()->name(), startPoint->getComInterface()->name()));
+            new ActiveInterface(startPoint->encompassingComp()->name(), startPoint->name()));
         interconnection->setInterface1(startInterface);
 
         QSharedPointer<ActiveInterface> endInterface(
-            new ActiveInterface(endPoint->encompassingComp()->name(), endPoint->getComInterface()->name()));
+            new ActiveInterface(endPoint->encompassingComp()->name(), endPoint->name()));
         interconnection->setInterface2(endInterface);
 
         ComGraphicsConnection* comGraphicsConnection =
