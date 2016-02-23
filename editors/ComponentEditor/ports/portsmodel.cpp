@@ -326,10 +326,7 @@ bool PortsModel::setData(QModelIndex const& index, QVariant const& value, int ro
                 removeReferencesFromSingleExpression(port->getLeftBound());
             }
 
-            // make sure left bound doesn't drop below right bound.
-            QString calculatedExpression = parseExpressionToDecimal(value.toString());
-
-            port->setLeftBound(calculatedExpression);
+            port->setLeftBound(value.toString());
 
             setTypeNameAndDefinitionOnRow(port, index.row());
 
@@ -343,9 +340,7 @@ bool PortsModel::setData(QModelIndex const& index, QVariant const& value, int ro
                 removeReferencesFromSingleExpression(port->getRightBound());
             }
 
-            // make sure right bound is not greater than left bound.
-            QString calculatedExpression = parseExpressionToDecimal(value.toString());
-            port->setRightBound(calculatedExpression);
+            port->setRightBound(value.toString());
 
             setTypeNameAndDefinitionOnRow(port, index.row());
 
@@ -852,7 +847,7 @@ bool PortsModel::validateIndex(QModelIndex const& index) const
     }
     if (index.column() == PortColumns::LEFT_BOUND)
     {
-		if ( port->getLeftBound().isEmpty() && port->getRightBound().isEmpty() )
+		if (port->getLeftBound().isEmpty() && port->getRightBound().isEmpty())
 		{
 			return true;
 		}
@@ -861,7 +856,7 @@ bool PortsModel::validateIndex(QModelIndex const& index) const
     }
     else if (index.column() == PortColumns::RIGHT_BOUND)
 	{
-		if ( port->getLeftBound().isEmpty() && port->getRightBound().isEmpty() )
+		if (port->getLeftBound().isEmpty() && port->getRightBound().isEmpty())
 		{
 			return true;
 		}
@@ -880,7 +875,6 @@ bool PortsModel::validateIndex(QModelIndex const& index) const
     {
         return portValidator_->arrayValueIsValid(port->getArrayRight());
     }
-
     else
     {
         return true;
