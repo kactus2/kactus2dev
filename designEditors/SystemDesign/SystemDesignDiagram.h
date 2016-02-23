@@ -476,6 +476,22 @@ private:
     void pasteInterfaces(PortCollectionCopyData const& collection, IGraphicsItemStack* stack, QUndoCommand* cmd,
                          bool useCursorPos);
 
+    /*!
+     *  Pastes columns from a copy data collection.
+     *
+     *      @param [in] collection  The collection of column copy data.
+     */
+    void pasteColumns(ColumnCollectionCopyData const collection);
+
+    /*!
+     *  Create a unique name for a column with the given base name.
+     *
+     *      @param [in] baseName    The base name of the column.
+     *
+     *      @return A unique column name.
+     */
+    QString createColumnName(QString const& baseName);
+
     //-----------------------------------------------------------------------------
     //! Drag type enumeration.
     //-----------------------------------------------------------------------------

@@ -508,24 +508,73 @@ void SystemDesignDiagram::onPasteAction()
                     (items.empty() || type == SystemColumn::Type))
                 {
                     ColumnCollectionCopyData collection = mimeData->imageData().value<ColumnCollectionCopyData>();
-                    QSharedPointer<QUndoCommand> parentCmd(new QUndoCommand());
 
-                    foreach (ColumnCopyData const& columnData, collection.columns)
-                    {
-                        SystemColumn* column = new SystemColumn(columnData.desc, getLayout().data());
-
-                        new GraphicsColumnAddCommand(getLayout().data(), column, getDesign(), parentCmd.data());
-                        pasteSWInstances(columnData.components, column, parentCmd.data(), false);
-                        pasteInterfaces(columnData.interfaces, column, parentCmd.data(), false);
-                    }
-
-                    getEditProvider()->addCommand(parentCmd);
-                    parentCmd->redo();
+                    pasteColumns(collection);
                 }
             }
         }
     }
 }
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::pasteColumns()
+//-----------------------------------------------------------------------------
+void SystemDesignDiagram::pasteColumns(ColumnCollectionCopyData const collection)
+{
+    QSharedPointer<QUndoCommand> parentCmd(new QUndoCommand());
+
+    foreach (ColumnCopyData const& columnData, collection.columns)
+    {
+        QSharedPointer<ColumnDesc> copiedColumnDescription (new ColumnDesc(*columnData.desc.data()));
+        QString newName = createColumnName(columnData.desc->name());
+        copiedColumnDescription->setName(newName);
+
+        SystemColumn* column = new SystemColumn(copiedColumnDescription, getLayout().data());
+
+        GraphicsColumnAddCommand* addCommand =
+            new GraphicsColumnAddCommand(getLayout().data(), column, getDesign(), parentCmd.data());
+        pasteSWInstances(columnData.components, column, parentCmd.data(), false);
+        pasteInterfaces(columnData.interfaces, column, parentCmd.data(), false);
+
+        QPointF columnOldPosition (copiedColumnDescription->getPosition(), 0);
+        column->setPos(findCursorPositionMappedToScene());
+
+        new GraphicsColumnMoveCommand(getLayout().data(), column, columnOldPosition, addCommand);
+    }
+
+    getEditProvider()->addCommand(parentCmd);
+    parentCmd->redo();
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::createColumnName()
+//-----------------------------------------------------------------------------
+QString SystemDesignDiagram::createColumnName(QString const& baseName)
+{
+    // Determine a unique name by using a running number.
+    int runningNumber = 0;
+
+    QStringList columnNames;
+    foreach (QSharedPointer<ColumnDesc> column, getDesign()->getColumns())
+    {
+        columnNames.append(column->name());
+    }
+
+    QString format = "$ComponentName$_$InstanceNumber$";
+    QString name = baseName;
+
+    while (columnNames.contains(name))
+    {
+        name = format;
+        name.replace("$ComponentName$", baseName);
+        name.replace("$InstanceNumber$", QString::number(runningNumber));
+
+        runningNumber++;
+    }
+
+    return name;
+}
+
 //-----------------------------------------------------------------------------
 // Function: SystemDesignDiagram::onAddAction()
 //-----------------------------------------------------------------------------
@@ -2291,28 +2340,7 @@ GraphicsConnection* SystemDesignDiagram::createConnection(ConnectionEndpoint* st
 
     GraphicsConnection* connection;
 
-    if (startPoint->isApi() || endPoint->isApi())
-    {
-        QSharedPointer<ApiInterconnection> interconnection (new ApiInterconnection());
-
-        QSharedPointer<ActiveInterface> startInterface(
-            new ActiveInterface(startPoint->encompassingComp()->name(), startPoint->name()));
-        interconnection->setInterface1(startInterface);
-
-        QSharedPointer<ActiveInterface> endInterface(
-            new ActiveInterface(endPoint->encompassingComp()->name(), endPoint->name()));
-        interconnection->setInterface2(endInterface);
-
-        ApiGraphicsConnection* apiGraphicsConnection =
-            new ApiGraphicsConnection(startPoint, endPoint, interconnection, route, false, this);
-
-        QString connectionName = apiGraphicsConnection->createDefaultName();
-        interconnection->setName(connectionName);
-        route->setName(connectionName);
-
-        connection = apiGraphicsConnection;
-    }
-    else if (startPoint->isCom() || endPoint->isCom())
+    if (startPoint->isCom() || endPoint->isCom())
     {
         QSharedPointer<ComInterconnection> interconnection(new ComInterconnection());
 
@@ -2335,7 +2363,24 @@ GraphicsConnection* SystemDesignDiagram::createConnection(ConnectionEndpoint* st
     }
     else
     {
-        connection = new GraphicsConnection(startPoint, endPoint, false, QString(), QString(), QString(), this);	
+        QSharedPointer<ApiInterconnection> interconnection (new ApiInterconnection());
+
+        QSharedPointer<ActiveInterface> startInterface(
+            new ActiveInterface(startPoint->encompassingComp()->name(), startPoint->name()));
+        interconnection->setInterface1(startInterface);
+
+        QSharedPointer<ActiveInterface> endInterface(
+            new ActiveInterface(endPoint->encompassingComp()->name(), endPoint->name()));
+        interconnection->setInterface2(endInterface);
+
+        ApiGraphicsConnection* apiGraphicsConnection =
+            new ApiGraphicsConnection(startPoint, endPoint, interconnection, route, false, this);
+
+        QString connectionName = apiGraphicsConnection->createDefaultName();
+        interconnection->setName(connectionName);
+        route->setName(connectionName);
+
+        connection = apiGraphicsConnection;
     }
 
     return connection;
@@ -2348,19 +2393,14 @@ GraphicsConnection* SystemDesignDiagram::createConnection(ConnectionEndpoint* st
 {
     GraphicsConnection* connection;
 
-    if (startPoint->isApi())
-    {
-        connection = new ApiGraphicsConnection(startPoint->scenePos(), startPoint->getDirection(), endPoint,
-            QVector2D(0.0f, 0.0f), QString(), QString(), this);
-    }
-    else if (startPoint->isCom())
+    if (startPoint->isCom())
     {
         connection = new ComGraphicsConnection(startPoint->scenePos(), startPoint->getDirection(), endPoint,
             QVector2D(0.0f, 0.0f), QString(), QString(), this);
     }
     else
     {
-        connection = new GraphicsConnection(startPoint->scenePos(), startPoint->getDirection(), endPoint,
+        connection = new ApiGraphicsConnection(startPoint->scenePos(), startPoint->getDirection(), endPoint,
             QVector2D(0.0f, 0.0f), QString(), QString(), this);
     }
 

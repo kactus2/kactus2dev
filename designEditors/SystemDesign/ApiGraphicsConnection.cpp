@@ -15,10 +15,8 @@
 #include <designEditors/common/DiagramUtil.h>
 
 #include <IPXACTmodels/kactusExtensions/ApiInterconnection.h>
-
-#include <IPXACTmodels/generaldeclarations.h>
-
 #include <IPXACTmodels/kactusExtensions/ConnectionRoute.h>
+#include <IPXACTmodels/generaldeclarations.h>
 
 //-----------------------------------------------------------------------------
 // Function: ApiGraphicsConnection::ApiGraphicsConnection()

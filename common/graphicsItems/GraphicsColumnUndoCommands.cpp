@@ -82,6 +82,7 @@ GraphicsColumnAddCommand::~GraphicsColumnAddCommand()
 {
     if (del_)
     {
+        layout_->removeColumn(column_);
         delete column_;
     }
 }
@@ -91,6 +92,8 @@ GraphicsColumnAddCommand::~GraphicsColumnAddCommand()
 //-----------------------------------------------------------------------------
 void GraphicsColumnAddCommand::undo()
 {
+    QUndoCommand::undo();
+
     Q_ASSERT(column_ != 0);
 
     // Remove the column from the layout.
@@ -109,6 +112,8 @@ void GraphicsColumnAddCommand::redo()
     layout_->addColumn(column_, true);
     del_ = false;
     design_->addColumn(column_->getColumnDesc());
+
+    QUndoCommand::redo();
 }
 
 //-----------------------------------------------------------------------------

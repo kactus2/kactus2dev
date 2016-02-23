@@ -24,8 +24,7 @@
 // Function: ComConnectionAddCommand::ComConnectionAddCommand()
 //-----------------------------------------------------------------------------
 ComConnectionAddCommand::ComConnectionAddCommand(QGraphicsScene* scene, ComGraphicsConnection* connection,
-                                                 QSharedPointer<Design> containingDesign,
-                                                 QUndoCommand* parent /* = 0 */):
+                                                 QSharedPointer<Design> containingDesign, QUndoCommand* parent):
 QUndoCommand(parent),
 connection_(connection),
 scene_(scene),
@@ -59,6 +58,7 @@ void ComConnectionAddCommand::undo()
     QList<QSharedPointer<ComInterconnection> > comInterconnections = containingDesign_->getComConnections();
     comInterconnections.removeAll(connection_->getComInterconnection());
     containingDesign_->setComConnections(comInterconnections);
+
     containingDesign_->removeRoute(connection_->getRouteExtension());
 
     del_ = true;
@@ -76,6 +76,7 @@ void ComConnectionAddCommand::redo()
 
     ConnectionEndpoint* startPoint = connection_->endpoint1();
     ConnectionEndpoint* endPoint = connection_->endpoint2();
+
     if (startPoint->getType() == ConnectionEndpoint::ENDPOINT_TYPE_UNDEFINED)
     {
         changePortItemFromApiToCom(startPoint);
