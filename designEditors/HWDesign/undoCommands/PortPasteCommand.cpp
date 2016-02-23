@@ -33,30 +33,33 @@ QUndoCommand(parent),
     foreach (QString const& portName, port_->getBusInterface()->getPhysicalPortNames())
     {	
         QString uniquePortName = portName;
-        unsigned int count = 0;
+        unsigned int trailingNumber = 0;
         while (component_->componentModel()->getPort(uniquePortName) != 0)
         {
-            count++;
-            uniquePortName = portName + "_" + QString::number(count);
+            trailingNumber++;
+            uniquePortName = portName + "_" + QString::number(trailingNumber);
         }
 
         // Create copies of the physical ports in the source component and rename them.
-        QSharedPointer<Port> physPortCopy = QSharedPointer<Port>(new Port(*srcComponent->getPort(portName)));
-        physPortCopy->setName(uniquePortName);
-
-        // If port name changed, it is also changed in bus interface.
-        if(uniquePortName != portName)
+        if (srcComponent->hasPort(portName))
         {
-            foreach (QSharedPointer<PortMap> portMap, *port_->getBusInterface()->getPortMaps())
+            QSharedPointer<Port> physPortCopy = QSharedPointer<Port>(new Port(*srcComponent->getPort(portName)));
+            physPortCopy->setName(uniquePortName);
+
+            // If port name changed, it is also changed in bus interface.
+            if(uniquePortName != portName)
             {
-                if(portMap->getPhysicalPort()->name_ == portName)
+                foreach (QSharedPointer<PortMap> portMap, *port_->getBusInterface()->getPortMaps())
                 {
-                    portMap->getPhysicalPort()->name_ = uniquePortName;
+                    if(portMap->getPhysicalPort()->name_ == portName)
+                    {
+                        portMap->getPhysicalPort()->name_ = uniquePortName;
+                    }
                 }
             }
-        }
 
-        new AddPhysicalPortCommand(component_->componentModel(), physPortCopy, this);
+            new AddPhysicalPortCommand(component_->componentModel(), physPortCopy, this);
+        }        
     }
 }
 
