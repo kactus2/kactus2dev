@@ -216,6 +216,13 @@ public:
 	 */
 	void setLabelPosition();
 
+    /*!
+     *  Gets the data extension for the bus interface.
+     *
+     *      @return The data vendor extension.
+     */
+    QSharedPointer<VendorExtension> getDataExtension() const;
+
 signals:
     //! Send an error message to the user.
     void errorMessage(const QString& errorMessage);
@@ -231,6 +238,7 @@ protected:
 
 
 private:
+
     /*!
      *  Clones the port maps and required ports from the source end point.
      *
@@ -239,14 +247,34 @@ private:
      */
     bool clonePortMaps(QSharedPointer<BusInterface> busIf, ConnectionEndpoint const* source);
 
+    /*!
+     *  Creates the shape of a up-pointing arrow for the item.
+     *
+     *      @return The shape for the item.
+     */
     QPolygonF arrowUp() const;
-
+    
+    /*!
+     *  Creates the shape of a down-pointing arrow for the item.
+     *
+     *      @return The shape for the item.
+     */
     QPolygonF arrowDown() const;
-
+    
+    /*!
+     *  Creates the shape of a double-headed arrow for the item.
+     *
+     *      @return The shape for the item.
+     */
     QPolygonF doubleArrow() const;
 
+    /*!
+     *  Gets the direction for the bus interface.
+     *
+     *      @return The direction of the bus interface.
+     */
     DirectionTypes::Direction getInterfaceDirection() const;
-
+    
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -263,6 +291,7 @@ private:
     //! The top-level component.
     QSharedPointer<Component> component_;
 
+    //! The data extension for the item.
     QSharedPointer<Kactus2Group> dataGroup_;
 
     //! The old column from where the mouse drag event began.

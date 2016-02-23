@@ -276,6 +276,11 @@ void BusPortItem::setDescription( QString const& description )
 //-----------------------------------------------------------------------------
 bool BusPortItem::onConnect(ConnectionEndpoint const* other)
 {
+    if (!other)
+    {
+        return false;
+    }
+
     QSharedPointer<BusInterface> otherBusIf = other->getBusInterface();
 
     // If the port is a non-typed one, try to copy the configuration from the other end point.
@@ -336,7 +341,7 @@ bool BusPortItem::onConnect(ConnectionEndpoint const* other)
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusPortItem::onDisonnect()
+// Function: BusPortItem::onDisconnect()
 //-----------------------------------------------------------------------------
 void BusPortItem::onDisconnect(ConnectionEndpoint const*)
 {

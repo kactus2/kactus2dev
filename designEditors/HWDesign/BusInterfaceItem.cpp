@@ -666,6 +666,14 @@ void BusInterfaceItem::setLabelPosition()
 }
 
 //-----------------------------------------------------------------------------
+// Function: BusInterfaceItem::getDataExtension()
+//-----------------------------------------------------------------------------
+QSharedPointer<VendorExtension> BusInterfaceItem::getDataExtension() const
+{
+    return dataGroup_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: BusInterfaceItem::itemChange()
 //-----------------------------------------------------------------------------
 QVariant BusInterfaceItem::itemChange(GraphicsItemChange change, QVariant const& value)

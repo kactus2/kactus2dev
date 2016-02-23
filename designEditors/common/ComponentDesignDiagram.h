@@ -299,7 +299,7 @@ private:
      *
      *      @param [in] cursorPosition   The cursor position.     
      */
-    void setConnectionStaringPoint(QPointF const& cursorPosition);
+    void setConnectionStartingPoint(QPointF const& cursorPosition);
 
     /*!
      *  Checks if the starting point of current connection is set.

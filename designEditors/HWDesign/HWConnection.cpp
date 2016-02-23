@@ -139,14 +139,6 @@ QSharedPointer<ConnectionRoute> HWConnection::getRouteExtension() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: HWConnection::connectEnds()
-//-----------------------------------------------------------------------------
-bool HWConnection::connectEnds()
-{
-    return GraphicsConnection::connectEnds();
-}
-
-//-----------------------------------------------------------------------------
 // Function: HWConnection::toggleOffPage()
 //-----------------------------------------------------------------------------
 void HWConnection::toggleOffPage()

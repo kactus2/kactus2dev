@@ -210,6 +210,37 @@ void ComponentInstance::updateBusInterfacePosition(QString const& name, QPointF 
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComponentInstance::removeBusInterfacePosition()
+//-----------------------------------------------------------------------------
+void ComponentInstance::removeBusInterfacePosition(QString const& interfaceName)
+{
+    if (!interfaceName.isEmpty())
+    {
+        QSharedPointer<Kactus2Group> portGroup;
+        QList<QSharedPointer<VendorExtension> > interfacePositions;
+
+        foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+        {
+            if (extension->type() == QLatin1String("kactus2:portPositions"))
+            {
+                portGroup = extension.dynamicCast<Kactus2Group>();
+                interfacePositions = portGroup->getByType(QLatin1String("kactus2:portPosition"));
+                break;
+            }
+        }
+
+        foreach(QSharedPointer<VendorExtension> extension, interfacePositions)
+        {
+            QSharedPointer<Kactus2Placeholder> positionExtension = extension.dynamicCast<Kactus2Placeholder>();
+            if (positionExtension->getAttributeValue(QLatin1String("busRef")) == interfaceName)
+            {
+                portGroup->removeFromGroup(positionExtension);
+            }            
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComponentInstance::updateAdHocPortPosition()
 //-----------------------------------------------------------------------------
 void ComponentInstance::updateAdHocPortPosition(QString const& name, QPointF const& pos)

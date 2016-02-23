@@ -118,6 +118,8 @@ public:
      */
     void updateBusInterfacePosition(QString const& name, QPointF const& pos);
 
+    void removeBusInterfacePosition(QString const& interfaceName);
+
     /*!
      *  Updates the position of the ad-hoc port with the given name.
      *
@@ -317,7 +319,7 @@ private:
      */
     QMap<QString, QPointF> getPositionMap(QString const& groupIdentifier, QString const& itemIdentifier,
         QString const& referenceIdentifier) const;
-
+    
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

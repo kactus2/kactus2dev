@@ -30,6 +30,7 @@ class BusInterface;
 class Component;
 class ComponentItem;
 class Design;
+class DesignDiagram;
 class GraphicsColumn;
 class GraphicsColumnLayout;
 class HWConnection;
@@ -168,12 +169,13 @@ public:
      *      @param [in] srcComponent   The component from which the interface is copied.
 	 *      @param [in] interface      The interface item to paste.
 	 *      @param [in] column         The target column.
+     *      @param [in] diagram        The target design diagram.
      *      @param [in] parent         The parent command.
      */
     BusInterfacePasteCommand(QSharedPointer<Component> srcComponent, 
         QSharedPointer<Component> destComponent,
         BusInterfaceItem* interfaceItem,
-        GraphicsColumn* column, QUndoCommand* parent = 0);
+        GraphicsColumn* column, DesignDiagram* diagram, QUndoCommand* parent = 0);
 
     /*!
      *  Constructor.
@@ -184,13 +186,14 @@ public:
      *      @param [in] srcComponent   The component from which the interface is copied.
 	 *      @param [in] interface      The interface item to paste.
 	 *      @param [in] column         The target column.
+     *      @param [in] diagram        The target design diagram.
 	 *      @param [in] ports          The ports for the interface.
      *      @param [in] parent         The parent command.
      */
     BusInterfacePasteCommand(QSharedPointer<Component> srcComponent, 
         QSharedPointer<Component> destComponent,
         BusInterfaceItem* interfaceItem,
-        GraphicsColumn* column, QList<QSharedPointer<Port> > ports,
+        GraphicsColumn* column, DesignDiagram* diagram, QList<QSharedPointer<Port> > ports,
         QUndoCommand* parent = 0);
 
     /*!
@@ -234,6 +237,9 @@ private:
 
     //! The target column.
     GraphicsColumn* column_;
+
+    //! The target design diagram.
+    DesignDiagram* diagram_;
 
     //! If true, the bus interface item is deleted in the destructor.
     bool del_;

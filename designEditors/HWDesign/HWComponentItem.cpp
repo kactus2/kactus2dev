@@ -250,11 +250,10 @@ BusPortItem* HWComponentItem::addPort(QPointF const& pos)
     BusPortItem* draftPort = new BusPortItem(busIf, getLibraryInterface(), this);
     draftPort->setTemporary(true);
     draftPort->setPos(mapFromScene(pos));
-
+    
     addPortToSideByPosition(draftPort);
 
-    // Update the component size.
-    updateSize();
+    onMovePort(draftPort);
 
     return draftPort;
 }
@@ -274,8 +273,7 @@ void HWComponentItem::addPort(HWConnectionEndpoint* port)
 
     addPortToSideByPosition(port);
 
-    // Update the component size.
-    updateSize();
+    onMovePort(port);
 }
 
 //-----------------------------------------------------------------------------
@@ -292,6 +290,7 @@ void HWComponentItem::removePort(HWConnectionEndpoint* port)
     if (port->type() == BusPortItem::Type)
     {
         componentModel()->getBusInterfaces()->removeOne(port->getBusInterface());
+        getComponentInstance()->removeBusInterfacePosition(port->name());
     }
 }
 
@@ -665,6 +664,7 @@ void HWComponentItem::positionBusInterfaceTerminals()
             BusPortItem *port = new BusPortItem(busInterface, getLibraryInterface(), this);
 
             port->setPos(instancePositions.value(busInterface->name()));
+            port->setTemporary(true);
             addPortToSideByPosition(port);
         }
     }

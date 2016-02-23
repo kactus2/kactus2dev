@@ -61,7 +61,6 @@ public:
     virtual void setDescription(QString const& description);
 
     virtual QString description() const;
-
         
     QSharedPointer<Interconnection> getInterconnection();
 
@@ -73,14 +72,6 @@ public:
      *      @param [in] visible If true, the label is set visible. Otherwise false.
      */
     void setBusWidthVisible(bool visible);
-
-    /*! 
-     *  Connects the ends of the interconnection.
-     *
-     *      @remarks There must be valid endpoints below the start and end positions
-     *               of the interconnection.
-     */
-    virtual bool connectEnds();
 
     /*!
      *  Toggles the connection between normal and off-page.

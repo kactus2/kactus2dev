@@ -29,6 +29,8 @@
 #include <IPXACTmodels/Component/Port.h>
 #include <IPXACTmodels/Component/PortMap.h>
 
+#include <IPXACTmodels/Design/Design.h>
+
 //-----------------------------------------------------------------------------
 // Function: InterfaceDeleteCommand::InterfaceDeleteCommand()
 //-----------------------------------------------------------------------------
@@ -107,6 +109,8 @@ void InterfaceDeleteCommand::undo()
         busIf_->getAbstractionTypes()->prepend(absType_);
 
         interface_->define(busIf_, false, ports_);
+
+        diagram_->getDesign()->getVendorExtensions()->append(interface_->getDataExtension());
     }
 
     // Execute child commands.
@@ -132,6 +136,7 @@ void InterfaceDeleteCommand::redo()
     // Remove the interface from the scene.
     parent_->removeItem(interface_);
     diagram_->removeItem(interface_);
+    diagram_->getDesign()->getVendorExtensions()->removeOne(interface_->getDataExtension());
 
     emit interfaceDeleted();
     del_ = true;

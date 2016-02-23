@@ -592,9 +592,9 @@ bool File::isVhdlFile() const
 {
     foreach (QString fileType, *fileTypes_)
     {
-        if (fileType.compare(QString("vhdlSource"), Qt::CaseInsensitive) == 0 ||
-            fileType.compare(QString("vhdlSource-87"), Qt::CaseInsensitive) == 0 ||
-            fileType.compare(QString("vhdlSource-93"), Qt::CaseInsensitive) == 0)
+        if (fileType.compare(QLatin1String("vhdlSource"), Qt::CaseInsensitive) == 0 ||
+            fileType.compare(QLatin1String("vhdlSource-87"), Qt::CaseInsensitive) == 0 ||
+            fileType.compare(QLatin1String("vhdlSource-93"), Qt::CaseInsensitive) == 0)
         {
             return true;
         }

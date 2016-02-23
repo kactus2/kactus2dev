@@ -135,7 +135,7 @@ bool PortGenerationRow::isValid() const
         return false;
     }
 
-    if ( sourceDirection_ == DirectionTypes::DIRECTION_PHANTOM || sourceDirection_ == DirectionTypes::DIRECTION_INVALID )
+    if (sourceDirection_ == DirectionTypes::DIRECTION_INVALID )
     {
         return false;
     }
@@ -150,7 +150,7 @@ bool PortGenerationRow::isValid() const
         return false;
     }
 
-    if ( draftDirection_ == DirectionTypes::DIRECTION_PHANTOM || draftDirection_ == DirectionTypes::DIRECTION_INVALID )
+    if (draftDirection_ == DirectionTypes::DIRECTION_INVALID )
     {
         return false;
     }

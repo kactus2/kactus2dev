@@ -1785,16 +1785,21 @@ void HWDesignDiagram::createInterconnectionBetweenComponents(QSharedPointer<Inte
     HWConnection* connectionItem = new HWConnection(startPort, endPort, interconnection, route, this);
     addItem(connectionItem);
 
+    startPort->onConnect(endPort);
+    endPort->onConnect(startPort);
+
+    connectionItem->validate();
+
+    startPort->addConnection(connectionItem);
+    endPort->addConnection(connectionItem);
+
     if (route->isOffpage())
     {
         connectionItem->hide();
     }
 
     connect(connectionItem, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
-
-    connectionItem->connectEnds();
     connectionItem->setBusWidthVisible(getParent()->getVisibilityControls().value("Bus Widths"));
-   // connectionItem->updatePosition();
 }
 
 //-----------------------------------------------------------------------------
@@ -1915,6 +1920,14 @@ void HWDesignDiagram::createHierarchicalConnection(QSharedPointer<Interconnectio
     {
         connectionItem->hide();
     }
+
+    componentPort->onConnect(hierarchicalInterface);
+    hierarchicalInterface->onConnect(componentPort);
+
+    connectionItem->validate();
+
+    componentPort->addConnection(connectionItem);
+    hierarchicalInterface->addConnection(connectionItem);
 
     connectionItem->setBusWidthVisible(getParent()->getVisibilityControls().value("Bus Widths"));
 
@@ -2298,7 +2311,6 @@ void HWDesignDiagram::pasteTopLevelInterfaces(BusInterfaceCollectionCopyData con
                 if (dialog.exec() == QDialog::Accepted)
                 {                 
                     QSharedPointer<Kactus2Group> dataGroup(new Kactus2Group("kactus2:interfaceGraphics"));
-                    getDesign()->getVendorExtensions()->append(dataGroup);
 
                     copyBusIf->getPortMaps()->append(dialog.getPortMaps());
 
@@ -2306,23 +2318,26 @@ void HWDesignDiagram::pasteTopLevelInterfaces(BusInterfaceCollectionCopyData con
                     port = new BusInterfaceItem(getLibraryInterface(), getEditedComponent(), 
                         copyBusIf, dataGroup, targetColumn);
                     pasteCmd = new BusInterfacePasteCommand(instance.srcComponent, 
-                        getEditedComponent(), port, targetColumn, dialog.getPorts(), cmd);
-                }                
+                        getEditedComponent(), port, targetColumn, this, dialog.getPorts(), cmd);
+                }
+                else
+                {
+                    return;
+                }
             }
             else
             {
                 QSharedPointer<Kactus2Group> dataGroup(new Kactus2Group("kactus2:interfaceGraphics"));
-                getDesign()->getVendorExtensions()->append(dataGroup);
 
                 // Create a busPort with the copied bus interface.
                 port = new BusInterfaceItem(getLibraryInterface(), getEditedComponent(), copyBusIf, dataGroup, targetColumn);
                 pasteCmd = new BusInterfacePasteCommand(instance.srcComponent, 
-                    getEditedComponent(), port, targetColumn, cmd); 
+                    getEditedComponent(), port, targetColumn, this, cmd); 
             }
 
             if (useCursorPos)
             {
-                port->setPos(contextMenuPosition());
+                port->setPos(findCursorPositionMappedToScene());
             }
             else
             {
@@ -2371,7 +2386,7 @@ void HWDesignDiagram::createPasteCommand(ComponentCollectionCopyData const& coll
         QPointF position;
         if (useCursorPos)
         {
-            position = contextMenuPosition();
+            position = findCursorPositionMappedToScene();
         }
         else
         {

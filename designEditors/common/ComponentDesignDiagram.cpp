@@ -609,7 +609,7 @@ void ComponentDesignDiagram::connectAt(QPointF const& cursorPosition)
 
     if (!creatingConnection())
     {
-        setConnectionStaringPoint(cursorPosition);
+        setConnectionStartingPoint(cursorPosition);
 
         if (hasConnectionStartingPoint())
         {
@@ -637,9 +637,9 @@ bool ComponentDesignDiagram::creatingConnection() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentDesignDiagram::setConnectionStaringPoint()
+// Function: ComponentDesignDiagram::setConnectionStartingPoint()
 //-----------------------------------------------------------------------------
-void ComponentDesignDiagram::setConnectionStaringPoint(QPointF const& cursorPosition)
+void ComponentDesignDiagram::setConnectionStartingPoint(QPointF const& cursorPosition)
 {
     // No need to change the starting point in off page mode.
     if (inOffPageMode() && connectionStartPoint_ != 0)

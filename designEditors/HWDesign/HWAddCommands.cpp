@@ -232,13 +232,14 @@ void ConnectionAddCommand::redo()
 //-----------------------------------------------------------------------------
 BusInterfacePasteCommand::BusInterfacePasteCommand(QSharedPointer<Component> srcComponent, 
     QSharedPointer<Component> destComponent, BusInterfaceItem* interfaceItem, GraphicsColumn* column,
-    QUndoCommand* parent) :
+    DesignDiagram* diagram, QUndoCommand* parent) :
 QUndoCommand(parent),
     srcComponent_(srcComponent),
     destComponent_(destComponent),
     busInterface_(interfaceItem->getBusInterface()), 
     interfaceItem_(interfaceItem),
     column_(column),
+    diagram_(diagram),
     del_(false)
 {
     // Create child commands for adding physical ports to target component. 
@@ -258,7 +259,7 @@ QUndoCommand(parent),
         physPortCopy->setName(uniquePortName);	
 
         // If port name changed, it is also changed in bus interface.
-        if( uniquePortName != portName )
+        if (uniquePortName != portName)
         {
             foreach (QSharedPointer<PortMap> portMap, *interfaceItem->getBusInterface()->getPortMaps())
             {
@@ -277,17 +278,19 @@ QUndoCommand(parent),
 // Function: BusInterfacePasteCommand::BusInterfacePasteCommand()
 //-----------------------------------------------------------------------------
 BusInterfacePasteCommand::BusInterfacePasteCommand(QSharedPointer<Component> srcComponent, 
-    QSharedPointer<Component> destComponent, 
-    BusInterfaceItem* interfaceItem, 
-    GraphicsColumn* column, 
-    QList<QSharedPointer<Port> > ports, 
-    QUndoCommand* parent /*= 0*/) 
-    : QUndoCommand(parent), srcComponent_(srcComponent), destComponent_(destComponent),
+    QSharedPointer<Component> destComponent, BusInterfaceItem* interfaceItem, 
+    GraphicsColumn* column, DesignDiagram* diagram, QList<QSharedPointer<Port> > ports, QUndoCommand* parent):
+QUndoCommand(parent),
+    srcComponent_(srcComponent),
+    destComponent_(destComponent),
     busInterface_(interfaceItem->getBusInterface()), 
-    interfaceItem_(interfaceItem), column_(column)
+    interfaceItem_(interfaceItem),
+    column_(column),
+    diagram_(diagram),
+    del_(false)
 {
     // Create child commands for adding pre-defined ports.
-    foreach( QSharedPointer<Port> port, ports)
+    foreach (QSharedPointer<Port> port, ports)
     {
         new AddPhysicalPortCommand(destComponent_, port, this);
     }
@@ -295,7 +298,7 @@ BusInterfacePasteCommand::BusInterfacePasteCommand(QSharedPointer<Component> src
 
 
 //-----------------------------------------------------------------------------
-// Function: ~PortPasteCommand()
+// Function: BusInterfacePasteCommand::~BusInterfacePasteCommand()
 //-----------------------------------------------------------------------------
 BusInterfacePasteCommand::~BusInterfacePasteCommand()
 {
@@ -306,7 +309,7 @@ BusInterfacePasteCommand::~BusInterfacePasteCommand()
 }
 
 //-----------------------------------------------------------------------------
-// Function: undo()
+// Function: BusInterfacePasteCommand::undo()
 //-----------------------------------------------------------------------------
 void BusInterfacePasteCommand::undo()
 {
@@ -319,12 +322,14 @@ void BusInterfacePasteCommand::undo()
     destComponent_->getBusInterfaces()->removeOne(busInterface_);
 
     column_->removeItem(interfaceItem_);
-    interfaceItem_->scene()->removeItem(interfaceItem_);       
+    diagram_->removeItem(interfaceItem_);       
+    diagram_->getDesign()->getVendorExtensions()->removeOne(interfaceItem_->getDataExtension());
+
     del_ = true;
 }
 
 //-----------------------------------------------------------------------------
-// Function: redo()
+// Function: BusInterfacePasteCommand::redo()
 //-----------------------------------------------------------------------------
 void BusInterfacePasteCommand::redo()
 {
@@ -336,6 +341,8 @@ void BusInterfacePasteCommand::redo()
     // Copy a port to the component.
     destComponent_->getBusInterfaces()->append(busInterface_);
     column_->addItem(interfaceItem_);
+    diagram_->getDesign()->getVendorExtensions()->append(interfaceItem_->getDataExtension());
+
     del_ = false;
 
     interfaceItem_->updateInterface();
