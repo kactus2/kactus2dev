@@ -99,12 +99,12 @@ public:
     //-----------------------------------------------------------------------------
     struct ComponentInstanceCopyData
     {
-		QSharedPointer<Component> component;            //!< The referenced component.
-		QSharedPointer<SWInstance> joq;		//!< The instance.
+		QSharedPointer<Component> component;    //! The referenced component.
+		QSharedPointer<SWInstance> swInstance;  //! The instance.
 
-        ComponentInstanceCopyData()
-			: component(),
-			joq()
+        ComponentInstanceCopyData():
+        component(),
+        swInstance()
         {
         }
     };
@@ -452,7 +452,7 @@ private:
      *      @param [in] userCursorPos  If true, the instances are placed close to the cursor position.
      *                                 Otherwise the original positions are used.
      */
-    void pasteSWInstances(ComponentCollectionCopyData const& collection,
+    void pasteSWInstances(ComponentCollectionCopyData const collection,
                           IGraphicsItemStack* stack, QUndoCommand* cmd, bool useCursorPos);
 
     /*!

@@ -258,6 +258,13 @@ protected:
      */
     virtual int connectionType() const = 0;
 
+    /*!
+     *  Find the cursor position mapped to the current scene.
+     *
+     *      @return The cursor position mapped to the current scene.
+     */
+    QPointF findCursorPositionMappedToScene();
+
 private:
     // Disable copying.
     ComponentDesignDiagram(ComponentDesignDiagram const& rhs);

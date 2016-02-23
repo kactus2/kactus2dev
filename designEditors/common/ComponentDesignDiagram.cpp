@@ -549,6 +549,14 @@ QPoint ComponentDesignDiagram::contextMenuPosition() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComponentDesignDiagram::findSceneMappedCursorPosition()
+//-----------------------------------------------------------------------------
+QPointF ComponentDesignDiagram::findCursorPositionMappedToScene()
+{
+    return views().first()->mapToScene(contextMenuPosition());
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComponentDesignDiagram::setupActions()
 //-----------------------------------------------------------------------------
 void ComponentDesignDiagram::setupActions()

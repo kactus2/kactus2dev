@@ -4225,9 +4225,6 @@
     <ClCompile Include="designEditors\SystemDesign\ApiGraphicsConnection.cpp">
       <Filter>Source Files\designEditors\SystemDesign</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_SystemAddCommands.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_SystemComponentDeleteCommand.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -4259,6 +4256,12 @@
       <Filter>Source Files\designEditors\SystemDesign\UndoCommands</Filter>
     </ClCompile>
     <ClCompile Include="designEditors\SystemDesign\UndoCommands\SystemDeleteCommands.cpp">
+      <Filter>Source Files\designEditors\SystemDesign\UndoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_SystemComponentAddCommand.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\SystemDesign\UndoCommands\SystemComponentAddCommand.cpp">
       <Filter>Source Files\designEditors\SystemDesign\UndoCommands</Filter>
     </ClCompile>
   </ItemGroup>
@@ -5854,6 +5857,9 @@
       <Filter>Header Files\designEditors\SystemDesign\UndoCommands</Filter>
     </CustomBuild>
     <CustomBuild Include="designEditors\SystemDesign\UndoCommands\SystemComponentDeleteCommand.h">
+      <Filter>Header Files\designEditors\SystemDesign\UndoCommands</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\SystemDesign\UndoCommands\SystemComponentAddCommand.h">
       <Filter>Header Files\designEditors\SystemDesign\UndoCommands</Filter>
     </CustomBuild>
   </ItemGroup>

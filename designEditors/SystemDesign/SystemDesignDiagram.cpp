@@ -36,6 +36,7 @@
 #include <designEditors/HWDesign/HWChangeCommands.h>
 #include <designEditors/SystemDesign/UndoCommands/SystemMoveCommands.h>
 #include <designEditors/SystemDesign/UndoCommands/SystemAddCommands.h>
+#include <designEditors/SystemDesign/UndoCommands/SystemComponentAddCommand.h>
 #include <designEditors/SystemDesign/SystemDetailsEditor/SwitchHWDialog.h>
 #include <designEditors/SystemDesign/ComGraphicsConnection.h>
 #include <designEditors/SystemDesign/UndoCommands/ComConnectionAddCommand.h>
@@ -490,7 +491,7 @@ void SystemDesignDiagram::onPasteAction()
                     }
                     else
                     {
-                        stack = getLayout()->findColumnAt(contextMenuPosition());
+                        stack = getLayout()->findColumnAt(findCursorPositionMappedToScene());
                     }
 
                     if (stack != 0)
@@ -846,7 +847,9 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
                 connect(item, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
 
                 // Create the undo command and execute it.
-                QSharedPointer<SystemItemAddCommand> cmd(new SystemItemAddCommand(stack, item));
+                QSharedPointer<SystemComponentAddCommand> cmd(
+                    new SystemComponentAddCommand(stack, item, getDesign()));
+
                 connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
                     this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
                 connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
@@ -1043,10 +1046,6 @@ QSharedPointer<SWInstance> SystemDesignDiagram::createSWInstance(QSharedPointer<
 	swInstance->setInstanceName(instanceName);
 	swInstance->setComponentRef( QSharedPointer<ConfigurableVLNVReference>(
 		new ConfigurableVLNVReference(comp->getVlnv()) ) );
-
-	QList<QSharedPointer<SWInstance> > swInstanceList = getDesign()->getSWInstances();
-	swInstanceList.append(swInstance);
-	getDesign()->setSWInstances(swInstanceList);
 
 	return swInstance;
 }
@@ -2412,7 +2411,7 @@ void SystemDesignDiagram::addTopLevelInterface(GraphicsColumn* column, QPointF c
         }
     }
 
-    QSharedPointer<QUndoCommand> cmd(new SystemItemAddCommand(column, newItem));
+    QSharedPointer<QUndoCommand> cmd(new SystemComponentAddCommand(column, newItem, getDesign()));
     cmd->redo();
 
     // Determine if the other interfaces changed their position and create undo commands for them.
@@ -2526,14 +2525,12 @@ void SystemDesignDiagram::draftAt(QPointF const& clickedPosition)
                 swCompItem->setPos(snapPointToGrid(clickedPosition));
 
                 // Add to the design.
-                QList<QSharedPointer<SWInstance> > swInstanceList = getDesign()->getSWInstances();
-                swInstanceList.append(swInstance);
-                getDesign()->setSWInstances(swInstanceList);
 
                 connect(swCompItem, SIGNAL(openCSource(ComponentItem*)), this, SIGNAL(openCSource(ComponentItem*)));
                 connect(swCompItem, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
 
-                QSharedPointer<SystemItemAddCommand> cmd(new SystemItemAddCommand(stack, swCompItem));
+                QSharedPointer<SystemComponentAddCommand> cmd(
+                    new SystemComponentAddCommand(stack, swCompItem, getDesign()));
 
                 connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
                     this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
@@ -2590,24 +2587,16 @@ void SystemDesignDiagram::copySWInstances(QList<QGraphicsItem*> const& items,
     {
         if (item->type() == SWComponentItem::Type)
         {
-            SWComponentItem* comp = static_cast<SWComponentItem*>(item);
+            SWComponentItem* comp = dynamic_cast<SWComponentItem*>(item);
 
             collection.instances.append(ComponentInstanceCopyData());
             ComponentInstanceCopyData& instance = collection.instances.back();
 
-            // Take a copy of the component model so that we are not influenced by any changes to the
-            // original model.
+            // Take a copy of the component model so that we are not influenced by any changes to the original.
             instance.component = QSharedPointer<Component>(new Component(*comp->componentModel()));
 
-            instance.joq->setInstanceName( comp->name() );
-            instance.joq->setDisplayName( comp->displayName() );
-            instance.joq->setDescription( comp->description() );
-            instance.joq->setPosition( comp->pos() );
-            instance.joq->setPropertyValues( comp->getPropertyValues() );
-			instance.joq->setFileSetRef( comp->getFileSetRef() );
-			instance.joq->setDraft( comp->isDraft() );
-            //instance.joq->updatePositionsMap( comp->getApiInterfacePositions() );
-            //instance.joq->comInterfacePositions( comp->getComInterfacePositions() );
+            QSharedPointer<SWInstance> copiedSWInstance = comp->getComponentInstance().dynamicCast<SWInstance>();
+            instance.swInstance = QSharedPointer<SWInstance>(new SWInstance(*copiedSWInstance));
         }
     }
 }
@@ -2615,39 +2604,36 @@ void SystemDesignDiagram::copySWInstances(QList<QGraphicsItem*> const& items,
 //-----------------------------------------------------------------------------
 // Function: SystemDesignDiagram::pasteSWInstances()
 //-----------------------------------------------------------------------------
-void SystemDesignDiagram::pasteSWInstances(ComponentCollectionCopyData const& collection, IGraphicsItemStack* stack,
+void SystemDesignDiagram::pasteSWInstances(ComponentCollectionCopyData const collection, IGraphicsItemStack* stack,
                                            QUndoCommand* cmd, bool useCursorPos)
 {
-    foreach (ComponentInstanceCopyData const& instance, collection.instances)
+    foreach (ComponentInstanceCopyData const instanceCopy, collection.instances)
     {
         // Create unique name for the component instance.
-        QString instanceName = createInstanceName(instance.joq->getInstanceName());
+        QSharedPointer<SWInstance> swInstanceCopy (new SWInstance(*instanceCopy.swInstance.data()));
+
+        QString instanceName = createInstanceName(instanceCopy.swInstance->getInstanceName());
+        swInstanceCopy->setInstanceName(instanceName);
 
         // Take a copy of the component in case of a draft.
-        QSharedPointer<Component> component = instance.component;
-
+        QSharedPointer<Component> component = instanceCopy.component;
         if (!component->getVlnv().isValid())
         {
-            component = QSharedPointer<Component>(new Component(*instance.component));
+            component = QSharedPointer<Component>(new Component(*instanceCopy.component));
         }
 
-        SWComponentItem* comp = new SWComponentItem(getLibraryInterface(),
-                                                    component,
-                                                    instance.joq);
+        SWComponentItem* comp = new SWComponentItem(getLibraryInterface(), component, swInstanceCopy);
 
         if (useCursorPos)
         {
-            comp->setPos(contextMenuPosition());
+            comp->setPos(findCursorPositionMappedToScene());
         }
         else
         {
-            comp->setPos(instance.joq->getPosition());
+            comp->setPos(swInstanceCopy->getPosition());
         }
 
-        //comp->setApiInterfacePositions(instance.apiInterfacePositions, false);
-        //comp->setComInterfacePositions(instance.comInterfacePositions, false);
-
-        if (instance.joq->isDraft())
+        if (swInstanceCopy->isDraft())
         {
             comp->setDraft();
         }
@@ -2672,7 +2658,8 @@ void SystemDesignDiagram::pasteSWInstances(ComponentCollectionCopyData const& co
 
         if (targetStack != 0)
         {
-            SystemItemAddCommand* childCmd = new SystemItemAddCommand(targetStack, comp, cmd);
+            SystemComponentAddCommand* childCmd =
+                new SystemComponentAddCommand(targetStack, comp,  getDesign(), cmd);
 
             connect(childCmd, SIGNAL(componentInstantiated(ComponentItem*)),
                 this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
@@ -2753,7 +2740,7 @@ void SystemDesignDiagram::pasteInterfaces(PortCollectionCopyData const& collecti
             port = new SWPortItem(uniqueName, targetComp);
         }
 
-        QPointF pos = snapPointToGrid(targetComp->mapFromScene(contextMenuPosition()));
+        QPointF pos = snapPointToGrid(targetComp->mapFromScene(findCursorPositionMappedToScene()));
         port->setPos(pos);
 
         // Save the positions of the other interfaces.

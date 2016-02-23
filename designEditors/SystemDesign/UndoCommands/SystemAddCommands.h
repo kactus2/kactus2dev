@@ -26,68 +26,6 @@ class ApiInterface;
 class ComInterface;
 
 //-----------------------------------------------------------------------------
-//! SystemItemAddCommand class.
-//-----------------------------------------------------------------------------
-class SystemItemAddCommand : public QObject, public QUndoCommand
-{
-	Q_OBJECT
-
-public:
-    /*!
-     *  Constructor.
-     *
-     *      @param [in] stack   The graphics item stack to which to add the item.
-     *      @param [in] item    The graphics item to add.
-     *      @param [in] parent  The parent command.
-     */
-    SystemItemAddCommand(IGraphicsItemStack* stack, QGraphicsItem* item, QUndoCommand* parent = 0);
-
-    /*!
-     *  Destructor.
-     */
-    ~SystemItemAddCommand();
-
-    /*!
-     *  Undoes the command.
-     */
-    virtual void undo();
-
-    /*!
-     *  Redoes the command.
-     */
-    virtual void redo();
-
-signals:
-
-	//! Signaled when the component is instantiated to the design.
-	void componentInstantiated(ComponentItem* comp);
-
-	//! Signaled when the component instance is removed from the design.
-	void componentInstanceRemoved(ComponentItem* comp);
-
-private:
-    // Disable copying.
-    SystemItemAddCommand(SystemItemAddCommand const& rhs);
-    SystemItemAddCommand& operator=(SystemItemAddCommand const& rhs);
-
-    //-----------------------------------------------------------------------------
-    // Data.
-    //-----------------------------------------------------------------------------
-
-    //! The graphics item.
-    QGraphicsItem* item_;
-
-    //! The item's parent component stack.
-    IGraphicsItemStack* stack_;
-
-    //! Boolean flag for indicating if the component should be deleted in the destructor.
-    bool del_;
-
-    //! The uuID of the containing HW component instance.
-    QString hwComponentId_;
-};
-
-//-----------------------------------------------------------------------------
 //! SWPortAddCommand class.
 //-----------------------------------------------------------------------------
 class SWPortAddCommand : public QUndoCommand

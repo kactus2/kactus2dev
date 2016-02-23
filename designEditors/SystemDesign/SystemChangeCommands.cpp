@@ -11,9 +11,6 @@
 
 #include "SystemChangeCommands.h"
 
-#include "SystemMoveCommands.h"
-#include "SystemDeleteCommands.h"
-#include "SystemComponentDeleteCommand.h"
 #include "SWConnectionEndpoint.h"
 #include "SystemComponentItem.h"
 #include "SWComponentItem.h"
@@ -24,6 +21,10 @@
 #include <common/graphicsItems/GraphicsConnection.h>
 
 #include <designEditors/common/Association/AssociationChangeEndpointCommand.h>
+
+#include <designEditors/SystemDesign/UndoCommands/SystemMoveCommands.h>
+#include <designEditors/SystemDesign/UndoCommands/SystemDeleteCommands.h>
+#include <designEditors/SystemDesign/UndoCommands/SystemComponentDeleteCommand.h>
 
 #include <IPXACTmodels/Design/Design.h>
 

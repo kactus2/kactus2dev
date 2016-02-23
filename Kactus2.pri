@@ -570,6 +570,7 @@ HEADERS += ./common/Global.h \
     ./designEditors/SystemDesign/SWInterfaceItem.h \
     ./designEditors/SystemDesign/SWOffPageConnectorItem.h \
     ./designEditors/SystemDesign/SWPortItem.h \
+    ./designEditors/SystemDesign/UndoCommands/SystemComponentAddCommand.h \
     ./designEditors/SystemDesign/SystemChangeCommands.h \
     ./designEditors/SystemDesign/SystemColumn.h \
     ./designEditors/SystemDesign/SystemComponentItem.h \
@@ -1287,5 +1288,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
-    ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp
+    ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
+    ./designEditors/SystemDesign/UndoCommands/SystemComponentAddCommand.cpp
 RESOURCES += kactus.qrc

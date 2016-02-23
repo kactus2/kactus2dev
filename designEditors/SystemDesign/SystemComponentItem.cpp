@@ -235,11 +235,25 @@ void SystemComponentItem::addPort(SWPortItem* port)
 
     if (port->getType() == SWPortItem::ENDPOINT_TYPE_API)
     {
-        componentModel()->getVendorExtensions()->append(port->getApiInterface());
+        if (!getComponentInstance()->isDraft())
+        {
+            QList<QSharedPointer<ApiInterface> > apiInterfaces = componentModel()->getApiInterfaces();
+            apiInterfaces.append(port->getApiInterface());
+            componentModel()->setApiInterfaces(apiInterfaces);
+        }
+
+        getComponentInstance()->updateApiInterfacePosition(port->name(), port->pos());
     }
     else if (port->getType() == SWPortItem::ENDPOINT_TYPE_COM)
     {
-        componentModel()->getVendorExtensions()->append(port->getComInterface());
+        if (!getComponentInstance()->isDraft())
+        {
+            QList<QSharedPointer<ComInterface> > comInterfaces = componentModel()->getComInterfaces();
+            comInterfaces.append(port->getComInterface());
+            componentModel()->setComInterfaces(comInterfaces);
+        }
+
+        getComponentInstance()->updateComInterfacePosition(port->name(), port->pos());
     }
 
     // Make preparations.
