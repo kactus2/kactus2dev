@@ -7,8 +7,7 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./common/PortAlignment.h \
-    ./XmlUtils.h \
+HEADERS += ./XmlUtils.h \
     ./generaldeclarations.h \
     ./ipxactmodels_global.h \
     ./kactusExtensions/ApiDefinition.h \
@@ -43,6 +42,8 @@ HEADERS += ./common/PortAlignment.h \
     ./kactusExtensions/ApiDefinitionReader.h \
     ./kactusExtensions/ComDefinitionWriter.h \
     ./kactusExtensions/ComDefinitionReader.h \
+    ./kactusExtensions/validators/SystemDesignConfigurationValidator.h \
+    ./kactusExtensions/validators/SystemViewConfigurationValidator.h \
     ./validators/BinaryValidator.h \
     ./validators/namevalidator.h \
     ./validators/NMTokenValidator.h \
@@ -67,6 +68,7 @@ HEADERS += ./common/PortAlignment.h \
     ./common/NameValuePair.h \
     ./common/Parameter.h \
     ./common/PartSelect.h \
+    ./common/PortAlignment.h \
     ./common/PresenceTypes.h \
     ./common/Protocol.h \
     ./common/Qualifier.h \
@@ -245,7 +247,7 @@ HEADERS += ./common/PortAlignment.h \
     ./Component/validators/MemoryReserve.h \
     ./Component/validators/RegisterValidator.h \
     ./Component/validators/ViewValidator.h \
-    ./kactusExtensions/validators/SystemDesignConfigurationValidator.h
+    ./kactusExtensions/InterfaceGraphicsData.h
 SOURCES += ./generaldeclarations.cpp \
     ./XmlUtils.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
@@ -280,6 +282,8 @@ SOURCES += ./generaldeclarations.cpp \
     ./kactusExtensions/SystemView.cpp \
     ./kactusExtensions/validators/ApiDefinitionValidator.cpp \
     ./kactusExtensions/validators/ComDefinitionValidator.cpp \
+    ./kactusExtensions/validators/SystemDesignConfigurationValidator.cpp \
+    ./kactusExtensions/validators/SystemViewConfigurationValidator.cpp \
     ./validators/BinaryValidator.cpp \
     ./validators/namevalidator.cpp \
     ./validators/NMTokenValidator.cpp \
@@ -316,6 +320,7 @@ SOURCES += ./generaldeclarations.cpp \
     ./common/ParameterReader.cpp \
     ./common/ParameterWriter.cpp \
     ./common/PartSelect.cpp \
+    ./common/PortAlignment.cpp \
     ./common/PresenceTypes.cpp \
     ./common/Protocol.cpp \
     ./common/ProtocolReader.cpp \
@@ -481,5 +486,4 @@ SOURCES += ./generaldeclarations.cpp \
     ./Component/validators/MemoryReserve.cpp \
     ./Component/validators/RegisterValidator.cpp \
     ./Component/validators/ViewValidator.cpp \
-    ./common/PortAlignment.cpp \
-    ./kactusExtensions/validators/SystemDesignConfigurationValidator.cpp
+    ./kactusExtensions/InterfaceGraphicsData.cpp

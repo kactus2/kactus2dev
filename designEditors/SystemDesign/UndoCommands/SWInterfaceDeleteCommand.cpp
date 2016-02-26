@@ -20,22 +20,26 @@
 #include <designEditors/SystemDesign/ComGraphicsConnection.h>
 #include <designEditors/SystemDesign/SWInterfaceItem.h>
 
+#include <IPXACTmodels/Design/Design.h>
+#include <IPXACTmodels/kactusExtensions/InterfaceGraphicsData.h>
+
 //-----------------------------------------------------------------------------
 // Function: SWInterfaceDeleteCommand::SWInterfaceDeleteCommand()
 //-----------------------------------------------------------------------------
 SWInterfaceDeleteCommand::SWInterfaceDeleteCommand(SWInterfaceItem* interface,
                                                    QSharedPointer<Design> containingDesign, QUndoCommand* parent):
 QUndoCommand(parent),
-interface_(interface),
+interfaceItem_(interface),
 apiInterface_(interface->getApiInterface()),
 comInterface_(interface->getComInterface()),
 parent_(dynamic_cast<IGraphicsItemStack*>(interface->parentItem())),
 scene_(interface->scene()),
-del_(true)
+del_(true),
+containingDesign_(containingDesign)
 {
     if (apiInterface_)
     {
-        foreach (GraphicsConnection* connection, interface_->getConnections())
+        foreach (GraphicsConnection* connection, interfaceItem_->getConnections())
         {
             ApiGraphicsConnection* apiConnection = dynamic_cast<ApiGraphicsConnection*>(connection);
 
@@ -44,7 +48,7 @@ del_(true)
     }
     else if (comInterface_)
     {
-        foreach (GraphicsConnection* connection, interface_->getConnections())
+        foreach (GraphicsConnection* connection, interfaceItem_->getConnections())
         {
             ComGraphicsConnection* comConnection = dynamic_cast<ComGraphicsConnection*>(connection);
             new ComConnectionDeleteCommand(comConnection, containingDesign, this);
@@ -59,7 +63,7 @@ SWInterfaceDeleteCommand::~SWInterfaceDeleteCommand()
 {
     if (del_)
     {
-        delete interface_;
+        delete interfaceItem_;
     }
 }
 
@@ -69,17 +73,20 @@ SWInterfaceDeleteCommand::~SWInterfaceDeleteCommand()
 void SWInterfaceDeleteCommand::undo()
 {
     // Add the interface back to the scene.
-    parent_->addItem(interface_);
+    parent_->addItem(interfaceItem_);
     del_ = false;
+
+    QSharedPointer<InterfaceGraphicsData> graphicsData = interfaceItem_->getInterfaceGraphicsData();
+    containingDesign_->getVendorExtensions()->append(graphicsData);
 
     // Define the interface.
     if (apiInterface_ != 0)
     {
-        interface_->define(apiInterface_);
+        interfaceItem_->define(apiInterface_);
     }
     else if (comInterface_ != 0)
     {
-        interface_->define(comInterface_);
+        interfaceItem_->define(comInterface_);
     }
 
     // Execute child commands.
@@ -97,11 +104,14 @@ void SWInterfaceDeleteCommand::redo()
     // Undefine the interface.
     if (apiInterface_ != 0 || comInterface_ != 0)
     {
-        interface_->undefine();
+        interfaceItem_->undefine();
     }
 
+    QSharedPointer<InterfaceGraphicsData> graphicsData = interfaceItem_->getInterfaceGraphicsData();
+    containingDesign_->getVendorExtensions()->removeAll(graphicsData);
+
     // Remove the interface from the scene.
-    parent_->removeItem(interface_);
-    scene_->removeItem(interface_);
+    parent_->removeItem(interfaceItem_);
+    scene_->removeItem(interfaceItem_);
     del_ = true;
 }

@@ -15,6 +15,7 @@
 
 #include <IPXACTmodels/kactusExtensions/Kactus2Placeholder.h>
 #include <IPXACTmodels/kactusExtensions/ConnectionRoute.h>
+#include <IPXACTmodels/kactusExtensions/InterfaceGraphicsData.h>
 
 //-----------------------------------------------------------------------------
 // Function: Design::Design()
@@ -888,4 +889,41 @@ QSharedPointer<Kactus2Group> Design::getRoutesExtension() const
     } 
 
     return QSharedPointer<Kactus2Group>();
+}
+
+//-----------------------------------------------------------------------------
+// Function: Design::getInterfacePositions()
+//-----------------------------------------------------------------------------
+QList<QSharedPointer<InterfaceGraphicsData> > Design::getInterfaceGraphicsData() const
+{
+    QList<QSharedPointer<InterfaceGraphicsData> > interfaceGrahics;
+
+    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    {
+        if (extension->type() == "kactus2:interfaceGraphics")
+        {
+            QSharedPointer<InterfaceGraphicsData> graphicsData = extension.dynamicCast<InterfaceGraphicsData>();
+            if (graphicsData)
+            {
+                interfaceGrahics.append(extension.dynamicCast<InterfaceGraphicsData>());
+            }
+        }
+    }
+
+    return interfaceGrahics;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Design::removeInterfacePosition()
+//-----------------------------------------------------------------------------
+void Design::removeInterfaceGraphicsData(QString const& name)
+{
+    foreach (QSharedPointer<InterfaceGraphicsData> containedInterface, getInterfaceGraphicsData())
+    {
+        if (name == containedInterface->getName())
+        {
+            getVendorExtensions()->removeAll(containedInterface);
+            return;
+        }
+    }
 }

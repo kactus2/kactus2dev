@@ -44,6 +44,7 @@
 #include <QVector2D>
 
 class ConnectionRoute;
+class InterfaceGraphicsData;
 
 //-----------------------------------------------------------------------------
 //! Implementation for the ipxact:design element.
@@ -357,6 +358,20 @@ public:
     void addRoute(QSharedPointer<ConnectionRoute> route);
     
     void removeRoute(QSharedPointer<ConnectionRoute> route);
+
+    /*!
+     *  Get the interface graphics data.
+     *
+     *      @return A list containing all the interface graphics data.
+     */
+    QList<QSharedPointer<InterfaceGraphicsData> > getInterfaceGraphicsData() const;
+
+    /*!
+     *  Remove the selected interface graphics data.
+     *
+     *      @param [in] name    Name of the selected graphics data.
+     */
+    void removeInterfaceGraphicsData(QString const& name);
 
 private:
     /*!

@@ -4264,6 +4264,12 @@
     <ClCompile Include="designEditors\SystemDesign\UndoCommands\SystemComponentAddCommand.cpp">
       <Filter>Source Files\designEditors\SystemDesign\UndoCommands</Filter>
     </ClCompile>
+    <ClCompile Include="designEditors\SystemDesign\UndoCommands\SWInterfaceAddCommand.cpp">
+      <Filter>Source Files\designEditors\SystemDesign\UndoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\SystemDesign\UndoCommands\SWInterfaceMoveCommand.cpp">
+      <Filter>Source Files\designEditors\SystemDesign\UndoCommands</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -6360,6 +6366,12 @@
       <Filter>Header Files\designEditors\SystemDesign\UndoCommands</Filter>
     </ClInclude>
     <ClInclude Include="designEditors\SystemDesign\UndoCommands\SystemDeleteCommands.h">
+      <Filter>Header Files\designEditors\SystemDesign\UndoCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\SystemDesign\UndoCommands\SWInterfaceAddCommand.h">
+      <Filter>Header Files\designEditors\SystemDesign\UndoCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\SystemDesign\UndoCommands\SWInterfaceMoveCommand.h">
       <Filter>Header Files\designEditors\SystemDesign\UndoCommands</Filter>
     </ClInclude>
   </ItemGroup>

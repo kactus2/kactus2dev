@@ -66,7 +66,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The interface item.
-    SWInterfaceItem* interface_;
+    SWInterfaceItem* interfaceItem_;
 
     //! The API interface (if API).
     QSharedPointer<ApiInterface> apiInterface_;
@@ -82,6 +82,9 @@ private:
 
     //! Boolean flag for indicating if the connection should be deleted in the destructor.
     bool del_;
+
+    //! The design containing the interface.
+    QSharedPointer<Design> containingDesign_;
 };
 
 //-----------------------------------------------------------------------------

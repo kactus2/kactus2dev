@@ -67,6 +67,7 @@
 
 #include <IPXACTmodels/kactusExtensions/ConnectionRoute.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Placeholder.h>
+#include <IPXACTmodels/kactusExtensions/InterfaceGraphicsData.h>
 
 #include <QPair>
 #include <QGraphicsSceneMouseEvent>
@@ -135,8 +136,9 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
 
     // Create diagram interfaces for the top-level bus interfaces.
     foreach (QSharedPointer<BusInterface> busIf, *getEditedComponent()->getBusInterfaces())
-    {        
-        QSharedPointer<Kactus2Group> dataGroup = findOrCreateInterfaceExtensionGroup(design, busIf->name());
+    {
+        QSharedPointer<InterfaceGraphicsData> dataGroup =
+            findOrCreateInterfaceExtensionGroup(design, busIf->name());
 
         BusInterfaceItem* topInterface = new BusInterfaceItem(getLibraryInterface(), getEditedComponent(), 
             busIf, dataGroup);
@@ -144,7 +146,7 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
         GraphicsColumn* targetColumn = getLayout()->findColumnAt(topInterface->scenePos());
         if (targetColumn && targetColumn->isItemAllowed(topInterface))
         {
-            targetColumn->addItem(topInterface, true);
+            targetColumn->addItem(topInterface);
         }
         else
         {
@@ -1189,27 +1191,20 @@ int HWDesignDiagram::connectionType() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::findInterfaceExtensionGroup()
+// Function: HWDesignDiagram::findOrCreateInterfaceExtensionGroup()
 //-----------------------------------------------------------------------------
-QSharedPointer<Kactus2Group> HWDesignDiagram::findOrCreateInterfaceExtensionGroup(QSharedPointer<Design> design, 
-    QString const& busInterfaceName)
+QSharedPointer<InterfaceGraphicsData> HWDesignDiagram::findOrCreateInterfaceExtensionGroup(
+    QSharedPointer<Design> design, QString const& busInterfaceName)
 {
-    foreach (QSharedPointer<VendorExtension> designExtension, *design->getVendorExtensions())
+    foreach (QSharedPointer<InterfaceGraphicsData> graphicsData, design->getInterfaceGraphicsData())
     {
-        if (designExtension->type() == "kactus2:interfaceGraphics")
+        if (busInterfaceName == graphicsData->getName())
         {
-            QSharedPointer<Kactus2Group> interfaceGroup = designExtension.dynamicCast<Kactus2Group>();
-
-            QList<QSharedPointer<VendorExtension> > nameExtensions = interfaceGroup->getByType("kactus2:name");
-            if (!nameExtensions.isEmpty() && 
-                nameExtensions.first().dynamicCast<Kactus2Value>()->value() == busInterfaceName)
-            {
-                return interfaceGroup;
-            }
+            return graphicsData;
         }
     }
 
-    QSharedPointer<Kactus2Group> dataGroup(new Kactus2Group("kactus2:interfaceGraphics"));
+    QSharedPointer<InterfaceGraphicsData> dataGroup (new InterfaceGraphicsData(busInterfaceName));
     design->getVendorExtensions()->append(dataGroup);
 
     return dataGroup;
@@ -1419,10 +1414,11 @@ QSharedPointer<QUndoCommand> HWDesignDiagram::createAddCommandForConnection(Grap
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::addTopLevelInterface(GraphicsColumn* column, QPointF const& pos)
 {
-    QSharedPointer<Kactus2Group> dataGroup(new Kactus2Group("kactus2:interfaceGraphics"));
+    QSharedPointer<BusInterface> busif(new BusInterface());
+    
+    QSharedPointer<InterfaceGraphicsData> dataGroup(new InterfaceGraphicsData(busif->name()));
     getDesign()->getVendorExtensions()->append(dataGroup);
 
-    QSharedPointer<BusInterface> busif(new BusInterface());
     BusInterfaceItem* newItem = new BusInterfaceItem(getLibraryInterface(), getEditedComponent(), busif, dataGroup);
     newItem->setPos(snapPointToGrid(pos));
 
@@ -1965,7 +1961,7 @@ ConnectionEndpoint* HWDesignDiagram::findOrCreateHierarchicalInterface(QString c
         busIf = QSharedPointer<BusInterface>(new BusInterface());
         busIf->setName(busRef);
 
-        QSharedPointer<Kactus2Group> dataGroup(new Kactus2Group("kactus2:interfaceGraphics"));
+        QSharedPointer<InterfaceGraphicsData> dataGroup(new InterfaceGraphicsData(busIf->name()));
         getDesign()->getVendorExtensions()->append(dataGroup);
 
         ConnectionEndpoint* hierarchicalInterface = new BusInterfaceItem(getLibraryInterface(), 
@@ -2310,7 +2306,7 @@ void HWDesignDiagram::pasteTopLevelInterfaces(BusInterfaceCollectionCopyData con
                     getLibraryInterface());
                 if (dialog.exec() == QDialog::Accepted)
                 {                 
-                    QSharedPointer<Kactus2Group> dataGroup(new Kactus2Group("kactus2:interfaceGraphics"));
+                    QSharedPointer<InterfaceGraphicsData> dataGroup(new InterfaceGraphicsData(copyBusIf->name()));
 
                     copyBusIf->getPortMaps()->append(dialog.getPortMaps());
 
@@ -2327,10 +2323,11 @@ void HWDesignDiagram::pasteTopLevelInterfaces(BusInterfaceCollectionCopyData con
             }
             else
             {
-                QSharedPointer<Kactus2Group> dataGroup(new Kactus2Group("kactus2:interfaceGraphics"));
+                QSharedPointer<InterfaceGraphicsData> dataGroup(new InterfaceGraphicsData(copyBusIf->name()));
 
                 // Create a busPort with the copied bus interface.
-                port = new BusInterfaceItem(getLibraryInterface(), getEditedComponent(), copyBusIf, dataGroup, targetColumn);
+                port = new BusInterfaceItem(
+                    getLibraryInterface(), getEditedComponent(), copyBusIf, dataGroup, targetColumn);
                 pasteCmd = new BusInterfacePasteCommand(instance.srcComponent, 
                     getEditedComponent(), port, targetColumn, this, cmd); 
             }

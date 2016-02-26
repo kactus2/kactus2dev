@@ -29,7 +29,8 @@ class HWComponentItem;
 class HWColumn;
 class Component;
 class LibraryInterface;
-class Kactus2Group;
+class InterfaceGraphicsData;
+
 //-----------------------------------------------------------------------------
 //! BusInterfaceItem class.
 //-----------------------------------------------------------------------------
@@ -50,7 +51,8 @@ public:
      *      @param [in] parent      The parent object.
      */
     BusInterfaceItem(LibraryInterface* lh, QSharedPointer<Component> component,
-                     QSharedPointer<BusInterface> busIf, QSharedPointer<Kactus2Group> dataGroup,
+                     QSharedPointer<BusInterface> busIf,
+                     QSharedPointer<InterfaceGraphicsData> dataGroup,
                      QGraphicsItem *parent = 0);
 
 	//! The destructor
@@ -292,7 +294,7 @@ private:
     QSharedPointer<Component> component_;
 
     //! The data extension for the item.
-    QSharedPointer<Kactus2Group> dataGroup_;
+    QSharedPointer<InterfaceGraphicsData> dataGroup_;
 
     //! The old column from where the mouse drag event began.
     HWColumn* oldColumn_;

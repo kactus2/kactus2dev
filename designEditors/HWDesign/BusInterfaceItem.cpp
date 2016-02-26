@@ -29,17 +29,13 @@
 #include <IPXACTmodels/Component/Port.h>
 #include <IPXACTmodels/Component/PortMap.h>
 
-#include <IPXACTmodels/kactusExtensions/Kactus2Group.h>
-#include <IPXACTmodels/kactusExtensions/Kactus2Position.h>
-#include <IPXACTmodels/kactusExtensions/Kactus2Placeholder.h>
-#include <IPXACTmodels/kactusExtensions/Kactus2Value.h>
+#include <IPXACTmodels/kactusExtensions/InterfaceGraphicsData.h>
 
 #include <common/GenericEditProvider.h>
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/GraphicsConnection.h>
 #include <common/graphicsItems/GraphicsColumnLayout.h>
 #include <common/graphicsItems/CommonGraphicsUndoCommands.h>
-
 
 #include <designEditors/common/diagramgrid.h>
 
@@ -57,18 +53,19 @@
 // Function: BusInterfaceItem::BusInterfaceItem()
 //-----------------------------------------------------------------------------
 BusInterfaceItem::BusInterfaceItem(LibraryInterface* lh, QSharedPointer<Component> component,
-    QSharedPointer<BusInterface> busIf, QSharedPointer<Kactus2Group> dataGroup, QGraphicsItem *parent)
-    : HWConnectionEndpoint(parent, QVector2D(1.0f, 0.0f)),
-    library_(lh),
-    nameLabel_("", this),
-    busInterface_(busIf),
-    component_(component),
-    dataGroup_(dataGroup),
-    oldColumn_(0),
-    oldPos_(),
-    oldInterfacePositions_(),
-    offPageConnector_(new OffPageConnectorItem(this)),
-    portsCopied_(false)
+                                   QSharedPointer<BusInterface> busIf,
+                                   QSharedPointer<InterfaceGraphicsData> dataGroup, QGraphicsItem *parent):
+HWConnectionEndpoint(parent, QVector2D(1.0f, 0.0f)),
+library_(lh),
+nameLabel_("", this),
+busInterface_(busIf),
+component_(component),
+dataGroup_(dataGroup),
+oldColumn_(0),
+oldPos_(),
+oldInterfacePositions_(),
+offPageConnector_(new OffPageConnectorItem(this)),
+portsCopied_(false)
 {
     setTemporary(busIf == 0);
 
@@ -77,42 +74,20 @@ BusInterfaceItem::BusInterfaceItem(LibraryInterface* lh, QSharedPointer<Componen
 
     setPolygon(arrowDown());
     
-    QList<QSharedPointer<VendorExtension> > nameExtensions = dataGroup_->getByType("kactus2:name");
-    if (nameExtensions.isEmpty())
+    dataGroup_->setName(busInterface_->name());
+
+    if (dataGroup_->hasPosition())
     {
-        QSharedPointer<VendorExtension> nameExtension(new Kactus2Value("kactus2:name", busInterface_->name()));
-        dataGroup_->addToGroup(nameExtension);
+        setPos(dataGroup_->getPosition());
     }
 
-    QList<QSharedPointer<VendorExtension> > positionExtensions = dataGroup_->getByType("kactus2:position");
-    if (positionExtensions.isEmpty())
+    if (dataGroup_->hasDirection())
     {
-        QSharedPointer<Kactus2Position> positionExtensions(new Kactus2Position(QPointF()));
-        dataGroup_->addToGroup(positionExtensions);
+        setDirection(dataGroup_->getDirection());
     }
     else
     {
-        setPos(positionExtensions.first().dynamicCast<Kactus2Position>()->position());
-    }
-
-    QList<QSharedPointer<VendorExtension> > directionExtensions = dataGroup_->getByType("kactus2:direction");
-    if (directionExtensions.isEmpty())
-    {
-        QSharedPointer<Kactus2Placeholder> directionExtension(new Kactus2Placeholder("kactus2:direction"));
-        QVector2D direction = getDirection();
-        directionExtension->setAttribute("x", QString::number(direction.x()));
-        directionExtension->setAttribute("y", QString::number(direction.y()));
-
-        dataGroup_->addToGroup(directionExtension);
-    }
-    else
-    {
-        QVector2D direction;
-        QSharedPointer<Kactus2Placeholder> directionExtension = directionExtensions.first().dynamicCast<Kactus2Placeholder>();
-        direction.setX(directionExtension->getAttributeValue("x").toInt());
-        direction.setY(directionExtension->getAttributeValue("y").toInt());
-
-        setDirection(direction);
+        dataGroup_->setDirection(getDirection());
     }
 
 	QFont font = nameLabel_.font();
@@ -370,8 +345,7 @@ void BusInterfaceItem::setName(QString const& name)
 
 	busInterface_->setName(name);
     
-    QList<QSharedPointer<VendorExtension> > extensions = dataGroup_->getByType("kactus2:name");
-    extensions.first().dynamicCast<Kactus2Value>()->setValue(name);
+    dataGroup_->setName(name);
 
     updateInterface();
     emit contentChanged();
@@ -620,10 +594,7 @@ void BusInterfaceItem::setDirection(QVector2D const& dir)
 {
     HWConnectionEndpoint::setDirection(dir);
 
-    QList<QSharedPointer<VendorExtension> > extensions = dataGroup_->getByType("kactus2:direction");
-    QSharedPointer<Kactus2Placeholder> directionExtension = extensions.first().dynamicCast<Kactus2Placeholder>();
-    directionExtension->setAttribute("x", QString::number(dir.x()));
-    directionExtension->setAttribute("y", QString::number(dir.y()));
+    dataGroup_->setDirection(dir);
 
     setLabelPosition();
 }
@@ -686,17 +657,11 @@ QVariant BusInterfaceItem::itemChange(GraphicsItemChange change, QVariant const&
     {
         nameLabel_.setRotation(-rotation());
 
-        QList<QSharedPointer<VendorExtension> > extensions = dataGroup_->getByType("kactus2:direction");
-        QSharedPointer<Kactus2Placeholder> directionExtension = extensions.first().dynamicCast<Kactus2Placeholder>();
-
-        QVector2D direction = getDirection();
-        directionExtension->setAttribute("x", QString::number(direction.x()));
-        directionExtension->setAttribute("y", QString::number(direction.y()));
+        dataGroup_->setDirection(getDirection());
     }
     else if (change == ItemScenePositionHasChanged)
     {   
-        QList<QSharedPointer<VendorExtension> > extensions = dataGroup_->getByType("kactus2:position");
-        extensions.first().dynamicCast<Kactus2Position>()->setPosition(value.toPointF());
+        dataGroup_->setPosition(value.toPointF());
 
         foreach (GraphicsConnection* interconnection, getConnections())
         {

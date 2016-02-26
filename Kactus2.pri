@@ -687,7 +687,9 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
     ./designEditors/SystemDesign/UndoCommands/SystemAddCommands.h \
-    ./designEditors/SystemDesign/UndoCommands/SystemComponentDeleteCommand.h
+    ./designEditors/SystemDesign/UndoCommands/SystemComponentDeleteCommand.h \
+    ./designEditors/SystemDesign/UndoCommands/SWInterfaceAddCommand.h \
+    ./designEditors/SystemDesign/UndoCommands/SWInterfaceMoveCommand.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -1289,5 +1291,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
-    ./designEditors/SystemDesign/UndoCommands/SystemComponentAddCommand.cpp
+    ./designEditors/SystemDesign/UndoCommands/SystemComponentAddCommand.cpp \
+    ./designEditors/SystemDesign/UndoCommands/SWInterfaceAddCommand.cpp \
+    ./designEditors/SystemDesign/UndoCommands/SWInterfaceMoveCommand.cpp
 RESOURCES += kactus.qrc

@@ -1286,6 +1286,9 @@
     <ClCompile Include="kactusExtensions\validators\SystemViewConfigurationValidator.cpp">
       <Filter>Source Files\kactusExtensions\validators</Filter>
     </ClCompile>
+    <ClCompile Include="kactusExtensions\InterfaceGraphicsData.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BusDefinition\BusDefinition.h">
@@ -1788,6 +1791,9 @@
     </ClInclude>
     <ClInclude Include="kactusExtensions\validators\SystemViewConfigurationValidator.h">
       <Filter>Header Files\kactusExtensions\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusExtensions\InterfaceGraphicsData.h">
+      <Filter>Header Files\kactusExtensions</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

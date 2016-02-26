@@ -17,12 +17,15 @@
 #include <common/graphicsItems/GraphicsColumnLayout.h>
 #include <common/graphicsItems/CommonGraphicsUndoCommands.h>
 #include <common/GenericEditProvider.h>
+
 #include <designEditors/common/diagramgrid.h>
 #include <designEditors/common/DesignDiagram.h>
+#include <designEditors/SystemDesign/UndoCommands/SWInterfaceMoveCommand.h>
 
+#include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/kactusExtensions/ApiInterface.h>
 #include <IPXACTmodels/kactusExtensions/ComInterface.h>
-#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/kactusExtensions/InterfaceGraphicsData.h>
 
 #include <QFont>
 #include <QGraphicsDropShadowEffect>
@@ -31,17 +34,18 @@
 //-----------------------------------------------------------------------------
 // Function: SWInterfaceItem::SWInterfaceItem()
 //-----------------------------------------------------------------------------
-SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component,
-                                 QString const& name, QGraphicsItem *parent)
-    : SWConnectionEndpoint(parent, QVector2D(-1.0f, 0.0f)),
-      nameLabel_(name, this),
-      component_(component),
-      comInterface_(),
-      apiInterface_(),
-      oldPos_(),
-      oldStack_(0),
-      oldInterfacePositions_(),
-      offPageConnector_(0)
+SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component, QString const& name,
+                                 QSharedPointer<InterfaceGraphicsData> interfaceGraphics, QGraphicsItem *parent):
+SWConnectionEndpoint(parent, QVector2D(-1.0f, 0.0f)),
+nameLabel_(name, this),
+component_(component),
+comInterface_(),
+apiInterface_(),
+oldPos_(),
+oldStack_(0),
+oldInterfacePositions_(),
+offPageConnector_(0),
+graphicsData_(interfaceGraphics)
 {
     setType(ENDPOINT_TYPE_UNDEFINED);
     setTypeLocked(false);
@@ -51,17 +55,18 @@ SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component,
 //-----------------------------------------------------------------------------
 // Function: SWInterfaceItem::SWInterfaceItem()
 //-----------------------------------------------------------------------------
-SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component,
-                                 QSharedPointer<ApiInterface> apiIf, QGraphicsItem *parent)
-    : SWConnectionEndpoint(parent, QVector2D(-1.0f, 0.0f)),
-      nameLabel_(this),
-      component_(component),
-      comInterface_(),
-      apiInterface_(apiIf),
-      oldPos_(),
-      oldStack_(0),
-      oldInterfacePositions_(),
-      offPageConnector_(0)
+SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component, QSharedPointer<ApiInterface> apiIf,
+                                 QSharedPointer<InterfaceGraphicsData> interfaceGraphics, QGraphicsItem *parent):
+SWConnectionEndpoint(parent, QVector2D(-1.0f, 0.0f)),
+nameLabel_(this),
+component_(component),
+comInterface_(),
+apiInterface_(apiIf),
+oldPos_(),
+oldStack_(0),
+oldInterfacePositions_(),
+offPageConnector_(0),
+graphicsData_(interfaceGraphics)
 {
     Q_ASSERT(apiIf != 0);
     setType(ENDPOINT_TYPE_API);
@@ -72,17 +77,18 @@ SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component,
 //-----------------------------------------------------------------------------
 // Function: SWInterfaceItem::SWInterfaceItem()
 //-----------------------------------------------------------------------------
-SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component, 
-                                 QSharedPointer<ComInterface> comIf, QGraphicsItem *parent)
-    : SWConnectionEndpoint(parent, QVector2D(-1.0f, 0.0f)),
-      nameLabel_(this),
-      component_(component),
-      comInterface_(comIf),
-      apiInterface_(),
-      oldPos_(),
-      oldStack_(0),
-      oldInterfacePositions_(),
-      offPageConnector_(0)
+SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component, QSharedPointer<ComInterface> comIf,
+                                 QSharedPointer<InterfaceGraphicsData> interfaceGraphics, QGraphicsItem *parent):
+SWConnectionEndpoint(parent, QVector2D(-1.0f, 0.0f)),
+nameLabel_(this),
+component_(component),
+comInterface_(comIf),
+apiInterface_(),
+oldPos_(),
+oldStack_(0),
+oldInterfacePositions_(),
+offPageConnector_(0),
+graphicsData_(interfaceGraphics)
 {
     Q_ASSERT(comIf != 0);
     setType(ENDPOINT_TYPE_COM);
@@ -135,6 +141,8 @@ void SWInterfaceItem::setName(const QString& name)
     {
         nameLabel_.setPlainText(name);
     }
+
+    graphicsData_->setName(name);
 
 	updateInterface();
     endUpdateConnectionNames();
@@ -408,6 +416,14 @@ QSharedPointer<Component> SWInterfaceItem::getOwnerComponent() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: SWInterfaceItem::getInterfaceGraphicsData()
+//-----------------------------------------------------------------------------
+QSharedPointer<InterfaceGraphicsData> SWInterfaceItem::getInterfaceGraphicsData() const
+{
+    return graphicsData_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: SWInterfaceItem::itemChange()
 //-----------------------------------------------------------------------------
 QVariant SWInterfaceItem::itemChange(GraphicsItemChange change, QVariant const& value)
@@ -416,19 +432,16 @@ QVariant SWInterfaceItem::itemChange(GraphicsItemChange change, QVariant const& 
     {
         return snapPointToGrid(value.toPointF());
     }
-    else if (change == ItemPositionHasChanged)
-        {
-            if (!parentItem())
-            {
-                // ?
-            }
-        }
     else if (change == ItemRotationHasChanged)
     {
         nameLabel_.setRotation(-rotation());
+
+        graphicsData_->setDirection(getDirection());
     }
     else if (change == ItemScenePositionHasChanged)
     {
+        graphicsData_->setPosition(value.toPointF());
+
         foreach (GraphicsConnection* conn, getConnections())
         {
             conn->updatePosition();
@@ -520,7 +533,7 @@ void SWInterfaceItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
         // Check if the interface position was really changed.
         if (oldPos_ != scenePos())
         {
-            cmd = QSharedPointer<QUndoCommand>(new ItemMoveCommand(this, oldPos_, oldStack_));
+            cmd = QSharedPointer<QUndoCommand>(new SWInterfaceMoveCommand(this, oldPos_, oldStack_));
         }
         else
         {
@@ -532,11 +545,10 @@ void SWInterfaceItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 
         while (cur != oldInterfacePositions_.end())
         {
-            if (cur.key()->scenePos() != cur.value())
+            if (cur.key()->scenePos() != cur.value() && cur.key() != this)
             {
-                new ItemMoveCommand(cur.key(), cur.value(),
-                                    dynamic_cast<IGraphicsItemStack*>(cur.key()->parentItem()),
-                                    cmd.data());
+                new SWInterfaceMoveCommand(cur.key(), cur.value(),
+                    dynamic_cast<IGraphicsItemStack*>(cur.key()->parentItem()), cmd.data());
             }
 
             ++cur;
@@ -558,8 +570,9 @@ void SWInterfaceItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
         // Add the undo command to the edit stack only if it has changes.
         if (cmd->childCount() > 0 || oldPos_ != scenePos())
         {
-
             static_cast<DesignDiagram*>(scene())->getEditProvider()->addCommand(cmd);
+
+            cmd->redo();
         }
 
         oldStack_ = 0;
@@ -629,6 +642,21 @@ void SWInterfaceItem::initialize()
     offPageConnector_->setPos(0.0, -GridSize * 3);
     offPageConnector_->setFlag(ItemStacksBehindParent);
     offPageConnector_->setVisible(false);
+
+    graphicsData_->setName(name());
+
+    if (graphicsData_->hasPosition())
+    {
+        setPos(graphicsData_->getPosition());
+    }
+    if (graphicsData_->hasDirection())
+    {
+        setDirection(graphicsData_->getDirection());
+    }
+    else
+    {
+        graphicsData_->setDirection(getDirection());
+    }
 
     updateInterface();
 }
@@ -758,6 +786,8 @@ VLNV SWInterfaceItem::getTypeDefinition() const
 void SWInterfaceItem::setDirection(QVector2D const& dir)
 {
     SWConnectionEndpoint::setDirection(dir);
+
+    graphicsData_->setDirection(dir);
 
 	setLabelPosition();	
 }

@@ -50,10 +50,11 @@ class Interconnection;
 class LibraryInterface;
 class PortReference;
 class VLNV;
+class InterfaceGraphicsData;
 
-/*! \brief HWDesignDiagram is a graphical view to a design
- *
- */
+//-----------------------------------------------------------------------------
+//! HWDesignDiagram is a graphical view to a design.
+//-----------------------------------------------------------------------------
 class HWDesignDiagram : public ComponentDesignDiagram
 {
     Q_OBJECT
@@ -365,7 +366,7 @@ private:
      *
      *      @return The extension for hierarchical bus interface data.
      */
-    QSharedPointer<Kactus2Group> findOrCreateInterfaceExtensionGroup(QSharedPointer<Design> design, 
+    QSharedPointer<InterfaceGraphicsData> findOrCreateInterfaceExtensionGroup(QSharedPointer<Design> design,
         QString const& busInterfaceName);
 
     /*!

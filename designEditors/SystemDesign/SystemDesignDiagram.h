@@ -32,6 +32,8 @@ class SWComponentItem;
 class SWPortItem;
 class SWConnectionEndpoint;
 class ConnectionRoute;
+class InterfaceGraphicsData;
+class SWInterfaceItem;
 
 //-----------------------------------------------------------------------------
 //! SystemDesignDiagram class.
@@ -317,6 +319,31 @@ private:
     void loadDesign(QSharedPointer<Design> design);
 
     /*!
+     *  Load interfaces from the component containing the design.
+     *
+     *      @param [in] design  The selected design.
+     */
+    void loadInterfaces(QSharedPointer<Design> design);
+
+    /*!
+     *  Get the interface graphics data.
+     *
+     *      @param [in] design          Design containing the interface.
+     *      @param [in] interfaceName   The name of the interface.
+     *
+     *      @return Graphics data of the interface.
+     */
+    QSharedPointer<InterfaceGraphicsData> findOrCreateInterfaceGraphicsData(QSharedPointer<Design> design,
+        QString const& interfaceName);
+
+    /*!
+     *  Add the interface item to the layout.
+     *
+     *      @param [in] item    The selected interface item.
+     */
+    void addInterfaceItemToLayout(SWInterfaceItem* item);
+
+    /*!
      *  Loads the COM connections from the given design.
      */
     void loadComConnections(QSharedPointer<Design> design);
@@ -410,6 +437,15 @@ private:
      *      @param [in] pos    The interface position.
      */
     virtual void addTopLevelInterface(GraphicsColumn* column, QPointF const& pos);
+
+    /*!
+     *  Create a unique name for the interface.
+     *
+     *      @param [in] baseName    The name from which to create the unique name.
+     *
+     *      @return A unique name for the interface.
+     */
+    QString createDraftInterfaceName(QString const& baseName) const;
 
     /*!
      *  Handler for draft tool clicks. Creates a draft component instance or a draft interface according to the

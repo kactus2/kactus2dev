@@ -21,6 +21,8 @@
 
 class IGraphicsItemStack;
 class SWOffPageConnectorItem;
+class InterfaceGraphicsData;
+class Design;
 
 //-----------------------------------------------------------------------------
 //! Graphics item for visualizing API/COM interfaces for the top-level
@@ -36,31 +38,35 @@ public:
     /*!
      *  Constructor which creates a graphics item for an undefined interface.
      *
-     *      @param [in] component   The selected component.
-     *      @param [in] name        The name of the item.
-     *      @param [in] parent      Owner of this item.
+     *      @param [in] component           The selected component.
+     *      @param [in] name                The name of the item.
+     *      @param [in] interfaceGraphics   Container for the interface graphics data.
+     *      @param [in] parent              Owner of this item.
      */
-    SWInterfaceItem(QSharedPointer<Component> component, QString const& name, QGraphicsItem *parent);
+    SWInterfaceItem(QSharedPointer<Component> component, QString const& name,
+        QSharedPointer<InterfaceGraphicsData> interfaceGraphics, QGraphicsItem *parent);
 
     /*!
      *  Constructor which creates a graphics item for an API interface.
      *
-     *      @param [in] component   The selected component.
-     *      @param [in] apiIf       The API interface.
-     *      @param [in] parent      Owner of this item.
+     *      @param [in] component           The selected component.
+     *      @param [in] apiIf               The API interface.
+     *      @param [in] interfaceGraphics   Container for the interface graphics data.
+     *      @param [in] parent              Owner of this item.
      */
     SWInterfaceItem(QSharedPointer<Component> component, QSharedPointer<ApiInterface> apiIf,
-        QGraphicsItem *parent = 0);
+        QSharedPointer<InterfaceGraphicsData> interfaceGraphics, QGraphicsItem *parent = 0);
 
     /*!
      *  Constructor which creates a graphics item for a COM interface.
      *
-     *      @param [in] component   The selected component.
-     *      @param [in] comIf       The COM interface.
-     *      @param [in] parent      Owner of this item.
+     *      @param [in] component           The selected component.
+     *      @param [in] comIf               The COM interface.
+     *      @param [in] interfaceGraphics   Container for the interface graphics data.
+     *      @param [in] parent              Owner of this item.
      */
     SWInterfaceItem(QSharedPointer<Component> component, QSharedPointer<ComInterface> comIf,
-        QGraphicsItem *parent = 0);
+        QSharedPointer<InterfaceGraphicsData> interfaceGraphics, QGraphicsItem *parent = 0);
     
     /*!
      *  Destructor.
@@ -228,6 +234,13 @@ public:
 	 */
 	void setLabelPosition();
 
+    /*!
+     *  Get the graphics data.
+     *
+     *      @return The container containing graphical data.
+     */
+    QSharedPointer<InterfaceGraphicsData> getInterfaceGraphicsData() const;
+
 protected:
     virtual QVariant itemChange(GraphicsItemChange change, QVariant const& value);
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
@@ -267,6 +280,9 @@ private:
 
     //! The off-page connector.
     SWOffPageConnectorItem* offPageConnector_;
+
+    //! The container for the graphical data.
+    QSharedPointer<InterfaceGraphicsData> graphicsData_;
 };
 
 //-----------------------------------------------------------------------------

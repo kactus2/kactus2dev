@@ -42,6 +42,7 @@
 #include <designEditors/SystemDesign/UndoCommands/ComConnectionAddCommand.h>
 #include <designEditors/SystemDesign/ApiGraphicsConnection.h>
 #include <designEditors/SystemDesign/UndoCommands/ApiConnectionAddCommand.h>
+#include <designEditors/SystemDesign/UndoCommands/SWInterfaceAddCommand.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 
@@ -60,6 +61,7 @@
 #include <IPXACTmodels/kactusExtensions/ComInterconnection.h>
 #include <IPXACTmodels/kactusExtensions/HierComInterconnection.h>
 #include <IPXACTmodels/kactusExtensions/ConnectionRoute.h>
+#include <IPXACTmodels/kactusExtensions/InterfaceGraphicsData.h>
 
 #include <QGraphicsScene>
 #include <QMimeData>
@@ -1508,52 +1510,55 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
     unsigned int colIndex = 0;
 
     // Create (HW) component instances.
-    foreach (QSharedPointer<ComponentInstance> instance, *design->getComponentInstances())
+    if (!onlySW_)
     {
-        QSharedPointer<Document> libComponent = getLibraryInterface()->getModel(*instance->getComponentRef());
-        QSharedPointer<Component> component = libComponent.staticCast<Component>();
-
-        if (!component)
+        foreach (QSharedPointer<ComponentInstance> instance, *design->getComponentInstances())
         {
-            emit errorMessage(tr("The component '%1' instantiated in the design '%2' was not found in " 
-                "the library").arg(instance->getComponentRef()->getName(), design->getVlnv().getName()));
+            QSharedPointer<Document> libComponent = getLibraryInterface()->getModel(*instance->getComponentRef());
+            QSharedPointer<Component> component = libComponent.staticCast<Component>();
 
-            // Create an unpackaged component so that we can still visualize the component instance->
-            component = QSharedPointer<Component>(new Component(*instance->getComponentRef()));
-            component->setImplementation(KactusAttribute::HW);
-        }
-
-        HWMappingItem* item = new HWMappingItem(getLibraryInterface(), component, instance); //instance->getConfigurableElementValues());
-        item->setImported(instance->isImported());
-        item->setImportRef(instance->getImportRef());
-        item->setPropertyValues(instance->getPropertyValues());
-
-        connect(item, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
-
-        // Check if the position is not found.
-        if (instance->getPosition().isNull())
-        {
-            getLayout()->getColumns().at(colIndex)->addItem(item);
-            colIndex = (colIndex + 1) % getLayout()->getColumns().size();
-        }
-        else
-        {
-            item->setPos(instance->getPosition());
-
-            GraphicsColumn* column = getLayout()->findColumnAt(instance->getPosition());
-
-            if (column != 0 && column->isItemAllowed(item))
+            if (!component)
             {
-                column->addItem(item, true);
+                emit errorMessage(tr("The component '%1' instantiated in the design '%2' was not found in " 
+                    "the library").arg(instance->getComponentRef()->getName(), design->getVlnv().getName()));
+
+                // Create an unpackaged component so that we can still visualize the component instance->
+                component = QSharedPointer<Component>(new Component(*instance->getComponentRef()));
+                component->setImplementation(KactusAttribute::HW);
             }
-            else
+
+            HWMappingItem* item = new HWMappingItem(getLibraryInterface(), component, instance); //instance->getConfigurableElementValues());
+            item->setImported(instance->isImported());
+            item->setImportRef(instance->getImportRef());
+            item->setPropertyValues(instance->getPropertyValues());
+
+            connect(item, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
+
+            // Check if the position is not found.
+            if (instance->getPosition().isNull())
             {
                 getLayout()->getColumns().at(colIndex)->addItem(item);
                 colIndex = (colIndex + 1) % getLayout()->getColumns().size();
             }
-        }
+            else
+            {
+                item->setPos(instance->getPosition());
 
-        onComponentInstanceAdded(item);
+                GraphicsColumn* column = getLayout()->findColumnAt(instance->getPosition());
+
+                if (column != 0 && column->isItemAllowed(item))
+                {
+                    column->addItem(item, true);
+                }
+                else
+                {
+                    getLayout()->getColumns().at(colIndex)->addItem(item);
+                    colIndex = (colIndex + 1) % getLayout()->getColumns().size();
+                }
+            }
+
+            onComponentInstanceAdded(item);
+        }
     }
 
     // Create SW instances.
@@ -1636,38 +1641,108 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
         onComponentInstanceAdded(item);
     }
 
-    // Create SW interface items for the top-level API and COM interfaces.
-    foreach (QSharedPointer<ApiInterface> apiIf, getEditedComponent()->getApiInterfaces())
+    if (onlySW_)
     {
-        SWInterfaceItem* item = new SWInterfaceItem(getEditedComponent(), apiIf);
-
-        // Add the interface to the first column where it is allowed to be placed.
-        getLayout()->addItem(item);
-    }
-
-    foreach (QSharedPointer<ComInterface> comIf, getEditedComponent()->getComInterfaces())
-    {
-        SWInterfaceItem* item = new SWInterfaceItem(getEditedComponent(), comIf);
-
-        // Add the interface to the first column where it is allowed to be placed.
-        getLayout()->addItem(item);
+        loadInterfaces(design);
     }
 
     loadApiDependencies(design);
     loadComConnections(design);
 
     // Refresh the layout of all HW mapping items.
-    foreach (QGraphicsItem* item, items())
+    if (!onlySW_)
     {
-        if (item->type() == HWMappingItem::Type)
+        foreach (QGraphicsItem* item, items())
         {
-            HWMappingItem* mappingItem = static_cast<HWMappingItem*>(item);
-            mappingItem->updateItemPositions();
+            if (item->type() == HWMappingItem::Type)
+            {
+                HWMappingItem* mappingItem = static_cast<HWMappingItem*>(item);
+                mappingItem->updateItemPositions();
+            }
         }
     }
 
     // Refresh the layout so that all components are placed in correct positions according to the stacking.
     getLayout()->updatePositions();
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::loadInterfaces()
+//-----------------------------------------------------------------------------
+void SystemDesignDiagram::loadInterfaces(QSharedPointer<Design> design)
+{
+    QStringList componentInterfaceNames;
+
+    // Create SW interface items for the top-level API and COM interfaces.
+    foreach (QSharedPointer<ApiInterface> apiIf, getEditedComponent()->getApiInterfaces())
+    {
+        QSharedPointer<InterfaceGraphicsData> graphicsData = findOrCreateInterfaceGraphicsData(design, apiIf->name());
+
+        SWInterfaceItem* item (new SWInterfaceItem(getEditedComponent(), apiIf, graphicsData));
+
+        // Add the interface to the first column where it is allowed to be placed.
+        addInterfaceItemToLayout(item);
+
+        componentInterfaceNames.append(apiIf->name());
+    }
+
+    foreach (QSharedPointer<ComInterface> comIf, getEditedComponent()->getComInterfaces())
+    {
+        QSharedPointer<InterfaceGraphicsData> graphicsData = findOrCreateInterfaceGraphicsData(design, comIf->name());
+
+        SWInterfaceItem* item (new SWInterfaceItem(getEditedComponent(), comIf, graphicsData));
+
+        // Add the interface to the first column where it is allowed to be placed.
+        addInterfaceItemToLayout(item);
+
+        componentInterfaceNames.append(comIf->name());
+    }
+
+    foreach (QSharedPointer<InterfaceGraphicsData> graphicsData, design->getInterfaceGraphicsData())
+    {
+        if (!componentInterfaceNames.contains(graphicsData->getName()))
+        {
+            SWInterfaceItem* draftInterfaceItem (
+                new SWInterfaceItem(getEditedComponent(), graphicsData->getName(), graphicsData, 0));
+
+            addInterfaceItemToLayout(draftInterfaceItem);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::findOrCreateInterfaceGraphicsData()
+//-----------------------------------------------------------------------------
+QSharedPointer<InterfaceGraphicsData> SystemDesignDiagram::findOrCreateInterfaceGraphicsData(
+    QSharedPointer<Design> design, QString const& interfaceName)
+{
+    foreach (QSharedPointer<InterfaceGraphicsData> graphicsData, design->getInterfaceGraphicsData())
+    {
+        if (interfaceName == graphicsData->getName())
+        {
+            return graphicsData;
+        }
+    }
+
+    QSharedPointer<InterfaceGraphicsData> newGraphicsData (new InterfaceGraphicsData(interfaceName));
+    design->getVendorExtensions()->append(newGraphicsData);
+    return newGraphicsData;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::addInterfaceItemToLayout()
+//-----------------------------------------------------------------------------
+void SystemDesignDiagram::addInterfaceItemToLayout(SWInterfaceItem* item)
+{
+    GraphicsColumn* targetColumn = getLayout()->findColumnAt(item->scenePos());
+    if (targetColumn && targetColumn->isItemAllowed(item))
+    {
+        targetColumn->addItem(item);
+    }
+    else
+    {
+        getLayout()->addItem(item);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -1757,7 +1832,11 @@ void SystemDesignDiagram::loadComConnections(QSharedPointer<Design> design)
                 hierConn->getInterface()->getBusReference()));
 
             // Create a dummy interface which is marked as invalid.
-            interface = new SWInterfaceItem(getEditedComponent(), hierConn->getInterface()->getBusReference(), 0);
+            QString temporaryName = hierConn->getInterface()->getBusReference();
+            QSharedPointer<InterfaceGraphicsData> graphicsData =
+                findOrCreateInterfaceGraphicsData(design, temporaryName);
+            interface = new SWInterfaceItem(getEditedComponent(), temporaryName, graphicsData, 0);
+
             interface->setTemporary(true);
             interface->updateInterface();
         }
@@ -1948,7 +2027,10 @@ void SystemDesignDiagram::loadApiDependencies(QSharedPointer<Design> design)
                 dependency->getInterface()->getBusReference()));
 
             // Create a dummy interface which is marked as invalid.
-            interface = new SWInterfaceItem(getEditedComponent(), dependency->getInterface()->getBusReference(), 0);
+            QString dummyName = dependency->getInterface()->getBusReference();
+            QSharedPointer<InterfaceGraphicsData> graphicsData = findOrCreateInterfaceGraphicsData(design, dummyName);
+            interface = new SWInterfaceItem(getEditedComponent(), dummyName, graphicsData, 0);
+
             interface->setTemporary(true);
             interface->updateInterface();
         }
@@ -2436,7 +2518,11 @@ QSharedPointer<QUndoCommand> SystemDesignDiagram::createAddCommandForConnection(
 //-----------------------------------------------------------------------------
 void SystemDesignDiagram::addTopLevelInterface(GraphicsColumn* column, QPointF const& pos)
 {
-    SWInterfaceItem* newItem = new SWInterfaceItem(getEditedComponent(), "", 0);
+    QString interfaceName = createDraftInterfaceName("interface");
+    QSharedPointer<InterfaceGraphicsData> graphicsData (new InterfaceGraphicsData(interfaceName));
+
+    SWInterfaceItem* newItem = new SWInterfaceItem(getEditedComponent(), interfaceName, graphicsData, 0);
+
     newItem->setPos(snapPointToGrid(pos));
 
     // Save the positions of the other interfaces.
@@ -2451,7 +2537,7 @@ void SystemDesignDiagram::addTopLevelInterface(GraphicsColumn* column, QPointF c
         }
     }
 
-    QSharedPointer<QUndoCommand> cmd(new SystemComponentAddCommand(column, newItem, getDesign()));
+    QSharedPointer<QUndoCommand> cmd(new SWInterfaceAddCommand(column, newItem, getDesign()));
     cmd->redo();
 
     // Determine if the other interfaces changed their position and create undo commands for them.
@@ -2468,6 +2554,47 @@ void SystemDesignDiagram::addTopLevelInterface(GraphicsColumn* column, QPointF c
     }
 
     getEditProvider()->addCommand(cmd);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::createDraftInterfaceName()
+//-----------------------------------------------------------------------------
+QString SystemDesignDiagram::createDraftInterfaceName(QString const& baseName) const
+{
+    // Determine a unique name by using a running number.
+    int runningNumber = 0;
+
+    QStringList interfaceNames;
+    foreach (QSharedPointer<ApiInterface> apiInterface, getEditedComponent()->getApiInterfaces())
+    {
+        interfaceNames.append(apiInterface->name());
+    }
+    foreach (QSharedPointer<ComInterface> comInterface, getEditedComponent()->getComInterfaces())
+    {
+        interfaceNames.append(comInterface->name());
+    }
+    foreach (QSharedPointer<InterfaceGraphicsData> graphicsData, getDesign()->getInterfaceGraphicsData())
+    {
+        if (!interfaceNames.contains(graphicsData->getName()))
+        {
+            interfaceNames.append(graphicsData->getName());
+        }
+    }
+
+
+    QString format = "$InterfaceName$_$InterfaceNumber$";
+    QString name = baseName;
+
+    while (interfaceNames.contains(name))
+    {
+        name = format;
+        name.replace("$InterfaceName$", baseName);
+        name.replace("$InterfaceNumber$", QString::number(runningNumber));
+
+        runningNumber++;
+    }
+
+    return name;
 }
 
 //-----------------------------------------------------------------------------
@@ -2822,29 +2949,11 @@ void SystemDesignDiagram::pasteInterfaces(PortCollectionCopyData const& collecti
 {
     foreach (PortCopyData const& portData, collection.ports)
     {
-        QList<QString> existingNames;
-
-        foreach (QGraphicsItem* item, items())
-        {
-            if (item->type() == SWInterfaceItem::Type)
-            {
-                SWInterfaceItem* interface = static_cast<SWInterfaceItem*>(item);
-                existingNames.append(interface->name());
-            }
-        }
-        
-        // Interface must have a unique name within the component.
-        QString uniqueName = portData.name;
-
-        unsigned int count = 0;
-
-        while (existingNames.contains(uniqueName))
-        {
-            ++count;
-            uniqueName = portData.name + "_" + QString::number(count);
-        }
+        QString uniqueName = createDraftInterfaceName(portData.name);
 
         SWInterfaceItem* interface = 0;
+
+        QSharedPointer<InterfaceGraphicsData> graphicsData(new InterfaceGraphicsData(uniqueName));
 
         if (portData.apiInterface != 0)
         {
@@ -2852,18 +2961,18 @@ void SystemDesignDiagram::pasteInterfaces(PortCollectionCopyData const& collecti
             QSharedPointer<ApiInterface> apiIf(new ApiInterface(*portData.apiInterface));
             apiIf->setName(uniqueName);
 
-            interface = new SWInterfaceItem(getEditedComponent(), apiIf);
+            interface = new SWInterfaceItem(getEditedComponent(), apiIf, graphicsData);
         }
         else if (portData.comInterface != 0)
         {
             QSharedPointer<ComInterface> comIf(new ComInterface(*portData.comInterface));
             comIf->setName(uniqueName);
 
-            interface = new SWInterfaceItem(getEditedComponent(), comIf);
+            interface = new SWInterfaceItem(getEditedComponent(), comIf, graphicsData);
         }
         else
         {
-            interface = new SWInterfaceItem(getEditedComponent(), uniqueName, 0);
+            interface = new SWInterfaceItem(getEditedComponent(), uniqueName, graphicsData, 0);
         }
 
         if (useCursorPos)
@@ -2887,8 +2996,8 @@ void SystemDesignDiagram::pasteInterfaces(PortCollectionCopyData const& collecti
             }
         }
 
-        QUndoCommand* pasteCmd = new SWInterfacePasteCommand(stack, interface, cmd);
-        pasteCmd->redo();
+        QUndoCommand* addCommand = new SWInterfaceAddCommand(stack, interface, getDesign(), cmd);
+        addCommand->redo();
 
         // Determine if the other interfaces changed their position and create undo commands for them.
         QMap<SWInterfaceItem*, QPointF>::iterator cur = oldPositions.begin();
@@ -2897,7 +3006,7 @@ void SystemDesignDiagram::pasteInterfaces(PortCollectionCopyData const& collecti
         {
             if (cur.key()->scenePos() != cur.value())
             {
-                new ItemMoveCommand(cur.key(), cur.value(), stack, pasteCmd);
+                new ItemMoveCommand(cur.key(), cur.value(), stack, addCommand);
             }
 
             ++cur;

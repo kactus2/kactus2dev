@@ -18,6 +18,7 @@
 
 #include <IPXACTmodels/kactusExtensions/Kactus2Position.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Placeholder.h>
+#include <IPXACTmodels/kactusExtensions/InterfaceGraphicsData.h>
 
 //-----------------------------------------------------------------------------
 // Function: DesignReader::DesignReader()
@@ -725,29 +726,21 @@ void DesignReader::parseInterfaceGraphics(QDomElement const& extensionsNode, QSh
     {
         QDomElement extension = graphicsExtensions.at(i).toElement();
         
-        QSharedPointer<Kactus2Group> graphicsGroup(new Kactus2Group("kactus2:interfaceGraphics"));
-
         QString name = extension.firstChildElement("kactus2:name").firstChild().nodeValue();
-        QSharedPointer<Kactus2Value> graphicsName(new Kactus2Value("kactus2:name", name));
-        graphicsGroup->addToGroup(graphicsName);
 
         QDomElement positionElement = extension.firstChildElement("kactus2:position");
-        QString xCoordinate = positionElement.attribute("x");
-        QString yCoordinate = positionElement.attribute("y");
-
-        QPointF position = QPointF(xCoordinate.toInt(), yCoordinate.toInt());
-        QSharedPointer<Kactus2Position> graphicsPosition(new Kactus2Position(position));
-        graphicsGroup->addToGroup(graphicsPosition);
+        int xCoordinate = positionElement.attribute("x").toInt();
+        int yCoordinate = positionElement.attribute("y").toInt();
+        QPointF graphicsPosition (xCoordinate, yCoordinate);
 
         QDomElement directionElement = extension.firstChildElement("kactus2:direction");
-        QString xDirection = directionElement.attribute("x");
-        QString yDirection = directionElement.attribute("y");
+        int xDirection = directionElement.attribute("x").toInt();
+        int yDirection = directionElement.attribute("y").toInt();
+        QVector2D graphicsVector (xDirection, yDirection);
 
-        QSharedPointer<Kactus2Placeholder> graphicsDirection(new Kactus2Placeholder("kactus2:direction"));
-        graphicsDirection->setAttribute("x", xDirection);
-        graphicsDirection->setAttribute("y", yDirection);
-        graphicsGroup->addToGroup(graphicsDirection);
+        QSharedPointer<InterfaceGraphicsData> graphicsData(
+            new InterfaceGraphicsData(name, graphicsPosition, graphicsVector));
 
-        design->getVendorExtensions()->append(graphicsGroup);
+        design->getVendorExtensions()->append(graphicsData);
     }
 }
