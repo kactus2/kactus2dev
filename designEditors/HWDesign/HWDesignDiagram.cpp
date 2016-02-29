@@ -454,7 +454,7 @@ void HWDesignDiagram::pasteComponentsToColumn()
         ComponentCollectionCopyData collection = mimeData->imageData().value<ComponentCollectionCopyData>();
 
         QSharedPointer<QUndoCommand> pasteUndoCommand(new QUndoCommand());
-        createPasteCommand(collection, column, pasteUndoCommand.data(), true);
+        createComponentPasteCommand(collection, column, pasteUndoCommand.data(), true);
         
         getEditProvider()->addCommand(pasteUndoCommand);
         pasteUndoCommand->redo();
@@ -469,23 +469,27 @@ void HWDesignDiagram::pasteColumns()
     QMimeData const* mimeData = QApplication::clipboard()->mimeData();
     ColumnCollectionCopyData collection = mimeData->imageData().value<ColumnCollectionCopyData>();
 
-    QSharedPointer<QUndoCommand> pasteUndoCommand(new QUndoCommand());
+    QSharedPointer<QUndoCommand> parentCommand(new QUndoCommand());
+
+    QPointF columnPosition = findCursorPositionMappedToScene();
 
     foreach (ColumnCopyData const& columnData, collection.columns)
     {
         QSharedPointer<ColumnDesc> columnCopy(new ColumnDesc(*columnData.desc));
-        HWColumn* column = new HWColumn(columnCopy, getLayout().data());
+        HWColumn* columnItem = new HWColumn(columnCopy, getLayout().data());
+        columnItem->setPos(columnPosition);
 
-        QUndoCommand* columnCmd = new GraphicsColumnAddCommand(getLayout().data(), column, getDesign(), pasteUndoCommand.data());
-        columnCmd->redo();
+        new GraphicsColumnAddCommand(getLayout().data(), columnItem, getDesign(), parentCommand.data());
 
-        createPasteCommand(columnData.components, column, pasteUndoCommand.data(), false);
+        createComponentPasteCommand(columnData.components, columnItem, parentCommand.data(), false);
         
-        pasteTopLevelInterfaces(columnData.interfaces, column, pasteUndoCommand.data(), false);
+        pasteTopLevelInterfaces(columnData.interfaces, columnItem, parentCommand.data(), false);
+
+        columnPosition += QPointF(columnCopy->getWidth(), 0);
     }
 
-    getEditProvider()->addCommand(pasteUndoCommand);
-    pasteUndoCommand->redo();
+    getEditProvider()->addCommand(parentCommand);
+    parentCommand->redo();
 
     emit clearItemSelection();
 }
@@ -1651,23 +1655,6 @@ void HWDesignDiagram::createComponentItem(QSharedPointer<ComponentInstance> inst
     
     HWComponentItem* item = new HWComponentItem(getLibraryInterface(), instance, component);
 
-    /* TODO: Configurable elements.
-    if (!getDesignConfiguration().isNull())
-    {
-        QMap<QString, QString> mergedCEVs = instance.getConfigurableElementValues();
-        QMap<QString, QString> overrideCEVs = getDesignConfiguration()->getConfigurableElementValues(
-            instance.getUuid());
-
-        foreach(QString id, overrideCEVs.keys())
-        {
-            mergedCEVs.insert(id, overrideCEVs.value(id));
-        }
-        item->setConfigurableElements(mergedCEVs);
-    }*/
-
-    //item->setBusInterfacePositions(instance->getBusInterfacePositions(), true);
-    //item->setAdHocPortPositions(instance->getAdHocPortPositions());
-
     // Check if the position is not found.
     // Migrate from the old layout to the column based layout.
     QPointF instancePosition = instance->getPosition();
@@ -1793,6 +1780,8 @@ void HWDesignDiagram::createInterconnectionBetweenComponents(QSharedPointer<Inte
     {
         connectionItem->hide();
     }
+
+    connectionItem->updatePosition();
 
     connect(connectionItem, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
     connectionItem->setBusWidthVisible(getParent()->getVisibilityControls().value("Bus Widths"));
@@ -2193,14 +2182,14 @@ void HWDesignDiagram::copyInstances(QList<QGraphicsItem*> const& items, Componen
 // Function: HWDesignDiagram::pasteInterfaces()
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::pasteInterfaces(BusInterfaceCollectionCopyData const& collection,
-                                      HWComponentItem* component, QUndoCommand* cmd)
+    HWComponentItem* component, QUndoCommand* cmd)
 {
     foreach(BusInterfaceCopyData const& instance, collection.instances)
     {        
         // Bus interface must have a unique name within the component.
         QString uniqueBusName = instance.busInterface->name();        	
         unsigned int count =  0;	
-        while( component->getBusPort( uniqueBusName ) != 0 )
+        while (component->getBusPort(uniqueBusName) != 0)
         {
             count++;
             uniqueBusName = instance.busInterface->name() + "_" + QString::number(count);			
@@ -2246,6 +2235,11 @@ void HWDesignDiagram::pasteInterfaces(BusInterfaceCollectionCopyData const& coll
 void HWDesignDiagram::pasteTopLevelInterfaces(BusInterfaceCollectionCopyData const& collection,
     GraphicsColumn* column, QUndoCommand* cmd, bool useCursorPos)
 {
+    if (collection.instances.isEmpty())
+    {
+        return;
+    }
+
     QStringList existingNames;
     foreach (QGraphicsItem* item, items())
     {
@@ -2256,7 +2250,7 @@ void HWDesignDiagram::pasteTopLevelInterfaces(BusInterfaceCollectionCopyData con
         }
     }
 
-    foreach(BusInterfaceCopyData const& instance, collection.instances)
+    foreach (BusInterfaceCopyData const& instance, collection.instances)
     {
         // Bus interface must have a unique name within the component.
         QString uniqueBusName = instance.busInterface->name();
@@ -2311,10 +2305,10 @@ void HWDesignDiagram::pasteTopLevelInterfaces(BusInterfaceCollectionCopyData con
                     copyBusIf->getPortMaps()->append(dialog.getPortMaps());
 
                     // Create a busPort with the copied bus interface.
-                    port = new BusInterfaceItem(getLibraryInterface(), getEditedComponent(), 
-                        copyBusIf, dataGroup, targetColumn);
-                    pasteCmd = new BusInterfacePasteCommand(instance.srcComponent, 
-                        getEditedComponent(), port, targetColumn, this, dialog.getPorts(), cmd);
+                    port = new BusInterfaceItem(getLibraryInterface(), getEditedComponent(), copyBusIf, 
+                        dataGroup, targetColumn);
+                    pasteCmd = new BusInterfacePasteCommand(instance.srcComponent, getEditedComponent(), port, 
+                        targetColumn, this, dialog.getPorts(), cmd);
                 }
                 else
                 {
@@ -2326,10 +2320,10 @@ void HWDesignDiagram::pasteTopLevelInterfaces(BusInterfaceCollectionCopyData con
                 QSharedPointer<InterfaceGraphicsData> dataGroup(new InterfaceGraphicsData(copyBusIf->name()));
 
                 // Create a busPort with the copied bus interface.
-                port = new BusInterfaceItem(
-                    getLibraryInterface(), getEditedComponent(), copyBusIf, dataGroup, targetColumn);
-                pasteCmd = new BusInterfacePasteCommand(instance.srcComponent, 
-                    getEditedComponent(), port, targetColumn, this, cmd); 
+                port = new BusInterfaceItem(getLibraryInterface(), getEditedComponent(), copyBusIf, 
+                    dataGroup, targetColumn);
+                pasteCmd = new BusInterfacePasteCommand(instance.srcComponent, getEditedComponent(), port,
+                    targetColumn, this, cmd); 
             }
 
             if (useCursorPos)
@@ -2373,10 +2367,10 @@ void HWDesignDiagram::pasteTopLevelInterfaces(BusInterfaceCollectionCopyData con
 }
 
 //-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::createPasteCommand()
+// Function: HWDesignDiagram::createComponentPasteCommand()
 //-----------------------------------------------------------------------------
-void HWDesignDiagram::createPasteCommand(ComponentCollectionCopyData const& collection, GraphicsColumn* column,
-    QUndoCommand* cmd, bool useCursorPos)
+void HWDesignDiagram::createComponentPasteCommand(ComponentCollectionCopyData const& collection, GraphicsColumn* column,
+    QUndoCommand* parentCommand, bool useCursorPos)
 {
     foreach (ComponentInstanceCopyData const& instance, collection.instances)
     {
@@ -2390,6 +2384,7 @@ void HWDesignDiagram::createPasteCommand(ComponentCollectionCopyData const& coll
             position = instance.instance->getPosition();
         }
 
-        new ComponentInstancePasteCommand(instance.component, instance.instance, position, column, this, cmd);
+        new ComponentInstancePasteCommand(instance.component, instance.instance, position, column, this,
+            parentCommand);
     }
 }

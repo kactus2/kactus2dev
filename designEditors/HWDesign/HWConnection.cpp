@@ -30,14 +30,10 @@
 //-----------------------------------------------------------------------------
 // Function: HWConnection::HWConnection()
 //-----------------------------------------------------------------------------
-HWConnection::HWConnection(ConnectionEndpoint* endpoint1, ConnectionEndpoint* endpoint2,
-    bool autoConnect,
-    QString const& name, 
-    QString const& displayName,
-    QString const& description,
-    DesignDiagram* parent)
-    : GraphicsConnection(endpoint1, endpoint2, autoConnect, name, displayName, description, parent), 
-    widthLabel_(new QGraphicsTextItem(this)),
+HWConnection::HWConnection(ConnectionEndpoint* endpoint1, ConnectionEndpoint* endpoint2, bool autoConnect,
+    QString const& name, QString const& displayName, QString const& description, DesignDiagram* parent):
+GraphicsConnection(endpoint1, endpoint2, autoConnect, name, displayName, description, parent), 
+    widthLabel_(new QGraphicsTextItem(this)), 
     interconnection_(),
     route_()
 {
@@ -53,10 +49,9 @@ HWConnection::HWConnection(ConnectionEndpoint* endpoint1, ConnectionEndpoint* en
 // Function: HWConnection::HWConnection()
 //-----------------------------------------------------------------------------
 HWConnection::HWConnection(ConnectionEndpoint* endpoint1, ConnectionEndpoint* endpoint2, 
-    QSharedPointer<Interconnection> interconnection, QSharedPointer<ConnectionRoute> route,
-    DesignDiagram* parent):
-    GraphicsConnection(endpoint1, endpoint2, false, interconnection->name(), interconnection->displayName(),
-        interconnection->description(), parent),
+    QSharedPointer<Interconnection> interconnection, QSharedPointer<ConnectionRoute> route, DesignDiagram* parent):
+GraphicsConnection(endpoint1, endpoint2, false, interconnection->name(), interconnection->displayName(),
+    interconnection->description(), parent),
     widthLabel_(new QGraphicsTextItem(this)),
     interconnection_(interconnection),
     route_(route)
@@ -70,8 +65,7 @@ HWConnection::HWConnection(ConnectionEndpoint* endpoint1, ConnectionEndpoint* en
 //-----------------------------------------------------------------------------
 // Function: HWConnection::HWConnection()
 //-----------------------------------------------------------------------------
-HWConnection::HWConnection(QPointF const& p1, QVector2D const& dir1,
-    QPointF const& p2, QVector2D const& dir2,
+HWConnection::HWConnection(QPointF const& p1, QVector2D const& dir1, QPointF const& p2, QVector2D const& dir2,
     QString const& displayName, QString const& description, DesignDiagram* parent):
 GraphicsConnection(p1, dir1, p2, dir2, displayName, description, parent),
     widthLabel_(new QGraphicsTextItem(this))

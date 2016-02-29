@@ -30,7 +30,7 @@
 #include <QApplication>
 
 //-----------------------------------------------------------------------------
-// Function: GraphicsColumn()
+// Function: GraphicsColumn::GraphicsColumn()
 //-----------------------------------------------------------------------------
 GraphicsColumn::GraphicsColumn(QSharedPointer<ColumnDesc> desc, GraphicsColumnLayout* layout)
     : QGraphicsRectItem(),
@@ -60,14 +60,14 @@ GraphicsColumn::GraphicsColumn(QSharedPointer<ColumnDesc> desc, GraphicsColumnLa
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~GraphicsColumn()
+// Function: GraphicsColumn::~GraphicsColumn()
 //-----------------------------------------------------------------------------
 GraphicsColumn::~GraphicsColumn()
 {
 }
 
 //-----------------------------------------------------------------------------
-// Function: setName()
+// Function: GraphicsColumn::setName()
 //-----------------------------------------------------------------------------
 void GraphicsColumn::setName(QString const& name)
 {
@@ -76,7 +76,7 @@ void GraphicsColumn::setName(QString const& name)
 }
 
 //-----------------------------------------------------------------------------
-// Function: name()
+// Function: GraphicsColumn::name()
 //-----------------------------------------------------------------------------
 QString GraphicsColumn::name() const
 {
@@ -151,7 +151,7 @@ void GraphicsColumn::setWidth(unsigned int width)
 }
 
 //-----------------------------------------------------------------------------
-// Function: setOffsetY()
+// Function: GraphicsColumn::setOffsetY()
 //-----------------------------------------------------------------------------
 void GraphicsColumn::setOffsetY(qreal y)
 {
@@ -185,7 +185,7 @@ bool GraphicsColumn::isAllowedItemsValid(unsigned int allowedItems) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: isEmpty()
+// Function: GraphicsColumn::isEmpty()
 //-----------------------------------------------------------------------------
 bool GraphicsColumn::isEmpty() const
 {
@@ -193,7 +193,7 @@ bool GraphicsColumn::isEmpty() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: addItem()
+// Function: GraphicsColumn::addItem()
 //-----------------------------------------------------------------------------
 void GraphicsColumn::addItem(QGraphicsItem* item, bool load)
 {
@@ -239,7 +239,7 @@ void GraphicsColumn::addItem(QGraphicsItem* item, bool load)
 }
 
 //-----------------------------------------------------------------------------
-// Function: removeItem()
+// Function: GraphicsColumn::removeItem()
 //-----------------------------------------------------------------------------
 void GraphicsColumn::removeItem(QGraphicsItem* item)
 {
@@ -252,7 +252,7 @@ void GraphicsColumn::removeItem(QGraphicsItem* item)
 }
 
 //-----------------------------------------------------------------------------
-// Function: onMoveItem()
+// Function: GraphicsColumn::onMoveItem()
 //-----------------------------------------------------------------------------
 void GraphicsColumn::onMoveItem(QGraphicsItem* item)
 {
@@ -337,7 +337,7 @@ void GraphicsColumn::onMoveItem(QGraphicsItem* item)
 }
 
 //-----------------------------------------------------------------------------
-// Function: onReleaseItem()
+// Function: GraphicsColumn::onReleaseItem()
 //-----------------------------------------------------------------------------
 void GraphicsColumn::onReleaseItem(QGraphicsItem* item)
 {
@@ -350,7 +350,7 @@ void GraphicsColumn::onReleaseItem(QGraphicsItem* item)
 }
 
 //-----------------------------------------------------------------------------
-// Function: updateItemPositions()
+// Function: GraphicsColumn::updateItemPositions()
 //-----------------------------------------------------------------------------
 void GraphicsColumn::updateItemPositions()
 {
@@ -393,7 +393,7 @@ ColumnTypes::ColumnContentType GraphicsColumn::getContentType() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: mousePressEvent()
+// Function: GraphicsColumn::mousePressEvent()
 //-----------------------------------------------------------------------------
 void GraphicsColumn::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
@@ -412,7 +412,7 @@ void GraphicsColumn::mousePressEvent(QGraphicsSceneMouseEvent* event)
 }
 
 //-----------------------------------------------------------------------------
-// Function: mouseMoveEvent()
+// Function: GraphicsColumn::mouseMoveEvent()
 //-----------------------------------------------------------------------------
 void GraphicsColumn::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 {
@@ -440,7 +440,7 @@ void GraphicsColumn::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 }
 
 //-----------------------------------------------------------------------------
-// Function: mouseReleaseEvent()
+// Function: GraphicsColumn::mouseReleaseEvent()
 //-----------------------------------------------------------------------------
 void GraphicsColumn::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
@@ -524,9 +524,9 @@ void GraphicsColumn::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 }
 
 //-----------------------------------------------------------------------------
-// Function: itemChange()
+// Function: GraphicsColumn::itemChange()
 //-----------------------------------------------------------------------------
-QVariant GraphicsColumn::itemChange(GraphicsItemChange change, const QVariant &value)
+QVariant GraphicsColumn::itemChange(GraphicsItemChange change, QVariant const& value)
 {
     if (change == ItemPositionChange)
     {

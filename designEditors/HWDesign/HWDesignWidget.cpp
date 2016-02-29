@@ -202,6 +202,11 @@ bool HWDesignWidget::setDesign(QSharedPointer<Component> component, QString cons
         }
 
         design = getLibraryInterface()->getModel(designVLNV).dynamicCast<Design>();
+        if (!design)
+        {
+            emit errorMessage(tr("VLNV %1 was not found in library.").arg(designVLNV.toString()));
+            return false;
+        }
     }
 
     if (!getDiagram()->setDesign(component, design, designConfiguration))

@@ -82,7 +82,6 @@ GraphicsColumnAddCommand::~GraphicsColumnAddCommand()
 {
     if (del_)
     {
-        layout_->removeColumn(column_);
         delete column_;
     }
 }
@@ -109,7 +108,7 @@ void GraphicsColumnAddCommand::undo()
 void GraphicsColumnAddCommand::redo()
 {
     // Add the column to the layout.
-    layout_->addColumn(column_, true);
+    layout_->addColumn(column_, column_->pos().isNull());
     del_ = false;
     design_->addColumn(column_->getColumnDesc());
 
@@ -125,6 +124,7 @@ GraphicsColumnChangeCommand::GraphicsColumnChangeCommand(GraphicsColumn* column,
                                                          QUndoCommand* parent):
 QUndoCommand(parent),
 columnItem_(column),
+columnDesc_(column->getColumnDesc()),
 oldDesc_(new ColumnDesc(*column->getColumnDesc().data())),
 newDesc_(newDesc),
 containingDesign_(containingDesign)
@@ -144,8 +144,6 @@ GraphicsColumnChangeCommand::~GraphicsColumnChangeCommand()
 void GraphicsColumnChangeCommand::undo()
 {
     changeModifiedColumnInDesign(oldDesc_);
-
-    columnItem_->setColumnDesc(oldDesc_);
 }
 
 //-----------------------------------------------------------------------------
@@ -154,8 +152,6 @@ void GraphicsColumnChangeCommand::undo()
 void GraphicsColumnChangeCommand::redo()
 {
     changeModifiedColumnInDesign(newDesc_);
-
-    columnItem_->setColumnDesc(newDesc_);
 }
 
 //-----------------------------------------------------------------------------
@@ -163,31 +159,11 @@ void GraphicsColumnChangeCommand::redo()
 //-----------------------------------------------------------------------------
 void GraphicsColumnChangeCommand::changeModifiedColumnInDesign(QSharedPointer<ColumnDesc> newColumn)
 {
-    QSharedPointer<ColumnDesc> modifiedColumn = getModifiedColumn();
-    if (modifiedColumn)
-    {
-        modifiedColumn->setAllowedItems(newColumn->getAllowedItems());
-        modifiedColumn->setContentType(newColumn->getContentType());
-        modifiedColumn->setName(newColumn->name());
-//         modifiedColumn->setPosition(newColumn->getPosition());
-        modifiedColumn->setWidth(newColumn->getWidth());
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: GraphicsColumnUndoCommands::getModifiedColumn()
-//-----------------------------------------------------------------------------
-QSharedPointer<ColumnDesc> GraphicsColumnChangeCommand::getModifiedColumn()
-{
-    foreach (QSharedPointer<ColumnDesc> designColumn, containingDesign_->getColumns())
-    {
-        if (designColumn->name() == columnItem_->name())
-        {
-            return designColumn;
-        }
-    }
-
-    return QSharedPointer<ColumnDesc>();
+    columnDesc_->setAllowedItems(newColumn->getAllowedItems());
+    columnDesc_->setContentType(newColumn->getContentType());
+    columnDesc_->setName(newColumn->name());
+    //columnDesc_->setPosition(newColumn->getPosition());
+    columnDesc_->setWidth(newColumn->getWidth());
 }
 
 //-----------------------------------------------------------------------------

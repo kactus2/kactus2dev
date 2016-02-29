@@ -10,6 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include "ColumnDeleteCommand.h"
+#include "ComponentDeleteCommand.h"
 #include "ConnectionDeleteCommand.h"
 
 #include <common/graphicsItems/GraphicsItemTypes.h>
@@ -79,6 +80,8 @@ QUndoCommand(parent),
             {
                 new AssociationRemoveCommand(association, diagram, this);
             }
+
+            new ComponentDeleteCommand(diagram, column, comp, this);
         }
         else if (item->type() == GFX_TYPE_DIAGRAM_INTERFACE)
         {

@@ -248,29 +248,32 @@ QUndoCommand(parent),
     {	
         QString uniquePortName = portName;
         unsigned int count = 0;
-        while (destComponent->getPort(uniquePortName) != 0 )
+        while (destComponent->getPort(uniquePortName) != 0)
         {
             count++;
             uniquePortName = portName + "_" + QString::number(count);
         }
 
-        // Create copies of the physical ports in the source component and rename them.
-        QSharedPointer<Port> physPortCopy = QSharedPointer<Port>(new Port(*srcComponent->getPort(portName)));
-        physPortCopy->setName(uniquePortName);	
-
-        // If port name changed, it is also changed in bus interface.
-        if (uniquePortName != portName)
+        if (srcComponent->hasPort(portName))
         {
-            foreach (QSharedPointer<PortMap> portMap, *interfaceItem->getBusInterface()->getPortMaps())
+            // Create copies of the physical ports in the source component and rename them.
+            QSharedPointer<Port> physPortCopy = QSharedPointer<Port>(new Port(*srcComponent->getPort(portName)));
+            physPortCopy->setName(uniquePortName);	
+
+            // If port name changed, it is also changed in bus interface.
+            if (uniquePortName != portName)
             {
-                if(portMap->getPhysicalPort()->name_ == portName)
+                foreach (QSharedPointer<PortMap> portMap, *interfaceItem->getBusInterface()->getPortMaps())
                 {
-                    portMap->getPhysicalPort()->name_ = uniquePortName;
+                    if (portMap->getPhysicalPort()->name_ == portName)
+                    {
+                        portMap->getPhysicalPort()->name_ = uniquePortName;
+                    }
                 }
             }
-        }
 
-        new AddPhysicalPortCommand(destComponent_, physPortCopy, this);
+            new AddPhysicalPortCommand(destComponent_, physPortCopy, this);
+        }       
     }
 }
 

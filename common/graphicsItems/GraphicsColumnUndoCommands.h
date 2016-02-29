@@ -165,14 +165,15 @@ private:
 
     void changeModifiedColumnInDesign(QSharedPointer<ColumnDesc> newColumn);
 
-    QSharedPointer<ColumnDesc> getModifiedColumn();
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
     //! The diagram column.
     GraphicsColumn* columnItem_;
+    
+    //! The column description.
+    QSharedPointer<ColumnDesc> columnDesc_;
 
     //! The column's old description.
     QSharedPointer<ColumnDesc> oldDesc_;

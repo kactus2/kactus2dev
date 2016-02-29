@@ -307,13 +307,16 @@ QList<QSharedPointer<Port> > BusInterfaceItem::getPorts() const
     Q_ASSERT(busInterface_ != 0);
     QList<QSharedPointer<Port> > ports;
 
-    foreach (QSharedPointer<PortMap> portMap, *busInterface_->getPortMaps())
+    if (busInterface_->getPortMaps())
     {
-        QSharedPointer<Port> port = component_->getPort(portMap->getPhysicalPort()->name_);
-
-        if (port)
+        foreach (QSharedPointer<PortMap> portMap, *busInterface_->getPortMaps())
         {
-            ports.append(port);
+            QSharedPointer<Port> port = component_->getPort(portMap->getPhysicalPort()->name_);
+
+            if (port)
+            {
+                ports.append(port);
+            }
         }
     }
 
