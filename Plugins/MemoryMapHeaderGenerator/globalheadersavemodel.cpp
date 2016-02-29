@@ -8,7 +8,7 @@
 #include "globalheadersavemodel.h"
 
 #include <library/LibraryManager/libraryinterface.h>
-#include <IPXACTmodels/ComponentInstance.h>
+#include <IPXACTmodels/Design/ComponentInstance.h>
 
 #include <QDir>
 #include <QStringList>
@@ -107,7 +107,7 @@ QVariant GlobalHeaderSaveModel::data( const QModelIndex& index, int role /*= Qt:
 			VLNV identifier = table_.at(index.row())->comp_;
 
 			// display the relative path from xml directory to the header to be generated
-			QDir xmlDir(handler_->getDirectoryPath(*comp_->getVlnv()));
+			QDir xmlDir(handler_->getDirectoryPath(comp_->getVlnv()));
 			QString headerPath = table_.at(index.row())->fileInfo_.absoluteFilePath();
 			QString relPath = xmlDir.relativeFilePath(headerPath);
 
@@ -133,7 +133,7 @@ QVariant GlobalHeaderSaveModel::data( const QModelIndex& index, int role /*= Qt:
 
 		// if not then at least the xml directory exists
 		else {
-			return handler_->getDirectoryPath(*comp_->getVlnv());
+			return handler_->getDirectoryPath(comp_->getVlnv());
 		}		
 	}
 	else {
@@ -243,7 +243,7 @@ void GlobalHeaderSaveModel::setDesign( QSharedPointer<Component> topComp, QShare
 			options->instanceId_ = instance->getUuid();
 
 			// the path to the directory containing the xml metadata
-			QString compPath(handler_->getDirectoryPath(*topComp->getVlnv()));
+			QString compPath(handler_->getDirectoryPath(topComp->getVlnv()));
 
 			// the relative path from the xml dir to the header to generate
 			QString headerPath = QString("%1/%2/%3.h").arg(

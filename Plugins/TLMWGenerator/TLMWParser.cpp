@@ -200,7 +200,7 @@ bool TLMWParser::canGenerateTLMWComponent(QSharedPointer<Component> component)
 void TLMWParser::checkRequiredPropertiesSet(QString componentVLNV, QSharedPointer<ComDefinition> comDef,
     QSharedPointer<ComInterface> comIf, QStringList &errorList)
 {
-    foreach ( QSharedPointer<ComProperty> property, comDef->getProperties() )
+    foreach (QSharedPointer<ComProperty> property, *comDef->getProperties())
     {
         if ( property->isRequired() && comIf->getPropertyValues().value(property->name()).isEmpty() )
         {

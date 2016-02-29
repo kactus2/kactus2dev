@@ -77,7 +77,7 @@ QStringList Channel::getInterfaces() const
 //-----------------------------------------------------------------------------
 // Function: Channel::setInterfaces()
 //-----------------------------------------------------------------------------
-void Channel::setInterfaces(QStringList const& interfaceNames )
+void Channel::setInterfaces(QStringList const& interfaceNames)
 {
     busInterfaces_ = interfaceNames;
 }

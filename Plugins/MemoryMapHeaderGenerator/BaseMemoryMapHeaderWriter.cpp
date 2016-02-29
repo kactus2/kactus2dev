@@ -20,9 +20,13 @@
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
-#include <IPXACTmodels/SWView.h>
-#include <IPXACTmodels/fileset.h>
-#include <IPXACTmodels/file.h>
+#include <IPXACTmodels/common/AccessTypes.h>
+
+#include <IPXACTmodels/Component/Fileset.h>
+#include <IPXACTmodels/Component/File.h>
+#include <IPXACTmodels/Component/MemoryMapBase.h>
+
+#include <IPXACTmodels/kactusExtensions/SWView.h>
 
 #include <QCoreApplication>
 #include <QDate>
@@ -97,10 +101,9 @@ void BaseMemoryMapHeaderWriter::writeTopOfHeaderFile(QTextStream& stream, QStrin
 // Function: BaseMemoryMapHeaderWriter::addHeaderFile()
 //-----------------------------------------------------------------------------
 void BaseMemoryMapHeaderWriter::addHeaderFile(QSharedPointer<Component> component, const QFileInfo& fileInfo,
-    const QString& filesetName, const QStringList& swViewNames /* = QStringList() */,
-    const QString& instanceId /* = QString() */) const
+    QString const& filesetName, QStringList const& swViewNames, QString const& instanceId) const
 {
-    QString xmlDir = utility_->getLibraryInterface()->getDirectoryPath(*component->getVlnv());
+    QString xmlDir = utility_->getLibraryInterface()->getDirectoryPath(component->getVlnv());
 
     // if the directory does not exist
     QDir ipXactDir(xmlDir);
@@ -133,11 +136,12 @@ void BaseMemoryMapHeaderWriter::addHeaderFile(QSharedPointer<Component> componen
         "This file contains the register and memory addresses defined in the memory map(s)"));
     file->setIncludeFile(true);
 
-    // update the sw views of the component to contain the reference to the file set.
-    foreach (QString swViewName, swViewNames)
+    foreach (QSharedPointer<SWView> swView, component->getSWViews())
     {
-        QSharedPointer<SWView> swView = component->getSWView(swViewName);
-        swView->addFileSetRef(filesetName);
+        if (swViewNames.contains(swView->name()))
+        {
+            swView->addFileSetRef(filesetName);
+        }
     }
 
     displayMemoryMapHeader(fileInfo.absoluteFilePath());
@@ -156,17 +160,17 @@ void BaseMemoryMapHeaderWriter::displayMemoryMapHeader(QString const& filePath) 
 //-----------------------------------------------------------------------------
 void BaseMemoryMapHeaderWriter::writeRegisterFromMemoryMap(QSharedPointer<ParameterFinder> finder,
     QSharedPointer<MemoryMap> containingMemoryMap, QTextStream& stream, bool useAddressBlockID, quint64 offset,
-    QString const& idString /* = QString() */)
+    QString const& idString)
 {
     QSharedPointer<IPXactSystemVerilogParser> expressionParser (new IPXactSystemVerilogParser(finder));
     QSharedPointer<ExpressionFormatter> formatter (new ExpressionFormatter(finder));
 
-    foreach (QSharedPointer<MemoryMapItem> memoryItem, containingMemoryMap->getItems())
+    foreach (QSharedPointer<MemoryBlockBase> memoryItem, *containingMemoryMap->getMemoryBlocks())
     {
         QSharedPointer<AddressBlock> addressBlock = memoryItem.dynamicCast<AddressBlock>();
 
         if (addressBlock && (addressBlock->getUsage() == General::REGISTER || (General::usage2Str(
-            addressBlock->getUsage()).isEmpty() && !addressBlock->getRegisterData().isEmpty())))
+            addressBlock->getUsage()).isEmpty() && !addressBlock->getRegisterData()->isEmpty())))
         {
             writeRegistersFromAddressBlock(expressionParser, formatter, addressBlock, stream, useAddressBlockID,
                 offset, idString);
@@ -179,7 +183,7 @@ void BaseMemoryMapHeaderWriter::writeRegisterFromMemoryMap(QSharedPointer<Parame
 //-----------------------------------------------------------------------------
 void BaseMemoryMapHeaderWriter::writeRegistersFromAddressBlock(QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<ExpressionFormatter> formatter, QSharedPointer<AddressBlock> currentAddressBlock,
-    QTextStream& stream, bool useAddressBlockID, quint64 offset, QString const& idString /* = QString() */)
+    QTextStream& stream, bool useAddressBlockID, quint64 offset, QString const& idString)
 {
     QString addressBlockOffsetInt = expressionParser->parseExpression(currentAddressBlock->getBaseAddress());
     quint64 addressBlockOffset = addressBlockOffsetInt.toUInt() + offset;
@@ -208,7 +212,7 @@ void BaseMemoryMapHeaderWriter::writeRegistersFromAddressBlock(QSharedPointer<Ex
     }
     stream << "*/" << endl;
 
-    foreach (QSharedPointer<RegisterModel> registerModelItem, currentAddressBlock->getRegisterData())
+    foreach (QSharedPointer<RegisterBase> registerModelItem, *currentAddressBlock->getRegisterData())
     {
         QSharedPointer<Register> registerItem = registerModelItem.dynamicCast<Register>();
         if (registerItem)
@@ -274,7 +278,7 @@ void BaseMemoryMapHeaderWriter::writeMemoryAddresses(QSharedPointer<ParameterFin
     QSharedPointer<IPXactSystemVerilogParser> expressionParser (new IPXactSystemVerilogParser(finder));
     QSharedPointer<ExpressionFormatter> formatter (new ExpressionFormatter(finder));
 
-    foreach (QSharedPointer<MemoryMapItem> memoryItem, targetMemoryMap->getItems())
+    foreach (QSharedPointer<MemoryBlockBase> memoryItem, *targetMemoryMap->getMemoryBlocks())
     {
         QSharedPointer<AddressBlock> currentAddressBlock = memoryItem.dynamicCast<AddressBlock>();
         if (currentAddressBlock && (currentAddressBlock->getUsage() == General::MEMORY ||
@@ -298,9 +302,9 @@ void BaseMemoryMapHeaderWriter::writeMemoryAddresses(QSharedPointer<ParameterFin
             }
 
             stream << " * Width: " << currentAddressBlock->getWidth();
-            if (!expressionParser->isPlainValue(currentAddressBlock->getWidthExpression()))
+            if (!expressionParser->isPlainValue(currentAddressBlock->getWidth()))
             {
-                stream << " = " << formatter->formatReferringExpression(currentAddressBlock->getWidthExpression());
+                stream << " = " << formatter->formatReferringExpression(currentAddressBlock->getWidth());
             }
             stream << endl;
 
@@ -313,7 +317,7 @@ void BaseMemoryMapHeaderWriter::writeMemoryAddresses(QSharedPointer<ParameterFin
             }
             stream << endl;
 
-            QString accessString = General::access2Str(currentAddressBlock->getAccess());
+            QString accessString = AccessTypes::access2Str(currentAddressBlock->getAccess());
             if (!accessString.isEmpty())
             {
                 stream << " * Access: " << accessString << endl;

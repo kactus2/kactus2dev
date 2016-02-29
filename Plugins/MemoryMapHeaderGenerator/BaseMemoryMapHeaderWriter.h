@@ -12,10 +12,10 @@
 #ifndef BASEMEMORYMAPHEADERWRITER_H
 #define BASEMEMORYMAPHEADERWRITER_H
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/addressblock.h>
-#include <IPXACTmodels/register.h>
-#include <IPXACTmodels/memorymap.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/AddressBlock.h>
+#include <IPXACTmodels/Component/Register.h>
+#include <IPXACTmodels/Component/MemoryMap.h>
 
 #include <QFileInfo>
 #include <QObject>

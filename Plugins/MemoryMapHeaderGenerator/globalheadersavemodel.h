@@ -9,7 +9,7 @@
 #define GLOBALHEADERSAVEMODEL_H
 
 #include <IPXACTmodels/common/VLNV.h>
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
 
 #include <IPXACTmodels/Design/Design.h>
 

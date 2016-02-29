@@ -8,7 +8,7 @@
 #ifndef LOCALHEADERSAVEDELEGATE_H
 #define LOCALHEADERSAVEDELEGATE_H
 
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
 
 #include <QStyledItemDelegate>
 #include <QSharedPointer>

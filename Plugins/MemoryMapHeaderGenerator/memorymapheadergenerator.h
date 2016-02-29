@@ -16,8 +16,7 @@
 
 #include <Plugins/PluginSystem/IGeneratorPlugin.h>
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/librarycomponent.h>
+#include <IPXACTmodels/Component/Component.h>
 
 #include <IPXACTmodels/Design/Design.h>
 

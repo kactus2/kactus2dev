@@ -16,9 +16,9 @@
 
 #include "globalheadersavemodel.h"
 
-#include <IPXACTmodels/component.h>
-
 #include <IPXACTmodels/common/Parameter.h>
+
+#include <IPXACTmodels/Component/Component.h>
 
 #include <IPXACTmodels/Design/Design.h>
 

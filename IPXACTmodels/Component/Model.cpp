@@ -296,7 +296,7 @@ VLNV Model::getHierRef(const QString viewName) const
 				{
 					if (instantiation->name() == view->getDesignConfigurationInstantiationRef())
 					{
-						return *instantiation->getDesignConfigurationReference().data();
+						return *instantiation->getDesignConfigurationReference();
 					}
 				}
 			}
@@ -307,7 +307,7 @@ VLNV Model::getHierRef(const QString viewName) const
                 {
                     if (instantiation->name() == view->getDesignInstantiationRef())
                     {
-                        return *instantiation->getDesignReference().data();
+                        return *instantiation->getDesignReference();
                     }
                 }
             }
@@ -547,7 +547,7 @@ void Model::copyPorts(const Model& other) const
     {
         if (port)
         {
-            QSharedPointer<Port> copy = QSharedPointer<Port>(new Port(*port.data()));
+            QSharedPointer<Port> copy = QSharedPointer<Port>(new Port(*port));
             ports_->append(copy);
         }
     }

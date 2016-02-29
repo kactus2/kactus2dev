@@ -21,6 +21,7 @@
 #include <common/utils.h>
 
 #include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/Component/Channel.h>
 #include <IPXACTmodels/Component/MasterInterface.h>
 #include <IPXACTmodels/Component/MirroredSlaveInterface.h>
 #include <IPXACTmodels/Component/SlaveInterface.h>
@@ -166,22 +167,27 @@ void GlobalMemoryMapHeaderWriter::parseInterface(qint64 offset, QTextStream& str
 	QSharedPointer<Component> component = libComp.dynamicCast<Component>();
 	Q_ASSERT(component);
 
-    if (component->getInterfaceMode(interface->getBusReference()) == General::MASTER)
+    QSharedPointer<BusInterface> busInterface = component->getBusInterface(interface->getBusReference());    
+    if (busInterface)
     {
-        parseMasterInterface(offset, component, stream, interface);
-    }
-    else if (component->getInterfaceMode(interface->getBusReference()) == General::SLAVE)
-    {
-        parseSlaveInterface(offset, component, stream, interface);
-    }
-    else if (component->getInterfaceMode(interface->getBusReference()) == General::MIRROREDSLAVE)
-    {
-        parseMirroredSlaveInterface(offset, component, stream, interface);
-    }
-    else if (component->getInterfaceMode(interface->getBusReference()) == General::MIRROREDMASTER)
-    {
-        parseMirroredMasterInterface(offset, component, stream, interface);
-    }
+        General::InterfaceMode interfaceMode = busInterface->getInterfaceMode();
+        if (interfaceMode == General::MASTER)
+        {
+            parseMasterInterface(offset, component, stream, interface);
+        }
+        else if (interfaceMode == General::SLAVE)
+        {
+            parseSlaveInterface(offset, component, stream, interface);
+        }
+        else if (interfaceMode == General::MIRROREDSLAVE)
+        {
+            parseMirroredSlaveInterface(offset, component, stream, interface);
+        }
+        else if (interfaceMode == General::MIRROREDMASTER)
+        {
+            parseMirroredMasterInterface(offset, component, stream, interface);
+        }
+    }    
 }
 
 //-----------------------------------------------------------------------------
@@ -217,26 +223,22 @@ void GlobalMemoryMapHeaderWriter::parseSlaveInterface(qint64 offset, QSharedPoin
     QSharedPointer<SlaveInterface> slave = component->getBusInterface(interface->getBusReference())->getSlave();
     Q_ASSERT(slave);
 
-    if (!slave->getBridges().isEmpty())
+    QSharedPointer<MemoryMap> memMap;
+    foreach (QSharedPointer<MemoryMap> availableMap, *component->getMemoryMaps())
     {
-        foreach (QSharedPointer<SlaveInterface::Bridge> bridge, slave->getBridges())
+        if (availableMap->name() == slave->getMemoryMapRef())
         {
-            if (bridge->opaque_)
-            {
-                utility_->printError(QObject::tr("An opaque bridge was found in interface ") +
-                    interface->getBusReference() + QObject::tr(" in instance ") + interface->getComponentReference() +
-                    QObject::tr(". Currently, opaque bridges are handled as transparent bridges."));
-            }
-        }
+            memMap = availableMap;
+            break;
+        }            
     }
 
-    QSharedPointer<MemoryMap> memMap = component->getMemoryMap(slave->getMemoryMapRef());
-    if (memMap && memMap->containsSubItems())
+    if (memMap && memMap->hasMemoryBlocks())
     {
         stream << "/*" << endl;
         stream << " * Instance: " << interface->getComponentReference() << " Interface: " << interface->getBusReference() << endl;
         stream << " * Instance base address: 0x" << QString::number(offset, 16) << endl;
-        stream << " * Source component: " << component->getVlnv()->toString() << endl;
+        stream << " * Source component: " << component->getVlnv().toString() << endl;
 
         // if there is a description for the component instance
         QString instanceDesc = componentDesign_->getHWInstanceDescription(interface->getComponentReference());
@@ -256,15 +258,17 @@ void GlobalMemoryMapHeaderWriter::parseSlaveInterface(qint64 offset, QSharedPoin
         writeMemoryAddresses(finder, memMap, stream, offset, interface->getComponentReference());
 
         // if the registers within the instance are unique then do not concatenate with address block name
-        QStringList regNames;
+        /*QStringList regNames;
         if (memMap->uniqueRegisterNames(regNames))
-        {
-            writeRegisterFromMemoryMap(finder, memMap, stream, false, offset, interface->getComponentReference());
-        }
+        {*/
+
+        writeRegisterFromMemoryMap(finder, memMap, stream, false, offset, interface->getComponentReference());
+        
+        /*}
         else
         {
             writeRegisterFromMemoryMap(finder, memMap, stream, true, offset, interface->getComponentReference());
-        }
+        }*/
     }
 
     if (slave->hasBridge())
@@ -297,21 +301,25 @@ void GlobalMemoryMapHeaderWriter::parseMirroredSlaveInterface(qint64 offset, QSh
     QTextStream& stream, QSharedPointer<ActiveInterface> interface)
 {
     // increase the offset by the remap address of the mirrored slave interface
-    QString remapStr = component->getBusInterface(interface->getBusReference())->getMirroredSlave()->getRemapAddress();
+    QSharedPointer<BusInterface> busInterface = component->getBusInterface(interface->getBusReference());
 
     QString instanceId = getInstanceID(interface->getComponentReference());
     QSharedPointer<ListParameterFinder> finder = createParameterFinder(instanceId, component);
 
-    QString remapValue = parsedValueFor(remapStr, finder);
-    offset += remapValue.toInt();
-
-    QList<QSharedPointer<ActiveInterface> > connected = getConnectedInterfaces(interface);
-    foreach (QSharedPointer<ActiveInterface> targetInterface, connected)
+    foreach (QSharedPointer<MirroredSlaveInterface::RemapAddress> remap, 
+        *busInterface->getMirroredSlave()->getRemapAddresses())
     {
-        if (!operatedInterfaces_.contains(targetInterface))
+        QString remapValue = parsedValueFor(remap->remapAddress_, finder);
+        offset += remapValue.toInt();
+
+        QList<QSharedPointer<ActiveInterface> > connected = getConnectedInterfaces(interface);
+        foreach (QSharedPointer<ActiveInterface> targetInterface, connected)
         {
-            operatedInterfaces_.append(targetInterface);
-            parseInterface(offset, stream, targetInterface);
+            if (!operatedInterfaces_.contains(targetInterface))
+            {
+                operatedInterfaces_.append(targetInterface);
+                parseInterface(offset, stream, targetInterface);
+            }
         }
     }
 }
@@ -324,12 +332,33 @@ void GlobalMemoryMapHeaderWriter::parseMirroredMasterInterface(qint64 offset, QS
 {
     // mirrored master interfaces are connected via channels
     // find the interfaces connected to the specified mirrored master interface
-    QList<QSharedPointer<const BusInterface> > connectedInterfaces =
-        component->getChannelConnectedInterfaces(interface->getBusReference());
+    QStringList connectedInterfaceNames;
+    foreach (QSharedPointer<Channel> channel, *component->getChannels())
+    {
+        if (channel->getInterfaces().contains(interface->getBusReference()))
+        {
+            connectedInterfaceNames.append(channel->getInterfaces());
+        }
+    }
+
+    connectedInterfaceNames.removeDuplicates();
+    connectedInterfaceNames.removeAll(interface->getBusReference());
+
+    QVector<QSharedPointer<const BusInterface> > connectedInterfaces;
+
+    foreach (QString const& interfaceName, connectedInterfaceNames)
+    {
+        QSharedPointer<BusInterface> connectedInterface = component->getBusInterface(interfaceName);
+        if (connectedInterface)
+        {
+            connectedInterfaces.append(connectedInterface);
+        }
+    }
 
     foreach (QSharedPointer<const BusInterface> busif, connectedInterfaces)
     {
-        QSharedPointer<ActiveInterface> connectedInterface(new ActiveInterface(interface->getComponentReference(), busif->name()));
+        QSharedPointer<ActiveInterface> connectedInterface(new ActiveInterface(interface->getComponentReference(),
+            busif->name()));
         if (!operatedInterfaces_.contains(connectedInterface))
         {
             operatedInterfaces_.append(connectedInterface);
