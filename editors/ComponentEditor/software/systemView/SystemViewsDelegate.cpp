@@ -98,7 +98,11 @@ void SystemViewsDelegate::setModelData(QWidget* editor, QAbstractItemModel* mode
     }
 }
 
-void SystemViewsDelegate::commitAndCloseEditor() {
+//-----------------------------------------------------------------------------
+// Function: SystemViewsDelegate::commitAndCloseEditor()
+//-----------------------------------------------------------------------------
+void SystemViewsDelegate::commitAndCloseEditor()
+{
 	QWidget* edit = qobject_cast<QWidget*>(sender());
 	Q_ASSERT(edit);
 

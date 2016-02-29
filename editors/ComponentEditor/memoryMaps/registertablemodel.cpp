@@ -304,18 +304,14 @@ QVariant RegisterTableModel::valueForIndex(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 // Function: registertablemodel::setData()
 //-----------------------------------------------------------------------------
-bool RegisterTableModel::setData( const QModelIndex& index, const QVariant& value, int role /*= Qt::EditRole*/ ) 
+bool RegisterTableModel::setData(QModelIndex const& index, QVariant const& value, int role) 
 {
-	if (!index.isValid()) 
-    {
-		return false;
-	}
-	else if (index.row() < 0 || index.row() >= fields_->size()) 
+	if (!index.isValid() || index.row() < 0 || index.row() >= fields_->size()) 
     {
 		return false;
 	}
 
-	if (Qt::EditRole == role) 
+	if (role == Qt::EditRole) 
     {
         if (index.column() == RegisterColumns::NAME_COLUMN)
         {
@@ -334,8 +330,7 @@ bool RegisterTableModel::setData( const QModelIndex& index, const QVariant& valu
                 removeReferencesFromSingleExpression(fields_->at(index.row())->getBitOffset());
             }
 
-            QString calculatedExpression = parseExpressionToDecimal(value.toString());
-            fields_->at(index.row())->setBitOffset(calculatedExpression);
+            fields_->at(index.row())->setBitOffset(value.toString());
 
             emit graphicsChanged();
         }
@@ -346,8 +341,7 @@ bool RegisterTableModel::setData( const QModelIndex& index, const QVariant& valu
                 removeReferencesFromSingleExpression(fields_->at(index.row())->getBitWidth());
             }
 
-            QString calculatedExpression = parseExpressionToDecimal(value.toString());
-            fields_->at(index.row())->setBitWidth(calculatedExpression);
+            fields_->at(index.row())->setBitWidth(value.toString());
 
             emit graphicsChanged();
         }

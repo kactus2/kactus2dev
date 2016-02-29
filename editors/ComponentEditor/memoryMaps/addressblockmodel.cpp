@@ -159,7 +159,7 @@ QVariant AddressBlockModel::data(QModelIndex const& index, int role) const
 		return QVariant();
 	}
 
-	if (Qt::DisplayRole == role) 
+	if (role == Qt::DisplayRole) 
     {
         if (isValidExpressionColumn(index))
         {
@@ -198,7 +198,7 @@ QVariant AddressBlockModel::data(QModelIndex const& index, int role) const
         }
     }
 
-	else if (Qt::ForegroundRole == role)
+	else if (role == Qt::ForegroundRole)
     {
         if (validateIndex(index))
         {
@@ -219,7 +219,7 @@ QVariant AddressBlockModel::data(QModelIndex const& index, int role) const
             return QColor("red");
         }
 	}
-    else if (Qt::BackgroundRole == role)
+    else if (role == Qt::BackgroundRole)
     {
         if (index.column() == AddressBlockColumns::NAME ||
             index.column() == AddressBlockColumns::REGISTER_OFFSET ||
@@ -304,7 +304,7 @@ bool AddressBlockModel::setData(QModelIndex const& index, QVariant const& value,
         return false;
     }
 
-    if (Qt::EditRole == role) 
+    if (role == Qt::EditRole) 
     {
         if (index.column() == AddressBlockColumns::NAME)
         {

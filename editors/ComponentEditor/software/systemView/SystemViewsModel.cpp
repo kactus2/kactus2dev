@@ -75,7 +75,7 @@ Qt::ItemFlags SystemViewsModel::flags(QModelIndex const& index) const
 		return Qt::NoItemFlags;
 	}
 	// hierarchy reference can only be dropped.
-	else if (SystemViewsDelegate::HIER_REF_COLUMN == index.column())
+	else if (index.column() == SystemViewsDelegate::HIER_REF_COLUMN)
     {
 		return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
 	}
@@ -125,7 +125,7 @@ QVariant SystemViewsModel::data(QModelIndex const& index, int role) const
 		return QVariant();
 	}
 	
-	if (role == Qt::DisplayRole || Qt::EditRole)
+	if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
         if (index.column() == SystemViewsDelegate::NAME_COLUMN)
         {
