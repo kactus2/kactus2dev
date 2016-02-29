@@ -11,18 +11,18 @@ HEADERS += ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
     ../../editors/ComponentEditor/common/ListParameterFinder.h \
     ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
     ../../editors/ComponentEditor/common/SystemVerilogSyntax.h \
+    ../common/NameGenerationPolicy.h \
     ./CompileConflictDialog.h \
     ./MakefileGenerator.h \
     ./MakefileParser.h \
     ./makefilegenerator_global.h \
-    ./MakefileGeneratorPlugin.h \
-    ../common/NameGenerationPolicy.h
+    ./MakefileGeneratorPlugin.h
 SOURCES += ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
     ../../editors/ComponentEditor/common/ListParameterFinder.cpp \
     ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
+    ../common/NameGenerationPolicy.cpp \
     ./CompileConflictDialog.cpp \
     ./MakefileGenerator.cpp \
     ./MakefileGeneratorPlugin.cpp \
-    ./MakefileParser.cpp \
-    ../common/NameGenerationPolicy.cpp
+    ./MakefileParser.cpp
 RESOURCES += MakefileGenerator.qrc

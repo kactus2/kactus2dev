@@ -13,10 +13,10 @@ HEADERS += ../common/CSourceWriter.h \
     ./MCAPIParser.h \
     ./MCAPICodeGenerator.h \
     ./MCAPICodeGeneratorPlugin.h
-SOURCES += ../common/NameGenerationPolicy.cpp \
+SOURCES += ../common/CSourceWriter.cpp \
+    ../common/NameGenerationPolicy.cpp \
     ./MCAPICodeGenerator.cpp \
     ./MCAPICodeGeneratorPlugin.cpp \
     ./MCAPIHeaderGenerator.cpp \
-    ./MCAPIParser.cpp \
-    ../common/CSourceWriter.cpp
+    ./MCAPIParser.cpp
 RESOURCES += MCAPICodeGenerator.qrc

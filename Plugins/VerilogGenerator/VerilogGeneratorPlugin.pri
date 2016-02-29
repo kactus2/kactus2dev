@@ -7,12 +7,12 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../common/NameGenerationPolicy.h \
-    ../PluginSystem/GeneratorPlugin/GeneratorConfiguration.h \
+HEADERS += ../PluginSystem/GeneratorPlugin/GeneratorConfiguration.h \
     ./veriloggeneratorplugin_global.h \
     ../PluginSystem/GeneratorPlugin/GeneratorConfigurationDialog.h \
     ./VerilogGeneratorPlugin.h \
     ./VerilogGenerator/VerilogGenerator.h \
+    ../common/NameGenerationPolicy.h \
     ./common/Writer.h \
     ./common/WriterGroup.h \
     ./ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.h \
@@ -26,12 +26,11 @@ HEADERS += ../common/NameGenerationPolicy.h \
     ./CommentWriter/CommentWriter.h \
     ../../editors/ComponentEditor/common/ComponentParameterFinder.h \
     ../../editors/ComponentEditor/common/ExpressionFormatter.h \
-    ../../editors/ComponentEditor/common/ParameterFinder.h \
     ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
+    ../../editors/ComponentEditor/common/ParameterFinder.h \
     ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
     ../../designEditors/common/TopComponentParameterFinder.h
-SOURCES += ../common/NameGenerationPolicy.cpp \
-    ../PluginSystem/GeneratorPlugin/GeneratorConfiguration.cpp \
+SOURCES += ../PluginSystem/GeneratorPlugin/GeneratorConfiguration.cpp \
     ../PluginSystem/GeneratorPlugin/GeneratorConfigurationDialog.cpp \
     ./VerilogGeneratorPlugin.cpp \
     ./VerilogGenerator/VerilogGenerator.cpp \
@@ -43,6 +42,7 @@ SOURCES += ../common/NameGenerationPolicy.cpp \
     ./VerilogHeaderWriter/VerilogHeaderWriter.cpp \
     ./VerilogWireWriter/VerilogWireWriter.cpp \
     ./CommentWriter/CommentWriter.cpp \
+    ../common/NameGenerationPolicy.cpp \
     ./common/WriterGroup.cpp \
     ../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
     ../../editors/ComponentEditor/common/ExpressionFormatter.cpp \

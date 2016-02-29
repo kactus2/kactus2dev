@@ -277,9 +277,9 @@ void SystemMemoryMapHeaderWriter::searchInstanceFiles(QSharedPointer<const Compo
                 QString sourcePath = utility_->getLibraryInterface()->getPath(component->getVlnv());
                 foreach (QString const& fileType, usedFileTypes)
                 {
-                    foreach (QString const& relPath, instanceFileSet->findFilesByFileType(fileType))
+                    foreach (QString const& relativePath, instanceFileSet->findFilesByFileType(fileType))
                     {
-                        QString absolutePath = General::getAbsolutePath(sourcePath, relPath);
+                        QString absolutePath = General::getAbsolutePath(sourcePath, relativePath);
 
                         QFileInfo info(absolutePath);
                         systemHeaderOption.includeFiles_.append(info);

@@ -18,9 +18,9 @@
 #include <editors/ComponentEditor/common/NullParser.h>
 #include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
 
-#include <IPXACTmodels/addressblock.h>
-#include <IPXACTmodels/register.h>
-#include <IPXACTmodels/registermodel.h>
+#include <IPXACTmodels/Component/AddressBlock.h>
+#include <IPXACTmodels/Component/Register.h>
+#include <IPXACTmodels/Component/RegisterBase.h>
 
 class tst_AddressBlockGraphItem : public QObject
 {
@@ -94,12 +94,12 @@ void tst_AddressBlockGraphItem::testAddressBlockWithRegister()
     AddressBlockGraphItem* addressBlockItem = new AddressBlockGraphItem(addressBlock, noParser, 0);
     addressBlockItem->setAddressableUnitBits(8);
 
-    QList<QSharedPointer<RegisterModel> > registers;
+    QList<QSharedPointer<RegisterBase> > registers;
     QSharedPointer<Register> reg(new Register());
     reg->setAddressOffset("0");
-    reg->setSize(8);
+    reg->setSize("8");
     registers.append(reg);
-    addressBlock->getRegisterData().append(registers);
+    addressBlock->getRegisterData()->append(registers);
 
     RegisterGraphItem* registerItem = new RegisterGraphItem(reg, noParser, addressBlockItem);
     addressBlockItem->addChild(registerItem);
@@ -140,12 +140,12 @@ void tst_AddressBlockGraphItem::testRegisterInSecondAddress()
     AddressBlockGraphItem* addressBlockItem = new AddressBlockGraphItem(addressBlock, noParser, 0);
     addressBlockItem->setAddressableUnitBits(8);
 
-    QList<QSharedPointer<RegisterModel> > registers;
+    QList<QSharedPointer<RegisterBase> > registers;
     QSharedPointer<Register> reg(new Register());
     reg->setAddressOffset("1");
-    reg->setSize(8);
+    reg->setSize("8");
     registers.append(reg);
-    addressBlock->getRegisterData().append(registers);
+    addressBlock->getRegisterData()->append(registers);
 
     RegisterGraphItem* registerItem = new RegisterGraphItem(reg, noParser, addressBlockItem);
     addressBlockItem->addChild(registerItem);
@@ -189,12 +189,12 @@ void tst_AddressBlockGraphItem::testEmptyAfterLastRegister()
     AddressBlockGraphItem* addressBlockItem = new AddressBlockGraphItem(addressBlock, noParser, 0);
     addressBlockItem->setAddressableUnitBits(8);
 
-    QList<QSharedPointer<RegisterModel> > registers;
+    QList<QSharedPointer<RegisterBase> > registers;
     QSharedPointer<Register> reg(new Register());
     reg->setAddressOffset("0");
-    reg->setSize(8);
+    reg->setSize("8");
     registers.append(reg);
-    addressBlock->getRegisterData().append(registers);
+    addressBlock->getRegisterData()->append(registers);
 
 
     RegisterGraphItem* registerItem = new RegisterGraphItem(reg, noParser, addressBlockItem);
@@ -232,7 +232,7 @@ void tst_AddressBlockGraphItem::testExpressions()
     QSharedPointer<AddressBlock> addressBlock(new AddressBlock());
     addressBlock->setBaseAddress("1+1");
     addressBlock->setRange("4*2");
-    addressBlock->setWidthExpression("16+16");
+    addressBlock->setWidth("16+16");
 
     QSharedPointer<ExpressionParser> expressionParser(new SystemVerilogExpressionParser());
 

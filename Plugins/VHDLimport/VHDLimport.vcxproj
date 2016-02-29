@@ -131,6 +131,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\common\NameGenerationPolicy.h" />
     <ClInclude Include="VHDLSyntax.h" />
     <CustomBuild Include="VHDLimport.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
@@ -189,6 +190,7 @@
     <ClInclude Include="vhdlimport_global.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\common\NameGenerationPolicy.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_VHDLGenericParser.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>

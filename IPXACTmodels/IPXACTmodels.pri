@@ -25,6 +25,7 @@ HEADERS += ./XmlUtils.h \
     ./kactusExtensions/FileDependency.h \
     ./kactusExtensions/HierApiInterconnection.h \
     ./kactusExtensions/HierComInterconnection.h \
+    ./kactusExtensions/InterfaceGraphicsData.h \
     ./kactusExtensions/Kactus2Array.h \
     ./kactusExtensions/Kactus2Group.h \
     ./kactusExtensions/Kactus2Placeholder.h \
@@ -246,8 +247,7 @@ HEADERS += ./XmlUtils.h \
     ./Component/validators/MemoryMapValidator.h \
     ./Component/validators/MemoryReserve.h \
     ./Component/validators/RegisterValidator.h \
-    ./Component/validators/ViewValidator.h \
-    ./kactusExtensions/InterfaceGraphicsData.h
+    ./Component/validators/ViewValidator.h
 SOURCES += ./generaldeclarations.cpp \
     ./XmlUtils.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
@@ -269,6 +269,7 @@ SOURCES += ./generaldeclarations.cpp \
     ./kactusExtensions/FileDependency.cpp \
     ./kactusExtensions/HierApiInterconnection.cpp \
     ./kactusExtensions/HierComInterconnection.cpp \
+    ./kactusExtensions/InterfaceGraphicsData.cpp \
     ./kactusExtensions/Kactus2Array.cpp \
     ./kactusExtensions/Kactus2Group.cpp \
     ./kactusExtensions/Kactus2Placeholder.cpp \
@@ -485,5 +486,4 @@ SOURCES += ./generaldeclarations.cpp \
     ./Component/validators/MemoryMapValidator.cpp \
     ./Component/validators/MemoryReserve.cpp \
     ./Component/validators/RegisterValidator.cpp \
-    ./Component/validators/ViewValidator.cpp \
-    ./kactusExtensions/InterfaceGraphicsData.cpp
+    ./Component/validators/ViewValidator.cpp

@@ -176,7 +176,7 @@
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
     <ClCompile Include="..\common\NameGenerationPolicy.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\common</Filter>
     </ClCompile>
     <ClCompile Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.cpp">
       <Filter>Source Files\editors\ComponentEditor\common</Filter>
@@ -241,7 +241,7 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\common\NameGenerationPolicy.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\common</Filter>
     </ClInclude>
     <ClInclude Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>

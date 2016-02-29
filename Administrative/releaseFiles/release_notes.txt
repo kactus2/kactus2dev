@@ -1,12 +1,30 @@
 	===============================================================================
                             RELEASE NOTES : Kactus2
-           Copyright (c) 2012-2015 Tampere University of Technology
+           Copyright (c) 2012-2016 Tampere University of Technology
                             http://funbase.cs.tut.fi
 ===============================================================================
               + Improvement or feature added
               - Bug fix or something removed
               * Changed or Information
 ===============================================================================
+
+29/02/2016 3.0.0 RC1
+----------------------------------------------------
+
++ Updated all IP-XACT elements to 2014 standard
++ Improved validation for many IP-XACT elements
+
+KNOWN UNRESOLVED ISSUES:
+* Memory map header generation from a system design does not work properly.
+* Parameters created with version 2.7.0 may not work with the latest release due to 
+  change in id formatting. The fastest way to fix this is to re-create the parameters.
+* SystemVerilog expressions are not supported by some features including generators.
+  If expressions or references have been used, it may cause at least the following issues:
+	* VHDL generator will generate wrong values.
+	* Port maps will not automatically adjust to changes in port size.
+* VHDL import does not preserve references to model parameters.
+* In ports editor, creating a bus interface through ports is not possible for name column.
+* VHDL generator crashes unexpectedly during run
 
 15/06/2015 2.8.0
 ----------------------------------------------------

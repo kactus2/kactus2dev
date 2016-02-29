@@ -7,7 +7,7 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./verilogincludeimport_global.h \
-    ./VerilogIncludeImport.h \
-    ../PluginSystem/ImportPlugin/ImportColors.h
+HEADERS += ../PluginSystem/ImportPlugin/ImportColors.h \
+    ./verilogincludeimport_global.h \
+    ./VerilogIncludeImport.h
 SOURCES += ./VerilogIncludeImport.cpp

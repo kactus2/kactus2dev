@@ -7,5 +7,6 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./VerilogSourceAnalyzer.h
+HEADERS += ./verilogsourceanalyzer_global.h \
+    ./VerilogSourceAnalyzer.h
 SOURCES += ./VerilogSourceAnalyzer.cpp
