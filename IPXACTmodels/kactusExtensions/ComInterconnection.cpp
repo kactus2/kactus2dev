@@ -24,11 +24,15 @@ Interconnection()
 // Function: ComInterconnection::ComInterconnection()
 //-----------------------------------------------------------------------------
 ComInterconnection::ComInterconnection(QString const& name, QString const& displayName, QString const& description,
-    QSharedPointer<ActiveInterface> ref1, QSharedPointer<ActiveInterface> ref2, QList<QPointF> const& route) :
-Interconnection(name, ref1, displayName, description)
+                                       QSharedPointer<HierInterface> ref1, QSharedPointer<HierInterface> ref2):
+Interconnection()
 {
-    setInterface2(ref2);
-    setRoute(route);
+    setName(name);
+    setDisplayName(displayName);
+    setDescription(description);
+
+    setInterface(ref1);
+    setInterface(ref2);
 }
 
 //-----------------------------------------------------------------------------
@@ -54,51 +58,23 @@ Interconnection()
         setDescription(connectionElement.firstChildElement("ipxact:description").firstChild().nodeValue());
 
         QDomNodeList interfaceList = connectionElement.elementsByTagName("kactus2:activeComInterface");
-        if (interfaceList.count() == 2)
+        for (int interfaceIndex = 0; interfaceIndex < interfaceList.count(); ++interfaceIndex)
         {
-            QDomNode startInterfaceNode = interfaceList.at(0);
-            QDomNamedNodeMap startInterfaceAttributes = startInterfaceNode.attributes();
-            QString startComponentRef = startInterfaceAttributes.namedItem("componentRef").nodeValue();
-            QString startComRef = startInterfaceAttributes.namedItem("comRef").nodeValue();
+            QDomNode activeInterfaceNode = interfaceList.at(interfaceIndex);
+            QDomNamedNodeMap startInterfaceAttributes = activeInterfaceNode.attributes();
+            QString componentReference = startInterfaceAttributes.namedItem("componentRef").nodeValue();
+            QString comReference = startInterfaceAttributes.namedItem("comRef").nodeValue();
 
-            QSharedPointer<ActiveInterface> startComInterface (new ActiveInterface(startComponentRef, startComRef));
-            setInterface1(startComInterface);
-
-            QDomNode endInterfaceNode = interfaceList.at(1);
-            QDomNamedNodeMap endInterfaceAttributes = endInterfaceNode.attributes();
-            QString endComponentRef = endInterfaceAttributes.namedItem("componentRef").nodeValue();
-            QString endComRef = endInterfaceAttributes.namedItem("comRef").nodeValue();
-
-            QSharedPointer<ActiveInterface> endComInterface (new ActiveInterface(endComponentRef, endComRef));
-            setInterface2(endComInterface);
+            QSharedPointer<ActiveInterface> comInterface (new ActiveInterface(componentReference, comReference));
+            setInterface(comInterface);
         }
 
-        QDomElement routeElement = connectionElement.firstChildElement("kactus2:route");
-        if (!routeElement.isNull())
+        QDomElement hierInterfaceElement = connectionElement.firstChildElement("kactus2:hierComInterface");
+        if (!hierInterfaceElement.isNull())
         {
-            if (routeElement.attribute("offPage") == "true")
-            {
-                setOffPage(true);
-            }
-            else
-            {
-                setOffPage(false);
-            }
-            
-            QList<QPointF> newRoute;
-
-            QDomNodeList routePositionNodes = routeElement.elementsByTagName("kactus2:position");
-            int routePositionCount = routePositionNodes.count();
-            for (int i = 0; i < routePositionCount; ++i)
-            {
-                QDomNamedNodeMap routePositionAttributes = routePositionNodes.at(i).attributes();
-                int positionX = routePositionAttributes.namedItem("x").nodeValue().toInt();
-                int positionY = routePositionAttributes.namedItem("y").nodeValue().toInt();
-
-                newRoute.append(QPointF(positionX, positionY));
-            }
-
-            setRoute(newRoute);
+            QString comReference = hierInterfaceElement.attribute("comRef");
+            QSharedPointer<HierInterface> hierarchicalInterface (new HierInterface(comReference));
+            setInterface(hierarchicalInterface);
         }
     }
 }
@@ -218,37 +194,31 @@ void ComInterconnection::write(QXmlStreamWriter& writer) const
     }
 
     writer.writeEmptyElement("kactus2:activeComInterface");
-    writer.writeAttribute("componentRef", getInterface1()->getComponentReference());
-    writer.writeAttribute("comRef", getInterface1()->getBusReference());
+    writer.writeAttribute("componentRef", getStartInterface()->getComponentReference());
+    writer.writeAttribute("comRef", getStartInterface()->getBusReference());
 
-    writer.writeEmptyElement("kactus2:activeComInterface");
-    writer.writeAttribute("componentRef", getInterface2()->getComponentReference());
-    writer.writeAttribute("comRef", getInterface2()->getBusReference());
-
-    if (!getRoute().isEmpty())
-    {
-        writer.writeStartElement("kactus2:route");
-
-        if (isOffPage())
-        {
-            writer.writeAttribute("offPage", "true");
-        }
-        else
-        {
-            writer.writeAttribute("offPage", "false");
-        }
-
-        foreach (QPointF const& point, getRoute())
-        {
-            writer.writeEmptyElement("kactus2:position");
-            writer.writeAttribute("x", QString::number(int(point.x())));
-            writer.writeAttribute("y", QString::number(int(point.y())));
-        }
-
-        writer.writeEndElement();
-    }
+    writeEndInterface(writer);
 
     writer.writeEndElement(); // kactus2:comConnection
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComInterconnection::writeEndInterface()
+//-----------------------------------------------------------------------------
+void ComInterconnection::writeEndInterface(QXmlStreamWriter& writer) const
+{
+    QSharedPointer<ActiveInterface> activeEndInterface = getEndInterface().dynamicCast<ActiveInterface>();
+    if (activeEndInterface)
+    {
+        writer.writeEmptyElement("kactus2:activeComInterface");
+        writer.writeAttribute("componentRef", activeEndInterface->getComponentReference());
+    }
+    else
+    {
+        writer.writeEmptyElement("kactus2:hierComInterface");
+    }
+
+    writer.writeAttribute("comRef", getEndInterface()->getBusReference());
 }
 
 //-----------------------------------------------------------------------------
@@ -342,57 +312,53 @@ bool ComConnection::isValid( const QStringList& instanceNames ) const {
 }*/
 
 //-----------------------------------------------------------------------------
-// Function: ComConnection::setInterface1()
+// Function: ComInterconnection::setInterface()
 //-----------------------------------------------------------------------------
-void ComInterconnection::setInterface1(QSharedPointer<ActiveInterface> ref)
+void ComInterconnection::setInterface(QSharedPointer<HierInterface> interfaceReference)
 {
-    setStartInterface(ref);
-}
+    QSharedPointer<ActiveInterface> activeInterface = interfaceReference.dynamicCast<ActiveInterface>();
+    if (activeInterface)
+    {
+        if (!getStartInterface())
+        {
+            setStartInterface(activeInterface);
+        }
+        else
+        {
+            if (!getActiveInterfaces()->isEmpty())
+            {
+                getActiveInterfaces()->clear();
+            }
 
-//-----------------------------------------------------------------------------
-// Function: ComConnection::setInterface2()
-//-----------------------------------------------------------------------------
-void ComInterconnection::setInterface2(QSharedPointer<ActiveInterface> ref)
-{
-    getActiveInterfaces()->clear();
-    getActiveInterfaces()->append(ref);
-}
+            getActiveInterfaces()->append(activeInterface);
+        }
+    }
+    else
+    {
+        if (!getHierInterfaces()->isEmpty())
+        {
+            getHierInterfaces()->clear();
+        }
 
-//-----------------------------------------------------------------------------
-// Function: ComConnection::getInterface1()
-//-----------------------------------------------------------------------------
-QSharedPointer<ActiveInterface> ComInterconnection::getInterface1() const
-{
-    return getStartInterface();
+        getHierInterfaces()->append(interfaceReference);
+    }
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComConnection::getInterface2()
 //-----------------------------------------------------------------------------
-QSharedPointer<ActiveInterface> ComInterconnection::getInterface2() const
+QSharedPointer<HierInterface> ComInterconnection::getEndInterface() const
 {
-    if (getActiveInterfaces()->isEmpty())
-    {
-        return QSharedPointer<ActiveInterface>(new ActiveInterface());
-    }
-    else
+    if (!getActiveInterfaces()->isEmpty())
     {
         return getActiveInterfaces()->first();
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComInterconnection::setRoute()
-//-----------------------------------------------------------------------------
-void ComInterconnection::setRoute(QList<QPointF> newRoute)
-{
-    getInterface2()->setRoute(newRoute);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComInterconnection::getRoute()
-//-----------------------------------------------------------------------------
-QList<QPointF> ComInterconnection::getRoute() const
-{
-    return getInterface2()->getRoute();
+    else if (!getHierInterfaces()->isEmpty())
+    {
+        return getHierInterfaces()->first();
+    }
+    else
+    {
+        return QSharedPointer<ActiveInterface>(new ActiveInterface());
+    }
 }

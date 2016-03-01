@@ -8,8 +8,6 @@
 #include "expandableitem.h"
 #include "graphicsexpandcollapseitem.h"
 
-#include <QDebug>
-
 //-----------------------------------------------------------------------------
 // Function: ExpandableItem::ExpandableItem()
 //-----------------------------------------------------------------------------

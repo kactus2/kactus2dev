@@ -16,6 +16,8 @@
 
 #include <common/graphicsItems/ConnectionEndpoint.h>
 
+#include <designEditors/SystemDesign/SWConnectionEndpoint.h>
+
 #include <QSharedPointer>
 
 class Component;
@@ -30,10 +32,10 @@ class SystemComponentItem;
 class GraphicsConnection;
 class SWComponentItem;
 class SWPortItem;
-class SWConnectionEndpoint;
 class ConnectionRoute;
 class InterfaceGraphicsData;
 class SWInterfaceItem;
+class HierInterface;
 
 //-----------------------------------------------------------------------------
 //! SystemDesignDiagram class.
@@ -349,6 +351,60 @@ private:
     void loadComConnections(QSharedPointer<Design> design);
 
     /*!
+     *  Find or create an endpoint item for the interface.
+     *
+     *      @param [in] endpointInterface   The selected end point interface.
+     *      @param [in] type                The type of the selected end point.
+     *      @param [in] containingDesign    The containing design.
+     *
+     *      @return The endpoint item corresponding to the selected interface.
+     */
+    ConnectionEndpoint* findOrCreateEndpointItem(QSharedPointer<HierInterface> endpointInterface,
+        SWConnectionEndpoint::EndpointType type, QSharedPointer<Design> containingDesign);
+
+    /*!
+     *  Find or create a COM interface item.
+     *
+     *      @param [in] comInterfaceReference   The name of the COM interface.
+     *
+     *      @return The found COM interface item.
+     */
+    ConnectionEndpoint* findOrCreateComInterfaceItem(QString const& comInterfaceReference);
+
+    /*!
+     *  Find or create an API interface item.
+     *
+     *      @param [in] apiInterfaceReference   The name of the API interface.
+     *
+     *      @return The found API interface item.
+     */
+    ConnectionEndpoint* findOrCreateApiInterfaceItem(QString const& apiInterfaceReference);
+
+    /*!
+     *  Create a dummy interface.
+     *
+     *      @param [in] itemType            Type of the interface in string format.
+     *      @param [in] interfaceReference  The name of the interface.
+     *
+     *      @return The created dummy interface.
+     */
+    ConnectionEndpoint* createDummyInterface(QString const& itemType, QString const& interfaceReference);
+
+    /*!
+     *  Find or create a SW port item.
+     *
+     *      @param [in] containingItem      The item containing the port item.
+     *      @param [in] interfaceReference  The name of the port.
+     *      @param [in] type                The type of the port.
+     *      @param [in] containingDesign    The design containing the port item.
+     *
+     *      @return The found SW port item.
+     */
+    ConnectionEndpoint* findOrCreateSWPortItem(SystemComponentItem* containingItem,
+        QString const& interfaceReference, SWConnectionEndpoint::EndpointType type,
+        QSharedPointer<Design> containingDesign);
+
+    /*!
      *  Loads the API dependencies from the given design.
      */
     void loadApiDependencies(QSharedPointer<Design> design);
@@ -410,6 +466,15 @@ private:
      *      @return The created connection.
      */
     virtual  GraphicsConnection* createConnection(ConnectionEndpoint* startPoint, ConnectionEndpoint* endPoint);
+
+    /*!
+     *  Create an interface for an end point.
+     *
+     *      @param [in] connectionPoint     The selected connection end point.
+     *
+     *      @return Interface created for the selected end point.
+     */
+    QSharedPointer<HierInterface> createEndpointInterface(ConnectionEndpoint* connectionPoint);
 
     /*!
      *  Creates a connection between the given endpoint and a coordinate point.

@@ -460,14 +460,14 @@ QString VLNV::IPXactType2String(IPXactType const& type)
         return QStringLiteral("invalid");
 	}
 }
-#include <QDebug>
+
 //-----------------------------------------------------------------------------
 // Function: vlnv::createVLNV()
 //-----------------------------------------------------------------------------
 VLNV VLNV::createVLNV(const QDomNode& node, IPXactType type)
 {
     // the vlnv info is found as attributes in the node
-    QDomNamedNodeMap attributeMap = node.attributes();qDebug() << node.nodeName() << endl;
+    QDomNamedNodeMap attributeMap = node.attributes();
     QString vendor = attributeMap.namedItem("ipxact:vendor").nodeValue();
     QString library = attributeMap.namedItem("ipxact:library").nodeValue();
     QString name = attributeMap.namedItem("ipxact:name").nodeValue();

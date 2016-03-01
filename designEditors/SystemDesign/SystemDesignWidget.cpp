@@ -381,8 +381,8 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
             {
                 SWInterfaceItem* interface = static_cast<SWInterfaceItem*>(selected);
 
-                QUndoCommand* childCmd =
-                    new SWInterfaceDeleteCommand(interface, getDiagram()->getDesign(), cmd.data());
+                QUndoCommand* childCmd = new SWInterfaceDeleteCommand(
+                    interface, getDiagram()->getDesign(), getDiagram()->getEditedComponent(), cmd.data());
                 childCmd->redo();
             }
 
@@ -477,8 +477,8 @@ void SystemDesignWidget::deleteConnectedEndPoint(SWConnectionEndpoint* endPoint,
         }
         else
         {
-            endPointCommand = new SWInterfaceDeleteCommand(
-                static_cast<SWInterfaceItem*>(endPoint), getDiagram()->getDesign(), parentCommand.data());
+            endPointCommand = new SWInterfaceDeleteCommand(static_cast<SWInterfaceItem*>(endPoint),
+                getDiagram()->getDesign(), getDiagram()->getEditedComponent(), parentCommand.data());
         }
 
         endPointCommand->redo();

@@ -17,7 +17,6 @@
 #include "HWMappingItem.h"
 #include "SWComponentItem.h"
 #include "SystemDesignWidget.h"
-#include "SWConnectionEndpoint.h"
 #include "SWPortItem.h"
 #include "SWInterfaceItem.h"
 
@@ -49,19 +48,21 @@
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
 #include <IPXACTmodels/kactusExtensions/SWInstance.h>
-#include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/Design/Design.h>
-#include <IPXACTmodels/Component/Model.h>
 #include <IPXACTmodels/kactusExtensions/ApiInterface.h>
 #include <IPXACTmodels/kactusExtensions/ComInterface.h>
 #include <IPXACTmodels/kactusExtensions/SystemView.h>
 #include <IPXACTmodels/kactusExtensions/SWView.h>
-
 #include <IPXACTmodels/kactusExtensions/HierApiInterconnection.h>
 #include <IPXACTmodels/kactusExtensions/ComInterconnection.h>
 #include <IPXACTmodels/kactusExtensions/HierComInterconnection.h>
 #include <IPXACTmodels/kactusExtensions/ConnectionRoute.h>
 #include <IPXACTmodels/kactusExtensions/InterfaceGraphicsData.h>
+
+#include <IPXACTmodels/common/VLNV.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/Model.h>
+
+#include <IPXACTmodels/Design/Design.h>
 
 #include <QGraphicsScene>
 #include <QMimeData>
@@ -1752,174 +1753,170 @@ void SystemDesignDiagram::loadComConnections(QSharedPointer<Design> design)
 {
     foreach (QSharedPointer<ComInterconnection> conn, design->getComConnections())
     {
-        // Find the referenced components.
-        SystemComponentItem* comp1 = getComponent(conn->getInterface1()->getComponentReference());
+        ConnectionEndpoint* startPoint =
+            findOrCreateEndpointItem(conn->getStartInterface(), ConnectionEndpoint::ENDPOINT_TYPE_COM, design);
+        ConnectionEndpoint* endPoint =
+            findOrCreateEndpointItem(conn->getEndInterface(), ConnectionEndpoint::ENDPOINT_TYPE_COM, design);
 
-        if (comp1 == 0)
+        if (startPoint && endPoint)
         {
-            emit errorMessage(tr("Component '%1' was not found in the design").arg(
-                conn->getInterface1()->getComponentReference()));
-            continue;
+            if (conn->isOffPage())
+            {
+                startPoint = startPoint->getOffPageConnector();
+                endPoint = endPoint->getOffPageConnector();
+            }
+
+            QSharedPointer<ConnectionRoute> comRoute = getInterconnectionRoute(conn->name());
+
+            ComGraphicsConnection* connection =
+                new ComGraphicsConnection(startPoint, endPoint, conn, comRoute, true, this);
+
+            if (comRoute->isOffpage())
+            {
+                connection->setVisible(false);
+            }
+
+            connect(connection, SIGNAL(errorMessage(QString const&)),
+                this, SIGNAL(errorMessage(QString const&)));
+
+            addItem(connection);
+            connection->updatePosition();
         }
-
-        SystemComponentItem* comp2 = getComponent(conn->getInterface2()->getComponentReference());
-
-        if (comp2 == 0)
-        {
-            emit errorMessage(tr("Component '%1' was not found in the design").arg(
-                conn->getInterface2()->getComponentReference()));
-            continue;
-        }
-
-        // Find the connected ports in the components.
-        ConnectionEndpoint* port1 = comp1->getSWPort(conn->getInterface1()->getBusReference(),
-            SWConnectionEndpoint::ENDPOINT_TYPE_COM);
-
-        if (port1 == 0)
-        {
-            emit errorMessage(tr("COM interface '%1' was not found in the component '%2'").arg(
-                conn->getInterface1()->getBusReference()).arg(conn->getInterface1()->getComponentReference()));
-
-            port1 = createMissingPort(conn->getInterface1()->getBusReference(), ConnectionEndpoint::ENDPOINT_TYPE_UNDEFINED,
-                comp1, design);
-        }
-
-        ConnectionEndpoint* port2 = comp2->getSWPort(conn->getInterface2()->getBusReference(),
-            SWConnectionEndpoint::ENDPOINT_TYPE_COM);
-
-        if (port2 == 0)
-        {
-            emit errorMessage(tr("COM interface '%1' was not found in the component '%2'").arg(
-                conn->getInterface2()->getBusReference()).arg(conn->getInterface2()->getComponentReference()));
-
-            port2 = createMissingPort(conn->getInterface2()->getBusReference(), ConnectionEndpoint::ENDPOINT_TYPE_UNDEFINED,
-                comp2, design);
-        }
-
-        if (conn->isOffPage())
-        {
-            port1 = port1->getOffPageConnector();
-            port2 = port2->getOffPageConnector();
-        }
-
-        QSharedPointer<ConnectionRoute> comRoute = getInterconnectionRoute(conn->name());
-
-        ComGraphicsConnection* connection = new ComGraphicsConnection(port1, port2, conn, comRoute, true, this);
-
-        if (comRoute->isOffpage())
-        {
-            connection->setVisible(false);
-        }
-
-        connect(connection, SIGNAL(errorMessage(QString const&)),
-            this, SIGNAL(errorMessage(QString const&)));
-
-        addItem(connection);
-        connection->updatePosition();
     }
+}
 
-    // Load hierarchical COM connections.
-    foreach (QSharedPointer<HierComInterconnection> hierConn, design->getHierComConnections())
+//-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::findOrCreateInterfaceItem()
+//-----------------------------------------------------------------------------
+ConnectionEndpoint* SystemDesignDiagram::findOrCreateEndpointItem(QSharedPointer<HierInterface> endpointInterface,
+    SWConnectionEndpoint::EndpointType type, QSharedPointer<Design> containingDesign)
+{
+    ConnectionEndpoint* endPointItem;
+
+    QString interfaceReference = endpointInterface->getBusReference();
+    
+    QSharedPointer<ActiveInterface> activeReference = endpointInterface.dynamicCast<ActiveInterface>();
+    if (activeReference)
     {
-        QSharedPointer<ComInterface> comIf =
-            getEditedComponent()->getComInterface(hierConn->getInterface()->getBusReference());
-
-        ConnectionEndpoint* interface = 0;
-
-        if (comIf == 0)
+        QString componentReference = activeReference->getComponentReference();
+        SystemComponentItem* componentItem = getComponent(componentReference);
+        if (!componentItem)
         {
-            emit errorMessage(tr("COM interface '%1' was not found in the top-component").arg(
-                hierConn->getInterface()->getBusReference()));
-
-            // Create a dummy interface which is marked as invalid.
-            QString temporaryName = hierConn->getInterface()->getBusReference();
-            QSharedPointer<InterfaceGraphicsData> graphicsData =
-                findOrCreateInterfaceGraphicsData(design, temporaryName);
-            interface = new SWInterfaceItem(getEditedComponent(), temporaryName, graphicsData, 0);
-
-            interface->setTemporary(true);
-            interface->updateInterface();
+            emit errorMessage(tr("Component '%1' was not found in the design").arg(componentReference));
         }
         else
         {
-            // Find the corresponding SW interface item.
-            foreach (QGraphicsItem* item, items())
+            endPointItem = findOrCreateSWPortItem(componentItem, interfaceReference, type, containingDesign);
+        }
+    }
+    else
+    {
+        if (type == SWConnectionEndpoint::ENDPOINT_TYPE_COM)
+        {
+            endPointItem = findOrCreateComInterfaceItem(interfaceReference);
+        }
+        else if (type == SWConnectionEndpoint::ENDPOINT_TYPE_API)
+        {
+            endPointItem = findOrCreateApiInterfaceItem(interfaceReference);
+        }
+    }
+
+    return endPointItem;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::findOrCreateComInterfaceItem()
+//-----------------------------------------------------------------------------
+ConnectionEndpoint* SystemDesignDiagram::findOrCreateComInterfaceItem(QString const& comInterfaceReference)
+{
+    QSharedPointer<ComInterface> componentCom = getEditedComponent()->getComInterface(comInterfaceReference);
+    if (componentCom)
+    {
+        foreach (QGraphicsItem* graphicsItem, items())
+        {
+            if (graphicsItem->type() == SWInterfaceItem::Type)
             {
-                if (item->type() == SWInterfaceItem::Type &&
-                    static_cast<SWInterfaceItem*>(item)->getComInterface() == comIf)
+                SWInterfaceItem* interfaceItem = qgraphicsitem_cast<SWInterfaceItem*>(graphicsItem);
+                if (interfaceItem && interfaceItem->getComInterface() == componentCom)
                 {
-                    interface = static_cast<SWInterfaceItem*>(item);
-                    break;
+                    return interfaceItem;
                 }
             }
         }
-
-        Q_ASSERT(interface != 0);
-
-        // Check if the position is found.
-        if (!hierConn->getPosition().isNull())
-        {
-            interface->setPos(hierConn->getPosition());
-            interface->setDirection(hierConn->getDirection());
-
-            GraphicsColumn* column = getLayout()->findColumnAt(hierConn->getPosition());
-
-            if (column != 0)
-            {
-                column->addItem(interface);
-            }
-            else
-            {
-                getLayout()->addItem(interface);
-            }
-        }
-
-        // Find the component where the hierarchical hierConn is connected to.
-        SystemComponentItem* componentItem = getComponent(hierConn->getInterface()->getComponentReference());
-
-        if (componentItem == 0)
-        {
-            emit errorMessage(tr("Component '%1' was not found in the top-design").arg(
-                hierConn->getInterface()->getComponentReference()));
-            continue;
-        }
-
-        // Find the port of the component.
-        ConnectionEndpoint* port = componentItem->getSWPort(
-            hierConn->getInterface()->getBusReference(), SWConnectionEndpoint::ENDPOINT_TYPE_COM);
-
-        if (port == 0)
-        {
-            emit errorMessage(tr("Port '%1' was not found in the component '%2'").arg(
-                hierConn->getInterface()->getBusReference(), hierConn->getInterface()->getComponentReference()));
-
-            port = createMissingPort(hierConn->getInterface()->getBusReference(),
-                ConnectionEndpoint::ENDPOINT_TYPE_COM, componentItem, design);
-        }
-
-        if (hierConn->isOffPage())
-        {
-            port = port->getOffPageConnector();
-            interface = interface->getOffPageConnector();
-        }
-
-        GraphicsConnection* connection = new GraphicsConnection(port, interface, true,
-            hierConn->name(),
-            hierConn->displayName(),
-            hierConn->description(), this);
-        connection->setRoute(hierConn->getRoute());
-
-        if (hierConn->isOffPage())
-        {
-            connection->setVisible(false);
-        }
-
-        connect(connection, SIGNAL(errorMessage(QString const&)),
-            this, SIGNAL(errorMessage(QString const&)));
-
-        addItem(connection);
-        connection->updatePosition();
     }
+
+    return createDummyInterface(QLatin1String("COM"), comInterfaceReference);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::findOrCreateApiInterfaceItem()
+//-----------------------------------------------------------------------------
+ConnectionEndpoint* SystemDesignDiagram::findOrCreateApiInterfaceItem(QString const& apiInterfaceReference)
+{
+    QSharedPointer<ApiInterface> componentApi = getEditedComponent()->getApiInterface(apiInterfaceReference);
+    if (componentApi)
+    {
+        foreach (QGraphicsItem* graphicsItem, items())
+        {
+            if (graphicsItem->type() == SWInterfaceItem::Type)
+            {
+                SWInterfaceItem* interfaceItem = qgraphicsitem_cast<SWInterfaceItem*>(graphicsItem);
+                if (interfaceItem && interfaceItem->getApiInterface() == componentApi)
+                {
+                    return interfaceItem;
+                }
+            }
+        }
+    }
+
+    return createDummyInterface(QLatin1String("API"), apiInterfaceReference);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::createDummyInterface()
+//-----------------------------------------------------------------------------
+ConnectionEndpoint* SystemDesignDiagram::createDummyInterface(QString const& itemType,
+    QString const& interfaceReference)
+{
+    emit errorMessage(tr("%1 interface '%2' was not found within the top component").
+        arg(itemType).arg(interfaceReference));
+
+    QSharedPointer<InterfaceGraphicsData> graphicsData (new InterfaceGraphicsData(interfaceReference));
+    getDesign()->getVendorExtensions()->append(graphicsData);
+
+    ConnectionEndpoint* hierarchicalInterface =
+        new SWInterfaceItem(getEditedComponent(), interfaceReference, graphicsData, 0);
+    hierarchicalInterface->setTemporary(true);
+    hierarchicalInterface->updateInterface();
+
+    return hierarchicalInterface;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::findOrCreatePortItem()
+//-----------------------------------------------------------------------------
+ConnectionEndpoint* SystemDesignDiagram::findOrCreateSWPortItem(SystemComponentItem* containingItem,
+    QString const& interfaceReference, SWConnectionEndpoint::EndpointType type,
+    QSharedPointer<Design> containingDesign)
+{
+    ConnectionEndpoint* portEndpoint = containingItem->getSWPort(interfaceReference, type);
+
+    if (!portEndpoint)
+    {
+        QString interfaceType = "API";
+        if (type == SWConnectionEndpoint::ENDPOINT_TYPE_COM)
+        {
+            interfaceType = "COM";
+        }
+
+        emit errorMessage(tr("%1 interface '%2' was not found in the component '%3'").
+            arg(interfaceType).arg(interfaceReference).arg(containingItem->name()));
+
+        portEndpoint = createMissingPort(interfaceReference, ConnectionEndpoint::ENDPOINT_TYPE_UNDEFINED,
+            containingItem, containingDesign);
+    }
+
+    return portEndpoint;
 }
 
 //-----------------------------------------------------------------------------
@@ -1946,59 +1943,20 @@ void SystemDesignDiagram::loadApiDependencies(QSharedPointer<Design> design)
 {
     foreach (QSharedPointer<ApiInterconnection> dependency, design->getApiConnections())
     {
-        // Find the referenced components.        
-        SystemComponentItem* comp1 = getComponent(dependency->getInterface1()->getComponentReference());
-
-        if (comp1 == 0)
-        {
-            emit errorMessage(tr("Component '%1' was not found in the design").arg(
-                dependency->getInterface1()->getComponentReference()));
-            continue;
-        }
-
-        SystemComponentItem* comp2 = getComponent(dependency->getInterface2()->getComponentReference());
-
-        if (comp2 == 0)
-        {
-            emit errorMessage(tr("Component '%1' was not found in the design").arg(
-                dependency->getInterface2()->getComponentReference()));
-            continue;
-        }
-
-        // Find the connected ports in the components.
-        ConnectionEndpoint* port1 = static_cast<SWPortItem*>(comp1->getSWPort(dependency->getInterface1()->getBusReference(),
-            SWConnectionEndpoint::ENDPOINT_TYPE_API));
-
-        if (port1 == 0)
-        {
-            emit errorMessage(tr("API interface '%1' was not found in the component '%2'").arg(
-                dependency->getInterface1()->getBusReference()).arg(dependency->getInterface1()->getComponentReference()));
-
-            port1 = createMissingPort(dependency->getInterface1()->getBusReference(),
-                SWConnectionEndpoint::ENDPOINT_TYPE_API, comp1, design);
-        }
-
-        ConnectionEndpoint* port2 = static_cast<SWPortItem*>(comp2->getSWPort(dependency->getInterface2()->getBusReference(),
-            SWConnectionEndpoint::ENDPOINT_TYPE_API));
-
-        if (port2 == 0)
-        {
-            emit errorMessage(tr("API interface '%1' was not found in the component '%2'").arg(
-                dependency->getInterface2()->getBusReference()).arg(dependency->getInterface2()->getComponentReference()));
-
-            port2 = createMissingPort(dependency->getInterface2()->getBusReference(),
-                SWConnectionEndpoint::ENDPOINT_TYPE_API, comp2, design);
-        }
+        ConnectionEndpoint* startPoint = findOrCreateEndpointItem(
+            dependency->getStartInterface(), ConnectionEndpoint::ENDPOINT_TYPE_API, design);
+        ConnectionEndpoint* endPoint = findOrCreateEndpointItem(
+            dependency->getEndInterface(), ConnectionEndpoint::ENDPOINT_TYPE_API, design);
 
         if (dependency->isOffPage())
         {
-            port1 = port1->getOffPageConnector();
-            port2 = port2->getOffPageConnector();
+            startPoint = startPoint->getOffPageConnector();
+            endPoint = endPoint->getOffPageConnector();
         }
 
         QSharedPointer<ConnectionRoute> apiRoute = getInterconnectionRoute(dependency->name());
         ApiGraphicsConnection* connection =
-            new ApiGraphicsConnection(port1, port2, dependency, apiRoute, true, this);
+            new ApiGraphicsConnection(startPoint, endPoint, dependency, apiRoute, true, this);
 
         connection->setImported(dependency->isImported());
 
@@ -2009,107 +1967,6 @@ void SystemDesignDiagram::loadApiDependencies(QSharedPointer<Design> design)
 
         connect(connection, SIGNAL(errorMessage(QString const&)),
             this, SIGNAL(errorMessage(QString const&)));
-
-        addItem(connection);
-        connection->updatePosition();
-    }
-
-    // Load hierarchical dependencies.
-    foreach (QSharedPointer<HierApiInterconnection> dependency, design->getHierApiDependencies())
-    {
-        QSharedPointer<ApiInterface> apiIf =
-            getEditedComponent()->getApiInterface(dependency->getInterface()->getBusReference());
-        ConnectionEndpoint* interface = 0;
-
-        if (apiIf == 0)
-        {
-            emit errorMessage(tr("API interface '%1' was not found in the top-component").arg(
-                dependency->getInterface()->getBusReference()));
-
-            // Create a dummy interface which is marked as invalid.
-            QString dummyName = dependency->getInterface()->getBusReference();
-            QSharedPointer<InterfaceGraphicsData> graphicsData = findOrCreateInterfaceGraphicsData(design, dummyName);
-            interface = new SWInterfaceItem(getEditedComponent(), dummyName, graphicsData, 0);
-
-            interface->setTemporary(true);
-            interface->updateInterface();
-        }
-        else
-        {
-            // Find the corresponding SW interface item.
-            foreach (QGraphicsItem* item, items())
-            {
-                if (item->type() == SWInterfaceItem::Type &&
-                    static_cast<SWInterfaceItem*>(item)->getApiInterface() == apiIf)
-                {
-                    interface = static_cast<SWInterfaceItem*>(item);
-                    break;
-                }
-            }
-        }
-
-        Q_ASSERT(interface != 0);
-
-        // Check if the position is found.
-        if (!dependency->getPosition().isNull())
-        {
-            interface->setPos(dependency->getPosition());
-            interface->setDirection(dependency->getDirection());
-
-            GraphicsColumn* column = getLayout()->findColumnAt(dependency->getPosition());
-
-            if (column != 0)
-            {
-                column->addItem(interface);
-            }
-            else
-            {
-                getLayout()->addItem(interface);
-            }
-        }
-
-        // Find the component where the hierarchical dependency is connected to.
-        SystemComponentItem* componentItem = getComponent(dependency->getInterface()->getComponentReference());
-
-        if (componentItem == 0)
-        {
-            emit errorMessage(tr("Component '%1' was not found in the top-design").arg(
-                dependency->getInterface()->getComponentReference()));
-            continue;
-        }
-
-        // Find the port of the component.
-        ConnectionEndpoint* port =
-            componentItem->getSWPort(dependency->getInterface()->getBusReference(),
-            SWConnectionEndpoint::ENDPOINT_TYPE_API);
-
-        if (port == 0)
-        {
-            emit errorMessage(tr("Port '%1' was not found in the component '%2'").arg(
-                dependency->getInterface()->getBusReference(), dependency->getInterface()->getComponentReference()));
-
-            port = createMissingPort(dependency->getInterface()->getBusReference(),
-                SWConnectionEndpoint::ENDPOINT_TYPE_API, componentItem, design);
-        }
-
-        if (dependency->isOffPage())
-        {
-            port = port->getOffPageConnector();
-            interface = interface->getOffPageConnector();
-        }
-
-        GraphicsConnection* connection = new GraphicsConnection(port, interface, true,
-            dependency->name(),
-            dependency->displayName(),
-            dependency->description(), this);
-        connection->setRoute(dependency->getRoute());
-
-        if (dependency->isOffPage())
-        {
-            connection->setVisible(false);
-        }
-
-        connect(connection, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
 
         addItem(connection);
         connection->updatePosition();
@@ -2280,47 +2137,59 @@ void SystemDesignDiagram::importDesign(QSharedPointer<Design> design, IGraphicsI
     foreach (QSharedPointer<ApiInterconnection> dependency, design->getApiConnections())
     {
         // Find the referenced components.
-        SystemComponentItem* comp1 = getComponent(nameMappings.value(dependency->getInterface1()->getComponentReference()));
+        QString startComponentReference = dependency->getStartInterface()->getComponentReference();
+        QString startApiReference = dependency->getStartInterface()->getBusReference();
+
+        SystemComponentItem* comp1 = getComponent(nameMappings.value(startComponentReference));
 
         if (comp1 == 0)
         {
-            emit errorMessage(tr("Component '%1' was not found in the design").arg(
-                nameMappings.value(dependency->getInterface1()->getComponentReference())));
+            emit errorMessage(tr("Component '%1' was not found in the design").
+                arg(nameMappings.value(startComponentReference)));
             continue;
         }
 
-        SystemComponentItem* comp2 = getComponent(nameMappings.value(dependency->getInterface2()->getComponentReference()));
+        QString endComponentReference = "";
+        QString endApiReference = dependency->getEndInterface()->getBusReference();
 
-        if (comp2 == 0)
+        SystemComponentItem* comp2;
+
+        QSharedPointer<ActiveInterface> activeEndInterface =
+            dependency->getEndInterface().dynamicCast<ActiveInterface>();
+        if (activeEndInterface)
         {
-            emit errorMessage(tr("Component '%1' was not found in the design").arg(
-                nameMappings.value(dependency->getInterface2()->getComponentReference())));
-            continue;
+            endComponentReference = activeEndInterface->getComponentReference();
+
+            comp2 = getComponent(nameMappings.value(endComponentReference));
+            if (comp2 == 0)
+            {
+                emit errorMessage(tr("Component '%1' was not found in the design").
+                    arg(nameMappings.value(endComponentReference)));
+                continue;
+            }
         }
 
         // Find the connected ports in the components.
-        ConnectionEndpoint* port1 = static_cast<SWPortItem*>(comp1->getSWPort(dependency->getInterface1()->getBusReference(),
+        ConnectionEndpoint* port1 = static_cast<SWPortItem*>(comp1->getSWPort(startApiReference,
             SWConnectionEndpoint::ENDPOINT_TYPE_API));
 
         if (port1 == 0)
         {
-            emit errorMessage(tr("API interface '%1' was not found in the component '%2'").arg(
-                dependency->getInterface1()->getBusReference()).arg(dependency->getInterface1()->getComponentReference()));
+            emit errorMessage(tr("API interface '%1' was not found in the component '%2'").
+                arg(startApiReference).arg(startComponentReference));
 
-            port1 = createMissingPort(dependency->getInterface1()->getBusReference(),
-                SWConnectionEndpoint::ENDPOINT_TYPE_API, comp1, design);
+            port1 = createMissingPort(startApiReference, SWConnectionEndpoint::ENDPOINT_TYPE_API, comp1, design);
         }
 
-        ConnectionEndpoint* port2 = static_cast<SWPortItem*>(comp2->getSWPort(dependency->getInterface2()->getBusReference(),
+        ConnectionEndpoint* port2 = static_cast<SWPortItem*>(comp2->getSWPort(endApiReference,
             SWConnectionEndpoint::ENDPOINT_TYPE_API));
 
         if (port2 == 0)
         {
-            emit errorMessage(tr("API interface '%1' was not found in the component '%2'").arg(
-                dependency->getInterface2()->getBusReference()).arg(dependency->getInterface2()->getComponentReference()));
+            emit errorMessage(tr("API interface '%1' was not found in the component '%2'").
+                arg(endApiReference).arg(endComponentReference));
 
-            port2 = createMissingPort(dependency->getInterface2()->getBusReference(),
-                SWConnectionEndpoint::ENDPOINT_TYPE_API, comp2, design);
+            port2 = createMissingPort(endApiReference, SWConnectionEndpoint::ENDPOINT_TYPE_API, comp2, design);
         }
 
         if (dependency->isOffPage())
@@ -2349,42 +2218,52 @@ void SystemDesignDiagram::importDesign(QSharedPointer<Design> design, IGraphicsI
     foreach (QSharedPointer<ComInterconnection> conn, design->getComConnections())
     {
         // Find the referenced components.
-        SystemComponentItem* comp1 = getComponent(nameMappings.value(conn->getInterface1()->getComponentReference()));
+        QString startComponentReference = conn->getStartInterface()->getComponentReference();
+        QString startComReference = conn->getStartInterface()->getBusReference();
+
+        SystemComponentItem* comp1 = getComponent(nameMappings.value(startComponentReference));
 
         if (comp1 == 0)
         {
-            emit errorMessage(tr("Component '%1' was not found in the design").arg(
-                nameMappings.value(conn->getInterface1()->getComponentReference())));
+            emit errorMessage(tr("Component '%1' was not found in the design").
+                arg(nameMappings.value(startComponentReference)));
             continue;
         }
 
-        SystemComponentItem* comp2 = getComponent(nameMappings.value(conn->getInterface2()->getComponentReference()));
+        SystemComponentItem* comp2;
 
-        if (comp2 == 0)
+        QString endComponentReference ="";
+        QString endcomReference = conn->getEndInterface()->getBusReference();
+        QSharedPointer<ActiveInterface> activeEndInterface = conn->getEndInterface().dynamicCast<ActiveInterface>();
+        if (activeEndInterface)
         {
-            emit errorMessage(tr("Component '%1' was not found in the design").arg(
-                nameMappings.value(conn->getInterface2()->getComponentReference())));
-            continue;
+            endComponentReference = activeEndInterface->getComponentReference();
+            comp2 = getComponent(nameMappings.value(endComponentReference));
+
+            if (comp2 == 0)
+            {
+                emit errorMessage(tr("Component '%1' was not found in the design").arg(
+                    nameMappings.value(endComponentReference)));
+                continue;
+            }
         }
 
         // Find the connected ports in the components.
-        ConnectionEndpoint* port1 = comp1->getSWPort(conn->getInterface1()->getBusReference(),
-            SWConnectionEndpoint::ENDPOINT_TYPE_COM);
+        ConnectionEndpoint* port1 = comp1->getSWPort(startComReference, SWConnectionEndpoint::ENDPOINT_TYPE_COM);
 
         if (port1 == 0)
         {
-            emit errorMessage(tr("API interface '%1' was not found in the component '%2'").arg(
-                conn->getInterface1()->getBusReference()).arg(conn->getInterface1()->getComponentReference()));
+            emit errorMessage(tr("COM interface '%1' was not found in the component '%2'").
+                arg(startComReference).arg(startComponentReference));
             continue;
         }
 
-        ConnectionEndpoint* port2 = comp2->getSWPort(conn->getInterface2()->getBusReference(),
-            SWConnectionEndpoint::ENDPOINT_TYPE_COM);
+        ConnectionEndpoint* port2 = comp2->getSWPort(endcomReference, SWConnectionEndpoint::ENDPOINT_TYPE_COM);
 
         if (port2 == 0)
         {
-            emit errorMessage(tr("API interface '%1' was not found in the component '%2'").arg(
-                conn->getInterface2()->getBusReference()).arg(conn->getInterface2()->getComponentReference()));
+            emit errorMessage(tr("API interface '%1' was not found in the component '%2'").
+                arg(endcomReference).arg(endComponentReference));
             continue;
         }
 
@@ -2426,13 +2305,11 @@ GraphicsConnection* SystemDesignDiagram::createConnection(ConnectionEndpoint* st
     {
         QSharedPointer<ComInterconnection> interconnection(new ComInterconnection());
 
-        QSharedPointer<ActiveInterface> startInterface(
-            new ActiveInterface(startPoint->encompassingComp()->name(), startPoint->name()));
-        interconnection->setInterface1(startInterface);
+        QSharedPointer<HierInterface> startInterface = createEndpointInterface(startPoint);
+        interconnection->setInterface(startInterface);
 
-        QSharedPointer<ActiveInterface> endInterface(
-            new ActiveInterface(endPoint->encompassingComp()->name(), endPoint->name()));
-        interconnection->setInterface2(endInterface);
+        QSharedPointer<HierInterface> endInterface = createEndpointInterface(endPoint);
+        interconnection->setInterface(endInterface);
 
         ComGraphicsConnection* comGraphicsConnection =
             new ComGraphicsConnection(startPoint, endPoint, interconnection, route, false, this);
@@ -2447,13 +2324,11 @@ GraphicsConnection* SystemDesignDiagram::createConnection(ConnectionEndpoint* st
     {
         QSharedPointer<ApiInterconnection> interconnection (new ApiInterconnection());
 
-        QSharedPointer<ActiveInterface> startInterface(
-            new ActiveInterface(startPoint->encompassingComp()->name(), startPoint->name()));
-        interconnection->setInterface1(startInterface);
+        QSharedPointer<HierInterface> startInterface = createEndpointInterface(startPoint);
+        interconnection->setInterface(startInterface);
 
-        QSharedPointer<ActiveInterface> endInterface(
-            new ActiveInterface(endPoint->encompassingComp()->name(), endPoint->name()));
-        interconnection->setInterface2(endInterface);
+        QSharedPointer<HierInterface> endInterface = createEndpointInterface(endPoint);
+        interconnection->setInterface(endInterface);
 
         ApiGraphicsConnection* apiGraphicsConnection =
             new ApiGraphicsConnection(startPoint, endPoint, interconnection, route, false, this);
@@ -2466,6 +2341,44 @@ GraphicsConnection* SystemDesignDiagram::createConnection(ConnectionEndpoint* st
     }
 
     return connection;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::createEndpointInterface()
+//-----------------------------------------------------------------------------
+QSharedPointer<HierInterface> SystemDesignDiagram::createEndpointInterface(ConnectionEndpoint* connectionPoint)
+{
+    QString componentReference ("");
+    QString endPointName = connectionPoint->name();
+
+    SWPortItem* portItem = dynamic_cast<SWPortItem*>(connectionPoint);
+    if (portItem)
+    {
+        componentReference = connectionPoint->encompassingComp()->name();
+    }
+    else
+    {
+        SWInterfaceItem* interfaceItem = dynamic_cast<SWInterfaceItem*>(connectionPoint);
+        if (interfaceItem)
+        {
+            componentReference = interfaceItem->getOwnerComponent()->getVlnv().getName();
+        }
+    }
+
+    QSharedPointer<HierInterface> endPointInterface;
+
+    QString editedComponentName = getEditedComponent()->getVlnv().getName();
+    if (componentReference == editedComponentName)
+    {
+        endPointInterface = QSharedPointer<HierInterface> (new HierInterface(endPointName));
+    }
+    else
+    {
+        endPointInterface =
+            QSharedPointer<ActiveInterface> (new ActiveInterface(componentReference, endPointName));
+    }
+
+    return endPointInterface;
 }
 
 //-----------------------------------------------------------------------------

@@ -10,8 +10,6 @@
 #include <QVariant>
 #include <QColor>
 
-#include <QDebug>
-
 ListManagerModel::ListManagerModel(QObject *parent, 
 								   const QStringList& items)
 	: QAbstractListModel(parent), items_(items) {

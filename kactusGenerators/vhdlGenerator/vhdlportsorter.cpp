@@ -7,8 +7,6 @@
 
 #include "vhdlportsorter.h"
 
-#include <QDebug>
-
 VhdlPortSorter::VhdlPortSorter(const QString& interface,
 							   const QString& name, 
 							   DirectionTypes::Direction direction ):

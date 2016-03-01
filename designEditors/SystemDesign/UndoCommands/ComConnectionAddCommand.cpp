@@ -13,6 +13,7 @@
 
 #include <designEditors/SystemDesign/ComGraphicsConnection.h>
 #include <designEditors/SystemDesign/SystemDesignDiagram.h>
+#include <designEditors/SystemDesign/SWPortItem.h>
 
 #include <common/graphicsItems/ConnectionEndpoint.h>
 #include <common/graphicsItems/ComponentItem.h>
@@ -74,20 +75,20 @@ void ComConnectionAddCommand::redo()
         scene_->addItem(connection_);
     }
 
-    ConnectionEndpoint* startPoint = connection_->endpoint1();
-    ConnectionEndpoint* endPoint = connection_->endpoint2();
-
-    if (startPoint->getType() == ConnectionEndpoint::ENDPOINT_TYPE_UNDEFINED)
-    {
-        changePortItemFromApiToCom(startPoint);
-    }
-    else if (endPoint->getType() == ConnectionEndpoint::ENDPOINT_TYPE_UNDEFINED)
-    {
-        changePortItemFromApiToCom(endPoint);
-    }
-
     if (connection_->connectEnds())
     {
+        ConnectionEndpoint* startPoint = connection_->endpoint1();
+        ConnectionEndpoint* endPoint = connection_->endpoint2();
+
+        if (startPoint->getType() == ConnectionEndpoint::ENDPOINT_TYPE_UNDEFINED)
+        {
+            changePortItemFromApiToCom(startPoint);
+        }
+        else if (endPoint->getType() == ConnectionEndpoint::ENDPOINT_TYPE_UNDEFINED)
+        {
+            changePortItemFromApiToCom(endPoint);
+        }
+
         QList<QSharedPointer<ComInterconnection> > comInterconnections = containingDesign_->getComConnections();
         comInterconnections.append(connection_->getComInterconnection());
         containingDesign_->setComConnections(comInterconnections);
@@ -103,14 +104,18 @@ void ComConnectionAddCommand::redo()
 //-----------------------------------------------------------------------------
 void ComConnectionAddCommand::changePortItemFromApiToCom(ConnectionEndpoint* endPoint)
 {
-    QSharedPointer<ComponentInstance> containingInstance = endPoint->encompassingComp()->getComponentInstance();
-
-    QMap<QString, QPointF> apiPositions = containingInstance->getApiInterfacePositions();
-
-    if (apiPositions.contains(endPoint->name()) && apiPositions.value(endPoint->name()) == endPoint->pos())
+    SWPortItem* portEndpoint = dynamic_cast<SWPortItem*>(endPoint);
+    if (portEndpoint)
     {
-        containingInstance->removeApiInterfacePosition(endPoint->name());
-    }
+        QSharedPointer<ComponentInstance> containingInstance = endPoint->encompassingComp()->getComponentInstance();
 
-    containingInstance->updateComInterfacePosition(endPoint->name(), endPoint->pos());
+        QMap<QString, QPointF> apiPositions = containingInstance->getApiInterfacePositions();
+
+        if (apiPositions.contains(endPoint->name()) && apiPositions.value(endPoint->name()) == endPoint->pos())
+        {
+            containingInstance->removeApiInterfacePosition(endPoint->name());
+        }
+
+        containingInstance->updateComInterfacePosition(endPoint->name(), endPoint->pos());
+    }
 }

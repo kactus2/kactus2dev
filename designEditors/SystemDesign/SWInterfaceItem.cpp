@@ -36,7 +36,7 @@
 //-----------------------------------------------------------------------------
 SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component, QString const& name,
                                  QSharedPointer<InterfaceGraphicsData> interfaceGraphics, QGraphicsItem *parent):
-SWConnectionEndpoint(parent, QVector2D(-1.0f, 0.0f)),
+SWConnectionEndpoint(parent, QVector2D(1.0f, 0.0f)),
 nameLabel_(name, this),
 component_(component),
 comInterface_(),
@@ -57,7 +57,7 @@ graphicsData_(interfaceGraphics)
 //-----------------------------------------------------------------------------
 SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component, QSharedPointer<ApiInterface> apiIf,
                                  QSharedPointer<InterfaceGraphicsData> interfaceGraphics, QGraphicsItem *parent):
-SWConnectionEndpoint(parent, QVector2D(-1.0f, 0.0f)),
+SWConnectionEndpoint(parent, QVector2D(1.0f, 0.0f)),
 nameLabel_(this),
 component_(component),
 comInterface_(),
@@ -79,7 +79,7 @@ graphicsData_(interfaceGraphics)
 //-----------------------------------------------------------------------------
 SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component, QSharedPointer<ComInterface> comIf,
                                  QSharedPointer<InterfaceGraphicsData> interfaceGraphics, QGraphicsItem *parent):
-SWConnectionEndpoint(parent, QVector2D(-1.0f, 0.0f)),
+SWConnectionEndpoint(parent, QVector2D(1.0f, 0.0f)),
 nameLabel_(this),
 component_(component),
 comInterface_(comIf),
@@ -292,11 +292,13 @@ bool SWInterfaceItem::onConnect(ConnectionEndpoint const* other)
             }
 
             apiInterface_ = QSharedPointer<ApiInterface>(new ApiInterface());
-            apiInterface_->setName(name);
+            apiInterface_->setName(SWInterfaceItem::name());
             apiInterface_->setApiType(other->getApiInterface()->getApiType());
             apiInterface_->setDependencyDirection(other->getApiInterface()->getDependencyDirection());
             
-            getOwnerComponent()->getVendorExtensions()->append(apiInterface_);
+            QList<QSharedPointer<ApiInterface> > componentApis = getOwnerComponent()->getApiInterfaces();
+            componentApis.append(apiInterface_);
+            getOwnerComponent()->setApiInterfaces(componentApis);
         }
         else if (other->getType() == ENDPOINT_TYPE_COM)
         {
@@ -311,12 +313,14 @@ bool SWInterfaceItem::onConnect(ConnectionEndpoint const* other)
             }
 
             comInterface_ = QSharedPointer<ComInterface>(new ComInterface());
-            comInterface_->setName(name);
+            comInterface_->setName(SWInterfaceItem::name());
             comInterface_->setComType(other->getComInterface()->getComType());
             comInterface_->setTransferType(other->getComInterface()->getTransferType());
             comInterface_->setDirection(other->getComInterface()->getDirection());
 
-            getOwnerComponent()->getVendorExtensions()->append(comInterface_);
+            QList<QSharedPointer<ComInterface> > componentComs = getOwnerComponent()->getComInterfaces();
+            componentComs.append(comInterface_);
+            getOwnerComponent()->setComInterfaces(componentComs);
         }
 
         setType(other->getType());
@@ -336,6 +340,22 @@ void SWInterfaceItem::onDisconnect(ConnectionEndpoint const*)
     {
         setTypeDefinition(VLNV());
         updateInterface();
+    }
+
+    if (getType() == ConnectionEndpoint::ENDPOINT_TYPE_UNDEFINED)
+    {
+        if (apiInterface_)
+        {
+            QList<QSharedPointer<ApiInterface> > componentApis = getOwnerComponent()->getApiInterfaces();
+            componentApis.removeAll(apiInterface_);
+            getOwnerComponent()->setApiInterfaces(componentApis);
+        }
+        else if (comInterface_)
+        {
+            QList<QSharedPointer<ComInterface> > componentComs = getOwnerComponent()->getComInterfaces();
+            componentComs.removeAll(comInterface_);
+            getOwnerComponent()->setComInterfaces(componentComs);
+        }
     }
 }
 
@@ -737,7 +757,6 @@ void SWInterfaceItem::setTypeDefinition(VLNV const& type)
 
         setType(ENDPOINT_TYPE_UNDEFINED);
         setTypeLocked(false);
-        nameLabel_.setPlainText("");
     }
 
     updateInterface();

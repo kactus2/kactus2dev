@@ -20,8 +20,8 @@ class IGraphicsItemStack;
 class SWInterfaceItem;
 class ApiInterface;
 class ComInterface;
-
 class Design;
+class Component;
 
 //-----------------------------------------------------------------------------
 //! SWInterfaceDeleteCommand class.
@@ -35,10 +35,11 @@ public:
      *
      *      @param [in] interface           The interface to delete.
      *      @param [in] containingDesign    Design containing the SW interface.
+     *      @param [in] component           The component containing the design.
      *      @param [in] parent              The owner of this command.
      */
     SWInterfaceDeleteCommand(SWInterfaceItem* interface, QSharedPointer<Design> containingDesign,
-        QUndoCommand* parent = 0);
+        QSharedPointer<Component> component, QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
@@ -85,6 +86,9 @@ private:
 
     //! The design containing the interface.
     QSharedPointer<Design> containingDesign_;
+
+    //! The component containing the SW interface.
+    QSharedPointer<Component> containingComponent_;
 };
 
 //-----------------------------------------------------------------------------

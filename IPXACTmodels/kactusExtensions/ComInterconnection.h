@@ -37,11 +37,9 @@ public:
      *      @param [in] description  The description to set.
      *      @param [in] ref1         A reference to the first COM interface.
      *      @param [in] ref2         A reference to the second COM interface.
-     *      @param [in] route        The connection route.
      */
     ComInterconnection(QString const& name, QString const& displayName, QString const& description,
-                  QSharedPointer<ActiveInterface> ref1, QSharedPointer<ActiveInterface> ref2,
-                  QList<QPointF> const& route);
+                       QSharedPointer<HierInterface> ref1, QSharedPointer<HierInterface> ref2);
 
     /*!
      *  Copy constructor.
@@ -96,46 +94,27 @@ public:
 	//bool isValid(const QStringList& instanceNames) const;
 
     /*!
-     *  Sets the first interface.
+     *  Set an interface. First active interface is set as the start interface.
      *
-     *      @param [in] ref A reference to a COM interface.
+     *      @param [in] interfaceReference  The selected interface.
      */
-    void setInterface1(QSharedPointer<ActiveInterface> ref);
+    void setInterface(QSharedPointer<HierInterface> interfaceReference);
 
     /*!
-     *  Sets the first interface.
-     *
-     *      @param [in] ref A reference to a COM interface.
-     */
-    void setInterface2(QSharedPointer<ActiveInterface> ref);
-
-    /*!
-     *  Returns the first interface.
-     *
-     *      @return Pointer to the start interface.
-     */
-    QSharedPointer<ActiveInterface> getInterface1() const;
-
-    /*!
-     *  Returns the second interface.
+     *  Returns the end interface.
      *
      *      @return Pointer to the end interface.
      */
-    QSharedPointer<ActiveInterface> getInterface2() const;
+    QSharedPointer<HierInterface> getEndInterface() const;
+
+private:
 
     /*!
-     *  Set a route for the connection.
+     *  Write the end interface.
      *
-     *      @param [in] newRoute    The new route.
+     *      @param [in] writer  The writer used to write the end interface.
      */
-    void setRoute(QList<QPointF> newRoute);
-
-    /*!
-     *  Get the route for the connection.
-     *
-     *      @return A list of positions determining the route.
-     */
-    QList<QPointF> getRoute() const;
+    void writeEndInterface(QXmlStreamWriter& writer) const;
 };
 
 //-----------------------------------------------------------------------------

@@ -37,12 +37,11 @@ public:
      *      @param [in] description  The description to set.
      *      @param [in] ref1         The first interface reference.
      *      @param [in] ref2         The second interface reference.
-     *      @param [in] route        The connection route.
      *      @param [in] imported     If true, the connection is an imported one.
      */
     ApiInterconnection(QString const& name, QString const& displayName, QString const& description,
-                  QSharedPointer<ActiveInterface> ref1, QSharedPointer<ActiveInterface> ref2,
-                  QList<QPointF> const& route, bool imported = false);
+                  QSharedPointer<HierInterface> ref1, QSharedPointer<HierInterface> ref2,
+                  bool imported = false);
 
     /*!
      *  Copy constructor.
@@ -100,18 +99,11 @@ public:
 	//bool isValid(const QStringList& instanceNames) const;
 
     /*!
-     *  Sets the provider reference.
+     *  Set an interface. First active interface is set as the start interface.
      *
-     *      @param [in] ref     The new interface reference.
+     *      @param [in] interfaceReference  The selected interface.
      */
-    void setInterface1(QSharedPointer<ActiveInterface> ref);
-
-    /*!
-     *  Sets the requester reference.
-     *
-     *      @param [in] ref     The interface reference.
-     */
-    void setInterface2(QSharedPointer<ActiveInterface> ref);
+    void setInterface(QSharedPointer<HierInterface> interfaceReference);
 
     /*!
      *  Sets the flag whether the connection is an imported one and should be auto-synced.
@@ -121,18 +113,11 @@ public:
     void setImported(bool imported);
 
     /*!
-     *  Returns the provider reference.
+     *  Get the end interface.
      *
-     *      @return The provider interface.
+     *      @return The end interface.
      */
-    QSharedPointer<ActiveInterface> getInterface1() const;
-
-    /*!
-     *  Returns the requester reference.
-     *
-     *      @return The requester interface.
-     */
-    QSharedPointer<ActiveInterface> getInterface2() const;
+    QSharedPointer<HierInterface> getEndInterface() const;
 
     /*!
      *  Returns true if the connection is an imported one.
@@ -144,21 +129,14 @@ public:
      */
     ApiInterconnection& operator=(ApiInterconnection const& rhs);
 
-    /*!
-     *  Set a route for the connection.
-     *
-     *      @param [in] newRoute    The new route.
-     */
-    void setRoute(QList<QPointF> newRoute);
-
-    /*!
-     *  Get the route for the connection.
-     *
-     *      @return A list of positions determining the route.
-     */
-    QList<QPointF> getRoute() const;
-
 private:
+
+    /*!
+     *  Write the end interface.
+     *
+     *      @param [in] writer  The writer used to write.
+     */
+    void writeEndInterface(QXmlStreamWriter& writer) const;
 
     //-----------------------------------------------------------------------------
     // Data.

@@ -280,15 +280,26 @@ int getMatchingApiDependency(QList<QSharedPointer<ApiInterconnection> > apiDepen
     int index = -1;
 
     // Retrieve the full names for the connected components in the system design.
-    int instanceIndex1 = getInstanceIndex(swInstances, dependency->getInterface1()->getComponentReference(), mapping);
+    QString startComponentReference = dependency->getStartInterface()->getComponentReference();
+    QString startApiReference = dependency->getStartInterface()->getBusReference();
+    int instanceIndex1 = getInstanceIndex(swInstances, startComponentReference, mapping);
 
     if (instanceIndex1 == -1)
     {
         return -1;
     }
     
-    int instanceIndex2 = getInstanceIndex(swInstances, dependency->getInterface2()->getComponentReference(), mapping);
-    
+    int instanceIndex2 = -1;
+
+    QString endComponentReference = "";
+    QString endApiReference = dependency->getEndInterface()->getBusReference();
+    QSharedPointer<ActiveInterface> activeEndInterface =
+        dependency->getEndInterface().dynamicCast<ActiveInterface>();
+    if (activeEndInterface)
+    {
+        instanceIndex2 = getInstanceIndex(swInstances, endComponentReference, mapping);
+    }
+
     if (instanceIndex2 == -1)
     {
         return -1;
@@ -297,14 +308,25 @@ int getMatchingApiDependency(QList<QSharedPointer<ApiInterconnection> > apiDepen
     // Search for a match in the list.
     for (int i = 0; i < apiDependencies.size(); ++i)
     {
-        if (apiDependencies[i]->getInterface1()->getComponentReference() == swInstances[instanceIndex1]->getInstanceName() &&
-            apiDependencies[i]->getInterface2()->getComponentReference() == swInstances[instanceIndex2]->getInstanceName() &&
-            apiDependencies[i]->getInterface1()->getBusReference() == dependency->getInterface1()->getBusReference() &&
-            apiDependencies[i]->getInterface2()->getBusReference() == dependency->getInterface2()->getBusReference())
+        QSharedPointer<ActiveInterface> listStartInterface = apiDependencies.at(i)->getStartInterface();
+        QSharedPointer<ActiveInterface> listEndInterface =
+            apiDependencies.at(i)->getEndInterface().dynamicCast<ActiveInterface>();
+        if (listEndInterface)
         {
-            index = i;
+            if (listStartInterface->getComponentReference() == swInstances[instanceIndex1]->getInstanceName() &&
+                listEndInterface->getComponentReference() == swInstances[instanceIndex2]->getInstanceName() &&
+                listStartInterface->getBusReference() == startApiReference &&
+                listEndInterface->getBusReference() == endApiReference)
+            {
+                index = i;
+                break;
+            }
+        }
+        else
+        {
             break;
         }
+
     }
 
     return index;
@@ -446,15 +468,26 @@ void updateSystemDesignV2(LibraryInterface* lh, VLNV const& hwDesignVLNV, Design
                 else
                 {
                     dependency->setName(hwInstance->getInstanceName() + "_" + dependency->name());
-                    dependency->setInterface1(
-                        QSharedPointer<ActiveInterface>(new ActiveInterface(
-                        hwInstance->getInstanceName() + "_" + dependency->getInterface1()->getComponentReference(),
-                        dependency->getInterface1()->getBusReference())));
-                    dependency->setInterface2(
-                        QSharedPointer<ActiveInterface>(new ActiveInterface(
-                        hwInstance->getInstanceName() + "_" + dependency->getInterface2()->getComponentReference(),
-                        dependency->getInterface2()->getBusReference())));
-                    dependency->setRoute(QList<QPointF>());
+                    QSharedPointer<ActiveInterface> startInterface = dependency->getStartInterface();
+                    QString startInterfaceComponentRef = hwInstance->getInstanceName() + "_" +
+                        startInterface->getComponentReference();
+
+                    QSharedPointer<ActiveInterface> newStartInterface (
+                        new ActiveInterface(startInterfaceComponentRef, startInterface->getBusReference()));
+                    dependency->setStartInterface(newStartInterface);
+
+                    QSharedPointer<ActiveInterface> activeEndInterface =
+                        dependency->getEndInterface().dynamicCast<ActiveInterface>();
+                    if (activeEndInterface)
+                    {
+                        QString endInterfaceComponentRef =
+                            hwInstance->getInstanceName() + "_" + activeEndInterface->getComponentReference();
+
+                        QSharedPointer<ActiveInterface> newEndInterface (
+                            new ActiveInterface(endInterfaceComponentRef, activeEndInterface->getBusReference()));
+                        dependency->setInterface(newEndInterface);
+                    }
+
                     dependency->setImported(true);
                     apiDependencies.append(dependency);
                 }

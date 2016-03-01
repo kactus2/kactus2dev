@@ -15,8 +15,6 @@
 #include <QInputDialog>
 #include <QModelIndex>
 
-#include <QDebug>
-
 ListManager::ListManager(const QString title, QWidget *parent): 
 QGroupBox(title, parent), 
 model_(NULL), 

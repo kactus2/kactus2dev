@@ -34,7 +34,7 @@ isPresent_()
 Interconnection::Interconnection():
 NameGroup(),
 Extendable(),
-startInterface_(new ActiveInterface()),
+startInterface_(),
 activeInterfaces_(new QList<QSharedPointer<ActiveInterface> > ()),
 hierInterfaces_(new QList<QSharedPointer<HierInterface> > ()),
 isPresent_()

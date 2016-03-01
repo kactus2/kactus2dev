@@ -120,7 +120,6 @@
 #include <QFileDialog>
 #include <QDockWidget>
 #include <QMessageBox>
-#include <QDebug>
 #include <QCoreApplication>
 #include <QFileInfo>
 #include <QFile>
@@ -131,7 +130,6 @@
 #include <QDateTime>
 #include <QElapsedTimer>
 #include <QDesktopServices>
-#include <QDebug>
 #include <QPainter>
 #include <QProcess>
 

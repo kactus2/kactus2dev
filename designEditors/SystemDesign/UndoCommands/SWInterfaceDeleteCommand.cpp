@@ -27,7 +27,8 @@
 // Function: SWInterfaceDeleteCommand::SWInterfaceDeleteCommand()
 //-----------------------------------------------------------------------------
 SWInterfaceDeleteCommand::SWInterfaceDeleteCommand(SWInterfaceItem* interface,
-                                                   QSharedPointer<Design> containingDesign, QUndoCommand* parent):
+                                                   QSharedPointer<Design> containingDesign,
+                                                   QSharedPointer<Component> component, QUndoCommand* parent):
 QUndoCommand(parent),
 interfaceItem_(interface),
 apiInterface_(interface->getApiInterface()),
@@ -35,7 +36,8 @@ comInterface_(interface->getComInterface()),
 parent_(dynamic_cast<IGraphicsItemStack*>(interface->parentItem())),
 scene_(interface->scene()),
 del_(true),
-containingDesign_(containingDesign)
+containingDesign_(containingDesign),
+containingComponent_(component)
 {
     if (apiInterface_)
     {
@@ -83,10 +85,18 @@ void SWInterfaceDeleteCommand::undo()
     if (apiInterface_ != 0)
     {
         interfaceItem_->define(apiInterface_);
+
+        QList<QSharedPointer<ApiInterface> > interfaces = containingComponent_->getApiInterfaces();
+        interfaces.append(apiInterface_);
+        containingComponent_->setApiInterfaces(interfaces);
     }
     else if (comInterface_ != 0)
     {
         interfaceItem_->define(comInterface_);
+
+        QList<QSharedPointer<ComInterface> > interfaces = containingComponent_->getComInterfaces();
+        interfaces.append(comInterface_);
+        containingComponent_->setComInterfaces(interfaces);
     }
 
     // Execute child commands.
@@ -105,6 +115,19 @@ void SWInterfaceDeleteCommand::redo()
     if (apiInterface_ != 0 || comInterface_ != 0)
     {
         interfaceItem_->undefine();
+    }
+
+    if (apiInterface_)
+    {
+        QList<QSharedPointer<ApiInterface> > interfaces = containingComponent_->getApiInterfaces();
+        interfaces.removeAll(apiInterface_);
+        containingComponent_->setApiInterfaces(interfaces);
+    }
+    else if (comInterface_)
+    {
+        QList<QSharedPointer<ComInterface> > interfaces = containingComponent_->getComInterfaces();
+        interfaces.removeAll(comInterface_);
+        containingComponent_->setComInterfaces(interfaces);
     }
 
     QSharedPointer<InterfaceGraphicsData> graphicsData = interfaceItem_->getInterfaceGraphicsData();
