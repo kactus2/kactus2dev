@@ -1791,10 +1791,9 @@ void SystemDesignDiagram::loadComConnections(QSharedPointer<Design> design)
 ConnectionEndpoint* SystemDesignDiagram::findOrCreateEndpointItem(QSharedPointer<HierInterface> endpointInterface,
     SWConnectionEndpoint::EndpointType type, QSharedPointer<Design> containingDesign)
 {
-    ConnectionEndpoint* endPointItem;
+    ConnectionEndpoint* endpointItem;
 
     QString interfaceReference = endpointInterface->getBusReference();
-    
     QSharedPointer<ActiveInterface> activeReference = endpointInterface.dynamicCast<ActiveInterface>();
     if (activeReference)
     {
@@ -1806,70 +1805,56 @@ ConnectionEndpoint* SystemDesignDiagram::findOrCreateEndpointItem(QSharedPointer
         }
         else
         {
-            endPointItem = findOrCreateSWPortItem(componentItem, interfaceReference, type, containingDesign);
+            endpointItem = findOrCreateSWPortItem(componentItem, interfaceReference, type, containingDesign);
         }
     }
     else
     {
-        if (type == SWConnectionEndpoint::ENDPOINT_TYPE_COM)
+        SWInterfaceItem* interfaceEndpoint = getSWInterfaceItem(interfaceReference);
+        if (interfaceEndpoint->getType() == ConnectionEndpoint::ENDPOINT_TYPE_COM)
         {
-            endPointItem = findOrCreateComInterfaceItem(interfaceReference);
+            QSharedPointer<ComInterface> componentCom = getEditedComponent()->getComInterface(interfaceReference);
+            if (!componentCom)
+            {
+                return createDummyInterface("COM", interfaceReference);
+            }
         }
-        else if (type == SWConnectionEndpoint::ENDPOINT_TYPE_API)
+        else if (interfaceEndpoint->getType() == ConnectionEndpoint::ENDPOINT_TYPE_API)
         {
-            endPointItem = findOrCreateApiInterfaceItem(interfaceReference);
+            QSharedPointer<ApiInterface> componentApi = getEditedComponent()->getApiInterface(interfaceReference);
+            if (!componentApi)
+            {
+                return createDummyInterface("API", interfaceReference);
+            }
         }
+
+        endpointItem = interfaceEndpoint;
     }
 
-    return endPointItem;
+    return endpointItem;
 }
 
 //-----------------------------------------------------------------------------
-// Function: SystemDesignDiagram::findOrCreateComInterfaceItem()
+// Function: SystemDesignDiagram::getSWInterfaceItem()
 //-----------------------------------------------------------------------------
-ConnectionEndpoint* SystemDesignDiagram::findOrCreateComInterfaceItem(QString const& comInterfaceReference)
+SWInterfaceItem* SystemDesignDiagram::getSWInterfaceItem(QString const& interfaceName) const
 {
-    QSharedPointer<ComInterface> componentCom = getEditedComponent()->getComInterface(comInterfaceReference);
-    if (componentCom)
+    SWInterfaceItem* endPoint;
+
+    foreach (QGraphicsItem* graphicsItem, items())
     {
-        foreach (QGraphicsItem* graphicsItem, items())
+        if (graphicsItem->type() == SWInterfaceItem::Type)
         {
-            if (graphicsItem->type() == SWInterfaceItem::Type)
+            SWInterfaceItem* interfaceItem = qgraphicsitem_cast<SWInterfaceItem*>(graphicsItem);
+            if (interfaceItem && interfaceName == interfaceItem->name())
             {
-                SWInterfaceItem* interfaceItem = qgraphicsitem_cast<SWInterfaceItem*>(graphicsItem);
-                if (interfaceItem && interfaceItem->getComInterface() == componentCom)
-                {
-                    return interfaceItem;
-                }
+                endPoint = interfaceItem;
+                break;
             }
         }
     }
 
-    return createDummyInterface(QLatin1String("COM"), comInterfaceReference);
-}
-
-//-----------------------------------------------------------------------------
-// Function: SystemDesignDiagram::findOrCreateApiInterfaceItem()
-//-----------------------------------------------------------------------------
-ConnectionEndpoint* SystemDesignDiagram::findOrCreateApiInterfaceItem(QString const& apiInterfaceReference)
-{
-    QSharedPointer<ApiInterface> componentApi = getEditedComponent()->getApiInterface(apiInterfaceReference);
-    if (componentApi)
-    {
-        foreach (QGraphicsItem* graphicsItem, items())
-        {
-            if (graphicsItem->type() == SWInterfaceItem::Type)
-            {
-                SWInterfaceItem* interfaceItem = qgraphicsitem_cast<SWInterfaceItem*>(graphicsItem);
-                if (interfaceItem && interfaceItem->getApiInterface() == componentApi)
-                {
-                    return interfaceItem;
-                }
-            }
-        }
-    }
-
-    return createDummyInterface(QLatin1String("API"), apiInterfaceReference);
+    return endPoint;
 }
 
 //-----------------------------------------------------------------------------

@@ -363,22 +363,13 @@ private:
         SWConnectionEndpoint::EndpointType type, QSharedPointer<Design> containingDesign);
 
     /*!
-     *  Find or create a COM interface item.
+     *  Get the SW interface item.
      *
-     *      @param [in] comInterfaceReference   The name of the COM interface.
+     *      @param [in] interfaceName   The name of the SW interface item.
      *
-     *      @return The found COM interface item.
+     *      @return The SW interface item matching the selected interface name.
      */
-    ConnectionEndpoint* findOrCreateComInterfaceItem(QString const& comInterfaceReference);
-
-    /*!
-     *  Find or create an API interface item.
-     *
-     *      @param [in] apiInterfaceReference   The name of the API interface.
-     *
-     *      @return The found API interface item.
-     */
-    ConnectionEndpoint* findOrCreateApiInterfaceItem(QString const& apiInterfaceReference);
+    SWInterfaceItem* getSWInterfaceItem(QString const& interfaceName) const;
 
     /*!
      *  Create a dummy interface.

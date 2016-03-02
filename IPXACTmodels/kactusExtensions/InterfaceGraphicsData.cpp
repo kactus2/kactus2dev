@@ -9,7 +9,6 @@
 // Interface graphics class for defining properties of graphical interfaces in designs.
 //-----------------------------------------------------------------------------
 
-// #include "ApiInterface.h"
 #include "InterfaceGraphicsData.h"
 
 #include <IPXACTmodels/kactusExtensions/Kactus2Position.h>
@@ -19,7 +18,6 @@
 //-----------------------------------------------------------------------------
 InterfaceGraphicsData::InterfaceGraphicsData(QString const& name, QPointF position, QVector2D direction):
 name_(name),
-// position_(position),
 positionExtension_(new Kactus2Position(position)),
 direction_(direction)
 {
@@ -31,7 +29,6 @@ direction_(direction)
 //-----------------------------------------------------------------------------
 InterfaceGraphicsData::InterfaceGraphicsData(const InterfaceGraphicsData& other):
 name_(other.name_),
-// position_(other.position_),
 positionExtension_(other.positionExtension_->clone()),
 direction_(other.direction_)
 {
@@ -100,7 +97,6 @@ InterfaceGraphicsData& InterfaceGraphicsData::operator=(InterfaceGraphicsData co
         direction_ = other.direction_;
 
         positionExtension_.clear();
-//         position_.setPosition(other.position_.position());
         positionExtension_ = QSharedPointer<Kactus2Position>(other.positionExtension_->clone());
     }
 
