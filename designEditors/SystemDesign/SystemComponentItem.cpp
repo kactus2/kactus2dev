@@ -480,6 +480,38 @@ SWPortItem* SystemComponentItem::getSWPort(QString const& name, SWConnectionEndp
 }
 
 //-----------------------------------------------------------------------------
+// Function: SystemComponentItem::getSWPortWithTypeAndDirection()
+//-----------------------------------------------------------------------------
+SWPortItem* SystemComponentItem::getSWPortMatchingOtherEndPoint(ConnectionEndpoint* otherEndPoint) const
+{
+    foreach (QGraphicsItem* item, QGraphicsRectItem::childItems())
+    {
+        if (item->type() == SWPortItem::Type)
+        {
+            SWPortItem* port = dynamic_cast<SWPortItem*>(item);
+            if (port && port->getType() == otherEndPoint->getType())
+            {
+                if ((port->getType() == ConnectionEndpoint::ENDPOINT_TYPE_COM &&
+                    port->getComInterface() && otherEndPoint->getComInterface() &&
+                    port->getComInterface()->getComType() == otherEndPoint->getComInterface()->getComType() &&
+                    port->getComInterface()->getDirection() == otherEndPoint->getComInterface()->getDirection()) ||
+                    (port->getType() == ConnectionEndpoint::ENDPOINT_TYPE_API &&
+                    port->getApiInterface() && otherEndPoint->getApiInterface() &&
+                    port->getApiInterface()->getApiType() == otherEndPoint->getApiInterface()->getApiType() &&
+                    port->getApiInterface()->getDependencyDirection() ==
+                    otherEndPoint->getApiInterface()->getDependencyDirection()) ||
+                    (port->getType() == ConnectionEndpoint::ENDPOINT_TYPE_UNDEFINED))
+                {
+                    return port;
+                }
+            }
+        }
+    }
+
+    return 0;
+}
+
+//-----------------------------------------------------------------------------
 // Function: SystemComponentItem::offsetPortPositions()
 //-----------------------------------------------------------------------------
 void SystemComponentItem::offsetPortPositions(qreal minY)

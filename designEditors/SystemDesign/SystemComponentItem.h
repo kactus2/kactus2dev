@@ -153,6 +153,15 @@ public:
     SWPortItem* getSWPort(QString const& name, SWConnectionEndpoint::EndpointType type) const;
 
     /*!
+     *  Retrieves the port with properties similar to the selected end point.
+     *
+     *      @param [in] otherEndPoint   The selected end point.
+     *
+     *      @return An SW port with similar properties to the selected port.
+     */
+    SWPortItem* getSWPortMatchingOtherEndPoint(ConnectionEndpoint* otherEndPoint) const;
+
+    /*!
      *  Returns the underlying HW linked with this component.
      */
     virtual HWMappingItem const* getLinkedHW() const = 0;

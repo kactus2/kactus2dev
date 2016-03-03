@@ -1936,9 +1936,6 @@
     <ClCompile Include="GeneratedFiles\moc_SWPortItem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_SystemChangeCommands.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_SystemColumn.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -1967,9 +1964,6 @@
       <Filter>Source Files\designEditors\SystemDesign</Filter>
     </ClCompile>
     <ClCompile Include="designEditors\SystemDesign\SWPortItem.cpp">
-      <Filter>Source Files\designEditors\SystemDesign</Filter>
-    </ClCompile>
-    <ClCompile Include="designEditors\SystemDesign\SystemChangeCommands.cpp">
       <Filter>Source Files\designEditors\SystemDesign</Filter>
     </ClCompile>
     <ClCompile Include="designEditors\SystemDesign\SystemColumn.cpp">
@@ -4270,6 +4264,21 @@
     <ClCompile Include="designEditors\SystemDesign\UndoCommands\SWInterfaceMoveCommand.cpp">
       <Filter>Source Files\designEditors\SystemDesign\UndoCommands</Filter>
     </ClCompile>
+    <ClCompile Include="designEditors\SystemDesign\UndoCommands\SystemChangeCommands.cpp">
+      <Filter>Source Files\designEditors\SystemDesign\UndoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\SystemDesign\UndoCommands\ReplaceSystemComponentCommand.cpp">
+      <Filter>Source Files\designEditors\SystemDesign\UndoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ReplaceSystemComponentCommand.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\SystemDesign\UndoCommands\ComConnectionExchangeCommand.cpp">
+      <Filter>Source Files\designEditors\SystemDesign\UndoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\SystemDesign\UndoCommands\ApiConnectionExchangeCommand.cpp">
+      <Filter>Source Files\designEditors\SystemDesign\UndoCommands</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -4756,9 +4765,6 @@
       <Filter>Header Files\designEditors\SystemDesign</Filter>
     </CustomBuild>
     <CustomBuild Include="designEditors\SystemDesign\SWPortItem.h">
-      <Filter>Header Files\designEditors\SystemDesign</Filter>
-    </CustomBuild>
-    <CustomBuild Include="designEditors\SystemDesign\SystemChangeCommands.h">
       <Filter>Header Files\designEditors\SystemDesign</Filter>
     </CustomBuild>
     <CustomBuild Include="designEditors\SystemDesign\SystemColumn.h">
@@ -5868,6 +5874,12 @@
     <CustomBuild Include="designEditors\SystemDesign\UndoCommands\SystemComponentAddCommand.h">
       <Filter>Header Files\designEditors\SystemDesign\UndoCommands</Filter>
     </CustomBuild>
+    <CustomBuild Include="designEditors\SystemDesign\UndoCommands\SystemChangeCommands.h">
+      <Filter>Header Files\designEditors\SystemDesign\UndoCommands</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\SystemDesign\UndoCommands\ReplaceSystemComponentCommand.h">
+      <Filter>Header Files\designEditors\SystemDesign\UndoCommands</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -6372,6 +6384,12 @@
       <Filter>Header Files\designEditors\SystemDesign\UndoCommands</Filter>
     </ClInclude>
     <ClInclude Include="designEditors\SystemDesign\UndoCommands\SWInterfaceMoveCommand.h">
+      <Filter>Header Files\designEditors\SystemDesign\UndoCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\SystemDesign\UndoCommands\ComConnectionExchangeCommand.h">
+      <Filter>Header Files\designEditors\SystemDesign\UndoCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\SystemDesign\UndoCommands\ApiConnectionExchangeCommand.h">
       <Filter>Header Files\designEditors\SystemDesign\UndoCommands</Filter>
     </ClInclude>
   </ItemGroup>

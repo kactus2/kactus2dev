@@ -17,10 +17,12 @@
 
 #include <designEditors/common/DesignCompletionModel.h>
 #include <designEditors/common/TopComponentParameterFinder.h>
+
 #include <designEditors/HWDesign/HWChangeCommands.h>
-#include <designEditors/SystemDesign/SystemChangeCommands.h>
+
 #include <designEditors/SystemDesign/SystemComponentItem.h>
 #include <designEditors/SystemDesign/SWComponentItem.h>
+#include <designEditors/SystemDesign/UndoCommands/SystemChangeCommands.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/common/VLNV.h>

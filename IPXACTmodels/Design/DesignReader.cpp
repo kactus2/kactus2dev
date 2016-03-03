@@ -478,11 +478,7 @@ void DesignReader::parseDesignExtensions(QDomNode const& documentNode, QSharedPo
 
     parseApiConnections(extensionNode.firstChildElement("kactus2:apiConnections"), design);
 
-    parseHierApiConnections(extensionNode.firstChildElement("kactus2:hierApiDependencies"), design);
-
     parseComConnections(extensionNode.firstChildElement("kactus2:comConnections"), design);
-
-    parseHierComConnections(extensionNode.firstChildElement("kactus2:hierComConnections"), design);
 
     parseInterfaceGraphics(extensionNode, design);
 }
@@ -648,29 +644,6 @@ void DesignReader::parseApiConnections(QDomNode const& apiConnectionsNode, QShar
 }
 
 //-----------------------------------------------------------------------------
-// Function: DesignReader::parseHierApiConnections()
-//-----------------------------------------------------------------------------
-void DesignReader::parseHierApiConnections(QDomNode const& hierApiConnectionsNode, QSharedPointer<Design> design)
-    const
-{
-    QList<QSharedPointer<HierApiInterconnection> > hierApiConnections;
-
-    QDomNodeList hierApiConnectionNodeList = hierApiConnectionsNode.childNodes();
-    int hierApiConnectionsCount = hierApiConnectionNodeList.count();
-    for (int connectionIndex = 0; connectionIndex < hierApiConnectionsCount; ++connectionIndex)
-    {
-        QDomNode singleHierApiConnectionNode = hierApiConnectionNodeList.at(connectionIndex);
-
-        QSharedPointer<HierApiInterconnection> newConnection (
-            new HierApiInterconnection(singleHierApiConnectionNode));
-
-        hierApiConnections.append(newConnection);
-    }
-
-    design->setHierApiDependencies(hierApiConnections);
-}
-
-//-----------------------------------------------------------------------------
 // Function: DesignReader::parseComConnections()
 //-----------------------------------------------------------------------------
 void DesignReader::parseComConnections(QDomNode const& comConnectionsNode, QSharedPointer<Design> design) const
@@ -689,29 +662,6 @@ void DesignReader::parseComConnections(QDomNode const& comConnectionsNode, QShar
     }
 
     design->setComConnections(comConnections);
-}
-
-//-----------------------------------------------------------------------------
-// Function: DesignReader::parseHierComConnections()
-//-----------------------------------------------------------------------------
-void DesignReader::parseHierComConnections(QDomNode const& hierComConnectionsNode, QSharedPointer<Design> design)
-    const
-{
-    QList<QSharedPointer<HierComInterconnection> > hierComConnections;
-
-    QDomNodeList hierComConnectionNodeList = hierComConnectionsNode.childNodes();
-    int hierComConnectionsCount = hierComConnectionNodeList.count();
-    for (int connectionIndex = 0; connectionIndex < hierComConnectionsCount; ++connectionIndex)
-    {
-        QDomNode singleHierComConnectionNode = hierComConnectionNodeList.at(connectionIndex);
-
-        QSharedPointer<HierComInterconnection> newConnection (
-            new HierComInterconnection(singleHierComConnectionNode));
-
-        hierComConnections.append(newConnection);
-    }
-
-    design->setHierComConnections(hierComConnections);
 }
 
 //-----------------------------------------------------------------------------

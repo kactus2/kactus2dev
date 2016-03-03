@@ -28,9 +28,7 @@
 #include <IPXACTmodels/kactusExtensions/SWInstance.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Group.h>
 #include <IPXACTmodels/kactusExtensions/ApiInterconnection.h>
-#include <IPXACTmodels/kactusExtensions/HierApiInterconnection.h>
 #include <IPXACTmodels/kactusExtensions/ComInterconnection.h>
-#include <IPXACTmodels/kactusExtensions/HierComInterconnection.h>
 
 #include <QSharedPointer>
 #include <QList>
@@ -147,19 +145,9 @@ public:
     QList<QSharedPointer<ApiInterconnection> > getApiConnections() const;
 
     /*!
-     *  Returns the list of hierarchical API dependencies.
-     */
-    QList<QSharedPointer<HierApiInterconnection> > getHierApiDependencies() const;
-
-    /*!
      *  Returns the list of COM connections.
      */
     QList<QSharedPointer<ComInterconnection> > getComConnections() const;
-
-    /*!
-     *  Returns the list of hierarchical COM connections.
-     */
-    QList<QSharedPointer<HierComInterconnection> > getHierComConnections() const;
 
     /*!
      *  Returns the port ad-hoc visibilities for the top-level component in this design.
@@ -216,25 +204,12 @@ public:
      */
     void setApiConnections(QList<QSharedPointer<ApiInterconnection> > newApiConnections);
 
-    /*! Sets the hierarchical API dependencies for the design.
-     *
-     *      @param [in] hierApiDependencies A list of hierarchical API dependencies.
-     */
-    void setHierApiDependencies(QList<QSharedPointer<HierApiInterconnection> > newHierApiDependencies);
-
     /*!
      *  Sets the COM connections for the design.
      *
      *      @param [in] comConnections A list of COM connections.
      */
     void setComConnections(QList<QSharedPointer<ComInterconnection> > newComConnections);
-
-    /*!
-     *  Sets the hierarchical COM connections for the design.
-     *
-     *      @param [in] hierComConnections A list of hierarchical COM connections.
-     */
-    void setHierComConnections(QList<QSharedPointer<HierComInterconnection> > newHierComConnections);
 
     /*!
      *  Sets the port ad-hoc visibilities for the top-level component in this design.

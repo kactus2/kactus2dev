@@ -355,12 +355,14 @@ private:
      *
      *      @param [in] endpointInterface   The selected end point interface.
      *      @param [in] type                The type of the selected end point.
+     *      @param [in] connectionName      Name of the connection containing the end point.
      *      @param [in] containingDesign    The containing design.
      *
      *      @return The endpoint item corresponding to the selected interface.
      */
     ConnectionEndpoint* findOrCreateEndpointItem(QSharedPointer<HierInterface> endpointInterface,
-        SWConnectionEndpoint::EndpointType type, QSharedPointer<Design> containingDesign);
+        SWConnectionEndpoint::EndpointType type, QString const& connectionName,
+        QSharedPointer<Design> containingDesign);
 
     /*!
      *  Get the SW interface item.

@@ -3222,11 +3222,19 @@ void MainWindow::openSWDesign(const VLNV& vlnv, QString const& viewName, bool fo
 
 	SystemDesignWidget* designWidget = new SystemDesignWidget(true, libraryHandler_, this);
 
+    connect(designWidget, SIGNAL(errorMessage(const QString&)),
+        console_, SLOT(onErrorMessage(const QString&)), Qt::UniqueConnection);
+    connect(designWidget, SIGNAL(noticeMessage(const QString&)),
+        console_, SLOT(onNoticeMessage(const QString&)), Qt::UniqueConnection);
+
 	if (!designWidget->setDesign(vlnv, viewName))
 	{
 		delete designWidget;
 		return;
 	}
+
+    disconnect(designWidget, SIGNAL(errorMessage(const QString&)), console_, SLOT(onErrorMessage(const QString&)));
+    disconnect(designWidget, SIGNAL(noticeMessage(const QString&)), console_, SLOT(onNoticeMessage(const QString&)));
 
 	connect(designWidget, SIGNAL(openComponent(const VLNV&)),
 		this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
@@ -3278,13 +3286,21 @@ void MainWindow::openSystemDesign(VLNV const& vlnv, QString const& viewName, boo
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
 	SystemDesignWidget* designWidget = new SystemDesignWidget(false, libraryHandler_, this);
-    
+
+    connect(designWidget, SIGNAL(errorMessage(const QString&)),
+        console_, SLOT(onErrorMessage(const QString&)), Qt::UniqueConnection);
+    connect(designWidget, SIGNAL(noticeMessage(const QString&)),
+        console_, SLOT(onNoticeMessage(const QString&)), Qt::UniqueConnection);
+
 	if (!designWidget->setDesign(vlnv, viewName))
 	{
 		delete designWidget;
 		QApplication::restoreOverrideCursor();
 		return;
 	}
+
+    disconnect(designWidget, SIGNAL(errorMessage(const QString&)), console_, SLOT(onErrorMessage(const QString&)));
+    disconnect(designWidget, SIGNAL(noticeMessage(const QString&)), console_, SLOT(onNoticeMessage(const QString&)));
 
 	connect(designWidget, SIGNAL(openComponent(const VLNV&)),
 		this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);

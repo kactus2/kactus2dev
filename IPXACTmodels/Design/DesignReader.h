@@ -235,28 +235,12 @@ private:
     void parseApiConnections(QDomNode const& apiConnectionsNode, QSharedPointer<Design>design) const;
 
     /*!
-     *  Reads the hierarchical api connections (Kactus2 extension).
-     *
-     *      @param [in] hierApiConnectionsNode  The XML description of the hierarchical api connections.
-     *      @param [in] design                  The new design item.
-     */
-    void parseHierApiConnections(QDomNode const& hierApiConnectionsNode, QSharedPointer<Design> design) const;
-
-    /*!
      *  Reads the com connections (Kactus2 extension).
      *
      *      @param [in] comConnectionsNode  The XML description of the com connections.
      *      @param [in] design              The new design item.
      */
     void parseComConnections(QDomNode const& comConnectionsNode, QSharedPointer<Design> design) const;
-
-    /*!
-     *  Reads the hierarchical com connections.
-     *
-     *      @param [in] hierComConnectionsNode  The XML description of the hierarchical com connections.
-     *      @param [in] design                  The new design item.
-     */
-    void parseHierComConnections(QDomNode const& hierComConnectionsNode, QSharedPointer<Design> design) const;
 
     /*!
      *  Reads the interface graphics extensions for the design.

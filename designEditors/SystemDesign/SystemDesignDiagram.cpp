@@ -11,7 +11,6 @@
 
 #include "SystemDesignDiagram.h"
 
-#include "SystemChangeCommands.h"
 #include "SWOffPageConnectorItem.h"
 #include "SystemColumn.h"
 #include "HWMappingItem.h"
@@ -42,6 +41,8 @@
 #include <designEditors/SystemDesign/ApiGraphicsConnection.h>
 #include <designEditors/SystemDesign/UndoCommands/ApiConnectionAddCommand.h>
 #include <designEditors/SystemDesign/UndoCommands/SWInterfaceAddCommand.h>
+#include <designEditors/SystemDesign/UndoCommands/SystemChangeCommands.h>
+#include <designEditors/SystemDesign/UndoCommands/ReplaceSystemComponentCommand.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 
@@ -52,9 +53,7 @@
 #include <IPXACTmodels/kactusExtensions/ComInterface.h>
 #include <IPXACTmodels/kactusExtensions/SystemView.h>
 #include <IPXACTmodels/kactusExtensions/SWView.h>
-#include <IPXACTmodels/kactusExtensions/HierApiInterconnection.h>
 #include <IPXACTmodels/kactusExtensions/ComInterconnection.h>
-#include <IPXACTmodels/kactusExtensions/HierComInterconnection.h>
 #include <IPXACTmodels/kactusExtensions/ConnectionRoute.h>
 #include <IPXACTmodels/kactusExtensions/InterfaceGraphicsData.h>
 
@@ -1753,10 +1752,10 @@ void SystemDesignDiagram::loadComConnections(QSharedPointer<Design> design)
 {
     foreach (QSharedPointer<ComInterconnection> conn, design->getComConnections())
     {
-        ConnectionEndpoint* startPoint =
-            findOrCreateEndpointItem(conn->getStartInterface(), ConnectionEndpoint::ENDPOINT_TYPE_COM, design);
-        ConnectionEndpoint* endPoint =
-            findOrCreateEndpointItem(conn->getEndInterface(), ConnectionEndpoint::ENDPOINT_TYPE_COM, design);
+        ConnectionEndpoint* startPoint = findOrCreateEndpointItem(
+            conn->getStartInterface(), ConnectionEndpoint::ENDPOINT_TYPE_COM, conn->name(), design);
+        ConnectionEndpoint* endPoint = findOrCreateEndpointItem(
+            conn->getEndInterface(), ConnectionEndpoint::ENDPOINT_TYPE_COM, conn->name(), design);
 
         if (startPoint && endPoint)
         {
@@ -1789,10 +1788,9 @@ void SystemDesignDiagram::loadComConnections(QSharedPointer<Design> design)
 // Function: SystemDesignDiagram::findOrCreateInterfaceItem()
 //-----------------------------------------------------------------------------
 ConnectionEndpoint* SystemDesignDiagram::findOrCreateEndpointItem(QSharedPointer<HierInterface> endpointInterface,
-    SWConnectionEndpoint::EndpointType type, QSharedPointer<Design> containingDesign)
+    SWConnectionEndpoint::EndpointType type, QString const& connectionName,
+    QSharedPointer<Design> containingDesign)
 {
-    ConnectionEndpoint* endpointItem;
-
     QString interfaceReference = endpointInterface->getBusReference();
     QSharedPointer<ActiveInterface> activeReference = endpointInterface.dynamicCast<ActiveInterface>();
     if (activeReference)
@@ -1801,11 +1799,13 @@ ConnectionEndpoint* SystemDesignDiagram::findOrCreateEndpointItem(QSharedPointer
         SystemComponentItem* componentItem = getComponent(componentReference);
         if (!componentItem)
         {
-            emit errorMessage(tr("Component '%1' was not found in the design").arg(componentReference));
+            emit errorMessage(
+                tr("Component '%1' containing interface '%2' in connection '%3' was not found in the design.")
+                .arg(componentReference).arg(endpointInterface->getBusReference()).arg(connectionName));
         }
         else
         {
-            endpointItem = findOrCreateSWPortItem(componentItem, interfaceReference, type, containingDesign);
+            return findOrCreateSWPortItem(componentItem, interfaceReference, type, containingDesign);
         }
     }
     else
@@ -1828,10 +1828,10 @@ ConnectionEndpoint* SystemDesignDiagram::findOrCreateEndpointItem(QSharedPointer
             }
         }
 
-        endpointItem = interfaceEndpoint;
+        return interfaceEndpoint;
     }
 
-    return endpointItem;
+    return 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -1929,9 +1929,9 @@ void SystemDesignDiagram::loadApiDependencies(QSharedPointer<Design> design)
     foreach (QSharedPointer<ApiInterconnection> dependency, design->getApiConnections())
     {
         ConnectionEndpoint* startPoint = findOrCreateEndpointItem(
-            dependency->getStartInterface(), ConnectionEndpoint::ENDPOINT_TYPE_API, design);
+            dependency->getStartInterface(), ConnectionEndpoint::ENDPOINT_TYPE_API, dependency->name(), design);
         ConnectionEndpoint* endPoint = findOrCreateEndpointItem(
-            dependency->getEndInterface(), ConnectionEndpoint::ENDPOINT_TYPE_API, design);
+            dependency->getEndInterface(), ConnectionEndpoint::ENDPOINT_TYPE_API, dependency->name(), design);
 
         if (dependency->isOffPage())
         {

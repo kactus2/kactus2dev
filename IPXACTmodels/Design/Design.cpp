@@ -420,33 +420,6 @@ void Design::setApiConnections(QList<QSharedPointer<ApiInterconnection> > newApi
 }
 
 //-----------------------------------------------------------------------------
-// Function: Design::setHierApiDependencies()
-//-----------------------------------------------------------------------------
-void Design::setHierApiDependencies(QList<QSharedPointer<HierApiInterconnection> > newHierApiDependencies)
-{
-    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
-    {
-        if (extension->type() == "kactus2:hierApiDependencies")
-        {
-            getVendorExtensions()->removeAll(extension);
-            break;
-        }
-    }
-
-    if (!newHierApiDependencies.isEmpty())
-    {
-        QSharedPointer<Kactus2Group> newHierApiGroup (new Kactus2Group("kactus2:hierApiDependencies"));
-
-        foreach (QSharedPointer<HierApiInterconnection> dependency, newHierApiDependencies)
-        {
-            newHierApiGroup->addToGroup(dependency);
-        }
-
-        getVendorExtensions()->append(newHierApiGroup);
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: Design::setComConnections()
 //-----------------------------------------------------------------------------
 void Design::setComConnections(QList<QSharedPointer<ComInterconnection> > newComConnections)
@@ -470,33 +443,6 @@ void Design::setComConnections(QList<QSharedPointer<ComInterconnection> > newCom
         }
 
         getVendorExtensions()->append(newComConnectionGroup);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: Design::setHierComConnections()
-//-----------------------------------------------------------------------------
-void Design::setHierComConnections(QList<QSharedPointer<HierComInterconnection> > newHierComConnections)
-{
-    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
-    {
-        if (extension->type() == "kactus2:hierComConnections")
-        {
-            getVendorExtensions()->removeAll(extension);
-            break;
-        }
-    }
-
-    if (!newHierComConnections.isEmpty())
-    {
-        QSharedPointer<Kactus2Group> newHierComConnectionGroup (new Kactus2Group("kactus2:hierComConnections"));
-
-        foreach (QSharedPointer<HierComInterconnection> connection, newHierComConnections)
-        {
-            newHierComConnectionGroup->addToGroup(connection);
-        }
-
-        getVendorExtensions()->append(newHierComConnectionGroup);
     }
 }
 
@@ -564,24 +510,6 @@ QList<QSharedPointer<ApiInterconnection> > Design::getApiConnections() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: Design::getHierApiDependencies()
-//-----------------------------------------------------------------------------
-QList<QSharedPointer<HierApiInterconnection> > Design::getHierApiDependencies() const
-{
-    QList<QSharedPointer<VendorExtension> > hierApiDependencyExtensions =
-        getGroupedExtensionsByType("kactus2:hierApiDependencies", "kactus2:hierApiDependency");
-
-    QList<QSharedPointer<HierApiInterconnection> > dependencyList;
-
-    foreach (QSharedPointer<VendorExtension> extension, hierApiDependencyExtensions)
-    {
-        dependencyList.append(extension.dynamicCast<HierApiInterconnection>());
-    }
-
-    return dependencyList;
-}
-
-//-----------------------------------------------------------------------------
 // Function: Design::getComConnections()
 //-----------------------------------------------------------------------------
 QList<QSharedPointer<ComInterconnection> > Design::getComConnections() const
@@ -597,24 +525,6 @@ QList<QSharedPointer<ComInterconnection> > Design::getComConnections() const
     }
 
     return comConnectionList;
-}
-
-//-----------------------------------------------------------------------------
-// Function: Design::getHierComConnections()
-//-----------------------------------------------------------------------------
-QList<QSharedPointer<HierComInterconnection> > Design::getHierComConnections() const
-{
-    QList<QSharedPointer<VendorExtension> > hierComConnectionExtensions =
-        getGroupedExtensionsByType("kactus2:hierComConnections", "kactus2:hierComConnection");
-
-    QList<QSharedPointer<HierComInterconnection> > hierComConnectionList;
-
-    foreach (QSharedPointer<VendorExtension> extension, hierComConnectionExtensions)
-    {
-        hierComConnectionList.append(extension.dynamicCast<HierComInterconnection>());
-    }
-
-    return hierComConnectionList;
 }
 
 //-----------------------------------------------------------------------------

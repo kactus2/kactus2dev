@@ -1216,7 +1216,7 @@ void GraphicsConnection::setEndpoint1(ConnectionEndpoint* endpoint1)
     endpoint1->addConnection(this);
 
     updatePosition();
-    name_ = createDefaultName();
+    setName(createDefaultName());
 }
 
 //-----------------------------------------------------------------------------
@@ -1240,7 +1240,7 @@ void GraphicsConnection::setEndpoint2(ConnectionEndpoint* endpoint2)
     endpoint2->addConnection(this);
 
     updatePosition();
-    name_ = createDefaultName();
+    setName(createDefaultName());
 }
 
 //-----------------------------------------------------------------------------
