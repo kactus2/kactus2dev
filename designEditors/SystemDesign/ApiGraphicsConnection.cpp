@@ -140,6 +140,14 @@ void ApiGraphicsConnection::toggleOffPage()
 }
 
 //-----------------------------------------------------------------------------
+// Function: ApiGraphicsConnection::isOffPage()
+//-----------------------------------------------------------------------------
+bool ApiGraphicsConnection::isOffPage() const
+{
+    return route_->isOffpage();
+}
+
+//-----------------------------------------------------------------------------
 // Function: ApiGraphicsConnection::setRoute()
 //-----------------------------------------------------------------------------
 void ApiGraphicsConnection::setRoute(QList<QPointF> path)

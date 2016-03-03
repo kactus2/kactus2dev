@@ -60,6 +60,11 @@ private:
     ApiConnectionExchangeCommand& operator=(ApiConnectionExchangeCommand const& rhs);
 
     /*!
+     *  Create interfaces for the exchanged connection..
+     */
+    void createExchangedInterfaces();
+
+    /*!
      *  Create an interface from the selected connection end point.
      *
      *      @param [in] endPoint    The selected connection end point.

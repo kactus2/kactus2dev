@@ -36,8 +36,33 @@ newEndpoint_(newEndpoint),
 oldInterface_(),
 newInterface_()
 {
-    oldInterface_ = createConnectionInterface(oldEndpoint_);
-    newInterface_ = createConnectionInterface(newEndpoint_);
+    createExchangedInterfaces();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ApiConnectionExchangeCommand::createExchangedInterfaces()
+//-----------------------------------------------------------------------------
+void ApiConnectionExchangeCommand::createExchangedInterfaces()
+{
+    if (connection_->isOffPage())
+    {
+        ConnectionEndpoint* oldParentPoint = dynamic_cast<ConnectionEndpoint*>(oldEndpoint_->parentItem());
+        if (oldParentPoint)
+        {
+            oldInterface_ = createConnectionInterface(oldParentPoint);
+        }
+
+        ConnectionEndpoint* newParentPoint = dynamic_cast<ConnectionEndpoint*>(newEndpoint_->parentItem());
+        if (newParentPoint)
+        {
+            newInterface_ = createConnectionInterface(newParentPoint);
+        }
+    }
+    else
+    {
+        oldInterface_ = createConnectionInterface(oldEndpoint_);
+        newInterface_ = createConnectionInterface(newEndpoint_);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -114,14 +139,13 @@ void ApiConnectionExchangeCommand::redo()
 QSharedPointer<HierInterface> ApiConnectionExchangeCommand::createConnectionInterface(ConnectionEndpoint* endPoint)
 {
     SWPortItem* portEndPoint = dynamic_cast<SWPortItem*>(endPoint);
+    SWInterfaceItem* interfaceEndPoint = dynamic_cast<SWInterfaceItem*>(endPoint);
     if (portEndPoint)
     {
         QString instanceName = portEndPoint->encompassingComp()->getComponentInstance()->getInstanceName();
         return QSharedPointer<ActiveInterface> (new ActiveInterface(instanceName, endPoint->name()));
     }
-    
-    SWInterfaceItem* interfaceEndPoint = dynamic_cast<SWInterfaceItem*>(endPoint);
-    if (interfaceEndPoint)
+    else if (interfaceEndPoint)
     {
         return QSharedPointer<HierInterface> (new HierInterface(endPoint->name()));
     }

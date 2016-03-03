@@ -36,8 +36,33 @@ newEndpoint_(newEndpoint),
 oldInterface_(),
 newInterface_()
 {
-    oldInterface_ = createConnectionInterface(oldEndpoint_);
-    newInterface_ = createConnectionInterface(newEndpoint_);
+    createExchangedInterfaces();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComConnectionExchangeCommand::createExchangedInterfaces()
+//-----------------------------------------------------------------------------
+void ComConnectionExchangeCommand::createExchangedInterfaces()
+{
+    if (connection_->isOffPage())
+    {
+        ConnectionEndpoint* oldParentPoint = dynamic_cast<ConnectionEndpoint*>(oldEndpoint_->parentItem());
+        if (oldParentPoint)
+        {
+            oldInterface_ = createConnectionInterface(oldParentPoint);
+        }
+
+        ConnectionEndpoint* newParentPoint = dynamic_cast<ConnectionEndpoint*>(newEndpoint_->parentItem());
+        if (newParentPoint)
+        {
+            newInterface_ = createConnectionInterface(newParentPoint);
+        }
+    }
+    else
+    {
+        oldInterface_ = createConnectionInterface(oldEndpoint_);
+        newInterface_ = createConnectionInterface(newEndpoint_);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -62,7 +87,7 @@ void ComConnectionExchangeCommand::undo()
         if (connection_->endpoint1() == newEndpoint_)
         {
             connection_->setEndpoint1(oldEndpoint_);
-
+            
             QSharedPointer<ActiveInterface> oldActiveInterface = oldInterface_.dynamicCast<ActiveInterface>();
             if (oldActiveInterface)
             {
@@ -72,7 +97,7 @@ void ComConnectionExchangeCommand::undo()
         else
         {
             connection_->setEndpoint2(oldEndpoint_);
-
+            
             interconnection->setInterface(oldInterface_);
         }
     }
@@ -90,7 +115,7 @@ void ComConnectionExchangeCommand::redo()
         if (connection_->endpoint1() == oldEndpoint_)
         {
             connection_->setEndpoint1(newEndpoint_);
-
+            
             QSharedPointer<ActiveInterface> newActiveInterface = newInterface_.dynamicCast<ActiveInterface>();
             if (newActiveInterface)
             {
@@ -100,7 +125,7 @@ void ComConnectionExchangeCommand::redo()
         else
         {
             connection_->setEndpoint2(newEndpoint_);
-
+            
             interconnection->setInterface(newInterface_);
         }
     }
@@ -114,14 +139,13 @@ void ComConnectionExchangeCommand::redo()
 QSharedPointer<HierInterface> ComConnectionExchangeCommand::createConnectionInterface(ConnectionEndpoint* endPoint)
 {
     SWPortItem* portEndPoint = dynamic_cast<SWPortItem*>(endPoint);
+    SWInterfaceItem* interfaceEndPoint = dynamic_cast<SWInterfaceItem*>(endPoint);
     if (portEndPoint)
     {
         QString instanceName = portEndPoint->encompassingComp()->getComponentInstance()->getInstanceName();
         return QSharedPointer<ActiveInterface> (new ActiveInterface(instanceName, endPoint->name()));
     }
-    
-    SWInterfaceItem* interfaceEndPoint = dynamic_cast<SWInterfaceItem*>(endPoint);
-    if (interfaceEndPoint)
+    else if (interfaceEndPoint)
     {
         return QSharedPointer<HierInterface> (new HierInterface(endPoint->name()));
     }

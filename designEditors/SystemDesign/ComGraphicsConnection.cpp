@@ -140,6 +140,14 @@ void ComGraphicsConnection::toggleOffPage()
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComGraphicsConnection::isOffPage()
+//-----------------------------------------------------------------------------
+bool ComGraphicsConnection::isOffPage() const
+{
+    return route_->isOffpage();
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComGraphicsConnection::setRoute()
 //-----------------------------------------------------------------------------
 void ComGraphicsConnection::setRoute(QList<QPointF> path)

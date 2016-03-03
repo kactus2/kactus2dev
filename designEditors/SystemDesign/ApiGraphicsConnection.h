@@ -131,6 +131,13 @@ public:
     virtual void toggleOffPage();
 
     /*!
+     *  Check if the connection is off-page.
+     *
+     *      @return True if the connection is off-page, otherwise false.
+     */
+    bool isOffPage() const;
+
+    /*!
      *  Set the routing of the interconnection
      *
      *      @param [in] path    List of points forming the connection route.

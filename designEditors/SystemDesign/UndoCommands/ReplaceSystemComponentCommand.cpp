@@ -21,11 +21,14 @@
 #include <designEditors/SystemDesign/SWComponentItem.h>
 #include <designEditors/SystemDesign/ComGraphicsConnection.h>
 #include <designEditors/SystemDesign/ApiGraphicsConnection.h>
+
 #include <designEditors/SystemDesign/UndoCommands/SystemMoveCommands.h>
 #include <designEditors/SystemDesign/UndoCommands/SystemComponentDeleteCommand.h>
 #include <designEditors/SystemDesign/UndoCommands/SystemComponentAddCommand.h>
 #include <designEditors/SystemDesign/UndoCommands/ComConnectionExchangeCommand.h>
 #include <designEditors/SystemDesign/UndoCommands/ApiConnectionExchangeCommand.h>
+#include <designEditors/SystemDesign/UndoCommands/ComConnectionDeleteCommand.h>
+#include <designEditors/SystemDesign/UndoCommands/ApiConnectionDeleteCommand.h>
 
 #include <IPXACTmodels/Design/Design.h>
 
@@ -41,7 +44,7 @@ oldComp_(oldComp),
 newComp_(newComp),
 existing_(existing)
 {
-    changeConnections();
+    changeConnections(oldComp_, newComp_, containingDesign);
 
     // Create a delete command for the old component if it should not be kept.
     if (!keepOld)
@@ -58,6 +61,10 @@ existing_(existing)
         {
             new AssociationChangeEndpointCommand(association, oldComp_, newComp_, this);
         }
+    }
+    else
+    {
+        changeConnections(newComp_, oldComp_, containingDesign);
     }
 
     // Create a move/add command for the new component.
@@ -84,12 +91,12 @@ existing_(existing)
 //-----------------------------------------------------------------------------
 // Function: ReplaceSystemComponentCommand::changeConnections()
 //-----------------------------------------------------------------------------
-void ReplaceSystemComponentCommand::changeConnections()
+void ReplaceSystemComponentCommand::changeConnections(SystemComponentItem* oldComponent,
+    SystemComponentItem* newComponent, QSharedPointer<Design> design)
 {
-    foreach (ConnectionEndpoint* oldEndpoint, oldComp_->getEndpoints())
+    foreach (ConnectionEndpoint* oldEndpoint, oldComponent->getEndpoints())
     {
-        SWPortItem* newEndpoint =
-            newComp_->getSWPortMatchingOtherEndPoint(oldEndpoint);
+        SWPortItem* newEndpoint = newComponent->getSWPortMatchingOtherEndPoint(oldEndpoint);
 
         if (newEndpoint != 0)
         {
@@ -106,6 +113,17 @@ void ReplaceSystemComponentCommand::changeConnections()
             {
                 createConnectionExchangeCommand(conn, oldEndpoint->getOffPageConnector(),
                     newEndpoint->getOffPageConnector());
+            }
+        }
+        else
+        {
+            foreach (GraphicsConnection* connection, oldEndpoint->getConnections())
+            {
+                createConnectionDeleteCommand(connection, design);
+            }
+            foreach (GraphicsConnection* connection, oldEndpoint->getOffPageConnector()->getConnections())
+            {
+                createConnectionDeleteCommand(connection, design);
             }
         }
     }
@@ -130,6 +148,27 @@ void ReplaceSystemComponentCommand::createConnectionExchangeCommand(GraphicsConn
     else
     {
         new ConnectionExchangeCommand(connection, oldEndpoint, newEndpoint, this);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ReplaceSystemComponentCommand::createConnectionDeleteCommands()
+//-----------------------------------------------------------------------------
+void ReplaceSystemComponentCommand::createConnectionDeleteCommand(GraphicsConnection* connection,
+    QSharedPointer<Design> design)
+{
+    ComGraphicsConnection* comConnection = dynamic_cast<ComGraphicsConnection*>(connection);
+    if (comConnection)
+    {
+        new ComConnectionDeleteCommand(comConnection, design, this);
+    }
+    else
+    {
+        ApiGraphicsConnection* apiConnection = dynamic_cast<ApiGraphicsConnection*>(connection);
+        if (apiConnection)
+        {
+            new ApiConnectionDeleteCommand(apiConnection, design, this);
+        }
     }
 }
 

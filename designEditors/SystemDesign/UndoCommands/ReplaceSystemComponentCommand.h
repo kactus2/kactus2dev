@@ -75,8 +75,13 @@ private:
 
     /*!
      *  Change the connections of the replaced component item.
+     *
+     *      @param [in] oldComponent    The component item being changed.
+     *      @param [in] newComponent    The new component item.
+     *      @param [in] design          The design containing the connections.
      */
-    void changeConnections();
+    void changeConnections(SystemComponentItem* oldComponent, SystemComponentItem* newComponent,
+        QSharedPointer<Design> design);
 
     /*!
      *  Create exchange command for the replaced connection.
@@ -87,6 +92,14 @@ private:
      */
     void createConnectionExchangeCommand(GraphicsConnection* connection, ConnectionEndpoint* oldEndpoint,
         ConnectionEndpoint* newEndpoint);
+
+    /*!
+     *  Create delete commands for a selected connection.
+     *
+     *      @param [in] connection  The selected connection.
+     *      @param [in] design      Design containing the selected connection.
+     */
+    void createConnectionDeleteCommand(GraphicsConnection* connection, QSharedPointer<Design> design);
 
     //-----------------------------------------------------------------------------
     // Data.

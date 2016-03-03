@@ -130,6 +130,13 @@ public:
     virtual void toggleOffPage();
 
     /*!
+     *  Check if the connection is off-page.
+     *
+     *      @return True, if the connection is off-page, otherwise false.
+     */
+    bool isOffPage() const;
+
+    /*!
      *  Set the routing of the interconnection.
      *
      *      @parameter [in] path    List containing the points used as the route for the connection.
@@ -142,7 +149,7 @@ public:
      *      @return The type of the COM connection item.
      */
     int type() const { return Type; }
-    
+
 private:
 
     //! The connected COM interconnection.
