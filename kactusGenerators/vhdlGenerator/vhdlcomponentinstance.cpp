@@ -95,37 +95,43 @@ portMap_()
 		i != defaultPortConnections_.end(); ++i)
 	{
 		// get the VLNVs of the abstraction definitions for the port
-		QSharedPointer<QList<QSharedPointer<AbstractionType> > > absTypes = 
-			component->getInterfaceForPort(i.key())->getAbstractionTypes();
+		QSharedPointer<QList<QSharedPointer<AbstractionType> > > absTypes;
+        QSharedPointer<BusInterface> portInterface(component->getInterfaceForPort(i.key()));
+        if (!portInterface.isNull())
+        {
+            absTypes = portInterface->getAbstractionTypes();
+        }        
 
 		// if the port is not in any interface then use the ports own default value.
-		if (absTypes->empty())
+		if (!absTypes || absTypes->empty())
 		{
 			tempDefaults.insert(i.key(), i.value());
 		}
+        else
+        {
+            // try to find the abstraction definition and use it's default value if possible
+            foreach (QSharedPointer<AbstractionType> j, *absTypes)
+            {
+                // if the abs def does not exist in the library
+                if (handler->getDocumentType(*j->getAbstractionRef()) != VLNV::ABSTRACTIONDEFINITION)
+                {
+                    if (!tempDefaults.contains(i.key()))
+                    {
+                        tempDefaults.insert(i.key(), i.value());
+                    }
 
-		// try to find the abstraction definition and use it's default value if possible
-		foreach (QSharedPointer<AbstractionType> j, *absTypes)
-		{
-			// if the abs def does not exist in the library
-			if (handler->getDocumentType(*j->getAbstractionRef()) != VLNV::ABSTRACTIONDEFINITION)
-			{
-				if (!tempDefaults.contains(i.key()))
-				{
-					tempDefaults.insert(i.key(), i.value());
-				}
+                    continue;
+                }
 
-				continue;
-			}
+                QSharedPointer<Document> libComp = handler->getModel(*j->getAbstractionRef());
+                QSharedPointer<AbstractionDefinition> absDef = libComp.staticCast<AbstractionDefinition>();
 
-			QSharedPointer<Document> libComp = handler->getModel(*j->getAbstractionRef());
-			QSharedPointer<AbstractionDefinition> absDef = libComp.staticCast<AbstractionDefinition>();
-
-			if (!tempDefaults.contains(i.key()))
-			{
-				tempDefaults.insert(i.key(), i.value());
-			}
-		}
+                if (!tempDefaults.contains(i.key()))
+                {
+                    tempDefaults.insert(i.key(), i.value());
+                }
+            }
+        }
 	}
 	defaultPortConnections_ = tempDefaults;
 }

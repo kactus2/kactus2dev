@@ -24,15 +24,17 @@
 
 #include <IPXACTmodels/generaldeclarations.h>
 
+#include <IPXACTmodels/Component/BusInterface.h>
+#include "IPXACTmodels/Component/ComponentInstantiation.h"
+#include "IPXACTmodels/Component/DesignInstantiation.h"
+#include "IPXACTmodels/Component/DesignConfigurationInstantiation.h"
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/File.h>
-#include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/PortMap.h>
 #include <IPXACTmodels/Component/Port.h>
 #include <IPXACTmodels/Component/View.h>
 
 #include <IPXACTmodels/Design/Interconnection.h>
-
 
 #include <common/utils.h>
 
@@ -41,9 +43,6 @@
 #include <QTime>
 #include <QDate>
 #include <QSettings>
-#include "IPXACTmodels/Component/ComponentInstantiation.h"
-#include "IPXACTmodels/Component/DesignInstantiation.h"
-#include "IPXACTmodels/Component/DesignConfigurationInstantiation.h"
 
 static const QString BLACK_BOX_DECL_START = "-- ##KACTUS2_BLACK_BOX_DECLARATIONS_BEGIN##";
 static const QString BLACK_BOX_DECL_END = "-- ##KACTUS2_BLACK_BOX_DECLARATIONS_END##";
@@ -350,36 +349,38 @@ bool VhdlGenerator2::addRTLView( const QString& vhdlFileName ) {
 	// specific settings
 	rtlView->addEnvIdentifier(QString("VHDL:Kactus2:"));
 
-	QSharedPointer<ComponentInstantiation> cimp( new ComponentInstantiation );
+	QSharedPointer<ComponentInstantiation> componentInstantiation(new ComponentInstantiation);
 
 	// Set the language of the instantiation.
-	cimp->setLanguage(QString("vhdl"));
+	componentInstantiation->setLanguage(QString("vhdl"));
 
 	// set the model name to be the top_level architecture of the top-level
 	// entity
 	QString archName;
-	if (viewName_.isEmpty()) {
+	if (viewName_.isEmpty())
+    {
 		archName = "rtl";
 	}
-	else {
+	else
+    {
 		archName = viewName_;
 	}
 	QString topEntity(QString("%1(%2)").arg(topLevelEntity_).arg(archName));
-	cimp->setModuleName(topEntity);
+	componentInstantiation->setModuleName(topEntity);
 
 	// set a reference to a file set
-	cimp->getFileSetReferences()->append(fileSetName);
+	componentInstantiation->getFileSetReferences()->append(fileSetName);
 
 	// Add the view and component instantiation to component.
 	component_->getViews()->append(rtlView);
-	component_->getComponentInstantiations()->append(cimp);
+	component_->getComponentInstantiations()->append(componentInstantiation);
 
 	// find the active view used to generate the vhdl
 	QSharedPointer<View> activeView;
 
-	foreach ( QSharedPointer<View> currentView, *component_->getViews() )
+	foreach (QSharedPointer<View> currentView, *component_->getViews())
 	{
-		if ( currentView->name() == viewName_ )
+		if (currentView->name() == viewName_)
 		{
 			activeView = currentView;
 			break;
@@ -387,28 +388,30 @@ bool VhdlGenerator2::addRTLView( const QString& vhdlFileName ) {
 	}
 	
 	// if the view does not exist or it is not hierarchical
-	if (!activeView || !activeView->isHierarchical()) {
+	if (!activeView || !activeView->isHierarchical())
+    {
 		return true;
 	}
 
 	return true;
 }
 
-bool VhdlGenerator2::parseDesignAndConfiguration() {
+bool VhdlGenerator2::parseDesignAndConfiguration()
+{
 	Q_ASSERT(component_);
 
-	// if view is not specified it is not error it just means that only
-	// the top entity should be created
-	if (viewName_.isEmpty()) {
+	// if view is not specified it is not error it just means that only the top entity should be created.
+	if (viewName_.isEmpty())
+    {
 		return true;
 	}
 
 	// if view is specified but it does not exist
 	QSharedPointer<View> view;
 	
-	foreach ( QSharedPointer<View> currentView, *component_->getViews() )
+	foreach (QSharedPointer<View> currentView, *component_->getViews())
 	{
-		if ( currentView->name() == viewName_ )
+		if (currentView->name() == viewName_)
 		{
 			view = currentView;
 			break;
@@ -416,10 +419,12 @@ bool VhdlGenerator2::parseDesignAndConfiguration() {
 	}
 	
 	// if view is not found
-	if (!view) {
+	if (!view)
+    {
 		return false;
 	}
-	else if (!view->isHierarchical()) {
+	else if (!view->isHierarchical())
+    {
 		return false;
 	}
 
@@ -427,9 +432,9 @@ bool VhdlGenerator2::parseDesignAndConfiguration() {
 	QSharedPointer<DesignConfigurationInstantiation> DCI;
 
 	// Try to find design instantiation.
-	foreach ( QSharedPointer<DesignInstantiation> currentInsta, *component_->getDesignInstantiations() )
+	foreach (QSharedPointer<DesignInstantiation> currentInsta, *component_->getDesignInstantiations())
 	{
-		if ( currentInsta->name() == view->getDesignInstantiationRef() )
+		if (currentInsta->name() == view->getDesignInstantiationRef())
 		{
 			DI = currentInsta;
 			break;
@@ -437,10 +442,10 @@ bool VhdlGenerator2::parseDesignAndConfiguration() {
 	}
 
 	// Try to find design configuration instantiation.
-	foreach ( QSharedPointer<DesignConfigurationInstantiation> currentInsta,
-		*component_->getDesignConfigurationInstantiations() )
+	foreach (QSharedPointer<DesignConfigurationInstantiation> currentInsta,
+		*component_->getDesignConfigurationInstantiations())
 	{
-		if ( currentInsta->name() == view->getDesignConfigurationInstantiationRef() )
+		if (currentInsta->name() == view->getDesignConfigurationInstantiationRef())
 		{
 			DCI = currentInsta;
 			break;
@@ -456,7 +461,7 @@ bool VhdlGenerator2::parseDesignAndConfiguration() {
 		QSharedPointer<Document> libComp = handler_->getModel(hierarchyRef);
 		desConf_ = libComp.staticCast<DesignConfiguration>();
 	}
-	else if ( DI )
+	else if (DI)
 	{
 		hierarchyRef = *DI->getDesignReference();
 	}
@@ -464,24 +469,23 @@ bool VhdlGenerator2::parseDesignAndConfiguration() {
 	else
 	{
 		emit errorMessage(tr("The design or design configuration reference within component %1's"
-			" view %2 was not found in library.").arg(
-			component_->getVlnv().toString()).arg( viewName_ ) );
+			" view %2 was not found in library.").arg(component_->getVlnv().toString()).arg(viewName_));
 		return false;
 	}
 	
 	design_ = handler_->getDesign(hierarchyRef);
 	// if design was not found
-	if (!design_) {
+	if (!design_)
+    {
 		VLNV designVLNV = handler_->getDesignVLNV(hierarchyRef);
-		emit errorMessage(tr("The design %1 referenced in component %2 was not "
-			"found in library.").arg(
+		emit errorMessage(tr("The design %1 referenced in component %2 was not found in library.").arg(
 			designVLNV.toString()).arg(component_->getVlnv().toString()));
 		return false;
 	}
 
 	// if design is found then make sure it is valid
-	else {
-
+	else
+    {
 		/*QStringList errorList;
 		if (!design_->isValid(errorList)) {
 
@@ -495,7 +499,8 @@ bool VhdlGenerator2::parseDesignAndConfiguration() {
 	}
 
 	// if design configuration is found the make sure it is also valid
-	if (desConf_) {
+	if (desConf_)
+    {
 		QStringList errorList;
 
         /*
@@ -514,7 +519,8 @@ bool VhdlGenerator2::parseDesignAndConfiguration() {
 	return true;
 }
 
-bool VhdlGenerator2::containsArchitecture() const {
+bool VhdlGenerator2::containsArchitecture() const
+{
 	// if design exists then architecture can be created
 	return design_;
 }
@@ -523,33 +529,39 @@ void VhdlGenerator2::parseTopGenerics(QString const& viewName)
 {
 	QSharedPointer<View> view;
 
-	foreach ( QSharedPointer<View> currentView, *component_->getViews() )
+	foreach (QSharedPointer<View> currentView, *component_->getViews())
 	{
-		if ( currentView->name() == viewName )
+		if (currentView->name() == viewName)
 		{
 			view = currentView;
 			break;
 		}
 	}
 
-	QSharedPointer<ComponentInstantiation> cimp;
+    if (view)
+    {
+        QSharedPointer<ComponentInstantiation> cimp;
 
-	foreach ( QSharedPointer<ComponentInstantiation> currentInsta, *component_->getComponentInstantiations() )
-	{
-		if ( currentInsta->name() == viewName_ )
-		{
-			cimp = currentInsta;
-			break;
-		}
-	}
+        foreach (QSharedPointer<ComponentInstantiation> currentInsta, *component_->getComponentInstantiations())
+        {
+            if (currentInsta->name() == view->getComponentInstantiationRef())
+            {
+                cimp = currentInsta;
+                break;
+            }
+        }
+        
+        if (cimp)
+        {
+            foreach (QSharedPointer<ModuleParameter> moduleParam, *cimp->getModuleParameters())
+            {
+                QString name = moduleParam->name();
+                QSharedPointer<VhdlGeneric> generic(new VhdlGeneric(moduleParam.data()));
 
-	foreach (QSharedPointer<ModuleParameter> moduleParam, *cimp->getModuleParameters())
-	{
-		QString name = moduleParam->name();
-		QSharedPointer<VhdlGeneric> generic(new VhdlGeneric(moduleParam.data()));
-
-		topGenerics_.insert(name, generic);
-	}
+                topGenerics_.insert(name, generic);
+            }
+        }
+    }
 }
 
 void VhdlGenerator2::parseTopPorts()
@@ -558,7 +570,8 @@ void VhdlGenerator2::parseTopPorts()
 	{
 		// do not add ports with invalid direction or phantom direction
 		if (port->getDirection() == DirectionTypes::DIRECTION_INVALID ||
-			port->getDirection() == DirectionTypes::DIRECTION_PHANTOM) {
+			port->getDirection() == DirectionTypes::DIRECTION_PHANTOM)
+        {
 				continue;
 		}
 
@@ -633,30 +646,34 @@ void VhdlGenerator2::parseInstances()
         connect(compInstance.data(), SIGNAL(errorMessage(const QString&)),
             this, SIGNAL(errorMessage(const QString)), Qt::UniqueConnection);
 
-		QSharedPointer<ComponentInstantiation> cimp;
+		QSharedPointer<ComponentInstantiation> componentInstantiation;
 
-		foreach ( QSharedPointer<ComponentInstantiation> currentInsta,
-			*compInstance->componentModel()->getComponentInstantiations() )
+		foreach (QSharedPointer<ComponentInstantiation> currentInstantiation,
+			*compInstance->componentModel()->getComponentInstantiations())
 		{
-			if ( currentInsta->name() == instanceActiveView )
+			if (currentInstantiation->name() == instanceActiveView)
 			{
-				cimp = currentInsta;
+				componentInstantiation = currentInstantiation;
 				break;
 			}
 		}
 
-		// add the libraries of the instantiated component to the library list.
-		foreach ( QString fileSetRef, *cimp->getFileSetReferences() )
-		{
-			QSharedPointer<FileSet> fileSet = compInstance->componentModel()->getFileSet(fileSetRef);
+        if (componentInstantiation)
+        {
+            // add the libraries of the instantiated component to the library list.
+            foreach (QString const& fileSetRef, *componentInstantiation->getFileSetReferences())
+            {
+                QSharedPointer<FileSet> fileSet = compInstance->componentModel()->getFileSet(fileSetRef);
 
-			if ( fileSet )
-			{
-				libraries_.append( fileSet->getVhdlLibraryNames() );
-			}
-		}
+                if (fileSet)
+                {
+                    libraries_.append( fileSet->getVhdlLibraryNames() );
+                }
+            }
+        }
 
-        foreach(QSharedPointer<ConfigurableElementValue> configurableElement, *instance->getConfigurableElementValues())
+        foreach(QSharedPointer<ConfigurableElementValue> configurableElement, 
+            *instance->getConfigurableElementValues())
         {
            compInstance->addGenericMap(configurableElement->getReferenceId(), 
                configurableElement->getConfigurableValue());
@@ -833,18 +850,18 @@ void VhdlGenerator2::connectPorts(const QString& connectionName,
 								  const QList<VhdlGenerator2::PortConnection>& ports) {
 
 	// at least 2 ports must be found
-	Q_ASSERT(ports.size() > 1);
+	/*Q_ASSERT(ports.size() > 1);
 
 	// the type of the signal
 	QString type = ports.first().instance_->portType(ports.first().portName_);
 
-	// TODO: PORTTAA LAUSEKKEIDEN SOLVAAMISEEN
 	// the minSize for the signal
-	/*int minSize = ports.first().leftBound_ - ports.first().rightBound_ + 1;
+	int minSize = ports.first().leftBound_ - ports.first().rightBound_ + 1;
 	int maxSize = minSize;
 
 	// first find out the smallest possible minSize for the signal
-	foreach (VhdlGenerator2::PortConnection connection, ports) {
+	foreach (VhdlGenerator2::PortConnection connection, ports)
+    {
 		// the smallest minSize needed is used
 		minSize = qMin(minSize, (connection.leftBound_ - connection.rightBound_ + 1));
 	}
@@ -1380,12 +1397,9 @@ void VhdlGenerator2::readUserModifiablePart( QFile& previousFile ) {
 
 	// open the file
 	// if file could not be opened
-	if (!previousFile.open(QFile::ReadOnly)) {
-
-		QString message(tr("File: "));
-		message += previousFile.fileName();
-		message += tr(" couldn't be opened for reading");
-		emit errorMessage(message);
+	if (!previousFile.open(QFile::ReadOnly)) 
+    {
+		emit errorMessage(tr("File: %1 couldn't be opened for reading").arg(previousFile.fileName()));
 		return;
 	}
 

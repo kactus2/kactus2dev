@@ -74,8 +74,15 @@ instantations_()
 		QSharedPointer<VhdlPort> vhdlPort(new VhdlPort(port.data() ));
 
 		// create the sorter instance
-		VhdlPortSorter sorter(component_->getInterfaceForPort(port->name())->name(),
-			vhdlPort->name(), port->getDirection());
+        QString interfaceName("none");
+        
+        QSharedPointer<BusInterface> portInterface(component_->getInterfaceForPort(port->name()));
+        if (!portInterface.isNull())
+        {
+            interfaceName = portInterface->name();
+        }
+
+		VhdlPortSorter sorter(interfaceName, vhdlPort->name(), port->getDirection());
 
 		// this port can not be created yet
 		Q_ASSERT(!ports_.contains(sorter));
