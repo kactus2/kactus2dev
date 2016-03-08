@@ -21,6 +21,7 @@ class Component;
 class HWComponentItem;
 class BusPortItem;
 class DesignConfiguration;
+class ExpressionParser;
 
 /*! \brief HWDesignWidget is used to edit and view one design
  *
@@ -102,6 +103,13 @@ private:
 	*/
 	void createDesignForComponent(QSharedPointer<Component> component, const QString& dirPath);
     void updateFiles(QSharedPointer<Component> topComponent, QString const& sourcePath, QString const& targetDirectory) const;
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! The expression parser for the top component.
+    QSharedPointer<ExpressionParser> expressionParser_;
 };
 
 #endif // HWDESIGNWIDGET_H

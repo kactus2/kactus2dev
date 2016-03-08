@@ -515,7 +515,7 @@ bool ComponentEditor::onVhdlGenerate()
 	if (path.isEmpty())
 		return false;
 
-	VhdlGenerator2 vhdlGen(libHandler_, this);
+    VhdlGenerator2 vhdlGen(expressionParser_, libHandler_, this);
 
     connect(&vhdlGen, SIGNAL(errorMessage(const QString&)),
         this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);

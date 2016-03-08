@@ -11,6 +11,9 @@
 #include "HWConnection.h"
 #include "AdHocConnectionItem.h"
 
+#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+
 #include <designEditors/common/Association/Association.h>
 #include <designEditors/common/StickyNote/StickyNote.h>
 #include <designEditors/common/Association/AssociationRemoveCommand.h>
@@ -58,8 +61,9 @@
 //-----------------------------------------------------------------------------
 // Function: HWDesignWidget::HWDesignWidget()
 //-----------------------------------------------------------------------------
-HWDesignWidget::HWDesignWidget(LibraryInterface *lh, QWidget* parent)
-    : DesignWidget(lh, parent)
+HWDesignWidget::HWDesignWidget(LibraryInterface *lh, QWidget* parent):
+DesignWidget(lh, parent),
+expressionParser_()
 {
 	// update the supported windows 
 	supportedWindows_ = (supportedWindows_ | CONFIGURATIONWINDOW |
@@ -70,6 +74,9 @@ HWDesignWidget::HWDesignWidget(LibraryInterface *lh, QWidget* parent)
     getDiagram()->setMode(MODE_SELECT);
     
 	addVisibilityControl("Bus Widths", false);
+
+    QSharedPointer<ComponentParameterFinder> parameterFinder (new ComponentParameterFinder(getEditedComponent()));
+    expressionParser_ = QSharedPointer<IPXactSystemVerilogParser>(new IPXactSystemVerilogParser(parameterFinder));
 }
 
 //-----------------------------------------------------------------------------
@@ -774,7 +781,7 @@ void HWDesignWidget::onVhdlGenerate()
 		return;
 	}
 
-	VhdlGenerator2 vhdlGen(getLibraryInterface(), this);
+	VhdlGenerator2 vhdlGen(expressionParser_, getLibraryInterface(), this);
 	
     connect(&vhdlGen, SIGNAL(errorMessage(const QString&)),
         this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);

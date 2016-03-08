@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 26.10.2011
- *      Author: Antti Kamppi
- * 		filename: vhdlgenerator2.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: vhdlgenerator.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 26.10.2011
+//
+// Description:
+// Vhdl Generator generates top-level vhdl for hierarchical component.
+//-----------------------------------------------------------------------------
 
 #ifndef VHDLGENERATOR2_H
 #define VHDLGENERATOR2_H
@@ -33,357 +37,424 @@ class LibraryInterface;
 class VhdlConnectionEndPoint;
 class HWDesignWidget;
 class PortMap;
-/*! \brief Vhdl Generator generates top-level vhdl for hierarchical component.
- *
- * This class and it's interface provide services to generate vhdl code from
- * a hierarchical view of a component. 
- */
-class VhdlGenerator2 : public QObject {
+class DesignValidator;
+class DesignConfigurationValidator;
+class ExpressionParser;
+class PortAlignment;
+
+//-----------------------------------------------------------------------------
+//! Vhdl Generator generates top-level vhdl for hierarchical component.
+//-----------------------------------------------------------------------------
+class VhdlGenerator2 : public QObject
+{
 	Q_OBJECT
 
 public:
 
-
-	/*! \brief The constructor
+	/*!
+     *  The constructor.
 	 *
-	 * \param handler Pointer to the instance that manages the library.
-	 * \param parent Pointer to the owner of this generator.
-	 *
-	*/
-	VhdlGenerator2(LibraryInterface* handler, QObject* parent);
+	 *      @param [in] handler     Pointer to the instance that manages the library.
+	 *      @param [in] parent      Pointer to the owner of this generator.
+	 */
+	VhdlGenerator2(QSharedPointer<ExpressionParser> parser, LibraryInterface* handler,
+        QObject* parent);
 	
-	//! \brief The destructor
+	//! The destructor.
 	virtual ~VhdlGenerator2();
 
-	/*! \brief Get pointer to the instance that manages the library.
+	/*!
+     *  Get pointer to the instance that manages the library.
 	 *
-	 * \return LibraryInterface* Pointer to the instance that manages the library.
-	*/
+	 *      @return LibraryInterface* Pointer to the instance that manages the library.
+	 */
 	LibraryInterface* handler() const;
 
-	/*! \brief Parse the data needed to create the top-level vhdl entity.
+	/*!
+     *  Parse the data needed to create the top-level vhdl entity.
 	 *
-	 * \param topLevelComponent Pointer to the component that's entity is created.
-	 * \param viewName The name of the view on the top component to generate the vhdl to.
+	 *      @param [in] topLevelComponent   Pointer to the component that's entity is created.
+	 *      @param [in] viewName            The name of the view on the top component to generate the vhdl to.
 	 *
-	 * \return bool True if the parsing was successful and the vhdl can be generated.
-	*/
+	 *      @return bool True if the parsing was successful and the vhdl can be generated.
+	 */
 	bool parse(QSharedPointer<Component> topLevelComponent, const QString& viewName);
 
-	/*! \brief Generate the vhdl that has been parsed.
+	/*!
+     *  Generate the vhdl that has been parsed.
 	 * 
-	 * NOTE: Before calling this function the parse() function MUST be called so
-	 * there is something to generate.
+	 *  NOTE: Before calling this function the parse() function MUST be called so there is something to generate.
 	 *
-	 * \param outputFileName The absolute file path of the vhdl file to be created.
-	 * If file exists it is overwritten.
-	 *
-	*/
+	 *      @param [in] outputFileName  The absolute file path of the vhdl file to be created.
+     *                                  If file exists it is overwritten.
+	 */
 	void generate(const QString& outputFileName);
 
-	/*! \brief Add a new view to the top component's IP-Xact metadata.
+	/*!
+     *  Add a new view to the top component's IP-Xact metadata.
 	 * 
-	 * NOTE: Before calling this function the parse() function must be called and
-	 * usually the generateVhdl() also. If generateVhdl() is not called then the
-	 * architecture name must be set other way.
+	 *  NOTE: Before calling this function the parse() function must be called and usually the generateVhdl() also.
+     *  If generateVhdl() is not called then the architecture name must be set other way.
 	 * 
-	 * \param vhdlFileName Absolute file path to the vhdl file to add to the metadata.
-	 * This is usually the same file that was set as output file when calling
-	 * generateVhdl().
+	 *      @param [in] vhdlFileName    Absolute file path to the vhdl file to add to the metadata. This is 
+     *                                  usually the same file that was set as output file when calling
+     *                                  generateVhdl().
 	 *
-	 * \return bool True if the view was added successfully.
-	*/
+	 *      @return bool True if the view was added successfully.
+	 */
 	bool addRTLView(const QString& vhdlFileName);
 
-	/*! \brief Check if the generator is able to generate and architecture for top entity.
+	/*!
+     *  Check if the generator is able to generate and architecture for top entity.
 	 *
-	 * \return bool True if component contains a design and is able to create an
-	 * architecture for the entity.
-	*/
+	 *      @return True if component contains a design and is able to create an architecture for the entity.
+	 */
 	bool containsArchitecture() const;
 
 signals:
 
-	//! \brief Print a notification to user.
+	//! Print a notification to user.
 	void noticeMessage(const QString& noticeMessage);
 
-	//! \brief Print a error message to user.
+	//! Print a error message to user.
 	void errorMessage(const QString& errorMessage);
 
 private:
-	//! \brief No copying
+
+	//! No copying.
 	VhdlGenerator2(const VhdlGenerator2& other);
 
-	//! \brief No assignment
+	//! No assignment.
 	VhdlGenerator2& operator=(const VhdlGenerator2& other);
 
-	//! \brief Contains info on what port to connect.
-	struct PortConnection {
-
-		//! \brief Pointer to the instance the port belongs to.
+	//! Contains info on what port to connect.
+	struct PortConnection
+    {
+		//! Pointer to the instance the port belongs to.
 		QSharedPointer<VhdlComponentInstance> instance_;
 
-		//! \brief The name of the port on the instance to connect.
+		//! The name of the port on the instance to connect.
 		QString portName_;
 
-		//! \brief The left bound of the port to connect.
-		QString leftBound_;
+		//! The left bound of the port to connect.
+// 		QString leftBound_;
+        int leftBound_;
 
-		//! \brief The right bound of the port to connect.
-		QString rightBound_;
+		//! The right bound of the port to connect.
+// 		QString rightBound_;
+        int rightBound_;
 
-		/*! \brief The constructor
+		/*!
+         *  The constructor
 		 *
-		 * \param instance Pointer to the instance to connect.
-		 * \param portName The name of the port on the instance.
-		 * \param left The left bound of the port.
-		 * \param right The right bound of the port.
-		 *
-		*/
-		PortConnection(QSharedPointer<VhdlComponentInstance> instance, 
-			const QString& portName, QString left = "-1", QString right = "-1");
+		 *      @param [in] instance    Pointer to the instance to connect.
+		 *      @param [in] portName    The name of the port on the instance.
+		 *      @param [in] left        The left bound of the port.
+		 *      @param [in] right       The right bound of the port.
+		 */
+// 		PortConnection(QSharedPointer<VhdlComponentInstance> instance, const QString& portName,
+//             QString left = "-1", QString right = "-1");
+        PortConnection(QSharedPointer<VhdlComponentInstance> instance, const QString& portName,
+            int left = -1, int right = -1);
 
-		//! \brief Copy constructor
+		//! Copy constructor.
 		PortConnection(const PortConnection& other);
 
-		//! \brief Assignment operator
+		//! Assignment operator.
 		PortConnection& operator=(const PortConnection& other);
 	};
 
-	/*! \brief Parse the design and configuration used.
+	/*!
+     *  Parse the design and configuration used.
 	 * 
-	 * \return True if the design and configuration were parsed successfully.
-	*/
+	 *      @return True if the design and configuration were parsed successfully.
+	 */
 	bool parseDesignAndConfiguration();
 
-	/*! \brief Parse the generics for the top entity to create.
-	 *
-	*/
+	/*!
+     *  Parse the generics for the top entity to create.
+     *
+     *      @param [in] viewName    Name of the selected view.
+	 */
 	void parseTopGenerics( QString const& viewName );
 
-	/*! \brief Parse the ports for the top entity to create.
-	 *
-	*/
+	/*!
+     *  Parse the ports for the top entity to create.
+	 */
 	void parseTopPorts();
 
-	/*! \brief Parse the component instances from the design.
-	 *
-	*/
+	/*!
+     *  Parse the component instances from the design.
+	 */
 	void parseInstances();
 
-	/*! \brief Parse the interconnections of a design.
-	 *
-	*/
+	/*!
+     *  Parse the interconnections of a design.
+	 */
 	void parseInterconnections();
 
-	/*! \brief Parse the ad hoc connections of a design.
-	 *
-	*/
+    void parseInstanceInterconnection(QSharedPointer<Interconnection> connection, bool& invalidInterconnection,
+        QSharedPointer<VhdlComponentInstance> startInstance, QSharedPointer<BusInterface> startInterface,
+        QSharedPointer<ActiveInterface> connectionEndInterface);
+
+    void parseHierarchicalConnection(QSharedPointer<VhdlComponentInstance> startInstance,
+        QSharedPointer<BusInterface> startInterface, QSharedPointer<HierInterface> endInterface);
+
+	/*!
+     *  Parse the ad hoc connections of a design.
+	 */
 	void parseAdHocConnections();
 
-	/*! \brief Parse the hierarchical connections of a design.
-	 *
-	*/
-	void parseHierConnections();
+	/*!
+     *  Parse the hierarchical connections of a design.
+	 */
+// 	void parseHierConnections();
 
-	/*! \brief Connect the two interfaces together with signals.
+	/*!
+     *  Connect the two interfaces together with signals.
 	 *
-	 * \param connectionName The name of the connection between the interfaces.
-	 * \param description The description of the interconnection.
-	 * \param instance1 Pointer to the instance 1.
-	 * \param interface1 Pointer to the bus interface of instance 1.
-	 * \param instance2 Pointer to the instance 2.
-	 * \param interface2 Pointer to the bus interface of instance 2.
-	 *
-	*/
-	void connectInterfaces(const QString& connectionName, const QString& description, QSharedPointer<VhdlComponentInstance> instance1, QSharedPointer<BusInterface> interface1, QSharedPointer<VhdlComponentInstance> instance2, QSharedPointer<BusInterface> interface2);
+	 *      @param [in] connectionName  The name of the connection between the interfaces.
+	 *      @param [in] description     The description of the interconnection.
+	 *      @param [in] instance1       Pointer to the instance 1.
+	 *      @param [in] interface1      Pointer to the bus interface of instance 1.
+	 *      @param [in] instance2       Pointer to the instance 2.
+	 *      @param [in] interface2      Pointer to the bus interface of instance 2.
+	 */
+	void connectInterfaces(const QString& connectionName, const QString& description,
+        QSharedPointer<VhdlComponentInstance> instance1, QSharedPointer<BusInterface> interface1,
+        QSharedPointer<VhdlComponentInstance> instance2, QSharedPointer<BusInterface> interface2);
 
-	/*! \brief Connect the specified ports together.
+	/*!
+     *  Connect the specified ports together.
 	 *
-	 * \param connectionName The name of the connection.
-	 * \param description Description for the connection.
-	 * \param ports Contains the ports to connect.
-	 *
-	*/
-	void connectPorts(const QString& connectionName, 
-		const QString& description,
-		const QList<VhdlGenerator2::PortConnection>& ports);
+	 *      @param [in] connectionName  The name of the connection.
+	 *      @param [in] description     Description for the connection.
+	 *      @param [in] ports           Contains the ports to connect.
+	 */
+	void connectPorts(const QString& connectionName, const QString& description,
+        const QList<VhdlGenerator2::PortConnection>& ports);
 
-	/*! \brief Connect the specified top port to specified instance ports.
+	/*!
+     *  Connect the specified top port to specified instance ports.
 	 *
-	 * \param topPort The name of the port on top component.
-	 * \param leftBound The left bound of the port on top component.
-	 * \param rightBound The right bound of the port on top component.
-	 * \param ports List of ports to connect to the top port
-	 *
-	*/
-	void connectHierPort(const QString& topPortName,
-		QString leftBound, 
-		QString rightBound,
-		const QList<VhdlGenerator2::PortConnection>& ports);
+	 *      @param [in] topPort     The name of the port on top component.
+	 *      @param [in] leftBound   The left bound of the port on top component.
+	 *      @param [in] rightBound  The right bound of the port on top component.
+	 *      @param [in] ports       List of ports to connect to the top port
+	 */
+	void connectHierPort(const QString& topPortName, QString leftBound, QString rightBound,
+        const QList<VhdlGenerator2::PortConnection>& ports);
 
-	/*! \brief Connect the given endpoint with the signal.
+	/*!
+     *  Connect the given endpoint with the signal.
 	 *
-	 * \param endpoint The end point that specified the port to connect.
-	 * \param signal The signal the port is connected to.
-	 *
-	*/
-	void connectEndPoint(const VhdlConnectionEndPoint& endpoint,
-		const QSharedPointer<VhdlSignal> signal);
+	 *      @param [in] endpoint    The end point that specified the port to connect.
+	 *      @param [in] signal      The signal the port is connected to.
+	 */
+	void connectEndPoint(const VhdlConnectionEndPoint& endpoint, const QSharedPointer<VhdlSignal> signal);
 
-	/*! \brief Connect the hierarchical interface to the instance interface.
+	/*!
+     *  Connect the hierarchical interface to the instance interface.
 	 *
-	 * \param instance Pointer to the instance that's interface is connected.
-	 * \param instanceInterface Pointer to the interface of the instance.
-	 * \param topInterface Pointer to the interface of the top component.
-	 *
-	*/
-	void connectHierInterface( QSharedPointer<VhdlComponentInstance> instance, QSharedPointer<BusInterface> instanceInterface, QSharedPointer<BusInterface> topInterface );
+	 *      @param [in] instance            Pointer to the instance that's interface is connected.
+	 *      @param [in] instanceInterface   Pointer to the interface of the instance.
+	 *      @param [in] topInterface        Pointer to the interface of the top component.
+	 */
+	void connectHierInterface( QSharedPointer<VhdlComponentInstance> instance,
+        QSharedPointer<BusInterface> instanceInterface, QSharedPointer<BusInterface> topInterface );
 
-	/*! \brief Map ports of component instances to signals.
+	/*!
+     *  Map ports of component instances to signals.
 	 *
-	 * NOTE: This function must be called only after all end points of signals
-	 * have been parsed.
-	 *
-	*/
+	 *  NOTE: This function must be called only after all end points of signals have been parsed.
+	 */
 	void mapPorts2Signals();
 	
-	/*! \brief Write the header of a vhdl file to be created.
+	/*!
+     *  Write the header of a vhdl file to be created.
 	 *
-	 * \param vhdlStream The text stream to write into.
-	 * \param fileName The name of the file that is being written.
-	 *
-	*/
+	 *      @param [in] vhdlStream  The text stream to write into.
+	 *      @param [in] fileName    The name of the file that is being written.
+	 */
 	void writeVhdlHeader( QTextStream& vhdlStream, const QString& fileName );
 	
-	/*! \brief Write the generics of the top entity.
+	/*!
+     *  Write the generics of the top entity.
 	 *
-	 * \param vhdlStream The text stream to write into.
-	 *
-	*/
+	 *      @param [in] vhdlStream  The text stream to write into.
+	 */
 	void writeGenerics( QTextStream& vhdlStream );
 	
-	/*! \brief Write the ports of the top entity.
+	/*!
+     *  Write the ports of the top entity.
 	 *
-	 * \param vhdlStream The text stream to write into.
-	 *
-	*/
+	 *      @param [in] vhdlStream  The text stream to write into.
+	 */
 	void writePorts( QTextStream& vhdlStream );
 	
-	/*! \brief Write the declarations of the signals.
+	/*!
+     *  Write the declarations of the signals.
 	 * 
-	 * \param vhdlStream The text stream to write into.
-	 *
-	*/
+	 *      @param [in] vhdlStream  The text stream to write into.
+	 */
 	void writeSignalDeclarations( QTextStream& vhdlStream );
 	
-	/*! \brief Write the declarations of components.
+	/*!
+     *  Write the declarations of components.
 	 *
-	 * \param vhdlStream The text stream to write into.
-	 *
-	*/
+	 *      @param [in] vhdlStream  The text stream to write into.
+	 */
 	void writeComponentDeclarations( QTextStream& vhdlStream );
 	
-	/*! \brief Write the instances of components.
+	/*!
+     *  Write the instances of components.
 	 *
-	 * \param vhdlStream The text stream to write into.
-	 *
-	*/
+	 *      @param [in] vhdlStream  The text stream to write into.
+	 */
 	void writeComponentInstances( QTextStream& vhdlStream );
 
-	/*! \brief Read an old vhdl file and read the user modifiable parts from it.
+	/*!
+     *  Read an old vhdl file and read the user modifiable parts from it.
 	 *
-	 * \param previousFile The file to read.
-	 *
-	*/
+	 *      @param [in] previousFile    The file to read.
+	 */
 	void readUserModifiablePart(QFile& previousFile);
 
-	/*! \brief Write the user modified declarations read from the previous file.
+	/*!
+     *  Write the user modified declarations read from the previous file.
 	 *
-	 * \param stream The text stream to write into.
-	 *
-	*/
+	 *      @param [in] stream  The text stream to write into.
+	 */
 	void writeUserModifiedDeclarations(QTextStream& stream);
 
-	/*! \brief Write the user modified assignments read from the previous file.
+	/*!
+     *  Write the user modified assignments read from the previous file.
 	 *
-	 * \param stream The text stream to write into.
-	 *
-	*/
+	 *      @param [in] stream  The text stream to write into.
+	 */
 	void writeUserModifiedAssignments(QTextStream& stream);
 	
-     General::PortAlignment calculatePortAlignment(const PortMap* portMap1, 
-									 QString phys1LeftBound,
-									 QString phys1RightBound,
-									 const PortMap* portMap2,
-									 QString phys2LeftBound,
-									 QString phys2RightBound);
+    /*!
+     *  Calculate the port alignment.
+     *
+     *      @param [in] portMap1            First port map.
+     *      @param [in] phys1LeftBound      Physical left bound of the first port.
+     *      @param [in] phys1RightBound     Physical right bound of the first port.
+     *      @param [in] portMap2            The second port map.
+     *      @param [in] phys2LeftBound      Physical left bound of the second port.
+     *      @param [in] phys2RightBound     Physical right bound of the second port.
+     */
+    General::PortAlignment calculatePortAlignment(const PortMap* portMap1, QString phys1LeftBound,
+        QString phys1RightBound, QSharedPointer<ExpressionParser> firstParser, const PortMap* portMap2,
+        QString phys2LeftBound, QString phys2RightBound, QSharedPointer<ExpressionParser> secondParser);
 
+    /*!
+     *  Get the alignment of the physical port mapping.
+     *
+     *      @param [in] portmap         The containing port map.
+     *      @param [in] portLeftBound   The left bound of the selected port.
+     *      @param [in] portRightBound  The right bound of the selected port.
+     *      @param [in] parser          Expression parser for the containing component.
+     *
+     *      @return The alignment of the physical port mapping.
+     */
+    QSharedPointer<PortAlignment> getPhysicalAlignment(const PortMap* portmap, QString const& portLeftBound,
+        QString const& portRightBound, QSharedPointer<ExpressionParser> parser) const;
 
-	//! \brief Pointer to the instance that manages the library.
+    /*!
+     *  Get the logical minimum or maximum port mapping value.
+     *
+     *      @param [in] portMap     Port map containing the logical port.
+     *      @param [in] parser      Expression parser for the containing component.
+     *      @param [in] isMaximum   Flag value for determining whether the maximum of minimum value is wanted.
+     *
+     *      @return A logical bound of the logical port mapping.
+     */
+    int getLogicalValue(const PortMap* portMap, QSharedPointer<ExpressionParser> parser, bool isMaximum);
+
+    /*!
+     *  Get the name of the containing bus interface.
+     *
+     *      @param [in] containingComponent     The component containing the port and the bus interface.
+     *      @param [in] portName                The name of the selected port.
+     *
+     *      @return The name of the containing bus interface, or "none" if one is not found.
+     */
+    QString getContainingBusInterfaceName(QSharedPointer<Component> containingComponent, QString const& portName)
+        const;
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+	//! Pointer to the instance that manages the library.
 	LibraryInterface* handler_;
 
-	//! \brief Pointer to the top component.
+	//! Pointer to the top component.
 	QSharedPointer<Component> component_;
 
-	//! \brief Pointer to the top design.
+	//! Pointer to the top design.
 	QSharedPointer<Design> design_;
 
-	//! \brief Pointer to the top configuration
+	//! Pointer to the top configuration
 	QSharedPointer<DesignConfiguration> desConf_;
 
-	//! \brief The name of the view used on the top component.
+	//! The name of the view used on the top component.
 	QString viewName_;
 
-	//! \brief The name of the top level entity to create.
+	//! The name of the top level entity to create.
 	QString topLevelEntity_;
 
-	//! \brief List of libraries to use
+	//! List of libraries to use
 	QStringList libraries_;
 
-	//! \brief The type definitions of the port types used.
+	//! The type definitions of the port types used.
 	QStringList typeDefinitions_;
 
-	//! \brief Contains the declarations that user has written by hand and that should be saved
+	//! Contains the declarations that user has written by hand and that should be saved
 	QString userModifiedDeclarations_;
 
-	//! \brief Contains the vhdl code that user has written by hand and that should be saved
+	//! Contains the vhdl code that user has written by hand and that should be saved
 	QString userModifiedAssignments_;
 
-	/*! \brief Contains the generics for the top level entity.
-	 * 
-	 * Key = Name of the generic
-	 * Value = Pointer to the generic.
+	/*! Contains the generics for the top level entity.
+	 *      Key = Name of the generic
+	 *      Value = Pointer to the generic.
 	 */
 	QMap<QString, QSharedPointer<VhdlGeneric> > topGenerics_;
 
-	/*! \brief Contains the ports for the top level entity.
-	 *
-	 * Key = Element used to sort the ports in correct order.
-	 * Value = Pointer to the port.
+	/*! Contains the ports for the top level entity.
+	 *      Key = Element used to sort the ports in correct order.
+	 *      Value = Pointer to the port.
 	 */
 	QMap<VhdlPortSorter, QSharedPointer<VhdlPort> > topPorts_;
 
-	/*! \brief Contains the signals for the architecture
-	 * 
-	 * Key = The end point associated with the signal.
-	 * Value = Pointer to the signal to use.
+	/*! Contains the signals for the architecture
+	 *      Key = The end point associated with the signal.
+	 *      Value = Pointer to the signal to use.
 	 */
 	QMap<VhdlConnectionEndPoint, QSharedPointer<VhdlSignal> > signals_;
 
-	/*! \brief Contains the component declarations of the architecture
-	 * 
-	 * Key = VLNV of the component IP-Xact model
-	 * Value = Pointer to the vhdl component declaration
+	/*! Contains the component declarations of the architecture
+	 *      Key = VLNV of the component IP-Xact model
+	 *      Value = Pointer to the vhdl component declaration
 	 */
 	QMap<VLNV, QSharedPointer<VhdlComponentDeclaration> > components_;
 
-	/*! \brief Contains the instances of the architecture
-	 * 
-	 * Key = Name of the instance
-	 * Value = Pointer to the component instance
+	/*! Contains the instances of the architecture
+	 *      Key = Name of the instance
+	 *      Value = Pointer to the component instance
 	 */
 	QMap<QString, QSharedPointer<VhdlComponentInstance> > instances_;
+
+    //! The used design validator.
+    QSharedPointer<DesignValidator> designvalidator_;
+
+    //! The used design configuration validator.
+    QSharedPointer<DesignConfigurationValidator> designConfigurationValidator_;
+
+    //! The expression parser for the top component parser.
+    QSharedPointer<ExpressionParser> topComponentParser_;
 };
 
 #endif // VHDLGENERATOR2_H
