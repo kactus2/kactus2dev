@@ -23,8 +23,8 @@
 //-----------------------------------------------------------------------------
 // Function: TLMWHeaderGenerator::TLMWHeaderGenerator()
 //-----------------------------------------------------------------------------
-TLMWHeaderGenerator::TLMWHeaderGenerator( TLMWParser& parser, IPluginUtility* utility ) : 
-componentEndpoints_( parser.getComponentEndpoints() ), designNodes_( parser.getDesignNodes() ), utility_( utility )
+TLMWHeaderGenerator::TLMWHeaderGenerator(TLMWParser& parser) : 
+designNodes_(parser.getDesignNodes())
 {
 }
 
@@ -39,9 +39,9 @@ TLMWHeaderGenerator::~TLMWHeaderGenerator()
 // Function: TLMWHeaderGenerator::generateTopLevel()
 //-----------------------------------------------------------------------------
 void TLMWHeaderGenerator::generateTopLevel(QSharedPointer<Design> design, QSharedPointer<Component> topComponent,
-    QSharedPointer<DesignConfiguration const> desgConf, QString topDir)
+    QSharedPointer<DesignConfiguration const> desgConf, QString const& topDir)
 {
-    foreach ( TLMWParser::NodeData nd, designNodes_ )
+    foreach (TLMWParser::NodeData const& nd, designNodes_)
     {
         generateInstanceHeader(nd.directory, nd);
 
@@ -77,13 +77,13 @@ QString TLMWHeaderGenerator::createIndentString()
 }
 
 //-----------------------------------------------------------------------------
-// Function: generateInstanceHeader()
+// Function: TLMWHeaderGenerator::generateInstanceHeader()
 //-----------------------------------------------------------------------------
-void TLMWHeaderGenerator::generateInstanceHeader(QString& directory, TLMWParser::NodeData& nodeData)
+void TLMWHeaderGenerator::generateInstanceHeader(QString const& directory, TLMWParser::NodeData const& nodeData)
 {
     // Create folder for the instance.
     QDir path;
-    path.mkpath( directory );
+    path.mkpath(directory);
 
     // Open the file for writing.
     QString const filename = directory + "/TLMWheader.h";
@@ -109,11 +109,11 @@ void TLMWHeaderGenerator::generateInstanceHeader(QString& directory, TLMWParser:
 	writer.writeLine("namespace TLMW");
 	writer.beginBlock();
 
-    QPair<TLMWParser::EndPointData, QString> conPair;
-    foreach( conPair, nodeData.connections )
+    QPair<TLMWParser::EndPointData, QString> connectionPair;
+    foreach(connectionPair, nodeData.connections)
 	{
-		writer.writeLine("const EDA_entry " + conPair.first.name + " = { \"" + conPair.second + "\", "
-			+ conPair.first.transferSize + " };" );
+		writer.writeLine("const EDA_entry " + connectionPair.first.name + " = { \"" + connectionPair.second + "\", "
+			+ connectionPair.first.transferSize + " };" );
     }
 
 	writer.endBlock();
@@ -125,14 +125,14 @@ void TLMWHeaderGenerator::generateInstanceHeader(QString& directory, TLMWParser:
 //-----------------------------------------------------------------------------
 // Function: TLMWHeaderGenerator::addGeneratedTLMWToFileset()
 //-----------------------------------------------------------------------------
-void TLMWHeaderGenerator::addGeneratedTLMWToFileset(QString directory, QSharedPointer<Component> topComponent,
-    QSharedPointer<SWInstance> instance, QSharedPointer<DesignConfiguration const> desgConf)
+void TLMWHeaderGenerator::addGeneratedTLMWToFileset(QString const& directory, QSharedPointer<Component> topComponent,
+    QSharedPointer<SWInstance> instance, QSharedPointer<DesignConfiguration const> designConfig)
 {
     QString sysViewName;
 
-    foreach( QSharedPointer<SystemView> view, topComponent->getSystemViews() )
+    foreach(QSharedPointer<SystemView> view, topComponent->getSystemViews())
     {
-        if ( view->getHierarchyRef() == desgConf->getVlnv() )
+        if (view->getHierarchyRef() == designConfig->getVlnv())
         {
            sysViewName = view->name();
            break;
@@ -143,10 +143,10 @@ void TLMWHeaderGenerator::addGeneratedTLMWToFileset(QString directory, QSharedPo
     QString fileSetName;
 
     // Check if the software instance has and existing fileSet reference. 
-    if ( instance->getFileSetRef().isEmpty() )
+    if (instance->getFileSetRef().isEmpty())
     {
         // If not, make a new one.
-        fileSetName = NameGenerationPolicy::instanceFilesetName( sysViewName, instance->getInstanceName() );
+        fileSetName = NameGenerationPolicy::instanceFilesetName(sysViewName, instance->getInstanceName());
         instance->setFileSetRef( fileSetName );
     }
     else
@@ -163,12 +163,12 @@ void TLMWHeaderGenerator::addGeneratedTLMWToFileset(QString directory, QSharedPo
     QString filePath = directory + "/TLMWheader.h";
 
     // Create file if does not already exist.
-    if ( !fileSet->contains(filePath) )
+    if (!fileSet->contains(filePath))
     {
         QSharedPointer<File> file;
         QSettings settings;
         file = fileSet->addFile(filePath, settings);
 		file->addFileType("cSource");
-		file->setIncludeFile( true );
+		file->setIncludeFile(true);
     }
 }

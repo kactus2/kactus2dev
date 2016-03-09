@@ -46,17 +46,17 @@ public:
     /*!
      *  Returns list TLMW endpoints within a single software component.
      */
-     const QList<EndPointData>& getComponentEndpoints();
+     QList<EndPointData> getComponentEndpoints() const;
 
     /*!
      *  Returns list nodes within a single system design, along with their connections to other nodes.
      */
-     const QList<NodeData>& getDesignNodes();
+     QList<NodeData> getDesignNodes() const;
 
     /*!
      *  Returns list of files replaced on the instance header generation.
      */
-     const QStringList& getReplacedFiles();
+     QStringList getReplacedFiles() const;
 
     /*!
      *  Generates TLMW code for the given component.
@@ -93,7 +93,7 @@ private:
       *      @param [in] comIf   The ComInterface under inspection.
       *      @param [in] errorList    Missing properties will be reported in this list.
       */
-      void checkRequiredPropertiesSet(QString componentVLNV, QSharedPointer<ComDefinition> comDef,
+      void checkRequiredPropertiesSet(QString const& componentVLNV, QSharedPointer<ComDefinition> comDef,
          QSharedPointer<ComInterface> comIf,  QStringList &errorList);
 
     /*!

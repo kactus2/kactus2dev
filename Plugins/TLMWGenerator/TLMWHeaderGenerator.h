@@ -30,7 +30,9 @@ public:
      *      @param [in] parser   A parser that has already parsed the design for TLMW generation.
      *      @param [in] utility   The same IPluginUtility, which is fed to the plugin class as parameter.
      */
-     TLMWHeaderGenerator( TLMWParser& parser, IPluginUtility* utility );
+     TLMWHeaderGenerator(TLMWParser& parser);
+
+     //! The destructor.
     ~TLMWHeaderGenerator();
 
     /*!
@@ -42,7 +44,7 @@ public:
      *      @param [in] topDir   The location of the top level component in the file system.
      */
      void generateTopLevel(QSharedPointer<Design> design, QSharedPointer<Component> topComponent,
-        QSharedPointer<DesignConfiguration const> desgConf, QString topDir);
+        QSharedPointer<DesignConfiguration const> desgConf, QString const& topDir);
 
 private:
 
@@ -57,7 +59,7 @@ private:
      *      @param [in] filename   The name of the source file to write.
      *      @param [in] nodeData   TLMW node data associated with the instance.
      */
-    void generateInstanceHeader(QString& directory, TLMWParser::NodeData& nodeData);
+    void generateInstanceHeader(QString const& directory, TLMWParser::NodeData const& nodeData);
 
     /*!
      *  Add generated TLMW code files to the fileSet of the associated component.
@@ -67,7 +69,7 @@ private:
      *      @param [in] instance   The software instance, which instance header was generated.
      *      @param [in] desgConf   The design configuration associated with the design.
      */
-     void addGeneratedTLMWToFileset(QString directory, QSharedPointer<Component> topComponent,
+     void addGeneratedTLMWToFileset(QString const&  directory, QSharedPointer<Component> topComponent,
         QSharedPointer<SWInstance> instance, QSharedPointer<DesignConfiguration const> desgConf);
 
     /*!
@@ -132,10 +134,9 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! Endpoints parsed from component
-    QList<TLMWParser::EndPointData> componentEndpoints_;
     //! Nodes parsed from design.
     QList<TLMWParser::NodeData> designNodes_;
+
     //! The plugin utility.
     IPluginUtility* utility_;
 };

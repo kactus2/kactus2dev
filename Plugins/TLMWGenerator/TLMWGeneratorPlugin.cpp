@@ -106,13 +106,13 @@ bool TLMWGeneratorPlugin::checkGeneratorSupport( QSharedPointer<Document const> 
     QSharedPointer<Component const> comp = libComp.dynamicCast<Component const>();
     QSharedPointer<DesignConfiguration const> desgConf = libDesConf.dynamicCast<DesignConfiguration const>();
 
-    return ( libDes != 0 && desgConf != 0 && desgConf->getDesignConfigImplementation() == KactusAttribute::SYSTEM );
+    return (libDes != 0 && desgConf != 0 && desgConf->getDesignConfigImplementation() == KactusAttribute::SYSTEM);
 }
 
 //-----------------------------------------------------------------------------
 // Function: TLMWGeneratorPlugin::runGenerator()
 //-----------------------------------------------------------------------------
-void TLMWGeneratorPlugin::runGenerator( IPluginUtility* utility, 
+void TLMWGeneratorPlugin::runGenerator(IPluginUtility* utility, 
     QSharedPointer<Document> libComp,
     QSharedPointer<Document> libDesConf,
     QSharedPointer<Document> libDes)
@@ -121,8 +121,7 @@ void TLMWGeneratorPlugin::runGenerator( IPluginUtility* utility,
     QSharedPointer<Component> comp = libComp.dynamicCast<Component>();
     QSharedPointer<DesignConfiguration const> desgConf = libDesConf.dynamicCast<DesignConfiguration const>();
 
-	if ( libDes != 0 && desgConf != 0 &&
-        desgConf->getDesignConfigImplementation() == KactusAttribute::SYSTEM )
+	if (libDes != 0 && desgConf != 0 && desgConf->getDesignConfigImplementation() == KactusAttribute::SYSTEM)
     {
         TLMWParser parser( utility );
         parser.parseTopLevel(design, comp, desgConf);
@@ -130,12 +129,12 @@ void TLMWGeneratorPlugin::runGenerator( IPluginUtility* utility,
         QStringList replacedFiles = parser.getReplacedFiles();
 
         // Ask verification from the user, if any file is being replaced,
-        if ( replacedFiles.size() > 0 )
+        if (replacedFiles.size() > 0)
         {
             // Details will be the list of files being replaced.
             QString detailMsg;
 
-            foreach ( QString file, replacedFiles )
+            foreach (QString const& file, replacedFiles)
             {
                 detailMsg += file + "\n";
             }
@@ -146,26 +145,27 @@ void TLMWGeneratorPlugin::runGenerator( IPluginUtility* utility,
             msgBox.setDetailedText(detailMsg);
 
             // If user did not want to replace the files.
-            if (msgBox.exec() == QMessageBox::No) {
+            if (msgBox.exec() == QMessageBox::No)
+            {
                 return;
             }
         }
 
-        TLMWHeaderGenerator generator( parser, utility );
-        VLNV topVLNV = comp->getVlnv();
-        QString topDir = QFileInfo(utility->getLibraryInterface()->getPath(topVLNV)).absolutePath();
+        TLMWHeaderGenerator generator(parser);
+
+        QString topDir = QFileInfo(utility->getLibraryInterface()->getPath(comp->getVlnv())).absolutePath();
         generator.generateTopLevel(design, comp, desgConf, topDir);
         utility->getLibraryInterface()->writeModelToFile(design);
     }
 
     utility->getLibraryInterface()->writeModelToFile(libComp);
-
-    utility->printInfo( "TLMW generation complete.");
+    utility->printInfo("TLMW generation complete.");
 }
 
 //-----------------------------------------------------------------------------
 // Function: TLMWGeneratorPlugin::getProgramRequirements()
 //-----------------------------------------------------------------------------
-QList<IPlugin::ExternalProgramRequirement> TLMWGeneratorPlugin::getProgramRequirements() {
+QList<IPlugin::ExternalProgramRequirement> TLMWGeneratorPlugin::getProgramRequirements()
+{
     return QList<IPlugin::ExternalProgramRequirement>();
 }
