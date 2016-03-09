@@ -38,7 +38,7 @@ public:
         QSharedPointer<AddressBlockValidator> addressBlockValidator);
 
 	//! The destructor.
-	~MemoryMapBaseValidator();
+	virtual ~MemoryMapBaseValidator();
     
     /*!
      *  Get the validator used for address blocks.

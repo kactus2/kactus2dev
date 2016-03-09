@@ -12,8 +12,8 @@
 #include "Component.h"
 #include "Model.h"
 
-#include "businterface.h"
-#include "channel.h"
+#include "BusInterface.h"
+#include "Channel.h"
 #include "RemapState.h"
 #include "AddressSpace.h"
 #include "MemoryMap.h"
@@ -23,9 +23,9 @@
 #include "DesignConfigurationInstantiation.h"
 #include "Port.h"
 #include "ComponentGenerator.h"
-#include "choice.h"
+#include "Choice.h"
 #include "FileSet.h"
-#include "cpu.h"
+#include "Cpu.h"
 #include "OtherClockDriver.h"
 
 #include "File.h"

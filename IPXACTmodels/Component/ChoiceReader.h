@@ -12,7 +12,7 @@
 #ifndef ChoiceReader_H
 #define ChoiceReader_H
 
-#include "choice.h"
+#include "Choice.h"
 
 #include <QObject>
 #include <QSharedPointer>

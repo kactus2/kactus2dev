@@ -86,7 +86,7 @@ void DesignConfigurationWriter::writeDesignConfigurationStart(QXmlStreamWriter& 
 //-----------------------------------------------------------------------------
 // Function: DesignConfigurationWriter::writeDesignReference()
 //-----------------------------------------------------------------------------
-void DesignConfigurationWriter::writeDesignReference(QXmlStreamWriter& writer, VLNV& designReference) const
+void DesignConfigurationWriter::writeDesignReference(QXmlStreamWriter& writer, VLNV const& designReference) const
 {
     if (designReference.isValid())
     {

@@ -14,10 +14,11 @@
 
 #include "ApiDefinition.h"
 
+#include <IPXACTmodels/common/DocumentWriter.h>
+
 #include <QXmlStreamWriter>
 #include <QObject>
 #include <QSharedPointer>
-#include "..\common\DocumentWriter.h"
 
 //-----------------------------------------------------------------------------
 //! Writer class for IP-XACT ApiDefinition element.

@@ -14,6 +14,9 @@
 
 #include <Plugins/PluginSystem/ISourceAnalyzerPlugin.h>
 
+#include <QFile>
+#include <QString>
+
 //-----------------------------------------------------------------------------
 //! MCAPI code generator.
 //-----------------------------------------------------------------------------

@@ -25,7 +25,7 @@
 #include <designEditors/common/DesignDiagram.h>
 #include <designEditors/common/Association/AssociationRemoveCommand.h>
 
-#include <IPXACTmodels/Component/Businterface.h>
+#include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Port.h>
 #include <IPXACTmodels/Component/PortMap.h>
 

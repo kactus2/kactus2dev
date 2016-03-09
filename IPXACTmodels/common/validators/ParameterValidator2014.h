@@ -38,7 +38,7 @@ public:
         QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices);
 
 	//! The destructor.
-	~ParameterValidator2014();
+	virtual ~ParameterValidator2014();
     
     /*!
      *  Change the available choices.

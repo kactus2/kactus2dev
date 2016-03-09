@@ -69,7 +69,7 @@ public:
         LibraryInterface* libraryHandler);
 
 	//! The destructor.
-	~BusInterfaceValidator();
+	virtual ~BusInterfaceValidator();
     
     /*!
      *  Change the available component elements.

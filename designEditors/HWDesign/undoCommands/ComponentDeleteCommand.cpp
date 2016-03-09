@@ -23,7 +23,7 @@
 #include <designEditors/HWDesign/HWConnectionEndpoint.h>
 
 #include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/Component/Businterface.h>
+#include <IPXACTmodels/Component/BusInterface.h>
 
 #include <IPXACTmodels/Design/Design.h>
 

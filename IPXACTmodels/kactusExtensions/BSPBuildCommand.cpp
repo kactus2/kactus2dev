@@ -9,7 +9,7 @@
 // Specifies the command to build a board support package for CPU components.
 //-----------------------------------------------------------------------------
 
-#include "bspbuildcommand.h"
+#include "BSPBuildCommand.h"
 
 //-----------------------------------------------------------------------------
 // Function: BSPBuildCommand::BSPBuildCommand()

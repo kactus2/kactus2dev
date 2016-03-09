@@ -15,11 +15,14 @@
 #include <QString>
 
 #include <IPXACTmodels/Design/Design.h>
+
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
-#include <IPXACTmodels/Component/file.h>
-#include <IPXACTmodels/Component/fileset.h>
+
+#include <IPXACTmodels/Component/File.h>
+#include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/BuildCommand.h>
+
 #include <IPXACTmodels/kactusExtensions/SWView.h>
 
 #include <library/LibraryManager/libraryinterface.h>

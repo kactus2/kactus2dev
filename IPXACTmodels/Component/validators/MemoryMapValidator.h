@@ -43,7 +43,7 @@ public:
         QSharedPointer<QList<QSharedPointer<RemapState> > > remapStates);
 
 	//! The destructor.
-	~MemoryMapValidator();
+	virtual ~MemoryMapValidator();
     
     /*!
      *  Change the availavle remap states.

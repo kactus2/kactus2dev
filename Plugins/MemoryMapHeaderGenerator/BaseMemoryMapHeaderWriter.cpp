@@ -22,7 +22,7 @@
 
 #include <IPXACTmodels/common/AccessTypes.h>
 
-#include <IPXACTmodels/Component/Fileset.h>
+#include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/File.h>
 #include <IPXACTmodels/Component/MemoryMapBase.h>
 

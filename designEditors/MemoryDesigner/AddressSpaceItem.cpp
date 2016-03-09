@@ -26,7 +26,7 @@
 #include <common/layouts/VStackedLayout.h>
 
 #include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/Component/Addressspace.h>
+#include <IPXACTmodels/Component/AddressSpace.h>
 #include <IPXACTmodels/Component/Segment.h>
 
 #include <QFont>

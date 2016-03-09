@@ -14,7 +14,7 @@
 #include "CpuColumns.h"
 
 #include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/Component/cpu.h>
+#include <IPXACTmodels/Component/Cpu.h>
 
 #include <IPXACTmodels/Component/validators/CPUValidator.h>
 

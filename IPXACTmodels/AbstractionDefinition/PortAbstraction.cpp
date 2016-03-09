@@ -27,8 +27,8 @@ PortAbstraction::PortAbstraction():
 NameGroup(),
     Extendable(),
     isPresent_(),
-    transactional_(), 
-    wire_()
+    wire_(),
+    transactional_()
 {
 
 }
@@ -40,8 +40,8 @@ PortAbstraction::PortAbstraction(PortAbstraction const& other):
 NameGroup(other),
     Extendable(other),
     isPresent_(),
-    transactional_(),
-    wire_()
+    wire_(),
+    transactional_()
 {
 
  	if (other.wire_)

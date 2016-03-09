@@ -43,11 +43,11 @@ class IPXACTMODELS_EXPORT BusInterface : public NameGroup, public Extendable
 
 public:
 
-    //! The endianess of a bus interface.
+    //! The endianness of a bus interface.
     enum Endianness
     {
-        LITTLE_ENDIAN,
-        BIG_ENDIAN,
+        LITTLE,
+        BIG,
         ENDIANNESS_UNSPECIFIED
     };
 

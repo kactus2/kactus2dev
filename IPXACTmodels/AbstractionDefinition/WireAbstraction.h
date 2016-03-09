@@ -172,10 +172,16 @@ public:
 private:
 
     //! The qualifier describing the information the wire carries.
-	Qualifier qualifier_;
+    Qualifier qualifier_;
 
-    //! The port definitions for system mode.
-	QSharedPointer<QList<QSharedPointer<WirePort> > > onSystem_;
+    //! The default value for the wire.
+    QString defaultValue_;
+    
+    //! Specifies whether the port requires a driver.
+    bool requiresDriver_;
+
+    //! Specifies the required driver type.
+    General::DriverType driverType_;
 
     //! The port definition for master mode.
     QSharedPointer<WirePort> onMaster_;
@@ -183,14 +189,8 @@ private:
     //! The port definition for slave mode.
     QSharedPointer<WirePort> onSlave_;
 
-    //! The default value for the wire.
-	QString defaultValue_;
-    
-    //! Specifies whether the port requires a driver.
-    bool requiresDriver_;
-
-    //! Specifies the required driver type.
-    General::DriverType driverType_;
+    //! The port definitions for system mode.
+    QSharedPointer<QList<QSharedPointer<WirePort> > > onSystem_;
 
 };
 

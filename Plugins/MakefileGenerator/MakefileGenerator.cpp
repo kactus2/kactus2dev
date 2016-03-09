@@ -15,7 +15,7 @@
 #include <QDir>
 #include <QTextStream>
 #include <QIODevice> 
-#include <IPXACTmodels/Component/fileset.h>
+#include <IPXACTmodels/Component/FileSet.h>
 
 //-----------------------------------------------------------------------------
 // Function: MakefileGenerator::MakefileGenerator()

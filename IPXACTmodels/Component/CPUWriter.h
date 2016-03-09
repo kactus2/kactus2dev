@@ -12,7 +12,7 @@
 #ifndef CPUWriter_H
 #define CPUWriter_H
 
-#include "cpu.h"
+#include "Cpu.h"
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 

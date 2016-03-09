@@ -20,7 +20,7 @@
 
 #include <designEditors/common/DesignDiagram.h>
 
-#include <IPXACTmodels/Component/Businterface.h>
+#include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/PortMap.h>
 
 //-----------------------------------------------------------------------------

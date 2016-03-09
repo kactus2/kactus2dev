@@ -44,7 +44,7 @@ public:
     DesignConfigurationValidator(QSharedPointer<ExpressionParser> parser, LibraryInterface* library);
 
 	//! The destructor.
-	~DesignConfigurationValidator();
+	virtual ~DesignConfigurationValidator();
     
     /*!
      *  Validates the given design configuration.

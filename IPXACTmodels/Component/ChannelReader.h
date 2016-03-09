@@ -12,7 +12,7 @@
 #ifndef ChannelReader_H
 #define ChannelReader_H
 
-#include "channel.h"
+#include "Channel.h"
 
 #include <IPXACTmodels/common/CommonItemsReader.h>
 

@@ -14,6 +14,7 @@
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
+#include <QList>
 #include <QString>
 #include <QVector>
 #include <QSharedPointer>
@@ -55,7 +56,7 @@ public:
 	 *      @param [in] context             Context to help locate the errors.
 	 *      @param [in] ports               Collection ports where the constraint belongs to.
      */
-    void TimingConstraintValidator::findErrorsIn(QVector<QString>& errors,
+    void findErrorsIn(QVector<QString>& errors,
         QSharedPointer<TimingConstraint> timingConstraint,
 		QString const& context, QSharedPointer<QList<QSharedPointer<PortAbstraction> > > ports) const;
 

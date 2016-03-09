@@ -14,8 +14,8 @@
 #include "FileDependencyColumns.h"
 #include "FileDependencyItem.h"
 
-#include <IPXACTmodels/Component/Fileset.h>
 #include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/kactusExtensions/FileDependency.h>
 
 #include <Plugins/PluginSystem/PluginManager.h>

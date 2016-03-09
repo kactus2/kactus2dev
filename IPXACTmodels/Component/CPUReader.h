@@ -12,7 +12,7 @@
 #ifndef CPUReader_H
 #define CPUReader_H
 
-#include "cpu.h"
+#include "Cpu.h"
 
 #include <QObject>
 #include <QSharedPointer>

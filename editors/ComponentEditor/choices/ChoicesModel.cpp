@@ -12,7 +12,7 @@
 #include "ChoicesModel.h"
 #include "ChoiceColumns.h"
 
-#include <IPXACTmodels/Component/choice.h>
+#include <IPXACTmodels/Component/Choice.h>
 #include <IPXACTmodels/Component/validators/ChoiceValidator.h>
 
 #include <QColor>

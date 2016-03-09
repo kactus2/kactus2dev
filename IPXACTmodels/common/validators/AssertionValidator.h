@@ -35,7 +35,7 @@ public:
     AssertionValidator(QSharedPointer<ExpressionParser> expressionParser);
 
 	//! The destructor.
-	~AssertionValidator();
+    virtual ~AssertionValidator();
     
     /*!
      *  Validates the given assertion.

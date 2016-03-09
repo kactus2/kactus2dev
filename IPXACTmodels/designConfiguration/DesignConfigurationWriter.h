@@ -72,7 +72,7 @@ private:
      *      @param [in] writer              The used xml writer.
      *      @param [in] designReference     The VLNV of the referenced design.
      */
-    void writeDesignReference(QXmlStreamWriter& writer, VLNV& designReference) const;
+    void writeDesignReference(QXmlStreamWriter& writer, VLNV const& designReference) const;
 
     /*!
      *  Write generator chain configuration.

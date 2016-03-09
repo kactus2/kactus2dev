@@ -50,7 +50,7 @@ public:
         QSharedPointer<ParameterValidator2014> parameterValidator, LibraryInterface* libraryHandler);
 
 	//! The destructor.
-	~InstantiationsValidator();
+	virtual ~InstantiationsValidator();
 	
     /*!
      *  Change the available file sets.

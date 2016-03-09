@@ -22,7 +22,7 @@
 
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/SlaveInterface.h>
-#include <IPXACTmodels/Component/Memorymap.h>
+#include <IPXACTmodels/Component/MemoryMap.h>
 
 //-----------------------------------------------------------------------------
 // Function: AddressEntry::AddressEntry()

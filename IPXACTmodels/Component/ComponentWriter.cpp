@@ -13,7 +13,7 @@
 #include "Component.h"
 #include "Model.h"
 
-#include "businterfaceWriter.h"
+#include "BusInterfaceWriter.h"
 #include "ChannelWriter.h"
 #include "RemapStateWriter.h"
 #include "AddressSpaceWriter.h"

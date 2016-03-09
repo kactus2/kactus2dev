@@ -43,7 +43,7 @@ public:
         QSharedPointer<ParameterValidator2014> parameterValidator);
 
 	//! The destructor.
-	~AddressSpaceValidator();
+	virtual ~AddressSpaceValidator();
     
     /*!
      *  Get the validator used for local memory map.

@@ -12,7 +12,7 @@
 #ifndef ChoiceWriter_H
 #define ChoiceWriter_H
 
-#include "choice.h"
+#include "Choice.h"
 
 #include <QXmlStreamWriter>
 #include <QObject>

@@ -16,7 +16,7 @@
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 
-#include <IPXACTmodels/Component/Fileset.h>
+#include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/Component.h>
 
 #include <library/LibraryManager/libraryinterface.h>

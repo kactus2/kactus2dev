@@ -11,8 +11,9 @@
 
 #include "SWPortDeleteCommand.h"
 
-#include <designEditors/SystemDesign/undoCommands/ComConnectionDeleteCommand.h>
-#include <designEditors/SystemDesign/undoCommands/ApiConnectionDeleteCommand.h>
+#include <designEditors/SystemDesign/UndoCommands/ComConnectionDeleteCommand.h>
+#include <designEditors/SystemDesign/UndoCommands/ApiConnectionDeleteCommand.h>
+
 #include <designEditors/SystemDesign/ApiGraphicsConnection.h>
 #include <designEditors/SystemDesign/ComGraphicsConnection.h>
 #include <designEditors/SystemDesign/SystemComponentItem.h>

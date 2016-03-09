@@ -9,7 +9,7 @@
 // Implementation of ipxact:mirroredSlave in bus interface.
 //-----------------------------------------------------------------------------
 
-#include "mirroredslaveinterface.h"
+#include "MirroredSlaveInterface.h"
 
 #include <QMap>
 #include <QString>

@@ -111,11 +111,11 @@ void BusIfGeneralDetails::onEndiannessChanged()
 {
     if (endiannessSelector_.currentText() == QLatin1String("little"))
     {
-        busif_->setEndianness(BusInterface::LITTLE_ENDIAN);
+        busif_->setEndianness(BusInterface::LITTLE);
     }
     else if (endiannessSelector_.currentText() == QLatin1String("big"))
     {
-        busif_->setEndianness(BusInterface::BIG_ENDIAN);
+        busif_->setEndianness(BusInterface::BIG);
     }
     else
     {

@@ -14,6 +14,8 @@
 
 #include <Plugins/PluginSystem/ISourceAnalyzerPlugin.h>
 
+#include <QFile>
+
 class IPluginUtility;
 
 //-----------------------------------------------------------------------------

@@ -13,11 +13,11 @@
 
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 
-#include <IPXACTmodels/Component/choice.h>
 #include <IPXACTmodels/common/TransactionalTypes.h>
 #include <IPXACTmodels/common/Enumeration.h>
 #include <IPXACTmodels/common/validators/ProtocolValidator.h>
 
+#include <IPXACTmodels/Component/Choice.h>
 #include <IPXACTmodels/Component/Port.h>
 #include <IPXACTmodels/Component/View.h>
 

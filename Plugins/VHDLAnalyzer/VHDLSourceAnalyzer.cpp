@@ -10,8 +10,10 @@
 //-----------------------------------------------------------------------------
 
 #include "VHDLSourceAnalyzer.h"
-#include <IPXACTmodels/Component/fileset.h>
-#include <IPXACTmodels/Component/file.h>
+
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/FileSet.h>
+#include <IPXACTmodels/Component/File.h>
 #include <IPXACTmodels/generaldeclarations.h>
 
 #include <QCryptographicHash>

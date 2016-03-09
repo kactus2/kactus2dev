@@ -15,12 +15,12 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
+#include <IPXACTmodels/Component/Choice.h>
 #include <IPXACTmodels/Component/DesignConfigurationInstantiation.h>
 #include <IPXACTmodels/Component/DesignInstantiation.h>
 #include <IPXACTmodels/Component/ComponentInstantiation.h>
 #include <IPXACTmodels/Component/FileSet.h>
 
-#include <IPXACTmodels/Component/choice.h>
 #include <IPXACTmodels/common/Enumeration.h>
 #include <IPXACTmodels/common/validators/ParameterValidator2014.h>
 

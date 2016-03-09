@@ -20,7 +20,7 @@
 #include <IPXACTmodels/AbstractionDefinition/TransactionalAbstraction.h>
 #include <IPXACTmodels/AbstractionDefinition/WireAbstraction.h>
 
-#include <IPXACTmodels/Component/choice.h>
+#include <IPXACTmodels/Component/Choice.h>
 
 #include <IPXACTmodels/common/Enumeration.h>
 #include <IPXACTmodels/common/DirectionTypes.h>

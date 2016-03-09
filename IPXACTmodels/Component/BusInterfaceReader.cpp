@@ -9,7 +9,7 @@
 // Reader class for IP-XACT businterface element.
 //-----------------------------------------------------------------------------
 
-#include "BusinterfaceReader.h"
+#include "BusInterfaceReader.h"
 
 #include "MasterInterface.h"
 #include "MirroredSlaveInterface.h"
@@ -115,11 +115,11 @@ QSharedPointer<BusInterface> BusinterfaceReader::createbusinterfaceFrom(QDomNode
         QString endianness = endiannessElement.childNodes().at(0).nodeValue();
         if (endianness == "little")
         {
-            newbusinterface->setEndianness(BusInterface::LITTLE_ENDIAN);
+            newbusinterface->setEndianness(BusInterface::LITTLE);
         }
         else if (endianness == "big")
         {
-            newbusinterface->setEndianness(BusInterface::BIG_ENDIAN);
+            newbusinterface->setEndianness(BusInterface::BIG);
         }
     }
 

@@ -12,7 +12,7 @@
 #ifndef ChannelWriter_H
 #define ChannelWriter_H
 
-#include "channel.h"
+#include "Channel.h"
 
 #include <QXmlStreamWriter>
 #include <QObject>

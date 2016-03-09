@@ -12,7 +12,7 @@
 #include "ComponentParameterFinder.h"
 
 #include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/Component/addressblock.h>
+#include <IPXACTmodels/Component/AddressBlock.h>
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/MemoryMap.h>
 #include <IPXACTmodels/Component/MemoryBlockBase.h>

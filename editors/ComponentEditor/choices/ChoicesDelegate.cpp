@@ -16,7 +16,7 @@
 
 #include <common/views/EditableTableView/editabletableview.h>
 
-#include <IPXACTmodels/Component/choice.h>
+#include <IPXACTmodels/Component/Choice.h>
 
 #include <QScrollArea>
 #include <QSortFilterProxyModel>

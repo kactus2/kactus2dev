@@ -41,7 +41,7 @@ public:
     ViewValidator(QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<Model> model);
 
 	//! The destructor.
-	~ViewValidator();
+	virtual ~ViewValidator();
 
     /*!
      *  Change the available model.

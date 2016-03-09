@@ -9,7 +9,7 @@
 // A class to hold VLNV information of a single IP-XACT document.
 //-----------------------------------------------------------------------------
 
-#include "vlnv.h"
+#include "VLNV.h"
 
 #include <QString>
 #include <QStringList>

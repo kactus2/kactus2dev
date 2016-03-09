@@ -34,7 +34,7 @@ public:
     FileValidator(QSharedPointer<ExpressionParser> expressionParser);
 
 	//! The destructor.
-	~FileValidator();
+	virtual ~FileValidator();
     
     /*!
      *  Validates the given File.

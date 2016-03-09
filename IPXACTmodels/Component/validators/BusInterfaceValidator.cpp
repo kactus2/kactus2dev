@@ -52,7 +52,6 @@ BusInterfaceValidator::BusInterfaceValidator(QSharedPointer<ExpressionParser> ex
     LibraryInterface* libraryHandler):
 expressionParser_(expressionParser),
 availableChoices_(choices),
-libraryHandler_(libraryHandler),
 availableViews_(views),
 availablePorts_(ports),
 availableAddressSpaces_(addressSpaces),
@@ -60,6 +59,7 @@ availableMemoryMaps_(memoryMaps),
 availableBusInterfaces_(busInterfaces),
 availableFileSets_(fileSets),
 availableRemapStates_(remapStates),
+libraryHandler_(libraryHandler),
 parameterValidator_(expressionParser_, availableChoices_)
 {
 

@@ -129,11 +129,11 @@ void BusInterfaceWriter::writeBitsInLau(QXmlStreamWriter& writer, QSharedPointer
 void BusInterfaceWriter::writeEndianness(QXmlStreamWriter& writer, QSharedPointer<BusInterface> busInterface) const
 {
     BusInterface::Endianness endianess = busInterface->getEndianness();
-    if (endianess == BusInterface::BIG_ENDIAN)
+    if (endianess == BusInterface::BIG)
     {
         writer.writeTextElement("ipxact:endianness", "big");
     }
-    else if (endianess == BusInterface::LITTLE_ENDIAN)
+    else if (endianess == BusInterface::LITTLE)
     {
         writer.writeTextElement("ipxact:endianness", "little");
     }

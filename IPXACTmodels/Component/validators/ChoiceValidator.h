@@ -35,7 +35,7 @@ public:
     ChoiceValidator(QSharedPointer<ExpressionParser> expressionParser);
 
 	//! The destructor.
-	~ChoiceValidator();
+	virtual ~ChoiceValidator();
     
     /*!
      *  Validates the given choice.

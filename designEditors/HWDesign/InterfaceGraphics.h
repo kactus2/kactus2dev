@@ -12,9 +12,9 @@
 #ifndef INTERFACEGRAPHICS_H
 #define INTERFACEGRAPHICS_H
 
-#include <IPXAcTmodels/common/DirectionTypes.h>
+#include <IPXACTmodels/common/DirectionTypes.h>
 
-#include <IPXACTmodels/Component/Businterface.h>
+#include <IPXACTmodels/Component/BusInterface.h>
 
 namespace InterfaceGraphics
 {

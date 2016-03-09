@@ -11,8 +11,7 @@
 
 #include "NameGenerationPolicy.h"
 
-namespace NameGenerationPolicy
-{
+
 	// File set containing design configuration specific files = name + suffix.
 	const QString SYSVIEW_FILESET_SUFFIX = "_general_files";
 	// File set containing instance specific files = name + suffix.
@@ -81,4 +80,4 @@ namespace NameGenerationPolicy
 	{
 		return viewName + "_design_configuration";
 	}
-}
+

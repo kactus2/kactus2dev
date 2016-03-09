@@ -37,7 +37,7 @@ public:
         QSharedPointer<ExpressionParser> expressionParser);
 
 	//! The destructor.
-	~FileSetValidator();
+	virtual ~FileSetValidator();
     
     /*!
      *  Validates the given FileSet.

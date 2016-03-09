@@ -265,14 +265,14 @@ QList<QPair<QSharedPointer<ComInterface>, PortReference> > MCAPIParser::findConn
     foreach ( QSharedPointer<ComInterconnection> connection, design->getComConnections() )
     {
         // See which end on the connection is NOT ours.
-        if ( ourInstance->getInstanceName() == connection->getInterface1()->getComponentReference())
+        /*if ( ourInstance->getInstanceName() == connection->getStartInterface()->getComponentReference())
         {
-            QSharedPointer<ComInterface> ourInterface = component->getComInterface(connection->getInterface1()->getBusReference());
+            QSharedPointer<ComInterface> ourInterface = component->getComInterface(connection->getStartInterface()->getBusReference());
 
             // If our interface was not found we should not generate remote endpoint identifier for it.
             if (!ourInterface.isNull())
             {
-                QSharedPointer<ActiveInterface> targetInterface = connection->getInterface2();
+                QSharedPointer<ActiveInterface> targetInterface = connection->getEndInterface();
 
                 QPair<QSharedPointer<ComInterface>, PortReference> pair(ourInterface,
                     PortReference(targetInterface->getBusReference(), targetInterface->getComponentReference()));
@@ -280,21 +280,21 @@ QList<QPair<QSharedPointer<ComInterface>, PortReference> > MCAPIParser::findConn
             }
         }
 
-        if (ourInstance->getInstanceName() == connection->getInterface2()->getComponentReference())
+        if (ourInstance->getInstanceName() == connection->getEndInterface()->getComponentReference())
         {
             QSharedPointer<ComInterface> ourInterface = component->
-                getComInterface( connection->getInterface2()->getBusReference());
+                getComInterface( connection->getEndInterface()->getBusReference());
 
             // If our interface was not found we should not generate remote endpoint identifier for it.
             if (!ourInterface.isNull())
             {
-                QSharedPointer<ActiveInterface> targetInterface = connection->getInterface1();
+                QSharedPointer<ActiveInterface> targetInterface = connection->getStartInterface();
 
                 QPair<QSharedPointer<ComInterface>, PortReference> pair( ourInterface,
                     PortReference(targetInterface->getBusReference(), targetInterface->getComponentReference()));
                 connectedInterfaces.append(pair);
             }
-        }
+        }*/
     }
 
     return connectedInterfaces;

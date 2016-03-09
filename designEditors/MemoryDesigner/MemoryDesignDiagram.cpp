@@ -44,7 +44,7 @@
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/Model.h>
-#include <IPXACTmodels/Component/Memorymap.h>
+#include <IPXACTmodels/Component/MemoryMap.h>
 #include <IPXACTmodels/Component/AddressSpace.h>
 #include <IPXACTmodels/Component/Channel.h>
 

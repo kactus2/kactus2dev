@@ -43,7 +43,7 @@ public:
     ViewConfigurationValidator(LibraryInterface* library, QSharedPointer<ExpressionParser> parser);
 
 	//! The destructor.
-	~ViewConfigurationValidator();
+	virtual ~ViewConfigurationValidator();
     
     /*!
      *  Change the available component instances.

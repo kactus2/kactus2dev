@@ -342,7 +342,8 @@ QList<LibraryItem*> LibraryItem::getVendors(QRegExpValidator const& validator) c
     {
         foreach (LibraryItem* item, childItems_) 
         {
-            if (validator.validate(item->name(), pos) == QValidator::Acceptable)
+            QString vendor = item->name();
+            if (validator.validate(vendor, pos) == QValidator::Acceptable)
             {
                 list.append(item);
             }
@@ -392,7 +393,8 @@ QList<LibraryItem*> LibraryItem::getLibraries(QRegExpValidator const& validator)
         int pos = 0;
         foreach (LibraryItem* item, childItems_)
         {
-            if (validator.validate(item->name(), pos) == QValidator::Acceptable)
+            QString library = item->name();
+            if (validator.validate(library, pos) == QValidator::Acceptable)
             {
                 list.append(item);
             }

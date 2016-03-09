@@ -35,11 +35,11 @@
 // Function: DesignValidator::DesignValidator()
 //-----------------------------------------------------------------------------
 DesignValidator::DesignValidator(QSharedPointer<ExpressionParser> parser, LibraryInterface* library):
-parameterValidator_(),
+componentInstanceValidator_(),
 interconnectionValidator_(),
 adHocConnectionValidator_(),
-assertionValidator_(),
-componentInstanceValidator_()
+parameterValidator_(),
+assertionValidator_()
 {
     componentInstanceValidator_ =
         QSharedPointer<ComponentInstanceValidator> (new ComponentInstanceValidator(parser, library));

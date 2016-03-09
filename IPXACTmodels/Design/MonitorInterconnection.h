@@ -58,24 +58,6 @@ public:
      */
     MonitorInterconnection& operator=(const MonitorInterconnection& other);
 
-    /*! Check if the interconnection is in a valid state.
-    * 
-    *       @param [in] instanceNames       List of component instance names contained in the design.
-    *       @param [in] errorList           The list to add the possible error messages to.
-    *       @param [in] parentIdentifier    String from parent to help to identify the location of the error.
-    *
-    *       @return True if the state is valid and writing is possible.
-    */
-    //bool isValid(QStringList const& instanceNames, QStringList& errorList, QString const& parentIdentifier) const;
-
-    /*! Check if the interconnection is in a valid state.
-    * 
-    *       @param [in] instanceNames   List of component instance names contained in the design.
-    * 
-    *       @return True if the state is valid and writing is possible.
-    */
-    //bool isValid(const QStringList& instanceNames) const;
-
     /*!
      *  Get the monitored active interface.
      *
@@ -124,13 +106,14 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
+    //! The presence.
+    QString isPresent_;
+
     //! The monitored active interface
     QSharedPointer<MonitorInterface> monitoredActiveInterface_;
 
     //! A list of monitor interfaces.
     QSharedPointer<QList<QSharedPointer<MonitorInterface> > > monitorInterfaces_;
 
-    //! The presence.
-    QString isPresent_;
 };
 #endif // MONITORINTERCONNECTION_H

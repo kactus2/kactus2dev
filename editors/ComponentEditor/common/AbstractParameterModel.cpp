@@ -11,8 +11,8 @@
 
 #include "AbstractParameterModel.h"
 
+#include <IPXACTmodels/Component/Choice.h>
 #include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/Component/choice.h>
 #include <IPXACTmodels/common/Enumeration.h>
 
 #include <IPXACTmodels/common/validators/ValueFormatter.h>

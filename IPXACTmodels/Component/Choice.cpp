@@ -9,7 +9,7 @@
 // Equals the ipxact:choice element in IP-Xact specification.
 //-----------------------------------------------------------------------------
 
-#include "choice.h"
+#include "Choice.h"
 
 #include <IPXACTmodels/common/Enumeration.h>
 

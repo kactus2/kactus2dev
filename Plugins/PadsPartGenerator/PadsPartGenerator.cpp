@@ -20,7 +20,7 @@
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/File.h>
-#include <IPXACTmodels/Component/Fileset.h>
+#include <IPXACTmodels/Component/FileSet.h>
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 

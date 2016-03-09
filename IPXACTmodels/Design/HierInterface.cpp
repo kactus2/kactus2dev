@@ -14,6 +14,8 @@
 #include <IPXACTmodels/kactusExtensions/Kactus2Placeholder.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Group.h>
 
+#include <QPointF>
+
 //-----------------------------------------------------------------------------
 // Function: HierInterface::HierInterface()
 //-----------------------------------------------------------------------------

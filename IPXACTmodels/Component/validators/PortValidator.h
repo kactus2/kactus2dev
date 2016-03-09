@@ -41,7 +41,7 @@ public:
         QSharedPointer<QList<QSharedPointer<View> > > views);
 
 	//! The destructor.
-	~PortValidator();
+	virtual ~PortValidator();
 
     /*!
      *  Change the available views.

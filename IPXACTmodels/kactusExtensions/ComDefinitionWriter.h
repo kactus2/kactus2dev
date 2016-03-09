@@ -14,10 +14,11 @@
 
 #include "ComDefinition.h"
 
-#include <QXmlStreamWriter>
+#include <IPXACTmodels/common/DocumentWriter.h>
+
 #include <QObject>
 #include <QSharedPointer>
-#include "..\common\DocumentWriter.h"
+#include <QXmlStreamWriter>
 
 //-----------------------------------------------------------------------------
 //! Writer class for IP-XACT ComDefinition element.

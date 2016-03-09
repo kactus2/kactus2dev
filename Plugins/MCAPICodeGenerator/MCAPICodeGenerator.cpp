@@ -17,7 +17,7 @@
 #include <Plugins/common/CSourceWriter.h>
 #include <editors/CSourceEditor/CSourceTextEdit.h>
 
-#include <IPXACTmodels/Component/fileset.h>
+#include <IPXACTmodels/Component/FileSet.h>
 
 #include <IPXACTmodels/kactusExtensions/SWView.h>
 #include "common/dialogs/comboSelector/comboselector.h"

@@ -13,7 +13,7 @@
 #include "Component.h"
 
 #include <IPXACTmodels/common/NameGroupReader.h>
-#include <IPXACTmodels/Component/businterfaceReader.h>
+#include <IPXACTmodels/Component/BusInterfaceReader.h>
 #include <IPXACTmodels/Component/ChannelReader.h>
 #include <IPXACTmodels/Component/RemapStateReader.h>
 #include <IPXACTmodels/Component/AddressSpaceReader.h>

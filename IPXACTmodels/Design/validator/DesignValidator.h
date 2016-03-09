@@ -45,7 +45,7 @@ public:
     DesignValidator(QSharedPointer<ExpressionParser> parser, LibraryInterface* library);
 
 	//! The destructor.
-	~DesignValidator();
+	virtual ~DesignValidator();
     
     /*!
      *  Validates the given design.

@@ -4,7 +4,7 @@
  *      Author: Antti Kamppi
  */
 
-#include "cpu.h"
+#include "Cpu.h"
 
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/common/ParameterWriter.h>

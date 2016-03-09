@@ -15,7 +15,7 @@
 
 #include "IGraphicsItemStack.h"
 
-#include <common\layouts\IVGraphicsLayout.h>
+#include <common/layouts/IVGraphicsLayout.h>
 
 #include <IPXACTmodels/kactusExtensions/ColumnDesc.h>
 

@@ -41,16 +41,9 @@
 #include <IPXACTmodels/kactusExtensions/ApiInterface.h>
 #include <IPXACTmodels/kactusExtensions/ComInterface.h>
 
-#include <IPXACTmodels/Component/Businterface.h>
-#include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/Component/PortMap.h>
-
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/PortMap.h>
-
-#include <IPXACTmodels/kactusExtensions/ApiInterface.h>
-#include <IPXACTmodels/kactusExtensions/ComInterface.h>
 
 #include <IPXACTmodels/validators/namevalidator.h>
 

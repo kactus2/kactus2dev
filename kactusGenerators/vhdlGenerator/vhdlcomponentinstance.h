@@ -16,7 +16,7 @@
 #include "vhdlportmap.h"
 #include "vhdlconnectionendpoint.h"
 
-#include <IPXACTmodels/Component/component.h>
+#include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/common/VLNV.h>
 
 #include <IPXACTmodels/common/DirectionTypes.h>
