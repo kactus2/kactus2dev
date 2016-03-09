@@ -305,7 +305,8 @@ void MakefileGenerator::writeExeBuild(QTextStream& outStream) const
 //-----------------------------------------------------------------------------
 // Function: MakefileGenerator::writeMakeObjects()
 //-----------------------------------------------------------------------------
-void MakefileGenerator::writeMakeObjects(QTextStream& outStream, QList<QSharedPointer<MakefileParser::MakeObjectData> >& objects, QString instancePath) const
+void MakefileGenerator::writeMakeObjects(QTextStream& outStream, 
+    QList<QSharedPointer<MakefileParser::MakeObjectData> >& objects, QString instancePath) const
 {
     foreach(QSharedPointer<MakefileParser::MakeObjectData> mod, objects)
     {

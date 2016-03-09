@@ -86,14 +86,14 @@ private:
     QSharedPointer<Component> createSW(QString swName, QString hwInstanceName, QSharedPointer<Design> design, QString softViewName,
 		 QSharedPointer<DesignConfiguration> desgconf, QSharedPointer<SWView>& softView, QString swInstanceName);
 
-    QSharedPointer<FileSet> addFileSet(QSharedPointer<Component> component, QString fileSetName, QSharedPointer<SWView>& view);
+    QSharedPointer<FileSet> addFileSet(QSharedPointer<Component> component, QString fileSetName, QSharedPointer<SWView> view);
 
     QSharedPointer<File> addFileToSet(QSharedPointer<FileSet> fileSet, QString fileName, QString fileType="cSource", bool isInclude=false);
 
     void createSWSWView(QSharedPointer<SWView> softView, QString softViewName, QSharedPointer<Component> sw);
 
-    QSharedPointer<Component> createHW(QString hwInstanceName, QSharedPointer<Design> design, QString hardViewName,
-		 QSharedPointer<DesignConfiguration> desgconf, QSharedPointer<SWView>& hardView, QString hwName="hardware");
+    QSharedPointer<Component> createHW(QString const& hwInstanceName, QSharedPointer<Design> design, QString const& hardViewName,
+		 QSharedPointer<DesignConfiguration> designConfig, QSharedPointer<SWView>& hardView, QString const& hwName="hardware");
 
     QSharedPointer<Component> createDesign(QSharedPointer<Design> &design, QSharedPointer<DesignConfiguration> &desgconf);
 
@@ -1106,7 +1106,6 @@ void tst_MakefileGenerator::apiUsage()
 	QSharedPointer<Component> bsw = createSW("stackware", hwInstanceName, design, "default", desgconf, bsoftView,"stackware_0");
 	addAPI(bsw, "banaani", DEPENDENCY_PROVIDER);
 
-    QList<QSharedPointer<ApiInterconnection> > deps = design->getApiConnections();
 	addAPIConnection(design,"crapware_0","apina","stackware_0","banaani");
 
     QSharedPointer<FileSet> afileSet = addFileSet(asw, "alphaFileSet", asoftView);
@@ -1114,27 +1113,28 @@ void tst_MakefileGenerator::apiUsage()
 
     addFileToSet(afileSet, "array.c");
     addFileToSet(afileSet, "support.c");
+    addFileToSet(afileSet, "array.h", "cSource", true);
+    
     addFileToSet(bfileSet, "additional.c");
     addFileToSet(bfileSet, "hiterbehn.c");
-    addFileToSet(afileSet, "array.h", "cSource", true);
     addFileToSet(bfileSet, "support.h", "cSource", true);
 
     MakefileParser parser;
-    parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
+    parser.parse(&library_, topComponent, desgconf, design, "tsydemi");
 
 	const QList<MakefileParser::MakeFileData> datas = parser.getParsedData();
-	QCOMPARE( datas.size(), 1 );
+	QCOMPARE(datas.size(), 1);
 	MakefileParser::MakeFileData data = datas.first();
-	QCOMPARE( data.swObjects.size(), 6 );
+	QCOMPARE(data.swObjects.size(), 6);
 
-	QCOMPARE( data.swObjects.at(0)->fileName, QString("array.c") );
-	QCOMPARE( data.swObjects.at(1)->fileName, QString("support.c") );
-	QCOMPARE( data.swObjects.at(2)->fileName, QString("array.h") );
-	QCOMPARE( data.swObjects.at(2)->file->isIncludeFile(), true );
-	QCOMPARE( data.swObjects.at(3)->fileName, QString("additional.c") );
-	QCOMPARE( data.swObjects.at(4)->fileName, QString("hiterbehn.c") );
-	QCOMPARE( data.swObjects.at(5)->fileName, QString("support.h") );
-	QCOMPARE( data.swObjects.at(5)->file->isIncludeFile(), true );
+	QCOMPARE(data.swObjects.at(0)->fileName, QString("array.c"));
+	QCOMPARE(data.swObjects.at(1)->fileName, QString("support.c"));
+	QCOMPARE(data.swObjects.at(2)->fileName, QString("array.h"));
+	QCOMPARE(data.swObjects.at(2)->file->isIncludeFile(), true);
+	QCOMPARE(data.swObjects.at(3)->fileName, QString("additional.c"));
+	QCOMPARE(data.swObjects.at(4)->fileName, QString("hiterbehn.c"));
+	QCOMPARE(data.swObjects.at(5)->fileName, QString("support.h"));
+	QCOMPARE(data.swObjects.at(5)->file->isIncludeFile(), true);
 }
 
 // A more complex situation with API dependency.
@@ -1737,41 +1737,43 @@ void tst_MakefileGenerator::allTheWay()
 	verifyOutputContains("software_0", "gcc -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw -hw");
 }
 
-QSharedPointer<Component> tst_MakefileGenerator::createDesign(QSharedPointer<Design> &design,
-    QSharedPointer<DesignConfiguration> &desgconf)
+QSharedPointer<Component> tst_MakefileGenerator::createDesign(QSharedPointer<Design>& design,
+    QSharedPointer<DesignConfiguration>& desgconf)
 {
-    VLNV dvlnv("","vendor","lib","design","1.0");
-    design = QSharedPointer<Design>(new Design(dvlnv));
-    VLNV dgvlnv("","vendor","lib","design-conf","1.0");
-    desgconf = QSharedPointer<DesignConfiguration>(new DesignConfiguration(dgvlnv));
-    desgconf->setDesignRef(dvlnv);
+    VLNV designVLNV("", "vendor", "lib", "design", "1.0");
+    design = QSharedPointer<Design>(new Design(designVLNV));
 
-    VLNV topvlvnv("","vendor","lib","master-plan","1.0");
-    QSharedPointer<Component> top = QSharedPointer<Component>(new Component(topvlvnv));
-    top->setImplementation(KactusAttribute::SYSTEM);
-    library_.addComponent(top);
-    library_.writeModelToFile("polku/master-plan",top);
+    VLNV configurationVLNV("", "vendor", "lib", "design-conf", "1.0");
+    desgconf = QSharedPointer<DesignConfiguration>(new DesignConfiguration(configurationVLNV));
+    desgconf->setDesignRef(designVLNV);
 
-    outputDir_ = QFileInfo(library_.getPath(topvlvnv)).absolutePath();
+    VLNV topVLNV("","vendor","lib","master-plan","1.0");
+    QSharedPointer<Component> topComponent = QSharedPointer<Component>(new Component(topVLNV));
+    topComponent->setImplementation(KactusAttribute::SYSTEM);
+    
+    library_.addComponent(topComponent);
+    library_.writeModelToFile("polku/master-plan",topComponent);
 
-    QSharedPointer<SystemView> sw( new SystemView("sysview") );
-    sw->setHierarchyRef(dgvlnv);
-	QList<QSharedPointer<SystemView> > sviews;
-	sviews.append(sw);
-	top->setSystemViews(sviews);
+    outputDir_ = QFileInfo(library_.getPath(topVLNV)).absolutePath();
 
-    return top;
+    QSharedPointer<SystemView> systemView( new SystemView("sysview") );
+    systemView->setHierarchyRef(configurationVLNV);
+	
+    QList<QSharedPointer<SystemView> > systemViews;
+	systemViews.append(systemView);
+	topComponent->setSystemViews(systemViews);
+
+    return topComponent;
 }
 
-QSharedPointer<File> tst_MakefileGenerator::addFileToSet(QSharedPointer<FileSet> fileSet, QString fileName, QString fileType/*="cSource"*/, bool isInclude/*=false*/)
+QSharedPointer<File> tst_MakefileGenerator::addFileToSet(QSharedPointer<FileSet> fileSet, QString fileName,
+    QString fileType/*="cSource"*/, bool isInclude/*=false*/)
 {
     QSettings settings;
 
-    QSharedPointer<File> file;
-
-    file = fileSet->addFile(fileName, settings);
+    QSharedPointer<File> file = fileSet->addFile(fileName, settings);
     file->addFileType(fileType);
-    file->setIncludeFile( isInclude );
+    file->setIncludeFile(isInclude);
 
 	return file;
 }
@@ -1804,30 +1806,32 @@ QSharedPointer<Component> tst_MakefileGenerator::createSW(QString swName, QStrin
     return sw;
 }
 
-QSharedPointer<Component> tst_MakefileGenerator::createHW(QString hwInstanceName, QSharedPointer<Design> design,
-	QString hardViewName, QSharedPointer<DesignConfiguration> desgconf, QSharedPointer<SWView>& hardView,
-	QString hwName/*="hardware"*/)
+QSharedPointer<Component> tst_MakefileGenerator::createHW(QString const& hwInstanceName,
+    QSharedPointer<Design> design, QString const& hardViewName, QSharedPointer<DesignConfiguration> designConfig, 
+    QSharedPointer<SWView>& softwareView, QString const& hwName)
 {
-	VLNV hwvlvnv("","vendor","lib",hwName,"1.0");
-	QSharedPointer<ConfigurableVLNVReference> hwvlvnv2( new ConfigurableVLNVReference( hwvlvnv ) );
-    QSharedPointer<Component> hw = QSharedPointer<Component>(new Component(hwvlvnv));
-    QSharedPointer<ComponentInstance> hwInstance(new ComponentInstance(
-		hwInstanceName,"","esim",hwvlvnv2,QPointF(),hwInstanceName ) );
+	VLNV hwVLNV("", "vendor", "lib", hwName, "1.0");	
+    QSharedPointer<Component> hwComponent = QSharedPointer<Component>(new Component(hwVLNV));
+   
+    QSharedPointer<ConfigurableVLNVReference> vlnvRef(new ConfigurableVLNVReference(hwVLNV));
+    QSharedPointer<ComponentInstance> hwInstance(new ComponentInstance(hwInstanceName, vlnvRef));
+    hwInstance->setDescription("esim");
+    hwInstance->setUuid(hwInstanceName);
 
     QSharedPointer<QList<QSharedPointer<ComponentInstance> > > instances = design->getComponentInstances();
     instances->append(hwInstance);
-    library_.addComponent(hw);
-    library_.writeModelToFile("polku/" + hwName,hw);
+    library_.addComponent(hwComponent);
+    library_.writeModelToFile("polku/" + hwName, hwComponent);
 
-    hardView = QSharedPointer<SWView>( new SWView );
-    hardView->setName(hardViewName);
+    softwareView = QSharedPointer<SWView>( new SWView );
+    softwareView->setName(hardViewName);
 	QList<QSharedPointer<SWView> > views;
-	views.append(hardView);
-    hw->setSWViews(views);
+	views.append(softwareView);
+    hwComponent->setSWViews(views);
 
-	desgconf->addViewConfiguration(hwInstanceName,hardViewName);
+	designConfig->addViewConfiguration(hwInstanceName,hardViewName);
 
-    return hw;
+    return hwComponent;
 }
 
 //-----------------------------------------------------------------------------
@@ -1907,9 +1911,10 @@ void tst_MakefileGenerator::addCmd2View(QSharedPointer<SWView> view, QString com
 	coms->append(cmd);
 }
 
-QSharedPointer<FileSet> tst_MakefileGenerator::addFileSet(QSharedPointer<Component> component, QString fileSetName, QSharedPointer<SWView>& view)
+QSharedPointer<FileSet> tst_MakefileGenerator::addFileSet(QSharedPointer<Component> component, QString fileSetName,
+    QSharedPointer<SWView> view)
 {
-    QSharedPointer<FileSet> fileSet( new FileSet(fileSetName,"sourceFiles") );
+    QSharedPointer<FileSet> fileSet(new FileSet(fileSetName, "sourceFiles"));
 
 	if ( view )
 	{
@@ -1918,27 +1923,26 @@ QSharedPointer<FileSet> tst_MakefileGenerator::addFileSet(QSharedPointer<Compone
 		view->setFileSetRefs(fileSets);
 	}
 	
-	QSharedPointer< QList< QSharedPointer<FileSet> > > sets = component->getFileSets();
-	sets->append(fileSet);
+	component->getFileSets()->append(fileSet);
 
     return fileSet;
 }
 
 void tst_MakefileGenerator::addFileSetBuilder(QSharedPointer<FileSet> fileSet, QString command, QString fileType, QString flags, bool replace)
 {
-    QSharedPointer<QList<QSharedPointer<FileBuilder> > > fblist = fileSet->getDefaultFileBuilders();
-    QSharedPointer<FileBuilder> fb = QSharedPointer<FileBuilder>(new FileBuilder);
-    fb->setCommand( command);
-    fb->setFileType(fileType);
-    fb->setFlags(flags);
-    fb->setReplaceDefaultFlags("false");
+    QSharedPointer<QList<QSharedPointer<FileBuilder> > > filebuilderList = fileSet->getDefaultFileBuilders();
+    QSharedPointer<FileBuilder> fileBuilder = QSharedPointer<FileBuilder>(new FileBuilder);
+    fileBuilder->setCommand(command);
+    fileBuilder->setFileType(fileType);
+    fileBuilder->setFlags(flags);
+    fileBuilder->setReplaceDefaultFlags("false");
 
-	if ( replace )
+	if (replace)
 	{
-		fb->setReplaceDefaultFlags("true");
+		fileBuilder->setReplaceDefaultFlags("true");
 	}
 
-	fblist->append(fb);
+	filebuilderList->append(fileBuilder);
 }
 
 void tst_MakefileGenerator::setFileBuilder(QSharedPointer<File> file, QString command, QString flags, bool replace)
@@ -1971,10 +1975,10 @@ void tst_MakefileGenerator::addAPIConnection(QSharedPointer<Design> design, QStr
 {
 	QList<QSharedPointer<ApiInterconnection> > deps = design->getApiConnections();
 	QSharedPointer<ApiInterconnection> dependency1( new ApiInterconnection );
-	QSharedPointer<ActiveInterface> air1( new ActiveInterface(com1,bus1));
-	QSharedPointer<ActiveInterface> air2( new ActiveInterface(com2,bus2));
-	dependency1->setInterface1(air1);
-	dependency1->setInterface2(air2);
+	QSharedPointer<ActiveInterface> air1( new ActiveInterface(com1, bus1));
+	QSharedPointer<ActiveInterface> air2( new ActiveInterface(com2, bus2));
+	dependency1->setStartInterface(air1);
+	dependency1->getActiveInterfaces()->append(air2);
 	deps.append(dependency1);
 	design->setApiConnections(deps);
 }

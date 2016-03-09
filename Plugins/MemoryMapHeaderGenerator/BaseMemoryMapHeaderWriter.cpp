@@ -115,7 +115,11 @@ void BaseMemoryMapHeaderWriter::addHeaderFile(QSharedPointer<Component> componen
 
     // file set where the file is added to
     QSharedPointer<FileSet> fileSet = component->getFileSet(filesetName);
-    Q_ASSERT(fileSet);
+    if (fileSet.isNull())
+    {
+        fileSet = QSharedPointer<FileSet>(new FileSet(filesetName));
+        component->getFileSets()->append(fileSet);
+    }
 
     fileSet->setGroups("generatedFiles");
     fileSet->setDescription(QObject::tr("Contains header files generated for the component.\n"
@@ -301,7 +305,7 @@ void BaseMemoryMapHeaderWriter::writeMemoryAddresses(QSharedPointer<ParameterFin
                 stream << " * Reserved block name: " << currentAddressBlock->name() << endl;
             }
 
-            stream << " * Width: " << currentAddressBlock->getWidth();
+            stream << " * Width: " << expressionParser->parseExpression(currentAddressBlock->getWidth());
             if (!expressionParser->isPlainValue(currentAddressBlock->getWidth()))
             {
                 stream << " = " << formatter->formatReferringExpression(currentAddressBlock->getWidth());
