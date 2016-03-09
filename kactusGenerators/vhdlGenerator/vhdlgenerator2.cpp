@@ -1227,8 +1227,8 @@ void VhdlGenerator2::connectHierPort( const QString& topPortName, QString leftBo
 	foreach (VhdlGenerator2::PortConnection port, ports)
 	{	
 		// if port is scalar then don't add the bit boundaries
-		QString portLeft = port.leftBound_;
-		QString portRight = port.rightBound_;
+        int portLeft = port.leftBound_;
+        int portRight = port.rightBound_;
 		if (port.instance_->isScalarPort(port.portName_))
         {
 			portLeft = -1;
@@ -1250,8 +1250,8 @@ void VhdlGenerator2::connectHierPort( const QString& topPortName, QString leftBo
 			// if the top port is scalar then don't use the bit boundaries
 			if (VhdlGeneral::isScalarType(vhdlPort->type()))
             {
-				leftBound = -1;
-				rightBound = -1;
+                leftBound = "-1";
+                rightBound = "-1";
 			}
 		}
 		else
@@ -1262,8 +1262,9 @@ void VhdlGenerator2::connectHierPort( const QString& topPortName, QString leftBo
 		}
 
 		// tell each instance to create a port map between the ports
-		port.instance_->addPortMap(port.portName_, portLeft, portRight, port.instance_->portType(port.portName_),
-			topPortName, leftBound, rightBound, topPorts_.value(sorter)->type());
+		port.instance_->addPortMap(port.portName_, QString::number(portLeft), QString::number(portRight),
+            port.instance_->portType(port.portName_), topPortName, leftBound, rightBound,
+            topPorts_.value(sorter)->type());
 	}
 }
 
