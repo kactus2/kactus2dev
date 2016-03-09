@@ -135,7 +135,7 @@ bool RemapStateValidator::remapPortHasValidIndex(QSharedPointer<RemapPort> remap
 bool RemapStateValidator::remapPortHasValidValue(QSharedPointer<RemapPort> remapPort) const
 {
     bool valueIsOk = true;
-    int value = expressionParser_->parseExpression(remapPort->getValue()).toInt(&valueIsOk);
+    quint64 value = expressionParser_->parseExpression(remapPort->getValue()).toULongLong(&valueIsOk);
 
     return valueIsOk && value >= 0;
 }

@@ -244,15 +244,19 @@ bool InterconnectionValidator::singleExcludePortIsValid(QString const& portRefer
 }
 
 //-----------------------------------------------------------------------------
-// Function: InterconnectionValidator::hasValidActiveInterfaces()
+// Function: InterconnectionValidator::hasValidInterfaces()
 //-----------------------------------------------------------------------------
 bool InterconnectionValidator::hasValidInterfaces(QSharedPointer<Interconnection> interConnection) const
 {
-    if (!interConnection->getActiveInterfaces()->isEmpty() || !interConnection->getHierInterfaces()->isEmpty())
+    if ((!interConnection->getActiveInterfaces()->isEmpty() || !interConnection->getHierInterfaces()->isEmpty()))
     {
         QMap<QString, QString> interfaceReferences;
-        interfaceReferences.insert(interConnection->getStartInterface()->getComponentReference(),
-            interConnection->getStartInterface()->getBusReference());
+
+        if (interConnection->getStartInterface())
+        {
+            interfaceReferences.insert(interConnection->getStartInterface()->getComponentReference(),
+                interConnection->getStartInterface()->getBusReference());
+        }
 
         foreach (QSharedPointer<ActiveInterface> currentInterface, *interConnection->getActiveInterfaces())
         {
@@ -552,8 +556,12 @@ void InterconnectionValidator::findErrorsInInterfaces(QVector<QString>& errors,
     if (!interConnection->getActiveInterfaces()->isEmpty() || !interConnection->getHierInterfaces()->isEmpty())
     {
         QMap<QString, QString> interfaceReferences;
-        interfaceReferences.insert(interConnection->getStartInterface()->getComponentReference(),
-            interConnection->getStartInterface()->getBusReference());
+
+        if (interConnection->getStartInterface())
+        {
+            interfaceReferences.insert(interConnection->getStartInterface()->getComponentReference(),
+                interConnection->getStartInterface()->getBusReference());
+        }
 
         foreach (QSharedPointer<ActiveInterface> currentInterface, *interConnection->getActiveInterfaces())
         {

@@ -248,6 +248,8 @@ void tst_AddressSpaceValidator::testHasValidRange_data()
     QTest::newRow("Text is not valid for range") << "text" << false;
     QTest::newRow("String is not valid for range") << "\"text\"" << false;
     QTest::newRow("Empty value is not valid for range") << "" << false;
+
+    QTest::newRow("Long range is valid") << "40000000000" << true;
 }
 
 //-----------------------------------------------------------------------------
@@ -305,6 +307,8 @@ void tst_AddressSpaceValidator::testHasValidWidth_data()
     QTest::newRow("Text is not valid for width") << "text" << false;
     QTest::newRow("String is not valid for width") << "\"text\"" << false;
     QTest::newRow("Empty value is not valid for width") << "" << false;
+
+    QTest::newRow("Long width is valid") << "40000000000" << true;
 }
 
 //-----------------------------------------------------------------------------
@@ -479,6 +483,11 @@ void tst_AddressSpaceValidator::testSegmentHasValidAddressOffset()
     QSharedPointer<AddressSpace> testSpace (new AddressSpace("TestAddressBlock", "100"));
     testSpace->getSegments()->append(testSegment);
 
+    if (addressOffset == "40000000000")
+    {
+        testSpace->setRange("50000000000");
+    }
+
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<ParameterValidator2014> parameterValidator (
         new ParameterValidator2014(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
@@ -522,6 +531,8 @@ void tst_AddressSpaceValidator::testSegmentHasValidAddressOffset_data()
     QTest::newRow("Text is not valid for address offset") << "text" << false;
     QTest::newRow("String is not valid for address offset") << "\"text\"" << false;
     QTest::newRow("Empty value is not valid for address offset") << "" << false;
+
+    QTest::newRow("Long address offset is valid for segment") << "40000000000" << true;
 }
 
 //-----------------------------------------------------------------------------
@@ -536,6 +547,11 @@ void tst_AddressSpaceValidator::testSegmentHasValidRange()
 
     QSharedPointer<AddressSpace> testSpace (new AddressSpace("TestAddressBlock", "100"));
     testSpace->getSegments()->append(testSegment);
+
+    if (range == "40000000000")
+    {
+        testSpace->setRange("50000000000");
+    }
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<ParameterValidator2014> parameterValidator (
@@ -580,6 +596,8 @@ void tst_AddressSpaceValidator::testSegmentHasValidRange_data()
     QTest::newRow("Text is not valid for range") << "text" << false;
     QTest::newRow("String is not valid for range") << "\"text\"" << false;
     QTest::newRow("Empty value is not valid for range") << "" << false;
+
+    QTest::newRow("Long range is valid for segment") << "40000000000" << true;
 }
 
 //-----------------------------------------------------------------------------
@@ -619,6 +637,18 @@ void tst_AddressSpaceValidator::testSegmentIsContainedWithinAddressSpace()
 
         QString expectedError = QObject::tr("Segment %1 is not contained within address space %2")
             .arg(testSegment->name()).arg(testSpace->name());
+
+        if (!parser->isValidExpression(segmentOffset))
+        {
+            expectedError = QObject::tr("Invalid address offset set for segment %1 within address space %2").
+                arg(testSegment->name()).arg(testSpace->name());
+        }
+        else if (!parser->isValidExpression(segmentRange))
+        {
+            expectedError = QObject::tr("Invalid range set for segment %1 within address space %2").
+                arg(testSegment->name()).arg(testSpace->name());
+        }
+
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
         {
             QFAIL("No error message found");
@@ -642,6 +672,11 @@ void tst_AddressSpaceValidator::testSegmentIsContainedWithinAddressSpace_data()
         "5" << false;
     QTest::newRow("Segment: offset = 20, range = 1 is not within address space with range 5") << "20" << "1" <<
         "5" << false;
+
+    QTest::newRow("Segment with a long offset is not contained within a small address space")
+        << "4000000000000000000000" << "5" << "5" << false;
+    QTest::newRow("Segment with a long range is not contained within a small address space")
+        << "0" << "4000000000000000000000" << "5" << false;
 }
 
 //-----------------------------------------------------------------------------
@@ -784,6 +819,8 @@ void tst_AddressSpaceValidator::testHasValidAddressUnitBits_data()
     QTest::newRow("Text is not valid for address unit bits") << "text" << false;
     QTest::newRow("String is not valid for address unit bits") << "\"text\"" << false;
     QTest::newRow("Empty value is valid for address unit bits") << "" << true;
+
+    QTest::newRow("Long address unit bits value is valid") << "40000000000" << true;
 }
 
 //-----------------------------------------------------------------------------

@@ -109,7 +109,10 @@ bool AddressBlockValidator::hasValidIsPresent(QSharedPointer<AddressBlock> addre
 bool AddressBlockValidator::hasValidBaseAddress(QSharedPointer<AddressBlock> addressBlock) const
 {
     bool toIntOk = true;
-    int baseAddress = expressionParser_->parseExpression(addressBlock->getBaseAddress()).toInt(&toIntOk);
+
+    QString parsedBaseAddress = addressBlock->getBaseAddress();
+
+    quint64 baseAddress = expressionParser_->parseExpression(addressBlock->getBaseAddress()).toULongLong(&toIntOk);
 
     return toIntOk && baseAddress >= 0;
 }
@@ -120,7 +123,7 @@ bool AddressBlockValidator::hasValidBaseAddress(QSharedPointer<AddressBlock> add
 bool AddressBlockValidator::hasValidRange(QSharedPointer<AddressBlock> addressBlock) const
 {
     bool toIntOk = true;
-    int range = expressionParser_->parseExpression(addressBlock->getRange()).toInt(&toIntOk);
+    quint64 range = expressionParser_->parseExpression(addressBlock->getRange()).toULongLong(&toIntOk);
 
     return toIntOk && range > 0;
 }
@@ -131,7 +134,7 @@ bool AddressBlockValidator::hasValidRange(QSharedPointer<AddressBlock> addressBl
 bool AddressBlockValidator::hasValidWidth(QSharedPointer<AddressBlock> addressBlock) const
 {
     bool toIntOk = true;
-    int width = expressionParser_->parseExpression(addressBlock->getWidth()).toInt(&toIntOk);
+    quint64 width = expressionParser_->parseExpression(addressBlock->getWidth()).toULongLong(&toIntOk);
 
     return toIntOk && width >= 0;
 }
@@ -174,8 +177,8 @@ bool AddressBlockValidator::hasValidRegisterData(QSharedPointer<AddressBlock> ad
         MemoryReserve reservedArea;
 
         bool aubChangeOk = true;
-        int aubInt = expressionParser_->parseExpression(addressUnitBits).toInt(&aubChangeOk);
-        int addressBlockRange = expressionParser_->parseExpression(addressBlock->getRange()).toInt();
+        qint64 aubInt = expressionParser_->parseExpression(addressUnitBits).toLongLong(&aubChangeOk);
+        qint64 addressBlockRange = expressionParser_->parseExpression(addressBlock->getRange()).toLongLong();
 
         foreach (QSharedPointer<RegisterBase> registerData, *addressBlock->getRegisterData())
         {
@@ -205,11 +208,12 @@ bool AddressBlockValidator::hasValidRegisterData(QSharedPointer<AddressBlock> ad
 
                     if (aubChangeOk && aubInt != 0)
                     {
-                        int registerSize = getRegisterSizeInLAU(targetRegister, aubInt);
+                        qint64 registerSize = getRegisterSizeInLAU(targetRegister, aubInt);
 
-                        int registerBegin = expressionParser_->parseExpression(targetRegister->getAddressOffset()).
-                            toInt();
-                        int registerEnd = registerBegin + registerSize - 1;
+                        qint64 registerBegin =
+                            expressionParser_->parseExpression(targetRegister->getAddressOffset()).toLongLong();
+
+                        qint64 registerEnd = registerBegin + registerSize - 1;
 
                         if ( registerBegin < 0 || registerBegin + registerSize > addressBlockRange)
                         {
@@ -495,8 +499,8 @@ void AddressBlockValidator::findErrorsInRegisterData(QVector<QString>& errors,
 
         MemoryReserve reservedArea;
         bool aubChangeOk = true;
-        int aubInt = expressionParser_->parseExpression(addressUnitBits).toInt(&aubChangeOk);
-        int addressBlockRange = expressionParser_->parseExpression(addressBlock->getRange()).toInt();
+        qint64 aubInt = expressionParser_->parseExpression(addressUnitBits).toLongLong(&aubChangeOk);
+        qint64 addressBlockRange = expressionParser_->parseExpression(addressBlock->getRange()).toLongLong();
 
         foreach (QSharedPointer<RegisterBase> registerData, *addressBlock->getRegisterData())
         {
@@ -554,11 +558,12 @@ void AddressBlockValidator::findErrorsInRegisterData(QVector<QString>& errors,
 
                 if (aubChangeOk && aubInt != 0)
                 {
-                    int registerSize = getRegisterSizeInLAU(targetRegister, aubInt);
+                    qint64 registerSize = getRegisterSizeInLAU(targetRegister, aubInt);
 
-                    int registerBegin = expressionParser_->parseExpression(targetRegister->getAddressOffset()).
-                        toInt();
-                    int registerEnd = registerBegin + registerSize - 1;
+                    qint64 registerBegin = expressionParser_->parseExpression(targetRegister->getAddressOffset()).
+                        toLongLong();
+
+                     qint64 registerEnd = registerBegin + registerSize - 1;
 
                     reservedArea.addArea(targetRegister->name(), registerBegin, registerEnd);
 
@@ -578,21 +583,21 @@ void AddressBlockValidator::findErrorsInRegisterData(QVector<QString>& errors,
 //-----------------------------------------------------------------------------
 // Function: AddressBlockValidator::getRegisterSizeInLAU()
 //-----------------------------------------------------------------------------
-int AddressBlockValidator::getRegisterSizeInLAU(QSharedPointer<Register> targetRegister, int addressUnitBits) const
+qint64 AddressBlockValidator::getRegisterSizeInLAU(QSharedPointer<Register> targetRegister, int addressUnitBits)
+    const
 {
-    int size = expressionParser_->parseExpression(targetRegister->getSize()).toInt();
-    int registerDimension = expressionParser_->parseExpression(targetRegister->getDimension()).
-        toInt();
+    qint64 size = expressionParser_->parseExpression(targetRegister->getSize()).toLongLong();
+    qint64 registerDimension = expressionParser_->parseExpression(targetRegister->getDimension()).toLongLong();
 
     if (registerDimension == 0)
     {
         registerDimension = 1;
     }
 
-    int topPart = size + addressUnitBits -1;
-    int dimensionlessSize = topPart / addressUnitBits;
+    qint64 topPart = size + addressUnitBits -1;
+    qint64 dimensionlessSize = topPart / addressUnitBits;
 
-    int trueSize = dimensionlessSize * registerDimension;
+    qint64 trueSize = dimensionlessSize * registerDimension;
 
     return trueSize;
 }

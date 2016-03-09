@@ -201,6 +201,8 @@ void tst_RemapStateValidator::testRemapPortHasValidValue_data()
     QTest::newRow("Text is not valid for remap port value") << "text" << false;
     QTest::newRow("String is not valid for remap port value") << "\"text\"" << false;
     QTest::newRow("Empty value is not valid for remap port value") << "" << false;
+
+    QTest::newRow("Long value is valid") << "40000000000" << true;
 }
 
 //-----------------------------------------------------------------------------

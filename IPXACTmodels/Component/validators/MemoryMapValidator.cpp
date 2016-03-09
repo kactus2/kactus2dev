@@ -63,7 +63,7 @@ bool MemoryMapValidator::hasValidAddressUnitBits(QSharedPointer<MemoryMap> memor
     {
         QString solvedValue = getExpressionParser()->parseExpression(memoryMap->getAddressUnitBits());
         bool changeOk = true;
-        int addressUnitBits = solvedValue.toInt(&changeOk);
+        quint64 addressUnitBits = solvedValue.toULongLong(&changeOk);
 
         if (!changeOk || addressUnitBits <= 0)
         {

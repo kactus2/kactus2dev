@@ -109,7 +109,7 @@ bool AddressSpaceValidator::hasValidRange(QSharedPointer<AddressSpace> addressSp
     if (!addressSpace->getRange().isEmpty())
     {
         bool rangeOk = true;
-        int range = expressionParser_->parseExpression(addressSpace->getRange()).toInt(&rangeOk);
+        quint64 range = expressionParser_->parseExpression(addressSpace->getRange()).toULongLong(&rangeOk);
 
         return rangeOk && range > 0;
     }
@@ -125,7 +125,7 @@ bool AddressSpaceValidator::hasValidWidth(QSharedPointer<AddressSpace> addressSp
     if (!addressSpace->getWidth().isEmpty())
     {
         bool widthOk = true;
-        int width = expressionParser_->parseExpression(addressSpace->getWidth()).toInt(&widthOk);
+        quint64 width = expressionParser_->parseExpression(addressSpace->getWidth()).toULongLong(&widthOk);
 
         return widthOk && width >= 0;
     }
@@ -144,13 +144,13 @@ bool AddressSpaceValidator::hasValidSegments(QSharedPointer<AddressSpace> addres
 
         QStringList segmentNames;
 
-        int addressSpaceRange = expressionParser_->parseExpression(addressSpace->getRange()).toInt();
+        qint64 addressSpaceRange = expressionParser_->parseExpression(addressSpace->getRange()).toLongLong();
 
         foreach (QSharedPointer<Segment> segment, *addressSpace->getSegments())
         {
-            int segmentBegin = expressionParser_->parseExpression(segment->getAddressOffset()).toInt();
-            int segmentRange = expressionParser_->parseExpression(segment->getRange()).toInt();
-            int segmentEnd = segmentBegin + segmentRange - 1;
+            qint64 segmentBegin = expressionParser_->parseExpression(segment->getAddressOffset()).toLongLong();
+            qint64 segmentRange = expressionParser_->parseExpression(segment->getRange()).toLongLong();
+            qint64 segmentEnd = segmentBegin + segmentRange - 1;
 
             if (segmentNames.contains(segment->name()) ||
                 !hasValidName(segment->name()) ||
@@ -183,7 +183,8 @@ bool AddressSpaceValidator::segmentHasValidAddressOffset(QSharedPointer<Segment>
     if (!segment->getAddressOffset().isEmpty())
     {
         bool offsetOk = true;
-        int addressOffset = expressionParser_->parseExpression(segment->getAddressOffset()).toInt(&offsetOk);
+        quint64 addressOffset =
+            expressionParser_->parseExpression(segment->getAddressOffset()).toULongLong(&offsetOk);
 
         return offsetOk && addressOffset >= 0;
     }
@@ -199,7 +200,7 @@ bool AddressSpaceValidator::segmentHasValidRange(QSharedPointer<Segment> segment
     if (!segment->getRange().isEmpty())
     {
         bool rangeOk = true;
-        int range = expressionParser_->parseExpression(segment->getRange()).toInt(&rangeOk);
+        quint64 range = expressionParser_->parseExpression(segment->getRange()).toULongLong(&rangeOk);
 
         return rangeOk && range > 0;
     }
@@ -216,7 +217,8 @@ bool AddressSpaceValidator::hasValidAddressUnitBits(QSharedPointer<AddressSpace>
     {
         bool bitsOk = true;
 
-        int unitBits = expressionParser_->parseExpression(addressSpace->getAddressUnitBits()).toInt(&bitsOk);
+        quint64 unitBits =
+            expressionParser_->parseExpression(addressSpace->getAddressUnitBits()).toULongLong(&bitsOk);
 
         return bitsOk && unitBits > 0;
     }
@@ -347,7 +349,7 @@ void AddressSpaceValidator::findErrorsInSegments(QVector<QString>& errors,
 {
     if (!addressSpace->getSegments()->isEmpty())
     {
-        int addressSpaceRange = expressionParser_->parseExpression(addressSpace->getRange()).toInt();
+        qint64 addressSpaceRange = expressionParser_->parseExpression(addressSpace->getRange()).toLongLong();
 
         MemoryReserve reservedArea;
         QStringList segmentNames;
@@ -385,9 +387,9 @@ void AddressSpaceValidator::findErrorsInSegments(QVector<QString>& errors,
                     .arg(segment->name()).arg(context));
             }
 
-            int segmentBegin = expressionParser_->parseExpression(segment->getAddressOffset()).toInt();
-            int segmentRange = expressionParser_->parseExpression(segment->getRange()).toInt();
-            int segmentEnd = segmentBegin + segmentRange - 1;
+            qint64 segmentBegin = expressionParser_->parseExpression(segment->getAddressOffset()).toLongLong();
+            qint64 segmentRange = expressionParser_->parseExpression(segment->getRange()).toLongLong();
+            qint64 segmentEnd = segmentBegin + segmentRange - 1;
 
             reservedArea.addArea(segment->name(), segmentBegin, segmentEnd);
 

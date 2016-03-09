@@ -206,8 +206,9 @@ void tst_RegisterValidator::testDimensionIsValid()
         QVector<QString> foundErrors;
         validator.findErrorsIn(foundErrors, testRegister, "test");
 
-        QString expectedError = QObject::tr("Invalid dimension set for %1 within %2").
+        QString expectedError = QObject::tr("Invalid dimension set for register %1 within %2").
             arg(testRegister->name(), "test");
+
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
         {
             QFAIL("No error message found");
@@ -228,6 +229,9 @@ void tst_RegisterValidator::testDimensionIsValid_data()
     QTest::newRow("Dimension 4*4/2-8 is valid") << "0" << true;
     QTest::newRow("Text value is invalid for dimension") << "text" << false;
     QTest::newRow("String value is invalid for dimension") << "\"text\"" << false;
+
+    QTest::newRow("Long dimension is valid") << "40000000000" << true;
+    QTest::newRow("Really long dimension is not valid") << "40000000000000000000000000000000000000000000" << false;
 }
 
 //-----------------------------------------------------------------------------
@@ -277,6 +281,8 @@ void tst_RegisterValidator::testAddressOffsetIsValid_data()
     QTest::newRow("Address offset of 20*80 is valid") << "20*80" << true;
     QTest::newRow("Text is invalid for address offset") << "text" << false;
     QTest::newRow("String is invalid for address offset") << "\"text\"" << false;
+
+    QTest::newRow("Long address offset is valid") << "40000000000" <<  true;
 }
 
 //-----------------------------------------------------------------------------
@@ -327,6 +333,8 @@ void tst_RegisterValidator::testSizeIsValid_data()
     QTest::newRow("Size 0 is invalid") << "18/2-9" << false;
     QTest::newRow("Text is invalid for size") << "text" << false;
     QTest::newRow("String is invalid for size") << "\"text\"" << false;
+
+    QTest::newRow("Long size is valid") << "40000000000" << true;
 }
 
 //-----------------------------------------------------------------------------
@@ -646,6 +654,17 @@ void tst_RegisterValidator::testFieldsAreWithinRegister()
         QString expectedError = QObject::tr("Field %1 is not contained within %2").arg(fieldOne->name()).
             arg(testRegister->name());
 
+        if (!parser->isValidExpression(bitOffset))
+        {
+            expectedError = QObject::tr("Invalid bit offset set for field %1 within register %2").
+                arg(fieldOne->name()).arg(testRegister->name());
+        }
+        else if (!parser->isValidExpression(bitWidth))
+        {
+            expectedError = QObject::tr("Invalid bit width set for field %1 within register %2").
+                arg(fieldOne->name()).arg(testRegister->name());
+        }
+
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
         {
             QFAIL("No error message found");
@@ -669,6 +688,11 @@ void tst_RegisterValidator::testFieldsAreWithinRegister_data()
         false;
     QTest::newRow("Field: bitOffset 8, bitWidth 2 in register with size 2 is invalid") << "8" << "2" << "2" << false;
     QTest::newRow("Field: bitOffset 2, bitWidth 8 in register with size 4 is invalid") << "2" << "8" << "4" << false;
+
+    QTest::newRow("Field with long bit offset is not within a small register") <<
+        "4000000000000000000000000000000000" << "0" << "10" << false;
+    QTest::newRow("Field with long bit width is not within a small register") <<
+        "0" << "4000000000000000000000000000000000" << "10" << false;
 }
 
 //-----------------------------------------------------------------------------

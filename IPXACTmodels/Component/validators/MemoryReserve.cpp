@@ -54,7 +54,7 @@ bool MemoryReserve::MemoryArea::operator<(const MemoryReserve::MemoryArea& other
 //-----------------------------------------------------------------------------
 // Function: MemoryReserve::addArea()
 //-----------------------------------------------------------------------------
-void MemoryReserve::addArea(QString const& newId, int newBegin, int newEnd)
+void MemoryReserve::addArea(QString const& newId, qint64 newBegin, qint64 newEnd)
 {
     MemoryArea newArea;
     newArea.id_ = newId;

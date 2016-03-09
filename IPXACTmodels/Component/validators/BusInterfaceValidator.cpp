@@ -225,15 +225,15 @@ bool BusInterfaceValidator::abstractionTypeHasValidPortMaps(QSharedPointer<BusIn
                 return false;
             }
             
-            int logicalAreaBegin = 0;
-            int LogicalAreaEnd = 0;
+            qint64 logicalAreaBegin = 0;
+            qint64 LogicalAreaEnd = 0;
 
             if (portMap->getLogicalPort()->range_)
             {
                 logicalAreaBegin =
-                    expressionParser_->parseExpression(portMap->getLogicalPort()->range_->getLeft()).toInt();
+                    expressionParser_->parseExpression(portMap->getLogicalPort()->range_->getLeft()).toLongLong();
                 LogicalAreaEnd =
-                    expressionParser_->parseExpression(portMap->getLogicalPort()->range_->getRight()).toInt();
+                    expressionParser_->parseExpression(portMap->getLogicalPort()->range_->getRight()).toLongLong();
             }
 
             if (LogicalAreaEnd < logicalAreaBegin)
@@ -301,7 +301,8 @@ bool BusInterfaceValidator::hasValidMasterInterface(QSharedPointer<MasterInterfa
             if (master->getAddressSpaceRef() == space->name())
             {
                 bool changeOk = true;
-                int baseAddress = expressionParser_->parseExpression(master->getBaseAddress()).toInt(&changeOk);
+                quint64 baseAddress =
+                    expressionParser_->parseExpression(master->getBaseAddress()).toULongLong(&changeOk);
 
                 return (master->getBaseAddress().isEmpty() || (changeOk && baseAddress >= 0)) &&
                     hasValidIsPresent(master->getIsPresent()) &&
@@ -515,7 +516,7 @@ bool BusInterfaceValidator::hasValidMirroredSlaveInterface(QSharedPointer<Mirror
 bool BusInterfaceValidator::mirroredSlaveRangeIsValid(QSharedPointer<MirroredSlaveInterface> mirroredSlave) const
 {
     bool changeOk = true;
-    int range = expressionParser_->parseExpression(mirroredSlave->getRange()).toInt(&changeOk);
+    quint64 range = expressionParser_->parseExpression(mirroredSlave->getRange()).toULongLong(&changeOk);
 
     return changeOk && range > 0;
 }
@@ -529,7 +530,8 @@ bool BusInterfaceValidator::mirroredSlaveRemapAddressIsValid(
     if (!remapAddress->remapAddress_.isEmpty())
     {
         bool changeOk = true;
-        int addressInt = expressionParser_->parseExpression(remapAddress->remapAddress_).toInt(&changeOk);
+        quint64 addressInt =
+            expressionParser_->parseExpression(remapAddress->remapAddress_).toULongLong(&changeOk);
 
         return changeOk && addressInt >= 0;
     }
@@ -588,7 +590,8 @@ bool BusInterfaceValidator::hasValidBitsInLAU(QSharedPointer<BusInterface> busIn
     if (!busInterface->getBitsInLau().isEmpty())
     {
         bool changeOk = true;
-        int bitsInLAU = expressionParser_->parseExpression(busInterface->getBitsInLau()).toInt(&changeOk);
+        quint64 bitsInLAU =
+            expressionParser_->parseExpression(busInterface->getBitsInLau()).toULongLong(&changeOk);
 
         if (!changeOk || bitsInLAU <= 0)
         {
@@ -778,15 +781,15 @@ void BusInterfaceValidator::findErrorsInAbstractionPortMaps(QVector<QString>& er
         {
             validator.findErrorsIn(errors, portMap, context);
 
-            int logicalAreaBegin = 0;
-            int LogicalAreaEnd = 0;
+            qint64 logicalAreaBegin = 0;
+            qint64 LogicalAreaEnd = 0;
 
             if (portMap->getLogicalPort()->range_)
             {
                 logicalAreaBegin =
-                    expressionParser_->parseExpression(portMap->getLogicalPort()->range_->getLeft()).toInt();
+                    expressionParser_->parseExpression(portMap->getLogicalPort()->range_->getLeft()).toLongLong();
                 LogicalAreaEnd =
-                    expressionParser_->parseExpression(portMap->getLogicalPort()->range_->getRight()).toInt();
+                    expressionParser_->parseExpression(portMap->getLogicalPort()->range_->getRight()).toLongLong();
             }
             if (LogicalAreaEnd < logicalAreaBegin)
             {

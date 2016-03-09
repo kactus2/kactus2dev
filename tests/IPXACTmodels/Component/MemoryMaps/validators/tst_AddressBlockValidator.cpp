@@ -225,6 +225,9 @@ void tst_AddressBlockValidator::testBaseAddressIsValid_data()
     QTest::newRow("Real number baseAddress 0.12 is invalid") << "0.12" << false;
     QTest::newRow("Text as baseAddress is invalid") << "test" << false;
     QTest::newRow("String as baseAddress is invalid") << "\"test\"" << false;
+
+    QTest::newRow("Long base address is valid") << "40000000000" << true;
+    QTest::newRow("Really long base address is invalid") << "40000000000000000000000000000000000000000*2" << false;
 }
 
 //-----------------------------------------------------------------------------
@@ -277,6 +280,8 @@ void tst_AddressBlockValidator::testRangeIsValid_data()
     QTest::newRow("Real number as range 0.12 is invalid") << "0.12" << false;
     QTest::newRow("Text as range is invalid") << "test" << false;
     QTest::newRow("String as range is invalid") << "\"test\"" << false;
+
+    QTest::newRow("Long range is valid") << "40000000000" << true;
 }
 
 //-----------------------------------------------------------------------------
@@ -328,6 +333,8 @@ void tst_AddressBlockValidator::testWidthIsValid_data()
     QTest::newRow("Real number as width 0.12 is invalid") << "0.12" << false;
     QTest::newRow("Text as width is invalid") << "test" << false;
     QTest::newRow("String as width is invalid") << "\"test\"" << false;
+
+    QTest::newRow("Long width is valid") << "40000000000" << true;
 }
 
 //-----------------------------------------------------------------------------
@@ -795,6 +802,22 @@ void tst_AddressBlockValidator::testRegisterPositioning()
         QString expectedError = QObject::tr("Register %1 is not contained within addressBlock %2")
             .arg(registerOne->name()).arg(testBlock->name());
 
+        if (!parser->isValidExpression(registerOffset1))
+        {
+            expectedError = QObject::tr("Invalid address offset set for register %1 within addressBlock %2").
+                arg(registerOne->name()).arg(testBlock->name());
+        }
+        else if (!parser->isValidExpression(registerSize1))
+        {
+            expectedError = QObject::tr("Invalid size specified for register %1 within addressBlock %2").
+                arg(registerOne->name()).arg(testBlock->name());
+        }
+        else if (!parser->isValidExpression(registerDimension1))
+        {
+            expectedError = QObject::tr("Invalid dimension set for register %1 within addressBlock %2").
+                arg(registerOne->name()).arg(testBlock->name());
+        }
+
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
         {
             QFAIL("No error message found");
@@ -831,6 +854,13 @@ void tst_AddressBlockValidator::testRegisterPositioning_data()
 
     QTest::newRow("Register: offset='h10, size=32, dimension=; addressBlock range=24, AUB=8, width = 32 is valid")
         << "'h10" << "32" << "" << "24" << "8" << "32" << true;
+
+    QTest::newRow("Register with long offset is not valid within a small address block")
+        << "4000000000000000000000" << "32" << "0" << "4" << "8" << "32" << false;
+    QTest::newRow("Register with long size is not valid within a small address block")
+        << "'h0" << "4000000000000000000000" << "0" << "4" << "8" << "32" << false;
+    QTest::newRow("Register with long dimension is not valid within a small address block")
+        << "'h0" << "32" << "4000000000000000000000" << "4" << "8" << "32" << false;
 }
 
 //-----------------------------------------------------------------------------

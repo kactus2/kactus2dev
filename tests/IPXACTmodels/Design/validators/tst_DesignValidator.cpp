@@ -878,6 +878,22 @@ void tst_DesignValidator::testInterconnectionInterfacesAreValid()
     QSharedPointer<QList<QSharedPointer<ComponentInstance> > > instances (
         new QList<QSharedPointer<ComponentInstance> > ());
 
+    QSharedPointer<ActiveInterface> startInterface(new ActiveInterface("StartComponent", "StartBus"));
+
+    QSharedPointer<ConfigurableVLNVReference> startVLNV (
+        new ConfigurableVLNVReference(VLNV(VLNV::COMPONENT, "One", "Punch", "Start", "1.0")));
+    QSharedPointer<Component> startComponent (new Component(*startVLNV));
+    mockLibrary->addComponent(startComponent);
+
+    QSharedPointer<ComponentInstance> startInstance (
+        new ComponentInstance(startInterface->getComponentReference(), startVLNV));
+
+    QSharedPointer<BusInterface> startBus(new BusInterface());
+    startBus->setName(startInterface->getBusReference());
+    startComponent->getBusInterfaces()->append(startBus);
+
+    testConnection->setStartInterface(startInterface);
+
     QSharedPointer<ActiveInterface> testInterface (new ActiveInterface("Demi", "Lich"));
 
     if (createActiveInterface)

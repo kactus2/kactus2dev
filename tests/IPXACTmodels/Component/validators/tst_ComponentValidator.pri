@@ -40,6 +40,7 @@ HEADERS += ../../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.
     ../../../../IPXACTmodels/kactusExtensions/ComProperty.h \
     ../../../../IPXACTmodels/Component/Component.h \
     ../../../../IPXACTmodels/Component/ComponentGenerator.h \
+    ../../../../IPXACTmodels/Component/validators/ComponentGeneratorValidator.h \
     ../../../../IPXACTmodels/Design/ComponentInstance.h \
     ../../../../IPXACTmodels/Component/ComponentInstantiation.h \
     ../../../../IPXACTmodels/Component/validators/ComponentValidator.h \
@@ -139,7 +140,7 @@ HEADERS += ../../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.
     ../../../../IPXACTmodels/generaldeclarations.h \
     ../../../MockObjects/LibraryMock.h \
     ../../../../IPXACTmodels/validators/namevalidator.h \
-    ../../../../IPXACTmodels/Component/validators/ComponentGeneratorValidator.h
+    ../../../../IPXACTmodels/kactusExtensions/InterfaceGraphicsData.h
 SOURCES += ../../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.cpp \
     ../../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../../IPXACTmodels/designConfiguration/AbstractorInstance.cpp \
@@ -173,6 +174,7 @@ SOURCES += ../../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.
     ../../../../IPXACTmodels/kactusExtensions/ComProperty.cpp \
     ../../../../IPXACTmodels/Component/Component.cpp \
     ../../../../IPXACTmodels/Component/ComponentGenerator.cpp \
+    ../../../../IPXACTmodels/Component/validators/ComponentGeneratorValidator.cpp \
     ../../../../IPXACTmodels/Design/ComponentInstance.cpp \
     ../../../../IPXACTmodels/Component/ComponentInstantiation.cpp \
     ../../../../IPXACTmodels/Component/validators/ComponentValidator.cpp \
@@ -273,4 +275,4 @@ SOURCES += ../../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.
     ../../../../IPXACTmodels/generaldeclarations.cpp \
     ../../../../IPXACTmodels/validators/namevalidator.cpp \
     ./tst_ComponentValidator.cpp \
-    ../../../../IPXACTmodels/Component/validators/ComponentGeneratorValidator.cpp
+    ../../../../IPXACTmodels/kactusExtensions/InterfaceGraphicsData.cpp

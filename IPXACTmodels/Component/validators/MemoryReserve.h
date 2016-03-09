@@ -40,8 +40,8 @@ public:
      *      @param [in] newBegin    Start point of the area.
      *      @param [in] newEnd      End point of the area.
      */
-    void addArea(QString const& newId, int newBegin, int newEnd);
-    
+    void addArea(QString const& newId, qint64 newBegin, qint64 newEnd);
+
     /*!
      *  Check if reserved areas overlap.
      *
@@ -92,10 +92,10 @@ private:
         QString id_;
 
         //! Start point of the area.
-        int begin_;
+        qint64 begin_;
 
         //! End point of the area.
-        int end_;
+        qint64 end_;
 
         /*!
          *  Assignment operator for MemoryArea.

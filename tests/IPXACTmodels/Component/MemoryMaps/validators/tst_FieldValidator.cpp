@@ -213,6 +213,8 @@ void tst_FieldValidator::testBitOffsetIsValid_data()
     QTest::newRow("Empty bit offset is invalid") << "" << false;
     QTest::newRow("Text is invalid for bit offset") << "test" << false;
     QTest::newRow("String is invalid for bit offset") << "\"test\"" << false;
+
+    QTest::newRow("Long bit offset is valid") << "40000000000" << true;
 }
 
 //-----------------------------------------------------------------------------
@@ -491,6 +493,8 @@ void tst_FieldValidator::testBitWidthIsValid_data()
     QTest::newRow("Empty bit width is invalid for bit width") << "" << false;
     QTest::newRow("Text is invalid for bit width") << "test" << false;
     QTest::newRow("String is invalid for bit width") << "\"test\"" << false;
+
+    QTest::newRow("Long bit width is valid") << "40000000000" << true;
 }
 
 //-----------------------------------------------------------------------------

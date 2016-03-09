@@ -115,7 +115,7 @@ bool RegisterValidator::hasValidDimension(QSharedPointer<Register> selectedRegis
         QString solvedValue = expressionParser_->parseExpression(selectedRegister->getDimension());
 
         bool toIntOk = true;
-        int intValue = solvedValue.toInt(&toIntOk);
+        quint64 intValue = solvedValue.toULongLong(&toIntOk);
 
         if (!toIntOk || intValue < 0)
         {
@@ -133,7 +133,7 @@ bool RegisterValidator::hasValidAddressOffset(QSharedPointer<Register> selectedR
 {
     QString solvedValue = expressionParser_->parseExpression(selectedRegister->getAddressOffset());
     bool changeOk = true;
-    int offsetInt = solvedValue.toInt(&changeOk);
+    quint64 offsetInt = solvedValue.toULongLong(&changeOk);
 
     return changeOk && offsetInt >= 0;
 }
@@ -145,7 +145,7 @@ bool RegisterValidator::hasValidSize(QSharedPointer<Register> selectedRegister) 
 {
     QString solvedValue = expressionParser_->parseExpression(selectedRegister->getSize());
     bool changeOk = true;
-    int sizeInt = solvedValue.toInt(&changeOk);
+    quint64 sizeInt = solvedValue.toULongLong(&changeOk);
 
     return changeOk && sizeInt > 0;
 }
@@ -161,7 +161,7 @@ bool RegisterValidator::hasValidFields(QSharedPointer<RegisterDefinition> select
         return false;
     }
 
-    int registerSizeInt = expressionParser_->parseExpression(registerSize).toInt();
+    qint64 registerSizeInt = expressionParser_->parseExpression(registerSize).toLongLong();
 
     MemoryReserve reservedArea;
 
@@ -176,12 +176,14 @@ bool RegisterValidator::hasValidFields(QSharedPointer<RegisterDefinition> select
         }
         else
         {
-            int bitWidth = expressionParser_->parseExpression(field->getBitWidth()).toInt();
+            quint64 bitWidth = expressionParser_->parseExpression(field->getBitWidth()).toLongLong();
 
-            int rangeBegin = expressionParser_->parseExpression(field->getBitOffset()).toInt();
-            int rangeEnd = rangeBegin + bitWidth - 1;
+            qint64 rangeBegin = expressionParser_->parseExpression(field->getBitOffset()).toLongLong();
+            qint64 rangeEnd = rangeBegin + bitWidth - 1;
 
-            if (rangeBegin < 0 || rangeBegin > registerSizeInt - bitWidth)
+            qint64 fieldEndPosition = registerSizeInt - bitWidth;
+
+            if (rangeBegin < 0 || rangeBegin > fieldEndPosition)
             {
                 return false;
             }
@@ -424,7 +426,7 @@ void RegisterValidator::findErrorsInDimension(QVector<QString>& errors, QSharedP
 {
     if (!hasValidDimension(selectedRegister))
     {
-        errors.append(QObject::tr("Invalid dimension set for %1 within %2").arg(selectedRegister->name()).
+        errors.append(QObject::tr("Invalid dimension set for register %1 within %2").arg(selectedRegister->name()).
             arg(context));
     }
 }
@@ -466,7 +468,7 @@ void RegisterValidator::findErrorsInFields(QVector<QString>& errors,
         QStringList fieldNames;
         QStringList fieldTypeIdentifiers;
 
-        int registerSizeInt = expressionParser_->parseExpression(registerSize).toInt();
+        qint64 registerSizeInt = expressionParser_->parseExpression(registerSize).toLongLong();
         MemoryReserve reservedArea;
 
         foreach (QSharedPointer<Field> field, *selectedRegister->getFields())
@@ -479,12 +481,14 @@ void RegisterValidator::findErrorsInFields(QVector<QString>& errors,
                     QObject::tr("Name %1 of fields in %2 is not unique.").arg(field->name()).arg(context));
             }
 
-            int bitWidth = expressionParser_->parseExpression(field->getBitWidth()).toInt();
+            qint64 bitWidth = expressionParser_->parseExpression(field->getBitWidth()).toLongLong();
 
-            int rangeBegin = expressionParser_->parseExpression(field->getBitOffset()).toInt();
-            int rangeEnd = rangeBegin + bitWidth - 1;
+            qint64 rangeBegin = expressionParser_->parseExpression(field->getBitOffset()).toLongLong();
+            qint64 rangeEnd = rangeBegin + bitWidth - 1;
 
-            if (rangeBegin < 0 || rangeBegin > registerSizeInt - bitWidth)
+            qint64 fieldEndPosition = registerSizeInt - bitWidth;
+
+            if (rangeBegin < 0 || rangeBegin > fieldEndPosition)
             {
                 errors.append(QObject::tr("Field %1 is not contained within %2").arg(field->name()).
                     arg(selectedRegister->name()));

@@ -545,6 +545,9 @@ void tst_BusInterfaceValidator::testPortMapLogicalPortIsValid_data()
     QTest::addColumn<bool>("createPort");
     QTest::addColumn<bool>("isValid");
 
+    QTest::newRow("Logical port with long range is valid") <<
+        "logicalPort" << "4000000000" << "4000000001" << "5000000000" << true << true;
+
     QTest::newRow("Logical port without range is valid") << "logicalPort" << "" << "" << "" << true << true;
     QTest::newRow("Logical port with range is valid") << "logicalPort" << "4+4" << "12" << "" << true << true;
     QTest::newRow("Logical port with either range as 0 is valid") << "logicalPort" << "0" << "0" << "" << true <<
@@ -877,6 +880,9 @@ void tst_BusInterfaceValidator::testPortMapPhysicalPortIsValid_data()
         << "testPort" << "0" << "4" << "1" << "10" << true << false;
     QTest::newRow("Physical port ranges outside referenced port range is not valid")
         << "testPort" << "12" << "4" << "1" << "10" << true << false;
+
+    QTest::newRow("Physical port with long range is valid") <<
+        "testPort" << "4000000000" << "4000000000" << "5000000000" << "3000000000" << true << true;
 }
 
 //-----------------------------------------------------------------------------
@@ -1350,6 +1356,9 @@ void tst_BusInterfaceValidator::testHasValidMasterInterface_data()
         "0" << true << true;
     QTest::newRow("Present master referring non-present address space is not valid") << "space" << "" << "1" <<
         "0" << true << false;
+
+    QTest::newRow("Master containing long base address is valid") <<
+        "space" << "4000000000" << "" << "" << true << true;
 }
 
 //-----------------------------------------------------------------------------
@@ -1700,6 +1709,9 @@ void tst_BusInterfaceValidator::testHasValidMirroredSlaveInterface_data()
     QTest::newRow("Mirrored slave without elements is valid") << "" << "" << "" << false << true;
     QTest::newRow("Mirrored slave with remap address and range is valid") << "1+2" << "12" << "" << false << true;
 
+    QTest::newRow("Mirrored slave with long remap address and long range is valid") <<
+        "4000000000" << "4000000000" << "" << false << true;
+
     QTest::newRow("Mirrored slave with negative remap address is not valid") << "10-20" << "12" << "" << false <<
         false;
     QTest::newRow("Mirrored slave with non-positive range is not valid") << "1+2" << "0" << "" << false << false;
@@ -1871,6 +1883,8 @@ void tst_BusInterfaceValidator::testHasValidBitsInLau_data()
     QTest::newRow("Real number bits in LAU 0.12 is invalid") << "0.12" << false;
     QTest::newRow("Text as bits in LAU is invalid") << "test" << false;
     QTest::newRow("String as bits in LAU is invalid") << "\"test\"" << false;
+
+    QTest::newRow("Long bits in LAU value is valid") << "40000000000" << true;
 }
 
 //-----------------------------------------------------------------------------

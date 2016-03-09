@@ -179,6 +179,7 @@ void tst_MemoryMapValidator::testAddressUnitBitsIsValid_data()
     QTest::newRow("Address unit bits of string is invalid") << "\"text\"" << false << false;
     QTest::newRow("Empty address unit bits is valid if there exists no address blocks") << "" << false << true;
     QTest::newRow("Empty address unit bits is invalid if there exists address blocks") << "" << true << false;
+    QTest::newRow("Long address unit bit value is valid") << "40000000000" << false << true;
 }
 
 

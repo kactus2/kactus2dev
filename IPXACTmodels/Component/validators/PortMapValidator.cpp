@@ -119,10 +119,12 @@ bool PortMapValidator::logicalPortHasValidRange(QSharedPointer<PortMap::LogicalP
         (!logicalPort->range_->getLeft().isEmpty() || !logicalPort->range_->getRight().isEmpty()))
     {
         bool leftOk = true;
-        int rangeLeft = expressionParser_->parseExpression(logicalPort->range_->getLeft()).toInt(&leftOk);
+        quint64 rangeLeft =
+            expressionParser_->parseExpression(logicalPort->range_->getLeft()).toULongLong(&leftOk);
 
         bool rightOk = true;
-        int rangeRight = expressionParser_->parseExpression(logicalPort->range_->getRight()).toInt(&rightOk);
+        quint64 rangeRight =
+            expressionParser_->parseExpression(logicalPort->range_->getRight()).toULongLong(&rightOk);
 
         return leftOk && rangeLeft >= 0 && rightOk && rangeRight >= 0;
     }
@@ -140,11 +142,11 @@ bool PortMapValidator::logicalPortRangeIsWithinAbstractionWidth(QSharedPointer<P
     {
         if (logicalPort->range_ && referencedPort->getWire() && !referencedPort->getWire()->getWidth(interfaceMode_).isEmpty())
         {
-            int rangeLeft = expressionParser_->parseExpression(logicalPort->range_->getLeft()).toInt();
-            int rangeRight = expressionParser_->parseExpression(logicalPort->range_->getRight()).toInt();
+            quint64 rangeLeft = expressionParser_->parseExpression(logicalPort->range_->getLeft()).toULongLong();
+            quint64 rangeRight = expressionParser_->parseExpression(logicalPort->range_->getRight()).toULongLong();
 
-            int abstractionWidth =
-                expressionParser_->parseExpression(referencedPort->getWire()->getWidth(interfaceMode_)).toInt();
+            quint64 abstractionWidth = expressionParser_->parseExpression(
+                referencedPort->getWire()->getWidth(interfaceMode_)).toULongLong();
 
             return 0 <= rangeLeft && rangeLeft <= abstractionWidth - 1 && 
                 0 <= rangeRight && rangeRight <= abstractionWidth - 1;
@@ -188,12 +190,12 @@ bool PortMapValidator::physicalPortHasValidPartSelect(QSharedPointer<PortMap::Ph
         !physicalPort->partSelect_->getRightRange().isEmpty()))
     {
         bool rangeLeftOk = true;
-        int rangeLeft =
-            expressionParser_->parseExpression(physicalPort->partSelect_->getLeftRange()).toInt(&rangeLeftOk);
+        quint64 rangeLeft = expressionParser_->parseExpression(
+            physicalPort->partSelect_->getLeftRange()).toULongLong(&rangeLeftOk);
 
         bool rangeRightOk = true;
-        int rangeRight =
-            expressionParser_->parseExpression(physicalPort->partSelect_->getRightRange()).toInt(&rangeRightOk);
+        quint64 rangeRight = expressionParser_->parseExpression(
+            physicalPort->partSelect_->getRightRange()).toULongLong(&rangeRightOk);
 
         return rangeLeftOk && rangeLeft >= 0 && rangeRightOk && rangeRight >= 0;
     }
@@ -210,18 +212,20 @@ bool PortMapValidator::physicalPortRangeIsWithinReferencedPort(QSharedPointer<Po
     if (referencedPort && physicalPort->partSelect_ && (!physicalPort->partSelect_->getLeftRange().isEmpty() ||
         !physicalPort->partSelect_->getRightRange().isEmpty()))
     {
-        int rangeLeft = expressionParser_->parseExpression(physicalPort->partSelect_->getLeftRange()).toInt();
-        int rangeRight = expressionParser_->parseExpression(physicalPort->partSelect_->getRightRange()).toInt();
+        quint64 rangeLeft =
+            expressionParser_->parseExpression(physicalPort->partSelect_->getLeftRange()).toULongLong();
+        quint64 rangeRight =
+            expressionParser_->parseExpression(physicalPort->partSelect_->getRightRange()).toULongLong();
 
-        int portLeft = 0;
-        int portRight = 0;
+        quint64 portLeft = 0;
+        quint64 portRight = 0;
 
-        portLeft = expressionParser_->parseExpression(referencedPort->getLeftBound()).toInt();
-        portRight = expressionParser_->parseExpression(referencedPort->getRightBound()).toInt();
+        portLeft = expressionParser_->parseExpression(referencedPort->getLeftBound()).toULongLong();
+        portRight = expressionParser_->parseExpression(referencedPort->getRightBound()).toULongLong();
 
         if (portLeft > portRight)
         {
-            int temporary = portLeft;
+            quint64 temporary = portLeft;
             portLeft = portRight;
             portRight = temporary;
         }
