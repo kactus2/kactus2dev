@@ -74,6 +74,12 @@ existing_(existing)
         {
             new ItemMoveCommand(newComp_, newComp_->scenePos(), newComp_->getParentStack(), oldComp_->scenePos(),
                 oldComp_->getParentStack(), this);
+
+            if (keepOld)
+            {
+                new ItemMoveCommand(oldComp_, oldComp_->scenePos(), oldComp_->getParentStack(),
+                    newComp_->scenePos(), newComp_->getParentStack(), this);
+            }
         }
     }
     else
@@ -94,36 +100,50 @@ existing_(existing)
 void ReplaceSystemComponentCommand::changeConnections(SystemComponentItem* oldComponent,
     SystemComponentItem* newComponent, QSharedPointer<Design> design)
 {
+    QStringList connectionNames;
+
     foreach (ConnectionEndpoint* oldEndpoint, oldComponent->getEndpoints())
     {
-        SWPortItem* newEndpoint = newComponent->getSWPortMatchingOtherEndPoint(oldEndpoint);
-
-        if (newEndpoint != 0)
+        if (!oldEndpoint->getConnections().isEmpty() ||
+            !oldEndpoint->getOffPageConnector()->getConnections().isEmpty())
         {
-            // Create a move command to move the port to the same place where it is in the old component.
-            new SWPortMoveCommand(newEndpoint, newEndpoint->pos(), oldEndpoint->pos(), this);
+            SWPortItem* newEndpoint = newComponent->getSWPortMatchingOtherEndPoint(oldEndpoint);
 
-            // Exchange connections between the endpoints.
-            foreach (GraphicsConnection* conn, oldEndpoint->getConnections())
+            if (newEndpoint != 0)
             {
-                createConnectionExchangeCommand(conn, oldEndpoint, newEndpoint);
-            }
+                // Create a move command to move the port to the same place where it is in the old component.
+                new SWPortMoveCommand(newEndpoint, newEndpoint->pos(), oldEndpoint->pos(), this);
 
-            foreach (GraphicsConnection* conn, oldEndpoint->getOffPageConnector()->getConnections())
-            {
-                createConnectionExchangeCommand(conn, oldEndpoint->getOffPageConnector(),
-                    newEndpoint->getOffPageConnector());
+                // Exchange connections between the endpoints.
+                foreach (GraphicsConnection* connection, oldEndpoint->getConnections())
+                {
+                    createConnectionExchangeCommand(connection, oldEndpoint, newEndpoint);
+                }
+
+                foreach (GraphicsConnection* connection, oldEndpoint->getOffPageConnector()->getConnections())
+                {
+                    createConnectionExchangeCommand(connection, oldEndpoint->getOffPageConnector(),
+                        newEndpoint->getOffPageConnector());
+                }
             }
-        }
-        else
-        {
-            foreach (GraphicsConnection* connection, oldEndpoint->getConnections())
+            else
             {
-                createConnectionDeleteCommand(connection, design);
-            }
-            foreach (GraphicsConnection* connection, oldEndpoint->getOffPageConnector()->getConnections())
-            {
-                createConnectionDeleteCommand(connection, design);
+                foreach (GraphicsConnection* connection, oldEndpoint->getConnections())
+                {
+                    if (!connectionNames.contains(connection->name()))
+                    {
+                        createConnectionDeleteCommand(connection, design);
+                        connectionNames.append(connection->name());
+                    }
+                }
+                foreach (GraphicsConnection* connection, oldEndpoint->getOffPageConnector()->getConnections())
+                {
+                    if (!connectionNames.contains(connection->name()))
+                    {
+                        createConnectionDeleteCommand(connection, design);
+                        connectionNames.append(connection->name());
+                    }
+                }
             }
         }
     }

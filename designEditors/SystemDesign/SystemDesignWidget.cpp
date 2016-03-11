@@ -157,15 +157,6 @@ bool SystemDesignWidget::setDesign(QSharedPointer<Component> comp, const QString
     {
 		QSharedPointer<SystemView> view = comp->findSystemView(viewName);
 
-		foreach ( QSharedPointer<SystemView> currentView, comp->getSystemViews() )
-		{
-			if ( currentView->name() == viewName )
-			{
-				view = currentView;
-				break;
-			}
-		}
-
         if (!view)
         {
             return false;
