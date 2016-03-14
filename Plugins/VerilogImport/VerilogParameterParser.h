@@ -96,6 +96,15 @@ private:
     QStringList findDeclarations(QRegularExpression const& declarationRule, QString const& inspect);
 
     /*!
+     *  Create an IP-XACT type for the parameter according to the given data type.
+     *
+     *      @param [in] dataType    The selected data type.
+     *
+     *      @return The type matching the data type, or none if data type does not match any IP-XACT type.
+     */
+    QString createTypeFromDataType(QString const& dataType);
+
+    /*!
      *  Culls multi line comments and stray single line comments out of the input text.
      *
      *      @param [in] inspect   The input text to parse.

@@ -102,10 +102,15 @@ void tst_ParameterValidator2014::testValueIsValidForGivenType_data()
     QTest::addColumn<QString>("type");
     QTest::addColumn<bool>("isValid");
 
+    QTest::newRow("Hexadecimal expression is valid for bit") << "'ha + 'hb" << "bit" << true;
+    QTest::newRow("String is not valid for bit type") << "\"text\"" << "bit" << false;
+
     QTest::newRow("0 is valid for bit type") << "0" << "bit" << true;
     QTest::newRow("1 is valid for bit type") << "1" << "bit" << true;
-    QTest::newRow("13 is invalid for bit type") << "13" << "bit" << false;
-    QTest::newRow("13*2 is invalid for bit type") << "13*2" << "bit" << false;
+//     QTest::newRow("13 is invalid for bit type") << "13" << "bit" << false;
+//     QTest::newRow("13*2 is invalid for bit type") << "13*2" << "bit" << false;
+    QTest::newRow("13 is valid for bit type") << "13" << "bit" << true;
+    QTest::newRow("13*2 is valid for bit type") << "13*2" << "bit" << true;
     QTest::newRow("'1 is valid for bit type") << "'1" << "bit" << true;
     QTest::newRow("Binary 'b0 is valid for bit type") << "'b0" << "bit" << true;
     QTest::newRow("Binary 'b1 is valid for bit type") << "'b1" << "bit" << true;
@@ -133,8 +138,10 @@ void tst_ParameterValidator2014::testValueIsValidForGivenType_data()
     QTest::newRow("Hexadecimal with size and upper case is valid for bit type") << "8'hED" << "bit" << true;
 
     QTest::newRow("Hexadecimal without size is valid for bit type") << "'h11" << "bit" << true;
-    QTest::newRow("2 is invalid for bit type") << "2" << "bit" << false;
-    QTest::newRow("-1 is invalid for bit type") << "-1" << "bit" << false;
+//     QTest::newRow("2 is invalid for bit type") << "2" << "bit" << false;
+    QTest::newRow("2 is valid for bit type") << "2" << "bit" << true;
+//     QTest::newRow("-1 is invalid for bit type") << "-1" << "bit" << false;
+    QTest::newRow("-1 is valid for bit type") << "-1" << "bit" << true;
     QTest::newRow("text is invalid for bit type") << "some text" << "bit" << false;
     QTest::newRow("string is invalid for bit type") << "\"some other text\"" << "bit" << false;
     QTest::newRow("Expression is valid for bit type") << "'h1 + 'h1 - 'b1" << "bit" << true;

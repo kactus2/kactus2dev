@@ -132,8 +132,9 @@ bool ParameterValidator2014::hasValidValueForType(QString const& value, QString 
 
     if (type == "bit")
     {
-        QRegularExpression testi("^[1-9]?[0-9]*'([bB]|[hH])");
-        if (testi.match(value).hasMatch())
+        /*
+        QRegularExpression bitStructure("^[1-9]?[0-9]*'([bB]|[hH])");
+        if (bitStructure.match(value).hasMatch())
         {
             ValueFormatter formatter;
             solvedValue = formatter.format(solvedValue, 2);
@@ -141,6 +142,17 @@ bool ParameterValidator2014::hasValidValueForType(QString const& value, QString 
 
         QRegularExpression bitExpression("^([01]|[1-9]?[0-9]*'([bB][01_]+|[hH][0-9a-fA-F_]+))$");
         return bitExpression.match(value).hasMatch() || bitExpression.match(solvedValue).hasMatch();
+        */
+
+        solvedValue.toInt(&canConvert);
+        if (canConvert)
+        {
+            ValueFormatter formatter;
+            solvedValue = formatter.format(solvedValue, 2);
+
+            QRegularExpression bitExpression("^([01]|[1-9]?[0-9]*'([bB][01_]+|[hH][0-9a-fA-F_]+))$");
+            return bitExpression.match(value).hasMatch() || bitExpression.match(solvedValue).hasMatch();
+        }
     }
     else if (type == "byte")
     {

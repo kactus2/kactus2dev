@@ -203,6 +203,7 @@ QList<QSharedPointer<ModuleParameter> > VerilogParameterParser::parseParameters(
            
         modelParameter->setName(name);
         modelParameter->setDataType(type);
+        modelParameter->setType(createTypeFromDataType(type));
         modelParameter->setValue(value);
         modelParameter->setUsageType("nontyped");
         modelParameter->setVectorLeft(bitWidthLeft);
@@ -215,6 +216,28 @@ QList<QSharedPointer<ModuleParameter> > VerilogParameterParser::parseParameters(
     }
 
     return parameters;
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogParameterParser::createTypeFromDataType()
+//-----------------------------------------------------------------------------
+QString VerilogParameterParser::createTypeFromDataType(QString const& dataType)
+{
+    if (dataType == QLatin1String("bit") ||
+        dataType == QLatin1String("byte") ||
+        dataType == QLatin1String("shortint") ||
+        dataType == QLatin1String("int") ||
+        dataType == QLatin1String("longint") ||
+        dataType == QLatin1String("shortreal") ||
+        dataType == QLatin1String("real") ||
+        dataType == QLatin1String("string"))
+    {
+        return dataType;
+    }
+    else
+    {
+        return QString("");
+    }
 }
 
 //-----------------------------------------------------------------------------
