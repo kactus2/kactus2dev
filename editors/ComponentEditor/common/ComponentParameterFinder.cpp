@@ -39,6 +39,14 @@ ComponentParameterFinder::~ComponentParameterFinder()
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComponentParameterFinder::changeComponent()
+//-----------------------------------------------------------------------------
+void ComponentParameterFinder::changeComponent(QSharedPointer<Component> newComponent)
+{
+    component_ = newComponent;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComponentParameterFinder::ComponentParameterFinder()
 //-----------------------------------------------------------------------------
 QSharedPointer<Parameter> ComponentParameterFinder::getParameterWithID(QString const& parameterId) const

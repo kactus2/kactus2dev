@@ -18,6 +18,8 @@
 #include <common/widgets/ScanProgressWidget/scanprogresswidget.h>
 
 #include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
+#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 
 #include <IPXACTmodels/common/VLNV.h>
 
@@ -81,7 +83,9 @@ vlnvErrors_(0),
 fileErrors_(0),
 fileCount_(0),
 urlTester_(new QRegExpValidator(Utils::URL_VALIDITY_REG_EXP, this)),
-componentValidator_(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()), handler_),
+componentValidatorFinder_(new ComponentParameterFinder(QSharedPointer<Component>())),
+componentValidator_(QSharedPointer<ExpressionParser>(new IPXactSystemVerilogParser(componentValidatorFinder_)),
+                    handler_),
 designValidator_(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()), handler_),
 designConfigurationValidator_(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()), handler_),
 systemDesignConfigurationValidator_(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()), handler_)
@@ -577,7 +581,11 @@ bool LibraryData::validateDocument(QSharedPointer<Document> document)
     }
 	else if (getType(documentVLNV) == VLNV::COMPONENT)
     {
-		if (!componentValidator_.validate(document.dynamicCast<Component>()))
+        QSharedPointer<Component> currentComponent = document.dynamicCast<Component>();
+
+        changeComponentValidatorParameterFinder(currentComponent);
+
+        if (currentComponent && !componentValidator_.validate(currentComponent))
         {
             return false;
         }
@@ -612,6 +620,14 @@ bool LibraryData::validateDocument(QSharedPointer<Document> document)
     return validateDependentVLNVReferencences(document) &&
         validateDependentDirectories(document, documentPath) &&
         validateDependentFiles(document, documentPath);
+}
+
+//-----------------------------------------------------------------------------
+// Function: librarydata::changeComponentValidatorParameterFinder()
+//-----------------------------------------------------------------------------
+void LibraryData::changeComponentValidatorParameterFinder(QSharedPointer<Component> targetComponent)
+{
+    componentValidatorFinder_->changeComponent(targetComponent);
 }
 
 //-----------------------------------------------------------------------------
@@ -706,6 +722,8 @@ void LibraryData::findErrorsInAbstractionDefinition(QSharedPointer<AbstractionDe
 void LibraryData::findErrorsInComponent(QSharedPointer<Component> component, QVector<QString>& errorList)
 {
     int errorsBeforeValidation = errorList.size();
+
+    changeComponentValidatorParameterFinder(component);
 
     componentValidator_.findErrorsIn(errorList, component);
 

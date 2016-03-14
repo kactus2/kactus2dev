@@ -37,6 +37,8 @@ class Document;
 class LibraryHandler;
 class ScanProgressWidget;
 
+class ComponentParameterFinder;
+
 //-----------------------------------------------------------------------------
 //! LibraryData is the data model that manages the actual VLNV library.
 //-----------------------------------------------------------------------------
@@ -174,6 +176,13 @@ private:
 
 	//! No assignment
 	LibraryData& operator=(const LibraryData& other);
+
+    /*!
+     *  Change the component used in the component validator parameter finder.
+     *
+     *      @param [in] targetComponent     The new component.
+     */
+    void changeComponentValidatorParameterFinder(QSharedPointer<Component> targetComponent);
 
 	/*! Search the directory and it's sub-directories for IP-Xact objects.
 	 *
@@ -345,6 +354,9 @@ private:
 
 	//! Checks if the given string is a URL (invalids are allowed) or not.
 	 QRegExpValidator* urlTester_;
+
+     //! The parameter finder used in the component validator.
+     QSharedPointer<ComponentParameterFinder> componentValidatorFinder_;
 
      //! The used component validator.
      ComponentValidator componentValidator_;
