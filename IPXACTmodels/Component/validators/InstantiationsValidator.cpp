@@ -369,6 +369,8 @@ void InstantiationsValidator::findErrorsInComponentInstantiation(QVector<QString
 		}
 	}
 
+    QStringList parameterNames;
+    QStringList duplicateParameterNames;
 	foreach ( QSharedPointer<ModuleParameter> parameter, *instantiation->getModuleParameters() )
 	{
 		parameterValidator_->findErrorsIn(errors,parameter,context);
@@ -384,11 +386,35 @@ void InstantiationsValidator::findErrorsInComponentInstantiation(QVector<QString
 			errors.append(QObject::tr("The usage of module parameter %1 is invalid: %2")
 				.arg(parameter->name()).arg(parameter->getUsageType()));
 		}
+
+        if (parameterNames.contains(parameter->name()) && !duplicateParameterNames.contains(parameter->name()))
+        {
+            errors.append(QObject::tr("Module parameter name %1 within %2 is not unique.")
+                .arg(parameter->name()).arg(context));
+            duplicateParameterNames.append(parameter->name());
+        }
+        else
+        {
+            parameterNames.append(parameter->name());
+        }
 	}
 
+    parameterNames.clear();
+    duplicateParameterNames.clear();
 	foreach ( QSharedPointer<Parameter> parameter, *instantiation->getParameters() )
 	{
-		parameterValidator_->findErrorsIn(errors,parameter,context);
+        parameterValidator_->findErrorsIn(errors,parameter,context);
+        
+        if (parameterNames.contains(parameter->name()) && !duplicateParameterNames.contains(parameter->name()))
+        {
+            errors.append(QObject::tr("Parameter name %1 within %2 is not unique.")
+                .arg(parameter->name()).arg(context));
+            duplicateParameterNames.append(parameter->name());
+        }
+        else
+        {
+            parameterNames.append(parameter->name());
+        }
 	}
 }
 

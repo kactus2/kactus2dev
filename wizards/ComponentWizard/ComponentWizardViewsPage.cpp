@@ -35,21 +35,21 @@
 // Function: ComponentWizardViewsPage::ComponentWizardViewsPage()
 //-----------------------------------------------------------------------------
 ComponentWizardViewsPage::ComponentWizardViewsPage(LibraryInterface* lh,
-    QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter,
-    ComponentWizard* parent)
-    : QWizardPage(parent), 
-    library_(lh), 
-    parent_(parent),
-    editorTabs_(new QTabWidget(this)),
-    addButton_(new QPushButton(QIcon(":/icons/common/graphics/add.png"), QString(), this)),
-    removeButton_(new QPushButton(QIcon(":/icons/common/graphics/remove.png"), QString(), this)),
-    viewList_(new QListView(this)),
-    viewModel_(new ViewListModel(this)),
-    parameterFinder_(parameterFinder),
-    expressionFormatter_(expressionFormatter),
-    validator_(QSharedPointer<ExpressionParser>(new IPXactSystemVerilogParser(parameterFinder)),
-        parent_->getComponent()->getModel())
+                                                   QSharedPointer<ParameterFinder> parameterFinder,
+                                                   QSharedPointer<ExpressionFormatter> expressionFormatter,
+                                                   ComponentWizard* parent):
+QWizardPage(parent),
+library_(lh),
+parent_(parent),
+editorTabs_(new QTabWidget(this)),
+addButton_(new QPushButton(QIcon(":/icons/common/graphics/add.png"), QString(), this)),
+removeButton_(new QPushButton(QIcon(":/icons/common/graphics/remove.png"), QString(), this)),
+viewList_(new QListView(this)),
+viewModel_(new ViewListModel(this)),
+parameterFinder_(parameterFinder),
+expressionFormatter_(expressionFormatter),
+validator_(QSharedPointer<ExpressionParser>(new IPXactSystemVerilogParser(parameterFinder)),
+           parent_->getComponent()->getModel())
 {
     setTitle(tr("Views"));
     setSubTitle(tr("Setup the views for the component."));
@@ -92,6 +92,8 @@ void ComponentWizardViewsPage::initializePage()
    QSharedPointer<Component> component = parent_->getComponent();
    viewModel_->setComponent(component);
    
+   validator_.componentChange(component->getModel());
+
    foreach(QSharedPointer<View> view, *component->getViews())
    {
        createEditorForView(component, view);
