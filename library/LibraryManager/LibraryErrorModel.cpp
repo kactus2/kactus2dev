@@ -88,7 +88,7 @@ QVariant LibraryErrorModel::data(QModelIndex const& index, int role) const
 //-----------------------------------------------------------------------------
 QVariant LibraryErrorModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    if (role != Qt::DisplayRole && orientation != Qt::Horizontal)
+    if (role != Qt::DisplayRole && orientation != Qt::Vertical)
     {
         return QVariant();
     }
@@ -97,10 +97,12 @@ QVariant LibraryErrorModel::headerData(int section, Qt::Orientation orientation,
     {
         return "#";
     }
-    else //if (section == COLUMN_DESCRIPTION)
+    else if (section == COLUMN_DESCRIPTION)
     {
         return tr("Description");
     }
+
+    return QVariant();
 }
 
 //-----------------------------------------------------------------------------

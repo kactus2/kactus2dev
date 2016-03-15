@@ -742,11 +742,13 @@ void LibraryHandler::onShowErrors(VLNV const& vlnv)
         TableViewDialog* dialog = new TableViewDialog(this);
         dialog->setWindowTitle(tr("Errors in %1").arg(vlnv.toString()));
 		dialog->setDescription(tr("The following errors were found:"));
-		dialog->setModel(model);
 		dialog->resize(700, 350);
 
 		dialog->show();
-		connect(dialog, SIGNAL(finished(int)), dialog, SLOT(deleteLater()));
+
+        dialog->setModel(model);
+        
+        connect(dialog, SIGNAL(finished(int)), dialog, SLOT(deleteLater()));
     }
 }
 
