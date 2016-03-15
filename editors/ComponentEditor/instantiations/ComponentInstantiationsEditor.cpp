@@ -24,12 +24,13 @@
 //-----------------------------------------------------------------------------
 // Function: ComponentInstantiationsEditor::ComponentInstantiationsEditor()
 //-----------------------------------------------------------------------------
-ComponentInstantiationsEditor::ComponentInstantiationsEditor(QSharedPointer<Component> component, 
-    LibraryInterface* handler, QSharedPointer<InstantiationsValidator> validator, QWidget* parent):
+ComponentInstantiationsEditor::ComponentInstantiationsEditor(QSharedPointer<Component> component,
+    LibraryInterface* handler, QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<InstantiationsValidator> validator, QWidget* parent /* = 0 */):
 ItemEditor(component, handler, parent),
-    view_(new EditableTableView(this)),
-    proxy_(new QSortFilterProxyModel(this)),
-    model_(component, validator, this)
+view_(new EditableTableView(this)),
+proxy_(new QSortFilterProxyModel(this)),
+model_(component, parameterFinder, validator, this)
 {
 	proxy_->setSourceModel(&model_);	
     proxy_->setDynamicSortFilter(false);
@@ -51,6 +52,9 @@ ItemEditor(component, handler, parent),
         &model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
 	connect(view_, SIGNAL(removeItem(const QModelIndex&)),
 		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
+
+    connect(&model_, SIGNAL(decreaseReferences(QString)), this,
+        SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
     SummaryLabel* summaryLabel = new SummaryLabel(tr("Component instantiations summary"), this);
 

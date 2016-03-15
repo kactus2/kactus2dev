@@ -99,7 +99,7 @@ void FileSetValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Fil
 			!expressionParser_->isValidExpression( currentFileBuilder->getReplaceDefaultFlags() ) )
 		{
             errors.append(QObject::tr("\"Replace default flags\" expression '%1' in build command for file set %2" 
-                "is invalid.").arg(currentFileBuilder->getReplaceDefaultFlags(), fileSet->name()));
+                " is invalid.").arg(currentFileBuilder->getReplaceDefaultFlags(), fileSet->name()));
 		}
 	}
 

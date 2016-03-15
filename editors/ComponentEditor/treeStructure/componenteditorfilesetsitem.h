@@ -24,6 +24,10 @@ class FileValidator;
 class FileSetValidator;
 class ParameterFinder;
 class PluginManager;
+class ReferenceCounter;
+class ExpressionParser;
+class ParameterFinder;
+class ExpressionFormatter;
 
 //-----------------------------------------------------------------------------
 //! The file sets-item in the component editor navigation tree.
@@ -37,16 +41,21 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] model               The model that owns the items.
-	 *      @param [in] libHandler          The instance that manages the library.
-  	 *      @param [in] pluginMgr           The plugin manager.
-	 *      @param [in] component           The component being edited.
-     *      @param [in] parameterFinder     The finder for component parameters.
-	 *      @param [in] parent              The parent item.
+	 *      @param [in] model                   The model that owns the items.
+	 *      @param [in] libHandler              The instance that manages the library.
+  	 *      @param [in] pluginMgr               The plugin manager.
+	 *      @param [in] component               The component being edited.
+     *      @param [in] referenceCounter        The counter for parameter references.
+     *      @param [in] parameterFinder         Finder used to identify parameters.
+     *      @param [in] expressionParser        Parser used to calculate expressions.
+     *      @param [in] expressionFormatter     Formatter used to format expressions.
+     *      @param [in] parameterFinder         The finder for component parameters.
+	 *      @param [in] parent                  The parent item.
 	 */
     ComponentEditorFileSetsItem(ComponentEditorTreeModel* model, LibraryInterface* libHandler,
         PluginManager& pluginMgr, QSharedPointer<Component> component,
-        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ReferenceCounter> referenceCounter, QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter,
         ComponentEditorItem* parent);
 
 	//! The destructor.

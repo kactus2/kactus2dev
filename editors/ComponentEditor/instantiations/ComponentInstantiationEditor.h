@@ -31,6 +31,7 @@ class View;
 class ComponentInstantiation;
 class ExpressionFormatter;
 class ParameterFinder;
+class ExpressionParser;
 
 //-----------------------------------------------------------------------------
 //! Contains the GUI items to edit the general settings of non-hierarchical view.
@@ -44,17 +45,19 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *        @param [in] component             The component that contains the view.
-	 *        @param [in] view                  The view being edited.
-     *        @param [in] parameterFinder       Parameter finder for view parameter expressions.
-     *        @param [in] expressionFormatter   Formatter for view parameter expressions.
-	 *        @param [in] parent                The owner of this widget.
+	 *      @param [in] component               The component that contains the view.
+	 *      @param [in] view                    The view being edited.
+     *      @param [in] parameterFinder         Parameter finder for view parameter expressions.
+     *      @param [in] parameterFinder         Finder used to identify parameters.
+     *      @param [in] expressionParser        Parser used to calculate expressions.
+     *      @param [in] expressionFormatter     Formatter for view parameter expressions.
+	 *      @param [in] parent                  The owner of this widget.
 	 */
 	ComponentInstantiationEditor(QSharedPointer<Component> component,
         LibraryInterface* library,
         QSharedPointer<ComponentInstantiation> componentInstantiation,
-        QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
-		QWidget *parent);
+        QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<ExpressionFormatter> expressionFormatter, QWidget *parent);
 	
 	//! The destructor.
 	virtual ~ComponentInstantiationEditor();

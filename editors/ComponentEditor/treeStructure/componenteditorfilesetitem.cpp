@@ -27,18 +27,22 @@
 // Function: ComponentEditorFileSetItem::ComponentEditorFileSetItem()
 //-----------------------------------------------------------------------------
 ComponentEditorFileSetItem::ComponentEditorFileSetItem(QSharedPointer<FileSet> fileSet,
-                                                       ComponentEditorTreeModel* model,
-                                                       LibraryInterface* libHandler,
-													   QSharedPointer<Component> component,
-                                                       QSharedPointer<FileSetValidator> validator,
-                                                       QSharedPointer<FileValidator> fileValidator,
-													   ComponentEditorItem* parent ):
+        ComponentEditorTreeModel* model, LibraryInterface* libHandler, QSharedPointer<Component> component,
+        QSharedPointer<ReferenceCounter> referenceCounter, QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QSharedPointer<FileSetValidator> validator, QSharedPointer<FileValidator> fileValidator,
+        ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 fileSet_(fileSet),
 files_(fileSet->getFiles()),
 filesetValidator_(validator),
-fileValidator_(fileValidator)
+fileValidator_(fileValidator),
+expressionParser_(expressionParser)
 {
+    setReferenceCounter(referenceCounter);
+    setParameterFinder(parameterFinder);
+    setExpressionFormatter(expressionFormatter);
+
     int childCount = files_->size();
     for (int i = 0; i < childCount; i++)
     {
@@ -95,15 +99,18 @@ ItemEditor* ComponentEditorFileSetItem::editor()
 {
 	if (!editor_)
     {
-		 editor_ = new FileSetEditor(libHandler_, component_, fileSet_, NULL);
-		 editor_->setProtection(locked_);
-		 connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
-		 connect(editor_, SIGNAL(childAdded(int)), this, SLOT(onAddChild(int)), Qt::UniqueConnection);
-		 connect(editor_, SIGNAL(childRemoved(int)), this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
-		 connect(editor_, SIGNAL(childMoved(int, int)), this, SLOT(onMoveChild(int, int)), Qt::UniqueConnection);
-		 connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
+        editor_ = new FileSetEditor(
+            libHandler_, component_, fileSet_, parameterFinder_, expressionParser_, expressionFormatter_, NULL);
+        editor_->setProtection(locked_);
+        connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(childAdded(int)), this, SLOT(onAddChild(int)), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(childRemoved(int)), this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(childMoved(int, int)), this, SLOT(onMoveChild(int, int)), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
 
-         connect(editor_, SIGNAL(childRemoved(int)), this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(childRemoved(int)), this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
+
+        connectItemEditorToReferenceCounter();
 	}
 
 	return editor_;

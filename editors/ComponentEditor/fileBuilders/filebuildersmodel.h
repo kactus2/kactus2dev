@@ -12,17 +12,23 @@
 #ifndef FILEBUILDERSMODEL_H
 #define FILEBUILDERSMODEL_H
 
+#include <editors/ComponentEditor/common/ReferencingTableModel.h>
+#include <editors/ComponentEditor/common/ParameterizableTable.h>
+
 #include <QAbstractTableModel>
 #include <QList>
 #include <QSharedPointer>
 #include <QObject>
 
 class FileBuilder;
+class ParameterFinder;
+class ExpressionFormatter;
+class ExpressionParser;
 
 //-----------------------------------------------------------------------------
 //! Model that contains the items to edit file builders.
 //-----------------------------------------------------------------------------
-class FileBuildersModel : public QAbstractTableModel
+class FileBuildersModel : public ReferencingTableModel, public ParameterizableTable
 {
 	Q_OBJECT
 
@@ -31,10 +37,17 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] fileBuilders    Contains the file builders to edit.
-	 *      @param [in] parent          Pointer to the owner of this model.
+	 *      @param [in] fileBuilders            Contains the file builders to edit.
+     *      @param [in] parameterFinder         Finder used to identify parameters.
+     *      @param [in] expressionFormatter     Formatter used to format expressions.
+     *      @param [in] expressionParser        Parser used to calculate expressions.
+	 *      @param [in] parent                  Pointer to the owner of this model.
 	 */
-	FileBuildersModel(QSharedPointer<QList<QSharedPointer<FileBuilder> > > fileBuilders, QObject* parent);
+	FileBuildersModel(QSharedPointer<QList<QSharedPointer<FileBuilder> > > fileBuilders,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QSharedPointer<ExpressionParser> expressionParser,
+        QObject* parent);
 
 	//! The destructor.
 	virtual ~FileBuildersModel();
@@ -134,14 +147,67 @@ signals:
 	//! Prints a notification to user.
 	void noticeMessage(const QString& msg) const;
 
+protected:
+
+    /*!
+     *  Check if the given column can contain expressions.
+     *
+     *      @param [in] index   The index of the selected column.
+     *
+     *      @return True, if the column can contain expressions, false otherwise.
+     */
+    virtual bool isValidExpressionColumn(QModelIndex const& index) const;
+
+    /*!
+     *  Get the value of the item in the given index.
+     *
+     *      @param [in] index   The selected index.
+     *
+     *      @return The value matching the index.
+     */
+    virtual QVariant expressionOrValueForIndex(QModelIndex const& index) const;
+
+    /*!
+     *  Validate the selected index.
+     *
+     *      @param [in] index   The selected index.
+     *
+     *      @return True, if the index is valid, otherwise false.
+     */
+    virtual bool validateIndex(QModelIndex const& index) const;
+
+    /*!
+     *  Get all the references to a selected parameter in the selected row.
+     *
+     *      @param [in] row         The selected row.
+     *      @param [in] valueID     The Id of the selected parameter.
+     *
+     *      @return The number of references made to teh selected Id.
+     */
+    virtual int getAllReferencesToIdInItemOnRow(const int& row, QString const& valueID) const;
+
 private:
 
 	//! No copying. No assignment.
 	FileBuildersModel(const FileBuildersModel& other);
 	FileBuildersModel& operator=(const FileBuildersModel& other);
 	
+    /*!
+     *  Decrease the amount of references made in the selected file builder.
+     *
+     *      @param [in] builder     The selected file builder.
+     */
+    void decreaseReferencesWithRemovedFileBuilder(QSharedPointer<FileBuilder> builder);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
 	//! Contains the file builders to edit.
     QSharedPointer<QList<QSharedPointer<FileBuilder> > > fileBuilders_;
+
+    //! The formatter for changing parameter ids to parameter names.
+    QSharedPointer<ExpressionFormatter> expressionFormatter_;
 };
 
 #endif // FILEBUILDERSMODEL_H

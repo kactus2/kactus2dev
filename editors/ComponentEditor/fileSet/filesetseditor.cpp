@@ -26,12 +26,12 @@
 //-----------------------------------------------------------------------------
 // Function: FileSetsEditor::FileSetsEditor()
 //-----------------------------------------------------------------------------
-FileSetsEditor::FileSetsEditor(QSharedPointer<Component> component, LibraryInterface* libInterface, 
-    PluginManager& pluginMgr):
+FileSetsEditor::FileSetsEditor(QSharedPointer<Component> component, LibraryInterface* libInterface,
+                               PluginManager& pluginMgr, QSharedPointer<ParameterFinder> parameterFinder):
 ItemEditor(component, libInterface),
 splitter_(Qt::Vertical, this),
 view_(&splitter_),
-model_(component, this),
+model_(component, parameterFinder, this),
 proxy_(this),
 dependencyEditor_(component, QFileInfo(libInterface->getPath(component->getVlnv())).path(), pluginMgr, &splitter_),
 firstShow_(true)
@@ -76,6 +76,9 @@ firstShow_(true)
         &model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
 	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
         &model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
+
+    connect(&model_, SIGNAL(decreaseReferences(QString)), this,
+        SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

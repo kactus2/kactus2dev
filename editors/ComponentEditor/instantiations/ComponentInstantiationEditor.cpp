@@ -25,25 +25,25 @@
 // Function: ComponentInstantiationEditor::ComponentInstantiationEditor()
 //-----------------------------------------------------------------------------
 ComponentInstantiationEditor::ComponentInstantiationEditor(QSharedPointer<Component> component,
-    LibraryInterface* library,
-    QSharedPointer<ComponentInstantiation> componentInstantiation,
-    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QWidget *parent):
+        LibraryInterface* library, QSharedPointer<ComponentInstantiation> componentInstantiation,
+        QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<ExpressionFormatter> expressionFormatter, QWidget *parent):
 ItemEditor(component, library, parent),
-    component_(component),
-    componentInstantiation_(componentInstantiation),
-    nameGroupEditor_(componentInstantiation, this, tr("Component instance name and description")),
-    languageEditor_(this), 
-    languageStrict_(tr("Strict"), this),
-    libraryEditor_(this),
-    packageEditor_(this),
-    modulelNameEditor_(this),
-    architectureEditor_(this),
-    configurationEditor_(this),
-    fileSetRefs_(component, tr("File set references"), this),
-    fileBuilders_(componentInstantiation->getDefaultFileBuilders(), this),
-    moduleParameters_(componentInstantiation->getModuleParameters(), component->getChoices(), parameterFinder,
-    expressionFormatter, this)
+component_(component),
+componentInstantiation_(componentInstantiation),
+nameGroupEditor_(componentInstantiation, this, tr("Component instance name and description")),
+languageEditor_(this), 
+languageStrict_(tr("Strict"), this),
+libraryEditor_(this),
+packageEditor_(this),
+modulelNameEditor_(this),
+architectureEditor_(this),
+configurationEditor_(this),
+fileSetRefs_(component, tr("File set references"), this),
+fileBuilders_(componentInstantiation->getDefaultFileBuilders(), parameterFinder, expressionParser,
+              expressionFormatter, this),
+moduleParameters_(componentInstantiation->getModuleParameters(), component->getChoices(), parameterFinder,
+expressionFormatter, this)
 {
     fileSetRefs_.initialize();
 
@@ -70,6 +70,11 @@ ItemEditor(component, library, parent),
 	connect(&fileSetRefs_, SIGNAL(contentChanged()), this, SLOT(onFileSetRefChange()), Qt::UniqueConnection);
 
     connect(&fileBuilders_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+
+    connect(&fileBuilders_, SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(&fileBuilders_, SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
     connect(&moduleParameters_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(&moduleParameters_, SIGNAL(increaseReferences(QString)),

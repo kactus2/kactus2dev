@@ -19,6 +19,7 @@
 #include <QSharedPointer>
 
 class InstantiationsValidator;
+class ParameterFinder;
 
 //-----------------------------------------------------------------------------
 //! Model for component instantiations summary.
@@ -32,11 +33,12 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] component       The component being edited.
-     *      @param [in] validator       The validator used for component instances.
-	 *      @param [in] parent          Pointer to the owner of the model.
+	 *      @param [in] component           The component being edited.
+     *      @param [in] parameterFinder     Finder used to identify parameters.
+     *      @param [in] validator           The validator used for component instances.
+	 *      @param [in] parent              Pointer to the owner of the model.
 	 */
-	ComponentInstantiationsModel(QSharedPointer<Component> component, 
+	ComponentInstantiationsModel(QSharedPointer<Component> component, QSharedPointer<ParameterFinder> finder,
         QSharedPointer<InstantiationsValidator> validator, QObject* parent);
 	
 	//! The destructor.
@@ -127,17 +129,38 @@ signals:
 
 	//! Emitted when a component instantiation is removed from the given index.
 	void componentInstantiationRemoved(int index);
+    
+    /*!
+     *  Decrease the amount of references to the selected parameter.
+     *
+     *      @param [in] valueId   The id of the referenced parameter.
+     */
+    void decreaseReferences(QString valueId) const;
 
 private:
 	//! No copying.
 	ComponentInstantiationsModel(const ComponentInstantiationsModel& other);
 	ComponentInstantiationsModel& operator=(const ComponentInstantiationsModel& other);
 
-	//! The component being edited.
+    /*!
+     *  Remove references made in the selected component instantiation.
+     *
+     *      @param [in] instantiation   The selected component instantiation.
+     */
+    void decreaseReferencesInRemovedComponentInstantiation(QSharedPointer<ComponentInstantiation> instantiation);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! The component being edited.
 	QSharedPointer<Component> component_;
 
 	//! Contains the component instantiations to manage.
     QSharedPointer<QList<QSharedPointer<ComponentInstantiation> > > instantiations_;
+
+    //! Finder for identifying parameters.
+    QSharedPointer<ParameterFinder> parameterFinder_;
 
     //! The validator used for component instantiations.
     QSharedPointer<InstantiationsValidator> validator_;

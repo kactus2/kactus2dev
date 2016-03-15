@@ -12,6 +12,8 @@
 #include "filesetsmodel.h"
 #include "FileSetColumns.h"
 
+#include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
+
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/FileSet.h>
 
@@ -23,10 +25,12 @@
 //-----------------------------------------------------------------------------
 // Function: FileSetsModel::FileSetsModel()
 //-----------------------------------------------------------------------------
-FileSetsModel::FileSetsModel(QSharedPointer<Component> component, QObject *parent):
+FileSetsModel::FileSetsModel(QSharedPointer<Component> component, QSharedPointer<ParameterFinder> parameterFinder,
+    QObject *parent):
 QAbstractTableModel(parent),
 component_(component),
-fileSets_(component->getFileSets())
+fileSets_(component->getFileSets()),
+parameterFinder_(parameterFinder)
 {
 
 }
@@ -242,14 +246,40 @@ void FileSetsModel::onRemoveItem(QModelIndex const& index)
 
 	// remove the specified item
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
+
+    decreaseReferencesWithRemovedFileSet(fileSets_->at(index.row()));
+
 	fileSets_->removeAt(index.row());
-	endRemoveRows();
+
+    endRemoveRows();
 
 	// inform navigation tree that file set has been removed
 	emit fileSetRemoved(index.row());
 
 	// tell also parent widget that contents have been changed
 	emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: filesetsmodel::decreaseReferencesWithRemovedFileSet()
+//-----------------------------------------------------------------------------
+void FileSetsModel::decreaseReferencesWithRemovedFileSet(QSharedPointer<FileSet> currentFileSet)
+{
+    QStringList expressionList;
+    foreach (QSharedPointer<FileBuilder> builder, *currentFileSet->getDefaultFileBuilders())
+    {
+        expressionList.append(builder->getReplaceDefaultFlags());
+    }
+
+    ReferenceCalculator referenceCalculator(parameterFinder_);
+    QMap<QString, int> referencedParameters = referenceCalculator.getReferencedParameters(expressionList);
+    foreach (QString referencedID, referencedParameters.keys())
+    {
+        for (int i = 0; i < referencedParameters.value(referencedID); ++i)
+        {
+            emit decreaseReferences(referencedID);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------

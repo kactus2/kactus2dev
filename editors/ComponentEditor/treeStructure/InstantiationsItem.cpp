@@ -96,7 +96,7 @@ ItemEditor* InstantiationsItem::editor()
 {
 	if (!editor_)
     {
- 		editor_ = new InstantiationsEditor(component_, libHandler_, validator_);
+ 		editor_ = new InstantiationsEditor(component_, parameterFinder_, libHandler_, validator_);
  		editor_->setProtection(locked_);
  
  		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
@@ -116,6 +116,8 @@ ItemEditor* InstantiationsItem::editor()
             SLOT(onAddChild(int)));
         connect(editor_, SIGNAL(designInstanceRemoved(int)), designInstantiationsItem_.data(), 
             SLOT(onRemoveChild(int)));
+
+        connectItemEditorToReferenceCounter();
 	}
 	return editor_;
 }

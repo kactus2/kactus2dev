@@ -12,6 +12,8 @@
 #include "ComponentInstantiationsModel.h"
 #include "ComponentInstantiationsColumns.h"
 
+#include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
+
 #include <QStringList>
 #include <QColor>
 #include <QRegularExpression>
@@ -21,13 +23,13 @@
 //-----------------------------------------------------------------------------
 // Function: ComponentInstantiationsModel::ComponentInstantiationsModel()
 //-----------------------------------------------------------------------------
-ComponentInstantiationsModel::ComponentInstantiationsModel(QSharedPointer<Component> component, 
-    QSharedPointer<InstantiationsValidator> validator,
-    QObject* parent):
+ComponentInstantiationsModel::ComponentInstantiationsModel(QSharedPointer<Component> component,
+    QSharedPointer<ParameterFinder> finder, QSharedPointer<InstantiationsValidator> validator, QObject* parent):
 QAbstractTableModel(parent),
-    component_(component),
-    instantiations_(component->getComponentInstantiations()),
-    validator_(validator)
+component_(component),
+instantiations_(component->getComponentInstantiations()),
+parameterFinder_(finder),
+validator_(validator)
 {
 
 }
@@ -273,9 +275,35 @@ void ComponentInstantiationsModel::onRemoveItem(QModelIndex const& index)
 
 	// remove the specified item
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
+
+    decreaseReferencesInRemovedComponentInstantiation(instantiations_->at(index.row()));
+
 	instantiations_->removeAt(index.row());
 	endRemoveRows();
 
 	emit componentInstantiationRemoved(index.row());
 	emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentInstantiationsModel::decreaseReferencesInRemovedComponentInstantiation()
+//-----------------------------------------------------------------------------
+void ComponentInstantiationsModel::decreaseReferencesInRemovedComponentInstantiation(
+    QSharedPointer<ComponentInstantiation> instantiation)
+{
+    QStringList expressionList;
+    foreach (QSharedPointer<FileBuilder> builder, *instantiation->getDefaultFileBuilders())
+    {
+        expressionList.append(builder->getReplaceDefaultFlags());
+    }
+
+    ReferenceCalculator referenceCalculator(parameterFinder_);
+    QMap<QString, int> referencedParameters = referenceCalculator.getReferencedParameters(expressionList);
+    foreach (QString referencedID, referencedParameters.keys())
+    {
+        for (int i = 0; i < referencedParameters.value(referencedID); ++i)
+        {
+            emit decreaseReferences(referencedID);
+        }
+    }
 }

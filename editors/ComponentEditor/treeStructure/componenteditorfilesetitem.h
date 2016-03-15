@@ -22,6 +22,9 @@ class FileSet;
 class FileSetValidator;
 class LibraryInterface;
 class ParameterFinder;
+class ExpressionParser;
+class ExpressionFormatter;
+class ReferenceCounter;
 
 //-----------------------------------------------------------------------------
 //! The item for a single file set in the component editor's navigation tree.
@@ -35,16 +38,22 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] fileSet         The file set being edited.
-	 *      @param [in] model           The model that owns the items.
-	 *      @param [in] libHandler      The instance that manages the library.
-	 *      @param [in] component       The component being edited.
-     *      @param [in] validator       The validator for checking file set validity.
-     *      @param [in] fileValidator   The validator for checking child item (file) validity.
-	 *      @param [in] parent          The parent item.
+	 *      @param [in] fileSet                 The file set being edited.
+	 *      @param [in] model                   The model that owns the items.
+	 *      @param [in] libHandler              The instance that manages the library.
+	 *      @param [in] component               The component being edited.
+     *      @param [in] referenceCounter        The counter for parameter references.
+     *      @param [in] parameterFinder         Finder used to identify parameters.
+     *      @param [in] expressionParser        Parser used to calculate expressions.
+     *      @param [in] expressionFormatter     Formatter used to format expressions.
+     *      @param [in] validator               The validator for checking file set validity.
+     *      @param [in] fileValidator           The validator for checking child item (file) validity.
+	 *      @param [in] parent                  The parent item.
      */
     ComponentEditorFileSetItem(QSharedPointer<FileSet> fileSet, ComponentEditorTreeModel* model,
         LibraryInterface* libHandler, QSharedPointer<Component> component,
+        QSharedPointer<ReferenceCounter> referenceCounter, QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter,
         QSharedPointer<FileSetValidator> validator, QSharedPointer<FileValidator> fileValidator,
         ComponentEditorItem* parent);
 
@@ -122,6 +131,9 @@ private:
 
     //! The validator for checking child validity.
     QSharedPointer<FileValidator> fileValidator_;
+
+    //! Formatter used to change parameter ids to parameter names.
+    QSharedPointer<ExpressionParser> expressionParser_;
 };
 
 #endif // COMPONENTEDITORFILESETITEM_H

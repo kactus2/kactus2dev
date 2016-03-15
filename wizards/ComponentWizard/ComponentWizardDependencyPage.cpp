@@ -24,12 +24,13 @@
 // Function: ComponentWizardDependencyPage::ComponentWizardDependencyPage()
 //-----------------------------------------------------------------------------
 ComponentWizardDependencyPage::ComponentWizardDependencyPage(QSharedPointer<Component> component,
-    QString const& componentPath, PluginManager const& pluginMgr, QWidget* parent):
+        QSharedPointer<ParameterFinder> parameterFinder, QString const& componentPath,
+        PluginManager const& pluginMgr, QWidget* parent):
 QWizardPage(parent),
 component_(component),
 splitter_(Qt::Vertical, this),
 view_(&splitter_),
-model_(component_, this),
+model_(component_, parameterFinder, this),
 proxy_(this),
 editor_(component_, componentPath, pluginMgr, &splitter_)
 {

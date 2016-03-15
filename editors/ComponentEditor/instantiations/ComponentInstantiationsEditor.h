@@ -21,6 +21,8 @@
 class EditableTableView;
 class LibraryInterface;
 class InstantiationsValidator;
+class ParameterFinder;
+
 //-----------------------------------------------------------------------------
 //! Editor for component instantiations.
 //-----------------------------------------------------------------------------
@@ -33,13 +35,15 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] component       The component being edited.
-	 *      @param [in] handler         The instance managing the library.
-     *      @param [in] validator       The validator used for component instantiations.
-	 *      @param [in] parent          The parent of this editor.
+	 *      @param [in] component           The component being edited.
+	 *      @param [in] handler             The instance managing the library.
+     *      @param [in] parameterFinder     Finder used to identify parameters.
+     *      @param [in] validator           The validator used for component instantiations.
+	 *      @param [in] parent              The parent of this editor.
 	 */
 	ComponentInstantiationsEditor(QSharedPointer<Component> component, LibraryInterface* handler,
-        QSharedPointer<InstantiationsValidator> validator, QWidget* parent = 0);
+        QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<InstantiationsValidator> validator,
+        QWidget* parent = 0);
 	
 	//! The destructor.
 	virtual ~ComponentInstantiationsEditor();

@@ -24,12 +24,15 @@
 //-----------------------------------------------------------------------------
 // Function: InstantiationsEditor::InstantiationsEditor()
 //-----------------------------------------------------------------------------
-InstantiationsEditor::InstantiationsEditor(QSharedPointer<Component> component, 
-    LibraryInterface* handler, QSharedPointer<InstantiationsValidator> validator, QWidget* parent):
+InstantiationsEditor::InstantiationsEditor(QSharedPointer<Component> component,
+    QSharedPointer<ParameterFinder> parameterFinder, LibraryInterface* handler,
+    QSharedPointer<InstantiationsValidator> validator, QWidget* parent /* = 0 */):
 ItemEditor(component, handler, parent),
-    componentInstantiationsEditor_(new ComponentInstantiationsEditor(component, handler, validator, this)),
-    designConfigurationInstantiationsEditor_(new DesignConfigurationInstantiationsEditor(component, handler, validator, this)),
-    designInstantiationsEditor_(new DesignInstantiationsEditor(component, handler, validator, this))
+componentInstantiationsEditor_(new ComponentInstantiationsEditor(component, handler, parameterFinder, validator,
+                                                                 this)),
+designConfigurationInstantiationsEditor_(new DesignConfigurationInstantiationsEditor(component, handler, validator,
+                                                                                     this)),
+designInstantiationsEditor_(new DesignInstantiationsEditor(component, handler, validator, this))
 {
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(componentInstantiationsEditor_);
@@ -57,6 +60,9 @@ ItemEditor(component, handler, parent),
         this, SIGNAL(designInstanceAdded(int)), Qt::UniqueConnection);
     connect(designInstantiationsEditor_, SIGNAL(childRemoved(int)), 
         this, SIGNAL(designInstanceRemoved(int)), Qt::UniqueConnection);
+
+    connect(componentInstantiationsEditor_, SIGNAL(decreaseReferences(QString)), this,
+        SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

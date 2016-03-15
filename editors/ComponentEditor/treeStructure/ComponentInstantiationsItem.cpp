@@ -78,13 +78,15 @@ ItemEditor* ComponentInstantiationsItem::editor()
 {
 	if (!editor_)
     {
-        editor_ = new ComponentInstantiationsEditor(component_, libHandler_, validator_, 0);
+        editor_ = new ComponentInstantiationsEditor(component_, libHandler_, parameterFinder_, validator_, 0);
         editor_->setProtection(locked_);
 
         connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(childAdded(int)), this, SLOT(onAddChild(int)), Qt::UniqueConnection);
         connect(editor_, SIGNAL(childRemoved(int)), this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
         connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
+
+        connectItemEditorToReferenceCounter();
 	}
 	return editor_;
 }

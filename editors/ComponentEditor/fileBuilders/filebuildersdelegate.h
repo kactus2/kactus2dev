@@ -12,13 +12,15 @@
 #ifndef FILEBUILDERSDELEGATE_H
 #define FILEBUILDERSDELEGATE_H
 
+#include <editors/ComponentEditor/common/ExpressionDelegate.h>
+
 #include <QStyledItemDelegate>
 #include <QObject>
 
 //-----------------------------------------------------------------------------
 //! Delegate to provide editors to edit file builders.
 //-----------------------------------------------------------------------------
-class FileBuildersDelegate : public QStyledItemDelegate
+class FileBuildersDelegate : public ExpressionDelegate
 {
 	Q_OBJECT
 
@@ -27,9 +29,12 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] parent  Pointer to the owner of the delegate.
+     *      @param [in] parameterNameCompleter  The completer to use for parameter names in expression editor.
+     *      @param [in] parameterFinder         The parameter finder to use for for expression editor.
+	 *      @param [in] parent                  Pointer to the owner of the delegate.
 	 */
-	FileBuildersDelegate(QObject *parent);
+    FileBuildersDelegate(QCompleter* parameterNameCompleter, QSharedPointer<ParameterFinder> parameterFinder,
+        QObject *parent);
 	
 	//! The destructor.
 	virtual ~FileBuildersDelegate();
@@ -84,6 +89,22 @@ protected:
 	 */
 	virtual bool editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option,
         const QModelIndex &index);
+
+    /*!
+     *  Check if a given column accepts expressions.
+     *
+     *      @param [in] column  The selected column.
+     *
+     *      @return True, if the column accepts expressions, false otherwise.
+     */
+    virtual bool columnAcceptsExpression(int column) const;
+
+    /*!
+     *  Gets the column number for the description column.
+     *
+     *      @return File builders do not have description.
+     */
+    virtual int descriptionColumn() const;
 
 private slots:
 

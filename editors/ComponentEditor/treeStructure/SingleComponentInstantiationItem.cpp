@@ -82,21 +82,15 @@ ItemEditor* SingleComponentInstantiationItem::editor()
 	if (!editor_)
     {
  		editor_ = new ComponentInstantiationEditor(component_, libHandler_, instantiation_, parameterFinder_,
-            expressionFormatter_, 0);
+            expressionParser_, expressionFormatter_, 0);
  		editor_->setProtection(locked_);
  
  		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
  		connect(editor_, SIGNAL(childAdded(int)), this, SLOT(onAddChild(int)), Qt::UniqueConnection);
  		connect(editor_, SIGNAL(childRemoved(int)), this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
  		connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
+
+        connectItemEditorToReferenceCounter();
 	}
 	return editor_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentInstantiationsItem::createChild()
-//-----------------------------------------------------------------------------
-void SingleComponentInstantiationItem::createChild( int index )
-{
-    // No children allowed.
 }

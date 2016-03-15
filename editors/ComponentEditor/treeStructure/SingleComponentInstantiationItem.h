@@ -80,13 +80,6 @@ public:
 	 */
 	virtual ItemEditor* editor();
 
-	/*!
-     *  Add a new child to the item.
-	 * 
-	 *      @param [in] index   The index to add the child into.
-	 */
-	virtual void createChild(int index);
-
 private:
 
 	//! No copying.

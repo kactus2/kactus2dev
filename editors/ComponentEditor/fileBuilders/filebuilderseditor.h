@@ -22,6 +22,9 @@
 #include <QObject>
 
 class FileBuilder;
+class ParameterFinder;
+class ExpressionFormatter;
+class ExpressionParser;
 
 //-----------------------------------------------------------------------------
 //! Editor to edit file builders.
@@ -35,10 +38,15 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] fileBuilders    QList that contains the file builders to edit.
-	 *      @param [in] parent          Pointer to the owner of this editor.
+	 *      @param [in] fileBuilders            QList that contains the file builders to edit.
+     *      @param [in] parameterFinder         Finder used to identify parameters.
+     *      @param [in] expressionParser        Parser used to calculate expressions.
+     *      @param [in] expressionFormatter     Formatter used to format expressions.
+	 *      @param [in] parent                  Pointer to the owner of this editor.
 	 */
-    FileBuildersEditor(QSharedPointer<QList<QSharedPointer<FileBuilder> > > fileBuilders, QWidget* parent);
+    FileBuildersEditor(QSharedPointer<QList<QSharedPointer<FileBuilder> > > fileBuilders,
+        QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<ExpressionFormatter> expressionFormatter, QWidget* parent);
 
 	//! The destructor.
 	virtual ~FileBuildersEditor();
@@ -66,6 +74,20 @@ signals:
 	//! Inform that contents of this editor have changed.
 	void contentChanged();
 
+    /*!
+     *  Increase the number of references in the selected parameter.
+     *
+     *      @param [in] id  Id of the selected parameter.
+     */
+    void increaseReferences(QString id) const;
+    
+    /*!
+     *  Decrease the number of references in the selected parameter.
+     *
+     *      @param [in] id  Id of the selected parameter.
+     */
+    void decreaseReferences(QString id) const;
+
 private:
 
 	//! No copying. No assignment.
@@ -76,7 +98,7 @@ private:
 	EditableTableView view_;
 
 	//! The model that holds the data to be displayed to the user.
-	FileBuildersModel model_;
+    FileBuildersModel* model_;
 
 	//! \brief Pointer to the proxy that is used to sort the view.
 	QSortFilterProxyModel proxy_;
