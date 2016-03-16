@@ -222,7 +222,7 @@ bool BusEditor::save()
 	if (absDefGroup_.isEnabled())
     {
 		absDefGroup_.save();
-		libHandler_->writeModelToFile(absDef_, true);
+		libHandler_->writeModelToFile(absDef_);
 	}
 
 	// If bus definition is being edited, save it.

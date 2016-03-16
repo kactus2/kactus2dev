@@ -16,7 +16,7 @@
 //-----------------------------------------------------------------------------
 // Function: DescEditor()
 //-----------------------------------------------------------------------------
-DescEditor::DescEditor(QWidget* parent /* = 0 */) : QGroupBox(parent), m_descEdit(0)
+DescEditor::DescEditor(QWidget* parent) : QGroupBox(parent), m_descEdit(0)
 {
     setTitle(tr("Description"));
 
@@ -27,8 +27,7 @@ DescEditor::DescEditor(QWidget* parent /* = 0 */) : QGroupBox(parent), m_descEdi
     layout->addWidget(m_descEdit);
 
     // Connect the signals informing of changes in items.
-    connect(m_descEdit, SIGNAL(textChanged()),
-            this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(m_descEdit, SIGNAL(textChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

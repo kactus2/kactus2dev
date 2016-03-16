@@ -13,10 +13,10 @@
 
 #include <QSharedPointer>
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/model.h>
-#include <IPXACTmodels/modelparameter.h>
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/Model.h>
+#include <IPXACTmodels/common/Parameter.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 #include <wizards/common/ViewComparator/ViewComparator.h>
 #include <wizards/common/IPXactDiff.h>

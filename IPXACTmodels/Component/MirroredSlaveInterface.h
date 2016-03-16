@@ -20,7 +20,7 @@
 #include <QSharedPointer>
 
 //-----------------------------------------------------------------------------
-//! Implementation of ipxact:mirredSlave in bus interface.
+//! Implementation of ipxact:mirroredSlave in bus interface.
 //-----------------------------------------------------------------------------
 class IPXACTMODELS_EXPORT MirroredSlaveInterface
 {
@@ -42,7 +42,7 @@ public:
 		 *
 		 *      @param [in] remapAddress The remap address to set.
 		*/
-		RemapAddress(QString const& remapAddress);
+		IPXACTMODELS_EXPORT RemapAddress(QString const& remapAddress);
 	};
 
 	//! The default constructor.

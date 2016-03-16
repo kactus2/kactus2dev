@@ -677,16 +677,17 @@ QSharedPointer<Design> tst_QuartusGenerator::createTestDesign(QString const& des
     library_.writeModelToFile(QFileInfo(".").absoluteFilePath() + "/", newDesign);
     library_.addComponent(newDesign);
 
-    QSharedPointer<QList<QSharedPointer<ComponentInstance> > > componentInstances( new QList<QSharedPointer<ComponentInstance> > );
+    QSharedPointer<QList<QSharedPointer<ComponentInstance> > > componentInstances(
+        new QList<QSharedPointer<ComponentInstance> >());
     QMap<QString, int> usedInstances;
     foreach (QSharedPointer<Component> currentComponent, containedComponents)
     {
         int instanceNumber = usedInstances.value(currentComponent->getVlnv().getName(), 0);
         QString instanceName = currentComponent->getVlnv().getName() + "_" + QString::number(instanceNumber);
         
-		QSharedPointer<ConfigurableVLNVReference> velviRef( new ConfigurableVLNVReference( currentComponent->getVlnv() ) );
-        QSharedPointer<ComponentInstance> newInstance (new ComponentInstance(instanceName, "", "", velviRef, QPointF(),
-            instanceName + "ID") );
+		QSharedPointer<ConfigurableVLNVReference> vlnvRef(new ConfigurableVLNVReference(currentComponent->getVlnv()));
+        QSharedPointer<ComponentInstance> newInstance (new ComponentInstance(instanceName, vlnvRef));
+        newInstance->setUuid(instanceName + "ID");
 
         componentInstances->append(newInstance);
         

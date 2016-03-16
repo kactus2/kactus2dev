@@ -13,10 +13,9 @@
 
 #include <QSharedPointer>
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/model.h>
-#include <IPXACTmodels/modelparameter.h>
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/Model.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 #include <wizards/common/ComponentComparator/ComponentComparator.h>
 #include <wizards/common/IPXactDiff.h>
@@ -41,12 +40,6 @@ private slots:
     void testComparingWithDifferentVLNVIsNotEqual();
     void testComparingWithDifferentVLNVIsNotEqual_data();
 
-    void testModelParameterInOneComponentIsNotEqual();
-    void testSimilarModelParametersIsEqual();
-    void testDifferentModelParametersIsNotEqual();
-    void testDifferentModelParameterValuesIsNotEqual();
-    void testMultipleModelParametersWithOneDifferenceIsNotEqual();
-
     void testViewInOneComponentIsNotEqual();
     void testDifferentViewsIsNotEqual();
     
@@ -67,9 +60,6 @@ private slots:
 private:
 
     ComponentComparator* makeComparator();
-
-    void addModelParameter(QSharedPointer<Component> component, QString const& name, QString const& value) const;
-   
 
     //! The comparator to test.
     ComponentComparator* comparator_;
@@ -166,91 +156,12 @@ void tst_ComponentComparator::testComparingWithDifferentVLNVIsNotEqual_data()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_ComponentComparator::testModelParameterInOneComponentIsNotEqual()
-//-----------------------------------------------------------------------------
-void tst_ComponentComparator::testModelParameterInOneComponentIsNotEqual()
-{
-    QSharedPointer<Component> reference(new Component());
-    QSharedPointer<Component> component(new Component());
-
-    QSharedPointer<ModelParameter> modelParameter(new ModelParameter());
-    component->getModel()->addModelParameter(modelParameter);
-
-    QVERIFY2(!comparator_->compare(reference, component), 
-        "Components with different model parameters should not be equal.");
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_ComponentComparator::testSimilarModelParametersIsEqual()
-//-----------------------------------------------------------------------------
-void tst_ComponentComparator::testSimilarModelParametersIsEqual()
-{
-    QSharedPointer<Component> reference(new Component());    
-    addModelParameter(reference, "id", "1");
-
-    QSharedPointer<Component> component(new Component());
-    addModelParameter(component, "id", "1");
-
-    QVERIFY2(comparator_->compare(reference, component), 
-        "Components with same model parameter should be equal.");
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_ComponentComparator::testDifferentModelParametersIsNotEqual()
-//-----------------------------------------------------------------------------
-void tst_ComponentComparator::testDifferentModelParametersIsNotEqual()
-{
-    QSharedPointer<Component> reference(new Component());    
-    addModelParameter(reference, "id", "1");
-
-    QSharedPointer<Component> component(new Component());
-    addModelParameter(component, "reference id", "1");
-
-    QVERIFY2(!comparator_->compare(reference, component), 
-        "Components with different model parameters should not be equal.");
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_ComponentComparator::testDifferentModelParameterValuesIsNotEqual()
-//-----------------------------------------------------------------------------
-void tst_ComponentComparator::testDifferentModelParameterValuesIsNotEqual()
-{
-    QSharedPointer<Component> reference(new Component());    
-    addModelParameter(reference, "id", "1");
-
-    QSharedPointer<Component> component(new Component());
-    addModelParameter(component, "id", "200");
-
-    QVERIFY2(!comparator_->compare(reference, component), 
-        "Components with different model parameter values should not be equal.");
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_ComponentComparator::testMultipleModelParametersWithOneDifferenceIsNotEqual()
-//-----------------------------------------------------------------------------
-void tst_ComponentComparator::testMultipleModelParametersWithOneDifferenceIsNotEqual()
-{
-    QSharedPointer<Component> reference(new Component());    
-    addModelParameter(reference, "addr_width", "16");
-    addModelParameter(reference, "data_width", "32");
-    addModelParameter(reference, "id", "1");
-
-    QSharedPointer<Component> component(new Component());    
-    addModelParameter(component, "addr_width", "16");    
-    addModelParameter(component, "data_width", "32");
-    addModelParameter(component, "clk_freq", "100000");    
-
-    QVERIFY2(!comparator_->compare(reference, component), 
-        "Components with different model parameters should not be equal.");
-}
-
-//-----------------------------------------------------------------------------
 // Function: tst_ComponentComparator::testViewInOneComponentIsNotEqual()
 //-----------------------------------------------------------------------------
 void tst_ComponentComparator::testViewInOneComponentIsNotEqual()
 {
     QSharedPointer<Component> reference(new Component());    
-    reference->addView(new View());
+    reference->getViews()->append(QSharedPointer<View>(new View()));
 
     QSharedPointer<Component> component(new Component());    
 
@@ -264,12 +175,12 @@ void tst_ComponentComparator::testViewInOneComponentIsNotEqual()
 void tst_ComponentComparator::testDifferentViewsIsNotEqual()
 {
     QSharedPointer<Component> reference(new Component());    
-    reference->addView(new View("view1"));
-    reference->addView(new View("view2"));
+    reference->getViews()->append(QSharedPointer<View>(new View("view1")));
+    reference->getViews()->append(QSharedPointer<View>(new View("view2")));
 
     QSharedPointer<Component> component(new Component());    
-    component->addView(new View("view1"));
-    component->addView(new View("unknown view"));
+    component->getViews()->append(QSharedPointer<View>(new View("view1")));
+    component->getViews()->append(QSharedPointer<View>(new View("unknown view")));
 
     QVERIFY2(!comparator_->compare(reference, component), 
         "Components with different views should not be equal.");
@@ -281,11 +192,11 @@ void tst_ComponentComparator::testDifferentViewsIsNotEqual()
 void tst_ComponentComparator::testDifferentNumberOfViewsIsNotEqual()
 {
     QSharedPointer<Component> reference(new Component());    
-    reference->addView(new View("0"));
+    reference->getViews()->append(QSharedPointer<View>(new View("0")));
 
     QSharedPointer<Component> component(new Component());    
-    component->addView(new View("0"));
-    component->addView(new View("1"));
+    component->getViews()->append(QSharedPointer<View>(new View("0")));
+    component->getViews()->append(QSharedPointer<View>(new View("1")));
 
     QVERIFY2(!comparator_->compare(reference, component), 
         "Components with views in different order should be equal.");
@@ -351,7 +262,7 @@ void tst_ComponentComparator::testDiffViewInSubjectComponentIsAdd()
     QSharedPointer<Component> reference(new Component());    
     
     QSharedPointer<Component> subject(new Component());    
-    subject->addView(new View("testView"));
+    subject->getViews()->append(QSharedPointer<View>(new View("testView")));
 
     QList<QSharedPointer<IPXactDiff> > diff = comparator_->diff(reference, subject);
 
@@ -365,7 +276,7 @@ void tst_ComponentComparator::testDiffViewInSubjectComponentIsAdd()
 void tst_ComponentComparator::testDiffViewInReferenceComponentIsRemove()
 {
     QSharedPointer<Component> reference(new Component());    
-    reference->addView(new View("testView"));
+    reference->getViews()->append(QSharedPointer<View>(new View("testView")));
 
     QSharedPointer<Component> subject(new Component());        
 
@@ -381,10 +292,10 @@ void tst_ComponentComparator::testDiffViewInReferenceComponentIsRemove()
 void tst_ComponentComparator::testDiffToSameViewIsNoChange()
 {
     QSharedPointer<Component> reference(new Component());    
-    reference->addView(new View());
+    reference->getViews()->append(QSharedPointer<View>(new View()));
 
     QSharedPointer<Component> subject(new Component());        
-    subject->addView(new View());
+    subject->getViews()->append(QSharedPointer<View>(new View()));
 
     QList<QSharedPointer<IPXactDiff> > diff = comparator_->diff(reference, subject);
 
@@ -398,14 +309,14 @@ void tst_ComponentComparator::testDiffToSameViewIsNoChange()
 void tst_ComponentComparator::testDiffMultipleViewsChanged()
 {
     QSharedPointer<Component> reference(new Component());       
-    reference->addView(new View("view1"));
-    reference->addView(new View("view2"));
+    reference->getViews()->append(QSharedPointer<View>(new View("view1")));
+    reference->getViews()->append(QSharedPointer<View>(new View("view2")));
 
     QSharedPointer<Component> subject(new Component());    
-    subject->addView(new View("view2"));    
-    subject->getViews().first()->setModelName("model");
-    subject->addView(new View("view3"));    
-    subject->addView(new View("view4"));    
+    subject->getViews()->append(QSharedPointer<View>(new View("view2")));    
+    //subject->getViews()->first()->setModelName("model");
+    subject->getViews()->append(QSharedPointer<View>(new View("view3")));    
+    subject->getViews()->append(QSharedPointer<View>(new View("view4")));    
 
     QList<QSharedPointer<IPXactDiff> > diff = comparator_->diff(reference, subject);
 
@@ -417,17 +328,6 @@ void tst_ComponentComparator::testDiffMultipleViewsChanged()
     verifyDiffElementAndType(diff.at(3), "view", "view4", IPXactDiff::ADD);
 }
 
-//-----------------------------------------------------------------------------
-// Function: tst_ComponentComparator::addModelParameter()
-//-----------------------------------------------------------------------------
-void tst_ComponentComparator::addModelParameter(QSharedPointer<Component> component, QString const& name, 
-    QString const& value) const
-{
-    QSharedPointer<ModelParameter> otherModelParameter(new ModelParameter());
-    otherModelParameter->setName(name);
-    otherModelParameter->setValue(value);
-    component->getModel()->addModelParameter(otherModelParameter);
-}
 
 QTEST_APPLESS_MAIN(tst_ComponentComparator)
 

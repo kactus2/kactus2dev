@@ -38,7 +38,7 @@ public:
     /*!
      *  Constructor which reads the property from an XML node.
      */
-    ComProperty(QDomNode& node);
+    ComProperty(QDomNode const& node);
 
     /*!
      *  Destructor.
@@ -115,7 +115,7 @@ public:
     /*!
      *  Returns the name of the property.
      */
-    QString const& name() const;
+    QString name() const;
 
     /*!
      *  Returns true if the property is required.
@@ -125,17 +125,17 @@ public:
     /*!
      *  Returns the property type.
      */
-    QString const& getType() const;
+    QString getType() const;
 
     /*!
      *  Returns the default value for the property.
      */
-    QString const& getDefaultValue() const;
+    QString getDefaultValue() const;
 
     /*!
      *  Returns the description of the property.
      */
-    QString const& getDescription() const;
+    QString getDescription() const;
 
     /*!
      *  Assignment operator.

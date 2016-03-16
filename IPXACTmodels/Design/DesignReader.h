@@ -250,6 +250,13 @@ private:
      */
     void parseInterfaceGraphics(QDomElement const& extensionsNode, QSharedPointer<Design> design) const;
 
+    /*!
+     *  Reads the sticky notes for the design.
+     *
+     *      @param [in] extensionNode   The XML description of the design vendor extensions.
+     *      @param [in] design          The new design item.
+     */
+    void parseNotes(QDomElement const& extensionNode, QSharedPointer<Design> design) const;
 };
 
 #endif // DESIGNREADER_H

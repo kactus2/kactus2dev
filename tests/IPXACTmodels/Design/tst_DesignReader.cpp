@@ -789,13 +789,13 @@ void tst_DesignReader::testReadColumns()
     int firstColumnWidth = columnList.first()->getWidth();
     QCOMPARE(columnList.first()->name(), QString("testColumn"));
     QCOMPARE(columnList.first()->getContentType(), ColumnTypes::COMPONENTS);
-    QCOMPARE(columnList.first()->getAllowedItems(), unsigned int(0));
+    QVERIFY(columnList.first()->getAllowedItems() == 0);
     QCOMPARE(firstColumnWidth, 259);
 
     int secondColumnWidth = columnList.last()->getWidth();
     QCOMPARE(columnList.last()->name(), QString("otherColumn"));
     QCOMPARE(columnList.last()->getContentType(), ColumnTypes::BUSES);
-    QCOMPARE(columnList.last()->getAllowedItems(), unsigned int (0));
+    QVERIFY(columnList.last()->getAllowedItems() == 0);
     QCOMPARE(secondColumnWidth, 259);
 }
 
@@ -989,15 +989,12 @@ void tst_DesignReader::testReadApiConnections()
     QCOMPARE(apiConnections.first()->displayName(), QString("connection"));
     QCOMPARE(apiConnections.first()->description(), QString("described"));
 
-    QCOMPARE(apiConnections.first()->getInterface1()->getComponentReference(), QString("applicationOne"));
-    QCOMPARE(apiConnections.first()->getInterface1()->getBusReference(), QString("busOne"));
-    QCOMPARE(apiConnections.first()->getInterface2()->getComponentReference(), QString("applicationTwo"));
-    QCOMPARE(apiConnections.first()->getInterface2()->getBusReference(), QString("busTwo"));
+    QCOMPARE(apiConnections.first()->getStartInterface()->getComponentReference(), QString("applicationOne"));
+    QCOMPARE(apiConnections.first()->getStartInterface()->getBusReference(), QString("busOne"));
+    QCOMPARE(apiConnections.first()->getActiveInterfaces()->first()->getComponentReference(), QString("applicationTwo"));
+    QCOMPARE(apiConnections.first()->getActiveInterfaces()->first()->getBusReference(), QString("busTwo"));
 
     QCOMPARE(apiConnections.first()->isOffPage(), false);
-    QCOMPARE(apiConnections.first()->getRoute().size(), 1);
-    QCOMPARE(apiConnections.first()->getRoute().first().x(), qreal(1));
-    QCOMPARE(apiConnections.first()->getRoute().first().y(), qreal(1));
 
     QCOMPARE(apiConnections.first()->isImported(), true);
 }
@@ -1020,19 +1017,15 @@ void tst_DesignReader::testReadHierApiConnections()
             "<ipxact:description>TestDescription</ipxact:description>"
             "<ipxact:vendorExtensions>"
                 "<kactus2:version>3.0.0</kactus2:version>"
-                "<kactus2:hierApiDependencies>"
-                    "<kactus2:hierApiDependency interfaceRef=\"topInterface\">"
+                "<kactus2:apiConnections>"
+                    "<kactus2:apiConnection>"
                         "<ipxact:name>hierApi</ipxact:name>"
                         "<ipxact:displayName>display</ipxact:displayName>"
                         "<ipxact:description>description</ipxact:description>"
-                        "<kactus2:activeApiInterface componentRef=\"applicationOne\" apiRef=\"busOne\"/>"
-                        "<kactus2:position x=\"1\" y=\"1\"/>"
-                        "<kactus2:direction x=\"10\" y=\"10\"/>"
-                        "<kactus2:route kactus2:offPage=\"false\">"
-                            "<kactus2:position x=\"1\" y=\"1\"/>"
-                        "</kactus2:route>"
-                    "</kactus2:hierApiDependency>"
-                "</kactus2:hierApiDependencies>"
+                        "<kactus2:activeApiInterface componentRef=\"applicationOne\" apiRef=\"busOne\"/>"           
+                        "<kactus2:hierApiInterface apiRef=\"topInterface\"/>"      
+                    "</kactus2:apiConnection>"
+                "</kactus2:apiConnections>"
             "</ipxact:vendorExtensions>"
         "</ipxact:design>");
 
@@ -1045,24 +1038,15 @@ void tst_DesignReader::testReadHierApiConnections()
     QCOMPARE(testDesign->getVendorExtensions()->size(), 2);
     QCOMPARE(testDesign->getVersion(), QString("3.0.0"));
 
-    QList<QSharedPointer<HierApiInterconnection> > hierApiConnections = testDesign->getHierApiDependencies();
+    QList<QSharedPointer<ApiInterconnection> > hierApiConnections = testDesign->getApiConnections();
     QCOMPARE(hierApiConnections.size(), 1);
     QCOMPARE(hierApiConnections.first()->name(), QString("hierApi"));
     QCOMPARE(hierApiConnections.first()->displayName(), QString("display"));
     QCOMPARE(hierApiConnections.first()->description(), QString("description"));
 
-    QCOMPARE(hierApiConnections.first()->getTopInterfaceRef(), QString("topInterface"));
-    QCOMPARE(hierApiConnections.first()->getInterface()->getComponentReference(), QString("applicationOne"));
-    QCOMPARE(hierApiConnections.first()->getInterface()->getBusReference(), QString("busOne"));
-
-    QCOMPARE(hierApiConnections.first()->getPosition().x(), qreal(1));
-    QCOMPARE(hierApiConnections.first()->getPosition().y(), qreal(1));
-    QCOMPARE(hierApiConnections.first()->getDirection().x(), float(10));
-    QCOMPARE(hierApiConnections.first()->getDirection().y(), float(10));
-
-    QCOMPARE(hierApiConnections.first()->getRoute().size(), 1);
-    QCOMPARE(hierApiConnections.first()->getRoute().first().x(), qreal(1));
-    QCOMPARE(hierApiConnections.first()->getRoute().first().y(), qreal(1));
+    QCOMPARE(hierApiConnections.first()->getEndInterface()->getBusReference(), QString("topInterface"));
+    QCOMPARE(hierApiConnections.first()->getStartInterface()->getComponentReference(), QString("applicationOne"));
+    QCOMPARE(hierApiConnections.first()->getStartInterface()->getBusReference(), QString("busOne"));
 }
 
 //-----------------------------------------------------------------------------
@@ -1113,14 +1097,10 @@ void tst_DesignReader::testReadComConnections()
     QCOMPARE(comConnections.first()->displayName(), QString("display"));
     QCOMPARE(comConnections.first()->description(), QString("description"));
 
-    QCOMPARE(comConnections.first()->getInterface1()->getComponentReference(), QString("applicationOne"));
-    QCOMPARE(comConnections.first()->getInterface1()->getBusReference(), QString("busOne"));
-    QCOMPARE(comConnections.first()->getInterface2()->getComponentReference(), QString("applicationTwo"));
-    QCOMPARE(comConnections.first()->getInterface2()->getBusReference(), QString("busTwo"));
-
-    QCOMPARE(comConnections.first()->getRoute().size(), 1);
-    QCOMPARE(comConnections.first()->getRoute().first().x(), qreal(1));
-    QCOMPARE(comConnections.first()->getRoute().first().y(), qreal(1));
+    QCOMPARE(comConnections.first()->getStartInterface()->getComponentReference(), QString("applicationOne"));
+    QCOMPARE(comConnections.first()->getStartInterface()->getBusReference(), QString("busOne"));
+    QCOMPARE(comConnections.first()->getActiveInterfaces()->first()->getComponentReference(), QString("applicationTwo"));
+    QCOMPARE(comConnections.first()->getActiveInterfaces()->first()->getBusReference(), QString("busTwo"));
 }
 
 //-----------------------------------------------------------------------------
@@ -1141,19 +1121,15 @@ void tst_DesignReader::testReadHierComConnections()
             "<ipxact:description>TestDescription</ipxact:description>"
             "<ipxact:vendorExtensions>"
                 "<kactus2:version>3.0.0</kactus2:version>"
-                "<kactus2:hierComConnections>"
-                    "<kactus2:hierComConnection interfaceRef=\"topInterface\">"
+                "<kactus2:comConnections>"
+                    "<kactus2:comConnection>"
                         "<ipxact:name>hierComConnection</ipxact:name>"
                         "<ipxact:displayName>display</ipxact:displayName>"
                         "<ipxact:description>description</ipxact:description>"
                         "<kactus2:activeComInterface componentRef=\"applicationOne\" comRef=\"busOne\"/>"
-                        "<kactus2:position x=\"1\" y=\"1\"/>"
-                        "<kactus2:direction x=\"10\" y=\"10\"/>"
-                        "<kactus2:route offPage=\"false\">"
-                            "<kactus2:position x=\"1\" y=\"1\"/>"
-                        "</kactus2:route>"
-                    "</kactus2:hierComConnection>"
-                "</kactus2:hierComConnections>"
+                        "<kactus2:hierComInterface comRef=\"topInterface\"/>"
+                    "</kactus2:comConnection>"
+                "</kactus2:comConnections>"
             "</ipxact:vendorExtensions>"
         "</ipxact:design>");
 
@@ -1166,24 +1142,15 @@ void tst_DesignReader::testReadHierComConnections()
     QCOMPARE(testDesign->getVendorExtensions()->size(), 2);
     QCOMPARE(testDesign->getVersion(), QString("3.0.0"));
 
-    QList<QSharedPointer<HierComInterconnection> > hierComConnections = testDesign->getHierComConnections();
+    QList<QSharedPointer<ComInterconnection> > hierComConnections = testDesign->getComConnections();
     QCOMPARE(hierComConnections.size(), 1);
     QCOMPARE(hierComConnections.first()->name(), QString("hierComConnection"));
     QCOMPARE(hierComConnections.first()->displayName(), QString("display"));
     QCOMPARE(hierComConnections.first()->description(), QString("description"));
 
-    QCOMPARE(hierComConnections.first()->getTopInterfaceRef(), QString("topInterface"));
-    QCOMPARE(hierComConnections.first()->getInterface()->getComponentReference(), QString("applicationOne"));
-    QCOMPARE(hierComConnections.first()->getInterface()->getBusReference(), QString("busOne"));
-    
-    QCOMPARE(hierComConnections.first()->getPosition().x(), qreal(1));
-    QCOMPARE(hierComConnections.first()->getPosition().y(), qreal(1));
-    QCOMPARE(hierComConnections.first()->getDirection().x(), float(10));
-    QCOMPARE(hierComConnections.first()->getDirection().y(), float(10));
-
-    QCOMPARE(hierComConnections.first()->getRoute().size(), 1);
-    QCOMPARE(hierComConnections.first()->getRoute().first().x(), qreal(1));
-    QCOMPARE(hierComConnections.first()->getRoute().first().y(), qreal(1));
+    QCOMPARE(hierComConnections.first()->getEndInterface()->getBusReference(), QString("topInterface"));
+    QCOMPARE(hierComConnections.first()->getStartInterface()->getComponentReference(), QString("applicationOne"));
+    QCOMPARE(hierComConnections.first()->getStartInterface()->getBusReference(), QString("busOne"));
 }
 
 QTEST_APPLESS_MAIN(tst_DesignReader)

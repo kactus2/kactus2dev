@@ -920,9 +920,9 @@ void tst_DesignWriter::testWriteColumns()
             "\t<ipxact:vendorExtensions>\n"
                 "\t\t<kactus2:columnLayout>\n"
                     "\t\t\t<kactus2:column name=\"testColumn\" contentType=\"2\" allowedItems=\"0\" "
-                        "minWidth=\"259\" width=\"259\"/>\n"
+                        "minWidth=\"259\" width=\"259\" x=\"0\"/>\n"
                     "\t\t\t<kactus2:column name=\"otherColumn\" contentType=\"1\" allowedItems=\"0\" "
-                        "minWidth=\"259\" width=\"259\"/>\n"
+                        "minWidth=\"259\" width=\"259\" x=\"0\"/>\n"
                 "\t\t</kactus2:columnLayout>\n"
             "\t</ipxact:vendorExtensions>\n"
         "</ipxact:design>\n"
@@ -951,7 +951,7 @@ void tst_DesignWriter::testWriteColumns()
             "\t<ipxact:vendorExtensions>\n"
                 "\t\t<kactus2:columnLayout>\n"
                     "\t\t\t<kactus2:column name=\"testColumn\" contentType=\"2\" allowedItems=\"0\" "
-                        "minWidth=\"259\" width=\"259\"/>\n"
+                        "minWidth=\"259\" width=\"259\" x=\"0\"/>\n"
                 "\t\t</kactus2:columnLayout>\n"
             "\t</ipxact:vendorExtensions>\n"
         "</ipxact:design>\n"
@@ -1120,8 +1120,8 @@ void tst_DesignWriter::testWriteApiDependencies()
     points.append(pointOne);
 
     QSharedPointer<ApiInterconnection> testApiConnection(new ApiInterconnection("apiConnect", "connection",
-        "described", testStartInterface, testEndInterface, points));
-
+        "described", testStartInterface, testEndInterface));
+    
     QList<QSharedPointer<ApiInterconnection> > apiConnections;
     apiConnections.append(testApiConnection);
 
@@ -1156,9 +1156,9 @@ void tst_DesignWriter::testWriteApiDependencies()
                         "\t\t\t\t<ipxact:description>described</ipxact:description>\n"
                         "\t\t\t\t<kactus2:activeApiInterface componentRef=\"applicationOne\" apiRef=\"busOne\"/>\n"
                         "\t\t\t\t<kactus2:activeApiInterface componentRef=\"applicationTwo\" apiRef=\"busTwo\"/>\n"
-                        "\t\t\t\t<kactus2:route offPage=\"false\">\n"
+                        /*"\t\t\t\t<kactus2:route offPage=\"false\">\n"
                             "\t\t\t\t\t<kactus2:position x=\"1\" y=\"1\"/>\n"
-                        "\t\t\t\t</kactus2:route>\n"
+                        "\t\t\t\t</kactus2:route>\n"*/
                     "\t\t\t</kactus2:apiConnection>\n"
                 "\t\t</kactus2:apiConnections>\n"
             "\t</ipxact:vendorExtensions>\n"
@@ -1175,23 +1175,15 @@ void tst_DesignWriter::testWriteHierApiDependencies()
 {
     QSharedPointer<ActiveInterface> testInterface(new ActiveInterface("applicationOne", "busOne"));
 
-    QPointF pointOne;
-    pointOne.setX(1);
-    pointOne.setY(1);
-    QList<QPointF> points;
-    points.append(pointOne);
-
-    QVector2D hierVector;
-    hierVector.setX(10);
-    hierVector.setY(10);
-
-    QSharedPointer<HierApiInterconnection> testHierApi(new HierApiInterconnection(
-        "hierApi", "display", "description", "topInterface", testInterface, pointOne, hierVector, points));
-
-    QList<QSharedPointer<HierApiInterconnection> > hierApiList;
+    QSharedPointer<HierInterface> topInterface(new HierInterface("topInterface"));
+    
+    QSharedPointer<ApiInterconnection> testHierApi(new ApiInterconnection("hierApi", "display", "description", 
+        topInterface, testInterface));
+    
+    QList<QSharedPointer<ApiInterconnection> > hierApiList;
     hierApiList.append(testHierApi);
 
-    testDesign_->setHierApiDependencies(hierApiList);
+    testDesign_->setApiConnections(hierApiList);
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
@@ -1215,19 +1207,15 @@ void tst_DesignWriter::testWriteHierApiDependencies()
             "\t<ipxact:name>TestDesign</ipxact:name>\n"
             "\t<ipxact:version>0.1</ipxact:version>\n"
             "\t<ipxact:vendorExtensions>\n"
-                "\t\t<kactus2:hierApiDependencies>\n"
-                    "\t\t\t<kactus2:hierApiDependency interfaceRef=\"topInterface\">\n"
+                "\t\t<kactus2:apiConnections>\n"
+                    "\t\t\t<kactus2:apiConnection>\n"
                         "\t\t\t\t<ipxact:name>hierApi</ipxact:name>\n"
                         "\t\t\t\t<ipxact:displayName>display</ipxact:displayName>\n"
                         "\t\t\t\t<ipxact:description>description</ipxact:description>\n"
                         "\t\t\t\t<kactus2:activeApiInterface componentRef=\"applicationOne\" apiRef=\"busOne\"/>\n"
-                        "\t\t\t\t<kactus2:position x=\"1\" y=\"1\"/>\n"
-                        "\t\t\t\t<kactus2:direction x=\"10\" y=\"10\"/>\n"
-                        "\t\t\t\t<kactus2:route kactus2:offPage=\"false\">\n"
-                            "\t\t\t\t\t<kactus2:position x=\"1\" y=\"1\"/>\n"
-                        "\t\t\t\t</kactus2:route>\n"
-                    "\t\t\t</kactus2:hierApiDependency>\n"
-                "\t\t</kactus2:hierApiDependencies>\n"
+                        "\t\t\t\t<kactus2:hierApiInterface apiRef=\"topInterface\"/>\n"
+                    "\t\t\t</kactus2:apiConnection>\n"
+                "\t\t</kactus2:apiConnections>\n"
             "\t</ipxact:vendorExtensions>\n"
         "</ipxact:design>\n"
         );
@@ -1243,12 +1231,8 @@ void tst_DesignWriter::testWriteComConnections()
     QSharedPointer<ActiveInterface> testStartInterface(new ActiveInterface("applicationOne", "busOne"));
     QSharedPointer<ActiveInterface> testEndInterface(new ActiveInterface("applicationTwo", "busTwo"));
 
-    QList<QPointF> points;
-    points.append(QPointF(1,1));
-    points.append(QPointF(2,1));
-
     QSharedPointer<ComInterconnection> testComConnection(new ComInterconnection("comConnect", "display",
-        "description", testStartInterface, testEndInterface, points));
+        "description", testStartInterface, testEndInterface));
 
     QList<QSharedPointer<ComInterconnection> > comConnectionList;
     comConnectionList.append(testComConnection);
@@ -1284,14 +1268,10 @@ void tst_DesignWriter::testWriteComConnections()
                         "\t\t\t\t<ipxact:description>description</ipxact:description>\n"
                         "\t\t\t\t<kactus2:activeComInterface componentRef=\"applicationOne\" comRef=\"busOne\"/>\n"
                         "\t\t\t\t<kactus2:activeComInterface componentRef=\"applicationTwo\" comRef=\"busTwo\"/>\n"
-                         "\t\t\t\t<kactus2:route offPage=\"false\">\n"
-                             "\t\t\t\t\t<kactus2:position x=\"1\" y=\"1\"/>\n"
-                             "\t\t\t\t\t<kactus2:position x=\"2\" y=\"1\"/>\n"
-                         "\t\t\t\t</kactus2:route>\n"
                     "\t\t\t</kactus2:comConnection>\n"
                 "\t\t</kactus2:comConnections>\n"
             "\t</ipxact:vendorExtensions>\n"
-        "</ipxact:design>\n"
+        "</ipxact:design>"
         );
 
     compareOutputToExpected(output, expectedOutput);
@@ -1304,23 +1284,15 @@ void tst_DesignWriter::testWriteHierComConnections()
 {
     QSharedPointer<ActiveInterface> testInterface(new ActiveInterface("applicationOne", "busOne"));
 
-    QPointF pointOne;
-    pointOne.setX(1);
-    pointOne.setY(1);
-    QList<QPointF> points;
-    points.append(pointOne);
+    QSharedPointer<HierInterface> topInterface(new HierInterface("topInterface"));
 
-    QVector2D hierVector;
-    hierVector.setX(10);
-    hierVector.setY(10);
+    QSharedPointer<ComInterconnection> testHierComConnection(new ComInterconnection("hierComConnection",
+        "display", "description", topInterface, testInterface));
 
-    QSharedPointer<HierComInterconnection> testHierComConnection(new HierComInterconnection("hierComConnection",
-        "display", "description", "topInterface", testInterface, pointOne, hierVector, points));
-
-    QList<QSharedPointer<HierComInterconnection> > hierComList;
+    QList<QSharedPointer<ComInterconnection> > hierComList;
     hierComList.append(testHierComConnection);
 
-    testDesign_->setHierComConnections(hierComList);
+    testDesign_->setComConnections(hierComList);
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
@@ -1344,19 +1316,15 @@ void tst_DesignWriter::testWriteHierComConnections()
             "\t<ipxact:name>TestDesign</ipxact:name>\n"
             "\t<ipxact:version>0.1</ipxact:version>\n"
             "\t<ipxact:vendorExtensions>\n"
-                "\t\t<kactus2:hierComConnections>\n"
-                    "\t\t\t<kactus2:hierComConnection interfaceRef=\"topInterface\">\n"
+                "\t\t<kactus2:comConnections>\n"
+                    "\t\t\t<kactus2:comConnection>\n"
                         "\t\t\t\t<ipxact:name>hierComConnection</ipxact:name>\n"
                         "\t\t\t\t<ipxact:displayName>display</ipxact:displayName>\n"
                         "\t\t\t\t<ipxact:description>description</ipxact:description>\n"
                         "\t\t\t\t<kactus2:activeComInterface componentRef=\"applicationOne\" comRef=\"busOne\"/>\n"
-                        "\t\t\t\t<kactus2:position x=\"1\" y=\"1\"/>\n"
-                        "\t\t\t\t<kactus2:direction x=\"10\" y=\"10\"/>\n"
-                        "\t\t\t\t<kactus2:route offPage=\"false\">\n"
-                            "\t\t\t\t\t<kactus2:position x=\"1\" y=\"1\"/>\n"
-                        "\t\t\t\t</kactus2:route>\n"
-                    "\t\t\t</kactus2:hierComConnection>\n"
-                "\t\t</kactus2:hierComConnections>\n"
+                        "\t\t\t\t<kactus2:hierComInterface comRef=\"topInterface\"/>\n"
+                    "\t\t\t</kactus2:comConnection>\n"
+                "\t\t</kactus2:comConnections>\n"
             "\t</ipxact:vendorExtensions>\n"
         "</ipxact:design>\n"
         );

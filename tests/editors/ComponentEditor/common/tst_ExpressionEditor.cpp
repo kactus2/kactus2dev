@@ -23,7 +23,7 @@
 
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
 
 Q_DECLARE_METATYPE(Qt::Key);
 

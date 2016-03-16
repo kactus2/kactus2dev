@@ -248,7 +248,12 @@ bool InterconnectionValidator::singleExcludePortIsValid(QString const& portRefer
 //-----------------------------------------------------------------------------
 bool InterconnectionValidator::hasValidInterfaces(QSharedPointer<Interconnection> interConnection) const
 {
-    if ((!interConnection->getActiveInterfaces()->isEmpty() || !interConnection->getHierInterfaces()->isEmpty()))
+    if (!interConnection->getStartInterface() || (interConnection->getActiveInterfaces()->isEmpty() && 
+        interConnection->getHierInterfaces()->isEmpty()))
+    {
+        return false;
+    }
+    else
     {
         QMap<QString, QString> interfaceReferences;
 
@@ -267,8 +272,8 @@ bool InterconnectionValidator::hasValidInterfaces(QSharedPointer<Interconnection
             }
             else
             {
-                interfaceReferences.insert(
-                    currentInterface->getComponentReference(), currentInterface->getBusReference());
+                interfaceReferences.insert(currentInterface->getComponentReference(),
+                    currentInterface->getBusReference());
             }
         }
 
@@ -287,10 +292,6 @@ bool InterconnectionValidator::hasValidInterfaces(QSharedPointer<Interconnection
         }
 
         return true;
-    }
-    else
-    {
-        return false;
     }
 }
 
@@ -553,7 +554,13 @@ void InterconnectionValidator::findErrorsInExcludePorts(QVector<QString>& errors
 void InterconnectionValidator::findErrorsInInterfaces(QVector<QString>& errors,
     QSharedPointer<Interconnection> interConnection, QString const& innerContext, QString const& context) const
 {
-    if (!interConnection->getActiveInterfaces()->isEmpty() || !interConnection->getHierInterfaces()->isEmpty())
+    if (!interConnection->getStartInterface() || (interConnection->getActiveInterfaces()->isEmpty() && 
+        interConnection->getHierInterfaces()->isEmpty()))
+    {
+        errors.append(QObject::tr("No active interfaces or hierarchical interfaces set for %1 within %2")
+            .arg(innerContext).arg(context));        
+    }
+    else
     {
         QMap<QString, QString> interfaceReferences;
 
@@ -598,11 +605,6 @@ void InterconnectionValidator::findErrorsInInterfaces(QVector<QString>& errors,
 
             findErrorsInIsPresent(errors, hierarchicalInterface->getIsPresent(), innerContext, context);
         }
-    }
-    else
-    {
-        errors.append(QObject::tr("No active interfaces or hierarchical interfaces set for %1 within %2")
-            .arg(innerContext).arg(context));
     }
 }
 

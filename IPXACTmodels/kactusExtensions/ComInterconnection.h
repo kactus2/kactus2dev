@@ -76,24 +76,6 @@ public:
     virtual void write(QXmlStreamWriter& writer) const;
 
     /*!
-     *  Returns true if the connection is valid.
-     *
-     *      @param [out] errorList     The list for possible error messages.
-     *      @param [in]  instanceNames The names of the HW/SW instances in the parent design.
-     *      @param [in]  parentId      The identifier for the design containing the connections.
-     */
-    //bool isValid(QStringList& errorList, QStringList const& instanceNames,
-    //             QString const& parentId) const;
-
-	/*! \brief Check if the COM connection is in valid state.
-	 *
-	 * \param instanceNames The names of the HW/SW instances in the parent design.
-	 *
-	 * \return bool True if the COM connection is in valid state.
-	*/
-	//bool isValid(const QStringList& instanceNames) const;
-
-    /*!
      *  Set an interface. First active interface is set as the start interface.
      *
      *      @param [in] interfaceReference  The selected interface.

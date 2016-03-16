@@ -799,8 +799,8 @@ void tst_DesignValidator::testInterconnectionActiveInterfaceHasValidExcludePorts
         new QList<QSharedPointer<ComponentInstance> > ());
     instances->append(testInstance);
 
-    LibraryMock* mockLibrary (new LibraryMock(this));
-    mockLibrary->addComponent(testComponent);
+    LibraryMock mockLibrary (this);
+    mockLibrary.addComponent(testComponent);
 
     if (!portName.isEmpty())
     {
@@ -823,7 +823,7 @@ void tst_DesignValidator::testInterconnectionActiveInterfaceHasValidExcludePorts
 
     QSharedPointer<Interconnection> testConnection (new Interconnection("OnePunchMan", testInterface));
 
-    QSharedPointer<InterconnectionValidator> validator = createInterconnectionValidator(mockLibrary);
+    QSharedPointer<InterconnectionValidator> validator = createInterconnectionValidator(&mockLibrary);
     validator->changeComponentInstances(instances);
 
     QCOMPARE(validator->hasValidStartInterface(testConnection), isValid);
@@ -873,7 +873,7 @@ void tst_DesignValidator::testInterconnectionInterfacesAreValid()
     QSharedPointer<Interconnection> testConnection (new Interconnection());
     testConnection->setName("Gygax");
 
-    LibraryMock* mockLibrary (new LibraryMock(this));
+    LibraryMock mockLibrary (this);
 
     QSharedPointer<QList<QSharedPointer<ComponentInstance> > > instances (
         new QList<QSharedPointer<ComponentInstance> > ());
@@ -911,9 +911,9 @@ void tst_DesignValidator::testInterconnectionInterfacesAreValid()
 
         testComponent->getBusInterfaces()->append(testBus);
 
-        testConnection->getActiveInterfaces()->append(testInterface);
+        testConnection->setStartInterface(testInterface);
 
-        mockLibrary->addComponent(testComponent);
+        mockLibrary.addComponent(testComponent);
 
         if (copyInterface)
         {
@@ -934,7 +934,7 @@ void tst_DesignValidator::testInterconnectionInterfacesAreValid()
         }
     }
 
-    QSharedPointer<InterconnectionValidator> validator = createInterconnectionValidator(mockLibrary);
+    QSharedPointer<InterconnectionValidator> validator = createInterconnectionValidator(&mockLibrary);
     validator->changeComponentInstances(instances);
 
     QCOMPARE(validator->hasValidInterfaces(testConnection), isValid);

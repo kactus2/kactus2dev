@@ -30,6 +30,7 @@
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/ConnectionUndoCommands.h>
 #include <common/graphicsItems/CommonGraphicsUndoCommands.h>
+#include <common/graphicsItems/GraphicsColumnLayout.h>
 
 #include <designEditors/common/ConfigurationEditor/activeviewmodel.h>
 
@@ -840,11 +841,11 @@ void AdHocBoundsChangeCommand::redo()
 //-----------------------------------------------------------------------------
 // Function: ReplaceComponentCommand::ReplaceComponentCommand()
 //-----------------------------------------------------------------------------
-ReplaceComponentCommand::ReplaceComponentCommand(DesignDiagram* diagram, HWComponentItem* oldComp, HWComponentItem* newComp,
-                                                 bool existing, bool keepOld, QUndoCommand* parent)
-    : QUndoCommand(parent),
-      oldComp_(oldComp),
-      newComp_(newComp)
+ReplaceComponentCommand::ReplaceComponentCommand(DesignDiagram* diagram, HWComponentItem* oldComp,
+    HWComponentItem* newComp, bool existing, bool keepOld, QUndoCommand* parent):
+QUndoCommand(parent),
+    oldComp_(oldComp),
+    newComp_(newComp)
 {
     foreach (ConnectionEndpoint* oldEndpoint, oldComp_->getEndpoints())
     {
@@ -865,15 +866,20 @@ ReplaceComponentCommand::ReplaceComponentCommand(DesignDiagram* diagram, HWCompo
             new PortMoveCommand(newEndpoint, newEndpoint->pos(), oldEndpoint->pos(), this);
 
             // Exchange connections between the endpoints.
-            foreach (GraphicsConnection* conn, oldEndpoint->getConnections())
+            foreach (GraphicsConnection* connection, oldEndpoint->getConnections())
             {
-                new ConnectionExchangeCommand(conn, oldEndpoint, newEndpoint, this);
+                new ConnectionExchangeCommand(connection, oldEndpoint, newEndpoint, this);
             }
 
-            foreach (GraphicsConnection* conn, oldEndpoint->getOffPageConnector()->getConnections())
+            foreach (GraphicsConnection* connection, oldEndpoint->getOffPageConnector()->getConnections())
             {
-                new ConnectionExchangeCommand(conn, oldEndpoint->getOffPageConnector(),
-                                              newEndpoint->getOffPageConnector(), this);
+//                 if (!newEndpoint->getOffPageConnector()->isVisible())
+//                 {
+//                     newEndpoint->getOffPageConnector()->setVisible(true);
+//                 }
+
+                new ConnectionExchangeCommand(connection, oldEndpoint->getOffPageConnector(),
+                    newEndpoint->getOffPageConnector(), this);
             }
         }
     }
@@ -881,8 +887,8 @@ ReplaceComponentCommand::ReplaceComponentCommand(DesignDiagram* diagram, HWCompo
     // Create a delete command for the old component if it should not be kept.
     if (!keepOld)
     {
-        ComponentDeleteCommand* deleteCmd = new ComponentDeleteCommand(diagram, 
-            dynamic_cast<GraphicsColumn*>(oldComp_->parent()), oldComp_, this);
+        GraphicsColumn* column = diagram->getLayout()->findColumnAt(oldComp_->scenePos());
+        ComponentDeleteCommand* deleteCmd = new ComponentDeleteCommand(diagram, column, oldComp_, this);
 
         connect(deleteCmd, SIGNAL(componentInstantiated(ComponentItem*)),
             this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
@@ -898,8 +904,8 @@ ReplaceComponentCommand::ReplaceComponentCommand(DesignDiagram* diagram, HWCompo
     // Create a move/add command for the new component.
     if (existing)
     {
-        new ItemMoveCommand(newComp_, newComp_->scenePos(), newComp_->getParentStack(),
-                            oldComp_->scenePos(), oldComp_->getParentStack(), this);
+        new ItemMoveCommand(newComp_, newComp_->scenePos(), newComp_->getParentStack(), oldComp_->scenePos(),
+            oldComp_->getParentStack(), this);
     }
     else
     {

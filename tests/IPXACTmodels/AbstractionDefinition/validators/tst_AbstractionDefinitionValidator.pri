@@ -63,7 +63,6 @@ SOURCES += ../../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.
     ../../../../IPXACTmodels/common/BooleanValue.cpp \
     ../../../../IPXACTmodels/BusDefinition/BusDefinition.cpp \
     ../../../../IPXACTmodels/common/CellSpecification.cpp \
-
     ../../../../IPXACTmodels/Component/Choice.cpp \
     ../../../../IPXACTmodels/common/validators/CellSpecificationValidator.cpp \
     ../../../../IPXACTmodels/common/ConfigurableElementValue.cpp \

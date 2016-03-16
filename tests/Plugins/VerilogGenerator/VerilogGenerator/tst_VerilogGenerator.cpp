@@ -1343,17 +1343,18 @@ void tst_VerilogGenerator::testDescriptionAndVLNVIsPrintedAboveInstance_data()
 //-----------------------------------------------------------------------------
 void tst_VerilogGenerator::testTopLevelModuleParametersAreWritten()
 {
-    QSharedPointer<View> activeView( new View() );
+    QSharedPointer<View> activeView(new View());
     activeView->setName("rtl");
+    activeView->setComponentInstantiationRef("instance1");
+
     QSharedPointer<ModuleParameter> moduleParameter(new ModuleParameter());
     moduleParameter->setName("moduleParameter");
     moduleParameter->setValue("1");
 
-	QSharedPointer<ComponentInstantiation> cimp( new ComponentInstantiation("rofl","","joq") );
-	activeView->setComponentInstantiationRef( cimp->name() );
-	cimp->getModuleParameters()->append(moduleParameter);
+	QSharedPointer<ComponentInstantiation> instantiation(new ComponentInstantiation("instance1"));
+	instantiation->getModuleParameters()->append(moduleParameter);
 
-	topComponent_->getComponentInstantiations()->append(cimp);
+	topComponent_->getComponentInstantiations()->append(instantiation);
     topComponent_->getViews()->append(activeView);
 
     runGenerator("rtl");

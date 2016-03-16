@@ -16,6 +16,7 @@
 
 #include <IPXACTmodels/kactusExtensions/ConnectionRoute.h>
 
+#include <IPXACTmodels/common/GenericVendorExtension.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Position.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Placeholder.h>
 #include <IPXACTmodels/kactusExtensions/InterfaceGraphicsData.h>
@@ -481,6 +482,8 @@ void DesignReader::parseDesignExtensions(QDomNode const& documentNode, QSharedPo
     parseComConnections(extensionNode.firstChildElement("kactus2:comConnections"), design);
 
     parseInterfaceGraphics(extensionNode, design);
+
+    parseNotes(extensionNode, design);
 }
 
 //-----------------------------------------------------------------------------
@@ -688,9 +691,24 @@ void DesignReader::parseInterfaceGraphics(QDomElement const& extensionsNode, QSh
         int yDirection = directionElement.attribute("y").toInt();
         QVector2D graphicsVector (xDirection, yDirection);
 
-        QSharedPointer<InterfaceGraphicsData> graphicsData(
-            new InterfaceGraphicsData(name, graphicsPosition, graphicsVector));
+        QSharedPointer<InterfaceGraphicsData> graphicsData(new InterfaceGraphicsData(name, graphicsPosition, 
+            graphicsVector));
 
         design->getVendorExtensions()->append(graphicsData);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignReader::parseNotes()
+//-----------------------------------------------------------------------------
+void DesignReader::parseNotes(QDomElement const& extensionNode, QSharedPointer<Design> design) const
+{
+    QDomNodeList notesExtensions = extensionNode.elementsByTagName("kactus2:note");
+
+    int notesCount = notesExtensions.count();
+    for (int i = 0; i < notesCount; i++)
+    {
+        QSharedPointer<GenericVendorExtension> note(new GenericVendorExtension(notesExtensions.at(i)));
+        design->getVendorExtensions()->append(note);
     }
 }

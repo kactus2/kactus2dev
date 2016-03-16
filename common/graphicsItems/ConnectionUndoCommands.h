@@ -167,7 +167,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The connection.
-    GraphicsConnection* conn_;
+    GraphicsConnection* connectionItem_;
 
     //! The old endpoint.
     ConnectionEndpoint* oldEndpoint_;

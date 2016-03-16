@@ -656,7 +656,7 @@ void tst_documentGenerator::testAddressBlocksWrittenWithTopComponent()
         "\t\t\t\t\t<td>" + testAddressBlock->getBaseAddress() + "</td>\n"
         "\t\t\t\t\t<td>" + testAddressBlock->getRange() + "</td>\n"
         "\t\t\t\t\t<td>" + testAddressBlock->getWidth() + "</td>\n"
-        "\t\t\t\t\t<td>" + General::access2Str(testAddressBlock->getAccess()) + "</td>\n"
+        "\t\t\t\t\t<td>" + AccessTypes::access2Str(testAddressBlock->getAccess()) + "</td>\n"
         "\t\t\t\t\t<td>" + testAddressBlock->getVolatile() + "</td>\n"
         "\t\t\t\t</tr>\n"
         "\t\t\t</table>\n"
@@ -744,7 +744,7 @@ void tst_documentGenerator::testExpressionsInAddressBlocks()
         "\t\t\t\t\t<td>" + "'h0" + "</td>\n"
         "\t\t\t\t\t<td>" + "target" + "</td>\n"
         "\t\t\t\t\t<td>" + "target + 2" + "</td>\n"
-        "\t\t\t\t\t<td>" + General::access2Str(testAddressBlock->getAccess()) + "</td>\n"
+        "\t\t\t\t\t<td>" + AccessTypes::access2Str(testAddressBlock->getAccess()) + "</td>\n"
         "\t\t\t\t\t<td>" + testAddressBlock->getVolatile() + "</td>\n"
         "\t\t\t\t</tr>\n"
         "\t\t\t</table>\n"
@@ -827,7 +827,7 @@ void tst_documentGenerator::testRegistersWrittenWithTopComponent()
         "\t\t\t\t\t<td>" + testRegister->getSize() + "</td>\n"
         "\t\t\t\t\t<td>" + testRegister->getDimension() + "</td>\n"
         "\t\t\t\t\t<td>" + testRegister->getVolatile() + "</td>\n"
-        "\t\t\t\t\t<td>" + General::access2Str(testRegister->getAccess()) + "</td>\n"
+        "\t\t\t\t\t<td>" + AccessTypes::access2Str(testRegister->getAccess()) + "</td>\n"
         //"\t\t\t\t\t<td>" + testRegister->getRegisterValue() + "</td>\n"
         //"\t\t\t\t\t<td>" + testRegister->getRegisterMask() + "</td>\n"
         "\t\t\t\t</tr>\n"
@@ -907,7 +907,7 @@ void tst_documentGenerator::testFieldsWrittenWithTopComponent()
         "\t\t\t\t\t<td>" + testField->getBitOffset() + "</td>\n"
         "\t\t\t\t\t<td>" + testField->getBitWidth() + "</td>\n"
         "\t\t\t\t\t<td>" + testField->getVolatile().toString() + "</td>\n"
-        "\t\t\t\t\t<td>" + General::access2Str(testField->getAccess()) + "</td>\n"
+        "\t\t\t\t\t<td>" + AccessTypes::access2Str(testField->getAccess()) + "</td>\n"
         "\t\t\t\t\t<td>" + testField->description() + "</td>\n"
         "\t\t\t\t</tr>\n"
         "\t\t\t</table>\n"
@@ -1011,7 +1011,7 @@ void tst_documentGenerator::testMemoryMapToFieldWrittenWithTopComponent()
         "\t\t\t\t\t<td>" + testAddressBlock->getBaseAddress() + "</td>\n"
         "\t\t\t\t\t<td>" + testAddressBlock->getRange() + "</td>\n"
         "\t\t\t\t\t<td>" + testAddressBlock->getWidth() + "</td>\n"
-        "\t\t\t\t\t<td>" + General::access2Str(testAddressBlock->getAccess()) + "</td>\n"
+        "\t\t\t\t\t<td>" + AccessTypes::access2Str(testAddressBlock->getAccess()) + "</td>\n"
         "\t\t\t\t\t<td>" + testAddressBlock->getVolatile() + "</td>\n"
         "\t\t\t\t</tr>\n"
         "\t\t\t</table>\n"
@@ -1035,7 +1035,7 @@ void tst_documentGenerator::testMemoryMapToFieldWrittenWithTopComponent()
         "\t\t\t\t\t<td>" + testRegister->getSize() + "</td>\n"
         "\t\t\t\t\t<td>" + testRegister->getDimension() + "</td>\n"
         "\t\t\t\t\t<td>" + testRegister->getVolatile() + "</td>\n"
-        "\t\t\t\t\t<td>" + General::access2Str(testRegister->getAccess()) + "</td>\n"
+        "\t\t\t\t\t<td>" + AccessTypes::access2Str(testRegister->getAccess()) + "</td>\n"
         //"\t\t\t\t\t<td>" + testRegister->getRegisterValue() + "</td>\n"
         //"\t\t\t\t\t<td>" + testRegister->getRegisterMask() + "</td>\n"
         "\t\t\t\t</tr>\n"
@@ -1057,7 +1057,7 @@ void tst_documentGenerator::testMemoryMapToFieldWrittenWithTopComponent()
         "\t\t\t\t\t<td>" + testField->getBitOffset() + "</td>\n"
         "\t\t\t\t\t<td>" + testField->getBitWidth() + "</td>\n"
         "\t\t\t\t\t<td>" + testField->getVolatile().toString() + "</td>\n"
-        "\t\t\t\t\t<td>" + General::access2Str(testField->getAccess()) + "</td>\n"
+        "\t\t\t\t\t<td>" + AccessTypes::access2Str(testField->getAccess()) + "</td>\n"
         "\t\t\t\t\t<td>" + testField->description() + "</td>\n"
         "\t\t\t\t</tr>\n"
         "\t\t\t</table>\n"
@@ -1672,7 +1672,7 @@ QSharedPointer <Field> tst_documentGenerator::createTestField(QString const& nam
     testField->setBitOffset(offset);
     testField->setBitWidth(width);
     testField->setVolatile(false);
-    testField->setAccess(General::READ_ONLY);
+    testField->setAccess(AccessTypes::READ_ONLY);
 
     return testField;
 }
@@ -1690,7 +1690,7 @@ QSharedPointer <Register> tst_documentGenerator::createTestRegister(QString cons
     testRegister->setDimension(dimension);
     testRegister->setDescription(description);
     testRegister->setVolatile(true);
-    testRegister->setAccess(General::READ_WRITE);
+    testRegister->setAccess(AccessTypes::READ_WRITE);
     //testRegister->setRegisterValue("2");
     //testRegister->setRegisterMask("4");
 
@@ -1711,7 +1711,7 @@ QSharedPointer <AddressBlock> tst_documentGenerator::createTestAddressBlock(QStr
     testAddressBlock->setBaseAddress(baseAddress);
     testAddressBlock->setRange(range);
     testAddressBlock->setWidth(width);
-    testAddressBlock->setAccess(General::READ_WRITE);
+    testAddressBlock->setAccess(AccessTypes::READ_WRITE);
     testAddressBlock->setVolatile(true);
 
     foreach (QSharedPointer<RegisterBase> testRegister, registers)

@@ -19,10 +19,10 @@
 #include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
 #include <editors/ComponentEditor/common/NullParser.h>
 
-#include <IPXACTmodels/addressblock.h>
-#include <IPXACTmodels/field.h>
-#include <IPXACTmodels/register.h>
-#include <IPXACTmodels/registermodel.h>
+#include <IPXACTmodels/Component/AddressBlock.h>
+#include <IPXACTmodels/Component/Field.h>
+#include <IPXACTmodels/Component/Register.h>
+#include <IPXACTmodels/Component/RegisterBase.h>
 
 class tst_RegisterGraphItem : public QObject
 {
@@ -102,7 +102,7 @@ void tst_RegisterGraphItem::testConstructor()
     QSharedPointer<Register> testRegister(new Register());
     testRegister->setName("testRegister");
     testRegister->setAddressOffset(0);
-    testRegister->setSize(1);
+    testRegister->setSize("1");
 
     RegisterGraphItem* registerItem = new RegisterGraphItem(testRegister, noParser, addressBlockItem);
     registerItem->refresh();
@@ -530,8 +530,8 @@ void tst_RegisterGraphItem::testTwoDimensional()
     QSharedPointer<Register> twoDimensionalRegister(new Register());
     twoDimensionalRegister->setName("testRegister");
     twoDimensionalRegister->setAddressOffset("1");
-    twoDimensionalRegister->setSize(8);
-    twoDimensionalRegister->setDim(2);
+    twoDimensionalRegister->setSize("8");
+    twoDimensionalRegister->setDimension("2");
 
 
     RegisterGraphItem* registerItem = new RegisterGraphItem(twoDimensionalRegister, noParser, addressBlockItem);
@@ -571,8 +571,8 @@ void tst_RegisterGraphItem::testLastDimensionExceedsAddressBlockRange()
     QSharedPointer<Register> twoDimensionalRegister(new Register());
     twoDimensionalRegister->setName("testRegister");
     twoDimensionalRegister->setAddressOffset(0);
-    twoDimensionalRegister->setSize(16);
-    twoDimensionalRegister->setDim(2);
+    twoDimensionalRegister->setSize("16");
+    twoDimensionalRegister->setDimension("2");
 
 
     RegisterGraphItem* registerItem = new RegisterGraphItem(twoDimensionalRegister, noParser, addressBlockItem);
@@ -607,8 +607,8 @@ void tst_RegisterGraphItem::testExpressions()
     QSharedPointer<Register> testRegister(new Register());
     testRegister->setName("testRegister");
     testRegister->setAddressOffset("1+1");
-    testRegister->setSizeExpression("8*2");
-    testRegister->setDimensionExpression("3-1");
+    testRegister->setSize("8*2");
+    testRegister->setDimension("3-1");
 
     QSharedPointer<ExpressionParser> expressionParser(new SystemVerilogExpressionParser());
 
@@ -632,9 +632,9 @@ void tst_RegisterGraphItem::testNonPresentField()
 
     QSharedPointer<Field> nonPresentField(new Field());
     nonPresentField->setName("invisibleField");
-    nonPresentField->setBitOffset(2);
-    nonPresentField->setBitWidth(2);
-    nonPresentField->setIsPresentExpression("0");
+    nonPresentField->setBitOffset("2");
+    nonPresentField->setBitWidth("2");
+    nonPresentField->setIsPresent("0");
 
     QSharedPointer<ExpressionParser> expressionParser(new SystemVerilogExpressionParser());
 
@@ -714,8 +714,8 @@ RegisterGraphItem* tst_RegisterGraphItem::createRegisterItem()
 
     QSharedPointer<Register> testRegister(new Register());
     testRegister->setName("testRegister");
-    testRegister->setAddressOffset(0);
-    testRegister->setSize(8);
+    testRegister->setAddressOffset("0");
+    testRegister->setSize("8");
 
     return new RegisterGraphItem(testRegister, noParser, addressBlockItem);
 }
@@ -728,8 +728,8 @@ FieldGraphItem* tst_RegisterGraphItem::createFieldItem(QString name, unsigned in
 {
     QSharedPointer<Field> field(new Field());
     field->setName(name);
-    field->setBitOffset(offset);
-    field->setBitWidth(bitWidth);
+    field->setBitOffset(QString::number(offset));
+    field->setBitWidth(QString::number(bitWidth));
     
     QSharedPointer<ExpressionParser> expressionParser(new SystemVerilogExpressionParser());
 

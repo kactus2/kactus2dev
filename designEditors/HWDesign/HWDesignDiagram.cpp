@@ -976,30 +976,31 @@ void HWDesignDiagram::replaceComponentItemAtPositionWith(QPointF position, QShar
 
     QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
         tr("Component instance '%1' is about to be replaced with an instance of %2. Continue and replace?").arg(
-        oldCompItem->name(), comp->getVlnv().toString()),
-        QMessageBox::Yes | QMessageBox::No, getParent());
+        oldCompItem->name(), comp->getVlnv().toString()), QMessageBox::Yes | QMessageBox::No, getParent());
 
     if (msgBox.exec() == QMessageBox::Yes)
     {
+        
+
         // Create the component item.
         QSharedPointer<ComponentInstance> componentInstance(new ComponentInstance());
         componentInstance->setInstanceName(createInstanceName(comp->getVlnv().getName()));
         getDesign()->getComponentInstances()->append(componentInstance);
 
-        HWComponentItem *newCompItem = new HWComponentItem(getLibraryInterface(), componentInstance, comp,
-			dynamic_cast<GraphicsColumn*>(oldCompItem->parent()));
+        GraphicsColumn* column = getLayout()->findColumnAt(oldCompItem->scenePos());
+        HWComponentItem* newCompItem = new HWComponentItem(getLibraryInterface(), componentInstance, comp, column);
 
         // Perform the replacement.
-        QSharedPointer<ReplaceComponentCommand> cmd(new ReplaceComponentCommand(this, oldCompItem, newCompItem,
-            false, false));
+        QSharedPointer<ReplaceComponentCommand> replaceCommand(new ReplaceComponentCommand(this, oldCompItem,
+            newCompItem, false, false));
 
-        connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
+        connect(replaceCommand.data(), SIGNAL(componentInstantiated(ComponentItem*)),
             this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
-        connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
+        connect(replaceCommand.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
             this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 
-        getEditProvider()->addCommand(cmd);
-        cmd->redo();
+        getEditProvider()->addCommand(replaceCommand);
+        replaceCommand->redo();
     }
 }
 
@@ -1614,9 +1615,8 @@ void HWDesignDiagram::replace(ComponentItem* destComp, ComponentItem* sourceComp
 
     if (destHWComponent && sourceHWComponent)
     {
-        // Perform the replacement.
-        QSharedPointer<ReplaceComponentCommand> 
-            cmd(new ReplaceComponentCommand(this, destHWComponent, sourceHWComponent, true, true));
+        QSharedPointer<ReplaceComponentCommand> cmd(new ReplaceComponentCommand(this,
+            destHWComponent, sourceHWComponent, true, true));
 
         connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
             this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
@@ -1700,15 +1700,26 @@ void HWDesignDiagram::createComponentItem(QSharedPointer<Component> comp, QPoint
 
     if (column != 0)
     {
-        QSharedPointer<ItemAddCommand> cmd(new ItemAddCommand(column, newItem));
+        // Create the diagram component.                            
+        QSharedPointer<ComponentInstance> componentInstance(new ComponentInstance("",
+            QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(comp->getVlnv()))));
+        QString instanceName = createInstanceName(comp->getVlnv().getName());
+        componentInstance->setInstanceName(instanceName);
 
-        connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
+        getDesign()->getComponentInstances()->append(componentInstance);
+
+        HWComponentItem *newItem = new HWComponentItem(getLibraryInterface(), componentInstance, comp);
+        newItem->setPos(snapPointToGrid(position));
+
+        QSharedPointer<ItemAddCommand> addCommand(new ItemAddCommand(column, newItem));
+
+        connect(addCommand.data(), SIGNAL(componentInstantiated(ComponentItem*)),
             this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
-        connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
+        connect(addCommand.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
             this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 
-        getEditProvider()->addCommand(cmd);
-        cmd->redo();
+        getEditProvider()->addCommand(addCommand);
+        addCommand->redo();
     }
 }
 

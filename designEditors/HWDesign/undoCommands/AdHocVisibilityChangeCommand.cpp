@@ -40,19 +40,22 @@ newVisibility_(newVisibility)
         HWConnectionEndpoint* port = dataSource->getDiagramAdHocPort(portName);
         Q_ASSERT(port != 0);
 
-        pos_ = port->scenePos();
-
-        foreach (GraphicsConnection* connection, port->getConnections())
+        if (port)
         {
-            new ConnectionDeleteCommand(static_cast<DesignDiagram*>(port->scene()), 
-                static_cast<HWConnection*>(connection), this);
-        }
+            pos_ = port->scenePos();
 
-        foreach (GraphicsConnection* connection, port->getOffPageConnector()->getConnections())
-        {
-            new ConnectionDeleteCommand(static_cast<DesignDiagram*>(port->scene()), 
-                static_cast<HWConnection*>(connection), this);
-        }
+            foreach (GraphicsConnection* connection, port->getConnections())
+            {
+                new ConnectionDeleteCommand(static_cast<DesignDiagram*>(port->scene()), 
+                    static_cast<HWConnection*>(connection), this);
+            }
+
+            foreach (GraphicsConnection* connection, port->getOffPageConnector()->getConnections())
+            {
+                new ConnectionDeleteCommand(static_cast<DesignDiagram*>(port->scene()), 
+                    static_cast<HWConnection*>(connection), this);
+            }
+        }        
     }
 }
 

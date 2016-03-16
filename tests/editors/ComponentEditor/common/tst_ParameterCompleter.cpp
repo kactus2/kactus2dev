@@ -19,7 +19,7 @@
 
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
 
 
 class tst_ParameterCompleter : public QObject

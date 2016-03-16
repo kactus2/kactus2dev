@@ -19,6 +19,7 @@ HEADERS += ../../../IPXACTmodels/Design/ActiveInterface.h \
     ../../../IPXACTmodels/Design/ComponentInstance.h \
     ../../../IPXACTmodels/common/ConfigurableElementValue.h \
     ../../../IPXACTmodels/common/ConfigurableVLNVReference.h \
+    ../../../IPXACTmodels/kactusExtensions/ConnectionRoute.h \
     ../../../IPXACTmodels/Design/Design.h \
     ../../../IPXACTmodels/common/DirectionTypes.h \
     ../../../IPXACTmodels/common/Document.h \
@@ -53,7 +54,7 @@ HEADERS += ../../../IPXACTmodels/Design/ActiveInterface.h \
     ../../../IPXACTmodels/common/NameGroupReader.h \
     ../../../IPXACTmodels/common/ParameterReader.h \
     ../../../IPXACTmodels/validators/namevalidator.h \
-    ../../../IPXACTmodels/kactusExtensions/ConnectionRoute.h
+    ../../../IPXACTmodels/kactusExtensions/InterfaceGraphicsData.h
 SOURCES += ../../../IPXACTmodels/Design/ActiveInterface.cpp \
     ../../../IPXACTmodels/Design/AdHocConnection.cpp \
     ../../../IPXACTmodels/kactusExtensions/ApiInterconnection.cpp \
@@ -68,6 +69,7 @@ SOURCES += ../../../IPXACTmodels/Design/ActiveInterface.cpp \
     ../../../IPXACTmodels/Design/ComponentInstanceReader.cpp \
     ../../../IPXACTmodels/common/ConfigurableElementValue.cpp \
     ../../../IPXACTmodels/common/ConfigurableVLNVReference.cpp \
+    ../../../IPXACTmodels/kactusExtensions/ConnectionRoute.cpp \
     ../../../IPXACTmodels/Design/Design.cpp \
     ../../../IPXACTmodels/Design/DesignReader.cpp \
     ../../../IPXACTmodels/common/DirectionTypes.cpp \
@@ -100,4 +102,4 @@ SOURCES += ../../../IPXACTmodels/Design/ActiveInterface.cpp \
     ../../../IPXACTmodels/generaldeclarations.cpp \
     ../../../IPXACTmodels/validators/namevalidator.cpp \
     ./tst_DesignReader.cpp \
-    ../../../IPXACTmodels/kactusExtensions/ConnectionRoute.cpp
+    ../../../IPXACTmodels/kactusExtensions/InterfaceGraphicsData.cpp

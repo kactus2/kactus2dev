@@ -50,7 +50,7 @@ previewBox_(0)
 
     attributeEditor_ = new KactusAttributeEditor(this);
 
-    QGroupBox* authorBox = new QGroupBox("Author",this);
+    QGroupBox* authorBox = new QGroupBox("Author", this);
     authorEditor_ = new QLineEdit(authorBox);   
     QVBoxLayout* authorLayout = new QVBoxLayout(authorBox);
     authorLayout->addWidget(authorEditor_);

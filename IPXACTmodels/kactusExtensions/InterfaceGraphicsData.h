@@ -56,7 +56,7 @@ public:
     /*!
      *  Destructor.
      */
-    ~InterfaceGraphicsData();
+    virtual ~InterfaceGraphicsData();
 
     /*!
      *  Clones the interface graphics data.

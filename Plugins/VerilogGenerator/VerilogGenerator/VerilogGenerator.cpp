@@ -38,7 +38,7 @@
 #include <Plugins/VerilogGenerator/VerilogWireWriter/VerilogWireWriter.h>
 
 #include <QDateTime>
-#include "QFileInfo"
+#include <QFileInfo>
 
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::VerilogGenerator()

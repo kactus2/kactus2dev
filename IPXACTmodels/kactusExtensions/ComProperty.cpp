@@ -16,12 +16,12 @@
 //-----------------------------------------------------------------------------
 // Function: ComProperty::ComProperty()
 //-----------------------------------------------------------------------------
-ComProperty::ComProperty() :
+ComProperty::ComProperty():
 name_(),
-required_(true),
-type_("string"),
-defaultValue_(""),
-desc_("")
+    required_(true),
+    type_("string"),
+    defaultValue_(""),
+    desc_("")
 {
 
 }
@@ -29,12 +29,12 @@ desc_("")
 //-----------------------------------------------------------------------------
 // Function: ComProperty::ComProperty()
 //-----------------------------------------------------------------------------
-ComProperty::ComProperty(ComProperty const& rhs) :
+ComProperty::ComProperty(ComProperty const& rhs):
 name_(rhs.name_),
-required_(rhs.required_),
-type_(rhs.type_),
-defaultValue_(rhs.defaultValue_),
-desc_(rhs.desc_)
+    required_(rhs.required_),
+    type_(rhs.type_),
+    defaultValue_(rhs.defaultValue_),
+    desc_(rhs.desc_)
 {
 
 }
@@ -42,12 +42,12 @@ desc_(rhs.desc_)
 //-----------------------------------------------------------------------------
 // Function: ComProperty::ComProperty()
 //-----------------------------------------------------------------------------
-ComProperty::ComProperty(QDomNode& node) :
+ComProperty::ComProperty(QDomNode const& node):
 name_(),
-required_(true),
-type_("string"),
-defaultValue_(""),
-desc_("")
+    required_(true),
+    type_("string"),
+    defaultValue_(""),
+    desc_("")
 {
     name_ = node.attributes().namedItem("name").nodeValue();
     required_ = General::str2Bool(node.attributes().namedItem("required").nodeValue(), false);
@@ -162,7 +162,7 @@ void ComProperty::setDescription(QString const& description)
 //-----------------------------------------------------------------------------
 // Function: ComProperty::name()
 //-----------------------------------------------------------------------------
-QString const& ComProperty::name() const
+QString ComProperty::name() const
 {
     return name_;
 }
@@ -178,7 +178,7 @@ bool ComProperty::isRequired() const
 //-----------------------------------------------------------------------------
 // Function: ComProperty::getType()
 //-----------------------------------------------------------------------------
-QString const& ComProperty::getType() const
+QString ComProperty::getType() const
 {
     return type_;
 }
@@ -186,7 +186,7 @@ QString const& ComProperty::getType() const
 //-----------------------------------------------------------------------------
 // Function: ComProperty::getDefaultValue()
 //-----------------------------------------------------------------------------
-QString const& ComProperty::getDefaultValue() const
+QString ComProperty::getDefaultValue() const
 {
     return defaultValue_;
 }
@@ -194,7 +194,7 @@ QString const& ComProperty::getDefaultValue() const
 //-----------------------------------------------------------------------------
 // Function: ComProperty::getDescription()
 //-----------------------------------------------------------------------------
-QString const& ComProperty::getDescription() const
+QString ComProperty::getDescription() const
 {
     return desc_;
 }

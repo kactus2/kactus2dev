@@ -12,7 +12,7 @@ HEADERS += ../../../../editors/ComponentEditor/common/ComponentParameterFinder.h
     ../../../../editors/ComponentEditor/common/ParameterFinder.h \
     ../../../../editors/ComponentEditor/common/ParameterizableTable.h \
     ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
-    ../../../../editors/ComponentEditor/common/ValueFormatter.h \
+    ../../../../IPXACTmodels/common/validators/ValueFormatter.h \
     ../../../../editors/ComponentEditor/common/CompleterPopupTable.h \
     ../../../../editors/ComponentEditor/parameters/ComponentParameterModel.h \
     ../../../../editors/ComponentEditor/common/ExpressionEditor.h \
@@ -25,7 +25,7 @@ SOURCES += ../../../../editors/ComponentEditor/common/CompleterPopupTable.cpp \
     ../../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
     ../../../../editors/ComponentEditor/common/ParameterCompleter.cpp \
     ../../../../editors/ComponentEditor/common/ParameterizableTable.cpp \
+    ../../../../editors/ComponentEditor/common/ReferencingTableModel.cpp \
     ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
-    ../../../../editors/ComponentEditor/common/ValueFormatter.cpp \
-    ./tst_ExpressionEditor.cpp \
-    ../../../../editors/ComponentEditor/common/ReferencingTableModel.cpp
+    ../../../../IPXACTmodels/common/validators/ValueFormatter.cpp \
+    ./tst_ExpressionEditor.cpp
